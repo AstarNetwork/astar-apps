@@ -9,23 +9,47 @@
     "lint": "eslint --ext .js,.ts,.vue ./",
     "test": "echo \"No test specified\" && exit 0"
   },
+  "resolutions": {
+    "@polkadot/api": ">=4.10.1",
+    "typescript": "^4.2.4"
+  },
   "dependencies": {
+    "@plasm/types": "1.5.4-3",
+    "@polkadot/api": "^4.12.1",
+    "@polkadot/api-contract": "^4.12.1",
+    "@polkadot/extension-dapp": "^0.38.3",
+    "@polkadot/keyring": "^6.6.1",
+    "@polkadot/networks": "^6.6.1",
+    "@polkadot/types": "^4.12.1",
+    "@polkadot/ui-keyring": "^0.78.1",
+    "@polkadot/util": "^6.6.1",
+    "@polkadot/util-crypto": "^6.6.1",
+    "@polkadot/wasm-crypto": "^4.0.2",
     "@quasar/extras": "^1.0.0",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "node-polyfill-webpack-plugin": "^1.1.4",
     "quasar": "^2.0.0",
+    "store": "^2.0.12",
+    "stream": "^0.0.2",
     "vue-i18n": "^9.0.0-beta.0",
+    "vue3-dropzone": "^0.0.7",
     "vuex": "^4.0.1"
   },
   "devDependencies": {
+    "@tailwindcss/custom-forms": "^0.2.1",
+    "@tailwindcss/postcss7-compat": "^2.0.3",
     "@babel/eslint-parser": "^7.13.14",
     "@quasar/app": "^3.0.0",
     "@types/node": "^10.17.15",
+    "@types/store": "^2.0.2",
     "@typescript-eslint/eslint-plugin": "^4.16.1",
     "@typescript-eslint/parser": "^4.16.1",
     "eslint": "^7.14.0",
     "eslint-config-prettier": "^8.1.0",
-    "eslint-plugin-vue": "^7.0.0"
+    "eslint-plugin-vue": "^7.0.0",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.3",
+    "sass-loader": "7.3.1"
   },
   "browserslist": [
     "last 10 Chrome versions",
@@ -39,8 +63,11 @@
     "last 5 Opera versions"
   ],
   "engines": {
-    "node": ">= 12.22.1",
-    "npm": ">= 6.13.4",
-    "yarn": ">= 1.21.1"
+    "node": ">=14.0.0",
+    "yarn": ">=1.22.0"
+  },
+  "browser": {
+    "crypto": false,
+    "stream": false
   }
 }

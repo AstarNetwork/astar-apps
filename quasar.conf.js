@@ -9,6 +9,7 @@
 /* eslint-env node */
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { configure } = require('quasar/wrappers');
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 
 module.exports = configure(function (ctx) {
   return {
@@ -77,6 +78,9 @@ module.exports = configure(function (ctx) {
       chainWebpack (/* chain */) {
         //
       },
+      extendWebpack(cfg) {
+        cfg.plugins.push(new NodePolyfillPlugin({}));
+      }
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer

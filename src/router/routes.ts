@@ -1,10 +1,28 @@
 import { RouteRecordRaw } from 'vue-router';
 
+import Balance from 'pages/Balance.vue';
+// import DApps from '@/views/DApps.vue';
+import BalancePlasm from 'components/balance/BalancePlasm.vue';
+
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [{ path: '', component: () => import('pages/Index.vue') }],
+    redirect: '/balance',
+  },
+  {
+    path: '/balance',
+    name: 'Balance',
+    component: Balance,
+    children: [
+      {
+        path: '',
+        redirect: '/balance/balance-plasm',
+      },
+      {
+        path: 'balance-plasm',
+        component: BalancePlasm,
+      },
+    ],
   },
 
   // Always leave this as last one,

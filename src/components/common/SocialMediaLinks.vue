@@ -1,0 +1,105 @@
+<template>
+  <div class="flex items-center">
+    <!-- TODO: Links -->
+    <a href="#" :class="classes.link">
+      <!-- original icon -->
+      <icon-base
+        :class="classes.iconBase"
+        viewBox="0 0 512 512"
+        iconName="Twitter"
+      >
+        <icon-twitter />
+      </icon-base>
+      <!-- Tooltip -->
+      <span :class="classes.tooltipText"> Twitter </span>
+    </a>
+
+    <a href="#" :class="classes.link">
+      <!-- original icon -->
+      <icon-base
+        :class="classes.iconBase"
+        viewBox="0 0 448 512"
+        iconName="Telegram"
+      >
+        <icon-telegram />
+      </icon-base>
+      <!-- Tooltip -->
+      <span :class="classes.tooltipText"> Telegram </span>
+    </a>
+
+    <a href="#" :class="classes.link">
+      <!-- original icon -->
+      <icon-base
+        :class="classes.iconBase"
+        viewBox="0 0 448 512"
+        iconName="Discord"
+      >
+        <icon-discord />
+      </icon-base>
+      <!-- Tooltip -->
+      <span :class="classes.tooltipText"> Discord </span>
+    </a>
+
+    <a href="#" :class="classes.link">
+      <!-- original icon -->
+      <icon-base
+        :class="classes.iconBase"
+        viewBox="0 0 496 512"
+        iconName="GitHub"
+      >
+        <icon-github />
+      </icon-base>
+
+      <!-- Tooltip -->
+      <span :class="classes.tooltipText"> GitHub </span>
+    </a>
+
+    <a href="#" :class="classes.link">
+      <!-- Heroicon name: outline/document-text -->
+      <icon-base
+        :class="classes.iconBase"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        iconColor="none"
+        iconName="Documentation"
+      >
+        <icon-document />
+      </icon-base>
+      <!-- Tooltip -->
+      <span :class="classes.tooltipText"> Documentation </span>
+    </a>
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent, reactive } from 'vue';
+import IconBase from '../icons/IconBase.vue';
+import IconTwitter from '../icons/IconTwitter.vue';
+import IconTelegram from '../icons/IconTelegram.vue';
+import IconDocument from '../icons/IconDocument.vue';
+import IconGithub from '../icons/IconGithub.vue';
+import IconDiscord from '../icons/IconDiscord.vue';
+
+export default defineComponent({
+  components: {
+    IconBase,
+    IconTwitter,
+    IconTelegram,
+    IconDocument,
+    IconGithub,
+    IconDiscord,
+  },
+  setup() {
+    const classes = reactive({
+      link:
+        'tw-tooltip tw-p-3 tw-rounded-full hover:tw-bg-gray-100 dark:hover:tw-bg-darkGray-600 focus:tw-z-10 focus:tw-outline-none focus:tw-ring focus:tw-ring-gray-100 dark:focus:tw-ring-darkGray-600 focus:tw-bg-blue-50 dark:focus:tw-bg-darkGray-900 tw-relative',
+      iconBase: 'tw-text-blue-900 dark:tw-text-darkGray-300 tw-h-4 tw-w-4',
+      tooltipText:
+        'tw-pointer-events-none tw-hidden tw-absolute tw-top-0 tw-left-1/2 tw-z-10 tw-transform tw--translate-y-full tw--translate-x-1/2 tw-p-2 tw-text-xs tw-leading-tight tw-text-white tw-bg-gray-800 dark:tw-bg-darkGray-500 tw-rounded-md tw-shadow-lg tw-opacity-90',
+    });
+    return {
+      classes,
+    };
+  },
+});
+</script>
