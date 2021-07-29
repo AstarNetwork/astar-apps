@@ -4,11 +4,11 @@ import { GeneralStateInterface as State } from './state';
 
 const actions: ActionTree<State, StateInterface> = {
   showAlertMsg ({ commit }, { msg, alertType }) {
-    commit('general/setShowAlertMsg', true);
-    commit('general/setAlertMsg', msg);
-    commit('general/setAlertType', alertType);
+    commit('setShowAlertMsg', true);
+    commit('setAlertMsg', msg);
+    commit('setAlertType', alertType);
     setTimeout(() => {
-      commit('general/setShowAlertMsg', false);
+      commit('setShowAlertMsg', false);
     }, 3000);
   }
 };

@@ -51,7 +51,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watchEffect } from 'vue';
+import { defineComponent, computed } from 'vue';
 import { useStore } from 'src/store';
 import { Theme } from 'src/store/general/state';
 import IconBase from '../icons/IconBase.vue';
@@ -62,16 +62,12 @@ export default defineComponent({
   components: { IconBase, IconOutlineSun, IconOutlineMoon },
   setup() {
     const store = useStore();
-    const currentTheme = ref(store.getters['general/theme']);
-
-    watchEffect(() => {
-      store.commit('general/setTheme', currentTheme.value);
-    });
+    const currentTheme = computed(() => store.getters['general/theme']);
 
     return {
       isDarkTheme: currentTheme.value == 'DARK',
       switchThemeTo(theme: Theme) {
-        currentTheme.value = theme;
+        store.commit('general/setTheme', theme);
       },
     };
   },

@@ -1,12 +1,12 @@
 <template>
   <div
-    :class="`border ${bgColor(
+    :class="`tw-border ${bgColor(
       alertType
-    )} shadow rounded-lg fixed top-3 right-3 left-3 sm:left-auto sm:max-w-sm sm:w-full p-4 flex z-50`"
+    )} tw-shadow tw-rounded-lg tw-fixed tw-top-3 tw-right-3 tw-left-3 sm:tw-left-auto sm:tw-max-w-sm sm:tw-w-full tw-p-4 tw-flex tw-z-50`"
   >
     <div>
       <svg
-        :class="`h-6 w-6 ${svgColor(alertType)}`"
+        :class="`tw-h-6 tw-w-6 ${svgColor(alertType)}`"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 20 20"
         fill="currentColor"
@@ -27,8 +27,8 @@
         ></path>
       </svg>
     </div>
-    <div class="ml-3 flex-1 pt-0.5">
-      <p :class="`text-sm font-medium ${txtColor(alertType)}`">{{ msg }}</p>
+    <div class="tw-ml-3 tw-flex-1 tw-pt-0.5">
+      <p :class="`tw-text-sm tw-font-medium ${txtColor(alertType)}`">{{ msg }}</p>
     </div>
   </div>
 </template>
@@ -52,29 +52,29 @@ export default defineComponent({
   methods: {
     bgColor(alertType: string) {
       if (alertType === 'warning') {
-        return 'bg-yellow-50 dark:bg-yellow-100 border-yellow-400';
+        return 'tw-bg-yellow-50 dark:tw-bg-yellow-100 tw-border-yellow-400';
       } else if (alertType === 'error') {
-        return 'bg-red-50 dark:bg-red-100 border-red-400';
+        return 'tw-bg-red-50 dark:tw-bg-red-100 tw-border-red-400';
       } else {
-        return 'bg-green-50 dark:bg-green-100 border-green-400';
+        return 'tw-bg-green-50 dark:tw-bg-green-100 tw-border-green-400';
       }
     },
     svgColor(alertType: string) {
       if (alertType === 'warning') {
-        return 'text-yellow-400';
+        return 'tw-text-yellow-400';
       } else if (alertType === 'error') {
-        return 'text-red-400';
+        return 'tw-text-red-400';
       } else {
-        return 'text-green-400';
+        return 'tw-text-green-400';
       }
     },
     txtColor(alertType: string) {
       if (alertType === 'warning') {
-        return 'text-yellow-600';
+        return 'tw-text-yellow-600';
       } else if (alertType === 'error') {
-        return 'text-red-600';
+        return 'tw-text-red-600';
       } else {
-        return 'text-green-600';
+        return 'tw-text-green-600';
       }
     },
   },

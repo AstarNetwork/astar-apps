@@ -1,9 +1,9 @@
 <template>
   <div
-    class="sm:flex items-end border-b border-gray-300 dark:border-darkGray-600 mb-8 -mx-4 sm:-mx-8 px-4 sm:px-8"
+    class="sm:tw-flex tw-items-end tw-border-b tw-border-gray-300 dark:tw-border-darkGray-600 tw-mb-8 tw--mx-4 sm:tw--mx-8 tw-px-4 sm:tw-px-8"
   >
     <h1
-      class="text-3xl font-extrabold text-blue-900 dark:text-white mb-6 sm:mb-8"
+      class="tw-text-3xl tw-font-extrabold tw-text-blue-900 dark:tw-text-white tw-mb-6 sm:tw-mb-8"
     >
       dApps
     </h1>
@@ -19,7 +19,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 // import { useMeta } from 'vue-meta';
-import Tab from '@/components/common/Tab.vue';
+import Tab from 'components/common/Tab.vue';
 
 export default defineComponent({
   components: {

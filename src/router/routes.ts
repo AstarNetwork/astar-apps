@@ -1,8 +1,9 @@
 import { RouteRecordRaw } from 'vue-router';
 
 import Balance from 'pages/Balance.vue';
-// import DApps from '@/views/DApps.vue';
+import DApps from 'pages/DApps.vue';
 import BalancePlasm from 'components/balance/BalancePlasm.vue';
+import CreateDappsTab from 'components/dapps/CreateDappsTab.vue';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -21,6 +22,21 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'balance-plasm',
         component: BalancePlasm,
+      },
+    ],
+  },
+  {
+    path: '/dapps',
+    name: 'dApps',
+    component: DApps,
+    children: [
+      {
+        path: '',
+        redirect: '/dapps/create-dapps',
+      },
+      {
+        path: 'create-dapps',
+        component: CreateDappsTab,
       },
     ],
   },

@@ -27,7 +27,7 @@
             </icon-base>
           </button>
         </div>
-        <sidebar-common />
+        <SidebarCommon />
       </div>
       <div class="tw-flex-shrink-0 tw-w-14">
         <!-- Force sidebar to shrink to fit close icon -->
@@ -46,7 +46,9 @@ import IconOutlineX from '../icons/IconOutlineX.vue';
 export default defineComponent({
   components: { 
     SidebarCommon, 
-    IconBase, IconOutlineX },
+    IconBase,
+    IconOutlineX
+  },
   setup() {
     const { isOpen } = useSidebar();
     return {

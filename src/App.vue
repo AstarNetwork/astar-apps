@@ -37,10 +37,10 @@ import { defineComponent, computed } from 'vue';
 import './css/base.scss';
 import DashboardLayout from 'layouts/DashboardLayout.vue';
 import { useStore } from 'src/store';
-import { useRouter } from 'vue-router';
+// import { useRouter } from 'vue-router';
 // import { useMeta } from 'vue-meta';
 import { providerEndpoints } from 'src/config/chainEndpoints';
-import { opengraphMeta } from 'src/config/opengraph';
+// import { opengraphMeta } from 'src/config/opengraph';
 import ApiLoader from 'src/hooks/providers/ApiLoader.vue';
 import Spinner from 'components/common/Spinner.vue';
 import ModalLoading from 'components/common/ModalLoading.vue';
@@ -58,7 +58,7 @@ export default defineComponent({
     AlertBox,
   },
   setup() {
-    const { currentRoute } = useRouter();
+    // const { currentRoute } = useRouter();
 
     // const layout = computed(
     //   () => `${currentRoute.value.meta.layout || defaultLayout}-layout`

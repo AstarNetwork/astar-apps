@@ -176,12 +176,12 @@ function createValue(
   };
 }
 
-function createValues(
-  registry: Registry,
-  params: { type: TypeDef }[]
-): RawParam[] {
-  return params.map((param) => createValue(registry, param));
-}
+// function createValues(
+//   registry: Registry,
+//   params: { type: TypeDef }[]
+// ): RawParam[] {
+//   return params.map((param) => createValue(registry, param));
+// }
 
 export function getParamValues(registry: any, params: AbiParam[] | undefined) {
   const pvalues = params?.reduce(

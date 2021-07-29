@@ -4,7 +4,7 @@
       <div
         class="tw-flex tw-flex-col tw-h-0 tw-flex-1 tw-shadow tw-bg-white dark:tw-bg-darkGray-800"
       >
-        <sidebar-common />
+        <SidebarCommon />
       </div>
     </div>
   </div>

@@ -1,0 +1,119 @@
+<template>
+  <div
+    class="tw-max-w-lg tw-flex tw-justify-center tw-px-6 tw-pt-5 tw-pb-6 tw-border-2 tw-border-gray-300 dark:tw-border-darkGray-500 tw-border-dashed tw-rounded-md tw-bg-blue-50 dark:tw-bg-darkGray-800"
+    v-bind="getRootProps()"
+  >
+    <div class="tw-space-y-1 tw-text-center">
+      <icon-document />
+      <div
+        v-if="file"
+        class="tw-flex tw-text-sm tw-text-gray-500 dark:tw-text-darkGray-400"
+      >
+        <div>File : {{ file.name }}</div>
+      </div>
+      <div v-else class="tw-flex tw-text-sm tw-text-gray-500 dark:tw-text-darkGray-400">
+        <div>
+          <input v-bind="getInputProps()" />
+          <div
+            class="tw-relative tw-cursor-pointer tw-rounded-md tw-font-medium tw-text-blue-500 dark:tw-text-blue-400 hover:tw-text-blue-400 dark:hover:tw-text-blue-300 focus-within:tw-ring-offset-none"
+          >
+            Upload a file
+          </div>
+          <p v-if="isDragActive">Drop the files here ...</p>
+          <p class="tw-pl-1" v-else>or drag and drop</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+<script lang="ts">
+import { defineComponent } from 'vue';
+import IconDocument from 'components/icons/IconDocument.vue';
+import { hexToU8a, isHex, u8aToString } from '@polkadot/util';
+import { useDropzone } from 'vue3-dropzone';
+
+export default defineComponent({
+  components: {
+    IconDocument,
+  },
+  props: {
+    file: {
+      type: Object,
+    },
+    extension: {
+      type: Array as () => string | string[],
+      required: true,
+    },
+  },
+  setup(props, { emit }) {
+    const BYTE_STR_0 = '0'.charCodeAt(0);
+    const BYTE_STR_X = 'x'.charCodeAt(0);
+    const STR_NL = '\n';
+    const NOOP = (): void => undefined;
+
+    function convertResult(result: ArrayBuffer): Uint8Array {
+      const data = new Uint8Array(result);
+
+      // this converts the input (if detected as hex), via the hex conversion route
+      if (data[0] === BYTE_STR_0 && data[1] === BYTE_STR_X) {
+        let hex = u8aToString(data);
+
+        while (hex[hex.length - 1] === STR_NL) {
+          hex = hex.substr(0, hex.length - 1);
+        }
+
+        if (isHex(hex)) {
+          return hexToU8a(hex);
+        }
+      }
+
+      return data;
+    }
+
+    const onDrop = (files: any, rejectReasons: any): void => {
+      console.log(files);
+      console.log(rejectReasons);
+
+      if (rejectReasons.length > 0) {
+        alert('file upload is rejected.');
+        return;
+      }
+
+      files.forEach((file: File): void => {
+        const reader = new FileReader();
+
+        reader.onabort = NOOP;
+        reader.onerror = NOOP;
+
+        reader.onload = ({ target }: ProgressEvent<FileReader>): void => {
+          if (target && target.result) {
+            const data = convertResult(target.result as ArrayBuffer);
+            const fileState = {
+              data,
+              name: file.name,
+              size: data.length,
+            };
+
+            emit('drop-file', fileState);
+          }
+        };
+
+        reader.readAsArrayBuffer(file);
+      });
+    };
+
+    const { getRootProps, getInputProps, ...rest } = useDropzone({
+      onDrop,
+      multiple: false,
+      accept: props.extension,
+    });
+
+    return {
+      onDrop,
+      getRootProps,
+      getInputProps,
+      ...rest,
+    };
+  },
+});
+</script>

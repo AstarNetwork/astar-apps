@@ -71,7 +71,7 @@ const actions: ActionTree<State, StateInterface> = {
 
     commit('contracts/addCode', newJson);
   },
-  forgetCode ({ commit, state }, { codeHash }) {
+  forgetCode ({ commit }, { codeHash }) {
     const key = `${KEY_CODE}${codeHash}`;
     store.remove(key);
     commit('contracts/removeCode', codeHash);

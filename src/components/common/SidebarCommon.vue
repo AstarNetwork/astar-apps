@@ -2,7 +2,7 @@
   <div class="tw-flex-1 tw-flex tw-flex-col tw-pt-10 tw-overflow-y-auto">
     <div class="tw-flex tw-items-center">
       <img width="200" src="~assets/img/astar.png" />
-      <connection-indicator
+      <ConnectionIndicator
         class="tw-pt-4"
         :connectionType="currentNetworkStatus"
       />
@@ -24,7 +24,7 @@
         </icon-base>
       </button>
 
-      <!-- <extensions-metadata v-if="!isLocalChain" /> -->
+      <ExtensionsMetadata v-if="!isLocalChain" />
     </div>
 
     <nav class="flex-1">
@@ -108,17 +108,17 @@
   <div
     class="tw-flex-shrink-0 tw-p-4 tw-border-t tw-border-gray-200 dark:tw-border-darkGray-600"
   >
-    <social-media-links />
-    <light-dark-mode />
+    <SocialMediaLinks />
+    <LightDarkMode />
   </div>
 
   <!-- Modals -->
-  <!-- <ModalNetwork
+  <ModalNetwork
     v-if="modalNetwork"
     :network-idx="currentNetworkIdx"
     v-model:isOpen="modalNetwork"
     v-model:selectNetwork="currentNetworkIdx"
-  /> -->
+  />
 </template>
 
 <script lang="ts">
@@ -127,7 +127,7 @@ import { useStore } from 'src/store';
 import { useAccount, useSidebar } from 'src/hooks';
 import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
 import ConnectionIndicator from './ConnectionIndicator.vue';
-// import ExtensionsMetadata from './ExtensionsMetadata.vue';
+import ExtensionsMetadata from './ExtensionsMetadata.vue';
 import SocialMediaLinks from './SocialMediaLinks.vue';
 import LightDarkMode from './LightDarkMode.vue';
 import IconBase from '../icons/IconBase.vue';
@@ -135,12 +135,12 @@ import IconDapps from '../icons/IconDapps.vue';
 import IconDotLockdrop from '../icons/IconDotLockdrop.vue';
 import IconBalance from '../icons/IconBalance.vue';
 import IconSolidChevronDown from '../icons/IconSolidChevronDown.vue';
-// import ModalNetwork from 'components/balance/ModalNetwork.vue';
+import ModalNetwork from 'src/components/balance/modals/ModalNetwork.vue';
 
 export default defineComponent({
   components: {
     ConnectionIndicator,
-    // ExtensionsMetadata,
+    ExtensionsMetadata,
     SocialMediaLinks,
     LightDarkMode,
     IconBase,
@@ -148,7 +148,7 @@ export default defineComponent({
     IconDotLockdrop,
     IconBalance,
     IconSolidChevronDown,
-    // ModalNetwork,
+    ModalNetwork,
   },
   setup() {
     const { isOpen } = useSidebar();

@@ -8,7 +8,7 @@ export interface GeneralMutations<S = State> {
   setLoading(state: S, isLoading: boolean): void;
   setShowAlertMsg(state: S, showAlert: boolean): void;
   setAlertMsg(state: S, msg: string): void;
-  showAlertType(state: S, type: string): void;
+  setAlertType(state: S, type: string): void;
   setApi(state: S, type: ApiPromise): void;
   setExtensions(state: S, type: InjectedExtension[]): void;
   setCurrentNetworkStatus(
@@ -33,7 +33,7 @@ const mutation: MutationTree<State> & GeneralMutations = {
   setAlertMsg(state, msg) {
     state.alertBox.alertMsg = msg;
   }, 
-  showAlertType(state, type) {
+  setAlertType(state, type) {
     state.alertBox.alertType = type;
   },
   setApi(state, api) {
