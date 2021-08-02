@@ -39,7 +39,7 @@ const actions: ActionTree<State, StateInterface> = {
           key.startsWith(KEY_CODE)
         ) {
           const newJson = getCodeJson(api, json);
-          commit('contracts/addCode', newJson);
+          commit('addCode', JSON.stringify(newJson));
         }
       });
     } catch (e) {
@@ -69,12 +69,12 @@ const actions: ActionTree<State, StateInterface> = {
     store.set(key, json);
     const newJson = getCodeJson(api, json as CodeJson);
 
-    commit('contracts/addCode', newJson);
+    commit('addCode', JSON.stringify(newJson));
   },
   forgetCode ({ commit }, { codeHash }) {
     const key = `${KEY_CODE}${codeHash}`;
     store.remove(key);
-    commit('contracts/removeCode', codeHash);
+    commit('removeCode', codeHash);
   }
 };
 

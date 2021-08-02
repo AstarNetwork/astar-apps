@@ -1,5 +1,4 @@
-import { ApiPromise } from '@polkadot/api';
-import type { InjectedExtension } from '@polkadot/extension-inject/types';
+import type { Extensions } from 'src/hooks/useMetaExtensions';
 
 export type AlertBox = {
   showAlertMsg: boolean;
@@ -15,8 +14,9 @@ export interface GeneralStateInterface {
   initialized: boolean;
   isLoading: boolean;
   alertBox: AlertBox;
-  api: ApiPromise | undefined;
-  extensions: InjectedExtension[];
+  chainInfo: any;
+  metaExtensions: Extensions;
+  extensionCount: number;
   currentNetworkStatus: ConnectionType;
   currentNetworkIdx: number;
   currentAccountIdx: number;
@@ -33,8 +33,12 @@ function state(): GeneralStateInterface {
       alertMsg: '',
       alertType: 'success',
     },
-    api: undefined,
-    extensions: [],
+    chainInfo: undefined,
+    metaExtensions: {
+      count: 0,
+      extensions: []
+    },
+    extensionCount: 0,
     currentNetworkStatus: 'connecting',
     currentNetworkIdx: 0,
     currentAccountIdx: 0,

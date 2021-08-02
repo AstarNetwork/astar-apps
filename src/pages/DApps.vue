@@ -18,7 +18,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-// import { useMeta } from 'vue-meta';
+import { useMeta } from 'quasar';
 import Tab from 'components/common/Tab.vue';
 
 export default defineComponent({
@@ -26,7 +26,7 @@ export default defineComponent({
     Tab,
   },
   setup() {
-    // useMeta({ title: 'Dapps' });
+    useMeta({ title: 'Dapps' });
   },
 });
 </script>

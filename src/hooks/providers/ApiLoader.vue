@@ -5,11 +5,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, ref } from 'vue';
 import { useStore } from 'src/store';
 import PolkadotProvider from './PolkadotProvider.vue';
 import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
 import { connectApi } from 'src/config/api/polkadot';
+import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
+import { useChainInfo } from 'src/hooks/useChainInfo';
 
 export default defineComponent({
   name: 'api-loader',
@@ -23,9 +25,17 @@ export default defineComponent({
     }
 
     let { api, extensions } = await connectApi(endpoint, networkIdx.value);
-    // only for sidebar, which is not connected with provider
-    // store.commit('general/setApi', api);
-    store.commit('general/setExtensions', extensions);
+    const apiRef: any = ref(api);
+    const extensionsRef = ref(extensions);
+
+    const { chainInfo } = useChainInfo(apiRef);
+    const { metaExtensions, extensionCount } = useMetaExtensions(
+      apiRef,
+      extensionsRef
+    );
+    store.commit('general/setChainInfo', chainInfo);
+    store.commit('general/setMetaExtensions', metaExtensions);
+    store.commit('general/setExtensionCount', extensionCount);
 
     return {
       api,

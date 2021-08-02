@@ -1,15 +1,16 @@
 import { GetterTree } from 'vuex';
 import { StateInterface } from '../index';
 import { GeneralStateInterface as State, Theme, AlertBox } from './state';
-import { ApiPromise } from '@polkadot/api';
-import type { InjectedExtension } from '@polkadot/extension-inject/types';
+import type { ChainInfo } from 'src/hooks/useChainInfo';
+import type { Extensions } from 'src/hooks/useMetaExtensions';
 
 export interface GeneralGetters {
   initialized(state: State): boolean;
   isLoading(state: State): boolean;
   showAlert(state: State): AlertBox;
-  api(state: State): ApiPromise | undefined;
-  extensions(state: State): InjectedExtension[];
+  chainInfo(state: State): ChainInfo;
+  metaExtensions(state: State): Extensions;
+  extensionCount(state: State): number;
   networkStatus(state: State): string;
   networkIdx(state: State): number;
   accountIdx(state: State): number;
@@ -21,8 +22,9 @@ const getters: GetterTree<State, StateInterface> & GeneralGetters = {
   initialized: (state) => state.initialized,
   isLoading: (state) => state.isLoading,
   showAlert: (state) => state.alertBox,
-  api: (state) => state.api,
-  extensions: (state) => state.extensions,
+  chainInfo: (state) => state.chainInfo,
+  metaExtensions: (state) => state.metaExtensions,
+  extensionCount: (state) => state.extensionCount,
   networkStatus: (state) => state.currentNetworkStatus,
   networkIdx: (state) => state.currentNetworkIdx,
   accountIdx: (state) => state.currentAccountIdx,

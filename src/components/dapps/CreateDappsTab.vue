@@ -53,7 +53,7 @@
 import { defineComponent, reactive, toRefs, computed, watch } from 'vue';
 import { useAccount } from 'src/hooks';
 import { useStore } from 'src/store';
-// import { useMeta } from 'vue-meta';
+import { useMeta } from 'quasar';
 import IconPlus from 'components/icons/IconPlus.vue';
 import IconBase from 'components/icons/IconBase.vue';
 import CodehashTable from './CodehashTable.vue';
@@ -76,7 +76,7 @@ export default defineComponent({
     ContractsTable,
   },
   setup() {
-    // useMeta({ title: 'Dapps-Create dApps' });
+    useMeta({ title: 'Dapps-Create dApps' });
 
     const stateModal = reactive<Modal>({
       modalCreateDapps: false,

@@ -24,7 +24,7 @@
                 <li
                   v-for="(provider, index) in providerEndpoints"
                   :key="index"
-                  class="mb-2"
+                  class="tw-mb-2"
                 >
                   <label
                     :class="selNetwork === index ? classRadioOn : classRadioOff"

@@ -177,10 +177,10 @@
             v-if="step === 1"
             class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 dark:focus:tw-ring-blue-400 tw-mx-1"
             :class="{
-              'placeholder-opacity-90': !canMoveToStep2,
-              'dark:hover:bg-blue-400': canMoveToStep2,
-              'hover:bg-blue-700': canMoveToStep2,
-              'cursor-not-allowed': !canMoveToStep2,
+              'tw-placeholder-opacity-90': !canMoveToStep2,
+              'dark:hover:tw-bg-blue-400': canMoveToStep2,
+              'hover:tw-bg-blue-700': canMoveToStep2,
+              'tw-cursor-not-allowed': !canMoveToStep2,
             }"
           >
             Next Step
@@ -214,7 +214,6 @@ import IconSolidSelector from 'components/icons/IconSolidSelector.vue';
 
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import type { CodeSubmittableResult } from '@polkadot/api-contract/promise/types';
-import type { Balance as BalanceType } from '@polkadot/types/interfaces/runtime';
 import type { QueueTx } from 'src/hooks/types/Status';
 import BN from 'bn.js';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
@@ -352,7 +351,7 @@ export default defineComponent({
     const { onSend } = useSendTx();
 
     const constructorIndex = ref(0);
-    const partialFee = ref<BalanceType>();
+    const partialFee = ref(new BN(0));
 
     //handlers for transactions
     const _onFailedTx = (result: SubmittableResult | null) => {
@@ -513,7 +512,7 @@ export default defineComponent({
       ) {
         try {
           const info = await currentItem.extrinsic?.paymentInfo(
-            currentItem.accountId!
+            currentItem.accountId
           );
 
           partialFee.value = info.partialFee;
@@ -563,7 +562,7 @@ export default defineComponent({
         return;
       }
 
-      if (toEndowment.value.lte(partialFee.value!)) {
+      if (toEndowment.value.lte(partialFee.value)) {
         isInsufficientFee.value = true;
       } else {
         step.value = 2;

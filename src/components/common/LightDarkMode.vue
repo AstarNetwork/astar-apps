@@ -33,7 +33,7 @@
     >
       <!-- Heroicon name: outline/moon -->
       <icon-base
-        class="tw-h-5 tw-w-5 tw-group-hover:text-blue-900 tw-text-gray-300 dark:group-hover:tw-text-darkGray-300 dark:tw-text-darkGray-100"
+        class="tw-h-5 tw-w-5 group-hover:tw-text-blue-900 tw-text-gray-300 dark:group-hover:tw-text-darkGray-300 dark:tw-text-darkGray-100"
         viewBox="0 0 24 24"
         stroke="currentColor"
         iconColor="none"

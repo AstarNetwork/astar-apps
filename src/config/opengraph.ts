@@ -1,29 +1,20 @@
-interface ogMeta {
-  property: string;
-  content: string;
-  vmid?: string;
-}
-
-export const opengraphMeta: ogMeta[] = [
-  {
+export const opengraphMeta = {
+  ogTitle: {
     property: 'og:title',
-    content: 'Astar Portal',
-    vmid: 'og:title',
+    template () {
+      return 'Astar Portal'
+    }
   },
-  {
+  ogDescription: {
     property: 'og:description',
-    content:
-      'All in one Astar portal that allows you to transfer your token and manage your application.',
-    vmid: 'og:description',
+    template () {
+      return 'All in one Astar portal that allows you to transfer your token and manage your application.'
+    }
   },
-  {
+  ogSiteName: {
     property: 'og:site_name',
-    content: 'Astar Portal',
-    vmid: 'og:site_name',
-  },
-  {
-    property: 'og:image',
-    content: '',
-    vmid: 'og:image',
-  },
-];
+    template () {
+      return 'Astar Portal'
+    }
+  }
+}

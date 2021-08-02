@@ -52,7 +52,7 @@ import {
 } from 'vue';
 import { useAccount, useBalance, useApi } from 'src/hooks';
 import { useStore } from 'src/store';
-// import { useMeta } from 'vue-meta';
+import { useMeta } from 'quasar';
 import { isWeb3Injected } from '@polkadot/extension-dapp';
 import Address from './Address.vue';
 import PlmBalance from './PlmBalance.vue';
@@ -77,7 +77,7 @@ export default defineComponent({
     ModalTransferAmount,
   },
   setup() {
-    // useMeta({ title: 'Balance-Plasm' });
+    useMeta({ title: 'Balance-Plasm' });
 
     const stateModal = reactive<Modal>({
       modalAccount: false,

@@ -8,7 +8,8 @@ export interface ContractsMutations<S = State> {
 
 const mutation: MutationTree<State> & ContractsMutations = {
   addCode(state, newJson) {
-    state.allCode[newJson.json.codeHash] = newJson;
+    const jsonResult = JSON.parse(newJson);
+    state.allCode[jsonResult.json.codeHash] = jsonResult;
   },
   removeCode(state, codeHash) {
     delete state.allCode[codeHash];

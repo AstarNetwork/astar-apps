@@ -4,7 +4,15 @@
     v-bind="getRootProps()"
   >
     <div class="tw-space-y-1 tw-text-center">
-      <icon-document />
+      <icon-base
+        class="tw-h-12 tw-w-12 tw-mx-auto"
+        viewBox="0 0 20 20"
+        fill="none"
+        stroke="currentColor"
+        aria-hidden="true"
+      >
+        <icon-document />
+      </icon-base>
       <div
         v-if="file"
         class="tw-flex tw-text-sm tw-text-gray-500 dark:tw-text-darkGray-400"
@@ -28,6 +36,7 @@
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
+import IconBase from 'components/icons/IconBase.vue';
 import IconDocument from 'components/icons/IconDocument.vue';
 import { hexToU8a, isHex, u8aToString } from '@polkadot/util';
 import { useDropzone } from 'vue3-dropzone';
@@ -35,6 +44,7 @@ import { useDropzone } from 'vue3-dropzone';
 export default defineComponent({
   components: {
     IconDocument,
+    IconBase,
   },
   props: {
     file: {

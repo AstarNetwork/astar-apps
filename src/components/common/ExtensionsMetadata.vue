@@ -14,21 +14,14 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from 'vue';
 import { useStore } from 'src/store';
-import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
-import { useChainInfo } from 'src/hooks/useChainInfo';
 
 export default defineComponent({
   setup() {
     const store = useStore();
-    const apiRef = computed(() => store.getters['general/api']);
-    const extensionsRef = computed(() => store.getters['general/extensions']);
 
-    const { chainInfo } = useChainInfo(apiRef);
-
-    const { metaExtensions, extensionCount } = useMetaExtensions(
-      apiRef,
-      extensionsRef
-    );
+    const chainInfo = computed(() => store.getters['general/chainInfo']);
+    const metaExtensions = computed(() => store.getters['general/metaExtensions']);
+    const extensionCount = computed(() => store.getters['general/extensionCount']);
 
     const selectedIndex = 0;
     const isBusy = ref(false);

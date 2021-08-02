@@ -17,7 +17,7 @@ interface ExtensionInfo extends ExtensionKnown {
   current: InjectedMetadataKnown | null;
 }
 
-interface Extensions {
+export interface Extensions {
   count: number;
   extensions: ExtensionInfo[];
 }

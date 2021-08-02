@@ -1,10 +1,4 @@
 <template>
-  <!-- <metainfo>
-    <template v-slot:title="{ content }">{{
-      content ? `${content} | Astar Apps Portal` : `Astar Apps Portal`
-    }}</template>
-  </metainfo> -->
-
   <dashboard-layout>
     <router-view v-slot="{ Component }">
       <template v-if="Component">
@@ -29,7 +23,7 @@
   <modal-loading v-if="isLoading" />
 
   <transition name="fade">
-    <alert-box v-show="showAlertMsg" :msg="alertMsg" :alert-type="alertType" />
+    <alert-box v-show="showAlert.showAlertMsg" :msg="showAlert.alertMsg" :alert-type="showAlert.alertType" />
   </transition>
 </template>
 <script lang="ts">
@@ -37,16 +31,14 @@ import { defineComponent, computed } from 'vue';
 import './css/base.scss';
 import DashboardLayout from 'layouts/DashboardLayout.vue';
 import { useStore } from 'src/store';
-// import { useRouter } from 'vue-router';
-// import { useMeta } from 'vue-meta';
+import { useMeta } from 'quasar'
 import { providerEndpoints } from 'src/config/chainEndpoints';
-// import { opengraphMeta } from 'src/config/opengraph';
+import { opengraphMeta } from 'src/config/opengraph';
 import ApiLoader from 'src/hooks/providers/ApiLoader.vue';
 import Spinner from 'components/common/Spinner.vue';
 import ModalLoading from 'components/common/ModalLoading.vue';
 import AlertBox from 'components/common/AlertBox.vue';
-
-// const defaultLayout = 'default';
+import Sidebar from 'components/Sidebar.vue';
 
 export default defineComponent({
   name: 'App',
@@ -56,21 +48,14 @@ export default defineComponent({
     Spinner,
     ModalLoading,
     AlertBox,
+    Sidebar,
   },
   setup() {
-    // const { currentRoute } = useRouter();
-
-    // const layout = computed(
-    //   () => `${currentRoute.value.meta.layout || defaultLayout}-layout`
-    // );
-
     const store = useStore();
 
     const isLoading = computed(() => store.getters['general/isLoading']);
-    const showAlertMsg = computed(() => store.getters['general/showAlert/showAlertMsg']);
-    const alertMsg = computed(() => store.getters['general/showAlert/alertMsg']);
-    const alertType = computed(() => store.getters['general/showAlert/alertType']);
-
+    const showAlert = computed(() => store.getters['general/showAlert']);
+    
     const networkIdx = localStorage.getItem('networkIdx');
     const customEndpoint = localStorage.getItem('customEndpoint');
     if (networkIdx) {
@@ -83,25 +68,23 @@ export default defineComponent({
     if (networkIdx) {
       const favicon = providerEndpoints[parseInt(networkIdx)].favicon;
 
-      // useMeta({
-      //   title: '',
-      //   htmlAttrs: { lang: 'en', amp: true },
-      //   link: [
-      //     {
-      //       rel: 'icon',
-      //       href: favicon,
-      //     },
-      //   ],
-      //   meta: opengraphMeta,
-      // });
+      useMeta({
+        title: '',
+        titleTemplate: title => `${title} | Astar Apps Portal`,
+        htmlAttr: { lang: 'en' },
+        link: {
+          material: {
+            rel: 'icon',
+            href: favicon,
+          },
+        },
+        meta: opengraphMeta,
+      });
     }
 
     return {
-      // layout,
       isLoading,
-      showAlertMsg,
-      alertMsg,
-      alertType,
+      showAlert
     };
   },
 })

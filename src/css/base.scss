@@ -6,7 +6,7 @@
 
 @import 'tailwindcss/utilities';
 
-.tooltip:hover span {
+.tw-tooltip:hover span {
     @apply tw-block;
 }
 

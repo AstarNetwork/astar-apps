@@ -1,7 +1,7 @@
 import { MutationTree } from 'vuex';
 import { ConnectionType, GeneralStateInterface as State } from './state';
-import type { InjectedExtension } from '@polkadot/extension-inject/types';
-import { ApiPromise } from '@polkadot/api';
+import type { ChainInfo } from 'src/hooks/useChainInfo';
+import type { Extensions } from 'src/hooks/useMetaExtensions';
 
 export interface GeneralMutations<S = State> {
   setInitialized(state: S): void;
@@ -9,8 +9,9 @@ export interface GeneralMutations<S = State> {
   setShowAlertMsg(state: S, showAlert: boolean): void;
   setAlertMsg(state: S, msg: string): void;
   setAlertType(state: S, type: string): void;
-  setApi(state: S, type: ApiPromise): void;
-  setExtensions(state: S, type: InjectedExtension[]): void;
+  setChainInfo(state: S, type: ChainInfo): void;
+  setMetaExtensions(state: S, type: Extensions): void;
+  setExtensionCount(state: S, type: number): void;
   setCurrentNetworkStatus(
     state: S,
     networkStatus: ConnectionType
@@ -36,11 +37,14 @@ const mutation: MutationTree<State> & GeneralMutations = {
   setAlertType(state, type) {
     state.alertBox.alertType = type;
   },
-  setApi(state, api) {
-    state.api = api;
+  setChainInfo(state, chainInfo) {
+    state.chainInfo = chainInfo;
   },
-  setExtensions(state, extensions) {
-    state.extensions = extensions;
+  setMetaExtensions(state, extensions) {
+    state.metaExtensions = extensions;
+  },
+  setExtensionCount(state, count) {
+    state.extensionCount = count;
   },
   setCurrentNetworkStatus(state, networkStatus) {
     state.currentNetworkStatus = networkStatus;
