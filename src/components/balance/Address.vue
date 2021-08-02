@@ -29,7 +29,7 @@
         class="tw-tooltip tw-ml-auto tw-p-4 sm:tw-p-5 tw-rounded-full hover:tw-bg-gray-100 dark:hover:tw-bg-darkGray-600 focus:tw-z-10 focus:tw-outline-none focus:tw-ring focus:tw-ring-gray-100 dark:focus:tw-ring-darkGray-600 focus:tw-bg-blue-50 dark:focus:tw-bg-darkGray-900 tw-relative"
       >
         <icon-base
-          class="tw-h-5 tw-w-5"
+          class="tw-h-5 tw-w-5 dark:tw-text-darkGray-100"
           viewBox="0 0 20 20"
           aria-hidden="true"
         >
@@ -54,7 +54,7 @@
         @click="copyAddress"
       >
         <icon-base
-          class="tw-h-5 tw-w-5"
+          class="tw-h-5 tw-w-5 dark:tw-text-darkGray-100"
           viewBox="0 0 20 20"
           aria-hidden="true"
         >

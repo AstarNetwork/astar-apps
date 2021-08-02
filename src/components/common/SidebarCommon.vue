@@ -76,7 +76,7 @@
         >
           <icon-dapps />
         </icon-base>
-        <span class="tw-ml-3 tw-flex-1">dApps</span>
+        <span class="tw-font-bold tw-ml-3 tw-flex-1">dApps</span>
       </router-link>
 
       <a

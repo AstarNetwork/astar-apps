@@ -28,7 +28,6 @@
 </template>
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import './css/base.scss';
 import DashboardLayout from 'layouts/DashboardLayout.vue';
 import { useStore } from 'src/store';
 import { useMeta } from 'quasar'
