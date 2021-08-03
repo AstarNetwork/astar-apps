@@ -34,11 +34,11 @@
     />
   </div>
 
-  <ModalAlertBox
+  <!-- <ModalAlertBox
     v-if="!isWeb3Injected"
     :hasClose="false"
     msg="Web3 is not found in the browser. You should install the polkadot extension or wallet."
-  />
+  /> -->
 </template>
 <script lang="ts">
 import {
@@ -57,7 +57,7 @@ import { isWeb3Injected } from '@polkadot/extension-dapp';
 import Address from './Address.vue';
 import PlmBalance from './PlmBalance.vue';
 import TotalBalance from './TotalBalance.vue';
-import ModalAlertBox from 'components/common/ModalAlertBox.vue';
+// import ModalAlertBox from 'components/common/ModalAlertBox.vue';
 import ModalAccount from './modals/ModalAccount.vue';
 import ModalTransferAmount from './modals/ModalTransferAmount.vue';
 
@@ -72,7 +72,7 @@ export default defineComponent({
     Address,
     PlmBalance,
     TotalBalance,
-    ModalAlertBox,
+    // ModalAlertBox,
     ModalAccount,
     ModalTransferAmount,
   },

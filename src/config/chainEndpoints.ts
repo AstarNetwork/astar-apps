@@ -22,7 +22,7 @@ export const providerEndpoints: ChainProvider[] = [
     displayName: 'Plasm Network (Mainnet)',
     info: 'The main network of the layer 2 scaling blockchain, Plasm Network',
     endpoint: 'wss://rpc.plasmnet.io/',
-    favicon: 'favicon.png',
+    favicon: 'icons/astar.png',
     isSupportContract: false,
   },
   {
@@ -32,7 +32,7 @@ export const providerEndpoints: ChainProvider[] = [
       'Smart contract platform for decentralized applications (dapps) on the Kusama network',
     endpoint: 'wss://rpc.shiden.plasmnet.io',
     fallback: 'wss://shiden.api.onfinality.io/public-ws',
-    favicon: 'img/shiden.png',
+    favicon: 'icons/shiden.png',
     isSupportContract: false,
   },
   {
@@ -48,14 +48,14 @@ export const providerEndpoints: ChainProvider[] = [
     networkAlias: 'local-node',
     displayName: 'Local Network',
     endpoint: 'ws://127.0.0.1:9944',
-    favicon: 'favicon.png',
+    favicon: 'icons/astar.png',
     isSupportContract: true,
   },
   {
     networkAlias: 'custom-node',
     displayName: 'Custom Network',
     endpoint: 'ws://127.0.0.1:9944',
-    favicon: 'favicon.png',
+    favicon: 'icons/astar.png',
     isSupportContract: true,
   },
 ];
