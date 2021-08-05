@@ -36,11 +36,9 @@ jobs:
                   yarn
                   wget -O astar-dev-node.zip https://github.com/PlasmNetwork/astar-apps/files/6939357/dusty-1.10.0-ubuntu.zip && unzip astar-dev-node.zip
                   ls
-                  chmod +x plasm
                   ./plasm --dev & sleep 10
                   curl -H "Content-Type: application/json" -d '{"id":"1", "jsonrpc":"2.0", "method": "system_chain", "params":[]}' http://localhost:9933
                   yarn test
-              working-directory: ./
     build_code:
         name: Build Code
         runs-on: ubuntu-latest
