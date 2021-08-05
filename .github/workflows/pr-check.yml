@@ -34,7 +34,6 @@ jobs:
             - name: Run local dev node
               run: |
                   yarn
-                  mkdir /tmp/
                   wget -O /tmp/astar-dev-node.zip https://github.com/PlasmNetwork/astar-apps/files/6939357/dusty-1.10.0-ubuntu.zip && unzip /tmp/astar-dev-node.zip
                   pwd
                   ls
