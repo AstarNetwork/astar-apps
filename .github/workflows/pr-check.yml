@@ -1,0 +1,58 @@
+name: PR
+on: [pull_request]
+
+jobs:
+    lint:
+        name: Linting
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                node-version: [16.x]
+        steps:
+            - uses: actions/checkout@v2
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v2
+              with:
+                  node-version: ${{ matrix.node-version }}
+            - name: lint
+              run: |
+                  yarn
+                  yarn lint
+              working-directory: ./
+    run_tests:
+        name: Unit Tests
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                node-version: [16.x]
+        steps:
+            - uses: actions/checkout@v2
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v2
+              with:
+                  node-version: ${{ matrix.node-version }}
+            - name: unit_test
+              run: |
+                  yarn
+                  wget -O astar-dev-node.zip https://github.com/PlasmNetwork/astar-apps/files/6939211/dusty-1.10.0-ubuntu.zip && unzip astar-dev-node.zip
+                  ./plasm --dev & sleep 10
+                  curl -H "Content-Type: application/json" -d '{"id":"1", "jsonrpc":"2.0", "method": "system_chain", "params":[]}' http://localhost:9933
+                  yarn test
+              working-directory: ./
+    build_code:
+        name: Build Code
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                node-version: [16.x]
+        steps:
+            - uses: actions/checkout@v2
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v2
+              with:
+                  node-version: ${{ matrix.node-version }}
+            - name: build
+              run: |
+                  yarn
+                  yarn build
+              working-directory: ./
