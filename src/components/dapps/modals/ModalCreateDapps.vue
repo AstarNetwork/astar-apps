@@ -351,6 +351,7 @@ export default defineComponent({
     const { onSend } = useSendTx();
 
     const constructorIndex = ref(0);
+    const params = ref<(Param | never)[]>([]);
     const partialFee = ref(new BN(0));
 
     //handlers for transactions
@@ -461,10 +462,10 @@ export default defineComponent({
         );
         console.log('toWeight', toWeight.toString(10));
 
-        const params = abi?.value?.constructors[constructorIndex.value].args;
-        console.log('params', params);
+        const defaultParams = abi?.value?.constructors[constructorIndex.value].args;
+        console.log('params', defaultParams);
 
-        const arrValues = getParamValues(abi.value?.registry, params);
+        const arrValues = getParamValues(abi.value?.registry, defaultParams);
         console.log('values', arrValues);
 
         uploadTx =
@@ -556,7 +557,12 @@ export default defineComponent({
 
     const moveStep2 = async () => {
       try {
-        await pushPendingTx();
+        // await pushPendingTx();
+
+        watch([constructorIndex, params], async () => {
+          console.log('update pendingTx once change params');
+          await pushPendingTx();
+        }, { immediate: true });
       } catch (e) {
         console.error(e);
         return;
@@ -568,8 +574,6 @@ export default defineComponent({
         step.value = 2;
       }
     };
-
-    const params = ref<(Param | never)[]>([]);
 
     return {
       ...toRefs(formData),
