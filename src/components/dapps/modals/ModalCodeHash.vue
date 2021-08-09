@@ -93,12 +93,6 @@ import InputFile from './InputFile.vue';
 import ContractInfo from './ContractInfo.vue';
 
 export default defineComponent({
-  props: {
-    address: {
-      type: String,
-      required: true,
-    },
-  },
   components: {
     InputFile,
     ContractInfo,
