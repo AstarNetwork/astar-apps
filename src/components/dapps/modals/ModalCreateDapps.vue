@@ -526,6 +526,8 @@ export default defineComponent({
     };
 
     const upload = async () => {
+      await pushPendingTx();
+
       const currentItem: QueueTx | undefined = curQueueTx?.value;
 
       if (currentItem) {
@@ -557,12 +559,7 @@ export default defineComponent({
 
     const moveStep2 = async () => {
       try {
-        // await pushPendingTx();
-
-        watch([constructorIndex, params], async () => {
-          console.log('update pendingTx once change params');
-          await pushPendingTx();
-        }, { immediate: true });
+        await pushPendingTx();
       } catch (e) {
         console.error(e);
         return;
