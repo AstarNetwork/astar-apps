@@ -60,6 +60,15 @@
               </div>
 
               <input-amount
+                v-if="isPayable"
+                title="Value"
+                :noMax="true"
+                :maxInDefaultUnit="endowment"
+                v-model:amount="endowment"
+                v-model:selectedUnit="selectUnitEndowment"
+              />
+
+              <input-amount
                 title="Max gas allowed"
                 :noMax="true"
                 :maxInDefaultUnit="weight"
@@ -93,6 +102,7 @@
 import { defineComponent, ref, reactive, watch, toRefs, } from 'vue';
 import BN from 'bn.js';
 import { ContractPromise } from '@polkadot/api-contract';
+import { useChainMetadata } from 'src/hooks';
 import ModalSelectAccountOption from 'components/balance/modals/ModalSelectAccountOption.vue';
 import InputAmount from 'components/common/InputAmount.vue';
 
@@ -134,6 +144,9 @@ export default defineComponent({
       emit('update:is-open', false);
     };
 
+    const { defaultUnitToken, decimal } = useChainMetadata();
+
+    const selectUnitEndowment = ref<string>(defaultUnitToken.value);
     const selectUnitGas = ref<string>('micro');
 
     const formData = reactive<FormData>({
@@ -160,10 +173,12 @@ export default defineComponent({
       const message = props.contract.abi.messages[props.messageIndex];
       const params: any[] = [];
 
+      const isPayable = message.isPayable;
+
       props.contract
         .query[message.method](toAccount.value, {
           gasLimit: formData.weight,
-          value: 0
+          value: isPayable? formData.endowment : 0
         }, ...params)
         .then((result): void => {
           console.log(result)
@@ -179,7 +194,9 @@ export default defineComponent({
       ...toRefs(formData),
       closeModal,
       selAccount,
+      selectUnitEndowment,
       selectUnitGas,
+      isPayable,
       readCallRpc,
     };
   },
