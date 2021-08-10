@@ -1,3 +1,4 @@
+/* eslint-disable vue/no-setup-props-destructure */
 <template>
   <div class="tw-fixed tw-z-10 tw-inset-0 tw-overflow-y-auto">
     <div class="tw-flex tw-items-center tw-justify-center tw-min-h-screen">
@@ -100,6 +101,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref, reactive, watch, toRefs, } from 'vue';
+import type { CallResult } from 'src/hooks/types/Contracts';
 import BN from 'bn.js';
 import { ContractPromise } from '@polkadot/api-contract';
 import { useChainMetadata } from 'src/hooks';
@@ -144,7 +146,7 @@ export default defineComponent({
       emit('update:is-open', false);
     };
 
-    const { defaultUnitToken, decimal } = useChainMetadata();
+    const { defaultUnitToken } = useChainMetadata();
 
     const selectUnitEndowment = ref<string>(defaultUnitToken.value);
     const selectUnitGas = ref<string>('micro');
@@ -169,11 +171,13 @@ export default defineComponent({
       { immediate: true }
     );
 
-    const readCallRpc = () => {      
-      const message = props.contract.abi.messages[props.messageIndex];
-      const params: any[] = [];
+    const outcomes = ref<CallResult[]>();
+    // eslint-disable-next-line vue/no-setup-props-destructure
+    const message = props.contract.abi.messages[props.messageIndex];
+    const isPayable = message.isPayable;
 
-      const isPayable = message.isPayable;
+    const readCallRpc = () => {
+      const params: any[] = message ? message.args : [];
 
       props.contract
         .query[message.method](toAccount.value, {
@@ -182,11 +186,19 @@ export default defineComponent({
         }, ...params)
         .then((result): void => {
           console.log(result)
-          // onCallResult && onCallResult(messageIndex, result);
+          const arrOutcomes = outcomes.value ? outcomes.value : [];
+          outcomes.value = [{
+            ...result,
+            from: toAccount.value,
+            message,
+            params,
+            when: new Date()
+          }, ...arrOutcomes];
+
+          emit('callResult', result);
         })
         .catch((error): void => {
           console.error(error);
-          // onCallResult && onCallResult(messageIndex);
         });
     }
 
