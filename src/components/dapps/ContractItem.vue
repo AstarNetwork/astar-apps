@@ -77,6 +77,7 @@
             v-for="message in messages"
             :message="message"
             :key="message.identifier"
+            v-on:callMethod="onCallMethod"
           />
         </div>
       </div>
@@ -162,6 +163,10 @@ export default defineComponent({
       link.click();
     };
 
+    const onCallMethod = (messageIndex: number) => {
+      //
+    };
+
     const abiRef = ref(contract.value.abi);
     const { messages } = useMessages(abiRef);
 
@@ -191,6 +196,7 @@ export default defineComponent({
       shortenCodeHash,
       abi,
       messages,
+      onCallMethod,
       onExport,
       onForget,
       showAlert,

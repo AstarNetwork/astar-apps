@@ -19,11 +19,17 @@
     v-on:forget="onForget"
     ctype="contract"
   />
+  <ModalCallContract
+    v-if="modalCallContract"
+    v-model:isOpen="modalCallContract"
+    :messageIndex="messageIndex"
+  />
 </template>
 <script lang="ts">
 import { defineComponent, reactive, toRefs, ref, computed } from 'vue';
 import ContractItem from './ContractItem.vue';
 import ModalConfirmRemoval from './modals/ModalConfirmRemoval.vue';
+import ModalCallContract from './modals/ModalCallContract.vue';
 import { useApi, useContracts } from 'src/hooks';
 import { ApiPromise } from '@polkadot/api';
 import { ContractPromise } from '@polkadot/api-contract';
@@ -32,18 +38,21 @@ import { keyring } from '@polkadot/ui-keyring';
 
 interface Modal {
   modalConfirmRemoval: boolean;
+  modalCallContract: boolean;
 }
 
 export default defineComponent({
   components: {
     ContractItem,
     ModalConfirmRemoval,
+    ModalCallContract,
   },
   setup() {
     const { api } = useApi();
 
     const stateModal = reactive<Modal>({
       modalConfirmRemoval: false,
+      modalCallContract: false,
     });
 
     const { allContracts } = useContracts();
@@ -61,7 +70,11 @@ export default defineComponent({
       return filterContracts(api?.value as ApiPromise, allContracts.value);
     });
 
+    const contractIndex = ref(0);
+    const messageIndex = ref(0);
     const addrRef = ref('');
+
+    const currentContract = computed(() => contracts.value[contractIndex.value]);
 
     const onConfirmRemoval = (address: string) => {
       stateModal.modalConfirmRemoval = true;
@@ -83,6 +96,8 @@ export default defineComponent({
       contracts,
       onConfirmRemoval,
       onForget,
+      currentContract,
+      messageIndex,
       ...toRefs(stateModal),
     };
   },
