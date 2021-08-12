@@ -6,9 +6,11 @@
   </h2>
 
   <div class="tw-grid tw-grid-cols-1 sm:tw-grid-cols-3 xl:tw-grid-cols-4 tw-gap-4">
-    <template v-for="contract in contracts" :key="contract.address.toString()">
+    <template v-for="(contract, index) in contracts" :key="contract.address.toString()">
       <ContractItem
         :contract="contract"
+        :index="index"
+        v-on:callMethod="onCallMethod"
         v-on:confirmRemoval="onConfirmRemoval"
       />
     </template>
@@ -19,11 +21,18 @@
     v-on:forget="onForget"
     ctype="contract"
   />
+  <ModalCallContract
+    v-if="modalCallContract"
+    v-model:isOpen="modalCallContract"
+    :contract="currentContract"
+    :messageIndex="messageIndex"
+  />
 </template>
 <script lang="ts">
 import { defineComponent, reactive, toRefs, ref, computed } from 'vue';
 import ContractItem from './ContractItem.vue';
 import ModalConfirmRemoval from './modals/ModalConfirmRemoval.vue';
+import ModalCallContract from './modals/ModalCallContract.vue';
 import { useApi, useContracts } from 'src/hooks';
 import { ApiPromise } from '@polkadot/api';
 import { ContractPromise } from '@polkadot/api-contract';
@@ -32,18 +41,21 @@ import { keyring } from '@polkadot/ui-keyring';
 
 interface Modal {
   modalConfirmRemoval: boolean;
+  modalCallContract: boolean;
 }
 
 export default defineComponent({
   components: {
     ContractItem,
     ModalConfirmRemoval,
+    ModalCallContract,
   },
   setup() {
     const { api } = useApi();
 
     const stateModal = reactive<Modal>({
       modalConfirmRemoval: false,
+      modalCallContract: false,
     });
 
     const { allContracts } = useContracts();
@@ -61,7 +73,23 @@ export default defineComponent({
       return filterContracts(api?.value as ApiPromise, allContracts.value);
     });
 
+    const contractIndex = ref(0);
+    const messageIndex = ref(0);
     const addrRef = ref('');
+
+    // should check again
+    const currentContract = computed(() => {
+      return contracts.value[contractIndex.value];
+    });
+
+    const onCallMethod = (contractIdx: number, msgIdx: number) => {
+      stateModal.modalCallContract = true;
+
+      contractIndex.value = contractIdx;
+      messageIndex.value = msgIdx;
+      
+      console.log('c', contractIdx +'/'+ msgIdx);
+    };
 
     const onConfirmRemoval = (address: string) => {
       stateModal.modalConfirmRemoval = true;
@@ -81,8 +109,11 @@ export default defineComponent({
 
     return {
       contracts,
+      onCallMethod,
       onConfirmRemoval,
       onForget,
+      currentContract,
+      messageIndex,
       ...toRefs(stateModal),
     };
   },

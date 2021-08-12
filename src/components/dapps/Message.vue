@@ -4,6 +4,7 @@
   >
     <div class="tw-tooltip tw-relative">
       <div class="tw-flex">
+        <q-icon :name="icPlayArrow" class="tw-mr-2" @click="onCall" />
         <div
           class="tw-font-semibold"
           :class="[message.isConstructor ? 'tw-text-blue-400' : 'tw-text-yellow-400']"
@@ -43,14 +44,19 @@
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
 import { MessageType } from 'src/hooks/types/Message';
+import { matPlayArrow } from '@quasar/extras/material-icons'
 export default defineComponent({
   props: {
     message: {
       required: true,
       type: Object as PropType<MessageType>,
     },
+    messageIndex: {
+      type: Number,
+    }
   },
-  setup(props) {
+  setup(props, { emit }) {
+    let icPlayArrow = matPlayArrow;
     let argsString = props.message.args
       .map(({ name, type }) => `${name}: ${type.type}`)
       .join(', ');
@@ -64,7 +70,11 @@ export default defineComponent({
       ? `: ${props.message.returnType.type}`
       : '';
 
-    return { argsString, docsString, returnTypeString };
+    const onCall = () => {
+      emit('call-method', props.messageIndex);
+    }
+
+    return { argsString, docsString, returnTypeString, icPlayArrow, onCall };
   },
 });
 </script>
