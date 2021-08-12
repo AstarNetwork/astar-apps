@@ -74,8 +74,9 @@
         <div class="tw-text-xs tw-text-gray-500 dark:tw-text-darkGray-400">Messages</div>
         <div v-if="messages" class="tw-text-xs tw-text-blue-900 dark:tw-text-darkGray-100">
           <Message
-            v-for="message in messages"
+            v-for="(message, index) in messages"
             :message="message"
+            :messageIndex="index"
             :key="message.identifier"
             v-on:callMethod="onCallMethod"
           />
@@ -124,6 +125,10 @@ export default defineComponent({
       type: Object as () => ContractPromise,
       required: true,
     },
+    index: {
+      type: Number,
+      required: true,
+    }
   },
   setup(props, { emit }) {
     const { contract } = toRefs(props);
@@ -164,7 +169,7 @@ export default defineComponent({
     };
 
     const onCallMethod = (messageIndex: number) => {
-      //
+      emit('call-method', props.index, messageIndex);
     };
 
     const abiRef = ref(contract.value.abi);

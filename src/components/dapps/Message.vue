@@ -52,7 +52,6 @@ export default defineComponent({
       type: Object as PropType<MessageType>,
     },
     messageIndex: {
-      required: true,
       type: Number,
     }
   },
@@ -72,7 +71,7 @@ export default defineComponent({
       : '';
 
     const onCall = () => {
-      emit('callMethod', props.messageIndex);
+      emit('call-method', props.messageIndex);
     }
 
     return { argsString, docsString, returnTypeString, icPlayArrow, onCall };

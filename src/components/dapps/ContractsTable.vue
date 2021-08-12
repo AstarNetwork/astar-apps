@@ -6,9 +6,11 @@
   </h2>
 
   <div class="tw-grid tw-grid-cols-1 sm:tw-grid-cols-3 xl:tw-grid-cols-4 tw-gap-4">
-    <template v-for="contract in contracts" :key="contract.address.toString()">
+    <template v-for="(contract, index) in contracts" :key="contract.address.toString()">
       <ContractItem
         :contract="contract"
+        :index="index"
+        v-on:callMethod="onCallMethod"
         v-on:confirmRemoval="onConfirmRemoval"
       />
     </template>
@@ -22,6 +24,7 @@
   <ModalCallContract
     v-if="modalCallContract"
     v-model:isOpen="modalCallContract"
+    :contract="currentContract"
     :messageIndex="messageIndex"
   />
 </template>
@@ -74,7 +77,19 @@ export default defineComponent({
     const messageIndex = ref(0);
     const addrRef = ref('');
 
-    const currentContract = computed(() => contracts.value[contractIndex.value]);
+    // should check again
+    const currentContract = computed(() => {
+      return contracts.value[contractIndex.value];
+    });
+
+    const onCallMethod = (contractIdx: number, msgIdx: number) => {
+      stateModal.modalCallContract = true;
+
+      contractIndex.value = contractIdx;
+      messageIndex.value = msgIdx;
+      
+      console.log('c', contractIdx +'/'+ msgIdx);
+    };
 
     const onConfirmRemoval = (address: string) => {
       stateModal.modalConfirmRemoval = true;
@@ -94,6 +109,7 @@ export default defineComponent({
 
     return {
       contracts,
+      onCallMethod,
       onConfirmRemoval,
       onForget,
       currentContract,
