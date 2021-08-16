@@ -23,6 +23,7 @@
               <ul
                 class="tw-max-h-56 tw-rounded-md tw-py-1 tw-text-base tw-overflow-auto focus:tw-outline-none"
               >
+                <MetamaskOption />
                 <ModalAccountOption
                   v-for="(account, index) in allAccounts"
                   :key="index"
@@ -59,10 +60,12 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { useStore } from 'src/store';
+import MetamaskOption from './MetamaskOption.vue';
 import ModalAccountOption from './ModalAccountOption.vue';
 
 export default defineComponent({
   components: {
+    MetamaskOption,
     ModalAccountOption,
   },
   props: {
