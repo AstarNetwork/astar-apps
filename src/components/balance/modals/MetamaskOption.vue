@@ -9,7 +9,16 @@
             <img width="80" src="~assets/img/metamask.png" />
           </div>
           <div>
-            <div class="tw-text-sm tw-font-medium">Connect to Metamask</div>
+            <template v-if="!ecdsaAccounts">
+              <div class="tw-text-sm tw-font-medium" @click="onLoadAccount">Connect to Metamask</div>
+            </template>
+            <template v-else>
+              <div class="tw-text-sm tw-font-medium">{{ ecdsaAccounts.ss58 }}</div>
+            </template>
+            
+            <div v-if="errorMsg" class="tw-text-sm">
+              {{ errorMsg }}
+            </div>
           </div>
         </div>
       </label>
@@ -17,28 +26,60 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, computed, ref, watchEffect } from 'vue';
+import { useStore } from 'src/store';
+import * as utils from 'src/hooks/custom-signature/utils'
+import { EcdsaAddressFormat } from 'src/hooks/types/CustomSignature';
+import { useMetamask } from 'src/hooks/custom-signature/useMetamask';
 
 export default defineComponent({
   components: {
   },
-  setup(props, { emit }) {
-    const onConnect = () => {
-      emit('connect', true);
-     };
-;
-    return {
-      onConnect
-    };
-  },
-  methods: {
-    opClass(checked: boolean) {
-      if (checked) {
-        return 'tw-text-blue-900 dark:tw-text-darkGray-100 tw-cursor-default tw-select-none tw-relative tw-py-2 tw-pl-3 tw-pr-6 tw-bg-blue-200 dark:tw-bg-blue-500 tw-bg-opacity-20';
-      } else {
-        return 'tw-text-blue-900 dark:tw-text-darkGray-100 tw-cursor-default tw-select-none tw-relative tw-py-2 tw-pl-3 tw-pr-6 hover:tw-bg-gray-50 dark:hover:tw-bg-darkGray-800';
+  setup() {
+    const store = useStore();
+    const chainInfo = computed(() => store.getters['general/chainInfo']);
+    const { loadedAccounts, requestAccounts, requestSignature } = useMetamask();
+    
+    const ecdsaAccounts = ref<EcdsaAddressFormat>();
+    const errorMsg = ref('');
+
+    watchEffect(() => {
+      if (loadedAccounts.value.length > 0 && ecdsaAccounts.value?.ethereum !== loadedAccounts.value[0]) {
+        ecdsaAccounts.value = undefined;
       }
-    },
+    });
+
+    const onLoadAccount = async () => {
+      try {
+        const accounts = await requestAccounts();
+        const loadingAddr = accounts[0];
+        const loginMsg = `Sign this message to login with address ${loadingAddr}`;
+
+        const signature = await requestSignature(loginMsg, loadingAddr);
+        console.log(signature);
+
+        if (typeof signature !== 'string') {
+          throw new Error('Failed to fetch signature');
+        }
+
+        const pubKey = utils.recoverPublicKeyFromSig(loadingAddr, loginMsg, signature);
+
+        console.log(`Public key: ${pubKey}`);
+        
+        // const ss58Address = utils.ecdsaPubKeyToSs58(pubKey, chainInfo.value?.ss58Format);
+
+        // ecdsaAccounts.value = { ethereum: loadingAddr, ss58: ss58Address };
+      } catch (err) {
+        console.error('err', err);
+        errorMsg.value = err.message;
+      }
+    };
+
+    return {
+      ecdsaAccounts,
+      errorMsg,
+      onLoadAccount,
+    };
   },
 });
 </script>

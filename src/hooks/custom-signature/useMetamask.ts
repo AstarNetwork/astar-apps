@@ -12,6 +12,7 @@ export function useMetamask() {
 
     const accounts = (await ethProvider.value.request({ method: 'eth_requestAccounts' })) as string[];
     loadedAccounts.value = accounts;
+    return accounts;
   }
 
   const requestSignature = async (message: string, account: string = loadedAccounts.value[0]) => {
