@@ -10,10 +10,10 @@
           </div>
           <div>
             <template v-if="!ecdsaAccounts">
-              <div class="tw-text-sm tw-font-medium" @click="onLoadAccount">Connect to Metamask</div>
+              <div class="tw-text-sm tw-font-medium dark:tw-text-darkGray-100" @click="onLoadAccount">Connect to Metamask</div>
             </template>
             <template v-else>
-              <div class="tw-text-sm tw-font-medium">{{ ecdsaAccounts.ss58 }}</div>
+              <div class="tw-text-sm tw-font-medium dark:tw-text-darkGray-100">{{ ecdsaAccounts.ss58 }}</div>
             </template>
             
             <div v-if="errorMsg" class="tw-text-sm">
@@ -63,13 +63,15 @@ export default defineComponent({
         }
 
         // FIXME: keccak issue should be resolved : https://github.com/cryptocoinjs/keccak/pull/22
-        // const pubKey = utils.recoverPublicKeyFromSig(loadingAddr, loginMsg, signature);
+        const pubKey = utils.recoverPublicKeyFromSig(loadingAddr, loginMsg, signature);
 
-        // console.log(`Public key: ${pubKey}`);
+        console.log(`Public key: ${pubKey}`);
         
-        // const ss58Address = utils.ecdsaPubKeyToSs58(pubKey, chainInfo.value?.ss58Format);
+        const ss58Address = utils.ecdsaPubKeyToSs58(pubKey, chainInfo.value?.ss58Format);
 
-        // ecdsaAccounts.value = { ethereum: loadingAddr, ss58: ss58Address };
+        console.log(`ethereum: ${loadingAddr} / ss58: ${ss58Address}`);
+
+        ecdsaAccounts.value = { ethereum: loadingAddr, ss58: ss58Address };
       } catch (err) {
         console.error('err', err);
         errorMsg.value = err.message;

@@ -1,7 +1,8 @@
 // Copyright 2017-2021 @polkadot/app-custom-signature authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import * as ethUtils from 'ethereumjs-util';
+// import * as ethUtils from 'ethereumjs-util';
+import * as ethUtils from './ethereumjs-util'
 import { publicKeyConvert } from 'secp256k1';
 
 import { hexToU8a, isHex, u8aToHex } from '@polkadot/util';
