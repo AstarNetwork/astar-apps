@@ -82,6 +82,9 @@ module.exports = configure(function (ctx) {
       },
       extendWebpack(cfg) {
         cfg.plugins.push(new NodePolyfillPlugin({}));
+        // cfg.resolve.fallback = {
+        //   stream: require.resolve('stream-browserify')
+        // }
       }
     },
 

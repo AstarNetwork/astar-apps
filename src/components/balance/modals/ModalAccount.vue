@@ -23,7 +23,7 @@
               <ul
                 class="tw-max-h-56 tw-rounded-md tw-py-1 tw-text-base tw-overflow-auto focus:tw-outline-none"
               >
-                <MetamaskOption />
+                <MetamaskOption v-if="isSupportContract" />
                 <ModalAccountOption
                   v-for="(account, index) in allAccounts"
                   :key="index"
@@ -58,8 +58,9 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, computed } from 'vue';
 import { useStore } from 'src/store';
+import { providerEndpoints } from 'src/config/chainEndpoints';
 import MetamaskOption from './MetamaskOption.vue';
 import ModalAccountOption from './ModalAccountOption.vue';
 
@@ -89,6 +90,10 @@ export default defineComponent({
 
     const store = useStore();
 
+    const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
+    const isSupportContract = ref(
+      providerEndpoints[currentNetworkIdx.value].isSupportContract
+    );
     const selectAccount = (accountIdx: number) => {
       store.commit('general/setCurrentAccountIdx', accountIdx);
 
@@ -98,8 +103,9 @@ export default defineComponent({
     const selAccount = ref(props.accountIdx);
 
     return {
-      closeModal,
       selAccount,
+      isSupportContract,
+      closeModal,
       selectAccount,
     };
   },

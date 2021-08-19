@@ -62,9 +62,10 @@ export default defineComponent({
           throw new Error('Failed to fetch signature');
         }
 
-        const pubKey = utils.recoverPublicKeyFromSig(loadingAddr, loginMsg, signature);
+        // FIXME: keccak issue should be resolved : https://github.com/cryptocoinjs/keccak/pull/22
+        // const pubKey = utils.recoverPublicKeyFromSig(loadingAddr, loginMsg, signature);
 
-        console.log(`Public key: ${pubKey}`);
+        // console.log(`Public key: ${pubKey}`);
         
         // const ss58Address = utils.ecdsaPubKeyToSs58(pubKey, chainInfo.value?.ss58Format);
 
