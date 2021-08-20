@@ -172,8 +172,10 @@ export default defineComponent({
     const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
 
     watch(currentAccountIdx, () => {
-      defaultAccount.value = allAccounts.value[currentAccountIdx.value];
-      defaultAccountName.value = allAccountNames.value[currentAccountIdx.value];
+      if (currentAccountIdx.value !== -1) {
+        defaultAccount.value = allAccounts.value[currentAccountIdx.value];
+        defaultAccountName.value = allAccountNames.value[currentAccountIdx.value];
+      }
     });
 
     const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);

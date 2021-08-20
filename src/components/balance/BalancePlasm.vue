@@ -23,6 +23,7 @@
       :account-idx="currentAccountIdx"
       :all-accounts="allAccounts"
       :all-account-names="allAccountNames"
+      :is-check-metamask="isCheckMetamask"
     />
     <ModalTransferAmount
       v-if="modalTransferAmount"
@@ -100,6 +101,8 @@ export default defineComponent({
     provide('balance', balance);
 
     const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
+    const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
+    const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
     const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
 
     const completeTransfer = () => {
@@ -115,12 +118,28 @@ export default defineComponent({
     watch(
       currentAccountIdx,
       () => {
-        defaultAccount.value = allAccounts.value[currentAccountIdx.value];
-        defaultAccountName.value =
-          allAccountNames.value[currentAccountIdx.value];
+        if (currentAccountIdx.value !== -1) {
+          defaultAccount.value = allAccounts.value[currentAccountIdx.value];
+          defaultAccountName.value =
+            allAccountNames.value[currentAccountIdx.value];
+        }
       },
       { immediate: true }
     );
+
+    // const ecdsaAddress = ref('');
+    watch(
+      isCheckMetamask,
+      () => {
+        if (isCheckMetamask.value && currentEcdsaAccount.value) {
+          // ecdsaAddress.value = currentEcdsaAccount.value.ss58;
+          defaultAccount.value = currentEcdsaAccount.value.ss58;
+          defaultAccountName.value = 'ECDSA (Ethereum Extension)';
+          // console.log('fs', ecdsaAddress.value)
+        }
+      },
+      { immediate: true }
+    )
 
     return {
       ...toRefs(stateModal),
@@ -132,6 +151,8 @@ export default defineComponent({
       defaultAccountName,
       currentNetworkStatus,
       currentAccountIdx,
+      isCheckMetamask,
+      // ecdsaAddress,
       completeTransfer,
     };
   },
