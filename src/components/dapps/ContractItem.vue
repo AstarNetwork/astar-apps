@@ -107,6 +107,7 @@
 import { ref, defineComponent, toRefs, computed } from 'vue';
 import { useStore } from 'src/store';
 import { useMessages } from 'src/hooks';
+import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import IconBase from 'components/icons/IconBase.vue';
 import IconAccountSample from 'components/icons/IconAccountSample.vue';
 import IconDocumentDuplicate from 'components/icons/IconDocumentDuplicate.vue';
@@ -141,9 +142,7 @@ export default defineComponent({
     });
 
     const shortenAddress = computed(() => {
-      return address
-        ? `${address.slice(0, 6)}${'.'.repeat(6)}${address.slice(-6)}`
-        : '';
+      return getShortenAddress(address);
     });
 
     const realCodeHash = computed(() => {

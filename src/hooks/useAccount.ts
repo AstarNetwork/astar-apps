@@ -1,21 +1,30 @@
-import { reactive, toRefs, watchEffect } from 'vue';
+import { reactive, toRefs, watch, watchEffect, computed, Ref } from 'vue';
 import { keyring } from '@polkadot/ui-keyring';
+import { useStore } from 'src/store';
 
 interface UseAccounts {
   allAccounts: string[];
   allAccountNames: string[];
   defaultAccount: string;
   defaultAccountName: string;
+  defaultShortenAddress: string;
   hasAccounts: boolean;
   isAccount: (address: string) => boolean;
 }
 
-export const useAccount = () => {
+export const useAccount = (currentAccount: Ref<string>, currentAccountName: Ref<string>) => {
+  const store = useStore();
+
+  const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
+  const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
+  const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
+
   const state = reactive<UseAccounts>({
     allAccounts: [],
     allAccountNames: [],
     defaultAccount: '',
     defaultAccountName: '',
+    defaultShortenAddress: '',
     hasAccounts: false,
     isAccount: () => false,
   });
@@ -38,6 +47,9 @@ export const useAccount = () => {
         state.allAccounts.length > 0
           ? Object.values(accounts)[0].option.name
           : '';
+      state.defaultShortenAddress = state.defaultAccount.length > 0
+        ? `${state.defaultAccount.slice(0, 6)}${'.'.repeat(6)}${state.defaultAccount.slice(-6)}`
+        : '';
       state.hasAccounts = state.allAccounts.length !== 0;
       state.isAccount = (address: string) =>
         state.allAccounts.includes(address);
@@ -47,6 +59,30 @@ export const useAccount = () => {
       subscription.unsubscribe();
     });
   });
+
+  watch(
+    currentAccountIdx,
+    () => {
+      currentAccount.value = state.allAccounts[currentAccountIdx.value];
+      currentAccountName.value =
+        state.allAccountNames[currentAccountIdx.value];
+      // state.defaultShortenAddress = `${state.defaultAccount.slice(0, 6)}${'.'.repeat(6)}${state.defaultAccount.slice(-6)}`
+
+      console.log('afafaf', currentAccountName.value)
+    },
+    { immediate: true }
+  );
+
+  watch(
+    isCheckMetamask,
+    () => {
+      if (isCheckMetamask.value && currentEcdsaAccount.value) {
+        currentAccount.value = currentEcdsaAccount.value.ss58;
+        currentAccountName.value = 'ECDSA (Ethereum Extension)';
+      }
+    },
+    { immediate: true }
+  )
 
   return toRefs(state);
 };

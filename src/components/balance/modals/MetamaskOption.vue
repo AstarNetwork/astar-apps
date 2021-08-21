@@ -44,6 +44,7 @@
 import { defineComponent, computed, ref, watchEffect } from 'vue';
 import { useStore } from 'src/store';
 import * as utils from 'src/hooks/custom-signature/utils'
+import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { EcdsaAddressFormat } from 'src/hooks/types/CustomSignature';
 import { useMetamask } from 'src/hooks/custom-signature/useMetamask';
 
@@ -76,11 +77,7 @@ export default defineComponent({
     });
 
     const shortenAddr = (addr: string) => {
-      return addr
-        ? `${addr.slice(0, 6)}${'.'.repeat(6)}${addr.slice(
-            -6
-          )}`
-        : '';
+      return getShortenAddress(addr);
     }
 
     const onLoadAccount = async () => {

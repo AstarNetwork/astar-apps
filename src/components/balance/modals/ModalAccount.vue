@@ -35,7 +35,7 @@
                   :key-idx="index"
                   :address="account"
                   :addressName="allAccountNames[index]"
-                  :checked="selAccount === index"
+                  :checked="!checkMetamask && selAccount === index"
                   v-model:selOption="selAccount"
                   v-model:selChecked="checkMetamask"
                 />
@@ -84,17 +84,14 @@ export default defineComponent({
       type: Array,
       required: true,
     },
-    accountIdx: {
-      type: Number,
-      required: true,
-    },
-    isCheckMetamask: {
-      type: Boolean,
-      required: true
-    },
-    // ecdsaAddress: {
-    //   type: String
-    // }
+    // accountIdx: {
+    //   type: Number,
+    //   required: true,
+    // },
+    // isCheckMetamask: {
+    //   type: Boolean,
+    //   required: true
+    // },
   },
   setup(props, { emit }) {
     const closeModal = () => {
@@ -103,6 +100,8 @@ export default defineComponent({
 
     const store = useStore();
 
+    const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
+    const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
     const isSupportContract = ref(
       providerEndpoints[currentNetworkIdx.value].isSupportContract
@@ -115,13 +114,12 @@ export default defineComponent({
       emit('update:is-open', false);
     };
 
-    const selAccount = ref(props.accountIdx);
-    const checkMetamask = ref<boolean>(props.isCheckMetamask);
+    const selAccount = ref(currentAccountIdx.value);
+    const checkMetamask = ref<boolean>(isCheckMetamask.value);
     // const checkMetamask = ref(false);
 
     const connectMetamask = (ethAddr: string, ss58: string) => {
       console.log(ethAddr+'/'+ss58);
-      store.commit('general/setIsCheckMetamask', true);
       store.commit('general/setCurrentEcdsaAccount', {
         ethereum: ethAddr,
         ss58

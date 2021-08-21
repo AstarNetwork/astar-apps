@@ -53,7 +53,7 @@
           <p
             class="tw-text-xs tw-text-blue-900 dark:tw-text-darkGray-100 tw-font-semibold tw-flex tw-justify-between"
           >
-            <span>{{ defaultAccountName }}</span>
+            <span>{{ currentAccountName }}</span>
           </p>
           <p class="tw-text-xs tw-text-gray-500 dark:tw-text-darkGray-400">
             {{ shortenAddress }}
@@ -126,6 +126,7 @@ import { defineComponent, ref, computed, watch } from 'vue';
 import { useStore } from 'src/store';
 import { useAccount, useSidebar } from 'src/hooks';
 import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
+import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import ConnectionIndicator from './ConnectionIndicator.vue';
 import ExtensionsMetadata from './ExtensionsMetadata.vue';
 import SocialMediaLinks from './SocialMediaLinks.vue';
@@ -156,40 +157,14 @@ export default defineComponent({
 
     const store = useStore();
 
-    const {
-      allAccounts,
-      allAccountNames,
-      defaultAccount,
-      defaultAccountName,
-    } = useAccount();
+    const currentAccount = ref('');
+    const currentAccountName = ref('');
+
+    useAccount(currentAccount, currentAccountName);
 
     const shortenAddress = computed(() => {
-      return `${defaultAccount.value.slice(0, 6)}${'.'.repeat(
-        6
-      )}${defaultAccount.value.slice(-6)}`;
+      return getShortenAddress(currentAccount.value);
     });
-
-    const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
-    const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
-    const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
-
-    watch(currentAccountIdx, () => {
-      if (currentAccountIdx.value !== -1) {
-        defaultAccount.value = allAccounts.value[currentAccountIdx.value];
-        defaultAccountName.value = allAccountNames.value[currentAccountIdx.value];
-      }
-    });
-
-    watch(
-      isCheckMetamask,
-      () => {
-        if (isCheckMetamask.value && currentEcdsaAccount.value) {
-          defaultAccount.value = currentEcdsaAccount.value.ss58;
-          defaultAccountName.value = 'ECDSA (Ethereum Extension)';
-        }
-      },
-      { immediate: true }
-    )
 
     const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
@@ -210,7 +185,7 @@ export default defineComponent({
       isOpen,
       modalNetwork,
       shortenAddress,
-      defaultAccountName,
+      currentAccountName,
       currentNetworkStatus,
       currentNetworkIdx,
       currentNetworkName,
