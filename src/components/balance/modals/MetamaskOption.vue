@@ -41,7 +41,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, computed, ref, watchEffect, toRefs } from 'vue';
+import { defineComponent, computed, ref, watchEffect } from 'vue';
 import { useStore } from 'src/store';
 import * as utils from 'src/hooks/custom-signature/utils'
 import { EcdsaAddressFormat } from 'src/hooks/types/CustomSignature';

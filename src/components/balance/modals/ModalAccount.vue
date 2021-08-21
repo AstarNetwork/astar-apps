@@ -25,6 +25,7 @@
               >
                 <MetamaskOption 
                   v-if="isSupportContract"
+                  :checked="checkMetamask"
                   v-model:selChecked="checkMetamask"
                   v-on:connectMetamask="connectMetamask"
                 />
@@ -87,10 +88,10 @@ export default defineComponent({
       type: Number,
       required: true,
     },
-    // isCheckMetamask: {
-    //   type: Boolean,
-    //   required: true
-    // },
+    isCheckMetamask: {
+      type: Boolean,
+      required: true
+    },
     // ecdsaAddress: {
     //   type: String
     // }
@@ -115,11 +116,12 @@ export default defineComponent({
     };
 
     const selAccount = ref(props.accountIdx);
-    // const checkMetamask = ref<boolean>(props.isCheckMetamask);
-    const checkMetamask = ref(false);
+    const checkMetamask = ref<boolean>(props.isCheckMetamask);
+    // const checkMetamask = ref(false);
 
     const connectMetamask = (ethAddr: string, ss58: string) => {
       console.log(ethAddr+'/'+ss58);
+      store.commit('general/setIsCheckMetamask', true);
       store.commit('general/setCurrentEcdsaAccount', {
         ethereum: ethAddr,
         ss58

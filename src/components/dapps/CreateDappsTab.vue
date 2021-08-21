@@ -92,6 +92,8 @@ export default defineComponent({
 
     const store = useStore();
     const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
+    const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
+    const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
 
     watch(
       currentAccountIdx,
@@ -102,6 +104,17 @@ export default defineComponent({
       },
       { immediate: true }
     );
+
+    watch(
+      isCheckMetamask,
+      () => {
+        if (isCheckMetamask.value && currentEcdsaAccount.value) {
+          defaultAccount.value = currentEcdsaAccount.value.ss58;
+          defaultAccountName.value = 'ECDSA (Ethereum Extension)';
+        }
+      },
+      { immediate: true }
+    )
 
     return {
       allAccounts,

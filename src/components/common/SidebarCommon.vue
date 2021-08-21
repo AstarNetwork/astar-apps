@@ -170,6 +170,8 @@ export default defineComponent({
     });
 
     const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
+    const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
+    const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
 
     watch(currentAccountIdx, () => {
       if (currentAccountIdx.value !== -1) {
@@ -177,6 +179,17 @@ export default defineComponent({
         defaultAccountName.value = allAccountNames.value[currentAccountIdx.value];
       }
     });
+
+    watch(
+      isCheckMetamask,
+      () => {
+        if (isCheckMetamask.value && currentEcdsaAccount.value) {
+          defaultAccount.value = currentEcdsaAccount.value.ss58;
+          defaultAccountName.value = 'ECDSA (Ethereum Extension)';
+        }
+      },
+      { immediate: true }
+    )
 
     const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);

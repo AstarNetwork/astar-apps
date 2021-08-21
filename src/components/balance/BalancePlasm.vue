@@ -127,15 +127,12 @@ export default defineComponent({
       { immediate: true }
     );
 
-    // const ecdsaAddress = ref('');
     watch(
       isCheckMetamask,
       () => {
         if (isCheckMetamask.value && currentEcdsaAccount.value) {
-          // ecdsaAddress.value = currentEcdsaAccount.value.ss58;
           defaultAccount.value = currentEcdsaAccount.value.ss58;
           defaultAccountName.value = 'ECDSA (Ethereum Extension)';
-          // console.log('fs', ecdsaAddress.value)
         }
       },
       { immediate: true }
@@ -152,7 +149,6 @@ export default defineComponent({
       currentNetworkStatus,
       currentAccountIdx,
       isCheckMetamask,
-      // ecdsaAddress,
       completeTransfer,
     };
   },
