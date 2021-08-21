@@ -92,10 +92,6 @@ export default defineComponent({
       allAccountNames,
     } = useAccount(currentAccount, currentAccountName);
 
-    watch(currentAccount, () => {
-      console.log('dfddf', currentAccountName.value)
-    });
-
     const { api } = useApi();
 
     const store = useStore();

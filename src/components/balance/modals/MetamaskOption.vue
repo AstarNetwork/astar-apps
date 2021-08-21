@@ -9,14 +9,14 @@
             <img width="80" src="~assets/img/metamask.png" />
           </div>
           <div>
-            <template v-if="!ecdsaAccounts">
+            <template v-if="!curAddress">
               <div class="tw-text-sm tw-font-medium dark:tw-text-darkGray-100" @click="onLoadAccount">Connect to Metamask</div>
             </template>
             <template v-else>
               <div>
                 <div class="tw-text-sm tw-font-medium dark:tw-text-darkGray-100">ECDSA (Ethereum extension)</div>
                 <div class="tw-text-xs tw-text-gray-500 dark:tw-text-darkGray-400">
-                  {{ shortenAddress }}
+                  {{ shortenAddr(curAddress) }}
                 </div>
               </div>
             </template>
@@ -27,7 +27,7 @@
           </div>
         </div>
 
-        <div class="tw-relative tw-w-5 tw-h-5" v-if="ecdsaAccounts">
+        <div class="tw-relative tw-w-5 tw-h-5" v-if="curAddress">
           <input
             name="choose_account"
             type="radio"
@@ -52,10 +52,6 @@ export default defineComponent({
   components: {
   },
   props: {
-    // address: {
-    //   type: String,
-    //   required: true,
-    // },
     checked: {
       type: Boolean,
     },
@@ -63,18 +59,18 @@ export default defineComponent({
   setup(props, { emit }) {
     const store = useStore();
     const chainInfo = computed(() => store.getters['general/chainInfo']);
-    const { loadedAccounts, requestAccounts, requestSignature } = useMetamask();
+    const { requestAccounts, requestSignature } = useMetamask();
     
-    const ecdsaAccounts = ref<EcdsaAddressFormat>();
-    // const curAddress = ref<string>(props.address);
-    const shortenAddress = ref('');
+    const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
+    const ecdsaAccounts = ref<EcdsaAddressFormat>(currentEcdsaAccount.value);
+    const curAddress = ref<string>(currentEcdsaAccount.value.ss58);
     const errorMsg = ref('');
 
-    watchEffect(() => {
-      if (loadedAccounts.value.length > 0 && ecdsaAccounts.value?.ethereum !== loadedAccounts.value[0]) {
-        ecdsaAccounts.value = undefined;
-      }
-    });
+    // watchEffect(() => {
+    //   if (loadedAccounts.value.length > 0 && ecdsaAccounts.value?.ethereum !== loadedAccounts.value[0]) {
+    //     ecdsaAccounts.value = undefined;
+    //   }
+    // });
 
     const shortenAddr = (addr: string) => {
       return getShortenAddress(addr);
@@ -103,12 +99,9 @@ export default defineComponent({
         console.log(`ethereum: ${loadingAddr} / ss58: ${ss58Address}`);
 
         ecdsaAccounts.value = { ethereum: loadingAddr, ss58: ss58Address };
-        // curAddress.value = ss58Address;
-        shortenAddress.value = shortenAddr(ss58Address);
+        curAddress.value = ss58Address;
 
-        // console.log('ss', curAddress.value);
-
-        // onSelectMetamask();
+        onSelectMetamask();
       } catch (err) {
         console.error('err', err);
         errorMsg.value = err.message;
@@ -121,8 +114,8 @@ export default defineComponent({
     };
 
     return {
-      // curAddress,
-      shortenAddress,
+      curAddress,
+      shortenAddr,
       ecdsaAccounts,
       errorMsg,
       onLoadAccount,
@@ -136,7 +129,7 @@ export default defineComponent({
       } else {
         return 'tw-text-blue-900 dark:tw-text-darkGray-100 tw-cursor-default tw-select-none tw-relative tw-py-2 tw-pl-3 tw-pr-6 hover:tw-bg-gray-50 dark:hover:tw-bg-darkGray-800';
       }
-    },
+    }
   },
 });
 </script>

@@ -66,9 +66,6 @@ export const useAccount = (currentAccount: Ref<string>, currentAccountName: Ref<
       currentAccount.value = state.allAccounts[currentAccountIdx.value];
       currentAccountName.value =
         state.allAccountNames[currentAccountIdx.value];
-      // state.defaultShortenAddress = `${state.defaultAccount.slice(0, 6)}${'.'.repeat(6)}${state.defaultAccount.slice(-6)}`
-
-      console.log('afafaf', currentAccountName.value)
     },
     { immediate: true }
   );

@@ -50,7 +50,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, computed, watch, ref } from 'vue';
+import { defineComponent, reactive, toRefs, computed, ref } from 'vue';
 import { useAccount } from 'src/hooks';
 import { useStore } from 'src/store';
 import { useMeta } from 'quasar';

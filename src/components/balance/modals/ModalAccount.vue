@@ -84,14 +84,6 @@ export default defineComponent({
       type: Array,
       required: true,
     },
-    // accountIdx: {
-    //   type: Number,
-    //   required: true,
-    // },
-    // isCheckMetamask: {
-    //   type: Boolean,
-    //   required: true
-    // },
   },
   setup(props, { emit }) {
     const closeModal = () => {
@@ -116,7 +108,6 @@ export default defineComponent({
 
     const selAccount = ref(currentAccountIdx.value);
     const checkMetamask = ref<boolean>(isCheckMetamask.value);
-    // const checkMetamask = ref(false);
 
     const connectMetamask = (ethAddr: string, ss58: string) => {
       console.log(ethAddr+'/'+ss58);
