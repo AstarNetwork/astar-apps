@@ -111,6 +111,7 @@ export default defineComponent({
 
     const connectMetamask = (ethAddr: string, ss58: string) => {
       console.log(ethAddr+'/'+ss58);
+      // store.commit('general/setCurrentAccountIdx', -1);
       store.commit('general/setCurrentEcdsaAccount', {
         ethereum: ethAddr,
         ss58

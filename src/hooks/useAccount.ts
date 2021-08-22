@@ -63,9 +63,11 @@ export const useAccount = (currentAccount: Ref<string>, currentAccountName: Ref<
   watch(
     currentAccountIdx,
     () => {
-      currentAccount.value = state.allAccounts[currentAccountIdx.value];
-      currentAccountName.value =
-        state.allAccountNames[currentAccountIdx.value];
+      if (currentAccountIdx.value !== -1) {
+        currentAccount.value = state.allAccounts[currentAccountIdx.value];
+        currentAccountName.value =
+          state.allAccountNames[currentAccountIdx.value];
+      }
     },
     { immediate: true }
   );
