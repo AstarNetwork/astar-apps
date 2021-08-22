@@ -63,11 +63,9 @@ export const useAccount = (currentAccount: Ref<string>, currentAccountName: Ref<
   watch(
     currentAccountIdx,
     () => {
-      if (currentAccountIdx.value !== -1) {
-        currentAccount.value = state.allAccounts[currentAccountIdx.value];
-        currentAccountName.value =
-          state.allAccountNames[currentAccountIdx.value];
-      }
+      currentAccount.value = state.allAccounts[currentAccountIdx.value];
+      currentAccountName.value =
+        state.allAccountNames[currentAccountIdx.value];
     },
     { immediate: true }
   );
@@ -78,6 +76,10 @@ export const useAccount = (currentAccount: Ref<string>, currentAccountName: Ref<
       if (isCheckMetamask.value && currentEcdsaAccount.value) {
         currentAccount.value = currentEcdsaAccount.value.ss58;
         currentAccountName.value = 'ECDSA (Ethereum Extension)';
+      } else {
+        currentAccount.value = state.allAccounts[currentAccountIdx.value];
+        currentAccountName.value =
+          state.allAccountNames[currentAccountIdx.value];
       }
     },
     { immediate: true }
