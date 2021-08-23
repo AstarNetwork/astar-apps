@@ -36,6 +36,7 @@
 import { defineComponent, computed, toRefs } from 'vue';
 import IconBase from 'components/icons/IconBase.vue';
 import IconAccountSample from 'components/icons/IconAccountSample.vue';
+import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 
 export default defineComponent({
   components: {
@@ -63,15 +64,12 @@ export default defineComponent({
     const { address } = toRefs(props);
 
     const shortenAddress = computed(() => {
-      return address.value
-        ? `${address.value.slice(0, 6)}${'.'.repeat(6)}${address.value.slice(
-            -6
-          )}`
-        : '';
+      return getShortenAddress(address.value);
     });
 
     const onChange = (keyIdx: number) => {
       emit('update:sel-option', keyIdx);
+      emit('update:sel-checked', false);
     };
 
     return {

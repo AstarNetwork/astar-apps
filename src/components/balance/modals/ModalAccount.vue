@@ -23,14 +23,21 @@
               <ul
                 class="tw-max-h-56 tw-rounded-md tw-py-1 tw-text-base tw-overflow-auto focus:tw-outline-none"
               >
+                <MetamaskOption 
+                  v-if="isSupportContract"
+                  :checked="checkMetamask"
+                  v-model:selChecked="checkMetamask"
+                  v-on:connectMetamask="connectMetamask"
+                />
                 <ModalAccountOption
                   v-for="(account, index) in allAccounts"
                   :key="index"
                   :key-idx="index"
                   :address="account"
                   :addressName="allAccountNames[index]"
-                  :checked="selAccount === index"
+                  :checked="!checkMetamask && selAccount === index"
                   v-model:selOption="selAccount"
+                  v-model:selChecked="checkMetamask"
                 />
               </ul>
             </div>
@@ -39,7 +46,7 @@
         <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row-reverse">
           <button
             type="button"
-            @click="selectAccount(selAccount)"
+            @click="selectAccount(selAccount, checkMetamask)"
             class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 hover:tw-bg-blue-700 dark:hover:tw-bg-blue-400 focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 dark:focus:tw-ring-blue-400 tw-mx-1"
           >
             Confirm
@@ -57,12 +64,15 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, computed } from 'vue';
 import { useStore } from 'src/store';
+import { providerEndpoints } from 'src/config/chainEndpoints';
+import MetamaskOption from './MetamaskOption.vue';
 import ModalAccountOption from './ModalAccountOption.vue';
 
 export default defineComponent({
   components: {
+    MetamaskOption,
     ModalAccountOption,
   },
   props: {
@@ -74,10 +84,6 @@ export default defineComponent({
       type: Array,
       required: true,
     },
-    accountIdx: {
-      type: Number,
-      required: true,
-    },
   },
   setup(props, { emit }) {
     const closeModal = () => {
@@ -86,18 +92,38 @@ export default defineComponent({
 
     const store = useStore();
 
-    const selectAccount = (accountIdx: number) => {
+    const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
+    const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
+    const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
+    const isSupportContract = ref(
+      providerEndpoints[currentNetworkIdx.value].isSupportContract
+    );
+    const selectAccount = (accountIdx: number, checkMetamask: boolean) => {
+      console.log(checkMetamask +'/'+ accountIdx)
+      store.commit('general/setIsCheckMetamask', checkMetamask);
       store.commit('general/setCurrentAccountIdx', accountIdx);
 
       emit('update:is-open', false);
     };
 
-    const selAccount = ref(props.accountIdx);
+    const selAccount = ref(currentAccountIdx.value);
+    const checkMetamask = ref<boolean>(isCheckMetamask.value);
+
+    const connectMetamask = (ethAddr: string, ss58: string) => {
+      console.log(ethAddr+'/'+ss58);
+      store.commit('general/setCurrentEcdsaAccount', {
+        ethereum: ethAddr,
+        ss58
+      });
+    }
 
     return {
-      closeModal,
       selAccount,
+      checkMetamask,
+      isSupportContract,
+      closeModal,
       selectAccount,
+      connectMetamask,
     };
   },
 });

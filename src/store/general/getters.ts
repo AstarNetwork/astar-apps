@@ -1,6 +1,6 @@
 import { GetterTree } from 'vuex';
 import { StateInterface } from '../index';
-import { GeneralStateInterface as State, Theme, AlertBox } from './state';
+import { GeneralStateInterface as State, Theme, AlertBox, EcdsaAccount } from './state';
 import type { ChainInfo } from 'src/hooks/useChainInfo';
 import type { Extensions } from 'src/hooks/useMetaExtensions';
 
@@ -13,6 +13,8 @@ export interface GeneralGetters {
   extensionCount(state: State): number;
   networkStatus(state: State): string;
   networkIdx(state: State): number;
+  isCheckMetamask(state: State): boolean;
+  currentEcdsaAccount(state: State): EcdsaAccount;
   accountIdx(state: State): number;
   customEndpoint(state: State): string;
   theme(state: State): Theme;
@@ -27,6 +29,8 @@ const getters: GetterTree<State, StateInterface> & GeneralGetters = {
   extensionCount: (state) => state.extensionCount,
   networkStatus: (state) => state.currentNetworkStatus,
   networkIdx: (state) => state.currentNetworkIdx,
+  isCheckMetamask: (state) => state.isCheckMetamask,
+  currentEcdsaAccount: (state) => state.currentEcdsaAccount,
   accountIdx: (state) => state.currentAccountIdx,
   customEndpoint: (state) => state.currentCustomEndpoint,
   theme: (state: State) => state.currentTheme,

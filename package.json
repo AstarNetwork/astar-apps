@@ -28,8 +28,12 @@
     "@quasar/extras": "^1.0.0",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "ethereumjs-util": "^7.1.0",
+    "ethjs-util": "^0.1.6",
+    "keccak": "byterose/keccak#stream-update",
     "node-polyfill-webpack-plugin": "^1.1.4",
     "quasar": "^2.0.0",
+    "secp256k1": "^4.0.2",
     "store": "^2.0.12",
     "stream": "^0.0.2",
     "vue-i18n": "^9.0.0-beta.0",
@@ -37,10 +41,11 @@
     "vuex": "^4.0.1"
   },
   "devDependencies": {
-    "@tailwindcss/custom-forms": "^0.2.1",
-    "@tailwindcss/postcss7-compat": "^2.0.3",
     "@babel/eslint-parser": "^7.13.14",
     "@quasar/app": "^3.0.0",
+    "@tailwindcss/custom-forms": "^0.2.1",
+    "@tailwindcss/postcss7-compat": "^2.0.3",
+    "@types/ethjs-util": "^0.1.0",
     "@types/node": "^10.17.15",
     "@types/store": "^2.0.2",
     "@typescript-eslint/eslint-plugin": "^4.16.1",
@@ -48,8 +53,8 @@
     "eslint": "^7.14.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-vue": "^7.0.0",
-    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.3",
-    "sass-loader": "7.3.1"
+    "sass-loader": "7.3.1",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.3"
   },
   "browserslist": [
     "last 10 Chrome versions",

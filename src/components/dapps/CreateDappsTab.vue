@@ -40,17 +40,17 @@
     v-model:isOpen="modalCreateDapps"
     :all-accounts="allAccounts"
     :all-account-names="allAccountNames"
-    :address="defaultAccount"
+    :address="currentAccount"
   />
   <ModalCodeHash
     v-if="modalCodeHash"
     v-model:isOpen="modalCodeHash"
-    :address="defaultAccount"
+    :address="currentAccount"
   />
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, computed, watch } from 'vue';
+import { defineComponent, reactive, toRefs, computed, ref } from 'vue';
 import { useAccount } from 'src/hooks';
 import { useStore } from 'src/store';
 import { useMeta } from 'quasar';
@@ -83,30 +83,21 @@ export default defineComponent({
       modalCodeHash: false,
     });
 
+    const currentAccount = ref('');
+    const currentAccountName = ref('');
+
     const {
       allAccounts,
       allAccountNames,
-      defaultAccount,
-      defaultAccountName,
-    } = useAccount();
+    } = useAccount(currentAccount, currentAccountName);
 
     const store = useStore();
     const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
-
-    watch(
-      currentAccountIdx,
-      () => {
-        defaultAccount.value = allAccounts.value[currentAccountIdx.value];
-        defaultAccountName.value =
-          allAccountNames.value[currentAccountIdx.value];
-      },
-      { immediate: true }
-    );
-
+    
     return {
       allAccounts,
       allAccountNames,
-      defaultAccount,
+      currentAccount,
       currentAccountIdx,
       ...toRefs(stateModal),
     };

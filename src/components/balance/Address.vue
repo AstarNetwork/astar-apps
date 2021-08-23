@@ -76,6 +76,7 @@
 <script lang="ts">
 import { defineComponent, computed, toRefs } from 'vue';
 import { useStore } from 'src/store';
+import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import IconBase from 'components/icons/IconBase.vue';
 import IconAccountSample from 'components/icons/IconAccountSample.vue';
 import IconChevronDown from 'components/icons/IconChevronDown.vue';
@@ -106,11 +107,7 @@ export default defineComponent({
     const { address } = toRefs(props);
 
     const shortenAddress = computed(() => {
-      return address.value
-        ? `${address.value.slice(0, 6)}${'.'.repeat(6)}${address.value.slice(
-            -6
-          )}`
-        : '';
+      return getShortenAddress(address.value);
     });
 
     const store = useStore();

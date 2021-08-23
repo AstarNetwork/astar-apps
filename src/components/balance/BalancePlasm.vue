@@ -2,8 +2,8 @@
   <div v-if="isWeb3Injected && isConnected(currentNetworkStatus)">
     <div class="tw-grid lg:tw-grid-cols-2 tw-gap-4 tw-mb-4">
       <Address
-        :address="defaultAccount"
-        :address-name="defaultAccountName"
+        :address="currentAccount"
+        :address-name="currentAccountName"
         v-model:isOpen="modalAccount"
       />
     </div>
@@ -11,7 +11,7 @@
     <div class="tw-grid tw-grid-cols-1 sm:tw-grid-cols-3 tw-gap-4 tw-mb-8">
       <TotalBalance />
       <PlmBalance
-        :address="defaultAccount"
+        :address="currentAccount"
         v-model:isOpenTransfer="modalTransferAmount"
       />
     </div>
@@ -20,7 +20,6 @@
     <ModalAccount
       v-if="modalAccount"
       v-model:isOpen="modalAccount"
-      :account-idx="currentAccountIdx"
       :all-accounts="allAccounts"
       :all-account-names="allAccountNames"
     />
@@ -85,25 +84,25 @@ export default defineComponent({
       modalTransferToken: false,
     });
 
+    const currentAccount = ref('');
+    const currentAccountName = ref('');
+
     const {
       allAccounts,
       allAccountNames,
-      defaultAccount,
-      defaultAccountName,
-    } = useAccount();
+    } = useAccount(currentAccount, currentAccountName);
 
     const { api } = useApi();
 
     const store = useStore();
 
-    const { balance } = useBalance(api, defaultAccount);
+    const { balance } = useBalance(api, currentAccount);
     provide('balance', balance);
 
     const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
-    const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
 
     const completeTransfer = () => {
-      const curAccountRef = ref(defaultAccount.value);
+      const curAccountRef = ref(currentAccount.value);
       const { balance: balanceRef } = useBalance(api, curAccountRef);
 
       watch(balanceRef, () => {
@@ -112,26 +111,15 @@ export default defineComponent({
       });
     };
 
-    watch(
-      currentAccountIdx,
-      () => {
-        defaultAccount.value = allAccounts.value[currentAccountIdx.value];
-        defaultAccountName.value =
-          allAccountNames.value[currentAccountIdx.value];
-      },
-      { immediate: true }
-    );
-
     return {
       ...toRefs(stateModal),
       isWeb3Injected,
       balance,
       allAccounts,
       allAccountNames,
-      defaultAccount,
-      defaultAccountName,
+      currentAccount,
+      currentAccountName,
       currentNetworkStatus,
-      currentAccountIdx,
       completeTransfer,
     };
   },

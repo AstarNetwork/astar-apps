@@ -6,6 +6,11 @@ export type AlertBox = {
   alertType: string;
 };
 
+export type EcdsaAccount = {
+  ethereum: string;
+  ss58: string;
+}
+
 export type ConnectionType = 'connected' | 'connecting' | 'offline';
 
 export type Theme = 'LIGHT' | 'DARK';
@@ -19,6 +24,8 @@ export interface GeneralStateInterface {
   extensionCount: number;
   currentNetworkStatus: ConnectionType;
   currentNetworkIdx: number;
+  isCheckMetamask: boolean;
+  currentEcdsaAccount: EcdsaAccount;
   currentAccountIdx: number;
   currentCustomEndpoint: string;
   currentTheme: Theme;
@@ -41,6 +48,11 @@ function state(): GeneralStateInterface {
     extensionCount: 0,
     currentNetworkStatus: 'connecting',
     currentNetworkIdx: 0,
+    isCheckMetamask: false,
+    currentEcdsaAccount: {
+      ethereum: '',
+      ss58: ''
+    },
     currentAccountIdx: 0,
     currentCustomEndpoint: '',
 

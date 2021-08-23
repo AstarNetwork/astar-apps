@@ -52,6 +52,12 @@ const mutation: MutationTree<State> & GeneralMutations = {
   setCurrentNetworkIdx(state, networkIdx) {
     state.currentNetworkIdx = networkIdx;
   },
+  setIsCheckMetamask(state, isCheckMetamask) {
+    state.isCheckMetamask = isCheckMetamask;
+  },
+  setCurrentEcdsaAccount(state, ecdsa) {
+    state.currentEcdsaAccount = ecdsa;
+  },
   setCurrentAccountIdx(state, accountIdx) {
     state.currentAccountIdx = accountIdx;
   },
