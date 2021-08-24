@@ -71,6 +71,7 @@ export default defineComponent({
 
     const onChange = (keyIdx: number) => {
       emit('update:sel-option', keyIdx);
+      emit('update:sel-checked', false);
     };
 
     return {

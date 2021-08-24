@@ -94,12 +94,16 @@ import { defineComponent, computed, ref } from 'vue';
 import BN from 'bn.js';
 import { useApi, useChainMetadata } from 'src/hooks';
 import { web3FromSource } from '@polkadot/extension-dapp';
+import type { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
+import { u8aToHex } from '@polkadot/util';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { getUnit } from 'src/hooks/helper/units';
 import ModalSelectAccount from './ModalSelectAccount.vue';
 import FormatBalance from 'components/balance/FormatBalance.vue';
 import InputAmount from 'components/common/InputAmount.vue';
+import { RawParams } from 'src/hooks/types/Params';
+import { useMetamask } from 'src/hooks/custom-signature/useMetamask';
 
 export default defineComponent({
   components: {
@@ -129,12 +133,14 @@ export default defineComponent({
     const openOption = ref(false);
 
     const { defaultUnitToken, decimal } = useChainMetadata();
+    const { requestSignature } = useMetamask();
 
     const transferAmt = ref(new BN(0));
     const fromAddress = ref('');
     const toAddress = ref('');
 
     const selectUnit = ref(defaultUnitToken.value);
+    const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
 
     const formatBalance = computed(() => {
       const tokenDecimal = decimal.value;
@@ -147,6 +153,43 @@ export default defineComponent({
     const { api } = useApi();
     const store = useStore();
 
+
+    const transferExtrinsic = async (
+      transferAmt: BN,
+      toAddress: string
+    ) => {
+      console.log('transfer', transferAmt.toString(10));
+      console.log('fromAccount', currentEcdsaAccount.value.ss58);
+      console.log('toAccount', toAddress);
+      console.log('selUnit', selectUnit.value);
+
+      const fn: SubmittableExtrinsicFunction<'promise'> | undefined = api?.value?.tx.balances.transfer;
+
+      if (fn) {
+        const params: RawParams = [
+          {
+            isValid: true,
+            value: toAddress
+          },
+          {
+            isValid: true,
+            value: transferAmt
+          }
+        ];
+        const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn(...params.map(({ value }): any => value)); 
+
+        const callPayload = u8aToHex(method.toU8a(true).slice(1));
+
+        // sign with eth private key
+        const signature = await requestSignature(callPayload, currentEcdsaAccount.value.ethereum);
+
+        await api?.value?.tx.ethCall.call(method, currentEcdsaAccount.value.ss58, signature);
+
+      } else {
+        // TODO see how to handle api undefined
+      }
+    }
+
     const transfer = async (
       transferAmt: BN,
       fromAddress: string,
@@ -156,6 +199,8 @@ export default defineComponent({
       console.log('fromAccount', fromAddress);
       console.log('toAccount', toAddress);
       console.log('selUnit', selectUnit.value);
+
+      return await transferExtrinsic(transferAmt, toAddress);
 
       if (Number(transferAmt) === 0) {
         store.dispatch('general/showAlertMsg', {
