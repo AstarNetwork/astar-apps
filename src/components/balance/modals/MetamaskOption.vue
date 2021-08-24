@@ -1,7 +1,7 @@
 <template>
   <div>
     <li role="option" :class="opClass(checked)">
-      <label class="tw-flex tw-items-center tw-justify-between tw-cursor-pointer">
+      <label class="tw-flex tw-items-center tw-justify-between tw-cursor-pointer" @click="onLoadAccount">
         <div class="tw-flex tw-items-center">
           <div
             class="tw-h-8 tw-w-8 tw-rounded-full tw-overflow-hidden tw-border tw-border-gray-100 tw-mr-3 tw-flex-shrink-0"
@@ -10,7 +10,7 @@
           </div>
           <div>
             <template v-if="!curAddress">
-              <div class="tw-text-sm tw-font-medium dark:tw-text-darkGray-100" @click="onLoadAccount">Connect to Metamask</div>
+              <div class="tw-text-sm tw-font-medium dark:tw-text-darkGray-100">Connect to Metamask</div>
             </template>
             <template v-else>
               <div>
@@ -77,6 +77,10 @@ export default defineComponent({
     }
 
     const onLoadAccount = async () => {
+      if (curAddress.value) {
+        return;
+      }
+
       try {
         const accounts = await requestAccounts();
         const loadingAddr = accounts[0];
@@ -99,7 +103,7 @@ export default defineComponent({
         console.log(`ethereum: ${loadingAddr} / ss58: ${ss58Address}`);
 
         ecdsaAccounts.value = { ethereum: loadingAddr, ss58: ss58Address };
-        curAddress.value = ss58Address;
+        curAddress.value = loadingAddr;
 
         onSelectMetamask();
       } catch (err) {
