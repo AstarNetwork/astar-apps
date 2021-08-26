@@ -206,7 +206,7 @@ export default defineComponent({
                   alertType: 'success',
                 });
 
-                store.commit('general/showLoading', false);
+                store.commit('general/setLoading', false);
                 emit('complete-transfer', true);
 
                 closeModal();
@@ -214,7 +214,7 @@ export default defineComponent({
                 console.log(`Current status: ${status.type}`);
 
                 if (status.type !== 'Finalized') {
-                  store.commit('general/showLoading', true);
+                  store.commit('general/setLoading', true);
                 }
               }
             }

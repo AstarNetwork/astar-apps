@@ -33,7 +33,7 @@ export const providerEndpoints: ChainProvider[] = [
     endpoint: 'wss://rpc.shiden.plasmnet.io',
     fallback: 'wss://shiden.api.onfinality.io/public-ws',
     favicon: 'icons/shiden.png',
-    isSupportContract: false,
+    isSupportContract: true,
   },
   {
     networkAlias: 'dusty-testnet',
