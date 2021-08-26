@@ -22,14 +22,9 @@
       <img width="200" src="~assets/img/astar.png" />
     </div>
 
-    <button
-      type="button"
+    <div 
       class="tw-w-8 tw-h-8 sm:tw-w-10 sm:tw-h-10 tw-rounded-full tw-overflow-hidden tw-border tw-border-gray-100 focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100"
-    >
-      <icon-base class="tw-h-full tw-w-full" viewBox="0 0 64 64">
-        <icon-account-sample />
-      </icon-base>
-    </button>
+    ></div>
   </div>
 </template>
 
