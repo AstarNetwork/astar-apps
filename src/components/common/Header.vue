@@ -33,10 +33,9 @@ import { useSidebar } from 'src/hooks';
 import { defineComponent } from 'vue';
 import IconBase from '../icons/IconBase.vue';
 import IconOutlineMenu from '../icons/IconOutlineMenu.vue';
-import IconAccountSample from '../icons/IconAccountSample.vue';
 
 export default defineComponent({
-  components: { IconBase, IconOutlineMenu, IconAccountSample },
+  components: { IconBase, IconOutlineMenu },
   setup() {
     const { isOpen } = useSidebar();
     return {
