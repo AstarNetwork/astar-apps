@@ -102,7 +102,6 @@ import { getUnit } from 'src/hooks/helper/units';
 import ModalSelectAccount from './ModalSelectAccount.vue';
 import FormatBalance from 'components/balance/FormatBalance.vue';
 import InputAmount from 'components/common/InputAmount.vue';
-import { RawParams } from 'src/hooks/types/Params';
 import { useMetamask } from 'src/hooks/custom-signature/useMetamask';
 
 export default defineComponent({
@@ -141,6 +140,7 @@ export default defineComponent({
 
     const selectUnit = ref(defaultUnitToken.value);
     const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
+    const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
 
     const formatBalance = computed(() => {
       const tokenDecimal = decimal.value;
@@ -153,85 +153,24 @@ export default defineComponent({
     const { api } = useApi();
     const store = useStore();
 
-
-    const transferExtrinsic = async (
-      transferAmt: BN,
-      toAddress: string
-    ) => {
-      console.log('transfer', transferAmt.toString(10));
-      console.log('fromAccount', currentEcdsaAccount.value.ss58);
-      console.log('toAccount', toAddress);
-      console.log('selUnit', selectUnit.value);
-
-      const fn: SubmittableExtrinsicFunction<'promise'> | undefined = api?.value?.tx.balances.transfer;
-
-      if (fn) {
-        const params: RawParams = [
-          {
-            isValid: true,
-            value: toAddress
-          },
-          {
-            isValid: true,
-            value: transferAmt
-          }
-        ];
-        const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn(...params.map(({ value }): any => value)); 
-
-        const callPayload = u8aToHex(method.toU8a(true).slice(1));
-
-        // sign with eth private key
-        const signature = await requestSignature(callPayload, currentEcdsaAccount.value.ethereum);
-
-        await api?.value?.tx.ethCall.call(method, currentEcdsaAccount.value.ss58, signature);
-
-      } else {
-        // TODO see how to handle api undefined
-      }
+    const handleTransactionError = (e: Error): void => {
+      console.error(e);
+      store.dispatch('general/showAlertMsg', {
+        msg: `Transaction failed with error: ${e.message}`,
+        alertType: 'error',
+      });
     }
 
-    const transfer = async (
+    const transferLocal = async (
       transferAmt: BN,
       fromAddress: string,
       toAddress: string
     ) => {
-      console.log('transfer', transferAmt.toString(10));
-      console.log('fromAccount', fromAddress);
-      console.log('toAccount', toAddress);
-      console.log('selUnit', selectUnit.value);
-
-      return await transferExtrinsic(transferAmt, toAddress);
-
-      if (Number(transferAmt) === 0) {
-        store.dispatch('general/showAlertMsg', {
-          msg: 'The amount of token to be transmitted must not be zero',
-          alertType: 'error',
-        });
-        return;
-      } else if (
-        !plasmUtils.isValidAddressPolkadotAddress(fromAddress) ||
-        !plasmUtils.isValidAddressPolkadotAddress(toAddress)
-      ) {
-        store.dispatch('general/showAlertMsg', {
-          msg: 'The address is not valid',
-          alertType: 'error',
-        });
-        return;
-      }
-
       try {
-        const unit = getUnit(selectUnit.value);
-        const toAmt = plasmUtils.reduceDenomToBalance(
-          transferAmt,
-          unit,
-          decimal.value
-        );
-        console.log('toAmt', toAmt.toString(10));
-
         const injector = await web3FromSource('polkadot-js');
         const transfer = await api?.value?.tx.balances.transfer(
           toAddress,
-          toAmt
+          transferAmt
         );
         //1000000000000004 : 1 PLD
         transfer
@@ -264,11 +203,105 @@ export default defineComponent({
               }
             }
           )
-          .catch((error: any) => {
-            console.log(':( transaction failed', error);
+          .catch((error: Error) => {
+            handleTransactionError(error);
           });
       } catch (e) {
         console.error(e);
+      }
+    }
+
+    const transferExtrinsic = async (
+      transferAmt: BN,
+      toAddress: string
+    ) => {
+      try {
+        const fn: SubmittableExtrinsicFunction<'promise'> | undefined = api?.value?.tx.balances.transfer;
+
+        if (fn) {
+          const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn(
+            toAddress,
+            transferAmt
+          ); 
+          const callPayload = u8aToHex(method.toU8a(true).slice(1));
+
+          // Sign transaction with eth private key
+          const signature = await requestSignature(callPayload, currentEcdsaAccount.value.ethereum);
+
+          const call = api?.value?.tx.ethCall.call(method, currentEcdsaAccount.value.ss58, signature);
+          call?.send(({ status }) => {
+            if (status.isInBlock) {
+              console.log(
+                `Completed at block hash #${status.asInBlock.toString()}`
+              );
+
+              store.dispatch('general/showAlertMsg', {
+                msg: `Completed at block hash #${status.asInBlock.toString()}`,
+                alertType: 'success',
+              });
+
+              store.commit('general/setLoading', false);
+              emit('complete-transfer', true);
+
+              closeModal();
+            } else {
+              console.log(`Current status: ${status.type}`);
+
+              if (status.type !== 'Finalized') {
+                store.commit('general/setLoading', true);
+              }
+            }
+          })
+          .catch((e: Error) => {
+            handleTransactionError(e);
+          });
+        } else {
+          console.log('Polkadot.js API is undefined.')
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    }
+
+    const transfer = async (
+      transferAmt: BN,
+      fromAddress: string,
+      toAddress: string
+    ) => {
+      console.log('transfer', transferAmt.toString(10));
+      console.log('fromAccount', fromAddress);
+      console.log('toAccount', toAddress);
+      console.log('selUnit', selectUnit.value);
+
+      if (Number(transferAmt) === 0) {
+        store.dispatch('general/showAlertMsg', {
+          msg: 'The amount of token to be transmitted must not be zero',
+          alertType: 'error',
+        });
+        return;
+      } else if (
+        !plasmUtils.isValidAddressPolkadotAddress(fromAddress) ||
+        !plasmUtils.isValidAddressPolkadotAddress(toAddress)
+      ) {
+        store.dispatch('general/showAlertMsg', {
+          msg: 'The address is not valid',
+          alertType: 'error',
+        });
+        return;
+      }
+
+      const unit = getUnit(selectUnit.value);
+      const toAmt = plasmUtils.reduceDenomToBalance(
+        transferAmt,
+        unit,
+        decimal.value
+      );
+      console.log('toAmt', toAmt.toString(10));
+
+      if (isCheckMetamask.value) {
+        await transferExtrinsic(toAmt, toAddress);
+      } else {
+        await transferLocal(toAmt, fromAddress, toAddress);
       }
     };
 
