@@ -43,6 +43,7 @@
                   :allAccounts="allAccounts"
                   :allAccountNames="allAccountNames"
                   v-model:selAddress="fromAddress"
+                  @sel-changed="reloadAmount"
                 />
               </div>
 
@@ -206,9 +207,7 @@ export default defineComponent({
               signer: injector.signer,
             },
             result => handleResult(result))
-          .catch((error: Error) => {
-            handleTransactionError(error);
-          });
+          .catch((error: Error) => handleTransactionError(error));
       } catch (e) {
         console.error(e);
       }
@@ -232,10 +231,9 @@ export default defineComponent({
           const signature = await requestSignature(callPayload, currentEcdsaAccount.value.ethereum);
 
           const call = api?.value?.tx.ethCall.call(method, currentEcdsaAccount.value.ss58, signature);
-          call?.send(result => handleResult(result))
-          .catch((e: Error) => {
-            handleTransactionError(e);
-          });
+          call
+            ?.send((result: ISubmittableResult) => handleResult(result))
+            .catch((e: Error) => handleTransactionError(e));
         } else {
           console.log('Polkadot.js API is undefined.')
         }
@@ -286,6 +284,11 @@ export default defineComponent({
       }
     };
 
+    const reloadAmount = (address: string, isMetamaskChecked:boolean, selAccountIdx: number): void => {
+      store.commit('general/setIsCheckMetamask', isMetamaskChecked);
+      store.commit('general/setCurrentAccountIdx', selAccountIdx);
+    }
+
     return {
       closeModal,
       transfer,
@@ -296,6 +299,7 @@ export default defineComponent({
       transferAmt,
       defaultUnitToken,
       selectUnit,
+      reloadAmount
     };
   },
 });

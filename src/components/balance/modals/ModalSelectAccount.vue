@@ -128,11 +128,11 @@ export default defineComponent({
           selAccountName.value = props.allAccountNames[selAccountIdx.value];
           selAddress.value = props.allAccounts[selAccountIdx.value] as string;
         } else {
-          //const currentEcdsaAccount = store.getters['general/currentEcdsaAccount'];
           selAddress.value = currentEcdsaAccount.value.ss58;
         }
 
         emit('update:sel-address', selAddress.value);
+        emit('selChanged', selAddress.value, checkMetamask.value, selAccountIdx.value);
 
         openOption.value = false;
       },
