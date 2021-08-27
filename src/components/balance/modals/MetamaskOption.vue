@@ -31,7 +31,22 @@
           <input
             name="choose_account"
             type="radio"
-            class="tw-appearance-none tw-border-2 tw-border-gray-300 dark:tw-border-darkGray-600 tw-rounded-full focus:tw-ring-blue-500 tw-h-4 tw-w-4 tw-mr-3 focus:tw-outline-none tw-bg-white dark:tw-bg-darkGray-900 checked:tw-border-4 checked:tw-border-blue-500"
+            :class="[
+              showRadioIfUnchecked ? 'tw-border-gray-300' : 'tw-border-transparent',
+              'tw-appearance-none',
+              'tw-border-2',
+              'dark:tw-border-darkGray-600',
+              'tw-rounded-full',
+              'focus:tw-ring-blue-500',
+              'tw-h-4',
+              'tw-w-4',
+              'tw-mr-3',
+              'focus:tw-outline-none',
+              'tw-bg-white',
+              'dark:tw-bg-darkGray-900',
+              'checked:tw-border-4',
+              'checked:tw-border-blue-500'
+            ]"
             :checked="checked"
             @change="onSelectMetamask"
           />
@@ -55,6 +70,10 @@ export default defineComponent({
     checked: {
       type: Boolean,
     },
+    showRadioIfUnchecked: {
+      type: Boolean,
+      default: true,
+    }
   },
   setup(props, { emit }) {
     const store = useStore();
@@ -133,7 +152,7 @@ export default defineComponent({
       } else {
         return 'tw-text-blue-900 dark:tw-text-darkGray-100 tw-cursor-default tw-select-none tw-relative tw-py-2 tw-pl-3 tw-pr-6 hover:tw-bg-gray-50 dark:hover:tw-bg-darkGray-800';
       }
-    }
+    },
   },
 });
 </script>

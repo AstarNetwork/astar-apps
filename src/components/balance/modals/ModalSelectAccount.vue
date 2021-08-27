@@ -47,8 +47,9 @@
         class="tw-max-h-56 tw-rounded-md tw-py-1 tw-text-base tw-overflow-auto focus:tw-outline-none"
       >
         <MetamaskOption
-          v-if="isSupportContract"
+          v-if="showMetamaskOption"
           :checked="checkMetamask"
+          :showRadioIfUnchecked="false"
           v-model:selChecked="checkMetamask"
         />
         <ModalSelectAccountOption
@@ -112,7 +113,9 @@ export default defineComponent({
     const selAccountName = ref(props.allAccountNames[selAccountIdx.value]);
 
     const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
+    const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
     const checkMetamask = ref<boolean>(isCheckMetamask.value);
+    const showMetamaskOption = computed(() => isSupportContract.value && currentEcdsaAccount.value.ethereum )
 
     watch(
       [
@@ -125,8 +128,8 @@ export default defineComponent({
           selAccountName.value = props.allAccountNames[selAccountIdx.value];
           selAddress.value = props.allAccounts[selAccountIdx.value] as string;
         } else {
-          const currentEcdsaAccount = store.getters['general/currentEcdsaAccount'];
-          selAddress.value = currentEcdsaAccount.ss58;
+          //const currentEcdsaAccount = store.getters['general/currentEcdsaAccount'];
+          selAddress.value = currentEcdsaAccount.value.ss58;
         }
 
         emit('update:sel-address', selAddress.value);
@@ -141,7 +144,8 @@ export default defineComponent({
       selAccountIdx,
       selAddress,
       isSupportContract,
-      checkMetamask
+      checkMetamask,
+      showMetamaskOption
     };
   },
 });

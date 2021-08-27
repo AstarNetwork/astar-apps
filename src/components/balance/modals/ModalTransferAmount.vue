@@ -95,6 +95,7 @@ import BN from 'bn.js';
 import { useApi, useChainMetadata } from 'src/hooks';
 import { web3FromSource } from '@polkadot/extension-dapp';
 import type { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
+import { ISubmittableResult } from '@polkadot/types/types';
 import { u8aToHex } from '@polkadot/util';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
@@ -161,6 +162,31 @@ export default defineComponent({
       });
     }
 
+    const handleResult = (result: ISubmittableResult): void => {
+      const status = result.status;
+      if (status.isInBlock) {
+        console.log(
+          `Completed at block hash #${status.asInBlock.toString()}`
+        );
+
+        store.dispatch('general/showAlertMsg', {
+          msg: `Completed at block hash #${status.asInBlock.toString()}`,
+          alertType: 'success',
+        });
+
+        store.commit('general/setLoading', false);
+        emit('complete-transfer', true);
+
+        closeModal();
+      } else {
+        console.log(`Current status: ${status.type}`);
+
+        if (status.type !== 'Finalized') {
+          store.commit('general/setLoading', true);
+        }
+      }
+    }
+
     const transferLocal = async (
       transferAmt: BN,
       fromAddress: string,
@@ -179,30 +205,7 @@ export default defineComponent({
             {
               signer: injector.signer,
             },
-            ({ status }) => {
-              if (status.isInBlock) {
-                console.log(
-                  `Completed at block hash #${status.asInBlock.toString()}`
-                );
-
-                store.dispatch('general/showAlertMsg', {
-                  msg: `Completed at block hash #${status.asInBlock.toString()}`,
-                  alertType: 'success',
-                });
-
-                store.commit('general/setLoading', false);
-                emit('complete-transfer', true);
-
-                closeModal();
-              } else {
-                console.log(`Current status: ${status.type}`);
-
-                if (status.type !== 'Finalized') {
-                  store.commit('general/setLoading', true);
-                }
-              }
-            }
-          )
+            result => handleResult(result))
           .catch((error: Error) => {
             handleTransactionError(error);
           });
@@ -229,29 +232,7 @@ export default defineComponent({
           const signature = await requestSignature(callPayload, currentEcdsaAccount.value.ethereum);
 
           const call = api?.value?.tx.ethCall.call(method, currentEcdsaAccount.value.ss58, signature);
-          call?.send(({ status }) => {
-            if (status.isInBlock) {
-              console.log(
-                `Completed at block hash #${status.asInBlock.toString()}`
-              );
-
-              store.dispatch('general/showAlertMsg', {
-                msg: `Completed at block hash #${status.asInBlock.toString()}`,
-                alertType: 'success',
-              });
-
-              store.commit('general/setLoading', false);
-              emit('complete-transfer', true);
-
-              closeModal();
-            } else {
-              console.log(`Current status: ${status.type}`);
-
-              if (status.type !== 'Finalized') {
-                store.commit('general/setLoading', true);
-              }
-            }
-          })
+          call?.send(result => handleResult(result))
           .catch((e: Error) => {
             handleTransactionError(e);
           });
