@@ -106,7 +106,7 @@ export default defineComponent({
       const { balance: balanceRef } = useBalance(api, curAccountRef);
 
       watch(balanceRef, () => {
-        console.log('new balance:', balance.value);
+        console.log('new balance:', balance.value.toString());
         balance.value = balanceRef.value;
       });
     };

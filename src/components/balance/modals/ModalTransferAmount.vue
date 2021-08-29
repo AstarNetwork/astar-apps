@@ -43,6 +43,7 @@
                   :allAccounts="allAccounts"
                   :allAccountNames="allAccountNames"
                   v-model:selAddress="fromAddress"
+                  @sel-changed="reloadAmount"
                 />
               </div>
 
@@ -94,12 +95,16 @@ import { defineComponent, computed, ref } from 'vue';
 import BN from 'bn.js';
 import { useApi, useChainMetadata } from 'src/hooks';
 import { web3FromSource } from '@polkadot/extension-dapp';
+import type { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
+import { ISubmittableResult } from '@polkadot/types/types';
+import { u8aToHex } from '@polkadot/util';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { getUnit } from 'src/hooks/helper/units';
 import ModalSelectAccount from './ModalSelectAccount.vue';
 import FormatBalance from 'components/balance/FormatBalance.vue';
 import InputAmount from 'components/common/InputAmount.vue';
+import { useMetamask } from 'src/hooks/custom-signature/useMetamask';
 
 export default defineComponent({
   components: {
@@ -129,12 +134,15 @@ export default defineComponent({
     const openOption = ref(false);
 
     const { defaultUnitToken, decimal } = useChainMetadata();
+    const { requestSignature } = useMetamask();
 
     const transferAmt = ref(new BN(0));
     const fromAddress = ref('');
     const toAddress = ref('');
 
     const selectUnit = ref(defaultUnitToken.value);
+    const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
+    const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
 
     const formatBalance = computed(() => {
       const tokenDecimal = decimal.value;
@@ -146,6 +154,93 @@ export default defineComponent({
 
     const { api } = useApi();
     const store = useStore();
+
+    const handleTransactionError = (e: Error): void => {
+      console.error(e);
+      store.dispatch('general/showAlertMsg', {
+        msg: `Transaction failed with error: ${e.message}`,
+        alertType: 'error',
+      });
+    }
+
+    const handleResult = (result: ISubmittableResult): void => {
+      const status = result.status;
+      if (status.isInBlock) {
+        console.log(
+          `Completed at block hash #${status.asInBlock.toString()}`
+        );
+
+        store.dispatch('general/showAlertMsg', {
+          msg: `Completed at block hash #${status.asInBlock.toString()}`,
+          alertType: 'success',
+        });
+
+        store.commit('general/setLoading', false);
+        emit('complete-transfer', true);
+
+        closeModal();
+      } else {
+        console.log(`Current status: ${status.type}`);
+
+        if (status.type !== 'Finalized') {
+          store.commit('general/setLoading', true);
+        }
+      }
+    }
+
+    const transferLocal = async (
+      transferAmt: BN,
+      fromAddress: string,
+      toAddress: string
+    ) => {
+      try {
+        const injector = await web3FromSource('polkadot-js');
+        const transfer = await api?.value?.tx.balances.transfer(
+          toAddress,
+          transferAmt
+        );
+        //1000000000000004 : 1 PLD
+        transfer
+          ?.signAndSend(
+            fromAddress,
+            {
+              signer: injector.signer,
+            },
+            result => handleResult(result))
+          .catch((error: Error) => handleTransactionError(error));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    const transferExtrinsic = async (
+      transferAmt: BN,
+      toAddress: string
+    ) => {
+      try {
+        const fn: SubmittableExtrinsicFunction<'promise'> | undefined = api?.value?.tx.balances.transfer;
+
+        if (fn) {
+          const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn(
+            toAddress,
+            transferAmt
+          ); 
+          const callPayload = u8aToHex(method.toU8a(true).slice(1));
+
+          // Sign transaction with eth private key
+          const signature = await requestSignature(callPayload, currentEcdsaAccount.value.ethereum);
+
+          const call = api?.value?.tx.ethCall.call(method, currentEcdsaAccount.value.ss58, signature);
+          call
+            ?.send((result: ISubmittableResult) => handleResult(result))
+            .catch((e: Error) => handleTransactionError(e));
+        } else {
+          console.log('Polkadot.js API is undefined.')
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    }
 
     const transfer = async (
       transferAmt: BN,
@@ -174,58 +269,25 @@ export default defineComponent({
         return;
       }
 
-      try {
-        const unit = getUnit(selectUnit.value);
-        const toAmt = plasmUtils.reduceDenomToBalance(
-          transferAmt,
-          unit,
-          decimal.value
-        );
-        console.log('toAmt', toAmt.toString(10));
+      const unit = getUnit(selectUnit.value);
+      const toAmt = plasmUtils.reduceDenomToBalance(
+        transferAmt,
+        unit,
+        decimal.value
+      );
+      console.log('toAmt', toAmt.toString(10));
 
-        const injector = await web3FromSource('polkadot-js');
-        const transfer = await api?.value?.tx.balances.transfer(
-          toAddress,
-          toAmt
-        );
-        //1000000000000004 : 1 PLD
-        transfer
-          ?.signAndSend(
-            fromAddress,
-            {
-              signer: injector.signer,
-            },
-            ({ status }) => {
-              if (status.isInBlock) {
-                console.log(
-                  `Completed at block hash #${status.asInBlock.toString()}`
-                );
-
-                store.dispatch('general/showAlertMsg', {
-                  msg: `Completed at block hash #${status.asInBlock.toString()}`,
-                  alertType: 'success',
-                });
-
-                store.commit('general/setLoading', false);
-                emit('complete-transfer', true);
-
-                closeModal();
-              } else {
-                console.log(`Current status: ${status.type}`);
-
-                if (status.type !== 'Finalized') {
-                  store.commit('general/setLoading', true);
-                }
-              }
-            }
-          )
-          .catch((error: any) => {
-            console.log(':( transaction failed', error);
-          });
-      } catch (e) {
-        console.error(e);
+      if (isCheckMetamask.value) {
+        await transferExtrinsic(toAmt, toAddress);
+      } else {
+        await transferLocal(toAmt, fromAddress, toAddress);
       }
     };
+
+    const reloadAmount = (address: string, isMetamaskChecked:boolean, selAccountIdx: number): void => {
+      store.commit('general/setIsCheckMetamask', isMetamaskChecked);
+      store.commit('general/setCurrentAccountIdx', selAccountIdx);
+    }
 
     return {
       closeModal,
@@ -237,6 +299,7 @@ export default defineComponent({
       transferAmt,
       defaultUnitToken,
       selectUnit,
+      reloadAmount
     };
   },
 });
