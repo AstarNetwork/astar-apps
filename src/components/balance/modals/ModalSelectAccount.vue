@@ -21,6 +21,7 @@
             type="text"
             spellcheck="false"
             v-model="selAddress"
+            @change="changeAddress"
           />
         </div>
       </div>
@@ -120,7 +121,7 @@ export default defineComponent({
     watch(
       [
         selAccountIdx,
-        checkMetamask
+        checkMetamask,
       ],
       () => {
         if(!checkMetamask.value) {
@@ -139,13 +140,18 @@ export default defineComponent({
       { immediate: true }
     );
 
+    const changeAddress = (e: any) => {
+      emit('update:sel-address', e.currentTarget.value);
+    }
+
     return {
       openOption,
       selAccountIdx,
       selAddress,
       isSupportContract,
       checkMetamask,
-      showMetamaskOption
+      showMetamaskOption,
+      changeAddress
     };
   },
 });
