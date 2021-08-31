@@ -11,6 +11,8 @@ export interface GeneralGetters {
   chainInfo(state: State): ChainInfo;
   metaExtensions(state: State): Extensions;
   extensionCount(state: State): number;
+  allAccounts(state: State): string[];
+  allAccountNames(state: State): string[];
   networkStatus(state: State): string;
   networkIdx(state: State): number;
   isCheckMetamask(state: State): boolean;
@@ -27,6 +29,8 @@ const getters: GetterTree<State, StateInterface> & GeneralGetters = {
   chainInfo: (state) => state.chainInfo,
   metaExtensions: (state) => state.metaExtensions,
   extensionCount: (state) => state.extensionCount,
+  allAccounts: (state) => state.allAccounts,
+  allAccountNames: (state) => state.allAccountNames,
   networkStatus: (state) => state.currentNetworkStatus,
   networkIdx: (state) => state.currentNetworkIdx,
   isCheckMetamask: (state) => state.isCheckMetamask,

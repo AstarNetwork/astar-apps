@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isWeb3Injected && isConnected(currentNetworkStatus)">
+  <div v-if="isConnected(currentNetworkStatus)">
     <div class="tw-grid lg:tw-grid-cols-2 tw-gap-4 tw-mb-4">
       <Address
         :address="currentAccount"
@@ -49,10 +49,10 @@ import {
   provide,
   ref,
 } from 'vue';
-import { useAccount, useBalance, useApi } from 'src/hooks';
+import { useBalance, useApi } from 'src/hooks';
 import { useStore } from 'src/store';
 import { useMeta } from 'quasar';
-import { isWeb3Injected } from '@polkadot/extension-dapp';
+// import { isWeb3Injected } from '@polkadot/extension-dapp';
 import Address from './Address.vue';
 import PlmBalance from './PlmBalance.vue';
 import TotalBalance from './TotalBalance.vue';
@@ -84,17 +84,30 @@ export default defineComponent({
       modalTransferToken: false,
     });
 
+    const store = useStore();
+
+    const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
+    const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
+    const allAccounts = computed(() => store.getters['general/allAccounts']);
+    const allAccountNames = computed(() => store.getters['general/allAccountNames']);
+    const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
+    
     const currentAccount = ref('');
     const currentAccountName = ref('');
 
-    const {
-      allAccounts,
-      allAccountNames,
-    } = useAccount(currentAccount, currentAccountName);
+    watch([allAccounts, allAccountNames, currentAccountIdx, isCheckMetamask], () => {
+      if (allAccounts.value) {
+        if (isCheckMetamask.value && currentEcdsaAccount.value) {
+          currentAccount.value = currentEcdsaAccount.value.ss58;
+          currentAccountName.value = 'ECDSA (Ethereum Extension)';
+        } else {
+          currentAccount.value = allAccounts.value[currentAccountIdx.value];
+          currentAccountName.value = allAccountNames.value[currentAccountIdx.value];
+        }
+      }
+    }, { immediate: true });
 
     const { api } = useApi();
-
-    const store = useStore();
 
     const { balance } = useBalance(api, currentAccount);
     provide('balance', balance);
@@ -113,7 +126,7 @@ export default defineComponent({
 
     return {
       ...toRefs(stateModal),
-      isWeb3Injected,
+      // isWeb3Injected,
       balance,
       allAccounts,
       allAccountNames,

@@ -22,6 +22,8 @@ export interface GeneralStateInterface {
   chainInfo: any;
   metaExtensions: Extensions;
   extensionCount: number;
+  allAccounts: string[];
+  allAccountNames: string[];
   currentNetworkStatus: ConnectionType;
   currentNetworkIdx: number;
   isCheckMetamask: boolean;
@@ -46,6 +48,8 @@ function state(): GeneralStateInterface {
       extensions: []
     },
     extensionCount: 0,
+    allAccounts: [],
+    allAccountNames: [],
     currentNetworkStatus: 'connecting',
     currentNetworkIdx: 0,
     isCheckMetamask: false,

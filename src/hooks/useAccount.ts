@@ -1,3 +1,4 @@
+//@deprecated
 import { reactive, toRefs, watch, watchEffect, computed, Ref } from 'vue';
 import { keyring } from '@polkadot/ui-keyring';
 import { useStore } from 'src/store';
@@ -28,12 +29,6 @@ export const useAccount = (currentAccount: Ref<string>, currentAccountName: Ref<
     hasAccounts: false,
     isAccount: () => false,
   });
-
-  const accounts = keyring.getAccounts();
-  console.log('accounts', accounts);
-  // accounts.forEach(({ address, meta, publicKey }) =>
-  //   console.log(address, JSON.stringify(meta), u8aToHex(publicKey))
-  // );
 
   watchEffect((onInvalidate) => {
     const subscription = keyring.accounts.subject.subscribe((accounts) => {
