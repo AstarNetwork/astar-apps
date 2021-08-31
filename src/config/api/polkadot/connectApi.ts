@@ -18,7 +18,7 @@ interface InjectedAccountExt {
   };
 }
 
-const injectedPromise = web3Enable('polkadot-js/apps');
+// const injectedPromise = web3Enable('polkadot-js/apps');
 
 const loadAccounts = async (api: ApiPromise) => {
   // wait for the WASM crypto libraries to load first
@@ -58,6 +58,10 @@ const loadAccounts = async (api: ApiPromise) => {
 export async function connectApi(endpoint: string, networkIdx: number) {
   const provider = new WsProvider(endpoint);
 
+
+  // load the web3 extension
+  let extensions: InjectedExtension[] = [];
+
   let typeDefinitions = null;
   if (networkIdx === endpointKey.SHIDEN) {
     typeDefinitions = typeDefs.plasmCollatorDefinitions as RegistryTypes;
@@ -71,7 +75,7 @@ export async function connectApi(endpoint: string, networkIdx: number) {
     provider,
     types: {
       ...typeDefinitions,
-      LookupSource: 'MultiAddress',
+      // LookupSource: 'MultiAddress', //for dusty
     },
   });
 
@@ -79,30 +83,40 @@ export async function connectApi(endpoint: string, networkIdx: number) {
 
   store.commit('general/setCurrentNetworkStatus', 'connecting');
 
-  try {
-    await api.isReadyOrError;
-  } catch (err) {
-    console.error('err', err);
-  }
+  // try {
+  //   await api.isReadyOrError;
+  // } catch (err) {
+  //   console.error('err', err);
+  // }
 
-  try {
-    await loadAccounts(api);
+  api.on('error', (error: Error) => console.error(error.message));
+  api.on('ready', async () => {
+    const injectedPromise = web3Enable('polkadot-js/apps');
 
-    store.commit('general/setCurrentNetworkStatus', 'connected');
-  } catch (err) {
-    console.error(err);
+    try {
+      extensions = await injectedPromise;
+    } catch (e) {
+      console.error(e);
+    }
 
-    store.commit('general/setCurrentNetworkStatus', 'offline');
-  }
+    try {
+      await loadAccounts(api);
 
-  // load the web3 extension
-  let extensions: InjectedExtension[] = [];
-
-  try {
-    extensions = await injectedPromise;
-  } catch (e) {
-    console.error(e);
-  }
+      keyring.accounts.subject.subscribe((accounts) => {
+        if (accounts) {
+          store.commit('general/setAllAccounts', Object.keys(accounts));
+          store.commit('general/setAllAccountNames', Object.values(accounts).map((obj) => obj.option.name));
+        }
+      });
+      //subscription.unsubscribe();
+  
+      store.commit('general/setCurrentNetworkStatus', 'connected');
+    } catch (err) {
+      console.error(err);
+  
+      store.commit('general/setCurrentNetworkStatus', 'offline');
+    }
+  });
 
   return {
     api,

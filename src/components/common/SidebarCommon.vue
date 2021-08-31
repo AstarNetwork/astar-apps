@@ -50,14 +50,14 @@
         </icon-base>
         <span class="tw-ml-3 tw-flex-1">
           <p class="tw-font-bold">Balance</p>
-          <p
+          <!-- <p
             class="tw-text-xs tw-text-blue-900 dark:tw-text-darkGray-100 tw-font-semibold tw-flex tw-justify-between"
           >
             <span>{{ currentAccountName }}</span>
           </p>
           <p class="tw-text-xs tw-text-gray-500 dark:tw-text-darkGray-400">
             {{ shortenAddress }}
-          </p>
+          </p> -->
         </span>
       </router-link>
 
@@ -124,9 +124,9 @@
 <script lang="ts">
 import { defineComponent, ref, computed, watch } from 'vue';
 import { useStore } from 'src/store';
-import { useAccount, useSidebar } from 'src/hooks';
+import { useSidebar } from 'src/hooks';
 import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
-import { getShortenAddress } from 'src/hooks/helper/addressUtils';
+// import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import ConnectionIndicator from './ConnectionIndicator.vue';
 import ExtensionsMetadata from './ExtensionsMetadata.vue';
 import SocialMediaLinks from './SocialMediaLinks.vue';
@@ -157,14 +157,22 @@ export default defineComponent({
 
     const store = useStore();
 
-    const currentAccount = ref('');
-    const currentAccountName = ref('');
+    // const allAccounts = computed(() => store.getters['general/allAccounts']);
+    // const allAccountNames = computed(() => store.getters['general/allAccountNames']);
 
-    useAccount(currentAccount, currentAccountName);
+    // const currentAccount = ref('');
+    // const currentAccountName = ref('');
 
-    const shortenAddress = computed(() => {
-      return getShortenAddress(currentAccount.value);
-    });
+    // watch([allAccounts, allAccountNames], () => {
+    //   if (allAccounts.value) {
+    //     currentAccount.value = allAccounts.value[0];
+    //     currentAccountName.value = allAccountNames.value[0];
+    //   }
+    // })
+
+    // const shortenAddress = computed(() => {
+    //   return getShortenAddress(currentAccount.value);
+    // });
 
     const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
@@ -184,8 +192,8 @@ export default defineComponent({
     return {
       isOpen,
       modalNetwork,
-      shortenAddress,
-      currentAccountName,
+      // shortenAddress,
+      // currentAccountName,
       currentNetworkStatus,
       currentNetworkIdx,
       currentNetworkName,

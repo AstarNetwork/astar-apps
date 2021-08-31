@@ -122,7 +122,7 @@ export default defineComponent({
         console.log(`ethereum: ${loadingAddr} / ss58: ${ss58Address}`);
 
         ecdsaAccounts.value = { ethereum: loadingAddr, ss58: ss58Address };
-        curAddress.value = loadingAddr;
+        curAddress.value = ss58Address;
 
         onSelectMetamask();
       } catch (err) {
