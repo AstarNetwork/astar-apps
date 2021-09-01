@@ -3,7 +3,7 @@ import { keyring } from '@polkadot/ui-keyring';
 import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import { isTestChain } from '@polkadot/util';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
-import * as typeDefs from '@plasm/types';
+import * as typeDefs from './registry_types';
 import { RegistryTypes } from '@polkadot/types/types';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
@@ -17,8 +17,6 @@ interface InjectedAccountExt {
     whenCreated: number;
   };
 }
-
-// const injectedPromise = web3Enable('polkadot-js/apps');
 
 const loadAccounts = async (api: ApiPromise) => {
   // wait for the WASM crypto libraries to load first
@@ -71,23 +69,18 @@ export async function connectApi(endpoint: string, networkIdx: number) {
     typeDefinitions = typeDefs.dustyDefinitions as RegistryTypes;
   }
 
+  console.log('t', typeDefinitions)
+
   const api = new ApiPromise({
     provider,
     types: {
-      ...typeDefinitions,
-      // LookupSource: 'MultiAddress', //for dusty
+      ...typeDefinitions
     },
   });
 
   const store = useStore();
 
   store.commit('general/setCurrentNetworkStatus', 'connecting');
-
-  // try {
-  //   await api.isReadyOrError;
-  // } catch (err) {
-  //   console.error('err', err);
-  // }
 
   api.on('error', (error: Error) => console.error(error.message));
   api.on('ready', async () => {

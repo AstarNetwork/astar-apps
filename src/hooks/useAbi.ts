@@ -85,7 +85,7 @@ export default function useAbi(source: Code | null = null, isRequired = false) {
           _codeHash: source?.codeHash,
           partial: { abi: json },
         });
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
 
       isAbiSupplied.value = false;

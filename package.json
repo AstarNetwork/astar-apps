@@ -7,24 +7,26 @@
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue ./",
-    "test": "echo \"No test specified\" && exit 0"
+    "test": "echo \"No test specified\" && exit 0",
+    "deploy": "push-dir --dir=dist/spa --remote=gh-pages --branch=main"
   },
   "resolutions": {
-    "@polkadot/api": ">=4.10.1",
-    "typescript": "^4.2.4"
+    "@polkadot/api": ">=5.6.2",
+    "typescript": "^4.3.5"
   },
   "dependencies": {
-    "@plasm/types": "1.5.4-3",
-    "@polkadot/api": "^4.12.1",
-    "@polkadot/api-contract": "^4.12.1",
-    "@polkadot/extension-dapp": "^0.38.3",
-    "@polkadot/keyring": "^6.6.1",
-    "@polkadot/networks": "^6.6.1",
-    "@polkadot/types": "^4.12.1",
-    "@polkadot/ui-keyring": "^0.78.1",
-    "@polkadot/util": "^6.6.1",
-    "@polkadot/util-crypto": "^6.6.1",
-    "@polkadot/wasm-crypto": "^4.0.2",
+    "@polkadot/api": "^5.6.2-10",
+    "@polkadot/api-contract": "^5.6.2-10",
+    "@polkadot/extension-dapp": "0.39.4-4",
+    "@polkadot/keyring": "^7.3.1",
+    "@polkadot/networks": "^7.3.1",
+    "@polkadot/types": "^5.6.2-10",
+    "@polkadot/types-known": "^5.6.2-10",
+    "@polkadot/types-support": "^5.6.2-10",
+    "@polkadot/ui-keyring": "^0.85.3",
+    "@polkadot/util": "^7.3.1",
+    "@polkadot/util-crypto": "^7.3.1",
+    "@polkadot/wasm-crypto": "^4.2.1",
     "@quasar/extras": "^1.0.0",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
@@ -43,6 +45,7 @@
   "devDependencies": {
     "@babel/eslint-parser": "^7.13.14",
     "@quasar/app": "^3.0.0",
+    "@polkadot/ts": "^0.4.6",
     "@tailwindcss/custom-forms": "^0.2.1",
     "@tailwindcss/postcss7-compat": "^2.0.3",
     "@types/ethjs-util": "^0.1.0",
@@ -53,6 +56,7 @@
     "eslint": "^7.14.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-vue": "^7.0.0",
+    "push-dir": "^0.4.1",
     "sass-loader": "7.3.1",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.3"
   },

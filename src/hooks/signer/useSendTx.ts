@@ -35,7 +35,7 @@ export default function useSendTx() {
           unsubscribe();
         })
       );
-    } catch (error) {
+    } catch (error: any) {
       console.error('signAndSend: error:', error);
 
       currentItem.txFailedCb && currentItem.txFailedCb(error);
