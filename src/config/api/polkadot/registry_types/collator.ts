@@ -1,8 +1,8 @@
 import type { RegistryTypes } from '@polkadot/types/types';
 
 const definitions: RegistryTypes = {
-    Address: 'AccountId',
-    LookupSource: 'AccountId',
+    Address: 'MultiAddress',
+    LookupSource: 'MultiAddress',
     ChainId: {
         _enum: {
             RelayChain: null,
