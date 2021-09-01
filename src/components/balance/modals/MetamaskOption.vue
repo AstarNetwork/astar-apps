@@ -125,7 +125,7 @@ export default defineComponent({
         curAddress.value = ss58Address;
 
         onSelectMetamask();
-      } catch (err) {
+      } catch (err: any) {
         console.error('err', err);
         errorMsg.value = err.message;
       }

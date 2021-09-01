@@ -200,11 +200,10 @@ export default defineComponent({
           transferAmt
         );
         //1000000000000004 : 1 PLD
-        transfer
-          ?.signAndSend(
+        transfer?.signAndSend(
             fromAddress,
             {
-              signer: injector.signer,
+              signer: injector?.signer,
             },
             result => handleResult(result))
           .catch((error: Error) => handleTransactionError(error));
