@@ -241,8 +241,10 @@ import { CodePromise, Abi } from '@polkadot/api-contract';
 import { useStore } from 'src/store';
 
 interface FormData {
-  endowment: BN;
-  weight: BN;
+  // endowment: BN;
+  // weight: BN;
+  endowment: number;
+  weight: number;
   projectName: string;
   projectDesc: string;
   webpage: string;
@@ -287,8 +289,10 @@ export default defineComponent({
     const selectUnitGas = ref<string>('micro');
 
     const formData = reactive<FormData>({
-      endowment: new BN(0),
-      weight: new BN(200000),
+      // endowment: new BN(0),
+      // weight: new BN(200000),
+      endowment: 0,
+      weight: 200000,
       projectName: '',
       projectDesc: '',
       webpage: '',

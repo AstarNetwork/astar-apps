@@ -242,11 +242,11 @@ export default defineComponent({
     }
 
     const transfer = async (
-      transferAmt: BN,
+      transferAmt: number,
       fromAddress: string,
       toAddress: string
     ) => {
-      console.log('transfer', transferAmt.toString(10));
+      console.log('transfer', transferAmt);
       console.log('fromAccount', fromAddress);
       console.log('toAccount', toAddress);
       console.log('selUnit', selectUnit.value);
