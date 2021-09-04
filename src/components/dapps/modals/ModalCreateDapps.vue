@@ -292,7 +292,7 @@ export default defineComponent({
       // endowment: new BN(0),
       // weight: new BN(200000),
       endowment: 0,
-      weight: 200000,
+      weight: 200,
       projectName: '',
       projectDesc: '',
       webpage: '',

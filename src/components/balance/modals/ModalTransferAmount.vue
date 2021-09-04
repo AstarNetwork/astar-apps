@@ -12,6 +12,9 @@
         class="tw-inline-block tw-bg-white dark:tw-bg-darkGray-900 tw-rounded-lg tw-px-4 sm:tw-px-8 tw-py-10 tw-shadow-xl tw-transform tw-transition-all tw-mx-2 tw-my-2 tw-align-middle tw-max-w-lg tw-w-full"
       >
         <div>
+          <q-banner dense rounded class="bg-orange text-white tw-mb-4 q-pa-xs" style="">
+            Custom sig extrinsic calls has been temporarily blocked
+          </q-banner>
           <div>
             <h3
               class="tw-text-lg tw-font-extrabold tw-text-blue-900 dark:tw-text-white tw-mb-6 tw-text-center"
