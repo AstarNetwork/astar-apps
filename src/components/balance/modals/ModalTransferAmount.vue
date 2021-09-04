@@ -12,7 +12,7 @@
         class="tw-inline-block tw-bg-white dark:tw-bg-darkGray-900 tw-rounded-lg tw-px-4 sm:tw-px-8 tw-py-10 tw-shadow-xl tw-transform tw-transition-all tw-mx-2 tw-my-2 tw-align-middle tw-max-w-lg tw-w-full"
       >
         <div>
-          <q-banner dense rounded class="bg-orange text-white tw-mb-4 q-pa-xs" style="">
+          <q-banner v-if="isShidenChain" dense rounded class="bg-orange text-white tw-mb-4 q-pa-xs" style="">
             Custom sig extrinsic calls has been temporarily blocked
           </q-banner>
           <div>
@@ -98,6 +98,7 @@ import { defineComponent, computed, ref } from 'vue';
 import BN from 'bn.js';
 import { useApi, useChainMetadata } from 'src/hooks';
 import { web3FromSource } from '@polkadot/extension-dapp';
+import { endpointKey } from 'src/config/chainEndpoints';
 import type { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { u8aToHex } from '@polkadot/util';
@@ -136,6 +137,8 @@ export default defineComponent({
 
     const openOption = ref(false);
 
+    const store = useStore();
+
     const { defaultUnitToken, decimal } = useChainMetadata();
     const { requestSignature } = useMetamask();
 
@@ -146,6 +149,9 @@ export default defineComponent({
     const selectUnit = ref(defaultUnitToken.value);
     const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
     const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
+    const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
+
+    const isShidenChain = currentNetworkIdx.value === endpointKey.SHIDEN;
 
     const formatBalance = computed(() => {
       const tokenDecimal = decimal.value;
@@ -155,8 +161,7 @@ export default defineComponent({
       );
     });
 
-    const { api } = useApi();
-    const store = useStore();
+    const { api } = useApi();    
 
     const handleTransactionError = (e: Error): void => {
       console.error(e);
@@ -293,6 +298,7 @@ export default defineComponent({
 
     return {
       closeModal,
+      isShidenChain,
       transfer,
       formatBalance,
       fromAddress,
