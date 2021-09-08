@@ -154,7 +154,7 @@ export default defineComponent({
     const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
     const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
-    const isExtrinsicSupported = computed(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
+    const isExtrinsicSupported = computed(() => !!providerEndpoints[currentNetworkIdx.value].prefix);
     const canExecuteTransaction = computed(() => isCheckMetamask.value ? isExtrinsicSupported.value : true);
 
     const formatBalance = computed(() => {

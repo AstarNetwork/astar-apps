@@ -6,7 +6,7 @@ interface ChainProvider {
   fallback?: string;
   favicon: string;
   isSupportContract: boolean;
-  prefix?: number;
+  prefix?: number; // Used in extrinsic transactions, also to determine if a network supports extensic transactions.
 }
 
 export enum endpointKey {
@@ -36,7 +36,6 @@ export const providerEndpoints: ChainProvider[] = [
     fallback: 'wss://shiden.api.onfinality.io/public-ws',
     favicon: 'icons/shiden.png',
     isSupportContract: true,
-    prefix: 0x150,
   },
   {
     networkAlias: 'dusty-testnet',
