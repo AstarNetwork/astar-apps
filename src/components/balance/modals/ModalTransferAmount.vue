@@ -269,7 +269,6 @@ export default defineComponent({
         payload.set(networkPrefix.toU8a(), 0);
         payload.set(nonce.toU8a(), networkPrefix.byteLength())
         payload.set(methodPayload, networkPrefix.byteLength() + nonce.byteLength())
-        console.log('p', payload);
       } else {
         store.dispatch('general/showAlertMsg', {
           msg: `Unable to get a nonce for the account: ${account}`,
