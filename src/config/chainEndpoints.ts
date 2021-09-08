@@ -6,14 +6,16 @@ interface ChainProvider {
   fallback?: string;
   favicon: string;
   isSupportContract: boolean;
+  prefix?: number;
 }
 
 export enum endpointKey {
   PLASM = 0,
   SHIDEN = 1,
   DUSTY = 2,
-  LOCAL = 3,
-  CUSTOM = 4,
+  SHIBUYA = 3,
+  LOCAL = 4,
+  CUSTOM = 5,
 }
 
 export const providerEndpoints: ChainProvider[] = [
@@ -30,11 +32,11 @@ export const providerEndpoints: ChainProvider[] = [
     displayName: 'Shiden Network (Kusama)',
     info:
       'Smart contract platform for decentralized applications (dapps) on the Kusama network',
-    // endpoint: 'wss://rpc.shiden.plasmnet.io',
-    endpoint: 'wss://shiden.api.onfinality.io/public-ws',
+    endpoint: 'wss://rpc.shiden.plasmnet.io',
     fallback: 'wss://shiden.api.onfinality.io/public-ws',
     favicon: 'icons/shiden.png',
     isSupportContract: true,
+    prefix: 0x150,
   },
   {
     networkAlias: 'dusty-testnet',
@@ -44,6 +46,16 @@ export const providerEndpoints: ChainProvider[] = [
     endpoint: 'wss://rpc.dusty.plasmnet.io/',
     favicon: 'https://polkadot.js.org/apps/static/dusty.16cf115c.png',
     isSupportContract: true,
+  },
+  {
+    networkAlias: 'shibuya-testnet',
+    displayName: 'Shibuya Network (Testnet)',
+    info:
+      'The test network of the layer 2 scaling blockchain',
+    endpoint: 'wss://rpc.shibuya.astar.network',
+    favicon: 'https://polkadot.js.org/apps/static/shiden.a066789e.png',
+    isSupportContract: true,
+    prefix: 0xff51
   },
   {
     networkAlias: 'local-node',

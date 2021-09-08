@@ -12,7 +12,7 @@
         class="tw-inline-block tw-bg-white dark:tw-bg-darkGray-900 tw-rounded-lg tw-px-4 sm:tw-px-8 tw-py-10 tw-shadow-xl tw-transform tw-transition-all tw-mx-2 tw-my-2 tw-align-middle tw-max-w-lg tw-w-full"
       >
         <div>
-          <q-banner v-if="isShidenChain" dense rounded class="bg-orange text-white tw-mb-4 q-pa-xs" style="">
+          <q-banner v-if="!isExtrinsicSupported" dense rounded class="bg-orange text-white tw-mb-4 q-pa-xs" style="">
             Custom sig extrinsic calls has been temporarily blocked
           </q-banner>
           <div>
@@ -76,6 +76,7 @@
         <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row-reverse">
           <button
             type="button"
+            :disabled="!canExecuteTransaction"
             @click="transfer(transferAmt, fromAddress, toAddress)"
             class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 hover:tw-bg-blue-700 dark:hover:tw-bg-blue-400 focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 dark:focus:tw-ring-blue-400 tw-mx-1"
           >
@@ -111,6 +112,7 @@ import ModalSelectAccount from './ModalSelectAccount.vue';
 import FormatBalance from 'components/balance/FormatBalance.vue';
 import InputAmount from 'components/common/InputAmount.vue';
 import { useMetamask } from 'src/hooks/custom-signature/useMetamask';
+import { providerEndpoints } from 'src/config/chainEndpoints';
 
 export default defineComponent({
   components: {
@@ -152,8 +154,8 @@ export default defineComponent({
     const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
     const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
-
-    const isShidenChain = currentNetworkIdx.value === endpointKey.SHIDEN;
+    const isExtrinsicSupported = computed(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
+    const canExecuteTransaction = computed(() => isCheckMetamask.value ? isExtrinsicSupported.value : true);
 
     const formatBalance = computed(() => {
       const tokenDecimal = decimal.value;
@@ -235,17 +237,15 @@ export default defineComponent({
             transferAmt
           ); 
 
-          api.value.query.system.account(currentEcdsaAccount.value.ss58, async (account: AccountInfo) => {
-            const callPayload = u8aToHex(await getPayload(method, account.nonce));
+          const account = <AccountInfo> await api.value.query.system.account(currentEcdsaAccount.value.ss58);
+          const callPayload = u8aToHex(await getPayload(method, account.nonce));
 
-            // Sign transaction with eth private key
-            const signature = await requestSignature(callPayload, currentEcdsaAccount.value.ethereum);
-
-            const call = api?.value?.tx.ethCall.call(method, currentEcdsaAccount.value.ss58, signature, account.nonce);
-            call
-              ?.send((result: ISubmittableResult) => handleResult(result))
-              .catch((e: Error) => handleTransactionError(e));
-          });
+          // Sign transaction with eth private key
+          const signature = await requestSignature(callPayload, currentEcdsaAccount.value.ethereum);
+          const call = api?.value?.tx.ethCall.call(method, currentEcdsaAccount.value.ss58, signature, account.nonce);
+          call
+            ?.send((result: ISubmittableResult) => handleResult(result))
+            .catch((e: Error) => handleTransactionError(e));
           
         } else {
           console.log('Polkadot.js API is undefined.')
@@ -258,15 +258,17 @@ export default defineComponent({
     const getPayload = async (method: SubmittableExtrinsic<'promise'>, nonce: u32): Promise<Uint8Array> => {
       const methodPayload: Uint8Array = method.toU8a(true).slice(1);
       const account = currentEcdsaAccount.value.ss58;
-      const networkIdx = new u16(new TypeRegistry(), 0xff51);
+      const networkPrefix = new u16(
+        new TypeRegistry(),
+        providerEndpoints[currentNetworkIdx.value].prefix || 0);
       let payload = new Uint8Array(0);
 
       if (nonce) {
-        const payloadLength = networkIdx.byteLength() + nonce.byteLength() + methodPayload.byteLength;
+        const payloadLength = networkPrefix.byteLength() + nonce.byteLength() + methodPayload.byteLength;
         payload = new Uint8Array(payloadLength);
-        payload.set(networkIdx.toU8a(), 0);
-        payload.set(nonce.toU8a(), networkIdx.byteLength())
-        payload.set(methodPayload, networkIdx.byteLength() + nonce.byteLength())
+        payload.set(networkPrefix.toU8a(), 0);
+        payload.set(nonce.toU8a(), networkPrefix.byteLength())
+        payload.set(methodPayload, networkPrefix.byteLength() + nonce.byteLength())
         console.log('p', payload);
       } else {
         store.dispatch('general/showAlertMsg', {
@@ -327,7 +329,8 @@ export default defineComponent({
 
     return {
       closeModal,
-      isShidenChain,
+      isExtrinsicSupported,
+      canExecuteTransaction,
       transfer,
       formatBalance,
       fromAddress,

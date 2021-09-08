@@ -61,7 +61,7 @@ export async function connectApi(endpoint: string, networkIdx: number) {
   let extensions: InjectedExtension[] = [];
 
   let typeDefinitions = null;
-  if (networkIdx === endpointKey.SHIDEN) {
+  if (networkIdx === endpointKey.SHIDEN || networkIdx === endpointKey.SHIBUYA) {
     typeDefinitions = typeDefs.plasmCollatorDefinitions as RegistryTypes;
   } else if (networkIdx === endpointKey.PLASM) {
     typeDefinitions = typeDefs.plasmDefinitions as RegistryTypes;
