@@ -102,6 +102,8 @@ import { endpointKey } from 'src/config/chainEndpoints';
 import type { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { u8aToHex } from '@polkadot/util';
+import { u16, u32, TypeRegistry } from '@polkadot/types';
+import { AccountInfo } from '@polkadot/types/interfaces';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { getUnit } from 'src/hooks/helper/units';
@@ -225,28 +227,55 @@ export default defineComponent({
       toAddress: string
     ) => {
       try {
-        const fn: SubmittableExtrinsicFunction<'promise'> | undefined = api?.value?.tx.balances.transfer;
-
-        if (fn) {
+        if (api && api.value) {
+          const fn: SubmittableExtrinsicFunction<'promise'> | undefined = api?.value?.tx.balances.transfer;
+          
           const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn(
             toAddress,
             transferAmt
           ); 
-          const callPayload = u8aToHex(method.toU8a(true).slice(1));
 
-          // Sign transaction with eth private key
-          const signature = await requestSignature(callPayload, currentEcdsaAccount.value.ethereum);
+          api.value.query.system.account(currentEcdsaAccount.value.ss58, async (account: AccountInfo) => {
+            const callPayload = u8aToHex(await getPayload(method, account.nonce));
 
-          const call = api?.value?.tx.ethCall.call(method, currentEcdsaAccount.value.ss58, signature);
-          call
-            ?.send((result: ISubmittableResult) => handleResult(result))
-            .catch((e: Error) => handleTransactionError(e));
+            // Sign transaction with eth private key
+            const signature = await requestSignature(callPayload, currentEcdsaAccount.value.ethereum);
+
+            const call = api?.value?.tx.ethCall.call(method, currentEcdsaAccount.value.ss58, signature, account.nonce);
+            call
+              ?.send((result: ISubmittableResult) => handleResult(result))
+              .catch((e: Error) => handleTransactionError(e));
+          });
+          
         } else {
           console.log('Polkadot.js API is undefined.')
         }
       } catch (e) {
         console.log(e);
       }
+    }
+
+    const getPayload = async (method: SubmittableExtrinsic<'promise'>, nonce: u32): Promise<Uint8Array> => {
+      const methodPayload: Uint8Array = method.toU8a(true).slice(1);
+      const account = currentEcdsaAccount.value.ss58;
+      const networkIdx = new u16(new TypeRegistry(), 0xff51);
+      let payload = new Uint8Array(0);
+
+      if (nonce) {
+        const payloadLength = networkIdx.byteLength() + nonce.byteLength() + methodPayload.byteLength;
+        payload = new Uint8Array(payloadLength);
+        payload.set(networkIdx.toU8a(), 0);
+        payload.set(nonce.toU8a(), networkIdx.byteLength())
+        payload.set(methodPayload, networkIdx.byteLength() + nonce.byteLength())
+        console.log('p', payload);
+      } else {
+        store.dispatch('general/showAlertMsg', {
+          msg: `Unable to get a nonce for the account: ${account}`,
+          alertType: 'error',
+        });
+      }
+
+      return payload;
     }
 
     const transfer = async (
