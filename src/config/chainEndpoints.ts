@@ -1,3 +1,6 @@
+import { RegistryTypes } from '@polkadot/types/types';
+import * as typeDefs from 'src/config/api/polkadot/registry-types';
+
 interface ChainProvider {
   networkAlias: string;
   displayName: string;
@@ -7,6 +10,8 @@ interface ChainProvider {
   favicon: string;
   isSupportContract: boolean;
   prefix?: number; // Used in extrinsic transactions, also to determine if a network supports extensic transactions.
+  typeDef: RegistryTypes,
+  key: endpointKey
 }
 
 export enum endpointKey {
@@ -26,6 +31,8 @@ export const providerEndpoints: ChainProvider[] = [
     endpoint: 'wss://rpc.plasmnet.io/',
     favicon: 'icons/astar.png',
     isSupportContract: false,
+    typeDef: typeDefs.plasmDefinitions,
+    key: endpointKey.PLASM
   },
   {
     networkAlias: 'shiden-shell',
@@ -36,6 +43,8 @@ export const providerEndpoints: ChainProvider[] = [
     fallback: 'wss://shiden.api.onfinality.io/public-ws',
     favicon: 'icons/shiden.png',
     isSupportContract: true,
+    typeDef: typeDefs.plasmCollatorDefinitions,
+    key: endpointKey.SHIDEN
   },
   {
     networkAlias: 'dusty-testnet',
@@ -45,6 +54,8 @@ export const providerEndpoints: ChainProvider[] = [
     endpoint: 'wss://rpc.dusty.plasmnet.io/',
     favicon: 'https://polkadot.js.org/apps/static/dusty.16cf115c.png',
     isSupportContract: true,
+    typeDef: typeDefs.dustyDefinitions,
+    key: endpointKey.DUSTY
   },
   {
     networkAlias: 'shibuya-testnet',
@@ -54,7 +65,9 @@ export const providerEndpoints: ChainProvider[] = [
     endpoint: 'wss://rpc.shibuya.astar.network',
     favicon: 'https://polkadot.js.org/apps/static/shiden.a066789e.png',
     isSupportContract: true,
-    prefix: 0xff51
+    prefix: 0xff51,
+    typeDef: typeDefs.plasmCollatorDefinitions,
+    key: endpointKey.SHIBUYA
   },
   {
     networkAlias: 'local-node',
@@ -62,6 +75,8 @@ export const providerEndpoints: ChainProvider[] = [
     endpoint: 'ws://127.0.0.1:9944',
     favicon: 'icons/astar.png',
     isSupportContract: true,
+    typeDef: typeDefs.dustyDefinitions,
+    key: endpointKey.LOCAL
   },
   {
     networkAlias: 'custom-node',
@@ -69,5 +84,7 @@ export const providerEndpoints: ChainProvider[] = [
     endpoint: 'ws://127.0.0.1:9944',
     favicon: 'icons/astar.png',
     isSupportContract: true,
+    typeDef: typeDefs.dustyDefinitions,
+    key:endpointKey.CUSTOM
   },
 ];

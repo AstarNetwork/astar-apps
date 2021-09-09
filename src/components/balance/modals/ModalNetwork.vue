@@ -49,7 +49,7 @@
 
                       <!-- custom endpoint -->
                       <input
-                        v-if="index === 5"
+                        v-if="provider.key === endpointKey.CUSTOM"
                         type="text"
                         placeholder="IP Address / Domain"
                         class="tw-appearance-none tw-bg-gray-50 dark:tw-bg-darkGray-800 tw-block tw-w-full tw-border tw-border-gray-300 dark:tw-border-darkGray-600 focus:tw-ring-blue-500 focus:tw-border-blue-500 tw-rounded-md tw-mt-2 tw-px-2 tw-py-2 focus:tw-outline-none tw-text-sm tw-text-gray-700 dark:tw-text-darkGray-100 focus:tw-bg-white dark:focus:tw-bg-darkGray-900 tw-placeholder-gray-300 dark:tw-placeholder-darkGray-600"
@@ -84,7 +84,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { providerEndpoints } from 'src/config/chainEndpoints';
+import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
 
 export default defineComponent({
   props: {
@@ -133,6 +133,7 @@ export default defineComponent({
       classRadioTxtOn,
       classRadioTxtOff,
       providerEndpoints,
+      endpointKey
     };
   },
 });

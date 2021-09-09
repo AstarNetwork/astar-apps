@@ -3,10 +3,8 @@ import { keyring } from '@polkadot/ui-keyring';
 import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import { isTestChain } from '@polkadot/util';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
-import * as typeDefs from './registry_types';
-import { RegistryTypes } from '@polkadot/types/types';
-import { endpointKey } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
+import { providerEndpoints } from 'src/config/chainEndpoints';
 import type { InjectedExtension } from '@polkadot/extension-inject/types';
 
 interface InjectedAccountExt {
@@ -56,19 +54,10 @@ const loadAccounts = async (api: ApiPromise) => {
 export async function connectApi(endpoint: string, networkIdx: number) {
   const provider = new WsProvider(endpoint);
 
-
   // load the web3 extension
   let extensions: InjectedExtension[] = [];
 
-  let typeDefinitions = null;
-  if (networkIdx === endpointKey.SHIDEN || networkIdx === endpointKey.SHIBUYA) {
-    typeDefinitions = typeDefs.plasmCollatorDefinitions as RegistryTypes;
-  } else if (networkIdx === endpointKey.PLASM) {
-    typeDefinitions = typeDefs.plasmDefinitions as RegistryTypes;
-  } else {
-    typeDefinitions = typeDefs.dustyDefinitions as RegistryTypes;
-  }
-
+  const typeDefinitions = providerEndpoints[networkIdx].typeDef;
   console.log('t', typeDefinitions)
 
   const api = new ApiPromise({
