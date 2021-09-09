@@ -99,7 +99,6 @@ import { defineComponent, computed, ref } from 'vue';
 import BN from 'bn.js';
 import { useApi, useChainMetadata } from 'src/hooks';
 import { web3FromSource } from '@polkadot/extension-dapp';
-import { endpointKey } from 'src/config/chainEndpoints';
 import type { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { u8aToHex } from '@polkadot/util';
