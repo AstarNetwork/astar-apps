@@ -12,7 +12,7 @@
         class="tw-inline-block tw-bg-white dark:tw-bg-darkGray-900 tw-rounded-lg tw-px-4 sm:tw-px-8 tw-py-10 tw-shadow-xl tw-transform tw-transition-all tw-mx-2 tw-my-2 tw-align-middle tw-max-w-lg tw-w-full"
       >
         <div>
-          <q-banner v-if="isShidenChain" dense rounded class="bg-orange text-white tw-mb-4 q-pa-xs" style="">
+          <q-banner v-if="isCustomSigBlocked" dense rounded class="bg-orange text-white tw-mb-4 q-pa-xs" style="">
             Custom sig extrinsic calls has been temporarily blocked
           </q-banner>
           <div>
@@ -76,6 +76,7 @@
         <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row-reverse">
           <button
             type="button"
+            :disabled="!canExecuteTransaction"
             @click="transfer(transferAmt, fromAddress, toAddress)"
             class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 hover:tw-bg-blue-700 dark:hover:tw-bg-blue-400 focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 dark:focus:tw-ring-blue-400 tw-mx-1"
           >
@@ -98,10 +99,10 @@ import { defineComponent, computed, ref } from 'vue';
 import BN from 'bn.js';
 import { useApi, useChainMetadata } from 'src/hooks';
 import { web3FromSource } from '@polkadot/extension-dapp';
-import { endpointKey } from 'src/config/chainEndpoints';
 import type { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { u8aToHex } from '@polkadot/util';
+import { AccountInfo } from '@polkadot/types/interfaces';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { getUnit } from 'src/hooks/helper/units';
@@ -109,6 +110,8 @@ import ModalSelectAccount from './ModalSelectAccount.vue';
 import FormatBalance from 'components/balance/FormatBalance.vue';
 import InputAmount from 'components/common/InputAmount.vue';
 import { useMetamask } from 'src/hooks/custom-signature/useMetamask';
+import { providerEndpoints } from 'src/config/chainEndpoints';
+import { getPayload } from 'src/hooks/extrinsic/payload';
 
 export default defineComponent({
   components: {
@@ -150,8 +153,10 @@ export default defineComponent({
     const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
     const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
-
-    const isShidenChain = currentNetworkIdx.value === endpointKey.SHIDEN;
+    
+    // isCustomSigBlocked is temporary until extrinsic call pallet is deployed to all networks.
+    const isCustomSigBlocked  = computed(() => !!!providerEndpoints[currentNetworkIdx.value].prefix);
+    const canExecuteTransaction = computed(() => isCheckMetamask.value ? !isCustomSigBlocked.value : true);
 
     const formatBalance = computed(() => {
       const tokenDecimal = decimal.value;
@@ -225,27 +230,45 @@ export default defineComponent({
       toAddress: string
     ) => {
       try {
-        const fn: SubmittableExtrinsicFunction<'promise'> | undefined = api?.value?.tx.balances.transfer;
-
-        if (fn) {
+        if (api && api.value) {
+          const fn: SubmittableExtrinsicFunction<'promise'> | undefined = api?.value?.tx.balances.transfer;
           const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn(
             toAddress,
             transferAmt
           ); 
-          const callPayload = u8aToHex(method.toU8a(true).slice(1));
 
+          const account = <AccountInfo> await api.value.query.system.account(currentEcdsaAccount.value.ss58);
+          const callPayload = u8aToHex(
+            await getPayload(
+              method,
+              account.nonce,
+              (providerEndpoints[currentNetworkIdx.value].prefix) || 0));
+
+          if (callPayload) {
           // Sign transaction with eth private key
           const signature = await requestSignature(callPayload, currentEcdsaAccount.value.ethereum);
-
-          const call = api?.value?.tx.ethCall.call(method, currentEcdsaAccount.value.ss58, signature);
+          const call = api?.value?.tx.ethCall.call(method, currentEcdsaAccount.value.ss58, signature, account.nonce);
           call
             ?.send((result: ISubmittableResult) => handleResult(result))
             .catch((e: Error) => handleTransactionError(e));
+          } else {
+            store.dispatch('general/showAlertMsg', {
+              msg: 'Unable to to callculate message payload.',
+              alertType: 'error',
+            });
+          }
         } else {
-          console.log('Polkadot.js API is undefined.')
+          store.dispatch('general/showAlertMsg', {
+            msg: 'Polkadot.js API is undefined.',
+            alertType: 'error',
+          });
         }
       } catch (e) {
         console.log(e);
+        store.dispatch('general/showAlertMsg', {
+          msg: (e as Error).message,
+          alertType: 'error',
+        });
       }
     }
 
@@ -298,7 +321,8 @@ export default defineComponent({
 
     return {
       closeModal,
-      isShidenChain,
+      isCustomSigBlocked,
+      canExecuteTransaction,
       transfer,
       formatBalance,
       fromAddress,
