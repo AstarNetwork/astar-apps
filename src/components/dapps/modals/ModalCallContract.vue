@@ -149,7 +149,7 @@ export default defineComponent({
     const { defaultUnitToken } = useChainMetadata();
 
     const selectUnitEndowment = ref<string>(defaultUnitToken.value);
-    const selectUnitGas = ref<string>('micro');
+    const selectUnitGas = ref<string>('nano');
 
     const formData = reactive<FormData>({
       endowment: new BN(0),
