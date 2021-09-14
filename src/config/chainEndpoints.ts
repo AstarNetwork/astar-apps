@@ -51,7 +51,7 @@ export const providerEndpoints: ChainProvider[] = [
     displayName: 'Dusty Network (Testnet)',
     info:
       'The test network of the layer 2 scaling blockchain, Dusty Plasm Network',
-    endpoint: 'wss://rpc.dusty.plasmnet.io',
+    endpoint: 'wss://dusty.astar.network',
     favicon: 'https://polkadot.js.org/apps/static/dusty.16cf115c.png',
     isSupportContract: true,
     typeDef: typeDefs.dustyDefinitions,

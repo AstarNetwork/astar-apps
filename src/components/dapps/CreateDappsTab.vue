@@ -31,9 +31,9 @@
     </button>
   </div>
 
-  <CodehashTable />
-
   <ContractsTable />
+
+  <CodehashTable />
 
   <ModalCreateDapps
     v-if="modalCreateDapps"

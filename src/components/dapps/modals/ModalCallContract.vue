@@ -25,13 +25,13 @@
                 <label
                   class="tw-block tw-text-sm tw-font-medium tw-text-gray-500 dark:tw-text-darkGray-400 tw-mb-2"
                 >
-                  Contract to use
+                  Contract to use:
                 </label>
                 <input
                   class="tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-rounded-md tw-w-full tw-text-blue-900 dark:tw-text-darkGray-100 focus:tw-outline-none tw-placeholder-gray-300 dark:tw-placeholder-darkGray-600 tw-px-3 tw-py-3 tw-appearance-none tw-bg-white dark:tw-bg-darkGray-900"
                   placeholder="A deployed contract that has either been deployed or attached."
                   disabled
-                  :value="address"
+                  :value="contract.address"
                 />
               </div>
 
@@ -41,7 +41,47 @@
                 >
                   Call from account
                 </label>
+
+                <button
+                  type="button"
+                  @click="openOption = !openOption"
+                  class="tw-relative tw-text-blue-900 dark:tw-text-darkGray-100 tw-w-full tw-bg-white dark:tw-bg-darkGray-900 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-rounded-md tw-pl-3 tw-pr-10 tw-py-3 tw-text-left focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 dark:focus:tw-ring-darkGray-600 hover:tw-bg-gray-50 dark:hover:tw-bg-darkGray-800"
+                >
+                  <div class="tw-flex tw-items-center tw-justify-between">
+                    <div class="tw-flex tw-items-center">
+                      <div
+                        class="tw-h-8 tw-w-8 tw-rounded-full tw-overflow-hidden tw-border tw-border-gray-100 tw-mr-3 tw-flex-shrink-0"
+                      >
+                        <icon-base class="tw-h-full tw-w-full" viewBox="0 0 64 64">
+                          <icon-account-sample />
+                        </icon-base>
+                      </div>
+                      <input
+                        class="tw-w-full tw-text-blue-900 dark:tw-text-darkGray-100 tw-text-xl focus:tw-outline-none tw-bg-transparent tw-placeholder-gray-300 dark:tw-placeholder-darkGray-600"
+                        style="width: 21rem"
+                        type="text"
+                        spellcheck="false"
+                        v-model="toAddress"
+                      />
+                    </div>
+                  </div>
+
+                  <span
+                    class="tw-ml-3 tw-absolute tw-inset-y-0 tw-right-0 tw-flex tw-items-center tw-pr-2 tw-pointer-events-none"
+                  >
+                    <icon-base
+                      class="tw-h-5 tw-w-5 tw-text-gray-400 dark:tw-text-darkGray-300"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <icon-solid-selector />
+                    </icon-base>
+                  </span>
+                </button>
+
                 <div
+                  v-if="openOption"
                   class="tw-block tw-absolute tw-mt-1 tw-w-full tw-rounded-md tw-bg-white dark:tw-bg-darkGray-800 tw-shadow-lg tw-z-10 tw-border tw-border-gray-200 dark:tw-border-darkGray-600"
                 >
                   <ul
@@ -58,6 +98,23 @@
                     />
                   </ul>
                 </div>
+              </div>
+
+              <div>
+                <label
+                  class="tw-block tw-text-sm tw-font-medium tw-text-gray-500 dark:tw-text-darkGray-400 tw-mb-2"
+                >
+                  Message to send
+                </label>
+
+                <input
+                  class="tw-w-full tw-text-blue-900 dark:tw-text-darkGray-100 tw-text-xl focus:tw-outline-none tw-bg-transparent tw-placeholder-gray-300 dark:tw-placeholder-darkGray-600"
+                  style="width: 21rem"
+                  type="text"
+                  spellcheck="false"
+                  disabled
+                  v-model="messageMethod"
+                />
               </div>
 
               <input-amount
@@ -100,8 +157,11 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, reactive, watch, toRefs, } from 'vue';
+import { defineComponent, ref, reactive, watch, toRefs, computed } from 'vue';
+import IconBase from 'components/icons/IconBase.vue';
+import IconAccountSample from 'components/icons/IconAccountSample.vue';
 import type { CallResult } from 'src/hooks/types/Contracts';
+import { useStore } from 'src/store';
 import BN from 'bn.js';
 import { ContractPromise } from '@polkadot/api-contract';
 import { useChainMetadata } from 'src/hooks';
@@ -115,18 +175,6 @@ interface FormData {
 
 export default defineComponent({
   props: {
-    allAccounts: {
-      type: Array,
-      required: true,
-    },
-    allAccountNames: {
-      type: Array,
-      required: true,
-    },
-    address: {
-      type: String,
-      required: true,
-    },
     contract: {
       type: ContractPromise,
       required: true,
@@ -140,6 +188,8 @@ export default defineComponent({
   components: {
     ModalSelectAccountOption,
     InputAmount,
+    IconBase,
+    IconAccountSample
   },
   setup(props, { emit }) {
     const closeModal = () => {
@@ -153,20 +203,27 @@ export default defineComponent({
 
     const formData = reactive<FormData>({
       endowment: new BN(0),
-      weight: new BN(200000),
+      weight: new BN(200),
     });
 
+    const store = useStore();
+    const allAccounts = computed(() => store.getters['general/allAccounts']);
+    const allAccountNames = computed(() => store.getters['general/allAccountNames']);
+
+    const openOption = ref(false);
     const selAccount = ref(0);
-    const toAccount = ref(props.allAccounts[0] as string);
-    const toAddress = ref(props.allAccounts[0] as string);
-    const toAccountName = ref(props.allAccountNames[0]);
+    const toAccount = ref(allAccounts.value[0] as string);
+    const toAddress = ref(allAccounts.value[0] as string);
+    const toAccountName = ref(allAccountNames.value[0]);
 
     watch(
       selAccount,
       () => {
-        toAccount.value = props.allAccounts[selAccount.value] as string;
-        toAccountName.value = props.allAccountNames[selAccount.value];
-        toAddress.value = props.allAccounts[selAccount.value] as string;
+        toAccount.value = allAccounts.value[selAccount.value] as string;
+        toAccountName.value = allAccountNames.value[selAccount.value];
+        toAddress.value = allAccounts.value[selAccount.value] as string;
+
+        openOption.value = false;
       },
       { immediate: true }
     );
@@ -174,6 +231,7 @@ export default defineComponent({
     const outcomes = ref<CallResult[]>();
     // eslint-disable-next-line vue/no-setup-props-destructure
     const message = props.contract.abi.messages[props.messageIndex];
+    const messageMethod = message.method;
     const isPayable = message.isPayable;
 
     const readCallRpc = () => {
@@ -205,6 +263,11 @@ export default defineComponent({
     return {
       ...toRefs(formData),
       closeModal,
+      openOption,
+      allAccounts,
+      allAccountNames,
+      toAddress,
+      messageMethod,
       selAccount,
       selectUnitEndowment,
       selectUnitGas,
