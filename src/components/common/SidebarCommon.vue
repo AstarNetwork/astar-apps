@@ -79,6 +79,23 @@
         <span class="tw-font-bold tw-ml-3 tw-flex-1">dApps</span>
       </router-link>
 
+      <router-link
+        to="/store"
+        :class="[
+          $route.path.split('/')[1] === 'store' ? 'activeLink' : 'inactiveLink',
+        ]"
+      >
+        <icon-base
+          :class="[
+            $route.path.split('/')[1] === 'store' ? 'activeSvg' : 'inactiveSvg',
+          ]"
+          viewBox="0 0 24 24"
+        >
+          <icon-dapps />
+        </icon-base>
+        <span class="tw-font-bold tw-ml-3 tw-flex-1">Store</span>
+      </router-link>
+
       <a
         href="https://lockdrop.plasmnet.io/"
         target="_blank"

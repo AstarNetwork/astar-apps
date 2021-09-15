@@ -8,9 +8,11 @@ import {
 
 import { GeneralStateInterface } from './general/state';
 import { ContractsStateInterface } from './contracts/state';
+import { DappStateInterface } from './dapps-store/state';
 
 import general from './general';
 import contracts from './contracts';
+import dapps from './dapps-store';
 
 
 /*
@@ -27,7 +29,8 @@ export interface StateInterface {
   // example: ExampleStateInterface;
   // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
   general: GeneralStateInterface,
-  contracts: ContractsStateInterface
+  contracts: ContractsStateInterface,
+  dapps: DappStateInterface,
 }
 
 // provide typings for `this.$store`
@@ -45,6 +48,7 @@ export default store(function (/* { ssrContext } */) {
     modules: {
       general,
       contracts,
+      dapps
     },
 
     // enable strict mode (adds overhead!)
