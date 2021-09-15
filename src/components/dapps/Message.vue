@@ -71,7 +71,6 @@ export default defineComponent({
       : '';
 
     const onCall = () => {
-      console.log('dd', props.messageIndex)
       emit('call-method', props.messageIndex);
     }
 

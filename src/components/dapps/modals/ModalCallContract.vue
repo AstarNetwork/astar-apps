@@ -134,6 +134,25 @@
                 v-model:selectedUnit="selectUnitGas"
               />
             </div>
+            <div v-if="outcomes" class="tw-mt-5">
+              <label
+                class="tw-block tw-text-sm tw-font-medium tw-text-gray-500 dark:tw-text-darkGray-400 tw-mb-2"
+              >
+                Outcome
+              </label>
+              <ul
+                class="tw-max-h-56 tw-rounded-md tw-py-1 tw-text-base tw-overflow-auto focus:tw-outline-none"
+              >
+                <li v-for="(outcome, index) in outcomes" :key="`outcome-${index}`">
+                  <div v-if="outcome.result.isOk" class="tw-text-blue-700 tw-text-sm">
+                    {{ outcome.output }}
+                  </div>
+                  <div v-else class="tw-text-red-700 tw-text-sm">
+                    {{ outcome.result }}
+                  </div>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
         <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row-reverse">
@@ -163,14 +182,16 @@ import IconAccountSample from 'components/icons/IconAccountSample.vue';
 import type { CallResult } from 'src/hooks/types/Contracts';
 import { useStore } from 'src/store';
 import BN from 'bn.js';
+import * as plasmUtils from 'src/hooks/helper/plasmUtils';
+import { getUnit } from 'src/hooks/helper/units';
 import { ContractPromise } from '@polkadot/api-contract';
 import { useChainMetadata } from 'src/hooks';
 import ModalSelectAccountOption from 'components/balance/modals/ModalSelectAccountOption.vue';
 import InputAmount from 'components/common/InputAmount.vue';
 
 interface FormData {
-  endowment: BN;
-  weight: BN;
+  endowment: number;
+  weight: number;
 }
 
 export default defineComponent({
@@ -196,14 +217,14 @@ export default defineComponent({
       emit('update:is-open', false);
     };
 
-    const { defaultUnitToken } = useChainMetadata();
+    const { defaultUnitToken, decimal } = useChainMetadata();
 
     const selectUnitEndowment = ref<string>(defaultUnitToken.value);
     const selectUnitGas = ref<string>('nano');
 
     const formData = reactive<FormData>({
-      endowment: new BN(0),
-      weight: new BN(200),
+      endowment: 0,
+      weight: 200,
     });
 
     const store = useStore();
@@ -236,14 +257,24 @@ export default defineComponent({
 
     const readCallRpc = () => {
       const params: any[] = message ? message.args : [];
+      console.log('message', message)
+      console.log('form', formData)
+
+      const unit = getUnit('nano');
+      const toWeight = plasmUtils.reduceDenomToBalance(
+        formData.weight,
+        unit,
+        decimal.value
+      );
+      console.log('toWeight', toWeight.toString(10));
 
       props.contract
         .query[message.method](toAccount.value, {
-          gasLimit: formData.weight,
+          gasLimit: toWeight,
           value: isPayable? formData.endowment : 0
         }, ...params)
         .then((result): void => {
-          console.log(result)
+          console.log('result', result)
           const arrOutcomes = outcomes.value ? outcomes.value : [];
           outcomes.value = [{
             ...result,
@@ -273,6 +304,7 @@ export default defineComponent({
       selectUnitGas,
       isPayable,
       readCallRpc,
+      outcomes
     };
   },
 });
