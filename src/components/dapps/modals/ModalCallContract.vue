@@ -179,13 +179,14 @@
 import { defineComponent, ref, reactive, watch, toRefs, computed } from 'vue';
 import IconBase from 'components/icons/IconBase.vue';
 import IconAccountSample from 'components/icons/IconAccountSample.vue';
+import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import type { CallResult } from 'src/hooks/types/Contracts';
 import { useStore } from 'src/store';
-import BN from 'bn.js';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { getUnit } from 'src/hooks/helper/units';
 import { ContractPromise } from '@polkadot/api-contract';
 import { useChainMetadata } from 'src/hooks';
+import usePendingTx from 'src/hooks/signer/usePendingTx';
 import ModalSelectAccountOption from 'components/balance/modals/ModalSelectAccountOption.vue';
 import InputAmount from 'components/common/InputAmount.vue';
 
@@ -255,18 +256,52 @@ export default defineComponent({
     const messageMethod = message.method;
     const isPayable = message.isPayable;
 
+    const unit = getUnit('nano');
+    const toWeight = plasmUtils.reduceDenomToBalance(
+      formData.weight,
+      unit,
+      decimal.value
+    );
+    console.log('toWeight', toWeight.toString(10));
+
+    const execCallRpc = () => {
+      let callTx: SubmittableExtrinsic<'promise'> | null = null;
+
+      try {
+        callTx = props.contract.tx[message.method]({
+          gasLimit: toWeight,
+          value: isPayable
+            ? formData.endowment
+            : 0
+        });
+      } catch (e) {
+        const error = (e as Error).message;
+        console.error(error);
+        store.dispatch('general/showAlertMsg', {
+          msg: error,
+          alertType: 'error',
+        });
+        return;
+      }
+
+      console.log('callTx', callTx);
+
+      // const { txqueue } = usePendingTx(
+      //   callTx,
+      //   toAddress.value,
+      //   null,
+      //   null,
+      //   null,
+      //   _onUpdateTx
+      // );
+
+      // console.log('txQueue', txqueue);
+    }
+
     const readCallRpc = () => {
       const params: any[] = message ? message.args : [];
       console.log('message', message)
-      console.log('form', formData)
-
-      const unit = getUnit('nano');
-      const toWeight = plasmUtils.reduceDenomToBalance(
-        formData.weight,
-        unit,
-        decimal.value
-      );
-      console.log('toWeight', toWeight.toString(10));
+      console.log('form', formData)      
 
       props.contract
         .query[message.method](toAccount.value, {
