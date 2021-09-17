@@ -2,7 +2,7 @@ export interface DappItem {
 	name: string;
 	icon: string;
 	description: string;
-	dappUrl: string;
+	url: string;
 }
 
 export interface DappStateInterface {

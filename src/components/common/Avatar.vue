@@ -1,5 +1,5 @@
 <template>
-  <img :src="url" class="tw-w-14 tw-h-14 tw-rounded-full image-shadow" />
+  <img :src="url" class="tw-rounded-full image-shadow" />
 </template>
 
 <script lang="ts">
@@ -8,7 +8,7 @@ import { defineComponent, toRefs } from 'vue'
 export default defineComponent({
   props: {
     url: {
-      type: string,
+      type: String,
       required: true
     }
   },
