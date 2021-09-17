@@ -286,16 +286,20 @@ export default defineComponent({
 
       console.log('callTx', callTx);
 
-      // const { txqueue } = usePendingTx(
-      //   callTx,
-      //   toAddress.value,
-      //   null,
-      //   null,
-      //   null,
-      //   _onUpdateTx
-      // );
+      const { txqueue } = usePendingTx(
+        callTx,
+        toAddress.value,
+        null,
+        null,
+        null,
+        null
+      );
 
-      // console.log('txQueue', txqueue);
+      console.log('txQueue', txqueue);
+
+      const currentItem: QueueTx = txqueue[0];
+
+
     }
 
     const readCallRpc = () => {
