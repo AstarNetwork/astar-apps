@@ -1,5 +1,6 @@
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import { u16, u32, TypeRegistry } from '@polkadot/types';
+import { keccakFromArray } from '../custom-signature/ethereumjs-util/hash'
 
 export const getPayload = async (
   method: SubmittableExtrinsic<'promise'>,
@@ -17,9 +18,10 @@ export const getPayload = async (
     payload.set(prefix.toU8a(), 0);
     payload.set(nonce.toU8a(), prefix.byteLength())
     payload.set(methodPayload, prefix.byteLength() + nonce.byteLength())
+    const buffer = keccakFromArray(Array.from(payload));
+
+    return new Uint8Array(buffer);
   } else {
     return null;
   }
-
-  return payload;
 }
