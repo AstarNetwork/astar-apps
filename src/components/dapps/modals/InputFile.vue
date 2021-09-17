@@ -5,6 +5,7 @@
   >
     <div class="tw-space-y-1 tw-text-center">
       <icon-base
+        v-if="!!!$slots.default"
         class="tw-h-12 tw-w-12 tw-mx-auto dark:tw-text-darkGray-100"
         viewBox="0 0 20 20"
         fill="none"
@@ -13,6 +14,7 @@
       >
         <icon-document />
       </icon-base>
+      <slot></slot>
       <div
         v-if="file"
         class="tw-flex tw-text-sm tw-text-gray-500 dark:tw-text-darkGray-400"
@@ -102,6 +104,7 @@ export default defineComponent({
               data,
               name: file.name,
               size: data.length,
+              type: file.type
             };
 
             emit('drop-file', fileState);

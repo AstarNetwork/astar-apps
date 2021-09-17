@@ -19,12 +19,11 @@
               {{ title }}
             </h3>
             <div>
-              <slot></slot>
+              <slot name="content"></slot>
             </div>
           </div>
         </div>
-        <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row-reverse">
-          <!-- TODO put slot for other buttons here -->
+        <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row">
           <button
             type="button"
             @click="closeModal"
@@ -32,6 +31,7 @@
           >
             {{ closeButtonCaption }}
           </button>
+          <slot name="buttons"></slot>
         </div>
       </div>
     </div>
