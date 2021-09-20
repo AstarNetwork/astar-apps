@@ -157,11 +157,20 @@
         </div>
         <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row-reverse">
           <button
+            v-if="isViaRpc"
             type="button"
             @click="readCallRpc"
             class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 hover:tw-bg-blue-700 dark:hover:tw-bg-blue-400 focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 dark:focus:tw-ring-blue-400 tw-mx-1"
           >
             Read
+          </button>
+          <button
+            v-else
+            type="button"
+            @click="execCallRpc"
+            class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 hover:tw-bg-blue-700 dark:hover:tw-bg-blue-400 focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 dark:focus:tw-ring-blue-400 tw-mx-1"
+          >
+            Execute
           </button>
           <button
             type="button"
@@ -180,12 +189,17 @@ import { defineComponent, ref, reactive, watch, toRefs, computed } from 'vue';
 import IconBase from 'components/icons/IconBase.vue';
 import IconAccountSample from 'components/icons/IconAccountSample.vue';
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
+import type { CodeSubmittableResult } from '@polkadot/api-contract/promise/types';
+import { SubmittableResult } from '@polkadot/api';
 import type { CallResult } from 'src/hooks/types/Contracts';
+import type { QueueTx } from 'src/hooks/types/Status';
+import { AddressProxy } from 'src/hooks/types/Signer';
 import { useStore } from 'src/store';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { getUnit } from 'src/hooks/helper/units';
 import { ContractPromise } from '@polkadot/api-contract';
 import { useChainMetadata } from 'src/hooks';
+import useSendTx from 'src/hooks/signer/useSendTx';
 import usePendingTx from 'src/hooks/signer/usePendingTx';
 import ModalSelectAccountOption from 'components/balance/modals/ModalSelectAccountOption.vue';
 import InputAmount from 'components/common/InputAmount.vue';
@@ -255,6 +269,9 @@ export default defineComponent({
     const message = props.contract.abi.messages[props.messageIndex];
     const messageMethod = message.method;
     const isPayable = message.isPayable;
+    const isViaRpc = props.contract.hasRpcContractsCall && (!message.isMutating && !message.isPayable);
+
+    const { onSend } = useSendTx();
 
     const unit = getUnit('nano');
     const toWeight = plasmUtils.reduceDenomToBalance(
@@ -286,20 +303,56 @@ export default defineComponent({
 
       console.log('callTx', callTx);
 
+      //handlers for transactions
+      const _onFailedTx = (result: SubmittableResult | null) => {
+        console.error('_onFailed', result);
+        store.commit('general/setLoading', false);
+        store.dispatch('general/showAlertMsg', {
+          msg: result,
+          alertType: 'error',
+        });
+      };
+      const _onStartTx = () => {
+        console.log('_onStart');
+        store.commit('general/setLoading', true);
+      };
+      const _onSuccessTx = (result: CodeSubmittableResult) => {
+        console.log('_onSuccess', result);
+
+        store.commit('general/setLoading', false);
+        store.dispatch('general/showAlertMsg', {
+          msg: 'Success to call contract for executing',
+          alertType: 'success',
+        });
+
+        closeModal();
+      };
+      const _onUpdateTx = () => {
+        console.log('_onUpdateTx');
+      };
+
       const { txqueue } = usePendingTx(
         callTx,
         toAddress.value,
-        null,
-        null,
-        null,
-        null
+        _onStartTx,
+        _onFailedTx,
+        _onSuccessTx,
+        _onUpdateTx
       );
 
       console.log('txQueue', txqueue);
 
       const currentItem: QueueTx = txqueue[0];
 
-
+      const senderInfo: AddressProxy = {
+        isMultiCall: false,
+        isUnlockCached: false,
+        multiRoot: null,
+        proxyRoot: null,
+        signAddress: toAddress.value,
+        signPassword: '',
+      };
+      onSend(currentItem, senderInfo);
     }
 
     const readCallRpc = () => {
@@ -342,6 +395,8 @@ export default defineComponent({
       selectUnitEndowment,
       selectUnitGas,
       isPayable,
+      isViaRpc,
+      execCallRpc,
       readCallRpc,
       outcomes
     };
