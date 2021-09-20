@@ -66,7 +66,7 @@
           <input
             class="tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-rounded-md tw-w-full tw-text-blue-900 dark:tw-text-darkGray-100 focus:tw-outline-none tw-placeholder-gray-300 dark:tw-placeholder-darkGray-600 tw-px-3 tw-py-3 tw-appearance-none tw-bg-white dark:tw-bg-darkGray-900"
             placeholder=""
-            v-model="data.description"
+            v-model="data.address"
             maxlength="1000"
           />
         </div>
@@ -88,6 +88,7 @@
     <template v-slot:buttons>
       <button
         type="button"
+        @click="registerDapp"
         class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 hover:tw-bg-blue-700 dark:hover:tw-bg-blue-400 focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 dark:focus:tw-ring-blue-400 tw-mx-1"
       >
         Register
@@ -104,7 +105,8 @@ import Avatar from 'components/common/Avatar.vue';
 import IconBase from 'components/icons/IconBase.vue';
 import IconDocument from 'components/icons/IconDocument.vue';
 import { useFile, FileState } from 'src/hooks/useFile';
-import { DappItem } from 'src/store/dapps-store/state';
+import { useStore } from 'src/store';
+import { NewDappItem } from 'src/store/dapps-store/state';
 
 export default defineComponent({
   components: {
@@ -114,8 +116,9 @@ export default defineComponent({
     IconBase,
     IconDocument
   },
-  setup() {
-    const data = reactive<DappItem>({} as DappItem);
+  setup(props, { emit }) {
+    const store = useStore();
+    const data = reactive<NewDappItem>({} as NewDappItem);
     const imagePreview = ref<string>();
     const fileExtension = ['.png', '.jpg', '.gif'];
     const {
@@ -126,7 +129,18 @@ export default defineComponent({
     const onDropFile = (fileState: FileState): void => {
       imagePreview.value = encodeImage(fileState.type, fileState.data);
       setFile(fileState);
+
+      data.iconFileName = fileState.name;
+      data.iconFile = imagePreview.value.split(',')[1];
     };
+
+    const registerDapp = async () => {
+      const result = await store.dispatch('dapps/registerDapp', data);
+
+      if (result) {
+         emit('update:is-open', false);
+      }
+    }
 
     const encodeImage = (fileType: string, data: Uint8Array): string => {
       const buffer = Buffer.from(data);
@@ -138,8 +152,10 @@ export default defineComponent({
       fileExtension,
       imageFromFile,
       imagePreview,
-      onDropFile
+      onDropFile,
+      registerDapp
     }
   }
 })
+
 </script>

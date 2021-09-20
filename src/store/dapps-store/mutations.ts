@@ -8,6 +8,10 @@ export interface ContractsMutations<S = State> {
 const mutation: MutationTree<State> & ContractsMutations = {
   addDapps(state: State, payload: DappItem[]) {
     state.dapps = payload
+  },
+
+  addDapp(state: State, payload: DappItem) {
+    state.dapps.push(payload);
   }
 };
 
