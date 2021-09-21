@@ -91,7 +91,7 @@
           ]"
           viewBox="0 0 24 24"
         >
-          <icon-dapps />
+          <icon-store />
         </icon-base>
         <span class="tw-font-bold tw-ml-3 tw-flex-1">Store</span>
       </router-link>
@@ -153,6 +153,7 @@ import IconDapps from '../icons/IconDapps.vue';
 import IconDotLockdrop from '../icons/IconDotLockdrop.vue';
 import IconBalance from '../icons/IconBalance.vue';
 import IconSolidChevronDown from '../icons/IconSolidChevronDown.vue';
+import IconStore from '../icons/IconStore.vue'
 import ModalNetwork from 'src/components/balance/modals/ModalNetwork.vue';
 
 export default defineComponent({
@@ -166,6 +167,7 @@ export default defineComponent({
     IconDotLockdrop,
     IconBalance,
     IconSolidChevronDown,
+    IconStore,
     ModalNetwork,
   },
   setup() {
