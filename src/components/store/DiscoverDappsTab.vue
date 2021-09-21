@@ -1,9 +1,7 @@
 <template>
   <div>
-    <button
-      type="button"
+    <Button
       @click="showRegisterDappModal = true"
-      class="tw-ml-4 tw-inline-flex tw-items-center tw-px-4 tw-py-2 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 hover:tw-bg-blue-400 focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 dark:focus:tw-ring-blue-400 tw-mb-1 tw-group"
     >
       <icon-base
         class="tw-w-5 tw-h-5 tw-text-white tw--ml-1"
@@ -13,7 +11,7 @@
         <icon-plus />
       </icon-base>
       Register dApp
-    </button>
+    </Button>
     <div class="tw-flex tw-flex-wrap tw-justify-start">
       <Dapp v-for="(dapp, index) in dapps" :key="index" :dapp="dapp" v-on:dappClick="showDetailsModal" />
     </div>
@@ -38,10 +36,18 @@ import IconPlus from 'components/icons/IconPlus.vue';
 import IconBase from 'components/icons/IconBase.vue';
 import ModalRegisterDapp from 'components/store/modals/ModalRegisterDapp.vue'
 import ModalDappDetails from 'components/store/modals/ModalDappDetails.vue'
+import Button from 'components/common/Button.vue';
 import { DappItem } from 'src/store/dapps-store/state';
 
 export default defineComponent({
-  components: { Dapp, IconPlus, IconBase, ModalRegisterDapp, ModalDappDetails },
+  components: {
+    Dapp,
+    IconPlus,
+    IconBase,
+    ModalRegisterDapp,
+    ModalDappDetails,
+    Button
+  },
   setup() {
     const store = useStore();
     const dapps = computed(() => store.getters['dapps/getAllDapps']);

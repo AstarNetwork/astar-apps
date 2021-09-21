@@ -86,13 +86,9 @@
       </div>
     </template>
     <template v-slot:buttons>
-      <button
-        type="button"
-        @click="registerDapp"
-        class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 hover:tw-bg-blue-700 dark:hover:tw-bg-blue-400 focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 dark:focus:tw-ring-blue-400 tw-mx-1"
-      >
+      <Button @click="registerDapp">
         Register
-      </button>
+      </Button>
     </template>
   </Modal>
 </template>
@@ -104,6 +100,7 @@ import InputFile from 'src/components/dapps/modals/InputFile.vue';
 import Avatar from 'components/common/Avatar.vue';
 import IconBase from 'components/icons/IconBase.vue';
 import IconDocument from 'components/icons/IconDocument.vue';
+import Button from 'components/common/Button.vue';
 import { useFile, FileState } from 'src/hooks/useFile';
 import { useStore } from 'src/store';
 import { NewDappItem } from 'src/store/dapps-store/state';
@@ -114,7 +111,8 @@ export default defineComponent({
     InputFile,
     Avatar,
     IconBase,
-    IconDocument
+    IconDocument,
+    Button
   },
   setup(props, { emit }) {
     const store = useStore();
