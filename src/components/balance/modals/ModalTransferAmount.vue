@@ -239,7 +239,7 @@ export default defineComponent({
 
           const account = <AccountInfo> await api.value.query.system.account(currentEcdsaAccount.value.ss58);
           const callPayload = u8aToHex(
-            await getPayload(
+            getPayload(
               method,
               account.nonce,
               (providerEndpoints[currentNetworkIdx.value].prefix) || 0));
