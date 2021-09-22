@@ -1,9 +1,19 @@
 <template>
-  <div v-if="hasStake">
-    <Button @click="showStakeModal" :small="true">Add</Button>
-    <Button @click="showUnstakeModal" :small="true">Unstake</Button>
+  <div class="tw-flex"> 
+    <div v-if="hasStake">
+      <Button @click="showStakeModal" :small="true">Add</Button>
+      <Button @click="showUnstakeModal" :small="true" :primary="false">Unstake</Button>
+    </div>
+    <Button v-else @click="showStakeModal" :small="true">Stake</Button>
+
+    <Button
+      :small="true"
+      :primary="false"
+      class="tw-ml-auto"
+      @click="showClaimRewardModal=true">
+      Claim
+    </Button>
   </div>
-  <Button v-else @click="showStakeModal" :small="true">Stake</Button>
 
   <StakeModal
     v-if="showModal"
@@ -13,6 +23,12 @@
     :actionName="modalActionName"
     :title="modalTitle"
   />
+
+  <ClaimRewardModal
+    v-if="showClaimRewardModal"
+    v-model:isOpen="showClaimRewardModal"
+    :dapp="dapp"
+  />
 </template>
 
 <script lang="ts">
@@ -20,11 +36,13 @@ import { defineComponent, ref, toRefs } from 'vue'
 import BN from 'bn.js';
 import Button from 'components/common/Button.vue';
 import StakeModal from 'components/store/modals/StakeModal.vue';
+import ClaimRewardModal from 'components/store/modals/ClaimRewardModal.vue';
 
 export default defineComponent({
   components: {
     Button,
-    StakeModal
+    StakeModal,
+    ClaimRewardModal
   },
   props: {
     dapp: {
@@ -34,6 +52,7 @@ export default defineComponent({
   },
   setup(props) {
     const showModal = ref<boolean>(false);
+    const showClaimRewardModal = ref<boolean>(false);
     const modalTitle = ref<string>('');
     const modalActionName = ref<string>('');
     const modalAction = ref();
@@ -65,6 +84,7 @@ export default defineComponent({
       hasStake,
       ...toRefs(props),
       showModal,
+      showClaimRewardModal,
       modalTitle,
       modalAction,
       modalActionName,

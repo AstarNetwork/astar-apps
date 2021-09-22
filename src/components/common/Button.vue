@@ -4,22 +4,22 @@
     v-bind:class="[
       'tw-inline-flex',
       'tw-items-center',
-      'tw-px-6',
+      small ? 'tw-px-3' : 'tw-px-6',
       small ? 'tw-py-1' : 'tw-py-3',
       'tw-border',
-      'tw-border-transparent',
+      primary ? 'tw-border-transparent' : 'tw-border-gray-300',
       'tw-text-sm',
       'tw-font-medium',
       'tw-rounded-full',
       'tw-shadow-sm',
-      'tw-text-white', 
-      'tw-bg-blue-500', 
-      'hover:tw-bg-blue-700',
-      'dark:hover:tw-bg-blue-400',
+      primary ? 'tw-text-white' : 'tw-text-gray-500', 
+      primary ? 'tw-bg-blue-500' : 'tw-bg-white', 
+      primary ? 'hover:tw-bg-blue-700' : 'hover:tw-bg-gray-100',
+      primary ? 'dark:hover:tw-bg-blue-400' : 'dark:tw-bg-darkGray-900',
       'focus:tw-outline-none',
       'focus:tw-ring',
-      'focus:tw-ring-blue-100',
-      'dark:focus:tw-ring-blue-400',
+      primary ? 'focus:tw-ring-blue-100' : 'focus:tw-ring-gray-100',
+      primary ? 'dark:focus:tw-ring-blue-400' : ' dark:focus:tw-ring-darkGray-600',
       'tw-mx-1'
     ]"
   >
@@ -35,6 +35,10 @@ export default defineComponent({
     small: {
       type: Boolean,
       default: false
+    },
+    primary: {
+      type: Boolean,
+      default: true
     }
   },
   setup(props) {

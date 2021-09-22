@@ -1,6 +1,7 @@
 <template>
   <div>
     <Button
+      class="tw-ml-4"
       @click="showRegisterDappModal = true"
     >
       <icon-base
@@ -15,17 +16,18 @@
     <div class="tw-flex tw-flex-wrap tw-justify-start">
       <Dapp v-for="(dapp, index) in dapps" :key="index" :dapp="dapp" v-on:dappClick="showDetailsModal" />
     </div>
-  </div>
 
-  <ModalRegisterDapp
+    <ModalRegisterDapp
     v-if="showRegisterDappModal"
     v-model:isOpen="showRegisterDappModal"
-  />
-  <ModalDappDetails
-    v-if="showDappDetailsModal"
-    v-model:isOpen="showDappDetailsModal"
-    :dapp="selectedDapp"
-  />
+    />
+    
+    <ModalDappDetails
+      v-if="showDappDetailsModal"
+      v-model:isOpen="showDappDetailsModal"
+      :dapp="selectedDapp"
+    />
+  </div>
 </template>
 
 <script lang="ts">

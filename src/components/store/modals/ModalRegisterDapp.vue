@@ -17,7 +17,7 @@
             <Avatar
               v-if="!!imagePreview"
               :url="imagePreview"
-              class="tw-mx-auto"
+              class="tw-mx-auto tw-w-36 tw-h-36"
             />
             <icon-base
               v-else

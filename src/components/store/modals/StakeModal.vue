@@ -13,13 +13,17 @@
           :allAccountNames="allAccountNames"
           v-model:selAddress="data.address"
         />
+        
       </div>
       <InputAmount
-          title="Amount"
-          :noMax="true"
-          v-model:amount="data.amount"
-          v-model:selectedUnit="data.unit"
-        />
+        title="Amount"
+        :noMax="true"
+        v-model:amount="data.amount"
+        v-model:selectedUnit="data.unit"
+      />
+      <div class="tw-mt-1 tw-ml-1">
+        Available <FormatBalance class="tw-inline tw-font-semibold"/>
+      </div>
      </template>
      <template v-slot:buttons>
       <Button @click="action(data.address, data.amount)">
@@ -39,6 +43,7 @@ import ModalSelectAccount from 'components/balance/modals/ModalSelectAccount.vue
 import InputAmount from 'src/components/common/InputAmount.vue';
 import Button from 'src/components/common/Button.vue';
 import Avatar from 'src/components/common/Avatar.vue';
+import FormatBalance from 'src/components/balance/FormatBalance.vue'
 
 export default defineComponent({
   components: {
@@ -46,7 +51,8 @@ export default defineComponent({
     ModalSelectAccount,
     InputAmount,
     Button,
-    Avatar
+    Avatar,
+    FormatBalance
   },
   props: {
     dapp: {
@@ -72,7 +78,7 @@ export default defineComponent({
     // const title = computed(() => `Stake on ${props.dapp.name}`);
     const data = ref<StakeModel>({
       address: '',
-      amount: new BN(10),
+      amount: new BN(0),
       unit: defaultUnitToken.value
     } as StakeModel);
     const allAccounts = computed(() => store.getters['general/allAccounts']);
