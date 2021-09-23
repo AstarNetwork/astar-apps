@@ -7,6 +7,7 @@
     <Button v-else @click="showStakeModal" :small="true">Stake</Button>
 
     <Button
+      v-if="hasStake"
       :small="true"
       :primary="false"
       class="tw-ml-auto"
@@ -48,6 +49,10 @@ export default defineComponent({
     dapp: {
       type: Object,
       required: true
+    },
+    hasStake: {
+      type: Boolean,
+      default: false
     }
   },
   setup(props) {
@@ -56,7 +61,6 @@ export default defineComponent({
     const modalTitle = ref<string>('');
     const modalActionName = ref<string>('');
     const modalAction = ref();
-    const hasStake = true;
 
     const showStakeModal = () => {
       modalTitle.value = `Stake on ${props.dapp.name}`;
@@ -81,7 +85,6 @@ export default defineComponent({
     }
 
     return {
-      hasStake,
       ...toRefs(props),
       showModal,
       showClaimRewardModal,

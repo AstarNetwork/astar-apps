@@ -22,7 +22,8 @@
         v-model:selectedUnit="data.unit"
       />
       <div class="tw-mt-1 tw-ml-1">
-        Available <FormatBalance class="tw-inline tw-font-semibold"/>
+        <!-- Available <FormatBalance class="tw-inline tw-font-semibold"/> -->
+        Available 99.9 SBY
       </div>
      </template>
      <template v-slot:buttons>
