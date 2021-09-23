@@ -129,7 +129,7 @@ export default defineComponent({
       setFile(fileState);
 
       data.iconFileName = fileState.name;
-      data.iconFile = imagePreview.value.split(',')[1];
+      data.iconFile = imagePreview.value;
     };
 
     const registerDapp = async () => {

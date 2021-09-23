@@ -58,7 +58,7 @@ export default defineComponent({
     const selectedDapp = ref<DappItem>();
 
     store.dispatch('dapps/getDapps');
-
+    
     const showDetailsModal = (dapp: DappItem): void => {
       selectedDapp.value = dapp;
       showDappDetailsModal.value = true;

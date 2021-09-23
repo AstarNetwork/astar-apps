@@ -1,6 +1,6 @@
 export interface DappItem {
 	name: string;
-	icon: string;
+	iconUrl: string;
 	description: string;
 	url: string;
   address:string;

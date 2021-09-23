@@ -1,18 +1,15 @@
 import { ActionTree } from 'vuex';
 import { StateInterface } from '../index';
-import { DappItem, DappStateInterface as State, NewDappItem } from './state';
-import { api as axios } from 'src/boot/axios';
-
-// TODO service url in ENV
-const apiUrl = 'https://localhost:5001/api/store';
+import { DappStateInterface as State, NewDappItem } from './state';
+import { dappsCollection, getDocs, uploadFile, addDapp} from 'src/hooks/firebase';
 
 const actions: ActionTree<State, StateInterface> = {
   async getDapps ({ commit, dispatch }) {
     commit('general/setLoading', true, { root: true });
 
     try {
-      const resposne = await axios.get<DappItem[]>(apiUrl);
-      commit('addDapps', resposne.data);
+      const collection = await getDocs(dappsCollection);
+      commit('addDapps', collection.docs.map(x => x.data()));
     } catch (e) {
       const error = e as unknown as Error; 
       dispatch('general/showAlertMsg', {
@@ -27,15 +24,12 @@ const actions: ActionTree<State, StateInterface> = {
 
   async registerDapp({ commit, dispatch }, dapp: NewDappItem): Promise<boolean> {
     commit('general/setLoading', true, { root: true });
-    console.log('dapp', dapp);
     try {
-      const resposne = await axios.post<DappItem>(apiUrl, dapp, {
-        headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-        }
-      });
-      commit('addDapp', resposne.data);
+      const fileName = `${dapp.address}_${dapp.iconFileName}`;
+      dapp.iconUrl = await uploadFile(fileName, dapp.iconFile);
+      const addedDapp = await addDapp(dapp);
+      commit('addDapp', addedDapp);
+
       return true;
     } catch (e) {
       const error = e as unknown as Error; 
