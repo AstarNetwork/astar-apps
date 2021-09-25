@@ -24,6 +24,12 @@ const definitions: RegistryTypes = {
     },
     AmountOf: 'Amount',
     Amount: 'i128',
+    SmartContract: {
+      _enum: {
+          Wasm: 'AccountId',
+          Evm: 'H160',
+      },
+  },
 };
 
 export default definitions;

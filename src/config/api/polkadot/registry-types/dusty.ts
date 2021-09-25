@@ -89,7 +89,7 @@ const definitions: RegistryTypes = {
     VoteCounts: {
         bad: 'u32',
         good: 'u32',
-    },
+    }
 };
 
 export default definitions;

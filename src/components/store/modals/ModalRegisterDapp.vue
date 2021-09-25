@@ -103,7 +103,9 @@ import IconDocument from 'components/icons/IconDocument.vue';
 import Button from 'components/common/Button.vue';
 import { useFile, FileState } from 'src/hooks/useFile';
 import { useStore } from 'src/store';
+import { useApi } from 'src/hooks';
 import { NewDappItem } from 'src/store/dapps-store/state';
+import { RegisterParameters } from 'src/store/dapps-store/actions';
 
 export default defineComponent({
   components: {
@@ -116,6 +118,7 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const store = useStore();
+    const { api } = useApi();
     const data = reactive<NewDappItem>({} as NewDappItem);
     const imagePreview = ref<string>();
     const fileExtension = ['.png', '.jpg', '.gif'];
@@ -133,7 +136,11 @@ export default defineComponent({
     };
 
     const registerDapp = async () => {
-      const result = await store.dispatch('dapps/registerDapp', data);
+      const result = await store.dispatch('dapps/registerDapp', {
+        dapp: data,
+        api: api?.value,
+        senderAddress: 'ajYMsCKsEAhEvHpeA4XqsfiA9v1CdzZPrCfS6pEfeGHW9j8'
+      } as RegisterParameters);
 
       if (result) {
          emit('update:is-open', false);
