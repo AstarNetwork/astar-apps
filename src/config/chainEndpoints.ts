@@ -43,6 +43,7 @@ export const providerEndpoints: ChainProvider[] = [
     fallback: 'wss://shiden.api.onfinality.io/public-ws',
     favicon: 'icons/shiden.png',
     isSupportContract: true,
+    prefix: 0x150,
     typeDef: typeDefs.plasmCollatorDefinitions,
     key: endpointKey.SHIDEN
   },
