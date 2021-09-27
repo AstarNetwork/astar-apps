@@ -22,8 +22,7 @@
         v-model:selectedUnit="data.unit"
       />
       <div class="tw-mt-1 tw-ml-1">
-        <!-- Available <FormatBalance class="tw-inline tw-font-semibold"/> -->
-        Available 99.9 SBY
+        Available <FormatBalance class="tw-inline tw-font-semibold"/>
       </div>
      </template>
      <template v-slot:buttons>
@@ -36,7 +35,6 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, toRefs } from 'vue'
-import BN from 'bn.js';
 import { useStore } from 'src/store';
 import { useChainMetadata } from 'src/hooks';
 import Modal from 'components/common/Modal.vue';
@@ -76,10 +74,9 @@ export default defineComponent({
     const store = useStore();
     const { defaultUnitToken } = useChainMetadata();
     
-    // const title = computed(() => `Stake on ${props.dapp.name}`);
     const data = ref<StakeModel>({
       address: '',
-      amount: new BN(0),
+      amount: 0,
       unit: defaultUnitToken.value
     } as StakeModel);
     const allAccounts = computed(() => store.getters['general/allAccounts']);
@@ -96,7 +93,7 @@ export default defineComponent({
 
 interface StakeModel {
   address: string;
-  amount: BN;
+  amount: number;
   unit: string
 }
 </script>

@@ -6,7 +6,7 @@
       <div class="tw-my-4">Your rewards <span class="tw-font-semibold">144 SBY</span></div>
     </template>
     <template v-slot:buttons>
-      <Button>Claim</Button>
+      <Button @click="claimAction()">Claim</Button>
     </template>
   </Modal>
 </template>
@@ -22,7 +22,11 @@ export default defineComponent({
     dapp: {
       type: Object,
       required: true
-    }
+    },
+    claimAction: {
+      type: Function,
+      required: true
+    },
   },
   components: {
     Modal,

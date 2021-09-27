@@ -18,8 +18,8 @@
     </div>
 
     <ModalRegisterDapp
-    v-if="showRegisterDappModal"
-    v-model:isOpen="showRegisterDappModal"
+      v-if="showRegisterDappModal"
+      v-model:isOpen="showRegisterDappModal"
     />
     
     <ModalDappDetails

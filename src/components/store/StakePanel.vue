@@ -29,15 +29,18 @@
     v-if="showClaimRewardModal"
     v-model:isOpen="showClaimRewardModal"
     :dapp="dapp"
+    :claimAction="claim"
   />
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, toRefs } from 'vue'
-import BN from 'bn.js';
 import Button from 'components/common/Button.vue';
 import StakeModal from 'components/store/modals/StakeModal.vue';
 import ClaimRewardModal from 'components/store/modals/ClaimRewardModal.vue';
+import { useStore } from 'src/store';
+import { useApi } from 'src/hooks';
+import { StakingParameters } from 'src/store/dapps-store/actions';
 
 export default defineComponent({
   components: {
@@ -56,6 +59,8 @@ export default defineComponent({
     }
   },
   setup(props) {
+    const store = useStore();
+    const { api } = useApi();
     const showModal = ref<boolean>(false);
     const showClaimRewardModal = ref<boolean>(false);
     const modalTitle = ref<string>('');
@@ -76,12 +81,34 @@ export default defineComponent({
       showModal.value = true;
     }
 
-    const stake = (address: string, value: BN): void => {
-      console.log(`you staked ${value.toString()} from adress ${address}`)
+    const stake = async (senderAddress: string, value: number) => {
+      const result = await store.dispatch('dapps/stake', {
+        api: api?.value,
+        senderAddress: 'ajYMsCKsEAhEvHpeA4XqsfiA9v1CdzZPrCfS6pEfeGHW9j8',
+        dapp: props.dapp,
+        amount: value
+      } as StakingParameters);
+
+      if (result) {
+        showModal.value = false;
+      }
     }
 
-    const unstake = (address: string, value: BN): void => {
-      console.log(`you un-staked ${value.toString()} from adress ${address}`)
+    const unstake = async (senderAddress: string, value: number) => {
+      const result = await store.dispatch('dapps/unstake', {
+        api: api?.value,
+        senderAddress: 'ajYMsCKsEAhEvHpeA4XqsfiA9v1CdzZPrCfS6pEfeGHW9j8',
+        dapp: props.dapp,
+        amount: value
+      } as StakingParameters);
+
+      if (result) {
+        showModal.value = false;
+      }
+    }
+
+    const claim = () => {
+      console.log('claim');
     }
 
     return {
@@ -92,7 +119,8 @@ export default defineComponent({
       modalAction,
       modalActionName,
       showStakeModal,
-      showUnstakeModal
+      showUnstakeModal,
+      claim
     };
   },
 })

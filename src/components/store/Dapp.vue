@@ -9,7 +9,7 @@
     </div>
     <hr />
     <div class="tw-p-4">
-      <StakePanel :dapp="dapp" :hasStake="dapp.address === '2' || dapp.address === '4'" />
+      <StakePanel :dapp="dapp" :hasStake="true" />
     </div>
   </div>
 </template>
