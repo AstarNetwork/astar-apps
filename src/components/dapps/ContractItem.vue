@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-bg-white dark:tw-bg-darkGray-800 tw-shadow tw-rounded-lg p-5">
+  <div class="tw-bg-white dark:tw-bg-darkGray-800 tw-shadow tw-rounded-lg tw-p-5 tw-mb-5">
     <div class="tw-flex tw-items-center tw--mx-5 tw-px-4">
       <div
         class="tw-h-8 tw-w-8 tw-rounded-full tw-overflow-hidden tw-border tw-border-gray-100 tw-mr-2"
@@ -72,9 +72,9 @@
 
       <div>
         <div class="tw-text-xs tw-text-gray-500 dark:tw-text-darkGray-400">Messages</div>
-        <div v-if="messages" class="tw-text-xs tw-text-blue-900 dark:tw-text-darkGray-100">
+        <div v-if="execMethods" class="tw-text-xs tw-text-blue-900 dark:tw-text-darkGray-100">
           <Message
-            v-for="(message, index) in messages"
+            v-for="(message, index) in execMethods"
             :message="message"
             :messageIndex="index"
             :key="message.identifier"
@@ -173,6 +173,7 @@ export default defineComponent({
 
     const abiRef = ref(contract.value.abi);
     const { messages } = useMessages(abiRef);
+    const execMethods = messages.value?.filter(m => !m.isConstructor)
 
     const abi = JSON.stringify(contract.value.abi.json);
 
@@ -199,7 +200,7 @@ export default defineComponent({
       realCodeHash,
       shortenCodeHash,
       abi,
-      messages,
+      execMethods,
       onCallMethod,
       onExport,
       onForget,
