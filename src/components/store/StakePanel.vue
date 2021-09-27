@@ -107,8 +107,16 @@ export default defineComponent({
       }
     }
 
-    const claim = () => {
-      console.log('claim');
+    const claim = async () => {
+      const result = await store.dispatch('dapps/claim', {
+        api: api?.value,
+        senderAddress: 'ajYMsCKsEAhEvHpeA4XqsfiA9v1CdzZPrCfS6pEfeGHW9j8',
+        dapp: props.dapp,
+      } as StakingParameters);
+
+      if (result) {
+        showClaimRewardModal.value = false;
+      }
     }
 
     return {

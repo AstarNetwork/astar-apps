@@ -136,6 +136,41 @@ const actions: ActionTree<State, StateInterface> = {
     }
 
     return false;
+  },
+
+  async claim({ commit, dispatch }, parameters: StakingParameters): Promise<boolean> {
+    commit('general/setLoading', true, { root: true });
+    try {
+      if (parameters.api) {
+        const injector = await web3FromSource('polkadot-js');    
+        await parameters.api.tx.dappsStaking
+          .claim(parseInt(parameters.dapp.address))
+          .signAndSend(
+            parameters.senderAddress,
+            {
+              signer: injector?.signer
+            }
+          );
+        
+        dispatch('general/showAlertMsg', {
+          msg: `You claimed from ${parameters.dapp.name}.`,
+          alertType: 'success',
+        },
+        { root: true });
+
+        return true;
+      } else {
+        showError(dispatch, 'Api is undefined');
+        return false;
+      }
+    } catch (e) {
+      const error = e as unknown as Error; 
+      showError(dispatch, error.message);
+    } finally {
+      commit('general/setLoading', false, { root: true });
+    }
+
+    return false;
   }
 };
 
