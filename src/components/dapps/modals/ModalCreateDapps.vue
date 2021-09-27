@@ -241,8 +241,6 @@ import { CodePromise, Abi } from '@polkadot/api-contract';
 import { useStore } from 'src/store';
 
 interface FormData {
-  // endowment: BN;
-  // weight: BN;
   endowment: number;
   weight: number;
   projectName: string;
@@ -289,8 +287,6 @@ export default defineComponent({
     const selectUnitGas = ref<string>('nano');
 
     const formData = reactive<FormData>({
-      // endowment: new BN(0),
-      // weight: new BN(200000),
       endowment: 0,
       weight: 200,
       projectName: '',
@@ -432,22 +428,10 @@ export default defineComponent({
       }
 
       const abiData = abi.value as Abi | AnyJson;
-
-      // console.log('s', abiData);
-      // console.log('w', wasm.value);
-
       let uploadTx: SubmittableExtrinsic<'promise'> | null = null;
 
       try {
         const code = new CodePromise(apiPromise, abiData, wasm.value);
-        //should be changable
-        // const unit_d = 3;
-        // const decimal = 12;
-        // const endowment = bnToBn(
-        //   plasmUtils.reduceDenomToBalance(27, unit_d, decimal)
-        // );
-        // const weight = new BN(200000000000);
-        ///
         console.log('code', code);
 
         const unit = getUnit(selectUnitEndowment.value);
@@ -520,7 +504,7 @@ export default defineComponent({
             currentItem.accountId
           );
 
-          partialFee.value = info.partialFee;
+          partialFee.value = info.partialFee.toBn().muln(100);
         } catch (error) {
           console.error(error);
         }
@@ -569,11 +553,22 @@ export default defineComponent({
         return;
       }
 
-      if (toEndowment.value.lte(partialFee.value)) {
+      //set proper endowment automatically - minimum proper amount + 1 
+      const addOneFee = plasmUtils.reduceDenomToBalance(
+        1,
+        0,
+        decimal.value
+      );
+      const required_endowment = partialFee.value.add(addOneFee);
+      console.log('required_endowment', required_endowment.toString(10));
+
+      if (toEndowment.value.lte(required_endowment)) {
         isInsufficientFee.value = true;
-      } else {
-        step.value = 2;
+
+        toEndowment.value = required_endowment;
       }
+      
+      step.value = 2;
     };
 
     return {

@@ -4,7 +4,7 @@
   >
     <div class="tw-tooltip tw-relative">
       <div class="tw-flex">
-        <q-icon :name="icPlayArrow" class="tw-mr-2" @click="onCall" />
+        <q-icon v-if="!message.isConstructor" :name="icPlayArrow" class="tw-mr-2" @click="onCall" />
         <div
           class="tw-font-semibold"
           :class="[message.isConstructor ? 'tw-text-blue-400' : 'tw-text-yellow-400']"

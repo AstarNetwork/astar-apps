@@ -101,17 +101,14 @@ import { useApi, useChainMetadata } from 'src/hooks';
 import { web3FromSource } from '@polkadot/extension-dapp';
 import type { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
-import { u8aToHex } from '@polkadot/util';
-import { AccountInfo } from '@polkadot/types/interfaces';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { getUnit } from 'src/hooks/helper/units';
 import ModalSelectAccount from './ModalSelectAccount.vue';
 import FormatBalance from 'components/balance/FormatBalance.vue';
 import InputAmount from 'components/common/InputAmount.vue';
-import { useMetamask } from 'src/hooks/custom-signature/useMetamask';
 import { providerEndpoints } from 'src/config/chainEndpoints';
-import { getPayload } from 'src/hooks/extrinsic/payload';
+import { useExtrinsicCall } from 'src/hooks/custom-signature/useExtrinsicCall';
 
 export default defineComponent({
   components: {
@@ -143,14 +140,12 @@ export default defineComponent({
     const store = useStore();
 
     const { defaultUnitToken, decimal } = useChainMetadata();
-    const { requestSignature } = useMetamask();
 
     const transferAmt = ref(new BN(0));
     const fromAddress = ref('');
     const toAddress = ref('');
 
     const selectUnit = ref(defaultUnitToken.value);
-    const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
     const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
     
@@ -179,12 +174,11 @@ export default defineComponent({
     const handleResult = (result: ISubmittableResult): void => {
       const status = result.status;
       if (status.isInBlock) {
-        console.log(
-          `Completed at block hash #${status.asInBlock.toString()}`
-        );
+        const msg = `Completed at block hash #${status.asInBlock.toString()}`
+        console.log(msg);
 
         store.dispatch('general/showAlertMsg', {
-          msg: `Completed at block hash #${status.asInBlock.toString()}`,
+          msg,
           alertType: 'success',
         });
 
@@ -201,6 +195,11 @@ export default defineComponent({
       }
     }
 
+    const { callFunc } = useExtrinsicCall({
+      onResult: handleResult,
+      onTransactionError: handleTransactionError
+    });
+
     const transferLocal = async (
       transferAmt: BN,
       fromAddress: string,
@@ -212,14 +211,13 @@ export default defineComponent({
           toAddress,
           transferAmt
         );
-        //1000000000000004 : 1 PLD
         transfer?.signAndSend(
-            fromAddress,
-            {
-              signer: injector?.signer,
-            },
-            result => handleResult(result))
-          .catch((error: Error) => handleTransactionError(error));
+          fromAddress,
+          {
+            signer: injector?.signer,
+          },
+          result => handleResult(result))
+        .catch((error: Error) => handleTransactionError(error));
       } catch (e) {
         console.error(e);
       }
@@ -230,39 +228,13 @@ export default defineComponent({
       toAddress: string
     ) => {
       try {
-        if (api && api.value) {
-          const fn: SubmittableExtrinsicFunction<'promise'> | undefined = api?.value?.tx.balances.transfer;
-          const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn(
-            toAddress,
-            transferAmt
-          ); 
+        const fn: SubmittableExtrinsicFunction<'promise'> | undefined = api?.value?.tx.balances.transfer;
+        const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn(
+          toAddress,
+          transferAmt
+        );
 
-          const account = <AccountInfo> await api.value.query.system.account(currentEcdsaAccount.value.ss58);
-          const callPayload = u8aToHex(
-            getPayload(
-              method,
-              account.nonce,
-              (providerEndpoints[currentNetworkIdx.value].prefix) || 0));
-
-          if (callPayload) {
-          // Sign transaction with eth private key
-          const signature = await requestSignature(callPayload, currentEcdsaAccount.value.ethereum);
-          const call = api?.value?.tx.ethCall.call(method, currentEcdsaAccount.value.ss58, signature, account.nonce);
-          call
-            ?.send((result: ISubmittableResult) => handleResult(result))
-            .catch((e: Error) => handleTransactionError(e));
-          } else {
-            store.dispatch('general/showAlertMsg', {
-              msg: 'Unable to to callculate message payload.',
-              alertType: 'error',
-            });
-          }
-        } else {
-          store.dispatch('general/showAlertMsg', {
-            msg: 'Polkadot.js API is undefined.',
-            alertType: 'error',
-          });
-        }
+        method && callFunc(method);
       } catch (e) {
         console.log(e);
         store.dispatch('general/showAlertMsg', {
