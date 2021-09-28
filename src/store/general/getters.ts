@@ -20,6 +20,7 @@ export interface GeneralGetters {
   accountIdx(state: State): number;
   customEndpoint(state: State): string;
   theme(state: State): Theme;
+  selectedAccountAddress(state: State): string;
 }
 
 const getters: GetterTree<State, StateInterface> & GeneralGetters = {
@@ -38,6 +39,13 @@ const getters: GetterTree<State, StateInterface> & GeneralGetters = {
   accountIdx: (state) => state.currentAccountIdx,
   customEndpoint: (state) => state.currentCustomEndpoint,
   theme: (state: State) => state.currentTheme,
+  selectedAccountAddress: (state: State) => {
+    if (state.isCheckMetamask) {
+      return state.currentEcdsaAccount.ss58;
+    } else {
+      return state.allAccounts[state.currentAccountIdx];
+    }
+  }
 };
 
 export default getters;

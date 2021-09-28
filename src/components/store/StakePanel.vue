@@ -1,19 +1,27 @@
 <template>
-  <div class="tw-flex"> 
-    <div v-if="hasStake">
-      <Button @click="showStakeModal" :small="true">Add</Button>
-      <Button @click="showUnstakeModal" :small="true" :primary="false">Unstake</Button>
+  <div>
+    <div v-if="stakeInfo" class="tw-mb-4">
+      Total stake: <span class="tw-font-semibold">{{ stakeInfo?.totalStake }}</span>
+      <div v-if="stakeInfo?.hasStake">
+        Your stake : <span class="tw-font-semibold">{{ stakeInfo?.yourStake }}</span>
+      </div>
     </div>
-    <Button v-else @click="showStakeModal" :small="true">Stake</Button>
+    <div class="tw-flex"> 
+      <div v-if="stakeInfo?.hasStake">
+        <Button @click="showStakeModal" :small="true">Add</Button>
+        <Button @click="showUnstakeModal" :small="true" :primary="false">Unstake</Button>
+      </div>
+      <Button v-else @click="showStakeModal" :small="true">Stake</Button>
 
-    <Button
-      v-if="hasStake"
-      :small="true"
-      :primary="false"
-      class="tw-ml-auto"
-      @click="showClaimRewardModal=true">
-      Claim
-    </Button>
+      <Button
+        v-if="stakeInfo?.hasStake"
+        :small="true"
+        :primary="false"
+        class="tw-ml-auto"
+        @click="showClaimRewardModal=true">
+        Claim
+      </Button>
+    </div>
   </div>
 
   <StakeModal
@@ -53,12 +61,12 @@ export default defineComponent({
       type: Object,
       required: true
     },
-    hasStake: {
-      type: Boolean,
-      default: false
+    stakeInfo: {
+      type: Object,
+      default: undefined
     }
   },
-  setup(props) {
+  setup(props, { emit }) {
     const store = useStore();
     const { api } = useApi();
     const showModal = ref<boolean>(false);
@@ -82,9 +90,10 @@ export default defineComponent({
     }
 
     const stake = async (senderAddress: string, value: number) => {
+      console.log(senderAddress);
       const result = await store.dispatch('dapps/stake', {
         api: api?.value,
-        senderAddress: 'ajYMsCKsEAhEvHpeA4XqsfiA9v1CdzZPrCfS6pEfeGHW9j8',
+        senderAddress,
         dapp: props.dapp,
         amount: value
       } as StakingParameters);
@@ -97,7 +106,7 @@ export default defineComponent({
     const unstake = async (senderAddress: string, value: number) => {
       const result = await store.dispatch('dapps/unstake', {
         api: api?.value,
-        senderAddress: 'ajYMsCKsEAhEvHpeA4XqsfiA9v1CdzZPrCfS6pEfeGHW9j8',
+        senderAddress,
         dapp: props.dapp,
         amount: value
       } as StakingParameters);
@@ -108,9 +117,11 @@ export default defineComponent({
     }
 
     const claim = async () => {
+      // TODO maybe to add select address option to modal as in stake/unstake
+      const senderAddress = store.getters['general/selectedAccountAddress'];
       const result = await store.dispatch('dapps/claim', {
         api: api?.value,
-        senderAddress: 'ajYMsCKsEAhEvHpeA4XqsfiA9v1CdzZPrCfS6pEfeGHW9j8',
+        senderAddress,
         dapp: props.dapp,
       } as StakingParameters);
 

@@ -9,15 +9,18 @@
     </div>
     <hr />
     <div class="tw-p-4">
-      <StakePanel :dapp="dapp" :hasStake="true" />
+      <StakePanel :dapp="dapp" :stakeInfo="stakeInfo" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs } from 'vue'
+import { defineComponent, toRefs, ref } from 'vue'
+import { useStore } from 'src/store';
+import { useApi } from 'src/hooks';
 import Avatar from 'components/common/Avatar.vue';
 import StakePanel from 'components/store/StakePanel.vue';
+import { StakingParameters, StakeInfo } from 'src/store/dapps-store/actions';
 
 export default defineComponent({
   props: {
@@ -31,12 +34,31 @@ export default defineComponent({
     StakePanel
   },
   setup(props, { emit }) {
+    const store = useStore();
+    const { api } = useApi();
+    const stakeInfo = ref<StakeInfo>();
+
     const emitClickEvent = () => {
       emit('dappClick', props.dapp)
     }
 
+    const getDappInfo = () => {
+      const senderAddress = store.getters['general/selectedAccountAddress'];
+      store.dispatch('dapps/getStakeInfo',{
+        api: api?.value,
+        senderAddress,
+        dapp: props.dapp,
+      } as StakingParameters)
+      .then((info: StakeInfo) => {
+        stakeInfo.value = info;
+      });
+    }
+
+    getDappInfo();
+
     return {
       ...toRefs(props),
+      stakeInfo,
       emitClickEvent
     }
   },

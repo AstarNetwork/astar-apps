@@ -29,7 +29,12 @@ const definitions: RegistryTypes = {
           Wasm: 'AccountId',
           Evm: 'H160',
       },
-  },
+    },
+    EraIndex: 'u32',
+    EraStakingPoints: {
+      total: 'Balance',
+      stakers: 'BTreeMap<AccountId, Balance>'
+    }
 };
 
 export default definitions;
