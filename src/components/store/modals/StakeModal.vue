@@ -26,7 +26,7 @@
       </div>
      </template>
      <template v-slot:buttons>
-      <Button @click="action(data.address, data.amount)">
+      <Button @click="action(data)">
         {{ actionName }}
       </Button>
     </template>
@@ -91,7 +91,7 @@ export default defineComponent({
   },
 })
 
-interface StakeModel {
+export interface StakeModel {
   address: string;
   amount: number;
   unit: string

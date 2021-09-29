@@ -2,6 +2,7 @@ import { ActionTree, Dispatch } from 'vuex';
 import { web3FromSource } from '@polkadot/extension-dapp';
 import { Option, Struct, BTreeMap } from '@polkadot/types';
 import { EraIndex, AccountId, Balance } from '@polkadot/types/interfaces';
+import BN from 'bn.js';
 import { StateInterface } from '../index';
 import { DappItem, DappStateInterface as State, NewDappItem } from './state';
 import { dappsCollection, getDocs, uploadFile, addDapp} from 'src/hooks/firebase';
@@ -202,8 +203,9 @@ const actions: ActionTree<State, StateInterface> = {
             let yourStake;
             stakeInfo.stakers.forEach((stake: Balance, account: AccountId) => {
                 if (account.toString() === parameters.senderAddress) {
-                yourStake = stake.toHuman();
-              }
+                  yourStake = stake.toHuman();
+                  return;
+                }
             });
 
             return {
@@ -231,7 +233,7 @@ export interface RegisterParameters {
 
 export interface StakingParameters {
   dapp: DappItem;
-  amount: number;
+  amount: BN;
   senderAddress: string;
   api: ApiPromise;
 }
