@@ -9,7 +9,7 @@
     </div>
     <hr />
     <div class="tw-p-4">
-      <StakePanel :dapp="dapp" :stakeInfo="stakeInfo" />
+      <StakePanel :dapp="dapp" :stakeInfo="stakeInfo" v-on:stake-changed="handleStakeChanged" />
     </div>
   </div>
 </template>
@@ -38,8 +38,13 @@ export default defineComponent({
     const { api } = useApi();
     const stakeInfo = ref<StakeInfo>();
 
-    const emitClickEvent = () => {
+    const emitClickEvent = (): void => {
       emit('dappClick', props.dapp)
+    }
+
+    const handleStakeChanged = (): void => {
+      console.log('stake changed');
+      getDappInfo();
     }
 
     const getDappInfo = () => {
@@ -50,6 +55,7 @@ export default defineComponent({
         dapp: props.dapp,
       } as StakingParameters)
       .then((info: StakeInfo) => {
+        console.log('new stake info received ', info);
         stakeInfo.value = info;
       });
     }
@@ -59,7 +65,8 @@ export default defineComponent({
     return {
       ...toRefs(props),
       stakeInfo,
-      emitClickEvent
+      emitClickEvent,
+      handleStakeChanged
     }
   },
 })

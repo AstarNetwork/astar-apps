@@ -41,25 +41,32 @@ const actions: ActionTree<State, StateInterface> = {
     try {
       if (parameters.api) {
         const injector = await web3FromSource('polkadot-js');    
-        await parameters.api.tx.dappsStaking
+        const unsub = await parameters.api.tx.dappsStaking
           .register(getAddressEnum(parameters.dapp.address))
           .signAndSend(
             parameters.senderAddress,
             {
               signer: injector?.signer
+            },
+            async result => {
+              if (result.status.isFinalized) {
+                const fileName = `${parameters.dapp.address}_${parameters.dapp.iconFileName}`;
+                parameters.dapp.iconUrl = await uploadFile(fileName, parameters.dapp.iconFile);
+                const addedDapp = await addDapp(parameters.dapp);
+                commit('addDapp', addedDapp);
+
+                commit('general/setLoading', false, { root: true });
+                dispatch('general/showAlertMsg', {
+                  msg: `You successfully registered dApp ${parameters.dapp.name} to the store.`,
+                  alertType: 'success',
+                },
+                { root: true });
+                
+                unsub();  
+              }
             }
           );
-
-        const fileName = `${parameters.dapp.address}_${parameters.dapp.iconFileName}`;
-        parameters.dapp.iconUrl = await uploadFile(fileName, parameters.dapp.iconFile);
-        const addedDapp = await addDapp(parameters.dapp);
-        commit('addDapp', addedDapp);
         
-        dispatch('general/showAlertMsg', {
-          msg: `You successfully registered dApp ${parameters.dapp.name} to the store.`,
-          alertType: 'success',
-        });
-
         return true;
       } else {
         showError(dispatch, 'Api is undefined.');
@@ -69,10 +76,9 @@ const actions: ActionTree<State, StateInterface> = {
     } catch (e) {
       const error = e as unknown as Error; 
       console.log(error);
-      showError(dispatch, error.message);
-    } finally {
       commit('general/setLoading', false, { root: true });
-    }
+      showError(dispatch, error.message);
+    } 
 
     return false;
   },
@@ -82,31 +88,37 @@ const actions: ActionTree<State, StateInterface> = {
     try {
       if (parameters.api) {
         const injector = await web3FromSource('polkadot-js');    
-        await parameters.api.tx.dappsStaking
+        const unsub = await parameters.api.tx.dappsStaking
           .bondAndStake(getAddressEnum(parameters.dapp.address), parameters.amount)
           .signAndSend(
             parameters.senderAddress,
             {
               signer: injector?.signer
+            },
+            result => {
+              if (result.status.isFinalized) {
+                commit('general/setLoading', false, { root: true });
+                dispatch('general/showAlertMsg', {
+                  msg: `You staked ${parameters.amount} to ${parameters.dapp.name}.`,
+                  alertType: 'success',
+                },
+                { root: true });
+
+                parameters.finalizeCallback();
+                unsub();
+              }
             }
           );
         
-        dispatch('general/showAlertMsg', {
-          msg: `You staked ${parameters.amount} to ${parameters.dapp.name}.`,
-          alertType: 'success',
-        },
-        { root: true });
-
         return true;
       } else {
         showError(dispatch, 'Api is undefined');
         return false;
       }
     } catch (e) {
-      const error = e as unknown as Error; 
+      const error = e as unknown as Error;
+      commit('general/setLoading', false, { root: true }); 
       showError(dispatch, error.message);
-    } finally {
-      commit('general/setLoading', false, { root: true });
     }
 
     return false;
@@ -117,20 +129,27 @@ const actions: ActionTree<State, StateInterface> = {
     try {
       if (parameters.api) {
         const injector = await web3FromSource('polkadot-js');    
-        await parameters.api.tx.dappsStaking
+        const unsub = await parameters.api.tx.dappsStaking
           .unbondUnstakeAndWithdraw(getAddressEnum(parameters.dapp.address), parameters.amount)
           .signAndSend(
             parameters.senderAddress,
             {
               signer: injector?.signer
+            },
+            result => {
+              if (result.status.isFinalized) {
+                commit('general/setLoading', false, { root: true });
+                dispatch('general/showAlertMsg', {
+                  msg: `You unstaked ${parameters.amount} from ${parameters.dapp.name}.`,
+                  alertType: 'success',
+                },
+                { root: true });
+
+                parameters.finalizeCallback();
+                unsub();
+              }
             }
           );
-        
-        dispatch('general/showAlertMsg', {
-          msg: `You unstaked ${parameters.amount} from ${parameters.dapp.name}.`,
-          alertType: 'success',
-        },
-        { root: true });
 
         return true;
       } else {
@@ -139,9 +158,10 @@ const actions: ActionTree<State, StateInterface> = {
       }
     } catch (e) {
       const error = e as unknown as Error; 
+      commit('general/setLoading', false, { root: true });
       showError(dispatch, error.message);
     } finally {
-      commit('general/setLoading', false, { root: true });
+      
     }
 
     return false;
@@ -152,20 +172,27 @@ const actions: ActionTree<State, StateInterface> = {
     try {
       if (parameters.api) {
         const injector = await web3FromSource('polkadot-js');    
-        await parameters.api.tx.dappsStaking
+        const unsub = await parameters.api.tx.dappsStaking
           .claim(getAddressEnum(parameters.dapp.address))
           .signAndSend(
             parameters.senderAddress,
             {
               signer: injector?.signer
+            },
+            result => {
+              if (result.isFinalized) {
+                commit('general/setLoading', false, { root: true });
+                dispatch('general/showAlertMsg', {
+                  msg: `You claimed from ${parameters.dapp.name}.`,
+                  alertType: 'success',
+                },
+                { root: true });
+
+                parameters.finalizeCallback();
+                unsub();
+              }
             }
           );
-        
-        dispatch('general/showAlertMsg', {
-          msg: `You claimed from ${parameters.dapp.name}.`,
-          alertType: 'success',
-        },
-        { root: true });
 
         return true;
       } else {
@@ -174,9 +201,8 @@ const actions: ActionTree<State, StateInterface> = {
       }
     } catch (e) {
       const error = e as unknown as Error; 
-      showError(dispatch, error.message);
-    } finally {
       commit('general/setLoading', false, { root: true });
+      showError(dispatch, error.message);
     }
 
     return false;
@@ -236,6 +262,7 @@ export interface StakingParameters {
   amount: BN;
   senderAddress: string;
   api: ApiPromise;
+  finalizeCallback: () => void;
 }
 
 export interface StakeInfo {

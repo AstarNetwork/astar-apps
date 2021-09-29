@@ -93,6 +93,10 @@ export default defineComponent({
       showModal.value = true;
     }
 
+    const emitStakeChanged = () => {
+      emit('stake-changed', props.dapp);
+    }
+
     // TODO refactor since very similar code is in ModalTransferAmount, maybe to move this logic into InputAmount component
     const getAmount = (stakeData: StakeModel): BN => {
       const unit = getUnit(stakeData.unit);
@@ -107,14 +111,19 @@ export default defineComponent({
     }
 
     const stake = async (stakeData: StakeModel) => {
-      const result = await store.dispatch('dapps/stake', {
-        api: api?.value,
-        senderAddress: stakeData.address,
-        dapp: props.dapp,
-        amount: getAmount(stakeData)
-      } as StakingParameters);
+      const result = await store.dispatch(
+        'dapps/stake',
+        {
+          api: api?.value,
+          senderAddress: stakeData.address,
+          dapp: props.dapp,
+          amount: getAmount(stakeData),
+          finalizeCallback: emitStakeChanged
+        } as StakingParameters,
+      );
 
       if (result) {
+        // emitStakeChanged();
         showModal.value = false;
       }
     }
@@ -124,7 +133,8 @@ export default defineComponent({
         api: api?.value,
         senderAddress: stakeData.address,
         dapp: props.dapp,
-        amount: getAmount(stakeData)
+        amount: getAmount(stakeData),
+        finalizeCallback: emitStakeChanged
       } as StakingParameters);
 
       if (result) {
@@ -139,6 +149,7 @@ export default defineComponent({
         api: api?.value,
         senderAddress,
         dapp: props.dapp,
+        finalizeCallback: emitStakeChanged
       } as StakingParameters);
 
       if (result) {
