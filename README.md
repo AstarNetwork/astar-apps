@@ -1,6 +1,6 @@
 # Astar Portal (astar-portal)
 
-Astar Portal App
+Astar Portal App 
 
 ## Install the dependencies
 ```bash
