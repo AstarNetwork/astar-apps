@@ -14,7 +14,10 @@
       Register dApp
     </Button>
     <div class="tw-flex tw-flex-wrap tw-justify-start">
-      <Dapp v-for="(dapp, index) in dapps" :key="index" :dapp="dapp" v-on:dappClick="showDetailsModal" />
+      <div v-if="dapps.length === 0" class="tw-text-xl tx-font-semibold tw-mt-4 tw-ml-4">
+        No dApps registered. Be a first to register one.
+      </div>
+      <Dapp v-else v-for="(dapp, index) in dapps" :key="index" :dapp="dapp" v-on:dappClick="showDetailsModal" />
     </div>
 
     <ModalRegisterDapp

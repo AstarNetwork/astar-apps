@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, ref } from 'vue'
+import { defineComponent, toRefs, ref, computed, watch } from 'vue'
 import { useStore } from 'src/store';
 import { useApi } from 'src/hooks';
 import Avatar from 'components/common/Avatar.vue';
@@ -37,30 +37,35 @@ export default defineComponent({
     const store = useStore();
     const { api } = useApi();
     const stakeInfo = ref<StakeInfo>();
+    const senderAddress = computed(() => store.getters['general/selectedAccountAddress']);
 
     const emitClickEvent = (): void => {
       emit('dappClick', props.dapp)
     }
 
     const handleStakeChanged = (): void => {
-      console.log('stake changed');
       getDappInfo();
     }
 
     const getDappInfo = () => {
-      const senderAddress = store.getters['general/selectedAccountAddress'];
       store.dispatch('dapps/getStakeInfo',{
         api: api?.value,
-        senderAddress,
+        senderAddress: senderAddress.value,
         dapp: props.dapp,
       } as StakingParameters)
       .then((info: StakeInfo) => {
-        console.log('new stake info received ', info);
         stakeInfo.value = info;
       });
     }
+    
+    watch(senderAddress, () => {
+      console.log('watching', senderAddress.value);
+      getDappInfo();
+    })
 
-    getDappInfo();
+    if (senderAddress.value) {
+      getDappInfo();
+    }
 
     return {
       ...toRefs(props),

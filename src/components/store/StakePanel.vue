@@ -59,6 +59,7 @@ export default defineComponent({
     StakeModal,
     ClaimRewardModal
   },
+  emits: ['stakeChanged'],
   props: {
     dapp: {
       type: Object,
@@ -77,7 +78,7 @@ export default defineComponent({
     const modalTitle = ref<string>('');
     const modalActionName = ref<string>('');
     const modalAction = ref();
-    const { decimal } = useChainMetadata();
+    const { decimal, defaultUnitToken } = useChainMetadata();
 
     const showStakeModal = () => {
       modalTitle.value = `Stake on ${props.dapp.name}`;
@@ -94,7 +95,7 @@ export default defineComponent({
     }
 
     const emitStakeChanged = () => {
-      emit('stake-changed', props.dapp);
+      emit('stakeChanged', props.dapp);
     }
 
     // TODO refactor since very similar code is in ModalTransferAmount, maybe to move this logic into InputAmount component
@@ -118,7 +119,9 @@ export default defineComponent({
           senderAddress: stakeData.address,
           dapp: props.dapp,
           amount: getAmount(stakeData),
-          finalizeCallback: emitStakeChanged
+          decimals: decimal.value,
+          unit: defaultUnitToken.value,
+          finalizeCallback: emitStakeChanged,
         } as StakingParameters,
       );
 
@@ -134,6 +137,8 @@ export default defineComponent({
         senderAddress: stakeData.address,
         dapp: props.dapp,
         amount: getAmount(stakeData),
+        decimals: decimal.value,
+        unit: defaultUnitToken.value,
         finalizeCallback: emitStakeChanged
       } as StakingParameters);
 

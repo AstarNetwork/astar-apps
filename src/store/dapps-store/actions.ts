@@ -2,6 +2,7 @@ import { ActionTree, Dispatch } from 'vuex';
 import { web3FromSource } from '@polkadot/extension-dapp';
 import { Option, Struct, BTreeMap } from '@polkadot/types';
 import { EraIndex, AccountId, Balance } from '@polkadot/types/interfaces';
+import { formatBalance } from '@polkadot/util';
 import BN from 'bn.js';
 import { StateInterface } from '../index';
 import { DappItem, DappStateInterface as State, NewDappItem } from './state';
@@ -20,6 +21,14 @@ const showError = (dispatch: Dispatch, message: string): void => {
 const getAddressEnum = (address:string) => (
   {'Evm': address}
 );
+
+const getFormattedBalance = (parameters: StakingParameters): string => {
+  return formatBalance(parameters.amount, {
+    withSi: true,
+    decimals: parameters.decimals,
+    withUnit: parameters.unit
+  });
+}
 
 const actions: ActionTree<State, StateInterface> = {
   async getDapps ({ commit, dispatch }) {
@@ -99,7 +108,7 @@ const actions: ActionTree<State, StateInterface> = {
               if (result.status.isFinalized) {
                 commit('general/setLoading', false, { root: true });
                 dispatch('general/showAlertMsg', {
-                  msg: `You staked ${parameters.amount} to ${parameters.dapp.name}.`,
+                  msg: `You staked ${getFormattedBalance(parameters)} on ${parameters.dapp.name}.`,
                   alertType: 'success',
                 },
                 { root: true });
@@ -140,7 +149,7 @@ const actions: ActionTree<State, StateInterface> = {
               if (result.status.isFinalized) {
                 commit('general/setLoading', false, { root: true });
                 dispatch('general/showAlertMsg', {
-                  msg: `You unstaked ${parameters.amount} from ${parameters.dapp.name}.`,
+                  msg: `You unstaked ${getFormattedBalance(parameters)} from ${parameters.dapp.name}.`,
                   alertType: 'success',
                 },
                 { root: true });
@@ -245,7 +254,7 @@ const actions: ActionTree<State, StateInterface> = {
         showError(dispatch, 'Api is undefined.');
       }
     } catch (e) {
-      // TODO check. There will me many calls to this method. Maybe is better not to show any popup.
+      // TODO check. There will me many calls to this method. Maybe is better not to show any popup in case of an error.
       console.log(e);
     }
   }
@@ -262,6 +271,8 @@ export interface StakingParameters {
   amount: BN;
   senderAddress: string;
   api: ApiPromise;
+  decimals: number,
+  unit: string
   finalizeCallback: () => void;
 }
 
