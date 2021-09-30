@@ -59,8 +59,17 @@ const actions: ActionTree<State, StateInterface> = {
             },
             async result => {
               if (result.status.isFinalized) {
-                const fileName = `${parameters.dapp.address}_${parameters.dapp.iconFileName}`;
-                parameters.dapp.iconUrl = await uploadFile(fileName, parameters.dapp.iconFile);
+                if (parameters.dapp.iconFileName) {
+                  const fileName = `${parameters.dapp.address}_${parameters.dapp.iconFileName}`;
+                  parameters.dapp.iconUrl = await uploadFile(fileName, parameters.dapp.iconFile);
+                } else {
+                  parameters.dapp.iconUrl = '/images/noimage.png';
+                }
+                
+                if (!parameters.dapp.url) {
+                  parameters.dapp.url = '';
+                }
+
                 const addedDapp = await addDapp(parameters.dapp);
                 commit('addDapp', addedDapp);
 
@@ -234,12 +243,17 @@ const actions: ActionTree<State, StateInterface> = {
           const stakeInfo = await stakeInfoPromise.unwrapOr(null);
           
           if (stakeInfo) {
-            // TODO find a way to utilize stakeInfo.stakers.get by providing AccountId as parameter
-            let yourStake;
+            let yourStake = '';
+            for (const [account, balance] of stakeInfo.stakers) {
+              if (account.toString() === parameters.senderAddress) {
+                yourStake = balance.toHuman();
+                break;
+              }
+            }
+
             stakeInfo.stakers.forEach((stake: Balance, account: AccountId) => {
                 if (account.toString() === parameters.senderAddress) {
                   yourStake = stake.toHuman();
-                  return;
                 }
             });
 

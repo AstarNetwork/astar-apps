@@ -31,58 +31,33 @@
             </icon-base>
           </input-file>
         </div>
-        <div class="tw-mb-4">
-          <label
-            class="tw-block tw-text-sm tw-font-medium tw-text-gray-500 dark:tw-text-darkGray-400 tw-mb-2"
-          >
-            Name
-          </label>
-          <input
-            class="tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-rounded-md tw-w-full tw-text-blue-900 dark:tw-text-darkGray-100 focus:tw-outline-none tw-placeholder-gray-300 dark:tw-placeholder-darkGray-600 tw-px-3 tw-py-3 tw-appearance-none tw-bg-white dark:tw-bg-darkGray-900"
-            placeholder=""
-            v-model="data.name"
-            maxlength="100"
-          />
-        </div>
-        <div class="tw-mb-4">
-          <label
-            class="tw-block tw-text-sm tw-font-medium tw-text-gray-500 dark:tw-text-darkGray-400 tw-mb-2"
-          >
-            Description
-          </label>
-          <input
-            class="tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-rounded-md tw-w-full tw-text-blue-900 dark:tw-text-darkGray-100 focus:tw-outline-none tw-placeholder-gray-300 dark:tw-placeholder-darkGray-600 tw-px-3 tw-py-3 tw-appearance-none tw-bg-white dark:tw-bg-darkGray-900"
-            placeholder=""
-            v-model="data.description"
-            maxlength="1000"
-          />
-        </div>
-        <div class="tw-mb-4">
-          <label
-            class="tw-block tw-text-sm tw-font-medium tw-text-gray-500 dark:tw-text-darkGray-400 tw-mb-2"
-          >
-            Contract address
-          </label>
-          <input
-            class="tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-rounded-md tw-w-full tw-text-blue-900 dark:tw-text-darkGray-100 focus:tw-outline-none tw-placeholder-gray-300 dark:tw-placeholder-darkGray-600 tw-px-3 tw-py-3 tw-appearance-none tw-bg-white dark:tw-bg-darkGray-900"
-            placeholder=""
-            v-model="data.address"
-            maxlength="1000"
-          />
-        </div>
-        <div class="tw-mb-4">
-          <label
-            class="tw-block tw-text-sm tw-font-medium tw-text-gray-500 dark:tw-text-darkGray-400 tw-mb-2"
-          >
-            Url
-          </label>
-          <input
-            class="tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-rounded-md tw-w-full tw-text-blue-900 dark:tw-text-darkGray-100 focus:tw-outline-none tw-placeholder-gray-300 dark:tw-placeholder-darkGray-600 tw-px-3 tw-py-3 tw-appearance-none tw-bg-white dark:tw-bg-darkGray-900"
-            placeholder=""
-            v-model="data.url"
-            maxlength="1000"
-          />
-        </div>
+        
+        <Input
+          v-model="data.name"
+          label="Name"
+          type="text"
+          required
+          :validationMessage="validationErrors['name']"
+        />
+        <Input
+          v-model="data.description"
+          label="Description"
+          type="text"
+          required
+          :validationMessage="validationErrors['description']"
+        />
+        <Input
+          v-model="data.address"
+          label="Contract address"
+          type="text"
+          required
+          :validationMessage="validationErrors['address']"
+        />
+        <Input
+          v-model="data.url"
+          label="Url"
+          type="text"
+        />
       </div>
     </template>
     <template v-slot:buttons>
@@ -94,8 +69,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from 'vue'
+import { defineComponent, reactive, ref, watch } from 'vue'
 import Modal from 'components/common/Modal.vue';
+import Input from 'src/components/common/Input.vue';
 import InputFile from 'src/components/dapps/modals/InputFile.vue';
 import Avatar from 'components/common/Avatar.vue';
 import IconBase from 'components/icons/IconBase.vue';
@@ -104,19 +80,21 @@ import Button from 'components/common/Button.vue';
 import { useFile, FileState } from 'src/hooks/useFile';
 import { useStore } from 'src/store';
 import { useApi } from 'src/hooks';
-import { NewDappItem } from 'src/store/dapps-store/state';
+import { isValidAddress } from 'src/hooks/custom-signature/ethereumjs-util/account';
+import { NewDappItem, LooseObject } from 'src/store/dapps-store/state';
 import { RegisterParameters } from 'src/store/dapps-store/actions';
 
 export default defineComponent({
   components: {
     Modal,
+    Input,
     InputFile,
     Avatar,
     IconBase,
     IconDocument,
     Button
   },
-  setup(props, { emit }) {
+  setup(_, { emit }) {
     const store = useStore();
     const { api } = useApi();
     const data = reactive<NewDappItem>({} as NewDappItem);
@@ -126,6 +104,7 @@ export default defineComponent({
       fileRef: imageFromFile,
       setFile
     } = useFile();
+    const validationErrors = ref<LooseObject>({});
 
     const onDropFile = (fileState: FileState): void => {
       imagePreview.value = encodeImage(fileState.type, fileState.data);
@@ -136,6 +115,10 @@ export default defineComponent({
     };
 
     const registerDapp = async () => {
+      if (!validateAll()) {
+        return;
+      }
+      
       const senderAddress = store.getters['general/selectedAccountAddress'];
       const result = await store.dispatch('dapps/registerDapp', {
         dapp: data,
@@ -153,11 +136,63 @@ export default defineComponent({
       return `data:${fileType};base64,${buffer.toString('base64')}`
     }
 
+    const validate = (field: string, errorMessage?: string):boolean => {
+      if (data[field]) {
+        validationErrors.value[field] = ''
+        return true
+      }
+
+      validationErrors.value[field] = errorMessage ? errorMessage : `The field ${field} is required.`;
+      return false;
+    }
+
+    const validateName = ():boolean => {
+      return validate('name', 'dApp name is required.');
+    }
+
+    const validateDescription = ():boolean => {
+      return validate('description', 'Please tell us a few words about your dApp.');
+    }
+
+    const validateContractAddress = ():boolean => {
+      if (validate('address', 'Please enter contract address.')) {
+        if (isValidAddress(data.address)){
+          validationErrors.value['address'] = '';
+          return true;
+        } else {
+          validationErrors.value['address'] = 'Please enter a valid EVM address.';
+          return false;
+        }
+      }
+
+      return false;
+    }
+
+    const validateAll = ():boolean => {
+      return validateName() && validateDescription() && validateContractAddress();
+    }
+
+    watch(
+      () => data.name,
+      () => validateName()
+    );
+
+    watch(
+      () => data.description,
+      () => validateDescription()
+    );
+
+    watch(
+      () => data.address,
+      () => validateContractAddress()
+    );
+
     return {
       data,
       fileExtension,
       imageFromFile,
       imagePreview,
+      validationErrors,
       onDropFile,
       registerDapp
     }

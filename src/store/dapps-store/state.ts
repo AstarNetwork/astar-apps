@@ -1,4 +1,4 @@
-export interface DappItem {
+export interface DappItem extends LooseObject {
 	name: string;
 	iconUrl: string;
 	description: string;
@@ -13,6 +13,10 @@ export interface NewDappItem extends DappItem {
 
 export interface DappStateInterface {
   dapps: DappItem[];
+}
+
+export interface LooseObject {
+  [key: string]: any;
 }
 
 function state(): DappStateInterface {
