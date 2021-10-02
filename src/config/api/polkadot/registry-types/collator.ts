@@ -26,15 +26,17 @@ const definitions: RegistryTypes = {
     Amount: 'i128',
     SmartContract: {
       _enum: {
-          Wasm: 'AccountId',
-          Evm: 'H160',
+        Evm: 'H160',  
+        Wasm: 'AccountId',
       },
     },
     EraIndex: 'u32',
     EraStakingPoints: {
       total: 'Balance',
-      stakers: 'BTreeMap<AccountId, Balance>'
+      stakers: 'BTreeMap<AccountId, Balance>',
+      formerStakedEra: 'EraIndex',
+      claimedRewards: 'Balance'
     }
-};
+  };
 
 export default definitions;

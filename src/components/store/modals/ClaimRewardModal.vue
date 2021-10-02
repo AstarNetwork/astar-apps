@@ -2,8 +2,12 @@
   <Modal :title="`Claim reward ${dapp.name}`">
     <template v-slot:content>
       <Avatar :url="dapp.iconUrl" class="tw-w-36 tw-h-36 tw-mb-4 tw-mx-auto"/>
-      <div class="tw-my-4">Contract rewards <span class="tw-font-semibold">?</span></div>
-      <div class="tw-my-4">Your rewards <span class="tw-font-semibold">?</span></div>
+      <div>Already claimed:</div>
+      <div class="tw-mt-4">
+        <span class="tw-w-40 tw-inline-block">Contract rewards</span><span class="tw-font-semibold">{{ stakeInfo.claimedRewards}}</span>
+        <br/>
+        <span class="tw-w-40 tw-inline-block">Your rewards</span><span class="tw-font-semibold">{{ stakeInfo.userClaimedRewards}}</span>
+      </div>
     </template>
     <template v-slot:buttons>
       <Button @click="claimAction()">Claim</Button>
@@ -27,6 +31,10 @@ export default defineComponent({
       type: Function,
       required: true
     },
+    stakeInfo: {
+      type: Object,
+      required: true
+    }
   },
   components: {
     Modal,

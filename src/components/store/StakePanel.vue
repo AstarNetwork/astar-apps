@@ -37,6 +37,7 @@
     v-if="showClaimRewardModal"
     v-model:isOpen="showClaimRewardModal"
     :dapp="dapp"
+    :stakeInfo="stakeInfo"
     :claimAction="claim"
   />
 </template>
@@ -126,7 +127,6 @@ export default defineComponent({
       );
 
       if (result) {
-        // emitStakeChanged();
         showModal.value = false;
       }
     }

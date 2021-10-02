@@ -59,7 +59,6 @@ export default defineComponent({
     }
     
     watch(senderAddress, () => {
-      console.log('watching', senderAddress.value);
       getDappInfo();
     })
 

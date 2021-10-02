@@ -201,7 +201,7 @@ const actions: ActionTree<State, StateInterface> = {
               if (result.isFinalized) {
                 commit('general/setLoading', false, { root: true });
                 dispatch('general/showAlertMsg', {
-                  msg: `You claimed from ${parameters.dapp.name}.`,
+                  msg: `You claimed from reward ${parameters.dapp.name}.`,
                   alertType: 'success',
                 },
                 { root: true });
@@ -229,19 +229,26 @@ const actions: ActionTree<State, StateInterface> = {
   async getStakeInfo({ dispatch }, parameters: StakingParameters): Promise<StakeInfo | undefined> {
     try {
       if (parameters.api) {
+        const contractAddress = getAddressEnum(parameters.dapp.address);
         const eraIndexPromise = await parameters.api
           .query
           .dappsStaking
-          .contractLastStaked<Option<EraIndex>>(getAddressEnum(parameters.dapp.address))
+          .contractLastStaked<Option<EraIndex>>(contractAddress);
         const eraIndex = await eraIndexPromise.unwrapOr(null);
         
         if (eraIndex) {
           const stakeInfoPromise = await parameters.api
             .query
             .dappsStaking
-            .contractEraStake<Option<EraStakingPoints>>(getAddressEnum(parameters.dapp.address), eraIndex);
+            .contractEraStake<Option<EraStakingPoints>>(contractAddress, eraIndex);
           const stakeInfo = await stakeInfoPromise.unwrapOr(null);
-          
+
+          const rewardsClaimed = await parameters.api
+            .query
+            .dappsStaking
+            .rewardsClaimed<Balance>(contractAddress, parameters.senderAddress);
+          console.log(rewardsClaimed);
+
           if (stakeInfo) {
             let yourStake = '';
             for (const [account, balance] of stakeInfo.stakers) {
@@ -251,15 +258,11 @@ const actions: ActionTree<State, StateInterface> = {
               }
             }
 
-            stakeInfo.stakers.forEach((stake: Balance, account: AccountId) => {
-                if (account.toString() === parameters.senderAddress) {
-                  yourStake = stake.toHuman();
-                }
-            });
-
             return {
               totalStake: stakeInfo.total.toHuman(),
               yourStake,
+              claimedRewards: stakeInfo.claimedRewards.toHuman(),
+              userClaimedRewards: rewardsClaimed.toHuman(),
               hasStake: yourStake !== undefined
             } as StakeInfo;
           }
@@ -293,6 +296,8 @@ export interface StakingParameters {
 export interface StakeInfo {
   yourStake: string | undefined;
   totalStake: string;
+  claimedRewards: string;
+  userClaimedRewards:string;
   hasStake: boolean;
 }
 
@@ -301,6 +306,8 @@ export interface StakeInfo {
 export interface EraStakingPoints extends Struct {
   readonly total: Balance;
   readonly stakers: BTreeMap<AccountId, Balance>;
+  readonly formerStakedEra: EraIndex;
+  readonly claimedRewards: Balance;
 }
 
 export default actions;
