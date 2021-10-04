@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-border tw-m-4 tw-w-72 tw-rounded-lg">
+  <div class="tw-bg-white dark:tw-bg-darkGray-800 tw-shadow tw-m-4 tw-w-72 tw-rounded-lg tw-text-blue-900 dark:tw-text-darkGray-100">
     <div class="tw-flex tw-flex-grow tw-cursor-pointer tw-p-4" @click="emitClickEvent">
       <Avatar :url="dapp.iconUrl" class="tw-w-14 tw-h-14" />
       <div class="tw-ml-4">
@@ -7,7 +7,7 @@
         <div class="tw-h-11 tw-overflow-ellipsis tw-overflow-y-hidden">{{ dapp.description }}</div>
       </div>
     </div>
-    <hr />
+    <hr class="dark:tw-bg-darkGray-600" />
     <div class="tw-p-4">
       <StakePanel :dapp="dapp" :stakeInfo="stakeInfo" v-on:stake-changed="handleStakeChanged" />
     </div>

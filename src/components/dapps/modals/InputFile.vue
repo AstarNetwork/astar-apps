@@ -5,7 +5,7 @@
   >
     <div class="tw-space-y-1 tw-text-center">
       <icon-base
-        v-if="!!!$slots.default"
+        v-if="!$slots.default"
         class="tw-h-12 tw-w-12 tw-mx-auto dark:tw-text-darkGray-100"
         viewBox="0 0 20 20"
         fill="none"

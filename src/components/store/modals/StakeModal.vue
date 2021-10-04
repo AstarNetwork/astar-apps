@@ -21,9 +21,9 @@
         v-model:amount="data.amount"
         v-model:selectedUnit="data.unit"
       />
-      <div class="tw-mt-1 tw-ml-1">
+      <!-- TODO enable available balance display <div class="tw-mt-1 tw-ml-1">
         Available <FormatBalance class="tw-inline tw-font-semibold"/>
-      </div>
+      </div> -->
      </template>
      <template v-slot:buttons>
       <Button @click="action(data)">
