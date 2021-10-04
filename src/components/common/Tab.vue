@@ -1,5 +1,5 @@
 <template>
-  <nav class="md:tw-ml-12 tw--mb-px tw-flex tw-justify-items-center" aria-label="Tabs">
+  <nav class="tw--mb-px tw-flex tw-justify-items-center" aria-label="Tabs">
     <router-link
       append
       v-for="num in labelsNumArray"

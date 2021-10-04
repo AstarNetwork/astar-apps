@@ -5,37 +5,27 @@
     <h1
       class="md:tw-mr-10 tw-text-3xl tw-font-extrabold tw-text-blue-900 dark:tw-text-white tw-mb-6 sm:tw-mb-8"
     >
-      Balance
+      dApps Store
     </h1>
     <Tab
       :labels="[
-        { label: 'Wallet', path: 'balance-plasm' },
+        { label: 'Discover', path: 'discover-dapps' },
+      ]"
+    />
+    <Tab
+      :labels="[
+        { label: 'Manage', path: 'manage-dapps' },
       ]"
     />
   </div>
-
   <router-view />
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { useMeta } from 'quasar';
+import { defineComponent } from 'vue'
 import Tab from 'components/common/Tab.vue';
 
 export default defineComponent({
-  components: {
-    Tab,
-  },
-  setup() {
-    useMeta({ title: 'Balance' });
-  },
-});
+  components: { Tab }
+})
 </script>
-<style>
-.dark\:tw-bg-blue-500 {
-  background-color: rgba(27, 109, 193, 0.1) !important;
-}
-.checked\:tw-border-blue-500:checked {
-  border-color: rgba(27, 109, 193, 1) !important;
-}
-</style>

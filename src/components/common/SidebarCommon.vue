@@ -62,7 +62,7 @@
       </router-link>
 
       <router-link
-        v-if="isSupportContract"
+        v-if="network.isSupportContract"
         to="/dapps"
         :class="[
           $route.path.split('/')[1] === 'dapps' ? 'activeLink' : 'inactiveLink',
@@ -77,6 +77,24 @@
           <icon-dapps />
         </icon-base>
         <span class="tw-font-bold tw-ml-3 tw-flex-1">dApps</span>
+      </router-link>
+
+      <router-link
+        v-if="network.isStoreEnabled"
+        to="/store"
+        :class="[
+          $route.path.split('/')[1] === 'store' ? 'activeLink' : 'inactiveLink',
+        ]"
+      >
+        <icon-base
+          :class="[
+            $route.path.split('/')[1] === 'store' ? 'activeSvg' : 'inactiveSvg',
+          ]"
+          viewBox="0 0 24 24"
+        >
+          <icon-store />
+        </icon-base>
+        <span class="tw-font-bold tw-ml-3 tw-flex-1">Store</span>
       </router-link>
 
       <a
@@ -136,6 +154,7 @@ import IconDapps from '../icons/IconDapps.vue';
 import IconDotLockdrop from '../icons/IconDotLockdrop.vue';
 import IconBalance from '../icons/IconBalance.vue';
 import IconSolidChevronDown from '../icons/IconSolidChevronDown.vue';
+import IconStore from '../icons/IconStore.vue'
 import ModalNetwork from 'src/components/balance/modals/ModalNetwork.vue';
 
 export default defineComponent({
@@ -149,6 +168,7 @@ export default defineComponent({
     IconDotLockdrop,
     IconBalance,
     IconSolidChevronDown,
+    IconStore,
     ModalNetwork,
   },
   setup() {
@@ -185,8 +205,8 @@ export default defineComponent({
     });
 
     const isLocalChain = currentNetworkIdx.value === endpointKey.LOCAL;
-    const isSupportContract = ref(
-      providerEndpoints[currentNetworkIdx.value].isSupportContract
+    const network = ref(
+      providerEndpoints[currentNetworkIdx.value]
     );
 
     return {
@@ -198,7 +218,7 @@ export default defineComponent({
       currentNetworkIdx,
       currentNetworkName,
       isLocalChain,
-      isSupportContract,
+      network,
     };
   },
 });
