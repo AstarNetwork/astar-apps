@@ -42,7 +42,6 @@ import ModalSelectAccount from 'components/balance/modals/ModalSelectAccount.vue
 import InputAmount from 'src/components/common/InputAmount.vue';
 import Button from 'src/components/common/Button.vue';
 import Avatar from 'src/components/common/Avatar.vue';
-import FormatBalance from 'src/components/balance/FormatBalance.vue'
 
 export default defineComponent({
   components: {
@@ -51,7 +50,6 @@ export default defineComponent({
     InputAmount,
     Button,
     Avatar,
-    FormatBalance
   },
   props: {
     dapp: {
