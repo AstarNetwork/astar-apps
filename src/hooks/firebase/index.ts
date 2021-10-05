@@ -5,6 +5,8 @@ import {
   getDocs,
   setDoc,
   doc,
+  QuerySnapshot,
+  DocumentData,
 } from 'firebase/firestore/lite';
 import { getStorage, ref, uploadString, getDownloadURL } from 'firebase/storage';
 import { DappItem, NewDappItem } from 'src/store/dapps-store/state';
@@ -22,19 +24,15 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app);
-
-// collection references
-const dappsCollection = collection(db, 'dapps')
-
 const storage = getStorage();
 
+const getDapps = async (collectionName: string):Promise<QuerySnapshot<DocumentData>> => {
+  const dbCollection = collection(db, collectionName)
+  const docs = await getDocs(dbCollection);
+  return docs;
+}
 
-// const getDapps = async ():Promise<DocumentData[]> => {
-//   const docs = await getDocs(dappsCollection);
-//   return docs.docs.map(x => x.data());
-// }
-
-const addDapp = async (dapp: NewDappItem): Promise<DappItem> => {
+const addDapp = async (collectionName: string, dapp: NewDappItem): Promise<DappItem> => {
   const newDapp = {
     name: dapp.name,
     description: dapp.description,
@@ -43,7 +41,7 @@ const addDapp = async (dapp: NewDappItem): Promise<DappItem> => {
     iconUrl: dapp.iconUrl
   } as DappItem
 
-  await setDoc(doc(db, 'dapps', newDapp.address), newDapp);
+  await setDoc(doc(db, collectionName, newDapp.address), newDapp);
 
   return newDapp;
 }
@@ -58,11 +56,11 @@ const uploadFile = async (fileName: string, base64Content: string) => {
 
 // export utils/refs
 export {
-  dappsCollection,
   db,
   getDocs,
   setDoc,
   doc,
   uploadFile,
-  addDapp
+  addDapp,
+  getDapps
 }
