@@ -3,8 +3,8 @@
     <div class="tw-flex tw-flex-grow tw-cursor-pointer tw-p-4" @click="emitClickEvent">
       <Avatar :url="dapp.iconUrl" class="tw-w-14 tw-h-14" />
       <div class="tw-ml-4">
-        <div class="tw-text-lg tw-font-semibold">{{ dapp.name }}</div>
-        <div class="tw-h-11 tw-overflow-ellipsis tw-overflow-y-hidden">{{ dapp.description }}</div>
+        <div class="tw-text-lg tw-font-semibold tw-w-48 tw-whitespace-nowrap tw-overflow-ellipsis tw-overflow-hidden">{{ dapp.name }}</div>
+        <div class="tw-h-11 tw-w-48 tw-overflow-ellipsis tw-overflow-hidden">{{ dapp.description }}</div>
       </div>
     </div>
     <hr class="dark:tw-bg-darkGray-600" />
