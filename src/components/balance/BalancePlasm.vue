@@ -9,9 +9,14 @@
     </div>
 
     <div class="tw-grid tw-grid-cols-1 sm:tw-grid-cols-3 tw-gap-4 tw-mb-8">
-      <TotalBalance />
+      <TotalBalance
+        v-if="accountData"
+        :accountData="accountData"
+      />
       <PlmBalance
+        v-if="accountData"
         :address="currentAccount"
+        :accountData="accountData"
         v-model:isOpenTransfer="modalTransferAmount"
       />
     </div>
@@ -30,6 +35,7 @@
       :all-accounts="allAccounts"
       :all-account-names="allAccountNames"
       :balance="balance"
+      :accountData="accountData"
     />
   </div>
 
@@ -46,7 +52,6 @@ import {
   toRefs,
   computed,
   watch,
-  provide,
   ref,
 } from 'vue';
 import { useBalance, useApi, useAccount } from 'src/hooks';
@@ -85,13 +90,9 @@ export default defineComponent({
     });
 
     const store = useStore();
-
     const { allAccounts, allAccountNames, currentAccount, currentAccountName } = useAccount();
-
     const { api } = useApi();
-
-    const { balance } = useBalance(api, currentAccount);
-    provide('balance', balance);
+    const { balance, accountData } = useBalance(api, currentAccount);
 
     const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
 
@@ -114,6 +115,7 @@ export default defineComponent({
       currentAccount,
       currentAccountName,
       currentNetworkStatus,
+      accountData,
       completeTransfer,
     };
   },

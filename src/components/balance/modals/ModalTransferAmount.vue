@@ -27,10 +27,10 @@
               class="tw-w-full tw-bg-blue-500 dark:tw-bg-blue-800 tw-text-white tw-rounded-lg tw-px-5 tw-py-5 tw-mb-4 tw-relative hover:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 dark:focus:tw-ring-blue-400"
             >
               <span class="tw-block tw-text-left tw-font-bold tw-text-sm mb-2"
-                >{{ defaultUnitToken }} Balance</span
+                >{{ defaultUnitToken }} transferable balance</span
               >
               <span class="tw-block tw-font-semibold tw-text-2xl tw-mb-1"
-                ><format-balance
+                ><format-balance :balance="accountData?.getUsableTransactionBalance()"
               /></span>
             </button>
 
@@ -95,7 +95,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, computed, ref } from 'vue';
+import { defineComponent, computed, ref, toRefs } from 'vue';
 import BN from 'bn.js';
 import { useApi, useChainMetadata } from 'src/hooks';
 import { web3FromSource } from '@polkadot/extension-dapp';
@@ -129,6 +129,10 @@ export default defineComponent({
       type: BN,
       required: true,
     },
+    accountData: {
+      type: Object,
+      required: true
+    }
   },
   setup(props, { emit }) {
     const closeModal = () => {
@@ -156,7 +160,7 @@ export default defineComponent({
     const formatBalance = computed(() => {
       const tokenDecimal = decimal.value;
       return plasmUtils.reduceBalanceToDenom(
-        props.balance.clone(),
+        props.accountData.getUsableTransactionBalance(),
         tokenDecimal
       );
     });
@@ -303,7 +307,8 @@ export default defineComponent({
       transferAmt,
       defaultUnitToken,
       selectUnit,
-      reloadAmount
+      reloadAmount,
+      ...toRefs(props)
     };
   },
 });
