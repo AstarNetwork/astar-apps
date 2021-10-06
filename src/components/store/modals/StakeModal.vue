@@ -26,7 +26,7 @@
       </div> -->
      </template>
      <template v-slot:buttons>
-      <Button @click="action(data)">
+      <Button @click="action(data)" :disabled="data.amount<=0">
         {{ actionName }}
       </Button>
     </template>
