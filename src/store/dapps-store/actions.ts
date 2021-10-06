@@ -317,7 +317,7 @@ const actions: ActionTree<State, StateInterface> = {
               yourStake,
               claimedRewards: stakeInfo.claimedRewards.toHuman(),
               userClaimedRewards: rewardsClaimed.toHuman(),
-              hasStake: yourStake !== undefined
+              hasStake: !!yourStake
             } as StakeInfo;
           }
         }
