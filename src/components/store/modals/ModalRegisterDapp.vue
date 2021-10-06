@@ -37,6 +37,7 @@
           label="Name"
           type="text"
           required
+          maxlength="200"
           :validationMessage="validationErrors['name']"
         />
         <Input
@@ -44,6 +45,7 @@
           label="Description"
           type="text"
           required
+          maxlength="2000"
           :validationMessage="validationErrors['description']"
         />
         <Input
@@ -51,12 +53,14 @@
           label="Contract address"
           type="text"
           required
+          maxlength="42"
           :validationMessage="validationErrors['address']"
         />
         <Input
           v-model="data.url"
           label="Url"
           type="text"
+          maxlength="1000"
         />
       </div>
     </template>
