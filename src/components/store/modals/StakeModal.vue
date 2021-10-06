@@ -70,12 +70,13 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
-    const { defaultUnitToken } = useChainMetadata();
+    const { decimal, defaultUnitToken } = useChainMetadata();
     
     const data = ref<StakeModel>({
       address: '',
       amount: 0,
-      unit: defaultUnitToken.value
+      unit: defaultUnitToken.value,
+      decimal: decimal.value
     } as StakeModel);
     const allAccounts = computed(() => store.getters['general/allAccounts']);
     const allAccountNames = computed(() => store.getters['general/allAccountNames']);
@@ -92,6 +93,7 @@ export default defineComponent({
 export interface StakeModel {
   address: string;
   amount: number;
-  unit: string
+  unit: string,
+  decimal: number
 }
 </script>

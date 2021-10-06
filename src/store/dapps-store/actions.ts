@@ -160,7 +160,6 @@ const actions: ActionTree<State, StateInterface> = {
               signer: injector?.signer
             },
             result => {
-              console.log('stake result', result);
               if (result.status.isFinalized) {
                 if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
                   dispatch('general/showAlertMsg', {
@@ -303,7 +302,6 @@ const actions: ActionTree<State, StateInterface> = {
             .query
             .dappsStaking
             .rewardsClaimed<Balance>(contractAddress, parameters.senderAddress);
-          console.log(rewardsClaimed);
 
           if (stakeInfo) {
             let yourStake = '';

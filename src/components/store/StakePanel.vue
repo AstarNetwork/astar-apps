@@ -79,7 +79,6 @@ export default defineComponent({
     const modalTitle = ref<string>('');
     const modalActionName = ref<string>('');
     const modalAction = ref();
-    const { decimal, defaultUnitToken } = useChainMetadata();
 
     const showStakeModal = () => {
       modalTitle.value = `Stake on ${props.dapp.name}`;
@@ -105,10 +104,10 @@ export default defineComponent({
       const amount = reduceDenomToBalance(
         stakeData.amount,
         unit,
-        decimal.value
+        stakeData.decimal
       );
 
-      console.log('getAmount', stakeData, unit, decimal.value, amount.toString());
+      console.log('getAmount', stakeData, unit, stakeData.decimal, amount.toString());
       return amount;
     }
 
@@ -120,8 +119,8 @@ export default defineComponent({
           senderAddress: stakeData.address,
           dapp: props.dapp,
           amount: getAmount(stakeData),
-          decimals: decimal.value,
-          unit: defaultUnitToken.value,
+          decimals: stakeData.decimal,
+          unit: stakeData.unit,
           finalizeCallback: emitStakeChanged,
         } as StakingParameters,
       );
@@ -137,8 +136,8 @@ export default defineComponent({
         senderAddress: stakeData.address,
         dapp: props.dapp,
         amount: getAmount(stakeData),
-        decimals: decimal.value,
-        unit: defaultUnitToken.value,
+        decimals: stakeData.decimal,
+        unit: stakeData.unit,
         finalizeCallback: emitStakeChanged
       } as StakingParameters);
 
