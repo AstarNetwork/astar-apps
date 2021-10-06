@@ -162,14 +162,17 @@ const actions: ActionTree<State, StateInterface> = {
             result => {
               console.log('stake result', result);
               if (result.status.isFinalized) {
-                commit('general/setLoading', false, { root: true });
-                dispatch('general/showAlertMsg', {
-                  msg: `You staked ${getFormattedBalance(parameters)} on ${parameters.dapp.name}.`,
-                  alertType: 'success',
-                },
-                { root: true });
+                if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
+                  dispatch('general/showAlertMsg', {
+                    msg: `You staked ${getFormattedBalance(parameters)} on ${parameters.dapp.name}.`,
+                    alertType: 'success',
+                  },
+                  { root: true });
 
-                parameters.finalizeCallback();
+                  parameters.finalizeCallback();
+                }
+
+                commit('general/setLoading', false, { root: true });
                 unsub();
               }
             }
@@ -203,14 +206,17 @@ const actions: ActionTree<State, StateInterface> = {
             },
             result => {
               if (result.status.isFinalized) {
-                commit('general/setLoading', false, { root: true });
-                dispatch('general/showAlertMsg', {
-                  msg: `You unstaked ${getFormattedBalance(parameters)} from ${parameters.dapp.name}.`,
-                  alertType: 'success',
-                },
-                { root: true });
+                if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
+                  dispatch('general/showAlertMsg', {
+                    msg: `You unstaked ${getFormattedBalance(parameters)} from ${parameters.dapp.name}.`,
+                    alertType: 'success',
+                  },
+                  { root: true });
 
-                parameters.finalizeCallback();
+                  parameters.finalizeCallback();
+                }
+
+                commit('general/setLoading', false, { root: true });
                 unsub();
               }
             }
@@ -246,14 +252,17 @@ const actions: ActionTree<State, StateInterface> = {
             },
             result => {
               if (result.isFinalized) {
-                commit('general/setLoading', false, { root: true });
-                dispatch('general/showAlertMsg', {
-                  msg: `You claimed from reward ${parameters.dapp.name}.`,
-                  alertType: 'success',
-                },
-                { root: true });
+                if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
+                  dispatch('general/showAlertMsg', {
+                    msg: `You claimed from reward ${parameters.dapp.name}.`,
+                    alertType: 'success',
+                  },
+                  { root: true });
 
-                parameters.finalizeCallback();
+                  parameters.finalizeCallback();
+                }
+                
+                commit('general/setLoading', false, { root: true });
                 unsub();
               }
             }
