@@ -89,7 +89,6 @@ const actions: ActionTree<State, StateInterface> = {
   },
 
   async registerDapp({ commit, dispatch, rootState }, parameters: RegisterParameters): Promise<boolean> {
-    commit('general/setLoading', true, { root: true });
     try {
       if (parameters.api) {
         const injector = await web3FromSource('polkadot-js');    
@@ -127,8 +126,10 @@ const actions: ActionTree<State, StateInterface> = {
 
                 commit('general/setLoading', false, { root: true });
                 unsub();  
+              } else {
+                commit('general/setLoading', true, { root: true });
               }
-            }
+            } 
           );
         
         return true;
@@ -148,7 +149,6 @@ const actions: ActionTree<State, StateInterface> = {
   },
   
   async stake({ commit, dispatch }, parameters: StakingParameters): Promise<boolean> {
-    commit('general/setLoading', true, { root: true });
     try {
       if (parameters.api) {
         const injector = await web3FromSource('polkadot-js');    
@@ -173,6 +173,8 @@ const actions: ActionTree<State, StateInterface> = {
 
                 commit('general/setLoading', false, { root: true });
                 unsub();
+              } else {
+                commit('general/setLoading', true, { root: true });
               }
             }
           );
@@ -192,7 +194,6 @@ const actions: ActionTree<State, StateInterface> = {
   },
 
   async unstake({ commit, dispatch }, parameters: StakingParameters): Promise<boolean> {
-    commit('general/setLoading', true, { root: true });
     try {
       if (parameters.api) {
         const injector = await web3FromSource('polkadot-js');    
@@ -217,6 +218,8 @@ const actions: ActionTree<State, StateInterface> = {
 
                 commit('general/setLoading', false, { root: true });
                 unsub();
+              } else {
+                commit('general/setLoading', true, { root: true });
               }
             }
           );
@@ -238,7 +241,6 @@ const actions: ActionTree<State, StateInterface> = {
   },
 
   async claim({ commit, dispatch }, parameters: StakingParameters): Promise<boolean> {
-    commit('general/setLoading', true, { root: true });
     try {
       if (parameters.api) {
         const injector = await web3FromSource('polkadot-js');    
@@ -263,6 +265,8 @@ const actions: ActionTree<State, StateInterface> = {
                 
                 commit('general/setLoading', false, { root: true });
                 unsub();
+              } else {
+                commit('general/setLoading', true, { root: true });
               }
             }
           );
