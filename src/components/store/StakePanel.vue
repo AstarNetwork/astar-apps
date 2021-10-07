@@ -2,7 +2,7 @@
   <div>
     <div v-if="stakeInfo" class="tw-mb-4">
       Total stake: <span class="tw-font-semibold">{{ stakeInfo?.totalStake }}</span>
-      <div v-if="stakeInfo?.hasStake">
+      <div :style="{opacity: stakeInfo?.hasStake ? '1' : '0'}">
         Your stake : <span class="tw-font-semibold">{{ stakeInfo?.yourStake }}</span>
       </div>
     </div>
@@ -49,7 +49,7 @@ import Button from 'components/common/Button.vue';
 import StakeModal, { StakeModel } from 'components/store/modals/StakeModal.vue';
 import ClaimRewardModal from 'components/store/modals/ClaimRewardModal.vue';
 import { useStore } from 'src/store';
-import { useApi, useChainMetadata } from 'src/hooks';
+import { useApi } from 'src/hooks';
 import { getUnit } from 'src/hooks/helper/units';
 import { reduceDenomToBalance } from 'src/hooks/helper/plasmUtils';
 import { StakingParameters } from 'src/store/dapps-store/actions';
