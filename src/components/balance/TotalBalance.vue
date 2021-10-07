@@ -8,19 +8,30 @@
       <p class="tw-text-lg tw-font-bold tw-mb-4 sm:tw-mb-12 lg:tw-mb-10">Total Balance</p>
       <p class="tw-font-semibold tw-text-center tw-mb-2">
         <span class="tw-text-4xl tw-tracking-tight tw-leading-tight"
-          ><format-balance />
+          ><format-balance :balance="accountData?.free" />
         </span>
       </p>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, toRefs } from 'vue';
 import FormatBalance from 'components/balance/FormatBalance.vue';
 
 export default defineComponent({
   components: {
     FormatBalance,
   },
+  props: {
+    accountData: {
+      type: Object,
+      required: true
+    }
+  },
+  setup (props) {
+    return {
+      ...toRefs(props)
+    }
+  }
 });
 </script>

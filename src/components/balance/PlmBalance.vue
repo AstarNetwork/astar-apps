@@ -20,7 +20,7 @@
         <div>
           <p class="tw-font-semibold tw-text-center">
             <span class="tw-text-4xl tw-tracking-tight tw-leading-tight"
-              ><format-balance
+              ><format-balance :balance="accountData?.free"
             /></span>
           </p>
         </div>
@@ -46,7 +46,7 @@
         <div>Transferable</div>
         <div>
           <p class="tw-font-bold tw-text-right">
-            <span class="tw-text-2xl tw-leading-tight"><format-balance /></span>
+            <span class="tw-text-2xl tw-leading-tight"><format-balance :balance="accountData?.getUsableTransactionBalance()" /></span>
           </p>
         </div>
       </div>
@@ -54,7 +54,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, toRefs } from 'vue';
 import { useChainMetadata } from 'src/hooks';
 import IconBase from 'components/icons/IconBase.vue';
 import IconAccountSample from 'components/icons/IconAccountSample.vue';
@@ -71,6 +71,10 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    accountData: {
+      type: Object,
+      required: true
+    }
   },
   setup(props, { emit }) {
     const openTransferModal = (): void => {
@@ -82,6 +86,7 @@ export default defineComponent({
     return {
       openTransferModal,
       defaultUnitToken,
+      ...toRefs(props)
     };
   },
 });

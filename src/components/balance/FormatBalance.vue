@@ -2,23 +2,26 @@
   <balance :balance="balance" :decimals="decimal" :unit="defaultUnitToken" />
 </template>
 <script lang="ts">
-import { defineComponent, inject, ref } from 'vue';
+import { defineComponent, toRefs} from 'vue';
 import { useChainMetadata } from 'src/hooks';
 
-import BN from 'bn.js';
 import Balance from 'components/common/Balance.vue';
 
 export default defineComponent({
   components: { Balance },
-  setup() {
+  props: {
+    balance: {
+      type: Object,
+      required: true
+    }
+  },
+  setup(props) {
     const { defaultUnitToken, decimal } = useChainMetadata();
-
-    const balance = inject('balance', ref(new BN(0)));
 
     return {
       defaultUnitToken,
-      balance,
       decimal,
+      ...toRefs(props)
     };
   },
   methods: {},
