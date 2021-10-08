@@ -5,7 +5,7 @@
     <div
       class="tw-rounded-lg tw-px-5 tw-pt-8 tw-pb-10 sm:tw-pb-0 tw-h-full tw-bg-local tw-bg-left-top tw-bg-no-repeat tw-bg-80 sm:tw-bg-88"
     >
-      <p class="tw-text-lg tw-font-bold tw-mb-4 sm:tw-mb-12 lg:tw-mb-10">Total Balance</p>
+      <p class="tw-text-lg tw-font-bold tw-mb-4 sm:tw-mb-12 lg:tw-mb-10">{{ $t('balance.totalBalance') }}</p>
       <p class="tw-font-semibold tw-text-center tw-mb-2">
         <span class="tw-text-4xl tw-tracking-tight tw-leading-tight"
           ><format-balance :balance="accountData?.free" />

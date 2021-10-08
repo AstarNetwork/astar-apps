@@ -25,7 +25,7 @@
         </div>
         <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row">
           <Button type="button" @click="closeModal" :primary="false">
-            {{ closeButtonCaption }}
+            {{ $t('close') }}
           </Button>
           <slot name="buttons"></slot>
         </div>
@@ -44,10 +44,6 @@ export default defineComponent({
       type: String,
       default: ''
     },
-    closeButtonCaption: {
-      type: String,
-      default: 'Close'
-    }
   },
   components: {
     Button

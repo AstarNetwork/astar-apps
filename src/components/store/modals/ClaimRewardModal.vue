@@ -2,15 +2,24 @@
   <Modal :title="`Claim reward ${dapp.name}`">
     <template v-slot:content>
       <Avatar :url="dapp.iconUrl" class="tw-w-36 tw-h-36 tw-mb-4 tw-mx-auto"/>
-      <div>Already claimed:</div>
+      <div>
+        {{ $t('store.modals.alreadyClaimed') }}
+      </div>
       <div class="tw-mt-4">
-        <span class="tw-w-40 tw-inline-block">Contract rewards</span><span class="tw-font-semibold">{{ stakeInfo.claimedRewards}}</span>
+        <span class="tw-w-40 tw-inline-block">
+        {{ $t('store.modals.contractRewards') }}</span>
+        <span class="tw-font-semibold">{{ stakeInfo.claimedRewards}}</span>
         <br/>
-        <span class="tw-w-40 tw-inline-block">Your rewards</span><span class="tw-font-semibold">{{ stakeInfo.userClaimedRewards}}</span>
+        <span class="tw-w-40 tw-inline-block">
+          {{ $t('store.modals.yourRewards') }}
+        </span>
+        <span class="tw-font-semibold">{{ stakeInfo.userClaimedRewards}}</span>
       </div>
     </template>
     <template v-slot:buttons>
-      <Button @click="claimAction()">Claim</Button>
+      <Button @click="claimAction()">
+        {{ $t('store.claim') }}
+      </Button>
     </template>
   </Modal>
 </template>

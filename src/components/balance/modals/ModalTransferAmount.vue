@@ -13,13 +13,13 @@
       >
         <div>
           <q-banner v-if="isCustomSigBlocked" dense rounded class="bg-orange text-white tw-mb-4 q-pa-xs" style="">
-            Custom sig extrinsic calls has been temporarily blocked
+            {{ $t('balance.modals.sigExtrinsicBlocked') }}
           </q-banner>
           <div>
             <h3
               class="tw-text-lg tw-font-extrabold tw-text-blue-900 dark:tw-text-white tw-mb-6 tw-text-center"
             >
-              Transfer {{ defaultUnitToken }}
+              {{ $t('balance.modals.transferToken', { token: defaultUnitToken}) }}
             </h3>
 
             <button
@@ -27,7 +27,8 @@
               class="tw-w-full tw-bg-blue-500 dark:tw-bg-blue-800 tw-text-white tw-rounded-lg tw-px-5 tw-py-5 tw-mb-4 tw-relative hover:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 dark:focus:tw-ring-blue-400"
             >
               <span class="tw-block tw-text-left tw-font-bold tw-text-sm mb-2"
-                >{{ defaultUnitToken }} transferable balance</span
+                >{{ $t('balance.modals.transferableBalance', { token: defaultUnitToken}) }}
+                </span
               >
               <span class="tw-block tw-font-semibold tw-text-2xl tw-mb-1"
                 ><format-balance :balance="accountData?.getUsableTransactionBalance()"
@@ -39,7 +40,7 @@
                 <label
                   class="tw-block tw-text-sm tw-font-medium tw-text-gray-500 dark:tw-text-darkGray-400 tw-mb-2"
                 >
-                  Send from
+                  {{ $t('balance.modals.sendFrom') }}
                 </label>
 
                 <modal-select-account
@@ -54,7 +55,7 @@
                 <label
                   class="tw-block tw-text-sm tw-font-medium tw-text-gray-500 dark:tw-text-darkGray-400 tw-mb-2"
                 >
-                  Send to
+                  {{ $t('balance.modals.sendTo') }}
                 </label>
 
                 <modal-select-account
@@ -80,14 +81,14 @@
             @click="transfer(transferAmt, fromAddress, toAddress)"
             class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 hover:tw-bg-blue-700 dark:hover:tw-bg-blue-400 focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 dark:focus:tw-ring-blue-400 tw-mx-1"
           >
-            Confirm
+            {{ $t('confirm') }}
           </button>
           <button
             type="button"
             @click="closeModal"
             class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-text-sm tw-font-medium tw-rounded-full tw-text-gray-500 dark:tw-text-darkGray-400 tw-bg-white dark:tw-bg-darkGray-900 hover:tw-bg-gray-100 dark:hover:tw-bg-darkGray-700 focus:tw-outline-none focus:tw-ring focus:tw-ring-gray-100 dark:focus:tw-ring-darkGray-600 tw-mx-1"
           >
-            Cancel
+            {{ $t('cancel') }}
           </button>
         </div>
       </div>

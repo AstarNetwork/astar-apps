@@ -16,32 +16,24 @@
             <h3
               class="tw-text-lg tw-font-extrabold tw-text-blue-900 dark:tw-text-white tw-mb-6 tw-text-center"
             >
-              Confirm
+              {{ $t('confirm') }}
+              <!-- Memo: Add translation file if necesally -->
               <span v-if="ctype == 'codehash'"> codeHash </span>
               <span v-else> contract </span>
-              removal
+              {{ $t('dapps.modals.removal') }}
             </h3>
 
             <div class="tw-grid tw-grid-cols-1 tw-gap-6 dark:tw-text-white">
               <div>
                 <div v-if="ctype === 'codehash'">
-                  You are about to remove this code from your list of available
-                  code hashes. Once completed, should you need to access it
-                  again, you will have to manually add the code hash again.
+                  {{ $t('dapps.modals.removeCode.first') }}
                   <br />
-                  This operation does not remove the uploaded code WASM and ABI
-                  from the chain, nor any deployed contracts. The forget
-                  operation only limits your access to the code on this browser.
+                  {{ $t('dapps.modals.removeCode.second') }}
                 </div>
                 <div v-else>
-                  You are about to remove this contract from your list of
-                  available contracts. Once completed, should you need to access
-                  it again, you will have to manually add the contract's address
-                  in the Instantiate tab. <br />
-                  This operation does not remove the history of the contract
-                  from the chain, nor any associated funds from its account. The
-                  forget operation only limits your access to the contract on
-                  this browser.
+                  {{ $t('dapps.modals.removeContract.first') }}
+                  <br />
+                  {{ $t('dapps.modals.removeContract.second') }}
                 </div>
               </div>
             </div>
@@ -53,14 +45,14 @@
             @click="forget"
             class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 hover:tw-bg-blue-700 dark:hover:tw-bg-blue-400 focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 dark:focus:tw-ring-blue-400 tw-mx-1"
           >
-            Forget
+            {{ $t('forget') }}
           </button>
           <button
             type="button"
             @click="closeModal"
             class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-text-sm tw-font-medium tw-rounded-full tw-text-gray-500 dark:tw-text-darkGray-400 tw-bg-white dark:tw-bg-darkGray-900 hover:tw-bg-gray-100 dark:hover:tw-bg-darkGray-700 focus:tw-outline-none focus:tw-ring focus:tw-ring-gray-100 dark:focus:tw-ring-darkGray-600 tw-mx-1"
           >
-            Cancel
+            {{ $t('cancel') }}
           </button>
         </div>
       </div>

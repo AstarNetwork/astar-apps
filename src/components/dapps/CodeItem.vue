@@ -9,7 +9,7 @@
     <div class="tw-grid tw-grid-cols-1 tw-gap-2 tw-my-4">
       <div>
         <div class="tw-text-xs tw-text-gray-500 dark:tw-text-darkGray-400">
-          Code hash
+          {{ $t('dapps.codeHash') }}
         </div>
         <div class="tw-flex tw-justify-between tw-items-center">
           <div class="tw-text-xs tw-text-blue-900 dark:tw-text-darkGray-100">
@@ -30,7 +30,7 @@
             <span
               class="tw-pointer-events-none tw-hidden tw-absolute tw-top-0 tw-left-1/2 tw-z-10 tw-transform tw--translate-y-full tw--translate-x-1/2 tw-p-2 tw-text-xs tw-leading-tight tw-text-white tw-bg-gray-800 dark:tw-bg-darkGray-500 tw-rounded-md tw-shadow-lg"
             >
-              Copy
+              {{ $t('copy') }}
             </span>
           </button>
           <input
@@ -41,7 +41,9 @@
         </div>
       </div>
       <div>
-        <div class="tw-text-xs tw-text-gray-500 dark:tw-text-darkGray-400">Messages</div>
+        <div class="tw-text-xs tw-text-gray-500 dark:tw-text-darkGray-400">
+          {{ $t('dapps.msgs') }}
+        </div>
         <div v-if="messages" class="tw-text-xs tw-text-blue-900 dark:tw-text-darkGray-100">
           <Message
             v-for="message in messages"
@@ -58,7 +60,7 @@
         class="tw-inline-flex tw-items-center tw-rounded-full tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-px-3 tw-py-2 tw-bg-white dark:tw-bg-darkGray-800 tw-text-xs tw-font-medium hover:tw-bg-gray-100 dark:hover:tw-bg-darkGray-700 focus:tw-outline-none focus:tw-ring focus:tw-ring-gray-100 dark:focus:tw-ring-darkGray-600 tw-text-gray-500 dark:tw-text-darkGray-400"
         @click="onForget"
       >
-        Forget
+          {{ $t('forget') }}
       </button>
     </div>
   </div>

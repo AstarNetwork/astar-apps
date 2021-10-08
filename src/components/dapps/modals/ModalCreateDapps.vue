@@ -15,7 +15,7 @@
           <h3
             class="tw-text-lg tw-font-extrabold tw-text-blue-900 dark:tw-text-white tw-mb-6 tw-text-center"
           >
-            Create Your dApps ({{ step }} / 2)
+            {{ $t('dapps.modals.createYourDapps', { step })}}
           </h3>
 
           <div
@@ -28,7 +28,7 @@
                   <label
                     class="tw-block tw-text-sm tw-font-medium tw-text-gray-500 dark:tw-text-darkGray-400 tw-mb-2"
                   >
-                    Deployment Account
+                    {{ $t('dapps.modals.deploymentAccount') }}
                   </label>
 
                   <button
@@ -93,7 +93,7 @@
                   <label
                     class="tw-block tw-text-sm tw-font-medium tw-text-gray-500 dark:tw-text-darkGray-400 tw-mb-2"
                   >
-                    Project name
+                    {{ $t('dapps.modals.projectName') }}
                   </label>
                   <input
                     class="tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-rounded-md tw-w-full tw-text-blue-900 dark:tw-text-darkGray-100 focus:tw-outline-none tw-placeholder-gray-300 dark:tw-placeholder-darkGray-600 tw-px-3 tw-py-3 tw-appearance-none tw-bg-white dark:tw-bg-darkGray-900"
@@ -114,14 +114,15 @@
                   v-if="isInsufficientFee"
                   class="tw-inline-flex tw-text-red-700 tw-text-xs"
                 >
-                  Fees of
+                <!-- Fixme: handle better way to pass the `balance` to translation file as variable  -->
+                  {{ $t('dapps.modals.fees.feesOf') }}
                   <balance
                     class="tw-ml-1 tw-mr-1"
                     :balance="partialFee"
                     :decimals="decimal"
                     :unit="defaultUnitToken"
                   />
-                  will be applied to the submission
+                  {{ $t('dapps.modals.fees.appliedToSubmission') }}
                 </div>
 
                 <input-amount
@@ -140,7 +141,7 @@
                   <label
                     class="tw-block tw-text-sm tw-font-medium tw-text-gray-500 dark:tw-text-darkGray-400 tw-mb-2"
                   >
-                    Contract file
+                    {{ $t('dapps.modals.contractFile') }}
                   </label>
 
                   <input-file
@@ -168,7 +169,7 @@
             @click="closeModal"
             class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-text-sm tw-font-medium tw-rounded-full tw-text-gray-500 dark:tw-text-darkGray-400 tw-bg-white dark:tw-bg-darkGray-900 hover:tw-bg-gray-100 dark:hover:tw-bg-darkGray-700 focus:tw-outline-none focus:tw-ring focus:tw-ring-gray-100 dark:focus:tw-ring-darkGray-600 tw-mx-1"
           >
-            Cancel
+            {{ $t('cancel') }}
           </button>
           <button
             type="button"
@@ -183,7 +184,7 @@
               'tw-cursor-not-allowed': !canMoveToStep2,
             }"
           >
-            Next Step
+            {{ $t('dapps.modals.nextStep') }}
           </button>
           <div v-if="step === 2">
             <button
@@ -191,14 +192,14 @@
               @click="step = 1"
               class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-text-sm tw-font-medium tw-rounded-full tw-text-gray-500 dark:tw-text-darkGray-400 tw-bg-white dark:tw-bg-darkGray-900 hover:tw-bg-gray-100 dark:hover:tw-bg-darkGray-700 focus:tw-outline-none focus:tw-ring focus:tw-ring-gray-100 dark:focus:tw-ring-darkGray-600 tw-mx-1"
             >
-              Previous Step
+              {{ $t('dapps.modals.previousStep') }}
             </button>
             <button
               type="button"
               @click="upload"
               class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 hover:tw-bg-blue-700 dark:hover:tw-bg-blue-400 focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 dark:focus:tw-ring-blue-400 tw-mx-1"
             >
-              Upload
+              {{ $t('dapps.modals.upload') }}
             </button>
           </div>
         </div>

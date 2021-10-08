@@ -11,11 +11,11 @@
       >
         <icon-plus />
       </icon-base>
-      Register dApp
+      {{ $t('store.registerDapp') }}
     </Button>
     <div class="tw-flex tw-flex-wrap tw-justify-start">
       <div v-if="dapps.length === 0" class="tw-text-xl tx-font-semibold tw-mt-4 tw-ml-4 dark:tw-text-darkGray-100">
-        No dApps registered. Be a first to register one.
+        {{ $t('store.noDappsRegistered') }}
       </div>
       <Dapp v-else v-for="(dapp, index) in dapps" :key="index" :dapp="dapp" v-on:dappClick="showDetailsModal" />
     </div>
