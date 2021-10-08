@@ -1,7 +1,7 @@
 <template>
   <div class="flex items-center">
     <!-- TODO: Links -->
-    <a href="#" :class="classes.link">
+    <a href="https://twitter.com/AstarNetwork" target="_blank" :class="classes.link">
       <!-- original icon -->
       <icon-base
         :class="classes.iconBase"
@@ -14,7 +14,7 @@
       <span :class="classes.tooltipText"> Twitter </span>
     </a>
 
-    <a href="#" :class="classes.link">
+    <a href="https://t.me/PlasmOfficial" target="_blank" :class="classes.link">
       <!-- original icon -->
       <icon-base
         :class="classes.iconBase"
@@ -27,7 +27,7 @@
       <span :class="classes.tooltipText"> Telegram </span>
     </a>
 
-    <a href="#" :class="classes.link">
+    <a href="https://discord.gg/Z3nC9U4" target="_blank" :class="classes.link">
       <!-- original icon -->
       <icon-base
         :class="classes.iconBase"
@@ -40,7 +40,7 @@
       <span :class="classes.tooltipText"> Discord </span>
     </a>
 
-    <a href="#" :class="classes.link">
+    <a href="https://github.com/PlasmNetwork/Plasm" target="_blank" :class="classes.link">
       <!-- original icon -->
       <icon-base
         :class="classes.iconBase"
@@ -54,7 +54,7 @@
       <span :class="classes.tooltipText"> GitHub </span>
     </a>
 
-    <a href="#" :class="classes.link">
+    <a href="https://docs.astar.network/" target="_blank" :class="classes.link">
       <!-- Heroicon name: outline/document-text -->
       <icon-base
         :class="classes.iconBase"
