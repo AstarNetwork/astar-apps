@@ -22,10 +22,10 @@ export default {
     docs: 'Documentation',
   },
   balance: {
-    totalBalance: '总馀额',
-    balance: '馀额',
+    totalBalance: '总余额',
+    balance: '余额',
     transfer: '转账',
-    transferable: '可使用馀额',
+    transferable: '可使用余额',
     modals: {
       connectMetamask: '链接MetaMask',
       ethereumExtension: 'ECDSA (Ethereum extension)',
@@ -35,7 +35,7 @@ export default {
       sigExtrinsicBlocked:
         'Custom sig extrinsic calls has been temporarily blocked',
       transferToken: '发送 {token}',
-      transferableBalance: '{token} 可使用馀额',
+      transferableBalance: '{token} 可使用余额',
       sendFrom: '发自',
       sendTo: '发送到',
       alert: 'Alert',
