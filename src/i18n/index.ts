@@ -5,7 +5,7 @@ import ja from './ja';
 
 export const languagesSelector = [
   {
-    text: 'EN',
+    text: 'English',
     code: 'en-US',
   },
   {

@@ -26,17 +26,15 @@
       class="tw-w-8 tw-h-8 sm:tw-w-10 sm:tw-h-10 tw-rounded-full tw-overflow-hidden tw-border tw-border-gray-100 focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100"
     ></div>
   </div>
-    <locale-changer />
 </template>
 
 <script lang="ts">
-import LocaleChanger from './LocaleChanger.vue'
 import { useSidebar } from 'src/hooks';
 import { defineComponent } from 'vue';
 import IconBase from '../icons/IconBase.vue';
 import IconOutlineMenu from '../icons/IconOutlineMenu.vue';
 export default defineComponent({
-  components: { IconBase, IconOutlineMenu, LocaleChanger },
+  components: { IconBase, IconOutlineMenu },
   setup() {
     const { isOpen } = useSidebar();
     return {

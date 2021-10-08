@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center">
+  <div class="flex items-center tw-justify-center">
     <!-- TODO: Links -->
     <a href="#" :class="classes.link">
       <!-- original icon -->

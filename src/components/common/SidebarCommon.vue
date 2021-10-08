@@ -135,7 +135,10 @@
     class="tw-flex-shrink-0 tw-p-4 tw-border-t tw-border-gray-200 dark:tw-border-darkGray-600"
   >
     <SocialMediaLinks />
+    <div class="tw-flex tw-items-center tw-justify-center">
     <LightDarkMode />
+    <locale-changer />
+    </div>
   </div>
 
   <!-- Modals -->
@@ -164,13 +167,14 @@ import IconBalance from '../icons/IconBalance.vue';
 import IconSolidChevronDown from '../icons/IconSolidChevronDown.vue';
 import IconStore from '../icons/IconStore.vue'
 import ModalNetwork from 'src/components/balance/modals/ModalNetwork.vue';
+import LocaleChanger from './LocaleChanger.vue'
 
 export default defineComponent({
   components: {
     ConnectionIndicator,
     ExtensionsMetadata,
     SocialMediaLinks,
-    LightDarkMode,
+    LightDarkMode,LocaleChanger,
     IconBase,
     IconDapps,
     IconDotLockdrop,
