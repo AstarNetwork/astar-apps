@@ -37,7 +37,7 @@ export default {
       transferToken: 'Transfer {token}',
       transferableBalance: '{token} 支払可能残高',
       sendFrom: '送信元',
-      sendTo: '送信先',
+      sendTo: '受取先',
       alert: 'Alert',
     },
   },
@@ -52,7 +52,7 @@ export default {
     modals: {
       createYourDapps: 'dAppsの作成 ({step} / 2)',
       deploymentAccount: 'Deployment Account',
-      projectName: 'Project name',
+      projectName: 'プロジェクト名',
       nextStep: '次に進む',
       previousStep: '前に戻る',
       instantiationConstructor: 'Instantiation Constructor',
