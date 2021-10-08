@@ -29,7 +29,7 @@
           @click="setMaxAmount"
           class="tw-bg-blue-100 dark:tw-bg-blue-200 hover:tw-bg-blue-200 dark:hover:tw-bg-blue-300 tw-text-xs tw-rounded-full tw-px-3 tw-py-2 tw-text-blue-900 dark:tw-text-darkGray-900 tw-mx-3 focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 dark:focus:tw-ring-blue-300"
         >
-          MAX
+          {{ $t('max') }}
         </button>
         <div
           class="tw-text-blue-900 dark:tw-text-darkGray-100 tw-text-lg tw-border-l tw-border-gray-300 dark:tw-border-darkGray-500 tw-px-3 tw-py-4"

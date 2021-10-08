@@ -1,12 +1,12 @@
 <template>
   <Modal title="Register a new dApp">
     <template v-slot:content>
-      <div> 
+      <div>
         <div class="tw-mb-4">
           <label
             class="tw-block tw-text-sm tw-font-medium tw-text-gray-500 dark:tw-text-darkGray-400 tw-mb-2"
           >
-            Logo
+            {{ $t('store.modals.logo') }}
           </label>
 
           <input-file
@@ -66,7 +66,7 @@
     </template>
     <template v-slot:buttons>
       <Button @click="registerDapp">
-        Register
+        {{ $t('store.modals.register') }}
       </Button>
     </template>
   </Modal>

@@ -10,11 +10,11 @@
           </div>
           <div>
             <template v-if="!curAddress">
-              <div class="tw-text-sm tw-font-medium dark:tw-text-darkGray-100">Connect to Metamask</div>
+              <div class="tw-text-sm tw-font-medium dark:tw-text-darkGray-100">{{ $t('balance.modals.connectMetamask') }}</div>
             </template>
             <template v-else>
               <div>
-                <div class="tw-text-sm tw-font-medium dark:tw-text-darkGray-100">ECDSA (Ethereum extension)</div>
+                <div class="tw-text-sm tw-font-medium dark:tw-text-darkGray-100">{{ $t('balance.modals.ethereumExtension') }}</div>
                 <div class="tw-text-xs tw-text-gray-500 dark:tw-text-darkGray-400">
                   {{ shortenAddr(curAddress) }}
                 </div>

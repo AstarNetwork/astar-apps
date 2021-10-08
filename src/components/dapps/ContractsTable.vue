@@ -2,7 +2,7 @@
   <h2
     class="tw-text-blue-900 dark:tw-text-white tw-text-lg tw-font-bold tw-mt-4 tw-mb-4 tw-leading-tight"
   >
-    Contracts
+    {{ $t('dapps.contracts') }}
   </h2>
 
   <div class="tw-grid tw-grid-cols-1 sm:tw-grid-cols-3 xl:tw-grid-cols-4 tw-gap-4">

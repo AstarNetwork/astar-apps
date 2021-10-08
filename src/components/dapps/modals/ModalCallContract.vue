@@ -17,7 +17,7 @@
             <h3
               class="tw-text-lg tw-font-extrabold tw-text-blue-900 dark:tw-text-white tw-mb-6 tw-text-center"
             >
-              Call a Contract
+              {{ $t('dapps.modals.callContract') }}
             </h3>
 
             <div class="tw-grid tw-grid-cols-1 tw-gap-6">
@@ -25,7 +25,7 @@
                 <label
                   class="tw-block tw-text-sm tw-font-medium tw-text-gray-500 dark:tw-text-darkGray-400 tw-mb-2"
                 >
-                  Contract to use:
+                  {{ $t('dapps.modals.contractToUse') }}
                 </label>
                 <input
                   class="tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-rounded-md tw-w-full tw-text-blue-900 dark:tw-text-darkGray-100 focus:tw-outline-none tw-placeholder-gray-300 dark:tw-placeholder-darkGray-600 tw-px-3 tw-py-3 tw-appearance-none tw-bg-white dark:tw-bg-darkGray-900"
@@ -39,7 +39,7 @@
                 <label
                   class="tw-block tw-text-sm tw-font-medium tw-text-gray-500 dark:tw-text-darkGray-400 tw-mb-2"
                 >
-                  Call from account
+                  {{ $t('dapps.modals.callFromAccount') }}
                 </label>
 
                 <button
@@ -104,7 +104,7 @@
                 <label
                   class="tw-block tw-text-sm tw-font-medium tw-text-gray-500 dark:tw-text-darkGray-400 tw-mb-2"
                 >
-                  Message to send
+                  {{ $t('dapps.modals.msgToSend') }}
                 </label>
 
                 <input
@@ -138,7 +138,7 @@
               <label
                 class="tw-block tw-text-sm tw-font-medium tw-text-gray-500 dark:tw-text-darkGray-400 tw-mb-2"
               >
-                Outcome
+                {{ $t('dapps.modals.outcome') }}
               </label>
               <ul
                 class="tw-max-h-56 tw-rounded-md tw-py-1 tw-text-base tw-overflow-auto focus:tw-outline-none"
@@ -162,7 +162,7 @@
             @click="readCallRpc"
             class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 hover:tw-bg-blue-700 dark:hover:tw-bg-blue-400 focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 dark:focus:tw-ring-blue-400 tw-mx-1"
           >
-            Read
+            {{ $t('dapps.modals.read') }}
           </button>
           <button
             v-else
@@ -170,14 +170,14 @@
             @click="execCallRpc"
             class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 hover:tw-bg-blue-700 dark:hover:tw-bg-blue-400 focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 dark:focus:tw-ring-blue-400 tw-mx-1"
           >
-            Execute
+            {{ $t('dapps.modals.execute') }}
           </button>
           <button
             type="button"
             @click="closeModal"
             class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-text-sm tw-font-medium tw-rounded-full tw-text-gray-500 dark:tw-text-darkGray-400 tw-bg-white dark:tw-bg-darkGray-900 hover:tw-bg-gray-100 dark:hover:tw-bg-darkGray-700 focus:tw-outline-none focus:tw-ring focus:tw-ring-gray-100 dark:focus:tw-ring-darkGray-600 tw-mx-1"
           >
-            Cancel
+            {{ $t('cancel') }}
           </button>
         </div>
       </div>

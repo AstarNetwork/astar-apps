@@ -8,7 +8,7 @@
         <div class="tw-my-8 tw-w-full tw-text-lg">
           <a :href="dapp.url" target="_blank">{{ dapp.url }}</a>
         </div>
-        <p class="tw-w-full">Contract address {{ dapp.address }}</p>
+        <p class="tw-w-full">{{ $t('store.modals.contractAddress', {address: dapp.address}) }}</p>
       </div>
     </template>
   </Modal>

@@ -6,9 +6,9 @@
     class="tw-inline-flex tw-items-center tw-w-full tw-justify-center tw-px-6 tw-py-1 tw-border tw-border-transparent tw-text-xs tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 hover:tw-bg-blue-700 dark:hover:tw-bg-blue-400 focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 dark:focus:tw-ring-blue-400 tw-my-1"
   >
     <template v-if="isNeedUpdate(extensionCount) && !isComplete"
-      >Update Metadata</template
+      > {{ $t('common.updateMetadata') }}</template
     >
-    <template v-else>Metadata Already Installed</template>
+    <template v-else> {{ $t('common.metadataAlreadyInstalled') }}</template>
   </button>
 </template>
 <script lang="ts">

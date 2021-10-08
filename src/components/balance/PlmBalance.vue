@@ -12,7 +12,7 @@
           </icon-base>
         </div>
         <p class="tw-text-blue-900 dark:tw-text-darkGray-100 tw-font-bold tw-text-lg">
-          {{ defaultUnitToken }} Balance
+          {{ defaultUnitToken }} {{ $t('balance.balance') }}
         </p>
       </div>
 
@@ -34,7 +34,7 @@
           class="tw-inline-flex tw-items-center tw-px-4 tw-py-2 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 hover:tw-bg-blue-400 focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 dark:focus:tw-ring-blue-400 tw-mx-0.5"
           :class="!address ? 'disabled_btn' : ''"
         >
-          Transfer
+          {{ $t('balance.transfer') }}
         </button>
       </div>
     </div>
@@ -43,7 +43,7 @@
       <div
         class="tw-flex tw-justify-between tw-items-center tw-bg-blue-50 dark:tw-bg-darkGray-700 tw-rounded-lg tw-mb-2 tw-py-3 tw-px-4"
       >
-        <div>Transferable</div>
+        <div> {{ $t('balance.transferable') }}</div>
         <div>
           <p class="tw-font-bold tw-text-right">
             <span class="tw-text-2xl tw-leading-tight"><format-balance :balance="accountData?.getUsableTransactionBalance()" /></span>

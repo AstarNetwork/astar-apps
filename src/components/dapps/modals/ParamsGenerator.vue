@@ -3,7 +3,7 @@
     <label
       class="tw-block tw-text-sm tw-font-medium tw-text-gray-500 dark:tw-text-darkGray-400 tw-mb-2"
     >
-      Instantiation Constructor
+      {{ $t('dapps.modals.instantiationConstructor') }}
     </label>
 
     <button

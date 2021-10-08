@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center">
+  <div class="flex items-center tw-justify-center">
     <!-- TODO: Links -->
     <a href="#" :class="classes.link">
       <!-- original icon -->
@@ -11,7 +11,9 @@
         <icon-twitter />
       </icon-base>
       <!-- Tooltip -->
-      <span :class="classes.tooltipText"> Twitter </span>
+      <span :class="classes.tooltipText">
+        {{ $t('common.twitter') }}
+      </span>
     </a>
 
     <a href="#" :class="classes.link">
@@ -24,7 +26,7 @@
         <icon-telegram />
       </icon-base>
       <!-- Tooltip -->
-      <span :class="classes.tooltipText"> Telegram </span>
+      <span :class="classes.tooltipText"> {{ $t('common.telegram') }} </span>
     </a>
 
     <a href="#" :class="classes.link">
@@ -37,7 +39,7 @@
         <icon-discord />
       </icon-base>
       <!-- Tooltip -->
-      <span :class="classes.tooltipText"> Discord </span>
+      <span :class="classes.tooltipText"> {{ $t('common.discord') }} </span>
     </a>
 
     <a href="#" :class="classes.link">
@@ -51,7 +53,7 @@
       </icon-base>
 
       <!-- Tooltip -->
-      <span :class="classes.tooltipText"> GitHub </span>
+      <span :class="classes.tooltipText"> {{ $t('common.github') }} </span>
     </a>
 
     <a href="#" :class="classes.link">
@@ -66,7 +68,7 @@
         <icon-document />
       </icon-base>
       <!-- Tooltip -->
-      <span :class="classes.tooltipText"> Documentation </span>
+      <span :class="classes.tooltipText"> {{ $t('common.docs') }} </span>
     </a>
   </div>
 </template>

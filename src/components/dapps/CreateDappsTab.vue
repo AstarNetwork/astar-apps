@@ -12,7 +12,7 @@
       >
         <icon-plus />
       </icon-base>
-      Create your dApp
+      {{ $t('dapps.createYourDapp') }}
     </button>
     <button
       type="button"
@@ -27,7 +27,7 @@
       >
         <icon-plus />
       </icon-base>
-      Add an existing code hash
+      {{ $t('dapps.addExistingCodeHash') }}
     </button>
   </div>
 
