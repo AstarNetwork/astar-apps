@@ -1,17 +1,23 @@
 <template>
   <div>
     <div v-if="stakeInfo" class="tw-mb-4">
-      Total stake: <span class="tw-font-semibold">{{ stakeInfo?.totalStake }}</span>
+      {{ $t('store.totalStake') }} <span class="tw-font-semibold">{{ stakeInfo?.totalStake }}</span>
       <div :style="{opacity: stakeInfo?.hasStake ? '1' : '0'}">
-        Your stake : <span class="tw-font-semibold">{{ stakeInfo?.yourStake }}</span>
+          {{ $t('store.yourStake') }}  <span class="tw-font-semibold">{{ stakeInfo?.yourStake }}</span>
       </div>
     </div>
-    <div class="tw-flex"> 
+    <div class="tw-flex">
       <div v-if="stakeInfo?.hasStake">
-        <Button @click="showStakeModal" :small="true">Add</Button>
-        <Button @click="showUnstakeModal" :small="true" :primary="false">Unstake</Button>
+        <Button @click="showStakeModal" :small="true">
+          {{ $t('store.add') }}
+        </Button>
+        <Button @click="showUnstakeModal" :small="true" :primary="false">
+          {{ $t('store.unstake') }}
+        </Button>
       </div>
-      <Button v-else @click="showStakeModal" :small="true">Stake</Button>
+      <Button v-else @click="showStakeModal" :small="true">
+        {{ $t('store.stake') }}
+      </Button>
 
       <Button
         v-if="stakeInfo?.hasStake"
@@ -19,7 +25,7 @@
         :primary="false"
         class="tw-ml-auto"
         @click="showClaimRewardModal=true">
-        Claim
+        {{ $t('store.claim') }}
       </Button>
     </div>
   </div>

@@ -49,7 +49,9 @@
           <icon-balance />
         </icon-base>
         <span class="tw-ml-3 tw-flex-1">
-          <p class="tw-font-bold">Balance</p>
+          <p class="tw-font-bold">
+              {{ $t('balance.balance') }}
+          </p>
           <!-- <p
             class="tw-text-xs tw-text-blue-900 dark:tw-text-darkGray-100 tw-font-semibold tw-flex tw-justify-between"
           >
@@ -76,7 +78,9 @@
         >
           <icon-dapps />
         </icon-base>
-        <span class="tw-font-bold tw-ml-3 tw-flex-1">dApps</span>
+        <span class="tw-font-bold tw-ml-3 tw-flex-1">
+          {{ $t('common.dApps') }}
+        </span>
       </router-link>
 
       <router-link
@@ -94,7 +98,9 @@
         >
           <icon-store />
         </icon-base>
-        <span class="tw-font-bold tw-ml-3 tw-flex-1">Store</span>
+        <span class="tw-font-bold tw-ml-3 tw-flex-1">
+            {{ $t('common.store') }}
+        </span>
       </router-link>
 
       <a
@@ -118,7 +124,9 @@
         >
           <icon-dot-lockdrop />
         </icon-base>
-        <span class="tw-ml-3 tw-flex-1">Plasm Lockdrop</span>
+        <span class="tw-ml-3 tw-flex-1">
+          {{ $t('common.plasmLockdrop') }}
+        </span>
       </a>
     </nav>
   </div>

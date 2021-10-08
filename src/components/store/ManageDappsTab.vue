@@ -10,7 +10,7 @@
       >
         <icon-plus />
       </icon-base>
-      Register dApp
+      {{ $t('store.registerDapp') }}
     </Button>
     
     <ModalRegisterDapp

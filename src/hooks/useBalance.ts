@@ -21,15 +21,21 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
       }
       if (address && api) {
         api.isReady.then(async () => {
-          const accountInfo: AccountInfo = await api.query.system.account(address);
+          const accountInfo: AccountInfo = await api.query.system.account(
+            address
+          );
           accountDataRef.value = new AccountData(
             accountInfo.data.free,
             accountInfo.data.reserved,
             accountInfo.data.miscFrozen,
-            accountInfo.data.feeFrozen);  
-          
+            accountInfo.data.feeFrozen
+          );
+
           balanceRef.value = accountInfo.data.free.toBn();
-          console.log(`The balance is ${balanceRef.value}`, accountDataRef.value  );
+          console.log(
+            `The balance is ${balanceRef.value}`,
+            accountDataRef.value
+          );
         });
       }
     },
@@ -44,7 +50,7 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
   });
   return {
     balanceRef,
-    accountDataRef
+    accountDataRef,
   };
 }
 
@@ -78,7 +84,12 @@ export function useBalance(apiRef: any, addressRef: Ref<string>) {
 }
 
 export class AccountData {
-  constructor(free: Balance, reserved: Balance, miscFrozen: Balance, feeFrozen: Balance) {
+  constructor(
+    free: Balance,
+    reserved: Balance,
+    miscFrozen: Balance,
+    feeFrozen: Balance
+  ) {
     this.free = free.toBn();
     this.reserved = reserved.toBn();
     this.miscFrozen = miscFrozen.toBn();

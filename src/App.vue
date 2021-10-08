@@ -39,6 +39,7 @@ import ModalLoading from 'components/common/ModalLoading.vue';
 import AlertBox from 'components/common/AlertBox.vue';
 import Sidebar from 'components/Sidebar.vue';
 
+
 export default defineComponent({
   name: 'App',
   components: {
@@ -51,7 +52,6 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
-
     const isLoading = computed(() => store.getters['general/isLoading']);
     const showAlert = computed(() => store.getters['general/showAlert']);
     

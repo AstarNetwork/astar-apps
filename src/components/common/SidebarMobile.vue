@@ -15,7 +15,9 @@
             class="tw-ml-1 tw-flex tw-items-center tw-justify-center tw-h-10 tw-w-10 tw-rounded-full focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-inset focus:tw-ring-white"
             @click="isOpen = false"
           >
-            <span class="tw-sr-only">Close sidebar</span>
+            <span class="tw-sr-only">
+              {{ $t('common.closeSidebar') }}
+            </span>
             <!-- Heroicon name: outline/x -->
             <icon-base
               class="tw-h-6 tw-w-6 tw-text-white dark:tw-text-darkGray-300"
