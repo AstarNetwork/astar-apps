@@ -12,7 +12,7 @@
           </icon-base>
         </div>
         <p class="tw-text-blue-900 dark:tw-text-darkGray-100 tw-font-bold tw-text-lg">
-          {{ defaultUnitToken }} {{ $t('balance.balance') }}
+          {{ defaultUnitToken }} {{ $t('balance.transferable') }}
         </p>
       </div>
 
@@ -20,7 +20,7 @@
         <div>
           <p class="tw-font-semibold tw-text-center">
             <span class="tw-text-4xl tw-tracking-tight tw-leading-tight"
-              ><format-balance :balance="accountData?.free"
+              ><format-balance :balance="accountData?.getUsableTransactionBalance()"
             /></span>
           </p>
         </div>
@@ -41,12 +41,23 @@
 
     <div class="tw-text-sm">
       <div
-        class="tw-flex tw-justify-between tw-items-center tw-bg-blue-50 dark:tw-bg-darkGray-700 tw-rounded-lg tw-mb-2 tw-py-3 tw-px-4"
+        class="tw-flex tw-justify-between tw-items-center tw-bg-blue-50 dark:tw-bg-darkGray-700 tw-rounded-lg tw-mb-4 tw-py-3 tw-px-4"
       >
-        <div> {{ $t('balance.transferable') }}</div>
+        <div> {{ $t('balance.vested') }}</div>
         <div>
           <p class="tw-font-bold tw-text-right">
-            <span class="tw-text-2xl tw-leading-tight"><format-balance :balance="accountData?.getUsableTransactionBalance()" /></span>
+            <span class="tw-text-2xl tw-leading-tight"><format-balance :balance="accountData?.vested" /></span>
+          </p>
+        </div>
+      </div>
+
+      <div
+        class="tw-flex tw-justify-between tw-items-center tw-bg-blue-50 dark:tw-bg-darkGray-700 tw-rounded-lg tw-mb-2 tw-py-3 tw-px-4"
+      >
+        <div> {{ $t('balance.locked') }}</div>
+        <div>
+          <p class="tw-font-bold tw-text-right">
+            <span class="tw-text-2xl tw-leading-tight"><format-balance :balance="accountData?.miscFrozen" /></span>
           </p>
         </div>
       </div>

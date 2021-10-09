@@ -26,6 +26,8 @@ export default {
     balance: 'Balance',
     transfer: 'Transfer',
     transferable: 'Transferable',
+    vested: 'Vested',
+    locked: 'Locked',
     modals: {
       connectMetamask: 'Connect to MetaMask',
       ethereumExtension: 'ECDSA (Ethereum extension)',
