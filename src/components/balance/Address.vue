@@ -58,7 +58,8 @@
           viewBox="0 0 20 20"
           aria-hidden="true"
         >
-          <icon-document-duplicate />
+          <!-- <icon-document-duplicate /> -->
+          <icon-link />
         </icon-base>
 
         <!-- Tooltip -->
@@ -81,13 +82,15 @@ import IconBase from 'components/icons/IconBase.vue';
 import IconAccountSample from 'components/icons/IconAccountSample.vue';
 import IconChevronDown from 'components/icons/IconChevronDown.vue';
 import IconDocumentDuplicate from 'components/icons/IconDocumentDuplicate.vue';
+import IconLink from 'components/icons/IconLink.vue';
 
 export default defineComponent({
   components: {
     IconBase,
     IconAccountSample,
     IconChevronDown,
-    IconDocumentDuplicate,
+    // IconDocumentDuplicate,
+    IconLink
   },
   props: {
     address: {
