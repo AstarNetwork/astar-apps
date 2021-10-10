@@ -1,6 +1,6 @@
 <template>
   <div v-if="isConnected(currentNetworkStatus)">
-    <div class="tw-grid lg:tw-grid-cols-2 tw-gap-4 tw-mb-4">
+    <div class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4 tw-mb-4">
       <Address
         :address="currentAccount"
         :address-name="currentAccountName"

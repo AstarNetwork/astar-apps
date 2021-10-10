@@ -6,6 +6,7 @@ export default {
   max: '最大',
   close: '閉じる',
   forget: 'Forget',
+  subscan: 'Subscan',
   common: {
     updateMetadata: 'Metadataアップデート',
     metadataAlreadyInstalled: 'Metadata Already Installed',
