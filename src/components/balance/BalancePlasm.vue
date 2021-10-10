@@ -8,7 +8,7 @@
       />
     </div>
 
-    <div class="tw-grid tw-grid-cols-1 sm:tw-grid-cols-3 tw-gap-4 tw-mb-8">
+    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-y-4 md:tw-gap-4 tw-mb-8">
       <TotalBalance
         v-if="accountData"
         :accountData="accountData"

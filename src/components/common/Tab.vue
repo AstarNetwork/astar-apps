@@ -1,5 +1,5 @@
 <template>
-  <nav class="tw--mb-px tw-flex tw-justify-items-center" aria-label="Tabs">
+  <nav class="tw--mb-px tw-flex tw-justify-items-center sm:tw-ml-8 md:tw-ml-0" aria-label="Tabs">
     <router-link
       append
       v-for="num in labelsNumArray"
@@ -42,9 +42,9 @@ export default defineComponent({
       inactiveLinkClass:
         'tw-border-gray-50 dark:tw-border-darkGray-900 tw-border tw-rounded-t-md',
       activeSpanClass:
-        'tw-block tw-bg-gray-50 dark:tw-bg-darkGray-900 tw--mb-px tw-whitespace-nowrap tw-py-3 sm:tw-py-5 tw-px-3 md:tw-px-8 tw-text-blue-900 dark:tw-text-darkGray-300 tw-font-medium tw-rounded-t-md tw-border-gray-50 dark:tw-border-darkGray-900 tw-border-b',
+        'tw-block tw-bg-gray-50 dark:tw-bg-darkGray-900 tw--mb-px tw-whitespace-nowrap tw-py-3 sm:tw-py-5 tw-px-6 md:tw-px-8 tw-text-blue-900 dark:tw-text-darkGray-300 tw-font-medium tw-rounded-t-md tw-border-gray-50 dark:tw-border-darkGray-900 tw-border-b',
       inactiveSpanClass:
-        'tw-block tw-bg-gray-50 dark:tw-bg-darkGray-900 tw--mb-px tw-whitespace-nowrap tw-py-3 sm:tw-py-5 tw-px-3 md:tw-px-8 tw-text-blue-500 dark:tw-text-blue-400 tw-font-medium tw-rounded-t-md tw-border-gray-200 dark:tw-border-darkGray-600 tw-border-b hover:tw-text-blue-400 dark:hover:tw-text-blue-300',
+        'tw-block tw-bg-gray-50 dark:tw-bg-darkGray-900 tw--mb-px tw-whitespace-nowrap tw-py-3 sm:tw-py-5 tw-px-6 md:tw-px-8 tw-text-blue-500 dark:tw-text-blue-400 tw-font-medium tw-rounded-t-md tw-border-gray-200 dark:tw-border-darkGray-600 tw-border-b hover:tw-text-blue-400 dark:hover:tw-text-blue-300',
     });
     const labelsNumArray = computed(() => [
       ...Array(props.labels.length).keys(),
