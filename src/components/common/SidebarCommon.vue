@@ -45,7 +45,6 @@
             : 'inactiveLink',
         ]"
         class="tw-items-center tw-justify-center"
-        style="height: 104px"
       >
         <icon-base
           :class="[
