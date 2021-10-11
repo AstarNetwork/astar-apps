@@ -92,6 +92,7 @@ export default {
     },
   },
   store: {
+    dappsStore: 'dApps Store',
     registerDapp: 'dAppを登録',
     noDappsRegistered: 'No dApps registered. Be a first to register one.',
     totalStake: 'Total stake:',

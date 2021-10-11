@@ -16,7 +16,7 @@
         </p>
       </div>
 
-      <div class="tw-flex tw-justify-center tw-mt-4 sm:tw-mt-8 lg:tw-mt-6">
+      <div class="tw-flex tw-justify-center tw-mt-4 lg:tw-mt-6">
         <div>
           <p class="tw-font-semibold tw-text-center">
             <span class="tw-text-4xl tw-tracking-tight tw-leading-tight"
@@ -57,7 +57,7 @@
         <div> {{ $t('balance.locked') }}</div>
         <div>
           <p class="tw-font-bold tw-text-right">
-            <span class="tw-text-2xl tw-leading-tight"><format-balance :balance="accountData?.miscFrozen" /></span>
+            <span class="tw-text-2xl md:tw-text-xl xl:tw-text-2xl tw-leading-tight"><format-balance :balance="accountData?.getUsableTransactionBalance()" /></span>
           </p>
         </div>
       </div>

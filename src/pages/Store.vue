@@ -5,19 +5,23 @@
     <h1
       class="md:tw-mr-10 tw-text-3xl tw-font-extrabold tw-text-blue-900 dark:tw-text-white tw-mb-6 sm:tw-mb-8"
     >
-      dApps Store
+      {{$t('store.dappsStore')}}
     </h1>
-    <Tab
-      :labels="[
-        { label: 'Discover', path: 'discover-dapps' },
-      ]"
-    />
-    <Tab
-      :labels="[
-        { label: 'Manage', path: 'manage-dapps' },
-      ]"
-    />
-  </div>
+      <div
+        class="tw-flex"
+      >
+        <Tab
+          :labels="[
+            { label: 'Discover', path: 'discover-dapps' },
+          ]"
+        />
+        <Tab
+          :labels="[
+            { label: 'Manage', path: 'manage-dapps' },
+          ]"
+        />
+      </div>
+    </div>
   <router-view />
 </template>
 

@@ -5,7 +5,7 @@
     <h1
       class="md:tw-mr-10 tw-text-3xl tw-font-extrabold tw-text-blue-900 dark:tw-text-white tw-mb-6 sm:tw-mb-8"
     >
-      dApps
+      {{$t('common.dApps')}}
     </h1>
     <Tab
       :labels="[

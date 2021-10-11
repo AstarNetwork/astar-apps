@@ -94,6 +94,7 @@ export default {
     },
   },
   store: {
+    dappsStore: 'dApps Store',
     registerDapp: 'Register dApp',
     noDappsRegistered: 'No dApps registered. Be a first to register one.',
     totalStake: 'Total stake:',
