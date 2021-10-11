@@ -93,6 +93,7 @@ export default {
     },
   },
   store: {
+    dappsStore: 'dApps Store',
     registerDapp: '註冊dApp',
     noDappsRegistered: 'No dApps registered. Be a first to register one.',
     totalStake: '總質押:',

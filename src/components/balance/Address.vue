@@ -7,7 +7,7 @@
     >
       <div class="tw-flex tw-items-center">
         <div
-          class="tw-h-11 tw-w-11 sm:tw-h-12 sm:tw-w-12 tw-rounded-full tw-overflow-hidden tw-border tw-border-gray-100 tw-mx-2 sm:tw-mx-3"
+          class="tw-h-11 tw-w-11 sm:tw-h-12 sm:tw-w-12 tw-rounded-full tw-overflow-hidden sm:tw-border tw-border-gray-100 tw-mx-2 sm:tw-mx-3"
         >
           <icon-base class="tw-h-full tw-w-full" viewBox="0 0 64 64">
             <icon-account-sample />
