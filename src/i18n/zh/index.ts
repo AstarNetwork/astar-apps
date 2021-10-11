@@ -6,6 +6,7 @@ export default {
   max: '最大',
   forget: 'Forget',
   close: '关闭',
+  subscan: 'Subscan',
   common: {
     updateMetadata: '更新Metadata',
     metadataAlreadyInstalled: '已建立Metadata',
