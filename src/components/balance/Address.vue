@@ -7,7 +7,7 @@
     >
       <div class="tw-flex tw-items-center">
         <div
-          class="tw-h-11 tw-w-11 sm:tw-h-12 sm:tw-w-12 tw-rounded-full tw-overflow-hidden tw-border tw-border-gray-100 tw-mx-2 sm:tw-mx-3"
+          class="tw-h-11 tw-w-11 sm:tw-h-12 sm:tw-w-12 tw-rounded-full tw-overflow-hidden sm:tw-border tw-border-gray-100 tw-mx-2 sm:tw-mx-3"
         >
           <icon-base class="tw-h-full tw-w-full" viewBox="0 0 64 64">
             <icon-account-sample />
@@ -45,31 +45,62 @@
       </button>
     </div>
 
-    <div
-      class="tw-border-l tw-border-gray-100 dark:tw-border-darkGray-600 tw-flex tw-items-center tw-px-1 md:tw-px-2"
-    >
-      <button
-        type="button"
-        class="tw-tooltip tw-p-4 sm:tw-p-5 tw-rounded-full hover:tw-bg-gray-100 dark:hover:tw-bg-darkGray-600 focus:tw-z-10 focus:tw-outline-none focus:tw-ring focus:tw-ring-gray-100 dark:focus:tw-ring-darkGray-600 focus:tw-bg-blue-50 dark:focus:tw-bg-darkGray-900 tw-relative tw-group"
-        @click="copyAddress"
+    <div class="tw-flex tw-items-center">
+      <div
+        class="tw-border-l tw-border-gray-100 dark:tw-border-darkGray-600 tw-flex tw-items-center tw-px-1 md:tw-px-2"
       >
-        <icon-base
-          class="tw-h-5 tw-w-5 dark:tw-text-darkGray-100"
-          viewBox="0 0 20 20"
-          aria-hidden="true"
+        <button
+          type="button"
+          class="tw-tooltip tw-p-4 sm:tw-p-5 tw-rounded-full hover:tw-bg-gray-100 dark:hover:tw-bg-darkGray-600 focus:tw-z-10 focus:tw-outline-none focus:tw-ring focus:tw-ring-gray-100 dark:focus:tw-ring-darkGray-600 focus:tw-bg-blue-50 dark:focus:tw-bg-darkGray-900 tw-relative tw-group"
+          @click="copyAddress"
         >
-          <icon-document-duplicate />
-        </icon-base>
+          <icon-base
+            class="tw-h-5 tw-w-5 dark:tw-text-darkGray-100"
+            viewBox="0 0 20 20"
+            aria-hidden="true"
+          >
+            <icon-document-duplicate />
+          </icon-base>
 
-        <!-- Tooltip -->
-        <span
-          class="tw-pointer-events-none tw-hidden tw-absolute tw-top-0 tw-left-1/2 tw-z-10 tw-transform tw--translate-y-full tw--translate-x-1/2  tw-p-2 tw-text-xs tw-leading-tight tw-text-white tw-bg-gray-800 dark:tw-bg-darkGray-500 tw-rounded-md tw-shadow-lg tw-whitespace-nowrap"
-        >
-          {{ $t('copy') }}
-        </span>
+          <!-- Tooltip -->
+          <span
+            class="tw-pointer-events-none tw-hidden tw-absolute tw-top-0 tw-left-1/2 tw-z-10 tw-transform tw--translate-y-full tw--translate-x-1/2  tw-p-2 tw-text-xs tw-leading-tight tw-text-white tw-bg-gray-800 dark:tw-bg-darkGray-500 tw-rounded-md tw-shadow-lg tw-whitespace-nowrap"
+          >
+            {{ $t('copy') }}
+          </span>
 
-        <input type="hidden" id="hiddenAddr" :value="address" />
-      </button>
+          <input type="hidden" id="hiddenAddr" :value="address" />
+        </button>
+      </div>
+
+      <div
+        v-if="isSubscan"
+        class="tw-border-l tw-border-gray-100 dark:tw-border-darkGray-600 tw-flex tw-items-center tw-px-1 md:tw-px-2"
+      >
+        <a :href=subScan target="_blank" rel="noopener noreferrer">
+          <button
+            type="button"
+            class="tw-tooltip tw-p-4 sm:tw-p-5 tw-rounded-full hover:tw-bg-gray-100 dark:hover:tw-bg-darkGray-600 focus:tw-z-10 focus:tw-outline-none focus:tw-ring focus:tw-ring-gray-100 dark:focus:tw-ring-darkGray-600 focus:tw-bg-blue-50 dark:focus:tw-bg-darkGray-900 tw-relative tw-group"
+          >
+            <icon-base
+              class="dark:tw-text-darkGray-300 tw-h-5 tw-w-5 tw-mt-1"
+              viewBox="0 0 30 40"
+              aria-hidden="true"
+            >
+              <icon-link />
+            </icon-base>
+
+            <!-- Tooltip -->
+            <span
+              class="tw-pointer-events-none tw-hidden tw-absolute tw-top-0 tw-left-1/2 tw-z-10 tw-transform tw--translate-y-full tw--translate-x-1/2  tw-p-2 tw-text-xs tw-leading-tight tw-text-white tw-bg-gray-800 dark:tw-bg-darkGray-500 tw-rounded-md tw-shadow-lg tw-whitespace-nowrap"
+            >
+              {{ $t('subscan') }}
+            </span>
+
+            <input type="hidden" id="hiddenAddr" :value="address" />
+          </button>
+        </a>
+      </div>
     </div>
   </div>
 </template>
@@ -81,6 +112,8 @@ import IconBase from 'components/icons/IconBase.vue';
 import IconAccountSample from 'components/icons/IconAccountSample.vue';
 import IconChevronDown from 'components/icons/IconChevronDown.vue';
 import IconDocumentDuplicate from 'components/icons/IconDocumentDuplicate.vue';
+import IconLink from 'components/icons/IconLink.vue';
+import { SUB_SCAN } from 'src/links'
 
 export default defineComponent({
   components: {
@@ -88,6 +121,7 @@ export default defineComponent({
     IconAccountSample,
     IconChevronDown,
     IconDocumentDuplicate,
+    IconLink
   },
   props: {
     address: {
@@ -111,6 +145,10 @@ export default defineComponent({
     });
 
     const store = useStore();
+    const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
+    const selectedAccountAddress = computed(() => store.getters['general/selectedAccountAddress']);
+    const subScan = computed(() => `${SUB_SCAN[currentNetworkIdx.value as 0 | 1 | 3 ]}/account/${selectedAccountAddress.value}`);
+    const isSubscan = Object.keys(SUB_SCAN).includes(currentNetworkIdx.value.toString())
 
     const showAlert = () => {
       store.dispatch('general/showAlertMsg', {
@@ -123,6 +161,9 @@ export default defineComponent({
       openModal,
       shortenAddress,
       showAlert,
+      subScan,
+      isSubscan,
+      currentNetworkIdx
     };
   },
   methods: {

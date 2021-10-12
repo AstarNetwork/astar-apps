@@ -9,6 +9,15 @@
     </div>
 
     <div class="tw-p-4">
+
+      <div class="tw-mb-1">
+        <AddressSmall
+          :address="currentAccount"
+          :address-name="currentAccountName"
+          v-model:isOpen="modalAccount"
+        />
+      </div>
+
       <button
         type="button"
         @click="modalNetwork = true"
@@ -147,12 +156,19 @@
     v-model:isOpen="modalNetwork"
     v-model:selectNetwork="currentNetworkIdx"
   />
+
+  <ModalAccount
+    v-if="modalAccount"
+    v-model:isOpen="modalAccount"
+    :all-accounts="allAccounts"
+    :all-account-names="allAccountNames"
+  />
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch } from 'vue';
+import { defineComponent, ref, computed, watch,reactive,  toRefs, } from 'vue';
 import { useStore } from 'src/store';
-import { useSidebar, useAccount } from 'src/hooks';
+import { useAccount, useSidebar } from 'src/hooks';
 import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import ConnectionIndicator from './ConnectionIndicator.vue';
@@ -167,6 +183,14 @@ import IconSolidChevronDown from '../icons/IconSolidChevronDown.vue';
 import IconStore from '../icons/IconStore.vue'
 import ModalNetwork from 'src/components/balance/modals/ModalNetwork.vue';
 import LocaleChanger from './LocaleChanger.vue'
+import AddressSmall from '../common/AddressSmall.vue'
+import ModalAccount from '../balance/modals/ModalAccount.vue';
+
+interface Modal {
+  modalAccount: boolean;
+  modalNetwork: boolean;
+}
+
 
 export default defineComponent({
   components: {
@@ -181,13 +205,18 @@ export default defineComponent({
     IconSolidChevronDown,
     IconStore,
     ModalNetwork,
+    AddressSmall,
+    ModalAccount
   },
   setup() {
     const { isOpen } = useSidebar();
-    const modalNetwork = ref(false);
+    const stateModal = reactive<Modal>({
+      modalNetwork: false,
+      modalAccount: false,
+    });
 
     const store = useStore();
-    const { currentAccount, currentAccountName } = useAccount();
+    const { allAccounts, allAccountNames, currentAccount, currentAccountName } = useAccount();
 
     const shortenAddress = computed(() => {
       return getShortenAddress(currentAccount.value);
@@ -209,15 +238,18 @@ export default defineComponent({
     );
 
     return {
+      ...toRefs(stateModal),
       isOpen,
-      modalNetwork,
-      shortenAddress,
-      currentAccountName,
       currentNetworkStatus,
       currentNetworkIdx,
       currentNetworkName,
       isLocalChain,
       network,
+      shortenAddress,
+      currentAccount,
+      currentAccountName,
+      allAccounts,
+      allAccountNames,
     };
   },
 });
