@@ -10,10 +10,8 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
   const accountDataRef = ref<AccountData>();
 
   const unsub: Ref<VoidFn | undefined> = ref();
-
-  watch(
-    () => addressRef.value,
-    (address) => {
+  const updateAccount = (address: string) => {
+    if (address) {
       const api = apiRef?.value;
       if (unsub.value) {
         unsub.value();
@@ -52,13 +50,23 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
           balanceRef.value = accountInfo.data.free.toBn();
         });
       }
+    }
+  };
+
+  const updateAccountHandler = setInterval(() => {
+    updateAccount(addressRef.value);
+  }, 10000);
+
+  watch(
+    () => addressRef.value,
+    (address) => {
+      updateAccount(address);
     },
     { immediate: true }
   );
 
-  console.log('accountDataRef', accountDataRef);
-
   onUnmounted(() => {
+    clearInterval(updateAccountHandler);
     const unsubFn = unsub.value;
     if (unsubFn) {
       unsubFn();
@@ -97,7 +105,6 @@ export function useBalance(apiRef: any, addressRef: Ref<string>) {
     },
     { immediate: true }
   );
-
   return { balance, accountData };
 }
 
