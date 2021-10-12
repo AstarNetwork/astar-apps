@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-flex-1 tw-flex tw-flex-col tw-pt-10 tw-overflow-y-auto">
+  <div class="tw-flex-1 tw-flex tw-flex-col tw-pt-10 tw-overflow-x-hidden tw-overflow-y-auto">
     <div class="tw-flex tw-items-center">
       <img width="200" src="~assets/img/astar.png" />
       <ConnectionIndicator
