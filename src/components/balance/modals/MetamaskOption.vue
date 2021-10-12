@@ -150,9 +150,18 @@ export default defineComponent({
       if (checked) {
         return 'tw-text-blue-900 dark:tw-text-darkGray-100 tw-cursor-default tw-select-none tw-relative tw-py-2 tw-pl-3 tw-pr-6 tw-bg-blue-200 dark:tw-bg-blue-500 tw-bg-opacity-20';
       } else {
-        return 'tw-text-blue-900 dark:tw-text-darkGray-100 tw-cursor-default tw-select-none tw-relative tw-py-2 tw-pl-3 tw-pr-6 hover:tw-bg-gray-50 dark:hover:tw-bg-darkGray-800';
+        return 'not-checkerd';
       }
     },
   },
 });
 </script>
+
+<style scoped>
+  .not-checkerd {
+    @apply tw-text-blue-900 dark:tw-text-darkGray-100 tw-cursor-default tw-select-none tw-relative tw-py-2 tw-pl-3 tw-pr-6;
+  }
+  .not-checkerd:hover {
+    @apply hover:tw-bg-gray-50 dark:tw-bg-darkGray-800;
+  }
+</style>

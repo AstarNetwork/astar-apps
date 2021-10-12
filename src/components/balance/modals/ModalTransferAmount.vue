@@ -24,7 +24,7 @@
 
             <button
               type="button"
-              class="tw-w-full tw-bg-blue-500 dark:tw-bg-blue-800 tw-text-white tw-rounded-lg tw-px-5 tw-py-5 tw-mb-4 tw-relative hover:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 dark:focus:tw-ring-blue-400"
+              class="transfer-button"
             >
               <span class="tw-block tw-text-left tw-font-bold tw-text-sm mb-2"
                 >{{ $t('balance.modals.transferableBalance', { token: defaultUnitToken}) }}
@@ -79,14 +79,14 @@
             type="button"
             :disabled="!canExecuteTransaction"
             @click="transfer(transferAmt, fromAddress, toAddress)"
-            class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 hover:tw-bg-blue-700 dark:hover:tw-bg-blue-400 focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 dark:focus:tw-ring-blue-400 tw-mx-1"
+            class="confirm"
           >
             {{ $t('confirm') }}
           </button>
           <button
             type="button"
             @click="closeModal"
-            class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-text-sm tw-font-medium tw-rounded-full tw-text-gray-500 dark:tw-text-darkGray-400 tw-bg-white dark:tw-bg-darkGray-900 hover:tw-bg-gray-100 dark:hover:tw-bg-darkGray-700 focus:tw-outline-none focus:tw-ring focus:tw-ring-gray-100 dark:focus:tw-ring-darkGray-600 tw-mx-1"
+            class="cancel"
           >
             {{ $t('cancel') }}
           </button>
@@ -314,3 +314,33 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+  .transfer-button {
+    @apply tw-w-full tw-bg-blue-500 dark:tw-bg-blue-800 tw-text-white tw-rounded-lg tw-px-5 tw-py-5 tw-mb-4 tw-relative;
+  }
+  .transfer-button:hover {
+    @apply tw-bg-blue-600 dark:tw-bg-blue-700;
+  }
+  .transfer-button:focus {
+    @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-blue-400;
+  }
+  .confirm {
+    @apply tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500  tw-mx-1;
+  }
+  .confirm:hover {
+    @apply tw-bg-blue-700 dark:tw-bg-blue-400;
+  }
+  .confirm:focus {
+    @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-blue-400;
+  }
+  .cancel {
+    @apply tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-text-sm tw-font-medium tw-rounded-full tw-text-gray-500 dark:tw-text-darkGray-400 tw-bg-white dark:tw-bg-darkGray-900 tw-mx-1;
+  }
+  .cancel:hover {
+    @apply tw-bg-gray-100 dark:tw-bg-darkGray-700;
+  }
+  .cancel:focus {
+    @apply tw-outline-none tw-ring tw-ring-gray-100 dark:tw-ring-darkGray-600;
+  }
+</style>

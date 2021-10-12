@@ -2,6 +2,7 @@ import { MutationTree } from 'vuex';
 import { ConnectionType, GeneralStateInterface as State } from './state';
 import type { ChainInfo } from 'src/hooks/useChainInfo';
 import type { Extensions } from 'src/hooks/useMetaExtensions';
+import { Dark } from 'quasar';
 
 export interface GeneralMutations<S = State> {
   setInitialized(state: S): void;
@@ -14,10 +15,7 @@ export interface GeneralMutations<S = State> {
   setExtensionCount(state: S, type: number): void;
   setAllAccounts(state: S, type: string[]): void;
   setAllAccountNames(state: S, type: string[]): void;
-  setCurrentNetworkStatus(
-    state: S,
-    networkStatus: ConnectionType
-  ): void;
+  setCurrentNetworkStatus(state: S, networkStatus: ConnectionType): void;
   setCurrentNetworkIdx(state: S, networkIdx: number): void;
   setCurrentAccountIdx(state: S, accountIdx: number): void;
   setCurrentCustomEndpoint(state: S, endpoint: string): void;
@@ -35,7 +33,7 @@ const mutation: MutationTree<State> & GeneralMutations = {
   },
   setAlertMsg(state, msg) {
     state.alertBox.alertMsg = msg;
-  }, 
+  },
   setAlertType(state, type) {
     state.alertBox.alertType = type;
   },
@@ -73,14 +71,16 @@ const mutation: MutationTree<State> & GeneralMutations = {
     state.currentCustomEndpoint = endpoint;
   },
   setTheme(state, theme) {
-    const htmlClasses = document.documentElement.classList;
     if (theme == 'DARK') {
-      htmlClasses.add('dark');
+      Dark.set(true);
+      document.documentElement.classList.add('dark');
     } else {
-      htmlClasses.remove('dark');
+      Dark.set(false);
+      document.documentElement.classList.remove('dark');
     }
+
     state.currentTheme = theme;
-  }
+  },
 };
 
 export default mutation;

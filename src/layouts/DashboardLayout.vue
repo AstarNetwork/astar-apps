@@ -25,5 +25,12 @@ export default defineComponent({
     PlasmHeader,
     Sidebar,
   },
+  setup(){
+    const isDark =  window.matchMedia &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches
+    isDark? document.documentElement.classList.add('dark')
+    : document.documentElement.classList.remove('dark')
+  }
 });
 </script>
+

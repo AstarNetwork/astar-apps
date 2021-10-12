@@ -22,7 +22,7 @@
       </div>
       <button
         type="button"
-        class="tw-ml-auto tw-tooltip tw-p-3 tw-rounded-full hover:tw-bg-gray-100 dark:hover:tw-bg-darkGray-600 focus:tw-z-10 focus:tw-outline-none focus:tw-ring focus:tw-ring-gray-100 dark:focus:tw-ring-darkGray-600 focus:tw-bg-blue-50 dark:focus:tw-bg-darkGray-900 tw-relative tw-group tw--mr-1"
+        class="coppy-address-button tw-tooltip"
         @click="copyAddress"
       >
         <icon-document-duplicate />
@@ -46,7 +46,7 @@
           </div>
           <button
             type="button"
-            class="tw-tooltip tw-p-3 tw-rounded-full hover:tw-bg-gray-100 dark:hover:tw-bg-darkGray-600 focus:tw-z-10 focus:tw-outline-none focus:tw-ring focus:tw-ring-gray-100 dark:focus:tw-ring-darkGray-600 focus:tw-bg-blue-50 dark:focus:tw-bg-darkGray-900 tw-relative tw-group tw--mr-2 tw--my-3"
+            class="coppy-code-hash-button tw-tooltip"
             @click="copyCodeHash"
           >
             <icon-base
@@ -87,7 +87,7 @@
     <div class="tw-text-right">
       <button
         type="button"
-        class="tw-inline-flex tw-items-center tw-rounded-full tw-border tw-border-blue-300 dark:tw-border-darkBlue-500 tw-px-3 tw-py-2 tw-bg-white dark:tw-bg-darkBlue-800 tw-text-xs tw-font-medium hover:tw-bg-blue-100 dark:hover:tw-bg-darkBlue-700 focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 dark:focus:tw-ring-darkBlue-600 tw-text-gray-500 dark:tw-text-darkBlue-400 tw-mr-2"
+        class="coppy-abi-button"
         @click="copyABI"
       >
         {{ $t('dapps.copyAbi') }}
@@ -95,7 +95,7 @@
       <input type="hidden" id="hiddenAbi" :value="abi" />
       <button
         type="button"
-        class="tw-inline-flex tw-items-center tw-rounded-full tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-px-3 tw-py-2 tw-bg-white dark:tw-bg-darkGray-800 tw-text-xs tw-font-medium hover:tw-bg-gray-100 dark:hover:tw-bg-darkGray-700 focus:tw-outline-none focus:tw-ring focus:tw-ring-gray-100 dark:focus:tw-ring-darkGray-600 tw-text-gray-500 dark:tw-text-darkGray-400"
+        class="forget-button"
         @click="onForget"
       >
         {{ $t('forget') }}
@@ -230,3 +230,45 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+  .coppy-address-button {
+    @apply tw-ml-auto tw-p-3 tw-rounded-full tw-relative tw-group tw--mr-1;
+  }
+  .coppy-address-button:hover {
+    @apply tw-bg-gray-100 dark:tw-bg-darkGray-600;
+  }
+  .coppy-address-button:focus {
+    @apply tw-z-10 tw-outline-none tw-ring tw-ring-gray-100 dark:tw-ring-darkGray-600 tw-bg-blue-50 dark:tw-bg-darkGray-900;
+  }
+
+  .coppy-code-hash-button {
+    @apply tw-p-3 tw-rounded-full tw-relative tw-group tw--mr-2 tw--my-3;
+  }
+  .coppy-code-hash-button:hover {
+    @apply tw-bg-gray-100 dark:tw-bg-darkGray-600;
+  }
+  .coppy-code-hash-button:focus {
+    @apply tw-z-10 tw-outline-none tw-ring tw-ring-gray-100 dark:tw-ring-darkGray-600 tw-bg-blue-50 dark:tw-bg-darkGray-900;
+  }
+
+  .coppy-abi-button {
+    @apply tw-inline-flex tw-items-center tw-rounded-full tw-border tw-border-blue-300 tw-px-3 tw-py-2 tw-bg-white dark:tw-bg-blue-800 tw-text-xs tw-font-medium tw-text-gray-500 dark:tw-text-blue-400 tw-mr-2 tw-border-blue-500;
+  }
+  .coppy-abi-button:hover {
+    @apply tw-bg-blue-100 dark:tw-bg-blue-700;
+  }
+  .coppy-abi-button:focus {
+    @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-blue-600;
+  }
+
+  .forget-button {
+    @apply tw-inline-flex tw-items-center tw-rounded-full tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-px-3 tw-py-2 tw-bg-white dark:tw-bg-darkGray-800 tw-text-xs tw-font-medium tw-text-gray-500 dark:tw-text-darkGray-400;
+  }
+  .forget-button:hover {
+    @apply tw-bg-gray-100 dark:tw-bg-darkGray-700;
+  }
+  .forget-button:focus {
+    @apply tw-outline-none tw-ring tw-ring-gray-100 dark:tw-ring-darkGray-600;
+  }
+</style>

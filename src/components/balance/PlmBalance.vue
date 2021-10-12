@@ -31,7 +31,7 @@
           type="button"
           @click="openTransferModal"
           :disabled="!address"
-          class="tw-inline-flex tw-items-center tw-px-4 tw-py-2 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 hover:tw-bg-blue-400 focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 dark:focus:tw-ring-blue-400 tw-mx-0.5"
+          class="transfer-button"
           :class="!address ? 'disabled_btn' : ''"
         >
           {{ $t('balance.transfer') }}
@@ -94,5 +94,12 @@ export default defineComponent({
 <style scoped>
 .disabled_btn {
   background: #c6d3e1 !important;
+}
+
+.transfer-button {
+  @apply tw-inline-flex tw-items-center tw-px-4 tw-py-2 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 tw-mx-0.5;
+}
+.transfer-button:focus {
+  @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-blue-400;
 }
 </style>

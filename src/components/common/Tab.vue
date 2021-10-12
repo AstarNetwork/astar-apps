@@ -44,7 +44,7 @@ export default defineComponent({
       activeSpanClass:
         'tw-block tw-bg-gray-50 dark:tw-bg-darkGray-900 tw--mb-px tw-whitespace-nowrap tw-py-3 sm:tw-py-5 tw-px-6 md:tw-px-8 tw-text-blue-900 dark:tw-text-darkGray-300 tw-font-medium tw-rounded-t-md tw-border-gray-50 dark:tw-border-darkGray-900 tw-border-b',
       inactiveSpanClass:
-        'tw-block tw-bg-gray-50 dark:tw-bg-darkGray-900 tw--mb-px tw-whitespace-nowrap tw-py-3 sm:tw-py-5 tw-px-6 md:tw-px-8 tw-text-blue-500 dark:tw-text-blue-400 tw-font-medium tw-rounded-t-md tw-border-gray-200 dark:tw-border-darkGray-600 tw-border-b hover:tw-text-blue-400 dark:hover:tw-text-blue-300',
+        'inactive-span-class',
     });
     const labelsNumArray = computed(() => [
       ...Array(props.labels.length).keys(),
@@ -58,3 +58,12 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+  .inactive-span-class {
+    @apply tw-block tw-bg-gray-50 dark:tw-bg-darkGray-900 tw--mb-px tw-whitespace-nowrap tw-py-3 sm:tw-py-5 tw-px-6 md:tw-px-8 tw-text-blue-500 dark:tw-text-blue-400 tw-font-medium tw-rounded-t-md tw-border-gray-200 dark:tw-border-darkGray-600 tw-border-b;
+  }
+  .inactive-span-class:hover {
+    @apply tw-text-blue-400 dark:tw-text-blue-300;
+  }
+</style>

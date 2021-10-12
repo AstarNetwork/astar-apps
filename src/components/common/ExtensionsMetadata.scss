@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer utilities {
+   @variants hover {
+button:disabled {
+  @apply tw-bg-blue-300 hover:tw-bg-blue-300 dark:hover:tw-bg-blue-300;
+}
+}
+}

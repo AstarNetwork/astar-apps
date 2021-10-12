@@ -1,8 +1,8 @@
 <template>
   <button
     type="button"
+    class="modal-button"
     @click="openModal"
-    class="tw-inline-flex tw-justify-center tw-items-center tw-w-full tw-rounded-full tw-border tw-border-gray-300 dark:tw-border-darkGray-600 tw-px-4 tw-py-2  tw-bg-white dark:tw-bg-darkGray-900 tw-text-xs tw-font-medium tw-text-gray-700 dark:tw-text-darkGray-100 hover:tw-bg-gray-100 dark:hover:tw-bg-darkGray-700 focus:tw-outline-none focus:tw-ring focus:tw-ring-gray-100 dark:focus:tw-ring-darkGray-600"
     >
     <div
       class="tw-h-6 tw-w-6 tw-rounded-full tw-overflow-hidden tw-border tw-border-gray-100 tw-mx-3 sm:tw-mx-4"
@@ -63,3 +63,15 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+  .modal-button {
+    @apply tw-inline-flex tw-justify-center tw-items-center tw-w-full tw-rounded-full tw-border tw-border-gray-300 dark:tw-border-darkGray-600 tw-px-4 tw-py-2  tw-bg-white dark:tw-bg-darkGray-900 tw-text-xs tw-font-medium tw-text-gray-700 dark:tw-text-darkGray-100;
+  }
+  .modal-button:hover {
+    @apply tw-bg-gray-100 dark:tw-bg-darkGray-700;
+  }
+  .modal-button:focus {
+    @apply tw-outline-none tw-ring tw-ring-gray-100 dark:tw-ring-darkGray-600;
+  }
+</style>
