@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-flex-1 tw-flex tw-flex-col tw-pt-10 tw-overflow-y-auto">
+  <div class="tw-flex-1 tw-flex tw-flex-col tw-pt-10 tw-overflow-x-hidden tw-overflow-y-auto">
     <div class="tw-flex tw-items-center">
       <img width="200" src="~assets/img/astar.png" />
       <ConnectionIndicator
@@ -60,7 +60,14 @@
           <p class="tw-font-bold">
               {{ $t('balance.balance') }}
           </p>
-
+          <p
+            class="tw-text-xs tw-text-blue-900 dark:tw-text-darkGray-100 tw-font-semibold tw-flex tw-justify-between"
+          >
+            <span>{{ currentAccountName }}</span>
+          </p>
+          <p class="tw-text-xs tw-text-gray-500 dark:tw-text-darkGray-400">
+            {{ shortenAddress }}
+          </p>
         </span>
       </router-link>
 
@@ -137,8 +144,8 @@
   >
     <SocialMediaLinks />
     <div class="tw-flex tw-items-center tw-justify-center">
-    <LightDarkMode />
-    <locale-changer />
+      <LightDarkMode />
+      <locale-changer />
     </div>
   </div>
 
@@ -163,6 +170,7 @@ import { defineComponent, ref, computed, watch,reactive,  toRefs, } from 'vue';
 import { useStore } from 'src/store';
 import { useAccount, useSidebar } from 'src/hooks';
 import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
+import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import ConnectionIndicator from './ConnectionIndicator.vue';
 import ExtensionsMetadata from './ExtensionsMetadata.vue';
 import SocialMediaLinks from './SocialMediaLinks.vue';
@@ -208,8 +216,11 @@ export default defineComponent({
     });
 
     const store = useStore();
-
     const { allAccounts, allAccountNames, currentAccount, currentAccountName } = useAccount();
+
+    const shortenAddress = computed(() => {
+      return getShortenAddress(currentAccount.value);
+    });
 
     const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
@@ -234,6 +245,7 @@ export default defineComponent({
       currentNetworkName,
       isLocalChain,
       network,
+      shortenAddress,
       currentAccount,
       currentAccountName,
       allAccounts,
