@@ -107,14 +107,13 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.icon-link {
-  @apply tw-p-3 tw-rounded-full tw-relative;
-}
-.icon-link:hover {
-  @apply tw-bg-gray-100 dark:tw-bg-darkGray-600;
-}
-.icon-link:focus {
-  @apply tw-z-10 tw-outline-none tw-ring tw-ring-gray-100 dark:tw-ring-darkGray-600 tw-bg-blue-50 dark:tw-bg-darkGray-900;
-}
-
+  .icon-link {
+    @apply tw-p-3 tw-rounded-full tw-relative;
+  }
+  .icon-link:hover {
+    @apply tw-bg-gray-100 dark:tw-bg-darkGray-600;
+  }
+  .icon-link:focus {
+    @apply tw-z-10 tw-outline-none tw-ring tw-ring-gray-100 dark:tw-ring-darkGray-600 tw-bg-blue-50 dark:tw-bg-darkGray-900;
+  }
 </style>

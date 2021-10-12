@@ -441,6 +441,6 @@ export default defineComponent({
     @apply tw-bg-gray-100 dark:tw-bg-darkGray-700;
   }
   .cancel:focus {
-   @apply tw-outline-none tw-ring tw-ring-gray-100 dark:tw-ring-darkGray-600;
+    @apply tw-outline-none tw-ring tw-ring-gray-100 dark:tw-ring-darkGray-600;
   }
 </style>

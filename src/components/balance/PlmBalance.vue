@@ -92,14 +92,13 @@ export default defineComponent({
 });
 </script>
 <style scoped>
-.disabled_btn {
-  background: #c6d3e1 !important;
-}
-
-.transfer-button {
-  @apply tw-inline-flex tw-items-center tw-px-4 tw-py-2 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 tw-mx-0.5;
-}
-.transfer-button:focus {
-  @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-blue-400;
-}
+  .disabled_btn {
+    background: #c6d3e1 !important;
+  }
+  .transfer-button {
+    @apply tw-inline-flex tw-items-center tw-px-4 tw-py-2 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 tw-mx-0.5;
+  }
+  .transfer-button:focus {
+    @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-blue-400;
+  }
 </style>

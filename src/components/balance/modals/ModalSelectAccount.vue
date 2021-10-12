@@ -158,13 +158,13 @@ export default defineComponent({
 </script>
 
 <style scoped>
- .button-account {
-   @apply tw-relative tw-text-blue-900 dark:tw-text-darkGray-100 tw-w-full tw-bg-white dark:tw-bg-darkGray-900 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-rounded-md tw-pl-3 tw-pr-10 tw-py-3 tw-text-left;
- }
- .button-account:hover {
-   @apply tw-bg-gray-50 dark:tw-bg-darkGray-800;
- }
- .button-account:focus {
-   @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-darkGray-600;
- }
+  .button-account {
+    @apply tw-relative tw-text-blue-900 dark:tw-text-darkGray-100 tw-w-full tw-bg-white dark:tw-bg-darkGray-900 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-rounded-md tw-pl-3 tw-pr-10 tw-py-3 tw-text-left;
+  }
+  .button-account:hover {
+    @apply tw-bg-gray-50 dark:tw-bg-darkGray-800;
+  }
+  .button-account:focus {
+    @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-darkGray-600;
+  }
 </style>

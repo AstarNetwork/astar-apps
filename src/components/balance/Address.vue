@@ -182,13 +182,13 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.icon {
-  @apply tw-p-4 sm:tw-p-5 tw-rounded-full tw-relative;
-}
-.icon:hover {
-  @apply tw-bg-gray-100 dark:tw-bg-darkGray-600;
-}
-.icon:focus {
-  @apply tw-z-10 tw-outline-none tw-ring tw-ring-gray-100 tw-bg-blue-50 dark:tw-ring-darkGray-600 dark:tw-bg-darkGray-900;
-}
+  .icon {
+    @apply tw-p-4 sm:tw-p-5 tw-rounded-full tw-relative;
+  }
+  .icon:hover {
+    @apply tw-bg-gray-100 dark:tw-bg-darkGray-600;
+  }
+  .icon:focus {
+    @apply tw-z-10 tw-outline-none tw-ring tw-ring-gray-100 tw-bg-blue-50 dark:tw-ring-darkGray-600 dark:tw-bg-darkGray-900;
+  }
 </style>
