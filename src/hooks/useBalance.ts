@@ -3,10 +3,12 @@ import { Balance } from '@polkadot/types/interfaces';
 import BN from 'bn.js';
 import { onUnmounted, ref, Ref, watch } from 'vue';
 import { getVested } from './helper/vested';
+
 function useCall(apiRef: any, addressRef: Ref<string>) {
   // should be fixed -- cannot refer it because it goes undefined once it called. to call balance again, it should pass apiRef by external params.
   // const { api: apiRef } = useApi();
   const balanceRef = ref(new BN(0));
+  const vestedRef = ref(new BN(0));
   const accountDataRef = ref<AccountData>();
 
   const unsub: Ref<VoidFn | undefined> = ref();
@@ -31,7 +33,7 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
           const vestingValue = vesting.value;
           const vestingLocked = vestingValue.locked;
 
-          const vested = vestingLocked
+          vestedRef.value = vestingLocked
             ? getVested({
                 currentBlock: currentBlock.toBn(),
                 startBlock: vesting.value.startingBlock.toBn(),
@@ -44,7 +46,7 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
             accountInfo.data.reserved,
             accountInfo.data.miscFrozen,
             accountInfo.data.feeFrozen,
-            vested
+            vestedRef.value
           );
 
           balanceRef.value = accountInfo.data.free.toBn();
@@ -54,7 +56,9 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
   };
 
   const updateAccountHandler = setInterval(() => {
-    updateAccount(addressRef.value);
+    if (!vestedRef.value.eq(new BN(0))) {
+      updateAccount(addressRef.value);
+    }
   }, 10000);
 
   watch(
