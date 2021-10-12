@@ -38,6 +38,7 @@
     "firebase": "^9.0.2",
     "keccak": "byterose/keccak#stream-update",
     "node-polyfill-webpack-plugin": "^1.1.4",
+    "tailwindcss-theme-variants": "^2.0.0-alpha.1",
     "quasar": "^2.0.0",
     "secp256k1": "^4.0.2",
     "store": "^2.0.12",
