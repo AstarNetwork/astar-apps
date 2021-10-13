@@ -48,7 +48,7 @@ export const providerEndpoints: ChainProvider[] = [
     prefix: 0x150,
     typeDef: typeDefs.plasmCollatorDefinitions,
     key: endpointKey.SHIDEN,
-    isStoreEnabled: false,
+    isStoreEnabled: true,
   },
   {
     networkAlias: 'dusty-testnet',
