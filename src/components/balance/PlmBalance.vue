@@ -57,7 +57,7 @@
         <div> {{ $t('balance.locked') }}</div>
         <div>
           <p class="tw-font-bold tw-text-right">
-            <span class="tw-text-2xl md:tw-text-xl xl:tw-text-2xl tw-leading-tight"><format-balance :balance="accountData?.getUsableTransactionBalance()" /></span>
+            <span class="tw-text-2xl md:tw-text-xl xl:tw-text-2xl tw-leading-tight"><format-balance :balance="accountData?.miscFrozen" /></span>
           </p>
         </div>
       </div>
