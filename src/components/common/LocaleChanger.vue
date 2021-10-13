@@ -1,6 +1,6 @@
 <template>
   <div class="tw-relative tw-inline-block tw-border tw-border-gray-300 dark:tw-border-darkGray-600 tw-rounded-lg tw-bg-white dark:tw-bg-darkGray-900">
-    <select class="tw-w-full tw-h-8 tw-pl-3 tw-pr-6 tw-text-s tw-rounded-lg tw-appearance-none tw-bg-white dark:tw-bg-darkGray-900 tw-font-medium tw-text-gray-700 dark:tw-text-darkGray-100 tw-cursor-pointer focus:tw-outline-none hover:tw-bg-gray-100 dark:hover:tw-bg-darkGray-700" placeholder="Regular input" v-model="$i18n.locale">
+    <select class="select-language" placeholder="Regular input" v-model="$i18n.locale">
         <option v-for="(lang, i) in langs" :key="`Lang${i}`" :value="lang.code">{{ lang.text }}</option>
     </select>
 
@@ -22,7 +22,16 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.dropdown:hover .dropdown-menu {
-  display: block;
-}
+  .dropdown:hover .dropdown-menu {
+    display: block;
+  }
+  .select-language {
+    @apply tw-w-full tw-h-8 tw-pl-3 tw-pr-6 tw-text-sm tw-rounded-lg tw-appearance-none tw-bg-white dark:tw-bg-darkGray-900 tw-font-medium tw-text-gray-700 dark:tw-text-darkGray-100 tw-cursor-pointer;
+  }
+  .select-language:hover {
+    @apply tw-bg-gray-100 dark:tw-bg-darkGray-700;
+  }
+  .select-language:focus {
+    @apply tw-outline-none;
+  }
 </style>

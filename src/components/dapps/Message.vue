@@ -1,6 +1,6 @@
 <template>
   <div
-    class="tw-cursor-default tw-my-2 tw-py-1 tw-px-2 dark:tw-text-white tw-bg-gray-100 hover:tw-bg-gray-200 dark:tw-bg-darkGray-800 dark:hover:tw-bg-darkGray-700 tw-rounded-sm"
+    class="message"
   >
     <div class="tw-tooltip tw-relative">
       <div class="tw-flex">
@@ -82,5 +82,11 @@ export default defineComponent({
 <style>
 .tooltip-shadow {
   box-shadow: 2px 3px 3px 1px rgba(21, 19, 19, 0.427);
+}
+.message {
+  @apply tw-cursor-default tw-my-2 tw-py-1 tw-px-2 dark:tw-text-white tw-bg-gray-100 dark:tw-bg-darkGray-800 tw-rounded-sm;
+}
+.message:hover {
+  @apply tw-bg-gray-200 dark:tw-bg-darkGray-700;
 }
 </style>

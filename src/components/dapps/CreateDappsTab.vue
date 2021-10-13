@@ -3,7 +3,7 @@
     <button
       type="button"
       @click="modalCreateDapps = true"
-      class="tw-inline-flex tw-items-center tw-px-4 tw-py-2 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 hover:tw-bg-blue-400 focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 dark:focus:tw-ring-blue-400 tw-mb-1 tw-group"
+      class="create-dapp-button"
     >
       <icon-base
         class="tw-w-5 tw-h-5 tw-text-white tw--ml-1"
@@ -17,10 +17,10 @@
     <button
       type="button"
       @click="modalCodeHash = true"
-      class="tw-inline-flex tw-items-center tw-ml-3 tw-px-4 tw-py-2 tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-blue-500 dark:tw-text-blue-400 tw-border tw-border-blue-500 dark:tw-border-blue-400 hover:tw-bg-blue-100 dark:hover:tw-bg-darkGray-800 dark:hover:tw-border-blue-300 dark:hover:tw-text-blue-300 focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 dark:focus:tw-ring-blue-400 tw-mb-1 tw-group"
+      class="icon-plus-button"
     >
       <icon-base
-        class="tw-w-5 tw-h-5 tw-text-blue-500 dark:tw-text-blue-400 tw--ml-1 dark:group-hover:tw-text-blue-300"
+        class="plus"
         icon-name="plus"
         viewBox="0 0 24 24"
         stroke="currentColor"
@@ -93,3 +93,29 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+  .icon-plus-button {
+    @apply tw-inline-flex tw-items-center tw-ml-3 tw-px-4 tw-py-2 tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-blue-500 dark:tw-text-blue-400 tw-border tw-border-blue-500 dark:tw-border-blue-400 tw-mb-1 tw-group;
+  }
+  .icon-plus-button:hover {
+    @apply tw-bg-blue-100 dark:tw-bg-darkGray-800 dark:tw-border-blue-300 dark:tw-text-blue-300;
+  }
+  .icon-plus-button:focus {
+    @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-blue-400;
+  }
+
+  .create-dapp-button {
+    @apply tw-inline-flex tw-items-center tw-px-4 tw-py-2 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 hover:tw-bg-blue-400 tw-mb-1 tw-group;
+  }
+  .create-dapp-button:focus {
+    @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-blue-400;
+  }
+
+  .plus {
+    @apply tw-w-5 tw-h-5 tw-text-blue-500 dark:tw-text-blue-400 tw--ml-1;
+  }
+  .plus:group-hover {
+    @apply dark:tw-text-blue-300;
+  }
+</style>

@@ -27,7 +27,7 @@
         <div>
           <input v-bind="getInputProps()" />
           <div
-            class="tw-relative tw-cursor-pointer tw-rounded-md tw-font-medium tw-text-blue-500 dark:tw-text-blue-400 hover:tw-text-blue-400 dark:hover:tw-text-blue-300 focus-within:tw-ring-offset-none"
+            class="upload focus-within:tw-ring-offset-none"
           >
             {{ $t('dapps.modals.uploadFile') }}
           </div>
@@ -134,3 +134,12 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+  .upload {
+    @apply tw-relative tw-cursor-pointer tw-rounded-md tw-font-medium tw-text-blue-500 dark:tw-text-blue-400;
+  }
+  .upload:hover {
+    @apply tw-text-blue-400 dark:tw-text-blue-300;
+  }
+</style>

@@ -29,7 +29,7 @@
           <button
             type="button"
             @click="closeModal"
-            class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-text-sm tw-font-medium tw-rounded-full tw-text-gray-500 dark:tw-text-darkGray-400 tw-bg-white dark:tw-bg-darkGray-900 hover:tw-bg-gray-100 dark:hover:tw-bg-darkGray-700 focus:tw-outline-none focus:tw-ring focus:tw-ring-gray-100 dark:focus:tw-ring-darkGray-600 tw-mx-1"
+            class="close-modal"
           >
             {{ $t('close') }}
           </button>
@@ -64,3 +64,15 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+  .close-modal {
+    @apply tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-text-sm tw-font-medium tw-rounded-full tw-text-gray-500 dark:tw-text-darkGray-400 tw-bg-white dark:tw-bg-darkGray-900 tw-mx-1;
+  }
+  .close-modal:hover {
+    @apply tw-bg-gray-100 dark:tw-bg-darkGray-700;
+  }
+  .close-modal:focus {
+    @apply tw-outline-none tw-ring tw-ring-gray-100 dark:tw-ring-darkGray-600;
+  }
+</style>

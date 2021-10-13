@@ -1,3 +1,4 @@
+const { themeVariants } = require('tailwindcss-theme-variants');
 const colors = require('tailwindcss/colors');
 module.exports = {
   prefix: 'tw-',
@@ -97,9 +98,18 @@ module.exports = {
   variants: {
     extend: {
       backgroundColor: ['checked'],
+      color: ['checked'],
       borderColor: ['checked'],
       borderWidth: ['checked'],
     },
   },
-  plugins: [],
+  plugins: [
+    themeVariants({
+      themes: {
+        'dark': {
+          selector: '.dark',
+        },
+      },
+    }),
+  ],
 };

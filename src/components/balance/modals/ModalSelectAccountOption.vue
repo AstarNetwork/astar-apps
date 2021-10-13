@@ -1,7 +1,7 @@
 <template>
   <li
     role="option"
-    class="tw-text-blue-900 dark:tw-text-darkGray-100 tw-cursor-default tw-select-none tw-relative tw-py-2 tw-pl-3 tw-pr-9 hover:tw-bg-gray-50 dark:hover:tw-bg-darkGray-700"
+    class="option-list"
   >
     <div
       class="tw-flex tw-items-center tw-justify-between tw-cursor-pointer"
@@ -81,3 +81,12 @@ export default defineComponent({
   },
 });
 </script>
+
+<style>
+  .option-list {
+    @apply tw-text-blue-900 dark:tw-text-darkGray-100 tw-cursor-default tw-select-none tw-relative tw-py-2 tw-pl-3 tw-pr-9;
+  }
+  .option-list:hover {
+    @apply tw-bg-gray-50 dark:tw-bg-darkGray-700;
+  }
+</style>

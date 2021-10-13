@@ -2,7 +2,7 @@
   <div class="tw-flex tw-items-center">
     <button
       type="button"
-      class="tw-tooltip tw-p-3 tw-rounded-full tw-relative focus:tw-z-10 focus:tw-outline-none focus:tw-ring focus:tw-ring-gray-100 focus:tw-bg-blue-50 dark:hover:tw-bg-darkGray-600 dark:focus:tw-ring-darkGray-600 dark:focus:tw-bg-darkGray-900"
+      class="icon-light tw-tooltip"
       :class="{ 'tw-cursor-default': !isDarkTheme }"
       @click="switchThemeTo('LIGHT')"
     >
@@ -27,13 +27,13 @@
 
     <button
       type="button"
-      class="tw-tooltip tw-p-3 tw-rounded-full focus:tw-z-10 focus:tw-outline-none focus:tw-ring focus:tw-ring-gray-100 focus:tw-bg-blue-50 tw-relative tw-group dark:tw-ring-darkGray-600 dark:focus:tw-bg-darkGray-900"
-      :class="[isDarkTheme ? 'tw-cursor-default' : 'hover:tw-bg-gray-100']"
+      class="icon-dark tw-tooltip"
+      :class=darkIconHoverClass
       @click="switchThemeTo('DARK')"
     >
       <!-- Heroicon name: outline/moon -->
       <icon-base
-        class="tw-h-5 tw-w-5 group-hover:tw-text-blue-900 tw-text-gray-300 dark:group-hover:tw-text-darkGray-300 dark:tw-text-darkGray-100"
+        class="icon-outline-moon"
         viewBox="0 0 24 24"
         stroke="currentColor"
         iconColor="none"
@@ -63,9 +63,14 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const currentTheme = computed(() => store.getters['general/theme']);
+    const darkIconHoverClass = computed(() =>
+      store.getters['general/theme'] === 'DARK'?  'tw-cursor-default' : 'icon-dark-h'
+    );
+    const isDarkTheme = currentTheme.value == 'DARK'
 
     return {
-      isDarkTheme: currentTheme.value == 'DARK',
+      isDarkTheme,
+      darkIconHoverClass,
       switchThemeTo(theme: Theme) {
         store.commit('general/setTheme', theme);
       },
@@ -73,3 +78,34 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+  .icon-light {
+    @apply tw-p-3 tw-rounded-full tw-relative;
+  }
+  .icon-light:hover {
+    @apply dark:tw-bg-darkGray-600;
+  }
+  .icon-light:focus {
+    @apply tw-z-10 tw-outline-none tw-ring tw-ring-gray-100 tw-bg-blue-50 dark:tw-ring-darkGray-600 dark:tw-bg-darkGray-900;
+  }
+
+  .icon-dark {
+    @apply tw-p-3 tw-rounded-full tw-relative dark:tw-ring-darkGray-600;
+  }
+
+  .icon-dark-h:hover{
+    @apply tw-bg-gray-100 tw-cursor-pointer;
+  }
+
+  .icon-dark:focus {
+    @apply tw-z-10 tw-outline-none tw-ring tw-ring-gray-100 tw-bg-blue-50 dark:tw-bg-darkGray-900;
+  }
+
+  .icon-outline-moon {
+    @apply tw-h-5 tw-w-5 group-hover:tw-text-blue-900 tw-text-gray-300 dark:tw-text-darkGray-100;
+  }
+  .icon-outline-moon:group-hover{
+    @apply dark:tw-text-darkGray-300;
+  }
+</style>

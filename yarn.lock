@@ -6687,6 +6687,7 @@ keccak@byterose/keccak#stream-update:
   dependencies:
     node-addon-api "^2.0.0"
     node-gyp-build "^4.2.0"
+    readable-stream "^3.6.0"
 
 keyv@^3.0.0:
   version "3.1.0"
@@ -9517,6 +9518,14 @@ table@6.7.1, table@^6.0.9:
     slice-ansi "^4.0.0"
     string-width "^4.2.0"
     strip-ansi "^6.0.0"
+
+tailwindcss-theme-variants@^2.0.0-alpha.1:
+  version "2.0.0-alpha.1"
+  resolved "https://registry.yarnpkg.com/tailwindcss-theme-variants/-/tailwindcss-theme-variants-2.0.0-alpha.1.tgz#5078369136c786b9e5bf016b3581f70715f6c115"
+  integrity sha512-KaVYLhvSo4sxQtgyOe8MN5K6M4LpP42Fbnq8c7VfG0bbQFFEancaysmORxqoeSqJh+chjQ8rCZBJu+baqaAbLw==
+  dependencies:
+    lodash "^4.17.21"
+    postcss-selector-parser "^6.0.6"
 
 tapable@^1.0.0:
   version "1.1.3"

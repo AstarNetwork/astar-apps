@@ -34,7 +34,7 @@
                   <button
                     type="button"
                     @click="openOption = !openOption"
-                    class="tw-relative tw-text-blue-900 dark:tw-text-darkGray-100 tw-w-full tw-bg-white dark:tw-bg-darkGray-900 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-rounded-md tw-pl-3 tw-pr-10 tw-py-3 tw-text-left focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 dark:focus:tw-ring-darkGray-600 hover:tw-bg-gray-50 dark:hover:tw-bg-darkGray-800"
+                    class="option-button"
                   >
                     <div class="tw-flex tw-items-center tw-justify-between">
                       <div class="tw-flex tw-items-center">
@@ -167,7 +167,7 @@
           <button
             type="button"
             @click="closeModal"
-            class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-text-sm tw-font-medium tw-rounded-full tw-text-gray-500 dark:tw-text-darkGray-400 tw-bg-white dark:tw-bg-darkGray-900 hover:tw-bg-gray-100 dark:hover:tw-bg-darkGray-700 focus:tw-outline-none focus:tw-ring focus:tw-ring-gray-100 dark:focus:tw-ring-darkGray-600 tw-mx-1"
+            class="cancel-button"
           >
             {{ $t('cancel') }}
           </button>
@@ -176,10 +176,10 @@
             @click="moveStep2"
             :disabled="!canMoveToStep2"
             v-if="step === 1"
-            class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 dark:focus:tw-ring-blue-400 tw-mx-1"
+            class="next-step-button"
             :class="{
               'tw-placeholder-opacity-90': !canMoveToStep2,
-              'dark:hover:tw-bg-blue-400': canMoveToStep2,
+              'dark-bg-blue': canMoveToStep2,
               'hover:tw-bg-blue-700': canMoveToStep2,
               'tw-cursor-not-allowed': !canMoveToStep2,
             }"
@@ -190,14 +190,14 @@
             <button
               type="button"
               @click="step = 1"
-              class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-text-sm tw-font-medium tw-rounded-full tw-text-gray-500 dark:tw-text-darkGray-400 tw-bg-white dark:tw-bg-darkGray-900 hover:tw-bg-gray-100 dark:hover:tw-bg-darkGray-700 focus:tw-outline-none focus:tw-ring focus:tw-ring-gray-100 dark:focus:tw-ring-darkGray-600 tw-mx-1"
+              class="previous-step-button"
             >
               {{ $t('dapps.modals.previousStep') }}
             </button>
             <button
               type="button"
               @click="upload"
-              class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 hover:tw-bg-blue-700 dark:hover:tw-bg-blue-400 focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 dark:focus:tw-ring-blue-400 tw-mx-1"
+              class="upload-button"
             >
               {{ $t('dapps.modals.upload') }}
             </button>
@@ -600,3 +600,56 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+  .option-button {
+    @apply tw-relative tw-text-blue-900 dark:tw-text-darkGray-100 tw-w-full tw-bg-white dark:tw-bg-darkGray-900 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-rounded-md tw-pl-3 tw-pr-10 tw-py-3 tw-text-left;
+  }
+  .option-button:hover {
+    @apply tw-bg-gray-50 dark:tw-bg-darkGray-800;
+  }
+  .option-button:focus {
+    @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-darkGray-600;
+  }
+
+  .cancel-button {
+    @apply tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-text-sm tw-font-medium tw-rounded-full tw-text-gray-500 dark:tw-text-darkGray-400 tw-bg-white dark:tw-bg-darkGray-900 tw-mx-1;
+  }
+  .cancel-button:hover {
+    @apply tw-bg-gray-100 dark:tw-bg-darkGray-700;
+  }
+  .cancel-button:focus {
+    @apply tw-outline-none tw-ring tw-ring-gray-100 dark:tw-ring-darkGray-600;
+  }
+
+  .next-step-button {
+    @apply tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 tw-mx-1;
+  }
+  .next-step-button:focus {
+    @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-blue-400;
+  }
+
+  .previous-step-button {
+    @apply tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-text-sm tw-font-medium tw-rounded-full tw-text-gray-500 dark:tw-text-darkGray-400 tw-bg-white dark:tw-bg-darkGray-900 tw-mx-1;
+  }
+  .previous-step-button:hover {
+    @apply tw-bg-gray-100 dark:tw-bg-darkGray-700;
+  }
+  .previous-step-button:focus {
+    @apply tw-outline-none tw-ring tw-ring-gray-100 dark:tw-ring-darkGray-600;
+  }
+
+  .upload-button {
+    @apply tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 tw-mx-1;
+  }
+  .upload-button:hover {
+    @apply tw-bg-blue-700 dark:tw-bg-blue-400;
+  }
+  .upload-button:focus {
+    @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-blue-400;
+  }
+
+  .dark-bg-blue:hover{
+    @apply tw-bg-blue-400;
+  }
+</style>

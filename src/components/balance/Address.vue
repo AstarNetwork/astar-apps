@@ -26,7 +26,7 @@
       <button
         type="button"
         @click="openModal"
-        class="tw-tooltip tw-ml-auto tw-p-4 sm:tw-p-5 tw-rounded-full hover:tw-bg-gray-100 dark:hover:tw-bg-darkGray-600 focus:tw-z-10 focus:tw-outline-none focus:tw-ring focus:tw-ring-gray-100 dark:focus:tw-ring-darkGray-600 focus:tw-bg-blue-50 dark:focus:tw-bg-darkGray-900 tw-relative"
+        class="icon tw-ml-auto tw-tooltip"
       >
         <icon-base
           class="tw-h-5 tw-w-5 dark:tw-text-darkGray-100"
@@ -51,7 +51,7 @@
       >
         <button
           type="button"
-          class="tw-tooltip tw-p-4 sm:tw-p-5 tw-rounded-full hover:tw-bg-gray-100 dark:hover:tw-bg-darkGray-600 focus:tw-z-10 focus:tw-outline-none focus:tw-ring focus:tw-ring-gray-100 dark:focus:tw-ring-darkGray-600 focus:tw-bg-blue-50 dark:focus:tw-bg-darkGray-900 tw-relative tw-group"
+          class="icon tw-tooltip"
           @click="copyAddress"
         >
           <icon-base
@@ -80,7 +80,7 @@
         <a :href=subScan target="_blank" rel="noopener noreferrer">
           <button
             type="button"
-            class="tw-tooltip tw-p-4 sm:tw-p-5 tw-rounded-full hover:tw-bg-gray-100 dark:hover:tw-bg-darkGray-600 focus:tw-z-10 focus:tw-outline-none focus:tw-ring focus:tw-ring-gray-100 dark:focus:tw-ring-darkGray-600 focus:tw-bg-blue-50 dark:focus:tw-bg-darkGray-900 tw-relative tw-group"
+            class="icon tw-tooltip"
           >
             <icon-base
               class="dark:tw-text-darkGray-300 tw-h-5 tw-w-5 tw-mt-1"
@@ -180,3 +180,15 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+  .icon {
+    @apply tw-p-4 sm:tw-p-5 tw-rounded-full tw-relative;
+  }
+  .icon:hover {
+    @apply tw-bg-gray-100 dark:tw-bg-darkGray-600;
+  }
+  .icon:focus {
+    @apply tw-z-10 tw-outline-none tw-ring tw-ring-gray-100 tw-bg-blue-50 dark:tw-ring-darkGray-600 dark:tw-bg-darkGray-900;
+  }
+</style>

@@ -3,7 +3,7 @@
     :disabled="!isNeedUpdate(extensionCount) || isBusy || isComplete"
     type="button"
     @click="updateMetadata"
-    class="tw-inline-flex tw-items-center tw-w-full tw-justify-center tw-px-6 tw-py-1 tw-border tw-border-transparent tw-text-xs tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 hover:tw-bg-blue-700 dark:hover:tw-bg-blue-400 focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 dark:focus:tw-ring-blue-400 tw-my-1"
+    class="update-metadata"
   >
     <template v-if="isNeedUpdate(extensionCount) && !isComplete"
       > {{ $t('common.updateMetadata') }}</template
@@ -59,6 +59,19 @@ export default defineComponent({
 </script>
 <style scoped>
 button:disabled {
-  @apply tw-bg-blue-300 hover:tw-bg-blue-300 dark:hover:tw-bg-blue-300;
+  @apply tw-bg-blue-300 hover:tw-bg-blue-300;
 }
+
+</style>
+
+<style scoped>
+  .update-metadata {
+    @apply tw-inline-flex tw-items-center tw-w-full tw-justify-center tw-px-6 tw-py-1 tw-border tw-border-transparent tw-text-xs tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 tw-my-1;
+  }
+  .update-metadata:hover {
+    @apply tw-bg-blue-700 dark:tw-bg-blue-400;
+  }
+  .update-metadata:focus {
+    @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-blue-400;
+  }
 </style>

@@ -52,7 +52,7 @@
                         v-if="provider.key === endpointKey.CUSTOM"
                         type="text"
                         placeholder="IP Address / Domain"
-                        class="tw-appearance-none tw-bg-gray-50 dark:tw-bg-darkGray-800 tw-block tw-w-full tw-border tw-border-gray-300 dark:tw-border-darkGray-600 focus:tw-ring-blue-500 focus:tw-border-blue-500 tw-rounded-md tw-mt-2 tw-px-2 tw-py-2 focus:tw-outline-none tw-text-sm tw-text-gray-700 dark:tw-text-darkGray-100 focus:tw-bg-white dark:focus:tw-bg-darkGray-900 tw-placeholder-gray-300 dark:tw-placeholder-darkGray-600"
+                        class="ip-input"
                         v-model="customEndpoint"
                       />
                     </div>
@@ -66,14 +66,14 @@
           <button
             type="button"
             @click="selectNetwork(selNetwork)"
-            class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 hover:tw-bg-blue-700 dark:hover:tw-bg-blue-400 focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 dark:focus:tw-ring-blue-400 tw-mx-1"
+            class="switch"
           >
             {{ $t('balance.modals.switch') }}
           </button>
           <button
             type="button"
             @click="closeModal"
-            class="tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-gray-300 dark:tw-border-darkGray-600 tw-text-sm tw-font-medium tw-rounded-full tw-text-gray-500 dark:tw-text-darkGray-400 tw-bg-white dark:tw-bg-darkGray-900 dark:hover:tw-bg-darkGray-800 hover:tw-bg-gray-100 focus:tw-outline-none focus:tw-ring focus:tw-ring-gray-100 dark:focus:tw-ring-darkGray-600 tw-mx-1"
+            class="cancel"
           >
             {{ $t('cancel') }}
           </button>
@@ -97,11 +97,11 @@ export default defineComponent({
     const classRadioOn =
       'tw-rounded-lg tw-border tw-border-blue-500 tw-bg-blue-200 dark:tw-bg-blue-500 tw-bg-opacity-10 tw-px-4 tw-py-5 tw-flex tw-items-center tw-cursor-pointer';
     const classRadioOff =
-      'tw-rounded-lg tw-border tw-border-gray-300 dark:tw-border-darkGray-600 tw-bg-white dark:tw-bg-darkGray-900 hover:tw-bg-gray-50 dark:hover:tw-bg-darkGray-800 tw-px-4 tw-py-5 tw-flex tw-items-start tw-cursor-pointer tw-group';
+      'class-radio-off';
     const classRadioTxtOn =
       'tw-font-medium tw-text-blue-500 dark:tw-text-blue-400 tw-text-sm';
     const classRadioTxtOff =
-      'tw-font-medium tw-text-gray-500 dark:tw-text-darkGray-400 group-hover:tw-text-gray-700 dark:group-hover:tw-text-darkGray-300 tw-text-sm';
+      'class-radio-tx-off';
 
     const customEndpoint = ref('');
 
@@ -138,3 +138,44 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+  .switch {
+    @apply tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 tw-mx-1;
+  }
+  .switch:hover {
+    @apply tw-bg-blue-700 dark:tw-bg-blue-400;
+  }
+  .switch:focus {
+    @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-blue-400;
+  }
+  .cancel {
+    @apply tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-gray-300 dark:tw-border-darkGray-600 tw-text-sm tw-font-medium tw-rounded-full tw-text-gray-500 dark:tw-text-darkGray-400 tw-bg-white dark:tw-bg-darkGray-900 tw-mx-1;
+  }
+  .cancel:hover {
+    @apply dark:tw-bg-darkGray-800 tw-bg-gray-100;
+  }
+  .cancel:focus {
+    @apply tw-outline-none tw-ring tw-ring-gray-100 dark:tw-ring-darkGray-600;
+  }
+  .class-radio-off {
+    @apply tw-rounded-lg tw-border tw-border-gray-300 dark:tw-border-darkGray-600 tw-bg-white dark:tw-bg-darkGray-900 tw-px-4 tw-py-5 tw-flex tw-items-start tw-cursor-pointer tw-group;
+  }
+  .class-radio-off:hover {
+    @apply tw-bg-gray-50 dark:tw-bg-darkGray-800;
+  }
+
+  .ip-input {
+    @apply tw-appearance-none tw-bg-gray-50 dark:tw-bg-darkGray-800 tw-block tw-w-full tw-border tw-border-gray-300 dark:tw-border-darkGray-600 tw-rounded-md tw-mt-2 tw-px-2 tw-py-2 tw-text-sm tw-text-gray-700 dark:tw-text-darkGray-100  tw-placeholder-gray-300 dark:tw-placeholder-darkGray-600;
+  }
+  .ip-input:focus {
+    @apply tw-outline-none tw-bg-white dark:tw-bg-darkGray-900 tw-ring-blue-500 tw-border-blue-500;
+  }
+
+  .class-radio-tx-off {
+    @apply tw-font-medium tw-text-gray-500 dark:tw-text-darkGray-400 tw-text-sm;
+  }
+  .class-radio-tx-off:group-hover {
+    @apply tw-text-gray-700 dark:tw-text-darkGray-300;
+  }
+</style>

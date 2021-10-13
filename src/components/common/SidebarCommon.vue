@@ -21,7 +21,7 @@
       <button
         type="button"
         @click="modalNetwork = true"
-        class="tw-inline-flex tw-justify-center tw-w-full tw-rounded-full tw-border tw-border-gray-300 dark:tw-border-darkGray-600 tw-px-4 tw-py-3 tw-bg-white dark:tw-bg-darkGray-900 tw-text-xs tw-font-medium tw-text-gray-700 dark:tw-text-darkGray-100 hover:tw-bg-gray-100 dark:hover:tw-bg-darkGray-700 focus:tw-outline-none focus:tw-ring focus:tw-ring-gray-100 dark:focus:tw-ring-darkGray-600"
+        class="network-button"
       >
         {{ currentNetworkName }}
         <icon-base
@@ -50,7 +50,7 @@
           :class="[
             $route.path.split('/')[1] === 'balance'
               ? 'activeSvg'
-              : 'inactiveSvg',
+              :'inactiveSvg',
           ]"
           viewBox="0 0 24 24"
         >
@@ -80,7 +80,7 @@
       >
         <icon-base
           :class="[
-            $route.path.split('/')[1] === 'dapps' ? 'activeSvg' : 'inactiveSvg',
+            $route.path.split('/')[1] === 'dapps' ? 'activeSvg':'inactiveSvg',
           ]"
           viewBox="0 0 24 24"
         >
@@ -100,7 +100,7 @@
       >
         <icon-base
           :class="[
-            $route.path.split('/')[1] === 'store' ? 'activeSvg' : 'inactiveSvg',
+            $route.path.split('/')[1] === 'store' ? 'activeSvg':'inactiveSvg',
           ]"
           viewBox="0 0 24 24"
         >
@@ -124,7 +124,7 @@
           :class="[
             $route.path.split('/')[1] === 'lockdrop'
               ? 'activeSvg'
-              : 'inactiveSvg',
+              :'inactiveSvg',
           ]"
           iconColor="none"
           viewBox="0 0 24 24"
@@ -237,6 +237,7 @@ export default defineComponent({
       providerEndpoints[currentNetworkIdx.value]
     );
 
+
     return {
       ...toRefs(stateModal),
       isOpen,
@@ -255,16 +256,33 @@ export default defineComponent({
 });
 </script>
 <style scoped>
-.activeLink {
-  @apply tw-bg-blue-200 dark:tw-bg-blue-500 tw-bg-opacity-20 dark:tw-text-white tw-text-blue-500 tw-group tw-flex tw-px-4 tw-py-6 tw-border-r-4 tw-border-blue-500 tw-cursor-default;
-}
-.inactiveLink {
-  @apply tw-text-gray-500 dark:tw-text-darkGray-300 hover:tw-text-gray-700 dark:hover:tw-text-white tw-group tw-flex tw-items-center tw-px-4 tw-py-6 tw-text-sm tw-font-medium;
-}
-.activeSvg {
-  @apply tw-text-blue-500 dark:tw-text-white tw-h-6 tw-w-6;
-}
-.inactiveSvg {
-  @apply tw-text-gray-500 dark:tw-text-darkGray-300 group-hover:tw-text-gray-700 dark:group-hover:tw-text-white tw-h-6 tw-w-6;
-}
+  .activeLink {
+    @apply tw-bg-blue-200 dark:tw-bg-blue-500 tw-bg-opacity-20 dark:tw-bg-opacity-20 dark:tw-text-white tw-text-blue-500 tw-group tw-flex tw-px-4 tw-py-6 tw-border-r-4 tw-border-blue-500 tw-cursor-default;
+  }
+  .inactiveLink {
+    @apply tw-text-gray-500 hover:tw-text-gray-700 tw-group tw-flex tw-items-center tw-px-4 tw-py-6 tw-text-sm tw-font-medium dark:tw-text-darkGray-300 ;
+  }
+  .inactiveLink:hover{
+    @apply dark:tw-text-white;
+  }
+
+  .activeSvg {
+    @apply tw-text-blue-500 dark:tw-text-white tw-h-6 tw-w-6;
+  }
+  .inactiveSvg {
+    @apply tw-text-gray-500 group-hover:tw-text-gray-700 tw-h-6 tw-w-6 dark:tw-text-darkGray-300;
+  }
+  .inactiveSvg:group-hover {
+    @apply dark:tw-text-white;
+  }
+
+  .network-button {
+    @apply tw-inline-flex tw-justify-center tw-w-full tw-rounded-full tw-border tw-border-gray-300 dark:tw-border-darkGray-600 tw-px-4 tw-py-3 tw-bg-white dark:tw-bg-darkGray-900 tw-text-xs tw-font-medium tw-text-gray-700 dark:tw-text-darkGray-100 ;
+  }
+  .network-button:hover {
+    @apply tw-bg-gray-100 dark:tw-bg-darkGray-700;
+  }
+  .network-button:focus {
+    @apply tw-outline-none tw-ring tw-ring-gray-100 dark:tw-ring-darkGray-600;
+  }
 </style>

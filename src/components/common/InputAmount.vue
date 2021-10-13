@@ -27,7 +27,7 @@
           v-if="!noMax"
           type="button"
           @click="setMaxAmount"
-          class="tw-bg-blue-100 dark:tw-bg-blue-200 hover:tw-bg-blue-200 dark:hover:tw-bg-blue-300 tw-text-xs tw-rounded-full tw-px-3 tw-py-2 tw-text-blue-900 dark:tw-text-darkGray-900 tw-mx-3 focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 dark:focus:tw-ring-blue-300"
+          class="max"
         >
           {{ $t('max') }}
         </button>
@@ -84,3 +84,15 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+  .max {
+    @apply tw-bg-blue-100 dark:tw-bg-blue-200 tw-text-xs tw-rounded-full tw-px-3 tw-py-2 tw-text-blue-900 dark:tw-text-darkGray-900 tw-mx-3;
+  }
+  .max:hover {
+    @apply tw-bg-blue-200 dark:tw-bg-blue-300;
+  }
+  .max:focus {
+    @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-blue-300;
+  }
+</style>

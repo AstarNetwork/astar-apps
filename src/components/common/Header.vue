@@ -3,7 +3,7 @@
     class="tw-flex tw-justify-between tw-items-center lg:tw-hidden tw-px-4 tw-py-1 sm:tw-py-2 tw-bg-white dark:tw-bg-darkGray-800 tw-shadow"
   >
     <button
-      class="tw--ml-3 tw-p-2 tw-rounded-full hover:tw-bg-blue-100 dark:hover:tw-bg-darkGray-600 hover:tw-text-gray-900 focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 focus:tw-bg-blue-50 tw-group"
+      class="open-sidebar"
       @click="isOpen = true"
     >
       <span class="tw-sr-only">Open sidebar</span>
@@ -43,3 +43,15 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+  .open-sidebar {
+    @apply tw--ml-3 tw-p-2 tw-rounded-full tw-group;
+  }
+  .open-sidebar:hover {
+    @apply tw-bg-blue-100 dark:tw-bg-darkGray-600 tw-text-gray-900;
+  }
+  .open-sidebar:focus {
+    @apply tw-outline-none tw-ring tw-ring-blue-100 tw-bg-blue-50;
+  }
+</style>

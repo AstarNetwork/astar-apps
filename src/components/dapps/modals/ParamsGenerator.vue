@@ -9,7 +9,7 @@
     <button
       type="button"
       @click="openOption = !openOption"
-      class="tw-relative tw-text-blue-900 dark:tw-text-darkGray-100 tw-w-full tw-bg-white dark:tw-bg-darkGray-900 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-rounded-md tw-pl-3 tw-pr-10 tw-py-3 tw-text-left focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 dark:focus:tw-ring-darkGray-600 hover:tw-bg-gray-50 dark:hover:tw-bg-darkGray-800"
+      class="option-button"
     >
       <div class="tw-flex tw-items-center tw-justify-between">
         <div class="tw-flex tw-items-center">
@@ -46,7 +46,7 @@
         <div
           v-for="constructor in constructors"
           :key="constructor.index"
-          class="hover:tw-bg-gray-50 dark:hover:tw-bg-darkGray-700 tw-cursor-pointer"
+          class="constructor-div"
           @click="onSelectConstructor(constructor.index)"
         >
           <div class="tw-flex tw-items-center tw-justify-between">
@@ -84,7 +84,7 @@
           />
           <input
             v-else
-            class="tw-p-4 tw-w-full tw-text-blue-900 dark:tw-text-darkGray-100 tw-text-2xl tw-bg-transparent tw-placeholder-gray-300 dark:tw-placeholder-darkGray-600 tw-bg-white dark:tw-bg-darkGray-900 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-rounded-md tw-pl-3 tw-text-left focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100 dark:focus:tw-ring-darkGray-600 hover:tw-bg-gray-50 dark:hover:tw-bg-darkGray-800"
+            class="params-input"
             type="string"
             :value="params[paramIndex] && params[paramIndex].value"
             @input="updateParam($event.target.value, paramIndex)"
@@ -189,3 +189,32 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+  .option-button {
+    @apply tw-relative tw-text-blue-900 dark:tw-text-darkGray-100 tw-w-full tw-bg-white dark:tw-bg-darkGray-900 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-rounded-md tw-pl-3 tw-pr-10 tw-py-3 tw-text-left;
+  }
+  .option-button:hover {
+    @apply tw-bg-gray-50 dark:tw-bg-darkGray-800;
+  }
+  .option-button:focus {
+    @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-darkGray-600;
+  }
+
+  .constructor-div {
+    @apply tw-cursor-pointer;
+  }
+  .constructor-div:hover {
+    @apply tw-bg-gray-50 dark:tw-bg-darkGray-700;
+  }
+
+  .params-input {
+    @apply tw-p-4 tw-w-full tw-text-blue-900 dark:tw-text-darkGray-100 tw-text-2xl tw-bg-transparent tw-placeholder-gray-300 dark:tw-placeholder-darkGray-600 tw-bg-white dark:tw-bg-darkGray-900 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-rounded-md tw-pl-3 tw-text-left;
+  }
+  .params-input:hover {
+    @apply tw-bg-gray-50 dark:tw-bg-darkGray-800;
+  }
+  .params-input:focus {
+    @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-darkGray-600;
+  }
+</style>
