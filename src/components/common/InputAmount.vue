@@ -18,8 +18,8 @@
             type="number"
             min="0"
             pattern="^[0-9]*(\.)?[0-9]*$"
-            placeholder="0.0"
-            :value="amount"
+            placeholder="0"
+            :value="Number(amount) ? amount : null"
             @input="update($event.target.value, selectedUnit)"
           />
         </div>
