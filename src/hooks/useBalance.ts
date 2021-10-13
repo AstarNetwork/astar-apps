@@ -1,19 +1,19 @@
-import { ref, onUnmounted, watch, Ref } from 'vue';
 import { VoidFn } from '@polkadot/api/types';
+import { Balance } from '@polkadot/types/interfaces';
 import BN from 'bn.js';
-import { AccountInfo, Balance } from '@polkadot/types/interfaces';
+import { onUnmounted, ref, Ref, watch } from 'vue';
+import { getVested } from './helper/vested';
 
 function useCall(apiRef: any, addressRef: Ref<string>) {
   // should be fixed -- cannot refer it because it goes undefined once it called. to call balance again, it should pass apiRef by external params.
   // const { api: apiRef } = useApi();
   const balanceRef = ref(new BN(0));
+  const vestedRef = ref(new BN(0));
   const accountDataRef = ref<AccountData>();
 
   const unsub: Ref<VoidFn | undefined> = ref();
-
-  watch(
-    () => addressRef.value,
-    (address) => {
+  const updateAccount = (address: string) => {
+    if (address) {
       const api = apiRef?.value;
       if (unsub.value) {
         unsub.value();
@@ -21,28 +21,56 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
       }
       if (address && api) {
         api.isReady.then(async () => {
-          const accountInfo: AccountInfo = await api.query.system.account(
-            address
-          );
+          const results = await Promise.all([
+            api.query.system.account(address),
+            api.query.vesting.vesting(address),
+            api.query.system.number(),
+          ]);
+          const accountInfo = results[0];
+          const vesting = results[1];
+          const currentBlock = results[2];
+
+          const vestingValue = vesting.value;
+          const vestingLocked = vestingValue.locked;
+
+          vestedRef.value = vestingLocked
+            ? getVested({
+                currentBlock: currentBlock.toBn(),
+                startBlock: vesting.value.startingBlock.toBn(),
+                perBlock: vesting.value.perBlock.toBn(),
+              })
+            : new BN(0);
+
           accountDataRef.value = new AccountData(
             accountInfo.data.free,
             accountInfo.data.reserved,
             accountInfo.data.miscFrozen,
-            accountInfo.data.feeFrozen
+            accountInfo.data.feeFrozen,
+            vestedRef.value
           );
 
           balanceRef.value = accountInfo.data.free.toBn();
-          console.log(
-            `The balance is ${balanceRef.value}`,
-            accountDataRef.value
-          );
         });
       }
+    }
+  };
+
+  const updateAccountHandler = setInterval(() => {
+    if (!vestedRef.value.eq(new BN(0))) {
+      updateAccount(addressRef.value);
+    }
+  }, 10000);
+
+  watch(
+    () => addressRef.value,
+    (address) => {
+      updateAccount(address);
     },
     { immediate: true }
   );
 
   onUnmounted(() => {
+    clearInterval(updateAccountHandler);
     const unsubFn = unsub.value;
     if (unsubFn) {
       unsubFn();
@@ -70,6 +98,8 @@ export function useBalance(apiRef: any, addressRef: Ref<string>) {
     { immediate: true }
   );
 
+  // Fixme: Update the latest `vested` when block has been updated.
+  // (implement something like useInterval might be better.)
   watch(
     () => accountDataRef?.value,
     (info) => {
@@ -79,7 +109,6 @@ export function useBalance(apiRef: any, addressRef: Ref<string>) {
     },
     { immediate: true }
   );
-
   return { balance, accountData };
 }
 
@@ -88,12 +117,14 @@ export class AccountData {
     free: Balance,
     reserved: Balance,
     miscFrozen: Balance,
-    feeFrozen: Balance
+    feeFrozen: Balance,
+    vested: BN
   ) {
     this.free = free.toBn();
     this.reserved = reserved.toBn();
     this.miscFrozen = miscFrozen.toBn();
     this.feeFrozen = feeFrozen.toBn();
+    this.vested = vested;
   }
 
   public getUsableTransactionBalance(): BN {
@@ -108,4 +139,5 @@ export class AccountData {
   public reserved: BN;
   public miscFrozen: BN;
   public feeFrozen: BN;
+  public vested: BN;
 }
