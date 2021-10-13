@@ -58,12 +58,12 @@ export async function connectApi(endpoint: string, networkIdx: number) {
   let extensions: InjectedExtension[] = [];
 
   const typeDefinitions = providerEndpoints[networkIdx].typeDef;
-  console.log('t', typeDefinitions)
+  console.log('t', typeDefinitions);
 
   const api = new ApiPromise({
     provider,
     types: {
-      ...typeDefinitions
+      ...typeDefinitions,
     },
   });
 
@@ -87,15 +87,21 @@ export async function connectApi(endpoint: string, networkIdx: number) {
       keyring.accounts.subject.subscribe((accounts) => {
         if (accounts) {
           store.commit('general/setAllAccounts', Object.keys(accounts));
-          store.commit('general/setAllAccountNames', Object.values(accounts).map((obj) => obj.option.name));
+          // Memo: remove space from UI.
+          store.commit(
+            'general/setAllAccountNames',
+            Object.values(accounts).map((obj) =>
+              obj.option.name.replace('\n              ', '')
+            )
+          );
         }
       });
       //subscription.unsubscribe();
-  
+
       store.commit('general/setCurrentNetworkStatus', 'connected');
     } catch (err) {
       console.error(err);
-  
+
       store.commit('general/setCurrentNetworkStatus', 'offline');
     }
   });
