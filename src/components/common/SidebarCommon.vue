@@ -257,7 +257,7 @@ export default defineComponent({
 </script>
 <style scoped>
   .activeLink {
-    @apply tw-bg-blue-200 dark:tw-bg-blue-400 tw-bg-opacity-20 dark:tw-bg-opacity-20 dark:tw-text-white tw-text-blue-500 tw-group tw-flex tw-px-4 tw-py-6 tw-border-r-4 tw-border-blue-500 tw-cursor-default;
+    @apply tw-bg-blue-200 dark:tw-bg-blue-500 tw-bg-opacity-20 dark:tw-bg-opacity-20 dark:tw-text-white tw-text-blue-500 tw-group tw-flex tw-px-4 tw-py-6 tw-border-r-4 tw-border-blue-500 tw-cursor-default;
   }
   .inactiveLink {
     @apply tw-text-gray-500 hover:tw-text-gray-700 tw-group tw-flex tw-items-center tw-px-4 tw-py-6 tw-text-sm tw-font-medium dark:tw-text-darkGray-300 ;
