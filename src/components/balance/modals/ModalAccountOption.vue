@@ -12,9 +12,7 @@
           </div>
           <div>
             <div class="tw-text-sm tw-font-medium">{{ addressName }}</div>
-            <div class="tw-text-xs tw-text-gray-500 dark:tw-text-darkGray-400">
-              {{ shortenAddress }}
-            </div>
+            <div class="tw-text-xs tw-text-gray-500 dark:tw-text-darkGray-400">{{ shortenAddress }}</div>
           </div>
         </div>
 
@@ -33,67 +31,68 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, computed, toRefs } from 'vue';
-import IconBase from 'components/icons/IconBase.vue';
-import IconAccountSample from 'components/icons/IconAccountSample.vue';
-import { getShortenAddress } from 'src/hooks/helper/addressUtils';
+	import { defineComponent, computed, toRefs } from 'vue';
+	import IconBase from 'components/icons/IconBase.vue';
+	import IconAccountSample from 'components/icons/IconAccountSample.vue';
+	import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 
-export default defineComponent({
-  components: {
-    IconBase,
-    IconAccountSample,
-  },
-  props: {
-    keyIdx: {
-      type: Number,
-      required: true,
-    },
-    address: {
-      type: String,
-      required: true,
-    },
-    addressName: {
-      type: String,
-      required: true,
-    },
-    checked: {
-      type: Boolean,
-    },
-  },
-  setup(props, { emit }) {
-    const { address } = toRefs(props);
+	export default defineComponent({
+		components: {
+			IconBase,
+			IconAccountSample,
+		},
+		props: {
+			keyIdx: {
+				type: Number,
+				required: true,
+			},
+			address: {
+				type: String,
+				required: true,
+			},
+			addressName: {
+				type: String,
+				required: true,
+			},
+			checked: {
+				type: Boolean,
+			},
+		},
+		emits: ['update:sel-option', 'update:sel-checked'],
+		setup(props, { emit }) {
+			const { address } = toRefs(props);
 
-    const shortenAddress = computed(() => {
-      return getShortenAddress(address.value);
-    });
+			const shortenAddress = computed(() => {
+				return getShortenAddress(address.value);
+			});
 
-    const onChange = (keyIdx: number) => {
-      emit('update:sel-option', keyIdx);
-      emit('update:sel-checked', false);
-    };
+			const onChange = (keyIdx: number) => {
+				emit('update:sel-option', keyIdx);
+				emit('update:sel-checked', false);
+			};
 
-    return {
-      shortenAddress,
-      onChange,
-    };
-  },
-  methods: {
-    opClass(checked: boolean) {
-      if (checked) {
-        return 'tw-text-blue-900 dark:tw-text-darkGray-100 tw-cursor-default tw-select-none tw-relative tw-py-2 tw-pl-3 tw-pr-6 tw-bg-blue-200 dark:tw-bg-blue-500 tw-bg-opacity-20';
-      } else {
-        return 'not-checkerd';
-      }
-    },
-  },
-});
+			return {
+				shortenAddress,
+				onChange,
+			};
+		},
+		methods: {
+			opClass(checked: boolean) {
+				if (checked) {
+					return 'tw-text-blue-900 dark:tw-text-darkGray-100 tw-cursor-default tw-select-none tw-relative tw-py-2 tw-pl-3 tw-pr-6 tw-bg-blue-200 dark:tw-bg-blue-500 tw-bg-opacity-20';
+				} else {
+					return 'not-checkerd';
+				}
+			},
+		},
+	});
 </script>
 
 <style scoped>
-  .not-checkerd {
-    @apply tw-text-blue-900 dark:tw-text-darkGray-100 tw-cursor-default tw-select-none tw-relative tw-py-2 tw-pl-3 tw-pr-6;
-  }
-  .not-checkerd:hover {
-    @apply tw-bg-gray-50 dark:tw-bg-darkGray-800;
-  }
+	.not-checkerd {
+		@apply tw-text-blue-900 dark:tw-text-darkGray-100 tw-cursor-default tw-select-none tw-relative tw-py-2 tw-pl-3 tw-pr-6;
+	}
+	.not-checkerd:hover {
+		@apply tw-bg-gray-50 dark:tw-bg-darkGray-800;
+	}
 </style>

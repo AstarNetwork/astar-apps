@@ -1,10 +1,6 @@
 <template>
   <div class="tw-relative">
-    <button
-      type="button"
-      @click="openOption = !openOption"
-      class="button-account"
-    >
+    <button type="button" @click="openOption = !openOption" class="button-account">
       <div class="tw-flex tw-items-center tw-justify-between">
         <div class="tw-flex tw-items-center">
           <div
@@ -68,103 +64,116 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, computed, ref, watch } from 'vue';
-import { useStore } from 'src/store';
-import { providerEndpoints } from 'src/config/chainEndpoints';
+	import { defineComponent, computed, ref, watch } from 'vue';
+	import { useStore } from 'src/store';
+	import { providerEndpoints } from 'src/config/chainEndpoints';
 
-import IconBase from 'components/icons/IconBase.vue';
-import IconAccountSample from 'components/icons/IconAccountSample.vue';
-import IconSolidSelector from 'components/icons/IconSolidSelector.vue';
-import ModalSelectAccountOption from './ModalSelectAccountOption.vue';
-import MetamaskOption from './MetamaskOption.vue';
+	import IconBase from 'components/icons/IconBase.vue';
+	import IconAccountSample from 'components/icons/IconAccountSample.vue';
+	import IconSolidSelector from 'components/icons/IconSolidSelector.vue';
+	import ModalSelectAccountOption from './ModalSelectAccountOption.vue';
+	import MetamaskOption from './MetamaskOption.vue';
 
-export default defineComponent({
-  components: {
-    ModalSelectAccountOption,
-    MetamaskOption,
-    IconBase,
-    IconAccountSample,
-    IconSolidSelector,
-  },
-  props: {
-    allAccounts: {
-      type: Array,
-      required: true,
-    },
-    allAccountNames: {
-      type: Array,
-      required: true,
-    },
-  },
-  setup(props, { emit }) {
-    const openOption = ref(false);
+	export default defineComponent({
+		components: {
+			ModalSelectAccountOption,
+			MetamaskOption,
+			IconBase,
+			IconAccountSample,
+			IconSolidSelector,
+		},
+		props: {
+			allAccounts: {
+				type: Array,
+				required: true,
+			},
+			allAccountNames: {
+				type: Array,
+				required: true,
+			},
+		},
+		emits: ['update:sel-address', 'selChanged'],
+		setup(props, { emit }) {
+			const openOption = ref(false);
 
-    const store = useStore();
-    const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
-    const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
-    
-    const isSupportContract = ref(
-      providerEndpoints[currentNetworkIdx.value].isSupportContract
-    );
+			const store = useStore();
+			const currentAccountIdx = computed(
+				() => store.getters['general/accountIdx']
+			);
+			const currentNetworkIdx = computed(
+				() => store.getters['general/networkIdx']
+			);
 
-    const selAccountIdx = ref(currentAccountIdx.value);
+			const isSupportContract = ref(
+				providerEndpoints[currentNetworkIdx.value].isSupportContract
+			);
 
-    const selAccount = ref(props.allAccounts[selAccountIdx.value] as string);
-    const selAddress = ref(props.allAccounts[selAccountIdx.value] as string);
-    const selAccountName = ref(props.allAccountNames[selAccountIdx.value]);
+			const selAccountIdx = ref(currentAccountIdx.value);
 
-    const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
-    const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
-    const checkMetamask = ref<boolean>(isCheckMetamask.value);
-    const showMetamaskOption = computed(() => isSupportContract.value && currentEcdsaAccount.value.ethereum )
+			const selAccount = ref(props.allAccounts[selAccountIdx.value] as string);
+			const selAddress = ref(props.allAccounts[selAccountIdx.value] as string);
+			const selAccountName = ref(props.allAccountNames[selAccountIdx.value]);
 
-    watch(
-      [
-        selAccountIdx,
-        checkMetamask,
-      ],
-      () => {
-        if(!checkMetamask.value) {
-          selAccount.value = props.allAccounts[selAccountIdx.value] as string;
-          selAccountName.value = props.allAccountNames[selAccountIdx.value];
-          selAddress.value = props.allAccounts[selAccountIdx.value] as string;
-        } else {
-          selAddress.value = currentEcdsaAccount.value.ss58;
-        }
+			const isCheckMetamask = computed(
+				() => store.getters['general/isCheckMetamask']
+			);
+			const currentEcdsaAccount = computed(
+				() => store.getters['general/currentEcdsaAccount']
+			);
+			const checkMetamask = ref<boolean>(isCheckMetamask.value);
+			const showMetamaskOption = computed(
+				() => isSupportContract.value && currentEcdsaAccount.value.ethereum
+			);
 
-        emit('update:sel-address', selAddress.value);
-        emit('selChanged', selAddress.value, checkMetamask.value, selAccountIdx.value);
+			watch(
+				[selAccountIdx, checkMetamask],
+				() => {
+					if (!checkMetamask.value) {
+						selAccount.value = props.allAccounts[selAccountIdx.value] as string;
+						selAccountName.value = props.allAccountNames[selAccountIdx.value];
+						selAddress.value = props.allAccounts[selAccountIdx.value] as string;
+					} else {
+						selAddress.value = currentEcdsaAccount.value.ss58;
+					}
 
-        openOption.value = false;
-      },
-      { immediate: true }
-    );
+					emit('update:sel-address', selAddress.value);
+					emit(
+						'selChanged',
+						selAddress.value,
+						checkMetamask.value,
+						selAccountIdx.value
+					);
 
-    const changeAddress = (e: any) => {
-      emit('update:sel-address', e.currentTarget.value);
-    }
+					openOption.value = false;
+				},
+				{ immediate: true }
+			);
 
-    return {
-      openOption,
-      selAccountIdx,
-      selAddress,
-      isSupportContract,
-      checkMetamask,
-      showMetamaskOption,
-      changeAddress
-    };
-  },
-});
+			const changeAddress = (e: any) => {
+				emit('update:sel-address', e.currentTarget.value);
+			};
+
+			return {
+				openOption,
+				selAccountIdx,
+				selAddress,
+				isSupportContract,
+				checkMetamask,
+				showMetamaskOption,
+				changeAddress,
+			};
+		},
+	});
 </script>
 
 <style scoped>
-  .button-account {
-    @apply tw-relative tw-text-blue-900 dark:tw-text-darkGray-100 tw-w-full tw-bg-white dark:tw-bg-darkGray-900 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-rounded-md tw-pl-3 tw-pr-10 tw-py-3 tw-text-left;
-  }
-  .button-account:hover {
-    @apply tw-bg-gray-50 dark:tw-bg-darkGray-800;
-  }
-  .button-account:focus {
-    @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-darkGray-600;
-  }
+	.button-account {
+		@apply tw-relative tw-text-blue-900 dark:tw-text-darkGray-100 tw-w-full tw-bg-white dark:tw-bg-darkGray-900 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-rounded-md tw-pl-3 tw-pr-10 tw-py-3 tw-text-left;
+	}
+	.button-account:hover {
+		@apply tw-bg-gray-50 dark:tw-bg-darkGray-800;
+	}
+	.button-account:focus {
+		@apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-darkGray-600;
+	}
 </style>

@@ -1,8 +1,5 @@
 <template>
-  <li
-    role="option"
-    class="option-list"
-  >
+  <li role="option" class="option-list">
     <div
       class="tw-flex tw-items-center tw-justify-between tw-cursor-pointer"
       @click="onChange(keyIdx)"
@@ -17,9 +14,7 @@
         </div>
         <div>
           <div class="tw-text-sm tw-font-medium">{{ addressName }}</div>
-          <div class="tw-text-xs tw-text-gray-500 dark:tw-text-darkGray-400">
-            {{ shortenAddress }}
-          </div>
+          <div class="tw-text-xs tw-text-gray-500 dark:tw-text-darkGray-400">{{ shortenAddress }}</div>
         </div>
       </div>
 
@@ -35,58 +30,59 @@
   </li>
 </template>
 <script lang="ts">
-import { defineComponent, toRefs, computed } from 'vue';
-import IconBase from 'components/icons/IconBase.vue';
-import IconAccountSample from 'components/icons/IconAccountSample.vue';
-import { getShortenAddress } from 'src/hooks/helper/addressUtils';
+	import { defineComponent, toRefs, computed } from 'vue';
+	import IconBase from 'components/icons/IconBase.vue';
+	import IconAccountSample from 'components/icons/IconAccountSample.vue';
+	import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 
-export default defineComponent({
-  components: {
-    IconBase,
-    IconAccountSample,
-  },
-  props: {
-    keyIdx: {
-      type: Number,
-      required: true,
-    },
-    address: {
-      type: String,
-      required: true,
-    },
-    addressName: {
-      type: String,
-      required: true,
-    },
-    checked: {
-      type: Boolean,
-    },
-  },
-  setup(props, { emit }) {
-    const { address } = toRefs(props);
+	export default defineComponent({
+		components: {
+			IconBase,
+			IconAccountSample,
+		},
+		props: {
+			keyIdx: {
+				type: Number,
+				required: true,
+			},
+			address: {
+				type: String,
+				required: true,
+			},
+			addressName: {
+				type: String,
+				required: true,
+			},
+			checked: {
+				type: Boolean,
+			},
+		},
+		emits: ['update:sel-checked', 'update:sel-option'],
+		setup(props, { emit }) {
+			const { address } = toRefs(props);
 
-    const shortenAddress = computed(() => {
-      return getShortenAddress(address.value);
-    });
+			const shortenAddress = computed(() => {
+				return getShortenAddress(address.value);
+			});
 
-    const onChange = (keyIdx: number) => {
-      emit('update:sel-option', keyIdx);
-      emit('update:sel-checked', false);
-    };
+			const onChange = (keyIdx: number) => {
+				emit('update:sel-option', keyIdx);
+				emit('update:sel-checked', false);
+			};
 
-    return {
-      shortenAddress,
-      onChange,
-    };
-  },
-});
+			return {
+				shortenAddress,
+				onChange,
+			};
+		},
+	});
 </script>
 
 <style>
-  .option-list {
-    @apply tw-text-blue-900 dark:tw-text-darkGray-100 tw-cursor-default tw-select-none tw-relative tw-py-2 tw-pl-3 tw-pr-9;
-  }
-  .option-list:hover {
-    @apply tw-bg-gray-50 dark:tw-bg-darkGray-700;
-  }
+	.option-list {
+		@apply tw-text-blue-900 dark:tw-text-darkGray-100 tw-cursor-default tw-select-none tw-relative tw-py-2 tw-pl-3 tw-pr-9;
+	}
+	.option-list:hover {
+		@apply tw-bg-gray-50 dark:tw-bg-darkGray-700;
+	}
 </style>

@@ -1,9 +1,13 @@
 <template>
-  <div class="tw-bg-white dark:tw-bg-darkGray-800 tw-shadow tw-m-4 tw-w-72 tw-rounded-lg tw-text-blue-900 dark:tw-text-darkGray-100">
+  <div
+    class="tw-bg-white dark:tw-bg-darkGray-800 tw-shadow tw-m-4 tw-w-72 tw-rounded-lg tw-text-blue-900 dark:tw-text-darkGray-100"
+  >
     <div class="tw-flex tw-flex-grow tw-cursor-pointer tw-p-4" @click="emitClickEvent">
       <Avatar :url="dapp.iconUrl" class="tw-w-14 tw-h-14" />
       <div class="tw-ml-4">
-        <div class="tw-text-lg tw-font-semibold tw-w-48 tw-whitespace-nowrap tw-overflow-ellipsis tw-overflow-hidden">{{ dapp.name }}</div>
+        <div
+          class="tw-text-lg tw-font-semibold tw-w-48 tw-whitespace-nowrap tw-overflow-ellipsis tw-overflow-hidden"
+        >{{ dapp.name }}</div>
         <div class="tw-h-11 tw-w-48 tw-overflow-ellipsis tw-overflow-hidden">{{ dapp.description }}</div>
       </div>
     </div>
@@ -15,63 +19,67 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, ref, computed, watch } from 'vue'
-import { useStore } from 'src/store';
-import { useApi } from 'src/hooks';
-import Avatar from 'components/common/Avatar.vue';
-import StakePanel from 'components/store/StakePanel.vue';
-import { StakingParameters, StakeInfo } from 'src/store/dapps-store/actions';
+	import { defineComponent, toRefs, ref, computed, watch } from 'vue';
+	import { useStore } from 'src/store';
+	import { useApi } from 'src/hooks';
+	import Avatar from 'components/common/Avatar.vue';
+	import StakePanel from 'components/store/StakePanel.vue';
+	import { StakingParameters, StakeInfo } from 'src/store/dapps-store/actions';
 
-export default defineComponent({
-  props: {
-    dapp: {
-      type: Object,
-      required: true
-    }
-  },
-  components: {
-    Avatar,
-    StakePanel
-  },
-  setup(props, { emit }) {
-    const store = useStore();
-    const { api } = useApi();
-    const stakeInfo = ref<StakeInfo>();
-    const senderAddress = computed(() => store.getters['general/selectedAccountAddress']);
+	export default defineComponent({
+		props: {
+			dapp: {
+				type: Object,
+				required: true,
+			},
+		},
+		components: {
+			Avatar,
+			StakePanel,
+		},
+		emits: ['dappClick'],
+		setup(props, { emit }) {
+			const store = useStore();
+			const { api } = useApi();
+			const stakeInfo = ref<StakeInfo>();
+			const senderAddress = computed(
+				() => store.getters['general/selectedAccountAddress']
+			);
 
-    const emitClickEvent = (): void => {
-      emit('dappClick', props.dapp)
-    }
+			const emitClickEvent = (): void => {
+				emit('dappClick', props.dapp);
+			};
 
-    const handleStakeChanged = (): void => {
-      getDappInfo();
-    }
+			const handleStakeChanged = (): void => {
+				getDappInfo();
+			};
 
-    const getDappInfo = () => {
-      store.dispatch('dapps/getStakeInfo',{
-        api: api?.value,
-        senderAddress: senderAddress.value,
-        dapp: props.dapp,
-      } as StakingParameters)
-      .then((info: StakeInfo) => {
-        stakeInfo.value = info;
-      });
-    }
-    
-    watch(senderAddress, () => {
-      getDappInfo();
-    })
+			const getDappInfo = () => {
+				store
+					.dispatch('dapps/getStakeInfo', {
+						api: api?.value,
+						senderAddress: senderAddress.value,
+						dapp: props.dapp,
+					} as StakingParameters)
+					.then((info: StakeInfo) => {
+						stakeInfo.value = info;
+					});
+			};
 
-    if (senderAddress.value) {
-      getDappInfo();
-    }
+			watch(senderAddress, () => {
+				getDappInfo();
+			});
 
-    return {
-      ...toRefs(props),
-      stakeInfo,
-      emitClickEvent,
-      handleStakeChanged
-    }
-  },
-})
+			if (senderAddress.value) {
+				getDappInfo();
+			}
+
+			return {
+				...toRefs(props),
+				stakeInfo,
+				emitClickEvent,
+				handleStakeChanged,
+			};
+		},
+	});
 </script>

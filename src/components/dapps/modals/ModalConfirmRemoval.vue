@@ -3,9 +3,7 @@
     <div class="tw-flex tw-items-center tw-justify-center tw-min-h-screen">
       <!-- Background overlay -->
       <div class="tw-fixed tw-inset-0 tw-transition-opacity" aria-hidden="true">
-        <div
-          class="tw-absolute tw-inset-0 tw-bg-gray-900 dark:tw-bg-black tw-opacity-75"
-        ></div>
+        <div class="tw-absolute tw-inset-0 tw-bg-gray-900 dark:tw-bg-black tw-opacity-75"></div>
       </div>
 
       <div
@@ -18,8 +16,8 @@
             >
               {{ $t('confirm') }}
               <!-- Memo: Add translation file if necesally -->
-              <span v-if="ctype == 'codehash'"> codeHash </span>
-              <span v-else> contract </span>
+              <span v-if="ctype == 'codehash'">codeHash</span>
+              <span v-else>contract</span>
               {{ $t('dapps.modals.removal') }}
             </h3>
 
@@ -40,70 +38,59 @@
           </div>
         </div>
         <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row-reverse">
-          <button
-            type="button"
-            @click="forget"
-            class="forget-button"
-          >
-            {{ $t('forget') }}
-          </button>
-          <button
-            type="button"
-            @click="closeModal"
-            class="cancel"
-          >
-            {{ $t('cancel') }}
-          </button>
+          <button type="button" @click="forget" class="forget-button">{{ $t('forget') }}</button>
+          <button type="button" @click="closeModal" class="cancel">{{ $t('cancel') }}</button>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
+	import { defineComponent } from 'vue';
 
-export default defineComponent({
-  props: {
-    ctype: {
-      type: String,
-      default: 'codehash',
-    },
-  },
-  setup(props, { emit }) {
-    const closeModal = () => {
-      emit('update:is-open', false);
-    };
+	export default defineComponent({
+		props: {
+			ctype: {
+				type: String,
+				default: 'codehash',
+			},
+		},
+		emits: ['update:is-open', 'forget'],
+		setup(props, { emit }) {
+			const closeModal = () => {
+				emit('update:is-open', false);
+			};
 
-    const forget = () => {
-      emit('forget', true);
-    };
+			const forget = () => {
+				emit('forget', true);
+			};
 
-    return {
-      closeModal,
-      forget,
-    };
-  },
-});
+			return {
+				closeModal,
+				forget,
+			};
+		},
+	});
 </script>
 
 <style scoped>
-  .forget-button {
-    @apply tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 tw-mx-1;
-  }
-  .forget-button:hover {
-    @apply tw-bg-blue-700 dark:tw-bg-blue-400;
-  }
-  .forget-button:focus {
-    @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-blue-400;
-  }
+	.forget-button {
+		@apply tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 tw-mx-1;
+	}
+	.forget-button:hover {
+		@apply tw-bg-blue-700 dark:tw-bg-blue-400;
+	}
+	.forget-button:focus {
+		@apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-blue-400;
+	}
 
-  .cancel {
-    @apply tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-text-sm tw-font-medium tw-rounded-full tw-text-gray-500 dark:tw-text-darkGray-400 tw-bg-white dark:tw-bg-darkGray-900 tw-mx-1;
-  }
-  .cancel:hover {
-    @apply tw-bg-gray-100 dark:tw-bg-darkGray-700;
-  }
-  .cancel:focus {
-    @apply tw-outline-none tw-ring tw-ring-gray-100 dark:tw-ring-darkGray-600;
-  }
+	.cancel {
+		@apply tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-text-sm tw-font-medium tw-rounded-full tw-text-gray-500 dark:tw-text-darkGray-400 tw-bg-white dark:tw-bg-darkGray-900 tw-mx-1;
+	}
+	.cancel:hover {
+		@apply tw-bg-gray-100 dark:tw-bg-darkGray-700;
+	}
+	.cancel:focus {
+		@apply tw-outline-none tw-ring tw-ring-gray-100 dark:tw-ring-darkGray-600;
+	}
 </style>

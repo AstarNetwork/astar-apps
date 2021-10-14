@@ -5,20 +5,10 @@
         <div class="tw-mb-4">
           <label
             class="tw-block tw-text-sm tw-font-medium tw-text-gray-500 dark:tw-text-darkGray-400 tw-mb-2"
-          >
-            {{ $t('store.modals.logo') }}
-          </label>
+          >{{ $t('store.modals.logo') }}</label>
 
-          <input-file
-            @dropFile="onDropFile"
-            :file="imageFromFile"
-            :extension="fileExtension"
-          >
-            <Avatar
-              v-if="!!imagePreview"
-              :url="imagePreview"
-              class="tw-mx-auto tw-w-36 tw-h-36"
-            />
+          <input-file @dropFile="onDropFile" :file="imageFromFile" :extension="fileExtension">
+            <Avatar v-if="!!imagePreview" :url="imagePreview" class="tw-mx-auto tw-w-36 tw-h-36" />
             <icon-base
               v-else
               class="tw-h-12 tw-w-12 tw-mx-auto dark:tw-text-darkGray-100"
@@ -31,7 +21,7 @@
             </icon-base>
           </input-file>
         </div>
-        
+
         <Input
           v-model="data.name"
           label="Name"
@@ -56,151 +46,149 @@
           maxlength="42"
           :validation-message="validationErrors['address']"
         />
-        <Input
-          v-model="data.url"
-          label="Url"
-          type="text"
-          maxlength="1000"
-        />
+        <Input v-model="data.url" label="Url" type="text" maxlength="1000" />
       </div>
     </template>
     <template #buttons>
-      <Button @click="registerDapp">
-        {{ $t('store.modals.register') }}
-      </Button>
+      <Button @click="registerDapp">{{ $t('store.modals.register') }}</Button>
     </template>
   </Modal>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, watch } from 'vue'
-import Modal from 'components/common/Modal.vue';
-import Input from 'src/components/common/Input.vue';
-import InputFile from 'src/components/dapps/modals/InputFile.vue';
-import Avatar from 'components/common/Avatar.vue';
-import IconBase from 'components/icons/IconBase.vue';
-import IconDocument from 'components/icons/IconDocument.vue';
-import Button from 'components/common/Button.vue';
-import { useFile, FileState } from 'src/hooks/useFile';
-import { useStore } from 'src/store';
-import { useApi } from 'src/hooks';
-import { isValidAddress } from 'src/hooks/custom-signature/ethereumjs-util/account';
-import { NewDappItem, LooseObject } from 'src/store/dapps-store/state';
-import { RegisterParameters } from 'src/store/dapps-store/actions';
+	import { defineComponent, reactive, ref, watch } from 'vue';
+	import Modal from 'components/common/Modal.vue';
+	import Input from 'src/components/common/Input.vue';
+	import InputFile from 'src/components/dapps/modals/InputFile.vue';
+	import Avatar from 'components/common/Avatar.vue';
+	import IconBase from 'components/icons/IconBase.vue';
+	import IconDocument from 'components/icons/IconDocument.vue';
+	import Button from 'components/common/Button.vue';
+	import { useFile, FileState } from 'src/hooks/useFile';
+	import { useStore } from 'src/store';
+	import { useApi } from 'src/hooks';
+	import { isValidAddress } from 'src/hooks/custom-signature/ethereumjs-util/account';
+	import { NewDappItem, LooseObject } from 'src/store/dapps-store/state';
+	import { RegisterParameters } from 'src/store/dapps-store/actions';
 
-export default defineComponent({
-  components: {
-    Modal,
-    Input,
-    InputFile,
-    Avatar,
-    IconBase,
-    IconDocument,
-    Button
-  },
-  setup(_, { emit }) {
-    const store = useStore();
-    const { api } = useApi();
-    const data = reactive<NewDappItem>({} as NewDappItem);
-    const imagePreview = ref<string>();
-    const fileExtension = ['.png', '.jpg', '.gif'];
-    const {
-      fileRef: imageFromFile,
-      setFile
-    } = useFile();
-    const validationErrors = ref<LooseObject>({});
+	export default defineComponent({
+		components: {
+			Modal,
+			Input,
+			InputFile,
+			Avatar,
+			IconBase,
+			IconDocument,
+			Button,
+		},
+		emits: ['update:is-open'],
+		setup(_, { emit }) {
+			const store = useStore();
+			const { api } = useApi();
+			const data = reactive<NewDappItem>({} as NewDappItem);
+			const imagePreview = ref<string>();
+			const fileExtension = ['.png', '.jpg', '.gif'];
+			const { fileRef: imageFromFile, setFile } = useFile();
+			const validationErrors = ref<LooseObject>({});
 
-    const onDropFile = (fileState: FileState): void => {
-      imagePreview.value = encodeImage(fileState.type, fileState.data);
-      setFile(fileState);
+			const onDropFile = (fileState: FileState): void => {
+				imagePreview.value = encodeImage(fileState.type, fileState.data);
+				setFile(fileState);
 
-      data.iconFileName = fileState.name;
-      data.iconFile = imagePreview.value;
-    };
+				data.iconFileName = fileState.name;
+				data.iconFile = imagePreview.value;
+			};
 
-    const registerDapp = async () => {
-      if (!validateAll()) {
-        return;
-      }
-      
-      const senderAddress = store.getters['general/selectedAccountAddress'];
-      const result = await store.dispatch('dapps/registerDapp', {
-        dapp: data,
-        api: api?.value,
-        senderAddress
-      } as RegisterParameters);
+			const registerDapp = async () => {
+				if (!validateAll()) {
+					return;
+				}
 
-      if (result) {
-         emit('update:is-open', false);
-      }
-    }
+				const senderAddress = store.getters['general/selectedAccountAddress'];
+				const result = await store.dispatch('dapps/registerDapp', {
+					dapp: data,
+					api: api?.value,
+					senderAddress,
+				} as RegisterParameters);
 
-    const encodeImage = (fileType: string, data: Uint8Array): string => {
-      const buffer = Buffer.from(data);
-      return `data:${fileType};base64,${buffer.toString('base64')}`
-    }
+				if (result) {
+					emit('update:is-open', false);
+				}
+			};
 
-    const validate = (field: string, errorMessage?: string):boolean => {
-      if (data[field]) {
-        validationErrors.value[field] = ''
-        return true
-      }
+			const encodeImage = (fileType: string, data: Uint8Array): string => {
+				const buffer = Buffer.from(data);
+				return `data:${fileType};base64,${buffer.toString('base64')}`;
+			};
 
-      validationErrors.value[field] = errorMessage ? errorMessage : `The field ${field} is required.`;
-      return false;
-    }
+			const validate = (field: string, errorMessage?: string): boolean => {
+				if (data[field]) {
+					validationErrors.value[field] = '';
+					return true;
+				}
 
-    const validateName = ():boolean => {
-      return validate('name', 'dApp name is required.');
-    }
+				validationErrors.value[field] = errorMessage
+					? errorMessage
+					: `The field ${field} is required.`;
+				return false;
+			};
 
-    const validateDescription = ():boolean => {
-      return validate('description', 'Please tell us a few words about your dApp.');
-    }
+			const validateName = (): boolean => {
+				return validate('name', 'dApp name is required.');
+			};
 
-    const validateContractAddress = ():boolean => {
-      if (validate('address', 'Please enter contract address.')) {
-        if (isValidAddress(data.address)){
-          validationErrors.value['address'] = '';
-          return true;
-        } else {
-          validationErrors.value['address'] = 'Please enter a valid EVM address.';
-          return false;
-        }
-      }
+			const validateDescription = (): boolean => {
+				return validate(
+					'description',
+					'Please tell us a few words about your dApp.'
+				);
+			};
 
-      return false;
-    }
+			const validateContractAddress = (): boolean => {
+				if (validate('address', 'Please enter contract address.')) {
+					if (isValidAddress(data.address)) {
+						validationErrors.value['address'] = '';
+						return true;
+					} else {
+						validationErrors.value['address'] =
+							'Please enter a valid EVM address.';
+						return false;
+					}
+				}
 
-    const validateAll = ():boolean => {
-      return validateName() && validateDescription() && validateContractAddress();
-    }
+				return false;
+			};
 
-    watch(
-      () => data.name,
-      () => validateName()
-    );
+			const validateAll = (): boolean => {
+				return (
+					validateName() && validateDescription() && validateContractAddress()
+				);
+			};
 
-    watch(
-      () => data.description,
-      () => validateDescription()
-    );
+			watch(
+				() => data.name,
+				() => validateName()
+			);
 
-    watch(
-      () => data.address,
-      () => validateContractAddress()
-    );
+			watch(
+				() => data.description,
+				() => validateDescription()
+			);
 
-    return {
-      data,
-      fileExtension,
-      imageFromFile,
-      imagePreview,
-      validationErrors,
-      onDropFile,
-      registerDapp
-    }
-  }
-})
+			watch(
+				() => data.address,
+				() => validateContractAddress()
+			);
 
+			return {
+				data,
+				fileExtension,
+				imageFromFile,
+				imagePreview,
+				validationErrors,
+				onDropFile,
+				registerDapp,
+			};
+		},
+	});
 </script>

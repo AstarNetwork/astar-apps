@@ -1,7 +1,10 @@
 <template>
   <div>
     <li role="option" :class="opClass(checked)">
-      <label class="tw-flex tw-items-center tw-justify-between tw-cursor-pointer" @click="onLoadAccount">
+      <label
+        class="tw-flex tw-items-center tw-justify-between tw-cursor-pointer"
+        @click="onLoadAccount"
+      >
         <div class="tw-flex tw-items-center">
           <div
             class="tw-h-8 tw-w-8 tw-rounded-full tw-overflow-hidden tw-border tw-border-gray-100 tw-mr-3 tw-flex-shrink-0"
@@ -10,20 +13,22 @@
           </div>
           <div>
             <template v-if="!curAddress">
-              <div class="tw-text-sm tw-font-medium dark:tw-text-darkGray-100">{{ $t('balance.modals.connectMetamask') }}</div>
+              <div
+                class="tw-text-sm tw-font-medium dark:tw-text-darkGray-100"
+              >{{ $t('balance.modals.connectMetamask') }}</div>
             </template>
             <template v-else>
               <div>
-                <div class="tw-text-sm tw-font-medium dark:tw-text-darkGray-100">{{ $t('balance.modals.ethereumExtension') }}</div>
-                <div class="tw-text-xs tw-text-gray-500 dark:tw-text-darkGray-400">
-                  {{ shortenAddr(curAddress) }}
-                </div>
+                <div
+                  class="tw-text-sm tw-font-medium dark:tw-text-darkGray-100"
+                >{{ $t('balance.modals.ethereumExtension') }}</div>
+                <div
+                  class="tw-text-xs tw-text-gray-500 dark:tw-text-darkGray-400"
+                >{{ shortenAddr(curAddress) }}</div>
               </div>
             </template>
-            
-            <div v-if="errorMsg" class="tw-text-sm">
-              {{ errorMsg }}
-            </div>
+
+            <div v-if="errorMsg" class="tw-text-sm">{{ errorMsg }}</div>
           </div>
         </div>
 
@@ -56,112 +61,125 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, computed, ref } from 'vue';
-import { useStore } from 'src/store';
-import * as utils from 'src/hooks/custom-signature/utils'
-import { getShortenAddress } from 'src/hooks/helper/addressUtils';
-import { EcdsaAddressFormat } from 'src/hooks/types/CustomSignature';
-import { useMetamask } from 'src/hooks/custom-signature/useMetamask';
+	import { defineComponent, computed, ref } from 'vue';
+	import { useStore } from 'src/store';
+	import * as utils from 'src/hooks/custom-signature/utils';
+	import { getShortenAddress } from 'src/hooks/helper/addressUtils';
+	import { EcdsaAddressFormat } from 'src/hooks/types/CustomSignature';
+	import { useMetamask } from 'src/hooks/custom-signature/useMetamask';
 
-export default defineComponent({
-  components: {
-  },
-  props: {
-    checked: {
-      type: Boolean,
-    },
-    showRadioIfUnchecked: {
-      type: Boolean,
-      default: true,
-    }
-  },
-  setup(props, { emit }) {
-    const store = useStore();
-    const chainInfo = computed(() => store.getters['general/chainInfo']);
-    const { requestAccounts, requestSignature } = useMetamask();
-    
-    const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
-    const ecdsaAccounts = ref<EcdsaAddressFormat>(currentEcdsaAccount.value);
-    const curAddress = ref<string>(currentEcdsaAccount.value.ss58);
-    const errorMsg = ref('');
+	export default defineComponent({
+		components: {},
+		props: {
+			checked: {
+				type: Boolean,
+			},
+			showRadioIfUnchecked: {
+				type: Boolean,
+				default: true,
+			},
+		},
+		emits: ['update:sel-checked', 'connectMetamask'],
+		setup(props, { emit }) {
+			const store = useStore();
+			const chainInfo = computed(() => store.getters['general/chainInfo']);
+			const { requestAccounts, requestSignature } = useMetamask();
 
-    // watchEffect(() => {
-    //   if (loadedAccounts.value.length > 0 && ecdsaAccounts.value?.ethereum !== loadedAccounts.value[0]) {
-    //     ecdsaAccounts.value = undefined;
-    //   }
-    // });
+			const currentEcdsaAccount = computed(
+				() => store.getters['general/currentEcdsaAccount']
+			);
+			const ecdsaAccounts = ref<EcdsaAddressFormat>(currentEcdsaAccount.value);
+			const curAddress = ref<string>(currentEcdsaAccount.value.ss58);
+			const errorMsg = ref('');
 
-    const shortenAddr = (addr: string) => {
-      return getShortenAddress(addr);
-    }
+			// watchEffect(() => {
+			//   if (loadedAccounts.value.length > 0 && ecdsaAccounts.value?.ethereum !== loadedAccounts.value[0]) {
+			//     ecdsaAccounts.value = undefined;
+			//   }
+			// });
 
-    const onLoadAccount = async () => {
-      if (curAddress.value) {
-        return;
-      }
+			const shortenAddr = (addr: string) => {
+				return getShortenAddress(addr);
+			};
 
-      try {
-        const accounts = await requestAccounts();
-        const loadingAddr = accounts[0];
-        const loginMsg = `Sign this message to login with address ${loadingAddr}`;
+			const onLoadAccount = async () => {
+				if (curAddress.value) {
+					return;
+				}
 
-        const signature = await requestSignature(loginMsg, loadingAddr);
-        console.log(signature);
+				try {
+					const accounts = await requestAccounts();
+					const loadingAddr = accounts[0];
+					const loginMsg = `Sign this message to login with address ${loadingAddr}`;
 
-        if (typeof signature !== 'string') {
-          throw new Error('Failed to fetch signature');
-        }
+					const signature = await requestSignature(loginMsg, loadingAddr);
+					console.log(signature);
 
-        // FIXME: keccak issue should be resolved : https://github.com/cryptocoinjs/keccak/pull/22
-        const pubKey = utils.recoverPublicKeyFromSig(loadingAddr, loginMsg, signature);
+					if (typeof signature !== 'string') {
+						throw new Error('Failed to fetch signature');
+					}
 
-        console.log(`Public key: ${pubKey}`);
-        
-        const ss58Address = utils.ecdsaPubKeyToSs58(pubKey, chainInfo.value?.ss58Format);
+					// FIXME: keccak issue should be resolved : https://github.com/cryptocoinjs/keccak/pull/22
+					const pubKey = utils.recoverPublicKeyFromSig(
+						loadingAddr,
+						loginMsg,
+						signature
+					);
 
-        console.log(`ethereum: ${loadingAddr} / ss58: ${ss58Address}`);
+					console.log(`Public key: ${pubKey}`);
 
-        ecdsaAccounts.value = { ethereum: loadingAddr, ss58: ss58Address };
-        curAddress.value = ss58Address;
+					const ss58Address = utils.ecdsaPubKeyToSs58(
+						pubKey,
+						chainInfo.value?.ss58Format
+					);
 
-        onSelectMetamask();
-      } catch (err: any) {
-        console.error('err', err);
-        errorMsg.value = err.message;
-      }
-    };
-    
-    const onSelectMetamask = () => {
-      emit('update:sel-checked', true);
-      emit('connectMetamask', ecdsaAccounts.value?.ethereum, ecdsaAccounts.value?.ss58);
-    };
+					console.log(`ethereum: ${loadingAddr} / ss58: ${ss58Address}`);
 
-    return {
-      curAddress,
-      shortenAddr,
-      ecdsaAccounts,
-      errorMsg,
-      onLoadAccount,
-      onSelectMetamask,
-    };
-  },
-  methods: {
-    opClass(checked: boolean) {
-      if (checked) {
-        return 'tw-text-blue-900 dark:tw-text-darkGray-100 tw-cursor-default tw-select-none tw-relative tw-py-2 tw-pl-3 tw-pr-6 tw-bg-blue-200 dark:tw-bg-blue-500 tw-bg-opacity-20';
-      } else {
-        return 'not-checkerd';
-      }
-    },
-  },
-});
+					ecdsaAccounts.value = { ethereum: loadingAddr, ss58: ss58Address };
+					curAddress.value = ss58Address;
+
+					onSelectMetamask();
+				} catch (err: any) {
+					console.error('err', err);
+					errorMsg.value = err.message;
+				}
+			};
+
+			const onSelectMetamask = () => {
+				emit('update:sel-checked', true);
+				emit(
+					'connectMetamask',
+					ecdsaAccounts.value?.ethereum,
+					ecdsaAccounts.value?.ss58
+				);
+			};
+
+			return {
+				curAddress,
+				shortenAddr,
+				ecdsaAccounts,
+				errorMsg,
+				onLoadAccount,
+				onSelectMetamask,
+			};
+		},
+		methods: {
+			opClass(checked: boolean) {
+				if (checked) {
+					return 'tw-text-blue-900 dark:tw-text-darkGray-100 tw-cursor-default tw-select-none tw-relative tw-py-2 tw-pl-3 tw-pr-6 tw-bg-blue-200 dark:tw-bg-blue-500 tw-bg-opacity-20';
+				} else {
+					return 'not-checkerd';
+				}
+			},
+		},
+	});
 </script>
 
 <style scoped>
-  .not-checkerd {
-    @apply tw-text-blue-900 dark:tw-text-darkGray-100 tw-cursor-default tw-select-none tw-relative tw-py-2 tw-pl-3 tw-pr-6;
-  }
-  .not-checkerd:hover {
-    @apply hover:tw-bg-gray-50 dark:tw-bg-darkGray-800;
-  }
+	.not-checkerd {
+		@apply tw-text-blue-900 dark:tw-text-darkGray-100 tw-cursor-default tw-select-none tw-relative tw-py-2 tw-pl-3 tw-pr-6;
+	}
+	.not-checkerd:hover {
+		@apply hover:tw-bg-gray-50 dark:tw-bg-darkGray-800;
+	}
 </style>

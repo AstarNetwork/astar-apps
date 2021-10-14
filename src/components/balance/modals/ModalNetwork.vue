@@ -3,9 +3,7 @@
     <div class="tw-flex tw-items-center tw-justify-center tw-min-h-screen">
       <!-- Background overlay -->
       <div class="tw-fixed tw-inset-0 tw-transition-opacity" aria-hidden="true">
-        <div
-          class="tw-absolute tw-inset-0 tw-bg-gray-900 dark:tw-bg-black tw-opacity-75"
-        ></div>
+        <div class="tw-absolute tw-inset-0 tw-bg-gray-900 dark:tw-bg-black tw-opacity-75"></div>
       </div>
 
       <div
@@ -15,20 +13,12 @@
           <div>
             <h3
               class="tw-text-lg tw-font-extrabold tw-text-blue-900 dark:tw-text-white tw-mb-6 tw-text-center"
-            >
-              {{ $t('balance.modals.chooseNetwork') }}
-            </h3>
+            >{{ $t('balance.modals.chooseNetwork') }}</h3>
 
             <fieldset>
               <ul role="radiogroup">
-                <li
-                  v-for="(provider, index) in providerEndpoints"
-                  :key="index"
-                  class="tw-mb-2"
-                >
-                  <label
-                    :class="selNetwork === index ? classRadioOn : classRadioOff"
-                  >
+                <li v-for="(provider, index) in providerEndpoints" :key="index" class="tw-mb-2">
+                  <label :class="selNetwork === index ? classRadioOn : classRadioOff">
                     <input
                       name="choose_networks"
                       type="radio"
@@ -43,9 +33,7 @@
                             ? classRadioTxtOn
                             : classRadioTxtOff
                         "
-                      >
-                        {{ provider.displayName }}
-                      </p>
+                      >{{ provider.displayName }}</p>
 
                       <!-- custom endpoint -->
                       <input
@@ -67,115 +55,106 @@
             type="button"
             @click="selectNetwork(selNetwork)"
             class="switch"
-          >
-            {{ $t('balance.modals.switch') }}
-          </button>
-          <button
-            type="button"
-            @click="closeModal"
-            class="cancel"
-          >
-            {{ $t('cancel') }}
-          </button>
+          >{{ $t('balance.modals.switch') }}</button>
+          <button type="button" @click="closeModal" class="cancel">{{ $t('cancel') }}</button>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
+	import { defineComponent, ref } from 'vue';
+	import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
 
-export default defineComponent({
-  props: {
-    networkIdx: {
-      type: Number,
-      required: true,
-    },
-  },
-  setup(props, { emit }) {
-    const classRadioOn =
-      'tw-rounded-lg tw-border tw-border-blue-500 tw-bg-blue-200 dark:tw-bg-blue-500 tw-bg-opacity-10 tw-px-4 tw-py-5 tw-flex tw-items-center tw-cursor-pointer';
-    const classRadioOff =
-      'class-radio-off';
-    const classRadioTxtOn =
-      'tw-font-medium tw-text-blue-500 dark:tw-text-blue-400 tw-text-sm';
-    const classRadioTxtOff =
-      'class-radio-tx-off';
+	export default defineComponent({
+		props: {
+			networkIdx: {
+				type: Number,
+				required: true,
+			},
+		},
+		emits: ['update:select-network', 'update:is-open'],
+		setup(props, { emit }) {
+			const classRadioOn =
+				'tw-rounded-lg tw-border tw-border-blue-500 tw-bg-blue-200 dark:tw-bg-blue-500 tw-bg-opacity-10 tw-px-4 tw-py-5 tw-flex tw-items-center tw-cursor-pointer';
+			const classRadioOff = 'class-radio-off';
+			const classRadioTxtOn =
+				'tw-font-medium tw-text-blue-500 dark:tw-text-blue-400 tw-text-sm';
+			const classRadioTxtOff = 'class-radio-tx-off';
 
-    const customEndpoint = ref('');
+			const customEndpoint = ref('');
 
-    const closeModal = (): void => {
-      emit('update:is-open', false);
-    };
+			const closeModal = (): void => {
+				emit('update:is-open', false);
+			};
 
-    const selectNetwork = (networkIdx: number): void => {
-      localStorage.setItem('networkIdx', networkIdx.toString());
-      if (customEndpoint.value) {
-        const endpoint = `ws://${customEndpoint.value}`;
-        localStorage.setItem('customEndpoint', endpoint);
-      }
-      location.reload();
+			const selectNetwork = (networkIdx: number): void => {
+				localStorage.setItem('networkIdx', networkIdx.toString());
+				if (customEndpoint.value) {
+					const endpoint = `ws://${customEndpoint.value}`;
+					localStorage.setItem('customEndpoint', endpoint);
+				}
+				location.reload();
 
-      emit('update:is-open', false);
-      emit('update:select-network', networkIdx);
-    };
+				emit('update:is-open', false);
+				emit('update:select-network', networkIdx);
+			};
 
-    const selNetwork = ref(props.networkIdx);
+			const selNetwork = ref(props.networkIdx);
 
-    return {
-      closeModal,
-      customEndpoint,
-      selectNetwork,
-      selNetwork,
-      classRadioOn,
-      classRadioOff,
-      classRadioTxtOn,
-      classRadioTxtOff,
-      providerEndpoints,
-      endpointKey
-    };
-  },
-});
+			return {
+				closeModal,
+				customEndpoint,
+				selectNetwork,
+				selNetwork,
+				classRadioOn,
+				classRadioOff,
+				classRadioTxtOn,
+				classRadioTxtOff,
+				providerEndpoints,
+				endpointKey,
+			};
+		},
+	});
 </script>
 
 <style scoped>
-  .switch {
-    @apply tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 tw-mx-1;
-  }
-  .switch:hover {
-    @apply tw-bg-blue-700 dark:tw-bg-blue-400;
-  }
-  .switch:focus {
-    @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-blue-400;
-  }
-  .cancel {
-    @apply tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-gray-300 dark:tw-border-darkGray-600 tw-text-sm tw-font-medium tw-rounded-full tw-text-gray-500 dark:tw-text-darkGray-400 tw-bg-white dark:tw-bg-darkGray-900 tw-mx-1;
-  }
-  .cancel:hover {
-    @apply dark:tw-bg-darkGray-800 tw-bg-gray-100;
-  }
-  .cancel:focus {
-    @apply tw-outline-none tw-ring tw-ring-gray-100 dark:tw-ring-darkGray-600;
-  }
-  .class-radio-off {
-    @apply tw-rounded-lg tw-border tw-border-gray-300 dark:tw-border-darkGray-600 tw-bg-white dark:tw-bg-darkGray-900 tw-px-4 tw-py-5 tw-flex tw-items-start tw-cursor-pointer tw-group;
-  }
-  .class-radio-off:hover {
-    @apply tw-bg-gray-50 dark:tw-bg-darkGray-800;
-  }
+	.switch {
+		@apply tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 tw-mx-1;
+	}
+	.switch:hover {
+		@apply tw-bg-blue-700 dark:tw-bg-blue-400;
+	}
+	.switch:focus {
+		@apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-blue-400;
+	}
+	.cancel {
+		@apply tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-gray-300 dark:tw-border-darkGray-600 tw-text-sm tw-font-medium tw-rounded-full tw-text-gray-500 dark:tw-text-darkGray-400 tw-bg-white dark:tw-bg-darkGray-900 tw-mx-1;
+	}
+	.cancel:hover {
+		@apply dark:tw-bg-darkGray-800 tw-bg-gray-100;
+	}
+	.cancel:focus {
+		@apply tw-outline-none tw-ring tw-ring-gray-100 dark:tw-ring-darkGray-600;
+	}
+	.class-radio-off {
+		@apply tw-rounded-lg tw-border tw-border-gray-300 dark:tw-border-darkGray-600 tw-bg-white dark:tw-bg-darkGray-900 tw-px-4 tw-py-5 tw-flex tw-items-start tw-cursor-pointer tw-group;
+	}
+	.class-radio-off:hover {
+		@apply tw-bg-gray-50 dark:tw-bg-darkGray-800;
+	}
 
-  .ip-input {
-    @apply tw-appearance-none tw-bg-gray-50 dark:tw-bg-darkGray-800 tw-block tw-w-full tw-border tw-border-gray-300 dark:tw-border-darkGray-600 tw-rounded-md tw-mt-2 tw-px-2 tw-py-2 tw-text-sm tw-text-gray-700 dark:tw-text-darkGray-100  tw-placeholder-gray-300 dark:tw-placeholder-darkGray-600;
-  }
-  .ip-input:focus {
-    @apply tw-outline-none tw-bg-white dark:tw-bg-darkGray-900 tw-ring-blue-500 tw-border-blue-500;
-  }
+	.ip-input {
+		@apply tw-appearance-none tw-bg-gray-50 dark:tw-bg-darkGray-800 tw-block tw-w-full tw-border tw-border-gray-300 dark:tw-border-darkGray-600 tw-rounded-md tw-mt-2 tw-px-2 tw-py-2 tw-text-sm tw-text-gray-700 dark:tw-text-darkGray-100  tw-placeholder-gray-300 dark:tw-placeholder-darkGray-600;
+	}
+	.ip-input:focus {
+		@apply tw-outline-none tw-bg-white dark:tw-bg-darkGray-900 tw-ring-blue-500 tw-border-blue-500;
+	}
 
-  .class-radio-tx-off {
-    @apply tw-font-medium tw-text-gray-500 dark:tw-text-darkGray-400 tw-text-sm;
-  }
-  .class-radio-tx-off:group-hover {
-    @apply tw-text-gray-700 dark:tw-text-darkGray-300;
-  }
+	.class-radio-tx-off {
+		@apply tw-font-medium tw-text-gray-500 dark:tw-text-darkGray-400 tw-text-sm;
+	}
+	.class-radio-tx-off:group-hover {
+		@apply tw-text-gray-700 dark:tw-text-darkGray-300;
+	}
 </style>
