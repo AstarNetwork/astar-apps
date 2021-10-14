@@ -1,12 +1,18 @@
 <template>
-  <Button class="tw-ml-4" @click="showRegisterDappModal = true">
-    <icon-base class="tw-w-5 tw-h-5 tw-text-white tw--ml-1" stroke="currentColor" icon-name="plus">
-      <icon-plus />
-    </icon-base>
-    {{ $t('store.registerDapp') }}
-  </Button>
+  <div>
+    <Button class="tw-ml-4" @click="showRegisterDappModal = true">
+      <icon-base
+        class="tw-w-5 tw-h-5 tw-text-white tw--ml-1"
+        stroke="currentColor"
+        icon-name="plus"
+      >
+        <icon-plus />
+      </icon-base>
+      {{ $t('store.registerDapp') }}
+    </Button>
 
-  <ModalRegisterDapp v-if="showRegisterDappModal" v-model:isOpen="showRegisterDappModal" />
+    <ModalRegisterDapp v-if="showRegisterDappModal" v-model:isOpen="showRegisterDappModal" />
+  </div>
 </template>
 
 <script lang="ts">

@@ -1,54 +1,56 @@
 <template>
   <div>
-    <div v-if="stakeInfo" class="tw-mb-4">
-      {{ $t('store.totalStake') }}
-      <span class="tw-font-semibold">{{ stakeInfo?.totalStake }}</span>
-      <div :style="{ opacity: stakeInfo?.hasStake ? '1' : '0' }">
-        {{ $t('store.yourStake') }}
-        <span class="tw-font-semibold">{{ stakeInfo?.yourStake }}</span>
+    <div>
+      <div v-if="stakeInfo" class="tw-mb-4">
+        {{ $t('store.totalStake') }}
+        <span class="tw-font-semibold">{{ stakeInfo?.totalStake }}</span>
+        <div :style="{ opacity: stakeInfo?.hasStake ? '1' : '0' }">
+          {{ $t('store.yourStake') }}
+          <span class="tw-font-semibold">{{ stakeInfo?.yourStake }}</span>
+        </div>
       </div>
-    </div>
-    <div class="tw-flex">
-      <div v-if="stakeInfo?.hasStake">
-        <Button :small="true" @click="showStakeModal">
-          {{ $t('store.add') }}
+      <div class="tw-flex">
+        <div v-if="stakeInfo?.hasStake">
+          <Button :small="true" @click="showStakeModal">
+            {{ $t('store.add') }}
+          </Button>
+          <Button :small="true" :primary="false" @click="showUnstakeModal">
+            {{ $t('store.unstake') }}
+          </Button>
+        </div>
+        <Button v-else :small="true" @click="showStakeModal">
+          {{ $t('store.stake') }}
         </Button>
-        <Button :small="true" :primary="false" @click="showUnstakeModal">
-          {{ $t('store.unstake') }}
-        </Button>
-      </div>
-      <Button v-else :small="true" @click="showStakeModal">
-        {{ $t('store.stake') }}
-      </Button>
 
-      <Button
-        v-if="stakeInfo?.hasStake"
-        :small="true"
-        :primary="false"
-        class="tw-ml-auto"
-        @click="showClaimRewardModal = true"
-      >
-        {{ $t('store.claim') }}
-      </Button>
+        <Button
+          v-if="stakeInfo?.hasStake"
+          :small="true"
+          :primary="false"
+          class="tw-ml-auto"
+          @click="showClaimRewardModal = true"
+        >
+          {{ $t('store.claim') }}
+        </Button>
+      </div>
     </div>
+
+    <StakeModal
+      v-if="showModal"
+      v-model:isOpen="showModal"
+      :dapp="dapp"
+      :action="modalAction"
+      :action-name="modalActionName"
+      :title="modalTitle"
+    />
+
+    <ClaimRewardModal
+      v-if="showClaimRewardModal"
+      v-model:isOpen="showClaimRewardModal"
+      :dapp="dapp"
+      :stake-info="stakeInfo"
+      :claim-action="claim"
+    />
   </div>
-
-  <StakeModal
-    v-if="showModal"
-    v-model:isOpen="showModal"
-    :dapp="dapp"
-    :action="modalAction"
-    :action-name="modalActionName"
-    :title="modalTitle"
-  />
-
-  <ClaimRewardModal
-    v-if="showClaimRewardModal"
-    v-model:isOpen="showClaimRewardModal"
-    :dapp="dapp"
-    :stake-info="stakeInfo"
-    :claim-action="claim"
-  />
 </template>
 
 <script lang="ts">

@@ -1,4 +1,4 @@
-const Buffer = require('buffer').Buffer;
+import { Buffer } from 'buffer';
 import BN from 'bn.js';
 
 /**

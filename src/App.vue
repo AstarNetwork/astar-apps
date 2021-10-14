@@ -1,34 +1,36 @@
 <template>
-  <dashboard-layout>
-    <router-view v-slot="{ Component }">
-      <template v-if="Component">
-        <transition name="fade" mode="out-in">
-          <keep-alive>
-            <Suspense>
-              <template #default>
-                <api-loader>
-                  <component :is="Component"></component>
-                </api-loader>
-              </template>
-              <template #fallback>
-                <modal-loading />
-              </template>
-            </Suspense>
-          </keep-alive>
-        </transition>
-      </template>
-    </router-view>
-  </dashboard-layout>
+  <div>
+    <dashboard-layout>
+      <router-view v-slot="{ Component }">
+        <template v-if="Component">
+          <transition name="fade" mode="out-in">
+            <keep-alive>
+              <Suspense>
+                <template #default>
+                  <api-loader>
+                    <component :is="Component"></component>
+                  </api-loader>
+                </template>
+                <template #fallback>
+                  <modal-loading />
+                </template>
+              </Suspense>
+            </keep-alive>
+          </transition>
+        </template>
+      </router-view>
+    </dashboard-layout>
 
-  <modal-loading v-if="isLoading" />
+    <modal-loading v-if="isLoading" />
 
-  <transition name="fade">
-    <alert-box
-      v-show="showAlert.showAlertMsg"
-      :msg="showAlert.alertMsg"
-      :alert-type="showAlert.alertType"
-    />
-  </transition>
+    <transition name="fade">
+      <alert-box
+        v-show="showAlert.showAlertMsg"
+        :msg="showAlert.alertMsg"
+        :alert-type="showAlert.alertType"
+      />
+    </transition>
+  </div>
 </template>
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
@@ -41,7 +43,6 @@ import ApiLoader from 'src/hooks/providers/ApiLoader.vue';
 import Spinner from 'components/common/Spinner.vue';
 import ModalLoading from 'components/common/ModalLoading.vue';
 import AlertBox from 'components/common/AlertBox.vue';
-import Sidebar from 'components/Sidebar.vue';
 
 export default defineComponent({
   name: 'App',
@@ -51,7 +52,6 @@ export default defineComponent({
     Spinner,
     ModalLoading,
     AlertBox,
-    Sidebar,
   },
   setup() {
     const store = useStore();

@@ -1,134 +1,136 @@
 <template>
-  <div class="tw-flex-1 tw-flex tw-flex-col tw-pt-10 tw-overflow-x-hidden tw-overflow-y-auto">
-    <div class="tw-flex tw-items-center">
-      <img width="200" src="~assets/img/astar.png" />
-      <ConnectionIndicator class="tw-pt-4" :connection-type="currentNetworkStatus" />
-    </div>
-
-    <div class="tw-p-4">
-      <div class="tw-mb-1">
-        <AddressSmall
-          v-model:isOpen="modalAccount"
-          :address="currentAccount"
-          :address-name="currentAccountName"
-        />
+  <div class="tw-flex-1 tw-flex tw-flex-col">
+    <div class="tw-flex-1 tw-flex tw-flex-col tw-pt-10 tw-overflow-x-hidden tw-overflow-y-auto">
+      <div class="tw-flex tw-items-center">
+        <img width="200" src="~assets/img/astar.png" />
+        <ConnectionIndicator class="tw-pt-4" :connection-type="currentNetworkStatus" />
       </div>
 
-      <button type="button" class="network-button" @click="modalNetwork = true">
-        {{ currentNetworkName }}
-        <icon-base class="tw--mr-1 tw-ml-2 tw-h-4 tw-w-4" viewBox="0 0 20 20" aria-hidden="true">
-          <icon-solid-chevron-down />
-        </icon-base>
-      </button>
+      <div class="tw-p-4">
+        <div class="tw-mb-1">
+          <AddressSmall
+            v-model:isOpen="modalAccount"
+            :address="currentAccount"
+            :address-name="currentAccountName"
+          />
+        </div>
 
-      <ExtensionsMetadata v-if="!isLocalChain" />
-    </div>
+        <button type="button" class="network-button" @click="modalNetwork = true">
+          {{ currentNetworkName }}
+          <icon-base class="tw--mr-1 tw-ml-2 tw-h-4 tw-w-4" viewBox="0 0 20 20" aria-hidden="true">
+            <icon-solid-chevron-down />
+          </icon-base>
+        </button>
 
-    <nav class="flex-1">
-      <router-link
-        to="/balance"
-        :class="[$route.path.split('/')[1] === 'balance' ? 'activeLink' : 'inactiveLink']"
-        class="tw-items-center tw-justify-center"
-      >
-        <icon-base
-          :class="[$route.path.split('/')[1] === 'balance' ? 'activeSvg' : 'inactiveSvg']"
-          viewBox="0 0 24 24"
+        <ExtensionsMetadata v-if="!isLocalChain" />
+      </div>
+
+      <nav class="flex-1">
+        <router-link
+          to="/balance"
+          :class="[$route.path.split('/')[1] === 'balance' ? 'activeLink' : 'inactiveLink']"
+          class="tw-items-center tw-justify-center"
         >
-          <icon-balance />
-        </icon-base>
-        <span class="tw-ml-3 tw-flex-1">
-          <p class="tw-font-bold">
-            {{ $t('balance.balance') }}
-          </p>
-          <p
-            class="
-              tw-text-xs tw-text-blue-900
-              dark:tw-text-darkGray-100
-              tw-font-semibold tw-flex tw-justify-between
-            "
+          <icon-base
+            :class="[$route.path.split('/')[1] === 'balance' ? 'activeSvg' : 'inactiveSvg']"
+            viewBox="0 0 24 24"
           >
-            <span>{{ currentAccountName }}</span>
-          </p>
-          <p class="tw-text-xs tw-text-gray-500 dark:tw-text-darkGray-400">
-            {{ shortenAddress }}
-          </p>
-        </span>
-      </router-link>
+            <icon-balance />
+          </icon-base>
+          <span class="tw-ml-3 tw-flex-1">
+            <p class="tw-font-bold">
+              {{ $t('balance.balance') }}
+            </p>
+            <p
+              class="
+                tw-text-xs tw-text-blue-900
+                dark:tw-text-darkGray-100
+                tw-font-semibold tw-flex tw-justify-between
+              "
+            >
+              <span>{{ currentAccountName }}</span>
+            </p>
+            <p class="tw-text-xs tw-text-gray-500 dark:tw-text-darkGray-400">
+              {{ shortenAddress }}
+            </p>
+          </span>
+        </router-link>
 
-      <router-link
-        v-if="network.isSupportContract"
-        to="/dapps"
-        :class="[$route.path.split('/')[1] === 'dapps' ? 'activeLink' : 'inactiveLink']"
-      >
-        <icon-base
-          :class="[$route.path.split('/')[1] === 'dapps' ? 'activeSvg' : 'inactiveSvg']"
-          viewBox="0 0 24 24"
+        <router-link
+          v-if="network.isSupportContract"
+          to="/dapps"
+          :class="[$route.path.split('/')[1] === 'dapps' ? 'activeLink' : 'inactiveLink']"
         >
-          <icon-dapps />
-        </icon-base>
-        <span class="tw-font-bold tw-ml-3 tw-flex-1">
-          {{ $t('common.dApps') }}
-        </span>
-      </router-link>
+          <icon-base
+            :class="[$route.path.split('/')[1] === 'dapps' ? 'activeSvg' : 'inactiveSvg']"
+            viewBox="0 0 24 24"
+          >
+            <icon-dapps />
+          </icon-base>
+          <span class="tw-font-bold tw-ml-3 tw-flex-1">
+            {{ $t('common.dApps') }}
+          </span>
+        </router-link>
 
-      <router-link
-        v-if="network.isStoreEnabled"
-        to="/store"
-        :class="[$route.path.split('/')[1] === 'store' ? 'activeLink' : 'inactiveLink']"
-      >
-        <icon-base
-          :class="[$route.path.split('/')[1] === 'store' ? 'activeSvg' : 'inactiveSvg']"
-          viewBox="0 0 24 24"
+        <router-link
+          v-if="network.isStoreEnabled"
+          to="/store"
+          :class="[$route.path.split('/')[1] === 'store' ? 'activeLink' : 'inactiveLink']"
         >
-          <icon-store />
-        </icon-base>
-        <span class="tw-font-bold tw-ml-3 tw-flex-1">
-          {{ $t('common.store') }}
-        </span>
-      </router-link>
+          <icon-base
+            :class="[$route.path.split('/')[1] === 'store' ? 'activeSvg' : 'inactiveSvg']"
+            viewBox="0 0 24 24"
+          >
+            <icon-store />
+          </icon-base>
+          <span class="tw-font-bold tw-ml-3 tw-flex-1">
+            {{ $t('common.store') }}
+          </span>
+        </router-link>
 
-      <a
-        href="https://lockdrop.plasmnet.io/"
-        target="_blank"
-        :class="[$route.path.split('/')[1] === 'lockdrop' ? 'activeLink' : 'inactiveLink']"
-      >
-        <icon-base
-          :class="[$route.path.split('/')[1] === 'lockdrop' ? 'activeSvg' : 'inactiveSvg']"
-          icon-color="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
+        <a
+          href="https://lockdrop.plasmnet.io/"
+          target="_blank"
+          :class="[$route.path.split('/')[1] === 'lockdrop' ? 'activeLink' : 'inactiveLink']"
         >
-          <icon-dot-lockdrop />
-        </icon-base>
-        <span class="tw-ml-3 tw-flex-1">
-          {{ $t('common.plasmLockdrop') }}
-        </span>
-      </a>
-    </nav>
-  </div>
-
-  <div class="tw-flex-shrink-0 tw-p-4 tw-border-t tw-border-gray-200 dark:tw-border-darkGray-600">
-    <SocialMediaLinks />
-    <div class="tw-flex tw-items-center tw-justify-center">
-      <LightDarkMode />
-      <locale-changer />
+          <icon-base
+            :class="[$route.path.split('/')[1] === 'lockdrop' ? 'activeSvg' : 'inactiveSvg']"
+            icon-color="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <icon-dot-lockdrop />
+          </icon-base>
+          <span class="tw-ml-3 tw-flex-1">
+            {{ $t('common.plasmLockdrop') }}
+          </span>
+        </a>
+      </nav>
     </div>
+
+    <div class="tw-flex-shrink-0 tw-p-4 tw-border-t tw-border-gray-200 dark:tw-border-darkGray-600">
+      <SocialMediaLinks />
+      <div class="tw-flex tw-items-center tw-justify-center">
+        <LightDarkMode />
+        <locale-changer />
+      </div>
+    </div>
+
+    <!-- Modals -->
+    <ModalNetwork
+      v-if="modalNetwork"
+      v-model:isOpen="modalNetwork"
+      v-model:selectNetwork="currentNetworkIdx"
+      :network-idx="currentNetworkIdx"
+    />
+
+    <ModalAccount
+      v-if="modalAccount"
+      v-model:isOpen="modalAccount"
+      :all-accounts="allAccounts"
+      :all-account-names="allAccountNames"
+    />
   </div>
-
-  <!-- Modals -->
-  <ModalNetwork
-    v-if="modalNetwork"
-    v-model:isOpen="modalNetwork"
-    v-model:selectNetwork="currentNetworkIdx"
-    :network-idx="currentNetworkIdx"
-  />
-
-  <ModalAccount
-    v-if="modalAccount"
-    v-model:isOpen="modalAccount"
-    :all-accounts="allAccounts"
-    :all-account-names="allAccountNames"
-  />
 </template>
 
 <script lang="ts">

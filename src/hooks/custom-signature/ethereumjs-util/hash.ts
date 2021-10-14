@@ -1,10 +1,9 @@
-// import { keccak224, keccak384, keccak256 as k256, keccak512 } from 'ethereum-cryptography/keccak'
-const createHash = require('create-hash');
+import createHash from 'create-hash';
 import * as rlp from 'rlp';
 import { toBuffer, setLengthLeft } from './bytes';
 import { assertIsString, assertIsBuffer, assertIsArray, assertIsHexString } from './helpers';
 import { Hash } from 'crypto';
-const createKeccakHash = require('keccak');
+import createKeccakHash from 'keccak';
 
 export function createHashFunction(hashConstructor: () => Hash): (msg: Buffer) => Buffer {
   return (msg) => {

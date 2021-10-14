@@ -1,35 +1,37 @@
 <template>
-  <div class="tw-mt-3 tw-mb-12">
-    <button type="button" class="create-dapp-button" @click="modalCreateDapps = true">
-      <icon-base
-        class="tw-w-5 tw-h-5 tw-text-white tw--ml-1"
-        stroke="currentColor"
-        icon-name="plus"
-      >
-        <icon-plus />
-      </icon-base>
-      {{ $t('dapps.createYourDapp') }}
-    </button>
-    <button type="button" class="icon-plus-button" @click="modalCodeHash = true">
-      <icon-base class="plus" icon-name="plus" viewBox="0 0 24 24" stroke="currentColor">
-        <icon-plus />
-      </icon-base>
-      {{ $t('dapps.addExistingCodeHash') }}
-    </button>
+  <div>
+    <div class="tw-mt-3 tw-mb-12">
+      <button type="button" class="create-dapp-button" @click="modalCreateDapps = true">
+        <icon-base
+          class="tw-w-5 tw-h-5 tw-text-white tw--ml-1"
+          stroke="currentColor"
+          icon-name="plus"
+        >
+          <icon-plus />
+        </icon-base>
+        {{ $t('dapps.createYourDapp') }}
+      </button>
+      <button type="button" class="icon-plus-button" @click="modalCodeHash = true">
+        <icon-base class="plus" icon-name="plus" viewBox="0 0 24 24" stroke="currentColor">
+          <icon-plus />
+        </icon-base>
+        {{ $t('dapps.addExistingCodeHash') }}
+      </button>
+    </div>
+
+    <ContractsTable />
+
+    <CodehashTable />
+
+    <ModalCreateDapps
+      v-if="modalCreateDapps"
+      v-model:isOpen="modalCreateDapps"
+      :all-accounts="allAccounts"
+      :all-account-names="allAccountNames"
+      :address="currentAccount"
+    />
+    <ModalCodeHash v-if="modalCodeHash" v-model:isOpen="modalCodeHash" :address="currentAccount" />
   </div>
-
-  <ContractsTable />
-
-  <CodehashTable />
-
-  <ModalCreateDapps
-    v-if="modalCreateDapps"
-    v-model:isOpen="modalCreateDapps"
-    :all-accounts="allAccounts"
-    :all-account-names="allAccountNames"
-    :address="currentAccount"
-  />
-  <ModalCodeHash v-if="modalCodeHash" v-model:isOpen="modalCodeHash" :address="currentAccount" />
 </template>
 
 <script lang="ts">
