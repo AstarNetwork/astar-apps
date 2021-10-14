@@ -4,7 +4,7 @@
       <img width="200" src="~assets/img/astar.png" />
       <ConnectionIndicator
         class="tw-pt-4"
-        :connectionType="currentNetworkStatus"
+        :connection-type="currentNetworkStatus"
       />
     </div>
 
@@ -126,7 +126,7 @@
               ? 'activeSvg'
               :'inactiveSvg',
           ]"
-          iconColor="none"
+          icon-color="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
         >

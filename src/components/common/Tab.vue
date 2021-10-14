@@ -5,12 +5,12 @@
       v-for="num in labelsNumArray"
       :to="{ path: labels[num].path }"
       :key="num"
-      v-bind:class="[
+      :class="[
         active === labels[num].path ? activeLinkClass : inactiveLinkClass,
       ]"
     >
       <span
-        v-bind:class="[
+        :class="[
           active === labels[num].path ? activeSpanClass : inactiveSpanClass,
         ]"
       >

@@ -27,14 +27,14 @@
                   v-if="isSupportContract"
                   :checked="checkMetamask"
                   v-model:selChecked="checkMetamask"
-                  v-on:connectMetamask="connectMetamask"
+                  @connectMetamask="connectMetamask"
                 />
                 <ModalAccountOption
                   v-for="(account, index) in allAccounts"
                   :key="index"
                   :key-idx="index"
                   :address="account"
-                  :addressName="allAccountNames[index]"
+                  :address-name="allAccountNames[index]"
                   :checked="!checkMetamask && selAccount === index"
                   v-model:selOption="selAccount"
                   v-model:selChecked="checkMetamask"

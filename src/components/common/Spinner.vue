@@ -13,7 +13,7 @@
 <script lang="ts">
 	import { defineComponent } from 'vue';
 	export default defineComponent({
-		name: 'spinner2',
+		name: 'Spinner2',
 	});
 </script>
 <style scoped>

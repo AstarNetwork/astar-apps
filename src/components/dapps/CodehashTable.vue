@@ -8,13 +8,13 @@
 
   <div class="tw-grid tw-grid-cols-1 sm:tw-grid-cols-3 xl:tw-grid-cols-4 tw-gap-4">
     <template v-for="(code, index) in allCode" :key="index">
-      <CodeItem :code="code" v-on:confirmRemoval="onConfirmRemoval" />
+      <CodeItem :code="code" @confirmRemoval="onConfirmRemoval" />
     </template>
   </div>
   <ModalConfirmRemoval
     v-if="modalConfirmRemoval"
     v-model:isOpen="modalConfirmRemoval"
-    v-on:forget="onForget"
+    @forget="onForget"
     ctype="codehash"
   />
 </template>

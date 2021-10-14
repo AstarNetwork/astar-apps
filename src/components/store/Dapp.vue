@@ -9,7 +9,7 @@
     </div>
     <hr class="dark:tw-bg-darkGray-600" />
     <div class="tw-p-4">
-      <StakePanel :dapp="dapp" :stakeInfo="stakeInfo" v-on:stake-changed="handleStakeChanged" />
+      <StakePanel :dapp="dapp" :stake-info="stakeInfo" @stake-changed="handleStakeChanged" />
     </div>
   </div>
 </template>

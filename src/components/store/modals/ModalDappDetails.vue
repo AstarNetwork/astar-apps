@@ -1,6 +1,6 @@
 <template>
   <Modal>
-    <template v-slot:content>
+    <template #content>
       <div class="tw-flex tw-flex-col tw-justify-center tw-items-center dark:tw-text-darkGray-100">
         <Avatar :url="dapp.iconUrl" class="tw-w-36 tw-h-36" />
         <div class="tw-my-8 tw-text-2xl tw-font-semibold">{{ dapp.name }}</div>

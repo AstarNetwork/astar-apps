@@ -6,7 +6,7 @@
       <icon-base
         :class="classes.iconBase"
         viewBox="0 0 512 512"
-        iconName="Twitter"
+        icon-name="Twitter"
       >
         <icon-twitter />
       </icon-base>
@@ -21,7 +21,7 @@
       <icon-base
         :class="classes.iconBase"
         viewBox="0 0 448 512"
-        iconName="Telegram"
+        icon-name="Telegram"
       >
         <icon-telegram />
       </icon-base>
@@ -34,7 +34,7 @@
       <icon-base
         :class="classes.iconBase"
         viewBox="0 0 448 512"
-        iconName="Discord"
+        icon-name="Discord"
       >
         <icon-discord />
       </icon-base>
@@ -47,7 +47,7 @@
       <icon-base
         :class="classes.iconBase"
         viewBox="0 0 496 512"
-        iconName="GitHub"
+        icon-name="GitHub"
       >
         <icon-github />
       </icon-base>
@@ -62,8 +62,8 @@
         :class="classes.iconBase"
         viewBox="0 0 24 24"
         stroke="currentColor"
-        iconColor="none"
-        iconName="Documentation"
+        icon-color="none"
+        icon-name="Documentation"
       >
         <icon-document />
       </icon-base>

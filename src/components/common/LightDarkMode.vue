@@ -11,7 +11,7 @@
         class="tw-h-5 tw-w-5 tw-text-blue-900 dark:tw-text-gray-300 dark:tw-text-darkGray-500"
         viewBox="0 0 24 24"
         stroke="currentColor"
-        iconColor="none"
+        icon-color="none"
       >
         <icon-outline-sun />
       </icon-base>
@@ -36,7 +36,7 @@
         class="icon-outline-moon"
         viewBox="0 0 24 24"
         stroke="currentColor"
-        iconColor="none"
+        icon-color="none"
       >
         <icon-outline-moon />
       </icon-base>

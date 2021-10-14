@@ -1,6 +1,6 @@
 <template>
   <Modal :title="`Claim reward ${dapp.name}`">
-    <template v-slot:content>
+    <template #content>
       <Avatar :url="dapp.iconUrl" class="tw-w-36 tw-h-36 tw-mb-4 tw-mx-auto"/>
       <div>
         {{ $t('store.modals.alreadyClaimed') }}
@@ -16,7 +16,7 @@
         <span class="tw-font-semibold">{{ stakeInfo.userClaimedRewards}}</span>
       </div>
     </template>
-    <template v-slot:buttons>
+    <template #buttons>
       <Button @click="claimAction()">
         {{ $t('store.claim') }}
       </Button>

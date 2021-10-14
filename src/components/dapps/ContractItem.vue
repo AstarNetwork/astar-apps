@@ -76,9 +76,9 @@
           <Message
             v-for="(message, index) in execMethods"
             :message="message"
-            :messageIndex="index"
+            :message-index="index"
             :key="message.identifier"
-            v-on:callMethod="onCallMethod"
+            @callMethod="onCallMethod"
           />
         </div>
       </div>

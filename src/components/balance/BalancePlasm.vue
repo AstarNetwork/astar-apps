@@ -11,12 +11,12 @@
     <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-y-4 md:tw-gap-4 tw-mb-8">
       <TotalBalance
         v-if="accountData"
-        :accountData="accountData"
+        :account-data="accountData"
       />
       <PlmBalance
         v-if="accountData"
         :address="currentAccount"
-        :accountData="accountData"
+        :account-data="accountData"
         v-model:isOpenTransfer="modalTransferAmount"
       />
     </div>
@@ -31,11 +31,11 @@
     <ModalTransferAmount
       v-if="modalTransferAmount"
       v-model:isOpen="modalTransferAmount"
-      v-on:completeTransfer="completeTransfer"
+      @completeTransfer="completeTransfer"
       :all-accounts="allAccounts"
       :all-account-names="allAccountNames"
       :balance="balance"
-      :accountData="accountData"
+      :account-data="accountData"
     />
   </div>
 

@@ -50,7 +50,7 @@
         <MetamaskOption
           v-if="showMetamaskOption"
           :checked="checkMetamask"
-          :showRadioIfUnchecked="false"
+          :show-radio-if-unchecked="false"
           v-model:selChecked="checkMetamask"
         />
         <ModalSelectAccountOption
@@ -58,7 +58,7 @@
           :key="index"
           :key-idx="index"
           :address="account"
-          :addressName="allAccountNames[index]"
+          :address-name="allAccountNames[index]"
           :checked="!checkMetamask && selAccountIdx === index"
           v-model:selOption="selAccountIdx"
           v-model:selChecked="checkMetamask"

@@ -35,7 +35,7 @@
     v-model:isOpen="showModal"
     :dapp="dapp"
     :action="modalAction"
-    :actionName="modalActionName"
+    :action-name="modalActionName"
     :title="modalTitle"
   />
 
@@ -43,8 +43,8 @@
     v-if="showClaimRewardModal"
     v-model:isOpen="showClaimRewardModal"
     :dapp="dapp"
-    :stakeInfo="stakeInfo"
-    :claimAction="claim"
+    :stake-info="stakeInfo"
+    :claim-action="claim"
   />
 </template>
 

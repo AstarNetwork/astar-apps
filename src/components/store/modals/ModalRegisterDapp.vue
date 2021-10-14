@@ -1,6 +1,6 @@
 <template>
   <Modal title="Register a new dApp">
-    <template v-slot:content>
+    <template #content>
       <div>
         <div class="tw-mb-4">
           <label
@@ -10,7 +10,7 @@
           </label>
 
           <input-file
-            v-on:dropFile="onDropFile"
+            @dropFile="onDropFile"
             :file="imageFromFile"
             :extension="fileExtension"
           >
@@ -38,7 +38,7 @@
           type="text"
           required
           maxlength="200"
-          :validationMessage="validationErrors['name']"
+          :validation-message="validationErrors['name']"
         />
         <Input
           v-model="data.description"
@@ -46,7 +46,7 @@
           type="text"
           required
           maxlength="2000"
-          :validationMessage="validationErrors['description']"
+          :validation-message="validationErrors['description']"
         />
         <Input
           v-model="data.address"
@@ -54,7 +54,7 @@
           type="text"
           required
           maxlength="42"
-          :validationMessage="validationErrors['address']"
+          :validation-message="validationErrors['address']"
         />
         <Input
           v-model="data.url"
@@ -64,7 +64,7 @@
         />
       </div>
     </template>
-    <template v-slot:buttons>
+    <template #buttons>
       <Button @click="registerDapp">
         {{ $t('store.modals.register') }}
       </Button>

@@ -53,7 +53,7 @@
                   {{ $t('dapps.modals.contractAbi') }}
                 </label>
                 <input-file
-                  v-on:dropFile="onDropFile"
+                  @dropFile="onDropFile"
                   :file="wasmFromFile"
                   :extension="extensionFile"
                 />

@@ -10,22 +10,22 @@
       <ContractItem
         :contract="contract"
         :index="index"
-        v-on:callMethod="onCallMethod"
-        v-on:confirmRemoval="onConfirmRemoval"
+        @callMethod="onCallMethod"
+        @confirmRemoval="onConfirmRemoval"
       />
     </template>
   </div>
   <ModalConfirmRemoval
     v-if="modalConfirmRemoval"
     v-model:isOpen="modalConfirmRemoval"
-    v-on:forget="onForget"
+    @forget="onForget"
     ctype="contract"
   />
   <ModalCallContract
     v-if="modalCallContract"
     v-model:isOpen="modalCallContract"
     :contract="currentContract"
-    :messageIndex="messageIndex"
+    :message-index="messageIndex"
   />
 </template>
 <script lang="ts">

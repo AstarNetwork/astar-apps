@@ -1,7 +1,7 @@
 <template>
   <button
     type="button"
-    v-bind:class="[
+    :class="[
       'tw-inline-flex',
       'tw-items-center',
       small ? 'tw-px-3' : 'tw-px-6',

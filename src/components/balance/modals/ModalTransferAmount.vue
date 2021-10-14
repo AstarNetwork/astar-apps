@@ -44,8 +44,8 @@
                 </label>
 
                 <modal-select-account
-                  :allAccounts="allAccounts"
-                  :allAccountNames="allAccountNames"
+                  :all-accounts="allAccounts"
+                  :all-account-names="allAccountNames"
                   v-model:selAddress="fromAddress"
                   @sel-changed="reloadAmount"
                 />
@@ -59,15 +59,15 @@
                 </label>
 
                 <modal-select-account
-                  :allAccounts="allAccounts"
-                  :allAccountNames="allAccountNames"
+                  :all-accounts="allAccounts"
+                  :all-account-names="allAccountNames"
                   v-model:selAddress="toAddress"
                 />
               </div>
 
               <input-amount
                 title="Amount"
-                :maxInDefaultUnit="formatBalance"
+                :max-in-default-unit="formatBalance"
                 v-model:amount="transferAmt"
                 v-model:selectedUnit="selectUnit"
               />

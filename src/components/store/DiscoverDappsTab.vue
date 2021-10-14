@@ -17,7 +17,7 @@
       <div v-if="dapps.length === 0" class="tw-text-xl tx-font-semibold tw-mt-4 tw-ml-4 dark:tw-text-darkGray-100">
         {{ $t('store.noDappsRegistered') }}
       </div>
-      <Dapp v-else v-for="(dapp, index) in dapps" :key="index" :dapp="dapp" v-on:dappClick="showDetailsModal" />
+      <Dapp v-else v-for="(dapp, index) in dapps" :key="index" :dapp="dapp" @dappClick="showDetailsModal" />
     </div>
 
     <ModalRegisterDapp

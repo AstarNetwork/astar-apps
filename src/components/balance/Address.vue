@@ -14,20 +14,12 @@
           </icon-base>
         </div>
         <div>
-          <p class="tw-text-blue-900 dark:tw-text-darkGray-100 tw-font-bold">
-            {{ addressName }}
-          </p>
-          <p class="tw-text-xs tw-text-gray-500 dark:tw-text-darkGray-400">
-            {{ shortenAddress }}
-          </p>
+          <p class="tw-text-blue-900 dark:tw-text-darkGray-100 tw-font-bold">{{ addressName }}</p>
+          <p class="tw-text-xs tw-text-gray-500 dark:tw-text-darkGray-400">{{ shortenAddress }}</p>
         </div>
       </div>
 
-      <button
-        type="button"
-        @click="openModal"
-        class="icon tw-ml-auto tw-tooltip"
-      >
+      <button type="button" @click="openModal" class="icon tw-ml-auto tw-tooltip">
         <icon-base
           class="tw-h-5 tw-w-5 dark:tw-text-darkGray-100"
           viewBox="0 0 20 20"
@@ -39,9 +31,7 @@
         <!-- Tooltip -->
         <span
           class="tw-pointer-events-none tw-hidden tw-absolute tw-top-0 tw-left-1/2 tw-z-10 tw-transform tw--translate-y-full tw--translate-x-1/2 tw-p-2 tw-text-xs tw-leading-tight tw-text-white tw-bg-gray-800 dark:tw-bg-darkGray-500 tw-rounded-md tw-shadow-lg tw-opacity-90 tw-whitespace-nowrap"
-        >
-          {{ $t('change') }}
-        </span>
+        >{{ $t('change') }}</span>
       </button>
     </div>
 
@@ -49,11 +39,7 @@
       <div
         class="tw-border-l tw-border-gray-100 dark:tw-border-darkGray-600 tw-flex tw-items-center tw-px-1 md:tw-px-2"
       >
-        <button
-          type="button"
-          class="icon tw-tooltip"
-          @click="copyAddress"
-        >
+        <button type="button" class="icon tw-tooltip" @click="copyAddress">
           <icon-base
             class="tw-h-5 tw-w-5 dark:tw-text-darkGray-100"
             viewBox="0 0 20 20"
@@ -64,10 +50,8 @@
 
           <!-- Tooltip -->
           <span
-            class="tw-pointer-events-none tw-hidden tw-absolute tw-top-0 tw-left-1/2 tw-z-10 tw-transform tw--translate-y-full tw--translate-x-1/2  tw-p-2 tw-text-xs tw-leading-tight tw-text-white tw-bg-gray-800 dark:tw-bg-darkGray-500 tw-rounded-md tw-shadow-lg tw-whitespace-nowrap"
-          >
-            {{ $t('copy') }}
-          </span>
+            class="tw-pointer-events-none tw-hidden tw-absolute tw-top-0 tw-left-1/2 tw-z-10 tw-transform tw--translate-y-full tw--translate-x-1/2 tw-p-2 tw-text-xs tw-leading-tight tw-text-white tw-bg-gray-800 dark:tw-bg-darkGray-500 tw-rounded-md tw-shadow-lg tw-whitespace-nowrap"
+          >{{ $t('copy') }}</span>
 
           <input type="hidden" id="hiddenAddr" :value="address" />
         </button>
@@ -77,11 +61,8 @@
         v-if="isSubscan"
         class="tw-border-l tw-border-gray-100 dark:tw-border-darkGray-600 tw-flex tw-items-center tw-px-1 md:tw-px-2"
       >
-        <a :href=subScan target="_blank" rel="noopener noreferrer">
-          <button
-            type="button"
-            class="icon tw-tooltip"
-          >
+        <a :href="subScan" target="_blank" rel="noopener noreferrer">
+          <button type="button" class="icon tw-tooltip">
             <icon-base
               class="dark:tw-text-darkGray-300 tw-h-5 tw-w-5 tw-mt-1"
               viewBox="0 0 30 40"
@@ -92,10 +73,8 @@
 
             <!-- Tooltip -->
             <span
-              class="tw-pointer-events-none tw-hidden tw-absolute tw-top-0 tw-left-1/2 tw-z-10 tw-transform tw--translate-y-full tw--translate-x-1/2  tw-p-2 tw-text-xs tw-leading-tight tw-text-white tw-bg-gray-800 dark:tw-bg-darkGray-500 tw-rounded-md tw-shadow-lg tw-whitespace-nowrap"
-            >
-              {{ $t('subscan') }}
-            </span>
+              class="tw-pointer-events-none tw-hidden tw-absolute tw-top-0 tw-left-1/2 tw-z-10 tw-transform tw--translate-y-full tw--translate-x-1/2 tw-p-2 tw-text-xs tw-leading-tight tw-text-white tw-bg-gray-800 dark:tw-bg-darkGray-500 tw-rounded-md tw-shadow-lg tw-whitespace-nowrap"
+            >{{ $t('subscan') }}</span>
 
             <input type="hidden" id="hiddenAddr" :value="address" />
           </button>
@@ -105,90 +84,103 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, computed, toRefs } from 'vue';
-import { useStore } from 'src/store';
-import { getShortenAddress } from 'src/hooks/helper/addressUtils';
-import IconBase from 'components/icons/IconBase.vue';
-import IconAccountSample from 'components/icons/IconAccountSample.vue';
-import IconChevronDown from 'components/icons/IconChevronDown.vue';
-import IconDocumentDuplicate from 'components/icons/IconDocumentDuplicate.vue';
-import IconLink from 'components/icons/IconLink.vue';
-import { SUB_SCAN } from 'src/links'
+	import { defineComponent, computed, toRefs } from 'vue';
+	import { useStore } from 'src/store';
+	import { getShortenAddress } from 'src/hooks/helper/addressUtils';
+	import IconBase from 'components/icons/IconBase.vue';
+	import IconAccountSample from 'components/icons/IconAccountSample.vue';
+	import IconChevronDown from 'components/icons/IconChevronDown.vue';
+	import IconDocumentDuplicate from 'components/icons/IconDocumentDuplicate.vue';
+	import IconLink from 'components/icons/IconLink.vue';
+	import { SUB_SCAN } from 'src/links';
 
-export default defineComponent({
-  components: {
-    IconBase,
-    IconAccountSample,
-    IconChevronDown,
-    IconDocumentDuplicate,
-    IconLink
-  },
-  props: {
-    address: {
-      type: String,
-      required: true,
-    },
-    addressName: {
-      type: String,
-      required: true,
-    },
-  },
-  setup(props, { emit }) {
-    const openModal = () => {
-      emit('update:is-open', true);
-    };
+	export default defineComponent({
+		components: {
+			IconBase,
+			IconAccountSample,
+			IconChevronDown,
+			IconDocumentDuplicate,
+			IconLink,
+		},
+		props: {
+			address: {
+				type: String,
+				required: true,
+			},
+			addressName: {
+				type: String,
+				required: true,
+			},
+		},
 
-    const { address } = toRefs(props);
+		emits: ['update:is-open'],
+		setup(props, { emit }) {
+			const openModal = () => {
+				emit('update:is-open', true);
+			};
 
-    const shortenAddress = computed(() => {
-      return getShortenAddress(address.value);
-    });
+			const { address } = toRefs(props);
 
-    const store = useStore();
-    const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
-    const selectedAccountAddress = computed(() => store.getters['general/selectedAccountAddress']);
-    const subScan = computed(() => `${SUB_SCAN[currentNetworkIdx.value as 0 | 1 | 3 ]}/account/${selectedAccountAddress.value}`);
-    const isSubscan = Object.keys(SUB_SCAN).includes(currentNetworkIdx.value.toString())
+			const shortenAddress = computed(() => {
+				return getShortenAddress(address.value);
+			});
 
-    const showAlert = () => {
-      store.dispatch('general/showAlertMsg', {
-        msg: 'Copy address success!!',
-        alertType: 'success',
-      });
-    };
+			const store = useStore();
+			const currentNetworkIdx = computed(
+				() => store.getters['general/networkIdx']
+			);
+			const selectedAccountAddress = computed(
+				() => store.getters['general/selectedAccountAddress']
+			);
+			const subScan = computed(
+				() =>
+					`${SUB_SCAN[currentNetworkIdx.value as 0 | 1 | 3]}/account/${
+						selectedAccountAddress.value
+					}`
+			);
+			const isSubscan = Object.keys(SUB_SCAN).includes(
+				currentNetworkIdx.value.toString()
+			);
 
-    return {
-      openModal,
-      shortenAddress,
-      showAlert,
-      subScan,
-      isSubscan,
-      currentNetworkIdx
-    };
-  },
-  methods: {
-    copyAddress() {
-      var copyAddr = document.querySelector('#hiddenAddr') as HTMLInputElement;
-      copyAddr.setAttribute('type', 'text');
-      copyAddr.select();
-      document.execCommand('copy');
-      copyAddr.setAttribute('type', 'hidden');
-      window.getSelection()?.removeAllRanges();
+			const showAlert = () => {
+				store.dispatch('general/showAlertMsg', {
+					msg: 'Copy address success!!',
+					alertType: 'success',
+				});
+			};
 
-      this.showAlert();
-    },
-  },
-});
+			return {
+				openModal,
+				shortenAddress,
+				showAlert,
+				subScan,
+				isSubscan,
+				currentNetworkIdx,
+			};
+		},
+		methods: {
+			copyAddress() {
+				var copyAddr = document.querySelector('#hiddenAddr') as HTMLInputElement;
+				copyAddr.setAttribute('type', 'text');
+				copyAddr.select();
+				document.execCommand('copy');
+				copyAddr.setAttribute('type', 'hidden');
+				window.getSelection()?.removeAllRanges();
+
+				this.showAlert();
+			},
+		},
+	});
 </script>
 
 <style scoped>
-  .icon {
-    @apply tw-p-4 sm:tw-p-5 tw-rounded-full tw-relative;
-  }
-  .icon:hover {
-    @apply tw-bg-gray-100 dark:tw-bg-darkGray-600;
-  }
-  .icon:focus {
-    @apply tw-z-10 tw-outline-none tw-ring tw-ring-gray-100 tw-bg-blue-50 dark:tw-ring-darkGray-600 dark:tw-bg-darkGray-900;
-  }
+	.icon {
+		@apply tw-p-4 sm:tw-p-5 tw-rounded-full tw-relative;
+	}
+	.icon:hover {
+		@apply tw-bg-gray-100 dark:tw-bg-darkGray-600;
+	}
+	.icon:focus {
+		@apply tw-z-10 tw-outline-none tw-ring tw-ring-gray-100 tw-bg-blue-50 dark:tw-ring-darkGray-600 dark:tw-bg-darkGray-900;
+	}
 </style>

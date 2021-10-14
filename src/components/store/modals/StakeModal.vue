@@ -1,6 +1,6 @@
 <template>
   <Modal :title="title">
-     <template v-slot:content>
+     <template #content>
        <Avatar :url="dapp.iconUrl" class="tw-w-36 tw-h-36 tw-mb-4 tw-mx-auto"/>
        <div class="tw-mb-4">
         <label
@@ -9,15 +9,15 @@
           {{ $t('store.modals.address') }}
         </label>
         <ModalSelectAccount
-          :allAccounts="allAccounts"
-          :allAccountNames="allAccountNames"
+          :all-accounts="allAccounts"
+          :all-account-names="allAccountNames"
           v-model:selAddress="data.address"
         />
         
       </div>
       <InputAmount
         title="Amount"
-        :noMax="true"
+        :no-max="true"
         v-model:amount="data.amount"
         v-model:selectedUnit="data.unit"
       />
@@ -25,7 +25,7 @@
         Available <FormatBalance class="tw-inline tw-font-semibold"/>
       </div> -->
      </template>
-     <template v-slot:buttons>
+     <template #buttons>
       <Button @click="action(data)" :disabled="data.amount<=0">
         {{ actionName }}
       </Button>

@@ -81,7 +81,7 @@
                         :key="index"
                         :key-idx="index"
                         :address="account"
-                        :addressName="allAccountNames[index]"
+                        :address-name="allAccountNames[index]"
                         :checked="selAccount === index"
                         v-model:selOption="selAccount"
                       />
@@ -104,8 +104,8 @@
 
                 <input-amount
                   title="Endowment"
-                  :noMax="true"
-                  :maxInDefaultUnit="endowment"
+                  :no-max="true"
+                  :max-in-default-unit="endowment"
                   v-model:amount="endowment"
                   v-model:selectedUnit="selectUnitEndowment"
                 />
@@ -127,8 +127,8 @@
 
                 <input-amount
                   title="Max gas allowed"
-                  :noMax="true"
-                  :maxInDefaultUnit="weight"
+                  :no-max="true"
+                  :max-in-default-unit="weight"
                   v-model:amount="weight"
                   v-model:selectedUnit="selectUnitGas"
                 />
@@ -145,7 +145,7 @@
                   </label>
 
                   <input-file
-                    v-on:dropFile="onDropFile"
+                    @dropFile="onDropFile"
                     :file="wasmFromFile"
                     :extension="extensionFile"
                   />

@@ -1,5 +1,5 @@
 <template>
-  <polkadot-provider :polkadotApi="api" :extensions="extensions">
+  <polkadot-provider :polkadot-api="api" :extensions="extensions">
     <slot />
   </polkadot-provider>
 </template>
@@ -14,7 +14,7 @@ import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
 import { useChainInfo } from 'src/hooks/useChainInfo';
 
 export default defineComponent({
-  name: 'api-loader',
+  name: 'ApiLoader',
   async setup() {
     const store = useStore();
     const networkIdx = computed(() => store.getters['general/networkIdx']);
