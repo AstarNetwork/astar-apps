@@ -2,11 +2,11 @@
   <button
     :disabled="!isNeedUpdate(extensionCount) || isBusy || isComplete"
     type="button"
-    @click="updateMetadata"
     class="update-metadata"
+    @click="updateMetadata"
   >
-    <template v-if="isNeedUpdate(extensionCount) && !isComplete"
-      > {{ $t('common.updateMetadata') }}</template
+    <template v-if="isNeedUpdate(extensionCount) && !isComplete">
+      {{ $t('common.updateMetadata') }}</template
     >
     <template v-else> {{ $t('common.metadataAlreadyInstalled') }}</template>
   </button>
@@ -61,17 +61,16 @@ export default defineComponent({
 button:disabled {
   @apply tw-bg-blue-300 hover:tw-bg-blue-300;
 }
-
 </style>
 
 <style scoped>
-  .update-metadata {
-    @apply tw-inline-flex tw-items-center tw-w-full tw-justify-center tw-px-6 tw-py-1 tw-border tw-border-transparent tw-text-xs tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 tw-my-1;
-  }
-  .update-metadata:hover {
-    @apply tw-bg-blue-700 dark:tw-bg-blue-400;
-  }
-  .update-metadata:focus {
-    @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-blue-400;
-  }
+.update-metadata {
+  @apply tw-inline-flex tw-items-center tw-w-full tw-justify-center tw-px-6 tw-py-1 tw-border tw-border-transparent tw-text-xs tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 tw-my-1;
+}
+.update-metadata:hover {
+  @apply tw-bg-blue-700 dark:tw-bg-blue-400;
+}
+.update-metadata:focus {
+  @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-blue-400;
+}
 </style>

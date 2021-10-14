@@ -1,6 +1,10 @@
 <template>
   <h2
-    class="tw-text-blue-900 dark:tw-text-white tw-text-lg tw-font-bold tw-mt-4 tw-mb-4 tw-leading-tight"
+    class="
+      tw-text-blue-900
+      dark:tw-text-white
+      tw-text-lg tw-font-bold tw-mt-4 tw-mb-4 tw-leading-tight
+    "
   >
     {{ $t('dapps.contracts') }}
   </h2>
@@ -10,22 +14,22 @@
       <ContractItem
         :contract="contract"
         :index="index"
-        v-on:callMethod="onCallMethod"
-        v-on:confirmRemoval="onConfirmRemoval"
+        @callMethod="onCallMethod"
+        @confirmRemoval="onConfirmRemoval"
       />
     </template>
   </div>
   <ModalConfirmRemoval
     v-if="modalConfirmRemoval"
     v-model:isOpen="modalConfirmRemoval"
-    v-on:forget="onForget"
     ctype="contract"
+    @forget="onForget"
   />
   <ModalCallContract
     v-if="modalCallContract"
     v-model:isOpen="modalCallContract"
     :contract="currentContract"
-    :messageIndex="messageIndex"
+    :message-index="messageIndex"
   />
 </template>
 <script lang="ts">
@@ -60,10 +64,7 @@ export default defineComponent({
 
     const { allContracts } = useContracts();
 
-    function filterContracts(
-      api: ApiPromise,
-      keyringContracts: string[] = []
-    ): ContractPromise[] {
+    function filterContracts(api: ApiPromise, keyringContracts: string[] = []): ContractPromise[] {
       return keyringContracts
         .map((address) => getContractForAddress(api, address.toString()))
         .filter((contract): contract is ContractPromise => !!contract);
@@ -87,8 +88,8 @@ export default defineComponent({
 
       contractIndex.value = contractIdx;
       messageIndex.value = msgIdx;
-      
-      console.log('c', contractIdx +'/'+ msgIdx);
+
+      console.log('c', contractIdx + '/' + msgIdx);
     };
 
     const onConfirmRemoval = (address: string) => {

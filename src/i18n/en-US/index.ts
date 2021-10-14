@@ -35,8 +35,7 @@ export default {
       chooseAccount: 'Choose Account',
       chooseNetwork: 'Choose Networks',
       switch: 'Switch',
-      sigExtrinsicBlocked:
-        'Custom sig extrinsic calls has been temporarily blocked',
+      sigExtrinsicBlocked: 'Custom sig extrinsic calls has been temporarily blocked',
       transferToken: 'Transfer {token}',
       transferableBalance: '{token} transferable balance',
       sendFrom: 'Send from',

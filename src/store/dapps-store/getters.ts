@@ -1,6 +1,6 @@
 import { GetterTree } from 'vuex';
 import { StateInterface } from '../index';
-import { DappStateInterface as State, DappItem} from './state';
+import { DappStateInterface as State, DappItem } from './state';
 
 export interface ContractsGetters {
   getAllDapps(state: State): DappItem[];

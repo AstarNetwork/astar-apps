@@ -1,32 +1,32 @@
 /**
  * Constants
  */
-export * from './constants'
+export * from './constants';
 
 /**
  * Account class and helper functions
  */
-export * from './account'
+export * from './account';
 
 /**
  * Address type
  */
-export * from './address'
+export * from './address';
 
 /**
  * Hash functions
  */
-export * from './hash'
+export * from './hash';
 
 /**
  * ECDSA signature
  */
-export * from './signature'
+export * from './signature';
 
 /**
  * Utilities for manipulating Buffers, byte arrays, etc.
  */
-export * from './bytes'
+export * from './bytes';
 
 /**
  * Function for definining properties on an object
@@ -41,9 +41,9 @@ export * from './bytes'
 /**
  * Helpful TypeScript types
  */
-export * from './types'
+export * from './types';
 
 /**
  * Export ethjs-util methods
  */
-export * from 'ethjs-util'
+export * from 'ethjs-util';

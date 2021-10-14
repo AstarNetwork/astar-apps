@@ -4,7 +4,16 @@
       <label class="tw-flex tw-items-center tw-justify-between tw-cursor-pointer">
         <div class="tw-flex tw-items-center">
           <div
-            class="tw-h-8 tw-w-8 tw-rounded-full tw-overflow-hidden tw-border tw-border-gray-100 tw-mr-3 tw-flex-shrink-0"
+            class="
+              tw-h-8
+              tw-w-8
+              tw-rounded-full
+              tw-overflow-hidden
+              tw-border
+              tw-border-gray-100
+              tw-mr-3
+              tw-flex-shrink-0
+            "
           >
             <icon-base class="tw-h-full tw-w-full" viewBox="0 0 64 64">
               <icon-account-sample />
@@ -22,7 +31,17 @@
           <input
             name="choose_account"
             type="radio"
-            class="tw-appearance-none tw-border-2 tw-border-gray-300 dark:tw-border-darkGray-600 tw-rounded-full focus:tw-ring-blue-500 tw-h-4 tw-w-4 tw-mr-3 focus:tw-outline-none tw-bg-white dark:tw-bg-darkGray-900 checked:tw-border-4 checked:tw-border-blue-500"
+            class="
+              tw-appearance-none tw-border-2 tw-border-gray-300
+              dark:tw-border-darkGray-600
+              tw-rounded-full
+              focus:tw-ring-blue-500
+              tw-h-4 tw-w-4 tw-mr-3
+              focus:tw-outline-none
+              tw-bg-white
+              dark:tw-bg-darkGray-900
+              checked:tw-border-4 checked:tw-border-blue-500
+            "
             :value="keyIdx"
             :checked="checked"
             @change="onChange(keyIdx)"
@@ -60,6 +79,7 @@ export default defineComponent({
       type: Boolean,
     },
   },
+  emits: ['update:sel-option', 'update:sel-checked'],
   setup(props, { emit }) {
     const { address } = toRefs(props);
 
@@ -90,10 +110,10 @@ export default defineComponent({
 </script>
 
 <style scoped>
-  .not-checkerd {
-    @apply tw-text-blue-900 dark:tw-text-darkGray-100 tw-cursor-default tw-select-none tw-relative tw-py-2 tw-pl-3 tw-pr-6;
-  }
-  .not-checkerd:hover {
-    @apply tw-bg-gray-50 dark:tw-bg-darkGray-800;
-  }
+.not-checkerd {
+  @apply tw-text-blue-900 dark:tw-text-darkGray-100 tw-cursor-default tw-select-none tw-relative tw-py-2 tw-pl-3 tw-pr-6;
+}
+.not-checkerd:hover {
+  @apply tw-bg-gray-50 dark:tw-bg-darkGray-800;
+}
 </style>

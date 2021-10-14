@@ -9,7 +9,7 @@ export type AlertBox = {
 export type EcdsaAccount = {
   ethereum: string;
   ss58: string;
-}
+};
 
 export type ConnectionType = 'connected' | 'connecting' | 'offline';
 
@@ -45,7 +45,7 @@ function state(): GeneralStateInterface {
     chainInfo: undefined,
     metaExtensions: {
       count: 0,
-      extensions: []
+      extensions: [],
     },
     extensionCount: 0,
     allAccounts: [],
@@ -55,18 +55,17 @@ function state(): GeneralStateInterface {
     isCheckMetamask: false,
     currentEcdsaAccount: {
       ethereum: '',
-      ss58: ''
+      ss58: '',
     },
     currentAccountIdx: 0,
     currentCustomEndpoint: '',
 
     currentTheme:
       //this queries the media setting
-      window.matchMedia &&
-      window.matchMedia('(prefers-color-scheme: dark)').matches
+      window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
         ? 'DARK'
         : 'LIGHT',
-  }
+  };
 }
 
 export default state;

@@ -2,22 +2,19 @@
   <div v-if="isConnected(currentNetworkStatus)">
     <div class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4 tw-mb-4">
       <Address
+        v-model:isOpen="modalAccount"
         :address="currentAccount"
         :address-name="currentAccountName"
-        v-model:isOpen="modalAccount"
       />
     </div>
 
     <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-y-4 md:tw-gap-4 tw-mb-8">
-      <TotalBalance
-        v-if="accountData"
-        :accountData="accountData"
-      />
+      <TotalBalance v-if="accountData" :account-data="accountData" />
       <PlmBalance
         v-if="accountData"
-        :address="currentAccount"
-        :accountData="accountData"
         v-model:isOpenTransfer="modalTransferAmount"
+        :address="currentAccount"
+        :account-data="accountData"
       />
     </div>
 
@@ -31,11 +28,11 @@
     <ModalTransferAmount
       v-if="modalTransferAmount"
       v-model:isOpen="modalTransferAmount"
-      v-on:completeTransfer="completeTransfer"
       :all-accounts="allAccounts"
       :all-account-names="allAccountNames"
       :balance="balance"
-      :accountData="accountData"
+      :account-data="accountData"
+      @completeTransfer="completeTransfer"
     />
   </div>
 
@@ -46,14 +43,7 @@
   /> -->
 </template>
 <script lang="ts">
-import {
-  defineComponent,
-  reactive,
-  toRefs,
-  computed,
-  watch,
-  ref,
-} from 'vue';
+import { defineComponent, reactive, toRefs, computed, watch, ref } from 'vue';
 import { useBalance, useApi, useAccount } from 'src/hooks';
 import { useStore } from 'src/store';
 import { useMeta } from 'quasar';

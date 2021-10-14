@@ -3,73 +3,98 @@
     <div class="tw-flex tw-items-center tw-justify-center tw-min-h-screen">
       <!-- Background overlay -->
       <div class="tw-fixed tw-inset-0 tw-transition-opacity" aria-hidden="true">
-        <div
-          class="tw-absolute tw-inset-0 tw-bg-gray-900 dark:tw-bg-black tw-opacity-75"
-        ></div>
+        <div class="tw-absolute tw-inset-0 tw-bg-gray-900 dark:tw-bg-black tw-opacity-75"></div>
       </div>
 
       <div
-        class="tw-inline-block tw-bg-white dark:tw-bg-darkGray-900 tw-rounded-lg tw-px-4 sm:tw-px-8 tw-py-10 tw-shadow-xl tw-transform tw-transition-all tw-mx-2 tw-my-2 tw-align-middle tw-max-w-lg tw-w-full"
+        class="
+          tw-inline-block tw-bg-white
+          dark:tw-bg-darkGray-900
+          tw-rounded-lg tw-px-4
+          sm:tw-px-8
+          tw-py-10
+          tw-shadow-xl
+          tw-transform
+          tw-transition-all
+          tw-mx-2
+          tw-my-2
+          tw-align-middle
+          tw-max-w-lg
+          tw-w-full
+        "
       >
         <div>
-          <q-banner v-if="isCustomSigBlocked" dense rounded class="bg-orange text-white tw-mb-4 q-pa-xs" style="">
-            {{ $t('balance.modals.sigExtrinsicBlocked') }}
-          </q-banner>
+          <q-banner
+            v-if="isCustomSigBlocked"
+            dense
+            rounded
+            class="bg-orange text-white tw-mb-4 q-pa-xs"
+            style
+            >{{ $t('balance.modals.sigExtrinsicBlocked') }}</q-banner
+          >
           <div>
             <h3
-              class="tw-text-lg tw-font-extrabold tw-text-blue-900 dark:tw-text-white tw-mb-6 tw-text-center"
+              class="
+                tw-text-lg tw-font-extrabold tw-text-blue-900
+                dark:tw-text-white
+                tw-mb-6 tw-text-center
+              "
             >
-              {{ $t('balance.modals.transferToken', { token: defaultUnitToken}) }}
+              {{ $t('balance.modals.transferToken', { token: defaultUnitToken }) }}
             </h3>
 
-            <button
-              type="button"
-              class="transfer-button"
-            >
-              <span class="tw-block tw-text-left tw-font-bold tw-text-sm mb-2"
-                >{{ $t('balance.modals.transferableBalance', { token: defaultUnitToken}) }}
-                </span
-              >
-              <span class="tw-block tw-font-semibold tw-text-2xl tw-mb-1"
-                ><format-balance :balance="accountData?.getUsableTransactionBalance()"
-              /></span>
+            <button type="button" class="transfer-button">
+              <span class="tw-block tw-text-left tw-font-bold tw-text-sm mb-2">{{
+                $t('balance.modals.transferableBalance', {
+                  token: defaultUnitToken,
+                })
+              }}</span>
+              <span class="tw-block tw-font-semibold tw-text-2xl tw-mb-1">
+                <format-balance :balance="accountData?.getUsableTransactionBalance()" />
+              </span>
             </button>
 
             <form>
               <div class="tw-mb-4">
                 <label
-                  class="tw-block tw-text-sm tw-font-medium tw-text-gray-500 dark:tw-text-darkGray-400 tw-mb-2"
+                  class="
+                    tw-block tw-text-sm tw-font-medium tw-text-gray-500
+                    dark:tw-text-darkGray-400
+                    tw-mb-2
+                  "
+                  >{{ $t('balance.modals.sendFrom') }}</label
                 >
-                  {{ $t('balance.modals.sendFrom') }}
-                </label>
 
                 <modal-select-account
-                  :allAccounts="allAccounts"
-                  :allAccountNames="allAccountNames"
                   v-model:selAddress="fromAddress"
+                  :all-accounts="allAccounts"
+                  :all-account-names="allAccountNames"
                   @sel-changed="reloadAmount"
                 />
               </div>
 
               <div class="tw-mb-4">
                 <label
-                  class="tw-block tw-text-sm tw-font-medium tw-text-gray-500 dark:tw-text-darkGray-400 tw-mb-2"
+                  class="
+                    tw-block tw-text-sm tw-font-medium tw-text-gray-500
+                    dark:tw-text-darkGray-400
+                    tw-mb-2
+                  "
+                  >{{ $t('balance.modals.sendTo') }}</label
                 >
-                  {{ $t('balance.modals.sendTo') }}
-                </label>
 
                 <modal-select-account
-                  :allAccounts="allAccounts"
-                  :allAccountNames="allAccountNames"
                   v-model:selAddress="toAddress"
+                  :all-accounts="allAccounts"
+                  :all-account-names="allAccountNames"
                 />
               </div>
 
               <input-amount
-                title="Amount"
-                :maxInDefaultUnit="formatBalance"
                 v-model:amount="transferAmt"
                 v-model:selectedUnit="selectUnit"
+                title="Amount"
+                :max-in-default-unit="formatBalance"
               />
             </form>
           </div>
@@ -78,16 +103,12 @@
           <button
             type="button"
             :disabled="!canExecuteTransaction"
-            @click="transfer(transferAmt, fromAddress, toAddress)"
             class="confirm"
+            @click="transfer(transferAmt, fromAddress, toAddress)"
           >
             {{ $t('confirm') }}
           </button>
-          <button
-            type="button"
-            @click="closeModal"
-            class="cancel"
-          >
+          <button type="button" class="cancel" @click="closeModal">
             {{ $t('cancel') }}
           </button>
         </div>
@@ -132,9 +153,10 @@ export default defineComponent({
     },
     accountData: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
+  emits: ['complete-transfer', 'update:is-open'],
   setup(props, { emit }) {
     const closeModal = () => {
       emit('update:is-open', false);
@@ -153,10 +175,12 @@ export default defineComponent({
     const selectUnit = ref(defaultUnitToken.value);
     const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
-    
+
     // isCustomSigBlocked is temporary until extrinsic call pallet is deployed to all networks.
-    const isCustomSigBlocked  = computed(() => !!!providerEndpoints[currentNetworkIdx.value].prefix);
-    const canExecuteTransaction = computed(() => isCheckMetamask.value ? !isCustomSigBlocked.value : true);
+    const isCustomSigBlocked = computed(() => !!!providerEndpoints[currentNetworkIdx.value].prefix);
+    const canExecuteTransaction = computed(() =>
+      isCheckMetamask.value ? !isCustomSigBlocked.value : true
+    );
 
     const formatBalance = computed(() => {
       const tokenDecimal = decimal.value;
@@ -166,7 +190,7 @@ export default defineComponent({
       );
     });
 
-    const { api } = useApi();    
+    const { api } = useApi();
 
     const handleTransactionError = (e: Error): void => {
       console.error(e);
@@ -174,12 +198,12 @@ export default defineComponent({
         msg: `Transaction failed with error: ${e.message}`,
         alertType: 'error',
       });
-    }
+    };
 
     const handleResult = (result: ISubmittableResult): void => {
       const status = result.status;
       if (status.isInBlock) {
-        const msg = `Completed at block hash #${status.asInBlock.toString()}`
+        const msg = `Completed at block hash #${status.asInBlock.toString()}`;
         console.log(msg);
 
         store.dispatch('general/showAlertMsg', {
@@ -198,46 +222,37 @@ export default defineComponent({
           store.commit('general/setLoading', true);
         }
       }
-    }
+    };
 
     const { callFunc } = useExtrinsicCall({
       onResult: handleResult,
-      onTransactionError: handleTransactionError
+      onTransactionError: handleTransactionError,
     });
 
-    const transferLocal = async (
-      transferAmt: BN,
-      fromAddress: string,
-      toAddress: string
-    ) => {
+    const transferLocal = async (transferAmt: BN, fromAddress: string, toAddress: string) => {
       try {
         const injector = await web3FromSource('polkadot-js');
-        const transfer = await api?.value?.tx.balances.transfer(
-          toAddress,
-          transferAmt
-        );
-        transfer?.signAndSend(
-          fromAddress,
-          {
-            signer: injector?.signer,
-          },
-          result => handleResult(result))
-        .catch((error: Error) => handleTransactionError(error));
+        const transfer = await api?.value?.tx.balances.transfer(toAddress, transferAmt);
+        transfer
+          ?.signAndSend(
+            fromAddress,
+            {
+              signer: injector?.signer,
+            },
+            (result) => handleResult(result)
+          )
+          .catch((error: Error) => handleTransactionError(error));
       } catch (e) {
         console.error(e);
       }
-    }
+    };
 
-    const transferExtrinsic = async (
-      transferAmt: BN,
-      toAddress: string
-    ) => {
+    const transferExtrinsic = async (transferAmt: BN, toAddress: string) => {
       try {
-        const fn: SubmittableExtrinsicFunction<'promise'> | undefined = api?.value?.tx.balances.transfer;
-        const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn(
-          toAddress,
-          transferAmt
-        );
+        const fn: SubmittableExtrinsicFunction<'promise'> | undefined =
+          api?.value?.tx.balances.transfer;
+        const method: SubmittableExtrinsic<'promise'> | undefined =
+          fn && fn(toAddress, transferAmt);
 
         method && callFunc(method);
       } catch (e) {
@@ -247,13 +262,9 @@ export default defineComponent({
           alertType: 'error',
         });
       }
-    }
+    };
 
-    const transfer = async (
-      transferAmt: number,
-      fromAddress: string,
-      toAddress: string
-    ) => {
+    const transfer = async (transferAmt: number, fromAddress: string, toAddress: string) => {
       console.log('transfer', transferAmt);
       console.log('fromAccount', fromAddress);
       console.log('toAccount', toAddress);
@@ -277,11 +288,7 @@ export default defineComponent({
       }
 
       const unit = getUnit(selectUnit.value);
-      const toAmt = plasmUtils.reduceDenomToBalance(
-        transferAmt,
-        unit,
-        decimal.value
-      );
+      const toAmt = plasmUtils.reduceDenomToBalance(transferAmt, unit, decimal.value);
       console.log('toAmt', toAmt.toString(10));
 
       if (isCheckMetamask.value) {
@@ -291,10 +298,14 @@ export default defineComponent({
       }
     };
 
-    const reloadAmount = (address: string, isMetamaskChecked:boolean, selAccountIdx: number): void => {
+    const reloadAmount = (
+      address: string,
+      isMetamaskChecked: boolean,
+      selAccountIdx: number
+    ): void => {
       store.commit('general/setIsCheckMetamask', isMetamaskChecked);
       store.commit('general/setCurrentAccountIdx', selAccountIdx);
-    }
+    };
 
     return {
       closeModal,
@@ -309,38 +320,38 @@ export default defineComponent({
       defaultUnitToken,
       selectUnit,
       reloadAmount,
-      ...toRefs(props)
+      ...toRefs(props),
     };
   },
 });
 </script>
 
 <style scoped>
-  .transfer-button {
-    @apply tw-w-full tw-bg-blue-500 dark:tw-bg-blue-800 tw-text-white tw-rounded-lg tw-px-5 tw-py-5 tw-mb-4 tw-relative;
-  }
-  .transfer-button:hover {
-    @apply tw-bg-blue-600 dark:tw-bg-blue-700;
-  }
-  .transfer-button:focus {
-    @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-blue-400;
-  }
-  .confirm {
-    @apply tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500  tw-mx-1;
-  }
-  .confirm:hover {
-    @apply tw-bg-blue-700 dark:tw-bg-blue-400;
-  }
-  .confirm:focus {
-    @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-blue-400;
-  }
-  .cancel {
-    @apply tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-text-sm tw-font-medium tw-rounded-full tw-text-gray-500 dark:tw-text-darkGray-400 tw-bg-white dark:tw-bg-darkGray-900 tw-mx-1;
-  }
-  .cancel:hover {
-    @apply tw-bg-gray-100 dark:tw-bg-darkGray-700;
-  }
-  .cancel:focus {
-    @apply tw-outline-none tw-ring tw-ring-gray-100 dark:tw-ring-darkGray-600;
-  }
+.transfer-button {
+  @apply tw-w-full tw-bg-blue-500 dark:tw-bg-blue-800 tw-text-white tw-rounded-lg tw-px-5 tw-py-5 tw-mb-4 tw-relative;
+}
+.transfer-button:hover {
+  @apply tw-bg-blue-600 dark:tw-bg-blue-700;
+}
+.transfer-button:focus {
+  @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-blue-400;
+}
+.confirm {
+  @apply tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500  tw-mx-1;
+}
+.confirm:hover {
+  @apply tw-bg-blue-700 dark:tw-bg-blue-400;
+}
+.confirm:focus {
+  @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-blue-400;
+}
+.cancel {
+  @apply tw-inline-flex tw-items-center tw-px-6 tw-py-3 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-text-sm tw-font-medium tw-rounded-full tw-text-gray-500 dark:tw-text-darkGray-400 tw-bg-white dark:tw-bg-darkGray-900 tw-mx-1;
+}
+.cancel:hover {
+  @apply tw-bg-gray-100 dark:tw-bg-darkGray-700;
+}
+.cancel:focus {
+  @apply tw-outline-none tw-ring tw-ring-gray-100 dark:tw-ring-darkGray-600;
+}
 </style>

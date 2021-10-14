@@ -1,10 +1,6 @@
 import { store } from 'quasar/wrappers';
 import { InjectionKey } from 'vue';
-import {
-  createStore,
-  Store as VuexStore,
-  useStore as vuexUseStore,
-} from 'vuex';
+import { createStore, Store as VuexStore, useStore as vuexUseStore } from 'vuex';
 
 import { GeneralStateInterface } from './general/state';
 import { ContractsStateInterface } from './contracts/state';
@@ -13,7 +9,6 @@ import { DappStateInterface } from './dapps-store/state';
 import general from './general';
 import contracts from './contracts';
 import dapps from './dapps-store';
-
 
 /*
  * If not building with SSR mode, you can
@@ -28,15 +23,15 @@ export interface StateInterface {
   // Define your own store structure, using submodules if needed
   // example: ExampleStateInterface;
   // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
-  general: GeneralStateInterface,
-  contracts: ContractsStateInterface,
-  dapps: DappStateInterface,
+  general: GeneralStateInterface;
+  contracts: ContractsStateInterface;
+  dapps: DappStateInterface;
 }
 
 // provide typings for `this.$store`
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
-    $store: VuexStore<StateInterface>
+    $store: VuexStore<StateInterface>;
   }
 }
 
@@ -48,17 +43,17 @@ export default store(function (/* { ssrContext } */) {
     modules: {
       general,
       contracts,
-      dapps
+      dapps,
     },
 
     // enable strict mode (adds overhead!)
     // for dev mode and --debug builds only
-    strict: !!process.env.DEBUGGING
-  })
+    strict: !!process.env.DEBUGGING,
+  });
 
   return Store;
-})
+});
 
 export function useStore() {
-  return vuexUseStore(storeKey)
+  return vuexUseStore(storeKey);
 }

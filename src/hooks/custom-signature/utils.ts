@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 // import * as ethUtils from 'ethereumjs-util';
-import * as ethUtils from './ethereumjs-util'
+import * as ethUtils from './ethereumjs-util';
 import { publicKeyConvert } from 'secp256k1';
 
 import { hexToU8a, isHex, u8aToHex } from '@polkadot/util';
@@ -35,7 +35,11 @@ export const ecdsaPubKeyToSs58 = (publicKey: string, networkPrefix?: number): st
  * @param msgString message string that was signed
  * @param rpcSig resulting signature in hex string
  */
-export const recoverPublicKeyFromSig = (address: string, msgString: string, rpcSig: string): string => {
+export const recoverPublicKeyFromSig = (
+  address: string,
+  msgString: string,
+  rpcSig: string
+): string => {
   // check if the message is hex encoded or not
   const encodingType = isHex(msgString) ? 'hex' : 'utf8';
   // message hashing is done here, which includes the message prefix

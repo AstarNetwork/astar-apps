@@ -23,14 +23,18 @@
   <modal-loading v-if="isLoading" />
 
   <transition name="fade">
-    <alert-box v-show="showAlert.showAlertMsg" :msg="showAlert.alertMsg" :alert-type="showAlert.alertType" />
+    <alert-box
+      v-show="showAlert.showAlertMsg"
+      :msg="showAlert.alertMsg"
+      :alert-type="showAlert.alertType"
+    />
   </transition>
 </template>
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
 import DashboardLayout from 'layouts/DashboardLayout.vue';
 import { useStore } from 'src/store';
-import { useMeta } from 'quasar'
+import { useMeta } from 'quasar';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { opengraphMeta } from 'src/config/opengraph';
 import ApiLoader from 'src/hooks/providers/ApiLoader.vue';
@@ -38,7 +42,6 @@ import Spinner from 'components/common/Spinner.vue';
 import ModalLoading from 'components/common/ModalLoading.vue';
 import AlertBox from 'components/common/AlertBox.vue';
 import Sidebar from 'components/Sidebar.vue';
-
 
 export default defineComponent({
   name: 'App',
@@ -54,7 +57,7 @@ export default defineComponent({
     const store = useStore();
     const isLoading = computed(() => store.getters['general/isLoading']);
     const showAlert = computed(() => store.getters['general/showAlert']);
-    
+
     const networkIdx = localStorage.getItem('networkIdx');
     const customEndpoint = localStorage.getItem('customEndpoint');
     if (networkIdx) {
@@ -69,7 +72,7 @@ export default defineComponent({
 
       useMeta({
         title: '',
-        titleTemplate: title => `${title} | Astar Apps Portal`,
+        titleTemplate: (title) => `${title} | Astar Apps Portal`,
         htmlAttr: { lang: 'en' },
         link: {
           material: {
@@ -83,10 +86,10 @@ export default defineComponent({
 
     return {
       isLoading,
-      showAlert
+      showAlert,
     };
   },
-})
+});
 </script>
 <style>
 ::-webkit-scrollbar {

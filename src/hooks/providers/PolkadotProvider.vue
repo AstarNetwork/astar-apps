@@ -11,7 +11,7 @@ import type { InjectedExtension } from '@polkadot/extension-inject/types';
 import { ApiPromise } from '@polkadot/api';
 
 export default defineComponent({
-  name: 'polkadot-provider',
+  name: 'PolkadotProvider',
   props: {
     polkadotApi: { type: Object as PropType<ApiPromise>, required: true },
     extensions: {

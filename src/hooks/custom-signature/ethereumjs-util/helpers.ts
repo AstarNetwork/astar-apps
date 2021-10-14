@@ -1,4 +1,4 @@
-import { isHexString } from 'ethjs-util'
+import { isHexString } from 'ethjs-util';
 
 /**
  * Throws if a string is not hex prefixed
@@ -6,10 +6,10 @@ import { isHexString } from 'ethjs-util'
  */
 export const assertIsHexString = function (input: string): void {
   if (!isHexString(input)) {
-    const msg = `This method only supports 0x-prefixed hex strings but input was: ${input}`
-    throw new Error(msg)
+    const msg = `This method only supports 0x-prefixed hex strings but input was: ${input}`;
+    throw new Error(msg);
   }
-}
+};
 
 /**
  * Throws if input is not a buffer
@@ -17,10 +17,10 @@ export const assertIsHexString = function (input: string): void {
  */
 export const assertIsBuffer = function (input: Buffer): void {
   if (!Buffer.isBuffer(input)) {
-    const msg = `This method only supports Buffer but input was: ${input}`
-    throw new Error(msg)
+    const msg = `This method only supports Buffer but input was: ${input}`;
+    throw new Error(msg);
   }
-}
+};
 
 /**
  * Throws if input is not an array
@@ -28,10 +28,10 @@ export const assertIsBuffer = function (input: Buffer): void {
  */
 export const assertIsArray = function (input: number[]): void {
   if (!Array.isArray(input)) {
-    const msg = `This method only supports number arrays but input was: ${input}`
-    throw new Error(msg)
+    const msg = `This method only supports number arrays but input was: ${input}`;
+    throw new Error(msg);
   }
-}
+};
 
 /**
  * Throws if input is not a string
@@ -39,7 +39,7 @@ export const assertIsArray = function (input: number[]): void {
  */
 export const assertIsString = function (input: string): void {
   if (typeof input !== 'string') {
-    const msg = `This method only supports strings but input was: ${input}`
-    throw new Error(msg)
+    const msg = `This method only supports strings but input was: ${input}`;
+    throw new Error(msg);
   }
-}
+};

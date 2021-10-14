@@ -1,19 +1,13 @@
 <template>
   <nav class="tw--mb-px tw-flex tw-justify-items-center sm:tw-ml-8 md:tw-ml-0" aria-label="Tabs">
     <router-link
-      append
       v-for="num in labelsNumArray"
-      :to="{ path: labels[num].path }"
       :key="num"
-      v-bind:class="[
-        active === labels[num].path ? activeLinkClass : inactiveLinkClass,
-      ]"
+      append
+      :to="{ path: labels[num].path }"
+      :class="[active === labels[num].path ? activeLinkClass : inactiveLinkClass]"
     >
-      <span
-        v-bind:class="[
-          active === labels[num].path ? activeSpanClass : inactiveSpanClass,
-        ]"
-      >
+      <span :class="[active === labels[num].path ? activeSpanClass : inactiveSpanClass]">
         {{ labels[num].label }}
       </span>
     </router-link>
@@ -37,18 +31,13 @@ export default defineComponent({
     // when `route.path` is `/dapps/dapps-staking`, `active` is `dapps-staking`.
     const active = computed(() => route.path.split('/')[2]);
     const classes = reactive({
-      activeLinkClass:
-        'tw-border-gray-200 dark:tw-border-darkGray-600 tw-border tw-rounded-t-md',
-      inactiveLinkClass:
-        'tw-border-gray-50 dark:tw-border-darkGray-900 tw-border tw-rounded-t-md',
+      activeLinkClass: 'tw-border-gray-200 dark:tw-border-darkGray-600 tw-border tw-rounded-t-md',
+      inactiveLinkClass: 'tw-border-gray-50 dark:tw-border-darkGray-900 tw-border tw-rounded-t-md',
       activeSpanClass:
         'tw-block tw-bg-gray-50 dark:tw-bg-darkGray-900 tw--mb-px tw-whitespace-nowrap tw-py-3 sm:tw-py-5 tw-px-6 md:tw-px-8 tw-text-blue-900 dark:tw-text-darkGray-300 tw-font-medium tw-rounded-t-md tw-border-gray-50 dark:tw-border-darkGray-900 tw-border-b',
-      inactiveSpanClass:
-        'inactive-span-class',
+      inactiveSpanClass: 'inactive-span-class',
     });
-    const labelsNumArray = computed(() => [
-      ...Array(props.labels.length).keys(),
-    ]);
+    const labelsNumArray = computed(() => [...Array(props.labels.length).keys()]);
     return {
       labelsNumArray,
       active,
@@ -60,10 +49,10 @@ export default defineComponent({
 </script>
 
 <style scoped>
-  .inactive-span-class {
-    @apply tw-block tw-bg-gray-50 dark:tw-bg-darkGray-900 tw--mb-px tw-whitespace-nowrap tw-py-3 sm:tw-py-5 tw-px-6 md:tw-px-8 tw-text-blue-500 dark:tw-text-blue-400 tw-font-medium tw-rounded-t-md tw-border-gray-200 dark:tw-border-darkGray-600 tw-border-b;
-  }
-  .inactive-span-class:hover {
-    @apply tw-text-blue-400 dark:tw-text-blue-300;
-  }
+.inactive-span-class {
+  @apply tw-block tw-bg-gray-50 dark:tw-bg-darkGray-900 tw--mb-px tw-whitespace-nowrap tw-py-3 sm:tw-py-5 tw-px-6 md:tw-px-8 tw-text-blue-500 dark:tw-text-blue-400 tw-font-medium tw-rounded-t-md tw-border-gray-200 dark:tw-border-darkGray-600 tw-border-b;
+}
+.inactive-span-class:hover {
+  @apply tw-text-blue-400 dark:tw-text-blue-300;
+}
 </style>

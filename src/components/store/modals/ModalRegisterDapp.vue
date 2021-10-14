@@ -1,24 +1,19 @@
 <template>
   <Modal title="Register a new dApp">
-    <template v-slot:content>
+    <template #content>
       <div>
         <div class="tw-mb-4">
           <label
-            class="tw-block tw-text-sm tw-font-medium tw-text-gray-500 dark:tw-text-darkGray-400 tw-mb-2"
+            class="
+              tw-block tw-text-sm tw-font-medium tw-text-gray-500
+              dark:tw-text-darkGray-400
+              tw-mb-2
+            "
+            >{{ $t('store.modals.logo') }}</label
           >
-            {{ $t('store.modals.logo') }}
-          </label>
 
-          <input-file
-            v-on:dropFile="onDropFile"
-            :file="imageFromFile"
-            :extension="fileExtension"
-          >
-            <Avatar
-              v-if="!!imagePreview"
-              :url="imagePreview"
-              class="tw-mx-auto tw-w-36 tw-h-36"
-            />
+          <input-file :file="imageFromFile" :extension="fileExtension" @dropFile="onDropFile">
+            <Avatar v-if="!!imagePreview" :url="imagePreview" class="tw-mx-auto tw-w-36 tw-h-36" />
             <icon-base
               v-else
               class="tw-h-12 tw-w-12 tw-mx-auto dark:tw-text-darkGray-100"
@@ -31,14 +26,14 @@
             </icon-base>
           </input-file>
         </div>
-        
+
         <Input
           v-model="data.name"
           label="Name"
           type="text"
           required
           maxlength="200"
-          :validationMessage="validationErrors['name']"
+          :validation-message="validationErrors['name']"
         />
         <Input
           v-model="data.description"
@@ -46,7 +41,7 @@
           type="text"
           required
           maxlength="2000"
-          :validationMessage="validationErrors['description']"
+          :validation-message="validationErrors['description']"
         />
         <Input
           v-model="data.address"
@@ -54,26 +49,19 @@
           type="text"
           required
           maxlength="42"
-          :validationMessage="validationErrors['address']"
+          :validation-message="validationErrors['address']"
         />
-        <Input
-          v-model="data.url"
-          label="Url"
-          type="text"
-          maxlength="1000"
-        />
+        <Input v-model="data.url" label="Url" type="text" maxlength="1000" />
       </div>
     </template>
-    <template v-slot:buttons>
-      <Button @click="registerDapp">
-        {{ $t('store.modals.register') }}
-      </Button>
+    <template #buttons>
+      <Button @click="registerDapp">{{ $t('store.modals.register') }}</Button>
     </template>
   </Modal>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, watch } from 'vue'
+import { defineComponent, reactive, ref, watch } from 'vue';
 import Modal from 'components/common/Modal.vue';
 import Input from 'src/components/common/Input.vue';
 import InputFile from 'src/components/dapps/modals/InputFile.vue';
@@ -96,18 +84,16 @@ export default defineComponent({
     Avatar,
     IconBase,
     IconDocument,
-    Button
+    Button,
   },
+  emits: ['update:is-open'],
   setup(_, { emit }) {
     const store = useStore();
     const { api } = useApi();
     const data = reactive<NewDappItem>({} as NewDappItem);
     const imagePreview = ref<string>();
     const fileExtension = ['.png', '.jpg', '.gif'];
-    const {
-      fileRef: imageFromFile,
-      setFile
-    } = useFile();
+    const { fileRef: imageFromFile, setFile } = useFile();
     const validationErrors = ref<LooseObject>({});
 
     const onDropFile = (fileState: FileState): void => {
@@ -122,45 +108,47 @@ export default defineComponent({
       if (!validateAll()) {
         return;
       }
-      
+
       const senderAddress = store.getters['general/selectedAccountAddress'];
       const result = await store.dispatch('dapps/registerDapp', {
         dapp: data,
         api: api?.value,
-        senderAddress
+        senderAddress,
       } as RegisterParameters);
 
       if (result) {
-         emit('update:is-open', false);
+        emit('update:is-open', false);
       }
-    }
+    };
 
     const encodeImage = (fileType: string, data: Uint8Array): string => {
       const buffer = Buffer.from(data);
-      return `data:${fileType};base64,${buffer.toString('base64')}`
-    }
+      return `data:${fileType};base64,${buffer.toString('base64')}`;
+    };
 
-    const validate = (field: string, errorMessage?: string):boolean => {
+    const validate = (field: string, errorMessage?: string): boolean => {
       if (data[field]) {
-        validationErrors.value[field] = ''
-        return true
+        validationErrors.value[field] = '';
+        return true;
       }
 
-      validationErrors.value[field] = errorMessage ? errorMessage : `The field ${field} is required.`;
+      validationErrors.value[field] = errorMessage
+        ? errorMessage
+        : `The field ${field} is required.`;
       return false;
-    }
+    };
 
-    const validateName = ():boolean => {
+    const validateName = (): boolean => {
       return validate('name', 'dApp name is required.');
-    }
+    };
 
-    const validateDescription = ():boolean => {
+    const validateDescription = (): boolean => {
       return validate('description', 'Please tell us a few words about your dApp.');
-    }
+    };
 
-    const validateContractAddress = ():boolean => {
+    const validateContractAddress = (): boolean => {
       if (validate('address', 'Please enter contract address.')) {
-        if (isValidAddress(data.address)){
+        if (isValidAddress(data.address)) {
           validationErrors.value['address'] = '';
           return true;
         } else {
@@ -170,11 +158,11 @@ export default defineComponent({
       }
 
       return false;
-    }
+    };
 
-    const validateAll = ():boolean => {
+    const validateAll = (): boolean => {
       return validateName() && validateDescription() && validateContractAddress();
-    }
+    };
 
     watch(
       () => data.name,
@@ -198,9 +186,8 @@ export default defineComponent({
       imagePreview,
       validationErrors,
       onDropFile,
-      registerDapp
-    }
-  }
-})
-
+      registerDapp,
+    };
+  },
+});
 </script>

@@ -45,7 +45,7 @@ const getters: GetterTree<State, StateInterface> & GeneralGetters = {
     } else {
       return state.allAccounts[state.currentAccountIdx];
     }
-  }
+  },
 };
 
 export default getters;

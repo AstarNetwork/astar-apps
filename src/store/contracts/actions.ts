@@ -17,15 +17,13 @@ const KEY_CODE = 'code:';
 
 const getCodeJson = (api: ApiPromise, json: CodeJson): any => {
   return {
-    contractAbi: json.abi
-      ? new Abi(json.abi, api.registry.getChainProperties())
-      : undefined,
+    contractAbi: json.abi ? new Abi(json.abi, api.registry.getChainProperties()) : undefined,
     json,
   };
 };
 
 const actions: ActionTree<State, StateInterface> = {
-  loadAllContracts ({ commit }, param: any) {
+  loadAllContracts({ commit }, param: any) {
     try {
       const api: ApiPromise = param.api;
       const genesisHash = api.genesisHash?.toHex();
@@ -33,11 +31,7 @@ const actions: ActionTree<State, StateInterface> = {
       console.log('genesisHash', genesisHash);
 
       store.each((json: CodeJson, key: string): void => {
-        if (
-          json &&
-          json.genesisHash === genesisHash &&
-          key.startsWith(KEY_CODE)
-        ) {
+        if (json && json.genesisHash === genesisHash && key.startsWith(KEY_CODE)) {
           const newJson = getCodeJson(api, json);
           commit('addCode', JSON.stringify(newJson));
         }
@@ -46,12 +40,8 @@ const actions: ActionTree<State, StateInterface> = {
       console.error('Unable to load code', e);
     }
   },
-  saveCode ({ commit, state },
-    { api, _codeHash, partial }: SaveCode
-  ) {
-    const hash: Hash = isString(_codeHash)
-      ? api.registry.createType('Hash', _codeHash)
-      : _codeHash;
+  saveCode({ commit, state }, { api, _codeHash, partial }: SaveCode) {
+    const hash: Hash = isString(_codeHash) ? api.registry.createType('Hash', _codeHash) : _codeHash;
     const codeHash = hash.toHex();
     const existing = state.allCode[codeHash];
     const json = {
@@ -71,11 +61,11 @@ const actions: ActionTree<State, StateInterface> = {
 
     commit('addCode', JSON.stringify(newJson));
   },
-  forgetCode ({ commit }, { codeHash }) {
+  forgetCode({ commit }, { codeHash }) {
     const key = `${KEY_CODE}${codeHash}`;
     store.remove(key);
     commit('removeCode', codeHash);
-  }
+  },
 };
 
 export default actions;

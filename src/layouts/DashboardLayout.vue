@@ -4,7 +4,12 @@
     <div class="tw-flex tw-flex-col tw-w-0 tw-flex-1 tw-overflow-y-auto lg:tw-overflow-hidden">
       <plasm-header />
       <main
-        class="tw-flex-1 tw-relative tw-z-0 lg:tw-overflow-y-auto tw-overflow-x-hidden focus:tw-outline-none"
+        class="
+          tw-flex-1 tw-relative tw-z-0
+          lg:tw-overflow-y-auto
+          tw-overflow-x-hidden
+          focus:tw-outline-none
+        "
       >
         <div class="tw-px-4 sm:tw-px-8 tw-py-10 lg:tw-py-16">
           <slot />
@@ -25,12 +30,11 @@ export default defineComponent({
     PlasmHeader,
     Sidebar,
   },
-  setup(){
-    const isDark =  window.matchMedia &&
-    window.matchMedia('(prefers-color-scheme: dark)').matches
-    isDark? document.documentElement.classList.add('dark')
-    : document.documentElement.classList.remove('dark')
-  }
+  setup() {
+    const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    isDark
+      ? document.documentElement.classList.add('dark')
+      : document.documentElement.classList.remove('dark');
+  },
 });
 </script>
-

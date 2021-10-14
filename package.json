@@ -8,8 +8,10 @@
   "scripts": {
     "dev": "quasar dev",
     "build": "quasar build",
-    "lint": "eslint --ext .js,.ts,.vue ./",
-    "lint:check": "eslint --ext .js,.ts,.vue ./",
+    "format": "prettier --write '**/*.{ts,vue}'",
+    "check-format": "prettier --check '**/*.{ts,vue}'",
+    "lint": "yarn format && yarn check-format && eslint --fix --ext .ts,.vue ./",
+    "lint:check": "yarn check-format && eslint --ext .ts,.vue ./",
     "test": "echo \"No test specified\" && exit 0",
     "deploy": "push-dir --dir=dist/spa --remote=gh-pages --branch=main"
   },
@@ -38,11 +40,11 @@
     "firebase": "^9.0.2",
     "keccak": "byterose/keccak#stream-update",
     "node-polyfill-webpack-plugin": "^1.1.4",
-    "tailwindcss-theme-variants": "^2.0.0-alpha.1",
     "quasar": "^2.0.0",
     "secp256k1": "^4.0.2",
     "store": "^2.0.12",
     "stream": "^0.0.2",
+    "tailwindcss-theme-variants": "^2.0.0-alpha.1",
     "vue-i18n": "^9.0.0-beta.0",
     "vue3-dropzone": "^0.0.7",
     "vuex": "^4.0.1"
@@ -60,7 +62,10 @@
     "@typescript-eslint/parser": "^4.16.1",
     "eslint": "^7.14.0",
     "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-prettier-vue": "^3.1.0",
     "eslint-plugin-vue": "^7.0.0",
+    "eslint-webpack-plugin": "^3.0.1",
+    "prettier": "^2.4.1",
     "push-dir": "^0.4.1",
     "sass-loader": "7.3.1",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.3"

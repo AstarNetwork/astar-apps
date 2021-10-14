@@ -1,21 +1,23 @@
 <template>
   <div>
     <div v-if="stakeInfo" class="tw-mb-4">
-      {{ $t('store.totalStake') }} <span class="tw-font-semibold">{{ stakeInfo?.totalStake }}</span>
-      <div :style="{opacity: stakeInfo?.hasStake ? '1' : '0'}">
-          {{ $t('store.yourStake') }}  <span class="tw-font-semibold">{{ stakeInfo?.yourStake }}</span>
+      {{ $t('store.totalStake') }}
+      <span class="tw-font-semibold">{{ stakeInfo?.totalStake }}</span>
+      <div :style="{ opacity: stakeInfo?.hasStake ? '1' : '0' }">
+        {{ $t('store.yourStake') }}
+        <span class="tw-font-semibold">{{ stakeInfo?.yourStake }}</span>
       </div>
     </div>
     <div class="tw-flex">
       <div v-if="stakeInfo?.hasStake">
-        <Button @click="showStakeModal" :small="true">
+        <Button :small="true" @click="showStakeModal">
           {{ $t('store.add') }}
         </Button>
-        <Button @click="showUnstakeModal" :small="true" :primary="false">
+        <Button :small="true" :primary="false" @click="showUnstakeModal">
           {{ $t('store.unstake') }}
         </Button>
       </div>
-      <Button v-else @click="showStakeModal" :small="true">
+      <Button v-else :small="true" @click="showStakeModal">
         {{ $t('store.stake') }}
       </Button>
 
@@ -24,7 +26,8 @@
         :small="true"
         :primary="false"
         class="tw-ml-auto"
-        @click="showClaimRewardModal=true">
+        @click="showClaimRewardModal = true"
+      >
         {{ $t('store.claim') }}
       </Button>
     </div>
@@ -35,7 +38,7 @@
     v-model:isOpen="showModal"
     :dapp="dapp"
     :action="modalAction"
-    :actionName="modalActionName"
+    :action-name="modalActionName"
     :title="modalTitle"
   />
 
@@ -43,13 +46,13 @@
     v-if="showClaimRewardModal"
     v-model:isOpen="showClaimRewardModal"
     :dapp="dapp"
-    :stakeInfo="stakeInfo"
-    :claimAction="claim"
+    :stake-info="stakeInfo"
+    :claim-action="claim"
   />
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, toRefs } from 'vue'
+import { defineComponent, ref, toRefs } from 'vue';
 import BN from 'bn.js';
 import Button from 'components/common/Button.vue';
 import StakeModal, { StakeModel } from 'components/store/modals/StakeModal.vue';
@@ -64,19 +67,19 @@ export default defineComponent({
   components: {
     Button,
     StakeModal,
-    ClaimRewardModal
+    ClaimRewardModal,
   },
-  emits: ['stakeChanged'],
   props: {
     dapp: {
       type: Object,
-      required: true
+      required: true,
     },
     stakeInfo: {
       type: Object,
-      default: undefined
-    }
+      default: undefined,
+    },
   },
+  emits: ['stakeChanged'],
   setup(props, { emit }) {
     const store = useStore();
     const { api } = useApi();
@@ -91,50 +94,43 @@ export default defineComponent({
       modalActionName.value = 'Stake';
       modalAction.value = stake;
       showModal.value = true;
-    }
+    };
 
     const showUnstakeModal = () => {
       modalTitle.value = `Unstake from ${props.dapp.name}`;
       modalActionName.value = 'Unstake';
       modalAction.value = unstake;
       showModal.value = true;
-    }
+    };
 
     const emitStakeChanged = () => {
       emit('stakeChanged', props.dapp);
-    }
+    };
 
     // TODO refactor since very similar code is in ModalTransferAmount, maybe to move this logic into InputAmount component
     const getAmount = (stakeData: StakeModel): BN => {
       const unit = getUnit(stakeData.unit);
-      const amount = reduceDenomToBalance(
-        stakeData.amount,
-        unit,
-        stakeData.decimal
-      );
+      const amount = reduceDenomToBalance(stakeData.amount, unit, stakeData.decimal);
 
       console.log('getAmount', stakeData, unit, stakeData.decimal, amount.toString());
       return amount;
-    }
+    };
 
     const stake = async (stakeData: StakeModel) => {
-      const result = await store.dispatch(
-        'dapps/stake',
-        {
-          api: api?.value,
-          senderAddress: stakeData.address,
-          dapp: props.dapp,
-          amount: getAmount(stakeData),
-          decimals: stakeData.decimal,
-          unit: stakeData.unit,
-          finalizeCallback: emitStakeChanged,
-        } as StakingParameters,
-      );
+      const result = await store.dispatch('dapps/stake', {
+        api: api?.value,
+        senderAddress: stakeData.address,
+        dapp: props.dapp,
+        amount: getAmount(stakeData),
+        decimals: stakeData.decimal,
+        unit: stakeData.unit,
+        finalizeCallback: emitStakeChanged,
+      } as StakingParameters);
 
       if (result) {
         showModal.value = false;
       }
-    }
+    };
 
     const unstake = async (stakeData: StakeModel) => {
       const result = await store.dispatch('dapps/unstake', {
@@ -144,13 +140,13 @@ export default defineComponent({
         amount: getAmount(stakeData),
         decimals: stakeData.decimal,
         unit: stakeData.unit,
-        finalizeCallback: emitStakeChanged
+        finalizeCallback: emitStakeChanged,
       } as StakingParameters);
 
       if (result) {
         showModal.value = false;
       }
-    }
+    };
 
     const claim = async () => {
       // TODO maybe to add select address option to modal as in stake/unstake
@@ -159,13 +155,13 @@ export default defineComponent({
         api: api?.value,
         senderAddress,
         dapp: props.dapp,
-        finalizeCallback: emitStakeChanged
+        finalizeCallback: emitStakeChanged,
       } as StakingParameters);
 
       if (result) {
         showClaimRewardModal.value = false;
       }
-    }
+    };
 
     return {
       ...toRefs(props),
@@ -176,8 +172,8 @@ export default defineComponent({
       modalActionName,
       showStakeModal,
       showUnstakeModal,
-      claim
+      claim,
     };
   },
-})
+});
 </script>

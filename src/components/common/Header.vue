@@ -1,15 +1,24 @@
 <template>
   <div
-    class="tw-flex tw-justify-between tw-items-center lg:tw-hidden tw-px-4 tw-py-1 sm:tw-py-2 tw-bg-white dark:tw-bg-darkGray-800 tw-shadow"
+    class="
+      tw-flex tw-justify-between tw-items-center
+      lg:tw-hidden
+      tw-px-4 tw-py-1
+      sm:tw-py-2
+      tw-bg-white
+      dark:tw-bg-darkGray-800
+      tw-shadow
+    "
   >
-    <button
-      class="open-sidebar"
-      @click="isOpen = true"
-    >
+    <button class="open-sidebar" @click="isOpen = true">
       <span class="tw-sr-only">Open sidebar</span>
       <!-- Heroicon name: outline/menu -->
       <icon-base
-        class="tw-h-6 tw-w-6 tw-text-gray-500 dark:tw-text-darkGray-300 group-hover:tw-text-blue-900"
+        class="
+          tw-h-6 tw-w-6 tw-text-gray-500
+          dark:tw-text-darkGray-300
+          group-hover:tw-text-blue-900
+        "
         viewBox="0 0 24 24"
         stroke="currentColor"
         aria-hidden="true"
@@ -23,7 +32,12 @@
     </div>
 
     <div
-      class="tw-w-8 tw-h-8 sm:tw-w-10 sm:tw-h-10 tw-rounded-full tw-overflow-hidden tw-border tw-border-gray-100 focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100"
+      class="
+        tw-w-8 tw-h-8
+        sm:tw-w-10 sm:tw-h-10
+        tw-rounded-full tw-overflow-hidden tw-border tw-border-gray-100
+        focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100
+      "
     ></div>
   </div>
 </template>
@@ -45,13 +59,13 @@ export default defineComponent({
 </script>
 
 <style scoped>
-  .open-sidebar {
-    @apply tw--ml-3 tw-p-2 tw-rounded-full tw-group;
-  }
-  .open-sidebar:hover {
-    @apply tw-bg-blue-100 dark:tw-bg-darkGray-600 tw-text-gray-900;
-  }
-  .open-sidebar:focus {
-    @apply tw-outline-none tw-ring tw-ring-blue-100 tw-bg-blue-50;
-  }
+.open-sidebar {
+  @apply tw--ml-3 tw-p-2 tw-rounded-full tw-group;
+}
+.open-sidebar:hover {
+  @apply tw-bg-blue-100 dark:tw-bg-darkGray-600 tw-text-gray-900;
+}
+.open-sidebar:focus {
+  @apply tw-outline-none tw-ring tw-ring-blue-100 tw-bg-blue-50;
+}
 </style>

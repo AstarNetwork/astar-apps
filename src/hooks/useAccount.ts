@@ -13,22 +13,26 @@ export const useAccount = () => {
   const currentAccount = ref('');
   const currentAccountName = ref('');
 
-  watch([allAccounts, allAccountNames, currentAccountIdx, isCheckMetamask], () => {
-    if (allAccounts.value) {
-      if (isCheckMetamask.value && currentEcdsaAccount.value) {
-        currentAccount.value = currentEcdsaAccount.value.ss58;
-        currentAccountName.value = 'ECDSA (Ethereum Extension)';
-      } else {
-        currentAccount.value = allAccounts.value[currentAccountIdx.value];
-        currentAccountName.value = allAccountNames.value[currentAccountIdx.value];
+  watch(
+    [allAccounts, allAccountNames, currentAccountIdx, isCheckMetamask],
+    () => {
+      if (allAccounts.value) {
+        if (isCheckMetamask.value && currentEcdsaAccount.value) {
+          currentAccount.value = currentEcdsaAccount.value.ss58;
+          currentAccountName.value = 'ECDSA (Ethereum Extension)';
+        } else {
+          currentAccount.value = allAccounts.value[currentAccountIdx.value];
+          currentAccountName.value = allAccountNames.value[currentAccountIdx.value];
+        }
       }
-    }
-  }, { immediate: true });
+    },
+    { immediate: true }
+  );
 
   return {
     allAccounts,
     allAccountNames,
     currentAccount,
     currentAccountName,
-  }
-}
+  };
+};

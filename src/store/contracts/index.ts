@@ -10,7 +10,7 @@ const contractsModule: Module<State, StateInterface> = {
   actions,
   getters,
   mutations,
-  state
+  state,
 };
 
 export default contractsModule;

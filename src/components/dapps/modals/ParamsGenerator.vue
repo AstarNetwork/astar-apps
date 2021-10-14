@@ -2,15 +2,10 @@
   <div class="tw-relative">
     <label
       class="tw-block tw-text-sm tw-font-medium tw-text-gray-500 dark:tw-text-darkGray-400 tw-mb-2"
+      >{{ $t('dapps.modals.instantiationConstructor') }}</label
     >
-      {{ $t('dapps.modals.instantiationConstructor') }}
-    </label>
 
-    <button
-      type="button"
-      @click="openOption = !openOption"
-      class="option-button"
-    >
+    <button type="button" class="option-button" @click="openOption = !openOption">
       <div class="tw-flex tw-items-center tw-justify-between">
         <div class="tw-flex tw-items-center">
           <div class="tw-flex">
@@ -23,7 +18,16 @@
       </div>
 
       <span
-        class="tw-ml-3 tw-absolute tw-inset-y-0 tw-right-0 tw-flex tw-items-center tw-pr-2 tw-pointer-events-none"
+        class="
+          tw-ml-3
+          tw-absolute
+          tw-inset-y-0
+          tw-right-0
+          tw-flex
+          tw-items-center
+          tw-pr-2
+          tw-pointer-events-none
+        "
       >
         <icon-base
           class="tw-h-5 tw-w-5 tw-text-gray-400 dark:tw-text-darkGray-300"
@@ -38,11 +42,14 @@
 
     <div
       v-if="openOption"
-      class="tw-block tw-absolute tw-mt-1 tw-w-full tw-rounded-md tw-bg-white dark:tw-bg-darkGray-800 tw-shadow-lg tw-z-10 tw-border tw-border-gray-200 dark:tw-border-darkGray-600"
+      class="
+        tw-block tw-absolute tw-mt-1 tw-w-full tw-rounded-md tw-bg-white
+        dark:tw-bg-darkGray-800
+        tw-shadow-lg tw-z-10 tw-border tw-border-gray-200
+        dark:tw-border-darkGray-600
+      "
     >
-      <ul
-        class="tw-max-h-56 tw-rounded-md tw-text-base tw-overflow-auto focus:tw-outline-none"
-      >
+      <ul class="tw-max-h-56 tw-rounded-md tw-text-base tw-overflow-auto focus:tw-outline-none">
         <div
           v-for="constructor in constructors"
           :key="constructor.index"
@@ -64,18 +71,11 @@
     </div>
     <div class="tw-mt-7 tw-ml-6">
       <div
-        v-for="(argString, paramIndex) in argsStrings[constructorIndex].split(
-          ','
-        )"
+        v-for="(argString, paramIndex) in argsStrings[constructorIndex].split(',')"
         :key="paramIndex"
       >
-        <div
-          class="tw-ml-5 tw-pl-10 tw-my-3"
-          v-if="constructors[constructorIndex].args.length"
-        >
-          <div class="tw-mb-3 tw-font-bold">
-            {{ argString }}
-          </div>
+        <div v-if="constructors[constructorIndex].args.length" class="tw-ml-5 tw-pl-10 tw-my-3">
+          <div class="tw-mb-3 tw-font-bold">{{ argString }}</div>
           <InputAmount
             v-if="isBalanceType(paramIndex)"
             v-model:amount="balance"
@@ -127,6 +127,7 @@ export default defineComponent({
     IconSolidSelector,
     InputAmount,
   },
+  emits: ['update:params', 'update:constructorIndex'],
   setup(props, { emit }) {
     const openOption = ref<boolean>(false);
     const argsStrings = props.constructors
@@ -143,19 +144,15 @@ export default defineComponent({
     const unit = ref((tokens || [])[0]);
 
     const isBalanceType = (paramIndex: number) => {
-      return (
-        props.constructors[props.constructorIndex].args[paramIndex].type
-          .type === 'Balance'
-      );
+      return props.constructors[props.constructorIndex].args[paramIndex].type.type === 'Balance';
     };
 
     watch(
       () => props.constructorIndex,
       (i) => {
-        const params = (getParamValues(
-          api?.value?.registry,
-          props.constructors[i].args
-        ) as any[]).map((pv, paramIndex) => {
+        const params = (
+          getParamValues(api?.value?.registry, props.constructors[i].args) as any[]
+        ).map((pv, paramIndex) => {
           let paramValue: ParamValue = pv as string;
           if (isBalanceType(paramIndex)) {
             paramValue = { balance: balance.value, unit: unit.value };
@@ -191,30 +188,30 @@ export default defineComponent({
 </script>
 
 <style scoped>
-  .option-button {
-    @apply tw-relative tw-text-blue-900 dark:tw-text-darkGray-100 tw-w-full tw-bg-white dark:tw-bg-darkGray-900 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-rounded-md tw-pl-3 tw-pr-10 tw-py-3 tw-text-left;
-  }
-  .option-button:hover {
-    @apply tw-bg-gray-50 dark:tw-bg-darkGray-800;
-  }
-  .option-button:focus {
-    @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-darkGray-600;
-  }
+.option-button {
+  @apply tw-relative tw-text-blue-900 dark:tw-text-darkGray-100 tw-w-full tw-bg-white dark:tw-bg-darkGray-900 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-rounded-md tw-pl-3 tw-pr-10 tw-py-3 tw-text-left;
+}
+.option-button:hover {
+  @apply tw-bg-gray-50 dark:tw-bg-darkGray-800;
+}
+.option-button:focus {
+  @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-darkGray-600;
+}
 
-  .constructor-div {
-    @apply tw-cursor-pointer;
-  }
-  .constructor-div:hover {
-    @apply tw-bg-gray-50 dark:tw-bg-darkGray-700;
-  }
+.constructor-div {
+  @apply tw-cursor-pointer;
+}
+.constructor-div:hover {
+  @apply tw-bg-gray-50 dark:tw-bg-darkGray-700;
+}
 
-  .params-input {
-    @apply tw-p-4 tw-w-full tw-text-blue-900 dark:tw-text-darkGray-100 tw-text-2xl tw-bg-transparent tw-placeholder-gray-300 dark:tw-placeholder-darkGray-600 tw-bg-white dark:tw-bg-darkGray-900 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-rounded-md tw-pl-3 tw-text-left;
-  }
-  .params-input:hover {
-    @apply tw-bg-gray-50 dark:tw-bg-darkGray-800;
-  }
-  .params-input:focus {
-    @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-darkGray-600;
-  }
+.params-input {
+  @apply tw-p-4 tw-w-full tw-text-blue-900 dark:tw-text-darkGray-100 tw-text-2xl tw-bg-transparent tw-placeholder-gray-300 dark:tw-placeholder-darkGray-600 tw-bg-white dark:tw-bg-darkGray-900 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-rounded-md tw-pl-3 tw-text-left;
+}
+.params-input:hover {
+  @apply tw-bg-gray-50 dark:tw-bg-darkGray-800;
+}
+.params-input:focus {
+  @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-darkGray-600;
+}
 </style>

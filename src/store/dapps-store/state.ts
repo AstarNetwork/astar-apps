@@ -1,9 +1,9 @@
 export interface DappItem extends LooseObject {
-	name: string;
-	iconUrl: string;
-	description: string;
-	url: string;
-  address:string;
+  name: string;
+  iconUrl: string;
+  description: string;
+  url: string;
+  address: string;
 }
 
 export interface NewDappItem extends DappItem {
@@ -21,8 +21,8 @@ export interface LooseObject {
 
 function state(): DappStateInterface {
   return {
-    dapps: []
-  }
+    dapps: [],
+  };
 }
 
 export default state;

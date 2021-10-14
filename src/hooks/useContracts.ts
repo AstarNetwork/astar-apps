@@ -18,17 +18,15 @@ export function useContracts() {
   const state = reactive<UseContracts>(DEFAULT_STATE);
 
   watchEffect((onInvalidate) => {
-    const subscription = keyring.contracts.subject.subscribe(
-      (contracts): void => {
-        const allContracts = contracts ? Object.keys(contracts) : [];
-        const hasContracts = allContracts.length !== 0;
-        const isContract = (address: string) => allContracts.includes(address);
+    const subscription = keyring.contracts.subject.subscribe((contracts): void => {
+      const allContracts = contracts ? Object.keys(contracts) : [];
+      const hasContracts = allContracts.length !== 0;
+      const isContract = (address: string) => allContracts.includes(address);
 
-        state.allContracts = allContracts;
-        state.hasContracts = hasContracts;
-        state.isContract = isContract;
-      }
-    );
+      state.allContracts = allContracts;
+      state.hasContracts = hasContracts;
+      state.isContract = isContract;
+    });
 
     onInvalidate(() => {
       subscription.unsubscribe();

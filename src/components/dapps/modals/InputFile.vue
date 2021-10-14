@@ -1,6 +1,11 @@
 <template>
   <div
-    class="tw-max-w-lg tw-flex tw-justify-center tw-px-6 tw-pt-5 tw-pb-6 tw-border-2 tw-border-gray-300 dark:tw-border-darkGray-500 tw-border-dashed tw-rounded-md tw-bg-blue-50 dark:tw-bg-darkGray-800"
+    class="
+      tw-max-w-lg tw-flex tw-justify-center tw-px-6 tw-pt-5 tw-pb-6 tw-border-2 tw-border-gray-300
+      dark:tw-border-darkGray-500
+      tw-border-dashed tw-rounded-md tw-bg-blue-50
+      dark:tw-bg-darkGray-800
+    "
     v-bind="getRootProps()"
   >
     <div class="tw-space-y-1 tw-text-center">
@@ -15,26 +20,17 @@
         <icon-document />
       </icon-base>
       <slot></slot>
-      <div
-        v-if="file"
-        class="tw-flex tw-text-sm tw-text-gray-500 dark:tw-text-darkGray-400"
-      >
-        <div>
-          {{ $t('dapps.modals.file', { name: file.name}) }}
-        </div>
+      <div v-if="file" class="tw-flex tw-text-sm tw-text-gray-500 dark:tw-text-darkGray-400">
+        <div>{{ $t('dapps.modals.file', { name: file.name }) }}</div>
       </div>
       <div v-else class="tw-flex tw-text-sm tw-text-gray-500 dark:tw-text-darkGray-400">
         <div>
           <input v-bind="getInputProps()" />
-          <div
-            class="upload focus-within:tw-ring-offset-none"
-          >
+          <div class="upload focus-within:tw-ring-offset-none">
             {{ $t('dapps.modals.uploadFile') }}
           </div>
-          <p v-if="isDragActive">
-            {{ $t('dapps.modals.dropFile') }}
-          </p>
-          <p class="tw-pl-1" v-else>{{ $t('dapps.modals.orDrag') }}</p>
+          <p v-if="isDragActive">{{ $t('dapps.modals.dropFile') }}</p>
+          <p v-else class="tw-pl-1">{{ $t('dapps.modals.orDrag') }}</p>
         </div>
       </div>
     </div>
@@ -55,12 +51,14 @@ export default defineComponent({
   props: {
     file: {
       type: Object,
+      required: true,
     },
     extension: {
       type: Array as () => string | string[],
       required: true,
     },
   },
+  emits: ['drop-file'],
   setup(props, { emit }) {
     const BYTE_STR_0 = '0'.charCodeAt(0);
     const BYTE_STR_X = 'x'.charCodeAt(0);
@@ -108,7 +106,7 @@ export default defineComponent({
               data,
               name: file.name,
               size: data.length,
-              type: file.type
+              type: file.type,
             };
 
             emit('drop-file', fileState);
@@ -136,10 +134,10 @@ export default defineComponent({
 </script>
 
 <style scoped>
-  .upload {
-    @apply tw-relative tw-cursor-pointer tw-rounded-md tw-font-medium tw-text-blue-500 dark:tw-text-blue-400;
-  }
-  .upload:hover {
-    @apply tw-text-blue-400 dark:tw-text-blue-300;
-  }
+.upload {
+  @apply tw-relative tw-cursor-pointer tw-rounded-md tw-font-medium tw-text-blue-500 dark:tw-text-blue-400;
+}
+.upload:hover {
+  @apply tw-text-blue-400 dark:tw-text-blue-300;
+}
 </style>

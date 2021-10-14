@@ -1,6 +1,6 @@
 import { GetterTree } from 'vuex';
 import { StateInterface } from '../index';
-import { ContractsStateInterface as State, CodeStored} from './state';
+import { ContractsStateInterface as State, CodeStored } from './state';
 
 export interface ContractsGetters {
   hasCode(state: State): boolean;
