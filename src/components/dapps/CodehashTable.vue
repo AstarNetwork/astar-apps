@@ -1,25 +1,27 @@
 <template>
-  <h2
-    v-show="allCode.length > 0"
-    class="tw-text-blue-900 dark:tw-text-white tw-text-lg tw-font-bold tw-mb-4 tw-leading-tight"
-  >
-    {{ $t('dapps.codeHashes') }}
-  </h2>
+  <div>
+    <h2
+      v-show="allCode.length > 0"
+      class="tw-text-blue-900 dark:tw-text-white tw-text-lg tw-font-bold tw-mb-4 tw-leading-tight"
+    >
+      {{ $t('dapps.codeHashes') }}
+    </h2>
 
-  <div class="tw-grid tw-grid-cols-1 sm:tw-grid-cols-3 xl:tw-grid-cols-4 tw-gap-4">
-    <CodeItem
-      v-for="(code, index) in allCode"
-      :key="index"
-      :code="code"
-      @confirmRemoval="onConfirmRemoval"
+    <div class="tw-grid tw-grid-cols-1 sm:tw-grid-cols-3 xl:tw-grid-cols-4 tw-gap-4">
+      <CodeItem
+        v-for="(code, index) in allCode"
+        :key="index"
+        :code="code"
+        @confirmRemoval="onConfirmRemoval"
+      />
+    </div>
+    <ModalConfirmRemoval
+      v-if="modalConfirmRemoval"
+      v-model:isOpen="modalConfirmRemoval"
+      ctype="codehash"
+      @forget="onForget"
     />
   </div>
-  <ModalConfirmRemoval
-    v-if="modalConfirmRemoval"
-    v-model:isOpen="modalConfirmRemoval"
-    ctype="codehash"
-    @forget="onForget"
-  />
 </template>
 <script lang="ts">
 import { defineComponent, reactive, toRefs, computed, ref } from 'vue';

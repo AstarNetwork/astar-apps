@@ -1,36 +1,38 @@
 <template>
-  <h2
-    class="
-      tw-text-blue-900
-      dark:tw-text-white
-      tw-text-lg tw-font-bold tw-mt-4 tw-mb-4 tw-leading-tight
-    "
-  >
-    {{ $t('dapps.contracts') }}
-  </h2>
+  <div>
+    <h2
+      class="
+        tw-text-blue-900
+        dark:tw-text-white
+        tw-text-lg tw-font-bold tw-mt-4 tw-mb-4 tw-leading-tight
+      "
+    >
+      {{ $t('dapps.contracts') }}
+    </h2>
 
-  <div class="tw-grid tw-grid-cols-1 sm:tw-grid-cols-3 xl:tw-grid-cols-4 tw-gap-4">
-    <ContractItem
-      v-for="(contract, index) in contracts"
-      :key="contract.address.toString()"
-      :contract="contract"
-      :index="index"
-      @callMethod="onCallMethod"
-      @confirmRemoval="onConfirmRemoval"
+    <div class="tw-grid tw-grid-cols-1 sm:tw-grid-cols-3 xl:tw-grid-cols-4 tw-gap-4">
+      <ContractItem
+        v-for="(contract, index) in contracts"
+        :key="contract.address.toString()"
+        :contract="contract"
+        :index="index"
+        @callMethod="onCallMethod"
+        @confirmRemoval="onConfirmRemoval"
+      />
+    </div>
+    <ModalConfirmRemoval
+      v-if="modalConfirmRemoval"
+      v-model:isOpen="modalConfirmRemoval"
+      ctype="contract"
+      @forget="onForget"
+    />
+    <ModalCallContract
+      v-if="modalCallContract"
+      v-model:isOpen="modalCallContract"
+      :contract="currentContract"
+      :message-index="messageIndex"
     />
   </div>
-  <ModalConfirmRemoval
-    v-if="modalConfirmRemoval"
-    v-model:isOpen="modalConfirmRemoval"
-    ctype="contract"
-    @forget="onForget"
-  />
-  <ModalCallContract
-    v-if="modalCallContract"
-    v-model:isOpen="modalCallContract"
-    :contract="currentContract"
-    :message-index="messageIndex"
-  />
 </template>
 <script lang="ts">
 import { defineComponent, reactive, toRefs, ref, computed } from 'vue';
