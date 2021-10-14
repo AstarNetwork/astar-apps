@@ -10,14 +10,14 @@
   </h2>
 
   <div class="tw-grid tw-grid-cols-1 sm:tw-grid-cols-3 xl:tw-grid-cols-4 tw-gap-4">
-    <template v-for="(contract, index) in contracts" :key="contract.address.toString()">
-      <ContractItem
-        :contract="contract"
-        :index="index"
-        @callMethod="onCallMethod"
-        @confirmRemoval="onConfirmRemoval"
-      />
-    </template>
+    <ContractItem
+      v-for="(contract, index) in contracts"
+      :key="contract.address.toString()"
+      :contract="contract"
+      :index="index"
+      @callMethod="onCallMethod"
+      @confirmRemoval="onConfirmRemoval"
+    />
   </div>
   <ModalConfirmRemoval
     v-if="modalConfirmRemoval"

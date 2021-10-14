@@ -124,7 +124,6 @@ module.exports = {
     'prefer-promise-reject-errors': 'off',
     'vue/no-v-model-argument': 'off',
     'vue/no-multiple-template-root': 'off',
-    'vue/no-v-for-template-key': 'off',
 
     // TypeScript
     quotes: ['warn', 'single', { avoidEscape: true }],
