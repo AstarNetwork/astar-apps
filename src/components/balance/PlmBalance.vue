@@ -62,7 +62,7 @@
         <div>{{ $t('balance.vested') }}</div>
         <div>
           <p class="tw-font-bold tw-text-right">
-            <span class="tw-text-2xl tw-leading-tight">
+            <span class="tw-text-2xl md:tw-text-xl xl:tw-text-2xl tw-leading-tight">
               <format-balance :balance="accountData?.vested" />
             </span>
           </p>
