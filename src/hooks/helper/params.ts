@@ -19,15 +19,10 @@ function getInitValue(registry: Registry | undefined, def: TypeDef): unknown {
   if (def.info === TypeDefInfo.Vec) {
     return [getInitValue(registry, def.sub as TypeDef)];
   } else if (def.info === TypeDefInfo.Tuple) {
-    return Array.isArray(def.sub)
-      ? def.sub.map((def) => getInitValue(registry, def))
-      : [];
+    return Array.isArray(def.sub) ? def.sub.map((def) => getInitValue(registry, def)) : [];
   } else if (def.info === TypeDefInfo.Struct) {
     return Array.isArray(def.sub)
-      ? def.sub.reduce((result: Record<string, unknown>, def): Record<
-          string,
-          unknown
-        > => {
+      ? def.sub.reduce((result: Record<string, unknown>, def): Record<string, unknown> => {
           result[def.name as string] = getInitValue(registry, def);
 
           return result;
@@ -164,10 +159,7 @@ function getInitValue(registry: Registry | undefined, def: TypeDef): unknown {
   }
 }
 
-function createValue(
-  registry: Registry | undefined,
-  param: { type: TypeDef }
-): RawParam {
+function createValue(registry: Registry | undefined, param: { type: TypeDef }): RawParam {
   const value = getInitValue(registry, param.type);
 
   return {
@@ -185,10 +177,7 @@ function createValue(
 
 export function getParamValues(registry: any, params: AbiParam[] | undefined) {
   const pvalues = params?.reduce(
-    (result: RawParams, param): RawParams => [
-      ...result,
-      createValue(registry, param),
-    ],
+    (result: RawParams, param): RawParams => [...result, createValue(registry, param)],
     []
   );
   const arrValues: any = pvalues?.map(({ value }) => value);
@@ -196,7 +185,5 @@ export function getParamValues(registry: any, params: AbiParam[] | undefined) {
 }
 
 export const getArgsString = (message: MessageType): string => {
-  return message.args
-    .map(({ name, type }) => `${name}: ${type.type}`)
-    .join(', ');
+  return message.args.map(({ name, type }) => `${name}: ${type.type}`).join(', ');
 };

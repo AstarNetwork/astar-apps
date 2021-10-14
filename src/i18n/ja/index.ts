@@ -33,8 +33,7 @@ export default {
       chooseAccount: 'アカウントの選択',
       chooseNetwork: 'ネットワークの選択',
       switch: 'スイッチ',
-      sigExtrinsicBlocked:
-        'Custom sig extrinsic calls has been temporarily blocked',
+      sigExtrinsicBlocked: 'Custom sig extrinsic calls has been temporarily blocked',
       transferToken: 'Transfer {token}',
       transferableBalance: '{token} 支払可能残高',
       sendFrom: '送信元',

@@ -16,14 +16,12 @@ import { useSidebar } from 'src/hooks';
 import SidebarCommon from './SidebarCommon.vue';
 
 export default defineComponent({
-  components: { 
-    SidebarCommon 
+  components: {
+    SidebarCommon,
   },
   setup() {
     const { isOpen } = useSidebar();
-    const activeClass = ref(
-      'tw-bg-gray-600 tw-bg-opacity-25 tw-text-gray-100 tw-border-gray-100'
-    );
+    const activeClass = ref('tw-bg-gray-600 tw-bg-opacity-25 tw-text-gray-100 tw-border-gray-100');
     const inactiveClass = ref(
       'tw-border-gray-900 tw-text-gray-500 hover:tw-bg-gray-600 hover:tw-bg-opacity-25 hover:tw-text-gray-100'
     );

@@ -46,9 +46,7 @@ export default function useAbi(source: Code | null = null, isRequired = false) {
   const { api } = useApi();
 
   const registry = api?.value?.registry;
-  const chainProperties = registry?.getChainProperties() as
-    | ChainProperties
-    | undefined;
+  const chainProperties = registry?.getChainProperties() as ChainProperties | undefined;
 
   const abi = source ? ref(new Abi(source?.abi, chainProperties)) : ref(null);
   const isAbiSupplied = ref(!!source?.abi);
@@ -66,9 +64,7 @@ export default function useAbi(source: Code | null = null, isRequired = false) {
       const abiOutdated = JSON.parse(json) as AbiSpecOutdated;
 
       if (abiOutdated.deploy || abiOutdated.messages) {
-        throw new Error(
-          'You are using an ABI with an outdated format. Please generate a new one.'
-        );
+        throw new Error('You are using an ABI with an outdated format. Please generate a new one.');
       }
 
       const newAbi = JSON.parse(json) as AnyJson;

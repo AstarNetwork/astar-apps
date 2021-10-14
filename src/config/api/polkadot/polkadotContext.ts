@@ -42,11 +42,7 @@ const mutations = {
 
     const accounts = keyring.getPairs();
     const accountsLength = accounts.length;
-    if (
-      accountsLength === 0 ||
-      accountIndex > accountsLength ||
-      accountIndex < 0
-    ) {
+    if (accountsLength === 0 || accountIndex > accountsLength || accountIndex < 0) {
       return;
     }
     // unsubscribe previous AccountInfo
@@ -61,12 +57,9 @@ const mutations = {
     state.currentAccount = currentAccount;
 
     // subscribe current AccountInfo
-    state.unsubscribeAccountInfo = api.query.system.account(
-      currentAccount.address,
-      (result) => {
-        state.currentBalance = result.data.free.toBn();
-      }
-    );
+    state.unsubscribeAccountInfo = api.query.system.account(currentAccount.address, (result) => {
+      state.currentBalance = result.data.free.toBn();
+    });
   },
 };
 
@@ -76,10 +69,7 @@ type StateMutations = typeof mutations;
 const STATE_SYMBOL = Symbol('polkadot API read state');
 const MUTATION_SYMBOL = Symbol('polkadot API state mutation');
 
-export const providePolkadotContainer = (
-  initApi: ApiPromise,
-  extensions: InjectedExtension[]
-) => {
+export const providePolkadotContainer = (initApi: ApiPromise, extensions: InjectedExtension[]) => {
   mutations.setApi(initApi);
   mutations.setExtensions(extensions);
 

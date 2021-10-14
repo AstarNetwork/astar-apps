@@ -1,10 +1,6 @@
 <template>
   <div v-if="messages">
-    <Message
-      v-for="message in messages"
-      :message="message"
-      :key="message.identifier"
-    />
+    <Message v-for="message in messages" :key="message.identifier" :message="message" />
   </div>
 </template>
 <script lang="ts">
@@ -19,6 +15,6 @@ export default defineComponent({
       type: Array as PropType<MessageType[] | null>,
     },
   },
-  components: { Message }
+  components: { Message },
 });
 </script>

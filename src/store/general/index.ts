@@ -10,7 +10,7 @@ const generalModule: Module<State, StateInterface> = {
   actions,
   getters,
   mutations,
-  state
+  state,
 };
 
 export default generalModule;

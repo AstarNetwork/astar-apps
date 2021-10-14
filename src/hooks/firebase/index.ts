@@ -19,18 +19,18 @@ const firebaseConfig = {
   projectId: 'dapp-store-7f9ab',
   storageBucket: 'gs://dapp-store-7f9ab.appspot.com',
   messagingSenderId: '',
-  appId: ''
-}
+  appId: '',
+};
 
-const app = initializeApp(firebaseConfig)
+const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage();
 
-const getDapps = async (collectionName: string):Promise<QuerySnapshot<DocumentData>> => {
-  const dbCollection = collection(db, collectionName)
+const getDapps = async (collectionName: string): Promise<QuerySnapshot<DocumentData>> => {
+  const dbCollection = collection(db, collectionName);
   const docs = await getDocs(dbCollection);
   return docs;
-}
+};
 
 const addDapp = async (collectionName: string, dapp: NewDappItem): Promise<DappItem> => {
   const newDapp = {
@@ -38,13 +38,13 @@ const addDapp = async (collectionName: string, dapp: NewDappItem): Promise<DappI
     description: dapp.description,
     address: dapp.address,
     url: dapp.url,
-    iconUrl: dapp.iconUrl
-  } as DappItem
+    iconUrl: dapp.iconUrl,
+  } as DappItem;
 
   await setDoc(doc(db, collectionName, newDapp.address), newDapp);
 
   return newDapp;
-}
+};
 
 const uploadFile = async (fileName: string, base64Content: string) => {
   const imagesRef = ref(storage, `images/${fileName}`);
@@ -52,15 +52,7 @@ const uploadFile = async (fileName: string, base64Content: string) => {
   const url = await getDownloadURL(ref(storage, result.metadata.fullPath));
 
   return url;
-}
+};
 
 // export utils/refs
-export {
-  db,
-  getDocs,
-  setDoc,
-  doc,
-  uploadFile,
-  addDapp,
-  getDapps
-}
+export { db, getDocs, setDoc, doc, uploadFile, addDapp, getDapps };

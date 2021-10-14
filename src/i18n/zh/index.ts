@@ -33,8 +33,7 @@ export default {
       chooseAccount: '选择账户',
       chooseNetwork: '选择网路',
       switch: '更改',
-      sigExtrinsicBlocked:
-        'Custom sig extrinsic calls has been temporarily blocked',
+      sigExtrinsicBlocked: 'Custom sig extrinsic calls has been temporarily blocked',
       transferToken: '发送 {token}',
       transferableBalance: '{token} 可使用余额',
       sendFrom: '发自',

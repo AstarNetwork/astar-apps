@@ -20,7 +20,7 @@
       'focus:tw-ring',
       primary ? 'focus:tw-ring-blue-100' : 'focus:tw-ring-gray-100',
       primary ? 'dark-ring-blue' : 'dark-ring-dark-gray',
-      'tw-mx-1'
+      'tw-mx-1',
     ]"
   >
     <slot></slot>
@@ -28,35 +28,35 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs } from 'vue'
+import { defineComponent, toRefs } from 'vue';
 
 export default defineComponent({
   props: {
     small: {
       type: Boolean,
-      default: false
+      default: false,
     },
     primary: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
   setup(props) {
     return {
-      ...toRefs(props)
+      ...toRefs(props),
     };
   },
-})
+});
 </script>
 
 <style scoped>
-  .dark-bg-blue:hover{
-    @apply dark:tw-bg-blue-400;
-  }
-  .dark-ring-blue:focus {
-    @apply dark:tw-ring-blue-400;
-  }
-  .dark-ring-dark-gray:focus {
-    @apply dark:tw-ring-darkGray-600;
-  }
+.dark-bg-blue:hover {
+  @apply dark:tw-bg-blue-400;
+}
+.dark-ring-blue:focus {
+  @apply dark:tw-ring-blue-400;
+}
+.dark-ring-dark-gray:focus {
+  @apply dark:tw-ring-darkGray-600;
+}
 </style>

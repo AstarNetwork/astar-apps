@@ -8,8 +8,10 @@
   "scripts": {
     "dev": "quasar dev",
     "build": "quasar build",
-    "lint": "eslint --ext .js,.ts,.vue ./",
-    "lint:check": "eslint --ext .js,.ts,.vue ./",
+    "format": "prettier --write '**/*.{ts,vue}'",
+    "check-format": "prettier --check '**/*.{ts,vue}'",
+    "lint": "yarn format && yarn check-format && eslint --fix --ext .ts,.vue ./",
+    "lint:check": "yrn check-format && eslint --ext .ts,.vue ./",
     "test": "echo \"No test specified\" && exit 0",
     "deploy": "push-dir --dir=dist/spa --remote=gh-pages --branch=main"
   },
@@ -60,8 +62,10 @@
     "@typescript-eslint/parser": "^4.16.1",
     "eslint": "^7.14.0",
     "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-prettier-vue": "^3.1.0",
     "eslint-plugin-vue": "^7.0.0",
     "eslint-webpack-plugin": "^3.0.1",
+    "prettier": "^2.4.1",
     "push-dir": "^0.4.1",
     "sass-loader": "7.3.1",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.3"

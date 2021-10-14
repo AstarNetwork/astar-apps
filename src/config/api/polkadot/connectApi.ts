@@ -37,9 +37,7 @@ const loadAccounts = async (api: ApiPromise) => {
     ),
   ]);
 
-  const isDevelopment = isTestChain(
-    systemChain ? systemChain.toString() : '<unknown>'
-  );
+  const isDevelopment = isTestChain(systemChain ? systemChain.toString() : '<unknown>');
 
   keyring.loadAll(
     {
@@ -90,9 +88,7 @@ export async function connectApi(endpoint: string, networkIdx: number) {
           // Memo: remove space from UI.
           store.commit(
             'general/setAllAccountNames',
-            Object.values(accounts).map((obj) =>
-              obj.option.name.replace('\n              ', '')
-            )
+            Object.values(accounts).map((obj) => obj.option.name.replace('\n              ', ''))
           );
         }
       });

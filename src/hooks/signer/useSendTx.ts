@@ -83,21 +83,10 @@ export default function useSendTx() {
             // @ts-ignore
             api.tx[multiModule].asMulti(threshold, others, timepoint, tx.method)
         : api.tx[multiModule].approveAsMulti.meta.args.length === 5
-        ? api.tx[multiModule].approveAsMulti(
-            threshold,
-            others,
-            timepoint,
-            tx.method.hash,
-            weight
-          )
+        ? api.tx[multiModule].approveAsMulti(threshold, others, timepoint, tx.method.hash, weight)
         : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
-          api.tx[multiModule].approveAsMulti(
-            threshold,
-            others,
-            timepoint,
-            tx.method.hash
-          );
+          api.tx[multiModule].approveAsMulti(threshold, others, timepoint, tx.method.hash);
     }
 
     return tx;
@@ -133,17 +122,10 @@ export default function useSendTx() {
       return ['signing', address, { ...options, signer: injected.signer }];
     }
 
-    return [
-      'signing',
-      address,
-      { ...options, signer: new AccountSigner(api.registry, pair) },
-    ];
+    return ['signing', address, { ...options, signer: new AccountSigner(api.registry, pair) }];
   }
 
-  const onSend = async (
-    currentItem: QueueTx,
-    senderInfo: AddressProxy
-  ): Promise<void> => {
+  const onSend = async (currentItem: QueueTx, senderInfo: AddressProxy): Promise<void> => {
     const apiPromise: ApiPromise = apiRef?.value as ApiPromise;
 
     const tip = new BN(0); // should be updated

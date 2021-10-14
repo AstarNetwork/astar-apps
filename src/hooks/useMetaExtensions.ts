@@ -34,10 +34,7 @@ interface SavedProperties {
 }
 
 // save the properties for a specific extension
-function saveProperties(
-  api: ApiPromise,
-  { name, version }: InjectedExtension
-): void {
+function saveProperties(api: ApiPromise, { name, version }: InjectedExtension): void {
   const storeKey = `properties:${api.genesisHash.toHex()}`;
   const allProperties = store.get(storeKey, {}) as SavedProperties;
 
@@ -52,14 +49,8 @@ function saveProperties(
 }
 
 // determines if the extension has current properties
-function hasCurrentProperties(
-  api: ApiPromise,
-  { extension }: ExtensionKnown
-): boolean {
-  const allProperties = store.get(
-    `properties:${api.genesisHash.toHex()}`,
-    {}
-  ) as SavedProperties;
+function hasCurrentProperties(api: ApiPromise, { extension }: ExtensionKnown): boolean {
+  const allProperties = store.get(`properties:${api.genesisHash.toHex()}`, {}) as SavedProperties;
 
   // when we don't have properties yet, assume nothing has changed and store
   if (!allProperties[extension.name]) {
@@ -68,9 +59,7 @@ function hasCurrentProperties(
     return true;
   }
 
-  const { ss58Format, tokenDecimals, tokenSymbol } = allProperties[
-    extension.name
-  ];
+  const { ss58Format, tokenDecimals, tokenSymbol } = allProperties[extension.name];
 
   return (
     ss58Format === api.registry.chainSS58 &&
@@ -83,9 +72,7 @@ function hasCurrentProperties(
 function filterAll(api: ApiPromise, all: ExtensionKnown[]): Extensions {
   const extensions = all
     .map((info): ExtensionInfo | null => {
-      const current =
-        info.known.find(({ genesisHash }) => api.genesisHash.eq(genesisHash)) ||
-        null;
+      const current = info.known.find(({ genesisHash }) => api.genesisHash.eq(genesisHash)) || null;
 
       // if we cannot find it as known, or either the specVersion or properties mismatches, mark it as upgradable
       return !current ||
@@ -144,9 +131,7 @@ async function getKnown(
   api: ApiPromise,
   extensions: InjectedExtension[]
 ): Promise<ExtensionKnown[]> {
-  const all = await Promise.all(
-    extensions.map((extension) => getExtensionInfo(api, extension))
-  );
+  const all = await Promise.all(extensions.map((extension) => getExtensionInfo(api, extension)));
 
   return all.filter((info): info is ExtensionKnown => !!info);
 }

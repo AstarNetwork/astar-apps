@@ -3,7 +3,7 @@
     v-show="allCode.length > 0"
     class="tw-text-blue-900 dark:tw-text-white tw-text-lg tw-font-bold tw-mb-4 tw-leading-tight"
   >
-      {{ $t('dapps.codeHashes') }}
+    {{ $t('dapps.codeHashes') }}
   </h2>
 
   <div class="tw-grid tw-grid-cols-1 sm:tw-grid-cols-3 xl:tw-grid-cols-4 tw-gap-4">
@@ -14,8 +14,8 @@
   <ModalConfirmRemoval
     v-if="modalConfirmRemoval"
     v-model:isOpen="modalConfirmRemoval"
-    @forget="onForget"
     ctype="codehash"
+    @forget="onForget"
   />
 </template>
 <script lang="ts">

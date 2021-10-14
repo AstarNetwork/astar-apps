@@ -20,17 +20,13 @@ export default function usePendingTx(
   let extrinsics: SubmittableExtrinsic<'promise'>[] | undefined;
 
   if (propsExtrinsic) {
-    extrinsics = Array.isArray(propsExtrinsic)
-      ? propsExtrinsic
-      : [propsExtrinsic];
+    extrinsics = Array.isArray(propsExtrinsic) ? propsExtrinsic : [propsExtrinsic];
   }
 
   let txqueue: QueueTx[] = [];
   let nextId = 0;
 
-  const addToTxQueue = (
-    value: QueueTxExtrinsic | QueueTxRpc | QueueTx
-  ): void => {
+  const addToTxQueue = (value: QueueTxExtrinsic | QueueTxRpc | QueueTx): void => {
     const id = ++nextId;
     const removeItem = () => {
       ////
@@ -47,8 +43,7 @@ export default function usePendingTx(
     ];
   };
 
-  const queueExtrinsic = (value: PartialQueueTxExtrinsic) =>
-    addToTxQueue({ ...value });
+  const queueExtrinsic = (value: PartialQueueTxExtrinsic) => addToTxQueue({ ...value });
 
   extrinsics?.forEach((extrinsic): void => {
     queueExtrinsic({

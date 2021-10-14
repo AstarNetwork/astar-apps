@@ -19,13 +19,13 @@ export type State = {
 };
 
 export interface ContractsStateInterface {
-  allCode: any
+  allCode: any;
 }
 
 function state(): ContractsStateInterface {
   return {
     allCode: {},
-  }
+  };
 }
 
 export default state;

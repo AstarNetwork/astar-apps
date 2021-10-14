@@ -14,8 +14,7 @@ interface CallOptions {
   onTransactionError: (_: Error) => void;
 }
 
-export function useExtrinsicCall({onResult, onTransactionError}: CallOptions) {
-
+export function useExtrinsicCall({ onResult, onTransactionError }: CallOptions) {
   const { api } = useApi();
   const { requestSignature } = useMetamask();
   const store = useStore();
@@ -24,17 +23,22 @@ export function useExtrinsicCall({onResult, onTransactionError}: CallOptions) {
   const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
 
   const callFunc = async (method: SubmittableExtrinsic<'promise'>) => {
-    const account = <AccountInfo> await api?.value?.query.system.account(currentEcdsaAccount.value.ss58);
+    const account = <AccountInfo>(
+      await api?.value?.query.system.account(currentEcdsaAccount.value.ss58)
+    );
     const callPayload = u8aToHex(
-      getPayload(
-        method,
-        account.nonce,
-        (providerEndpoints[currentNetworkIdx.value].prefix) || 0));
+      getPayload(method, account.nonce, providerEndpoints[currentNetworkIdx.value].prefix || 0)
+    );
 
     if (callPayload) {
       // Sign transaction with eth private key
       const signature = await requestSignature(callPayload, currentEcdsaAccount.value.ethereum);
-      const call = api?.value?.tx.ethCall.call(method, currentEcdsaAccount.value.ss58, signature, account.nonce);
+      const call = api?.value?.tx.ethCall.call(
+        method,
+        currentEcdsaAccount.value.ss58,
+        signature,
+        account.nonce
+      );
       call
         ?.send((result: ISubmittableResult) => onResult(result))
         .catch((e: Error) => onTransactionError(e));
@@ -44,9 +48,9 @@ export function useExtrinsicCall({onResult, onTransactionError}: CallOptions) {
         alertType: 'error',
       });
     }
-  }
+  };
 
   return {
-    callFunc
-  }
+    callFunc,
+  };
 }

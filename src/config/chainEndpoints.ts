@@ -10,8 +10,8 @@ interface ChainProvider {
   favicon: string;
   isSupportContract: boolean;
   prefix?: number; // Used in extrinsic transactions, also to determine if a network supports extensic transactions.
-  typeDef: RegistryTypes,
-  key: endpointKey,
+  typeDef: RegistryTypes;
+  key: endpointKey;
   isStoreEnabled: boolean;
 }
 
@@ -39,8 +39,7 @@ export const providerEndpoints: ChainProvider[] = [
   {
     networkAlias: 'shiden-shell',
     displayName: 'Shiden Network (Kusama)',
-    info:
-      'Smart contract platform for decentralized applications (dapps) on the Kusama network',
+    info: 'Smart contract platform for decentralized applications (dapps) on the Kusama network',
     endpoint: 'wss://rpc.shiden.astar.network',
     fallback: 'wss://shiden.api.onfinality.io/public-ws',
     favicon: 'icons/shiden.png',
@@ -53,8 +52,7 @@ export const providerEndpoints: ChainProvider[] = [
   {
     networkAlias: 'dusty-testnet',
     displayName: 'Dusty Network (Testnet)',
-    info:
-      'The test network of the layer 2 scaling blockchain, Dusty Plasm Network',
+    info: 'The test network of the layer 2 scaling blockchain, Dusty Plasm Network',
     endpoint: 'wss://dusty.astar.network',
     favicon: 'https://polkadot.js.org/apps/static/dusty.16cf115c.png',
     isSupportContract: true,
@@ -65,8 +63,7 @@ export const providerEndpoints: ChainProvider[] = [
   {
     networkAlias: 'shibuya-testnet',
     displayName: 'Shibuya Network (Testnet)',
-    info:
-      'The test network of the layer 2 scaling blockchain',
+    info: 'The test network of the layer 2 scaling blockchain',
     endpoint: 'wss://rpc.shibuya.astar.network',
     favicon: 'https://polkadot.js.org/apps/static/shiden.a066789e.png',
     isSupportContract: true,
@@ -92,7 +89,7 @@ export const providerEndpoints: ChainProvider[] = [
     favicon: 'icons/astar.png',
     isSupportContract: true,
     typeDef: typeDefs.dustyDefinitions,
-    key:endpointKey.CUSTOM,
-    isStoreEnabled: false
+    key: endpointKey.CUSTOM,
+    isStoreEnabled: false,
   },
 ];

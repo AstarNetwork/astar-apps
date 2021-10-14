@@ -1,42 +1,42 @@
 import type { RegistryTypes } from '@polkadot/types/types';
 
 const definitions: RegistryTypes = {
-    Address: 'MultiAddress',
-    LookupSource: 'MultiAddress',
-    ChainId: {
-        _enum: {
-            RelayChain: null,
-            Parachain: 'ParaId',
-        },
+  Address: 'MultiAddress',
+  LookupSource: 'MultiAddress',
+  ChainId: {
+    _enum: {
+      RelayChain: null,
+      Parachain: 'ParaId',
     },
-    XCurrencyId: {
-        chain_id: 'ChainId',
-        currency_id: 'Bytes',
+  },
+  XCurrencyId: {
+    chain_id: 'ChainId',
+    currency_id: 'Bytes',
+  },
+  CurrencyIdOf: 'CurrencyId',
+  CurrencyId: {
+    _enum: {
+      Token: 'TokenSymbol',
     },
-    CurrencyIdOf: 'CurrencyId',
-    CurrencyId: {
-        _enum: {
-            Token: 'TokenSymbol',
-        },
+  },
+  TokenSymbol: {
+    _enum: ['ACA', 'AUSD', 'DOT', 'XBTC', 'LDOT', 'RENBTC', 'SDN', 'PLM'],
+  },
+  AmountOf: 'Amount',
+  Amount: 'i128',
+  SmartContract: {
+    _enum: {
+      Evm: 'H160',
+      Wasm: 'AccountId',
     },
-    TokenSymbol: {
-        _enum: ['ACA', 'AUSD', 'DOT', 'XBTC', 'LDOT', 'RENBTC', 'SDN', 'PLM'],
-    },
-    AmountOf: 'Amount',
-    Amount: 'i128',
-    SmartContract: {
-      _enum: {
-        Evm: 'H160',  
-        Wasm: 'AccountId',
-      },
-    },
-    EraIndex: 'u32',
-    EraStakingPoints: {
-      total: 'Balance',
-      stakers: 'BTreeMap<AccountId, Balance>',
-      formerStakedEra: 'EraIndex',
-      claimedRewards: 'Balance'
-    }
-  };
+  },
+  EraIndex: 'u32',
+  EraStakingPoints: {
+    total: 'Balance',
+    stakers: 'BTreeMap<AccountId, Balance>',
+    formerStakedEra: 'EraIndex',
+    claimedRewards: 'Balance',
+  },
+};
 
 export default definitions;

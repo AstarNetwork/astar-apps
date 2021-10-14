@@ -3,16 +3,21 @@
   <div :class="isOpen ? 'tw-block' : 'tw-hidden'" class="lg:tw-hidden">
     <div class="tw-fixed tw-inset-0 tw-flex tw-z-40">
       <div class="tw-fixed tw-inset-0">
-        <div
-          class="tw-absolute tw-inset-0 tw-bg-gray-900 dark:tw-bg-black tw-opacity-75"
-        ></div>
+        <div class="tw-absolute tw-inset-0 tw-bg-gray-900 dark:tw-bg-black tw-opacity-75"></div>
       </div>
       <div
-        class="tw-relative tw-flex-1 tw-flex tw-flex-col tw-max-w-xs tw-w-full tw-bg-white dark:tw-bg-darkGray-800 tw-overflow-visible"
+        class="
+          tw-relative tw-flex-1 tw-flex tw-flex-col tw-max-w-xs tw-w-full tw-bg-white
+          dark:tw-bg-darkGray-800
+          tw-overflow-visible
+        "
       >
         <div class="tw-absolute tw-top-0 tw-right-0 tw--mr-12 tw-pt-2">
           <button
-            class="tw-ml-1 tw-flex tw-items-center tw-justify-center tw-h-10 tw-w-10 tw-rounded-full focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-inset focus:tw-ring-white"
+            class="
+              tw-ml-1 tw-flex tw-items-center tw-justify-center tw-h-10 tw-w-10 tw-rounded-full
+              focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-inset focus:tw-ring-white
+            "
             @click="isOpen = false"
           >
             <span class="tw-sr-only">
@@ -46,10 +51,10 @@ import IconBase from '../icons/IconBase.vue';
 import IconOutlineX from '../icons/IconOutlineX.vue';
 
 export default defineComponent({
-  components: { 
-    SidebarCommon, 
+  components: {
+    SidebarCommon,
     IconBase,
-    IconOutlineX
+    IconOutlineX,
   },
   setup() {
     const { isOpen } = useSidebar();

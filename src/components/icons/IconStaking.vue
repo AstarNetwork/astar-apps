@@ -17,36 +17,8 @@
     fill="none"
     d="M9.59,12.22h3.75a1.87,1.87,0,0,0,.44-3.72,1.62,1.62,0,0,0-.44,0H9.59Z"
   />
-  <line
-    stroke="currentColor"
-    stroke-width="2"
-    x1="12.51"
-    y1="7.15"
-    x2="12.51"
-    y2="8.36"
-  />
-  <line
-    stroke="currentColor"
-    stroke-width="2"
-    x1="12.51"
-    y1="16.12"
-    x2="12.51"
-    y2="17.32"
-  />
-  <line
-    stroke="currentColor"
-    stroke-width="2"
-    x1="8.57"
-    y1="8.49"
-    x2="10.14"
-    y2="8.49"
-  />
-  <line
-    stroke="currentColor"
-    stroke-width="2"
-    x1="8.57"
-    y1="15.99"
-    x2="10.14"
-    y2="15.99"
-  />
+  <line stroke="currentColor" stroke-width="2" x1="12.51" y1="7.15" x2="12.51" y2="8.36" />
+  <line stroke="currentColor" stroke-width="2" x1="12.51" y1="16.12" x2="12.51" y2="17.32" />
+  <line stroke="currentColor" stroke-width="2" x1="8.57" y1="8.49" x2="10.14" y2="8.49" />
+  <line stroke="currentColor" stroke-width="2" x1="8.57" y1="15.99" x2="10.14" y2="15.99" />
 </template>

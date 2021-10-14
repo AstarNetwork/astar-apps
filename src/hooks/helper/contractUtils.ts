@@ -1,18 +1,12 @@
 import type { AnyJson } from '@polkadot/types/types';
 import type { AbiMessage } from '@polkadot/api-contract/types';
-import type {
-  KeyringItemType,
-  KeyringJson$Meta,
-} from '@polkadot/ui-keyring/types';
+import type { KeyringItemType, KeyringJson$Meta } from '@polkadot/ui-keyring/types';
 import { keyring } from '@polkadot/ui-keyring';
 
 import { Abi, ContractPromise as Contract } from '@polkadot/api-contract';
 import { ApiPromise } from '@polkadot/api';
 
-function getAddressMeta(
-  address: string,
-  type: KeyringItemType | null = null
-): KeyringJson$Meta {
+function getAddressMeta(address: string, type: KeyringItemType | null = null): KeyringJson$Meta {
   let meta: KeyringJson$Meta | undefined;
 
   try {
@@ -67,10 +61,7 @@ export function getContractMethodFn(
   return fn || null;
 }
 
-export function getContractForAddress(
-  api: ApiPromise,
-  address: string | null
-): Contract | null {
+export function getContractForAddress(api: ApiPromise, address: string | null): Contract | null {
   if (!address) {
     return null;
   } else {

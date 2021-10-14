@@ -11,7 +11,7 @@ const storeModule: Module<State, StateInterface> = {
   actions,
   getters,
   mutations,
-  state
+  state,
 };
 
 export default storeModule;

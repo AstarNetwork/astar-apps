@@ -23,11 +23,7 @@ export default defineComponent({
             decimals: props.decimals,
           });
 
-          formattedBalance.value = formatted
-            .split(' ')
-            .slice(0, 2)
-            .join(' ')
-            .replace('Unit', '');
+          formattedBalance.value = formatted.split(' ').slice(0, 2).join(' ').replace('Unit', '');
         }
       },
       { immediate: true }

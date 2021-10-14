@@ -1,11 +1,22 @@
 <template>
   <div
-    class="tw-bg-blue-500 dark:tw-bg-blue-800 tw-text-white tw-overflow-hidden tw-shadow tw-rounded-lg"
+    class="
+      tw-bg-blue-500
+      dark:tw-bg-blue-800
+      tw-text-white tw-overflow-hidden tw-shadow tw-rounded-lg
+    "
   >
     <div
-      class="tw-rounded-lg tw-px-5 tw-pt-8 tw-pb-10 md:tw-pb-0 tw-h-full tw-bg-local tw-bg-left-top tw-bg-no-repeat tw-bg-80 md:tw-bg-88"
+      class="
+        tw-rounded-lg tw-px-5 tw-pt-8 tw-pb-10
+        md:tw-pb-0
+        tw-h-full tw-bg-local tw-bg-left-top tw-bg-no-repeat tw-bg-80
+        md:tw-bg-88
+      "
     >
-      <p class="tw-text-lg tw-font-bold tw-mb-4 md:tw-mb-12 lg:tw-mb-10">{{ $t('balance.totalBalance') }}</p>
+      <p class="tw-text-lg tw-font-bold tw-mb-4 md:tw-mb-12 lg:tw-mb-10">
+        {{ $t('balance.totalBalance') }}
+      </p>
       <p class="tw-font-semibold tw-text-center tw-mb-2">
         <span class="tw-text-4xl tw-tracking-tight tw-leading-tight"
           ><format-balance :balance="accountData?.free" />
@@ -25,13 +36,13 @@ export default defineComponent({
   props: {
     accountData: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
-  setup (props) {
+  setup(props) {
     return {
-      ...toRefs(props)
-    }
-  }
+      ...toRefs(props),
+    };
+  },
 });
 </script>

@@ -3,11 +3,7 @@
     <!-- TODO: Links -->
     <a href="https://twitter.com/AstarNetwork" target="_blank" :class="classes.link">
       <!-- original icon -->
-      <icon-base
-        :class="classes.iconBase"
-        viewBox="0 0 512 512"
-        icon-name="Twitter"
-      >
+      <icon-base :class="classes.iconBase" viewBox="0 0 512 512" icon-name="Twitter">
         <icon-twitter />
       </icon-base>
       <!-- Tooltip -->
@@ -18,11 +14,7 @@
 
     <a href="https://t.me/PlasmOfficial" target="_blank" :class="classes.link">
       <!-- original icon -->
-      <icon-base
-        :class="classes.iconBase"
-        viewBox="0 0 448 512"
-        icon-name="Telegram"
-      >
+      <icon-base :class="classes.iconBase" viewBox="0 0 448 512" icon-name="Telegram">
         <icon-telegram />
       </icon-base>
       <!-- Tooltip -->
@@ -31,11 +23,7 @@
 
     <a href="https://discord.gg/Z3nC9U4" target="_blank" :class="classes.link">
       <!-- original icon -->
-      <icon-base
-        :class="classes.iconBase"
-        viewBox="0 0 448 512"
-        icon-name="Discord"
-      >
+      <icon-base :class="classes.iconBase" viewBox="0 0 448 512" icon-name="Discord">
         <icon-discord />
       </icon-base>
       <!-- Tooltip -->
@@ -44,11 +32,7 @@
 
     <a href="https://github.com/PlasmNetwork/Plasm" target="_blank" :class="classes.link">
       <!-- original icon -->
-      <icon-base
-        :class="classes.iconBase"
-        viewBox="0 0 496 512"
-        icon-name="GitHub"
-      >
+      <icon-base :class="classes.iconBase" viewBox="0 0 496 512" icon-name="GitHub">
         <icon-github />
       </icon-base>
 
@@ -93,8 +77,7 @@ export default defineComponent({
   },
   setup() {
     const classes = reactive({
-      link:
-        'tw-tooltip icon-link',
+      link: 'tw-tooltip icon-link',
       iconBase: 'tw-text-blue-900 dark:tw-text-darkGray-300 tw-h-4 tw-w-4',
       tooltipText:
         'tw-pointer-events-none tw-hidden tw-absolute tw-top-0 tw-left-1/2 tw-z-10 tw-transform tw--translate-y-full tw--translate-x-1/2 tw-p-2 tw-text-xs tw-leading-tight tw-text-white tw-bg-gray-800 dark:tw-bg-darkGray-500 tw-rounded-md tw-shadow-lg tw-opacity-90 tw-whitespace-nowrap',
@@ -107,13 +90,13 @@ export default defineComponent({
 </script>
 
 <style scoped>
-  .icon-link {
-    @apply tw-p-3 tw-rounded-full tw-relative;
-  }
-  .icon-link:hover {
-    @apply tw-bg-gray-100 dark:tw-bg-darkGray-600;
-  }
-  .icon-link:focus {
-    @apply tw-z-10 tw-outline-none tw-ring tw-ring-gray-100 dark:tw-ring-darkGray-600 tw-bg-blue-50 dark:tw-bg-darkGray-900;
-  }
+.icon-link {
+  @apply tw-p-3 tw-rounded-full tw-relative;
+}
+.icon-link:hover {
+  @apply tw-bg-gray-100 dark:tw-bg-darkGray-600;
+}
+.icon-link:focus {
+  @apply tw-z-10 tw-outline-none tw-ring tw-ring-gray-100 dark:tw-ring-darkGray-600 tw-bg-blue-50 dark:tw-bg-darkGray-900;
+}
 </style>
