@@ -11,7 +11,7 @@
     "format": "prettier --write '**/*.{ts,vue}'",
     "check-format": "prettier --check '**/*.{ts,vue}'",
     "lint": "yarn format && yarn check-format && eslint --fix --ext .ts,.vue ./",
-    "lint:check": "yrn check-format && eslint --ext .ts,.vue ./",
+    "lint:check": "yarn check-format && eslint --ext .ts,.vue ./",
     "test": "echo \"No test specified\" && exit 0",
     "deploy": "push-dir --dir=dist/spa --remote=gh-pages --branch=main"
   },
