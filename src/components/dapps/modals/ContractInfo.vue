@@ -9,12 +9,12 @@ import Message from 'components/dapps/Message.vue';
 import { MessageType } from 'src/hooks/types/Message';
 
 export default defineComponent({
+  components: { Message },
   props: {
     messages: {
       required: true,
       type: Array as PropType<MessageType[] | null>,
     },
   },
-  components: { Message },
 });
 </script>

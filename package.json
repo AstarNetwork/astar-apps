@@ -8,8 +8,8 @@
   "scripts": {
     "dev": "quasar dev",
     "build": "quasar build",
-    "format": "prettier --write '**/*.{ts,vue}'",
-    "check-format": "prettier --check '**/*.{ts,vue}'",
+    "format": "prettier --write **/*.{ts,vue}",
+    "check-format": "prettier --check **/*.{ts,vue}",
     "lint": "yarn format && yarn check-format && eslint --fix --ext .ts,.vue ./",
     "lint:check": "yarn check-format && eslint --ext .ts,.vue ./",
     "test": "echo \"No test specified\" && exit 0",
@@ -55,7 +55,9 @@
     "@quasar/app": "^3.0.0",
     "@tailwindcss/custom-forms": "^0.2.1",
     "@tailwindcss/postcss7-compat": "^2.0.3",
+    "@types/create-hash": "^1.2.2",
     "@types/ethjs-util": "^0.1.0",
+    "@types/keccak": "^3.0.1",
     "@types/node": "^10.17.15",
     "@types/store": "^2.0.2",
     "@typescript-eslint/eslint-plugin": "^4.16.1",
@@ -82,7 +84,7 @@
     "last 5 Opera versions"
   ],
   "engines": {
-    "node": ">=16.0.0",
+    "node": ">=14.0.0",
     "yarn": ">=1.22.0"
   },
   "browser": {

@@ -108,6 +108,11 @@ import { getParamValues } from 'src/hooks/helper/params';
 import InputAmount from 'components/common/InputAmount.vue';
 
 export default defineComponent({
+  components: {
+    IconBase,
+    IconSolidSelector,
+    InputAmount,
+  },
   props: {
     constructors: {
       required: true,
@@ -121,11 +126,6 @@ export default defineComponent({
       required: true,
       type: Number,
     },
-  },
-  components: {
-    IconBase,
-    IconSolidSelector,
-    InputAmount,
   },
   emits: ['update:params', 'update:constructorIndex'],
   setup(props, { emit }) {

@@ -122,6 +122,9 @@ module.exports = {
   // add your custom rules here
   rules: {
     'prefer-promise-reject-errors': 'off',
+    'vue/no-v-model-argument': 'off',
+    'vue/no-multiple-template-root': 'off',
+    'vue/no-v-for-template-key': 'off',
 
     // TypeScript
     quotes: ['warn', 'single', { avoidEscape: true }],
@@ -131,6 +134,7 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'warn',
     '@typescript-eslint/no-var-requires': 'error',
     '@typescript-eslint/no-inferrable-types': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
 
     // allow debugger during development only
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
