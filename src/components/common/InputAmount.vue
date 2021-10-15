@@ -27,9 +27,6 @@
             @input="update($event.target.value, selectedUnit)"
           />
         </div>
-        <button v-if="!noMax" type="button" class="max" @click="setMaxAmount">
-          {{ $t('max') }}
-        </button>
         <div
           class="
             tw-text-blue-900
@@ -54,16 +51,25 @@
         </div>
       </div>
     </div>
+    <div
+      v-if="isMaxAmount"
+      class="
+        tw-text-xs tw-font-medium tw-text-red-700
+        dark:tw-text-red-600
+        tw-absolute tw-bottom-3 tw-left-1/2 tw-transform tw--translate-x-1/2 tw-whitespace-nowrap
+      "
+    >
+      {{ $t('warning.insufficientFee') }}
+    </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, PropType, ref, watchEffect } from 'vue';
 import { getUnitNames, defaultUnitIndex } from 'src/hooks/helper/units';
 import BN from 'bn.js';
 export default defineComponent({
   props: {
     title: { type: String, default: '' },
-    noMax: { type: Boolean },
     selectedUnit: { type: String, default: '' },
     maxInDefaultUnit: { type: Object as PropType<BN>, default: new BN(0) },
     fixUnit: { type: Boolean, default: false },
@@ -71,19 +77,30 @@ export default defineComponent({
   },
   emits: ['update:amount', 'update:selectedUnit', 'input'],
   setup(props, { emit }) {
+    const isMaxAmount = ref<boolean>(false);
     const arrUnitNames = getUnitNames();
-    const setMaxAmount = () => {
-      if (props.maxInDefaultUnit) {
-        emit('update:selectedUnit', arrUnitNames[defaultUnitIndex]);
-        emit('update:amount', props.maxInDefaultUnit);
-      }
-    };
     const update = (amount: BN, unit: string | undefined) => {
       emit('update:amount', amount);
       emit('update:selectedUnit', unit);
       emit('input', { amount, unit });
     };
-    return { arrUnitNames, setMaxAmount, update };
+
+    watchEffect(() => {
+      // Memo: cast from string
+      const formattedAmount = new BN(Number(props.amount));
+      const formattedMaxInDefaultUnit = new BN(props.maxInDefaultUnit);
+      if (formattedMaxInDefaultUnit.eq(new BN(0))) {
+        return;
+      }
+
+      if (formattedAmount.gte(formattedMaxInDefaultUnit)) {
+        isMaxAmount.value = true;
+        return;
+      }
+      isMaxAmount.value = false;
+    });
+
+    return { arrUnitNames, update, isMaxAmount };
   },
 });
 </script>

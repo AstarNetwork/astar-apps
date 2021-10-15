@@ -15,17 +15,22 @@
           v-model:selAddress="data.address"
           :all-accounts="allAccounts"
           :all-account-names="allAccountNames"
+          @sel-changed="reloadAmount"
         />
       </div>
       <InputAmount
         v-model:amount="data.amount"
         v-model:selectedUnit="data.unit"
         title="Amount"
-        :no-max="true"
+        :max-in-default-unit="formatBalance"
       />
-      <!-- TODO enable available balance display <div class="tw-mt-1 tw-ml-1">
-        Available <FormatBalance class="tw-inline tw-font-semibold"/>
-      </div>-->
+      <div class="tw-mt-1 tw-ml-1">
+        {{ $t('balance.transferable') }}
+        <format-balance
+          :balance="accountData?.getUsableTransactionBalance()"
+          class="tw-inline tw-font-semibold"
+        />
+      </div>
     </template>
     <template #buttons>
       <Button :disabled="data.amount <= 0" @click="action(data)">{{ actionName }}</Button>
@@ -42,6 +47,9 @@ import ModalSelectAccount from 'components/balance/modals/ModalSelectAccount.vue
 import InputAmount from 'src/components/common/InputAmount.vue';
 import Button from 'src/components/common/Button.vue';
 import Avatar from 'src/components/common/Avatar.vue';
+import * as plasmUtils from 'src/hooks/helper/plasmUtils';
+import { useBalance, useApi, useAccount } from 'src/hooks';
+import FormatBalance from 'components/balance/FormatBalance.vue';
 
 export default defineComponent({
   components: {
@@ -50,6 +58,7 @@ export default defineComponent({
     InputAmount,
     Button,
     Avatar,
+    FormatBalance,
   },
   props: {
     dapp: {
@@ -82,10 +91,34 @@ export default defineComponent({
     const allAccounts = computed(() => store.getters['general/allAccounts']);
     const allAccountNames = computed(() => store.getters['general/allAccountNames']);
 
+    const { currentAccount } = useAccount();
+    const { api } = useApi();
+    const { accountData } = useBalance(api, currentAccount);
+
+    const formatBalance = computed(() => {
+      const tokenDecimal = decimal.value;
+      return plasmUtils.reduceBalanceToDenom(
+        accountData!.value!.getUsableTransactionBalance(),
+        tokenDecimal
+      );
+    });
+
+    const reloadAmount = (
+      address: string,
+      isMetamaskChecked: boolean,
+      selAccountIdx: number
+    ): void => {
+      store.commit('general/setIsCheckMetamask', isMetamaskChecked);
+      store.commit('general/setCurrentAccountIdx', selAccountIdx);
+    };
+
     return {
       data,
       allAccounts,
       allAccountNames,
+      formatBalance,
+      reloadAmount,
+      accountData,
       ...toRefs(props),
     };
   },
