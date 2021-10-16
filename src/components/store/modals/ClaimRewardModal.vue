@@ -18,7 +18,8 @@
     <template #buttons>
       <Button disabled class="tw-tooltip" @click="claimAction()">
         {{ $t('store.claim') }}
-        <!-- Tooltip -->
+        <!-- Temporary Tooltip -->
+        <!-- Todo: remove this when function is fixed -->
         <span
           class="
             tw-pointer-events-none
