@@ -1,8 +1,13 @@
+import { setupNetwork } from './../web3/utils/index';
 import { VoidFn } from '@polkadot/api/types';
 import { Balance } from '@polkadot/types/interfaces';
 import BN from 'bn.js';
-import { onUnmounted, ref, Ref, watch } from 'vue';
+import { useStore } from 'src/store';
+import { getChainData, getChainId } from 'src/web3';
+import { onUnmounted, ref, Ref, watch, computed } from 'vue';
 import { getVested } from './helper/vested';
+import Web3 from 'web3';
+import { AbstractInt } from '@polkadot/types/codec/AbstractInt';
 
 function useCall(apiRef: any, addressRef: Ref<string>) {
   // should be fixed -- cannot refer it because it goes undefined once it called. to call balance again, it should pass apiRef by external params.
@@ -10,8 +15,32 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
   const balanceRef = ref(new BN(0));
   const vestedRef = ref(new BN(0));
   const accountDataRef = ref<AccountData>();
+  const store = useStore();
+  const isCheckMetamaskH160 = computed(() => store.getters['general/isCheckMetamaskH160']);
+  const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
 
   const unsub: Ref<VoidFn | undefined> = ref();
+
+  const updateAccountH160 = async (address: string) => {
+    try {
+      const chainId = getChainId(currentNetworkIdx.value);
+      const network = getChainData(chainId);
+      await setupNetwork(chainId);
+      const web3 = new Web3(network.rpcUrls[0]);
+      const rawBal = await web3.eth.getBalance(address);
+      accountDataRef.value = new AccountDataH160(
+        new BN(rawBal),
+        new BN(0),
+        new BN(0),
+        new BN(0),
+        new BN(0)
+      );
+      balanceRef.value = new BN(rawBal);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const updateAccount = (address: string) => {
     if (address) {
       const api = apiRef?.value;
@@ -48,7 +77,6 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
             accountInfo.data.feeFrozen,
             vestedRef.value
           );
-
           balanceRef.value = accountInfo.data.free.toBn();
         });
       }
@@ -64,7 +92,11 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
   watch(
     () => addressRef.value,
     (address) => {
-      updateAccount(address);
+      if (isCheckMetamaskH160.value) {
+        updateAccountH160(address);
+      } else {
+        updateAccount(address);
+      }
     },
     { immediate: true }
   );
@@ -84,7 +116,7 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
 
 export function useBalance(apiRef: any, addressRef: Ref<string>) {
   const balance = ref(new BN(0));
-  const accountData = ref<AccountData>();
+  const accountData = ref<AccountData | AccountDataH160>();
 
   const { balanceRef, accountDataRef } = useCall(apiRef, addressRef);
 
@@ -140,4 +172,21 @@ export class AccountData {
   public miscFrozen: BN;
   public feeFrozen: BN;
   public vested: BN;
+}
+export class AccountDataH160 {
+  constructor(
+    public free: BN,
+    public reserved: BN,
+    public miscFrozen: BN,
+    public feeFrozen: BN,
+    public vested: BN
+  ) {}
+
+  public getUsableTransactionBalance(): BN {
+    return this.free.sub(this.miscFrozen);
+  }
+
+  public getUsableFeeBalance(): BN {
+    return this.free.sub(this.feeFrozen);
+  }
 }
