@@ -14,33 +14,13 @@
         </span>
         <span class="tw-font-semibold">{{ stakeInfo.userClaimedRewards }}</span>
       </div>
+      <q-banner dense rounded class="bg-orange text-white tw-my-4 q-pa-xs" style
+        >The claim function has been temporarily disabled due to pallet maintenance.</q-banner
+      >
     </template>
     <template #buttons>
       <Button disabled class="tw-tooltip" @click="claimAction()">
         {{ $t('store.claim') }}
-        <!-- Temporary Tooltip -->
-        <!-- Todo: remove this when function is fixed -->
-        <span
-          class="
-            tw-pointer-events-none
-            tw-hidden
-            tw-absolute
-            tw-top-0
-            tw-left-1/2
-            tw-z-10
-            tw-transform
-            tw--translate-y-full
-            tw--translate-x-1/2
-            tw-p-2
-            tw-text-xs
-            tw-leading-tight
-            tw-text-white
-            tw-bg-gray-800
-            dark:tw-bg-darkGray-500
-            tw-rounded-md tw-shadow-lg tw-opacity-90 tw-whitespace-nowrap
-          "
-          >the claim function has been temporarily disabled due to pallet maintenance</span
-        >
       </Button>
     </template>
   </Modal>
