@@ -14,9 +14,12 @@
         </span>
         <span class="tw-font-semibold">{{ stakeInfo.userClaimedRewards }}</span>
       </div>
+      <q-banner dense rounded class="bg-orange text-white tw-my-4 q-pa-xs" style
+        >The claim function has been temporarily disabled due to pallet maintenance.</q-banner
+      >
     </template>
     <template #buttons>
-      <Button @click="claimAction()">
+      <Button disabled class="tw-tooltip" @click="claimAction()">
         {{ $t('store.claim') }}
       </Button>
     </template>
