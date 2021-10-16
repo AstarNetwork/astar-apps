@@ -57,7 +57,7 @@
                   @connectMetamask="connectMetamask"
                 />
                 <MetamaskOption
-                  v-if="isSupportContract"
+                  v-if="isSupportContract && isBalancePath"
                   v-model:selChecked="checkMetamask"
                   v-model:selCheckedH="checkMetamaskH160"
                   :checked="checkMetamaskH160"
@@ -98,6 +98,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue';
 import { useStore } from 'src/store';
+import { useRouter } from 'vue-router';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import MetamaskOption from './MetamaskOption.vue';
 import ModalAccountOption from './ModalAccountOption.vue';
@@ -123,6 +124,10 @@ export default defineComponent({
       emit('update:is-open', false);
     };
 
+    const currentRoute = computed(() => {
+      return useRouter().currentRoute.value;
+    });
+    const isBalancePath = currentRoute.value.matched[0].path === '/balance';
     const store = useStore();
 
     const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
@@ -168,6 +173,7 @@ export default defineComponent({
       closeModal,
       selectAccount,
       connectMetamask,
+      isBalancePath,
     };
   },
 });
