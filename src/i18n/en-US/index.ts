@@ -30,8 +30,8 @@ export default {
     vested: 'Vested',
     locked: 'Locked',
     modals: {
-      connectMetamask: 'Connect to MetaMask',
-      ethereumExtension: 'ECDSA (Ethereum extension)',
+      connectMetamask: 'Connect to MetaMask ({format})',
+      ethereumExtension: 'ECDSA (Ethereum extension {format})',
       chooseAccount: 'Choose Account',
       chooseNetwork: 'Choose Networks',
       switch: 'Switch',

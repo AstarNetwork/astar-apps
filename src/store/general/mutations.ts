@@ -61,6 +61,9 @@ const mutation: MutationTree<State> & GeneralMutations = {
   setIsCheckMetamask(state, isCheckMetamask) {
     state.isCheckMetamask = isCheckMetamask;
   },
+  setIsCheckMetamaskH160(state, isCheckMetamaskH160) {
+    state.isCheckMetamaskH160 = isCheckMetamaskH160;
+  },
   setCurrentEcdsaAccount(state, ecdsa) {
     state.currentEcdsaAccount = ecdsa;
   },

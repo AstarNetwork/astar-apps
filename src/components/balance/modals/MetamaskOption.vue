@@ -20,18 +20,18 @@
           >
             <img width="80" src="~assets/img/metamask.png" />
           </div>
-          <div>
+          <div class="tw-flex tw-items-center">
             <template v-if="!curAddress">
               <div class="tw-text-sm tw-font-medium dark:tw-text-darkGray-100">
-                {{ $t('balance.modals.connectMetamask') }}
+                {{ $t('balance.modals.connectMetamask', { format }) }}
               </div>
             </template>
             <template v-else>
               <div>
                 <div class="tw-text-sm tw-font-medium dark:tw-text-darkGray-100">
-                  {{ $t('balance.modals.ethereumExtension') }}
+                  {{ $t('balance.modals.ethereumExtension', { format }) }}
                 </div>
-                <div class="tw-text-xs tw-text-gray-500 dark:tw-text-darkGray-400">
+                <div v-if="checked" class="tw-text-xs tw-text-gray-500 dark:tw-text-darkGray-400">
                   {{ shortenAddr(curAddress) }}
                 </div>
               </div>
@@ -46,7 +46,7 @@
             name="choose_account"
             type="radio"
             :class="[
-              showRadioIfUnchecked ? 'tw-border-gray-300' : 'tw-border-transparent',
+              showRadioIfUnchecked ? 'tw-border-gray-300' : 'tw-border-red-400',
               'tw-appearance-none',
               'tw-border-2',
               'dark:tw-border-darkGray-600',
@@ -87,8 +87,9 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    isH160: { type: Boolean, default: false },
   },
-  emits: ['update:sel-checked', 'connectMetamask'],
+  emits: ['update:sel-checked', 'update:sel-checked-h', 'connectMetamask'],
   setup(props, { emit }) {
     const store = useStore();
     const chainInfo = computed(() => store.getters['general/chainInfo']);
@@ -96,14 +97,10 @@ export default defineComponent({
 
     const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
     const ecdsaAccounts = ref<EcdsaAddressFormat>(currentEcdsaAccount.value);
-    const curAddress = ref<string>(currentEcdsaAccount.value.ss58);
+    const curAddress = ref<string>(
+      props.isH160 ? currentEcdsaAccount.value.h160 : currentEcdsaAccount.value.ss58
+    );
     const errorMsg = ref('');
-
-    // watchEffect(() => {
-    //   if (loadedAccounts.value.length > 0 && ecdsaAccounts.value?.ethereum !== loadedAccounts.value[0]) {
-    //     ecdsaAccounts.value = undefined;
-    //   }
-    // });
 
     const shortenAddr = (addr: string) => {
       return getShortenAddress(addr);
@@ -125,6 +122,14 @@ export default defineComponent({
         if (typeof signature !== 'string') {
           throw new Error('Failed to fetch signature');
         }
+        // Memo: load H160 format address
+        if (props.isH160) {
+          const pubKey = loadingAddr;
+          ecdsaAccounts.value = { ethereum: loadingAddr, h160: pubKey };
+          curAddress.value = pubKey;
+          onSelectMetamask();
+          return;
+        }
 
         // FIXME: keccak issue should be resolved : https://github.com/cryptocoinjs/keccak/pull/22
         const pubKey = utils.recoverPublicKeyFromSig(loadingAddr, loginMsg, signature);
@@ -137,7 +142,6 @@ export default defineComponent({
 
         ecdsaAccounts.value = { ethereum: loadingAddr, ss58: ss58Address };
         curAddress.value = ss58Address;
-
         onSelectMetamask();
       } catch (err: any) {
         console.error('err', err);
@@ -146,9 +150,17 @@ export default defineComponent({
     };
 
     const onSelectMetamask = () => {
-      emit('update:sel-checked', true);
-      emit('connectMetamask', ecdsaAccounts.value?.ethereum, ecdsaAccounts.value?.ss58);
+      emit(props.isH160 ? 'update:sel-checked-h' : 'update:sel-checked', true);
+      emit(props.isH160 ? 'update:sel-checked' : 'update:sel-checked-h', false);
+      emit(
+        'connectMetamask',
+        ecdsaAccounts.value?.ethereum,
+        curAddress.value,
+        props.isH160 ? 'h160' : 'ss58'
+      );
     };
+
+    const format = props.isH160 ? 'H160' : 'SS58';
 
     return {
       curAddress,
@@ -157,6 +169,7 @@ export default defineComponent({
       errorMsg,
       onLoadAccount,
       onSelectMetamask,
+      format,
     };
   },
   methods: {

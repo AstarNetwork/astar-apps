@@ -79,7 +79,7 @@ export default defineComponent({
       type: Boolean,
     },
   },
-  emits: ['update:sel-option', 'update:sel-checked'],
+  emits: ['update:sel-option', 'update:sel-checked', 'update:sel-checked-h'],
   setup(props, { emit }) {
     const { address } = toRefs(props);
 
@@ -90,6 +90,7 @@ export default defineComponent({
     const onChange = (keyIdx: number) => {
       emit('update:sel-option', keyIdx);
       emit('update:sel-checked', false);
+      emit('update:sel-checked-h', false);
     };
 
     return {

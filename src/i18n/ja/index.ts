@@ -28,8 +28,8 @@ export default {
     transfer: '送金',
     transferable: '支払可能残高',
     modals: {
-      connectMetamask: 'MetaMaskへ接続',
-      ethereumExtension: 'ECDSA (Ethereum extension)',
+      connectMetamask: 'MetaMaskへ接続 ({format})',
+      ethereumExtension: 'ECDSA (Ethereum extension {format})',
       chooseAccount: 'アカウントの選択',
       chooseNetwork: 'ネットワークの選択',
       switch: 'スイッチ',

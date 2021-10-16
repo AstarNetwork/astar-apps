@@ -28,8 +28,8 @@ export default {
     transfer: '转账',
     transferable: '可使用余额',
     modals: {
-      connectMetamask: '链接MetaMask',
-      ethereumExtension: 'ECDSA (Ethereum extension)',
+      connectMetamask: '链接MetaMask ({format})',
+      ethereumExtension: 'ECDSA (Ethereum extension {format})',
       chooseAccount: '选择账户',
       chooseNetwork: '选择网路',
       switch: '更改',

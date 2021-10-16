@@ -57,7 +57,7 @@
         </router-link>
 
         <router-link
-          v-if="network.isSupportContract"
+          v-if="network.isSupportContract && !isH160"
           to="/dapps"
           :class="[$route.path.split('/')[1] === 'dapps' ? 'activeLink' : 'inactiveLink']"
         >
@@ -73,7 +73,7 @@
         </router-link>
 
         <router-link
-          v-if="network.isStoreEnabled"
+          v-if="network.isStoreEnabled && !isH160"
           to="/store"
           :class="[$route.path.split('/')[1] === 'store' ? 'activeLink' : 'inactiveLink']"
         >
@@ -134,9 +134,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, reactive, toRefs } from 'vue';
+import { defineComponent, ref, computed, watch, reactive, toRefs, watchEffect } from 'vue';
 import { useStore } from 'src/store';
 import { useAccount, useSidebar } from 'src/hooks';
+import { isH160Address } from 'src/hooks/helper/addressUtils';
 import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import ConnectionIndicator from './ConnectionIndicator.vue';
@@ -182,6 +183,7 @@ export default defineComponent({
       modalNetwork: false,
       modalAccount: false,
     });
+    const isH160 = ref(false);
 
     const store = useStore();
     const { allAccounts, allAccountNames, currentAccount, currentAccountName } = useAccount();
@@ -196,6 +198,14 @@ export default defineComponent({
 
     watch(currentNetworkIdx, (networkIdx) => {
       currentNetworkName.value = providerEndpoints[networkIdx].displayName;
+    });
+
+    watchEffect(() => {
+      if (isH160Address(currentAccount.value)) {
+        isH160.value = true;
+        return;
+      }
+      isH160.value = false;
     });
 
     const isLocalChain = currentNetworkIdx.value === endpointKey.LOCAL;
@@ -214,6 +224,7 @@ export default defineComponent({
       currentAccountName,
       allAccounts,
       allAccountNames,
+      isH160,
     };
   },
 });
