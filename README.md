@@ -32,7 +32,7 @@ Please refer to `src/i18n/files/LANGUAGE.ts` file to add or edit sentences.
 
 ### How To Contribute
 
-When you push your branch to remote ones, please run `yarn lint --fix` to comply to the code convention.
+When you push your branch to remote ones, please run `yarn lint` to comply to the code convention.
 
 When you add a new library, please make sure it license is not
 [GPL](https://en.wikipedia.org/wiki/GNU_General_Public_License). And please use `-D` for @types.
