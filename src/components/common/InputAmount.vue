@@ -4,9 +4,23 @@
       class="tw-block tw-text-sm tw-font-medium tw-text-gray-500 dark:tw-text-darkGray-400 tw-mb-2"
       >{{ title }}</label
     >
-    <div class="tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-rounded-md tw-relative">
+    <div
+      :class="[
+        isMaxAmount ? 'tw-border-red-600' : 'tw-border-gray-300',
+        isMaxAmount ? 'dark:tw-border-red-700' : 'dark:tw-border-darkGray-500',
+        'tw-border',
+        'tw-rounded-md',
+        'tw-relative',
+      ]"
+    >
       <div
-        class="tw-flex tw-items-center tw-border-b tw-border-gray-300 dark:tw-border-darkGray-500"
+        :class="[
+          !isMaxAmount && 'tw-border-gray-300',
+          !isMaxAmount && 'dark:tw-border-darkGray-500',
+          !isMaxAmount && 'tw-border-b',
+          'tw-flex',
+          'tw-items-center',
+        ]"
       >
         <div class="tw-flex-1 tw-pl-8">
           <input
