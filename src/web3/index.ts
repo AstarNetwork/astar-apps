@@ -29,7 +29,7 @@ export const nativeCurrency = {
 };
 
 export const rpcUrls = {
-  [CHAIN.SHIDEN_MAINNET]: ['https://rpc.shiden.astar.network:8545'],
+  [CHAIN.SHIDEN_MAINNET]: ['https://shiden.api.onfinality.io/public'],
   [CHAIN.SHIDEN_TESTNET]: ['https://rpc.shibuya.astar.network:8545'],
 };
 
