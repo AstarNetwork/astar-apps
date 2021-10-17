@@ -172,7 +172,6 @@ export default defineComponent({
           selAccountName.value = props.allAccountNames[selAccountIdx.value];
           selAddress.value = props.allAccounts[selAccountIdx.value] as string;
         } else {
-          console.log('props.role', props.role);
           if (props.role === 'toAddress' && isH160) {
             selAddress.value = '';
           } else {
@@ -181,7 +180,13 @@ export default defineComponent({
         }
 
         emit('update:sel-address', selAddress.value);
-        emit('selChanged', selAddress.value, checkMetamaskOption.value, selAccountIdx.value);
+        emit(
+          'selChanged',
+          selAddress.value,
+          checkMetamaskOption.value,
+          selAccountIdx.value,
+          isH160.value
+        );
 
         openOption.value = false;
       },

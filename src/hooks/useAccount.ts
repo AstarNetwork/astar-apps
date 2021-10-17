@@ -18,9 +18,6 @@ export const useAccount = () => {
     [allAccounts, allAccountNames, currentAccountIdx, isCheckMetamask, isCheckMetamaskH160],
     () => {
       if (allAccounts.value) {
-        console.log('currentEcdsaAccount.value', currentEcdsaAccount.value);
-        console.log('isCheckMetamask', isCheckMetamask.value);
-        console.log('isCheckMetamaskH160', isCheckMetamaskH160.value);
         if (isCheckMetamask.value && currentEcdsaAccount.value) {
           currentAccount.value = currentEcdsaAccount.value.ss58;
           currentAccountName.value = 'ECDSA (Ethereum SS58)';

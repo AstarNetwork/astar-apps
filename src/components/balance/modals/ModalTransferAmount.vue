@@ -260,7 +260,7 @@ export default defineComponent({
 
         method && callFunc(method);
       } catch (e) {
-        console.log(e);
+        console.error(e);
         store.dispatch('general/showAlertMsg', {
           msg: (e as Error).message,
           alertType: 'error',
@@ -274,31 +274,56 @@ export default defineComponent({
       console.log('toAccount', toAddress);
       console.log('selUnit', selectUnit.value);
 
+      const toastInvalidAddress = () =>
+        store.dispatch('general/showAlertMsg', {
+          msg: 'The address is not valid',
+          alertType: 'error',
+        });
+
       if (Number(transferAmt) === 0) {
         store.dispatch('general/showAlertMsg', {
           msg: 'The amount of token to be transmitted must not be zero',
           alertType: 'error',
         });
         return;
-      } else if (
-        !plasmUtils.isValidAddressPolkadotAddress(fromAddress) ||
-        !plasmUtils.isValidAddressPolkadotAddress(toAddress)
-      ) {
-        store.dispatch('general/showAlertMsg', {
-          msg: 'The address is not valid',
-          alertType: 'error',
-        });
+      }
+
+      if (isH160.value) {
+        const provider = typeof window !== 'undefined' && window.ethereum;
+        const web3 = new Web3(provider as any);
+        if (!web3.utils.checkAddressChecksum(toAddress)) {
+          toastInvalidAddress();
+          return;
+        }
+        await web3.eth
+          .sendTransaction({
+            to: toAddress,
+            from: fromAddress,
+            value: web3.utils.toWei(String(transferAmt), 'ether'),
+          })
+          .on('transactionHash', (hash) => {
+            store.commit('general/setLoading', true);
+          })
+          .once('confirmation', (confNumber, receipt) => {
+            const hash = receipt.transactionHash;
+            const msg = `Completed at transaction hash #${hash}`;
+            store.dispatch('general/showAlertMsg', { msg, alertType: 'success' });
+            store.commit('general/setLoading', false);
+            closeModal();
+          })
+          .then(() => {
+            // Memo: looks like cannot run 2 emits together
+            emit('complete-transfer', true);
+          });
+
         return;
       }
 
-      if (isH160) {
-        const provider = typeof window !== 'undefined' && window.ethereum;
-        const web3 = new Web3(provider as any);
-        await web3.eth.sendTransaction({
-          to: toAddress,
-          from: fromAddress,
-          value: web3.utils.toWei(String(transferAmt), 'ether'),
-        });
+      if (
+        !plasmUtils.isValidAddressPolkadotAddress(fromAddress) ||
+        !plasmUtils.isValidAddressPolkadotAddress(toAddress)
+      ) {
+        toastInvalidAddress();
         return;
       }
 
@@ -315,10 +340,14 @@ export default defineComponent({
 
     const reloadAmount = (
       address: string,
-      isMetamaskChecked: boolean,
-      selAccountIdx: number
+      isMetamaskOptionChecked: boolean,
+      selAccountIdx: number,
+      isH160: boolean
     ): void => {
-      store.commit('general/setIsCheckMetamask', isMetamaskChecked);
+      const actionCheckMetaMask = isH160
+        ? 'general/setIsCheckMetamaskH160'
+        : 'general/setIsCheckMetamask';
+      store.commit(actionCheckMetaMask, isMetamaskOptionChecked);
       store.commit('general/setCurrentAccountIdx', selAccountIdx);
     };
 
