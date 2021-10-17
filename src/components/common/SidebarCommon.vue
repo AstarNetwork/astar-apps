@@ -134,10 +134,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, reactive, toRefs, watchEffect } from 'vue';
+import { defineComponent, ref, computed, watch, reactive, toRefs } from 'vue';
 import { useStore } from 'src/store';
 import { useAccount, useSidebar } from 'src/hooks';
-import { isH160Address } from 'src/hooks/helper/addressUtils';
 import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import ConnectionIndicator from './ConnectionIndicator.vue';
@@ -183,7 +182,7 @@ export default defineComponent({
       modalNetwork: false,
       modalAccount: false,
     });
-    const isH160 = ref(false);
+    const isH160 = computed(() => store.getters['general/isCheckMetamaskH160']);
 
     const store = useStore();
     const { allAccounts, allAccountNames, currentAccount, currentAccountName } = useAccount();
@@ -198,14 +197,6 @@ export default defineComponent({
 
     watch(currentNetworkIdx, (networkIdx) => {
       currentNetworkName.value = providerEndpoints[networkIdx].displayName;
-    });
-
-    watchEffect(() => {
-      if (isH160Address(currentAccount.value)) {
-        isH160.value = true;
-        return;
-      }
-      isH160.value = false;
     });
 
     const isLocalChain = currentNetworkIdx.value === endpointKey.LOCAL;

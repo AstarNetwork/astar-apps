@@ -1,3 +1,4 @@
+import Web3 from 'web3';
 import { CHAIN_INFORMATION } from '..';
 
 export const getChainData = (chainId: 336 | 81) => {
@@ -43,4 +44,11 @@ export const getChainId = (currentNetworkIdx: 1 | 3): 336 | 81 => {
     return 336;
   }
   return 81;
+};
+
+export const createWeb3Instance = async (currentNetworkIdx: 1 | 3) => {
+  const chainId = getChainId(currentNetworkIdx);
+  const network = getChainData(chainId);
+  await setupNetwork(chainId);
+  return new Web3(new Web3.providers.HttpProvider(network.rpcUrls[0]));
 };

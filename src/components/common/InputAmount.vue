@@ -40,7 +40,7 @@
           "
         >
           <select
-            v-if="!fixUnit"
+            v-if="!fixUnit && !isH160"
             name="units"
             class="dark:tw-bg-darkGray-900"
             :value="selectedUnit"
@@ -57,8 +57,9 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, PropType, computed } from 'vue';
 import { getUnitNames, defaultUnitIndex } from 'src/hooks/helper/units';
+import { useStore } from 'src/store';
 import BN from 'bn.js';
 export default defineComponent({
   props: {
@@ -71,6 +72,8 @@ export default defineComponent({
   },
   emits: ['update:amount', 'update:selectedUnit', 'input'],
   setup(props, { emit }) {
+    const store = useStore();
+    const isH160 = computed(() => store.getters['general/isCheckMetamaskH160']);
     const arrUnitNames = getUnitNames();
     const setMaxAmount = () => {
       if (props.maxInDefaultUnit) {
@@ -83,7 +86,7 @@ export default defineComponent({
       emit('update:selectedUnit', unit);
       emit('input', { amount, unit });
     };
-    return { arrUnitNames, setMaxAmount, update };
+    return { arrUnitNames, setMaxAmount, update, isH160 };
   },
 });
 </script>

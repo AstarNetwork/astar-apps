@@ -1,6 +1,6 @@
 <template>
   <div class="tw-relative">
-    <button type="button" class="button-account" @click="openOption = !openOption">
+    <button type="button" class="button-account" @click="openOption = !openOption && !isH160">
       <div class="tw-flex tw-items-center tw-justify-between">
         <div class="tw-flex tw-items-center">
           <div
@@ -39,6 +39,7 @@
       </div>
 
       <span
+        v-if="!isH160"
         class="
           tw-ml-3
           tw-absolute
@@ -78,20 +79,23 @@
       >
         <MetamaskOption
           v-if="showMetamaskOption"
-          v-model:selChecked="checkMetamask"
-          :checked="checkMetamask"
+          v-model:selChecked="checkMetamaskOption"
+          :checked="checkMetamaskOption"
           :show-radio-if-unchecked="false"
+          :is-h160="isH160"
         />
-        <ModalSelectAccountOption
-          v-for="(account, index) in allAccounts"
-          :key="index"
-          v-model:selOption="selAccountIdx"
-          v-model:selChecked="checkMetamask"
-          :key-idx="index"
-          :address="account"
-          :address-name="allAccountNames[index]"
-          :checked="!checkMetamask && selAccountIdx === index"
-        />
+        <div v-if="!isH160">
+          <ModalSelectAccountOption
+            v-for="(account, index) in allAccounts"
+            :key="index"
+            v-model:selOption="selAccountIdx"
+            v-model:selChecked="checkMetamaskOption"
+            :key-idx="index"
+            :address="account"
+            :address-name="allAccountNames[index]"
+            :checked="!checkMetamaskOption && selAccountIdx === index"
+          />
+        </div>
       </ul>
     </div>
   </div>
@@ -124,6 +128,11 @@ export default defineComponent({
       type: Array,
       required: true,
     },
+    role: {
+      type: String,
+      defalut: false,
+      default: '',
+    },
   },
   emits: ['update:sel-address', 'selChanged'],
   setup(props, { emit }) {
@@ -135,10 +144,11 @@ export default defineComponent({
 
     const isSupportContract = ref(providerEndpoints[currentNetworkIdx.value].isSupportContract);
 
+    const isH160 = computed(() => store.getters['general/isCheckMetamaskH160']);
     const selAccountIdx = ref(currentAccountIdx.value);
 
     const selAccount = ref(props.allAccounts[selAccountIdx.value] as string);
-    const selAddress = ref(props.allAccounts[selAccountIdx.value] as string);
+    const selAddress = ref(!isH160 ? (props.allAccounts[selAccountIdx.value] as string) : '');
     const selAccountName = ref(props.allAccountNames[selAccountIdx.value]);
 
     const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
@@ -148,19 +158,30 @@ export default defineComponent({
       () => isSupportContract.value && currentEcdsaAccount.value.ethereum
     );
 
+    const checkMetamaskH160 = ref<boolean>(isH160.value);
+    const checkMetamaskOption = isH160.value ? checkMetamaskH160 : checkMetamask;
+    const ecdsaAccountValue = isH160.value
+      ? currentEcdsaAccount.value.h160
+      : currentEcdsaAccount.value.ss58;
+
     watch(
-      [selAccountIdx, checkMetamask],
+      [selAccountIdx, checkMetamaskOption, ecdsaAccountValue],
       () => {
-        if (!checkMetamask.value) {
+        if (!checkMetamaskOption.value) {
           selAccount.value = props.allAccounts[selAccountIdx.value] as string;
           selAccountName.value = props.allAccountNames[selAccountIdx.value];
           selAddress.value = props.allAccounts[selAccountIdx.value] as string;
         } else {
-          selAddress.value = currentEcdsaAccount.value.ss58;
+          console.log('props.role', props.role);
+          if (props.role === 'toAddress' && isH160) {
+            selAddress.value = '';
+          } else {
+            selAddress.value = ecdsaAccountValue;
+          }
         }
 
         emit('update:sel-address', selAddress.value);
-        emit('selChanged', selAddress.value, checkMetamask.value, selAccountIdx.value);
+        emit('selChanged', selAddress.value, checkMetamaskOption.value, selAccountIdx.value);
 
         openOption.value = false;
       },
@@ -179,6 +200,8 @@ export default defineComponent({
       checkMetamask,
       showMetamaskOption,
       changeAddress,
+      isH160,
+      checkMetamaskOption,
     };
   },
 });

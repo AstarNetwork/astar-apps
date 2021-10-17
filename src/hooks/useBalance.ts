@@ -1,13 +1,10 @@
-import { setupNetwork } from './../web3/utils/index';
 import { VoidFn } from '@polkadot/api/types';
 import { Balance } from '@polkadot/types/interfaces';
 import BN from 'bn.js';
 import { useStore } from 'src/store';
-import { getChainData, getChainId } from 'src/web3';
-import { onUnmounted, ref, Ref, watch, computed } from 'vue';
+import { createWeb3Instance } from 'src/web3';
+import { computed, onUnmounted, ref, Ref, watch } from 'vue';
 import { getVested } from './helper/vested';
-import Web3 from 'web3';
-import { AbstractInt } from '@polkadot/types/codec/AbstractInt';
 
 function useCall(apiRef: any, addressRef: Ref<string>) {
   // should be fixed -- cannot refer it because it goes undefined once it called. to call balance again, it should pass apiRef by external params.
@@ -23,10 +20,7 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
 
   const updateAccountH160 = async (address: string) => {
     try {
-      const chainId = getChainId(currentNetworkIdx.value);
-      const network = getChainData(chainId);
-      await setupNetwork(chainId);
-      const web3 = new Web3(network.rpcUrls[0]);
+      const web3 = await createWeb3Instance(currentNetworkIdx.value);
       const rawBal = await web3.eth.getBalance(address);
       accountDataRef.value = new AccountDataH160(
         new BN(rawBal),

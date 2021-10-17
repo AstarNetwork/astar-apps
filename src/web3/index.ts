@@ -1,6 +1,9 @@
-export { getChainData, setupNetwork, getChainId } from './utils';
+export { getChainData, setupNetwork, getChainId, createWeb3Instance } from './utils';
 
-// Memo: H160(EVM) network
+/*
+ * EVM network config
+ * Metamask address format: H160
+ */
 
 export enum CHAIN {
   SHIDEN_MAINNET = 336,
