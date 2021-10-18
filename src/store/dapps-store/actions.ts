@@ -360,45 +360,25 @@ const actions: ActionTree<State, StateInterface> = {
     }
   },
 
-  async getClaimInfo({ commit }, parameters: StakingParameters): Promise<number> {
+  async getClaimInfo({ dispatch, commit }, parameters: StakingParameters): Promise<number> {
     let myReward: number = 0;
     commit('general/setLoading', true, { root: true });
-    const currentEraIndex = await parameters.api.query.dappsStaking.currentEra<Option<EraIndex>>();
-    const currentEra = parseInt(currentEraIndex.toString());
 
-    const contractAddress = getAddressEnum(parameters.dapp.address);
-    const eraLastStakedIndex = await parameters.api.query.dappsStaking.contractLastStaked<
-      Option<EraIndex>
-    >(contractAddress);
-    const eraLastStaked = parseInt(eraLastStakedIndex.toString());
+    try {
+      const currentEraIndex = await parameters.api.query.dappsStaking.currentEra<EraIndex>();
+      const currentEra = parseInt(currentEraIndex.toString());
 
-    // Find a first stake
-    let currentEraStake: EraStakingPoints | null = null;
-    let firstEraWithStake: number = 1;
-    for (let era = 1; era < currentEra; era++) {
-      const eraStakes = (
-        await parameters.api.query.dappsStaking.contractEraStake<Option<EraStakingPoints>>(
-          contractAddress,
-          era
-        )
-      ).unwrapOr(null);
+      const contractAddress = getAddressEnum(parameters.dapp.address);
+      const eraLastStakedIndex = await parameters.api.query.dappsStaking.contractLastStaked<
+        Option<EraIndex>
+      >(contractAddress);
+      const eraLastStaked = parseInt(eraLastStakedIndex.toString());
 
-      if (eraStakes) {
-        currentEraStake = eraStakes;
-        firstEraWithStake = era;
-        break;
-      }
-    }
-
-    // TODO think about optimizing perfomance by fetching all era rewards and stakes in single request
-    // const entries = await parameters.api.query.dappsStaking.eraRewardsAndStakes.entries();
-    // entries.forEach(([key, exposure]) => {
-    //   console.log('key arguments:', key[0]);
-    //   console.log('     exposure:', exposure.toHuman());
-    // });
-
-    for (let era = 1; era < currentEra; era++) {
-      if (era > firstEraWithStake) {
+      // Find a first stake
+      let currentEraStake: EraStakingPoints | null = null;
+      let firstEraWithStake: number = 1;
+      for (let era = 1; era < currentEra; era++) {
+        // TODO think about optimizing perfomance by fetching all staking points in a single request
         const eraStakes = (
           await parameters.api.query.dappsStaking.contractEraStake<Option<EraStakingPoints>>(
             contractAddress,
@@ -408,38 +388,68 @@ const actions: ActionTree<State, StateInterface> = {
 
         if (eraStakes) {
           currentEraStake = eraStakes;
+          firstEraWithStake = era;
+          break;
         }
       }
 
-      if (currentEraStake) {
-        // TODO check why eraStakes.stakers.get not working
-        // const accountId = parameters.api.createType('AccountId', parameters.senderAddress);
-        // console.log('staker', accountId.toHuman(), eraStakes.stakers.get(accountId)?.toHuman());
-        for (const [account, balance] of currentEraStake.stakers) {
-          if (account.toString() === parameters.senderAddress) {
-            let eraRewardsAndStakes = (
-              await parameters.api.query.dappsStaking.eraRewardsAndStakes<
-                Option<EraRewardAndStake>
-              >(era)
-            ).unwrap();
+      const eraRewardsAndStakeMap = new Map();
+      const entries =
+        await parameters.api.query.dappsStaking.eraRewardsAndStakes.entries<EraRewardAndStake>();
+      entries.forEach(([key, stake]) => {
+        eraRewardsAndStakeMap.set(parseInt(key.args.map((k) => k.toString())[0]), stake);
+      });
 
-            // temp to avoid staked = 0 on test env
-            if (eraRewardsAndStakes.staked.toString() === '0') {
-              break;
-            }
+      // console.log('chain', await (await parameters.api.rpc.system.chain()).toHuman());
 
-            let rewardToAdd =
-              0.2 *
-              (parseFloat(reduceBalanceToDenom(balance, parameters.decimals)) /
-                parseFloat(reduceBalanceToDenom(eraRewardsAndStakes.staked, parameters.decimals))) *
-              parseFloat(reduceBalanceToDenom(eraRewardsAndStakes.rewards, parameters.decimals));
-            myReward = myReward + rewardToAdd;
-            break;
+      for (let era = 1; era < currentEra; era++) {
+        if (era > firstEraWithStake) {
+          const eraStakes = (
+            await parameters.api.query.dappsStaking.contractEraStake<Option<EraStakingPoints>>(
+              contractAddress,
+              era
+            )
+          ).unwrapOr(null);
+
+          if (eraStakes) {
+            currentEraStake = eraStakes;
           }
         }
-      } else {
-        console.warn('No stakes found');
+
+        if (currentEraStake) {
+          // TODO check why eraStakes.stakers.get not working
+          for (const [account, balance] of currentEraStake.stakers) {
+            if (account.toString() === parameters.senderAddress) {
+              let eraRewardsAndStakes = eraRewardsAndStakeMap.get(era).unwrap();
+              if (eraRewardsAndStakes) {
+                // temp to avoid staked = 0 on test env
+                if (eraRewardsAndStakes.staked.toString() === '0') {
+                  break;
+                }
+
+                let rewardToAdd =
+                  0.2 *
+                  (parseFloat(reduceBalanceToDenom(balance, parameters.decimals)) /
+                    parseFloat(
+                      reduceBalanceToDenom(eraRewardsAndStakes.staked, parameters.decimals)
+                    )) *
+                  parseFloat(
+                    reduceBalanceToDenom(eraRewardsAndStakes.rewards, parameters.decimals)
+                  );
+                myReward = myReward + rewardToAdd;
+              } else {
+                console.warn('No EraRewardAndStake for era ', era);
+              }
+            }
+          }
+        } else {
+          console.warn('No stakes found');
+        }
       }
+    } catch (err) {
+      const error = err as unknown as Error;
+      console.error(error);
+      showError(dispatch, error.message);
     }
 
     console.log('my reward', myReward.toString());

@@ -55,11 +55,12 @@ export default defineComponent({
     const store = useStore();
     const { defaultUnitToken, decimal } = useChainMetadata();
     const estimatedRewards = ref<number>(0);
+    const senderAddress = store.getters['general/selectedAccountAddress'];
 
     onMounted(async () => {
       estimatedRewards.value = await store.dispatch('dapps/getClaimInfo', {
         api: api?.value,
-        senderAddress: 'ajYMsCKsEAhEvHpeA4XqsfiA9v1CdzZPrCfS6pEfeGHW9j8',
+        senderAddress,
         dapp: props.dapp,
         decimals: decimal.value,
       } as StakingParameters);
