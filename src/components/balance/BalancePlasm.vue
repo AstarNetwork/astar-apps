@@ -47,11 +47,9 @@ import { defineComponent, reactive, toRefs, computed, watch, ref } from 'vue';
 import { useBalance, useApi, useAccount } from 'src/hooks';
 import { useStore } from 'src/store';
 import { useMeta } from 'quasar';
-// import { isWeb3Injected } from '@polkadot/extension-dapp';
 import Address from './Address.vue';
 import PlmBalance from './PlmBalance.vue';
 import TotalBalance from './TotalBalance.vue';
-// import ModalAlertBox from 'components/common/ModalAlertBox.vue';
 import ModalAccount from './modals/ModalAccount.vue';
 import ModalTransferAmount from './modals/ModalTransferAmount.vue';
 
@@ -66,7 +64,6 @@ export default defineComponent({
     Address,
     PlmBalance,
     TotalBalance,
-    // ModalAlertBox,
     ModalAccount,
     ModalTransferAmount,
   },

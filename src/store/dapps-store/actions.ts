@@ -10,6 +10,7 @@ import {
 } from '@polkadot/types/interfaces';
 import { formatBalance } from '@polkadot/util';
 import BN from 'bn.js';
+import { reduceBalanceToDenom } from 'src/hooks/helper/plasmUtils';
 import { StateInterface } from '../index';
 import { DappItem, DappStateInterface as State, NewDappItem } from './state';
 import { uploadFile, addDapp, getDapps } from 'src/hooks/firebase';
@@ -358,6 +359,56 @@ const actions: ActionTree<State, StateInterface> = {
       console.log(e);
     }
   },
+
+  async getClaimInfo({ commit }, parameters: StakingParameters): Promise<number> {
+    let myReward: number = 0;
+    commit('general/setLoading', true, { root: true });
+    const currentEraIndex = await parameters.api.query.dappsStaking.currentEra<Option<EraIndex>>();
+    const currentEra = parseInt(currentEraIndex.toString());
+
+    const contractAddress = getAddressEnum(parameters.dapp.address);
+    const eraLastStakedIndex = await parameters.api.query.dappsStaking.contractLastStaked<
+      Option<EraIndex>
+    >(contractAddress);
+    const eraLastStaked = parseInt(eraLastStakedIndex.toString());
+
+    for (let era = 1; era < currentEra; era++) {
+      const eraStakes = (
+        await parameters.api.query.dappsStaking.contractEraStake<Option<EraStakingPoints>>(
+          contractAddress,
+          era
+        )
+      ).unwrapOr(null);
+
+      if (eraStakes) {
+        // TODO check why eraStakes.stakers.get not working
+        // const accountId = parameters.api.createType('AccountId', parameters.senderAddress);
+        // console.log('staker', accountId.toHuman(), eraStakes.stakers.get(accountId)?.toHuman());
+        for (const [account, balance] of eraStakes.stakers) {
+          if (account.toString() === parameters.senderAddress) {
+            const eraRewardsAndStakes = (
+              await parameters.api.query.dappsStaking.eraRewardsAndStakes<
+                Option<EraRewardAndStake>
+              >(era)
+            ).unwrap();
+            // myAccumulatedReward += myEraStake / eraTotalStaked * eraTotalReward
+            const rewardToAdd =
+              0.2 *
+              (parseFloat(reduceBalanceToDenom(balance, parameters.decimals)) /
+                parseFloat(reduceBalanceToDenom(eraRewardsAndStakes.staked, parameters.decimals))) *
+              parseFloat(reduceBalanceToDenom(eraRewardsAndStakes.rewards, parameters.decimals));
+            myReward = myReward + rewardToAdd;
+
+            break;
+          }
+        }
+      }
+    }
+
+    console.log('my reward', myReward.toString());
+    commit('general/setLoading', false, { root: true });
+    return myReward;
+  },
 };
 
 export interface RegisterParameters {
@@ -391,6 +442,11 @@ export interface EraStakingPoints extends Struct {
   readonly stakers: BTreeMap<AccountId, Balance>;
   readonly formerStakedEra: EraIndex;
   readonly claimedRewards: Balance;
+}
+
+export interface EraRewardAndStake extends Struct {
+  readonly rewards: Balance;
+  readonly staked: Balance;
 }
 
 export default actions;

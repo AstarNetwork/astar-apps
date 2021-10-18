@@ -31,6 +31,10 @@ const definitions: RegistryTypes = {
     },
   },
   EraIndex: 'u32',
+  EraRewardAndStake: {
+    rewards: 'Balance',
+    staked: 'Balance',
+  },
   EraStakingPoints: {
     total: 'Balance',
     stakers: 'BTreeMap<AccountId, Balance>',
