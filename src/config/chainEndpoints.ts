@@ -13,6 +13,7 @@ interface ChainProvider {
   typeDef: RegistryTypes;
   key: endpointKey;
   isStoreEnabled: boolean;
+  subscan: string;
 }
 
 export enum endpointKey {
@@ -35,6 +36,7 @@ export const providerEndpoints: ChainProvider[] = [
   //   typeDef: typeDefs.plasmDefinitions,
   //   key: endpointKey.PLASM,
   //   isStoreEnabled: false,
+  //   subScan: 'https://astar.subscan.io'
   // },
   {
     networkAlias: 'shiden-shell',
@@ -47,6 +49,7 @@ export const providerEndpoints: ChainProvider[] = [
     typeDef: typeDefs.plasmCollatorDefinitions,
     key: endpointKey.SHIDEN,
     isStoreEnabled: true,
+    subscan: 'https://shiden.subscan.io',
   },
   {
     networkAlias: 'dusty-testnet',
@@ -58,6 +61,7 @@ export const providerEndpoints: ChainProvider[] = [
     typeDef: typeDefs.dustyDefinitions,
     key: endpointKey.DUSTY,
     isStoreEnabled: false,
+    subscan: '',
   },
   {
     networkAlias: 'shibuya-testnet',
@@ -70,6 +74,7 @@ export const providerEndpoints: ChainProvider[] = [
     typeDef: typeDefs.plasmCollatorDefinitions,
     key: endpointKey.SHIBUYA,
     isStoreEnabled: true,
+    subscan: 'https://shibuya.subscan.io',
   },
   {
     networkAlias: 'local-node',
@@ -80,6 +85,7 @@ export const providerEndpoints: ChainProvider[] = [
     typeDef: typeDefs.plasmCollatorDefinitions,
     key: endpointKey.LOCAL,
     isStoreEnabled: true,
+    subscan: '',
   },
   {
     networkAlias: 'custom-node',
@@ -89,6 +95,7 @@ export const providerEndpoints: ChainProvider[] = [
     isSupportContract: true,
     typeDef: typeDefs.plasmCollatorDefinitions,
     key: endpointKey.CUSTOM,
-    isStoreEnabled: false,
+    isStoreEnabled: true,
+    subscan: '',
   },
 ];
