@@ -95,7 +95,7 @@ export const providerEndpoints: ChainProvider[] = [
     isSupportContract: true,
     typeDef: typeDefs.plasmCollatorDefinitions,
     key: endpointKey.CUSTOM,
-    isStoreEnabled: false,
+    isStoreEnabled: true,
     subscan: '',
   },
 ];
