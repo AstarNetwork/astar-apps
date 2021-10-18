@@ -216,7 +216,7 @@ export default defineComponent({
           selectedAccountAddress.value
         }`
     );
-    const isSubscan = providerEndpoints[currentNetworkIdx.value].subscan !== undefined;
+    const isSubscan = providerEndpoints[currentNetworkIdx.value].subscan !== '';
 
     const showAlert = () => {
       store.dispatch('general/showAlertMsg', {

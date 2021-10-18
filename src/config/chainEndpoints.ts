@@ -13,7 +13,7 @@ interface ChainProvider {
   typeDef: RegistryTypes;
   key: endpointKey;
   isStoreEnabled: boolean;
-  subscan?: string;
+  subscan: string;
 }
 
 export enum endpointKey {
@@ -61,6 +61,7 @@ export const providerEndpoints: ChainProvider[] = [
     typeDef: typeDefs.dustyDefinitions,
     key: endpointKey.DUSTY,
     isStoreEnabled: false,
+    subscan: '',
   },
   {
     networkAlias: 'shibuya-testnet',
@@ -84,6 +85,7 @@ export const providerEndpoints: ChainProvider[] = [
     typeDef: typeDefs.plasmCollatorDefinitions,
     key: endpointKey.LOCAL,
     isStoreEnabled: true,
+    subscan: '',
   },
   {
     networkAlias: 'custom-node',
@@ -94,5 +96,6 @@ export const providerEndpoints: ChainProvider[] = [
     typeDef: typeDefs.plasmCollatorDefinitions,
     key: endpointKey.CUSTOM,
     isStoreEnabled: false,
+    subscan: '',
   },
 ];
