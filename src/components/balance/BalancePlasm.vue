@@ -1,6 +1,6 @@
 <template>
   <div v-if="isConnected(currentNetworkStatus)">
-    <div class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4 tw-mb-4">
+    <div class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4 tw-mb-8">
       <Address
         v-model:isOpen="modalAccount"
         :address="currentAccount"
