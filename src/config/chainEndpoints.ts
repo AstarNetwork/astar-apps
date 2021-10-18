@@ -87,7 +87,7 @@ export const providerEndpoints: ChainProvider[] = [
     endpoint: 'ws://127.0.0.1:9944',
     favicon: 'icons/astar.png',
     isSupportContract: true,
-    typeDef: typeDefs.dustyDefinitions,
+    typeDef: typeDefs.plasmCollatorDefinitions,
     key: endpointKey.CUSTOM,
     isStoreEnabled: false,
   },
