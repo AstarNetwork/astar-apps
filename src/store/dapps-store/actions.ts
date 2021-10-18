@@ -372,6 +372,9 @@ const actions: ActionTree<State, StateInterface> = {
     >(contractAddress);
     const eraLastStaked = parseInt(eraLastStakedIndex.toString());
 
+    // Find a first stake
+    let currentEraStake: EraStakingPoints | null = null;
+    let firstEraWithStake: number = 1;
     for (let era = 1; era < currentEra; era++) {
       const eraStakes = (
         await parameters.api.query.dappsStaking.contractEraStake<Option<EraStakingPoints>>(
@@ -381,27 +384,61 @@ const actions: ActionTree<State, StateInterface> = {
       ).unwrapOr(null);
 
       if (eraStakes) {
+        currentEraStake = eraStakes;
+        firstEraWithStake = era;
+        break;
+      }
+    }
+
+    // TODO think about optimizing perfomance by fetching all era rewards and stakes in single request
+    // const entries = await parameters.api.query.dappsStaking.eraRewardsAndStakes.entries();
+    // entries.forEach(([key, exposure]) => {
+    //   console.log('key arguments:', key[0]);
+    //   console.log('     exposure:', exposure.toHuman());
+    // });
+
+    for (let era = 1; era < currentEra; era++) {
+      if (era > firstEraWithStake) {
+        const eraStakes = (
+          await parameters.api.query.dappsStaking.contractEraStake<Option<EraStakingPoints>>(
+            contractAddress,
+            era
+          )
+        ).unwrapOr(null);
+
+        if (eraStakes) {
+          currentEraStake = eraStakes;
+        }
+      }
+
+      if (currentEraStake) {
         // TODO check why eraStakes.stakers.get not working
         // const accountId = parameters.api.createType('AccountId', parameters.senderAddress);
         // console.log('staker', accountId.toHuman(), eraStakes.stakers.get(accountId)?.toHuman());
-        for (const [account, balance] of eraStakes.stakers) {
+        for (const [account, balance] of currentEraStake.stakers) {
           if (account.toString() === parameters.senderAddress) {
-            const eraRewardsAndStakes = (
+            let eraRewardsAndStakes = (
               await parameters.api.query.dappsStaking.eraRewardsAndStakes<
                 Option<EraRewardAndStake>
               >(era)
             ).unwrap();
-            // myAccumulatedReward += myEraStake / eraTotalStaked * eraTotalReward
-            const rewardToAdd =
+
+            // temp to avoid staked = 0 on test env
+            if (eraRewardsAndStakes.staked.toString() === '0') {
+              break;
+            }
+
+            let rewardToAdd =
               0.2 *
               (parseFloat(reduceBalanceToDenom(balance, parameters.decimals)) /
                 parseFloat(reduceBalanceToDenom(eraRewardsAndStakes.staked, parameters.decimals))) *
               parseFloat(reduceBalanceToDenom(eraRewardsAndStakes.rewards, parameters.decimals));
             myReward = myReward + rewardToAdd;
-
             break;
           }
         }
+      } else {
+        console.warn('No stakes found');
       }
     }
 
