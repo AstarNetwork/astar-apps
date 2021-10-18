@@ -7,6 +7,9 @@ export default {
   forget: 'Forget',
   close: 'Close',
   subscan: 'Subscan',
+  warning: {
+    insufficientFee: 'Warning! Transaction might failed due to insufficient fee',
+  },
   common: {
     updateMetadata: 'Update Metadata',
     metadataAlreadyInstalled: 'Metadata Already Installed',

@@ -1,3 +1,4 @@
+import { NETWORK_ID, TNetworkId, EVM } from './../index';
 import Web3 from 'web3';
 import { CHAIN_INFORMATION } from '..';
 
@@ -39,14 +40,16 @@ export const setupNetwork = async (network: 336 | 81): Promise<boolean> => {
   return false;
 };
 
-export const getChainId = (currentNetworkIdx: 1 | 3): 336 | 81 => {
-  if (currentNetworkIdx === 1) {
-    return 336;
+export const getChainId = (
+  currentNetworkIdx: TNetworkId
+): EVM.SHIDEN_MAINNET | EVM.SHIDEN_TESTNET => {
+  if (currentNetworkIdx === NETWORK_ID.SHIDEN) {
+    return EVM.SHIDEN_MAINNET;
   }
-  return 81;
+  return EVM.SHIDEN_TESTNET;
 };
 
-export const createWeb3Instance = async (currentNetworkIdx: 1 | 3) => {
+export const createWeb3Instance = async (currentNetworkIdx: TNetworkId) => {
   const chainId = getChainId(currentNetworkIdx);
   const network = getChainData(chainId);
   await setupNetwork(chainId);

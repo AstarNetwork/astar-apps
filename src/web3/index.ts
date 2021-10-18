@@ -5,23 +5,30 @@ export { getChainData, setupNetwork, getChainId, createWeb3Instance } from './ut
  * Metamask address format: H160
  */
 
-export enum CHAIN {
+export enum NETWORK_ID {
+  SHIDEN = 0,
+  SHIBUYA = 2,
+}
+
+export type TNetworkId = NETWORK_ID.SHIDEN | NETWORK_ID.SHIBUYA;
+
+export enum EVM {
   SHIDEN_MAINNET = 336,
   SHIDEN_TESTNET = 81,
 }
 
 export const chainName = {
-  [CHAIN.SHIDEN_MAINNET]: 'Shiden Network Mainnet',
-  [CHAIN.SHIDEN_TESTNET]: 'Shibuya Testnet',
+  [EVM.SHIDEN_MAINNET]: 'Shiden Network Mainnet',
+  [EVM.SHIDEN_TESTNET]: 'Shibuya Testnet',
 };
 
 export const nativeCurrency = {
-  [CHAIN.SHIDEN_MAINNET]: {
+  [EVM.SHIDEN_MAINNET]: {
     name: 'SDN',
     symbol: 'sdn',
     decimals: 18,
   },
-  [CHAIN.SHIDEN_TESTNET]: {
+  [EVM.SHIDEN_TESTNET]: {
     name: 'SBY',
     symbol: 'sby',
     decimals: 18,
@@ -29,13 +36,13 @@ export const nativeCurrency = {
 };
 
 export const rpcUrls = {
-  [CHAIN.SHIDEN_MAINNET]: ['https://shiden.api.onfinality.io/public'],
-  [CHAIN.SHIDEN_TESTNET]: ['https://rpc.shibuya.astar.network:8545'],
+  [EVM.SHIDEN_MAINNET]: ['https://shiden.api.onfinality.io/public'],
+  [EVM.SHIDEN_TESTNET]: ['https://rpc.shibuya.astar.network:8545'],
 };
 
 export const blockExplorerUrls = {
-  [CHAIN.SHIDEN_MAINNET]: ['https://shiden.subscan.io'],
-  [CHAIN.SHIDEN_TESTNET]: ['https://shibuya.subscan.io'],
+  [EVM.SHIDEN_MAINNET]: ['https://shiden.subscan.io'],
+  [EVM.SHIDEN_TESTNET]: ['https://shibuya.subscan.io'],
 };
 
 export const CHAIN_INFORMATION = {
