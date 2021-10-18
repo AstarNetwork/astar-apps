@@ -7,6 +7,13 @@
         :address-name="currentAccountName"
       />
     </div>
+    <div class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4 tw-mb-4">
+      <ToggleMetaMask
+        v-model:isOpen="modalAccount"
+        :address="currentAccount"
+        :address-name="currentAccountName"
+      />
+    </div>
 
     <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-y-4 md:tw-gap-4 tw-mb-8">
       <TotalBalance v-if="accountData" :account-data="accountData" />
@@ -49,6 +56,7 @@ import { useStore } from 'src/store';
 import { useMeta } from 'quasar';
 // import { isWeb3Injected } from '@polkadot/extension-dapp';
 import Address from './Address.vue';
+import ToggleMetaMask from './ToggleMetaMask.vue';
 import PlmBalance from './PlmBalance.vue';
 import TotalBalance from './TotalBalance.vue';
 // import ModalAlertBox from 'components/common/ModalAlertBox.vue';
@@ -67,6 +75,7 @@ export default defineComponent({
     PlmBalance,
     TotalBalance,
     // ModalAlertBox,
+    ToggleMetaMask,
     ModalAccount,
     ModalTransferAmount,
   },
