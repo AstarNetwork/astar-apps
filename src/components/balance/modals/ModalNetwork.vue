@@ -65,7 +65,7 @@
                       <!-- custom endpoint -->
                       <input
                         v-if="provider.key === endpointKey.CUSTOM"
-                        v-model="customEndpoint"
+                        v-model="newEndpoint"
                         type="text"
                         placeholder="IP Address / Domain"
                         class="ip-input"
@@ -78,7 +78,7 @@
           </div>
         </div>
         <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row-reverse">
-          <button type="button" class="switch" @click="selectNetwork(selNetwork)">
+          <button type="button" class="switch" @click="selectNetwork(selNetwork, newEndpoint)">
             {{ $t('balance.modals.switch') }}
           </button>
           <button type="button" class="cancel" @click="closeModal">
@@ -90,8 +90,9 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, computed } from 'vue';
 import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
+import { useStore } from 'src/store';
 
 export default defineComponent({
   props: {
@@ -108,7 +109,10 @@ export default defineComponent({
     const classRadioTxtOn = 'tw-font-medium tw-text-blue-500 dark:tw-text-blue-400 tw-text-sm';
     const classRadioTxtOff = 'class-radio-tx-off';
 
-    const customEndpoint = ref('');
+    const store = useStore();
+    const newEndpoint = ref('');
+    const customEndpoint = computed(() => store.getters['general/customEndpoint']);
+    newEndpoint.value = customEndpoint.value;
 
     const closeModal = (): void => {
       emit('update:is-open', false);
@@ -116,8 +120,9 @@ export default defineComponent({
 
     const selectNetwork = (networkIdx: number): void => {
       localStorage.setItem('networkIdx', networkIdx.toString());
-      if (customEndpoint.value) {
-        const endpoint = `ws://${customEndpoint.value}`;
+      if (newEndpoint.value) {
+        let endpoint = `${newEndpoint.value}`;
+        endpoint = !endpoint.includes('wss://') ? `wss://${endpoint}` : endpoint;
         localStorage.setItem('customEndpoint', endpoint);
       }
       location.reload();
@@ -130,7 +135,7 @@ export default defineComponent({
 
     return {
       closeModal,
-      customEndpoint,
+      newEndpoint,
       selectNetwork,
       selNetwork,
       classRadioOn,
