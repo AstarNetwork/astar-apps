@@ -168,7 +168,6 @@
                   v-model:amount="endowment"
                   v-model:selectedUnit="selectUnitEndowment"
                   title="Endowment"
-                  :no-max="true"
                   :max-in-default-unit="endowment"
                 />
 
@@ -188,7 +187,6 @@
                   v-model:amount="weight"
                   v-model:selectedUnit="selectUnitGas"
                   title="Max gas allowed"
-                  :no-max="true"
                   :max-in-default-unit="weight"
                 />
               </div>

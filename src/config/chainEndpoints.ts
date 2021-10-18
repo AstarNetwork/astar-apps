@@ -16,26 +16,26 @@ interface ChainProvider {
 }
 
 export enum endpointKey {
-  PLASM = 0,
-  SHIDEN = 1,
-  DUSTY = 2,
-  SHIBUYA = 3,
-  LOCAL = 4,
-  CUSTOM = 5,
+  // PLASM = 0,
+  SHIDEN = 0,
+  DUSTY = 1,
+  SHIBUYA = 2,
+  LOCAL = 3,
+  CUSTOM = 4,
 }
 
 export const providerEndpoints: ChainProvider[] = [
-  {
-    networkAlias: 'plasm-main',
-    displayName: 'Plasm Network (Mainnet)',
-    info: 'The main network of the layer 2 scaling blockchain, Plasm Network',
-    endpoint: 'wss://rpc.plasmnet.io/',
-    favicon: 'icons/astar.png',
-    isSupportContract: false,
-    typeDef: typeDefs.plasmDefinitions,
-    key: endpointKey.PLASM,
-    isStoreEnabled: false,
-  },
+  // {
+  //   networkAlias: 'plasm-main',
+  //   displayName: 'Plasm Network (Mainnet)',
+  //   info: 'The main network of the layer 2 scaling blockchain, Plasm Network',
+  //   endpoint: 'wss://rpc.plasmnet.io/',
+  //   favicon: 'icons/astar.png',
+  //   isSupportContract: false,
+  //   typeDef: typeDefs.plasmDefinitions,
+  //   key: endpointKey.PLASM,
+  //   isStoreEnabled: false,
+  // },
   {
     networkAlias: 'shiden-shell',
     displayName: 'Shiden Network (Kusama)',
@@ -87,7 +87,7 @@ export const providerEndpoints: ChainProvider[] = [
     endpoint: 'ws://127.0.0.1:9944',
     favicon: 'icons/astar.png',
     isSupportContract: true,
-    typeDef: typeDefs.dustyDefinitions,
+    typeDef: typeDefs.plasmCollatorDefinitions,
     key: endpointKey.CUSTOM,
     isStoreEnabled: false,
   },
