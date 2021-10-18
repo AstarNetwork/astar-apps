@@ -32,7 +32,6 @@
       :all-account-names="allAccountNames"
       :balance="balance"
       :account-data="accountData"
-      @completeTransfer="completeTransfer"
     />
   </div>
 
@@ -86,16 +85,6 @@ export default defineComponent({
 
     const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
 
-    const completeTransfer = () => {
-      const curAccountRef = ref(currentAccount.value);
-      const { balance: balanceRef } = useBalance(api, curAccountRef);
-
-      watch(balanceRef, () => {
-        console.log('new balance:', balance.value.toString());
-        balance.value = balanceRef.value;
-      });
-    };
-
     return {
       ...toRefs(stateModal),
       // isWeb3Injected,
@@ -106,7 +95,6 @@ export default defineComponent({
       currentAccountName,
       currentNetworkStatus,
       accountData,
-      completeTransfer,
     };
   },
   methods: {
