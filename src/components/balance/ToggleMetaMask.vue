@@ -61,13 +61,13 @@ export default defineComponent({
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
     const chainInfo = computed(() => store.getters['general/chainInfo']);
     const isSS58 = computed(() => store.getters['general/isCheckMetamask']);
-    const isH160 = computed(() => store.getters['general/isCheckMetamaskH160']);
+    const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const metaMaskFormat = computed(() => (isH160.value ? 'H160 (EVM)' : 'SS58 (ASTAR)'));
 
     const toggleAction = async () => {
       isToggleOn.value = !isToggleOn.value;
       store.commit('general/setIsCheckMetamask', !isSS58.value);
-      store.commit('general/setIsCheckMetamaskH160', !isH160.value);
+      store.commit('general/setIsH160Formatted', !isH160.value);
 
       const accounts = await requestAccounts();
       const loadingAddr = accounts[0];

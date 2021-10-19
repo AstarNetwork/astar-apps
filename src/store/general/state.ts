@@ -28,7 +28,7 @@ export interface GeneralStateInterface {
   currentNetworkStatus: ConnectionType;
   currentNetworkIdx: number;
   isCheckMetamask: boolean;
-  isCheckMetamaskH160: boolean;
+  isH160Formatted: boolean;
   currentEcdsaAccount: EcdsaAccount;
   currentAccountIdx: number;
   currentCustomEndpoint: string;
@@ -55,7 +55,7 @@ function state(): GeneralStateInterface {
     currentNetworkStatus: 'connecting',
     currentNetworkIdx: 0,
     isCheckMetamask: false,
-    isCheckMetamaskH160: false,
+    isH160Formatted: false,
     currentEcdsaAccount: {
       ethereum: '',
       ss58: '',

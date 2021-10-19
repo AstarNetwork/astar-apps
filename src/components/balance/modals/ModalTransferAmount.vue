@@ -178,7 +178,7 @@ export default defineComponent({
     const selectUnit = ref(defaultUnitToken.value);
     const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
-    const isH160 = computed(() => store.getters['general/isCheckMetamaskH160']);
+    const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
     // isCustomSigBlocked is temporary until extrinsic call pallet is deployed to all networks.
     const isCustomSigBlocked = computed(() => !!!providerEndpoints[currentNetworkIdx.value].prefix);

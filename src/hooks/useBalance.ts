@@ -13,7 +13,7 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
   const vestedRef = ref(new BN(0));
   const accountDataRef = ref<AccountData>();
   const store = useStore();
-  const isCheckMetamaskH160 = computed(() => store.getters['general/isCheckMetamaskH160']);
+  const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
   const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
 
   const unsub: Ref<VoidFn | undefined> = ref();
@@ -86,7 +86,7 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
   watch(
     () => addressRef.value,
     (address) => {
-      if (isCheckMetamaskH160.value) {
+      if (isH160Formatted.value) {
         updateAccountH160(address);
       } else {
         updateAccount(address);

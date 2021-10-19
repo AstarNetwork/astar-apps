@@ -101,7 +101,7 @@ export default defineComponent({
     };
 
     const store = useStore();
-    const isH160 = computed(() => store.getters['general/isCheckMetamaskH160']);
+    const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
     watchEffect(() => {
       // Memo: cast from string

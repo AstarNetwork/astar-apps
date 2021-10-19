@@ -16,7 +16,7 @@ export interface GeneralGetters {
   networkStatus(state: State): string;
   networkIdx(state: State): number;
   isCheckMetamask(state: State): boolean;
-  isCheckMetamaskH160(state: State): boolean;
+  isH160Formatted(state: State): boolean;
   currentEcdsaAccount(state: State): EcdsaAccount;
   accountIdx(state: State): number;
   customEndpoint(state: State): string;
@@ -36,7 +36,7 @@ const getters: GetterTree<State, StateInterface> & GeneralGetters = {
   networkStatus: (state) => state.currentNetworkStatus,
   networkIdx: (state) => state.currentNetworkIdx,
   isCheckMetamask: (state) => state.isCheckMetamask,
-  isCheckMetamaskH160: (state) => state.isCheckMetamaskH160,
+  isH160Formatted: (state) => state.isH160Formatted,
   currentEcdsaAccount: (state) => state.currentEcdsaAccount,
   accountIdx: (state) => state.currentAccountIdx,
   customEndpoint: (state) => state.currentCustomEndpoint,
@@ -44,7 +44,7 @@ const getters: GetterTree<State, StateInterface> & GeneralGetters = {
   selectedAccountAddress: (state: State) => {
     if (state.isCheckMetamask) {
       return state.currentEcdsaAccount.ss58;
-    } else if (state.isCheckMetamaskH160) {
+    } else if (state.isH160Formatted) {
       return state.currentEcdsaAccount.h160;
     } else {
       return state.allAccounts[state.currentAccountIdx];

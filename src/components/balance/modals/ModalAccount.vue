@@ -117,7 +117,7 @@ export default defineComponent({
 
     const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
     const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
-    const isCheckMetamaskH160 = computed(() => store.getters['general/isCheckMetamaskH160']);
+    const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
     const isSupportContract = ref(providerEndpoints[currentNetworkIdx.value].isSupportContract);
     const selectAccount = (accountIdx: number, checkMetamask: boolean) => {
@@ -130,7 +130,7 @@ export default defineComponent({
 
     const selAccount = ref(currentAccountIdx.value);
     const checkMetamask = ref<boolean>(isCheckMetamask.value);
-    const checkMetamaskH160 = ref<boolean>(isCheckMetamaskH160.value);
+    const checkMetamaskH160 = ref<boolean>(isH160Formatted.value);
 
     const connectMetamask = (ethAddr: string, ss58: string) => {
       console.log(ethAddr + '/' + ss58);

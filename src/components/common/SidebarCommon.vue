@@ -182,7 +182,7 @@ export default defineComponent({
       modalNetwork: false,
       modalAccount: false,
     });
-    const isH160 = computed(() => store.getters['general/isCheckMetamaskH160']);
+    const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
     const store = useStore();
     const { allAccounts, allAccountNames, currentAccount, currentAccountName } = useAccount();

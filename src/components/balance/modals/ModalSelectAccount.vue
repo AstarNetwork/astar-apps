@@ -143,7 +143,7 @@ export default defineComponent({
 
     const isSupportContract = ref(providerEndpoints[currentNetworkIdx.value].isSupportContract);
 
-    const isH160 = computed(() => store.getters['general/isCheckMetamaskH160']);
+    const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const selAccountIdx = ref(currentAccountIdx.value);
 
     const selAccount = ref(props.allAccounts[selAccountIdx.value] as string);

@@ -5,7 +5,7 @@ export const useAccount = () => {
   const store = useStore();
 
   const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
-  const isCheckMetamaskH160 = computed(() => store.getters['general/isCheckMetamaskH160']);
+  const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
   const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
   const allAccounts = computed(() => store.getters['general/allAccounts']);
   const allAccountNames = computed(() => store.getters['general/allAccountNames']);
@@ -20,7 +20,7 @@ export const useAccount = () => {
       allAccountNames,
       currentAccountIdx,
       isCheckMetamask,
-      isCheckMetamaskH160,
+      isH160Formatted,
       currentEcdsaAccount,
     ],
     () => {
@@ -28,7 +28,7 @@ export const useAccount = () => {
         if (isCheckMetamask.value && currentEcdsaAccount.value) {
           currentAccount.value = currentEcdsaAccount.value.ss58;
           currentAccountName.value = 'ECDSA (Ethereum Extension)';
-        } else if (isCheckMetamaskH160.value && currentEcdsaAccount.value) {
+        } else if (isH160Formatted.value && currentEcdsaAccount.value) {
           currentAccount.value = currentEcdsaAccount.value.h160;
           currentAccountName.value = 'ECDSA (Ethereum Extension)';
         } else {

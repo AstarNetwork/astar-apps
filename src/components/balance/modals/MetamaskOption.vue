@@ -91,7 +91,7 @@ export default defineComponent({
   emits: ['update:sel-checked', 'connectMetamask'],
   setup(props, { emit }) {
     const store = useStore();
-    const isH160 = computed(() => store.getters['general/isCheckMetamaskH160']);
+    const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const chainInfo = computed(() => store.getters['general/chainInfo']);
     const { requestAccounts, requestSignature } = useMetamask();
 

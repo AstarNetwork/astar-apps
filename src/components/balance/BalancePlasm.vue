@@ -94,7 +94,7 @@ export default defineComponent({
 
     const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
     const isSS58 = computed(() => store.getters['general/isCheckMetamask']);
-    const isH160 = computed(() => store.getters['general/isCheckMetamaskH160']);
+    const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
     const completeTransfer = () => {
       const curAccountRef = ref(currentAccount.value);
