@@ -42,7 +42,7 @@ export const providerEndpoints: ChainProvider[] = [
     networkAlias: 'shiden-shell',
     displayName: 'Shiden Network (Kusama)',
     info: 'Smart contract platform for decentralized applications (dapps) on the Kusama network',
-    endpoint: 'wss://shiden.api.onfinality.io/public-ws',
+    endpoint: 'wss://rpc.shiden.astar.network',
     favicon: 'icons/shiden.png',
     isSupportContract: true,
     prefix: 0x150,
