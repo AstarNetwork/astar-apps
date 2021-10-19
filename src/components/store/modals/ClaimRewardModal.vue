@@ -12,9 +12,9 @@
       </div>
       <div class="tw-mt-2">
         <span class="tw-w-52 tw-inline-block"> {{ $t('store.modals.estimatedRewards') }}</span>
-        <span class="tw-font-semibold tw-w-16 tw-text-rigth"
-          >{{ estimatedRewards.toFixed(4) }} {{ defaultUnitToken }}</span
-        >
+        <span class="tw-font-semibold tw-w-16 tw-text-rigth">{{
+          estimatedRewards?.toHuman()
+        }}</span>
       </div>
       <q-banner dense rounded class="bg-orange text-white tw-my-4 q-pa-xs" style
         >The claim function has been temporarily disabled due to pallet maintenance.</q-banner
@@ -37,6 +37,7 @@ import Modal from 'src/components/common/Modal.vue';
 import Button from 'src/components/common/Button.vue';
 import Avatar from 'src/components/common/Avatar.vue';
 import { StakingParameters } from 'src/store/dapps-store/actions';
+import { Balance } from '@polkadot/types/interfaces';
 
 export default defineComponent({
   components: {
@@ -61,8 +62,8 @@ export default defineComponent({
   setup(props) {
     const { api } = useApi();
     const store = useStore();
-    const { defaultUnitToken, decimal } = useChainMetadata();
-    const estimatedRewards = ref<number>(0);
+    const { decimal } = useChainMetadata();
+    const estimatedRewards = ref<Balance>();
     const senderAddress = store.getters['general/selectedAccountAddress'];
 
     onMounted(async () => {
@@ -76,7 +77,6 @@ export default defineComponent({
 
     return {
       estimatedRewards,
-      defaultUnitToken,
       ...toRefs(props),
     };
   },

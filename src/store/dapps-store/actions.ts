@@ -360,9 +360,9 @@ const actions: ActionTree<State, StateInterface> = {
     }
   },
 
-  async getClaimInfo({ dispatch, commit }, parameters: StakingParameters): Promise<number> {
-    const stakeRewardPercentage = 0.2;
-    let myReward: number = 0;
+  async getClaimInfo({ dispatch, commit }, parameters: StakingParameters): Promise<Balance> {
+    let accumulatedReward = new BN(0);
+    let result: Balance;
     commit('general/setLoading', true, { root: true });
 
     try {
@@ -387,7 +387,7 @@ const actions: ActionTree<State, StateInterface> = {
       // Find a first stake
       let currentEraStakes: EraStakingPoints | null = null;
       let firstEraWithStake: number = 1;
-      for (let era = 1; era < currentEra; era++) {
+      for (let era = eraLastStaked; era < currentEra; era++) {
         const eraStakes = eraStakesMap.get(era);
 
         if (eraStakes) {
@@ -425,16 +425,11 @@ const actions: ActionTree<State, StateInterface> = {
                   break;
                 }
 
-                let rewardToAdd =
-                  stakeRewardPercentage *
-                  (parseFloat(reduceBalanceToDenom(balance, parameters.decimals)) /
-                    parseFloat(
-                      reduceBalanceToDenom(eraRewardsAndStakes.staked, parameters.decimals)
-                    )) *
-                  parseFloat(
-                    reduceBalanceToDenom(eraRewardsAndStakes.rewards, parameters.decimals)
-                  );
-                myReward = myReward + rewardToAdd;
+                let eraReward = balance
+                  .mul(eraRewardsAndStakes.rewards)
+                  .divn(5) // 20% reward percentage
+                  .div(eraRewardsAndStakes.staked);
+                accumulatedReward = accumulatedReward.add(eraReward);
               } else {
                 console.warn('No EraRewardAndStake for era ', era);
               }
@@ -452,9 +447,10 @@ const actions: ActionTree<State, StateInterface> = {
       showError(dispatch, error.message);
     }
 
-    console.log('my reward', myReward.toString());
+    console.log('my reward', accumulatedReward.toString());
     commit('general/setLoading', false, { root: true });
-    return myReward;
+    result = parameters.api.createType('Balance', accumulatedReward);
+    return result;
   },
 };
 
