@@ -157,8 +157,8 @@ export default defineComponent({
       () => isSupportContract.value && currentEcdsaAccount.value.ethereum
     );
 
-    const checkMetamaskH160 = ref<boolean>(isH160.value);
-    const checkMetamaskOption = isH160.value ? checkMetamaskH160 : checkMetamask;
+    const isH160Account = ref<boolean>(isH160.value);
+    const checkMetamaskOption = isH160.value ? isH160Account : checkMetamask;
     const ecdsaAccountValue = isH160.value
       ? currentEcdsaAccount.value.h160
       : currentEcdsaAccount.value.ss58;
@@ -179,7 +179,7 @@ export default defineComponent({
         }
 
         emit('update:sel-address', selAddress.value);
-        emit('selChanged', selAddress.value, checkMetamaskOption.value, selAccountIdx.value);
+        emit('selChanged', selAddress.value, isCheckMetamask.value, selAccountIdx.value);
 
         openOption.value = false;
       },

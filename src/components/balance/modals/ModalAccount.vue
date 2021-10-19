@@ -51,7 +51,7 @@
                 <MetamaskOption
                   v-if="isSupportContract"
                   v-model:selChecked="checkMetamask"
-                  :checked="checkMetamask || checkMetamaskH160"
+                  :checked="checkMetamask || isH160Account"
                   @connectMetamask="connectMetamask"
                 />
                 <ModalAccountOption
@@ -62,7 +62,7 @@
                   :key-idx="index"
                   :address="account"
                   :address-name="allAccountNames[index]"
-                  :checked="!checkMetamask && !checkMetamaskH160 && selAccount === index"
+                  :checked="!checkMetamask && !isH160Account && selAccount === index"
                 />
               </ul>
             </div>
@@ -130,7 +130,7 @@ export default defineComponent({
 
     const selAccount = ref(currentAccountIdx.value);
     const checkMetamask = ref<boolean>(isCheckMetamask.value);
-    const checkMetamaskH160 = ref<boolean>(isH160Formatted.value);
+    const isH160Account = ref<boolean>(isH160Formatted.value);
 
     const connectMetamask = (ethAddr: string, ss58: string) => {
       console.log(ethAddr + '/' + ss58);
@@ -140,7 +140,7 @@ export default defineComponent({
     return {
       selAccount,
       checkMetamask,
-      checkMetamaskH160,
+      isH160Account,
       isSupportContract,
       closeModal,
       selectAccount,
