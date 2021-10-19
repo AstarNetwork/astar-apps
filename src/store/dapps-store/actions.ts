@@ -361,6 +361,7 @@ const actions: ActionTree<State, StateInterface> = {
   },
 
   async getClaimInfo({ dispatch, commit }, parameters: StakingParameters): Promise<number> {
+    const stakeRewardPercentage = 0.2;
     let myReward: number = 0;
     commit('general/setLoading', true, { root: true });
 
@@ -414,7 +415,7 @@ const actions: ActionTree<State, StateInterface> = {
         }
 
         if (currentEraStakes) {
-          // TODO check why eraStakes.stakers.get not working
+          // TODO check why eraStakes.stakers.get is not working
           for (const [account, balance] of currentEraStakes.stakers) {
             if (account.toString() === parameters.senderAddress) {
               let eraRewardsAndStakes = eraRewardsAndStakeMap.get(era).unwrap();
@@ -425,7 +426,7 @@ const actions: ActionTree<State, StateInterface> = {
                 }
 
                 let rewardToAdd =
-                  0.2 *
+                  stakeRewardPercentage *
                   (parseFloat(reduceBalanceToDenom(balance, parameters.decimals)) /
                     parseFloat(
                       reduceBalanceToDenom(eraRewardsAndStakes.staked, parameters.decimals)
@@ -437,6 +438,8 @@ const actions: ActionTree<State, StateInterface> = {
               } else {
                 console.warn('No EraRewardAndStake for era ', era);
               }
+
+              break;
             }
           }
         } else {
