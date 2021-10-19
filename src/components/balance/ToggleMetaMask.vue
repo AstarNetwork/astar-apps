@@ -12,7 +12,7 @@
         tw-rounded-l-lg tw-flex-1 tw-text-left tw-justify-between
       "
     >
-      <div class="tw-flex tw-items-center">
+      <div class="tw-flex tw-items-center md:tw-w-96 xl:tw-w-auto">
         <div
           class="
             tw-h-11 tw-w-11
@@ -27,12 +27,14 @@
         </div>
         <div>
           <p class="tw-text-blue-900 dark:tw-text-darkGray-100 tw-font-bold">
-            Current address scheme
+            {{ $t('balance.addressScheme') }}
           </p>
-          <p class="tw-text-blue-900 dark:tw-text-darkGray-100 tw-font-bold">H160 (EVM)</p>
+          <p class="tw-text-blue-900 dark:tw-text-darkGray-100 tw-font-bold">
+            {{ metaMaskFormat }}
+          </p>
         </div>
       </div>
-      <div class="tw-mr-4">
+      <div class="tw-mr-4 md:tw-w-20 tw-flex tw-justify-end">
         <Toggle v-model:value="isToggleOn" @toggleAction="toggleAction" />
       </div>
     </div>
@@ -42,8 +44,9 @@
 import { useMetamask } from 'src/hooks/custom-signature/useMetamask';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref } from 'vue';
-import Toggle from './Toggle.vue';
+import Toggle from '../common/Toggle.vue';
 import * as utils from 'src/hooks/custom-signature/utils';
+import { getChainId, setupNetwork } from 'src/web3';
 
 export default defineComponent({
   components: {
@@ -55,9 +58,11 @@ export default defineComponent({
     const store = useStore();
     const { requestAccounts, requestSignature } = useMetamask();
 
+    const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
     const chainInfo = computed(() => store.getters['general/chainInfo']);
     const isSS58 = computed(() => store.getters['general/isCheckMetamask']);
     const isH160 = computed(() => store.getters['general/isCheckMetamaskH160']);
+    const metaMaskFormat = computed(() => (isH160.value ? 'H160 (EVM)' : 'SS58 (ASTAR)'));
 
     const toggleAction = async () => {
       isToggleOn.value = !isToggleOn.value;
@@ -74,6 +79,10 @@ export default defineComponent({
           ethereum: loadingAddr,
           h160: loadingAddr,
         });
+        const chainId = getChainId(currentNetworkIdx.value);
+        setTimeout(async () => {
+          await setupNetwork(chainId);
+        }, 1000);
         return;
       }
       if (isSS58.value) {
@@ -90,6 +99,7 @@ export default defineComponent({
     return {
       toggleAction,
       isToggleOn,
+      metaMaskFormat,
     };
   },
 });

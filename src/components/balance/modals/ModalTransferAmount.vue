@@ -310,10 +310,6 @@ export default defineComponent({
             store.dispatch('general/showAlertMsg', { msg, alertType: 'success' });
             store.commit('general/setLoading', false);
             closeModal();
-          })
-          .then(() => {
-            // Memo: looks like cannot run 2 emits together
-            emit('complete-transfer', true);
           });
 
         return;
@@ -340,14 +336,10 @@ export default defineComponent({
 
     const reloadAmount = (
       address: string,
-      isMetamaskOptionChecked: boolean,
-      selAccountIdx: number,
-      isH160: boolean
+      isMetamaskChecked: boolean,
+      selAccountIdx: number
     ): void => {
-      const actionCheckMetaMask = isH160
-        ? 'general/setIsCheckMetamaskH160'
-        : 'general/setIsCheckMetamask';
-      store.commit(actionCheckMetaMask, isMetamaskOptionChecked);
+      store.commit('general/setIsCheckMetamask', isMetamaskChecked);
       store.commit('general/setCurrentAccountIdx', selAccountIdx);
     };
 

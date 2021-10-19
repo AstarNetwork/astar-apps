@@ -5,13 +5,13 @@
       tw-h-8
       tw-flex
       tw-items-center
-      tw-bg-gray-300
+      tw-bg-blue-500
       tw-rounded-full
       tw-p-1
       tw-duration-300
       tw-cursor-pointer
     "
-    :class="{ 'tw-bg-blue-500 dark:tw-bg-blue-600': value }"
+    :class="!value && 'tw-bg-gray-300'"
     :aria-checked="value.toString()"
     @click="toggle"
   >

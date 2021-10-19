@@ -32,9 +32,10 @@ export default {
     transferable: 'Transferable',
     vested: 'Vested',
     locked: 'Locked',
+    addressScheme: 'Current address scheme',
     modals: {
-      connectMetamask: 'Connect to MetaMask ({format})',
-      ethereumExtension: 'ECDSA (Ethereum extension {format})',
+      connectMetamask: 'Connect to MetaMask',
+      ethereumExtension: 'ECDSA (Ethereum extension)',
       chooseAccount: 'Choose Account',
       chooseNetwork: 'Choose Networks',
       switch: 'Switch',

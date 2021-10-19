@@ -1,3 +1,4 @@
+import { endpointKey } from './../config/chainEndpoints';
 export { getChainData, setupNetwork, getChainId, createWeb3Instance } from './utils';
 
 /*
@@ -5,12 +6,7 @@ export { getChainData, setupNetwork, getChainId, createWeb3Instance } from './ut
  * Metamask address format: H160
  */
 
-export enum NETWORK_ID {
-  SHIDEN = 0,
-  SHIBUYA = 2,
-}
-
-export type TNetworkId = NETWORK_ID.SHIDEN | NETWORK_ID.SHIBUYA;
+export type TNetworkId = endpointKey.SHIDEN | endpointKey.SHIBUYA;
 
 export enum EVM {
   SHIDEN_MAINNET = 336,

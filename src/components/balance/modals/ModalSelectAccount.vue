@@ -82,7 +82,6 @@
           v-model:selChecked="checkMetamaskOption"
           :checked="checkMetamaskOption"
           :show-radio-if-unchecked="false"
-          :is-h160="isH160"
         />
         <div v-if="!isH160">
           <ModalSelectAccountOption
@@ -172,7 +171,7 @@ export default defineComponent({
           selAccountName.value = props.allAccountNames[selAccountIdx.value];
           selAddress.value = props.allAccounts[selAccountIdx.value] as string;
         } else {
-          if (props.role === 'toAddress' && isH160) {
+          if (props.role === 'toAddress' && isH160.value) {
             selAddress.value = '';
           } else {
             selAddress.value = ecdsaAccountValue;
@@ -180,13 +179,7 @@ export default defineComponent({
         }
 
         emit('update:sel-address', selAddress.value);
-        emit(
-          'selChanged',
-          selAddress.value,
-          checkMetamaskOption.value,
-          selAccountIdx.value,
-          isH160.value
-        );
+        emit('selChanged', selAddress.value, checkMetamaskOption.value, selAccountIdx.value);
 
         openOption.value = false;
       },

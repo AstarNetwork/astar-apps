@@ -23,13 +23,13 @@
           <div class="tw-flex tw-items-center">
             <template v-if="!curAddress">
               <div class="tw-text-sm tw-font-medium dark:tw-text-darkGray-100">
-                {{ $t('balance.modals.connectMetamask', { format }) }}
+                {{ $t('balance.modals.connectMetamask') }}
               </div>
             </template>
             <template v-else>
               <div>
                 <div class="tw-text-sm tw-font-medium dark:tw-text-darkGray-100">
-                  {{ $t('balance.modals.ethereumExtension', { format }) }}
+                  {{ $t('balance.modals.ethereumExtension') }}
                 </div>
                 <div v-if="checked" class="tw-text-xs tw-text-gray-500 dark:tw-text-darkGray-400">
                   {{ shortenAddr(curAddress) }}
@@ -70,7 +70,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, computed, ref } from 'vue';
+import { defineComponent, computed, ref, watchEffect } from 'vue';
 import { useStore } from 'src/store';
 import * as utils from 'src/hooks/custom-signature/utils';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
@@ -87,19 +87,24 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
-    isH160: { type: Boolean, default: false },
   },
-  emits: ['update:sel-checked', 'update:sel-checked-h', 'connectMetamask'],
+  emits: ['update:sel-checked', 'connectMetamask'],
   setup(props, { emit }) {
     const store = useStore();
+    const isH160 = computed(() => store.getters['general/isCheckMetamaskH160']);
     const chainInfo = computed(() => store.getters['general/chainInfo']);
     const { requestAccounts, requestSignature } = useMetamask();
 
     const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
     const ecdsaAccounts = ref<EcdsaAddressFormat>(currentEcdsaAccount.value);
-    const curAddress = ref<string>(
-      props.isH160 ? currentEcdsaAccount.value.h160 : currentEcdsaAccount.value.ss58
-    );
+    const curAddress = ref<string>(currentEcdsaAccount.value.ss58);
+
+    watchEffect(() => {
+      if (isH160.value) {
+        curAddress.value = currentEcdsaAccount.value.h160;
+      }
+    });
+
     const errorMsg = ref('');
 
     const shortenAddr = (addr: string) => {
@@ -122,14 +127,6 @@ export default defineComponent({
         if (typeof signature !== 'string') {
           throw new Error('Failed to fetch signature');
         }
-        // Memo: load H160 format address
-        if (props.isH160) {
-          const pubKey = loadingAddr;
-          ecdsaAccounts.value = { ethereum: loadingAddr, h160: pubKey };
-          curAddress.value = pubKey;
-          onSelectMetamask();
-          return;
-        }
 
         // FIXME: keccak issue should be resolved : https://github.com/cryptocoinjs/keccak/pull/22
         const pubKey = utils.recoverPublicKeyFromSig(loadingAddr, loginMsg, signature);
@@ -150,17 +147,9 @@ export default defineComponent({
     };
 
     const onSelectMetamask = () => {
-      emit(props.isH160 ? 'update:sel-checked-h' : 'update:sel-checked', true);
-      emit(props.isH160 ? 'update:sel-checked' : 'update:sel-checked-h', false);
-      emit(
-        'connectMetamask',
-        ecdsaAccounts.value?.ethereum,
-        curAddress.value,
-        props.isH160 ? 'h160' : 'ss58'
-      );
+      emit('update:sel-checked', true);
+      emit('connectMetamask', ecdsaAccounts.value?.ethereum, curAddress.value);
     };
-
-    const format = props.isH160 ? 'H160' : 'SS58';
 
     return {
       curAddress,
@@ -169,7 +158,6 @@ export default defineComponent({
       errorMsg,
       onLoadAccount,
       onSelectMetamask,
-      format,
     };
   },
   methods: {
