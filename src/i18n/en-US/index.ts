@@ -111,7 +111,7 @@ export default {
       logo: 'Logo',
       register: 'Register',
       address: 'Address',
-      estimatedRewards: 'Already accumulated rewards',
+      estimatedRewards: 'Already accumulated staking rewards',
     },
   },
 };

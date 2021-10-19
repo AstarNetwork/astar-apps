@@ -425,6 +425,13 @@ const actions: ActionTree<State, StateInterface> = {
                   break;
                 }
 
+                console.log(
+                  'era reward',
+                  era,
+                  eraRewardsAndStakes.rewards.toHuman(),
+                  eraRewardsAndStakes.staked.toHuman()
+                );
+
                 let eraReward = balance
                   .mul(eraRewardsAndStakes.rewards)
                   .divn(5) // 20% reward percentage
@@ -447,9 +454,10 @@ const actions: ActionTree<State, StateInterface> = {
       showError(dispatch, error.message);
     }
 
-    console.log('my reward', accumulatedReward.toString());
     commit('general/setLoading', false, { root: true });
+
     result = parameters.api.createType('Balance', accumulatedReward);
+    console.log('calculated reward', result.toHuman());
     return result;
   },
 };
