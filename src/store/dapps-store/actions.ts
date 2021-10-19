@@ -369,30 +369,34 @@ const actions: ActionTree<State, StateInterface> = {
       const currentEra = parseInt(currentEraIndex.toString());
 
       const contractAddress = getAddressEnum(parameters.dapp.address);
-      const eraLastStakedIndex = await parameters.api.query.dappsStaking.contractLastStaked<
-        Option<EraIndex>
-      >(contractAddress);
+      const eraLastStakedIndex =
+        await parameters.api.query.dappsStaking.contractLastStaked<EraIndex>(contractAddress);
       const eraLastStaked = parseInt(eraLastStakedIndex.toString());
 
+      // Get all staking points for contract.
+      const eraStakesMap = new Map();
+      const eraStakes =
+        await parameters.api.query.dappsStaking.contractEraStake.entries<EraStakingPoints>(
+          contractAddress
+        );
+      eraStakes.forEach(([key, stake]) => {
+        eraStakesMap.set(parseInt(key.args.map((k) => k.toString())[1]), stake);
+      });
+
       // Find a first stake
-      let currentEraStake: EraStakingPoints | null = null;
+      let currentEraStakes: EraStakingPoints | null = null;
       let firstEraWithStake: number = 1;
       for (let era = 1; era < currentEra; era++) {
-        // TODO think about optimizing perfomance by fetching all staking points in a single request
-        const eraStakes = (
-          await parameters.api.query.dappsStaking.contractEraStake<Option<EraStakingPoints>>(
-            contractAddress,
-            era
-          )
-        ).unwrapOr(null);
+        const eraStakes = eraStakesMap.get(era);
 
         if (eraStakes) {
-          currentEraStake = eraStakes;
+          currentEraStakes = eraStakes.unwrap();
           firstEraWithStake = era;
           break;
         }
       }
 
+      // Get rewards and stakes for all eras.
       const eraRewardsAndStakeMap = new Map();
       const entries =
         await parameters.api.query.dappsStaking.eraRewardsAndStakes.entries<EraRewardAndStake>();
@@ -400,29 +404,22 @@ const actions: ActionTree<State, StateInterface> = {
         eraRewardsAndStakeMap.set(parseInt(key.args.map((k) => k.toString())[0]), stake);
       });
 
-      // console.log('chain', await (await parameters.api.rpc.system.chain()).toHuman());
-
+      // calculate reward
       for (let era = 1; era < currentEra; era++) {
         if (era > firstEraWithStake) {
-          const eraStakes = (
-            await parameters.api.query.dappsStaking.contractEraStake<Option<EraStakingPoints>>(
-              contractAddress,
-              era
-            )
-          ).unwrapOr(null);
-
+          const eraStakes = eraStakesMap.get(era);
           if (eraStakes) {
-            currentEraStake = eraStakes;
+            currentEraStakes = eraStakes.unwrap();
           }
         }
 
-        if (currentEraStake) {
+        if (currentEraStakes) {
           // TODO check why eraStakes.stakers.get not working
-          for (const [account, balance] of currentEraStake.stakers) {
+          for (const [account, balance] of currentEraStakes.stakers) {
             if (account.toString() === parameters.senderAddress) {
               let eraRewardsAndStakes = eraRewardsAndStakeMap.get(era).unwrap();
               if (eraRewardsAndStakes) {
-                // temp to avoid staked = 0 on test env
+                // temp to avoid staked = 0 in first blocks on test env
                 if (eraRewardsAndStakes.staked.toString() === '0') {
                   break;
                 }

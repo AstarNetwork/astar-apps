@@ -3,8 +3,16 @@
     <template #content>
       <Avatar :url="dapp.iconUrl" class="tw-w-36 tw-h-36 tw-mb-4 tw-mx-auto" />
       <div class="tw-mt-4">
-        <span class="tw-w-40 tw-inline-block"> {{ $t('store.modals.estimatedRewards') }}</span>
-        <span class="tw-font-semibold"
+        <span class="tw-w-52 tw-inline-block">{{ $t('store.totalStake') }}</span>
+        <span class="tw-font-semibold">{{ stakeInfo.totalStake }}</span>
+      </div>
+      <div v-if="stakeInfo.yourStake" class="tw-mt-2">
+        <span class="tw-w-52 tw-inline-block">{{ $t('store.yourStake') }}</span>
+        <span class="tw-font-semibold">{{ stakeInfo.yourStake }}</span>
+      </div>
+      <div class="tw-mt-2">
+        <span class="tw-w-52 tw-inline-block"> {{ $t('store.modals.estimatedRewards') }}</span>
+        <span class="tw-font-semibold tw-w-16 tw-text-rigth"
           >{{ estimatedRewards.toFixed(4) }} {{ defaultUnitToken }}</span
         >
       </div>
