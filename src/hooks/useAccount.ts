@@ -15,7 +15,14 @@ export const useAccount = () => {
   const currentAccountName = ref('');
 
   watch(
-    [allAccounts, allAccountNames, currentAccountIdx, isCheckMetamask, isCheckMetamaskH160],
+    [
+      allAccounts,
+      allAccountNames,
+      currentAccountIdx,
+      isCheckMetamask,
+      isCheckMetamaskH160,
+      currentEcdsaAccount,
+    ],
     () => {
       if (allAccounts.value) {
         if (isCheckMetamask.value && currentEcdsaAccount.value) {
