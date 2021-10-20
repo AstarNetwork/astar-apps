@@ -156,7 +156,7 @@ export default defineComponent({
       required: true,
     },
   },
-  emits: ['complete-transfer', 'update:is-open'],
+  emits: ['update:is-open'],
   setup(props, { emit }) {
     const closeModal = () => {
       emit('update:is-open', false);
@@ -212,8 +212,6 @@ export default defineComponent({
         });
 
         store.commit('general/setLoading', false);
-        emit('complete-transfer', true);
-
         closeModal();
       } else {
         console.log(`Current status: ${status.type}`);

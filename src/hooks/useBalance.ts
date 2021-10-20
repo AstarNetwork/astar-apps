@@ -1,7 +1,8 @@
+import { useStore } from 'src/store';
 import { VoidFn } from '@polkadot/api/types';
 import { Balance } from '@polkadot/types/interfaces';
 import BN from 'bn.js';
-import { onUnmounted, ref, Ref, watch } from 'vue';
+import { onUnmounted, ref, Ref, watch, computed } from 'vue';
 import { getVested } from './helper/vested';
 
 function useCall(apiRef: any, addressRef: Ref<string>) {
@@ -10,6 +11,8 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
   const balanceRef = ref(new BN(0));
   const vestedRef = ref(new BN(0));
   const accountDataRef = ref<AccountData>();
+  const store = useStore();
+  const isLoading = computed(() => store.getters['general/isLoading']);
 
   const unsub: Ref<VoidFn | undefined> = ref();
   const updateAccount = (address: string) => {
@@ -62,8 +65,9 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
   }, 10000);
 
   watch(
-    () => addressRef.value,
-    (address) => {
+    [addressRef, isLoading],
+    () => {
+      const address = addressRef.value;
       updateAccount(address);
     },
     { immediate: true }
