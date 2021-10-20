@@ -10,6 +10,7 @@ import {
 } from '@polkadot/types/interfaces';
 import { formatBalance } from '@polkadot/util';
 import BN from 'bn.js';
+import { reduceBalanceToDenom } from 'src/hooks/helper/plasmUtils';
 import { StateInterface } from '../index';
 import { DappItem, DappStateInterface as State, NewDappItem } from './state';
 import { uploadFile, addDapp, getDapps } from 'src/hooks/firebase';
@@ -455,6 +456,107 @@ const actions: ActionTree<State, StateInterface> = {
       console.log(e);
     }
   },
+
+  async getClaimInfo({ dispatch, commit }, parameters: StakingParameters): Promise<Balance> {
+    let accumulatedReward = new BN(0);
+    let result: Balance;
+    commit('general/setLoading', true, { root: true });
+
+    try {
+      const currentEraIndex = await parameters.api.query.dappsStaking.currentEra<EraIndex>();
+      const currentEra = parseInt(currentEraIndex.toString());
+
+      const contractAddress = getAddressEnum(parameters.dapp.address);
+      const eraLastStakedIndex =
+        await parameters.api.query.dappsStaking.contractLastStaked<EraIndex>(contractAddress);
+      const eraLastStaked = parseInt(eraLastStakedIndex.toString());
+
+      // Get all staking points for contract.
+      const eraStakesMap = new Map();
+      const eraStakes =
+        await parameters.api.query.dappsStaking.contractEraStake.entries<EraStakingPoints>(
+          contractAddress
+        );
+      eraStakes.forEach(([key, stake]) => {
+        eraStakesMap.set(parseInt(key.args.map((k) => k.toString())[1]), stake);
+      });
+
+      // Find a first stake
+      let currentEraStakes: EraStakingPoints | null = null;
+      let firstEraWithStake: number = 1;
+      for (let era = eraLastStaked; era < currentEra; era++) {
+        const eraStakes = eraStakesMap.get(era);
+
+        if (eraStakes) {
+          currentEraStakes = eraStakes.unwrap();
+          firstEraWithStake = era;
+          break;
+        }
+      }
+
+      // Get rewards and stakes for all eras.
+      const eraRewardsAndStakeMap = new Map();
+      const entries =
+        await parameters.api.query.dappsStaking.eraRewardsAndStakes.entries<EraRewardAndStake>();
+      entries.forEach(([key, stake]) => {
+        eraRewardsAndStakeMap.set(parseInt(key.args.map((k) => k.toString())[0]), stake);
+      });
+
+      // calculate reward
+      for (let era = 1; era < currentEra; era++) {
+        if (era > firstEraWithStake) {
+          const eraStakes = eraStakesMap.get(era);
+          if (eraStakes) {
+            currentEraStakes = eraStakes.unwrap();
+          }
+        }
+
+        if (currentEraStakes) {
+          // TODO check why eraStakes.stakers.get is not working
+          for (const [account, balance] of currentEraStakes.stakers) {
+            if (account.toString() === parameters.senderAddress) {
+              let eraRewardsAndStakes = eraRewardsAndStakeMap.get(era).unwrap();
+              if (eraRewardsAndStakes) {
+                // temp to avoid staked = 0 in first blocks on test env
+                if (eraRewardsAndStakes.staked.toString() === '0') {
+                  break;
+                }
+
+                console.log(
+                  'era reward',
+                  era,
+                  eraRewardsAndStakes.rewards.toHuman(),
+                  eraRewardsAndStakes.staked.toHuman()
+                );
+
+                let eraReward = balance
+                  .mul(eraRewardsAndStakes.rewards)
+                  .divn(5) // 20% reward percentage
+                  .div(eraRewardsAndStakes.staked);
+                accumulatedReward = accumulatedReward.add(eraReward);
+              } else {
+                console.warn('No EraRewardAndStake for era ', era);
+              }
+
+              break;
+            }
+          }
+        } else {
+          console.warn('No stakes found');
+        }
+      }
+    } catch (err) {
+      const error = err as unknown as Error;
+      console.error(error);
+      showError(dispatch, error.message);
+    }
+
+    commit('general/setLoading', false, { root: true });
+
+    result = parameters.api.createType('Balance', accumulatedReward);
+    console.log('calculated reward', result.toHuman());
+    return result;
+  },
 };
 
 export interface RegisterParameters {
@@ -488,6 +590,11 @@ export interface EraStakingPoints extends Struct {
   readonly stakers: BTreeMap<AccountId, Balance>;
   readonly formerStakedEra: EraIndex;
   readonly claimedRewards: Balance;
+}
+
+export interface EraRewardAndStake extends Struct {
+  readonly rewards: Balance;
+  readonly staked: Balance;
 }
 
 export default actions;
