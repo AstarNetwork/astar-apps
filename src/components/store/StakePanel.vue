@@ -153,7 +153,7 @@ export default defineComponent({
     const claim = async () => {
       // TODO maybe to add select address option to modal as in stake/unstake
       const senderAddress = store.getters['general/selectedAccountAddress'];
-      const result = await store.dispatch('dapps/claim', {
+      const result = await store.dispatch('dapps/claimBatch', {
         api: api?.value,
         senderAddress,
         dapp: props.dapp,

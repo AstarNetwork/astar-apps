@@ -19,7 +19,7 @@
       >
     </template>
     <template #buttons>
-      <Button disabled class="tw-tooltip" @click="claimAction()">
+      <Button class="tw-tooltip" @click="claimAction()">
         {{ $t('store.claim') }}
       </Button>
     </template>
