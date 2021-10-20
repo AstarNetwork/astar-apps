@@ -10,14 +10,13 @@ import {
 } from '@polkadot/types/interfaces';
 import { formatBalance } from '@polkadot/util';
 import BN from 'bn.js';
-import { reduceBalanceToDenom } from 'src/hooks/helper/plasmUtils';
 import { StateInterface } from '../index';
 import { DappItem, DappStateInterface as State, NewDappItem } from './state';
 import { uploadFile, addDapp, getDapps } from 'src/hooks/firebase';
 import { ApiPromise } from '@polkadot/api';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { ISubmittableResult, ITuple } from '@polkadot/types/types';
-import { SubmittableExtrinsic } from '@polkadot/api/types';
+import { ApiOptions, SubmittableExtrinsic } from '@polkadot/api/types';
 
 const showError = (dispatch: Dispatch, message: string): void => {
   dispatch(
@@ -96,6 +95,28 @@ const getEraStakes = async (
   return eraStakeMap;
 };
 
+const getContractLastStakedEra = async (
+  api: ApiPromise,
+  contractAddress: string
+): Promise<number> => {
+  const eraStakeMap = await getEraStakes(api, contractAddress);
+  const eraIndex = Math.max(...eraStakeMap.keys());
+
+  return eraIndex;
+};
+
+const getLowestClaimableEra = (
+  api: ApiPromise,
+  currentEra: number,
+  eraStakeMap: Map<number, Option<EraStakingPoints>>
+) => {
+  const historyDepth = parseInt(api.consts.dappsStaking.historyDepth.toString());
+  const firstStakedEra = Math.min(...eraStakeMap.keys());
+  const lowestClaimableEra = Math.max(firstStakedEra, Math.max(1, currentEra - historyDepth));
+
+  return lowestClaimableEra;
+};
+
 const getErasToClaim = async (api: ApiPromise, contractAddress: string): Promise<number[]> => {
   const currentEra = await (await api.query.dappsStaking.currentEra<EraIndex>()).toNumber();
   const historyDepth = parseInt(api.consts.dappsStaking.historyDepth.toString());
@@ -105,8 +126,9 @@ const getErasToClaim = async (api: ApiPromise, contractAddress: string): Promise
     return [];
   }
 
-  const firstStakedEra = Math.min(...eraStakeMap.keys());
-  const lowestClaimableEra = Math.max(firstStakedEra, Math.max(1, currentEra - historyDepth));
+  // const firstStakedEra = Math.min(...eraStakeMap.keys());
+  // const lowestClaimableEra = Math.max(firstStakedEra, Math.max(1, currentEra - historyDepth));
+  const lowestClaimableEra = getLowestClaimableEra(api, currentEra, eraStakeMap);
   const result: number[] = [];
 
   for (let era = lowestClaimableEra; era < currentEra; era++) {
@@ -116,7 +138,7 @@ const getErasToClaim = async (api: ApiPromise, contractAddress: string): Promise
     }
   }
 
-  console.log(currentEra, historyDepth, firstStakedEra, lowestClaimableEra, result);
+  console.log(currentEra, historyDepth, lowestClaimableEra, result);
   return result;
 };
 
@@ -412,23 +434,12 @@ const actions: ActionTree<State, StateInterface> = {
     try {
       if (parameters.api) {
         const contractAddress = getAddressEnum(parameters.dapp.address);
-        // const eraIndexPromise = await parameters.api.query.dappsStaking.contractLastStaked<
-        //   Option<EraIndex>
-        // >(contractAddress);
-        // const eraIndex = await eraIndexPromise.unwrapOr(null);
-        const eraStakeMap = await getEraStakes(parameters.api, parameters.dapp.address);
-        const eraIndex = Math.max(...eraStakeMap.keys());
-
-        if (eraIndex) {
+        const eraIndex = await getContractLastStakedEra(parameters.api, parameters.dapp.address);
+        if (eraIndex > 0) {
           const stakeInfoPromise = await parameters.api.query.dappsStaking.contractEraStake<
             Option<EraStakingPoints>
           >(contractAddress, eraIndex);
           const stakeInfo = await stakeInfoPromise.unwrapOr(null);
-
-          // const rewardsClaimed = await parameters.api.query.dappsStaking.rewardsClaimed<Balance>(
-          //   contractAddress,
-          //   parameters.senderAddress
-          // );
 
           if (stakeInfo) {
             let yourStake = '';
@@ -443,7 +454,6 @@ const actions: ActionTree<State, StateInterface> = {
               totalStake: stakeInfo.total.toHuman(),
               yourStake,
               claimedRewards: stakeInfo.claimedRewards.toHuman(),
-              // userClaimedRewards: rewardsClaimed.toHuman(),
               hasStake: !!yourStake,
             } as StakeInfo;
           }
@@ -465,26 +475,13 @@ const actions: ActionTree<State, StateInterface> = {
     try {
       const currentEraIndex = await parameters.api.query.dappsStaking.currentEra<EraIndex>();
       const currentEra = parseInt(currentEraIndex.toString());
-
-      const contractAddress = getAddressEnum(parameters.dapp.address);
-      const eraLastStakedIndex =
-        await parameters.api.query.dappsStaking.contractLastStaked<EraIndex>(contractAddress);
-      const eraLastStaked = parseInt(eraLastStakedIndex.toString());
-
-      // Get all staking points for contract.
-      const eraStakesMap = new Map();
-      const eraStakes =
-        await parameters.api.query.dappsStaking.contractEraStake.entries<EraStakingPoints>(
-          contractAddress
-        );
-      eraStakes.forEach(([key, stake]) => {
-        eraStakesMap.set(parseInt(key.args.map((k) => k.toString())[1]), stake);
-      });
-
+      const eraStakesMap = await getEraStakes(parameters.api, parameters.dapp.address);
+      const lowestClaimableEra = getLowestClaimableEra(parameters.api, currentEra, eraStakesMap);
+      console.log('lowest', lowestClaimableEra);
       // Find a first stake
       let currentEraStakes: EraStakingPoints | null = null;
       let firstEraWithStake: number = 1;
-      for (let era = eraLastStaked; era < currentEra; era++) {
+      for (let era = lowestClaimableEra; era < currentEra; era++) {
         const eraStakes = eraStakesMap.get(era);
 
         if (eraStakes) {
@@ -503,7 +500,7 @@ const actions: ActionTree<State, StateInterface> = {
       });
 
       // calculate reward
-      for (let era = 1; era < currentEra; era++) {
+      for (let era = lowestClaimableEra; era < currentEra; era++) {
         if (era > firstEraWithStake) {
           const eraStakes = eraStakesMap.get(era);
           if (eraStakes) {
