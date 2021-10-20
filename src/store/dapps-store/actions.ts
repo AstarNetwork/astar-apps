@@ -16,7 +16,7 @@ import { uploadFile, addDapp, getDapps } from 'src/hooks/firebase';
 import { ApiPromise } from '@polkadot/api';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { ISubmittableResult, ITuple } from '@polkadot/types/types';
-import { ApiOptions, SubmittableExtrinsic } from '@polkadot/api/types';
+import { SubmittableExtrinsic } from '@polkadot/api/types';
 
 const showError = (dispatch: Dispatch, message: string): void => {
   dispatch(
@@ -105,13 +105,30 @@ const getContractLastStakedEra = async (
   return eraIndex;
 };
 
+const getFirstUcnlaimedEra = (
+  eraStakeMap: Map<number, Option<EraStakingPoints>>,
+  era: number
+): number => {
+  if (!eraStakeMap.has(era)) {
+    return era;
+  } else {
+    const stakingPoints: EraStakingPoints | undefined = eraStakeMap.get(era)?.unwrap();
+    if (stakingPoints && stakingPoints.claimedRewards.eq(new BN(0))) {
+      return era;
+    } else {
+      return getFirstUcnlaimedEra(eraStakeMap, ++era);
+    }
+  }
+};
+
 const getLowestClaimableEra = (
   api: ApiPromise,
   currentEra: number,
   eraStakeMap: Map<number, Option<EraStakingPoints>>
 ) => {
   const historyDepth = parseInt(api.consts.dappsStaking.historyDepth.toString());
-  const firstStakedEra = Math.min(...eraStakeMap.keys());
+  // const firstStakedEra = Math.min(...eraStakeMap.keys());
+  const firstStakedEra = getFirstUcnlaimedEra(eraStakeMap, 1);
   const lowestClaimableEra = Math.max(firstStakedEra, Math.max(1, currentEra - historyDepth));
 
   return lowestClaimableEra;
@@ -119,26 +136,23 @@ const getLowestClaimableEra = (
 
 const getErasToClaim = async (api: ApiPromise, contractAddress: string): Promise<number[]> => {
   const currentEra = await (await api.query.dappsStaking.currentEra<EraIndex>()).toNumber();
-  const historyDepth = parseInt(api.consts.dappsStaking.historyDepth.toString());
 
   const eraStakeMap = await getEraStakes(api, contractAddress);
   if (eraStakeMap.size === 0) {
     return [];
   }
 
-  // const firstStakedEra = Math.min(...eraStakeMap.keys());
-  // const lowestClaimableEra = Math.max(firstStakedEra, Math.max(1, currentEra - historyDepth));
   const lowestClaimableEra = getLowestClaimableEra(api, currentEra, eraStakeMap);
   const result: number[] = [];
 
   for (let era = lowestClaimableEra; era < currentEra; era++) {
-    const info = eraStakeMap.get(era)?.unwrap();
-    if (!info || info.claimedRewards === new BN(0)) {
+    const info: EraStakingPoints | undefined = eraStakeMap.get(era)?.unwrap();
+    if (info === undefined || info.claimedRewards.eq(new BN(0))) {
       result.push(era);
     }
   }
 
-  console.log(currentEra, historyDepth, lowestClaimableEra, result);
+  console.log('Eras to claim', result);
   return result;
 };
 
@@ -328,53 +342,53 @@ const actions: ActionTree<State, StateInterface> = {
     return false;
   },
 
-  async claim({ commit, dispatch }, parameters: StakingParameters): Promise<boolean> {
-    try {
-      if (parameters.api) {
-        const injector = await web3FromSource('polkadot-js');
-        const unsub = await parameters.api.tx.dappsStaking
-          .claim(getAddressEnum(parameters.dapp.address))
-          .signAndSend(
-            parameters.senderAddress,
-            {
-              signer: injector?.signer,
-            },
-            (result) => {
-              if (result.isFinalized) {
-                if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
-                  dispatch(
-                    'general/showAlertMsg',
-                    {
-                      msg: `You claimed from reward ${parameters.dapp.name}.`,
-                      alertType: 'success',
-                    },
-                    { root: true }
-                  );
+  // async claim({ commit, dispatch }, parameters: StakingParameters): Promise<boolean> {
+  //   try {
+  //     if (parameters.api) {
+  //       const injector = await web3FromSource('polkadot-js');
+  //       const unsub = await parameters.api.tx.dappsStaking
+  //         .claim(getAddressEnum(parameters.dapp.address))
+  //         .signAndSend(
+  //           parameters.senderAddress,
+  //           {
+  //             signer: injector?.signer,
+  //           },
+  //           (result) => {
+  //             if (result.isFinalized) {
+  //               if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
+  //                 dispatch(
+  //                   'general/showAlertMsg',
+  //                   {
+  //                     msg: `You claimed from reward ${parameters.dapp.name}.`,
+  //                     alertType: 'success',
+  //                   },
+  //                   { root: true }
+  //                 );
 
-                  parameters.finalizeCallback();
-                }
+  //                 parameters.finalizeCallback();
+  //               }
 
-                commit('general/setLoading', false, { root: true });
-                unsub();
-              } else {
-                commit('general/setLoading', true, { root: true });
-              }
-            }
-          );
+  //               commit('general/setLoading', false, { root: true });
+  //               unsub();
+  //             } else {
+  //               commit('general/setLoading', true, { root: true });
+  //             }
+  //           }
+  //         );
 
-        return true;
-      } else {
-        showError(dispatch, 'Api is undefined');
-        return false;
-      }
-    } catch (e) {
-      const error = e as unknown as Error;
-      commit('general/setLoading', false, { root: true });
-      showError(dispatch, error.message);
-    }
+  //       return true;
+  //     } else {
+  //       showError(dispatch, 'Api is undefined');
+  //       return false;
+  //     }
+  //   } catch (e) {
+  //     const error = e as unknown as Error;
+  //     commit('general/setLoading', false, { root: true });
+  //     showError(dispatch, error.message);
+  //   }
 
-    return false;
-  },
+  //   return false;
+  // },
 
   async claimBatch({ commit, dispatch }, parameters: StakingParameters): Promise<boolean> {
     try {
@@ -512,10 +526,10 @@ const actions: ActionTree<State, StateInterface> = {
           // TODO check why eraStakes.stakers.get is not working
           for (const [account, balance] of currentEraStakes.stakers) {
             if (account.toString() === parameters.senderAddress) {
-              let eraRewardsAndStakes = eraRewardsAndStakeMap.get(era).unwrap();
+              let eraRewardsAndStakes: EraRewardAndStake = eraRewardsAndStakeMap.get(era).unwrap();
               if (eraRewardsAndStakes) {
                 // temp to avoid staked = 0 in first blocks on test env
-                if (eraRewardsAndStakes.staked.toString() === '0') {
+                if (eraRewardsAndStakes.staked.eq(new BN(0))) {
                   break;
                 }
 
@@ -576,7 +590,6 @@ export interface StakeInfo {
   yourStake: string | undefined;
   totalStake: string;
   claimedRewards: string;
-  userClaimedRewards: string;
   hasStake: boolean;
 }
 

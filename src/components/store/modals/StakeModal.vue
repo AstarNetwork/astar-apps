@@ -24,7 +24,7 @@
         title="Amount"
         :max-in-default-unit="formatBalance"
       />
-      <div class="tw-mt-1 tw-ml-1">
+      <div v-if="accountData" class="tw-mt-1 tw-ml-1">
         {{ $t('balance.transferable') }}
         <format-balance
           :balance="accountData?.getUsableTransactionBalance()"
