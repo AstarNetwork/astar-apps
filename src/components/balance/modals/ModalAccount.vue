@@ -124,6 +124,9 @@ export default defineComponent({
       console.log(checkMetamask + '/' + accountIdx);
       store.commit('general/setIsCheckMetamask', checkMetamask);
       store.commit('general/setCurrentAccountIdx', accountIdx);
+      if (isH160Formatted.value && accountIdx !== 0) {
+        store.commit('general/setIsH160Formatted', false);
+      }
 
       emit('update:is-open', false);
     };

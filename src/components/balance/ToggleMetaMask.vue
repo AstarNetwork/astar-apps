@@ -82,7 +82,7 @@ export default defineComponent({
         const chainId = getChainId(currentNetworkIdx.value);
         setTimeout(async () => {
           await setupNetwork(chainId);
-        }, 1000);
+        }, 500);
         return;
       }
       if (isSS58.value) {

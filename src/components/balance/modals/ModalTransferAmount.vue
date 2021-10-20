@@ -159,7 +159,7 @@ export default defineComponent({
       required: true,
     },
   },
-  emits: ['complete-transfer', 'update:is-open'],
+  emits: ['update:is-open'],
   setup(props, { emit }) {
     const closeModal = () => {
       emit('update:is-open', false);
@@ -216,8 +216,6 @@ export default defineComponent({
         });
 
         store.commit('general/setLoading', false);
-        emit('complete-transfer', true);
-
         closeModal();
       } else {
         console.log(`Current status: ${status.type}`);
@@ -295,22 +293,25 @@ export default defineComponent({
           toastInvalidAddress();
           return;
         }
-        await web3.eth
-          .sendTransaction({
-            to: toAddress,
-            from: fromAddress,
-            value: web3.utils.toWei(String(transferAmt), 'ether'),
-          })
-          .on('transactionHash', (hash) => {
-            store.commit('general/setLoading', true);
-          })
-          .once('confirmation', (confNumber, receipt) => {
-            const hash = receipt.transactionHash;
-            const msg = `Completed at transaction hash #${hash}`;
-            store.dispatch('general/showAlertMsg', { msg, alertType: 'success' });
-            store.commit('general/setLoading', false);
-            closeModal();
-          });
+        store.commit('general/setLoading', true);
+        try {
+          await web3.eth
+            .sendTransaction({
+              to: toAddress,
+              from: fromAddress,
+              value: web3.utils.toWei(String(transferAmt), 'ether'),
+            })
+            .once('confirmation', (confNumber, receipt) => {
+              const hash = receipt.transactionHash;
+              const msg = `Completed at transaction hash #${hash}`;
+              store.dispatch('general/showAlertMsg', { msg, alertType: 'success' });
+              store.commit('general/setLoading', false);
+              closeModal();
+            });
+        } catch (error) {
+          console.error(error);
+          store.commit('general/setLoading', false);
+        }
 
         return;
       }

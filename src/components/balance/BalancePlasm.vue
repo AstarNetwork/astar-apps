@@ -38,7 +38,6 @@
       :all-account-names="allAccountNames"
       :balance="balance"
       :account-data="accountData"
-      @completeTransfer="completeTransfer"
     />
   </div>
 
@@ -53,12 +52,10 @@ import { defineComponent, reactive, toRefs, computed, watch, ref } from 'vue';
 import { useBalance, useApi, useAccount } from 'src/hooks';
 import { useStore } from 'src/store';
 import { useMeta } from 'quasar';
-// import { isWeb3Injected } from '@polkadot/extension-dapp';
 import Address from './Address.vue';
 import ToggleMetaMask from './ToggleMetaMask.vue';
 import PlmBalance from './PlmBalance.vue';
 import TotalBalance from './TotalBalance.vue';
-// import ModalAlertBox from 'components/common/ModalAlertBox.vue';
 import ModalAccount from './modals/ModalAccount.vue';
 import ModalTransferAmount from './modals/ModalTransferAmount.vue';
 
@@ -96,16 +93,6 @@ export default defineComponent({
     const isSS58 = computed(() => store.getters['general/isCheckMetamask']);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
-    const completeTransfer = () => {
-      const curAccountRef = ref(currentAccount.value);
-      const { balance: balanceRef } = useBalance(api, curAccountRef);
-
-      watch(balanceRef, () => {
-        console.log('new balance:', balance.value.toString());
-        balance.value = balanceRef.value;
-      });
-    };
-
     return {
       ...toRefs(stateModal),
       // isWeb3Injected,
@@ -116,7 +103,6 @@ export default defineComponent({
       currentAccountName,
       currentNetworkStatus,
       accountData,
-      completeTransfer,
       isSS58,
       isH160,
     };

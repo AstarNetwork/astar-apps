@@ -1,9 +1,9 @@
+import { useStore } from 'src/store';
 import { VoidFn } from '@polkadot/api/types';
 import { Balance } from '@polkadot/types/interfaces';
 import BN from 'bn.js';
-import { useStore } from 'src/store';
 import { createWeb3Instance } from 'src/web3';
-import { computed, onUnmounted, ref, Ref, watch } from 'vue';
+import { onUnmounted, ref, Ref, watch, computed } from 'vue';
 import { getVested } from './helper/vested';
 
 function useCall(apiRef: any, addressRef: Ref<string>) {
@@ -15,6 +15,7 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
   const store = useStore();
   const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
   const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
+  const isLoading = computed(() => store.getters['general/isLoading']);
 
   const unsub: Ref<VoidFn | undefined> = ref();
 
@@ -84,8 +85,9 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
   }, 10000);
 
   watch(
-    () => addressRef.value,
-    (address) => {
+    [addressRef, isLoading],
+    () => {
+      const address = addressRef.value;
       if (isH160Formatted.value) {
         updateAccountH160(address);
       } else {
