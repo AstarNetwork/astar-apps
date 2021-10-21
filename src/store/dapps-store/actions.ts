@@ -57,10 +57,10 @@ const hasExtrinsicFailedEvent = (events: EventRecord[], dispatch: Dispatch): boo
         console.log(data.toHuman());
       }
 
-      if (
-        (section === 'system' && method === 'ExtrinsicFailed') ||
-        (section === 'utility' && method === 'BatchInterrupted')
-      ) {
+      // TODO handle batch interrupter event properly
+      // section === 'utility' && method === 'BatchInterrupted'
+
+      if (section === 'system' && method === 'ExtrinsicFailed') {
         const [dispatchError] = data as unknown as ITuple<[DispatchError]>;
         let message = dispatchError.type;
 
@@ -366,7 +366,6 @@ const actions: ActionTree<State, StateInterface> = {
           },
           (result) => {
             if (result.isFinalized) {
-              console.log('res', result.toHuman(), result.events);
               if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
                 dispatch(
                   'general/showAlertMsg',
@@ -517,6 +516,14 @@ const actions: ActionTree<State, StateInterface> = {
           console.warn('No stakes found');
         }
       }
+
+      result.estimatedClaimedRewards = getEstimatedClaimedAwards(
+        currentEra,
+        eraStakesMap,
+        eraRewardsAndStakeMap,
+        parameters.api,
+        parameters.senderAddress
+      );
     } catch (err) {
       const error = err as unknown as Error;
       console.error(error);
@@ -529,6 +536,51 @@ const actions: ActionTree<State, StateInterface> = {
     console.log('calculated reward', result.rewards.toHuman());
     return result;
   },
+};
+
+const getEstimatedClaimedAwards = (
+  currentEra: number,
+  eraStakesMap: Map<number, Option<EraStakingPoints>>,
+  eraRewardAndStake: Map<number, Option<EraRewardAndStake>>,
+  api: ApiPromise,
+  senderAddress: string
+): Balance => {
+  const firstStakedEra = Math.min(...eraStakesMap.keys());
+  //let claimedSoFar = api.createType('Balance', new BN(0));
+  let claimedSoFar = new BN(0);
+
+  if (firstStakedEra) {
+    for (let era = firstStakedEra; era < currentEra; era++) {
+      const stakingInfo = eraStakesMap.get(era)?.unwrap();
+
+      if (stakingInfo) {
+        for (const [account, balance] of stakingInfo.stakers) {
+          if (
+            !stakingInfo ||
+            stakingInfo.claimedRewards.eq(new BN(0)) ||
+            account.toString() !== senderAddress
+          ) {
+            continue;
+          }
+
+          const eraRewardsAndStakes = eraRewardAndStake.get(era)?.unwrap();
+
+          if (eraRewardsAndStakes) {
+            let claimedForEra = balance
+              .mul(eraRewardsAndStakes.rewards)
+              .divn(5) // 20% reward percentage
+              .div(eraRewardsAndStakes.staked);
+            claimedSoFar = claimedSoFar.add(claimedForEra);
+          }
+          break;
+        }
+      }
+    }
+  }
+
+  const result = api.createType('Balance', claimedSoFar);
+  console.log('claimed so far', result.toHuman());
+  return result;
 };
 
 export interface RegisterParameters {
@@ -556,6 +608,7 @@ export interface StakeInfo {
 
 export interface ClaimInfo {
   rewards: Balance;
+  estimatedClaimedRewards: Balance;
   unclaimedEras: number[];
 }
 

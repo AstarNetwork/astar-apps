@@ -17,6 +17,14 @@
         }}</span>
       </div>
       <div class="tw-mt-2">
+        <span class="tw-w-52 tw-inline-block">
+          {{ $t('store.modals.estimatedClaimedRewards') }}
+        </span>
+        <span class="tw-font-semibold tw-w-16 tw-text-rigth">{{
+          claimInfo?.estimatedClaimedRewards.toHuman()
+        }}</span>
+      </div>
+      <div class="tw-mt-2">
         <span class="tw-w-52 tw-inline-block"> {{ $t('store.modals.unclaimedEras') }}</span>
         <span class="tw-font-semibold tw-w-16 tw-text-rigth">{{
           claimInfo?.unclaimedEras?.length
