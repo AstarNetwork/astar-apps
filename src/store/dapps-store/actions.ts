@@ -49,11 +49,18 @@ const getCollectionKey = (rootState: StateInterface) => {
 
 const hasExtrinsicFailedEvent = (events: EventRecord[], dispatch: Dispatch): boolean => {
   let result = false;
-
   events
     .filter((record): boolean => !!record.event && record.event.section !== 'democracy')
     .map(({ event: { data, method, section } }) => {
-      if (section === 'system' && method === 'ExtrinsicFailed') {
+      console.log('event', method, section, data);
+      if (section === 'utility' && method === 'BatchInterrupted') {
+        console.log(data.toHuman());
+      }
+
+      if (
+        (section === 'system' && method === 'ExtrinsicFailed') ||
+        (section === 'utility' && method === 'BatchInterrupted')
+      ) {
         const [dispatchError] = data as unknown as ITuple<[DispatchError]>;
         let message = dispatchError.type;
 
@@ -364,9 +371,7 @@ const actions: ActionTree<State, StateInterface> = {
                 dispatch(
                   'general/showAlertMsg',
                   {
-                    msg: `You claimed from reward ${
-                      parameters.dapp.name
-                    } for eras ${erasToClaim.join(', ')}.`,
+                    msg: `You claimed from reward ${parameters.dapp.name} for ${erasToClaim.length} eras.`,
                     alertType: 'success',
                   },
                   { root: true }
