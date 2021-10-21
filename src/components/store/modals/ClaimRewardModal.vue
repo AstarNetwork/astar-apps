@@ -19,12 +19,12 @@
       <div class="tw-mt-2">
         <span class="tw-w-52 tw-inline-block"> {{ $t('store.modals.unclaimedEras') }}</span>
         <span class="tw-font-semibold tw-w-16 tw-text-rigth">{{
-          claimInfo?.unclaimedEras?.join(', ')
+          claimInfo?.unclaimedEras?.length
         }}</span>
       </div>
     </template>
     <template #buttons>
-      <Button class="tw-tooltip" @click="claimAction()">
+      <Button :disabled="!canClaim" class="tw-tooltip" @click="claimAction()">
         {{ $t('store.claim') }}
       </Button>
     </template>
@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, onMounted, ref } from 'vue';
+import { defineComponent, toRefs, onMounted, ref, computed } from 'vue';
 import { useApi } from 'src/hooks';
 import { useStore } from 'src/store';
 import { useChainMetadata } from 'src/hooks';
@@ -68,6 +68,10 @@ export default defineComponent({
     const claimInfo = ref<ClaimInfo>();
     const senderAddress = store.getters['general/selectedAccountAddress'];
 
+    const canClaim = computed(() => {
+      return claimInfo?.value && claimInfo.value.unclaimedEras.length > 0;
+    });
+
     onMounted(async () => {
       claimInfo.value = await store.dispatch('dapps/getClaimInfo', {
         api: api?.value,
@@ -79,6 +83,7 @@ export default defineComponent({
 
     return {
       claimInfo,
+      canClaim,
       ...toRefs(props),
     };
   },

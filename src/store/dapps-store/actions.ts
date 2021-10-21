@@ -65,6 +65,7 @@ const hasExtrinsicFailedEvent = (events: EventRecord[], dispatch: Dispatch): boo
             message = `${error.section}.${error.name}`;
           } catch (error) {
             // swallow
+            console.error(error);
           }
         } else if (dispatchError.isToken) {
           message = `${dispatchError.type}.${dispatchError.asToken.type}`;
@@ -105,30 +106,13 @@ const getContractLastStakedEra = async (
   return eraIndex;
 };
 
-const getFirstUcnlaimedEra = (
-  eraStakeMap: Map<number, Option<EraStakingPoints>>,
-  era: number
-): number => {
-  if (!eraStakeMap.has(era)) {
-    return era;
-  } else {
-    const stakingPoints: EraStakingPoints | undefined = eraStakeMap.get(era)?.unwrap();
-    if (stakingPoints && stakingPoints.claimedRewards.eq(new BN(0))) {
-      return era;
-    } else {
-      return getFirstUcnlaimedEra(eraStakeMap, ++era);
-    }
-  }
-};
-
 const getLowestClaimableEra = (
   api: ApiPromise,
   currentEra: number,
   eraStakeMap: Map<number, Option<EraStakingPoints>>
 ) => {
   const historyDepth = parseInt(api.consts.dappsStaking.historyDepth.toString());
-  // const firstStakedEra = Math.min(...eraStakeMap.keys());
-  const firstStakedEra = getFirstUcnlaimedEra(eraStakeMap, 1);
+  const firstStakedEra = Math.min(...eraStakeMap.keys());
   const lowestClaimableEra = Math.max(firstStakedEra, Math.max(1, currentEra - historyDepth));
 
   return lowestClaimableEra;
@@ -361,11 +345,11 @@ const actions: ActionTree<State, StateInterface> = {
         }
 
         const transactions: SubmittableExtrinsic<'promise', ISubmittableResult>[] = [];
-        erasToClaim.forEach((era) => {
+        for (let era of erasToClaim) {
           transactions.push(
             parameters.api.tx.dappsStaking.claim(getAddressEnum(parameters.dapp.address), era)
           );
-        });
+        }
 
         const injector = await web3FromSource('polkadot-js');
         const unsub = await parameters.api.tx.utility.batch(transactions).signAndSend(
@@ -375,6 +359,7 @@ const actions: ActionTree<State, StateInterface> = {
           },
           (result) => {
             if (result.isFinalized) {
+              console.log('res', result.toHuman(), result.events);
               if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
                 dispatch(
                   'general/showAlertMsg',
