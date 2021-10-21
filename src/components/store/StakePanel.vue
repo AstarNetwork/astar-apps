@@ -44,7 +44,7 @@
     />
 
     <ClaimRewardModal
-      v-if="showClaimRewardModal"
+      v-if="stakeInfo && dapp && showClaimRewardModal"
       v-model:isOpen="showClaimRewardModal"
       :dapp="dapp"
       :stake-info="stakeInfo"

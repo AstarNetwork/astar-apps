@@ -115,6 +115,7 @@ export default {
       register: 'Register',
       address: 'Address',
       estimatedRewards: 'Already accumulated staking rewards',
+      unclaimedEras: 'Unclaimed eras',
     },
   },
 };

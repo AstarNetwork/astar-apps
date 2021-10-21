@@ -97,10 +97,14 @@ export default defineComponent({
 
     const formatBalance = computed(() => {
       const tokenDecimal = decimal.value;
-      return plasmUtils.reduceBalanceToDenom(
-        accountData!.value!.getUsableTransactionBalance(),
-        tokenDecimal
-      );
+      if (accountData.value) {
+        return plasmUtils.reduceBalanceToDenom(
+          accountData!.value!.getUsableTransactionBalance(),
+          tokenDecimal
+        );
+      } else {
+        return '';
+      }
     });
 
     const reloadAmount = (

@@ -342,58 +342,24 @@ const actions: ActionTree<State, StateInterface> = {
     return false;
   },
 
-  // async claim({ commit, dispatch }, parameters: StakingParameters): Promise<boolean> {
-  //   try {
-  //     if (parameters.api) {
-  //       const injector = await web3FromSource('polkadot-js');
-  //       const unsub = await parameters.api.tx.dappsStaking
-  //         .claim(getAddressEnum(parameters.dapp.address))
-  //         .signAndSend(
-  //           parameters.senderAddress,
-  //           {
-  //             signer: injector?.signer,
-  //           },
-  //           (result) => {
-  //             if (result.isFinalized) {
-  //               if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
-  //                 dispatch(
-  //                   'general/showAlertMsg',
-  //                   {
-  //                     msg: `You claimed from reward ${parameters.dapp.name}.`,
-  //                     alertType: 'success',
-  //                   },
-  //                   { root: true }
-  //                 );
-
-  //                 parameters.finalizeCallback();
-  //               }
-
-  //               commit('general/setLoading', false, { root: true });
-  //               unsub();
-  //             } else {
-  //               commit('general/setLoading', true, { root: true });
-  //             }
-  //           }
-  //         );
-
-  //       return true;
-  //     } else {
-  //       showError(dispatch, 'Api is undefined');
-  //       return false;
-  //     }
-  //   } catch (e) {
-  //     const error = e as unknown as Error;
-  //     commit('general/setLoading', false, { root: true });
-  //     showError(dispatch, error.message);
-  //   }
-
-  //   return false;
-  // },
-
   async claimBatch({ commit, dispatch }, parameters: StakingParameters): Promise<boolean> {
     try {
       if (parameters.api) {
         const erasToClaim = await getErasToClaim(parameters.api, parameters.dapp.address);
+
+        if (erasToClaim.length === 0) {
+          dispatch(
+            'general/showAlertMsg',
+            {
+              msg: 'All rewards have been already claimed.',
+              alertType: 'warning',
+            },
+            { root: true }
+          );
+
+          return true;
+        }
+
         const transactions: SubmittableExtrinsic<'promise', ISubmittableResult>[] = [];
         erasToClaim.forEach((era) => {
           transactions.push(
@@ -413,7 +379,9 @@ const actions: ActionTree<State, StateInterface> = {
                 dispatch(
                   'general/showAlertMsg',
                   {
-                    msg: `You claimed from reward ${parameters.dapp.name} for eras ${erasToClaim}.`,
+                    msg: `You claimed from reward ${
+                      parameters.dapp.name
+                    } for eras ${erasToClaim.join(', ')}.`,
                     alertType: 'success',
                   },
                   { root: true }
@@ -481,9 +449,9 @@ const actions: ActionTree<State, StateInterface> = {
     }
   },
 
-  async getClaimInfo({ dispatch, commit }, parameters: StakingParameters): Promise<Balance> {
+  async getClaimInfo({ dispatch, commit }, parameters: StakingParameters): Promise<ClaimInfo> {
     let accumulatedReward = new BN(0);
-    let result: Balance;
+    let result: ClaimInfo = {} as ClaimInfo;
     commit('general/setLoading', true, { root: true });
 
     try {
@@ -492,15 +460,14 @@ const actions: ActionTree<State, StateInterface> = {
       const eraStakesMap = await getEraStakes(parameters.api, parameters.dapp.address);
       const lowestClaimableEra = getLowestClaimableEra(parameters.api, currentEra, eraStakesMap);
       console.log('lowest', lowestClaimableEra);
-      // Find a first stake
+
+      // Find a latest stake
       let currentEraStakes: EraStakingPoints | null = null;
-      let firstEraWithStake: number = 1;
-      for (let era = lowestClaimableEra; era < currentEra; era++) {
+      for (let era = currentEra - 1; era >= 1; era--) {
         const eraStakes = eraStakesMap.get(era);
 
         if (eraStakes) {
           currentEraStakes = eraStakes.unwrap();
-          firstEraWithStake = era;
           break;
         }
       }
@@ -514,11 +481,15 @@ const actions: ActionTree<State, StateInterface> = {
       });
 
       // calculate reward
-      for (let era = lowestClaimableEra; era < currentEra; era++) {
-        if (era > firstEraWithStake) {
-          const eraStakes = eraStakesMap.get(era);
-          if (eraStakes) {
-            currentEraStakes = eraStakes.unwrap();
+      result.unclaimedEras = await getErasToClaim(parameters.api, parameters.dapp.address);
+      for (let era of result.unclaimedEras) {
+        const eraStakes: EraStakingPoints | undefined = eraStakesMap.get(era)?.unwrap();
+        if (eraStakes) {
+          currentEraStakes = eraStakes;
+
+          // Reward for the era is already claimed.
+          if (!eraStakes.claimedRewards.eq(new BN(0))) {
+            continue;
           }
         }
 
@@ -564,8 +535,8 @@ const actions: ActionTree<State, StateInterface> = {
 
     commit('general/setLoading', false, { root: true });
 
-    result = parameters.api.createType('Balance', accumulatedReward);
-    console.log('calculated reward', result.toHuman());
+    result.rewards = parameters.api.createType('Balance', accumulatedReward);
+    console.log('calculated reward', result.rewards.toHuman());
     return result;
   },
 };
@@ -591,6 +562,11 @@ export interface StakeInfo {
   totalStake: string;
   claimedRewards: string;
   hasStake: boolean;
+}
+
+export interface ClaimInfo {
+  rewards: Balance;
+  unclaimedEras: number[];
 }
 
 // TODO check why this type is not autogenerated.

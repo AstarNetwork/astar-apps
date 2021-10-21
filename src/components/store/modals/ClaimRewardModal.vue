@@ -13,12 +13,15 @@
       <div class="tw-mt-2">
         <span class="tw-w-52 tw-inline-block"> {{ $t('store.modals.estimatedRewards') }}</span>
         <span class="tw-font-semibold tw-w-16 tw-text-rigth">{{
-          estimatedRewards?.toHuman()
+          claimInfo?.rewards.toHuman()
         }}</span>
       </div>
-      <q-banner dense rounded class="bg-orange text-white tw-my-4 q-pa-xs" style
-        >The claim function has been temporarily disabled due to pallet maintenance.</q-banner
-      >
+      <div class="tw-mt-2">
+        <span class="tw-w-52 tw-inline-block"> {{ $t('store.modals.unclaimedEras') }}</span>
+        <span class="tw-font-semibold tw-w-16 tw-text-rigth">{{
+          claimInfo?.unclaimedEras?.join(', ')
+        }}</span>
+      </div>
     </template>
     <template #buttons>
       <Button class="tw-tooltip" @click="claimAction()">
@@ -36,8 +39,7 @@ import { useChainMetadata } from 'src/hooks';
 import Modal from 'src/components/common/Modal.vue';
 import Button from 'src/components/common/Button.vue';
 import Avatar from 'src/components/common/Avatar.vue';
-import { StakingParameters } from 'src/store/dapps-store/actions';
-import { Balance } from '@polkadot/types/interfaces';
+import { StakingParameters, ClaimInfo } from 'src/store/dapps-store/actions';
 
 export default defineComponent({
   components: {
@@ -63,11 +65,11 @@ export default defineComponent({
     const { api } = useApi();
     const store = useStore();
     const { decimal } = useChainMetadata();
-    const estimatedRewards = ref<Balance>();
+    const claimInfo = ref<ClaimInfo>();
     const senderAddress = store.getters['general/selectedAccountAddress'];
 
     onMounted(async () => {
-      estimatedRewards.value = await store.dispatch('dapps/getClaimInfo', {
+      claimInfo.value = await store.dispatch('dapps/getClaimInfo', {
         api: api?.value,
         senderAddress,
         dapp: props.dapp,
@@ -76,7 +78,7 @@ export default defineComponent({
     });
 
     return {
-      estimatedRewards,
+      claimInfo,
       ...toRefs(props),
     };
   },
