@@ -7,6 +7,7 @@ import {
   Balance,
   EventRecord,
   DispatchError,
+  DispatchResult,
 } from '@polkadot/types/interfaces';
 import { formatBalance } from '@polkadot/util';
 import BN from 'bn.js';
@@ -57,9 +58,6 @@ const hasExtrinsicFailedEvent = (events: EventRecord[], dispatch: Dispatch): boo
         console.log(data.toHuman());
       }
 
-      // TODO handle batch interrupter event properly
-      // section === 'utility' && method === 'BatchInterrupted'
-
       if (section === 'system' && method === 'ExtrinsicFailed') {
         const [dispatchError] = data as unknown as ITuple<[DispatchError]>;
         let message = dispatchError.type;
@@ -78,9 +76,16 @@ const hasExtrinsicFailedEvent = (events: EventRecord[], dispatch: Dispatch): boo
           message = `${dispatchError.type}.${dispatchError.asToken.type}`;
         }
 
-        showError(dispatch, message);
+        showError(dispatch, `action: ${section}.${method} ${message}`);
         result = true;
-        //   action: `${section}.${method}`,
+      } else if (section === 'utility' && method === 'BatchInterrupted') {
+        // TODO there should be a better way to extract error,
+        // for some reason cast data as unknown as ITuple<[DispatchError]>; doesn't work
+        const anyData = data as any;
+        const error = anyData[1].registry.findMetaError(anyData[1].asModule);
+        let message = `${error.section}.${error.name}`;
+        showError(dispatch, `action: ${section}.${method} ${message}`);
+        result = true;
       }
     });
 
