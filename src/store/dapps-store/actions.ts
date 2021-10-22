@@ -509,6 +509,7 @@ const actions: ActionTree<State, StateInterface> = {
                   .mul(eraRewardsAndStakes.rewards)
                   .divn(5) // 20% reward percentage
                   .div(eraRewardsAndStakes.staked);
+
                 accumulatedReward = accumulatedReward.add(eraReward);
               } else {
                 console.warn('No EraRewardAndStake for era ', era);
@@ -575,6 +576,11 @@ const getEstimatedClaimedAwards = (
               .mul(eraRewardsAndStakes.rewards)
               .divn(5) // 20% reward percentage
               .div(eraRewardsAndStakes.staked);
+
+            // todo: add reward multiplier for certain era range
+            // query from await api.const.dappsStaking.bonusEraDuration
+            // if current is less than the bonusEraDuration, multiply by the bonus amount
+
             claimedSoFar = claimedSoFar.add(claimedForEra);
           }
           break;
