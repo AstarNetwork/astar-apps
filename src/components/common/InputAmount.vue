@@ -37,8 +37,9 @@
             min="0"
             pattern="^[0-9]*(\.)?[0-9]*$"
             placeholder="0"
-            :value="Number(amount) ? amount : null"
+            :value="isInitInput && amount"
             @input="update($event.target.value, selectedUnit)"
+            @focus="initInput"
           />
         </div>
         <div
@@ -88,11 +89,12 @@ export default defineComponent({
     selectedUnit: { type: String, default: '' },
     maxInDefaultUnit: { type: Object as PropType<BN>, default: new BN(0) },
     fixUnit: { type: Boolean, default: false },
-    amount: { required: true, type: Object as PropType<BN> },
+    amount: { default: new BN(0), type: (Object as PropType<BN>) || Number },
   },
   emits: ['update:amount', 'update:selectedUnit', 'input'],
   setup(props, { emit }) {
     const isMaxAmount = ref<boolean>(false);
+    const isInitInput = ref<boolean>(false);
     const arrUnitNames = getUnitNames();
     const update = (amount: BN, unit: string | undefined) => {
       emit('update:amount', amount);
@@ -118,7 +120,25 @@ export default defineComponent({
       isMaxAmount.value = false;
     });
 
-    return { arrUnitNames, update, isMaxAmount, isH160 };
+    const initInput = () => {
+      // Memo: Remove default `props.amount->(0)` from input when initialised
+      // Memo: `props.amout` is defined by BN or Number from parent components
+      try {
+        if (props.amount.eq(new BN(0))) {
+          emit('update:amount', '');
+        }
+      } catch (e) {
+        if (new BN(props.amount).eq(new BN(0))) {
+          emit('update:amount', '');
+        }
+      }
+
+      if (!isInitInput.value) {
+        isInitInput.value = true;
+      }
+    };
+
+    return { arrUnitNames, update, isMaxAmount, isInitInput, initInput, isH160 };
   },
 });
 </script>
