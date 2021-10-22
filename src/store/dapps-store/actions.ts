@@ -453,6 +453,9 @@ const actions: ActionTree<State, StateInterface> = {
       const currentEra = parseInt(currentEraIndex.toString());
       const eraStakesMap = await getEraStakes(parameters.api, parameters.dapp.address);
       const lowestClaimableEra = getLowestClaimableEra(parameters.api, currentEra, eraStakesMap);
+      const bonusEraDuration = parseInt(
+        await parameters.api.consts.dappsStaking.bonusEraDuration.toString()
+      );
       console.log('lowest', lowestClaimableEra);
 
       // Find a latest stake
@@ -528,7 +531,8 @@ const actions: ActionTree<State, StateInterface> = {
         eraStakesMap,
         eraRewardsAndStakeMap,
         parameters.api,
-        parameters.senderAddress
+        parameters.senderAddress,
+        bonusEraDuration
       );
     } catch (err) {
       const error = err as unknown as Error;
@@ -549,7 +553,8 @@ const getEstimatedClaimedAwards = (
   eraStakesMap: Map<number, Option<EraStakingPoints>>,
   eraRewardAndStake: Map<number, Option<EraRewardAndStake>>,
   api: ApiPromise,
-  senderAddress: string
+  senderAddress: string,
+  bonusEraDuration: number
 ): Balance => {
   const firstStakedEra = Math.min(...eraStakesMap.keys());
   //let claimedSoFar = api.createType('Balance', new BN(0));
@@ -577,9 +582,9 @@ const getEstimatedClaimedAwards = (
               .divn(5) // 20% reward percentage
               .div(eraRewardsAndStakes.staked);
 
-            // todo: add reward multiplier for certain era range
-            // query from await api.const.dappsStaking.bonusEraDuration
-            // if current is less than the bonusEraDuration, multiply by the bonus amount
+            if (era < bonusEraDuration) {
+              claimedForEra = claimedForEra.muln(2);
+            }
 
             claimedSoFar = claimedSoFar.add(claimedForEra);
           }
