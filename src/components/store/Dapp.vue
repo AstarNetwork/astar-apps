@@ -76,7 +76,10 @@ export default defineComponent({
           dapp: props.dapp,
         } as StakingParameters)
         .then((info: StakeInfo) => {
-          stakeInfo.value = info;
+          if (info) {
+            console.log('info', info);
+            stakeInfo.value = info;
+          }
         });
     };
 

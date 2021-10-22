@@ -24,7 +24,7 @@
         title="Amount"
         :max-in-default-unit="formatBalance"
       />
-      <div class="tw-mt-1 tw-ml-1">
+      <div v-if="accountData" class="tw-mt-1 tw-ml-1">
         {{ $t('balance.transferable') }}
         <format-balance
           :balance="accountData?.getUsableTransactionBalance()"
@@ -97,10 +97,14 @@ export default defineComponent({
 
     const formatBalance = computed(() => {
       const tokenDecimal = decimal.value;
-      return plasmUtils.reduceBalanceToDenom(
-        accountData!.value!.getUsableTransactionBalance(),
-        tokenDecimal
-      );
+      if (accountData.value) {
+        return plasmUtils.reduceBalanceToDenom(
+          accountData!.value!.getUsableTransactionBalance(),
+          tokenDecimal
+        );
+      } else {
+        return '';
+      }
     });
 
     const reloadAmount = (

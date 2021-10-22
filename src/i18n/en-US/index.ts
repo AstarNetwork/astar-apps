@@ -114,7 +114,9 @@ export default {
       logo: 'Logo',
       register: 'Register',
       address: 'Address',
-      estimatedRewards: 'Already accumulated staking rewards',
+      estimatedRewards: 'Pending rewards',
+      unclaimedEras: 'Number of unclaimed eras',
+      estimatedClaimedRewards: 'Claimed rewards',
     },
   },
 };
