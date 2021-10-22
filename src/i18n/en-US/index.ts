@@ -34,8 +34,8 @@ export default {
     locked: 'Locked',
     addressScheme: 'Current address scheme',
     modals: {
-      connectMetamask: 'Connect to MetaMask',
-      ethereumExtension: 'ECDSA (Ethereum extension)',
+      connectMetamask: 'Connect Account with Ethereum Wallet',
+      ethereumExtension: 'Ethereum Extension',
       chooseAccount: 'Choose Account',
       chooseNetwork: 'Choose Networks',
       switch: 'Switch',

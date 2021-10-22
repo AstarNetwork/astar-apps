@@ -27,10 +27,10 @@ export const useAccount = () => {
       if (allAccounts.value) {
         if (isCheckMetamask.value && currentEcdsaAccount.value) {
           currentAccount.value = currentEcdsaAccount.value.ss58;
-          currentAccountName.value = 'ECDSA (Ethereum Extension)';
+          currentAccountName.value = 'Ethereum Extension';
         } else if (isH160Formatted.value && currentEcdsaAccount.value) {
           currentAccount.value = currentEcdsaAccount.value.h160;
-          currentAccountName.value = 'ECDSA (Ethereum Extension)';
+          currentAccountName.value = 'Ethereum Extension';
         } else {
           currentAccount.value = allAccounts.value[currentAccountIdx.value];
           currentAccountName.value = allAccountNames.value[currentAccountIdx.value];

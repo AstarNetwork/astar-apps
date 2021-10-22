@@ -1,11 +1,6 @@
 import { endpointKey } from './../config/chainEndpoints';
 export { getChainData, setupNetwork, getChainId, createWeb3Instance } from './utils';
 
-/*
- * EVM network config
- * Metamask address format: H160
- */
-
 export type TNetworkId = endpointKey.SHIDEN | endpointKey.SHIBUYA;
 
 export enum EVM {
@@ -32,7 +27,7 @@ export const nativeCurrency = {
 };
 
 export const rpcUrls = {
-  [EVM.SHIDEN_MAINNET]: ['https://shiden.api.onfinality.io/public'],
+  [EVM.SHIDEN_MAINNET]: ['https://rpc.shiden.astar.network:8545'],
   [EVM.SHIDEN_TESTNET]: ['https://rpc.shibuya.astar.network:8545'],
 };
 
