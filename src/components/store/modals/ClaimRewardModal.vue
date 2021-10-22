@@ -30,6 +30,9 @@
           claimInfo?.unclaimedEras?.length
         }}</span>
       </div>
+      <q-banner dense rounded class="bg-orange text-white tw-my-4 q-pa-xs" style
+        >The claim function has been temporarily disabled due to pallet maintenance.</q-banner
+      >
     </template>
     <template #buttons>
       <Button :disabled="!canClaim" class="tw-tooltip" @click="claimAction()">
@@ -77,7 +80,7 @@ export default defineComponent({
     const senderAddress = store.getters['general/selectedAccountAddress'];
 
     const canClaim = computed(() => {
-      return claimInfo?.value && claimInfo.value.unclaimedEras.length > 0;
+      return false; // && claimInfo?.value && claimInfo.value.unclaimedEras.length > 0;
     });
 
     onMounted(async () => {
