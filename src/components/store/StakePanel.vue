@@ -55,11 +55,12 @@
 <script lang="ts">
 import { defineComponent, ref, toRefs } from 'vue';
 import BN from 'bn.js';
+import Web3 from 'web3';
 import Button from 'components/common/Button.vue';
 import StakeModal, { StakeModel } from 'components/store/modals/StakeModal.vue';
 import ClaimRewardModal from 'components/store/modals/ClaimRewardModal.vue';
 import { useStore } from 'src/store';
-import { useApi } from 'src/hooks';
+import { useApi, useGetMinStaking } from 'src/hooks';
 import { getUnit } from 'src/hooks/helper/units';
 import { reduceDenomToBalance } from 'src/hooks/helper/plasmUtils';
 import { StakingParameters } from 'src/store/dapps-store/actions';
@@ -89,6 +90,7 @@ export default defineComponent({
     const modalTitle = ref<string>('');
     const modalActionName = ref<string>('');
     const modalAction = ref();
+    const { minStaking } = useGetMinStaking(api);
 
     const showStakeModal = () => {
       modalTitle.value = `Stake on ${props.dapp.name}`;
@@ -118,13 +120,26 @@ export default defineComponent({
     };
 
     const stake = async (stakeData: StakeModel) => {
+      const web3 = new Web3();
+      const amount = getAmount(stakeData);
+      const unit = stakeData.unit;
+      const formattedMinStake = web3.utils.fromWei(minStaking.value.toString());
+
+      if (amount.lt(minStaking.value)) {
+        store.dispatch('general/showAlertMsg', {
+          msg: `The amount of token to be staking must greater than ${formattedMinStake} ${unit}`,
+          alertType: 'error',
+        });
+        return;
+      }
+
       const result = await store.dispatch('dapps/stake', {
         api: api?.value,
         senderAddress: stakeData.address,
         dapp: props.dapp,
-        amount: getAmount(stakeData),
+        amount,
         decimals: stakeData.decimal,
-        unit: stakeData.unit,
+        unit,
         finalizeCallback: emitStakeChanged,
       } as StakingParameters);
 

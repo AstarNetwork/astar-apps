@@ -2,7 +2,7 @@
   <div
     :class="`tw-border ${bgColor(
       alertType
-    )} tw-shadow tw-rounded-lg tw-fixed tw-top-3 tw-right-3 tw-left-3 sm:tw-left-auto sm:tw-max-w-sm sm:tw-w-full tw-p-4 tw-flex tw-z-50`"
+    )} tw-shadow tw-rounded-lg tw-fixed tw-top-3 tw-right-3 tw-left-3 sm:tw-left-auto sm:tw-max-w-sm sm:tw-w-full tw-p-3 tw-flex tw-z-50`"
   >
     <div>
       <svg
