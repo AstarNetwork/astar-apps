@@ -74,6 +74,10 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    minStaking: {
+      type: String,
+      required: true,
+    },
   },
   setup(props) {
     const store = useStore();
@@ -81,7 +85,7 @@ export default defineComponent({
 
     const data = ref<StakeModel>({
       address: '',
-      amount: 0,
+      amount: props.actionName === 'Stake' ? Number(props.minStaking) : 0,
       unit: defaultUnitToken.value,
       decimal: decimal.value,
     } as StakeModel);

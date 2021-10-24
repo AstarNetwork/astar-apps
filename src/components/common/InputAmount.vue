@@ -115,6 +115,13 @@ export default defineComponent({
       isMaxAmount.value = false;
     });
 
+    watchEffect(() => {
+      // Memo: to allow show the default amount for staking modal
+      if (!isInitInput.value && Number(props.amount) > 0) {
+        isInitInput.value = true;
+      }
+    });
+
     const initInput = () => {
       // Memo: Remove default props.amount->(0) from input when initialised
       // Memo: props.amout is defined by BN or Number from parent components

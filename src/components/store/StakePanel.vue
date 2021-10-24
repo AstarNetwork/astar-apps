@@ -40,6 +40,7 @@
       :action="modalAction"
       :action-name="modalActionName"
       :title="modalTitle"
+      :min-staking="formattedMinStake"
     />
 
     <ClaimRewardModal
@@ -53,7 +54,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, toRefs } from 'vue';
+import { defineComponent, ref, toRefs, watchEffect } from 'vue';
 import BN from 'bn.js';
 import Web3 from 'web3';
 import Button from 'components/common/Button.vue';
@@ -89,8 +90,14 @@ export default defineComponent({
     const showClaimRewardModal = ref<boolean>(false);
     const modalTitle = ref<string>('');
     const modalActionName = ref<string>('');
+    const formattedMinStake = ref<string>('');
     const modalAction = ref();
     const { minStaking } = useGetMinStaking(api);
+
+    watchEffect(() => {
+      const web3 = new Web3();
+      formattedMinStake.value = web3.utils.fromWei(minStaking.value.toString());
+    });
 
     const showStakeModal = () => {
       modalTitle.value = `Stake on ${props.dapp.name}`;
@@ -120,14 +127,12 @@ export default defineComponent({
     };
 
     const stake = async (stakeData: StakeModel) => {
-      const web3 = new Web3();
       const amount = getAmount(stakeData);
       const unit = stakeData.unit;
-      const formattedMinStake = web3.utils.fromWei(minStaking.value.toString());
 
       if (amount.lt(minStaking.value)) {
         store.dispatch('general/showAlertMsg', {
-          msg: `The amount of token to be staking must greater than ${formattedMinStake} ${unit}`,
+          msg: `The amount of token to be staking must greater than ${formattedMinStake.value} ${unit}`,
           alertType: 'error',
         });
         return;
@@ -189,6 +194,7 @@ export default defineComponent({
       showStakeModal,
       showUnstakeModal,
       claim,
+      formattedMinStake,
     };
   },
 });
