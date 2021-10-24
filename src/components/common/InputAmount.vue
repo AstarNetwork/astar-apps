@@ -17,7 +17,6 @@
         :class="[
           !isMaxAmount && 'tw-border-gray-300',
           !isMaxAmount && 'dark:tw-border-darkGray-500',
-          !isMaxAmount && 'tw-border-b',
           'tw-flex',
           'tw-items-center',
         ]"

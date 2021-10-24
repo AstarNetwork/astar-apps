@@ -25,11 +25,8 @@
         :max-in-default-unit="formatBalance"
       />
       <div v-if="accountData" class="tw-mt-1 tw-ml-1">
-        {{ $t('balance.transferable') }}
-        <format-balance
-          :balance="accountData?.getUsableTransactionBalance()"
-          class="tw-inline tw-font-semibold"
-        />
+        {{ $t('store.modals.yourBalance') }}
+        <format-balance :balance="accountData?.free" class="tw-inline tw-font-semibold" />
       </div>
     </template>
     <template #buttons>
@@ -98,10 +95,7 @@ export default defineComponent({
     const formatBalance = computed(() => {
       const tokenDecimal = decimal.value;
       if (accountData.value) {
-        return plasmUtils.reduceBalanceToDenom(
-          accountData!.value!.getUsableTransactionBalance(),
-          tokenDecimal
-        );
+        return plasmUtils.reduceBalanceToDenom(accountData!.value!.free, tokenDecimal);
       } else {
         return '';
       }
