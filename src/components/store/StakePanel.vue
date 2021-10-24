@@ -56,15 +56,15 @@
 <script lang="ts">
 import { defineComponent, ref, toRefs, watchEffect } from 'vue';
 import BN from 'bn.js';
-import Web3 from 'web3';
 import Button from 'components/common/Button.vue';
 import StakeModal, { StakeModel } from 'components/store/modals/StakeModal.vue';
 import ClaimRewardModal from 'components/store/modals/ClaimRewardModal.vue';
 import { useStore } from 'src/store';
-import { useApi, useGetMinStaking } from 'src/hooks';
+import { useApi, useGetMinStaking, useChainMetadata } from 'src/hooks';
 import { getUnit } from 'src/hooks/helper/units';
 import { reduceDenomToBalance } from 'src/hooks/helper/plasmUtils';
 import { StakingParameters } from 'src/store/dapps-store/actions';
+import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 
 export default defineComponent({
   components: {
@@ -93,10 +93,11 @@ export default defineComponent({
     const formattedMinStake = ref<string>('');
     const modalAction = ref();
     const { minStaking } = useGetMinStaking(api);
+    const { defaultUnitToken, decimal } = useChainMetadata();
 
     watchEffect(() => {
-      const web3 = new Web3();
-      formattedMinStake.value = web3.utils.fromWei(minStaking.value.toString());
+      const minStakingAmount = plasmUtils.reduceBalanceToDenom(minStaking.value, decimal.value);
+      formattedMinStake.value = minStakingAmount;
     });
 
     const showStakeModal = () => {

@@ -8,16 +8,17 @@ export function useGetMinStaking(apiRef: any) {
 
   watchEffect(() => {
     const api = apiRef?.value;
+    if (!api) return;
+
     if (unsub.value) {
       unsub.value();
       unsub.value = undefined;
     }
-    if (api) {
-      api.isReady.then(async () => {
-        const amount = await api.consts.dappsStaking.minimumStakingAmount;
-        minStaking.value = amount;
-      });
-    }
+
+    api.isReady.then(async () => {
+      const amount = await api.consts.dappsStaking.minimumStakingAmount;
+      minStaking.value = amount;
+    });
   });
 
   onUnmounted(() => {
