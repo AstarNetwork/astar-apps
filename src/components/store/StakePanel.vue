@@ -23,7 +23,6 @@
         </Button>
 
         <Button
-          v-if="stakeInfo?.hasStake"
           :small="true"
           :primary="false"
           class="tw-ml-auto"
@@ -44,7 +43,7 @@
     />
 
     <ClaimRewardModal
-      v-if="showClaimRewardModal"
+      v-if="stakeInfo && dapp && showClaimRewardModal"
       v-model:isOpen="showClaimRewardModal"
       :dapp="dapp"
       :stake-info="stakeInfo"
@@ -153,7 +152,7 @@ export default defineComponent({
     const claim = async () => {
       // TODO maybe to add select address option to modal as in stake/unstake
       const senderAddress = store.getters['general/selectedAccountAddress'];
-      const result = await store.dispatch('dapps/claim', {
+      const result = await store.dispatch('dapps/claimBatch', {
         api: api?.value,
         senderAddress,
         dapp: props.dapp,
