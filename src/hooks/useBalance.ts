@@ -22,6 +22,10 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
   const updateAccountH160 = async (address: string) => {
     try {
       const web3 = await createWeb3Instance(currentNetworkIdx.value);
+      if (!web3) {
+        throw Error(`cannot create the web3 instance with network id ${currentNetworkIdx.value}`);
+      }
+
       const rawBal = await web3.eth.getBalance(address);
       accountDataRef.value = new AccountDataH160(
         new BN(rawBal),

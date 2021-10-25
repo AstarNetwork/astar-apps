@@ -14,6 +14,8 @@ interface ChainProvider {
   key: endpointKey;
   isStoreEnabled: boolean;
   subscan: string;
+  evmChainId: string;
+  evmRpc: string;
 }
 
 export enum endpointKey {
@@ -36,7 +38,8 @@ export const providerEndpoints: ChainProvider[] = [
   //   typeDef: typeDefs.plasmDefinitions,
   //   key: endpointKey.PLASM,
   //   isStoreEnabled: false,
-  //   subScan: 'https://astar.subscan.io'
+  //   subScan: 'https://astar.subscan.io',
+  //   evmChainId: ''
   // },
   {
     networkAlias: 'shiden-shell',
@@ -50,6 +53,8 @@ export const providerEndpoints: ChainProvider[] = [
     key: endpointKey.SHIDEN,
     isStoreEnabled: true,
     subscan: 'https://shiden.subscan.io',
+    evmChainId: '336',
+    evmRpc: 'https://rpc.shiden.astar.network:8545',
   },
   {
     networkAlias: 'dusty-testnet',
@@ -62,6 +67,8 @@ export const providerEndpoints: ChainProvider[] = [
     key: endpointKey.DUSTY,
     isStoreEnabled: false,
     subscan: '',
+    evmChainId: '',
+    evmRpc: '',
   },
   {
     networkAlias: 'shibuya-testnet',
@@ -75,6 +82,8 @@ export const providerEndpoints: ChainProvider[] = [
     key: endpointKey.SHIBUYA,
     isStoreEnabled: true,
     subscan: 'https://shibuya.subscan.io',
+    evmChainId: '81',
+    evmRpc: 'https://rpc.shibuya.astar.network:8545',
   },
   {
     networkAlias: 'local-node',
@@ -86,6 +95,8 @@ export const providerEndpoints: ChainProvider[] = [
     key: endpointKey.LOCAL,
     isStoreEnabled: true,
     subscan: '',
+    evmChainId: '',
+    evmRpc: '',
   },
   {
     networkAlias: 'custom-node',
@@ -97,5 +108,7 @@ export const providerEndpoints: ChainProvider[] = [
     key: endpointKey.CUSTOM,
     isStoreEnabled: true,
     subscan: '',
+    evmChainId: '',
+    evmRpc: '',
   },
 ];

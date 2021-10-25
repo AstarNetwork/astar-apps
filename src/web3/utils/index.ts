@@ -3,7 +3,7 @@ import Web3 from 'web3';
 import { CHAIN_INFORMATION } from '..';
 import { endpointKey } from 'src/config/chainEndpoints';
 
-export const getChainData = (chainId: 336 | 81) => {
+export const getChainData = (chainId: number) => {
   const { chainName, nativeCurrency, rpcUrls, blockExplorerUrls } = CHAIN_INFORMATION;
 
   return {
@@ -14,7 +14,7 @@ export const getChainData = (chainId: 336 | 81) => {
   };
 };
 
-export const setupNetwork = async (network: 336 | 81): Promise<boolean> => {
+export const setupNetwork = async (network: number): Promise<boolean> => {
   const provider = typeof window !== 'undefined' && window.ethereum;
   if (provider) {
     const chainId = `0x${network.toString(16)}`;
@@ -41,17 +41,17 @@ export const setupNetwork = async (network: 336 | 81): Promise<boolean> => {
   return false;
 };
 
-export const getChainId = (
-  currentNetworkIdx: TNetworkId
-): EVM.SHIDEN_MAINNET | EVM.SHIDEN_TESTNET => {
+export const getChainId = (currentNetworkIdx: TNetworkId): number => {
   if (currentNetworkIdx === endpointKey.SHIDEN) {
     return EVM.SHIDEN_MAINNET;
   }
-  return EVM.SHIDEN_TESTNET;
+  return EVM.SHIBUYA_TESTNET;
 };
 
 export const createWeb3Instance = async (currentNetworkIdx: TNetworkId) => {
   const chainId = getChainId(currentNetworkIdx);
   const network = getChainData(chainId);
+  if (!network.rpcUrls[0]) return;
+
   return new Web3(new Web3.providers.HttpProvider(network.rpcUrls[0]));
 };
