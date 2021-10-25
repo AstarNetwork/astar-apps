@@ -30,7 +30,7 @@
               tw-bg-transparent tw-placeholder-gray-300
               dark:tw-placeholder-darkGray-600
             "
-            style="width: 21rem"
+            :style="isH160 ? 'width: 24rem' : 'width: 21rem'"
             type="text"
             spellcheck="false"
             @change="changeAddress"
