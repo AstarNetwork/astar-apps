@@ -15,18 +15,24 @@ export const useChainMetadata = () => {
     defaultUnitToken: '',
   });
 
+  // Memo: Separate the watchEffect due to useApi returns decimal:12 at the very first moment if without `isReady`
   watchEffect(() => {
     if (!api || !api.value) return;
 
     api.value.isReady.then(() => {
       const registry = api.value!.registry;
       const decimals = registry.chainDecimals;
-      const tokens = registry.chainTokens;
-
       state.decimal = (decimals || [])[0];
-      state.defaultUnitToken = (tokens || [])[0];
-      setDefaultUnitName(state.defaultUnitToken);
     });
+  });
+
+  watchEffect(() => {
+    if (!api || !api.value) return;
+
+    const tokens = api.value!.registry.chainTokens;
+    // Memo: Always set from blank array if with `isReady`
+    state.defaultUnitToken = (tokens || [])[0];
+    setDefaultUnitName(state.defaultUnitToken);
   });
 
   return toRefs(state);

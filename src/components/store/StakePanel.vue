@@ -93,7 +93,7 @@ export default defineComponent({
     const formattedMinStake = ref<string>('');
     const modalAction = ref();
     const { minStaking } = useGetMinStaking(api);
-    const { defaultUnitToken, decimal } = useChainMetadata();
+    const { decimal } = useChainMetadata();
 
     watchEffect(() => {
       const minStakingAmount = plasmUtils.reduceBalanceToDenom(minStaking.value, decimal.value);
