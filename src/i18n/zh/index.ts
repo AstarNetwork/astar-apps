@@ -39,6 +39,7 @@ export default {
       sendFrom: '发自',
       sendTo: '发送到',
       alert: 'Alert',
+      invalidAddress: '钱包地址有误',
     },
   },
   dapps: {

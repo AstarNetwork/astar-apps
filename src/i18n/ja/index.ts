@@ -39,6 +39,7 @@ export default {
       sendFrom: '送信元',
       sendTo: '受取先',
       alert: 'Alert',
+      invalidAddress: '入力されたアドレスは正しくありません',
     },
   },
   dapps: {

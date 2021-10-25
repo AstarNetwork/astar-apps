@@ -274,7 +274,7 @@ export default defineComponent({
 
       const toastInvalidAddress = () =>
         store.dispatch('general/showAlertMsg', {
-          msg: 'The address is not valid',
+          msg: 'balance.modals.invalidAddress',
           alertType: 'error',
         });
 
@@ -289,7 +289,7 @@ export default defineComponent({
       if (isH160.value) {
         const provider = typeof window !== 'undefined' && window.ethereum;
         const web3 = new Web3(provider as any);
-        if (!web3.utils.checkAddressChecksum(toAddress)) {
+        if (!web3.utils.isAddress(toAddress)) {
           toastInvalidAddress();
           return;
         }

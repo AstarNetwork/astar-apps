@@ -45,6 +45,7 @@ export default {
       sendFrom: 'Send from',
       sendTo: 'Send to',
       alert: 'Alert',
+      invalidAddress: 'The address is not valid',
     },
   },
   dapps: {
