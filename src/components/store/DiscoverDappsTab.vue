@@ -10,19 +10,23 @@
       </icon-base>
       {{ $t('store.registerDapp') }}
     </Button>
-    <q-banner
-      rounded
+    <div
       class="
         tw-bg-white
         dark:tw-bg-darkGray-800
         tw-shadow tw-m-4 tw-rounded-lg tw-text-blue-900
         dark:tw-text-darkGray-100
         tw-p-2
-        q-pa-xs
       "
     >
-      {{ minimumStakingAmount }} {{ maxNumberOfStakersPerContract }}
-    </q-banner>
+      <div class="tw-flex tw-flex-row tw-content-around">
+        <DashboardItem :value="minimumStakingAmount" :caption="$t('store.minimumStakingAmount')" />
+        <DashboardItem
+          :value="maxNumberOfStakersPerContract"
+          :caption="$t('store.maxNumberOfStakersPerContract')"
+        />
+      </div>
+    </div>
     <div class="tw-flex tw-flex-wrap tw-justify-start">
       <div
         v-if="dapps.length === 0"
@@ -58,6 +62,7 @@ import IconBase from 'components/icons/IconBase.vue';
 import ModalRegisterDapp from 'components/store/modals/ModalRegisterDapp.vue';
 import ModalDappDetails from 'components/store/modals/ModalDappDetails.vue';
 import Button from 'components/common/Button.vue';
+import DashboardItem from 'components/common/DashboardItem.vue';
 import { DappItem } from 'src/store/dapps-store/state';
 
 export default defineComponent({
@@ -68,6 +73,7 @@ export default defineComponent({
     ModalRegisterDapp,
     ModalDappDetails,
     Button,
+    DashboardItem,
   },
   setup() {
     const store = useStore();

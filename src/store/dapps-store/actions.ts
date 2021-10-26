@@ -447,6 +447,7 @@ const actions: ActionTree<State, StateInterface> = {
               yourStake,
               claimedRewards: stakeInfo.claimedRewards.toHuman(),
               hasStake: !!yourStake,
+              stakersCount: stakeInfo.stakers.size,
             } as StakeInfo;
           }
         }
@@ -657,6 +658,7 @@ export interface StakeInfo {
   totalStake: string;
   claimedRewards: string;
   hasStake: boolean;
+  stakersCount: number;
 }
 
 export interface ClaimInfo {
