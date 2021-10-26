@@ -69,6 +69,7 @@
                   v-model:selAddress="fromAddress"
                   :all-accounts="allAccounts"
                   :all-account-names="allAccountNames"
+                  role="fromAddress"
                   @sel-changed="reloadAmount"
                 />
               </div>
@@ -87,6 +88,7 @@
                   v-model:selAddress="toAddress"
                   :all-accounts="allAccounts"
                   :all-account-names="allAccountNames"
+                  role="toAddress"
                 />
               </div>
 
@@ -117,20 +119,21 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, computed, ref, toRefs } from 'vue';
-import BN from 'bn.js';
-import { useApi, useChainMetadata } from 'src/hooks';
-import { web3FromSource } from '@polkadot/extension-dapp';
 import type { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
+import { web3FromSource } from '@polkadot/extension-dapp';
 import { ISubmittableResult } from '@polkadot/types/types';
-import * as plasmUtils from 'src/hooks/helper/plasmUtils';
-import { useStore } from 'src/store';
-import { getUnit } from 'src/hooks/helper/units';
-import ModalSelectAccount from './ModalSelectAccount.vue';
+import BN from 'bn.js';
 import FormatBalance from 'components/balance/FormatBalance.vue';
 import InputAmount from 'components/common/InputAmount.vue';
 import { providerEndpoints } from 'src/config/chainEndpoints';
+import { useApi, useChainMetadata } from 'src/hooks';
 import { useExtrinsicCall } from 'src/hooks/custom-signature/useExtrinsicCall';
+import * as plasmUtils from 'src/hooks/helper/plasmUtils';
+import { getUnit } from 'src/hooks/helper/units';
+import { useStore } from 'src/store';
+import { computed, defineComponent, ref, toRefs } from 'vue';
+import Web3 from 'web3';
+import ModalSelectAccount from './ModalSelectAccount.vue';
 
 export default defineComponent({
   components: {
@@ -175,6 +178,7 @@ export default defineComponent({
     const selectUnit = ref(defaultUnitToken.value);
     const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
+    const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
     // isCustomSigBlocked is temporary until extrinsic call pallet is deployed to all networks.
     const isCustomSigBlocked = computed(() => !!!providerEndpoints[currentNetworkIdx.value].prefix);
@@ -254,7 +258,7 @@ export default defineComponent({
 
         method && callFunc(method);
       } catch (e) {
-        console.log(e);
+        console.error(e);
         store.dispatch('general/showAlertMsg', {
           msg: (e as Error).message,
           alertType: 'error',
@@ -268,20 +272,55 @@ export default defineComponent({
       console.log('toAccount', toAddress);
       console.log('selUnit', selectUnit.value);
 
+      const toastInvalidAddress = () =>
+        store.dispatch('general/showAlertMsg', {
+          msg: 'balance.modals.invalidAddress',
+          alertType: 'error',
+        });
+
       if (Number(transferAmt) === 0) {
         store.dispatch('general/showAlertMsg', {
           msg: 'The amount of token to be transmitted must not be zero',
           alertType: 'error',
         });
         return;
-      } else if (
+      }
+
+      if (isH160.value) {
+        const provider = typeof window !== 'undefined' && window.ethereum;
+        const web3 = new Web3(provider as any);
+        if (!web3.utils.isAddress(toAddress)) {
+          toastInvalidAddress();
+          return;
+        }
+        store.commit('general/setLoading', true);
+        try {
+          await web3.eth
+            .sendTransaction({
+              to: toAddress,
+              from: fromAddress,
+              value: web3.utils.toWei(String(transferAmt), 'ether'),
+            })
+            .once('confirmation', (confNumber, receipt) => {
+              const hash = receipt.transactionHash;
+              const msg = `Completed at transaction hash #${hash}`;
+              store.dispatch('general/showAlertMsg', { msg, alertType: 'success' });
+              store.commit('general/setLoading', false);
+              closeModal();
+            });
+        } catch (error) {
+          console.error(error);
+          store.commit('general/setLoading', false);
+        }
+
+        return;
+      }
+
+      if (
         !plasmUtils.isValidAddressPolkadotAddress(fromAddress) ||
         !plasmUtils.isValidAddressPolkadotAddress(toAddress)
       ) {
-        store.dispatch('general/showAlertMsg', {
-          msg: 'The address is not valid',
-          alertType: 'error',
-        });
+        toastInvalidAddress();
         return;
       }
 

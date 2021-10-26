@@ -28,8 +28,8 @@ export default {
     transfer: '轉賬',
     transferable: '可使用餘額',
     modals: {
-      connectMetamask: '鏈接MetaMask',
-      ethereumExtension: 'ECDSA (Ethereum extension)',
+      connectMetamask: '鏈接 Ethereum Wallet',
+      ethereumExtension: 'Ethereum Extension',
       chooseAccount: '選擇賬戶',
       chooseNetwork: '選擇網路',
       switch: '更改',
@@ -39,6 +39,7 @@ export default {
       sendFrom: '發自',
       sendTo: '發送到',
       alert: 'Alert',
+      invalidAddress: '錢包地址有誤',
     },
   },
   dapps: {

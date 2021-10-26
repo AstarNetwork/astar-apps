@@ -28,8 +28,8 @@ export default {
     transfer: '送金',
     transferable: '支払可能残高',
     modals: {
-      connectMetamask: 'MetaMaskへ接続',
-      ethereumExtension: 'ECDSA (Ethereum extension)',
+      connectMetamask: 'Ethereum Walletへ接続',
+      ethereumExtension: 'Ethereum Extension',
       chooseAccount: 'アカウントの選択',
       chooseNetwork: 'ネットワークの選択',
       switch: 'スイッチ',
@@ -39,6 +39,7 @@ export default {
       sendFrom: '送信元',
       sendTo: '受取先',
       alert: 'Alert',
+      invalidAddress: '入力されたアドレスは正しくありません',
     },
   },
   dapps: {

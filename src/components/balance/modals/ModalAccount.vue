@@ -51,7 +51,7 @@
                 <MetamaskOption
                   v-if="isSupportContract"
                   v-model:selChecked="checkMetamask"
-                  :checked="checkMetamask"
+                  :checked="checkMetamask || isH160Account"
                   @connectMetamask="connectMetamask"
                 />
                 <ModalAccountOption
@@ -62,7 +62,7 @@
                   :key-idx="index"
                   :address="account"
                   :address-name="allAccountNames[index]"
-                  :checked="!checkMetamask && selAccount === index"
+                  :checked="!checkMetamask && !isH160Account && selAccount === index"
                 />
               </ul>
             </div>
@@ -83,6 +83,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue';
 import { useStore } from 'src/store';
+import { useRouter } from 'vue-router';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import MetamaskOption from './MetamaskOption.vue';
 import ModalAccountOption from './ModalAccountOption.vue';
@@ -108,38 +109,46 @@ export default defineComponent({
       emit('update:is-open', false);
     };
 
+    const currentRoute = computed(() => {
+      return useRouter().currentRoute.value;
+    });
+    const isBalancePath = currentRoute.value.matched[0].path === '/balance';
     const store = useStore();
 
     const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
     const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
+    const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
     const isSupportContract = ref(providerEndpoints[currentNetworkIdx.value].isSupportContract);
     const selectAccount = (accountIdx: number, checkMetamask: boolean) => {
       console.log(checkMetamask + '/' + accountIdx);
       store.commit('general/setIsCheckMetamask', checkMetamask);
       store.commit('general/setCurrentAccountIdx', accountIdx);
+      if (isH160Formatted.value && accountIdx !== 0) {
+        store.commit('general/setIsH160Formatted', false);
+      }
 
       emit('update:is-open', false);
     };
 
     const selAccount = ref(currentAccountIdx.value);
     const checkMetamask = ref<boolean>(isCheckMetamask.value);
+    const isH160Account = ref<boolean>(isH160Formatted.value);
 
     const connectMetamask = (ethAddr: string, ss58: string) => {
       console.log(ethAddr + '/' + ss58);
-      store.commit('general/setCurrentEcdsaAccount', {
-        ethereum: ethAddr,
-        ss58,
-      });
+      store.commit('general/setCurrentEcdsaAccount', { ethereum: ethAddr, ss58 });
     };
 
     return {
       selAccount,
       checkMetamask,
+      isH160Account,
       isSupportContract,
       closeModal,
       selectAccount,
       connectMetamask,
+      isBalancePath,
     };
   },
 });

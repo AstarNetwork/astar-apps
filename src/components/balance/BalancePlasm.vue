@@ -1,14 +1,20 @@
 <template>
   <div v-if="isConnected(currentNetworkStatus)">
-    <div class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4 tw-mb-8">
+    <div class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4">
       <Address
         v-model:isOpen="modalAccount"
         :address="currentAccount"
         :address-name="currentAccountName"
       />
     </div>
+    <div
+      v-if="isH160 || isSS58"
+      class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4 tw-mt-4"
+    >
+      <ToggleMetaMask />
+    </div>
 
-    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-y-4 md:tw-gap-4 tw-mb-8">
+    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-y-4 md:tw-gap-4 tw-mt-8">
       <TotalBalance v-if="accountData" :account-data="accountData" />
       <PlmBalance
         v-if="accountData"
@@ -47,6 +53,7 @@ import { useBalance, useApi, useAccount } from 'src/hooks';
 import { useStore } from 'src/store';
 import { useMeta } from 'quasar';
 import Address from './Address.vue';
+import ToggleMetaMask from './ToggleMetaMask.vue';
 import PlmBalance from './PlmBalance.vue';
 import TotalBalance from './TotalBalance.vue';
 import ModalAccount from './modals/ModalAccount.vue';
@@ -63,6 +70,8 @@ export default defineComponent({
     Address,
     PlmBalance,
     TotalBalance,
+    // ModalAlertBox,
+    ToggleMetaMask,
     ModalAccount,
     ModalTransferAmount,
   },
@@ -81,6 +90,8 @@ export default defineComponent({
     const { balance, accountData } = useBalance(api, currentAccount);
 
     const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
+    const isSS58 = computed(() => store.getters['general/isCheckMetamask']);
+    const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
     return {
       ...toRefs(stateModal),
@@ -92,6 +103,8 @@ export default defineComponent({
       currentAccountName,
       currentNetworkStatus,
       accountData,
+      isSS58,
+      isH160,
     };
   },
   methods: {
