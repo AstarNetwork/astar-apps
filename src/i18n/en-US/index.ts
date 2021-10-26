@@ -108,6 +108,9 @@ export default {
     unstake: 'Unstake',
     stake: 'Stake',
     claim: 'Claim',
+    minimumStakingAmount: 'Min. staking amount',
+    maxNumberOfStakersPerContract: 'Max. stakers per contract',
+    stakersCount: 'Stakers:',
     modals: {
       alreadyClaimed: 'Already claimed:',
       contractRewards: 'Contract rewards:',

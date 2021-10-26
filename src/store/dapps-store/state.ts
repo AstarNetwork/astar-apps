@@ -13,6 +13,8 @@ export interface NewDappItem extends DappItem {
 
 export interface DappStateInterface {
   dapps: DappItem[];
+  minimumStakingAmount: string;
+  maxNumberOfStakersPerContract: number;
 }
 
 export interface LooseObject {
@@ -22,6 +24,8 @@ export interface LooseObject {
 function state(): DappStateInterface {
   return {
     dapps: [],
+    minimumStakingAmount: '0',
+    maxNumberOfStakersPerContract: 0,
   };
 }
 

@@ -453,6 +453,7 @@ const actions: ActionTree<State, StateInterface> = {
               yourStake,
               claimedRewards: stakeInfo.claimedRewards.toHuman(),
               hasStake: !!yourStake.formatted,
+              stakersCount: stakeInfo.stakers.size,
             } as StakeInfo;
           }
         }
@@ -568,6 +569,27 @@ const actions: ActionTree<State, StateInterface> = {
     console.log('calculated reward', result.rewards.toHuman());
     return result;
   },
+
+  async getStakingInfo({ commit, dispatch, rootState }) {
+    const { api } = useApi();
+    await api?.value?.isReady;
+
+    try {
+      const [minimumStakingAmount, maxNumberOfStakersPerContract] = await Promise.all([
+        api?.value?.consts.dappsStaking.minimumStakingAmount,
+        api?.value?.consts.dappsStaking.maxNumberOfStakersPerContract,
+      ]);
+
+      commit('setMinimumStakingAmount', minimumStakingAmount?.toHuman());
+      commit(
+        'setMaxNumberOfStakersPerContract',
+        parseInt(maxNumberOfStakersPerContract?.toString() || '0')
+      );
+    } catch (e) {
+      const error = e as unknown as Error;
+      showError(dispatch, error.message);
+    }
+  },
 };
 
 const getEstimatedClaimedAwards = (
@@ -647,6 +669,7 @@ export interface StakeInfo {
   totalStake: string;
   claimedRewards: string;
   hasStake: boolean;
+  stakersCount: number;
 }
 
 export interface ClaimInfo {
