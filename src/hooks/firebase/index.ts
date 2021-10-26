@@ -13,11 +13,11 @@ import { DappItem, NewDappItem } from 'src/store/dapps-store/state';
 
 // firebase init - add your own config here
 const firebaseConfig = {
-  apiKey: 'AIzaSyA0z54GGpR59uOzb-I4aNDCmvC1S1UO24E',
+  apiKey: 'AIzaSyBS6tU69xQAnfWfI4U9vmErJ7qBDnO7MOI',
   authDomain: '',
   databaseURL: '',
-  projectId: 'dapp-store-7f9ab',
-  storageBucket: 'gs://dapp-store-7f9ab.appspot.com',
+  projectId: 'astarnetwork-a4924',
+  storageBucket: 'gs://astarnetwork-a4924.appspot.com',
   messagingSenderId: '',
   appId: '',
 };
@@ -46,8 +46,8 @@ const addDapp = async (collectionName: string, dapp: NewDappItem): Promise<DappI
   return newDapp;
 };
 
-const uploadFile = async (fileName: string, base64Content: string) => {
-  const imagesRef = ref(storage, `images/${fileName}`);
+const uploadFile = async (fileName: string, collectionKey: string, base64Content: string) => {
+  const imagesRef = ref(storage, `${collectionKey}/${fileName}`);
   const result = await uploadString(imagesRef, base64Content, 'data_url');
   const url = await getDownloadURL(ref(storage, result.metadata.fullPath));
 

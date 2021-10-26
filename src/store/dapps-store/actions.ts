@@ -7,17 +7,18 @@ import {
   Balance,
   EventRecord,
   DispatchError,
-  DispatchResult,
 } from '@polkadot/types/interfaces';
 import { formatBalance } from '@polkadot/util';
 import BN from 'bn.js';
 import { StateInterface } from '../index';
 import { DappItem, DappStateInterface as State, NewDappItem } from './state';
 import { uploadFile, addDapp, getDapps } from 'src/hooks/firebase';
+import { useApi } from 'src/hooks/useApi';
 import { ApiPromise } from '@polkadot/api';
-import { providerEndpoints } from 'src/config/chainEndpoints';
 import { ISubmittableResult, ITuple } from '@polkadot/types/types';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
+
+let collectionKey: string;
 
 const showError = (dispatch: Dispatch, message: string): void => {
   dispatch(
@@ -41,11 +42,16 @@ const getFormattedBalance = (parameters: StakingParameters): string => {
   });
 };
 
-const getCollectionKey = (rootState: StateInterface) => {
-  const currentNetworkIdx = rootState.general.currentNetworkIdx;
-  const currentNetworkAlias = providerEndpoints[currentNetworkIdx].networkAlias;
+const getCollectionKey = async (): Promise<string> => {
+  if (!collectionKey) {
+    const { api } = useApi();
 
-  return `${currentNetworkAlias}-dapps`;
+    await api?.value?.isReady;
+    const chain = (await api?.value?.rpc.system.chain()) || 'development-dapps';
+    collectionKey = `${chain.toString().toLowerCase()}-dapps`.replace(' ', '-');
+  }
+
+  return collectionKey;
 };
 
 const hasExtrinsicFailedEvent = (events: EventRecord[], dispatch: Dispatch): boolean => {
@@ -157,7 +163,7 @@ const actions: ActionTree<State, StateInterface> = {
     commit('general/setLoading', true, { root: true });
 
     try {
-      const collectionKey = getCollectionKey(rootState);
+      const collectionKey = await getCollectionKey();
       const collection = await getDapps(collectionKey);
       commit(
         'addDapps',
@@ -188,29 +194,39 @@ const actions: ActionTree<State, StateInterface> = {
             async (result) => {
               if (result.status.isFinalized) {
                 if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
-                  if (parameters.dapp.iconFileName) {
-                    const fileName = `${parameters.dapp.address}_${parameters.dapp.iconFileName}`;
-                    parameters.dapp.iconUrl = await uploadFile(fileName, parameters.dapp.iconFile);
-                  } else {
-                    parameters.dapp.iconUrl = '/images/noimage.png';
+                  try {
+                    if (parameters.dapp.iconFileName) {
+                      const fileName = `${parameters.dapp.address}_${parameters.dapp.iconFileName}`;
+                      parameters.dapp.iconUrl = await uploadFile(
+                        fileName,
+                        await getCollectionKey(),
+                        parameters.dapp.iconFile
+                      );
+                    } else {
+                      parameters.dapp.iconUrl = '/images/noimage.png';
+                    }
+
+                    if (!parameters.dapp.url) {
+                      parameters.dapp.url = '';
+                    }
+
+                    const collectionKey = await getCollectionKey();
+                    const addedDapp = await addDapp(collectionKey, parameters.dapp);
+                    commit('addDapp', addedDapp);
+
+                    dispatch(
+                      'general/showAlertMsg',
+                      {
+                        msg: `You successfully registered dApp ${parameters.dapp.name} to the store.`,
+                        alertType: 'success',
+                      },
+                      { root: true }
+                    );
+                  } catch (e) {
+                    const error = e as unknown as Error;
+                    console.log(error);
+                    showError(dispatch, error.message);
                   }
-
-                  if (!parameters.dapp.url) {
-                    parameters.dapp.url = '';
-                  }
-
-                  const collectionKey = getCollectionKey(rootState);
-                  const addedDapp = await addDapp(collectionKey, parameters.dapp);
-                  commit('addDapp', addedDapp);
-
-                  dispatch(
-                    'general/showAlertMsg',
-                    {
-                      msg: `You successfully registered dApp ${parameters.dapp.name} to the store.`,
-                      alertType: 'success',
-                    },
-                    { root: true }
-                  );
                 }
 
                 commit('general/setLoading', false, { root: true });
