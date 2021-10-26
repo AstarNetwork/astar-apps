@@ -6,7 +6,7 @@
         <span class="tw-font-semibold">{{ stakeInfo?.totalStake }}</span>
         <div :style="{ opacity: stakeInfo?.hasStake ? '1' : '0' }">
           {{ $t('store.yourStake') }}
-          <span class="tw-font-semibold">{{ stakeInfo?.yourStake }}</span>
+          <span class="tw-font-semibold">{{ stakeInfo?.yourStake.formatted }}</span>
         </div>
       </div>
       <div class="tw-flex">
@@ -41,6 +41,7 @@
       :action-name="modalActionName"
       :title="modalTitle"
       :min-staking="formattedMinStake"
+      :stake-amount="stakeInfo?.yourStake.denomAmount"
     />
 
     <ClaimRewardModal

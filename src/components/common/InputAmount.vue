@@ -41,6 +41,9 @@
             @focus="initInput"
           />
         </div>
+        <button v-if="isMaxButton" type="button" class="max" @click="setMaxAmount">
+          {{ $t('max') }}
+        </button>
         <div
           class="
             tw-text-blue-900
@@ -89,6 +92,7 @@ export default defineComponent({
     maxInDefaultUnit: { type: Object as PropType<BN>, default: new BN(0) },
     fixUnit: { type: Boolean, default: false },
     amount: { default: new BN(0), type: (Object as PropType<BN>) || Number },
+    isMaxButton: { type: Boolean },
   },
   emits: ['update:amount', 'update:selectedUnit', 'input'],
   setup(props, { emit }) {
@@ -99,6 +103,13 @@ export default defineComponent({
       emit('update:amount', amount);
       emit('update:selectedUnit', unit);
       emit('input', { amount, unit });
+    };
+
+    const setMaxAmount = () => {
+      if (props.maxInDefaultUnit) {
+        emit('update:selectedUnit', arrUnitNames[defaultUnitIndex]);
+        emit('update:amount', props.maxInDefaultUnit);
+      }
     };
 
     const store = useStore();
@@ -112,7 +123,7 @@ export default defineComponent({
         return;
       }
 
-      if (formattedAmount.gte(formattedMaxInDefaultUnit)) {
+      if (formattedAmount.gte(formattedMaxInDefaultUnit) && !props.isMaxButton) {
         isMaxAmount.value = true;
         return;
       }
@@ -144,7 +155,7 @@ export default defineComponent({
       }
     };
 
-    return { arrUnitNames, update, isMaxAmount, isInitInput, initInput, isH160 };
+    return { arrUnitNames, update, isMaxAmount, isInitInput, initInput, isH160, setMaxAmount };
   },
 });
 </script>

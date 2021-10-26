@@ -434,10 +434,16 @@ const actions: ActionTree<State, StateInterface> = {
           const stakeInfo = await stakeInfoPromise.unwrapOr(null);
 
           if (stakeInfo) {
-            let yourStake = '';
+            let yourStake = {
+              formatted: '',
+              denomAmount: new BN('0'),
+            };
             for (const [account, balance] of stakeInfo.stakers) {
               if (account.toString() === parameters.senderAddress) {
-                yourStake = balance.toHuman();
+                yourStake = {
+                  formatted: balance.toHuman(),
+                  denomAmount: new BN(balance.toString()),
+                };
                 break;
               }
             }
@@ -446,7 +452,7 @@ const actions: ActionTree<State, StateInterface> = {
               totalStake: stakeInfo.total.toHuman(),
               yourStake,
               claimedRewards: stakeInfo.claimedRewards.toHuman(),
-              hasStake: !!yourStake,
+              hasStake: !!yourStake.formatted,
             } as StakeInfo;
           }
         }
@@ -632,7 +638,12 @@ export interface StakingParameters {
 }
 
 export interface StakeInfo {
-  yourStake: string | undefined;
+  yourStake:
+    | undefined
+    | {
+        formatted: string;
+        denomAmount: BN;
+      };
   totalStake: string;
   claimedRewards: string;
   hasStake: boolean;
