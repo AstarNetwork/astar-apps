@@ -10,6 +10,13 @@
       </icon-base>
       {{ $t('store.registerDapp') }}
     </Button>
+    <div class="tw-flex tw-flex-row tw-content-around">
+      <DashboardItem :value="minimumStakingAmount" :caption="$t('store.minimumStakingAmount')" />
+      <DashboardItem
+        :value="maxNumberOfStakersPerContract"
+        :caption="$t('store.maxNumberOfStakersPerContract')"
+      />
+    </div>
     <div class="tw-flex tw-flex-wrap tw-justify-start">
       <div
         v-if="dapps.length === 0"
@@ -45,6 +52,7 @@ import IconBase from 'components/icons/IconBase.vue';
 import ModalRegisterDapp from 'components/store/modals/ModalRegisterDapp.vue';
 import ModalDappDetails from 'components/store/modals/ModalDappDetails.vue';
 import Button from 'components/common/Button.vue';
+import DashboardItem from 'components/common/DashboardItem.vue';
 import { DappItem } from 'src/store/dapps-store/state';
 
 export default defineComponent({
@@ -55,15 +63,21 @@ export default defineComponent({
     ModalRegisterDapp,
     ModalDappDetails,
     Button,
+    DashboardItem,
   },
   setup() {
     const store = useStore();
     const dapps = computed(() => store.getters['dapps/getAllDapps']);
+    const maxNumberOfStakersPerContract = computed(
+      () => store.getters['dapps/getMaxNumberOfStakersPerContract']
+    );
+    const minimumStakingAmount = computed(() => store.getters['dapps/getMinimumStakingAmount']);
     const showRegisterDappModal = ref<boolean>(false);
     const showDappDetailsModal = ref<boolean>(false);
     const selectedDapp = ref<DappItem>();
 
     store.dispatch('dapps/getDapps');
+    store.dispatch('dapps/getStakingInfo');
 
     const showDetailsModal = (dapp: DappItem): void => {
       selectedDapp.value = dapp;
@@ -75,6 +89,8 @@ export default defineComponent({
       selectedDapp,
       showRegisterDappModal,
       showDappDetailsModal,
+      maxNumberOfStakersPerContract,
+      minimumStakingAmount,
       showDetailsModal,
     };
   },

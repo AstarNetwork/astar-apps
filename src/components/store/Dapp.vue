@@ -77,7 +77,6 @@ export default defineComponent({
         } as StakingParameters)
         .then((info: StakeInfo) => {
           if (info) {
-            console.log('info', info);
             stakeInfo.value = info;
           }
         });

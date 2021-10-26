@@ -2,11 +2,17 @@
   <div>
     <div>
       <div v-if="stakeInfo" class="tw-mb-4">
-        {{ $t('store.totalStake') }}
-        <span class="tw-font-semibold">{{ stakeInfo?.totalStake }}</span>
-        <div :style="{ opacity: stakeInfo?.hasStake ? '1' : '0' }">
-          {{ $t('store.yourStake') }}
-          <span class="tw-font-semibold">{{ stakeInfo?.yourStake }}</span>
+        <div class="tw-flex tw-flex-row">
+          <div class="tw-w-20">{{ $t('store.stakersCount') }}</div>
+          <div class="tw-font-semibold">{{ stakeInfo?.stakersCount }}</div>
+        </div>
+        <div class="tw-flex tw-flex-row">
+          <div class="tw-w-20">{{ $t('store.totalStake') }}</div>
+          <div class="tw-font-semibold">{{ stakeInfo?.totalStake }}</div>
+        </div>
+        <div :style="{ opacity: stakeInfo?.hasStake ? '1' : '0' }" class="tw-flex tw-flex-row">
+          <div class="tw-w-20">{{ $t('store.yourStake') }}</div>
+          <div class="tw-font-semibold">{{ stakeInfo?.yourStake }}</div>
         </div>
       </div>
       <div class="tw-flex">
