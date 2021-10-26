@@ -10,6 +10,19 @@
       </icon-base>
       {{ $t('store.registerDapp') }}
     </Button>
+    <q-banner
+      rounded
+      class="
+        tw-bg-white
+        dark:tw-bg-darkGray-800
+        tw-shadow tw-m-4 tw-rounded-lg tw-text-blue-900
+        dark:tw-text-darkGray-100
+        tw-p-2
+        q-pa-xs
+      "
+    >
+      {{ minimumStakingAmount }} {{ maxNumberOfStakersPerContract }}
+    </q-banner>
     <div class="tw-flex tw-flex-wrap tw-justify-start">
       <div
         v-if="dapps.length === 0"
@@ -59,11 +72,16 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const dapps = computed(() => store.getters['dapps/getAllDapps']);
+    const maxNumberOfStakersPerContract = computed(
+      () => store.getters['dapps/getMaxNumberOfStakersPerContract']
+    );
+    const minimumStakingAmount = computed(() => store.getters['dapps/getMinimumStakingAmount']);
     const showRegisterDappModal = ref<boolean>(false);
     const showDappDetailsModal = ref<boolean>(false);
     const selectedDapp = ref<DappItem>();
 
     store.dispatch('dapps/getDapps');
+    store.dispatch('dapps/getStakingInfo');
 
     const showDetailsModal = (dapp: DappItem): void => {
       selectedDapp.value = dapp;
@@ -75,6 +93,8 @@ export default defineComponent({
       selectedDapp,
       showRegisterDappModal,
       showDappDetailsModal,
+      maxNumberOfStakersPerContract,
+      minimumStakingAmount,
       showDetailsModal,
     };
   },
