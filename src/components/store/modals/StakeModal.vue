@@ -25,11 +25,8 @@
         :max-in-default-unit="formatBalance"
       />
       <div v-if="accountData" class="tw-mt-1 tw-ml-1">
-        {{ $t('balance.transferable') }}
-        <format-balance
-          :balance="accountData?.getUsableTransactionBalance()"
-          class="tw-inline tw-font-semibold"
-        />
+        {{ $t('store.modals.yourBalance') }}
+        <format-balance :balance="accountData?.free" class="tw-inline tw-font-semibold" />
       </div>
     </template>
     <template #buttons>
@@ -77,6 +74,10 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    minStaking: {
+      type: String,
+      required: true,
+    },
   },
   setup(props) {
     const store = useStore();
@@ -84,7 +85,7 @@ export default defineComponent({
 
     const data = ref<StakeModel>({
       address: '',
-      amount: 0,
+      amount: props.actionName === 'Stake' ? Number(props.minStaking) : 0,
       unit: defaultUnitToken.value,
       decimal: decimal.value,
     } as StakeModel);
@@ -98,10 +99,7 @@ export default defineComponent({
     const formatBalance = computed(() => {
       const tokenDecimal = decimal.value;
       if (accountData.value) {
-        return plasmUtils.reduceBalanceToDenom(
-          accountData!.value!.getUsableTransactionBalance(),
-          tokenDecimal
-        );
+        return plasmUtils.reduceBalanceToDenom(accountData!.value!.free, tokenDecimal);
       } else {
         return '';
       }

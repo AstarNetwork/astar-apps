@@ -130,8 +130,6 @@ export function useBalance(apiRef: any, addressRef: Ref<string>) {
     { immediate: true }
   );
 
-  // Fixme: Update the latest `vested` when block has been updated.
-  // (implement something like useInterval might be better.)
   watch(
     () => accountDataRef?.value,
     (info) => {

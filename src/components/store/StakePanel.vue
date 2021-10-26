@@ -40,6 +40,7 @@
       :action="modalAction"
       :action-name="modalActionName"
       :title="modalTitle"
+      :min-staking="formattedMinStake"
     />
 
     <ClaimRewardModal
@@ -53,16 +54,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, toRefs } from 'vue';
+import { defineComponent, ref, toRefs, watchEffect } from 'vue';
 import BN from 'bn.js';
 import Button from 'components/common/Button.vue';
 import StakeModal, { StakeModel } from 'components/store/modals/StakeModal.vue';
 import ClaimRewardModal from 'components/store/modals/ClaimRewardModal.vue';
 import { useStore } from 'src/store';
-import { useApi } from 'src/hooks';
+import { useApi, useGetMinStaking, useChainMetadata } from 'src/hooks';
 import { getUnit } from 'src/hooks/helper/units';
 import { reduceDenomToBalance } from 'src/hooks/helper/plasmUtils';
 import { StakingParameters } from 'src/store/dapps-store/actions';
+import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 
 export default defineComponent({
   components: {
@@ -88,7 +90,15 @@ export default defineComponent({
     const showClaimRewardModal = ref<boolean>(false);
     const modalTitle = ref<string>('');
     const modalActionName = ref<string>('');
+    const formattedMinStake = ref<string>('');
     const modalAction = ref();
+    const { minStaking } = useGetMinStaking(api);
+    const { decimal } = useChainMetadata();
+
+    watchEffect(() => {
+      const minStakingAmount = plasmUtils.reduceBalanceToDenom(minStaking.value, decimal.value);
+      formattedMinStake.value = minStakingAmount;
+    });
 
     const showStakeModal = () => {
       modalTitle.value = `Stake on ${props.dapp.name}`;
@@ -118,13 +128,24 @@ export default defineComponent({
     };
 
     const stake = async (stakeData: StakeModel) => {
+      const amount = getAmount(stakeData);
+      const unit = stakeData.unit;
+
+      if (amount.lt(minStaking.value)) {
+        store.dispatch('general/showAlertMsg', {
+          msg: `The amount of token to be staking must greater than ${formattedMinStake.value} ${unit}`,
+          alertType: 'error',
+        });
+        return;
+      }
+
       const result = await store.dispatch('dapps/stake', {
         api: api?.value,
         senderAddress: stakeData.address,
         dapp: props.dapp,
-        amount: getAmount(stakeData),
+        amount,
         decimals: stakeData.decimal,
-        unit: stakeData.unit,
+        unit,
         finalizeCallback: emitStakeChanged,
       } as StakingParameters);
 
@@ -174,6 +195,7 @@ export default defineComponent({
       showStakeModal,
       showUnstakeModal,
       claim,
+      formattedMinStake,
     };
   },
 });

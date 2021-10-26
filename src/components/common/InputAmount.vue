@@ -17,7 +17,6 @@
         :class="[
           !isMaxAmount && 'tw-border-gray-300',
           !isMaxAmount && 'dark:tw-border-darkGray-500',
-          !isMaxAmount && 'tw-border-b',
           'tw-flex',
           'tw-items-center',
         ]"
@@ -118,6 +117,13 @@ export default defineComponent({
         return;
       }
       isMaxAmount.value = false;
+    });
+
+    watchEffect(() => {
+      // Memo: to allow show the default amount for staking modal
+      if (!isInitInput.value && Number(props.amount) > 0) {
+        isInitInput.value = true;
+      }
     });
 
     const initInput = () => {

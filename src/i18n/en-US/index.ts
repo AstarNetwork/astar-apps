@@ -111,6 +111,7 @@ export default {
     modals: {
       alreadyClaimed: 'Already claimed:',
       contractRewards: 'Contract rewards:',
+      yourBalance: 'Your balance',
       yourRewards: 'Your rewards',
       contractAddress: 'Contract address {address}',
       logo: 'Logo',
