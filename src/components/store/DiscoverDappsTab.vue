@@ -10,22 +10,12 @@
       </icon-base>
       {{ $t('store.registerDapp') }}
     </Button>
-    <div
-      class="
-        tw-bg-white
-        dark:tw-bg-darkGray-800
-        tw-shadow tw-m-4 tw-rounded-lg tw-text-blue-900
-        dark:tw-text-darkGray-100
-        tw-p-2
-      "
-    >
-      <div class="tw-flex tw-flex-row tw-content-around">
-        <DashboardItem :value="minimumStakingAmount" :caption="$t('store.minimumStakingAmount')" />
-        <DashboardItem
-          :value="maxNumberOfStakersPerContract"
-          :caption="$t('store.maxNumberOfStakersPerContract')"
-        />
-      </div>
+    <div class="tw-flex tw-flex-row tw-content-around">
+      <DashboardItem :value="minimumStakingAmount" :caption="$t('store.minimumStakingAmount')" />
+      <DashboardItem
+        :value="maxNumberOfStakersPerContract"
+        :caption="$t('store.maxNumberOfStakersPerContract')"
+      />
     </div>
     <div class="tw-flex tw-flex-wrap tw-justify-start">
       <div

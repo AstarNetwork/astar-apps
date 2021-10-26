@@ -1,5 +1,13 @@
 <template>
-  <div class="tw-mx-4 tw-mb-2">
+  <div
+    class="
+      tw-bg-white
+      dark:tw-bg-darkGray-800
+      tw-shadow tw-m-4 tw-rounded-lg tw-text-blue-900
+      dark:tw-text-darkGray-100
+      tw-p-4
+    "
+  >
     <div class="tw-text-center tw-font-semibold tw-text-xl tw-my-1">{{ value }}</div>
     <div class="tw-text-center">{{ caption }}</div>
   </div>
