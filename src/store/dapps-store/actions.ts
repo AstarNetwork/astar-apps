@@ -190,6 +190,7 @@ const actions: ActionTree<State, StateInterface> = {
             parameters.senderAddress,
             {
               signer: injector?.signer,
+              nonce: -1,
             },
             async (result) => {
               if (result.status.isFinalized) {
@@ -257,12 +258,14 @@ const actions: ActionTree<State, StateInterface> = {
     try {
       if (parameters.api) {
         const injector = await web3FromSource('polkadot-js');
+        // const nonce = await parameters.api.rpc.system.accountNextIndex(parameters.senderAddress);
         const unsub = await parameters.api.tx.dappsStaking
           .bondAndStake(getAddressEnum(parameters.dapp.address), parameters.amount)
           .signAndSend(
             parameters.senderAddress,
             {
               signer: injector?.signer,
+              nonce: -1,
             },
             (result) => {
               if (result.status.isFinalized) {
@@ -313,6 +316,7 @@ const actions: ActionTree<State, StateInterface> = {
             parameters.senderAddress,
             {
               signer: injector?.signer,
+              nonce: -1,
             },
             (result) => {
               if (result.status.isFinalized) {
@@ -384,6 +388,7 @@ const actions: ActionTree<State, StateInterface> = {
           parameters.senderAddress,
           {
             signer: injector?.signer,
+            nonce: -1,
           },
           (result) => {
             if (result.isFinalized) {

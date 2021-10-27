@@ -8,7 +8,7 @@
       tw-p-4
     "
   >
-    <div class="tw-text-center tw-font-semibold tw-text-xl tw-my-1">{{ value }}</div>
+    <div class="tw-text-center tw-font-semibold tw-text-2xl tw-my-1">{{ value }}</div>
     <div class="tw-text-center">{{ caption }}</div>
   </div>
 </template>
