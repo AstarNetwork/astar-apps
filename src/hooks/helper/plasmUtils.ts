@@ -56,6 +56,7 @@ export const isValidAddressPolkadotAddress = (address: string) => {
 };
 
 /**
+ * Remove the unnecessary decimals such as '.000' that returned in `<Balance>.toHuman()` function
  * @param amountWithUnit eg: '100.0000 SDN'
  * @returns '100 SDN'
  */
