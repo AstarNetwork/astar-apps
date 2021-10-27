@@ -10,7 +10,7 @@
       </icon-base>
       {{ $t('store.registerDapp') }}
     </Button>
-    <div class="tw-flex tw-flex-row tw-content-around">
+    <div class="tw-flex tw-flex-row tw-flex-wrap tw-content-around">
       <DashboardItem :value="minimumStakingAmount" :caption="$t('store.minimumStakingAmount')" />
       <DashboardItem
         :value="maxNumberOfStakersPerContract"
