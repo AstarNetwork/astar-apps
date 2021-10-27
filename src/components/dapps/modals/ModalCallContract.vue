@@ -195,6 +195,7 @@
                 v-model:selectedUnit="selectUnitEndowment"
                 title="Value"
                 :max-in-default-unit="endowment"
+                :is-max-button="false"
               />
 
               <input-amount
@@ -202,6 +203,7 @@
                 v-model:selectedUnit="selectUnitGas"
                 title="Max gas allowed"
                 :max-in-default-unit="weight"
+                :is-max-button="false"
               />
             </div>
             <div v-if="outcomes" class="tw-mt-5">

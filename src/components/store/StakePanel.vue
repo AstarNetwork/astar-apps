@@ -12,7 +12,7 @@
         </div>
         <div :style="{ opacity: stakeInfo?.hasStake ? '1' : '0' }" class="tw-flex tw-flex-row">
           <div class="tw-w-20">{{ $t('store.yourStake') }}</div>
-          <div class="tw-font-semibold">{{ stakeInfo?.yourStake }}</div>
+          <div class="tw-font-semibold">{{ stakeInfo?.yourStake.formatted }}</div>
         </div>
       </div>
       <div class="tw-flex">
@@ -47,6 +47,7 @@
       :action-name="modalActionName"
       :title="modalTitle"
       :min-staking="formattedMinStake"
+      :stake-amount="stakeInfo?.yourStake.denomAmount"
     />
 
     <ClaimRewardModal
@@ -95,7 +96,7 @@ export default defineComponent({
     const showModal = ref<boolean>(false);
     const showClaimRewardModal = ref<boolean>(false);
     const modalTitle = ref<string>('');
-    const modalActionName = ref<string>('');
+    const modalActionName = ref<StakeAction | ''>('');
     const formattedMinStake = ref<string>('');
     const modalAction = ref();
     const { minStaking } = useGetMinStaking(api);
@@ -108,14 +109,14 @@ export default defineComponent({
 
     const showStakeModal = () => {
       modalTitle.value = `Stake on ${props.dapp.name}`;
-      modalActionName.value = 'Stake';
+      modalActionName.value = StakeAction.Stake;
       modalAction.value = stake;
       showModal.value = true;
     };
 
     const showUnstakeModal = () => {
       modalTitle.value = `Unstake from ${props.dapp.name}`;
-      modalActionName.value = 'Unstake';
+      modalActionName.value = StakeAction.Unstake;
       modalAction.value = unstake;
       showModal.value = true;
     };
@@ -205,4 +206,9 @@ export default defineComponent({
     };
   },
 });
+
+export enum StakeAction {
+  Stake = 'Stake',
+  Unstake = 'Unstake',
+}
 </script>

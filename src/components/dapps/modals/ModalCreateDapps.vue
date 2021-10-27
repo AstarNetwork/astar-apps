@@ -169,6 +169,7 @@
                   v-model:selectedUnit="selectUnitEndowment"
                   title="Endowment"
                   :max-in-default-unit="endowment"
+                  :is-max-button="false"
                 />
 
                 <div v-if="isInsufficientFee" class="tw-inline-flex tw-text-red-700 tw-text-xs">
@@ -188,6 +189,7 @@
                   v-model:selectedUnit="selectUnitGas"
                   title="Max gas allowed"
                   :max-in-default-unit="weight"
+                  :is-max-button="false"
                 />
               </div>
             </div>

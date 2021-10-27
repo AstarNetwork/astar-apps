@@ -22,11 +22,18 @@
         v-model:amount="data.amount"
         v-model:selectedUnit="data.unit"
         title="Amount"
-        :max-in-default-unit="formatBalance"
+        :max-in-default-unit="
+          actionName === StakeAction.Unstake ? formatStakeAmount : formatBalance
+        "
+        :is-max-button="actionName === StakeAction.Unstake ? true : false"
       />
-      <div v-if="accountData" class="tw-mt-1 tw-ml-1">
+      <div v-if="accountData && actionName !== StakeAction.Unstake" class="tw-mt-1 tw-ml-1">
         {{ $t('store.modals.yourBalance') }}
         <format-balance :balance="accountData?.free" class="tw-inline tw-font-semibold" />
+      </div>
+      <div v-if="accountData && actionName === StakeAction.Unstake" class="tw-mt-1 tw-ml-1">
+        {{ $t('store.yourStake') }}
+        <format-balance :balance="stakeAmount" class="tw-inline tw-font-semibold" />
       </div>
     </template>
     <template #buttons>
@@ -36,17 +43,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, toRefs } from 'vue';
-import { useStore } from 'src/store';
-import { useChainMetadata } from 'src/hooks';
-import Modal from 'components/common/Modal.vue';
-import ModalSelectAccount from 'components/balance/modals/ModalSelectAccount.vue';
-import InputAmount from 'src/components/common/InputAmount.vue';
-import Button from 'src/components/common/Button.vue';
-import Avatar from 'src/components/common/Avatar.vue';
-import * as plasmUtils from 'src/hooks/helper/plasmUtils';
-import { useBalance, useApi, useAccount } from 'src/hooks';
+import BN from 'bn.js';
 import FormatBalance from 'components/balance/FormatBalance.vue';
+import ModalSelectAccount from 'components/balance/modals/ModalSelectAccount.vue';
+import Modal from 'components/common/Modal.vue';
+import Avatar from 'src/components/common/Avatar.vue';
+import Button from 'src/components/common/Button.vue';
+import InputAmount from 'src/components/common/InputAmount.vue';
+import { useAccount, useApi, useBalance, useChainMetadata } from 'src/hooks';
+import * as plasmUtils from 'src/hooks/helper/plasmUtils';
+import { useStore } from 'src/store';
+import { computed, defineComponent, ref, toRefs } from 'vue';
+import { StakeAction } from '../StakePanel.vue';
 
 export default defineComponent({
   components: {
@@ -78,6 +86,10 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    stakeAmount: {
+      type: BN,
+      required: true,
+    },
   },
   setup(props) {
     const store = useStore();
@@ -105,6 +117,10 @@ export default defineComponent({
       }
     });
 
+    const formatStakeAmount = computed(() => {
+      return plasmUtils.reduceBalanceToDenom(props.stakeAmount, decimal.value);
+    });
+
     const reloadAmount = (
       address: string,
       isMetamaskChecked: boolean,
@@ -119,8 +135,10 @@ export default defineComponent({
       allAccounts,
       allAccountNames,
       formatBalance,
+      formatStakeAmount,
       reloadAmount,
       accountData,
+      StakeAction,
       ...toRefs(props),
     };
   },

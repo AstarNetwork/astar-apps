@@ -80,6 +80,7 @@
             v-if="isBalanceType(paramIndex)"
             v-model:amount="balance"
             v-model:selectedUnit="unit"
+            :is-max-button="false"
             @input="updateParam({ balance, unit }, paramIndex)"
           />
           <input

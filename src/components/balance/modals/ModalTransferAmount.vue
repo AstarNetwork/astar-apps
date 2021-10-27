@@ -97,6 +97,7 @@
                 v-model:selectedUnit="selectUnit"
                 title="Amount"
                 :max-in-default-unit="formatBalance"
+                :is-max-button="false"
               />
             </form>
           </div>
