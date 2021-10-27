@@ -28,13 +28,8 @@
           {{ $t('store.stake') }}
         </Button>
 
-        <Button
-          :small="true"
-          :primary="false"
-          class="tw-ml-auto"
-          @click="showClaimRewardModal = true"
-        >
-          {{ $t('store.claim') }}
+        <Button :small="true" class="tw-ml-auto" @click="showClaimRewardModal = true">
+          {{ $t('store.view') }}
         </Button>
       </div>
     </div>

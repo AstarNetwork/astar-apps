@@ -103,6 +103,7 @@ export default {
     unstake: '解除質押',
     stake: '質押',
     claim: '認領',
+    view: '查看',
     modals: {
       alreadyClaimed: '已認領:',
       contractRewards: '合約報酬:',

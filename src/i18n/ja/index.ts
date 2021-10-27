@@ -103,6 +103,7 @@ export default {
     unstake: 'Unstake',
     stake: 'Stake',
     claim: '報酬',
+    view: '詳細',
     modals: {
       alreadyClaimed: 'Already claimed:',
       contractRewards: 'Contract rewards:',

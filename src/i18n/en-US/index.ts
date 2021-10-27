@@ -108,6 +108,7 @@ export default {
     unstake: 'Unstake',
     stake: 'Stake',
     claim: 'Claim',
+    view: 'View',
     minimumStakingAmount: 'Min. staking amount',
     maxNumberOfStakersPerContract: 'Max. stakers per contract',
     stakersCount: 'Stakers:',
