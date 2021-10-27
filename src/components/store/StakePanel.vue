@@ -61,17 +61,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, toRefs, watchEffect } from 'vue';
 import BN from 'bn.js';
 import Button from 'components/common/Button.vue';
-import StakeModal, { StakeModel } from 'components/store/modals/StakeModal.vue';
 import ClaimRewardModal from 'components/store/modals/ClaimRewardModal.vue';
-import { useStore } from 'src/store';
-import { useApi, useGetMinStaking, useChainMetadata } from 'src/hooks';
-import { getUnit } from 'src/hooks/helper/units';
-import { reduceDenomToBalance } from 'src/hooks/helper/plasmUtils';
-import { StakingParameters } from 'src/store/dapps-store/actions';
+import StakeModal, { StakeModel } from 'components/store/modals/StakeModal.vue';
+import { useApi, useChainMetadata, useGetMinStaking } from 'src/hooks';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
+import { reduceDenomToBalance } from 'src/hooks/helper/plasmUtils';
+import { getUnit } from 'src/hooks/helper/units';
+import { useStore } from 'src/store';
+import { StakingParameters } from 'src/store/dapps-store/actions';
+import { defineComponent, ref, toRefs, watchEffect } from 'vue';
 
 export default defineComponent({
   components: {
@@ -137,8 +137,9 @@ export default defineComponent({
     const stake = async (stakeData: StakeModel) => {
       const amount = getAmount(stakeData);
       const unit = stakeData.unit;
+      const ttlStakeAmount = amount.add(props.stakeInfo?.yourStake.denomAmount);
 
-      if (amount.lt(minStaking.value)) {
+      if (ttlStakeAmount.lt(minStaking.value)) {
         store.dispatch('general/showAlertMsg', {
           msg: `The amount of token to be staking must greater than ${formattedMinStake.value} ${unit}`,
           alertType: 'error',
