@@ -43,18 +43,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, toRefs } from 'vue';
-import { useStore } from 'src/store';
-import { useChainMetadata } from 'src/hooks';
-import Modal from 'components/common/Modal.vue';
-import ModalSelectAccount from 'components/balance/modals/ModalSelectAccount.vue';
-import InputAmount from 'src/components/common/InputAmount.vue';
-import Button from 'src/components/common/Button.vue';
-import Avatar from 'src/components/common/Avatar.vue';
-import * as plasmUtils from 'src/hooks/helper/plasmUtils';
-import { useBalance, useApi, useAccount } from 'src/hooks';
-import FormatBalance from 'components/balance/FormatBalance.vue';
 import BN from 'bn.js';
+import FormatBalance from 'components/balance/FormatBalance.vue';
+import ModalSelectAccount from 'components/balance/modals/ModalSelectAccount.vue';
+import Modal from 'components/common/Modal.vue';
+import Avatar from 'src/components/common/Avatar.vue';
+import Button from 'src/components/common/Button.vue';
+import InputAmount from 'src/components/common/InputAmount.vue';
+import { useAccount, useApi, useBalance, useChainMetadata } from 'src/hooks';
+import * as plasmUtils from 'src/hooks/helper/plasmUtils';
+import { useStore } from 'src/store';
+import { computed, defineComponent, ref, toRefs } from 'vue';
 import { StakeAction } from '../StakePanel.vue';
 
 export default defineComponent({
