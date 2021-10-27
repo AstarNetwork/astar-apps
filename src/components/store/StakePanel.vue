@@ -17,7 +17,7 @@
       </div>
       <div class="tw-flex">
         <div v-if="stakeInfo?.hasStake">
-          <Button :small="true" @click="showStakeModal">
+          <Button :small="true" :primary="true" @click="showStakeModal">
             {{ $t('store.add') }}
           </Button>
           <Button :small="true" :primary="false" @click="showUnstakeModal">
@@ -30,7 +30,7 @@
 
         <Button
           :small="true"
-          :primary="false"
+          :primary="true"
           class="tw-ml-auto"
           @click="showClaimRewardModal = true"
         >
