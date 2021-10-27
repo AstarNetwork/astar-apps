@@ -54,6 +54,7 @@ import ModalDappDetails from 'components/store/modals/ModalDappDetails.vue';
 import Button from 'components/common/Button.vue';
 import DashboardItem from 'components/common/DashboardItem.vue';
 import { DappItem } from 'src/store/dapps-store/state';
+import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
 
 export default defineComponent({
   components: {
@@ -71,7 +72,10 @@ export default defineComponent({
     const maxNumberOfStakersPerContract = computed(
       () => store.getters['dapps/getMaxNumberOfStakersPerContract']
     );
-    const minimumStakingAmount = computed(() => store.getters['dapps/getMinimumStakingAmount']);
+    const minimumStakingAmount = computed(() => {
+      const amount = store.getters['dapps/getMinimumStakingAmount'];
+      return formatUnitAmount(amount);
+    });
     const showRegisterDappModal = ref<boolean>(false);
     const showDappDetailsModal = ref<boolean>(false);
     const selectedDapp = ref<DappItem>();
