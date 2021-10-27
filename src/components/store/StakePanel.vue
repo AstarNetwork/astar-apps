@@ -96,7 +96,7 @@ export default defineComponent({
     const showModal = ref<boolean>(false);
     const showClaimRewardModal = ref<boolean>(false);
     const modalTitle = ref<string>('');
-    const modalActionName = ref<string>('');
+    const modalActionName = ref<StakeAction | ''>('');
     const formattedMinStake = ref<string>('');
     const modalAction = ref();
     const { minStaking } = useGetMinStaking(api);
@@ -109,14 +109,14 @@ export default defineComponent({
 
     const showStakeModal = () => {
       modalTitle.value = `Stake on ${props.dapp.name}`;
-      modalActionName.value = 'Stake';
+      modalActionName.value = StakeAction.Stake;
       modalAction.value = stake;
       showModal.value = true;
     };
 
     const showUnstakeModal = () => {
       modalTitle.value = `Unstake from ${props.dapp.name}`;
-      modalActionName.value = 'Unstake';
+      modalActionName.value = StakeAction.Unstake;
       modalAction.value = unstake;
       showModal.value = true;
     };
@@ -206,4 +206,9 @@ export default defineComponent({
     };
   },
 });
+
+export enum StakeAction {
+  Stake = 'Stake',
+  Unstake = 'Unstake',
+}
 </script>

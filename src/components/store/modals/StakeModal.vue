@@ -22,14 +22,16 @@
         v-model:amount="data.amount"
         v-model:selectedUnit="data.unit"
         title="Amount"
-        :max-in-default-unit="actionName === 'Unstake' ? formatStakeAmount : formatBalance"
-        :is-max-button="actionName === 'Unstake' ? true : false"
+        :max-in-default-unit="
+          actionName === StakeAction.Unstake ? formatStakeAmount : formatBalance
+        "
+        :is-max-button="actionName === StakeAction.Unstake ? true : false"
       />
-      <div v-if="accountData && actionName !== 'Unstake'" class="tw-mt-1 tw-ml-1">
+      <div v-if="accountData && actionName !== StakeAction.Unstake" class="tw-mt-1 tw-ml-1">
         {{ $t('store.modals.yourBalance') }}
         <format-balance :balance="accountData?.free" class="tw-inline tw-font-semibold" />
       </div>
-      <div v-if="accountData && actionName === 'Unstake'" class="tw-mt-1 tw-ml-1">
+      <div v-if="accountData && actionName === StakeAction.Unstake" class="tw-mt-1 tw-ml-1">
         {{ $t('store.yourStake') }}
         <format-balance :balance="stakeAmount" class="tw-inline tw-font-semibold" />
       </div>
@@ -53,6 +55,7 @@ import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { useBalance, useApi, useAccount } from 'src/hooks';
 import FormatBalance from 'components/balance/FormatBalance.vue';
 import BN from 'bn.js';
+import { StakeAction } from '../StakePanel.vue';
 
 export default defineComponent({
   components: {
@@ -136,6 +139,7 @@ export default defineComponent({
       formatStakeAmount,
       reloadAmount,
       accountData,
+      StakeAction,
       ...toRefs(props),
     };
   },
