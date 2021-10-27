@@ -62,15 +62,16 @@
 
 <script lang="ts">
 import { defineComponent, ref, toRefs, watchEffect } from 'vue';
-import BN from 'bn.js';
 import Button from 'components/common/Button.vue';
-import StakeModal, { StakeModel } from 'components/store/modals/StakeModal.vue';
+import StakeModal from 'components/store/modals/StakeModal.vue';
+import { StakeModel } from 'src/hooks/store';
 import ClaimRewardModal from 'components/store/modals/ClaimRewardModal.vue';
 import { useStore } from 'src/store';
 import { useApi, useGetMinStaking, useChainMetadata } from 'src/hooks';
 import { getUnit } from 'src/hooks/helper/units';
 import { reduceDenomToBalance } from 'src/hooks/helper/plasmUtils';
 import { StakingParameters } from 'src/store/dapps-store/actions';
+import { getAmount } from 'src/hooks/store';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 
 export default defineComponent({
@@ -123,15 +124,6 @@ export default defineComponent({
 
     const emitStakeChanged = () => {
       emit('stakeChanged', props.dapp);
-    };
-
-    // TODO refactor since very similar code is in ModalTransferAmount, maybe to move this logic into InputAmount component
-    const getAmount = (stakeData: StakeModel): BN => {
-      const unit = getUnit(stakeData.unit);
-      const amount = reduceDenomToBalance(stakeData.amount, unit, stakeData.decimal);
-
-      console.log('getAmount', stakeData, unit, stakeData.decimal, amount.toString());
-      return amount;
     };
 
     const stake = async (stakeData: StakeModel) => {

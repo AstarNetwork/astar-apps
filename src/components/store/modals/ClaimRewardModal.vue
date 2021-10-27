@@ -8,7 +8,7 @@
       </div>
       <div v-if="stakeInfo.yourStake" class="tw-mt-2">
         <span class="tw-w-52 tw-inline-block">{{ $t('store.yourStake') }}</span>
-        <span class="tw-font-semibold">{{ stakeInfo.yourStake }}</span>
+        <span class="tw-font-semibold">{{ stakeInfo.yourStake.formatted }}</span>
       </div>
       <div class="tw-mt-2">
         <span class="tw-w-52 tw-inline-block"> {{ $t('store.modals.estimatedRewards') }}</span>

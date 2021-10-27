@@ -37,7 +37,7 @@
       </div>
     </template>
     <template #buttons>
-      <Button :disabled="data.amount <= 0" @click="action(data)">{{ actionName }}</Button>
+      <Button :disabled="!canStake" @click="action(data)">{{ actionName }}</Button>
     </template>
   </Modal>
 </template>
@@ -55,6 +55,7 @@ import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, toRefs } from 'vue';
 import { StakeAction } from '../StakePanel.vue';
+import { getAmount, StakeModel } from 'src/hooks/store';
 
 export default defineComponent({
   components: {
@@ -121,6 +122,15 @@ export default defineComponent({
       return plasmUtils.reduceBalanceToDenom(props.stakeAmount, decimal.value);
     });
 
+    const canStake = computed(() => {
+      if (data.value) {
+        const amount = getAmount(data.value);
+        return amount.gtn(0) && amount.lt(accountData.value!.free || new BN(0));
+      } else {
+        return false;
+      }
+    });
+
     const reloadAmount = (
       address: string,
       isMetamaskChecked: boolean,
@@ -139,15 +149,9 @@ export default defineComponent({
       reloadAmount,
       accountData,
       StakeAction,
+      canStake,
       ...toRefs(props),
     };
   },
 });
-
-export interface StakeModel {
-  address: string;
-  amount: number;
-  unit: string;
-  decimal: number;
-}
 </script>
