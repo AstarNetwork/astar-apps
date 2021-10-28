@@ -63,7 +63,7 @@ export const isValidAddressPolkadotAddress = (address: string) => {
 export const formatUnitAmount = (amountWithUnit: string): string => {
   const words = amountWithUnit.split(' ');
   const value = Number(words[0]);
-  const unit = words[1];
+  const unit = words[1] || '';
   const formattedAmount = `${value} ${unit}`;
   return formattedAmount;
 };
