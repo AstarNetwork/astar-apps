@@ -17,7 +17,7 @@
         :caption="$t('store.maxNumberOfStakersPerContract')"
       />
     </div>
-    <div class="tw-flex tw-flex-wrap tw-justify-start">
+    <div class="tw-grid tw-grid-flow-col tw-auto-cols-max tw-grid-flow-row tw-auto-rows-max">
       <div
         v-if="dapps.length === 0"
         class="tw-text-xl tx-font-semibold tw-mt-4 tw-ml-4 dark:tw-text-darkGray-100"

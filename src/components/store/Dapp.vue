@@ -1,9 +1,9 @@
 <template>
   <div
     class="
-      tw-bg-white
+      tw-flex-initial tw-bg-white
       dark:tw-bg-darkGray-800
-      tw-shadow tw-m-4 tw-w-72 tw-rounded-lg tw-text-blue-900
+      tw-shadow tw-mb-4 tw-w-72 tw-rounded-lg tw-text-blue-900
       dark:tw-text-darkGray-100
     "
   >
