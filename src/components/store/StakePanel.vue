@@ -109,7 +109,7 @@ export default defineComponent({
         plasmUtils.reduceBalanceToDenom(props.stakeInfo?.yourStake.denomAmount, decimal.value);
 
       formattedMinStake.value =
-        Number(stakedAmount) > Number(minStakingAmount) ? '0' : minStakingAmount;
+        Number(stakedAmount) >= Number(minStakingAmount) ? '0' : minStakingAmount;
     });
 
     const showStakeModal = () => {
