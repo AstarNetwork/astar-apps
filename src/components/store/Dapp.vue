@@ -3,8 +3,9 @@
     class="
       tw-bg-white
       dark:tw-bg-darkGray-800
-      tw-shadow tw-m-4 tw-w-72 tw-rounded-lg tw-text-blue-900
+      tw-shadow tw-mb-8 tw-w-72 tw-rounded-lg tw-text-blue-900
       dark:tw-text-darkGray-100
+      xl:tw-mx-2
     "
   >
     <div class="tw-flex tw-flex-grow tw-cursor-pointer tw-p-4" @click="emitClickEvent">

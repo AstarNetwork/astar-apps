@@ -65,14 +65,19 @@ import { defineComponent, ref, toRefs, watchEffect } from 'vue';
 import Button from 'components/common/Button.vue';
 import StakeModal from 'components/store/modals/StakeModal.vue';
 import { StakeModel } from 'src/hooks/store';
+import BN from 'bn.js';
+import Button from 'components/common/Button.vue';
 import ClaimRewardModal from 'components/store/modals/ClaimRewardModal.vue';
-import { useStore } from 'src/store';
-import { useApi, useGetMinStaking, useChainMetadata } from 'src/hooks';
-import { getUnit } from 'src/hooks/helper/units';
+import StakeModal, { StakeModel } from 'components/store/modals/StakeModal.vue';
+import { useApi, useChainMetadata, useGetMinStaking } from 'src/hooks';
+import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { reduceDenomToBalance } from 'src/hooks/helper/plasmUtils';
+import { getUnit } from 'src/hooks/helper/units';
+import { useStore } from 'src/store';
 import { StakingParameters } from 'src/store/dapps-store/actions';
 import { getAmount } from 'src/hooks/store';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
+import { defineComponent, ref, toRefs, watchEffect } from 'vue';
 
 export default defineComponent({
   components: {
@@ -105,7 +110,12 @@ export default defineComponent({
 
     watchEffect(() => {
       const minStakingAmount = plasmUtils.reduceBalanceToDenom(minStaking.value, decimal.value);
-      formattedMinStake.value = minStakingAmount;
+      const stakedAmount =
+        props.stakeInfo?.yourStake.denomAmount &&
+        plasmUtils.reduceBalanceToDenom(props.stakeInfo?.yourStake.denomAmount, decimal.value);
+
+      formattedMinStake.value =
+        Number(stakedAmount) >= Number(minStakingAmount) ? '0' : minStakingAmount;
     });
 
     const showStakeModal = () => {
@@ -129,8 +139,9 @@ export default defineComponent({
     const stake = async (stakeData: StakeModel) => {
       const amount = getAmount(stakeData.amount, stakeData.unit);
       const unit = stakeData.unit;
+      const ttlStakeAmount = amount.add(props.stakeInfo?.yourStake.denomAmount);
 
-      if (amount.lt(minStaking.value)) {
+      if (ttlStakeAmount.lt(minStaking.value)) {
         store.dispatch('general/showAlertMsg', {
           msg: `The amount of token to be staking must greater than ${formattedMinStake.value} ${unit}`,
           alertType: 'error',

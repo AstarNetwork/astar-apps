@@ -103,6 +103,7 @@ export default {
     unstake: '解除質押',
     stake: '質押',
     claim: '認領',
+    warning: '請注意: Minimum Staking Amount is {amount} and Up to {stakers} Stakers Per Contract',
     modals: {
       alreadyClaimed: '已認領:',
       contractRewards: '合約報酬:',
