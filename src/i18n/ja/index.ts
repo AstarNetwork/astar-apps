@@ -103,6 +103,7 @@ export default {
     unstake: 'Unstake',
     stake: 'Stake',
     claim: '報酬',
+    warning: 'Warning: Minimum Staking Amount is {amount} and Up to {stakers} Stakers Per Contract',
     modals: {
       alreadyClaimed: 'Already claimed:',
       contractRewards: 'Contract rewards:',
