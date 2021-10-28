@@ -127,7 +127,7 @@ export default defineComponent({
     };
 
     const stake = async (stakeData: StakeModel) => {
-      const amount = getAmount(stakeData);
+      const amount = getAmount(stakeData.amount, stakeData.unit);
       const unit = stakeData.unit;
 
       if (amount.lt(minStaking.value)) {
@@ -158,7 +158,7 @@ export default defineComponent({
         api: api?.value,
         senderAddress: stakeData.address,
         dapp: props.dapp,
-        amount: getAmount(stakeData),
+        amount: getAmount(stakeData.amount, stakeData.unit),
         decimals: stakeData.decimal,
         unit: stakeData.unit,
         finalizeCallback: emitStakeChanged,

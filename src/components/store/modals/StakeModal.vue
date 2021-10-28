@@ -124,8 +124,8 @@ export default defineComponent({
 
     const canStake = computed(() => {
       if (data.value) {
-        const amount = getAmount(data.value);
-        return amount.gtn(0) && amount.lt(accountData.value!.free || new BN(0));
+        const amount = getAmount(data.value.amount, data.value.unit);
+        return amount.gtn(0) && amount.lt(accountData?.value?.free || new BN(0));
       } else {
         return false;
       }

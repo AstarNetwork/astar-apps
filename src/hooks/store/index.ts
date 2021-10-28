@@ -1,6 +1,7 @@
 import BN from 'bn.js';
 import { getUnit } from 'src/hooks/helper/units';
 import { reduceDenomToBalance } from 'src/hooks/helper/plasmUtils';
+import { useChainMetadata } from 'src/hooks';
 
 export interface StakeModel {
   address: string;
@@ -9,10 +10,8 @@ export interface StakeModel {
   decimal: number;
 }
 
-// TODO refactor since very similar code is in ModalTransferAmount, maybe to move this logic into InputAmount component
-export const getAmount = (stakeData: StakeModel): BN => {
-  const unit = getUnit(stakeData.unit);
-  const amount = reduceDenomToBalance(stakeData.amount, unit, stakeData.decimal);
-
-  return amount;
+export const getAmount = (amount: number, unit: string): BN => {
+  const unitIndex = getUnit(unit);
+  const { decimal } = useChainMetadata();
+  return reduceDenomToBalance(amount, unitIndex, decimal.value);
 };
