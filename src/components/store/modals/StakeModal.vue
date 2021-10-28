@@ -28,8 +28,11 @@
         :is-max-button="actionName === StakeAction.Unstake ? true : false"
       />
       <div v-if="accountData && actionName !== StakeAction.Unstake" class="tw-mt-1 tw-ml-1">
-        {{ $t('store.modals.yourBalance') }}
-        <format-balance :balance="accountData?.free" class="tw-inline tw-font-semibold" />
+        {{ $t('store.modals.yourTransferableBalance') }}
+        <format-balance
+          :balance="accountData?.getUsableTransactionBalance()"
+          class="tw-inline tw-font-semibold"
+        />
       </div>
       <div v-if="accountData && actionName === StakeAction.Unstake" class="tw-mt-1 tw-ml-1">
         {{ $t('store.yourStake') }}
@@ -37,7 +40,7 @@
       </div>
     </template>
     <template #buttons>
-      <Button :disabled="!canStake" @click="action(data)">{{ actionName }}</Button>
+      <Button :disabled="!canExecuteAction" @click="action(data)">{{ actionName }}</Button>
     </template>
   </Modal>
 </template>
@@ -98,7 +101,7 @@ export default defineComponent({
 
     const data = ref<StakeModel>({
       address: '',
-      amount: props.actionName === 'Stake' ? Number(props.minStaking) : 0,
+      amount: props.actionName === StakeAction.Stake ? Number(props.minStaking) : 0,
       unit: defaultUnitToken.value,
       decimal: decimal.value,
     } as StakeModel);
@@ -110,9 +113,8 @@ export default defineComponent({
     const { accountData } = useBalance(api, currentAccount);
 
     const formatBalance = computed(() => {
-      const tokenDecimal = decimal.value;
       if (accountData.value) {
-        return plasmUtils.reduceBalanceToDenom(accountData!.value!.free, tokenDecimal);
+        return getAmount(data.value.amount, data.value.unit);
       } else {
         return '';
       }
@@ -122,10 +124,15 @@ export default defineComponent({
       return plasmUtils.reduceBalanceToDenom(props.stakeAmount, decimal.value);
     });
 
-    const canStake = computed(() => {
+    const canExecuteAction = computed(() => {
+      const maxAmount =
+        props.actionName === StakeAction.Stake
+          ? accountData?.value?.getUsableTransactionBalance() || new BN(0)
+          : props.stakeAmount;
+      console.log('max amount', maxAmount.toString());
       if (data.value) {
         const amount = getAmount(data.value.amount, data.value.unit);
-        return amount.gtn(0) && amount.lt(accountData?.value?.free || new BN(0));
+        return amount.gtn(0) && amount.lte(maxAmount);
       } else {
         return false;
       }
@@ -149,7 +156,7 @@ export default defineComponent({
       reloadAmount,
       accountData,
       StakeAction,
-      canStake,
+      canExecuteAction,
       ...toRefs(props),
     };
   },
