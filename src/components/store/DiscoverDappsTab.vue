@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="tw-text-center lg:tw-text-left tw-mb-8">
+    <div class="tw-text-center tw-mb-8">
       <Button class="tw-ml-4" @click="showRegisterDappModal = true">
         <icon-base
           class="tw-w-5 tw-h-5 tw-text-white tw--ml-1"
@@ -13,14 +13,7 @@
       </Button>
     </div>
 
-    <div
-      class="
-        tw-mb-8 tw-mx-20
-        lg:tw-mx-4
-        tw-flex tw-flex-row tw-content-around tw-justify-center
-        lg:tw-justify-start
-      "
-    >
+    <div class="tw-mb-8 lg:tw-mx-4 tw-flex tw-flex-row tw-content-around tw-justify-center">
       <div
         class="
           tw-bg-blue-500
