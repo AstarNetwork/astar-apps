@@ -129,7 +129,7 @@ export default defineComponent({
         props.actionName === StakeAction.Stake
           ? accountData?.value?.getUsableTransactionBalance() || new BN(0)
           : props.stakeAmount;
-      console.log('max amount', maxAmount.toString());
+
       if (data.value) {
         const amount = getAmount(data.value.amount, data.value.unit);
         return amount.gtn(0) && amount.lte(maxAmount);

@@ -62,22 +62,15 @@
 
 <script lang="ts">
 import { defineComponent, ref, toRefs, watchEffect } from 'vue';
-import Button from 'components/common/Button.vue';
 import StakeModal from 'components/store/modals/StakeModal.vue';
 import { StakeModel } from 'src/hooks/store';
-import BN from 'bn.js';
 import Button from 'components/common/Button.vue';
 import ClaimRewardModal from 'components/store/modals/ClaimRewardModal.vue';
-import StakeModal, { StakeModel } from 'components/store/modals/StakeModal.vue';
 import { useApi, useChainMetadata, useGetMinStaking } from 'src/hooks';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
-import { reduceDenomToBalance } from 'src/hooks/helper/plasmUtils';
-import { getUnit } from 'src/hooks/helper/units';
 import { useStore } from 'src/store';
 import { StakingParameters } from 'src/store/dapps-store/actions';
 import { getAmount } from 'src/hooks/store';
-import * as plasmUtils from 'src/hooks/helper/plasmUtils';
-import { defineComponent, ref, toRefs, watchEffect } from 'vue';
 
 export default defineComponent({
   components: {
