@@ -104,7 +104,12 @@ export default defineComponent({
 
     watchEffect(() => {
       const minStakingAmount = plasmUtils.reduceBalanceToDenom(minStaking.value, decimal.value);
-      formattedMinStake.value = minStakingAmount;
+      const stakedAmount =
+        props.stakeInfo?.yourStake.denomAmount &&
+        plasmUtils.reduceBalanceToDenom(props.stakeInfo?.yourStake.denomAmount, decimal.value);
+
+      formattedMinStake.value =
+        Number(stakedAmount) > Number(minStakingAmount) ? '0' : minStakingAmount;
     });
 
     const showStakeModal = () => {
