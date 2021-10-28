@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="tw-text-center tw-mb-8">
-      <Button class="tw-ml-4" @click="showRegisterDappModal = true">
+      <Button @click="showRegisterDappModal = true">
         <icon-base
           class="tw-w-5 tw-h-5 tw-text-white tw--ml-1"
           stroke="currentColor"
@@ -13,7 +13,7 @@
       </Button>
     </div>
 
-    <div class="tw-mb-8 lg:tw-mx-4 tw-flex tw-flex-row tw-content-around tw-justify-center">
+    <div class="tw-mb-8 tw-flex tw-flex-row tw-content-around tw-justify-center">
       <div
         class="
           tw-bg-blue-500
@@ -23,9 +23,7 @@
       >
         <div
           class="
-            tw-rounded-lg
-            md:tw-pb-0
-            tw-h-full tw-bg-local tw-bg-left-top tw-bg-no-repeat tw-bg-80
+            tw-rounded-lg tw-h-full tw-bg-local tw-bg-left-top tw-bg-no-repeat tw-bg-80
             md:tw-bg-88
             tw-px-4
           "
