@@ -33,7 +33,7 @@
               {{
                 $t('store.warning', {
                   amount: minimumStakingAmount,
-                  staker: maxNumberOfStakersPerContract,
+                  stakers: maxNumberOfStakersPerContract,
                 })
               }}
             </span>
