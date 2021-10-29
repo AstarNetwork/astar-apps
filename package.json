@@ -59,6 +59,7 @@
     "@babel/eslint-parser": "^7.13.14",
     "@polkadot/ts": "^0.4.6",
     "@quasar/app": "^3.0.0",
+    "@quasar/cli": "^1.2.2",
     "@tailwindcss/custom-forms": "^0.2.1",
     "@tailwindcss/postcss7-compat": "^2.0.3",
     "@types/create-hash": "^1.2.2",
