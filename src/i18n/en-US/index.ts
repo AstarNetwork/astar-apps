@@ -114,6 +114,7 @@ export default {
       alreadyClaimed: 'Already claimed:',
       contractRewards: 'Contract rewards:',
       yourBalance: 'Your balance',
+      yourTransferableBalance: 'Your transferable balance',
       yourRewards: 'Your rewards',
       contractAddress: 'Contract address {address}',
       logo: 'Logo',

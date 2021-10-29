@@ -61,17 +61,16 @@
 </template>
 
 <script lang="ts">
-import BN from 'bn.js';
+import { defineComponent, ref, toRefs, watchEffect } from 'vue';
+import StakeModal from 'components/store/modals/StakeModal.vue';
+import { StakeModel } from 'src/hooks/store';
 import Button from 'components/common/Button.vue';
 import ClaimRewardModal from 'components/store/modals/ClaimRewardModal.vue';
-import StakeModal, { StakeModel } from 'components/store/modals/StakeModal.vue';
 import { useApi, useChainMetadata, useGetMinStaking } from 'src/hooks';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
-import { reduceDenomToBalance } from 'src/hooks/helper/plasmUtils';
-import { getUnit } from 'src/hooks/helper/units';
 import { useStore } from 'src/store';
 import { StakingParameters } from 'src/store/dapps-store/actions';
-import { defineComponent, ref, toRefs, watchEffect } from 'vue';
+import { getAmount } from 'src/hooks/store';
 
 export default defineComponent({
   components: {
@@ -130,17 +129,8 @@ export default defineComponent({
       emit('stakeChanged', props.dapp);
     };
 
-    // TODO refactor since very similar code is in ModalTransferAmount, maybe to move this logic into InputAmount component
-    const getAmount = (stakeData: StakeModel): BN => {
-      const unit = getUnit(stakeData.unit);
-      const amount = reduceDenomToBalance(stakeData.amount, unit, stakeData.decimal);
-
-      console.log('getAmount', stakeData, unit, stakeData.decimal, amount.toString());
-      return amount;
-    };
-
     const stake = async (stakeData: StakeModel) => {
-      const amount = getAmount(stakeData);
+      const amount = getAmount(stakeData.amount, stakeData.unit);
       const unit = stakeData.unit;
       const ttlStakeAmount = amount.add(props.stakeInfo?.yourStake.denomAmount);
 
@@ -172,7 +162,7 @@ export default defineComponent({
         api: api?.value,
         senderAddress: stakeData.address,
         dapp: props.dapp,
-        amount: getAmount(stakeData),
+        amount: getAmount(stakeData.amount, stakeData.unit),
         decimals: stakeData.decimal,
         unit: stakeData.unit,
         finalizeCallback: emitStakeChanged,
