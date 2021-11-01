@@ -28,8 +28,8 @@ export default {
     transfer: '送金',
     transferable: '支払可能残高',
     modals: {
-      connectMetamask: 'MetaMaskへ接続',
-      ethereumExtension: 'ECDSA (Ethereum extension)',
+      connectMetamask: 'Ethereum Walletへ接続',
+      ethereumExtension: 'Ethereum Extension',
       chooseAccount: 'アカウントの選択',
       chooseNetwork: 'ネットワークの選択',
       switch: 'スイッチ',
@@ -39,6 +39,7 @@ export default {
       sendFrom: '送信元',
       sendTo: '受取先',
       alert: 'Alert',
+      invalidAddress: '入力されたアドレスは正しくありません',
     },
   },
   dapps: {
@@ -96,11 +97,13 @@ export default {
     registerDapp: 'dAppを登録',
     noDappsRegistered: 'No dApps registered. Be a first to register one.',
     totalStake: 'Total stake:',
+    yourBalance: 'Your balance',
     yourStake: 'Your stake: ',
     add: 'Add',
     unstake: 'Unstake',
     stake: 'Stake',
     claim: '報酬',
+    warning: 'Warning: Minimum Staking Amount is {amount} and Up to {stakers} Stakers Per Contract',
     modals: {
       alreadyClaimed: 'Already claimed:',
       contractRewards: 'Contract rewards:',

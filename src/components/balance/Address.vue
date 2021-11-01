@@ -174,7 +174,7 @@ import IconAccountSample from 'components/icons/IconAccountSample.vue';
 import IconChevronDown from 'components/icons/IconChevronDown.vue';
 import IconDocumentDuplicate from 'components/icons/IconDocumentDuplicate.vue';
 import IconLink from 'components/icons/IconLink.vue';
-import { SUB_SCAN } from 'src/links';
+import { providerEndpoints } from 'src/config/chainEndpoints';
 
 export default defineComponent({
   components: {
@@ -212,9 +212,11 @@ export default defineComponent({
     const selectedAccountAddress = computed(() => store.getters['general/selectedAccountAddress']);
     const subScan = computed(
       () =>
-        `${SUB_SCAN[currentNetworkIdx.value as 0 | 1 | 3]}/account/${selectedAccountAddress.value}`
+        `${providerEndpoints[currentNetworkIdx.value].subscan}/account/${
+          selectedAccountAddress.value
+        }`
     );
-    const isSubscan = Object.keys(SUB_SCAN).includes(currentNetworkIdx.value.toString());
+    const isSubscan = providerEndpoints[currentNetworkIdx.value].subscan !== '';
 
     const showAlert = () => {
       store.dispatch('general/showAlertMsg', {

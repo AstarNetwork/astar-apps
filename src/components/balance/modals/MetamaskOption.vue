@@ -20,7 +20,7 @@
           >
             <img width="80" src="~assets/img/metamask.png" />
           </div>
-          <div>
+          <div class="tw-flex tw-items-center">
             <template v-if="!curAddress">
               <div class="tw-text-sm tw-font-medium dark:tw-text-darkGray-100">
                 {{ $t('balance.modals.connectMetamask') }}
@@ -31,7 +31,7 @@
                 <div class="tw-text-sm tw-font-medium dark:tw-text-darkGray-100">
                   {{ $t('balance.modals.ethereumExtension') }}
                 </div>
-                <div class="tw-text-xs tw-text-gray-500 dark:tw-text-darkGray-400">
+                <div v-if="checked" class="tw-text-xs tw-text-gray-500 dark:tw-text-darkGray-400">
                   {{ shortenAddr(curAddress) }}
                 </div>
               </div>
@@ -46,7 +46,7 @@
             name="choose_account"
             type="radio"
             :class="[
-              showRadioIfUnchecked ? 'tw-border-gray-300' : 'tw-border-transparent',
+              showRadioIfUnchecked ? 'tw-border-gray-300' : 'tw-border-red-400',
               'tw-appearance-none',
               'tw-border-2',
               'dark:tw-border-darkGray-600',
@@ -70,7 +70,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, computed, ref } from 'vue';
+import { defineComponent, computed, ref, watchEffect } from 'vue';
 import { useStore } from 'src/store';
 import * as utils from 'src/hooks/custom-signature/utils';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
@@ -91,19 +91,21 @@ export default defineComponent({
   emits: ['update:sel-checked', 'connectMetamask'],
   setup(props, { emit }) {
     const store = useStore();
+    const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const chainInfo = computed(() => store.getters['general/chainInfo']);
     const { requestAccounts, requestSignature } = useMetamask();
 
     const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
     const ecdsaAccounts = ref<EcdsaAddressFormat>(currentEcdsaAccount.value);
     const curAddress = ref<string>(currentEcdsaAccount.value.ss58);
-    const errorMsg = ref('');
 
-    // watchEffect(() => {
-    //   if (loadedAccounts.value.length > 0 && ecdsaAccounts.value?.ethereum !== loadedAccounts.value[0]) {
-    //     ecdsaAccounts.value = undefined;
-    //   }
-    // });
+    watchEffect(() => {
+      if (isH160.value) {
+        curAddress.value = currentEcdsaAccount.value.h160;
+      }
+    });
+
+    const errorMsg = ref('');
 
     const shortenAddr = (addr: string) => {
       return getShortenAddress(addr);
@@ -137,7 +139,6 @@ export default defineComponent({
 
         ecdsaAccounts.value = { ethereum: loadingAddr, ss58: ss58Address };
         curAddress.value = ss58Address;
-
         onSelectMetamask();
       } catch (err: any) {
         console.error('err', err);
@@ -147,7 +148,7 @@ export default defineComponent({
 
     const onSelectMetamask = () => {
       emit('update:sel-checked', true);
-      emit('connectMetamask', ecdsaAccounts.value?.ethereum, ecdsaAccounts.value?.ss58);
+      emit('connectMetamask', ecdsaAccounts.value?.ethereum, curAddress.value);
     };
 
     return {

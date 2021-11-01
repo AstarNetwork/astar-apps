@@ -13,6 +13,9 @@ interface ChainProvider {
   typeDef: RegistryTypes;
   key: endpointKey;
   isStoreEnabled: boolean;
+  subscan: string;
+  evmChainId: string;
+  evmRpc: string;
 }
 
 export enum endpointKey {
@@ -35,18 +38,23 @@ export const providerEndpoints: ChainProvider[] = [
   //   typeDef: typeDefs.plasmDefinitions,
   //   key: endpointKey.PLASM,
   //   isStoreEnabled: false,
+  //   subScan: 'https://astar.subscan.io',
+  //   evmChainId: ''
   // },
   {
     networkAlias: 'shiden-shell',
     displayName: 'Shiden Network (Kusama)',
     info: 'Smart contract platform for decentralized applications (dapps) on the Kusama network',
-    endpoint: 'wss://shiden.api.onfinality.io/public-ws',
+    endpoint: 'wss://rpc.shiden.astar.network',
     favicon: 'icons/shiden.png',
     isSupportContract: true,
     prefix: 0x150,
     typeDef: typeDefs.plasmCollatorDefinitions,
     key: endpointKey.SHIDEN,
     isStoreEnabled: true,
+    subscan: 'https://shiden.subscan.io',
+    evmChainId: '336',
+    evmRpc: 'https://rpc.shiden.astar.network:8545',
   },
   {
     networkAlias: 'dusty-testnet',
@@ -58,6 +66,9 @@ export const providerEndpoints: ChainProvider[] = [
     typeDef: typeDefs.dustyDefinitions,
     key: endpointKey.DUSTY,
     isStoreEnabled: false,
+    subscan: '',
+    evmChainId: '',
+    evmRpc: '',
   },
   {
     networkAlias: 'shibuya-testnet',
@@ -70,6 +81,9 @@ export const providerEndpoints: ChainProvider[] = [
     typeDef: typeDefs.plasmCollatorDefinitions,
     key: endpointKey.SHIBUYA,
     isStoreEnabled: true,
+    subscan: 'https://shibuya.subscan.io',
+    evmChainId: '81',
+    evmRpc: 'https://rpc.shibuya.astar.network:8545',
   },
   {
     networkAlias: 'local-node',
@@ -80,6 +94,9 @@ export const providerEndpoints: ChainProvider[] = [
     typeDef: typeDefs.plasmCollatorDefinitions,
     key: endpointKey.LOCAL,
     isStoreEnabled: true,
+    subscan: '',
+    evmChainId: '',
+    evmRpc: '',
   },
   {
     networkAlias: 'custom-node',
@@ -90,5 +107,8 @@ export const providerEndpoints: ChainProvider[] = [
     typeDef: typeDefs.plasmCollatorDefinitions,
     key: endpointKey.CUSTOM,
     isStoreEnabled: true,
+    subscan: '',
+    evmChainId: '',
+    evmRpc: '',
   },
 ];

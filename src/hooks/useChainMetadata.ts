@@ -11,19 +11,27 @@ export const useChainMetadata = () => {
   const { api } = useApi();
 
   const state = reactive<Metadata>({
-    decimal: 12,
+    decimal: 18,
     defaultUnitToken: '',
   });
 
+  // Memo: Separate the watchEffect due to useApi returns decimal:12 at the very first moment if without `isReady`
   watchEffect(() => {
-    const registry = api?.value?.registry;
+    if (!api || !api.value) return;
 
-    const decimals = registry?.chainDecimals;
-    const tokens = registry?.chainTokens;
+    api.value.isReady.then(() => {
+      const registry = api.value!.registry;
+      const decimals = registry.chainDecimals;
+      state.decimal = (decimals || [])[0];
+    });
+  });
 
-    state.decimal = (decimals || [])[0];
+  watchEffect(() => {
+    if (!api || !api.value) return;
+
+    const tokens = api.value!.registry.chainTokens;
+    // Memo: Always set from blank array if with `isReady`
     state.defaultUnitToken = (tokens || [])[0];
-
     setDefaultUnitName(state.defaultUnitToken);
   });
 

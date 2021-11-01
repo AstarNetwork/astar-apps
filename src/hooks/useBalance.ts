@@ -1,7 +1,9 @@
+import { useStore } from 'src/store';
 import { VoidFn } from '@polkadot/api/types';
 import { Balance } from '@polkadot/types/interfaces';
 import BN from 'bn.js';
-import { onUnmounted, ref, Ref, watch } from 'vue';
+import { createWeb3Instance } from 'src/web3';
+import { onUnmounted, ref, Ref, watch, computed } from 'vue';
 import { getVested } from './helper/vested';
 
 function useCall(apiRef: any, addressRef: Ref<string>) {
@@ -10,8 +12,34 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
   const balanceRef = ref(new BN(0));
   const vestedRef = ref(new BN(0));
   const accountDataRef = ref<AccountData>();
+  const store = useStore();
+  const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
+  const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
+  const isLoading = computed(() => store.getters['general/isLoading']);
 
   const unsub: Ref<VoidFn | undefined> = ref();
+
+  const updateAccountH160 = async (address: string) => {
+    try {
+      const web3 = await createWeb3Instance(currentNetworkIdx.value);
+      if (!web3) {
+        throw Error(`cannot create the web3 instance with network id ${currentNetworkIdx.value}`);
+      }
+
+      const rawBal = await web3.eth.getBalance(address);
+      accountDataRef.value = new AccountDataH160(
+        new BN(rawBal),
+        new BN(0),
+        new BN(0),
+        new BN(0),
+        new BN(0)
+      );
+      balanceRef.value = new BN(rawBal);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const updateAccount = (address: string) => {
     if (address) {
       const api = apiRef?.value;
@@ -48,7 +76,6 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
             accountInfo.data.feeFrozen,
             vestedRef.value
           );
-
           balanceRef.value = accountInfo.data.free.toBn();
         });
       }
@@ -62,9 +89,14 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
   }, 10000);
 
   watch(
-    () => addressRef.value,
-    (address) => {
-      updateAccount(address);
+    [addressRef, isLoading],
+    () => {
+      const address = addressRef.value;
+      if (isH160Formatted.value) {
+        updateAccountH160(address);
+      } else {
+        updateAccount(address);
+      }
     },
     { immediate: true }
   );
@@ -84,7 +116,7 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
 
 export function useBalance(apiRef: any, addressRef: Ref<string>) {
   const balance = ref(new BN(0));
-  const accountData = ref<AccountData>();
+  const accountData = ref<AccountData | AccountDataH160>();
 
   const { balanceRef, accountDataRef } = useCall(apiRef, addressRef);
 
@@ -98,8 +130,6 @@ export function useBalance(apiRef: any, addressRef: Ref<string>) {
     { immediate: true }
   );
 
-  // Fixme: Update the latest `vested` when block has been updated.
-  // (implement something like useInterval might be better.)
   watch(
     () => accountDataRef?.value,
     (info) => {
@@ -140,4 +170,21 @@ export class AccountData {
   public miscFrozen: BN;
   public feeFrozen: BN;
   public vested: BN;
+}
+export class AccountDataH160 {
+  constructor(
+    public free: BN,
+    public reserved: BN,
+    public miscFrozen: BN,
+    public feeFrozen: BN,
+    public vested: BN
+  ) {}
+
+  public getUsableTransactionBalance(): BN {
+    return this.free.sub(this.miscFrozen);
+  }
+
+  public getUsableFeeBalance(): BN {
+    return this.free.sub(this.feeFrozen);
+  }
 }

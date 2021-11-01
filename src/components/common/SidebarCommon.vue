@@ -57,7 +57,7 @@
         </router-link>
 
         <router-link
-          v-if="network.isSupportContract"
+          v-if="network.isSupportContract && !isH160"
           to="/dapps"
           :class="[$route.path.split('/')[1] === 'dapps' ? 'activeLink' : 'inactiveLink']"
         >
@@ -73,7 +73,7 @@
         </router-link>
 
         <router-link
-          v-if="network.isStoreEnabled"
+          v-if="network.isStoreEnabled && !isH160"
           to="/store"
           :class="[$route.path.split('/')[1] === 'store' ? 'activeLink' : 'inactiveLink']"
         >
@@ -182,6 +182,7 @@ export default defineComponent({
       modalNetwork: false,
       modalAccount: false,
     });
+    const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
     const store = useStore();
     const { allAccounts, allAccountNames, currentAccount, currentAccountName } = useAccount();
@@ -214,6 +215,7 @@ export default defineComponent({
       currentAccountName,
       allAccounts,
       allAccountNames,
+      isH160,
     };
   },
 });

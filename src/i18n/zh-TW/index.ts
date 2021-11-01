@@ -28,8 +28,8 @@ export default {
     transfer: '轉賬',
     transferable: '可使用餘額',
     modals: {
-      connectMetamask: '鏈接MetaMask',
-      ethereumExtension: 'ECDSA (Ethereum extension)',
+      connectMetamask: '鏈接 Ethereum Wallet',
+      ethereumExtension: 'Ethereum Extension',
       chooseAccount: '選擇賬戶',
       chooseNetwork: '選擇網路',
       switch: '更改',
@@ -39,6 +39,7 @@ export default {
       sendFrom: '發自',
       sendTo: '發送到',
       alert: 'Alert',
+      invalidAddress: '錢包地址有誤',
     },
   },
   dapps: {
@@ -95,12 +96,14 @@ export default {
     dappsStore: 'dApps Store',
     registerDapp: '註冊dApp',
     noDappsRegistered: 'No dApps registered. Be a first to register one.',
+    yourBalance: 'Your balance',
     totalStake: '總質押:',
     yourStake: '您的質押: ',
     add: 'Add',
     unstake: '解除質押',
     stake: '質押',
     claim: '認領',
+    warning: '請注意: Minimum Staking Amount is {amount} and Up to {stakers} Stakers Per Contract',
     modals: {
       alreadyClaimed: '已認領:',
       contractRewards: '合約報酬:',

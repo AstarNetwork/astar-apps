@@ -22,34 +22,43 @@
         v-model:amount="data.amount"
         v-model:selectedUnit="data.unit"
         title="Amount"
-        :max-in-default-unit="formatBalance"
+        :max-in-default-unit="
+          actionName === StakeAction.Unstake ? formatStakeAmount : formatBalance
+        "
+        :is-max-button="actionName === StakeAction.Unstake ? true : false"
       />
-      <div class="tw-mt-1 tw-ml-1">
-        {{ $t('balance.transferable') }}
+      <div v-if="accountData && actionName !== StakeAction.Unstake" class="tw-mt-1 tw-ml-1">
+        {{ $t('store.modals.yourTransferableBalance') }}
         <format-balance
           :balance="accountData?.getUsableTransactionBalance()"
           class="tw-inline tw-font-semibold"
         />
       </div>
+      <div v-if="accountData && actionName === StakeAction.Unstake" class="tw-mt-1 tw-ml-1">
+        {{ $t('store.yourStake') }}
+        <format-balance :balance="stakeAmount" class="tw-inline tw-font-semibold" />
+      </div>
     </template>
     <template #buttons>
-      <Button :disabled="data.amount <= 0" @click="action(data)">{{ actionName }}</Button>
+      <Button :disabled="!canExecuteAction" @click="action(data)">{{ actionName }}</Button>
     </template>
   </Modal>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, toRefs } from 'vue';
-import { useStore } from 'src/store';
-import { useChainMetadata } from 'src/hooks';
-import Modal from 'components/common/Modal.vue';
-import ModalSelectAccount from 'components/balance/modals/ModalSelectAccount.vue';
-import InputAmount from 'src/components/common/InputAmount.vue';
-import Button from 'src/components/common/Button.vue';
-import Avatar from 'src/components/common/Avatar.vue';
-import * as plasmUtils from 'src/hooks/helper/plasmUtils';
-import { useBalance, useApi, useAccount } from 'src/hooks';
+import BN from 'bn.js';
 import FormatBalance from 'components/balance/FormatBalance.vue';
+import ModalSelectAccount from 'components/balance/modals/ModalSelectAccount.vue';
+import Modal from 'components/common/Modal.vue';
+import Avatar from 'src/components/common/Avatar.vue';
+import Button from 'src/components/common/Button.vue';
+import InputAmount from 'src/components/common/InputAmount.vue';
+import { useAccount, useApi, useBalance, useChainMetadata } from 'src/hooks';
+import * as plasmUtils from 'src/hooks/helper/plasmUtils';
+import { useStore } from 'src/store';
+import { computed, defineComponent, ref, toRefs } from 'vue';
+import { StakeAction } from '../StakePanel.vue';
+import { getAmount, StakeModel } from 'src/hooks/store';
 
 export default defineComponent({
   components: {
@@ -77,6 +86,14 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    minStaking: {
+      type: String,
+      required: true,
+    },
+    stakeAmount: {
+      type: BN,
+      required: true,
+    },
   },
   setup(props) {
     const store = useStore();
@@ -84,7 +101,7 @@ export default defineComponent({
 
     const data = ref<StakeModel>({
       address: '',
-      amount: 0,
+      amount: props.actionName === StakeAction.Stake ? Number(props.minStaking) : 0,
       unit: defaultUnitToken.value,
       decimal: decimal.value,
     } as StakeModel);
@@ -96,11 +113,29 @@ export default defineComponent({
     const { accountData } = useBalance(api, currentAccount);
 
     const formatBalance = computed(() => {
-      const tokenDecimal = decimal.value;
-      return plasmUtils.reduceBalanceToDenom(
-        accountData!.value!.getUsableTransactionBalance(),
-        tokenDecimal
-      );
+      if (accountData.value) {
+        return getAmount(data.value.amount, data.value.unit);
+      } else {
+        return '';
+      }
+    });
+
+    const formatStakeAmount = computed(() => {
+      return plasmUtils.reduceBalanceToDenom(props.stakeAmount, decimal.value);
+    });
+
+    const canExecuteAction = computed(() => {
+      const maxAmount =
+        props.actionName === StakeAction.Stake
+          ? accountData?.value?.getUsableTransactionBalance() || new BN(0)
+          : props.stakeAmount;
+
+      if (data.value) {
+        const amount = getAmount(data.value.amount, data.value.unit);
+        return amount.gtn(0) && amount.lte(maxAmount);
+      } else {
+        return false;
+      }
     });
 
     const reloadAmount = (
@@ -117,17 +152,13 @@ export default defineComponent({
       allAccounts,
       allAccountNames,
       formatBalance,
+      formatStakeAmount,
       reloadAmount,
       accountData,
+      StakeAction,
+      canExecuteAction,
       ...toRefs(props),
     };
   },
 });
-
-export interface StakeModel {
-  address: string;
-  amount: number;
-  unit: string;
-  decimal: number;
-}
 </script>

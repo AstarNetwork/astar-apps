@@ -17,7 +17,6 @@
         :class="[
           !isMaxAmount && 'tw-border-gray-300',
           !isMaxAmount && 'dark:tw-border-darkGray-500',
-          !isMaxAmount && 'tw-border-b',
           'tw-flex',
           'tw-items-center',
         ]"
@@ -37,10 +36,14 @@
             min="0"
             pattern="^[0-9]*(\.)?[0-9]*$"
             placeholder="0"
-            :value="Number(amount) ? amount : null"
+            :value="isInitInput && amount"
             @input="update($event.target.value, selectedUnit)"
+            @focus="initInput"
           />
         </div>
+        <button v-if="isMaxButton" type="button" class="max" @click="setMaxAmount">
+          {{ $t('max') }}
+        </button>
         <div
           class="
             tw-text-blue-900
@@ -51,7 +54,7 @@
           "
         >
           <select
-            v-if="!fixUnit"
+            v-if="!fixUnit && !isH160"
             name="units"
             class="dark:tw-bg-darkGray-900"
             :value="selectedUnit"
@@ -78,8 +81,9 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, PropType, ref, watchEffect } from 'vue';
+import { defineComponent, PropType, ref, watchEffect, computed } from 'vue';
 import { getUnitNames, defaultUnitIndex } from 'src/hooks/helper/units';
+import { useStore } from 'src/store';
 import BN from 'bn.js';
 export default defineComponent({
   props: {
@@ -87,17 +91,29 @@ export default defineComponent({
     selectedUnit: { type: String, default: '' },
     maxInDefaultUnit: { type: Object as PropType<BN>, default: new BN(0) },
     fixUnit: { type: Boolean, default: false },
-    amount: { required: true, type: Object as PropType<BN> },
+    amount: { default: new BN(0), type: (Object as PropType<BN>) || Number },
+    isMaxButton: { type: Boolean },
   },
   emits: ['update:amount', 'update:selectedUnit', 'input'],
   setup(props, { emit }) {
     const isMaxAmount = ref<boolean>(false);
+    const isInitInput = ref<boolean>(false);
     const arrUnitNames = getUnitNames();
     const update = (amount: BN, unit: string | undefined) => {
       emit('update:amount', amount);
       emit('update:selectedUnit', unit);
       emit('input', { amount, unit });
     };
+
+    const setMaxAmount = () => {
+      if (props.maxInDefaultUnit) {
+        emit('update:selectedUnit', arrUnitNames[defaultUnitIndex]);
+        emit('update:amount', props.maxInDefaultUnit);
+      }
+    };
+
+    const store = useStore();
+    const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
     watchEffect(() => {
       // Memo: cast from string
@@ -107,14 +123,39 @@ export default defineComponent({
         return;
       }
 
-      if (formattedAmount.gte(formattedMaxInDefaultUnit)) {
+      if (formattedAmount.gte(formattedMaxInDefaultUnit) && !props.isMaxButton) {
         isMaxAmount.value = true;
         return;
       }
       isMaxAmount.value = false;
     });
 
-    return { arrUnitNames, update, isMaxAmount };
+    watchEffect(() => {
+      // Memo: to allow show the default amount for staking modal
+      if (!isInitInput.value && Number(props.amount) > 0) {
+        isInitInput.value = true;
+      }
+    });
+
+    const initInput = () => {
+      // Memo: Remove default `props.amount->(0)` from input when initialised
+      // Memo: `props.amout` is defined by BN or Number from parent components
+      try {
+        if (props.amount.eq(new BN(0))) {
+          emit('update:amount', '');
+        }
+      } catch (e) {
+        if (new BN(props.amount).eq(new BN(0))) {
+          emit('update:amount', '');
+        }
+      }
+
+      if (!isInitInput.value) {
+        isInitInput.value = true;
+      }
+    };
+
+    return { arrUnitNames, update, isMaxAmount, isInitInput, initInput, isH160, setMaxAmount };
   },
 });
 </script>

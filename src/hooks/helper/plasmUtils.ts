@@ -54,3 +54,16 @@ export const isValidAddressPolkadotAddress = (address: string) => {
     return false;
   }
 };
+
+/**
+ * Remove the unnecessary decimals such as '.000' that returned in `<Balance>.toHuman()` function
+ * @param amountWithUnit eg: '100.0000 SDN'
+ * @returns '100 SDN'
+ */
+export const formatUnitAmount = (amountWithUnit: string): string => {
+  const words = amountWithUnit.split(' ');
+  const value = Number(words[0]);
+  const unit = words[1] || '';
+  const formattedAmount = `${value} ${unit}`;
+  return formattedAmount;
+};
