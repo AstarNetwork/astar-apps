@@ -51,7 +51,7 @@
     />
 
     <ClaimRewardModal
-      v-if="stakeInfo && dapp && showClaimRewardModal"
+      v-if="dapp && showClaimRewardModal"
       v-model:isOpen="showClaimRewardModal"
       :dapp="dapp"
       :stake-info="stakeInfo"
@@ -134,7 +134,7 @@ export default defineComponent({
       const unit = stakeData.unit;
 
       if (props.stakeInfo) {
-        const ttlStakeAmount = amount.add(props.stakeInfo?.yourStake.denomAmount);
+        const ttlStakeAmount = amount.add(props.stakeInfo.yourStake.denomAmount);
 
         if (ttlStakeAmount.lt(minStaking.value)) {
           store.dispatch('general/showAlertMsg', {
