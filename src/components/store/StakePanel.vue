@@ -132,14 +132,19 @@ export default defineComponent({
     const stake = async (stakeData: StakeModel) => {
       const amount = getAmount(stakeData.amount, stakeData.unit);
       const unit = stakeData.unit;
-      const ttlStakeAmount = amount.add(props.stakeInfo?.yourStake.denomAmount);
 
-      if (ttlStakeAmount.lt(minStaking.value)) {
-        store.dispatch('general/showAlertMsg', {
-          msg: `The amount of token to be staking must greater than ${formattedMinStake.value} ${unit}`,
-          alertType: 'error',
-        });
-        return;
+      if (props.stakeInfo) {
+        const ttlStakeAmount = amount.add(props.stakeInfo?.yourStake.denomAmount);
+
+        if (ttlStakeAmount.lt(minStaking.value)) {
+          store.dispatch('general/showAlertMsg', {
+            msg: `The amount of token to be staking must greater than ${formattedMinStake.value} ${unit}`,
+            alertType: 'error',
+          });
+          return;
+        }
+      } else {
+        console.warn('No stakeInfo available. The store is unable to check some constraints.');
       }
 
       const result = await store.dispatch('dapps/stake', {
