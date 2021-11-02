@@ -42,6 +42,7 @@ import { useApi } from 'src/hooks';
 import Avatar from 'components/common/Avatar.vue';
 import StakePanel from 'components/store/StakePanel.vue';
 import { StakingParameters, StakeInfo } from 'src/store/dapps-store/actions';
+import { endpointKey } from 'src/config/chainEndpoints';
 
 export default defineComponent({
   components: {
@@ -60,6 +61,7 @@ export default defineComponent({
     const { api } = useApi();
     const stakeInfo = ref<StakeInfo>();
     const senderAddress = computed(() => store.getters['general/selectedAccountAddress']);
+    const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
 
     const emitClickEvent = (): void => {
       emit('dappClick', props.dapp);
@@ -70,17 +72,19 @@ export default defineComponent({
     };
 
     const getDappInfo = () => {
-      store
-        .dispatch('dapps/getStakeInfo', {
-          api: api?.value,
-          senderAddress: senderAddress.value,
-          dapp: props.dapp,
-        } as StakingParameters)
-        .then((info: StakeInfo) => {
-          if (info) {
-            stakeInfo.value = info;
-          }
-        });
+      if (currentNetworkIdx.value !== endpointKey.SHIBUYA) {
+        store
+          .dispatch('dapps/getStakeInfo', {
+            api: api?.value,
+            senderAddress: senderAddress.value,
+            dapp: props.dapp,
+          } as StakingParameters)
+          .then((info: StakeInfo) => {
+            if (info) {
+              stakeInfo.value = info;
+            }
+          });
+      }
     };
 
     watch(senderAddress, () => {
