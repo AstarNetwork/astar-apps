@@ -7,7 +7,7 @@
   "private": true,
   "scripts": {
     "dev": "quasar dev",
-    "build": "yarn global add @quasar/cli && quasar build",
+    "build": "quasar build",
     "format": "prettier --write **/*.{ts,vue}",
     "check-format": "prettier --check **/*.{ts,vue}",
     "lint": "yarn format && yarn check-format && eslint --fix --ext .ts,.vue ./",
@@ -15,7 +15,7 @@
     "test": "echo \"No test specified\" && exit 0",
     "deploy": "push-dir --dir=dist/spa --remote=gh-pages --branch=main",
     "start": "node server.js",
-    "heroku-postbuild": "yarn && yarn build"
+    "heroku-postbuild": "yarn install && yarn build"
   },
   "resolutions": {
     "@polkadot/api": ">=5.6.2",
