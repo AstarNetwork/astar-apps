@@ -28,11 +28,8 @@
         :is-max-button="actionName === StakeAction.Unstake ? true : false"
       />
       <div v-if="accountData && actionName !== StakeAction.Unstake" class="tw-mt-1 tw-ml-1">
-        {{ $t('store.modals.yourTransferableBalance') }}
-        <format-balance
-          :balance="accountData?.getUsableTransactionBalance()"
-          class="tw-inline tw-font-semibold"
-        />
+        {{ $t('store.modals.yourBalance') }}
+        <format-balance :balance="accountData?.free" class="tw-inline tw-font-semibold" />
       </div>
       <div v-if="accountData && actionName === StakeAction.Unstake" class="tw-mt-1 tw-ml-1">
         {{ $t('store.yourStake') }}
@@ -132,7 +129,9 @@ export default defineComponent({
 
       if (data.value) {
         const amount = getAmount(data.value.amount, data.value.unit);
-        return amount.gtn(0) && amount.lte(maxAmount);
+        // return amount.gtn(0) && amount.lte(maxAmount);
+        // TODO implement proper max boudary check.
+        return amount.gtn(0);
       } else {
         return false;
       }

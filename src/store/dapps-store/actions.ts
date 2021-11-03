@@ -114,16 +114,6 @@ const getEraStakes = async (
   return eraStakeMap;
 };
 
-const getContractLastStakedEra = async (
-  api: ApiPromise,
-  contractAddress: string
-): Promise<number> => {
-  const eraStakeMap = await getEraStakes(api, contractAddress);
-  const eraIndex = Math.max(...eraStakeMap.keys());
-
-  return eraIndex;
-};
-
 const getLowestClaimableEra = (
   api: ApiPromise,
   currentEra: number,
@@ -156,6 +146,27 @@ const getErasToClaim = async (api: ApiPromise, contractAddress: string): Promise
 
   console.log('Eras to claim', result);
   return result;
+};
+
+const getLatestStakePoint = async (
+  api: ApiPromise,
+  contract: string
+): Promise<EraStakingPoints | undefined> => {
+  const currentEra = await (await api.query.dappsStaking.currentEra<EraIndex>()).toNumber();
+  const contractAddress = getAddressEnum(contract);
+  // iterate from currentEra backwards until you find record for ContractEraStake
+  for (let era = currentEra; era > 0; era -= 1) {
+    const stakeInfoPromise = await api.query.dappsStaking.contractEraStake<
+      Option<EraStakingPoints>
+    >(contractAddress, era);
+    const stakeInfo = await stakeInfoPromise.unwrapOr(undefined);
+
+    if (stakeInfo) {
+      return stakeInfo;
+    }
+  }
+
+  return undefined;
 };
 
 const actions: ActionTree<State, StateInterface> = {
@@ -430,37 +441,29 @@ const actions: ActionTree<State, StateInterface> = {
   async getStakeInfo({ dispatch }, parameters: StakingParameters): Promise<StakeInfo | undefined> {
     try {
       if (parameters.api) {
-        const contractAddress = getAddressEnum(parameters.dapp.address);
-        const eraIndex = await getContractLastStakedEra(parameters.api, parameters.dapp.address);
-        if (eraIndex > 0) {
-          const stakeInfoPromise = await parameters.api.query.dappsStaking.contractEraStake<
-            Option<EraStakingPoints>
-          >(contractAddress, eraIndex);
-          const stakeInfo = await stakeInfoPromise.unwrapOr(null);
-
-          if (stakeInfo) {
-            let yourStake = {
-              formatted: '',
-              denomAmount: new BN('0'),
-            };
-            for (const [account, balance] of stakeInfo.stakers) {
-              if (account.toString() === parameters.senderAddress) {
-                yourStake = {
-                  formatted: balance.toHuman(),
-                  denomAmount: new BN(balance.toString()),
-                };
-                break;
-              }
+        const stakeInfo = await getLatestStakePoint(parameters.api, parameters.dapp.address);
+        if (stakeInfo) {
+          let yourStake = {
+            formatted: '',
+            denomAmount: new BN('0'),
+          };
+          for (const [account, balance] of stakeInfo.stakers) {
+            if (account.toString() === parameters.senderAddress) {
+              yourStake = {
+                formatted: balance.toHuman(),
+                denomAmount: new BN(balance.toString()),
+              };
+              break;
             }
-
-            return {
-              totalStake: stakeInfo.total.toHuman(),
-              yourStake,
-              claimedRewards: stakeInfo.claimedRewards.toHuman(),
-              hasStake: !!yourStake.formatted,
-              stakersCount: stakeInfo.stakers.size,
-            } as StakeInfo;
           }
+
+          return {
+            totalStake: stakeInfo.total.toHuman(),
+            yourStake,
+            claimedRewards: stakeInfo.claimedRewards.toHuman(),
+            hasStake: !!yourStake.formatted,
+            stakersCount: stakeInfo.stakers.size,
+          } as StakeInfo;
         }
       } else {
         showError(dispatch, 'Api is undefined.');
