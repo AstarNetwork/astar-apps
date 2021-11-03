@@ -6,8 +6,8 @@
   "author": "",
   "private": true,
   "scripts": {
-    "dev": "$(npm bin)/quasar dev",
-    "build": "npx quasar build",
+    "dev": "quasar dev",
+    "build": "yarn add @quasar/cli && npx quasar build",
     "format": "prettier --write **/*.{ts,vue}",
     "check-format": "prettier --check **/*.{ts,vue}",
     "lint": "yarn format && yarn check-format && eslint --fix --ext .ts,.vue ./",
@@ -34,7 +34,6 @@
     "@polkadot/util": "^7.3.1",
     "@polkadot/util-crypto": "^7.3.1",
     "@polkadot/wasm-crypto": "^4.2.1",
-    "@quasar/cli": "^1.2.2",
     "@quasar/extras": "^1.0.0",
     "axios": "^0.21.1",
     "connect-history-api-fallback": "^1.6.0",
