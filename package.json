@@ -6,8 +6,8 @@
   "author": "",
   "private": true,
   "scripts": {
-    "dev": "$(npm bin)quasar dev",
-    "build": "$(npm bin)/quasar build",
+    "dev": "$(npm bin)/quasar dev",
+    "build": "npx quasar build",
     "format": "prettier --write **/*.{ts,vue}",
     "check-format": "prettier --check **/*.{ts,vue}",
     "lint": "yarn format && yarn check-format && eslint --fix --ext .ts,.vue ./",
