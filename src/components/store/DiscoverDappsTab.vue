@@ -68,16 +68,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from 'vue';
-import { useStore } from 'src/store';
-import Dapp from 'src/components/store/Dapp.vue';
-import IconPlus from 'components/icons/IconPlus.vue';
-import IconBase from 'components/icons/IconBase.vue';
-import ModalRegisterDapp from 'components/store/modals/ModalRegisterDapp.vue';
-import ModalDappDetails from 'components/store/modals/ModalDappDetails.vue';
 import Button from 'components/common/Button.vue';
-import { DappItem } from 'src/store/dapps-store/state';
+import IconBase from 'components/icons/IconBase.vue';
+import IconPlus from 'components/icons/IconPlus.vue';
+import ModalDappDetails from 'components/store/modals/ModalDappDetails.vue';
+import ModalRegisterDapp from 'components/store/modals/ModalRegisterDapp.vue';
+import Dapp from 'src/components/store/Dapp.vue';
 import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
+import { useStore } from 'src/store';
+import { DappItem } from 'src/store/dapps-store/state';
+import { computed, defineComponent, ref } from 'vue';
 
 export default defineComponent({
   components: {
@@ -91,6 +91,7 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const dapps = computed(() => store.getters['dapps/getAllDapps']);
+
     const maxNumberOfStakersPerContract = computed(
       () => store.getters['dapps/getMaxNumberOfStakersPerContract']
     );
