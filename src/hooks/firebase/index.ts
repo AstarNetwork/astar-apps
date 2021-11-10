@@ -9,6 +9,7 @@ import {
   DocumentData,
 } from 'firebase/firestore/lite';
 import { getStorage, ref, uploadString, getDownloadURL } from 'firebase/storage';
+import { getAuth, signInAnonymously } from 'firebase/auth';
 import { DappItem, NewDappItem } from 'src/store/dapps-store/state';
 
 // firebase init - add your own config here
@@ -25,6 +26,14 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage();
+const auth = getAuth();
+signInAnonymously(auth)
+  .then(() => {
+    console.log('Firebase user signed in.');
+  })
+  .catch((error) => {
+    console.error(error.message);
+  });
 
 const getDapps = async (collectionName: string): Promise<QuerySnapshot<DocumentData>> => {
   const dbCollection = collection(db, collectionName);
