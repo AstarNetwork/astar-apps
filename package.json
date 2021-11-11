@@ -15,7 +15,7 @@
     "test": "echo \"No test specified\" && exit 0",
     "deploy": "push-dir --dir=dist/spa --remote=gh-pages --branch=main",
     "start": "node server.js",
-    "heroku-postbuild": "yarn install --only=dev --no-shrinkwrap && yarn build"
+    "heroku-postbuild": "yarn install && yarn build"
   },
   "resolutions": {
     "@polkadot/api": ">=5.6.2",
@@ -34,6 +34,7 @@
     "@polkadot/util": "^7.3.1",
     "@polkadot/util-crypto": "^7.3.1",
     "@polkadot/wasm-crypto": "^4.2.1",
+    "@quasar/app": "^3.0.0",
     "@quasar/extras": "^1.0.0",
     "axios": "^0.21.1",
     "connect-history-api-fallback": "^1.6.0",
@@ -58,7 +59,6 @@
   "devDependencies": {
     "@babel/eslint-parser": "^7.13.14",
     "@polkadot/ts": "^0.4.6",
-    "@quasar/app": "^3.0.0",
     "@tailwindcss/custom-forms": "^0.2.1",
     "@tailwindcss/postcss7-compat": "^2.0.3",
     "@types/create-hash": "^1.2.2",
