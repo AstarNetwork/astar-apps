@@ -7,6 +7,7 @@ export default {
   forget: 'Forget',
   close: 'Close',
   subscan: 'Subscan',
+  usd: 'USD',
   warning: {
     insufficientFee: 'Warning! Transaction might failed due to insufficient fee',
   },
@@ -110,6 +111,8 @@ export default {
     claim: 'Claim',
     stakersCount: 'Stakers:',
     warning: 'Warning: Minimum Staking Amount is {amount} and Up to {stakers} Stakers Per Contract',
+    tvl: 'TVL IN DAPPS',
+    dappsCount: 'DAPPS COUNT',
     modals: {
       alreadyClaimed: 'Already claimed:',
       contractRewards: 'Contract rewards:',

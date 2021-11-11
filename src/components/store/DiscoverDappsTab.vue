@@ -42,6 +42,14 @@
       </div>
     </div>
 
+    <div
+      v-if="dapps.length > 0"
+      class="store-container tw-grid tw-gap-x-12 xl:tw-gap-x-18 tw-justify-center"
+    >
+      <TVL />
+      <DappsCount />
+    </div>
+
     <div class="store-container tw-grid tw-gap-x-12 xl:tw-gap-x-18 tw-justify-center">
       <div
         v-if="dapps.length === 0"
@@ -78,6 +86,8 @@ import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { DappItem } from 'src/store/dapps-store/state';
 import { computed, defineComponent, ref } from 'vue';
+import TVL from './statistics/TVL.vue';
+import DappsCount from './statistics/DappsCount.vue';
 
 export default defineComponent({
   components: {
@@ -87,6 +97,8 @@ export default defineComponent({
     ModalRegisterDapp,
     ModalDappDetails,
     Button,
+    TVL,
+    DappsCount,
   },
   setup() {
     const store = useStore();
