@@ -48,6 +48,7 @@
     "firebase": "^9.0.2",
     "keccak": "byterose/keccak#stream-update",
     "node-polyfill-webpack-plugin": "^1.1.4",
+    "prettier": "^2.4.1",
     "quasar": "^2.0.0",
     "secp256k1": "^4.0.2",
     "serve-static": "^1.14.1",
@@ -73,7 +74,6 @@
     "@typescript-eslint/parser": "^4.16.1",
     "eslint": "^7.14.0",
     "eslint-config-prettier": "^8.1.0",
-    "prettier": "^2.4.1",
     "push-dir": "^0.4.1",
     "sass-loader": "7.3.1",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.3"
