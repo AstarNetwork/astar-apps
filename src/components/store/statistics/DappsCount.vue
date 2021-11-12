@@ -10,7 +10,7 @@
       box
     "
   >
-    <div class="tw-text-xl tw-font-semibold tw-mb-4">{{ $t('dappsCount') }}</div>
+    <div class="tw-text-xl tw-font-semibold tw-mb-4">{{ $t('store.dappsCount') }}</div>
     <div class="tw-flex tw-flex-col tw-items-center">
       <div class="tw-text-5xl tw-font-semibold">{{ dappsCount }}</div>
     </div>
