@@ -66,9 +66,7 @@
     "vue-i18n": "^9.0.0-beta.0",
     "vue3-dropzone": "^0.0.7",
     "vuex": "^4.0.1",
-    "web3": "^1.6.0"
-  },
-  "devDependencies": {
+    "web3": "^1.6.0",
     "@babel/eslint-parser": "^7.13.14",
     "@polkadot/ts": "^0.4.6",
     "@tailwindcss/custom-forms": "^0.2.1",
@@ -78,6 +76,7 @@
     "sass-loader": "7.3.1",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.3"
   },
+  "devDependencies": {},
   "browserslist": [
     "last 10 Chrome versions",
     "last 10 Firefox versions",
