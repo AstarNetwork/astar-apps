@@ -33,7 +33,7 @@
               {{
                 $t('store.warning', {
                   amount: minimumStakingAmount,
-                  stakers: maxNumberOfStakersPerContract,
+                  stakers: maxNumberOfStakersPerContract.toLocaleString('en-US'),
                 })
               }}
             </span>

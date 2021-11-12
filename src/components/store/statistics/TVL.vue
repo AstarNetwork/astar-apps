@@ -12,10 +12,10 @@
   >
     <div class="tw-text-xl tw-font-semibold tw-mb-4">{{ $t('store.tvl') }}</div>
     <div class="tw-flex tw-flex-col tw-items-center">
-      <div class="tw-text-xl tw-font-bold">
+      <div class="tw-font-bold" :class="tvlUsd === 0 ? 'tw-text-2xl tw-pt-1' : 'tw-text-xl'">
         <format-balance :balance="tvlToken" />
       </div>
-      <div class="tw-flex tw-text-xl tw-font-bold">
+      <div v-if="tvlUsd !== 0" class="tw-flex tw-text-xl tw-font-bold">
         <div>${{ numFormatter(tvlUsd) }}</div>
         <div class="tw-ml-1">{{ $t('usd') }}</div>
       </div>
