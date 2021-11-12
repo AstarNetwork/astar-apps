@@ -1,0 +1,17 @@
+{
+  "name": "astar-portal",
+  "scripts": {
+    "heroku-postbuild": "yarn install && yarn build"
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "hobby"
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-nodejs"
+    }
+  ]
+}
