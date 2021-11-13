@@ -1,7 +1,7 @@
 <template>
   <div v-if="isConnected(currentNetworkStatus)">
     <div class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4">
-      <Address
+      <Wallet
         v-model:isOpen="modalAccount"
         :address="currentAccount"
         :address-name="currentAccountName"
@@ -52,7 +52,7 @@ import { defineComponent, reactive, toRefs, computed, watch, ref } from 'vue';
 import { useBalance, useApi, useAccount } from 'src/hooks';
 import { useStore } from 'src/store';
 import { useMeta } from 'quasar';
-import Address from './Address.vue';
+import Wallet from './Wallet.vue';
 import ToggleMetaMask from './ToggleMetaMask.vue';
 import PlmBalance from './PlmBalance.vue';
 import TotalBalance from './TotalBalance.vue';
@@ -67,7 +67,7 @@ interface Modal {
 
 export default defineComponent({
   components: {
-    Address,
+    Wallet,
     PlmBalance,
     TotalBalance,
     // ModalAlertBox,
