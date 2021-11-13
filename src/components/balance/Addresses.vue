@@ -12,13 +12,13 @@
     <div class="tw-px-32">
       <div class="tw-border-b tw-border-gray-100 dark:tw-border-darkGray-600" />
     </div>
-    <Address :address="address" format="H160" />
+    <Address :address="evmAddress" format="H160" />
   </div>
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
 import Address from './Address.vue';
-
+import { toEvmAddress } from 'src/hooks/helper/addressUtils';
 export default defineComponent({
   components: {
     Address,
@@ -30,10 +30,11 @@ export default defineComponent({
     },
   },
 
-  // setup(props) {
-  //   return {
-  //     address,
-  //   };
-  // },
+  setup(props) {
+    const evmAddress = toEvmAddress(props.address);
+    return {
+      evmAddress,
+    };
+  },
 });
 </script>

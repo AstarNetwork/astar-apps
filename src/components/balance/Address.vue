@@ -17,7 +17,7 @@
             {{ format }}
           </p>
           <p class="tw-text-xs tw-text-gray-500 dark:tw-text-darkGray-400">
-            {{ shortenAddress }}
+            {{ formattedAddress }}
           </p>
         </div>
       </div>
@@ -56,14 +56,17 @@
             "
             >{{ $t('copy') }}</span
           >
-
-          <input id="hiddenAddr" type="hidden" :value="address" />
         </button>
       </div>
 
       <div
         v-if="isSubscan"
-        class="tw-border-l tw-border-gray-100 dark:tw-border-darkGray-600 tw-flex tw-items-center"
+        class="
+          tw-border-l tw-border-gray-100
+          dark:tw-border-darkGray-600
+          tw-flex tw-items-center tw-pl-1
+          md:tw-pl-2
+        "
       >
         <a :href="subScan" target="_blank" rel="noopener noreferrer">
           <button type="button" class="icon tw-tooltip">
@@ -97,8 +100,6 @@
               "
               >{{ $t('subscan') }}</span
             >
-
-            <input id="hiddenAddr" type="hidden" :value="address" />
           </button>
         </a>
       </div>
@@ -106,7 +107,8 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, computed, toRefs } from 'vue';
+import { defineComponent, computed, ref, watchEffect } from 'vue';
+import { useWindowSize } from '@vueuse/core';
 import { useStore } from 'src/store';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import IconBase from 'components/icons/IconBase.vue';
@@ -114,6 +116,7 @@ import IconAccountSample from 'components/icons/IconAccountSample.vue';
 import IconDocumentDuplicate from 'components/icons/IconDocumentDuplicate.vue';
 import IconLink from 'components/icons/IconLink.vue';
 import { providerEndpoints } from 'src/config/chainEndpoints';
+import { screens } from 'src/layouts';
 
 export default defineComponent({
   components: {
@@ -133,25 +136,34 @@ export default defineComponent({
     },
   },
 
-  setup(props) {
-    const { address } = toRefs(props);
+  setup({ address }) {
+    const store = useStore();
+    const formattedAddress = ref(address);
+    const shortenAddress = computed(() => getShortenAddress(address));
 
-    const shortenAddress = computed(() => {
-      return getShortenAddress(address.value);
+    const { width } = useWindowSize();
+    watchEffect(() => {
+      const { lg, md } = screens;
+      const { value: w } = width;
+      formattedAddress.value =
+        w > screens['2xl']
+          ? address
+          : w > lg
+          ? shortenAddress.value
+          : w > md
+          ? address
+          : shortenAddress.value;
     });
 
-    const store = useStore();
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
-    const selectedAccountAddress = computed(() => store.getters['general/selectedAccountAddress']);
     const subScan = computed(
-      () =>
-        `${providerEndpoints[currentNetworkIdx.value].subscan}/account/${
-          selectedAccountAddress.value
-        }`
+      () => `${providerEndpoints[currentNetworkIdx.value].subscan}/account/${address}`
     );
+
     const isSubscan = providerEndpoints[currentNetworkIdx.value].subscan !== '';
 
-    const showAlert = () => {
+    const copyAddress = async () => {
+      await navigator.clipboard.writeText(address);
       store.dispatch('general/showAlertMsg', {
         msg: 'Copy address success!!',
         alertType: 'success',
@@ -159,24 +171,12 @@ export default defineComponent({
     };
 
     return {
-      shortenAddress,
-      showAlert,
+      formattedAddress,
       subScan,
       isSubscan,
       currentNetworkIdx,
+      copyAddress,
     };
-  },
-  methods: {
-    copyAddress() {
-      var copyAddr = document.querySelector('#hiddenAddr') as HTMLInputElement;
-      copyAddr.setAttribute('type', 'text');
-      copyAddr.select();
-      document.execCommand('copy');
-      copyAddr.setAttribute('type', 'hidden');
-      window.getSelection()?.removeAllRanges();
-
-      this.showAlert();
-    },
   },
 });
 </script>
