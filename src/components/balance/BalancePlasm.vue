@@ -1,20 +1,28 @@
 <template>
   <div v-if="isConnected(currentNetworkStatus)">
-    <div class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4">
-      <Wallet
-        v-model:isOpen="modalAccount"
-        :address="currentAccount"
-        :address-name="currentAccountName"
-      />
-    </div>
-    <div
-      v-if="isH160 || isSS58"
-      class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4 tw-mt-4"
-    >
-      <ToggleMetaMask />
+    <div v-if="isH160 || isSS58">
+      <div class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4">
+        <WalletH160
+          v-model:isOpen="modalAccount"
+          :address="currentAccount"
+          :address-name="currentAccountName"
+        />
+      </div>
+      <div class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4 tw-mt-4">
+        <ToggleMetaMask />
+      </div>
     </div>
 
-    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-y-4 md:tw-gap-4 tw-mt-8">
+    <div v-else>
+      <div class="tw-grid lg:tw-grid-cols-2 tw-gap-4">
+        <Wallet v-model:isOpen="modalAccount" :wallet-name="currentAccountName" />
+      </div>
+      <div class="tw-grid lg:tw-grid-cols-2 tw-gap-4 tw-mt-8">
+        <Addresses :address="currentAccount" />
+      </div>
+    </div>
+
+    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-y-8 md:tw-gap-8 tw-mt-8">
       <TotalBalance v-if="accountData" :account-data="accountData" />
       <PlmBalance
         v-if="accountData"
@@ -53,6 +61,8 @@ import { useBalance, useApi, useAccount } from 'src/hooks';
 import { useStore } from 'src/store';
 import { useMeta } from 'quasar';
 import Wallet from './Wallet.vue';
+import WalletH160 from './WalletH160.vue';
+import Addresses from './Addresses.vue';
 import ToggleMetaMask from './ToggleMetaMask.vue';
 import PlmBalance from './PlmBalance.vue';
 import TotalBalance from './TotalBalance.vue';
@@ -68,9 +78,10 @@ interface Modal {
 export default defineComponent({
   components: {
     Wallet,
+    WalletH160,
     PlmBalance,
     TotalBalance,
-    // ModalAlertBox,
+    Addresses,
     ToggleMetaMask,
     ModalAccount,
     ModalTransferAmount,
