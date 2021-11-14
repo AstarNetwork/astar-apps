@@ -17,7 +17,12 @@
             {{ format }}
           </p>
           <p class="tw-text-xs tw-text-gray-500 dark:tw-text-darkGray-400">
-            {{ formattedAddress }}
+            <span class="tw-hidden sm:tw-block lg:tw-hidden 2xl:tw-block">
+              {{ address }}
+            </span>
+            <span class="sm:tw-hidden lg:tw-block 2xl:tw-hidden">
+              {{ getShortenAddress(address) }}
+            </span>
           </p>
         </div>
       </div>
@@ -108,7 +113,6 @@
 </template>
 <script lang="ts">
 import { defineComponent, computed, ref, watchEffect } from 'vue';
-import { useWindowSize } from '@vueuse/core';
 import { useStore } from 'src/store';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import IconBase from 'components/icons/IconBase.vue';
@@ -116,7 +120,6 @@ import IconAccountSample from 'components/icons/IconAccountSample.vue';
 import IconDocumentDuplicate from 'components/icons/IconDocumentDuplicate.vue';
 import IconLink from 'components/icons/IconLink.vue';
 import { providerEndpoints } from 'src/config/chainEndpoints';
-import { screens } from 'src/layouts';
 import { useAccount } from 'src/hooks';
 import { toEvmAddress } from 'src/hooks/helper/plasmUtils';
 import { AddressFormat } from './Addresses.vue';
@@ -138,24 +141,11 @@ export default defineComponent({
   setup({ format }) {
     const store = useStore();
     const address = ref<string>('');
-    const formattedAddress = ref<string>('');
     const { currentAccount } = useAccount();
-    const { width } = useWindowSize();
 
     watchEffect(() => {
       address.value =
         format === AddressFormat.SS58 ? currentAccount.value : toEvmAddress(currentAccount.value);
-      const shortenAddress = getShortenAddress(address.value);
-      const { lg, md } = screens;
-      const { value: w } = width;
-      formattedAddress.value =
-        w > screens['2xl']
-          ? address.value
-          : w > lg
-          ? shortenAddress
-          : w > md
-          ? address.value
-          : shortenAddress;
     });
 
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
@@ -174,11 +164,12 @@ export default defineComponent({
     };
 
     return {
-      formattedAddress,
+      address,
       subScan,
       isSubscan,
       currentNetworkIdx,
       copyAddress,
+      getShortenAddress,
     };
   },
 });
