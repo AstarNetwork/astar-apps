@@ -317,22 +317,28 @@ export default defineComponent({
         return;
       }
 
-      if (
-        !plasmUtils.isValidAddressPolkadotAddress(fromAddress) ||
-        !plasmUtils.isValidAddressPolkadotAddress(toAddress)
-      ) {
+      const isValidSS58Address =
+        plasmUtils.isValidAddressPolkadotAddress(fromAddress) &&
+        plasmUtils.isValidAddressPolkadotAddress(toAddress);
+
+      if (!isValidSS58Address && !plasmUtils.isValidEvmAddress(toAddress)) {
         toastInvalidAddress();
         return;
       }
+
+      const receivingAddress = plasmUtils.isValidEvmAddress(toAddress)
+        ? plasmUtils.toSS58Address(toAddress)
+        : toAddress;
+      console.log('receivingAddress', receivingAddress);
 
       const unit = getUnit(selectUnit.value);
       const toAmt = plasmUtils.reduceDenomToBalance(transferAmt, unit, decimal.value);
       console.log('toAmt', toAmt.toString(10));
 
       if (isCheckMetamask.value) {
-        await transferExtrinsic(toAmt, toAddress);
+        await transferExtrinsic(toAmt, receivingAddress);
       } else {
-        await transferLocal(toAmt, fromAddress, toAddress);
+        await transferLocal(toAmt, fromAddress, receivingAddress);
       }
     };
 

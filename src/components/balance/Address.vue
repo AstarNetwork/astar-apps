@@ -117,6 +117,9 @@ import IconDocumentDuplicate from 'components/icons/IconDocumentDuplicate.vue';
 import IconLink from 'components/icons/IconLink.vue';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { screens } from 'src/layouts';
+import { useAccount } from 'src/hooks';
+import { toEvmAddress } from 'src/hooks/helper/plasmUtils';
+import { AddressFormat } from 'src/hooks/helper/plasmUtils';
 
 export default defineComponent({
   components: {
@@ -126,44 +129,44 @@ export default defineComponent({
     IconLink,
   },
   props: {
-    address: {
-      type: String,
-      required: true,
-    },
     format: {
       type: String,
       required: true,
     },
   },
 
-  setup({ address }) {
+  setup({ format }) {
     const store = useStore();
-    const formattedAddress = ref(address);
-    const shortenAddress = computed(() => getShortenAddress(address));
-
+    const address = ref<string>('');
+    const formattedAddress = ref<string>('');
+    const { currentAccount } = useAccount();
     const { width } = useWindowSize();
+
     watchEffect(() => {
+      address.value =
+        format === AddressFormat.SS58 ? currentAccount.value : toEvmAddress(currentAccount.value);
+      const shortenAddress = getShortenAddress(address.value);
       const { lg, md } = screens;
       const { value: w } = width;
       formattedAddress.value =
         w > screens['2xl']
-          ? address
+          ? address.value
           : w > lg
-          ? shortenAddress.value
+          ? shortenAddress
           : w > md
-          ? address
-          : shortenAddress.value;
+          ? address.value
+          : shortenAddress;
     });
 
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
     const subScan = computed(
-      () => `${providerEndpoints[currentNetworkIdx.value].subscan}/account/${address}`
+      () => `${providerEndpoints[currentNetworkIdx.value].subscan}/account/${address.value}`
     );
 
     const isSubscan = providerEndpoints[currentNetworkIdx.value].subscan !== '';
 
     const copyAddress = async () => {
-      await navigator.clipboard.writeText(address);
+      await navigator.clipboard.writeText(address.value);
       store.dispatch('general/showAlertMsg', {
         msg: 'Copy address success!!',
         alertType: 'success',

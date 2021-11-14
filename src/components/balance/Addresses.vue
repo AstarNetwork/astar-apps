@@ -8,33 +8,24 @@
       tw-py-4 tw-gap-y-2
     "
   >
-    <Address :address="address" format="SS58" />
+    <Address :format="AddressFormat.SS58" />
     <div class="tw-px-32">
       <div class="tw-border-b tw-border-gray-100 dark:tw-border-darkGray-600" />
     </div>
-    <Address :address="evmAddress" format="H160" />
+    <Address :format="AddressFormat.H160" />
   </div>
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
 import Address from './Address.vue';
-import { toEvmAddress } from 'src/hooks/helper/addressUtils';
+import { AddressFormat } from 'src/hooks/helper/plasmUtils';
+
 export default defineComponent({
   components: {
     Address,
   },
-  props: {
-    address: {
-      type: String,
-      required: true,
-    },
-  },
-
-  setup(props) {
-    const evmAddress = toEvmAddress(props.address);
-    return {
-      evmAddress,
-    };
+  setup() {
+    return { AddressFormat };
   },
 });
 </script>

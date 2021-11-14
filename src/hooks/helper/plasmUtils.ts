@@ -1,8 +1,16 @@
 // const { decodeAddress, encodeAddress } = require('@polkadot/keyring');
 // const { hexToU8a, isHex } = require('@polkadot/util');
-import { decodeAddress, encodeAddress } from '@polkadot/util-crypto';
-import { hexToU8a, isHex } from '@polkadot/util';
+import { addressToEvm, decodeAddress, encodeAddress, evmToAddress } from '@polkadot/util-crypto';
+import { hexToU8a, isHex, u8aToHex } from '@polkadot/util';
 import BN from 'bn.js';
+import Web3 from 'web3';
+
+const ASTAR_SS58_FORMAT = 5;
+
+export enum AddressFormat {
+  SS58 = 'SS58',
+  H160 = 'H160',
+}
 
 /**
  * A helper function to convert the given node balance value into the given chain token decimal point as a string.
@@ -66,4 +74,25 @@ export const formatUnitAmount = (amountWithUnit: string): string => {
   const unit = words[1] || '';
   const formattedAmount = `${value} ${unit}`;
   return formattedAmount;
+};
+
+// Memo: The EVM address won't be same as the address shown in MetaMask imported from the same private key of the SS58
+// Ref: https://github.com/polkadot-js/common/issues/931
+export const toEvmAddress = (ss58Address: string) => {
+  return u8aToHex(addressToEvm(ss58Address));
+};
+
+export const checkSumEvmAddress = (h160Address: string): string => {
+  const web3 = new Web3();
+  return web3.utils.toChecksumAddress(h160Address);
+};
+
+export const isValidEvmAddress = (h160Address: string): boolean => {
+  const web3 = new Web3();
+  return web3.utils.checkAddressChecksum(h160Address);
+};
+
+export const toSS58Address = (h160Address: string) => {
+  const address = checkSumEvmAddress(h160Address);
+  return evmToAddress(address, ASTAR_SS58_FORMAT);
 };
