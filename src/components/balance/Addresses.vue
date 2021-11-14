@@ -18,7 +18,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import Address from './Address.vue';
-import { AddressFormat } from 'src/hooks/helper/plasmUtils';
+
+export enum AddressFormat {
+  SS58 = 'SS58',
+  H160 = 'H160',
+}
 
 export default defineComponent({
   components: {

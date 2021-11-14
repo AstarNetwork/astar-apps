@@ -24,12 +24,8 @@ export const ecdsaPubKeyToSs58 = (publicKey: string, networkPrefix?: number): st
   }
 
   const ss58PubKey = blake2AsU8a(hexToU8a(publicKey), 256);
-  const hexAddress = hexAddPrefix(Buffer.from(ss58PubKey).toString('hex'));
-  console.log('hexAddress', hexAddress);
-  console.log('networkPrefix', networkPrefix);
-  console.log('ss58PubKey', ss58PubKey);
+
   const ss58Address = encodeAddress(ss58PubKey, networkPrefix);
-  console.log('ss58Address', ss58Address);
 
   return ss58Address;
 };

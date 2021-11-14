@@ -21,7 +21,7 @@
           </div>
 
           <input
-            v-model="selAddress"
+            v-model="valueAddressOrWallet"
             class="
               tw-w-full tw-text-blue-900
               dark:tw-text-darkGray-100
@@ -100,15 +100,17 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, computed, ref, watch } from 'vue';
+import { defineComponent, computed, ref, watch, watchEffect } from 'vue';
 import { useStore } from 'src/store';
 import { providerEndpoints } from 'src/config/chainEndpoints';
+import { useAccount } from 'src/hooks';
 
 import IconBase from 'components/icons/IconBase.vue';
 import IconAccountSample from 'components/icons/IconAccountSample.vue';
 import IconSolidSelector from 'components/icons/IconSolidSelector.vue';
 import ModalSelectAccountOption from './ModalSelectAccountOption.vue';
 import MetamaskOption from './MetamaskOption.vue';
+import { Role } from './ModalTransferAmount.vue';
 
 export default defineComponent({
   components: {
@@ -138,6 +140,7 @@ export default defineComponent({
     const openOption = ref(false);
 
     const store = useStore();
+    const { currentAccountName } = useAccount();
     const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
 
@@ -171,7 +174,7 @@ export default defineComponent({
           selAccountName.value = props.allAccountNames[selAccountIdx.value];
           selAddress.value = props.allAccounts[selAccountIdx.value] as string;
         } else {
-          if (props.role === 'toAddress' && isH160.value) {
+          if (props.role === Role.ToAddress && isH160.value) {
             selAddress.value = '';
           } else {
             selAddress.value = ecdsaAccountValue;
@@ -190,7 +193,14 @@ export default defineComponent({
       emit('update:sel-address', e.currentTarget.value);
     };
 
+    const valueAddressOrWallet = ref<string>('');
+    watchEffect(() => {
+      valueAddressOrWallet.value =
+        props.role === Role.FromAddress ? String(currentAccountName.value) : selAddress.value;
+    });
+
     return {
+      valueAddressOrWallet,
       openOption,
       selAccountIdx,
       selAddress,

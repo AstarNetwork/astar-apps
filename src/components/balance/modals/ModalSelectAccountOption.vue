@@ -55,6 +55,7 @@ import { defineComponent, toRefs, computed } from 'vue';
 import IconBase from 'components/icons/IconBase.vue';
 import IconAccountSample from 'components/icons/IconAccountSample.vue';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
+import { useStore } from 'src/store';
 
 export default defineComponent({
   components: {
@@ -81,14 +82,24 @@ export default defineComponent({
   emits: ['update:sel-checked', 'update:sel-option'],
   setup(props, { emit }) {
     const { address } = toRefs(props);
+    const store = useStore();
 
     const shortenAddress = computed(() => {
       return getShortenAddress(address.value);
     });
+    const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
 
     const onChange = (keyIdx: number) => {
       emit('update:sel-option', keyIdx);
       emit('update:sel-checked', false);
+      if (isCheckMetamask) {
+        store.commit('general/setIsCheckMetamask', false);
+        store.commit('general/setCurrentEcdsaAccount', {
+          ethereum: '',
+          ss58: '',
+          h160: '',
+        });
+      }
     };
 
     return {

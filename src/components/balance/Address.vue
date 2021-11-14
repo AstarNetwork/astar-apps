@@ -119,7 +119,7 @@ import { providerEndpoints } from 'src/config/chainEndpoints';
 import { screens } from 'src/layouts';
 import { useAccount } from 'src/hooks';
 import { toEvmAddress } from 'src/hooks/helper/plasmUtils';
-import { AddressFormat } from 'src/hooks/helper/plasmUtils';
+import { AddressFormat } from './Addresses.vue';
 
 export default defineComponent({
   components: {

@@ -69,7 +69,7 @@
                   v-model:selAddress="fromAddress"
                   :all-accounts="allAccounts"
                   :all-account-names="allAccountNames"
-                  role="fromAddress"
+                  :role="Role.FromAddress"
                   @sel-changed="reloadAmount"
                 />
               </div>
@@ -88,7 +88,7 @@
                   v-model:selAddress="toAddress"
                   :all-accounts="allAccounts"
                   :all-account-names="allAccountNames"
-                  role="toAddress"
+                  :role="Role.ToAddress"
                 />
               </div>
 
@@ -135,6 +135,11 @@ import { useStore } from 'src/store';
 import { computed, defineComponent, ref, toRefs } from 'vue';
 import Web3 from 'web3';
 import ModalSelectAccount from './ModalSelectAccount.vue';
+
+export enum Role {
+  FromAddress = 'FromAddress',
+  ToAddress = 'ToAddress',
+}
 
 export default defineComponent({
   components: {
@@ -364,6 +369,7 @@ export default defineComponent({
       defaultUnitToken,
       selectUnit,
       reloadAmount,
+      Role,
       ...toRefs(props),
     };
   },

@@ -7,11 +7,6 @@ import Web3 from 'web3';
 
 const ASTAR_SS58_FORMAT = 5;
 
-export enum AddressFormat {
-  SS58 = 'SS58',
-  H160 = 'H160',
-}
-
 /**
  * A helper function to convert the given node balance value into the given chain token decimal point as a string.
  * EX: `femto` -> `PLM`
