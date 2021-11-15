@@ -4,7 +4,7 @@
       <div class="tw-flex tw-items-center">
         <div class="tw-h-11 tw-w-11 sm:tw-h-12 sm:tw-w-12 tw-overflow-hidden tw-mx-2 sm:tw-mx-3">
           <div v-if="format === 'H160'">
-            <img width="80" src="~assets/img/metamask.png" />
+            <img width="80" src="~assets/img/ethereum.png" />
           </div>
           <div v-else>
             <icon-base class="tw-h-full tw-w-full" viewBox="0 0 64 64">

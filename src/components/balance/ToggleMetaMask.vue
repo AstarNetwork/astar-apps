@@ -23,7 +23,7 @@
             sm:tw-mx-3
           "
         >
-          <img width="80" src="~assets/img/metamask.png" />
+          <img width="80" src="~assets/img/ethereum.png" />
         </div>
         <div>
           <p class="tw-text-blue-900 dark:tw-text-darkGray-100 tw-font-bold">
