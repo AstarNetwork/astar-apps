@@ -83,6 +83,8 @@ export const checkSumEvmAddress = (h160Address: string): string => {
 };
 
 export const isValidEvmAddress = (h160Address: string): boolean => {
+  if (!h160Address) return false;
+
   const web3 = new Web3();
   return web3.utils.checkAddressChecksum(h160Address);
 };

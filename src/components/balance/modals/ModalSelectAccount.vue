@@ -3,19 +3,9 @@
     <div class="button-account">
       <div class="tw-flex tw-items-center tw-justify-between">
         <div class="tw-flex tw-items-center">
-          <div
-            class="
-              tw-h-8
-              tw-w-8
-              tw-rounded-full
-              tw-overflow-hidden
-              tw-border
-              tw-border-gray-100
-              tw-mr-3
-              tw-flex-shrink-0
-            "
-          >
-            <icon-base class="tw-h-full tw-w-full" viewBox="0 0 64 64">
+          <div class="tw-h-8 tw-w-8 tw-overflow-hidden tw-mr-3 tw-flex-shrink-0">
+            <img v-if="isEvmAddress" width="80" src="~assets/img/ethereum.png" />
+            <icon-base v-else class="tw-h-full tw-w-full" viewBox="0 0 64 64">
               <icon-account-sample />
             </icon-base>
           </div>
@@ -114,6 +104,7 @@ import IconSolidSelector from 'components/icons/IconSolidSelector.vue';
 import ModalSelectAccountOption from './ModalSelectAccountOption.vue';
 import MetamaskOption from './MetamaskOption.vue';
 import { Role } from './ModalTransferAmount.vue';
+import { isValidEvmAddress } from 'src/hooks/helper/plasmUtils';
 
 export default defineComponent({
   components: {
@@ -137,11 +128,16 @@ export default defineComponent({
       defalut: false,
       default: '',
     },
+    toAddress: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   emits: ['update:sel-address', 'selChanged'],
   setup(props, { emit }) {
+    const isReadOnly = props.role === Role.FromAddress;
     const openOption = ref(false);
-
     const store = useStore();
     const { currentAccountName } = useAccount();
     const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
@@ -192,7 +188,10 @@ export default defineComponent({
       { immediate: true }
     );
 
-    const isReadOnly = props.role === Role.FromAddress;
+    const isEvmAddress = ref<boolean>(false);
+    watchEffect(() => {
+      isEvmAddress.value = isValidEvmAddress(props.toAddress ? props.toAddress : '');
+    });
 
     const changeAddress = (e: any) => {
       emit('update:sel-address', e.currentTarget.value);
@@ -223,6 +222,7 @@ export default defineComponent({
       isH160,
       checkMetamaskOption,
       isReadOnly,
+      isEvmAddress,
     };
   },
 });
