@@ -102,7 +102,7 @@ export default {
   store: {
     dappsStore: 'dApps Store',
     registerDapp: 'Register dApp',
-    noDappsRegistered: 'No dApps registered. Be a first to register one.',
+    noDappsRegistered: 'No dApps registered. Be the first to register one.',
     totalStake: 'Total stake:',
     yourStake: 'Your stake: ',
     add: 'Add',
@@ -110,9 +110,10 @@ export default {
     stake: 'Stake',
     claim: 'Claim',
     stakersCount: 'Stakers:',
-    warning: 'Warning: Minimum Staking Amount is {amount} and Up to {stakers} Stakers Per Contract',
+    warning: 'Minimum Staking Amount is {amount} and Up to {stakers} Stakers Per Contract',
     tvl: 'TVL IN DAPPS',
     dappsCount: 'DAPPS COUNT',
+    requirement: 'REQUIREMENT',
     modals: {
       alreadyClaimed: 'Already claimed:',
       contractRewards: 'Contract rewards:',

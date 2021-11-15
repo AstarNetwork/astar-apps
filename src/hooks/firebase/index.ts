@@ -15,7 +15,7 @@ import { DappItem, NewDappItem } from 'src/store/dapps-store/state';
 // firebase init - add your own config here
 const firebaseConfig = {
   apiKey: 'AIzaSyBS6tU69xQAnfWfI4U9vmErJ7qBDnO7MOI',
-  authDomain: '',
+  authDomain: 'astarnetwork-a4924.firebaseapp.com',
   databaseURL: '',
   projectId: 'astarnetwork-a4924',
   storageBucket: 'gs://astarnetwork-a4924.appspot.com',
