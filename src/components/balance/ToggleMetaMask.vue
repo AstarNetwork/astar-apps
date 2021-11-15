@@ -13,16 +13,7 @@
       "
     >
       <div class="tw-flex tw-items-center md:tw-w-96 xl:tw-w-auto">
-        <div
-          class="
-            tw-h-11 tw-w-11
-            sm:tw-h-12 sm:tw-w-12
-            tw-rounded-full tw-overflow-hidden
-            sm:tw-border
-            tw-border-gray-100 tw-mx-2
-            sm:tw-mx-3
-          "
-        >
+        <div class="tw-h-11 tw-w-11 sm:tw-h-12 sm:tw-w-12 tw-overflow-hidden tw-mx-2 sm:tw-mx-3">
           <img width="80" src="~assets/img/ethereum.png" />
         </div>
         <div>
@@ -30,7 +21,7 @@
             {{ $t('balance.addressScheme') }}
           </p>
           <p class="tw-text-blue-900 dark:tw-text-darkGray-100 tw-font-bold">
-            {{ metaMaskFormat }}
+            {{ evmFormat }}
           </p>
         </div>
       </div>
@@ -62,7 +53,7 @@ export default defineComponent({
     const chainInfo = computed(() => store.getters['general/chainInfo']);
     const isSS58 = computed(() => store.getters['general/isCheckMetamask']);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
-    const metaMaskFormat = computed(() => (isH160.value ? 'H160 (EVM)' : 'SS58 (ASTAR)'));
+    const evmFormat = computed(() => (isH160.value ? 'H160 (EVM)' : 'SS58 (ASTAR)'));
 
     const toggleAction = async () => {
       isToggleOn.value = !isToggleOn.value;
@@ -99,7 +90,7 @@ export default defineComponent({
     return {
       toggleAction,
       isToggleOn,
-      metaMaskFormat,
+      evmFormat,
     };
   },
 });

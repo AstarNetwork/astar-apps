@@ -1,6 +1,6 @@
 <template>
   <div class="tw-relative">
-    <button type="button" class="button-account" @click="openOption = !openOption && !isH160">
+    <div class="button-account">
       <div class="tw-flex tw-items-center tw-justify-between">
         <div class="tw-flex tw-items-center">
           <div
@@ -33,7 +33,10 @@
             :style="isH160 ? 'width: 24rem' : 'width: 21rem'"
             type="text"
             spellcheck="false"
+            :readonly="isReadOnly"
             @change="changeAddress"
+            @focus="openOption = !isH160"
+            @blur="closeOption"
           />
         </div>
       </div>
@@ -60,7 +63,7 @@
           <icon-solid-selector />
         </icon-base>
       </span>
-    </button>
+    </div>
 
     <div
       v-if="openOption"
@@ -189,8 +192,16 @@ export default defineComponent({
       { immediate: true }
     );
 
+    const isReadOnly = props.role === Role.FromAddress;
+
     const changeAddress = (e: any) => {
       emit('update:sel-address', e.currentTarget.value);
+    };
+
+    const closeOption = () => {
+      setTimeout(() => {
+        openOption.value = false;
+      }, 400);
     };
 
     const valueAddressOrWallet = ref<string>('');
@@ -202,6 +213,7 @@ export default defineComponent({
     return {
       valueAddressOrWallet,
       openOption,
+      closeOption,
       selAccountIdx,
       selAddress,
       isSupportContract,
@@ -210,6 +222,7 @@ export default defineComponent({
       changeAddress,
       isH160,
       checkMetamaskOption,
+      isReadOnly,
     };
   },
 });
