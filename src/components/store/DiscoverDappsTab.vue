@@ -1,5 +1,14 @@
 <template>
   <div>
+    <div
+      v-if="dapps.length > 0"
+      class="tw-flex tw-flex-wrap tw-gap-x-12 xl:tw-gap-x-18 tw-justify-center"
+    >
+      <TVL />
+      <DappsCount />
+      <Requirement />
+    </div>
+
     <div class="tw-text-center tw-mb-8">
       <Button @click="showRegisterDappModal = true">
         <icon-base
@@ -11,35 +20,6 @@
         </icon-base>
         {{ $t('store.registerDapp') }}
       </Button>
-    </div>
-
-    <div class="tw-mb-8 tw-flex tw-flex-row tw-content-around tw-justify-center">
-      <div
-        class="
-          tw-bg-blue-500
-          dark:tw-bg-blue-800
-          tw-text-white tw-overflow-hidden tw-shadow tw-rounded-lg
-        "
-      >
-        <div
-          class="
-            tw-rounded-lg tw-h-full tw-bg-local tw-bg-left-top tw-bg-no-repeat tw-bg-80
-            md:tw-bg-88
-            tw-px-4
-          "
-        >
-          <p class="tw-font-semibold tw-text-center tw-py-4">
-            <span class="tw-text-lg tw-tracking-tight tw-leading-tight">
-              {{
-                $t('store.warning', {
-                  amount: minimumStakingAmount,
-                  stakers: maxNumberOfStakersPerContract,
-                })
-              }}
-            </span>
-          </p>
-        </div>
-      </div>
     </div>
 
     <div class="store-container tw-grid tw-gap-x-12 xl:tw-gap-x-18 tw-justify-center">
@@ -68,16 +48,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from 'vue';
-import { useStore } from 'src/store';
-import Dapp from 'src/components/store/Dapp.vue';
-import IconPlus from 'components/icons/IconPlus.vue';
-import IconBase from 'components/icons/IconBase.vue';
-import ModalRegisterDapp from 'components/store/modals/ModalRegisterDapp.vue';
-import ModalDappDetails from 'components/store/modals/ModalDappDetails.vue';
 import Button from 'components/common/Button.vue';
-import { DappItem } from 'src/store/dapps-store/state';
+import IconBase from 'components/icons/IconBase.vue';
+import IconPlus from 'components/icons/IconPlus.vue';
+import ModalDappDetails from 'components/store/modals/ModalDappDetails.vue';
+import ModalRegisterDapp from 'components/store/modals/ModalRegisterDapp.vue';
+import Dapp from 'src/components/store/Dapp.vue';
 import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
+import { useStore } from 'src/store';
+import { DappItem } from 'src/store/dapps-store/state';
+import { computed, defineComponent, ref } from 'vue';
+import TVL from './statistics/TVL.vue';
+import DappsCount from './statistics/DappsCount.vue';
+import Requirement from './statistics/Requirement.vue';
 
 export default defineComponent({
   components: {
@@ -87,10 +70,14 @@ export default defineComponent({
     ModalRegisterDapp,
     ModalDappDetails,
     Button,
+    TVL,
+    DappsCount,
+    Requirement,
   },
   setup() {
     const store = useStore();
     const dapps = computed(() => store.getters['dapps/getAllDapps']);
+
     const maxNumberOfStakersPerContract = computed(
       () => store.getters['dapps/getMaxNumberOfStakersPerContract']
     );

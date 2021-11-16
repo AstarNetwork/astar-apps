@@ -34,7 +34,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import Tab from 'components/common/Tab.vue';
-
 export default defineComponent({
   components: { Tab },
 });

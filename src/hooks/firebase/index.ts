@@ -9,12 +9,13 @@ import {
   DocumentData,
 } from 'firebase/firestore/lite';
 import { getStorage, ref, uploadString, getDownloadURL } from 'firebase/storage';
+import { getAuth, signInAnonymously } from 'firebase/auth';
 import { DappItem, NewDappItem } from 'src/store/dapps-store/state';
 
 // firebase init - add your own config here
 const firebaseConfig = {
   apiKey: 'AIzaSyBS6tU69xQAnfWfI4U9vmErJ7qBDnO7MOI',
-  authDomain: '',
+  authDomain: 'astarnetwork-a4924.firebaseapp.com',
   databaseURL: '',
   projectId: 'astarnetwork-a4924',
   storageBucket: 'gs://astarnetwork-a4924.appspot.com',
@@ -25,6 +26,14 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage();
+const auth = getAuth(app);
+signInAnonymously(auth)
+  .then(() => {
+    console.log('Firebase user signed in.');
+  })
+  .catch((error) => {
+    console.error(error.message);
+  });
 
 const getDapps = async (collectionName: string): Promise<QuerySnapshot<DocumentData>> => {
   const dbCollection = collection(db, collectionName);
