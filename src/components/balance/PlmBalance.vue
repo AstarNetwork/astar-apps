@@ -28,7 +28,10 @@
         </p>
       </div>
 
-      <div class="tw-flex tw-justify-center tw-mt-4 lg:tw-mt-6">
+      <div
+        class="tw-flex tw-justify-center tw-mt-2 xl:tw-mt-11"
+        :class="!isEvmDeposit && 'sm:tw-mt-7 md:tw-mt-12 lg:tw-mt-11'"
+      >
         <div>
           <p class="tw-font-semibold tw-text-center">
             <span class="tw-text-4xl tw-tracking-tight tw-leading-tight">
@@ -38,7 +41,19 @@
         </div>
       </div>
 
-      <div class="tw-mt-3 tw-text-center tw-mb-6 sm:tw-mb-0">
+      <div
+        class="
+          tw-mt-3 tw-text-center tw-mb-6
+          sm:tw-mb-0
+          tw-flex tw-flex-col
+          xl:tw-flex-row
+          tw-justify-center tw-items-center
+          xl:tw-gap-x-1
+          2xl:tw-gap-x-2
+          tw-gap-y-4
+          xl:tw-pt-1
+        "
+      >
         <button
           type="button"
           :disabled="!address"
@@ -48,15 +63,23 @@
         >
           {{ $t('balance.transfer') }}
         </button>
+        <button
+          v-if="isEvmDeposit"
+          type="button"
+          class="transfer-button"
+          @click="openWithdrawalModal"
+        >
+          {{ $t('balance.withdrawEvm') }}
+        </button>
       </div>
     </div>
 
-    <div class="tw-text-sm">
+    <div class="tw-text-sm tw-flex tw-flex-col tw-gap-y-5">
       <div
         class="
           tw-flex tw-justify-between tw-items-center tw-bg-blue-50
           dark:tw-bg-darkGray-700
-          tw-rounded-lg tw-mb-4 tw-py-3 tw-px-4
+          tw-rounded-lg tw-py-3 tw-px-4
         "
       >
         <div>{{ $t('balance.vested') }}</div>
@@ -73,7 +96,7 @@
         class="
           tw-flex tw-justify-between tw-items-center tw-bg-blue-50
           dark:tw-bg-darkGray-700
-          tw-rounded-lg tw-mb-2 tw-py-3 tw-px-4
+          tw-rounded-lg tw-py-3 tw-px-4
         "
       >
         <div>{{ $t('balance.locked') }}</div>
@@ -85,12 +108,29 @@
           </p>
         </div>
       </div>
+
+      <div
+        class="
+          tw-flex tw-justify-between tw-items-center tw-bg-blue-50
+          dark:tw-bg-darkGray-700
+          tw-rounded-lg tw-mb-0 tw-py-3 tw-px-4
+        "
+      >
+        <div>{{ $t('balance.evmDeposit') }}</div>
+        <div>
+          <p class="tw-font-bold tw-text-right">
+            <span class="tw-text-2xl md:tw-text-xl xl:tw-text-2xl tw-leading-tight">
+              <format-balance :balance="evmDeposit" />
+            </span>
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent, toRefs } from 'vue';
-import { useChainMetadata } from 'src/hooks';
+import { useChainMetadata, useEvmDeposit } from 'src/hooks';
 import IconBase from 'components/icons/IconBase.vue';
 import IconAccountSample from 'components/icons/IconAccountSample.vue';
 import FormatBalance from 'components/balance/FormatBalance.vue';
@@ -111,15 +151,24 @@ export default defineComponent({
       required: true,
     },
   },
-  emits: ['update:is-open-transfer'],
+  emits: ['update:is-open-transfer', 'update:is-open-withdrawal-evm-deposit'],
   setup(props, { emit }) {
     const openTransferModal = (): void => {
       emit('update:is-open-transfer', true);
     };
 
+    const openWithdrawalModal = (): void => {
+      emit('update:is-open-withdrawal-evm-deposit', true);
+    };
+
     const { defaultUnitToken } = useChainMetadata();
+    const { evmDeposit, isEvmDeposit } = useEvmDeposit();
+    // const isEvmDeposit = evmDeposit.value.toString() !== '0';
 
     return {
+      openWithdrawalModal,
+      evmDeposit,
+      isEvmDeposit,
       openTransferModal,
       defaultUnitToken,
       ...toRefs(props),
@@ -131,8 +180,12 @@ export default defineComponent({
 .disabled_btn {
   background: #c6d3e1 !important;
 }
+.btn {
+  text-align: center;
+}
 .transfer-button {
-  @apply tw-inline-flex tw-items-center tw-px-4 tw-py-2 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 tw-mx-0.5;
+  @apply tw-flex tw-justify-center tw-px-3 tw-py-2 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 tw-mx-0.5 tw-w-48 xl:tw-w-auto;
+  min-width: 96px;
 }
 .transfer-button:focus {
   @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-blue-400;

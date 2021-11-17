@@ -27,6 +27,7 @@
       <PlmBalance
         v-if="accountData"
         v-model:isOpenTransfer="modalTransferAmount"
+        v-model:isOpenWithdrawalEvmDeposit="modalWithdrawalEvmDeposit"
         :address="currentAccount"
         :account-data="accountData"
       />
@@ -47,6 +48,13 @@
       :balance="balance"
       :account-data="accountData"
     />
+    <ModalWithdrawalEvmDeposit
+      v-if="modalWithdrawalEvmDeposit"
+      v-model:isOpen="modalWithdrawalEvmDeposit"
+      :balance="evmDeposit"
+      :account="currentAccount"
+      :account-name="currentAccountName"
+    />
   </div>
 
   <!-- <ModalAlertBox
@@ -56,22 +64,24 @@
   /> -->
 </template>
 <script lang="ts">
-import { defineComponent, reactive, toRefs, computed, watch, ref } from 'vue';
-import { useBalance, useApi, useAccount } from 'src/hooks';
-import { useStore } from 'src/store';
 import { useMeta } from 'quasar';
-import Wallet from './Wallet.vue';
-import WalletH160 from './WalletH160.vue';
+import { useAccount, useApi, useBalance, useEvmDeposit } from 'src/hooks';
+import { useStore } from 'src/store';
+import { computed, defineComponent, reactive, toRefs } from 'vue';
 import Addresses from './Addresses.vue';
-import ToggleMetaMask from './ToggleMetaMask.vue';
-import PlmBalance from './PlmBalance.vue';
-import TotalBalance from './TotalBalance.vue';
 import ModalAccount from './modals/ModalAccount.vue';
 import ModalTransferAmount from './modals/ModalTransferAmount.vue';
+import ModalWithdrawalEvmDeposit from './modals/ModalWithdrawalEvmDeposit.vue';
+import PlmBalance from './PlmBalance.vue';
+import ToggleMetaMask from './ToggleMetaMask.vue';
+import TotalBalance from './TotalBalance.vue';
+import Wallet from './Wallet.vue';
+import WalletH160 from './WalletH160.vue';
 
 interface Modal {
   modalAccount: boolean;
   modalTransferAmount: boolean;
+  modalWithdrawalEvmDeposit: boolean;
   modalTransferToken: boolean;
 }
 
@@ -85,6 +95,7 @@ export default defineComponent({
     ToggleMetaMask,
     ModalAccount,
     ModalTransferAmount,
+    ModalWithdrawalEvmDeposit,
   },
   setup() {
     useMeta({ title: 'Balance-Plasm' });
@@ -93,6 +104,7 @@ export default defineComponent({
       modalAccount: false,
       modalTransferAmount: false,
       modalTransferToken: false,
+      modalWithdrawalEvmDeposit: false,
     });
 
     const store = useStore();
@@ -103,11 +115,13 @@ export default defineComponent({
     const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
     const isSS58 = computed(() => store.getters['general/isCheckMetamask']);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
+    const { evmDeposit } = useEvmDeposit();
 
     return {
       ...toRefs(stateModal),
       // isWeb3Injected,
       balance,
+      evmDeposit,
       allAccounts,
       allAccountNames,
       currentAccount,

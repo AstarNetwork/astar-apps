@@ -1,7 +1,8 @@
 // const { decodeAddress, encodeAddress } = require('@polkadot/keyring');
 // const { hexToU8a, isHex } = require('@polkadot/util');
-import { addressToEvm, decodeAddress, encodeAddress, evmToAddress } from '@polkadot/util-crypto';
+import { formatFixed } from '@ethersproject/bignumber';
 import { hexToU8a, isHex, u8aToHex } from '@polkadot/util';
+import { addressToEvm, decodeAddress, encodeAddress, evmToAddress } from '@polkadot/util-crypto';
 import BN from 'bn.js';
 import Web3 from 'web3';
 
@@ -18,6 +19,17 @@ export const reduceBalanceToDenom = (bal: BN, decimal: number) => {
   const decPoint = new BN(10).pow(new BN(decimal));
   const formatted = bal.div(decPoint);
   return formatted.toString();
+};
+
+/**
+ * Convert the given value into the given token decimal point WITHOUT losing decimals.
+ * @param value eg: value.toString() -> '12999999999999000000'
+ * @param decimal eg: 18
+ * @returns '12.999999999999'
+ */
+export const defaultAmountWithDecimals = (value: BN, decimal: number): string => {
+  const hexValue = value.toJSON();
+  return formatFixed(hexValue, decimal);
 };
 
 export const reduceDenomToBalance = (bal: number, unit: number, decimal: number) => {
@@ -59,7 +71,7 @@ export const isValidAddressPolkadotAddress = (address: string) => {
 };
 
 /**
- * Remove the unnecessary decimals such as '.000' that returned in `<Balance>.toHuman()` function
+ * Remove the unnecessary decimals such as '.000' that comes from `<Balance>.toHuman()`
  * @param amountWithUnit eg: '100.0000 SDN'
  * @returns '100 SDN'
  */
@@ -77,16 +89,27 @@ export const toEvmAddress = (ss58Address: string) => {
   return u8aToHex(addressToEvm(ss58Address));
 };
 
-export const checkSumEvmAddress = (h160Address: string): string => {
+export const checkSumEvmAddress = (evmAddress: string): string => {
   const web3 = new Web3();
-  return web3.utils.toChecksumAddress(h160Address);
+  return web3.utils.toChecksumAddress(evmAddress);
 };
 
-export const isValidEvmAddress = (h160Address: string): boolean => {
-  if (!h160Address) return false;
+export const isValidEvmAddress = (evmAddress: string): boolean => {
+  if (!evmAddress) return false;
 
-  const web3 = new Web3();
-  return web3.utils.checkAddressChecksum(h160Address);
+  try {
+    const web3 = new Web3();
+    // Memo: returns `false` if evmAddress was converted from SS58
+    const isEvmAddress = web3.utils.checkAddressChecksum(evmAddress);
+
+    // Memo: check if the given evmAddress is convertible
+    const ss58Address = toSS58Address(evmAddress);
+
+    return ss58Address.length > 0 || isEvmAddress;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
 };
 
 export const toSS58Address = (h160Address: string) => {
