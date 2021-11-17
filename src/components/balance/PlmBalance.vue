@@ -163,7 +163,6 @@ export default defineComponent({
 
     const { defaultUnitToken } = useChainMetadata();
     const { evmDeposit, isEvmDeposit } = useEvmDeposit();
-    // const isEvmDeposit = evmDeposit.value.toString() !== '0';
 
     return {
       openWithdrawalModal,
