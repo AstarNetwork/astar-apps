@@ -6,19 +6,8 @@
         @click="onLoadAccount"
       >
         <div class="tw-flex tw-items-center">
-          <div
-            class="
-              tw-h-8
-              tw-w-8
-              tw-rounded-full
-              tw-overflow-hidden
-              tw-border
-              tw-border-gray-100
-              tw-mr-3
-              tw-flex-shrink-0
-            "
-          >
-            <img width="80" src="~assets/img/metamask.png" />
+          <div class="tw-h-8 tw-w-8 tw-overflow-hidden tw-mr-3 tw-flex-shrink-0">
+            <img width="80" src="~assets/img/ethereum.png" />
           </div>
           <div class="tw-flex tw-items-center">
             <template v-if="!curAddress">

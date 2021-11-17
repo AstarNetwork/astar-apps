@@ -1,27 +1,17 @@
 <template>
   <div class="tw-relative">
-    <button type="button" class="button-account" @click="openOption = !openOption && !isH160">
+    <div class="button-account">
       <div class="tw-flex tw-items-center tw-justify-between">
         <div class="tw-flex tw-items-center">
-          <div
-            class="
-              tw-h-8
-              tw-w-8
-              tw-rounded-full
-              tw-overflow-hidden
-              tw-border
-              tw-border-gray-100
-              tw-mr-3
-              tw-flex-shrink-0
-            "
-          >
-            <icon-base class="tw-h-full tw-w-full" viewBox="0 0 64 64">
+          <div class="tw-h-8 tw-w-8 tw-overflow-hidden tw-mr-3 tw-flex-shrink-0">
+            <img v-if="isEvmAddress" width="80" src="~assets/img/ethereum.png" />
+            <icon-base v-else class="tw-h-full tw-w-full" viewBox="0 0 64 64">
               <icon-account-sample />
             </icon-base>
           </div>
 
           <input
-            v-model="selAddress"
+            v-model="valueAddressOrWallet"
             class="
               tw-w-full tw-text-blue-900
               dark:tw-text-darkGray-100
@@ -33,7 +23,10 @@
             :style="isH160 ? 'width: 24rem' : 'width: 21rem'"
             type="text"
             spellcheck="false"
+            :readonly="isReadOnly"
             @change="changeAddress"
+            @focus="openOption = !isH160"
+            @blur="closeOption"
           />
         </div>
       </div>
@@ -60,7 +53,7 @@
           <icon-solid-selector />
         </icon-base>
       </span>
-    </button>
+    </div>
 
     <div
       v-if="openOption"
@@ -100,15 +93,18 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, computed, ref, watch } from 'vue';
+import { defineComponent, computed, ref, watch, watchEffect } from 'vue';
 import { useStore } from 'src/store';
 import { providerEndpoints } from 'src/config/chainEndpoints';
+import { useAccount } from 'src/hooks';
 
 import IconBase from 'components/icons/IconBase.vue';
 import IconAccountSample from 'components/icons/IconAccountSample.vue';
 import IconSolidSelector from 'components/icons/IconSolidSelector.vue';
 import ModalSelectAccountOption from './ModalSelectAccountOption.vue';
 import MetamaskOption from './MetamaskOption.vue';
+import { Role } from './ModalTransferAmount.vue';
+import { isValidEvmAddress } from 'src/hooks/helper/plasmUtils';
 
 export default defineComponent({
   components: {
@@ -132,12 +128,18 @@ export default defineComponent({
       defalut: false,
       default: '',
     },
+    toAddress: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   emits: ['update:sel-address', 'selChanged'],
   setup(props, { emit }) {
+    const isReadOnly = props.role === Role.FromAddress;
     const openOption = ref(false);
-
     const store = useStore();
+    const { currentAccountName } = useAccount();
     const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
 
@@ -171,7 +173,7 @@ export default defineComponent({
           selAccountName.value = props.allAccountNames[selAccountIdx.value];
           selAddress.value = props.allAccounts[selAccountIdx.value] as string;
         } else {
-          if (props.role === 'toAddress' && isH160.value) {
+          if (props.role === Role.ToAddress && isH160.value) {
             selAddress.value = '';
           } else {
             selAddress.value = ecdsaAccountValue;
@@ -186,12 +188,31 @@ export default defineComponent({
       { immediate: true }
     );
 
+    const isEvmAddress = ref<boolean>(false);
+    watchEffect(() => {
+      isEvmAddress.value = isValidEvmAddress(props.toAddress ? props.toAddress : '');
+    });
+
     const changeAddress = (e: any) => {
       emit('update:sel-address', e.currentTarget.value);
     };
 
+    const closeOption = () => {
+      setTimeout(() => {
+        openOption.value = false;
+      }, 400);
+    };
+
+    const valueAddressOrWallet = ref<string>('');
+    watchEffect(() => {
+      valueAddressOrWallet.value =
+        props.role === Role.FromAddress ? String(currentAccountName.value) : selAddress.value;
+    });
+
     return {
+      valueAddressOrWallet,
       openOption,
+      closeOption,
       selAccountIdx,
       selAddress,
       isSupportContract,
@@ -200,6 +221,8 @@ export default defineComponent({
       changeAddress,
       isH160,
       checkMetamaskOption,
+      isReadOnly,
+      isEvmAddress,
     };
   },
 });

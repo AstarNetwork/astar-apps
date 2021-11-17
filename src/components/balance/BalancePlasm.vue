@@ -1,24 +1,33 @@
 <template>
   <div v-if="isConnected(currentNetworkStatus)">
-    <div class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4">
-      <Address
-        v-model:isOpen="modalAccount"
-        :address="currentAccount"
-        :address-name="currentAccountName"
-      />
-    </div>
-    <div
-      v-if="isH160 || isSS58"
-      class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4 tw-mt-4"
-    >
-      <ToggleMetaMask />
+    <div v-if="isH160 || isSS58">
+      <div class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4">
+        <WalletH160
+          v-model:isOpen="modalAccount"
+          :address="currentAccount"
+          :address-name="currentAccountName"
+        />
+      </div>
+      <div class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4 tw-mt-4">
+        <ToggleMetaMask />
+      </div>
     </div>
 
-    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-y-4 md:tw-gap-4 tw-mt-8">
+    <div v-else>
+      <div class="tw-grid lg:tw-grid-cols-2 tw-gap-4">
+        <Wallet v-model:isOpen="modalAccount" :wallet-name="currentAccountName" />
+      </div>
+      <div class="tw-grid lg:tw-grid-cols-2 tw-gap-4 tw-mt-8">
+        <Addresses :address="currentAccount" />
+      </div>
+    </div>
+
+    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-y-8 md:tw-gap-8 tw-mt-8">
       <TotalBalance v-if="accountData" :account-data="accountData" />
       <PlmBalance
         v-if="accountData"
         v-model:isOpenTransfer="modalTransferAmount"
+        v-model:isOpenWithdrawalEvmDeposit="modalWithdrawalEvmDeposit"
         :address="currentAccount"
         :account-data="accountData"
       />
@@ -39,6 +48,13 @@
       :balance="balance"
       :account-data="accountData"
     />
+    <ModalWithdrawalEvmDeposit
+      v-if="modalWithdrawalEvmDeposit"
+      v-model:isOpen="modalWithdrawalEvmDeposit"
+      :balance="evmDeposit"
+      :account="currentAccount"
+      :account-name="currentAccountName"
+    />
   </div>
 
   <!-- <ModalAlertBox
@@ -48,32 +64,38 @@
   /> -->
 </template>
 <script lang="ts">
-import { defineComponent, reactive, toRefs, computed, watch, ref } from 'vue';
-import { useBalance, useApi, useAccount } from 'src/hooks';
-import { useStore } from 'src/store';
 import { useMeta } from 'quasar';
-import Address from './Address.vue';
-import ToggleMetaMask from './ToggleMetaMask.vue';
-import PlmBalance from './PlmBalance.vue';
-import TotalBalance from './TotalBalance.vue';
+import { useAccount, useApi, useBalance, useEvmDeposit } from 'src/hooks';
+import { useStore } from 'src/store';
+import { computed, defineComponent, reactive, toRefs } from 'vue';
+import Addresses from './Addresses.vue';
 import ModalAccount from './modals/ModalAccount.vue';
 import ModalTransferAmount from './modals/ModalTransferAmount.vue';
+import ModalWithdrawalEvmDeposit from './modals/ModalWithdrawalEvmDeposit.vue';
+import PlmBalance from './PlmBalance.vue';
+import ToggleMetaMask from './ToggleMetaMask.vue';
+import TotalBalance from './TotalBalance.vue';
+import Wallet from './Wallet.vue';
+import WalletH160 from './WalletH160.vue';
 
 interface Modal {
   modalAccount: boolean;
   modalTransferAmount: boolean;
+  modalWithdrawalEvmDeposit: boolean;
   modalTransferToken: boolean;
 }
 
 export default defineComponent({
   components: {
-    Address,
+    Wallet,
+    WalletH160,
     PlmBalance,
     TotalBalance,
-    // ModalAlertBox,
+    Addresses,
     ToggleMetaMask,
     ModalAccount,
     ModalTransferAmount,
+    ModalWithdrawalEvmDeposit,
   },
   setup() {
     useMeta({ title: 'Balance-Plasm' });
@@ -82,6 +104,7 @@ export default defineComponent({
       modalAccount: false,
       modalTransferAmount: false,
       modalTransferToken: false,
+      modalWithdrawalEvmDeposit: false,
     });
 
     const store = useStore();
@@ -92,11 +115,13 @@ export default defineComponent({
     const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
     const isSS58 = computed(() => store.getters['general/isCheckMetamask']);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
+    const { evmDeposit } = useEvmDeposit();
 
     return {
       ...toRefs(stateModal),
       // isWeb3Injected,
       balance,
+      evmDeposit,
       allAccounts,
       allAccountNames,
       currentAccount,
