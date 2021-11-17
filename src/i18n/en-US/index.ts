@@ -106,6 +106,7 @@ export default {
     totalStake: 'Total stake:',
     yourStake: 'Your stake: ',
     add: 'Add',
+    unbond: 'Unbond',
     unstake: 'Unstake',
     stake: 'Stake',
     claim: 'Claim',
@@ -127,6 +128,8 @@ export default {
       estimatedRewards: 'Pending rewards',
       unclaimedEras: 'Number of unclaimed eras',
       estimatedClaimedRewards: 'Claimed rewards',
+      startUnbonding: 'Start unbonding',
+      chunks: 'Chunks',
     },
   },
 };
