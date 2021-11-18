@@ -5,6 +5,7 @@ import { isTestChain } from '@polkadot/util';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 import { useStore } from 'src/store';
 import { providerEndpoints } from 'src/config/chainEndpoints';
+import { useBlockTime } from 'src/hooks/useBlockTime';
 import type { InjectedExtension } from '@polkadot/extension-inject/types';
 
 interface InjectedAccountExt {
@@ -93,6 +94,8 @@ export async function connectApi(endpoint: string, networkIdx: number) {
         }
       });
       //subscription.unsubscribe();
+
+      useBlockTime(api);
 
       store.commit('general/setCurrentNetworkStatus', 'connected');
     } catch (err) {
