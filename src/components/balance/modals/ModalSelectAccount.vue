@@ -86,6 +86,7 @@
             :address="account"
             :address-name="allAccountNames[index]"
             :checked="!checkMetamaskOption && selAccountIdx === index"
+            :role="role"
           />
         </div>
       </ul>
@@ -125,7 +126,7 @@ export default defineComponent({
     },
     role: {
       type: String,
-      defalut: false,
+      required: false,
       default: '',
     },
     toAddress: {
