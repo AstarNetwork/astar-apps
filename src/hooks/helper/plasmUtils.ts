@@ -6,7 +6,7 @@ import { addressToEvm, decodeAddress, encodeAddress, evmToAddress } from '@polka
 import BN from 'bn.js';
 import Web3 from 'web3';
 
-const ASTAR_SS58_FORMAT = 5;
+export const ASTAR_SS58_FORMAT = 5;
 
 /**
  * A helper function to convert the given node balance value into the given chain token decimal point as a string.

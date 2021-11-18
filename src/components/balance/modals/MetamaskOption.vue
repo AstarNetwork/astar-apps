@@ -65,6 +65,7 @@ import * as utils from 'src/hooks/custom-signature/utils';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { EcdsaAddressFormat } from 'src/hooks/types/CustomSignature';
 import { useMetamask } from 'src/hooks/custom-signature/useMetamask';
+import { ASTAR_SS58_FORMAT } from 'src/hooks/helper/plasmUtils';
 
 export default defineComponent({
   components: {},
@@ -81,7 +82,6 @@ export default defineComponent({
   setup(props, { emit }) {
     const store = useStore();
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
-    const chainInfo = computed(() => store.getters['general/chainInfo']);
     const { requestAccounts, requestSignature } = useMetamask();
 
     const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
@@ -122,7 +122,7 @@ export default defineComponent({
 
         console.log(`Public key: ${pubKey}`);
 
-        const ss58Address = utils.ecdsaPubKeyToSs58(pubKey, chainInfo.value?.ss58Format);
+        const ss58Address = utils.ecdsaPubKeyToSs58(pubKey, ASTAR_SS58_FORMAT);
 
         console.log(`ethereum: ${loadingAddr} / ss58: ${ss58Address}`);
 
