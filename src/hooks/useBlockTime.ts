@@ -7,11 +7,9 @@ import { onUnmounted, ref, Ref, watchEffect } from 'vue';
 const DEFAULT_TIME = new BN(6_000);
 const THRESHOLD = BN_THOUSAND.div(BN_TWO);
 const AVG_BLOCK_TIME_MILLISEC = 12000;
-const WARNING_BLOCK_TIME_PERIOD = AVG_BLOCK_TIME_MILLISEC;
 
 export function useBlockTime(api: ApiPromise) {
   const blockTime = ref<number>(0);
-  const isLateBlock = ref<boolean>(false);
   const unsub: Ref<VoidFn | undefined> = ref();
 
   watchEffect(() => {
@@ -33,9 +31,6 @@ export function useBlockTime(api: ApiPromise) {
         ));
     
     blockTime.value = time.toNumber();
-    isLateBlock.value = blockTime.value > WARNING_BLOCK_TIME_PERIOD;
-
-    console.log('time', time.toNumber());
   });
 
   onUnmounted(() => {
@@ -46,6 +41,5 @@ export function useBlockTime(api: ApiPromise) {
   });
   return {
     blockTime,
-    isLateBlock
   };
 }

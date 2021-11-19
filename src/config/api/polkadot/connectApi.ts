@@ -95,7 +95,8 @@ export async function connectApi(endpoint: string, networkIdx: number) {
       });
       //subscription.unsubscribe();
 
-      useBlockTime(api);
+      const { blockTime } = useBlockTime(api);
+      store.commit('general/setBlockTime', blockTime.value);
 
       store.commit('general/setCurrentNetworkStatus', 'connected');
     } catch (err) {

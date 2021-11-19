@@ -52,6 +52,9 @@ const mutation: MutationTree<State> & GeneralMutations = {
   setAllAccountNames(state, accountNames) {
     state.allAccountNames = accountNames;
   },
+  setBlockTime(state, blockTime) {
+    state.blockTime = blockTime;
+  },
   setCurrentNetworkStatus(state, networkStatus) {
     state.currentNetworkStatus = networkStatus;
   },
