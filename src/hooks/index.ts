@@ -8,3 +8,4 @@ export * from './useWasm';
 export * from './useChainMetadata';
 export * from './useGetMinStaking';
 export * from './useTvl';
+export * from './useEvmDeposit';

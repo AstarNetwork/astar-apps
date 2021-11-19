@@ -69,7 +69,7 @@
                   v-model:selAddress="fromAddress"
                   :all-accounts="allAccounts"
                   :all-account-names="allAccountNames"
-                  role="fromAddress"
+                  :role="Role.FromAddress"
                   @sel-changed="reloadAmount"
                 />
               </div>
@@ -88,7 +88,8 @@
                   v-model:selAddress="toAddress"
                   :all-accounts="allAccounts"
                   :all-account-names="allAccountNames"
-                  role="toAddress"
+                  :role="Role.ToAddress"
+                  :to-address="toAddress"
                 />
               </div>
 
@@ -135,6 +136,11 @@ import { useStore } from 'src/store';
 import { computed, defineComponent, ref, toRefs } from 'vue';
 import Web3 from 'web3';
 import ModalSelectAccount from './ModalSelectAccount.vue';
+
+export enum Role {
+  FromAddress = 'FromAddress',
+  ToAddress = 'ToAddress',
+}
 
 export default defineComponent({
   components: {
@@ -317,22 +323,28 @@ export default defineComponent({
         return;
       }
 
-      if (
-        !plasmUtils.isValidAddressPolkadotAddress(fromAddress) ||
-        !plasmUtils.isValidAddressPolkadotAddress(toAddress)
-      ) {
+      const isValidSS58Address =
+        plasmUtils.isValidAddressPolkadotAddress(fromAddress) &&
+        plasmUtils.isValidAddressPolkadotAddress(toAddress);
+
+      if (!isValidSS58Address && !plasmUtils.isValidEvmAddress(toAddress)) {
         toastInvalidAddress();
         return;
       }
+
+      const receivingAddress = plasmUtils.isValidEvmAddress(toAddress)
+        ? plasmUtils.toSS58Address(toAddress)
+        : toAddress;
+      console.log('receivingAddress', receivingAddress);
 
       const unit = getUnit(selectUnit.value);
       const toAmt = plasmUtils.reduceDenomToBalance(transferAmt, unit, decimal.value);
       console.log('toAmt', toAmt.toString(10));
 
       if (isCheckMetamask.value) {
-        await transferExtrinsic(toAmt, toAddress);
+        await transferExtrinsic(toAmt, receivingAddress);
       } else {
-        await transferLocal(toAmt, fromAddress, toAddress);
+        await transferLocal(toAmt, fromAddress, receivingAddress);
       }
     };
 
@@ -358,6 +370,7 @@ export default defineComponent({
       defaultUnitToken,
       selectUnit,
       reloadAmount,
+      Role,
       ...toRefs(props),
     };
   },
