@@ -15,6 +15,8 @@ export interface DappStateInterface {
   dapps: DappItem[];
   minimumStakingAmount: string;
   maxNumberOfStakersPerContract: number;
+  unbondingPeriod: number;
+  maxUnlockingChunks: number;
 }
 
 export interface LooseObject {
@@ -26,6 +28,8 @@ function state(): DappStateInterface {
     dapps: [],
     minimumStakingAmount: '0',
     maxNumberOfStakersPerContract: 0,
+    unbondingPeriod: 0,
+    maxUnlockingChunks: 0,
   };
 }
 

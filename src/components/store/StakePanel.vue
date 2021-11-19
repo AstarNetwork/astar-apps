@@ -62,6 +62,8 @@
       v-if="isUnstakeModalOpen"
       v-model:isOpen="isUnstakeModalOpen"
       :dapp="dapp"
+      :stake-amount="stakeInfo?.yourStake.denomAmount"
+      :start-unbonding-action="unstake"
     />
   </div>
 </template>
@@ -135,7 +137,7 @@ export default defineComponent({
       emit('stakeChanged', props.dapp);
     };
 
-    const stake = async (stakeData: StakeModel) => {
+    const stake = async (stakeData: StakeModel): Promise<void> => {
       const amount = getAmount(stakeData.amount, stakeData.unit);
       const unit = stakeData.unit;
 
@@ -168,7 +170,7 @@ export default defineComponent({
       }
     };
 
-    const unstake = async (stakeData: StakeModel) => {
+    const unstake = async (stakeData: StakeModel): Promise<void> => {
       const result = await store.dispatch('dapps/unstake', {
         api: api?.value,
         senderAddress: stakeData.address,
@@ -211,6 +213,7 @@ export default defineComponent({
       showUnstakeModal,
       claim,
       formattedMinStake,
+      unstake,
     };
   },
 });

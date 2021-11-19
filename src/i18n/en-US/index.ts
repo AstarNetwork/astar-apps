@@ -135,6 +135,7 @@ export default {
       estimatedClaimedRewards: 'Claimed rewards',
       startUnbonding: 'Start unbonding',
       chunks: 'Chunks',
+      unbondingPeriod: 'Unbonding period: {period} era',
     },
   },
 };

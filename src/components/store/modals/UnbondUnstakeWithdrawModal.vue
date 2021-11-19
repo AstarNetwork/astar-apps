@@ -27,7 +27,9 @@
           <q-separator />
           <q-tab-panels v-model="tab" class="tw-bg-transparent">
             <q-tab-panel name="unbond">
-              <div class="tw-mb-4">Unbonding period</div>
+              <div class="tw-mb-4">
+                {{ $t('store.modals.unbondingPeriod', { period: unbondingPeriod }) }}
+              </div>
               <InputAmount
                 v-model:amount="data.amount"
                 v-model:selectedUnit="data.unit"
@@ -37,7 +39,7 @@
                 {{ $t('store.yourStake') }}
                 <format-balance :balance="stakeAmount" class="tw-inline tw-font-semibold" />
               </div>
-              <Button class="tw-my-4 tw-float-right">
+              <Button class="tw-my-4 tw-float-right" @click="startUnbondingAction(data)">
                 {{ $t('store.modals.startUnbonding') }}
               </Button>
             </q-tab-panel>
@@ -66,6 +68,7 @@
 
 <script lang="ts">
 import { ref, toRefs, computed, defineComponent, PropType } from 'vue';
+import BN from 'bn.js';
 import { useAccount, useApi, useBalance, useChainMetadata } from 'src/hooks';
 import { useStore } from 'src/store';
 import Modal from 'components/common/Modal.vue';
@@ -74,6 +77,7 @@ import Avatar from 'src/components/common/Avatar.vue';
 import ModalSelectAccount from 'components/balance/modals/ModalSelectAccount.vue';
 import InputAmount from 'src/components/common/InputAmount.vue';
 import Button from 'src/components/common/Button.vue';
+import FormatBalance from 'components/balance/FormatBalance.vue';
 import { StakeModel } from 'src/hooks/store';
 
 export default defineComponent({
@@ -83,10 +87,19 @@ export default defineComponent({
     ModalSelectAccount,
     InputAmount,
     Button,
+    FormatBalance,
   },
   props: {
     dapp: {
       type: Object as PropType<DappItem>,
+      required: true,
+    },
+    stakeAmount: {
+      type: BN,
+      required: true,
+    },
+    startUnbondingAction: {
+      type: Function,
       required: true,
     },
   },
@@ -102,6 +115,7 @@ export default defineComponent({
     title.value = `Unstake from ${props.dapp.name}`;
     const allAccounts = computed(() => store.getters['general/allAccounts']);
     const allAccountNames = computed(() => store.getters['general/allAccountNames']);
+    const unbondingPeriod = computed(() => store.getters['dapps/getUnbondingPeriod']);
     const data = ref<StakeModel>({
       address: '',
       amount: 0,
@@ -125,6 +139,7 @@ export default defineComponent({
       allAccounts,
       allAccountNames,
       accountData,
+      unbondingPeriod,
       reloadAmount,
       ...toRefs(props),
     };

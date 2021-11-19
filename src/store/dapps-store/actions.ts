@@ -17,6 +17,7 @@ import { useApi } from 'src/hooks/useApi';
 import { ApiPromise } from '@polkadot/api';
 import { ISubmittableResult, ITuple } from '@polkadot/types/types';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
+import { u32 } from '@polkadot/types';
 
 let collectionKey: string;
 
@@ -322,7 +323,7 @@ const actions: ActionTree<State, StateInterface> = {
       if (parameters.api) {
         const injector = await web3FromSource('polkadot-js');
         const unsub = await parameters.api.tx.dappsStaking
-          .unbondUnstakeAndWithdraw(getAddressEnum(parameters.dapp.address), parameters.amount)
+          .unbondAndUnstake(getAddressEnum(parameters.dapp.address), parameters.amount)
           .signAndSend(
             parameters.senderAddress,
             {
@@ -583,16 +584,24 @@ const actions: ActionTree<State, StateInterface> = {
     await api?.value?.isReady;
 
     try {
-      const [minimumStakingAmount, maxNumberOfStakersPerContract] = await Promise.all([
-        api?.value?.consts.dappsStaking.minimumStakingAmount,
-        api?.value?.consts.dappsStaking.maxNumberOfStakersPerContract,
-      ]);
+      if (api?.value) {
+        const [
+          minimumStakingAmount,
+          maxNumberOfStakersPerContract,
+          maxUnlockingChunks,
+          unbondingPeriod,
+        ] = await Promise.all([
+          api.value.consts.dappsStaking.minimumStakingAmount,
+          api.value.consts.dappsStaking.maxNumberOfStakersPerContract as u32,
+          api.value.consts.dappsStaking.maxUnlockingChunks as u32,
+          api.value.consts.dappsStaking.unbondingPeriod as u32,
+        ]);
 
-      commit('setMinimumStakingAmount', minimumStakingAmount?.toHuman());
-      commit(
-        'setMaxNumberOfStakersPerContract',
-        parseInt(maxNumberOfStakersPerContract?.toString() || '0')
-      );
+        commit('setMinimumStakingAmount', minimumStakingAmount?.toHuman());
+        commit('setMaxNumberOfStakersPerContract', maxNumberOfStakersPerContract?.toNumber());
+        commit('setUnbondingPeriod', unbondingPeriod.toNumber());
+        commit('setMaxUnlockingChunks', maxUnlockingChunks.toNumber());
+      }
     } catch (e) {
       const error = e as unknown as Error;
       showError(dispatch, error.message);
