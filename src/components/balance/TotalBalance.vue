@@ -14,7 +14,7 @@
         md:tw-bg-88
       "
     >
-      <p class="tw-text-lg tw-font-bold tw-mb-4 md:tw-mb-12 lg:tw-mb-10">
+      <p class="tw-text-lg tw-font-bold tw-mb-4 md:tw-mb-12 lg:tw-mb-11">
         {{ $t('balance.totalBalance') }}
       </p>
       <p class="tw-font-semibold tw-text-center tw-mb-2">

@@ -1,11 +1,11 @@
 // Copyright 2017-2021 @polkadot/app-custom-signature authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-// import * as ethUtils from 'ethereumjs-util';
-import * as ethUtils from './ethereumjs-util';
+import * as ethUtils from 'ethereumjs-util';
+// import * as ethUtils from './ethereumjs-util';
 import { publicKeyConvert } from 'secp256k1';
 
-import { hexToU8a, isHex, u8aToHex } from '@polkadot/util';
+import { hexAddPrefix, hexToU8a, isHex, u8aToHex } from '@polkadot/util';
 import { blake2AsU8a, encodeAddress, isEthereumAddress } from '@polkadot/util-crypto';
 
 /**
@@ -24,6 +24,7 @@ export const ecdsaPubKeyToSs58 = (publicKey: string, networkPrefix?: number): st
   }
 
   const ss58PubKey = blake2AsU8a(hexToU8a(publicKey), 256);
+
   const ss58Address = encodeAddress(ss58PubKey, networkPrefix);
 
   return ss58Address;
