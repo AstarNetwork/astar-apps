@@ -7,6 +7,7 @@
       <TVL />
       <DappsCount />
       <Requirement />
+      <Era />
     </div>
 
     <div class="tw-text-center tw-mb-8">
@@ -57,10 +58,11 @@ import Dapp from 'src/components/store/Dapp.vue';
 import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { DappItem } from 'src/store/dapps-store/state';
-import { computed, defineComponent, ref } from 'vue';
+import { computed, defineComponent, ref, watchEffect } from 'vue';
 import TVL from './statistics/TVL.vue';
 import DappsCount from './statistics/DappsCount.vue';
 import Requirement from './statistics/Requirement.vue';
+import Era from './statistics/Era.vue';
 
 export default defineComponent({
   components: {
@@ -73,6 +75,7 @@ export default defineComponent({
     TVL,
     DappsCount,
     Requirement,
+    Era,
   },
   setup() {
     const store = useStore();

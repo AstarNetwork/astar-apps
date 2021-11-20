@@ -5,7 +5,6 @@
       dark:tw-bg-darkGray-800
       tw-shadow tw-mb-8 tw-w-72 tw-rounded-lg tw-text-white
       dark:tw-text-darkGray-100
-      xl:tw-mx-2
       tw-py-4 tw-pb-8 tw-px-4
       box
     "

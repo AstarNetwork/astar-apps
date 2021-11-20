@@ -10109,6 +10109,11 @@ vue@3.2.21:
     "@vue/server-renderer" "3.2.21"
     "@vue/shared" "3.2.21"
 
+vuejs-progress-bar@^1.2.7:
+  version "1.2.7"
+  resolved "https://registry.yarnpkg.com/vuejs-progress-bar/-/vuejs-progress-bar-1.2.7.tgz#40ffb8427ccde109a3b2fb038848dff433673060"
+  integrity sha512-w6lKwYT5kLSp5aCywSoBD01rZF1MeurOGX1u4gwSKCuWLZj3GB+/Trq+rI7ESesGgFYFfcg6050NyPAiCstJgw==
+
 vuex@^4.0.1:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/vuex/-/vuex-4.0.2.tgz#f896dbd5bf2a0e963f00c67e9b610de749ccacc9"
