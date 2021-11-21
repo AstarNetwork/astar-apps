@@ -109,6 +109,7 @@ export default {
     registerDapp: 'Register dApp',
     noDappsRegistered: 'No dApps registered. Be the first to register one.',
     totalStake: 'Total stake:',
+    apr: 'APR:',
     yourStake: 'Your stake: ',
     add: 'Add',
     unstake: 'Unstake',

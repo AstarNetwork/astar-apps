@@ -33,6 +33,8 @@
         v-for="(dapp, index) in dapps"
         :key="index"
         :dapp="dapp"
+        :block-rewards-per-dapps="blockRewardsPerDapps"
+        :token-price="tokenPrice"
         @dappClick="showDetailsModal"
       />
     </div>
@@ -61,6 +63,7 @@ import { computed, defineComponent, ref } from 'vue';
 import TVL from './statistics/TVL.vue';
 import DappsCount from './statistics/DappsCount.vue';
 import Requirement from './statistics/Requirement.vue';
+import { useRewardsPerBlock } from 'src/hooks';
 
 export default defineComponent({
   components: {
@@ -77,6 +80,7 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const dapps = computed(() => store.getters['dapps/getAllDapps']);
+    const { blockRewardsPerDapps, tokenPrice } = useRewardsPerBlock();
 
     const maxNumberOfStakersPerContract = computed(
       () => store.getters['dapps/getMaxNumberOfStakersPerContract']
@@ -105,6 +109,8 @@ export default defineComponent({
       maxNumberOfStakersPerContract,
       minimumStakingAmount,
       showDetailsModal,
+      blockRewardsPerDapps,
+      tokenPrice,
     };
   },
 });

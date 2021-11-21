@@ -2,9 +2,9 @@
   <Modal :title="`Claim reward ${dapp.name}`">
     <template #content>
       <Avatar :url="dapp.iconUrl" class="tw-w-36 tw-h-36 tw-mb-4 tw-mx-auto" />
-      <div v-if="stakeInfo?.totalStake" class="tw-mt-4">
+      <div v-if="stakeInfo?.totalStake.formatted" class="tw-mt-4">
         <span class="tw-w-52 tw-inline-block">{{ $t('store.totalStake') }}</span>
-        <span class="tw-font-semibold">{{ stakeInfo.totalStake }}</span>
+        <span class="tw-font-semibold">{{ stakeInfo.totalStake.formatted }}</span>
       </div>
       <div v-if="stakeInfo?.yourStake" class="tw-mt-2">
         <span class="tw-w-52 tw-inline-block">{{ $t('store.yourStake') }}</span>

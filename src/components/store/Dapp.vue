@@ -30,7 +30,13 @@
     </div>
     <hr class="dark:tw-bg-darkGray-600" />
     <div class="tw-p-4">
-      <StakePanel :dapp="dapp" :stake-info="stakeInfo" @stake-changed="handleStakeChanged" />
+      <StakePanel
+        :dapp="dapp"
+        :stake-info="stakeInfo"
+        :block-rewards-per-dapps="blockRewardsPerDapps"
+        :token-price="tokenPrice"
+        @stake-changed="handleStakeChanged"
+      />
     </div>
   </div>
 </template>
@@ -52,6 +58,16 @@ export default defineComponent({
     dapp: {
       type: Object,
       required: true,
+    },
+    blockRewardsPerDapps: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
+    tokenPrice: {
+      type: Number,
+      required: false,
+      default: 0,
     },
   },
   emits: ['dappClick'],
