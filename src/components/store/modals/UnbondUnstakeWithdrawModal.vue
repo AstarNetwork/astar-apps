@@ -44,6 +44,9 @@
               </Button>
             </q-tab-panel>
             <q-tab-panel name="unstake">
+              <div class="tw-mb-4">
+                {{ $t('store.modals.maxUnlockingChunks', { chunks: maxUnlockingChunks }) }}
+              </div>
               <div>{{ $t('store.modals.chunks') }}</div>
               <q-card class="dark:tw-bg-transparent tw-p-4 tw-mt-1">
                 <div class="row tw-py-2">
@@ -116,6 +119,7 @@ export default defineComponent({
     const allAccounts = computed(() => store.getters['general/allAccounts']);
     const allAccountNames = computed(() => store.getters['general/allAccountNames']);
     const unbondingPeriod = computed(() => store.getters['dapps/getUnbondingPeriod']);
+    const maxUnlockingChunks = computed(() => store.getters['dapps/getMaxUnlockingChunks']);
     const data = ref<StakeModel>({
       address: '',
       amount: 0,
@@ -140,6 +144,7 @@ export default defineComponent({
       allAccountNames,
       accountData,
       unbondingPeriod,
+      maxUnlockingChunks,
       reloadAmount,
       ...toRefs(props),
     };

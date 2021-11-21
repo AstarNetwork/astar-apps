@@ -17,6 +17,7 @@ export interface DappStateInterface {
   maxNumberOfStakersPerContract: number;
   unbondingPeriod: number;
   maxUnlockingChunks: number;
+  unlockingChunks: number;
 }
 
 export interface LooseObject {
@@ -30,6 +31,7 @@ function state(): DappStateInterface {
     maxNumberOfStakersPerContract: 0,
     unbondingPeriod: 0,
     maxUnlockingChunks: 0,
+    unlockingChunks: 0,
   };
 }
 

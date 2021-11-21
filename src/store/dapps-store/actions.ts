@@ -336,7 +336,59 @@ const actions: ActionTree<State, StateInterface> = {
                   dispatch(
                     'general/showAlertMsg',
                     {
-                      msg: `You unstaked ${getFormattedBalance(parameters)} from ${
+                      msg: `You started unstaking of ${getFormattedBalance(parameters)} from ${
+                        parameters.dapp.name
+                      }.`,
+                      alertType: 'success',
+                    },
+                    { root: true }
+                  );
+
+                  parameters.finalizeCallback();
+                }
+
+                commit('general/setLoading', false, { root: true });
+                unsub();
+              } else {
+                commit('general/setLoading', true, { root: true });
+              }
+            }
+          );
+
+        return true;
+      } else {
+        showError(dispatch, 'Api is undefined');
+        return false;
+      }
+    } catch (e) {
+      const error = e as unknown as Error;
+      commit('general/setLoading', false, { root: true });
+      showError(dispatch, error.message);
+    } finally {
+    }
+
+    return false;
+  },
+
+  async withdrawUnbonded({ commit, dispatch }, parameters: StakingParameters): Promise<boolean> {
+    try {
+      if (parameters.api) {
+        const injector = await web3FromSource('polkadot-js');
+        const unsub = await parameters.api.tx.dappsStaking
+          .withdrawUnbonded(getAddressEnum(parameters.dapp.address))
+          .signAndSend(
+            parameters.senderAddress,
+            {
+              signer: injector?.signer,
+              nonce: -1,
+            },
+            (result) => {
+              if (result.status.isFinalized) {
+                if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
+                  dispatch(
+                    'general/showAlertMsg',
+                    {
+                      msg: `You started unstaking of ${getFormattedBalance(parameters)} from ${
                         parameters.dapp.name
                       }.`,
                       alertType: 'success',
@@ -618,7 +670,6 @@ const getEstimatedClaimedAwards = (
   bonusEraDuration: number
 ): Balance => {
   const firstStakedEra = Math.min(...eraStakesMap.keys());
-  //let claimedSoFar = api.createType('Balance', new BN(0));
   let claimedSoFar = new BN(0);
 
   if (firstStakedEra) {

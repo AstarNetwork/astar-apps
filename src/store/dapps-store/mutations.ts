@@ -32,6 +32,10 @@ const mutation: MutationTree<State> & ContractsMutations = {
   setMaxUnlockingChunks(state: State, payload: number) {
     state.maxUnlockingChunks = payload;
   },
+
+  setUnlockingChunks(state: State, payload: number) {
+    state.unlockingChunks = payload;
+  },
 };
 
 export default mutation;

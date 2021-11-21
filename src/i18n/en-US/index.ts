@@ -120,6 +120,8 @@ export default {
     tvl: 'TVL IN DAPPS',
     dappsCount: 'DAPPS COUNT',
     requirement: 'REQUIREMENT',
+    unlockingChunks: 'Unlocking chunks',
+    maxChunksWarning: 'You reached maximum unbonding chunks ({chunks}). Unstake rewards first.',
     modals: {
       alreadyClaimed: 'Already claimed:',
       contractRewards: 'Contract rewards:',
@@ -136,6 +138,7 @@ export default {
       startUnbonding: 'Start unbonding',
       chunks: 'Chunks',
       unbondingPeriod: 'Unbonding period: {period} era',
+      maxUnlockingChunks: 'Max unlocking chunks: {chunks}',
     },
   },
 };

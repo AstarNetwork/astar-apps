@@ -10,6 +10,7 @@ export interface ContractsGetters {
   getMaxNumberOfStakersPerContract(state: State): number;
   getUnbondingPeriod(state: State): number;
   getMaxUnlockingChunks(state: State): number;
+  getUnlockingChunks(state: State): number;
 }
 
 const getters: GetterTree<State, StateInterface> & ContractsGetters = {
@@ -18,6 +19,7 @@ const getters: GetterTree<State, StateInterface> & ContractsGetters = {
   getMaxNumberOfStakersPerContract: (state) => state.maxNumberOfStakersPerContract,
   getUnbondingPeriod: (state) => state.unbondingPeriod,
   getMaxUnlockingChunks: (state) => state.maxUnlockingChunks,
+  getUnlockingChunks: (state) => state.unlockingChunks,
 };
 
 export default getters;

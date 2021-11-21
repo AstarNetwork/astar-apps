@@ -35,6 +35,9 @@
         {{ $t('store.yourStake') }}
         <format-balance :balance="stakeAmount" class="tw-inline tw-font-semibold" />
       </div>
+      <div v-if="isMaxChunks" class="tw-mt-4 tw-ml-1 tw-text-red-700">
+        {{ $t('store.maxChunksWarning', { chunks: maxUnlockingChunks }) }}
+      </div>
     </template>
     <template #buttons>
       <Button :disabled="!canExecuteAction" @click="action(data)">{{ actionName }}</Button>
@@ -104,6 +107,9 @@ export default defineComponent({
     } as StakeModel);
     const allAccounts = computed(() => store.getters['general/allAccounts']);
     const allAccountNames = computed(() => store.getters['general/allAccountNames']);
+    const maxUnlockingChunks = computed(() => store.getters['dapps/getMaxUnlockingChunks']);
+    const unlockingChunks = computed(() => store.getters['dapps/getUnlockingChunks']);
+    const isMaxChunks = computed(() => unlockingChunks >= maxUnlockingChunks);
 
     const { currentAccount } = useAccount();
     const { api } = useApi();
@@ -131,7 +137,7 @@ export default defineComponent({
         const amount = getAmount(data.value.amount, data.value.unit);
         // return amount.gtn(0) && amount.lte(maxAmount);
         // TODO implement proper max boudary check.
-        return amount.gtn(0);
+        return amount.gtn(0) && !(props.actionName === StakeAction.Unstake && isMaxChunks.value);
       } else {
         return false;
       }
@@ -156,6 +162,8 @@ export default defineComponent({
       accountData,
       StakeAction,
       canExecuteAction,
+      isMaxChunks,
+      maxUnlockingChunks,
       ...toRefs(props),
     };
   },

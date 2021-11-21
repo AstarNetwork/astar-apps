@@ -21,7 +21,7 @@
             {{ $t('store.add') }}
           </Button>
           <Button :small="true" :primary="false" @click="showUnstakeModal">
-            {{ $t('store.unstake') }}
+            {{ $t('store.unbond') }}
           </Button>
         </div>
         <Button v-else :small="true" @click="showStakeModal">
@@ -58,20 +58,20 @@
       :claim-action="claim"
     />
 
-    <UnbondUnstakeWithdrawModal
+    <!-- <UnbondUnstakeWithdrawModal
       v-if="isUnstakeModalOpen"
       v-model:isOpen="isUnstakeModalOpen"
       :dapp="dapp"
       :stake-amount="stakeInfo?.yourStake.denomAmount"
       :start-unbonding-action="unstake"
-    />
+    /> -->
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, toRefs, watchEffect } from 'vue';
 import StakeModal from 'components/store/modals/StakeModal.vue';
-import UnbondUnstakeWithdrawModal from 'components/store/modals/UnbondUnstakeWithdrawModal.vue';
+// import UnbondUnstakeWithdrawModal from 'components/store/modals/UnbondUnstakeWithdrawModal.vue';
 import { StakeModel } from 'src/hooks/store';
 import Button from 'components/common/Button.vue';
 import ClaimRewardModal from 'components/store/modals/ClaimRewardModal.vue';
@@ -86,7 +86,7 @@ export default defineComponent({
     Button,
     StakeModal,
     ClaimRewardModal,
-    UnbondUnstakeWithdrawModal,
+    // UnbondUnstakeWithdrawModal,
   },
   props: {
     dapp: {
@@ -103,7 +103,7 @@ export default defineComponent({
     const store = useStore();
     const { api } = useApi();
     const showModal = ref<boolean>(false);
-    const isUnstakeModalOpen = ref<boolean>(false);
+    // const isUnstakeModalOpen = ref<boolean>(false);
     const showClaimRewardModal = ref<boolean>(false);
     const modalTitle = ref<string>('');
     const modalActionName = ref<StakeAction | ''>('');
@@ -130,7 +130,10 @@ export default defineComponent({
     };
 
     const showUnstakeModal = () => {
-      isUnstakeModalOpen.value = true;
+      modalTitle.value = `Unstake from ${props.dapp.name}`;
+      modalActionName.value = StakeAction.Unstake;
+      modalAction.value = unstake;
+      showModal.value = true;
     };
 
     const emitStakeChanged = () => {
@@ -204,7 +207,7 @@ export default defineComponent({
     return {
       ...toRefs(props),
       showModal,
-      isUnstakeModalOpen,
+      // isUnstakeModalOpen,
       showClaimRewardModal,
       modalTitle,
       modalAction,
@@ -220,6 +223,6 @@ export default defineComponent({
 
 export enum StakeAction {
   Stake = 'Stake',
-  Unstake = 'Unstake',
+  Unstake = 'Start unbonding',
 }
 </script>
