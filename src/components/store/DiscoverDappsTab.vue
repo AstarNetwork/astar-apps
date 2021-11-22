@@ -1,12 +1,13 @@
 <template>
   <div>
     <div
-      v-if="dapps.length > 0"
+      v-if="dapps.length > 0 && progress > 0"
       class="tw-flex tw-flex-wrap tw-gap-x-12 xl:tw-gap-x-18 tw-justify-center"
     >
       <TVL />
       <DappsCount />
       <Requirement />
+      <Era :progress="progress" :blocks-until-next-era="blocksUntilNextEra" :era="era" />
     </div>
 
     <div class="tw-text-center tw-mb-8">
@@ -56,11 +57,13 @@ import ModalRegisterDapp from 'components/store/modals/ModalRegisterDapp.vue';
 import Dapp from 'src/components/store/Dapp.vue';
 import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
+import { useCurrentEra } from 'src/hooks';
 import { DappItem } from 'src/store/dapps-store/state';
-import { computed, defineComponent, ref } from 'vue';
+import { computed, defineComponent, ref, watchEffect } from 'vue';
 import TVL from './statistics/TVL.vue';
 import DappsCount from './statistics/DappsCount.vue';
 import Requirement from './statistics/Requirement.vue';
+import Era from './statistics/Era.vue';
 
 export default defineComponent({
   components: {
@@ -73,10 +76,12 @@ export default defineComponent({
     TVL,
     DappsCount,
     Requirement,
+    Era,
   },
   setup() {
     const store = useStore();
     const dapps = computed(() => store.getters['dapps/getAllDapps']);
+    const { progress, blocksUntilNextEra, era } = useCurrentEra();
 
     const maxNumberOfStakersPerContract = computed(
       () => store.getters['dapps/getMaxNumberOfStakersPerContract']
@@ -105,6 +110,9 @@ export default defineComponent({
       maxNumberOfStakersPerContract,
       minimumStakingAmount,
       showDetailsModal,
+      progress,
+      blocksUntilNextEra,
+      era,
     };
   },
 });
