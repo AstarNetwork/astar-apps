@@ -5,7 +5,8 @@
         sm:tw-flex
         tw-items-end tw-border-b tw-border-gray-300
         dark:tw-border-darkGray-600
-        tw-mb-8 tw-mx-4
+        tw-mb-8
+        tw-mx--4
         sm:tw--mx-8
         tw-px-4
         sm:tw-px-8

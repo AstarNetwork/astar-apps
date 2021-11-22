@@ -1,1 +1,1 @@
-declare module 'vuejs-progress-bar';
+declare module 'vue-js-progress';

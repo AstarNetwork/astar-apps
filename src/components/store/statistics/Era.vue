@@ -5,47 +5,78 @@
       dark:tw-bg-darkGray-800
       tw-mb-8 tw-w-72 tw-rounded-lg tw-text-white
       dark:tw-text-darkGray-100
-      tw-py-4 tw-pb-4 tw-px-4
+      tw-py-4 tw-pb-2 tw-px-4
       box
     "
   >
     <div class="tw-text-xl tw-font-semibold tw-mb-2">{{ $t('store.currentEra') }}</div>
     <div class="tw-flex tw-flex-col tw-items-center tw-mb-1">
-      <div class="tw-font-bold tw-text-xl">
-        {{ era }}
+      <div class="tw-font-bold tw-text-2xl">
+        <vue3-autocounter ref="counter-era" :duration="2" :end-amount="era" :autoinit="era > 0" />
       </div>
     </div>
-    <div class="">
+    <div>
       <div class="tw-font-semibold tw-mb-1">
         {{ $t('store.blocksUntilNextEra') }}
       </div>
-      <q-linear-progress size="22px" :value="progress" color="secondary" stripe rounded>
-        <div class="absolute-full flex flex-center">
-          <q-badge
-            color="transparent"
-            text-color="white"
-            :label="blockUntilNextEra.toLocaleString('en-US')"
-          />
+      <div class="tw-relative">
+        <VueJsProgress
+          :percentage="progress"
+          bg="turquoise"
+          :delay="600"
+          :striped="true"
+          :animation="true"
+        />
+        <div class="tw-absolute tw-bottom-0 tw-w-full tw-text-white tw-font-semibold">
+          <div class="tw-flex tw-justify-center">
+            <vue3-autocounter
+              ref="counter-countdown"
+              :start-amount="startValue"
+              :end-amount="blocksUntilNextEra"
+              separator=","
+              decimal-separator="."
+              :duration="2"
+              :autoinit="blocksUntilNextEra > 0"
+              @finished="startValue = blocksUntilNextEra"
+            />
+          </div>
         </div>
-      </q-linear-progress>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { useCurrentEra } from 'src/hooks';
+import { defineComponent, ref } from 'vue';
+import VueJsProgress from 'vue-js-progress';
+import Vue3autocounter from 'vue3-autocounter';
+import './era.scss';
 
 export default defineComponent({
+  components: {
+    VueJsProgress,
+    'vue3-autocounter': Vue3autocounter,
+  },
+  props: {
+    progress: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    era: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    blocksUntilNextEra: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+  },
   setup() {
-    const { era, blockPerEra, blockUntilNextEra, progress } = useCurrentEra();
-
-    return {
-      era,
-      blockPerEra,
-      blockUntilNextEra,
-      progress,
-    };
+    const startValue = ref<number>(0);
+    return { startValue };
   },
 });
 </script>
