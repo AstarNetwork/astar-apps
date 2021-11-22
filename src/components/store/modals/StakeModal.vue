@@ -107,9 +107,9 @@ export default defineComponent({
     } as StakeModel);
     const allAccounts = computed(() => store.getters['general/allAccounts']);
     const allAccountNames = computed(() => store.getters['general/allAccountNames']);
-    const maxUnlockingChunks = computed(() => store.getters['dapps/getMaxUnlockingChunks']);
-    const unlockingChunks = computed(() => store.getters['dapps/getUnlockingChunks']);
-    const isMaxChunks = computed(() => unlockingChunks >= maxUnlockingChunks);
+    const maxUnlockingChunks = computed<number>(() => store.getters['dapps/getMaxUnlockingChunks']);
+    const unlockingChunks = computed<number>(() => store.getters['dapps/getUnlockingChunks']);
+    const isMaxChunks = unlockingChunks.value >= maxUnlockingChunks.value;
 
     const { currentAccount } = useAccount();
     const { api } = useApi();
@@ -137,7 +137,7 @@ export default defineComponent({
         const amount = getAmount(data.value.amount, data.value.unit);
         // return amount.gtn(0) && amount.lte(maxAmount);
         // TODO implement proper max boudary check.
-        return amount.gtn(0) && !(props.actionName === StakeAction.Unstake && isMaxChunks.value);
+        return amount.gtn(0) && !(props.actionName === StakeAction.Unstake && isMaxChunks);
       } else {
         return false;
       }

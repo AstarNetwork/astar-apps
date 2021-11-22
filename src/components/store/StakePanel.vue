@@ -130,7 +130,7 @@ export default defineComponent({
     };
 
     const showUnstakeModal = () => {
-      modalTitle.value = `Unstake from ${props.dapp.name}`;
+      modalTitle.value = `Unbond from ${props.dapp.name}`;
       modalActionName.value = StakeAction.Unstake;
       modalAction.value = unstake;
       showModal.value = true;

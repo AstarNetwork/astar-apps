@@ -333,6 +333,7 @@ const actions: ActionTree<State, StateInterface> = {
             (result) => {
               if (result.status.isFinalized) {
                 if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
+                  commit('setUnlockingChunks', -1);
                   dispatch(
                     'general/showAlertMsg',
                     {
@@ -370,42 +371,37 @@ const actions: ActionTree<State, StateInterface> = {
     return false;
   },
 
-  async withdrawUnbonded({ commit, dispatch }, parameters: StakingParameters): Promise<boolean> {
+  async withdrawUnbonded({ commit, dispatch }, parameters: WithdrawParameters): Promise<boolean> {
     try {
       if (parameters.api) {
         const injector = await web3FromSource('polkadot-js');
-        const unsub = await parameters.api.tx.dappsStaking
-          .withdrawUnbonded(getAddressEnum(parameters.dapp.address))
-          .signAndSend(
-            parameters.senderAddress,
-            {
-              signer: injector?.signer,
-              nonce: -1,
-            },
-            (result) => {
-              if (result.status.isFinalized) {
-                if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
-                  dispatch(
-                    'general/showAlertMsg',
-                    {
-                      msg: `You started unstaking of ${getFormattedBalance(parameters)} from ${
-                        parameters.dapp.name
-                      }.`,
-                      alertType: 'success',
-                    },
-                    { root: true }
-                  );
-
-                  parameters.finalizeCallback();
-                }
-
-                commit('general/setLoading', false, { root: true });
-                unsub();
-              } else {
-                commit('general/setLoading', true, { root: true });
+        const unsub = await parameters.api.tx.dappsStaking.withdrawUnbonded().signAndSend(
+          parameters.senderAddress,
+          {
+            signer: injector?.signer,
+            nonce: -1,
+          },
+          (result) => {
+            if (result.status.isFinalized) {
+              if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
+                commit('setUnlockingChunks', -1);
+                dispatch(
+                  'general/showAlertMsg',
+                  {
+                    msg: 'Sucessfully withdrawed',
+                    alertType: 'success',
+                  },
+                  { root: true }
+                );
               }
+
+              commit('general/setLoading', false, { root: true });
+              unsub();
+            } else {
+              commit('general/setLoading', true, { root: true });
             }
-          );
+          }
+        );
 
         return true;
       } else {
@@ -725,6 +721,11 @@ export interface StakingParameters {
   decimals: number;
   unit: string;
   finalizeCallback: () => void;
+}
+
+export interface WithdrawParameters {
+  api: ApiPromise;
+  senderAddress: string;
 }
 
 export interface StakeInfo {

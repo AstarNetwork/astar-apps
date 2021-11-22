@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="unlockingChunks?.length > 0"
     class="
       tw-bg-white
       dark:tw-bg-darkGray-800
@@ -13,19 +14,24 @@
     <div class="tw-text-xl tw-font-semibold tw-mb-4 tw-uppercase">
       {{ $t('store.unlockingChunks') }}
     </div>
+    <div class="tw-grid tw-grid-cols-12">
+      <div class="tw-col-span-1">{{ $t('store.chunk') }}</div>
+      <div class="tw-col-span-8 tw-text-right">{{ $t('store.amount') }}</div>
+      <div class="tw-col-span-3 tw-text-right">{{ $t('store.era') }}</div>
+    </div>
     <div v-for="(chunk, index) in unlockingChunks" :key="index" class="tw-grid tw-grid-cols-12">
       <div class="tw-col-span-1">{{ index + 1 }}.</div>
-      <div class="tw-col-span-9 tw-text-right">{{ chunk.amount.toHuman() }}</div>
-      <div class="tw-col-span-2 tw-text-right">{{ chunk.erasBeforeUnlock }}</div>
+      <div class="tw-col-span-8 tw-text-right tw-font-semibold">{{ chunk.amount.toHuman() }}</div>
+      <div class="tw-col-span-3 tw-text-right">{{ chunk.erasBeforeUnlock }}</div>
     </div>
-    <Button v-if="canUnstake" :primary="false" class="tw-mt-2 tw-float-right">
-      {{ $t('store.unstake') }}
+    <Button v-if="canWithdraw" :primary="false" class="tw-mt-2 tw-float-right" @click="withdraw()">
+      {{ $t('store.withdraw') }}
     </Button>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onUnmounted, computed, ref } from 'vue';
+import { defineComponent, onUnmounted, computed, ref, watch } from 'vue';
 import BN from 'bn.js';
 import { useApi } from 'src/hooks';
 import { useStore } from 'src/store';
@@ -34,6 +40,7 @@ import { VoidFn } from '@polkadot/api/types';
 import { Balance, EraIndex } from '@polkadot/types/interfaces';
 import { Codec } from '@polkadot/types/types';
 import Button from 'src/components/common/Button.vue';
+import { WithdrawParameters } from 'src/store/dapps-store/actions';
 
 export default defineComponent({
   components: {
@@ -42,38 +49,60 @@ export default defineComponent({
   setup() {
     const { api } = useApi();
     const store = useStore();
-    const unbondingPeriod = computed(() => store.getters['dapps/getUnbondingPeriod']);
     const selectedAccountAddress = computed(() => store.getters['general/selectedAccountAddress']);
+    const unlockingChunksCount = computed(() => store.getters['dapps/getUnlockingChunks']);
     const unlockingChunks = ref<ChunkInfo[]>();
-    const canUnstake = ref<boolean>(false);
+    const canWithdraw = ref<boolean>(false);
+
+    const withdraw = async (): Promise<void> => {
+      const result = await store.dispatch('dapps/withdrawUnbonded', {
+        api: api?.value,
+        senderAddress: selectedAccountAddress.value,
+      } as WithdrawParameters);
+    };
 
     const subscribeToEraChange = async (): Promise<VoidFn | undefined> => {
       const unsub = (await api?.value?.query.dappsStaking.currentEra(async (era: u32) => {
         console.log('new era', era.toNumber(), selectedAccountAddress.value);
-        const unbondingInfo =
-          await api?.value?.query.dappsStaking.unbondingInfoStorage<UnbondingInfo>(
-            selectedAccountAddress.value
-          );
-
-        if (unbondingInfo) {
-          unlockingChunks.value = unbondingInfo.unlockingChunks;
-          store.commit('dapps/setUnlockingChunks', unlockingChunks.value?.length);
-          for (const chunk of unlockingChunks.value) {
-            const erasBeforeUnlock = new BN(era).sub(chunk.unlockEra).toNumber();
-            chunk.erasBeforeUnlock =
-              erasBeforeUnlock > unbondingPeriod.value ? 0 : erasBeforeUnlock;
-
-            if (!canUnstake.value) {
-              canUnstake.value = chunk.erasBeforeUnlock === 0;
-            }
-          }
-        }
+        await getChunks(era);
       })) as VoidFn | undefined;
 
       return unsub;
     };
 
     const unsub = subscribeToEraChange();
+
+    const getChunks = async (era: u32) => {
+      const unbondingInfo =
+        await api?.value?.query.dappsStaking.unbondingInfoStorage<UnbondingInfo>(
+          selectedAccountAddress.value
+        );
+
+      if (unbondingInfo?.unlockingChunks) {
+        unlockingChunks.value = unbondingInfo.unlockingChunks;
+        store.commit('dapps/setUnlockingChunks', unlockingChunks.value?.length);
+        canWithdraw.value = false;
+        for (const chunk of unlockingChunks.value) {
+          const erasBeforeUnlock = new BN(era).sub(chunk.unlockEra).toNumber();
+          chunk.erasBeforeUnlock = erasBeforeUnlock > 0 ? 0 : erasBeforeUnlock;
+
+          if (!canWithdraw.value) {
+            canWithdraw.value = chunk.erasBeforeUnlock === 0;
+          }
+        }
+      }
+    };
+
+    watch(
+      () => unlockingChunksCount.value,
+      async (chunks) => {
+        console.log('chunks count changed');
+        const era = await api?.value?.query.dappsStaking.currentEra<u32>();
+        if (era) {
+          await getChunks(era);
+        }
+      }
+    );
 
     onUnmounted(async () => {
       const unsubFn = await unsub;
@@ -84,7 +113,8 @@ export default defineComponent({
 
     return {
       unlockingChunks,
-      canUnstake,
+      canWithdraw,
+      withdraw,
     };
   },
 });

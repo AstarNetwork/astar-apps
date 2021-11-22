@@ -121,7 +121,11 @@ export default {
     dappsCount: 'DAPPS COUNT',
     requirement: 'REQUIREMENT',
     unlockingChunks: 'Unlocking chunks',
-    maxChunksWarning: 'You reached maximum unbonding chunks ({chunks}). Unstake rewards first.',
+    maxChunksWarning: 'You reached maximum unlocking chunks ({chunks}). Unstake rewards first.',
+    withdraw: 'Withdraw',
+    chunk: 'Chunk',
+    amount: 'Amount',
+    era: 'Era',
     modals: {
       alreadyClaimed: 'Already claimed:',
       contractRewards: 'Contract rewards:',
