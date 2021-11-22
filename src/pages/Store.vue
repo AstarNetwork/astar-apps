@@ -5,7 +5,7 @@
         sm:tw-flex
         tw-items-end tw-border-b tw-border-gray-300
         dark:tw-border-darkGray-600
-        tw-mb-8 tw--mx-4
+        tw-mb-8 tw-mx-4
         sm:tw--mx-8
         tw-px-4
         sm:tw-px-8
@@ -18,13 +18,34 @@
           dark:tw-text-white
           tw-mb-6
           sm:tw-mb-8
+          tw-whitespace-nowrap
         "
       >
         {{ $t('store.dappsStore') }}
       </h1>
-      <div class="tw-flex">
-        <Tab :labels="[{ label: 'Discover', path: 'discover-dapps' }]" />
-        <Tab :labels="[{ label: 'Manage', path: 'manage-dapps' }]" />
+      <div class="tw-flex tw-justify-between tw-items-center tw-w-full">
+        <div class="tw-flex">
+          <Tab :labels="[{ label: 'Discover', path: 'discover-dapps' }]" />
+          <Tab :labels="[{ label: 'Manage', path: 'manage-dapps' }]" />
+        </div>
+        <div
+          class="
+            tw-hidden
+            lg:tw-block
+            tw-hidden
+            lg:tw-block
+            2xl:tw-text-lg
+            tw-font-semibold tw-text-blue-900
+            dark:tw-text-white
+          "
+        >
+          {{
+            $t('store.warning', {
+              amount: minimumStakingAmount,
+              stakers: maxNumberOfStakersPerContract.toLocaleString('en-US'),
+            })
+          }}
+        </div>
       </div>
     </div>
     <router-view />
@@ -32,9 +53,26 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
+import { useStore } from 'src/store';
+import { computed, defineComponent } from 'vue';
 import Tab from 'components/common/Tab.vue';
 export default defineComponent({
   components: { Tab },
+  setup() {
+    const store = useStore();
+    const maxNumberOfStakersPerContract = computed(
+      () => store.getters['dapps/getMaxNumberOfStakersPerContract']
+    );
+    const minimumStakingAmount = computed(() => {
+      const amount = store.getters['dapps/getMinimumStakingAmount'];
+      return formatUnitAmount(amount);
+    });
+
+    return {
+      maxNumberOfStakersPerContract,
+      minimumStakingAmount,
+    };
+  },
 });
 </script>

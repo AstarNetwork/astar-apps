@@ -1,6 +1,7 @@
 <template>
   <div
     class="
+      lg:tw-hidden
       tw-bg-white
       dark:tw-bg-darkGray-800
       tw-shadow tw-mb-8 tw-w-72 tw-rounded-lg tw-text-white
