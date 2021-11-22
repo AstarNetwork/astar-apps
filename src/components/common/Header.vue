@@ -31,14 +31,7 @@
       <img width="200" src="~assets/img/astar.png" />
     </div>
 
-    <div
-      class="
-        tw-w-8 tw-h-8
-        sm:tw-w-10 sm:tw-h-10
-        tw-rounded-full tw-overflow-hidden tw-border tw-border-gray-100
-        focus:tw-outline-none focus:tw-ring focus:tw-ring-blue-100
-      "
-    ></div>
+    <div class="tw-w-8 tw-h-8"></div>
   </div>
 </template>
 
