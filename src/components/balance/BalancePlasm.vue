@@ -1,6 +1,5 @@
 <template>
   <div v-if="isConnected(currentNetworkStatus)">
-    <BlockTimeNow />
     <div class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4">
       <Address
         v-model:isOpen="modalAccount"
@@ -57,7 +56,6 @@ import Address from './Address.vue';
 import ToggleMetaMask from './ToggleMetaMask.vue';
 import PlmBalance from './PlmBalance.vue';
 import TotalBalance from './TotalBalance.vue';
-import BlockTimeNow from '../common/BlockTimeNow.vue';
 import ModalAccount from './modals/ModalAccount.vue';
 import ModalTransferAmount from './modals/ModalTransferAmount.vue';
 
@@ -74,7 +72,6 @@ export default defineComponent({
     TotalBalance,
     // ModalAlertBox,
     ToggleMetaMask,
-    BlockTimeNow,
     ModalAccount,
     ModalTransferAmount,
   },
