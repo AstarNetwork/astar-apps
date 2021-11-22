@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="statusTxt">{{ blockTimeSec }} s</div>
+    <div :class="[isDelayed ? 'tw-text-red-600' : '']">{{ blockTimeSec }} s</div>
   </div>
 </template>
 <script lang="ts">
@@ -15,10 +15,10 @@ export default defineComponent({
     const { api } = useApi();
 
     const blockTime = computed(() => store.getters['general/blockTime']);
-    console.log('blockTime', blockTime.value);
 
     const timestamp = ref();
     const blockTimeSec = ref<number>();
+    const isDelayed = ref(false);
 
     const formatValue = (value: number) => {
       const [pre, post] = value.toFixed(1).split('.');
@@ -40,6 +40,11 @@ export default defineComponent({
         const elapsed = Math.max(Math.abs(now - tsValue), 0) / 1000;
         const value = formatValue(elapsed);
         blockTimeSec.value = value;
+        if (value > blockTime.value / 1000) {
+          isDelayed.value = true;
+        } else {
+          isDelayed.value = false;
+        }
       }
 
       setTimeout(tick, TICK_TIMEOUT);
@@ -49,6 +54,7 @@ export default defineComponent({
 
     return {
       blockTimeSec,
+      isDelayed,
     };
   },
 });
