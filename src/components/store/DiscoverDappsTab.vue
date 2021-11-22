@@ -7,7 +7,7 @@
       <TVL />
       <DappsCount />
       <Requirement />
-      <UnlockingChunks />
+      <Withdraw />
     </div>
 
     <div class="tw-text-center tw-mb-8">
@@ -62,7 +62,7 @@ import { computed, defineComponent, ref } from 'vue';
 import TVL from './statistics/TVL.vue';
 import DappsCount from './statistics/DappsCount.vue';
 import Requirement from './statistics/Requirement.vue';
-import UnlockingChunks from './statistics/UnlockingChunks.vue';
+import Withdraw from './statistics/Withdraw.vue';
 
 export default defineComponent({
   components: {
@@ -75,7 +75,7 @@ export default defineComponent({
     TVL,
     DappsCount,
     Requirement,
-    UnlockingChunks,
+    Withdraw,
   },
   setup() {
     const store = useStore();

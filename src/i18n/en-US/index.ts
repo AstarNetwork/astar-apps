@@ -124,8 +124,10 @@ export default {
     maxChunksWarning: 'You reached maximum unlocking chunks ({chunks}). Unstake rewards first.',
     withdraw: 'Withdraw',
     chunk: 'Chunk',
+    chunks: 'Chunks',
     amount: 'Amount',
     era: 'Era',
+    availableForWithdraw: 'Withdraw rewards',
     modals: {
       alreadyClaimed: 'Already claimed:',
       contractRewards: 'Contract rewards:',

@@ -1,6 +1,5 @@
 <template>
   <div
-    v-if="unlockingChunks?.length > 0"
     class="
       tw-bg-white
       dark:tw-bg-darkGray-800
@@ -12,21 +11,33 @@
     "
   >
     <div class="tw-text-xl tw-font-semibold tw-mb-4 tw-uppercase">
-      {{ $t('store.unlockingChunks') }}
+      {{ $t('store.availableForWithdraw') }}
     </div>
-    <div class="tw-grid tw-grid-cols-12">
+    <!-- <div class="tw-grid tw-grid-cols-12">
       <div class="tw-col-span-1">{{ $t('store.chunk') }}</div>
-      <div class="tw-col-span-8 tw-text-right">{{ $t('store.amount') }}</div>
-      <div class="tw-col-span-3 tw-text-right">{{ $t('store.era') }}</div>
+      <div class="tw-col-span-7 tw-text-right">{{ $t('store.amount') }}</div>
+      <div class="tw-col-span-4 tw-text-right">{{ $t('store.era') }}</div>
     </div>
     <div v-for="(chunk, index) in unlockingChunks" :key="index" class="tw-grid tw-grid-cols-12">
       <div class="tw-col-span-1">{{ index + 1 }}.</div>
-      <div class="tw-col-span-8 tw-text-right tw-font-semibold">{{ chunk.amount.toHuman() }}</div>
-      <div class="tw-col-span-3 tw-text-right">{{ chunk.erasBeforeUnlock }}</div>
+      <div class="tw-col-span-7 tw-text-right tw-font-semibold">{{ chunk.amount.toHuman() }}</div>
+      <div class="tw-col-span-4 tw-text-right">
+        {{ chunk.unlockEra.toHuman() }} ({{ chunk.erasBeforeUnlock }})
+      </div>
+    </div> -->
+    <div class="tw-flex tw-flex-col tw-items-center">
+      <FormatBalance :balance="totalToWithdraw" class="tw-flex tw-text-2xl tw-font-bold" />
     </div>
-    <Button v-if="canWithdraw" :primary="false" class="tw-mt-2 tw-float-right" @click="withdraw()">
-      {{ $t('store.withdraw') }}
-    </Button>
+    <div class="tw-flex tw-flex-row tw-items-baseline tw-float-right">
+      <div class="tw-cursor-pointer tw-mr-4" @click="showModal = true">
+        {{ $t('store.chunks') }}
+      </div>
+      <Button v-if="canWithdraw" :primary="false" class="tw-mt-4" @click="withdraw()">
+        {{ $t('store.withdraw') }}
+      </Button>
+    </div>
+
+    <ChunksModal v-if="showModal" v-model:isOpen="showModal" :unlockingChunks="unlockingChunks" />
   </div>
 </template>
 
@@ -41,10 +52,14 @@ import { Balance, EraIndex } from '@polkadot/types/interfaces';
 import { Codec } from '@polkadot/types/types';
 import Button from 'src/components/common/Button.vue';
 import { WithdrawParameters } from 'src/store/dapps-store/actions';
+import FormatBalance from 'components/balance/FormatBalance.vue';
+import ChunksModal from './ChunksModal.vue';
 
 export default defineComponent({
   components: {
     Button,
+    FormatBalance,
+    ChunksModal,
   },
   setup() {
     const { api } = useApi();
@@ -53,6 +68,8 @@ export default defineComponent({
     const unlockingChunksCount = computed(() => store.getters['dapps/getUnlockingChunks']);
     const unlockingChunks = ref<ChunkInfo[]>();
     const canWithdraw = ref<boolean>(false);
+    const totalToWithdraw = ref<BN>(new BN(0));
+    const showModal = ref<boolean>(false);
 
     const withdraw = async (): Promise<void> => {
       const result = await store.dispatch('dapps/withdrawUnbonded', {
@@ -82,9 +99,14 @@ export default defineComponent({
         unlockingChunks.value = unbondingInfo.unlockingChunks;
         store.commit('dapps/setUnlockingChunks', unlockingChunks.value?.length);
         canWithdraw.value = false;
+        totalToWithdraw.value = new BN(0);
         for (const chunk of unlockingChunks.value) {
           const erasBeforeUnlock = new BN(era).sub(chunk.unlockEra).toNumber();
           chunk.erasBeforeUnlock = erasBeforeUnlock > 0 ? 0 : erasBeforeUnlock;
+
+          if (erasBeforeUnlock >= 0) {
+            totalToWithdraw.value = totalToWithdraw.value.add(chunk.amount);
+          }
 
           if (!canWithdraw.value) {
             canWithdraw.value = chunk.erasBeforeUnlock === 0;
@@ -115,6 +137,8 @@ export default defineComponent({
       unlockingChunks,
       canWithdraw,
       withdraw,
+      totalToWithdraw,
+      showModal,
     };
   },
 });
@@ -123,7 +147,7 @@ interface UnbondingInfo extends Codec {
   unlockingChunks: ChunkInfo[];
 }
 
-interface ChunkInfo extends Codec {
+export interface ChunkInfo extends Codec {
   amount: Balance;
   unlockEra: EraIndex;
   erasBeforeUnlock: number;
