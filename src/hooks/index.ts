@@ -9,4 +9,5 @@ export * from './useChainMetadata';
 export * from './useGetMinStaking';
 export * from './useTvl';
 export * from './useEvmDeposit';
-export * from './useRewardPerBlock';
+export * from './useApr';
+export * from './useCurrentEra';

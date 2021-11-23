@@ -10,10 +10,7 @@
           <div class="tw-w-20">{{ $t('store.totalStake') }}</div>
           <div class="tw-font-semibold">{{ stakeInfo?.totalStake.formatted }}</div>
         </div>
-        <div v-if="apr > 0" class="tw-flex tw-flex-row">
-          <div class="tw-w-20">{{ $t('store.apr') }}</div>
-          <div class="tw-font-semibold">{{ Number(apr.toFixed(1)).toLocaleString('en-US') }}%</div>
-        </div>
+
         <div :style="{ opacity: stakeInfo?.hasStake ? '1' : '0' }" class="tw-flex tw-flex-row">
           <div class="tw-w-20">{{ $t('store.yourStake') }}</div>
           <div class="tw-font-semibold">{{ stakeInfo?.yourStake.formatted }}</div>
@@ -75,7 +72,6 @@ import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { StakingParameters } from 'src/store/dapps-store/actions';
 import { getAmount } from 'src/hooks/store';
-import { getApr } from 'src/hooks/helper/apr';
 
 export default defineComponent({
   components: {
@@ -92,16 +88,6 @@ export default defineComponent({
       type: Object,
       default: undefined,
     },
-    blockRewardsPerDapps: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
-    tokenPrice: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
   },
   emits: ['stakeChanged'],
   setup(props, { emit }) {
@@ -112,7 +98,6 @@ export default defineComponent({
     const modalTitle = ref<string>('');
     const modalActionName = ref<StakeAction | ''>('');
     const formattedMinStake = ref<string>('');
-    const apr = ref<number>(0);
     const modalAction = ref();
     const { minStaking } = useGetMinStaking(api);
     const { decimal } = useChainMetadata();
@@ -209,27 +194,6 @@ export default defineComponent({
       }
     };
 
-    watchEffect(() => {
-      if (
-        !props.stakeInfo?.totalStake.denomAmount ||
-        !props.tokenPrice ||
-        !props.blockRewardsPerDapps
-      ) {
-        return;
-      }
-
-      const ttlStake = Number(
-        plasmUtils.reduceBalanceToDenom(props.stakeInfo?.totalStake.denomAmount, decimal.value)
-      );
-      console.log(props.stakeInfo);
-      const dappsApr = getApr({
-        rewardsPerBlock: props.blockRewardsPerDapps,
-        tokenPrice: props.tokenPrice,
-        dappsStakedAmount: ttlStake,
-      });
-      apr.value = dappsApr;
-    });
-
     return {
       ...toRefs(props),
       showModal,
@@ -241,7 +205,6 @@ export default defineComponent({
       showUnstakeModal,
       claim,
       formattedMinStake,
-      apr,
     };
   },
 });

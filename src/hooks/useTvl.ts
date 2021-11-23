@@ -8,14 +8,14 @@ import { getUsdPrice } from './helper/price';
 export function useTvl(api: any) {
   const store = useStore();
 
-  const { decimal, defaultUnitToken } = useChainMetadata();
+  const { decimal } = useChainMetadata();
 
   const dapps = computed(() => store.getters['dapps/getAllDapps']);
   const tvlToken = ref<BN>(new BN(0));
   const tvlUsd = ref<number>(0);
 
   watch(
-    [api, dapps, defaultUnitToken.value],
+    [api, dapps],
     () => {
       const apiRef = api && api.value;
       const dappsRef = dapps.value;
@@ -30,9 +30,10 @@ export function useTvl(api: any) {
       };
 
       const priceUsd = async (): Promise<number> => {
-        if (defaultUnitToken.value === 'SDN') {
+        const chainName = await apiRef.runtimeVersion.specName.toString();
+        if (chainName === 'shiden') {
           try {
-            return await getUsdPrice('shiden');
+            return await getUsdPrice(chainName);
           } catch (error) {
             console.error(error);
             return 0;

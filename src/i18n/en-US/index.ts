@@ -120,6 +120,9 @@ export default {
     tvl: 'TVL IN DAPPS',
     dappsCount: 'DAPPS COUNT',
     requirement: 'REQUIREMENT',
+    currentEra: 'CURRENT ERA',
+    blocksUntilNextEra: 'Blocks until next era',
+    stakerApr: 'APR: {value}%',
     modals: {
       alreadyClaimed: 'Already claimed:',
       contractRewards: 'Contract rewards:',
