@@ -22,6 +22,7 @@
         {{ $t('store.registerDapp') }}
       </Button>
       <div
+        v-if="stakerApr > 0"
         class="
           sm:tw-w-40
           tw-justify-center
