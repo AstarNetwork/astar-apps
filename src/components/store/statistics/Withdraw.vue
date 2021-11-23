@@ -11,7 +11,7 @@
     "
   >
     <div class="tw-text-xl tw-font-semibold tw-mb-4 tw-uppercase">
-      {{ $t('store.availableForWithdraw') }}
+      {{ $t('store.unbondedFunds') }}
     </div>
     <div class="tw-flex tw-flex-col tw-items-center">
       <FormatBalance :balance="totalToWithdraw" class="tw-flex tw-text-2xl tw-font-bold" />
@@ -25,7 +25,12 @@
       </Button>
     </div>
 
-    <ChunksModal v-if="showModal" v-model:isOpen="showModal" :unlocking-chunks="unlockingChunks" />
+    <ChunksModal
+      v-if="showModal"
+      v-model:isOpen="showModal"
+      :unlocking-chunks="unlockingChunks"
+      :max-unlocking-chunks="maxUnlockingChunks"
+    />
   </div>
 </template>
 
@@ -54,6 +59,7 @@ export default defineComponent({
     const store = useStore();
     const selectedAccountAddress = computed(() => store.getters['general/selectedAccountAddress']);
     const unlockingChunksCount = computed(() => store.getters['dapps/getUnlockingChunks']);
+    const maxUnlockingChunks = computed(() => store.getters['dapps/getMaxUnlockingChunks']);
     const unlockingChunks = ref<ChunkInfo[]>();
     const canWithdraw = ref<boolean>(false);
     const totalToWithdraw = ref<BN>(new BN(0));
@@ -90,7 +96,7 @@ export default defineComponent({
         totalToWithdraw.value = new BN(0);
         for (const chunk of unlockingChunks.value) {
           const erasBeforeUnlock = new BN(era).sub(chunk.unlockEra).toNumber();
-          chunk.erasBeforeUnlock = erasBeforeUnlock > 0 ? 0 : erasBeforeUnlock;
+          chunk.erasBeforeUnlock = Math.abs(erasBeforeUnlock > 0 ? 0 : erasBeforeUnlock);
 
           if (erasBeforeUnlock >= 0) {
             totalToWithdraw.value = totalToWithdraw.value.add(chunk.amount);
@@ -127,6 +133,7 @@ export default defineComponent({
       withdraw,
       totalToWithdraw,
       showModal,
+      maxUnlockingChunks,
     };
   },
 });

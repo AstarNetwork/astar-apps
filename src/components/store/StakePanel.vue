@@ -57,21 +57,12 @@
       :stake-info="stakeInfo"
       :claim-action="claim"
     />
-
-    <!-- <UnbondUnstakeWithdrawModal
-      v-if="isUnstakeModalOpen"
-      v-model:isOpen="isUnstakeModalOpen"
-      :dapp="dapp"
-      :stake-amount="stakeInfo?.yourStake.denomAmount"
-      :start-unbonding-action="unstake"
-    /> -->
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, toRefs, watchEffect } from 'vue';
 import StakeModal from 'components/store/modals/StakeModal.vue';
-// import UnbondUnstakeWithdrawModal from 'components/store/modals/UnbondUnstakeWithdrawModal.vue';
 import { StakeModel } from 'src/hooks/store';
 import Button from 'components/common/Button.vue';
 import ClaimRewardModal from 'components/store/modals/ClaimRewardModal.vue';
@@ -86,7 +77,6 @@ export default defineComponent({
     Button,
     StakeModal,
     ClaimRewardModal,
-    // UnbondUnstakeWithdrawModal,
   },
   props: {
     dapp: {

@@ -127,7 +127,7 @@ export default {
     chunks: 'Chunks',
     amount: 'Amount',
     era: 'Era',
-    availableForWithdraw: 'Withdraw rewards',
+    unbondedFunds: 'Unbonded funds',
     modals: {
       alreadyClaimed: 'Already claimed:',
       contractRewards: 'Contract rewards:',
@@ -144,7 +144,12 @@ export default {
       startUnbonding: 'Start unbonding',
       chunks: 'Chunks',
       unbondingPeriod: 'Unbonding period: {period} era',
-      maxUnlockingChunks: 'Max unlocking chunks: {chunks}',
+      maxUnlockingChunks: 'Maximum unlocking chunks: {chunks}',
+      unbondingInfo:
+        'Your funds will be unbonded and available for withdrawal after {era} full eras.',
+      availableInEra: 'Available in era',
+      erasToGo: 'eras to pass: {era}',
+      chunksModalDescription: 'This table shows when your funds will be eligible for withdrawal.',
     },
   },
 };

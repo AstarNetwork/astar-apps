@@ -35,7 +35,10 @@
         {{ $t('store.yourStake') }}
         <format-balance :balance="stakeAmount" class="tw-inline tw-font-semibold" />
       </div>
-      <div v-if="isMaxChunks" class="tw-mt-4 tw-ml-1 tw-text-red-700">
+      <div class="tw-mt-4 tw-ml-1">
+        {{ $t('store.modals.unbondingInfo', { era: unbondingPeriod }) }}
+      </div>
+      <div v-if="isMaxChunks" class="tw-mt-1 tw-ml-1 tw-text-red-700">
         {{ $t('store.maxChunksWarning', { chunks: maxUnlockingChunks }) }}
       </div>
     </template>
@@ -109,6 +112,7 @@ export default defineComponent({
     const allAccountNames = computed(() => store.getters['general/allAccountNames']);
     const maxUnlockingChunks = computed<number>(() => store.getters['dapps/getMaxUnlockingChunks']);
     const unlockingChunks = computed<number>(() => store.getters['dapps/getUnlockingChunks']);
+    const unbondingPeriod = computed(() => store.getters['dapps/getUnbondingPeriod']);
     const isMaxChunks = unlockingChunks.value >= maxUnlockingChunks.value;
 
     const { currentAccount } = useAccount();
@@ -164,6 +168,7 @@ export default defineComponent({
       canExecuteAction,
       isMaxChunks,
       maxUnlockingChunks,
+      unbondingPeriod,
       ...toRefs(props),
     };
   },
