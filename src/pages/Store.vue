@@ -27,7 +27,7 @@
       <div class="tw-flex tw-justify-between tw-items-center tw-w-full">
         <div class="tw-flex">
           <Tab :labels="[{ label: 'Discover', path: 'discover-dapps' }]" />
-          <Tab :labels="[{ label: 'Manage', path: 'manage-dapps' }]" />
+          <!-- <Tab :labels="[{ label: 'Manage', path: 'manage-dapps' }]" /> -->
         </div>
         <div
           class="
@@ -35,6 +35,7 @@
             lg:tw-block
             tw-hidden
             lg:tw-block
+            tw-ml-4
             2xl:tw-text-lg
             tw-font-semibold tw-text-blue-900
             dark:tw-text-white
@@ -54,10 +55,12 @@
 </template>
 
 <script lang="ts">
-import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
+import BN from 'bn.js';
+import { formatUnitAmount, reduceBalanceToDenom } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { computed, defineComponent } from 'vue';
 import Tab from 'components/common/Tab.vue';
+import { formatBalance } from '@polkadot/util';
 export default defineComponent({
   components: { Tab },
   setup() {
@@ -67,7 +70,18 @@ export default defineComponent({
     );
     const minimumStakingAmount = computed(() => {
       const amount = store.getters['dapps/getMinimumStakingAmount'];
-      return formatUnitAmount(amount);
+      // return formatUnitAmount(amount);
+      if (amount) {
+        // return reduceBalanceToDenom(new BN(amount), 18);
+        const formatted = formatBalance(new BN(amount), {
+          withSiFull: true,
+          decimals: 18,
+        });
+
+        return formatted;
+      }
+
+      return '0';
     });
 
     return {
