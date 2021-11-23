@@ -13,18 +13,6 @@
     <div class="tw-text-xl tw-font-semibold tw-mb-4 tw-uppercase">
       {{ $t('store.availableForWithdraw') }}
     </div>
-    <!-- <div class="tw-grid tw-grid-cols-12">
-      <div class="tw-col-span-1">{{ $t('store.chunk') }}</div>
-      <div class="tw-col-span-7 tw-text-right">{{ $t('store.amount') }}</div>
-      <div class="tw-col-span-4 tw-text-right">{{ $t('store.era') }}</div>
-    </div>
-    <div v-for="(chunk, index) in unlockingChunks" :key="index" class="tw-grid tw-grid-cols-12">
-      <div class="tw-col-span-1">{{ index + 1 }}.</div>
-      <div class="tw-col-span-7 tw-text-right tw-font-semibold">{{ chunk.amount.toHuman() }}</div>
-      <div class="tw-col-span-4 tw-text-right">
-        {{ chunk.unlockEra.toHuman() }} ({{ chunk.erasBeforeUnlock }})
-      </div>
-    </div> -->
     <div class="tw-flex tw-flex-col tw-items-center">
       <FormatBalance :balance="totalToWithdraw" class="tw-flex tw-text-2xl tw-font-bold" />
     </div>
@@ -37,7 +25,7 @@
       </Button>
     </div>
 
-    <ChunksModal v-if="showModal" v-model:isOpen="showModal" :unlockingChunks="unlockingChunks" />
+    <ChunksModal v-if="showModal" v-model:isOpen="showModal" :unlocking-chunks="unlockingChunks" />
   </div>
 </template>
 
