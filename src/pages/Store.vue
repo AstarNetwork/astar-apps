@@ -27,7 +27,7 @@
       <div class="tw-flex tw-justify-between tw-items-center tw-w-full">
         <div class="tw-flex">
           <Tab :labels="[{ label: 'Discover', path: 'discover-dapps' }]" />
-          <Tab :labels="[{ label: 'Manage', path: 'manage-dapps' }]" />
+          <!-- <Tab :labels="[{ label: 'Manage', path: 'manage-dapps' }]" /> -->
         </div>
         <div
           class="
@@ -35,6 +35,7 @@
             lg:tw-block
             tw-hidden
             lg:tw-block
+            tw-ml-4
             2xl:tw-text-lg
             tw-font-semibold tw-text-blue-900
             dark:tw-text-white
@@ -54,6 +55,7 @@
 </template>
 
 <script lang="ts">
+import BN from 'bn.js';
 import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { computed, defineComponent } from 'vue';
