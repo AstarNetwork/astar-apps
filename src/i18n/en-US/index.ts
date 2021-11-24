@@ -128,6 +128,8 @@ export default {
     amount: 'Amount',
     era: 'Era',
     unbondedFunds: 'Unbonded funds',
+    currentEra: 'CURRENT ERA',
+    blocksUntilNextEra: 'Blocks until next era',
     modals: {
       alreadyClaimed: 'Already claimed:',
       contractRewards: 'Contract rewards:',
