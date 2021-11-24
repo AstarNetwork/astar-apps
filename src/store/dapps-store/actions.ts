@@ -645,7 +645,8 @@ const actions: ActionTree<State, StateInterface> = {
           api.value.consts.dappsStaking.unbondingPeriod as u32,
         ]);
 
-        commit('setMinimumStakingAmount', minimumStakingAmount?.toHuman());
+        const minimumStakingAmountBalance = api?.value?.createType('Balance', minimumStakingAmount);
+        commit('setMinimumStakingAmount', minimumStakingAmountBalance?.toHuman());
         commit('setMaxNumberOfStakersPerContract', maxNumberOfStakersPerContract?.toNumber());
         commit('setUnbondingPeriod', unbondingPeriod.toNumber());
         commit('setMaxUnlockingChunks', maxUnlockingChunks.toNumber());
