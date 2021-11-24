@@ -7,8 +7,8 @@
       <TVL />
       <DappsCount />
       <Requirement />
-      <Withdraw />
       <Era :progress="progress" :blocks-until-next-era="blocksUntilNextEra" :era="era" />
+      <Withdraw />
     </div>
 
     <div class="tw-text-center tw-mb-8">
