@@ -1,6 +1,6 @@
 <template>
   <div v-if="isConnected(currentNetworkStatus)">
-    <div v-if="isH160 || isSS58">
+    <div v-if="isH160">
       <div class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4">
         <WalletH160
           v-model:isOpen="modalAccount"
@@ -10,6 +10,17 @@
       </div>
       <div class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4 tw-mt-4">
         <ToggleMetaMask />
+      </div>
+    </div>
+    <div v-if="isSS58">
+      <div class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4">
+        <Wallet v-model:isOpen="modalAccount" :wallet-name="currentAccountName" />
+      </div>
+      <div class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4 tw-mt-4">
+        <ToggleMetaMask />
+      </div>
+      <div class="tw-grid lg:tw-grid-cols-2 tw-gap-4 tw-mt-4">
+        <Addresses :address="currentAccount" />
       </div>
     </div>
 

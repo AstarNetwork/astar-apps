@@ -12,7 +12,7 @@
         tw-rounded-l-lg tw-flex-1 tw-text-left tw-justify-between
       "
     >
-      <div class="tw-flex tw-items-center md:tw-w-96 xl:tw-w-auto">
+      <div class="tw-flex tw-items-center xl:tw-w-auto">
         <div class="tw-h-11 tw-w-11 sm:tw-h-12 sm:tw-w-12 tw-overflow-hidden tw-mx-2 sm:tw-mx-3">
           <img width="80" src="~assets/img/ethereum.png" />
         </div>
@@ -38,6 +38,7 @@ import { computed, defineComponent, ref } from 'vue';
 import Toggle from '../common/Toggle.vue';
 import * as utils from 'src/hooks/custom-signature/utils';
 import { getChainId, setupNetwork } from 'src/web3';
+import { ASTAR_SS58_FORMAT } from 'src/hooks/helper/plasmUtils';
 
 export default defineComponent({
   components: {
@@ -78,7 +79,7 @@ export default defineComponent({
       }
       if (isSS58.value) {
         const pubKey = utils.recoverPublicKeyFromSig(loadingAddr, loginMsg, signature);
-        const ss58Address = utils.ecdsaPubKeyToSs58(pubKey, chainInfo.value?.ss58Format);
+        const ss58Address = utils.ecdsaPubKeyToSs58(pubKey, ASTAR_SS58_FORMAT);
         store.commit('general/setCurrentEcdsaAccount', {
           ethereum: loadingAddr,
           ss58: ss58Address,
