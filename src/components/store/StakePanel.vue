@@ -93,7 +93,6 @@ export default defineComponent({
     const store = useStore();
     const { api } = useApi();
     const showModal = ref<boolean>(false);
-    // const isUnstakeModalOpen = ref<boolean>(false);
     const showClaimRewardModal = ref<boolean>(false);
     const modalTitle = ref<string>('');
     const modalActionName = ref<StakeAction | ''>('');

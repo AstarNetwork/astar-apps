@@ -86,7 +86,6 @@ export default defineComponent({
     IconDocument,
     Button,
   },
-  emits: ['update:is-open'],
   setup(_, { emit }) {
     const store = useStore();
     const { api } = useApi();

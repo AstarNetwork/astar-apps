@@ -1,7 +1,6 @@
 <template>
-  <Modal>
+  <Modal title="Unlocking chunks">
     <template #content>
-      <div class="tw-mt-8 tw-text-2xl tw-font-semibold">{{ $t('store.unlockingChunks') }}</div>
       <div class="tw-my-4">
         {{ $t('store.modals.chunksModalDescription') }}
         <br />
