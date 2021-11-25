@@ -36,10 +36,7 @@ export const useApr = () => {
     if (chainName === 'shiden' || chainName === 'shibuya') {
       const currentTs = Math.floor(timestampMillis / 1000);
       const minsChainRunning = (currentTs - TS_FIRST_BLOCK[chainName]) / 60;
-      console.log('latestBlock:', latestBlock); //-> 709,400 blocks
-      console.log('minsChainRunning:', minsChainRunning); // -> 201,890.3 mins
       const avgBlocksPerMin = latestBlock / minsChainRunning;
-      console.log('avgBlocksPerMin: 709,400 / 201,890.3 =', avgBlocksPerMin); // 3.51 blocks per mins
       return avgBlocksPerMin;
     }
     return 0;
@@ -57,10 +54,8 @@ export const useApr = () => {
     }
 
     const getApr = async (): Promise<number> => {
-      console.log('getApr: Start ↓');
       try {
         const results = await Promise.all([
-          apiRef.query.balances.totalIssuance(),
           apiRef.consts.blockReward.rewardAmount.toString(),
           apiRef.runtimeVersion.specName.toString(),
           apiRef.query.timestamp.now(),
@@ -68,50 +63,27 @@ export const useApr = () => {
           apiRef.consts.dappsStaking.developerRewardPercentage.toHuman(),
         ]);
 
-        const rawTotalSupply = results[0];
-        const totalSupply = reduceBalanceToDenom(rawTotalSupply, decimalRef);
-        console.log('totalSupply:', totalSupply.toString()); // -> 71,001,295 SDN
-
-        const rawBlockRewards = results[1];
+        const rawBlockRewards = results[0];
         const blockRewards = Number(defaultAmountWithDecimals(rawBlockRewards, decimalRef));
-        console.log('blockRewards:', blockRewards.toString()); // -> 2.664 SDN
-
         const eraRewards = blocksPerEraRef * blockRewards;
-        console.log('eraRewards: 7,200 * 2.664 =', eraRewards); // -> 19,180.8 SDN
-
-        const latestBlock = results[4].toJSON().number as number;
-
+        const latestBlock = results[3].toJSON().number as number;
         const avrBlockPerMins = getAveBlocksPerMins({
-          chainName: results[2],
-          timestampMillis: results[3].toNumber(),
+          chainName: results[1],
+          timestampMillis: results[2].toNumber(),
           latestBlock,
         });
-        console.log('avrBlockPerMins:', avrBlockPerMins); // -> 3.51 blocks
 
         const avgBlocksPerDay = avrBlockPerMins * 60 * 24;
-        console.log('avgBlocksPerDay:', avgBlocksPerDay); // -> 5,060 blocks
-
-        console.log('blockPerEra:', blocksPerEraRef); // -> 7,200 blocks
-
         const dailyEraRate = avgBlocksPerDay / blocksPerEraRef;
-        console.log('dailyEraRate: 5,060 / 7,200 =', dailyEraRate); // -> 0.702...
-
         const annualRewards = eraRewards * dailyEraRate * 365.25;
-        console.log('annualRewards: 19,180.8 * 0.702 * 365.25 =', annualRewards); // -> 4,923,372 SDN
-
         const totalStaked = Number(reduceBalanceToDenom(tvlTokenRef, decimalRef));
-        console.log('totalStaked:', totalStaked); // -> 7,325,951 SDN
 
-        const developerRewardPercentage = Number(results[5]?.toString().replace('%', '')) * 0.01;
-        console.log('developerRewardPercentage:', developerRewardPercentage); // -> 0.8
-
+        const developerRewardPercentage = Number(results[4]?.toString().replace('%', '')) * 0.01;
         const stakerBlockReward = (1 - developerRewardPercentage) * DAPPS_REWARD_RATE;
-        console.log('stakerBlockReward: (1 - 0.8) * 0.5 ', stakerBlockReward); // -> 0.1
 
         const stakerApr = (annualRewards / totalStaked) * stakerBlockReward * 100;
-        console.log('stakerApr: 4,923,372 / 7,325,951 * 0.1 * 100 =', stakerApr); // -> 6.7%
 
-        console.log('getApr: Finish ↑');
+        if (stakerApr === Infinity) return 0;
         return stakerApr;
       } catch (error) {
         console.error(error);
