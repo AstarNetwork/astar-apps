@@ -8,23 +8,27 @@
           :address-name="currentAccountName"
         />
       </div>
-      <div class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4 tw-mt-4">
-        <ToggleMetaMask />
-      </div>
     </div>
     <div v-if="isSS58">
       <div class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4">
         <Wallet v-model:isOpen="modalAccount" :wallet-name="currentAccountName" />
       </div>
-      <div class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4 tw-mt-4">
+      <!-- <div class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4 tw-mt-4">
         <ToggleMetaMask />
-      </div>
+      </div> -->
       <div class="tw-grid lg:tw-grid-cols-2 tw-gap-4 tw-mt-4">
         <Addresses :address="currentAccount" />
       </div>
     </div>
 
-    <div v-else>
+    <div
+      v-if="isH160 || isSS58"
+      class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4 tw-mt-4"
+    >
+      <ToggleMetaMask />
+    </div>
+
+    <div v-if="!isH160 && !isSS58">
       <div class="tw-grid lg:tw-grid-cols-2 tw-gap-4">
         <Wallet v-model:isOpen="modalAccount" :wallet-name="currentAccountName" />
       </div>
@@ -78,7 +82,7 @@
 import { useMeta } from 'quasar';
 import { useAccount, useApi, useBalance, useEvmDeposit } from 'src/hooks';
 import { useStore } from 'src/store';
-import { computed, defineComponent, reactive, toRefs } from 'vue';
+import { computed, defineComponent, reactive, toRefs, watchEffect } from 'vue';
 import Addresses from './Addresses.vue';
 import ModalAccount from './modals/ModalAccount.vue';
 import ModalTransferAmount from './modals/ModalTransferAmount.vue';
@@ -127,6 +131,11 @@ export default defineComponent({
     const isSS58 = computed(() => store.getters['general/isCheckMetamask']);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const { evmDeposit } = useEvmDeposit();
+
+    watchEffect(() => {
+      console.log('isSS58', isSS58.value);
+      console.log('isH160', isH160.value);
+    });
 
     return {
       ...toRefs(stateModal),
