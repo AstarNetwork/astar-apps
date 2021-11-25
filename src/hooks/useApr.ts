@@ -4,9 +4,10 @@ import { useChainMetadata, useCurrentEra, useTvl } from '.';
 import { defaultAmountWithDecimals, reduceBalanceToDenom } from './helper/plasmUtils';
 import { useApi } from './useApi';
 
-// fixme: ideally get the value from API
-const STAKER_BLOCK_REWARD = 0.1;
-const DAPPS_BLOCK_REWARD = 0.4;
+// Ref: https://github.com/PlasmNetwork/Astar/blob/5b01ef3c2ca608126601c1bd04270ed08ece69c4/runtime/shiden/src/lib.rs#L435
+// Memo: 50% of block rewards goes to dappsStaking, 50% goes to block validator
+// Fixme: ideally get the value from API
+const DAPPS_REWARD_RATE = 0.5;
 
 const TS_FIRST_BLOCK = {
   shiden: 1625570880, //  Ref: 2021-07-06 11:28:00 https://shiden.subscan.io/block/1
@@ -64,6 +65,7 @@ export const useApr = () => {
           apiRef.runtimeVersion.specName.toString(),
           apiRef.query.timestamp.now(),
           apiRef.rpc.chain.getHeader(),
+          apiRef.consts.dappsStaking.developerRewardPercentage.toHuman(),
         ]);
 
         const rawTotalSupply = results[0];
@@ -100,7 +102,13 @@ export const useApr = () => {
         const totalStaked = Number(reduceBalanceToDenom(tvlTokenRef, decimalRef));
         console.log('totalStaked:', totalStaked); // -> 7,325,951 SDN
 
-        const stakerApr = (annualRewards / totalStaked) * STAKER_BLOCK_REWARD * 100;
+        const developerRewardPercentage = Number(results[5]?.toString().replace('%', '')) * 0.01;
+        console.log('developerRewardPercentage:', developerRewardPercentage); // -> 0.8
+
+        const stakerBlockReward = (1 - developerRewardPercentage) * DAPPS_REWARD_RATE;
+        console.log('stakerBlockReward: (1 - 0.8) * 0.5 ', stakerBlockReward); // -> 0.1
+
+        const stakerApr = (annualRewards / totalStaked) * stakerBlockReward * 100;
         console.log('stakerApr: 4,923,372 / 7,325,951 * 0.1 * 100 =', stakerApr); // -> 6.7%
 
         console.log('getApr: Finish ↑');
