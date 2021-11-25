@@ -8,7 +8,7 @@
         </div>
         <div class="tw-flex tw-flex-row">
           <div class="tw-w-20">{{ $t('store.totalStake') }}</div>
-          <div class="tw-font-semibold">{{ stakeInfo?.totalStake.formatted }}</div>
+          <div class="tw-font-semibold">{{ stakeInfo?.totalStake }}</div>
         </div>
 
         <div :style="{ opacity: stakeInfo?.hasStake ? '1' : '0' }" class="tw-flex tw-flex-row">

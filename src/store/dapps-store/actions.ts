@@ -457,13 +457,8 @@ const actions: ActionTree<State, StateInterface> = {
             }
           }
 
-          const totalStake = {
-            formatted: stakeInfo.total.toHuman(),
-            denomAmount: new BN(stakeInfo.total.toString()),
-          };
-
           return {
-            totalStake,
+            totalStake: stakeInfo.total.toHuman(),
             yourStake,
             claimedRewards: stakeInfo.claimedRewards.toHuman(),
             hasStake: !!yourStake.formatted,
@@ -680,10 +675,7 @@ export interface StakeInfo {
         formatted: string;
         denomAmount: BN;
       };
-  totalStake: {
-    formatted: string;
-    denomAmount: BN;
-  };
+  totalStake: string;
   claimedRewards: string;
   hasStake: boolean;
   stakersCount: number;
