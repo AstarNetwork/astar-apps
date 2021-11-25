@@ -72,7 +72,7 @@ import Button from 'components/common/Button.vue';
 import { useFile, FileState } from 'src/hooks/useFile';
 import { useStore } from 'src/store';
 import { useApi } from 'src/hooks';
-import { isValidAddress } from 'src/hooks/custom-signature/ethereumjs-util/account';
+import { isEthereumAddress } from '@polkadot/util-crypto';
 import { NewDappItem, LooseObject } from 'src/store/dapps-store/state';
 import { RegisterParameters } from 'src/store/dapps-store/actions';
 
@@ -148,7 +148,7 @@ export default defineComponent({
 
     const validateContractAddress = (): boolean => {
       if (validate('address', 'Please enter contract address.')) {
-        if (isValidAddress(data.address)) {
+        if (isEthereumAddress(data.address)) {
           validationErrors.value['address'] = '';
           return true;
         } else {

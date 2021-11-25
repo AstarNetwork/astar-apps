@@ -593,7 +593,8 @@ const actions: ActionTree<State, StateInterface> = {
         api?.value?.consts.dappsStaking.maxNumberOfStakersPerContract,
       ]);
 
-      commit('setMinimumStakingAmount', minimumStakingAmount?.toHuman());
+      const minimumStakingAmountBalance = api?.value?.createType('Balance', minimumStakingAmount);
+      commit('setMinimumStakingAmount', minimumStakingAmountBalance?.toHuman());
       commit(
         'setMaxNumberOfStakersPerContract',
         parseInt(maxNumberOfStakersPerContract?.toString() || '0')
