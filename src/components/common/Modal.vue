@@ -19,7 +19,7 @@
           tw-mx-2
           tw-my-2
           tw-align-middle
-          tw-max-w-lg
+          tw-max-w-2xl
           tw-w-full
         "
       >
