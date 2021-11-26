@@ -38,11 +38,11 @@
       />
     </div>
 
-    <ModalRegisterDapp v-if="showRegisterDappModal" v-model:isOpen="showRegisterDappModal" />
+    <ModalRegisterDapp v-if="showRegisterDappModal" v-model:is-open="showRegisterDappModal" />
 
     <ModalDappDetails
       v-if="showDappDetailsModal"
-      v-model:isOpen="showDappDetailsModal"
+      v-model:is-open="showDappDetailsModal"
       :dapp="selectedDapp"
     />
   </div>
