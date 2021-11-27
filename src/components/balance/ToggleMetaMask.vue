@@ -51,16 +51,12 @@ export default defineComponent({
     const { requestAccounts, requestSignature } = useMetamask();
 
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
-    const chainInfo = computed(() => store.getters['general/chainInfo']);
     const isSS58 = computed(() => store.getters['general/isCheckMetamask']);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const evmFormat = computed(() => (isH160.value ? 'H160 (EVM)' : 'SS58 (ASTAR)'));
 
     const toggleAction = async () => {
-      console.log('toggleAction');
-      console.log('!isToggleOn.value', !isToggleOn.value);
       isToggleOn.value = !isToggleOn.value;
-      console.log('isToggleOn.value 2', isToggleOn.value);
 
       store.commit('general/setIsCheckMetamask', !isSS58.value);
       store.commit('general/setIsH160Formatted', !isH160.value);

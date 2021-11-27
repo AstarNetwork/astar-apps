@@ -13,9 +13,6 @@
       <div class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4">
         <Wallet v-model:isOpen="modalAccount" :wallet-name="currentAccountName" />
       </div>
-      <!-- <div class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4 tw-mt-4">
-        <ToggleMetaMask />
-      </div> -->
       <div class="tw-grid lg:tw-grid-cols-2 tw-gap-4 tw-mt-4">
         <Addresses :address="currentAccount" />
       </div>
@@ -132,14 +129,8 @@ export default defineComponent({
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const { evmDeposit } = useEvmDeposit();
 
-    watchEffect(() => {
-      console.log('isSS58', isSS58.value);
-      console.log('isH160', isH160.value);
-    });
-
     return {
       ...toRefs(stateModal),
-      // isWeb3Injected,
       balance,
       evmDeposit,
       allAccounts,
