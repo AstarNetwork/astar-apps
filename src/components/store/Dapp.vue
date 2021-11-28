@@ -23,7 +23,7 @@
         >
           {{ dapp.name }}
         </div>
-        <div class="tw-h-11 tw-w-48 tw-overflow-ellipsis tw-overflow-hidden">
+        <div class="tw-h-11 tw-w-48 description">
           {{ dapp.description }}
         </div>
       </div>
@@ -113,3 +113,12 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.description {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+</style>
