@@ -4,6 +4,7 @@ export interface DappItem extends LooseObject {
   description: string;
   url: string;
   address: string;
+  license: string;
 }
 
 export interface NewDappItem extends DappItem {

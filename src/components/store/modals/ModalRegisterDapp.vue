@@ -1,7 +1,7 @@
 <template>
   <Modal title="Register a new dApp">
     <template #content>
-      <q-stepper ref="stepper" v-model="step" header-nav animated dark="isDark">
+      <q-stepper ref="stepper" v-model="step" header-nav animated>
         <q-step :name="1" title="General" icon="settings" :done="step > 1">
           <RegisterDappGeneral
             v-if="data"
@@ -10,7 +10,11 @@
           />
         </q-step>
         <q-step :name="2" title="Description" icon="notes" :done="step > 2">
-          <RegisterDappDescription />
+          <RegisterDappDescription
+            v-if="data"
+            :value="data"
+            @data-changed="(newData) => handleDataChange(newData)"
+          />
         </q-step>
         <q-step :name="3" title="Media" icon="image">Media</q-step>
 
@@ -63,7 +67,6 @@ export default defineComponent({
     const { api } = useApi();
     const data = reactive<NewDappItem>({} as NewDappItem);
     const step = ref<number>(1);
-    const isDark = computed(() => store.getters['general/theme'] === 'DARK');
 
     const registerDapp = async () => {
       // if (!validateAll()) {
@@ -92,7 +95,6 @@ export default defineComponent({
       registerDapp,
       handleDataChange,
       step,
-      isDark,
     };
   },
 });

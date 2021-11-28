@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="tw-mb-4">
+    <div class="tw-mb-6">
       <label
         class="
           tw-block tw-text-sm tw-font-medium tw-text-gray-500
@@ -25,31 +25,37 @@
       </input-file>
     </div>
 
-    <Input
+    <q-input
       v-model="data.name"
+      outlined
       label="Name"
-      type="text"
-      required
       maxlength="200"
-      :validation-message="validationErrors['name']"
+      :rules="[(v) => v !== '' || 'dApp name is required.']"
+      class="tw-my-2"
     />
-    <Input
-      v-model="data.description"
-      label="Description"
-      type="text"
-      required
-      maxlength="2000"
-      :validation-message="validationErrors['description']"
-    />
-    <Input
+    <q-input
       v-model="data.address"
-      label="Contract address"
-      type="text"
-      required
+      outlined
       maxlength="42"
-      :validation-message="validationErrors['address']"
+      label="Contract address"
+      class="tw-my-2"
+      :rules="[(v) => isEthereumAddress(v) || 'Enter a valid EVM contract address.']"
     />
-    <Input v-model="data.url" label="Url" type="text" maxlength="1000" />
+    <q-input
+      v-model="data.url"
+      outlined
+      maxlength="1000"
+      label="Project url"
+      class="tw-my-2"
+      :rules="[(v) => v !== '' || 'Enter project url.']"
+    />
+    <q-select
+      v-model="data.license"
+      outlined
+      :options="licenseTypes"
+      label="License type"
+      class="tw-my-2"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -58,7 +64,6 @@ import { LooseObject, NewDappItem } from 'src/store/dapps-store/state';
 import { defineComponent } from 'vue';
 import { useFile, FileState } from 'src/hooks/useFile';
 import { isEthereumAddress } from '@polkadot/util-crypto';
-import Input from 'src/components/common/Input.vue';
 import InputFile from 'src/components/dapps/modals/InputFile.vue';
 import Avatar from 'components/common/Avatar.vue';
 import IconBase from 'components/icons/IconBase.vue';
@@ -66,7 +71,6 @@ import IconDocument from 'components/icons/IconDocument.vue';
 
 export default defineComponent({
   components: {
-    Input,
     InputFile,
     Avatar,
     IconBase,
@@ -83,7 +87,8 @@ export default defineComponent({
     const { fileRef: imageFromFile, setFile } = useFile();
     const imagePreview = ref<string>();
     const fileExtensions = ['.png', '.jpg', '.gif'];
-    const validationErrors = ref<LooseObject>({});
+    const licenseTypes = ['GPL-3.0 License', 'MIT'];
+    // const validationErrors = ref<LooseObject>({});
 
     const handleChange = (a: NewDappItem): void => {
       console.log('value', a);
@@ -102,65 +107,12 @@ export default defineComponent({
       data.iconFile = imagePreview.value;
     };
 
-    const validate = (field: string, errorMessage?: string): boolean => {
-      if (data[field]) {
-        validationErrors.value[field] = '';
-        return true;
-      }
-
-      validationErrors.value[field] = errorMessage
-        ? errorMessage
-        : `The field ${field} is required.`;
-      return false;
-    };
-
-    const validateName = (): boolean => {
-      return validate('name', 'dApp name is required.');
-    };
-
-    const validateDescription = (): boolean => {
-      return validate('description', 'Please tell us a few words about your dApp.');
-    };
-
-    const validateContractAddress = (): boolean => {
-      if (validate('address', 'Please enter contract address.')) {
-        if (isEthereumAddress(data.address)) {
-          validationErrors.value['address'] = '';
-          return true;
-        } else {
-          validationErrors.value['address'] = 'Please enter a valid EVM address.';
-          return false;
-        }
-      }
-
-      return false;
-    };
-
-    const validateAll = (): boolean => {
-      return validateName() && validateDescription() && validateContractAddress();
-    };
-
     watch(
       () => data,
       () => {
         emit('dataChanged', data);
       },
       { deep: true }
-    );
-
-    watch(
-      () => data.name,
-      () => validateName()
-    );
-
-    watch(
-      () => data.description,
-      () => validateDescription()
-    );
-
-    watch(
-      () => data.address,
-      () => validateContractAddress()
     );
 
     return {
@@ -170,7 +122,9 @@ export default defineComponent({
       handleChange,
       onDropFile,
       data,
-      validationErrors,
+      // validationErrors,
+      licenseTypes,
+      isEthereumAddress,
     };
   },
 });
