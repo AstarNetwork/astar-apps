@@ -34,6 +34,7 @@
         :dapp="dapp"
         :stake-info="stakeInfo"
         :is-max-staker="isMaxStaker"
+        :staker-max-number="stakerMaxNumber"
         @stake-changed="handleStakeChanged"
       />
     </div>

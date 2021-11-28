@@ -2,17 +2,30 @@
   <div>
     <div>
       <div v-if="stakeInfo" class="tw-mb-4">
-        <div class="tw-flex tw-flex-row">
-          <div class="tw-w-20">{{ $t('store.stakersCount') }}</div>
-          <div class="tw-font-semibold">{{ stakeInfo?.stakersCount }}</div>
+        <div :style="{ opacity: stakeInfo?.hasStake ? '1' : '0' }" class="tw-flex tw-flex-row">
+          <div class="tw-w-20">{{ $t('store.yourStake') }}</div>
+          <div class="tw-font-semibold">{{ stakeInfo?.yourStake.formatted }}</div>
         </div>
         <div class="tw-flex tw-flex-row">
           <div class="tw-w-20">{{ $t('store.totalStake') }}</div>
           <div class="tw-font-semibold">{{ stakeInfo?.totalStake }}</div>
         </div>
-        <div :style="{ opacity: stakeInfo?.hasStake ? '1' : '0' }" class="tw-flex tw-flex-row">
-          <div class="tw-w-20">{{ $t('store.yourStake') }}</div>
-          <div class="tw-font-semibold">{{ stakeInfo?.yourStake.formatted }}</div>
+        <div class="tw-mt-1">
+          <div class="tw-w-20">{{ $t('store.stakersCount') }}</div>
+          <div class="tw-relative">
+            <VueJsProgress
+              :percentage="((stakeInfo?.stakersCount / stakerMaxNumber) * 100).toFixed(0)"
+              :bg="stakeInfo?.stakersCount === stakerMaxNumber ? 'pinkglamour' : 'turquoise'"
+              :delay="600"
+              :striped="!isMaxStaker"
+              :animation="!isMaxStaker"
+            />
+            <div class="tw-absolute tw-bottom-0 tw-w-full tw-text-white tw-font-semibold">
+              <div class="tw-flex tw-justify-center">
+                {{ stakeInfo?.stakersCount.toLocaleString('en-US') }}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="tw-flex">
@@ -71,12 +84,15 @@ import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { StakingParameters } from 'src/store/dapps-store/actions';
 import { getAmount } from 'src/hooks/store';
+import VueJsProgress from 'vue-js-progress';
+import './stake-panel.scss';
 
 export default defineComponent({
   components: {
     Button,
     StakeModal,
     ClaimRewardModal,
+    VueJsProgress,
   },
   props: {
     dapp: {
@@ -90,6 +106,10 @@ export default defineComponent({
     isMaxStaker: {
       type: Boolean,
       default: false,
+    },
+    stakerMaxNumber: {
+      type: Number,
+      default: 0,
     },
   },
   emits: ['stakeChanged'],
