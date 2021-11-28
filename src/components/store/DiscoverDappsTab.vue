@@ -34,6 +34,7 @@
         v-for="(dapp, index) in dapps"
         :key="index"
         :dapp="dapp"
+        :staker-max-number="maxNumberOfStakersPerContract"
         @dappClick="showDetailsModal"
       />
     </div>
@@ -59,7 +60,7 @@ import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { useCurrentEra } from 'src/hooks';
 import { DappItem } from 'src/store/dapps-store/state';
-import { computed, defineComponent, ref, watchEffect } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
 import TVL from './statistics/TVL.vue';
 import DappsCount from './statistics/DappsCount.vue';
 import Requirement from './statistics/Requirement.vue';

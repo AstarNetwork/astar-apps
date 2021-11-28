@@ -24,7 +24,7 @@
             {{ $t('store.unstake') }}
           </Button>
         </div>
-        <Button v-else :small="true" @click="showStakeModal">
+        <Button v-else :small="true" :disabled="isMaxStaker" @click="showStakeModal">
           {{ $t('store.stake') }}
         </Button>
 
@@ -86,6 +86,10 @@ export default defineComponent({
     stakeInfo: {
       type: Object,
       default: undefined,
+    },
+    isMaxStaker: {
+      type: Boolean,
+      default: false,
     },
   },
   emits: ['stakeChanged'],
