@@ -5,6 +5,9 @@ export interface DappItem extends LooseObject {
   url: string;
   address: string;
   license: string;
+  videoUrl: string;
+  images: string[];
+  tags: string[];
 }
 
 export interface NewDappItem extends DappItem {
