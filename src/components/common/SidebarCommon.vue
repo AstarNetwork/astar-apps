@@ -2,7 +2,13 @@
   <div class="tw-flex-1 tw-flex tw-flex-col">
     <div class="tw-flex-1 tw-flex tw-flex-col tw-pt-10 tw-overflow-x-hidden tw-overflow-y-auto">
       <div class="tw-flex tw-items-center">
-        <img width="200" src="~assets/img/astar.png" />
+        <div v-if="currentNetworkIdx === endpointKey.SHIDEN" class="tw-px-6">
+          <img width="150" src="~assets/img/shiden.png" />
+        </div>
+        <div v-else-if="currentNetworkIdx === endpointKey.SHIBUYA" class="tw-px-6">
+          <img width="150" src="~assets/img/shibuya.svg" />
+        </div>
+        <img v-else width="200" src="~assets/img/astar.png" />
         <ConnectionIndicator class="tw-pt-4" :connection-type="currentNetworkStatus" />
       </div>
 
@@ -216,6 +222,7 @@ export default defineComponent({
       allAccounts,
       allAccountNames,
       isH160,
+      endpointKey,
     };
   },
 });
