@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="canUnbondWithdraw"
     class="
       tw-bg-white
       dark:tw-bg-darkGray-800
@@ -47,6 +48,7 @@ import Button from 'src/components/common/Button.vue';
 import { WithdrawParameters } from 'src/store/dapps-store/actions';
 import FormatBalance from 'components/balance/FormatBalance.vue';
 import ChunksModal from './ChunksModal.vue';
+import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
 
 export default defineComponent({
   components: {
@@ -64,6 +66,7 @@ export default defineComponent({
     const canWithdraw = ref<boolean>(false);
     const totalToWithdraw = ref<BN>(new BN(0));
     const showModal = ref<boolean>(false);
+    const { canUnbondWithdraw } = useUnbondWithdraw();
 
     const withdraw = async (): Promise<void> => {
       const result = await store.dispatch('dapps/withdrawUnbonded', {
@@ -84,6 +87,10 @@ export default defineComponent({
     const unsub = subscribeToEraChange();
 
     const getChunks = async (era: u32) => {
+      if (!canUnbondWithdraw) {
+        return;
+      }
+
       const unbondingInfo =
         await api?.value?.query.dappsStaking.unbondingInfoStorage<UnbondingInfo>(
           selectedAccountAddress.value
@@ -134,6 +141,7 @@ export default defineComponent({
       totalToWithdraw,
       showModal,
       maxUnlockingChunks,
+      canUnbondWithdraw,
     };
   },
 });

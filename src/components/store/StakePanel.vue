@@ -21,7 +21,7 @@
             {{ $t('store.add') }}
           </Button>
           <Button :small="true" :primary="false" @click="showUnstakeModal">
-            {{ $t('store.unbond') }}
+            {{ canUnbondWithdraw ? $t('store.unbond') : $t('store.unstake') }}
           </Button>
         </div>
         <Button v-else :small="true" @click="showStakeModal">
@@ -71,6 +71,7 @@ import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { StakingParameters } from 'src/store/dapps-store/actions';
 import { getAmount } from 'src/hooks/store';
+import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
 
 export default defineComponent({
   components: {
@@ -95,11 +96,12 @@ export default defineComponent({
     const showModal = ref<boolean>(false);
     const showClaimRewardModal = ref<boolean>(false);
     const modalTitle = ref<string>('');
-    const modalActionName = ref<StakeAction | ''>('');
+    const modalActionName = ref<string | ''>('');
     const formattedMinStake = ref<string>('');
     const modalAction = ref();
     const { minStaking } = useGetMinStaking(api);
     const { decimal } = useChainMetadata();
+    const { canUnbondWithdraw } = useUnbondWithdraw();
 
     watchEffect(() => {
       const minStakingAmount = plasmUtils.reduceBalanceToDenom(minStaking.value, decimal.value);
@@ -119,8 +121,10 @@ export default defineComponent({
     };
 
     const showUnstakeModal = () => {
-      modalTitle.value = `Start unbonbonding from ${props.dapp.name}`;
-      modalActionName.value = StakeAction.Unstake;
+      modalTitle.value = canUnbondWithdraw
+        ? `Start unbonbonding from ${props.dapp.name}`
+        : `Unstake from ${props.dapp.name}`;
+      modalActionName.value = canUnbondWithdraw ? StakeAction.Unstake : 'Unstake';
       modalAction.value = unstake;
       showModal.value = true;
     };
@@ -163,7 +167,8 @@ export default defineComponent({
     };
 
     const unstake = async (stakeData: StakeModel): Promise<void> => {
-      const result = await store.dispatch('dapps/unstake', {
+      const dispatchCommand = canUnbondWithdraw ? 'dapps/unbond' : 'dapps/unstake';
+      const result = await store.dispatch(dispatchCommand, {
         api: api?.value,
         senderAddress: stakeData.address,
         dapp: props.dapp,
@@ -196,7 +201,6 @@ export default defineComponent({
     return {
       ...toRefs(props),
       showModal,
-      // isUnstakeModalOpen,
       showClaimRewardModal,
       modalTitle,
       modalAction,
@@ -206,6 +210,7 @@ export default defineComponent({
       claim,
       formattedMinStake,
       unstake,
+      canUnbondWithdraw,
     };
   },
 });

@@ -323,6 +323,58 @@ const actions: ActionTree<State, StateInterface> = {
       if (parameters.api) {
         const injector = await web3FromSource('polkadot-js');
         const unsub = await parameters.api.tx.dappsStaking
+          .unbondUnstakeAndWithdraw(getAddressEnum(parameters.dapp.address), parameters.amount)
+          .signAndSend(
+            parameters.senderAddress,
+            {
+              signer: injector?.signer,
+              nonce: -1,
+            },
+            (result) => {
+              if (result.status.isFinalized) {
+                if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
+                  commit('setUnlockingChunks', -1);
+                  dispatch(
+                    'general/showAlertMsg',
+                    {
+                      msg: `You unstaked ${getFormattedBalance(parameters)} from ${
+                        parameters.dapp.name
+                      }.`,
+                      alertType: 'success',
+                    },
+                    { root: true }
+                  );
+
+                  parameters.finalizeCallback();
+                }
+
+                commit('general/setLoading', false, { root: true });
+                unsub();
+              } else {
+                commit('general/setLoading', true, { root: true });
+              }
+            }
+          );
+
+        return true;
+      } else {
+        showError(dispatch, 'Api is undefined');
+        return false;
+      }
+    } catch (e) {
+      const error = e as unknown as Error;
+      commit('general/setLoading', false, { root: true });
+      showError(dispatch, error.message);
+    }
+
+    return false;
+  },
+
+  async unbond({ commit, dispatch }, parameters: StakingParameters): Promise<boolean> {
+    try {
+      if (parameters.api) {
+        const injector = await web3FromSource('polkadot-js');
+        const unsub = await parameters.api.tx.dappsStaking
           .unbondAndUnstake(getAddressEnum(parameters.dapp.address), parameters.amount)
           .signAndSend(
             parameters.senderAddress,
@@ -365,7 +417,6 @@ const actions: ActionTree<State, StateInterface> = {
       const error = e as unknown as Error;
       commit('general/setLoading', false, { root: true });
       showError(dispatch, error.message);
-    } finally {
     }
 
     return false;
@@ -648,8 +699,8 @@ const actions: ActionTree<State, StateInterface> = {
         const minimumStakingAmountBalance = api?.value?.createType('Balance', minimumStakingAmount);
         commit('setMinimumStakingAmount', minimumStakingAmountBalance?.toHuman());
         commit('setMaxNumberOfStakersPerContract', maxNumberOfStakersPerContract?.toNumber());
-        commit('setUnbondingPeriod', unbondingPeriod.toNumber());
-        commit('setMaxUnlockingChunks', maxUnlockingChunks.toNumber());
+        commit('setUnbondingPeriod', unbondingPeriod?.toNumber());
+        commit('setMaxUnlockingChunks', maxUnlockingChunks?.toNumber());
       }
     } catch (e) {
       const error = e as unknown as Error;

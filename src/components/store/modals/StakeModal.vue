@@ -35,11 +35,11 @@
         {{ $t('store.yourStake') }}
         <format-balance :balance="stakeAmount" class="tw-inline tw-font-semibold" />
       </div>
-      <div v-if="actionName === StakeAction.Unstake" class="tw-mt-4 tw-ml-1">
+      <div v-if="actionName === StakeAction.Unstake && canUnbondWithdraw" class="tw-mt-4 tw-ml-1">
         {{ $t('store.modals.unbondingInfo', { era: unbondingPeriod }) }}
       </div>
       <div
-        v-if="isMaxChunks && actionName === StakeAction.Unstake"
+        v-if="isMaxChunks && actionName === StakeAction.Unstake && canUnbondWithdraw"
         class="tw-mt-1 tw-ml-1 tw-text-red-700"
       >
         {{ $t('store.maxChunksWarning', { chunks: maxUnlockingChunks }) }}
@@ -65,6 +65,7 @@ import { useStore } from 'src/store';
 import { computed, defineComponent, ref, toRefs } from 'vue';
 import { StakeAction } from '../StakePanel.vue';
 import { getAmount, StakeModel } from 'src/hooks/store';
+import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
 
 export default defineComponent({
   components: {
@@ -121,6 +122,7 @@ export default defineComponent({
     const { currentAccount } = useAccount();
     const { api } = useApi();
     const { accountData } = useBalance(api, currentAccount);
+    const { canUnbondWithdraw } = useUnbondWithdraw();
 
     const formatBalance = computed(() => {
       if (accountData.value) {
@@ -144,7 +146,9 @@ export default defineComponent({
         const amount = getAmount(data.value.amount, data.value.unit);
         // return amount.gtn(0) && amount.lte(maxAmount);
         // TODO implement proper max boudary check.
-        return amount.gtn(0) && !(props.actionName === StakeAction.Unstake && isMaxChunks);
+        return canUnbondWithdraw
+          ? amount.gtn(0) && !(props.actionName === StakeAction.Unstake && isMaxChunks)
+          : amount.gtn(0);
       } else {
         return false;
       }
@@ -172,6 +176,7 @@ export default defineComponent({
       isMaxChunks,
       maxUnlockingChunks,
       unbondingPeriod,
+      canUnbondWithdraw,
       ...toRefs(props),
     };
   },
