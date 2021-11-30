@@ -3,13 +3,13 @@ import { useApi } from '.';
 
 export function useCurrentEra() {
   const era = ref<number>(0);
-  const blockPerEra = ref<string>('0');
+  const blockPerEra = ref<number>(0);
   const blocksUntilNextEra = ref<number>(0);
   const progress = ref<number>(0);
   const interval = ref<number>(0);
   const { api } = useApi();
 
-  const getEra = async (): Promise<{ era: number; blockPerEra: string } | void> => {
+  const getEra = async (): Promise<{ era: number; blockPerEra: number } | void> => {
     const apiRef = api && api.value;
     if (!apiRef) return;
 
@@ -20,13 +20,13 @@ export function useCurrentEra() {
     ]);
 
     const era = Number(result[0].toString());
-    const blockPerEra = result[1].toString();
+    const blockPerEra = Number(result[1].toString());
 
     const handleBestNumber = result[2];
     await handleBestNumber((bestNumber) => {
       const best = bestNumber.toNumber();
-      const progressRes = ((best % Number(blockPerEra)) / Number(blockPerEra)) * 100;
-      const countDown = Number(blockPerEra) - (best % Number(blockPerEra));
+      const progressRes = ((best % blockPerEra) / blockPerEra) * 100;
+      const countDown = blockPerEra - (best % blockPerEra);
       progress.value = Number(progressRes.toFixed(0));
       blocksUntilNextEra.value = countDown;
     });
