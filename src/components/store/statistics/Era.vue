@@ -7,6 +7,7 @@
       dark:tw-text-darkGray-100
       tw-py-4 tw-pb-2 tw-px-4
       box
+      xl:tw-mx-2
     "
   >
     <div class="tw-text-xl tw-font-semibold tw-mb-2">{{ $t('store.currentEra') }}</div>
