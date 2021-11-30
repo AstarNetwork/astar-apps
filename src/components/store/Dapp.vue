@@ -23,14 +23,20 @@
         >
           {{ dapp.name }}
         </div>
-        <div class="tw-h-11 tw-w-48 tw-overflow-ellipsis tw-overflow-hidden">
+        <div class="tw-h-11 tw-w-48 description">
           {{ dapp.description }}
         </div>
       </div>
     </div>
     <hr class="dark:tw-bg-darkGray-600" />
     <div class="tw-p-4">
-      <StakePanel :dapp="dapp" :stake-info="stakeInfo" @stake-changed="handleStakeChanged" />
+      <StakePanel
+        :dapp="dapp"
+        :stake-info="stakeInfo"
+        :is-max-staker="isMaxStaker"
+        :staker-max-number="stakerMaxNumber"
+        @stake-changed="handleStakeChanged"
+      />
     </div>
   </div>
 </template>
@@ -53,6 +59,10 @@ export default defineComponent({
       type: Object,
       required: true,
     },
+    stakerMaxNumber: {
+      type: Number,
+      default: 0,
+    },
   },
   emits: ['dappClick'],
   setup(props, { emit }) {
@@ -60,6 +70,7 @@ export default defineComponent({
     const { api } = useApi();
     const stakeInfo = ref<StakeInfo>();
     const senderAddress = computed(() => store.getters['general/selectedAccountAddress']);
+    const isMaxStaker = ref<boolean>(false);
 
     const emitClickEvent = (): void => {
       emit('dappClick', props.dapp);
@@ -79,6 +90,7 @@ export default defineComponent({
         .then((info: StakeInfo) => {
           if (info) {
             stakeInfo.value = info;
+            isMaxStaker.value = info.stakersCount === props.stakerMaxNumber;
           }
         });
     };
@@ -96,7 +108,17 @@ export default defineComponent({
       stakeInfo,
       emitClickEvent,
       handleStakeChanged,
+      isMaxStaker,
     };
   },
 });
 </script>
+
+<style scoped>
+.description {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+</style>

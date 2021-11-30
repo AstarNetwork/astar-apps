@@ -61,6 +61,7 @@
         v-for="(dapp, index) in dapps"
         :key="index"
         :dapp="dapp"
+        :staker-max-number="maxNumberOfStakersPerContract"
         @dappClick="showDetailsModal"
       />
     </div>
