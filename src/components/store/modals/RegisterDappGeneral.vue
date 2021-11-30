@@ -49,18 +49,11 @@
       class="tw-my-2"
       :rules="[(v) => v !== '' || 'Enter project url.']"
     />
-    <q-select
-      v-model="data.license"
-      outlined
-      :options="licenseTypes"
-      label="License type"
-      class="tw-my-2"
-    />
   </div>
 </template>
 <script lang="ts">
 import { PropType, reactive, watch, ref } from 'vue';
-import { LooseObject, NewDappItem } from 'src/store/dapps-store/state';
+import { NewDappItem } from 'src/store/dapps-store/state';
 import { defineComponent } from 'vue';
 import { useFile, FileState } from 'src/hooks/useFile';
 import { isEthereumAddress } from '@polkadot/util-crypto';
@@ -87,12 +80,6 @@ export default defineComponent({
     const { fileRef: imageFromFile, setFile } = useFile();
     const imagePreview = ref<string>();
     const fileExtensions = ['.png', '.jpg', '.gif'];
-    const licenseTypes = ['GPL-3.0 License', 'MIT'];
-    // const validationErrors = ref<LooseObject>({});
-
-    const handleChange = (a: NewDappItem): void => {
-      console.log('value', a);
-    };
 
     const encodeImage = (fileType: string, data: Uint8Array): string => {
       const buffer = Buffer.from(data);
@@ -119,11 +106,8 @@ export default defineComponent({
       imageFromFile,
       imagePreview,
       fileExtensions,
-      handleChange,
       onDropFile,
       data,
-      // validationErrors,
-      licenseTypes,
       isEthereumAddress,
     };
   },

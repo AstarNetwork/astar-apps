@@ -22,7 +22,7 @@
     </q-input>
     <q-video v-if="showVideoPreview" :src="data.videoUrl" />
     <q-file
-      v-model="images"
+      v-model="data.images"
       outlined
       multiple
       append
@@ -30,19 +30,33 @@
       accept=".jpg .png, image/*"
       label="Screenshots"
       class="tw-my-4"
-      @update="updateFile(value)"
+      @update:model-value="updateFile(value)"
     >
       <template #prepend>
         <q-icon name="image" />
       </template>
       <template #file="{ index, file }">
-        <q-chip :removable="true" @remove="removeFile(index)">
+        <!-- <q-chip :removable="true" @remove="removeFile(index)">
           <div class="ellipsis relative-position">
             {{ file.name }}
+            <img :src="file.content" />
           </div>
-        </q-chip>
+        </q-chip> -->
+        <q-card class="tw-w-28 tw-p-2 tw-m-1">
+          <img :src="file.content" :title="index" />
+        </q-card>
       </template>
     </q-file>
+    <!-- <q-uploader :factory="factoryFn" multiple class="tw-w-full" @failed="uploadFailed"></q-uploader> -->
+    <q-select
+      v-model="data.tags"
+      outlined
+      multiple
+      use-chips
+      stack-label
+      :options="tags"
+      label="Tags"
+    ></q-select>
   </div>
 </template>
 <script lang="ts">
@@ -58,8 +72,18 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const data = reactive<NewDappItem>(props.value);
-    const images = ref(null);
+    const images = ref([]);
     const showVideoPreview = ref<boolean>(false);
+    const tags = ref<string[]>([
+      'DeFi',
+      'Games',
+      'NFT',
+      'DEX',
+      'Utility',
+      'Mixer',
+      'Social',
+      'Other',
+    ]);
 
     const removeFile = (index: number): void => {
       data.images.splice(index, 1);
@@ -69,8 +93,12 @@ export default defineComponent({
       showVideoPreview.value = !showVideoPreview.value;
     };
 
-    const updateFile = (): void => {
-      console.log('update');
+    const updateFile = (value: any): void => {
+      const reader = new FileReader();
+      reader.readAsDataURL(value.images[0]);
+      reader.onload = () => (value.images[0].content = reader.result);
+      reader.onerror = (error) => console.log(error);
+      console.log('update', value);
     };
 
     watch(
@@ -85,6 +113,7 @@ export default defineComponent({
       data,
       images,
       showVideoPreview,
+      tags,
       removeFile,
       toggleViewPreview,
       updateFile,

@@ -23,9 +23,23 @@
             @data-changed="(newData) => handleDataChange(newData)"
           />
         </q-step>
+        <q-step :name="4" title="Support info" icon="info">
+          <RegisterDappSupport
+            v-if="data"
+            :value="data"
+            @data-changed="(newData) => handleDataChange(newData)"
+          />
+        </q-step>
 
         <template #navigation>
           <q-stepper-navigation>
+            <q-btn
+              color="primary"
+              flat
+              :label="step === 4 ? 'Finish' : 'Continue'"
+              class="q-ml-sm"
+              @click="$refs.stepper.next()"
+            />
             <q-btn
               v-if="step > 1"
               flat
@@ -33,13 +47,6 @@
               label="Back"
               class="q-ml-sm"
               @click="$refs.stepper.previous()"
-            />
-            <q-btn
-              color="primary"
-              flat
-              :label="step === 4 ? 'Finish' : 'Continue'"
-              class="q-ml-sm"
-              @click="$refs.stepper.next()"
             />
           </q-stepper-navigation>
         </template>
@@ -52,11 +59,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, computed } from 'vue';
+import { defineComponent, reactive, ref } from 'vue';
 import Modal from 'components/common/Modal.vue';
 import RegisterDappGeneral from 'components/store/modals/RegisterDappGeneral.vue';
 import RegisterDappDescription from 'components/store/modals/RegisterDappDescription.vue';
 import RegisterDappMedia from 'components/store/modals/RegisterDappMedia.vue';
+import RegisterDappSupport from 'components/store/modals/RegisterDappSupport.vue';
 import Button from 'components/common/Button.vue';
 import { useStore } from 'src/store';
 import { useApi } from 'src/hooks';
@@ -70,12 +78,13 @@ export default defineComponent({
     RegisterDappGeneral,
     RegisterDappDescription,
     RegisterDappMedia,
+    RegisterDappSupport,
   },
   // emits: ['update:is-open'],
   setup(_, { emit }) {
     const store = useStore();
     const { api } = useApi();
-    const data = reactive<NewDappItem>({} as NewDappItem);
+    const data = reactive<NewDappItem>({ tags: [] } as unknown as NewDappItem);
     const step = ref<number>(1);
 
     const registerDapp = async () => {

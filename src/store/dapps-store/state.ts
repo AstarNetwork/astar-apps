@@ -8,6 +8,8 @@ export interface DappItem extends LooseObject {
   videoUrl: string;
   images: string[];
   tags: string[];
+  forumUrl: string;
+  authorContact: string;
 }
 
 export interface NewDappItem extends DappItem {
