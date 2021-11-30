@@ -1,28 +1,27 @@
 import BN from 'bn.js';
+import { endpointKey } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
 import { computed, ref, watch } from 'vue';
 import { useChainMetadata } from '.';
 import { reduceBalanceToDenom } from './helper/plasmUtils';
 import { getUsdPrice } from './helper/price';
-import { useChainInfo } from './useChainInfo';
 
 export function useTvl(api: any) {
   const store = useStore();
 
   const { decimal } = useChainMetadata();
-  const { chainInfo } = useChainInfo(api);
 
   const dapps = computed(() => store.getters['dapps/getAllDapps']);
   const tvlToken = ref<BN>(new BN(0));
   const tvlUsd = ref<number>(0);
+  const currentNetworkIdx = Number(localStorage.getItem('networkIdx'));
 
   watch(
-    [api, dapps, chainInfo],
+    [api, dapps, currentNetworkIdx],
     () => {
       const apiRef = api.value;
       const dappsRef = dapps.value;
-      const chainInfoRef = chainInfo.value;
-      if (!apiRef || !dappsRef || !chainInfoRef) return;
+      if (!apiRef || !dappsRef) return;
 
       const getTvl = async (): Promise<{ tvl: BN; tvlDefaultUnit: number }> => {
         const era = await apiRef.query.dappsStaking.currentEra();
@@ -33,7 +32,7 @@ export function useTvl(api: any) {
       };
 
       const priceUsd = async (): Promise<number> => {
-        if (chainInfoRef.chain === 'Shiden') {
+        if (currentNetworkIdx === endpointKey.SHIDEN) {
           try {
             return await getUsdPrice('shiden');
           } catch (error) {
@@ -56,6 +55,7 @@ export function useTvl(api: any) {
     },
     { immediate: true }
   );
+
   return {
     tvlToken,
     tvlUsd,
