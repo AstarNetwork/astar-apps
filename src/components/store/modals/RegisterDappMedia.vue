@@ -27,27 +27,28 @@
       multiple
       append
       counter
+      max-file-size="102400"
       accept=".jpg .png, image/*"
-      label="Screenshots"
+      label="Screenshots (Max. file size 100kB)"
       class="tw-my-4"
       @update:model-value="updateFile(value)"
     >
-      <template #prepend>
-        <q-icon name="image" />
-      </template>
-      <template #file="{ index, file }">
-        <!-- <q-chip :removable="true" @remove="removeFile(index)">
-          <div class="ellipsis relative-position">
-            {{ file.name }}
-            <img :src="file.content" />
-          </div>
-        </q-chip> -->
-        <q-card class="tw-w-28 tw-p-2 tw-m-1">
-          <img :src="file.content" :title="index" />
+      <template #file="{ file, index }">
+        <q-card class="tw-p-2 tw-m-1">
+          <q-img
+            :src="data.imagesContent[index]"
+            :title="file.name"
+            fit="contain"
+            width="180px"
+            height="180px"
+          >
+            <div class="text-subtitle2 absolute-top tw-text-right">
+              <q-icon name="close" @click.prevent="removeFile(index)" />
+            </div>
+          </q-img>
         </q-card>
       </template>
     </q-file>
-    <!-- <q-uploader :factory="factoryFn" multiple class="tw-w-full" @failed="uploadFailed"></q-uploader> -->
     <q-select
       v-model="data.tags"
       outlined
@@ -72,7 +73,6 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const data = reactive<NewDappItem>(props.value);
-    const images = ref([]);
     const showVideoPreview = ref<boolean>(false);
     const tags = ref<string[]>([
       'DeFi',
@@ -84,9 +84,11 @@ export default defineComponent({
       'Social',
       'Other',
     ]);
+    const imgPreviews = ref<string[]>([]);
 
     const removeFile = (index: number): void => {
       data.images.splice(index, 1);
+      data.imagesContent.splice(index, 1);
     };
 
     const toggleViewPreview = (): void => {
@@ -94,11 +96,20 @@ export default defineComponent({
     };
 
     const updateFile = (value: any): void => {
-      const reader = new FileReader();
-      reader.readAsDataURL(value.images[0]);
-      reader.onload = () => (value.images[0].content = reader.result);
-      reader.onerror = (error) => console.log(error);
-      console.log('update', value);
+      //const files = value.images as File[];
+      // const files = images;
+      data.imagesContent = [];
+      const index = 0;
+      data.images.forEach((image) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(image);
+        reader.onload = () => {
+          data.imagesContent.push(reader.result?.toString() || '');
+        };
+        reader.onerror = (error) => console.log(error);
+      });
+
+      console.log('update', data.images);
     };
 
     watch(
@@ -111,12 +122,12 @@ export default defineComponent({
 
     return {
       data,
-      images,
       showVideoPreview,
       tags,
       removeFile,
       toggleViewPreview,
       updateFile,
+      imgPreviews,
     };
   },
 });

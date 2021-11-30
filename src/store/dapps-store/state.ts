@@ -6,7 +6,6 @@ export interface DappItem extends LooseObject {
   address: string;
   license: string;
   videoUrl: string;
-  images: string[];
   tags: string[];
   forumUrl: string;
   authorContact: string;
@@ -15,6 +14,8 @@ export interface DappItem extends LooseObject {
 export interface NewDappItem extends DappItem {
   iconFileName: string;
   iconFile: string;
+  images: File[];
+  imagesContent: string[];
 }
 
 export interface DappStateInterface {
