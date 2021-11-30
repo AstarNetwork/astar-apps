@@ -28,7 +28,13 @@
     </button>
 
     <div class="tw-flex tw-items-center tw-justify-center">
-      <img width="200" src="~assets/img/astar.png" />
+      <div v-if="currentNetworkIdx === endpointKey.SHIDEN" class="tw-py-2">
+        <img width="190" src="~assets/img/shiden.png" />
+      </div>
+      <div v-else-if="currentNetworkIdx === endpointKey.SHIBUYA" class="tw-py-2">
+        <img width="190" src="~assets/img/shibuya.svg" />
+      </div>
+      <img v-else width="200" src="~assets/img/astar.png" />
     </div>
 
     <div class="tw-w-8 tw-h-8"></div>
@@ -36,6 +42,7 @@
 </template>
 
 <script lang="ts">
+import { endpointKey } from 'src/config/chainEndpoints';
 import { useSidebar } from 'src/hooks';
 import { defineComponent } from 'vue';
 import IconBase from '../icons/IconBase.vue';
@@ -44,8 +51,13 @@ export default defineComponent({
   components: { IconBase, IconOutlineMenu },
   setup() {
     const { isOpen } = useSidebar();
+
+    const currentNetworkIdx = Number(localStorage.getItem('networkIdx'));
+
     return {
       isOpen,
+      currentNetworkIdx,
+      endpointKey,
     };
   },
 });
