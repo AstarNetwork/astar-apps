@@ -26,11 +26,6 @@
               </div>
             </div>
           </div>
-
-          <div :style="{ opacity: stakeInfo?.hasStake ? '1' : '0' }" class="tw-flex tw-flex-row">
-            <div class="tw-w-20">{{ $t('store.yourStake') }}</div>
-            <div class="tw-font-semibold">{{ stakeInfo?.yourStake.formatted }}</div>
-          </div>
         </div>
       </div>
       <div class="tw-flex">
