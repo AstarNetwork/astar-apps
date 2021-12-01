@@ -20,6 +20,7 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
   const unsub: Ref<VoidFn | undefined> = ref();
 
   const updateAccountH160 = async (address: string) => {
+    if (!address) return;
     try {
       const web3 = await createWeb3Instance(currentNetworkIdx.value);
       if (!web3) {

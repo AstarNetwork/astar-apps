@@ -122,6 +122,8 @@ import { useStore } from 'src/store';
 import { computed, defineComponent, ref } from 'vue';
 import IconBase from 'components/icons/IconBase.vue';
 import IconAccountSample from 'components/icons/IconAccountSample.vue';
+import { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
+import { useExtrinsicCall } from 'src/hooks/custom-signature/useExtrinsicCall';
 export default defineComponent({
   components: {
     FormatBalance,
@@ -159,6 +161,7 @@ export default defineComponent({
     const withdrawAmount = ref(new BN(0));
     const selectUnit = ref(defaultUnitToken.value);
     const acName = accountName;
+    const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
 
     const formatBalance = computed(() => {
       const tokenDecimal = decimal.value;
@@ -189,6 +192,28 @@ export default defineComponent({
         if (status.type !== 'Finalized') {
           store.commit('general/setLoading', true);
         }
+      }
+    };
+
+    const { callFunc } = useExtrinsicCall({
+      onResult: handleResult,
+      onTransactionError: handleTransactionError,
+    });
+
+    const transferExtrinsic = async ({ amount, account }: { amount: BN; account: string }) => {
+      try {
+        const h160Addr = plasmUtils.toEvmAddress(account);
+
+        const fn: SubmittableExtrinsicFunction<'promise'> | undefined = api?.value?.tx.evm.withdraw;
+        const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn(h160Addr, amount);
+
+        method && callFunc(method);
+      } catch (e) {
+        console.error(e);
+        store.dispatch('general/showAlertMsg', {
+          msg: (e as Error).message,
+          alertType: 'error',
+        });
       }
     };
 
@@ -234,7 +259,11 @@ export default defineComponent({
 
       const unit = getUnit(selectUnit.value);
       const toAmt = plasmUtils.reduceDenomToBalance(amount, unit, decimal.value);
-      await withdraw({ amount: toAmt, account });
+      if (isCheckMetamask.value) {
+        await transferExtrinsic({ amount: toAmt, account });
+      } else {
+        await withdraw({ amount: toAmt, account });
+      }
     };
 
     const reloadAmount = (
