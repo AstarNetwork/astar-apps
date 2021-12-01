@@ -22,7 +22,7 @@
         {{ $t('store.registerDapp') }}
       </Button>
       <div
-        v-if="stakerApr > 0"
+        v-if="stakerApy > 0"
         class="
           sm:tw-w-40
           tw-justify-center
@@ -45,7 +45,7 @@
           <q-icon :name="fasSeedling" color="green" />
         </icon-base>
         <div>
-          {{ $t('store.stakerApr', { value: Number(stakerApr.toFixed(1)) }) }}
+          {{ $t('store.stakerApy', { value: Number(stakerApy.toFixed(1)) }) }}
         </div>
       </div>
     </div>
@@ -110,7 +110,7 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const dapps = computed(() => store.getters['dapps/getAllDapps']);
-    const { stakerApr } = useApr();
+    const { stakerApy } = useApr();
     const { progress, blocksUntilNextEra, era } = useCurrentEra();
 
     const maxNumberOfStakersPerContract = computed(
@@ -143,7 +143,7 @@ export default defineComponent({
       progress,
       blocksUntilNextEra,
       era,
-      stakerApr,
+      stakerApy,
       fasSeedling,
     };
   },
