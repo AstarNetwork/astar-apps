@@ -71,6 +71,9 @@
         >
           {{ $t('balance.withdrawEvm') }}
         </button>
+        <button v-if="isH160" type="button" class="transfer-button" @click="openFaucetModal">
+          {{ $t('balance.faucet') }}
+        </button>
       </div>
     </div>
 
@@ -153,7 +156,11 @@ export default defineComponent({
       required: true,
     },
   },
-  emits: ['update:is-open-transfer', 'update:is-open-withdrawal-evm-deposit'],
+  emits: [
+    'update:is-open-transfer',
+    'update:is-open-withdrawal-evm-deposit',
+    'update:is-open-modal-faucet',
+  ],
   setup(props, { emit }) {
     const store = useStore();
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
@@ -165,14 +172,20 @@ export default defineComponent({
       emit('update:is-open-withdrawal-evm-deposit', true);
     };
 
+    const openFaucetModal = (): void => {
+      console.log('faucet!');
+      emit('update:is-open-modal-faucet', true);
+    };
+
     const { defaultUnitToken } = useChainMetadata();
     const { evmDeposit, isEvmDeposit } = useEvmDeposit();
 
     return {
       openWithdrawalModal,
+      openFaucetModal,
+      openTransferModal,
       evmDeposit,
       isEvmDeposit,
-      openTransferModal,
       defaultUnitToken,
       isH160,
       ...toRefs(props),

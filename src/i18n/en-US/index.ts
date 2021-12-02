@@ -31,6 +31,7 @@ export default {
     balance: 'Balance',
     transfer: 'Transfer',
     withdrawEvm: 'Withdraw EVM Deposit',
+    faucet: 'Faucet',
     transferable: 'Transferable',
     vested: 'Vested',
     locked: 'Locked',
