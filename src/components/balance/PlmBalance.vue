@@ -7,13 +7,14 @@
       sm:tw-col-span-2
       tw-text-blue-900
       dark:tw-text-darkGray-100
-      tw-p-5
+      tw-p-5 tw-pb-14
       sm:tw-grid
       tw-grid-cols-2 tw-gap-4
+      xl:tw-col-span-3
     "
   >
     <div>
-      <div class="tw-flex tw-items-center">
+      <div class="tw-flex tw-items-center tw-pt-1">
         <div
           class="
             tw-h-10 tw-w-10 tw-rounded-full tw-overflow-hidden tw-border tw-border-gray-100 tw-mr-2
@@ -28,52 +29,56 @@
         </p>
       </div>
 
-      <div
-        class="tw-flex tw-justify-center tw-mt-2 xl:tw-mt-11"
-        :class="!isEvmDeposit && 'sm:tw-mt-7 md:tw-mt-12 lg:tw-mt-11'"
-      >
-        <div>
-          <p class="tw-font-semibold tw-text-center">
-            <span class="tw-text-4xl tw-tracking-tight tw-leading-tight">
-              <format-balance :balance="accountData?.getUsableTransactionBalance()" />
-            </span>
-          </p>
+      <div class="tw-flex tw-flex-col tw-h-full tw-justify-center">
+        <div class="tw-flex tw-justify-center">
+          <div>
+            <p class="tw-font-semibold tw-text-center">
+              <span class="tw-text-3xl tw-tracking-tight tw-leading-tight">
+                <format-balance :balance="accountData?.getUsableTransactionBalance()" />
+              </span>
+            </p>
+          </div>
         </div>
-      </div>
 
-      <div
-        class="
-          tw-mt-3 tw-text-center tw-mb-6
-          sm:tw-mb-0
-          tw-flex tw-flex-col
-          xl:tw-flex-row
-          tw-justify-center tw-items-center
-          xl:tw-gap-x-1
-          2xl:tw-gap-x-2
-          tw-gap-y-4
-          xl:tw-pt-1
-        "
-      >
-        <button
-          type="button"
-          :disabled="!address"
-          class="transfer-button"
-          :class="!address ? 'disabled_btn' : ''"
-          @click="openTransferModal"
+        <div
+          class="
+            tw-mt-8
+            xl:tw-mt-1
+            tw-text-center tw-mb-6
+            sm:tw-mb-0
+            tw-flex tw-flex-col
+            2xl:tw-flex-row
+            tw-justify-center tw-items-center
+            xl:tw-gap-x-1
+            2xl:tw-gap-x-2
+            tw-gap-y-4
+            xl:tw-pt-3
+          "
         >
-          {{ $t('balance.transfer') }}
-        </button>
-        <button
-          v-if="isEvmDeposit && !isH160"
-          type="button"
-          class="transfer-button"
-          @click="openWithdrawalModal"
-        >
-          {{ $t('balance.withdrawEvm') }}
-        </button>
-        <button v-if="isH160" type="button" class="transfer-button" @click="openFaucetModal">
-          {{ $t('balance.faucet') }}
-        </button>
+          <div class="tw-flex tw-flex-col xl:tw-flex-row tw-gap-y-4 xl:tw-gap-x-4">
+            <button
+              type="button"
+              :disabled="!address"
+              class="transfer-button"
+              :class="!address ? 'disabled_btn' : ''"
+              @click="openTransferModal"
+            >
+              {{ $t('balance.transfer') }}
+            </button>
+            <button v-if="!isH160" type="button" class="transfer-button" @click="openFaucetModal">
+              {{ $t('balance.faucet') }}
+            </button>
+          </div>
+
+          <button
+            v-if="isEvmDeposit && !isH160"
+            type="button"
+            class="transfer-button"
+            @click="openWithdrawalModal"
+          >
+            {{ $t('balance.withdrawEvm') }}
+          </button>
+        </div>
       </div>
     </div>
 

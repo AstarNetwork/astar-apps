@@ -34,7 +34,16 @@
       </div>
     </div>
 
-    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-y-8 md:tw-gap-8 tw-mt-8">
+    <div
+      class="
+        tw-grid tw-grid-cols-1
+        md:tw-grid-cols-3
+        xl:tw-grid-cols-4
+        tw-gap-y-8
+        md:tw-gap-8
+        tw-mt-8
+      "
+    >
       <TotalBalance v-if="accountData" :account-data="accountData" />
       <PlmBalance
         v-if="accountData"
