@@ -16,7 +16,7 @@
     "lint:check": "yarn check-format && eslint --ext .ts,.vue ./",
     "test": "echo \"No test specified\" && exit 0",
     "deploy": "push-dir --dir=dist/spa --remote=gh-pages --branch=main",
-    "start": "cd dist/ssr && yarn start",
+    "start": "node server.js",
     "heroku-postbuild": "yarn install && yarn build",
     "heroku-deploy": "git push heroku main"
   },
