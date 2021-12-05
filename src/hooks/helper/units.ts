@@ -27,27 +27,15 @@ export const getUnit = (unitType: string) => {
   return arrUnitPrefixes[index];
 };
 
+/**
+ * Convert number to K M G
+ * @param num -> '1903'
+ * @returns '1.903K'
+ */
 export const nFormatter = (num: number): string => {
-  if (num >= 1000000000) {
-    return (
-      Number((num / 1000000000).toFixed(3))
-        .toString()
-        .replace(/\.0$/, '') + 'G'
-    );
-  }
-  if (num >= 1000000) {
-    return (
-      Number((num / 1000000).toFixed(3))
-        .toString()
-        .replace(/\.0$/, '') + 'M'
-    );
-  }
-  if (num >= 1000) {
-    return (
-      Number((num / 1000).toFixed(3))
-        .toString()
-        .replace(/\.0$/, '') + 'K'
-    );
-  }
-  return Number(num.toFixed(3)).toString();
+  return new Intl.NumberFormat('en-US', {
+    maximumFractionDigits: 3,
+    notation: 'compact',
+    compactDisplay: 'short',
+  }).format(num);
 };
