@@ -170,16 +170,52 @@ const getLatestStakePoint = async (
 };
 
 const actions: ActionTree<State, StateInterface> = {
-  async getDapps({ commit, dispatch, rootState }) {
+  async getDapps({ commit, dispatch, rootState }, parameters: GetDappsParameters) {
     commit('general/setLoading', true, { root: true });
+    const { keyword, isStakedOnly, address, api } = parameters;
 
     try {
       const collectionKey = await getCollectionKey();
       const collection = await getDapps(collectionKey);
-      commit(
-        'addDapps',
-        collection.docs.map((x) => x.data())
-      );
+
+      const dapps = collection.docs
+        .map((x) => {
+          const data = x.data();
+          if (keyword) {
+            return data.name.toLowerCase().includes(keyword.toLowerCase()) ? data : null;
+          }
+          return data;
+        })
+        .filter((it) => it !== null);
+
+      if (isStakedOnly) {
+        if (!api) return;
+
+        const stakedCollection = (
+          await Promise.all(
+            dapps.map(async (dapp) => {
+              if (!dapp) return;
+              let isStaked = false;
+              const stakeInfo = await getLatestStakePoint(api, dapp.address).catch((e) => {
+                console.error(e);
+                return null;
+              });
+
+              if (!stakeInfo) return null;
+              for (const [account] of stakeInfo.stakers) {
+                if (account.toString() === address) {
+                  isStaked = true;
+                }
+              }
+              return isStaked ? dapp : null;
+            })
+          )
+        ).filter((it) => it !== null);
+
+        commit('addDapps', stakedCollection);
+      } else {
+        commit('addDapps', dapps);
+      }
     } catch (e) {
       const error = e as unknown as Error;
       showError(dispatch, error.message);
@@ -251,9 +287,6 @@ const actions: ActionTree<State, StateInterface> = {
 
         return true;
       } else {
-        showError(dispatch, 'Api is undefined.');
-
-        return false;
       }
     } catch (e) {
       const error = e as unknown as Error;
@@ -666,6 +699,13 @@ export interface StakingParameters {
   decimals: number;
   unit: string;
   finalizeCallback: () => void;
+}
+
+export interface GetDappsParameters {
+  keyword: string;
+  address: string;
+  isStakedOnly: boolean;
+  api: ApiPromise | null;
 }
 
 export interface StakeInfo {

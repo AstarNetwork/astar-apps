@@ -1,8 +1,6 @@
 <template>
   <div
     class="
-      tw-w-14
-      tw-h-8
       tw-flex
       tw-items-center
       tw-bg-blue-500
@@ -11,13 +9,13 @@
       tw-duration-300
       tw-cursor-pointer
     "
-    :class="!value && 'tw-bg-gray-300'"
+    :class="[!value && 'tw-bg-gray-300', isSmall ? 'tw-w-12 tw-h-6' : 'tw-w-14 tw-h-8']"
     :aria-checked="value.toString()"
     @click="toggle"
   >
     <div
-      class="tw-bg-white tw-w-6 tw-h-6 tw-rounded-full tw-shadow-md tw-transform tw-duration-300"
-      :class="{ 'tw-translate-x-6': value }"
+      class="tw-bg-white tw-rounded-full tw-shadow-md tw-transform tw-duration-300"
+      :class="[{ 'tw-translate-x-6': value }, isSmall ? 'tw-w-5 tw-h-5' : 'tw-w-6 tw-h-6']"
     ></div>
   </div>
 </template>
@@ -30,6 +28,11 @@ export default defineComponent({
     value: {
       type: Boolean,
       required: true,
+    },
+    isSmall: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
 
