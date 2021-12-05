@@ -79,6 +79,7 @@
         :key="index"
         :dapp="dapp"
         :staker-max-number="maxNumberOfStakersPerContract"
+        :account-data="accountData"
         @dappClick="showDetailsModal"
       />
     </div>
@@ -101,9 +102,9 @@ import IconPlus from 'components/icons/IconPlus.vue';
 import ModalDappDetails from 'components/store/modals/ModalDappDetails.vue';
 import ModalRegisterDapp from 'components/store/modals/ModalRegisterDapp.vue';
 import Dapp from 'src/components/store/Dapp.vue';
-import { useAccount, useApr, useCurrentEra } from 'src/hooks';
 import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
+import { useCurrentEra, useApr, useApi, useAccount, useBalance } from 'src/hooks';
 import { DappItem } from 'src/store/dapps-store/state';
 import { computed, defineComponent, ref } from 'vue';
 import DappsFilter from './DappsFilter.vue';
@@ -132,6 +133,9 @@ export default defineComponent({
     const dapps = computed(() => store.getters['dapps/getAllDapps']);
     const { stakerApy } = useApr();
     const { progress, blocksUntilNextEra, era } = useCurrentEra();
+    const { api } = useApi();
+    const { currentAccount } = useAccount();
+    const { accountData } = useBalance(api, currentAccount);
 
     const maxNumberOfStakersPerContract = computed(
       () => store.getters['dapps/getMaxNumberOfStakersPerContract']
@@ -145,7 +149,6 @@ export default defineComponent({
     const showDappDetailsModal = ref<boolean>(false);
     const selectedDapp = ref<DappItem>();
 
-    const { currentAccount } = useAccount();
     store.dispatch('dapps/getStakingInfo');
 
     const showDetailsModal = (dapp: DappItem): void => {
@@ -167,6 +170,7 @@ export default defineComponent({
       stakerApy,
       fasSeedling,
       currentAccount,
+      accountData,
     };
   },
 });
