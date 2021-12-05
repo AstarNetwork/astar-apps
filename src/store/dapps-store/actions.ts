@@ -148,7 +148,7 @@ const getErasToClaim = async (api: ApiPromise, contractAddress: string): Promise
   return result;
 };
 
-const getLatestStakePoint = async (
+export const getLatestStakePoint = async (
   api: ApiPromise,
   contract: string
 ): Promise<EraStakingPoints | undefined> => {

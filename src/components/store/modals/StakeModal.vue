@@ -23,13 +23,18 @@
         v-model:selectedUnit="data.unit"
         title="Amount"
         :max-in-default-unit="
-          actionName === StakeAction.Unstake ? formatStakeAmount : formatBalance
+          actionName === StakeAction.Unstake
+            ? formatStakeAmount
+            : accountData?.getUsableStakeBalance()
         "
         :is-max-button="actionName === StakeAction.Unstake ? true : false"
       />
       <div v-if="accountData && actionName !== StakeAction.Unstake" class="tw-mt-1 tw-ml-1">
-        {{ $t('store.modals.yourBalance') }}
-        <format-balance :balance="accountData?.free" class="tw-inline tw-font-semibold" />
+        {{ $t('store.modals.availableToStake') }}
+        <format-balance
+          :balance="accountData?.getUsableStakeBalance()"
+          class="tw-inline tw-font-semibold"
+        />
       </div>
       <div v-if="accountData && actionName === StakeAction.Unstake" class="tw-mt-1 tw-ml-1">
         {{ $t('store.yourStake') }}
@@ -71,6 +76,10 @@ export default defineComponent({
       type: Object,
       required: true,
     },
+    accountData: {
+      type: Object,
+      required: true,
+    },
     title: {
       type: String,
       required: true,
@@ -105,33 +114,16 @@ export default defineComponent({
     const allAccounts = computed(() => store.getters['general/allAccounts']);
     const allAccountNames = computed(() => store.getters['general/allAccountNames']);
 
-    const { currentAccount } = useAccount();
-    const { api } = useApi();
-    const { accountData } = useBalance(api, currentAccount);
-
-    const formatBalance = computed(() => {
-      if (accountData.value) {
-        return getAmount(data.value.amount, data.value.unit);
-      } else {
-        return '';
-      }
-    });
-
     const formatStakeAmount = computed(() => {
       return plasmUtils.reduceBalanceToDenom(props.stakeAmount, decimal.value);
     });
 
     const canExecuteAction = computed(() => {
-      const maxAmount =
-        props.actionName === StakeAction.Stake
-          ? accountData?.value?.getUsableTransactionBalance() || new BN(0)
-          : props.stakeAmount;
-
       if (data.value) {
         const amount = getAmount(data.value.amount, data.value.unit);
-        // return amount.gtn(0) && amount.lte(maxAmount);
-        // TODO implement proper max boudary check.
-        return amount.gtn(0);
+        const useableStakeAmount = props.accountData.getUsableStakeBalance();
+
+        return amount.gtn(0) && amount.lt(useableStakeAmount);
       } else {
         return false;
       }
@@ -150,10 +142,8 @@ export default defineComponent({
       data,
       allAccounts,
       allAccountNames,
-      formatBalance,
       formatStakeAmount,
       reloadAmount,
-      accountData,
       StakeAction,
       canExecuteAction,
       ...toRefs(props),
