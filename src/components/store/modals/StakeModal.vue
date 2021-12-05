@@ -25,14 +25,14 @@
         :max-in-default-unit="
           actionName === StakeAction.Unstake
             ? formatStakeAmount
-            : accountData?.getUsableStakeBalance()
+            : accountData?.getUsableFeeBalance()
         "
         :is-max-button="actionName === StakeAction.Unstake ? true : false"
       />
       <div v-if="accountData && actionName !== StakeAction.Unstake" class="tw-mt-1 tw-ml-1">
         {{ $t('store.modals.availableToStake') }}
         <format-balance
-          :balance="accountData?.getUsableStakeBalance()"
+          :balance="accountData?.getUsableFeeBalance()"
           class="tw-inline tw-font-semibold"
         />
       </div>
@@ -55,7 +55,7 @@ import Modal from 'components/common/Modal.vue';
 import Avatar from 'src/components/common/Avatar.vue';
 import Button from 'src/components/common/Button.vue';
 import InputAmount from 'src/components/common/InputAmount.vue';
-import { useAccount, useApi, useBalance, useChainMetadata } from 'src/hooks';
+import { useChainMetadata } from 'src/hooks';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, toRefs } from 'vue';
@@ -121,7 +121,7 @@ export default defineComponent({
     const canExecuteAction = computed(() => {
       if (data.value) {
         const amount = getAmount(data.value.amount, data.value.unit);
-        const useableStakeAmount = props.accountData.getUsableStakeBalance();
+        const useableStakeAmount = props.accountData.getUsableFeeBalance();
 
         return amount.gtn(0) && amount.lt(useableStakeAmount);
       } else {
