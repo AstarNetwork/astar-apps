@@ -26,3 +26,28 @@ export const getUnit = (unitType: string) => {
   const index = arrUnitNames.findIndex((elem) => elem === unitType);
   return arrUnitPrefixes[index];
 };
+
+export const nFormatter = (num: number): string => {
+  if (num >= 1000000000) {
+    return (
+      Number((num / 1000000000).toFixed(3))
+        .toString()
+        .replace(/\.0$/, '') + 'G'
+    );
+  }
+  if (num >= 1000000) {
+    return (
+      Number((num / 1000000).toFixed(3))
+        .toString()
+        .replace(/\.0$/, '') + 'M'
+    );
+  }
+  if (num >= 1000) {
+    return (
+      Number((num / 1000).toFixed(3))
+        .toString()
+        .replace(/\.0$/, '') + 'K'
+    );
+  }
+  return Number(num.toFixed(3)).toString();
+};

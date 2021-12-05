@@ -16,6 +16,7 @@ interface ChainProvider {
   subscan: string;
   evmChainId: string;
   evmRpc: string;
+  currency: string;
 }
 
 export enum endpointKey {
@@ -55,6 +56,7 @@ export const providerEndpoints: ChainProvider[] = [
     subscan: 'https://shiden.subscan.io',
     evmChainId: '336',
     evmRpc: 'https://rpc.shiden.astar.network:8545',
+    currency: 'SDN',
   },
   {
     networkAlias: 'dusty-testnet',
@@ -69,6 +71,7 @@ export const providerEndpoints: ChainProvider[] = [
     subscan: '',
     evmChainId: '',
     evmRpc: '',
+    currency: 'DUSTY',
   },
   {
     networkAlias: 'shibuya-testnet',
@@ -84,6 +87,7 @@ export const providerEndpoints: ChainProvider[] = [
     subscan: 'https://shibuya.subscan.io',
     evmChainId: '81',
     evmRpc: 'https://rpc.shibuya.astar.network:8545',
+    currency: 'SBY',
   },
   {
     networkAlias: 'local-node',
@@ -97,6 +101,7 @@ export const providerEndpoints: ChainProvider[] = [
     subscan: '',
     evmChainId: '',
     evmRpc: '',
+    currency: '',
   },
   {
     networkAlias: 'custom-node',
@@ -110,5 +115,6 @@ export const providerEndpoints: ChainProvider[] = [
     subscan: '',
     evmChainId: '',
     evmRpc: '',
+    currency: '',
   },
 ];
