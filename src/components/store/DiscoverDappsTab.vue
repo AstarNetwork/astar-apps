@@ -62,6 +62,7 @@
         :key="index"
         :dapp="dapp"
         :staker-max-number="maxNumberOfStakersPerContract"
+        :account-data="accountData"
         @dappClick="showDetailsModal"
       />
     </div>
@@ -85,7 +86,7 @@ import ModalRegisterDapp from 'components/store/modals/ModalRegisterDapp.vue';
 import Dapp from 'src/components/store/Dapp.vue';
 import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
-import { useCurrentEra, useApr } from 'src/hooks';
+import { useCurrentEra, useApr, useApi, useAccount, useBalance } from 'src/hooks';
 import { DappItem } from 'src/store/dapps-store/state';
 import { computed, defineComponent, ref } from 'vue';
 import TVL from './statistics/TVL.vue';
@@ -112,6 +113,9 @@ export default defineComponent({
     const dapps = computed(() => store.getters['dapps/getAllDapps']);
     const { stakerApy } = useApr();
     const { progress, blocksUntilNextEra, era } = useCurrentEra();
+    const { api } = useApi();
+    const { currentAccount } = useAccount();
+    const { accountData } = useBalance(api, currentAccount);
 
     const maxNumberOfStakersPerContract = computed(
       () => store.getters['dapps/getMaxNumberOfStakersPerContract']
@@ -145,6 +149,7 @@ export default defineComponent({
       era,
       stakerApy,
       fasSeedling,
+      accountData,
     };
   },
 });

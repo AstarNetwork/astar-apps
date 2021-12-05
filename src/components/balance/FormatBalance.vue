@@ -17,7 +17,7 @@ export default defineComponent({
   },
   setup(props) {
     const { defaultUnitToken, decimal } = useChainMetadata();
-    console.log('unit', defaultUnitToken.value);
+    // console.log('unit', defaultUnitToken.value);
     return {
       defaultUnitToken,
       decimal,

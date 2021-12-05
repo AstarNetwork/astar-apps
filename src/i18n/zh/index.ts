@@ -97,7 +97,7 @@ export default {
     registerDapp: '注册dApp',
     noDappsRegistered: 'No dApps registered. Be the first to register one.',
     totalStake: '总质押:',
-    yourBalance: 'Your balance',
+    availableToStake: 'Available to stake',
     yourStake: '您的质押: ',
     add: 'Add',
     unstake: '解除质押',
