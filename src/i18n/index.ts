@@ -2,6 +2,7 @@ import enUS from './en-US';
 import zh from './zh';
 import zhTW from './zh-TW';
 import ja from './ja';
+import FR from './FR';
 
 export const languagesSelector = [
   {
@@ -31,4 +32,5 @@ export default {
   ja: ja,
   zh: zh,
   'zh-TW': zhTW,
+  FR: FR,
 };
