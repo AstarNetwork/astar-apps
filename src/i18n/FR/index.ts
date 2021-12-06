@@ -94,7 +94,7 @@ export default {
       },
       removeContract: {
         first:
-          "Vous êtes sur le point de supprimer ce contrat de votre liste de contrats disponibles. Une fois cette opération terminée, si vous avez besoin d'y accéder à nouveau, vous devrez ajouter manuellement l'adresse du contrat dans l'onglet "Instancier".",
+          "Vous êtes sur le point de supprimer ce contrat de votre liste de contrats disponibles. Une fois cette opération terminée, si vous avez besoin d'y accéder à nouveau, vous devrez ajouter manuellement l'adresse du contrat dans l'onglet Instancier.",
         second:
           "Cette opération ne supprime pas l'historique du contrat de la chaîne, ni les fonds associés de son compte. L'opération d'oubli limite seulement votre accès au contrat sur son navigateur.",
       },
