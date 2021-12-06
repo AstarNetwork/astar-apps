@@ -137,4 +137,4 @@ export default {
       estimatedClaimedRewards: 'Récompenses réclamées',
     },
   },
-};
+}
