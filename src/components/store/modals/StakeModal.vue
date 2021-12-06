@@ -123,7 +123,9 @@ export default defineComponent({
         const amount = getAmount(data.value.amount, data.value.unit);
         const useableStakeAmount = props.accountData.getUsableFeeBalance();
 
-        return amount.gtn(0) && amount.lt(useableStakeAmount);
+        return props.actionName === StakeAction.Stake
+          ? amount.lt(useableStakeAmount) && amount.gtn(0)
+          : amount.lte(props.stakeAmount) && amount.gtn(0);
       } else {
         return false;
       }
