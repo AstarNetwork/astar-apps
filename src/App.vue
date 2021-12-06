@@ -43,7 +43,7 @@ import ApiLoader from 'src/hooks/providers/ApiLoader.vue';
 import Spinner from 'components/common/Spinner.vue';
 import ModalLoading from 'components/common/ModalLoading.vue';
 import AlertBox from 'components/common/AlertBox.vue';
-
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 export default defineComponent({
   name: 'App',
   components: {
@@ -58,8 +58,10 @@ export default defineComponent({
     const isLoading = computed(() => store.getters['general/isLoading']);
     const showAlert = computed(() => store.getters['general/showAlert']);
 
-    const networkIdx = localStorage.getItem('networkIdx');
-    const customEndpoint = localStorage.getItem('customEndpoint');
+    const { NETWORK_IDX, CUSTOM_ENDPOINT } = LOCAL_STORAGE;
+
+    const networkIdx = localStorage.getItem(NETWORK_IDX);
+    const customEndpoint = localStorage.getItem(CUSTOM_ENDPOINT);
     if (networkIdx) {
       store.commit('general/setCurrentNetworkIdx', parseInt(networkIdx));
     }

@@ -1,3 +1,4 @@
+import { LOCAL_STORAGE } from './../config/localStorage';
 import { toRefs, reactive, watchEffect } from 'vue';
 import { useApi } from '.';
 import { setDefaultUnitName } from './helper/units';
@@ -33,6 +34,7 @@ export const useChainMetadata = () => {
     // Memo: Always set from blank array if with `isReady`
     state.defaultUnitToken = (tokens || [])[0];
     setDefaultUnitName(state.defaultUnitToken);
+    localStorage.setItem(LOCAL_STORAGE.DEFAULT_CURRENCY, state.defaultUnitToken);
   });
 
   return toRefs(state);

@@ -1,11 +1,10 @@
-import { providerEndpoints } from 'src/config/chainEndpoints';
-import { nFormatter } from './units';
-import { isString } from '@polkadot/util';
 import { BigNumber, formatFixed } from '@ethersproject/bignumber';
-import { hexToU8a, isHex, u8aToHex } from '@polkadot/util';
+import { hexToU8a, isHex, isString, u8aToHex } from '@polkadot/util';
 import { addressToEvm, decodeAddress, encodeAddress, evmToAddress } from '@polkadot/util-crypto';
 import BN from 'bn.js';
 import Web3 from 'web3';
+import { LOCAL_STORAGE } from './../../config/localStorage';
+import { nFormatter } from './units';
 
 export const ASTAR_SS58_FORMAT = 5;
 export const ASTAR_DECIMALS = 18;
@@ -38,8 +37,8 @@ export const balanceFormatter = (bal: BN | string, decimal = ASTAR_DECIMALS): st
     amount = defaultAmountWithDecimals(bal, decimal);
   }
 
-  const currentNetworkIdx = Number(localStorage.getItem('networkIdx'));
-  return `${nFormatter(Number(amount))} ${providerEndpoints[currentNetworkIdx].currency}`;
+  const defaultCurrency = localStorage.getItem(LOCAL_STORAGE.DEFAULT_CURRENCY);
+  return `${nFormatter(Number(amount))} ${defaultCurrency}`;
 };
 
 /**
