@@ -7,7 +7,9 @@ export const useUnbondWithdraw = () => {
 
   const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
 
-  const canUnbondWithdraw = currentNetworkIdx.value === endpointKey.LOCAL;
+  const canUnbondWithdraw =
+    currentNetworkIdx.value === endpointKey.LOCAL ||
+    currentNetworkIdx.value === endpointKey.SHIBUYA;
 
   return {
     canUnbondWithdraw,
