@@ -20,6 +20,10 @@ export const languagesSelector = [
     text: '繁體中文',
     code: 'zh-TW',
   },
+  {
+    text: 'Français',
+    code: 'FR',
+  },
 ];
 
 export default {
