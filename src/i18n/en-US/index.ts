@@ -125,7 +125,7 @@ export default {
     modals: {
       alreadyClaimed: 'Already claimed:',
       contractRewards: 'Contract rewards:',
-      yourBalance: 'Your balance',
+      availableToStake: 'Available to stake',
       yourTransferableBalance: 'Your transferable balance',
       yourRewards: 'Your rewards',
       contractAddress: 'Contract address {address}',

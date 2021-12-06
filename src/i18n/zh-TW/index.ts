@@ -96,7 +96,7 @@ export default {
     dappsStore: 'dApps Store',
     registerDapp: '註冊dApp',
     noDappsRegistered: 'No dApps registered. Be the first to register one.',
-    yourBalance: 'Your balance',
+    availableToStake: 'Available to stake',
     totalStake: '總質押:',
     yourStake: '您的質押: ',
     add: 'Add',

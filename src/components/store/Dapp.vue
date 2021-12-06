@@ -35,6 +35,7 @@
         :stake-info="stakeInfo"
         :is-max-staker="isMaxStaker"
         :staker-max-number="stakerMaxNumber"
+        :account-data="accountData"
         @stake-changed="handleStakeChanged"
       />
     </div>
@@ -56,6 +57,10 @@ export default defineComponent({
   },
   props: {
     dapp: {
+      type: Object,
+      required: true,
+    },
+    accountData: {
       type: Object,
       required: true,
     },

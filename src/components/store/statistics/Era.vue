@@ -22,7 +22,7 @@
       </div>
       <div class="tw-relative">
         <VueJsProgress
-          :percentage="progress"
+          :percentage="Number(progress)"
           bg="turquoise"
           :delay="600"
           :striped="true"
