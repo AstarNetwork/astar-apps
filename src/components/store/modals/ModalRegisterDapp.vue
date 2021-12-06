@@ -30,30 +30,17 @@
             @data-changed="(newData) => handleDataChange(newData)"
           />
         </q-step>
-
-        <template #navigation>
-          <q-stepper-navigation>
-            <q-btn
-              color="primary"
-              flat
-              :label="step === 4 ? 'Finish' : 'Continue'"
-              class="q-ml-sm"
-              @click="$refs.stepper.next()"
-            />
-            <q-btn
-              v-if="step > 1"
-              flat
-              color="primary"
-              label="Back"
-              class="q-ml-sm"
-              @click="$refs.stepper.previous()"
-            />
-          </q-stepper-navigation>
-        </template>
       </q-stepper>
     </template>
     <template #buttons>
-      <Button @click="registerDapp">{{ $t('store.modals.register') }}</Button>
+      <q-stepper-navigation>
+        <Button :primary="false" @click="step > 1 ? $refs.stepper.previous() : close()">
+          {{ step &gt; 1 ? $t('store.modals.previous') : $t('close') }}
+        </Button>
+        <Button @click="step < stepsCount ? $refs.stepper.next() : registerDapp()">
+          {{ step &lt; stepsCount ? $t('store.modals.next') : $t('store.modals.register') }}
+        </Button>
+      </q-stepper-navigation>
     </template>
   </Modal>
 </template>
@@ -86,6 +73,7 @@ export default defineComponent({
     const { api } = useApi();
     const data = reactive<NewDappItem>({ tags: [] } as unknown as NewDappItem);
     const step = ref<number>(1);
+    const stepsCount = 4;
 
     const registerDapp = async () => {
       // if (!validateAll()) {
@@ -93,7 +81,7 @@ export default defineComponent({
       // }
 
       const senderAddress = store.getters['general/selectedAccountAddress'];
-      const result = await store.dispatch('dapps/registerDapp', {
+      const result = await store.dispatch('dapps/registerDappTest', {
         dapp: data,
         api: api?.value,
         senderAddress,
@@ -109,11 +97,17 @@ export default defineComponent({
       data.ref = newData;
     };
 
+    const close = () => {
+      emit('update:is-open', false);
+    };
+
     return {
       data,
       registerDapp,
       handleDataChange,
       step,
+      stepsCount,
+      close,
     };
   },
 });

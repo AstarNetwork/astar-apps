@@ -40,7 +40,9 @@
           </div>
         </div>
         <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row">
-          <Button type="button" :primary="false" @click="closeModal">{{ $t('close') }}</Button>
+          <Button v-if="showCloseButton" type="button" :primary="false" @click="closeModal">{{
+            $t('close')
+          }}</Button>
           <slot name="buttons"></slot>
         </div>
       </div>
@@ -60,6 +62,10 @@ export default defineComponent({
     title: {
       type: String,
       default: '',
+    },
+    showCloseButton: {
+      type: Boolean,
+      default: true,
     },
   },
   emits: ['update:is-open'],

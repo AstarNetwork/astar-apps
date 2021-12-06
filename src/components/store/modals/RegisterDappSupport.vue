@@ -9,11 +9,25 @@
       class="tw-my-2"
     />
     <q-input
+      v-model="data.gitHubUrl"
+      outlined
+      label="GitHub url"
+      maxlength="500"
+      :rules="[
+        (v) => v !== '' || 'GitHub url is required.',
+        (v) => isUrlValid(v) || 'Invalid url.',
+      ]"
+      class="tw-my-2"
+    />
+    <q-input
       v-model="data.authorContact"
       outlined
       label="Author contact email"
       maxlength="500"
-      :rules="[(v) => v !== '' || 'Author contact email is required.']"
+      :rules="[
+        (v) => v !== '' || 'Author contact email is required.',
+        (v) => isEmailValid(v) || 'Email address is invalid.',
+      ]"
       class="tw-my-2"
     />
     <q-select
@@ -28,6 +42,7 @@
 <script lang="ts">
 import { NewDappItem } from 'src/store/dapps-store/state';
 import { defineComponent, PropType, reactive } from 'vue';
+import { isEmailValid, isUrlValid } from 'src/components/common/Validators';
 
 export default defineComponent({
   props: {
@@ -43,6 +58,8 @@ export default defineComponent({
     return {
       data,
       licenseTypes,
+      isEmailValid,
+      isUrlValid,
     };
   },
 });

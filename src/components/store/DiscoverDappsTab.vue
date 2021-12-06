@@ -38,7 +38,11 @@
       />
     </div>
 
-    <ModalRegisterDapp v-if="showRegisterDappModal" v-model:is-open="showRegisterDappModal" />
+    <ModalRegisterDapp
+      v-if="showRegisterDappModal"
+      v-model:is-open="showRegisterDappModal"
+      :show-close-button="false"
+    />
 
     <ModalDappDetails
       v-if="showDappDetailsModal"

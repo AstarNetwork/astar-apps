@@ -20,7 +20,7 @@
         />
       </template>
     </q-input>
-    <q-video v-if="showVideoPreview" :src="data.videoUrl" />
+    <q-video v-if="showVideoPreview" :src="getEmbedUrl(data.videoUrl)" />
     <q-file
       v-model="data.images"
       outlined
@@ -112,6 +112,19 @@ export default defineComponent({
       console.log('update', data.images);
     };
 
+    const getVideoId = (url: string): string | null => {
+      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+      const match = url.match(regExp);
+
+      return match && match[2].length === 11 ? match[2] : null;
+    };
+
+    const getEmbedUrl = (url: string): string | null => {
+      const id = getVideoId(url);
+
+      return 'http://www.youtube.com/embed/' + id;
+    };
+
     watch(
       () => data,
       () => {
@@ -127,6 +140,7 @@ export default defineComponent({
       removeFile,
       toggleViewPreview,
       updateFile,
+      getEmbedUrl,
       imgPreviews,
     };
   },

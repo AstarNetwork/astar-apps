@@ -134,6 +134,8 @@ export default {
       estimatedRewards: 'Pending rewards',
       unclaimedEras: 'Number of unclaimed eras',
       estimatedClaimedRewards: 'Claimed rewards',
+      next: 'Next',
+      previous: 'Previous',
     },
   },
 };
