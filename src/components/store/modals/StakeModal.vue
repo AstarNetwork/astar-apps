@@ -23,13 +23,18 @@
         v-model:selectedUnit="data.unit"
         title="Amount"
         :max-in-default-unit="
-          actionName === StakeAction.Unstake ? formatStakeAmount : formatBalance
+          actionName === StakeAction.Unstake
+            ? formatStakeAmount
+            : accountData?.getUsableFeeBalance()
         "
         :is-max-button="actionName === StakeAction.Unstake ? true : false"
       />
       <div v-if="accountData && actionName !== StakeAction.Unstake" class="tw-mt-1 tw-ml-1">
-        {{ $t('store.modals.yourBalance') }}
-        <format-balance :balance="accountData?.free" class="tw-inline tw-font-semibold" />
+        {{ $t('store.modals.availableToStake') }}
+        <format-balance
+          :balance="accountData?.getUsableFeeBalance()"
+          class="tw-inline tw-font-semibold"
+        />
       </div>
       <div v-if="accountData && actionName === StakeAction.Unstake" class="tw-mt-1 tw-ml-1">
         {{ $t('store.yourStake') }}
@@ -59,7 +64,7 @@ import Modal from 'components/common/Modal.vue';
 import Avatar from 'src/components/common/Avatar.vue';
 import Button from 'src/components/common/Button.vue';
 import InputAmount from 'src/components/common/InputAmount.vue';
-import { useAccount, useApi, useBalance, useChainMetadata } from 'src/hooks';
+import { useChainMetadata } from 'src/hooks';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, toRefs } from 'vue';
@@ -78,6 +83,10 @@ export default defineComponent({
   },
   props: {
     dapp: {
+      type: Object,
+      required: true,
+    },
+    accountData: {
       type: Object,
       required: true,
     },
@@ -118,37 +127,20 @@ export default defineComponent({
     const unlockingChunks = computed<number>(() => store.getters['dapps/getUnlockingChunks']);
     const unbondingPeriod = computed(() => store.getters['dapps/getUnbondingPeriod']);
     const isMaxChunks = unlockingChunks.value >= maxUnlockingChunks.value;
-
-    const { currentAccount } = useAccount();
-    const { api } = useApi();
-    const { accountData } = useBalance(api, currentAccount);
     const { canUnbondWithdraw } = useUnbondWithdraw();
-
-    const formatBalance = computed(() => {
-      if (accountData.value) {
-        return getAmount(data.value.amount, data.value.unit);
-      } else {
-        return '';
-      }
-    });
 
     const formatStakeAmount = computed(() => {
       return plasmUtils.reduceBalanceToDenom(props.stakeAmount, decimal.value);
     });
 
     const canExecuteAction = computed(() => {
-      const maxAmount =
-        props.actionName === StakeAction.Stake
-          ? accountData?.value?.getUsableTransactionBalance() || new BN(0)
-          : props.stakeAmount;
-
       if (data.value) {
         const amount = getAmount(data.value.amount, data.value.unit);
-        // return amount.gtn(0) && amount.lte(maxAmount);
-        // TODO implement proper max boudary check.
-        return canUnbondWithdraw
-          ? amount.gtn(0) && !(props.actionName === StakeAction.Unstake && isMaxChunks)
-          : amount.gtn(0);
+        const useableStakeAmount = props.accountData.getUsableFeeBalance();
+
+        return props.actionName === StakeAction.Stake
+          ? amount.lt(useableStakeAmount) && amount.gtn(0)
+          : amount.lte(props.stakeAmount) && amount.gtn(0);
       } else {
         return false;
       }
@@ -167,10 +159,8 @@ export default defineComponent({
       data,
       allAccounts,
       allAccountNames,
-      formatBalance,
       formatStakeAmount,
       reloadAmount,
-      accountData,
       StakeAction,
       canExecuteAction,
       isMaxChunks,

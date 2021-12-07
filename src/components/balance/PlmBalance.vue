@@ -64,7 +64,7 @@
           {{ $t('balance.transfer') }}
         </button>
         <button
-          v-if="isEvmDeposit"
+          v-if="isEvmDeposit && !isH160"
           type="button"
           class="transfer-button"
           @click="openWithdrawalModal"
@@ -110,6 +110,7 @@
       </div>
 
       <div
+        v-if="!isH160"
         class="
           tw-flex tw-justify-between tw-items-center tw-bg-blue-50
           dark:tw-bg-darkGray-700
@@ -129,11 +130,12 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, toRefs } from 'vue';
+import { defineComponent, toRefs, computed } from 'vue';
 import { useChainMetadata, useEvmDeposit } from 'src/hooks';
 import IconBase from 'components/icons/IconBase.vue';
 import IconAccountSample from 'components/icons/IconAccountSample.vue';
 import FormatBalance from 'components/balance/FormatBalance.vue';
+import { useStore } from 'src/store';
 
 export default defineComponent({
   components: {
@@ -153,6 +155,8 @@ export default defineComponent({
   },
   emits: ['update:is-open-transfer', 'update:is-open-withdrawal-evm-deposit'],
   setup(props, { emit }) {
+    const store = useStore();
+    const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const openTransferModal = (): void => {
       emit('update:is-open-transfer', true);
     };
@@ -170,6 +174,7 @@ export default defineComponent({
       isEvmDeposit,
       openTransferModal,
       defaultUnitToken,
+      isH160,
       ...toRefs(props),
     };
   },

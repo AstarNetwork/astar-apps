@@ -1,9 +1,9 @@
-import { useStore } from 'src/store';
 import { VoidFn } from '@polkadot/api/types';
 import { Balance } from '@polkadot/types/interfaces';
 import BN from 'bn.js';
+import { useStore } from 'src/store';
 import { createWeb3Instance } from 'src/web3';
-import { onUnmounted, ref, Ref, watch, computed } from 'vue';
+import { computed, onUnmounted, ref, Ref, watch } from 'vue';
 import { getVested } from './helper/vested';
 
 function useCall(apiRef: any, addressRef: Ref<string>) {
@@ -16,10 +16,12 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
   const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
   const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
   const isLoading = computed(() => store.getters['general/isLoading']);
+  const dapps = computed(() => store.getters['dapps/getAllDapps']);
 
   const unsub: Ref<VoidFn | undefined> = ref();
 
   const updateAccountH160 = async (address: string) => {
+    if (!address) return;
     try {
       const web3 = await createWeb3Instance(currentNetworkIdx.value);
       if (!web3) {
@@ -40,62 +42,64 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
     }
   };
 
-  const updateAccount = (address: string) => {
-    if (address) {
-      const api = apiRef?.value;
-      if (unsub.value) {
-        unsub.value();
-        unsub.value = undefined;
-      }
-      if (address && api) {
-        api.isReady.then(async () => {
-          const results = await Promise.all([
-            api.query.system.account(address),
-            api.query.vesting.vesting(address),
-            api.query.system.number(),
-          ]);
-          const accountInfo = results[0];
-          const vesting = results[1];
-          const currentBlock = results[2];
+  const updateAccount = (address: string, dapps: any[]) => {
+    if (!address) return;
 
-          const vestingValue = vesting.value;
-          const vestingLocked = vestingValue.locked;
-
-          vestedRef.value = vestingLocked
-            ? getVested({
-                currentBlock: currentBlock.toBn(),
-                startBlock: vesting.value.startingBlock.toBn(),
-                perBlock: vesting.value.perBlock.toBn(),
-              })
-            : new BN(0);
-
-          accountDataRef.value = new AccountData(
-            accountInfo.data.free,
-            accountInfo.data.reserved,
-            accountInfo.data.miscFrozen,
-            accountInfo.data.feeFrozen,
-            vestedRef.value
-          );
-          balanceRef.value = accountInfo.data.free.toBn();
-        });
-      }
+    const api = apiRef?.value;
+    if (unsub.value) {
+      unsub.value();
+      unsub.value = undefined;
     }
+    if (!api) return;
+
+    api.isReady.then(async () => {
+      const results = await Promise.all([
+        api.query.system.account(address),
+        api.query.vesting.vesting(address),
+        api.query.system.number(),
+      ]);
+
+      const accountInfo = results[0];
+
+      const vesting = results[1];
+      const currentBlock = results[2];
+      const vestingValue = vesting.value;
+      const vestingLocked = vestingValue.locked;
+
+      vestedRef.value = vestingLocked
+        ? getVested({
+            currentBlock: currentBlock.toBn(),
+            startBlock: vesting.value.startingBlock.toBn(),
+            perBlock: vesting.value.perBlock.toBn(),
+          })
+        : new BN(0);
+
+      accountDataRef.value = new AccountData(
+        accountInfo.data.free,
+        accountInfo.data.reserved,
+        accountInfo.data.miscFrozen,
+        accountInfo.data.feeFrozen,
+        vestedRef.value
+      );
+
+      balanceRef.value = accountInfo.data.free.toBn();
+    });
   };
 
   const updateAccountHandler = setInterval(() => {
     if (!vestedRef.value.eq(new BN(0))) {
-      updateAccount(addressRef.value);
+      updateAccount(addressRef.value, dapps.value || []);
     }
   }, 10000);
 
   watch(
-    [addressRef, isLoading],
+    [addressRef, isLoading, dapps],
     () => {
       const address = addressRef.value;
       if (isH160Formatted.value) {
         updateAccountH160(address);
       } else {
-        updateAccount(address);
+        updateAccount(address, dapps.value || []);
       }
     },
     { immediate: true }
