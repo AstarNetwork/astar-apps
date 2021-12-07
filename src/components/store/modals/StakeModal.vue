@@ -138,9 +138,16 @@ export default defineComponent({
         const amount = getAmount(data.value.amount, data.value.unit);
         const useableStakeAmount = props.accountData.getUsableFeeBalance();
 
-        return props.actionName === StakeAction.Stake
-          ? amount.lt(useableStakeAmount) && amount.gtn(0)
-          : amount.lte(props.stakeAmount) && amount.gtn(0);
+        let canExecute =
+          props.actionName === StakeAction.Stake
+            ? amount.lt(useableStakeAmount) && amount.gtn(0)
+            : amount.lte(props.stakeAmount) && amount.gtn(0);
+
+        if (canUnbondWithdraw) {
+          canExecute = canExecute && !(props.actionName === StakeAction.Unstake && isMaxChunks);
+        }
+
+        return canExecute;
       } else {
         return false;
       }
