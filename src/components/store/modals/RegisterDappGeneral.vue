@@ -30,8 +30,8 @@
       outlined
       label="Name"
       maxlength="200"
-      :rules="[(v) => v !== '' || 'dApp name is required.']"
       class="tw-my-2"
+      :rules="[(v) => (v && v.length > 0) || 'dApp name is required.']"
     />
     <q-input
       v-model="data.address"
@@ -47,7 +47,7 @@
       maxlength="1000"
       label="Project url"
       class="tw-my-2"
-      :rules="[(v) => v !== '' || 'Enter project url.']"
+      :rules="[(v) => v !== '' || 'Enter project url.', (v) => isUrlValid(v) || 'Invalid url.']"
     />
   </div>
 </template>
@@ -61,6 +61,7 @@ import InputFile from 'src/components/dapps/modals/InputFile.vue';
 import Avatar from 'components/common/Avatar.vue';
 import IconBase from 'components/icons/IconBase.vue';
 import IconDocument from 'components/icons/IconDocument.vue';
+import { isUrlValid } from 'components/common/Validators';
 
 export default defineComponent({
   components: {
@@ -109,6 +110,7 @@ export default defineComponent({
       onDropFile,
       data,
       isEthereumAddress,
+      isUrlValid,
     };
   },
 });

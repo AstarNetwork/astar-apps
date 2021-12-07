@@ -5,7 +5,7 @@
       outlined
       label="Video link"
       maxlength="500"
-      :rules="[(v) => v !== '' || 'dApp video link is required.']"
+      :rules="[(v) => (v && v.length > 0) || 'dApp video link is required.']"
       class="tw-my-2"
     >
       <template #prepend>
@@ -31,6 +31,7 @@
       accept=".jpg .png, image/*"
       label="Screenshots (Max. file size 100kB)"
       class="tw-my-4"
+      :rules="[(v) => (v && v.length >= 4) || 'At least 4 dApp images are required.']"
       @update:model-value="updateFile(value)"
     >
       <template #file="{ file, index }">
@@ -57,6 +58,7 @@
       stack-label
       :options="tags"
       label="Tags"
+      :rules="[(v) => (v && v.length >= 1) || 'Select at least 1 tag.']"
     ></q-select>
   </div>
 </template>

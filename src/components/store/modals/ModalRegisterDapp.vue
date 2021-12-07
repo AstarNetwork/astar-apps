@@ -1,43 +1,45 @@
 <template>
   <Modal title="Register a new dApp">
     <template #content>
-      <q-stepper ref="stepper" v-model="step" header-nav animated>
-        <q-step :name="1" title="General" icon="settings" :done="step > 1">
-          <RegisterDappGeneral
-            v-if="data"
-            :value="data"
-            @data-changed="(newData) => handleDataChange(newData)"
-          />
-        </q-step>
-        <q-step :name="2" title="Description" icon="notes" :done="step > 2">
-          <RegisterDappDescription
-            v-if="data"
-            :value="data"
-            @data-changed="(newData) => handleDataChange(newData)"
-          />
-        </q-step>
-        <q-step :name="3" title="Media" icon="image">
-          <RegisterDappMedia
-            v-if="data"
-            :value="data"
-            @data-changed="(newData) => handleDataChange(newData)"
-          />
-        </q-step>
-        <q-step :name="4" title="Support info" icon="info">
-          <RegisterDappSupport
-            v-if="data"
-            :value="data"
-            @data-changed="(newData) => handleDataChange(newData)"
-          />
-        </q-step>
-      </q-stepper>
+      <q-form ref="registerForm">
+        <q-stepper ref="stepper" v-model="step" header-nav animated>
+          <q-step :name="1" title="General" icon="settings" :done="step > 1">
+            <RegisterDappGeneral
+              v-if="data"
+              :value="data"
+              @data-changed="(newData) => handleDataChange(newData)"
+            />
+          </q-step>
+          <q-step :name="2" title="Description" icon="notes" :done="step > 2">
+            <RegisterDappDescription
+              v-if="data"
+              :value="data"
+              @data-changed="(newData) => handleDataChange(newData)"
+            />
+          </q-step>
+          <q-step :name="3" title="Media" icon="image">
+            <RegisterDappMedia
+              v-if="data"
+              :value="data"
+              @data-changed="(newData) => handleDataChange(newData)"
+            />
+          </q-step>
+          <q-step :name="4" title="Support info" icon="info">
+            <RegisterDappSupport
+              v-if="data"
+              :value="data"
+              @data-changed="(newData) => handleDataChange(newData)"
+            />
+          </q-step>
+        </q-stepper>
+      </q-form>
     </template>
     <template #buttons>
       <q-stepper-navigation>
         <Button :primary="false" @click="step > 1 ? $refs.stepper.previous() : close()">
           {{ step &gt; 1 ? $t('store.modals.previous') : $t('close') }}
         </Button>
-        <Button @click="step < stepsCount ? $refs.stepper.next() : registerDapp()">
+        <Button @click="registerDapp(step)">
           {{ step &lt; stepsCount ? $t('store.modals.next') : $t('store.modals.register') }}
         </Button>
       </q-stepper-navigation>
@@ -74,22 +76,33 @@ export default defineComponent({
     const data = reactive<NewDappItem>({ tags: [] } as unknown as NewDappItem);
     const step = ref<number>(1);
     const stepsCount = 4;
+    const registerForm = ref();
+    const stepper = ref();
 
-    const registerDapp = async () => {
+    const registerDapp = async (step: number): Promise<void> => {
       // if (!validateAll()) {
       //   return;
       // }
+      console.log('form', stepper.value);
 
-      const senderAddress = store.getters['general/selectedAccountAddress'];
-      const result = await store.dispatch('dapps/registerDappTest', {
-        dapp: data,
-        api: api?.value,
-        senderAddress,
-      } as RegisterParameters);
+      registerForm?.value?.validate().then(async (success: boolean) => {
+        if (success) {
+          if (step === stepsCount) {
+            const senderAddress = store.getters['general/selectedAccountAddress'];
+            const result = await store.dispatch('dapps/registerDappTest', {
+              dapp: data,
+              api: api?.value,
+              senderAddress,
+            } as RegisterParameters);
 
-      if (result) {
-        emit('update:is-open', false);
-      }
+            if (result) {
+              emit('update:is-open', false);
+            }
+          } else {
+            stepper.value.next();
+          }
+        }
+      });
     };
 
     const handleDataChange = (newData: NewDappItem): void => {
@@ -108,6 +121,8 @@ export default defineComponent({
       step,
       stepsCount,
       close,
+      registerForm,
+      stepper,
     };
   },
 });

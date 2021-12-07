@@ -5,7 +5,10 @@
       outlined
       label="Astar forum post link"
       maxlength="500"
-      :rules="[(v) => v !== '' || 'Astar forum post link is required.']"
+      :rules="[
+        (v) => (v && v.length > 0) || 'Astar forum post link is required.',
+        (v) => isUrlValid(v) || 'Invalid url.',
+      ]"
       class="tw-my-2"
     />
     <q-input
@@ -14,7 +17,7 @@
       label="GitHub url"
       maxlength="500"
       :rules="[
-        (v) => v !== '' || 'GitHub url is required.',
+        (v) => (v && v.length > 0) || 'GitHub url is required.',
         (v) => isUrlValid(v) || 'Invalid url.',
       ]"
       class="tw-my-2"
@@ -25,7 +28,7 @@
       label="Author contact email"
       maxlength="500"
       :rules="[
-        (v) => v !== '' || 'Author contact email is required.',
+        (v) => (v && v.length > 0) || 'Author contact email is required.',
         (v) => isEmailValid(v) || 'Email address is invalid.',
       ]"
       class="tw-my-2"
@@ -36,6 +39,7 @@
       :options="licenseTypes"
       label="License type"
       class="tw-my-2"
+      :rules="[(v) => v !== undefined || 'Select a license type.']"
     />
   </div>
 </template>

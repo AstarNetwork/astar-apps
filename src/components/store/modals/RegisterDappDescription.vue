@@ -13,7 +13,7 @@
           outlined
           autogrow
           class="tw-h-96 tw-min-w-full"
-          :rules="[(v) => v !== '' || 'Tell the world something about your dApp.']"
+          :rules="[(v) => (v && v.length > 0) || 'Tell the world something about your dApp.']"
         />
         <!-- TODO description validation -->
       </q-tab-panel>
