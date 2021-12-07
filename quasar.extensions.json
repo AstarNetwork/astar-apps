@@ -2,5 +2,16 @@
   "@quasar/qmarkdown": {
     "import_md": false,
     "import_vmd": false
+  },
+  "@quasar/testing": {
+    "harnesses": [
+      "unit-jest@alpha"
+    ]
+  },
+  "@quasar/testing-unit-jest": {
+    "babel": "babelrc",
+    "options": [
+      "typescript"
+    ]
   }
 }

@@ -12,7 +12,7 @@
     "check-format": "prettier --check **/*.{ts,vue}",
     "lint": "yarn format && yarn check-format && eslint --fix --ext .ts,.vue ./",
     "lint:check": "yarn check-format && eslint --ext .ts,.vue ./",
-    "test": "echo \"No test specified\" && exit 0",
+    "test": "quasar test --unit jest",
     "deploy": "push-dir --dir=dist/spa --remote=gh-pages --branch=main",
     "start": "node server.js",
     "heroku-postbuild": "yarn install && yarn build"
@@ -56,6 +56,8 @@
     "@babel/eslint-parser": "^7.13.14",
     "@polkadot/ts": "^0.4.6",
     "@quasar/quasar-app-extension-qmarkdown": "^2.0.0-alpha.8",
+    "@quasar/quasar-app-extension-testing": "^2.0.1",
+    "@quasar/quasar-app-extension-testing-unit-jest": "^3.0.0-alpha.6",
     "@tailwindcss/custom-forms": "^0.2.1",
     "@tailwindcss/postcss7-compat": "^2.0.3",
     "@types/create-hash": "^1.2.2",
@@ -74,7 +76,8 @@
     "push-dir": "^0.4.1",
     "sass-loader": "12.3.0",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.3",
-    "tailwindcss-theme-variants": "^2.0.0-alpha.2"
+    "tailwindcss-theme-variants": "^2.0.0-alpha.2",
+    "eslint-plugin-jest": "^25.2.2"
   },
   "browserslist": [
     "last 10 Chrome versions",
