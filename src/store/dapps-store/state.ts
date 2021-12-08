@@ -10,6 +10,7 @@ export interface DappItem extends LooseObject {
   forumUrl: string;
   authorContact: string;
   gitHubUrl: string;
+  imagesUrl: string[];
 }
 
 export interface NewDappItem extends DappItem {

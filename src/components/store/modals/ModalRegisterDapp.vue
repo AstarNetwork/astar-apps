@@ -2,7 +2,7 @@
   <Modal title="Register a new dApp">
     <template #content>
       <q-form ref="registerForm">
-        <q-stepper ref="stepper" v-model="step" header-nav animated>
+        <q-stepper ref="stepper" v-model="step" header-nav animated style="height: 600px">
           <q-step :name="1" title="General" icon="settings" :done="step > 1">
             <RegisterDappGeneral
               v-if="data"
@@ -17,14 +17,14 @@
               @data-changed="(newData) => handleDataChange(newData)"
             />
           </q-step>
-          <q-step :name="3" title="Media" icon="image">
+          <q-step :name="3" title="Media" icon="image" :done="step > 3">
             <RegisterDappMedia
               v-if="data"
               :value="data"
               @data-changed="(newData) => handleDataChange(newData)"
             />
           </q-step>
-          <q-step :name="4" title="Support info" icon="info">
+          <q-step :name="4" title="Support" icon="info">
             <RegisterDappSupport
               v-if="data"
               :value="data"
@@ -69,7 +69,6 @@ export default defineComponent({
     RegisterDappMedia,
     RegisterDappSupport,
   },
-  // emits: ['update:is-open'],
   setup(_, { emit }) {
     const store = useStore();
     const { api } = useApi();
@@ -80,11 +79,6 @@ export default defineComponent({
     const stepper = ref();
 
     const registerDapp = async (step: number): Promise<void> => {
-      // if (!validateAll()) {
-      //   return;
-      // }
-      console.log('form', stepper.value);
-
       registerForm?.value?.validate().then(async (success: boolean) => {
         if (success) {
           if (step === stepsCount) {
@@ -106,7 +100,6 @@ export default defineComponent({
     };
 
     const handleDataChange = (newData: NewDappItem): void => {
-      console.log('new dapp', newData);
       data.ref = newData;
     };
 

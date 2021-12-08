@@ -190,14 +190,15 @@ const actions: ActionTree<State, StateInterface> = {
 
   async registerDappTest({ commit, dispatch }, parameters: RegisterParameters): Promise<Boolean> {
     console.log(parameters);
-    return false;
+    // return false;
 
     try {
+      const collectionKey = await getCollectionKey();
       if (parameters.dapp.iconFileName) {
         const fileName = `${parameters.dapp.address}_${parameters.dapp.iconFileName}`;
         parameters.dapp.iconUrl = await uploadFile(
           fileName,
-          await getCollectionKey(),
+          collectionKey,
           parameters.dapp.iconFile
         );
       } else {
@@ -208,7 +209,16 @@ const actions: ActionTree<State, StateInterface> = {
         parameters.dapp.url = '';
       }
 
-      const collectionKey = await getCollectionKey();
+      parameters.dapp.imagesUrl = [];
+      for (let i = 0; i < parameters.dapp.imagesContent.length; i++) {
+        const dappImage = parameters.dapp.imagesContent[i];
+        const dappImageUrl = await uploadFile(
+          `${parameters.dapp.address}_${i}_${parameters.dapp.images[i].name}`,
+          collectionKey,
+          dappImage
+        );
+        parameters.dapp.imagesUrl.push(dappImageUrl);
+      }
       const addedDapp = await addDapp(collectionKey, parameters.dapp);
       commit('addDapp', addedDapp);
 

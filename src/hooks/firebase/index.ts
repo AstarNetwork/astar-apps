@@ -48,6 +48,13 @@ const addDapp = async (collectionName: string, dapp: NewDappItem): Promise<DappI
     address: dapp.address,
     url: dapp.url,
     iconUrl: dapp.iconUrl,
+    license: dapp.license,
+    videoUrl: dapp.videoUrl,
+    tags: dapp.tags,
+    forumUrl: dapp.forumUrl,
+    authorContact: dapp.authorContact,
+    gitHubUrl: dapp.gitHubUrl,
+    imagesUrl: dapp.imagesUrl,
   } as DappItem;
 
   await setDoc(doc(db, collectionName, newDapp.address), newDapp);

@@ -40,10 +40,10 @@
             :src="data.imagesContent[index]"
             :title="file.name"
             fit="contain"
-            width="180px"
-            height="180px"
+            width="100px"
+            height="100px"
           >
-            <div class="text-subtitle2 absolute-top tw-text-right">
+            <div class="text-subtitle2 absolute-bottom tw-text-right">
               <q-icon name="close" @click.prevent="removeFile(index)" />
             </div>
           </q-img>

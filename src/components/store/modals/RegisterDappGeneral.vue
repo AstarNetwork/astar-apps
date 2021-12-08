@@ -11,10 +11,10 @@
       >
 
       <input-file :file="imageFromFile" :extension="fileExtensions" @dropFile="onDropFile">
-        <Avatar v-if="!!imagePreview" :url="imagePreview" class="tw-mx-auto tw-w-36 tw-h-36" />
+        <Avatar v-if="!!data.iconFile" :url="data.iconFile" class="tw-mx-auto tw-w-20 tw-h-20" />
         <icon-base
           v-else
-          class="tw-h-12 tw-w-12 tw-mx-auto dark:tw-text-darkGray-100"
+          class="tw-h-20 tw-w-20 tw-mx-auto dark:tw-text-darkGray-100"
           viewBox="0 0 20 20"
           fill="none"
           stroke="currentColor"
@@ -79,7 +79,6 @@ export default defineComponent({
   setup(props, { emit }) {
     const data = reactive<NewDappItem>(props.value);
     const { fileRef: imageFromFile, setFile } = useFile();
-    const imagePreview = ref<string>();
     const fileExtensions = ['.png', '.jpg', '.gif'];
 
     const encodeImage = (fileType: string, data: Uint8Array): string => {
@@ -88,11 +87,10 @@ export default defineComponent({
     };
 
     const onDropFile = (fileState: FileState): void => {
-      imagePreview.value = encodeImage(fileState.type, fileState.data);
       setFile(fileState);
 
       data.iconFileName = fileState.name;
-      data.iconFile = imagePreview.value;
+      data.iconFile = encodeImage(fileState.type, fileState.data);
     };
 
     watch(
@@ -105,7 +103,6 @@ export default defineComponent({
 
     return {
       imageFromFile,
-      imagePreview,
       fileExtensions,
       onDropFile,
       data,
