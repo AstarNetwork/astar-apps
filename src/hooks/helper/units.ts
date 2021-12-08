@@ -26,3 +26,16 @@ export const getUnit = (unitType: string) => {
   const index = arrUnitNames.findIndex((elem) => elem === unitType);
   return arrUnitPrefixes[index];
 };
+
+/**
+ * Convert number to K M G
+ * @param num -> '1903'
+ * @returns '1.903K'
+ */
+export const nFormatter = (num: number): string => {
+  return new Intl.NumberFormat('en-US', {
+    maximumFractionDigits: 3,
+    notation: 'compact',
+    compactDisplay: 'short',
+  }).format(num);
+};

@@ -12,17 +12,13 @@
       </div>
       <div class="tw-mt-2">
         <span class="tw-w-52 tw-inline-block"> {{ $t('store.modals.estimatedRewards') }}</span>
-        <span class="tw-font-semibold tw-w-16 tw-text-rigth">{{
-          claimInfo?.rewards.toHuman()
-        }}</span>
+        <span class="tw-font-semibold tw-w-16 tw-text-rigth">{{ pendingRewards }}</span>
       </div>
       <div class="tw-mt-2">
         <span class="tw-w-52 tw-inline-block">
           {{ $t('store.modals.estimatedClaimedRewards') }}
         </span>
-        <span class="tw-font-semibold tw-w-16 tw-text-rigth">{{
-          claimInfo?.estimatedClaimedRewards.toHuman()
-        }}</span>
+        <span class="tw-font-semibold tw-w-16 tw-text-rigth">{{ claimedRewards }}</span>
       </div>
       <div class="tw-mt-2">
         <span class="tw-w-52 tw-inline-block"> {{ $t('store.modals.unclaimedEras') }}</span>
@@ -48,6 +44,8 @@ import Modal from 'src/components/common/Modal.vue';
 import Button from 'src/components/common/Button.vue';
 import Avatar from 'src/components/common/Avatar.vue';
 import { StakingParameters, ClaimInfo } from 'src/store/dapps-store/actions';
+import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
+import BN from 'bn.js';
 
 export default defineComponent({
   components: {
@@ -74,6 +72,8 @@ export default defineComponent({
     const store = useStore();
     const { decimal } = useChainMetadata();
     const claimInfo = ref<ClaimInfo>();
+    const pendingRewards = ref<string>('');
+    const claimedRewards = ref<string>('');
     const senderAddress = store.getters['general/selectedAccountAddress'];
 
     const canClaim = computed(() => {
@@ -87,9 +87,15 @@ export default defineComponent({
         dapp: props.dapp,
         decimals: decimal.value,
       } as StakingParameters);
+      if (!claimInfo.value) return;
+      pendingRewards.value = claimInfo?.value.rewards.toString();
+      // (claimInfo.value && balanceFormatter(new BN(claimInfo.value.rewards.toString()))) ?? '';
+      claimedRewards.value = balanceFormatter(claimInfo.value.estimatedClaimedRewards.toString());
     });
 
     return {
+      pendingRewards,
+      claimedRewards,
       claimInfo,
       canClaim,
       ...toRefs(props),
