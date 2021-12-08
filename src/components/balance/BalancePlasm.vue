@@ -77,7 +77,12 @@
       :account="currentAccount"
       :account-name="currentAccountName"
     />
-    <ModalFaucet v-if="modalFaucet" v-model:isOpen="modalFaucet" :info="faucetInfo" />
+    <ModalFaucet
+      v-if="modalFaucet"
+      v-model:isOpen="modalFaucet"
+      :info="faucetInfo"
+      :request-faucet="requestFaucet"
+    />
   </div>
 
   <!-- <ModalAlertBox
@@ -90,7 +95,7 @@
 import { useMeta } from 'quasar';
 import { useAccount, useApi, useBalance, useEvmDeposit, useFaucet } from 'src/hooks';
 import { useStore } from 'src/store';
-import { computed, defineComponent, reactive, toRefs, watchEffect } from 'vue';
+import { computed, defineComponent, reactive, toRefs } from 'vue';
 import Addresses from './Addresses.vue';
 import ModalAccount from './modals/ModalAccount.vue';
 import ModalTransferAmount from './modals/ModalTransferAmount.vue';
@@ -134,10 +139,6 @@ export default defineComponent({
       modalFaucet: false,
     });
 
-    watchEffect(() => {
-      console.log('modalFaucet', stateModal.modalFaucet);
-    });
-
     const store = useStore();
     const { allAccounts, allAccountNames, currentAccount, currentAccountName } = useAccount();
     const { api } = useApi();
@@ -147,7 +148,7 @@ export default defineComponent({
     const isSS58 = computed(() => store.getters['general/isCheckMetamask']);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const { evmDeposit } = useEvmDeposit();
-    const { faucetInfo } = useFaucet();
+    const { faucetInfo, requestFaucet } = useFaucet();
 
     return {
       ...toRefs(stateModal),
@@ -162,6 +163,7 @@ export default defineComponent({
       isSS58,
       isH160,
       faucetInfo,
+      requestFaucet,
     };
   },
   methods: {

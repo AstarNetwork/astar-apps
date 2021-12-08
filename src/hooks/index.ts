@@ -12,3 +12,4 @@ export * from './useEvmDeposit';
 export * from './useApr';
 export * from './useCurrentEra';
 export * from './useFaucet';
+export * from './useChainInfo';

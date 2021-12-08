@@ -1,10 +1,12 @@
-import { ref, watch, onUnmounted, watchEffect } from 'vue';
-
+import { useStore } from 'src/store';
+import axios from 'axios';
+import { ref, watch } from 'vue';
+import { useAccount } from './useAccount';
+import { providerEndpoints } from 'src/config/chainEndpoints';
 export interface FaucetInfo {
-  remainTime: {
-    hours: number;
-    minutes: number;
-    seconds: number;
+  timestamps: {
+    lastRequestAt: number;
+    nextRequestAt: number;
   };
   faucet: {
     amount: number;
@@ -13,10 +15,9 @@ export interface FaucetInfo {
 }
 
 const initialInfoState = {
-  remainTime: {
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
+  timestamps: {
+    lastRequestAt: 0,
+    nextRequestAt: 3600000,
   },
   faucet: {
     amount: 0.002,
@@ -26,34 +27,67 @@ const initialInfoState = {
 
 export function useFaucet() {
   const faucetInfo = ref<FaucetInfo>(initialInfoState);
+  const hash = ref<string>('');
+  const { currentAccount } = useAccount();
+  const store = useStore();
+  const currentNetworkIdx = Number(localStorage.getItem('networkIdx'));
+  const faucetEndpoint = providerEndpoints[currentNetworkIdx].faucetEndpoint;
 
-  const getFaucetInfo = (): FaucetInfo => {
-    // Todo: fetch from API
-    const data = initialInfoState;
+  const getFaucetInfo = async (account: string): Promise<FaucetInfo> => {
+    try {
+      const url = `${faucetEndpoint}/drip/?destination=${account}`;
+      const { data } = await axios.get(url);
 
-    return initialInfoState;
+      return data;
+    } catch (error) {
+      console.error(error);
+      return initialInfoState;
+    }
   };
 
-  // const updateEra = async () => {
-  //   const data = await getEra();
-  //   if (!data) return;
-  //   era.value = Number(data.era.toFixed(0));
-  //   blockPerEra.value = data.blockPerEra;
-  // };
+  watch(
+    [hash, currentAccount],
+    async () => {
+      const currentAccountRef = currentAccount.value;
+      if (!currentAccountRef) return;
 
-  // const updateIntervalHandler = setInterval(() => {
-  //   interval.value = interval.value + 1;
-  // }, 30000);
+      faucetInfo.value = await getFaucetInfo(currentAccountRef);
+    },
+    { immediate: true }
+  );
 
-  watchEffect(() => {
-    faucetInfo.value = getFaucetInfo();
-  });
+  const requestFaucet = async (): Promise<void> => {
+    if (!currentAccount.value) {
+      throw Error('Address is empty');
+    }
 
-  onUnmounted(() => {
-    // clearInterval(updateIntervalHandler);
-  });
+    try {
+      store.commit('general/setLoading', true);
+
+      const url = `${faucetEndpoint}/drip`;
+      const { data } = await axios.post<{ hash: string }>(url, {
+        destination: currentAccount.value,
+      });
+
+      const msg = `Completed at block hash #${data.hash}`;
+      store.dispatch('general/showAlertMsg', {
+        msg,
+        alertType: 'success',
+      });
+      hash.value = data.hash;
+    } catch (e: any) {
+      console.error(e);
+      store.dispatch('general/showAlertMsg', {
+        msg: `Transaction failed with error: ${e.message}`,
+        alertType: 'error',
+      });
+    } finally {
+      store.commit('general/setLoading', false);
+    }
+  };
 
   return {
     faucetInfo,
+    requestFaucet,
   };
 }

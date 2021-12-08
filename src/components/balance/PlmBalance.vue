@@ -178,7 +178,6 @@ export default defineComponent({
     };
 
     const openFaucetModal = (): void => {
-      console.log('faucet!');
       emit('update:is-open-modal-faucet', true);
     };
 

@@ -83,21 +83,23 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
     }
   };
 
-  const updateAccountHandler = setInterval(() => {
-    if (!vestedRef.value.eq(new BN(0))) {
-      updateAccount(addressRef.value);
+  const updateAccountBalance = () => {
+    const address = addressRef.value;
+    if (isH160Formatted.value) {
+      updateAccountH160(address);
+    } else {
+      updateAccount(address);
     }
-  }, 10000);
+  };
+
+  const updateAccountHandler = setInterval(() => {
+    updateAccountBalance();
+  }, 12000);
 
   watch(
     [addressRef, isLoading],
     () => {
-      const address = addressRef.value;
-      if (isH160Formatted.value) {
-        updateAccountH160(address);
-      } else {
-        updateAccount(address);
-      }
+      updateAccountBalance();
     },
     { immediate: true }
   );

@@ -31,24 +31,30 @@
               tw-mb-4 tw-text-center
             "
           >
-            <!-- {{ $t('balance.modals.withdrawalToken', { token: defaultUnitToken }) }} -->
-            SDN Faucet
+            {{ $t('balance.faucet') }}
           </h3>
 
           <div class="faucet-amount">
-            <span class="tw-block tw-text-left tw-font-bold tw-text-sm"> Faucet amount </span>
+            <span class="tw-block tw-text-left tw-font-bold tw-text-sm">
+              {{ $t('balance.modals.faucetAmount') }}
+            </span>
             <span class="tw-block tw-font-semibold tw-text-2xl tw-mb-1 tw-text-center">
-              <!-- <format-balance :balance="balance" /> -->
-              {{ faucetAmount }} SDN
+              {{ faucetAmount }} {{ unit }}
             </span>
           </div>
 
-          <div class="tw-mb-8 tw-mt-9 tw-text-center">
+          <div v-if="!isAbleToFaucet" class="tw-mb-8 tw-mt-9 tw-text-center">
             <div class="tw-text-lg tw-font-extrabold tw-text-blue-900 dark:tw-text-white">
-              Time left until the next request
+              {{ $t('balance.modals.faucetNextRequest') }}
             </div>
             <div class="tw-text-xl tw-font-extrabold tw-text-blue-900 dark:tw-text-white">
-              48 hrs 55 mins 20 secs
+              {{
+                $t('balance.modals.countDown', {
+                  hrs: countDown.hours,
+                  mins: countDown.minutes,
+                  secs: countDown.seconds,
+                })
+              }}
             </div>
           </div>
           <div class="tw-mb-8">
@@ -59,17 +65,19 @@
                 tw-text-center tw-mb-2
               "
             >
-              What is faucet and how does it help you?
+              {{ $t('balance.modals.whatIsFaucet') }}
             </div>
             <div class="tw-text-md tw-text-blue-900 dark:tw-text-white">
-              On Shiden network, there are minimal costs for each transaction, and this is paid as
-              gas using SDN token. If you have no SDN in your account, you cannot send any tokens.
-              Faucet sends enough SDN to cover the transaction cost!
+              {{
+                $t('balance.modals.faucetIntro', {
+                  unit,
+                })
+              }}
             </div>
           </div>
         </div>
         <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row-reverse">
-          <button type="button" class="confirm" @click="console.log('hello')">
+          <button :disabled="!isAbleToFaucet" type="button" class="confirm" @click="handleRequest">
             {{ $t('confirm') }}
           </button>
           <button type="button" class="cancel" @click="closeModal">
@@ -82,28 +90,84 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { DateTime } from 'luxon';
+import { defineComponent, onUnmounted, ref, watchEffect } from 'vue';
+interface Countdown {
+  hours: number;
+  minutes: number;
+  seconds: number;
+}
+
 export default defineComponent({
   props: {
     info: {
       type: Object,
       required: true,
     },
+    requestFaucet: {
+      type: Function,
+      required: true,
+    },
   },
   emits: ['update:is-open'],
 
-  setup({ info }, { emit }) {
+  setup({ info: { faucet, timestamps }, requestFaucet }, { emit }) {
     const closeModal = () => {
       emit('update:is-open', false);
     };
 
     const openOption = ref(false);
-    const faucetAmount = info.faucet.amount;
+    const faucetAmount = faucet.amount;
+    const unit = faucet.unit;
+    const countDown = ref<Countdown>({
+      hours: 0,
+      minutes: 0,
+      seconds: 0,
+    });
+
+    const { nextRequestAt } = timestamps;
+    const isAbleToFaucet = Date.now() > nextRequestAt;
+
+    const handleCountDown = (): void => {
+      if (!isAbleToFaucet) {
+        const resetTime = DateTime.fromMillis(nextRequestAt);
+        const { hours, minutes, seconds } = resetTime.diffNow(['hours', 'minutes', 'seconds']);
+        countDown.value.hours = hours;
+        countDown.value.minutes = minutes;
+        countDown.value.seconds = Number(seconds.toFixed(0));
+      }
+    };
+
+    const updateCountdown = setInterval(() => {
+      handleCountDown();
+    }, 1000);
+
+    watchEffect(() => {
+      handleCountDown();
+    });
+
+    onUnmounted(() => {
+      clearInterval(updateCountdown);
+    });
+
+    const handleRequest = async () => {
+      try {
+        await requestFaucet();
+      } catch (error) {
+        console.error(error);
+      } finally {
+        closeModal();
+      }
+    };
 
     return {
       closeModal,
+      countDown,
       openOption,
       faucetAmount,
+      unit,
+      isAbleToFaucet,
+      handleRequest,
     };
   },
 });
