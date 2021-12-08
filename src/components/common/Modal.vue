@@ -19,8 +19,7 @@
           tw-mx-2
           tw-my-2
           tw-align-middle
-          tw-max-w-2xl
-          tw-w-full
+          tw-w-auto
         "
       >
         <div>
