@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      v-if="dapps.length > 0 && progress > 0"
+      v-if="dapps.length > 0"
       class="tw-flex tw-flex-wrap tw-gap-x-12 xl:tw-gap-x-18 tw-justify-center"
     >
       <TVL />
@@ -22,7 +22,7 @@
         {{ $t('store.registerDapp') }}
       </Button>
       <div
-        v-if="stakerApr > 0"
+        v-if="stakerApy > 0"
         class="
           sm:tw-w-40
           tw-justify-center
@@ -45,7 +45,7 @@
           <q-icon :name="fasSeedling" color="green" />
         </icon-base>
         <div>
-          {{ $t('store.stakerApr', { value: Number(stakerApr.toFixed(1)) }) }}
+          {{ $t('store.stakerApy', { value: Number(stakerApy.toFixed(1)) }) }}
         </div>
       </div>
     </div>
@@ -62,6 +62,7 @@
         :key="index"
         :dapp="dapp"
         :staker-max-number="maxNumberOfStakersPerContract"
+        :account-data="accountData"
         @dappClick="showDetailsModal"
       />
     </div>
@@ -85,7 +86,7 @@ import ModalRegisterDapp from 'components/store/modals/ModalRegisterDapp.vue';
 import Dapp from 'src/components/store/Dapp.vue';
 import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
-import { useCurrentEra, useApr } from 'src/hooks';
+import { useCurrentEra, useApr, useApi, useAccount, useBalance } from 'src/hooks';
 import { DappItem } from 'src/store/dapps-store/state';
 import { computed, defineComponent, ref } from 'vue';
 import TVL from './statistics/TVL.vue';
@@ -110,8 +111,11 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const dapps = computed(() => store.getters['dapps/getAllDapps']);
-    const { stakerApr } = useApr();
+    const { stakerApy } = useApr();
     const { progress, blocksUntilNextEra, era } = useCurrentEra();
+    const { api } = useApi();
+    const { currentAccount } = useAccount();
+    const { accountData } = useBalance(api, currentAccount);
 
     const maxNumberOfStakersPerContract = computed(
       () => store.getters['dapps/getMaxNumberOfStakersPerContract']
@@ -143,8 +147,9 @@ export default defineComponent({
       progress,
       blocksUntilNextEra,
       era,
-      stakerApr,
+      stakerApy,
       fasSeedling,
+      accountData,
     };
   },
 });

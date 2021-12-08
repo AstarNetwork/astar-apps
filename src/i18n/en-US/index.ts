@@ -129,11 +129,11 @@ export default {
     requirement: 'REQUIREMENT',
     currentEra: 'CURRENT ERA',
     blocksUntilNextEra: 'Blocks until next era',
-    stakerApr: 'APR: {value}%',
+    stakerApy: 'APY: {value}%',
     modals: {
       alreadyClaimed: 'Already claimed:',
       contractRewards: 'Contract rewards:',
-      yourBalance: 'Your balance',
+      availableToStake: 'Available to stake',
       yourTransferableBalance: 'Your transferable balance',
       yourRewards: 'Your rewards',
       contractAddress: 'Contract address {address}',

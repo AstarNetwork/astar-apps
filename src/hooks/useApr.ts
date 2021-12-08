@@ -1,3 +1,4 @@
+import { aprToApy } from 'apr-tools';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
 import { computed, ref, watchEffect } from 'vue';
@@ -24,6 +25,7 @@ export const useApr = () => {
 
   const dapps = computed(() => store.getters['dapps/getAllDapps']);
   const stakerApr = ref<number>(0);
+  const stakerApy = ref<number>(0);
 
   const getAveBlocksPerMins = ({
     chainId,
@@ -92,9 +94,11 @@ export const useApr = () => {
 
     apiRef.isReady.then(async () => {
       stakerApr.value = await getApr();
+      stakerApy.value = aprToApy(stakerApr.value);
     });
   });
   return {
     stakerApr,
+    stakerApy,
   };
 };

@@ -14,7 +14,7 @@
           <div class="tw-w-20">{{ $t('store.stakersCount') }}</div>
           <div class="tw-relative">
             <VueJsProgress
-              :percentage="((stakeInfo?.stakersCount / stakerMaxNumber) * 100).toFixed(0)"
+              :percentage="Number(((stakeInfo?.stakersCount / stakerMaxNumber) * 100).toFixed(0))"
               :bg="stakeInfo?.stakersCount === stakerMaxNumber ? 'pinkglamour' : 'turquoise'"
               :delay="600"
               :striped="!isMaxStaker"
@@ -61,6 +61,7 @@
       :title="modalTitle"
       :min-staking="formattedMinStake"
       :stake-amount="stakeInfo?.yourStake.denomAmount"
+      :account-data="accountData"
     />
 
     <ClaimRewardModal
@@ -96,6 +97,10 @@ export default defineComponent({
   },
   props: {
     dapp: {
+      type: Object,
+      required: true,
+    },
+    accountData: {
       type: Object,
       required: true,
     },
