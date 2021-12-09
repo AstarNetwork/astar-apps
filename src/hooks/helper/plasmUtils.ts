@@ -1,12 +1,13 @@
-// const { decodeAddress, encodeAddress } = require('@polkadot/keyring');
-// const { hexToU8a, isHex } = require('@polkadot/util');
-import { formatFixed } from '@ethersproject/bignumber';
-import { hexToU8a, isHex, u8aToHex } from '@polkadot/util';
+import { BigNumber, formatFixed } from '@ethersproject/bignumber';
+import { hexToU8a, isHex, isString, u8aToHex } from '@polkadot/util';
 import { addressToEvm, decodeAddress, encodeAddress, evmToAddress } from '@polkadot/util-crypto';
 import BN from 'bn.js';
 import Web3 from 'web3';
+import { LOCAL_STORAGE } from './../../config/localStorage';
+import { nFormatter } from './units';
 
 export const ASTAR_SS58_FORMAT = 5;
+export const ASTAR_DECIMALS = 18;
 
 /**
  * A helper function to convert the given node balance value into the given chain token decimal point as a string.
@@ -15,10 +16,29 @@ export const ASTAR_SS58_FORMAT = 5;
  * @param decimal the decimal point it should convert to
  * @returns the reduced value in string number
  */
-export const reduceBalanceToDenom = (bal: BN, decimal: number) => {
+export const reduceBalanceToDenom = (bal: BN, decimal: number): string => {
   const decPoint = new BN(10).pow(new BN(decimal));
   const formatted = bal.div(decPoint);
   return formatted.toString();
+};
+
+/**
+ * Format unit number(K M B) with default currency.
+ * info: Balance.toHuman() -> 243.5087 mSDN (lower readability)
+ * @param value eg: value.toString() -> '243508700000000000'
+ * @param decimal eg: 18
+ * @returns '0.244 SDN'
+ */
+export const balanceFormatter = (bal: BN | string, decimal = ASTAR_DECIMALS): string => {
+  let amount;
+  if (isString(bal)) {
+    amount = defaultAmountWithDecimals(new BN(bal), decimal);
+  } else {
+    amount = defaultAmountWithDecimals(bal, decimal);
+  }
+
+  const defaultCurrency = localStorage.getItem(LOCAL_STORAGE.DEFAULT_CURRENCY);
+  return `${nFormatter(Number(amount))} ${defaultCurrency}`;
 };
 
 /**
@@ -27,9 +47,25 @@ export const reduceBalanceToDenom = (bal: BN, decimal: number) => {
  * @param decimal eg: 18
  * @returns '12.999999999999'
  */
-export const defaultAmountWithDecimals = (value: BN, decimal: number): string => {
-  const hexValue = value.toJSON();
-  return formatFixed(hexValue, decimal);
+export const defaultAmountWithDecimals = (
+  value: BN | BigNumber | string,
+  decimal: number
+): string => {
+  const strToBig = (str: string) => BigNumber.from(str.toString());
+
+  if (isString(value)) {
+    const hexValue = strToBig(value);
+    return formatFixed(hexValue, decimal);
+  }
+
+  try {
+    const hexValue = value.toJSON();
+    return formatFixed(hexValue, decimal);
+  } catch (error) {
+    const bigValue = strToBig(value.toString());
+    const hexValue = bigValue.toJSON();
+    return formatFixed(hexValue, decimal);
+  }
 };
 
 export const reduceDenomToBalance = (bal: number, unit: number, decimal: number) => {

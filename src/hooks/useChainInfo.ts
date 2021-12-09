@@ -1,10 +1,10 @@
-import { ref, Ref, watch } from 'vue';
 import type { ApiPromise } from '@polkadot/api';
-import { getSpecTypes } from '@polkadot/types-known';
-import { formatBalance, isNumber } from '@polkadot/util';
 import type { MetadataDef } from '@polkadot/extension-inject/types';
+import { getSpecTypes } from '@polkadot/types-known';
 import { TypeRegistry } from '@polkadot/types/create';
+import { formatBalance, isNumber } from '@polkadot/util';
 import { defaults as addressDefaults } from '@polkadot/util-crypto/address/defaults';
+import { ref, Ref, watchEffect } from 'vue';
 
 export interface ChainInfo extends MetadataDef {
   color: string | undefined;
@@ -21,7 +21,7 @@ function createInfo(
   systemName: string,
   specName: string
 ): ChainInfo {
-  console.log('chainInfo', `${systemChain} | ${systemName} | ${specName}`);
+  // console.log('chainInfo', `${systemChain} | ${systemName} | ${specName}`);
   return {
     chain: systemChain,
     color: '#2096F3',
@@ -43,18 +43,12 @@ function createInfo(
 
 export function useChainInfo(apiRef: Ref<ApiPromise>) {
   const chainInfo = ref<ChainInfo>();
-  watch(
-    () => apiRef?.value,
-    async () => {
-      const specName: string = apiRef.value.runtimeVersion.specName.toString();
-      const systemChain: string = (
-        (await apiRef.value.rpc.system.chain()) || '<unknown>'
-      ).toString();
-      const systemName: string = (await apiRef.value.rpc.system.name()).toString();
-
-      chainInfo.value = createInfo(apiRef.value, systemChain, systemName, specName);
-    }
-  );
+  watchEffect(async () => {
+    const specName: string = apiRef.value.runtimeVersion.specName.toString();
+    const systemChain: string = ((await apiRef.value.rpc.system.chain()) || '<unknown>').toString();
+    const systemName: string = (await apiRef.value.rpc.system.name()).toString();
+    chainInfo.value = createInfo(apiRef.value, systemChain, systemName, specName);
+  });
 
   return {
     chainInfo,

@@ -97,7 +97,7 @@ export default {
     registerDapp: 'dAppを登録',
     noDappsRegistered: 'No dApps registered. Be the first to register one.',
     totalStake: 'Total stake:',
-    yourBalance: 'Your balance',
+    availableToStake: 'Available to stake',
     yourStake: 'Your stake: ',
     add: 'Add',
     unstake: 'Unstake',

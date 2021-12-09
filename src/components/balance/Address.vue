@@ -144,6 +144,8 @@ export default defineComponent({
     const { currentAccount } = useAccount();
 
     watchEffect(() => {
+      if (!currentAccount.value) return;
+
       address.value =
         format === AddressFormat.SS58 ? currentAccount.value : toEvmAddress(currentAccount.value);
     });

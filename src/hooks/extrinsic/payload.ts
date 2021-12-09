@@ -1,6 +1,6 @@
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import { u16, u32, TypeRegistry } from '@polkadot/types';
-import { keccakFromArray } from '../custom-signature/ethereumjs-util/hash';
+import { keccakFromArray } from 'ethereumjs-util';
 
 export const getPayload = (
   method: SubmittableExtrinsic<'promise'>,
