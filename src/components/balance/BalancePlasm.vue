@@ -34,12 +34,22 @@
       </div>
     </div>
 
-    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-y-8 md:tw-gap-8 tw-mt-8">
+    <div
+      class="
+        tw-grid tw-grid-cols-1
+        md:tw-grid-cols-3
+        xl:tw-grid-cols-4
+        tw-gap-y-8
+        md:tw-gap-8
+        tw-mt-8
+      "
+    >
       <TotalBalance v-if="accountData" :account-data="accountData" />
       <PlmBalance
         v-if="accountData"
         v-model:isOpenTransfer="modalTransferAmount"
         v-model:isOpenWithdrawalEvmDeposit="modalWithdrawalEvmDeposit"
+        v-model:isOpenModalFaucet="modalFaucet"
         :address="currentAccount"
         :account-data="accountData"
       />
@@ -67,6 +77,12 @@
       :account="currentAccount"
       :account-name="currentAccountName"
     />
+    <ModalFaucet
+      v-if="modalFaucet"
+      v-model:isOpen="modalFaucet"
+      :info="faucetInfo"
+      :request-faucet="requestFaucet"
+    />
   </div>
 
   <!-- <ModalAlertBox
@@ -77,13 +93,14 @@
 </template>
 <script lang="ts">
 import { useMeta } from 'quasar';
-import { useAccount, useApi, useBalance, useEvmDeposit } from 'src/hooks';
+import { useAccount, useApi, useBalance, useEvmDeposit, useFaucet } from 'src/hooks';
 import { useStore } from 'src/store';
-import { computed, defineComponent, reactive, toRefs, watchEffect } from 'vue';
+import { computed, defineComponent, reactive, toRefs } from 'vue';
 import Addresses from './Addresses.vue';
 import ModalAccount from './modals/ModalAccount.vue';
 import ModalTransferAmount from './modals/ModalTransferAmount.vue';
 import ModalWithdrawalEvmDeposit from './modals/ModalWithdrawalEvmDeposit.vue';
+import ModalFaucet from './modals/ModalFaucet.vue';
 import PlmBalance from './PlmBalance.vue';
 import ToggleMetaMask from './ToggleMetaMask.vue';
 import TotalBalance from './TotalBalance.vue';
@@ -95,6 +112,7 @@ interface Modal {
   modalTransferAmount: boolean;
   modalWithdrawalEvmDeposit: boolean;
   modalTransferToken: boolean;
+  modalFaucet: boolean;
 }
 
 export default defineComponent({
@@ -108,6 +126,7 @@ export default defineComponent({
     ModalAccount,
     ModalTransferAmount,
     ModalWithdrawalEvmDeposit,
+    ModalFaucet,
   },
   setup() {
     useMeta({ title: 'Wallet' });
@@ -117,6 +136,7 @@ export default defineComponent({
       modalTransferAmount: false,
       modalTransferToken: false,
       modalWithdrawalEvmDeposit: false,
+      modalFaucet: false,
     });
 
     const store = useStore();
@@ -128,6 +148,7 @@ export default defineComponent({
     const isSS58 = computed(() => store.getters['general/isCheckMetamask']);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const { evmDeposit } = useEvmDeposit();
+    const { faucetInfo, requestFaucet } = useFaucet();
 
     return {
       ...toRefs(stateModal),
@@ -141,6 +162,8 @@ export default defineComponent({
       accountData,
       isSS58,
       isH160,
+      faucetInfo,
+      requestFaucet,
     };
   },
   methods: {
