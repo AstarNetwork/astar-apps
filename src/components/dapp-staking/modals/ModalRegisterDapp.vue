@@ -73,8 +73,8 @@ import { useFile, FileState } from 'src/hooks/useFile';
 import { useStore } from 'src/store';
 import { useApi } from 'src/hooks';
 import { isEthereumAddress } from '@polkadot/util-crypto';
-import { NewDappItem, LooseObject } from 'src/store/dapps-store/state';
-import { RegisterParameters } from 'src/store/dapps-store/actions';
+import { NewDappItem, LooseObject } from 'src/store/dapp-staking/state';
+import { RegisterParameters } from 'src/store/dapp-staking/actions';
 
 export default defineComponent({
   components: {

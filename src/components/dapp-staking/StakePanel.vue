@@ -76,14 +76,14 @@
 
 <script lang="ts">
 import { defineComponent, ref, toRefs, watchEffect } from 'vue';
-import StakeModal from 'components/dappStaking/modals/StakeModal.vue';
+import StakeModal from 'components/dapp-staking/modals/StakeModal.vue';
 import { StakeModel } from 'src/hooks/store';
 import Button from 'components/common/Button.vue';
-import ClaimRewardModal from 'components/dappStaking/modals/ClaimRewardModal.vue';
+import ClaimRewardModal from 'components/dapp-staking/modals/ClaimRewardModal.vue';
 import { useApi, useChainMetadata, useGetMinStaking } from 'src/hooks';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
-import { StakingParameters } from 'src/store/dapps-store/actions';
+import { StakingParameters } from 'src/store/dapp-staking/actions';
 import { getAmount } from 'src/hooks/store';
 import VueJsProgress from 'vue-js-progress';
 import './stake-panel.scss';

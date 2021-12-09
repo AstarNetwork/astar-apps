@@ -81,13 +81,13 @@
 import Button from 'components/common/Button.vue';
 import IconBase from 'components/icons/IconBase.vue';
 import IconPlus from 'components/icons/IconPlus.vue';
-import ModalDappDetails from 'components/dappStaking/modals/ModalDappDetails.vue';
-import ModalRegisterDapp from 'components/dappStaking/modals/ModalRegisterDapp.vue';
-import Dapp from 'src/components/dappStaking/Dapp.vue';
+import ModalDappDetails from 'components/dapp-staking/modals/ModalDappDetails.vue';
+import ModalRegisterDapp from 'components/dapp-staking/modals/ModalRegisterDapp.vue';
+import Dapp from 'src/components/dapp-staking/Dapp.vue';
 import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { useCurrentEra, useApr, useApi, useAccount, useBalance } from 'src/hooks';
-import { DappItem } from 'src/store/dapps-store/state';
+import { DappItem } from 'src/store/dapp-staking/state';
 import { computed, defineComponent, ref } from 'vue';
 import TVL from './statistics/TVL.vue';
 import DappsCount from './statistics/DappsCount.vue';

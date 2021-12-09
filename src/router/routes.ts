@@ -5,8 +5,8 @@ import DApps from 'pages/DApps.vue';
 import Store from 'pages/Store.vue';
 import BalancePlasm from 'components/balance/BalancePlasm.vue';
 import CreateDappsTab from 'components/contracts/CreateDappsTab.vue';
-import DiscoverDappsTab from 'components/dappStaking/DiscoverDappsTab.vue';
-import ManageDappsTab from 'components/dappStaking/ManageDappsTab.vue';
+import DiscoverDappsTab from 'components/dapp-staking/DiscoverDappsTab.vue';
+import ManageDappsTab from 'components/dapp-staking/ManageDappsTab.vue';
 
 const routes: RouteRecordRaw[] = [
   {

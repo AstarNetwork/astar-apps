@@ -45,7 +45,7 @@ import { useChainMetadata } from 'src/hooks';
 import Modal from 'src/components/common/Modal.vue';
 import Button from 'src/components/common/Button.vue';
 import Avatar from 'src/components/common/Avatar.vue';
-import { StakingParameters, ClaimInfo } from 'src/store/dapps-store/actions';
+import { StakingParameters, ClaimInfo } from 'src/store/dapp-staking/actions';
 import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
 import BN from 'bn.js';
 
