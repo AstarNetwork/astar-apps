@@ -33,7 +33,7 @@
 
       <nav class="flex-1">
         <router-link
-          to="/wallet"
+          to="/balance"
           :class="[$route.path.split('/')[1] === 'balance' ? 'activeLink' : 'inactiveLink']"
           class="tw-items-center tw-justify-center"
         >
@@ -65,10 +65,10 @@
         <router-link
           v-if="network.isSupportContract && !isH160"
           to="/contracts"
-          :class="[$route.path.split('/')[1] === 'dapps' ? 'activeLink' : 'inactiveLink']"
+          :class="[$route.path.split('/')[1] === 'contracts' ? 'activeLink' : 'inactiveLink']"
         >
           <icon-base
-            :class="[$route.path.split('/')[1] === 'dapps' ? 'activeSvg' : 'inactiveSvg']"
+            :class="[$route.path.split('/')[1] === 'contracts' ? 'activeSvg' : 'inactiveSvg']"
             viewBox="0 0 24 24"
           >
             <icon-dapps />
@@ -81,10 +81,10 @@
         <router-link
           v-if="network.isStoreEnabled && !isH160"
           to="/dapp-staking"
-          :class="[$route.path.split('/')[1] === 'store' ? 'activeLink' : 'inactiveLink']"
+          :class="[$route.path.split('/')[1] === 'dapp-staking' ? 'activeLink' : 'inactiveLink']"
         >
           <icon-base
-            :class="[$route.path.split('/')[1] === 'store' ? 'activeSvg' : 'inactiveSvg']"
+            :class="[$route.path.split('/')[1] === 'dapp-staking' ? 'activeSvg' : 'inactiveSvg']"
             viewBox="0 0 24 24"
           >
             <icon-store />

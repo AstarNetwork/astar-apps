@@ -33,8 +33,6 @@
           class="
             tw-hidden
             lg:tw-block
-            tw-hidden
-            lg:tw-block
             tw-ml-4
             2xl:tw-text-lg
             tw-font-semibold tw-text-blue-900
