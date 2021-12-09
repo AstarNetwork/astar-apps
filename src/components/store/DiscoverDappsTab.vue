@@ -94,6 +94,7 @@ import DappsCount from './statistics/DappsCount.vue';
 import Requirement from './statistics/Requirement.vue';
 import Era from './statistics/Era.vue';
 import { fasSeedling } from '@quasar/extras/fontawesome-v5';
+import { useMeta } from 'quasar';
 
 export default defineComponent({
   components: {
@@ -111,6 +112,7 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const dapps = computed(() => store.getters['dapps/getAllDapps']);
+    useMeta({ title: 'Discover dApps' });
     const { stakerApy } = useApr();
     const { progress, blocksUntilNextEra, era } = useCurrentEra();
     const { api } = useApi();

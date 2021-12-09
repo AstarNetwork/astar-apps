@@ -22,11 +22,11 @@
           tw-whitespace-nowrap
         "
       >
-        {{ $t('store.dappsStore') }}
+        {{ $t('store.dappStaking') }}
       </h1>
       <div class="tw-flex tw-justify-between tw-items-center tw-w-full">
         <div class="tw-flex">
-          <Tab :labels="[{ label: 'Discover', path: 'discover-dapps' }]" />
+          <Tab :labels="[{ label: 'Discover', path: 'discover' }]" />
           <!-- <Tab :labels="[{ label: 'Manage', path: 'manage-dapps' }]" /> -->
         </div>
         <div
@@ -55,7 +55,6 @@
 </template>
 
 <script lang="ts">
-import BN from 'bn.js';
 import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { computed, defineComponent } from 'vue';

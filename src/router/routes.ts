@@ -20,44 +20,44 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
-        redirect: '/balance/balance-plasm',
+        redirect: '/balance/wallet',
       },
       {
-        path: 'balance-plasm',
+        path: 'wallet',
         component: BalancePlasm,
       },
     ],
   },
   {
-    path: '/dapps',
-    name: 'dApps',
+    path: '/contracts',
+    name: 'Contracts',
     component: DApps,
     children: [
       {
         path: '',
-        redirect: '/dapps/create-dapps',
+        redirect: '/contracts/create-contract',
       },
       {
-        path: 'create-dapps',
+        path: 'create-contract',
         component: CreateDappsTab,
       },
     ],
   },
   {
-    path: '/store',
-    name: 'Store',
+    path: '/dapp-staking',
+    name: 'dApp Staking',
     component: Store,
     children: [
       {
         path: '',
-        redirect: '/store/discover-dapps',
+        redirect: '/dapp-staking/discover',
       },
       {
-        path: 'discover-dapps',
+        path: 'discover',
         component: DiscoverDappsTab,
       },
       {
-        path: 'manage-dapps',
+        path: 'manage',
         component: ManageDappsTab,
       },
     ],

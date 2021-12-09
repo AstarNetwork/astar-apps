@@ -110,7 +110,7 @@ export default defineComponent({
     ModalWithdrawalEvmDeposit,
   },
   setup() {
-    useMeta({ title: 'Balance-Plasm' });
+    useMeta({ title: 'Wallet' });
 
     const stateModal = reactive<Modal>({
       modalAccount: false,

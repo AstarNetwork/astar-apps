@@ -22,7 +22,7 @@
       >
         {{ $t('balance.balance') }}
       </h1>
-      <Tab :labels="[{ label: 'Wallet', path: 'balance-plasm' }]" />
+      <Tab :labels="[{ label: 'Wallet', path: 'wallet' }]" />
     </div>
     <router-view />
   </div>

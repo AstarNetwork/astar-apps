@@ -60,7 +60,7 @@ export default defineComponent({
     ContractsTable,
   },
   setup() {
-    useMeta({ title: 'Dapps-Create dApps' });
+    useMeta({ title: 'Deploy Contracts' });
 
     const stateModal = reactive<Modal>({
       modalCreateDapps: false,

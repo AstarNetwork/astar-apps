@@ -33,7 +33,7 @@
 
       <nav class="flex-1">
         <router-link
-          to="/balance"
+          to="/wallet"
           :class="[$route.path.split('/')[1] === 'balance' ? 'activeLink' : 'inactiveLink']"
           class="tw-items-center tw-justify-center"
         >
@@ -64,7 +64,7 @@
 
         <router-link
           v-if="network.isSupportContract && !isH160"
-          to="/dapps"
+          to="/contracts"
           :class="[$route.path.split('/')[1] === 'dapps' ? 'activeLink' : 'inactiveLink']"
         >
           <icon-base
@@ -74,13 +74,13 @@
             <icon-dapps />
           </icon-base>
           <span class="tw-font-bold tw-ml-3 tw-flex-1">
-            {{ $t('common.dApps') }}
+            {{ $t('common.contract') }}
           </span>
         </router-link>
 
         <router-link
           v-if="network.isStoreEnabled && !isH160"
-          to="/store"
+          to="/dapp-staking"
           :class="[$route.path.split('/')[1] === 'store' ? 'activeLink' : 'inactiveLink']"
         >
           <icon-base
@@ -90,7 +90,7 @@
             <icon-store />
           </icon-base>
           <span class="tw-font-bold tw-ml-3 tw-flex-1">
-            {{ $t('common.store') }}
+            {{ $t('common.dappStaking') }}
           </span>
         </router-link>
 

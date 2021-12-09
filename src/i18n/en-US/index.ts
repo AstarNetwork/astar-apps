@@ -16,8 +16,10 @@ export default {
     metadataAlreadyInstalled: 'Metadata Already Installed',
     lightMode: 'Light mode',
     darkMode: 'Dark mode',
-    dApps: 'dApps',
-    store: 'Store',
+    dApps: 'dApps', // replaced by contract
+    store: 'Store', // replaced by dappStaking
+    dappStaking: 'dApp Staking',
+    contract: 'Contract',
     plasmLockdrop: 'Plasm Lockdrop',
     closeSidebar: 'Close sidebar',
     twitter: 'Twitter',
@@ -106,6 +108,7 @@ export default {
   },
   store: {
     dappsStore: 'dApps Store',
+    dappStaking: 'dApp Staking',
     registerDapp: 'Register dApp',
     noDappsRegistered: 'No dApps registered. Be the first to register one.',
     totalStake: 'Total stake:',
