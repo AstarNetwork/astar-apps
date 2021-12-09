@@ -42,7 +42,7 @@ export default {
       invalidAddress: '钱包地址有误',
     },
   },
-  dapps: {
+  contracts: {
     codeHashes: 'Code hashes',
     codeHash: 'Code hash',
     msgs: 'Messages',
@@ -92,7 +92,7 @@ export default {
       },
     },
   },
-  store: {
+  dappStaking: {
     dappsStore: 'dApps Store',
     registerDapp: '注册dApp',
     noDappsRegistered: 'No dApps registered. Be the first to register one.',

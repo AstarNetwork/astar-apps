@@ -8,7 +8,7 @@
       >
         <icon-plus />
       </icon-base>
-      {{ $t('store.registerDapp') }}
+      {{ $t('dappStaking.registerDapp') }}
     </Button>
 
     <ModalRegisterDapp v-if="showRegisterDappModal" v-model:isOpen="showRegisterDappModal" />
@@ -19,7 +19,7 @@
 import { defineComponent, ref } from 'vue';
 import IconPlus from 'components/icons/IconPlus.vue';
 import IconBase from 'components/icons/IconBase.vue';
-import ModalRegisterDapp from 'components/store/modals/ModalRegisterDapp.vue';
+import ModalRegisterDapp from 'components/dappStaking/modals/ModalRegisterDapp.vue';
 import Button from 'components/common/Button.vue';
 
 export default defineComponent({

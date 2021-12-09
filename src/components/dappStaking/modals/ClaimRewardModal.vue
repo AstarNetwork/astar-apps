@@ -3,25 +3,27 @@
     <template #content>
       <Avatar :url="dapp.iconUrl" class="tw-w-36 tw-h-36 tw-mb-4 tw-mx-auto" />
       <div v-if="stakeInfo?.totalStake" class="tw-mt-4">
-        <span class="tw-w-52 tw-inline-block">{{ $t('store.totalStake') }}</span>
+        <span class="tw-w-52 tw-inline-block">{{ $t('dappStaking.totalStake') }}</span>
         <span class="tw-font-semibold">{{ stakeInfo.totalStake }}</span>
       </div>
       <div v-if="stakeInfo?.yourStake" class="tw-mt-2">
-        <span class="tw-w-52 tw-inline-block">{{ $t('store.yourStake') }}</span>
+        <span class="tw-w-52 tw-inline-block">{{ $t('dappStaking.yourStake') }}</span>
         <span class="tw-font-semibold">{{ stakeInfo.yourStake.formatted }}</span>
       </div>
       <div class="tw-mt-2">
-        <span class="tw-w-52 tw-inline-block"> {{ $t('store.modals.estimatedRewards') }}</span>
+        <span class="tw-w-52 tw-inline-block">
+          {{ $t('dappStaking.modals.estimatedRewards') }}</span
+        >
         <span class="tw-font-semibold tw-w-16 tw-text-rigth">{{ pendingRewards }}</span>
       </div>
       <div class="tw-mt-2">
         <span class="tw-w-52 tw-inline-block">
-          {{ $t('store.modals.estimatedClaimedRewards') }}
+          {{ $t('dappStaking.modals.estimatedClaimedRewards') }}
         </span>
         <span class="tw-font-semibold tw-w-16 tw-text-rigth">{{ claimedRewards }}</span>
       </div>
       <div class="tw-mt-2">
-        <span class="tw-w-52 tw-inline-block"> {{ $t('store.modals.unclaimedEras') }}</span>
+        <span class="tw-w-52 tw-inline-block"> {{ $t('dappStaking.modals.unclaimedEras') }}</span>
         <span class="tw-font-semibold tw-w-16 tw-text-rigth">{{
           claimInfo?.unclaimedEras?.length
         }}</span>
@@ -29,7 +31,7 @@
     </template>
     <template #buttons>
       <Button :disabled="!canClaim" class="tw-tooltip" @click="claimAction()">
-        {{ $t('store.claim') }}
+        {{ $t('dappStaking.claim') }}
       </Button>
     </template>
   </Modal>

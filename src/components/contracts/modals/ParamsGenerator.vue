@@ -2,7 +2,7 @@
   <div class="tw-relative">
     <label
       class="tw-block tw-text-sm tw-font-medium tw-text-gray-500 dark:tw-text-darkGray-400 tw-mb-2"
-      >{{ $t('dapps.modals.instantiationConstructor') }}</label
+      >{{ $t('contracts.modals.instantiationConstructor') }}</label
     >
 
     <button type="button" class="option-button" @click="openOption = !openOption">

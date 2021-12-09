@@ -37,20 +37,20 @@
               <!-- Memo: Add translation file if necesally -->
               <span v-if="ctype == 'codehash'">codeHash</span>
               <span v-else>contract</span>
-              {{ $t('dapps.modals.removal') }}
+              {{ $t('contracts.modals.removal') }}
             </h3>
 
             <div class="tw-grid tw-grid-cols-1 tw-gap-6 dark:tw-text-white">
               <div>
                 <div v-if="ctype === 'codehash'">
-                  {{ $t('dapps.modals.removeCode.first') }}
+                  {{ $t('contracts.modals.removeCode.first') }}
                   <br />
-                  {{ $t('dapps.modals.removeCode.second') }}
+                  {{ $t('contracts.modals.removeCode.second') }}
                 </div>
                 <div v-else>
-                  {{ $t('dapps.modals.removeContract.first') }}
+                  {{ $t('contracts.modals.removeContract.first') }}
                   <br />
-                  {{ $t('dapps.modals.removeContract.second') }}
+                  {{ $t('contracts.modals.removeContract.second') }}
                 </div>
               </div>
             </div>

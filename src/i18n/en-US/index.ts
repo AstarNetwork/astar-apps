@@ -64,7 +64,7 @@ export default {
         'There will be minimal costs for each transaction, and this is paid as gas using {unit} token. If you have no {unit} in your account, you cannot send any tokens. Faucet sends enough {unit} to cover the transaction cost.',
     },
   },
-  dapps: {
+  contracts: {
     codeHashes: 'Code hashes',
     codeHash: 'Code hash',
     msgs: 'Messages',
@@ -114,7 +114,7 @@ export default {
       },
     },
   },
-  store: {
+  dappStaking: {
     dappsStore: 'dApps Store',
     dappStaking: 'dApp Staking',
     registerDapp: 'Register dApp',

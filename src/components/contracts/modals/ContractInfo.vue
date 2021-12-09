@@ -5,7 +5,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import Message from 'components/dapps/Message.vue';
+import Message from 'components/contracts/Message.vue';
 import { MessageType } from 'src/hooks/types/Message';
 
 export default defineComponent({

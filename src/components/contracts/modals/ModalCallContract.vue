@@ -34,7 +34,7 @@
                 tw-mb-6 tw-text-center
               "
             >
-              {{ $t('dapps.modals.callContract') }}
+              {{ $t('contracts.modals.callContract') }}
             </h3>
 
             <div class="tw-grid tw-grid-cols-1 tw-gap-6">
@@ -45,7 +45,7 @@
                     dark:tw-text-darkGray-400
                     tw-mb-2
                   "
-                  >{{ $t('dapps.modals.contractToUse') }}</label
+                  >{{ $t('contracts.modals.contractToUse') }}</label
                 >
                 <input
                   class="
@@ -72,7 +72,7 @@
                     dark:tw-text-darkGray-400
                     tw-mb-2
                   "
-                  >{{ $t('dapps.modals.callFromAccount') }}</label
+                  >{{ $t('contracts.modals.callFromAccount') }}</label
                 >
 
                 <button type="button" class="option-button" @click="openOption = !openOption">
@@ -169,7 +169,7 @@
                     dark:tw-text-darkGray-400
                     tw-mb-2
                   "
-                  >{{ $t('dapps.modals.msgToSend') }}</label
+                  >{{ $t('contracts.modals.msgToSend') }}</label
                 >
 
                 <input
@@ -213,7 +213,7 @@
                   dark:tw-text-darkGray-400
                   tw-mb-2
                 "
-                >{{ $t('dapps.modals.outcome') }}</label
+                >{{ $t('contracts.modals.outcome') }}</label
               >
               <ul
                 class="
@@ -235,10 +235,10 @@
         </div>
         <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row-reverse">
           <button v-if="isViaRpc" type="button" class="read-button" @click="readCallRpc">
-            {{ $t('dapps.modals.read') }}
+            {{ $t('contracts.modals.read') }}
           </button>
           <button v-else type="button" class="excute-button" @click="execCallRpc">
-            {{ $t('dapps.modals.execute') }}
+            {{ $t('contracts.modals.execute') }}
           </button>
           <button type="button" class="cancel" @click="closeModal">
             {{ $t('cancel') }}

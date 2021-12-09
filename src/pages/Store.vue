@@ -22,7 +22,7 @@
           tw-whitespace-nowrap
         "
       >
-        {{ $t('store.dappStaking') }}
+        {{ $t('dappStaking.dappStaking') }}
       </h1>
       <div class="tw-flex tw-justify-between tw-items-center tw-w-full">
         <div class="tw-flex">
@@ -40,7 +40,7 @@
           "
         >
           {{
-            $t('store.warning', {
+            $t('dappStaking.warning', {
               amount: minimumStakingAmount,
               stakers: maxNumberOfStakersPerContract.toLocaleString('en-US'),
             })

@@ -9,7 +9,7 @@
               dark:tw-text-darkGray-400
               tw-mb-2
             "
-            >{{ $t('store.modals.logo') }}</label
+            >{{ $t('dappStaking.modals.logo') }}</label
           >
 
           <input-file :file="imageFromFile" :extension="fileExtension" @dropFile="onDropFile">
@@ -55,7 +55,7 @@
       </div>
     </template>
     <template #buttons>
-      <Button @click="registerDapp">{{ $t('store.modals.register') }}</Button>
+      <Button @click="registerDapp">{{ $t('dappStaking.modals.register') }}</Button>
     </template>
   </Modal>
 </template>
@@ -64,7 +64,7 @@
 import { defineComponent, reactive, ref, watch } from 'vue';
 import Modal from 'components/common/Modal.vue';
 import Input from 'src/components/common/Input.vue';
-import InputFile from 'src/components/dapps/modals/InputFile.vue';
+import InputFile from 'src/components/contracts/modals/InputFile.vue';
 import Avatar from 'components/common/Avatar.vue';
 import IconBase from 'components/icons/IconBase.vue';
 import IconDocument from 'components/icons/IconDocument.vue';

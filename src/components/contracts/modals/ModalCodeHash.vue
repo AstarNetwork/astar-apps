@@ -33,7 +33,7 @@
                 tw-mb-6 tw-text-center
               "
             >
-              {{ $t('dapps.addExistingCodeHash') }}
+              {{ $t('contracts.addExistingCodeHash') }}
             </h3>
 
             <div class="tw-grid tw-grid-cols-1 tw-gap-6">
@@ -44,7 +44,7 @@
                     dark:tw-text-darkGray-400
                     tw-mb-2
                   "
-                  >{{ $t('dapps.modals.codeBundleName') }}</label
+                  >{{ $t('contracts.modals.codeBundleName') }}</label
                 >
                 <input
                   v-model="bundleName"
@@ -70,7 +70,7 @@
                     dark:tw-text-darkGray-400
                     tw-mb-2
                   "
-                  >{{ $t('dapps.codeHash') }}</label
+                  >{{ $t('contracts.codeHash') }}</label
                 >
                 <input
                   v-model="codeHash"
@@ -96,7 +96,7 @@
                     dark:tw-text-darkGray-400
                     tw-mb-2
                   "
-                  >{{ $t('dapps.modals.contractAbi') }}</label
+                  >{{ $t('contracts.modals.contractAbi') }}</label
                 >
                 <input-file
                   :file="wasmFromFile"
@@ -110,7 +110,7 @@
         </div>
         <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row-reverse">
           <button type="button" class="save-button" @click="save">
-            {{ $t('dapps.modals.save') }}
+            {{ $t('contracts.modals.save') }}
           </button>
           <button type="button" class="cancel" @click="closeModal">
             {{ $t('cancel') }}

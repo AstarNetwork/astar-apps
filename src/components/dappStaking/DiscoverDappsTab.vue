@@ -19,7 +19,7 @@
         >
           <icon-plus />
         </icon-base>
-        {{ $t('store.registerDapp') }}
+        {{ $t('dappStaking.registerDapp') }}
       </Button>
       <div
         v-if="stakerApy > 0"
@@ -45,7 +45,7 @@
           <q-icon :name="fasSeedling" color="green" />
         </icon-base>
         <div>
-          {{ $t('store.stakerApy', { value: Number(stakerApy.toFixed(1)) }) }}
+          {{ $t('dappStaking.stakerApy', { value: Number(stakerApy.toFixed(1)) }) }}
         </div>
       </div>
     </div>
@@ -55,7 +55,7 @@
         v-if="dapps.length === 0"
         class="tw-text-xl tx-font-semibold tw-mt-4 dark:tw-text-darkGray-100"
       >
-        {{ $t('store.noDappsRegistered') }}
+        {{ $t('dappStaking.noDappsRegistered') }}
       </div>
       <Dapp
         v-for="(dapp, index) in dapps"
@@ -81,9 +81,9 @@
 import Button from 'components/common/Button.vue';
 import IconBase from 'components/icons/IconBase.vue';
 import IconPlus from 'components/icons/IconPlus.vue';
-import ModalDappDetails from 'components/store/modals/ModalDappDetails.vue';
-import ModalRegisterDapp from 'components/store/modals/ModalRegisterDapp.vue';
-import Dapp from 'src/components/store/Dapp.vue';
+import ModalDappDetails from 'components/dappStaking/modals/ModalDappDetails.vue';
+import ModalRegisterDapp from 'components/dappStaking/modals/ModalRegisterDapp.vue';
+import Dapp from 'src/components/dappStaking/Dapp.vue';
 import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { useCurrentEra, useApr, useApi, useAccount, useBalance } from 'src/hooks';

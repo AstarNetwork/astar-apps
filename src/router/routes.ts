@@ -4,9 +4,9 @@ import Balance from 'pages/Balance.vue';
 import DApps from 'pages/DApps.vue';
 import Store from 'pages/Store.vue';
 import BalancePlasm from 'components/balance/BalancePlasm.vue';
-import CreateDappsTab from 'components/dapps/CreateDappsTab.vue';
-import DiscoverDappsTab from 'components/store/DiscoverDappsTab.vue';
-import ManageDappsTab from 'components/store/ManageDappsTab.vue';
+import CreateDappsTab from 'components/contracts/CreateDappsTab.vue';
+import DiscoverDappsTab from 'components/dappStaking/DiscoverDappsTab.vue';
+import ManageDappsTab from 'components/dappStaking/ManageDappsTab.vue';
 
 const routes: RouteRecordRaw[] = [
   {
