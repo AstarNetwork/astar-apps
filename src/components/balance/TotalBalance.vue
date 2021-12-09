@@ -8,17 +8,18 @@
   >
     <div
       class="
-        tw-rounded-lg tw-px-5 tw-pt-8 tw-pb-10
+        tw-rounded-lg tw-px-5 tw-pt-7 tw-pb-10
         md:tw-pb-0
-        tw-h-full tw-bg-local tw-bg-left-top tw-bg-no-repeat tw-bg-80
+        tw-bg-local tw-bg-left-top tw-bg-no-repeat tw-bg-80
         md:tw-bg-88
+        tw-grid tw-h-full
       "
     >
-      <p class="tw-text-lg tw-font-bold tw-mb-4 md:tw-mb-12 lg:tw-mb-11">
+      <p class="tw-text-lg tw-font-bold">
         {{ $t('balance.totalBalance') }}
       </p>
-      <p class="tw-font-semibold tw-text-center tw-mb-2">
-        <span class="tw-text-4xl tw-tracking-tight tw-leading-tight"
+      <p class="tw-font-semibold tw-text-center tw-items-center md:tw-mb-10 xl:tw-mb-14">
+        <span class="tw-text-3xl tw-tracking-tight tw-leading-tight"
           ><format-balance :balance="accountData?.free" />
         </span>
       </p>
