@@ -1,8 +1,8 @@
 import { RouteRecordRaw } from 'vue-router';
 
 import Balance from 'pages/Balance.vue';
-import DApps from 'pages/DApps.vue';
-import Store from 'pages/Store.vue';
+import DApps from 'src/pages/Contract.vue';
+import Store from 'src/pages/DappStaking.vue';
 import BalancePlasm from 'components/balance/BalancePlasm.vue';
 import CreateDappsTab from 'components/contracts/CreateDappsTab.vue';
 import DiscoverDappsTab from 'components/dapp-staking/DiscoverDappsTab.vue';
