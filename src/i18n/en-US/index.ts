@@ -136,6 +136,9 @@ export default {
       estimatedClaimedRewards: 'Claimed rewards',
       next: 'Next',
       previous: 'Previous',
+      viewProject: 'View Project',
+      license: 'License',
+      staked: 'Staked',
     },
   },
 };

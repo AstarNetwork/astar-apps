@@ -48,6 +48,7 @@
       v-if="showDappDetailsModal"
       v-model:is-open="showDappDetailsModal"
       :dapp="selectedDapp"
+      :stake-info="selectedDappInfo"
     />
   </div>
 </template>
@@ -68,6 +69,7 @@ import TVL from './statistics/TVL.vue';
 import DappsCount from './statistics/DappsCount.vue';
 import Requirement from './statistics/Requirement.vue';
 import Era from './statistics/Era.vue';
+import { StakeInfo } from 'src/store/dapps-store/actions';
 
 export default defineComponent({
   components: {
@@ -97,18 +99,22 @@ export default defineComponent({
     const showRegisterDappModal = ref<boolean>(false);
     const showDappDetailsModal = ref<boolean>(false);
     const selectedDapp = ref<DappItem>();
+    const selectedDappInfo = ref<StakeInfo>();
 
     store.dispatch('dapps/getDapps');
     store.dispatch('dapps/getStakingInfo');
 
-    const showDetailsModal = (dapp: DappItem): void => {
+    const showDetailsModal = (dapp: DappItem, stakeInfo: StakeInfo): void => {
+      console.log(stakeInfo);
       selectedDapp.value = dapp;
+      selectedDappInfo.value = stakeInfo;
       showDappDetailsModal.value = true;
     };
 
     return {
       dapps,
       selectedDapp,
+      selectedDappInfo,
       showRegisterDappModal,
       showDappDetailsModal,
       maxNumberOfStakersPerContract,

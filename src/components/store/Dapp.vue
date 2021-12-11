@@ -62,7 +62,7 @@ export default defineComponent({
     const senderAddress = computed(() => store.getters['general/selectedAccountAddress']);
 
     const emitClickEvent = (): void => {
-      emit('dappClick', props.dapp);
+      emit('dappClick', props.dapp, stakeInfo);
     };
 
     const handleStakeChanged = (): void => {

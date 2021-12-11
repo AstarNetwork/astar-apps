@@ -7,23 +7,21 @@
 
     <q-tab-panels v-model="tab">
       <q-tab-panel name="markdown">
-        <q-input
-          v-model="data.description"
-          maxlength="5000"
-          outlined
-          autogrow
-          class="tw-h-96 tw-min-w-full"
-          :rules="[(v) => (v && v.length > 0) || 'Tell the world something about your dApp.']"
-        />
-        <!-- TODO description validation -->
+        <q-scroll-area class="tw-h-96">
+          <q-input
+            v-model="data.description"
+            maxlength="5000"
+            outlined
+            autogrow
+            class="tw-h-96 tw-min-w-full"
+            :rules="[(v) => (v && v.length > 0) || 'Tell the world something about your dApp.']"
+          />
+        </q-scroll-area>
       </q-tab-panel>
       <q-tab-panel name="preview">
-        <q-markdown
-          :src="data.description"
-          no-emoji="false"
-          no-html="true"
-          class="tw-h-96 tw-fit"
-        ></q-markdown>
+        <q-scroll-area class="tw-h-96">
+          <q-markdown :src="data.description" :no-html="noHtml"></q-markdown>
+        </q-scroll-area>
       </q-tab-panel>
     </q-tab-panels>
   </div>
@@ -42,6 +40,8 @@ export default defineComponent({
   setup(props, { emit }) {
     const tab = ref<string>('markdown');
     const data = reactive<NewDappItem>(props.value);
+    const noEmoji = ref<boolean>(false);
+    const noHtml = ref<boolean>(true);
 
     // const validateDescription = (): boolean => {
     //   return validate('description', 'Please tell us a few words about your dApp.');
@@ -58,6 +58,8 @@ export default defineComponent({
     return {
       tab,
       data,
+      noEmoji,
+      noHtml,
       ...toRefs(props),
     };
   },
