@@ -188,58 +188,6 @@ const actions: ActionTree<State, StateInterface> = {
     }
   },
 
-  async registerDappTest({ commit, dispatch }, parameters: RegisterParameters): Promise<Boolean> {
-    console.log(parameters);
-    // return false;
-
-    try {
-      const collectionKey = await getCollectionKey();
-      if (parameters.dapp.iconFileName) {
-        const fileName = `${parameters.dapp.address}_${parameters.dapp.iconFileName}`;
-        parameters.dapp.iconUrl = await uploadFile(
-          fileName,
-          collectionKey,
-          parameters.dapp.iconFile
-        );
-      } else {
-        parameters.dapp.iconUrl = '/images/noimage.png';
-      }
-
-      if (!parameters.dapp.url) {
-        parameters.dapp.url = '';
-      }
-
-      parameters.dapp.imagesUrl = [];
-      for (let i = 0; i < parameters.dapp.imagesContent.length; i++) {
-        const dappImage = parameters.dapp.imagesContent[i];
-        const dappImageUrl = await uploadFile(
-          `${parameters.dapp.address}_${i}_${parameters.dapp.images[i].name}`,
-          collectionKey,
-          dappImage
-        );
-        parameters.dapp.imagesUrl.push(dappImageUrl);
-      }
-      const addedDapp = await addDapp(collectionKey, parameters.dapp);
-      commit('addDapp', addedDapp);
-
-      dispatch(
-        'general/showAlertMsg',
-        {
-          msg: `You successfully registered dApp ${parameters.dapp.name} to the store.`,
-          alertType: 'success',
-        },
-        { root: true }
-      );
-
-      return true;
-    } catch (e) {
-      const error = e as unknown as Error;
-      console.log(error);
-      showError(dispatch, error.message);
-      return false;
-    }
-  },
-
   async registerDapp(
     { commit, dispatch, rootState },
     parameters: RegisterParameters
@@ -259,11 +207,12 @@ const actions: ActionTree<State, StateInterface> = {
               if (result.status.isFinalized) {
                 if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
                   try {
+                    const collectionKey = await getCollectionKey();
                     if (parameters.dapp.iconFileName) {
                       const fileName = `${parameters.dapp.address}_${parameters.dapp.iconFileName}`;
                       parameters.dapp.iconUrl = await uploadFile(
                         fileName,
-                        await getCollectionKey(),
+                        collectionKey,
                         parameters.dapp.iconFile
                       );
                     } else {
@@ -274,7 +223,17 @@ const actions: ActionTree<State, StateInterface> = {
                       parameters.dapp.url = '';
                     }
 
-                    const collectionKey = await getCollectionKey();
+                    parameters.dapp.imagesUrl = [];
+                    for (let i = 0; i < parameters.dapp.imagesContent.length; i++) {
+                      const dappImage = parameters.dapp.imagesContent[i];
+                      const dappImageUrl = await uploadFile(
+                        `${parameters.dapp.address}_${i}_${parameters.dapp.images[i].name}`,
+                        collectionKey,
+                        dappImage
+                      );
+                      parameters.dapp.imagesUrl.push(dappImageUrl);
+                    }
+
                     const addedDapp = await addDapp(collectionKey, parameters.dapp);
                     commit('addDapp', addedDapp);
 

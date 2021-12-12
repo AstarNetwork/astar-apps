@@ -21,16 +21,19 @@
             :name="index.toString()"
           />
         </q-carousel>
-        <div class="tw-w-auto tw-pl-4 dark:tw-text-darkGray-100">
+        <div class="tw-w-auto dark:tw-text-darkGray-100 md:tw-pl-4">
           <div class="tw-flex tw-flex-col tw-items-center">
-            <Avatar :url="dapp.iconUrl" class="tw-w-24 tw-h-24 sm:tw-mt-4" />
-            <div class="tw-my-2 tw-text-2xl tw-font-semibold">
-              {{ dapp.name }}
-              <a :href="dapp.gitHubUrl" target="_blank">
-                <img width="20" class="tw-inline tw-ml-2" src="~assets/img/github.png" />
-              </a>
-            </div>
             <q-card class="bg-auto">
+              <div class="tw-flex tw-flex-col tw-items-center">
+                <Avatar :url="dapp.iconUrl" class="tw-w-24 tw-h-24 tw-mt-4" />
+                <div class="tw-my-2 tw-text-2xl tw-font-semibold">
+                  {{ dapp.name }}
+                  <a :href="dapp.gitHubUrl" target="_blank">
+                    <img width="20" class="tw-inline tw-ml-2" src="~assets/img/github.png" />
+                  </a>
+                </div>
+              </div>
+              <q-separator />
               <div class="tw-flex tw-flex-wrap tw-w-full tw-m-2">
                 <NameValue label="License" class="info">
                   {{ dapp.license }}

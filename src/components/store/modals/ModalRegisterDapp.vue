@@ -83,7 +83,7 @@ export default defineComponent({
         if (success) {
           if (step === stepsCount) {
             const senderAddress = store.getters['general/selectedAccountAddress'];
-            const result = await store.dispatch('dapps/registerDappTest', {
+            const result = await store.dispatch('dapps/registerDapp', {
               dapp: data,
               api: api?.value,
               senderAddress,

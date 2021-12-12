@@ -1,12 +1,13 @@
 <template>
   <div>
     <q-input
-      v-model="data.videoUrl"
+      :model-value="data.videoUrlInput"
       outlined
       label="Video link"
       maxlength="500"
       :rules="[(v) => (v && v.length > 0) || 'dApp video link is required.']"
       class="tw-my-2"
+      @update:model-value="videoUrlChanged"
     >
       <template #prepend>
         <q-icon name="movie" />
@@ -98,8 +99,6 @@ export default defineComponent({
     };
 
     const updateFile = (value: any): void => {
-      //const files = value.images as File[];
-      // const files = images;
       data.imagesContent = [];
       const index = 0;
       data.images.forEach((image) => {
@@ -110,8 +109,6 @@ export default defineComponent({
         };
         reader.onerror = (error) => console.log(error);
       });
-
-      console.log('update', data.images);
     };
 
     const getVideoId = (url: string): string | null => {
@@ -125,6 +122,14 @@ export default defineComponent({
       const id = getVideoId(url);
 
       return 'http://www.youtube.com/embed/' + id;
+    };
+
+    const videoUrlChanged = (url: string): void => {
+      const embedUrl = getEmbedUrl(url);
+      data.videoUrlInput = url;
+      if (embedUrl) {
+        data.videoUrl = embedUrl;
+      }
     };
 
     watch(
@@ -143,6 +148,7 @@ export default defineComponent({
       toggleViewPreview,
       updateFile,
       getEmbedUrl,
+      videoUrlChanged,
       imgPreviews,
     };
   },

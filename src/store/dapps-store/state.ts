@@ -18,6 +18,7 @@ export interface NewDappItem extends DappItem {
   iconFile: string;
   images: File[];
   imagesContent: string[];
+  videoUrlInput: string;
 }
 
 export interface DappStateInterface {
