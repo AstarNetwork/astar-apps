@@ -4,11 +4,11 @@ import { createStore, Store as VuexStore, useStore as vuexUseStore } from 'vuex'
 
 import { GeneralStateInterface } from './general/state';
 import { ContractsStateInterface } from './contracts/state';
-import { DappStateInterface } from './dapps-store/state';
+import { DappStateInterface } from './dapp-staking/state';
 
 import general from './general';
 import contracts from './contracts';
-import dapps from './dapps-store';
+import dapps from './dapp-staking';
 
 /*
  * If not building with SSR mode, you can

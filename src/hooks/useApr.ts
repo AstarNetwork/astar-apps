@@ -1,3 +1,4 @@
+import { LOCAL_STORAGE } from './../config/localStorage';
 import { aprToApy } from 'apr-tools';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
@@ -21,7 +22,7 @@ export const useApr = () => {
   const { decimal } = useChainMetadata();
   const { tvlToken } = useTvl(api);
   const { blockPerEra } = useCurrentEra();
-  const currentNetworkIdx = Number(localStorage.getItem('networkIdx'));
+  const currentNetworkIdx = Number(localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX));
 
   const dapps = computed(() => store.getters['dapps/getAllDapps']);
   const stakerApr = ref<number>(0);

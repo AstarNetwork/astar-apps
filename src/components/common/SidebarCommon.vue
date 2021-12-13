@@ -64,33 +64,33 @@
 
         <router-link
           v-if="network.isSupportContract && !isH160"
-          to="/dapps"
-          :class="[$route.path.split('/')[1] === 'dapps' ? 'activeLink' : 'inactiveLink']"
+          to="/contracts"
+          :class="[$route.path.split('/')[1] === 'contracts' ? 'activeLink' : 'inactiveLink']"
         >
           <icon-base
-            :class="[$route.path.split('/')[1] === 'dapps' ? 'activeSvg' : 'inactiveSvg']"
+            :class="[$route.path.split('/')[1] === 'contracts' ? 'activeSvg' : 'inactiveSvg']"
             viewBox="0 0 24 24"
           >
             <icon-dapps />
           </icon-base>
           <span class="tw-font-bold tw-ml-3 tw-flex-1">
-            {{ $t('common.dApps') }}
+            {{ $t('common.contract') }}
           </span>
         </router-link>
 
         <router-link
           v-if="network.isStoreEnabled && !isH160"
-          to="/store"
-          :class="[$route.path.split('/')[1] === 'store' ? 'activeLink' : 'inactiveLink']"
+          to="/dapp-staking"
+          :class="[$route.path.split('/')[1] === 'dapp-staking' ? 'activeLink' : 'inactiveLink']"
         >
           <icon-base
-            :class="[$route.path.split('/')[1] === 'store' ? 'activeSvg' : 'inactiveSvg']"
+            :class="[$route.path.split('/')[1] === 'dapp-staking' ? 'activeSvg' : 'inactiveSvg']"
             viewBox="0 0 24 24"
           >
             <icon-store />
           </icon-base>
           <span class="tw-font-bold tw-ml-3 tw-flex-1">
-            {{ $t('common.store') }}
+            {{ $t('common.dappStaking') }}
           </span>
         </router-link>
 

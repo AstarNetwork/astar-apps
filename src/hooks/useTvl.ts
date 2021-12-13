@@ -1,3 +1,4 @@
+import { LOCAL_STORAGE } from './../config/localStorage';
 import BN from 'bn.js';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
@@ -14,7 +15,7 @@ export function useTvl(api: any) {
   const dapps = computed(() => store.getters['dapps/getAllDapps']);
   const tvlToken = ref<BN>(new BN(0));
   const tvlUsd = ref<number>(0);
-  const currentNetworkIdx = Number(localStorage.getItem('networkIdx'));
+  const currentNetworkIdx = Number(localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX));
 
   watch(
     [api, dapps, currentNetworkIdx],

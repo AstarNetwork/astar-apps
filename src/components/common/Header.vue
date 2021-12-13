@@ -43,6 +43,7 @@
 
 <script lang="ts">
 import { endpointKey } from 'src/config/chainEndpoints';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useSidebar } from 'src/hooks';
 import { defineComponent } from 'vue';
 import IconBase from '../icons/IconBase.vue';
@@ -52,7 +53,7 @@ export default defineComponent({
   setup() {
     const { isOpen } = useSidebar();
 
-    const currentNetworkIdx = Number(localStorage.getItem('networkIdx'));
+    const currentNetworkIdx = Number(localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX));
 
     return {
       isOpen,

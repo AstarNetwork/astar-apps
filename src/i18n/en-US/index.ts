@@ -16,8 +16,10 @@ export default {
     metadataAlreadyInstalled: 'Metadata Already Installed',
     lightMode: 'Light mode',
     darkMode: 'Dark mode',
-    dApps: 'dApps',
-    store: 'Store',
+    dApps: 'dApps', // replaced by contract
+    store: 'Store', // replaced by dappStaking
+    dappStaking: 'dApp Staking',
+    contract: 'Contract',
     plasmLockdrop: 'Plasm Lockdrop',
     closeSidebar: 'Close sidebar',
     twitter: 'Twitter',
@@ -31,6 +33,7 @@ export default {
     balance: 'Balance',
     transfer: 'Transfer',
     withdrawEvm: 'Withdraw EVM Deposit',
+    faucet: 'Faucet',
     transferable: 'Transferable',
     vested: 'Vested',
     locked: 'Locked',
@@ -52,9 +55,16 @@ export default {
       sendTo: 'Send to',
       alert: 'Alert',
       invalidAddress: 'The address is not valid',
+      faucet: 'Faucet',
+      faucetAmount: 'Faucet amount',
+      faucetNextRequest: 'Time left until the next request',
+      countDown: '{hrs} hrs {mins} mins {secs} secs',
+      whatIsFaucet: ' What is faucet and how does it help you?',
+      faucetIntro:
+        'There will be minimal costs for each transaction, and this is paid as gas using {unit} token. If you have no {unit} in your account, you cannot send any tokens. Faucet sends enough {unit} to cover the transaction cost.',
     },
   },
-  dapps: {
+  contracts: {
     codeHashes: 'Code hashes',
     codeHash: 'Code hash',
     msgs: 'Messages',
@@ -104,8 +114,9 @@ export default {
       },
     },
   },
-  store: {
+  dappStaking: {
     dappsStore: 'dApps Store',
+    dappStaking: 'dApp Staking',
     registerDapp: 'Register dApp',
     noDappsRegistered: 'No dApps registered. Be the first to register one.',
     totalStake: 'Total stake:',

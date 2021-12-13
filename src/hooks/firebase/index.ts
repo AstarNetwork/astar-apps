@@ -10,7 +10,7 @@ import {
 } from 'firebase/firestore/lite';
 import { getStorage, ref, uploadString, getDownloadURL } from 'firebase/storage';
 import { getAuth, signInAnonymously } from 'firebase/auth';
-import { DappItem, NewDappItem } from 'src/store/dapps-store/state';
+import { DappItem, NewDappItem } from 'src/store/dapp-staking/state';
 
 // firebase init - add your own config here
 const firebaseConfig = {
