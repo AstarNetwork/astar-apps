@@ -79,7 +79,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const data = reactive<NewDappItem>(props.value);
     const { fileRef: imageFromFile, setFile } = useFile();
-    const fileExtensions = ['.png', '.jpg', '.gif'];
+    const fileExtensions = ['.png', '.jpg', '.jpeg', '.gif'];
 
     const encodeImage = (fileType: string, data: Uint8Array): string => {
       const buffer = Buffer.from(data);

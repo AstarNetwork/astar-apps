@@ -3,9 +3,12 @@
     <q-input
       :model-value="data.videoUrlInput"
       outlined
-      label="Video link"
+      label="Youtube Video link"
       maxlength="500"
-      :rules="[(v) => (v && v.length > 0) || 'dApp video link is required.']"
+      :rules="[
+        (v) => (v && v.length > 0) || 'dApp video link is required.',
+        (v) => getVideoId(v) !== null || 'Enter a valid YouTube url',
+      ]"
       class="tw-my-2"
       @update:model-value="videoUrlChanged"
     >
@@ -148,6 +151,7 @@ export default defineComponent({
       toggleViewPreview,
       updateFile,
       getEmbedUrl,
+      getVideoId,
       videoUrlChanged,
       imgPreviews,
     };
