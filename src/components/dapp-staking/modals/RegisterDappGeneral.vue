@@ -7,7 +7,7 @@
           dark:tw-text-darkGray-400
           tw-mb-2
         "
-        >{{ $t('store.modals.logo') }}</label
+        >{{ $t('dappStore.modals.logo') }}</label
       >
 
       <input-file :file="imageFromFile" :extension="fileExtensions" @dropFile="onDropFile">
@@ -57,7 +57,7 @@ import { NewDappItem } from 'src/store/dapp-staking/state';
 import { defineComponent } from 'vue';
 import { useFile, FileState } from 'src/hooks/useFile';
 import { isEthereumAddress } from '@polkadot/util-crypto';
-import InputFile from 'src/components/dapps/modals/InputFile.vue';
+import InputFile from 'src/components/contracts/modals/InputFile.vue';
 import Avatar from 'components/common/Avatar.vue';
 import IconBase from 'components/icons/IconBase.vue';
 import IconDocument from 'components/icons/IconDocument.vue';

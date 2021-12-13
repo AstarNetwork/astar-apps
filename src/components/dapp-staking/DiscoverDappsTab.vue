@@ -98,7 +98,7 @@ import TVL from './statistics/TVL.vue';
 import DappsCount from './statistics/DappsCount.vue';
 import Requirement from './statistics/Requirement.vue';
 import Era from './statistics/Era.vue';
-import { StakeInfo } from 'src/store/dapps-store/actions';
+import { StakeInfo } from 'src/store/dapp-staking/actions';
 import { fasSeedling } from '@quasar/extras/fontawesome-v5';
 import { useMeta } from 'quasar';
 

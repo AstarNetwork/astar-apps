@@ -37,10 +37,10 @@
     <template #buttons>
       <q-stepper-navigation>
         <Button :primary="false" @click="step > 1 ? $refs.stepper.previous() : close()">
-          {{ step &gt; 1 ? $t('store.modals.previous') : $t('close') }}
+          {{ step &gt; 1 ? $t('dappStaking.modals.previous') : $t('close') }}
         </Button>
         <Button @click="registerDapp(step)">
-          {{ step &lt; stepsCount ? $t('store.modals.next') : $t('store.modals.register') }}
+          {{ step &lt; stepsCount ? $t('dappStaking.modals.next') : $t('dappStaking.modals.register') }}
         </Button>
       </q-stepper-navigation>
     </template>
@@ -50,10 +50,10 @@
 <script lang="ts">
 import { defineComponent, reactive, ref } from 'vue';
 import Modal from 'components/common/Modal.vue';
-import RegisterDappGeneral from 'components/store/modals/RegisterDappGeneral.vue';
-import RegisterDappDescription from 'components/store/modals/RegisterDappDescription.vue';
-import RegisterDappMedia from 'components/store/modals/RegisterDappMedia.vue';
-import RegisterDappSupport from 'components/store/modals/RegisterDappSupport.vue';
+import RegisterDappGeneral from 'components/dapp-staking/modals/RegisterDappGeneral.vue';
+import RegisterDappDescription from 'components/dapp-staking/modals/RegisterDappDescription.vue';
+import RegisterDappMedia from 'components/dapp-staking/modals/RegisterDappMedia.vue';
+import RegisterDappSupport from 'components/dapp-staking/modals/RegisterDappSupport.vue';
 import Button from 'components/common/Button.vue';
 import { useStore } from 'src/store';
 import { useApi } from 'src/hooks';

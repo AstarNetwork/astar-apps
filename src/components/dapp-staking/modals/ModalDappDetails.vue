@@ -73,7 +73,7 @@
     <template #buttons>
       <a :href="dapp.url" target="_blank">
         <Button>
-          {{ $t('store.modals.viewProject') }}
+          {{ $t('dappStaking.modals.viewProject') }}
         </Button>
       </a>
     </template>
