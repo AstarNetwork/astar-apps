@@ -22,17 +22,15 @@
           tw-whitespace-nowrap
         "
       >
-        {{ $t('store.dappsStore') }}
+        {{ $t('dappStaking.dappStaking') }}
       </h1>
       <div class="tw-flex tw-justify-between tw-items-center tw-w-full">
         <div class="tw-flex">
-          <Tab :labels="[{ label: 'Discover', path: 'discover-dapps' }]" />
+          <Tab :labels="[{ label: 'Discover', path: 'discover' }]" />
           <!-- <Tab :labels="[{ label: 'Manage', path: 'manage-dapps' }]" /> -->
         </div>
         <div
           class="
-            tw-hidden
-            lg:tw-block
             tw-hidden
             lg:tw-block
             tw-ml-4
@@ -42,7 +40,7 @@
           "
         >
           {{
-            $t('store.warning', {
+            $t('dappStaking.warning', {
               amount: minimumStakingAmount,
               stakers: maxNumberOfStakersPerContract.toLocaleString('en-US'),
             })
@@ -55,7 +53,6 @@
 </template>
 
 <script lang="ts">
-import BN from 'bn.js';
 import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { computed, defineComponent } from 'vue';

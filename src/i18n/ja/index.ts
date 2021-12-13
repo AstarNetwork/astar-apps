@@ -42,7 +42,7 @@ export default {
       invalidAddress: '入力されたアドレスは正しくありません',
     },
   },
-  dapps: {
+  contracts: {
     codeHashes: 'Code hashes',
     codeHash: 'Code hash',
     msgs: 'Messages',
@@ -92,7 +92,7 @@ export default {
       },
     },
   },
-  store: {
+  dappStaking: {
     dappsStore: 'dApps Store',
     registerDapp: 'dAppを登録',
     noDappsRegistered: 'No dApps registered. Be the first to register one.',

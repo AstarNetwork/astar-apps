@@ -10,11 +10,13 @@
       box
     "
   >
-    <div class="tw-text-xl tw-font-semibold tw-mb-1 tw-pt-4">{{ $t('store.requirement') }}</div>
+    <div class="tw-text-xl tw-font-semibold tw-mb-1 tw-pt-4">
+      {{ $t('dappStaking.requirement') }}
+    </div>
     <div class="tw-flex tw-flex-col tw-items-center">
       <div class="tw-text-lg tw-font-semibold tw-text-center">
         {{
-          $t('store.warning', {
+          $t('dappStaking.warning', {
             amount: minimumStakingAmount,
             stakers: maxNumberOfStakersPerContract.toLocaleString('en-US'),
           })

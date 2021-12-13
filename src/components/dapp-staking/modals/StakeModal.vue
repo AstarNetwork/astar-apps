@@ -9,7 +9,7 @@
             dark:tw-text-darkGray-400
             tw-mb-2
           "
-          >{{ $t('store.modals.address') }}</label
+          >{{ $t('dappStaking.modals.address') }}</label
         >
         <ModalSelectAccount
           v-model:selAddress="data.address"
@@ -30,14 +30,14 @@
         :is-max-button="actionName === StakeAction.Unstake ? true : false"
       />
       <div v-if="accountData && actionName !== StakeAction.Unstake" class="tw-mt-1 tw-ml-1">
-        {{ $t('store.modals.availableToStake') }}
+        {{ $t('dappStaking.modals.availableToStake') }}
         <format-balance
           :balance="accountData?.getUsableFeeBalance()"
           class="tw-inline tw-font-semibold"
         />
       </div>
       <div v-if="accountData && actionName === StakeAction.Unstake" class="tw-mt-1 tw-ml-1">
-        {{ $t('store.yourStake') }}
+        {{ $t('dappStaking.yourStake') }}
         <format-balance :balance="stakeAmount" class="tw-inline tw-font-semibold" />
       </div>
     </template>

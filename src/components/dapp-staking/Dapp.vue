@@ -47,8 +47,8 @@ import { defineComponent, toRefs, ref, computed, watch } from 'vue';
 import { useStore } from 'src/store';
 import { useApi } from 'src/hooks';
 import Avatar from 'components/common/Avatar.vue';
-import StakePanel from 'components/store/StakePanel.vue';
-import { StakingParameters, StakeInfo } from 'src/store/dapps-store/actions';
+import StakePanel from 'components/dapp-staking/StakePanel.vue';
+import { StakingParameters, StakeInfo } from 'src/store/dapp-staking/actions';
 
 export default defineComponent({
   components: {

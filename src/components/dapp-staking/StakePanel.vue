@@ -3,15 +3,15 @@
     <div>
       <div v-if="stakeInfo" class="tw-mb-4">
         <div :style="{ opacity: stakeInfo?.hasStake ? '1' : '0' }" class="tw-flex tw-flex-row">
-          <div class="tw-w-20">{{ $t('store.yourStake') }}</div>
+          <div class="tw-w-20">{{ $t('dappStaking.yourStake') }}</div>
           <div class="tw-font-semibold">{{ stakeInfo?.yourStake.formatted }}</div>
         </div>
         <div class="tw-flex tw-flex-row">
-          <div class="tw-w-20">{{ $t('store.totalStake') }}</div>
+          <div class="tw-w-20">{{ $t('dappStaking.totalStake') }}</div>
           <div class="tw-font-semibold">{{ stakeInfo?.totalStake }}</div>
         </div>
         <div class="tw-mt-1">
-          <div class="tw-w-20">{{ $t('store.stakersCount') }}</div>
+          <div class="tw-w-20">{{ $t('dappStaking.stakersCount') }}</div>
           <div class="tw-relative">
             <VueJsProgress
               :percentage="Number(((stakeInfo?.stakersCount / stakerMaxNumber) * 100).toFixed(0))"
@@ -31,14 +31,14 @@
       <div class="tw-flex">
         <div v-if="stakeInfo?.hasStake">
           <Button :small="true" :primary="true" @click="showStakeModal">
-            {{ $t('store.add') }}
+            {{ $t('dappStaking.add') }}
           </Button>
           <Button :small="true" :primary="false" @click="showUnstakeModal">
-            {{ $t('store.unstake') }}
+            {{ $t('dappStaking.unstake') }}
           </Button>
         </div>
         <Button v-else :small="true" :disabled="isMaxStaker" @click="showStakeModal">
-          {{ $t('store.stake') }}
+          {{ $t('dappStaking.stake') }}
         </Button>
 
         <Button
@@ -47,7 +47,7 @@
           class="tw-ml-auto"
           @click="showClaimRewardModal = true"
         >
-          {{ $t('store.claim') }}
+          {{ $t('dappStaking.claim') }}
         </Button>
       </div>
     </div>
@@ -76,14 +76,14 @@
 
 <script lang="ts">
 import { defineComponent, ref, toRefs, watchEffect } from 'vue';
-import StakeModal from 'components/store/modals/StakeModal.vue';
+import StakeModal from 'components/dapp-staking/modals/StakeModal.vue';
 import { StakeModel } from 'src/hooks/store';
 import Button from 'components/common/Button.vue';
-import ClaimRewardModal from 'components/store/modals/ClaimRewardModal.vue';
+import ClaimRewardModal from 'components/dapp-staking/modals/ClaimRewardModal.vue';
 import { useApi, useChainMetadata, useGetMinStaking } from 'src/hooks';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
-import { StakingParameters } from 'src/store/dapps-store/actions';
+import { StakingParameters } from 'src/store/dapp-staking/actions';
 import { getAmount } from 'src/hooks/store';
 import VueJsProgress from 'vue-js-progress';
 import './stake-panel.scss';

@@ -10,7 +10,7 @@
       xl:tw-mx-2
     "
   >
-    <div class="tw-text-xl tw-font-semibold tw-mb-4">{{ $t('store.tvl') }}</div>
+    <div class="tw-text-xl tw-font-semibold tw-mb-4">{{ $t('dappStaking.tvl') }}</div>
     <div class="tw-flex tw-flex-col tw-items-center">
       <div class="tw-font-bold" :class="tvlUsd === 0 ? 'tw-text-2xl tw-pt-1' : 'tw-text-xl'">
         <format-balance :balance="tvlToken" />

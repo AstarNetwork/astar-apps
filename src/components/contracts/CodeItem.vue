@@ -13,7 +13,7 @@
     <div class="tw-grid tw-grid-cols-1 tw-gap-2 tw-my-4">
       <div>
         <div class="tw-text-xs tw-text-gray-500 dark:tw-text-darkGray-400">
-          {{ $t('dapps.codeHash') }}
+          {{ $t('contracts.codeHash') }}
         </div>
         <div class="tw-flex tw-justify-between tw-items-center">
           <div class="tw-text-xs tw-text-blue-900 dark:tw-text-darkGray-100">
@@ -54,7 +54,7 @@
       </div>
       <div>
         <div class="tw-text-xs tw-text-gray-500 dark:tw-text-darkGray-400">
-          {{ $t('dapps.msgs') }}
+          {{ $t('contracts.msgs') }}
         </div>
         <div v-if="messages" class="tw-text-xs tw-text-blue-900 dark:tw-text-darkGray-100">
           <Message v-for="message in messages" :key="message.identifier" :message="message" />
@@ -76,7 +76,7 @@ import IconBase from 'components/icons/IconBase.vue';
 import IconDocumentDuplicate from 'components/icons/IconDocumentDuplicate.vue';
 import type { CodeStored } from 'src/store/contracts/state';
 import { useMessages } from 'src/hooks';
-import Message from 'components/dapps/Message.vue';
+import Message from 'components/contracts/Message.vue';
 
 export default defineComponent({
   components: {
