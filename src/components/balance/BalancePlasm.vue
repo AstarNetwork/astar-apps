@@ -129,7 +129,7 @@ export default defineComponent({
     ModalFaucet,
   },
   setup() {
-    useMeta({ title: 'Balance-Plasm' });
+    useMeta({ title: 'Wallet' });
 
     const stateModal = reactive<Modal>({
       modalAccount: false,
