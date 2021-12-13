@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      v-if="dapps.length > 0 && progress > 0"
+      v-if="dapps.length > 0"
       class="tw-flex tw-flex-wrap tw-gap-x-12 xl:tw-gap-x-18 tw-justify-center"
     >
       <TVL />
@@ -10,7 +10,7 @@
       <Era :progress="progress" :blocks-until-next-era="blocksUntilNextEra" :era="era" />
     </div>
 
-    <div class="tw-text-center tw-mb-8">
+    <div class="tw-text-center tw-mb-8 tw-flex tw-items-center tw-justify-center sm:tw-gap-x-4">
       <Button @click="showRegisterDappModal = true">
         <icon-base
           class="tw-w-5 tw-h-5 tw-text-white tw--ml-1"
@@ -21,6 +21,33 @@
         </icon-base>
         {{ $t('store.registerDapp') }}
       </Button>
+      <div
+        v-if="stakerApy > 0"
+        class="
+          sm:tw-w-40
+          tw-justify-center
+          tw-inline-flex
+          tw-items-center
+          tw-px-6
+          tw-py-3
+          tw-border
+          tw-border-transparent
+          tw-text-sm
+          tw-font-medium
+          tw-rounded-full
+          tw-shadow-sm
+          tw-text-white
+          tw-bg-indigo-500
+          tw-mx-1
+        "
+      >
+        <icon-base class="tw-w-5 tw-h-5 tw-text-white tw--ml-2 tw-mr-2" icon-name="seedling">
+          <q-icon :name="fasSeedling" color="green" />
+        </icon-base>
+        <div>
+          {{ $t('store.stakerApy', { value: Number(stakerApy.toFixed(1)) }) }}
+        </div>
+      </div>
     </div>
 
     <div class="store-container tw-grid tw-gap-x-12 xl:tw-gap-x-18 tw-justify-center">
@@ -34,6 +61,8 @@
         v-for="(dapp, index) in dapps"
         :key="index"
         :dapp="dapp"
+        :staker-max-number="maxNumberOfStakersPerContract"
+        :account-data="accountData"
         @dappClick="showDetailsModal"
       />
     </div>
@@ -62,14 +91,15 @@ import ModalRegisterDapp from 'components/store/modals/ModalRegisterDapp.vue';
 import Dapp from 'src/components/store/Dapp.vue';
 import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
-import { useCurrentEra } from 'src/hooks';
+import { useCurrentEra, useApr, useApi, useAccount, useBalance } from 'src/hooks';
 import { DappItem } from 'src/store/dapps-store/state';
-import { computed, defineComponent, ref, watchEffect } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
 import TVL from './statistics/TVL.vue';
 import DappsCount from './statistics/DappsCount.vue';
 import Requirement from './statistics/Requirement.vue';
 import Era from './statistics/Era.vue';
 import { StakeInfo } from 'src/store/dapps-store/actions';
+import { fasSeedling } from '@quasar/extras/fontawesome-v5';
 
 export default defineComponent({
   components: {
@@ -87,7 +117,11 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const dapps = computed(() => store.getters['dapps/getAllDapps']);
+    const { stakerApy } = useApr();
     const { progress, blocksUntilNextEra, era } = useCurrentEra();
+    const { api } = useApi();
+    const { currentAccount } = useAccount();
+    const { accountData } = useBalance(api, currentAccount);
 
     const maxNumberOfStakersPerContract = computed(
       () => store.getters['dapps/getMaxNumberOfStakersPerContract']
@@ -123,6 +157,9 @@ export default defineComponent({
       progress,
       blocksUntilNextEra,
       era,
+      stakerApy,
+      fasSeedling,
+      accountData,
     };
   },
 });

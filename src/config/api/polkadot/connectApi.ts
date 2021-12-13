@@ -56,7 +56,7 @@ export async function connectApi(endpoint: string, networkIdx: number) {
   let extensions: InjectedExtension[] = [];
 
   const typeDefinitions = providerEndpoints[networkIdx].typeDef;
-  console.log('t', typeDefinitions);
+  // console.log('t', typeDefinitions);
 
   const api = new ApiPromise({
     provider,

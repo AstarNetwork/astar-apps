@@ -17,6 +17,7 @@ import { useApi } from 'src/hooks/useApi';
 import { ApiPromise } from '@polkadot/api';
 import { ISubmittableResult, ITuple } from '@polkadot/types/types';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
+import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
 
 let collectionKey: string;
 
@@ -461,7 +462,7 @@ const actions: ActionTree<State, StateInterface> = {
           for (const [account, balance] of stakeInfo.stakers) {
             if (account.toString() === parameters.senderAddress) {
               yourStake = {
-                formatted: balance.toHuman(),
+                formatted: balanceFormatter(balance),
                 denomAmount: new BN(balance.toString()),
               };
               break;
@@ -469,9 +470,9 @@ const actions: ActionTree<State, StateInterface> = {
           }
 
           return {
-            totalStake: stakeInfo.total.toHuman(),
+            totalStake: balanceFormatter(stakeInfo.total),
             yourStake,
-            claimedRewards: stakeInfo.claimedRewards.toHuman(),
+            claimedRewards: balanceFormatter(stakeInfo.claimedRewards),
             hasStake: !!yourStake.formatted,
             stakersCount: stakeInfo.stakers.size,
           } as StakeInfo;
@@ -543,12 +544,12 @@ const actions: ActionTree<State, StateInterface> = {
                   break;
                 }
 
-                console.log(
-                  'era reward',
-                  era,
-                  eraRewardsAndStakes.rewards.toHuman(),
-                  eraRewardsAndStakes.staked.toHuman()
-                );
+                // console.log(
+                //   'era reward',
+                //   era,
+                //   eraRewardsAndStakes.rewards.toHuman(),
+                //   eraRewardsAndStakes.staked.toHuman()
+                // );
 
                 let eraReward = balance
                   .mul(eraRewardsAndStakes.rewards)
@@ -585,7 +586,7 @@ const actions: ActionTree<State, StateInterface> = {
     commit('general/setLoading', false, { root: true });
 
     result.rewards = parameters.api.createType('Balance', accumulatedReward);
-    console.log('calculated reward', result.rewards.toHuman());
+    // console.log('calculated reward', result.rewards.toHuman());
     return result;
   },
 
@@ -659,7 +660,7 @@ const getEstimatedClaimedAwards = (
   }
 
   const result = api.createType('Balance', claimedSoFar);
-  console.log('claimed so far', result.toHuman());
+  // console.log('claimed so far', result.toHuman());
   return result;
 };
 

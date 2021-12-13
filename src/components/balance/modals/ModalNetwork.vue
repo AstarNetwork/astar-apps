@@ -93,6 +93,7 @@
 import { defineComponent, ref, computed } from 'vue';
 import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 
 export default defineComponent({
   props: {
@@ -118,12 +119,14 @@ export default defineComponent({
       emit('update:is-open', false);
     };
 
+    const { NETWORK_IDX, CUSTOM_ENDPOINT } = LOCAL_STORAGE;
+
     const selectNetwork = (networkIdx: number): void => {
-      localStorage.setItem('networkIdx', networkIdx.toString());
+      localStorage.setItem(NETWORK_IDX, networkIdx.toString());
       if (newEndpoint.value) {
         let endpoint = `${newEndpoint.value}`;
         endpoint = !endpoint.includes('wss://') ? `wss://${endpoint}` : endpoint;
-        localStorage.setItem('customEndpoint', endpoint);
+        localStorage.setItem(CUSTOM_ENDPOINT, endpoint);
       }
       location.reload();
 
