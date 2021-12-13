@@ -129,6 +129,6 @@ export default defineComponent({
 }
 
 .scroll {
-  height: 400px;
+  height: 350px;
 }
 </style>
