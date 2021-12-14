@@ -1,15 +1,16 @@
-import { useStore } from 'src/store';
-import { computed } from 'vue';
-import { endpointKey } from 'src/config/chainEndpoints';
+import { ref, watchEffect } from 'vue';
 
-export const useUnbondWithdraw = () => {
-  const store = useStore();
+export const useUnbondWithdraw = (apiRef: any) => {
+  const canUnbondWithdraw = ref<boolean>(false);
 
-  const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
-
-  const canUnbondWithdraw =
-    currentNetworkIdx.value === endpointKey.LOCAL ||
-    currentNetworkIdx.value === endpointKey.SHIBUYA;
+  watchEffect(() => {
+    try {
+      const unbondingPeriod = apiRef.value?.consts.dappsStaking.unbondingPeriod;
+      canUnbondWithdraw.value = !!unbondingPeriod;
+    } catch {
+      canUnbondWithdraw.value = false;
+    }
+  });
 
   return {
     canUnbondWithdraw,

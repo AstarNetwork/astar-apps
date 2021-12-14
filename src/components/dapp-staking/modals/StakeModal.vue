@@ -41,13 +41,13 @@
         <format-balance :balance="stakeAmount" class="tw-inline tw-font-semibold" />
       </div>
       <div v-if="actionName === StakeAction.Unstake && canUnbondWithdraw" class="tw-mt-4 tw-ml-1">
-        {{ $t('store.modals.unbondingInfo', { era: unbondingPeriod }) }}
+        {{ $t('dappStaking.modals.unbondingInfo', { era: unbondingPeriod }) }}
       </div>
       <div
         v-if="isMaxChunks && actionName === StakeAction.Unstake && canUnbondWithdraw"
         class="tw-mt-1 tw-ml-1 tw-text-red-700"
       >
-        {{ $t('store.maxChunksWarning', { chunks: maxUnlockingChunks }) }}
+        {{ $t('dappStaking.maxChunksWarning', { chunks: maxUnlockingChunks }) }}
       </div>
     </template>
     <template #buttons>
@@ -71,6 +71,7 @@ import { computed, defineComponent, ref, toRefs } from 'vue';
 import { StakeAction } from '../StakePanel.vue';
 import { getAmount, StakeModel } from 'src/hooks/store';
 import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
+import { useApi } from 'src/hooks';
 
 export default defineComponent({
   components: {
@@ -127,7 +128,8 @@ export default defineComponent({
     const unlockingChunks = computed<number>(() => store.getters['dapps/getUnlockingChunks']);
     const unbondingPeriod = computed(() => store.getters['dapps/getUnbondingPeriod']);
     const isMaxChunks = unlockingChunks.value >= maxUnlockingChunks.value;
-    const { canUnbondWithdraw } = useUnbondWithdraw();
+    const { api } = useApi();
+    const { canUnbondWithdraw } = useUnbondWithdraw(api);
 
     const formatStakeAmount = computed(() => {
       return plasmUtils.reduceBalanceToDenom(props.stakeAmount, decimal.value);
@@ -143,7 +145,7 @@ export default defineComponent({
             ? amount.lt(useableStakeAmount) && amount.gtn(0)
             : amount.lte(props.stakeAmount) && amount.gtn(0);
 
-        if (canUnbondWithdraw) {
+        if (canUnbondWithdraw.value) {
           canExecute = canExecute && !(props.actionName === StakeAction.Unstake && isMaxChunks);
         }
 

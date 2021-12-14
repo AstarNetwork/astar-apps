@@ -19,7 +19,7 @@
     </div>
     <div class="tw-flex tw-flex-row tw-items-baseline tw-float-right">
       <div class="tw-cursor-pointer tw-mr-4" @click="showModal = true">
-        {{ $t('dappStaking.chunks') }}
+        {{ $t('dappStaking.chunks') }} ({{ unlockingChunks?.length }})
       </div>
       <Button v-if="canWithdraw" :primary="false" class="tw-mt-4" @click="withdraw()">
         {{ $t('dappStaking.withdraw') }}
@@ -66,7 +66,7 @@ export default defineComponent({
     const canWithdraw = ref<boolean>(false);
     const totalToWithdraw = ref<BN>(new BN(0));
     const showModal = ref<boolean>(false);
-    const { canUnbondWithdraw } = useUnbondWithdraw();
+    const { canUnbondWithdraw } = useUnbondWithdraw(api);
 
     const withdraw = async (): Promise<void> => {
       const result = await store.dispatch('dapps/withdrawUnbonded', {
@@ -87,7 +87,7 @@ export default defineComponent({
     const unsub = subscribeToEraChange();
 
     const getChunks = async (era: u32) => {
-      if (!canUnbondWithdraw) {
+      if (!canUnbondWithdraw.value) {
         return;
       }
 

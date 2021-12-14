@@ -130,7 +130,7 @@ export default defineComponent({
     const modalAction = ref();
     const { minStaking } = useGetMinStaking(api);
     const { decimal } = useChainMetadata();
-    const { canUnbondWithdraw } = useUnbondWithdraw();
+    const { canUnbondWithdraw } = useUnbondWithdraw(api);
 
     watchEffect(() => {
       const minStakingAmount = plasmUtils.reduceBalanceToDenom(minStaking.value, decimal.value);
@@ -150,10 +150,10 @@ export default defineComponent({
     };
 
     const showUnstakeModal = () => {
-      modalTitle.value = canUnbondWithdraw
+      modalTitle.value = canUnbondWithdraw.value
         ? `Start unbonbonding from ${props.dapp.name}`
         : `Unstake from ${props.dapp.name}`;
-      modalActionName.value = canUnbondWithdraw ? StakeAction.Unstake : 'Unstake';
+      modalActionName.value = canUnbondWithdraw.value ? StakeAction.Unstake : 'Unstake';
       modalAction.value = unstake;
       showModal.value = true;
     };
@@ -196,7 +196,7 @@ export default defineComponent({
     };
 
     const unstake = async (stakeData: StakeModel): Promise<void> => {
-      const dispatchCommand = canUnbondWithdraw ? 'dapps/unbond' : 'dapps/unstake';
+      const dispatchCommand = canUnbondWithdraw.value ? 'dapps/unbond' : 'dapps/unstake';
       const result = await store.dispatch(dispatchCommand, {
         api: api?.value,
         senderAddress: stakeData.address,

@@ -1,5 +1,5 @@
 <template>
-  <Modal title="Unlocking chunks">
+  <Modal title="Unlocking chunks" class="tw-text-darkGray-800 dark:tw-text-darkGray-100">
     <template #content>
       <div class="tw-my-4">
         {{ $t('dappStaking.modals.chunksModalDescription') }}
