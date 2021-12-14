@@ -90,8 +90,7 @@ export default defineComponent({
         decimals: decimal.value,
       } as StakingParameters);
       if (!claimInfo.value) return;
-      pendingRewards.value = claimInfo?.value.rewards.toString();
-      // (claimInfo.value && balanceFormatter(new BN(claimInfo.value.rewards.toString()))) ?? '';
+      pendingRewards.value = balanceFormatter(claimInfo.value.rewards.toString());
       claimedRewards.value = balanceFormatter(claimInfo.value.estimatedClaimedRewards.toString());
     });
 
