@@ -76,6 +76,9 @@
           {{ $t('dappStaking.modals.viewProject') }}
         </Button>
       </a>
+      <Button @click="showStakeModal">
+        {{ $t('dappStaking.stake') }}
+      </Button>
     </template>
   </Modal>
 </template>
@@ -107,13 +110,19 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
+  setup(props, { emit }) {
     const slide = ref<string>('video');
+
+    const showStakeModal = (): void => {
+      emit('update:is-open', false);
+      emit('showStake');
+    };
 
     return {
       slide,
       ...toRefs(props),
       getShortenAddress,
+      showStakeModal,
     };
   },
 });

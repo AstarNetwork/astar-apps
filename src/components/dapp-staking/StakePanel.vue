@@ -116,8 +116,12 @@ export default defineComponent({
       type: Number,
       default: 0,
     },
+    showStake: {
+      type: Boolean,
+      default: false,
+    },
   },
-  emits: ['stakeChanged'],
+  emits: ['stakeChanged', 'stakeModalOpened'],
   setup(props, { emit }) {
     const store = useStore();
     const { api } = useApi();
@@ -130,6 +134,22 @@ export default defineComponent({
     const { minStaking } = useGetMinStaking(api);
     const { decimal } = useChainMetadata();
 
+    const showStakeModal = () => {
+      modalTitle.value = `Stake on ${props.dapp.name}`;
+      modalActionName.value = StakeAction.Stake;
+      modalAction.value = stake;
+      showModal.value = true;
+      emit('stakeModalOpened');
+    };
+
+    const showUnstakeModal = () => {
+      modalTitle.value = `Unstake from ${props.dapp.name}`;
+      modalActionName.value = StakeAction.Unstake;
+      modalAction.value = unstake;
+      showModal.value = true;
+      emit('stakeModalOpened');
+    };
+
     watchEffect(() => {
       const minStakingAmount = plasmUtils.reduceBalanceToDenom(minStaking.value, decimal.value);
       const stakedAmount =
@@ -138,21 +158,11 @@ export default defineComponent({
 
       formattedMinStake.value =
         Number(stakedAmount) >= Number(minStakingAmount) ? '0' : minStakingAmount;
+
+      if (props.showStake) {
+        showStakeModal();
+      }
     });
-
-    const showStakeModal = () => {
-      modalTitle.value = `Stake on ${props.dapp.name}`;
-      modalActionName.value = StakeAction.Stake;
-      modalAction.value = stake;
-      showModal.value = true;
-    };
-
-    const showUnstakeModal = () => {
-      modalTitle.value = `Unstake from ${props.dapp.name}`;
-      modalActionName.value = StakeAction.Unstake;
-      modalAction.value = unstake;
-      showModal.value = true;
-    };
 
     const emitStakeChanged = () => {
       emit('stakeChanged', props.dapp);
