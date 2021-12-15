@@ -36,10 +36,10 @@
     <q-input
       v-model="data.address"
       outlined
-      maxlength="42"
+      maxlength="48"
       label="Contract address"
       class="tw-my-2"
-      :rules="[(v) => isEthereumAddress(v) || 'Enter a valid EVM contract address.']"
+      :rules="[(v) => isValidAddress(v) || 'Enter a valid EVM or SS58 contract address.']"
     />
     <q-input
       v-model="data.url"
@@ -57,6 +57,7 @@ import { NewDappItem } from 'src/store/dapp-staking/state';
 import { defineComponent } from 'vue';
 import { useFile, FileState } from 'src/hooks/useFile';
 import { isEthereumAddress } from '@polkadot/util-crypto';
+import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import InputFile from 'src/components/contracts/modals/InputFile.vue';
 import Avatar from 'components/common/Avatar.vue';
 import IconBase from 'components/icons/IconBase.vue';
@@ -93,6 +94,9 @@ export default defineComponent({
       data.iconFile = encodeImage(fileState.type, fileState.data);
     };
 
+    const isValidAddress = (address: string): boolean =>
+      isEthereumAddress(address) || isValidAddressPolkadotAddress(address);
+
     watch(
       () => data,
       () => {
@@ -108,6 +112,7 @@ export default defineComponent({
       data,
       isEthereumAddress,
       isUrlValid,
+      isValidAddress,
     };
   },
 });

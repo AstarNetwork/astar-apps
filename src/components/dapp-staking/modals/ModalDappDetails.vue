@@ -2,25 +2,41 @@
   <Modal>
     <template #content>
       <div class="tw-flex tw-flex-row tw-flex-wrap">
-        <q-carousel
-          v-model="slide"
-          class="tw-w-96 rounded-borders"
-          swipeable
-          animated
-          navigation
-          arrows
-          infinite
-        >
-          <q-carousel-slide name="video">
-            <q-video :src="dapp.videoUrl" :name="video" class="absolute-full" />
-          </q-carousel-slide>
-          <q-carousel-slide
-            v-for="(url, index) in dapp.imagesUrl"
-            :key="index"
-            :img-src="url"
-            :name="index.toString()"
-          />
-        </q-carousel>
+        <div v-if="dapp.videoUrl" class="tw-w-96">
+          <q-carousel
+            v-model:fullscreen="isFullScreen"
+            v-model="slide"
+            class="ounded-borders"
+            swipeable
+            animated
+            navigation
+            arrows
+            infinite
+          >
+            <q-carousel-slide v-model:fullscreen="isFullScreen" name="video">
+              <q-video :src="dapp.videoUrl" name="video" class="absolute-full" />
+            </q-carousel-slide>
+            <q-carousel-slide
+              v-for="(url, index) in dapp.imagesUrl"
+              :key="index"
+              :img-src="url"
+              :name="index.toString()"
+            />
+            <template #control>
+              <q-carousel-control position="bottom-right" :offset="[18, 18]">
+                <q-btn
+                  push
+                  round
+                  dense
+                  color="white"
+                  text-color="primary"
+                  :icon="isFullScreen ? 'fullscreen_exit' : 'fullscreen'"
+                  @click="isFullScreen = !isFullScreen"
+                />
+              </q-carousel-control>
+            </template>
+          </q-carousel>
+        </div>
         <div class="tw-w-auto dark:tw-text-darkGray-100 md:tw-pl-4">
           <div class="tw-flex tw-flex-col tw-items-center">
             <q-card class="bg-auto">
@@ -28,7 +44,7 @@
                 <Avatar :url="dapp.iconUrl" class="tw-w-24 tw-h-24 tw-mt-4" />
                 <div class="tw-my-2 tw-text-2xl tw-font-semibold">
                   {{ dapp.name }}
-                  <a :href="dapp.gitHubUrl" target="_blank">
+                  <a v-if="dapp.gitHubUrl" :href="dapp.gitHubUrl" target="_blank">
                     <img width="20" class="tw-inline tw-ml-2" src="~assets/img/github.png" />
                   </a>
                 </div>
@@ -49,7 +65,7 @@
                 </NameValue>
               </div>
               <q-separator />
-              <div class="tw-w-full tw-m-2">
+              <div v-if="dapp.tags" class="tw-w-full tw-m-2">
                 <q-chip
                   v-for="(tag, index) in dapp.tags"
                   :key="index"
@@ -59,7 +75,7 @@
                   {{ tag }}
                 </q-chip>
               </div>
-              <q-separator />
+              <q-separator v-if="dapp.tags" />
               <div>
                 <q-scroll-area class="scroll">
                   <q-markdown :src="dapp.description" :no-html="true" class="tw-m-2"></q-markdown>
@@ -112,6 +128,7 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const slide = ref<string>('video');
+    const isFullScreen = ref<boolean>(false);
 
     const showStakeModal = (): void => {
       emit('update:is-open', false);
@@ -120,6 +137,7 @@ export default defineComponent({
 
     return {
       slide,
+      isFullScreen,
       ...toRefs(props),
       getShortenAddress,
       showStakeModal,
@@ -129,7 +147,6 @@ export default defineComponent({
 </script>
 <style scoped>
 .info {
-  /* flex: 1 0 45%; */
   margin-bottom: 8px;
 }
 
