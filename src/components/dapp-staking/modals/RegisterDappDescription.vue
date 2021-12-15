@@ -7,16 +7,14 @@
 
     <q-tab-panels v-model="tab">
       <q-tab-panel name="markdown">
-        <q-scroll-area class="tw-h-96">
-          <q-input
-            v-model="data.description"
-            maxlength="5000"
-            outlined
-            autogrow
-            class="tw-h-96 tw-min-w-full"
-            :rules="[(v) => (v && v.length > 0) || 'Tell the world something about your dApp.']"
-          />
-        </q-scroll-area>
+        <q-input
+          v-model="data.description"
+          maxlength="5000"
+          type="textarea"
+          class="description tw-min-w-full"
+          rows="20"
+          :rules="[(v) => (v && v.length > 0) || 'Tell the world something about your dApp.']"
+        />
       </q-tab-panel>
       <q-tab-panel name="preview">
         <q-scroll-area class="tw-h-96">
@@ -61,3 +59,9 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.description {
+  height: 400px;
+}
+</style>

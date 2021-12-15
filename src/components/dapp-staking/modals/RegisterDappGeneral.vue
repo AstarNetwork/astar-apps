@@ -7,7 +7,7 @@
           dark:tw-text-darkGray-400
           tw-mb-2
         "
-        >{{ $t('dappStore.modals.logo') }}</label
+        >{{ $t('dappStaking.modals.logo') }}</label
       >
 
       <input-file :file="imageFromFile" :extension="fileExtensions" @dropFile="onDropFile">
@@ -94,8 +94,8 @@ export default defineComponent({
       data.iconFile = encodeImage(fileState.type, fileState.data);
     };
 
-    const isValidAddress = (address: string): boolean =>
-      isEthereumAddress(address) || isValidAddressPolkadotAddress(address);
+    const isValidAddress = (address: string): boolean => isEthereumAddress(address); // || isValidAddressPolkadotAddress(address);
+    // TODO uncoment the code above when we will support ink contract.
 
     watch(
       () => data,

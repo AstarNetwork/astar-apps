@@ -1,89 +1,90 @@
 <template>
   <Modal>
     <template #content>
-      <div class="tw-flex tw-flex-row tw-flex-wrap">
-        <div v-if="dapp.videoUrl" class="tw-w-96">
-          <q-carousel
-            v-model:fullscreen="isFullScreen"
-            v-model="slide"
-            class="ounded-borders"
-            swipeable
-            animated
-            navigation
-            arrows
-            infinite
-          >
-            <q-carousel-slide v-model:fullscreen="isFullScreen" name="video">
-              <q-video :src="dapp.videoUrl" name="video" class="absolute-full" />
-            </q-carousel-slide>
-            <q-carousel-slide
-              v-for="(url, index) in dapp.imagesUrl"
-              :key="index"
-              :img-src="url"
-              :name="index.toString()"
-            />
-            <template #control>
-              <q-carousel-control position="bottom-right" :offset="[18, 18]">
-                <q-btn
-                  push
-                  round
-                  dense
-                  color="white"
-                  text-color="primary"
-                  :icon="isFullScreen ? 'fullscreen_exit' : 'fullscreen'"
-                  @click="isFullScreen = !isFullScreen"
-                />
-              </q-carousel-control>
-            </template>
-          </q-carousel>
-        </div>
-        <div class="tw-w-auto dark:tw-text-darkGray-100 md:tw-pl-4">
-          <div class="tw-flex tw-flex-col tw-items-center">
-            <q-card class="bg-auto">
-              <div class="tw-flex tw-flex-col tw-items-center">
-                <Avatar :url="dapp.iconUrl" class="tw-w-24 tw-h-24 tw-mt-4" />
-                <div class="tw-my-2 tw-text-2xl tw-font-semibold">
-                  {{ dapp.name }}
-                  <a v-if="dapp.gitHubUrl" :href="dapp.gitHubUrl" target="_blank">
-                    <img width="20" class="tw-inline tw-ml-2" src="~assets/img/github.png" />
-                  </a>
+      <div>
+        <div class="tw-flex tw-flex-row tw-flex-wrap">
+          <q-card v-if="dapp.videoUrl" class="tw-w-96 md:tw-mr-4">
+            <q-carousel
+              v-model:fullscreen="isFullScreen"
+              v-model="slide"
+              class="ounded-borders tw-h-96"
+              swipeable
+              animated
+              navigation
+              arrows
+              infinite
+            >
+              <q-carousel-slide v-model:fullscreen="isFullScreen" name="video">
+                <q-video :src="dapp.videoUrl" name="video" class="absolute-full" />
+              </q-carousel-slide>
+              <q-carousel-slide
+                v-for="(url, index) in dapp.imagesUrl"
+                :key="index"
+                :img-src="url"
+                :name="index.toString()"
+              />
+              <template #control>
+                <q-carousel-control position="bottom-right" :offset="[18, 18]">
+                  <q-btn
+                    push
+                    round
+                    dense
+                    color="white"
+                    text-color="primary"
+                    :icon="isFullScreen ? 'fullscreen_exit' : 'fullscreen'"
+                    @click="isFullScreen = !isFullScreen"
+                  />
+                </q-carousel-control>
+              </template>
+            </q-carousel>
+          </q-card>
+          <div class="tw-w-auto dark:tw-text-darkGray-100">
+            <div class="tw-flex tw-flex-col tw-items-center">
+              <q-card class="bg-auto tw-h-96">
+                <div class="tw-flex tw-flex-col tw-items-center tw-py-4">
+                  <Avatar :url="dapp.iconUrl" class="tw-w-24 tw-h-24 tw-mt-4" />
+                  <div class="tw-my-2 tw-text-2xl tw-font-semibold">
+                    {{ dapp.name }}
+                    <a v-if="dapp.gitHubUrl" :href="dapp.gitHubUrl" target="_blank">
+                      <img width="20" class="tw-inline tw-ml-2" src="~assets/img/github.png" />
+                    </a>
+                  </div>
                 </div>
-              </div>
-              <q-separator />
-              <div class="tw-flex tw-flex-wrap tw-w-full tw-m-2">
-                <NameValue label="License" class="info">
-                  {{ dapp.license }}
-                </NameValue>
-                <NameValue label="Stakers count" class="info">
-                  {{ stakeInfo?.stakersCount }}
-                </NameValue>
-                <NameValue label="Address" class="info">
-                  {{ getShortenAddress(dapp.address) }}
-                </NameValue>
-                <NameValue label="Staked" class="info">
-                  {{ stakeInfo?.totalStake }}
-                </NameValue>
-              </div>
-              <q-separator />
-              <div v-if="dapp.tags" class="tw-w-full tw-m-2">
-                <q-chip
-                  v-for="(tag, index) in dapp.tags"
-                  :key="index"
-                  color="blue"
-                  class="tw-text-white"
-                >
-                  {{ tag }}
-                </q-chip>
-              </div>
-              <q-separator v-if="dapp.tags" />
-              <div>
-                <q-scroll-area class="scroll">
-                  <q-markdown :src="dapp.description" :no-html="true" class="tw-m-2"></q-markdown>
-                </q-scroll-area>
-              </div>
-            </q-card>
+                <q-separator />
+                <div class="tw-flex tw-flex-wrap tw-w-full tw-m-2">
+                  <NameValue label="License" class="info">
+                    {{ dapp.license }}
+                  </NameValue>
+                  <NameValue label="Stakers count" class="info">
+                    {{ stakeInfo?.stakersCount }}
+                  </NameValue>
+                  <NameValue label="Address" class="info">
+                    {{ getShortenAddress(dapp.address) }}
+                  </NameValue>
+                  <NameValue label="Staked" class="info">
+                    {{ stakeInfo?.totalStake }}
+                  </NameValue>
+                </div>
+                <q-separator v-if="dapp.tags" />
+                <div v-if="dapp.tags" class="tw-w-full tw-m-2">
+                  <q-chip
+                    v-for="(tag, index) in dapp.tags"
+                    :key="index"
+                    color="blue"
+                    class="tw-text-white"
+                  >
+                    {{ tag }}
+                  </q-chip>
+                </div>
+              </q-card>
+            </div>
           </div>
         </div>
+        <q-card class="tw-mt-4">
+          <q-scroll-area class="scroll">
+            <q-markdown :src="dapp.description" :no-html="true" class="tw-m-2"></q-markdown>
+          </q-scroll-area>
+        </q-card>
       </div>
     </template>
     <template #buttons>

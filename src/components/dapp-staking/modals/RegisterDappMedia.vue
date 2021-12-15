@@ -31,9 +31,9 @@
       multiple
       append
       counter
-      max-file-size="102400"
+      max-file-size="1000000"
       accept=".jpg .png, image/*"
-      label="Screenshots (Max. file size 100kB)"
+      label="Screenshots (Max. file size 1MB)"
       class="tw-my-4"
       :rules="[(v) => (v && v.length >= 4) || 'At least 4 dApp images are required.']"
       @update:model-value="updateFile(value)"
