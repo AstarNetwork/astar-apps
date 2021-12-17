@@ -1,6 +1,20 @@
 <template>
   <div v-if="isConnected(currentNetworkStatus)">
-    <div v-if="isH160">
+    <div class="tw-grid md:tw-grid-cols-2 xl:tw-grid-cols-3 tw-gap-4 tw-mb-8">
+      <Wallet
+        v-model:isOpen="modalAccount"
+        :wallet-name="currentAccountName"
+        :is-evm-deposit="isEvmDeposit"
+      />
+    </div>
+    <Accounts
+      :current-account="currentAccount"
+      :account-data="accountData"
+      :is-evm-deposit="isEvmDeposit"
+      :evm-deposit="evmDeposit"
+      :is-transferable="accountData?.getUsableTransactionBalance().toString() !== '0'"
+    />
+    <!-- <div v-if="isH160">
       <div class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4">
         <WalletH160
           v-model:isOpen="modalAccount"
@@ -8,43 +22,34 @@
           :address-name="currentAccountName"
         />
       </div>
-    </div>
-    <div v-if="isSS58">
+    </div> -->
+    <!-- <div v-if="isSS58">
       <div class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4">
         <Wallet v-model:isOpen="modalAccount" :wallet-name="currentAccountName" />
       </div>
       <div class="tw-grid lg:tw-grid-cols-2 tw-gap-4 tw-mt-4">
         <Addresses :address="currentAccount" />
       </div>
-    </div>
+    </div> -->
 
-    <div
+    <!-- <div
       v-if="isH160 || isSS58"
       class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4 tw-mt-4"
     >
       <ToggleMetaMask />
-    </div>
+    </div> -->
 
-    <div v-if="!isH160 && !isSS58">
+    <!-- <div v-if="!isH160 && !isSS58">
       <div class="tw-grid lg:tw-grid-cols-2 tw-gap-4">
         <Wallet v-model:isOpen="modalAccount" :wallet-name="currentAccountName" />
       </div>
       <div class="tw-grid lg:tw-grid-cols-2 tw-gap-4 tw-mt-8">
         <Addresses :address="currentAccount" />
       </div>
-    </div>
+    </div> -->
 
-    <div
-      class="
-        tw-grid tw-grid-cols-1
-        md:tw-grid-cols-3
-        xl:tw-grid-cols-4
-        tw-gap-y-8
-        md:tw-gap-8
-        tw-mt-8
-      "
-    >
-      <TotalBalance v-if="accountData" :account-data="accountData" />
+    <div class="tw-mt-8">
+      <!-- <TotalBalance v-if="accountData" :account-data="accountData" /> -->
       <PlmBalance
         v-if="accountData"
         v-model:isOpenTransfer="modalTransferAmount"
@@ -95,7 +100,7 @@
 import { useMeta } from 'quasar';
 import { useAccount, useApi, useBalance, useEvmDeposit, useFaucet } from 'src/hooks';
 import { useStore } from 'src/store';
-import { computed, defineComponent, reactive, toRefs } from 'vue';
+import { computed, defineComponent, reactive, toRefs, watchEffect } from 'vue';
 import Addresses from './Addresses.vue';
 import ModalAccount from './modals/ModalAccount.vue';
 import ModalTransferAmount from './modals/ModalTransferAmount.vue';
@@ -106,6 +111,7 @@ import ToggleMetaMask from './ToggleMetaMask.vue';
 import TotalBalance from './TotalBalance.vue';
 import Wallet from './Wallet.vue';
 import WalletH160 from './WalletH160.vue';
+import Accounts from './Accounts.vue';
 
 interface Modal {
   modalAccount: boolean;
@@ -118,15 +124,16 @@ interface Modal {
 export default defineComponent({
   components: {
     Wallet,
-    WalletH160,
+    // WalletH160,
     PlmBalance,
-    TotalBalance,
-    Addresses,
-    ToggleMetaMask,
+    // TotalBalance,
+    // Addresses,
+    // ToggleMetaMask,
     ModalAccount,
     ModalTransferAmount,
     ModalWithdrawalEvmDeposit,
     ModalFaucet,
+    Accounts,
   },
   setup() {
     useMeta({ title: 'Wallet' });
@@ -147,7 +154,7 @@ export default defineComponent({
     const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
     const isSS58 = computed(() => store.getters['general/isCheckMetamask']);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
-    const { evmDeposit } = useEvmDeposit();
+    const { evmDeposit, isEvmDeposit } = useEvmDeposit();
     const { faucetInfo, requestFaucet } = useFaucet();
 
     return {
@@ -164,6 +171,7 @@ export default defineComponent({
       isH160,
       faucetInfo,
       requestFaucet,
+      isEvmDeposit,
     };
   },
   methods: {

@@ -18,7 +18,6 @@ export function useEvmDeposit() {
       const apiRef = api && api.value;
       const currentAccountRef = currentAccount.value;
       if (!apiRef || !currentAccountRef) return;
-
       const getData = async (h160Addr: string): Promise<BN> => {
         return await apiRef.rpc.eth.getBalance(h160Addr);
       };

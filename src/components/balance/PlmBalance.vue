@@ -7,7 +7,7 @@
       sm:tw-col-span-2
       tw-text-blue-900
       dark:tw-text-darkGray-100
-      tw-p-5 tw-pb-14
+      tw-p-5
       sm:tw-grid
       tw-grid-cols-2 tw-gap-4
       xl:tw-col-span-3
@@ -15,7 +15,7 @@
   >
     <div>
       <div class="tw-flex tw-items-center tw-pt-1">
-        <div
+        <!-- <div
           class="
             tw-h-10 tw-w-10 tw-rounded-full tw-overflow-hidden tw-border tw-border-gray-100 tw-mr-2
           "
@@ -23,24 +23,24 @@
           <icon-base class="tw-h-full tw-w-full" viewBox="0 0 64 64">
             <icon-account-sample />
           </icon-base>
-        </div>
+        </div> -->
         <p class="tw-text-blue-900 dark:tw-text-darkGray-100 tw-font-bold tw-text-lg">
-          {{ defaultUnitToken }} {{ $t('balance.transferable') }}
+          {{ $t('balance.transferable') }}
         </p>
       </div>
 
-      <div class="tw-flex tw-flex-col tw-h-full tw-justify-center">
+      <div class="tw-flex tw-flex-col tw-pt-1 sm:tw-pt-12 tw-pb-3 sm:tw-pb-0 tw-justify-center">
         <div class="tw-flex tw-justify-center">
           <div>
             <p class="tw-font-semibold tw-text-center">
-              <span class="tw-text-3xl tw-tracking-tight tw-leading-tight">
+              <span class="tw-text-4xl tw-tracking-tight tw-leading-tight">
                 <format-balance :balance="accountData?.getUsableTransactionBalance()" />
               </span>
             </p>
           </div>
         </div>
 
-        <div
+        <!-- <div
           class="
             tw-mt-8
             xl:tw-mt-1
@@ -78,7 +78,7 @@
           >
             {{ $t('balance.withdrawEvm') }}
           </button>
-        </div>
+        </div> -->
       </div>
     </div>
 
@@ -116,8 +116,11 @@
           </p>
         </div>
       </div>
+      <div class="tw-flex tw-justify-center tw-items-center tw-bg-blue-500 tw-rounded-lg tw-h-14">
+        <div class="tw-font-bold tw-text-lg tw-text-white">{{ $t('balance.faucet') }}</div>
+      </div>
 
-      <div
+      <!-- <div
         v-if="!isH160"
         class="
           tw-flex tw-justify-between tw-items-center tw-bg-blue-50
@@ -133,7 +136,7 @@
             </span>
           </p>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -147,8 +150,8 @@ import { useStore } from 'src/store';
 
 export default defineComponent({
   components: {
-    IconBase,
-    IconAccountSample,
+    // IconBase,
+    // IconAccountSample,
     FormatBalance,
   },
   props: {
