@@ -8,6 +8,8 @@
       />
     </div>
     <Accounts
+      v-model:isOpenTransfer="modalTransferAmount"
+      v-model:isOpenWithdrawalEvmDeposit="modalWithdrawalEvmDeposit"
       :current-account="currentAccount"
       :account-data="accountData"
       :is-evm-deposit="isEvmDeposit"
@@ -52,8 +54,6 @@
       <!-- <TotalBalance v-if="accountData" :account-data="accountData" /> -->
       <PlmBalance
         v-if="accountData"
-        v-model:isOpenTransfer="modalTransferAmount"
-        v-model:isOpenWithdrawalEvmDeposit="modalWithdrawalEvmDeposit"
         v-model:isOpenModalFaucet="modalFaucet"
         :address="currentAccount"
         :account-data="accountData"

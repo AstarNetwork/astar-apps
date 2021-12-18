@@ -103,6 +103,7 @@
         class="transfer-button"
         :disabled="isDisableAction"
         :class="isDisableAction ? 'disabled_btn' : ''"
+        @click="openModal"
       >
         {{ $t(accountName === accountLabel.h160 ? 'balance.withdraw' : 'balance.transfer') }}
       </button>
@@ -144,7 +145,12 @@ export default defineComponent({
       type: Boolean,
       required: true,
     },
+    openModal: {
+      type: Function,
+      required: true,
+    },
   },
+
   setup({ format, isDisableAction }) {
     const store = useStore();
     const accountAddress = ref<string>('');
