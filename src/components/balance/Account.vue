@@ -151,7 +151,7 @@ export default defineComponent({
     },
   },
 
-  setup({ format, isDisableAction }) {
+  setup({ format }) {
     const store = useStore();
     const accountAddress = ref<string>('');
     const accountName = ref<string>('');

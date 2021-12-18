@@ -10,39 +10,15 @@ import { getChainId, setupNetwork } from 'src/web3';
 function useCall(apiRef: any, addressRef: Ref<string>) {
   // should be fixed -- cannot refer it because it goes undefined once it called. to call balance again, it should pass apiRef by external params.
   // const { api: apiRef } = useApi();
-  // const balanceRef = ref(new BN(0));
   const vestedRef = ref(new BN(0));
   const accountDataRef = ref<AccountData>();
   const store = useStore();
   const isMetamask = computed(() => store.getters['general/isCheckMetamask']);
-  // const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
   const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
   const isLoading = computed(() => store.getters['general/isLoading']);
   const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
 
   const unsub: Ref<VoidFn | undefined> = ref();
-
-  // const updateAccountH160 = async (address: string) => {
-  //   if (!address) return;
-  //   try {
-  //     const web3 = await createWeb3Instance(currentNetworkIdx.value);
-  //     if (!web3) {
-  //       throw Error(`cannot create the web3 instance with network id ${currentNetworkIdx.value}`);
-  //     }
-
-  //     const rawBal = await web3.eth.getBalance(address);
-  //     accountDataRef.value = new AccountDataH160(
-  //       new BN(rawBal),
-  //       new BN(0),
-  //       new BN(0),
-  //       new BN(0),
-  //       new BN(0)
-  //     );
-  //     balanceRef.value = new BN(rawBal);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
 
   const updateAccount = (address: string) => {
     if (!address) return;
@@ -92,7 +68,6 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
 
           const rawBal = await web3.eth.getBalance(currentEcdsaAccount.value.ethereum);
           ethereumBalance = new BN(rawBal);
-          // balanceRef.value = new BN(rawBal);
         } catch (error) {
           console.error(error);
         }
@@ -106,8 +81,6 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
         vestedRef.value,
         ethereumBalance
       );
-
-      // balanceRef.value = accountInfo.data.free.toBn();
     });
   };
 
@@ -137,7 +110,6 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
     }
   });
   return {
-    // balanceRef,
     accountDataRef,
   };
 }
@@ -145,19 +117,7 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
 export function useBalance(apiRef: any, addressRef: Ref<string>) {
   const balance = ref(new BN(0));
   const accountData = ref<AccountData>();
-
-  // const { balanceRef, accountDataRef } = useCall(apiRef, addressRef);
   const { accountDataRef } = useCall(apiRef, addressRef);
-
-  // watch(
-  //   () => balanceRef?.value,
-  //   (bal) => {
-  //     if (bal) {
-  //       balance.value = bal;
-  //     }
-  //   },
-  //   { immediate: true }
-  // );
 
   watch(
     () => accountDataRef?.value,

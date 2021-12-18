@@ -103,7 +103,6 @@ export default defineComponent({
         store.commit('general/setCurrentEcdsaAccount', {
           ethereum: '',
           ss58: '',
-          h160: '',
         });
       }
     };

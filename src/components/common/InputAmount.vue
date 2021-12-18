@@ -54,7 +54,7 @@
           "
         >
           <select
-            v-if="!fixUnit && !isH160"
+            v-if="!fixUnit"
             name="units"
             class="dark:tw-bg-darkGray-900"
             :value="selectedUnit"
@@ -81,9 +81,8 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, PropType, ref, watchEffect, computed } from 'vue';
+import { defineComponent, PropType, ref, watchEffect } from 'vue';
 import { getUnitNames, defaultUnitIndex } from 'src/hooks/helper/units';
-import { useStore } from 'src/store';
 import BN from 'bn.js';
 export default defineComponent({
   props: {
@@ -112,9 +111,6 @@ export default defineComponent({
       }
     };
 
-    const store = useStore();
-    const isH160 = computed(() => store.getters['general/isH160Formatted']);
-
     watchEffect(() => {
       // Memo: cast from string
       const formattedAmount = new BN(Number(props.amount));
@@ -138,8 +134,8 @@ export default defineComponent({
     });
 
     const initInput = () => {
-      // Memo: Remove default `props.amount->(0)` from input when initialised
-      // Memo: `props.amout` is defined by BN or Number from parent components
+      // Memo: Remove default `props.amount->(0)` from input when initialized
+      // Memo: `props.amount` is defined by BN or Number from parent components
       try {
         if (props.amount.eq(new BN(0))) {
           emit('update:amount', '');
@@ -155,7 +151,7 @@ export default defineComponent({
       }
     };
 
-    return { arrUnitNames, update, isMaxAmount, isInitInput, initInput, isH160, setMaxAmount };
+    return { arrUnitNames, update, isMaxAmount, isInitInput, initInput, setMaxAmount };
   },
 });
 </script>

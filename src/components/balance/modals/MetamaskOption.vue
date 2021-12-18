@@ -81,19 +81,11 @@ export default defineComponent({
   emits: ['update:sel-checked', 'connectMetamask'],
   setup(props, { emit }) {
     const store = useStore();
-    const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const { requestAccounts, requestSignature } = useMetamask();
 
     const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
     const ecdsaAccounts = ref<EcdsaAddressFormat>(currentEcdsaAccount.value);
     const curAddress = ref<string>(currentEcdsaAccount.value.ss58);
-
-    watchEffect(() => {
-      if (isH160.value) {
-        curAddress.value = currentEcdsaAccount.value.h160;
-      }
-    });
-
     const errorMsg = ref('');
 
     const shortenAddr = (addr: string) => {
@@ -111,7 +103,7 @@ export default defineComponent({
         const loginMsg = `Sign this message to login with address ${loadingAddr}`;
 
         const signature = await requestSignature(loginMsg, loadingAddr);
-        console.log(signature);
+        // console.log(signature);
 
         if (typeof signature !== 'string') {
           throw new Error('Failed to fetch signature');
@@ -120,11 +112,11 @@ export default defineComponent({
         // FIXME: keccak issue should be resolved : https://github.com/cryptocoinjs/keccak/pull/22
         const pubKey = utils.recoverPublicKeyFromSig(loadingAddr, loginMsg, signature);
 
-        console.log(`Public key: ${pubKey}`);
+        // console.log(`Public key: ${pubKey}`);
 
         const ss58Address = utils.ecdsaPubKeyToSs58(pubKey, ASTAR_SS58_FORMAT);
 
-        console.log(`ethereum: ${loadingAddr} / ss58: ${ss58Address}`);
+        // console.log(`ethereum: ${loadingAddr} / ss58: ${ss58Address}`);
 
         ecdsaAccounts.value = { ethereum: loadingAddr, ss58: ss58Address };
         curAddress.value = ss58Address;

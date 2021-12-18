@@ -150,12 +150,9 @@ export default defineComponent({
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
 
     const isSupportContract = ref(providerEndpoints[currentNetworkIdx.value].isSupportContract);
-
-    // const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const selAccountIdx = ref(currentAccountIdx.value);
 
     const selAccount = ref(allAccounts[selAccountIdx.value] as string);
-    // const selAddress = ref(!isH160 ? (allAccounts[selAccountIdx.value] as string) : '');
     const selAddress = ref(!isEthereumTx ? (allAccounts[selAccountIdx.value] as string) : '');
     const selAccountName = ref(allAccountNames[selAccountIdx.value]);
 
@@ -166,8 +163,8 @@ export default defineComponent({
       () => isSupportContract.value && currentEcdsaAccount.value.ethereum
     );
 
-    const isH160Account = ref<boolean>(isEthereumTx);
-    const checkMetamaskOption = isEthereumTx ? isH160Account : checkMetamask;
+    const isEthereumAccount = ref<boolean>(isEthereumTx);
+    const checkMetamaskOption = isEthereumTx ? isEthereumAccount : checkMetamask;
     const ecdsaAccountValue = isEthereumTx
       ? currentEcdsaAccount.value.ethereum
       : currentEcdsaAccount.value.ss58;
@@ -226,7 +223,6 @@ export default defineComponent({
       checkMetamask,
       showMetamaskOption,
       changeAddress,
-      // isH160,
       checkMetamaskOption,
       isReadOnly,
       isEvmAddress,

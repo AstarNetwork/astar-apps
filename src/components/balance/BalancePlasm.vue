@@ -17,42 +17,8 @@
       :evm-deposit="evmDeposit"
       :is-transferable="accountData?.getUsableTransactionBalance().toString() !== '0'"
     />
-    <!-- <div v-if="isH160">
-      <div class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4">
-        <WalletH160
-          v-model:isOpen="modalAccount"
-          :address="currentAccount"
-          :address-name="currentAccountName"
-        />
-      </div>
-    </div> -->
-    <!-- <div v-if="isSS58">
-      <div class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4">
-        <Wallet v-model:isOpen="modalAccount" :wallet-name="currentAccountName" />
-      </div>
-      <div class="tw-grid lg:tw-grid-cols-2 tw-gap-4 tw-mt-4">
-        <Addresses :address="currentAccount" />
-      </div>
-    </div> -->
-
-    <!-- <div
-      v-if="isH160 || isSS58"
-      class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4 tw-mt-4"
-    >
-      <ToggleMetaMask />
-    </div> -->
-
-    <!-- <div v-if="!isH160 && !isSS58">
-      <div class="tw-grid lg:tw-grid-cols-2 tw-gap-4">
-        <Wallet v-model:isOpen="modalAccount" :wallet-name="currentAccountName" />
-      </div>
-      <div class="tw-grid lg:tw-grid-cols-2 tw-gap-4 tw-mt-8">
-        <Addresses :address="currentAccount" />
-      </div>
-    </div> -->
 
     <div class="tw-mt-8">
-      <!-- <TotalBalance v-if="accountData" :account-data="accountData" /> -->
       <PlmBalance
         v-if="accountData"
         v-model:isOpenModalFaucet="modalFaucet"
@@ -109,19 +75,14 @@
 import { useMeta } from 'quasar';
 import { useAccount, useApi, useBalance, useEvmDeposit, useFaucet } from 'src/hooks';
 import { useStore } from 'src/store';
-import { computed, defineComponent, reactive, toRefs, watchEffect } from 'vue';
-import Addresses from './Addresses.vue';
-import ModalAccount from './modals/ModalAccount.vue';
-import ModalTransferAmount from './modals/ModalTransferAmount.vue';
-import ModalTransferAmountEthereum from './modals/ModalTransferAmountEthereum.vue';
-import ModalWithdrawalEvmDeposit from './modals/ModalWithdrawalEvmDeposit.vue';
-import ModalFaucet from './modals/ModalFaucet.vue';
-import PlmBalance from './PlmBalance.vue';
-import ToggleMetaMask from './ToggleMetaMask.vue';
-import TotalBalance from './TotalBalance.vue';
-import Wallet from './Wallet.vue';
-import WalletH160 from './WalletH160.vue';
+import { computed, defineComponent, reactive, toRefs } from 'vue';
 import Accounts from './Accounts.vue';
+import ModalAccount from './modals/ModalAccount.vue';
+import ModalFaucet from './modals/ModalFaucet.vue';
+import ModalTransferAmount from './modals/ModalTransferAmount.vue';
+import ModalWithdrawalEvmDeposit from './modals/ModalWithdrawalEvmDeposit.vue';
+import PlmBalance from './PlmBalance.vue';
+import Wallet from './Wallet.vue';
 
 interface Modal {
   modalAccount: boolean;
@@ -135,17 +96,12 @@ interface Modal {
 export default defineComponent({
   components: {
     Wallet,
-    // WalletH160,
     PlmBalance,
-    // TotalBalance,
-    // Addresses,
-    // ToggleMetaMask,
     ModalAccount,
     ModalTransferAmount,
     ModalWithdrawalEvmDeposit,
     ModalFaucet,
     Accounts,
-    // ModalTransferAmountEthereum,
   },
   setup() {
     useMeta({ title: 'Wallet' });
@@ -163,10 +119,7 @@ export default defineComponent({
     const { allAccounts, allAccountNames, currentAccount, currentAccountName } = useAccount();
     const { api } = useApi();
     const { balance, accountData } = useBalance(api, currentAccount);
-
     const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
-    const isSS58 = computed(() => store.getters['general/isCheckMetamask']);
-    const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const { evmDeposit, isEvmDeposit } = useEvmDeposit();
     const { faucetInfo, requestFaucet } = useFaucet();
 
@@ -180,8 +133,6 @@ export default defineComponent({
       currentAccountName,
       currentNetworkStatus,
       accountData,
-      isSS58,
-      isH160,
       faucetInfo,
       requestFaucet,
       isEvmDeposit,

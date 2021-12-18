@@ -51,7 +51,7 @@
                 <MetamaskOption
                   v-if="isSupportContract"
                   v-model:selChecked="checkMetamask"
-                  :checked="checkMetamask || isH160Account"
+                  :checked="checkMetamask"
                   @connectMetamask="connectMetamask"
                 />
                 <ModalAccountOption
@@ -62,7 +62,7 @@
                   :key-idx="index"
                   :address="account"
                   :address-name="allAccountNames[index]"
-                  :checked="!checkMetamask && !isH160Account && selAccount === index"
+                  :checked="!checkMetamask && selAccount === index"
                 />
               </ul>
             </div>
@@ -117,23 +117,17 @@ export default defineComponent({
 
     const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
     const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
-    const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
     const isSupportContract = ref(providerEndpoints[currentNetworkIdx.value].isSupportContract);
     const selectAccount = (accountIdx: number, checkMetamask: boolean) => {
       console.log(checkMetamask + '/' + accountIdx);
       store.commit('general/setIsCheckMetamask', checkMetamask);
       store.commit('general/setCurrentAccountIdx', accountIdx);
-      if (isH160Formatted.value && accountIdx !== 0) {
-        store.commit('general/setIsH160Formatted', false);
-      }
-
       emit('update:is-open', false);
     };
 
     const selAccount = ref(currentAccountIdx.value);
     const checkMetamask = ref<boolean>(isCheckMetamask.value);
-    const isH160Account = ref<boolean>(isH160Formatted.value);
 
     const connectMetamask = (ethAddr: string, ss58: string) => {
       console.log(ethAddr + '/' + ss58);
@@ -143,7 +137,6 @@ export default defineComponent({
     return {
       selAccount,
       checkMetamask,
-      isH160Account,
       isSupportContract,
       closeModal,
       selectAccount,

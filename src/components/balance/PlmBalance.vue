@@ -85,10 +85,8 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, toRefs, computed } from 'vue';
-import { useChainMetadata, useEvmDeposit } from 'src/hooks';
 import FormatBalance from 'components/balance/FormatBalance.vue';
-import { useStore } from 'src/store';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   components: {
@@ -106,23 +104,12 @@ export default defineComponent({
   },
   emits: ['update:is-open-modal-faucet'],
   setup(props, { emit }) {
-    const store = useStore();
-    const isH160 = computed(() => store.getters['general/isH160Formatted']);
-
     const openFaucetModal = (): void => {
       emit('update:is-open-modal-faucet', true);
     };
 
-    const { defaultUnitToken } = useChainMetadata();
-    const { evmDeposit, isEvmDeposit } = useEvmDeposit();
-
     return {
       openFaucetModal,
-      evmDeposit,
-      isEvmDeposit,
-      defaultUnitToken,
-      isH160,
-      ...toRefs(props),
     };
   },
 });
