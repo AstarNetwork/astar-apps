@@ -20,19 +20,19 @@
               tw-bg-transparent tw-placeholder-gray-300
               dark:tw-placeholder-darkGray-600
             "
-            :style="isH160 ? 'width: 24rem' : 'width: 21rem'"
+            :style="isEthereumTx ? 'width: 24rem' : 'width: 21rem'"
             type="text"
             spellcheck="false"
             :readonly="isReadOnly"
             @change="changeAddress"
-            @focus="openOption = !isH160"
+            @focus="openOption = !isEthereumTx"
             @blur="closeOption"
           />
         </div>
       </div>
 
       <span
-        v-if="!isH160"
+        v-if="!isEthereumTx"
         class="
           tw-ml-3
           tw-absolute
@@ -76,7 +76,7 @@
           :checked="checkMetamaskOption"
           :show-radio-if-unchecked="false"
         />
-        <div v-if="!isH160">
+        <div v-if="!isEthereumTx">
           <ModalSelectAccountOption
             v-for="(account, index) in allAccounts"
             :key="index"
@@ -134,10 +134,15 @@ export default defineComponent({
       required: false,
       default: '',
     },
+    isEthereumTx: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   emits: ['update:sel-address', 'selChanged'],
-  setup(props, { emit }) {
-    const isReadOnly = props.role === Role.FromAddress;
+  setup({ isEthereumTx, role, allAccounts, allAccountNames, toAddress }, { emit }) {
+    const isReadOnly = role === Role.FromAddress;
     const openOption = ref(false);
     const store = useStore();
     const { currentAccountName } = useAccount();
@@ -146,12 +151,13 @@ export default defineComponent({
 
     const isSupportContract = ref(providerEndpoints[currentNetworkIdx.value].isSupportContract);
 
-    const isH160 = computed(() => store.getters['general/isH160Formatted']);
+    // const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const selAccountIdx = ref(currentAccountIdx.value);
 
-    const selAccount = ref(props.allAccounts[selAccountIdx.value] as string);
-    const selAddress = ref(!isH160 ? (props.allAccounts[selAccountIdx.value] as string) : '');
-    const selAccountName = ref(props.allAccountNames[selAccountIdx.value]);
+    const selAccount = ref(allAccounts[selAccountIdx.value] as string);
+    // const selAddress = ref(!isH160 ? (allAccounts[selAccountIdx.value] as string) : '');
+    const selAddress = ref(!isEthereumTx ? (allAccounts[selAccountIdx.value] as string) : '');
+    const selAccountName = ref(allAccountNames[selAccountIdx.value]);
 
     const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
     const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
@@ -160,21 +166,21 @@ export default defineComponent({
       () => isSupportContract.value && currentEcdsaAccount.value.ethereum
     );
 
-    const isH160Account = ref<boolean>(isH160.value);
-    const checkMetamaskOption = isH160.value ? isH160Account : checkMetamask;
-    const ecdsaAccountValue = isH160.value
-      ? currentEcdsaAccount.value.h160
+    const isH160Account = ref<boolean>(isEthereumTx);
+    const checkMetamaskOption = isEthereumTx ? isH160Account : checkMetamask;
+    const ecdsaAccountValue = isEthereumTx
+      ? currentEcdsaAccount.value.ethereum
       : currentEcdsaAccount.value.ss58;
 
     watch(
       [selAccountIdx, checkMetamaskOption, ecdsaAccountValue],
       () => {
         if (!checkMetamaskOption.value) {
-          selAccount.value = props.allAccounts[selAccountIdx.value] as string;
-          selAccountName.value = props.allAccountNames[selAccountIdx.value];
-          selAddress.value = props.allAccounts[selAccountIdx.value] as string;
+          selAccount.value = allAccounts[selAccountIdx.value] as string;
+          selAccountName.value = allAccountNames[selAccountIdx.value];
+          selAddress.value = allAccounts[selAccountIdx.value] as string;
         } else {
-          if (props.role === Role.ToAddress && isH160.value) {
+          if (role === Role.ToAddress && isEthereumTx) {
             selAddress.value = '';
           } else {
             selAddress.value = ecdsaAccountValue;
@@ -191,7 +197,7 @@ export default defineComponent({
 
     const isEvmAddress = ref<boolean>(false);
     watchEffect(() => {
-      isEvmAddress.value = isValidEvmAddress(props.toAddress ? props.toAddress : '');
+      isEvmAddress.value = isValidEvmAddress(toAddress ? toAddress : '');
     });
 
     const changeAddress = (e: any) => {
@@ -207,7 +213,7 @@ export default defineComponent({
     const valueAddressOrWallet = ref<string>('');
     watchEffect(() => {
       valueAddressOrWallet.value =
-        props.role === Role.FromAddress ? String(currentAccountName.value) : selAddress.value;
+        role === Role.FromAddress ? String(currentAccountName.value) : selAddress.value;
     });
 
     return {
@@ -220,7 +226,7 @@ export default defineComponent({
       checkMetamask,
       showMetamaskOption,
       changeAddress,
-      isH160,
+      // isH160,
       checkMetamaskOption,
       isReadOnly,
       isEvmAddress,

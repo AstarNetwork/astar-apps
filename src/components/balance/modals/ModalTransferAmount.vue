@@ -50,7 +50,13 @@
                 })
               }}</span>
               <span class="tw-block tw-font-semibold tw-text-2xl tw-mb-1">
-                <format-balance :balance="accountData?.getUsableTransactionBalance()" />
+                <format-balance
+                  :balance="
+                    isEthereum
+                      ? accountData.ethereumBalance
+                      : accountData.getUsableTransactionBalance()
+                  "
+                />
               </span>
             </button>
 
@@ -70,6 +76,7 @@
                   :all-accounts="allAccounts"
                   :all-account-names="allAccountNames"
                   :role="Role.FromAddress"
+                  :is-ethereum-tx="isEthereum"
                   @sel-changed="reloadAmount"
                 />
               </div>
@@ -90,6 +97,7 @@
                   :all-account-names="allAccountNames"
                   :role="Role.ToAddress"
                   :to-address="toAddress"
+                  :is-ethereum-tx="isEthereum"
                 />
               </div>
 
@@ -157,17 +165,17 @@ export default defineComponent({
       type: Array,
       required: true,
     },
-    balance: {
-      type: BN,
-      required: true,
-    },
     accountData: {
       type: Object,
       required: true,
     },
+    isEthereum: {
+      type: Boolean,
+      required: true,
+    },
   },
   emits: ['update:is-open'],
-  setup(props, { emit }) {
+  setup({ accountData, isEthereum }, { emit }) {
     const closeModal = () => {
       emit('update:is-open', false);
     };
@@ -185,7 +193,7 @@ export default defineComponent({
     const selectUnit = ref(defaultUnitToken.value);
     const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
-    const isH160 = computed(() => store.getters['general/isH160Formatted']);
+    // const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
     // isCustomSigBlocked is temporary until extrinsic call pallet is deployed to all networks.
     const isCustomSigBlocked = computed(() => !!!providerEndpoints[currentNetworkIdx.value].prefix);
@@ -196,7 +204,7 @@ export default defineComponent({
     const formatBalance = computed(() => {
       const tokenDecimal = decimal.value;
       return plasmUtils.reduceBalanceToDenom(
-        props.accountData.getUsableTransactionBalance(),
+        isEthereum ? accountData.ethereumBalance : accountData.getUsableTransactionBalance(),
         tokenDecimal
       );
     });
@@ -293,7 +301,7 @@ export default defineComponent({
         return;
       }
 
-      if (isH160.value) {
+      if (isEthereum) {
         const provider = typeof window !== 'undefined' && window.ethereum;
         const web3 = new Web3(provider as any);
         if (!web3.utils.isAddress(toAddress)) {
@@ -371,7 +379,7 @@ export default defineComponent({
       selectUnit,
       reloadAmount,
       Role,
-      ...toRefs(props),
+      // ...toRefs(props),
     };
   },
 });

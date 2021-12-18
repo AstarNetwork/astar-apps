@@ -9,6 +9,7 @@
     </div>
     <Accounts
       v-model:isOpenTransfer="modalTransferAmount"
+      v-model:isOpenTransferEthereum="modalTransferAmountEthereum"
       v-model:isOpenWithdrawalEvmDeposit="modalWithdrawalEvmDeposit"
       :current-account="currentAccount"
       :account-data="accountData"
@@ -72,8 +73,16 @@
       v-model:isOpen="modalTransferAmount"
       :all-accounts="allAccounts"
       :all-account-names="allAccountNames"
-      :balance="balance"
       :account-data="accountData"
+      :is-ethereum="false"
+    />
+    <ModalTransferAmount
+      v-if="modalTransferAmountEthereum"
+      v-model:isOpen="modalTransferAmountEthereum"
+      :all-accounts="allAccounts"
+      :all-account-names="allAccountNames"
+      :account-data="accountData"
+      :is-ethereum="true"
     />
     <ModalWithdrawalEvmDeposit
       v-if="modalWithdrawalEvmDeposit"
@@ -104,6 +113,7 @@ import { computed, defineComponent, reactive, toRefs, watchEffect } from 'vue';
 import Addresses from './Addresses.vue';
 import ModalAccount from './modals/ModalAccount.vue';
 import ModalTransferAmount from './modals/ModalTransferAmount.vue';
+import ModalTransferAmountEthereum from './modals/ModalTransferAmountEthereum.vue';
 import ModalWithdrawalEvmDeposit from './modals/ModalWithdrawalEvmDeposit.vue';
 import ModalFaucet from './modals/ModalFaucet.vue';
 import PlmBalance from './PlmBalance.vue';
@@ -116,6 +126,7 @@ import Accounts from './Accounts.vue';
 interface Modal {
   modalAccount: boolean;
   modalTransferAmount: boolean;
+  modalTransferAmountEthereum: boolean;
   modalWithdrawalEvmDeposit: boolean;
   modalTransferToken: boolean;
   modalFaucet: boolean;
@@ -134,6 +145,7 @@ export default defineComponent({
     ModalWithdrawalEvmDeposit,
     ModalFaucet,
     Accounts,
+    // ModalTransferAmountEthereum,
   },
   setup() {
     useMeta({ title: 'Wallet' });
@@ -141,6 +153,7 @@ export default defineComponent({
     const stateModal = reactive<Modal>({
       modalAccount: false,
       modalTransferAmount: false,
+      modalTransferAmountEthereum: false,
       modalTransferToken: false,
       modalWithdrawalEvmDeposit: false,
       modalFaucet: false,

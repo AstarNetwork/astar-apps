@@ -15,9 +15,9 @@
       />
       <Account
         :format="AccountFormat.Ethereum"
-        :balance="accountData?.free"
+        :balance="accountData?.ethereumBalance"
         :is-disable-action="!isTransferable"
-        :open-modal="openTransferModal"
+        :open-modal="openTransferEthereumModal"
       />
     </template>
     <template v-else>
@@ -74,12 +74,20 @@ export default defineComponent({
       required: true,
     },
   },
-  emits: ['update:is-open-transfer', 'update:is-open-withdrawal-evm-deposit'],
+  emits: [
+    'update:is-open-transfer',
+    'update:is-open-transfer-ethereum',
+    'update:is-open-withdrawal-evm-deposit',
+  ],
   setup(props, { emit }) {
     const store = useStore();
     const isMetamask = computed(() => store.getters['general/isCheckMetamask']);
     const openTransferModal = (): void => {
       emit('update:is-open-transfer', true);
+    };
+
+    const openTransferEthereumModal = (): void => {
+      emit('update:is-open-transfer-ethereum', true);
     };
 
     const openWithdrawalModal = (): void => {
@@ -91,6 +99,7 @@ export default defineComponent({
       isMetamask,
       openTransferModal,
       openWithdrawalModal,
+      openTransferEthereumModal,
     };
   },
 });
