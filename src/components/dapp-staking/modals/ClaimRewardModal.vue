@@ -28,11 +28,12 @@
           claimInfo?.unclaimedEras?.length
         }}</span>
       </div>
-    </template>
-    <template #buttons>
-      <Button :disabled="!canClaim" class="tw-tooltip" @click="claimAction()">
-        {{ $t('dappStaking.claim') }}
-      </Button>
+      <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row">
+        <Button type="button" :primary="false" @click="closeModal">{{ $t('close') }}</Button>
+        <Button :disabled="!canClaim" class="tw-tooltip" @click="claimAction()">
+          {{ $t('dappStaking.claim') }}
+        </Button>
+      </div>
     </template>
   </Modal>
 </template>
@@ -47,7 +48,6 @@ import Button from 'src/components/common/Button.vue';
 import Avatar from 'src/components/common/Avatar.vue';
 import { StakingParameters, ClaimInfo } from 'src/store/dapp-staking/actions';
 import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
-import BN from 'bn.js';
 
 export default defineComponent({
   components: {
@@ -69,7 +69,8 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
+  emits: ['update:is-open'],
+  setup(props, { emit }) {
     const { api } = useApi();
     const store = useStore();
     const { decimal } = useChainMetadata();
@@ -94,11 +95,16 @@ export default defineComponent({
       claimedRewards.value = balanceFormatter(claimInfo.value.estimatedClaimedRewards.toString());
     });
 
+    const closeModal = () => {
+      emit('update:is-open', false);
+    };
+
     return {
       pendingRewards,
       claimedRewards,
       claimInfo,
       canClaim,
+      closeModal,
       ...toRefs(props),
     };
   },

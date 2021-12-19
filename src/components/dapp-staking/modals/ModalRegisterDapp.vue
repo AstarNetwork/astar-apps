@@ -53,9 +53,10 @@
         />
         <Input v-model="data.url" label="Url" type="text" maxlength="1000" />
       </div>
-    </template>
-    <template #buttons>
-      <Button @click="registerDapp">{{ $t('dappStaking.modals.register') }}</Button>
+      <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row">
+        <Button type="button" :primary="false" @click="closeModal">{{ $t('close') }}</Button>
+        <Button @click="registerDapp">{{ $t('dappStaking.modals.register') }}</Button>
+      </div>
     </template>
   </Modal>
 </template>
@@ -119,6 +120,10 @@ export default defineComponent({
       if (result) {
         emit('update:is-open', false);
       }
+    };
+
+    const closeModal = () => {
+      emit('update:is-open', false);
     };
 
     const encodeImage = (fileType: string, data: Uint8Array): string => {
@@ -187,6 +192,7 @@ export default defineComponent({
       validationErrors,
       onDropFile,
       registerDapp,
+      closeModal,
     };
   },
 });
