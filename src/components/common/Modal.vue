@@ -22,6 +22,7 @@
           tw-max-w-lg
           tw-w-full
         "
+        @click.stop
       >
         <div>
           <div>
@@ -39,10 +40,6 @@
             </div>
           </div>
         </div>
-        <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row">
-          <Button type="button" :primary="false" @click="closeModal">{{ $t('close') }}</Button>
-          <slot name="buttons"></slot>
-        </div>
       </div>
     </div>
   </div>
@@ -50,27 +47,17 @@
 
 <script lang="ts">
 import { defineComponent, toRefs } from 'vue';
-import Button from 'src/components/common/Button.vue';
 
 export default defineComponent({
-  components: {
-    Button,
-  },
   props: {
     title: {
       type: String,
       default: '',
     },
   },
-  emits: ['update:is-open'],
-  setup(props, { emit }) {
-    const closeModal = () => {
-      emit('update:is-open', false);
-    };
-
+  setup(props) {
     return {
       ...toRefs(props),
-      closeModal,
     };
   },
 });
