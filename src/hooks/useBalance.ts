@@ -115,7 +115,6 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
 }
 
 export function useBalance(apiRef: any, addressRef: Ref<string>) {
-  const balance = ref(new BN(0));
   const accountData = ref<AccountData>();
   const { accountDataRef } = useCall(apiRef, addressRef);
 
@@ -128,7 +127,7 @@ export function useBalance(apiRef: any, addressRef: Ref<string>) {
     },
     { immediate: true }
   );
-  return { balance, accountData };
+  return { accountData };
 }
 
 export class AccountData {

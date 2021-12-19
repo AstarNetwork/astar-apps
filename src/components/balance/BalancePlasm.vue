@@ -12,7 +12,6 @@
       v-model:isOpenTransferEthereum="modalTransferAmountEthereum"
       v-model:isOpenWithdrawalEvmDeposit="modalWithdrawalEvmDeposit"
       :current-account="currentAccount"
-      :account-data="accountData"
       :is-evm-deposit="isEvmDeposit"
       :evm-deposit="evmDeposit"
       :is-transferable="accountData?.getUsableTransactionBalance().toString() !== '0'"
@@ -24,6 +23,7 @@
         v-model:isOpenModalFaucet="modalFaucet"
         :address="currentAccount"
         :account-data="accountData"
+        :transferable="transferable"
       />
     </div>
 
@@ -75,7 +75,7 @@
 import { useMeta } from 'quasar';
 import { useAccount, useApi, useBalance, useEvmDeposit, useFaucet } from 'src/hooks';
 import { useStore } from 'src/store';
-import { computed, defineComponent, reactive, toRefs } from 'vue';
+import { computed, defineComponent, reactive, toRefs, watchEffect, ref } from 'vue';
 import Accounts from './Accounts.vue';
 import ModalAccount from './modals/ModalAccount.vue';
 import ModalFaucet from './modals/ModalFaucet.vue';
@@ -83,6 +83,7 @@ import ModalTransferAmount from './modals/ModalTransferAmount.vue';
 import ModalWithdrawalEvmDeposit from './modals/ModalWithdrawalEvmDeposit.vue';
 import PlmBalance from './PlmBalance.vue';
 import Wallet from './Wallet.vue';
+import BN from 'bn.js';
 
 interface Modal {
   modalAccount: boolean;
@@ -118,14 +119,22 @@ export default defineComponent({
     const store = useStore();
     const { allAccounts, allAccountNames, currentAccount, currentAccountName } = useAccount();
     const { api } = useApi();
-    const { balance, accountData } = useBalance(api, currentAccount);
+    const { accountData } = useBalance(api, currentAccount);
     const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
     const { evmDeposit, isEvmDeposit } = useEvmDeposit();
     const { faucetInfo, requestFaucet } = useFaucet();
 
+    const transferable = ref<BN>(new BN(0));
+    watchEffect(() => {
+      if (!accountData.value || !evmDeposit.value) return;
+      transferable.value = accountData.value
+        .getUsableTransactionBalance()
+        .add(accountData.value.ethereumBalance)
+        .add(evmDeposit.value);
+    });
+
     return {
       ...toRefs(stateModal),
-      balance,
       evmDeposit,
       allAccounts,
       allAccountNames,
@@ -136,6 +145,7 @@ export default defineComponent({
       faucetInfo,
       requestFaucet,
       isEvmDeposit,
+      transferable,
     };
   },
   methods: {

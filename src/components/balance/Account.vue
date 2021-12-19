@@ -15,9 +15,13 @@
           <icon-account-sample />
         </icon-base>
       </div>
-      <div v-else>
+      <div v-else-if="accountName === accountLabel.h160">
         <img width="40" src="~assets/img/ethereum.png" />
       </div>
+      <div v-else>
+        <img width="40" src="~assets/img/metamask.png" />
+      </div>
+
       <div class="tw-justify-self-center tw-font-semibold tw-text-lg">{{ $t(accountName) }}</div>
       <div v-if="isSubscan" class="tw-justify-self-end">
         <a :href="subScan" target="_blank" rel="noopener noreferrer">
@@ -55,10 +59,6 @@
           </button>
         </a>
       </div>
-    </div>
-    <div class="tw-flex tw-justify-between tw-mt-4">
-      <div>{{ $t('balance.totalBalance') }}</div>
-      <div><format-balance :balance="balance" /></div>
     </div>
     <div class="row">
       <div>{{ $t('address') }}</div>
@@ -98,6 +98,19 @@
         </button>
       </div>
     </div>
+    <div class="tw-flex tw-justify-between tw-mt-1">
+      <div>{{ $t('balance.totalBalance') }}</div>
+      <div><format-balance :balance="balance" /></div>
+    </div>
+    <div
+      :style="{
+        opacity: accountName === accountLabel.ss58 ? '1' : '0',
+      }"
+      class="tw-flex tw-justify-between tw-mt-3"
+    >
+      <div>{{ $t('balance.transferable') }}</div>
+      <div><format-balance :balance="transferable" /></div>
+    </div>
     <div>
       <button
         class="transfer-button"
@@ -123,7 +136,7 @@ import { AccountFormat } from './Accounts.vue';
 import { toEvmAddress } from 'src/hooks/helper/plasmUtils';
 import FormatBalance from 'components/balance/FormatBalance.vue';
 import BN from 'bn.js';
-import { useAccount } from 'src/hooks';
+import { useAccount, useApi, useBalance } from 'src/hooks';
 export default defineComponent({
   components: {
     IconBase,
@@ -139,7 +152,13 @@ export default defineComponent({
     },
     balance: {
       type: BN,
-      required: true,
+      required: false,
+      default: new BN(0),
+    },
+    transferable: {
+      type: BN,
+      required: false,
+      default: new BN(0),
     },
     isDisableAction: {
       type: Boolean,
@@ -151,7 +170,7 @@ export default defineComponent({
     },
   },
 
-  setup({ format }) {
+  setup({ format, balance, transferable }) {
     const store = useStore();
     const accountAddress = ref<string>('');
     const accountName = ref<string>('');
@@ -160,12 +179,11 @@ export default defineComponent({
       h160: 'balance.accountH160',
       ethereum: 'balance.accountEthereum',
     };
-    const { currentAccount } = useAccount();
     const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
+    const { currentAccount } = useAccount();
 
     watchEffect(() => {
       if (!currentAccount) return;
-
       accountAddress.value =
         format === AccountFormat.Ethereum
           ? currentEcdsaAccount.value.ethereum

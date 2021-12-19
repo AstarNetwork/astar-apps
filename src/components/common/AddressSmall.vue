@@ -33,11 +33,13 @@ export default defineComponent({
   props: {
     address: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     addressName: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
   },
   emits: ['update:is-open'],

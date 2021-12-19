@@ -25,7 +25,7 @@
           <div>
             <p class="tw-font-semibold tw-text-center">
               <span class="tw-text-4xl tw-tracking-tight tw-leading-tight">
-                <format-balance :balance="accountData?.getUsableTransactionBalance()" />
+                <format-balance :balance="transferable" />
               </span>
             </p>
           </div>
@@ -87,7 +87,7 @@
 <script lang="ts">
 import FormatBalance from 'components/balance/FormatBalance.vue';
 import { defineComponent } from 'vue';
-
+import BN from 'bn.js';
 export default defineComponent({
   components: {
     FormatBalance,
@@ -99,6 +99,10 @@ export default defineComponent({
     },
     accountData: {
       type: Object,
+      required: true,
+    },
+    transferable: {
+      type: BN,
       required: true,
     },
   },

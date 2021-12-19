@@ -1,9 +1,10 @@
 <template>
-  <div class="tw-flex tw-flex-col md:tw-flex-row tw-gap-y-8 tw-gap-x-8">
+  <div class="tw-flex tw-flex-col md:tw-flex-row tw-gap-y-8 tw-gap-x-8 tw-flex-wrap">
     <template v-if="isMetamask">
       <Account
         :format="AccountFormat.SS58"
         :balance="accountData?.free"
+        :transferable="accountData?.getUsableFeeBalance()"
         :is-disable-action="!isTransferable"
         :open-modal="openTransferModal"
       />
@@ -24,6 +25,7 @@
       <Account
         :format="AccountFormat.SS58"
         :balance="accountData?.free"
+        :transferable="accountData?.getUsableFeeBalance()"
         :is-disable-action="!isTransferable"
         :open-modal="openTransferModal"
       />
@@ -37,11 +39,11 @@
   </div>
 </template>
 <script lang="ts">
-import { useAccount, useApi, useBalance, useEvmDeposit } from 'src/hooks';
-import { defineComponent, computed, watchEffect } from 'vue';
-import { useStore } from 'src/store';
-import Account from './Account.vue';
 import BN from 'bn.js';
+import { useAccount, useApi, useBalance } from 'src/hooks';
+import { useStore } from 'src/store';
+import { computed, defineComponent, watch } from 'vue';
+import Account from './Account.vue';
 export enum AccountFormat {
   SS58 = 'SS58',
   H160 = 'H160',
@@ -53,14 +55,6 @@ export default defineComponent({
     Account,
   },
   props: {
-    currentAccount: {
-      type: String,
-      required: true,
-    },
-    accountData: {
-      type: Object,
-      required: true,
-    },
     isEvmDeposit: {
       type: Boolean,
       required: true,
@@ -94,12 +88,17 @@ export default defineComponent({
       emit('update:is-open-withdrawal-evm-deposit', true);
     };
 
+    const { currentAccount } = useAccount();
+    const { api } = useApi();
+    const { accountData } = useBalance(api, currentAccount);
+
     return {
       AccountFormat,
       isMetamask,
       openTransferModal,
       openWithdrawalModal,
       openTransferEthereumModal,
+      accountData,
     };
   },
 });
