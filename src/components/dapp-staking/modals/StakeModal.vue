@@ -1,5 +1,5 @@
 <template>
-  <Modal :title="title">
+  <Modal :title="title" @click="closeModal">
     <template #content>
       <Avatar :url="dapp.iconUrl" class="tw-w-36 tw-h-36 tw-mb-4 tw-mx-auto" />
       <div class="tw-mb-4">

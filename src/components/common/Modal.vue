@@ -22,6 +22,7 @@
           tw-max-w-lg
           tw-w-full
         "
+        @click.stop
       >
         <div>
           <div>

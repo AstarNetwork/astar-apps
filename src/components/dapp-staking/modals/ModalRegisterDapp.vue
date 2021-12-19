@@ -1,5 +1,5 @@
 <template>
-  <Modal title="Register a new dApp">
+  <Modal title="Register a new dApp" @click="closeModal">
     <template #content>
       <div>
         <div class="tw-mb-4">

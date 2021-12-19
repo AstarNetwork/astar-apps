@@ -1,5 +1,5 @@
 <template>
-  <Modal :title="`Claim reward ${dapp.name}`">
+  <Modal :title="`Claim reward ${dapp.name}`" @click="closeModal">
     <template #content>
       <Avatar :url="dapp.iconUrl" class="tw-w-36 tw-h-36 tw-mb-4 tw-mx-auto" />
       <div v-if="stakeInfo?.totalStake" class="tw-mt-4">
