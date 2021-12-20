@@ -43,7 +43,7 @@ function createInfo(
 
 export function useChainInfo(apiRef: Ref<ApiPromise>) {
   const chainInfo = ref<ChainInfo>();
-  watchEffect(async () => {
+  apiRef.value.isReady.then(async () => {
     const specName: string = apiRef.value.runtimeVersion.specName.toString();
     const systemChain: string = ((await apiRef.value.rpc.system.chain()) || '<unknown>').toString();
     const systemName: string = (await apiRef.value.rpc.system.name()).toString();
