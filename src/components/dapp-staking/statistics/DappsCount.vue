@@ -10,7 +10,7 @@
       xl:tw-mx-2
     "
   >
-    <div class="tw-text-xl tw-font-semibold tw-mb-4">{{ $t('store.dappsCount') }}</div>
+    <div class="tw-text-xl tw-font-semibold tw-mb-4">{{ $t('dappStaking.dappsCount') }}</div>
     <div class="tw-flex tw-flex-col tw-items-center">
       <div class="tw-text-5xl tw-font-semibold">
         <vue3-autocounter

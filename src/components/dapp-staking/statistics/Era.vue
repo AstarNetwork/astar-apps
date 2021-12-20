@@ -10,7 +10,7 @@
       xl:tw-mx-2
     "
   >
-    <div class="tw-text-xl tw-font-semibold tw-mb-2">{{ $t('store.currentEra') }}</div>
+    <div class="tw-text-xl tw-font-semibold tw-mb-2">{{ $t('dappStaking.currentEra') }}</div>
     <div class="tw-flex tw-flex-col tw-items-center tw-mb-1">
       <div class="tw-font-bold tw-text-2xl">
         <vue3-autocounter ref="counter-era" :duration="2" :end-amount="era" :autoinit="era > 0" />
@@ -18,7 +18,7 @@
     </div>
     <div>
       <div class="tw-font-semibold tw-mb-1">
-        {{ $t('store.blocksUntilNextEra') }}
+        {{ $t('dappStaking.blocksUntilNextEra') }}
       </div>
       <div class="tw-relative">
         <VueJsProgress

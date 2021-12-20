@@ -9,7 +9,7 @@
           <a :href="dapp.url" target="_blank">{{ dapp.url }}</a>
         </div>
         <p class="tw-w-full">
-          {{ $t('store.modals.contractAddress', { address: dapp.address }) }}
+          {{ $t('dappStaking.modals.contractAddress', { address: dapp.address }) }}
         </p>
       </div>
     </template>

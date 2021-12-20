@@ -1,17 +1,21 @@
 import { RouteRecordRaw } from 'vue-router';
 
 import Balance from 'pages/Balance.vue';
-import DApps from 'pages/DApps.vue';
-import Store from 'pages/Store.vue';
+import DApps from 'src/pages/Contract.vue';
+import Store from 'src/pages/DappStaking.vue';
 import BalancePlasm from 'components/balance/BalancePlasm.vue';
-import CreateDappsTab from 'components/dapps/CreateDappsTab.vue';
-import DiscoverDappsTab from 'components/store/DiscoverDappsTab.vue';
-import ManageDappsTab from 'components/store/ManageDappsTab.vue';
+import CreateDappsTab from 'components/contracts/CreateDappsTab.vue';
+import DiscoverDappsTab from 'components/dapp-staking/DiscoverDappsTab.vue';
+import ManageDappsTab from 'components/dapp-staking/ManageDappsTab.vue';
 
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
     redirect: '/balance',
+  },
+  {
+    path: '/store/discover-dapps',
+    redirect: '/dapp-staking/discover',
   },
   {
     path: '/balance',
@@ -20,44 +24,52 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
-        redirect: '/balance/balance-plasm',
+        redirect: '/balance/wallet',
       },
       {
         path: 'balance-plasm',
+        redirect: '/balance/wallet',
+      },
+      {
+        path: 'wallet',
         component: BalancePlasm,
       },
     ],
   },
   {
-    path: '/dapps',
-    name: 'dApps',
+    path: '/contracts',
+    name: 'Contracts',
     component: DApps,
     children: [
       {
         path: '',
-        redirect: '/dapps/create-dapps',
+        redirect: '/contracts/create-contract',
       },
       {
         path: 'create-dapps',
+        redirect: '/contracts/create-contract',
+      },
+      {
+        path: 'create-contract',
         component: CreateDappsTab,
       },
     ],
   },
   {
-    path: '/store',
-    name: 'Store',
+    path: '/dapp-staking',
+    name: 'dApp Staking',
     component: Store,
     children: [
       {
         path: '',
-        redirect: '/store/discover-dapps',
+        redirect: '/dapp-staking/discover',
       },
       {
-        path: 'discover-dapps',
+        path: 'discover',
         component: DiscoverDappsTab,
       },
       {
-        path: 'manage-dapps',
+        path: 'manage',
         component: ManageDappsTab,
       },
     ],

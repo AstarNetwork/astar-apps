@@ -1,5 +1,5 @@
 <template>
-  <Modal title="Register a new dApp">
+  <Modal title="Register a new dApp" @click="closeModal">
     <template #content>
       <div>
         <div class="tw-mb-4">
@@ -9,7 +9,7 @@
               dark:tw-text-darkGray-400
               tw-mb-2
             "
-            >{{ $t('store.modals.logo') }}</label
+            >{{ $t('dappStaking.modals.logo') }}</label
           >
 
           <input-file :file="imageFromFile" :extension="fileExtension" @dropFile="onDropFile">
@@ -53,9 +53,10 @@
         />
         <Input v-model="data.url" label="Url" type="text" maxlength="1000" />
       </div>
-    </template>
-    <template #buttons>
-      <Button @click="registerDapp">{{ $t('store.modals.register') }}</Button>
+      <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row">
+        <Button type="button" :primary="false" @click="closeModal">{{ $t('close') }}</Button>
+        <Button @click="registerDapp">{{ $t('dappStaking.modals.register') }}</Button>
+      </div>
     </template>
   </Modal>
 </template>
@@ -64,7 +65,7 @@
 import { defineComponent, reactive, ref, watch } from 'vue';
 import Modal from 'components/common/Modal.vue';
 import Input from 'src/components/common/Input.vue';
-import InputFile from 'src/components/dapps/modals/InputFile.vue';
+import InputFile from 'src/components/contracts/modals/InputFile.vue';
 import Avatar from 'components/common/Avatar.vue';
 import IconBase from 'components/icons/IconBase.vue';
 import IconDocument from 'components/icons/IconDocument.vue';
@@ -73,8 +74,8 @@ import { useFile, FileState } from 'src/hooks/useFile';
 import { useStore } from 'src/store';
 import { useApi } from 'src/hooks';
 import { isEthereumAddress } from '@polkadot/util-crypto';
-import { NewDappItem, LooseObject } from 'src/store/dapps-store/state';
-import { RegisterParameters } from 'src/store/dapps-store/actions';
+import { NewDappItem, LooseObject } from 'src/store/dapp-staking/state';
+import { RegisterParameters } from 'src/store/dapp-staking/actions';
 
 export default defineComponent({
   components: {
@@ -119,6 +120,10 @@ export default defineComponent({
       if (result) {
         emit('update:is-open', false);
       }
+    };
+
+    const closeModal = () => {
+      emit('update:is-open', false);
     };
 
     const encodeImage = (fileType: string, data: Uint8Array): string => {
@@ -187,6 +192,7 @@ export default defineComponent({
       validationErrors,
       onDropFile,
       registerDapp,
+      closeModal,
     };
   },
 });

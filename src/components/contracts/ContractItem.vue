@@ -60,7 +60,7 @@
     <div class="tw-grid tw-grid-cols-1 tw-gap-2 tw-my-4">
       <div>
         <div class="tw-text-xs tw-text-gray-500 dark:tw-text-darkGray-400">
-          {{ $t('dapps.codeHash') }}
+          {{ $t('contracts.codeHash') }}
         </div>
         <div class="tw-flex tw-justify-between tw-items-center">
           <div class="tw-text-xs tw-text-blue-900 dark:tw-text-darkGray-100">
@@ -102,7 +102,7 @@
 
       <div>
         <div class="tw-text-xs tw-text-gray-500 dark:tw-text-darkGray-400">
-          {{ $t('dapps.msgs') }}
+          {{ $t('contracts.msgs') }}
         </div>
         <div v-if="execMethods" class="tw-text-xs tw-text-blue-900 dark:tw-text-darkGray-100">
           <Message
@@ -118,7 +118,7 @@
 
     <div class="tw-text-right">
       <button type="button" class="coppy-abi-button" @click="copyABI">
-        {{ $t('dapps.copyAbi') }}
+        {{ $t('contracts.copyAbi') }}
       </button>
       <input id="hiddenAbi" type="hidden" :value="abi" />
       <button type="button" class="forget-button" @click="onForget">
@@ -135,7 +135,7 @@ import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import IconBase from 'components/icons/IconBase.vue';
 import IconAccountSample from 'components/icons/IconAccountSample.vue';
 import IconDocumentDuplicate from 'components/icons/IconDocumentDuplicate.vue';
-import Message from 'components/dapps/Message.vue';
+import Message from 'components/contracts/Message.vue';
 import { ContractPromise } from '@polkadot/api-contract';
 
 export default defineComponent({

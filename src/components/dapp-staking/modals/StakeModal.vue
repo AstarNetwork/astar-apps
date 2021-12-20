@@ -1,5 +1,5 @@
 <template>
-  <Modal :title="title">
+  <Modal :title="title" @click="closeModal">
     <template #content>
       <Avatar :url="dapp.iconUrl" class="tw-w-36 tw-h-36 tw-mb-4 tw-mx-auto" />
       <div class="tw-mb-4">
@@ -9,7 +9,7 @@
             dark:tw-text-darkGray-400
             tw-mb-2
           "
-          >{{ $t('store.modals.address') }}</label
+          >{{ $t('dappStaking.modals.address') }}</label
         >
         <ModalSelectAccount
           v-model:selAddress="data.address"
@@ -30,19 +30,20 @@
         :is-max-button="actionName === StakeAction.Unstake ? true : false"
       />
       <div v-if="accountData && actionName !== StakeAction.Unstake" class="tw-mt-1 tw-ml-1">
-        {{ $t('store.modals.availableToStake') }}
+        {{ $t('dappStaking.modals.availableToStake') }}
         <format-balance
           :balance="accountData?.getUsableFeeBalance()"
           class="tw-inline tw-font-semibold"
         />
       </div>
       <div v-if="accountData && actionName === StakeAction.Unstake" class="tw-mt-1 tw-ml-1">
-        {{ $t('store.yourStake') }}
+        {{ $t('dappStaking.yourStake') }}
         <format-balance :balance="stakeAmount" class="tw-inline tw-font-semibold" />
       </div>
-    </template>
-    <template #buttons>
-      <Button :disabled="!canExecuteAction" @click="action(data)">{{ actionName }}</Button>
+      <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row">
+        <Button type="button" :primary="false" @click="closeModal">{{ $t('close') }}</Button>
+        <Button :disabled="!canExecuteAction" @click="action(data)">{{ actionName }}</Button>
+      </div>
     </template>
   </Modal>
 </template>
@@ -101,7 +102,8 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
+  emits: ['update:is-open'],
+  setup(props, { emit }) {
     const store = useStore();
     const { decimal, defaultUnitToken } = useChainMetadata();
 
@@ -140,6 +142,10 @@ export default defineComponent({
       store.commit('general/setCurrentAccountIdx', selAccountIdx);
     };
 
+    const closeModal = () => {
+      emit('update:is-open', false);
+    };
+
     return {
       data,
       allAccounts,
@@ -148,6 +154,7 @@ export default defineComponent({
       reloadAmount,
       StakeAction,
       canExecuteAction,
+      closeModal,
       ...toRefs(props),
     };
   },

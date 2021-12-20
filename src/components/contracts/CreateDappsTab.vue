@@ -9,13 +9,13 @@
         >
           <icon-plus />
         </icon-base>
-        {{ $t('dapps.createYourDapp') }}
+        {{ $t('contracts.createYourDapp') }}
       </button>
       <button type="button" class="icon-plus-button" @click="modalCodeHash = true">
         <icon-base class="plus" icon-name="plus" viewBox="0 0 24 24" stroke="currentColor">
           <icon-plus />
         </icon-base>
-        {{ $t('dapps.addExistingCodeHash') }}
+        {{ $t('contracts.addExistingCodeHash') }}
       </button>
     </div>
 
@@ -60,7 +60,7 @@ export default defineComponent({
     ContractsTable,
   },
   setup() {
-    useMeta({ title: 'Dapps-Create dApps' });
+    useMeta({ title: 'Deploy Contracts' });
 
     const stateModal = reactive<Modal>({
       modalCreateDapps: false,

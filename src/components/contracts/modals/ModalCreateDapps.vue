@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-fixed tw-z-10 tw-inset-0 tw-overflow-y-auto">
+  <div class="tw-fixed tw-z-10 tw-inset-0 tw-overflow-y-auto" @click="closeModal">
     <div class="tw-flex tw-items-center tw-justify-center tw-min-h-screen">
       <!-- Background overlay -->
       <div class="tw-fixed tw-inset-0 tw-transition-opacity" aria-hidden="true">
@@ -23,6 +23,7 @@
           tw-max-w-4xl
           tw-w-full
         "
+        @click.stop
       >
         <div>
           <h3
@@ -32,7 +33,7 @@
               tw-mb-6 tw-text-center
             "
           >
-            {{ $t('dapps.modals.createYourDapps', { step }) }}
+            {{ $t('contracts.modals.createYourDapps', { step }) }}
           </h3>
 
           <div
@@ -48,7 +49,7 @@
                       dark:tw-text-darkGray-400
                       tw-mb-2
                     "
-                    >{{ $t('dapps.modals.deploymentAccount') }}</label
+                    >{{ $t('contracts.modals.deploymentAccount') }}</label
                   >
 
                   <button type="button" class="option-button" @click="openOption = !openOption">
@@ -145,7 +146,7 @@
                       dark:tw-text-darkGray-400
                       tw-mb-2
                     "
-                    >{{ $t('dapps.modals.projectName') }}</label
+                    >{{ $t('contracts.modals.projectName') }}</label
                   >
                   <input
                     v-model="projectName"
@@ -174,14 +175,14 @@
 
                 <div v-if="isInsufficientFee" class="tw-inline-flex tw-text-red-700 tw-text-xs">
                   <!-- Fixme: handle better way to pass the `balance` to translation file as variable  -->
-                  {{ $t('dapps.modals.fees.feesOf') }}
+                  {{ $t('contracts.modals.fees.feesOf') }}
                   <balance
                     class="tw-ml-1 tw-mr-1"
                     :balance="partialFee"
                     :decimals="decimal"
                     :unit="defaultUnitToken"
                   />
-                  {{ $t('dapps.modals.fees.appliedToSubmission') }}
+                  {{ $t('contracts.modals.fees.appliedToSubmission') }}
                 </div>
 
                 <input-amount
@@ -203,7 +204,7 @@
                       dark:tw-text-darkGray-400
                       tw-mb-2
                     "
-                    >{{ $t('dapps.modals.contractFile') }}</label
+                    >{{ $t('contracts.modals.contractFile') }}</label
                   >
 
                   <input-file
@@ -242,14 +243,14 @@
             }"
             @click="moveStep2"
           >
-            {{ $t('dapps.modals.nextStep') }}
+            {{ $t('contracts.modals.nextStep') }}
           </button>
           <div v-if="step === 2">
             <button type="button" class="previous-step-button" @click="step = 1">
-              {{ $t('dapps.modals.previousStep') }}
+              {{ $t('contracts.modals.previousStep') }}
             </button>
             <button type="button" class="upload-button" @click="upload">
-              {{ $t('dapps.modals.upload') }}
+              {{ $t('contracts.modals.upload') }}
             </button>
           </div>
         </div>
