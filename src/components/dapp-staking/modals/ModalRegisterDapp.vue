@@ -2,7 +2,7 @@
   <Modal title="Register a new dApp">
     <template #content>
       <q-form ref="registerForm">
-        <q-stepper ref="stepper" v-model="step" :header-nav="false" animated style="height: 600px">
+        <q-stepper ref="stepper" v-model="step" :header-nav="false" animated>
           <q-step :name="1" title="General" icon="settings" :done="step > 1">
             <RegisterDappGeneral
               v-if="data"
