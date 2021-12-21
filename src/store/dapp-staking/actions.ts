@@ -502,10 +502,11 @@ const actions: ActionTree<State, StateInterface> = {
     return false;
   },
 
-  async claimBatch({ commit, dispatch }, parameters: StakingParameters): Promise<boolean> {
+  async claimBatch({ commit, dispatch }, parameters: ClaimParameters): Promise<boolean> {
     try {
       if (parameters.api) {
-        const erasToClaim = await getErasToClaim(parameters.api, parameters.dapp.address);
+        //const erasToClaim = await getErasToClaim(parameters.api, parameters.dapp.address);
+        const erasToClaim = parameters.unclaimedEras;
 
         if (erasToClaim.length === 0) {
           dispatch(
@@ -698,6 +699,7 @@ const actions: ActionTree<State, StateInterface> = {
 
       // Commented out becasue the calculation is not feasible in reasonable time
       // on Shibuya, and soon the same will happen on Shiden (as number of era increases).
+
       // result.estimatedClaimedRewards = getEstimatedClaimedAwards(
       //   currentEra,
       //   eraStakesMap,
@@ -815,6 +817,10 @@ export interface StakingParameters {
   decimals: number;
   unit: string;
   finalizeCallback: () => void;
+}
+
+export interface ClaimParameters extends StakingParameters {
+  unclaimedEras: number[];
 }
 
 export interface WithdrawParameters {

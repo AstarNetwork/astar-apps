@@ -30,7 +30,11 @@
       </div>
       <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row">
         <Button type="button" :primary="false" @click="closeModal">{{ $t('close') }}</Button>
-        <Button :disabled="!canClaim" class="tw-tooltip" @click="claimAction()">
+        <Button
+          :disabled="!canClaim"
+          class="tw-tooltip"
+          @click="claimAction(claimInfo.unclaimedEras)"
+        >
           {{ $t('dappStaking.claim') }}
         </Button>
       </div>

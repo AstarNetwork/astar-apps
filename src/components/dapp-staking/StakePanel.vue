@@ -83,7 +83,7 @@ import ClaimRewardModal from 'components/dapp-staking/modals/ClaimRewardModal.vu
 import { useApi, useChainMetadata, useGetMinStaking } from 'src/hooks';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
-import { StakingParameters } from 'src/store/dapp-staking/actions';
+import { StakingParameters, ClaimParameters } from 'src/store/dapp-staking/actions';
 import { getAmount } from 'src/hooks/store';
 import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
 import VueJsProgress from 'vue-js-progress';
@@ -212,7 +212,7 @@ export default defineComponent({
       }
     };
 
-    const claim = async () => {
+    const claim = async (unclaimedEras: number[]) => {
       // TODO maybe to add select address option to modal as in stake/unstake
       const senderAddress = store.getters['general/selectedAccountAddress'];
       const result = await store.dispatch('dapps/claimBatch', {
@@ -220,7 +220,8 @@ export default defineComponent({
         senderAddress,
         dapp: props.dapp,
         finalizeCallback: emitStakeChanged,
-      } as StakingParameters);
+        unclaimedEras,
+      } as ClaimParameters);
 
       if (result) {
         showClaimRewardModal.value = false;
