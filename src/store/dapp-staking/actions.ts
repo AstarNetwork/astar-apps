@@ -116,6 +116,26 @@ const getEraStakes = async (
   return eraStakeMap;
 };
 
+const getClaimableEraStakes = async (
+  api: ApiPromise,
+  contractAddress: string,
+  currentEra: number,
+  historyDepth: number
+): Promise<Map<number, Option<EraStakingPoints>>> => {
+  let eraStakeMap = new Map();
+  const lowestEra = Math.max(currentEra - historyDepth, 1);
+  for (let era = currentEra - 1; era >= lowestEra; era--) {
+    const eraStake = await api.query.dappsStaking.contractEraStake<EraStakingPoints>(
+      getAddressEnum(contractAddress),
+      era
+    );
+
+    eraStakeMap.set(era, eraStake);
+  }
+
+  return eraStakeMap;
+};
+
 const getLowestClaimableEra = (
   api: ApiPromise,
   currentEra: number,
@@ -145,6 +165,18 @@ const getErasToClaim = async (api: ApiPromise, contractAddress: string): Promise
       result.push(era);
     }
   }
+
+  console.log('Eras to claim', result);
+  return result;
+};
+
+const getErasToClaim2 = (eraStakeMap: Map<number, Option<EraStakingPoints>>): number[] => {
+  const result: number[] = [];
+  eraStakeMap.forEach((map: Option<EraStakingPoints>, era: number) => {
+    if (map.isNone || (map.isSome && map.unwrap().claimedRewards.eq(new BN(0)))) {
+      result.push(era);
+    }
+  });
 
   console.log('Eras to claim', result);
   return result;
@@ -583,7 +615,13 @@ const actions: ActionTree<State, StateInterface> = {
     try {
       const currentEraIndex = await parameters.api.query.dappsStaking.currentEra<EraIndex>();
       const currentEra = parseInt(currentEraIndex.toString());
-      const eraStakesMap = await getEraStakes(parameters.api, parameters.dapp.address);
+      const historyDepth = parseInt(parameters.api.consts.dappsStaking.historyDepth.toString());
+      const eraStakesMap = await getClaimableEraStakes(
+        parameters.api,
+        parameters.dapp.address,
+        currentEra,
+        historyDepth
+      );
       const lowestClaimableEra = getLowestClaimableEra(parameters.api, currentEra, eraStakesMap);
       const bonusEraDuration = parseInt(
         await parameters.api.consts.dappsStaking.bonusEraDuration.toString()
@@ -595,7 +633,7 @@ const actions: ActionTree<State, StateInterface> = {
       for (let era = currentEra - 1; era >= 1; era--) {
         const eraStakes = eraStakesMap.get(era);
 
-        if (eraStakes) {
+        if (eraStakes?.isSome) {
           currentEraStakes = eraStakes.unwrap();
           break;
         }
@@ -610,9 +648,9 @@ const actions: ActionTree<State, StateInterface> = {
       });
 
       // calculate reward
-      result.unclaimedEras = await getErasToClaim(parameters.api, parameters.dapp.address);
+      result.unclaimedEras = getErasToClaim2(eraStakesMap);
       for (let era of result.unclaimedEras) {
-        const eraStakes: EraStakingPoints | undefined = eraStakesMap.get(era)?.unwrap();
+        const eraStakes: EraStakingPoints | undefined = eraStakesMap.get(era)?.unwrapOr(undefined);
         if (eraStakes) {
           currentEraStakes = eraStakes;
 
@@ -658,14 +696,17 @@ const actions: ActionTree<State, StateInterface> = {
         }
       }
 
-      result.estimatedClaimedRewards = getEstimatedClaimedAwards(
-        currentEra,
-        eraStakesMap,
-        eraRewardsAndStakeMap,
-        parameters.api,
-        parameters.senderAddress,
-        bonusEraDuration
-      );
+      // Commented out becasue the calculation is not feasible in reasonable time
+      // on Shibuya, and soon the same will happen on Shiden (as number of era increases).
+      // result.estimatedClaimedRewards = getEstimatedClaimedAwards(
+      //   currentEra,
+      //   eraStakesMap,
+      //   eraRewardsAndStakeMap,
+      //   parameters.api,
+      //   parameters.senderAddress,
+      //   bonusEraDuration
+      // );
+      result.estimatedClaimedRewards = parameters.api.createType('Balance', 0);
     } catch (err) {
       const error = err as unknown as Error;
       console.error(error);

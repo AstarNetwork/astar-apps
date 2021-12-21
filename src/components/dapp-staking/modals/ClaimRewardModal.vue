@@ -16,7 +16,7 @@
         >
         <span class="tw-font-semibold tw-w-16 tw-text-rigth">{{ pendingRewards }}</span>
       </div>
-      <div class="tw-mt-2">
+      <div v-if="claimedRewards > 0" class="tw-mt-2">
         <span class="tw-w-52 tw-inline-block">
           {{ $t('dappStaking.modals.estimatedClaimedRewards') }}
         </span>
