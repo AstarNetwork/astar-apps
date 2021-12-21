@@ -153,7 +153,7 @@ export default defineComponent({
       modalTitle.value = canUnbondWithdraw.value
         ? `Start unbonbonding from ${props.dapp.name}`
         : `Unstake from ${props.dapp.name}`;
-      modalActionName.value = canUnbondWithdraw.value ? StakeAction.Unstake : 'Unstake';
+      modalActionName.value = StakeAction.Unstake;
       modalAction.value = unstake;
       showModal.value = true;
     };

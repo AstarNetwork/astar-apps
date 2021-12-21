@@ -1,5 +1,5 @@
 <template>
-  <Modal :title="title">
+  <Modal :title="title" @click="closeModal">
     <template #content>
       <Avatar :url="dapp.iconUrl" class="tw-w-36 tw-h-36 tw-mb-4 tw-mx-auto" />
       <div class="tw-mb-4">
@@ -29,7 +29,7 @@
         "
         :is-max-button="actionName === StakeAction.Unstake ? true : false"
       />
-      <div v-if="accountData && actionName !== StakeAction.Unstake" class="tw-mt-1 tw-ml-1">
+      <div v-if="accountData && actionName === StakeAction.Stake" class="tw-mt-1 tw-ml-1">
         {{ $t('dappStaking.modals.availableToStake') }}
         <format-balance
           :balance="accountData?.getUsableFeeBalance()"
@@ -49,9 +49,10 @@
       >
         {{ $t('dappStaking.maxChunksWarning', { chunks: maxUnlockingChunks }) }}
       </div>
-    </template>
-    <template #buttons>
-      <Button :disabled="!canExecuteAction" @click="action(data)">{{ actionName }}</Button>
+      <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row">
+        <Button type="button" :primary="false" @click="closeModal">{{ $t('close') }}</Button>
+        <Button :disabled="!canExecuteAction" @click="action(data)">{{ actionName }}</Button>
+      </div>
     </template>
   </Modal>
 </template>
@@ -112,7 +113,8 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
+  emits: ['update:is-open'],
+  setup(props, { emit }) {
     const store = useStore();
     const { decimal, defaultUnitToken } = useChainMetadata();
 
@@ -164,6 +166,10 @@ export default defineComponent({
       store.commit('general/setCurrentAccountIdx', selAccountIdx);
     };
 
+    const closeModal = () => {
+      emit('update:is-open', false);
+    };
+
     return {
       data,
       allAccounts,
@@ -176,6 +182,7 @@ export default defineComponent({
       maxUnlockingChunks,
       unbondingPeriod,
       canUnbondWithdraw,
+      closeModal,
       ...toRefs(props),
     };
   },
