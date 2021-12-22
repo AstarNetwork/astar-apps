@@ -16,7 +16,7 @@
         >
         <span class="tw-font-semibold tw-w-16 tw-text-rigth">{{ pendingRewards }}</span>
       </div>
-      <div class="tw-mt-2">
+      <div v-if="claimedRewards > 0" class="tw-mt-2">
         <span class="tw-w-52 tw-inline-block">
           {{ $t('dappStaking.modals.estimatedClaimedRewards') }}
         </span>
@@ -30,7 +30,11 @@
       </div>
       <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row">
         <Button type="button" :primary="false" @click="closeModal">{{ $t('close') }}</Button>
-        <Button :disabled="!canClaim" class="tw-tooltip" @click="claimAction()">
+        <Button
+          :disabled="!canClaim"
+          class="tw-tooltip"
+          @click="claimAction(claimInfo.unclaimedEras)"
+        >
           {{ $t('dappStaking.claim') }}
         </Button>
       </div>

@@ -8,6 +8,7 @@
       <DappsCount />
       <Requirement />
       <Era :progress="progress" :blocks-until-next-era="blocksUntilNextEra" :era="era" />
+      <Withdraw />
     </div>
 
     <div class="tw-text-center tw-mb-8 tw-flex tw-items-center tw-justify-center sm:tw-gap-x-4">
@@ -67,11 +68,11 @@
       />
     </div>
 
-    <ModalRegisterDapp v-if="showRegisterDappModal" v-model:isOpen="showRegisterDappModal" />
+    <ModalRegisterDapp v-if="showRegisterDappModal" v-model:is-open="showRegisterDappModal" />
 
     <ModalDappDetails
       v-if="showDappDetailsModal"
-      v-model:isOpen="showDappDetailsModal"
+      v-model:is-open="showDappDetailsModal"
       :dapp="selectedDapp"
     />
   </div>
@@ -92,6 +93,7 @@ import { computed, defineComponent, ref } from 'vue';
 import TVL from './statistics/TVL.vue';
 import DappsCount from './statistics/DappsCount.vue';
 import Requirement from './statistics/Requirement.vue';
+import Withdraw from './statistics/Withdraw.vue';
 import Era from './statistics/Era.vue';
 import { fasSeedling } from '@quasar/extras/fontawesome-v5';
 import { useMeta } from 'quasar';
@@ -107,6 +109,7 @@ export default defineComponent({
     TVL,
     DappsCount,
     Requirement,
+    Withdraw,
     Era,
   },
   setup() {

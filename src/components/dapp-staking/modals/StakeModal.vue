@@ -29,7 +29,7 @@
         "
         :is-max-button="actionName === StakeAction.Unstake ? true : false"
       />
-      <div v-if="accountData && actionName !== StakeAction.Unstake" class="tw-mt-1 tw-ml-1">
+      <div v-if="accountData && actionName === StakeAction.Stake" class="tw-mt-1 tw-ml-1">
         {{ $t('dappStaking.modals.availableToStake') }}
         <format-balance
           :balance="accountData?.getUsableFeeBalance()"
@@ -39,6 +39,15 @@
       <div v-if="accountData && actionName === StakeAction.Unstake" class="tw-mt-1 tw-ml-1">
         {{ $t('dappStaking.yourStake') }}
         <format-balance :balance="stakeAmount" class="tw-inline tw-font-semibold" />
+      </div>
+      <div v-if="actionName === StakeAction.Unstake && canUnbondWithdraw" class="tw-mt-4 tw-ml-1">
+        {{ $t('dappStaking.modals.unbondingInfo', { era: unbondingPeriod }) }}
+      </div>
+      <div
+        v-if="isMaxChunks && actionName === StakeAction.Unstake && canUnbondWithdraw"
+        class="tw-mt-1 tw-ml-1 tw-text-red-700"
+      >
+        {{ $t('dappStaking.maxChunksWarning', { chunks: maxUnlockingChunks }) }}
       </div>
       <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row">
         <Button type="button" :primary="false" @click="closeModal">{{ $t('close') }}</Button>
@@ -62,6 +71,8 @@ import { useStore } from 'src/store';
 import { computed, defineComponent, ref, toRefs } from 'vue';
 import { StakeAction } from '../StakePanel.vue';
 import { getAmount, StakeModel } from 'src/hooks/store';
+import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
+import { useApi } from 'src/hooks';
 
 export default defineComponent({
   components: {
@@ -115,6 +126,12 @@ export default defineComponent({
     } as StakeModel);
     const allAccounts = computed(() => store.getters['general/allAccounts']);
     const allAccountNames = computed(() => store.getters['general/allAccountNames']);
+    const maxUnlockingChunks = computed<number>(() => store.getters['dapps/getMaxUnlockingChunks']);
+    const unlockingChunks = computed<number>(() => store.getters['dapps/getUnlockingChunks']);
+    const unbondingPeriod = computed(() => store.getters['dapps/getUnbondingPeriod']);
+    const isMaxChunks = unlockingChunks.value >= maxUnlockingChunks.value;
+    const { api } = useApi();
+    const { canUnbondWithdraw } = useUnbondWithdraw(api);
 
     const formatStakeAmount = computed(() => {
       return plasmUtils.reduceBalanceToDenom(props.stakeAmount, decimal.value);
@@ -125,9 +142,16 @@ export default defineComponent({
         const amount = getAmount(data.value.amount, data.value.unit);
         const useableStakeAmount = props.accountData.getUsableFeeBalance();
 
-        return props.actionName === StakeAction.Stake
-          ? amount.lt(useableStakeAmount) && amount.gtn(0)
-          : amount.lte(props.stakeAmount) && amount.gtn(0);
+        let canExecute =
+          props.actionName === StakeAction.Stake
+            ? amount.lt(useableStakeAmount) && amount.gtn(0)
+            : amount.lte(props.stakeAmount) && amount.gtn(0);
+
+        if (canUnbondWithdraw.value) {
+          canExecute = canExecute && !(props.actionName === StakeAction.Unstake && isMaxChunks);
+        }
+
+        return canExecute;
       } else {
         return false;
       }
@@ -154,6 +178,10 @@ export default defineComponent({
       reloadAmount,
       StakeAction,
       canExecuteAction,
+      isMaxChunks,
+      maxUnlockingChunks,
+      unbondingPeriod,
+      canUnbondWithdraw,
       closeModal,
       ...toRefs(props),
     };
