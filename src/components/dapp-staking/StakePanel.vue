@@ -212,20 +212,19 @@ export default defineComponent({
       }
     };
 
-    const claim = async (unclaimedEras: number[]) => {
+    const claim = async (unclaimedEras: number[], claimFinishedCallback: () => void) => {
       // TODO maybe to add select address option to modal as in stake/unstake
       const senderAddress = store.getters['general/selectedAccountAddress'];
       const result = await store.dispatch('dapps/claimBatch', {
         api: api?.value,
         senderAddress,
         dapp: props.dapp,
-        finalizeCallback: emitStakeChanged,
+        finalizeCallback: function () {
+          emitStakeChanged();
+          claimFinishedCallback();
+        },
         unclaimedEras,
       } as ClaimParameters);
-
-      if (result) {
-        showClaimRewardModal.value = false;
-      }
     };
 
     return {
