@@ -104,10 +104,6 @@ export default defineComponent({
       pendingRewards.value = balanceFormatter(claimInfo.value.rewards.toString());
       claimedRewards.value = balanceFormatter(claimInfo.value.estimatedClaimedRewards.toString());
       stepsCount.value = Math.ceil(claimInfo.value.unclaimedEras.length / maxErasPerClaim);
-
-      if (claimInfo.value.unclaimedEras.length === 0) {
-        closeModal();
-      }
     };
 
     const closeModal = () => {
