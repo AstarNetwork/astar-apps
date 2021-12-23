@@ -74,7 +74,7 @@ export default defineComponent({
   },
   emits: ['update:is-open'],
   setup(props, { emit }) {
-    const maxErasPerClaim = 10;
+    const maxErasPerClaim = 15;
     const { api } = useApi();
     const store = useStore();
     const { decimal } = useChainMetadata();
