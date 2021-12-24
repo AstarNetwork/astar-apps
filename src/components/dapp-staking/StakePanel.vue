@@ -117,8 +117,12 @@ export default defineComponent({
       type: Number,
       default: 0,
     },
+    showStake: {
+      type: Boolean,
+      default: false,
+    },
   },
-  emits: ['stakeChanged'],
+  emits: ['stakeChanged', 'stakeModalOpened'],
   setup(props, { emit }) {
     const store = useStore();
     const { api } = useApi();
@@ -132,21 +136,12 @@ export default defineComponent({
     const { decimal } = useChainMetadata();
     const { canUnbondWithdraw } = useUnbondWithdraw(api);
 
-    watchEffect(() => {
-      const minStakingAmount = plasmUtils.reduceBalanceToDenom(minStaking.value, decimal.value);
-      const stakedAmount =
-        props.stakeInfo?.yourStake.denomAmount &&
-        plasmUtils.reduceBalanceToDenom(props.stakeInfo?.yourStake.denomAmount, decimal.value);
-
-      formattedMinStake.value =
-        Number(stakedAmount) >= Number(minStakingAmount) ? '0' : minStakingAmount;
-    });
-
     const showStakeModal = () => {
       modalTitle.value = `Stake on ${props.dapp.name}`;
       modalActionName.value = StakeAction.Stake;
       modalAction.value = stake;
       showModal.value = true;
+      emit('stakeModalOpened');
     };
 
     const showUnstakeModal = () => {
@@ -156,7 +151,22 @@ export default defineComponent({
       modalActionName.value = StakeAction.Unstake;
       modalAction.value = unstake;
       showModal.value = true;
+      emit('stakeModalOpened');
     };
+
+    watchEffect(() => {
+      const minStakingAmount = plasmUtils.reduceBalanceToDenom(minStaking.value, decimal.value);
+      const stakedAmount =
+        props.stakeInfo?.yourStake.denomAmount &&
+        plasmUtils.reduceBalanceToDenom(props.stakeInfo?.yourStake.denomAmount, decimal.value);
+
+      formattedMinStake.value =
+        Number(stakedAmount) >= Number(minStakingAmount) ? '0' : minStakingAmount;
+
+      if (props.showStake) {
+        showStakeModal();
+      }
+    });
 
     const emitStakeChanged = () => {
       emit('stakeChanged', props.dapp);

@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-fixed tw-z-10 tw-inset-0 tw-overflow-y-auto">
+  <div class="tw-fixed tw-z-10 tw-inset-0 tw-overflow-y-auto" @click="closeModal()">
     <div class="tw-flex tw-items-center tw-justify-center tw-min-h-screen">
       <!-- Background overlay -->
       <div class="tw-fixed tw-inset-0 tw-transition-opacity" aria-hidden="true">
@@ -19,8 +19,7 @@
           tw-mx-2
           tw-my-2
           tw-align-middle
-          tw-max-w-lg
-          tw-w-full
+          tw-w-auto
         "
         @click.stop
       >
@@ -54,9 +53,18 @@ export default defineComponent({
       type: String,
       default: '',
     },
+    showCloseButton: {
+      type: Boolean,
+      default: true,
+    },
   },
-  setup(props) {
+  setup(props, { emit }) {
+    const closeModal = () => {
+      emit('update:is-open', false);
+    };
+
     return {
+      closeModal,
       ...toRefs(props),
     };
   },

@@ -64,16 +64,13 @@
         :dapp="dapp"
         :staker-max-number="maxNumberOfStakersPerContract"
         :account-data="accountData"
-        @dappClick="showDetailsModal"
       />
     </div>
 
-    <ModalRegisterDapp v-if="showRegisterDappModal" v-model:is-open="showRegisterDappModal" />
-
-    <ModalDappDetails
-      v-if="showDappDetailsModal"
-      v-model:is-open="showDappDetailsModal"
-      :dapp="selectedDapp"
+    <ModalRegisterDapp
+      v-if="showRegisterDappModal"
+      v-model:is-open="showRegisterDappModal"
+      :show-close-button="false"
     />
   </div>
 </template>
@@ -82,7 +79,6 @@
 import Button from 'components/common/Button.vue';
 import IconBase from 'components/icons/IconBase.vue';
 import IconPlus from 'components/icons/IconPlus.vue';
-import ModalDappDetails from 'components/dapp-staking/modals/ModalDappDetails.vue';
 import ModalRegisterDapp from 'components/dapp-staking/modals/ModalRegisterDapp.vue';
 import Dapp from 'src/components/dapp-staking/Dapp.vue';
 import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
@@ -95,6 +91,7 @@ import DappsCount from './statistics/DappsCount.vue';
 import Requirement from './statistics/Requirement.vue';
 import Withdraw from './statistics/Withdraw.vue';
 import Era from './statistics/Era.vue';
+import { StakeInfo } from 'src/store/dapp-staking/actions';
 import { fasSeedling } from '@quasar/extras/fontawesome-v5';
 import { useMeta } from 'quasar';
 
@@ -104,7 +101,6 @@ export default defineComponent({
     IconPlus,
     IconBase,
     ModalRegisterDapp,
-    ModalDappDetails,
     Button,
     TVL,
     DappsCount,
@@ -130,25 +126,28 @@ export default defineComponent({
       return formatUnitAmount(amount);
     });
     const showRegisterDappModal = ref<boolean>(false);
-    const showDappDetailsModal = ref<boolean>(false);
     const selectedDapp = ref<DappItem>();
+    const selectedDappInfo = ref<StakeInfo>();
 
     store.dispatch('dapps/getDapps');
     store.dispatch('dapps/getStakingInfo');
 
-    const showDetailsModal = (dapp: DappItem): void => {
-      selectedDapp.value = dapp;
-      showDappDetailsModal.value = true;
-    };
+    // const showDetailsModal = (dapp: DappItem, stakeInfo: StakeInfo): void => {
+    //   console.log(stakeInfo);
+    //   selectedDapp.value = dapp;
+    //   selectedDappInfo.value = stakeInfo;
+    //   showDappDetailsModal.value = true;
+    // };
 
     return {
       dapps,
       selectedDapp,
+      selectedDappInfo,
       showRegisterDappModal,
-      showDappDetailsModal,
+      // showDappDetailsModal,
       maxNumberOfStakersPerContract,
       minimumStakingAmount,
-      showDetailsModal,
+      // showDetailsModal,
       progress,
       blocksUntilNextEra,
       era,

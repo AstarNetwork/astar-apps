@@ -1,5 +1,5 @@
 <template>
-  <div class="text-left relative mb-6">
+  <div class="text-left relative mb-4">
     <label
       v-if="label"
       class="tw-block tw-text-sm tw-font-medium tw-text-gray-500 dark:tw-text-darkGray-400 tw-mb-2"
