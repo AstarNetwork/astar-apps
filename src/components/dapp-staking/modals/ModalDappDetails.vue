@@ -1,5 +1,5 @@
 <template>
-  <Modal>
+  <Modal @click="closeModal">
     <template #content>
       <div>
         <div class="tw-flex tw-flex-row tw-flex-wrap">
@@ -88,6 +88,9 @@
           ></q-markdown>
         </q-card>
       </div>
+      <div class="tw-mt-6 tw-flex tw-justify-center">
+        <Button type="button" :primary="false" @click="closeModal">{{ $t('close') }}</Button>
+      </div>
     </template>
     <template #buttons>
       <a :href="dapp.url" target="_blank">
@@ -129,6 +132,7 @@ export default defineComponent({
       required: true,
     },
   },
+  emits: ['update:is-open', 'showStake'],
   setup(props, { emit }) {
     const slide = ref<string>('video');
     const isFullScreen = ref<boolean>(false);

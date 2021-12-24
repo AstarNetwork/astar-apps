@@ -1,5 +1,5 @@
 <template>
-  <Modal title="Register a new dApp">
+  <Modal title="Register a new dApp" @click="closeModal">
     <template #content>
       <q-form ref="registerForm">
         <q-stepper ref="stepper" v-model="step" :header-nav="false" animated>

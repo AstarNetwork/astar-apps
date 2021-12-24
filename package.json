@@ -7,7 +7,9 @@
   "private": true,
   "scripts": {
     "dev": "quasar dev",
-    "build": "quasar build",
+    "build": "yarn run build:spa",
+    "build:ssr": "quasar build -m ssr",
+    "build:spa": "quasar build -m spa",
     "format": "prettier --write **/*.{ts,vue}",
     "check-format": "prettier --check **/*.{ts,vue}",
     "lint": "yarn format && yarn check-format && eslint --fix --ext .ts,.vue ./",
@@ -15,7 +17,8 @@
     "test": "quasar test --unit jest",
     "deploy": "push-dir --dir=dist/spa --remote=gh-pages --branch=main",
     "start": "node server.js",
-    "heroku-postbuild": "yarn install && yarn build"
+    "heroku-postbuild": "yarn install && yarn build",
+    "heroku-deploy": "git push heroku main"
   },
   "dependencies": {
     "@ethersproject/bignumber": "^5.5.0",
@@ -45,6 +48,7 @@
     "quasar": "^2.3.3",
     "secp256k1": "^4.0.2",
     "serve-static": "^1.14.1",
+    "serverless-http": "^2.7.0",
     "store": "^2.0.12",
     "stream": "^0.0.2",
     "vue-i18n": "^9.0.0-beta.0",
