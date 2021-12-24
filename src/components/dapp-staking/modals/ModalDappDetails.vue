@@ -80,10 +80,12 @@
             </div>
           </div>
         </div>
-        <q-card class="tw-mt-4">
-          <q-scroll-area class="scroll">
-            <q-markdown :src="dapp.description" :no-html="true" class="tw-m-2"></q-markdown>
-          </q-scroll-area>
+        <q-card class="tw-mt-4 tw-py-2">
+          <q-markdown
+            :src="dapp.description"
+            :no-html="true"
+            class="tw-m-2 tw-max-h-72"
+          ></q-markdown>
         </q-card>
       </div>
     </template>
@@ -156,6 +158,6 @@ export default defineComponent({
 }
 
 .scroll {
-  height: 350px;
+  max-height: 350px;
 }
 </style>
