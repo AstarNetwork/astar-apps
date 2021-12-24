@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-fixed tw-z-10 tw-inset-0 tw-overflow-y-auto">
+  <div class="tw-fixed tw-z-10 tw-inset-0 tw-overflow-y-auto" @click="closeModal()">
     <div class="tw-flex tw-items-center tw-justify-center tw-min-h-screen">
       <!-- Background overlay -->
       <div class="tw-fixed tw-inset-0 tw-transition-opacity" aria-hidden="true">
@@ -58,8 +58,13 @@ export default defineComponent({
       default: true,
     },
   },
-  setup(props) {
+  setup(props, { emit }) {
+    const closeModal = () => {
+      emit('update:is-open', false);
+    };
+
     return {
+      closeModal,
       ...toRefs(props),
     };
   },

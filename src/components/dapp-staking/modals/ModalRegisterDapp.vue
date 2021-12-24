@@ -32,17 +32,17 @@
             />
           </q-step>
         </q-stepper>
+        <div class="tw-text-center">
+          <q-stepper-navigation>
+            <Button :primary="false" @click="step > 1 ? $refs.stepper.previous() : close()">
+              {{ step &gt; 1 ? $t('dappStaking.modals.previous') : $t('close') }}
+            </Button>
+            <Button @click="registerDapp(step)">
+              {{ step &lt; stepsCount ? $t('dappStaking.modals.next') : $t('dappStaking.modals.register') }}
+            </Button>
+          </q-stepper-navigation>
+        </div>
       </q-form>
-    </template>
-    <template #buttons>
-      <q-stepper-navigation>
-        <Button :primary="false" @click="step > 1 ? $refs.stepper.previous() : close()">
-          {{ step &gt; 1 ? $t('dappStaking.modals.previous') : $t('close') }}
-        </Button>
-        <Button @click="registerDapp(step)">
-          {{ step &lt; stepsCount ? $t('dappStaking.modals.next') : $t('dappStaking.modals.register') }}
-        </Button>
-      </q-stepper-navigation>
     </template>
   </Modal>
 </template>

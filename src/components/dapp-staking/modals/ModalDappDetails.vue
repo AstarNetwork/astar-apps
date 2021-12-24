@@ -80,27 +80,23 @@
             </div>
           </div>
         </div>
-        <q-card class="tw-mt-4 tw-py-2">
-          <q-markdown
-            :src="dapp.description"
-            :no-html="true"
-            class="tw-m-2 tw-max-h-72"
-          ></q-markdown>
+        <q-card class="tw-mt-4">
+          <q-scroll-area class="scroll">
+            <q-markdown :src="dapp.description" :no-html="true" class="tw-m-2"></q-markdown>
+          </q-scroll-area>
         </q-card>
       </div>
       <div class="tw-mt-6 tw-flex tw-justify-center">
         <Button type="button" :primary="false" @click="closeModal">{{ $t('close') }}</Button>
-      </div>
-    </template>
-    <template #buttons>
-      <a :href="dapp.url" target="_blank">
-        <Button>
-          {{ $t('dappStaking.modals.viewProject') }}
+        <a :href="dapp.url" target="_blank">
+          <Button>
+            {{ $t('dappStaking.modals.viewProject') }}
+          </Button>
+        </a>
+        <Button @click="showStakeModal">
+          {{ $t('dappStaking.stake') }}
         </Button>
-      </a>
-      <Button @click="showStakeModal">
-        {{ $t('dappStaking.stake') }}
-      </Button>
+      </div>
     </template>
   </Modal>
 </template>
@@ -142,12 +138,17 @@ export default defineComponent({
       emit('showStake');
     };
 
+    const closeModal = () => {
+      emit('update:is-open', false);
+    };
+
     return {
       slide,
       isFullScreen,
       ...toRefs(props),
       getShortenAddress,
       showStakeModal,
+      closeModal,
     };
   },
 });
@@ -162,6 +163,6 @@ export default defineComponent({
 }
 
 .scroll {
-  max-height: 350px;
+  height: 350px;
 }
 </style>
