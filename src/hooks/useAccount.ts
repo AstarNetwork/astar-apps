@@ -11,31 +11,49 @@ export const useAccount = () => {
   const allAccountNames = computed(() => store.getters['general/allAccountNames']);
   const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
 
+  const disconnectAccount = () => {
+    store.commit('general/setCurrentAccountIdx', null);
+    store.commit('general/setIsH160Formatted', false);
+    store.commit('general/setIsCheckMetamask', false);
+    store.commit('general/setCurrentEcdsaAccount', {
+      ethereum: '',
+      ss58: '',
+      h160: '',
+    });
+  };
+
   const currentAccount = ref('');
   const currentAccountName = ref('');
 
   watch(
-    [
-      allAccounts,
-      allAccountNames,
-      currentAccountIdx,
-      isCheckMetamask,
-      isH160Formatted,
-      currentEcdsaAccount,
-    ],
+    [isCheckMetamask, isH160Formatted, currentEcdsaAccount],
     () => {
-      if (allAccounts.value) {
-        if (isCheckMetamask.value && currentEcdsaAccount.value) {
-          currentAccount.value = currentEcdsaAccount.value.ss58;
-          currentAccountName.value = 'Ethereum Extension';
-        } else if (isH160Formatted.value && currentEcdsaAccount.value) {
-          currentAccount.value = currentEcdsaAccount.value.h160;
-          currentAccountName.value = 'Ethereum Extension';
-        } else {
-          currentAccount.value = allAccounts.value[currentAccountIdx.value];
-          currentAccountName.value = allAccountNames.value[currentAccountIdx.value];
-        }
+      if (!allAccounts.value) return;
+
+      if (isCheckMetamask.value && currentEcdsaAccount.value) {
+        currentAccount.value = currentEcdsaAccount.value.ss58;
+        currentAccountName.value = 'Ethereum Extension';
+        return;
       }
+      if (isH160Formatted.value && currentEcdsaAccount.value) {
+        currentAccount.value = currentEcdsaAccount.value.h160;
+        currentAccountName.value = 'Ethereum Extension';
+        return;
+      }
+      currentAccount.value = '';
+      currentAccountName.value = '';
+    },
+    { immediate: true }
+  );
+
+  watch(
+    [currentAccountIdx],
+    () => {
+      if (!allAccounts.value || currentAccountIdx.value === null) return;
+
+      currentAccount.value = allAccounts.value[currentAccountIdx.value];
+      currentAccountName.value = allAccountNames.value[currentAccountIdx.value];
+      return;
     },
     { immediate: true }
   );
@@ -45,5 +63,6 @@ export const useAccount = () => {
     allAccountNames,
     currentAccount,
     currentAccountName,
+    disconnectAccount,
   };
 };

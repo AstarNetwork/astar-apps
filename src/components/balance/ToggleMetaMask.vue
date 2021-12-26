@@ -46,7 +46,6 @@ export default defineComponent({
   },
 
   setup() {
-    const isToggleOn = ref(false);
     const store = useStore();
     const { requestAccounts, requestSignature } = useMetamask();
 
@@ -54,6 +53,8 @@ export default defineComponent({
     const isSS58 = computed(() => store.getters['general/isCheckMetamask']);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const evmFormat = computed(() => (isH160.value ? 'H160 (EVM)' : 'SS58 (ASTAR)'));
+
+    const isToggleOn = ref(isH160.value);
 
     const toggleAction = async () => {
       isToggleOn.value = !isToggleOn.value;

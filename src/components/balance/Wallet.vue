@@ -18,7 +18,7 @@
         </div>
       </div>
 
-      <button type="button" class="icon tw-ml-auto tw-tooltip" @click="openModal">
+      <button type="button" class="icon tw-ml-auto tw-tooltip" @click="disconnectAccount">
         <icon-base
           class="tw-h-5 tw-w-5 dark:tw-text-darkGray-100"
           viewBox="0 0 20 20"
@@ -47,7 +47,7 @@
             dark:tw-bg-darkGray-500
             tw-rounded-md tw-shadow-lg tw-opacity-90 tw-whitespace-nowrap
           "
-          >{{ $t('change') }}</span
+          >{{ $t('disconnect') }}</span
         >
       </button>
     </div>
@@ -56,6 +56,7 @@
 <script lang="ts">
 import IconBase from 'components/icons/IconBase.vue';
 import IconChevronDown from 'components/icons/IconChevronDown.vue';
+import { useAccount } from 'src/hooks';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
@@ -70,14 +71,10 @@ export default defineComponent({
     },
   },
 
-  emits: ['update:is-open'],
-  setup(props, { emit }) {
-    const openModal = () => {
-      emit('update:is-open', true);
-    };
-
+  setup() {
+    const { disconnectAccount } = useAccount();
     return {
-      openModal,
+      disconnectAccount,
     };
   },
 });

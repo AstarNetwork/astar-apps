@@ -37,7 +37,7 @@
         </div>
       </div>
 
-      <button type="button" class="icon tw-ml-auto tw-tooltip" @click="openModal">
+      <button type="button" class="icon tw-ml-auto tw-tooltip" @click="disconnectAccount">
         <icon-base
           class="tw-h-5 tw-w-5 dark:tw-text-darkGray-100"
           viewBox="0 0 20 20"
@@ -66,7 +66,7 @@
             dark:tw-bg-darkGray-500
             tw-rounded-md tw-shadow-lg tw-opacity-90 tw-whitespace-nowrap
           "
-          >{{ $t('change') }}</span
+          >{{ $t('disconnect') }}</span
         >
       </button>
     </div>
@@ -175,6 +175,7 @@ import IconChevronDown from 'components/icons/IconChevronDown.vue';
 import IconDocumentDuplicate from 'components/icons/IconDocumentDuplicate.vue';
 import IconLink from 'components/icons/IconLink.vue';
 import { providerEndpoints } from 'src/config/chainEndpoints';
+import { useAccount } from 'src/hooks';
 export default defineComponent({
   components: {
     IconBase,
@@ -193,11 +194,7 @@ export default defineComponent({
       required: true,
     },
   },
-  emits: ['update:is-open'],
-  setup(props, { emit }) {
-    const openModal = () => {
-      emit('update:is-open', true);
-    };
+  setup(props) {
     const { address } = toRefs(props);
     const shortenAddress = computed(() => {
       return getShortenAddress(address.value);
@@ -218,25 +215,25 @@ export default defineComponent({
         alertType: 'success',
       });
     };
+    const { disconnectAccount } = useAccount();
+
+    const copyAddress = async () => {
+      await navigator.clipboard.writeText(address.value);
+      store.dispatch('general/showAlertMsg', {
+        msg: 'Copy address success!!',
+        alertType: 'success',
+      });
+    };
+
     return {
-      openModal,
       shortenAddress,
       showAlert,
       subScan,
       isSubscan,
       currentNetworkIdx,
+      disconnectAccount,
+      copyAddress,
     };
-  },
-  methods: {
-    copyAddress() {
-      var copyAddr = document.querySelector('#hiddenAddr') as HTMLInputElement;
-      copyAddr.setAttribute('type', 'text');
-      copyAddr.select();
-      document.execCommand('copy');
-      copyAddr.setAttribute('type', 'hidden');
-      window.getSelection()?.removeAllRanges();
-      this.showAlert();
-    },
   },
 });
 </script>
