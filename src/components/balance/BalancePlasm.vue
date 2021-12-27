@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="animate__animated animate__fadeIn">
     <div v-if="isH160">
       <div class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4">
         <WalletH160
