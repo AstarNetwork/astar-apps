@@ -43,7 +43,7 @@
           viewBox="0 0 20 20"
           aria-hidden="true"
         >
-          <icon-chevron-down />
+          <icon-disconnect />
         </icon-base>
 
         <!-- Tooltip -->
@@ -171,7 +171,7 @@ import { useStore } from 'src/store';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import IconBase from 'components/icons/IconBase.vue';
 import IconAccountSample from 'components/icons/IconAccountSample.vue';
-import IconChevronDown from 'components/icons/IconChevronDown.vue';
+import IconDisconnect from 'components/icons/IconDisconnect.vue';
 import IconDocumentDuplicate from 'components/icons/IconDocumentDuplicate.vue';
 import IconLink from 'components/icons/IconLink.vue';
 import { providerEndpoints } from 'src/config/chainEndpoints';
@@ -180,7 +180,7 @@ export default defineComponent({
   components: {
     IconBase,
     IconAccountSample,
-    IconChevronDown,
+    IconDisconnect,
     IconDocumentDuplicate,
     IconLink,
   },

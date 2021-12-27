@@ -24,10 +24,9 @@
           viewBox="0 0 20 20"
           aria-hidden="true"
         >
-          <icon-chevron-down />
+          <icon-disconnect />
         </icon-base>
 
-        <!-- Tooltip -->
         <span
           class="
             tw-pointer-events-none
@@ -56,13 +55,13 @@
 <script lang="ts">
 import IconBase from 'components/icons/IconBase.vue';
 import IconChevronDown from 'components/icons/IconChevronDown.vue';
+import IconDisconnect from 'src/components/icons/IconDisconnect.vue';
 import { useAccount } from 'src/hooks';
-import { defineComponent } from 'vue';
-
+import { defineComponent, ref, watchEffect, watch, computed } from 'vue';
 export default defineComponent({
   components: {
     IconBase,
-    IconChevronDown,
+    IconDisconnect,
   },
   props: {
     walletName: {

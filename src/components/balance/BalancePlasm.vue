@@ -1,5 +1,5 @@
 <template>
-  <div class="animate__animated animate__fadeIn">
+  <div>
     <div v-if="isH160">
       <div class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4">
         <WalletH160
@@ -107,6 +107,7 @@ import ToggleMetaMask from './ToggleMetaMask.vue';
 import TotalBalance from './TotalBalance.vue';
 import Wallet from './Wallet.vue';
 import WalletH160 from './WalletH160.vue';
+import 'animate.css';
 
 interface Modal {
   modalAccount: boolean;
