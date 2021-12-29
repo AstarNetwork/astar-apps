@@ -8,7 +8,7 @@
       xl:tw-mx-2
     "
   >
-    <div class="tw-flex tw-flex-grow tw-cursor-pointer tw-p-4" @click="emitClickEvent">
+    <div class="tw-flex tw-flex-grow tw-cursor-pointer tw-p-4" @click="showDappDetails">
       <Avatar :url="dapp.iconUrl" class="tw-w-14 tw-h-14" />
       <div class="tw-ml-4">
         <div
@@ -36,9 +36,18 @@
         :is-max-staker="isMaxStaker"
         :staker-max-number="stakerMaxNumber"
         :account-data="accountData"
+        :show-stake="showStakeModal"
         @stake-changed="handleStakeChanged"
+        @stake-modal-opened="handleStakeModalOpened"
       />
     </div>
+    <ModalDappDetails
+      v-if="showDappDetailsModal"
+      v-model:is-open="showDappDetailsModal"
+      :dapp="dapp"
+      :stake-info="stakeInfo"
+      @show-stake="showStake"
+    />
   </div>
 </template>
 
@@ -48,12 +57,14 @@ import { useStore } from 'src/store';
 import { useApi } from 'src/hooks';
 import Avatar from 'components/common/Avatar.vue';
 import StakePanel from 'components/dapp-staking/StakePanel.vue';
+import ModalDappDetails from 'components/dapp-staking/modals/ModalDappDetails.vue';
 import { StakingParameters, StakeInfo } from 'src/store/dapp-staking/actions';
 
 export default defineComponent({
   components: {
     Avatar,
     StakePanel,
+    ModalDappDetails,
   },
   props: {
     dapp: {
@@ -76,9 +87,11 @@ export default defineComponent({
     const stakeInfo = ref<StakeInfo>();
     const senderAddress = computed(() => store.getters['general/selectedAccountAddress']);
     const isMaxStaker = ref<boolean>(false);
+    const showDappDetailsModal = ref<boolean>(false);
+    const showStakeModal = ref<boolean>(false);
 
-    const emitClickEvent = (): void => {
-      emit('dappClick', props.dapp);
+    const showDappDetails = (): void => {
+      showDappDetailsModal.value = true;
     };
 
     const handleStakeChanged = (): void => {
@@ -104,6 +117,15 @@ export default defineComponent({
       getDappInfo();
     });
 
+    const showStake = (): void => {
+      console.log('show stake');
+      showStakeModal.value = true;
+    };
+
+    const handleStakeModalOpened = () => {
+      showStakeModal.value = false;
+    };
+
     if (senderAddress.value) {
       getDappInfo();
     }
@@ -111,9 +133,13 @@ export default defineComponent({
     return {
       ...toRefs(props),
       stakeInfo,
-      emitClickEvent,
+      showDappDetails,
       handleStakeChanged,
       isMaxStaker,
+      showDappDetailsModal,
+      showStake,
+      showStakeModal,
+      handleStakeModalOpened,
     };
   },
 });
