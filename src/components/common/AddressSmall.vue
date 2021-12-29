@@ -5,14 +5,14 @@
     </button>
 
     <button v-else type="button" class="modal-button" @click="disconnectAccount">
-      <div class="tw-h-6 tw-w-6 tw-overflow-hidden tw-mx-3 sm:tw-mx-4">
+      <div class="tw-h-6 tw-w-6 tw-overflow-hidden tw-mr-3">
         <icon-base class="tw-h-full tw-w-full" viewBox="0 0 64 64">
           <icon-account-sample />
         </icon-base>
       </div>
       {{ shortenAddress }}
-      <icon-base class="tw--mr-1 tw-ml-2 tw-h-4 tw-w-4" viewBox="0 0 20 20" aria-hidden="true">
-        <icon-solid-chevron-down />
+      <icon-base class="tw-ml-3 tw-h-3 tw-w-3" viewBox="0 0 20 20" aria-hidden="true">
+        <icon-disconnect />
       </icon-base>
     </button>
 
@@ -42,7 +42,7 @@
 import { defineComponent, computed } from 'vue';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import IconBase from 'components/icons/IconBase.vue';
-import IconSolidChevronDown from 'components/icons/IconSolidChevronDown.vue';
+import IconDisconnect from 'components/icons/IconDisconnect.vue';
 import IconAccountSample from 'components/icons/IconAccountSample.vue';
 import { useConnectWallet } from 'src/hooks';
 import ModalAccount from '../balance/modals/ModalAccount.vue';
@@ -52,7 +52,7 @@ import ModalInstallWallet from '../balance/modals/ModalInstallWallet.vue';
 export default defineComponent({
   components: {
     IconBase,
-    IconSolidChevronDown,
+    IconDisconnect,
     IconAccountSample,
     ModalAccount,
     ModalConnectWallet,

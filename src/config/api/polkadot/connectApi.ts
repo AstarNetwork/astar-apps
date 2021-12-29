@@ -66,41 +66,37 @@ export async function connectApi(endpoint: string, networkIdx: number) {
   });
 
   const store = useStore();
-
   store.commit('general/setCurrentNetworkStatus', 'connecting');
 
   api.on('error', (error: Error) => console.error(error.message));
-  api.on('ready', async () => {
-    const injectedPromise = web3Enable('polkadot-js/apps');
+  await api.isReady;
+  const injectedPromise = web3Enable('polkadot-js/apps');
 
-    try {
-      extensions = await injectedPromise;
-    } catch (e) {
-      console.error(e);
-    }
+  try {
+    extensions = await injectedPromise;
+  } catch (e) {
+    console.error(e);
+  }
 
-    try {
-      await loadAccounts(api);
+  try {
+    await loadAccounts(api);
 
-      keyring.accounts.subject.subscribe((accounts) => {
-        if (accounts) {
-          store.commit('general/setAllAccounts', Object.keys(accounts));
-          // Memo: remove space from UI.
-          store.commit(
-            'general/setAllAccountNames',
-            Object.values(accounts).map((obj) => obj.option.name.replace('\n              ', ''))
-          );
-        }
-      });
-      //subscription.unsubscribe();
+    keyring.accounts.subject.subscribe((accounts) => {
+      if (accounts) {
+        store.commit('general/setAllAccounts', Object.keys(accounts));
+        // Memo: remove space from UI.
+        store.commit(
+          'general/setAllAccountNames',
+          Object.values(accounts).map((obj) => obj.option.name.replace('\n              ', ''))
+        );
+      }
+    });
 
-      store.commit('general/setCurrentNetworkStatus', 'connected');
-    } catch (err) {
-      console.error(err);
-
-      store.commit('general/setCurrentNetworkStatus', 'offline');
-    }
-  });
+    store.commit('general/setCurrentNetworkStatus', 'connected');
+  } catch (err) {
+    console.error(err);
+    store.commit('general/setCurrentNetworkStatus', 'offline');
+  }
 
   return {
     api,
