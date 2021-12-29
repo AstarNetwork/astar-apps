@@ -109,7 +109,7 @@ import { isValidEvmAddress } from 'src/hooks/helper/plasmUtils';
 
 export default defineComponent({
   components: {
-    // ModalSelectAccountOption,
+    ModalSelectAccountOption,
     MetamaskOption,
     IconBase,
     IconAccountSample,

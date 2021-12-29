@@ -1,4 +1,4 @@
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watch, watchEffect } from 'vue';
 import { useStore } from 'src/store';
 
 export const useAccount = () => {
@@ -57,6 +57,16 @@ export const useAccount = () => {
     },
     { immediate: true }
   );
+
+  watchEffect(() => {
+    if (!currentEcdsaAccount.value || !window.ethereum) return;
+
+    window.ethereum.on('accountsChanged', (accounts: string[]) => {
+      if (accounts[0] !== currentAccount.value) {
+        disconnectAccount();
+      }
+    });
+  });
 
   return {
     allAccounts,
