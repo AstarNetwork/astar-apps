@@ -130,14 +130,14 @@ export default defineComponent({
 
 <style scoped>
 .installButton {
-  @apply tw-inline-flex tw-items-center tw-px-5 tw-py-3 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500  tw-mx-1;
+  @apply tw-inline-flex tw-items-center tw-px-4 tw-py-3 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500  tw-mx-1;
 }
 .installButton:hover {
   @apply tw-bg-blue-700 dark:tw-bg-blue-400;
 }
 
 .learnButton {
-  @apply tw-inline-flex tw-items-center tw-px-5 tw-py-3 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-text-sm tw-font-medium tw-rounded-full tw-text-gray-500 dark:tw-text-darkGray-400 tw-bg-white dark:tw-bg-darkGray-900 tw-mx-3;
+  @apply tw-inline-flex tw-items-center tw-px-4 tw-py-3 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-text-sm tw-font-medium tw-rounded-full tw-text-gray-500 dark:tw-text-darkGray-400 tw-bg-white dark:tw-bg-darkGray-900 tw-mx-3;
 }
 .learnButton:hover {
   @apply tw-bg-gray-100 dark:tw-bg-darkGray-700;
