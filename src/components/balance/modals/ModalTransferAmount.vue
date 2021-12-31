@@ -275,10 +275,10 @@ export default defineComponent({
     };
 
     const transfer = async (transferAmt: number, fromAddress: string, toAddress: string) => {
-      console.log('transfer', transferAmt);
-      console.log('fromAccount', fromAddress);
-      console.log('toAccount', toAddress);
-      console.log('selUnit', selectUnit.value);
+      // console.log('transfer', transferAmt);
+      // console.log('fromAccount', fromAddress);
+      // console.log('toAccount', toAddress);
+      // console.log('selUnit', selectUnit.value);
 
       const toastInvalidAddress = () =>
         store.dispatch('general/showAlertMsg', {
@@ -297,15 +297,26 @@ export default defineComponent({
       if (isH160.value) {
         const provider = typeof window !== 'undefined' && window.ethereum;
         const web3 = new Web3(provider as any);
-        if (!web3.utils.isAddress(toAddress)) {
-          toastInvalidAddress();
-          return;
-        }
+
+        const buildEvmAddress = (toAddress: string) => {
+          // Memo: goes to EVM deposit
+          if (plasmUtils.isValidAddressPolkadotAddress(toAddress)) {
+            return plasmUtils.toEvmAddress(toAddress);
+          }
+          if (!web3.utils.isAddress(toAddress)) {
+            toastInvalidAddress();
+            return;
+          }
+          return toAddress;
+        };
+
+        const destinationAddress = buildEvmAddress(toAddress);
+
         store.commit('general/setLoading', true);
         try {
           await web3.eth
             .sendTransaction({
-              to: toAddress,
+              to: destinationAddress,
               from: fromAddress,
               value: web3.utils.toWei(String(transferAmt), 'ether'),
             })
