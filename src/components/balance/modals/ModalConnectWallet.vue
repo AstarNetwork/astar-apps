@@ -14,8 +14,9 @@
 <script lang="ts">
 import WalletOption from 'src/components/balance/modals/wallet/WalletOption.vue';
 import Modal from 'src/components/common/Modal.vue';
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
 import '../styles/modal-connect-wallet.scss';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   components: {
@@ -37,18 +38,32 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const wallets = [
-      {
-        img: require('/src/assets/img/logo-polkadot-js.png'),
-        name: 'wallet.polkadotJs',
-        click: props.setPolkadot,
-      },
-      {
-        img: require('/src/assets/img/metamask.png'),
-        name: 'wallet.metamask',
-        click: props.setMetaMask,
-      },
-    ];
+    const currentRoute = computed(() => {
+      return useRouter().currentRoute.value;
+    });
+
+    const isBalancePath = currentRoute.value.matched[0].path === '/balance';
+
+    const wallets = isBalancePath
+      ? [
+          {
+            img: require('/src/assets/img/logo-polkadot-js.png'),
+            name: 'wallet.polkadotJs',
+            click: props.setPolkadot,
+          },
+          {
+            img: require('/src/assets/img/metamask.png'),
+            name: 'wallet.metamask',
+            click: props.setMetaMask,
+          },
+        ]
+      : [
+          {
+            img: require('/src/assets/img/logo-polkadot-js.png'),
+            name: 'wallet.polkadotJs',
+            click: props.setPolkadot,
+          },
+        ];
 
     return { wallets };
   },

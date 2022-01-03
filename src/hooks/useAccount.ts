@@ -4,7 +4,6 @@ import { useStore } from 'src/store';
 export const useAccount = () => {
   const store = useStore();
 
-  const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
   const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
   const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
   const allAccounts = computed(() => store.getters['general/allAccounts']);
@@ -26,16 +25,10 @@ export const useAccount = () => {
   const currentAccountName = ref('');
 
   watch(
-    [isCheckMetamask, isH160Formatted, currentEcdsaAccount],
+    [isH160Formatted, currentEcdsaAccount],
     () => {
       if (!allAccounts.value) return;
-
-      if (isCheckMetamask.value && currentEcdsaAccount.value) {
-        currentAccount.value = currentEcdsaAccount.value.ss58;
-        currentAccountName.value = 'Ethereum Extension';
-        return;
-      }
-      if (isH160Formatted.value && currentEcdsaAccount.value) {
+      if (isH160Formatted.value && currentEcdsaAccount.value.h160) {
         currentAccount.value = currentEcdsaAccount.value.h160;
         currentAccountName.value = 'Ethereum Extension';
         return;
