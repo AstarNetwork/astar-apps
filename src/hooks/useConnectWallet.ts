@@ -1,3 +1,4 @@
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useAccount } from 'src/hooks';
 import { useStore } from 'src/store';
 import { getChainId, setupNetwork } from 'src/web3';
@@ -83,6 +84,25 @@ export const useConnectWallet = () => {
       }
       modalName.value = WalletOption.SelectPolkadotAccount;
       modalAccountSelect.value = true;
+      return;
+    }
+  });
+
+  const { SELECTED_ACCOUNT_ID } = LOCAL_STORAGE;
+  const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
+
+  watchEffect(async () => {
+    const accountId = localStorage.getItem(SELECTED_ACCOUNT_ID);
+
+    if (currentAccountIdx.value !== null || accountId === null) return;
+
+    if (accountId === 'Ethereum Extension') {
+      await setMetaMask();
+      return;
+    }
+
+    if (accountId !== null) {
+      store.commit('general/setCurrentAccountIdx', Number(accountId));
       return;
     }
   });

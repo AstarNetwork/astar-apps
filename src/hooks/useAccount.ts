@@ -1,5 +1,6 @@
-import { computed, ref, watch, watchEffect } from 'vue';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useStore } from 'src/store';
+import { computed, ref, watch, watchEffect } from 'vue';
 
 export const useAccount = () => {
   const store = useStore();
@@ -9,6 +10,7 @@ export const useAccount = () => {
   const allAccounts = computed(() => store.getters['general/allAccounts']);
   const allAccountNames = computed(() => store.getters['general/allAccountNames']);
   const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
+  const { SELECTED_ACCOUNT_ID } = LOCAL_STORAGE;
 
   const disconnectAccount = () => {
     store.commit('general/setCurrentAccountIdx', null);
@@ -19,6 +21,7 @@ export const useAccount = () => {
       ss58: '',
       h160: '',
     });
+    localStorage.removeItem(SELECTED_ACCOUNT_ID);
   };
 
   const currentAccount = ref('');
@@ -31,6 +34,7 @@ export const useAccount = () => {
       if (isH160Formatted.value && currentEcdsaAccount.value.h160) {
         currentAccount.value = currentEcdsaAccount.value.h160;
         currentAccountName.value = 'Ethereum Extension';
+        localStorage.setItem(SELECTED_ACCOUNT_ID, 'Ethereum Extension');
         return;
       }
       currentAccount.value = '';
@@ -46,6 +50,7 @@ export const useAccount = () => {
 
       currentAccount.value = allAccounts.value[currentAccountIdx.value];
       currentAccountName.value = allAccountNames.value[currentAccountIdx.value];
+      localStorage.setItem(SELECTED_ACCOUNT_ID, String(currentAccountIdx.value));
       return;
     },
     { immediate: true }
