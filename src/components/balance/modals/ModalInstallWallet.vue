@@ -40,7 +40,7 @@
                 {{ $t('installWallet.getWallet', { value: selectedWallet }) }}
               </div>
             </div>
-            <div class="tw-text-md tw-text-blue-900 dark:tw-text-white">
+            <div class="tw-text-md tw-text-blue-900 dark:tw-text-white tw-text-center">
               {{ $t('installWallet.installWallet', { value: selectedWallet }) }}
             </div>
           </div>
