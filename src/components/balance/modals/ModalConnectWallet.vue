@@ -4,7 +4,7 @@
       <div class="tw-text-lg tw-text-center tw-text-blue-900 dark:tw-text-darkGray-100">
         {{ $t('wallet.select') }}
       </div>
-      <div class="tw-flex tw-flex-col sm:tw-flex-row tw-gap-x-8">
+      <div class="tw-flex tw-flex-col sm:tw-flex-row tw-gap-x-8 tw-justify-center tw-items-center">
         <WalletOption v-for="(wallet, index) in wallets" :key="index" :wallet="wallet" />
       </div>
     </template>
