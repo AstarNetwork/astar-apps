@@ -169,6 +169,7 @@ export default {
       availableInEra: 'Available in era',
       erasToGo: 'eras to pass: {era}',
       chunksModalDescription: 'This table shows when your funds will be eligible for withdrawal.',
+      multipleClaimInfo: '{steps} requests are required to claim all unclaimed eras.',
     },
   },
 };
