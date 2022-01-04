@@ -77,7 +77,7 @@ export default defineComponent({
 
     const subscribeToEraChange = async (): Promise<VoidFn | undefined> => {
       const unsub = (await api?.value?.query.dappsStaking.currentEra(async (era: u32) => {
-        console.log('new era', era.toNumber(), selectedAccountAddress.value);
+        // console.log('new era', era.toNumber(), selectedAccountAddress.value);
         await getChunks(era);
       })) as VoidFn | undefined;
 

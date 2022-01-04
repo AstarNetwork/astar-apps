@@ -27,6 +27,9 @@ export const useConnectWallet = () => {
   const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
   const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
 
+  const { SELECTED_ACCOUNT_ID } = LOCAL_STORAGE;
+  const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
+
   const setCloseModal = () => {
     modalName.value = '';
   };
@@ -87,9 +90,6 @@ export const useConnectWallet = () => {
       return;
     }
   });
-
-  const { SELECTED_ACCOUNT_ID } = LOCAL_STORAGE;
-  const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
 
   watchEffect(async () => {
     const accountId = localStorage.getItem(SELECTED_ACCOUNT_ID);

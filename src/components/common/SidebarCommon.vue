@@ -75,7 +75,7 @@
         </router-link>
 
         <router-link
-          v-if="network.isStoreEnabled && !isH160"
+          v-if="network.isStoreEnabled"
           to="/dapp-staking"
           :class="[$route.path.split('/')[1] === 'dapp-staking' ? 'activeLink' : 'inactiveLink']"
         >

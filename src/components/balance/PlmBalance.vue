@@ -15,14 +15,8 @@
   >
     <div>
       <div class="tw-flex tw-items-center tw-pt-1">
-        <div
-          class="
-            tw-h-10 tw-w-10 tw-rounded-full tw-overflow-hidden tw-border tw-border-gray-100 tw-mr-2
-          "
-        >
-          <icon-base class="tw-h-full tw-w-full" viewBox="0 0 64 64">
-            <icon-account-sample />
-          </icon-base>
+        <div class="tw-h-10 tw-w-10 tw-overflow-hidden">
+          <img width="30" src="~assets/img/sdn-token.png" alt="sdn" />
         </div>
         <p class="tw-text-blue-900 dark:tw-text-darkGray-100 tw-font-bold tw-text-lg">
           {{ defaultUnitToken }} {{ $t('balance.transferable') }}
@@ -140,15 +134,11 @@
 <script lang="ts">
 import { defineComponent, toRefs, computed } from 'vue';
 import { useChainMetadata, useEvmDeposit } from 'src/hooks';
-import IconBase from 'components/icons/IconBase.vue';
-import IconAccountSample from 'components/icons/IconAccountSample.vue';
 import FormatBalance from 'components/balance/FormatBalance.vue';
 import { useStore } from 'src/store';
 
 export default defineComponent({
   components: {
-    IconBase,
-    IconAccountSample,
     FormatBalance,
   },
   props: {
