@@ -35,7 +35,7 @@
 import { useMeta } from 'quasar';
 import BalancePlasm from 'src/components/balance/BalancePlasm.vue';
 import { useConnectWallet } from 'src/hooks';
-import { defineComponent } from 'vue';
+import { defineComponent, watch } from 'vue';
 import ModalAccount from './modals/ModalAccount.vue';
 import ModalConnectWallet from './modals/ModalConnectWallet.vue';
 import ModalInstallWallet from './modals/ModalInstallWallet.vue';
@@ -66,6 +66,18 @@ export default defineComponent({
       setMetaMask,
       openSelectModal,
     } = useConnectWallet();
+
+    watch(
+      [currentAccount],
+      () => {
+        if (currentAccount.value === '') {
+          setTimeout(() => {
+            openSelectModal();
+          }, 200);
+        }
+      },
+      { immediate: false }
+    );
 
     return {
       WalletOption,

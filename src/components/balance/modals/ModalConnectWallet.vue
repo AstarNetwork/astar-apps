@@ -1,5 +1,5 @@
 <template>
-  <Modal title="Select a Wallet" @click="setCloseModal">
+  <Modal title="Select a Wallet" class="animate__animated animate__fadeIn" @click="setCloseModal">
     <template #content>
       <div class="tw-text-lg tw-text-center tw-text-blue-900 dark:tw-text-darkGray-100">
         {{ $t('wallet.select') }}

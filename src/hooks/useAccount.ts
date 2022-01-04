@@ -24,8 +24,8 @@ export const useAccount = () => {
     localStorage.removeItem(SELECTED_ACCOUNT_ID);
   };
 
-  const currentAccount = ref('');
-  const currentAccountName = ref('');
+  const currentAccount = ref<string>('');
+  const currentAccountName = ref<string>('');
 
   watch(
     [isH160Formatted, currentEcdsaAccount],
