@@ -44,6 +44,8 @@ import Spinner from 'components/common/Spinner.vue';
 import ModalLoading from 'components/common/ModalLoading.vue';
 import AlertBox from 'components/common/AlertBox.vue';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
+import 'animate.css';
+
 export default defineComponent({
   name: 'App',
   components: {

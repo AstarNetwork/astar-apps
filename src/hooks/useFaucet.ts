@@ -1,6 +1,6 @@
 import { useStore } from 'src/store';
 import axios from 'axios';
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { useAccount } from './useAccount';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 export interface FaucetInfo {
@@ -32,6 +32,7 @@ export function useFaucet() {
   const store = useStore();
   const currentNetworkIdx = Number(localStorage.getItem('networkIdx'));
   const faucetEndpoint = providerEndpoints[currentNetworkIdx].faucetEndpoint;
+  const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
 
   const getFaucetInfo = async (account: string): Promise<FaucetInfo> => {
     try {
@@ -49,7 +50,7 @@ export function useFaucet() {
     [hash, currentAccount],
     async () => {
       const currentAccountRef = currentAccount.value;
-      if (!currentAccountRef) return;
+      if (!currentAccountRef || isH160Formatted.value) return;
 
       faucetInfo.value = await getFaucetInfo(currentAccountRef);
     },

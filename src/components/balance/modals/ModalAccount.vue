@@ -1,81 +1,77 @@
 <template>
-  <div class="tw-fixed tw-z-10 tw-inset-0 tw-overflow-y-auto" @click="closeModal">
-    <div class="tw-flex tw-items-center tw-justify-center tw-min-h-screen">
-      <!-- Background overlay -->
-      <div class="tw-fixed tw-inset-0 tw-transition-opacity" aria-hidden="true">
-        <div class="tw-absolute tw-inset-0 tw-bg-gray-900 dark:tw-bg-black tw-opacity-75"></div>
-      </div>
-      <div
-        class="
-          tw-inline-block tw-bg-white
-          dark:tw-bg-darkGray-900
-          tw-rounded-lg tw-px-4
-          sm:tw-px-8
-          tw-py-10
-          tw-overflow-hidden
-          tw-shadow-xl
-          tw-transform
-          tw-transition-all
-          tw-mx-2
-          tw-my-2
-          tw-align-middle
-          tw-max-w-lg
-          tw-w-full
-        "
-        @click.stop
-      >
-        <div>
+  <div v-if="isConnected(currentNetworkStatus)">
+    <div class="tw-fixed tw-z-10 tw-inset-0 tw-overflow-y-auto" @click="closeModal">
+      <div class="tw-flex tw-items-center tw-justify-center tw-min-h-screen">
+        <!-- Background overlay -->
+        <div class="tw-fixed tw-inset-0 tw-transition-opacity" aria-hidden="true">
+          <div class="tw-absolute tw-inset-0 tw-bg-gray-900 dark:tw-bg-black tw-opacity-75"></div>
+        </div>
+        <div
+          class="
+            tw-inline-block tw-bg-white
+            dark:tw-bg-darkGray-900
+            tw-rounded-lg tw-px-4
+            sm:tw-px-8
+            tw-py-10
+            tw-overflow-hidden
+            tw-shadow-xl
+            tw-transform
+            tw-transition-all
+            tw-mx-2
+            tw-my-2
+            tw-align-middle
+            tw-max-w-lg
+            tw-w-full
+          "
+          @click.stop
+        >
           <div>
-            <h3
-              class="
-                tw-text-lg tw-font-extrabold tw-text-blue-900
-                dark:tw-text-white
-                tw-mb-6 tw-text-center
-              "
-            >
-              {{ $t('balance.modals.chooseAccount') }}
-            </h3>
-            <div
-              class="
-                tw-mt-1 tw-w-full tw-rounded-md tw-bg-white
-                dark:tw-bg-darkGray-900
-                tw-border tw-border-gray-300
-                dark:tw-border-darkGray-500
-              "
-            >
-              <ul
+            <div>
+              <h3
                 class="
-                  tw-max-h-56 tw-rounded-md tw-py-1 tw-text-base tw-overflow-auto
-                  focus:tw-outline-none
+                  tw-text-lg tw-font-extrabold tw-text-blue-900
+                  dark:tw-text-white
+                  tw-mb-6 tw-text-center
                 "
               >
-                <MetamaskOption
-                  v-if="isSupportContract"
-                  v-model:selChecked="checkMetamask"
-                  :checked="checkMetamask || isH160Account"
-                  @connectMetamask="connectMetamask"
-                />
-                <ModalAccountOption
-                  v-for="(account, index) in allAccounts"
-                  :key="index"
-                  v-model:selOption="selAccount"
-                  v-model:selChecked="checkMetamask"
-                  :key-idx="index"
-                  :address="account"
-                  :address-name="allAccountNames[index]"
-                  :checked="!checkMetamask && !isH160Account && selAccount === index"
-                />
-              </ul>
+                {{ $t('balance.modals.chooseAccount') }}
+              </h3>
+              <div
+                class="
+                  tw-mt-1 tw-w-full tw-rounded-md tw-bg-white
+                  dark:tw-bg-darkGray-900
+                  tw-border tw-border-gray-300
+                  dark:tw-border-darkGray-500
+                "
+              >
+                <ul
+                  class="
+                    tw-max-h-56 tw-rounded-md tw-py-1 tw-text-base tw-overflow-auto
+                    focus:tw-outline-none
+                  "
+                >
+                  <ModalAccountOption
+                    v-for="(account, index) in allAccounts"
+                    :key="index"
+                    v-model:selOption="selAccount"
+                    v-model:selChecked="checkMetamask"
+                    :key-idx="index"
+                    :address="account"
+                    :address-name="allAccountNames[index]"
+                    :checked="!checkMetamask && !isH160Account && selAccount === index"
+                  />
+                </ul>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row-reverse">
-          <button type="button" class="confirm" @click="selectAccount(selAccount, checkMetamask)">
-            {{ $t('confirm') }}
-          </button>
-          <button type="button" class="cancel" @click="closeModal">
-            {{ $t('cancel') }}
-          </button>
+          <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row-reverse">
+            <button type="button" class="confirm" @click="selectAccount(selAccount, checkMetamask)">
+              {{ $t('confirm') }}
+            </button>
+            <button type="button" class="cancel" @click="closeModal">
+              {{ $t('cancel') }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -86,12 +82,10 @@ import { defineComponent, ref, computed } from 'vue';
 import { useStore } from 'src/store';
 import { useRouter } from 'vue-router';
 import { providerEndpoints } from 'src/config/chainEndpoints';
-import MetamaskOption from './MetamaskOption.vue';
 import ModalAccountOption from './ModalAccountOption.vue';
 
 export default defineComponent({
   components: {
-    MetamaskOption,
     ModalAccountOption,
   },
   props: {
@@ -122,7 +116,7 @@ export default defineComponent({
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
     const isSupportContract = ref(providerEndpoints[currentNetworkIdx.value].isSupportContract);
     const selectAccount = (accountIdx: number, checkMetamask: boolean) => {
-      console.log(checkMetamask + '/' + accountIdx);
+      // console.log(checkMetamask + '/' + accountIdx);
       store.commit('general/setIsCheckMetamask', checkMetamask);
       store.commit('general/setCurrentAccountIdx', accountIdx);
       if (isH160Formatted.value && accountIdx !== 0) {
@@ -141,6 +135,8 @@ export default defineComponent({
       store.commit('general/setCurrentEcdsaAccount', { ethereum: ethAddr, ss58 });
     };
 
+    const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
+
     return {
       selAccount,
       checkMetamask,
@@ -150,7 +146,13 @@ export default defineComponent({
       selectAccount,
       connectMetamask,
       isBalancePath,
+      currentNetworkStatus,
     };
+  },
+  methods: {
+    isConnected(networkStatus: string) {
+      return networkStatus === 'connected';
+    },
   },
 });
 </script>

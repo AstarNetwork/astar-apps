@@ -85,7 +85,7 @@ import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { useCurrentEra, useApr, useApi, useAccount, useBalance } from 'src/hooks';
 import { DappItem } from 'src/store/dapp-staking/state';
-import { computed, defineComponent, ref } from 'vue';
+import { computed, defineComponent, ref, watchEffect } from 'vue';
 import TVL from './statistics/TVL.vue';
 import DappsCount from './statistics/DappsCount.vue';
 import Requirement from './statistics/Requirement.vue';
@@ -117,6 +117,7 @@ export default defineComponent({
     const { api } = useApi();
     const { currentAccount } = useAccount();
     const { accountData } = useBalance(api, currentAccount);
+    const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
 
     const maxNumberOfStakersPerContract = computed(
       () => store.getters['dapps/getMaxNumberOfStakersPerContract']
@@ -138,6 +139,14 @@ export default defineComponent({
     //   selectedDappInfo.value = stakeInfo;
     //   showDappDetailsModal.value = true;
     // };
+    watchEffect(() => {
+      if (isH160Formatted.value) {
+        store.dispatch('general/showAlertMsg', {
+          msg: 'dApp staking only supports Polkadot.js wallet',
+          alertType: 'error',
+        });
+      }
+    });
 
     return {
       dapps,

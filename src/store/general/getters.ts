@@ -18,10 +18,10 @@ export interface GeneralGetters {
   isCheckMetamask(state: State): boolean;
   isH160Formatted(state: State): boolean;
   currentEcdsaAccount(state: State): EcdsaAccount;
-  accountIdx(state: State): number;
+  accountIdx(state: State): number | null;
   customEndpoint(state: State): string;
   theme(state: State): Theme;
-  selectedAccountAddress(state: State): string;
+  selectedAccountAddress(state: State): string | null;
 }
 
 const getters: GetterTree<State, StateInterface> & GeneralGetters = {
@@ -38,7 +38,7 @@ const getters: GetterTree<State, StateInterface> & GeneralGetters = {
   isCheckMetamask: (state) => state.isCheckMetamask,
   isH160Formatted: (state) => state.isH160Formatted,
   currentEcdsaAccount: (state) => state.currentEcdsaAccount,
-  accountIdx: (state) => state.currentAccountIdx,
+  accountIdx: (state) => (state.currentAccountIdx !== null ? state.currentAccountIdx : null),
   customEndpoint: (state) => state.currentCustomEndpoint,
   theme: (state: State) => state.currentTheme,
   selectedAccountAddress: (state: State) => {
@@ -47,7 +47,7 @@ const getters: GetterTree<State, StateInterface> & GeneralGetters = {
     } else if (state.isH160Formatted) {
       return state.currentEcdsaAccount.h160;
     } else {
-      return state.allAccounts[state.currentAccountIdx];
+      return state.currentAccountIdx !== null ? state.allAccounts[state.currentAccountIdx] : null;
     }
   },
 };

@@ -2,6 +2,7 @@ export default {
   confirm: 'Confirm',
   cancel: 'Cancel',
   change: 'Change',
+  disconnect: 'Disconnect',
   copy: 'Copy',
   max: 'Max',
   forget: 'Forget',
@@ -27,6 +28,19 @@ export default {
     discord: 'Discord',
     github: 'GitHub',
     docs: 'Documentation',
+  },
+  wallet: {
+    connectWallet: 'Connect Wallet',
+    select: 'Please select a wallet to connect to this portal',
+    polkadotJs: 'Polkadot.js',
+    metamask: 'MetaMask',
+  },
+  installWallet: {
+    getWallet: 'Haven’t got a {value} wallet yet?',
+    installWallet:
+      "You'll need to install {value} to continue. Once you have it installed, go ahead and refresh this page",
+    installExtension: 'Install {value} extension',
+    howToConnect: 'Learn how to Connect',
   },
   balance: {
     totalBalance: 'Total Balance',

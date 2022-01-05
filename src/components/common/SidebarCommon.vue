@@ -13,12 +13,8 @@
       </div>
 
       <div class="tw-p-4">
-        <div class="tw-mb-1">
-          <AddressSmall
-            v-model:isOpen="modalAccount"
-            :address="currentAccount"
-            :address-name="currentAccountName"
-          />
+        <div v-if="isConnected(currentNetworkStatus)" class="tw-mb-1">
+          <AddressSmall />
         </div>
 
         <button type="button" class="network-button" @click="modalNetwork = true">
@@ -79,7 +75,7 @@
         </router-link>
 
         <router-link
-          v-if="network.isStoreEnabled && !isH160"
+          v-if="network.isStoreEnabled"
           to="/dapp-staking"
           :class="[$route.path.split('/')[1] === 'dapp-staking' ? 'activeLink' : 'inactiveLink']"
         >
@@ -129,13 +125,6 @@
       v-model:selectNetwork="currentNetworkIdx"
       :network-idx="currentNetworkIdx"
     />
-
-    <ModalAccount
-      v-if="modalAccount"
-      v-model:isOpen="modalAccount"
-      :all-accounts="allAccounts"
-      :all-account-names="allAccountNames"
-    />
   </div>
 </template>
 
@@ -158,10 +147,8 @@ import IconStore from '../icons/IconStore.vue';
 import ModalNetwork from 'src/components/balance/modals/ModalNetwork.vue';
 import LocaleChanger from './LocaleChanger.vue';
 import AddressSmall from '../common/AddressSmall.vue';
-import ModalAccount from '../balance/modals/ModalAccount.vue';
 
 interface Modal {
-  modalAccount: boolean;
   modalNetwork: boolean;
 }
 
@@ -180,13 +167,11 @@ export default defineComponent({
     IconStore,
     ModalNetwork,
     AddressSmall,
-    ModalAccount,
   },
   setup() {
     const { isOpen } = useSidebar();
     const stateModal = reactive<Modal>({
       modalNetwork: false,
-      modalAccount: false,
     });
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
@@ -224,6 +209,11 @@ export default defineComponent({
       isH160,
       endpointKey,
     };
+  },
+  methods: {
+    isConnected(networkStatus: string) {
+      return networkStatus === 'connected';
+    },
   },
 });
 </script>

@@ -37,13 +37,19 @@
             {{ canUnbondWithdraw ? $t('dappStaking.unbond') : $t('dappStaking.unstake') }}
           </Button>
         </div>
-        <Button v-else :small="true" :disabled="isMaxStaker" @click="showStakeModal">
+        <Button
+          v-else
+          :small="true"
+          :disabled="isMaxStaker || isH160Formatted || currentAccountIdx === null"
+          @click="showStakeModal"
+        >
           {{ $t('dappStaking.stake') }}
         </Button>
 
         <Button
           :small="true"
           :primary="true"
+          :disabled="isH160Formatted || currentAccountIdx === null"
           class="tw-ml-auto"
           @click="showClaimRewardModal = true"
         >
@@ -75,7 +81,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, toRefs, watchEffect } from 'vue';
+import { defineComponent, ref, toRefs, watchEffect, computed } from 'vue';
 import StakeModal from 'components/dapp-staking/modals/StakeModal.vue';
 import { StakeModel } from 'src/hooks/store';
 import Button from 'components/common/Button.vue';
@@ -135,6 +141,8 @@ export default defineComponent({
     const { minStaking } = useGetMinStaking(api);
     const { decimal } = useChainMetadata();
     const { canUnbondWithdraw } = useUnbondWithdraw(api);
+    const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
+    const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
 
     const showStakeModal = () => {
       modalTitle.value = `Stake on ${props.dapp.name}`;
@@ -250,6 +258,8 @@ export default defineComponent({
       formattedMinStake,
       unstake,
       canUnbondWithdraw,
+      isH160Formatted,
+      currentAccountIdx,
     };
   },
 });
