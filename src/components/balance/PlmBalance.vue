@@ -59,7 +59,13 @@
             >
               {{ $t('balance.transfer') }}
             </button>
-            <button v-if="!isH160" type="button" class="transfer-button" @click="openFaucetModal">
+            <button
+              v-if="!isH160"
+              type="button"
+              class="transfer-button"
+              :disabled="isFaucetLoading"
+              @click="openFaucetModal"
+            >
               {{ $t('balance.faucet') }}
             </button>
           </div>
@@ -148,6 +154,10 @@ export default defineComponent({
     },
     accountData: {
       type: Object,
+      required: true,
+    },
+    isFaucetLoading: {
+      type: Boolean,
       required: true,
     },
   },

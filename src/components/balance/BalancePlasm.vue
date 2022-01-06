@@ -45,6 +45,7 @@
         v-model:isOpenModalFaucet="modalFaucet"
         :address="currentAccount"
         :account-data="accountData"
+        :is-faucet-loading="isLoading"
       />
     </div>
 
@@ -140,7 +141,7 @@ export default defineComponent({
     const isSS58 = computed(() => store.getters['general/isCheckMetamask']);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const { evmDeposit } = useEvmDeposit();
-    const { faucetInfo, requestFaucet } = useFaucet();
+    const { faucetInfo, requestFaucet, isLoading } = useFaucet();
 
     return {
       ...toRefs(stateModal),
@@ -156,6 +157,7 @@ export default defineComponent({
       isH160,
       faucetInfo,
       requestFaucet,
+      isLoading,
     };
   },
   methods: {
