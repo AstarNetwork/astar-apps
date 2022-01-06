@@ -132,6 +132,8 @@ const getClaimableEraStakes = async (
 
     if (!eraStake.isEmpty) {
       eraStakeMap.set(era, eraStake);
+    } else {
+      break;
     }
   }
 
