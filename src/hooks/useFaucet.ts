@@ -28,6 +28,7 @@ const initialInfoState = {
 export function useFaucet() {
   const faucetInfo = ref<FaucetInfo>(initialInfoState);
   const hash = ref<string>('');
+  const isLoading = ref<boolean>(false);
   const { currentAccount } = useAccount();
   const store = useStore();
   const currentNetworkIdx = Number(localStorage.getItem('networkIdx'));
@@ -35,14 +36,28 @@ export function useFaucet() {
   const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
 
   const getFaucetInfo = async (account: string): Promise<FaucetInfo> => {
-    try {
-      const url = `${faucetEndpoint}/drip/?destination=${account}`;
-      const { data } = await axios.get(url);
+    const fetchData = async () => {
+      try {
+        isLoading.value = true;
+        const url = `${faucetEndpoint}/drip/?destination=${account}`;
+        const { data } = await axios.get(url);
+        isLoading.value = false;
+        return data;
+      } catch (error: any) {
+        throw Error(error.message || 'Something went wrong');
+      }
+    };
 
-      return data;
+    try {
+      return await fetchData();
     } catch (error) {
-      console.error(error);
-      return initialInfoState;
+      // Memo: Recursion
+      try {
+        return await fetchData();
+      } catch (error: any) {
+        console.error(error.message);
+        return initialInfoState;
+      }
     }
   };
 
@@ -90,5 +105,6 @@ export function useFaucet() {
   return {
     faucetInfo,
     requestFaucet,
+    isLoading,
   };
 }
