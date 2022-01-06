@@ -130,7 +130,9 @@ const getClaimableEraStakes = async (
       era
     );
 
-    eraStakeMap.set(era, eraStake);
+    if (!eraStake.isEmpty) {
+      eraStakeMap.set(era, eraStake);
+    }
   }
 
   return eraStakeMap;
