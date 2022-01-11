@@ -2,14 +2,8 @@
   <div class="tw-flex-1 tw-flex tw-flex-col">
     <div class="tw-flex-1 tw-flex tw-flex-col tw-pt-10 tw-overflow-x-hidden tw-overflow-y-auto">
       <div class="tw-flex tw-items-center">
-        <div v-if="currentNetworkIdx === endpointKey.SHIDEN" class="tw-px-6">
-          <img width="150" src="~assets/img/shiden.png" />
-        </div>
-        <div v-else-if="currentNetworkIdx === endpointKey.SHIBUYA" class="tw-px-6">
-          <img width="150" src="~assets/img/shibuya.svg" />
-        </div>
-        <img v-else width="200" src="~assets/img/astar.png" />
-        <ConnectionIndicator class="tw-pt-4" :connection-type="currentNetworkStatus" />
+        <Logo />
+        <ConnectionIndicator class="tw-pt-4 tw-mr-1" :connection-type="currentNetworkStatus" />
       </div>
 
       <div class="tw-p-4">
@@ -147,6 +141,7 @@ import IconStore from '../icons/IconStore.vue';
 import ModalNetwork from 'src/components/balance/modals/ModalNetwork.vue';
 import LocaleChanger from './LocaleChanger.vue';
 import AddressSmall from '../common/AddressSmall.vue';
+import Logo from './Logo.vue';
 
 interface Modal {
   modalNetwork: boolean;
@@ -167,6 +162,7 @@ export default defineComponent({
     IconStore,
     ModalNetwork,
     AddressSmall,
+    Logo,
   },
   setup() {
     const { isOpen } = useSidebar();

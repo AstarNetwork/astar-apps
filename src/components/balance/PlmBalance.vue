@@ -16,7 +16,7 @@
     <div>
       <div class="tw-flex tw-items-center tw-pt-1">
         <div class="tw-h-10 tw-w-10 tw-overflow-hidden">
-          <img width="30" src="~assets/img/sdn-token.png" alt="sdn" />
+          <Logo :small="true" class="tw-w-8" />
         </div>
         <p class="tw-text-blue-900 dark:tw-text-darkGray-100 tw-font-bold tw-text-lg">
           {{ defaultUnitToken }} {{ $t('balance.transferable') }}
@@ -142,10 +142,12 @@ import { defineComponent, toRefs, computed } from 'vue';
 import { useChainMetadata, useEvmDeposit } from 'src/hooks';
 import FormatBalance from 'components/balance/FormatBalance.vue';
 import { useStore } from 'src/store';
+import Logo from '../common/Logo.vue';
 
 export default defineComponent({
   components: {
     FormatBalance,
+    Logo,
   },
   props: {
     address: {
