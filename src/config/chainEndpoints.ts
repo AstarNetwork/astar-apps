@@ -20,28 +20,30 @@ interface ChainProvider {
 }
 
 export enum endpointKey {
-  // PLASM = 0,
-  SHIDEN = 0,
-  DUSTY = 1,
+  ASTAR = 0,
+  SHIDEN = 1,
   SHIBUYA = 2,
   LOCAL = 3,
   CUSTOM = 4,
 }
 
 export const providerEndpoints: ChainProvider[] = [
-  // {
-  //   networkAlias: 'plasm-main',
-  //   displayName: 'Plasm Network (Mainnet)',
-  //   info: 'The main network of the layer 2 scaling blockchain, Plasm Network',
-  //   endpoint: 'wss://rpc.plasmnet.io/',
-  //   favicon: 'icons/astar.png',
-  //   isSupportContract: false,
-  //   typeDef: typeDefs.plasmDefinitions,
-  //   key: endpointKey.PLASM,
-  //   isStoreEnabled: false,
-  //   subScan: 'https://astar.subscan.io',
-  //   evmChainId: ''
-  // },
+  {
+    networkAlias: 'astar',
+    displayName: 'Astar Network (Polkadot)',
+    info: 'Smart contract platform for decentralized applications (dapps) on the Polkadot network',
+    endpoint: 'wss://ws.astar.bldnodes.org/',
+    favicon: 'https://polkadot.js.org/apps/static/astar.b48435e0.png',
+    isSupportContract: true,
+    prefix: 0x250,
+    typeDef: typeDefs.plasmCollatorDefinitions,
+    key: endpointKey.ASTAR,
+    isStoreEnabled: false,
+    subscan: 'https://astar.subscan.io',
+    evmChainId: '592',
+    evmRpc: 'https://rpc.astar.bldnodes.org/',
+    faucetEndpoint: '',
+  },
   {
     networkAlias: 'shiden-shell',
     displayName: 'Shiden Network (Kusama)',
@@ -57,21 +59,6 @@ export const providerEndpoints: ChainProvider[] = [
     evmChainId: '336',
     evmRpc: 'https://rpc.shiden.astar.network:8545',
     faucetEndpoint: 'https://astar-discord-faucet.herokuapp.com/shiden',
-  },
-  {
-    networkAlias: 'dusty-testnet',
-    displayName: 'Dusty Network (Testnet)',
-    info: 'The test network of the layer 2 scaling blockchain, Dusty Plasm Network',
-    endpoint: 'wss://dusty.astar.network',
-    favicon: 'https://polkadot.js.org/apps/static/dusty.16cf115c.png',
-    isSupportContract: true,
-    typeDef: typeDefs.dustyDefinitions,
-    key: endpointKey.DUSTY,
-    isStoreEnabled: false,
-    subscan: '',
-    evmChainId: '',
-    evmRpc: '',
-    faucetEndpoint: '',
   },
   {
     networkAlias: 'shibuya-testnet',
