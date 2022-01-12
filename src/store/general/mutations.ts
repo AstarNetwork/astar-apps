@@ -1,8 +1,8 @@
-import { MutationTree } from 'vuex';
-import { ConnectionType, GeneralStateInterface as State } from './state';
+import { Dark } from 'quasar';
 import type { ChainInfo } from 'src/hooks/useChainInfo';
 import type { Extensions } from 'src/hooks/useMetaExtensions';
-import { Dark } from 'quasar';
+import { MutationTree } from 'vuex';
+import { ConnectionType, GeneralStateInterface as State, SubstrateAccount } from './state';
 
 export interface GeneralMutations<S = State> {
   setInitialized(state: S): void;
@@ -13,11 +13,12 @@ export interface GeneralMutations<S = State> {
   setChainInfo(state: S, type: ChainInfo): void;
   setMetaExtensions(state: S, type: Extensions): void;
   setExtensionCount(state: S, type: number): void;
+  setSubstrateAccounts(state: S, type: SubstrateAccount[]): void;
   setAllAccounts(state: S, type: string[]): void;
   setAllAccountNames(state: S, type: string[]): void;
   setCurrentNetworkStatus(state: S, networkStatus: ConnectionType): void;
   setCurrentNetworkIdx(state: S, networkIdx: number): void;
-  setCurrentAccountIdx(state: S, accountIdx: number): void;
+  setCurrentAccountIdx(state: S, accountIdx: string): void;
   setCurrentCustomEndpoint(state: S, endpoint: string): void;
 }
 
@@ -45,6 +46,9 @@ const mutation: MutationTree<State> & GeneralMutations = {
   },
   setExtensionCount(state, count) {
     state.extensionCount = count;
+  },
+  setSubstrateAccounts(state, accounts) {
+    state.substrateAccounts = accounts;
   },
   setAllAccounts(state, accounts) {
     state.allAccounts = accounts;

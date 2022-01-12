@@ -18,8 +18,7 @@
     <ModalAccount
       v-if="modalAccountSelect"
       v-model:isOpen="modalAccountSelect"
-      :all-accounts="allAccounts"
-      :all-account-names="allAccountNames"
+      :selected-wallet="selectedWallet"
     />
 
     <ModalInstallWallet
@@ -56,8 +55,6 @@ export default defineComponent({
       modalConnectWallet,
       currentAccount,
       modalName,
-      allAccounts,
-      allAccountNames,
       selectedWallet,
       modalAccountSelect,
       setCloseModal,
@@ -83,8 +80,6 @@ export default defineComponent({
       modalConnectWallet,
       currentAccount,
       modalName,
-      allAccounts,
-      allAccountNames,
       selectedWallet,
       modalAccountSelect,
       setCloseModal,

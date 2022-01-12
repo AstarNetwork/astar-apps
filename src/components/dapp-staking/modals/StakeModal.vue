@@ -11,12 +11,7 @@
           "
           >{{ $t('dappStaking.modals.address') }}</label
         >
-        <ModalSelectAccount
-          v-model:selAddress="data.address"
-          :all-accounts="allAccounts"
-          :all-account-names="allAccountNames"
-          @sel-changed="reloadAmount"
-        />
+        <ModalSelectAccount v-model:selAddress="data.address" @sel-changed="reloadAmount" />
       </div>
       <InputAmount
         v-model:amount="data.amount"
@@ -124,8 +119,6 @@ export default defineComponent({
       unit: defaultUnitToken.value,
       decimal: decimal.value,
     } as StakeModel);
-    const allAccounts = computed(() => store.getters['general/allAccounts']);
-    const allAccountNames = computed(() => store.getters['general/allAccountNames']);
     const maxUnlockingChunks = computed<number>(() => store.getters['dapps/getMaxUnlockingChunks']);
     const unlockingChunks = computed<number>(() => store.getters['dapps/getUnlockingChunks']);
     const unbondingPeriod = computed(() => store.getters['dapps/getUnbondingPeriod']);
@@ -172,8 +165,6 @@ export default defineComponent({
 
     return {
       data,
-      allAccounts,
-      allAccountNames,
       formatStakeAmount,
       reloadAmount,
       StakeAction,

@@ -2,7 +2,7 @@
   <li role="option" class="option-list">
     <div
       class="tw-flex tw-items-center tw-justify-between tw-cursor-pointer"
-      @click="onChange(keyIdx)"
+      @click="onChange(address)"
     >
       <div class="tw-flex tw-items-center">
         <div
@@ -64,10 +64,6 @@ export default defineComponent({
     IconAccountSample,
   },
   props: {
-    keyIdx: {
-      type: Number,
-      required: true,
-    },
     address: {
       type: String,
       required: true,
@@ -95,17 +91,9 @@ export default defineComponent({
     });
     const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
 
-    const onChange = (keyIdx: number) => {
-      emit('update:sel-option', keyIdx);
+    const onChange = (address: string) => {
+      emit('update:sel-option', address);
       emit('update:sel-checked', false);
-      if (isCheckMetamask && props.role === Role.FromAddress) {
-        store.commit('general/setIsCheckMetamask', false);
-        store.commit('general/setCurrentEcdsaAccount', {
-          ethereum: '',
-          ss58: '',
-          h160: '',
-        });
-      }
     };
 
     return {

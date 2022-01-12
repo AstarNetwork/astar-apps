@@ -37,11 +37,11 @@
                   tw-text-center tw-mb-2
                 "
               >
-                {{ $t('installWallet.getWallet', { value: selectedWallet }) }}
+                {{ $t('installWallet.getWallet', { value: $t(selectedWallet) }) }}
               </div>
             </div>
             <div class="tw-text-md tw-text-blue-900 dark:tw-text-white tw-text-center">
-              {{ $t('installWallet.installWallet', { value: selectedWallet }) }}
+              {{ $t('installWallet.installWallet', { value: $t(selectedWallet) }) }}
             </div>
           </div>
         </div>
@@ -53,7 +53,7 @@
           </a>
           <a :href="getExtensionUrl()" target="_blank" rel="noopener noreferrer">
             <button type="button" class="installButton">
-              {{ $t('installWallet.installExtension', { value: selectedWallet }) }}
+              {{ $t('installWallet.installExtension', { value: $t(selectedWallet) }) }}
             </button>
           </a>
         </div>

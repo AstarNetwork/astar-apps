@@ -1,5 +1,11 @@
 import type { Extensions } from 'src/hooks/useMetaExtensions';
 
+export type SubstrateAccount = {
+  address: string;
+  name: string;
+  source: string;
+};
+
 export type AlertBox = {
   showAlertMsg: boolean;
   alertMsg: string;
@@ -23,6 +29,7 @@ export interface GeneralStateInterface {
   chainInfo: any;
   metaExtensions: Extensions;
   extensionCount: number;
+  substrateAccounts: SubstrateAccount[];
   allAccounts: string[];
   allAccountNames: string[];
   currentNetworkStatus: ConnectionType;
@@ -30,7 +37,7 @@ export interface GeneralStateInterface {
   isCheckMetamask: boolean;
   isH160Formatted: boolean;
   currentEcdsaAccount: EcdsaAccount;
-  currentAccountIdx: number | null;
+  currentAccountIdx: string | null;
   currentCustomEndpoint: string;
   currentTheme: Theme;
 }
@@ -50,6 +57,7 @@ function state(): GeneralStateInterface {
       extensions: [],
     },
     extensionCount: 0,
+    substrateAccounts: [],
     allAccounts: [],
     allAccountNames: [],
     currentNetworkStatus: 'connecting',

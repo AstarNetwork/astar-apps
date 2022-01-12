@@ -68,8 +68,6 @@
 
                 <modal-select-account
                   v-model:selAddress="fromAddress"
-                  :all-accounts="allAccounts"
-                  :all-account-names="allAccountNames"
                   :role="Role.FromAddress"
                   @sel-changed="reloadAmount"
                 />
@@ -87,8 +85,6 @@
 
                 <modal-select-account
                   v-model:selAddress="toAddress"
-                  :all-accounts="allAccounts"
-                  :all-account-names="allAccountNames"
                   :role="Role.ToAddress"
                   :to-address="toAddress"
                 />
@@ -123,7 +119,7 @@
 </template>
 <script lang="ts">
 import type { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
-import { web3Enable, web3FromSource } from '@polkadot/extension-dapp';
+import { web3FromSource } from '@polkadot/extension-dapp';
 import { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 import FormatBalance from 'components/balance/FormatBalance.vue';
@@ -150,14 +146,6 @@ export default defineComponent({
     InputAmount,
   },
   props: {
-    allAccounts: {
-      type: Array,
-      required: true,
-    },
-    allAccountNames: {
-      type: Array,
-      required: true,
-    },
     balance: {
       type: BN,
       required: true,

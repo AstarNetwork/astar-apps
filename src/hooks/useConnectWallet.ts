@@ -1,3 +1,4 @@
+import { web3Enable } from '@polkadot/extension-dapp';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SupportWallets } from 'src/config/wallets';
 import { useAccount } from 'src/hooks';
@@ -8,7 +9,7 @@ import { useMetamask } from './custom-signature/useMetamask';
 
 enum WalletOption {
   SelectWallet = 'SelectWallet',
-  SelectPolkadotAccount = 'SelectPolkadotAccount',
+  SelectSubstrateAccount = 'SelectSubstrateAccount',
   NoExtension = 'NoExtension',
   PolkadotJs = 'Polkadot.js',
   Clover = 'Clover',
@@ -23,8 +24,7 @@ export const useConnectWallet = () => {
 
   const { requestAccounts } = useMetamask();
   const store = useStore();
-  const { allAccounts, allAccountNames, currentAccount, currentAccountName, disconnectAccount } =
-    useAccount();
+  const { currentAccount, currentAccountName, disconnectAccount } = useAccount();
 
   const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
   const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
@@ -41,19 +41,16 @@ export const useConnectWallet = () => {
   };
 
   const setPolkadot = async () => {
-    selectedWallet.value = WalletOption.PolkadotJs;
+    selectedWallet.value = SupportWallets.PolkadotJs;
     modalName.value = WalletOption.PolkadotJs;
   };
 
   const setClover = async () => {
-    selectedWallet.value = WalletOption.Clover;
+    selectedWallet.value = SupportWallets.Clover;
     modalName.value = WalletOption.Clover;
   };
 
   const setWalletModal = (wallet: SupportWallets): void => {
-    if (wallet === SupportWallets.PolkadotJs) {
-      setPolkadot();
-    }
     if (wallet === SupportWallets.PolkadotJs) {
       setPolkadot();
     }
@@ -87,7 +84,7 @@ export const useConnectWallet = () => {
   };
 
   const setMetaMask = async () => {
-    selectedWallet.value = WalletOption.MetaMask;
+    selectedWallet.value = SupportWallets.MetaMask;
     const isMetamaskExtension = typeof window.ethereum !== 'undefined';
     if (!isMetamaskExtension) {
       modalName.value = WalletOption.NoExtension;
@@ -100,15 +97,21 @@ export const useConnectWallet = () => {
     }
   };
 
+  // const checkIsNoExtension
+
   // Todo
-  watchEffect(() => {
-    if (modalName.value === WalletOption.PolkadotJs) {
-      if (allAccounts.value.length === 0) {
+  watchEffect(async () => {
+    if (modalName.value === WalletOption.PolkadotJs || modalName.value === WalletOption.Clover) {
+      const injected = await web3Enable('AstarNetwork/astar-apps');
+
+      const isInstalledExtension = injected.find((it) => selectedWallet.value === it.name);
+
+      if (!isInstalledExtension) {
         modalName.value = WalletOption.NoExtension;
         modalAccountSelect.value = false;
         return;
       }
-      modalName.value = WalletOption.SelectPolkadotAccount;
+      modalName.value = WalletOption.SelectSubstrateAccount;
       modalAccountSelect.value = true;
       return;
     }
@@ -125,7 +128,7 @@ export const useConnectWallet = () => {
     }
 
     if (accountId !== null) {
-      store.commit('general/setCurrentAccountIdx', Number(accountId));
+      store.commit('general/setCurrentAccountIdx', accountId);
       return;
     }
   });
@@ -137,8 +140,6 @@ export const useConnectWallet = () => {
     currentAccount,
     currentAccountName,
     modalName,
-    allAccounts,
-    allAccountNames,
     selectedWallet,
     modalAccountSelect,
     openSelectModal,

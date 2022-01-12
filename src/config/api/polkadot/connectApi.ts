@@ -5,6 +5,7 @@ import { keyring } from '@polkadot/ui-keyring';
 import { isTestChain } from '@polkadot/util';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 import { providerEndpoints } from 'src/config/chainEndpoints';
+import { objToArray } from 'src/hooks/helper/common';
 import { useStore } from 'src/store';
 
 interface InjectedAccountExt {
@@ -86,6 +87,18 @@ export async function connectApi(endpoint: string, networkIdx: number) {
 
     keyring.accounts.subject.subscribe((accounts) => {
       if (accounts) {
+        const data = objToArray(accounts);
+        const accountsData = data.map((account) => {
+          const { address, meta } = account.json;
+          return {
+            address,
+            name: meta.name.replace('\n              ', ''),
+            source: meta.source,
+          };
+        });
+
+        store.commit('general/setSubstrateAccounts', accountsData);
+        // Todo: remove
         store.commit('general/setAllAccounts', Object.keys(accounts));
         // Memo: remove space from UI.
         store.commit(

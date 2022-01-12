@@ -1,3 +1,4 @@
+import { SubstrateAccount } from './../store/general/state';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useStore } from 'src/store';
 import { computed, ref, watch, watchEffect } from 'vue';
@@ -7,6 +8,7 @@ export const useAccount = () => {
 
   const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
   const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
+  const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const allAccounts = computed(() => store.getters['general/allAccounts']);
   const allAccountNames = computed(() => store.getters['general/allAccountNames']);
   const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
@@ -30,11 +32,11 @@ export const useAccount = () => {
   watch(
     [isH160Formatted, currentEcdsaAccount],
     () => {
-      if (!allAccounts.value) return;
       if (isH160Formatted.value && currentEcdsaAccount.value.h160) {
         currentAccount.value = currentEcdsaAccount.value.h160;
         currentAccountName.value = 'Ethereum Extension';
         localStorage.setItem(SELECTED_ACCOUNT_ID, 'Ethereum Extension');
+        store.commit('general/setIsH160Formatted', true);
         return;
       }
       currentAccount.value = '';
@@ -46,11 +48,16 @@ export const useAccount = () => {
   watch(
     [currentAccountIdx],
     () => {
-      if (!allAccounts.value || currentAccountIdx.value === null) return;
+      if (!substrateAccounts.value || currentAccountIdx.value === null) return;
+      const account = substrateAccounts.value.find(
+        (it: SubstrateAccount) => it.address === currentAccountIdx.value
+      );
+      if (!account) return;
 
-      currentAccount.value = allAccounts.value[currentAccountIdx.value];
-      currentAccountName.value = allAccountNames.value[currentAccountIdx.value];
+      currentAccount.value = account.address;
+      currentAccountName.value = account.name;
       localStorage.setItem(SELECTED_ACCOUNT_ID, String(currentAccountIdx.value));
+      store.commit('general/setIsH160Formatted', false);
       return;
     },
     { immediate: true }
@@ -67,6 +74,7 @@ export const useAccount = () => {
   });
 
   return {
+    substrateAccounts,
     allAccounts,
     allAccountNames,
     currentAccount,

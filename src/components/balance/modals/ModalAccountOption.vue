@@ -42,9 +42,8 @@
               dark:tw-bg-darkGray-900
               checked:tw-border-4 checked:tw-border-blue-500
             "
-            :value="keyIdx"
             :checked="checked"
-            @change="onChange(keyIdx)"
+            @change="onChange(address)"
           />
         </div>
       </label>
@@ -63,10 +62,6 @@ export default defineComponent({
     IconAccountSample,
   },
   props: {
-    keyIdx: {
-      type: Number,
-      required: true,
-    },
     address: {
       type: String,
       required: true,
@@ -87,9 +82,8 @@ export default defineComponent({
       return getShortenAddress(address.value);
     });
 
-    const onChange = (keyIdx: number) => {
-      emit('update:sel-option', keyIdx);
-      emit('update:sel-checked', false);
+    const onChange = (address: string) => {
+      emit('update:sel-option', address);
     };
 
     return {

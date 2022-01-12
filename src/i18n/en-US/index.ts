@@ -9,6 +9,9 @@ export default {
   close: 'Close',
   subscan: 'Subscan',
   usd: 'USD',
+  'polkadot-js': 'Polkadot.js',
+  metamask: 'MetaMask',
+  clover: 'Clover',
   warning: {
     insufficientFee: 'Warning! Transaction might failed due to insufficient fee',
   },
