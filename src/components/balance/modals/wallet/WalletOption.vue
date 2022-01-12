@@ -7,7 +7,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import '../../styles/modal-connect-wallet.scss';
 
 export default defineComponent({
   props: {
@@ -22,3 +21,7 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss" scoped>
+@import '../../styles/modal-connect-wallet.scss';
+</style>

@@ -1,4 +1,5 @@
 import type { Extensions } from 'src/hooks/useMetaExtensions';
+import { endpointKey } from 'src/config/chainEndpoints';
 
 export type SubstrateAccount = {
   address: string;
@@ -61,7 +62,7 @@ function state(): GeneralStateInterface {
     allAccounts: [],
     allAccountNames: [],
     currentNetworkStatus: 'connecting',
-    currentNetworkIdx: 0,
+    currentNetworkIdx: endpointKey.SHIDEN,
     isCheckMetamask: false,
     isH160Formatted: false,
     currentEcdsaAccount: {

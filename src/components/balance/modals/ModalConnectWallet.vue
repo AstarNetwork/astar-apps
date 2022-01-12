@@ -21,7 +21,6 @@ import WalletOption from 'src/components/balance/modals/wallet/WalletOption.vue'
 import Modal from 'src/components/common/Modal.vue';
 import { supportWallets } from 'src/config/wallets';
 import { defineComponent } from 'vue';
-import '../styles/modal-connect-wallet.scss';
 
 export default defineComponent({
   components: {
@@ -43,3 +42,7 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss" scoped>
+@import '../styles/modal-connect-wallet.scss';
+</style>
