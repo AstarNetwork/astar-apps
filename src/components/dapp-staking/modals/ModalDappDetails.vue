@@ -52,7 +52,7 @@
                 </div>
                 <q-separator />
                 <div class="tw-flex tw-flex-wrap tw-w-full tw-m-2">
-                  <NameValue label="License" class="info">
+                  <NameValue v-if="dapp.license" label="License" class="info">
                     {{ dapp.license }}
                   </NameValue>
                   <NameValue label="Stakers count" class="info">

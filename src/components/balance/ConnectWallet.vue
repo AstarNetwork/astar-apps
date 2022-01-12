@@ -39,7 +39,6 @@ import { defineComponent, watch } from 'vue';
 import ModalAccount from './modals/ModalAccount.vue';
 import ModalConnectWallet from './modals/ModalConnectWallet.vue';
 import ModalInstallWallet from './modals/ModalInstallWallet.vue';
-import './styles/connect-wallet.scss';
 
 export default defineComponent({
   components: {
@@ -102,3 +101,7 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss" scoped>
+@import './styles/connect-wallet.scss';
+</style>
