@@ -57,7 +57,7 @@ export const useAccount = () => {
   );
 
   watchEffect(() => {
-    if (!currentEcdsaAccount.value || !window.ethereum) return;
+    if (!currentEcdsaAccount.value || !window.ethereum || !isH160Formatted.value) return;
 
     window.ethereum.on('accountsChanged', (accounts: string[]) => {
       if (accounts[0] !== currentAccount.value) {

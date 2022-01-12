@@ -23,8 +23,7 @@
 
     <modal-connect-wallet
       v-if="modalName === WalletOption.SelectWallet"
-      :set-polkadot="setPolkadot"
-      :set-meta-mask="setMetaMask"
+      :set-wallet-modal="setWalletModal"
       :set-close-modal="setCloseModal"
     />
 
@@ -79,9 +78,8 @@ export default defineComponent({
       selectedWallet,
       modalAccountSelect,
       currentNetworkStatus,
-      setPolkadot,
       setCloseModal,
-      setMetaMask,
+      setWalletModal,
       openSelectModal,
       disconnectAccount,
     } = useConnectWallet();
@@ -117,9 +115,8 @@ export default defineComponent({
       selectedWallet,
       modalAccountSelect,
       isH160Formatted,
-      setPolkadot,
       setCloseModal,
-      setMetaMask,
+      setWalletModal,
       openSelectModal,
       disconnectAccount,
     };

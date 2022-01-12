@@ -1,11 +1,11 @@
 import { ApiPromise, WsProvider } from '@polkadot/api';
-import { keyring } from '@polkadot/ui-keyring';
 import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
+import type { InjectedExtension } from '@polkadot/extension-inject/types';
+import { keyring } from '@polkadot/ui-keyring';
 import { isTestChain } from '@polkadot/util';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
-import { useStore } from 'src/store';
 import { providerEndpoints } from 'src/config/chainEndpoints';
-import type { InjectedExtension } from '@polkadot/extension-inject/types';
+import { useStore } from 'src/store';
 
 interface InjectedAccountExt {
   address: string;
@@ -70,7 +70,10 @@ export async function connectApi(endpoint: string, networkIdx: number) {
 
   api.on('error', (error: Error) => console.error(error.message));
   await api.isReady;
-  const injectedPromise = web3Enable('polkadot-js/apps');
+  // const injectedPromise = web3Enable('polkadot-js/apps');
+  // const injectedPromise = await web3Enable('clv');
+  const injectedPromise = await web3Enable('AstarNetwork/astar-apps');
+  console.log('injectedPromise', injectedPromise);
 
   try {
     extensions = await injectedPromise;

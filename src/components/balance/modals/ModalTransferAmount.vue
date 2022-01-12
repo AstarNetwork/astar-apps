@@ -123,7 +123,7 @@
 </template>
 <script lang="ts">
 import type { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
-import { web3FromSource } from '@polkadot/extension-dapp';
+import { web3Enable, web3FromSource } from '@polkadot/extension-dapp';
 import { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 import FormatBalance from 'components/balance/FormatBalance.vue';
@@ -242,6 +242,15 @@ export default defineComponent({
     const transferLocal = async (transferAmt: BN, fromAddress: string, toAddress: string) => {
       try {
         const injector = await web3FromSource('polkadot-js');
+        // const injected = await web3Enable('clv');
+        // if (!injected.length) {
+        //   return {
+        //     message: 'Not found wallet',
+        //     status: 'error',
+        //   };
+        // }
+        // console.log('injected', injected);
+        // const injector = injected[0];
         const transfer = await api?.value?.tx.balances.transfer(toAddress, transferAmt);
         transfer
           ?.signAndSend(

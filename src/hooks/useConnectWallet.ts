@@ -1,4 +1,5 @@
 import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { SupportWallets } from 'src/config/wallets';
 import { useAccount } from 'src/hooks';
 import { useStore } from 'src/store';
 import { getChainId, setupNetwork } from 'src/web3';
@@ -10,6 +11,7 @@ enum WalletOption {
   SelectPolkadotAccount = 'SelectPolkadotAccount',
   NoExtension = 'NoExtension',
   PolkadotJs = 'Polkadot.js',
+  Clover = 'Clover',
   MetaMask = 'MetaMask',
 }
 
@@ -41,6 +43,26 @@ export const useConnectWallet = () => {
   const setPolkadot = async () => {
     selectedWallet.value = WalletOption.PolkadotJs;
     modalName.value = WalletOption.PolkadotJs;
+  };
+
+  const setClover = async () => {
+    selectedWallet.value = WalletOption.Clover;
+    modalName.value = WalletOption.Clover;
+  };
+
+  const setWalletModal = (wallet: SupportWallets): void => {
+    if (wallet === SupportWallets.PolkadotJs) {
+      setPolkadot();
+    }
+    if (wallet === SupportWallets.PolkadotJs) {
+      setPolkadot();
+    }
+    if (wallet === SupportWallets.Clover) {
+      setClover();
+    }
+    if (wallet === SupportWallets.MetaMask) {
+      setMetaMask();
+    }
   };
 
   const loadMetaMask = async (): Promise<boolean> => {
@@ -78,6 +100,7 @@ export const useConnectWallet = () => {
     }
   };
 
+  // Todo
   watchEffect(() => {
     if (modalName.value === WalletOption.PolkadotJs) {
       if (allAccounts.value.length === 0) {
@@ -119,9 +142,8 @@ export const useConnectWallet = () => {
     selectedWallet,
     modalAccountSelect,
     openSelectModal,
-    setPolkadot,
     setCloseModal,
-    setMetaMask,
+    setWalletModal,
     disconnectAccount,
   };
 };

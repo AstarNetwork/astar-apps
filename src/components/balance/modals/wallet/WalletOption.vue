@@ -1,7 +1,7 @@
 <template>
-  <div class="wallet" @click="wallet.click">
+  <div class="wallet" @click="setWalletModal(wallet.source)">
     <img width="40" :src="wallet.img" />
-    <div>{{ $t(wallet.name) }}</div>
+    <div>{{ wallet.name }}</div>
   </div>
 </template>
 
@@ -13,6 +13,10 @@ export default defineComponent({
   props: {
     wallet: {
       type: Object,
+      required: true,
+    },
+    setWalletModal: {
+      type: Function,
       required: true,
     },
   },
