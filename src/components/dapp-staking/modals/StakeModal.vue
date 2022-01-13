@@ -11,10 +11,9 @@
           "
           >{{ $t('dappStaking.modals.address') }}</label
         >
-        <ModalSelectAccount
+        <modal-select-account
           v-model:selAddress="data.address"
-          :all-accounts="allAccounts"
-          :all-account-names="allAccountNames"
+          :role="Role.FromAddress"
           @sel-changed="reloadAmount"
         />
       </div>
@@ -62,17 +61,16 @@ import BN from 'bn.js';
 import FormatBalance from 'components/balance/FormatBalance.vue';
 import ModalSelectAccount from 'components/balance/modals/ModalSelectAccount.vue';
 import Modal from 'components/common/Modal.vue';
+import { Role } from 'src/components/balance/modals/ModalTransferAmount.vue';
 import Avatar from 'src/components/common/Avatar.vue';
 import Button from 'src/components/common/Button.vue';
 import InputAmount from 'src/components/common/InputAmount.vue';
-import { useChainMetadata } from 'src/hooks';
+import { useApi, useChainMetadata, useUnbondWithdraw } from 'src/hooks';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
+import { getAmount, StakeModel } from 'src/hooks/store';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, toRefs } from 'vue';
 import { StakeAction } from '../StakePanel.vue';
-import { getAmount, StakeModel } from 'src/hooks/store';
-import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
-import { useApi } from 'src/hooks';
 
 export default defineComponent({
   components: {
@@ -124,8 +122,6 @@ export default defineComponent({
       unit: defaultUnitToken.value,
       decimal: decimal.value,
     } as StakeModel);
-    const allAccounts = computed(() => store.getters['general/allAccounts']);
-    const allAccountNames = computed(() => store.getters['general/allAccountNames']);
     const maxUnlockingChunks = computed<number>(() => store.getters['dapps/getMaxUnlockingChunks']);
     const unlockingChunks = computed<number>(() => store.getters['dapps/getUnlockingChunks']);
     const unbondingPeriod = computed(() => store.getters['dapps/getUnbondingPeriod']);
@@ -157,13 +153,8 @@ export default defineComponent({
       }
     });
 
-    const reloadAmount = (
-      address: string,
-      isMetamaskChecked: boolean,
-      selAccountIdx: number
-    ): void => {
-      store.commit('general/setIsCheckMetamask', isMetamaskChecked);
-      store.commit('general/setCurrentAccountIdx', selAccountIdx);
+    const reloadAmount = (address: string): void => {
+      store.commit('general/setCurrentAddress', address);
     };
 
     const closeModal = () => {
@@ -172,8 +163,6 @@ export default defineComponent({
 
     return {
       data,
-      allAccounts,
-      allAccountNames,
       formatStakeAmount,
       reloadAmount,
       StakeAction,
@@ -183,6 +172,7 @@ export default defineComponent({
       unbondingPeriod,
       canUnbondWithdraw,
       closeModal,
+      Role,
       ...toRefs(props),
     };
   },

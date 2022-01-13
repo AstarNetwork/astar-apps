@@ -142,7 +142,7 @@ export default defineComponent({
     watchEffect(() => {
       if (isH160Formatted.value) {
         store.dispatch('general/showAlertMsg', {
-          msg: 'dApp staking only supports Polkadot.js wallet',
+          msg: 'dApp staking only supports Substrate wallets',
           alertType: 'error',
         });
       }

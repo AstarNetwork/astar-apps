@@ -1,11 +1,13 @@
 import { ApiPromise, WsProvider } from '@polkadot/api';
-import { keyring } from '@polkadot/ui-keyring';
 import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
+import type { InjectedExtension } from '@polkadot/extension-inject/types';
+import { keyring } from '@polkadot/ui-keyring';
 import { isTestChain } from '@polkadot/util';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
-import { useStore } from 'src/store';
 import { providerEndpoints } from 'src/config/chainEndpoints';
-import type { InjectedExtension } from '@polkadot/extension-inject/types';
+import { objToArray } from 'src/hooks/helper/common';
+import { getInjectedExtensions } from 'src/hooks/helper/wallet';
+import { useStore } from 'src/store';
 
 interface InjectedAccountExt {
   address: string;
@@ -70,7 +72,7 @@ export async function connectApi(endpoint: string, networkIdx: number) {
 
   api.on('error', (error: Error) => console.error(error.message));
   await api.isReady;
-  const injectedPromise = web3Enable('polkadot-js/apps');
+  const injectedPromise = await getInjectedExtensions();
 
   try {
     extensions = await injectedPromise;
@@ -83,6 +85,18 @@ export async function connectApi(endpoint: string, networkIdx: number) {
 
     keyring.accounts.subject.subscribe((accounts) => {
       if (accounts) {
+        const accountArray = objToArray(accounts);
+        const accountMap = accountArray.map((account) => {
+          const { address, meta } = account.json;
+          return {
+            address,
+            name: meta.name.replace('\n              ', ''),
+            source: meta.source,
+          };
+        });
+
+        store.commit('general/setSubstrateAccounts', accountMap);
+        // Todo: remove
         store.commit('general/setAllAccounts', Object.keys(accounts));
         // Memo: remove space from UI.
         store.commit(

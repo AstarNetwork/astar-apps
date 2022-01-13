@@ -48,7 +48,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from 'vue';
+import { defineComponent, reactive, ref, computed } from 'vue';
 import Modal from 'components/common/Modal.vue';
 import RegisterDappGeneral from 'components/dapp-staking/modals/RegisterDappGeneral.vue';
 import RegisterDappDescription from 'components/dapp-staking/modals/RegisterDappDescription.vue';
@@ -77,16 +77,18 @@ export default defineComponent({
     const stepsCount = 4;
     const registerForm = ref();
     const stepper = ref();
+    const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
 
     const registerDapp = async (step: number): Promise<void> => {
       registerForm?.value?.validate().then(async (success: boolean) => {
         if (success) {
           if (step === stepsCount) {
-            const senderAddress = store.getters['general/selectedAccountAddress'];
+            const senderAddress = store.getters['general/selectedAddress'];
             const result = await store.dispatch('dapps/registerDapp', {
               dapp: data,
               api: api?.value,
               senderAddress,
+              substrateAccounts: substrateAccounts.value,
             } as RegisterParameters);
 
             if (result) {

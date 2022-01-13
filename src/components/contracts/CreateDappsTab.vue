@@ -23,20 +23,13 @@
 
     <CodehashTable />
 
-    <ModalCreateDapps
-      v-if="modalCreateDapps"
-      v-model:isOpen="modalCreateDapps"
-      :all-accounts="allAccounts"
-      :all-account-names="allAccountNames"
-      :address="currentAccount"
-    />
+    <ModalCreateDapps v-if="modalCreateDapps" v-model:isOpen="modalCreateDapps" />
     <ModalCodeHash v-if="modalCodeHash" v-model:isOpen="modalCodeHash" :address="currentAccount" />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive, toRefs } from 'vue';
-import { useAccount } from 'src/hooks';
 import { useMeta } from 'quasar';
 import IconPlus from 'components/icons/IconPlus.vue';
 import IconBase from 'components/icons/IconBase.vue';
@@ -67,12 +60,7 @@ export default defineComponent({
       modalCodeHash: false,
     });
 
-    const { allAccounts, allAccountNames, currentAccount } = useAccount();
-
     return {
-      allAccounts,
-      allAccountNames,
-      currentAccount,
       ...toRefs(stateModal),
     };
   },

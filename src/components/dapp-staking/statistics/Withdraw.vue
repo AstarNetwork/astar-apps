@@ -59,7 +59,7 @@ export default defineComponent({
   setup() {
     const { api } = useApi();
     const store = useStore();
-    const selectedAccountAddress = computed(() => store.getters['general/selectedAccountAddress']);
+    const selectedAccountAddress = computed(() => store.getters['general/selectedAddress']);
     const unlockingChunksCount = computed(() => store.getters['dapps/getUnlockingChunks']);
     const maxUnlockingChunks = computed(() => store.getters['dapps/getMaxUnlockingChunks']);
     const unlockingChunks = ref<ChunkInfo[]>();
@@ -67,11 +67,13 @@ export default defineComponent({
     const totalToWithdraw = ref<BN>(new BN(0));
     const showModal = ref<boolean>(false);
     const { canUnbondWithdraw } = useUnbondWithdraw(api);
+    const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
 
     const withdraw = async (): Promise<void> => {
       const result = await store.dispatch('dapps/withdrawUnbonded', {
         api: api?.value,
         senderAddress: selectedAccountAddress.value,
+        substrateAccounts: substrateAccounts.value,
       } as WithdrawParameters);
     };
 

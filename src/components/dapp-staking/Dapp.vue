@@ -85,10 +85,11 @@ export default defineComponent({
     const store = useStore();
     const { api } = useApi();
     const stakeInfo = ref<StakeInfo>();
-    const senderAddress = computed(() => store.getters['general/selectedAccountAddress']);
+    const senderAddress = computed(() => store.getters['general/selectedAddress']);
     const isMaxStaker = ref<boolean>(false);
     const showDappDetailsModal = ref<boolean>(false);
     const showStakeModal = ref<boolean>(false);
+    const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
 
     const showDappDetails = (): void => {
       showDappDetailsModal.value = true;
@@ -104,6 +105,7 @@ export default defineComponent({
           api: api?.value,
           senderAddress: senderAddress.value,
           dapp: props.dapp,
+          substrateAccounts: substrateAccounts.value,
         } as StakingParameters)
         .then((info: StakeInfo) => {
           if (info) {

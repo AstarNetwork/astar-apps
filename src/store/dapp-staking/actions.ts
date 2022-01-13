@@ -1,24 +1,24 @@
-import { ActionTree, Dispatch } from 'vuex';
-import { web3FromSource } from '@polkadot/extension-dapp';
-import { Option, Struct, BTreeMap } from '@polkadot/types';
+import { SubstrateAccount } from './../general/state';
+import { ApiPromise } from '@polkadot/api';
+import { SubmittableExtrinsic } from '@polkadot/api/types';
+import { BTreeMap, Option, Struct, u32 } from '@polkadot/types';
 import {
-  EraIndex,
   AccountId,
   Balance,
-  EventRecord,
   DispatchError,
+  EraIndex,
+  EventRecord,
 } from '@polkadot/types/interfaces';
+import { ISubmittableResult, ITuple } from '@polkadot/types/types';
 import { formatBalance } from '@polkadot/util';
 import BN from 'bn.js';
-import { StateInterface } from '../index';
-import { DappItem, DappStateInterface as State, NewDappItem } from './state';
-import { uploadFile, addDapp, getDapps } from 'src/hooks/firebase';
-import { useApi } from 'src/hooks/useApi';
-import { ApiPromise } from '@polkadot/api';
-import { ISubmittableResult, ITuple } from '@polkadot/types/types';
-import { SubmittableExtrinsic } from '@polkadot/api/types';
-import { u32 } from '@polkadot/types';
+import { addDapp, getDapps, uploadFile } from 'src/hooks/firebase';
 import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
+import { useApi } from 'src/hooks/useApi';
+import { ActionTree, Dispatch } from 'vuex';
+import { StateInterface } from '../index';
+import { getInjector } from './../../hooks/helper/wallet';
+import { DappItem, DappStateInterface as State, NewDappItem } from './state';
 
 let collectionKey: string;
 
@@ -232,7 +232,7 @@ const actions: ActionTree<State, StateInterface> = {
   ): Promise<boolean> {
     try {
       if (parameters.api) {
-        const injector = await web3FromSource('polkadot-js');
+        const injector = await getInjector(parameters.substrateAccounts);
         const unsub = await parameters.api.tx.dappsStaking
           .register(getAddressEnum(parameters.dapp.address))
           .signAndSend(
@@ -317,8 +317,7 @@ const actions: ActionTree<State, StateInterface> = {
   async stake({ commit, dispatch }, parameters: StakingParameters): Promise<boolean> {
     try {
       if (parameters.api) {
-        const injector = await web3FromSource('polkadot-js');
-        // const nonce = await parameters.api.rpc.system.accountNextIndex(parameters.senderAddress);
+        const injector = await getInjector(parameters.substrateAccounts);
         const unsub = await parameters.api.tx.dappsStaking
           .bondAndStake(getAddressEnum(parameters.dapp.address), parameters.amount)
           .signAndSend(
@@ -369,7 +368,7 @@ const actions: ActionTree<State, StateInterface> = {
   async unstake({ commit, dispatch }, parameters: StakingParameters): Promise<boolean> {
     try {
       if (parameters.api) {
-        const injector = await web3FromSource('polkadot-js');
+        const injector = await getInjector(parameters.substrateAccounts);
         const unsub = await parameters.api.tx.dappsStaking
           .unbondUnstakeAndWithdraw(getAddressEnum(parameters.dapp.address), parameters.amount)
           .signAndSend(
@@ -421,7 +420,7 @@ const actions: ActionTree<State, StateInterface> = {
   async unbond({ commit, dispatch }, parameters: StakingParameters): Promise<boolean> {
     try {
       if (parameters.api) {
-        const injector = await web3FromSource('polkadot-js');
+        const injector = await getInjector(parameters.substrateAccounts);
         const unsub = await parameters.api.tx.dappsStaking
           .unbondAndUnstake(getAddressEnum(parameters.dapp.address), parameters.amount)
           .signAndSend(
@@ -473,7 +472,7 @@ const actions: ActionTree<State, StateInterface> = {
   async withdrawUnbonded({ commit, dispatch }, parameters: WithdrawParameters): Promise<boolean> {
     try {
       if (parameters.api) {
-        const injector = await web3FromSource('polkadot-js');
+        const injector = await getInjector(parameters.substrateAccounts);
         const unsub = await parameters.api.tx.dappsStaking.withdrawUnbonded().signAndSend(
           parameters.senderAddress,
           {
@@ -543,7 +542,7 @@ const actions: ActionTree<State, StateInterface> = {
           );
         }
 
-        const injector = await web3FromSource('polkadot-js');
+        const injector = await getInjector(parameters.substrateAccounts);
         const unsub = await parameters.api.tx.utility.batch(transactions).signAndSend(
           parameters.senderAddress,
           {
@@ -822,6 +821,7 @@ export interface RegisterParameters {
   dapp: NewDappItem;
   senderAddress: string;
   api: ApiPromise;
+  substrateAccounts: SubstrateAccount[];
 }
 
 export interface StakingParameters {
@@ -831,16 +831,19 @@ export interface StakingParameters {
   api: ApiPromise;
   decimals: number;
   unit: string;
+  substrateAccounts: SubstrateAccount[];
   finalizeCallback: () => void;
 }
 
 export interface ClaimParameters extends StakingParameters {
   unclaimedEras: number[];
+  substrateAccounts: SubstrateAccount[];
 }
 
 export interface WithdrawParameters {
   api: ApiPromise;
   senderAddress: string;
+  substrateAccounts: SubstrateAccount[];
 }
 
 export interface StakeInfo {

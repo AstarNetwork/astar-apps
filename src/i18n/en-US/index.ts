@@ -9,6 +9,9 @@ export default {
   close: 'Close',
   subscan: 'Subscan',
   usd: 'USD',
+  'polkadot-js': 'Polkadot.js',
+  metamask: 'MetaMask',
+  clover: 'Clover',
   warning: {
     insufficientFee: 'Warning! Transaction might failed due to insufficient fee',
   },
@@ -17,8 +20,7 @@ export default {
     metadataAlreadyInstalled: 'Metadata Already Installed',
     lightMode: 'Light mode',
     darkMode: 'Dark mode',
-    dApps: 'dApps', // replaced by contract
-    store: 'Store', // replaced by dappStaking
+    dApps: 'dApps',
     dappStaking: 'dApp Staking',
     contract: 'Contract',
     plasmLockdrop: 'Plasm Lockdrop',
@@ -32,8 +34,6 @@ export default {
   wallet: {
     connectWallet: 'Connect Wallet',
     select: 'Please select a wallet to connect to this portal',
-    polkadotJs: 'Polkadot.js',
-    metamask: 'MetaMask',
   },
   installWallet: {
     getWallet: 'Haven’t got a {value} wallet yet?',

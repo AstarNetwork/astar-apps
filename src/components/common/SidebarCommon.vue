@@ -52,7 +52,7 @@
           </span>
         </router-link>
 
-        <router-link
+        <!-- <router-link
           v-if="network.isSupportContract && !isH160"
           to="/contracts"
           :class="[$route.path.split('/')[1] === 'contracts' ? 'activeLink' : 'inactiveLink']"
@@ -66,7 +66,7 @@
           <span class="tw-font-bold tw-ml-3 tw-flex-1">
             {{ $t('common.contract') }}
           </span>
-        </router-link>
+        </router-link> -->
 
         <router-link
           v-if="network.isStoreEnabled"
@@ -133,7 +133,7 @@ import ExtensionsMetadata from './ExtensionsMetadata.vue';
 import SocialMediaLinks from './SocialMediaLinks.vue';
 import LightDarkMode from './LightDarkMode.vue';
 import IconBase from '../icons/IconBase.vue';
-import IconDapps from '../icons/IconDapps.vue';
+// import IconDapps from '../icons/IconDapps.vue';
 import IconDotLockdrop from '../icons/IconDotLockdrop.vue';
 import IconBalance from '../icons/IconBalance.vue';
 import IconSolidChevronDown from '../icons/IconSolidChevronDown.vue';
@@ -155,7 +155,7 @@ export default defineComponent({
     LightDarkMode,
     LocaleChanger,
     IconBase,
-    IconDapps,
+    // IconDapps,
     IconDotLockdrop,
     IconBalance,
     IconSolidChevronDown,
@@ -172,7 +172,7 @@ export default defineComponent({
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
     const store = useStore();
-    const { allAccounts, allAccountNames, currentAccount, currentAccountName } = useAccount();
+    const { currentAccount, currentAccountName } = useAccount();
 
     const shortenAddress = computed(() => {
       return getShortenAddress(currentAccount.value);
@@ -200,8 +200,6 @@ export default defineComponent({
       shortenAddress,
       currentAccount,
       currentAccountName,
-      allAccounts,
-      allAccountNames,
       isH160,
       endpointKey,
     };

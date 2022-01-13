@@ -50,17 +50,9 @@
     </div>
 
     <!-- Modals -->
-    <ModalAccount
-      v-if="modalAccount"
-      v-model:isOpen="modalAccount"
-      :all-accounts="allAccounts"
-      :all-account-names="allAccountNames"
-    />
     <ModalTransferAmount
       v-if="modalTransferAmount"
       v-model:isOpen="modalTransferAmount"
-      :all-accounts="allAccounts"
-      :all-account-names="allAccountNames"
       :balance="balance"
       :account-data="accountData"
     />
@@ -92,7 +84,6 @@ import { useAccount, useApi, useBalance, useEvmDeposit, useFaucet } from 'src/ho
 import { useStore } from 'src/store';
 import { computed, defineComponent, reactive, toRefs } from 'vue';
 import Addresses from './Addresses.vue';
-import ModalAccount from './modals/ModalAccount.vue';
 import ModalFaucet from './modals/ModalFaucet.vue';
 import ModalTransferAmount from './modals/ModalTransferAmount.vue';
 import ModalWithdrawalEvmDeposit from './modals/ModalWithdrawalEvmDeposit.vue';
@@ -116,7 +107,6 @@ export default defineComponent({
     PlmBalance,
     TotalBalance,
     Addresses,
-    ModalAccount,
     ModalTransferAmount,
     ModalWithdrawalEvmDeposit,
     ModalFaucet,
@@ -133,7 +123,7 @@ export default defineComponent({
     });
 
     const store = useStore();
-    const { allAccounts, allAccountNames, currentAccount, currentAccountName } = useAccount();
+    const { currentAccount, currentAccountName } = useAccount();
     const { api } = useApi();
     const { balance, accountData } = useBalance(api, currentAccount);
 
@@ -147,8 +137,6 @@ export default defineComponent({
       ...toRefs(stateModal),
       balance,
       evmDeposit,
-      allAccounts,
-      allAccountNames,
       currentAccount,
       currentAccountName,
       currentNetworkStatus,

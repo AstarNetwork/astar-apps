@@ -11,16 +11,14 @@
 
     <modal-connect-wallet
       v-if="modalName === WalletOption.SelectWallet"
-      :set-polkadot="setPolkadot"
-      :set-meta-mask="setMetaMask"
+      :set-wallet-modal="setWalletModal"
       :set-close-modal="setCloseModal"
     />
 
     <ModalAccount
       v-if="modalAccountSelect"
       v-model:isOpen="modalAccountSelect"
-      :all-accounts="allAccounts"
-      :all-account-names="allAccountNames"
+      :selected-wallet="selectedWallet"
     />
 
     <ModalInstallWallet
@@ -56,13 +54,10 @@ export default defineComponent({
       modalConnectWallet,
       currentAccount,
       modalName,
-      allAccounts,
-      allAccountNames,
       selectedWallet,
       modalAccountSelect,
-      setPolkadot,
       setCloseModal,
-      setMetaMask,
+      setWalletModal,
       openSelectModal,
     } = useConnectWallet();
 
@@ -84,13 +79,10 @@ export default defineComponent({
       modalConnectWallet,
       currentAccount,
       modalName,
-      allAccounts,
-      allAccountNames,
       selectedWallet,
       modalAccountSelect,
-      setPolkadot,
       setCloseModal,
-      setMetaMask,
+      setWalletModal,
       openSelectModal,
     };
   },

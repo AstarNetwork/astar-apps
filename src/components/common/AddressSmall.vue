@@ -23,16 +23,14 @@
 
     <modal-connect-wallet
       v-if="modalName === WalletOption.SelectWallet"
-      :set-polkadot="setPolkadot"
-      :set-meta-mask="setMetaMask"
+      :set-wallet-modal="setWalletModal"
       :set-close-modal="setCloseModal"
     />
 
     <ModalAccount
       v-if="modalAccountSelect"
       v-model:isOpen="modalAccountSelect"
-      :all-accounts="allAccounts"
-      :all-account-names="allAccountNames"
+      :selected-wallet="selectedWallet"
     />
 
     <ModalInstallWallet
@@ -72,22 +70,19 @@ export default defineComponent({
       WalletOption,
       modalConnectWallet,
       modalName,
-      allAccounts,
-      allAccountNames,
       currentAccount,
       currentAccountName,
       selectedWallet,
       modalAccountSelect,
       currentNetworkStatus,
-      setPolkadot,
       setCloseModal,
-      setMetaMask,
+      setWalletModal,
       openSelectModal,
       disconnectAccount,
     } = useConnectWallet();
 
     const router = useRouter();
-    const accountId = localStorage.getItem(LOCAL_STORAGE.SELECTED_ACCOUNT_ID);
+    const accountId = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
     const store = useStore();
     const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
 
@@ -111,15 +106,12 @@ export default defineComponent({
       modalConnectWallet,
       currentAccount,
       modalName,
-      allAccounts,
-      allAccountNames,
       currentAccountName,
       selectedWallet,
       modalAccountSelect,
       isH160Formatted,
-      setPolkadot,
       setCloseModal,
-      setMetaMask,
+      setWalletModal,
       openSelectModal,
       disconnectAccount,
     };

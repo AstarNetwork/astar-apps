@@ -190,7 +190,7 @@ export default defineComponent({
     });
     const store = useStore();
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
-    const selectedAccountAddress = computed(() => store.getters['general/selectedAccountAddress']);
+    const selectedAccountAddress = computed(() => store.getters['general/selectedAddress']);
     const subScan = computed(
       () =>
         `${providerEndpoints[currentNetworkIdx.value].subscan}/account/${
