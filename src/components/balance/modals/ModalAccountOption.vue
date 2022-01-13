@@ -72,12 +72,12 @@ export default defineComponent({
     },
     checked: {
       type: Boolean,
+      required: true,
     },
   },
   emits: ['update:sel-option', 'update:sel-checked'],
   setup(props, { emit }) {
     const { address } = toRefs(props);
-
     const shortenAddress = computed(() => {
       return getShortenAddress(address.value);
     });
@@ -96,7 +96,7 @@ export default defineComponent({
       if (checked) {
         return 'tw-text-blue-900 dark:tw-text-darkGray-100 tw-cursor-default tw-select-none tw-relative tw-py-2 tw-pl-3 tw-pr-6 tw-bg-blue-200 dark:tw-bg-blue-500 tw-bg-opacity-20';
       } else {
-        return 'not-checkerd';
+        return 'not-checked';
       }
     },
   },
@@ -104,10 +104,10 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.not-checkerd {
+.not-checked {
   @apply tw-text-blue-900 dark:tw-text-darkGray-100 tw-cursor-default tw-select-none tw-relative tw-py-2 tw-pl-3 tw-pr-6;
 }
-.not-checkerd:hover {
+.not-checked:hover {
   @apply tw-bg-gray-50 dark:tw-bg-darkGray-800;
 }
 </style>

@@ -56,7 +56,7 @@
                     v-model:selOption="selAccount"
                     :address="account.address"
                     :address-name="account.name"
-                    :checked="selAccount === index"
+                    :checked="selAccount === account.address"
                   />
                 </ul>
               </div>

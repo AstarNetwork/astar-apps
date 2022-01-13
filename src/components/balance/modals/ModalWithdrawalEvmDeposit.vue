@@ -267,15 +267,6 @@ export default defineComponent({
       }
     };
 
-    const reloadAmount = (
-      address: string,
-      isMetamaskChecked: boolean,
-      selAccountIdx: number
-    ): void => {
-      store.commit('general/setIsCheckMetamask', isMetamaskChecked);
-      store.commit('general/setCurrentAccountIdx', selAccountIdx);
-    };
-
     return {
       closeModal,
       sendTransaction,
@@ -284,7 +275,6 @@ export default defineComponent({
       withdrawAmount,
       defaultUnitToken,
       selectUnit,
-      reloadAmount,
       acName,
     };
   },

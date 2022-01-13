@@ -357,13 +357,8 @@ export default defineComponent({
       }
     };
 
-    const reloadAmount = (
-      address: string,
-      isMetamaskChecked: boolean,
-      selAccountIdx: number
-    ): void => {
-      store.commit('general/setIsCheckMetamask', isMetamaskChecked);
-      store.commit('general/setCurrentAccountIdx', selAccountIdx);
+    const reloadAmount = (address: string): void => {
+      store.commit('general/setCurrentAccountIdx', address);
     };
 
     return {

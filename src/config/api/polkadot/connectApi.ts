@@ -6,6 +6,7 @@ import { isTestChain } from '@polkadot/util';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { objToArray } from 'src/hooks/helper/common';
+import { getInjectedExtensions } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 
 interface InjectedAccountExt {
@@ -71,10 +72,7 @@ export async function connectApi(endpoint: string, networkIdx: number) {
 
   api.on('error', (error: Error) => console.error(error.message));
   await api.isReady;
-  // const injectedPromise = web3Enable('polkadot-js/apps');
-  // const injectedPromise = await web3Enable('clv');
-  const injectedPromise = await web3Enable('AstarNetwork/astar-apps');
-  console.log('injectedPromise', injectedPromise);
+  const injectedPromise = await getInjectedExtensions();
 
   try {
     extensions = await injectedPromise;

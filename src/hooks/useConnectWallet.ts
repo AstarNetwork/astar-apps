@@ -6,6 +6,7 @@ import { useStore } from 'src/store';
 import { getChainId, setupNetwork } from 'src/web3';
 import { computed, ref, watchEffect } from 'vue';
 import { useMetamask } from './custom-signature/useMetamask';
+import { getInjectedExtensions } from './helper/wallet';
 
 enum WalletOption {
   SelectWallet = 'SelectWallet',
@@ -30,7 +31,6 @@ export const useConnectWallet = () => {
   const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
 
   const { SELECTED_ACCOUNT_ID } = LOCAL_STORAGE;
-  const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
 
   const setCloseModal = () => {
     modalName.value = '';
@@ -97,13 +97,9 @@ export const useConnectWallet = () => {
     }
   };
 
-  // const checkIsNoExtension
-
-  // Todo
   watchEffect(async () => {
     if (modalName.value === WalletOption.PolkadotJs || modalName.value === WalletOption.Clover) {
-      const injected = await web3Enable('AstarNetwork/astar-apps');
-
+      const injected = await getInjectedExtensions();
       const isInstalledExtension = injected.find((it) => selectedWallet.value === it.name);
 
       if (!isInstalledExtension) {
@@ -119,15 +115,14 @@ export const useConnectWallet = () => {
 
   watchEffect(async () => {
     const accountId = localStorage.getItem(SELECTED_ACCOUNT_ID);
-
-    if (currentAccountIdx.value !== null || accountId === null) return;
+    if (accountId === null) return;
 
     if (accountId === 'Ethereum Extension') {
       await setMetaMask();
       return;
     }
 
-    if (accountId !== null) {
+    if (accountId) {
       store.commit('general/setCurrentAccountIdx', accountId);
       return;
     }

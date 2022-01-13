@@ -29,7 +29,7 @@
         </div>
       </div>
 
-      <div v-if="checked" class="tw-relative tw-w-5 tw-h-5">
+      <div class="tw-relative tw-w-5 tw-h-5">
         <input
           name="choose_account"
           type="radio"
@@ -55,8 +55,6 @@ import { defineComponent, toRefs, computed } from 'vue';
 import IconBase from 'components/icons/IconBase.vue';
 import IconAccountSample from 'components/icons/IconAccountSample.vue';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
-import { useStore } from 'src/store';
-import { Role } from './ModalTransferAmount.vue';
 
 export default defineComponent({
   components: {
@@ -75,21 +73,14 @@ export default defineComponent({
     checked: {
       type: Boolean,
     },
-    role: {
-      type: String,
-      required: false,
-      default: '',
-    },
   },
   emits: ['update:sel-checked', 'update:sel-option'],
   setup(props, { emit }) {
     const { address } = toRefs(props);
-    const store = useStore();
 
     const shortenAddress = computed(() => {
       return getShortenAddress(address.value);
     });
-    const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
 
     const onChange = (address: string) => {
       emit('update:sel-option', address);

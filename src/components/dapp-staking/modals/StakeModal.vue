@@ -11,7 +11,11 @@
           "
           >{{ $t('dappStaking.modals.address') }}</label
         >
-        <ModalSelectAccount v-model:selAddress="data.address" @sel-changed="reloadAmount" />
+        <modal-select-account
+          v-model:selAddress="data.address"
+          :role="Role.FromAddress"
+          @sel-changed="reloadAmount"
+        />
       </div>
       <InputAmount
         v-model:amount="data.amount"
@@ -66,8 +70,9 @@ import { useStore } from 'src/store';
 import { computed, defineComponent, ref, toRefs } from 'vue';
 import { StakeAction } from '../StakePanel.vue';
 import { getAmount, StakeModel } from 'src/hooks/store';
-import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
+import { useUnbondWithdraw, useAccount } from 'src/hooks';
 import { useApi } from 'src/hooks';
+import { Role } from 'src/components/balance/modals/ModalTransferAmount.vue';
 
 export default defineComponent({
   components: {
@@ -124,6 +129,7 @@ export default defineComponent({
     const unbondingPeriod = computed(() => store.getters['dapps/getUnbondingPeriod']);
     const isMaxChunks = unlockingChunks.value >= maxUnlockingChunks.value;
     const { api } = useApi();
+    useAccount();
     const { canUnbondWithdraw } = useUnbondWithdraw(api);
 
     const formatStakeAmount = computed(() => {
@@ -150,13 +156,8 @@ export default defineComponent({
       }
     });
 
-    const reloadAmount = (
-      address: string,
-      isMetamaskChecked: boolean,
-      selAccountIdx: number
-    ): void => {
-      store.commit('general/setIsCheckMetamask', isMetamaskChecked);
-      store.commit('general/setCurrentAccountIdx', selAccountIdx);
+    const reloadAmount = (address: string): void => {
+      store.commit('general/setCurrentAccountIdx', address);
     };
 
     const closeModal = () => {
@@ -174,6 +175,7 @@ export default defineComponent({
       unbondingPeriod,
       canUnbondWithdraw,
       closeModal,
+      Role,
       ...toRefs(props),
     };
   },

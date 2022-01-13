@@ -38,7 +38,7 @@ export interface GeneralStateInterface {
   isCheckMetamask: boolean;
   isH160Formatted: boolean;
   currentEcdsaAccount: EcdsaAccount;
-  currentAccountIdx: string | null;
+  currentAccountIdx: string;
   currentCustomEndpoint: string;
   currentTheme: Theme;
 }
@@ -70,7 +70,7 @@ function state(): GeneralStateInterface {
       ss58: '',
       h160: '',
     },
-    currentAccountIdx: null,
+    currentAccountIdx: '',
     currentCustomEndpoint: '',
 
     currentTheme:

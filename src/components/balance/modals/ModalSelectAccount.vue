@@ -77,8 +77,7 @@
             v-model:selOption="selAccountIdx"
             :address="account.address"
             :address-name="account.name"
-            :checked="selAccountIdx === index"
-            :role="role"
+            :checked="selAccountIdx === account.address"
           />
         </div>
       </ul>
@@ -89,6 +88,7 @@
 import IconAccountSample from 'components/icons/IconAccountSample.vue';
 import IconBase from 'components/icons/IconBase.vue';
 import IconSolidSelector from 'components/icons/IconSolidSelector.vue';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useAccount } from 'src/hooks';
 import { isValidEvmAddress } from 'src/hooks/helper/plasmUtils';
 import { getSelectedAccount } from 'src/hooks/helper/wallet';
@@ -117,7 +117,7 @@ export default defineComponent({
       default: '',
     },
   },
-  emits: ['update:sel-address', 'selChanged'],
+  emits: ['update:sel-address', 'sel-changed'],
   setup(props, { emit }) {
     const isReadOnly = props.role === Role.FromAddress;
     const openOption = ref(false);
@@ -139,24 +139,22 @@ export default defineComponent({
 
     const selAddress = ref(!isH160 ? (account?.address as string) : '');
     const selAccountName = ref(account?.name);
-
-    const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
-    const checkMetamask = ref<boolean>(isCheckMetamask.value);
     const isH160Account = ref<boolean>(isH160.value);
-    const checkMetamaskOption = isH160.value ? isH160Account : checkMetamask;
 
     watch(
-      [selAccountIdx, checkMetamaskOption],
+      [selAccountIdx, isH160Account],
       () => {
-        if (!checkMetamaskOption.value) {
+        if (!isH160Account.value) {
           const account = substrateAccounts.value.find(
             (it: SubstrateAccount) => it.address === selAccountIdx.value
           );
+          if (!account) return;
           selAccountName.value = account.name;
           selAddress.value = account.address;
 
           if (props.role === Role.FromAddress) {
             store.commit('general/setCurrentAccountIdx', account.address);
+            localStorage.setItem(LOCAL_STORAGE.SELECTED_ACCOUNT_ID, String(account.address));
           }
         } else {
           if (props.role === Role.ToAddress && isH160.value) {
@@ -165,7 +163,7 @@ export default defineComponent({
         }
 
         emit('update:sel-address', selAddress.value);
-        emit('selChanged', selAddress.value, isCheckMetamask.value, selAccountIdx.value);
+        emit('sel-changed', selAccountIdx.value);
 
         openOption.value = false;
       },
@@ -199,9 +197,7 @@ export default defineComponent({
       closeOption,
       selAccountIdx,
       selAddress,
-      checkMetamask,
       isH160,
-      checkMetamaskOption,
       isReadOnly,
       isEvmAddress,
       substrateAccounts,
