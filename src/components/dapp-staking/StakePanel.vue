@@ -40,7 +40,7 @@
         <Button
           v-else
           :small="true"
-          :disabled="isMaxStaker || isH160Formatted || currentAccountIdx === null"
+          :disabled="isMaxStaker || isH160Formatted || currentAddress === null"
           @click="showStakeModal"
         >
           {{ $t('dappStaking.stake') }}
@@ -49,7 +49,7 @@
         <Button
           :small="true"
           :primary="true"
-          :disabled="isH160Formatted || currentAccountIdx === null"
+          :disabled="isH160Formatted || currentAddress === null"
           class="tw-ml-auto"
           @click="showClaimRewardModal = true"
         >
@@ -142,7 +142,7 @@ export default defineComponent({
     const { decimal } = useChainMetadata();
     const { canUnbondWithdraw } = useUnbondWithdraw(api);
     const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
-    const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
+    const currentAddress = computed(() => store.getters['general/selectedAddress']);
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
 
     const showStakeModal = () => {
@@ -235,7 +235,7 @@ export default defineComponent({
 
     const claim = async (unclaimedEras: number[], claimFinishedCallback: () => void) => {
       // TODO maybe to add select address option to modal as in stake/unstake
-      const senderAddress = store.getters['general/selectedAccountAddress'];
+      const senderAddress = store.getters['general/selectedAddress'];
       const result = await store.dispatch('dapps/claimBatch', {
         api: api?.value,
         senderAddress,
@@ -263,7 +263,7 @@ export default defineComponent({
       unstake,
       canUnbondWithdraw,
       isH160Formatted,
-      currentAccountIdx,
+      currentAddress,
     };
   },
 });

@@ -123,7 +123,7 @@ export default defineComponent({
     const openOption = ref(false);
     const store = useStore();
     const { currentAccountName } = useAccount();
-    const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
+    const currentAddress = computed(() => store.getters['general/selectedAddress']);
     const substrateAccounts = computed(() => {
       const accounts = store.getters['general/substrateAccounts'];
       const selectedAccount = getSelectedAccount(accounts);
@@ -134,7 +134,7 @@ export default defineComponent({
     });
 
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
-    const selAccountIdx = ref(currentAccountIdx.value);
+    const selAccountIdx = ref(currentAddress.value);
     const account = getSelectedAccount(substrateAccounts.value);
 
     const selAddress = ref(!isH160 ? (account?.address as string) : '');
@@ -153,8 +153,8 @@ export default defineComponent({
           selAddress.value = account.address;
 
           if (props.role === Role.FromAddress) {
-            store.commit('general/setCurrentAccountIdx', account.address);
-            localStorage.setItem(LOCAL_STORAGE.SELECTED_ACCOUNT_ID, String(account.address));
+            store.commit('general/setCurrentAddress', account.address);
+            localStorage.setItem(LOCAL_STORAGE.SELECTED_ADDRESS, String(account.address));
           }
         } else {
           if (props.role === Role.ToAddress && isH160.value) {

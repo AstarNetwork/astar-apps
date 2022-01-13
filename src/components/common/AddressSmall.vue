@@ -82,7 +82,7 @@ export default defineComponent({
     } = useConnectWallet();
 
     const router = useRouter();
-    const accountId = localStorage.getItem(LOCAL_STORAGE.SELECTED_ACCOUNT_ID);
+    const accountId = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
     const store = useStore();
     const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
 

@@ -85,7 +85,7 @@ export default defineComponent({
     const store = useStore();
     const { api } = useApi();
     const stakeInfo = ref<StakeInfo>();
-    const senderAddress = computed(() => store.getters['general/selectedAccountAddress']);
+    const senderAddress = computed(() => store.getters['general/selectedAddress']);
     const isMaxStaker = ref<boolean>(false);
     const showDappDetailsModal = ref<boolean>(false);
     const showStakeModal = ref<boolean>(false);

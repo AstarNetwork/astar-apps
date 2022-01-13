@@ -81,7 +81,7 @@ export default defineComponent({
     const claimInfo = ref<ClaimInfo>();
     const pendingRewards = ref<string>('');
     const claimedRewards = ref<string>('');
-    const senderAddress = store.getters['general/selectedAccountAddress'];
+    const senderAddress = store.getters['general/selectedAddress'];
     const stepsCount = ref<number>(1);
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
 

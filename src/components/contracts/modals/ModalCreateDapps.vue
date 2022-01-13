@@ -320,7 +320,7 @@ export default defineComponent({
     };
 
     const store = useStore();
-    const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
+    const currentAddress = computed(() => store.getters['general/selectedAddress']);
 
     const substrateAccounts = computed(() => {
       const accounts = store.getters['general/substrateAccounts'];
@@ -347,9 +347,9 @@ export default defineComponent({
     });
 
     const selectedAccount = getSelectedAccount(substrateAccounts.value);
-    const selAccount = ref(currentAccountIdx.value);
-    const toAccount = ref(currentAccountIdx.value);
-    const toAddress = ref(currentAccountIdx.value);
+    const selAccount = ref(currentAddress.value);
+    const toAccount = ref(currentAddress.value);
+    const toAddress = ref(currentAddress.value);
     const toAccountName = ref(selectedAccount ? selectedAccount.name : '');
 
     watch(

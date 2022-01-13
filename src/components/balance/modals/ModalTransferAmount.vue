@@ -349,7 +349,7 @@ export default defineComponent({
     };
 
     const reloadAmount = (address: string): void => {
-      store.commit('general/setCurrentAccountIdx', address);
+      store.commit('general/setCurrentAddress', address);
     };
 
     return {

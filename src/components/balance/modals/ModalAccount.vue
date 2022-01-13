@@ -112,17 +112,17 @@ export default defineComponent({
       );
       return filteredAccounts;
     });
-    const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
+    const currentAddress = computed(() => store.getters['general/selectedAddress']);
     const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
     const isSupportContract = ref(providerEndpoints[currentNetworkIdx.value].isSupportContract);
 
     const selectAccount = (account: string) => {
-      store.commit('general/setCurrentAccountIdx', account);
+      store.commit('general/setCurrentAddress', account);
       emit('update:is-open', false);
     };
 
-    const selAccount = ref(currentAccountIdx.value);
+    const selAccount = ref(currentAddress.value);
     const isH160Account = ref<boolean>(isH160Formatted.value);
 
     const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);

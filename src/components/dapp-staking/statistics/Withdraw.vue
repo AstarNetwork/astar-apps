@@ -59,7 +59,7 @@ export default defineComponent({
   setup() {
     const { api } = useApi();
     const store = useStore();
-    const selectedAccountAddress = computed(() => store.getters['general/selectedAccountAddress']);
+    const selectedAccountAddress = computed(() => store.getters['general/selectedAddress']);
     const unlockingChunksCount = computed(() => store.getters['dapps/getUnlockingChunks']);
     const maxUnlockingChunks = computed(() => store.getters['dapps/getMaxUnlockingChunks']);
     const unlockingChunks = ref<ChunkInfo[]>();

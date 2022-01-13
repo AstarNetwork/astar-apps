@@ -9,11 +9,11 @@ export const useAccount = () => {
   const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
   const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
-  const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
-  const { SELECTED_ACCOUNT_ID } = LOCAL_STORAGE;
+  const currentAddress = computed(() => store.getters['general/selectedAddress']);
+  const { SELECTED_ADDRESS } = LOCAL_STORAGE;
 
   const disconnectAccount = () => {
-    store.commit('general/setCurrentAccountIdx', null);
+    store.commit('general/setCurrentAddress', null);
     store.commit('general/setIsH160Formatted', false);
     store.commit('general/setIsCheckMetamask', false);
     store.commit('general/setCurrentEcdsaAccount', {
@@ -21,7 +21,7 @@ export const useAccount = () => {
       ss58: '',
       h160: '',
     });
-    localStorage.removeItem(SELECTED_ACCOUNT_ID);
+    localStorage.removeItem(SELECTED_ADDRESS);
   };
 
   const currentAccount = ref<string>('');
@@ -33,7 +33,7 @@ export const useAccount = () => {
       if (isH160Formatted.value && currentEcdsaAccount.value.h160) {
         currentAccount.value = currentEcdsaAccount.value.h160;
         currentAccountName.value = 'Ethereum Extension';
-        localStorage.setItem(SELECTED_ACCOUNT_ID, 'Ethereum Extension');
+        localStorage.setItem(SELECTED_ADDRESS, 'Ethereum Extension');
         store.commit('general/setIsH160Formatted', true);
         return;
       }
@@ -44,17 +44,17 @@ export const useAccount = () => {
   );
 
   watch(
-    [currentAccountIdx],
+    [currentAddress],
     () => {
-      if (!substrateAccounts.value || currentAccountIdx.value === null) return;
+      if (!substrateAccounts.value || currentAddress.value === null) return;
       const account = substrateAccounts.value.find(
-        (it: SubstrateAccount) => it.address === currentAccountIdx.value
+        (it: SubstrateAccount) => it.address === currentAddress.value
       );
       if (!account) return;
 
       currentAccount.value = account.address;
       currentAccountName.value = account.name;
-      localStorage.setItem(SELECTED_ACCOUNT_ID, String(currentAccountIdx.value));
+      localStorage.setItem(SELECTED_ADDRESS, String(currentAddress.value));
       store.commit('general/setIsH160Formatted', false);
       return;
     },

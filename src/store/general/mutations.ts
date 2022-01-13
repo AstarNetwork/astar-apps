@@ -18,7 +18,7 @@ export interface GeneralMutations<S = State> {
   setAllAccountNames(state: S, type: string[]): void;
   setCurrentNetworkStatus(state: S, networkStatus: ConnectionType): void;
   setCurrentNetworkIdx(state: S, networkIdx: number): void;
-  setCurrentAccountIdx(state: S, accountIdx: string): void;
+  setCurrentAddress(state: S, address: string): void;
   setCurrentCustomEndpoint(state: S, endpoint: string): void;
 }
 
@@ -71,8 +71,8 @@ const mutation: MutationTree<State> & GeneralMutations = {
   setCurrentEcdsaAccount(state, ecdsa) {
     state.currentEcdsaAccount = ecdsa;
   },
-  setCurrentAccountIdx(state, accountIdx) {
-    state.currentAccountIdx = accountIdx;
+  setCurrentAddress(state, address) {
+    state.currentAddress = address;
   },
   setCurrentCustomEndpoint(state, endpoint) {
     state.currentCustomEndpoint = endpoint;

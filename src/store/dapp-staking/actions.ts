@@ -1,3 +1,4 @@
+import { SubstrateAccount } from './../general/state';
 import { ApiPromise } from '@polkadot/api';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { BTreeMap, Option, Struct, u32 } from '@polkadot/types';
@@ -820,7 +821,7 @@ export interface RegisterParameters {
   dapp: NewDappItem;
   senderAddress: string;
   api: ApiPromise;
-  substrateAccounts: any[];
+  substrateAccounts: SubstrateAccount[];
 }
 
 export interface StakingParameters {
@@ -830,19 +831,19 @@ export interface StakingParameters {
   api: ApiPromise;
   decimals: number;
   unit: string;
-  substrateAccounts: any[];
+  substrateAccounts: SubstrateAccount[];
   finalizeCallback: () => void;
 }
 
 export interface ClaimParameters extends StakingParameters {
   unclaimedEras: number[];
-  substrateAccounts: any[];
+  substrateAccounts: SubstrateAccount[];
 }
 
 export interface WithdrawParameters {
   api: ApiPromise;
   senderAddress: string;
-  substrateAccounts: any[];
+  substrateAccounts: SubstrateAccount[];
 }
 
 export interface StakeInfo {

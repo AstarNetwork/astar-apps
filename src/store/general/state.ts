@@ -31,6 +31,7 @@ export interface GeneralStateInterface {
   metaExtensions: Extensions;
   extensionCount: number;
   substrateAccounts: SubstrateAccount[];
+  // Memo: Try to remove `allAccounts` and `allAccountNames` state after `contracts` module has been removed from codebase
   allAccounts: string[];
   allAccountNames: string[];
   currentNetworkStatus: ConnectionType;
@@ -38,7 +39,7 @@ export interface GeneralStateInterface {
   isCheckMetamask: boolean;
   isH160Formatted: boolean;
   currentEcdsaAccount: EcdsaAccount;
-  currentAccountIdx: string;
+  currentAddress: string;
   currentCustomEndpoint: string;
   currentTheme: Theme;
 }
@@ -70,7 +71,7 @@ function state(): GeneralStateInterface {
       ss58: '',
       h160: '',
     },
-    currentAccountIdx: '',
+    currentAddress: '',
     currentCustomEndpoint: '',
 
     currentTheme:

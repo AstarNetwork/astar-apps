@@ -9,7 +9,7 @@ export const getInjectedExtensions = async (): Promise<any[]> => {
 
 export const getSelectedAccount = (accounts: SubstrateAccount[]) => {
   try {
-    const selectedAddress = localStorage.getItem(LOCAL_STORAGE.SELECTED_ACCOUNT_ID);
+    const selectedAddress = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
     if (selectedAddress === 'Ethereum Extension') {
       return undefined;
     }

@@ -30,7 +30,7 @@ export const useConnectWallet = () => {
   const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
   const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
 
-  const { SELECTED_ACCOUNT_ID } = LOCAL_STORAGE;
+  const { SELECTED_ADDRESS } = LOCAL_STORAGE;
 
   const setCloseModal = () => {
     modalName.value = '';
@@ -114,16 +114,16 @@ export const useConnectWallet = () => {
   });
 
   watchEffect(async () => {
-    const accountId = localStorage.getItem(SELECTED_ACCOUNT_ID);
-    if (accountId === null) return;
+    const address = localStorage.getItem(SELECTED_ADDRESS);
+    if (address === null) return;
 
-    if (accountId === 'Ethereum Extension') {
+    if (address === 'Ethereum Extension') {
       await setMetaMask();
       return;
     }
 
-    if (accountId) {
-      store.commit('general/setCurrentAccountIdx', accountId);
+    if (address) {
+      store.commit('general/setCurrentAddress', address);
       return;
     }
   });
