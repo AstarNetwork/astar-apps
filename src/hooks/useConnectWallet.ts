@@ -1,6 +1,5 @@
-import { web3Enable } from '@polkadot/extension-dapp';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { SupportWallets } from 'src/config/wallets';
+import { SupportWallet } from 'src/config/wallets';
 import { useAccount } from 'src/hooks';
 import { useStore } from 'src/store';
 import { getChainId, setupNetwork } from 'src/web3';
@@ -8,14 +7,14 @@ import { computed, ref, watchEffect } from 'vue';
 import { useMetamask } from './custom-signature/useMetamask';
 import { getInjectedExtensions } from './helper/wallet';
 
-enum WalletOption {
-  SelectWallet = 'SelectWallet',
-  SelectSubstrateAccount = 'SelectSubstrateAccount',
-  NoExtension = 'NoExtension',
-  PolkadotJs = 'Polkadot.js',
-  Clover = 'Clover',
-  MetaMask = 'MetaMask',
-}
+const WalletOption = {
+  SelectWallet: 'SelectWallet',
+  SelectSubstrateAccount: 'SelectSubstrateAccount',
+  NoExtension: 'NoExtension',
+  PolkadotJs: SupportWallet.PolkadotJs,
+  Clover: SupportWallet.Clover,
+  MetaMask: SupportWallet.MetaMask,
+};
 
 export const useConnectWallet = () => {
   const modalConnectWallet = ref<boolean>(false);
@@ -41,23 +40,23 @@ export const useConnectWallet = () => {
   };
 
   const setPolkadot = async () => {
-    selectedWallet.value = SupportWallets.PolkadotJs;
+    selectedWallet.value = SupportWallet.PolkadotJs;
     modalName.value = WalletOption.PolkadotJs;
   };
 
   const setClover = async () => {
-    selectedWallet.value = SupportWallets.Clover;
+    selectedWallet.value = SupportWallet.Clover;
     modalName.value = WalletOption.Clover;
   };
 
-  const setWalletModal = (wallet: SupportWallets): void => {
-    if (wallet === SupportWallets.PolkadotJs) {
+  const setWalletModal = (wallet: SupportWallet): void => {
+    if (wallet === SupportWallet.PolkadotJs) {
       setPolkadot();
     }
-    if (wallet === SupportWallets.Clover) {
+    if (wallet === SupportWallet.Clover) {
       setClover();
     }
-    if (wallet === SupportWallets.MetaMask) {
+    if (wallet === SupportWallet.MetaMask) {
       setMetaMask();
     }
   };
@@ -84,7 +83,7 @@ export const useConnectWallet = () => {
   };
 
   const setMetaMask = async () => {
-    selectedWallet.value = SupportWallets.MetaMask;
+    selectedWallet.value = SupportWallet.MetaMask;
     const isMetamaskExtension = typeof window.ethereum !== 'undefined';
     if (!isMetamaskExtension) {
       modalName.value = WalletOption.NoExtension;

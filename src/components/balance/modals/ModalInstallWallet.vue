@@ -28,7 +28,7 @@
           <div class="tw-mb-8">
             <div class="tw-flex tw-items-center tw-justify-center tw-mb-4">
               <div class="tw-h-8 tw-w-8 tw-mr-3 tw-mb-2">
-                <img width="40" :src="getIcon()" />
+                <img width="40" :src="img" />
               </div>
               <div
                 class="
@@ -46,12 +46,12 @@
           </div>
         </div>
         <div class="tw-mt-6 tw-flex tw-justify-center">
-          <a :href="getHowToConnectUrl()" target="_blank" rel="noopener noreferrer">
+          <a :href="guideUrl" target="_blank" rel="noopener noreferrer">
             <button type="button" class="learnButton">
               {{ $t('installWallet.howToConnect') }}
             </button>
           </a>
-          <a :href="getExtensionUrl()" target="_blank" rel="noopener noreferrer">
+          <a :href="walletUrl" target="_blank" rel="noopener noreferrer">
             <button type="button" class="installButton">
               {{ $t('installWallet.installExtension', { value: $t(selectedWallet) }) }}
             </button>
@@ -63,6 +63,7 @@
 </template>
 
 <script lang="ts">
+import { supportWalletObj } from 'src/config/wallets';
 import { useConnectWallet } from 'src/hooks';
 import { defineComponent } from 'vue';
 export default defineComponent({
@@ -77,52 +78,13 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { WalletOption } = useConnectWallet();
-    const getIcon = () => {
-      switch (props.selectedWallet) {
-        case WalletOption.PolkadotJs:
-          return require('/src/assets/img/logo-polkadot-js.png');
-
-        case WalletOption.MetaMask:
-          return require('/src/assets/img/metamask.png');
-
-        default:
-          return require('/src/assets/img/logo-polkadot-js.png');
-      }
-    };
-
-    const getExtensionUrl = () => {
-      switch (props.selectedWallet) {
-        case WalletOption.PolkadotJs:
-          return 'https://polkadot.js.org/extension/';
-
-        case WalletOption.MetaMask:
-          return 'https://metamask.io/';
-
-        default:
-          return 'https://polkadot.js.org/extension/';
-      }
-    };
-
-    // Todo
-    const getHowToConnectUrl = () => {
-      switch (props.selectedWallet) {
-        case WalletOption.PolkadotJs:
-          return 'https://www.youtube.com/watch?v=r-fAy7Ta_vY';
-
-        case WalletOption.MetaMask:
-          return 'https://metamask.io/';
-
-        default:
-          return 'https://www.youtube.com/watch?v=r-fAy7Ta_vY';
-      }
-    };
+    // @ts-ignore
+    const { img, walletUrl, guideUrl } = supportWalletObj[props.selectedWallet];
 
     return {
-      getExtensionUrl,
-      getHowToConnectUrl,
-      WalletOption,
-      getIcon,
+      img,
+      walletUrl,
+      guideUrl,
     };
   },
 });
