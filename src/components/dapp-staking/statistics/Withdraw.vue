@@ -67,11 +67,13 @@ export default defineComponent({
     const totalToWithdraw = ref<BN>(new BN(0));
     const showModal = ref<boolean>(false);
     const { canUnbondWithdraw } = useUnbondWithdraw(api);
+    const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
 
     const withdraw = async (): Promise<void> => {
       const result = await store.dispatch('dapps/withdrawUnbonded', {
         api: api?.value,
         senderAddress: selectedAccountAddress.value,
+        substrateAccounts: substrateAccounts.value,
       } as WithdrawParameters);
     };
 

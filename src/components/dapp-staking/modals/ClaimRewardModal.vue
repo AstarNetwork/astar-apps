@@ -83,6 +83,7 @@ export default defineComponent({
     const claimedRewards = ref<string>('');
     const senderAddress = store.getters['general/selectedAccountAddress'];
     const stepsCount = ref<number>(1);
+    const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
 
     const canClaim = computed(() => {
       return claimInfo?.value && claimInfo.value.unclaimedEras.length > 0;
@@ -98,6 +99,7 @@ export default defineComponent({
         senderAddress,
         dapp: props.dapp,
         decimals: decimal.value,
+        substrateAccounts: substrateAccounts.value,
       } as StakingParameters);
       if (!claimInfo.value) return;
 

@@ -143,6 +143,7 @@ export default defineComponent({
     const { canUnbondWithdraw } = useUnbondWithdraw(api);
     const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
     const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
+    const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
 
     const showStakeModal = () => {
       modalTitle.value = `Stake on ${props.dapp.name}`;
@@ -206,6 +207,7 @@ export default defineComponent({
         decimals: stakeData.decimal,
         unit,
         finalizeCallback: emitStakeChanged,
+        substrateAccounts: substrateAccounts.value,
       } as StakingParameters);
 
       if (result) {
@@ -223,6 +225,7 @@ export default defineComponent({
         decimals: stakeData.decimal,
         unit: stakeData.unit,
         finalizeCallback: emitStakeChanged,
+        substrateAccounts: substrateAccounts.value,
       } as StakingParameters);
 
       if (result) {
@@ -237,6 +240,7 @@ export default defineComponent({
         api: api?.value,
         senderAddress,
         dapp: props.dapp,
+        substrateAccounts: substrateAccounts.value,
         finalizeCallback: function () {
           emitStakeChanged();
           claimFinishedCallback();

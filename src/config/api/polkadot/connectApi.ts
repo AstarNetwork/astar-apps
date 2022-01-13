@@ -85,8 +85,8 @@ export async function connectApi(endpoint: string, networkIdx: number) {
 
     keyring.accounts.subject.subscribe((accounts) => {
       if (accounts) {
-        const data = objToArray(accounts);
-        const accountsData = data.map((account) => {
+        const accountArray = objToArray(accounts);
+        const accountMap = accountArray.map((account) => {
           const { address, meta } = account.json;
           return {
             address,
@@ -95,7 +95,7 @@ export async function connectApi(endpoint: string, networkIdx: number) {
           };
         });
 
-        store.commit('general/setSubstrateAccounts', accountsData);
+        store.commit('general/setSubstrateAccounts', accountMap);
         // Todo: remove
         store.commit('general/setAllAccounts', Object.keys(accounts));
         // Memo: remove space from UI.

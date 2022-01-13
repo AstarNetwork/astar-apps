@@ -119,7 +119,6 @@
 </template>
 <script lang="ts">
 import type { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
-import { web3FromSource } from '@polkadot/extension-dapp';
 import { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 import FormatBalance from 'components/balance/FormatBalance.vue';
@@ -129,6 +128,7 @@ import { useApi, useChainMetadata } from 'src/hooks';
 import { useExtrinsicCall } from 'src/hooks/custom-signature/useExtrinsicCall';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { getUnit } from 'src/hooks/helper/units';
+import { getInjector } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, toRefs } from 'vue';
 import Web3 from 'web3';
@@ -162,8 +162,8 @@ export default defineComponent({
     };
 
     const openOption = ref(false);
-
     const store = useStore();
+    const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
 
     const { defaultUnitToken, decimal } = useChainMetadata();
 
@@ -229,16 +229,7 @@ export default defineComponent({
 
     const transferLocal = async (transferAmt: BN, fromAddress: string, toAddress: string) => {
       try {
-        const injector = await web3FromSource('polkadot-js');
-        // const injected = await web3Enable('clv');
-        // if (!injected.length) {
-        //   return {
-        //     message: 'Not found wallet',
-        //     status: 'error',
-        //   };
-        // }
-        // console.log('injected', injected);
-        // const injector = injected[0];
+        const injector = await getInjector(substrateAccounts.value);
         const transfer = await api?.value?.tx.balances.transfer(toAddress, transferAmt);
         transfer
           ?.signAndSend(

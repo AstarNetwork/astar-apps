@@ -111,20 +111,20 @@
 </template>
 
 <script lang="ts">
-import { web3FromSource } from '@polkadot/extension-dapp';
+import { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 import FormatBalance from 'components/balance/FormatBalance.vue';
 import InputAmount from 'components/common/InputAmount.vue';
+import IconAccountSample from 'components/icons/IconAccountSample.vue';
+import IconBase from 'components/icons/IconBase.vue';
 import { useApi, useChainMetadata } from 'src/hooks';
+import { useExtrinsicCall } from 'src/hooks/custom-signature/useExtrinsicCall';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { getUnit } from 'src/hooks/helper/units';
+import { getInjector } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref } from 'vue';
-import IconBase from 'components/icons/IconBase.vue';
-import IconAccountSample from 'components/icons/IconAccountSample.vue';
-import { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
-import { useExtrinsicCall } from 'src/hooks/custom-signature/useExtrinsicCall';
 export default defineComponent({
   components: {
     FormatBalance,
@@ -163,6 +163,7 @@ export default defineComponent({
     const selectUnit = ref(defaultUnitToken.value);
     const acName = accountName;
     const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
+    const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
 
     const formatBalance = computed(() => {
       const tokenDecimal = decimal.value;
@@ -224,7 +225,7 @@ export default defineComponent({
           throw Error('Cannot connect to the API');
         }
 
-        const injector = await web3FromSource('polkadot-js');
+        const injector = await getInjector(substrateAccounts.value);
         if (!injector) {
           throw Error('Cannot reach to the injector');
         }
