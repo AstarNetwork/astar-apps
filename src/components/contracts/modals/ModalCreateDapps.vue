@@ -127,13 +127,12 @@
                       "
                     >
                       <ModalSelectAccountOption
-                        v-for="(account, index) in allAccounts"
+                        v-for="(account, index) in substrateAccounts"
                         :key="index"
                         v-model:selOption="selAccount"
-                        :key-idx="index"
-                        :address="account"
-                        :address-name="allAccountNames[index]"
-                        :checked="selAccount === index"
+                        :address="account.address"
+                        :address-name="account.name"
+                        :checked="selAccount === account.address"
                       />
                     </ul>
                   </div>
@@ -291,6 +290,8 @@ import ContractInfo from './ContractInfo.vue';
 import ParamsGenerator from './ParamsGenerator.vue';
 import { CodePromise, Abi } from '@polkadot/api-contract';
 import { useStore } from 'src/store';
+import { SubstrateAccount } from 'src/store/general/state';
+import { getSelectedAccount } from 'src/hooks/helper/wallet';
 
 interface FormData {
   endowment: number;
@@ -312,25 +313,23 @@ export default defineComponent({
     InputAmount,
     Balance,
   },
-  props: {
-    allAccounts: {
-      type: Array,
-      required: true,
-    },
-    allAccountNames: {
-      type: Array,
-      required: true,
-    },
-    address: {
-      type: String,
-      required: true,
-    },
-  },
   emits: ['update:is-open'],
   setup(props, { emit }) {
     const closeModal = () => {
       emit('update:is-open', false);
     };
+
+    const store = useStore();
+    const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
+
+    const substrateAccounts = computed(() => {
+      const accounts = store.getters['general/substrateAccounts'];
+      const selectedAccount = getSelectedAccount(accounts);
+      const filteredAccounts = accounts.filter(
+        (it: SubstrateAccount) => selectedAccount && it.source === selectedAccount.source
+      );
+      return filteredAccounts;
+    });
 
     const openOption = ref(false);
 
@@ -347,17 +346,23 @@ export default defineComponent({
       webpage: '',
     });
 
-    const selAccount = ref(0);
-    const toAccount = ref(props.allAccounts[0] as string);
-    const toAddress = ref(props.allAccounts[0] as string);
-    const toAccountName = ref(props.allAccountNames[0]);
+    const selectedAccount = getSelectedAccount(substrateAccounts.value);
+    const selAccount = ref(currentAccountIdx.value);
+    const toAccount = ref(currentAccountIdx.value);
+    const toAddress = ref(currentAccountIdx.value);
+    const toAccountName = ref(selectedAccount ? selectedAccount.name : '');
 
     watch(
       selAccount,
       () => {
-        toAccount.value = props.allAccounts[selAccount.value] as string;
-        toAccountName.value = props.allAccountNames[selAccount.value];
-        toAddress.value = props.allAccounts[selAccount.value] as string;
+        const account = substrateAccounts.value.find(
+          (it: SubstrateAccount) => it.address === selAccount.value
+        );
+        if (!account) return;
+
+        toAccount.value = account.address;
+        toAccountName.value = account.name;
+        toAddress.value = account.address;
 
         openOption.value = false;
       },
@@ -368,8 +373,6 @@ export default defineComponent({
       const address = toAccount.value as string;
       return `${address.slice(0, 6)}${'.'.repeat(6)}${address.slice(-6)}`;
     });
-
-    const store = useStore();
 
     const { api } = useApi();
     const apiPromise: ApiPromise = api?.value as ApiPromise;
@@ -626,6 +629,7 @@ export default defineComponent({
       partialFee,
       isInsufficientFee,
       moveStep2,
+      substrateAccounts,
     };
   },
 });

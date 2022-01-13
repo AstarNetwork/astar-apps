@@ -9,8 +9,6 @@ export const useAccount = () => {
   const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
   const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
-  const allAccounts = computed(() => store.getters['general/allAccounts']);
-  const allAccountNames = computed(() => store.getters['general/allAccountNames']);
   const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
   const { SELECTED_ACCOUNT_ID } = LOCAL_STORAGE;
 
@@ -75,8 +73,6 @@ export const useAccount = () => {
 
   return {
     substrateAccounts,
-    allAccounts,
-    allAccountNames,
     currentAccount,
     currentAccountName,
     disconnectAccount,

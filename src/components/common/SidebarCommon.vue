@@ -172,7 +172,7 @@ export default defineComponent({
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
     const store = useStore();
-    const { allAccounts, allAccountNames, currentAccount, currentAccountName } = useAccount();
+    const { currentAccount, currentAccountName } = useAccount();
 
     const shortenAddress = computed(() => {
       return getShortenAddress(currentAccount.value);
@@ -200,8 +200,6 @@ export default defineComponent({
       shortenAddress,
       currentAccount,
       currentAccountName,
-      allAccounts,
-      allAccountNames,
       isH160,
       endpointKey,
     };

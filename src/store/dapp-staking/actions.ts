@@ -1,6 +1,5 @@
 import { ApiPromise } from '@polkadot/api';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
-import { web3FromSource } from '@polkadot/extension-dapp';
 import { BTreeMap, Option, Struct, u32 } from '@polkadot/types';
 import {
   AccountId,
