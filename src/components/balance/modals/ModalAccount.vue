@@ -112,7 +112,6 @@ export default defineComponent({
       );
       return filteredAccounts;
     });
-    const currentAddress = computed(() => store.getters['general/selectedAddress']);
     const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
     const isSupportContract = ref(providerEndpoints[currentNetworkIdx.value].isSupportContract);
@@ -122,7 +121,7 @@ export default defineComponent({
       emit('update:is-open', false);
     };
 
-    const selAccount = ref(currentAddress.value);
+    const selAccount = ref<string>(substrateAccounts.value[0].address);
     const isH160Account = ref<boolean>(isH160Formatted.value);
 
     const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
