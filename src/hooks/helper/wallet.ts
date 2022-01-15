@@ -4,6 +4,8 @@ import { SubstrateAccount } from './../../store/general/state';
 
 export const getInjectedExtensions = async (): Promise<any[]> => {
   const extensions = await web3Enable('AstarNetwork/astar-apps');
+  // Memo: obtain the extension name
+  // console.log('extensions', extensions);
   return extensions;
 };
 

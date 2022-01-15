@@ -36,7 +36,16 @@
               >
                 {{ $t('balance.modals.chooseAccount') }}
               </h3>
+              <div v-if="!substrateAccounts.length && selectedWallet === SupportWallet.Math">
+                <li v-if="currentNetworkIdx !== 1">
+                  {{ $t('balance.modals.math.supportsNetwork') }}
+                </li>
+                <li v-if="!substrateAccounts.length">
+                  {{ $t('balance.modals.math.switchNetwork') }}
+                </li>
+              </div>
               <div
+                v-else
                 class="
                   tw-mt-1 tw-w-full tw-rounded-md tw-bg-white
                   dark:tw-bg-darkGray-900
@@ -82,6 +91,7 @@ import { SubstrateAccount } from 'src/store/general/state';
 import { computed, defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import ModalAccountOption from './ModalAccountOption.vue';
+import { SupportWallet } from 'src/config/wallets';
 
 export default defineComponent({
   components: {
@@ -136,6 +146,8 @@ export default defineComponent({
       isBalancePath,
       currentNetworkStatus,
       substrateAccounts,
+      SupportWallet,
+      currentNetworkIdx,
     };
   },
   methods: {
