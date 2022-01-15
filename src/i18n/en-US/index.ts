@@ -37,7 +37,7 @@ export default {
     select: 'Please select a wallet to connect to this portal',
   },
   installWallet: {
-    getWallet: 'Haven’t got a {value} wallet yet?',
+    getWallet: 'Haven’t got a {value} yet?',
     installWallet:
       "You'll need to install {value} to continue. Once you have it installed, go ahead and refresh this page",
     installExtension: 'Install {value} extension',
