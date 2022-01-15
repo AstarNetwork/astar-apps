@@ -12,6 +12,7 @@ export default {
   'polkadot-js': 'Polkadot.js',
   metamask: 'MetaMask',
   clover: 'Clover',
+  mathwallet: 'Math Wallet',
   warning: {
     insufficientFee: 'Warning! Transaction might failed due to insufficient fee',
   },
