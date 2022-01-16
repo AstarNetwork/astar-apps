@@ -1,3 +1,4 @@
+import { SupportWallet } from 'src/config/wallets';
 import { web3Enable } from '@polkadot/extension-dapp';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SubstrateAccount } from './../../store/general/state';
@@ -29,4 +30,16 @@ export const getInjector = async (accounts: SubstrateAccount[]) => {
   const extensions = await getInjectedExtensions();
   const injector = extensions.find((it) => it.name === account?.source);
   return injector;
+};
+
+export const isMobileDevice =
+  'ontouchstart' in document.documentElement && navigator.userAgent.match(/Mobi/);
+
+export const castMobileSource = (source: string) => {
+  if (isMobileDevice) {
+    if (source === SupportWallet.Math) {
+      return SupportWallet.PolkadotJs;
+    }
+  }
+  return source;
 };

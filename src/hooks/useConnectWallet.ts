@@ -5,7 +5,7 @@ import { useStore } from 'src/store';
 import { getChainId, setupNetwork } from 'src/web3';
 import { computed, ref, watchEffect } from 'vue';
 import { useMetamask } from './custom-signature/useMetamask';
-import { getInjectedExtensions } from './helper/wallet';
+import { castMobileSource, getInjectedExtensions } from './helper/wallet';
 
 export const useConnectWallet = () => {
   const modalConnectWallet = ref<boolean>(false);
@@ -75,9 +75,10 @@ export const useConnectWallet = () => {
   };
 
   watchEffect(async () => {
-    if (SubstrateWallets.find((it) => it === modalName.value)) {
+    const lookupWallet = castMobileSource(modalName.value);
+    if (SubstrateWallets.find((it) => it === lookupWallet)) {
       const injected = await getInjectedExtensions();
-      const isInstalledExtension = injected.find((it) => selectedWallet.value === it.name);
+      const isInstalledExtension = injected.find((it) => lookupWallet === it.name);
 
       if (!isInstalledExtension) {
         modalName.value = WalletModalOption.NoExtension;

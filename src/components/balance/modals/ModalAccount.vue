@@ -86,12 +86,13 @@
 </template>
 <script lang="ts">
 import { providerEndpoints } from 'src/config/chainEndpoints';
+import { SupportWallet } from 'src/config/wallets';
+import { castMobileSource } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
 import { computed, defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import ModalAccountOption from './ModalAccountOption.vue';
-import { SupportWallet } from 'src/config/wallets';
 
 export default defineComponent({
   components: {
@@ -117,9 +118,10 @@ export default defineComponent({
 
     const substrateAccounts = computed(() => {
       const accounts = store.getters['general/substrateAccounts'];
-      const filteredAccounts = accounts.filter(
-        (it: SubstrateAccount) => it.source === props.selectedWallet
-      );
+      const filteredAccounts = accounts.filter((it: SubstrateAccount) => {
+        const lookupWallet = castMobileSource(props.selectedWallet);
+        return it.source === lookupWallet;
+      });
       return filteredAccounts;
     });
     const currentAddress = computed(() => store.getters['general/selectedAddress']);

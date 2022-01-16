@@ -64,7 +64,6 @@
 
 <script lang="ts">
 import { supportWalletObj } from 'src/config/wallets';
-import { useConnectWallet } from 'src/hooks';
 import { defineComponent } from 'vue';
 export default defineComponent({
   props: {
