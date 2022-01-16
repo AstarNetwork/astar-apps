@@ -53,6 +53,7 @@ export default {
     locked: 'Locked',
     evmDeposit: 'EVM Deposit',
     addressScheme: 'Current address scheme',
+    unlockVestedTokens: 'Unlock vested tokens',
     modals: {
       connectMetamask: 'Connect Account with Ethereum Wallet',
       ethereumExtension: 'Ethereum Extension',

@@ -68,6 +68,14 @@
             >
               {{ $t('balance.faucet') }}
             </button>
+            <button
+              :disabled="!(accountData?.vested <= 0 && !isH160)"
+              type="button"
+              class="transfer-button"
+              @click="unlockVestedTokens"
+            >
+              {{ $t('balance.unlockVestedTokens') }}
+            </button>
           </div>
 
           <button
@@ -139,9 +147,11 @@
 </template>
 <script lang="ts">
 import { defineComponent, toRefs, computed } from 'vue';
-import { useChainMetadata, useEvmDeposit } from 'src/hooks';
+import { useAccount, useChainMetadata, useEvmDeposit } from 'src/hooks';
 import FormatBalance from 'components/balance/FormatBalance.vue';
 import { useStore } from 'src/store';
+import { useApi } from 'src/hooks';
+import { getInjector } from 'src/hooks/helper/wallet';
 import Logo from '../common/Logo.vue';
 
 export default defineComponent({
@@ -170,7 +180,10 @@ export default defineComponent({
   ],
   setup(props, { emit }) {
     const store = useStore();
+    const { api } = useApi();
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
+    const selectedAddress = computed(() => store.getters['general/selectedAddress']);
+    const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
     const openTransferModal = (): void => {
       emit('update:is-open-transfer', true);
     };
@@ -183,6 +196,28 @@ export default defineComponent({
       emit('update:is-open-modal-faucet', true);
     };
 
+    const unlockVestedTokens = async (): Promise<void> => {
+      const injector = await getInjector(substrateAccounts.value);
+      try {
+        api?.value?.tx.vesting.vest().signAndSend(
+          selectedAddress.value,
+          {
+            signer: injector?.signer,
+          },
+          (result) => {
+            if (result.status.isFinalized) {
+              store.commit('general/setLoading', false);
+            } else {
+              store.commit('general/setLoading', true);
+            }
+          }
+        );
+      } catch (e) {
+        console.log(e);
+        store.commit('general/setLoading', false);
+      }
+    };
+
     const { defaultUnitToken } = useChainMetadata();
     const { evmDeposit, isEvmDeposit } = useEvmDeposit();
 
@@ -190,6 +225,7 @@ export default defineComponent({
       openWithdrawalModal,
       openFaucetModal,
       openTransferModal,
+      unlockVestedTokens,
       evmDeposit,
       isEvmDeposit,
       defaultUnitToken,
