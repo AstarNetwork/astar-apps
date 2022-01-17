@@ -42,8 +42,9 @@
               dark:tw-bg-darkGray-900
               checked:tw-border-4 checked:tw-border-blue-500
             "
+            :value="keyIdx"
             :checked="checked"
-            @change="onChange(address)"
+            @change="onChange(keyIdx)"
           />
         </div>
       </label>
@@ -62,6 +63,10 @@ export default defineComponent({
     IconAccountSample,
   },
   props: {
+    keyIdx: {
+      type: Number,
+      required: true,
+    },
     address: {
       type: String,
       required: true,
@@ -72,18 +77,19 @@ export default defineComponent({
     },
     checked: {
       type: Boolean,
-      required: true,
     },
   },
   emits: ['update:sel-option', 'update:sel-checked'],
   setup(props, { emit }) {
     const { address } = toRefs(props);
+
     const shortenAddress = computed(() => {
       return getShortenAddress(address.value);
     });
 
-    const onChange = (address: string) => {
-      emit('update:sel-option', address);
+    const onChange = (keyIdx: number) => {
+      emit('update:sel-option', keyIdx);
+      emit('update:sel-checked', false);
     };
 
     return {
@@ -96,7 +102,7 @@ export default defineComponent({
       if (checked) {
         return 'tw-text-blue-900 dark:tw-text-darkGray-100 tw-cursor-default tw-select-none tw-relative tw-py-2 tw-pl-3 tw-pr-6 tw-bg-blue-200 dark:tw-bg-blue-500 tw-bg-opacity-20';
       } else {
-        return 'not-checked';
+        return 'not-checkerd';
       }
     },
   },
@@ -104,10 +110,10 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.not-checked {
+.not-checkerd {
   @apply tw-text-blue-900 dark:tw-text-darkGray-100 tw-cursor-default tw-select-none tw-relative tw-py-2 tw-pl-3 tw-pr-6;
 }
-.not-checked:hover {
+.not-checkerd:hover {
   @apply tw-bg-gray-50 dark:tw-bg-darkGray-800;
 }
 </style>

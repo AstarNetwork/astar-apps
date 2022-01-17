@@ -1,6 +1,6 @@
 import { useStore } from 'src/store';
 import axios from 'axios';
-import { ref, watch, computed } from 'vue';
+import { ref, watch } from 'vue';
 import { useAccount } from './useAccount';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 export interface FaucetInfo {
@@ -28,36 +28,20 @@ const initialInfoState = {
 export function useFaucet() {
   const faucetInfo = ref<FaucetInfo>(initialInfoState);
   const hash = ref<string>('');
-  const isLoading = ref<boolean>(false);
   const { currentAccount } = useAccount();
   const store = useStore();
   const currentNetworkIdx = Number(localStorage.getItem('networkIdx'));
   const faucetEndpoint = providerEndpoints[currentNetworkIdx].faucetEndpoint;
-  const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
 
   const getFaucetInfo = async (account: string): Promise<FaucetInfo> => {
-    const fetchData = async () => {
-      try {
-        isLoading.value = true;
-        const url = `${faucetEndpoint}/drip/?destination=${account}`;
-        const { data } = await axios.get(url);
-        isLoading.value = false;
-        return data;
-      } catch (error: any) {
-        throw Error(error.message || 'Something went wrong');
-      }
-    };
-
     try {
-      return await fetchData();
+      const url = `${faucetEndpoint}/drip/?destination=${account}`;
+      const { data } = await axios.get(url);
+
+      return data;
     } catch (error) {
-      // Memo: Recursion
-      try {
-        return await fetchData();
-      } catch (error: any) {
-        console.error(error.message);
-        return initialInfoState;
-      }
+      console.error(error);
+      return initialInfoState;
     }
   };
 
@@ -65,7 +49,7 @@ export function useFaucet() {
     [hash, currentAccount],
     async () => {
       const currentAccountRef = currentAccount.value;
-      if (!currentAccountRef || isH160Formatted.value) return;
+      if (!currentAccountRef) return;
 
       faucetInfo.value = await getFaucetInfo(currentAccountRef);
     },
@@ -105,6 +89,5 @@ export function useFaucet() {
   return {
     faucetInfo,
     requestFaucet,
-    isLoading,
   };
 }

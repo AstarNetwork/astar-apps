@@ -18,15 +18,16 @@
         </div>
       </div>
 
-      <button type="button" class="icon tw-ml-auto tw-tooltip" @click="disconnectAccount">
+      <button type="button" class="icon tw-ml-auto tw-tooltip" @click="openModal">
         <icon-base
           class="tw-h-5 tw-w-5 dark:tw-text-darkGray-100"
           viewBox="0 0 20 20"
           aria-hidden="true"
         >
-          <icon-disconnect />
+          <icon-chevron-down />
         </icon-base>
 
+        <!-- Tooltip -->
         <span
           class="
             tw-pointer-events-none
@@ -46,7 +47,7 @@
             dark:tw-bg-darkGray-500
             tw-rounded-md tw-shadow-lg tw-opacity-90 tw-whitespace-nowrap
           "
-          >{{ $t('disconnect') }}</span
+          >{{ $t('change') }}</span
         >
       </button>
     </div>
@@ -55,13 +56,12 @@
 <script lang="ts">
 import IconBase from 'components/icons/IconBase.vue';
 import IconChevronDown from 'components/icons/IconChevronDown.vue';
-import IconDisconnect from 'src/components/icons/IconDisconnect.vue';
-import { useAccount } from 'src/hooks';
-import { defineComponent, ref, watchEffect, watch, computed } from 'vue';
+import { defineComponent } from 'vue';
+
 export default defineComponent({
   components: {
     IconBase,
-    IconDisconnect,
+    IconChevronDown,
   },
   props: {
     walletName: {
@@ -70,10 +70,14 @@ export default defineComponent({
     },
   },
 
-  setup() {
-    const { disconnectAccount } = useAccount();
+  emits: ['update:is-open'],
+  setup(props, { emit }) {
+    const openModal = () => {
+      emit('update:is-open', true);
+    };
+
     return {
-      disconnectAccount,
+      openModal,
     };
   },
 });

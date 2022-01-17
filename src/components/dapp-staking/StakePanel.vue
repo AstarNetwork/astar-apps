@@ -34,22 +34,16 @@
             {{ $t('dappStaking.add') }}
           </Button>
           <Button :small="true" :primary="false" @click="showUnstakeModal">
-            {{ canUnbondWithdraw ? $t('dappStaking.unbond') : $t('dappStaking.unstake') }}
+            {{ $t('dappStaking.unstake') }}
           </Button>
         </div>
-        <Button
-          v-else
-          :small="true"
-          :disabled="isMaxStaker || isH160Formatted || currentAddress === null"
-          @click="showStakeModal"
-        >
+        <Button v-else :small="true" :disabled="isMaxStaker" @click="showStakeModal">
           {{ $t('dappStaking.stake') }}
         </Button>
 
         <Button
           :small="true"
           :primary="true"
-          :disabled="isH160Formatted || currentAddress === null"
           class="tw-ml-auto"
           @click="showClaimRewardModal = true"
         >
@@ -81,7 +75,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, toRefs, watchEffect, computed } from 'vue';
+import { defineComponent, ref, toRefs, watchEffect } from 'vue';
 import StakeModal from 'components/dapp-staking/modals/StakeModal.vue';
 import { StakeModel } from 'src/hooks/store';
 import Button from 'components/common/Button.vue';
@@ -89,9 +83,8 @@ import ClaimRewardModal from 'components/dapp-staking/modals/ClaimRewardModal.vu
 import { useApi, useChainMetadata, useGetMinStaking } from 'src/hooks';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
-import { StakingParameters, ClaimParameters } from 'src/store/dapp-staking/actions';
+import { StakingParameters } from 'src/store/dapp-staking/actions';
 import { getAmount } from 'src/hooks/store';
-import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
 import VueJsProgress from 'vue-js-progress';
 import './stake-panel.scss';
 
@@ -123,45 +116,19 @@ export default defineComponent({
       type: Number,
       default: 0,
     },
-    showStake: {
-      type: Boolean,
-      default: false,
-    },
   },
-  emits: ['stakeChanged', 'stakeModalOpened'],
+  emits: ['stakeChanged'],
   setup(props, { emit }) {
     const store = useStore();
     const { api } = useApi();
     const showModal = ref<boolean>(false);
     const showClaimRewardModal = ref<boolean>(false);
     const modalTitle = ref<string>('');
-    const modalActionName = ref<string | ''>('');
+    const modalActionName = ref<StakeAction | ''>('');
     const formattedMinStake = ref<string>('');
     const modalAction = ref();
     const { minStaking } = useGetMinStaking(api);
     const { decimal } = useChainMetadata();
-    const { canUnbondWithdraw } = useUnbondWithdraw(api);
-    const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
-    const currentAddress = computed(() => store.getters['general/selectedAddress']);
-    const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
-
-    const showStakeModal = () => {
-      modalTitle.value = `Stake on ${props.dapp.name}`;
-      modalActionName.value = StakeAction.Stake;
-      modalAction.value = stake;
-      showModal.value = true;
-      emit('stakeModalOpened');
-    };
-
-    const showUnstakeModal = () => {
-      modalTitle.value = canUnbondWithdraw.value
-        ? `Start unbonbonding from ${props.dapp.name}`
-        : `Unstake from ${props.dapp.name}`;
-      modalActionName.value = StakeAction.Unstake;
-      modalAction.value = unstake;
-      showModal.value = true;
-      emit('stakeModalOpened');
-    };
 
     watchEffect(() => {
       const minStakingAmount = plasmUtils.reduceBalanceToDenom(minStaking.value, decimal.value);
@@ -171,17 +138,27 @@ export default defineComponent({
 
       formattedMinStake.value =
         Number(stakedAmount) >= Number(minStakingAmount) ? '0' : minStakingAmount;
-
-      if (props.showStake) {
-        showStakeModal();
-      }
     });
+
+    const showStakeModal = () => {
+      modalTitle.value = `Stake on ${props.dapp.name}`;
+      modalActionName.value = StakeAction.Stake;
+      modalAction.value = stake;
+      showModal.value = true;
+    };
+
+    const showUnstakeModal = () => {
+      modalTitle.value = `Unstake from ${props.dapp.name}`;
+      modalActionName.value = StakeAction.Unstake;
+      modalAction.value = unstake;
+      showModal.value = true;
+    };
 
     const emitStakeChanged = () => {
       emit('stakeChanged', props.dapp);
     };
 
-    const stake = async (stakeData: StakeModel): Promise<void> => {
+    const stake = async (stakeData: StakeModel) => {
       const amount = getAmount(stakeData.amount, stakeData.unit);
       const unit = stakeData.unit;
 
@@ -207,7 +184,6 @@ export default defineComponent({
         decimals: stakeData.decimal,
         unit,
         finalizeCallback: emitStakeChanged,
-        substrateAccounts: substrateAccounts.value,
       } as StakingParameters);
 
       if (result) {
@@ -215,9 +191,8 @@ export default defineComponent({
       }
     };
 
-    const unstake = async (stakeData: StakeModel): Promise<void> => {
-      const dispatchCommand = canUnbondWithdraw.value ? 'dapps/unbond' : 'dapps/unstake';
-      const result = await store.dispatch(dispatchCommand, {
+    const unstake = async (stakeData: StakeModel) => {
+      const result = await store.dispatch('dapps/unstake', {
         api: api?.value,
         senderAddress: stakeData.address,
         dapp: props.dapp,
@@ -225,7 +200,6 @@ export default defineComponent({
         decimals: stakeData.decimal,
         unit: stakeData.unit,
         finalizeCallback: emitStakeChanged,
-        substrateAccounts: substrateAccounts.value,
       } as StakingParameters);
 
       if (result) {
@@ -233,20 +207,19 @@ export default defineComponent({
       }
     };
 
-    const claim = async (unclaimedEras: number[], claimFinishedCallback: () => void) => {
+    const claim = async () => {
       // TODO maybe to add select address option to modal as in stake/unstake
-      const senderAddress = store.getters['general/selectedAddress'];
+      const senderAddress = store.getters['general/selectedAccountAddress'];
       const result = await store.dispatch('dapps/claimBatch', {
         api: api?.value,
         senderAddress,
         dapp: props.dapp,
-        substrateAccounts: substrateAccounts.value,
-        finalizeCallback: function () {
-          emitStakeChanged();
-          claimFinishedCallback();
-        },
-        unclaimedEras,
-      } as ClaimParameters);
+        finalizeCallback: emitStakeChanged,
+      } as StakingParameters);
+
+      if (result) {
+        showClaimRewardModal.value = false;
+      }
     };
 
     return {
@@ -260,16 +233,12 @@ export default defineComponent({
       showUnstakeModal,
       claim,
       formattedMinStake,
-      unstake,
-      canUnbondWithdraw,
-      isH160Formatted,
-      currentAddress,
     };
   },
 });
 
 export enum StakeAction {
   Stake = 'Stake',
-  Unstake = 'Start unbonding',
+  Unstake = 'Unstake',
 }
 </script>

@@ -13,8 +13,19 @@
       "
     >
       <div class="tw-flex tw-items-center">
-        <div class="tw-h-11 tw-w-11 sm:tw-h-12 sm:tw-w-12 tw-overflow-hidden tw-mx-2 sm:tw-mx-3">
-          <img width="80" src="~assets/img/ethereum.png" />
+        <div
+          class="
+            tw-h-11 tw-w-11
+            sm:tw-h-12 sm:tw-w-12
+            tw-rounded-full tw-overflow-hidden
+            sm:tw-border
+            tw-border-gray-100 tw-mx-2
+            sm:tw-mx-3
+          "
+        >
+          <icon-base class="tw-h-full tw-w-full" viewBox="0 0 64 64">
+            <icon-account-sample />
+          </icon-base>
         </div>
         <div>
           <p class="tw-text-blue-900 dark:tw-text-darkGray-100 tw-font-bold">
@@ -26,13 +37,13 @@
         </div>
       </div>
 
-      <button type="button" class="icon tw-ml-auto tw-tooltip" @click="disconnectAccount">
+      <button type="button" class="icon tw-ml-auto tw-tooltip" @click="openModal">
         <icon-base
           class="tw-h-5 tw-w-5 dark:tw-text-darkGray-100"
           viewBox="0 0 20 20"
           aria-hidden="true"
         >
-          <icon-disconnect />
+          <icon-chevron-down />
         </icon-base>
 
         <!-- Tooltip -->
@@ -55,7 +66,7 @@
             dark:tw-bg-darkGray-500
             tw-rounded-md tw-shadow-lg tw-opacity-90 tw-whitespace-nowrap
           "
-          >{{ $t('disconnect') }}</span
+          >{{ $t('change') }}</span
         >
       </button>
     </div>
@@ -160,16 +171,15 @@ import { useStore } from 'src/store';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import IconBase from 'components/icons/IconBase.vue';
 import IconAccountSample from 'components/icons/IconAccountSample.vue';
-import IconDisconnect from 'components/icons/IconDisconnect.vue';
+import IconChevronDown from 'components/icons/IconChevronDown.vue';
 import IconDocumentDuplicate from 'components/icons/IconDocumentDuplicate.vue';
 import IconLink from 'components/icons/IconLink.vue';
 import { providerEndpoints } from 'src/config/chainEndpoints';
-import { useAccount } from 'src/hooks';
 export default defineComponent({
   components: {
     IconBase,
-    // IconAccountSample,
-    IconDisconnect,
+    IconAccountSample,
+    IconChevronDown,
     IconDocumentDuplicate,
     IconLink,
   },
@@ -183,14 +193,18 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
+  emits: ['update:is-open'],
+  setup(props, { emit }) {
+    const openModal = () => {
+      emit('update:is-open', true);
+    };
     const { address } = toRefs(props);
     const shortenAddress = computed(() => {
       return getShortenAddress(address.value);
     });
     const store = useStore();
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
-    const selectedAccountAddress = computed(() => store.getters['general/selectedAddress']);
+    const selectedAccountAddress = computed(() => store.getters['general/selectedAccountAddress']);
     const subScan = computed(
       () =>
         `${providerEndpoints[currentNetworkIdx.value].subscan}/account/${
@@ -204,25 +218,25 @@ export default defineComponent({
         alertType: 'success',
       });
     };
-    const { disconnectAccount } = useAccount();
-
-    const copyAddress = async () => {
-      await navigator.clipboard.writeText(address.value);
-      store.dispatch('general/showAlertMsg', {
-        msg: 'Copy address success!!',
-        alertType: 'success',
-      });
-    };
-
     return {
+      openModal,
       shortenAddress,
       showAlert,
       subScan,
       isSubscan,
       currentNetworkIdx,
-      disconnectAccount,
-      copyAddress,
     };
+  },
+  methods: {
+    copyAddress() {
+      var copyAddr = document.querySelector('#hiddenAddr') as HTMLInputElement;
+      copyAddr.setAttribute('type', 'text');
+      copyAddr.select();
+      document.execCommand('copy');
+      copyAddr.setAttribute('type', 'hidden');
+      window.getSelection()?.removeAllRanges();
+      this.showAlert();
+    },
   },
 });
 </script>

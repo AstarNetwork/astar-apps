@@ -20,13 +20,13 @@
               tw-bg-transparent tw-placeholder-gray-300
               dark:tw-placeholder-darkGray-600
             "
-            :class="isH160 ? 'input-h160' : 'input-ss58'"
+            :style="isH160 ? 'width: 24rem' : 'width: 21rem'"
             type="text"
             spellcheck="false"
             :readonly="isReadOnly"
+            @change="changeAddress"
             @focus="openOption = !isH160"
             @blur="closeOption"
-            @change="changeAddress"
           />
         </div>
       </div>
@@ -70,14 +70,23 @@
           focus:tw-outline-none
         "
       >
+        <MetamaskOption
+          v-if="showMetamaskOption"
+          v-model:selChecked="checkMetamaskOption"
+          :checked="checkMetamaskOption"
+          :show-radio-if-unchecked="false"
+        />
         <div v-if="!isH160">
           <ModalSelectAccountOption
-            v-for="(account, index) in substrateAccounts"
+            v-for="(account, index) in allAccounts"
             :key="index"
             v-model:selOption="selAccountIdx"
-            :address="account.address"
-            :address-name="account.name"
-            :checked="selAccountIdx === account.address"
+            v-model:selChecked="checkMetamaskOption"
+            :key-idx="index"
+            :address="account"
+            :address-name="allAccountNames[index]"
+            :checked="!checkMetamaskOption && selAccountIdx === index"
+            :role="role"
           />
         </div>
       </ul>
@@ -85,27 +94,36 @@
   </div>
 </template>
 <script lang="ts">
-import IconAccountSample from 'components/icons/IconAccountSample.vue';
-import IconBase from 'components/icons/IconBase.vue';
-import IconSolidSelector from 'components/icons/IconSolidSelector.vue';
-import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { useAccount } from 'src/hooks';
-import { isValidEvmAddress } from 'src/hooks/helper/plasmUtils';
-import { getSelectedAccount } from 'src/hooks/helper/wallet';
+import { defineComponent, computed, ref, watch, watchEffect } from 'vue';
 import { useStore } from 'src/store';
-import { SubstrateAccount } from 'src/store/general/state';
-import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
+import { providerEndpoints } from 'src/config/chainEndpoints';
+import { useAccount } from 'src/hooks';
+
+import IconBase from 'components/icons/IconBase.vue';
+import IconAccountSample from 'components/icons/IconAccountSample.vue';
+import IconSolidSelector from 'components/icons/IconSolidSelector.vue';
 import ModalSelectAccountOption from './ModalSelectAccountOption.vue';
+import MetamaskOption from './MetamaskOption.vue';
 import { Role } from './ModalTransferAmount.vue';
+import { isValidEvmAddress } from 'src/hooks/helper/plasmUtils';
 
 export default defineComponent({
   components: {
     ModalSelectAccountOption,
+    MetamaskOption,
     IconBase,
     IconAccountSample,
     IconSolidSelector,
   },
   props: {
+    allAccounts: {
+      type: Array,
+      required: true,
+    },
+    allAccountNames: {
+      type: Array,
+      required: true,
+    },
     role: {
       type: String,
       required: false,
@@ -117,53 +135,54 @@ export default defineComponent({
       default: '',
     },
   },
-  emits: ['update:sel-address', 'sel-changed'],
+  emits: ['update:sel-address', 'selChanged'],
   setup(props, { emit }) {
     const isReadOnly = props.role === Role.FromAddress;
     const openOption = ref(false);
     const store = useStore();
     const { currentAccountName } = useAccount();
-    const currentAddress = computed(() => store.getters['general/selectedAddress']);
-    const substrateAccounts = computed(() => {
-      const accounts = store.getters['general/substrateAccounts'];
-      const selectedAccount = getSelectedAccount(accounts);
-      const filteredAccounts = accounts.filter(
-        (it: SubstrateAccount) => selectedAccount && it.source === selectedAccount.source
-      );
-      return filteredAccounts;
-    });
+    const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
+    const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
+
+    const isSupportContract = ref(providerEndpoints[currentNetworkIdx.value].isSupportContract);
 
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
-    const selAccountIdx = ref(currentAddress.value);
-    const account = getSelectedAccount(substrateAccounts.value);
+    const selAccountIdx = ref(currentAccountIdx.value);
 
-    const selAddress = ref(!isH160 ? (account?.address as string) : '');
-    const selAccountName = ref(account?.name);
+    const selAccount = ref(props.allAccounts[selAccountIdx.value] as string);
+    const selAddress = ref(!isH160 ? (props.allAccounts[selAccountIdx.value] as string) : '');
+    const selAccountName = ref(props.allAccountNames[selAccountIdx.value]);
+
+    const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
+    const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
+    const checkMetamask = ref<boolean>(isCheckMetamask.value);
+    const showMetamaskOption = computed(
+      () => isSupportContract.value && currentEcdsaAccount.value.ethereum
+    );
+
     const isH160Account = ref<boolean>(isH160.value);
+    const checkMetamaskOption = isH160.value ? isH160Account : checkMetamask;
+    const ecdsaAccountValue = isH160.value
+      ? currentEcdsaAccount.value.h160
+      : currentEcdsaAccount.value.ss58;
 
     watch(
-      [selAccountIdx, isH160Account],
+      [selAccountIdx, checkMetamaskOption, ecdsaAccountValue],
       () => {
-        if (!isH160Account.value) {
-          const account = substrateAccounts.value.find(
-            (it: SubstrateAccount) => it.address === selAccountIdx.value
-          );
-          if (!account) return;
-          selAccountName.value = account.name;
-          selAddress.value = account.address;
-
-          if (props.role === Role.FromAddress) {
-            store.commit('general/setCurrentAddress', account.address);
-            localStorage.setItem(LOCAL_STORAGE.SELECTED_ADDRESS, String(account.address));
-          }
+        if (!checkMetamaskOption.value) {
+          selAccount.value = props.allAccounts[selAccountIdx.value] as string;
+          selAccountName.value = props.allAccountNames[selAccountIdx.value];
+          selAddress.value = props.allAccounts[selAccountIdx.value] as string;
         } else {
           if (props.role === Role.ToAddress && isH160.value) {
             selAddress.value = '';
+          } else {
+            selAddress.value = ecdsaAccountValue;
           }
         }
 
         emit('update:sel-address', selAddress.value);
-        emit('sel-changed', selAccountIdx.value);
+        emit('selChanged', selAddress.value, isCheckMetamask.value, selAccountIdx.value);
 
         openOption.value = false;
       },
@@ -174,6 +193,10 @@ export default defineComponent({
     watchEffect(() => {
       isEvmAddress.value = isValidEvmAddress(props.toAddress ? props.toAddress : '');
     });
+
+    const changeAddress = (e: any) => {
+      emit('update:sel-address', e.currentTarget.value);
+    };
 
     const closeOption = () => {
       setTimeout(() => {
@@ -187,21 +210,20 @@ export default defineComponent({
         props.role === Role.FromAddress ? String(currentAccountName.value) : selAddress.value;
     });
 
-    const changeAddress = (e: any) => {
-      emit('update:sel-address', e.currentTarget.value);
-    };
-
     return {
       valueAddressOrWallet,
       openOption,
       closeOption,
       selAccountIdx,
       selAddress,
+      isSupportContract,
+      checkMetamask,
+      showMetamaskOption,
+      changeAddress,
       isH160,
+      checkMetamaskOption,
       isReadOnly,
       isEvmAddress,
-      substrateAccounts,
-      changeAddress,
     };
   },
 });
@@ -216,20 +238,5 @@ export default defineComponent({
 }
 .button-account:focus {
   @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-darkGray-600;
-}
-</style>
-
-<style lang="scss" scoped>
-.input-ss58 {
-  width: 14rem;
-  @media (min-width: 768px) {
-    width: 21rem;
-  }
-}
-.input-h160 {
-  width: 14rem;
-  @media (min-width: 768px) {
-    width: 24rem;
-  }
 }
 </style>

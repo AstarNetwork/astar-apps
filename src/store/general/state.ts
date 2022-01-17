@@ -1,11 +1,4 @@
 import type { Extensions } from 'src/hooks/useMetaExtensions';
-import { endpointKey } from 'src/config/chainEndpoints';
-
-export type SubstrateAccount = {
-  address: string;
-  name: string;
-  source: string;
-};
 
 export type AlertBox = {
   showAlertMsg: boolean;
@@ -30,8 +23,6 @@ export interface GeneralStateInterface {
   chainInfo: any;
   metaExtensions: Extensions;
   extensionCount: number;
-  substrateAccounts: SubstrateAccount[];
-  // Memo: Try to remove `allAccounts` and `allAccountNames` state after `contracts` module has been removed from codebase
   allAccounts: string[];
   allAccountNames: string[];
   currentNetworkStatus: ConnectionType;
@@ -39,7 +30,7 @@ export interface GeneralStateInterface {
   isCheckMetamask: boolean;
   isH160Formatted: boolean;
   currentEcdsaAccount: EcdsaAccount;
-  currentAddress: string;
+  currentAccountIdx: number;
   currentCustomEndpoint: string;
   currentTheme: Theme;
 }
@@ -59,11 +50,10 @@ function state(): GeneralStateInterface {
       extensions: [],
     },
     extensionCount: 0,
-    substrateAccounts: [],
     allAccounts: [],
     allAccountNames: [],
     currentNetworkStatus: 'connecting',
-    currentNetworkIdx: endpointKey.SHIDEN,
+    currentNetworkIdx: 0,
     isCheckMetamask: false,
     isH160Formatted: false,
     currentEcdsaAccount: {
@@ -71,7 +61,7 @@ function state(): GeneralStateInterface {
       ss58: '',
       h160: '',
     },
-    currentAddress: '',
+    currentAccountIdx: 0,
     currentCustomEndpoint: '',
 
     currentTheme:

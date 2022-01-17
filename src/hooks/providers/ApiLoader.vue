@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watchEffect } from 'vue';
+import { defineComponent, computed, ref } from 'vue';
 import { useStore } from 'src/store';
 import PolkadotProvider from './PolkadotProvider.vue';
 import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
@@ -33,11 +33,9 @@ export default defineComponent({
 
     const { chainInfo } = useChainInfo(apiRef);
     const { metaExtensions, extensionCount } = useMetaExtensions(apiRef, extensionsRef);
-    watchEffect(() => {
-      store.commit('general/setChainInfo', chainInfo.value);
-      store.commit('general/setMetaExtensions', metaExtensions.value);
-      store.commit('general/setExtensionCount', extensionCount.value);
-    });
+    store.commit('general/setChainInfo', chainInfo);
+    store.commit('general/setMetaExtensions', metaExtensions);
+    store.commit('general/setExtensionCount', extensionCount);
 
     return {
       api,

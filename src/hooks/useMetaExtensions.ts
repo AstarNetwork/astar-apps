@@ -140,21 +140,17 @@ export function useMetaExtensions(
   apiRef: Ref<ApiPromise>,
   extensionsRef: Ref<InjectedExtension[]>
 ) {
-  const metaExtensions = ref<any>(null);
-  const extensionCount = ref<number>(0);
+  const metaExtensions = ref<Extensions>();
+  const extensionCount = ref<number>();
 
   watch(
-    [extensionsRef, apiRef],
-    () => {
-      if (!apiRef.value || !extensionsRef.value) return;
-      (async () => {
-        const all = await getKnown(apiRef?.value, extensionsRef?.value);
+    () => extensionsRef?.value,
+    async () => {
+      const all = await getKnown(apiRef?.value, extensionsRef?.value);
 
-        metaExtensions.value = filterAll(apiRef?.value, all);
-        extensionCount.value = metaExtensions.value.count;
-      })();
-    },
-    { immediate: true }
+      metaExtensions.value = filterAll(apiRef?.value, all);
+      extensionCount.value = metaExtensions.value.count;
+    }
   );
 
   return { metaExtensions, extensionCount };

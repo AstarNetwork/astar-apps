@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-fixed tw-z-10 tw-inset-0 tw-overflow-y-auto" @click="closeModal()">
+  <div class="tw-fixed tw-z-10 tw-inset-0 tw-overflow-y-auto">
     <div class="tw-flex tw-items-center tw-justify-center tw-min-h-screen">
       <!-- Background overlay -->
       <div class="tw-fixed tw-inset-0 tw-transition-opacity" aria-hidden="true">
@@ -19,9 +19,9 @@
           tw-mx-2
           tw-my-2
           tw-align-middle
-          tw-w-auto
+          tw-max-w-lg
+          tw-w-full
         "
-        @click.stop
       >
         <div>
           <div>
@@ -39,6 +39,10 @@
             </div>
           </div>
         </div>
+        <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row">
+          <Button type="button" :primary="false" @click="closeModal">{{ $t('close') }}</Button>
+          <slot name="buttons"></slot>
+        </div>
       </div>
     </div>
   </div>
@@ -46,26 +50,27 @@
 
 <script lang="ts">
 import { defineComponent, toRefs } from 'vue';
+import Button from 'src/components/common/Button.vue';
 
 export default defineComponent({
+  components: {
+    Button,
+  },
   props: {
     title: {
       type: String,
       default: '',
     },
-    showCloseButton: {
-      type: Boolean,
-      default: true,
-    },
   },
+  emits: ['update:is-open'],
   setup(props, { emit }) {
     const closeModal = () => {
       emit('update:is-open', false);
     };
 
     return {
-      closeModal,
       ...toRefs(props),
+      closeModal,
     };
   },
 });

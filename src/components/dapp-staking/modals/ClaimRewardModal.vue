@@ -1,5 +1,5 @@
 <template>
-  <Modal :title="`Claim reward ${dapp.name}`" @click="closeModal">
+  <Modal :title="`Claim reward ${dapp.name}`">
     <template #content>
       <Avatar :url="dapp.iconUrl" class="tw-w-36 tw-h-36 tw-mb-4 tw-mx-auto" />
       <div v-if="stakeInfo?.totalStake" class="tw-mt-4">
@@ -16,7 +16,7 @@
         >
         <span class="tw-font-semibold tw-w-16 tw-text-rigth">{{ pendingRewards }}</span>
       </div>
-      <div v-if="claimedRewards > 0" class="tw-mt-2">
+      <div class="tw-mt-2">
         <span class="tw-w-52 tw-inline-block">
           {{ $t('dappStaking.modals.estimatedClaimedRewards') }}
         </span>
@@ -28,15 +28,11 @@
           claimInfo?.unclaimedEras?.length
         }}</span>
       </div>
-      <div v-if="stepsCount > 1" class="tw-mt-4">
-        {{ $t('dappStaking.modals.multipleClaimInfo', { steps: stepsCount }) }}
-      </div>
-      <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row">
-        <Button type="button" :primary="false" @click="closeModal">{{ $t('close') }}</Button>
-        <Button :disabled="!canClaim" class="tw-tooltip" @click="claim()">
-          {{ $t('dappStaking.claim') }}
-        </Button>
-      </div>
+    </template>
+    <template #buttons>
+      <Button :disabled="!canClaim" class="tw-tooltip" @click="claimAction()">
+        {{ $t('dappStaking.claim') }}
+      </Button>
     </template>
   </Modal>
 </template>
@@ -51,6 +47,7 @@ import Button from 'src/components/common/Button.vue';
 import Avatar from 'src/components/common/Avatar.vue';
 import { StakingParameters, ClaimInfo } from 'src/store/dapp-staking/actions';
 import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
+import BN from 'bn.js';
 
 export default defineComponent({
   components: {
@@ -72,60 +69,36 @@ export default defineComponent({
       required: true,
     },
   },
-  emits: ['update:is-open'],
-  setup(props, { emit }) {
-    const maxErasPerClaim = 15;
+  setup(props) {
     const { api } = useApi();
     const store = useStore();
     const { decimal } = useChainMetadata();
     const claimInfo = ref<ClaimInfo>();
     const pendingRewards = ref<string>('');
     const claimedRewards = ref<string>('');
-    const senderAddress = store.getters['general/selectedAddress'];
-    const stepsCount = ref<number>(1);
-    const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
+    const senderAddress = store.getters['general/selectedAccountAddress'];
 
     const canClaim = computed(() => {
       return claimInfo?.value && claimInfo.value.unclaimedEras.length > 0;
     });
 
     onMounted(async () => {
-      await getClaimInfo();
-    });
-
-    const getClaimInfo = async () => {
       claimInfo.value = await store.dispatch('dapps/getClaimInfo', {
         api: api?.value,
         senderAddress,
         dapp: props.dapp,
         decimals: decimal.value,
-        substrateAccounts: substrateAccounts.value,
       } as StakingParameters);
       if (!claimInfo.value) return;
-
       pendingRewards.value = balanceFormatter(claimInfo.value.rewards.toString());
       claimedRewards.value = balanceFormatter(claimInfo.value.estimatedClaimedRewards.toString());
-      stepsCount.value = Math.ceil(claimInfo.value.unclaimedEras.length / maxErasPerClaim);
-    };
-
-    const closeModal = () => {
-      emit('update:is-open', false);
-    };
-
-    const claim = async () => {
-      const erasToClaim = claimInfo.value?.unclaimedEras.sort().slice(0, maxErasPerClaim);
-      console.log('Eras to claim in batch', erasToClaim);
-      await props.claimAction(erasToClaim, getClaimInfo);
-    };
+    });
 
     return {
       pendingRewards,
       claimedRewards,
       claimInfo,
       canClaim,
-      closeModal,
-      stepsCount,
-      claim,
       ...toRefs(props),
     };
   },

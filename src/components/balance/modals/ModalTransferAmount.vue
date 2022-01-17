@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-fixed tw-z-10 tw-inset-0 tw-overflow-y-auto" @click="closeModal">
+  <div class="tw-fixed tw-z-10 tw-inset-0 tw-overflow-y-auto">
     <div class="tw-flex tw-items-center tw-justify-center tw-min-h-screen">
       <!-- Background overlay -->
       <div class="tw-fixed tw-inset-0 tw-transition-opacity" aria-hidden="true">
@@ -22,7 +22,6 @@
           tw-max-w-lg
           tw-w-full
         "
-        @click.stop
       >
         <div>
           <q-banner
@@ -68,6 +67,8 @@
 
                 <modal-select-account
                   v-model:selAddress="fromAddress"
+                  :all-accounts="allAccounts"
+                  :all-account-names="allAccountNames"
                   :role="Role.FromAddress"
                   @sel-changed="reloadAmount"
                 />
@@ -85,6 +86,8 @@
 
                 <modal-select-account
                   v-model:selAddress="toAddress"
+                  :all-accounts="allAccounts"
+                  :all-account-names="allAccountNames"
                   :role="Role.ToAddress"
                   :to-address="toAddress"
                 />
@@ -119,6 +122,7 @@
 </template>
 <script lang="ts">
 import type { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
+import { web3FromSource } from '@polkadot/extension-dapp';
 import { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 import FormatBalance from 'components/balance/FormatBalance.vue';
@@ -128,7 +132,6 @@ import { useApi, useChainMetadata } from 'src/hooks';
 import { useExtrinsicCall } from 'src/hooks/custom-signature/useExtrinsicCall';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { getUnit } from 'src/hooks/helper/units';
-import { getInjector } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, toRefs } from 'vue';
 import Web3 from 'web3';
@@ -146,6 +149,14 @@ export default defineComponent({
     InputAmount,
   },
   props: {
+    allAccounts: {
+      type: Array,
+      required: true,
+    },
+    allAccountNames: {
+      type: Array,
+      required: true,
+    },
     balance: {
       type: BN,
       required: true,
@@ -162,8 +173,8 @@ export default defineComponent({
     };
 
     const openOption = ref(false);
+
     const store = useStore();
-    const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
 
     const { defaultUnitToken, decimal } = useChainMetadata();
 
@@ -229,7 +240,7 @@ export default defineComponent({
 
     const transferLocal = async (transferAmt: BN, fromAddress: string, toAddress: string) => {
       try {
-        const injector = await getInjector(substrateAccounts.value);
+        const injector = await web3FromSource('polkadot-js');
         const transfer = await api?.value?.tx.balances.transfer(toAddress, transferAmt);
         transfer
           ?.signAndSend(
@@ -263,10 +274,10 @@ export default defineComponent({
     };
 
     const transfer = async (transferAmt: number, fromAddress: string, toAddress: string) => {
-      // console.log('transfer', transferAmt);
-      // console.log('fromAccount', fromAddress);
-      // console.log('toAccount', toAddress);
-      // console.log('selUnit', selectUnit.value);
+      console.log('transfer', transferAmt);
+      console.log('fromAccount', fromAddress);
+      console.log('toAccount', toAddress);
+      console.log('selUnit', selectUnit.value);
 
       const toastInvalidAddress = () =>
         store.dispatch('general/showAlertMsg', {
@@ -285,26 +296,15 @@ export default defineComponent({
       if (isH160.value) {
         const provider = typeof window !== 'undefined' && window.ethereum;
         const web3 = new Web3(provider as any);
-
-        const buildEvmAddress = (toAddress: string) => {
-          // Memo: goes to EVM deposit
-          if (plasmUtils.isValidAddressPolkadotAddress(toAddress)) {
-            return plasmUtils.toEvmAddress(toAddress);
-          }
-          if (!web3.utils.isAddress(toAddress)) {
-            toastInvalidAddress();
-            return;
-          }
-          return toAddress;
-        };
-
-        const destinationAddress = buildEvmAddress(toAddress);
-
+        if (!web3.utils.isAddress(toAddress)) {
+          toastInvalidAddress();
+          return;
+        }
         store.commit('general/setLoading', true);
         try {
           await web3.eth
             .sendTransaction({
-              to: destinationAddress,
+              to: toAddress,
               from: fromAddress,
               value: web3.utils.toWei(String(transferAmt), 'ether'),
             })
@@ -348,8 +348,13 @@ export default defineComponent({
       }
     };
 
-    const reloadAmount = (address: string): void => {
-      store.commit('general/setCurrentAddress', address);
+    const reloadAmount = (
+      address: string,
+      isMetamaskChecked: boolean,
+      selAccountIdx: number
+    ): void => {
+      store.commit('general/setIsCheckMetamask', isMetamaskChecked);
+      store.commit('general/setCurrentAccountIdx', selAccountIdx);
     };
 
     return {

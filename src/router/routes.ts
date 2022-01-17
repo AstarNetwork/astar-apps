@@ -3,7 +3,7 @@ import { RouteRecordRaw } from 'vue-router';
 import Balance from 'pages/Balance.vue';
 import DApps from 'src/pages/Contract.vue';
 import Store from 'src/pages/DappStaking.vue';
-import ConnectWallet from 'src/components/balance/ConnectWallet.vue';
+import BalancePlasm from 'components/balance/BalancePlasm.vue';
 import CreateDappsTab from 'components/contracts/CreateDappsTab.vue';
 import DiscoverDappsTab from 'components/dapp-staking/DiscoverDappsTab.vue';
 import ManageDappsTab from 'components/dapp-staking/ManageDappsTab.vue';
@@ -32,7 +32,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'wallet',
-        component: ConnectWallet,
+        component: BalancePlasm,
       },
     ],
   },

@@ -1,80 +1,49 @@
-import { SubstrateAccount } from './../store/general/state';
-import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { computed, ref, watch } from 'vue';
 import { useStore } from 'src/store';
-import { computed, ref, watch, watchEffect } from 'vue';
 
 export const useAccount = () => {
   const store = useStore();
 
+  const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
   const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
   const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
-  const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
-  const currentAddress = computed(() => store.getters['general/selectedAddress']);
-  const { SELECTED_ADDRESS } = LOCAL_STORAGE;
+  const allAccounts = computed(() => store.getters['general/allAccounts']);
+  const allAccountNames = computed(() => store.getters['general/allAccountNames']);
+  const currentAccountIdx = computed(() => store.getters['general/accountIdx']);
 
-  const disconnectAccount = () => {
-    store.commit('general/setCurrentAddress', null);
-    store.commit('general/setIsH160Formatted', false);
-    store.commit('general/setIsCheckMetamask', false);
-    store.commit('general/setCurrentEcdsaAccount', {
-      ethereum: '',
-      ss58: '',
-      h160: '',
-    });
-    localStorage.removeItem(SELECTED_ADDRESS);
-  };
-
-  const currentAccount = ref<string>('');
-  const currentAccountName = ref<string>('');
+  const currentAccount = ref('');
+  const currentAccountName = ref('');
 
   watch(
-    [isH160Formatted, currentEcdsaAccount],
+    [
+      allAccounts,
+      allAccountNames,
+      currentAccountIdx,
+      isCheckMetamask,
+      isH160Formatted,
+      currentEcdsaAccount,
+    ],
     () => {
-      if (isH160Formatted.value && currentEcdsaAccount.value.h160) {
-        currentAccount.value = currentEcdsaAccount.value.h160;
-        currentAccountName.value = 'Ethereum Extension';
-        localStorage.setItem(SELECTED_ADDRESS, 'Ethereum Extension');
-        store.commit('general/setIsH160Formatted', true);
-        return;
+      if (allAccounts.value) {
+        if (isCheckMetamask.value && currentEcdsaAccount.value) {
+          currentAccount.value = currentEcdsaAccount.value.ss58;
+          currentAccountName.value = 'Ethereum Extension';
+        } else if (isH160Formatted.value && currentEcdsaAccount.value) {
+          currentAccount.value = currentEcdsaAccount.value.h160;
+          currentAccountName.value = 'Ethereum Extension';
+        } else {
+          currentAccount.value = allAccounts.value[currentAccountIdx.value];
+          currentAccountName.value = allAccountNames.value[currentAccountIdx.value];
+        }
       }
-      currentAccount.value = '';
-      currentAccountName.value = '';
     },
     { immediate: true }
   );
-
-  watch(
-    [currentAddress],
-    () => {
-      if (!substrateAccounts.value || currentAddress.value === null) return;
-      const account = substrateAccounts.value.find(
-        (it: SubstrateAccount) => it.address === currentAddress.value
-      );
-      if (!account) return;
-
-      currentAccount.value = account.address;
-      currentAccountName.value = account.name;
-      localStorage.setItem(SELECTED_ADDRESS, String(currentAddress.value));
-      store.commit('general/setIsH160Formatted', false);
-      return;
-    },
-    { immediate: true }
-  );
-
-  watchEffect(() => {
-    if (!currentEcdsaAccount.value || !window.ethereum || !isH160Formatted.value) return;
-
-    window.ethereum.on('accountsChanged', (accounts: string[]) => {
-      if (accounts[0] !== currentAccount.value) {
-        disconnectAccount();
-      }
-    });
-  });
 
   return {
-    substrateAccounts,
+    allAccounts,
+    allAccountNames,
     currentAccount,
     currentAccountName,
-    disconnectAccount,
   };
 };

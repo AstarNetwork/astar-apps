@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-fixed tw-z-10 tw-inset-0 tw-overflow-y-auto" @click="closeModal">
+  <div class="tw-fixed tw-z-10 tw-inset-0 tw-overflow-y-auto">
     <div class="tw-flex tw-items-center tw-justify-center tw-min-h-screen">
       <!-- Background overlay -->
       <div class="tw-fixed tw-inset-0 tw-transition-opacity" aria-hidden="true">
@@ -23,7 +23,6 @@
           tw-max-w-lg
           tw-w-full
         "
-        @click.stop
       >
         <div>
           <div>

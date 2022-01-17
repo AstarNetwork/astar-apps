@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-fixed tw-z-10 tw-inset-0 tw-overflow-y-auto" @click="closeModal">
+  <div class="tw-fixed tw-z-10 tw-inset-0 tw-overflow-y-auto">
     <div class="tw-flex tw-items-center tw-justify-center tw-min-h-screen">
       <!-- Background overlay -->
       <div class="tw-fixed tw-inset-0 tw-transition-opacity" aria-hidden="true">
@@ -22,7 +22,6 @@
           tw-max-w-lg
           tw-w-full
         "
-        @click.stop
       >
         <div>
           <h3
@@ -111,20 +110,20 @@
 </template>
 
 <script lang="ts">
-import { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
+import { web3FromSource } from '@polkadot/extension-dapp';
 import { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 import FormatBalance from 'components/balance/FormatBalance.vue';
 import InputAmount from 'components/common/InputAmount.vue';
-import IconAccountSample from 'components/icons/IconAccountSample.vue';
-import IconBase from 'components/icons/IconBase.vue';
 import { useApi, useChainMetadata } from 'src/hooks';
-import { useExtrinsicCall } from 'src/hooks/custom-signature/useExtrinsicCall';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { getUnit } from 'src/hooks/helper/units';
-import { getInjector } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref } from 'vue';
+import IconBase from 'components/icons/IconBase.vue';
+import IconAccountSample from 'components/icons/IconAccountSample.vue';
+import { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
+import { useExtrinsicCall } from 'src/hooks/custom-signature/useExtrinsicCall';
 export default defineComponent({
   components: {
     FormatBalance,
@@ -163,7 +162,6 @@ export default defineComponent({
     const selectUnit = ref(defaultUnitToken.value);
     const acName = accountName;
     const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
-    const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
 
     const formatBalance = computed(() => {
       const tokenDecimal = decimal.value;
@@ -225,7 +223,7 @@ export default defineComponent({
           throw Error('Cannot connect to the API');
         }
 
-        const injector = await getInjector(substrateAccounts.value);
+        const injector = await web3FromSource('polkadot-js');
         if (!injector) {
           throw Error('Cannot reach to the injector');
         }
@@ -268,6 +266,15 @@ export default defineComponent({
       }
     };
 
+    const reloadAmount = (
+      address: string,
+      isMetamaskChecked: boolean,
+      selAccountIdx: number
+    ): void => {
+      store.commit('general/setIsCheckMetamask', isMetamaskChecked);
+      store.commit('general/setCurrentAccountIdx', selAccountIdx);
+    };
+
     return {
       closeModal,
       sendTransaction,
@@ -276,6 +283,7 @@ export default defineComponent({
       withdrawAmount,
       defaultUnitToken,
       selectUnit,
+      reloadAmount,
       acName,
     };
   },

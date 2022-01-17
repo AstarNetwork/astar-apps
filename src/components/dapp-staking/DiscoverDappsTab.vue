@@ -8,7 +8,6 @@
       <DappsCount />
       <Requirement />
       <Era :progress="progress" :blocks-until-next-era="blocksUntilNextEra" :era="era" />
-      <Withdraw />
     </div>
 
     <div class="tw-text-center tw-mb-8 tw-flex tw-items-center tw-justify-center sm:tw-gap-x-4">
@@ -64,13 +63,16 @@
         :dapp="dapp"
         :staker-max-number="maxNumberOfStakersPerContract"
         :account-data="accountData"
+        @dappClick="showDetailsModal"
       />
     </div>
 
-    <ModalRegisterDapp
-      v-if="showRegisterDappModal"
-      v-model:is-open="showRegisterDappModal"
-      :show-close-button="false"
+    <ModalRegisterDapp v-if="showRegisterDappModal" v-model:isOpen="showRegisterDappModal" />
+
+    <ModalDappDetails
+      v-if="showDappDetailsModal"
+      v-model:isOpen="showDappDetailsModal"
+      :dapp="selectedDapp"
     />
   </div>
 </template>
@@ -79,19 +81,18 @@
 import Button from 'components/common/Button.vue';
 import IconBase from 'components/icons/IconBase.vue';
 import IconPlus from 'components/icons/IconPlus.vue';
+import ModalDappDetails from 'components/dapp-staking/modals/ModalDappDetails.vue';
 import ModalRegisterDapp from 'components/dapp-staking/modals/ModalRegisterDapp.vue';
 import Dapp from 'src/components/dapp-staking/Dapp.vue';
 import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { useCurrentEra, useApr, useApi, useAccount, useBalance } from 'src/hooks';
 import { DappItem } from 'src/store/dapp-staking/state';
-import { computed, defineComponent, ref, watchEffect } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
 import TVL from './statistics/TVL.vue';
 import DappsCount from './statistics/DappsCount.vue';
 import Requirement from './statistics/Requirement.vue';
-import Withdraw from './statistics/Withdraw.vue';
 import Era from './statistics/Era.vue';
-import { StakeInfo } from 'src/store/dapp-staking/actions';
 import { fasSeedling } from '@quasar/extras/fontawesome-v5';
 import { useMeta } from 'quasar';
 
@@ -101,11 +102,11 @@ export default defineComponent({
     IconPlus,
     IconBase,
     ModalRegisterDapp,
+    ModalDappDetails,
     Button,
     TVL,
     DappsCount,
     Requirement,
-    Withdraw,
     Era,
   },
   setup() {
@@ -117,7 +118,6 @@ export default defineComponent({
     const { api } = useApi();
     const { currentAccount } = useAccount();
     const { accountData } = useBalance(api, currentAccount);
-    const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
 
     const maxNumberOfStakersPerContract = computed(
       () => store.getters['dapps/getMaxNumberOfStakersPerContract']
@@ -127,36 +127,25 @@ export default defineComponent({
       return formatUnitAmount(amount);
     });
     const showRegisterDappModal = ref<boolean>(false);
+    const showDappDetailsModal = ref<boolean>(false);
     const selectedDapp = ref<DappItem>();
-    const selectedDappInfo = ref<StakeInfo>();
 
     store.dispatch('dapps/getDapps');
     store.dispatch('dapps/getStakingInfo');
 
-    // const showDetailsModal = (dapp: DappItem, stakeInfo: StakeInfo): void => {
-    //   console.log(stakeInfo);
-    //   selectedDapp.value = dapp;
-    //   selectedDappInfo.value = stakeInfo;
-    //   showDappDetailsModal.value = true;
-    // };
-    watchEffect(() => {
-      if (isH160Formatted.value) {
-        store.dispatch('general/showAlertMsg', {
-          msg: 'dApp staking only supports Substrate wallets',
-          alertType: 'error',
-        });
-      }
-    });
+    const showDetailsModal = (dapp: DappItem): void => {
+      selectedDapp.value = dapp;
+      showDappDetailsModal.value = true;
+    };
 
     return {
       dapps,
       selectedDapp,
-      selectedDappInfo,
       showRegisterDappModal,
-      // showDappDetailsModal,
+      showDappDetailsModal,
       maxNumberOfStakersPerContract,
       minimumStakingAmount,
-      // showDetailsModal,
+      showDetailsModal,
       progress,
       blocksUntilNextEra,
       era,

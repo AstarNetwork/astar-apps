@@ -1,7 +1,7 @@
 <template>
   <div
     class="
-      tw-max-w-full tw-flex tw-justify-center tw-px-6 tw-pt-5 tw-pb-6 tw-border-2 tw-border-gray-300
+      tw-max-w-lg tw-flex tw-justify-center tw-px-6 tw-pt-5 tw-pb-6 tw-border-2 tw-border-gray-300
       dark:tw-border-darkGray-500
       tw-border-dashed tw-rounded-md tw-bg-blue-50
       dark:tw-bg-darkGray-800

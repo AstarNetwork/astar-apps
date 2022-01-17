@@ -81,8 +81,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, watch } from 'vue';
-import { useQuasar } from 'quasar';
+import { defineComponent, computed } from 'vue';
 import { useStore } from 'src/store';
 import { Theme } from 'src/store/general/state';
 import IconBase from '../icons/IconBase.vue';
@@ -98,12 +97,6 @@ export default defineComponent({
       store.getters['general/theme'] === 'DARK' ? 'tw-cursor-default' : 'icon-dark-h'
     );
     const isDarkTheme = currentTheme.value == 'DARK';
-    const $q = useQuasar();
-
-    watch(
-      () => isDarkTheme,
-      () => $q.dark.set(isDarkTheme)
-    );
 
     return {
       isDarkTheme,
