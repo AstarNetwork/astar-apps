@@ -134,7 +134,7 @@ export default defineComponent({
     };
 
     const selAccount = ref<string>(
-      substrateAccounts.value.length ? substrateAccounts.value[0] : ''
+      substrateAccounts.value.length > 0 ? substrateAccounts.value[0] : ''
     );
     const isH160Account = ref<boolean>(isH160Formatted.value);
 
