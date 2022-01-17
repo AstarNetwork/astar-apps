@@ -53,6 +53,7 @@ export default {
     vested: 'Vested',
     locked: 'Locked',
     evmDeposit: 'EVM Deposit',
+    unlockVestedTokens: 'Unlock vested tokens',
     switchToLockdrop: 'Switch to {value} account',
     modals: {
       connectMetamask: 'Connect Account with Ethereum Wallet',

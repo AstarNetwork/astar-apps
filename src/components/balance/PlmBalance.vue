@@ -68,6 +68,14 @@
             >
               {{ $t('balance.faucet') }}
             </button>
+            <button
+              :disabled="!canUnlockVestedTokens"
+              type="button"
+              class="transfer-button"
+              @click="unlockVestedTokens"
+            >
+              {{ $t('balance.unlockVestedTokens') }}
+            </button>
           </div>
 
           <button
@@ -156,10 +164,12 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, toRefs, computed } from 'vue';
-import { useChainMetadata, useConnectWallet, useEvmDeposit } from 'src/hooks';
+import { defineComponent, toRefs, computed, PropType } from 'vue';
+import { AccountData, useChainMetadata, useEvmDeposit, useConnectWallet } from 'src/hooks';
 import FormatBalance from 'components/balance/FormatBalance.vue';
 import { useStore } from 'src/store';
+import { useApi } from 'src/hooks';
+import { getInjector } from 'src/hooks/helper/wallet';
 import Logo from '../common/Logo.vue';
 import { endpointKey } from 'src/config/chainEndpoints';
 
@@ -174,7 +184,7 @@ export default defineComponent({
       required: true,
     },
     accountData: {
-      type: Object,
+      type: Object as PropType<AccountData>,
       required: true,
     },
     isFaucetLoading: {
@@ -190,7 +200,10 @@ export default defineComponent({
   setup(props, { emit }) {
     const store = useStore();
     const isCheckMetaMask = computed(() => store.getters['general/isCheckMetamask']);
+    const { api } = useApi();
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
+    const selectedAddress = computed(() => store.getters['general/selectedAddress']);
+    const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
     const openTransferModal = (): void => {
       emit('update:is-open-transfer', true);
     };
@@ -207,6 +220,34 @@ export default defineComponent({
       return networkIdx === endpointKey.ASTAR;
     });
 
+    const canUnlockVestedTokens = computed(() => props.accountData.vested.gtn(0) && !isH160.value);
+
+    const unlockVestedTokens = async (): Promise<void> => {
+      const injector = await getInjector(substrateAccounts.value);
+      try {
+        api?.value?.tx.vesting.vest().signAndSend(
+          selectedAddress.value,
+          {
+            signer: injector?.signer,
+          },
+          (result) => {
+            if (result.status.isFinalized) {
+              store.commit('general/setLoading', false);
+            } else {
+              store.commit('general/setLoading', true);
+            }
+          }
+        );
+      } catch (e) {
+        console.log(e);
+        store.commit('general/setLoading', false);
+        store.dispatch('general/showAlertMsg', {
+          msg: (e as Error).message,
+          alertType: 'error',
+        });
+      }
+    };
+
     const { defaultUnitToken } = useChainMetadata();
     const { evmDeposit, isEvmDeposit } = useEvmDeposit();
     const { isMetaMaskSs58, toggleMetaMaskSchema } = useConnectWallet();
@@ -215,6 +256,7 @@ export default defineComponent({
       openWithdrawalModal,
       openFaucetModal,
       openTransferModal,
+      unlockVestedTokens,
       evmDeposit,
       isEvmDeposit,
       defaultUnitToken,
@@ -223,6 +265,7 @@ export default defineComponent({
       toggleMetaMaskSchema,
       isCheckMetaMask,
       isAstar,
+      canUnlockVestedTokens,
       ...toRefs(props),
     };
   },
