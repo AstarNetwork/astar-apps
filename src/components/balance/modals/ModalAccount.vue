@@ -133,7 +133,9 @@ export default defineComponent({
       emit('update:is-open', false);
     };
 
-    const selAccount = ref<string>(substrateAccounts.value[0].address);
+    const selAccount = ref<string>(
+      substrateAccounts.value.length ? substrateAccounts.value[0] : ''
+    );
     const isH160Account = ref<boolean>(isH160Formatted.value);
 
     const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
