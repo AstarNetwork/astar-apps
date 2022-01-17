@@ -12,6 +12,7 @@ export default {
   'polkadot-js': 'Polkadot.js',
   metamask: 'MetaMask',
   clover: 'Clover',
+  mathwallet: 'Math Wallet',
   warning: {
     insufficientFee: 'Warning! Transaction might failed due to insufficient fee',
   },
@@ -36,7 +37,7 @@ export default {
     select: 'Please select a wallet to connect to this portal',
   },
   installWallet: {
-    getWallet: 'Haven’t got a {value} wallet yet?',
+    getWallet: 'Haven’t got a {value} yet?',
     installWallet:
       "You'll need to install {value} to continue. Once you have it installed, go ahead and refresh this page",
     installExtension: 'Install {value} extension',
@@ -76,6 +77,10 @@ export default {
       whatIsFaucet: ' What is faucet and how does it help you?',
       faucetIntro:
         'There will be minimal costs for each transaction, and this is paid as gas using {unit} token. If you have no {unit} in your account, you cannot send any tokens. Faucet sends enough {unit} to cover the transaction cost.',
+      math: {
+        supportsNetwork: 'Math Wallet supports Shiden network only',
+        switchNetwork: "Switch your network to 'Shiden' in the Math Wallet extension",
+      },
     },
   },
   contracts: {

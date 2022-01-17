@@ -20,7 +20,7 @@
               tw-bg-transparent tw-placeholder-gray-300
               dark:tw-placeholder-darkGray-600
             "
-            :style="isH160 ? 'width: 24rem' : 'width: 21rem'"
+            :class="isH160 ? 'input-h160' : 'input-ss58'"
             type="text"
             spellcheck="false"
             :readonly="isReadOnly"
@@ -216,5 +216,20 @@ export default defineComponent({
 }
 .button-account:focus {
   @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-darkGray-600;
+}
+</style>
+
+<style lang="scss" scoped>
+.input-ss58 {
+  width: 14rem;
+  @media (min-width: 768px) {
+    width: 21rem;
+  }
+}
+.input-h160 {
+  width: 14rem;
+  @media (min-width: 768px) {
+    width: 24rem;
+  }
 }
 </style>

@@ -36,7 +36,16 @@
               >
                 {{ $t('balance.modals.chooseAccount') }}
               </h3>
+              <div v-if="!substrateAccounts.length && selectedWallet === SupportWallet.Math">
+                <li v-if="currentNetworkIdx !== 1">
+                  {{ $t('balance.modals.math.supportsNetwork') }}
+                </li>
+                <li v-if="!substrateAccounts.length">
+                  {{ $t('balance.modals.math.switchNetwork') }}
+                </li>
+              </div>
               <div
+                v-else
                 class="
                   tw-mt-1 tw-w-full tw-rounded-md tw-bg-white
                   dark:tw-bg-darkGray-900
@@ -77,6 +86,8 @@
 </template>
 <script lang="ts">
 import { providerEndpoints } from 'src/config/chainEndpoints';
+import { SupportWallet } from 'src/config/wallets';
+import { castMobileSource } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
 import { computed, defineComponent, ref } from 'vue';
@@ -107,9 +118,10 @@ export default defineComponent({
 
     const substrateAccounts = computed(() => {
       const accounts = store.getters['general/substrateAccounts'];
-      const filteredAccounts = accounts.filter(
-        (it: SubstrateAccount) => it.source === props.selectedWallet
-      );
+      const filteredAccounts = accounts.filter((it: SubstrateAccount) => {
+        const lookupWallet = castMobileSource(props.selectedWallet);
+        return it.source === lookupWallet;
+      });
       return filteredAccounts;
     });
     const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
@@ -135,6 +147,8 @@ export default defineComponent({
       isBalancePath,
       currentNetworkStatus,
       substrateAccounts,
+      SupportWallet,
+      currentNetworkIdx,
     };
   },
   methods: {

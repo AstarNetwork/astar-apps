@@ -22,7 +22,7 @@
     </button>
 
     <modal-connect-wallet
-      v-if="modalName === WalletOption.SelectWallet"
+      v-if="modalName === WalletModalOption.SelectWallet"
       :set-wallet-modal="setWalletModal"
       :set-close-modal="setCloseModal"
     />
@@ -34,7 +34,7 @@
     />
 
     <ModalInstallWallet
-      v-if="modalName === WalletOption.NoExtension"
+      v-if="modalName === WalletModalOption.NoExtension"
       :set-close-modal="setCloseModal"
       :selected-wallet="selectedWallet"
     />
@@ -67,7 +67,7 @@ export default defineComponent({
 
   setup() {
     const {
-      WalletOption,
+      WalletModalOption,
       modalConnectWallet,
       modalName,
       currentAccount,
@@ -102,7 +102,7 @@ export default defineComponent({
 
     return {
       shortenAddress,
-      WalletOption,
+      WalletModalOption,
       modalConnectWallet,
       currentAccount,
       modalName,

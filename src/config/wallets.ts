@@ -1,12 +1,31 @@
 import { objToArray } from 'src/hooks/helper/common';
 
 // Memo: enum value comes from:
-// keyring.accounts.subject.subscribe -> account[address].json.meta.source
+//   const extensions = await getInjectedExtensions();
+//   console.log('extensions', extensions); -> extensions[index] -> name
+
 export enum SupportWallet {
   PolkadotJs = 'polkadot-js',
-  Clover = 'clover',
   MetaMask = 'metamask',
+  Clover = 'clover',
+  Math = 'mathwallet',
 }
+
+export const WalletModalOption = {
+  SelectWallet: 'SelectWallet',
+  SelectSubstrateAccount: 'SelectSubstrateAccount',
+  NoExtension: 'NoExtension',
+  PolkadotJs: SupportWallet.PolkadotJs,
+  Clover: SupportWallet.Clover,
+  MetaMask: SupportWallet.MetaMask,
+  Math: SupportWallet.Math,
+};
+
+export const SubstrateWallets = [
+  SupportWallet.PolkadotJs,
+  SupportWallet.Clover,
+  SupportWallet.Math,
+];
 
 export const supportWalletObj = {
   [SupportWallet.PolkadotJs]: {
@@ -29,6 +48,13 @@ export const supportWalletObj = {
     source: SupportWallet.Clover,
     walletUrl: 'https://clover.finance/',
     guideUrl: 'https://docs.clover.finance/quick-start/about-clover',
+  },
+  [SupportWallet.Math]: {
+    img: require('/src/assets/img/logo-mathwallet.png'),
+    name: 'Math Wallet',
+    source: SupportWallet.Math,
+    walletUrl: 'https://mathwallet.org/en-us/',
+    guideUrl: 'https://blog.mathwallet.org/?p=540',
   },
 };
 
