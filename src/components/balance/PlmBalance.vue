@@ -196,7 +196,7 @@ export default defineComponent({
       emit('update:is-open-modal-faucet', true);
     };
 
-    const canUnlockVestedTokens = props.accountData.vested.gtn(0) && !isH160;
+    const canUnlockVestedTokens = computed(() => props.accountData.vested.gtn(0) && !isH160.value);
 
     const unlockVestedTokens = async (): Promise<void> => {
       const injector = await getInjector(substrateAccounts.value);
