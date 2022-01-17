@@ -61,16 +61,17 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
 
       const accountInfo = results[0];
 
-      const vesting = results[1];
+      const vesting = results[1].unwrapOr(undefined);
       const currentBlock = results[2];
-      const vestingValue = vesting.value;
-      const vestingLocked = vestingValue.locked;
+      const vestingValue = vesting?.length > 0 ? vesting[0] : undefined;
+      const vestingLocked = vestingValue?.locked;
 
       vestedRef.value = vestingLocked
         ? getVested({
             currentBlock: currentBlock.toBn(),
-            startBlock: vesting.value.startingBlock.toBn(),
-            perBlock: vesting.value.perBlock.toBn(),
+            startBlock: vestingValue.startingBlock.toBn(),
+            perBlock: vestingValue.perBlock.toBn(),
+            locked: vestingLocked,
           })
         : new BN(0);
 
