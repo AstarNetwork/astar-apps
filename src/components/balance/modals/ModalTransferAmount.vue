@@ -204,7 +204,7 @@ export default defineComponent({
       const status = result.status;
       if (status.isInBlock) {
         const msg = `Completed at block hash #${status.asInBlock.toString()}`;
-        console.log(msg);
+        // console.log(msg);
 
         store.dispatch('general/showAlertMsg', {
           msg,
@@ -214,7 +214,7 @@ export default defineComponent({
         store.commit('general/setLoading', false);
         closeModal();
       } else {
-        console.log(`Current status: ${status.type}`);
+        // console.log(`Current status: ${status.type}`);
 
         if (status.type !== 'Finalized') {
           store.commit('general/setLoading', true);
@@ -263,10 +263,10 @@ export default defineComponent({
     };
 
     const transfer = async (transferAmt: number, fromAddress: string, toAddress: string) => {
-      console.log('transfer', transferAmt);
-      console.log('fromAccount', fromAddress);
-      console.log('toAccount', toAddress);
-      console.log('selUnit', selectUnit.value);
+      // console.log('transfer', transferAmt);
+      // console.log('fromAccount', fromAddress);
+      // console.log('toAccount', toAddress);
+      // console.log('selUnit', selectUnit.value);
 
       const toastInvalidAddress = () =>
         store.dispatch('general/showAlertMsg', {
@@ -335,11 +335,11 @@ export default defineComponent({
       const receivingAddress = plasmUtils.isValidEvmAddress(toAddress)
         ? plasmUtils.toSS58Address(toAddress)
         : toAddress;
-      console.log('receivingAddress', receivingAddress);
+      // console.log('receivingAddress', receivingAddress);
 
       const unit = getUnit(selectUnit.value);
       const toAmt = plasmUtils.reduceDenomToBalance(transferAmt, unit, decimal.value);
-      console.log('toAmt', toAmt.toString(10));
+      // console.log('toAmt', toAmt.toString(10));
 
       if (isCheckMetamask.value) {
         await transferExtrinsic(toAmt, receivingAddress);

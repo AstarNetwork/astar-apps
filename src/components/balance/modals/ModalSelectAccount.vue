@@ -20,11 +20,11 @@
               tw-bg-transparent tw-placeholder-gray-300
               dark:tw-placeholder-darkGray-600
             "
-            :class="isH160 ? 'input-h160' : 'input-ss58'"
+            :class="isCheckMetaMask ? 'input-h160' : 'input-ss58'"
             type="text"
             spellcheck="false"
             :readonly="isReadOnly"
-            @focus="openOption = !isH160"
+            @focus="openOption = !isCheckMetaMask"
             @blur="closeOption"
             @change="changeAddress"
           />
@@ -32,7 +32,7 @@
       </div>
 
       <span
-        v-if="!isH160"
+        v-if="!isCheckMetaMask"
         class="
           tw-ml-3
           tw-absolute
@@ -70,7 +70,7 @@
           focus:tw-outline-none
         "
       >
-        <div v-if="!isH160">
+        <div v-if="!isCheckMetaMask">
           <ModalSelectAccountOption
             v-for="(account, index) in substrateAccounts"
             :key="index"
@@ -199,6 +199,7 @@ export default defineComponent({
       isEvmAddress,
       substrateAccounts,
       changeAddress,
+      isCheckMetaMask,
     };
   },
 });
