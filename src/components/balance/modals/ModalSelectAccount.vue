@@ -122,7 +122,7 @@ export default defineComponent({
     const isReadOnly = props.role === Role.FromAddress;
     const openOption = ref(false);
     const store = useStore();
-    const { currentAccountName } = useAccount();
+    const { currentAccountName, currentAccount } = useAccount();
     const currentAddress = computed(() => store.getters['general/selectedAddress']);
     const substrateAccounts = computed(() => {
       const accounts = store.getters['general/substrateAccounts'];
@@ -134,22 +134,20 @@ export default defineComponent({
     });
 
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
+    const isCheckMetaMask = computed(() => store.getters['general/isCheckMetamask']);
     const selAccountIdx = ref(currentAddress.value);
     const account = getSelectedAccount(substrateAccounts.value);
 
     const selAddress = ref(!isH160 ? (account?.address as string) : '');
-    const selAccountName = ref(account?.name);
-    const isH160Account = ref<boolean>(isH160.value);
 
     watch(
-      [selAccountIdx, isH160Account],
+      [selAccountIdx, isCheckMetaMask],
       () => {
-        if (!isH160Account.value) {
+        if (!isCheckMetaMask.value) {
           const account = substrateAccounts.value.find(
             (it: SubstrateAccount) => it.address === selAccountIdx.value
           );
           if (!account) return;
-          selAccountName.value = account.name;
           selAddress.value = account.address;
 
           if (props.role === Role.FromAddress) {
@@ -157,9 +155,8 @@ export default defineComponent({
             localStorage.setItem(LOCAL_STORAGE.SELECTED_ADDRESS, String(account.address));
           }
         } else {
-          if (props.role === Role.ToAddress && isH160.value) {
-            selAddress.value = '';
-          }
+          const lookupAddress = props.role === Role.ToAddress ? '' : currentAccount.value;
+          selAddress.value = lookupAddress;
         }
 
         emit('update:sel-address', selAddress.value);

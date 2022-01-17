@@ -30,13 +30,24 @@ export const useAccount = () => {
   watch(
     [isH160Formatted, currentEcdsaAccount],
     () => {
-      if (isH160Formatted.value && currentEcdsaAccount.value.h160) {
-        currentAccount.value = currentEcdsaAccount.value.h160;
+      if (currentEcdsaAccount.value.h160 || currentEcdsaAccount.value.ss58) {
         currentAccountName.value = 'Ethereum Extension';
         localStorage.setItem(SELECTED_ADDRESS, 'Ethereum Extension');
+        store.commit('general/setIsCheckMetamask', true);
+      }
+
+      if (isH160Formatted.value && currentEcdsaAccount.value.h160) {
+        currentAccount.value = currentEcdsaAccount.value.h160;
         store.commit('general/setIsH160Formatted', true);
         return;
       }
+
+      if (!isH160Formatted.value && currentEcdsaAccount.value.ss58) {
+        currentAccount.value = currentEcdsaAccount.value.ss58;
+        store.commit('general/setIsH160Formatted', false);
+        return;
+      }
+
       currentAccount.value = '';
       currentAccountName.value = '';
     },
@@ -55,6 +66,7 @@ export const useAccount = () => {
       currentAccount.value = account.address;
       currentAccountName.value = account.name;
       localStorage.setItem(SELECTED_ADDRESS, String(currentAddress.value));
+      store.commit('general/setIsCheckMetamask', false);
       store.commit('general/setIsH160Formatted', false);
       return;
     },

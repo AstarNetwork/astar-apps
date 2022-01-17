@@ -167,9 +167,9 @@ export default defineComponent({
 
     const { defaultUnitToken, decimal } = useChainMetadata();
 
-    const transferAmt = ref(new BN(0));
-    const fromAddress = ref('');
-    const toAddress = ref('');
+    const transferAmt = ref<BN>(new BN(0));
+    const fromAddress = ref<string>('');
+    const toAddress = ref<string>('');
 
     const selectUnit = ref(defaultUnitToken.value);
     const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
@@ -263,10 +263,10 @@ export default defineComponent({
     };
 
     const transfer = async (transferAmt: number, fromAddress: string, toAddress: string) => {
-      // console.log('transfer', transferAmt);
-      // console.log('fromAccount', fromAddress);
-      // console.log('toAccount', toAddress);
-      // console.log('selUnit', selectUnit.value);
+      console.log('transfer', transferAmt);
+      console.log('fromAccount', fromAddress);
+      console.log('toAccount', toAddress);
+      console.log('selUnit', selectUnit.value);
 
       const toastInvalidAddress = () =>
         store.dispatch('general/showAlertMsg', {

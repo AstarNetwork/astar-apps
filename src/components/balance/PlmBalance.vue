@@ -134,15 +134,34 @@
           </p>
         </div>
       </div>
+
+      <div
+        v-if="isCheckMetaMask && isAstar"
+        class="
+          tw-flex tw-justify-center tw-items-center tw-mb-0 tw-py-3 tw-px-4
+          md:tw-w-56 md:tw-self-end
+          tw-cursor-pointer tw-bg-blue-500 tw-rounded-full tw-shadow-sm
+        "
+        @click="toggleMetaMaskSchema"
+      >
+        <div>
+          <p class="tw-font-bold tw-text-right">
+            <span class="tw-leading-tight">{{
+              $t('balance.switchToLockdrop', { value: isH160 ? 'lockdrop' : 'EVM' })
+            }}</span>
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent, toRefs, computed } from 'vue';
-import { useChainMetadata, useEvmDeposit } from 'src/hooks';
+import { useChainMetadata, useConnectWallet, useEvmDeposit } from 'src/hooks';
 import FormatBalance from 'components/balance/FormatBalance.vue';
 import { useStore } from 'src/store';
 import Logo from '../common/Logo.vue';
+import { endpointKey } from 'src/config/chainEndpoints';
 
 export default defineComponent({
   components: {
@@ -170,6 +189,7 @@ export default defineComponent({
   ],
   setup(props, { emit }) {
     const store = useStore();
+    const isCheckMetaMask = computed(() => store.getters['general/isCheckMetamask']);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const openTransferModal = (): void => {
       emit('update:is-open-transfer', true);
@@ -182,9 +202,14 @@ export default defineComponent({
     const openFaucetModal = (): void => {
       emit('update:is-open-modal-faucet', true);
     };
+    const isAstar = computed(() => {
+      const networkIdx = store.getters['general/networkIdx'];
+      return networkIdx === endpointKey.ASTAR;
+    });
 
     const { defaultUnitToken } = useChainMetadata();
     const { evmDeposit, isEvmDeposit } = useEvmDeposit();
+    const { isMetaMaskSs58, toggleMetaMaskSchema } = useConnectWallet();
 
     return {
       openWithdrawalModal,
@@ -194,6 +219,10 @@ export default defineComponent({
       isEvmDeposit,
       defaultUnitToken,
       isH160,
+      isMetaMaskSs58,
+      toggleMetaMaskSchema,
+      isCheckMetaMask,
+      isAstar,
       ...toRefs(props),
     };
   },

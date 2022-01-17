@@ -1,3 +1,4 @@
+import { ASTAR_SS58_FORMAT } from './helper/plasmUtils';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SubstrateWallets, SupportWallet, WalletModalOption } from 'src/config/wallets';
 import { useAccount } from 'src/hooks';
@@ -6,14 +7,16 @@ import { getChainId, setupNetwork } from 'src/web3';
 import { computed, ref, watchEffect } from 'vue';
 import { useMetamask } from './custom-signature/useMetamask';
 import { castMobileSource, getInjectedExtensions } from './helper/wallet';
+import * as utils from 'src/hooks/custom-signature/utils';
 
 export const useConnectWallet = () => {
   const modalConnectWallet = ref<boolean>(false);
   const modalAccountSelect = ref<boolean>(false);
   const selectedWallet = ref<string>('');
   const modalName = ref<string>('');
+  const isMetaMaskSs58 = ref<boolean>(false);
 
-  const { requestAccounts } = useMetamask();
+  const { requestAccounts, requestSignature } = useMetamask();
   const store = useStore();
   const { currentAccount, currentAccountName, disconnectAccount } = useAccount();
 
@@ -62,6 +65,27 @@ export const useConnectWallet = () => {
     if (result) {
       modalName.value = '';
       return;
+    }
+  };
+
+  const toggleMetaMaskSchema = async () => {
+    isMetaMaskSs58.value = !isMetaMaskSs58.value;
+
+    const accounts = await requestAccounts();
+    const loadingAddr = accounts[0];
+    const loginMsg = `Sign this message to login with address ${loadingAddr}`;
+    const signature = await requestSignature(loginMsg, loadingAddr);
+    const pubKey = utils.recoverPublicKeyFromSig(loadingAddr, loginMsg, signature);
+    const ss58Address = utils.ecdsaPubKeyToSs58(pubKey, ASTAR_SS58_FORMAT);
+
+    if (isMetaMaskSs58.value) {
+      store.commit('general/setIsH160Formatted', false);
+      store.commit('general/setCurrentEcdsaAccount', {
+        ethereum: loadingAddr,
+        ss58: ss58Address,
+      });
+    } else {
+      await loadMetaMask();
     }
   };
 
@@ -119,5 +143,7 @@ export const useConnectWallet = () => {
     setCloseModal,
     setWalletModal,
     disconnectAccount,
+    isMetaMaskSs58,
+    toggleMetaMaskSchema,
   };
 };

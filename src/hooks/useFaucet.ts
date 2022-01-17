@@ -2,7 +2,7 @@ import { useStore } from 'src/store';
 import axios from 'axios';
 import { ref, watch, computed } from 'vue';
 import { useAccount } from './useAccount';
-import { providerEndpoints } from 'src/config/chainEndpoints';
+import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
 export interface FaucetInfo {
   timestamps: {
     lastRequestAt: number;
@@ -35,10 +35,19 @@ export function useFaucet() {
   const faucetEndpoint = providerEndpoints[currentNetworkIdx].faucetEndpoint;
   const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
 
+  const isAstar = computed(() => {
+    const networkIdx = store.getters['general/networkIdx'];
+    return networkIdx === endpointKey.ASTAR;
+  });
+
   const getFaucetInfo = async (account: string): Promise<FaucetInfo> => {
     const fetchData = async () => {
       try {
         isLoading.value = true;
+
+        // Todo: add a faucet for Astar network later
+        if (isAstar) return;
+
         const url = `${faucetEndpoint}/drip/?destination=${account}`;
         const { data } = await axios.get(url);
         isLoading.value = false;
