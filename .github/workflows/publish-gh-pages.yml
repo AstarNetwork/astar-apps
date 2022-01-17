@@ -3,7 +3,7 @@ name: Publish Application
 on:
   push:
     branches:
-      - ledger-support
+      - main
 
 jobs:
   deploy:
