@@ -69,7 +69,7 @@
               {{ $t('balance.faucet') }}
             </button>
             <button
-              :disabled="!(accountData?.vested <= 0 && !isH160)"
+              :disabled="!canUnlockVestedTokens"
               type="button"
               class="transfer-button"
               @click="unlockVestedTokens"
@@ -146,8 +146,8 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, toRefs, computed } from 'vue';
-import { useAccount, useChainMetadata, useEvmDeposit } from 'src/hooks';
+import { defineComponent, toRefs, computed, PropType } from 'vue';
+import { AccountData, useChainMetadata, useEvmDeposit } from 'src/hooks';
 import FormatBalance from 'components/balance/FormatBalance.vue';
 import { useStore } from 'src/store';
 import { useApi } from 'src/hooks';
@@ -165,7 +165,7 @@ export default defineComponent({
       required: true,
     },
     accountData: {
-      type: Object,
+      type: Object as PropType<AccountData>,
       required: true,
     },
     isFaucetLoading: {
@@ -196,6 +196,8 @@ export default defineComponent({
       emit('update:is-open-modal-faucet', true);
     };
 
+    const canUnlockVestedTokens = props.accountData.vested.gtn(0) && !isH160;
+
     const unlockVestedTokens = async (): Promise<void> => {
       const injector = await getInjector(substrateAccounts.value);
       try {
@@ -215,6 +217,10 @@ export default defineComponent({
       } catch (e) {
         console.log(e);
         store.commit('general/setLoading', false);
+        store.dispatch('general/showAlertMsg', {
+          msg: (e as Error).message,
+          alertType: 'error',
+        });
       }
     };
 
@@ -230,6 +236,7 @@ export default defineComponent({
       isEvmDeposit,
       defaultUnitToken,
       isH160,
+      canUnlockVestedTokens,
       ...toRefs(props),
     };
   },
