@@ -20,11 +20,11 @@
               tw-bg-transparent tw-placeholder-gray-300
               dark:tw-placeholder-darkGray-600
             "
-            :class="isCheckMetaMask ? 'input-h160' : 'input-ss58'"
+            :class="isCheckEthWallet ? 'input-h160' : 'input-ss58'"
             type="text"
             spellcheck="false"
             :readonly="isReadOnly"
-            @focus="openOption = !isCheckMetaMask"
+            @focus="openOption = !isCheckEthWallet"
             @blur="closeOption"
             @change="changeAddress"
           />
@@ -32,7 +32,7 @@
       </div>
 
       <span
-        v-if="!isCheckMetaMask"
+        v-if="!isCheckEthWallet"
         class="
           tw-ml-3
           tw-absolute
@@ -70,7 +70,7 @@
           focus:tw-outline-none
         "
       >
-        <div v-if="!isCheckMetaMask">
+        <div v-if="!isCheckEthWallet">
           <ModalSelectAccountOption
             v-for="(account, index) in substrateAccounts"
             :key="index"
@@ -134,16 +134,16 @@ export default defineComponent({
     });
 
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
-    const isCheckMetaMask = computed(() => store.getters['general/isCheckMetamask']);
+    const isCheckEthWallet = computed(() => store.getters['general/isCheckEthWallet']);
     const selAccountIdx = ref(currentAddress.value);
     const account = getSelectedAccount(substrateAccounts.value);
 
     const selAddress = ref(!isH160 ? (account?.address as string) : '');
 
     watch(
-      [selAccountIdx, isCheckMetaMask],
+      [selAccountIdx, isCheckEthWallet],
       () => {
-        if (!isCheckMetaMask.value) {
+        if (!isCheckEthWallet.value) {
           const account = substrateAccounts.value.find(
             (it: SubstrateAccount) => it.address === selAccountIdx.value
           );
@@ -199,7 +199,7 @@ export default defineComponent({
       isEvmAddress,
       substrateAccounts,
       changeAddress,
-      isCheckMetaMask,
+      isCheckEthWallet,
     };
   },
 });

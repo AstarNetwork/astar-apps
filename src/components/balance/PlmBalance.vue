@@ -163,7 +163,7 @@
       </div>
 
       <div
-        v-if="isCheckMetaMask && isAstar"
+        v-if="isCheckEthWallet"
         class="
           tw-flex tw-justify-center tw-items-center tw-mb-0 tw-py-3 tw-px-2
           xl:tw-px-5
@@ -222,7 +222,7 @@ export default defineComponent({
   ],
   setup(props, { emit }) {
     const store = useStore();
-    const isCheckMetaMask = computed(() => store.getters['general/isCheckMetamask']);
+    const isCheckEthWallet = computed(() => store.getters['general/isCheckEthWallet']);
     const { api } = useApi();
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const selectedAddress = computed(() => store.getters['general/selectedAddress']);
@@ -286,7 +286,7 @@ export default defineComponent({
       isH160,
       isMetaMaskSs58,
       toggleMetaMaskSchema,
-      isCheckMetaMask,
+      isCheckEthWallet,
       isAstar,
       canUnlockVestedTokens,
       ...toRefs(props),

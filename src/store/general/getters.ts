@@ -22,7 +22,7 @@ export interface GeneralGetters {
   allAccountNames(state: State): string[];
   networkStatus(state: State): string;
   networkIdx(state: State): number;
-  isCheckMetamask(state: State): boolean;
+  isCheckEthWallet(state: State): boolean;
   isH160Formatted(state: State): boolean;
   currentEcdsaAccount(state: State): EcdsaAccount;
   selectedAddress(state: State): string;
@@ -42,13 +42,13 @@ const getters: GetterTree<State, StateInterface> & GeneralGetters = {
   allAccountNames: (state) => state.allAccountNames,
   networkStatus: (state) => state.currentNetworkStatus,
   networkIdx: (state) => state.currentNetworkIdx,
-  isCheckMetamask: (state) => state.isCheckMetamask,
+  isCheckEthWallet: (state) => state.isCheckEthWallet,
   isH160Formatted: (state) => state.isH160Formatted,
   currentEcdsaAccount: (state) => state.currentEcdsaAccount,
   customEndpoint: (state) => state.currentCustomEndpoint,
   theme: (state: State) => state.currentTheme,
   selectedAddress: (state: State) => {
-    if (state.isCheckMetamask) {
+    if (state.isCheckEthWallet) {
       return state.currentEcdsaAccount.ss58;
     } else if (state.isH160Formatted) {
       return state.currentEcdsaAccount.h160;

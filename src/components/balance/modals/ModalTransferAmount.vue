@@ -172,14 +172,14 @@ export default defineComponent({
     const toAddress = ref<string>('');
 
     const selectUnit = ref(defaultUnitToken.value);
-    const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
+    const isCheckEthWallet = computed(() => store.getters['general/isCheckEthWallet']);
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
     // isCustomSigBlocked is temporary until extrinsic call pallet is deployed to all networks.
     const isCustomSigBlocked = computed(() => !!!providerEndpoints[currentNetworkIdx.value].prefix);
     const canExecuteTransaction = computed(() =>
-      isCheckMetamask.value ? !isCustomSigBlocked.value : true
+      isCheckEthWallet.value ? !isCustomSigBlocked.value : true
     );
 
     const formatBalance = computed(() => {
@@ -341,7 +341,7 @@ export default defineComponent({
       const toAmt = plasmUtils.reduceDenomToBalance(transferAmt, unit, decimal.value);
       // console.log('toAmt', toAmt.toString(10));
 
-      if (isCheckMetamask.value) {
+      if (isCheckEthWallet.value) {
         await transferExtrinsic(toAmt, receivingAddress);
       } else {
         await transferLocal(toAmt, fromAddress, receivingAddress);
