@@ -133,7 +133,7 @@ export default {
     dappsStore: 'dApps Store',
     dappStaking: 'dApp Staking',
     registerDapp: 'Enregistrez votre dApp',
-    noDappsRegistered: 'Aucune dApps enregistrée. Soyez le premier à enregistrer une dApp.',
+    noDappsRegistered: 'Aucune dApp enregistrée. Soyez le premier à enregistrer une dApp.',
     totalStake: 'Total stake:',
     yourStake: 'Votre stake: ',
     add: 'Ajouter',
@@ -143,7 +143,7 @@ export default {
     claim: 'Claim',
     stakersCount: 'Stakers:',
     warning:
-      "Le montant minimum de staking est de {amount} et jusqu'à {amount} stakers par contrat.",
+      "Le montant minimum de staking est de {amount} et jusqu'à {stakers} stakers par contrat.",
     tvl: 'TVL IN DAPPS',
     dappsCount: 'COMPTEUR DE DAPPS',
     requirement: 'EXIGENCE',
