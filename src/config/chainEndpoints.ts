@@ -41,7 +41,7 @@ export const providerEndpoints: ChainProvider[] = [
     isStoreEnabled: false,
     subscan: 'https://astar.subscan.io',
     evmChainId: '592',
-    evmRpc: 'https://rpc.astar.bldnodes.org/',
+    evmRpc: 'https://rpc.astar.network:8545',
     faucetEndpoint: '',
   },
   {
