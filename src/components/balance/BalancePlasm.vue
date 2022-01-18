@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isConnected(currentNetworkStatus)">
+  <div>
     <div v-if="isH160">
       <div class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4">
         <WalletH160
@@ -9,28 +9,13 @@
         />
       </div>
     </div>
-    <div v-if="isSS58">
-      <div class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4">
-        <Wallet v-model:isOpen="modalAccount" :wallet-name="currentAccountName" />
-      </div>
-      <div class="tw-grid lg:tw-grid-cols-2 tw-gap-4 tw-mt-4">
-        <Addresses :address="currentAccount" />
-      </div>
-    </div>
 
-    <div
-      v-if="isH160 || isSS58"
-      class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4 tw-mt-4"
-    >
-      <ToggleMetaMask />
-    </div>
-
-    <div v-if="!isH160 && !isSS58">
+    <div v-if="!isH160">
       <div class="tw-grid lg:tw-grid-cols-2 tw-gap-4">
         <Wallet v-model:isOpen="modalAccount" :wallet-name="currentAccountName" />
       </div>
       <div class="tw-grid lg:tw-grid-cols-2 tw-gap-4 tw-mt-8">
-        <Addresses :address="currentAccount" />
+        <Addresses />
       </div>
     </div>
 
@@ -52,21 +37,14 @@
         v-model:isOpenModalFaucet="modalFaucet"
         :address="currentAccount"
         :account-data="accountData"
+        :is-faucet-loading="isLoading"
       />
     </div>
 
     <!-- Modals -->
-    <ModalAccount
-      v-if="modalAccount"
-      v-model:isOpen="modalAccount"
-      :all-accounts="allAccounts"
-      :all-account-names="allAccountNames"
-    />
     <ModalTransferAmount
       v-if="modalTransferAmount"
       v-model:isOpen="modalTransferAmount"
-      :all-accounts="allAccounts"
-      :all-account-names="allAccountNames"
       :balance="balance"
       :account-data="accountData"
     />
@@ -92,17 +70,16 @@
   /> -->
 </template>
 <script lang="ts">
+import 'animate.css';
 import { useMeta } from 'quasar';
 import { useAccount, useApi, useBalance, useEvmDeposit, useFaucet } from 'src/hooks';
 import { useStore } from 'src/store';
 import { computed, defineComponent, reactive, toRefs } from 'vue';
 import Addresses from './Addresses.vue';
-import ModalAccount from './modals/ModalAccount.vue';
+import ModalFaucet from './modals/ModalFaucet.vue';
 import ModalTransferAmount from './modals/ModalTransferAmount.vue';
 import ModalWithdrawalEvmDeposit from './modals/ModalWithdrawalEvmDeposit.vue';
-import ModalFaucet from './modals/ModalFaucet.vue';
 import PlmBalance from './PlmBalance.vue';
-import ToggleMetaMask from './ToggleMetaMask.vue';
 import TotalBalance from './TotalBalance.vue';
 import Wallet from './Wallet.vue';
 import WalletH160 from './WalletH160.vue';
@@ -122,8 +99,6 @@ export default defineComponent({
     PlmBalance,
     TotalBalance,
     Addresses,
-    ToggleMetaMask,
-    ModalAccount,
     ModalTransferAmount,
     ModalWithdrawalEvmDeposit,
     ModalFaucet,
@@ -140,30 +115,27 @@ export default defineComponent({
     });
 
     const store = useStore();
-    const { allAccounts, allAccountNames, currentAccount, currentAccountName } = useAccount();
+    const { currentAccount, currentAccountName } = useAccount();
     const { api } = useApi();
     const { balance, accountData } = useBalance(api, currentAccount);
 
     const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
-    const isSS58 = computed(() => store.getters['general/isCheckMetamask']);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const { evmDeposit } = useEvmDeposit();
-    const { faucetInfo, requestFaucet } = useFaucet();
+    const { faucetInfo, requestFaucet, isLoading } = useFaucet();
 
     return {
       ...toRefs(stateModal),
       balance,
       evmDeposit,
-      allAccounts,
-      allAccountNames,
       currentAccount,
       currentAccountName,
       currentNetworkStatus,
       accountData,
-      isSS58,
       isH160,
       faucetInfo,
       requestFaucet,
+      isLoading,
     };
   },
   methods: {

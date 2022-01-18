@@ -1,6 +1,12 @@
 import { GetterTree } from 'vuex';
 import { StateInterface } from '../index';
-import { GeneralStateInterface as State, Theme, AlertBox, EcdsaAccount } from './state';
+import {
+  GeneralStateInterface as State,
+  Theme,
+  AlertBox,
+  EcdsaAccount,
+  SubstrateAccount,
+} from './state';
 import type { ChainInfo } from 'src/hooks/useChainInfo';
 import type { Extensions } from 'src/hooks/useMetaExtensions';
 
@@ -11,17 +17,17 @@ export interface GeneralGetters {
   chainInfo(state: State): ChainInfo;
   metaExtensions(state: State): Extensions;
   extensionCount(state: State): number;
+  substrateAccounts(state: State): SubstrateAccount[];
   allAccounts(state: State): string[];
   allAccountNames(state: State): string[];
   networkStatus(state: State): string;
   networkIdx(state: State): number;
-  isCheckMetamask(state: State): boolean;
+  isEthWallet(state: State): boolean;
   isH160Formatted(state: State): boolean;
   currentEcdsaAccount(state: State): EcdsaAccount;
-  accountIdx(state: State): number;
+  selectedAddress(state: State): string;
   customEndpoint(state: State): string;
   theme(state: State): Theme;
-  selectedAccountAddress(state: State): string;
 }
 
 const getters: GetterTree<State, StateInterface> & GeneralGetters = {
@@ -31,24 +37,18 @@ const getters: GetterTree<State, StateInterface> & GeneralGetters = {
   chainInfo: (state) => state.chainInfo,
   metaExtensions: (state) => state.metaExtensions,
   extensionCount: (state) => state.extensionCount,
+  substrateAccounts: (state) => state.substrateAccounts,
   allAccounts: (state) => state.allAccounts,
   allAccountNames: (state) => state.allAccountNames,
   networkStatus: (state) => state.currentNetworkStatus,
   networkIdx: (state) => state.currentNetworkIdx,
-  isCheckMetamask: (state) => state.isCheckMetamask,
+  isEthWallet: (state) => state.isEthWallet,
   isH160Formatted: (state) => state.isH160Formatted,
   currentEcdsaAccount: (state) => state.currentEcdsaAccount,
-  accountIdx: (state) => state.currentAccountIdx,
   customEndpoint: (state) => state.currentCustomEndpoint,
   theme: (state: State) => state.currentTheme,
-  selectedAccountAddress: (state: State) => {
-    if (state.isCheckMetamask) {
-      return state.currentEcdsaAccount.ss58;
-    } else if (state.isH160Formatted) {
-      return state.currentEcdsaAccount.h160;
-    } else {
-      return state.allAccounts[state.currentAccountIdx];
-    }
+  selectedAddress: (state: State) => {
+    return state.currentAddress;
   },
 };
 

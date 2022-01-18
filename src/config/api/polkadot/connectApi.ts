@@ -1,11 +1,13 @@
 import { ApiPromise, WsProvider } from '@polkadot/api';
-import { keyring } from '@polkadot/ui-keyring';
 import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
+import type { InjectedExtension } from '@polkadot/extension-inject/types';
+import { keyring } from '@polkadot/ui-keyring';
 import { isTestChain } from '@polkadot/util';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
-import { useStore } from 'src/store';
 import { providerEndpoints } from 'src/config/chainEndpoints';
-import type { InjectedExtension } from '@polkadot/extension-inject/types';
+import { objToArray } from 'src/hooks/helper/common';
+import { getInjectedExtensions } from 'src/hooks/helper/wallet';
+import { useStore } from 'src/store';
 
 interface InjectedAccountExt {
   address: string;
@@ -66,41 +68,49 @@ export async function connectApi(endpoint: string, networkIdx: number) {
   });
 
   const store = useStore();
-
   store.commit('general/setCurrentNetworkStatus', 'connecting');
 
   api.on('error', (error: Error) => console.error(error.message));
-  api.on('ready', async () => {
-    const injectedPromise = web3Enable('polkadot-js/apps');
+  await api.isReady;
+  const injectedPromise = await getInjectedExtensions();
 
-    try {
-      extensions = await injectedPromise;
-    } catch (e) {
-      console.error(e);
-    }
+  try {
+    extensions = await injectedPromise;
+  } catch (e) {
+    console.error(e);
+  }
 
-    try {
-      await loadAccounts(api);
+  try {
+    await loadAccounts(api);
 
-      keyring.accounts.subject.subscribe((accounts) => {
-        if (accounts) {
-          store.commit('general/setAllAccounts', Object.keys(accounts));
-          // Memo: remove space from UI.
-          store.commit(
-            'general/setAllAccountNames',
-            Object.values(accounts).map((obj) => obj.option.name.replace('\n              ', ''))
-          );
-        }
-      });
-      //subscription.unsubscribe();
+    keyring.accounts.subject.subscribe((accounts) => {
+      if (accounts) {
+        const accountArray = objToArray(accounts);
+        const accountMap = accountArray.map((account) => {
+          const { address, meta } = account.json;
+          return {
+            address,
+            name: meta.name.replace('\n              ', ''),
+            source: meta.source,
+          };
+        });
 
-      store.commit('general/setCurrentNetworkStatus', 'connected');
-    } catch (err) {
-      console.error(err);
+        store.commit('general/setSubstrateAccounts', accountMap);
+        // Todo: remove
+        store.commit('general/setAllAccounts', Object.keys(accounts));
+        // Memo: remove space from UI.
+        store.commit(
+          'general/setAllAccountNames',
+          Object.values(accounts).map((obj) => obj.option.name.replace('\n              ', ''))
+        );
+      }
+    });
 
-      store.commit('general/setCurrentNetworkStatus', 'offline');
-    }
-  });
+    store.commit('general/setCurrentNetworkStatus', 'connected');
+  } catch (err) {
+    console.error(err);
+    store.commit('general/setCurrentNetworkStatus', 'offline');
+  }
 
   return {
     api,

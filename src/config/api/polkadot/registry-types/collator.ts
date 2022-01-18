@@ -51,6 +51,10 @@ const definitions: RegistryTypes = {
     formerStakedEra: 'EraIndex',
     claimedRewards: 'Balance',
   },
+  PalletDappsStakingUnlockingChunk: {
+    amount: 'Balance',
+    unlockEra: 'EraIndex',
+  },
 };
 
 export default definitions;

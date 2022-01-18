@@ -1,8 +1,8 @@
 import { useStore } from 'src/store';
 import axios from 'axios';
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { useAccount } from './useAccount';
-import { providerEndpoints } from 'src/config/chainEndpoints';
+import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
 export interface FaucetInfo {
   timestamps: {
     lastRequestAt: number;
@@ -28,20 +28,45 @@ const initialInfoState = {
 export function useFaucet() {
   const faucetInfo = ref<FaucetInfo>(initialInfoState);
   const hash = ref<string>('');
+  const isLoading = ref<boolean>(false);
   const { currentAccount } = useAccount();
   const store = useStore();
   const currentNetworkIdx = Number(localStorage.getItem('networkIdx'));
   const faucetEndpoint = providerEndpoints[currentNetworkIdx].faucetEndpoint;
+  const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
+
+  const isAstar = computed(() => {
+    const networkIdx = store.getters['general/networkIdx'];
+    return networkIdx === endpointKey.ASTAR;
+  });
 
   const getFaucetInfo = async (account: string): Promise<FaucetInfo> => {
-    try {
-      const url = `${faucetEndpoint}/drip/?destination=${account}`;
-      const { data } = await axios.get(url);
+    const fetchData = async () => {
+      try {
+        isLoading.value = true;
 
-      return data;
+        // Todo: add a faucet for Astar network later
+        if (isAstar.value) return;
+
+        const url = `${faucetEndpoint}/drip/?destination=${account}`;
+        const { data } = await axios.get(url);
+        isLoading.value = false;
+        return data;
+      } catch (error: any) {
+        throw Error(error.message || 'Something went wrong');
+      }
+    };
+
+    try {
+      return await fetchData();
     } catch (error) {
-      console.error(error);
-      return initialInfoState;
+      // Memo: Recursion
+      try {
+        return await fetchData();
+      } catch (error: any) {
+        console.error(error.message);
+        return initialInfoState;
+      }
     }
   };
 
@@ -49,7 +74,7 @@ export function useFaucet() {
     [hash, currentAccount],
     async () => {
       const currentAccountRef = currentAccount.value;
-      if (!currentAccountRef) return;
+      if (!currentAccountRef || isH160Formatted.value) return;
 
       faucetInfo.value = await getFaucetInfo(currentAccountRef);
     },
@@ -89,5 +114,6 @@ export function useFaucet() {
   return {
     faucetInfo,
     requestFaucet,
+    isLoading,
   };
 }

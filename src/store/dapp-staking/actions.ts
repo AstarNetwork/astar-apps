@@ -1,23 +1,24 @@
-import { ActionTree, Dispatch } from 'vuex';
-import { web3FromSource } from '@polkadot/extension-dapp';
-import { Option, Struct, BTreeMap } from '@polkadot/types';
+import { SubstrateAccount } from './../general/state';
+import { ApiPromise } from '@polkadot/api';
+import { SubmittableExtrinsic } from '@polkadot/api/types';
+import { BTreeMap, Option, Struct, u32 } from '@polkadot/types';
 import {
-  EraIndex,
   AccountId,
   Balance,
-  EventRecord,
   DispatchError,
+  EraIndex,
+  EventRecord,
 } from '@polkadot/types/interfaces';
+import { ISubmittableResult, ITuple } from '@polkadot/types/types';
 import { formatBalance } from '@polkadot/util';
 import BN from 'bn.js';
-import { StateInterface } from '../index';
-import { DappItem, DappStateInterface as State, NewDappItem } from './state';
-import { uploadFile, addDapp, getDapps } from 'src/hooks/firebase';
-import { useApi } from 'src/hooks/useApi';
-import { ApiPromise } from '@polkadot/api';
-import { ISubmittableResult, ITuple } from '@polkadot/types/types';
-import { SubmittableExtrinsic } from '@polkadot/api/types';
+import { addDapp, getDapps, uploadFile } from 'src/hooks/firebase';
 import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
+import { useApi } from 'src/hooks/useApi';
+import { ActionTree, Dispatch } from 'vuex';
+import { StateInterface } from '../index';
+import { getInjector } from './../../hooks/helper/wallet';
+import { DappItem, DappStateInterface as State, NewDappItem } from './state';
 
 let collectionKey: string;
 
@@ -115,6 +116,30 @@ const getEraStakes = async (
   return eraStakeMap;
 };
 
+const getClaimableEraStakes = async (
+  api: ApiPromise,
+  contractAddress: string,
+  currentEra: number,
+  historyDepth: number
+): Promise<Map<number, Option<EraStakingPoints>>> => {
+  let eraStakeMap = new Map();
+  const lowestEra = Math.max(currentEra - historyDepth, 1);
+  for (let era = currentEra - 1; era >= lowestEra; era--) {
+    const eraStake = await api.query.dappsStaking.contractEraStake<EraStakingPoints>(
+      getAddressEnum(contractAddress),
+      era
+    );
+
+    if (!eraStake.isEmpty) {
+      eraStakeMap.set(era, eraStake);
+    } else {
+      break;
+    }
+  }
+
+  return eraStakeMap;
+};
+
 const getLowestClaimableEra = (
   api: ApiPromise,
   currentEra: number,
@@ -144,6 +169,18 @@ const getErasToClaim = async (api: ApiPromise, contractAddress: string): Promise
       result.push(era);
     }
   }
+
+  console.log('Eras to claim', result);
+  return result;
+};
+
+const getErasToClaim2 = (eraStakeMap: Map<number, Option<EraStakingPoints>>): number[] => {
+  const result: number[] = [];
+  eraStakeMap.forEach((map: Option<EraStakingPoints>, era: number) => {
+    if (map.isNone || (map.isSome && map.unwrap().claimedRewards.eq(new BN(0)))) {
+      result.push(era);
+    }
+  });
 
   console.log('Eras to claim', result);
   return result;
@@ -195,7 +232,7 @@ const actions: ActionTree<State, StateInterface> = {
   ): Promise<boolean> {
     try {
       if (parameters.api) {
-        const injector = await web3FromSource('polkadot-js');
+        const injector = await getInjector(parameters.substrateAccounts);
         const unsub = await parameters.api.tx.dappsStaking
           .register(getAddressEnum(parameters.dapp.address))
           .signAndSend(
@@ -208,11 +245,12 @@ const actions: ActionTree<State, StateInterface> = {
               if (result.status.isFinalized) {
                 if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
                   try {
+                    const collectionKey = await getCollectionKey();
                     if (parameters.dapp.iconFileName) {
                       const fileName = `${parameters.dapp.address}_${parameters.dapp.iconFileName}`;
                       parameters.dapp.iconUrl = await uploadFile(
                         fileName,
-                        await getCollectionKey(),
+                        collectionKey,
                         parameters.dapp.iconFile
                       );
                     } else {
@@ -223,7 +261,17 @@ const actions: ActionTree<State, StateInterface> = {
                       parameters.dapp.url = '';
                     }
 
-                    const collectionKey = await getCollectionKey();
+                    parameters.dapp.imagesUrl = [];
+                    for (let i = 0; i < parameters.dapp.imagesContent.length; i++) {
+                      const dappImage = parameters.dapp.imagesContent[i];
+                      const dappImageUrl = await uploadFile(
+                        `${parameters.dapp.address}_${i}_${parameters.dapp.images[i].name}`,
+                        collectionKey,
+                        dappImage
+                      );
+                      parameters.dapp.imagesUrl.push(dappImageUrl);
+                    }
+
                     const addedDapp = await addDapp(collectionKey, parameters.dapp);
                     commit('addDapp', addedDapp);
 
@@ -269,8 +317,7 @@ const actions: ActionTree<State, StateInterface> = {
   async stake({ commit, dispatch }, parameters: StakingParameters): Promise<boolean> {
     try {
       if (parameters.api) {
-        const injector = await web3FromSource('polkadot-js');
-        // const nonce = await parameters.api.rpc.system.accountNextIndex(parameters.senderAddress);
+        const injector = await getInjector(parameters.substrateAccounts);
         const unsub = await parameters.api.tx.dappsStaking
           .bondAndStake(getAddressEnum(parameters.dapp.address), parameters.amount)
           .signAndSend(
@@ -321,7 +368,7 @@ const actions: ActionTree<State, StateInterface> = {
   async unstake({ commit, dispatch }, parameters: StakingParameters): Promise<boolean> {
     try {
       if (parameters.api) {
-        const injector = await web3FromSource('polkadot-js');
+        const injector = await getInjector(parameters.substrateAccounts);
         const unsub = await parameters.api.tx.dappsStaking
           .unbondUnstakeAndWithdraw(getAddressEnum(parameters.dapp.address), parameters.amount)
           .signAndSend(
@@ -333,6 +380,7 @@ const actions: ActionTree<State, StateInterface> = {
             (result) => {
               if (result.status.isFinalized) {
                 if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
+                  commit('setUnlockingChunks', -1);
                   dispatch(
                     'general/showAlertMsg',
                     {
@@ -364,16 +412,115 @@ const actions: ActionTree<State, StateInterface> = {
       const error = e as unknown as Error;
       commit('general/setLoading', false, { root: true });
       showError(dispatch, error.message);
+    }
+
+    return false;
+  },
+
+  async unbond({ commit, dispatch }, parameters: StakingParameters): Promise<boolean> {
+    try {
+      if (parameters.api) {
+        const injector = await getInjector(parameters.substrateAccounts);
+        const unsub = await parameters.api.tx.dappsStaking
+          .unbondAndUnstake(getAddressEnum(parameters.dapp.address), parameters.amount)
+          .signAndSend(
+            parameters.senderAddress,
+            {
+              signer: injector?.signer,
+              nonce: -1,
+            },
+            (result) => {
+              if (result.status.isFinalized) {
+                if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
+                  commit('setUnlockingChunks', -1);
+                  dispatch(
+                    'general/showAlertMsg',
+                    {
+                      msg: `You started unstaking of ${getFormattedBalance(parameters)} from ${
+                        parameters.dapp.name
+                      }.`,
+                      alertType: 'success',
+                    },
+                    { root: true }
+                  );
+
+                  parameters.finalizeCallback();
+                }
+
+                commit('general/setLoading', false, { root: true });
+                unsub();
+              } else {
+                commit('general/setLoading', true, { root: true });
+              }
+            }
+          );
+
+        return true;
+      } else {
+        showError(dispatch, 'Api is undefined');
+        return false;
+      }
+    } catch (e) {
+      const error = e as unknown as Error;
+      commit('general/setLoading', false, { root: true });
+      showError(dispatch, error.message);
+    }
+
+    return false;
+  },
+
+  async withdrawUnbonded({ commit, dispatch }, parameters: WithdrawParameters): Promise<boolean> {
+    try {
+      if (parameters.api) {
+        const injector = await getInjector(parameters.substrateAccounts);
+        const unsub = await parameters.api.tx.dappsStaking.withdrawUnbonded().signAndSend(
+          parameters.senderAddress,
+          {
+            signer: injector?.signer,
+            nonce: -1,
+          },
+          (result) => {
+            if (result.status.isFinalized) {
+              if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
+                commit('setUnlockingChunks', -1);
+                dispatch(
+                  'general/showAlertMsg',
+                  {
+                    msg: 'Sucessfully withdrawed',
+                    alertType: 'success',
+                  },
+                  { root: true }
+                );
+              }
+
+              commit('general/setLoading', false, { root: true });
+              unsub();
+            } else {
+              commit('general/setLoading', true, { root: true });
+            }
+          }
+        );
+
+        return true;
+      } else {
+        showError(dispatch, 'Api is undefined');
+        return false;
+      }
+    } catch (e) {
+      const error = e as unknown as Error;
+      commit('general/setLoading', false, { root: true });
+      showError(dispatch, error.message);
     } finally {
     }
 
     return false;
   },
 
-  async claimBatch({ commit, dispatch }, parameters: StakingParameters): Promise<boolean> {
+  async claimBatch({ commit, dispatch }, parameters: ClaimParameters): Promise<boolean> {
     try {
       if (parameters.api) {
-        const erasToClaim = await getErasToClaim(parameters.api, parameters.dapp.address);
+        //const erasToClaim = await getErasToClaim(parameters.api, parameters.dapp.address);
+        const erasToClaim = parameters.unclaimedEras;
 
         if (erasToClaim.length === 0) {
           dispatch(
@@ -395,7 +542,7 @@ const actions: ActionTree<State, StateInterface> = {
           );
         }
 
-        const injector = await web3FromSource('polkadot-js');
+        const injector = await getInjector(parameters.substrateAccounts);
         const unsub = await parameters.api.tx.utility.batch(transactions).signAndSend(
           parameters.senderAddress,
           {
@@ -483,7 +630,13 @@ const actions: ActionTree<State, StateInterface> = {
     try {
       const currentEraIndex = await parameters.api.query.dappsStaking.currentEra<EraIndex>();
       const currentEra = parseInt(currentEraIndex.toString());
-      const eraStakesMap = await getEraStakes(parameters.api, parameters.dapp.address);
+      const historyDepth = parseInt(parameters.api.consts.dappsStaking.historyDepth.toString());
+      const eraStakesMap = await getClaimableEraStakes(
+        parameters.api,
+        parameters.dapp.address,
+        currentEra,
+        historyDepth
+      );
       const lowestClaimableEra = getLowestClaimableEra(parameters.api, currentEra, eraStakesMap);
       const bonusEraDuration = parseInt(
         await parameters.api.consts.dappsStaking.bonusEraDuration.toString()
@@ -495,7 +648,7 @@ const actions: ActionTree<State, StateInterface> = {
       for (let era = currentEra - 1; era >= 1; era--) {
         const eraStakes = eraStakesMap.get(era);
 
-        if (eraStakes) {
+        if (eraStakes?.isSome) {
           currentEraStakes = eraStakes.unwrap();
           break;
         }
@@ -510,9 +663,9 @@ const actions: ActionTree<State, StateInterface> = {
       });
 
       // calculate reward
-      result.unclaimedEras = await getErasToClaim(parameters.api, parameters.dapp.address);
+      result.unclaimedEras = getErasToClaim2(eraStakesMap);
       for (let era of result.unclaimedEras) {
-        const eraStakes: EraStakingPoints | undefined = eraStakesMap.get(era)?.unwrap();
+        const eraStakes: EraStakingPoints | undefined = eraStakesMap.get(era)?.unwrapOr(undefined);
         if (eraStakes) {
           currentEraStakes = eraStakes;
 
@@ -558,14 +711,18 @@ const actions: ActionTree<State, StateInterface> = {
         }
       }
 
-      result.estimatedClaimedRewards = getEstimatedClaimedAwards(
-        currentEra,
-        eraStakesMap,
-        eraRewardsAndStakeMap,
-        parameters.api,
-        parameters.senderAddress,
-        bonusEraDuration
-      );
+      // Commented out becasue the calculation is not feasible in reasonable time
+      // on Shibuya, and soon the same will happen on Shiden (as number of era increases).
+
+      // result.estimatedClaimedRewards = getEstimatedClaimedAwards(
+      //   currentEra,
+      //   eraStakesMap,
+      //   eraRewardsAndStakeMap,
+      //   parameters.api,
+      //   parameters.senderAddress,
+      //   bonusEraDuration
+      // );
+      result.estimatedClaimedRewards = parameters.api.createType('Balance', 0);
     } catch (err) {
       const error = err as unknown as Error;
       console.error(error);
@@ -584,17 +741,25 @@ const actions: ActionTree<State, StateInterface> = {
     await api?.value?.isReady;
 
     try {
-      const [minimumStakingAmount, maxNumberOfStakersPerContract] = await Promise.all([
-        api?.value?.consts.dappsStaking.minimumStakingAmount,
-        api?.value?.consts.dappsStaking.maxNumberOfStakersPerContract,
-      ]);
+      if (api?.value) {
+        const [
+          minimumStakingAmount,
+          maxNumberOfStakersPerContract,
+          maxUnlockingChunks,
+          unbondingPeriod,
+        ] = await Promise.all([
+          api.value.consts.dappsStaking.minimumStakingAmount,
+          api.value.consts.dappsStaking.maxNumberOfStakersPerContract as u32,
+          api.value.consts.dappsStaking.maxUnlockingChunks as u32,
+          api.value.consts.dappsStaking.unbondingPeriod as u32,
+        ]);
 
-      const minimumStakingAmountBalance = api?.value?.createType('Balance', minimumStakingAmount);
-      commit('setMinimumStakingAmount', minimumStakingAmountBalance?.toHuman());
-      commit(
-        'setMaxNumberOfStakersPerContract',
-        parseInt(maxNumberOfStakersPerContract?.toString() || '0')
-      );
+        const minimumStakingAmountBalance = api?.value?.createType('Balance', minimumStakingAmount);
+        commit('setMinimumStakingAmount', minimumStakingAmountBalance?.toHuman());
+        commit('setMaxNumberOfStakersPerContract', maxNumberOfStakersPerContract?.toNumber());
+        commit('setUnbondingPeriod', unbondingPeriod?.toNumber());
+        commit('setMaxUnlockingChunks', maxUnlockingChunks?.toNumber());
+      }
     } catch (e) {
       const error = e as unknown as Error;
       showError(dispatch, error.message);
@@ -611,7 +776,6 @@ const getEstimatedClaimedAwards = (
   bonusEraDuration: number
 ): Balance => {
   const firstStakedEra = Math.min(...eraStakesMap.keys());
-  //let claimedSoFar = api.createType('Balance', new BN(0));
   let claimedSoFar = new BN(0);
 
   if (firstStakedEra) {
@@ -657,6 +821,7 @@ export interface RegisterParameters {
   dapp: NewDappItem;
   senderAddress: string;
   api: ApiPromise;
+  substrateAccounts: SubstrateAccount[];
 }
 
 export interface StakingParameters {
@@ -666,7 +831,19 @@ export interface StakingParameters {
   api: ApiPromise;
   decimals: number;
   unit: string;
+  substrateAccounts: SubstrateAccount[];
   finalizeCallback: () => void;
+}
+
+export interface ClaimParameters extends StakingParameters {
+  unclaimedEras: number[];
+  substrateAccounts: SubstrateAccount[];
+}
+
+export interface WithdrawParameters {
+  api: ApiPromise;
+  senderAddress: string;
+  substrateAccounts: SubstrateAccount[];
 }
 
 export interface StakeInfo {

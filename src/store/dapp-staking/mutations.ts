@@ -24,6 +24,18 @@ const mutation: MutationTree<State> & ContractsMutations = {
   setMaxNumberOfStakersPerContract(state: State, payload: number) {
     state.maxNumberOfStakersPerContract = payload;
   },
+
+  setUnbondingPeriod(state: State, payload: number) {
+    state.unbondingPeriod = payload;
+  },
+
+  setMaxUnlockingChunks(state: State, payload: number) {
+    state.maxUnlockingChunks = payload;
+  },
+
+  setUnlockingChunks(state: State, payload: number) {
+    state.unlockingChunks = payload;
+  },
 };
 
 export default mutation;

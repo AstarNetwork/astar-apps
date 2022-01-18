@@ -35,7 +35,6 @@ export default defineComponent({
         extensions[selectedIndex]
           .update(JSON.parse(JSON.stringify(chainInfo.value)))
           .then(() => {
-            console.log('updated');
             isBusy.value = false;
             isComplete.value = true;
           })

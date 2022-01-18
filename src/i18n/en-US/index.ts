@@ -2,12 +2,17 @@ export default {
   confirm: 'Confirm',
   cancel: 'Cancel',
   change: 'Change',
+  disconnect: 'Disconnect',
   copy: 'Copy',
   max: 'Max',
   forget: 'Forget',
   close: 'Close',
   subscan: 'Subscan',
   usd: 'USD',
+  'polkadot-js': 'Polkadot.js',
+  metamask: 'MetaMask',
+  clover: 'Clover',
+  mathwallet: 'Math Wallet',
   warning: {
     insufficientFee: 'Warning! Transaction might failed due to insufficient fee',
   },
@@ -16,8 +21,7 @@ export default {
     metadataAlreadyInstalled: 'Metadata Already Installed',
     lightMode: 'Light mode',
     darkMode: 'Dark mode',
-    dApps: 'dApps', // replaced by contract
-    store: 'Store', // replaced by dappStaking
+    dApps: 'dApps',
     dappStaking: 'dApp Staking',
     contract: 'Contract',
     plasmLockdrop: 'Plasm Lockdrop',
@@ -27,6 +31,17 @@ export default {
     discord: 'Discord',
     github: 'GitHub',
     docs: 'Documentation',
+  },
+  wallet: {
+    connectWallet: 'Connect Wallet',
+    select: 'Please select a wallet to connect to this portal',
+  },
+  installWallet: {
+    getWallet: 'Haven’t got a {value} yet?',
+    installWallet:
+      "You'll need to install {value} to continue. Once you have it installed, go ahead and refresh this page",
+    installExtension: 'Install {value} extension',
+    howToConnect: 'Learn how to Connect',
   },
   balance: {
     totalBalance: 'Total Balance',
@@ -38,7 +53,8 @@ export default {
     vested: 'Vested',
     locked: 'Locked',
     evmDeposit: 'EVM Deposit',
-    addressScheme: 'Current address scheme',
+    unlockVestedTokens: 'Unlock vested tokens',
+    switchToLockdrop: 'Switch to {value} account',
     modals: {
       connectMetamask: 'Connect Account with Ethereum Wallet',
       ethereumExtension: 'Ethereum Extension',
@@ -62,6 +78,11 @@ export default {
       whatIsFaucet: ' What is faucet and how does it help you?',
       faucetIntro:
         'There will be minimal costs for each transaction, and this is paid as gas using {unit} token. If you have no {unit} in your account, you cannot send any tokens. Faucet sends enough {unit} to cover the transaction cost.',
+      math: {
+        supportsNetwork: 'Math Wallet supports Shiden network only',
+        switchNetwork:
+          "Switch your network to 'Shiden' in the Math Wallet extension and refresh this page",
+      },
     },
   },
   contracts: {
@@ -122,6 +143,7 @@ export default {
     totalStake: 'Total stake:',
     yourStake: 'Your stake: ',
     add: 'Add',
+    unbond: 'Unbond',
     unstake: 'Unstake',
     stake: 'Stake',
     claim: 'Claim',
@@ -130,6 +152,14 @@ export default {
     tvl: 'TVL IN DAPPS',
     dappsCount: 'DAPPS COUNT',
     requirement: 'REQUIREMENT',
+    unlockingChunks: 'Unlocking chunks',
+    maxChunksWarning: 'You reached maximum unlocking chunks ({chunks}). Unstake rewards first.',
+    withdraw: 'Withdraw',
+    chunk: 'Chunk',
+    chunks: 'Chunks',
+    amount: 'Amount',
+    era: 'Era',
+    unbondedFunds: 'Unbonded funds',
     currentEra: 'CURRENT ERA',
     blocksUntilNextEra: 'Blocks until next era',
     stakerApy: 'APY: {value}%',
@@ -146,6 +176,21 @@ export default {
       estimatedRewards: 'Pending rewards',
       unclaimedEras: 'Number of unclaimed eras',
       estimatedClaimedRewards: 'Claimed rewards',
+      next: 'Next',
+      previous: 'Previous',
+      viewProject: 'View Project',
+      license: 'License',
+      staked: 'Staked',
+      startUnbonding: 'Start unbonding',
+      chunks: 'Chunks',
+      unbondingPeriod: 'Unbonding period: {period} era',
+      maxUnlockingChunks: 'Maximum unlocking chunks: {chunks}',
+      unbondingInfo:
+        'Your funds will be unbonded and available for withdrawal after {era} full eras.',
+      availableInEra: 'Available in era',
+      erasToGo: 'eras to pass: {era}',
+      chunksModalDescription: 'This table shows when your funds will be eligible for withdrawal.',
+      multipleClaimInfo: '{steps} requests are required to claim all unclaimed eras.',
     },
   },
 };

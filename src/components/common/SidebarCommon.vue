@@ -2,23 +2,13 @@
   <div class="tw-flex-1 tw-flex tw-flex-col">
     <div class="tw-flex-1 tw-flex tw-flex-col tw-pt-10 tw-overflow-x-hidden tw-overflow-y-auto">
       <div class="tw-flex tw-items-center">
-        <div v-if="currentNetworkIdx === endpointKey.SHIDEN" class="tw-px-6">
-          <img width="150" src="~assets/img/shiden.png" />
-        </div>
-        <div v-else-if="currentNetworkIdx === endpointKey.SHIBUYA" class="tw-px-6">
-          <img width="150" src="~assets/img/shibuya.svg" />
-        </div>
-        <img v-else width="200" src="~assets/img/astar.png" />
-        <ConnectionIndicator class="tw-pt-4" :connection-type="currentNetworkStatus" />
+        <Logo />
+        <ConnectionIndicator class="tw-pt-4 tw-mr-1" :connection-type="currentNetworkStatus" />
       </div>
 
       <div class="tw-p-4">
-        <div class="tw-mb-1">
-          <AddressSmall
-            v-model:isOpen="modalAccount"
-            :address="currentAccount"
-            :address-name="currentAccountName"
-          />
+        <div v-if="isConnected(currentNetworkStatus)" class="tw-mb-1">
+          <AddressSmall />
         </div>
 
         <button type="button" class="network-button" @click="modalNetwork = true">
@@ -62,7 +52,7 @@
           </span>
         </router-link>
 
-        <router-link
+        <!-- <router-link
           v-if="network.isSupportContract && !isH160"
           to="/contracts"
           :class="[$route.path.split('/')[1] === 'contracts' ? 'activeLink' : 'inactiveLink']"
@@ -76,10 +66,10 @@
           <span class="tw-font-bold tw-ml-3 tw-flex-1">
             {{ $t('common.contract') }}
           </span>
-        </router-link>
+        </router-link> -->
 
         <router-link
-          v-if="network.isStoreEnabled && !isH160"
+          v-if="network.isStoreEnabled"
           to="/dapp-staking"
           :class="[$route.path.split('/')[1] === 'dapp-staking' ? 'activeLink' : 'inactiveLink']"
         >
@@ -129,13 +119,6 @@
       v-model:selectNetwork="currentNetworkIdx"
       :network-idx="currentNetworkIdx"
     />
-
-    <ModalAccount
-      v-if="modalAccount"
-      v-model:isOpen="modalAccount"
-      :all-accounts="allAccounts"
-      :all-account-names="allAccountNames"
-    />
   </div>
 </template>
 
@@ -150,7 +133,7 @@ import ExtensionsMetadata from './ExtensionsMetadata.vue';
 import SocialMediaLinks from './SocialMediaLinks.vue';
 import LightDarkMode from './LightDarkMode.vue';
 import IconBase from '../icons/IconBase.vue';
-import IconDapps from '../icons/IconDapps.vue';
+// import IconDapps from '../icons/IconDapps.vue';
 import IconDotLockdrop from '../icons/IconDotLockdrop.vue';
 import IconBalance from '../icons/IconBalance.vue';
 import IconSolidChevronDown from '../icons/IconSolidChevronDown.vue';
@@ -158,10 +141,9 @@ import IconStore from '../icons/IconStore.vue';
 import ModalNetwork from 'src/components/balance/modals/ModalNetwork.vue';
 import LocaleChanger from './LocaleChanger.vue';
 import AddressSmall from '../common/AddressSmall.vue';
-import ModalAccount from '../balance/modals/ModalAccount.vue';
+import Logo from './Logo.vue';
 
 interface Modal {
-  modalAccount: boolean;
   modalNetwork: boolean;
 }
 
@@ -173,25 +155,23 @@ export default defineComponent({
     LightDarkMode,
     LocaleChanger,
     IconBase,
-    IconDapps,
+    // IconDapps,
     IconDotLockdrop,
     IconBalance,
     IconSolidChevronDown,
     IconStore,
     ModalNetwork,
     AddressSmall,
-    ModalAccount,
+    Logo,
   },
   setup() {
     const { isOpen } = useSidebar();
     const stateModal = reactive<Modal>({
       modalNetwork: false,
-      modalAccount: false,
     });
-    const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
     const store = useStore();
-    const { allAccounts, allAccountNames, currentAccount, currentAccountName } = useAccount();
+    const { currentAccount, currentAccountName } = useAccount();
 
     const shortenAddress = computed(() => {
       return getShortenAddress(currentAccount.value);
@@ -219,11 +199,13 @@ export default defineComponent({
       shortenAddress,
       currentAccount,
       currentAccountName,
-      allAccounts,
-      allAccountNames,
-      isH160,
       endpointKey,
     };
+  },
+  methods: {
+    isConnected(networkStatus: string) {
+      return networkStatus === 'connected';
+    },
   },
 });
 </script>

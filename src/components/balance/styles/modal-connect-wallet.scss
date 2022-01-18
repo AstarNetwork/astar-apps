@@ -1,0 +1,16 @@
+.wallet {
+  display: flex;
+  align-items: center;
+  column-gap: 14px;
+  margin-top: 14px;
+  width: 220px;
+  padding: 8px 24px;
+  transition: 0.2s;
+  border-radius: 40px;
+  font-weight: 600;
+  @apply tw-text-lg tw-text-blue-900 dark:tw-text-darkGray-100;
+}
+.wallet:hover {
+  cursor: pointer;
+  @apply tw-bg-darkGray-300 dark:tw-bg-darkGray-600;
+}
