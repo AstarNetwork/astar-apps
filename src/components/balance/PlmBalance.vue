@@ -117,7 +117,10 @@
           tw-rounded-lg tw-py-3 tw-px-4
         "
       >
-        <div>{{ $t('balance.vested') }}</div>
+        <div>
+          {{ $t('balance.vested') }}
+          <Button :small="true" @click="showVestingInfo">info</Button>
+        </div>
         <div>
           <p class="tw-font-bold tw-text-right">
             <span class="tw-text-2xl md:tw-text-xl xl:tw-text-2xl tw-leading-tight">
@@ -182,12 +185,15 @@
         </div>
       </div>
     </div>
+    <ModalVestingInfo v-if="showVestingModal" v-model:isOpen="showVestingModal" />
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, toRefs, computed, PropType } from 'vue';
+import { defineComponent, toRefs, computed, PropType, ref } from 'vue';
 import { AccountData, useChainMetadata, useEvmDeposit, useConnectWallet } from 'src/hooks';
 import FormatBalance from 'components/balance/FormatBalance.vue';
+import Button from 'src/components/common/Button.vue';
+import ModalVestingInfo from 'components/balance/modals/ModalVestingInfo.vue';
 import { useStore } from 'src/store';
 import { useApi } from 'src/hooks';
 import { getInjector } from 'src/hooks/helper/wallet';
@@ -197,6 +203,8 @@ export default defineComponent({
   components: {
     FormatBalance,
     Logo,
+    Button,
+    ModalVestingInfo,
   },
   props: {
     address: {
@@ -224,6 +232,8 @@ export default defineComponent({
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const selectedAddress = computed(() => store.getters['general/selectedAddress']);
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
+    const showVestingModal = ref<boolean>(false);
+
     const openTransferModal = (): void => {
       emit('update:is-open-transfer', true);
     };
@@ -263,6 +273,10 @@ export default defineComponent({
       }
     };
 
+    const showVestingInfo = (): void => {
+      showVestingModal.value = true;
+    };
+
     const { defaultUnitToken } = useChainMetadata();
     const { evmDeposit, isEvmDeposit } = useEvmDeposit();
     const { toggleMetaMaskSchema } = useConnectWallet();
@@ -272,6 +286,7 @@ export default defineComponent({
       openFaucetModal,
       openTransferModal,
       unlockVestedTokens,
+      showVestingInfo,
       evmDeposit,
       isEvmDeposit,
       defaultUnitToken,
@@ -279,6 +294,7 @@ export default defineComponent({
       toggleMetaMaskSchema,
       isEthWallet,
       canUnlockVestedTokens,
+      showVestingModal,
       ...toRefs(props),
     };
   },
