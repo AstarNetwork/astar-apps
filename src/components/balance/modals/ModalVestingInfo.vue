@@ -2,7 +2,11 @@
   <Modal title="Vesting info" @click="closeModal">
     <template #content>
       <div class="tw-w-96">
-        <hr class="tw-mb-4" />
+        <div class="tw-flex tw-space-x-2 tw-text-xl">
+          <b><format-balance :balance="accountData.vestedClaimable" /></b>
+          <span>availabe to be unlocked</span>
+        </div>
+        <hr class="tw-my-4" />
         <div v-for="(vestingInfo, index) in accountData.vesting" :key="index">
           <div class="tw-flex tw-space-x-2">
             <b><format-balance :balance="vestingInfo.vested" /></b>
@@ -18,6 +22,7 @@
           <hr class="tw-my-4" />
         </div>
         <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row">
+          <Button @click="unlockFunction()">Unlock available</Button>
           <Button type="button" :primary="false" @click="closeModal">{{ $t('close') }}</Button>
         </div>
       </div>
@@ -43,6 +48,10 @@ export default defineComponent({
   props: {
     accountData: {
       type: Object as PropType<AccountData>,
+      required: true,
+    },
+    unlockFunction: {
+      type: Function,
       required: true,
     },
   },

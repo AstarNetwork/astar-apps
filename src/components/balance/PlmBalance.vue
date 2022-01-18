@@ -88,15 +88,6 @@
 
             <!-- memo: duplicate component to avoid styling from breaking -->
             <button
-              v-if="!isH160 && !isEvmDeposit"
-              :disabled="!canUnlockVestedTokens"
-              type="button"
-              class="transfer-button large-button"
-              @click="unlockVestedTokens"
-            >
-              {{ $t('balance.unlockVestedTokens') }}
-            </button>
-            <button
               v-if="isEvmDeposit && !isH160"
               type="button"
               class="transfer-button large-button"
@@ -119,7 +110,9 @@
       >
         <div>
           {{ $t('balance.vested') }}
-          <Button :small="true" @click="showVestingInfo">info</Button>
+          <Button v-if="!isH160 && !isEvmDeposit" :small="true" @click="showVestingInfo"
+            >Info</Button
+          >
         </div>
         <div>
           <p class="tw-font-bold tw-text-right">
@@ -189,6 +182,7 @@
       v-if="showVestingModal"
       v-model:isOpen="showVestingModal"
       :account-data="accountData"
+      :unlock-function="unlockVestedTokens"
     />
   </div>
 </template>
@@ -261,6 +255,7 @@ export default defineComponent({
           },
           (result) => {
             if (result.status.isFinalized) {
+              showVestingModal.value = false;
               store.commit('general/setLoading', false);
             } else {
               store.commit('general/setLoading', true);

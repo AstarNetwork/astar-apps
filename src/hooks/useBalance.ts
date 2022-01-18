@@ -2,7 +2,6 @@ import { VoidFn } from '@polkadot/api/types';
 import { Balance } from '@polkadot/types/interfaces';
 import { PalletVestingVestingInfo } from '@polkadot/types/lookup';
 import BN from 'bn.js';
-import { plasmCollatorDefinitions } from 'src/config/api/polkadot/registry-types';
 import { useStore } from 'src/store';
 import { createWeb3Instance } from 'src/web3';
 import { computed, onUnmounted, ref, Ref, watch } from 'vue';
@@ -37,7 +36,8 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
         new BN(0),
         new BN(0),
         new BN(0),
-        []
+        [],
+        new BN(0)
       );
       balanceRef.value = new BN(rawBal);
     } catch (error) {
@@ -60,37 +60,26 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
         api.query.system.account(address),
         api.query.vesting.vesting(address),
         api.query.system.number(),
+        api.derive.balances?.all(address),
       ]);
 
       const accountInfo = results[0];
 
-      const vesting: PalletVestingVestingInfo[] = results[1].unwrapOr(undefined);
+      const vesting: PalletVestingVestingInfo[] = results[1].unwrapOr(undefined) || [];
       const currentBlock = results[2];
-      // const vestingValue = vesting?.length > 0 ? vesting[0] : undefined;
-      // const vestingLocked = vestingValue?.locked;
-
-      // vestedRef.value = vestingLocked
-      //   ? getVested({
-      //       currentBlock: currentBlock.toBn(),
-      //       startBlock: vestingValue?.startingBlock.toBn() || new BN(0),
-      //       perBlock: vestingValue?.perBlock.toBn() || new BN(0),
-      //       locked: vestingLocked,
-      //     })
-      //   : new BN(0);
+      const vestedClaimable = results[3].vestedClaimable;
 
       const extendedVesting: ExtendedVestingInfo[] = [];
+      vestedRef.value = new BN(0);
       vesting.forEach((v) => {
-        return extendedVesting.push(
-          new ExtendedVestingInfo(
-            v,
-            getVested({
-              currentBlock: currentBlock.toBn(),
-              startBlock: v.startingBlock.toBn() || new BN(0),
-              perBlock: v.perBlock || new BN(0),
-              locked: v.locked,
-            })
-          )
-        );
+        const vested = getVested({
+          currentBlock: currentBlock.toBn(),
+          startBlock: v.startingBlock.toBn() || new BN(0),
+          perBlock: v.perBlock || new BN(0),
+          locked: v.locked,
+        });
+        vestedRef.value = vestedRef.value.add(vested);
+        extendedVesting.push(new ExtendedVestingInfo(v, vested));
       });
 
       accountDataRef.value = new AccountData(
@@ -99,7 +88,8 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
         accountInfo.data.miscFrozen,
         accountInfo.data.feeFrozen,
         vestedRef.value,
-        extendedVesting
+        extendedVesting,
+        vestedClaimable
       );
 
       balanceRef.value = accountInfo.data.free.toBn();
@@ -175,7 +165,8 @@ export class AccountData {
     miscFrozen: Balance,
     feeFrozen: Balance,
     vested: BN,
-    vesting: ExtendedVestingInfo[]
+    vesting: ExtendedVestingInfo[],
+    vestedClaimable: BN
   ) {
     this.free = free.toBn();
     this.reserved = reserved.toBn();
@@ -183,6 +174,7 @@ export class AccountData {
     this.feeFrozen = feeFrozen.toBn();
     this.vested = vested;
     this.vesting = vesting;
+    this.vestedClaimable = vestedClaimable;
   }
 
   public getUsableTransactionBalance(): BN {
@@ -199,6 +191,7 @@ export class AccountData {
   public feeFrozen: BN;
   public vested: BN;
   public vesting: ExtendedVestingInfo[];
+  public vestedClaimable: BN;
 }
 export class AccountDataH160 {
   constructor(
@@ -207,7 +200,8 @@ export class AccountDataH160 {
     public miscFrozen: BN,
     public feeFrozen: BN,
     public vested: BN,
-    public vesting: ExtendedVestingInfo[]
+    public vesting: ExtendedVestingInfo[],
+    public vestedClaimable: BN
   ) {}
 
   public getUsableTransactionBalance(): BN {
