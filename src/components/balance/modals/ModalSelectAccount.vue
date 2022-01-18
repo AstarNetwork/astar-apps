@@ -20,11 +20,11 @@
               tw-bg-transparent tw-placeholder-gray-300
               dark:tw-placeholder-darkGray-600
             "
-            :class="isH160 ? 'input-h160' : 'input-ss58'"
+            :class="isEthWallet ? 'input-h160' : 'input-ss58'"
             type="text"
             spellcheck="false"
             :readonly="isReadOnly"
-            @focus="openOption = !isH160"
+            @focus="openOption = !isEthWallet"
             @blur="closeOption"
             @change="changeAddress"
           />
@@ -32,7 +32,7 @@
       </div>
 
       <span
-        v-if="!isH160"
+        v-if="!isEthWallet"
         class="
           tw-ml-3
           tw-absolute
@@ -70,7 +70,7 @@
           focus:tw-outline-none
         "
       >
-        <div v-if="!isH160">
+        <div v-if="!isEthWallet">
           <ModalSelectAccountOption
             v-for="(account, index) in substrateAccounts"
             :key="index"
@@ -122,7 +122,7 @@ export default defineComponent({
     const isReadOnly = props.role === Role.FromAddress;
     const openOption = ref(false);
     const store = useStore();
-    const { currentAccountName } = useAccount();
+    const { currentAccountName, currentAccount } = useAccount();
     const currentAddress = computed(() => store.getters['general/selectedAddress']);
     const substrateAccounts = computed(() => {
       const accounts = store.getters['general/substrateAccounts'];
@@ -134,22 +134,20 @@ export default defineComponent({
     });
 
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
+    const isEthWallet = computed(() => store.getters['general/isEthWallet']);
     const selAccountIdx = ref(currentAddress.value);
     const account = getSelectedAccount(substrateAccounts.value);
 
     const selAddress = ref(!isH160 ? (account?.address as string) : '');
-    const selAccountName = ref(account?.name);
-    const isH160Account = ref<boolean>(isH160.value);
 
     watch(
-      [selAccountIdx, isH160Account],
+      [selAccountIdx, isEthWallet],
       () => {
-        if (!isH160Account.value) {
+        if (!isEthWallet.value) {
           const account = substrateAccounts.value.find(
             (it: SubstrateAccount) => it.address === selAccountIdx.value
           );
           if (!account) return;
-          selAccountName.value = account.name;
           selAddress.value = account.address;
 
           if (props.role === Role.FromAddress) {
@@ -157,9 +155,8 @@ export default defineComponent({
             localStorage.setItem(LOCAL_STORAGE.SELECTED_ADDRESS, String(account.address));
           }
         } else {
-          if (props.role === Role.ToAddress && isH160.value) {
-            selAddress.value = '';
-          }
+          const lookupAddress = props.role === Role.ToAddress ? '' : currentAccount.value;
+          selAddress.value = lookupAddress;
         }
 
         emit('update:sel-address', selAddress.value);
@@ -202,6 +199,7 @@ export default defineComponent({
       isEvmAddress,
       substrateAccounts,
       changeAddress,
+      isEthWallet,
     };
   },
 });

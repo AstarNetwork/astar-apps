@@ -62,8 +62,8 @@ const mutation: MutationTree<State> & GeneralMutations = {
   setCurrentNetworkIdx(state, networkIdx) {
     state.currentNetworkIdx = networkIdx;
   },
-  setIsCheckMetamask(state, isCheckMetamask) {
-    state.isCheckMetamask = isCheckMetamask;
+  setIsEthWallet(state, isEthWallet) {
+    state.isEthWallet = isEthWallet;
   },
   setIsH160Formatted(state, isH160Formatted) {
     state.isH160Formatted = isH160Formatted;

@@ -15,7 +15,7 @@ export const useAccount = () => {
   const disconnectAccount = () => {
     store.commit('general/setCurrentAddress', null);
     store.commit('general/setIsH160Formatted', false);
-    store.commit('general/setIsCheckMetamask', false);
+    store.commit('general/setIsEthWallet', false);
     store.commit('general/setCurrentEcdsaAccount', {
       ethereum: '',
       ss58: '',
@@ -30,13 +30,19 @@ export const useAccount = () => {
   watch(
     [isH160Formatted, currentEcdsaAccount],
     () => {
-      if (isH160Formatted.value && currentEcdsaAccount.value.h160) {
-        currentAccount.value = currentEcdsaAccount.value.h160;
+      if (currentEcdsaAccount.value.h160 || currentEcdsaAccount.value.ss58) {
         currentAccountName.value = 'Ethereum Extension';
         localStorage.setItem(SELECTED_ADDRESS, 'Ethereum Extension');
-        store.commit('general/setIsH160Formatted', true);
+        store.commit('general/setIsEthWallet', true);
+
+        const { ss58, h160 } = currentEcdsaAccount.value;
+        const address = ss58 ? ss58 : h160;
+        currentAccount.value = address;
+        store.commit('general/setIsH160Formatted', h160 ? true : false);
+        store.commit('general/setCurrentAddress', address);
         return;
       }
+
       currentAccount.value = '';
       currentAccountName.value = '';
     },
@@ -46,7 +52,12 @@ export const useAccount = () => {
   watch(
     [currentAddress],
     () => {
-      if (!substrateAccounts.value || currentAddress.value === null) return;
+      if (
+        !substrateAccounts.value ||
+        currentAddress.value === null ||
+        currentEcdsaAccount.value.ethereum
+      )
+        return;
       const account = substrateAccounts.value.find(
         (it: SubstrateAccount) => it.address === currentAddress.value
       );
@@ -55,6 +66,7 @@ export const useAccount = () => {
       currentAccount.value = account.address;
       currentAccountName.value = account.name;
       localStorage.setItem(SELECTED_ADDRESS, String(currentAddress.value));
+      store.commit('general/setIsEthWallet', false);
       store.commit('general/setIsH160Formatted', false);
       return;
     },
@@ -62,7 +74,7 @@ export const useAccount = () => {
   );
 
   watchEffect(() => {
-    if (!currentEcdsaAccount.value || !window.ethereum || !isH160Formatted.value) return;
+    if (!currentEcdsaAccount.value.ethereum || !window.ethereum || !isH160Formatted.value) return;
 
     window.ethereum.on('accountsChanged', (accounts: string[]) => {
       if (accounts[0] !== currentAccount.value) {

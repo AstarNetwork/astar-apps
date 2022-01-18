@@ -167,19 +167,19 @@ export default defineComponent({
 
     const { defaultUnitToken, decimal } = useChainMetadata();
 
-    const transferAmt = ref(new BN(0));
-    const fromAddress = ref('');
-    const toAddress = ref('');
+    const transferAmt = ref<BN>(new BN(0));
+    const fromAddress = ref<string>('');
+    const toAddress = ref<string>('');
 
     const selectUnit = ref(defaultUnitToken.value);
-    const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
+    const isEthWallet = computed(() => store.getters['general/isEthWallet']);
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
     // isCustomSigBlocked is temporary until extrinsic call pallet is deployed to all networks.
     const isCustomSigBlocked = computed(() => !!!providerEndpoints[currentNetworkIdx.value].prefix);
     const canExecuteTransaction = computed(() =>
-      isCheckMetamask.value ? !isCustomSigBlocked.value : true
+      isEthWallet.value ? !isCustomSigBlocked.value : true
     );
 
     const formatBalance = computed(() => {
@@ -204,7 +204,7 @@ export default defineComponent({
       const status = result.status;
       if (status.isInBlock) {
         const msg = `Completed at block hash #${status.asInBlock.toString()}`;
-        console.log(msg);
+        // console.log(msg);
 
         store.dispatch('general/showAlertMsg', {
           msg,
@@ -214,7 +214,7 @@ export default defineComponent({
         store.commit('general/setLoading', false);
         closeModal();
       } else {
-        console.log(`Current status: ${status.type}`);
+        // console.log(`Current status: ${status.type}`);
 
         if (status.type !== 'Finalized') {
           store.commit('general/setLoading', true);
@@ -335,13 +335,13 @@ export default defineComponent({
       const receivingAddress = plasmUtils.isValidEvmAddress(toAddress)
         ? plasmUtils.toSS58Address(toAddress)
         : toAddress;
-      console.log('receivingAddress', receivingAddress);
+      // console.log('receivingAddress', receivingAddress);
 
       const unit = getUnit(selectUnit.value);
       const toAmt = plasmUtils.reduceDenomToBalance(transferAmt, unit, decimal.value);
-      console.log('toAmt', toAmt.toString(10));
+      // console.log('toAmt', toAmt.toString(10));
 
-      if (isCheckMetamask.value) {
+      if (isEthWallet.value) {
         await transferExtrinsic(toAmt, receivingAddress);
       } else {
         await transferLocal(toAmt, fromAddress, receivingAddress);

@@ -9,16 +9,8 @@
         />
       </div>
     </div>
-    <div v-if="isSS58">
-      <div class="tw-grid md:tw-auto-cols-max xl:tw-grid-cols-2 tw-gap-4">
-        <Wallet v-model:isOpen="modalAccount" :wallet-name="currentAccountName" />
-      </div>
-      <div class="tw-grid lg:tw-grid-cols-2 tw-gap-4 tw-mt-4">
-        <Addresses />
-      </div>
-    </div>
 
-    <div v-if="!isH160 && !isSS58">
+    <div v-if="!isH160">
       <div class="tw-grid lg:tw-grid-cols-2 tw-gap-4">
         <Wallet v-model:isOpen="modalAccount" :wallet-name="currentAccountName" />
       </div>
@@ -128,7 +120,6 @@ export default defineComponent({
     const { balance, accountData } = useBalance(api, currentAccount);
 
     const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
-    const isSS58 = computed(() => store.getters['general/isCheckMetamask']);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const { evmDeposit } = useEvmDeposit();
     const { faucetInfo, requestFaucet, isLoading } = useFaucet();
@@ -141,7 +132,6 @@ export default defineComponent({
       currentAccountName,
       currentNetworkStatus,
       accountData,
-      isSS58,
       isH160,
       faucetInfo,
       requestFaucet,

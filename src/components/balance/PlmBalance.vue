@@ -49,43 +49,62 @@
             xl:tw-pt-3
           "
         >
-          <div class="tw-flex tw-flex-col xl:tw-flex-row tw-gap-y-4 xl:tw-gap-x-4">
+          <div
+            class="
+              tw-flex tw-flex-col
+              xl:tw-flex-row
+              tw-gap-y-4
+              xl:tw-gap-x-4
+              lg:tw-justify-center lg:tw-flex-wrap
+            "
+          >
             <button
               type="button"
               :disabled="!address"
-              class="transfer-button"
+              class="transfer-button small-button"
               :class="!address ? 'disabled_btn' : ''"
               @click="openTransferModal"
             >
               {{ $t('balance.transfer') }}
             </button>
             <button
+              v-if="!isH160 && isEvmDeposit"
+              :disabled="!canUnlockVestedTokens"
+              type="button"
+              class="transfer-button large-button"
+              @click="unlockVestedTokens"
+            >
+              {{ $t('balance.unlockVestedTokens') }}
+            </button>
+            <button
               v-if="!isH160"
               type="button"
-              class="transfer-button"
+              class="transfer-button small-button"
               :disabled="isFaucetLoading"
               @click="openFaucetModal"
             >
               {{ $t('balance.faucet') }}
             </button>
+
+            <!-- memo: duplicate component to avoid styling from breaking -->
             <button
+              v-if="!isH160 && !isEvmDeposit"
               :disabled="!canUnlockVestedTokens"
               type="button"
-              class="transfer-button"
+              class="transfer-button large-button"
               @click="unlockVestedTokens"
             >
               {{ $t('balance.unlockVestedTokens') }}
             </button>
+            <button
+              v-if="isEvmDeposit && !isH160"
+              type="button"
+              class="transfer-button large-button"
+              @click="openWithdrawalModal"
+            >
+              {{ $t('balance.withdrawEvm') }}
+            </button>
           </div>
-
-          <button
-            v-if="isEvmDeposit && !isH160"
-            type="button"
-            class="transfer-button"
-            @click="openWithdrawalModal"
-          >
-            {{ $t('balance.withdrawEvm') }}
-          </button>
         </div>
       </div>
     </div>
@@ -142,12 +161,34 @@
           </p>
         </div>
       </div>
+
+      <div
+        v-if="isEthWallet"
+        class="
+          tw-flex tw-justify-center tw-items-center tw-mb-0 tw-py-3 tw-px-2
+          xl:tw-px-5
+          sm:tw-mt-2
+          xl:tw-mt-0
+          md:tw-self-end
+          tw-cursor-pointer tw-bg-blue-500 tw-rounded-full tw-shadow-sm
+        "
+        :class="isH160 ? 'md:tw-w-56 xl:tw-w-64' : 'md:tw-w-48'"
+        @click="toggleMetaMaskSchema"
+      >
+        <div>
+          <p class="tw-font-bold tw-text-right">
+            <span class="tw-leading-tight tw-text-xs">{{
+              $t('balance.switchToLockdrop', { value: isH160 ? 'Lockdrop' : 'EVM' })
+            }}</span>
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent, toRefs, computed, PropType } from 'vue';
-import { AccountData, useChainMetadata, useEvmDeposit } from 'src/hooks';
+import { AccountData, useChainMetadata, useEvmDeposit, useConnectWallet } from 'src/hooks';
 import FormatBalance from 'components/balance/FormatBalance.vue';
 import { useStore } from 'src/store';
 import { useApi } from 'src/hooks';
@@ -180,6 +221,7 @@ export default defineComponent({
   ],
   setup(props, { emit }) {
     const store = useStore();
+    const isEthWallet = computed(() => store.getters['general/isEthWallet']);
     const { api } = useApi();
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const selectedAddress = computed(() => store.getters['general/selectedAddress']);
@@ -195,7 +237,6 @@ export default defineComponent({
     const openFaucetModal = (): void => {
       emit('update:is-open-modal-faucet', true);
     };
-
     const canUnlockVestedTokens = computed(() => props.accountData.vested.gtn(0) && !isH160.value);
 
     const unlockVestedTokens = async (): Promise<void> => {
@@ -226,6 +267,7 @@ export default defineComponent({
 
     const { defaultUnitToken } = useChainMetadata();
     const { evmDeposit, isEvmDeposit } = useEvmDeposit();
+    const { toggleMetaMaskSchema } = useConnectWallet();
 
     return {
       openWithdrawalModal,
@@ -236,24 +278,42 @@ export default defineComponent({
       isEvmDeposit,
       defaultUnitToken,
       isH160,
+      toggleMetaMaskSchema,
+      isEthWallet,
       canUnlockVestedTokens,
       ...toRefs(props),
     };
   },
 });
 </script>
-<style scoped>
+
+<style lang="scss" scoped>
 .disabled_btn {
   background: #c6d3e1 !important;
 }
+
 .btn {
   text-align: center;
 }
+
 .transfer-button {
-  @apply tw-flex tw-justify-center tw-px-3 tw-py-2 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 tw-mx-0.5 tw-w-48 xl:tw-w-auto;
+  @apply tw-flex tw-justify-center tw-px-3 tw-py-2 tw-border tw-border-transparent tw-text-sm tw-font-medium tw-rounded-full tw-shadow-sm tw-text-white tw-bg-blue-500 tw-mx-0.5 xl:tw-w-auto;
   min-width: 96px;
 }
+
 .transfer-button:focus {
   @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-blue-400;
+}
+
+.small-button {
+  @media (min-width: 1280px) {
+    width: 100px;
+  }
+}
+
+.large-button {
+  @media (min-width: 1280px) {
+    width: 180px;
+  }
 }
 </style>

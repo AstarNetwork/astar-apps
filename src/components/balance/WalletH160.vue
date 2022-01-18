@@ -159,7 +159,6 @@ import { defineComponent, computed, toRefs } from 'vue';
 import { useStore } from 'src/store';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import IconBase from 'components/icons/IconBase.vue';
-import IconAccountSample from 'components/icons/IconAccountSample.vue';
 import IconDisconnect from 'components/icons/IconDisconnect.vue';
 import IconDocumentDuplicate from 'components/icons/IconDocumentDuplicate.vue';
 import IconLink from 'components/icons/IconLink.vue';
@@ -168,7 +167,6 @@ import { useAccount } from 'src/hooks';
 export default defineComponent({
   components: {
     IconBase,
-    // IconAccountSample,
     IconDisconnect,
     IconDocumentDuplicate,
     IconLink,
