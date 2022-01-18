@@ -15,7 +15,7 @@ export const useAccount = () => {
   const disconnectAccount = () => {
     store.commit('general/setCurrentAddress', null);
     store.commit('general/setIsH160Formatted', false);
-    store.commit('general/setIsCheckMetamask', false);
+    store.commit('general/setIsEthWallet', false);
     store.commit('general/setCurrentEcdsaAccount', {
       ethereum: '',
       ss58: '',
@@ -33,7 +33,7 @@ export const useAccount = () => {
       if (currentEcdsaAccount.value.h160 || currentEcdsaAccount.value.ss58) {
         currentAccountName.value = 'Ethereum Extension';
         localStorage.setItem(SELECTED_ADDRESS, 'Ethereum Extension');
-        store.commit('general/setIsCheckMetamask', true);
+        store.commit('general/setIsEthWallet', true);
       }
 
       if (isH160Formatted.value && currentEcdsaAccount.value.h160) {
@@ -66,7 +66,7 @@ export const useAccount = () => {
       currentAccount.value = account.address;
       currentAccountName.value = account.name;
       localStorage.setItem(SELECTED_ADDRESS, String(currentAddress.value));
-      store.commit('general/setIsCheckMetamask', false);
+      store.commit('general/setIsEthWallet', false);
       store.commit('general/setIsH160Formatted', false);
       return;
     },

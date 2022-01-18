@@ -222,7 +222,7 @@ export default defineComponent({
   ],
   setup(props, { emit }) {
     const store = useStore();
-    const isCheckMetaMask = computed(() => store.getters['general/isCheckMetamask']);
+    const isCheckMetaMask = computed(() => store.getters['general/isEthWallet']);
     const { api } = useApi();
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const selectedAddress = computed(() => store.getters['general/selectedAddress']);
@@ -273,7 +273,7 @@ export default defineComponent({
 
     const { defaultUnitToken } = useChainMetadata();
     const { evmDeposit, isEvmDeposit } = useEvmDeposit();
-    const { isMetaMaskSs58, toggleMetaMaskSchema } = useConnectWallet();
+    const { toggleMetaMaskSchema } = useConnectWallet();
 
     return {
       openWithdrawalModal,
@@ -284,7 +284,6 @@ export default defineComponent({
       isEvmDeposit,
       defaultUnitToken,
       isH160,
-      isMetaMaskSs58,
       toggleMetaMaskSchema,
       isCheckMetaMask,
       isAstar,

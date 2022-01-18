@@ -134,7 +134,7 @@ export default defineComponent({
     });
 
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
-    const isCheckMetaMask = computed(() => store.getters['general/isCheckMetamask']);
+    const isCheckMetaMask = computed(() => store.getters['general/isEthWallet']);
     const selAccountIdx = ref(currentAddress.value);
     const account = getSelectedAccount(substrateAccounts.value);
 

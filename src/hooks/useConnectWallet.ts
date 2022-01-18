@@ -14,14 +14,14 @@ export const useConnectWallet = () => {
   const modalAccountSelect = ref<boolean>(false);
   const selectedWallet = ref<string>('');
   const modalName = ref<string>('');
-  const isMetaMaskSs58 = ref<boolean>(false);
+  const isEthWalletSs58 = ref<boolean>(false);
 
   const { requestAccounts, requestSignature } = useMetamask();
   const store = useStore();
   const { currentAccount, currentAccountName, disconnectAccount } = useAccount();
-
   const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
   const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
+  const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
   const { SELECTED_ADDRESS } = LOCAL_STORAGE;
 
@@ -69,7 +69,7 @@ export const useConnectWallet = () => {
   };
 
   const toggleMetaMaskSchema = async () => {
-    isMetaMaskSs58.value = !isMetaMaskSs58.value;
+    // isEthWalletSs58.value = !isEthWalletSs58.value;
 
     const accounts = await requestAccounts();
     const loadingAddr = accounts[0];
@@ -78,7 +78,7 @@ export const useConnectWallet = () => {
     const pubKey = utils.recoverPublicKeyFromSig(loadingAddr, loginMsg, signature);
     const ss58Address = utils.ecdsaPubKeyToSs58(pubKey, ASTAR_SS58_FORMAT);
 
-    if (isMetaMaskSs58.value) {
+    if (isH160.value) {
       store.commit('general/setIsH160Formatted', false);
       store.commit('general/setCurrentEcdsaAccount', {
         ethereum: loadingAddr,
@@ -143,7 +143,7 @@ export const useConnectWallet = () => {
     setCloseModal,
     setWalletModal,
     disconnectAccount,
-    isMetaMaskSs58,
+    isEthWalletSs58,
     toggleMetaMaskSchema,
   };
 };

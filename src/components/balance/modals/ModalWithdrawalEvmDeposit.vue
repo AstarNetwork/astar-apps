@@ -162,7 +162,7 @@ export default defineComponent({
     const withdrawAmount = ref(new BN(0));
     const selectUnit = ref(defaultUnitToken.value);
     const acName = accountName;
-    const isCheckMetamask = computed(() => store.getters['general/isCheckMetamask']);
+    const isEthWallet = computed(() => store.getters['general/isEthWallet']);
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
 
     const formatBalance = computed(() => {
@@ -261,7 +261,7 @@ export default defineComponent({
 
       const unit = getUnit(selectUnit.value);
       const toAmt = plasmUtils.reduceDenomToBalance(amount, unit, decimal.value);
-      if (isCheckMetamask.value) {
+      if (isEthWallet.value) {
         await transferExtrinsic({ amount: toAmt, account });
       } else {
         await withdraw({ amount: toAmt, account });
