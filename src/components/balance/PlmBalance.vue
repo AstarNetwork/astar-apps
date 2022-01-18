@@ -185,7 +185,11 @@
         </div>
       </div>
     </div>
-    <ModalVestingInfo v-if="showVestingModal" v-model:isOpen="showVestingModal" />
+    <ModalVestingInfo
+      v-if="showVestingModal"
+      v-model:isOpen="showVestingModal"
+      :account-data="accountData"
+    />
   </div>
 </template>
 <script lang="ts">

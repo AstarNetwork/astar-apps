@@ -1,6 +1,8 @@
 import { VoidFn } from '@polkadot/api/types';
 import { Balance } from '@polkadot/types/interfaces';
+import { PalletVestingVestingInfo } from '@polkadot/types/lookup';
 import BN from 'bn.js';
+import { plasmCollatorDefinitions } from 'src/config/api/polkadot/registry-types';
 import { useStore } from 'src/store';
 import { createWeb3Instance } from 'src/web3';
 import { computed, onUnmounted, ref, Ref, watch } from 'vue';
@@ -34,7 +36,8 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
         new BN(0),
         new BN(0),
         new BN(0),
-        new BN(0)
+        new BN(0),
+        []
       );
       balanceRef.value = new BN(rawBal);
     } catch (error) {
@@ -61,26 +64,42 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
 
       const accountInfo = results[0];
 
-      const vesting = results[1].unwrapOr(undefined);
+      const vesting: PalletVestingVestingInfo[] = results[1].unwrapOr(undefined);
       const currentBlock = results[2];
-      const vestingValue = vesting?.length > 0 ? vesting[0] : undefined;
-      const vestingLocked = vestingValue?.locked;
+      // const vestingValue = vesting?.length > 0 ? vesting[0] : undefined;
+      // const vestingLocked = vestingValue?.locked;
 
-      vestedRef.value = vestingLocked
-        ? getVested({
-            currentBlock: currentBlock.toBn(),
-            startBlock: vestingValue.startingBlock.toBn(),
-            perBlock: vestingValue.perBlock.toBn(),
-            locked: vestingLocked,
-          })
-        : new BN(0);
+      // vestedRef.value = vestingLocked
+      //   ? getVested({
+      //       currentBlock: currentBlock.toBn(),
+      //       startBlock: vestingValue?.startingBlock.toBn() || new BN(0),
+      //       perBlock: vestingValue?.perBlock.toBn() || new BN(0),
+      //       locked: vestingLocked,
+      //     })
+      //   : new BN(0);
+
+      const extendedVesting: ExtendedVestingInfo[] = [];
+      vesting.forEach((v) => {
+        return extendedVesting.push(
+          new ExtendedVestingInfo(
+            v,
+            getVested({
+              currentBlock: currentBlock.toBn(),
+              startBlock: v.startingBlock.toBn() || new BN(0),
+              perBlock: v.perBlock || new BN(0),
+              locked: v.locked,
+            })
+          )
+        );
+      });
 
       accountDataRef.value = new AccountData(
         accountInfo.data.free,
         accountInfo.data.reserved,
         accountInfo.data.miscFrozen,
         accountInfo.data.feeFrozen,
-        vestedRef.value
+        vestedRef.value,
+        extendedVesting
       );
 
       balanceRef.value = accountInfo.data.free.toBn();
@@ -155,13 +174,15 @@ export class AccountData {
     reserved: Balance,
     miscFrozen: Balance,
     feeFrozen: Balance,
-    vested: BN
+    vested: BN,
+    vesting: ExtendedVestingInfo[]
   ) {
     this.free = free.toBn();
     this.reserved = reserved.toBn();
     this.miscFrozen = miscFrozen.toBn();
     this.feeFrozen = feeFrozen.toBn();
     this.vested = vested;
+    this.vesting = vesting;
   }
 
   public getUsableTransactionBalance(): BN {
@@ -177,6 +198,7 @@ export class AccountData {
   public miscFrozen: BN;
   public feeFrozen: BN;
   public vested: BN;
+  public vesting: ExtendedVestingInfo[];
 }
 export class AccountDataH160 {
   constructor(
@@ -184,7 +206,8 @@ export class AccountDataH160 {
     public reserved: BN,
     public miscFrozen: BN,
     public feeFrozen: BN,
-    public vested: BN
+    public vested: BN,
+    public vesting: ExtendedVestingInfo[]
   ) {}
 
   public getUsableTransactionBalance(): BN {
@@ -194,4 +217,8 @@ export class AccountDataH160 {
   public getUsableFeeBalance(): BN {
     return this.free.sub(this.feeFrozen);
   }
+}
+
+export class ExtendedVestingInfo {
+  constructor(public basicInfo: PalletVestingVestingInfo, public vested: BN) {}
 }
