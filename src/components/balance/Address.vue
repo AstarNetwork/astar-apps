@@ -46,8 +46,7 @@
                   $t(
                     format === AddressFormat.SS58 ? 'balance.tooltipNative' : 'balance.tooltipEvm',
                     {
-                      value:
-                        format === AddressFormat.SS58 ? currentNetworkName : chainInfo.tokenSymbol,
+                      value: format === AddressFormat.SS58 ? currentNetworkName : tokenSymbol,
                     }
                   )
                 }}</span
@@ -193,15 +192,17 @@ export default defineComponent({
 
     const currentNetworkName = computed(() => {
       const id = store.getters['general/networkIdx'];
-      const network = providerEndpoints[id].displayName;
-      return network;
+      return providerEndpoints[id].displayName;
     });
 
     const subScan = computed(
       () => `${providerEndpoints[currentNetworkIdx.value].subscan}/account/${address.value}`
     );
 
-    const chainInfo = computed(() => store.getters['general/chainInfo'] ?? '');
+    const tokenSymbol = computed(() => {
+      const chainInfo = store.getters['general/chainInfo'];
+      return chainInfo ? chainInfo.tokenSymbol : '';
+    });
 
     const isSubscan = providerEndpoints[currentNetworkIdx.value].subscan !== '';
 
@@ -223,7 +224,7 @@ export default defineComponent({
       AddressFormat,
       farQuestionCircle,
       currentNetworkName,
-      chainInfo,
+      tokenSymbol,
     };
   },
 });
