@@ -52,7 +52,12 @@ export const useAccount = () => {
   watch(
     [currentAddress],
     () => {
-      if (!substrateAccounts.value || currentAddress.value === null) return;
+      if (
+        !substrateAccounts.value ||
+        currentAddress.value === null ||
+        currentEcdsaAccount.value.ethereum
+      )
+        return;
       const account = substrateAccounts.value.find(
         (it: SubstrateAccount) => it.address === currentAddress.value
       );
@@ -69,7 +74,7 @@ export const useAccount = () => {
   );
 
   watchEffect(() => {
-    if (!currentEcdsaAccount.value || !window.ethereum || !isH160Formatted.value) return;
+    if (!currentEcdsaAccount.value.ethereum || !window.ethereum || !isH160Formatted.value) return;
 
     window.ethereum.on('accountsChanged', (accounts: string[]) => {
       if (accounts[0] !== currentAccount.value) {
