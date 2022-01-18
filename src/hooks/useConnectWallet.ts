@@ -4,7 +4,7 @@ import { SubstrateWallets, SupportWallet, WalletModalOption } from 'src/config/w
 import { useAccount } from 'src/hooks';
 import { useStore } from 'src/store';
 import { getChainId, setupNetwork } from 'src/web3';
-import { computed, ref, watchEffect } from 'vue';
+import { computed, ref, watchEffect, watch } from 'vue';
 import { useMetamask } from './custom-signature/useMetamask';
 import { castMobileSource, getInjectedExtensions } from './helper/wallet';
 import * as utils from 'src/hooks/custom-signature/utils';
@@ -14,7 +14,6 @@ export const useConnectWallet = () => {
   const modalAccountSelect = ref<boolean>(false);
   const selectedWallet = ref<string>('');
   const modalName = ref<string>('');
-  const isEthWalletSs58 = ref<boolean>(false);
 
   const { requestAccounts, requestSignature } = useMetamask();
   const store = useStore();
@@ -22,6 +21,7 @@ export const useConnectWallet = () => {
   const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
   const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
+  const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
 
   const { SELECTED_ADDRESS } = LOCAL_STORAGE;
 
@@ -33,16 +33,21 @@ export const useConnectWallet = () => {
     modalName.value = WalletModalOption.SelectWallet;
   };
 
-  const loadMetaMask = async (): Promise<boolean> => {
+  const loadMetaMask = async (ss58?: string): Promise<boolean> => {
     try {
       const accounts = await requestAccounts();
       const ethereumAddr = accounts[0];
-      store.commit('general/setCurrentEcdsaAccount', {
-        ethereum: ethereumAddr,
-        h160: ethereumAddr,
-      });
-      store.commit('general/setIsH160Formatted', true);
+      const data = ss58
+        ? {
+            ethereum: ethereumAddr,
+            ss58,
+          }
+        : {
+            ethereum: ethereumAddr,
+            h160: ethereumAddr,
+          };
 
+      store.commit('general/setCurrentEcdsaAccount', data);
       const chainId = getChainId(currentNetworkIdx.value);
       setTimeout(async () => {
         await setupNetwork(chainId);
@@ -61,7 +66,8 @@ export const useConnectWallet = () => {
       modalName.value = WalletModalOption.NoExtension;
       return;
     }
-    const result = await loadMetaMask();
+    const ss58 = currentEcdsaAccount.value.ss58 ?? '';
+    const result = await loadMetaMask(ss58);
     if (result) {
       modalName.value = '';
       return;
@@ -69,8 +75,6 @@ export const useConnectWallet = () => {
   };
 
   const toggleMetaMaskSchema = async () => {
-    // isEthWalletSs58.value = !isEthWalletSs58.value;
-
     const accounts = await requestAccounts();
     const loadingAddr = accounts[0];
     const loginMsg = `Sign this message to login with address ${loadingAddr}`;
@@ -115,20 +119,24 @@ export const useConnectWallet = () => {
     }
   });
 
-  watchEffect(async () => {
-    const address = localStorage.getItem(SELECTED_ADDRESS);
-    if (address === null) return;
+  watch(
+    [currentNetworkStatus],
+    async () => {
+      const address = localStorage.getItem(SELECTED_ADDRESS);
+      if (address === null) return;
 
-    if (address === 'Ethereum Extension') {
-      await setMetaMask();
-      return;
-    }
+      if (address === 'Ethereum Extension') {
+        await setMetaMask();
+        return;
+      }
 
-    if (address) {
-      store.commit('general/setCurrentAddress', address);
-      return;
-    }
-  });
+      if (address) {
+        store.commit('general/setCurrentAddress', address);
+        return;
+      }
+    },
+    { immediate: true }
+  );
 
   return {
     WalletModalOption,
@@ -143,7 +151,6 @@ export const useConnectWallet = () => {
     setCloseModal,
     setWalletModal,
     disconnectAccount,
-    isEthWalletSs58,
     toggleMetaMaskSchema,
   };
 };

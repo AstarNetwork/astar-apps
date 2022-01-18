@@ -48,13 +48,7 @@ const getters: GetterTree<State, StateInterface> & GeneralGetters = {
   customEndpoint: (state) => state.currentCustomEndpoint,
   theme: (state: State) => state.currentTheme,
   selectedAddress: (state: State) => {
-    if (state.isEthWallet) {
-      return state.currentEcdsaAccount.ss58;
-    } else if (state.isH160Formatted) {
-      return state.currentEcdsaAccount.h160;
-    } else {
-      return state.currentAddress;
-    }
+    return state.currentAddress;
   },
 };
 

@@ -124,7 +124,6 @@ export default defineComponent({
       });
       return filteredAccounts;
     });
-    const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
     const isSupportContract = ref(providerEndpoints[currentNetworkIdx.value].isSupportContract);
 
@@ -134,15 +133,13 @@ export default defineComponent({
     };
 
     const selAccount = ref<string>(
-      substrateAccounts.value.length > 0 ? substrateAccounts.value[0] : ''
+      substrateAccounts.value.length > 0 ? substrateAccounts.value[0].address : ''
     );
-    const isH160Account = ref<boolean>(isH160Formatted.value);
 
     const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
 
     return {
       selAccount,
-      isH160Account,
       isSupportContract,
       closeModal,
       selectAccount,

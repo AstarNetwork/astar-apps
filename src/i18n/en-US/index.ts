@@ -80,7 +80,8 @@ export default {
         'There will be minimal costs for each transaction, and this is paid as gas using {unit} token. If you have no {unit} in your account, you cannot send any tokens. Faucet sends enough {unit} to cover the transaction cost.',
       math: {
         supportsNetwork: 'Math Wallet supports Shiden network only',
-        switchNetwork: "Switch your network to 'Shiden' in the Math Wallet extension",
+        switchNetwork:
+          "Switch your network to 'Shiden' in the Math Wallet extension and refresh this page",
       },
     },
   },

@@ -169,7 +169,6 @@ export default defineComponent({
     const stateModal = reactive<Modal>({
       modalNetwork: false,
     });
-    const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
     const store = useStore();
     const { currentAccount, currentAccountName } = useAccount();
@@ -200,7 +199,6 @@ export default defineComponent({
       shortenAddress,
       currentAccount,
       currentAccountName,
-      isH160,
       endpointKey,
     };
   },

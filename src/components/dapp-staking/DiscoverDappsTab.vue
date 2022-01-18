@@ -117,7 +117,7 @@ export default defineComponent({
     const { api } = useApi();
     const { currentAccount } = useAccount();
     const { accountData } = useBalance(api, currentAccount);
-    const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
+    const isEthWallet = computed(() => store.getters['general/isEthWallet']);
 
     const maxNumberOfStakersPerContract = computed(
       () => store.getters['dapps/getMaxNumberOfStakersPerContract']
@@ -140,7 +140,7 @@ export default defineComponent({
     //   showDappDetailsModal.value = true;
     // };
     watchEffect(() => {
-      if (isH160Formatted.value) {
+      if (isEthWallet.value) {
         store.dispatch('general/showAlertMsg', {
           msg: 'dApp staking only supports Substrate wallets',
           alertType: 'error',

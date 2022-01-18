@@ -34,17 +34,12 @@ export const useAccount = () => {
         currentAccountName.value = 'Ethereum Extension';
         localStorage.setItem(SELECTED_ADDRESS, 'Ethereum Extension');
         store.commit('general/setIsEthWallet', true);
-      }
 
-      if (isH160Formatted.value && currentEcdsaAccount.value.h160) {
-        currentAccount.value = currentEcdsaAccount.value.h160;
-        store.commit('general/setIsH160Formatted', true);
-        return;
-      }
-
-      if (!isH160Formatted.value && currentEcdsaAccount.value.ss58) {
-        currentAccount.value = currentEcdsaAccount.value.ss58;
-        store.commit('general/setIsH160Formatted', false);
+        const { ss58, h160 } = currentEcdsaAccount.value;
+        const address = ss58 ? ss58 : h160;
+        currentAccount.value = address;
+        store.commit('general/setIsH160Formatted', h160 ? true : false);
+        store.commit('general/setCurrentAddress', address);
         return;
       }
 

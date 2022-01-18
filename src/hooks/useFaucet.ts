@@ -46,7 +46,7 @@ export function useFaucet() {
         isLoading.value = true;
 
         // Todo: add a faucet for Astar network later
-        if (isAstar) return;
+        if (isAstar.value) return;
 
         const url = `${faucetEndpoint}/drip/?destination=${account}`;
         const { data } = await axios.get(url);

@@ -40,7 +40,7 @@
         <Button
           v-else
           :small="true"
-          :disabled="isMaxStaker || isH160Formatted || currentAddress === null"
+          :disabled="isMaxStaker || isEthWallet || currentAddress === null"
           @click="showStakeModal"
         >
           {{ $t('dappStaking.stake') }}
@@ -49,7 +49,7 @@
         <Button
           :small="true"
           :primary="true"
-          :disabled="isH160Formatted || currentAddress === null"
+          :disabled="isEthWallet || currentAddress === null"
           class="tw-ml-auto"
           @click="showClaimRewardModal = true"
         >
@@ -141,7 +141,7 @@ export default defineComponent({
     const { minStaking } = useGetMinStaking(api);
     const { decimal } = useChainMetadata();
     const { canUnbondWithdraw } = useUnbondWithdraw(api);
-    const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
+    const isEthWallet = computed(() => store.getters['general/isEthWallet']);
     const currentAddress = computed(() => store.getters['general/selectedAddress']);
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
 
@@ -262,7 +262,7 @@ export default defineComponent({
       formattedMinStake,
       unstake,
       canUnbondWithdraw,
-      isH160Formatted,
+      isEthWallet,
       currentAddress,
     };
   },

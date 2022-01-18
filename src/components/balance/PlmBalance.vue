@@ -163,7 +163,7 @@
       </div>
 
       <div
-        v-if="isEthWallet && isAstar"
+        v-if="isEthWallet"
         class="
           tw-flex tw-justify-center tw-items-center tw-mb-0 tw-py-3 tw-px-2
           xl:tw-px-5
@@ -194,7 +194,6 @@ import { useStore } from 'src/store';
 import { useApi } from 'src/hooks';
 import { getInjector } from 'src/hooks/helper/wallet';
 import Logo from '../common/Logo.vue';
-import { endpointKey } from 'src/config/chainEndpoints';
 
 export default defineComponent({
   components: {
@@ -238,11 +237,6 @@ export default defineComponent({
     const openFaucetModal = (): void => {
       emit('update:is-open-modal-faucet', true);
     };
-    const isAstar = computed(() => {
-      const networkIdx = store.getters['general/networkIdx'];
-      return networkIdx === endpointKey.ASTAR;
-    });
-
     const canUnlockVestedTokens = computed(() => props.accountData.vested.gtn(0) && !isH160.value);
 
     const unlockVestedTokens = async (): Promise<void> => {
@@ -286,7 +280,6 @@ export default defineComponent({
       isH160,
       toggleMetaMaskSchema,
       isEthWallet,
-      isAstar,
       canUnlockVestedTokens,
       ...toRefs(props),
     };
