@@ -246,14 +246,14 @@ export default defineComponent({
     });
 
     const unlockVestedTokens = async (): Promise<void> => {
-      const injector = await getInjector(substrateAccounts.value);
       try {
-        if (isEthWallet) {
+        if (isEthWallet.value) {
           const fn: SubmittableExtrinsicFunction<'promise'> | undefined =
             api?.value?.tx.vesting.vest;
           const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn();
           method && callFunc(method);
         } else {
+          const injector = await getInjector(substrateAccounts.value);
           api?.value?.tx.vesting
             .vest()
             .signAndSend(
