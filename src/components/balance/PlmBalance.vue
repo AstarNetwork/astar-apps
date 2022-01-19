@@ -192,6 +192,9 @@ import { useStore } from 'src/store';
 import { useApi } from 'src/hooks';
 import { getInjector } from 'src/hooks/helper/wallet';
 import Logo from '../common/Logo.vue';
+import { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
+import { useExtrinsicCall } from 'src/hooks/custom-signature/useExtrinsicCall';
+import { ISubmittableResult } from '@polkadot/types/types';
 
 export default defineComponent({
   components: {
@@ -235,9 +238,56 @@ export default defineComponent({
     const openFaucetModal = (): void => {
       emit('update:is-open-modal-faucet', true);
     };
+
     const canUnlockVestedTokens = computed(() => props.accountData.vested.gtn(0) && !isH160.value);
 
-    const unlockVestedTokens = async (): Promise<void> => {
+    const handleTransactionError = (e: Error): void => {
+      console.error(e);
+      store.dispatch('general/showAlertMsg', {
+        msg: `Transaction failed with error: ${e.message}`,
+        alertType: 'error',
+      });
+    };
+
+    const handleResult = (result: ISubmittableResult): void => {
+      const status = result.status;
+      if (status.isInBlock) {
+        const msg = `Completed at block hash #${status.asInBlock.toString()}`;
+
+        store.dispatch('general/showAlertMsg', {
+          msg,
+          alertType: 'success',
+        });
+
+        store.commit('general/setLoading', false);
+      } else {
+        if (status.type !== 'Finalized') {
+          store.commit('general/setLoading', true);
+        }
+      }
+    };
+
+    const { callFunc } = useExtrinsicCall({
+      onResult: handleResult,
+      onTransactionError: handleTransactionError,
+    });
+
+    const unlockVestedTokensMetaMask = async (): Promise<void> => {
+      try {
+        const fn: SubmittableExtrinsicFunction<'promise'> | undefined = api?.value?.tx.vesting.vest;
+        const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn();
+
+        method && callFunc(method);
+      } catch (e) {
+        console.error(e);
+        store.dispatch('general/showAlertMsg', {
+          msg: (e as Error).message,
+          alertType: 'error',
+        });
+      }
+    };
+
+    const unlockVestedTokensSubstrate = async (): Promise<void> => {
       const injector = await getInjector(substrateAccounts.value);
       try {
         api?.value?.tx.vesting.vest().signAndSend(
@@ -260,6 +310,14 @@ export default defineComponent({
           msg: (e as Error).message,
           alertType: 'error',
         });
+      }
+    };
+
+    const unlockVestedTokens = async () => {
+      if (isEthWallet.value) {
+        await unlockVestedTokensMetaMask();
+      } else {
+        await unlockVestedTokensSubstrate();
       }
     };
 
