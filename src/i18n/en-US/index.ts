@@ -53,7 +53,7 @@ export default {
     vested: 'Vested',
     locked: 'Locked',
     evmDeposit: 'EVM Deposit',
-    unlockVestedTokens: 'Unlock vested tokens',
+    unlockVestedTokens: 'Unlock available tokens',
     switchToLockdrop: 'Switch to {value} account',
     modals: {
       connectMetamask: 'Connect Account with Ethereum Wallet',
@@ -83,6 +83,11 @@ export default {
         switchNetwork:
           "Switch your network to 'Shiden' in the Math Wallet extension and refresh this page",
       },
+      availableToUnlock: 'available to be unlocked',
+      of: 'of',
+      vested: 'vested',
+      perBlock: 'per block',
+      untilBlock: 'until block',
     },
   },
   contracts: {

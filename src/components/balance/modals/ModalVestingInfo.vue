@@ -4,25 +4,29 @@
       <div class="tw-w-96">
         <div class="tw-flex tw-space-x-2 tw-text-xl">
           <b><format-balance :balance="accountData.vestedClaimable" /></b>
-          <span>availabe to be unlocked</span>
+          <span>{{ $t('balance.modals.availableToUnlock') }}</span>
         </div>
         <hr class="tw-my-4" />
         <div v-for="(vestingInfo, index) in accountData.vesting" :key="index">
           <div class="tw-flex tw-space-x-2">
             <b><format-balance :balance="vestingInfo.vested" /></b>
-            <span>of</span>
+            <span>{{ $t('balance.modals.of') }}</span>
             <format-balance :balance="vestingInfo.basicInfo.locked" />
-            <span>vested</span>
+            <span>{{ $t('balance.modals.vested') }}</span>
           </div>
           <div class="tw-flex tw-space-x-2">
             <b><format-balance :balance="vestingInfo.basicInfo.perBlock" /></b>
-            <span>per block</span>
+            <span>{{ $t('balance.modals.perBlock') }}</span>
           </div>
-          <div>until block {{ getUntilBlock(vestingInfo.basicInfo) }}</div>
+          <div>
+            {{ $t('balance.modals.untilBlock') }} {{ getUntilBlock(vestingInfo.basicInfo) }}
+          </div>
           <hr class="tw-my-4" />
         </div>
         <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row">
-          <Button @click="unlockFunction()">Unlock available</Button>
+          <Button :disabled="!canUnlockVestedTokens" @click="unlockFunction()">
+            {{ $t('balance.unlockVestedTokens') }}
+          </Button>
           <Button type="button" :primary="false" @click="closeModal">{{ $t('close') }}</Button>
         </div>
       </div>
@@ -31,8 +35,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, toRefs } from 'vue';
+import { defineComponent, PropType, toRefs, computed } from 'vue';
 import { PalletVestingVestingInfo } from '@polkadot/types/lookup';
+import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
 import { AccountData } from 'src/hooks';
 import Modal from 'src/components/common/Modal.vue';
 import Button from 'src/components/common/Button.vue';
@@ -65,9 +70,13 @@ export default defineComponent({
       return vesting.locked.div(vesting.perBlock).add(vesting.startingBlock);
     };
 
+    const canUnlockVestedTokens = computed(() => props.accountData.vestedClaimable.gtn(0));
+
     return {
       closeModal,
       getUntilBlock,
+      canUnlockVestedTokens,
+      balanceFormatter,
       ...toRefs(props),
     };
   },

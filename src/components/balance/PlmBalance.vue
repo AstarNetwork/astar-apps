@@ -49,53 +49,35 @@
             xl:tw-pt-3
           "
         >
-          <div
-            class="
-              tw-flex tw-flex-col
-              xl:tw-flex-row
-              tw-gap-y-4
-              xl:tw-gap-x-4
-              lg:tw-justify-center lg:tw-flex-wrap
-            "
-          >
+          <div class="tw-flex tw-flex-col xl:tw-flex-row tw-gap-y-4 xl:tw-gap-x-4">
             <button
               type="button"
               :disabled="!address"
-              class="transfer-button small-button"
+              class="transfer-button"
               :class="!address ? 'disabled_btn' : ''"
               @click="openTransferModal"
             >
               {{ $t('balance.transfer') }}
             </button>
             <button
-              v-if="!isH160 && isEvmDeposit"
-              :disabled="!canUnlockVestedTokens"
-              type="button"
-              class="transfer-button large-button"
-              @click="unlockVestedTokens"
-            >
-              {{ $t('balance.unlockVestedTokens') }}
-            </button>
-            <button
               v-if="!isH160"
               type="button"
-              class="transfer-button small-button"
+              class="transfer-button"
               :disabled="isFaucetLoading"
               @click="openFaucetModal"
             >
               {{ $t('balance.faucet') }}
             </button>
-
-            <!-- memo: duplicate component to avoid styling from breaking -->
-            <button
-              v-if="isEvmDeposit && !isH160"
-              type="button"
-              class="transfer-button large-button"
-              @click="openWithdrawalModal"
-            >
-              {{ $t('balance.withdrawEvm') }}
-            </button>
           </div>
+
+          <button
+            v-if="isEvmDeposit && !isH160"
+            type="button"
+            class="transfer-button"
+            @click="openWithdrawalModal"
+          >
+            {{ $t('balance.withdrawEvm') }}
+          </button>
         </div>
       </div>
     </div>
@@ -243,7 +225,6 @@ export default defineComponent({
     const openFaucetModal = (): void => {
       emit('update:is-open-modal-faucet', true);
     };
-    const canUnlockVestedTokens = computed(() => props.accountData.vested.gtn(0) && !isH160.value);
 
     const unlockVestedTokens = async (): Promise<void> => {
       const injector = await getInjector(substrateAccounts.value);
@@ -255,9 +236,9 @@ export default defineComponent({
           },
           (result) => {
             if (result.status.isFinalized) {
-              showVestingModal.value = false;
               store.commit('general/setLoading', false);
             } else {
+              showVestingModal.value = false;
               store.commit('general/setLoading', true);
             }
           }
@@ -292,7 +273,6 @@ export default defineComponent({
       isH160,
       toggleMetaMaskSchema,
       isEthWallet,
-      canUnlockVestedTokens,
       showVestingModal,
       ...toRefs(props),
     };
