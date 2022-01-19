@@ -171,6 +171,9 @@
 <script lang="ts">
 import { defineComponent, toRefs, computed, PropType, ref } from 'vue';
 import { AccountData, useChainMetadata, useEvmDeposit, useConnectWallet } from 'src/hooks';
+import type { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
+import { ISubmittableResult } from '@polkadot/types/types';
+import { useExtrinsicCall } from 'src/hooks/custom-signature/useExtrinsicCall';
 import FormatBalance from 'components/balance/FormatBalance.vue';
 import Button from 'src/components/common/Button.vue';
 import ModalVestingInfo from 'components/balance/modals/ModalVestingInfo.vue';
@@ -226,30 +229,51 @@ export default defineComponent({
       emit('update:is-open-modal-faucet', true);
     };
 
+    const handleVestingError = (error: Error): void => {
+      console.log(error);
+      store.commit('general/setLoading', false);
+      store.dispatch('general/showAlertMsg', {
+        msg: error.message,
+        alertType: 'error',
+      });
+    };
+
+    const handleResult = (result: ISubmittableResult): void => {};
+
+    const { callFunc } = useExtrinsicCall({
+      onResult: handleResult,
+      onTransactionError: handleVestingError,
+    });
+
     const unlockVestedTokens = async (): Promise<void> => {
       const injector = await getInjector(substrateAccounts.value);
       try {
-        api?.value?.tx.vesting.vest().signAndSend(
-          selectedAddress.value,
-          {
-            signer: injector?.signer,
-          },
-          (result) => {
-            if (result.status.isFinalized) {
-              store.commit('general/setLoading', false);
-            } else {
-              showVestingModal.value = false;
-              store.commit('general/setLoading', true);
-            }
-          }
-        );
+        if (isEthWallet) {
+          const fn: SubmittableExtrinsicFunction<'promise'> | undefined =
+            api?.value?.tx.vesting.vest;
+          const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn();
+          method && callFunc(method);
+        } else {
+          api?.value?.tx.vesting
+            .vest()
+            .signAndSend(
+              selectedAddress.value,
+              {
+                signer: injector?.signer,
+              },
+              (result) => {
+                if (result.status.isFinalized) {
+                  store.commit('general/setLoading', false);
+                } else {
+                  showVestingModal.value = false;
+                  store.commit('general/setLoading', true);
+                }
+              }
+            )
+            .catch((error: Error) => handleVestingError(error));
+        }
       } catch (e) {
-        console.log(e);
-        store.commit('general/setLoading', false);
-        store.dispatch('general/showAlertMsg', {
-          msg: (e as Error).message,
-          alertType: 'error',
-        });
+        handleVestingError(e as Error);
       }
     };
 
