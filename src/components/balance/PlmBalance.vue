@@ -166,18 +166,16 @@
         v-if="isEthWallet"
         class="
           tw-flex tw-justify-center tw-items-center tw-mb-0 tw-py-3 tw-px-2
-          xl:tw-px-5
           sm:tw-mt-2
-          xl:tw-mt-0
-          md:tw-self-end
+          md:tw-self-end md:tw-w-50
+          xl:tw-px-5 xl:tw-mt-0
           tw-cursor-pointer tw-bg-blue-500 tw-rounded-full tw-shadow-sm
         "
-        :class="isH160 ? 'md:tw-w-56 xl:tw-w-64' : 'md:tw-w-48'"
         @click="toggleMetaMaskSchema"
       >
         <div>
           <p class="tw-font-bold tw-text-right">
-            <span class="tw-leading-tight tw-text-xs">{{
+            <span class="tw-leading-tight tw-text-xs tw-text-white">{{
               $t('balance.switchToLockdrop', { value: isH160 ? 'Lockdrop' : 'EVM' })
             }}</span>
           </p>

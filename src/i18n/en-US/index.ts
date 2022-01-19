@@ -55,6 +55,10 @@ export default {
     evmDeposit: 'EVM Deposit',
     unlockVestedTokens: 'Unlock vested tokens',
     switchToLockdrop: 'Switch to {value} account',
+    native: 'Native',
+    evm: 'EVM',
+    tooltipNative: 'Native address for {value}. Use this address to withdraw from exchanges.',
+    tooltipEvm: 'Ethereum address for receiving {value} from EVM network.',
     modals: {
       connectMetamask: 'Connect Account with Ethereum Wallet',
       ethereumExtension: 'Ethereum Extension',
