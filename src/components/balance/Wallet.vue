@@ -54,10 +54,9 @@
 </template>
 <script lang="ts">
 import IconBase from 'components/icons/IconBase.vue';
-import IconChevronDown from 'components/icons/IconChevronDown.vue';
 import IconDisconnect from 'src/components/icons/IconDisconnect.vue';
 import { useAccount } from 'src/hooks';
-import { defineComponent, ref, watchEffect, watch, computed } from 'vue';
+import { defineComponent } from 'vue';
 export default defineComponent({
   components: {
     IconBase,

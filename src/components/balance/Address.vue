@@ -13,9 +13,46 @@
           </div>
         </div>
         <div>
-          <p class="tw-text-blue-900 dark:tw-text-darkGray-100 tw-font-bold">
-            {{ format }}
-          </p>
+          <div class="tw-flex tw-items-center tw-gap-x-2">
+            <p class="tw-text-blue-900 dark:tw-text-darkGray-100 tw-font-bold">
+              {{ $t(format === AddressFormat.SS58 ? 'balance.native' : 'balance.evm') }}
+            </p>
+
+            <button class="tw-tooltip">
+              <div>
+                <q-icon class="tw-w-4 tw-h-4 tw-mb-1" :name="farQuestionCircle" color="grey" />
+              </div>
+
+              <!-- Tooltip -->
+              <span
+                class="
+                  tw-pointer-events-none
+                  tw-hidden
+                  tw-absolute
+                  tw-top-0
+                  tw-z-10
+                  tw-transform
+                  tw--translate-y-full
+                  tw-p-2
+                  tw-text-xs
+                  tw-leading-tight
+                  tw-text-white
+                  tw-bg-gray-800
+                  dark:tw-bg-darkGray-500
+                  tw-rounded-md tw-shadow-lg
+                  md:tw-whitespace-nowrap
+                "
+                >{{
+                  $t(
+                    format === AddressFormat.SS58 ? 'balance.tooltipNative' : 'balance.tooltipEvm',
+                    {
+                      value: format === AddressFormat.SS58 ? currentNetworkName : tokenSymbol,
+                    }
+                  )
+                }}</span
+              >
+            </button>
+          </div>
           <p class="tw-text-xs tw-text-gray-500 dark:tw-text-darkGray-400">
             <span class="tw-hidden sm:tw-block lg:tw-hidden 2xl:tw-block">
               {{ address }}
@@ -123,6 +160,7 @@ import { providerEndpoints } from 'src/config/chainEndpoints';
 import { useAccount } from 'src/hooks';
 import { toEvmAddress } from 'src/hooks/helper/plasmUtils';
 import { AddressFormat } from './Addresses.vue';
+import { farQuestionCircle } from '@quasar/extras/fontawesome-v5';
 
 export default defineComponent({
   components: {
@@ -151,9 +189,20 @@ export default defineComponent({
     });
 
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
+
+    const currentNetworkName = computed(() => {
+      const id = store.getters['general/networkIdx'];
+      return providerEndpoints[id].displayName;
+    });
+
     const subScan = computed(
       () => `${providerEndpoints[currentNetworkIdx.value].subscan}/account/${address.value}`
     );
+
+    const tokenSymbol = computed(() => {
+      const chainInfo = store.getters['general/chainInfo'];
+      return chainInfo ? chainInfo.tokenSymbol : '';
+    });
 
     const isSubscan = providerEndpoints[currentNetworkIdx.value].subscan !== '';
 
@@ -172,6 +221,10 @@ export default defineComponent({
       currentNetworkIdx,
       copyAddress,
       getShortenAddress,
+      AddressFormat,
+      farQuestionCircle,
+      currentNetworkName,
+      tokenSymbol,
     };
   },
 });

@@ -238,14 +238,56 @@ export default defineComponent({
       });
     };
 
-    const handleResult = (result: ISubmittableResult): void => {};
+    const canUnlockVestedTokens = computed(() => props.accountData.vested.gtn(0) && !isH160.value);
+
+    const handleTransactionError = (e: Error): void => {
+      console.error(e);
+      store.dispatch('general/showAlertMsg', {
+        msg: `Transaction failed with error: ${e.message}`,
+        alertType: 'error',
+      });
+    };
+
+    const handleResult = (result: ISubmittableResult): void => {
+      const status = result.status;
+      if (status.isInBlock) {
+        const msg = `Completed at block hash #${status.asInBlock.toString()}`;
+
+        store.dispatch('general/showAlertMsg', {
+          msg,
+          alertType: 'success',
+        });
+
+        store.commit('general/setLoading', false);
+      } else {
+        if (status.type !== 'Finalized') {
+          store.commit('general/setLoading', true);
+        }
+      }
+    };
 
     const { callFunc } = useExtrinsicCall({
       onResult: handleResult,
-      onTransactionError: handleVestingError,
+      onTransactionError: handleTransactionError,
     });
 
-    const unlockVestedTokens = async (): Promise<void> => {
+    const unlockVestedTokensEthExtrinsic = async (): Promise<void> => {
+      try {
+        const fn: SubmittableExtrinsicFunction<'promise'> | undefined = api?.value?.tx.vesting.vest;
+        const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn();
+
+        method && callFunc(method);
+      } catch (e) {
+        console.error(e);
+        store.dispatch('general/showAlertMsg', {
+          msg: (e as Error).message,
+          alertType: 'error',
+        });
+      }
+    };
+
+    const unlockVestedTokensSubstrate = async (): Promise<void> => {
+      const injector = await getInjector(substrateAccounts.value);
       try {
         if (isEthWallet.value) {
           const fn: SubmittableExtrinsicFunction<'promise'> | undefined =
@@ -277,6 +319,14 @@ export default defineComponent({
       }
     };
 
+    const unlockVestedTokens = async () => {
+      if (isEthWallet.value) {
+        await unlockVestedTokensEthExtrinsic();
+      } else {
+        await unlockVestedTokensSubstrate();
+      }
+    };
+
     const showVestingInfo = (): void => {
       showVestingModal.value = true;
     };
@@ -290,7 +340,6 @@ export default defineComponent({
       openFaucetModal,
       openTransferModal,
       unlockVestedTokens,
-      showVestingInfo,
       evmDeposit,
       isEvmDeposit,
       defaultUnitToken,
@@ -298,6 +347,7 @@ export default defineComponent({
       toggleMetaMaskSchema,
       isEthWallet,
       showVestingModal,
+      showVestingInfo,
       ...toRefs(props),
     };
   },
