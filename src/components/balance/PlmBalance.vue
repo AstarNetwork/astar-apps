@@ -272,7 +272,7 @@ export default defineComponent({
       onTransactionError: handleTransactionError,
     });
 
-    const unlockVestedTokensMetaMask = async (): Promise<void> => {
+    const unlockVestedTokensEthExtrinsic = async (): Promise<void> => {
       try {
         const fn: SubmittableExtrinsicFunction<'promise'> | undefined = api?.value?.tx.vesting.vest;
         const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn();
@@ -315,7 +315,7 @@ export default defineComponent({
 
     const unlockVestedTokens = async () => {
       if (isEthWallet.value) {
-        await unlockVestedTokensMetaMask();
+        await unlockVestedTokensEthExtrinsic();
       } else {
         await unlockVestedTokensSubstrate();
       }
