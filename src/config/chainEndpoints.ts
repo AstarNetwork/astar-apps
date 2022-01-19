@@ -42,7 +42,7 @@ export const providerEndpoints: ChainProvider[] = [
     subscan: 'https://astar.subscan.io',
     evmChainId: '592',
     evmRpc: 'https://rpc.astar.network:8545',
-    faucetEndpoint: '',
+    faucetEndpoint: 'https://astar-discord-faucet.herokuapp.com/astar',
   },
   {
     networkAlias: 'shiden-shell',
