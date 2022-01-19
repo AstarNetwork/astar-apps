@@ -66,8 +66,16 @@ export const useConnectWallet = () => {
       modalName.value = WalletModalOption.NoExtension;
       return;
     }
-    const ss58 = currentEcdsaAccount.value.ss58 ?? '';
-    const result = await loadMetaMask(ss58);
+    // const ss58 = currentEcdsaAccount.value.ss58 ?? '';
+
+    // Test
+    const accounts = await requestAccounts();
+    const loadingAddr = accounts[0];
+    const loginMsg = `Sign this message to login with address ${loadingAddr}`;
+    const signature = await requestSignature(loginMsg, loadingAddr);
+    const pubKey = utils.recoverPublicKeyFromSig(loadingAddr, loginMsg, signature);
+    const ss58Address = utils.ecdsaPubKeyToSs58(pubKey, ASTAR_SS58_FORMAT);
+    const result = await loadMetaMask(ss58Address);
     if (result) {
       modalName.value = '';
       return;
