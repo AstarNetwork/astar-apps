@@ -167,6 +167,7 @@ export default {
     currentEra: 'CURRENT ERA',
     blocksUntilNextEra: 'Blocks until next era',
     stakerApy: 'APY: {value}%',
+    stakerApr: 'APR: {value}%',
     modals: {
       alreadyClaimed: 'Already claimed:',
       contractRewards: 'Contract rewards:',

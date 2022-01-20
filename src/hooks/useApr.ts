@@ -12,6 +12,7 @@ import { defaultAmountWithDecimals, reduceBalanceToDenom } from './helper/plasmU
 const DAPPS_REWARD_RATE = 0.5;
 
 const TS_FIRST_BLOCK = {
+  [endpointKey.ASTAR]: 1639798585, //  Ref: 2021-12-18 03:36:25 https://astar.subscan.io/block/1
   [endpointKey.SHIDEN]: 1625570880, //  Ref: 2021-07-06 11:28:00 https://shiden.subscan.io/block/1
   [endpointKey.SHIBUYA]: 1630937640, // Ref: 2021-09-06 14:14:00 https://shibuya.subscan.io/block/1
 };
@@ -37,7 +38,11 @@ export const useApr = () => {
     latestBlock: number;
     timestampMillis: number;
   }): number => {
-    if (chainId === endpointKey.SHIDEN || chainId === endpointKey.SHIBUYA) {
+    if (
+      chainId === endpointKey.SHIDEN ||
+      chainId === endpointKey.SHIBUYA ||
+      chainId === endpointKey.ASTAR
+    ) {
       const currentTs = Math.floor(timestampMillis / 1000);
       const minsChainRunning = (currentTs - TS_FIRST_BLOCK[chainId]) / 60;
       const avgBlocksPerMin = latestBlock / minsChainRunning;
