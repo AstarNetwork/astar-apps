@@ -55,7 +55,6 @@ export default defineComponent({
 
     const chain = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
-      console.log('chainInfo', chainInfo);
       return chainInfo ? chainInfo.chain : '';
     });
 
