@@ -181,6 +181,7 @@ import { useStore } from 'src/store';
 import { useApi } from 'src/hooks';
 import { getInjector } from 'src/hooks/helper/wallet';
 import Logo from '../common/Logo.vue';
+import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
 
 export default defineComponent({
   components: {
@@ -251,12 +252,14 @@ export default defineComponent({
     const handleResult = (result: ISubmittableResult): void => {
       const status = result.status;
       if (status.isInBlock) {
-        const msg = `Completed at block hash #${status.asInBlock.toString()}`;
+        if (!hasExtrinsicFailedEvent(result.events, store.dispatch)) {
+          const msg = `Completed at block hash #${status.asInBlock.toString()}`;
 
-        store.dispatch('general/showAlertMsg', {
-          msg,
-          alertType: 'success',
-        });
+          store.dispatch('general/showAlertMsg', {
+            msg,
+            alertType: 'success',
+          });
+        }
 
         store.commit('general/setLoading', false);
       } else {

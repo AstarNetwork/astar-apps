@@ -56,7 +56,7 @@ const getCollectionKey = async (): Promise<string> => {
   return collectionKey;
 };
 
-const hasExtrinsicFailedEvent = (events: EventRecord[], dispatch: Dispatch): boolean => {
+export const hasExtrinsicFailedEvent = (events: EventRecord[], dispatch: Dispatch): boolean => {
   let result = false;
   events
     .filter((record): boolean => !!record.event && record.event.section !== 'democracy')
