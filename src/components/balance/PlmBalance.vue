@@ -53,7 +53,7 @@
             <button
               type="button"
               :disabled="!address"
-              class="transfer-button"
+              class="transfer-button small-button"
               :class="!address ? 'disabled_btn' : ''"
               @click="openTransferModal"
             >
@@ -62,7 +62,7 @@
             <button
               v-if="!isH160"
               type="button"
-              class="transfer-button"
+              class="transfer-button small-button"
               :disabled="isFaucetLoading"
               @click="openFaucetModal"
             >
@@ -73,7 +73,7 @@
           <button
             v-if="isEvmDeposit && !isH160"
             type="button"
-            class="transfer-button"
+            class="transfer-button small-button"
             @click="openWithdrawalModal"
           >
             {{ $t('balance.withdrawEvm') }}
