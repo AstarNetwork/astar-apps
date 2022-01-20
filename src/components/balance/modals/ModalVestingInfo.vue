@@ -6,23 +6,25 @@
           <b><format-balance :balance="accountData.vestedClaimable" /></b>
           <span>{{ $t('balance.modals.availableToUnlock') }}</span>
         </div>
-        <hr class="tw-my-4" />
-        <div v-for="(vestingInfo, index) in accountData.vesting" :key="index">
-          <div class="tw-flex tw-space-x-2">
-            <b><format-balance :balance="vestingInfo.vested" /></b>
-            <span>{{ $t('balance.modals.of') }}</span>
-            <format-balance :balance="vestingInfo.basicInfo.locked" />
-            <span>{{ $t('balance.modals.vested') }}</span>
-          </div>
-          <div class="tw-flex tw-space-x-2">
-            <b><format-balance :balance="vestingInfo.basicInfo.perBlock" /></b>
-            <span>{{ $t('balance.modals.perBlock') }}</span>
-          </div>
-          <div>
-            {{ $t('balance.modals.untilBlock') }} {{ getUntilBlock(vestingInfo.basicInfo) }}
-          </div>
+        <q-scroll-area class="scroll">
           <hr class="tw-my-4" />
-        </div>
+          <div v-for="(vestingInfo, index) in accountData.vesting" :key="index">
+            <div class="tw-flex tw-space-x-2">
+              <b><format-balance :balance="vestingInfo.vested" /></b>
+              <span>{{ $t('balance.modals.of') }}</span>
+              <format-balance :balance="vestingInfo.basicInfo.locked" />
+              <span>{{ $t('balance.modals.vested') }}</span>
+            </div>
+            <div class="tw-flex tw-space-x-2">
+              <b><format-balance :balance="vestingInfo.basicInfo.perBlock" /></b>
+              <span>{{ $t('balance.modals.perBlock') }}</span>
+            </div>
+            <div>
+              {{ $t('balance.modals.untilBlock') }} {{ getUntilBlock(vestingInfo.basicInfo) }}
+            </div>
+            <hr class="tw-my-4" />
+          </div>
+        </q-scroll-area>
         <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row">
           <Button :disabled="!canUnlockVestedTokens" @click="unlockFunction()">
             {{ $t('balance.unlockVestedTokens') }}
@@ -82,3 +84,9 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss" scoped>
+.scroll {
+  height: 300px;
+}
+</style>
