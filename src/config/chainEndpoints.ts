@@ -38,7 +38,7 @@ export const providerEndpoints: ChainProvider[] = [
     prefix: 0x250,
     typeDef: typeDefs.plasmCollatorDefinitions,
     key: endpointKey.ASTAR,
-    isStoreEnabled: false,
+    isStoreEnabled: true,
     subscan: 'https://astar.subscan.io',
     evmChainId: '592',
     evmRpc: 'https://rpc.astar.network:8545',
