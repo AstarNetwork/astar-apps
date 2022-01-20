@@ -156,7 +156,7 @@ import IconBase from 'components/icons/IconBase.vue';
 import IconAccountSample from 'components/icons/IconAccountSample.vue';
 import IconDocumentDuplicate from 'components/icons/IconDocumentDuplicate.vue';
 import IconLink from 'components/icons/IconLink.vue';
-import { providerEndpoints } from 'src/config/chainEndpoints';
+import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { useAccount } from 'src/hooks';
 import { toEvmAddress } from 'src/hooks/helper/plasmUtils';
 import { AddressFormat } from './Addresses.vue';
@@ -188,7 +188,11 @@ export default defineComponent({
         format === AddressFormat.SS58 ? currentAccount.value : toEvmAddress(currentAccount.value);
     });
 
-    const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
+    const currentNetworkIdx = computed(() => {
+      const chainInfo = store.getters['general/chainInfo'];
+      const chain = chainInfo ? chainInfo.chain : '';
+      return getProviderIndex(chain);
+    });
 
     const currentNetworkName = computed(() => {
       const id = store.getters['general/networkIdx'];

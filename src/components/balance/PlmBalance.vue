@@ -49,7 +49,15 @@
             xl:tw-pt-3
           "
         >
-          <div class="tw-flex tw-flex-col xl:tw-flex-row tw-gap-y-4 xl:tw-gap-x-4">
+          <div
+            class="
+              tw-flex tw-flex-col
+              xl:tw-flex-row
+              tw-gap-y-4
+              xl:tw-gap-x-4
+              tw-flex-wrap tw-justify-center
+            "
+          >
             <button
               type="button"
               :disabled="!address"
@@ -59,6 +67,13 @@
             >
               {{ $t('balance.transfer') }}
             </button>
+            <Button
+              class="transfer-button"
+              :class="isEvmDeposit ? 'large-button' : 'small-button'"
+              @click="showVestingInfo"
+            >
+              {{ $t('balance.vestingInfo') }}
+            </Button>
             <button
               v-if="!isH160"
               type="button"
@@ -68,19 +83,15 @@
             >
               {{ $t('balance.faucet') }}
             </button>
-            <Button class="transfer-button small-button" @click="showVestingInfo">
-              {{ $t('balance.vestingInfo') }}
-            </Button>
+            <button
+              v-if="isEvmDeposit && !isH160"
+              type="button"
+              class="transfer-button"
+              @click="openWithdrawalModal"
+            >
+              {{ $t('balance.withdrawEvm') }}
+            </button>
           </div>
-
-          <button
-            v-if="isEvmDeposit && !isH160"
-            type="button"
-            class="transfer-button"
-            @click="openWithdrawalModal"
-          >
-            {{ $t('balance.withdrawEvm') }}
-          </button>
         </div>
       </div>
     </div>
@@ -251,8 +262,6 @@ export default defineComponent({
       });
     };
 
-    const canUnlockVestedTokens = computed(() => props.accountData.vested.gtn(0) && !isH160.value);
-
     const handleTransactionError = (e: Error): void => {
       console.error(e);
       store.dispatch('general/showAlertMsg', {
@@ -303,7 +312,6 @@ export default defineComponent({
     };
 
     const unlockVestedTokensSubstrate = async (): Promise<void> => {
-      const injector = await getInjector(substrateAccounts.value);
       try {
         if (isEthWallet.value) {
           const fn: SubmittableExtrinsicFunction<'promise'> | undefined =

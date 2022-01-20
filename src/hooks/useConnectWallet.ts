@@ -8,6 +8,7 @@ import { computed, ref, watchEffect, watch } from 'vue';
 import { useMetamask } from './custom-signature/useMetamask';
 import { castMobileSource, getInjectedExtensions } from './helper/wallet';
 import * as utils from 'src/hooks/custom-signature/utils';
+import { getProviderIndex } from 'src/config/chainEndpoints';
 
 export const useConnectWallet = () => {
   const modalConnectWallet = ref<boolean>(false);
@@ -19,7 +20,11 @@ export const useConnectWallet = () => {
   const store = useStore();
   const { currentAccount, currentAccountName, disconnectAccount } = useAccount();
   const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
-  const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
+  const currentNetworkIdx = computed(() => {
+    const chainInfo = store.getters['general/chainInfo'];
+    const chain = chainInfo ? chainInfo.chain : '';
+    return getProviderIndex(chain);
+  });
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
   const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
 
