@@ -68,6 +68,9 @@
             >
               {{ $t('balance.faucet') }}
             </button>
+            <Button class="transfer-button small-button" @click="showVestingInfo">
+              {{ $t('balance.vestingInfo') }}
+            </Button>
           </div>
 
           <button
@@ -90,7 +93,7 @@
           tw-rounded-lg tw-py-3 tw-px-4
         "
       >
-        <div class="tw-flex tw-justify-between">
+        <div class="tw-flex tw-justify-between tw-items-center">
           <div>
             {{ $t('balance.claimable') }}
           </div>
@@ -100,7 +103,7 @@
             </span>
           </div>
         </div>
-        <div class="tw-flex tw-justify-between">
+        <div class="tw-flex tw-justify-between tw-items-center">
           <div>
             {{ $t('balance.vested') }}
           </div>
@@ -112,9 +115,6 @@
             </p>
           </div>
         </div>
-        <Button :small="true" class="tw-self-end tw-mt-1" @click="showVestingInfo">
-          {{ $t('balance.info') }}
-        </Button>
       </div>
 
       <div
@@ -390,7 +390,7 @@ export default defineComponent({
 
 .small-button {
   @media (min-width: 1280px) {
-    width: 100px;
+    width: 120px;
   }
 }
 
