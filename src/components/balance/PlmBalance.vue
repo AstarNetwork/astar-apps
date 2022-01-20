@@ -277,6 +277,7 @@ export default defineComponent({
         const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn();
 
         method && callFunc(method);
+        showVestingModal.value = false;
       } catch (e) {
         console.error(e);
         store.dispatch('general/showAlertMsg', {
