@@ -1,3 +1,5 @@
+import { endpointKey } from 'src/config/chainEndpoints';
+import { TNetworkId } from './../web3/index';
 import { VoidFn } from '@polkadot/api/types';
 import { Balance } from '@polkadot/types/interfaces';
 import BN from 'bn.js';
@@ -5,6 +7,7 @@ import { useStore } from 'src/store';
 import { createWeb3Instance } from 'src/web3';
 import { computed, onUnmounted, ref, Ref, watch } from 'vue';
 import { getVested } from './helper/vested';
+import Web3 from 'web3';
 
 function useCall(apiRef: any, addressRef: Ref<string>) {
   // should be fixed -- cannot refer it because it goes undefined once it called. to call balance again, it should pass apiRef by external params.
@@ -23,7 +26,19 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
   const updateAccountH160 = async (address: string) => {
     if (!address) return;
     try {
-      const web3 = await createWeb3Instance(currentNetworkIdx.value);
+      const isCustomOrLocalNode =
+        currentNetworkIdx.value === endpointKey.CUSTOM ||
+        currentNetworkIdx.value === endpointKey.LOCAL;
+
+      let web3;
+      if (isCustomOrLocalNode) {
+        const provider = typeof window !== 'undefined' && window.ethereum;
+        if (!provider) return;
+        web3 = new Web3(provider as any);
+      } else {
+        web3 = await createWeb3Instance(currentNetworkIdx.value);
+      }
+
       if (!web3) {
         throw Error(`cannot create the web3 instance with network id ${currentNetworkIdx.value}`);
       }
