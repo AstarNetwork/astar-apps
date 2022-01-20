@@ -33,9 +33,10 @@ export function useTvl(api: any) {
       };
 
       const priceUsd = async (): Promise<number> => {
-        if (currentNetworkIdx === endpointKey.SHIDEN) {
+        if (currentNetworkIdx === endpointKey.SHIDEN || currentNetworkIdx === endpointKey.ASTAR) {
           try {
-            return await getUsdPrice('shiden');
+            const coinGeckoTicker = currentNetworkIdx === endpointKey.SHIDEN ? 'shiden' : 'astar';
+            return await getUsdPrice(coinGeckoTicker);
           } catch (error) {
             console.error(error);
             return 0;
