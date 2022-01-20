@@ -105,3 +105,17 @@ export const providerEndpoints: ChainProvider[] = [
     faucetEndpoint: '',
   },
 ];
+
+// Memo: return the provider index for Local and Custom node
+export const getProviderIndex = (chain: 'Shiden' | 'Astar' | 'Shibuya') => {
+  switch (chain) {
+    case 'Astar':
+      return endpointKey.ASTAR;
+    case 'Shiden':
+      return endpointKey.SHIDEN;
+    case 'Shibuya':
+      return endpointKey.SHIBUYA;
+    default:
+      return endpointKey.ASTAR;
+  }
+};
