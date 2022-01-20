@@ -1,3 +1,4 @@
+import { getProviderIndex } from './../config/chainEndpoints';
 import { useStore } from 'src/store';
 import axios from 'axios';
 import { ref, watch, computed } from 'vue';
@@ -31,8 +32,10 @@ export function useFaucet() {
   const isLoading = ref<boolean>(false);
   const { currentAccount } = useAccount();
   const store = useStore();
-  const currentNetworkIdx = Number(localStorage.getItem('networkIdx'));
-  const faucetEndpoint = providerEndpoints[currentNetworkIdx].faucetEndpoint;
+  const chainInfo = computed(() => {
+    const chainInfo = store.getters['general/chainInfo'];
+    return chainInfo ? chainInfo : undefined;
+  });
   const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
 
   const isAstar = computed(() => {
@@ -40,7 +43,13 @@ export function useFaucet() {
     return networkIdx === endpointKey.ASTAR;
   });
 
-  const getFaucetInfo = async (account: string): Promise<FaucetInfo> => {
+  const getFaucetInfo = async ({
+    account,
+    endpoint,
+  }: {
+    account: string;
+    endpoint: string;
+  }): Promise<FaucetInfo> => {
     const fetchData = async () => {
       try {
         isLoading.value = true;
@@ -48,7 +57,7 @@ export function useFaucet() {
         // Todo: add a faucet for Astar network later
         if (isAstar.value) return;
 
-        const url = `${faucetEndpoint}/drip/?destination=${account}`;
+        const url = `${endpoint}/drip/?destination=${account}`;
         const { data } = await axios.get(url);
         isLoading.value = false;
         return data;
@@ -71,12 +80,14 @@ export function useFaucet() {
   };
 
   watch(
-    [hash, currentAccount],
+    [hash, currentAccount, chainInfo],
     async () => {
       const currentAccountRef = currentAccount.value;
-      if (!currentAccountRef || isH160Formatted.value) return;
+      if (!currentAccountRef || isH160Formatted.value || !chainInfo.value) return;
+      const currentNetworkIdx = getProviderIndex(chainInfo.value.chain);
+      const endpoint = providerEndpoints[currentNetworkIdx].faucetEndpoint;
 
-      faucetInfo.value = await getFaucetInfo(currentAccountRef);
+      faucetInfo.value = await getFaucetInfo({ account: currentAccountRef, endpoint });
     },
     { immediate: true }
   );
@@ -88,8 +99,13 @@ export function useFaucet() {
 
     try {
       store.commit('general/setLoading', true);
+      const currentNetworkIdx = getProviderIndex(chainInfo.value.chain);
+      const endpoint = providerEndpoints[currentNetworkIdx].faucetEndpoint;
+      if (!endpoint) {
+        throw Error('Cannot find the request endpoint');
+      }
 
-      const url = `${faucetEndpoint}/drip`;
+      const url = `${endpoint}/drip`;
       const { data } = await axios.post<{ hash: string }>(url, {
         destination: currentAccount.value,
       });

@@ -28,10 +28,10 @@
     </button>
 
     <div class="tw-flex tw-items-center tw-justify-center">
-      <div v-if="currentNetworkIdx === endpointKey.SHIDEN" class="tw-py-2">
+      <div v-if="chain === 'Shiden'" class="tw-py-2">
         <img width="190" src="~assets/img/shiden.png" />
       </div>
-      <div v-else-if="currentNetworkIdx === endpointKey.SHIBUYA" class="tw-py-2">
+      <div v-else-if="chain === 'Shibuya'" class="tw-py-2">
         <img width="190" src="~assets/img/shibuya.svg" />
       </div>
       <img v-else width="200" src="~assets/img/astar.png" />
@@ -42,23 +42,26 @@
 </template>
 
 <script lang="ts">
-import { endpointKey } from 'src/config/chainEndpoints';
-import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useSidebar } from 'src/hooks';
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
 import IconBase from '../icons/IconBase.vue';
 import IconOutlineMenu from '../icons/IconOutlineMenu.vue';
+import { useStore } from 'src/store';
 export default defineComponent({
   components: { IconBase, IconOutlineMenu },
   setup() {
     const { isOpen } = useSidebar();
+    const store = useStore();
 
-    const currentNetworkIdx = Number(localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX));
+    const chain = computed(() => {
+      const chainInfo = store.getters['general/chainInfo'];
+      console.log('chainInfo', chainInfo);
+      return chainInfo ? chainInfo.chain : '';
+    });
 
     return {
       isOpen,
-      currentNetworkIdx,
-      endpointKey,
+      chain,
     };
   },
 });

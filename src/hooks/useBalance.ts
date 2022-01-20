@@ -4,6 +4,8 @@ import BN from 'bn.js';
 import { useStore } from 'src/store';
 import { createWeb3Instance } from 'src/web3';
 import { computed, onUnmounted, ref, Ref, watch } from 'vue';
+import { getProviderIndex } from './../config/chainEndpoints';
+import { TNetworkId } from './../web3/index';
 import { getVested } from './helper/vested';
 
 function useCall(apiRef: any, addressRef: Ref<string>) {
@@ -14,7 +16,13 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
   const accountDataRef = ref<AccountData>();
   const store = useStore();
   const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
-  const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
+
+  const currentNetworkIdx = computed(() => {
+    const chainInfo = store.getters['general/chainInfo'];
+    const chain = chainInfo ? chainInfo.chain : '';
+    return getProviderIndex(chain);
+  });
+
   const isLoading = computed(() => store.getters['general/isLoading']);
   const dapps = computed(() => store.getters['dapps/getAllDapps']);
 
@@ -23,7 +31,8 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
   const updateAccountH160 = async (address: string) => {
     if (!address) return;
     try {
-      const web3 = await createWeb3Instance(currentNetworkIdx.value);
+      const web3 = await createWeb3Instance(currentNetworkIdx.value as TNetworkId);
+
       if (!web3) {
         throw Error(`cannot create the web3 instance with network id ${currentNetworkIdx.value}`);
       }
