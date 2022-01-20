@@ -51,6 +51,7 @@ export default {
     faucet: 'Faucet',
     transferable: 'Transferable',
     vested: 'Vested',
+    claimable: 'Claimable',
     locked: 'Locked',
     evmDeposit: 'EVM Deposit',
     unlockVestedTokens: 'Unlock available tokens',
@@ -59,6 +60,7 @@ export default {
     evm: 'EVM',
     tooltipNative: 'Native address for {value}. Use this address to withdraw from exchanges.',
     tooltipEvm: 'Ethereum address for receiving {value} from EVM network.',
+    info: 'Info',
     modals: {
       connectMetamask: 'Connect Account with Ethereum Wallet',
       ethereumExtension: 'Ethereum Extension',

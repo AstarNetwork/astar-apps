@@ -73,7 +73,7 @@
           <button
             v-if="isEvmDeposit && !isH160"
             type="button"
-            class="transfer-button small-button"
+            class="transfer-button"
             @click="openWithdrawalModal"
           >
             {{ $t('balance.withdrawEvm') }}
@@ -85,24 +85,36 @@
     <div class="tw-text-sm tw-flex tw-flex-col tw-gap-y-5">
       <div
         class="
-          tw-flex tw-justify-between tw-items-center tw-bg-blue-50
+          tw-flex tw-flex-col tw-justify-between tw-bg-blue-50
           dark:tw-bg-darkGray-700
           tw-rounded-lg tw-py-3 tw-px-4
         "
       >
-        <div>
-          {{ $t('balance.vested') }}
-          <Button v-if="!isH160 && !isEvmDeposit" :small="true" @click="showVestingInfo"
-            >Info</Button
-          >
-        </div>
-        <div>
-          <p class="tw-font-bold tw-text-right">
+        <div class="tw-flex tw-justify-between">
+          <div>
+            {{ $t('balance.claimable') }}
+          </div>
+          <div class="tw-font-bold tw-text-right tw-fle">
             <span class="tw-text-2xl md:tw-text-xl xl:tw-text-2xl tw-leading-tight">
-              <format-balance :balance="accountData?.vested" />
+              <format-balance :balance="accountData?.vestedClaimable" />
             </span>
-          </p>
+          </div>
         </div>
+        <div class="tw-flex tw-justify-between">
+          <div>
+            {{ $t('balance.vested') }}
+          </div>
+          <div>
+            <p class="tw-font-bold tw-text-right">
+              <span class="tw-text-2xl md:tw-text-xl xl:tw-text-2xl tw-leading-tight">
+                <format-balance :balance="accountData?.vested" />
+              </span>
+            </p>
+          </div>
+        </div>
+        <Button :small="true" class="tw-self-end tw-mt-1" @click="showVestingInfo">
+          {{ $t('balance.info') }}
+        </Button>
       </div>
 
       <div
