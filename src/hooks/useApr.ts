@@ -87,10 +87,8 @@ export const useApr = () => {
         const dailyEraRate = avgBlocksPerDay / blocksPerEraRef;
         const annualRewards = eraRewards * dailyEraRate * 365.25;
         const totalStaked = Number(reduceBalanceToDenom(tvlTokenRef, decimalRef));
-
         const developerRewardPercentage = Number(results[3]?.toString().replace('%', '')) * 0.01;
         const stakerBlockReward = (1 - developerRewardPercentage) * DAPPS_REWARD_RATE;
-
         const stakerApr = (annualRewards / totalStaked) * stakerBlockReward * 100;
 
         if (stakerApr === Infinity) return 0;
