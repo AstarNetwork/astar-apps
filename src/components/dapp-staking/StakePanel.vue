@@ -40,7 +40,7 @@
         <Button
           v-else
           :small="true"
-          :disabled="isMaxStaker || isEthWallet || currentAddress === null"
+          :disabled="isMaxStaker || isH160 || currentAddress === null"
           @click="showStakeModal"
         >
           {{ $t('dappStaking.stake') }}
@@ -49,7 +49,7 @@
         <Button
           :small="true"
           :primary="true"
-          :disabled="isEthWallet || currentAddress === null"
+          :disabled="isH160 || currentAddress === null"
           class="tw-ml-auto"
           @click="showClaimRewardModal = true"
         >
@@ -81,17 +81,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, toRefs, watchEffect, computed } from 'vue';
-import StakeModal from 'components/dapp-staking/modals/StakeModal.vue';
-import { StakeModel } from 'src/hooks/store';
+import { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
 import Button from 'components/common/Button.vue';
 import ClaimRewardModal from 'components/dapp-staking/modals/ClaimRewardModal.vue';
-import { useApi, useChainMetadata, useGetMinStaking } from 'src/hooks';
+import StakeModal from 'components/dapp-staking/modals/StakeModal.vue';
+import { useApi, useChainMetadata, useCustomSignature, useGetMinStaking } from 'src/hooks';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
-import { useStore } from 'src/store';
-import { StakingParameters, ClaimParameters } from 'src/store/dapp-staking/actions';
-import { getAmount } from 'src/hooks/store';
+import { getAmount, StakeModel } from 'src/hooks/store';
 import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
+import { useStore } from 'src/store';
+import { ClaimParameters, getAddressEnum, StakingParameters } from 'src/store/dapp-staking/actions';
+import { computed, defineComponent, ref, toRefs, watchEffect } from 'vue';
 import VueJsProgress from 'vue-js-progress';
 import './stake-panel.scss';
 
@@ -141,7 +141,10 @@ export default defineComponent({
     const { minStaking } = useGetMinStaking(api);
     const { decimal } = useChainMetadata();
     const { canUnbondWithdraw } = useUnbondWithdraw(api);
-    const isEthWallet = computed(() => store.getters['general/isEthWallet']);
+    const isH160 = computed(() => store.getters['general/isH160Formatted']);
+
+    const { callFunc, dispatchError, isCustomSig } = useCustomSignature();
+
     const currentAddress = computed(() => store.getters['general/selectedAddress']);
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
 
@@ -185,6 +188,19 @@ export default defineComponent({
       const amount = getAmount(stakeData.amount, stakeData.unit);
       const unit = stakeData.unit;
 
+      const stakeCustomExtrinsic = async () => {
+        try {
+          const fn: SubmittableExtrinsicFunction<'promise'> | undefined =
+            api?.value?.tx.dappsStaking.bondAndStake;
+          const method: SubmittableExtrinsic<'promise'> | undefined =
+            fn && fn(getAddressEnum(props.dapp.address), amount);
+
+          method && callFunc(method);
+        } catch (e) {
+          dispatchError((e as Error).message);
+        }
+      };
+
       if (props.stakeInfo) {
         const ttlStakeAmount = amount.add(props.stakeInfo.yourStake.denomAmount);
 
@@ -199,54 +215,117 @@ export default defineComponent({
         console.warn('No stakeInfo available. The store is unable to check some constraints.');
       }
 
-      const result = await store.dispatch('dapps/stake', {
-        api: api?.value,
-        senderAddress: stakeData.address,
-        dapp: props.dapp,
-        amount,
-        decimals: stakeData.decimal,
-        unit,
-        finalizeCallback: emitStakeChanged,
-        substrateAccounts: substrateAccounts.value,
-      } as StakingParameters);
-
-      if (result) {
+      if (isCustomSig.value) {
+        await stakeCustomExtrinsic();
         showModal.value = false;
+      } else {
+        const result = await store.dispatch('dapps/stake', {
+          api: api?.value,
+          senderAddress: stakeData.address,
+          dapp: props.dapp,
+          amount,
+          decimals: stakeData.decimal,
+          unit,
+          finalizeCallback: emitStakeChanged,
+          substrateAccounts: substrateAccounts.value,
+        } as StakingParameters);
+
+        if (result) {
+          showModal.value = false;
+        }
       }
     };
 
     const unstake = async (stakeData: StakeModel): Promise<void> => {
       const dispatchCommand = canUnbondWithdraw.value ? 'dapps/unbond' : 'dapps/unstake';
-      const result = await store.dispatch(dispatchCommand, {
-        api: api?.value,
-        senderAddress: stakeData.address,
-        dapp: props.dapp,
-        amount: getAmount(stakeData.amount, stakeData.unit),
-        decimals: stakeData.decimal,
-        unit: stakeData.unit,
-        finalizeCallback: emitStakeChanged,
-        substrateAccounts: substrateAccounts.value,
-      } as StakingParameters);
+      const amount = getAmount(stakeData.amount, stakeData.unit);
 
-      if (result) {
+      const unstakeCustomExtrinsic = async () => {
+        try {
+          const fn: SubmittableExtrinsicFunction<'promise'> | undefined =
+            api?.value?.tx.dappsStaking.unbondUnstakeAndWithdraw;
+          const method: SubmittableExtrinsic<'promise'> | undefined =
+            fn && fn(getAddressEnum(props.dapp.address), amount);
+
+          method && callFunc(method);
+        } catch (e) {
+          dispatchError((e as Error).message);
+        }
+      };
+
+      if (isCustomSig.value) {
+        await unstakeCustomExtrinsic();
         showModal.value = false;
+      } else {
+        const result = await store.dispatch(dispatchCommand, {
+          api: api?.value,
+          senderAddress: stakeData.address,
+          dapp: props.dapp,
+          amount,
+          decimals: stakeData.decimal,
+          unit: stakeData.unit,
+          finalizeCallback: emitStakeChanged,
+          substrateAccounts: substrateAccounts.value,
+        } as StakingParameters);
+
+        if (result) {
+          showModal.value = false;
+        }
       }
     };
 
     const claim = async (unclaimedEras: number[], claimFinishedCallback: () => void) => {
       // TODO maybe to add select address option to modal as in stake/unstake
       const senderAddress = store.getters['general/selectedAddress'];
-      const result = await store.dispatch('dapps/claimBatch', {
-        api: api?.value,
-        senderAddress,
-        dapp: props.dapp,
-        substrateAccounts: substrateAccounts.value,
-        finalizeCallback: function () {
-          emitStakeChanged();
-          claimFinishedCallback();
-        },
-        unclaimedEras,
-      } as ClaimParameters);
+
+      const claimCustomExtrinsic = async () => {
+        const erasToClaim = unclaimedEras;
+        if (erasToClaim.length === 0) {
+          store.dispatch(
+            'general/showAlertMsg',
+            {
+              msg: 'All rewards have been already claimed.',
+              alertType: 'warning',
+            },
+            { root: true }
+          );
+
+          return true;
+        }
+
+        try {
+          const transactions = [];
+          for (let era of erasToClaim) {
+            transactions.push(
+              api?.value?.tx.dappsStaking.claim(getAddressEnum(props.dapp.address), era)
+            );
+          }
+
+          const fn: SubmittableExtrinsicFunction<'promise'> | undefined =
+            api?.value?.tx.utility.batch;
+          const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn(transactions);
+
+          method && callFunc(method);
+        } catch (e) {
+          dispatchError((e as Error).message);
+        }
+      };
+
+      if (isCustomSig.value) {
+        await claimCustomExtrinsic();
+      } else {
+        await store.dispatch('dapps/claimBatch', {
+          api: api?.value,
+          senderAddress,
+          dapp: props.dapp,
+          substrateAccounts: substrateAccounts.value,
+          finalizeCallback: function () {
+            emitStakeChanged();
+            claimFinishedCallback();
+          },
+          unclaimedEras,
+        } as ClaimParameters);
+      }
     };
 
     return {
@@ -262,7 +341,7 @@ export default defineComponent({
       formattedMinStake,
       unstake,
       canUnbondWithdraw,
-      isEthWallet,
+      isH160,
       currentAddress,
     };
   },

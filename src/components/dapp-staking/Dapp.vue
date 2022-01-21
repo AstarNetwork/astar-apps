@@ -90,7 +90,8 @@ export default defineComponent({
     const showDappDetailsModal = ref<boolean>(false);
     const showStakeModal = ref<boolean>(false);
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
-
+    const isEthWallet = computed(() => store.getters['general/isEthWallet']);
+    const isLoading = computed(() => store.getters['general/isLoading']);
     const showDappDetails = (): void => {
       showDappDetailsModal.value = true;
     };
@@ -118,6 +119,17 @@ export default defineComponent({
     watch(senderAddress, () => {
       getDappInfo();
     });
+
+    // Memo: update staking data for EthWallet account
+    watch(
+      [isLoading],
+      () => {
+        if (isEthWallet.value && !isLoading.value) {
+          getDappInfo();
+        }
+      },
+      { immediate: false }
+    );
 
     const showStake = (): void => {
       console.log('show stake');

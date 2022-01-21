@@ -205,7 +205,6 @@ export default defineComponent({
     const transferExtrinsic = async ({ amount, account }: { amount: BN; account: string }) => {
       try {
         const h160Addr = plasmUtils.toEvmAddress(account);
-
         const fn: SubmittableExtrinsicFunction<'promise'> | undefined = api?.value?.tx.evm.withdraw;
         const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn(h160Addr, amount);
 

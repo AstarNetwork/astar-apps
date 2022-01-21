@@ -34,7 +34,7 @@ const showError = (dispatch: Dispatch, message: string): void => {
 };
 
 // TODO refactor, detect address type, etc.....
-const getAddressEnum = (address: string) => ({ Evm: address });
+export const getAddressEnum = (address: string) => ({ Evm: address });
 
 const getFormattedBalance = (parameters: StakingParameters): string => {
   return formatBalance(parameters.amount, {
