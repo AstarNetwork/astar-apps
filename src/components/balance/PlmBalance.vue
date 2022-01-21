@@ -135,7 +135,12 @@
           tw-rounded-lg tw-py-3 tw-px-4
         "
       >
-        <div>{{ $t('balance.locked') }}</div>
+        <div class="tw-flex">
+          {{ $t('balance.locked') }}
+          <div>
+            <q-icon name="farQuestionCircle" />
+          </div>
+        </div>
         <div>
           <p class="tw-font-bold tw-text-right">
             <span class="tw-text-2xl md:tw-text-xl xl:tw-text-2xl tw-leading-tight">
