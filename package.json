@@ -1,9 +1,9 @@
 {
   "name": "astar-portal",
   "version": "0.0.1",
-  "description": "Astar Portal App",
-  "productName": "Astar Portal",
-  "author": "",
+  "description": "Your one-stop platform for the Astar ecosystem - Wallet / Staking / Bridging",
+  "productName": "Astar Portal - Astar & Shiden Network",
+  "author": "Astar Network",
   "private": true,
   "scripts": {
     "dev": "quasar dev",
