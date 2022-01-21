@@ -76,7 +76,7 @@ export default defineComponent({
 
       useMeta({
         title: '',
-        titleTemplate: (title) => `${title} | Astar Apps Portal`,
+        titleTemplate: (title) => `${title} | Astar Portal - Astar & Shiden Network`,
         htmlAttr: { lang: 'en' },
         link: {
           material: {
