@@ -63,7 +63,7 @@ function state(): GeneralStateInterface {
     allAccounts: [],
     allAccountNames: [],
     currentNetworkStatus: 'connecting',
-    currentNetworkIdx: endpointKey.SHIDEN,
+    currentNetworkIdx: endpointKey.ASTAR,
     isEthWallet: false,
     isH160Formatted: false,
     currentEcdsaAccount: {
