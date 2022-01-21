@@ -135,7 +135,7 @@ export default defineComponent({
 
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const isEthWallet = computed(() => store.getters['general/isEthWallet']);
-    const selAccountIdx = ref(currentAddress.value);
+    const selAccountIdx = props.role === Role.ToAddress ? ref('') : ref(currentAddress.value);
     const account = getSelectedAccount(substrateAccounts.value);
 
     const selAddress = ref(!isH160 ? (account?.address as string) : '');
