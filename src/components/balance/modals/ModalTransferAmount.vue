@@ -119,13 +119,11 @@
 </template>
 <script lang="ts">
 import type { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
-import { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 import FormatBalance from 'components/balance/FormatBalance.vue';
 import InputAmount from 'components/common/InputAmount.vue';
 import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { useApi, useChainMetadata, useCustomSignature } from 'src/hooks';
-import { useExtrinsicCall } from 'src/hooks/custom-signature/useExtrinsicCall';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { getUnit } from 'src/hooks/helper/units';
 import { getInjector } from 'src/hooks/helper/wallet';
@@ -173,7 +171,6 @@ export default defineComponent({
 
     const selectUnit = ref(defaultUnitToken.value);
     const isEthWallet = computed(() => store.getters['general/isEthWallet']);
-    // const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
     const currentNetworkIdx = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
       const chain = chainInfo ? chainInfo.chain : '';
