@@ -56,5 +56,7 @@ export function useCustomSignature(fn?: () => void) {
     callFunc,
     dispatchError,
     isCustomSig,
+    handleResult,
+    handleTransactionError,
   };
 }

@@ -142,7 +142,6 @@ export default defineComponent({
     const { decimal } = useChainMetadata();
     const { canUnbondWithdraw } = useUnbondWithdraw(api);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
-
     const { callFunc, dispatchError, isCustomSig } = useCustomSignature();
 
     const currentAddress = computed(() => store.getters['general/selectedAddress']);
