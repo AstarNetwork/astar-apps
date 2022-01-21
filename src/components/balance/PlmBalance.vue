@@ -116,12 +116,12 @@
         </div>
         <div class="tw-flex tw-justify-between tw-items-center">
           <div>
-            {{ $t('balance.vested') }}
+            {{ $t('balance.remainingVests') }}
           </div>
           <div>
             <p class="tw-font-bold tw-text-right">
               <span class="tw-text-2xl md:tw-text-xl xl:tw-text-2xl tw-leading-tight">
-                <format-balance :balance="accountData?.vested" />
+                <format-balance :balance="accountData?.remainingVests" />
               </span>
             </p>
           </div>

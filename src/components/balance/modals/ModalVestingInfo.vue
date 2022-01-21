@@ -16,6 +16,12 @@
               <span>{{ $t('balance.modals.vested') }}</span>
             </div>
             <div class="tw-flex tw-space-x-2">
+              <b>
+                <format-balance :balance="vestingInfo.basicInfo.locked.sub(vestingInfo.vested)" />
+              </b>
+              <span>{{ $t('balance.remainingVests') }}</span>
+            </div>
+            <div class="tw-flex tw-space-x-2">
               <b><format-balance :balance="vestingInfo.basicInfo.perBlock" /></b>
               <span>{{ $t('balance.modals.perBlock') }}</span>
             </div>

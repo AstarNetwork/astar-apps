@@ -61,6 +61,7 @@ export default {
     tooltipNative: 'Native address for {value}. Use this address to withdraw from exchanges.',
     tooltipEvm: 'Ethereum address for receiving {value} from EVM network.',
     vestingInfo: 'Vesting info',
+    remainingVests: 'Remaining vests',
     modals: {
       connectMetamask: 'Connect Account with Ethereum Wallet',
       ethereumExtension: 'Ethereum Extension',
