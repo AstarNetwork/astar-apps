@@ -82,6 +82,7 @@
 
 <script lang="ts">
 import { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
+import { formatBalance } from '@polkadot/util';
 import Button from 'components/common/Button.vue';
 import ClaimRewardModal from 'components/dapp-staking/modals/ClaimRewardModal.vue';
 import StakeModal from 'components/dapp-staking/modals/StakeModal.vue';
@@ -142,7 +143,7 @@ export default defineComponent({
     const { decimal } = useChainMetadata();
     const { canUnbondWithdraw } = useUnbondWithdraw(api);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
-    const { callFunc, dispatchError, isCustomSig } = useCustomSignature();
+    const { callFunc, dispatchError, isCustomSig, customMsg } = useCustomSignature();
 
     const currentAddress = computed(() => store.getters['general/selectedAddress']);
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
@@ -189,12 +190,19 @@ export default defineComponent({
 
       const stakeCustomExtrinsic = async () => {
         try {
+          const balance = formatBalance(amount, {
+            withSi: true,
+            decimals: stakeData.decimal,
+            withUnit: unit,
+          });
+          customMsg.value = `You staked ${balance} on ${props.dapp.name}.`;
           const fn: SubmittableExtrinsicFunction<'promise'> | undefined =
             api?.value?.tx.dappsStaking.bondAndStake;
           const method: SubmittableExtrinsic<'promise'> | undefined =
             fn && fn(getAddressEnum(props.dapp.address), amount);
 
-          method && callFunc(method);
+          method && (await callFunc(method));
+          emitStakeChanged();
         } catch (e) {
           dispatchError((e as Error).message);
         }
@@ -241,12 +249,20 @@ export default defineComponent({
 
       const unstakeCustomExtrinsic = async () => {
         try {
+          const balance = formatBalance(amount, {
+            withSi: true,
+            decimals: stakeData.decimal,
+            withUnit: stakeData.unit,
+          });
+          customMsg.value = `You unstaked ${balance} on ${props.dapp.name}.`;
           const fn: SubmittableExtrinsicFunction<'promise'> | undefined =
             api?.value?.tx.dappsStaking.unbondUnstakeAndWithdraw;
           const method: SubmittableExtrinsic<'promise'> | undefined =
             fn && fn(getAddressEnum(props.dapp.address), amount);
 
-          method && callFunc(method);
+          method && (await callFunc(method));
+          store.commit('setUnlockingChunks', -1);
+          emitStakeChanged();
         } catch (e) {
           dispatchError((e as Error).message);
         }
@@ -300,11 +316,13 @@ export default defineComponent({
             );
           }
 
+          customMsg.value = 'All rewards have been already claimed.';
           const fn: SubmittableExtrinsicFunction<'promise'> | undefined =
             api?.value?.tx.utility.batch;
           const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn(transactions);
 
-          method && callFunc(method);
+          method && (await callFunc(method));
+          emitStakeChanged();
         } catch (e) {
           dispatchError((e as Error).message);
         }

@@ -1,10 +1,12 @@
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { ISubmittableResult } from '@polkadot/types/types';
 
 import { useStore } from 'src/store';
 import { useExtrinsicCall } from './custom-signature/useExtrinsicCall';
 
 export function useCustomSignature(fn?: () => void) {
+  const customMsg = ref<string>('');
+
   const store = useStore();
   const isCustomSig = computed(() => {
     const isEthWallet = store.getters['general/isEthWallet'];
@@ -23,7 +25,7 @@ export function useCustomSignature(fn?: () => void) {
   const handleResult = (result: ISubmittableResult): void => {
     const status = result.status;
     if (status.isInBlock) {
-      const msg = `Completed at block hash #${status.asInBlock.toString()}`;
+      const msg = customMsg.value ?? `Completed at block hash #${status.asInBlock.toString()}`;
 
       store.dispatch('general/showAlertMsg', {
         msg,
@@ -58,5 +60,6 @@ export function useCustomSignature(fn?: () => void) {
     isCustomSig,
     handleResult,
     handleTransactionError,
+    customMsg,
   };
 }
