@@ -5,7 +5,7 @@ import { useStore } from 'src/store';
 import { useExtrinsicCall } from './custom-signature/useExtrinsicCall';
 
 export function useCustomSignature(fn?: () => void) {
-  const customMsg = ref<string>('');
+  const customMsg = ref<string | null>(null);
 
   const store = useStore();
   const isCustomSig = computed(() => {
@@ -34,6 +34,7 @@ export function useCustomSignature(fn?: () => void) {
 
       store.commit('general/setLoading', false);
       fn && fn();
+      customMsg.value = null;
     } else {
       if (status.type !== 'Finalized') {
         store.commit('general/setLoading', true);
