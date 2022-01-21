@@ -1,6 +1,5 @@
-import { LOCAL_STORAGE } from './../config/localStorage';
 import { aprToApy } from 'apr-tools';
-import { endpointKey } from 'src/config/chainEndpoints';
+import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
 import { computed, ref, watchEffect } from 'vue';
 import { useApi, useChainMetadata, useCurrentEra, useTvl } from '.';
@@ -12,6 +11,7 @@ import { defaultAmountWithDecimals, reduceBalanceToDenom } from './helper/plasmU
 const DAPPS_REWARD_RATE = 0.5;
 
 const TS_FIRST_BLOCK = {
+  [endpointKey.ASTAR]: 1639798585, //  Ref: 2021-12-18 03:36:25 https://astar.subscan.io/block/1
   [endpointKey.SHIDEN]: 1625570880, //  Ref: 2021-07-06 11:28:00 https://shiden.subscan.io/block/1
   [endpointKey.SHIBUYA]: 1630937640, // Ref: 2021-09-06 14:14:00 https://shibuya.subscan.io/block/1
 };
@@ -22,7 +22,11 @@ export const useApr = () => {
   const { decimal } = useChainMetadata();
   const { tvlToken } = useTvl(api);
   const { blockPerEra } = useCurrentEra();
-  const currentNetworkIdx = Number(localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX));
+  const currentNetworkIdx = computed(() => {
+    const chainInfo = store.getters['general/chainInfo'];
+    const chain = chainInfo ? chainInfo.chain : '';
+    return getProviderIndex(chain);
+  });
 
   const dapps = computed(() => store.getters['dapps/getAllDapps']);
   const stakerApr = ref<number>(0);
@@ -33,17 +37,14 @@ export const useApr = () => {
     latestBlock,
     timestampMillis,
   }: {
-    chainId: number;
+    chainId: endpointKey.SHIBUYA | endpointKey.ASTAR | endpointKey.SHIDEN;
     latestBlock: number;
     timestampMillis: number;
   }): number => {
-    if (chainId === endpointKey.SHIDEN || chainId === endpointKey.SHIBUYA) {
-      const currentTs = Math.floor(timestampMillis / 1000);
-      const minsChainRunning = (currentTs - TS_FIRST_BLOCK[chainId]) / 60;
-      const avgBlocksPerMin = latestBlock / minsChainRunning;
-      return avgBlocksPerMin;
-    }
-    return 0;
+    const currentTs = Math.floor(timestampMillis / 1000);
+    const minsChainRunning = (currentTs - TS_FIRST_BLOCK[chainId]) / 60;
+    const avgBlocksPerMin = latestBlock / minsChainRunning;
+    return avgBlocksPerMin;
   };
 
   watchEffect(() => {
@@ -52,7 +53,14 @@ export const useApr = () => {
     const decimalRef = decimal.value;
     const blocksPerEraRef = Number(blockPerEra.value);
     const apiRef = api && api.value;
-    if (!apiRef || !dappsRef || !tvlTokenRef || !decimalRef || !blocksPerEraRef) {
+    if (
+      !apiRef ||
+      !dappsRef ||
+      !tvlTokenRef ||
+      !decimalRef ||
+      !blocksPerEraRef ||
+      !currentNetworkIdx
+    ) {
       return;
     }
 
@@ -70,7 +78,7 @@ export const useApr = () => {
         const eraRewards = blocksPerEraRef * blockRewards;
         const latestBlock = results[2].toJSON().number as number;
         const avrBlockPerMins = getAveBlocksPerMins({
-          chainId: currentNetworkIdx,
+          chainId: currentNetworkIdx.value,
           timestampMillis: results[1].toNumber(),
           latestBlock,
         });
@@ -79,10 +87,8 @@ export const useApr = () => {
         const dailyEraRate = avgBlocksPerDay / blocksPerEraRef;
         const annualRewards = eraRewards * dailyEraRate * 365.25;
         const totalStaked = Number(reduceBalanceToDenom(tvlTokenRef, decimalRef));
-
         const developerRewardPercentage = Number(results[3]?.toString().replace('%', '')) * 0.01;
         const stakerBlockReward = (1 - developerRewardPercentage) * DAPPS_REWARD_RATE;
-
         const stakerApr = (annualRewards / totalStaked) * stakerBlockReward * 100;
 
         if (stakerApr === Infinity) return 0;

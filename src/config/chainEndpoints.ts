@@ -38,11 +38,11 @@ export const providerEndpoints: ChainProvider[] = [
     prefix: 0x250,
     typeDef: typeDefs.plasmCollatorDefinitions,
     key: endpointKey.ASTAR,
-    isStoreEnabled: false,
+    isStoreEnabled: true,
     subscan: 'https://astar.subscan.io',
     evmChainId: '592',
     evmRpc: 'https://rpc.astar.network:8545',
-    faucetEndpoint: '',
+    faucetEndpoint: 'https://astar-discord-faucet.herokuapp.com/astar',
   },
   {
     networkAlias: 'shiden-shell',
@@ -105,3 +105,17 @@ export const providerEndpoints: ChainProvider[] = [
     faucetEndpoint: '',
   },
 ];
+
+// Memo: return the provider index for Local and Custom node
+export const getProviderIndex = (chain: 'Shiden' | 'Astar' | 'Shibuya Testnet') => {
+  switch (chain) {
+    case 'Astar':
+      return endpointKey.ASTAR;
+    case 'Shiden':
+      return endpointKey.SHIDEN;
+    case 'Shibuya Testnet':
+      return endpointKey.SHIBUYA;
+    default:
+      return endpointKey.ASTAR;
+  }
+};
