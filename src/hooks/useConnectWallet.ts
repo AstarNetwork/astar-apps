@@ -27,6 +27,7 @@ export const useConnectWallet = () => {
   });
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
   const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
+  const isConnectedNetwork = computed(() => store.getters['general/networkStatus'] === 'connected');
 
   const { SELECTED_ADDRESS } = LOCAL_STORAGE;
 
@@ -125,8 +126,10 @@ export const useConnectWallet = () => {
   });
 
   watch(
-    [currentNetworkStatus],
+    [isConnectedNetwork, currentNetworkIdx],
     async () => {
+      if (!isConnectedNetwork) return;
+
       const address = localStorage.getItem(SELECTED_ADDRESS);
       if (address === null) return;
 
@@ -140,7 +143,7 @@ export const useConnectWallet = () => {
         return;
       }
     },
-    { immediate: true }
+    { immediate: false }
   );
 
   return {

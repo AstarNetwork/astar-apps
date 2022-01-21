@@ -112,14 +112,12 @@
 
 <script lang="ts">
 import { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
-import { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 import FormatBalance from 'components/balance/FormatBalance.vue';
 import InputAmount from 'components/common/InputAmount.vue';
 import IconAccountSample from 'components/icons/IconAccountSample.vue';
 import IconBase from 'components/icons/IconBase.vue';
-import { useApi, useChainMetadata } from 'src/hooks';
-import { useExtrinsicCall } from 'src/hooks/custom-signature/useExtrinsicCall';
+import { useApi, useChainMetadata, useCustomSignature } from 'src/hooks';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { getUnit } from 'src/hooks/helper/units';
 import { getInjector } from 'src/hooks/helper/wallet';
@@ -162,60 +160,30 @@ export default defineComponent({
     const withdrawAmount = ref(new BN(0));
     const selectUnit = ref(defaultUnitToken.value);
     const acName = accountName;
-    const isEthWallet = computed(() => store.getters['general/isEthWallet']);
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
+    const { callFunc, dispatchError, isCustomSig, handleResult, handleTransactionError } =
+      useCustomSignature(closeModal);
 
     const formatBalance = computed(() => {
       const tokenDecimal = decimal.value;
       return plasmUtils.defaultAmountWithDecimals(balance, tokenDecimal);
     });
 
-    const handleTransactionError = (e: Error): void => {
-      console.error(e);
-      store.dispatch('general/showAlertMsg', {
-        msg: `Transaction failed with error: ${e.message}`,
-        alertType: 'error',
-      });
-    };
-
-    const handleResult = (result: ISubmittableResult): void => {
-      const status = result.status;
-      if (status.isInBlock) {
-        const msg = `Completed at block hash #${status.asInBlock.toString()}`;
-
-        store.dispatch('general/showAlertMsg', {
-          msg,
-          alertType: 'success',
-        });
-
-        store.commit('general/setLoading', false);
-        closeModal();
-      } else {
-        if (status.type !== 'Finalized') {
-          store.commit('general/setLoading', true);
-        }
-      }
-    };
-
-    const { callFunc } = useExtrinsicCall({
-      onResult: handleResult,
-      onTransactionError: handleTransactionError,
-    });
-
-    const transferExtrinsic = async ({ amount, account }: { amount: BN; account: string }) => {
+    const withdrawCustomExtrinsic = async ({
+      amount,
+      account,
+    }: {
+      amount: BN;
+      account: string;
+    }) => {
       try {
         const h160Addr = plasmUtils.toEvmAddress(account);
-
         const fn: SubmittableExtrinsicFunction<'promise'> | undefined = api?.value?.tx.evm.withdraw;
         const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn(h160Addr, amount);
 
         method && callFunc(method);
       } catch (e) {
-        console.error(e);
-        store.dispatch('general/showAlertMsg', {
-          msg: (e as Error).message,
-          alertType: 'error',
-        });
+        dispatchError((e as Error).message);
       }
     };
 
@@ -261,8 +229,8 @@ export default defineComponent({
 
       const unit = getUnit(selectUnit.value);
       const toAmt = plasmUtils.reduceDenomToBalance(amount, unit, decimal.value);
-      if (isEthWallet.value) {
-        await transferExtrinsic({ amount: toAmt, account });
+      if (isCustomSig.value) {
+        await withdrawCustomExtrinsic({ amount: toAmt, account });
       } else {
         await withdraw({ amount: toAmt, account });
       }
