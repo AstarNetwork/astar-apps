@@ -8,6 +8,7 @@ export default {
   forget: 'Forget',
   close: 'Close',
   subscan: 'Subscan',
+  blockscout: 'Blockscout',
   usd: 'USD',
   'polkadot-js': 'Polkadot.js',
   metamask: 'MetaMask',
