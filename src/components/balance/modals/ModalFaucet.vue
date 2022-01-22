@@ -7,6 +7,7 @@
       </div>
 
       <div
+        v-if="!isLoading"
         class="
           tw-inline-block tw-bg-white
           dark:tw-bg-darkGray-900
@@ -91,65 +92,17 @@
 </template>
 
 <script lang="ts">
-import { DateTime } from 'luxon';
-import { defineComponent, onUnmounted, ref, watchEffect } from 'vue';
-interface Countdown {
-  hours: number;
-  minutes: number;
-  seconds: number;
-}
+import { useFaucet } from 'src/hooks';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
-  props: {
-    info: {
-      type: Object,
-      required: true,
-    },
-    requestFaucet: {
-      type: Function,
-      required: true,
-    },
-  },
   emits: ['update:is-open'],
 
-  setup({ info: { faucet, timestamps }, requestFaucet }, { emit }) {
+  setup(props, { emit }) {
     const closeModal = () => {
       emit('update:is-open', false);
     };
-
-    const openOption = ref(false);
-    const faucetAmount = faucet.amount;
-    const unit = faucet.unit;
-    const countDown = ref<Countdown>({
-      hours: 0,
-      minutes: 0,
-      seconds: 0,
-    });
-
-    const { nextRequestAt } = timestamps;
-    const isAbleToFaucet = Date.now() > nextRequestAt;
-
-    const handleCountDown = (): void => {
-      if (!isAbleToFaucet) {
-        const resetTime = DateTime.fromMillis(nextRequestAt);
-        const { hours, minutes, seconds } = resetTime.diffNow(['hours', 'minutes', 'seconds']);
-        countDown.value.hours = hours;
-        countDown.value.minutes = minutes;
-        countDown.value.seconds = Number(seconds.toFixed(0));
-      }
-    };
-
-    const updateCountdown = setInterval(() => {
-      handleCountDown();
-    }, 1000);
-
-    watchEffect(() => {
-      handleCountDown();
-    });
-
-    onUnmounted(() => {
-      clearInterval(updateCountdown);
-    });
+    const { requestFaucet, isLoading, unit, isAbleToFaucet, countDown, faucetAmount } = useFaucet();
 
     const handleRequest = async () => {
       try {
@@ -164,11 +117,11 @@ export default defineComponent({
     return {
       closeModal,
       countDown,
-      openOption,
       faucetAmount,
       unit,
       isAbleToFaucet,
       handleRequest,
+      isLoading,
     };
   },
 });
