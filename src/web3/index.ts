@@ -47,9 +47,9 @@ export const rpcUrls = {
 };
 
 export const blockExplorerUrls = {
-  [EVM.SHIDEN_MAINNET]: [chain.shiden?.subscan],
-  [EVM.SHIBUYA_TESTNET]: [chain.shibuya?.subscan],
-  [EVM.ASTAR_MAINNET]: [chain.astar?.subscan],
+  [EVM.SHIDEN_MAINNET]: [chain.shiden?.blockscout],
+  [EVM.SHIBUYA_TESTNET]: [chain.shibuya?.blockscout],
+  [EVM.ASTAR_MAINNET]: [chain.astar?.blockscout],
 };
 
 export const CHAIN_INFORMATION = {
