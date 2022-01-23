@@ -137,9 +137,27 @@
       >
         <div class="tw-flex">
           {{ $t('balance.locked') }}
-          <div>
-            <q-icon name="farQuestionCircle" />
-          </div>
+          <button v-if="accountData.locks.length > 0" class="tw-tooltip">
+            <div>
+              <q-icon
+                :name="fasInfoCircle"
+                class="tw-ml-2 tw-w-4 tw-h-4 tw-cursor-pointer"
+                color="grey"
+              />
+              <q-tooltip
+                class="
+                  tw-text-xs tw-leading-tight tw-text-white tw-bg-gray-800
+                  dark:tw-bg-darkGray-500
+                  tw-rounded-md tw-shadow-lg
+                "
+              >
+                <div v-for="(lock, index) in accountData?.locks" :key="index" class="tw-my-1">
+                  <format-balance :balance="lock.amount" />
+                  {{ $t('balance.via') }} {{ hexToString(lock.id.toHex()) }}<br />{{ lock.reasons }}
+                </div>
+              </q-tooltip>
+            </div>
+          </button>
         </div>
         <div>
           <p class="tw-font-bold tw-text-right">
@@ -201,6 +219,7 @@ import { defineComponent, toRefs, computed, PropType, ref } from 'vue';
 import { AccountData, useChainMetadata, useEvmDeposit, useConnectWallet } from 'src/hooks';
 import type { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
+import { hexToString } from '@polkadot/util';
 import { useExtrinsicCall } from 'src/hooks/custom-signature/useExtrinsicCall';
 import FormatBalance from 'components/balance/FormatBalance.vue';
 import Button from 'src/components/common/Button.vue';
@@ -210,6 +229,7 @@ import { useApi } from 'src/hooks';
 import { getInjector } from 'src/hooks/helper/wallet';
 import Logo from '../common/Logo.vue';
 import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
+import { fasInfoCircle } from '@quasar/extras/fontawesome-v5';
 
 export default defineComponent({
   components: {
@@ -377,6 +397,8 @@ export default defineComponent({
       isEthWallet,
       showVestingModal,
       showVestingInfo,
+      fasInfoCircle,
+      hexToString,
       ...toRefs(props),
     };
   },

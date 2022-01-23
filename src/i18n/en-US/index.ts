@@ -62,6 +62,7 @@ export default {
     tooltipEvm: 'Ethereum address for receiving {value} from EVM network.',
     vestingInfo: 'Vesting info',
     remainingVests: 'Remaining vests',
+    via: 'via',
     modals: {
       connectMetamask: 'Connect Account with Ethereum Wallet',
       ethereumExtension: 'Ethereum Extension',
