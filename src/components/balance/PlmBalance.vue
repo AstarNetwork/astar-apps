@@ -74,12 +74,7 @@
             >
               {{ $t('balance.vestingInfo') }}
             </Button>
-            <button
-              v-if="!isH160"
-              type="button"
-              class="transfer-button small-button"
-              @click="openFaucetModal"
-            >
+            <button type="button" class="transfer-button small-button" @click="openFaucetModal">
               {{ $t('balance.faucet') }}
             </button>
             <button
