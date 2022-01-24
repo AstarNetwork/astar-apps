@@ -127,7 +127,7 @@ module.exports = configure(function (ctx) {
 
     // https://v2.quasar.dev/quasar-cli/developing-ssr/configuring-ssr
     ssr: {
-      pwa: false,
+      pwa: true,
 
       // manualStoreHydration: true,
       // manualPostHydrationTrigger: true,
@@ -160,41 +160,31 @@ module.exports = configure(function (ctx) {
       },
 
       manifest: {
-        name: 'Astar Portal',
+        name: 'Astar Portal - Astar & Shiden Network',
         short_name: 'Astar Portal',
-        description: 'Astar Portal App',
+        description: 'Your one-stop platform for the Astar ecosystem - Wallet / Staking / Bridging',
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',
         theme_color: '#027be3',
         icons: [
           {
-            src: 'icons/icon-128x128.png',
+            src: 'favicon.png',
             sizes: '128x128',
-            type: 'image/png'
+            type: 'image/png',
           },
           {
-            src: 'icons/icon-192x192.png',
+            src: 'favicon/android-chrome-192x192.png',
             sizes: '192x192',
-            type: 'image/png'
+            type: 'image/png',
           },
           {
-            src: 'icons/icon-256x256.png',
+            src: 'favicon/android-chrome-256x256.png',
             sizes: '256x256',
-            type: 'image/png'
+            type: 'image/png',
           },
-          {
-            src: 'icons/icon-384x384.png',
-            sizes: '384x384',
-            type: 'image/png'
-          },
-          {
-            src: 'icons/icon-512x512.png',
-            sizes: '512x512',
-            type: 'image/png'
-          }
-        ]
-      }
+        ],
+      },
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli/developing-cordova-apps/configuring-cordova
