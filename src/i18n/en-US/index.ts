@@ -4,7 +4,9 @@ export default {
   change: 'Change',
   disconnect: 'Disconnect',
   copy: 'Copy',
-  max: 'Max',
+  from: 'From',
+  to: 'To',
+  estimated: 'Estimated',
   forget: 'Forget',
   close: 'Close',
   subscan: 'Subscan',
@@ -205,5 +207,11 @@ export default {
       chunksModalDescription: 'This table shows when your funds will be eligible for withdrawal.',
       multipleClaimInfo: '{steps} requests are required to claim all unclaimed eras.',
     },
+  },
+  bridge: {
+    bridge: 'Bridge',
+    connectEvmWallet: 'Connect EVM wallet',
+    max: 'MAX',
+    balance: 'Available Balance:',
   },
 };

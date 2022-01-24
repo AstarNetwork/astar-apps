@@ -84,6 +84,21 @@
           </span>
         </router-link>
 
+        <router-link
+          to="/bridge"
+          :class="[$route.path.split('/')[1] === 'bridge' ? 'activeLink' : 'inactiveLink']"
+        >
+          <icon-base
+            :class="[$route.path.split('/')[1] === 'bridge' ? 'activeSvg' : 'inactiveSvg']"
+            viewBox="0 0 24 24"
+          >
+            <icon-bridge />
+          </icon-base>
+          <span class="tw-font-bold tw-ml-3 tw-flex-1">
+            {{ $t('bridge.bridge') }}
+          </span>
+        </router-link>
+
         <a
           href="https://lockdrop.plasmnet.io/"
           target="_blank"
@@ -138,6 +153,7 @@ import IconDotLockdrop from '../icons/IconDotLockdrop.vue';
 import IconBalance from '../icons/IconBalance.vue';
 import IconSolidChevronDown from '../icons/IconSolidChevronDown.vue';
 import IconStore from '../icons/IconStore.vue';
+import IconBridge from '../icons/IconBridge.vue';
 import ModalNetwork from 'src/components/balance/modals/ModalNetwork.vue';
 import LocaleChanger from './LocaleChanger.vue';
 import AddressSmall from '../common/AddressSmall.vue';
@@ -160,6 +176,7 @@ export default defineComponent({
     IconBalance,
     IconSolidChevronDown,
     IconStore,
+    IconBridge,
     ModalNetwork,
     AddressSmall,
     Logo,
