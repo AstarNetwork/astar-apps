@@ -8,6 +8,7 @@ import { computed, ref, watchEffect, watch } from 'vue';
 import { useMetamask } from './custom-signature/useMetamask';
 import { castMobileSource, getInjectedExtensions } from './helper/wallet';
 import * as utils from 'src/hooks/custom-signature/utils';
+import { getProviderIndex, endpointKey } from 'src/config/chainEndpoints';
 
 export const useConnectWallet = () => {
   const modalConnectWallet = ref<boolean>(false);
@@ -19,9 +20,14 @@ export const useConnectWallet = () => {
   const store = useStore();
   const { currentAccount, currentAccountName, disconnectAccount } = useAccount();
   const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
-  const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
+  const currentNetworkIdx = computed(() => {
+    const chainInfo = store.getters['general/chainInfo'];
+    const chain = chainInfo ? chainInfo.chain : '';
+    return getProviderIndex(chain);
+  });
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
   const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
+  const isConnectedNetwork = computed(() => store.getters['general/networkStatus'] === 'connected');
 
   const { SELECTED_ADDRESS } = LOCAL_STORAGE;
 
@@ -120,20 +126,17 @@ export const useConnectWallet = () => {
   });
 
   watch(
-    [currentNetworkStatus],
-    async () => {
+    [isConnectedNetwork],
+    () => {
       const address = localStorage.getItem(SELECTED_ADDRESS);
-      if (address === null) return;
-
-      if (address === 'Ethereum Extension') {
-        await setMetaMask();
-        return;
-      }
-
-      if (address) {
-        store.commit('general/setCurrentAddress', address);
-        return;
-      }
+      if (!address || !isConnectedNetwork.value) return;
+      // Memo: wait for updating the chain id from the initial state 592 (to pass the `setupNetwork` function)
+      setTimeout(async () => {
+        if (address === 'Ethereum Extension') {
+          await setMetaMask();
+        }
+      }, 800);
+      store.commit('general/setCurrentAddress', address);
     },
     { immediate: true }
   );

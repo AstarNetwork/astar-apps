@@ -119,13 +119,11 @@
 </template>
 <script lang="ts">
 import type { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
-import { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 import FormatBalance from 'components/balance/FormatBalance.vue';
 import InputAmount from 'components/common/InputAmount.vue';
-import { providerEndpoints } from 'src/config/chainEndpoints';
-import { useApi, useChainMetadata } from 'src/hooks';
-import { useExtrinsicCall } from 'src/hooks/custom-signature/useExtrinsicCall';
+import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
+import { useApi, useChainMetadata, useCustomSignature } from 'src/hooks';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { getUnit } from 'src/hooks/helper/units';
 import { getInjector } from 'src/hooks/helper/wallet';
@@ -173,8 +171,13 @@ export default defineComponent({
 
     const selectUnit = ref(defaultUnitToken.value);
     const isEthWallet = computed(() => store.getters['general/isEthWallet']);
-    const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
+    const currentNetworkIdx = computed(() => {
+      const chainInfo = store.getters['general/chainInfo'];
+      const chain = chainInfo ? chainInfo.chain : '';
+      return getProviderIndex(chain);
+    });
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
+    const { callFunc, handleResult, handleTransactionError } = useCustomSignature(closeModal);
 
     // isCustomSigBlocked is temporary until extrinsic call pallet is deployed to all networks.
     const isCustomSigBlocked = computed(() => !!!providerEndpoints[currentNetworkIdx.value].prefix);
@@ -191,41 +194,6 @@ export default defineComponent({
     });
 
     const { api } = useApi();
-
-    const handleTransactionError = (e: Error): void => {
-      console.error(e);
-      store.dispatch('general/showAlertMsg', {
-        msg: `Transaction failed with error: ${e.message}`,
-        alertType: 'error',
-      });
-    };
-
-    const handleResult = (result: ISubmittableResult): void => {
-      const status = result.status;
-      if (status.isInBlock) {
-        const msg = `Completed at block hash #${status.asInBlock.toString()}`;
-        // console.log(msg);
-
-        store.dispatch('general/showAlertMsg', {
-          msg,
-          alertType: 'success',
-        });
-
-        store.commit('general/setLoading', false);
-        closeModal();
-      } else {
-        // console.log(`Current status: ${status.type}`);
-
-        if (status.type !== 'Finalized') {
-          store.commit('general/setLoading', true);
-        }
-      }
-    };
-
-    const { callFunc } = useExtrinsicCall({
-      onResult: handleResult,
-      onTransactionError: handleTransactionError,
-    });
 
     const transferLocal = async (transferAmt: BN, fromAddress: string, toAddress: string) => {
       try {

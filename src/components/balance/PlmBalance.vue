@@ -55,7 +55,7 @@
               xl:tw-flex-row
               tw-gap-y-4
               xl:tw-gap-x-4
-              lg:tw-justify-center lg:tw-flex-wrap
+              tw-flex-wrap tw-justify-center
             "
           >
             <button
@@ -67,39 +67,25 @@
             >
               {{ $t('balance.transfer') }}
             </button>
-            <button
-              v-if="!isH160 && isEvmDeposit"
-              :disabled="!canUnlockVestedTokens"
-              type="button"
-              class="transfer-button large-button"
-              @click="unlockVestedTokens"
+            <Button
+              class="transfer-button"
+              :class="isEvmDeposit ? 'large-button' : 'small-button'"
+              @click="showVestingInfo"
             >
-              {{ $t('balance.unlockVestedTokens') }}
-            </button>
+              {{ $t('balance.vestingInfo') }}
+            </Button>
             <button
               v-if="!isH160"
               type="button"
               class="transfer-button small-button"
-              :disabled="isFaucetLoading"
               @click="openFaucetModal"
             >
               {{ $t('balance.faucet') }}
             </button>
-
-            <!-- memo: duplicate component to avoid styling from breaking -->
-            <button
-              v-if="!isH160 && !isEvmDeposit"
-              :disabled="!canUnlockVestedTokens"
-              type="button"
-              class="transfer-button large-button"
-              @click="unlockVestedTokens"
-            >
-              {{ $t('balance.unlockVestedTokens') }}
-            </button>
             <button
               v-if="isEvmDeposit && !isH160"
               type="button"
-              class="transfer-button large-button"
+              class="transfer-button"
               @click="openWithdrawalModal"
             >
               {{ $t('balance.withdrawEvm') }}
@@ -112,18 +98,32 @@
     <div class="tw-text-sm tw-flex tw-flex-col tw-gap-y-5">
       <div
         class="
-          tw-flex tw-justify-between tw-items-center tw-bg-blue-50
+          tw-flex tw-flex-col tw-justify-between tw-bg-blue-50
           dark:tw-bg-darkGray-700
           tw-rounded-lg tw-py-3 tw-px-4
         "
       >
-        <div>{{ $t('balance.vested') }}</div>
-        <div>
-          <p class="tw-font-bold tw-text-right">
+        <div class="tw-flex tw-justify-between tw-items-center">
+          <div>
+            {{ $t('balance.claimable') }}
+          </div>
+          <div class="tw-font-bold tw-text-right tw-fle">
             <span class="tw-text-2xl md:tw-text-xl xl:tw-text-2xl tw-leading-tight">
-              <format-balance :balance="accountData?.vested" />
+              <format-balance :balance="accountData?.vestedClaimable" />
             </span>
-          </p>
+          </div>
+        </div>
+        <div class="tw-flex tw-justify-between tw-items-center">
+          <div>
+            {{ $t('balance.vested') }}
+          </div>
+          <div>
+            <p class="tw-font-bold tw-text-right">
+              <span class="tw-text-2xl md:tw-text-xl xl:tw-text-2xl tw-leading-tight">
+                <format-balance :balance="accountData?.vested" />
+              </span>
+            </p>
+          </div>
         </div>
       </div>
 
@@ -182,21 +182,35 @@
         </div>
       </div>
     </div>
+    <ModalVestingInfo
+      v-if="showVestingModal"
+      v-model:isOpen="showVestingModal"
+      :account-data="accountData"
+      :unlock-function="unlockVestedTokens"
+    />
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, toRefs, computed, PropType } from 'vue';
+import { defineComponent, toRefs, computed, PropType, ref } from 'vue';
 import { AccountData, useChainMetadata, useEvmDeposit, useConnectWallet } from 'src/hooks';
+import type { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
+import { ISubmittableResult } from '@polkadot/types/types';
+import { useExtrinsicCall } from 'src/hooks/custom-signature/useExtrinsicCall';
 import FormatBalance from 'components/balance/FormatBalance.vue';
+import Button from 'src/components/common/Button.vue';
+import ModalVestingInfo from 'components/balance/modals/ModalVestingInfo.vue';
 import { useStore } from 'src/store';
 import { useApi } from 'src/hooks';
 import { getInjector } from 'src/hooks/helper/wallet';
 import Logo from '../common/Logo.vue';
+import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
 
 export default defineComponent({
   components: {
     FormatBalance,
     Logo,
+    Button,
+    ModalVestingInfo,
   },
   props: {
     address: {
@@ -205,10 +219,6 @@ export default defineComponent({
     },
     accountData: {
       type: Object as PropType<AccountData>,
-      required: true,
-    },
-    isFaucetLoading: {
-      type: Boolean,
       required: true,
     },
   },
@@ -224,6 +234,8 @@ export default defineComponent({
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const selectedAddress = computed(() => store.getters['general/selectedAddress']);
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
+    const showVestingModal = ref<boolean>(false);
+
     const openTransferModal = (): void => {
       emit('update:is-open-transfer', true);
     };
@@ -235,32 +247,107 @@ export default defineComponent({
     const openFaucetModal = (): void => {
       emit('update:is-open-modal-faucet', true);
     };
-    const canUnlockVestedTokens = computed(() => props.accountData.vested.gtn(0) && !isH160.value);
 
-    const unlockVestedTokens = async (): Promise<void> => {
-      const injector = await getInjector(substrateAccounts.value);
-      try {
-        api?.value?.tx.vesting.vest().signAndSend(
-          selectedAddress.value,
-          {
-            signer: injector?.signer,
-          },
-          (result) => {
-            if (result.status.isFinalized) {
-              store.commit('general/setLoading', false);
-            } else {
-              store.commit('general/setLoading', true);
-            }
-          }
-        );
-      } catch (e) {
-        console.log(e);
+    const handleVestingError = (error: Error): void => {
+      console.log(error);
+      store.commit('general/setLoading', false);
+      store.dispatch('general/showAlertMsg', {
+        msg: error.message,
+        alertType: 'error',
+      });
+    };
+
+    const handleTransactionError = (e: Error): void => {
+      console.error(e);
+      store.dispatch('general/showAlertMsg', {
+        msg: `Transaction failed with error: ${e.message}`,
+        alertType: 'error',
+      });
+    };
+
+    const handleResult = (result: ISubmittableResult): void => {
+      const status = result.status;
+      if (status.isInBlock) {
+        if (!hasExtrinsicFailedEvent(result.events, store.dispatch)) {
+          const msg = `Completed at block hash #${status.asInBlock.toString()}`;
+
+          store.dispatch('general/showAlertMsg', {
+            msg,
+            alertType: 'success',
+          });
+        }
+
         store.commit('general/setLoading', false);
+      } else {
+        if (status.type !== 'Finalized') {
+          store.commit('general/setLoading', true);
+        }
+      }
+    };
+
+    const { callFunc } = useExtrinsicCall({
+      onResult: handleResult,
+      onTransactionError: handleTransactionError,
+    });
+
+    const unlockVestedTokensEthExtrinsic = async (): Promise<void> => {
+      try {
+        const fn: SubmittableExtrinsicFunction<'promise'> | undefined = api?.value?.tx.vesting.vest;
+        const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn();
+
+        method && callFunc(method);
+        showVestingModal.value = false;
+      } catch (e) {
+        console.error(e);
         store.dispatch('general/showAlertMsg', {
           msg: (e as Error).message,
           alertType: 'error',
         });
       }
+    };
+
+    const unlockVestedTokensSubstrate = async (): Promise<void> => {
+      try {
+        if (isEthWallet.value) {
+          const fn: SubmittableExtrinsicFunction<'promise'> | undefined =
+            api?.value?.tx.vesting.vest;
+          const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn();
+          method && callFunc(method);
+        } else {
+          const injector = await getInjector(substrateAccounts.value);
+          api?.value?.tx.vesting
+            .vest()
+            .signAndSend(
+              selectedAddress.value,
+              {
+                signer: injector?.signer,
+              },
+              (result) => {
+                if (result.status.isFinalized) {
+                  store.commit('general/setLoading', false);
+                } else {
+                  showVestingModal.value = false;
+                  store.commit('general/setLoading', true);
+                }
+              }
+            )
+            .catch((error: Error) => handleVestingError(error));
+        }
+      } catch (e) {
+        handleVestingError(e as Error);
+      }
+    };
+
+    const unlockVestedTokens = async () => {
+      if (isEthWallet.value) {
+        await unlockVestedTokensEthExtrinsic();
+      } else {
+        await unlockVestedTokensSubstrate();
+      }
+    };
+
+    const showVestingInfo = (): void => {
+      showVestingModal.value = true;
     };
 
     const { defaultUnitToken } = useChainMetadata();
@@ -278,7 +365,8 @@ export default defineComponent({
       isH160,
       toggleMetaMaskSchema,
       isEthWallet,
-      canUnlockVestedTokens,
+      showVestingModal,
+      showVestingInfo,
       ...toRefs(props),
     };
   },
@@ -305,7 +393,7 @@ export default defineComponent({
 
 .small-button {
   @media (min-width: 1280px) {
-    width: 100px;
+    width: 120px;
   }
 }
 

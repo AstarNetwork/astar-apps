@@ -1,9 +1,12 @@
 import { VoidFn } from '@polkadot/api/types';
 import { Balance } from '@polkadot/types/interfaces';
+import { PalletVestingVestingInfo } from '@polkadot/types/lookup';
 import BN from 'bn.js';
 import { useStore } from 'src/store';
 import { createWeb3Instance } from 'src/web3';
 import { computed, onUnmounted, ref, Ref, watch } from 'vue';
+import { getProviderIndex } from './../config/chainEndpoints';
+import { TNetworkId } from './../web3';
 import { getVested } from './helper/vested';
 
 function useCall(apiRef: any, addressRef: Ref<string>) {
@@ -14,7 +17,13 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
   const accountDataRef = ref<AccountData>();
   const store = useStore();
   const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
-  const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
+
+  const currentNetworkIdx = computed(() => {
+    const chainInfo = store.getters['general/chainInfo'];
+    const chain = chainInfo ? chainInfo.chain : '';
+    return getProviderIndex(chain);
+  });
+
   const isLoading = computed(() => store.getters['general/isLoading']);
   const dapps = computed(() => store.getters['dapps/getAllDapps']);
 
@@ -23,7 +32,8 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
   const updateAccountH160 = async (address: string) => {
     if (!address) return;
     try {
-      const web3 = await createWeb3Instance(currentNetworkIdx.value);
+      const web3 = await createWeb3Instance(currentNetworkIdx.value as TNetworkId);
+
       if (!web3) {
         throw Error(`cannot create the web3 instance with network id ${currentNetworkIdx.value}`);
       }
@@ -34,6 +44,8 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
         new BN(0),
         new BN(0),
         new BN(0),
+        new BN(0),
+        [],
         new BN(0)
       );
       balanceRef.value = new BN(rawBal);
@@ -57,30 +69,36 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
         api.query.system.account(address),
         api.query.vesting.vesting(address),
         api.query.system.number(),
+        api.derive.balances?.all(address),
       ]);
 
       const accountInfo = results[0];
 
-      const vesting = results[1].unwrapOr(undefined);
+      const vesting: PalletVestingVestingInfo[] = results[1].unwrapOr(undefined) || [];
       const currentBlock = results[2];
-      const vestingValue = vesting?.length > 0 ? vesting[0] : undefined;
-      const vestingLocked = vestingValue?.locked;
+      const vestedClaimable = results[3].vestedClaimable;
 
-      vestedRef.value = vestingLocked
-        ? getVested({
-            currentBlock: currentBlock.toBn(),
-            startBlock: vestingValue.startingBlock.toBn(),
-            perBlock: vestingValue.perBlock.toBn(),
-            locked: vestingLocked,
-          })
-        : new BN(0);
+      const extendedVesting: ExtendedVestingInfo[] = [];
+      vestedRef.value = new BN(0);
+      vesting.forEach((v) => {
+        const vested = getVested({
+          currentBlock: currentBlock.toBn(),
+          startBlock: v.startingBlock.toBn() || new BN(0),
+          perBlock: v.perBlock || new BN(0),
+          locked: v.locked,
+        });
+        vestedRef.value = vestedRef.value.add(vested);
+        extendedVesting.push(new ExtendedVestingInfo(v, vested));
+      });
 
       accountDataRef.value = new AccountData(
         accountInfo.data.free,
         accountInfo.data.reserved,
         accountInfo.data.miscFrozen,
         accountInfo.data.feeFrozen,
-        vestedRef.value
+        vestedRef.value,
+        extendedVesting,
+        vestedClaimable
       );
 
       balanceRef.value = accountInfo.data.free.toBn();
@@ -155,13 +173,17 @@ export class AccountData {
     reserved: Balance,
     miscFrozen: Balance,
     feeFrozen: Balance,
-    vested: BN
+    vested: BN,
+    vesting: ExtendedVestingInfo[],
+    vestedClaimable: BN
   ) {
     this.free = free.toBn();
     this.reserved = reserved.toBn();
     this.miscFrozen = miscFrozen.toBn();
     this.feeFrozen = feeFrozen.toBn();
     this.vested = vested;
+    this.vesting = vesting;
+    this.vestedClaimable = vestedClaimable;
   }
 
   public getUsableTransactionBalance(): BN {
@@ -177,6 +199,8 @@ export class AccountData {
   public miscFrozen: BN;
   public feeFrozen: BN;
   public vested: BN;
+  public vesting: ExtendedVestingInfo[];
+  public vestedClaimable: BN;
 }
 export class AccountDataH160 {
   constructor(
@@ -184,7 +208,9 @@ export class AccountDataH160 {
     public reserved: BN,
     public miscFrozen: BN,
     public feeFrozen: BN,
-    public vested: BN
+    public vested: BN,
+    public vesting: ExtendedVestingInfo[],
+    public vestedClaimable: BN
   ) {}
 
   public getUsableTransactionBalance(): BN {
@@ -194,4 +220,8 @@ export class AccountDataH160 {
   public getUsableFeeBalance(): BN {
     return this.free.sub(this.feeFrozen);
   }
+}
+
+export class ExtendedVestingInfo {
+  constructor(public basicInfo: PalletVestingVestingInfo, public vested: BN) {}
 }

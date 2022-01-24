@@ -106,7 +106,7 @@
       </div>
 
       <div
-        v-if="isSubscan"
+        v-if="isBlockscout"
         class="
           tw-border-l tw-border-gray-100
           dark:tw-border-darkGray-600
@@ -114,7 +114,7 @@
           md:tw-px-2
         "
       >
-        <a :href="subScan" target="_blank" rel="noopener noreferrer">
+        <a :href="blockscout" target="_blank" rel="noopener noreferrer">
           <button type="button" class="icon tw-tooltip">
             <icon-base
               class="dark:tw-text-darkGray-300 tw-h-5 tw-w-5 tw-mt-1"
@@ -144,7 +144,7 @@
                 dark:tw-bg-darkGray-500
                 tw-rounded-md tw-shadow-lg tw-whitespace-nowrap
               "
-              >{{ $t('subscan') }}</span
+              >{{ $t('blockscout') }}</span
             >
 
             <input id="hiddenAddr" type="hidden" :value="address" />
@@ -189,13 +189,13 @@ export default defineComponent({
     const store = useStore();
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
     const selectedAccountAddress = computed(() => store.getters['general/selectedAddress']);
-    const subScan = computed(
+    const blockscout = computed(
       () =>
-        `${providerEndpoints[currentNetworkIdx.value].subscan}/account/${
+        `${providerEndpoints[currentNetworkIdx.value].blockscout}/address/${
           selectedAccountAddress.value
         }`
     );
-    const isSubscan = providerEndpoints[currentNetworkIdx.value].subscan !== '';
+    const isBlockscout = providerEndpoints[currentNetworkIdx.value].blockscout !== '';
     const showAlert = () => {
       store.dispatch('general/showAlertMsg', {
         msg: 'Copy address success!!',
@@ -215,8 +215,8 @@ export default defineComponent({
     return {
       shortenAddress,
       showAlert,
-      subScan,
-      isSubscan,
+      blockscout,
+      isBlockscout,
       currentNetworkIdx,
       disconnectAccount,
       copyAddress,

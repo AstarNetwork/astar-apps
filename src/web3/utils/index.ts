@@ -41,7 +41,7 @@ export const setupNetwork = async (network: number): Promise<boolean> => {
   return false;
 };
 
-export const getChainId = (currentNetworkIdx: TNetworkId): number => {
+export const getChainId = (currentNetworkIdx: endpointKey): number => {
   if (currentNetworkIdx === endpointKey.SHIDEN) {
     return EVM.SHIDEN_MAINNET;
   } else if (currentNetworkIdx === endpointKey.ASTAR) {

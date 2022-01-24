@@ -14,6 +14,7 @@ interface ChainProvider {
   key: endpointKey;
   isStoreEnabled: boolean;
   subscan: string;
+  blockscout: string;
   evmChainId: string;
   evmRpc: string;
   faucetEndpoint: string;
@@ -38,11 +39,12 @@ export const providerEndpoints: ChainProvider[] = [
     prefix: 0x250,
     typeDef: typeDefs.plasmCollatorDefinitions,
     key: endpointKey.ASTAR,
-    isStoreEnabled: false,
+    isStoreEnabled: true,
     subscan: 'https://astar.subscan.io',
+    blockscout: 'https://blockscout.com/astar',
     evmChainId: '592',
     evmRpc: 'https://rpc.astar.network:8545',
-    faucetEndpoint: '',
+    faucetEndpoint: 'https://astar-discord-faucet.herokuapp.com/astar',
   },
   {
     networkAlias: 'shiden-shell',
@@ -56,6 +58,7 @@ export const providerEndpoints: ChainProvider[] = [
     key: endpointKey.SHIDEN,
     isStoreEnabled: true,
     subscan: 'https://shiden.subscan.io',
+    blockscout: 'https://blockscout.com/shiden',
     evmChainId: '336',
     evmRpc: 'https://rpc.shiden.astar.network:8545',
     faucetEndpoint: 'https://astar-discord-faucet.herokuapp.com/shiden',
@@ -72,6 +75,7 @@ export const providerEndpoints: ChainProvider[] = [
     key: endpointKey.SHIBUYA,
     isStoreEnabled: true,
     subscan: 'https://shibuya.subscan.io',
+    blockscout: 'https://blockscout.com/shibuya',
     evmChainId: '81',
     evmRpc: 'https://rpc.shibuya.astar.network:8545',
     faucetEndpoint: 'https://astar-discord-faucet.herokuapp.com/shibuya',
@@ -86,6 +90,7 @@ export const providerEndpoints: ChainProvider[] = [
     key: endpointKey.LOCAL,
     isStoreEnabled: true,
     subscan: '',
+    blockscout: '',
     evmChainId: '',
     evmRpc: '',
     faucetEndpoint: '',
@@ -100,8 +105,23 @@ export const providerEndpoints: ChainProvider[] = [
     key: endpointKey.CUSTOM,
     isStoreEnabled: true,
     subscan: '',
+    blockscout: '',
     evmChainId: '',
     evmRpc: '',
     faucetEndpoint: '',
   },
 ];
+
+// Memo: return the provider index for Local and Custom node
+export const getProviderIndex = (chain: 'Shiden' | 'Astar' | 'Shibuya Testnet') => {
+  switch (chain) {
+    case 'Astar':
+      return endpointKey.ASTAR;
+    case 'Shiden':
+      return endpointKey.SHIDEN;
+    case 'Shibuya Testnet':
+      return endpointKey.SHIBUYA;
+    default:
+      return endpointKey.ASTAR;
+  }
+};

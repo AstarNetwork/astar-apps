@@ -34,7 +34,7 @@ const showError = (dispatch: Dispatch, message: string): void => {
 };
 
 // TODO refactor, detect address type, etc.....
-const getAddressEnum = (address: string) => ({ Evm: address });
+export const getAddressEnum = (address: string) => ({ Evm: address });
 
 const getFormattedBalance = (parameters: StakingParameters): string => {
   return formatBalance(parameters.amount, {
@@ -56,7 +56,7 @@ const getCollectionKey = async (): Promise<string> => {
   return collectionKey;
 };
 
-const hasExtrinsicFailedEvent = (events: EventRecord[], dispatch: Dispatch): boolean => {
+export const hasExtrinsicFailedEvent = (events: EventRecord[], dispatch: Dispatch): boolean => {
   let result = false;
   events
     .filter((record): boolean => !!record.event && record.event.section !== 'democracy')

@@ -1,6 +1,4 @@
-import { LOCAL_STORAGE } from './../config/localStorage';
 import BN from 'bn.js';
-import { endpointKey } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
 import { computed, ref, watch } from 'vue';
 import { useChainMetadata } from '.';
@@ -9,20 +7,23 @@ import { getUsdPrice } from './helper/price';
 
 export function useTvl(api: any) {
   const store = useStore();
-
   const { decimal } = useChainMetadata();
 
   const dapps = computed(() => store.getters['dapps/getAllDapps']);
   const tvlToken = ref<BN>(new BN(0));
   const tvlUsd = ref<number>(0);
-  const currentNetworkIdx = Number(localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX));
+  const tokenSymbol = computed(() => {
+    const chainInfo = store.getters['general/chainInfo'];
+    return chainInfo ? chainInfo.tokenSymbol : '';
+  });
 
   watch(
-    [api, dapps, currentNetworkIdx],
+    [api, dapps, tokenSymbol],
     () => {
       const apiRef = api.value;
       const dappsRef = dapps.value;
-      if (!apiRef || !dappsRef) return;
+      const tokenSymbolRef = tokenSymbol.value;
+      if (!apiRef || !dappsRef || !tokenSymbolRef) return;
 
       const getTvl = async (): Promise<{ tvl: BN; tvlDefaultUnit: number }> => {
         const era = await apiRef.query.dappsStaking.currentEra();
@@ -33,9 +34,10 @@ export function useTvl(api: any) {
       };
 
       const priceUsd = async (): Promise<number> => {
-        if (currentNetworkIdx === endpointKey.SHIDEN) {
+        if (tokenSymbolRef === 'SDN' || tokenSymbolRef === 'ASTR') {
           try {
-            return await getUsdPrice('shiden');
+            const coingeckoTicker = tokenSymbolRef === 'SDN' ? 'shiden' : 'astar';
+            return await getUsdPrice(coingeckoTicker);
           } catch (error) {
             console.error(error);
             return 0;

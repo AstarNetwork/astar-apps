@@ -1,59 +1,68 @@
-import { useStore } from 'src/store';
 import axios from 'axios';
-import { ref, watch, computed } from 'vue';
+import { providerEndpoints } from 'src/config/chainEndpoints';
+import { useStore } from 'src/store';
+import { computed, ref, watch, onUnmounted, watchEffect } from 'vue';
+import { getProviderIndex } from './../config/chainEndpoints';
 import { useAccount } from './useAccount';
-import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
+import { DateTime } from 'luxon';
+
+interface Timestamps {
+  lastRequestAt: number;
+  nextRequestAt: number;
+}
+
 export interface FaucetInfo {
-  timestamps: {
-    lastRequestAt: number;
-    nextRequestAt: number;
-  };
+  timestamps: Timestamps;
   faucet: {
     amount: number;
     unit: string;
   };
 }
 
-const initialInfoState = {
-  timestamps: {
-    lastRequestAt: 0,
-    nextRequestAt: 3600000,
-  },
-  faucet: {
-    amount: 0.002,
-    unit: 'SBY',
-  },
-};
+interface Countdown {
+  hours: number;
+  minutes: number;
+  seconds: number;
+}
 
 export function useFaucet() {
-  const faucetInfo = ref<FaucetInfo>(initialInfoState);
+  const timestamps = ref<Timestamps | null>(null);
+  const faucetAmount = ref<number>(0);
+  const unit = ref<string>('');
+  const isAbleToFaucet = ref<boolean>(false);
   const hash = ref<string>('');
-  const isLoading = ref<boolean>(false);
-  const { currentAccount } = useAccount();
-  const store = useStore();
-  const currentNetworkIdx = Number(localStorage.getItem('networkIdx'));
-  const faucetEndpoint = providerEndpoints[currentNetworkIdx].faucetEndpoint;
-  const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
-
-  const isAstar = computed(() => {
-    const networkIdx = store.getters['general/networkIdx'];
-    return networkIdx === endpointKey.ASTAR;
+  const isLoading = ref<boolean>(true);
+  const countDown = ref<Countdown>({
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
   });
 
-  const getFaucetInfo = async (account: string): Promise<FaucetInfo> => {
+  const { currentAccount } = useAccount();
+  const store = useStore();
+  const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
+  const chainInfo = computed(() => {
+    const chainInfo = store.getters['general/chainInfo'];
+    return chainInfo ? chainInfo : undefined;
+  });
+
+  const getFaucetInfo = async ({
+    account,
+    endpoint,
+  }: {
+    account: string;
+    endpoint: string;
+  }): Promise<FaucetInfo | false> => {
     const fetchData = async () => {
       try {
         isLoading.value = true;
-
-        // Todo: add a faucet for Astar network later
-        if (isAstar.value) return;
-
-        const url = `${faucetEndpoint}/drip/?destination=${account}`;
+        const url = `${endpoint}/drip/?destination=${account}`;
         const { data } = await axios.get(url);
-        isLoading.value = false;
         return data;
       } catch (error: any) {
         throw Error(error.message || 'Something went wrong');
+      } finally {
+        isLoading.value = false;
       }
     };
 
@@ -65,21 +74,10 @@ export function useFaucet() {
         return await fetchData();
       } catch (error: any) {
         console.error(error.message);
-        return initialInfoState;
+        return false;
       }
     }
   };
-
-  watch(
-    [hash, currentAccount],
-    async () => {
-      const currentAccountRef = currentAccount.value;
-      if (!currentAccountRef || isH160Formatted.value) return;
-
-      faucetInfo.value = await getFaucetInfo(currentAccountRef);
-    },
-    { immediate: true }
-  );
 
   const requestFaucet = async (): Promise<void> => {
     if (!currentAccount.value) {
@@ -88,8 +86,13 @@ export function useFaucet() {
 
     try {
       store.commit('general/setLoading', true);
+      const currentNetworkIdx = getProviderIndex(chainInfo.value.chain);
+      const endpoint = providerEndpoints[currentNetworkIdx].faucetEndpoint;
+      if (!endpoint) {
+        throw Error('Cannot find the request endpoint');
+      }
 
-      const url = `${faucetEndpoint}/drip`;
+      const url = `${endpoint}/drip`;
       const { data } = await axios.post<{ hash: string }>(url, {
         destination: currentAccount.value,
       });
@@ -111,9 +114,56 @@ export function useFaucet() {
     }
   };
 
+  const handleCountDown = (): void => {
+    if (!timestamps.value) return;
+    const { nextRequestAt } = timestamps.value;
+    isAbleToFaucet.value = Date.now() > nextRequestAt;
+
+    if (!isAbleToFaucet.value) {
+      const resetTime = DateTime.fromMillis(nextRequestAt);
+      const { hours, minutes, seconds } = resetTime.diffNow(['hours', 'minutes', 'seconds']);
+      countDown.value.hours = hours;
+      countDown.value.minutes = minutes;
+      countDown.value.seconds = Number(seconds.toFixed(0));
+    }
+  };
+
+  const updateCountdown = setInterval(() => {
+    handleCountDown();
+  }, 1000);
+
+  watchEffect(() => {
+    handleCountDown();
+  });
+
+  onUnmounted(() => {
+    clearInterval(updateCountdown);
+  });
+
+  watch(
+    [hash, currentAccount, chainInfo],
+    async () => {
+      const currentAccountRef = currentAccount.value;
+      if (!currentAccountRef || isH160Formatted.value || !chainInfo.value) return;
+      const currentNetworkIdx = getProviderIndex(chainInfo.value.chain);
+      const endpoint = providerEndpoints[currentNetworkIdx].faucetEndpoint;
+
+      const data = await getFaucetInfo({ account: currentAccountRef, endpoint });
+      if (!data) return;
+
+      faucetAmount.value = data.faucet.amount;
+      unit.value = data.faucet.unit;
+      timestamps.value = data.timestamps;
+    },
+    { immediate: true }
+  );
+
   return {
-    faucetInfo,
     requestFaucet,
     isLoading,
+    faucetAmount,
+    unit,
+    isAbleToFaucet,
+    countDown,
   };
 }

@@ -23,7 +23,7 @@
         {{ $t('dappStaking.registerDapp') }}
       </Button>
       <div
-        v-if="stakerApy > 0"
+        v-if="stakerApr > 0"
         class="
           sm:tw-w-40
           tw-justify-center
@@ -46,7 +46,7 @@
           <q-icon :name="fasSeedling" color="green" />
         </icon-base>
         <div>
-          {{ $t('dappStaking.stakerApy', { value: Number(stakerApy.toFixed(1)) }) }}
+          {{ $t('dappStaking.stakerApr', { value: Number(stakerApr.toFixed(1)) }) }}
         </div>
       </div>
     </div>
@@ -112,12 +112,12 @@ export default defineComponent({
     const store = useStore();
     const dapps = computed(() => store.getters['dapps/getAllDapps']);
     useMeta({ title: 'Discover dApps' });
-    const { stakerApy } = useApr();
+    const { stakerApr } = useApr();
     const { progress, blocksUntilNextEra, era } = useCurrentEra();
     const { api } = useApi();
     const { currentAccount } = useAccount();
     const { accountData } = useBalance(api, currentAccount);
-    const isEthWallet = computed(() => store.getters['general/isEthWallet']);
+    const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
     const maxNumberOfStakersPerContract = computed(
       () => store.getters['dapps/getMaxNumberOfStakersPerContract']
@@ -140,7 +140,7 @@ export default defineComponent({
     //   showDappDetailsModal.value = true;
     // };
     watchEffect(() => {
-      if (isEthWallet.value) {
+      if (isH160.value) {
         store.dispatch('general/showAlertMsg', {
           msg: 'dApp staking only supports Substrate wallets',
           alertType: 'error',
@@ -160,7 +160,7 @@ export default defineComponent({
       progress,
       blocksUntilNextEra,
       era,
-      stakerApy,
+      stakerApr,
       fasSeedling,
       accountData,
     };
