@@ -37,7 +37,6 @@
         v-model:isOpenModalFaucet="modalFaucet"
         :address="currentAccount"
         :account-data="accountData"
-        :is-faucet-loading="isLoading"
       />
     </div>
 
@@ -55,12 +54,7 @@
       :account="currentAccount"
       :account-name="currentAccountName"
     />
-    <ModalFaucet
-      v-if="modalFaucet"
-      v-model:isOpen="modalFaucet"
-      :info="faucetInfo"
-      :request-faucet="requestFaucet"
-    />
+    <ModalFaucet v-if="modalFaucet" v-model:isOpen="modalFaucet" />
   </div>
 
   <!-- <ModalAlertBox
@@ -122,7 +116,6 @@ export default defineComponent({
     const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const { evmDeposit } = useEvmDeposit();
-    const { faucetInfo, requestFaucet, isLoading } = useFaucet();
 
     return {
       ...toRefs(stateModal),
@@ -133,9 +126,6 @@ export default defineComponent({
       currentNetworkStatus,
       accountData,
       isH160,
-      faucetInfo,
-      requestFaucet,
-      isLoading,
     };
   },
   methods: {

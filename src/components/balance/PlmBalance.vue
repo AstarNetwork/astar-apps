@@ -78,7 +78,6 @@
               v-if="!isH160"
               type="button"
               class="transfer-button small-button"
-              :disabled="isFaucetLoading"
               @click="openFaucetModal"
             >
               {{ $t('balance.faucet') }}
@@ -220,10 +219,6 @@ export default defineComponent({
     },
     accountData: {
       type: Object as PropType<AccountData>,
-      required: true,
-    },
-    isFaucetLoading: {
-      type: Boolean,
       required: true,
     },
   },
