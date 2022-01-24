@@ -115,12 +115,12 @@
         </div>
         <div class="tw-flex tw-justify-between tw-items-center">
           <div>
-            {{ $t('balance.vested') }}
+            {{ $t('balance.remainingVests') }}
           </div>
           <div>
             <p class="tw-font-bold tw-text-right">
               <span class="tw-text-2xl md:tw-text-xl xl:tw-text-2xl tw-leading-tight">
-                <format-balance :balance="accountData?.vested" />
+                <format-balance :balance="accountData?.remainingVests" />
               </span>
             </p>
           </div>
@@ -134,7 +134,30 @@
           tw-rounded-lg tw-py-3 tw-px-4
         "
       >
-        <div>{{ $t('balance.locked') }}</div>
+        <div class="tw-flex">
+          {{ $t('balance.locked') }}
+          <button v-if="accountData.locks.length > 0" class="tw-tooltip">
+            <div>
+              <q-icon
+                :name="fasInfoCircle"
+                class="tw-ml-2 tw-w-4 tw-h-4 tw-cursor-pointer"
+                color="grey"
+              />
+              <q-tooltip
+                class="
+                  tw-text-xs tw-leading-tight tw-text-white tw-bg-gray-800
+                  dark:tw-bg-darkGray-500
+                  tw-rounded-md tw-shadow-lg
+                "
+              >
+                <div v-for="(lock, index) in accountData?.locks" :key="index" class="tw-my-1">
+                  <format-balance :balance="lock.amount" />
+                  {{ $t('balance.via') }} {{ hexToString(lock.id.toHex()) }}<br />{{ lock.reasons }}
+                </div>
+              </q-tooltip>
+            </div>
+          </button>
+        </div>
         <div>
           <p class="tw-font-bold tw-text-right">
             <span class="tw-text-2xl md:tw-text-xl xl:tw-text-2xl tw-leading-tight">
@@ -195,6 +218,7 @@ import { defineComponent, toRefs, computed, PropType, ref } from 'vue';
 import { AccountData, useChainMetadata, useEvmDeposit, useConnectWallet } from 'src/hooks';
 import type { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
+import { hexToString } from '@polkadot/util';
 import { useExtrinsicCall } from 'src/hooks/custom-signature/useExtrinsicCall';
 import FormatBalance from 'components/balance/FormatBalance.vue';
 import Button from 'src/components/common/Button.vue';
@@ -204,6 +228,7 @@ import { useApi } from 'src/hooks';
 import { getInjector } from 'src/hooks/helper/wallet';
 import Logo from '../common/Logo.vue';
 import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
+import { fasInfoCircle } from '@quasar/extras/fontawesome-v5';
 
 export default defineComponent({
   components: {
@@ -367,6 +392,8 @@ export default defineComponent({
       isEthWallet,
       showVestingModal,
       showVestingInfo,
+      fasInfoCircle,
+      hexToString,
       ...toRefs(props),
     };
   },
