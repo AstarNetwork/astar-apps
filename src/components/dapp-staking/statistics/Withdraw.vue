@@ -92,23 +92,21 @@ export default defineComponent({
         return;
       }
 
-      const unbondingInfo =
-        await api?.value?.query.dappsStaking.ledger<PalletDappsStakingAccountLedger>(
-          selectedAccountAddress.value
-        );
+      const ledger = await api?.value?.query.dappsStaking.ledger<PalletDappsStakingAccountLedger>(
+        selectedAccountAddress.value
+      );
 
-      if (unbondingInfo?.unbondingInfo.unlockingChunks) {
-        unlockingChunks.value = unbondingInfo.unbondingInfo.unlockingChunks;
+      if (ledger?.unbondingInfo.unlockingChunks) {
+        unlockingChunks.value = ledger.unbondingInfo.unlockingChunks;
         store.commit('dapps/setUnlockingChunks', unlockingChunks.value?.length);
         canWithdraw.value = false;
         totalToWithdraw.value = new BN(0);
         for (const chunk of unlockingChunks.value) {
-          const erasBeforeUnlock = era.sub(new BN(chunk.unlockEra.toString())).toNumber();
+          const erasBeforeUnlock = era.sub(chunk.unlockEra.toBn()).toNumber();
           chunk.erasBeforeUnlock = Math.abs(erasBeforeUnlock > 0 ? 0 : erasBeforeUnlock);
-          console.log('ebu', erasBeforeUnlock);
 
           if (erasBeforeUnlock >= 0) {
-            totalToWithdraw.value = totalToWithdraw.value.add(chunk.amount);
+            totalToWithdraw.value = totalToWithdraw.value.add(chunk.amount.toBn());
           }
 
           if (!canWithdraw.value) {
