@@ -40,7 +40,6 @@ export function useFaucet() {
 
   const { currentAccount } = useAccount();
   const store = useStore();
-  const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
   const chainInfo = computed(() => {
     const chainInfo = store.getters['general/chainInfo'];
     return chainInfo ? chainInfo : undefined;
@@ -144,7 +143,7 @@ export function useFaucet() {
     [hash, currentAccount, chainInfo],
     async () => {
       const currentAccountRef = currentAccount.value;
-      if (!currentAccountRef || isH160Formatted.value || !chainInfo.value) return;
+      if (!currentAccountRef || !chainInfo.value) return;
       const currentNetworkIdx = getProviderIndex(chainInfo.value.chain);
       const endpoint = providerEndpoints[currentNetworkIdx].faucetEndpoint;
 
