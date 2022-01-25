@@ -133,12 +133,6 @@ export default defineComponent({
     store.dispatch('dapps/getDapps');
     store.dispatch('dapps/getStakingInfo');
 
-    // const showDetailsModal = (dapp: DappItem, stakeInfo: StakeInfo): void => {
-    //   console.log(stakeInfo);
-    //   selectedDapp.value = dapp;
-    //   selectedDappInfo.value = stakeInfo;
-    //   showDappDetailsModal.value = true;
-    // };
     watchEffect(() => {
       if (isH160.value) {
         store.dispatch('general/showAlertMsg', {
@@ -153,10 +147,8 @@ export default defineComponent({
       selectedDapp,
       selectedDappInfo,
       showRegisterDappModal,
-      // showDappDetailsModal,
       maxNumberOfStakersPerContract,
       minimumStakingAmount,
-      // showDetailsModal,
       progress,
       blocksUntilNextEra,
       era,
