@@ -52,6 +52,16 @@
         </div>
         <div class="bridge-button">{{ $t('bridge.connectEvmWallet') }}</div>
       </div>
+      <div class="provider">
+        <a
+          href="https://cbridge.celer.network/#/transfer"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="powered-link"
+        >
+          Powered by Celer Network
+        </a>
+      </div>
       <!-- <div class="connect-wallet" @click="openSelectModal">
         {{ $t('wallet.connectWallet') }}
       </div> -->
@@ -73,6 +83,7 @@
 
 <script lang="ts">
 import { useMeta } from 'quasar';
+import { useCbridge } from 'src/hooks';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
@@ -83,6 +94,7 @@ export default defineComponent({
   },
   setup() {
     useMeta({ title: 'EVM Bridge' });
+    useCbridge();
 
     return {};
   },

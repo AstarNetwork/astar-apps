@@ -44,6 +44,8 @@
     "ethereumjs-util": "^7.1.3",
     "express": "^4.17.1",
     "firebase": "^9.5.0",
+    "google-protobuf": "^3.19.3",
+    "grpc-web": "^1.3.0",
     "keccak": "byterose/keccak#stream-update",
     "luxon": "^2.1.1",
     "quasar": "^2.3.3",
@@ -76,6 +78,7 @@
     "@typescript-eslint/parser": "^4.16.1",
     "eslint": "^7.14.0",
     "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-jest": "^25.2.2",
     "eslint-plugin-prettier-vue": "^3.1.0",
     "eslint-plugin-vue": "^7.0.0",
     "eslint-webpack-plugin": "^3.0.1",
@@ -84,8 +87,7 @@
     "push-dir": "^0.4.1",
     "sass-loader": "12.3.0",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.3",
-    "tailwindcss-theme-variants": "^2.0.0-alpha.2",
-    "eslint-plugin-jest": "^25.2.2"
+    "tailwindcss-theme-variants": "^2.0.0-alpha.2"
   },
   "browserslist": [
     "last 10 Chrome versions",
