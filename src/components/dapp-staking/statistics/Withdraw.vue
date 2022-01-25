@@ -156,8 +156,8 @@ interface UnbondingInfo {
 
 export interface ChunkInfo extends Codec {
   amount: Balance;
-  unlockEra: u32;
-  erasBeforeUnlock: Number;
+  unlockEra: EraIndex;
+  erasBeforeUnlock: number;
 }
 </script>
 
