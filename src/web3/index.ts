@@ -1,5 +1,4 @@
-import { providerEndpoints } from 'src/config/chainEndpoints';
-import { endpointKey } from './../config/chainEndpoints';
+import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
 export { getChainData, setupNetwork, getChainId, createWeb3Instance } from './utils';
 
 export type TNetworkId = endpointKey.SHIDEN | endpointKey.SHIBUYA | endpointKey.ASTAR;

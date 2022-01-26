@@ -9,7 +9,7 @@ import { defineComponent, computed, ref, watchEffect } from 'vue';
 import { useStore } from 'src/store';
 import PolkadotProvider from './PolkadotProvider.vue';
 import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
-import { connectApi } from 'src/config/api/polkadot';
+import { connectApi } from 'src/config/api/polkadot/connectApi';
 import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
 import { useChainInfo } from 'src/hooks/useChainInfo';
 

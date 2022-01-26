@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import { providePolkadotContainer } from 'src/config/api/polkadot';
+import { providePolkadotContainer } from 'src/config/api/polkadot/polkadotContext';
 import type { InjectedExtension } from '@polkadot/extension-inject/types';
 import { ApiPromise } from '@polkadot/api';
 

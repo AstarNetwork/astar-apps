@@ -87,6 +87,7 @@
         <a
           href="https://lockdrop.plasmnet.io/"
           target="_blank"
+          rel="noreferrer"
           :class="[$route.path.split('/')[1] === 'lockdrop' ? 'activeLink' : 'inactiveLink']"
         >
           <icon-base

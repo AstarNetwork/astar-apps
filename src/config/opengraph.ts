@@ -2,13 +2,13 @@ export const opengraphMeta = {
   ogTitle: {
     property: 'og:title',
     template() {
-      return 'Astar Portal';
+      return 'Astar Portal - Astar & Shiden Network';
     },
   },
   ogDescription: {
     property: 'og:description',
     template() {
-      return 'All in one Astar portal that allows you to transfer your token and manage your application.';
+      return 'Your one-stop platform for the Astar ecosystem - Wallet / Staking / Bridging';
     },
   },
   ogSiteName: {
