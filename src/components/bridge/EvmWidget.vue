@@ -5,20 +5,24 @@
         <div class="row">
           <div class="currency">
             <div class="label">{{ $t('from') }}</div>
-            <div class="chain">
-              <div>Logo</div>
-              <div class="chain-name">Ethereum</div>
-              <div>▼</div>
+            <div class="chain" @click="openModal('src')">
+              <div>
+                <img v-if="srcChain" :src="srcChain.icon" alt="src-chain-logo" class="chain-logo" />
+              </div>
+              <div v-if="srcChain" class="chain-name">
+                {{ srcChain ? getChainName(srcChain.id) : '' }}
+              </div>
+              <div class="under-arrow">▼</div>
             </div>
           </div>
           <div>
             <div class="input-row">
               <input />
               <div class="max-button">{{ $t('bridge.max') }}</div>
-              <div class="token-selector">
+              <div class="token-selector" @click="openModal('token')">
                 <div></div>
                 <div>token</div>
-                <div>▼</div>
+                <div class="under-arrow">▼</div>
               </div>
             </div>
             <div class="information label">
@@ -36,10 +40,17 @@
         <div class="row">
           <div class="currency">
             <div class="label">{{ $t('to') }}</div>
-            <div class="chain">
-              <div>Logo</div>
-              <div class="chain-name">Astar</div>
-              <div>▼</div>
+            <div class="chain" @click="openModal('dest')">
+              <div>
+                <img
+                  v-if="destChain"
+                  :src="destChain.icon"
+                  alt="destChain-chain-logo"
+                  class="chain-logo"
+                />
+              </div>
+              <div class="chain-name">{{ destChain ? getChainName(destChain.id) : '' }}</div>
+              <div class="under-arrow">▼</div>
             </div>
           </div>
           <div>
@@ -62,6 +73,24 @@
           Powered by Celer Network
         </a>
       </div>
+
+      <ModalChain
+        v-if="modal === 'src'"
+        v-model:isOpen="modal"
+        :close-modal="closeModal"
+        :select-chain="selectChain"
+        :chains="srcChains"
+        :modal="modal"
+      />
+
+      <ModalChain
+        v-if="modal === 'dest'"
+        v-model:isOpen="modal"
+        :close-modal="closeModal"
+        :select-chain="selectChain"
+        :chains="destChains"
+        :modal="modal"
+      />
       <!-- <div class="connect-wallet" @click="openSelectModal">
         {{ $t('wallet.connectWallet') }}
       </div> -->
@@ -85,18 +114,42 @@
 import { useMeta } from 'quasar';
 import { useCbridge } from 'src/hooks';
 import { defineComponent } from 'vue';
+import { getChainName } from 'src/c-bridge';
+import ModalChain from './modals/ModalChain.vue';
 
 export default defineComponent({
   components: {
     // ModalConnectWallet,
     // ModalInstallWallet,
     // ModalAccount,
+    ModalChain,
   },
   setup() {
     useMeta({ title: 'EVM Bridge' });
-    useCbridge();
+    const {
+      srcChain,
+      destChain,
+      chains,
+      closeModal,
+      openModal,
+      modal,
+      destChains,
+      srcChains,
+      selectChain,
+    } = useCbridge();
 
-    return {};
+    return {
+      srcChain,
+      destChain,
+      chains,
+      closeModal,
+      openModal,
+      modal,
+      destChains,
+      srcChains,
+      selectChain,
+      getChainName,
+    };
   },
 });
 </script>

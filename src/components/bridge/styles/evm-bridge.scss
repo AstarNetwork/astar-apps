@@ -171,9 +171,9 @@ input {
 }
 
 .chain {
-  display: grid;
-  grid-template-columns: 40px auto 20px;
-  width: 160px;
+  display: flex;
+  justify-content: space-between;
+  width: 150px;
   margin: 2px 0px;
   background: rgb(23, 23, 26, 0.3);
   border-radius: 8px;
@@ -220,4 +220,12 @@ input {
 
 .provider-link {
   cursor: pointer;
+}
+
+.chain-logo {
+  width: 26px;
+}
+
+.under-arrow {
+  margin-top: 2px;
 }

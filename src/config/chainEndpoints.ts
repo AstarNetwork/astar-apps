@@ -44,7 +44,8 @@ export const providerEndpoints: ChainProvider[] = [
     blockscout: 'https://blockscout.com/astar',
     evmChainId: '592',
     evmRpc: 'https://rpc.astar.network:8545',
-    faucetEndpoint: 'https://astar-discord-faucet.herokuapp.com/astar',
+    faucetEndpoint: 'http://localhost:8080/astar',
+    // faucetEndpoint: 'https://astar-discord-faucet.herokuapp.com/astar',
   },
   {
     networkAlias: 'shiden-shell',
