@@ -1,15 +1,5 @@
 import { RouteRecordRaw } from 'vue-router';
 
-import Balance from 'pages/Balance.vue';
-import Bridge from 'pages/Bridge.vue';
-import DApps from 'src/pages/Contract.vue';
-import Store from 'src/pages/DappStaking.vue';
-import ConnectWallet from 'src/components/balance/ConnectWallet.vue';
-import CreateDappsTab from 'components/contracts/CreateDappsTab.vue';
-import DiscoverDappsTab from 'components/dapp-staking/DiscoverDappsTab.vue';
-import ManageDappsTab from 'components/dapp-staking/ManageDappsTab.vue';
-import EvmWidget from 'components/bridge/EvmWidget.vue';
-
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
@@ -22,7 +12,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/balance',
     name: 'Balance',
-    component: Balance,
+    component: () => import('pages/Balance.vue'),
     children: [
       {
         path: '',
@@ -34,14 +24,14 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'wallet',
-        component: ConnectWallet,
+        component: () => import('components/balance/ConnectWallet.vue'),
       },
     ],
   },
   {
     path: '/contracts',
     name: 'Contracts',
-    component: DApps,
+    component: () => import('pages/Contract.vue'),
     children: [
       {
         path: '',
@@ -53,14 +43,14 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'create-contract',
-        component: CreateDappsTab,
+        component: () => import('components/contracts/CreateDappsTab.vue'),
       },
     ],
   },
   {
     path: '/dapp-staking',
     name: 'dApp Staking',
-    component: Store,
+    component: () => import('pages/DappStaking.vue'),
     children: [
       {
         path: '',
@@ -68,18 +58,18 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'discover',
-        component: DiscoverDappsTab,
+        component: () => import('components/dapp-staking/DiscoverDappsTab.vue'),
       },
       {
         path: 'manage',
-        component: ManageDappsTab,
+        component: () => import('components/dapp-staking/ManageDappsTab.vue'),
       },
     ],
   },
   {
     path: '/bridge',
     name: 'Bridge',
-    component: Bridge,
+    component: () => import('pages/Bridge.vue'),
     children: [
       {
         path: '',
@@ -87,7 +77,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'evm',
-        component: EvmWidget,
+        component: () => import('components/bridge/EvmWidget.vue'),
       },
     ],
   },

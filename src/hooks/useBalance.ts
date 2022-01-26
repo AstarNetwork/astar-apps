@@ -1,6 +1,6 @@
 import { VoidFn } from '@polkadot/api/types';
 import { Balance } from '@polkadot/types/interfaces';
-import { PalletVestingVestingInfo } from '@polkadot/types/lookup';
+import { PalletVestingVestingInfo, PalletBalancesBalanceLock } from '@polkadot/types/lookup';
 import BN from 'bn.js';
 import { useStore } from 'src/store';
 import { createWeb3Instance } from 'src/web3';
@@ -14,6 +14,7 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
   // const { api: apiRef } = useApi();
   const balanceRef = ref(new BN(0));
   const vestedRef = ref(new BN(0));
+  const remainingVests = ref(new BN(0));
   const accountDataRef = ref<AccountData>();
   const store = useStore();
   const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
@@ -46,7 +47,9 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
         new BN(0),
         new BN(0),
         [],
-        new BN(0)
+        new BN(0),
+        new BN(0),
+        []
       );
       balanceRef.value = new BN(rawBal);
     } catch (error) {
@@ -73,13 +76,15 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
       ]);
 
       const accountInfo = results[0];
-
       const vesting: PalletVestingVestingInfo[] = results[1].unwrapOr(undefined) || [];
       const currentBlock = results[2];
       const vestedClaimable = results[3].vestedClaimable;
+      const locks: PalletBalancesBalanceLock[] = results[3].lockedBreakdown;
 
       const extendedVesting: ExtendedVestingInfo[] = [];
       vestedRef.value = new BN(0);
+      remainingVests.value = new BN(0);
+
       vesting.forEach((v) => {
         const vested = getVested({
           currentBlock: currentBlock.toBn(),
@@ -88,6 +93,7 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
           locked: v.locked,
         });
         vestedRef.value = vestedRef.value.add(vested);
+        remainingVests.value = remainingVests.value.add(v.locked.sub(vested));
         extendedVesting.push(new ExtendedVestingInfo(v, vested));
       });
 
@@ -98,7 +104,9 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
         accountInfo.data.feeFrozen,
         vestedRef.value,
         extendedVesting,
-        vestedClaimable
+        vestedClaimable,
+        remainingVests.value,
+        locks
       );
 
       balanceRef.value = accountInfo.data.free.toBn();
@@ -175,7 +183,9 @@ export class AccountData {
     feeFrozen: Balance,
     vested: BN,
     vesting: ExtendedVestingInfo[],
-    vestedClaimable: BN
+    vestedClaimable: BN,
+    remainingVests: BN,
+    locks: PalletBalancesBalanceLock[]
   ) {
     this.free = free.toBn();
     this.reserved = reserved.toBn();
@@ -184,6 +194,8 @@ export class AccountData {
     this.vested = vested;
     this.vesting = vesting;
     this.vestedClaimable = vestedClaimable;
+    this.remainingVests = remainingVests;
+    this.locks = locks;
   }
 
   public getUsableTransactionBalance(): BN {
@@ -201,7 +213,10 @@ export class AccountData {
   public vested: BN;
   public vesting: ExtendedVestingInfo[];
   public vestedClaimable: BN;
+  public remainingVests: BN;
+  public locks: PalletBalancesBalanceLock[];
 }
+
 export class AccountDataH160 {
   constructor(
     public free: BN,
@@ -210,7 +225,9 @@ export class AccountDataH160 {
     public feeFrozen: BN,
     public vested: BN,
     public vesting: ExtendedVestingInfo[],
-    public vestedClaimable: BN
+    public vestedClaimable: BN,
+    public remainingVests: BN,
+    public locks: PalletBalancesBalanceLock[]
   ) {}
 
   public getUsableTransactionBalance(): BN {

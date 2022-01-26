@@ -29,12 +29,12 @@
 
     <div class="tw-flex tw-items-center tw-justify-center">
       <div v-if="chain === 'Shiden'" class="tw-py-2">
-        <img width="190" src="~assets/img/shiden.png" />
+        <img width="190" height="44" src="~assets/img/shiden.png" />
       </div>
       <div v-else-if="chain === 'Shibuya'" class="tw-py-2">
-        <img width="190" src="~assets/img/shibuya.svg" />
+        <img width="190" height="44" src="~assets/img/shibuya.svg" />
       </div>
-      <img v-else width="200" src="~assets/img/astar.png" />
+      <img v-else width="200" height="77" src="~assets/img/astar.png" />
     </div>
 
     <div class="tw-w-8 tw-h-8"></div>

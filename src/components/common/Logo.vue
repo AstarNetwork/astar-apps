@@ -1,12 +1,12 @@
 <template>
   <div v-if="!small">
     <div v-if="currentNetworkIdx === endpointKey.SHIDEN" class="tw-px-6">
-      <img src="~assets/img/shiden.png" />
+      <img src="~assets/img/shiden.png" widht="152" height="44" />
     </div>
     <div v-else-if="currentNetworkIdx === endpointKey.SHIBUYA" class="tw-px-6">
-      <img src="~assets/img/shibuya.svg" />
+      <img src="~assets/img/shibuya.svg" width="152" height="55" />
     </div>
-    <img v-else src="~assets/img/astar.png" />
+    <img v-else src="~assets/img/astar.png" width="200" height="78" />
   </div>
   <div v-else>
     <img
