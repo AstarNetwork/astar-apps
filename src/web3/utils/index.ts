@@ -1,6 +1,6 @@
 import { TNetworkId, EVM } from './../index';
 import Web3 from 'web3';
-import { CHAIN_INFORMATION } from '..';
+import { CHAIN_INFORMATION } from '../index';
 import { endpointKey } from 'src/config/chainEndpoints';
 
 export const getChainData = (chainId: number) => {
@@ -19,7 +19,22 @@ export const setupNetwork = async (network: number): Promise<boolean> => {
   if (provider) {
     const chainId = `0x${network.toString(16)}`;
     const { chainName, nativeCurrency, rpcUrls, blockExplorerUrls } = getChainData(network);
+
     try {
+      console.log('network', network);
+      if (network === 1) {
+        console.log('chainId', chainId);
+        await provider.request({
+          method: 'wallet_switchEthereumChain',
+          params: [
+            {
+              chainId,
+            },
+          ],
+        });
+        return true;
+      }
+
       await provider.request({
         method: 'wallet_addEthereumChain',
         params: [

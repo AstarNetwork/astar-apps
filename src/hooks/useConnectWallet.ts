@@ -9,12 +9,16 @@ import { computed, ref, watch, watchEffect } from 'vue';
 import { useMetamask } from './custom-signature/useMetamask';
 import { ASTAR_SS58_FORMAT } from './helper/plasmUtils';
 import { castMobileSource, getInjectedExtensions } from './helper/wallet';
+import { useRouter } from 'vue-router';
 
 export const useConnectWallet = () => {
   const modalConnectWallet = ref<boolean>(false);
   const modalAccountSelect = ref<boolean>(false);
   const selectedWallet = ref<string>('');
   const modalName = ref<string>('');
+
+  const router = useRouter();
+  const isBridge = router.currentRoute.value.matched[0].path === '/bridge';
 
   const { requestAccounts, requestSignature } = useMetamask();
   const store = useStore();
@@ -56,7 +60,7 @@ export const useConnectWallet = () => {
       store.commit('general/setCurrentEcdsaAccount', data);
       const chainId = getChainId(currentNetworkIdx.value);
       setTimeout(async () => {
-        await setupNetwork(chainId);
+        !isBridge && (await setupNetwork(chainId));
       }, 500);
       return true;
     } catch (err: any) {
@@ -126,8 +130,9 @@ export const useConnectWallet = () => {
   });
 
   watch(
-    [isConnectedNetwork],
+    [isConnectedNetwork, router],
     () => {
+      if (isBridge) return;
       const address = localStorage.getItem(SELECTED_ADDRESS);
       if (!address || !isConnectedNetwork.value) return;
       // Memo: wait for updating the chain id from the initial state 592 (to pass the `setupNetwork` function)

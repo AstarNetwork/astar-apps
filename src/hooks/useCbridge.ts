@@ -1,15 +1,13 @@
 import { cbridgeInitialState, getTransferConfigs } from 'src/c-bridge';
-import { ref, watchEffect } from 'vue';
+import { useStore } from 'src/store';
+import { setupNetwork } from 'src/web3';
+import { computed, ref, watch, watchEffect } from 'vue';
 import { Chain, EvmChain } from './../c-bridge';
 import { PeggedPairConfig } from './../c-bridge/index';
 import { pushToSelectableChains, sortChainName } from './../c-bridge/utils/index';
 import { objToArray } from './helper/common';
 
 const { Ethereum, BSC, Astar, Shiden } = EvmChain;
-
-// Todo:
-// address: start from '0x'
-// useConnectWallet: add {option: EVM} parameter
 
 export function useCbridge() {
   const srcChain = ref<Chain | null>(cbridgeInitialState[Ethereum]);
@@ -22,15 +20,17 @@ export function useCbridge() {
   const modal = ref<'src' | 'dest' | 'token' | null>(null);
   const tokensObj = ref<any | null>(null);
 
+  const store = useStore();
+  const isH160 = computed(() => store.getters['general/isH160Formatted']);
+
   const closeModal = () => modal.value === null;
   const openModal = (scene: 'src' | 'dest' | 'token') => (modal.value = scene);
   const selectToken = (token: PeggedPairConfig) => {
     selectedToken.value = token;
-    console.log(' selectedToken.value ', selectedToken.value);
     modal.value = null;
   };
 
-  const selectChain = (chainId: number) => {
+  const selectChain = async (chainId: number) => {
     if (!chains.value) return;
     const isSrcChain = modal.value === 'src';
     const chain = chains.value.find((it) => it.id === chainId);
@@ -96,6 +96,16 @@ export function useCbridge() {
   watchEffect(() => {
     watchSelectableChains();
   });
+
+  watch(
+    [srcChain, isH160],
+    async () => {
+      setTimeout(async () => {
+        isH160.value && srcChain.value && (await setupNetwork(srcChain.value.id));
+      }, 800);
+    },
+    { immediate: false }
+  );
 
   return {
     destChains,
