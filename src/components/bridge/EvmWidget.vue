@@ -20,9 +20,16 @@
               <input />
               <div class="max-button">{{ $t('bridge.max') }}</div>
               <div class="token-selector" @click="openModal('token')">
-                <div></div>
-                <div>token</div>
-                <div class="under-arrow">▼</div>
+                <div>
+                  <img
+                    v-if="selectedToken"
+                    :src="selectedToken.org_token.icon"
+                    alt="token-logo"
+                    class="token-logo"
+                  />
+                </div>
+                <div>{{ selectedToken ? selectedToken.org_token.token.symbol : '' }}</div>
+                <div class="token-under-arrow">▼</div>
               </div>
             </div>
             <div class="information label">
@@ -74,6 +81,17 @@
         </a>
       </div>
 
+      <ModalToken
+        v-if="modal === 'token'"
+        v-model:isOpen="modal"
+        :close-modal="closeModal"
+        :select-token="selectToken"
+        :tokens="tokens"
+        :selected-token="selectedToken"
+        :src-chain-id="srcChainId"
+        :modal="modal"
+      />
+
       <ModalChain
         v-if="modal === 'src'"
         v-model:isOpen="modal"
@@ -114,41 +132,47 @@
 import { useMeta } from 'quasar';
 import { useCbridge } from 'src/hooks';
 import { defineComponent } from 'vue';
-import { getChainName } from 'src/c-bridge';
 import ModalChain from './modals/ModalChain.vue';
+import ModalToken from './modals/ModalToken.vue';
+import { getChainName } from 'src/c-bridge';
 
 export default defineComponent({
   components: {
-    // ModalConnectWallet,
-    // ModalInstallWallet,
-    // ModalAccount,
     ModalChain,
+    ModalToken,
   },
   setup() {
     useMeta({ title: 'EVM Bridge' });
+
     const {
       srcChain,
       destChain,
       chains,
-      closeModal,
-      openModal,
+      tokens,
       modal,
       destChains,
       srcChains,
+      selectedToken,
+      closeModal,
+      openModal,
       selectChain,
+      selectToken,
     } = useCbridge();
 
     return {
+      getChainName,
       srcChain,
       destChain,
       chains,
-      closeModal,
-      openModal,
+      tokens,
       modal,
       destChains,
       srcChains,
+      selectedToken,
+      closeModal,
+      openModal,
       selectChain,
-      getChainName,
+      selectToken,
     };
   },
 });

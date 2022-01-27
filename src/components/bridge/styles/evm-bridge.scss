@@ -90,10 +90,10 @@
   border-radius: 8px;
   display: grid;
   align-items: center;
-  grid-template-columns: auto 100px;
+  grid-template-columns: auto 114px;
   margin-bottom: 8px;
   @media (min-width: 768px) {
-    grid-template-columns: auto 60px 100px;
+    grid-template-columns: auto 60px 114px;
   }
 }
 
@@ -163,11 +163,18 @@ input {
   margin-right: 8px;
   display: flex;
   justify-content: center;
+  align-items: center;
   transition: all 0.2s ease-in-out;
   &:hover {
     background: #4d5f74;
     transition: all 0.2s ease-in-out;
   }
+}
+
+.token-logo {
+  margin-right: 12px;
+  width: 22px;
+  height: 22px;
 }
 
 .chain {
@@ -228,4 +235,8 @@ input {
 
 .under-arrow {
   margin-top: 2px;
+}
+
+.token-under-arrow {
+  margin-left: 6px;
 }

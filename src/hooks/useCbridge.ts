@@ -1,4 +1,5 @@
-import { cbridgeInitialState, getTransferConfigs } from 'src/c-bridge';
+import { PeggedPairConfig } from './../c-bridge/index';
+import { cbridgeInitialState, getTransferConfigs, initialStateWeth } from 'src/c-bridge';
 import { ref, watchEffect, watch } from 'vue';
 import { Chain, EvmChain } from './../c-bridge';
 import { isAstarOrShiden, pushToSelectableChains } from './../c-bridge/utils/index';
@@ -16,11 +17,18 @@ export function useCbridge() {
   const srcChains = ref<Chain[] | null>(null);
   const destChains = ref<Chain[] | null>(null);
   const chains = ref<Chain[] | null>(null);
+  const tokens = ref<PeggedPairConfig[] | null>(null);
+  const selectedToken = ref<PeggedPairConfig | null>(null);
   const modal = ref<'src' | 'dest' | 'token' | null>(null);
   const tokensObj = ref<any | null>(null);
 
   const closeModal = () => modal.value === null;
   const openModal = (scene: 'src' | 'dest' | 'token') => (modal.value = scene);
+  const selectToken = (token: PeggedPairConfig) => {
+    selectedToken.value = token;
+    console.log(' selectedToken.value ', selectedToken.value);
+    modal.value = null;
+  };
 
   const selectChain = (chainId: number) => {
     if (!chains.value) return;
@@ -42,9 +50,6 @@ export function useCbridge() {
     const tokens = data && data.tokens;
 
     if (!supportChain || !tokens) return;
-    console.log('supportChain', supportChain);
-    console.log('tokens', tokens);
-
     srcChain.value = supportChain.find((it) => it.id === Ethereum) as Chain;
     destChain.value = supportChain.find((it) => it.id === Astar) as Chain;
     srcChains.value = supportChain;
@@ -66,59 +71,19 @@ export function useCbridge() {
       destChain.value = chains.value.find((it) => it.id === chainId) as Chain;
     }
 
-    const isSrcAstarOrShiden = isAstarOrShiden(srcChain.value.id);
-    const lookChain = isSrcAstarOrShiden ? destChain.value.id : srcChain.value.id;
-    // const lookChain = srcChain.value.id;
     const selectableChains: Chain[] = [];
-
     pushToSelectableChains({
-      tokensObj: tokensObj.value[Shiden],
-      chainId: Shiden,
-      lookChain,
+      tokensObj: tokensObj.value,
+      srcChainId: srcChain.value.id,
       selectableChains,
       supportChains: chains.value,
     });
-
-    pushToSelectableChains({
-      tokensObj: tokensObj.value[Astar],
-      chainId: Astar,
-      lookChain,
-      selectableChains,
-      supportChains: chains.value,
-    });
-
-    console.log('tokensObj.value', tokensObj.value);
-    console.log('tokensObj.value[Shiden]', tokensObj.value[Shiden]);
-    console.log('selectableChains', selectableChains);
 
     destChains.value = selectableChains;
+    tokens.value = tokensObj.value[srcChain.value.id][destChain.value.id];
+    console.log('tokens', tokens.value);
+    selectedToken.value = tokens.value && tokens.value[0];
   };
-
-  // watch([srcChain],()=>{
-  //   if (!srcChain.value || !destChain.value || chains.value === null) {
-  //     return;
-  //   }
-
-  //   const isSrcAstarOrShiden = isAstarOrShiden(srcChain.value.id);
-  //   const lookChain = isSrcAstarOrShiden ? destChain.value.id : srcChain.value.id;
-  //   const selectableChains: Chain[] = [];
-
-  //   pushToSelectableChains({
-  //     tokensObj: tokensObj.value[Shiden],
-  //     chainId: Shiden,
-  //     lookChain,
-  //     selectableChains,
-  //     supportChains: chains.value,
-  //   });
-
-  //   pushToSelectableChains({
-  //     tokensObj: tokensObj.value[Astar],
-  //     chainId: Astar,
-  //     lookChain,
-  //     selectableChains,
-  //     supportChains: chains.value,
-  //   });
-  // },{immediate:false})
 
   watchEffect(() => {
     watchSelectableChains();
@@ -128,11 +93,14 @@ export function useCbridge() {
     srcChain,
     destChain,
     chains,
-    closeModal,
-    openModal,
+    tokens,
     modal,
     destChains,
     srcChains,
+    selectedToken,
+    closeModal,
+    openModal,
     selectChain,
+    selectToken,
   };
 }

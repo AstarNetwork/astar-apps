@@ -80,6 +80,14 @@ export const getTransferConfigs = async () => {
           [BSC]: bscToShiden,
           [Astar]: shidenToAstar,
         },
+        [Ethereum]: {
+          [Astar]: ethToAstar,
+          [Shiden]: ethToShiden,
+        },
+        [BSC]: {
+          [Astar]: bscToAstar,
+          [Shiden]: bscToShiden,
+        },
       },
     };
   } catch (error: any) {
@@ -102,35 +110,21 @@ export const isAstarOrShiden = (chainId: number) => {
 
 export const pushToSelectableChains = ({
   tokensObj,
-  chainId,
-  lookChain,
+  srcChainId,
   selectableChains,
   supportChains,
 }: {
   tokensObj: any;
-  chainId: EvmChain;
-  lookChain: EvmChain;
+  srcChainId: EvmChain;
   selectableChains: Chain[];
   supportChains: Chain[];
 }) => {
-  console.log('tokensObj', tokensObj);
-  console.log('lookChain', lookChain);
-  // const isSelectableDestChain = tokensObj[lookChain] || [];
-  const lookupArray: number[] = [];
-  const chains = objToArray(tokensObj);
-  console.log('chains', chains);
-  chains.forEach((it) => {
-    // @ts-ignore
-    const tokens = objToArray(it) as PeggedPairConfig[];
+  const chains: PeggedPairConfig[][] = objToArray(tokensObj[srcChainId]);
+  chains.forEach((tokens: PeggedPairConfig[]) => {
+    if (!tokens[0]) return;
     const token = tokens[0];
-    console.log('token', token);
-    if (lookupArray.includes(token.org_chain_id)) return;
-    lookupArray.push(token.org_chain_id);
-  });
-  console.log('lookupArray', chains);
-
-  lookupArray.forEach((it) => {
-    const chain = supportChains.find((it: Chain) => it.id === chainId);
-    chain && supportChains.push(chain);
+    const id = srcChainId === EvmChain.Astar ? token.org_chain_id : token.pegged_chain_id;
+    const chain = supportChains.find((it: Chain) => it.id === id);
+    chain && selectableChains.push(chain);
   });
 };
