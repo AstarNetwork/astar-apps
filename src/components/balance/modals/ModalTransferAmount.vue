@@ -33,6 +33,14 @@
             style
             >{{ $t('balance.modals.sigExtrinsicBlocked') }}</q-banner
           >
+          <q-banner
+            v-if="isEthWallet"
+            dense
+            rounded
+            class="bg-orange text-white tw-mb-4 q-pa-xs"
+            style
+            >{{ $t('balance.modals.evmModeWarning') }}</q-banner
+          >
           <div>
             <h3
               class="
@@ -334,6 +342,7 @@ export default defineComponent({
       selectUnit,
       reloadAmount,
       Role,
+      isEthWallet,
       ...toRefs(props),
     };
   },
