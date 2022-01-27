@@ -1,6 +1,11 @@
 <template>
-  <div @click="selectChain(chain.id)">
-    {{ chain.name }}
+  <div class="chain" @click="selectChain(chain.id)">
+    <div>
+      <img :src="chain.icon" alt="chain-logo" class="chain-logo" />
+    </div>
+    <div>
+      {{ chain.name }}
+    </div>
   </div>
 </template>
 
@@ -17,6 +22,10 @@ export default defineComponent({
       type: Object,
       required: true,
     },
+    selectedChain: {
+      type: Object,
+      required: true,
+    },
   },
   setup() {
     return {};
@@ -24,4 +33,6 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+@import './styles/modal';
+</style>

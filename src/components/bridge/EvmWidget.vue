@@ -4,15 +4,15 @@
       <div class="widget">
         <div class="row">
           <div class="currency">
-            <div class="label">{{ $t('from') }}</div>
+            <span class="label">{{ $t('from') }}</span>
             <div class="chain" @click="openModal('src')">
               <div>
                 <img v-if="srcChain" :src="srcChain.icon" alt="src-chain-logo" class="chain-logo" />
               </div>
-              <div v-if="srcChain" class="chain-name">
+              <span v-if="srcChain" class="chain-name">
                 {{ srcChain ? getChainName(srcChain.id) : '' }}
-              </div>
-              <div class="under-arrow">▼</div>
+              </span>
+              <span class="under-arrow">▼</span>
             </div>
           </div>
           <div>
@@ -23,30 +23,34 @@
                 <div>
                   <img
                     v-if="selectedToken"
-                    :src="selectedToken.org_token.icon"
+                    :src="
+                      selectedToken.org_token.token.symbol === 'USDT'
+                        ? logoUsdt
+                        : selectedToken.org_token.icon
+                    "
                     alt="token-logo"
                     class="token-logo"
                   />
                 </div>
-                <div>{{ selectedToken ? selectedToken.org_token.token.symbol : '' }}</div>
-                <div class="token-under-arrow">▼</div>
+                <span>{{ selectedToken ? selectedToken.org_token.token.symbol : '' }}</span>
+                <span>▼</span>
               </div>
             </div>
             <div class="information label">
-              <div>$0.00</div>
+              <span>$0.00</span>
               <div class="balance">
-                <div>{{ $t('bridge.balance') }}</div>
-                <div>0.1234 ETH</div>
+                <p>{{ $t('bridge.balance') }}</p>
+                <p>0.1234 ETH</p>
               </div>
             </div>
           </div>
         </div>
-        <div class="reverse">
-          <div class="reverse-button">↑↓</div>
+        <div class="reverse" @click="reverseChain">
+          <span class="reverse-button">↑↓</span>
         </div>
         <div class="row">
           <div class="currency">
-            <div class="label">{{ $t('to') }}</div>
+            <span class="label">{{ $t('to') }}</span>
             <div class="chain" @click="openModal('dest')">
               <div>
                 <img
@@ -56,19 +60,24 @@
                   class="chain-logo"
                 />
               </div>
-              <div class="chain-name">{{ destChain ? getChainName(destChain.id) : '' }}</div>
-              <div class="under-arrow">▼</div>
+              <span class="chain-name">{{ destChain ? getChainName(destChain.id) : '' }}</span>
+              <span class="under-arrow">▼</span>
             </div>
           </div>
           <div>
             <div class="estimation-row">
-              <div class="label">{{ $t('estimated') }}</div>
-              <div class="estimated-value">123.456789123445</div>
+              <span class="label">{{ $t('estimated') }}</span>
+              <span class="estimated-value">123.456789123445</span>
             </div>
-            <div class="label">$0.00</div>
+            <span class="label">$0.00</span>
           </div>
         </div>
-        <div class="bridge-button">{{ $t('bridge.connectEvmWallet') }}</div>
+        <div v-if="!isH160" class="bridge-button" @click="openSelectModal">
+          {{ $t('bridge.connectEvmWallet') }}
+        </div>
+        <div v-else class="bridge-button">
+          {{ $t('bridge.bridge') }}
+        </div>
       </div>
       <div class="provider">
         <a
@@ -99,6 +108,7 @@
         :select-chain="selectChain"
         :chains="srcChains"
         :modal="modal"
+        :selected-chain="srcChain"
       />
 
       <ModalChain
@@ -108,38 +118,42 @@
         :select-chain="selectChain"
         :chains="destChains"
         :modal="modal"
+        :selected-chain="destChain"
       />
-      <!-- <div class="connect-wallet" @click="openSelectModal">
-        {{ $t('wallet.connectWallet') }}
-      </div> -->
+
+      <modal-connect-wallet
+        v-if="walletModalName === WalletModalOption.SelectWallet"
+        :set-wallet-modal="setWalletModal"
+        :set-close-modal="closeWalletModal"
+        :is-evm-only="true"
+      />
+
+      <ModalInstallWallet
+        v-if="walletModalName === WalletModalOption.NoExtension"
+        :set-close-modal="closeWalletModal"
+        :selected-wallet="selectedWallet"
+      />
     </div>
-
-    <!-- <modal-connect-wallet
-      v-if="modalName === WalletModalOption.SelectWallet"
-      :set-wallet-modal="setWalletModal"
-      :set-close-modal="setCloseModal"
-    />
-
-    <ModalInstallWallet
-      v-if="modalName === WalletModalOption.NoExtension"
-      :set-close-modal="setCloseModal"
-      :selected-wallet="selectedWallet"
-    /> -->
   </div>
 </template>
 
 <script lang="ts">
 import { useMeta } from 'quasar';
-import { useCbridge } from 'src/hooks';
+import { useCbridge, useConnectWallet } from 'src/hooks';
 import { defineComponent } from 'vue';
 import ModalChain from './modals/ModalChain.vue';
 import ModalToken from './modals/ModalToken.vue';
 import { getChainName } from 'src/c-bridge';
 
+import ModalConnectWallet from '../balance/modals/ModalConnectWallet.vue';
+import ModalInstallWallet from '../balance/modals/ModalInstallWallet.vue';
+
 export default defineComponent({
   components: {
     ModalChain,
     ModalToken,
+    ModalConnectWallet,
+    ModalInstallWallet,
   },
   setup() {
     useMeta({ title: 'EVM Bridge' });
@@ -147,17 +161,31 @@ export default defineComponent({
     const {
       srcChain,
       destChain,
+      srcChains,
+      destChains,
       chains,
       tokens,
       modal,
-      destChains,
-      srcChains,
       selectedToken,
       closeModal,
       openModal,
       selectChain,
       selectToken,
+      reverseChain,
     } = useCbridge();
+
+    const {
+      WalletModalOption,
+      modalConnectWallet,
+      modalName: walletModalName,
+      selectedWallet,
+      isH160,
+      setCloseModal: closeWalletModal,
+      setWalletModal,
+      openSelectModal,
+    } = useConnectWallet();
+
+    const logoUsdt = 'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png';
 
     return {
       getChainName,
@@ -169,10 +197,20 @@ export default defineComponent({
       destChains,
       srcChains,
       selectedToken,
+      logoUsdt,
       closeModal,
       openModal,
       selectChain,
       selectToken,
+      reverseChain,
+      WalletModalOption,
+      modalConnectWallet,
+      walletModalName,
+      selectedWallet,
+      isH160,
+      closeWalletModal,
+      setWalletModal,
+      openSelectModal,
     };
   },
 });

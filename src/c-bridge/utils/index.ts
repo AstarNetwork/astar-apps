@@ -19,6 +19,8 @@ export const getChainName = (chain: number) => {
       return 'Astar';
     case EvmChain.Shiden:
       return 'Shiden';
+    case EvmChain.Polygon:
+      return 'Polygon';
 
     default:
       return '';
@@ -52,15 +54,19 @@ export const getTransferConfigs = async () => {
     const ethToShiden: PeggedPairConfig[] = [];
     const bscToAstar: PeggedPairConfig[] = [];
     const bscToShiden: PeggedPairConfig[] = [];
+    const polygonToAstar: PeggedPairConfig[] = [];
+    const polygonToShiden: PeggedPairConfig[] = [];
     const shidenToAstar: PeggedPairConfig[] = [];
 
-    const { Ethereum, BSC, Astar, Shiden } = EvmChain;
+    const { Ethereum, BSC, Astar, Shiden, Polygon } = EvmChain;
 
     pegged_pair_configs.forEach((token) => {
       pushToken({ tokens: ethToAstar, srcChain: Ethereum, destChain: Astar, token });
       pushToken({ tokens: ethToShiden, srcChain: Ethereum, destChain: Shiden, token });
       pushToken({ tokens: bscToAstar, srcChain: BSC, destChain: Astar, token });
       pushToken({ tokens: bscToShiden, srcChain: BSC, destChain: Shiden, token });
+      pushToken({ tokens: polygonToAstar, srcChain: Polygon, destChain: Astar, token });
+      pushToken({ tokens: polygonToShiden, srcChain: Polygon, destChain: Shiden, token });
       pushToken({ tokens: shidenToAstar, srcChain: Shiden, destChain: Astar, token });
     });
 
@@ -73,11 +79,13 @@ export const getTransferConfigs = async () => {
         [Astar]: {
           [Ethereum]: ethToAstar,
           [BSC]: bscToAstar,
+          [Polygon]: polygonToAstar,
           [Shiden]: shidenToAstar,
         },
         [Shiden]: {
           [Ethereum]: ethToShiden,
           [BSC]: bscToShiden,
+          [Polygon]: polygonToShiden,
           [Astar]: shidenToAstar,
         },
         [Ethereum]: {
@@ -87,6 +95,10 @@ export const getTransferConfigs = async () => {
         [BSC]: {
           [Astar]: bscToAstar,
           [Shiden]: bscToShiden,
+        },
+        [Polygon]: {
+          [Astar]: polygonToAstar,
+          [Shiden]: polygonToShiden,
         },
       },
     };
@@ -126,5 +138,19 @@ export const pushToSelectableChains = ({
     const id = srcChainId === EvmChain.Astar ? token.org_chain_id : token.pegged_chain_id;
     const chain = supportChains.find((it: Chain) => it.id === id);
     chain && selectableChains.push(chain);
+  });
+};
+
+export const sortChainName = (chains: Chain[]) => {
+  chains.sort((a, b) => {
+    const nameA = a.name.toUpperCase();
+    const nameB = b.name.toUpperCase();
+    if (nameA < nameB) {
+      return -1;
+    }
+    if (nameA > nameB) {
+      return 1;
+    }
+    return 0;
   });
 };

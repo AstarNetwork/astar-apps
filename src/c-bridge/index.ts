@@ -1,15 +1,22 @@
 // Docs: https://cbridge-docs.celer.network/developer/api-reference/gateway-gettransferconfigs
 
-export { getTransferConfigs, getChainName, isAstarOrShiden } from './utils';
+export { getTransferConfigs, getChainName, isAstarOrShiden, sortChainName } from './utils';
 
 export enum EvmChain {
   Ethereum = 1,
   BSC = 56,
   Astar = 592,
   Shiden = 336,
+  Polygon = 137,
 }
 
-export const supportChains = [EvmChain.Ethereum, EvmChain.BSC, EvmChain.Astar, EvmChain.Shiden];
+export const supportChains = [
+  EvmChain.Ethereum,
+  EvmChain.BSC,
+  EvmChain.Astar,
+  EvmChain.Shiden,
+  EvmChain.Polygon,
+];
 
 export const cBridgeEndpoint = 'https://cbridge-prod2.celer.network/v1';
 
@@ -89,32 +96,4 @@ export const cbridgeInitialState = {
     name: 'Astar',
     suggested_gas_cost: '129568',
   },
-};
-
-export const initialStateWeth = {
-  org_chain_id: 1,
-  org_token: {
-    token: {
-      symbol: 'WETH',
-      address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-      decimal: 18,
-      xfer_disabled: false,
-    },
-    name: 'Wrapped Ether',
-    icon: 'https://get.celer.app/cbridge-icons/WETH.png',
-  },
-  pegged_chain_id: 592,
-  pegged_token: {
-    token: {
-      symbol: 'WETH',
-      address: '0x81ECac0D6Be0550A00FF064a4f9dd2400585FE9c',
-      decimal: 18,
-      xfer_disabled: false,
-    },
-    name: 'Wrapped Ether',
-    icon: 'https://get.celer.app/cbridge-icons/ETH.png',
-  },
-  pegged_deposit_contract_addr: '0xB37D31b2A74029B5951a2778F959282E2D518595',
-  pegged_burn_contract_addr: '0xBB7684Cc5408F4DD0921E5c2Cadd547b8f1AD573',
-  canonical_token_contract_addr: '',
 };

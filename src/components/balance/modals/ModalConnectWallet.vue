@@ -13,7 +13,7 @@
           "
         >
           <WalletOption
-            v-for="(wallet, index) in supportWallets"
+            v-for="(wallet, index) in isEvmOnly ? supportEvmWallets : supportWallets"
             :key="index"
             :wallet="wallet"
             :set-wallet-modal="setWalletModal"
@@ -27,7 +27,7 @@
 <script lang="ts">
 import WalletOption from 'src/components/balance/modals/wallet/WalletOption.vue';
 import Modal from 'src/components/common/Modal.vue';
-import { supportWallets } from 'src/config/wallets';
+import { supportWallets, supportEvmWallets } from 'src/config/wallets';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
@@ -44,9 +44,14 @@ export default defineComponent({
       type: Function,
       required: true,
     },
+    isEvmOnly: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   setup() {
-    return { supportWallets };
+    return { supportWallets, supportEvmWallets };
   },
 });
 </script>

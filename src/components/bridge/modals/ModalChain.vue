@@ -1,24 +1,14 @@
 <template>
   <Modal :title="title" @click="closeModal">
     <template #content>
-      <div class="tw-max-w-md">
-        <div class="tw-text-lg tw-text-center tw-text-blue-900 dark:tw-text-darkGray-100">
-          {{ $t('wallet.select') }}
-        </div>
-        <div
-          class="
-            tw-flex tw-flex-col
-            sm:tw-flex-row sm:tw-flex-wrap
-            tw-gap-x-2 tw-justify-center tw-items-center
-          "
-        >
-          <Chain
-            v-for="(chain, index) in chains"
-            :key="index"
-            :chain="chain"
-            :select-chain="selectChain"
-          />
-        </div>
+      <div class="tw-max-w-sm">
+        <Chain
+          v-for="(chain, index) in chains"
+          :key="index"
+          :chain="chain"
+          :select-chain="selectChain"
+          :selected-chain="selectedChain"
+        />
       </div>
     </template>
   </Modal>
@@ -50,6 +40,10 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    selectedChain: {
+      type: Object,
+      required: true,
+    },
   },
   setup(props) {
     const title = props.modal === 'src' ? 'Select Source Chain' : 'Select Destination Chain';
@@ -58,3 +52,7 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss" scoped>
+@import '../styles/modal';
+</style>

@@ -1,8 +1,8 @@
-import { PeggedPairConfig } from './../c-bridge/index';
-import { cbridgeInitialState, getTransferConfigs, initialStateWeth } from 'src/c-bridge';
-import { ref, watchEffect, watch } from 'vue';
+import { cbridgeInitialState, getTransferConfigs } from 'src/c-bridge';
+import { ref, watchEffect } from 'vue';
 import { Chain, EvmChain } from './../c-bridge';
-import { isAstarOrShiden, pushToSelectableChains } from './../c-bridge/utils/index';
+import { PeggedPairConfig } from './../c-bridge/index';
+import { pushToSelectableChains, sortChainName } from './../c-bridge/utils/index';
 import { objToArray } from './helper/common';
 
 const { Ethereum, BSC, Astar, Shiden } = EvmChain;
@@ -44,6 +44,12 @@ export function useCbridge() {
     modal.value = null;
   };
 
+  const reverseChain = () => {
+    const fromChain = srcChain.value;
+    srcChain.value = destChain.value;
+    destChain.value = fromChain;
+  };
+
   const updateBridgeConfig = async () => {
     const data = await getTransferConfigs();
     const supportChain = data && data.supportChain;
@@ -52,6 +58,8 @@ export function useCbridge() {
     if (!supportChain || !tokens) return;
     srcChain.value = supportChain.find((it) => it.id === Ethereum) as Chain;
     destChain.value = supportChain.find((it) => it.id === Astar) as Chain;
+
+    sortChainName(supportChain);
     srcChains.value = supportChain;
     chains.value = supportChain;
     tokensObj.value = tokens;
@@ -79,9 +87,9 @@ export function useCbridge() {
       supportChains: chains.value,
     });
 
+    sortChainName(selectableChains);
     destChains.value = selectableChains;
     tokens.value = tokensObj.value[srcChain.value.id][destChain.value.id];
-    console.log('tokens', tokens.value);
     selectedToken.value = tokens.value && tokens.value[0];
   };
 
@@ -90,14 +98,15 @@ export function useCbridge() {
   });
 
   return {
+    destChains,
+    srcChains,
     srcChain,
     destChain,
     chains,
     tokens,
     modal,
-    destChains,
-    srcChains,
     selectedToken,
+    reverseChain,
     closeModal,
     openModal,
     selectChain,

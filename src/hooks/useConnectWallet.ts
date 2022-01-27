@@ -1,14 +1,14 @@
-import { ASTAR_SS58_FORMAT } from './helper/plasmUtils';
+import { getProviderIndex } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SubstrateWallets, SupportWallet, WalletModalOption } from 'src/config/wallets';
 import { useAccount } from 'src/hooks';
+import * as utils from 'src/hooks/custom-signature/utils';
 import { useStore } from 'src/store';
 import { getChainId, setupNetwork } from 'src/web3';
-import { computed, ref, watchEffect, watch } from 'vue';
+import { computed, ref, watch, watchEffect } from 'vue';
 import { useMetamask } from './custom-signature/useMetamask';
+import { ASTAR_SS58_FORMAT } from './helper/plasmUtils';
 import { castMobileSource, getInjectedExtensions } from './helper/wallet';
-import * as utils from 'src/hooks/custom-signature/utils';
-import { getProviderIndex, endpointKey } from 'src/config/chainEndpoints';
 
 export const useConnectWallet = () => {
   const modalConnectWallet = ref<boolean>(false);
@@ -150,6 +150,7 @@ export const useConnectWallet = () => {
     modalName,
     selectedWallet,
     modalAccountSelect,
+    isH160,
     openSelectModal,
     setCloseModal,
     setWalletModal,
