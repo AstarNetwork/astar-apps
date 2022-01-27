@@ -1,4 +1,4 @@
-import { usePolkadotContainerContext } from 'src/config/api/polkadot';
+import { usePolkadotContainerContext } from 'src/config/api/polkadot/polkadotContext';
 
 /**
  * Access the global polkadot API state that is provided by the provider component from a nested parent

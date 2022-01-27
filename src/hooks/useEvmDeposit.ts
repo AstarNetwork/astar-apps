@@ -11,6 +11,7 @@ export function useEvmDeposit() {
   const { currentAccount } = useAccount();
   const store = useStore();
   const isLoading = computed(() => store.getters['general/isLoading']);
+  const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
   watch(
     [api, currentAccount, isLoading],
@@ -28,7 +29,7 @@ export function useEvmDeposit() {
           const h160Addr = toEvmAddress(currentAccountRef);
           const deposit = await getData(h160Addr);
           evmDeposit.value = deposit;
-          if (deposit.toString() !== '0') {
+          if (deposit.toString() !== '0' && !isH160.value) {
             isEvmDeposit.value = true;
           } else {
             isEvmDeposit.value = false;
