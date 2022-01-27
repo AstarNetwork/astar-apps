@@ -1,5 +1,13 @@
 import { RouteRecordRaw } from 'vue-router';
 
+import Balance from 'pages/Balance.vue';
+import DApps from 'src/pages/Contract.vue';
+import Store from 'src/pages/DappStaking.vue';
+import ConnectWallet from 'src/components/balance/ConnectWallet.vue';
+// import CreateDappsTab from 'components/contracts/CreateDappsTab.vue';
+import DiscoverDappsTab from 'components/dapp-staking/DiscoverDappsTab.vue';
+import ManageDappsTab from 'components/dapp-staking/ManageDappsTab.vue';
+
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
@@ -12,7 +20,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/balance',
     name: 'Balance',
-    component: () => import('pages/Balance.vue'),
+    component: Balance,
     children: [
       {
         path: '',
@@ -24,33 +32,33 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'wallet',
-        component: () => import('components/balance/ConnectWallet.vue'),
+        component: ConnectWallet,
       },
     ],
   },
-  {
-    path: '/contracts',
-    name: 'Contracts',
-    component: () => import('pages/Contract.vue'),
-    children: [
-      {
-        path: '',
-        redirect: '/contracts/create-contract',
-      },
-      {
-        path: 'create-dapps',
-        redirect: '/contracts/create-contract',
-      },
-      {
-        path: 'create-contract',
-        component: () => import('components/contracts/CreateDappsTab.vue'),
-      },
-    ],
-  },
+  // {
+  //   path: '/contracts',
+  //   name: 'Contracts',
+  //   component: DApps,
+  //   children: [
+  //     {
+  //       path: '',
+  //       redirect: '/contracts/create-contract',
+  //     },
+  //     {
+  //       path: 'create-dapps',
+  //       redirect: '/contracts/create-contract',
+  //     },
+  //     {
+  //       path: 'create-contract',
+  //       component: CreateDappsTab,
+  //     },
+  //   ],
+  // },
   {
     path: '/dapp-staking',
     name: 'dApp Staking',
-    component: () => import('pages/DappStaking.vue'),
+    component: Store,
     children: [
       {
         path: '',
@@ -58,11 +66,11 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'discover',
-        component: () => import('components/dapp-staking/DiscoverDappsTab.vue'),
+        component: DiscoverDappsTab,
       },
       {
         path: 'manage',
-        component: () => import('components/dapp-staking/ManageDappsTab.vue'),
+        component: ManageDappsTab,
       },
     ],
   },
