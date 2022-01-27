@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { objToArray } from 'src/hooks/helper/common';
 import {
   cBridgeEndpoint,
   EvmChain,
@@ -112,11 +113,24 @@ export const pushToSelectableChains = ({
   selectableChains: Chain[];
   supportChains: Chain[];
 }) => {
-  const strLookChain = String(lookChain);
-  const isSelectableDestChain = tokensObj[strLookChain];
+  console.log('tokensObj', tokensObj);
+  console.log('lookChain', lookChain);
+  // const isSelectableDestChain = tokensObj[lookChain] || [];
+  const lookupArray: number[] = [];
+  const chains = objToArray(tokensObj);
+  console.log('chains', chains);
+  chains.forEach((it) => {
+    // @ts-ignore
+    const tokens = objToArray(it) as PeggedPairConfig[];
+    const token = tokens[0];
+    console.log('token', token);
+    if (lookupArray.includes(token.org_chain_id)) return;
+    lookupArray.push(token.org_chain_id);
+  });
+  console.log('lookupArray', chains);
 
-  if (isSelectableDestChain.length > 0) {
+  lookupArray.forEach((it) => {
     const chain = supportChains.find((it: Chain) => it.id === chainId);
-    chain && selectableChains.push(chain);
-  }
+    chain && supportChains.push(chain);
+  });
 };

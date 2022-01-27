@@ -1,7 +1,8 @@
 import { cbridgeInitialState, getTransferConfigs } from 'src/c-bridge';
-import { ref, watchEffect } from 'vue';
+import { ref, watchEffect, watch } from 'vue';
 import { Chain, EvmChain } from './../c-bridge';
 import { isAstarOrShiden, pushToSelectableChains } from './../c-bridge/utils/index';
+import { objToArray } from './helper/common';
 
 const { Ethereum, BSC, Astar, Shiden } = EvmChain;
 
@@ -60,8 +61,14 @@ export function useCbridge() {
       return;
     }
 
+    if (destChain.value.id === srcChain.value.id) {
+      const chainId = objToArray(tokensObj.value[srcChain.value.id])[0][0].org_chain_id;
+      destChain.value = chains.value.find((it) => it.id === chainId) as Chain;
+    }
+
     const isSrcAstarOrShiden = isAstarOrShiden(srcChain.value.id);
     const lookChain = isSrcAstarOrShiden ? destChain.value.id : srcChain.value.id;
+    // const lookChain = srcChain.value.id;
     const selectableChains: Chain[] = [];
 
     pushToSelectableChains({
@@ -80,13 +87,38 @@ export function useCbridge() {
       supportChains: chains.value,
     });
 
-    destChains.value = selectableChains;
-    console.log('destChains.value', destChains.value);
+    console.log('tokensObj.value', tokensObj.value);
+    console.log('tokensObj.value[Shiden]', tokensObj.value[Shiden]);
+    console.log('selectableChains', selectableChains);
 
-    if (destChain.value.id === srcChain.value.id) {
-      srcChain.value = chains.value.find((it) => it.id === Ethereum) as Chain;
-    }
+    destChains.value = selectableChains;
   };
+
+  // watch([srcChain],()=>{
+  //   if (!srcChain.value || !destChain.value || chains.value === null) {
+  //     return;
+  //   }
+
+  //   const isSrcAstarOrShiden = isAstarOrShiden(srcChain.value.id);
+  //   const lookChain = isSrcAstarOrShiden ? destChain.value.id : srcChain.value.id;
+  //   const selectableChains: Chain[] = [];
+
+  //   pushToSelectableChains({
+  //     tokensObj: tokensObj.value[Shiden],
+  //     chainId: Shiden,
+  //     lookChain,
+  //     selectableChains,
+  //     supportChains: chains.value,
+  //   });
+
+  //   pushToSelectableChains({
+  //     tokensObj: tokensObj.value[Astar],
+  //     chainId: Astar,
+  //     lookChain,
+  //     selectableChains,
+  //     supportChains: chains.value,
+  //   });
+  // },{immediate:false})
 
   watchEffect(() => {
     watchSelectableChains();
