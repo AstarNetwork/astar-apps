@@ -28,11 +28,9 @@ export default defineComponent({
     }
 
     let { api, extensions } = await connectApi(endpoint, networkIdx.value);
-    const apiRef: any = ref(api);
-    const extensionsRef = ref(extensions);
 
-    const { chainInfo } = useChainInfo(apiRef);
-    const { metaExtensions, extensionCount } = useMetaExtensions(apiRef, extensionsRef);
+    const { chainInfo } = useChainInfo(api);
+    const { metaExtensions, extensionCount } = useMetaExtensions(api, extensions)!!;
     watchEffect(() => {
       store.commit('general/setChainInfo', chainInfo.value);
       store.commit('general/setMetaExtensions', metaExtensions.value);

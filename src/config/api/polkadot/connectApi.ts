@@ -96,13 +96,6 @@ export async function connectApi(endpoint: string, networkIdx: number) {
         });
 
         store.commit('general/setSubstrateAccounts', accountMap);
-        // Todo: remove
-        store.commit('general/setAllAccounts', Object.keys(accounts));
-        // Memo: remove space from UI.
-        store.commit(
-          'general/setAllAccountNames',
-          Object.values(accounts).map((obj) => obj.option.name.replace('\n              ', ''))
-        );
       }
     });
 

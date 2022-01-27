@@ -14,8 +14,6 @@ export interface GeneralMutations<S = State> {
   setMetaExtensions(state: S, type: Extensions): void;
   setExtensionCount(state: S, type: number): void;
   setSubstrateAccounts(state: S, type: SubstrateAccount[]): void;
-  setAllAccounts(state: S, type: string[]): void;
-  setAllAccountNames(state: S, type: string[]): void;
   setCurrentNetworkStatus(state: S, networkStatus: ConnectionType): void;
   setCurrentNetworkIdx(state: S, networkIdx: number): void;
   setCurrentAddress(state: S, address: string): void;
@@ -49,12 +47,6 @@ const mutation: MutationTree<State> & GeneralMutations = {
   },
   setSubstrateAccounts(state, accounts) {
     state.substrateAccounts = accounts;
-  },
-  setAllAccounts(state, accounts) {
-    state.allAccounts = accounts;
-  },
-  setAllAccountNames(state, accountNames) {
-    state.allAccountNames = accountNames;
   },
   setCurrentNetworkStatus(state, networkStatus) {
     state.currentNetworkStatus = networkStatus;

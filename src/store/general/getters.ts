@@ -18,8 +18,6 @@ export interface GeneralGetters {
   metaExtensions(state: State): Extensions;
   extensionCount(state: State): number;
   substrateAccounts(state: State): SubstrateAccount[];
-  allAccounts(state: State): string[];
-  allAccountNames(state: State): string[];
   networkStatus(state: State): string;
   networkIdx(state: State): number;
   isEthWallet(state: State): boolean;
@@ -38,8 +36,6 @@ const getters: GetterTree<State, StateInterface> & GeneralGetters = {
   metaExtensions: (state) => state.metaExtensions,
   extensionCount: (state) => state.extensionCount,
   substrateAccounts: (state) => state.substrateAccounts,
-  allAccounts: (state) => state.allAccounts,
-  allAccountNames: (state) => state.allAccountNames,
   networkStatus: (state) => state.currentNetworkStatus,
   networkIdx: (state) => state.currentNetworkIdx,
   isEthWallet: (state) => state.isEthWallet,
