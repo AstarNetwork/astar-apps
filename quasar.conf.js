@@ -232,6 +232,9 @@ module.exports = configure(function (ctx) {
         // do something with the Electron main process Webpack cfg
         // extendWebpackPreload also available besides this chainWebpackPreload
       },
-    }
-  }
+    },
+    htmlVariables: {
+      analyticsId: ctx.dev ? 'G-GBPD0EVWBJ' : 'G-RKKEVC5VJY',
+    },
+  };
 });

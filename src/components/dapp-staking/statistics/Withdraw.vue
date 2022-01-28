@@ -79,7 +79,6 @@ export default defineComponent({
 
     const subscribeToEraChange = async (): Promise<VoidFn | undefined> => {
       const unsub = (await api?.value?.query.dappsStaking.currentEra(async (era: u32) => {
-        // console.log('new era', era.toNumber(), selectedAccountAddress.value);
         await getChunks(era);
       })) as VoidFn | undefined;
 
@@ -93,22 +92,21 @@ export default defineComponent({
         return;
       }
 
-      const unbondingInfo =
-        await api?.value?.query.dappsStaking.unbondingInfoStorage<UnbondingInfo>(
-          selectedAccountAddress.value
-        );
+      const ledger = await api?.value?.query.dappsStaking.ledger<PalletDappsStakingAccountLedger>(
+        selectedAccountAddress.value
+      );
 
-      if (unbondingInfo?.unlockingChunks) {
-        unlockingChunks.value = unbondingInfo.unlockingChunks;
+      if (ledger?.unbondingInfo.unlockingChunks) {
+        unlockingChunks.value = ledger.unbondingInfo.unlockingChunks;
         store.commit('dapps/setUnlockingChunks', unlockingChunks.value?.length);
         canWithdraw.value = false;
         totalToWithdraw.value = new BN(0);
         for (const chunk of unlockingChunks.value) {
-          const erasBeforeUnlock = new BN(era).sub(chunk.unlockEra).toNumber();
+          const erasBeforeUnlock = era.sub(chunk.unlockEra.toBn()).toNumber();
           chunk.erasBeforeUnlock = Math.abs(erasBeforeUnlock > 0 ? 0 : erasBeforeUnlock);
 
           if (erasBeforeUnlock >= 0) {
-            totalToWithdraw.value = totalToWithdraw.value.add(chunk.amount);
+            totalToWithdraw.value = totalToWithdraw.value.add(chunk.amount.toBn());
           }
 
           if (!canWithdraw.value) {
@@ -148,7 +146,11 @@ export default defineComponent({
   },
 });
 
-interface UnbondingInfo extends Codec {
+interface PalletDappsStakingAccountLedger extends Codec {
+  unbondingInfo: UnbondingInfo;
+}
+
+interface UnbondingInfo {
   unlockingChunks: ChunkInfo[];
 }
 

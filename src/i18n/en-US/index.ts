@@ -62,6 +62,8 @@ export default {
     tooltipNative: 'Native address for {value}. Use this address to withdraw from exchanges.',
     tooltipEvm: 'Ethereum address for receiving {value} from EVM network.',
     vestingInfo: 'Vesting info',
+    remainingVests: 'Remaining vests',
+    via: 'via',
     modals: {
       connectMetamask: 'Connect Account with Ethereum Wallet',
       ethereumExtension: 'Ethereum Extension',
@@ -95,6 +97,7 @@ export default {
       vested: 'vested',
       perBlock: 'per block',
       untilBlock: 'until block',
+      evmModeWarning: 'You are in EVM mode. Do not send funds to exchanges!',
     },
   },
   contracts: {
