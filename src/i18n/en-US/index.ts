@@ -216,5 +216,6 @@ export default {
     connectEvmWallet: 'Connect EVM wallet',
     max: 'MAX',
     balance: 'Available Balance:',
+    approve: 'Approve',
   },
 };

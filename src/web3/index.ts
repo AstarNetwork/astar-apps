@@ -1,5 +1,5 @@
 import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
-export { getChainData, setupNetwork, getChainId, createWeb3Instance } from './utils';
+export { getChainData, setupNetwork, getChainId, createWeb3Instance, getTokenBal } from './utils';
 
 export type TNetworkId = endpointKey.SHIDEN | endpointKey.SHIBUYA | endpointKey.ASTAR;
 
@@ -13,6 +13,7 @@ export enum EVM {
   SHIDEN_MAINNET = Number(chain.shiden!.evmChainId),
   SHIBUYA_TESTNET = Number(chain.shibuya!.evmChainId),
   ASTAR_MAINNET = Number(chain.astar!.evmChainId),
+  ETHEREUM_MAINNET = 1,
   BSC = 56,
   POLYGON = 137,
 }
@@ -25,6 +26,11 @@ export const chainName = {
 };
 
 export const nativeCurrency = {
+  [EVM.ETHEREUM_MAINNET]: {
+    name: 'ETH',
+    symbol: 'eth',
+    decimals: 18,
+  },
   [EVM.SHIDEN_MAINNET]: {
     name: 'SDN',
     symbol: 'sdn',

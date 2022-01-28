@@ -6,15 +6,16 @@
       </div>
       <div>
         <span>
-          {{ token.name }}
+          {{ tokenInfo.name }}
         </span>
       </div>
     </div>
-    <div class="balance">0 MATIC</div>
+    <div class="balance">0 {{ tokenInfo ? tokenInfo.token.symbol : '' }}</div>
   </div>
 </template>
 
 <script lang="ts">
+import { getTokenInfo, PeggedPairConfig } from 'src/c-bridge';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
@@ -37,15 +38,15 @@ export default defineComponent({
     },
   },
   setup({ srcChainId, tokenObj }) {
-    const token = srcChainId === tokenObj.org_chain_id ? tokenObj.org_token : tokenObj.pegged_token;
+    const tokenInfo = getTokenInfo({ srcChainId, selectedToken: tokenObj as PeggedPairConfig });
 
     const logo =
-      token.token.symbol === 'USDT'
+      tokenInfo.token.symbol === 'USDT'
         ? 'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png'
-        : token.icon;
+        : tokenInfo.icon;
 
-    console.log('token', token);
-    return { token, logo };
+    console.log('tokenInfo', tokenInfo);
+    return { tokenInfo, logo };
   },
 });
 </script>

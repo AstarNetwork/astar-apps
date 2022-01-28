@@ -17,8 +17,16 @@
           </div>
           <div>
             <div class="input-row">
-              <input />
-              <div class="max-button">{{ $t('bridge.max') }}</div>
+              <input
+                v-model="amount"
+                inputmode="decimal"
+                type="number"
+                min="0"
+                pattern="^[0-9]*(\.)?[0-9]*$"
+                placeholder="0"
+                @input="inputHandler"
+              />
+              <div class="max-button" @click="toMaxAmount">{{ $t('bridge.max') }}</div>
               <div class="token-selector" @click="openModal('token')">
                 <div>
                   <img
@@ -40,7 +48,10 @@
               <span>$0.00</span>
               <div class="balance">
                 <p>{{ $t('bridge.balance') }}</p>
-                <p>0.1234 ETH</p>
+                <p>
+                  {{ selectedTokenBalance ? selectedTokenBalance : 0 }}
+                  {{ selectedToken ? selectedToken.org_token.token.symbol : '' }}
+                </p>
               </div>
             </div>
           </div>
@@ -67,17 +78,27 @@
           <div>
             <div class="estimation-row">
               <span class="label">{{ $t('estimated') }}</span>
-              <span class="estimated-value">123.456789123445</span>
+              <span class="estimated-value">{{
+                quotation ? quotation.estimated_receive_amt : ''
+              }}</span>
             </div>
             <span class="label">$0.00</span>
           </div>
         </div>
-        <div v-if="!isH160" class="bridge-button" @click="openSelectModal">
+        <button v-if="!isH160" class="bridge-button" @click="openSelectModal">
           {{ $t('bridge.connectEvmWallet') }}
-        </div>
-        <div v-else class="bridge-button">
+        </button>
+        <button
+          v-else-if="isApprovalNeeded"
+          :disabled="selectedNetwork !== srcChain.id"
+          class="bridge-button"
+          @click="handleApprove"
+        >
+          {{ $t('bridge.approve') }}
+        </button>
+        <button v-else :disabled="selectedNetwork !== srcChain.id" class="bridge-button">
           {{ $t('bridge.bridge') }}
-        </div>
+        </button>
       </div>
       <div class="provider">
         <a
@@ -144,7 +165,6 @@ import { defineComponent } from 'vue';
 import ModalChain from './modals/ModalChain.vue';
 import ModalToken from './modals/ModalToken.vue';
 import { getChainName } from 'src/c-bridge';
-
 import ModalConnectWallet from '../balance/modals/ModalConnectWallet.vue';
 import ModalInstallWallet from '../balance/modals/ModalInstallWallet.vue';
 
@@ -166,12 +186,20 @@ export default defineComponent({
       chains,
       tokens,
       modal,
+      amount,
       selectedToken,
+      quotation,
       closeModal,
       openModal,
       selectChain,
       selectToken,
       reverseChain,
+      inputHandler,
+      toMaxAmount,
+      selectedTokenBalance,
+      handleApprove,
+      isApprovalNeeded,
+      selectedNetwork,
     } = useCbridge();
 
     const {
@@ -194,15 +222,20 @@ export default defineComponent({
       chains,
       tokens,
       modal,
+      amount,
       destChains,
       srcChains,
       selectedToken,
+      quotation,
+      selectedTokenBalance,
       logoUsdt,
+      selectedNetwork,
       closeModal,
       openModal,
       selectChain,
       selectToken,
       reverseChain,
+      toMaxAmount,
       WalletModalOption,
       modalConnectWallet,
       walletModalName,
@@ -211,6 +244,9 @@ export default defineComponent({
       closeWalletModal,
       setWalletModal,
       openSelectModal,
+      inputHandler,
+      handleApprove,
+      isApprovalNeeded,
     };
   },
 });

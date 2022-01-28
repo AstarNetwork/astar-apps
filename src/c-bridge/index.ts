@@ -1,6 +1,16 @@
 // Docs: https://cbridge-docs.celer.network/developer/api-reference/gateway-gettransferconfigs
 
-export { getTransferConfigs, getChainName, isAstarOrShiden, sortChainName } from './utils';
+export {
+  getTransferConfigs,
+  getChainName,
+  isAstarOrShiden,
+  sortChainName,
+  formatDecimals,
+  getTokenBalCbridge,
+  getTokenInfo,
+  pushToSelectableChains,
+  approve,
+} from './utils';
 
 export enum EvmChain {
   Ethereum = 1,
@@ -67,6 +77,17 @@ export interface PeggedPairConfig {
   pegged_deposit_contract_addr: string;
   pegged_burn_contract_addr: string;
   canonical_token_contract_addr: string;
+}
+
+export interface Quotation {
+  err: null;
+  eq_value_token_amt: string;
+  bridge_rate: number;
+  perc_fee: string;
+  base_fee: string;
+  slippage_tolerance: number;
+  max_slippage: number;
+  estimated_receive_amt: string;
 }
 
 export const cbridgeInitialState = {

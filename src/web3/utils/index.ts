@@ -1,7 +1,9 @@
-import { TNetworkId, EVM } from './../index';
+import { TNetworkId, EVM, nativeCurrency } from './../index';
 import Web3 from 'web3';
 import { CHAIN_INFORMATION } from '../index';
 import { endpointKey } from 'src/config/chainEndpoints';
+import ABI from 'human-standard-token-abi';
+import { ethers } from 'ethers';
 
 export const getChainData = (chainId: number) => {
   const { chainName, nativeCurrency, rpcUrls, blockExplorerUrls } = CHAIN_INFORMATION;
@@ -21,9 +23,7 @@ export const setupNetwork = async (network: number): Promise<boolean> => {
     const { chainName, nativeCurrency, rpcUrls, blockExplorerUrls } = getChainData(network);
 
     try {
-      console.log('network', network);
       if (network === 1) {
-        console.log('chainId', chainId);
         await provider.request({
           method: 'wallet_switchEthereumChain',
           params: [
@@ -71,4 +71,35 @@ export const createWeb3Instance = async (currentNetworkIdx: TNetworkId) => {
   if (!network.rpcUrls[0]) return;
 
   return new Web3(new Web3.providers.HttpProvider(network.rpcUrls[0]));
+};
+
+export const getTokenBal = async ({
+  address,
+  contractAddress,
+  srcChainId,
+  tokenSymbol,
+}: {
+  address: string;
+  contractAddress: string;
+  srcChainId?: number;
+  tokenSymbol?: string;
+}): Promise<string> => {
+  try {
+    const provider = typeof window !== 'undefined' && window.ethereum;
+    const web3 = new Web3(provider as any);
+    const contract = new web3.eth.Contract(ABI, contractAddress);
+
+    const isCheckNativeBal = tokenSymbol && srcChainId;
+    if (isCheckNativeBal && nativeCurrency[srcChainId].name === tokenSymbol) {
+      const balance = await web3.eth.getBalance(address);
+      return web3.utils.fromWei(balance, 'ether');
+    }
+
+    const decimals = await contract.methods.decimals().call();
+    const balance = (await contract.methods.balanceOf(address).call()) ?? '0';
+    return ethers.utils.formatUnits(balance, decimals).toString();
+  } catch (error) {
+    console.log(error);
+    return '0';
+  }
 };
