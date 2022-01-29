@@ -8,7 +8,7 @@
 
       <div class="tw-p-4">
         <div v-if="isConnected(currentNetworkStatus)" class="tw-mb-1">
-          <AddressSmall />
+          <!-- <AddressSmall /> -->
         </div>
 
         <button type="button" class="network-button" @click="modalNetwork = true">
@@ -141,7 +141,7 @@ import IconSolidChevronDown from '../icons/IconSolidChevronDown.vue';
 import IconStore from '../icons/IconStore.vue';
 import ModalNetwork from 'src/components/balance/modals/ModalNetwork.vue';
 import LocaleChanger from './LocaleChanger.vue';
-import AddressSmall from '../common/AddressSmall.vue';
+// import AddressSmall from '../common/AddressSmall.vue';
 import Logo from './Logo.vue';
 
 interface Modal {
@@ -162,7 +162,7 @@ export default defineComponent({
     IconSolidChevronDown,
     IconStore,
     ModalNetwork,
-    AddressSmall,
+    // AddressSmall,
     Logo,
   },
   setup() {
