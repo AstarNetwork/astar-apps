@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import Chain from '../Chain.vue';
+import Chain from './Chain.vue';
 import Modal from 'src/components/common/Modal.vue';
 export default defineComponent({
   components: {
@@ -54,5 +54,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../styles/modal';
+@import '../styles/bridge-modal';
 </style>

@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import Token from '../Token.vue';
+import Token from './Token.vue';
 import Modal from 'src/components/common/Modal.vue';
 export default defineComponent({
   components: {

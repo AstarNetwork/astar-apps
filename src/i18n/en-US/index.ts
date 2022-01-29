@@ -217,5 +217,6 @@ export default {
     max: 'MAX',
     balance: 'Available Balance:',
     approve: 'Approve',
+    addMetamask: 'Add to MetaMask',
   },
 };

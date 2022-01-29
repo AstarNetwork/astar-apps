@@ -198,6 +198,10 @@ export function useCbridge() {
       destChain.value = chains.value.find((it) => it.id === chainId) as Chain;
     }
 
+    if (srcChain.value.id !== Astar) {
+      destChain.value = chains.value.find((it) => it.id === Astar) as Chain;
+    }
+
     const selectableChains: Chain[] = [];
     pushToSelectableChains({
       tokensObj: tokensObj.value,

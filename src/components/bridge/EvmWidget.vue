@@ -118,7 +118,7 @@
         :select-token="selectToken"
         :tokens="tokens"
         :selected-token="selectedToken"
-        :src-chain-id="srcChainId"
+        :src-chain-id="srcChain.id"
         :modal="modal"
       />
 

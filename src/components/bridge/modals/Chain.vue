@@ -1,5 +1,9 @@
 <template>
-  <div class="chain" @click="selectChain(chain.id)">
+  <div
+    class="chain"
+    :class="selectedChain.id === chain.id && 'selected'"
+    @click="selectChain(chain.id)"
+  >
     <div>
       <img :src="chain.icon" alt="chain-logo" class="chain-logo" />
     </div>
@@ -27,12 +31,9 @@ export default defineComponent({
       required: true,
     },
   },
-  setup() {
-    return {};
-  },
 });
 </script>
 
 <style lang="scss" scoped>
-@import './styles/modal';
+@import '../styles/bridge-modal';
 </style>
