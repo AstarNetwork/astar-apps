@@ -18,6 +18,7 @@ import {
   PeggedPairConfig,
   pushToSelectableChains,
   Quotation,
+  mintOrBurn,
   sortChainName,
 } from 'src/c-bridge';
 import { useStore } from 'src/store';
@@ -42,14 +43,16 @@ export function useCbridge() {
   const amount = ref<string | null>(null);
   const quotation = ref<Quotation | null>(null);
   const selectedNetwork = ref<number | null>(null);
-  const isApprovalNeeded = ref<boolean | null>(null);
+  const isApprovalNeeded = ref<boolean | null>(true);
+  const isDisabledBridge = ref<boolean>(true);
 
   const store = useStore();
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
   const selectedAddress = computed(() => store.getters['general/selectedAddress']);
 
   const handleApprove = async () => {
-    if (!selectedToken.value || !selectedToken.value || !srcChain.value) return;
+    const provider = typeof window !== 'undefined' && window.ethereum;
+    if (!selectedToken.value || !selectedToken.value || !srcChain.value || !provider) return;
     if (srcChain.value.id !== selectedNetwork.value) {
       throw Error('invalid network');
     }
@@ -57,6 +60,7 @@ export function useCbridge() {
       address: selectedAddress.value,
       selectedToken: selectedToken.value,
       srcChainId: srcChain.value.id,
+      provider,
     });
   };
 
@@ -66,6 +70,7 @@ export function useCbridge() {
     selectedToken.value = token;
     console.log('selectedToken.value', selectedToken.value);
     modal.value = null;
+    isApprovalNeeded.value = true;
   };
 
   const getSelectedTokenBal = async () => {
@@ -214,6 +219,32 @@ export function useCbridge() {
     destChains.value = selectableChains;
     tokens.value = tokensObj.value[srcChain.value.id][destChain.value.id];
     selectedToken.value = tokens.value && tokens.value[0];
+    isApprovalNeeded.value = true;
+  };
+
+  const bridge = async () => {
+    try {
+      const provider = typeof window !== 'undefined' && window.ethereum;
+      if (
+        !isH160.value ||
+        !selectedAddress.value ||
+        !selectedToken.value ||
+        !srcChain.value ||
+        !amount.value ||
+        !provider
+      ) {
+        throw Error('Something went wrong');
+      }
+      await mintOrBurn({
+        provider,
+        selectedToken: selectedToken.value,
+        amount: amount.value,
+        srcChainId: srcChain.value.id,
+        address: selectedAddress.value,
+      });
+    } catch (error: any) {
+      console.error(error.message);
+    }
   };
 
   watchEffect(async () => {
@@ -252,18 +283,35 @@ export function useCbridge() {
     { immediate: false }
   );
 
-  watchEffect(() => {
+  watchEffect(async () => {
     if (!isH160.value) return;
-    const ethereum = typeof window !== 'undefined' && window.ethereum;
+    const provider = typeof window !== 'undefined' && window.ethereum;
+    const web3 = new Web3(provider as any);
+    const chainId = await web3.eth.getChainId();
+    selectedNetwork.value = chainId;
 
-    ethereum &&
-      ethereum.on('chainChanged', (chainId: string) => {
+    provider &&
+      provider.on('chainChanged', (chainId: string) => {
         selectedNetwork.value = Number(chainId);
       });
   });
 
+  watchEffect(() => {
+    if (!quotation.value || !srcChain.value) return;
+
+    if (
+      selectedNetwork.value !== srcChain.value.id ||
+      0 >= Number(quotation.value.estimated_receive_amt)
+    ) {
+      isDisabledBridge.value = true;
+    } else {
+      isDisabledBridge.value = false;
+    }
+  });
+
   // Memo: Check approval
   watchEffect(() => {
+    console.log('checkApprove');
     let cancelled = false;
     const provider = typeof window !== 'undefined' && window.ethereum;
     if (
@@ -301,15 +349,24 @@ export function useCbridge() {
     };
 
     const checkPeriodically = async () => {
+      console.log('checkPeriodically');
+      console.log('cancelled', cancelled);
+      console.log('srcChain.value', srcChain.value);
+      console.log('isApprovalNeeded.value', isApprovalNeeded.value);
       if (cancelled || !srcChain.value || isApprovalNeeded.value === false) return;
 
+      console.log('1');
+      isApprovalNeeded.value = true;
       if (nativeCurrency[srcChain.value.id].name === tokenInfo.token.symbol) {
+        console.log('native?');
         isApprovalNeeded.value = false;
         return;
       }
+      console.log('2');
 
       const result = await checkIsApproved();
       if (cancelled) return;
+      console.log('result', result);
       isApprovalNeeded.value = !!!result;
       setTimeout(checkPeriodically, 15000);
     };
@@ -333,6 +390,9 @@ export function useCbridge() {
     selectedTokenBalance,
     amount,
     quotation,
+    isApprovalNeeded,
+    selectedNetwork,
+    isDisabledBridge,
     reverseChain,
     closeModal,
     openModal,
@@ -341,7 +401,6 @@ export function useCbridge() {
     inputHandler,
     toMaxAmount,
     handleApprove,
-    isApprovalNeeded,
-    selectedNetwork,
+    bridge,
   };
 }

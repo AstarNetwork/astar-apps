@@ -96,7 +96,7 @@
         >
           {{ $t('bridge.approve') }}
         </button>
-        <button v-else :disabled="selectedNetwork !== srcChain.id" class="bridge-button">
+        <button v-else :disabled="isDisabledBridge" class="bridge-button" @click="bridge">
           {{ $t('bridge.bridge') }}
         </button>
       </div>
@@ -189,6 +189,10 @@ export default defineComponent({
       amount,
       selectedToken,
       quotation,
+      isApprovalNeeded,
+      selectedTokenBalance,
+      selectedNetwork,
+      isDisabledBridge,
       closeModal,
       openModal,
       selectChain,
@@ -196,10 +200,8 @@ export default defineComponent({
       reverseChain,
       inputHandler,
       toMaxAmount,
-      selectedTokenBalance,
       handleApprove,
-      isApprovalNeeded,
-      selectedNetwork,
+      bridge,
     } = useCbridge();
 
     const {
@@ -230,12 +232,14 @@ export default defineComponent({
       selectedTokenBalance,
       logoUsdt,
       selectedNetwork,
+      isDisabledBridge,
       closeModal,
       openModal,
       selectChain,
       selectToken,
       reverseChain,
       toMaxAmount,
+      bridge,
       WalletModalOption,
       modalConnectWallet,
       walletModalName,

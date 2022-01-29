@@ -10,6 +10,7 @@ export {
   getTokenInfo,
   pushToSelectableChains,
   approve,
+  mintOrBurn,
 } from './utils';
 
 export enum EvmChain {

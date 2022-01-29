@@ -1,5 +1,9 @@
+import { nativeCurrency } from './../../web3/index';
 import axios from 'axios';
 import ABI from 'human-standard-token-abi';
+import CANONICAL_DEPOSIT_ABI from 'src/c-bridge/abi/canonical-deposit.json';
+import CANONICAL_BURN_ABI from 'src/c-bridge/abi/canonical-burn.json';
+import { ethers } from 'ethers';
 import { objToArray } from 'src/hooks/helper/common';
 import Web3 from 'web3';
 import { TransactionConfig } from 'web3-eth';
@@ -13,6 +17,8 @@ import {
   TransferConfigs,
 } from './../index';
 import { MaxUint256 } from '@ethersproject/constants';
+import { AbiItem } from 'web3-utils';
+
 export const getChainName = (chain: number) => {
   switch (chain) {
     case EvmChain.Ethereum:
@@ -197,13 +203,13 @@ export const approve = async ({
   address,
   selectedToken,
   srcChainId,
+  provider,
 }: {
   address: string;
   srcChainId: number;
   selectedToken: PeggedPairConfig;
+  provider: any;
 }) => {
-  const provider = typeof window !== 'undefined' && window.ethereum;
-
   if (!provider) {
     throw new Error('No wallet connected');
   }
@@ -237,6 +243,99 @@ export const approve = async ({
     value: '0x0',
     data: contract.methods.approve(spender, MaxUint256).encodeABI(),
   };
+
+  const estimatedGas = await web3.eth.estimateGas(rawTx);
+  return await web3.eth.sendTransaction({ ...rawTx, gas: estimatedGas });
+};
+
+export const mintOrBurn = async ({
+  selectedToken,
+  amount,
+  srcChainId,
+  provider,
+  address,
+}: {
+  amount: string;
+  srcChainId: number;
+  selectedToken: PeggedPairConfig;
+  provider: any;
+  address: string;
+}) => {
+  if (!provider) {
+    throw new Error('No wallet connected');
+  }
+
+  const tokenInfo = getTokenInfo({
+    selectedToken,
+    srcChainId,
+  });
+  const token = tokenInfo.token.address;
+  const isDeposit = selectedToken.org_chain_id === srcChainId;
+
+  const contractAddress = isDeposit
+    ? selectedToken.pegged_deposit_contract_addr
+    : selectedToken.pegged_burn_contract_addr;
+
+  if (!contractAddress) {
+    throw new Error('No spender to approve');
+  }
+
+  if (!token) {
+    throw new Error('No token to approve');
+  }
+
+  const web3 = new Web3(provider as any);
+
+  const abi = isDeposit ? CANONICAL_DEPOSIT_ABI : CANONICAL_BURN_ABI;
+  const contract = new web3.eth.Contract(abi as AbiItem[], contractAddress);
+  const gasPrice = await web3.eth.getGasPrice();
+  const isNativeToken = nativeCurrency[srcChainId].name === tokenInfo.token.symbol;
+  const sendAmount = ethers.utils.parseUnits(amount, tokenInfo.token.decimal).toString();
+  const timestamp = String(Math.floor(Date.now()));
+  console.log('isDeposit', isDeposit);
+  console.log('contractAddress', contractAddress);
+  console.log('contract', contract);
+
+  const getData = () => {
+    if (isDeposit) {
+      if (isNativeToken) {
+        console.log('depositNative');
+        console.log('sendAmount', sendAmount);
+        console.log('selectedToken.pegged_chain_id', selectedToken.pegged_chain_id);
+        console.log('address', address);
+        console.log('timestamp', timestamp);
+        return contract.methods
+          .depositNative(sendAmount, selectedToken.pegged_chain_id, address, timestamp)
+          .encodeABI();
+      }
+      console.log('deposit');
+      console.log('token', token);
+      console.log('sendAmount', sendAmount);
+      console.log('selectedToken.pegged_chain_id', selectedToken.pegged_chain_id);
+      console.log('address', address);
+      console.log('timestamp', timestamp);
+      return contract.methods
+        .deposit(token, sendAmount, selectedToken.pegged_chain_id, address, timestamp)
+        .encodeABI();
+    }
+    console.log('burn');
+    console.log('token', token);
+    console.log('sendAmount', sendAmount);
+    console.log('address', address);
+    console.log('timestamp', timestamp);
+    return contract.methods.burn(token, sendAmount, address, timestamp).encodeABI();
+  };
+
+  const rawTx: TransactionConfig = {
+    nonce: await web3.eth.getTransactionCount(address),
+    gasPrice: web3.utils.toHex(gasPrice),
+    from: address,
+    to: contractAddress,
+    value: isNativeToken ? sendAmount : '0x0',
+    data: getData(),
+    // data: contract.methods.burn(token, sendAmount, address, timestamp).encodeABI(),
+  };
+  console.log('rawTx', rawTx);
 
   const estimatedGas = await web3.eth.estimateGas(rawTx);
   return await web3.eth.sendTransaction({ ...rawTx, gas: estimatedGas });
