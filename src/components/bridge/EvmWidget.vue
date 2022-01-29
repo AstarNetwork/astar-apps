@@ -1,11 +1,11 @@
 <template>
   <div>
     <div class="container">
-      <div class="widget">
+      <div class="widget" :class="isDarkTheme && 'widget-dark'">
         <div class="row">
           <div class="currency">
             <span class="label">{{ $t('from') }}</span>
-            <div class="chain" @click="openModal('src')">
+            <div class="chain" :class="isDarkTheme && 'chain-dark'" @click="openModal('src')">
               <div>
                 <img v-if="srcChain" :src="srcChain.icon" alt="src-chain-logo" class="chain-logo" />
               </div>
@@ -16,7 +16,7 @@
             </div>
           </div>
           <div>
-            <div class="input-row">
+            <div class="input-row" :class="isDarkTheme && 'input-row-dark'">
               <input
                 v-model="amount"
                 inputmode="decimal"
@@ -26,8 +26,18 @@
                 placeholder="0"
                 @input="inputHandler"
               />
-              <div class="max-button" @click="toMaxAmount">{{ $t('bridge.max') }}</div>
-              <div class="token-selector" @click="openModal('token')">
+              <div
+                class="max-button"
+                :class="isDarkTheme && 'max-button-dark'"
+                @click="toMaxAmount"
+              >
+                {{ $t('bridge.max') }}
+              </div>
+              <div
+                class="token-selector"
+                :class="isDarkTheme && 'token-selector-dark'"
+                @click="openModal('token')"
+              >
                 <div>
                   <img
                     v-if="selectedToken"
@@ -56,13 +66,13 @@
             </div>
           </div>
         </div>
-        <div class="reverse" @click="reverseChain">
-          <span class="reverse-button">↑↓</span>
+        <div class="reverse" :class="isDarkTheme && 'reverse-dark'" @click="reverseChain">
+          <span class="reverse-button" :class="isDarkTheme && 'reverse-button-dark'">↑↓</span>
         </div>
         <div class="row">
           <div class="currency">
             <span class="label">{{ $t('to') }}</span>
-            <div class="chain" @click="openModal('dest')">
+            <div class="chain" :class="isDarkTheme && 'chain-dark'" @click="openModal('dest')">
               <div>
                 <img
                   v-if="destChain"
@@ -76,7 +86,7 @@
             </div>
           </div>
           <div>
-            <div class="estimation-row">
+            <div class="estimation-row" :class="isDarkTheme && 'estimation-row-dark'">
               <span class="label">{{ $t('estimated') }}</span>
               <span class="estimated-value">{{
                 quotation ? quotation.estimated_receive_amt : ''
@@ -85,18 +95,30 @@
             <span class="label">$0.00</span>
           </div>
         </div>
-        <button v-if="!isH160" class="bridge-button" @click="openSelectModal">
+        <button
+          v-if="!isH160"
+          class="bridge-button"
+          :class="isDarkTheme && 'bridge-button-dark'"
+          @click="openSelectModal"
+        >
           {{ $t('bridge.connectEvmWallet') }}
         </button>
         <button
           v-else-if="isApprovalNeeded"
           :disabled="selectedNetwork !== srcChain.id"
           class="bridge-button"
+          :class="isDarkTheme && 'bridge-button-dark'"
           @click="handleApprove"
         >
           {{ $t('bridge.approve') }}
         </button>
-        <button v-else :disabled="isDisabledBridge" class="bridge-button" @click="bridge">
+        <button
+          v-else
+          :disabled="isDisabledBridge"
+          class="bridge-button"
+          :class="isDarkTheme && 'bridge-button-dark'"
+          @click="bridge"
+        >
           {{ $t('bridge.bridge') }}
         </button>
       </div>
@@ -161,12 +183,13 @@
 <script lang="ts">
 import { useMeta } from 'quasar';
 import { useCbridge, useConnectWallet } from 'src/hooks';
-import { defineComponent } from 'vue';
+import { defineComponent, watchEffect, computed } from 'vue';
 import ModalChain from './modals/ModalChain.vue';
 import ModalToken from './modals/ModalToken.vue';
 import { getChainName } from 'src/c-bridge';
 import ModalConnectWallet from '../balance/modals/ModalConnectWallet.vue';
 import ModalInstallWallet from '../balance/modals/ModalInstallWallet.vue';
+import { useStore } from 'src/store';
 
 export default defineComponent({
   components: {
@@ -177,6 +200,9 @@ export default defineComponent({
   },
   setup() {
     useMeta({ title: 'EVM Bridge' });
+
+    const store = useStore();
+    const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
 
     const {
       srcChain,
@@ -219,6 +245,7 @@ export default defineComponent({
 
     return {
       getChainName,
+      isDarkTheme,
       srcChain,
       destChain,
       chains,

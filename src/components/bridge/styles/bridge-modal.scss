@@ -19,7 +19,7 @@
 
 .chain:hover {
   cursor: pointer;
-  @apply tw-bg-darkGray-300 dark:tw-bg-darkGray-600;
+  @apply tw-bg-darkGray-200 dark:tw-bg-darkGray-600;
 }
 
 .chain-logo {
@@ -63,8 +63,12 @@
 }
 
 .token-button:hover {
-  cursor: pointer;
   @apply tw-bg-darkGray-300 dark:tw-bg-darkGray-600;
+}
+
+.token-button:hover {
+  cursor: pointer;
+  @apply tw-bg-darkGray-200 dark:tw-bg-darkGray-500;
 }
 
 .token {
