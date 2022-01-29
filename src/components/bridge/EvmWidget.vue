@@ -18,7 +18,7 @@
           <div>
             <div class="input-row" :class="isDarkTheme && 'input-row-dark'">
               <input
-                v-model="amount"
+                :value="amount"
                 inputmode="decimal"
                 type="number"
                 min="0"
@@ -55,7 +55,7 @@
               </div>
             </div>
             <div class="information label">
-              <span>$0.00</span>
+              <span class="label"> ${{ $n(usdValue) }}</span>
               <div class="balance">
                 <p>{{ $t('bridge.balance') }}</p>
                 <p>
@@ -92,7 +92,6 @@
                 quotation ? quotation.estimated_receive_amt : ''
               }}</span>
             </div>
-            <span class="label">$0.00</span>
           </div>
         </div>
         <button
@@ -182,14 +181,15 @@
 
 <script lang="ts">
 import { useMeta } from 'quasar';
-import { useCbridge, useConnectWallet } from 'src/hooks';
-import { defineComponent, watchEffect, computed } from 'vue';
-import ModalChain from './modals/ModalChain.vue';
-import ModalToken from './modals/ModalToken.vue';
 import { getChainName } from 'src/c-bridge';
+import { useCbridge, useConnectWallet } from 'src/hooks';
+import { calUsdAmount } from 'src/hooks/helper/price';
+import { useStore } from 'src/store';
+import { computed, defineComponent } from 'vue';
 import ModalConnectWallet from '../balance/modals/ModalConnectWallet.vue';
 import ModalInstallWallet from '../balance/modals/ModalInstallWallet.vue';
-import { useStore } from 'src/store';
+import ModalChain from './modals/ModalChain.vue';
+import ModalToken from './modals/ModalToken.vue';
 
 export default defineComponent({
   components: {
@@ -219,6 +219,7 @@ export default defineComponent({
       selectedTokenBalance,
       selectedNetwork,
       isDisabledBridge,
+      usdValue,
       closeModal,
       openModal,
       selectChain,
@@ -260,6 +261,7 @@ export default defineComponent({
       logoUsdt,
       selectedNetwork,
       isDisabledBridge,
+      usdValue,
       closeModal,
       openModal,
       selectChain,
@@ -278,6 +280,7 @@ export default defineComponent({
       inputHandler,
       handleApprove,
       isApprovalNeeded,
+      calUsdAmount,
     };
   },
 });

@@ -1,4 +1,3 @@
-import { nativeCurrency } from './../web3/index';
 import { MaxUint256 } from '@ethersproject/constants';
 import axios from 'axios';
 import { ethers } from 'ethers';
@@ -22,12 +21,13 @@ import {
   sortChainName,
 } from 'src/c-bridge';
 import { useStore } from 'src/store';
-import { setupNetwork } from 'src/web3';
-import { computed, ref, watch, watchEffect } from 'vue';
+import { setupNetwork, nativeCurrency } from 'src/web3';
+import { computed, ref, watch, watchEffect, onUnmounted } from 'vue';
 import Web3 from 'web3';
 import { objToArray } from './helper/common';
+import { calUsdAmount } from './helper/price';
 
-const { Ethereum, BSC, Astar, Shiden } = EvmChain;
+const { Ethereum, Astar } = EvmChain;
 
 export function useCbridge() {
   const srcChain = ref<Chain | null>(cbridgeInitialState[Ethereum]);
@@ -45,6 +45,7 @@ export function useCbridge() {
   const selectedNetwork = ref<number | null>(null);
   const isApprovalNeeded = ref<boolean | null>(true);
   const isDisabledBridge = ref<boolean>(true);
+  const usdValue = ref<number>(0);
 
   const store = useStore();
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
@@ -143,6 +144,10 @@ export function useCbridge() {
       console.log(error);
     }
   };
+
+  const updateEstimation = setInterval(() => {
+    getEstimation();
+  }, 15 * 1000);
 
   const inputHandler = debounce((event) => {
     amount.value = event.target.value;
@@ -256,8 +261,15 @@ export function useCbridge() {
   });
 
   watchEffect(async () => {
+    if (!selectedToken.value || !amount.value) return;
+    usdValue.value = await calUsdAmount({
+      amount: Number(amount.value),
+      symbol: selectedToken.value.org_token.token.symbol,
+    });
+  });
+
+  watchEffect(async () => {
     getEstimation();
-    console.log('isApprovalNeeded', isApprovalNeeded.value);
   });
 
   watch(
@@ -311,7 +323,6 @@ export function useCbridge() {
 
   // Memo: Check approval
   watchEffect(() => {
-    console.log('checkApprove');
     let cancelled = false;
     const provider = typeof window !== 'undefined' && window.ethereum;
     if (
@@ -349,24 +360,15 @@ export function useCbridge() {
     };
 
     const checkPeriodically = async () => {
-      console.log('checkPeriodically');
-      console.log('cancelled', cancelled);
-      console.log('srcChain.value', srcChain.value);
-      console.log('isApprovalNeeded.value', isApprovalNeeded.value);
       if (cancelled || !srcChain.value || isApprovalNeeded.value === false) return;
-
-      console.log('1');
       isApprovalNeeded.value = true;
       if (nativeCurrency[srcChain.value.id].name === tokenInfo.token.symbol) {
-        console.log('native?');
         isApprovalNeeded.value = false;
         return;
       }
-      console.log('2');
 
       const result = await checkIsApproved();
       if (cancelled) return;
-      console.log('result', result);
       isApprovalNeeded.value = !!!result;
       setTimeout(checkPeriodically, 15000);
     };
@@ -376,6 +378,10 @@ export function useCbridge() {
     return () => {
       cancelled = true;
     };
+  });
+
+  onUnmounted(() => {
+    clearInterval(updateEstimation);
   });
 
   return {
@@ -393,6 +399,7 @@ export function useCbridge() {
     isApprovalNeeded,
     selectedNetwork,
     isDisabledBridge,
+    usdValue,
     reverseChain,
     closeModal,
     openModal,
