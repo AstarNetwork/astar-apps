@@ -335,15 +335,24 @@ export function useCbridge() {
   });
 
   watchEffect(() => {
-    if (!quotation.value || !srcChain.value) return;
-
     if (
+      !quotation.value ||
+      !srcChain.value ||
+      !quotation.value.minAmount ||
+      !quotation.value.maxAmount ||
       selectedNetwork.value !== srcChain.value.id ||
       0 >= Number(quotation.value.estimated_receive_amt)
     ) {
       isDisabledBridge.value = true;
-    } else {
+      return;
+    }
+
+    if (
+      quotation.value.maxAmount > Number(amount.value) &&
+      Number(amount.value) > quotation.value.minAmount
+    ) {
       isDisabledBridge.value = false;
+      return;
     }
   });
 
@@ -378,7 +387,7 @@ export function useCbridge() {
         const web3 = new Web3(provider as any);
         const contract = new web3.eth.Contract(ABI, token);
         const allowance = await contract.methods.allowance(address, spender).call();
-        return allowance === MaxUint256.toString();
+        return Number(allowance) === Number(MaxUint256.toString());
       } catch (err: any) {
         console.error(err.message);
         return null;

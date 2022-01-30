@@ -64,7 +64,6 @@ export default defineComponent({
         ? 'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png'
         : tokenInfo.icon;
 
-    console.log('tokenInfo', tokenInfo);
     const isNativeToken = nativeCurrency[srcChainId].name === tokenInfo.token.symbol;
 
     const addToMetaMask = () => {
@@ -90,7 +89,7 @@ export default defineComponent({
       if (!isH160.value || !srcChainId || !selectedAddress.value || !tokenInfo) return;
       const bal = await getTokenBalCbridge({
         srcChainId,
-        selectedToken: selectedToken as PeggedPairConfig,
+        selectedToken: tokenObj as PeggedPairConfig,
         address: selectedAddress.value,
       });
       balance.value = Number(Number(bal).toFixed(3));
