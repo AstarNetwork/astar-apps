@@ -26,30 +26,28 @@
                 placeholder="0"
                 @input="inputHandler"
               />
-              <div
+              <button
                 class="max-button"
                 :class="isDarkTheme && 'max-button-dark'"
                 @click="toMaxAmount"
               >
                 {{ $t('bridge.max') }}
-              </div>
+              </button>
               <div
                 class="token-selector"
                 :class="isDarkTheme && 'token-selector-dark'"
                 @click="openModal('token')"
               >
-                <div>
-                  <img
-                    v-if="selectedToken"
-                    :src="
-                      selectedToken.org_token.token.symbol === 'USDT'
-                        ? logoUsdt
-                        : selectedToken.org_token.icon
-                    "
-                    alt="token-logo"
-                    class="token-logo"
-                  />
-                </div>
+                <img
+                  v-if="selectedToken"
+                  :src="
+                    selectedToken.org_token.token.symbol === 'USDT'
+                      ? logoUsdt
+                      : selectedToken.org_token.icon
+                  "
+                  alt="token-logo"
+                  class="token-logo"
+                />
                 <span>{{ selectedToken ? selectedToken.org_token.token.symbol : '' }}</span>
                 <span>▼</span>
               </div>
@@ -89,37 +87,97 @@
             <div class="estimation-row" :class="isDarkTheme && 'estimation-row-dark'">
               <span class="label">{{ $t('estimated') }}</span>
               <span class="estimated-value">{{
-                quotation ? quotation.estimated_receive_amt : ''
+                amount && quotation && quotation.estimated_receive_amt > 0
+                  ? quotation.estimated_receive_amt
+                  : ''
               }}</span>
             </div>
           </div>
         </div>
-        <button
-          v-if="!isH160"
-          class="bridge-button"
-          :class="isDarkTheme && 'bridge-button-dark'"
-          @click="openSelectModal"
-        >
-          {{ $t('bridge.connectEvmWallet') }}
-        </button>
-        <button
-          v-else-if="isApprovalNeeded"
-          :disabled="selectedNetwork !== srcChain.id"
-          class="bridge-button"
-          :class="isDarkTheme && 'bridge-button-dark'"
-          @click="handleApprove"
-        >
-          {{ $t('bridge.approve') }}
-        </button>
-        <button
-          v-else
-          :disabled="isDisabledBridge"
-          class="bridge-button"
-          :class="isDarkTheme && 'bridge-button-dark'"
-          @click="bridge"
-        >
-          {{ $t('bridge.bridge') }}
-        </button>
+
+        <EvmBridgeButtons
+          :bridge="bridge"
+          :handle-approve="handleApprove"
+          :open-select-modal="openSelectModal"
+          :is-disabled-bridge="isDisabledBridge"
+          :is-approval-needed="isApprovalNeeded"
+          :selected-network="selectedNetwork"
+          :src-chain-id="srcChain.id"
+        />
+      </div>
+      <div class="remarks-container" :class="isDarkTheme && 'remarks-container-dark'">
+        <div class="remarks-left">
+          <p>{{ $t('bridge.bridgeRate') }}</p>
+          <p>{{ $t('bridge.fee') }}</p>
+          <p>{{ $t('bridge.timeOfArrival') }}</p>
+          <p>{{ $t('bridge.minAmount') }}</p>
+          <p>{{ $t('bridge.maxAmount') }}</p>
+        </div>
+        <div class="remarks-right">
+          <div class="rate">
+            <p class="rate-mobile">{{ quotation ? quotation.bridge_rate : 1 }}</p>
+            <div class="rate-md">
+              <div class="rate-column">
+                <span>{{
+                  $t('bridge.rateSymbol', {
+                    symbol: selectedToken ? selectedToken.org_token.token.symbol : '',
+                    value: 1,
+                  })
+                }}</span>
+                <img
+                  v-if="srcChain"
+                  :src="srcChain.icon"
+                  alt="src-chain-logo"
+                  class="chain-logo-mini"
+                />
+              </div>
+              <span>=</span>
+              <div class="rate-column">
+                <span>{{
+                  $t('bridge.rateSymbol', {
+                    symbol: selectedToken ? selectedToken.org_token.token.symbol : '',
+                    value: quotation ? quotation.bridge_rate : 1,
+                  })
+                }}</span>
+                <img
+                  v-if="destChain"
+                  :src="destChain.icon"
+                  alt="destChain-chain-logo"
+                  class="chain-logo-mini"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="quotation-value-currency">
+            <span class="quotation-value">{{
+              quotation
+                ? quotation.base_fee.includes('e') // eg: '1e-8' (WBTC)
+                  ? amount
+                    ? Number(amount) - Number(quotation.estimated_receive_amt)
+                    : 0
+                  : quotation.base_fee
+                : 0
+            }}</span>
+            <span class="quotation-currency">{{
+              selectedToken ? selectedToken.org_token.token.symbol : ''
+            }}</span>
+          </div>
+          <p class="time">{{ $t('bridge.time', { from: '5', to: '20' }) }}</p>
+          <div class="quotation-value-currency">
+            <span class="quotation-value">{{ quotation ? quotation.minAmount : 0 }}</span>
+            <span class="quotation-currency">{{
+              selectedToken ? selectedToken.org_token.token.symbol : ''
+            }}</span>
+          </div>
+          <div class="quotation-value-currency">
+            <span class="quotation-value">{{
+              $n(quotation ? Number(quotation.maxAmount) : 0)
+            }}</span>
+            <span class="quotation-currency">{{
+              selectedToken ? selectedToken.org_token.token.symbol : ''
+            }}</span>
+          </div>
+        </div>
       </div>
       <div class="provider">
         <a
@@ -190,6 +248,7 @@ import ModalConnectWallet from '../balance/modals/ModalConnectWallet.vue';
 import ModalInstallWallet from '../balance/modals/ModalInstallWallet.vue';
 import ModalChain from './modals/ModalChain.vue';
 import ModalToken from './modals/ModalToken.vue';
+import EvmBridgeButtons from './EvmBridgeButtons.vue';
 
 export default defineComponent({
   components: {
@@ -197,6 +256,7 @@ export default defineComponent({
     ModalToken,
     ModalConnectWallet,
     ModalInstallWallet,
+    EvmBridgeButtons,
   },
   setup() {
     useMeta({ title: 'EVM Bridge' });

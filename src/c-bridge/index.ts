@@ -11,6 +11,7 @@ export {
   pushToSelectableChains,
   approve,
   mintOrBurn,
+  getCanonicalMinAndMaxAmount,
 } from './utils';
 
 export enum EvmChain {
@@ -89,6 +90,8 @@ export interface Quotation {
   slippage_tolerance: number;
   max_slippage: number;
   estimated_receive_amt: string;
+  minAmount?: number;
+  maxAmount?: number;
 }
 
 export const cbridgeInitialState = {

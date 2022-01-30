@@ -19,6 +19,7 @@ import {
   Quotation,
   mintOrBurn,
   sortChainName,
+  getCanonicalMinAndMaxAmount,
 } from 'src/c-bridge';
 import { useStore } from 'src/store';
 import { setupNetwork, nativeCurrency } from 'src/web3';
@@ -30,39 +31,50 @@ import { calUsdAmount } from './helper/price';
 const { Ethereum, Astar } = EvmChain;
 
 export function useCbridge() {
-  const srcChain = ref<Chain | null>(cbridgeInitialState[Ethereum]);
-  const destChain = ref<Chain | null>(cbridgeInitialState[Astar]);
+  const srcChain = ref<Chain>(cbridgeInitialState[Ethereum]);
+  const destChain = ref<Chain>(cbridgeInitialState[Astar]);
   const srcChains = ref<Chain[] | null>(null);
   const destChains = ref<Chain[] | null>(null);
+  const selectedNetwork = ref<number | null>(null);
   const chains = ref<Chain[] | null>(null);
   const tokens = ref<PeggedPairConfig[] | null>(null);
+  const tokensObj = ref<any | null>(null);
   const selectedToken = ref<PeggedPairConfig | null>(null);
   const selectedTokenBalance = ref<string | null>(null);
   const modal = ref<'src' | 'dest' | 'token' | null>(null);
-  const tokensObj = ref<any | null>(null);
   const amount = ref<string | null>(null);
   const quotation = ref<Quotation | null>(null);
-  const selectedNetwork = ref<number | null>(null);
-  const isApprovalNeeded = ref<boolean | null>(true);
-  const isDisabledBridge = ref<boolean>(true);
   const usdValue = ref<number>(0);
+  const isApprovalNeeded = ref<boolean>(true);
+  const isDisabledBridge = ref<boolean>(true);
 
   const store = useStore();
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
   const selectedAddress = computed(() => store.getters['general/selectedAddress']);
 
   const handleApprove = async () => {
-    const provider = typeof window !== 'undefined' && window.ethereum;
-    if (!selectedToken.value || !selectedToken.value || !srcChain.value || !provider) return;
-    if (srcChain.value.id !== selectedNetwork.value) {
-      throw Error('invalid network');
+    try {
+      const provider = typeof window !== 'undefined' && window.ethereum;
+      if (!selectedToken.value || !selectedToken.value || !srcChain.value || !provider) return;
+      if (srcChain.value.id !== selectedNetwork.value) {
+        throw Error('invalid network');
+      }
+
+      const hash = await approve({
+        address: selectedAddress.value,
+        selectedToken: selectedToken.value,
+        srcChainId: srcChain.value.id,
+        provider,
+      });
+      const msg = `Transaction submitted at transaction hash #${hash}`;
+      store.dispatch('general/showAlertMsg', { msg, alertType: 'success' });
+    } catch (error: any) {
+      console.error(error.message);
+      store.dispatch('general/showAlertMsg', {
+        msg: error.message || 'Something went wrong',
+        alertType: 'error',
+      });
     }
-    await approve({
-      address: selectedAddress.value,
-      selectedToken: selectedToken.value,
-      srcChainId: srcChain.value.id,
-      provider,
-    });
   };
 
   const closeModal = () => modal.value === null;
@@ -89,8 +101,8 @@ export function useCbridge() {
 
   const getEstimation = async () => {
     try {
-      if (!srcChain.value || !destChain.value || !selectedToken.value || !amount.value) return;
-      const numAmount = Number(amount.value);
+      if (!srcChain.value || !destChain.value || !selectedToken.value) return;
+      const numAmount = Number(amount.value ?? 0.000001);
       const isValidAmount = !isNaN(numAmount);
       if (!isValidAmount) return;
 
@@ -135,11 +147,19 @@ export function useCbridge() {
         decimals: 6,
       });
 
+      const { min, max } = await getCanonicalMinAndMaxAmount({
+        srcChainId: srcChain.value.id,
+        selectedToken: selectedToken.value,
+      });
+
       quotation.value = {
         ...data,
         base_fee: String(baseFee),
         estimated_receive_amt: String(estimatedReceiveAmount),
+        minAmount: min,
+        maxAmount: max,
       };
+      console.log('quotation', quotation.value);
     } catch (error) {
       console.log(error);
     }
@@ -240,15 +260,21 @@ export function useCbridge() {
       ) {
         throw Error('Something went wrong');
       }
-      await mintOrBurn({
+      const hash = await mintOrBurn({
         provider,
         selectedToken: selectedToken.value,
         amount: amount.value,
         srcChainId: srcChain.value.id,
         address: selectedAddress.value,
       });
+      const msg = `Transaction submitted at transaction hash #${hash}`;
+      store.dispatch('general/showAlertMsg', { msg, alertType: 'success' });
     } catch (error: any) {
       console.error(error.message);
+      store.dispatch('general/showAlertMsg', {
+        msg: error.message || 'Something went wrong',
+        alertType: 'error',
+      });
     }
   };
 

@@ -3,7 +3,7 @@ import { Balance } from '@polkadot/types/interfaces';
 import { PalletVestingVestingInfo, PalletBalancesBalanceLock } from '@polkadot/types/lookup';
 import BN from 'bn.js';
 import { useStore } from 'src/store';
-import { createWeb3Instance } from 'src/web3';
+import { createAstarWeb3Instance } from 'src/web3';
 import { computed, onUnmounted, ref, Ref, watch } from 'vue';
 import { getProviderIndex } from './../config/chainEndpoints';
 import { TNetworkId } from './../web3';
@@ -33,7 +33,7 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
   const updateAccountH160 = async (address: string) => {
     if (!address) return;
     try {
-      const web3 = await createWeb3Instance(currentNetworkIdx.value as TNetworkId);
+      const web3 = await createAstarWeb3Instance(currentNetworkIdx.value as TNetworkId);
 
       if (!web3) {
         throw Error(`cannot create the web3 instance with network id ${currentNetworkIdx.value}`);

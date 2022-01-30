@@ -244,9 +244,9 @@ input[type='number']::-webkit-outer-spin-button {
 }
 
 .chain-dark {
-  background: rgb(23, 23, 26, 0.3);
+  background: rgba(23, 23, 26, 0.3);
   &:hover {
-    background: rgb(23, 23, 26, 0.4);
+    background: rgba(23, 23, 26, 0.4);
   }
 }
 
@@ -295,7 +295,84 @@ input[type='number']::-webkit-outer-spin-button {
 .chain-logo {
   width: 26px;
 }
+.chain-logo-mini {
+  width: 14px;
+  height: 14px;
+  margin: 0 4px;
+}
 
 .under-arrow {
   margin-top: 2px;
+}
+
+.remarks-container {
+  background: rgba(235, 245, 255, 0.2);
+  margin-top: -8px;
+  margin-bottom: 24px;
+  min-height: 100px;
+  width: 330px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  border: 1px solid #c6d3e1;
+  border-top: 0px solid #c6d3e1;
+  display: flex;
+  justify-content: space-between;
+  padding: 8px;
+
+  @media (min-width: 768px) {
+    padding: 12px;
+    width: 440px;
+  }
+}
+
+.rate-mobile {
+  text-align: right;
+  @media (min-width: 768px) {
+    display: none;
+  }
+}
+
+.rate-md {
+  display: none;
+  @media (min-width: 768px) {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    column-gap: 2px;
+  }
+}
+
+.rate-column {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.quotation-value-currency,
+.time {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.quotation-currency {
+  display: none;
+  @media (min-width: 768px) {
+    display: block;
+    margin-left: 4px;
+  }
+}
+
+.remarks-container-dark {
+  background: rgba(39, 55, 76, 0.2);
+  border: 1px solid #364453;
+  border-top: 0px solid #364453;
+}
+
+.remarks-left {
+  @apply tw-text-sm tw-text-darkGray-600 dark:tw-text-darkGray-300;
+}
+
+.remarks-right {
+  @apply tw-text-sm tw-text-blue-900 dark:tw-text-darkGray-100;
 }

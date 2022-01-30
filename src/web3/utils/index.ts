@@ -65,11 +65,17 @@ export const getChainId = (currentNetworkIdx: endpointKey): number => {
   return EVM.SHIBUYA_TESTNET;
 };
 
-export const createWeb3Instance = async (currentNetworkIdx: TNetworkId) => {
+export const createAstarWeb3Instance = (currentNetworkIdx: TNetworkId) => {
   const chainId = getChainId(currentNetworkIdx);
   const network = getChainData(chainId);
   if (!network.rpcUrls[0]) return;
 
+  return new Web3(new Web3.providers.HttpProvider(network.rpcUrls[0]));
+};
+
+export const buildWeb3Instance = (chainId: EVM) => {
+  const network = getChainData(chainId);
+  if (!network.rpcUrls[0]) return;
   return new Web3(new Web3.providers.HttpProvider(network.rpcUrls[0]));
 };
 

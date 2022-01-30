@@ -1,5 +1,12 @@
 import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
-export { getChainData, setupNetwork, getChainId, createWeb3Instance, getTokenBal } from './utils';
+export {
+  getChainData,
+  setupNetwork,
+  getChainId,
+  createAstarWeb3Instance,
+  getTokenBal,
+  buildWeb3Instance,
+} from './utils';
 
 export type TNetworkId = endpointKey.SHIDEN | endpointKey.SHIBUYA | endpointKey.ASTAR;
 
@@ -19,6 +26,7 @@ export enum EVM {
 }
 
 export const chainName = {
+  [EVM.ETHEREUM_MAINNET]: 'Ethereum Mainnet',
   [EVM.SHIDEN_MAINNET]: 'Shiden Network Mainnet',
   [EVM.SHIBUYA_TESTNET]: 'Shibuya Testnet',
   [EVM.BSC]: 'Binance Smart Chain',
@@ -59,6 +67,7 @@ export const nativeCurrency = {
 };
 
 export const rpcUrls = {
+  [EVM.ETHEREUM_MAINNET]: ['https://mainnet-nethermind.blockscout.com/'],
   [EVM.SHIDEN_MAINNET]: [chain.shiden?.evmRpc],
   [EVM.SHIBUYA_TESTNET]: [chain.shibuya?.evmRpc],
   [EVM.ASTAR_MAINNET]: [chain.astar?.evmRpc],
@@ -67,6 +76,7 @@ export const rpcUrls = {
 };
 
 export const blockExplorerUrls = {
+  [EVM.ETHEREUM_MAINNET]: ['https://etherscan.io'],
   [EVM.SHIDEN_MAINNET]: [chain.shiden?.blockscout],
   [EVM.SHIBUYA_TESTNET]: [chain.shibuya?.blockscout],
   [EVM.ASTAR_MAINNET]: [chain.astar?.blockscout],

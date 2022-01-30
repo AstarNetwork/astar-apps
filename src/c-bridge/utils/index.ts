@@ -7,7 +7,7 @@ import { ethers } from 'ethers';
 import { objToArray } from 'src/hooks/helper/common';
 import Web3 from 'web3';
 import { TransactionConfig } from 'web3-eth';
-import { getTokenBal } from './../../web3/utils/index';
+import { buildWeb3Instance, getTokenBal } from './../../web3/utils/index';
 import {
   cBridgeEndpoint,
   Chain,
@@ -209,7 +209,7 @@ export const approve = async ({
   srcChainId: number;
   selectedToken: PeggedPairConfig;
   provider: any;
-}) => {
+}): Promise<string> => {
   if (!provider) {
     throw new Error('No wallet connected');
   }
@@ -245,7 +245,15 @@ export const approve = async ({
   };
 
   const estimatedGas = await web3.eth.estimateGas(rawTx);
-  return await web3.eth.sendTransaction({ ...rawTx, gas: estimatedGas });
+  const hash = await new Promise<string>(async (resolve, reject) => {
+    await web3.eth
+      .sendTransaction({ ...rawTx, gas: estimatedGas })
+      .once('transactionHash', (transactionHash) => {
+        resolve(transactionHash);
+      });
+  });
+
+  return hash;
 };
 
 export const mintOrBurn = async ({
@@ -260,7 +268,7 @@ export const mintOrBurn = async ({
   selectedToken: PeggedPairConfig;
   provider: any;
   address: string;
-}) => {
+}): Promise<string> => {
   if (!provider) {
     throw new Error('No wallet connected');
   }
@@ -276,12 +284,8 @@ export const mintOrBurn = async ({
     ? selectedToken.pegged_deposit_contract_addr
     : selectedToken.pegged_burn_contract_addr;
 
-  if (!contractAddress) {
-    throw new Error('No spender to approve');
-  }
-
-  if (!token) {
-    throw new Error('No token to approve');
+  if (!contractAddress || !token) {
+    throw new Error('Cannnot find the contract or token address');
   }
 
   const web3 = new Web3(provider as any);
@@ -292,37 +296,18 @@ export const mintOrBurn = async ({
   const isNativeToken = nativeCurrency[srcChainId].name === tokenInfo.token.symbol;
   const sendAmount = ethers.utils.parseUnits(amount, tokenInfo.token.decimal).toString();
   const timestamp = String(Math.floor(Date.now()));
-  console.log('isDeposit', isDeposit);
-  console.log('contractAddress', contractAddress);
-  console.log('contract', contract);
 
   const getData = () => {
     if (isDeposit) {
       if (isNativeToken) {
-        console.log('depositNative');
-        console.log('sendAmount', sendAmount);
-        console.log('selectedToken.pegged_chain_id', selectedToken.pegged_chain_id);
-        console.log('address', address);
-        console.log('timestamp', timestamp);
         return contract.methods
           .depositNative(sendAmount, selectedToken.pegged_chain_id, address, timestamp)
           .encodeABI();
       }
-      console.log('deposit');
-      console.log('token', token);
-      console.log('sendAmount', sendAmount);
-      console.log('selectedToken.pegged_chain_id', selectedToken.pegged_chain_id);
-      console.log('address', address);
-      console.log('timestamp', timestamp);
       return contract.methods
         .deposit(token, sendAmount, selectedToken.pegged_chain_id, address, timestamp)
         .encodeABI();
     }
-    console.log('burn');
-    console.log('token', token);
-    console.log('sendAmount', sendAmount);
-    console.log('address', address);
-    console.log('timestamp', timestamp);
     return contract.methods.burn(token, sendAmount, address, timestamp).encodeABI();
   };
 
@@ -333,10 +318,74 @@ export const mintOrBurn = async ({
     to: contractAddress,
     value: isNativeToken ? sendAmount : '0x0',
     data: getData(),
-    // data: contract.methods.burn(token, sendAmount, address, timestamp).encodeABI(),
   };
-  console.log('rawTx', rawTx);
 
   const estimatedGas = await web3.eth.estimateGas(rawTx);
-  return await web3.eth.sendTransaction({ ...rawTx, gas: estimatedGas });
+  const hash = await new Promise<string>(async (resolve, reject) => {
+    await web3.eth
+      .sendTransaction({ ...rawTx, gas: estimatedGas })
+      .once('transactionHash', (transactionHash) => {
+        resolve(transactionHash);
+      });
+  });
+
+  return hash;
+};
+
+export const getCanonicalMinAndMaxAmount = async ({
+  srcChainId,
+  selectedToken,
+}: {
+  selectedToken: PeggedPairConfig;
+  srcChainId: number;
+}): Promise<{ min: number; max: number }> => {
+  try {
+    const web3 = buildWeb3Instance(srcChainId);
+    const tokenInfo = getTokenInfo({
+      selectedToken,
+      srcChainId,
+    });
+    const token = tokenInfo.token.address;
+    const decimals = tokenInfo.token.decimal;
+    const isDeposit = selectedToken.org_chain_id === srcChainId;
+    const contractAddress = isDeposit
+      ? selectedToken.pegged_deposit_contract_addr
+      : selectedToken.pegged_burn_contract_addr;
+
+    if (!contractAddress || !token || !web3) {
+      throw new Error('Cannnot find the web3 instance, contract or token address');
+    }
+
+    const abi = isDeposit ? CANONICAL_DEPOSIT_ABI : CANONICAL_BURN_ABI;
+    const contract = new web3.eth.Contract(abi as AbiItem[], contractAddress);
+    const isNativeToken = nativeCurrency[srcChainId].name === tokenInfo.token.symbol;
+
+    if (isDeposit) {
+      const nativeWrap = isNativeToken && (await contract.methods.nativeWrap().call());
+      const results = await Promise.all([
+        contract.methods.minDeposit(isNativeToken ? nativeWrap : token).call(),
+        contract.methods.maxDeposit(isNativeToken ? nativeWrap : token).call(),
+      ]);
+      return {
+        min: Number(ethers.utils.formatUnits(results[0], decimals)),
+        max: Number(ethers.utils.formatUnits(results[1], decimals)),
+      };
+    }
+
+    const results = await Promise.all([
+      contract.methods.minBurn(token).call(),
+      contract.methods.maxBurn(token).call(),
+    ]);
+
+    return {
+      min: Number(ethers.utils.formatUnits(results[0], decimals)),
+      max: Number(ethers.utils.formatUnits(results[1], decimals)),
+    };
+  } catch (error: any) {
+    console.error(error.message);
+    return {
+      min: 0,
+      max: 0,
+    };
+  }
 };

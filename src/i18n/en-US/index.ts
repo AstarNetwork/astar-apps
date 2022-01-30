@@ -218,5 +218,12 @@ export default {
     balance: 'Available Balance:',
     approve: 'Approve',
     addMetamask: 'Add to MetaMask',
+    bridgeRate: 'Bridge Rate',
+    fee: 'Fee',
+    timeOfArrival: 'Estimated Time of Arrival',
+    minAmount: 'Minimum bridge amount',
+    maxAmount: 'Maximum bridge amount',
+    time: '{from} ~ {to} mins',
+    rateSymbol: '{value} {symbol} on ',
   },
 };
