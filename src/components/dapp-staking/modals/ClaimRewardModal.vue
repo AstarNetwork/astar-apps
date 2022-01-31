@@ -43,7 +43,7 @@
 
 <script lang="ts">
 import { defineComponent, toRefs, onMounted, ref, computed } from 'vue';
-import { useApi } from 'src/hooks';
+import { $api } from 'boot/api';
 import { useStore } from 'src/store';
 import { useChainMetadata } from 'src/hooks';
 import Modal from 'src/components/common/Modal.vue';
@@ -75,7 +75,7 @@ export default defineComponent({
   emits: ['update:is-open'],
   setup(props, { emit }) {
     const maxErasPerClaim = 15;
-    const { api } = useApi();
+    // const { api } = useApi();
     const store = useStore();
     const { decimal } = useChainMetadata();
     const claimInfo = ref<ClaimInfo>();
@@ -95,7 +95,7 @@ export default defineComponent({
 
     const getClaimInfo = async () => {
       claimInfo.value = await store.dispatch('dapps/getClaimInfo', {
-        api: api?.value,
+        api: $api?.value,
         senderAddress,
         dapp: props.dapp,
         decimals: decimal.value,

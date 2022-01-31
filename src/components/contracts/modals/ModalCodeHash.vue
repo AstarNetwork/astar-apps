@@ -125,7 +125,8 @@
 import { defineComponent, ref } from 'vue';
 import { useStore } from 'src/store';
 import { stringify } from '@polkadot/util';
-import { useApi, useMessages } from 'src/hooks';
+import { useMessages } from 'src/hooks';
+import { $api } from 'boot/api';
 import useAbi from 'src/hooks/useAbi';
 import { useFile, FileState } from 'src/hooks/useFile';
 import InputFile from './InputFile.vue';
@@ -143,7 +144,7 @@ export default defineComponent({
     };
 
     const store = useStore();
-    const { api } = useApi();
+    // const { api } = useApi();
 
     const { abi, onChangeAbi, onRemoveAbi } = useAbi();
 
@@ -179,7 +180,7 @@ export default defineComponent({
       console.log('codeJson', codeJson);
 
       store.dispatch('contracts/saveCode', {
-        api: api?.value,
+        api: $api?.value,
         _codeHash: codeHash.value,
         partial: codeJson,
       });

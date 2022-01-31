@@ -65,7 +65,8 @@ import { Role } from 'src/components/balance/modals/ModalTransferAmount.vue';
 import Avatar from 'src/components/common/Avatar.vue';
 import Button from 'src/components/common/Button.vue';
 import InputAmount from 'src/components/common/InputAmount.vue';
-import { useApi, useChainMetadata, useUnbondWithdraw } from 'src/hooks';
+import { useChainMetadata, useUnbondWithdraw } from 'src/hooks';
+import { $api } from 'boot/api';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { getAmount, StakeModel } from 'src/hooks/store';
 import { useStore } from 'src/store';
@@ -126,8 +127,8 @@ export default defineComponent({
     const unlockingChunks = computed<number>(() => store.getters['dapps/getUnlockingChunks']);
     const unbondingPeriod = computed(() => store.getters['dapps/getUnbondingPeriod']);
     const isMaxChunks = unlockingChunks.value >= maxUnlockingChunks.value;
-    const { api } = useApi();
-    const { canUnbondWithdraw } = useUnbondWithdraw(api);
+    // const { api } = useApi();
+    const { canUnbondWithdraw } = useUnbondWithdraw($api);
 
     const formatStakeAmount = computed(() => {
       return plasmUtils.reduceBalanceToDenom(props.stakeAmount, decimal.value);

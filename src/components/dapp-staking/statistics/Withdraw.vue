@@ -38,7 +38,7 @@
 <script lang="ts">
 import { defineComponent, onUnmounted, computed, ref, watch } from 'vue';
 import BN from 'bn.js';
-import { useApi } from 'src/hooks';
+import { $api } from 'boot/api';
 import { useStore } from 'src/store';
 import { u32 } from '@polkadot/types';
 import { VoidFn } from '@polkadot/api/types';
@@ -57,7 +57,7 @@ export default defineComponent({
     ChunksModal,
   },
   setup() {
-    const { api } = useApi();
+    // const { api } = useApi();
     const store = useStore();
     const selectedAccountAddress = computed(() => store.getters['general/selectedAddress']);
     const unlockingChunksCount = computed(() => store.getters['dapps/getUnlockingChunks']);
@@ -66,19 +66,19 @@ export default defineComponent({
     const canWithdraw = ref<boolean>(false);
     const totalToWithdraw = ref<BN>(new BN(0));
     const showModal = ref<boolean>(false);
-    const { canUnbondWithdraw } = useUnbondWithdraw(api);
+    const { canUnbondWithdraw } = useUnbondWithdraw($api);
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
 
     const withdraw = async (): Promise<void> => {
       const result = await store.dispatch('dapps/withdrawUnbonded', {
-        api: api?.value,
+        api: $api?.value,
         senderAddress: selectedAccountAddress.value,
         substrateAccounts: substrateAccounts.value,
       } as WithdrawParameters);
     };
 
     const subscribeToEraChange = async (): Promise<VoidFn | undefined> => {
-      const unsub = (await api?.value?.query.dappsStaking.currentEra(async (era: u32) => {
+      const unsub = (await $api?.value?.query.dappsStaking.currentEra(async (era: u32) => {
         await getChunks(era);
       })) as VoidFn | undefined;
 
@@ -92,7 +92,7 @@ export default defineComponent({
         return;
       }
 
-      const ledger = await api?.value?.query.dappsStaking.ledger<PalletDappsStakingAccountLedger>(
+      const ledger = await $api?.value?.query.dappsStaking.ledger<PalletDappsStakingAccountLedger>(
         selectedAccountAddress.value
       );
 
@@ -120,7 +120,7 @@ export default defineComponent({
       () => unlockingChunksCount.value,
       async (chunks) => {
         console.log('chunks count changed');
-        const era = await api?.value?.query.dappsStaking.currentEra<u32>();
+        const era = await $api?.value?.query.dappsStaking.currentEra<u32>();
         if (era) {
           await getChunks(era);
         }

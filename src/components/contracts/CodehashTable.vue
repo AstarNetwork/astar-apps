@@ -26,7 +26,7 @@
 <script lang="ts">
 import { defineComponent, reactive, toRefs, computed, ref } from 'vue';
 import { useStore } from 'src/store';
-import { useApi } from 'src/hooks';
+import { $api } from 'boot/api';
 import CodeItem from './CodeItem.vue';
 import ModalConfirmRemoval from './modals/ModalConfirmRemoval.vue';
 
@@ -40,7 +40,7 @@ export default defineComponent({
     ModalConfirmRemoval,
   },
   setup() {
-    const { api } = useApi();
+    // const { api } = useApi();
 
     const stateModal = reactive<Modal>({
       modalConfirmRemoval: false,
@@ -53,7 +53,7 @@ export default defineComponent({
 
     const loadAll = () => {
       store.dispatch('contracts/loadAllContracts', {
-        api: api?.value,
+        api: $api?.value,
       });
     };
 

@@ -131,7 +131,8 @@ import BN from 'bn.js';
 import FormatBalance from 'components/balance/FormatBalance.vue';
 import InputAmount from 'components/common/InputAmount.vue';
 import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
-import { useApi, useChainMetadata, useCustomSignature } from 'src/hooks';
+import { useChainMetadata, useCustomSignature } from 'src/hooks';
+import { $api } from 'boot/api';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { getUnit } from 'src/hooks/helper/units';
 import { getInjector } from 'src/hooks/helper/wallet';
@@ -201,12 +202,12 @@ export default defineComponent({
       );
     });
 
-    const { api } = useApi();
+    // const { api } = useApi();
 
     const transferLocal = async (transferAmt: BN, fromAddress: string, toAddress: string) => {
       try {
         const injector = await getInjector(substrateAccounts.value);
-        const transfer = await api?.value?.tx.balances.transfer(toAddress, transferAmt);
+        const transfer = await $api?.value?.tx.balances.transfer(toAddress, transferAmt);
         transfer
           ?.signAndSend(
             fromAddress,
@@ -224,7 +225,7 @@ export default defineComponent({
     const transferExtrinsic = async (transferAmt: BN, toAddress: string) => {
       try {
         const fn: SubmittableExtrinsicFunction<'promise'> | undefined =
-          api?.value?.tx.balances.transfer;
+          $api?.value?.tx.balances.transfer;
         const method: SubmittableExtrinsic<'promise'> | undefined =
           fn && fn(toAddress, transferAmt);
 

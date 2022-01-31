@@ -5,7 +5,7 @@ import { Abi } from '@polkadot/api-contract';
 import { AnyJson } from '@polkadot/types/types';
 import { u8aToString } from '@polkadot/util';
 import { useStore } from 'src/store';
-import { useApi } from '.';
+import { $api } from 'boot/api';
 
 interface CodeBase {
   id: string;
@@ -43,9 +43,9 @@ interface AbiSpecOutdated {
 }
 
 export default function useAbi(source: Code | null = null, isRequired = false) {
-  const { api } = useApi();
+  // const { api } = useApi();
 
-  const registry = api?.value?.registry;
+  const registry = $api?.value?.registry;
   const chainProperties = registry?.getChainProperties() as ChainProperties | undefined;
 
   const abi = source ? ref(new Abi(source?.abi, chainProperties)) : ref(null);
@@ -77,7 +77,7 @@ export default function useAbi(source: Code | null = null, isRequired = false) {
 
       source?.codeHash &&
         store.dispatch('contracts/saveCode', {
-          api: api?.value,
+          api: $api?.value,
           _codeHash: source?.codeHash,
           partial: { abi: json },
         });
@@ -100,7 +100,7 @@ export default function useAbi(source: Code | null = null, isRequired = false) {
 
     source?.codeHash &&
       store.dispatch('contracts/saveCode', {
-        api: api?.value,
+        api: $api?.value,
         _codeHash: source?.codeHash,
         partial: { abi: null },
       });

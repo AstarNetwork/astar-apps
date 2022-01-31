@@ -8,7 +8,7 @@
 import { defineComponent, computed, watchPostEffect } from 'vue';
 import { useStore } from 'src/store';
 import PolkadotProvider from './PolkadotProvider.vue';
-import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
+// import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
 // import { connectApi } from 'src/config/api/polkadot/connectApi';
 import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
 import { useChainInfo } from 'src/hooks/useChainInfo';
@@ -23,12 +23,12 @@ export default defineComponent({
     // console.log('fff', $api);
 
     const store = useStore();
-    const networkIdx = computed(() => store.getters['general/networkIdx']);
-    let endpoint = providerEndpoints[networkIdx.value].endpoint;
-    if (networkIdx.value === endpointKey.CUSTOM) {
-      const customEndpoint = computed(() => store.getters['general/customEndpoint']);
-      endpoint = customEndpoint.value;
-    }
+    // const networkIdx = computed(() => store.getters['general/networkIdx']);
+    // let endpoint = providerEndpoints[networkIdx.value].endpoint;
+    // if (networkIdx.value === endpointKey.CUSTOM) {
+    //   const customEndpoint = computed(() => store.getters['general/customEndpoint']);
+    //   endpoint = customEndpoint.value;
+    // }
 
     // let { api, extensions } = await connectApi(endpoint, networkIdx.value);
 

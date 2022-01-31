@@ -54,7 +54,7 @@
 <script lang="ts">
 import { defineComponent, toRefs, ref, computed, watch } from 'vue';
 import { useStore } from 'src/store';
-import { useApi } from 'src/hooks';
+import { $api } from 'boot/api';
 import Avatar from 'components/common/Avatar.vue';
 import StakePanel from 'components/dapp-staking/StakePanel.vue';
 import ModalDappDetails from 'components/dapp-staking/modals/ModalDappDetails.vue';
@@ -83,7 +83,7 @@ export default defineComponent({
   emits: ['dappClick'],
   setup(props, { emit }) {
     const store = useStore();
-    const { api } = useApi();
+    // const { api } = useApi();
     const stakeInfo = ref<StakeInfo>();
     const senderAddress = computed(() => store.getters['general/selectedAddress']);
     const isMaxStaker = ref<boolean>(false);
@@ -103,7 +103,7 @@ export default defineComponent({
     const getDappInfo = () => {
       store
         .dispatch('dapps/getStakeInfo', {
-          api: api?.value,
+          api: $api?.value,
           senderAddress: senderAddress.value,
           dapp: props.dapp,
           substrateAccounts: substrateAccounts.value,

@@ -14,7 +14,7 @@ import { formatBalance } from '@polkadot/util';
 import BN from 'bn.js';
 import { addDapp, getDapps, uploadFile } from 'src/hooks/firebase';
 import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
-import { useApi } from 'src/hooks/useApi';
+import { $api } from 'boot/api';
 import { ActionTree, Dispatch } from 'vuex';
 import { StateInterface } from '../index';
 import { getInjector } from './../../hooks/helper/wallet';
@@ -46,10 +46,10 @@ const getFormattedBalance = (parameters: StakingParameters): string => {
 
 const getCollectionKey = async (): Promise<string> => {
   if (!collectionKey) {
-    const { api } = useApi();
+    // const { api } = useApi();
 
-    await api?.value?.isReady;
-    const chain = (await api?.value?.rpc.system.chain()) || 'development-dapps';
+    await $api?.value?.isReady;
+    const chain = (await $api?.value?.rpc.system.chain()) || 'development-dapps';
     collectionKey = `${chain.toString().toLowerCase()}-dapps`.replace(' ', '-');
   }
 
@@ -737,24 +737,27 @@ const actions: ActionTree<State, StateInterface> = {
   },
 
   async getStakingInfo({ commit, dispatch, rootState }) {
-    const { api } = useApi();
-    await api?.value?.isReady;
+    // const { api } = useApi();
+    await $api?.value?.isReady;
 
     try {
-      if (api?.value) {
+      if ($api?.value) {
         const [
           minimumStakingAmount,
           maxNumberOfStakersPerContract,
           maxUnlockingChunks,
           unbondingPeriod,
         ] = await Promise.all([
-          api.value.consts.dappsStaking.minimumStakingAmount,
-          api.value.consts.dappsStaking.maxNumberOfStakersPerContract as u32,
-          api.value.consts.dappsStaking.maxUnlockingChunks as u32,
-          api.value.consts.dappsStaking.unbondingPeriod as u32,
+          $api.value.consts.dappsStaking.minimumStakingAmount,
+          $api.value.consts.dappsStaking.maxNumberOfStakersPerContract as u32,
+          $api.value.consts.dappsStaking.maxUnlockingChunks as u32,
+          $api.value.consts.dappsStaking.unbondingPeriod as u32,
         ]);
 
-        const minimumStakingAmountBalance = api?.value?.createType('Balance', minimumStakingAmount);
+        const minimumStakingAmountBalance = $api?.value?.createType(
+          'Balance',
+          minimumStakingAmount
+        );
         commit('setMinimumStakingAmount', minimumStakingAmountBalance?.toHuman());
         commit('setMaxNumberOfStakersPerContract', maxNumberOfStakersPerContract?.toNumber());
         commit('setUnbondingPeriod', unbondingPeriod?.toNumber());

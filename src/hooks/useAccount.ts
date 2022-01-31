@@ -30,7 +30,6 @@ export const useAccount = () => {
   watch(
     [isH160Formatted, currentEcdsaAccount],
     () => {
-      console.log('sfsfsf', currentEcdsaAccount.value);
       if (currentEcdsaAccount.value.h160 || currentEcdsaAccount.value.ss58) {
         currentAccountName.value = 'Ethereum Extension';
         localStorage.setItem(SELECTED_ADDRESS, 'Ethereum Extension');
