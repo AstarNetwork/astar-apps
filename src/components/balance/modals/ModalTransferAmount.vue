@@ -132,6 +132,7 @@ import FormatBalance from 'components/balance/FormatBalance.vue';
 import InputAmount from 'components/common/InputAmount.vue';
 import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { useApi, useChainMetadata, useCustomSignature } from 'src/hooks';
+import { getEvmProvider } from 'src/hooks/helper/wallet';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { getUnit } from 'src/hooks/helper/units';
 import { getInjector } from 'src/hooks/helper/wallet';
@@ -259,7 +260,7 @@ export default defineComponent({
       }
 
       if (isH160.value) {
-        const provider = typeof window !== 'undefined' && window.ethereum;
+        const provider = getEvmProvider();
         const web3 = new Web3(provider as any);
 
         const buildEvmAddress = (toAddress: string) => {

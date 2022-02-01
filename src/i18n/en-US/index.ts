@@ -217,7 +217,7 @@ export default {
     max: 'MAX',
     balance: 'Available Balance:',
     approve: 'Approve',
-    addMetamask: 'Add to MetaMask',
+    addWallet: 'Add to wallet',
     bridgeRate: 'Bridge Rate',
     fee: 'Fee',
     timeOfArrival: 'Estimated Time of Arrival',

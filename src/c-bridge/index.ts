@@ -3,15 +3,17 @@
 export {
   getTransferConfigs,
   getChainName,
-  isAstarOrShiden,
   sortChainName,
   formatDecimals,
   getTokenBalCbridge,
-  getTokenInfo,
+  getPeggedTokenInfo,
   pushToSelectableChains,
   approve,
   mintOrBurn,
-  getCanonicalMinAndMaxAmount,
+  getTokenInfo,
+  getSelectedToken,
+  getMinimalMaxSlippage,
+  poolTransfer,
 } from './utils';
 
 export enum EvmChain {
@@ -48,6 +50,7 @@ export interface Token {
   token: TokenDetail;
   name: string;
   icon: string;
+  poolContract?: string;
 }
 
 export interface TokenDetail {
@@ -71,6 +74,21 @@ export interface Chain {
   suggested_gas_cost: string;
 }
 
+export enum BridgeMethod {
+  pool = 'pool',
+  canonical = 'canonical',
+}
+
+export interface CbridgeToken {
+  bridgeMethod: BridgeMethod;
+  canonical: PeggedPairConfig | null;
+  pool: PoolConfig | null;
+}
+
+export type PoolConfig = {
+  [key: number]: Token;
+};
+
 export interface PeggedPairConfig {
   org_chain_id: number;
   org_token: Token;
@@ -79,6 +97,17 @@ export interface PeggedPairConfig {
   pegged_deposit_contract_addr: string;
   pegged_burn_contract_addr: string;
   canonical_token_contract_addr: string;
+}
+
+export interface SelectedToken {
+  bridgeMethod: BridgeMethod;
+  canonicalConfig: PeggedPairConfig | null;
+  poolConfig: PoolConfig | null;
+  name: string;
+  symbol: string;
+  address: string;
+  icon: string;
+  decimal: number;
 }
 
 export interface Quotation {

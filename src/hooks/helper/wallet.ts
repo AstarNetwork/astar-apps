@@ -43,3 +43,9 @@ export const castMobileSource = (source: string) => {
   }
   return source;
 };
+
+export const getEvmProvider = () => {
+  // Todo: integrate with other wallet
+  const metamaskProvider = typeof window !== 'undefined' && window.ethereum;
+  return metamaskProvider;
+};

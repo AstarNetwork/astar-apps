@@ -40,25 +40,30 @@
               >
                 <img
                   v-if="selectedToken"
-                  :src="
-                    selectedToken.org_token.token.symbol === 'USDT'
-                      ? logoUsdt
-                      : selectedToken.org_token.icon
-                  "
+                  :src="selectedToken.symbol === 'USDT' ? logoUsdt : selectedToken.icon"
                   alt="token-logo"
                   class="token-logo"
                 />
-                <span>{{ selectedToken ? selectedToken.org_token.token.symbol : '' }}</span>
+                <span>{{ selectedToken ? selectedToken.symbol : '' }}</span>
                 <span>▼</span>
               </div>
             </div>
             <div class="information label">
-              <span class="label"> ${{ $n(usdValue) }}</span>
+              <!-- Todo: Un-comment after fix the debounce issue -->
+              <!-- <span class="label"> ${{ $n(usdValue) }}</span> -->
+              <div />
               <div class="balance">
                 <p>{{ $t('bridge.balance') }}</p>
                 <p>
-                  {{ selectedTokenBalance ? selectedTokenBalance : 0 }}
-                  {{ selectedToken ? selectedToken.org_token.token.symbol : '' }}
+                  {{
+                    selectedTokenBalance
+                      ? formatDecimals({
+                          amount: selectedTokenBalance,
+                          decimals: 6,
+                        })
+                      : 0
+                  }}
+                  {{ selectedToken ? selectedToken.symbol : '' }}
                 </p>
               </div>
             </div>
@@ -120,7 +125,7 @@
               <div class="rate-column">
                 <span>{{
                   $t('bridge.rateSymbol', {
-                    symbol: selectedToken ? selectedToken.org_token.token.symbol : '',
+                    symbol: selectedToken ? selectedToken.symbol : '',
                     value: 1,
                   })
                 }}</span>
@@ -135,7 +140,7 @@
               <div class="rate-column">
                 <span>{{
                   $t('bridge.rateSymbol', {
-                    symbol: selectedToken ? selectedToken.org_token.token.symbol : '',
+                    symbol: selectedToken ? selectedToken.symbol : '',
                     value: quotation ? quotation.bridge_rate : 1,
                   })
                 }}</span>
@@ -158,24 +163,18 @@
                   : quotation.base_fee
                 : 0
             }}</span>
-            <span class="quotation-currency">{{
-              selectedToken ? selectedToken.org_token.token.symbol : ''
-            }}</span>
+            <span class="quotation-currency">{{ selectedToken ? selectedToken.symbol : '' }}</span>
           </div>
           <p class="time">{{ $t('bridge.time', { from: '5', to: '20' }) }}</p>
           <div class="quotation-value-currency">
             <span class="quotation-value">{{ quotation ? quotation.minAmount : 0 }}</span>
-            <span class="quotation-currency">{{
-              selectedToken ? selectedToken.org_token.token.symbol : ''
-            }}</span>
+            <span class="quotation-currency">{{ selectedToken ? selectedToken.symbol : '' }}</span>
           </div>
           <div class="quotation-value-currency">
             <span class="quotation-value">{{
               $n(quotation ? Number(quotation.maxAmount) : 0)
             }}</span>
-            <span class="quotation-currency">{{
-              selectedToken ? selectedToken.org_token.token.symbol : ''
-            }}</span>
+            <span class="quotation-currency">{{ selectedToken ? selectedToken.symbol : '' }}</span>
           </div>
         </div>
       </div>
@@ -239,7 +238,7 @@
 
 <script lang="ts">
 import { useMeta } from 'quasar';
-import { getChainName } from 'src/c-bridge';
+import { getChainName, formatDecimals } from 'src/c-bridge';
 import { useCbridge, useConnectWallet } from 'src/hooks';
 import { calUsdAmount } from 'src/hooks/helper/price';
 import { useStore } from 'src/store';
@@ -306,6 +305,7 @@ export default defineComponent({
 
     return {
       getChainName,
+      formatDecimals,
       isDarkTheme,
       srcChain,
       destChain,

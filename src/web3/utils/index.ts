@@ -4,6 +4,7 @@ import { CHAIN_INFORMATION } from '../index';
 import { endpointKey } from 'src/config/chainEndpoints';
 import ABI from 'human-standard-token-abi';
 import { ethers } from 'ethers';
+import { getEvmProvider } from 'src/hooks/helper/wallet';
 
 export const getChainData = (chainId: number) => {
   const { chainName, nativeCurrency, rpcUrls, blockExplorerUrls } = CHAIN_INFORMATION;
@@ -17,7 +18,7 @@ export const getChainData = (chainId: number) => {
 };
 
 export const setupNetwork = async (network: number): Promise<boolean> => {
-  const provider = typeof window !== 'undefined' && window.ethereum;
+  const provider = getEvmProvider();
   if (provider) {
     const chainId = `0x${network.toString(16)}`;
     const { chainName, nativeCurrency, rpcUrls, blockExplorerUrls } = getChainData(network);
@@ -81,19 +82,19 @@ export const buildWeb3Instance = (chainId: EVM) => {
 
 export const getTokenBal = async ({
   address,
-  contractAddress,
+  tokenAddress,
   srcChainId,
   tokenSymbol,
 }: {
   address: string;
-  contractAddress: string;
+  tokenAddress: string;
   srcChainId?: number;
   tokenSymbol?: string;
 }): Promise<string> => {
   try {
-    const provider = typeof window !== 'undefined' && window.ethereum;
+    const provider = getEvmProvider();
     const web3 = new Web3(provider as any);
-    const contract = new web3.eth.Contract(ABI, contractAddress);
+    const contract = new web3.eth.Contract(ABI, tokenAddress);
 
     const isCheckNativeBal = tokenSymbol && srcChainId;
     if (isCheckNativeBal && nativeCurrency[srcChainId].name === tokenSymbol) {
@@ -104,8 +105,8 @@ export const getTokenBal = async ({
     const decimals = await contract.methods.decimals().call();
     const balance = (await contract.methods.balanceOf(address).call()) ?? '0';
     return ethers.utils.formatUnits(balance, decimals).toString();
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    console.error(error.message);
     return '0';
   }
 };

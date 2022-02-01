@@ -130,7 +130,7 @@ export const useConnectWallet = () => {
   });
 
   watch(
-    [isConnectedNetwork, router],
+    [isConnectedNetwork],
     () => {
       if (isBridge) return;
       const address = localStorage.getItem(SELECTED_ADDRESS);
