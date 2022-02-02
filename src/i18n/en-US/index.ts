@@ -225,5 +225,6 @@ export default {
     maxAmount: 'Max. amount less than',
     time: '{from} ~ {to} mins',
     rateSymbol: '{value} {symbol} on ',
+    history: 'History',
   },
 };

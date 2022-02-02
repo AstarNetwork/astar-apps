@@ -1,6 +1,14 @@
 <template>
   <div v-if="srcChains" class="container animate__animated animate__fadeIn">
     <div class="widget" :class="isDarkTheme && 'widget-dark'">
+      <div class="row-tool">
+        <div class="tw-tooltip tw-relative">
+          <icon-base class="tool-icon" icon-name="history">
+            <q-icon :name="fasHistory" color="grey" />
+          </icon-base>
+          <span class="tooltip">{{ $t('bridge.history') }}</span>
+        </div>
+      </div>
       <div class="row">
         <div class="currency">
           <span class="label">{{ $t('from') }}</span>
@@ -186,6 +194,8 @@ import ModalChain from './modals/ModalChain.vue';
 import ModalToken from './modals/ModalToken.vue';
 import BridgeButtons from './BridgeButtons.vue';
 import Remarks from './Remarks.vue';
+import { fasHistory } from '@quasar/extras/fontawesome-v5';
+import IconBase from 'components/icons/IconBase.vue';
 
 export default defineComponent({
   components: {
@@ -195,6 +205,7 @@ export default defineComponent({
     ModalInstallWallet,
     BridgeButtons,
     Remarks,
+    IconBase,
   },
   setup() {
     useMeta({ title: 'EVM Bridge' });
@@ -242,6 +253,7 @@ export default defineComponent({
 
     return {
       getChainName,
+      fasHistory,
       formatDecimals,
       isDarkTheme,
       srcChain,

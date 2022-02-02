@@ -10,6 +10,7 @@
 }
 
 .widget {
+  position: relative;
   padding: 30px 0px;
   min-width: 350px;
   min-height: 470px;
@@ -28,6 +29,17 @@
 .widget-dark {
   background: linear-gradient(179.08deg, #0f355c 4.34%, #1d223d 52.76%, #452347 127.72%);
   box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.25), 0px 0px 8px rgba(0, 0, 0, 0.1);
+}
+
+.row-tool {
+  position: absolute;
+  right: 24px;
+  top: 24px;
+}
+
+.tool-icon {
+  width: 24px;
+  cursor: pointer;
 }
 
 .row {
@@ -380,4 +392,23 @@ input[type='number']::-webkit-outer-spin-button {
 
 .remarks-right {
   @apply tw-text-sm tw-text-blue-900 dark:tw-text-darkGray-100;
+}
+
+.tooltip {
+  @apply tw-pointer-events-none
+  tw-hidden
+  tw-absolute
+  tw--top-2
+  tw-left-1/2
+  tw-z-10
+  tw-transform
+  tw--translate-y-full
+  tw--translate-x-1/2
+  tw-p-2
+  tw-text-xs
+  tw-leading-tight
+  tw-text-white
+  tw-bg-gray-800
+  dark:tw-bg-darkGray-500
+  tw-rounded-md tw-shadow-lg tw-whitespace-nowrap;
 }
