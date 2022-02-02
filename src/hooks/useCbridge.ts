@@ -2,7 +2,7 @@ import { MaxUint256 } from '@ethersproject/constants';
 import axios from 'axios';
 import { ethers } from 'ethers';
 import ABI from 'human-standard-token-abi';
-// import debounce from 'lodash.debounce';
+// import debounce from 'lodash.debounce'; Todo: Add debounce to inputHandler
 import { stringifyUrl } from 'query-string';
 import {
   approve,
@@ -160,7 +160,7 @@ export function useCbridge() {
       }
 
       const url = stringifyUrl({
-        url: cBridgeEndpoint + '/estimateAmt',
+        url: cBridgeEndpoint.Quotation,
         query: {
           src_chain_id: srcChain.value.id,
           dst_chain_id: destChain.value.id,

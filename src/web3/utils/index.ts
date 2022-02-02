@@ -1,10 +1,10 @@
-import { TNetworkId, EVM, nativeCurrency } from './../index';
+import { ethers } from 'ethers';
+import ABI from 'human-standard-token-abi';
+import { endpointKey } from 'src/config/chainEndpoints';
+import { getEvmProvider } from 'src/hooks/helper/wallet';
 import Web3 from 'web3';
 import { CHAIN_INFORMATION } from '../index';
-import { endpointKey } from 'src/config/chainEndpoints';
-import ABI from 'human-standard-token-abi';
-import { ethers } from 'ethers';
-import { getEvmProvider } from 'src/hooks/helper/wallet';
+import { EVM, nativeCurrency, TNetworkId } from './../index';
 
 export const getChainData = (chainId: number) => {
   const { chainName, nativeCurrency, rpcUrls, blockExplorerUrls } = CHAIN_INFORMATION;

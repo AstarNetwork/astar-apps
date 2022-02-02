@@ -11,11 +11,15 @@ export {
   getTransferConfigs,
   pushToSelectableChains,
   sortChainName,
+  getIcon,
+} from './cbridgeAPI';
+
+export {
   getSelectedToken,
   getPeggedTokenInfo,
   getTokenBalCbridge,
   getTokenInfo,
-} from './cbridgeAPI';
+} from './token-detail';
 
 export const formatDecimals = ({ amount, decimals }: { amount: string; decimals: number }) => {
   return Number(Number(amount).toFixed(decimals));

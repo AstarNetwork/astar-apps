@@ -1,3 +1,4 @@
+import { EthereumProvider } from './../types/CustomSignature';
 import { SupportWallet } from 'src/config/wallets';
 import { web3Enable } from '@polkadot/extension-dapp';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
@@ -48,4 +49,47 @@ export const getEvmProvider = () => {
   // Todo: integrate with other wallet
   const metamaskProvider = typeof window !== 'undefined' && window.ethereum;
   return metamaskProvider;
+};
+
+export const addToMetamask = ({
+  tokenAddress,
+  symbol,
+  decimals,
+  image,
+  provider,
+}: {
+  tokenAddress: string;
+  symbol: string;
+  decimals: number;
+  image: string;
+  provider: EthereumProvider;
+}) => {
+  provider.request({
+    method: 'wallet_watchAsset',
+    params: {
+      type: 'ERC20',
+      options: {
+        address: tokenAddress,
+        symbol,
+        decimals,
+        image,
+      },
+    },
+  });
+};
+
+export const addToEvmWallet = ({
+  tokenAddress,
+  symbol,
+  decimals,
+  image,
+}: {
+  tokenAddress: string;
+  symbol: string;
+  decimals: number;
+  image: string;
+}) => {
+  const provider = getEvmProvider();
+  if (!provider) return;
+  addToMetamask({ tokenAddress, symbol, decimals, image, provider });
 };

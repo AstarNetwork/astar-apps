@@ -284,12 +284,17 @@ input[type='number']::-webkit-outer-spin-button {
   );
 }
 
-.provider {
-  text-decoration: underline;
+.cbridge-logo {
+  width: 30px;
 }
 
-.provider-link {
+.powered-link {
   cursor: pointer;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  align-items: center;
+  grid-column-gap: 4px;
+  font-weight: 700;
 }
 
 .chain-logo {
@@ -308,7 +313,7 @@ input[type='number']::-webkit-outer-spin-button {
 .remarks-container {
   background: rgba(235, 245, 255, 0.2);
   margin-top: -8px;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
   min-height: 100px;
   width: 330px;
   border-bottom-left-radius: 8px;

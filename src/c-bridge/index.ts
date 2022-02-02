@@ -14,6 +14,7 @@ export {
   getSelectedToken,
   getMinimalMaxSlippage,
   poolTransfer,
+  getIcon,
 } from './utils';
 
 export enum EvmChain {
@@ -32,7 +33,12 @@ export const supportChains = [
   EvmChain.Polygon,
 ];
 
-export const cBridgeEndpoint = 'https://cbridge-prod2.celer.network/v1';
+export const cBridgeBaseEndpoint = 'https://cbridge-prod2.celer.network/v1';
+
+export const cBridgeEndpoint = {
+  Configs: cBridgeBaseEndpoint + '/getTransferConfigsForAll',
+  Quotation: cBridgeBaseEndpoint + '/estimateAmt',
+};
 
 export interface TransferConfigs {
   err: null;

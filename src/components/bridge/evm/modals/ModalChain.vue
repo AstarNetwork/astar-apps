@@ -1,17 +1,14 @@
 <template>
-  <Modal title="Select a token" @click="closeModal">
+  <Modal :title="title" class="animate__animated animate__fadeIn" @click="closeModal">
     <template #content>
       <div class="tw-max-w-sm">
-        <div>
-          <Token
-            v-for="(token, index) in tokens"
-            :key="index"
-            :token-obj="token"
-            :selected-token="selectedToken"
-            :src-chain-id="srcChainId"
-            :select-token="selectToken"
-          />
-        </div>
+        <Chain
+          v-for="(chain, index) in chains"
+          :key="index"
+          :chain="chain"
+          :select-chain="selectChain"
+          :selected-chain="selectedChain"
+        />
       </div>
     </template>
   </Modal>
@@ -19,11 +16,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import Token from './Token.vue';
+import Chain from './Chain.vue';
 import Modal from 'src/components/common/Modal.vue';
 export default defineComponent({
   components: {
-    Token,
+    Chain,
     Modal,
   },
   props: {
@@ -31,24 +28,20 @@ export default defineComponent({
       type: Function,
       required: true,
     },
-    selectToken: {
+    selectChain: {
       type: Function,
       required: true,
     },
-    tokens: {
+    chains: {
       type: Array,
-      required: true,
-    },
-    selectedToken: {
-      type: Object,
-      required: true,
-    },
-    srcChainId: {
-      type: Number,
       required: true,
     },
     modal: {
       type: String,
+      required: true,
+    },
+    selectedChain: {
+      type: Object,
       required: true,
     },
   },
@@ -59,3 +52,7 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss" scoped>
+@import '../styles/bridge-modal';
+</style>

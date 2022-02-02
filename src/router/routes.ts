@@ -85,7 +85,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'evm',
-        component: () => import('components/bridge/EvmWidget.vue'),
+        component: () => import('components/bridge/evm/EvmWidget.vue'),
       },
     ],
   },

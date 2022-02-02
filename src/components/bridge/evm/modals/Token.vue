@@ -7,7 +7,12 @@
     >
       <div class="token">
         <div>
-          <img :src="logo" alt="token-icon" class="chain-logo" />
+          <img
+            v-if="tokenInfo"
+            :src="getIcon({ symbol: tokenInfo.symbol, icon: tokenInfo.icon })"
+            alt="token-icon"
+            class="chain-logo"
+          />
         </div>
         <div>
           <span>
@@ -15,10 +20,10 @@
           </span>
         </div>
       </div>
-      <div class="balance">{{ balance }} {{ tokenInfo ? tokenInfo.symbol : '' }}</div>
+      <div class="balance">{{ $n(balance) }} {{ tokenInfo ? tokenInfo.symbol : '' }}</div>
     </div>
-    <div v-if="!isNativeToken">
-      <button class="add-metamask tw-tooltip tw-relative" @click="addToMetaMask">
+    <div v-if="!isNativeToken && isH160">
+      <button class="add-metamask tw-tooltip tw-relative" @click="addToWallet">
         <icon-base
           icon-name="plus"
           class="tw-w-5 tw-h-5 tw-text-gray-500 dark:tw-text-darkGray-300"
@@ -33,13 +38,19 @@
 </template>
 
 <script lang="ts">
-import { CbridgeToken, EvmChain, getSelectedToken, getTokenBalCbridge } from 'src/c-bridge';
+import {
+  CbridgeToken,
+  EvmChain,
+  getIcon,
+  getSelectedToken,
+  getTokenBalCbridge,
+} from 'src/c-bridge';
+import IconBase from 'src/components/icons/IconBase.vue';
+import IconPlus from 'src/components/icons/IconPlus.vue';
+import { addToEvmWallet } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { nativeCurrency } from 'src/web3';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
-import IconPlus from '../../icons/IconPlus.vue';
-import IconBase from '../../icons/IconBase.vue';
-import { getEvmProvider } from 'src/hooks/helper/wallet';
 
 export default defineComponent({
   components: {
@@ -76,29 +87,18 @@ export default defineComponent({
       token: tokenObj as CbridgeToken,
     });
 
-    const logo =
-      tokenInfo?.symbol === 'USDT'
-        ? 'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png'
-        : tokenInfo?.icon;
-
     const isNativeToken = nativeCurrency[srcChainId].name === tokenInfo?.symbol;
 
-    const addToMetaMask = () => {
-      const provider = getEvmProvider();
-      if (!provider || !isH160.value || !selectedAddress.value || isNativeToken || !tokenInfo) {
+    const addToWallet = () => {
+      if (!isH160.value || !selectedAddress.value || isNativeToken || !tokenInfo) {
         return;
       }
-      provider.request({
-        method: 'wallet_watchAsset',
-        params: {
-          type: 'ERC20',
-          options: {
-            address: tokenInfo.address,
-            symbol: tokenInfo.symbol,
-            decimals: tokenInfo.decimal,
-            image: logo,
-          },
-        },
+
+      addToEvmWallet({
+        tokenAddress: tokenInfo.address,
+        symbol: tokenInfo.symbol,
+        decimals: tokenInfo.decimal,
+        image: getIcon({ symbol: tokenInfo.symbol, icon: tokenInfo.icon }),
       });
     };
 
@@ -112,7 +112,7 @@ export default defineComponent({
       balance.value = Number(Number(bal).toFixed(3));
     });
 
-    return { tokenInfo, logo, isNativeToken, balance, addToMetaMask };
+    return { tokenInfo, isNativeToken, balance, addToWallet, getIcon, isH160 };
   },
 });
 </script>
