@@ -1,5 +1,5 @@
 import { ApiPromise, WsProvider } from '@polkadot/api';
-import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
+import { web3Accounts } from '@polkadot/extension-dapp';
 import type { InjectedExtension } from '@polkadot/extension-inject/types';
 import { keyring } from '@polkadot/ui-keyring';
 import { isTestChain } from '@polkadot/util';
@@ -7,7 +7,7 @@ import { cryptoWaitReady } from '@polkadot/util-crypto';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { objToArray } from 'src/hooks/helper/common';
 import { getInjectedExtensions } from 'src/hooks/helper/wallet';
-import { useStore } from 'src/store';
+// import { options } from '@astar-network/astar-api';
 
 interface InjectedAccountExt {
   address: string;
@@ -51,7 +51,7 @@ const loadAccounts = async (api: ApiPromise) => {
   );
 };
 
-export async function connectApi(endpoint: string, networkIdx: number) {
+export async function connectApi(endpoint: string, networkIdx: number, store: any) {
   const provider = new WsProvider(endpoint);
 
   // load the web3 extension
@@ -67,7 +67,6 @@ export async function connectApi(endpoint: string, networkIdx: number) {
     },
   });
 
-  const store = useStore();
   store.commit('general/setCurrentNetworkStatus', 'connecting');
 
   api.on('error', (error: Error) => console.error(error.message));
@@ -96,13 +95,6 @@ export async function connectApi(endpoint: string, networkIdx: number) {
         });
 
         store.commit('general/setSubstrateAccounts', accountMap);
-        // Todo: remove
-        store.commit('general/setAllAccounts', Object.keys(accounts));
-        // Memo: remove space from UI.
-        store.commit(
-          'general/setAllAccountNames',
-          Object.values(accounts).map((obj) => obj.option.name.replace('\n              ', ''))
-        );
       }
     });
 

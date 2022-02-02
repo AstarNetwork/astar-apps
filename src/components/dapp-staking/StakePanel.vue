@@ -86,7 +86,8 @@ import { formatBalance } from '@polkadot/util';
 import Button from 'components/common/Button.vue';
 import ClaimRewardModal from 'components/dapp-staking/modals/ClaimRewardModal.vue';
 import StakeModal from 'components/dapp-staking/modals/StakeModal.vue';
-import { useApi, useChainMetadata, useCustomSignature, useGetMinStaking } from 'src/hooks';
+import { useChainMetadata, useCustomSignature, useGetMinStaking } from 'src/hooks';
+import { $api } from 'boot/api';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { getAmount, StakeModel } from 'src/hooks/store';
 import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
@@ -132,16 +133,15 @@ export default defineComponent({
   emits: ['stakeChanged', 'stakeModalOpened'],
   setup(props, { emit }) {
     const store = useStore();
-    const { api } = useApi();
     const showModal = ref<boolean>(false);
     const showClaimRewardModal = ref<boolean>(false);
     const modalTitle = ref<string>('');
     const modalActionName = ref<string | ''>('');
     const formattedMinStake = ref<string>('');
     const modalAction = ref();
-    const { minStaking } = useGetMinStaking(api);
+    const { minStaking } = useGetMinStaking($api);
     const { decimal } = useChainMetadata();
-    const { canUnbondWithdraw } = useUnbondWithdraw(api);
+    const { canUnbondWithdraw } = useUnbondWithdraw($api);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const { callFunc, dispatchError, isCustomSig, customMsg } = useCustomSignature();
 
@@ -197,7 +197,7 @@ export default defineComponent({
           });
           customMsg.value = `You staked ${balance} on ${props.dapp.name}.`;
           const fn: SubmittableExtrinsicFunction<'promise'> | undefined =
-            api?.value?.tx.dappsStaking.bondAndStake;
+            $api?.value?.tx.dappsStaking.bondAndStake;
           const method: SubmittableExtrinsic<'promise'> | undefined =
             fn && fn(getAddressEnum(props.dapp.address), amount);
 
@@ -227,7 +227,7 @@ export default defineComponent({
         showModal.value = false;
       } else {
         const result = await store.dispatch('dapps/stake', {
-          api: api?.value,
+          api: $api?.value,
           senderAddress: stakeData.address,
           dapp: props.dapp,
           amount,
@@ -256,7 +256,7 @@ export default defineComponent({
           });
           customMsg.value = `You unstaked ${balance} on ${props.dapp.name}.`;
           const fn: SubmittableExtrinsicFunction<'promise'> | undefined =
-            api?.value?.tx.dappsStaking.unbondUnstakeAndWithdraw;
+            $api?.value?.tx.dappsStaking.unbondUnstakeAndWithdraw;
           const method: SubmittableExtrinsic<'promise'> | undefined =
             fn && fn(getAddressEnum(props.dapp.address), amount);
 
@@ -273,7 +273,7 @@ export default defineComponent({
         showModal.value = false;
       } else {
         const result = await store.dispatch(dispatchCommand, {
-          api: api?.value,
+          api: $api?.value,
           senderAddress: stakeData.address,
           dapp: props.dapp,
           amount,
@@ -312,13 +312,13 @@ export default defineComponent({
           const transactions = [];
           for (let era of erasToClaim) {
             transactions.push(
-              api?.value?.tx.dappsStaking.claim(getAddressEnum(props.dapp.address), era)
+              $api?.value?.tx.dappsStaking.claim(getAddressEnum(props.dapp.address), era)
             );
           }
 
           customMsg.value = 'All rewards have been already claimed.';
           const fn: SubmittableExtrinsicFunction<'promise'> | undefined =
-            api?.value?.tx.utility.batch;
+            $api?.value?.tx.utility.batch;
           const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn(transactions);
 
           method && (await callFunc(method));
@@ -332,7 +332,7 @@ export default defineComponent({
         await claimCustomExtrinsic();
       } else {
         await store.dispatch('dapps/claimBatch', {
-          api: api?.value,
+          api: $api?.value,
           senderAddress,
           dapp: props.dapp,
           substrateAccounts: substrateAccounts.value,

@@ -31,9 +31,6 @@ export interface GeneralStateInterface {
   metaExtensions: Extensions;
   extensionCount: number;
   substrateAccounts: SubstrateAccount[];
-  // Memo: Try to remove `allAccounts` and `allAccountNames` state after `contracts` module has been removed from codebase
-  allAccounts: string[];
-  allAccountNames: string[];
   currentNetworkStatus: ConnectionType;
   currentNetworkIdx: number;
   isEthWallet: boolean;
@@ -60,8 +57,6 @@ function state(): GeneralStateInterface {
     },
     extensionCount: 0,
     substrateAccounts: [],
-    allAccounts: [],
-    allAccountNames: [],
     currentNetworkStatus: 'connecting',
     currentNetworkIdx: endpointKey.ASTAR,
     isEthWallet: false,

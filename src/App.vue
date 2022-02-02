@@ -7,9 +7,7 @@
             <keep-alive>
               <Suspense>
                 <template #default>
-                  <api-loader>
-                    <component :is="Component"></component>
-                  </api-loader>
+                  <component :is="Component"></component>
                 </template>
                 <template #fallback>
                   <modal-loading />
@@ -36,21 +34,15 @@
 import { defineComponent, computed } from 'vue';
 import DashboardLayout from 'layouts/DashboardLayout.vue';
 import { useStore } from 'src/store';
-import { useMeta } from 'quasar';
-import { providerEndpoints } from 'src/config/chainEndpoints';
-import { opengraphMeta } from 'src/config/opengraph';
-import ApiLoader from 'src/hooks/providers/ApiLoader.vue';
 import Spinner from 'components/common/Spinner.vue';
 import ModalLoading from 'components/common/ModalLoading.vue';
 import AlertBox from 'components/common/AlertBox.vue';
-import { LOCAL_STORAGE } from 'src/config/localStorage';
 import 'animate.css';
 
 export default defineComponent({
   name: 'App',
   components: {
     DashboardLayout,
-    ApiLoader,
     Spinner,
     ModalLoading,
     AlertBox,
@@ -59,34 +51,6 @@ export default defineComponent({
     const store = useStore();
     const isLoading = computed(() => store.getters['general/isLoading']);
     const showAlert = computed(() => store.getters['general/showAlert']);
-
-    const { NETWORK_IDX, CUSTOM_ENDPOINT } = LOCAL_STORAGE;
-
-    const networkIdx = localStorage.getItem(NETWORK_IDX);
-    const customEndpoint = localStorage.getItem(CUSTOM_ENDPOINT);
-    if (networkIdx) {
-      store.commit('general/setCurrentNetworkIdx', parseInt(networkIdx));
-    }
-    if (customEndpoint) {
-      store.commit('general/setCurrentCustomEndpoint', customEndpoint);
-    }
-
-    if (networkIdx) {
-      const favicon = providerEndpoints[parseInt(networkIdx)].favicon;
-
-      useMeta({
-        title: '',
-        titleTemplate: (title) => `${title} | Astar Portal - Astar & Shiden Network`,
-        htmlAttr: { lang: 'en' },
-        link: {
-          material: {
-            rel: 'icon',
-            href: favicon,
-          },
-        },
-        meta: opengraphMeta,
-      });
-    }
 
     return {
       isLoading,
