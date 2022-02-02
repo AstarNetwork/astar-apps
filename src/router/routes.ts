@@ -1,7 +1,7 @@
 import { RouteRecordRaw } from 'vue-router';
 
 import Balance from 'pages/Balance.vue';
-import DApps from 'src/pages/Contract.vue';
+// import DApps from 'src/pages/Contract.vue';
 import Store from 'src/pages/DappStaking.vue';
 import ConnectWallet from 'src/components/balance/ConnectWallet.vue';
 // import CreateDappsTab from 'components/contracts/CreateDappsTab.vue';

@@ -104,7 +104,7 @@ import { MessageType } from 'src/hooks/types/Message';
 import { defineComponent, PropType, ref, watch } from 'vue';
 import IconSolidSelector from 'components/icons/IconSolidSelector.vue';
 import IconBase from 'components/icons/IconBase.vue';
-import { useApi } from 'src/hooks';
+import { $api } from 'boot/api';
 import { getParamValues } from 'src/hooks/helper/params';
 import InputAmount from 'components/common/InputAmount.vue';
 
@@ -138,10 +138,9 @@ export default defineComponent({
       emit('update:constructorIndex', index);
       openOption.value = false;
     };
-    const { api } = useApi();
 
     const balance = ref(new BN(0));
-    const tokens = api?.value?.registry?.chainTokens;
+    const tokens = $api?.value?.registry?.chainTokens;
     const unit = ref((tokens || [])[0]);
 
     const isBalanceType = (paramIndex: number) => {
@@ -152,7 +151,7 @@ export default defineComponent({
       () => props.constructorIndex,
       (i) => {
         const params = (
-          getParamValues(api?.value?.registry, props.constructors[i].args) as any[]
+          getParamValues($api?.value?.registry, props.constructors[i].args) as any[]
         ).map((pv, paramIndex) => {
           let paramValue: ParamValue = pv as string;
           if (isBalanceType(paramIndex)) {

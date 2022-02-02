@@ -18,7 +18,9 @@ export const useConnectWallet = () => {
   const modalName = ref<string>('');
 
   const router = useRouter();
-  const isBridge = router.currentRoute.value.matched[0].path === '/bridge';
+  const isBridge =
+    router.currentRoute.value.matched.length > 0 &&
+    router.currentRoute.value.matched[0].path === '/bridge';
 
   const { requestAccounts, requestSignature } = useMetamask();
   const store = useStore();

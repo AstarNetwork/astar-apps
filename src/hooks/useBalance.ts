@@ -10,8 +10,6 @@ import { TNetworkId } from './../web3';
 import { getVested } from './helper/vested';
 
 function useCall(apiRef: any, addressRef: Ref<string>) {
-  // should be fixed -- cannot refer it because it goes undefined once it called. to call balance again, it should pass apiRef by external params.
-  // const { api: apiRef } = useApi();
   const balanceRef = ref(new BN(0));
   const vestedRef = ref(new BN(0));
   const remainingVests = ref(new BN(0));

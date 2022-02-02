@@ -26,13 +26,13 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { numFormatter } from 'src/hooks/helper/price';
-import { useTvl, useApi } from 'src/hooks';
+import { useTvl } from 'src/hooks';
+import { $api } from 'boot/api';
 import FormatBalance from 'components/balance/FormatBalance.vue';
 export default defineComponent({
   components: { FormatBalance },
   setup() {
-    const { api } = useApi();
-    const { tvlToken, tvlUsd } = useTvl(api);
+    const { tvlToken, tvlUsd } = useTvl($api);
 
     return {
       tvlToken,

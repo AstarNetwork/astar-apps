@@ -276,7 +276,8 @@ import { stringify, isFunction } from '@polkadot/util';
 import { SubmittableResult } from '@polkadot/api';
 import type { ApiPromise } from '@polkadot/api';
 import { keyring } from '@polkadot/ui-keyring';
-import { useApi, useMessages, useWasm, useChainMetadata } from 'src/hooks';
+import { useMessages, useWasm, useChainMetadata } from 'src/hooks';
+import { $api } from 'boot/api';
 import { useFile, FileState } from 'src/hooks/useFile';
 import useAbi from 'src/hooks/useAbi';
 import useSendTx from 'src/hooks/signer/useSendTx';
@@ -374,8 +375,7 @@ export default defineComponent({
       return `${address.slice(0, 6)}${'.'.repeat(6)}${address.slice(-6)}`;
     });
 
-    const { api } = useApi();
-    const apiPromise: ApiPromise = api?.value as ApiPromise;
+    const apiPromise: ApiPromise = $api?.value as ApiPromise;
 
     const { abi, onChangeAbi, onRemoveAbi } = useAbi();
 

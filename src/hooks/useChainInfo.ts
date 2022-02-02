@@ -4,7 +4,7 @@ import { getSpecTypes } from '@polkadot/types-known';
 import { TypeRegistry } from '@polkadot/types/create';
 import { formatBalance, isNumber } from '@polkadot/util';
 import { defaults as addressDefaults } from '@polkadot/util-crypto/address/defaults';
-import { ref, Ref, watchEffect } from 'vue';
+import { ref } from 'vue';
 
 export interface ChainInfo extends MetadataDef {
   color: string | undefined;
@@ -41,13 +41,13 @@ function createInfo(
   };
 }
 
-export function useChainInfo(apiRef: Ref<ApiPromise>) {
+export function useChainInfo(api: ApiPromise) {
   const chainInfo = ref<ChainInfo>();
-  apiRef.value.isReady.then(async () => {
-    const specName: string = apiRef.value.runtimeVersion.specName.toString();
-    const systemChain: string = ((await apiRef.value.rpc.system.chain()) || '<unknown>').toString();
-    const systemName: string = (await apiRef.value.rpc.system.name()).toString();
-    chainInfo.value = createInfo(apiRef.value, systemChain, systemName, specName);
+  api.isReady.then(async () => {
+    const specName: string = api.runtimeVersion.specName.toString();
+    const systemChain: string = ((await api.rpc.system.chain()) || '<unknown>').toString();
+    const systemName: string = (await api.rpc.system.name()).toString();
+    chainInfo.value = createInfo(api, systemChain, systemName, specName);
   });
 
   return {
