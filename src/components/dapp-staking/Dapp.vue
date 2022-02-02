@@ -83,7 +83,6 @@ export default defineComponent({
   emits: ['dappClick'],
   setup(props, { emit }) {
     const store = useStore();
-    // const { api } = useApi();
     const stakeInfo = ref<StakeInfo>();
     const senderAddress = computed(() => store.getters['general/selectedAddress']);
     const isMaxStaker = ref<boolean>(false);

@@ -202,8 +202,6 @@ export default defineComponent({
       );
     });
 
-    // const { api } = useApi();
-
     const transferLocal = async (transferAmt: BN, fromAddress: string, toAddress: string) => {
       try {
         const injector = await getInjector(substrateAccounts.value);

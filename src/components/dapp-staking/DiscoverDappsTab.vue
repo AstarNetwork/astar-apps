@@ -115,9 +115,7 @@ export default defineComponent({
     useMeta({ title: 'Discover dApps' });
     const { stakerApr } = useApr();
     const { progress, blocksUntilNextEra, era } = useCurrentEra();
-    // const { api } = useApi();
     const { currentAccount } = useAccount();
-    console.log('sfsf', currentAccount.value);
     const { accountData } = useBalance($api, currentAccount);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
 

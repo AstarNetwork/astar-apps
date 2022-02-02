@@ -1,6 +1,5 @@
 import { computed } from 'vue';
 import { useStore } from 'src/store';
-// import { useApi } from '../';
 import { $api } from 'boot/api';
 import { u8aToHex } from '@polkadot/util';
 import { AccountInfo } from '@polkadot/types/interfaces';
@@ -16,7 +15,6 @@ interface CallOptions {
 }
 
 export function useExtrinsicCall({ onResult, onTransactionError }: CallOptions) {
-  // const { api } = useApi();
   const { requestSignature } = useMetamask();
   const store = useStore();
 

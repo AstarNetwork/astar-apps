@@ -43,8 +43,6 @@ interface AbiSpecOutdated {
 }
 
 export default function useAbi(source: Code | null = null, isRequired = false) {
-  // const { api } = useApi();
-
   const registry = $api?.value?.registry;
   const chainProperties = registry?.getChainProperties() as ChainProperties | undefined;
 

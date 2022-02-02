@@ -219,7 +219,6 @@ import FormatBalance from 'components/balance/FormatBalance.vue';
 import Button from 'src/components/common/Button.vue';
 import ModalVestingInfo from 'components/balance/modals/ModalVestingInfo.vue';
 import { useStore } from 'src/store';
-// import { useApi } from 'src/hooks';
 import { $api } from 'boot/api';
 import { getInjector } from 'src/hooks/helper/wallet';
 import Logo from '../common/Logo.vue';
@@ -251,7 +250,6 @@ export default defineComponent({
   setup(props, { emit }) {
     const store = useStore();
     const isEthWallet = computed(() => store.getters['general/isEthWallet']);
-    // const { api } = useApi();
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const selectedAddress = computed(() => store.getters['general/selectedAddress']);
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);

@@ -46,8 +46,6 @@ const getFormattedBalance = (parameters: StakingParameters): string => {
 
 const getCollectionKey = async (): Promise<string> => {
   if (!collectionKey) {
-    // const { api } = useApi();
-
     await $api?.value?.isReady;
     const chain = (await $api?.value?.rpc.system.chain()) || 'development-dapps';
     collectionKey = `${chain.toString().toLowerCase()}-dapps`.replace(' ', '-');
@@ -737,7 +735,6 @@ const actions: ActionTree<State, StateInterface> = {
   },
 
   async getStakingInfo({ commit, dispatch, rootState }) {
-    // const { api } = useApi();
     await $api?.value?.isReady;
 
     try {

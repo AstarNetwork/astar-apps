@@ -71,7 +71,6 @@ export default defineComponent({
   },
   setup(_, { emit }) {
     const store = useStore();
-    // const { api } = useApi();
     const data = reactive<NewDappItem>({ tags: [] } as unknown as NewDappItem);
     const step = ref<number>(1);
     const stepsCount = 4;

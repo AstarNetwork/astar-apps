@@ -18,7 +18,6 @@ const TS_FIRST_BLOCK = {
 };
 
 export const useApr = () => {
-  // const { api } = useApi();
   const store = useStore();
   const { decimal } = useChainMetadata();
   const { tvlToken } = useTvl($api);

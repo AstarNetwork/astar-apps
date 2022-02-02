@@ -156,7 +156,6 @@ export default defineComponent({
 
     const openOption = ref(false);
     const store = useStore();
-    // const { api } = useApi();
     const { defaultUnitToken, decimal } = useChainMetadata();
     const withdrawAmount = ref(new BN(0));
     const selectUnit = ref(defaultUnitToken.value);

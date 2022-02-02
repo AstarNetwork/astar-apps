@@ -40,8 +40,6 @@ export default defineComponent({
     ModalConfirmRemoval,
   },
   setup() {
-    // const { api } = useApi();
-
     const stateModal = reactive<Modal>({
       modalConfirmRemoval: false,
     });

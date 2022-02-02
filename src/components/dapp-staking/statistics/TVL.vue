@@ -32,7 +32,6 @@ import FormatBalance from 'components/balance/FormatBalance.vue';
 export default defineComponent({
   components: { FormatBalance },
   setup() {
-    // const { api } = useApi();
     const { tvlToken, tvlUsd } = useTvl($api);
 
     return {

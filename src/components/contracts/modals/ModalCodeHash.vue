@@ -144,8 +144,6 @@ export default defineComponent({
     };
 
     const store = useStore();
-    // const { api } = useApi();
-
     const { abi, onChangeAbi, onRemoveAbi } = useAbi();
 
     const codeHash = ref('');

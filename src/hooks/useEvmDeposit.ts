@@ -8,7 +8,6 @@ import { toEvmAddress } from './helper/plasmUtils';
 export function useEvmDeposit() {
   const evmDeposit = ref<BN>(new BN(0));
   const isEvmDeposit = ref<boolean>(false);
-  // const { api } = useApi();
   const { currentAccount } = useAccount();
   const store = useStore();
   const isLoading = computed(() => store.getters['general/isLoading']);

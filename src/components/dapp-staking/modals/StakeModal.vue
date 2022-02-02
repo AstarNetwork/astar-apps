@@ -127,7 +127,6 @@ export default defineComponent({
     const unlockingChunks = computed<number>(() => store.getters['dapps/getUnlockingChunks']);
     const unbondingPeriod = computed(() => store.getters['dapps/getUnbondingPeriod']);
     const isMaxChunks = unlockingChunks.value >= maxUnlockingChunks.value;
-    // const { api } = useApi();
     const { canUnbondWithdraw } = useUnbondWithdraw($api);
 
     const formatStakeAmount = computed(() => {

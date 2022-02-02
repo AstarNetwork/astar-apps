@@ -7,7 +7,7 @@ import { cryptoWaitReady } from '@polkadot/util-crypto';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { objToArray } from 'src/hooks/helper/common';
 import { getInjectedExtensions } from 'src/hooks/helper/wallet';
-import { useStore } from 'src/store';
+// import { options } from '@astar-network/astar-api';
 
 interface InjectedAccountExt {
   address: string;
@@ -67,7 +67,6 @@ export async function connectApi(endpoint: string, networkIdx: number, store: an
     },
   });
 
-  // const store = useStore();
   store.commit('general/setCurrentNetworkStatus', 'connecting');
 
   api.on('error', (error: Error) => console.error(error.message));

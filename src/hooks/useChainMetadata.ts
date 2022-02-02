@@ -1,6 +1,5 @@
 import { LOCAL_STORAGE } from './../config/localStorage';
 import { toRefs, reactive, watchEffect } from 'vue';
-// import { useApi } from '.';
 import { $api } from 'boot/api';
 import { setDefaultUnitName } from './helper/units';
 
@@ -10,8 +9,6 @@ interface Metadata {
 }
 
 export const useChainMetadata = () => {
-  // const { api } = useApi();
-
   const state = reactive<Metadata>({
     decimal: 18,
     defaultUnitToken: '',

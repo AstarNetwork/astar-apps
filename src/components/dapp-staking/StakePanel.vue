@@ -133,7 +133,6 @@ export default defineComponent({
   emits: ['stakeChanged', 'stakeModalOpened'],
   setup(props, { emit }) {
     const store = useStore();
-    // const { api } = useApi();
     const showModal = ref<boolean>(false);
     const showClaimRewardModal = ref<boolean>(false);
     const modalTitle = ref<string>('');

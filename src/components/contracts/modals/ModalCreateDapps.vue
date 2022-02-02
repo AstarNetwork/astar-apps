@@ -375,7 +375,6 @@ export default defineComponent({
       return `${address.slice(0, 6)}${'.'.repeat(6)}${address.slice(-6)}`;
     });
 
-    // const { api } = useApi();
     const apiPromise: ApiPromise = $api?.value as ApiPromise;
 
     const { abi, onChangeAbi, onRemoveAbi } = useAbi();

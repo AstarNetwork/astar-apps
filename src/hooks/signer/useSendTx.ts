@@ -9,14 +9,11 @@ import type { AddressProxy } from 'src/hooks/types/Signer';
 import { keyring } from '@polkadot/ui-keyring';
 import { web3FromSource } from '@polkadot/extension-dapp';
 import AccountSigner from './AccountSigner';
-// import { useApi } from 'src/hooks';
 import { $api } from 'boot/api';
 import BN from 'bn.js';
 import { extractExternal, handleTxResults } from './util';
 
 export default function useSendTx() {
-  // const { api: apiRef } = useApi();
-
   async function signAndSend(
     currentItem: QueueTx,
     tx: SubmittableExtrinsic<'promise'>,

@@ -57,7 +57,6 @@ export default defineComponent({
     ChunksModal,
   },
   setup() {
-    // const { api } = useApi();
     const store = useStore();
     const selectedAccountAddress = computed(() => store.getters['general/selectedAddress']);
     const unlockingChunksCount = computed(() => store.getters['dapps/getUnlockingChunks']);

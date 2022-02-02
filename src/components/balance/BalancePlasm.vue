@@ -66,7 +66,7 @@
 <script lang="ts">
 import 'animate.css';
 import { useMeta } from 'quasar';
-import { useAccount, useBalance, useEvmDeposit, useFaucet } from 'src/hooks';
+import { useAccount, useBalance, useEvmDeposit } from 'src/hooks';
 import { useStore } from 'src/store';
 import { computed, defineComponent, reactive, toRefs } from 'vue';
 import { $api } from 'boot/api';
@@ -111,7 +111,6 @@ export default defineComponent({
 
     const store = useStore();
     const { currentAccount, currentAccountName } = useAccount();
-    // const { api } = useApi();
     const { balance, accountData } = useBalance($api, currentAccount);
 
     const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);

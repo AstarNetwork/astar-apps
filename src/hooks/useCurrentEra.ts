@@ -1,5 +1,4 @@
 import { ref, watch, onUnmounted } from 'vue';
-// import { useApi } from '.';
 import { $api } from 'boot/api';
 
 export function useCurrentEra() {
@@ -8,7 +7,6 @@ export function useCurrentEra() {
   const blocksUntilNextEra = ref<number>(0);
   const progress = ref<number>(0);
   const interval = ref<number>(0);
-  // const { api } = useApi();
 
   const getEra = async (): Promise<{ era: number; blockPerEra: number } | void> => {
     const apiRef = $api && $api.value;
