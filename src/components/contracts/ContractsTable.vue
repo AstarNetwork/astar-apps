@@ -39,7 +39,8 @@ import { defineComponent, reactive, toRefs, ref, computed } from 'vue';
 import ContractItem from './ContractItem.vue';
 import ModalConfirmRemoval from './modals/ModalConfirmRemoval.vue';
 import ModalCallContract from './modals/ModalCallContract.vue';
-import { useApi, useContracts } from 'src/hooks';
+import { useContracts } from 'src/hooks';
+import { $api } from 'boot/api';
 import { ApiPromise } from '@polkadot/api';
 import { ContractPromise } from '@polkadot/api-contract';
 import { getContractForAddress } from 'src/hooks/helper/contractUtils';
@@ -57,8 +58,6 @@ export default defineComponent({
     ModalCallContract,
   },
   setup() {
-    const { api } = useApi();
-
     const stateModal = reactive<Modal>({
       modalConfirmRemoval: false,
       modalCallContract: false,
@@ -73,7 +72,7 @@ export default defineComponent({
     }
 
     const contracts = computed(() => {
-      return filterContracts(api?.value as ApiPromise, allContracts.value);
+      return filterContracts($api?.value as ApiPromise, allContracts.value);
     });
 
     const contractIndex = ref(0);

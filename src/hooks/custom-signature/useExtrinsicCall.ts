@@ -1,6 +1,6 @@
 import { computed } from 'vue';
 import { useStore } from 'src/store';
-import { useApi } from '../';
+import { $api } from 'boot/api';
 import { u8aToHex } from '@polkadot/util';
 import { AccountInfo } from '@polkadot/types/interfaces';
 import { ISubmittableResult } from '@polkadot/types/types';
@@ -15,7 +15,6 @@ interface CallOptions {
 }
 
 export function useExtrinsicCall({ onResult, onTransactionError }: CallOptions) {
-  const { api } = useApi();
   const { requestSignature } = useMetamask();
   const store = useStore();
 
@@ -24,7 +23,7 @@ export function useExtrinsicCall({ onResult, onTransactionError }: CallOptions) 
 
   const callFunc = async (method: SubmittableExtrinsic<'promise'>) => {
     const account = <AccountInfo>(
-      await api?.value?.query.system.account(currentEcdsaAccount.value.ss58)
+      await $api?.value?.query.system.account(currentEcdsaAccount.value.ss58)
     );
     const callPayload = u8aToHex(
       getPayload(method, account.nonce, providerEndpoints[currentNetworkIdx.value].prefix || 0)
@@ -33,7 +32,7 @@ export function useExtrinsicCall({ onResult, onTransactionError }: CallOptions) 
     if (callPayload) {
       // Sign transaction with eth private key
       const signature = await requestSignature(callPayload, currentEcdsaAccount.value.ethereum);
-      const call = api?.value?.tx.ethCall.call(
+      const call = $api?.value?.tx.ethCall.call(
         method,
         currentEcdsaAccount.value.ss58,
         signature,

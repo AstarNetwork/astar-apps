@@ -150,12 +150,12 @@
                     "
                   >
                     <ModalSelectAccountOption
-                      v-for="(account, index) in allAccounts"
+                      v-for="(account, index) in substrateAccounts"
                       :key="index"
                       v-model:selOption="selAccount"
                       :key-idx="index"
-                      :address="account"
-                      :address-name="allAccountNames[index]"
+                      :address="account.address"
+                      :address-name="substrateAccounts[index].name"
                       :checked="selAccount === index"
                     />
                   </ul>
@@ -308,21 +308,20 @@ export default defineComponent({
     });
 
     const store = useStore();
-    const allAccounts = computed(() => store.getters['general/allAccounts']);
-    const allAccountNames = computed(() => store.getters['general/allAccountNames']);
+    const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
 
     const openOption = ref(false);
     const selAccount = ref(0);
-    const toAccount = ref(allAccounts.value[0] as string);
-    const toAddress = ref(allAccounts.value[0] as string);
-    const toAccountName = ref(allAccountNames.value[0]);
+    const toAccount = ref(substrateAccounts.value[0].address as string);
+    const toAddress = ref(substrateAccounts.value[0].address as string);
+    const toAccountName = ref(substrateAccounts.value[0].name);
 
     watch(
       selAccount,
       () => {
-        toAccount.value = allAccounts.value[selAccount.value] as string;
-        toAccountName.value = allAccountNames.value[selAccount.value];
-        toAddress.value = allAccounts.value[selAccount.value] as string;
+        toAccount.value = substrateAccounts.value[selAccount.value].address as string;
+        toAccountName.value = substrateAccounts.value[selAccount.value].name;
+        toAddress.value = substrateAccounts.value[selAccount.value].address as string;
 
         openOption.value = false;
       },
@@ -453,8 +452,7 @@ export default defineComponent({
       ...toRefs(formData),
       closeModal,
       openOption,
-      allAccounts,
-      allAccountNames,
+      substrateAccounts,
       toAddress,
       messageMethod,
       selAccount,

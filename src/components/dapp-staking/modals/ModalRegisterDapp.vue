@@ -56,7 +56,7 @@ import RegisterDappMedia from 'components/dapp-staking/modals/RegisterDappMedia.
 import RegisterDappSupport from 'components/dapp-staking/modals/RegisterDappSupport.vue';
 import Button from 'components/common/Button.vue';
 import { useStore } from 'src/store';
-import { useApi } from 'src/hooks';
+import { $api } from 'boot/api';
 import { NewDappItem } from 'src/store/dapp-staking/state';
 import { RegisterParameters } from 'src/store/dapp-staking/actions';
 
@@ -71,7 +71,6 @@ export default defineComponent({
   },
   setup(_, { emit }) {
     const store = useStore();
-    const { api } = useApi();
     const data = reactive<NewDappItem>({ tags: [] } as unknown as NewDappItem);
     const step = ref<number>(1);
     const stepsCount = 4;
@@ -86,7 +85,7 @@ export default defineComponent({
             const senderAddress = store.getters['general/selectedAddress'];
             const result = await store.dispatch('dapps/registerDapp', {
               dapp: data,
-              api: api?.value,
+              api: $api?.value,
               senderAddress,
               substrateAccounts: substrateAccounts.value,
             } as RegisterParameters);

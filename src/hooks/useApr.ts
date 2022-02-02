@@ -1,10 +1,12 @@
 import { aprToApy } from 'apr-tools';
+import { $api } from 'boot/api';
 import { ethers } from 'ethers';
 import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
 import { computed, ref, watchEffect } from 'vue';
-import { useApi, useChainMetadata, useCurrentEra, useTvl } from '.';
+import { useChainMetadata, useCurrentEra, useTvl } from '.';
 import { defaultAmountWithDecimals } from './helper/plasmUtils';
+
 // Ref: https://github.com/PlasmNetwork/Astar/blob/5b01ef3c2ca608126601c1bd04270ed08ece69c4/runtime/shiden/src/lib.rs#L435
 // Memo: 50% of block rewards goes to dappsStaking, 50% goes to block validator
 // Fixme: ideally get the value from API
@@ -17,10 +19,9 @@ const TS_FIRST_BLOCK = {
 };
 
 export const useApr = () => {
-  const { api } = useApi();
   const store = useStore();
   const { decimal } = useChainMetadata();
-  const { tvlToken } = useTvl(api);
+  const { tvlToken } = useTvl($api);
   const { blockPerEra } = useCurrentEra();
   const currentNetworkIdx = computed(() => {
     const chainInfo = store.getters['general/chainInfo'];
@@ -52,7 +53,7 @@ export const useApr = () => {
     const tvlTokenRef = tvlToken.value;
     const decimalRef = decimal.value;
     const blocksPerEraRef = Number(blockPerEra.value);
-    const apiRef = api && api.value;
+    const apiRef = $api && $api.value;
     if (
       !apiRef ||
       !dappsRef ||

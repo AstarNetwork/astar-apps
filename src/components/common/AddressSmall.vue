@@ -87,7 +87,9 @@ export default defineComponent({
     const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
 
     watchEffect(() => {
-      const isDappStakingPath = router.currentRoute.value.matched[0].path === '/dapp-staking';
+      const isDappStakingPath =
+        router.currentRoute.value.matched.length > 0 &&
+        router.currentRoute.value.matched[0].path === '/dapp-staking';
       if (currentNetworkStatus.value !== 'connected' || !isDappStakingPath) return;
       if (currentAccount.value === '' && accountId === null) {
         setTimeout(() => {

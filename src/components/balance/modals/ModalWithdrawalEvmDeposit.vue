@@ -117,7 +117,8 @@ import FormatBalance from 'components/balance/FormatBalance.vue';
 import InputAmount from 'components/common/InputAmount.vue';
 import IconAccountSample from 'components/icons/IconAccountSample.vue';
 import IconBase from 'components/icons/IconBase.vue';
-import { useApi, useChainMetadata, useCustomSignature } from 'src/hooks';
+import { useChainMetadata, useCustomSignature } from 'src/hooks';
+import { $api } from 'boot/api';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { getUnit } from 'src/hooks/helper/units';
 import { getInjector } from 'src/hooks/helper/wallet';
@@ -155,7 +156,6 @@ export default defineComponent({
 
     const openOption = ref(false);
     const store = useStore();
-    const { api } = useApi();
     const { defaultUnitToken, decimal } = useChainMetadata();
     const withdrawAmount = ref(new BN(0));
     const selectUnit = ref(defaultUnitToken.value);
@@ -178,7 +178,8 @@ export default defineComponent({
     }) => {
       try {
         const h160Addr = plasmUtils.toEvmAddress(account);
-        const fn: SubmittableExtrinsicFunction<'promise'> | undefined = api?.value?.tx.evm.withdraw;
+        const fn: SubmittableExtrinsicFunction<'promise'> | undefined =
+          $api?.value?.tx.evm.withdraw;
         const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn(h160Addr, amount);
 
         method && callFunc(method);
@@ -189,7 +190,7 @@ export default defineComponent({
 
     const withdraw = async ({ amount, account }: { amount: BN; account: string }) => {
       try {
-        if (!api || !api.value) {
+        if (!$api || !$api.value) {
           throw Error('Cannot connect to the API');
         }
 
@@ -199,7 +200,7 @@ export default defineComponent({
         }
 
         const h160Addr = plasmUtils.toEvmAddress(account);
-        const transaction = await api.value.tx.evm.withdraw(h160Addr, amount);
+        const transaction = await $api.value.tx.evm.withdraw(h160Addr, amount);
         if (!transaction) {
           throw Error('Cannot withdraw the deposit');
         }

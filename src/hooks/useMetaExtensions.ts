@@ -1,4 +1,4 @@
-import { ref, Ref, watch } from 'vue';
+import { ref } from 'vue';
 import store from 'store';
 import type { ApiPromise } from '@polkadot/api';
 import type {
@@ -136,26 +136,18 @@ async function getKnown(
   return all.filter((info): info is ExtensionKnown => !!info);
 }
 
-export function useMetaExtensions(
-  apiRef: Ref<ApiPromise>,
-  extensionsRef: Ref<InjectedExtension[]>
-) {
+export function useMetaExtensions(api: ApiPromise, extensions: InjectedExtension[]) {
+  if (!api || !extensions) return;
+
   const metaExtensions = ref<any>(null);
   const extensionCount = ref<number>(0);
 
-  watch(
-    [extensionsRef, apiRef],
-    () => {
-      if (!apiRef.value || !extensionsRef.value) return;
-      (async () => {
-        const all = await getKnown(apiRef?.value, extensionsRef?.value);
+  (async () => {
+    const all = await getKnown(api, extensions);
 
-        metaExtensions.value = filterAll(apiRef?.value, all);
-        extensionCount.value = metaExtensions.value.count;
-      })();
-    },
-    { immediate: true }
-  );
+    metaExtensions.value = filterAll(api, all);
+    extensionCount.value = metaExtensions.value.count;
+  })();
 
   return { metaExtensions, extensionCount };
 }
