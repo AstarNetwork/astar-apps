@@ -1,10 +1,11 @@
 import { aprToApy } from 'apr-tools';
+import { $api } from 'boot/api';
+import { ethers } from 'ethers';
 import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
 import { computed, ref, watchEffect } from 'vue';
 import { useChainMetadata, useCurrentEra, useTvl } from '.';
-import { $api } from 'boot/api';
-import { defaultAmountWithDecimals, reduceBalanceToDenom } from './helper/plasmUtils';
+import { defaultAmountWithDecimals } from './helper/plasmUtils';
 
 // Ref: https://github.com/PlasmNetwork/Astar/blob/5b01ef3c2ca608126601c1bd04270ed08ece69c4/runtime/shiden/src/lib.rs#L435
 // Memo: 50% of block rewards goes to dappsStaking, 50% goes to block validator
@@ -86,7 +87,7 @@ export const useApr = () => {
         const avgBlocksPerDay = avrBlockPerMins * 60 * 24;
         const dailyEraRate = avgBlocksPerDay / blocksPerEraRef;
         const annualRewards = eraRewards * dailyEraRate * 365.25;
-        const totalStaked = Number(reduceBalanceToDenom(tvlTokenRef, decimalRef));
+        const totalStaked = Number(ethers.utils.formatUnits(tvlTokenRef.toString(), decimalRef));
         const developerRewardPercentage = Number(results[3]?.toString().replace('%', '')) * 0.01;
         const stakerBlockReward = (1 - developerRewardPercentage) * DAPPS_REWARD_RATE;
         const stakerApr = (annualRewards / totalStaked) * stakerBlockReward * 100;

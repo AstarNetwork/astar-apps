@@ -1,8 +1,8 @@
 import BN from 'bn.js';
+import { ethers } from 'ethers';
 import { useStore } from 'src/store';
 import { computed, ref, watch } from 'vue';
 import { useChainMetadata } from '.';
-import { reduceBalanceToDenom } from './helper/plasmUtils';
 import { getUsdPrice } from './helper/price';
 
 export function useTvl(api: any) {
@@ -29,7 +29,7 @@ export function useTvl(api: any) {
         const era = await apiRef.query.dappsStaking.currentEra();
         const result = await apiRef.query.dappsStaking.eraRewardsAndStakes(era);
         const tvl = result.unwrap().staked.valueOf();
-        const tvlDefaultUnit = Number(reduceBalanceToDenom(tvl, decimal.value));
+        const tvlDefaultUnit = Number(ethers.utils.formatUnits(tvl.toString(), decimal.value));
         return { tvl, tvlDefaultUnit };
       };
 
