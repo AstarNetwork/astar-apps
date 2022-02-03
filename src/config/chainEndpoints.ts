@@ -18,6 +18,7 @@ interface ChainProvider {
   evmChainId: string;
   evmRpc: string;
   faucetEndpoint: string;
+  baseApiUrl: string;
 }
 
 export enum endpointKey {
@@ -45,6 +46,7 @@ export const providerEndpoints: ChainProvider[] = [
     evmChainId: '592',
     evmRpc: 'https://rpc.astar.network:8545',
     faucetEndpoint: 'https://astar-discord-faucet.herokuapp.com/astar',
+    baseApiUrl: 'https://api.astar.network/api/astar',
   },
   {
     networkAlias: 'shiden-shell',
@@ -62,6 +64,7 @@ export const providerEndpoints: ChainProvider[] = [
     evmChainId: '336',
     evmRpc: 'https://rpc.shiden.astar.network:8545',
     faucetEndpoint: 'https://astar-discord-faucet.herokuapp.com/shiden',
+    baseApiUrl: 'https://api.astar.network/api/shiden',
   },
   {
     networkAlias: 'shibuya-testnet',
@@ -79,6 +82,7 @@ export const providerEndpoints: ChainProvider[] = [
     evmChainId: '81',
     evmRpc: 'https://rpc.shibuya.astar.network:8545',
     faucetEndpoint: 'https://astar-discord-faucet.herokuapp.com/shibuya',
+    baseApiUrl: 'https://api.astar.network/api/shibuya',
   },
   {
     networkAlias: 'local-node',
@@ -94,6 +98,7 @@ export const providerEndpoints: ChainProvider[] = [
     evmChainId: '',
     evmRpc: '',
     faucetEndpoint: '',
+    baseApiUrl: '',
   },
   {
     networkAlias: 'custom-node',
@@ -109,6 +114,7 @@ export const providerEndpoints: ChainProvider[] = [
     evmChainId: '',
     evmRpc: '',
     faucetEndpoint: '',
+    baseApiUrl: '',
   },
 ];
 
