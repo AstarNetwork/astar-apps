@@ -128,32 +128,3 @@ export interface Quotation {
   minAmount?: number;
   maxAmount?: number;
 }
-
-export const cbridgeInitialState = {
-  [EvmChain.Ethereum]: {
-    block_delay: 8,
-    contract_addr: '0x5427FEFA711Eff984124bFBB1AB6fbf5E3DA1820',
-    drop_gas_amt: '0',
-    drop_gas_balance_alert: '0',
-    drop_gas_cost_amt: '0',
-    explore_url: 'https://etherscan.io/',
-    gas_token_symbol: 'ETH',
-    icon: 'https://get.celer.app/cbridge-icons/chain-icon/ETH.png',
-    id: 1,
-    name: 'Ethereum Mainnet',
-    suggested_gas_cost: '0',
-  },
-  [EvmChain.Astar]: {
-    block_delay: 6,
-    contract_addr: '0x841ce48F9446C8E281D3F1444cB859b4A6D0738C',
-    drop_gas_amt: '2000000000000000',
-    drop_gas_balance_alert: '500000000000000000',
-    drop_gas_cost_amt: '21000000000000',
-    explore_url: 'https://blockscout.com/astar/',
-    gas_token_symbol: 'ASTR',
-    icon: 'https://get.celer.app/cbridge-icons/chain-icon/Astar.png',
-    id: 592,
-    name: 'Astar',
-    suggested_gas_cost: '129568',
-  },
-};

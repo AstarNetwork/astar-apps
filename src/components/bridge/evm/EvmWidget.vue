@@ -146,6 +146,13 @@
       :modal="modal"
     />
 
+    <ModalHistory
+      v-if="modal === 'history'"
+      v-model:isOpen="modal"
+      :close-modal="closeModal"
+      :modal="modal"
+    />
+
     <ModalChain
       v-if="modal === 'src'"
       v-model:isOpen="modal"
@@ -192,6 +199,7 @@ import ModalConnectWallet from 'src/components/balance/modals/ModalConnectWallet
 import ModalInstallWallet from 'src/components/balance/modals/ModalInstallWallet.vue';
 import ModalChain from './modals/ModalChain.vue';
 import ModalToken from './modals/ModalToken.vue';
+import ModalHistory from './modals/ModalHistory.vue';
 import BridgeButtons from './BridgeButtons.vue';
 import Remarks from './Remarks.vue';
 import { fasHistory } from '@quasar/extras/fontawesome-v5';
@@ -206,6 +214,7 @@ export default defineComponent({
     BridgeButtons,
     Remarks,
     IconBase,
+    ModalHistory,
   },
   setup() {
     useMeta({ title: 'EVM Bridge' });

@@ -8,7 +8,6 @@ import {
   approve,
   BridgeMethod,
   cBridgeEndpoint,
-  cbridgeInitialState,
   CbridgeToken,
   Chain,
   EvmChain,
@@ -39,8 +38,8 @@ import { getEvmProvider } from './helper/wallet';
 const { Ethereum, Astar } = EvmChain;
 
 export function useCbridge() {
-  const srcChain = ref<Chain>(cbridgeInitialState[Ethereum]);
-  const destChain = ref<Chain>(cbridgeInitialState[Astar]);
+  const srcChain = ref<Chain | null>(null);
+  const destChain = ref<Chain | null>(null);
   const srcChains = ref<Chain[] | null>(null);
   const destChains = ref<Chain[] | null>(null);
   const selectedNetwork = ref<number>(0);
@@ -96,6 +95,7 @@ export function useCbridge() {
   const closeModal = () => modal.value === null;
   const openModal = (scene: 'src' | 'dest' | 'token') => (modal.value = scene);
   const selectToken = (token: CbridgeToken) => {
+    if (!srcChain.value) return;
     const formattedToken = getSelectedToken({
       srcChainId: srcChain.value.id,
       token,
@@ -317,6 +317,7 @@ export function useCbridge() {
         !selectedToken.value ||
         !srcChain.value ||
         !amount.value ||
+        !destChain.value ||
         !provider
       ) {
         throw Error('Something went wrong');
@@ -363,7 +364,7 @@ export function useCbridge() {
   });
 
   watchEffect(async () => {
-    if (!selectedToken.value || !amount.value) return;
+    if (!selectedToken.value || !destChain.value || !srcChain.value || !amount.value) return;
     const { symbol } = getTokenInfo({
       srcChainId: srcChain.value.id,
       selectedToken: selectedToken.value,
