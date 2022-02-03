@@ -21,6 +21,7 @@
     "heroku-deploy": "git push heroku main"
   },
   "dependencies": {
+    "@astar-network/astar-api": "^0.1.4-13",
     "@ethersproject/bignumber": "^5.5.0",
     "@polkadot/api": "^6.8.1",
     "@polkadot/api-contract": "^6.8.1",
@@ -42,6 +43,7 @@
     "connect-history-api-fallback": "^1.6.0",
     "core-js": "^3.19.1",
     "ethereumjs-util": "^7.1.3",
+    "ethers": "^5.5.4",
     "express": "^4.17.1",
     "firebase": "^9.5.0",
     "keccak": "byterose/keccak#stream-update",
@@ -76,6 +78,7 @@
     "@typescript-eslint/parser": "^4.16.1",
     "eslint": "^7.14.0",
     "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-jest": "^25.2.2",
     "eslint-plugin-prettier-vue": "^3.1.0",
     "eslint-plugin-vue": "^7.0.0",
     "eslint-webpack-plugin": "^3.0.1",
@@ -84,8 +87,7 @@
     "push-dir": "^0.4.1",
     "sass-loader": "12.3.0",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.3",
-    "tailwindcss-theme-variants": "^2.0.0-alpha.2",
-    "eslint-plugin-jest": "^25.2.2"
+    "tailwindcss-theme-variants": "^2.0.0-alpha.2"
   },
   "browserslist": [
     "last 10 Chrome versions",

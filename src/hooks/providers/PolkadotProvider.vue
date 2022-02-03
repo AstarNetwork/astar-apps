@@ -5,6 +5,7 @@
 </template>
 
 <script lang="ts">
+////@deprecated
 import { defineComponent, PropType } from 'vue';
 import { providePolkadotContainer } from 'src/config/api/polkadot/polkadotContext';
 import type { InjectedExtension } from '@polkadot/extension-inject/types';

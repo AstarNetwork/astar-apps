@@ -1,3 +1,4 @@
+////@deprecated
 import { provide, inject, reactive, toRefs, readonly } from 'vue';
 import { ApiPromise } from '@polkadot/api';
 import { keyring } from '@polkadot/ui-keyring';
