@@ -1,38 +1,56 @@
 <template>
-  <Modal :title="title" class="animate__animated animate__fadeIn" @click="closeModal">
+  <Modal title="Bridge History" class="animate__animated animate__fadeIn" @click="closeModal">
     <template #content>
-      <div class="tw-max-w-sm">
-        <!-- <Chain
-          v-for="(chain, index) in chains"
+      <div v-if="!histories.length" class="no-history">
+        <icon-base class="history-icon" icon-name="history">
+          <q-icon :name="fasHistory" :color="isDarkTheme ? 'white' : 'blue'" />
+        </icon-base>
+        <p>{{ $t('bridge.noHistory') }}</p>
+      </div>
+      <div v-else class="histories">
+        <History
+          v-for="(history, index) in histories"
           :key="index"
-          :chain="chain"
-          :select-chain="selectChain"
-          :selected-chain="selectedChain"
-        /> -->
+          :history="history"
+          :token-icons="tokenIcons"
+        />
       </div>
     </template>
   </Modal>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-// import Chain from './Chain.vue';
+import { defineComponent, computed } from 'vue';
+import { useStore } from 'src/store';
+import History from './History.vue';
 import Modal from 'src/components/common/Modal.vue';
+import { fasHistory } from '@quasar/extras/fontawesome-v5';
+import IconBase from 'components/icons/IconBase.vue';
+
 export default defineComponent({
   components: {
-    // Chain,
+    History,
     Modal,
+    IconBase,
   },
   props: {
     closeModal: {
       type: Function,
       required: true,
     },
+    histories: {
+      type: Array,
+      required: true,
+    },
+    tokenIcons: {
+      type: Array,
+      required: true,
+    },
   },
-  setup(props) {
-    const title = 'Bridge history';
-
-    return { title };
+  setup() {
+    const store = useStore();
+    const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
+    return { fasHistory, isDarkTheme };
   },
 });
 </script>

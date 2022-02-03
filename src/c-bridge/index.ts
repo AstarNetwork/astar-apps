@@ -15,6 +15,9 @@ export {
   getMinimalMaxSlippage,
   poolTransfer,
   getIcon,
+  getHistory,
+  getTxStatus,
+  getTokenIcons,
 } from './utils';
 
 export enum EvmChain {
@@ -38,6 +41,7 @@ export const cBridgeBaseEndpoint = 'https://cbridge-prod2.celer.network/v1';
 export const cBridgeEndpoint = {
   Configs: cBridgeBaseEndpoint + '/getTransferConfigsForAll',
   Quotation: cBridgeBaseEndpoint + '/estimateAmt',
+  History: cBridgeBaseEndpoint + '/transferHistory',
 };
 
 export interface TransferConfigs {
@@ -127,4 +131,21 @@ export interface Quotation {
   estimated_receive_amt: string;
   minAmount?: number;
   maxAmount?: number;
+}
+
+export interface History {
+  transfer_id: string;
+  src_send_info: HistoryInfo;
+  dst_received_info: HistoryInfo;
+  ts: string;
+  src_block_tx_link: string;
+  dst_block_tx_link: string;
+  status: number;
+  refund_reason: number;
+}
+
+export interface HistoryInfo {
+  chain: Chain;
+  token: Token;
+  amount: string;
 }

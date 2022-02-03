@@ -18,9 +18,8 @@ export const useConnectWallet = () => {
   const modalName = ref<string>('');
 
   const router = useRouter();
-  const isBridge =
-    router.currentRoute.value.matched.length > 0 &&
-    router.currentRoute.value.matched[0].path === '/bridge';
+  const currentRouter = router.currentRoute.value.matched[0];
+  const isBridge = router.currentRoute.value.matched.length > 0 && currentRouter.path === '/bridge';
 
   const { requestAccounts, requestSignature } = useMetamask();
   const store = useStore();
@@ -131,22 +130,20 @@ export const useConnectWallet = () => {
     }
   });
 
-  watch(
-    [isConnectedNetwork],
-    () => {
-      if (isBridge) return;
-      const address = localStorage.getItem(SELECTED_ADDRESS);
-      if (!address || !isConnectedNetwork.value) return;
-      // Memo: wait for updating the chain id from the initial state 592 (to pass the `setupNetwork` function)
-      setTimeout(async () => {
-        if (address === 'Ethereum Extension') {
-          await setMetaMask();
-        }
-      }, 800);
-      store.commit('general/setCurrentAddress', address);
-    },
-    { immediate: true }
-  );
+  watchEffect(() => {
+    const address = localStorage.getItem(SELECTED_ADDRESS);
+    if (isBridge || currentRouter === undefined || !address || !isConnectedNetwork.value) {
+      return;
+    }
+
+    // Memo: wait for updating the chain id from the initial state 592 (to pass the `setupNetwork` function)
+    setTimeout(async () => {
+      if (address === 'Ethereum Extension') {
+        await setMetaMask();
+      }
+    }, 800);
+    store.commit('general/setCurrentAddress', address);
+  });
 
   return {
     WalletModalOption,

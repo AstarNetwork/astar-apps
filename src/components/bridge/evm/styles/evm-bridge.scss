@@ -386,6 +386,18 @@ input[type='number']::-webkit-outer-spin-button {
   border-top: 0px solid #364453;
 }
 
+@keyframes rotation {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+.rotate {
+  animation: rotation 5s infinite linear;
+}
+
 .remarks-left {
   @apply tw-text-sm tw-text-darkGray-600 dark:tw-text-darkGray-300;
 }

@@ -12,6 +12,9 @@ export {
   pushToSelectableChains,
   sortChainName,
   getIcon,
+  getHistory,
+  getTokenIcons,
+  getTxStatus,
 } from './cbridgeAPI';
 
 export {

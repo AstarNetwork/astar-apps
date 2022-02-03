@@ -1,3 +1,4 @@
+import { History } from './../c-bridge/index';
 import { MaxUint256 } from '@ethersproject/constants';
 import axios from 'axios';
 import { ethers } from 'ethers';
@@ -20,6 +21,8 @@ import {
   Quotation,
   SelectedToken,
   sortChainName,
+  getHistory,
+  getTokenIcons,
 } from 'src/c-bridge';
 import { getSelectedToken } from 'src/c-bridge/utils';
 import { useStore } from 'src/store';
@@ -48,8 +51,11 @@ export function useCbridge() {
   const tokensObj = ref<any | null>(null);
   const selectedToken = ref<SelectedToken | null>(null);
   const selectedTokenBalance = ref<string>('0');
-  const modal = ref<'src' | 'dest' | 'token' | null>(null);
+  const modal = ref<'src' | 'dest' | 'token' | 'history' | null>(null);
   const amount = ref<string | null>(null);
+  const histories = ref<History[] | []>([]);
+  const tokenIcons = ref<{ symbol: string; icon: string }[]>([]);
+  const isPendingTx = ref<boolean>(false);
   const quotation = ref<Quotation | null>(null);
   const usdValue = ref<number>(0);
   const isApprovalNeeded = ref<boolean>(true);
@@ -58,6 +64,18 @@ export function useCbridge() {
   const store = useStore();
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
   const selectedAddress = computed(() => store.getters['general/selectedAddress']);
+
+  const fetchHistory = async () => {
+    if (!isH160.value || !selectedAddress.value) return;
+    const { histories: historyArray, isPending } = await getHistory(selectedAddress.value);
+    histories.value = historyArray;
+    isPendingTx.value = isPending;
+  };
+
+  const fetchTokenIcons = async () => {
+    const result = await getTokenIcons();
+    tokenIcons.value = result;
+  };
 
   const resetStates = () => {
     isApprovalNeeded.value = true;
@@ -93,7 +111,7 @@ export function useCbridge() {
   };
 
   const closeModal = () => modal.value === null;
-  const openModal = (scene: 'src' | 'dest' | 'token') => (modal.value = scene);
+  const openModal = (scene: 'src' | 'dest' | 'token' | 'history') => (modal.value = scene);
   const selectToken = (token: CbridgeToken) => {
     if (!srcChain.value) return;
     const formattedToken = getSelectedToken({
@@ -203,10 +221,6 @@ export function useCbridge() {
       console.log(error);
     }
   };
-
-  const updateEstimation = setInterval(() => {
-    getEstimation();
-  }, 15 * 1000);
 
   // Todo: Fix input bug with debounce
   // const inputHandler = debounce((event) => {
@@ -345,8 +359,8 @@ export function useCbridge() {
         const msg = `Transaction submitted at transaction hash #${hash}`;
         store.dispatch('general/showAlertMsg', { msg, alertType: 'success' });
       }
+      amount.value = null;
     } catch (error: any) {
-      console.log('error', error);
       console.error(error.message);
       store.dispatch('general/showAlertMsg', {
         msg: error.message.message || 'Something went wrong',
@@ -380,6 +394,10 @@ export function useCbridge() {
   });
 
   watchEffect(async () => {
+    await fetchHistory();
+  });
+
+  watchEffect(async () => {
     selectedTokenBalance.value = await getSelectedTokenBal();
   });
 
@@ -392,6 +410,7 @@ export function useCbridge() {
     },
     { immediate: false }
   );
+
   watch(
     [srcChain, isH160],
     async () => {
@@ -401,6 +420,10 @@ export function useCbridge() {
     },
     { immediate: false }
   );
+
+  watchEffect(async () => {
+    await fetchTokenIcons();
+  });
 
   watchEffect(async () => {
     const provider = getEvmProvider();
@@ -496,8 +519,13 @@ export function useCbridge() {
     };
   });
 
+  const handleUpdate = setInterval(async () => {
+    await getEstimation();
+    await fetchHistory();
+  }, 10 * 1000);
+
   onUnmounted(() => {
-    clearInterval(updateEstimation);
+    clearInterval(handleUpdate);
   });
 
   return {
@@ -516,6 +544,9 @@ export function useCbridge() {
     selectedNetwork,
     isDisabledBridge,
     usdValue,
+    histories,
+    isPendingTx,
+    tokenIcons,
     reverseChain,
     closeModal,
     openModal,

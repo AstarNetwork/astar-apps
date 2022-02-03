@@ -82,6 +82,112 @@
   @apply tw-border-2  tw-border-blue-400 dark:tw-border-blue-500;
 }
 
+.no-history {
+  padding: 16px;
+  display: grid;
+  justify-items: center;
+  @apply tw-text-lg tw-text-blue-900 dark:tw-text-darkGray-100;
+}
+
+.history-icon {
+  width: 24px;
+  margin-bottom: 8px;
+}
+
+.histories {
+  display: grid;
+  row-gap: 32px;
+  min-width: 290px;
+}
+
+.history-card {
+  padding: 24px 12px;
+  transition: 0.2s;
+  border-radius: 40px;
+  font-weight: 600;
+  display: grid;
+  align-items: center;
+  grid-template-columns: 74px 20px 74px 74px;
+  column-gap: 8px;
+  @apply tw-text-xs tw-text-blue-900 dark:tw-text-darkGray-100 tw-bg-darkGray-300 dark:tw-bg-darkGray-700;
+
+  @media (min-width: 768px) {
+    font-size: 16px;
+    padding: 16px 6px;
+    grid-template-columns: 210px 20px 220px 190px;
+  }
+}
+
+.amount {
+  @media (min-width: 768px) {
+    white-space: nowrap;
+  }
+}
+
+.history-chain-logo {
+  margin-bottom: 8px;
+  height: 24px;
+  width: 24px;
+  @media (min-width: 768px) {
+    margin-bottom: 0;
+    margin-right: 12px;
+    height: 38px;
+    width: 38px;
+  }
+}
+
+.history-card:hover {
+  @apply tw-bg-darkGray-200 dark:tw-bg-darkGray-600;
+}
+
+.history-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  @media (min-width: 768px) {
+    flex-direction: row;
+    justify-content: flex-start;
+    padding-left: 32px;
+  }
+}
+
+.tx-detail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  @media (min-width: 768px) {
+    row-gap: 2px;
+  }
+}
+
+.row-token {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-column-gap: 4px;
+  margin-bottom: 4px;
+}
+
+.token-mini {
+  display: none;
+  @media (min-width: 768px) {
+    display: block;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.arrow {
+  font-weight: 900;
+  @apply tw-text-xl;
+}
+
+.explorer-link {
+  text-decoration: underline;
+}
+
 .tooltip {
   @apply tw-pointer-events-none
   tw-hidden

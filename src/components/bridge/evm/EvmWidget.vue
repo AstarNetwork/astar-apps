@@ -3,8 +3,13 @@
     <div class="widget" :class="isDarkTheme && 'widget-dark'">
       <div class="row-tool">
         <div class="tw-tooltip tw-relative">
-          <icon-base class="tool-icon" icon-name="history">
-            <q-icon :name="fasHistory" color="grey" />
+          <icon-base
+            class="tool-icon"
+            :class="isPendingTx && 'rotate'"
+            icon-name="history"
+            @click="openModal('history')"
+          >
+            <q-icon :name="fasHistory" :color="isDarkTheme ? 'grey' : 'blue'" />
           </icon-base>
           <span class="tooltip">{{ $t('bridge.history') }}</span>
         </div>
@@ -151,6 +156,8 @@
       v-model:isOpen="modal"
       :close-modal="closeModal"
       :modal="modal"
+      :histories="histories"
+      :token-icons="tokenIcons"
     />
 
     <ModalChain
@@ -238,6 +245,9 @@ export default defineComponent({
       selectedNetwork,
       isDisabledBridge,
       usdValue,
+      histories,
+      isPendingTx,
+      tokenIcons,
       closeModal,
       openModal,
       selectChain,
@@ -261,9 +271,7 @@ export default defineComponent({
     } = useConnectWallet();
 
     return {
-      getChainName,
       fasHistory,
-      formatDecimals,
       isDarkTheme,
       srcChain,
       destChain,
@@ -276,10 +284,12 @@ export default defineComponent({
       selectedToken,
       quotation,
       selectedTokenBalance,
-      getIcon,
       selectedNetwork,
       isDisabledBridge,
       usdValue,
+      histories,
+      isPendingTx,
+      tokenIcons,
       closeModal,
       openModal,
       selectChain,
@@ -287,17 +297,20 @@ export default defineComponent({
       reverseChain,
       toMaxAmount,
       bridge,
+      getIcon,
+      getChainName,
+      formatDecimals,
       WalletModalOption,
       modalConnectWallet,
       walletModalName,
       selectedWallet,
       isH160,
+      isApprovalNeeded,
       closeWalletModal,
       setWalletModal,
       openSelectModal,
       inputHandler,
       handleApprove,
-      isApprovalNeeded,
       calUsdAmount,
     };
   },
