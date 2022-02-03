@@ -3,18 +3,16 @@
     <dashboard-layout>
       <router-view v-slot="{ Component }">
         <template v-if="Component">
-          <transition name="fade" mode="out-in">
-            <keep-alive>
-              <Suspense>
-                <template #default>
-                  <component :is="Component"></component>
-                </template>
-                <template #fallback>
-                  <modal-loading />
-                </template>
-              </Suspense>
-            </keep-alive>
-          </transition>
+          <keep-alive>
+            <Suspense>
+              <template #default>
+                <component :is="Component"></component>
+              </template>
+              <template #fallback>
+                <modal-loading />
+              </template>
+            </Suspense>
+          </keep-alive>
         </template>
       </router-view>
     </dashboard-layout>
