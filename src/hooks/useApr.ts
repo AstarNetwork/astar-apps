@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { aprToApy } from 'apr-tools';
-import { $api } from 'boot/api';
 import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
 import { computed, ref, watchEffect } from 'vue';
@@ -13,7 +12,6 @@ export const useApr = () => {
     return getProviderIndex(chain);
   });
 
-  const dapps = computed(() => store.getters['dapps/getAllDapps']);
   const stakerApr = ref<number>(0);
   const stakerApy = ref<number>(0);
 
