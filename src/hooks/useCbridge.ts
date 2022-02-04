@@ -508,7 +508,6 @@ export function useCbridge() {
         .catch((error: any) => {
           return '0';
         });
-      console.log('allowance', allowance);
       return Number(allowance) === Number(MaxUint256.toString());
     };
 
