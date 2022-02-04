@@ -17,6 +17,8 @@ export {
   getIcon,
   getHistory,
   getTxStatus,
+  detectRemoveNetwork,
+  castToPortalNetworkId,
 } from './utils';
 
 export enum EvmChain {
@@ -27,13 +29,15 @@ export enum EvmChain {
   Polygon = 137,
 }
 
-export const supportChains = [
+export const astarSupportChains = [
   EvmChain.Ethereum,
   EvmChain.BSC,
   EvmChain.Astar,
   EvmChain.Shiden,
   EvmChain.Polygon,
 ];
+
+export const shidenSupportChains = [EvmChain.Astar, EvmChain.Shiden];
 
 export const cBridgeBaseEndpoint = 'https://cbridge-prod2.celer.network/v1';
 

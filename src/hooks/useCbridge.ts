@@ -1,3 +1,4 @@
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { History } from './../c-bridge/index';
 import { MaxUint256 } from '@ethersproject/constants';
 import axios from 'axios';
@@ -24,6 +25,8 @@ import {
   sortChainName,
   getHistory,
   pendingStatus,
+  detectRemoveNetwork,
+  castToPortalNetworkId,
 } from 'src/c-bridge';
 import { getSelectedToken } from 'src/c-bridge/utils';
 import { useStore } from 'src/store';
@@ -38,8 +41,9 @@ import {
 import { objToArray } from './helper/common';
 import { calUsdAmount } from './helper/price';
 import { getEvmProvider } from './helper/wallet';
+import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
 
-const { Ethereum, Astar } = EvmChain;
+const { Ethereum, Astar, Shiden } = EvmChain;
 
 export function useCbridge() {
   const srcChain = ref<Chain | null>(null);
@@ -67,6 +71,11 @@ export function useCbridge() {
   const store = useStore();
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
   const selectedAddress = computed(() => store.getters['general/selectedAddress']);
+  const currentNetworkIdx = computed(() => {
+    const chainInfo = store.getters['general/chainInfo'];
+    const chain = chainInfo ? chainInfo.chain : '';
+    return getProviderIndex(chain);
+  });
 
   const fetchHistory = async () => {
     if (!isH160.value || !selectedAddress.value) return;
@@ -164,7 +173,19 @@ export function useCbridge() {
 
   const getEstimation = async () => {
     try {
-      if (!srcChain.value || !destChain.value || !selectedToken.value) return;
+      if (
+        !srcChain.value ||
+        !destChain.value ||
+        !selectedToken.value ||
+        (amount.value && Number(amount.value) === 0)
+      ) {
+        if (!quotation.value) return;
+        quotation.value = {
+          ...quotation.value,
+          estimated_receive_amt: '0',
+        };
+        return;
+      }
       const numAmount = amount.value ? Number(amount.value) : 0.001;
       const isValidAmount = !isNaN(numAmount);
       if (!isValidAmount) return;
@@ -238,8 +259,8 @@ export function useCbridge() {
       } else {
         errMsg.value = '';
       }
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      console.error(error.message);
     }
   };
 
@@ -279,22 +300,38 @@ export function useCbridge() {
     const fromChain = srcChain.value;
     srcChain.value = destChain.value;
     destChain.value = fromChain;
+    if (!srcChain.value) return;
+    const portalNetworkIdx = castToPortalNetworkId(srcChain.value.id);
     resetStates();
+
+    if (portalNetworkIdx === false || portalNetworkIdx === currentNetworkIdx.value) return;
+    // Memo: ASTAR - SHIDEN
+    localStorage.setItem(LOCAL_STORAGE.NETWORK_IDX, portalNetworkIdx.toString());
+    location.reload();
   };
 
   const updateBridgeConfig = async () => {
-    const data = await getTransferConfigs();
+    const data = await getTransferConfigs(currentNetworkIdx.value);
     const supportChain = data && data.supportChain;
     const tokens = data && data.tokens;
     const tokenIconsData = data && data.tokenIcons;
 
     if (!supportChain || !tokens || !tokenIconsData) return;
-    srcChain.value = supportChain.find((it) => it.id === Ethereum) as Chain;
-    destChain.value = supportChain.find((it) => it.id === Astar) as Chain;
+
+    if (currentNetworkIdx.value === endpointKey.ASTAR) {
+      srcChain.value = supportChain.find((it) => it.id === Ethereum) as Chain;
+      destChain.value = supportChain.find((it) => it.id === Astar) as Chain;
+    } else {
+      srcChain.value = supportChain.find((it) => it.id === Shiden) as Chain;
+      destChain.value = supportChain.find((it) => it.id === Astar) as Chain;
+    }
     tokenIcons.value = tokenIconsData;
 
     sortChainName(supportChain);
-    srcChains.value = supportChain;
+    const removeNetworkId = detectRemoveNetwork(currentNetworkIdx.value);
+    srcChains.value = supportChain.filter((it) => {
+      return it.id !== removeNetworkId;
+    });
     chains.value = supportChain;
     tokensObj.value = tokens;
   };
@@ -395,6 +432,7 @@ export function useCbridge() {
   };
 
   watchEffect(async () => {
+    if (currentNetworkIdx.value === null || currentNetworkIdx.value === undefined) return;
     await updateBridgeConfig();
   });
 

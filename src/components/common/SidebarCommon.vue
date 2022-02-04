@@ -85,7 +85,7 @@
         </router-link>
 
         <router-link
-          v-if="isH160"
+          v-if="isH160 && currentNetworkIdx !== endpointKey.SHIBUYA"
           to="/bridge"
           :class="[$route.path.split('/')[1] === 'bridge' ? 'activeLink' : 'inactiveLink']"
         >

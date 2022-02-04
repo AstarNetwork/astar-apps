@@ -1,3 +1,5 @@
+import { EvmChain } from './../index';
+import { endpointKey } from 'src/config/chainEndpoints';
 export {
   approve,
   getMinAndMaxAmount,
@@ -25,4 +27,30 @@ export {
 
 export const formatDecimals = ({ amount, decimals }: { amount: string; decimals: number }) => {
   return Number(Number(amount).toFixed(decimals));
+};
+
+export const detectRemoveNetwork = (portalNetworkId: endpointKey) => {
+  switch (portalNetworkId) {
+    case endpointKey.ASTAR:
+      return EvmChain.Shiden;
+
+    case endpointKey.SHIDEN:
+      return EvmChain.Astar;
+
+    default:
+      return EvmChain.Shiden;
+  }
+};
+
+export const castToPortalNetworkId = (portalNetworkId: EvmChain) => {
+  switch (portalNetworkId) {
+    case EvmChain.Astar:
+      return endpointKey.ASTAR;
+
+    case EvmChain.Shiden:
+      return endpointKey.SHIDEN;
+
+    default:
+      return false;
+  }
 };

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { stringifyUrl } from 'query-string';
+import { endpointKey } from 'src/config/chainEndpoints';
 import { objToArray } from 'src/hooks/helper/common';
 import {
   BridgeMethod,
@@ -8,7 +9,8 @@ import {
   Chain,
   EvmChain,
   PeggedPairConfig,
-  supportChains,
+  astarSupportChains,
+  shidenSupportChains,
   Token,
   TransferConfigs,
   History,
@@ -110,7 +112,7 @@ const pushPooledToken = ({
   });
 };
 
-export const getTransferConfigs = async () => {
+export const getTransferConfigs = async (portalNetworkIdx: endpointKey) => {
   const { Ethereum, BSC, Astar, Shiden, Polygon } = EvmChain;
 
   try {
@@ -185,6 +187,8 @@ export const getTransferConfigs = async () => {
       });
     });
 
+    const supportChains =
+      portalNetworkIdx === endpointKey.SHIDEN ? shidenSupportChains : astarSupportChains;
     const supportChain = chains.filter((it) => supportChains.find((that) => that === it.id));
     if (!supportChain) return;
 
