@@ -46,7 +46,6 @@
     "ethers": "^5.5.4",
     "express": "^4.17.1",
     "firebase": "^9.5.0",
-    "human-standard-token-abi": "^2.0.0",
     "keccak": "byterose/keccak#stream-update",
     "lodash.debounce": "^4.0.8",
     "luxon": "^2.1.1",

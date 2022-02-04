@@ -1,6 +1,6 @@
 import { MaxUint256 } from '@ethersproject/constants';
 import { ethers } from 'ethers';
-import ABI from 'human-standard-token-abi';
+import ABI from 'src/c-bridge/abi/ERC20.json';
 import { BridgeMethod, SelectedToken } from 'src/c-bridge';
 import CANONICAL_BURN_ABI from 'src/c-bridge/abi/canonical-burn.json';
 import CANONICAL_DEPOSIT_ABI from 'src/c-bridge/abi/canonical-deposit.json';
@@ -155,7 +155,7 @@ export const approve = async ({
   }
 
   const web3 = new Web3(provider as any);
-  const contract = new web3.eth.Contract(ABI, tokenAddress);
+  const contract = new web3.eth.Contract(ABI as AbiItem[], tokenAddress);
   const gasPrice = await web3.eth.getGasPrice();
   const rawTx: TransactionConfig = {
     nonce: await web3.eth.getTransactionCount(address),

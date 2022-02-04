@@ -2,7 +2,8 @@ import { History } from './../c-bridge/index';
 import { MaxUint256 } from '@ethersproject/constants';
 import axios from 'axios';
 import { ethers } from 'ethers';
-import ABI from 'human-standard-token-abi';
+import ABI from 'src/c-bridge/abi/ERC20.json';
+import { AbiItem } from 'web3-utils';
 // import debounce from 'lodash.debounce'; Todo: Add debounce to inputHandler
 import { stringifyUrl } from 'query-string';
 import {
@@ -162,7 +163,7 @@ export function useCbridge() {
   const getEstimation = async () => {
     try {
       if (!srcChain.value || !destChain.value || !selectedToken.value) return;
-      const numAmount = Number(amount.value ?? 0.001);
+      const numAmount = amount.value ? Number(amount.value) : 0.001;
       const isValidAmount = !isNaN(numAmount);
       if (!isValidAmount) return;
 
@@ -496,18 +497,19 @@ export function useCbridge() {
 
     const checkIsApproved = async (): Promise<boolean | null> => {
       if (!tokenAddress) return null;
-      try {
-        if (!tokenAddress || !symbol || !contractAddress) {
-          throw Error('Cannot find token information');
-        }
-        const web3 = new Web3(provider as any);
-        const contract = new web3.eth.Contract(ABI, tokenAddress);
-        const allowance = await contract.methods.allowance(address, contractAddress).call();
-        return Number(allowance) === Number(MaxUint256.toString());
-      } catch (err: any) {
-        console.error(err.message);
-        return null;
+      if (!tokenAddress || !symbol || !contractAddress) {
+        throw Error('Cannot find token information');
       }
+      const web3 = new Web3(provider as any);
+      const contract = new web3.eth.Contract(ABI as AbiItem[], tokenAddress);
+      const allowance = await contract.methods
+        .allowance(address, contractAddress)
+        .call()
+        .catch((error: any) => {
+          return '0';
+        });
+      console.log('allowance', allowance);
+      return Number(allowance) === Number(MaxUint256.toString());
     };
 
     const checkPeriodically = async () => {

@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
-import ABI from 'human-standard-token-abi';
+import ABI from 'src/c-bridge/abi/ERC20.json';
+import { AbiItem } from 'web3-utils';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
 import Web3 from 'web3';
@@ -94,7 +95,7 @@ export const getTokenBal = async ({
   try {
     const provider = getEvmProvider();
     const web3 = new Web3(provider as any);
-    const contract = new web3.eth.Contract(ABI, tokenAddress);
+    const contract = new web3.eth.Contract(ABI as AbiItem[], tokenAddress);
 
     const isCheckNativeBal = tokenSymbol && srcChainId;
     if (isCheckNativeBal && nativeCurrency[srcChainId].name === tokenSymbol) {
