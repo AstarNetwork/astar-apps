@@ -123,10 +123,10 @@
   align-items: center;
   grid-template-columns: auto 120px;
   margin-bottom: 8px;
+  @apply tw-bg-white dark:tw-bg-darkGray-900;
   @media (min-width: 768px) {
     grid-template-columns: auto 60px 120px;
   }
-  @apply tw-bg-white dark:tw-bg-darkGray-900;
 }
 
 .input-row-dark {
@@ -143,9 +143,14 @@ input {
   }
 }
 
-input[type='number']::-webkit-inner-spin-button,
-input[type='number']::-webkit-outer-spin-button {
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
   -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
 }
 
 .estimation-row {

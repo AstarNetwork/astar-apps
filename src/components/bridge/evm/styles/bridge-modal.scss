@@ -95,19 +95,19 @@
 }
 
 .histories {
-  display: grid;
-  row-gap: 32px;
   min-width: 290px;
+  padding: 12px 0;
 }
 
 .history-card {
-  padding: 24px 12px;
+  padding: 32px 16px;
+  padding-right: 0;
   transition: 0.2s;
   border-radius: 40px;
   font-weight: 600;
   display: grid;
   align-items: center;
-  grid-template-columns: 74px 20px 74px 74px;
+  grid-template-columns: 74px 20px 74px 68px;
   column-gap: 8px;
   @apply tw-text-xs tw-text-blue-900 dark:tw-text-darkGray-100 tw-bg-darkGray-300 dark:tw-bg-darkGray-700;
 
@@ -116,6 +116,10 @@
     padding: 16px 6px;
     grid-template-columns: 210px 20px 220px 190px;
   }
+}
+
+.history-card:hover {
+  @apply tw-bg-darkGray-200 dark:tw-bg-darkGray-600;
 }
 
 .amount {
@@ -136,16 +140,11 @@
   }
 }
 
-.history-card:hover {
-  @apply tw-bg-darkGray-200 dark:tw-bg-darkGray-600;
-}
-
 .history-item {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 100%;
   @media (min-width: 768px) {
     flex-direction: row;
     justify-content: flex-start;
@@ -167,7 +166,9 @@
   display: grid;
   grid-template-columns: auto auto;
   grid-column-gap: 4px;
-  margin-bottom: 4px;
+  @media (min-width: 768px) {
+    margin-bottom: 4px;
+  }
 }
 
 .token-mini {

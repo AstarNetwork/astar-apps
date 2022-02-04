@@ -21,14 +21,14 @@
     <div class="arrow">→</div>
 
     <div class="history-item">
-      <img :src="destChainIcon" class="history-chain-logo" alt="src-chain-icon" />
+      <img :src="destChainIcon" class="history-chain-logo" alt="dest-chain-icon" />
       <div class="tx-detail">
         <div class="row-token">
           <img :src="icon" class="token-mini" alt="dest-token" />
           <span class="amount">{{ destAmount }} {{ destToken.symbol }}</span>
         </div>
         <a
-          :href="history.src_block_tx_link"
+          :href="history.dst_block_tx_link"
           target="_blank"
           rel="noopener noreferrer"
           class="explorer-link"

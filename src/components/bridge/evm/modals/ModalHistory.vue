@@ -7,13 +7,23 @@
         </icon-base>
         <p>{{ $t('bridge.noHistory') }}</p>
       </div>
-      <div v-else class="histories">
-        <History
-          v-for="(history, index) in histories"
-          :key="index"
-          :history="history"
-          :token-icons="tokenIcons"
-        />
+
+      <div v-else>
+        <div id="virtual-scroll-target" class="scroll" style="max-height: 600px">
+          <q-virtual-scroll scroll-target="#virtual-scroll-target" :items="histories">
+            <template #default="{ item, index }">
+              <q-item :key="index" dense>
+                <q-item-section>
+                  <q-item-label>
+                    <div class="histories">
+                      <History :key="index" :history="item" :token-icons="tokenIcons" />
+                    </div>
+                  </q-item-label>
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-virtual-scroll>
+        </div>
       </div>
     </template>
   </Modal>
