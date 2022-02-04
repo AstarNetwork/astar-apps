@@ -85,6 +85,7 @@
         </router-link>
 
         <router-link
+          v-if="isH160"
           to="/bridge"
           :class="[$route.path.split('/')[1] === 'bridge' ? 'activeLink' : 'inactiveLink']"
         >
@@ -194,6 +195,7 @@ export default defineComponent({
     const shortenAddress = computed(() => {
       return getShortenAddress(currentAccount.value);
     });
+    const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
     const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
@@ -218,6 +220,7 @@ export default defineComponent({
       currentAccount,
       currentAccountName,
       endpointKey,
+      isH160,
     };
   },
   methods: {
