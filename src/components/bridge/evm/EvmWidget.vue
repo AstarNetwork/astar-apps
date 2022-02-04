@@ -95,6 +95,7 @@
             <span class="under-arrow">▼</span>
           </div>
         </div>
+
         <div>
           <div class="estimation-row" :class="isDarkTheme && 'estimation-row-dark'">
             <span class="label">{{ $t('estimated') }}</span>
@@ -108,7 +109,9 @@
           </div>
         </div>
       </div>
-
+      <div v-if="errMsg && amount" class="err-msg-container">
+        <p class="err-msg">{{ errMsg }}</p>
+      </div>
       <BridgeButtons
         :bridge="bridge"
         :handle-approve="handleApprove"
@@ -252,6 +255,7 @@ export default defineComponent({
       isUpdatingHistories,
       isPendingTx,
       tokenIcons,
+      errMsg,
       closeModal,
       openModal,
       selectChain,
@@ -295,6 +299,7 @@ export default defineComponent({
       isUpdatingHistories,
       isPendingTx,
       tokenIcons,
+      errMsg,
       closeModal,
       openModal,
       selectChain,

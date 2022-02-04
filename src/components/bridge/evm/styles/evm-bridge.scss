@@ -191,6 +191,28 @@ input[type='number'] {
   column-gap: 4px;
 }
 
+.err-msg-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+.err-msg {
+  color: red;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  font-size: 16px;
+  margin-bottom: 24px;
+  @media (min-width: 768px) {
+    top: -34px;
+    white-space: nowrap;
+    position: absolute;
+    left: 50%;
+    right: 50%;
+    margin-bottom: 0;
+  }
+}
+
 .max-button {
   display: none;
   @media (min-width: 768px) {

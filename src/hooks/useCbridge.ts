@@ -59,6 +59,7 @@ export function useCbridge() {
   const isPendingTx = ref<boolean>(false);
   const isUpdatingHistories = ref<boolean>(false);
   const quotation = ref<Quotation | null>(null);
+  const errMsg = ref<string>('');
   const usdValue = ref<number>(0);
   const isApprovalNeeded = ref<boolean>(true);
   const isDisabledBridge = ref<boolean>(true);
@@ -98,6 +99,7 @@ export function useCbridge() {
     quotation.value = null;
     amount.value = null;
     usdValue.value = 0;
+    errMsg.value = '';
   };
 
   const handleApprove = async () => {
@@ -231,6 +233,11 @@ export function useCbridge() {
         minAmount: min,
         maxAmount: max,
       };
+      if (0 > Number(quotation.value.estimated_receive_amt)) {
+        errMsg.value = 'The received amount cannot cover fee';
+      } else {
+        errMsg.value = '';
+      }
     } catch (error) {
       console.log(error);
     }
@@ -245,6 +252,7 @@ export function useCbridge() {
   const inputHandler = (event: any) => {
     amount.value = event.target.value;
     isDisabledBridge.value = true;
+    errMsg.value = '';
   };
 
   const toMaxAmount = async () => {
@@ -438,6 +446,31 @@ export function useCbridge() {
     { immediate: false }
   );
 
+  watch(
+    [quotation],
+    async () => {
+      if (!quotation.value || !srcChain.value || !selectedToken.value) return;
+      const { symbol } = getTokenInfo({
+        srcChainId: srcChain.value.id,
+        selectedToken: selectedToken.value,
+      });
+
+      const balance = Number(await getSelectedTokenBal());
+      const numAmount = Number(amount.value);
+      const { minAmount, maxAmount } = quotation.value;
+      if (!minAmount || !maxAmount) return;
+
+      if (numAmount > balance) {
+        errMsg.value = 'Insufficient balance';
+      } else if (minAmount >= numAmount) {
+        errMsg.value = `Amount must be greater than ${minAmount} ${symbol}`;
+      } else if (numAmount >= maxAmount) {
+        errMsg.value = `Amount must be less than ${maxAmount} ${symbol}`;
+      }
+    },
+    { immediate: false }
+  );
+
   watchEffect(async () => {
     const provider = getEvmProvider();
     if (!isH160.value || !provider) return;
@@ -561,6 +594,7 @@ export function useCbridge() {
     isUpdatingHistories,
     isPendingTx,
     tokenIcons,
+    errMsg,
     reverseChain,
     closeModal,
     openModal,
