@@ -66,7 +66,7 @@
     "@polkadot/ts": "^0.4.6",
     "@quasar/quasar-app-extension-qmarkdown": "^2.0.0-alpha.8",
     "@quasar/quasar-app-extension-testing": "^2.0.1",
-    "@quasar/quasar-app-extension-testing-unit-jest": "^3.0.0-alpha.6",
+    "@quasar/quasar-app-extension-testing-unit-jest": "^3.0.0-alpha.8",
     "@tailwindcss/custom-forms": "^0.2.1",
     "@tailwindcss/postcss7-compat": "^2.0.3",
     "@types/create-hash": "^1.2.2",

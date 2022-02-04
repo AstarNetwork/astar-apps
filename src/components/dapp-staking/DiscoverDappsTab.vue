@@ -22,33 +22,8 @@
         </icon-base>
         {{ $t('dappStaking.registerDapp') }}
       </Button>
-      <div
-        v-if="stakerApr > 0"
-        class="
-          sm:tw-w-40
-          tw-justify-center
-          tw-inline-flex
-          tw-items-center
-          tw-px-6
-          tw-py-3
-          tw-border
-          tw-border-transparent
-          tw-text-sm
-          tw-font-medium
-          tw-rounded-full
-          tw-shadow-sm
-          tw-text-white
-          tw-bg-indigo-500
-          tw-mx-1
-        "
-      >
-        <icon-base class="tw-w-5 tw-h-5 tw-text-white tw--ml-2 tw-mr-2" icon-name="seedling">
-          <q-icon :name="fasSeedling" color="green" />
-        </icon-base>
-        <div>
-          {{ $t('dappStaking.stakerApr', { value: Number(stakerApr.toFixed(1)) }) }}
-        </div>
-      </div>
+
+      <APR />
     </div>
 
     <div class="store-container tw-grid tw-gap-x-12 xl:tw-gap-x-18 tw-justify-center">
@@ -83,17 +58,17 @@ import ModalRegisterDapp from 'components/dapp-staking/modals/ModalRegisterDapp.
 import Dapp from 'src/components/dapp-staking/Dapp.vue';
 import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
-import { useCurrentEra, useApr, useAccount, useBalance } from 'src/hooks';
+import { useCurrentEra, useAccount, useBalance } from 'src/hooks';
 import { $api } from 'boot/api';
 import { DappItem } from 'src/store/dapp-staking/state';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
 import TVL from './statistics/TVL.vue';
+import APR from './statistics/APR.vue';
 import DappsCount from './statistics/DappsCount.vue';
 import Requirement from './statistics/Requirement.vue';
 import Withdraw from './statistics/Withdraw.vue';
 import Era from './statistics/Era.vue';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
-import { fasSeedling } from '@quasar/extras/fontawesome-v5';
 import { useMeta } from 'quasar';
 
 export default defineComponent({
@@ -104,6 +79,7 @@ export default defineComponent({
     ModalRegisterDapp,
     Button,
     TVL,
+    APR,
     DappsCount,
     Requirement,
     Withdraw,
@@ -113,7 +89,6 @@ export default defineComponent({
     const store = useStore();
     const dapps = computed(() => store.getters['dapps/getAllDapps']);
     useMeta({ title: 'Discover dApps' });
-    const { stakerApr } = useApr();
     const { progress, blocksUntilNextEra, era } = useCurrentEra();
     const { currentAccount } = useAccount();
     const { accountData } = useBalance($api, currentAccount);
@@ -152,8 +127,6 @@ export default defineComponent({
       progress,
       blocksUntilNextEra,
       era,
-      stakerApr,
-      fasSeedling,
       accountData,
     };
   },
