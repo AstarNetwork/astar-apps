@@ -13,7 +13,6 @@ export {
   sortChainName,
   getIcon,
   getHistory,
-  getTokenIcons,
   getTxStatus,
 } from './cbridgeAPI';
 

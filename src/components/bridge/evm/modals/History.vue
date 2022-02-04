@@ -28,6 +28,7 @@
           <span class="amount">{{ destAmount }} {{ destToken.symbol }}</span>
         </div>
         <a
+          v-if="history.dst_block_tx_link"
           :href="history.dst_block_tx_link"
           target="_blank"
           rel="noopener noreferrer"
@@ -45,7 +46,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, watchEffect, ref } from 'vue';
 import { ethers } from 'ethers';
 import { formatDecimals, getIcon, getTxStatus } from 'src/c-bridge';
 import { DateTime } from 'luxon';
@@ -62,6 +63,7 @@ export default defineComponent({
     },
   },
   setup({ history, tokenIcons }) {
+    // const status = ref<string>('');
     const srcChainIcon = history.src_send_info.chain.icon;
     const destChainIcon = history.dst_received_info.chain.icon;
     const srcToken = history.src_send_info.token;
@@ -86,6 +88,10 @@ export default defineComponent({
     const time = DateTime.fromMillis(Number(history.ts)).toLocal().toFormat('dd-MMM-yy HH:mm');
 
     const status = `bridge.status.${getTxStatus(history.status)}`;
+
+    // watchEffect(() => {
+    //   status.value = `bridge.status.${getTxStatus(history.status)}`;
+    // });
 
     return {
       srcChainIcon,

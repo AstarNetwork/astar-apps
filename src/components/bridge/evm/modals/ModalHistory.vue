@@ -1,21 +1,25 @@
 <template>
   <Modal title="Bridge History" class="animate__animated animate__fadeIn" @click="closeModal">
     <template #content>
-      <div v-if="!histories.length" class="no-history">
+      <div v-if="!histories.length && !isUpdatingHistories" class="no-history">
         <icon-base class="history-icon" icon-name="history">
           <q-icon :name="fasHistory" :color="isDarkTheme ? 'white' : 'blue'" />
         </icon-base>
         <p>{{ $t('bridge.noHistory') }}</p>
+        <p>{{ $t('bridge.updateTime', { from: 5, to: 20 }) }}</p>
       </div>
 
       <div v-else>
-        <div id="virtual-scroll-target" class="scroll" style="max-height: 600px">
+        <div v-if="isUpdatingHistories" class="updating-container">
+          <q-spinner-ios color="primary" size="80px" />
+        </div>
+        <div v-else id="virtual-scroll-target" class="scroll list-container" style="height: 600px">
           <q-virtual-scroll scroll-target="#virtual-scroll-target" :items="histories">
             <template #default="{ item, index }">
               <q-item :key="index" dense>
                 <q-item-section>
                   <q-item-label>
-                    <div class="histories">
+                    <div class="histories animate__animated animate__fadeIn">
                       <History :key="index" :history="item" :token-icons="tokenIcons" />
                     </div>
                   </q-item-label>
@@ -23,6 +27,9 @@
               </q-item>
             </template>
           </q-virtual-scroll>
+        </div>
+        <div class="list-footer">
+          <span>{{ $t('bridge.updateTime', { from: 5, to: 20 }) }}</span>
         </div>
       </div>
     </template>
@@ -54,6 +61,10 @@ export default defineComponent({
     },
     tokenIcons: {
       type: Array,
+      required: true,
+    },
+    isUpdatingHistories: {
+      type: Boolean,
       required: true,
     },
   },

@@ -227,6 +227,7 @@ export default {
     rateSymbol: '{value} {symbol} on ',
     history: 'History',
     noHistory: "You don't have any transaction record yet",
+    updateTime: 'The new transaction will be reflected in {from} ~ {to} mins',
     viewDetails: 'View details',
     status: {
       TRANSFER_UNKNOWN: 'Unknown transfer',

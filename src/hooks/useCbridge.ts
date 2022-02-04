@@ -22,7 +22,7 @@ import {
   SelectedToken,
   sortChainName,
   getHistory,
-  getTokenIcons,
+  pendingStatus,
 } from 'src/c-bridge';
 import { getSelectedToken } from 'src/c-bridge/utils';
 import { useStore } from 'src/store';
@@ -56,6 +56,7 @@ export function useCbridge() {
   const histories = ref<History[] | []>([]);
   const tokenIcons = ref<{ symbol: string; icon: string }[]>([]);
   const isPendingTx = ref<boolean>(false);
+  const isUpdatingHistories = ref<boolean>(false);
   const quotation = ref<Quotation | null>(null);
   const usdValue = ref<number>(0);
   const isApprovalNeeded = ref<boolean>(true);
@@ -68,13 +69,26 @@ export function useCbridge() {
   const fetchHistory = async () => {
     if (!isH160.value || !selectedAddress.value) return;
     const { histories: historyArray, isPending } = await getHistory(selectedAddress.value);
-    histories.value = historyArray;
-    isPendingTx.value = isPending;
-  };
 
-  const fetchTokenIcons = async () => {
-    const result = await getTokenIcons();
-    tokenIcons.value = result;
+    if (histories.value.length === 0) {
+      histories.value = historyArray;
+      isPendingTx.value = isPending;
+    }
+
+    if (histories.value.length === 0) return;
+
+    const isFirstItemPending = pendingStatus.find((it) => it === histories.value[0].status);
+    // Memo: update history items on the modal UI
+    if (isFirstItemPending || isPending) {
+      isUpdatingHistories.value = true;
+      histories.value = [];
+      const { histories: historyArray, isPending } = await getHistory(selectedAddress.value);
+      histories.value = historyArray;
+      isPendingTx.value = isPending;
+      setTimeout(() => {
+        isUpdatingHistories.value = false;
+      }, 500);
+    }
   };
 
   const resetStates = () => {
@@ -264,10 +278,12 @@ export function useCbridge() {
     const data = await getTransferConfigs();
     const supportChain = data && data.supportChain;
     const tokens = data && data.tokens;
+    const tokenIconsData = data && data.tokenIcons;
 
-    if (!supportChain || !tokens) return;
+    if (!supportChain || !tokens || !tokenIconsData) return;
     srcChain.value = supportChain.find((it) => it.id === Ethereum) as Chain;
     destChain.value = supportChain.find((it) => it.id === Astar) as Chain;
+    tokenIcons.value = tokenIconsData;
 
     sortChainName(supportChain);
     srcChains.value = supportChain;
@@ -422,10 +438,6 @@ export function useCbridge() {
   );
 
   watchEffect(async () => {
-    await fetchTokenIcons();
-  });
-
-  watchEffect(async () => {
     const provider = getEvmProvider();
     if (!isH160.value || !provider) return;
 
@@ -522,7 +534,7 @@ export function useCbridge() {
   const handleUpdate = setInterval(async () => {
     await getEstimation();
     await fetchHistory();
-  }, 10 * 1000);
+  }, 20 * 1000);
 
   onUnmounted(() => {
     clearInterval(handleUpdate);
@@ -545,6 +557,7 @@ export function useCbridge() {
     isDisabledBridge,
     usdValue,
     histories,
+    isUpdatingHistories,
     isPendingTx,
     tokenIcons,
     reverseChain,

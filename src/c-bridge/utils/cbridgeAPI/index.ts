@@ -12,6 +12,7 @@ import {
   Token,
   TransferConfigs,
   History,
+  pendingStatus,
 } from './../../index';
 
 export const getChainName = (chain: number) => {
@@ -116,7 +117,7 @@ export const getTransferConfigs = async () => {
   try {
     const url = cBridgeEndpoint.Configs;
     const { data } = await axios.get<TransferConfigs>(url);
-    const { chains, pegged_pair_configs } = data;
+    const { chains, pegged_pair_configs, chain_token } = data;
 
     const ethToAstar: CbridgeToken[] = [];
     const ethToShiden: CbridgeToken[] = [];
@@ -188,8 +189,21 @@ export const getTransferConfigs = async () => {
     const supportChain = chains.filter((it) => supportChains.find((that) => that === it.id));
     if (!supportChain) return;
 
+    // Memo: get token icons for History modal
+    const omitChainIdArray = Object.values(chain_token);
+    const formattedArray = omitChainIdArray.map((it) => {
+      return it.token;
+    });
+    const tokenIcons = formattedArray.flat().map((it) => {
+      return {
+        symbol: it.token.symbol,
+        icon: it.icon,
+      };
+    });
+
     return {
       supportChain,
+      tokenIcons,
       tokens: {
         [Astar]: {
           [Ethereum]: ethToAstar,
@@ -283,7 +297,6 @@ const filterHistory = (histories: History[]): { histories: History[] | []; isPen
   let isPending = false;
   if (!histories) return { histories: [], isPending };
 
-  const pendingStatus = [1, 3, 4];
   const filtered = histories.filter((history: History) => {
     if (
       isShidenOrAstar(history.src_send_info.chain.id) ||
@@ -345,26 +358,5 @@ export const getTxStatus = (status: number): string => {
       return 'TRANSFER_REFUNDED';
     default:
       return 'TRANSFER_UNKNOWN';
-  }
-};
-
-export const getTokenIcons = async (): Promise<{ symbol: string; icon: string }[]> => {
-  try {
-    const url = cBridgeEndpoint.Configs;
-    const { data } = await axios.get<TransferConfigs>(url);
-    const { chain_token } = data;
-    const omitChainIdArray = Object.values(chain_token);
-    const formattedArray = omitChainIdArray.map((it) => {
-      return it.token;
-    });
-    return formattedArray.flat().map((it) => {
-      return {
-        symbol: it.token.symbol,
-        icon: it.icon,
-      };
-    });
-  } catch (error: any) {
-    console.error(error.message);
-    return [{ symbol: '', icon: '' }];
   }
 };

@@ -158,6 +158,7 @@
       :modal="modal"
       :histories="histories"
       :token-icons="tokenIcons"
+      :is-updating-histories="isUpdatingHistories"
     />
 
     <ModalChain
@@ -246,6 +247,7 @@ export default defineComponent({
       isDisabledBridge,
       usdValue,
       histories,
+      isUpdatingHistories,
       isPendingTx,
       tokenIcons,
       closeModal,
@@ -288,6 +290,7 @@ export default defineComponent({
       isDisabledBridge,
       usdValue,
       histories,
+      isUpdatingHistories,
       isPendingTx,
       tokenIcons,
       closeModal,

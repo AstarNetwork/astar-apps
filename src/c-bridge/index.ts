@@ -17,7 +17,6 @@ export {
   getIcon,
   getHistory,
   getTxStatus,
-  getTokenIcons,
 } from './utils';
 
 export enum EvmChain {
@@ -149,3 +148,5 @@ export interface HistoryInfo {
   token: Token;
   amount: string;
 }
+
+export const pendingStatus = [0, 1, 2, 3, 4];
