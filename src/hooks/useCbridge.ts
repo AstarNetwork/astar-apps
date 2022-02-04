@@ -178,7 +178,6 @@ export function useCbridge() {
         ? selectedAddress.value
         : '0xaa47c83316edc05cf9ff7136296b026c5de7eccd'; // random address from docs
 
-      // Todo: Add slippage UI
       // Memo: 3000 -> 0.3%
       let slippage_tolerance = 3000;
 

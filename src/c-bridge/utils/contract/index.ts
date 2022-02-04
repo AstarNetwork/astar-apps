@@ -293,7 +293,6 @@ export const poolTransfer = async ({
   const sendAmount = ethers.utils.parseUnits(amount, decimals).toString();
   const timestamp = String(Math.floor(Date.now()));
 
-  // Todo: Add slippage UI
   // Memo: 3000 -> 0.3%
   let slippage_tolerance = 3000;
   const minimalMaxSlippage = await getMinimalMaxSlippage({

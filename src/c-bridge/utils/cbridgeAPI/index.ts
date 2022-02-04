@@ -56,7 +56,6 @@ const pushPooledToken = ({
   chainB,
   configs,
 }: {
-  // tokens: PeggedPairConfig[];
   tokens: CbridgeToken[];
   chainA: EvmChain;
   chainB: EvmChain;

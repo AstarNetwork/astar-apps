@@ -7,6 +7,8 @@ import ConnectWallet from 'src/components/balance/ConnectWallet.vue';
 // import CreateDappsTab from 'components/contracts/CreateDappsTab.vue';
 import DiscoverDappsTab from 'components/dapp-staking/DiscoverDappsTab.vue';
 import ManageDappsTab from 'components/dapp-staking/ManageDappsTab.vue';
+import EvmWidget from 'components/bridge/evm/EvmWidget.vue';
+import Bridge from 'src/pages/Bridge.vue';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -77,7 +79,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/bridge',
     name: 'Bridge',
-    component: () => import('pages/Bridge.vue'),
+    component: Bridge,
     children: [
       {
         path: '',
@@ -85,7 +87,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'evm',
-        component: () => import('components/bridge/evm/EvmWidget.vue'),
+        component: EvmWidget,
       },
     ],
   },
