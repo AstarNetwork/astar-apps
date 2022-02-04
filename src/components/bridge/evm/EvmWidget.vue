@@ -98,11 +98,13 @@
         <div>
           <div class="estimation-row" :class="isDarkTheme && 'estimation-row-dark'">
             <span class="label">{{ $t('estimated') }}</span>
-            <span class="estimated-value">{{
-              amount && quotation && Number(quotation.estimated_receive_amt) > 0
-                ? quotation.estimated_receive_amt
-                : ''
-            }}</span>
+            <div
+              v-if="amount && quotation && Number(quotation.estimated_receive_amt) > 0"
+              class="estimated-input"
+            >
+              <span class="estimated-value">{{ quotation.estimated_receive_amt }}</span>
+              <span class="estimated-value"> {{ selectedToken.symbol }}</span>
+            </div>
           </div>
         </div>
       </div>

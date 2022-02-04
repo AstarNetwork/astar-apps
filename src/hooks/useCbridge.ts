@@ -207,12 +207,12 @@ export function useCbridge() {
 
       const baseFee = formatDecimals({
         amount: ethers.utils.formatUnits(data.base_fee, decimals).toString(),
-        decimals: 8,
+        decimals: 6,
       });
 
       const estimatedReceiveAmount = formatDecimals({
         amount: ethers.utils.formatUnits(data.estimated_receive_amt, decimals).toString(),
-        decimals: 6,
+        decimals: 8,
       });
 
       const { min, max } = await getMinAndMaxAmount({

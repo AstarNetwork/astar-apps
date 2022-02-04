@@ -186,6 +186,11 @@ input[type='number'] {
   font-size: 24px;
 }
 
+.estimated-input {
+  display: flex;
+  column-gap: 4px;
+}
+
 .max-button {
   display: none;
   @media (min-width: 768px) {
