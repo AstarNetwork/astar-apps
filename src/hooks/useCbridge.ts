@@ -340,16 +340,17 @@ export function useCbridge() {
   const bridge = async () => {
     try {
       const provider = getEvmProvider();
-      if (
-        !isH160.value ||
-        !selectedAddress.value ||
-        !selectedToken.value ||
-        !srcChain.value ||
-        !amount.value ||
-        !destChain.value ||
-        !provider
-      ) {
-        throw Error('Something went wrong');
+      if (!isH160.value || !selectedAddress.value) {
+        throw Error('Failed loading wallet address');
+      }
+      if (!provider) {
+        throw Error('Failed loading wallet provider');
+      }
+      if (!selectedToken.value || !srcChain.value || !destChain.value) {
+        throw Error('Something went wrong with cBridge API');
+      }
+      if (!amount.value) {
+        throw Error('Invalid amount');
       }
 
       if (selectedToken.value.bridgeMethod === BridgeMethod.canonical) {
@@ -378,7 +379,7 @@ export function useCbridge() {
     } catch (error: any) {
       console.error(error.message);
       store.dispatch('general/showAlertMsg', {
-        msg: error.message.message || 'Something went wrong',
+        msg: error.message || 'Something went wrong',
         alertType: 'error',
       });
     }
