@@ -132,16 +132,24 @@
       :amount="Number(amount)"
     />
 
-    <div>
+    <div class="cbridge-links">
+      <a
+        href="https://form.typeform.com/to/Q4LMjUaK"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="powered-link"
+      >
+        <span>{{ $t('bridge.contactSupport') }}</span>
+      </a>
       <a
         href="https://cbridge.celer.network/#/transfer"
         target="_blank"
         rel="noopener noreferrer"
         class="powered-link"
       >
-        <span>Powered by</span>
+        <span>{{ $t('bridge.poweredBy') }}</span>
         <img class="cbridge-logo" src="~assets/img/logo-cbridge.png" alt="logo-cbrige" />
-        <span>cBRIDGE</span>
+        <span>{{ $t('bridge.cbridge') }}</span>
       </a>
     </div>
 

@@ -229,6 +229,9 @@ export default {
     noHistory: "You don't have any transaction record yet",
     updateTime: 'The new transaction will be reflected in {from} ~ {to} mins',
     viewDetails: 'View details',
+    contactSupport: 'Contact Support',
+    poweredBy: 'Powered by',
+    cbridge: 'cBRIDGE',
     status: {
       TRANSFER_UNKNOWN: 'Unknown transfer',
       TRANSFER_SUBMITTING: 'Submitting',
