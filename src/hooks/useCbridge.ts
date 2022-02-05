@@ -1,47 +1,46 @@
-import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { History } from './../c-bridge/index';
 import { MaxUint256 } from '@ethersproject/constants';
 import axios from 'axios';
 import { ethers } from 'ethers';
-import ABI from 'src/c-bridge/abi/ERC20.json';
-import { AbiItem } from 'web3-utils';
 // import debounce from 'lodash.debounce'; Todo: Add debounce to inputHandler
 import { stringifyUrl } from 'query-string';
 import {
   approve,
   BridgeMethod,
+  castToPortalNetworkId,
   cBridgeEndpoint,
   CbridgeToken,
   Chain,
+  detectRemoveNetwork,
   EvmChain,
   formatDecimals,
+  getHistory,
+  getMinAndMaxAmount,
+  getMinimalMaxSlippage,
+  getSelectedToken,
   getTokenBalCbridge,
   getTokenInfo,
   getTransferConfigs,
+  History,
   mintOrBurn,
+  pendingStatus,
+  poolTransfer,
   pushToSelectableChains,
   Quotation,
   SelectedToken,
   sortChainName,
-  getHistory,
-  pendingStatus,
-  detectRemoveNetwork,
-  castToPortalNetworkId,
+  getDestTokenInfo,
 } from 'src/c-bridge';
-import { getSelectedToken } from 'src/c-bridge/utils';
+import ABI from 'src/c-bridge/abi/ERC20.json';
+import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useStore } from 'src/store';
 import { nativeCurrency, setupNetwork } from 'src/web3';
 import { computed, onUnmounted, ref, watch, watchEffect } from 'vue';
 import Web3 from 'web3';
-import {
-  getMinAndMaxAmount,
-  getMinimalMaxSlippage,
-  poolTransfer,
-} from './../c-bridge/utils/contract/index';
+import { AbiItem } from 'web3-utils';
 import { objToArray } from './helper/common';
 import { calUsdAmount } from './helper/price';
 import { getEvmProvider } from './helper/wallet';
-import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
 
 const { Ethereum, Astar, Shiden } = EvmChain;
 
@@ -67,6 +66,8 @@ export function useCbridge() {
   const usdValue = ref<number>(0);
   const isApprovalNeeded = ref<boolean>(true);
   const isDisabledBridge = ref<boolean>(true);
+  const destTokenUrl = ref<string>('');
+  const destTokenAddress = ref<string>('');
 
   const store = useStore();
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
@@ -77,7 +78,7 @@ export function useCbridge() {
     return getProviderIndex(chain);
   });
 
-  const fetchHistory = async () => {
+  const fetchHistory = async (): Promise<void> => {
     if (!isH160.value || !selectedAddress.value) return;
     const { histories: historyArray, isPending } = await getHistory(selectedAddress.value);
 
@@ -102,7 +103,7 @@ export function useCbridge() {
     }
   };
 
-  const resetStates = () => {
+  const resetStates = (): void => {
     isApprovalNeeded.value = true;
     isDisabledBridge.value = true;
     quotation.value = null;
@@ -111,7 +112,7 @@ export function useCbridge() {
     errMsg.value = '';
   };
 
-  const handleApprove = async () => {
+  const handleApprove = async (): Promise<void> => {
     try {
       const provider = getEvmProvider();
       if (!selectedToken.value || !selectedToken.value || !srcChain.value || !provider) return;
@@ -136,10 +137,14 @@ export function useCbridge() {
     }
   };
 
-  const closeModal = () => modal.value === null;
-  const openModal = (scene: 'src' | 'dest' | 'token' | 'history') => (modal.value = scene);
-  const selectToken = (token: CbridgeToken) => {
-    if (!srcChain.value) return;
+  const closeModal = (): boolean => modal.value === null;
+
+  const openModal = (scene: 'src' | 'dest' | 'token' | 'history'): void => {
+    modal.value = scene;
+  };
+
+  const selectToken = (token: CbridgeToken): void => {
+    if (!srcChain.value || !destChain.value) return;
     const formattedToken = getSelectedToken({
       srcChainId: srcChain.value.id,
       token,
@@ -151,7 +156,7 @@ export function useCbridge() {
     resetStates();
   };
 
-  const getSelectedTokenBal = async () => {
+  const getSelectedTokenBal = async (): Promise<string> => {
     if (
       !selectedAddress.value ||
       !srcChain.value ||
@@ -171,7 +176,7 @@ export function useCbridge() {
     });
   };
 
-  const getEstimation = async () => {
+  const getEstimation = async (): Promise<void> => {
     try {
       if (
         !srcChain.value ||
@@ -270,18 +275,18 @@ export function useCbridge() {
   //   isDisabledBridge.value = true;
   // }, 800);
 
-  const inputHandler = (event: any) => {
+  const inputHandler = (event: any): void => {
     amount.value = event.target.value;
     isDisabledBridge.value = true;
     errMsg.value = '';
   };
 
-  const toMaxAmount = async () => {
+  const toMaxAmount = async (): Promise<void> => {
     if (!isH160.value) return;
     amount.value = await getSelectedTokenBal();
   };
 
-  const selectChain = async (chainId: number) => {
+  const selectChain = (chainId: number): void => {
     if (!chains.value) return;
     const isSrcChain = modal.value === 'src';
     const chain = chains.value.find((it) => it.id === chainId);
@@ -296,7 +301,7 @@ export function useCbridge() {
     resetStates();
   };
 
-  const reverseChain = () => {
+  const reverseChain = (): void => {
     const fromChain = srcChain.value;
     srcChain.value = destChain.value;
     destChain.value = fromChain;
@@ -310,7 +315,7 @@ export function useCbridge() {
     location.reload();
   };
 
-  const updateBridgeConfig = async () => {
+  const updateBridgeConfig = async (): Promise<void> => {
     const data = await getTransferConfigs(currentNetworkIdx.value);
     const supportChain = data && data.supportChain;
     const tokens = data && data.tokens;
@@ -336,7 +341,7 @@ export function useCbridge() {
     tokensObj.value = tokens;
   };
 
-  const watchSelectableChains = () => {
+  const watchSelectableChains = (): void => {
     if (!srcChain.value || !destChain.value || chains.value === null) {
       return;
     }
@@ -383,7 +388,7 @@ export function useCbridge() {
     isApprovalNeeded.value = true;
   };
 
-  const bridge = async () => {
+  const bridge = async (): Promise<void> => {
     try {
       const provider = getEvmProvider();
       if (!isH160.value || !selectedAddress.value) {
@@ -438,6 +443,21 @@ export function useCbridge() {
 
   watchEffect(() => {
     watchSelectableChains();
+  });
+
+  watchEffect(() => {
+    if (!destChain.value || !selectedToken.value) return;
+    const destTokenInfo = getDestTokenInfo({
+      destChainId: destChain.value.id,
+      selectedToken: selectedToken.value,
+    });
+    if (destTokenInfo && !destTokenInfo.isNativeToken) {
+      destTokenUrl.value = destTokenInfo.url;
+      destTokenAddress.value = destTokenInfo.address;
+    } else {
+      destTokenUrl.value = '';
+      destTokenAddress.value = '';
+    }
   });
 
   watchEffect(async () => {
@@ -633,6 +653,8 @@ export function useCbridge() {
     isPendingTx,
     tokenIcons,
     errMsg,
+    destTokenUrl,
+    destTokenAddress,
     reverseChain,
     closeModal,
     openModal,

@@ -1,5 +1,12 @@
-import { CbridgeToken, SelectedToken, BridgeMethod, PeggedPairConfig } from 'src/c-bridge';
-import { getTokenBal } from 'src/web3';
+import { nativeCurrency } from './../../../web3/index';
+import {
+  CbridgeToken,
+  SelectedToken,
+  BridgeMethod,
+  PeggedPairConfig,
+  EvmChain,
+} from 'src/c-bridge';
+import { getTokenBal, getTokenExplorer } from 'src/web3';
 
 export const getSelectedToken = ({
   srcChainId,
@@ -92,6 +99,38 @@ export const getPeggedTokenInfo = ({
   return srcChainId === selectedToken.org_chain_id
     ? selectedToken.org_token
     : selectedToken.pegged_token;
+};
+
+export const getDestTokenInfo = ({
+  selectedToken,
+  destChainId,
+}: {
+  selectedToken: SelectedToken;
+  destChainId: EvmChain;
+}): { isNativeToken: boolean; address: string; url: string } | false => {
+  if (selectedToken.bridgeMethod === BridgeMethod.canonical) {
+    const token =
+      destChainId === selectedToken.canonicalConfig?.pegged_chain_id
+        ? selectedToken.canonicalConfig?.pegged_token
+        : selectedToken.canonicalConfig?.org_token;
+    const address = token?.token.address;
+    const isNativeToken = nativeCurrency[destChainId].name === token?.token.symbol;
+    if (!address) return false;
+    return {
+      isNativeToken,
+      address,
+      url: getTokenExplorer({ address, chainId: destChainId }),
+    };
+  } else {
+    const tokenDetail = selectedToken.poolConfig![destChainId];
+    const address = tokenDetail.token.address;
+    const isNativeToken = nativeCurrency[destChainId].name === tokenDetail.token.symbol;
+    return {
+      isNativeToken,
+      address,
+      url: getTokenExplorer({ address, chainId: destChainId }),
+    };
+  }
 };
 
 export const getTokenBalCbridge = async ({

@@ -4,7 +4,7 @@ import { AbiItem } from 'web3-utils';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
 import Web3 from 'web3';
-import { CHAIN_INFORMATION } from '../index';
+import { blockExplorerUrls, CHAIN_INFORMATION } from '../index';
 import { EVM, nativeCurrency, TNetworkId } from './../index';
 
 export const getChainData = (chainId: number) => {
@@ -109,5 +109,25 @@ export const getTokenBal = async ({
   } catch (error: any) {
     console.error(error.message);
     return '0';
+  }
+};
+
+export const getTokenExplorer = ({
+  chainId,
+  address,
+}: {
+  chainId: number;
+  address: string;
+}): string => {
+  switch (chainId) {
+    case EVM.ASTAR_MAINNET:
+      return blockExplorerUrls[EVM.ASTAR_MAINNET] + `/address/${address}`;
+    case EVM.SHIDEN_MAINNET:
+      return blockExplorerUrls[EVM.SHIDEN_MAINNET] + `/address/${address}`;
+    case EVM.SHIBUYA_TESTNET:
+      return blockExplorerUrls[EVM.SHIBUYA_TESTNET] + `/address/${address}`;
+
+    default:
+      return blockExplorerUrls[chainId] + `/token/${address}`;
   }
 };

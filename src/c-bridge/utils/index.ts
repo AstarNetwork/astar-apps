@@ -23,6 +23,7 @@ export {
   getPeggedTokenInfo,
   getTokenBalCbridge,
   getTokenInfo,
+  getDestTokenInfo,
 } from './token-detail';
 
 export const formatDecimals = ({ amount, decimals }: { amount: string; decimals: number }) => {

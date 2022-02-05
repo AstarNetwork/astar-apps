@@ -232,6 +232,7 @@ export default {
     contactSupport: 'Contact Support',
     poweredBy: 'Powered by',
     cbridge: 'cBRIDGE',
+    destToken: 'Destination token address',
     status: {
       TRANSFER_UNKNOWN: 'Unknown transfer',
       TRANSFER_SUBMITTING: 'Submitting',

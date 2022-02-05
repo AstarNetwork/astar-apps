@@ -6,6 +6,7 @@ export {
   createAstarWeb3Instance,
   getTokenBal,
   buildWeb3Instance,
+  getTokenExplorer,
 } from './utils';
 
 export type TNetworkId = endpointKey.SHIDEN | endpointKey.SHIBUYA | endpointKey.ASTAR;

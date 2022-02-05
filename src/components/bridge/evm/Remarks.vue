@@ -10,6 +10,7 @@
       <p>{{ $t('bridge.timeOfArrival') }}</p>
       <p>{{ $t('bridge.minAmount') }}</p>
       <p>{{ $t('bridge.maxAmount') }}</p>
+      <p v-if="destTokenAddress">{{ $t('bridge.destToken') }}</p>
     </div>
     <div class="remarks-right">
       <div class="rate">
@@ -67,13 +68,26 @@
         <span class="quotation-value">{{ $n(quotation ? Number(quotation.maxAmount) : 0) }}</span>
         <span class="quotation-currency">{{ selectedToken.symbol }}</span>
       </div>
+      <div v-if="destTokenAddress" class="dest-token">
+        <img
+          :src="getIcon({ symbol: selectedToken.symbol, icon: selectedToken.icon })"
+          alt="token-icon"
+          class="chain-logo-mini"
+        />
+        <div class="dest-token-link">
+          <a :href="destTokenUrl" target="_blank" rel="noopener noreferrer">{{
+            destTokenAddress
+          }}</a>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { useStore } from 'src/store';
-import { defineComponent, computed } from 'vue';
+import { getIcon } from 'src/c-bridge';
+import { computed, defineComponent } from 'vue';
 
 export default defineComponent({
   props: {
@@ -101,12 +115,21 @@ export default defineComponent({
       type: Number,
       required: true,
     },
+    destTokenUrl: {
+      type: String,
+      required: true,
+    },
+    destTokenAddress: {
+      type: String,
+      required: true,
+    },
   },
   setup() {
     const store = useStore();
     const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
-    return { isDarkTheme, isH160 };
+
+    return { isDarkTheme, isH160, getIcon };
   },
 });
 </script>

@@ -19,6 +19,8 @@ export {
   getTxStatus,
   detectRemoveNetwork,
   castToPortalNetworkId,
+  getDestTokenInfo,
+  getMinAndMaxAmount,
 } from './utils';
 
 export enum EvmChain {
@@ -64,6 +66,7 @@ export interface Token {
   name: string;
   icon: string;
   poolContract?: string;
+  chain?: EvmChain;
 }
 
 export interface TokenDetail {

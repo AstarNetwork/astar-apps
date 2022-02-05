@@ -130,6 +130,8 @@
       :src-chain="srcChain"
       :dest-chain="destChain"
       :amount="Number(amount)"
+      :dest-token-url="destTokenUrl"
+      :dest-token-address="destTokenAddress"
     />
 
     <div class="cbridge-links">
@@ -264,6 +266,8 @@ export default defineComponent({
       isPendingTx,
       tokenIcons,
       errMsg,
+      destTokenUrl,
+      destTokenAddress,
       closeModal,
       openModal,
       selectChain,
@@ -308,6 +312,8 @@ export default defineComponent({
       isPendingTx,
       tokenIcons,
       errMsg,
+      destTokenUrl,
+      destTokenAddress,
       closeModal,
       openModal,
       selectChain,

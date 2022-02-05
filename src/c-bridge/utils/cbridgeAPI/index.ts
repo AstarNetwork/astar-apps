@@ -3,18 +3,18 @@ import { stringifyUrl } from 'query-string';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { objToArray } from 'src/hooks/helper/common';
 import {
+  astarSupportChains,
   BridgeMethod,
   cBridgeEndpoint,
   CbridgeToken,
   Chain,
   EvmChain,
+  History,
   PeggedPairConfig,
-  astarSupportChains,
+  pendingStatus,
   shidenSupportChains,
   Token,
   TransferConfigs,
-  History,
-  pendingStatus,
 } from './../../index';
 
 export const getChainName = (chain: number) => {
@@ -98,10 +98,12 @@ const pushPooledToken = ({
               [chainA]: {
                 ...a,
                 poolContract: poolContractChainA,
+                id: chainA,
               },
               [chainB]: {
                 ...b,
                 poolContract: poolContractChainB,
+                id: chainB,
               },
             },
           };

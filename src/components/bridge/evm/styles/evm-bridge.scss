@@ -435,7 +435,25 @@ input[type='number'] {
 }
 
 .remarks-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
   @apply tw-text-sm tw-text-blue-900 dark:tw-text-darkGray-100;
+}
+
+.dest-token {
+  display: flex;
+  align-items: center;
+}
+.dest-token-link {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 70px;
+  text-decoration: underline;
+  @media (min-width: 768px) {
+    max-width: 100px;
+  }
 }
 
 .cbridge-links {
