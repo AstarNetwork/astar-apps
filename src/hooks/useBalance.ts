@@ -1,15 +1,15 @@
 import { VoidFn } from '@polkadot/api/types';
-import { Balance } from '@polkadot/types/interfaces';
+import { Balance, BalanceLockTo212 } from '@polkadot/types/interfaces';
 import { PalletVestingVestingInfo, PalletBalancesBalanceLock } from '@polkadot/types/lookup';
 import BN from 'bn.js';
 import { useStore } from 'src/store';
-import { createWeb3Instance } from 'src/web3';
+import { createWeb3Instance, TNetworkId } from 'src/config/web3';
 import { computed, onUnmounted, ref, Ref, watch } from 'vue';
-import { getProviderIndex } from './../config/chainEndpoints';
-import { TNetworkId } from './../web3';
+import { getProviderIndex } from 'src/config/chainEndpoints';
 import { getVested } from './helper/vested';
+import { $api } from 'boot/api';
 
-function useCall(apiRef: any, addressRef: Ref<string>) {
+function useCall(addressRef: Ref<string>) {
   const balanceRef = ref(new BN(0));
   const vestedRef = ref(new BN(0));
   const remainingVests = ref(new BN(0));
@@ -57,13 +57,12 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
 
   const updateAccount = (address: string) => {
     if (!address) return;
+    const api = $api.value!!;
 
-    const api = apiRef?.value;
     if (unsub.value) {
       unsub.value();
       unsub.value = undefined;
     }
-    if (!api) return;
 
     api.isReady.then(async () => {
       const results = await Promise.all([
@@ -77,7 +76,7 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
       const vesting: PalletVestingVestingInfo[] = results[1].unwrapOr(undefined) || [];
       const currentBlock = results[2];
       const vestedClaimable = results[3].vestedClaimable;
-      const locks: PalletBalancesBalanceLock[] = results[3].lockedBreakdown;
+      const locks: (PalletBalancesBalanceLock | BalanceLockTo212)[] = results[3].lockedBreakdown;
 
       const extendedVesting: ExtendedVestingInfo[] = [];
       vestedRef.value = new BN(0);
@@ -145,11 +144,11 @@ function useCall(apiRef: any, addressRef: Ref<string>) {
   };
 }
 
-export function useBalance(apiRef: any, addressRef: Ref<string>) {
+export function useBalance(addressRef: Ref<string>) {
   const balance = ref(new BN(0));
   const accountData = ref<AccountData | AccountDataH160>();
 
-  const { balanceRef, accountDataRef } = useCall(apiRef, addressRef);
+  const { balanceRef, accountDataRef } = useCall(addressRef);
 
   watch(
     () => balanceRef?.value,
@@ -183,7 +182,7 @@ export class AccountData {
     vesting: ExtendedVestingInfo[],
     vestedClaimable: BN,
     remainingVests: BN,
-    locks: PalletBalancesBalanceLock[]
+    locks: (PalletBalancesBalanceLock | BalanceLockTo212)[]
   ) {
     this.free = free.toBn();
     this.reserved = reserved.toBn();
@@ -212,7 +211,7 @@ export class AccountData {
   public vesting: ExtendedVestingInfo[];
   public vestedClaimable: BN;
   public remainingVests: BN;
-  public locks: PalletBalancesBalanceLock[];
+  public locks: (PalletBalancesBalanceLock | BalanceLockTo212)[];
 }
 
 export class AccountDataH160 {
@@ -225,7 +224,7 @@ export class AccountDataH160 {
     public vesting: ExtendedVestingInfo[],
     public vestedClaimable: BN,
     public remainingVests: BN,
-    public locks: PalletBalancesBalanceLock[]
+    public locks: (PalletBalancesBalanceLock | BalanceLockTo212)[]
   ) {}
 
   public getUsableTransactionBalance(): BN {
