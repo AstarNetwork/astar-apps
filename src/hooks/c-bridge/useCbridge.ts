@@ -1,10 +1,8 @@
-import { MaxUint256 } from '@ethersproject/constants';
 import axios from 'axios';
 import { ethers } from 'ethers';
 // import { debounce } from 'quasar';
 import { stringifyUrl } from 'query-string';
 import {
-  approve,
   BridgeMethod,
   castToPortalNetworkId,
   cBridgeEndpoint,
@@ -13,37 +11,31 @@ import {
   detectRemoveNetwork,
   EvmChain,
   formatDecimals,
-  getHistory,
+  getDestTokenInfo,
   getMinAndMaxAmount,
   getMinimalMaxSlippage,
   getSelectedToken,
   getTokenBalCbridge,
   getTokenInfo,
   getTransferConfigs,
-  History,
   mintOrBurn,
-  pendingStatus,
   poolTransfer,
   pushToSelectableChains,
   Quotation,
   SelectedToken,
   sortChainName,
-  getDestTokenInfo,
 } from 'src/c-bridge';
-import ABI from 'src/c-bridge/abi/ERC20.json';
 import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { objToArray } from 'src/hooks/helper/common';
+import { getEvmProvider } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
-import { nativeCurrency, setupNetwork } from 'src/web3';
+import { setupNetwork } from 'src/web3';
 import { computed, onUnmounted, ref, watch, watchEffect } from 'vue';
 import Web3 from 'web3';
-import { AbiItem } from 'web3-utils';
-import { objToArray } from './helper/common';
 // import { calUsdAmount } from './helper/price';
-import { getEvmProvider } from './helper/wallet';
 
 const { Ethereum, Astar, Shiden } = EvmChain;
-
 export function useCbridge() {
   const srcChain = ref<Chain | null>(null);
   const destChain = ref<Chain | null>(null);
@@ -53,18 +45,13 @@ export function useCbridge() {
   const chains = ref<Chain[] | null>(null);
   const tokens = ref<SelectedToken[] | null>(null);
   const tokensObj = ref<any | null>(null);
-  const selectedToken = ref<SelectedToken | null>(null);
   const selectedTokenBalance = ref<string>('0');
   const modal = ref<'src' | 'dest' | 'token' | 'history' | null>(null);
   const amount = ref<string | null>(null);
-  const histories = ref<History[] | []>([]);
   const tokenIcons = ref<{ symbol: string; icon: string }[]>([]);
-  const isPendingTx = ref<boolean>(false);
-  const isUpdatingHistories = ref<boolean>(false);
   const quotation = ref<Quotation | null>(null);
   const errMsg = ref<string>('');
   const usdValue = ref<number>(0);
-  const isApprovalNeeded = ref<boolean>(true);
   const isDisabledBridge = ref<boolean>(true);
   const destTokenUrl = ref<string>('');
   const destTokenAddress = ref<string>('');
@@ -77,64 +64,14 @@ export function useCbridge() {
     const chain = chainInfo ? chainInfo.chain : '';
     return getProviderIndex(chain);
   });
-
-  const fetchHistory = async (): Promise<void> => {
-    if (!isH160.value || !selectedAddress.value) return;
-    const { histories: historyArray, isPending } = await getHistory(selectedAddress.value);
-
-    if (histories.value.length === 0) {
-      histories.value = historyArray;
-      isPendingTx.value = isPending;
-    }
-
-    if (histories.value.length === 0) return;
-
-    const isFirstItemPending = pendingStatus.find((it) => it === histories.value[0].status);
-    // Memo: update history items on the modal UI
-    if (isFirstItemPending || isPending) {
-      isUpdatingHistories.value = true;
-      histories.value = [];
-      const { histories: historyArray, isPending } = await getHistory(selectedAddress.value);
-      histories.value = historyArray;
-      isPendingTx.value = isPending;
-      setTimeout(() => {
-        isUpdatingHistories.value = false;
-      }, 500);
-    }
-  };
+  const selectedToken = computed(() => store.getters['bridge/selectedToken']);
 
   const resetStates = (): void => {
-    isApprovalNeeded.value = true;
     isDisabledBridge.value = true;
     quotation.value = null;
     amount.value = null;
     usdValue.value = 0;
     errMsg.value = '';
-  };
-
-  const handleApprove = async (): Promise<void> => {
-    try {
-      const provider = getEvmProvider();
-      if (!selectedToken.value || !srcChain.value || !provider) return;
-      if (srcChain.value.id !== selectedNetwork.value) {
-        throw Error('invalid network');
-      }
-
-      const hash = await approve({
-        address: selectedAddress.value,
-        selectedToken: selectedToken.value,
-        srcChainId: srcChain.value.id,
-        provider,
-      });
-      const msg = `Transaction submitted at transaction hash #${hash}`;
-      store.dispatch('general/showAlertMsg', { msg, alertType: 'success' });
-    } catch (error: any) {
-      console.error(error.message);
-      store.dispatch('general/showAlertMsg', {
-        msg: error.message || 'Something went wrong',
-        alertType: 'error',
-      });
-    }
   };
 
   const closeModal = (): boolean => modal.value === null;
@@ -144,7 +81,7 @@ export function useCbridge() {
   };
 
   const selectToken = (token: SelectedToken): void => {
-    selectedToken.value = token;
+    store.commit('bridge/setSelectedToken', token);
     modal.value = null;
     resetStates();
   };
@@ -381,8 +318,7 @@ export function useCbridge() {
       })
     );
 
-    selectedToken.value = tokens.value[0];
-    isApprovalNeeded.value = true;
+    store.commit('bridge/setSelectedToken', tokens.value[0]);
   };
 
   const bridge = async (): Promise<void> => {
@@ -483,10 +419,6 @@ export function useCbridge() {
   });
 
   watchEffect(async () => {
-    await fetchHistory();
-  });
-
-  watchEffect(async () => {
     selectedTokenBalance.value = await getSelectedTokenBal();
   });
 
@@ -568,66 +500,8 @@ export function useCbridge() {
     }
   });
 
-  // Memo: Check approval
-  watchEffect(() => {
-    let cancelled = false;
-    const provider = getEvmProvider();
-    if (
-      !isH160.value ||
-      !srcChain.value ||
-      !selectedToken.value ||
-      !selectedAddress.value ||
-      !provider
-    ) {
-      return;
-    }
-
-    const address = selectedAddress.value;
-    const { tokenAddress, symbol, contractAddress } = getTokenInfo({
-      srcChainId: srcChain.value.id,
-      selectedToken: selectedToken.value,
-    });
-
-    const checkIsApproved = async (): Promise<boolean | null> => {
-      if (!tokenAddress) return null;
-      if (!tokenAddress || !symbol || !contractAddress) {
-        throw Error('Cannot find token information');
-      }
-      const web3 = new Web3(provider as any);
-      const contract = new web3.eth.Contract(ABI as AbiItem[], tokenAddress);
-      const allowance = await contract.methods
-        .allowance(address, contractAddress)
-        .call()
-        .catch((error: any) => {
-          return '0';
-        });
-      return Number(allowance) === Number(MaxUint256.toString());
-    };
-
-    const checkPeriodically = async () => {
-      if (cancelled || !srcChain.value || isApprovalNeeded.value === false) return;
-      isApprovalNeeded.value = true;
-      if (nativeCurrency[srcChain.value.id].name === symbol) {
-        isApprovalNeeded.value = false;
-        return;
-      }
-
-      const result = await checkIsApproved();
-      if (cancelled) return;
-      isApprovalNeeded.value = !!!result;
-      setTimeout(checkPeriodically, 15000);
-    };
-
-    checkPeriodically();
-
-    return () => {
-      cancelled = true;
-    };
-  });
-
   const handleUpdate = setInterval(async () => {
     await getEstimation();
-    await fetchHistory();
   }, 20 * 1000);
 
   onUnmounted(() => {
@@ -642,17 +516,12 @@ export function useCbridge() {
     chains,
     tokens,
     modal,
-    selectedToken,
     selectedTokenBalance,
     amount,
     quotation,
-    isApprovalNeeded,
     selectedNetwork,
     isDisabledBridge,
     usdValue,
-    histories,
-    isUpdatingHistories,
-    isPendingTx,
     tokenIcons,
     errMsg,
     destTokenUrl,
@@ -664,7 +533,6 @@ export function useCbridge() {
     selectToken,
     inputHandler,
     toMaxAmount,
-    handleApprove,
     bridge,
   };
 }

@@ -212,21 +212,21 @@
 </template>
 
 <script lang="ts">
+import { fasHistory } from '@quasar/extras/fontawesome-v5';
+import IconBase from 'components/icons/IconBase.vue';
 import { useMeta } from 'quasar';
-import { getChainName, formatDecimals, getIcon } from 'src/c-bridge';
-import { useCbridge, useConnectWallet } from 'src/hooks';
+import { formatDecimals, getChainName, getIcon } from 'src/c-bridge';
+import ModalConnectWallet from 'src/components/balance/modals/ModalConnectWallet.vue';
+import ModalInstallWallet from 'src/components/balance/modals/ModalInstallWallet.vue';
+import { useCbridgeHistory, useCbridgeApproval, useCbridge, useConnectWallet } from 'src/hooks';
 import { calUsdAmount } from 'src/hooks/helper/price';
 import { useStore } from 'src/store';
 import { computed, defineComponent } from 'vue';
-import ModalConnectWallet from 'src/components/balance/modals/ModalConnectWallet.vue';
-import ModalInstallWallet from 'src/components/balance/modals/ModalInstallWallet.vue';
-import ModalChain from './modals/ModalChain.vue';
-import ModalToken from './modals/ModalToken.vue';
-import ModalHistory from './modals/ModalHistory.vue';
 import BridgeButtons from './BridgeButtons.vue';
+import ModalChain from './modals/ModalChain.vue';
+import ModalHistory from './modals/ModalHistory.vue';
+import ModalToken from './modals/ModalToken.vue';
 import Remarks from './Remarks.vue';
-import { fasHistory } from '@quasar/extras/fontawesome-v5';
-import IconBase from 'components/icons/IconBase.vue';
 
 export default defineComponent({
   components: {
@@ -243,6 +243,7 @@ export default defineComponent({
     useMeta({ title: 'EVM Bridge' });
     const store = useStore();
     const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
+    const selectedToken = computed(() => store.getters['bridge/selectedToken']);
 
     const {
       srcChain,
@@ -253,16 +254,11 @@ export default defineComponent({
       tokens,
       modal,
       amount,
-      selectedToken,
       quotation,
-      isApprovalNeeded,
       selectedTokenBalance,
       selectedNetwork,
       isDisabledBridge,
       usdValue,
-      histories,
-      isUpdatingHistories,
-      isPendingTx,
       tokenIcons,
       errMsg,
       destTokenUrl,
@@ -274,9 +270,11 @@ export default defineComponent({
       reverseChain,
       inputHandler,
       toMaxAmount,
-      handleApprove,
       bridge,
     } = useCbridge();
+
+    const { isApprovalNeeded, handleApprove } = useCbridgeApproval();
+    const { histories, isUpdatingHistories, isPendingTx } = useCbridgeHistory();
 
     const {
       WalletModalOption,

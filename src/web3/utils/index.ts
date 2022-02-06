@@ -89,12 +89,14 @@ export const getTokenBal = async ({
 }: {
   address: string;
   tokenAddress: string;
-  srcChainId?: number;
+  srcChainId: number;
   tokenSymbol?: string;
 }): Promise<string> => {
   try {
-    const provider = getEvmProvider();
-    const web3 = new Web3(provider as any);
+    const web3 = buildWeb3Instance(srcChainId);
+    if (!web3) {
+      throw Error(`Cannot create web3 instance with network id ${srcChainId}`);
+    }
     const contract = new web3.eth.Contract(ABI as AbiItem[], tokenAddress);
 
     const isCheckNativeBal = tokenSymbol && srcChainId;
@@ -105,7 +107,8 @@ export const getTokenBal = async ({
 
     const decimals = await contract.methods.decimals().call();
     const balance = (await contract.methods.balanceOf(address).call()) ?? '0';
-    return ethers.utils.formatUnits(balance, decimals).toString();
+    const formattedBalance = ethers.utils.formatUnits(balance, decimals).toString();
+    return formattedBalance;
   } catch (error: any) {
     console.error(error.message);
     return '0';
