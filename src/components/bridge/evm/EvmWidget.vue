@@ -1,5 +1,5 @@
 <template>
-  <div v-if="srcChains" class="container animate__animated animate__fadeIn">
+  <div v-if="srcChain" class="container animate__animated animate__fadeIn">
     <div class="widget" :class="isDarkTheme && 'widget-dark'">
       <div class="row-tool">
         <div class="tw-tooltip tw-relative">
@@ -18,14 +18,14 @@
         <div class="currency">
           <span class="label">{{ $t('from') }}</span>
           <div class="chain" :class="isDarkTheme && 'chain-dark'" @click="openModal('src')">
-            <img v-if="srcChain" :src="srcChain.icon" alt="src-chain-logo" class="chain-logo" />
-            <span v-if="srcChain" class="chain-name">
+            <img :src="srcChain.icon" alt="src-chain-logo" class="chain-logo" />
+            <span class="chain-name">
               {{ getChainName(srcChain.id) }}
             </span>
             <span class="under-arrow">▼</span>
           </div>
         </div>
-        <div v-if="selectedToken">
+        <div>
           <div class="input-row" :class="isDarkTheme && 'input-row-dark'">
             <input
               :value="amount"
