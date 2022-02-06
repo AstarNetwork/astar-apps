@@ -1,19 +1,12 @@
-import axios from 'axios';
-import { ethers } from 'ethers';
-// import { debounce } from 'quasar';
-import { stringifyUrl } from 'query-string';
 import {
   BridgeMethod,
   castToPortalNetworkId,
-  cBridgeEndpoint,
   CbridgeToken,
   Chain,
   detectRemoveNetwork,
   EvmChain,
-  formatDecimals,
+  fetchEstimation,
   getDestTokenInfo,
-  getMinAndMaxAmount,
-  getMinimalMaxSlippage,
   getSelectedToken,
   getTokenBalCbridge,
   getTokenInfo,
@@ -114,7 +107,9 @@ export function useCbridge() {
         !selectedToken.value ||
         (amount.value && Number(amount.value) === 0)
       ) {
-        if (!quotation.value) return;
+        if (!quotation.value) {
+          return;
+        }
         quotation.value = {
           ...quotation.value,
           estimated_receive_amt: '0',
@@ -123,73 +118,23 @@ export function useCbridge() {
       }
       const numAmount = amount.value ? Number(amount.value) : 0.001;
       const isValidAmount = !isNaN(numAmount);
-      if (!isValidAmount) return;
-
-      const { symbol, decimals } = getTokenInfo({
-        srcChainId: srcChain.value.id,
-        selectedToken: selectedToken.value,
-      });
-
-      const token_symbol = symbol;
-      const amt = ethers.utils.parseUnits(numAmount.toString(), decimals).toString();
-      const is_pegged = selectedToken.value.bridgeMethod === BridgeMethod.canonical;
-      const usr_addr = isH160.value
-        ? selectedAddress.value
-        : '0xaa47c83316edc05cf9ff7136296b026c5de7eccd'; // random address from docs
-
-      // Memo: 3000 -> 0.3%
-      let slippage_tolerance = 3000;
-
-      if (!is_pegged) {
-        const minimalMaxSlippage = await getMinimalMaxSlippage({
-          srcChainId: srcChain.value.id,
-          selectedToken: selectedToken.value,
-        });
-        slippage_tolerance =
-          slippage_tolerance > minimalMaxSlippage ? slippage_tolerance : minimalMaxSlippage;
+      if (!isValidAmount) {
+        throw Error('Invalid amount');
       }
 
-      const url = stringifyUrl({
-        url: cBridgeEndpoint.Quotation,
-        query: {
-          src_chain_id: srcChain.value.id,
-          dst_chain_id: destChain.value.id,
-          token_symbol,
-          amt,
-          usr_addr,
-          slippage_tolerance,
-          is_pegged,
-        },
-      });
-      const { data } = await axios.get<Quotation>(url);
-
-      const baseFee = formatDecimals({
-        amount: ethers.utils.formatUnits(data.base_fee, decimals).toString(),
-        decimals: 6,
-      });
-
-      const estimatedReceiveAmount = formatDecimals({
-        amount: ethers.utils.formatUnits(data.estimated_receive_amt, decimals).toString(),
-        decimals: 8,
-      });
-
-      const { min, max } = await getMinAndMaxAmount({
+      const address = isH160.value
+        ? selectedAddress.value
+        : '0xaa47c83316edc05cf9ff7136296b026c5de7eccd'; // random address from docs
+      const estimation = await fetchEstimation({
+        amount: numAmount,
         srcChainId: srcChain.value.id,
+        destChainId: destChain.value.id,
         selectedToken: selectedToken.value,
+        address,
       });
 
-      quotation.value = {
-        ...data,
-        bridge_rate: formatDecimals({
-          amount: String(data.bridge_rate),
-          decimals: 2,
-        }),
-        base_fee: String(baseFee),
-        estimated_receive_amt: String(estimatedReceiveAmount),
-        minAmount: min,
-        maxAmount: max,
-      };
-      if (0 > Number(quotation.value.estimated_receive_amt)) {
+      quotation.value = estimation;
+      if (0 > Number(estimation.estimated_receive_amt)) {
         errMsg.value = 'The received amount cannot cover fee';
       } else {
         errMsg.value = '';
@@ -251,7 +196,9 @@ export function useCbridge() {
     const tokens = data && data.tokens;
     const tokenIconsData = data && data.tokenIcons;
 
-    if (!supportChain || !tokens || !tokenIconsData) return;
+    if (!supportChain || !tokens || !tokenIconsData) {
+      throw Error('Cannot fetch from cBridge API');
+    }
 
     if (currentNetworkIdx.value === endpointKey.ASTAR) {
       srcChain.value = supportChain.find((it) => it.id === Ethereum) as Chain;

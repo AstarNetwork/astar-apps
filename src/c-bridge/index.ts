@@ -21,6 +21,7 @@ export {
   castToPortalNetworkId,
   getDestTokenInfo,
   getMinAndMaxAmount,
+  fetchEstimation,
 } from './utils';
 
 export enum EvmChain {

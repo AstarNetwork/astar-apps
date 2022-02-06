@@ -1,3 +1,4 @@
+import { SelectedToken } from 'src/c-bridge';
 import axios from 'axios';
 import { stringifyUrl } from 'query-string';
 import { endpointKey } from 'src/config/chainEndpoints';
@@ -15,7 +16,10 @@ import {
   shidenSupportChains,
   Token,
   TransferConfigs,
+  Quotation,
 } from './../../index';
+import { formatDecimals, getMinAndMaxAmount, getMinimalMaxSlippage, getTokenInfo } from '..';
+import { ethers } from 'ethers';
 
 export const getChainName = (chain: number) => {
   switch (chain) {
@@ -363,4 +367,80 @@ export const getTxStatus = (status: number): string => {
     default:
       return 'TRANSFER_UNKNOWN';
   }
+};
+
+export const fetchEstimation = async ({
+  amount,
+  srcChainId,
+  destChainId,
+  selectedToken,
+  address,
+}: {
+  amount: number;
+  srcChainId: EvmChain;
+  destChainId: EvmChain;
+  selectedToken: SelectedToken;
+  address: string;
+}) => {
+  const { symbol, decimals } = getTokenInfo({
+    srcChainId,
+    selectedToken,
+  });
+
+  const token_symbol = symbol;
+  const amt = ethers.utils.parseUnits(amount.toString(), decimals).toString();
+  const is_pegged = selectedToken.bridgeMethod === BridgeMethod.canonical;
+  // Memo: 3000 -> 0.3%
+  let slippage_tolerance = 3000;
+
+  if (!is_pegged) {
+    const minimalMaxSlippage = await getMinimalMaxSlippage({
+      srcChainId,
+      selectedToken,
+    });
+    slippage_tolerance =
+      slippage_tolerance > minimalMaxSlippage ? slippage_tolerance : minimalMaxSlippage;
+  }
+
+  const url = stringifyUrl({
+    url: cBridgeEndpoint.Quotation,
+    query: {
+      src_chain_id: srcChainId,
+      dst_chain_id: destChainId,
+      token_symbol,
+      amt,
+      usr_addr: address,
+      slippage_tolerance,
+      is_pegged,
+    },
+  });
+  const { data } = await axios.get<Quotation>(url);
+
+  const baseFee = formatDecimals({
+    amount: ethers.utils.formatUnits(data.base_fee, decimals).toString(),
+    decimals: 6,
+  });
+
+  const estimatedReceiveAmount = formatDecimals({
+    amount: ethers.utils.formatUnits(data.estimated_receive_amt, decimals).toString(),
+    decimals: 8,
+  });
+
+  const { min, max } = await getMinAndMaxAmount({
+    srcChainId,
+    selectedToken,
+  });
+
+  const quotation = {
+    ...data,
+    bridge_rate: formatDecimals({
+      amount: String(data.bridge_rate),
+      decimals: 2,
+    }),
+    base_fee: String(baseFee),
+    estimated_receive_amt: String(estimatedReceiveAmount),
+    minAmount: min,
+    maxAmount: max,
+  };
+  return quotation;
 };

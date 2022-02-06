@@ -16,6 +16,7 @@ export {
   getIcon,
   getHistory,
   getTxStatus,
+  fetchEstimation,
 } from './cbridgeAPI';
 
 export {
