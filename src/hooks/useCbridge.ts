@@ -1,7 +1,6 @@
 import { MaxUint256 } from '@ethersproject/constants';
 import axios from 'axios';
 import { ethers } from 'ethers';
-// import debounce from 'lodash.debounce'; Todo: Add debounce to inputHandler
 // import { debounce } from 'quasar';
 import { stringifyUrl } from 'query-string';
 import {
@@ -292,6 +291,7 @@ export function useCbridge() {
       destChain.value = chain;
     }
     modal.value = null;
+    selectedToken.value = null;
     resetStates();
   };
 
@@ -544,24 +544,20 @@ export function useCbridge() {
 
   watchEffect(() => {
     if (
-      !quotation.value ||
-      !srcChain.value ||
-      !quotation.value.minAmount ||
-      !quotation.value.maxAmount ||
-      selectedNetwork.value !== srcChain.value.id ||
-      0 >= Number(quotation.value.estimated_receive_amt) ||
-      Number(amount.value) > Number(selectedTokenBalance.value)
+      quotation.value &&
+      quotation.value.maxAmount !== undefined &&
+      quotation.value.minAmount !== undefined
     ) {
+      if (
+        quotation.value.maxAmount > Number(amount.value) &&
+        Number(amount.value) > quotation.value.minAmount
+      ) {
+        isDisabledBridge.value = false;
+      } else {
+        isDisabledBridge.value = true;
+      }
+    } else {
       isDisabledBridge.value = true;
-      return;
-    }
-
-    if (
-      quotation.value.maxAmount > Number(amount.value) &&
-      Number(amount.value) > quotation.value.minAmount
-    ) {
-      isDisabledBridge.value = false;
-      return;
     }
   });
 
