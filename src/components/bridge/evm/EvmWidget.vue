@@ -1,5 +1,5 @@
 <template>
-  <div v-if="srcChain" class="container animate__animated animate__fadeIn">
+  <div v-if="srcChain && selectedToken" class="container animate__animated animate__fadeIn">
     <div class="widget" :class="isDarkTheme && 'widget-dark'">
       <div class="row-tool">
         <div class="tw-tooltip tw-relative">

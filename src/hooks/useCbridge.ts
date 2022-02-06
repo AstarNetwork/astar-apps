@@ -291,7 +291,6 @@ export function useCbridge() {
       destChain.value = chain;
     }
     modal.value = null;
-    selectedToken.value = null;
     resetStates();
   };
 
