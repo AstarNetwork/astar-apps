@@ -400,6 +400,14 @@ export function useCbridge() {
       if (!amount.value) {
         throw Error('Invalid amount');
       }
+      if (
+        !quotation.value ||
+        !quotation.value.estimated_receive_amt ||
+        0 >= Number(quotation.value.estimated_receive_amt) ||
+        errMsg.value !== ''
+      ) {
+        throw Error('Invalid estimated receiving amount');
+      }
 
       if (selectedToken.value.bridgeMethod === BridgeMethod.canonical) {
         const hash = await mintOrBurn({
