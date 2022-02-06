@@ -3,7 +3,7 @@
     <div
       class="token-button"
       :class="selectedToken.symbol === token.symbol && 'selected'"
-      @click="selectToken(token)"
+      @click="selectedToken.symbol !== token.symbol && selectToken(token)"
     >
       <div class="token">
         <div>

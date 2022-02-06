@@ -2,7 +2,7 @@
   <div
     class="chain"
     :class="selectedChain.id === chain.id && 'selected'"
-    @click="selectChain(chain.id)"
+    @click="selectedChain.id !== chain.id && selectChain(chain.id)"
   >
     <div>
       <img :src="chain.icon" alt="chain-logo" class="chain-logo" />
