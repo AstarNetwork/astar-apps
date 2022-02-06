@@ -115,7 +115,7 @@ export function useCbridge() {
   const handleApprove = async (): Promise<void> => {
     try {
       const provider = getEvmProvider();
-      if (!selectedToken.value || !selectedToken.value || !srcChain.value || !provider) return;
+      if (!selectedToken.value || !srcChain.value || !provider) return;
       if (srcChain.value.id !== selectedNetwork.value) {
         throw Error('invalid network');
       }
