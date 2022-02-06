@@ -2,6 +2,7 @@ import { MaxUint256 } from '@ethersproject/constants';
 import axios from 'axios';
 import { ethers } from 'ethers';
 // import debounce from 'lodash.debounce'; Todo: Add debounce to inputHandler
+// import { debounce } from 'quasar';
 import { stringifyUrl } from 'query-string';
 import {
   approve,
@@ -39,7 +40,7 @@ import { computed, onUnmounted, ref, watch, watchEffect } from 'vue';
 import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
 import { objToArray } from './helper/common';
-import { calUsdAmount } from './helper/price';
+// import { calUsdAmount } from './helper/price';
 import { getEvmProvider } from './helper/wallet';
 
 const { Ethereum, Astar, Shiden } = EvmChain;
@@ -51,7 +52,7 @@ export function useCbridge() {
   const destChains = ref<Chain[] | null>(null);
   const selectedNetwork = ref<number>(0);
   const chains = ref<Chain[] | null>(null);
-  const tokens = ref<CbridgeToken[] | null>(null);
+  const tokens = ref<SelectedToken[] | null>(null);
   const tokensObj = ref<any | null>(null);
   const selectedToken = ref<SelectedToken | null>(null);
   const selectedTokenBalance = ref<string>('0');
@@ -143,15 +144,8 @@ export function useCbridge() {
     modal.value = scene;
   };
 
-  const selectToken = (token: CbridgeToken): void => {
-    if (!srcChain.value || !destChain.value) return;
-    const formattedToken = getSelectedToken({
-      srcChainId: srcChain.value.id,
-      token,
-    });
-    if (formattedToken) {
-      selectedToken.value = formattedToken;
-    }
+  const selectToken = (token: SelectedToken): void => {
+    selectedToken.value = token;
     modal.value = null;
     resetStates();
   };
@@ -341,7 +335,7 @@ export function useCbridge() {
     tokensObj.value = tokens;
   };
 
-  const watchSelectableChains = (): void => {
+  const watchSelectableChains = async (): Promise<void> => {
     if (!srcChain.value || !destChain.value || chains.value === null) {
       return;
     }
@@ -376,15 +370,19 @@ export function useCbridge() {
 
     sortChainName(selectableChains);
     destChains.value = selectableChains;
-    tokens.value = tokensObj.value[srcChain.value.id][destChain.value.id] as CbridgeToken[];
+    tokens.value = await Promise.all(
+      tokensObj.value[srcChain.value.id][destChain.value.id].map(async (token: CbridgeToken) => {
+        if (!srcChain.value) return;
+        const address = selectedAddress.value ? selectedAddress.value : null;
+        return await getSelectedToken({
+          srcChainId: srcChain.value.id,
+          token,
+          address,
+        });
+      })
+    );
 
-    const formattedToken = getSelectedToken({
-      srcChainId: srcChain.value.id,
-      token: tokens.value && tokens.value[0],
-    });
-    if (formattedToken) {
-      selectedToken.value = formattedToken;
-    }
+    selectedToken.value = tokens.value[0];
     isApprovalNeeded.value = true;
   };
 
@@ -460,17 +458,18 @@ export function useCbridge() {
     }
   });
 
-  watchEffect(async () => {
-    if (!selectedToken.value || !destChain.value || !srcChain.value || !amount.value) return;
-    const { symbol } = getTokenInfo({
-      srcChainId: srcChain.value.id,
-      selectedToken: selectedToken.value,
-    });
-    usdValue.value = await calUsdAmount({
-      amount: Number(amount.value),
-      symbol,
-    });
-  });
+  // Todo: enable after fix the debounce issue
+  // watchEffect(async () => {
+  //   if (!selectedToken.value || !destChain.value || !srcChain.value || !amount.value) return;
+  //   const { symbol } = getTokenInfo({
+  //     srcChainId: srcChain.value.id,
+  //     selectedToken: selectedToken.value,
+  //   });
+  //   usdValue.value = await calUsdAmount({
+  //     amount: Number(amount.value),
+  //     symbol,
+  //   });
+  // });
 
   watchEffect(async () => {
     await getEstimation();

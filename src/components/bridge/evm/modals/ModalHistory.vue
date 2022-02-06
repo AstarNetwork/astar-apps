@@ -13,13 +13,18 @@
         <div v-if="isUpdatingHistories" class="updating-container">
           <q-spinner-ios color="primary" size="80px" />
         </div>
-        <div v-else id="virtual-scroll-target" class="scroll list-container" style="height: 600px">
+        <div
+          v-else
+          id="virtual-scroll-target"
+          class="scroll list-container"
+          :style="width > 425 ? 'height: 600px' : 'height: 250px'"
+        >
           <q-virtual-scroll scroll-target="#virtual-scroll-target" :items="histories">
             <template #default="{ item, index }">
               <q-item :key="index" dense>
                 <q-item-section>
                   <q-item-label>
-                    <div class="histories animate__animated animate__fadeIn">
+                    <div class="history-items animate__animated animate__fadeIn">
                       <History :key="index" :history="item" :token-icons="tokenIcons" />
                     </div>
                   </q-item-label>
@@ -43,6 +48,7 @@ import History from './History.vue';
 import Modal from 'src/components/common/Modal.vue';
 import { fasHistory } from '@quasar/extras/fontawesome-v5';
 import IconBase from 'components/icons/IconBase.vue';
+import { useBreakpoints } from 'src/hooks';
 
 export default defineComponent({
   components: {
@@ -71,7 +77,8 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
-    return { fasHistory, isDarkTheme };
+    const { width } = useBreakpoints();
+    return { fasHistory, isDarkTheme, width };
   },
 });
 </script>

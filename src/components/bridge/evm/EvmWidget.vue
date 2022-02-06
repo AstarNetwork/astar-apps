@@ -241,7 +241,6 @@ export default defineComponent({
   },
   setup() {
     useMeta({ title: 'EVM Bridge' });
-
     const store = useStore();
     const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
 

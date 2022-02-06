@@ -8,7 +8,6 @@
   display: flex;
   align-items: center;
   column-gap: 14px;
-  margin-top: 14px;
   width: 250px;
   padding: 8px 24px;
   transition: 0.2s;
@@ -30,7 +29,7 @@
 .row-token {
   display: flex;
   align-items: center;
-  column-gap: 12px;
+  justify-content: center;
 }
 
 .token-button {
@@ -40,7 +39,8 @@
   display: flex;
   align-items: center;
   margin-top: 14px;
-  width: 300px;
+  margin-right: 8px;
+  width: 250px;
   height: 50px;
   padding: 8px 24px;
   transition: 0.2s;
@@ -94,9 +94,18 @@
   margin-bottom: 8px;
 }
 
-.histories {
+.history-items {
   min-width: 290px;
-  padding: 12px 0;
+  padding: 16px 0;
+}
+
+.chain-items {
+  min-width: 290px;
+  padding: 8px 0;
+}
+
+.token-items {
+  min-width: 290px;
 }
 
 .list-footer {
@@ -210,6 +219,32 @@
 
 .explorer-link {
   text-decoration: underline;
+}
+
+.row-token-input {
+  display: grid;
+  justify-items: center;
+  margin-bottom: 12px;
+}
+
+.token-input {
+  border: 2px solid #c6d3e1;
+  padding: 0 18px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  height: 50px;
+  width: 300px;
+  outline: none;
+  font-size: 18px;
+  @apply tw-bg-white dark:tw-bg-darkGray-900;
+  @media (min-width: 768px) {
+    width: 350px;
+  }
+}
+
+.token-input-dark {
+  border: 2px solid #364453;
 }
 
 .tooltip {

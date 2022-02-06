@@ -8,17 +8,27 @@ import {
 } from 'src/c-bridge';
 import { getTokenBal, getTokenExplorer } from 'src/web3';
 
-export const getSelectedToken = ({
+export const getSelectedToken = async ({
   srcChainId,
   token,
+  address,
 }: {
   token: CbridgeToken;
   srcChainId: number;
-}): SelectedToken | undefined => {
+  address?: string;
+}): Promise<SelectedToken | undefined> => {
   if (!token) return;
   if (token.bridgeMethod === BridgeMethod.canonical) {
     if (!token.canonical) return;
     const tokenInfo = getPeggedTokenInfo({ srcChainId, selectedToken: token.canonical });
+    const userBalance = address
+      ? await getTokenBal({
+          srcChainId,
+          address,
+          tokenAddress: tokenInfo.token.address,
+          tokenSymbol: tokenInfo.token.symbol,
+        })
+      : '0';
     const data = {
       bridgeMethod: token.bridgeMethod,
       canonicalConfig: token.canonical,
@@ -28,11 +38,20 @@ export const getSelectedToken = ({
       address: tokenInfo.token.address,
       icon: tokenInfo.icon,
       decimal: tokenInfo.token.decimal,
+      userBalance,
     };
     return data;
   }
   const tokenPool = token.pool && token.pool[srcChainId];
   if (!tokenPool) return;
+  const userBalance = address
+    ? await getTokenBal({
+        srcChainId,
+        address,
+        tokenAddress: tokenPool.token.address,
+        tokenSymbol: tokenPool.token.symbol,
+      })
+    : '0';
   return {
     bridgeMethod: token.bridgeMethod,
     canonicalConfig: null,
@@ -42,6 +61,7 @@ export const getSelectedToken = ({
     address: tokenPool.token.address,
     icon: tokenPool.icon,
     decimal: tokenPool.token.decimal,
+    userBalance,
   };
 };
 
@@ -137,30 +157,12 @@ export const getTokenBalCbridge = async ({
   srcChainId,
   selectedToken,
   address,
-  cbridgeToken,
 }: {
   srcChainId: number;
-  selectedToken?: SelectedToken;
-  cbridgeToken?: CbridgeToken;
+  selectedToken: SelectedToken;
   address: string;
 }): Promise<string> => {
   try {
-    if (cbridgeToken) {
-      const token = getSelectedToken({ token: cbridgeToken, srcChainId });
-
-      if (!token) return '0';
-      return await getTokenBal({
-        srcChainId,
-        address,
-        tokenAddress: token.address,
-        tokenSymbol: token.symbol,
-      });
-    }
-
-    if (!selectedToken) {
-      throw Error('cannot find selectedToken');
-    }
-
     const { tokenAddress, symbol } = getTokenInfo({ selectedToken, srcChainId });
     if (!tokenAddress) return '0';
     return await getTokenBal({

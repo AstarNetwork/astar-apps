@@ -16,3 +16,4 @@ export * from './useConnectWallet';
 export * from './useUnbondWithdraw';
 export * from './useCustomSignature';
 export * from './useCbridge';
+export * from './useBreakpoints';

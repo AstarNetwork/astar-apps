@@ -124,6 +124,7 @@ export interface SelectedToken {
   address: string;
   icon: string;
   decimal: number;
+  userBalance: string;
 }
 
 export interface Quotation {
