@@ -1,10 +1,26 @@
-import { mountFactory } from '@quasar/quasar-app-extension-testing';
-import APR from 'src/components/dapp-staking/statistics/APR.vue';
+// TODO work on this will be continued in another branch
 
-const wrapper = mountFactory(APR);
+// import { shallowMount } from '@vue/test-utils';
+// import { QIcon } from 'quasar';
+// import * as apr from 'src/hooks/useApr';
+// import APR from 'src/components/dapp-staking/statistics/APR.vue';
 
-describe('APR', () => {
-  it('creates component wrapper', () => {
-    expect(wrapper).toBeDefined();
-  });
-});
+// const mock = jest.spyOn(apr, 'useApr');
+// const wrapper = shallowMount(APR, {
+//   global: {
+//     components: {
+//       QIcon,
+//     },
+//     mocks: {
+//       $t: (msg: string) => msg,
+//     },
+//   },
+// });
+
+// describe('APR', () => {
+//   it('calls useApr', () => {
+//     console.log('in test');
+//     expect(mock).toBeCalled();
+//     mock.mockRestore();
+//   });
+// });
