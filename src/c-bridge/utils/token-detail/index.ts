@@ -5,6 +5,8 @@ import {
   BridgeMethod,
   PeggedPairConfig,
   EvmChain,
+  TokenInfo,
+  Token,
 } from 'src/c-bridge';
 import { getTokenBal, getTokenExplorer } from 'src/web3';
 
@@ -55,14 +57,14 @@ export const getTokenInfo = ({
 }: {
   srcChainId: number;
   selectedToken: SelectedToken;
-}) => {
+}): TokenInfo => {
   // Memo: Pick Pool Config
   if (selectedToken.bridgeMethod === BridgeMethod.pool) {
     if (selectedToken.poolConfig === null) {
       throw Error('Cannot find pool config');
     }
     return {
-      contractAddress: selectedToken.poolConfig[srcChainId].poolContract,
+      contractAddress: selectedToken.poolConfig[srcChainId].poolContract ?? '',
       tokenAddress: selectedToken.poolConfig[srcChainId].token.address,
       symbol: selectedToken.symbol,
       decimals: selectedToken.poolConfig[srcChainId].token.decimal,
@@ -99,7 +101,7 @@ export const getPeggedTokenInfo = ({
 }: {
   srcChainId: number;
   selectedToken: PeggedPairConfig;
-}) => {
+}): Token => {
   return srcChainId === selectedToken.org_chain_id
     ? selectedToken.org_token
     : selectedToken.pegged_token;

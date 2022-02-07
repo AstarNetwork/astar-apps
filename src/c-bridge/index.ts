@@ -77,6 +77,13 @@ export interface TokenDetail {
   xfer_disabled: boolean;
 }
 
+export interface TokenInfo {
+  contractAddress: string;
+  tokenAddress: string;
+  symbol: string;
+  decimals: number;
+}
+
 export interface Chain {
   id: number;
   name: string;

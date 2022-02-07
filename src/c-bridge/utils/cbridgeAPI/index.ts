@@ -21,7 +21,7 @@ import {
 import { formatDecimals, getMinAndMaxAmount, getMinimalMaxSlippage, getTokenInfo } from '..';
 import { ethers } from 'ethers';
 
-export const getChainName = (chain: number) => {
+export const getChainName = (chain: number): string => {
   switch (chain) {
     case EvmChain.Ethereum:
       return 'Ethereum';
@@ -49,7 +49,7 @@ const pushCanonicalToken = ({
   srcChain: EvmChain;
   destChain: EvmChain;
   token: PeggedPairConfig;
-}) => {
+}): void => {
   if (token.org_chain_id === srcChain && token.pegged_chain_id === destChain) {
     tokens.push({ bridgeMethod: BridgeMethod.canonical, canonical: token, pool: null });
   }
@@ -66,7 +66,7 @@ const pushPooledToken = ({
   chainA: EvmChain;
   chainB: EvmChain;
   configs: TransferConfigs;
-}) => {
+}): void => {
   const lookUpTable: Token[] = [];
 
   const tokensChainA = configs.chain_token[chainA].token;
@@ -255,7 +255,7 @@ export const pushToSelectableChains = ({
   srcChainId: EvmChain;
   selectableChains: Chain[];
   supportChains: Chain[];
-}) => {
+}): void => {
   const chains: CbridgeToken[][] = objToArray(tokensObj[srcChainId]);
 
   chains.forEach((tokens: CbridgeToken[]) => {
@@ -274,7 +274,7 @@ export const pushToSelectableChains = ({
   });
 };
 
-export const sortChainName = (chains: Chain[]) => {
+export const sortChainName = (chains: Chain[]): void => {
   chains.sort((a, b) => {
     const nameA = a.name.toUpperCase();
     const nameB = b.name.toUpperCase();
@@ -288,13 +288,13 @@ export const sortChainName = (chains: Chain[]) => {
   });
 };
 
-export const getIcon = ({ symbol, icon }: { symbol: string; icon: string }) => {
+export const getIcon = ({ symbol, icon }: { symbol: string; icon: string }): string => {
   // Memo: the background color of the icon (url provides by cBridge API) is white color
   const logoUsdt = 'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png';
   return symbol === 'USDT' ? logoUsdt : icon;
 };
 
-const isShidenOrAstar = (chain: number) => {
+const isShidenOrAstar = (chain: number): boolean => {
   if (chain === EvmChain.Astar || chain === EvmChain.Shiden) {
     return true;
   }
@@ -381,7 +381,7 @@ export const fetchEstimation = async ({
   destChainId: EvmChain;
   selectedToken: SelectedToken;
   address: string;
-}) => {
+}): Promise<Quotation> => {
   const { symbol, decimals } = getTokenInfo({
     srcChainId,
     selectedToken,
