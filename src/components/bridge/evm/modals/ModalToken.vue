@@ -1,6 +1,6 @@
 <template>
   <Modal title="Select a token" class="animate__animated animate__fadeIn" @click="closeModal">
-    <template #content>
+    <template v-if="filteredTokens" #content>
       <div class="row-token-input">
         <input
           class="token-input"
@@ -49,12 +49,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, watchEffect, computed, ref } from 'vue';
+import { defineComponent, watchEffect, computed, ref, watch } from 'vue';
 import Token from './Token.vue';
 import Modal from 'src/components/common/Modal.vue';
 import { useBreakpoints } from 'src/hooks';
 import { useStore } from 'src/store';
 import { SelectedToken } from 'src/c-bridge';
+import { getTokenBal } from 'src/web3';
 export default defineComponent({
   components: {
     Token,
@@ -86,17 +87,43 @@ export default defineComponent({
       required: true,
     },
   },
-  setup({ tokens, modal }) {
+  setup({ tokens, modal, srcChainId }) {
     const title = modal === 'src' ? 'Select Source Chain' : 'Select Destination Chain';
     const filteredTokens = ref<SelectedToken[] | []>([]);
     const inputValue = ref<string>('');
     const { width } = useBreakpoints();
     const store = useStore();
     const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
+    const selectedAddress = computed(() => store.getters['general/selectedAddress']);
+    const computedSrcChainId = computed(() => srcChainId);
 
     const inputHandler = (event: any): void => {
       inputValue.value = event.target.value;
     };
+
+    watch(
+      [computedSrcChainId, selectedAddress],
+      async () => {
+        if (!selectedAddress.value) return;
+        const tokenArray = tokens as SelectedToken[];
+        filteredTokens.value = await Promise.all(
+          tokenArray.map(async (token: SelectedToken) => {
+            const userBalance = await getTokenBal({
+              srcChainId,
+              address: selectedAddress.value,
+              tokenAddress: token.address,
+              tokenSymbol: token.symbol,
+            });
+
+            return {
+              ...token,
+              userBalance,
+            };
+          })
+        );
+      },
+      { immediate: true }
+    );
 
     watchEffect(async () => {
       const tokenArray = tokens as SelectedToken[];

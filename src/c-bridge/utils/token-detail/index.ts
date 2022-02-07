@@ -8,27 +8,18 @@ import {
 } from 'src/c-bridge';
 import { getTokenBal, getTokenExplorer } from 'src/web3';
 
-export const getSelectedToken = async ({
+export const getSelectedToken = ({
   srcChainId,
   token,
-  address,
 }: {
   token: CbridgeToken;
   srcChainId: number;
-  address?: string;
-}): Promise<SelectedToken | undefined> => {
+}): SelectedToken | undefined => {
   if (!token) return;
   if (token.bridgeMethod === BridgeMethod.canonical) {
     if (!token.canonical) return;
     const tokenInfo = getPeggedTokenInfo({ srcChainId, selectedToken: token.canonical });
-    const userBalance = address
-      ? await getTokenBal({
-          srcChainId,
-          address,
-          tokenAddress: tokenInfo.token.address,
-          tokenSymbol: tokenInfo.token.symbol,
-        })
-      : '0';
+
     const data = {
       bridgeMethod: token.bridgeMethod,
       canonicalConfig: token.canonical,
@@ -38,20 +29,13 @@ export const getSelectedToken = async ({
       address: tokenInfo.token.address,
       icon: tokenInfo.icon,
       decimal: tokenInfo.token.decimal,
-      userBalance,
+      userBalance: '0',
     };
     return data;
   }
   const tokenPool = token.pool && token.pool[srcChainId];
   if (!tokenPool) return;
-  const userBalance = address
-    ? await getTokenBal({
-        srcChainId,
-        address,
-        tokenAddress: tokenPool.token.address,
-        tokenSymbol: tokenPool.token.symbol,
-      })
-    : '0';
+
   return {
     bridgeMethod: token.bridgeMethod,
     canonicalConfig: null,
@@ -61,7 +45,7 @@ export const getSelectedToken = async ({
     address: tokenPool.token.address,
     icon: tokenPool.icon,
     decimal: tokenPool.token.decimal,
-    userBalance,
+    userBalance: '0',
   };
 };
 

@@ -29,6 +29,7 @@ import Web3 from 'web3';
 // import { calUsdAmount } from './helper/price';
 
 const { Ethereum, Astar, Shiden } = EvmChain;
+
 export function useCbridge() {
   const srcChain = ref<Chain | null>(null);
   const destChain = ref<Chain | null>(null);
@@ -48,6 +49,7 @@ export function useCbridge() {
   const isDisabledBridge = ref<boolean>(true);
   const destTokenUrl = ref<string>('');
   const destTokenAddress = ref<string>('');
+  const isClickReverseButton = ref<boolean>(false);
 
   const store = useStore();
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
@@ -107,13 +109,7 @@ export function useCbridge() {
         !selectedToken.value ||
         (amount.value && Number(amount.value) === 0)
       ) {
-        if (!quotation.value) {
-          return;
-        }
-        quotation.value = {
-          ...quotation.value,
-          estimated_receive_amt: '0',
-        };
+        quotation.value = null;
         return;
       }
       const numAmount = amount.value ? Number(amount.value) : 0.001;
@@ -177,6 +173,7 @@ export function useCbridge() {
   };
 
   const reverseChain = (): void => {
+    isClickReverseButton.value = true;
     const fromChain = srcChain.value;
     srcChain.value = destChain.value;
     destChain.value = fromChain;
@@ -253,19 +250,21 @@ export function useCbridge() {
 
     sortChainName(selectableChains);
     destChains.value = selectableChains;
-    tokens.value = await Promise.all(
-      tokensObj.value[srcChain.value.id][destChain.value.id].map(async (token: CbridgeToken) => {
+    tokens.value = tokensObj.value[srcChain.value.id][destChain.value.id].map(
+      (token: CbridgeToken) => {
         if (!srcChain.value) return;
-        const address = selectedAddress.value ? selectedAddress.value : null;
-        return await getSelectedToken({
+        return getSelectedToken({
           srcChainId: srcChain.value.id,
           token,
-          address,
         });
-      })
+      }
     );
 
-    store.commit('bridge/setSelectedToken', tokens.value[0]);
+    if (isClickReverseButton.value) {
+      isClickReverseButton.value = false;
+    } else {
+      store.commit('bridge/setSelectedToken', tokens.value && tokens.value[0]);
+    }
   };
 
   const bridge = async (): Promise<void> => {
@@ -325,13 +324,18 @@ export function useCbridge() {
   };
 
   watchEffect(async () => {
-    if (currentNetworkIdx.value === null || currentNetworkIdx.value === undefined) return;
-    await updateBridgeConfig();
+    if (!currentNetworkIdx.value || currentNetworkIdx.value !== null) {
+      await updateBridgeConfig();
+    }
   });
 
-  watchEffect(() => {
-    watchSelectableChains();
-  });
+  watch(
+    [srcChain, destChain, chains],
+    async () => {
+      await watchSelectableChains();
+    },
+    { immediate: true }
+  );
 
   watchEffect(() => {
     if (!destChain.value || !selectedToken.value) return;
@@ -380,19 +384,10 @@ export function useCbridge() {
   );
 
   watch(
-    [srcChain, isH160],
-    async () => {
-      setTimeout(async () => {
-        isH160.value && srcChain.value && (await setupNetwork(srcChain.value.id));
-      }, 800);
-    },
-    { immediate: false }
-  );
-
-  watch(
     [quotation],
     async () => {
-      if (!quotation.value || !srcChain.value || !selectedToken.value) return;
+      if (!quotation.value || quotation.value === null || !srcChain.value || !selectedToken.value)
+        return;
       const { symbol } = getTokenInfo({
         srcChainId: srcChain.value.id,
         selectedToken: selectedToken.value,

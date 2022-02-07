@@ -78,8 +78,14 @@
           </div>
         </div>
       </div>
-      <div class="reverse" :class="isDarkTheme && 'reverse-dark'" @click="reverseChain">
-        <span class="reverse-button" :class="isDarkTheme && 'reverse-button-dark'">↑↓</span>
+      <div class="reverse" :class="isDarkTheme && 'reverse-dark'">
+        <button
+          class="reverse-button"
+          :class="isDarkTheme && 'reverse-button-dark'"
+          @click="reverseChain"
+        >
+          ↑↓
+        </button>
       </div>
       <div v-if="destChain" class="row">
         <div class="currency">
