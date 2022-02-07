@@ -111,12 +111,16 @@
 .list-footer {
   display: flex;
   justify-content: center;
-  font-size: 16px;
+  font-size: 14px;
   position: absolute;
   left: 50%;
   right: 50%;
   white-space: nowrap;
+  bottom: 8px;
   @apply tw-text-blue-900 dark:tw-text-darkGray-100;
+  @media (min-width: 768px) {
+    font-size: 16px;
+  }
 }
 
 .updating-container {
@@ -146,18 +150,15 @@
     font-size: 16px;
     padding: 16px 6px;
     padding-right: 32px;
-    grid-template-columns: 210px 20px 220px 140px;
+    grid-template-columns: 240px 20px 260px 90px;
+  }
+  @media (min-width: 1024px) {
+    grid-template-columns: 260px 40px 300px 140px;
   }
 }
 
 .history-card:hover {
   @apply tw-bg-darkGray-200 dark:tw-bg-darkGray-600;
-}
-
-.amount {
-  @media (min-width: 768px) {
-    white-space: nowrap;
-  }
 }
 
 .history-chain-logo {

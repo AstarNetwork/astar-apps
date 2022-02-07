@@ -87,6 +87,7 @@ const pushPooledToken = ({
 
   tokensChainB.forEach((b) => {
     if (!b.token.xfer_disabled) {
+      // Memo: no need to add the token data if `tokens` array has the token data (that should be `CanonicalToken`) already
       const isExistsInCanonicalBridge = tokens.find((it: CbridgeToken) => {
         if (!it.canonical) return false;
         it.canonical.org_token.token.symbol === b.token.symbol;
@@ -118,6 +119,8 @@ const pushPooledToken = ({
   });
 };
 
+// Ref: https://cbridge-docs.celer.network/developer/api-reference/gateway-gettransferconfigs
+// Memo: filter/cast the `chains` and `tokens` interface to convenient for bridge page in Astar Portal
 export const getTransferConfigs = async (portalNetworkIdx: endpointKey) => {
   const { Ethereum, BSC, Astar, Shiden, Polygon } = EvmChain;
 
@@ -320,6 +323,7 @@ const filterHistory = (histories: History[]): { histories: History[] | []; isPen
   return { histories: filtered, isPending };
 };
 
+// Ref: https://cbridge-docs.celer.network/developer/api-reference/gateway-transferhistory
 export const getHistory = async (
   address: string
 ): Promise<{ histories: History[] | []; isPending: boolean }> => {
@@ -340,6 +344,7 @@ export const getHistory = async (
   }
 };
 
+// Ref: https://cbridge-docs.celer.network/developer/api-reference/gateway-gettransferstatus#transferhistorystatus-enum
 export const getTxStatus = (status: number): string => {
   switch (status) {
     case 0:
@@ -369,6 +374,7 @@ export const getTxStatus = (status: number): string => {
   }
 };
 
+// Ref: https://cbridge-docs.celer.network/developer/api-reference/gateway-estimateamt
 export const fetchEstimation = async ({
   amount,
   srcChainId,

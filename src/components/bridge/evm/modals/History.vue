@@ -5,7 +5,7 @@
       <div class="tx-detail">
         <div class="row-token">
           <img :src="icon" class="token-mini" alt="src-token" />
-          <p>{{ srcAmount }} {{ srcToken.symbol }}</p>
+          <p>{{ $n(srcAmount) }} {{ srcToken.symbol }}</p>
         </div>
         <a
           :href="history.src_block_tx_link"
@@ -25,7 +25,7 @@
       <div class="tx-detail">
         <div class="row-token">
           <img :src="icon" class="token-mini" alt="dest-token" />
-          <span class="amount">{{ destAmount }} {{ destToken.symbol }}</span>
+          <span>{{ $n(destAmount) }} {{ destToken.symbol }}</span>
         </div>
         <a
           v-if="history.dst_block_tx_link"
