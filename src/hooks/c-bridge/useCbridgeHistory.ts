@@ -13,6 +13,7 @@ export function useCbridgeHistory() {
 
   const fetchHistory = async (): Promise<void> => {
     if (!isH160.value || !selectedAddress.value) return;
+
     const { histories: historyArray, isPending } = await getHistory(selectedAddress.value);
 
     if (histories.value.length === 0) {
@@ -37,7 +38,11 @@ export function useCbridgeHistory() {
   };
 
   watchEffect(async () => {
-    await fetchHistory();
+    if (selectedAddress.value) {
+      await fetchHistory();
+    } else {
+      histories.value = [];
+    }
   });
 
   const handleUpdate = setInterval(async () => {
