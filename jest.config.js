@@ -1,4 +1,10 @@
-const esModules = ['quasar/lang', 'lodash-es'].join('|');
+const esModules = [
+  'quasar/lang',
+  '@quasar/extras',
+  'lodash-es',
+  '@polkadot',
+  '@babel/runtime/helpers/esm/',
+].join('|');
 
 /* eslint-env node */
 module.exports = {
