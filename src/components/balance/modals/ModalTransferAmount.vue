@@ -133,7 +133,12 @@ import InputAmount from 'components/common/InputAmount.vue';
 import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { useChainMetadata, useCustomSignature } from 'src/hooks';
 import { $api } from 'boot/api';
-import * as plasmUtils from 'src/hooks/helper/plasmUtils';
+import {
+  reduceBalanceToDenom,
+  isValidAddressPolkadotAddress,
+  reduceDenomToBalance,
+} from 'src/hooks/helper/plasmUtils';
+import { isValidEvmAddress, toSS58Address, toEvmAddress } from 'src/config/web3/utils/convert';
 import { getUnit } from 'src/hooks/helper/units';
 import { getInjector } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
@@ -196,10 +201,7 @@ export default defineComponent({
 
     const formatBalance = computed(() => {
       const tokenDecimal = decimal.value;
-      return plasmUtils.reduceBalanceToDenom(
-        props.accountData.getUsableTransactionBalance(),
-        tokenDecimal
-      );
+      return reduceBalanceToDenom(props.accountData.getUsableTransactionBalance(), tokenDecimal);
     });
 
     const transferLocal = async (transferAmt: BN, fromAddress: string, toAddress: string) => {
@@ -263,8 +265,8 @@ export default defineComponent({
 
         const buildEvmAddress = (toAddress: string) => {
           // Memo: goes to EVM deposit
-          if (plasmUtils.isValidAddressPolkadotAddress(toAddress)) {
-            return plasmUtils.toEvmAddress(toAddress);
+          if (isValidAddressPolkadotAddress(toAddress)) {
+            return toEvmAddress(toAddress);
           }
           if (!web3.utils.isAddress(toAddress)) {
             toastInvalidAddress();
@@ -299,21 +301,18 @@ export default defineComponent({
       }
 
       const isValidSS58Address =
-        plasmUtils.isValidAddressPolkadotAddress(fromAddress) &&
-        plasmUtils.isValidAddressPolkadotAddress(toAddress);
+        isValidAddressPolkadotAddress(fromAddress) && isValidAddressPolkadotAddress(toAddress);
 
-      if (!isValidSS58Address && !plasmUtils.isValidEvmAddress(toAddress)) {
+      if (!isValidSS58Address && !isValidEvmAddress(toAddress)) {
         toastInvalidAddress();
         return;
       }
 
-      const receivingAddress = plasmUtils.isValidEvmAddress(toAddress)
-        ? plasmUtils.toSS58Address(toAddress)
-        : toAddress;
+      const receivingAddress = isValidEvmAddress(toAddress) ? toSS58Address(toAddress) : toAddress;
       // console.log('receivingAddress', receivingAddress);
 
       const unit = getUnit(selectUnit.value);
-      const toAmt = plasmUtils.reduceDenomToBalance(transferAmt, unit, decimal.value);
+      const toAmt = reduceDenomToBalance(transferAmt, unit, decimal.value);
       // console.log('toAmt', toAmt.toString(10));
 
       if (isEthWallet.value) {

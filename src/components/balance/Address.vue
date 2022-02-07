@@ -158,7 +158,7 @@ import IconDocumentDuplicate from 'components/icons/IconDocumentDuplicate.vue';
 import IconLink from 'components/icons/IconLink.vue';
 import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { useAccount } from 'src/hooks';
-import { toEvmAddress } from 'src/hooks/helper/plasmUtils';
+import { toEvmAddress } from 'src/config/web3/utils/convert';
 import { AddressFormat } from './Addresses.vue';
 import { farQuestionCircle } from '@quasar/extras/fontawesome-v5';
 

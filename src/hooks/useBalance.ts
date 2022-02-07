@@ -29,7 +29,6 @@ function useCall(addressRef: Ref<string>) {
   const unsub: Ref<VoidFn | undefined> = ref();
 
   const updateAccountH160 = async (address: string) => {
-    if (!address) return;
     try {
       const web3 = await createWeb3Instance(currentNetworkIdx.value as TNetworkId);
 
@@ -55,7 +54,7 @@ function useCall(addressRef: Ref<string>) {
     }
   };
 
-  const updateAccount = (address: string) => {
+  const updateAccount = async (address: string) => {
     if (!address) return;
     const api = $api.value!!;
 
@@ -64,50 +63,48 @@ function useCall(addressRef: Ref<string>) {
       unsub.value = undefined;
     }
 
-    api.isReady.then(async () => {
-      const results = await Promise.all([
-        api.query.system.account(address),
-        api.query.vesting.vesting(address),
-        api.query.system.number(),
-        api.derive.balances?.all(address),
-      ]);
+    const results = await Promise.all([
+      api.query.system.account(address),
+      api.query.vesting.vesting(address),
+      api.query.system.number(),
+      api.derive.balances?.all(address),
+    ]);
 
-      const accountInfo = results[0];
-      const vesting: PalletVestingVestingInfo[] = results[1].unwrapOr(undefined) || [];
-      const currentBlock = results[2];
-      const vestedClaimable = results[3].vestedClaimable;
-      const locks: (PalletBalancesBalanceLock | BalanceLockTo212)[] = results[3].lockedBreakdown;
+    const accountInfo = results[0];
+    const vesting: PalletVestingVestingInfo[] = results[1].unwrapOr(undefined) || [];
+    const currentBlock = results[2];
+    const vestedClaimable = results[3].vestedClaimable;
+    const locks: (PalletBalancesBalanceLock | BalanceLockTo212)[] = results[3].lockedBreakdown;
 
-      const extendedVesting: ExtendedVestingInfo[] = [];
-      vestedRef.value = new BN(0);
-      remainingVests.value = new BN(0);
+    const extendedVesting: ExtendedVestingInfo[] = [];
+    vestedRef.value = new BN(0);
+    remainingVests.value = new BN(0);
 
-      vesting.forEach((v) => {
-        const vested = getVested({
-          currentBlock: currentBlock.toBn(),
-          startBlock: v.startingBlock.toBn() || new BN(0),
-          perBlock: v.perBlock || new BN(0),
-          locked: v.locked,
-        });
-        vestedRef.value = vestedRef.value.add(vested);
-        remainingVests.value = remainingVests.value.add(v.locked.sub(vested));
-        extendedVesting.push(new ExtendedVestingInfo(v, vested));
+    vesting.forEach((v) => {
+      const vested = getVested({
+        currentBlock: currentBlock.toBn(),
+        startBlock: v.startingBlock.toBn() || new BN(0),
+        perBlock: v.perBlock || new BN(0),
+        locked: v.locked,
       });
-
-      accountDataRef.value = new AccountData(
-        accountInfo.data.free,
-        accountInfo.data.reserved,
-        accountInfo.data.miscFrozen,
-        accountInfo.data.feeFrozen,
-        vestedRef.value,
-        extendedVesting,
-        vestedClaimable,
-        remainingVests.value,
-        locks
-      );
-
-      balanceRef.value = accountInfo.data.free.toBn();
+      vestedRef.value = vestedRef.value.add(vested);
+      remainingVests.value = remainingVests.value.add(v.locked.sub(vested));
+      extendedVesting.push(new ExtendedVestingInfo(v, vested));
     });
+
+    accountDataRef.value = new AccountData(
+      accountInfo.data.free,
+      accountInfo.data.reserved,
+      accountInfo.data.miscFrozen,
+      accountInfo.data.feeFrozen,
+      vestedRef.value,
+      extendedVesting,
+      vestedClaimable,
+      remainingVests.value,
+      locks
+    );
+
+    balanceRef.value = accountInfo.data.free.toBn();
   };
 
   const updateAccountBalance = () => {
@@ -214,6 +211,7 @@ export class AccountData {
   public locks: (PalletBalancesBalanceLock | BalanceLockTo212)[];
 }
 
+// FIXME: the class might be inherited by AccountData
 export class AccountDataH160 {
   constructor(
     public free: BN,
