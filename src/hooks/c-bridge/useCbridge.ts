@@ -64,7 +64,6 @@ export function useCbridge() {
     quotation.value = null;
     amount.value = null;
     usdValue.value = 0;
-    errMsg.value = '';
   };
 
   const closeModal = (): boolean => modal.value === null;
@@ -400,6 +399,8 @@ export function useCbridge() {
 
       if (numAmount > balance) {
         errMsg.value = 'Insufficient balance';
+      } else if (srcChain.value.id !== selectedNetwork.value) {
+        errMsg.value = 'Selected invalid network in your wallet';
       } else if (minAmount >= numAmount) {
         errMsg.value = `Amount must be greater than ${minAmount} ${symbol}`;
       } else if (numAmount >= maxAmount) {
@@ -427,16 +428,10 @@ export function useCbridge() {
     if (
       quotation.value &&
       quotation.value.maxAmount !== undefined &&
-      quotation.value.minAmount !== undefined
+      quotation.value.minAmount !== undefined &&
+      Number(amount.value) > 0
     ) {
-      if (
-        quotation.value.maxAmount > Number(amount.value) &&
-        Number(amount.value) > quotation.value.minAmount
-      ) {
-        isDisabledBridge.value = false;
-      } else {
-        isDisabledBridge.value = true;
-      }
+      isDisabledBridge.value = errMsg.value !== '';
     } else {
       isDisabledBridge.value = true;
     }
