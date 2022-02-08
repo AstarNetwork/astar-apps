@@ -173,13 +173,28 @@
   border: 1px solid #364453;
 }
 
+.input-row-native-token {
+  display: flex;
+  justify-content: space-between;
+  @media (min-width: 768px) {
+    grid-template-columns: auto 120px;
+  }
+}
+
 input {
-  width: 150px;
+  width: 140px;
   outline: none;
-  font-size: 24px;
+  font-size: 22px;
   @apply tw-bg-white dark:tw-bg-darkGray-900;
   @media (min-width: 768px) {
-    width: 170px;
+    font-size: 24px;
+    width: 210px;
+  }
+}
+
+.input-native-token {
+  @media (min-width: 768px) {
+    width: 280px;
   }
 }
 
@@ -223,7 +238,10 @@ input[type='number'] {
 }
 
 .estimated-value {
-  font-size: 24px;
+  font-size: 22px;
+  @media (min-width: 768px) {
+    font-size: 24px;
+  }
 }
 
 .estimated-input {

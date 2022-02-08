@@ -39,7 +39,13 @@
           </div>
         </div>
         <div>
-          <div class="input-row" :class="isDarkTheme && 'input-row-dark'">
+          <div
+            class="input-row"
+            :class="[
+              isDarkTheme && 'input-row-dark',
+              nativeCurrency[srcChain.id].name === selectedToken.symbol && 'input-row-native-token',
+            ]"
+          >
             <input
               :value="amount"
               inputmode="decimal"
@@ -47,6 +53,9 @@
               min="0"
               pattern="^[0-9]*(\.)?[0-9]*$"
               placeholder="0"
+              :class="
+                nativeCurrency[srcChain.id].name === selectedToken.symbol && 'input-native-token'
+              "
               @input="inputHandler"
             />
             <button
