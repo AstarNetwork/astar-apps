@@ -18,7 +18,6 @@ export {
   getHistory,
   getTxStatus,
   detectRemoveNetwork,
-  castToPortalNetworkId,
   getDestTokenInfo,
   getMinAndMaxAmount,
   fetchEstimation,

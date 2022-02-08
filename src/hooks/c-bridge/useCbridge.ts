@@ -1,6 +1,5 @@
 import {
   BridgeMethod,
-  castToPortalNetworkId,
   CbridgeToken,
   Chain,
   detectRemoveNetwork,
@@ -19,7 +18,6 @@ import {
   sortChainName,
 } from 'src/c-bridge';
 import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
-import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { objToArray } from 'src/hooks/helper/common';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
@@ -177,14 +175,7 @@ export function useCbridge() {
     const fromChain = srcChain.value;
     srcChain.value = destChain.value;
     destChain.value = fromChain;
-    if (!srcChain.value) return;
-    const portalNetworkIdx = castToPortalNetworkId(srcChain.value.id);
     resetStates();
-
-    if (portalNetworkIdx === false || portalNetworkIdx === currentNetworkIdx.value) return;
-    // Memo: ASTAR - SHIDEN
-    localStorage.setItem(LOCAL_STORAGE.NETWORK_IDX, portalNetworkIdx.toString());
-    location.reload();
   };
 
   const updateBridgeConfig = async (): Promise<void> => {

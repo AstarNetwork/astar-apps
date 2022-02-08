@@ -43,16 +43,3 @@ export const detectRemoveNetwork = (portalNetworkId: endpointKey) => {
       return EvmChain.Shiden;
   }
 };
-
-export const castToPortalNetworkId = (portalNetworkId: EvmChain) => {
-  switch (portalNetworkId) {
-    case EvmChain.Astar:
-      return endpointKey.ASTAR;
-
-    case EvmChain.Shiden:
-      return endpointKey.SHIDEN;
-
-    default:
-      return false;
-  }
-};
