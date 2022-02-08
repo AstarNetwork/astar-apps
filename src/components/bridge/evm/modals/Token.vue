@@ -23,7 +23,7 @@
     </div>
     <div v-if="isH160 && nativeCurrency[srcChainId].name !== token.symbol">
       <button
-        class="add-metamask tw-tooltip tw-relative"
+        class="add-wallet tw-tooltip tw-relative"
         @click="
           addToEvmWallet({
             tokenAddress: selectedAddress,
@@ -43,6 +43,7 @@
         <span class="tooltip">{{ $t('bridge.addWallet') }}</span>
       </button>
     </div>
+    <div v-else class="fake-add-button-placeholder" />
   </div>
 </template>
 

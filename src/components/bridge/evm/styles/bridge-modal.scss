@@ -58,8 +58,12 @@
   @apply tw-text-xs md:tw-text-sm;
 }
 
-.add-metamask {
+.add-wallet {
   margin-top: 16px;
+}
+
+.fake-add-button-placeholder {
+  width: 20px;
 }
 
 .token-button:hover {
