@@ -377,8 +377,17 @@ export function useCbridge() {
   watch(
     [quotation],
     async () => {
-      if (!quotation.value || quotation.value === null || !srcChain.value || !selectedToken.value)
+      if (
+        !quotation.value ||
+        quotation.value === null ||
+        !srcChain.value ||
+        !selectedToken.value ||
+        !amount.value
+      ) {
+        errMsg.value = '';
         return;
+      }
+
       const { symbol } = getTokenInfo({
         srcChainId: srcChain.value.id,
         selectedToken: selectedToken.value,

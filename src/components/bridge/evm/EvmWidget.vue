@@ -50,12 +50,14 @@
               @input="inputHandler"
             />
             <button
+              v-if="nativeCurrency[srcChain.id].name !== selectedToken.symbol"
               class="max-button"
               :class="isDarkTheme && 'max-button-dark'"
               @click="toMaxAmount"
             >
               {{ $t('bridge.max') }}
             </button>
+            <div v-else />
             <div
               class="token-selector"
               :class="isDarkTheme && 'token-selector-dark'"
@@ -247,6 +249,7 @@ import ModalHistory from './modals/ModalHistory.vue';
 import ModalToken from './modals/ModalToken.vue';
 import { endpointKey } from 'src/config/chainEndpoints';
 import Remarks from './Remarks.vue';
+import { nativeCurrency } from 'src/web3';
 
 export default defineComponent({
   components: {
@@ -334,6 +337,7 @@ export default defineComponent({
       destTokenAddress,
       currentNetworkIdx,
       endpointKey,
+      nativeCurrency,
       closeModal,
       openModal,
       selectChain,
