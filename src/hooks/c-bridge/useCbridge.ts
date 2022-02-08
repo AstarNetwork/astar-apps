@@ -129,8 +129,6 @@ export function useCbridge() {
       quotation.value = estimation;
       if (0 > Number(estimation.estimated_receive_amt)) {
         errMsg.value = 'The received amount cannot cover fee';
-      } else {
-        errMsg.value = '';
       }
     } catch (error: any) {
       console.error(error.message);
@@ -374,7 +372,7 @@ export function useCbridge() {
   );
 
   watch(
-    [quotation],
+    [quotation, selectedNetwork],
     async () => {
       if (
         !quotation.value ||
@@ -397,14 +395,16 @@ export function useCbridge() {
       const { minAmount, maxAmount } = quotation.value;
       if (!minAmount || !maxAmount) return;
 
-      if (numAmount > balance) {
-        errMsg.value = 'Insufficient balance';
-      } else if (srcChain.value.id !== selectedNetwork.value) {
+      if (srcChain.value.id !== selectedNetwork.value) {
         errMsg.value = 'Selected invalid network in your wallet';
+      } else if (numAmount > balance) {
+        errMsg.value = 'Insufficient balance';
       } else if (minAmount >= numAmount) {
         errMsg.value = `Amount must be greater than ${minAmount} ${symbol}`;
       } else if (numAmount >= maxAmount) {
         errMsg.value = `Amount must be less than ${maxAmount} ${symbol}`;
+      } else {
+        errMsg.value = '';
       }
     },
     { immediate: false }
