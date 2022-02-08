@@ -233,6 +233,8 @@ export default {
     poweredBy: 'Powered by',
     cbridge: 'cBRIDGE',
     destToken: 'Destination token address',
+    multichain: 'MultiChain',
+    multichainLink: 'Bridge any other assets to Shiden with',
     status: {
       TRANSFER_UNKNOWN: 'Unknown transfer',
       TRANSFER_SUBMITTING: 'Submitting',

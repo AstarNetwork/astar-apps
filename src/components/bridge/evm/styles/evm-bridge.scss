@@ -9,6 +9,46 @@
   }
 }
 
+.multichain-link {
+  width: 350px;
+  text-align: center;
+  margin-bottom: 32px;
+  cursor: pointer;
+  opacity: 0.9;
+  transition: all 0.2s ease-in-out;
+  background: linear-gradient(
+    59.11deg,
+    #694ea4 12.18%,
+    #1b6dc1 41.2%,
+    #1b6dc1 62.56%,
+    #2ea0c4 89.56%
+  );
+
+  @apply tw-bg-blue-400 dark:tw-bg-blue-800 tw-text-white tw-rounded-lg tw-p-3 md:tw-p-4 md:tw-text-xl;
+
+  @media (min-width: 768px) {
+    min-width: 480px;
+  }
+  &:hover {
+    opacity: 1;
+    transition: all 0.2s ease-in-out;
+  }
+}
+
+.text-multichain {
+  font-weight: 700;
+}
+
+.multichain-link-dark {
+  background: linear-gradient(
+    87.73deg,
+    #25bed2 -14.35%,
+    #2686e9 31.69%,
+    #8b5bc5 79.92%,
+    #ff92cc 125.96%
+  );
+}
+
 .widget {
   position: relative;
   padding: 30px 0px;

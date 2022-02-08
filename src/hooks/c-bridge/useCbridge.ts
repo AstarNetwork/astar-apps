@@ -468,6 +468,7 @@ export function useCbridge() {
     errMsg,
     destTokenUrl,
     destTokenAddress,
+    currentNetworkIdx,
     reverseChain,
     closeModal,
     openModal,

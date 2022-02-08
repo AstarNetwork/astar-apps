@@ -1,5 +1,18 @@
 <template>
   <div v-if="srcChain && selectedToken" class="container animate__animated animate__fadeIn">
+    <a
+      v-if="currentNetworkIdx === endpointKey.SHIDEN"
+      href="https://anyswap.exchange/#/bridge"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="multichain-link"
+      :class="isDarkTheme && 'multichain-link-dark'"
+    >
+      <span
+        >{{ $t('bridge.multichainLink') }}
+        <span class="text-multichain">{{ $t('bridge.multichain') }}</span>
+      </span>
+    </a>
     <div class="widget" :class="isDarkTheme && 'widget-dark'">
       <div class="row-tool">
         <div class="tw-tooltip tw-relative">
@@ -232,6 +245,7 @@ import BridgeButtons from './BridgeButtons.vue';
 import ModalChain from './modals/ModalChain.vue';
 import ModalHistory from './modals/ModalHistory.vue';
 import ModalToken from './modals/ModalToken.vue';
+import { endpointKey } from 'src/config/chainEndpoints';
 import Remarks from './Remarks.vue';
 
 export default defineComponent({
@@ -269,6 +283,7 @@ export default defineComponent({
       errMsg,
       destTokenUrl,
       destTokenAddress,
+      currentNetworkIdx,
       closeModal,
       openModal,
       selectChain,
@@ -317,6 +332,8 @@ export default defineComponent({
       errMsg,
       destTokenUrl,
       destTokenAddress,
+      currentNetworkIdx,
+      endpointKey,
       closeModal,
       openModal,
       selectChain,
