@@ -1,6 +1,7 @@
 import Web3 from 'web3';
 import { u8aToHex } from '@polkadot/util';
 import { addressToEvm, evmToAddress } from '@polkadot/util-crypto';
+import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { ASTAR_SS58_FORMAT } from 'src/hooks/helper/plasmUtils';
 
 // Memo: The EVM address won't be same as the address shown in MetaMask imported from the same private key of the SS58
@@ -35,4 +36,16 @@ export const isValidEvmAddress = (evmAddress: string): boolean => {
 export const toSS58Address = (h160Address: string) => {
   const address = checkSumEvmAddress(h160Address);
   return evmToAddress(address, ASTAR_SS58_FORMAT);
+};
+
+export const buildEvmAddress = (toAddress: string) => {
+  // Memo: goes to EVM deposit
+  if (isValidAddressPolkadotAddress(toAddress)) {
+    return toEvmAddress(toAddress);
+  }
+  const web3 = new Web3();
+  if (web3.utils.isAddress(toAddress)) {
+    return toAddress;
+  }
+  return false;
 };
