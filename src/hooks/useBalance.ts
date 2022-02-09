@@ -8,6 +8,7 @@ import { computed, onUnmounted, ref, Ref, watch } from 'vue';
 import { getProviderIndex } from 'src/config/chainEndpoints';
 import { getVested } from './helper/vested';
 import { $api } from 'boot/api';
+import { getBalance } from 'src/config/web3/utils/transactions';
 
 function useCall(addressRef: Ref<string>) {
   const balanceRef = ref(new BN(0));
@@ -36,7 +37,7 @@ function useCall(addressRef: Ref<string>) {
         throw Error(`cannot create the web3 instance with network id ${currentNetworkIdx.value}`);
       }
 
-      const rawBal = await web3.eth.getBalance(address);
+      const rawBal = await getBalance(web3, address);
       accountDataRef.value = new AccountDataH160(
         new BN(rawBal),
         new BN(0),
