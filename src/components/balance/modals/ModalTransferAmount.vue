@@ -96,6 +96,15 @@
                   :role="Role.ToAddress"
                   :to-address="toAddress"
                 />
+                <div
+                  class="
+                    tw-flex tw-gap-2 tw-justify-end tw-mt-1 tw-text-gray-500
+                    dark:tw-text-darkGray-400
+                  "
+                >
+                  <span>{{ $t('balance.modals.destBalance') }}</span>
+                  <FormatBalance :balance="toAddressBalance" />
+                </div>
               </div>
 
               <input-amount
@@ -160,9 +169,10 @@ import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { getUnit } from 'src/hooks/helper/units';
 import { getInjector } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, toRefs } from 'vue';
+import { computed, defineComponent, ref, toRefs, watchEffect, watch } from 'vue';
 import Web3 from 'web3';
 import ModalSelectAccount from './ModalSelectAccount.vue';
+import { createWeb3Instance } from 'src/web3';
 
 export enum Role {
   FromAddress = 'FromAddress',
@@ -193,6 +203,7 @@ export default defineComponent({
 
     const openOption = ref<boolean>(false);
     const isChecked = ref<boolean>(false);
+    const web3 = ref<Web3 | undefined>(undefined);
     const store = useStore();
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
     const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
@@ -202,6 +213,7 @@ export default defineComponent({
     const transferAmt = ref<BN>(new BN(0));
     const fromAddress = ref<string>('');
     const toAddress = ref<string>('');
+    const toAddressBalance = ref<BN>(new BN(0));
 
     const selectUnit = ref(defaultUnitToken.value);
     const isEthWallet = computed(() => store.getters['general/isEthWallet']);
@@ -352,6 +364,30 @@ export default defineComponent({
       store.commit('general/setCurrentAddress', address);
     };
 
+    watch(
+      [currentNetworkIdx],
+      async () => {
+        web3.value = await createWeb3Instance(currentNetworkIdx.value);
+      },
+      { immediate: true }
+    );
+
+    watchEffect(async () => {
+      const toAddressRef = toAddress.value;
+      const web3Ref = web3.value;
+      const apiRef = $api.value;
+      if (!apiRef || !toAddressRef) return;
+      if (plasmUtils.isValidAddressPolkadotAddress(toAddressRef)) {
+        const { data } = await apiRef.query.system.account(toAddressRef);
+        toAddressBalance.value = data.free;
+        return;
+      }
+      if (web3Ref && web3Ref.utils.isAddress(toAddressRef)) {
+        toAddressBalance.value = new BN(await web3Ref.eth.getBalance(toAddressRef));
+        return;
+      }
+    });
+
     return {
       closeModal,
       isCustomSigBlocked,
@@ -370,6 +406,7 @@ export default defineComponent({
       isChecked,
       isH160,
       isDarkTheme,
+      toAddressBalance,
       ...toRefs(props),
     };
   },

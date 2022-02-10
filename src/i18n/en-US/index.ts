@@ -97,6 +97,7 @@ export default {
       vested: 'vested',
       perBlock: 'per block',
       untilBlock: 'until block',
+      destBalance: 'Balance:',
       evmModeWarning: 'You are in EVM mode. Do not send funds to exchanges!',
       notSendToExchanges: 'I’m not sending tokens to Exchanges',
     },
