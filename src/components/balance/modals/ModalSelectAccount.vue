@@ -169,7 +169,10 @@ export default defineComponent({
 
     const isEvmAddress = ref<boolean>(false);
     watchEffect(() => {
-      isEvmAddress.value = isValidEvmAddress(props.toAddress ? props.toAddress : '');
+      isEvmAddress.value =
+        props.role === Role.ToAddress
+          ? isValidEvmAddress(props.toAddress ? props.toAddress : '')
+          : isH160.value;
     });
 
     const closeOption = () => {
