@@ -1,4 +1,4 @@
-import Web3 from 'web3';
+import { ethers } from 'ethers';
 import { u8aToHex } from '@polkadot/util';
 import { addressToEvm, evmToAddress } from '@polkadot/util-crypto';
 import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
@@ -11,22 +11,24 @@ export const toEvmAddress = (ss58Address: string) => {
 };
 
 export const checkSumEvmAddress = (evmAddress: string): string => {
-  const web3 = new Web3();
-  return web3.utils.toChecksumAddress(evmAddress);
+  return ethers.utils.getAddress(evmAddress);
 };
 
 export const isValidEvmAddress = (evmAddress: string): boolean => {
   if (!evmAddress) return false;
 
+  // Memo: returns `false` if evmAddress was converted from SS58
   try {
-    const web3 = new Web3();
-    // Memo: returns `false` if evmAddress was converted from SS58
-    const isEvmAddress = web3.utils.checkAddressChecksum(evmAddress);
+    ethers.utils.getAddress(evmAddress);
+  } catch (e) {
+    return false;
+  }
 
+  try {
     // Memo: check if the given evmAddress is convertible
     const ss58Address = toSS58Address(evmAddress);
 
-    return ss58Address.length > 0 || isEvmAddress;
+    return ss58Address.length > 0;
   } catch (error) {
     console.log(error);
     return false;
@@ -43,8 +45,8 @@ export const buildEvmAddress = (toAddress: string) => {
   if (isValidAddressPolkadotAddress(toAddress)) {
     return toEvmAddress(toAddress);
   }
-  const web3 = new Web3();
-  if (web3.utils.isAddress(toAddress)) {
+
+  if (ethers.utils.isAddress(toAddress)) {
     return toAddress;
   }
   return false;

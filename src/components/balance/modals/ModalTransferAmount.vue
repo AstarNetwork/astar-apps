@@ -192,11 +192,6 @@ export default defineComponent({
     const { callTransfer } = useTransfer(selectUnit, decimal, closeModal);
 
     const transfer = () => {
-      // console.log('transfer', transferAmt.value);
-      // console.log('fromAccount', fromAddress.value);
-      // console.log('toAccount', toAddress.value);
-      // console.log('selUnit', selectUnit.value);
-
       if (Number(transferAmt.value) === 0) {
         store.dispatch('general/showAlertMsg', {
           msg: 'The amount of token to be transmitted must not be zero',
