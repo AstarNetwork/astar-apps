@@ -120,7 +120,7 @@ export default defineComponent({
   emits: ['update:sel-address', 'sel-changed'],
   setup(props, { emit }) {
     const isReadOnly = props.role === Role.FromAddress;
-    const openOption = ref(false);
+    const openOption = ref<boolean>(false);
     const store = useStore();
     const { currentAccountName, currentAccount } = useAccount();
     const currentAddress = computed(() => store.getters['general/selectedAddress']);
@@ -169,7 +169,10 @@ export default defineComponent({
 
     const isEvmAddress = ref<boolean>(false);
     watchEffect(() => {
-      isEvmAddress.value = isValidEvmAddress(props.toAddress ? props.toAddress : '');
+      isEvmAddress.value =
+        props.role === Role.ToAddress
+          ? isValidEvmAddress(props.toAddress ? props.toAddress : '')
+          : isH160.value;
     });
 
     const closeOption = () => {
