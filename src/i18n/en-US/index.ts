@@ -98,6 +98,7 @@ export default {
       perBlock: 'per block',
       untilBlock: 'until block',
       evmModeWarning: 'You are in EVM mode. Do not send funds to exchanges!',
+      notSendToExchanges: 'I’m not sending tokens to Exchanges',
     },
   },
   contracts: {

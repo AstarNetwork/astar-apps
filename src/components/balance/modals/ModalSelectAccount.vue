@@ -120,7 +120,7 @@ export default defineComponent({
   emits: ['update:sel-address', 'sel-changed'],
   setup(props, { emit }) {
     const isReadOnly = props.role === Role.FromAddress;
-    const openOption = ref(false);
+    const openOption = ref<boolean>(false);
     const store = useStore();
     const { currentAccountName, currentAccount } = useAccount();
     const currentAddress = computed(() => store.getters['general/selectedAddress']);
