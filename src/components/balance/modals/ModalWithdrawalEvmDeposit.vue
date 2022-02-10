@@ -120,7 +120,7 @@ import IconBase from 'components/icons/IconBase.vue';
 import { useChainMetadata, useCustomSignature } from 'src/hooks';
 import { $api } from 'boot/api';
 import { defaultAmountWithDecimals, reduceDenomToBalance } from 'src/hooks/helper/plasmUtils';
-import { toEvmAddress } from 'src/config/web3/utils/convert';
+import { buildEvmAddress } from 'src/config/web3/utils/convert';
 import { getUnit } from 'src/hooks/helper/units';
 import { getInjector } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
@@ -178,7 +178,7 @@ export default defineComponent({
       account: string;
     }) => {
       try {
-        const h160Addr = toEvmAddress(account);
+        const h160Addr = buildEvmAddress(account);
         const fn: SubmittableExtrinsicFunction<'promise'> | undefined =
           $api?.value?.tx.evm.withdraw;
         const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn(h160Addr, amount);
@@ -200,7 +200,7 @@ export default defineComponent({
           throw Error('Cannot reach to the injector');
         }
 
-        const h160Addr = toEvmAddress(account);
+        const h160Addr = buildEvmAddress(account);
         const transaction = await $api.value.tx.evm.withdraw(h160Addr, amount);
         if (!transaction) {
           throw Error('Cannot withdraw the deposit');

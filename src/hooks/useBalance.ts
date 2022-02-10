@@ -3,11 +3,9 @@ import { Balance, BalanceLockTo212 } from '@polkadot/types/interfaces';
 import { PalletVestingVestingInfo, PalletBalancesBalanceLock } from '@polkadot/types/lookup';
 import BN from 'bn.js';
 import { useStore } from 'src/store';
-import { createWeb3Instance, TNetworkId } from 'src/config/web3';
 import { computed, onUnmounted, ref, Ref, watch } from 'vue';
-import { getProviderIndex } from 'src/config/chainEndpoints';
 import { getVested } from './helper/vested';
-import { $api } from 'boot/api';
+import { $api, $web3 } from 'boot/api';
 import { getBalance } from 'src/config/web3/utils/transactions';
 
 function useCall(addressRef: Ref<string>) {
@@ -18,12 +16,6 @@ function useCall(addressRef: Ref<string>) {
   const store = useStore();
   const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
 
-  const currentNetworkIdx = computed(() => {
-    const chainInfo = store.getters['general/chainInfo'];
-    const chain = chainInfo ? chainInfo.chain : '';
-    return getProviderIndex(chain);
-  });
-
   const isLoading = computed(() => store.getters['general/isLoading']);
   const dapps = computed(() => store.getters['dapps/getAllDapps']);
 
@@ -31,13 +23,7 @@ function useCall(addressRef: Ref<string>) {
 
   const updateAccountH160 = async (address: string) => {
     try {
-      const web3 = await createWeb3Instance(currentNetworkIdx.value as TNetworkId);
-
-      if (!web3) {
-        throw Error(`cannot create the web3 instance with network id ${currentNetworkIdx.value}`);
-      }
-
-      const rawBal = await getBalance(web3, address);
+      const rawBal = await getBalance($web3.value!!, address);
       accountDataRef.value = new AccountDataH160(
         new BN(rawBal),
         new BN(0),

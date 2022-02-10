@@ -1,4 +1,4 @@
-import { TNetworkId, EVM } from './../index';
+import { TNetworkId, EVM } from '../index';
 import Web3 from 'web3';
 import { CHAIN_INFORMATION } from '..';
 import { endpointKey } from 'src/config/chainEndpoints';
