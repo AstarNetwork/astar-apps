@@ -63,7 +63,6 @@ export default boot(async ({ store }) => {
     if (chainInfo.value?.chain) {
       const currentChain = chainInfo.value?.chain as ASTAR_CHAIN;
       const currentNetworkIdx = getProviderIndex(currentChain);
-      console.log('cur', currentChain);
       const web3 = await createWeb3Instance(currentNetworkIdx as TNetworkId);
       if (!web3) {
         console.error(`cannot create the web3 instance with network id ${currentNetworkIdx}`);
