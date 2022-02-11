@@ -3,19 +3,14 @@
     <div class="tw-relative tw-inline-flex tw-items-center tw-rounded-l-lg tw-flex-1 tw-text-left">
       <div class="tw-flex tw-items-center">
         <div class="tw-h-11 tw-w-11 sm:tw-h-12 sm:tw-w-12 tw-overflow-hidden tw-mx-2 sm:tw-mx-3">
-          <div v-if="format === 'H160'">
-            <img width="80" src="~assets/img/ethereum.png" />
-          </div>
-          <div v-else>
-            <icon-base class="tw-h-full tw-w-full" viewBox="0 0 64 64">
-              <icon-account-sample />
-            </icon-base>
-          </div>
+          <icon-base class="tw-h-full tw-w-full" viewBox="0 0 64 64">
+            <icon-account-sample />
+          </icon-base>
         </div>
         <div>
           <div class="tw-flex tw-items-center tw-gap-x-2">
             <p class="tw-text-blue-900 dark:tw-text-darkGray-100 tw-font-bold">
-              {{ $t(format === AddressFormat.SS58 ? 'balance.native' : 'balance.evm') }}
+              {{ $t('balance.native') }}
             </p>
 
             <button class="tw-tooltip">
@@ -43,22 +38,19 @@
                   md:tw-whitespace-nowrap
                 "
                 >{{
-                  $t(
-                    format === AddressFormat.SS58 ? 'balance.tooltipNative' : 'balance.tooltipEvm',
-                    {
-                      value: format === AddressFormat.SS58 ? currentNetworkName : tokenSymbol,
-                    }
-                  )
+                  $t('balance.tooltipNative', {
+                    value: currentNetworkName,
+                  })
                 }}</span
               >
             </button>
           </div>
           <p class="tw-text-xs tw-text-gray-500 dark:tw-text-darkGray-400">
             <span class="tw-hidden sm:tw-block lg:tw-hidden 2xl:tw-block">
-              {{ address }}
+              {{ currentAccount }}
             </span>
             <span class="sm:tw-hidden lg:tw-block 2xl:tw-hidden">
-              {{ getShortenAddress(address) }}
+              {{ getShortenAddress(currentAccount) }}
             </span>
           </p>
         </div>
@@ -102,7 +94,6 @@
       </div>
 
       <div
-        v-if="isSubscan"
         class="
           tw-border-l tw-border-gray-100
           dark:tw-border-darkGray-600
@@ -149,18 +140,16 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, computed, ref, watchEffect } from 'vue';
-import { useStore } from 'src/store';
-import { getShortenAddress } from 'src/hooks/helper/addressUtils';
-import IconBase from 'components/icons/IconBase.vue';
+import { farQuestionCircle } from '@quasar/extras/fontawesome-v5';
 import IconAccountSample from 'components/icons/IconAccountSample.vue';
+import IconBase from 'components/icons/IconBase.vue';
 import IconDocumentDuplicate from 'components/icons/IconDocumentDuplicate.vue';
 import IconLink from 'components/icons/IconLink.vue';
 import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { useAccount } from 'src/hooks';
-import { toEvmAddress } from 'src/hooks/helper/plasmUtils';
-import { AddressFormat } from './Addresses.vue';
-import { farQuestionCircle } from '@quasar/extras/fontawesome-v5';
+import { getShortenAddress } from 'src/hooks/helper/addressUtils';
+import { useStore } from 'src/store';
+import { computed, defineComponent } from 'vue';
 
 export default defineComponent({
   components: {
@@ -169,24 +158,10 @@ export default defineComponent({
     IconDocumentDuplicate,
     IconLink,
   },
-  props: {
-    format: {
-      type: String,
-      required: true,
-    },
-  },
 
-  setup({ format }) {
+  setup() {
     const store = useStore();
-    const address = ref<string>('');
     const { currentAccount } = useAccount();
-
-    watchEffect(() => {
-      if (!currentAccount.value) return;
-
-      address.value =
-        format === AddressFormat.SS58 ? currentAccount.value : toEvmAddress(currentAccount.value);
-    });
 
     const currentNetworkIdx = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
@@ -200,18 +175,11 @@ export default defineComponent({
     });
 
     const subScan = computed(
-      () => `${providerEndpoints[currentNetworkIdx.value].subscan}/account/${address.value}`
+      () => `${providerEndpoints[currentNetworkIdx.value].subscan}/account/${currentAccount.value}`
     );
 
-    const tokenSymbol = computed(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      return chainInfo ? chainInfo.tokenSymbol : '';
-    });
-
-    const isSubscan = providerEndpoints[currentNetworkIdx.value].subscan !== '';
-
     const copyAddress = async () => {
-      await navigator.clipboard.writeText(address.value);
+      await navigator.clipboard.writeText(currentAccount.value);
       store.dispatch('general/showAlertMsg', {
         msg: 'Copy address success!!',
         alertType: 'success',
@@ -219,16 +187,12 @@ export default defineComponent({
     };
 
     return {
-      address,
       subScan,
-      isSubscan,
-      currentNetworkIdx,
       copyAddress,
       getShortenAddress,
-      AddressFormat,
       farQuestionCircle,
       currentNetworkName,
-      tokenSymbol,
+      currentAccount,
     };
   },
 });

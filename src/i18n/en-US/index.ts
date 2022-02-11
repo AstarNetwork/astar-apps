@@ -58,12 +58,14 @@ export default {
     unlockVestedTokens: 'Unlock available tokens',
     switchToLockdrop: 'Switch to {value} account',
     native: 'Native',
-    evm: 'EVM',
     tooltipNative: 'Native address for {value}. Use this address to withdraw from exchanges.',
-    tooltipEvm: 'Ethereum address for receiving {value} from EVM network.',
     vestingInfo: 'Vesting info',
     remainingVests: 'Remaining vests',
     via: 'via',
+    transferFromMetamask: 'Transfer {token} from MetaMask?',
+    howToSendFromMetamask:
+      'Copy Native address and connect PORTAL to MetaMask and transfer {token} to Native address.',
+    readTheTutorial: 'Please read the tutorial before using',
     modals: {
       connectMetamask: 'Connect Account with Ethereum Wallet',
       ethereumExtension: 'Ethereum Extension',
