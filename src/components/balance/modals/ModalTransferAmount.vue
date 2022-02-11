@@ -96,6 +96,15 @@
                   :role="Role.ToAddress"
                   :to-address="toAddress"
                 />
+                <div
+                  class="
+                    tw-flex tw-gap-2 tw-justify-end tw-mt-1 tw-text-gray-500
+                    dark:tw-text-darkGray-400
+                  "
+                >
+                  <span>{{ $t('balance.modals.destBalance') }}</span>
+                  <FormatBalance :balance="toAddressBalance" />
+                </div>
               </div>
 
               <input-amount
@@ -108,10 +117,33 @@
             </form>
           </div>
         </div>
+        <div
+          v-if="isH160"
+          class="tw-flex tw-items-center tw-mt-6 tw-p-3 tw-pb-4 tw-rounded-md tw-border"
+          :class="[
+            isChecked && 'tw-bg-blue-500 dark:tw-bg-blue-800',
+            isChecked ? 'tw-border-transparent' : 'tw-border-gray-300 dark:tw-border-darkGray-500',
+          ]"
+        >
+          <label class="form-check-input">
+            <input v-model="isChecked" type="checkbox" :class="isDarkTheme && 'input-dark'" />
+            <span
+              class="
+                tw-inline-block tw-whitespace-nowrap tw-ml-1
+                sm:tw-ml-4
+                dark:tw-text-white
+                text-not-sending
+              "
+              :class="isChecked ? 'tw-text-white' : 'tw-text-gray-800'"
+            >
+              {{ $t('balance.modals.notSendToExchanges') }}
+            </span>
+          </label>
+        </div>
         <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row-reverse">
           <button
             type="button"
-            :disabled="!canExecuteTransaction"
+            :disabled="!canExecuteTransaction || (isH160 && !isChecked)"
             class="confirm"
             @click="transfer(transferAmt, fromAddress, toAddress)"
           >
@@ -137,9 +169,10 @@ import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { getUnit } from 'src/hooks/helper/units';
 import { getInjector } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, toRefs } from 'vue';
+import { computed, defineComponent, ref, toRefs, watchEffect, watch } from 'vue';
 import Web3 from 'web3';
 import ModalSelectAccount from './ModalSelectAccount.vue';
+import { createWeb3Instance } from 'src/web3';
 
 export enum Role {
   FromAddress = 'FromAddress',
@@ -168,15 +201,19 @@ export default defineComponent({
       emit('update:is-open', false);
     };
 
-    const openOption = ref(false);
+    const openOption = ref<boolean>(false);
+    const isChecked = ref<boolean>(false);
+    const web3 = ref<Web3 | undefined>(undefined);
     const store = useStore();
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
+    const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
 
     const { defaultUnitToken, decimal } = useChainMetadata();
 
     const transferAmt = ref<BN>(new BN(0));
     const fromAddress = ref<string>('');
     const toAddress = ref<string>('');
+    const toAddressBalance = ref<BN>(new BN(0));
 
     const selectUnit = ref(defaultUnitToken.value);
     const isEthWallet = computed(() => store.getters['general/isEthWallet']);
@@ -327,6 +364,30 @@ export default defineComponent({
       store.commit('general/setCurrentAddress', address);
     };
 
+    watch(
+      [currentNetworkIdx],
+      async () => {
+        web3.value = await createWeb3Instance(currentNetworkIdx.value);
+      },
+      { immediate: true }
+    );
+
+    watchEffect(async () => {
+      const toAddressRef = toAddress.value;
+      const web3Ref = web3.value;
+      const apiRef = $api.value;
+      if (!apiRef || !toAddressRef) return;
+      if (plasmUtils.isValidAddressPolkadotAddress(toAddressRef)) {
+        const { data } = await apiRef.query.system.account(toAddressRef);
+        toAddressBalance.value = data.free;
+        return;
+      }
+      if (web3Ref && web3Ref.utils.isAddress(toAddressRef)) {
+        toAddressBalance.value = new BN(await web3Ref.eth.getBalance(toAddressRef));
+        return;
+      }
+    });
+
     return {
       closeModal,
       isCustomSigBlocked,
@@ -342,6 +403,10 @@ export default defineComponent({
       reloadAmount,
       Role,
       isEthWallet,
+      isChecked,
+      isH160,
+      isDarkTheme,
+      toAddressBalance,
       ...toRefs(props),
     };
   },
@@ -375,5 +440,85 @@ export default defineComponent({
 }
 .cancel:focus {
   @apply tw-outline-none tw-ring tw-ring-gray-100 dark:tw-ring-darkGray-600;
+}
+
+#checkb {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  background: rgba(40, 40, 40, 0.2);
+  color: black;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: none;
+  position: relative;
+  left: -5px;
+  top: -5px;
+}
+
+#checkb:checked {
+  background: rgba(40, 40, 40, 0.7);
+}
+
+.checkbox-container {
+  position: absolute;
+  display: inline-block;
+  margin: 20px;
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+}
+
+.form-check-input {
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  justify-items: center;
+  align-items: center;
+}
+
+.form-check-input > span {
+  padding: 0.5rem 0.25rem;
+}
+
+.form-check-input > input {
+  height: 24px;
+  width: 24px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -o-appearance: none;
+  appearance: none;
+  border-radius: 4px;
+  outline: none;
+  transition-duration: 0.3s;
+  cursor: pointer;
+  border: 1px solid rgba(174, 192, 212, 1);
+}
+
+.input-dark {
+  border: 1px solid white;
+}
+
+.form-check-input > input:checked {
+  border: 1px solid white;
+  background-color: transparent;
+}
+
+.form-check-input > input:checked + span::before {
+  content: '\2713';
+  display: block;
+  text-align: center;
+  color: white;
+  position: absolute;
+  font-weight: 800;
+  left: 5px;
+  top: 7px;
+}
+
+.text-not-sending {
+  font-size: 16px;
+  font-weight: 500;
+  padding-top: 3px;
 }
 </style>

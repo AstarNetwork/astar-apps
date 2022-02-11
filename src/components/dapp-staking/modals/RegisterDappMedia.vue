@@ -124,7 +124,7 @@ export default defineComponent({
     const getEmbedUrl = (url: string): string | null => {
       const id = getVideoId(url);
 
-      return 'http://www.youtube.com/embed/' + id;
+      return 'https://www.youtube.com/embed/' + id;
     };
 
     const videoUrlChanged = (url: string): void => {
