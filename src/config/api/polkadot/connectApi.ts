@@ -70,7 +70,12 @@ export async function connectApi(endpoint: string, networkIdx: number, store: an
   store.commit('general/setCurrentNetworkStatus', 'connecting');
 
   api.on('error', (error: Error) => console.error(error.message));
-  await api.isReady;
+  try {
+    await api.isReadyOrError;
+  } catch (e) {
+    console.error(e);
+  }
+
   const injectedPromise = await getInjectedExtensions();
 
   try {
