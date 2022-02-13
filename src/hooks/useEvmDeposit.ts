@@ -3,7 +3,7 @@ import { useStore } from 'src/store';
 import { computed, ref, watch } from 'vue';
 import { useAccount } from '.';
 import { $api } from 'boot/api';
-import { toEvmAddress } from './helper/plasmUtils';
+import { buildEvmAddress } from 'src/config/web3/utils/convert';
 
 export function useEvmDeposit() {
   const evmDeposit = ref<BN>(new BN(0));
@@ -15,27 +15,20 @@ export function useEvmDeposit() {
 
   watch(
     [$api, currentAccount, isLoading],
-    () => {
-      const apiRef = $api && $api.value;
-      const currentAccountRef = currentAccount.value;
-      if (!apiRef || !currentAccountRef) return;
+    async () => {
+      const api = $api.value!!;
+      const currentAccountVal = currentAccount.value;
 
       const getData = async (h160Addr: string): Promise<BN> => {
-        return await apiRef.rpc.eth.getBalance(h160Addr);
+        return await api.rpc.eth.getBalance(h160Addr);
       };
 
-      apiRef.isReady.then(() => {
-        (async () => {
-          const h160Addr = toEvmAddress(currentAccountRef);
-          const deposit = await getData(h160Addr);
-          evmDeposit.value = deposit;
-          if (deposit.toString() !== '0' && !isH160.value) {
-            isEvmDeposit.value = true;
-          } else {
-            isEvmDeposit.value = false;
-          }
-        })();
-      });
+      if (currentAccountVal) {
+        const h160Addr = buildEvmAddress(currentAccountVal);
+        const deposit = await getData(h160Addr);
+        evmDeposit.value = deposit;
+        isEvmDeposit.value = deposit.toString() !== '0' && !isH160.value ? true : false;
+      }
     },
     { immediate: true }
   );

@@ -84,7 +84,6 @@ import Dapp from 'src/components/dapp-staking/Dapp.vue';
 import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { useCurrentEra, useApr, useAccount, useBalance } from 'src/hooks';
-import { $api } from 'boot/api';
 import { DappItem } from 'src/store/dapp-staking/state';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
 import TVL from './statistics/TVL.vue';
@@ -116,7 +115,7 @@ export default defineComponent({
     const { stakerApr } = useApr();
     const { progress, blocksUntilNextEra, era } = useCurrentEra();
     const { currentAccount } = useAccount();
-    const { accountData } = useBalance($api, currentAccount);
+    const { accountData } = useBalance(currentAccount);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
     const maxNumberOfStakersPerContract = computed(
