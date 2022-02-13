@@ -1,3 +1,4 @@
+//@deprecated
 import { usePolkadotContainerContext } from 'src/config/api/polkadot/polkadotContext';
 
 /**

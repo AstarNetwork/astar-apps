@@ -145,7 +145,7 @@
             type="button"
             :disabled="!canExecuteTransaction || (isH160 && !isChecked)"
             class="confirm"
-            @click="transfer(transferAmt, fromAddress, toAddress)"
+            @click="transfer"
           >
             {{ $t('confirm') }}
           </button>
@@ -158,21 +158,19 @@
   </div>
 </template>
 <script lang="ts">
-import type { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
 import BN from 'bn.js';
 import FormatBalance from 'components/balance/FormatBalance.vue';
 import InputAmount from 'components/common/InputAmount.vue';
 import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
-import { useChainMetadata, useCustomSignature } from 'src/hooks';
+import { useChainMetadata, useTransfer } from 'src/hooks';
 import { $api } from 'boot/api';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
-import { getUnit } from 'src/hooks/helper/units';
-import { getInjector } from 'src/hooks/helper/wallet';
+import { reduceBalanceToDenom } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, toRefs, watchEffect, watch } from 'vue';
 import Web3 from 'web3';
 import ModalSelectAccount from './ModalSelectAccount.vue';
-import { createWeb3Instance } from 'src/web3';
+import { createWeb3Instance } from 'src/config/web3';
 
 export enum Role {
   FromAddress = 'FromAddress',
@@ -223,7 +221,6 @@ export default defineComponent({
       return getProviderIndex(chain);
     });
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
-    const { callFunc, handleResult, handleTransactionError } = useCustomSignature(closeModal);
 
     // isCustomSigBlocked is temporary until extrinsic call pallet is deployed to all networks.
     const isCustomSigBlocked = computed(() => !!!providerEndpoints[currentNetworkIdx.value].prefix);
@@ -233,60 +230,13 @@ export default defineComponent({
 
     const formatBalance = computed(() => {
       const tokenDecimal = decimal.value;
-      return plasmUtils.reduceBalanceToDenom(
-        props.accountData.getUsableTransactionBalance(),
-        tokenDecimal
-      );
+      return reduceBalanceToDenom(props.accountData.getUsableTransactionBalance(), tokenDecimal);
     });
 
-    const transferLocal = async (transferAmt: BN, fromAddress: string, toAddress: string) => {
-      try {
-        const injector = await getInjector(substrateAccounts.value);
-        const transfer = await $api?.value?.tx.balances.transfer(toAddress, transferAmt);
-        transfer
-          ?.signAndSend(
-            fromAddress,
-            {
-              signer: injector?.signer,
-            },
-            (result) => handleResult(result)
-          )
-          .catch((error: Error) => handleTransactionError(error));
-      } catch (e) {
-        console.error(e);
-      }
-    };
+    const { callTransfer } = useTransfer(selectUnit, decimal, closeModal);
 
-    const transferExtrinsic = async (transferAmt: BN, toAddress: string) => {
-      try {
-        const fn: SubmittableExtrinsicFunction<'promise'> | undefined =
-          $api?.value?.tx.balances.transfer;
-        const method: SubmittableExtrinsic<'promise'> | undefined =
-          fn && fn(toAddress, transferAmt);
-
-        method && callFunc(method);
-      } catch (e) {
-        console.error(e);
-        store.dispatch('general/showAlertMsg', {
-          msg: (e as Error).message,
-          alertType: 'error',
-        });
-      }
-    };
-
-    const transfer = async (transferAmt: number, fromAddress: string, toAddress: string) => {
-      // console.log('transfer', transferAmt);
-      // console.log('fromAccount', fromAddress);
-      // console.log('toAccount', toAddress);
-      // console.log('selUnit', selectUnit.value);
-
-      const toastInvalidAddress = () =>
-        store.dispatch('general/showAlertMsg', {
-          msg: 'balance.modals.invalidAddress',
-          alertType: 'error',
-        });
-
-      if (Number(transferAmt) === 0) {
+    const transfer = () => {
+      if (Number(transferAmt.value) === 0) {
         store.dispatch('general/showAlertMsg', {
           msg: 'The amount of token to be transmitted must not be zero',
           alertType: 'error',
@@ -294,70 +244,7 @@ export default defineComponent({
         return;
       }
 
-      if (isH160.value) {
-        const provider = typeof window !== 'undefined' && window.ethereum;
-        const web3 = new Web3(provider as any);
-
-        const buildEvmAddress = (toAddress: string) => {
-          // Memo: goes to EVM deposit
-          if (plasmUtils.isValidAddressPolkadotAddress(toAddress)) {
-            return plasmUtils.toEvmAddress(toAddress);
-          }
-          if (!web3.utils.isAddress(toAddress)) {
-            toastInvalidAddress();
-            return;
-          }
-          return toAddress;
-        };
-
-        const destinationAddress = buildEvmAddress(toAddress);
-
-        store.commit('general/setLoading', true);
-        try {
-          await web3.eth
-            .sendTransaction({
-              to: destinationAddress,
-              from: fromAddress,
-              value: web3.utils.toWei(String(transferAmt), 'ether'),
-            })
-            .once('confirmation', (confNumber, receipt) => {
-              const hash = receipt.transactionHash;
-              const msg = `Completed at transaction hash #${hash}`;
-              store.dispatch('general/showAlertMsg', { msg, alertType: 'success' });
-              store.commit('general/setLoading', false);
-              closeModal();
-            });
-        } catch (error) {
-          console.error(error);
-          store.commit('general/setLoading', false);
-        }
-
-        return;
-      }
-
-      const isValidSS58Address =
-        plasmUtils.isValidAddressPolkadotAddress(fromAddress) &&
-        plasmUtils.isValidAddressPolkadotAddress(toAddress);
-
-      if (!isValidSS58Address && !plasmUtils.isValidEvmAddress(toAddress)) {
-        toastInvalidAddress();
-        return;
-      }
-
-      const receivingAddress = plasmUtils.isValidEvmAddress(toAddress)
-        ? plasmUtils.toSS58Address(toAddress)
-        : toAddress;
-      // console.log('receivingAddress', receivingAddress);
-
-      const unit = getUnit(selectUnit.value);
-      const toAmt = plasmUtils.reduceDenomToBalance(transferAmt, unit, decimal.value);
-      // console.log('toAmt', toAmt.toString(10));
-
-      if (isEthWallet.value) {
-        await transferExtrinsic(toAmt, receivingAddress);
-      } else {
-        await transferLocal(toAmt, fromAddress, receivingAddress);
-      }
+      callTransfer(Number(transferAmt.value), fromAddress.value, toAddress.value);
     };
 
     const reloadAmount = (address: string): void => {
@@ -396,7 +283,6 @@ export default defineComponent({
       formatBalance,
       fromAddress,
       toAddress,
-      openOption,
       transferAmt,
       defaultUnitToken,
       selectUnit,
