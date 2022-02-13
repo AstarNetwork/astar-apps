@@ -3,7 +3,7 @@ import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SubstrateWallets, SupportWallet, WalletModalOption } from 'src/config/wallets';
 import { useAccount } from 'src/hooks';
 import { useStore } from 'src/store';
-import { getChainId, setupNetwork } from 'src/web3';
+import { getChainId, setupNetwork } from 'src/config/web3';
 import { computed, ref, watchEffect, watch } from 'vue';
 import { useMetamask } from './custom-signature/useMetamask';
 import { castMobileSource, getInjectedExtensions } from './helper/wallet';

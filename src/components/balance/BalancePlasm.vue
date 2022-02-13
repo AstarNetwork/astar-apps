@@ -69,7 +69,6 @@ import { useMeta } from 'quasar';
 import { useAccount, useBalance, useEvmDeposit } from 'src/hooks';
 import { useStore } from 'src/store';
 import { computed, defineComponent, reactive, toRefs } from 'vue';
-import { $api } from 'boot/api';
 import Addresses from './Addresses.vue';
 import ModalFaucet from './modals/ModalFaucet.vue';
 import ModalTransferAmount from './modals/ModalTransferAmount.vue';
@@ -111,7 +110,7 @@ export default defineComponent({
 
     const store = useStore();
     const { currentAccount, currentAccountName } = useAccount();
-    const { balance, accountData } = useBalance($api, currentAccount);
+    const { balance, accountData } = useBalance(currentAccount);
 
     const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
