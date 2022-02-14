@@ -8,7 +8,7 @@ import { computed, ref, watchEffect, watch } from 'vue';
 import { useMetamask } from './custom-signature/useMetamask';
 import { castMobileSource, getInjectedExtensions } from './helper/wallet';
 import * as utils from 'src/hooks/custom-signature/utils';
-import { getProviderIndex, endpointKey } from 'src/config/chainEndpoints';
+import { getProviderIndex } from 'src/config/chainEndpoints';
 
 export const useConnectWallet = () => {
   const modalConnectWallet = ref<boolean>(false);
