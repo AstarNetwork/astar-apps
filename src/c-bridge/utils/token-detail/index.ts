@@ -1,4 +1,3 @@
-import { nativeCurrency } from './../../../web3/index';
 import {
   CbridgeToken,
   SelectedToken,
@@ -8,7 +7,7 @@ import {
   TokenInfo,
   Token,
 } from 'src/c-bridge';
-import { getTokenBal, getTokenExplorer } from 'src/web3';
+import { getTokenBal, getTokenExplorer, nativeCurrency } from 'src/config/web3';
 
 export const getSelectedToken = ({
   srcChainId,

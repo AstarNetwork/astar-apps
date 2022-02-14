@@ -1,6 +1,7 @@
 export * from './useSidebar';
 export * from './useAccount';
 export * from './useBalance';
+export * from './useTransfer';
 export * from './useContracts';
 export * from './useMessages';
 export * from './useWasm';

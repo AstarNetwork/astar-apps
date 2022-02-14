@@ -55,7 +55,7 @@ import Modal from 'src/components/common/Modal.vue';
 import { useBreakpoints } from 'src/hooks';
 import { useStore } from 'src/store';
 import { SelectedToken } from 'src/c-bridge';
-import { getTokenBal } from 'src/web3';
+import { getTokenBal } from 'src/config/web3';
 export default defineComponent({
   components: {
     Token,

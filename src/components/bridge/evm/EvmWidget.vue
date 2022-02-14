@@ -258,7 +258,7 @@ import ModalHistory from './modals/ModalHistory.vue';
 import ModalToken from './modals/ModalToken.vue';
 import { endpointKey } from 'src/config/chainEndpoints';
 import Remarks from './Remarks.vue';
-import { nativeCurrency } from 'src/web3';
+import { nativeCurrency } from 'src/config/web3';
 
 export default defineComponent({
   components: {

@@ -2,7 +2,7 @@ import { MaxUint256 } from '@ethersproject/constants';
 import { approve, getTokenInfo } from 'src/c-bridge';
 import ABI from 'src/c-bridge/abi/ERC20.json';
 import { useStore } from 'src/store';
-import { nativeCurrency } from 'src/web3';
+import { nativeCurrency } from 'src/config/web3';
 import { computed, ref, watchEffect, watch } from 'vue';
 import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';

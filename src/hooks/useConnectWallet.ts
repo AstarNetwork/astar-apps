@@ -4,8 +4,8 @@ import { SubstrateWallets, SupportWallet, WalletModalOption } from 'src/config/w
 import { useAccount } from 'src/hooks';
 import * as utils from 'src/hooks/custom-signature/utils';
 import { useStore } from 'src/store';
-import { getChainId, setupNetwork } from 'src/web3';
-import { computed, ref, watch, watchEffect } from 'vue';
+import { getChainId, setupNetwork } from 'src/config/web3';
+import { computed, ref, watchEffect, watch } from 'vue';
 import { useMetamask } from './custom-signature/useMetamask';
 import { ASTAR_SS58_FORMAT } from './helper/plasmUtils';
 import { castMobileSource, getInjectedExtensions } from './helper/wallet';

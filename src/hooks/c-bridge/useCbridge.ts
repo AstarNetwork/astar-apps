@@ -21,7 +21,7 @@ import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
 import { objToArray } from 'src/hooks/helper/common';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
-import { setupNetwork } from 'src/web3';
+import { setupNetwork } from 'src/config/web3';
 import { computed, onUnmounted, ref, watch, watchEffect } from 'vue';
 import Web3 from 'web3';
 // import { calUsdAmount } from './helper/price';

@@ -158,7 +158,7 @@ import IconDocumentDuplicate from 'components/icons/IconDocumentDuplicate.vue';
 import IconLink from 'components/icons/IconLink.vue';
 import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { useAccount } from 'src/hooks';
-import { toEvmAddress } from 'src/hooks/helper/plasmUtils';
+import { buildEvmAddress } from 'src/config/web3';
 import { AddressFormat } from './Addresses.vue';
 import { farQuestionCircle } from '@quasar/extras/fontawesome-v5';
 
@@ -185,7 +185,9 @@ export default defineComponent({
       if (!currentAccount.value) return;
 
       address.value =
-        format === AddressFormat.SS58 ? currentAccount.value : toEvmAddress(currentAccount.value);
+        format === AddressFormat.SS58
+          ? currentAccount.value
+          : buildEvmAddress(currentAccount.value);
     });
 
     const currentNetworkIdx = computed(() => {

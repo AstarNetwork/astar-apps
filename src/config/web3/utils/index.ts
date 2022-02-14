@@ -1,11 +1,13 @@
-import { ethers } from 'ethers';
-import ABI from 'src/c-bridge/abi/ERC20.json';
-import { AbiItem } from 'web3-utils';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
 import Web3 from 'web3';
 import { blockExplorerUrls, CHAIN_INFORMATION } from '../index';
 import { EVM, nativeCurrency, TNetworkId } from './../index';
+import { ethers } from 'ethers';
+import ABI from 'src/c-bridge/abi/ERC20.json';
+import { AbiItem } from 'web3-utils';
+export { buildEvmAddress, isValidEvmAddress, toSS58Address } from './convert';
+export { getBalance, sendNativeTokenTransaction } from './transactions';
 
 export const getChainData = (chainId: number) => {
   const { chainName, nativeCurrency, rpcUrls, blockExplorerUrls } = CHAIN_INFORMATION;
@@ -133,4 +135,10 @@ export const getTokenExplorer = ({
     default:
       return blockExplorerUrls[chainId] + `/token/${address}`;
   }
+};
+
+export const getDefaultEthProvider = () => {
+  const provider = typeof window !== 'undefined' && window.ethereum;
+  const web3 = new Web3(provider as any);
+  return web3;
 };

@@ -7,7 +7,15 @@ export {
   getTokenBal,
   buildWeb3Instance,
   getTokenExplorer,
+  buildEvmAddress,
+  getBalance,
+  isValidEvmAddress,
+  toSS58Address,
+  getDefaultEthProvider,
+  sendNativeTokenTransaction,
 } from './utils';
+
+export { contractInstance, Staking } from './contracts';
 
 export type TNetworkId = endpointKey.SHIDEN | endpointKey.SHIBUYA | endpointKey.ASTAR;
 

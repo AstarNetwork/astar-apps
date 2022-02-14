@@ -53,7 +53,7 @@ import IconBase from 'src/components/icons/IconBase.vue';
 import IconPlus from 'src/components/icons/IconPlus.vue';
 import { addToEvmWallet } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
-import { nativeCurrency } from 'src/web3';
+import { nativeCurrency } from 'src/config/web3';
 import { computed, defineComponent } from 'vue';
 export default defineComponent({
   components: {

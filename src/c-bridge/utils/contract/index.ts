@@ -5,7 +5,7 @@ import { BridgeMethod, SelectedToken } from 'src/c-bridge';
 import CANONICAL_BURN_ABI from 'src/c-bridge/abi/canonical-burn.json';
 import CANONICAL_DEPOSIT_ABI from 'src/c-bridge/abi/canonical-deposit.json';
 import POOL_ABI from 'src/c-bridge/abi/pool.json';
-import { buildWeb3Instance, nativeCurrency } from 'src/web3';
+import { buildWeb3Instance, nativeCurrency } from 'src/config/web3';
 import Web3 from 'web3';
 import { TransactionConfig } from 'web3-eth';
 import { AbiItem } from 'web3-utils';
