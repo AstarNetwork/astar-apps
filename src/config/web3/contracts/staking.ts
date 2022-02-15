@@ -3,7 +3,7 @@ import type { Contract } from 'web3-eth-contract/types';
 export class Staking {
   public ci: Contract;
   public fromAddr: string;
-  constructor(contractInstance: Contract, fromAddress: string) {
+  constructor(contractInstance: Contract, fromAddress: string = '') {
     this.ci = contractInstance;
     this.fromAddr = fromAddress;
   }
