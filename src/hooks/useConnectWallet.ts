@@ -1,15 +1,15 @@
 import { getProviderIndex } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SubstrateWallets, SupportWallet, WalletModalOption } from 'src/config/wallets';
+import { getChainId, setupNetwork } from 'src/config/web3';
 import { useAccount } from 'src/hooks';
 import * as utils from 'src/hooks/custom-signature/utils';
 import { useStore } from 'src/store';
-import { getChainId, setupNetwork } from 'src/config/web3';
-import { computed, ref, watchEffect, watch } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
+import { useRouter } from 'vue-router';
 import { useMetamask } from './custom-signature/useMetamask';
 import { ASTAR_SS58_FORMAT } from './helper/plasmUtils';
 import { castMobileSource, getInjectedExtensions } from './helper/wallet';
-import { useRouter } from 'vue-router';
 
 export const useConnectWallet = () => {
   const modalConnectWallet = ref<boolean>(false);

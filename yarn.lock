@@ -2,30 +2,31 @@
 # yarn lockfile v1
 
 
-"@astar-network/astar-api@^0.1.4-13":
-  version "0.1.4-13"
-  resolved "https://registry.yarnpkg.com/@astar-network/astar-api/-/astar-api-0.1.4-13.tgz#ca0ec8df1e48a7751563d04d4ef8ca07ab5b41b7"
-  integrity sha512-Vm25zL+lhXDr7uc+25MYZ/W6BiGpplOj+kTcuES3MhwIfT1O1dqUEW5NfR6waouBjvZZ1X6FX9P75lo4vIu9Vw==
+"@astar-network/astar-api@^0.1.5-3":
+  version "0.1.5-3"
+  resolved "https://registry.yarnpkg.com/@astar-network/astar-api/-/astar-api-0.1.5-3.tgz#0b8d1ccfd56a83f5007b8b4dc827d3124e73530d"
+  integrity sha512-s/A+3+UnCByvi6Z0IvmXKTOwravevG9b/ulCAGmAEzFIgC5PJ2sVypYOstKyIuT7amlXmEAfobikuqtIMk233w==
   dependencies:
-    "@astar-network/astar-types" "0.1.4-13"
+    "@astar-network/astar-types" "0.1.5-3"
     "@babel/runtime" "^7.10.2"
     "@open-web3/orml-api-derive" "^1.0.2-0"
     "@polkadot/api" "^6.5.2"
     "@polkadot/rpc-core" "^6.5.2"
 
-"@astar-network/astar-type-definitions@0.1.4-13":
-  version "0.1.4-13"
-  resolved "https://registry.yarnpkg.com/@astar-network/astar-type-definitions/-/astar-type-definitions-0.1.4-13.tgz#3d714eacaa37a878f7fb4518087b43a2852fd62f"
-  integrity sha512-AXsq7AS+E67aQj0Ixgj98pxuRI0/S1DYksHvHg2pJ4pxqn/YlwC2EhVIbtGtbsTZ19fLXEx3n4N5Upo0dimiTg==
+"@astar-network/astar-type-definitions@0.1.5-3":
+  version "0.1.5-3"
+  resolved "https://registry.yarnpkg.com/@astar-network/astar-type-definitions/-/astar-type-definitions-0.1.5-3.tgz#a32323122495b105bc06fc9f692be43de0b2bb25"
+  integrity sha512-YnpcjsZw3Isfci3GKaGun1v2Saj/i/1za5jyxCSGF6uR0EvAiFH076WFwhARJ/qKmA6onyG3G5PoRr3UFBihYQ==
   dependencies:
+    "@babel/runtime" "^7.10.2"
     "@open-web3/orml-type-definitions" "^1.0.2-0"
 
-"@astar-network/astar-types@0.1.4-13":
-  version "0.1.4-13"
-  resolved "https://registry.yarnpkg.com/@astar-network/astar-types/-/astar-types-0.1.4-13.tgz#bb8df1f19d7a3ad02962fd420867d08fc38699db"
-  integrity sha512-Q8HSMLHfMrEALx+xvvd4hxik0uvoVEEloID7xsKyDHZk2tvl/kY6HhlXGE5vx0fRoYaE975Ex/5QTqSTaIrCbg==
+"@astar-network/astar-types@0.1.5-3":
+  version "0.1.5-3"
+  resolved "https://registry.yarnpkg.com/@astar-network/astar-types/-/astar-types-0.1.5-3.tgz#87ec92502c9269757ec8dfc0f3c0cf9bb7fe3202"
+  integrity sha512-VAJUkIOXZs65TdUAR3wg8XDQP02Xo+w4K4zZL+Z+sQ3/kFAjzAsNlLNPLXTOzvD518kNpk/Nam2iRDCmQQiWzw==
   dependencies:
-    "@astar-network/astar-type-definitions" "0.1.4-13"
+    "@astar-network/astar-type-definitions" "0.1.5-3"
     "@babel/runtime" "^7.10.2"
     "@open-web3/api-mobx" "^1.0.2-0"
     "@open-web3/orml-types" "^1.0.2-0"
