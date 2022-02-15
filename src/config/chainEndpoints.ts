@@ -21,6 +21,8 @@ interface ChainProvider {
   baseApiUrl: string;
 }
 
+export type ASTAR_CHAIN = 'Shiden' | 'Astar' | 'Shibuya Testnet';
+
 export enum endpointKey {
   ASTAR = 0,
   SHIDEN = 1,
@@ -119,7 +121,7 @@ export const providerEndpoints: ChainProvider[] = [
 ];
 
 // Memo: return the provider index for Local and Custom node
-export const getProviderIndex = (chain: 'Shiden' | 'Astar' | 'Shibuya Testnet') => {
+export const getProviderIndex = (chain: ASTAR_CHAIN) => {
   switch (chain) {
     case 'Astar':
       return endpointKey.ASTAR;

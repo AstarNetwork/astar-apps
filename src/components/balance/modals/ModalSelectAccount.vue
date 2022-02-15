@@ -90,7 +90,7 @@ import IconBase from 'components/icons/IconBase.vue';
 import IconSolidSelector from 'components/icons/IconSolidSelector.vue';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useAccount } from 'src/hooks';
-import { isValidEvmAddress } from 'src/hooks/helper/plasmUtils';
+import { isValidEvmAddress } from 'src/config/web3/utils/convert';
 import { getSelectedAccount } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
@@ -120,7 +120,7 @@ export default defineComponent({
   emits: ['update:sel-address', 'sel-changed'],
   setup(props, { emit }) {
     const isReadOnly = props.role === Role.FromAddress;
-    const openOption = ref(false);
+    const openOption = ref<boolean>(false);
     const store = useStore();
     const { currentAccountName, currentAccount } = useAccount();
     const currentAddress = computed(() => store.getters['general/selectedAddress']);
@@ -169,7 +169,10 @@ export default defineComponent({
 
     const isEvmAddress = ref<boolean>(false);
     watchEffect(() => {
-      isEvmAddress.value = isValidEvmAddress(props.toAddress ? props.toAddress : '');
+      isEvmAddress.value =
+        props.role === Role.ToAddress
+          ? isValidEvmAddress(props.toAddress ? props.toAddress : '')
+          : isH160.value;
     });
 
     const closeOption = () => {

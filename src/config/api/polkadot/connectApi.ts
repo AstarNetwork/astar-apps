@@ -4,10 +4,9 @@ import type { InjectedExtension } from '@polkadot/extension-inject/types';
 import { keyring } from '@polkadot/ui-keyring';
 import { isTestChain } from '@polkadot/util';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
-import { providerEndpoints } from 'src/config/chainEndpoints';
 import { objToArray } from 'src/hooks/helper/common';
 import { getInjectedExtensions } from 'src/hooks/helper/wallet';
-// import { options } from '@astar-network/astar-api';
+import { options } from '@astar-network/astar-api';
 
 interface InjectedAccountExt {
   address: string;
@@ -53,26 +52,21 @@ const loadAccounts = async (api: ApiPromise) => {
 
 export async function connectApi(endpoint: string, networkIdx: number, store: any) {
   const provider = new WsProvider(endpoint);
-
-  // load the web3 extension
-  let extensions: InjectedExtension[] = [];
-
-  const typeDefinitions = providerEndpoints[networkIdx].typeDef;
-  // console.log('t', typeDefinitions);
-
-  const api = new ApiPromise({
-    provider,
-    types: {
-      ...typeDefinitions,
-    },
-  });
+  const api = new ApiPromise(options({ provider }));
 
   store.commit('general/setCurrentNetworkStatus', 'connecting');
 
   api.on('error', (error: Error) => console.error(error.message));
-  await api.isReady;
+  try {
+    await api.isReadyOrError;
+  } catch (e) {
+    console.error(e);
+  }
+
   const injectedPromise = await getInjectedExtensions();
 
+  // load the web3 extension
+  let extensions: InjectedExtension[] = [];
   try {
     extensions = await injectedPromise;
   } catch (e) {

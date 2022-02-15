@@ -96,6 +96,15 @@
                   :role="Role.ToAddress"
                   :to-address="toAddress"
                 />
+                <div
+                  class="
+                    tw-flex tw-gap-2 tw-justify-end tw-mt-1 tw-text-gray-500
+                    dark:tw-text-darkGray-400
+                  "
+                >
+                  <span>{{ $t('balance.modals.destBalance') }}</span>
+                  <FormatBalance :balance="toAddressBalance" />
+                </div>
               </div>
 
               <input-amount
@@ -108,12 +117,35 @@
             </form>
           </div>
         </div>
+        <div
+          v-if="isH160"
+          class="tw-flex tw-items-center tw-mt-6 tw-p-3 tw-pb-4 tw-rounded-md tw-border"
+          :class="[
+            isChecked && 'tw-bg-blue-500 dark:tw-bg-blue-800',
+            isChecked ? 'tw-border-transparent' : 'tw-border-gray-300 dark:tw-border-darkGray-500',
+          ]"
+        >
+          <label class="form-check-input">
+            <input v-model="isChecked" type="checkbox" :class="isDarkTheme && 'input-dark'" />
+            <span
+              class="
+                tw-inline-block tw-whitespace-nowrap tw-ml-1
+                sm:tw-ml-4
+                dark:tw-text-white
+                text-not-sending
+              "
+              :class="isChecked ? 'tw-text-white' : 'tw-text-gray-800'"
+            >
+              {{ $t('balance.modals.notSendToExchanges') }}
+            </span>
+          </label>
+        </div>
         <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row-reverse">
           <button
             type="button"
-            :disabled="!canExecuteTransaction"
+            :disabled="!canExecuteTransaction || (isH160 && !isChecked)"
             class="confirm"
-            @click="transfer(transferAmt, fromAddress, toAddress)"
+            @click="transfer"
           >
             {{ $t('confirm') }}
           </button>
@@ -126,20 +158,19 @@
   </div>
 </template>
 <script lang="ts">
-import type { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
 import BN from 'bn.js';
 import FormatBalance from 'components/balance/FormatBalance.vue';
 import InputAmount from 'components/common/InputAmount.vue';
 import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
-import { useChainMetadata, useCustomSignature } from 'src/hooks';
+import { useChainMetadata, useTransfer } from 'src/hooks';
 import { $api } from 'boot/api';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
-import { getUnit } from 'src/hooks/helper/units';
-import { getInjector } from 'src/hooks/helper/wallet';
+import { reduceBalanceToDenom } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, toRefs } from 'vue';
+import { computed, defineComponent, ref, toRefs, watchEffect, watch } from 'vue';
 import Web3 from 'web3';
 import ModalSelectAccount from './ModalSelectAccount.vue';
+import { createWeb3Instance } from 'src/config/web3';
 
 export enum Role {
   FromAddress = 'FromAddress',
@@ -168,15 +199,19 @@ export default defineComponent({
       emit('update:is-open', false);
     };
 
-    const openOption = ref(false);
+    const openOption = ref<boolean>(false);
+    const isChecked = ref<boolean>(false);
+    const web3 = ref<Web3 | undefined>(undefined);
     const store = useStore();
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
+    const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
 
     const { defaultUnitToken, decimal } = useChainMetadata();
 
     const transferAmt = ref<BN>(new BN(0));
     const fromAddress = ref<string>('');
     const toAddress = ref<string>('');
+    const toAddressBalance = ref<BN>(new BN(0));
 
     const selectUnit = ref(defaultUnitToken.value);
     const isEthWallet = computed(() => store.getters['general/isEthWallet']);
@@ -186,7 +221,6 @@ export default defineComponent({
       return getProviderIndex(chain);
     });
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
-    const { callFunc, handleResult, handleTransactionError } = useCustomSignature(closeModal);
 
     // isCustomSigBlocked is temporary until extrinsic call pallet is deployed to all networks.
     const isCustomSigBlocked = computed(() => !!!providerEndpoints[currentNetworkIdx.value].prefix);
@@ -196,60 +230,13 @@ export default defineComponent({
 
     const formatBalance = computed(() => {
       const tokenDecimal = decimal.value;
-      return plasmUtils.reduceBalanceToDenom(
-        props.accountData.getUsableTransactionBalance(),
-        tokenDecimal
-      );
+      return reduceBalanceToDenom(props.accountData.getUsableTransactionBalance(), tokenDecimal);
     });
 
-    const transferLocal = async (transferAmt: BN, fromAddress: string, toAddress: string) => {
-      try {
-        const injector = await getInjector(substrateAccounts.value);
-        const transfer = await $api?.value?.tx.balances.transfer(toAddress, transferAmt);
-        transfer
-          ?.signAndSend(
-            fromAddress,
-            {
-              signer: injector?.signer,
-            },
-            (result) => handleResult(result)
-          )
-          .catch((error: Error) => handleTransactionError(error));
-      } catch (e) {
-        console.error(e);
-      }
-    };
+    const { callTransfer } = useTransfer(selectUnit, decimal, closeModal);
 
-    const transferExtrinsic = async (transferAmt: BN, toAddress: string) => {
-      try {
-        const fn: SubmittableExtrinsicFunction<'promise'> | undefined =
-          $api?.value?.tx.balances.transfer;
-        const method: SubmittableExtrinsic<'promise'> | undefined =
-          fn && fn(toAddress, transferAmt);
-
-        method && callFunc(method);
-      } catch (e) {
-        console.error(e);
-        store.dispatch('general/showAlertMsg', {
-          msg: (e as Error).message,
-          alertType: 'error',
-        });
-      }
-    };
-
-    const transfer = async (transferAmt: number, fromAddress: string, toAddress: string) => {
-      // console.log('transfer', transferAmt);
-      // console.log('fromAccount', fromAddress);
-      // console.log('toAccount', toAddress);
-      // console.log('selUnit', selectUnit.value);
-
-      const toastInvalidAddress = () =>
-        store.dispatch('general/showAlertMsg', {
-          msg: 'balance.modals.invalidAddress',
-          alertType: 'error',
-        });
-
-      if (Number(transferAmt) === 0) {
+    const transfer = () => {
+      if (Number(transferAmt.value) === 0) {
         store.dispatch('general/showAlertMsg', {
           msg: 'The amount of token to be transmitted must not be zero',
           alertType: 'error',
@@ -257,75 +244,36 @@ export default defineComponent({
         return;
       }
 
-      if (isH160.value) {
-        const provider = typeof window !== 'undefined' && window.ethereum;
-        const web3 = new Web3(provider as any);
-
-        const buildEvmAddress = (toAddress: string) => {
-          // Memo: goes to EVM deposit
-          if (plasmUtils.isValidAddressPolkadotAddress(toAddress)) {
-            return plasmUtils.toEvmAddress(toAddress);
-          }
-          if (!web3.utils.isAddress(toAddress)) {
-            toastInvalidAddress();
-            return;
-          }
-          return toAddress;
-        };
-
-        const destinationAddress = buildEvmAddress(toAddress);
-
-        store.commit('general/setLoading', true);
-        try {
-          await web3.eth
-            .sendTransaction({
-              to: destinationAddress,
-              from: fromAddress,
-              value: web3.utils.toWei(String(transferAmt), 'ether'),
-            })
-            .once('confirmation', (confNumber, receipt) => {
-              const hash = receipt.transactionHash;
-              const msg = `Completed at transaction hash #${hash}`;
-              store.dispatch('general/showAlertMsg', { msg, alertType: 'success' });
-              store.commit('general/setLoading', false);
-              closeModal();
-            });
-        } catch (error) {
-          console.error(error);
-          store.commit('general/setLoading', false);
-        }
-
-        return;
-      }
-
-      const isValidSS58Address =
-        plasmUtils.isValidAddressPolkadotAddress(fromAddress) &&
-        plasmUtils.isValidAddressPolkadotAddress(toAddress);
-
-      if (!isValidSS58Address && !plasmUtils.isValidEvmAddress(toAddress)) {
-        toastInvalidAddress();
-        return;
-      }
-
-      const receivingAddress = plasmUtils.isValidEvmAddress(toAddress)
-        ? plasmUtils.toSS58Address(toAddress)
-        : toAddress;
-      // console.log('receivingAddress', receivingAddress);
-
-      const unit = getUnit(selectUnit.value);
-      const toAmt = plasmUtils.reduceDenomToBalance(transferAmt, unit, decimal.value);
-      // console.log('toAmt', toAmt.toString(10));
-
-      if (isEthWallet.value) {
-        await transferExtrinsic(toAmt, receivingAddress);
-      } else {
-        await transferLocal(toAmt, fromAddress, receivingAddress);
-      }
+      callTransfer(Number(transferAmt.value), fromAddress.value, toAddress.value);
     };
 
     const reloadAmount = (address: string): void => {
       store.commit('general/setCurrentAddress', address);
     };
+
+    watch(
+      [currentNetworkIdx],
+      async () => {
+        web3.value = await createWeb3Instance(currentNetworkIdx.value);
+      },
+      { immediate: true }
+    );
+
+    watchEffect(async () => {
+      const toAddressRef = toAddress.value;
+      const web3Ref = web3.value;
+      const apiRef = $api.value;
+      if (!apiRef || !toAddressRef) return;
+      if (plasmUtils.isValidAddressPolkadotAddress(toAddressRef)) {
+        const { data } = await apiRef.query.system.account(toAddressRef);
+        toAddressBalance.value = data.free;
+        return;
+      }
+      if (web3Ref && web3Ref.utils.isAddress(toAddressRef)) {
+        toAddressBalance.value = new BN(await web3Ref.eth.getBalance(toAddressRef));
+        return;
+      }
+    });
 
     return {
       closeModal,
@@ -335,13 +283,16 @@ export default defineComponent({
       formatBalance,
       fromAddress,
       toAddress,
-      openOption,
       transferAmt,
       defaultUnitToken,
       selectUnit,
       reloadAmount,
       Role,
       isEthWallet,
+      isChecked,
+      isH160,
+      isDarkTheme,
+      toAddressBalance,
       ...toRefs(props),
     };
   },
@@ -375,5 +326,85 @@ export default defineComponent({
 }
 .cancel:focus {
   @apply tw-outline-none tw-ring tw-ring-gray-100 dark:tw-ring-darkGray-600;
+}
+
+#checkb {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  background: rgba(40, 40, 40, 0.2);
+  color: black;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: none;
+  position: relative;
+  left: -5px;
+  top: -5px;
+}
+
+#checkb:checked {
+  background: rgba(40, 40, 40, 0.7);
+}
+
+.checkbox-container {
+  position: absolute;
+  display: inline-block;
+  margin: 20px;
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+}
+
+.form-check-input {
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  justify-items: center;
+  align-items: center;
+}
+
+.form-check-input > span {
+  padding: 0.5rem 0.25rem;
+}
+
+.form-check-input > input {
+  height: 24px;
+  width: 24px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -o-appearance: none;
+  appearance: none;
+  border-radius: 4px;
+  outline: none;
+  transition-duration: 0.3s;
+  cursor: pointer;
+  border: 1px solid rgba(174, 192, 212, 1);
+}
+
+.input-dark {
+  border: 1px solid white;
+}
+
+.form-check-input > input:checked {
+  border: 1px solid white;
+  background-color: transparent;
+}
+
+.form-check-input > input:checked + span::before {
+  content: '\2713';
+  display: block;
+  text-align: center;
+  color: white;
+  position: absolute;
+  font-weight: 800;
+  left: 5px;
+  top: 7px;
+}
+
+.text-not-sending {
+  font-size: 16px;
+  font-weight: 500;
+  padding-top: 3px;
 }
 </style>

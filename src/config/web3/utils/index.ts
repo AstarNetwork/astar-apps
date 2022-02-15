@@ -1,4 +1,4 @@
-import { TNetworkId, EVM } from './../index';
+import { TNetworkId, EVM } from '../index';
 import Web3 from 'web3';
 import { CHAIN_INFORMATION } from '..';
 import { endpointKey } from 'src/config/chainEndpoints';
@@ -56,4 +56,10 @@ export const createWeb3Instance = async (currentNetworkIdx: TNetworkId) => {
   if (!network.rpcUrls[0]) return;
 
   return new Web3(new Web3.providers.HttpProvider(network.rpcUrls[0]));
+};
+
+export const getDefaultEthProvider = () => {
+  const provider = typeof window !== 'undefined' && window.ethereum;
+  const web3 = new Web3(provider as any);
+  return web3;
 };
