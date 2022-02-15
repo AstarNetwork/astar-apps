@@ -29,7 +29,7 @@ export function useTvl(api: any) {
       const getTvl = async (): Promise<{ tvl: BN; tvlDefaultUnit: number }> => {
         const era = await apiRef.query.dappsStaking.currentEra();
         const result = await apiRef.query.dappsStaking.eraRewardsAndStakes(era);
-        const tvl = isEnableIndividualClaim()
+        const tvl = isEnableIndividualClaim
           ? result.unwrap().locked
           : result.unwrap().staked.valueOf();
         const tvlDefaultUnit = Number(ethers.utils.formatUnits(tvl.toString(), decimal.value));

@@ -130,7 +130,7 @@ export const getProviderIndex = (chain: ASTAR_CHAIN) => {
 };
 
 // Memo: remove this function whenever individual claim  is applied in all the networks
-export const isEnableIndividualClaim = () => {
+export const checkIsEnableIndividualClaim = () => {
   const networkIdx = Number(localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX));
   switch (networkIdx) {
     case endpointKey.ASTAR:
@@ -147,3 +147,5 @@ export const isEnableIndividualClaim = () => {
       return false;
   }
 };
+
+export const isEnableIndividualClaim = checkIsEnableIndividualClaim();

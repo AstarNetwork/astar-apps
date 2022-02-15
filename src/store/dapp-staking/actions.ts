@@ -1,3 +1,4 @@
+import { isEnableIndividualClaim } from './../../config/chainEndpoints';
 import { SubstrateAccount } from './../general/state';
 import { ApiPromise } from '@polkadot/api';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
@@ -587,18 +588,55 @@ const actions: ActionTree<State, StateInterface> = {
   async getStakeInfo({ dispatch }, parameters: StakingParameters): Promise<StakeInfo | undefined> {
     try {
       if (parameters.api) {
-        const stakeInfo = await getLatestStakePoint(parameters.api, parameters.dapp.address);
+        // Todo: fix type annotation
+        const stakeInfo = (await getLatestStakePoint(
+          parameters.api,
+          parameters.dapp.address
+        )) as any;
+
         if (stakeInfo) {
           let yourStake = {
             formatted: '',
             denomAmount: new BN('0'),
           };
+
+          if (isEnableIndividualClaim) {
+            // Todo: fix type annotation
+            const stakersInfo = (await parameters.api.query.dappsStaking.stakersInfo(
+              parameters.senderAddress,
+              {
+                Evm: parameters.dapp.address,
+              }
+            )) as any;
+
+            const balance =
+              stakersInfo.stakes.length && stakersInfo.stakes.slice(-1)[0].staked.toString();
+
+            if (balance) {
+              yourStake = {
+                formatted: balanceFormatter(balance),
+                denomAmount: new BN(balance.toString()),
+              };
+            }
+
+            return {
+              totalStake: balanceFormatter(stakeInfo.total.toString()),
+              yourStake,
+              claimedRewards: '0', // always returns 0 in the current pallet (stakeInfo.claimedRewards)
+              hasStake: !!yourStake.formatted,
+              stakersCount: stakeInfo.numberOfStakers.toString(),
+            } as StakeInfo;
+          }
+
           for (const [account, balance] of stakeInfo.stakers) {
             if (account.toString() === parameters.senderAddress) {
               yourStake = {
                 formatted: balanceFormatter(balance),
                 denomAmount: new BN(balance.toString()),
               };
+              // Memo: always returns 0
+              // const c = balanceFormatter(stakeInfo.claimedRewards);
+              // console.log('c', c);
               break;
             }
           }
