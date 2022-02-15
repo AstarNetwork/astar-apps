@@ -1,3 +1,4 @@
+import { LOCAL_STORAGE } from './localStorage';
 import { RegistryTypes } from '@polkadot/types/types';
 import * as typeDefs from 'src/config/api/polkadot/registry-types';
 
@@ -125,5 +126,24 @@ export const getProviderIndex = (chain: ASTAR_CHAIN) => {
       return endpointKey.SHIBUYA;
     default:
       return endpointKey.ASTAR;
+  }
+};
+
+// Memo: remove this function whenever individual claim  is applied in all the networks
+export const isEnableIndividualClaim = () => {
+  const networkIdx = Number(localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX));
+  switch (networkIdx) {
+    case endpointKey.ASTAR:
+      return false;
+    case endpointKey.SHIDEN:
+      return false;
+    case endpointKey.SHIBUYA:
+      return false;
+    case endpointKey.LOCAL:
+      return true;
+    case endpointKey.CUSTOM:
+      return false;
+    default:
+      return false;
   }
 };
