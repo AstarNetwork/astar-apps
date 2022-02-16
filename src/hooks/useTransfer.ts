@@ -81,27 +81,28 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
       }
 
       store.commit('general/setLoading', true);
-      try {
-        const web3 = getDefaultEthProvider();
-        sendNativeTokenTransaction(
-          web3,
-          fromAddress,
-          destinationAddress,
-          transferAmt,
-          (hash: string) => {
-            const msg = `Completed at transaction hash #${hash}`;
-            store.dispatch('general/showAlertMsg', { msg, alertType: 'success' });
-            store.commit('general/setLoading', false);
-            fn && fn();
+      const web3 = getDefaultEthProvider();
 
-            isTxSuccess.value = true;
-          }
-        );
-      } catch (error) {
-        console.error(error);
-        store.commit('general/setLoading', false);
+      sendNativeTokenTransaction(
+        web3,
+        fromAddress,
+        destinationAddress,
+        transferAmt,
+        (hash: string) => {
+          const msg = `Completed at transaction hash #${hash}`;
+          store.dispatch('general/showAlertMsg', { msg, alertType: 'success' });
+          store.commit('general/setLoading', false);
+          fn && fn();
+          isTxSuccess.value = true;
+        }
+      ).catch((error: any) => {
         isTxSuccess.value = false;
-      }
+        store.commit('general/setLoading', false);
+        store.dispatch('general/showAlertMsg', {
+          msg: error.message,
+          alertType: 'error',
+        });
+      });
     } else {
       const isValidSS58Address =
         isValidAddressPolkadotAddress(fromAddress) && isValidAddressPolkadotAddress(toAddress);
