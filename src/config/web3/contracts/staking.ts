@@ -34,25 +34,73 @@ export class Staking {
   };
 
   /* extrinsic calls */
-  callRegister = async (contractAddr: string) => {
-    return await this.ci.methods.register(contractAddr).send({ from: this.fromAddr });
+  callRegister = (contractAddr: string) => {
+    return new Promise((resolve, reject) => {
+      this.ci.methods
+        .register(contractAddr)
+        .send({ from: this.fromAddr })
+        .on('transactionHash', (hash: string) => {
+          resolve(hash);
+        })
+        .on('error', (error: any) => {
+          reject(error);
+        });
+    });
   };
 
-  callBondAndStake = async (contractAddr: string, amount: number) => {
-    return await this.ci.methods.bond_and_stake(contractAddr, amount).send({ from: this.fromAddr });
+  callBondAndStake = (contractAddr: string, amount: number) => {
+    return new Promise((resolve, reject) => {
+      this.ci.methods
+        .bond_and_stake(contractAddr, amount)
+        .send({ from: this.fromAddr })
+        .on('transactionHash', (hash: string) => {
+          resolve(hash);
+        })
+        .on('error', (error: any) => {
+          reject(error);
+        });
+    });
   };
 
-  callUnbondAndUnstake = async (contractAddr: string, amount: number) => {
-    return await this.ci.methods
-      .unbond_and_unstake(contractAddr, amount)
-      .send({ from: this.fromAddr });
+  callUnbondAndUnstake = (contractAddr: string, amount: number) => {
+    return new Promise((resolve, reject) => {
+      this.ci.methods
+        .unbond_and_unstake(contractAddr, amount)
+        .send({ from: this.fromAddr })
+        .on('transactionHash', (hash: string) => {
+          resolve(hash);
+        })
+        .on('error', (error: any) => {
+          reject(error);
+        });
+    });
   };
 
-  callWithdrawUnbonded = async () => {
-    return await this.ci.methods.withdraw_unbonded().send({ from: this.fromAddr });
+  callWithdrawUnbonded = () => {
+    return new Promise((resolve, reject) => {
+      this.ci.methods
+        .withdraw_unbonded()
+        .send({ from: this.fromAddr })
+        .on('transactionHash', (hash: string) => {
+          resolve(hash);
+        })
+        .on('error', (error: any) => {
+          reject(error);
+        });
+    });
   };
 
-  callClaim = async (contractAddr: string, amount: number) => {
-    return await this.ci.methods.claim(contractAddr, amount).send({ from: this.fromAddr });
+  callClaim = (contractAddr: string, amount: number) => {
+    return new Promise((resolve, reject) => {
+      this.ci.methods
+        .claim(contractAddr, amount)
+        .send({ from: this.fromAddr })
+        .on('transactionHash', (hash: string) => {
+          resolve(hash);
+        })
+        .on('error', (error: any) => {
+          reject(error);
+        });
+    });
   };
 }

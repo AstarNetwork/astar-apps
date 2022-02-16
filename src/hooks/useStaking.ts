@@ -92,5 +92,66 @@ export function useStaking(addressRef: Ref<string>) {
     return { result };
   };
 
-  return { getEraInfo, getStakingInfoByEra, getStakedAmount, getContractEraStake };
+  /* extrinsic calls */
+  const callRegister = async (contractAddr: string) => {
+    let txHash;
+    try {
+      txHash = await stakingRef.value.callRegister(contractAddr);
+    } catch (e) {
+      console.error(e);
+    }
+    return txHash;
+  };
+
+  const callBondAndStake = async (contractAddr: string, amount: number) => {
+    let txHash;
+    try {
+      txHash = await stakingRef.value.callBondAndStake(contractAddr, amount);
+    } catch (e) {
+      console.error(e);
+    }
+    return txHash;
+  };
+
+  const callUnbondAndUnstake = async (contractAddr: string, amount: number) => {
+    let txHash;
+    try {
+      txHash = await stakingRef.value.callUnbondAndUnstake(contractAddr, amount);
+    } catch (e) {
+      console.error(e);
+    }
+    return txHash;
+  };
+
+  const callWithdrawUnbonded = async () => {
+    let txHash;
+    try {
+      txHash = await stakingRef.value.callWithdrawUnbonded();
+    } catch (e) {
+      console.error(e);
+    }
+    return txHash;
+  };
+
+  const callClaim = async (contractAddr: string, amount: number) => {
+    let txHash;
+    try {
+      txHash = await stakingRef.value.callClaim(contractAddr, amount);
+    } catch (e) {
+      console.error(e);
+    }
+    return txHash;
+  };
+
+  return {
+    getEraInfo,
+    getStakingInfoByEra,
+    getStakedAmount,
+    getContractEraStake,
+    callRegister,
+    callBondAndStake,
+    callUnbondAndUnstake,
+    callWithdrawUnbonded,
+    callClaim,
+  };
 }
