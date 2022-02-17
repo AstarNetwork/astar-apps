@@ -611,7 +611,6 @@ const actions: ActionTree<State, StateInterface> = {
 
             const balance =
               stakersInfo.stakes.length && stakersInfo.stakes.slice(-1)[0].staked.toString();
-
             if (balance) {
               yourStake = {
                 formatted: balanceFormatter(balance),
@@ -622,7 +621,7 @@ const actions: ActionTree<State, StateInterface> = {
             return {
               totalStake: balanceFormatter(stakeInfo.total.toString()),
               yourStake,
-              claimedRewards: '0', // always returns 0 in the current pallet (stakeInfo.claimedRewards)
+              claimedRewards: '0', // always returns 0 in the below `getClaimInfo` function. (stakeInfo.claimedRewards)
               hasStake: !!yourStake.formatted,
               stakersCount: stakeInfo.numberOfStakers.toString(),
             } as StakeInfo;
@@ -634,9 +633,6 @@ const actions: ActionTree<State, StateInterface> = {
                 formatted: balanceFormatter(balance),
                 denomAmount: new BN(balance.toString()),
               };
-              // Memo: always returns 0
-              // const c = balanceFormatter(stakeInfo.claimedRewards);
-              // console.log('c', c);
               break;
             }
           }
@@ -666,6 +662,7 @@ const actions: ActionTree<State, StateInterface> = {
     try {
       const currentEraIndex = await parameters.api.query.dappsStaking.currentEra<EraIndex>();
       const currentEra = parseInt(currentEraIndex.toString());
+      // Memo: historyDepth is not existing in the upgraded pallet
       const historyDepth = parseInt(parameters.api.consts.dappsStaking.historyDepth.toString());
       const eraStakesMap = await getClaimableEraStakes(
         parameters.api,

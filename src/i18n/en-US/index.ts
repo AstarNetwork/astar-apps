@@ -181,6 +181,8 @@ export default {
     blocksUntilNextEra: 'Blocks until next era',
     stakerApy: 'APY: {value}%',
     stakerApr: 'APR: {value}%',
+    ttlPendingRewards: 'Your Pending Rewards',
+    claimAll: 'Claim All ({value})',
     modals: {
       alreadyClaimed: 'Already claimed:',
       contractRewards: 'Contract rewards:',
