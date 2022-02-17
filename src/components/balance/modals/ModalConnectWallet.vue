@@ -13,7 +13,7 @@
           "
         >
           <WalletOption
-            v-for="(wallet, index) in supportWallets"
+            v-for="(wallet, index) in wallets"
             :key="index"
             :wallet="wallet"
             :set-wallet-modal="setWalletModal"
@@ -27,8 +27,9 @@
 <script lang="ts">
 import WalletOption from 'src/components/balance/modals/wallet/WalletOption.vue';
 import Modal from 'src/components/common/Modal.vue';
-import { supportWallets } from 'src/config/wallets';
-import { defineComponent } from 'vue';
+import { supportWallets, Wallet } from 'src/config/wallets';
+import { isMobileDevice } from 'src/hooks/helper/wallet';
+import { defineComponent, watchEffect, ref } from 'vue';
 
 export default defineComponent({
   components: {
@@ -46,7 +47,19 @@ export default defineComponent({
     },
   },
   setup() {
-    return { supportWallets };
+    const wallets = ref<Wallet[]>(supportWallets);
+    watchEffect(() => {
+      wallets.value = supportWallets
+        .map((it) => {
+          if (isMobileDevice) {
+            return it;
+          } else {
+            return !it.isMobileOnly ? it : null;
+          }
+        })
+        .filter((it) => it !== null) as Wallet[];
+    });
+    return { wallets };
   },
 });
 </script>
