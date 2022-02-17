@@ -36,13 +36,12 @@ export const isMobileDevice =
   'ontouchstart' in document.documentElement && navigator.userAgent.match(/Mobi/);
 
 export const castMobileSource = (source: string) => {
-  if (!isMobileDevice) {
-    return source;
+  if (isMobileDevice) {
+    // Memo: source as 'polkadot-js' in mobile app
+    const polkadotJsWallets = [SupportWallet.Math, SupportWallet.Nova];
+    if (polkadotJsWallets.find((it) => it === source)) {
+      return SupportWallet.PolkadotJs;
+    }
   }
-
-  // Memo: source as 'polkadot-js' in mobile app
-  const polkadotJsWallets = [SupportWallet.Math, SupportWallet.Nova];
-  if (polkadotJsWallets.find((it) => it === source)) {
-    return SupportWallet.PolkadotJs;
-  }
+  return source;
 };
