@@ -92,53 +92,69 @@ export function useStaking(addressRef: Ref<string>) {
     return { result };
   };
 
+  const handleError = (e: any) => {
+    console.error(e);
+    store.dispatch('general/showAlertMsg', {
+      msg: `Transaction failed with error: ${e}`,
+      alertType: 'error',
+    });
+  };
+
   /* extrinsic calls */
   const callRegister = async (contractAddr: string) => {
     let txHash;
+    store.commit('general/setLoading', true);
     try {
       txHash = await stakingRef.value.callRegister(contractAddr);
+      store.dispatch('general/showAlertMsg', { txHash, alertType: 'success' });
     } catch (e) {
-      console.error(e);
+      handleError(e);
     }
+    store.commit('general/setLoading', false);
     return txHash;
   };
 
   const callBondAndStake = async (contractAddr: string, amount: number) => {
     let txHash;
+    store.commit('general/setLoading', true);
     try {
       txHash = await stakingRef.value.callBondAndStake(contractAddr, amount);
+      store.dispatch('general/showAlertMsg', { txHash, alertType: 'success' });
     } catch (e) {
-      console.error(e);
+      handleError(e);
     }
     return txHash;
   };
 
   const callUnbondAndUnstake = async (contractAddr: string, amount: number) => {
     let txHash;
+    store.commit('general/setLoading', true);
     try {
       txHash = await stakingRef.value.callUnbondAndUnstake(contractAddr, amount);
     } catch (e) {
-      console.error(e);
+      handleError(e);
     }
     return txHash;
   };
 
   const callWithdrawUnbonded = async () => {
     let txHash;
+    store.commit('general/setLoading', true);
     try {
       txHash = await stakingRef.value.callWithdrawUnbonded();
     } catch (e) {
-      console.error(e);
+      handleError(e);
     }
     return txHash;
   };
 
   const callClaim = async (contractAddr: string, amount: number) => {
     let txHash;
+    store.commit('general/setLoading', true);
     try {
       txHash = await stakingRef.value.callClaim(contractAddr, amount);
     } catch (e) {
-      console.error(e);
+      handleError(e);
     }
     return txHash;
   };

@@ -42,7 +42,7 @@ export class Staking {
         .on('transactionHash', (hash: string) => {
           resolve(hash);
         })
-        .on('error', (error: any) => {
+        .on('error', (error: Error) => {
           reject(error);
         });
     });
@@ -56,7 +56,7 @@ export class Staking {
         .on('transactionHash', (hash: string) => {
           resolve(hash);
         })
-        .on('error', (error: any) => {
+        .on('error', (error: Error) => {
           reject(error);
         });
     });
@@ -70,7 +70,7 @@ export class Staking {
         .on('transactionHash', (hash: string) => {
           resolve(hash);
         })
-        .on('error', (error: any) => {
+        .on('error', (error: Error) => {
           reject(error);
         });
     });
@@ -84,7 +84,7 @@ export class Staking {
         .on('transactionHash', (hash: string) => {
           resolve(hash);
         })
-        .on('error', (error: any) => {
+        .on('error', (error: Error) => {
           reject(error);
         });
     });
@@ -98,7 +98,7 @@ export class Staking {
         .on('transactionHash', (hash: string) => {
           resolve(hash);
         })
-        .on('error', (error: any) => {
+        .on('error', (error: Error) => {
           reject(error);
         });
     });
