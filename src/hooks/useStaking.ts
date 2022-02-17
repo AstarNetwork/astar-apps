@@ -13,29 +13,33 @@ export function useStaking(addressRef: Ref<string>) {
   const PRECOMPILED_ADDR = '0x0000000000000000000000000000000000005001';
 
   watch(
-    () => addressRef.value,
+    () => [$web3.value, addressRef.value],
     async () => {
-      const ci = contractInstance(
-        $web3.value!!,
-        dappsStakingContractAbi,
-        PRECOMPILED_ADDR,
-        addressRef.value
-      );
-      stakingRef.value = new Staking(ci);
+      if ($web3.value) {
+        const ci = contractInstance(
+          $web3.value,
+          dappsStakingContractAbi,
+          PRECOMPILED_ADDR,
+          addressRef.value
+        );
+        stakingRef.value = new Staking(ci);
+      }
     },
     { immediate: true }
   );
 
   const getEraInfo = () => {
     const result = ref();
-
     watch(
       () => stakingRef.value,
       async () => {
-        result.value = {
-          currentEra: await stakingRef.value.getCurrentEra(),
-          unbondingPeriod: await stakingRef.value.getUnbondingPeriod(),
-        };
+        if (stakingRef.value) {
+          result.value = {
+            currentEra: await stakingRef.value.getCurrentEra(),
+            unbondingPeriod: await stakingRef.value.getUnbondingPeriod(),
+          };
+          console.log('r', result.value);
+        }
       },
       { immediate: true }
     );
@@ -45,14 +49,15 @@ export function useStaking(addressRef: Ref<string>) {
 
   const getStakingInfoByEra = (era: number) => {
     const result = ref();
-
     watch(
       () => stakingRef.value,
       async () => {
-        result.value = {
-          eraReward: await stakingRef.value.getEraReward(era),
-          eraStaked: await stakingRef.value.getEraStaked(era),
-        };
+        if (stakingRef.value) {
+          result.value = {
+            eraReward: await stakingRef.value.getEraReward(era),
+            eraStaked: await stakingRef.value.getEraStaked(era),
+          };
+        }
       },
       { immediate: true }
     );
@@ -62,13 +67,14 @@ export function useStaking(addressRef: Ref<string>) {
 
   const getStakedAmount = (staker: string) => {
     const result = ref();
-
     watch(
       () => stakingRef.value,
       async () => {
-        result.value = {
-          stakedAmount: await stakingRef.value.getStakedAmount(staker),
-        };
+        if (stakingRef.value) {
+          result.value = {
+            stakedAmount: await stakingRef.value.getStakedAmount(staker),
+          };
+        }
       },
       { immediate: true }
     );
@@ -78,13 +84,14 @@ export function useStaking(addressRef: Ref<string>) {
 
   const getContractEraStake = (contract_id: string, era: number) => {
     const result = ref();
-
     watch(
       () => stakingRef.value,
       async () => {
-        result.value = {
-          stakedAmount: await stakingRef.value.getContractEraStake(contract_id, era),
-        };
+        if (stakingRef.value) {
+          result.value = {
+            stakedAmount: await stakingRef.value.getContractEraStake(contract_id, era),
+          };
+        }
       },
       { immediate: true }
     );
@@ -92,6 +99,7 @@ export function useStaking(addressRef: Ref<string>) {
     return { result };
   };
 
+  /* extrinsic calls */
   const handleError = (e: any) => {
     console.error(e);
     store.dispatch('general/showAlertMsg', {
@@ -100,7 +108,6 @@ export function useStaking(addressRef: Ref<string>) {
     });
   };
 
-  /* extrinsic calls */
   const callRegister = async (contractAddr: string) => {
     let txHash;
     store.commit('general/setLoading', true);
