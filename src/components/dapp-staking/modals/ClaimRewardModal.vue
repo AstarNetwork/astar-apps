@@ -22,7 +22,7 @@
         </span>
         <span class="tw-font-semibold tw-w-16 tw-text-rigth">{{ claimedRewards }}</span>
       </div>
-      <div class="tw-mt-2">
+      <div v-if="!isEnableIndividualClaim" class="tw-mt-2">
         <span class="tw-w-52 tw-inline-block"> {{ $t('dappStaking.modals.unclaimedEras') }}</span>
         <span class="tw-font-semibold tw-w-16 tw-text-rigth">{{
           claimInfo?.unclaimedEras?.length
@@ -51,6 +51,7 @@ import Button from 'src/components/common/Button.vue';
 import Avatar from 'src/components/common/Avatar.vue';
 import { StakingParameters, ClaimInfo } from 'src/store/dapp-staking/actions';
 import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
+import { isEnableIndividualClaim } from 'src/config/chainEndpoints';
 
 export default defineComponent({
   components: {
@@ -85,7 +86,9 @@ export default defineComponent({
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
 
     const canClaim = computed(() => {
-      return claimInfo?.value && claimInfo.value.unclaimedEras.length > 0;
+      return isEnableIndividualClaim
+        ? Number(claimInfo.value ? claimInfo.value.rewards.toString() : '0') > 0
+        : claimInfo?.value && claimInfo.value.unclaimedEras.length > 0;
     });
 
     onMounted(async () => {
@@ -93,6 +96,7 @@ export default defineComponent({
     });
 
     const getClaimInfo = async () => {
+      // Todo: resolve error
       claimInfo.value = await store.dispatch('dapps/getClaimInfo', {
         api: $api?.value,
         senderAddress,
@@ -125,6 +129,7 @@ export default defineComponent({
       closeModal,
       stepsCount,
       claim,
+      isEnableIndividualClaim,
       ...toRefs(props),
     };
   },

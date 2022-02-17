@@ -56,8 +56,8 @@ export default defineComponent({
     const numOfRewardableApp = ref<number>(0);
     const ttlPendingRewards = ref<string>('0');
 
-    // Todo: query the values
     watchEffect(() => {
+      // Todo: query the total pending rewards and number of rewardable dApps (Bobo)
       numOfRewardableApp.value = 2;
       ttlPendingRewards.value = '1000000000000000000000'; // 1K ASTR
     });
