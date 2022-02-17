@@ -1,12 +1,7 @@
 <template>
   <div class="flex items-center tw-justify-center">
     <!-- TODO: Links -->
-    <a
-      href="https://twitter.com/AstarNetwork"
-      target="_blank"
-      :class="classes.link"
-      rel="noreferrer"
-    >
+    <a :href="socialUrl.twitter" target="_blank" :class="classes.link" rel="noreferrer">
       <!-- original icon -->
       <icon-base :class="classes.iconBase" viewBox="0 0 512 512" icon-name="Twitter">
         <icon-twitter />
@@ -17,7 +12,7 @@
       </span>
     </a>
 
-    <a href="https://t.me/PlasmOfficial" target="_blank" :class="classes.link" rel="noreferrer">
+    <a :href="socialUrl.telegram" target="_blank" :class="classes.link" rel="noreferrer">
       <!-- original icon -->
       <icon-base :class="classes.iconBase" viewBox="0 0 448 512" icon-name="Telegram">
         <icon-telegram />
@@ -26,7 +21,7 @@
       <span :class="classes.tooltipText"> {{ $t('common.telegram') }} </span>
     </a>
 
-    <a href="https://discord.gg/Z3nC9U4" target="_blank" :class="classes.link" rel="noreferrer">
+    <a :href="socialUrl.discord" target="_blank" :class="classes.link" rel="noreferrer">
       <!-- original icon -->
       <icon-base :class="classes.iconBase" viewBox="0 0 448 512" icon-name="Discord">
         <icon-discord />
@@ -35,12 +30,7 @@
       <span :class="classes.tooltipText"> {{ $t('common.discord') }} </span>
     </a>
 
-    <a
-      href="https://github.com/PlasmNetwork/Plasm"
-      target="_blank"
-      :class="classes.link"
-      rel="noreferrer"
-    >
+    <a :href="socialUrl.github" target="_blank" :class="classes.link" rel="noreferrer">
       <!-- original icon -->
       <icon-base :class="classes.iconBase" viewBox="0 0 496 512" icon-name="GitHub">
         <icon-github />
@@ -50,7 +40,7 @@
       <span :class="classes.tooltipText"> {{ $t('common.github') }} </span>
     </a>
 
-    <a href="https://docs.astar.network/" target="_blank" :class="classes.link" rel="noreferrer">
+    <a :href="docsUrl.topPage" target="_blank" :class="classes.link" rel="noreferrer">
       <!-- Heroicon name: outline/document-text -->
       <icon-base
         :class="classes.iconBase"
@@ -75,6 +65,7 @@ import IconTelegram from '../icons/IconTelegram.vue';
 import IconDocument from '../icons/IconDocument.vue';
 import IconGithub from '../icons/IconGithub.vue';
 import IconDiscord from '../icons/IconDiscord.vue';
+import { socialUrl, docsUrl } from 'src/links';
 
 export default defineComponent({
   components: {
@@ -94,6 +85,8 @@ export default defineComponent({
     });
     return {
       classes,
+      socialUrl,
+      docsUrl,
     };
   },
 });
