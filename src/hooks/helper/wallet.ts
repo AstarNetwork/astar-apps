@@ -3,36 +3,10 @@ import { web3Enable } from '@polkadot/extension-dapp';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SubstrateAccount } from './../../store/general/state';
 
-export const sendBot = async (msg: string) => {
-  try {
-    const headers = {
-      'Content-Type': 'application/json',
-    };
-    const BOT_URL = 'https://astar-network-api.vercel.app/api/v1/sendBot';
-    const body = JSON.stringify({
-      msg,
-    });
-
-    await fetch(BOT_URL, {
-      method: 'POST',
-      body,
-      headers,
-    });
-    return;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-// [{"name":"polkadot-js","version":"0.10.1","originName":"AstarNetwork/astar-apps","isMathWallet":true,"accounts":{},"signer":{}}]
-
 export const getInjectedExtensions = async (): Promise<any[]> => {
   const extensions = await web3Enable('AstarNetwork/astar-apps');
   // Memo: obtain the extension name
-  console.log('extensions', extensions);
-  const extentionsMsg = JSON.stringify(extensions);
-  console.log('extentionsMsg', extentionsMsg);
-  await sendBot(extentionsMsg);
+  // console.log('extensions', extensions);
   return extensions;
 };
 
