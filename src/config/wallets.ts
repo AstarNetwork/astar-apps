@@ -36,7 +36,8 @@ export interface Wallet {
   source: SupportWallet;
   walletUrl: string;
   guideUrl: string;
-  isMobileOnly: boolean;
+  isSupportBrowserExtension: boolean;
+  isSupportMobileApp: boolean;
 }
 
 export const supportWalletObj = {
@@ -46,7 +47,8 @@ export const supportWalletObj = {
     source: SupportWallet.PolkadotJs,
     walletUrl: 'https://polkadot.js.org/extension/',
     guideUrl: 'https://www.youtube.com/watch?v=r-fAy7Ta_vY',
-    isMobileOnly: false,
+    isSupportBrowserExtension: true,
+    isSupportMobileApp: false,
   },
   [SupportWallet.MetaMask]: {
     img: require('/src/assets/img/metamask.png'),
@@ -54,7 +56,8 @@ export const supportWalletObj = {
     source: SupportWallet.MetaMask,
     walletUrl: 'https://metamask.io/',
     guideUrl: 'https://metamask.io/',
-    isMobileOnly: false,
+    isSupportBrowserExtension: true,
+    isSupportMobileApp: true,
   },
   [SupportWallet.Clover]: {
     img: require('/src/assets/img/logo-clover.png'),
@@ -62,7 +65,8 @@ export const supportWalletObj = {
     source: SupportWallet.Clover,
     walletUrl: 'https://clover.finance/',
     guideUrl: 'https://docs.clover.finance/quick-start/about-clover',
-    isMobileOnly: false,
+    isSupportBrowserExtension: true,
+    isSupportMobileApp: false,
   },
   [SupportWallet.Math]: {
     img: require('/src/assets/img/logo-mathwallet.png'),
@@ -70,7 +74,8 @@ export const supportWalletObj = {
     source: SupportWallet.Math,
     walletUrl: 'https://mathwallet.org/en-us/',
     guideUrl: 'https://blog.mathwallet.org/?p=540',
-    isMobileOnly: false,
+    isSupportBrowserExtension: true,
+    isSupportMobileApp: true,
   },
   [SupportWallet.Nova]: {
     img: require('/src/assets/img/logo-nova.png'),
@@ -78,7 +83,8 @@ export const supportWalletObj = {
     source: SupportWallet.Nova,
     walletUrl: 'https://novawallet.io/',
     guideUrl: 'https://novawallet.io/',
-    isMobileOnly: true,
+    isSupportBrowserExtension: false,
+    isSupportMobileApp: true,
   },
 };
 

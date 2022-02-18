@@ -51,10 +51,11 @@ export default defineComponent({
     watchEffect(() => {
       wallets.value = supportWallets
         .map((it) => {
+          const { isSupportMobileApp, isSupportBrowserExtension } = it;
           if (isMobileDevice) {
-            return it;
+            return isSupportMobileApp ? it : null;
           } else {
-            return !it.isMobileOnly ? it : null;
+            return isSupportBrowserExtension ? it : null;
           }
         })
         .filter((it) => it !== null) as Wallet[];
