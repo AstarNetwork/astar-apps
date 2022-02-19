@@ -2,16 +2,11 @@ import { SupportWallet } from 'src/config/wallets';
 import { web3Enable } from '@polkadot/extension-dapp';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SubstrateAccount } from './../../store/general/state';
-import { getWallets } from '@talisman-connect/wallets';
 
 export const getInjectedExtensions = async (): Promise<any[]> => {
-  // const supportedWallets = getWallets();
-  // console.log('supportedWallets', supportedWallets);
-  // const tasliman = supportedWallets[0];
-  // await tasliman.enable('AstarNetwork/astar-apps');
   const extensions = await web3Enable('AstarNetwork/astar-apps');
   // Memo: obtain the extension name
-  console.log('extensions', extensions);
+  // console.log('extensions', extensions);
   return extensions;
 };
 

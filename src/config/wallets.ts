@@ -10,6 +10,7 @@ export enum SupportWallet {
   Clover = 'clover',
   Math = 'mathwallet',
   Nova = 'nova',
+  Talisman = 'talisman',
 }
 
 export const WalletModalOption = {
@@ -21,6 +22,7 @@ export const WalletModalOption = {
   MetaMask: SupportWallet.MetaMask,
   Math: SupportWallet.Math,
   Nova: SupportWallet.Nova,
+  Talisman: SupportWallet.Talisman,
 };
 
 export const SubstrateWallets = [
@@ -28,6 +30,7 @@ export const SubstrateWallets = [
   SupportWallet.Clover,
   SupportWallet.Math,
   SupportWallet.Nova,
+  SupportWallet.Talisman,
 ];
 
 export interface Wallet {
@@ -65,6 +68,15 @@ export const supportWalletObj = {
     source: SupportWallet.Clover,
     walletUrl: 'https://clover.finance/',
     guideUrl: 'https://docs.clover.finance/quick-start/about-clover',
+    isSupportBrowserExtension: true,
+    isSupportMobileApp: false,
+  },
+  [SupportWallet.Talisman]: {
+    img: require('/src/assets/img/logo-talisman.svg'),
+    name: 'Talisman',
+    source: SupportWallet.Talisman,
+    walletUrl: 'https://app.talisman.xyz/',
+    guideUrl: 'https://app.talisman.xyz/',
     isSupportBrowserExtension: true,
     isSupportMobileApp: false,
   },

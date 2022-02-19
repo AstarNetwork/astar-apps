@@ -37,7 +37,6 @@
     "@polkadot/wasm-crypto": "^4.2.1",
     "@quasar/app": "^3.2.3",
     "@quasar/extras": "^1.12.0",
-    "@talisman-connect/wallets": "^1.1.0",
     "animate.css": "^4.1.1",
     "apr-tools": "^0.1.3",
     "axios": "^0.24.0",
