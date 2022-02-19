@@ -57,6 +57,7 @@ import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { computed, defineComponent } from 'vue';
 import Tab from 'components/common/Tab.vue';
+import { useAccount, useStaking } from 'src/hooks';
 export default defineComponent({
   components: { Tab },
   setup() {
@@ -68,6 +69,11 @@ export default defineComponent({
       const amount = store.getters['dapps/getMinimumStakingAmount'];
       return formatUnitAmount(amount);
     });
+
+    // for testing
+    const { currentAccount } = useAccount();
+    const { getEraInfo } = useStaking(currentAccount);
+    const { result } = getEraInfo();
 
     return {
       maxNumberOfStakersPerContract,
