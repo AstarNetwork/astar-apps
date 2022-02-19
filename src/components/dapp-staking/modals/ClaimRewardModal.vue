@@ -33,7 +33,9 @@
       </div>
       <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row">
         <Button type="button" :primary="false" @click="closeModal">{{ $t('close') }}</Button>
-        <Button :disabled="!canClaim" class="tw-tooltip" @click="claim()">
+        <!-- <Button :disabled="!canClaim" class="tw-tooltip" @click="claim()"> -->
+        <!-- Todo: add the :disabled -->
+        <Button class="tw-tooltip" @click="claim()">
           {{ $t('dappStaking.claim') }}
         </Button>
       </div>
@@ -45,7 +47,7 @@
 import { defineComponent, toRefs, onMounted, ref, computed } from 'vue';
 import { $api } from 'boot/api';
 import { useStore } from 'src/store';
-import { useChainMetadata } from 'src/hooks';
+import { useChainMetadata, useIndividualClaim } from 'src/hooks';
 import Modal from 'src/components/common/Modal.vue';
 import Button from 'src/components/common/Button.vue';
 import Avatar from 'src/components/common/Avatar.vue';
@@ -78,6 +80,7 @@ export default defineComponent({
     const maxErasPerClaim = 15;
     const store = useStore();
     const { decimal } = useChainMetadata();
+    const { individualClaim } = useIndividualClaim(props.dapp.address);
     const claimInfo = ref<ClaimInfo>();
     const pendingRewards = ref<string>('');
     const claimedRewards = ref<string>('');
@@ -116,9 +119,13 @@ export default defineComponent({
     };
 
     const claim = async () => {
-      const erasToClaim = claimInfo.value?.unclaimedEras.sort().slice(0, maxErasPerClaim);
-      console.log('Eras to claim in batch', erasToClaim);
-      await props.claimAction(erasToClaim, getClaimInfo);
+      if (isEnableIndividualClaim) {
+        await individualClaim();
+      } else {
+        const erasToClaim = claimInfo.value?.unclaimedEras.sort().slice(0, maxErasPerClaim);
+        console.log('Eras to claim in batch', erasToClaim);
+        await props.claimAction(erasToClaim, getClaimInfo);
+      }
     };
 
     return {
