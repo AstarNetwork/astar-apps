@@ -67,7 +67,6 @@
       :title="modalTitle"
       :min-staking="formattedMinStake"
       :stake-amount="stakeInfo?.yourStake.denomAmount"
-      :account-data="accountData"
     />
 
     <ClaimRewardModal
@@ -106,10 +105,6 @@ export default defineComponent({
   },
   props: {
     dapp: {
-      type: Object,
-      required: true,
-    },
-    accountData: {
       type: Object,
       required: true,
     },

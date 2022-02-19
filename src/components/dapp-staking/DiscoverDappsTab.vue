@@ -63,7 +63,6 @@
         :key="index"
         :dapp="dapp"
         :staker-max-number="maxNumberOfStakersPerContract"
-        :account-data="accountData"
       />
     </div>
 
@@ -83,7 +82,7 @@ import ModalRegisterDapp from 'components/dapp-staking/modals/ModalRegisterDapp.
 import Dapp from 'src/components/dapp-staking/Dapp.vue';
 import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
-import { useCurrentEra, useApr, useAccount, useBalance } from 'src/hooks';
+import { useCurrentEra, useApr } from 'src/hooks';
 import { DappItem } from 'src/store/dapp-staking/state';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
 import TVL from './statistics/TVL.vue';
@@ -114,8 +113,6 @@ export default defineComponent({
     useMeta({ title: 'Discover dApps' });
     const { stakerApr } = useApr();
     const { progress, blocksUntilNextEra, era } = useCurrentEra();
-    const { currentAccount } = useAccount();
-    const { accountData } = useBalance(currentAccount);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
     const maxNumberOfStakersPerContract = computed(
@@ -153,7 +150,6 @@ export default defineComponent({
       era,
       stakerApr,
       fasSeedling,
-      accountData,
     };
   },
 });

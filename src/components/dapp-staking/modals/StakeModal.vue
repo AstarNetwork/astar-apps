@@ -65,6 +65,7 @@ import { Role } from 'src/components/balance/modals/ModalTransferAmount.vue';
 import Avatar from 'src/components/common/Avatar.vue';
 import Button from 'src/components/common/Button.vue';
 import InputAmount from 'src/components/common/InputAmount.vue';
+import { useAccount, useBalance } from 'src/hooks';
 import { useChainMetadata, useUnbondWithdraw } from 'src/hooks';
 import { $api } from 'boot/api';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
@@ -84,10 +85,6 @@ export default defineComponent({
   },
   props: {
     dapp: {
-      type: Object,
-      required: true,
-    },
-    accountData: {
       type: Object,
       required: true,
     },
@@ -117,6 +114,9 @@ export default defineComponent({
     const store = useStore();
     const { decimal, defaultUnitToken } = useChainMetadata();
 
+    const { currentAccount } = useAccount();
+    const { accountData } = useBalance(currentAccount);
+
     const data = ref<StakeModel>({
       address: '',
       amount: props.actionName === StakeAction.Stake ? Number(props.minStaking) : 0,
@@ -134,13 +134,13 @@ export default defineComponent({
     });
 
     const canExecuteAction = computed(() => {
-      if (data.value) {
+      if (data.value && accountData.value) {
         const amount = getAmount(data.value.amount, data.value.unit);
-        const useableStakeAmount = props.accountData.getUsableFeeBalance();
+        const usableStakeAmount = accountData.value.getUsableFeeBalance();
 
         let canExecute =
           props.actionName === StakeAction.Stake
-            ? amount.lt(useableStakeAmount) && amount.gtn(0)
+            ? amount.lt(usableStakeAmount) && amount.gtn(0)
             : amount.lte(props.stakeAmount) && amount.gtn(0);
 
         if (canUnbondWithdraw.value) {
