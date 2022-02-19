@@ -20,6 +20,7 @@ import { ActionTree, Dispatch } from 'vuex';
 import { StateInterface } from '../index';
 import { getInjector } from './../../hooks/helper/wallet';
 import { DappItem, DappStateInterface as State, NewDappItem } from './state';
+import { getIndividualClaimStakingInfo } from './calculation';
 
 let collectionKey: string;
 
@@ -657,105 +658,111 @@ const actions: ActionTree<State, StateInterface> = {
   async getClaimInfo({ dispatch, commit }, parameters: StakingParameters): Promise<ClaimInfo> {
     let accumulatedReward = new BN(0);
     let result: ClaimInfo = {} as ClaimInfo;
+    // await getIndividualClaimReward(parameters.senderAddress, parameters.dapp.address);
     commit('general/setLoading', true, { root: true });
 
     try {
-      const currentEraIndex = await parameters.api.query.dappsStaking.currentEra<EraIndex>();
-      const currentEra = parseInt(currentEraIndex.toString());
-      // Memo: historyDepth is not existing in the upgraded pallet
-      const historyDepth = parseInt(parameters.api.consts.dappsStaking.historyDepth.toString());
-      const eraStakesMap = await getClaimableEraStakes(
-        parameters.api,
-        parameters.dapp.address,
-        currentEra,
-        historyDepth
-      );
-      const lowestClaimableEra = getLowestClaimableEra(parameters.api, currentEra, eraStakesMap);
-      const bonusEraDuration = parseInt(
-        await parameters.api.consts.dappsStaking.bonusEraDuration.toString()
-      );
-      console.log('lowest', lowestClaimableEra);
+      if (isEnableIndividualClaim) {
+        result = await getIndividualClaimStakingInfo(
+          parameters.senderAddress,
+          parameters.dapp.address
+        );
+      } else {
+        const currentEraIndex = await parameters.api.query.dappsStaking.currentEra<EraIndex>();
+        const currentEra = parseInt(currentEraIndex.toString());
+        // Memo: historyDepth is not existing in the upgraded pallet
+        const historyDepth = parseInt(parameters.api.consts.dappsStaking.historyDepth.toString());
+        const eraStakesMap = await getClaimableEraStakes(
+          parameters.api,
+          parameters.dapp.address,
+          currentEra,
+          historyDepth
+        );
+        const lowestClaimableEra = getLowestClaimableEra(parameters.api, currentEra, eraStakesMap);
+        const bonusEraDuration = parseInt(
+          await parameters.api.consts.dappsStaking.bonusEraDuration.toString()
+        );
+        console.log('lowest', lowestClaimableEra);
 
-      // Find a latest stake
-      let currentEraStakes: EraStakingPoints | null = null;
-      for (let era = currentEra - 1; era >= 1; era--) {
-        const eraStakes = eraStakesMap.get(era);
+        // Find a latest stake
+        let currentEraStakes: EraStakingPoints | null = null;
+        for (let era = currentEra - 1; era >= 1; era--) {
+          const eraStakes = eraStakesMap.get(era);
 
-        if (eraStakes?.isSome) {
-          currentEraStakes = eraStakes.unwrap();
-          break;
-        }
-      }
-
-      // Get rewards and stakes for all eras.
-      const eraRewardsAndStakeMap = new Map();
-      const entries =
-        await parameters.api.query.dappsStaking.eraRewardsAndStakes.entries<EraRewardAndStake>();
-      entries.forEach(([key, stake]) => {
-        eraRewardsAndStakeMap.set(parseInt(key.args.map((k) => k.toString())[0]), stake);
-      });
-
-      // calculate reward
-      result.unclaimedEras = getErasToClaim2(eraStakesMap);
-      for (let era of result.unclaimedEras) {
-        const eraStakes: EraStakingPoints | undefined = eraStakesMap.get(era)?.unwrapOr(undefined);
-        if (eraStakes) {
-          currentEraStakes = eraStakes;
-
-          // Reward for the era is already claimed.
-          if (!eraStakes.claimedRewards.eq(new BN(0))) {
-            continue;
+          if (eraStakes?.isSome) {
+            currentEraStakes = eraStakes.unwrap();
+            break;
           }
         }
 
-        if (currentEraStakes) {
-          // TODO check why eraStakes.stakers.get is not working
-          for (const [account, balance] of currentEraStakes.stakers) {
-            if (account.toString() === parameters.senderAddress) {
-              let eraRewardsAndStakes: EraRewardAndStake = eraRewardsAndStakeMap.get(era).unwrap();
-              if (eraRewardsAndStakes) {
-                // temp to avoid staked = 0 in first blocks on test env
-                if (eraRewardsAndStakes.staked.eq(new BN(0))) {
-                  break;
-                }
+        // Get rewards and stakes for all eras.
+        const eraRewardsAndStakeMap = new Map();
+        const entries =
+          await parameters.api.query.dappsStaking.eraRewardsAndStakes.entries<EraRewardAndStake>();
+        entries.forEach(([key, stake]) => {
+          eraRewardsAndStakeMap.set(parseInt(key.args.map((k) => k.toString())[0]), stake);
+        });
 
-                // console.log(
-                //   'era reward',
-                //   era,
-                //   eraRewardsAndStakes.rewards.toHuman(),
-                //   eraRewardsAndStakes.staked.toHuman()
-                // );
+        // calculate reward
+        result.unclaimedEras = getErasToClaim2(eraStakesMap);
+        for (let era of result.unclaimedEras) {
+          const eraStakes: EraStakingPoints | undefined = eraStakesMap
+            .get(era)
+            ?.unwrapOr(undefined);
+          if (eraStakes) {
+            currentEraStakes = eraStakes;
 
-                let eraReward = balance
-                  .mul(eraRewardsAndStakes.rewards)
-                  .divn(5) // 20% reward percentage
-                  .div(eraRewardsAndStakes.staked);
-
-                accumulatedReward = accumulatedReward.add(eraReward);
-              } else {
-                console.warn('No EraRewardAndStake for era ', era);
-              }
-
-              break;
+            // Reward for the era is already claimed.
+            if (!eraStakes.claimedRewards.eq(new BN(0))) {
+              continue;
             }
           }
-        } else {
-          console.warn('No stakes found');
+
+          if (currentEraStakes) {
+            // TODO check why eraStakes.stakers.get is not working
+            for (const [account, balance] of currentEraStakes.stakers) {
+              if (account.toString() === parameters.senderAddress) {
+                let eraRewardsAndStakes: EraRewardAndStake = eraRewardsAndStakeMap
+                  .get(era)
+                  .unwrap();
+                if (eraRewardsAndStakes) {
+                  // temp to avoid staked = 0 in first blocks on test env
+                  if (eraRewardsAndStakes.staked.eq(new BN(0))) {
+                    break;
+                  }
+
+                  let eraReward = balance
+                    .mul(eraRewardsAndStakes.rewards)
+                    .divn(5) // 20% reward percentage
+                    .div(eraRewardsAndStakes.staked);
+
+                  accumulatedReward = accumulatedReward.add(eraReward);
+                } else {
+                  console.warn('No EraRewardAndStake for era ', era);
+                }
+
+                break;
+              }
+            }
+          } else {
+            console.warn('No stakes found');
+          }
         }
+
+        // Commented out becasue the calculation is not feasible in reasonable time
+        // on Shibuya, and soon the same will happen on Shiden (as number of era increases).
+
+        // result.estimatedClaimedRewards = getEstimatedClaimedAwards(
+        //   currentEra,
+        //   eraStakesMap,
+        //   eraRewardsAndStakeMap,
+        //   parameters.api,
+        //   parameters.senderAddress,
+        //   bonusEraDuration
+        // );
+        result.estimatedClaimedRewards = parameters.api.createType('Balance', 0);
+        result.rewards = parameters.api.createType('Balance', accumulatedReward);
       }
-
-      // Commented out becasue the calculation is not feasible in reasonable time
-      // on Shibuya, and soon the same will happen on Shiden (as number of era increases).
-
-      // result.estimatedClaimedRewards = getEstimatedClaimedAwards(
-      //   currentEra,
-      //   eraStakesMap,
-      //   eraRewardsAndStakeMap,
-      //   parameters.api,
-      //   parameters.senderAddress,
-      //   bonusEraDuration
-      // );
-      result.estimatedClaimedRewards = parameters.api.createType('Balance', 0);
     } catch (err) {
       const error = err as unknown as Error;
       console.error(error);
@@ -763,9 +770,6 @@ const actions: ActionTree<State, StateInterface> = {
     }
 
     commit('general/setLoading', false, { root: true });
-
-    result.rewards = parameters.api.createType('Balance', accumulatedReward);
-    // console.log('calculated reward', result.rewards.toHuman());
     return result;
   },
 
@@ -895,8 +899,8 @@ export interface StakeInfo {
 }
 
 export interface ClaimInfo {
-  rewards: Balance;
-  estimatedClaimedRewards: Balance;
+  rewards: BN;
+  estimatedClaimedRewards: BN;
   unclaimedEras: number[];
 }
 
@@ -912,6 +916,7 @@ export interface EraStakingPoints extends Struct {
 export interface EraRewardAndStake extends Struct {
   readonly rewards: Balance;
   readonly staked: Balance;
+  readonly locked: Balance;
 }
 
 export default actions;
