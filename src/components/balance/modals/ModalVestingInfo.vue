@@ -1,7 +1,7 @@
 <template>
   <Modal title="Vesting info" @click="closeModal">
     <template #content>
-      <div class="tw-w-96">
+      <div class="md:tw-w-96">
         <div class="tw-flex tw-space-x-2 tw-text-xl">
           <b><format-balance :balance="accountData.vestedClaimable" /></b>
           <span>{{ $t('balance.modals.availableToUnlock') }}</span>

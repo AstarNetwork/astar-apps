@@ -8,28 +8,44 @@
       tw-py-4 tw-gap-y-2
     "
   >
-    <Address :format="AddressFormat.SS58" />
-    <div class="tw-px-32">
-      <div class="tw-border-b tw-border-gray-100 dark:tw-border-darkGray-600" />
+    <Address />
+    <div
+      class="
+        tw-border tw-border-gray-300
+        dark:tw-border-white
+        tw-rounded-md tw-p-2 tw-m-3 tw-mb-2 tw-text-blue-900
+        dark:tw-text-darkGray-100
+      "
+    >
+      <p class="tw-font-bold">{{ $t('balance.transferFromMetamask', { token: tokenSymbol }) }}</p>
+      <p>{{ $t('balance.howToSendFromMetamask', { token: tokenSymbol }) }}</p>
+      <a
+        class="tw-underline"
+        target="_blank"
+        rel="noopener noreferrer"
+        :href="docsUrl.evmDeposit"
+        >{{ $t('balance.readTheTutorial') }}</a
+      >
     </div>
-    <Address :format="AddressFormat.H160" />
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { useStore } from 'src/store';
+import { computed, defineComponent } from 'vue';
 import Address from './Address.vue';
-
-export enum AddressFormat {
-  SS58 = 'SS58',
-  H160 = 'H160',
-}
+import { docsUrl } from 'src/links';
 
 export default defineComponent({
   components: {
     Address,
   },
   setup() {
-    return { AddressFormat };
+    const store = useStore();
+    const tokenSymbol = computed(() => {
+      const chainInfo = store.getters['general/chainInfo'];
+      return chainInfo && chainInfo.tokenSymbol;
+    });
+    return { tokenSymbol, docsUrl };
   },
 });
 </script>

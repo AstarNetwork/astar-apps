@@ -34,7 +34,7 @@
             >{{ $t('balance.modals.sigExtrinsicBlocked') }}</q-banner
           >
           <q-banner
-            v-if="isEthWallet"
+            v-if="isH160ToSs58"
             dense
             rounded
             class="bg-orange text-white tw-mb-4 q-pa-xs"
@@ -118,7 +118,7 @@
           </div>
         </div>
         <div
-          v-if="isH160"
+          v-if="isH160ToSs58"
           class="tw-flex tw-items-center tw-mt-6 tw-p-3 tw-pb-4 tw-rounded-md tw-border"
           :class="[
             isChecked && 'tw-bg-blue-500 dark:tw-bg-blue-800',
@@ -143,7 +143,7 @@
         <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row-reverse">
           <button
             type="button"
-            :disabled="!canExecuteTransaction || (isH160 && !isChecked)"
+            :disabled="!canExecuteTransaction || (isH160ToSs58 && !isChecked)"
             class="confirm"
             @click="transfer"
           >
@@ -198,6 +198,7 @@ export default defineComponent({
       emit('update:is-open', false);
     };
 
+    const isH160ToSs58 = ref<boolean>(false);
     const isChecked = ref<boolean>(false);
     const store = useStore();
     const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
@@ -263,6 +264,13 @@ export default defineComponent({
       }
     });
 
+    watchEffect(() => {
+      if (isH160.value) {
+        const isSendToSs58 = plasmUtils.isValidAddressPolkadotAddress(toAddress.value);
+        isH160ToSs58.value = isSendToSs58;
+      }
+    });
+
     return {
       closeModal,
       isCustomSigBlocked,
@@ -278,9 +286,9 @@ export default defineComponent({
       Role,
       isEthWallet,
       isChecked,
-      isH160,
       isDarkTheme,
       toAddressBalance,
+      isH160ToSs58,
       ...toRefs(props),
     };
   },

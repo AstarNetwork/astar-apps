@@ -230,7 +230,7 @@ export default defineComponent({
 .input-h160 {
   width: 14rem;
   @media (min-width: 768px) {
-    width: 24rem;
+    width: 23rem;
   }
 }
 </style>
