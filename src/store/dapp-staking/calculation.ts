@@ -2,14 +2,15 @@ import { bool, Option, Struct, u32, Vec } from '@polkadot/types';
 import { Balance } from '@polkadot/types/interfaces';
 import BN from 'bn.js';
 import { $api } from 'boot/api';
+import { storeKey } from 'vuex';
 import { ClaimInfo, EraRewardAndStake } from './actions';
 
 export const getAddressEnum = (address: string) => ({ Evm: address });
 
 /**
  * Gets claimable eras from first staked era to next staked era or current era.
- * e.g. if of stakerInfo [EraStake(1000, 5), EraStake(2000, 7), EraStake(500, 15), EraStake(0, 17)]
- * function will return [EraStake(1000, 5), EraStake(1000, 6)]
+ * e.g. if stakerInfo is [EraStake(1000, 5), EraStake(2000, 7), EraStake(500, 9)] and current era is 10
+ * function will return [EraStake(1000, 5), EraStake(1000, 6), EraStake(2000, 7), EraStake(2000, 8), EraStake(500, 9)]
  * @param stakerInfo Staker info structure
  * @param currentEra Current staking era
  * @returns Claimable eras arrat
@@ -20,27 +21,33 @@ const getClaimableEras = async (
 ): Promise<EraStake[]> => {
   const result: EraStake[] = [];
 
+  if (!stakerInfo.stakes || stakerInfo.stakes.length == 0) {
+    return result;
+  }
+
   // Sort stakerInfo from lowest to highest era.
   const sortedStakes = stakerInfo.stakes.sort((stake1, stake2) => {
     return stake1.era - stake2.era;
   });
 
-  const firstStake = sortedStakes[0];
-  let eraTo = 0;
-
-  if (sortedStakes.length == 1) {
-    // calculate until current era
-    eraTo = currentEra;
-  } else {
-    // calculate until next staked era
-    eraTo = sortedStakes[1].era;
+  // add current era so we can loop through all stakes
+  const lastStake = stakerInfo.stakes[stakerInfo.stakes.length - 1];
+  if (Number(lastStake.era) !== currentEra) {
+    stakerInfo.stakes.push({
+      staked: lastStake.staked, // staked amount not important for this item since it will not be taken into account
+      era: currentEra,
+    } as EraStake);
   }
 
-  for (let era = Number(firstStake.era); era < eraTo; era++) {
-    result.push({
-      staked: firstStake.staked,
-      era,
-    } as EraStake);
+  // Biuild result array
+  for (let i = 0; i < stakerInfo.stakes.length - 1; i++) {
+    let currentStake = stakerInfo.stakes[i];
+    for (let era = currentStake.era; era < stakerInfo.stakes[i + 1].era; era++) {
+      result.push({
+        staked: currentStake.staked,
+        era: Number(era),
+      } as EraStake);
+    }
   }
 
   return result;
@@ -66,7 +73,7 @@ export const getIndividualClaimReward = async (
 
   // Developer percentage string has format like 80.00%, get whole part as number.
   const developerRewardPercentage = parseInt(
-    ((await $api.value?.query.dappsStaking.developerRewardPercentage) || '0.0')
+    ((await $api.value?.consts.dappsStaking.developerRewardPercentage.toHuman()) || '0.0')
       .toString()
       .split('.')[0]
   );
@@ -78,7 +85,6 @@ export const getIndividualClaimReward = async (
     const claimableEras = await getClaimableEras(stakerInfo, currentEra);
 
     if (claimableEras.length > 0) {
-      // erasToClaim = currentEra - claimableEras[claimableEras.length - 1].era;
       const firstUnclaimedEra = claimableEras[claimableEras.length - 1].era + 1;
       erasToClaim = [...Array(currentEra - firstUnclaimedEra).keys()].map(
         (x) => x + firstUnclaimedEra
@@ -96,7 +102,7 @@ export const getIndividualClaimReward = async (
             await $api.value?.query.dappsStaking.eraRewardsAndStakes<Option<EraRewardAndStake>>(
               claimableEra.era
             )
-          )?.unwrap();
+          )?.unwrapOrDefault();
 
           if (eraInfo) {
             const eraReward = claimableEra.staked
