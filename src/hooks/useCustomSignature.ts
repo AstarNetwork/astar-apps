@@ -1,7 +1,7 @@
-import { computed, ref } from 'vue';
+import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
-
 import { useStore } from 'src/store';
+import { computed, ref } from 'vue';
 import { useExtrinsicCall } from './custom-signature/useExtrinsicCall';
 
 export function useCustomSignature(fn?: () => void) {
@@ -47,6 +47,10 @@ export function useCustomSignature(fn?: () => void) {
     onTransactionError: handleTransactionError,
   });
 
+  const handleCustomExtrinsic = async (method: SubmittableExtrinsic<'promise'>) => {
+    await callFunc(method);
+  };
+
   const dispatchError = (msg: string) => {
     console.error(msg);
     store.dispatch('general/showAlertMsg', {
@@ -62,5 +66,6 @@ export function useCustomSignature(fn?: () => void) {
     handleResult,
     handleTransactionError,
     customMsg,
+    handleCustomExtrinsic,
   };
 }

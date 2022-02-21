@@ -121,6 +121,7 @@ export default defineComponent({
     const claim = async () => {
       if (isEnableIndividualClaim) {
         await individualClaim();
+        closeModal();
       } else {
         const erasToClaim = claimInfo.value?.unclaimedEras.sort().slice(0, maxErasPerClaim);
         console.log('Eras to claim in batch', erasToClaim);
