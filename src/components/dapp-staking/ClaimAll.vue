@@ -11,7 +11,7 @@
       <FormatBalance :balance="new BN(ttlPendingRewards)" />
     </div>
     <Button
-      :disabled="numOfRewardableApp === 0"
+      :disabled="numOfRewardableApp === 0 || isLoading"
       class="
         sm:tw-w-40
         tw-justify-center
@@ -24,12 +24,14 @@
         tw-text-white
         tw-bg-indigo-500
       "
+      @click="claimAll"
     >
       <icon-base class="tw-w-5 tw-h-5 tw-text-white tw--ml-2 tw-mr-2" icon-name="sack-dollar">
         <q-icon :name="fasMoneyCheckAlt" color="green" />
       </icon-base>
       <div>
-        {{ $t('dappStaking.claimAll', { value: numOfRewardableApp }) }}
+        {{ $t('dappStaking.claimAll') }}
+        <!-- {{ $t('dappStaking.claimAll', { value: numOfRewardableApp }) }} -->
       </div>
     </Button>
   </div>
@@ -38,7 +40,7 @@
 <script lang="ts">
 import { defineComponent, ref, watchEffect } from 'vue';
 import FormatBalance from 'components/balance/FormatBalance.vue';
-import { useAccount } from 'src/hooks';
+import { useAccount, useClaimAll } from 'src/hooks';
 import IconBase from 'components/icons/IconBase.vue';
 import BN from 'bn.js';
 import Button from 'src/components/common/Button.vue';
@@ -55,9 +57,10 @@ export default defineComponent({
     const { currentAccount } = useAccount();
     const numOfRewardableApp = ref<number>(0);
     const ttlPendingRewards = ref<string>('0');
+    const { claimAll, isLoading } = useClaimAll();
 
     watchEffect(() => {
-      // Todo: query the total pending rewards and number of rewardable dApps (Bobo)
+      // Todo: query the total pending rewards and number of rewardable dApps(if possible) (Bobo)
       numOfRewardableApp.value = 2;
       ttlPendingRewards.value = '1000000000000000000000'; // 1K ASTR
     });
@@ -68,6 +71,8 @@ export default defineComponent({
       numOfRewardableApp,
       isEnableIndividualClaim,
       fasMoneyCheckAlt,
+      isLoading,
+      claimAll,
     };
   },
 });
