@@ -1,54 +1,58 @@
-import { getAddressEnum } from './../store/dapp-staking/actions';
-import api, { $api } from 'boot/api';
+import { $api } from 'boot/api';
 import { getInjector } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
-import { computed, watchEffect } from 'vue';
-import { useCustomSignature } from '.';
-import { SubmittableExtrinsic } from '@polkadot/api/types';
-import { ISubmittableResult } from '@polkadot/types/types';
+import { computed, ref, watchEffect } from 'vue';
+import { useCustomSignature } from './index';
+import { BatchTxs } from './helper';
+import { getClaimStakerData, handleGetClaimDappData } from './helper/claim';
 
 export function useIndividualClaim(dappAddress: string) {
+  const claimDappTxs = ref<BatchTxs>([]);
   const store = useStore();
-  const isH160 = computed(() => store.getters['general/isH160Formatted']);
   const senderAddress = computed(() => store.getters['general/selectedAddress']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
 
-  const { callFunc, handleResult, handleTransactionError, dispatchError } = useCustomSignature();
-
-  const getClaimStakerData = (address: string) => {
-    return $api?.value?.tx.dappsStaking.claimStaker(getAddressEnum(address));
-  };
-  const getClaimDappData = async (address: string) => {
-    const data = await $api?.value?.query.dappsStaking.contractEraStake(
-      getAddressEnum(address),
-      null
-    );
-    // @ts-ignore
-    const d = data.entries();
-    console.log('d', d);
-    console.log('data', data);
-    console.log('data.toJSON()', data?.toJSON());
-    // return $api?.value?.tx.dappsStaking.claimStaker(getAddressEnum(address));
-  };
+  const {
+    handleResult,
+    handleTransactionError,
+    dispatchError,
+    handleCustomExtrinsic,
+    isCustomSig,
+  } = useCustomSignature();
 
   watchEffect(async () => {
-    await getClaimDappData(dappAddress);
+    const api = $api.value;
+    if (!api) {
+      throw Error('Failed to connect to API');
+    }
+    claimDappTxs.value = await handleGetClaimDappData({ address: dappAddress, api }).catch(
+      (error: any) => {
+        console.error(error.message);
+        return [];
+      }
+    );
   });
 
   const individualClaim = async () => {
-    if (!isH160.value) {
-      const transactions: SubmittableExtrinsic<'promise', ISubmittableResult>[] = [];
-      const stakerData = getClaimStakerData(dappAddress);
-      if (!stakerData) {
-        throw Error('No rewards to claim');
-      }
+    const api = $api.value;
+    if (!api) {
+      throw Error('Failed to connect to API');
+    }
 
-      try {
-        transactions.push(stakerData);
+    const stakerData = getClaimStakerData({ address: dappAddress, api });
+    if (!stakerData) {
+      throw Error('No rewards to claim');
+    }
+    const batchTxs = claimDappTxs.value;
+    batchTxs.push(stakerData);
+    const transaction = api.tx.utility.batch(batchTxs);
+
+    try {
+      if (isCustomSig.value) {
+        await handleCustomExtrinsic(transaction);
+      } else {
         const injector = await getInjector(substrateAccounts.value);
-
-        await $api?.value?.tx.utility
-          .batch(transactions)
+        await transaction
           .signAndSend(
             senderAddress.value,
             {
@@ -63,10 +67,10 @@ export function useIndividualClaim(dappAddress: string) {
           .catch((error: Error) => {
             handleTransactionError(error);
           });
-      } catch (error: any) {
-        console.error(error.message);
-        dispatchError(error.message);
       }
+    } catch (error: any) {
+      console.error(error.message);
+      dispatchError(error.message);
     }
   };
 

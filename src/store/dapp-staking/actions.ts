@@ -107,6 +107,7 @@ const getEraStakes = async (
   const eraStakes = await api.query.dappsStaking.contractEraStake.entries<EraStakingPoints>(
     getAddressEnum(contractAddress)
   );
+  console.log('eraStakes', eraStakes);
 
   let eraStakeMap = new Map();
   eraStakes.forEach(([key, stake]) => {
