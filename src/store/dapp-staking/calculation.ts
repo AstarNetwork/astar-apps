@@ -89,30 +89,34 @@ export const getIndividualClaimReward = async (
       erasToClaim = [...Array(currentEra - firstUnclaimedEra).keys()].map(
         (x) => x + firstUnclaimedEra
       );
-      const eraStake = (
-        await $api.value?.query.dappsStaking.contractEraStake<
-          Option<EraStakingPointsIndividualClaim>
-        >(getAddressEnum(contractAddress), claimableEras[0].era)
-      )?.unwrapOrDefault();
 
-      if (eraStake) {
-        const totalEra = eraStake?.total.toBn() || new BN(0);
-        for (const claimableEra of claimableEras) {
-          const eraInfo = (
-            await $api.value?.query.dappsStaking.eraRewardsAndStakes<Option<EraRewardAndStake>>(
-              claimableEra.era
-            )
-          )?.unwrapOrDefault();
+      let totalForEra = new BN(0);
+      for (const claimableEra of claimableEras) {
+        const eraStake = (
+          await $api.value?.query.dappsStaking.contractEraStake<
+            Option<EraStakingPointsIndividualClaim>
+          >(getAddressEnum(contractAddress), claimableEras[0].era)
+        )?.unwrapOrDefault();
 
-          if (eraInfo) {
-            const eraReward = claimableEra.staked
-              .mul(eraInfo.rewards.toBn())
-              .div(eraInfo.staked.toBn());
-            const stakerJointReward = eraReward.divn(stakerRewardPercentage);
-            const stakerReward = stakerJointReward.mul(claimableEra.staked.toBn()).div(totalEra);
+        if (eraStake) {
+          // If era stake doesn't exist use previous eraTotal.
+          // Fist claimable era has contract era stake info so totalForEra will be filled with value > 0
+          totalForEra = eraStake?.total.toBn() || new BN(0);
+        }
+        const eraInfo = (
+          await $api.value?.query.dappsStaking.eraRewardsAndStakes<Option<EraRewardAndStake>>(
+            claimableEra.era
+          )
+        )?.unwrapOrDefault();
 
-            reward = reward.add(stakerReward);
-          }
+        if (eraInfo) {
+          const eraReward = claimableEra.staked
+            .mul(eraInfo.rewards.toBn())
+            .div(eraInfo.staked.toBn());
+          const stakerJointReward = eraReward.divn(stakerRewardPercentage);
+          const stakerReward = stakerJointReward.mul(claimableEra.staked.toBn()).div(totalForEra);
+
+          reward = reward.add(stakerReward);
         }
       }
     }
