@@ -17,3 +17,4 @@ export * from './useConnectWallet';
 export * from './useUnbondWithdraw';
 export * from './useCustomSignature';
 export * from './useIndividualClaim';
+export * from './useClaimAll';

@@ -9,6 +9,30 @@ interface ContractEraStake extends Struct {
   readonly total: string;
 }
 
+interface StakersInfo extends Struct {
+  stakes: any[];
+}
+
+export const checkIsStakerData = async ({
+  dappAddress,
+  api,
+  senderAddress,
+}: {
+  dappAddress: string;
+  senderAddress: string;
+  api: ApiPromise;
+}) => {
+  const data = await api.query.dappsStaking.stakersInfo<StakersInfo>(
+    senderAddress,
+    getAddressEnum(dappAddress)
+  );
+  if (data && !data.isEmpty) {
+    return data.stakes.length > 0;
+  } else {
+    false;
+  }
+};
+
 export const getClaimStakerData = ({ address, api }: { address: string; api: ApiPromise }) => {
   return api.tx.dappsStaking.claimStaker(getAddressEnum(address));
 };

@@ -47,26 +47,30 @@ export function useIndividualClaim(dappAddress: string) {
     batchTxs.push(stakerData);
     const transaction = api.tx.utility.batch(batchTxs);
 
+    const sendSubstrateTransaction = async () => {
+      const injector = await getInjector(substrateAccounts.value);
+      await transaction
+        .signAndSend(
+          senderAddress.value,
+          {
+            signer: injector?.signer,
+            // Memo: check if it is ok to remove nonce: -1
+            nonce: -1,
+          },
+          (result) => {
+            handleResult(result);
+          }
+        )
+        .catch((error: Error) => {
+          handleTransactionError(error);
+        });
+    };
+
     try {
       if (isCustomSig.value) {
         await handleCustomExtrinsic(transaction);
       } else {
-        const injector = await getInjector(substrateAccounts.value);
-        await transaction
-          .signAndSend(
-            senderAddress.value,
-            {
-              signer: injector?.signer,
-              // Memo: check if it is ok to remove nonce: -1
-              nonce: -1,
-            },
-            (result) => {
-              handleResult(result);
-            }
-          )
-          .catch((error: Error) => {
-            handleTransactionError(error);
-          });
+        await sendSubstrateTransaction();
       }
     } catch (error: any) {
       console.error(error.message);
