@@ -21,7 +21,7 @@ const TS_FIRST_BLOCK = {
 export const useApr = () => {
   const store = useStore();
   const { decimal } = useChainMetadata();
-  const { tvlToken } = useTvl($api);
+  const { tvlToken } = useTvl();
   const { blockPerEra } = useCurrentEra();
   const currentNetworkIdx = computed(() => {
     const chainInfo = store.getters['general/chainInfo'];

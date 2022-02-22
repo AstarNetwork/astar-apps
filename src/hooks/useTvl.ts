@@ -4,8 +4,9 @@ import { useStore } from 'src/store';
 import { computed, ref, watch } from 'vue';
 import { useChainMetadata } from '.';
 import { getUsdPrice } from './helper/price';
+import { $api } from 'boot/api';
 
-export function useTvl(api: any) {
+export function useTvl() {
   const store = useStore();
   const { decimal } = useChainMetadata();
 
@@ -18,16 +19,16 @@ export function useTvl(api: any) {
   });
 
   watch(
-    [api, dapps, tokenSymbol],
+    [$api, dapps, tokenSymbol],
     () => {
-      const apiRef = api.value;
+      const apiRef = $api.value;
       const dappsRef = dapps.value;
       const tokenSymbolRef = tokenSymbol.value;
       if (!apiRef || !dappsRef || !tokenSymbolRef) return;
 
       const getTvl = async (): Promise<{ tvl: BN; tvlDefaultUnit: number }> => {
         const era = await apiRef.query.dappsStaking.currentEra();
-        const result = await apiRef.query.dappsStaking.eraRewardsAndStakes(era);
+        const result: any = await apiRef.query.dappsStaking.eraRewardsAndStakes(era);
         const tvl = result.unwrap().staked.valueOf();
         const tvlDefaultUnit = Number(ethers.utils.formatUnits(tvl.toString(), decimal.value));
         return { tvl, tvlDefaultUnit };
