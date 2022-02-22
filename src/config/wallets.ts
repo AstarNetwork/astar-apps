@@ -1,8 +1,9 @@
 import { objToArray } from 'src/hooks/helper/common';
 
 // Memo: enum value comes from:
-//   const extensions = await getInjectedExtensions();
-//   console.log('extensions', extensions); -> extensions[index] -> name
+//    const extensions = await getInjectedExtensions();
+//    console.log('extensions', extensions); -> extensions[index] -> name
+// Memo: Mobile wallets such as Math and Nova returns 'polkadot-js' as the wallet name
 
 export enum SupportWallet {
   PolkadotJs = 'polkadot-js',
