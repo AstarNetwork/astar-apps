@@ -255,8 +255,9 @@ export default defineComponent({
             withUnit: stakeData.unit,
           });
           customMsg.value = `You unstaked ${balance} on ${props.dapp.name}.`;
-          const fn: SubmittableExtrinsicFunction<'promise'> | undefined =
-            $api?.value?.tx.dappsStaking.unbondUnstakeAndWithdraw;
+          const fn: SubmittableExtrinsicFunction<'promise'> | undefined = canUnbondWithdraw.value
+            ? $api?.value?.tx.dappsStaking.unbondAndUnstake
+            : $api?.value?.tx.dappsStaking.unbondUnstakeAndWithdraw;
           const method: SubmittableExtrinsic<'promise'> | undefined =
             fn && fn(getAddressEnum(props.dapp.address), amount);
 
