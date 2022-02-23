@@ -186,7 +186,7 @@ export default defineComponent({
       if (props.role === Role.FromAddress) {
         valueAddressOrWallet.value = currentAccountName.value;
       } else {
-        // Memo: `props.toAddress` is defined whenever user clicked 'transfer to own address' checkbox
+        // Memo: `props.toAddress` is defined whenever user clicked 'transfer to my address' checkbox
         const destAddress = props.toAddress ?? selAddress.value;
         valueAddressOrWallet.value = destAddress;
       }
