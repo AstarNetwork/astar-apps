@@ -51,7 +51,7 @@ export default defineComponent({
 
 <style scoped>
 .dark-bg-blue:hover {
-  @apply dark:tw-bg-blue-400;
+  @apply tw-bg-blue-700 dark:tw-bg-blue-400;
 }
 .dark-ring-blue:focus {
   @apply dark:tw-ring-blue-400;

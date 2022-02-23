@@ -58,7 +58,7 @@
               tw-flex-wrap tw-justify-center
             "
           >
-            <button
+            <Button
               type="button"
               :disabled="!address"
               class="transfer-button small-button"
@@ -66,7 +66,7 @@
               @click="openTransferModal"
             >
               {{ $t('balance.transfer') }}
-            </button>
+            </Button>
             <Button
               class="transfer-button"
               :class="isEvmDeposit ? 'large-button' : 'small-button'"
@@ -74,17 +74,17 @@
             >
               {{ $t('balance.vestingInfo') }}
             </Button>
-            <button type="button" class="transfer-button small-button" @click="openFaucetModal">
+            <Button type="button" class="transfer-button small-button" @click="openFaucetModal">
               {{ $t('balance.faucet') }}
-            </button>
-            <button
+            </Button>
+            <Button
               v-if="isEvmDeposit && !isH160"
               type="button"
               class="transfer-button"
               @click="openWithdrawalModal"
             >
               {{ $t('balance.withdrawEvm') }}
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -180,7 +180,7 @@
         </div>
       </div>
 
-      <div
+      <Button
         v-if="isEthWallet"
         class="
           tw-flex tw-justify-center tw-items-center tw-mb-0 tw-py-3 tw-px-2
@@ -194,11 +194,13 @@
         <div>
           <p class="tw-font-bold tw-text-right">
             <span class="tw-leading-tight tw-text-xs tw-text-white">{{
-              $t('balance.switchToLockdrop', { value: isH160 ? 'Lockdrop' : 'EVM' })
+              $t('balance.switchToLockdrop', {
+                value: isH160 ? (isShibuya ? 'Native' : 'Lockdrop') : 'EVM',
+              })
             }}</span>
           </p>
         </div>
-      </div>
+      </Button>
     </div>
     <ModalVestingInfo
       v-if="showVestingModal"
@@ -224,6 +226,7 @@ import { getInjector } from 'src/hooks/helper/wallet';
 import Logo from '../common/Logo.vue';
 import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
 import { fasInfoCircle } from '@quasar/extras/fontawesome-v5';
+import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
 
 export default defineComponent({
   components: {
@@ -253,6 +256,12 @@ export default defineComponent({
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const selectedAddress = computed(() => store.getters['general/selectedAddress']);
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
+    const isShibuya = computed(() => {
+      const chainInfo = store.getters['general/chainInfo'];
+      const chain = chainInfo ? chainInfo.chain : '';
+      const netowrkIdx = getProviderIndex(chain);
+      return netowrkIdx === endpointKey.SHIBUYA;
+    });
     const showVestingModal = ref<boolean>(false);
 
     const openTransferModal = (): void => {
@@ -389,6 +398,7 @@ export default defineComponent({
       showVestingInfo,
       fasInfoCircle,
       hexToString,
+      isShibuya,
       ...toRefs(props),
     };
   },

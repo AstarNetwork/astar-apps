@@ -2,11 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as ethUtils from 'ethereumjs-util';
-// import * as ethUtils from './ethereumjs-util';
 import { publicKeyConvert } from 'secp256k1';
 
-import { hexAddPrefix, hexToU8a, isHex, u8aToHex } from '@polkadot/util';
+import { hexToU8a, isHex, u8aToHex } from '@polkadot/util';
 import { blake2AsU8a, encodeAddress, isEthereumAddress } from '@polkadot/util-crypto';
+import { ASTAR_SS58_FORMAT } from './../helper/plasmUtils';
 
 /**
  * Converts ECDSA public key into a valid ss58 address for Substrate.
@@ -75,4 +75,18 @@ export const recoverPublicKeyFromSig = (
   const compressedKey = publicKeyConvert(Buffer.from(prefixedPubKey, 'hex'), true);
 
   return u8aToHex(compressedKey);
+};
+
+export const ethWalletToSs58Address = async (
+  ethAddress: string,
+  requestSignature: (msg: string, ethAddress: string) => Promise<string>
+): Promise<string> => {
+  const msg = `Sign this message to login with address ${ethAddress}`;
+  const signature = await requestSignature(msg, ethAddress);
+  if (typeof signature !== 'string') {
+    throw new Error('Failed to fetch signature');
+  }
+
+  const pubKey = recoverPublicKeyFromSig(ethAddress, msg, signature);
+  return ecdsaPubKeyToSs58(pubKey, ASTAR_SS58_FORMAT);
 };

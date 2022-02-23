@@ -135,10 +135,11 @@ export default defineComponent({
 
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const isEthWallet = computed(() => store.getters['general/isEthWallet']);
-    const selAccountIdx = props.role === Role.ToAddress ? ref('') : ref(currentAddress.value);
+    const selAccountIdx = ref<string>(props.role === Role.ToAddress ? '' : currentAddress.value);
     const account = getSelectedAccount(substrateAccounts.value);
 
     const selAddress = ref(!isH160 ? (account?.address as string) : '');
+    const valueAddressOrWallet = ref<string>('');
 
     watch(
       [selAccountIdx, isEthWallet],
@@ -181,10 +182,14 @@ export default defineComponent({
       }, 400);
     };
 
-    const valueAddressOrWallet = ref<string>('');
     watchEffect(() => {
-      valueAddressOrWallet.value =
-        props.role === Role.FromAddress ? String(currentAccountName.value) : selAddress.value;
+      if (props.role === Role.FromAddress) {
+        valueAddressOrWallet.value = currentAccountName.value;
+      } else {
+        // Memo: `props.toAddress` is defined whenever user clicked 'transfer to own address' checkbox
+        const destAddress = props.toAddress ?? selAddress.value;
+        valueAddressOrWallet.value = destAddress;
+      }
     });
 
     const changeAddress = (e: any) => {

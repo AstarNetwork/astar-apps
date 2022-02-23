@@ -83,10 +83,7 @@ export const useConnectWallet = () => {
   const toggleMetaMaskSchema = async () => {
     const accounts = await requestAccounts();
     const loadingAddr = accounts[0];
-    const loginMsg = `Sign this message to login with address ${loadingAddr}`;
-    const signature = await requestSignature(loginMsg, loadingAddr);
-    const pubKey = utils.recoverPublicKeyFromSig(loadingAddr, loginMsg, signature);
-    const ss58Address = utils.ecdsaPubKeyToSs58(pubKey, ASTAR_SS58_FORMAT);
+    const ss58Address = await utils.ethWalletToSs58Address(loadingAddr, requestSignature);
 
     if (isH160.value) {
       store.commit('general/setIsH160Formatted', false);

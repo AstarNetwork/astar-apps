@@ -102,6 +102,7 @@ export default {
       destBalance: 'Balance:',
       evmModeWarning: 'You are in EVM mode. Do not send funds to exchanges!',
       notSendToExchanges: 'I’m not sending tokens to Exchanges',
+      transferToMyOwn: 'I want to transfer to my {network} account',
     },
   },
   contracts: {

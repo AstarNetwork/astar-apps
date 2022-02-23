@@ -59,13 +59,12 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, computed, ref, watchEffect } from 'vue';
-import { useStore } from 'src/store';
+import { useMetamask } from 'src/hooks/custom-signature/useMetamask';
 import * as utils from 'src/hooks/custom-signature/utils';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { EcdsaAddressFormat } from 'src/hooks/types/CustomSignature';
-import { useMetamask } from 'src/hooks/custom-signature/useMetamask';
-import { ASTAR_SS58_FORMAT } from 'src/hooks/helper/plasmUtils';
+import { useStore } from 'src/store';
+import { computed, defineComponent, ref, watchEffect } from 'vue';
 
 export default defineComponent({
   components: {},
@@ -108,21 +107,7 @@ export default defineComponent({
       try {
         const accounts = await requestAccounts();
         const loadingAddr = accounts[0];
-        const loginMsg = `Sign this message to login with address ${loadingAddr}`;
-
-        const signature = await requestSignature(loginMsg, loadingAddr);
-        console.log(signature);
-
-        if (typeof signature !== 'string') {
-          throw new Error('Failed to fetch signature');
-        }
-
-        // FIXME: keccak issue should be resolved : https://github.com/cryptocoinjs/keccak/pull/22
-        const pubKey = utils.recoverPublicKeyFromSig(loadingAddr, loginMsg, signature);
-
-        console.log(`Public key: ${pubKey}`);
-
-        const ss58Address = utils.ecdsaPubKeyToSs58(pubKey, ASTAR_SS58_FORMAT);
+        const ss58Address = await utils.ethWalletToSs58Address(loadingAddr, requestSignature);
 
         console.log(`ethereum: ${loadingAddr} / ss58: ${ss58Address}`);
 

@@ -105,6 +105,35 @@
                   <span>{{ $t('balance.modals.destBalance') }}</span>
                   <FormatBalance :balance="toAddressBalance" />
                 </div>
+
+                <div
+                  v-if="isEthWallet && currentNetworkIdx === endpointKey.SHIBUYA"
+                  class="tw-flex tw-items-center tw-mt-0 tw-p-1 tw-pl-3 tw-rounded-md"
+                  :class="isTransferToOwnAddress && 'tw-bg-blue-500 dark:tw-bg-blue-800'"
+                >
+                  <label class="form-check-input">
+                    <input
+                      v-model="isTransferToOwnAddress"
+                      type="checkbox"
+                      :class="isDarkTheme && 'input-dark'"
+                    />
+                    <span
+                      class="
+                        tw-inline-block tw-whitespace-nowrap tw-ml-1
+                        sm:tw-ml-4
+                        dark:tw-text-white
+                        text-not-sending
+                      "
+                      :class="isTransferToOwnAddress ? 'tw-text-white' : 'tw-text-gray-800'"
+                    >
+                      {{
+                        $t('balance.modals.transferToMyOwn', {
+                          network: isH160 ? 'Native' : 'EVM',
+                        })
+                      }}
+                    </span>
+                  </label>
+                </div>
               </div>
 
               <input-amount
@@ -161,7 +190,7 @@
 import BN from 'bn.js';
 import FormatBalance from 'components/balance/FormatBalance.vue';
 import InputAmount from 'components/common/InputAmount.vue';
-import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
+import { getProviderIndex, providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
 import { useChainMetadata, useTransfer } from 'src/hooks';
 import { $api } from 'boot/api';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
@@ -171,6 +200,8 @@ import { computed, defineComponent, ref, toRefs, watchEffect, watch } from 'vue'
 import Web3 from 'web3';
 import ModalSelectAccount from './ModalSelectAccount.vue';
 import { createWeb3Instance } from 'src/config/web3';
+import { useMetamask } from 'src/hooks/custom-signature/useMetamask';
+import * as utils from 'src/hooks/custom-signature/utils';
 
 export enum Role {
   FromAddress = 'FromAddress',
@@ -201,11 +232,13 @@ export default defineComponent({
 
     const isH160ToSs58 = ref<boolean>(false);
     const isChecked = ref<boolean>(false);
+    const isTransferToOwnAddress = ref<boolean>(false);
     const web3 = ref<Web3 | undefined>(undefined);
     const store = useStore();
     const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
 
     const { defaultUnitToken, decimal } = useChainMetadata();
+    const { requestAccounts, requestSignature } = useMetamask();
 
     const transferAmt = ref<BN>(new BN(0));
     const fromAddress = ref<string>('');
@@ -213,13 +246,14 @@ export default defineComponent({
     const toAddressBalance = ref<BN>(new BN(0));
 
     const selectUnit = ref(defaultUnitToken.value);
+    const isH160 = computed(() => store.getters['general/isH160Formatted']);
+    const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
     const isEthWallet = computed(() => store.getters['general/isEthWallet']);
     const currentNetworkIdx = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
       const chain = chainInfo ? chainInfo.chain : '';
       return getProviderIndex(chain);
     });
-    const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
     // isCustomSigBlocked is temporary until extrinsic call pallet is deployed to all networks.
     const isCustomSigBlocked = computed(() => !!!providerEndpoints[currentNetworkIdx.value].prefix);
@@ -281,6 +315,25 @@ export default defineComponent({
       }
     });
 
+    watch(
+      [isTransferToOwnAddress],
+      async () => {
+        if (isTransferToOwnAddress.value) {
+          if (isH160.value) {
+            const accounts = await requestAccounts();
+            const loadingAddr = accounts[0];
+            const ss58Address = await utils.ethWalletToSs58Address(loadingAddr, requestSignature);
+            toAddress.value = ss58Address;
+          } else {
+            toAddress.value = currentEcdsaAccount.value.ethereum;
+          }
+        } else {
+          toAddress.value = '';
+        }
+      },
+      { immediate: false }
+    );
+
     return {
       closeModal,
       isCustomSigBlocked,
@@ -299,6 +352,10 @@ export default defineComponent({
       isDarkTheme,
       toAddressBalance,
       isH160ToSs58,
+      currentNetworkIdx,
+      endpointKey,
+      isH160,
+      isTransferToOwnAddress,
       ...toRefs(props),
     };
   },
