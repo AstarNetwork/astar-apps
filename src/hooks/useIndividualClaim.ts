@@ -2,15 +2,18 @@ import { $api } from 'boot/api';
 import { getInjector } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { computed, ref, watchEffect } from 'vue';
-import { useCustomSignature } from './index';
 import { BatchTxs } from './helper';
-import { getClaimStakerData, handleGetClaimDappData } from './helper/claim';
+import { getIndividualClaimData } from './helper/claim';
+import { useCurrentEra, useCustomSignature } from './index';
 
 export function useIndividualClaim(dappAddress: string) {
-  const claimDappTxs = ref<BatchTxs>([]);
+  const numOfUnclaimedEra = ref<number | undefined>(undefined);
+  const batchTxs = ref<BatchTxs>([]);
+
   const store = useStore();
   const senderAddress = computed(() => store.getters['general/selectedAddress']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
+  const { era } = useCurrentEra();
 
   const {
     handleResult,
@@ -25,27 +28,33 @@ export function useIndividualClaim(dappAddress: string) {
     if (!api) {
       throw Error('Failed to connect to API');
     }
-    claimDappTxs.value = await handleGetClaimDappData({ address: dappAddress, api }).catch(
-      (error: any) => {
-        console.error(error.message);
-        return [];
-      }
-    );
+    if (!senderAddress.value || !era.value) return;
+
+    const data = await getIndividualClaimData({
+      dappAddress,
+      api,
+      senderAddress: senderAddress.value,
+      currentEra: era.value,
+    }).catch((error: any) => {
+      console.error(error.message);
+      return { transactions: [], numberOfUnclaimedEra: undefined };
+    });
+
+    numOfUnclaimedEra.value = data.numberOfUnclaimedEra;
+    batchTxs.value = data.transactions;
   });
 
   const individualClaim = async () => {
     const api = $api.value;
+    const batchTxsRef = batchTxs.value;
     if (!api) {
       throw Error('Failed to connect to API');
     }
-
-    const stakerData = getClaimStakerData({ address: dappAddress, api });
-    if (!stakerData) {
-      throw Error('No rewards to claim');
+    if (batchTxsRef.length === 0) {
+      throw Error('There is no transaction for claiming');
     }
-    const batchTxs = claimDappTxs.value;
-    batchTxs.push(stakerData);
-    const transaction = api.tx.utility.batch(batchTxs);
+
+    const transaction = api.tx.utility.batch(batchTxsRef);
 
     const sendSubstrateTransaction = async () => {
       const injector = await getInjector(substrateAccounts.value);
@@ -78,5 +87,5 @@ export function useIndividualClaim(dappAddress: string) {
     }
   };
 
-  return { individualClaim };
+  return { individualClaim, numOfUnclaimedEra };
 }

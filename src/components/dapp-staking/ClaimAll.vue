@@ -6,12 +6,8 @@
       sm:tw-gap-x-10
     "
   >
-    <div class="tw-text-sm tw-font-medium tw-text-blue-900 dark:tw-text-darkGray-100">
-      <span>{{ $t('dappStaking.ttlPendingRewards') }}</span>
-      <FormatBalance :balance="new BN(ttlPendingRewards)" />
-    </div>
     <Button
-      :disabled="numOfRewardableApp === 0 || isLoading"
+      :disabled="numOfRewardableDapp === 0 || isLoading"
       class="
         sm:tw-w-40
         tw-justify-center
@@ -30,49 +26,36 @@
         <q-icon :name="fasMoneyCheckAlt" color="green" />
       </icon-base>
       <div>
-        {{ $t('dappStaking.claimAll') }}
-        <!-- {{ $t('dappStaking.claimAll', { value: numOfRewardableApp }) }} -->
+        {{ $t('dappStaking.claimAll', { value: isLoading ? 0 : numOfRewardableDapp }) }}
       </div>
     </Button>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watchEffect } from 'vue';
-import FormatBalance from 'components/balance/FormatBalance.vue';
-import { useAccount, useClaimAll } from 'src/hooks';
+import { fasMoneyCheckAlt } from '@quasar/extras/fontawesome-v5';
 import IconBase from 'components/icons/IconBase.vue';
-import BN from 'bn.js';
 import Button from 'src/components/common/Button.vue';
 import { isEnableIndividualClaim } from 'src/config/chainEndpoints';
-import { fasMoneyCheckAlt } from '@quasar/extras/fontawesome-v5';
+import { useAccount, useClaimAll } from 'src/hooks';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   components: {
-    FormatBalance,
     Button,
     IconBase,
   },
   setup() {
+    const { claimAll, numOfRewardableDapp, isLoading } = useClaimAll();
     const { currentAccount } = useAccount();
-    const numOfRewardableApp = ref<number>(0);
-    const ttlPendingRewards = ref<string>('0');
-    const { claimAll, isLoading } = useClaimAll();
 
-    watchEffect(() => {
-      // Todo: query the total pending rewards and number of rewardable dApps(if possible) (Bobo)
-      numOfRewardableApp.value = 2;
-      ttlPendingRewards.value = '1000000000000000000000'; // 1K ASTR
-    });
     return {
-      BN,
-      currentAccount,
-      ttlPendingRewards,
-      numOfRewardableApp,
       isEnableIndividualClaim,
       fasMoneyCheckAlt,
-      isLoading,
       claimAll,
+      numOfRewardableDapp,
+      isLoading,
+      currentAccount,
     };
   },
 });

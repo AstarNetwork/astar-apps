@@ -33,9 +33,7 @@
       </div>
       <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row">
         <Button type="button" :primary="false" @click="closeModal">{{ $t('close') }}</Button>
-        <!-- <Button :disabled="!canClaim" class="tw-tooltip" @click="claim()"> -->
-        <!-- Todo: add the :disabled -->
-        <Button class="tw-tooltip" @click="claim()">
+        <Button :disabled="!canClaim" class="tw-tooltip" @click="claim()">
           {{ $t('dappStaking.claim') }}
         </Button>
       </div>
@@ -80,7 +78,7 @@ export default defineComponent({
     const maxErasPerClaim = 15;
     const store = useStore();
     const { decimal } = useChainMetadata();
-    const { individualClaim } = useIndividualClaim(props.dapp.address);
+    const { individualClaim, numOfUnclaimedEra } = useIndividualClaim(props.dapp.address);
     const claimInfo = ref<ClaimInfo>();
     const pendingRewards = ref<string>('');
     const claimedRewards = ref<string>('');
@@ -90,7 +88,7 @@ export default defineComponent({
 
     const canClaim = computed(() => {
       return isEnableIndividualClaim
-        ? Number(claimInfo.value ? claimInfo.value.rewards.toString() : '0') > 0
+        ? numOfUnclaimedEra.value && numOfUnclaimedEra.value > 0
         : claimInfo?.value && claimInfo.value.unclaimedEras.length > 0;
     });
 
