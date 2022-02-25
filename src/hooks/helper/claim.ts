@@ -90,8 +90,8 @@ const eraSkippedZeroStake = async ({
     if (total !== '0') {
       return era;
     } else {
-      // Memo: no one staked on this era
-      // Memo: find the next era that any user has staked. Return false in case no result
+      // Memo: No one staked on this era
+      // Memo: Find the next era that any user has staked. Return false in case no results found.
       const result = await findStakedEra(era);
       return result;
     }
@@ -107,7 +107,7 @@ const getTxsForClaimDapp = async ({
   api: ApiPromise;
   currentEra: number;
 }): Promise<BatchTxs> => {
-  const eras = []; // used for debugging
+  // const eras = []; // used for debugging
   const transactions = [];
   const lastEraClaimedForDapp = await getLastEraClaimedForDapp({
     dappAddress,
@@ -116,25 +116,25 @@ const getTxsForClaimDapp = async ({
   });
 
   // Fixme: This is not an elegant solution. Please feel free to refactor the code.
-  // Memo: This function has covered in case dApp has been unstaked totally (total: 0) in some points of the past era (this is a rare case)
+  // Memo: This function has been covered in case dApp has been unstaked totally (total: 0) at some points of the past era (this is a rare case)
   // Ref: https://gyazo.com/e36c0ec019a08b9ab4a93c8d5f119cce
 
   for (let era = lastEraClaimedForDapp + 1; era < currentEra; era++) {
     const e = await eraSkippedZeroStake({ dappAddress, api, currentEra, era });
 
-    // Memo: No more new staking after the dApp has been unstaked totally
+    // Memo: No more new staking after the dApp has been unstaked
     // When: User claims after dApp has been unstaked
     if (!e) break;
 
     if (era === e) {
       const tx = api.tx.dappsStaking.claimDapp(getAddressEnum(dappAddress), era);
       transactions.push(tx);
-      eras.push(era);
+      // eras.push(era);
     } else {
-      // Memo: e -> skip to the era that has been staked after unstaked
+      // Memo: e -> skip to the era that have been staked after unstaked
       const tx = api.tx.dappsStaking.claimDapp(getAddressEnum(dappAddress), e);
       transactions.push(tx);
-      eras.push(e);
+      // eras.push(e);
       era = e;
     }
   }
@@ -212,7 +212,8 @@ const getLastEraClaimedForDapp = async ({
   let lastEraClaimed = 0;
   let isFinish = false;
 
-  // Memo: find the last era of 'contractRewardClaimed: false' (decrease from currentEra)
+  // Memo: find the last era of 'contractRewardClaimed: false'
+  // Memo: Era decrease from currentEra
   while (!isFinish) {
     try {
       const data = await getContractEraStake({ dappAddress, era, api });
