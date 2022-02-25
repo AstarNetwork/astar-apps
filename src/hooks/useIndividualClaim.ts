@@ -1,18 +1,20 @@
 import { $api } from 'boot/api';
 import { getInjector } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
-import { computed, ref, watchEffect } from 'vue';
+import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
+import { computed, ref, watch } from 'vue';
 import { BatchTxs } from './helper';
 import { getIndividualClaimData } from './helper/claim';
 import { useCurrentEra, useCustomSignature } from './index';
 
 export function useIndividualClaim(dappAddress: string) {
-  const numOfUnclaimedEra = ref<number | undefined>(undefined);
+  const numOfUnclaimedEra = ref<number>(0);
   const batchTxs = ref<BatchTxs>([]);
 
   const store = useStore();
   const senderAddress = computed(() => store.getters['general/selectedAddress']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
+  const isSendingTx = computed(() => store.getters['general/isLoading']);
   const { era } = useCurrentEra();
 
   const {
@@ -23,28 +25,32 @@ export function useIndividualClaim(dappAddress: string) {
     isCustomSig,
   } = useCustomSignature();
 
-  watchEffect(async () => {
-    const api = $api.value;
-    if (!api) {
-      throw Error('Failed to connect to API');
-    }
-    if (!senderAddress.value || !era.value) return;
+  watch(
+    [$api, senderAddress, era, isSendingTx],
+    async () => {
+      const api = $api.value;
+      if (!api) {
+        throw Error('Failed to connect to API');
+      }
+      if (!senderAddress.value || !era.value) return;
 
-    const data = await getIndividualClaimData({
-      dappAddress,
-      api,
-      senderAddress: senderAddress.value,
-      currentEra: era.value,
-    }).catch((error: any) => {
-      console.error(error.message);
-      return { transactions: [], numberOfUnclaimedEra: undefined };
-    });
+      const data = await getIndividualClaimData({
+        dappAddress,
+        api,
+        senderAddress: senderAddress.value,
+        currentEra: era.value,
+      }).catch((error: any) => {
+        console.error(error.message);
+        return { transactions: [], numberOfUnclaimedEra: 0 };
+      });
 
-    numOfUnclaimedEra.value = data.numberOfUnclaimedEra;
-    batchTxs.value = data.transactions;
-  });
+      numOfUnclaimedEra.value = data.numberOfUnclaimedEra;
+      batchTxs.value = data.transactions;
+    },
+    { immediate: true }
+  );
 
-  const individualClaim = async () => {
+  const individualClaim = async (): Promise<void> => {
     const api = $api.value;
     const batchTxsRef = batchTxs.value;
     if (!api) {
@@ -68,6 +74,7 @@ export function useIndividualClaim(dappAddress: string) {
           },
           (result) => {
             handleResult(result);
+            hasExtrinsicFailedEvent(result.events, store.dispatch);
           }
         )
         .catch((error: Error) => {
@@ -87,5 +94,5 @@ export function useIndividualClaim(dappAddress: string) {
     }
   };
 
-  return { individualClaim, numOfUnclaimedEra };
+  return { individualClaim, numOfUnclaimedEra, claimBatchTxs: batchTxs };
 }

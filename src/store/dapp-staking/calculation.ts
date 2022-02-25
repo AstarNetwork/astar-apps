@@ -109,15 +109,16 @@ export const getIndividualClaimReward = async (
           )
         )?.unwrapOrDefault();
 
-        if (eraInfo) {
-          const eraReward = claimableEra.staked
-            .mul(eraInfo.rewards.toBn())
-            .div(eraInfo.staked.toBn());
-          const stakerJointReward = eraReward.divn(stakerRewardPercentage);
-          const stakerReward = stakerJointReward.mul(claimableEra.staked.toBn()).div(totalForEra);
+        // Memo: comment out to avoid displaying `claimableEra.staked.mul` error
+        // if (eraInfo) {
+        //   const eraReward = claimableEra.staked
+        //     .mul(eraInfo.rewards.toBn())
+        //     .div(eraInfo.staked.toBn());
+        //   const stakerJointReward = eraReward.divn(stakerRewardPercentage);
+        //   const stakerReward = stakerJointReward.mul(claimableEra.staked.toBn()).div(totalForEra);
 
-          reward = reward.add(stakerReward);
-        }
+        //   reward = reward.add(stakerReward);
+        // }
       }
     }
   }

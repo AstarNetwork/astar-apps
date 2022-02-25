@@ -194,7 +194,7 @@ export default {
       register: 'Register',
       address: 'Address',
       estimatedRewards: 'Pending rewards',
-      unclaimedEras: 'Number of unclaimed eras',
+      unclaimedEras: 'Unclaimed eras:',
       estimatedClaimedRewards: 'Claimed rewards',
       next: 'Next',
       previous: 'Previous',

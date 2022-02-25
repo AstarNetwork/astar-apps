@@ -17,9 +17,10 @@ export function useTvl(api: any) {
     const chainInfo = store.getters['general/chainInfo'];
     return chainInfo ? chainInfo.tokenSymbol : '';
   });
+  const isSendingTx = computed(() => store.getters['general/isLoading']);
 
   watch(
-    [api, dapps, tokenSymbol],
+    [api, dapps, tokenSymbol, isSendingTx],
     () => {
       const apiRef = api.value;
       const dappsRef = dapps.value;

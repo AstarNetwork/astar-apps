@@ -10,7 +10,7 @@
         <span class="tw-w-52 tw-inline-block">{{ $t('dappStaking.yourStake') }}</span>
         <span class="tw-font-semibold">{{ stakeInfo.yourStake.formatted }}</span>
       </div>
-      <div class="tw-mt-2">
+      <div v-if="!isEnableIndividualClaim" class="tw-mt-2">
         <span class="tw-w-52 tw-inline-block">
           {{ $t('dappStaking.modals.estimatedRewards') }}</span
         >
@@ -22,9 +22,12 @@
         </span>
         <span class="tw-font-semibold tw-w-16 tw-text-rigth">{{ claimedRewards }}</span>
       </div>
-      <div v-if="!isEnableIndividualClaim" class="tw-mt-2">
+      <div class="tw-mt-2">
         <span class="tw-w-52 tw-inline-block"> {{ $t('dappStaking.modals.unclaimedEras') }}</span>
-        <span class="tw-font-semibold tw-w-16 tw-text-rigth">{{
+        <span v-if="isEnableIndividualClaim" class="tw-font-semibold tw-w-16 tw-text-rigth">{{
+          numOfUnclaimedEra
+        }}</span>
+        <span v-else class="tw-font-semibold tw-w-16 tw-text-rigth">{{
           claimInfo?.unclaimedEras?.length
         }}</span>
       </div>
@@ -136,6 +139,7 @@ export default defineComponent({
       stepsCount,
       claim,
       isEnableIndividualClaim,
+      numOfUnclaimedEra,
       ...toRefs(props),
     };
   },

@@ -5,6 +5,7 @@ import { useStore } from 'src/store';
 import { computed, ref, watch } from 'vue';
 import { BatchTxs } from './helper';
 import { useCustomSignature, useCurrentEra } from './index';
+import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
 
 export function useClaimAll() {
   const batchTxs = ref<BatchTxs>([]);
@@ -29,32 +30,31 @@ export function useClaimAll() {
     [$api, senderAddress, dapps, isSendingTx, era],
     async () => {
       try {
-        console.log('run');
         isLoading.value = true;
         numOfRewardableDapp.value = 0;
+        batchTxs.value = [];
         const api = $api.value;
         const senderAddressRef = senderAddress.value;
         if (!api) {
           throw Error('Failed to connect to API');
         }
-        if (!senderAddressRef) return;
+        if (!senderAddressRef || !era.value) return;
 
         const txs = [];
         for await (const { address } of dapps.value) {
           const data = await getIndividualClaimData({
             dappAddress: address,
             api,
-            senderAddress: senderAddress.value,
+            senderAddress: senderAddressRef,
             currentEra: era.value,
           }).catch((error: any) => {
             console.error(error.message);
-            return { transactions: [], numberOfUnclaimedEra: undefined };
+            return { transactions: [], numberOfUnclaimedEra: 0 };
           });
-          if (data.numberOfUnclaimedEra && data.numberOfUnclaimedEra > 0) {
-            console.log('increase rewardable', address);
+          if (data.numberOfUnclaimedEra > 0) {
             numOfRewardableDapp.value = numOfRewardableDapp.value + 1;
+            txs.push(data.transactions);
           }
-          txs.push(data.transactions);
         }
         batchTxs.value = txs.flat();
       } catch (error: any) {
@@ -66,7 +66,7 @@ export function useClaimAll() {
     { immediate: true }
   );
 
-  const claimAll = async () => {
+  const claimAll = async (): Promise<void> => {
     const api = $api.value;
     const batchTxsRef = batchTxs.value;
     if (!api) {
@@ -90,6 +90,7 @@ export function useClaimAll() {
           },
           (result) => {
             handleResult(result);
+            hasExtrinsicFailedEvent(result.events, store.dispatch);
           }
         )
         .catch((error: Error) => {
@@ -106,9 +107,6 @@ export function useClaimAll() {
     } catch (error: any) {
       console.error(error.message);
       dispatchError(error.message);
-    } finally {
-      batchTxs.value = [];
-      numOfRewardableDapp.value = 0;
     }
   };
 

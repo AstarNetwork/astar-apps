@@ -21,6 +21,7 @@ import { StateInterface } from '../index';
 import { getInjector } from './../../hooks/helper/wallet';
 import { DappItem, DappStateInterface as State, NewDappItem } from './state';
 import { getIndividualClaimStakingInfo } from './calculation';
+import { StakersInfo } from 'src/hooks/helper/claim';
 
 let collectionKey: string;
 
@@ -590,11 +591,7 @@ const actions: ActionTree<State, StateInterface> = {
   async getStakeInfo({ dispatch }, parameters: StakingParameters): Promise<StakeInfo | undefined> {
     try {
       if (parameters.api) {
-        // Todo: fix type annotation
-        const stakeInfo = (await getLatestStakePoint(
-          parameters.api,
-          parameters.dapp.address
-        )) as any;
+        const stakeInfo = await getLatestStakePoint(parameters.api, parameters.dapp.address);
 
         if (stakeInfo) {
           let yourStake = {
@@ -603,13 +600,12 @@ const actions: ActionTree<State, StateInterface> = {
           };
 
           if (isEnableIndividualClaim) {
-            // Todo: fix type annotation
-            const stakersInfo = (await parameters.api.query.dappsStaking.stakersInfo(
+            const stakersInfo = await parameters.api.query.dappsStaking.stakersInfo<StakersInfo>(
               parameters.senderAddress,
               {
                 Evm: parameters.dapp.address,
               }
-            )) as any;
+            );
 
             const balance =
               stakersInfo.stakes.length && stakersInfo.stakes.slice(-1)[0].staked.toString();
@@ -625,7 +621,7 @@ const actions: ActionTree<State, StateInterface> = {
               yourStake,
               claimedRewards: '0', // always returns 0 in the below `getClaimInfo` function. (stakeInfo.claimedRewards)
               hasStake: !!yourStake.formatted,
-              stakersCount: stakeInfo.numberOfStakers.toString(),
+              stakersCount: Number(stakeInfo.numberOfStakers.toString()),
             } as StakeInfo;
           }
 
@@ -912,6 +908,7 @@ export interface EraStakingPoints extends Struct {
   readonly stakers: BTreeMap<AccountId, Balance>;
   readonly formerStakedEra: EraIndex;
   readonly claimedRewards: Balance;
+  readonly numberOfStakers: BN;
 }
 
 export interface EraRewardAndStake extends Struct {
