@@ -123,7 +123,7 @@ export const getIndividualClaimReward = async (
     }
   }
 
-  console.log('reward', reward.toString());
+  // console.log('reward', reward.toString());
   return {
     rewards: reward,
     estimatedClaimedRewards: new BN(0),

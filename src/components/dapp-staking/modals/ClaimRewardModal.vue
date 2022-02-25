@@ -125,7 +125,6 @@ export default defineComponent({
         closeModal();
       } else {
         const erasToClaim = claimInfo.value?.unclaimedEras.sort().slice(0, maxErasPerClaim);
-        console.log('Eras to claim in batch', erasToClaim);
         await props.claimAction(erasToClaim, getClaimInfo);
       }
     };
