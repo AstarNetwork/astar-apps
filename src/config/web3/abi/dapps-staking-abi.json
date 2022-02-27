@@ -41,43 +41,14 @@
 				"internalType": "address",
 				"name": "contract_id",
 				"type": "address"
-			},
-			{
-				"internalType": "uint32",
-				"name": "era",
-				"type": "uint32"
 			}
 		],
-		"name": "read_contract_era_stake",
+		"name": "read_contract_stake",
 		"outputs": [
 			{
 				"internalType": "uint128",
 				"name": "",
 				"type": "uint128"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "contract_id",
-				"type": "address"
-			},
-			{
-				"internalType": "uint32",
-				"name": "era",
-				"type": "uint32"
-			}
-		],
-		"name": "read_contract_era_stakers",
-		"outputs": [
-			{
-				"internalType": "uint256[]",
-				"name": "",
-				"type": "uint256[]"
 			}
 		],
 		"stateMutability": "view",
@@ -148,6 +119,19 @@
 				"internalType": "uint128",
 				"name": "",
 				"type": "uint128"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "read_unbonding_period",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",

@@ -29,8 +29,8 @@ export class Staking {
     return await this.ci.methods.read_staked_amount(staker).call();
   };
 
-  getContractEraStake = async (contract_id: string, era: number) => {
-    return await this.ci.methods.read_contract_era_stake(contract_id, era).call();
+  getContractStake = async (contract_id: string) => {
+    return await this.ci.methods.read_contract_stake(contract_id).call();
   };
 
   /* extrinsic calls */
@@ -43,7 +43,7 @@ export class Staking {
           resolve(hash);
         })
         .on('error', (error: Error) => {
-          reject(error);
+          reject(error.message);
         });
     });
   };
@@ -57,7 +57,7 @@ export class Staking {
           resolve(hash);
         })
         .on('error', (error: Error) => {
-          reject(error);
+          reject(error.message);
         });
     });
   };
@@ -71,7 +71,7 @@ export class Staking {
           resolve(hash);
         })
         .on('error', (error: Error) => {
-          reject(error);
+          reject(error.message);
         });
     });
   };
@@ -85,7 +85,7 @@ export class Staking {
           resolve(hash);
         })
         .on('error', (error: Error) => {
-          reject(error);
+          reject(error.message);
         });
     });
   };
@@ -99,7 +99,7 @@ export class Staking {
           resolve(hash);
         })
         .on('error', (error: Error) => {
-          reject(error);
+          reject(error.message);
         });
     });
   };
