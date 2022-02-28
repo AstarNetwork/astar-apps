@@ -3,13 +3,13 @@ import { getInjector } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
 import { computed, ref, watch } from 'vue';
-import { BatchTxs } from './helper';
+import { ExtrinsicPayload } from './helper';
 import { getIndividualClaimData } from './helper/claim';
 import { useCurrentEra, useCustomSignature } from './index';
 
 export function useIndividualClaim(dappAddress: string) {
   const numOfUnclaimedEra = ref<number>(0);
-  const batchTxs = ref<BatchTxs>([]);
+  const batchTxs = ref<ExtrinsicPayload[]>([]);
 
   const store = useStore();
   const senderAddress = computed(() => store.getters['general/selectedAddress']);

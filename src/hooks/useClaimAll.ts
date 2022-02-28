@@ -3,12 +3,12 @@ import { $api } from 'boot/api';
 import { getInjector } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { computed, ref, watch } from 'vue';
-import { BatchTxs } from './helper';
+import { ExtrinsicPayload } from './helper';
 import { useCustomSignature, useCurrentEra } from './index';
 import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
 
 export function useClaimAll() {
-  const batchTxs = ref<BatchTxs>([]);
+  const batchTxs = ref<ExtrinsicPayload[]>([]);
   const numOfRewardableDapp = ref<number>(0);
   const isLoading = ref<boolean>(true);
   const store = useStore();

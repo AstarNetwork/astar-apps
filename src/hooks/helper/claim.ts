@@ -1,4 +1,4 @@
-import { BatchTxs } from './index';
+import { ExtrinsicPayload } from './index';
 import { getAddressEnum } from './../../store/dapp-staking/calculation';
 import { Struct, Option } from '@polkadot/types';
 import { ApiPromise } from '@polkadot/api';
@@ -120,7 +120,7 @@ const getTxsForClaimDapp = async ({
   dappAddress: string;
   api: ApiPromise;
   currentEra: number;
-}): Promise<BatchTxs> => {
+}): Promise<ExtrinsicPayload[]> => {
   // const eras = []; // used for debugging
   const transactions = [];
   const lastEraClaimedForDapp = await getLastEraClaimedForDapp({
@@ -164,7 +164,7 @@ const getTxsForClaimStaker = async ({
   dappAddress: string;
   api: ApiPromise;
   numberOfUnclaimedEra: number;
-}): Promise<BatchTxs> => {
+}): Promise<ExtrinsicPayload[]> => {
   const transactions = [];
   for (let i = 0; i < numberOfUnclaimedEra; i++) {
     const tx = api.tx.dappsStaking.claimStaker(getAddressEnum(dappAddress));
@@ -267,7 +267,7 @@ export const getIndividualClaimData = async ({
   senderAddress: string;
   api: ApiPromise;
   currentEra: number;
-}): Promise<{ transactions: BatchTxs; numberOfUnclaimedEra: number }> => {
+}): Promise<{ transactions: ExtrinsicPayload[]; numberOfUnclaimedEra: number }> => {
   const numberOfUnclaimedEra = await getNumberOfUnclaimedEra({
     dappAddress,
     api,
