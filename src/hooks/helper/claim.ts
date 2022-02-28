@@ -14,7 +14,7 @@ export interface StakersInfo extends Struct {
   readonly stakes: any[];
 }
 
-const getStakerInfo = async ({
+const getNumberOfUnclaimedEra = async ({
   dappAddress,
   api,
   senderAddress,
@@ -24,19 +24,33 @@ const getStakerInfo = async ({
   senderAddress: string;
   api: ApiPromise;
   currentEra: number;
-}): Promise<{ firstEraToClaimForStaker: number; numberOfUnclaimedEra: number } | null> => {
-  const data = await api.query.dappsStaking.stakersInfo<StakersInfo>(
-    senderAddress,
-    getAddressEnum(dappAddress)
-  );
-  if (data && !data.isEmpty) {
-    const stakes = data.stakes;
-    const firstEraToClaimForStaker = Number(stakes[0].toHuman().era);
-    const numberOfUnclaimedEra = currentEra - firstEraToClaimForStaker;
+}): Promise<number> => {
+  let numberOfUnclaimedEra = 0;
+  try {
+    const data = await api.query.dappsStaking.stakersInfo<Option<StakersInfo>>(
+      senderAddress,
+      getAddressEnum(dappAddress)
+    );
 
-    return { firstEraToClaimForStaker, numberOfUnclaimedEra };
-  } else {
-    return null;
+    if (data && !data.isEmpty) {
+      const stakersInfo: StakersInfo = data.toHuman() as any;
+      const stakes = stakersInfo && stakersInfo.stakes;
+
+      for (let i = 0; i < stakes.length; i++) {
+        const { era, staked } = stakes[i];
+        if (staked === '0') continue;
+        const nextEraData = stakes[i + 1] ?? null;
+        const nextEra = nextEraData && nextEraData.era;
+        const isLastEra = i === stakes.length - 1;
+
+        const eraToClaim = isLastEra ? currentEra - era : nextEra - era;
+        numberOfUnclaimedEra += eraToClaim;
+      }
+    }
+    return numberOfUnclaimedEra;
+  } catch (error: any) {
+    console.error(error.message);
+    return numberOfUnclaimedEra;
   }
 };
 
@@ -145,16 +159,14 @@ const getTxsForClaimDapp = async ({
 const getTxsForClaimStaker = async ({
   dappAddress,
   api,
-  currentEra,
-  firstEraToClaimForStaker,
+  numberOfUnclaimedEra,
 }: {
   dappAddress: string;
   api: ApiPromise;
-  currentEra: number;
-  firstEraToClaimForStaker: number;
+  numberOfUnclaimedEra: number;
 }): Promise<BatchTxs> => {
   const transactions = [];
-  for (let era = firstEraToClaimForStaker; era < currentEra; era++) {
+  for (let i = 0; i < numberOfUnclaimedEra; i++) {
     const tx = api.tx.dappsStaking.claimStaker(getAddressEnum(dappAddress));
     transactions.push(tx);
   }
@@ -256,22 +268,21 @@ export const getIndividualClaimData = async ({
   api: ApiPromise;
   currentEra: number;
 }): Promise<{ transactions: BatchTxs; numberOfUnclaimedEra: number }> => {
-  const stakerInfo = await getStakerInfo({
+  const numberOfUnclaimedEra = await getNumberOfUnclaimedEra({
     dappAddress,
     api,
     senderAddress,
     currentEra,
   });
-  if (!stakerInfo) {
-    return { transactions: [], numberOfUnclaimedEra: 0 };
+  if (numberOfUnclaimedEra === 0) {
+    return { transactions: [], numberOfUnclaimedEra };
   }
 
   const results = await Promise.all([
     getTxsForClaimStaker({
       dappAddress,
       api,
-      currentEra,
-      firstEraToClaimForStaker: stakerInfo.firstEraToClaimForStaker,
+      numberOfUnclaimedEra,
     }),
     getTxsForClaimDapp({
       dappAddress,
@@ -283,5 +294,5 @@ export const getIndividualClaimData = async ({
   const txsForClaimStaker = results[0];
   const txsForClaimDapp = results[1];
   const transactions = txsForClaimStaker.concat(txsForClaimDapp);
-  return { transactions, numberOfUnclaimedEra: stakerInfo.numberOfUnclaimedEra };
+  return { transactions, numberOfUnclaimedEra };
 };

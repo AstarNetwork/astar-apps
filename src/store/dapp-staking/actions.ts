@@ -108,7 +108,6 @@ const getEraStakes = async (
   const eraStakes = await api.query.dappsStaking.contractEraStake.entries<EraStakingPoints>(
     getAddressEnum(contractAddress)
   );
-  console.log('eraStakes', eraStakes);
 
   let eraStakeMap = new Map();
   eraStakes.forEach(([key, stake]) => {
@@ -592,7 +591,6 @@ const actions: ActionTree<State, StateInterface> = {
     try {
       if (parameters.api) {
         const stakeInfo = await getLatestStakePoint(parameters.api, parameters.dapp.address);
-
         if (stakeInfo) {
           let yourStake = {
             formatted: '',
@@ -679,7 +677,7 @@ const actions: ActionTree<State, StateInterface> = {
         const bonusEraDuration = parseInt(
           await parameters.api.consts.dappsStaking.bonusEraDuration.toString()
         );
-        console.log('lowest', lowestClaimableEra);
+        // console.log('lowest', lowestClaimableEra);
 
         // Find a latest stake
         let currentEraStakes: EraStakingPoints | null = null;
