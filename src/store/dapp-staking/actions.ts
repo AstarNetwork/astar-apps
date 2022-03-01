@@ -699,7 +699,7 @@ const actions: ActionTree<State, StateInterface> = {
         });
 
         // calculate reward
-        result.unclaimedEras = getErasToClaim2(eraStakesMap);
+        result.unclaimedEras = await getErasToClaim(parameters.api, parameters.dapp.address);
         for (let era of result.unclaimedEras) {
           const eraStakes: EraStakingPoints | undefined = eraStakesMap
             .get(era)
@@ -711,52 +711,52 @@ const actions: ActionTree<State, StateInterface> = {
             if (!eraStakes.claimedRewards.eq(new BN(0))) {
               continue;
             }
-          }
 
-          if (currentEraStakes) {
-            // TODO check why eraStakes.stakers.get is not working
-            for (const [account, balance] of currentEraStakes.stakers) {
-              if (account.toString() === parameters.senderAddress) {
-                let eraRewardsAndStakes: EraRewardAndStake = eraRewardsAndStakeMap
-                  .get(era)
-                  .unwrap();
-                if (eraRewardsAndStakes) {
-                  // temp to avoid staked = 0 in first blocks on test env
-                  if (eraRewardsAndStakes.staked.eq(new BN(0))) {
-                    break;
+            if (currentEraStakes) {
+              // TODO check why eraStakes.stakers.get is not working
+              for (const [account, balance] of currentEraStakes.stakers) {
+                if (account.toString() === parameters.senderAddress) {
+                  let eraRewardsAndStakes: EraRewardAndStake = eraRewardsAndStakeMap
+                    .get(era)
+                    .unwrap();
+                  if (eraRewardsAndStakes) {
+                    // temp to avoid staked = 0 in first blocks on test env
+                    if (eraRewardsAndStakes.staked.eq(new BN(0))) {
+                      break;
+                    }
+
+                    let eraReward = balance
+                      .mul(eraRewardsAndStakes.rewards)
+                      .divn(5) // 20% reward percentage
+                      .div(eraRewardsAndStakes.staked);
+
+                    accumulatedReward = accumulatedReward.add(eraReward);
+                  } else {
+                    console.warn('No EraRewardAndStake for era ', era);
                   }
 
-                  let eraReward = balance
-                    .mul(eraRewardsAndStakes.rewards)
-                    .divn(5) // 20% reward percentage
-                    .div(eraRewardsAndStakes.staked);
-
-                  accumulatedReward = accumulatedReward.add(eraReward);
-                } else {
-                  console.warn('No EraRewardAndStake for era ', era);
+                  break;
                 }
-
-                break;
               }
+            } else {
+              console.warn('No stakes found');
             }
-          } else {
-            console.warn('No stakes found');
           }
+
+          // Commented out becasue the calculation is not feasible in reasonable time
+          // on Shibuya, and soon the same will happen on Shiden (as number of era increases).
+
+          // result.estimatedClaimedRewards = getEstimatedClaimedAwards(
+          //   currentEra,
+          //   eraStakesMap,
+          //   eraRewardsAndStakeMap,
+          //   parameters.api,
+          //   parameters.senderAddress,
+          //   bonusEraDuration
+          // );
+          result.estimatedClaimedRewards = parameters.api.createType('Balance', 0);
+          result.rewards = parameters.api.createType('Balance', accumulatedReward);
         }
-
-        // Commented out becasue the calculation is not feasible in reasonable time
-        // on Shibuya, and soon the same will happen on Shiden (as number of era increases).
-
-        // result.estimatedClaimedRewards = getEstimatedClaimedAwards(
-        //   currentEra,
-        //   eraStakesMap,
-        //   eraRewardsAndStakeMap,
-        //   parameters.api,
-        //   parameters.senderAddress,
-        //   bonusEraDuration
-        // );
-        result.estimatedClaimedRewards = parameters.api.createType('Balance', 0);
-        result.rewards = parameters.api.createType('Balance', accumulatedReward);
       }
     } catch (err) {
       const error = err as unknown as Error;

@@ -63,7 +63,7 @@ export const providerEndpoints: ChainProvider[] = [
     subscan: 'https://shiden.subscan.io',
     blockscout: 'https://blockscout.com/shiden',
     evmChainId: '336',
-    evmRpc: 'https://rpc.shiden.astar.network:8545',
+    evmRpc: 'https://evm.shiden.astar.network',
     faucetEndpoint: 'https://astar-discord-faucet.herokuapp.com/shiden',
   },
   {

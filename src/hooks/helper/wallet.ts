@@ -37,7 +37,9 @@ export const isMobileDevice =
 
 export const castMobileSource = (source: string) => {
   if (isMobileDevice) {
-    if (source === SupportWallet.Math) {
+    // Memo: source as 'polkadot-js' in mobile app
+    const polkadotJsWallets = [SupportWallet.Math, SupportWallet.Nova];
+    if (polkadotJsWallets.find((it) => it === source)) {
       return SupportWallet.PolkadotJs;
     }
   }

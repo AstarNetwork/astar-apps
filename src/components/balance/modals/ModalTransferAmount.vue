@@ -33,14 +33,6 @@
             style
             >{{ $t('balance.modals.sigExtrinsicBlocked') }}</q-banner
           >
-          <q-banner
-            v-if="isEthWallet"
-            dense
-            rounded
-            class="bg-orange text-white tw-mb-4 q-pa-xs"
-            style
-            >{{ $t('balance.modals.evmModeWarning') }}</q-banner
-          >
           <div>
             <h3
               class="
@@ -118,7 +110,7 @@
           </div>
         </div>
         <div
-          v-if="isH160"
+          v-if="isEthWallet"
           class="tw-flex tw-items-center tw-mt-6 tw-p-3 tw-pb-4 tw-rounded-md tw-border"
           :class="[
             isChecked && 'tw-bg-blue-500 dark:tw-bg-blue-800',
@@ -143,7 +135,7 @@
         <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row-reverse">
           <button
             type="button"
-            :disabled="!canExecuteTransaction || (isH160 && !isChecked)"
+            :disabled="!canExecuteTransaction || (isEthWallet && !isChecked)"
             class="confirm"
             @click="transfer"
           >
@@ -199,11 +191,9 @@ export default defineComponent({
       emit('update:is-open', false);
     };
 
-    const openOption = ref<boolean>(false);
     const isChecked = ref<boolean>(false);
     const web3 = ref<Web3 | undefined>(undefined);
     const store = useStore();
-    const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
     const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
 
     const { defaultUnitToken, decimal } = useChainMetadata();
@@ -220,7 +210,6 @@ export default defineComponent({
       const chain = chainInfo ? chainInfo.chain : '';
       return getProviderIndex(chain);
     });
-    const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
     // isCustomSigBlocked is temporary until extrinsic call pallet is deployed to all networks.
     const isCustomSigBlocked = computed(() => !!!providerEndpoints[currentNetworkIdx.value].prefix);
@@ -290,7 +279,6 @@ export default defineComponent({
       Role,
       isEthWallet,
       isChecked,
-      isH160,
       isDarkTheme,
       toAddressBalance,
       ...toRefs(props),
