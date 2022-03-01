@@ -1,11 +1,11 @@
-import { getIndividualClaimData } from './helper/claim';
 import { $api } from 'boot/api';
 import { getInjector } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
-import { computed, ref, watch } from 'vue';
-import { ExtrinsicPayload } from './helper';
-import { useCustomSignature, useCurrentEra } from './index';
 import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
+import { computed, ref, watchEffect } from 'vue';
+import { ExtrinsicPayload } from './helper';
+import { getIndividualClaimData } from './helper/claim';
+import { useCurrentEra, useCustomSignature } from './index';
 
 export function useClaimAll() {
   const batchTxs = ref<ExtrinsicPayload[]>([]);
@@ -26,45 +26,41 @@ export function useClaimAll() {
     isCustomSig,
   } = useCustomSignature();
 
-  watch(
-    [$api, senderAddress, dapps, isSendingTx, era],
-    async () => {
-      try {
-        isLoading.value = true;
-        numOfRewardableDapp.value = 0;
-        batchTxs.value = [];
-        const api = $api.value;
-        const senderAddressRef = senderAddress.value;
-        if (!api) {
-          throw Error('Failed to connect to API');
-        }
-        if (!senderAddressRef || !era.value) return;
-
-        const txs = [];
-        for await (const { address } of dapps.value) {
-          const data = await getIndividualClaimData({
-            dappAddress: address,
-            api,
-            senderAddress: senderAddressRef,
-            currentEra: era.value,
-          }).catch((error: any) => {
-            console.error(error.message);
-            return { transactions: [], numberOfUnclaimedEra: 0 };
-          });
-          if (data.numberOfUnclaimedEra > 0) {
-            numOfRewardableDapp.value = numOfRewardableDapp.value + 1;
-            txs.push(data.transactions);
-          }
-        }
-        batchTxs.value = txs.flat();
-      } catch (error: any) {
-        console.error(error.message);
-      } finally {
-        isLoading.value = false;
+  watchEffect(async () => {
+    try {
+      isLoading.value = true;
+      numOfRewardableDapp.value = 0;
+      batchTxs.value = [];
+      const api = $api.value;
+      const senderAddressRef = senderAddress.value;
+      if (!api) {
+        throw Error('Failed to connect to API');
       }
-    },
-    { immediate: true }
-  );
+      if (!senderAddressRef || !era.value || isSendingTx.value) return;
+
+      const txs = [];
+      for await (const { address } of dapps.value) {
+        const data = await getIndividualClaimData({
+          dappAddress: address,
+          api,
+          senderAddress: senderAddressRef,
+          currentEra: era.value,
+        }).catch((error: any) => {
+          console.error(error.message);
+          return { transactions: [], numberOfUnclaimedEra: 0 };
+        });
+        if (data.numberOfUnclaimedEra > 0) {
+          numOfRewardableDapp.value = numOfRewardableDapp.value + 1;
+          txs.push(data.transactions);
+        }
+      }
+      batchTxs.value = txs.flat();
+    } catch (error: any) {
+      console.error(error.message);
+    } finally {
+      isLoading.value = false;
+    }
+  });
 
   const claimAll = async (): Promise<void> => {
     const api = $api.value;

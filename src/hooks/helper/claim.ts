@@ -183,31 +183,28 @@ const getFirstEraDappHasNotClaimed = async ({
   api: ApiPromise;
   currentEra: number;
 }): Promise<number> => {
-  let isFinish = false;
-  let era = 0;
   let firstEraDappHasNotClaimed = 0;
 
-  while (!isFinish) {
+  for (let era = 0; era <= currentEra; era++) {
     try {
       const data = await getContractEraStake({ dappAddress, era, api });
       if (data && !data.isNone) {
         const { contractRewardClaimed } = data.unwrapOrDefault().toHuman();
         if (!contractRewardClaimed) {
           firstEraDappHasNotClaimed = era;
-          isFinish = true;
+          break;
         }
       }
 
       if (era === currentEra) {
         firstEraDappHasNotClaimed = era;
-        isFinish = true;
+        break;
       }
-      era++;
     } catch (error: any) {
       console.error(error.message);
-      isFinish = true;
     }
   }
+
   return firstEraDappHasNotClaimed;
 };
 
@@ -220,20 +217,16 @@ const getLastEraClaimedForDapp = async ({
   api: ApiPromise;
   currentEra: number;
 }): Promise<number> => {
-  let era = currentEra;
   let lastEraClaimed = 0;
-  let isFinish = false;
 
-  // Memo: find the last era of 'contractRewardClaimed: false'
-  // Memo: Era decrease from currentEra
-  while (!isFinish) {
+  for (let era = currentEra; era >= 0; era--) {
     try {
       const data = await getContractEraStake({ dappAddress, era, api });
       if (data && !data.isNone) {
         const { contractRewardClaimed } = data.unwrapOrDefault().toHuman();
         if (contractRewardClaimed) {
           lastEraClaimed = era;
-          isFinish = true;
+          break;
         }
       }
 
@@ -245,15 +238,13 @@ const getLastEraClaimedForDapp = async ({
           currentEra,
         });
         lastEraClaimed = firstEraDappStaked - 1;
-        isFinish = true;
+        break;
       }
-
-      era--;
     } catch (error: any) {
       console.error(error.message);
-      isFinish = true;
     }
   }
+
   return lastEraClaimed;
 };
 
