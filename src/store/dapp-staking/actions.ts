@@ -661,7 +661,7 @@ const actions: ActionTree<State, StateInterface> = {
       });
 
       // calculate reward
-      result.unclaimedEras = getErasToClaim2(eraStakesMap);
+      result.unclaimedEras = await getErasToClaim(parameters.api, parameters.dapp.address);
       for (let era of result.unclaimedEras) {
         const eraStakes: EraStakingPoints | undefined = eraStakesMap.get(era)?.unwrapOr(undefined);
         if (eraStakes) {
