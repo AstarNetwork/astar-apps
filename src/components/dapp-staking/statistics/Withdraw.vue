@@ -44,6 +44,7 @@ import { u32 } from '@polkadot/types';
 import { VoidFn } from '@polkadot/api/types';
 import { Balance, EraIndex } from '@polkadot/types/interfaces';
 import { Codec } from '@polkadot/types/types';
+import { useAccount, useStakingH160 } from 'src/hooks';
 import Button from 'src/components/common/Button.vue';
 import { WithdrawParameters } from 'src/store/dapp-staking/actions';
 import FormatBalance from 'components/balance/FormatBalance.vue';
@@ -65,15 +66,23 @@ export default defineComponent({
     const canWithdraw = ref<boolean>(false);
     const totalToWithdraw = ref<BN>(new BN(0));
     const showModal = ref<boolean>(false);
-    const { canUnbondWithdraw } = useUnbondWithdraw($api);
+    const { canUnbondWithdraw } = useUnbondWithdraw();
+    const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
+    const { currentAccount } = useAccount();
+    const { callWithdrawUnbonded } = useStakingH160(currentAccount);
 
     const withdraw = async (): Promise<void> => {
-      const result = await store.dispatch('dapps/withdrawUnbonded', {
-        api: $api?.value,
-        senderAddress: selectedAccountAddress.value,
-        substrateAccounts: substrateAccounts.value,
-      } as WithdrawParameters);
+      if (!isH160.value) {
+        const result = await store.dispatch('dapps/withdrawUnbonded', {
+          api: $api?.value,
+          senderAddress: selectedAccountAddress.value,
+          substrateAccounts: substrateAccounts.value,
+        } as WithdrawParameters);
+      } else {
+        const result = await callWithdrawUnbonded();
+        console.log('result', result);
+      }
     };
 
     const subscribeToEraChange = async (): Promise<VoidFn | undefined> => {

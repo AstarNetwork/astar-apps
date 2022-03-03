@@ -1,11 +1,12 @@
 import { ref, watchEffect } from 'vue';
+import { $api } from 'boot/api';
 
-export const useUnbondWithdraw = (apiRef: any) => {
+export const useUnbondWithdraw = () => {
   const canUnbondWithdraw = ref<boolean>(false);
 
   watchEffect(() => {
     try {
-      const unbondingPeriod = apiRef.value?.consts.dappsStaking.unbondingPeriod;
+      const unbondingPeriod = $api.value?.consts.dappsStaking.unbondingPeriod;
       canUnbondWithdraw.value = !!unbondingPeriod;
     } catch {
       canUnbondWithdraw.value = false;

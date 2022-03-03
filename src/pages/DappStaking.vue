@@ -24,6 +24,7 @@
       >
         {{ $t('dappStaking.dappStaking') }}
       </h1>
+      <button @click="callTest">Test</button>
       <div class="tw-flex tw-justify-between tw-items-center tw-w-full">
         <div class="tw-flex">
           <Tab :labels="[{ label: 'Discover', path: 'discover' }]" />
@@ -55,9 +56,10 @@
 <script lang="ts">
 import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
-import { computed, defineComponent } from 'vue';
+import { computed, defineComponent, watchEffect } from 'vue';
 import Tab from 'components/common/Tab.vue';
-import { useAccount, useStaking } from 'src/hooks';
+import { useAccount, useStakingH160 } from 'src/hooks';
+import BN from 'bn.js';
 export default defineComponent({
   components: { Tab },
   setup() {
@@ -72,12 +74,44 @@ export default defineComponent({
 
     // for testing
     const { currentAccount } = useAccount();
-    const { getEraInfo } = useStaking(currentAccount);
-    const { result } = getEraInfo();
+    const {
+      getEraInfo,
+      getEraRewardsAndStakes,
+      getStakedAmount,
+      getContractStake,
+      callRegister,
+      callBondAndStake,
+      callUnbondAndUnstake,
+      callWithdrawUnbonded,
+      callClaim,
+    } = useStakingH160(currentAccount);
+    // const { result } = getEraInfo();
+    // const { result } = getEraRewardsAndStakes(633);
+    // const { result } = getStakedAmount('0x1CdEBe3d073CE76615Ed3f9FaB9F4A886BE62f27');
+    // const { result } = getContractStake('0x03B233193E1F59edbDb154a9f59347dD40584F5a'); // decus
+
+    // watchEffect(() => {
+    //   if (result.value) {
+    //     console.log('result', result.value);
+    //   }
+    // });
+
+    const callTest = async () => {
+      // const result = await callRegister('0x1CdEBe3d073CE76615Ed3f9FaB9F4A886BE62f27');
+      const result = await callBondAndStake(
+        '0xDE0f34d2845511c20bAb0d7ce02B03c8065ff0c5',
+        new BN(10).pow(new BN(19))
+      );
+      // const result = await callUnbondAndUnstake('0x1CdEBe3d073CE76615Ed3f9FaB9F4A886BE62f27', 10 ** 19);
+      // const result = await callWithdrawUnbonded();
+      // const result = await callClaim('0x1CdEBe3d073CE76615Ed3f9FaB9F4A886BE62f27', 1);
+      console.log('result', result);
+    };
 
     return {
       maxNumberOfStakersPerContract,
       minimumStakingAmount,
+      callTest,
     };
   },
 });

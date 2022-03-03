@@ -1,3 +1,5 @@
+import { EthReceipt } from '@polkadot/types/interfaces';
+import BN from 'bn.js';
 import type { Contract } from 'web3-eth-contract/types';
 
 export class Staking {
@@ -40,7 +42,10 @@ export class Staking {
         .register(contractAddr)
         .send({ from: this.fromAddr })
         .on('transactionHash', (hash: string) => {
-          resolve(hash);
+          console.log('hash', hash);
+        })
+        .on('receipt', (receipt: EthReceipt) => {
+          resolve(receipt.transactionHash);
         })
         .on('error', (error: Error) => {
           reject(error.message);
@@ -48,13 +53,16 @@ export class Staking {
     });
   };
 
-  callBondAndStake = (contractAddr: string, amount: number) => {
+  callBondAndStake = (contractAddr: string, amount: BN) => {
     return new Promise((resolve, reject) => {
       this.ci.methods
         .bond_and_stake(contractAddr, amount)
         .send({ from: this.fromAddr })
         .on('transactionHash', (hash: string) => {
-          resolve(hash);
+          console.log('hash', hash);
+        })
+        .on('receipt', (receipt: EthReceipt) => {
+          resolve(receipt.transactionHash);
         })
         .on('error', (error: Error) => {
           reject(error.message);
@@ -62,13 +70,16 @@ export class Staking {
     });
   };
 
-  callUnbondAndUnstake = (contractAddr: string, amount: number) => {
+  callUnbondAndUnstake = (contractAddr: string, amount: BN) => {
     return new Promise((resolve, reject) => {
       this.ci.methods
         .unbond_and_unstake(contractAddr, amount)
         .send({ from: this.fromAddr })
         .on('transactionHash', (hash: string) => {
-          resolve(hash);
+          console.log('hash', hash);
+        })
+        .on('receipt', (receipt: EthReceipt) => {
+          resolve(receipt.transactionHash);
         })
         .on('error', (error: Error) => {
           reject(error.message);
@@ -82,7 +93,10 @@ export class Staking {
         .withdraw_unbonded()
         .send({ from: this.fromAddr })
         .on('transactionHash', (hash: string) => {
-          resolve(hash);
+          console.log('hash', hash);
+        })
+        .on('receipt', (receipt: EthReceipt) => {
+          resolve(receipt.transactionHash);
         })
         .on('error', (error: Error) => {
           reject(error.message);
@@ -90,13 +104,16 @@ export class Staking {
     });
   };
 
-  callClaim = (contractAddr: string, amount: number) => {
+  callClaim = (contractAddr: string, era: number) => {
     return new Promise((resolve, reject) => {
       this.ci.methods
-        .claim(contractAddr, amount)
+        .claim(contractAddr, era)
         .send({ from: this.fromAddr })
         .on('transactionHash', (hash: string) => {
-          resolve(hash);
+          console.log('hash', hash);
+        })
+        .on('receipt', (receipt: EthReceipt) => {
+          resolve(receipt.transactionHash);
         })
         .on('error', (error: Error) => {
           reject(error.message);

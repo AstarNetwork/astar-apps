@@ -19,6 +19,7 @@ import { ActionTree, Dispatch } from 'vuex';
 import { StateInterface } from '../index';
 import { getInjector } from './../../hooks/helper/wallet';
 import { DappItem, DappStateInterface as State, NewDappItem } from './state';
+import { isValidEvmAddress, toSS58Address } from 'src/config/web3/utils/convert';
 
 let collectionKey: string;
 
@@ -593,8 +594,12 @@ const actions: ActionTree<State, StateInterface> = {
             formatted: '',
             denomAmount: new BN('0'),
           };
+          const senderAddress = isValidEvmAddress(parameters.senderAddress)
+            ? toSS58Address(parameters.senderAddress)
+            : parameters.senderAddress;
+
           for (const [account, balance] of stakeInfo.stakers) {
-            if (account.toString() === parameters.senderAddress) {
+            if (account.toString() === senderAddress) {
               yourStake = {
                 formatted: balanceFormatter(balance),
                 denomAmount: new BN(balance.toString()),

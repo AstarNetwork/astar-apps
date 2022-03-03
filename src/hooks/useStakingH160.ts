@@ -4,8 +4,9 @@ import { contractInstance, Staking } from 'src/config/web3';
 import dappsStakingContractAbi from 'src/config/web3/abi/dapps-staking-abi.json';
 import { $web3 } from 'boot/api';
 import { getDefaultEthProvider } from 'src/config/web3/utils';
+import BN from 'bn.js';
 
-export function useStaking(addressRef: Ref<string>) {
+export function useStakingH160(addressRef: Ref<string>) {
   const store = useStore();
   const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
   const stakingRef = ref();
@@ -115,7 +116,10 @@ export function useStaking(addressRef: Ref<string>) {
     try {
       txHash = await stakingRef.value.callRegister(contractAddr);
       console.log('ss', txHash);
-      store.dispatch('general/showAlertMsg', { msg: txHash, alertType: 'success' });
+      store.dispatch('general/showAlertMsg', {
+        msg: `transaction is confirmed: ${txHash}`,
+        alertType: 'success',
+      });
     } catch (e) {
       handleError(e);
     }
@@ -123,12 +127,15 @@ export function useStaking(addressRef: Ref<string>) {
     return txHash;
   };
 
-  const callBondAndStake = async (contractAddr: string, amount: number) => {
+  const callBondAndStake = async (contractAddr: string, amount: BN) => {
     let txHash;
     store.commit('general/setLoading', true);
     try {
       txHash = await stakingRef.value.callBondAndStake(contractAddr, amount);
-      store.dispatch('general/showAlertMsg', { msg: txHash, alertType: 'success' });
+      store.dispatch('general/showAlertMsg', {
+        msg: `transaction is confirmed: ${txHash}`,
+        alertType: 'success',
+      });
     } catch (e) {
       handleError(e);
     }
@@ -136,12 +143,15 @@ export function useStaking(addressRef: Ref<string>) {
     return txHash;
   };
 
-  const callUnbondAndUnstake = async (contractAddr: string, amount: number) => {
+  const callUnbondAndUnstake = async (contractAddr: string, amount: BN) => {
     let txHash;
     store.commit('general/setLoading', true);
     try {
       txHash = await stakingRef.value.callUnbondAndUnstake(contractAddr, amount);
-      store.dispatch('general/showAlertMsg', { msg: txHash, alertType: 'success' });
+      store.dispatch('general/showAlertMsg', {
+        msg: `transaction is confirmed: ${txHash}`,
+        alertType: 'success',
+      });
     } catch (e) {
       handleError(e);
     }
@@ -154,7 +164,10 @@ export function useStaking(addressRef: Ref<string>) {
     store.commit('general/setLoading', true);
     try {
       txHash = await stakingRef.value.callWithdrawUnbonded();
-      store.dispatch('general/showAlertMsg', { msg: txHash, alertType: 'success' });
+      store.dispatch('general/showAlertMsg', {
+        msg: `transaction is confirmed: ${txHash}`,
+        alertType: 'success',
+      });
     } catch (e) {
       handleError(e);
     }
@@ -162,12 +175,15 @@ export function useStaking(addressRef: Ref<string>) {
     return txHash;
   };
 
-  const callClaim = async (contractAddr: string, amount: number) => {
+  const callClaim = async (contractAddr: string, era: number) => {
     let txHash;
     store.commit('general/setLoading', true);
     try {
-      txHash = await stakingRef.value.callClaim(contractAddr, amount);
-      store.dispatch('general/showAlertMsg', { msg: txHash, alertType: 'success' });
+      txHash = await stakingRef.value.callClaim(contractAddr, era);
+      store.dispatch('general/showAlertMsg', {
+        msg: `transaction is confirmed: ${txHash}`,
+        alertType: 'success',
+      });
     } catch (e) {
       handleError(e);
     }

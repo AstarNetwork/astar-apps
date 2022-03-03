@@ -56,6 +56,7 @@ import RegisterDappMedia from 'components/dapp-staking/modals/RegisterDappMedia.
 import RegisterDappSupport from 'components/dapp-staking/modals/RegisterDappSupport.vue';
 import Button from 'components/common/Button.vue';
 import { useStore } from 'src/store';
+import { useAccount, useStakingH160 } from 'src/hooks';
 import { $api } from 'boot/api';
 import { NewDappItem } from 'src/store/dapp-staking/state';
 import { RegisterParameters } from 'src/store/dapp-staking/actions';
@@ -76,19 +77,27 @@ export default defineComponent({
     const stepsCount = 4;
     const registerForm = ref();
     const stepper = ref();
+    const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
+    const { currentAccount } = useAccount();
+    const { callRegister } = useStakingH160(currentAccount);
 
     const registerDapp = async (step: number): Promise<void> => {
       registerForm?.value?.validate().then(async (success: boolean) => {
         if (success) {
           if (step === stepsCount) {
-            const senderAddress = store.getters['general/selectedAddress'];
-            const result = await store.dispatch('dapps/registerDapp', {
-              dapp: data,
-              api: $api?.value,
-              senderAddress,
-              substrateAccounts: substrateAccounts.value,
-            } as RegisterParameters);
+            let result;
+            if (!isH160.value) {
+              const senderAddress = store.getters['general/selectedAddress'];
+              result = await store.dispatch('dapps/registerDapp', {
+                dapp: data,
+                api: $api?.value,
+                senderAddress,
+                substrateAccounts: substrateAccounts.value,
+              } as RegisterParameters);
+            } else {
+              result = await callRegister(data.address);
+            }
 
             if (result) {
               emit('update:is-open', false);

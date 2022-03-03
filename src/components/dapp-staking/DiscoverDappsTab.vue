@@ -129,15 +129,6 @@ export default defineComponent({
     store.dispatch('dapps/getDapps');
     store.dispatch('dapps/getStakingInfo');
 
-    watchEffect(() => {
-      if (isH160.value) {
-        store.dispatch('general/showAlertMsg', {
-          msg: 'dApp staking only supports Substrate wallets',
-          alertType: 'error',
-        });
-      }
-    });
-
     return {
       dapps,
       selectedDapp,
