@@ -27,7 +27,7 @@
 <script lang="ts">
 import WalletOption from 'src/components/balance/modals/wallet/WalletOption.vue';
 import Modal from 'src/components/common/Modal.vue';
-import { supportWallets, Wallet } from 'src/config/wallets';
+import { supportWallets, Wallet, supportEvmWallets } from 'src/config/wallets';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
 import { defineComponent, watchEffect, ref } from 'vue';
 
@@ -45,20 +45,27 @@ export default defineComponent({
       type: Function,
       required: true,
     },
+    isEvmOnly: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
-  setup() {
+  setup(props) {
     const wallets = ref<Wallet[]>(supportWallets);
     watchEffect(() => {
-      wallets.value = supportWallets
-        .map((it) => {
-          const { isSupportMobileApp, isSupportBrowserExtension } = it;
-          if (isMobileDevice) {
-            return isSupportMobileApp ? it : null;
-          } else {
-            return isSupportBrowserExtension ? it : null;
-          }
-        })
-        .filter((it) => it !== null) as Wallet[];
+      wallets.value = props.isEvmOnly
+        ? supportEvmWallets
+        : (supportWallets
+            .map((it) => {
+              const { isSupportMobileApp, isSupportBrowserExtension } = it;
+              if (isMobileDevice) {
+                return isSupportMobileApp ? it : null;
+              } else {
+                return isSupportBrowserExtension ? it : null;
+              }
+            })
+            .filter((it) => it !== null) as Wallet[]);
     });
     return { wallets };
   },

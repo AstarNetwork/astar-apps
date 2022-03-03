@@ -113,4 +113,17 @@ export const supportWalletObj = {
   },
 };
 
+export const supportEvmWalletObj = {
+  [SupportWallet.MetaMask]: {
+    img: require('/src/assets/img/metamask.png'),
+    name: 'MetaMask',
+    source: SupportWallet.MetaMask,
+    walletUrl: 'https://metamask.io/',
+    guideUrl: 'https://metamask.io/',
+    isSupportBrowserExtension: true,
+    isSupportMobileApp: true,
+  },
+};
+
+export const supportEvmWallets = objToArray(supportEvmWalletObj) as Wallet[];
 export const supportWallets = objToArray(supportWalletObj) as Wallet[];

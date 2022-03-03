@@ -4,10 +4,14 @@ import BN from 'bn.js';
 import type { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
 import { useStore } from 'src/store';
 import { useCustomSignature } from 'src/hooks';
-import { isValidEvmAddress, toSS58Address, buildEvmAddress } from 'src/config/web3/utils/convert';
+import {
+  isValidEvmAddress,
+  toSS58Address,
+  buildEvmAddress,
+  getDefaultEthProvider,
+  sendNativeTokenTransaction,
+} from 'src/config/web3';
 import { isValidAddressPolkadotAddress, reduceDenomToBalance } from 'src/hooks/helper/plasmUtils';
-import { getDefaultEthProvider } from 'src/config/web3/utils';
-import { sendTransaction } from 'src/config/web3/utils/transactions';
 import { getUnit } from 'src/hooks/helper/units';
 import { getInjector } from 'src/hooks/helper/wallet';
 
@@ -79,13 +83,19 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
       store.commit('general/setLoading', true);
       const web3 = getDefaultEthProvider();
 
-      sendTransaction(web3, fromAddress, destinationAddress, transferAmt, (hash: string) => {
-        const msg = `Completed at transaction hash #${hash}`;
-        store.dispatch('general/showAlertMsg', { msg, alertType: 'success' });
-        store.commit('general/setLoading', false);
-        fn && fn();
-        isTxSuccess.value = true;
-      }).catch((error: any) => {
+      sendNativeTokenTransaction(
+        web3,
+        fromAddress,
+        destinationAddress,
+        transferAmt,
+        (hash: string) => {
+          const msg = `Completed at transaction hash #${hash}`;
+          store.dispatch('general/showAlertMsg', { msg, alertType: 'success' });
+          store.commit('general/setLoading', false);
+          fn && fn();
+          isTxSuccess.value = true;
+        }
+      ).catch((error: any) => {
         isTxSuccess.value = false;
         store.commit('general/setLoading', false);
         store.dispatch('general/showAlertMsg', {

@@ -1,20 +1,25 @@
-import { ASTAR_SS58_FORMAT } from './helper/plasmUtils';
+import { getProviderIndex } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SubstrateWallets, SupportWallet, WalletModalOption } from 'src/config/wallets';
-import { useAccount } from 'src/hooks';
-import { useStore } from 'src/store';
 import { getChainId, setupNetwork } from 'src/config/web3';
-import { computed, ref, watchEffect, watch } from 'vue';
-import { useMetamask } from './custom-signature/useMetamask';
-import { castMobileSource, getInjectedExtensions } from './helper/wallet';
+import { useAccount } from 'src/hooks';
 import * as utils from 'src/hooks/custom-signature/utils';
-import { getProviderIndex } from 'src/config/chainEndpoints';
+import { useStore } from 'src/store';
+import { computed, ref, watchEffect } from 'vue';
+import { useRouter } from 'vue-router';
+import { useMetamask } from './custom-signature/useMetamask';
+import { ASTAR_SS58_FORMAT } from './helper/plasmUtils';
+import { castMobileSource, getInjectedExtensions } from './helper/wallet';
 
 export const useConnectWallet = () => {
   const modalConnectWallet = ref<boolean>(false);
   const modalAccountSelect = ref<boolean>(false);
   const selectedWallet = ref<string>('');
   const modalName = ref<string>('');
+
+  const router = useRouter();
+  const currentRouter = router.currentRoute.value.matched[0];
+  const isBridge = router.currentRoute.value.matched.length > 0 && currentRouter.path === '/bridge';
 
   const { requestAccounts, requestSignature } = useMetamask();
   const store = useStore();
@@ -56,7 +61,7 @@ export const useConnectWallet = () => {
       store.commit('general/setCurrentEcdsaAccount', data);
       const chainId = getChainId(currentNetworkIdx.value);
       setTimeout(async () => {
-        await setupNetwork(chainId);
+        !isBridge && (await setupNetwork(chainId));
       }, 500);
       return true;
     } catch (err: any) {
@@ -125,21 +130,20 @@ export const useConnectWallet = () => {
     }
   });
 
-  watch(
-    [isConnectedNetwork],
-    () => {
-      const address = localStorage.getItem(SELECTED_ADDRESS);
-      if (!address || !isConnectedNetwork.value) return;
-      // Memo: wait for updating the chain id from the initial state 592 (to pass the `setupNetwork` function)
-      setTimeout(async () => {
-        if (address === 'Ethereum Extension') {
-          await setMetaMask();
-        }
-      }, 800);
-      store.commit('general/setCurrentAddress', address);
-    },
-    { immediate: true }
-  );
+  watchEffect(() => {
+    const address = localStorage.getItem(SELECTED_ADDRESS);
+    if (isBridge || currentRouter === undefined || !address || !isConnectedNetwork.value) {
+      return;
+    }
+
+    // Memo: wait for updating the chain id from the initial state 592 (to pass the `setupNetwork` function)
+    setTimeout(async () => {
+      if (address === 'Ethereum Extension') {
+        await setMetaMask();
+      }
+    }, 800);
+    store.commit('general/setCurrentAddress', address);
+  });
 
   return {
     WalletModalOption,
@@ -150,6 +154,7 @@ export const useConnectWallet = () => {
     modalName,
     selectedWallet,
     modalAccountSelect,
+    isH160,
     openSelectModal,
     setCloseModal,
     setWalletModal,
