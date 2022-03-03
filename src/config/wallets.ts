@@ -12,6 +12,7 @@ export enum SupportWallet {
   Math = 'mathwallet',
   Nova = 'nova',
   Talisman = 'talisman',
+  SubWallet = 'subwallet-js',
 }
 
 export const WalletModalOption = {
@@ -24,6 +25,7 @@ export const WalletModalOption = {
   Math: SupportWallet.Math,
   Nova: SupportWallet.Nova,
   Talisman: SupportWallet.Talisman,
+  SubWallet: SupportWallet.SubWallet,
 };
 
 export const SubstrateWallets = [
@@ -32,6 +34,7 @@ export const SubstrateWallets = [
   SupportWallet.Math,
   SupportWallet.Nova,
   SupportWallet.Talisman,
+  SupportWallet.SubWallet,
 ];
 
 export interface Wallet {
@@ -98,6 +101,15 @@ export const supportWalletObj = {
     guideUrl: 'https://novawallet.io/',
     isSupportBrowserExtension: false,
     isSupportMobileApp: true,
+  },
+  [SupportWallet.SubWallet]: {
+    img: require('/src/assets/img/logo-subwallet.svg'),
+    name: 'SubWallet',
+    source: SupportWallet.SubWallet,
+    walletUrl: 'https://subwallet.app/',
+    guideUrl: 'https://docs.subwallet.app/user-guide/how-to-install-subwallet',
+    isSupportBrowserExtension: true,
+    isSupportMobileApp: false,
   },
 };
 
