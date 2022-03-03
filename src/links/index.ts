@@ -12,9 +12,9 @@ export const socialUrl = {
 };
 
 export const deepLinkPath = {
-  metamask: '/#/balance/wallet/deeplink-metamask',
+  metamask: '#/balance/wallet/deeplink-metamask',
 };
 
 export const deepLink = {
-  metamask: `https://metamask.app.link/dapp/${window.location.host}${deepLinkPath.metamask}`,
+  metamask: `https://metamask.app.link/dapp/${window.location.host}/${deepLinkPath.metamask}`,
 };
