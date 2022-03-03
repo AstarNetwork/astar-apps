@@ -6,7 +6,7 @@ import { useStore } from 'src/store';
 import { getChainId, setupNetwork } from 'src/config/web3';
 import { computed, ref, watchEffect, watch } from 'vue';
 import { useMetamask } from './custom-signature/useMetamask';
-import { castMobileSource, getInjectedExtensions } from './helper/wallet';
+import { castMobileSource, getInjectedExtensions, isMobileDevice } from './helper/wallet';
 import * as utils from 'src/hooks/custom-signature/utils';
 import { getProviderIndex } from 'src/config/chainEndpoints';
 
@@ -67,6 +67,12 @@ export const useConnectWallet = () => {
 
   const setMetaMask = async () => {
     selectedWallet.value = SupportWallet.MetaMask;
+
+    if (isMobileDevice) {
+      const deeplinkUrl = `https://metamask.app.link/dapp/${window.location.host}`;
+      window.open(deeplinkUrl);
+    }
+
     const isMetamaskExtension = typeof window.ethereum !== 'undefined';
     if (!isMetamaskExtension) {
       modalName.value = WalletModalOption.NoExtension;
