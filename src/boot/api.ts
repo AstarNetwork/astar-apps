@@ -60,7 +60,7 @@ export default boot(async ({ store }) => {
   // update chaininfo
   const { chainInfo } = useChainInfo(api);
   const { metaExtensions, extensionCount } = useMetaExtensions(api, extensions)!!;
-  watchPostEffect(() => {
+  watchPostEffect(async () => {
     store.commit('general/setChainInfo', chainInfo.value);
     store.commit('general/setMetaExtensions', metaExtensions.value);
     store.commit('general/setExtensionCount', extensionCount.value);
