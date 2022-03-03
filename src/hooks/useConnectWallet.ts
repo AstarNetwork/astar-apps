@@ -9,6 +9,7 @@ import { useMetamask } from './custom-signature/useMetamask';
 import { castMobileSource, getInjectedExtensions, isMobileDevice } from './helper/wallet';
 import * as utils from 'src/hooks/custom-signature/utils';
 import { getProviderIndex } from 'src/config/chainEndpoints';
+import { deepLink, deepLinkPath } from 'src/links';
 
 export const useConnectWallet = () => {
   const modalConnectWallet = ref<boolean>(false);
@@ -71,8 +72,7 @@ export const useConnectWallet = () => {
     const isMetamaskExtension = typeof window.ethereum !== 'undefined';
 
     if (isMobileDevice && !isMetamaskExtension) {
-      const deeplinkUrl = `https://metamask.app.link/dapp/${window.location.host}`;
-      window.open(deeplinkUrl);
+      window.open(deepLink.metamask);
       return;
     }
     if (!isMetamaskExtension) {
@@ -134,16 +134,18 @@ export const useConnectWallet = () => {
 
   watch(
     [isConnectedNetwork],
-    () => {
+    async () => {
       const address = localStorage.getItem(SELECTED_ADDRESS);
-      if (!address || !isConnectedNetwork.value) return;
-      // Memo: wait for updating the chain id from the initial state 592 (to pass the `setupNetwork` function)
-      setTimeout(async () => {
-        if (address === 'Ethereum Extension') {
+      const isMetaMaskDeepLink = window.location.hash === deepLinkPath.metamask;
+      const isConnectMetaMask = address === 'Ethereum Extension' || isMetaMaskDeepLink;
+
+      if (isConnectedNetwork.value && isConnectMetaMask) {
+        // Memo: wait for updating the chain id from the initial state 592 (to pass the `setupNetwork` function)
+        setTimeout(async () => {
           await setMetaMask();
-        }
-      }, 800);
-      store.commit('general/setCurrentAddress', address);
+        }, 800);
+        store.commit('general/setCurrentAddress', address);
+      }
     },
     { immediate: true }
   );
