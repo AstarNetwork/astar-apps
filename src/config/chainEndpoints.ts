@@ -1,4 +1,4 @@
-import { LOCAL_STORAGE } from './localStorage';
+import { ApiPromise } from '@polkadot/api';
 import { RegistryTypes } from '@polkadot/types/types';
 import * as typeDefs from 'src/config/api/polkadot/registry-types';
 
@@ -129,23 +129,16 @@ export const getProviderIndex = (chain: ASTAR_CHAIN) => {
   }
 };
 
-// Memo: remove this function whenever individual claim  is applied in all the networks
-export const checkIsEnableIndividualClaim = () => {
-  const networkIdx = Number(localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX));
-  switch (networkIdx) {
-    case endpointKey.ASTAR:
-      return false;
-    case endpointKey.SHIDEN:
-      return false;
-    case endpointKey.SHIBUYA:
-      return false;
-    case endpointKey.LOCAL:
-      return true;
-    case endpointKey.CUSTOM:
-      return false;
-    default:
-      return false;
+export const checkIsEnableIndividualClaim = async (api: ApiPromise): Promise<boolean> => {
+  try {
+    const version = await api.query.dappsStaking.storageVersion();
+    if (!version) {
+      throw Error('invalid version');
+    }
+    const isEnableIndividualClaim = version.toHuman() !== 'V2_0_0';
+    return isEnableIndividualClaim;
+  } catch (error) {
+    // Memo: there is no `storageVersion` query in Astar network
+    return false;
   }
 };
-
-export const isEnableIndividualClaim = checkIsEnableIndividualClaim();

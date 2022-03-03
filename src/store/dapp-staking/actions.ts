@@ -1,4 +1,3 @@
-import { isEnableIndividualClaim } from './../../config/chainEndpoints';
 import { SubstrateAccount } from './../general/state';
 import { ApiPromise } from '@polkadot/api';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
@@ -597,7 +596,7 @@ const actions: ActionTree<State, StateInterface> = {
             denomAmount: new BN('0'),
           };
 
-          if (isEnableIndividualClaim) {
+          if (parameters.isEnableIndividualClaim) {
             const stakersInfo = await parameters.api.query.dappsStaking.stakersInfo<StakersInfo>(
               parameters.senderAddress,
               {
@@ -657,6 +656,7 @@ const actions: ActionTree<State, StateInterface> = {
     commit('general/setLoading', true, { root: true });
 
     try {
+      const isEnableIndividualClaim = parameters.isEnableIndividualClaim;
       if (isEnableIndividualClaim) {
         result = await getIndividualClaimStakingInfo(
           parameters.senderAddress,
@@ -867,6 +867,7 @@ export interface StakingParameters {
   unit: string;
   substrateAccounts: SubstrateAccount[];
   finalizeCallback: () => void;
+  isEnableIndividualClaim: boolean;
 }
 
 export interface ClaimParameters extends StakingParameters {

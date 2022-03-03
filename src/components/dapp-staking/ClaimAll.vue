@@ -36,7 +36,6 @@
 import { fasMoneyCheckAlt } from '@quasar/extras/fontawesome-v5';
 import IconBase from 'components/icons/IconBase.vue';
 import Button from 'src/components/common/Button.vue';
-import { isEnableIndividualClaim } from 'src/config/chainEndpoints';
 import { useAccount, useClaimAll } from 'src/hooks';
 import { defineComponent } from 'vue';
 
@@ -46,7 +45,7 @@ export default defineComponent({
     IconBase,
   },
   setup() {
-    const { claimAll, numOfRewardableDapp, isLoading } = useClaimAll();
+    const { claimAll, numOfRewardableDapp, isLoading, isEnableIndividualClaim } = useClaimAll();
     const { currentAccount } = useAccount();
 
     return {

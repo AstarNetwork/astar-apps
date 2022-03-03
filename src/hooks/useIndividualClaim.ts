@@ -1,4 +1,4 @@
-import { $api } from 'boot/api';
+import { $api, $isEnableIndividualClaim } from 'boot/api';
 import { getInjector } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
@@ -26,13 +26,13 @@ export function useIndividualClaim(dappAddress: string) {
   } = useCustomSignature();
 
   watch(
-    [$api, senderAddress, era, isSendingTx],
+    [$api, senderAddress, era, isSendingTx, $isEnableIndividualClaim],
     async () => {
       const api = $api.value;
       if (!api) {
         throw Error('Failed to connect to API');
       }
-      if (!senderAddress.value || !era.value) return;
+      if (!senderAddress.value || !era.value || !$isEnableIndividualClaim.value) return;
 
       const data = await getIndividualClaimData({
         dappAddress,
@@ -94,5 +94,10 @@ export function useIndividualClaim(dappAddress: string) {
     }
   };
 
-  return { individualClaim, numOfUnclaimedEra, claimBatchTxs: batchTxs };
+  return {
+    individualClaim,
+    numOfUnclaimedEra,
+    claimBatchTxs: batchTxs,
+    isEnableIndividualClaim: $isEnableIndividualClaim,
+  };
 }

@@ -1,5 +1,5 @@
-import { isEnableIndividualClaim } from './../config/chainEndpoints';
 import BN from 'bn.js';
+import { $isEnableIndividualClaim } from 'boot/api';
 import { ethers } from 'ethers';
 import { useStore } from 'src/store';
 import { computed, ref, watch } from 'vue';
@@ -28,6 +28,7 @@ export function useTvl(api: any) {
       if (!apiRef || !dappsRef || !tokenSymbolRef) return;
 
       const getTvl = async (): Promise<{ tvl: BN; tvlDefaultUnit: number }> => {
+        const isEnableIndividualClaim = $isEnableIndividualClaim.value;
         const era = await apiRef.query.dappsStaking.currentEra();
         const result = isEnableIndividualClaim
           ? await apiRef.query.dappsStaking.generalEraInfo(era)

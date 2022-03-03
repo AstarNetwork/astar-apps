@@ -1,4 +1,4 @@
-import { $api } from 'boot/api';
+import { $api, $isEnableIndividualClaim } from 'boot/api';
 import { getInjector } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
@@ -36,7 +36,9 @@ export function useClaimAll() {
       if (!api) {
         throw Error('Failed to connect to API');
       }
-      if (!senderAddressRef || !era.value || isSendingTx.value) return;
+      if (!senderAddressRef || !era.value || isSendingTx.value || !$isEnableIndividualClaim.value) {
+        return;
+      }
 
       const txs = [];
       for await (const { address } of dapps.value) {
@@ -106,5 +108,11 @@ export function useClaimAll() {
     }
   };
 
-  return { claimAll, batchTxs, numOfRewardableDapp, isLoading };
+  return {
+    claimAll,
+    batchTxs,
+    numOfRewardableDapp,
+    isLoading,
+    isEnableIndividualClaim: $isEnableIndividualClaim,
+  };
 }
