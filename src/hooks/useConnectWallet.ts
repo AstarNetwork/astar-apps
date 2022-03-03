@@ -144,6 +144,9 @@ export const useConnectWallet = () => {
         setTimeout(async () => {
           await setMetaMask();
         }, 800);
+      }
+
+      if (isConnectedNetwork && address) {
         store.commit('general/setCurrentAddress', address);
       }
     },
