@@ -68,12 +68,13 @@ export const useConnectWallet = () => {
   const setMetaMask = async () => {
     selectedWallet.value = SupportWallet.MetaMask;
 
-    if (isMobileDevice) {
+    const isMetamaskExtension = typeof window.ethereum !== 'undefined';
+
+    if (isMobileDevice && !isMetamaskExtension) {
       const deeplinkUrl = `https://metamask.app.link/dapp/${window.location.host}`;
       window.open(deeplinkUrl);
+      return;
     }
-
-    const isMetamaskExtension = typeof window.ethereum !== 'undefined';
     if (!isMetamaskExtension) {
       modalName.value = WalletModalOption.NoExtension;
       return;
