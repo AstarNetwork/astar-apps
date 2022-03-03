@@ -1,8 +1,7 @@
 import { useStore } from 'src/store';
 import { computed, Ref, watch, ref } from 'vue';
-import { contractInstance } from 'src/config/web3/contracts';
+import { contractInstance, Staking } from 'src/config/web3';
 import dappsStakingContractAbi from 'src/config/web3/abi/dapps-staking-abi.json';
-import { Staking } from 'src/config/web3/contracts/staking';
 import { $web3 } from 'boot/api';
 
 export function useStaking() {

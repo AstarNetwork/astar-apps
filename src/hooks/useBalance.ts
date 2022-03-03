@@ -6,7 +6,7 @@ import { useStore } from 'src/store';
 import { computed, onUnmounted, ref, Ref, watch } from 'vue';
 import { getVested } from './helper/vested';
 import { $api, $web3 } from 'boot/api';
-import { getBalance } from 'src/config/web3/utils/transactions';
+import { getBalance } from 'src/config/web3';
 
 function useCall(addressRef: Ref<string>) {
   const balanceRef = ref(new BN(0));

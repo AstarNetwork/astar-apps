@@ -155,14 +155,13 @@ import FormatBalance from 'components/balance/FormatBalance.vue';
 import InputAmount from 'components/common/InputAmount.vue';
 import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { useChainMetadata, useTransfer } from 'src/hooks';
-import { $api } from 'boot/api';
+import { $api, $web3 } from 'boot/api';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { reduceBalanceToDenom } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, toRefs, watchEffect, watch } from 'vue';
 import Web3 from 'web3';
 import ModalSelectAccount from './ModalSelectAccount.vue';
-import { createWeb3Instance } from 'src/config/web3';
 
 export enum Role {
   FromAddress = 'FromAddress',
@@ -192,7 +191,6 @@ export default defineComponent({
     };
 
     const isChecked = ref<boolean>(false);
-    const web3 = ref<Web3 | undefined>(undefined);
     const store = useStore();
     const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
 
@@ -240,17 +238,9 @@ export default defineComponent({
       store.commit('general/setCurrentAddress', address);
     };
 
-    watch(
-      [currentNetworkIdx],
-      async () => {
-        web3.value = await createWeb3Instance(currentNetworkIdx.value);
-      },
-      { immediate: true }
-    );
-
     watchEffect(async () => {
       const toAddressRef = toAddress.value;
-      const web3Ref = web3.value;
+      const web3Ref = $web3.value;
       const apiRef = $api.value;
       if (!apiRef || !toAddressRef) return;
       if (plasmUtils.isValidAddressPolkadotAddress(toAddressRef)) {
