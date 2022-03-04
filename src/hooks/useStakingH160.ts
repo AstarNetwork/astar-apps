@@ -8,7 +8,6 @@ import BN from 'bn.js';
 
 export function useStakingH160(addressRef: Ref<string>) {
   const store = useStore();
-  const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
   const stakingRef = ref();
 
   // dApps Staking precompiled contract address
