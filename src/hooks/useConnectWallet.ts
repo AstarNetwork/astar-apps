@@ -6,7 +6,12 @@ import { useStore } from 'src/store';
 import { computed, ref, watchEffect, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useMetamask } from './custom-signature/useMetamask';
-import { castMobileSource, getInjectedExtensions, isMobileDevice } from './helper/wallet';
+import {
+  castMobileSource,
+  getInjectedExtensions,
+  isMobileDevice,
+  handleIsSubstrateDappBrowser,
+} from './helper/wallet';
 import * as utils from 'src/hooks/custom-signature/utils';
 import { getProviderIndex } from 'src/config/chainEndpoints';
 import { deepLink, deepLinkPath } from 'src/links';
@@ -111,13 +116,20 @@ export const useConnectWallet = () => {
     }
   };
 
+  const setWallet = (wallet: SupportWallet): void => {
+    selectedWallet.value = wallet;
+    modalName.value = wallet;
+  };
+
   const setWalletModal = (wallet: SupportWallet): void => {
     if (wallet === SupportWallet.MetaMask) {
       setMetaMask();
       return;
     }
-    selectedWallet.value = wallet;
-    modalName.value = wallet;
+    if (wallet === SupportWallet.Math) {
+      handleIsSubstrateDappBrowser(wallet);
+    }
+    setWallet(wallet);
   };
 
   watchEffect(async () => {
@@ -156,10 +168,16 @@ export const useConnectWallet = () => {
     [isConnectedNetwork],
     async () => {
       const isMetaMaskDeepLink = window.location.hash === deepLinkPath.metamask;
-      if (isConnectedNetwork.value && isMetaMaskDeepLink) {
+      const isMathWalletDeepLink = window.location.hash === deepLinkPath.mathwallet;
+      if (!isConnectedNetwork.value) return;
+
+      if (isMetaMaskDeepLink) {
         setTimeout(async () => {
           await setMetaMask();
         }, 800);
+      }
+      if (isMathWalletDeepLink) {
+        setWallet(SupportWallet.Math);
       }
     },
     { immediate: true }

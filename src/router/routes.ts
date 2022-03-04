@@ -40,6 +40,10 @@ const routes: RouteRecordRaw[] = [
             path: 'deeplink-metamask',
             component: ConnectWallet,
           },
+          {
+            path: 'deeplink-mathwallet',
+            component: ConnectWallet,
+          },
         ],
       },
     ],
