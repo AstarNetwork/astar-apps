@@ -13,11 +13,8 @@ export const socialUrl = {
 
 export const deepLinkPath = {
   metamask: '#/balance/wallet/deeplink-metamask',
-  mathwallet: '#/balance/wallet/deeplink-mathwallet',
 };
 
 export const deepLink = {
   metamask: `https://metamask.app.link/dapp/${window.location.host}/${deepLinkPath.metamask}`,
-  mathwallet: `mathwallet://mathwallet.org?action=link&value=${window.location.host}/${deepLinkPath.mathwallet}
-  `,
 };

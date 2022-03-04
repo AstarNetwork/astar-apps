@@ -170,17 +170,14 @@ export const useConnectWallet = () => {
     [isConnectedNetwork],
     async () => {
       const isMetaMaskDeepLink = window.location.hash === deepLinkPath.metamask;
-      const isMathWalletDeepLink = window.location.hash === deepLinkPath.mathwallet;
-      const isWalExtension = await checkIsWalletExtension();
-      if (!isConnectedNetwork.value || !isWalExtension) return;
+
+      const isWalletExtension = await checkIsWalletExtension();
+      if (!isConnectedNetwork.value || !isWalletExtension) return;
 
       if (isMetaMaskDeepLink) {
         setTimeout(async () => {
           await setMetaMask();
         }, 800);
-      }
-      if (isMathWalletDeepLink) {
-        setWallet(SupportWallet.Math);
       }
     },
     { immediate: true }

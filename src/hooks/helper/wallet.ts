@@ -101,8 +101,6 @@ export const getDeepLinkUrl = (wallet: SupportWallet): string | false => {
   switch (wallet) {
     case SupportWallet.MetaMask:
       return deepLink.metamask;
-    case SupportWallet.Math:
-      return deepLink.mathwallet;
 
     default:
       return false;
