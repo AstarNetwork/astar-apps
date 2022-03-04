@@ -1,5 +1,13 @@
 import axios from 'axios';
 
+export const getUsdBySymbol = async (symbol: string): Promise<number> => {
+  const url = 'https://api.coingecko.com/api/v3/coins/list';
+  const { data } = await axios.get<{ id: string; symbol: string }[]>(url);
+  const item = data.find((it) => it.symbol.toLowerCase() === symbol.toLowerCase());
+  if (!item) return 0;
+  return (await getUsdPrice(item.id)) ?? 0;
+};
+
 export const getUsdPrice = async (currency: string): Promise<number> => {
   const url = `https://api.coingecko.com/api/v3/simple/price?ids=${currency}&vs_currencies=usd`;
   const result = await axios.get(url);
@@ -17,4 +25,16 @@ export const numFormatter = (num: number): string => {
   }
 
   return String(num);
+};
+
+export const calUsdAmount = async ({
+  symbol,
+  amount,
+}: {
+  symbol: string;
+  amount: number;
+}): Promise<number> => {
+  const price = await getUsdBySymbol(symbol);
+  const total = price * amount;
+  return Number(total.toFixed(2));
 };

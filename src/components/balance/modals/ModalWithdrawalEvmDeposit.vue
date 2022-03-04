@@ -120,7 +120,7 @@ import IconBase from 'components/icons/IconBase.vue';
 import { useChainMetadata, useCustomSignature } from 'src/hooks';
 import { $api } from 'boot/api';
 import { defaultAmountWithDecimals, reduceDenomToBalance } from 'src/hooks/helper/plasmUtils';
-import { buildEvmAddress } from 'src/config/web3/utils/convert';
+import { buildEvmAddress } from 'src/config/web3';
 import { getUnit } from 'src/hooks/helper/units';
 import { getInjector } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';

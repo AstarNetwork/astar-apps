@@ -37,11 +37,11 @@
                   tw-text-center tw-mb-2
                 "
               >
-                {{ $t('installWallet.getWallet', { value: $t(selectedWallet) }) }}
+                {{ $t('installWallet.getWallet', { value: $t(name) }) }}
               </div>
             </div>
             <div class="tw-text-md tw-text-blue-900 dark:tw-text-white tw-text-center">
-              {{ $t('installWallet.installWallet', { value: $t(selectedWallet) }) }}
+              {{ $t('installWallet.installWallet', { value: $t(name) }) }}
             </div>
           </div>
         </div>
@@ -53,7 +53,7 @@
           </a>
           <a :href="walletUrl" target="_blank" rel="noopener noreferrer">
             <button type="button" class="installButton">
-              {{ $t('installWallet.installExtension', { value: $t(selectedWallet) }) }}
+              {{ $t('installWallet.installExtension', { value: $t(name) }) }}
             </button>
           </a>
         </div>
@@ -78,12 +78,13 @@ export default defineComponent({
   },
   setup(props) {
     // @ts-ignore
-    const { img, walletUrl, guideUrl } = supportWalletObj[props.selectedWallet];
+    const { img, walletUrl, guideUrl, name } = supportWalletObj[props.selectedWallet];
 
     return {
       img,
       walletUrl,
       guideUrl,
+      name,
     };
   },
 });

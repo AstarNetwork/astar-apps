@@ -4,7 +4,7 @@ export const getBalance = async (web3: Web3, address: string) => {
   return await web3.eth.getBalance(address);
 };
 
-export const sendTransaction = async (
+export const sendNativeTokenTransaction = async (
   web3: Web3,
   fromAddress: string,
   destinationAddress: string,

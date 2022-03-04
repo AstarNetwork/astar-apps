@@ -90,7 +90,7 @@ import IconBase from 'components/icons/IconBase.vue';
 import IconSolidSelector from 'components/icons/IconSolidSelector.vue';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useAccount } from 'src/hooks';
-import { isValidEvmAddress } from 'src/config/web3/utils/convert';
+import { isValidEvmAddress } from 'src/config/web3';
 import { getSelectedAccount } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';

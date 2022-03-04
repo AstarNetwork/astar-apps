@@ -8,7 +8,7 @@ import { useMeta } from 'quasar';
 import { opengraphMeta } from 'src/config/opengraph';
 import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
 import { useChainInfo } from 'src/hooks/useChainInfo';
-import { TNetworkId, createWeb3Instance } from 'src/config/web3';
+import { TNetworkId, createAstarWeb3Instance } from 'src/config/web3';
 import { getProviderIndex, ASTAR_CHAIN } from 'src/config/chainEndpoints';
 import Web3 from 'web3';
 
@@ -55,7 +55,7 @@ export default boot(async ({ store }) => {
   // update chaininfo
   const { chainInfo } = useChainInfo(api);
   const { metaExtensions, extensionCount } = useMetaExtensions(api, extensions)!!;
-  watchPostEffect(async () => {
+  watchPostEffect(() => {
     store.commit('general/setChainInfo', chainInfo.value);
     store.commit('general/setMetaExtensions', metaExtensions.value);
     store.commit('general/setExtensionCount', extensionCount.value);
@@ -63,7 +63,7 @@ export default boot(async ({ store }) => {
     if (chainInfo.value?.chain) {
       const currentChain = chainInfo.value?.chain as ASTAR_CHAIN;
       const currentNetworkIdx = getProviderIndex(currentChain);
-      const web3 = await createWeb3Instance(currentNetworkIdx as TNetworkId);
+      const web3 = createAstarWeb3Instance(currentNetworkIdx as TNetworkId);
       if (!web3) {
         console.error(`cannot create the web3 instance with network id ${currentNetworkIdx}`);
       }

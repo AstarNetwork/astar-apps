@@ -3,7 +3,7 @@ import { useStore } from 'src/store';
 import { computed, ref, watch } from 'vue';
 import { useAccount } from '.';
 import { $api } from 'boot/api';
-import { buildEvmAddress } from 'src/config/web3/utils/convert';
+import { buildEvmAddress } from 'src/config/web3';
 
 export function useEvmDeposit() {
   const evmDeposit = ref<BN>(new BN(0));
