@@ -114,10 +114,3 @@ export const checkIsWalletExtension = (): boolean => {
   const isMetamask = typeof window.ethereum !== 'undefined';
   return isSubstrateDappBrowser || isMetamask;
 };
-
-export const openDeepLink = (wallet: SupportWallet): void => {
-  if (isMobileDevice) {
-    const url = getDeepLinkUrl(wallet);
-    url && window.open(url);
-  }
-};

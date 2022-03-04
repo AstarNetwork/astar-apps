@@ -16,7 +16,6 @@ import {
   getDeepLinkUrl,
   getInjectedExtensions,
   isMobileDevice,
-  openDeepLink,
 } from './helper/wallet';
 
 export const useConnectWallet = () => {
@@ -121,9 +120,11 @@ export const useConnectWallet = () => {
 
   const setWalletModal = (wallet: SupportWallet): void => {
     const isWalletExtension = checkIsWalletExtension();
-    const isDeepLink = getDeepLinkUrl(wallet);
-    if (isMobileDevice && isDeepLink && !isWalletExtension) {
-      openDeepLink(wallet);
+    const deepLinkUrl = getDeepLinkUrl(wallet);
+    const isOpenMobileDappBrowser = isMobileDevice && deepLinkUrl && !isWalletExtension;
+
+    if (isOpenMobileDappBrowser) {
+      window.open(deepLinkUrl);
       return;
     }
     if (wallet === SupportWallet.MetaMask) {
