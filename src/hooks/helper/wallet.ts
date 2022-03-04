@@ -109,8 +109,8 @@ export const getDeepLinkUrl = (wallet: SupportWallet): string | false => {
   }
 };
 
-export const checkIsWalletExtension = (): boolean => {
-  const isSubstrateDappBrowser = typeof window.injectedWeb3 !== 'undefined';
+export const checkIsWalletExtension = async (): Promise<boolean> => {
+  const isSubstrateDappBrowser = await getInjectedExtensions();
   const isMetamask = typeof window.ethereum !== 'undefined';
-  return isSubstrateDappBrowser || isMetamask;
+  return Boolean(isSubstrateDappBrowser.length || isMetamask);
 };

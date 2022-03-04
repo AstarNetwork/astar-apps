@@ -118,8 +118,8 @@ export const useConnectWallet = () => {
     modalName.value = wallet;
   };
 
-  const setWalletModal = (wallet: SupportWallet): void => {
-    const isWalletExtension = checkIsWalletExtension();
+  const setWalletModal = async (wallet: SupportWallet): Promise<void> => {
+    const isWalletExtension = await checkIsWalletExtension();
     const deepLinkUrl = getDeepLinkUrl(wallet);
     const isOpenMobileDappBrowser = isMobileDevice && deepLinkUrl && !isWalletExtension;
 
@@ -171,7 +171,7 @@ export const useConnectWallet = () => {
     async () => {
       const isMetaMaskDeepLink = window.location.hash === deepLinkPath.metamask;
       const isMathWalletDeepLink = window.location.hash === deepLinkPath.mathwallet;
-      const isWalExtension = checkIsWalletExtension();
+      const isWalExtension = await checkIsWalletExtension();
       if (!isConnectedNetwork.value || !isWalExtension) return;
 
       if (isMetaMaskDeepLink) {
