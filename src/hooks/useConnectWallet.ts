@@ -1,21 +1,23 @@
+import { getProviderIndex } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SubstrateWallets, SupportWallet, WalletModalOption } from 'src/config/wallets';
 import { getChainId, setupNetwork } from 'src/config/web3';
 import { useAccount } from 'src/hooks';
+import * as utils from 'src/hooks/custom-signature/utils';
+import { deepLinkPath } from 'src/links';
 import { useStore } from 'src/store';
-import { computed, ref, watchEffect, watch } from 'vue';
+import { computed, ref, watch, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 import { useMetamask } from './custom-signature/useMetamask';
+import { ASTAR_SS58_FORMAT } from './helper/plasmUtils';
 import {
   castMobileSource,
+  checkIsWalletExtension,
+  getDeepLinkUrl,
   getInjectedExtensions,
   isMobileDevice,
-  handleIsSubstrateDappBrowser,
+  openDeepLink,
 } from './helper/wallet';
-import * as utils from 'src/hooks/custom-signature/utils';
-import { getProviderIndex } from 'src/config/chainEndpoints';
-import { deepLink, deepLinkPath } from 'src/links';
-import { ASTAR_SS58_FORMAT } from './helper/plasmUtils';
 
 export const useConnectWallet = () => {
   const modalConnectWallet = ref<boolean>(false);
@@ -81,10 +83,6 @@ export const useConnectWallet = () => {
 
     const isMetamaskExtension = typeof window.ethereum !== 'undefined';
 
-    if (isMobileDevice && !isMetamaskExtension) {
-      window.open(deepLink.metamask);
-      return;
-    }
     if (!isMetamaskExtension) {
       modalName.value = WalletModalOption.NoExtension;
       return;
@@ -122,12 +120,15 @@ export const useConnectWallet = () => {
   };
 
   const setWalletModal = (wallet: SupportWallet): void => {
+    const isWalletExtension = checkIsWalletExtension();
+    const isDeepLink = getDeepLinkUrl(wallet);
+    if (isMobileDevice && isDeepLink && !isWalletExtension) {
+      openDeepLink(wallet);
+      return;
+    }
     if (wallet === SupportWallet.MetaMask) {
       setMetaMask();
       return;
-    }
-    if (wallet === SupportWallet.Math) {
-      handleIsSubstrateDappBrowser(wallet);
     }
     setWallet(wallet);
   };
@@ -169,7 +170,8 @@ export const useConnectWallet = () => {
     async () => {
       const isMetaMaskDeepLink = window.location.hash === deepLinkPath.metamask;
       const isMathWalletDeepLink = window.location.hash === deepLinkPath.mathwallet;
-      if (!isConnectedNetwork.value) return;
+      const isWalExtension = checkIsWalletExtension();
+      if (!isConnectedNetwork.value || !isWalExtension) return;
 
       if (isMetaMaskDeepLink) {
         setTimeout(async () => {

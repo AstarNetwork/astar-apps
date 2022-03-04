@@ -97,7 +97,7 @@ export const addToEvmWallet = ({
   addToMetamask({ tokenAddress, symbol, decimals, image, provider });
 };
 
-const getDeepLinkUrl = (wallet: SupportWallet) => {
+export const getDeepLinkUrl = (wallet: SupportWallet): string | false => {
   switch (wallet) {
     case SupportWallet.MetaMask:
       return deepLink.metamask;
@@ -105,19 +105,19 @@ const getDeepLinkUrl = (wallet: SupportWallet) => {
       return deepLink.mathwallet;
 
     default:
-      return '';
+      return false;
   }
 };
 
-export const handleIsSubstrateDappBrowser = (wallet: SupportWallet): void => {
-  const isDappBrowser =
-    typeof window.injectedWeb3 !== 'undefined' &&
-    window.injectedWeb3 &&
-    window.injectedWeb3['polkadot-js'];
+export const checkIsWalletExtension = (): boolean => {
+  const isSubstrateDappBrowser = typeof window.injectedWeb3 !== 'undefined';
+  const isMetamask = typeof window.ethereum !== 'undefined';
+  return isSubstrateDappBrowser || isMetamask;
+};
 
-  if (isMobileDevice && !isDappBrowser) {
+export const openDeepLink = (wallet: SupportWallet): void => {
+  if (isMobileDevice) {
     const url = getDeepLinkUrl(wallet);
-    window.open(url);
-    return;
+    url && window.open(url);
   }
 };
