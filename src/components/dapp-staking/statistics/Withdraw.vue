@@ -80,8 +80,7 @@ export default defineComponent({
           substrateAccounts: substrateAccounts.value,
         } as WithdrawParameters);
       } else {
-        const result = await callWithdrawUnbonded();
-        console.log('result', result);
+        await callWithdrawUnbonded();
       }
     };
 
