@@ -180,7 +180,7 @@ export class AccountData {
   }
 
   public getUsableTransactionBalance(): BN {
-    return this.free; //.sub(this.miscFrozen);
+    return this.free;
   }
 
   public getUsableFeeBalance(): BN {
