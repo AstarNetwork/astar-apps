@@ -18,8 +18,7 @@ export const useConnectWallet = () => {
   const modalName = ref<string>('');
 
   const router = useRouter();
-  const currentRouter = router.currentRoute.value.matched[0];
-  const isBridge = router.currentRoute.value.matched.length > 0 && currentRouter.path === '/bridge';
+  const currentRouter = computed(() => router.currentRoute.value.matched[0]);
 
   const { requestAccounts, requestSignature } = useMetamask();
   const store = useStore();
@@ -60,6 +59,8 @@ export const useConnectWallet = () => {
 
       store.commit('general/setCurrentEcdsaAccount', data);
       const chainId = getChainId(currentNetworkIdx.value);
+      const isBridge =
+        router.currentRoute.value.matched.length > 0 && currentRouter.value.path === '/bridge';
       setTimeout(async () => {
         !isBridge && (await setupNetwork(chainId));
       }, 500);
@@ -132,7 +133,9 @@ export const useConnectWallet = () => {
 
   watchEffect(() => {
     const address = localStorage.getItem(SELECTED_ADDRESS);
-    if (isBridge || currentRouter === undefined || !address || !isConnectedNetwork.value) {
+    const isBridge =
+      router.currentRoute.value.matched.length > 0 && currentRouter.value.path === '/bridge';
+    if (isBridge || currentRouter.value === undefined || !address || !isConnectedNetwork.value) {
       return;
     }
 
