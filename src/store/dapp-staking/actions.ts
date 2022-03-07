@@ -652,7 +652,8 @@ const actions: ActionTree<State, StateInterface> = {
   async getClaimInfo({ dispatch, commit }, parameters: StakingParameters): Promise<ClaimInfo> {
     let accumulatedReward = new BN(0);
     let result: ClaimInfo = {} as ClaimInfo;
-    // await getIndividualClaimReward(parameters.senderAddress, parameters.dapp.address);
+    result.rewards = parameters.api.createType('Balance', accumulatedReward);
+    result.estimatedClaimedRewards = parameters.api.createType('Balance', 0);
     commit('general/setLoading', true, { root: true });
 
     try {
@@ -754,7 +755,6 @@ const actions: ActionTree<State, StateInterface> = {
           //   parameters.senderAddress,
           //   bonusEraDuration
           // );
-          result.estimatedClaimedRewards = parameters.api.createType('Balance', 0);
           result.rewards = parameters.api.createType('Balance', accumulatedReward);
         }
       }
