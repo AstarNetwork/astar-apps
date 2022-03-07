@@ -83,7 +83,7 @@ export function useClaimAll() {
           senderAddress.value,
           {
             signer: injector?.signer,
-            // Memo: check if it is ok to remove nonce: -1
+            // Memo: Removing it can cause subsequent transactions to fail
             nonce: -1,
           },
           (result) => {
