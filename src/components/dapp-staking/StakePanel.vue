@@ -30,17 +30,27 @@
       </div>
       <div class="tw-flex">
         <div v-if="stakeInfo?.hasStake">
-          <Button :small="true" :primary="true" @click="showStakeModal">
+          <Button
+            :small="true"
+            :primary="true"
+            :disabled="!isSupportedStakingFeature"
+            @click="showStakeModal"
+          >
             {{ $t('dappStaking.add') }}
           </Button>
-          <Button :small="true" :primary="false" @click="showUnstakeModal">
+          <Button
+            :small="true"
+            :primary="false"
+            :disabled="!isSupportedStakingFeature"
+            @click="showUnstakeModal"
+          >
             {{ canUnbondWithdraw ? $t('dappStaking.unbond') : $t('dappStaking.unstake') }}
           </Button>
         </div>
         <Button
           v-else
           :small="true"
-          :disabled="isMaxStaker || currentAddress === null"
+          :disabled="isMaxStaker || currentAddress === null || !isSupportedStakingFeature"
           @click="showStakeModal"
         >
           {{ $t('dappStaking.stake') }}
@@ -49,7 +59,7 @@
         <Button
           :small="true"
           :primary="true"
-          :disabled="isH160 || currentAddress === null"
+          :disabled="isH160 || currentAddress === null || !isSupportedStakingFeature"
           class="tw-ml-auto"
           @click="showClaimRewardModal = true"
         >
@@ -87,6 +97,7 @@ import ClaimRewardModal from 'components/dapp-staking/modals/ClaimRewardModal.vu
 import StakeModal from 'components/dapp-staking/modals/StakeModal.vue';
 import { useChainMetadata, useCustomSignature, useGetMinStaking } from 'src/hooks';
 import { $api } from 'boot/api';
+import { endpointKey } from 'src/config/chainEndpoints';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { getAmount, StakeModel } from 'src/hooks/store';
 import { useAccount, useStakingH160 } from 'src/hooks';
@@ -140,6 +151,10 @@ export default defineComponent({
     const { canUnbondWithdraw } = useUnbondWithdraw();
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const { callFunc, dispatchError, isCustomSig, customMsg } = useCustomSignature();
+    const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
+    const isSupportedStakingFeature = computed(
+      () => !isH160 || (isH160 && currentNetworkIdx.value === endpointKey.SHIBUYA)
+    );
 
     const currentAddress = computed(() => store.getters['general/selectedAddress']);
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
@@ -374,6 +389,7 @@ export default defineComponent({
       unstake,
       canUnbondWithdraw,
       isH160,
+      isSupportedStakingFeature,
       currentAddress,
     };
   },

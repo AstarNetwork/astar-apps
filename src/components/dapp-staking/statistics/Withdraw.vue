@@ -50,6 +50,7 @@ import { WithdrawParameters } from 'src/store/dapp-staking/actions';
 import FormatBalance from 'components/balance/FormatBalance.vue';
 import ChunksModal from './ChunksModal.vue';
 import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
+import { endpointKey } from 'src/config/chainEndpoints';
 
 export default defineComponent({
   components: {
@@ -71,6 +72,7 @@ export default defineComponent({
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
     const { currentAccount } = useAccount();
     const { callWithdrawUnbonded } = useStakingH160(currentAccount);
+    const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
 
     const withdraw = async (): Promise<void> => {
       if (!isH160.value) {
@@ -80,7 +82,9 @@ export default defineComponent({
           substrateAccounts: substrateAccounts.value,
         } as WithdrawParameters);
       } else {
-        await callWithdrawUnbonded();
+        if (currentNetworkIdx.value === endpointKey.SHIBUYA) {
+          await callWithdrawUnbonded();
+        }
       }
     };
 
