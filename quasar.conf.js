@@ -225,6 +225,7 @@ module.exports = configure(function (ctx) {
     },
     htmlVariables: {
       analyticsId: ctx.dev ? 'G-GBPD0EVWBJ' : 'G-RKKEVC5VJY',
+      tagManagerId: ctx.dev ? 'GTM-W57JPZC' : 'GTM-W6Z3SH9',
     },
   };
 });
