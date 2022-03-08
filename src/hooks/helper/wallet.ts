@@ -3,6 +3,7 @@ import { SupportWallet } from 'src/config/wallets';
 import { web3Enable } from '@polkadot/extension-dapp';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SubstrateAccount } from './../../store/general/state';
+import { deepLink } from 'src/links';
 
 export const getInjectedExtensions = async (): Promise<any[]> => {
   const extensions = await web3Enable('AstarNetwork/astar-apps');
@@ -94,4 +95,20 @@ export const addToEvmWallet = ({
   const provider = getEvmProvider();
   if (!provider) return;
   addToMetamask({ tokenAddress, symbol, decimals, image, provider });
+};
+
+export const getDeepLinkUrl = (wallet: SupportWallet): string | false => {
+  switch (wallet) {
+    case SupportWallet.MetaMask:
+      return deepLink.metamask;
+
+    default:
+      return false;
+  }
+};
+
+export const checkIsWalletExtension = async (): Promise<boolean> => {
+  const isSubstrateDappBrowser = await getInjectedExtensions();
+  const isMetamask = typeof window.ethereum !== 'undefined';
+  return Boolean(isSubstrateDappBrowser.length || isMetamask);
 };

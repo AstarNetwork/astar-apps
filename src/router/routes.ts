@@ -35,6 +35,12 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'wallet',
         component: ConnectWallet,
+        children: [
+          {
+            path: 'deeplink-metamask',
+            component: ConnectWallet,
+          },
+        ],
       },
     ],
   },

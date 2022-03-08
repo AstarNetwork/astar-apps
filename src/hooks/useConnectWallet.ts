@@ -4,12 +4,19 @@ import { SubstrateWallets, SupportWallet, WalletModalOption } from 'src/config/w
 import { getChainId, setupNetwork } from 'src/config/web3';
 import { useAccount } from 'src/hooks';
 import * as utils from 'src/hooks/custom-signature/utils';
+import { deepLinkPath } from 'src/links';
 import { useStore } from 'src/store';
-import { computed, ref, watchEffect } from 'vue';
+import { computed, ref, watch, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 import { useMetamask } from './custom-signature/useMetamask';
 import { ASTAR_SS58_FORMAT } from './helper/plasmUtils';
-import { castMobileSource, getInjectedExtensions } from './helper/wallet';
+import {
+  castMobileSource,
+  checkIsWalletExtension,
+  getDeepLinkUrl,
+  getInjectedExtensions,
+  isMobileDevice,
+} from './helper/wallet';
 
 export const useConnectWallet = () => {
   const modalConnectWallet = ref<boolean>(false);
@@ -72,7 +79,9 @@ export const useConnectWallet = () => {
 
   const setMetaMask = async () => {
     selectedWallet.value = SupportWallet.MetaMask;
+
     const isMetamaskExtension = typeof window.ethereum !== 'undefined';
+
     if (!isMetamaskExtension) {
       modalName.value = WalletModalOption.NoExtension;
       return;
@@ -104,13 +113,25 @@ export const useConnectWallet = () => {
     }
   };
 
-  const setWalletModal = (wallet: SupportWallet): void => {
+  const setWallet = (wallet: SupportWallet): void => {
+    selectedWallet.value = wallet;
+    modalName.value = wallet;
+  };
+
+  const setWalletModal = async (wallet: SupportWallet): Promise<void> => {
+    const isWalletExtension = await checkIsWalletExtension();
+    const deepLinkUrl = getDeepLinkUrl(wallet);
+    const isOpenMobileDappBrowser = isMobileDevice && deepLinkUrl && !isWalletExtension;
+
+    if (isOpenMobileDappBrowser) {
+      window.open(deepLinkUrl);
+      return;
+    }
     if (wallet === SupportWallet.MetaMask) {
       setMetaMask();
       return;
     }
-    selectedWallet.value = wallet;
-    modalName.value = wallet;
+    setWallet(wallet);
   };
 
   watchEffect(async () => {
@@ -144,6 +165,23 @@ export const useConnectWallet = () => {
     }, 800);
     store.commit('general/setCurrentAddress', address);
   });
+
+  watch(
+    [isConnectedNetwork],
+    async () => {
+      const isMetaMaskDeepLink = window.location.hash === deepLinkPath.metamask;
+
+      const isWalletExtension = await checkIsWalletExtension();
+      if (!isConnectedNetwork.value || !isWalletExtension) return;
+
+      if (isMetaMaskDeepLink) {
+        setTimeout(async () => {
+          await setMetaMask();
+        }, 800);
+      }
+    },
+    { immediate: true }
+  );
 
   return {
     WalletModalOption,

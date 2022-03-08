@@ -10,3 +10,11 @@ export const socialUrl = {
   discord: 'https://discord.gg/Z3nC9U4',
   github: 'https://github.com/AstarNetwork',
 };
+
+export const deepLinkPath = {
+  metamask: '#/balance/wallet/deeplink-metamask',
+};
+
+export const deepLink = {
+  metamask: `https://metamask.app.link/dapp/${window.location.host}/${deepLinkPath.metamask}`,
+};
