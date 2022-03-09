@@ -13,6 +13,7 @@ export enum SupportWallet {
   Nova = 'nova',
   Talisman = 'talisman',
   SubWallet = 'subwallet-js',
+  Metadot = 'metadot',
 }
 
 export const WalletModalOption = {
@@ -26,6 +27,7 @@ export const WalletModalOption = {
   Nova: SupportWallet.Nova,
   Talisman: SupportWallet.Talisman,
   SubWallet: SupportWallet.SubWallet,
+  Metadot: SupportWallet.Metadot,
 };
 
 export const SubstrateWallets = [
@@ -35,6 +37,7 @@ export const SubstrateWallets = [
   SupportWallet.Nova,
   SupportWallet.Talisman,
   SupportWallet.SubWallet,
+  SupportWallet.Metadot,
 ];
 
 export interface Wallet {
@@ -108,6 +111,15 @@ export const supportWalletObj = {
     source: SupportWallet.SubWallet,
     walletUrl: 'https://subwallet.app/',
     guideUrl: 'https://docs.subwallet.app/user-guide/how-to-install-subwallet',
+    isSupportBrowserExtension: true,
+    isSupportMobileApp: false,
+  },
+  [SupportWallet.Metadot]: {
+    img: require('/src/assets/img/logo-metadot.png'),
+    name: 'Metadot Wallet',
+    source: SupportWallet.Metadot,
+    walletUrl: 'https://metadot.app/',
+    guideUrl: 'https://docs.metadot.app/install-metadot-on-chrome-and-firefox',
     isSupportBrowserExtension: true,
     isSupportMobileApp: false,
   },
