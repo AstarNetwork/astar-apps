@@ -2,9 +2,10 @@ import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { useStore } from 'src/store';
 import { computed, ref } from 'vue';
+import { displayCustomMessage, TxType } from './custom-signature/message';
 import { useExtrinsicCall } from './custom-signature/useExtrinsicCall';
 
-export function useCustomSignature(fn?: () => void) {
+export function useCustomSignature({ fn, txType }: { fn?: () => void; txType?: TxType }) {
   const customMsg = ref<string | null>(null);
 
   const store = useStore();
@@ -13,6 +14,7 @@ export function useCustomSignature(fn?: () => void) {
     const isH160 = store.getters['general/isH160Formatted'];
     return isEthWallet && !isH160;
   });
+  const senderAddress = computed(() => store.getters['general/selectedAddress']);
 
   const handleTransactionError = (e: Error): void => {
     console.error(e);
@@ -39,6 +41,17 @@ export function useCustomSignature(fn?: () => void) {
       if (status.type !== 'Finalized') {
         store.commit('general/setLoading', true);
       }
+    }
+    if (txType) {
+      // Memo: display the msg toast after displaying the ^block hash toast
+      setTimeout(() => {
+        displayCustomMessage({
+          txType,
+          result,
+          senderAddress: senderAddress.value,
+          dispatch: store.dispatch,
+        });
+      }, 3 * 1000);
     }
   };
 

@@ -1,7 +1,10 @@
-import { ExtrinsicPayload } from './index';
-import { getAddressEnum } from './../../store/dapp-staking/calculation';
-import { Struct, Option } from '@polkadot/types';
 import { ApiPromise } from '@polkadot/api';
+import { Option, Struct } from '@polkadot/types';
+import { EventRecord } from '@polkadot/types/interfaces';
+import BN from 'bn.js';
+import { getAddressEnum } from './../../store/dapp-staking/calculation';
+import { ExtrinsicPayload } from './index';
+import { balanceFormatter } from './plasmUtils';
 
 interface ContractEraStake extends Struct {
   readonly contractRewardClaimed: boolean;
@@ -286,4 +289,26 @@ export const getIndividualClaimData = async ({
   const txsForClaimDapp = results[1];
   const transactions = txsForClaimStaker.concat(txsForClaimDapp);
   return { transactions, numberOfUnclaimedEra };
+};
+
+export const calculateClaimedStaker = ({
+  events,
+  senderAddress,
+}: {
+  events: EventRecord[];
+  senderAddress: string;
+}): string => {
+  let totalClaimStaker = new BN(0);
+  events.forEach(({ event: { data, method, section } }) => {
+    if (section === 'dappsStaking' && method === 'Reward') {
+      const d = data.toHuman() as string[];
+      const isClaimStakerEvent = d[0] === senderAddress;
+      const claimedAmount = d[3];
+      if (isClaimStakerEvent) {
+        const amount = claimedAmount.replace(/,/g, '');
+        totalClaimStaker = totalClaimStaker.add(new BN(amount));
+      }
+    }
+  });
+  return balanceFormatter(totalClaimStaker);
 };

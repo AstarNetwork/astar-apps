@@ -1,8 +1,8 @@
 import { $api, $isEnableIndividualClaim } from 'boot/api';
 import { getInjector } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
-import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
 import { computed, ref, watch } from 'vue';
+import { TxType } from './custom-signature/message';
 import { ExtrinsicPayload } from './helper';
 import { getIndividualClaimData } from './helper/claim';
 import { useCurrentEra, useCustomSignature } from './index';
@@ -23,7 +23,7 @@ export function useIndividualClaim(dappAddress: string) {
     dispatchError,
     handleCustomExtrinsic,
     isCustomSig,
-  } = useCustomSignature();
+  } = useCustomSignature({ txType: TxType.dappsStaking });
 
   watch(
     [$api, senderAddress, era, isSendingTx, $isEnableIndividualClaim],
@@ -74,7 +74,6 @@ export function useIndividualClaim(dappAddress: string) {
           },
           (result) => {
             handleResult(result);
-            hasExtrinsicFailedEvent(result.events, store.dispatch);
           }
         )
         .catch((error: Error) => {

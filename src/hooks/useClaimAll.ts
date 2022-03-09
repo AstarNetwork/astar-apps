@@ -3,6 +3,7 @@ import { getInjector } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
 import { computed, ref, watchEffect } from 'vue';
+import { TxType } from './custom-signature/message';
 import { ExtrinsicPayload } from './helper';
 import { getIndividualClaimData } from './helper/claim';
 import { useCurrentEra, useCustomSignature } from './index';
@@ -24,7 +25,7 @@ export function useClaimAll() {
     dispatchError,
     handleCustomExtrinsic,
     isCustomSig,
-  } = useCustomSignature();
+  } = useCustomSignature({ txType: TxType.dappsStaking });
 
   watchEffect(async () => {
     try {
