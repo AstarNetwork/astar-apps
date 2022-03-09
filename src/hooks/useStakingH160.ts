@@ -5,6 +5,7 @@ import dappsStakingContractAbi from 'src/config/web3/abi/dapps-staking-abi.json'
 import { $web3 } from 'boot/api';
 import { getDefaultEthProvider } from 'src/config/web3/utils';
 import BN from 'bn.js';
+import { endpointKey } from 'src/config/chainEndpoints';
 
 export function useStakingH160(addressRef: Ref<string>) {
   const store = useStore();
@@ -190,6 +191,12 @@ export function useStakingH160(addressRef: Ref<string>) {
     return txHash;
   };
 
+  const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
+  const isH160 = computed(() => store.getters['general/isH160Formatted']);
+  const isSupportedStakingFeature = computed(
+    () => !isH160 || (isH160 && currentNetworkIdx.value === endpointKey.SHIBUYA)
+  );
+
   return {
     getEraInfo,
     getEraRewardsAndStakes,
@@ -200,5 +207,6 @@ export function useStakingH160(addressRef: Ref<string>) {
     callUnbondAndUnstake,
     callWithdrawUnbonded,
     callClaim,
+    isSupportedStakingFeature,
   };
 }

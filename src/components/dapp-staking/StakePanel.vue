@@ -97,7 +97,6 @@ import ClaimRewardModal from 'components/dapp-staking/modals/ClaimRewardModal.vu
 import StakeModal from 'components/dapp-staking/modals/StakeModal.vue';
 import { useChainMetadata, useCustomSignature, useGetMinStaking } from 'src/hooks';
 import { $api } from 'boot/api';
-import { endpointKey } from 'src/config/chainEndpoints';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { getAmount, StakeModel } from 'src/hooks/store';
 import { useAccount, useStakingH160 } from 'src/hooks';
@@ -151,16 +150,13 @@ export default defineComponent({
     const { canUnbondWithdraw } = useUnbondWithdraw();
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const { callFunc, dispatchError, isCustomSig, customMsg } = useCustomSignature();
-    const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
-    const isSupportedStakingFeature = computed(
-      () => !isH160 || (isH160 && currentNetworkIdx.value === endpointKey.SHIBUYA)
-    );
 
     const currentAddress = computed(() => store.getters['general/selectedAddress']);
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
 
     const { currentAccount } = useAccount();
-    const { callBondAndStake, callUnbondAndUnstake, callClaim } = useStakingH160(currentAccount);
+    const { callBondAndStake, callUnbondAndUnstake, callClaim, isSupportedStakingFeature } =
+      useStakingH160(currentAccount);
 
     const showStakeModal = () => {
       modalTitle.value = `Stake on ${props.dapp.name}`;

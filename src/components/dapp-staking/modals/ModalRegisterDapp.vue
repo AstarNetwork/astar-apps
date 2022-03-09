@@ -58,7 +58,6 @@ import Button from 'components/common/Button.vue';
 import { useStore } from 'src/store';
 import { useAccount, useStakingH160 } from 'src/hooks';
 import { $api } from 'boot/api';
-import { endpointKey } from 'src/config/chainEndpoints';
 import { NewDappItem } from 'src/store/dapp-staking/state';
 import { RegisterParameters } from 'src/store/dapp-staking/actions';
 
@@ -81,8 +80,7 @@ export default defineComponent({
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
     const { currentAccount } = useAccount();
-    const { callRegister } = useStakingH160(currentAccount);
-    const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
+    const { callRegister, isSupportedStakingFeature } = useStakingH160(currentAccount);
 
     const registerDapp = async (step: number): Promise<void> => {
       registerForm?.value?.validate().then(async (success: boolean) => {
@@ -98,7 +96,7 @@ export default defineComponent({
                 substrateAccounts: substrateAccounts.value,
               } as RegisterParameters);
             } else {
-              if (currentNetworkIdx.value === endpointKey.SHIBUYA) {
+              if (isSupportedStakingFeature) {
                 result = await callRegister(data.address);
               }
             }
