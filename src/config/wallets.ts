@@ -116,7 +116,7 @@ export const supportWalletObj = {
   },
   [SupportWallet.Metadot]: {
     img: require('/src/assets/img/logo-metadot.png'),
-    name: 'Metadot Wallet',
+    name: 'Metadot',
     source: SupportWallet.Metadot,
     walletUrl: 'https://metadot.app/',
     guideUrl: 'https://docs.metadot.app/install-metadot-on-chrome-and-firefox',
