@@ -253,4 +253,7 @@ export default {
       TRANSFER_REFUNDED: 'Refunded',
     },
   },
+  assets: {
+    assets: 'Assets',
+  },
 };

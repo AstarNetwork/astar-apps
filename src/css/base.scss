@@ -6,10 +6,32 @@
 
 @import 'tailwindcss/utilities';
 
+@font-face {
+  font-family: 'SF Pro';
+  src: url('/fonts/SFPro-Regular.ttf');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'SF Pro';
+  src: url('/fonts/SFPro-Semibold.ttf');
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'SF Pro';
+  src: url('/fonts/SFPro-Bold.ttf');
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
 .tw-tooltip:hover span {
-    @apply tw-block;
+  @apply tw-block;
 }
 
 .checkbox:checked + span {
-    @apply tw-block;
+  @apply tw-block;
 }
