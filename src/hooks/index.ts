@@ -16,7 +16,6 @@ export * from './useChainInfo';
 export * from './useConnectWallet';
 export * from './useUnbondWithdraw';
 export * from './useCustomSignature';
-export * from './useIndividualClaim';
 export * from './useClaimAll';
 export * from './useBreakpoints';
 export * from './c-bridge/useCbridge';

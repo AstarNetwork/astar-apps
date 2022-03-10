@@ -33,7 +33,12 @@
           <Button :small="true" :primary="true" @click="showStakeModal">
             {{ $t('dappStaking.add') }}
           </Button>
-          <Button :small="true" :primary="false" @click="showUnstakeModal">
+          <Button
+            v-if="!isEnableIndividualClaim"
+            :small="true"
+            :primary="false"
+            @click="showUnstakeModal"
+          >
             {{ canUnbondWithdraw ? $t('dappStaking.unbond') : $t('dappStaking.unstake') }}
           </Button>
         </div>
@@ -47,6 +52,17 @@
         </Button>
 
         <Button
+          v-if="isEnableIndividualClaim"
+          :disabled="!stakeInfo?.hasStake"
+          :small="true"
+          :primary="false"
+          class="tw-ml-auto"
+          @click="showUnstakeModal"
+        >
+          {{ canUnbondWithdraw ? $t('dappStaking.unbond') : $t('dappStaking.unstake') }}
+        </Button>
+        <Button
+          v-else
           :small="true"
           :primary="true"
           :disabled="isH160 || currentAddress === null"
@@ -83,11 +99,11 @@
 <script lang="ts">
 import { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
 import { formatBalance } from '@polkadot/util';
+import { $api, $isEnableIndividualClaim } from 'boot/api';
 import Button from 'components/common/Button.vue';
 import ClaimRewardModal from 'components/dapp-staking/modals/ClaimRewardModal.vue';
 import StakeModal from 'components/dapp-staking/modals/StakeModal.vue';
 import { useChainMetadata, useCustomSignature, useGetMinStaking } from 'src/hooks';
-import { $api } from 'boot/api';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { getAmount, StakeModel } from 'src/hooks/store';
 import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
@@ -361,6 +377,7 @@ export default defineComponent({
       canUnbondWithdraw,
       isH160,
       currentAddress,
+      isEnableIndividualClaim: $isEnableIndividualClaim,
     };
   },
 });

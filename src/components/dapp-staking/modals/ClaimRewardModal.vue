@@ -10,7 +10,7 @@
         <span class="tw-w-52 tw-inline-block">{{ $t('dappStaking.yourStake') }}</span>
         <span class="tw-font-semibold">{{ stakeInfo.yourStake.formatted }}</span>
       </div>
-      <div v-if="!isEnableIndividualClaim" class="tw-mt-2">
+      <div class="tw-mt-2">
         <span class="tw-w-52 tw-inline-block">
           {{ $t('dappStaking.modals.estimatedRewards') }}</span
         >
@@ -24,10 +24,7 @@
       </div>
       <div class="tw-mt-2">
         <span class="tw-w-52 tw-inline-block"> {{ $t('dappStaking.modals.unclaimedEras') }}</span>
-        <span v-if="isEnableIndividualClaim" class="tw-font-semibold tw-w-16 tw-text-rigth">{{
-          numOfUnclaimedEra
-        }}</span>
-        <span v-else class="tw-font-semibold tw-w-16 tw-text-rigth">{{
+        <span class="tw-font-semibold tw-w-16 tw-text-rigth">{{
           claimInfo?.unclaimedEras?.length
         }}</span>
       </div>
@@ -45,11 +42,11 @@
 </template>
 
 <script lang="ts">
-import { $api } from 'boot/api';
+import { $api, $isEnableIndividualClaim } from 'boot/api';
 import Avatar from 'src/components/common/Avatar.vue';
 import Button from 'src/components/common/Button.vue';
 import Modal from 'src/components/common/Modal.vue';
-import { useChainMetadata, useIndividualClaim } from 'src/hooks';
+import { useChainMetadata } from 'src/hooks';
 import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { ClaimInfo, StakingParameters } from 'src/store/dapp-staking/actions';
@@ -80,9 +77,6 @@ export default defineComponent({
     const maxErasPerClaim = 15;
     const store = useStore();
     const { decimal } = useChainMetadata();
-    const { individualClaim, numOfUnclaimedEra, isEnableIndividualClaim } = useIndividualClaim(
-      props.dapp.address
-    );
     const claimInfo = ref<ClaimInfo>();
     const pendingRewards = ref<string>('');
     const claimedRewards = ref<string>('');
@@ -91,9 +85,11 @@ export default defineComponent({
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
 
     const canClaim = computed(() => {
-      return isEnableIndividualClaim.value
-        ? numOfUnclaimedEra.value && numOfUnclaimedEra.value > 0
-        : claimInfo?.value && claimInfo.value.unclaimedEras.length > 0;
+      return (
+        !$isEnableIndividualClaim.value &&
+        claimInfo?.value &&
+        claimInfo.value.unclaimedEras.length > 0
+      );
     });
 
     onMounted(async () => {
@@ -101,14 +97,13 @@ export default defineComponent({
     });
 
     const getClaimInfo = async () => {
-      // Todo: resolve error
       claimInfo.value = await store.dispatch('dapps/getClaimInfo', {
         api: $api?.value,
         senderAddress,
         dapp: props.dapp,
         decimals: decimal.value,
         substrateAccounts: substrateAccounts.value,
-        isEnableIndividualClaim: isEnableIndividualClaim.value,
+        isEnableIndividualClaim: $isEnableIndividualClaim.value,
       } as StakingParameters);
       if (!claimInfo.value) return;
 
@@ -122,10 +117,7 @@ export default defineComponent({
     };
 
     const claim = async () => {
-      if (isEnableIndividualClaim.value) {
-        await individualClaim();
-        closeModal();
-      } else {
+      if (!$isEnableIndividualClaim.value) {
         const erasToClaim = claimInfo.value?.unclaimedEras.sort().slice(0, maxErasPerClaim);
         await props.claimAction(erasToClaim, getClaimInfo);
       }
@@ -139,8 +131,6 @@ export default defineComponent({
       closeModal,
       stepsCount,
       claim,
-      isEnableIndividualClaim,
-      numOfUnclaimedEra,
       ...toRefs(props),
     };
   },

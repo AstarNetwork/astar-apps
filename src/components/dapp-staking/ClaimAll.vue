@@ -25,9 +25,9 @@
       <icon-base class="tw-w-5 tw-h-5 tw-text-white tw--ml-2 tw-mr-2" icon-name="sack-dollar">
         <q-icon :name="fasMoneyCheckAlt" color="green" />
       </icon-base>
-      <div>
-        {{ $t('dappStaking.claimAll', { value: isLoading ? 0 : numOfRewardableDapp }) }}
-      </div>
+      <span>
+        {{ $t('dappStaking.claim') }}
+      </span>
     </Button>
   </div>
 </template>

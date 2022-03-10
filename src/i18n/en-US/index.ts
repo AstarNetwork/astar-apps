@@ -186,7 +186,7 @@ export default {
     stakerApy: 'APY: {value}%',
     stakerApr: 'APR: {value}%',
     ttlPendingRewards: 'Your Pending Rewards',
-    claimAll: 'Claim All ({value})',
+    claimAll: 'Claim',
     modals: {
       alreadyClaimed: 'Already claimed:',
       contractRewards: 'Contract rewards:',

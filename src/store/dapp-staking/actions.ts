@@ -867,7 +867,7 @@ export interface StakingParameters {
   unit: string;
   substrateAccounts: SubstrateAccount[];
   finalizeCallback: () => void;
-  isEnableIndividualClaim: boolean;
+  isEnableIndividualClaim?: boolean;
 }
 
 export interface ClaimParameters extends StakingParameters {
