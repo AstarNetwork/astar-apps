@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="size-lg">
-      <span class="title">
+    <div class="screen--lg">
+      <span class="text--page-title">
         {{ $t('assets.assets') }}
       </span>
     </div>
@@ -21,14 +21,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style lang="scss" scoped>
-@import 'src/components/assets/styles/assets.scss';
-
-.dark\:tw-bg-blue-500 {
-  background-color: rgba(27, 109, 193, 0.1) !important;
-}
-.checked\:tw-border-blue-500:checked {
-  border-color: rgba(27, 109, 193, 1) !important;
-}
-</style>

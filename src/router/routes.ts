@@ -14,7 +14,7 @@ import Bridge from 'src/pages/Bridge.vue';
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    redirect: '/balance',
+    redirect: '/assets',
   },
   {
     path: '/store/discover-dapps',

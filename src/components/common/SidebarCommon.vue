@@ -23,7 +23,7 @@
 
       <nav class="flex-1">
         <!-- Todo: Remove -->
-        <router-link
+        <!-- <router-link
           to="/balance"
           :class="[$route.path.split('/')[1] === 'balance' ? 'activeLink' : 'inactiveLink']"
           class="tw-items-center tw-justify-center"
@@ -51,7 +51,7 @@
               {{ shortenAddress }}
             </p>
           </span>
-        </router-link>
+        </router-link> -->
 
         <router-link
           to="/assets"
