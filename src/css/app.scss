@@ -1,1 +1,15 @@
 // app global css in SCSS form
+@import 'src/css/quasar.variables.scss';
+
+.size-lg {
+  display: none;
+  @media (min-width: $lg) {
+    display: block;
+  }
+}
+
+.title {
+  font-family: 'SF Pro';
+  font-weight: 600;
+  font-size: 26px;
+}
