@@ -17,17 +17,28 @@
         <span class="text--accent">{{ currentAccountName }}</span>
       </div>
       <div class="column-address">
-        <span>{{ width > 1280 ? currentAccount : getShortenAddress(currentAccount) }}</span>
+        <span>{{
+          width > screenSize.xl ? currentAccount : getShortenAddress(currentAccount)
+        }}</span>
       </div>
       <div class="column__icons">
         <div>
-          <img class="icon" src="~components/icons/icon-copy.svg" @click="copyAddress" />
+          <img
+            class="icon"
+            :src="isDarkTheme ? 'icons/icon-copy-dark.svg' : 'icons/icon-copy.svg'"
+            @click="copyAddress"
+          />
           <q-tooltip>
             <span class="text--md">{{ $t('copy') }}</span>
           </q-tooltip>
         </div>
         <a :href="isH160 ? blockscout : subScan" target="_blank" rel="noopener noreferrer">
-          <img class="icon" src="~components/icons/icon-external-link.svg" />
+          <img
+            class="icon"
+            :src="
+              isDarkTheme ? 'icons/icon-external-link-dark.svg' : 'icons/icon-external-link.svg'
+            "
+          />
           <q-tooltip>
             <span class="text--md">{{ $t(isH160 ? 'blockscout' : 'subscan') }}</span>
           </q-tooltip>
@@ -70,21 +81,13 @@ export default defineComponent({
   },
   setup({ isEthWallet }) {
     const { currentAccount, currentAccountName } = useAccount();
-    const { width } = useBreakpoints();
-
+    const { width, screenSize } = useBreakpoints();
     const iconWallet = ref<string>('');
+
     const store = useStore();
+    const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
     const account = getSelectedAccount(substrateAccounts.value);
-    watchEffect(() => {
-      if (account) {
-        // @ts-ignore
-        iconWallet.value = supportWalletObj[account.source].img;
-      } else if (isEthWallet) {
-        iconWallet.value = supportWalletObj[SupportWallet.MetaMask].img;
-      }
-    });
-
     const currentNetworkIdx = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
       const chain = chainInfo ? chainInfo.chain : '';
@@ -109,6 +112,15 @@ export default defineComponent({
       });
     };
 
+    watchEffect(() => {
+      if (account) {
+        // @ts-ignore
+        iconWallet.value = supportWalletObj[account.source].img;
+      } else if (isEthWallet) {
+        iconWallet.value = supportWalletObj[SupportWallet.MetaMask].img;
+      }
+    });
+
     return {
       getShortenAddress,
       iconWallet,
@@ -118,6 +130,8 @@ export default defineComponent({
       blockscout,
       subScan,
       width,
+      isDarkTheme,
+      screenSize,
     };
   },
 });

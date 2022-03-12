@@ -50,7 +50,7 @@
 .text--total-balance {
   font-size: 16px;
   font-weight: 700;
-  color: $gray;
+  color: $gray-5;
 }
 
 .row__icons {
@@ -71,5 +71,8 @@
 .body--dark {
   .text--switch-account {
     color: $astar-blue-dark;
+  }
+  .text--total-balance {
+    color: $gray-1;
   }
 }

@@ -8,11 +8,15 @@
 .body--dark {
   .container {
     background: $container-bg-dark;
+    box-shadow: $container-border-shadow-dark;
+  }
+  .border--separator {
+    border: 1px solid $border-separator-dark;
   }
 }
 
 .container {
-  box-shadow: inset 0px 0px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: $container-border-shadow-light;
   border-radius: 6px;
   padding: 0px 16px;
 }
@@ -25,5 +29,5 @@
 }
 
 .border--separator {
-  border: 1px solid $border-separator-black;
+  border: 1px solid $border-separator-light;
 }

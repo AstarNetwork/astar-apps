@@ -7,9 +7,14 @@ $warning-red: #ff5621;
 $connected-green: #56f566;
 
 $container-bg-dark: #2c3335;
-$border-separator-black: #191d1f;
+$border-separator-dark: #191d1f;
+$border-separator-light: #e6e9ee;
 
-$gray: #f7f7f8;
+$gray-1: #f7f7f8;
+$gray-5: #2c3335;
+
+$container-border-shadow-dark: inset 0px 0px 4px rgba(0, 0, 0, 0.25);
+$container-border-shadow-light: 0px 0px 8px 1px rgba(0, 0, 0, 0.1);
 
 // Screen size
 $sm: 640px;
