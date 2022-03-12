@@ -1,23 +1,45 @@
 @import 'src/css/quasar.variables.scss';
 
-.column {
-  padding-top: 16px;
-  margin-bottom: -12px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  column-gap: 8px;
-}
-
-.icon--polkadot-sample {
-  @apply tw-h-6 tw-w-6;
-}
-
 .row {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 16px 0px;
+}
+
+.row--details {
+  padding: 16px 0;
+  display: grid;
+  align-items: center;
+  grid-template-areas:
+    'name _'
+    'address icons';
+  @media (min-width: $lg) {
+    grid-template-areas: 'name address icons';
+  }
+}
+
+.column-account-name {
+  grid-area: name;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  column-gap: 8px;
+  @media (min-width: $lg) {
+    margin-bottom: 0;
+  }
+}
+
+.column-address {
+  grid-area: address;
+}
+
+.column__icons {
+  grid-area: icons;
+  display: flex;
+  column-gap: 16px;
+  justify-content: flex-end;
 }
 
 .text--switch-account {
@@ -40,6 +62,10 @@
   width: 32px;
   height: 32px;
   cursor: pointer;
+}
+
+.icon--polkadot-sample {
+  @apply tw-h-6 tw-w-6;
 }
 
 .body--dark {

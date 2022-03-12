@@ -3,12 +3,7 @@
 // Ref:  https://css-tricks.com/bem-101/
 
 @use 'src/css/quasar.variables.scss';
-
-span {
-  font-family: 'SF Pro', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI,
-    Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji,
-    Segoe UI Symbol, Noto Color Emoji;
-}
+@use 'src/css/text.scss';
 
 .body--dark {
   .container {
@@ -29,25 +24,6 @@ span {
   }
 }
 
-.text--page-title {
-  font-weight: 600;
-  font-size: 26px;
-}
-
-.text--title {
-  font-weight: 700;
-  font-size: 16px;
-}
-
-.text--accent {
-  font-weight: 700;
-  font-size: 14px;
-}
-
-.text--md {
-  font-size: 14px;
-}
-
 .border--separator {
-  border: 1px solid #191d1f;
+  border: 1px solid $border-separator-black;
 }

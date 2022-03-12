@@ -1,10 +1,10 @@
 <template>
-  <div v-if="isConnectedNetwork">
+  <div>
     <!-- Memo: This is a temporary login solution until adding the dashboard page -->
     <div v-if="!currentAccount" class="container--connect-wallet">
-      <div class="connect-wallet" @click="openSelectModal">
+      <button class="connect-wallet" :disabled="!isConnectedNetwork" @click="openSelectModal">
         {{ $t('wallet.connectWallet') }}
-      </div>
+      </button>
     </div>
     <div v-else>
       <div class="container--assets">
@@ -81,4 +81,5 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @use 'src/components/assets/styles/assets.scss';
+@use 'src/components/balance/styles/connect-wallet.scss';
 </style>

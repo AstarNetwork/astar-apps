@@ -1,10 +1,10 @@
+@use 'tailwindcss/base';
+
+@use 'tailwindcss/components';
+
+@use 'tailwindcss/utilities';
+
 @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&display=swap');
-
-@import 'tailwindcss/base';
-
-@import 'tailwindcss/components';
-
-@import 'tailwindcss/utilities';
 
 @font-face {
   font-family: 'SF Pro';

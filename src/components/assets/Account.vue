@@ -11,29 +11,27 @@
 
     <div class="border--separator" />
 
-    <div>
-      <div class="column">
-        <div>
-          <img v-if="iconWallet" width="24" :src="iconWallet" alt="wallet-icon" />
-        </div>
+    <div class="row--details">
+      <div class="column-account-name">
+        <img v-if="iconWallet" width="24" :src="iconWallet" alt="wallet-icon" />
         <span class="text--accent">{{ currentAccountName }}</span>
       </div>
-      <div class="row">
-        <span>{{ getShortenAddress(currentAccount) }}</span>
-        <div class="row__icons">
-          <div>
-            <img class="icon" src="~components/icons/icon-copy.svg" @click="copyAddress" />
-            <q-tooltip>
-              <span class="text--md">{{ $t('copy') }}</span>
-            </q-tooltip>
-          </div>
-          <a :href="isH160 ? blockscout : subScan" target="_blank" rel="noopener noreferrer">
-            <img class="icon" src="~components/icons/icon-external-link.svg" />
-            <q-tooltip>
-              <span class="text--md">{{ $t(isH160 ? 'blockscout' : 'subscan') }}</span>
-            </q-tooltip>
-          </a>
+      <div class="column-address">
+        <span>{{ width > 1280 ? currentAccount : getShortenAddress(currentAccount) }}</span>
+      </div>
+      <div class="column__icons">
+        <div>
+          <img class="icon" src="~components/icons/icon-copy.svg" @click="copyAddress" />
+          <q-tooltip>
+            <span class="text--md">{{ $t('copy') }}</span>
+          </q-tooltip>
         </div>
+        <a :href="isH160 ? blockscout : subScan" target="_blank" rel="noopener noreferrer">
+          <img class="icon" src="~components/icons/icon-external-link.svg" />
+          <q-tooltip>
+            <span class="text--md">{{ $t(isH160 ? 'blockscout' : 'subscan') }}</span>
+          </q-tooltip>
+        </a>
       </div>
     </div>
 
@@ -52,7 +50,7 @@ import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { SupportWallet, supportWalletObj } from 'src/config/wallets';
 import { useStore } from 'src/store';
 import { getSelectedAccount } from 'src/hooks/helper/wallet';
-import { useAccount } from 'src/hooks';
+import { useAccount, useBreakpoints } from 'src/hooks';
 import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 
 export default defineComponent({
@@ -72,6 +70,7 @@ export default defineComponent({
   },
   setup({ isEthWallet }) {
     const { currentAccount, currentAccountName } = useAccount();
+    const { width } = useBreakpoints();
 
     const iconWallet = ref<string>('');
     const store = useStore();
@@ -118,6 +117,7 @@ export default defineComponent({
       currentAccount,
       blockscout,
       subScan,
+      width,
     };
   },
 });
