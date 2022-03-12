@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container--page">
     <!-- Memo: This is a temporary login solution until adding the dashboard page -->
     <div v-if="!currentAccount" class="container--connect-wallet">
       <button class="connect-wallet" :disabled="!isConnectedNetwork" @click="openSelectModal">

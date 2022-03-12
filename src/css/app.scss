@@ -17,6 +17,7 @@
 
 .container {
   box-shadow: $container-border-shadow-light;
+  background: $container-bg-white;
   border-radius: 6px;
   padding: 0px 16px;
 }

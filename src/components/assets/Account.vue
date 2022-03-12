@@ -18,7 +18,7 @@
       </div>
       <div class="column-address">
         <span>{{
-          width > screenSize.xl ? currentAccount : getShortenAddress(currentAccount)
+          width >= screenSize.xl ? currentAccount : getShortenAddress(currentAccount)
         }}</span>
       </div>
       <div class="column__icons">
