@@ -64,10 +64,6 @@
   cursor: pointer;
 }
 
-.icon--polkadot-sample {
-  @apply tw-h-6 tw-w-6;
-}
-
 .body--dark {
   .text--switch-account {
     color: $astar-blue-dark;
