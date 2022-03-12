@@ -6,6 +6,7 @@
 @use 'src/css/text.scss';
 
 .body--dark {
+  background: $gray-6;
   .container {
     background: $container-bg-dark;
     box-shadow: $container-border-shadow-dark;
@@ -13,6 +14,10 @@
   .border--separator {
     border: 1px solid $border-separator-dark;
   }
+}
+
+body {
+  background: $gray-1;
 }
 
 .container {

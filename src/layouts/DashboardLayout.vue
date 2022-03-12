@@ -1,5 +1,6 @@
 <template>
-  <div class="tw-h-screen tw-flex tw-overflow-hidden tw-bg-gray-50 dark:tw-bg-darkGray-900">
+  <!-- <div class="tw-h-screen tw-flex tw-overflow-hidden tw-bg-gray-50 dark:tw-bg-darkGray-900"> -->
+  <div class="tw-h-screen tw-flex tw-overflow-hidden">
     <sidebar-desktop />
     <sidebar-mobile />
     <div class="tw-flex tw-flex-col tw-w-0 tw-flex-1 tw-overflow-y-auto lg:tw-overflow-hidden">
