@@ -6,7 +6,11 @@
 @use 'src/css/text.scss';
 
 .body--dark {
-  background: $gray-6;
+  // background: $gray-6;
+  background: $body-bg-dark;
+  main {
+    background: $gray-6;
+  }
   .container {
     background: $container-bg-dark;
     box-shadow: $container-border-shadow-dark;
@@ -17,6 +21,15 @@
 }
 
 body {
+  // background: $gray-1;
+  background: $body-bg-light;
+  @media (min-width: $lg) {
+    max-width: $xxl;
+    margin: auto !important;
+  }
+}
+
+main {
   background: $gray-1;
 }
 
