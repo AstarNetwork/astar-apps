@@ -11,7 +11,9 @@
   padding: 16px 8px;
   display: flex;
   flex-direction: column;
+  row-gap: 12px;
   @media (min-width: $lg) {
+    row-gap: 0;
     display: grid;
     grid-template-columns: auto 1fr;
     align-items: center;
