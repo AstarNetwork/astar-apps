@@ -1,64 +1,61 @@
 <template>
-  <div class="wrapper--account">
-    <div v-if="!currentAccount" class="backdrop" />
-    <div class="container">
-      <div class="row">
-        <span class="text--title">{{
-          $t(isH160 ? 'assets.evmAccount' : 'assets.nativeAccount')
-        }}</span>
-        <span v-if="isEthWallet" class="text--switch-account" @click="toggleMetaMaskSchema">{{
-          $t(isH160 ? 'assets.switchToNative' : 'assets.switchToEvm')
-        }}</span>
+  <div class="container">
+    <div class="row">
+      <span class="text--title">{{
+        $t(isH160 ? 'assets.evmAccount' : 'assets.nativeAccount')
+      }}</span>
+      <span v-if="isEthWallet" class="text--switch-account" @click="toggleMetaMaskSchema">{{
+        $t(isH160 ? 'assets.switchToNative' : 'assets.switchToEvm')
+      }}</span>
+    </div>
+
+    <div class="border--separator" />
+
+    <div class="row--details">
+      <div class="column-account-name">
+        <img v-if="iconWallet" width="24" :src="iconWallet" alt="wallet-icon" />
+        <span class="text--accent">{{ currentAccount ? currentAccountName : 'My Wallet' }}</span>
       </div>
-
-      <div class="border--separator" />
-
-      <div class="row--details">
-        <div class="column-account-name">
-          <img v-if="iconWallet" width="24" :src="iconWallet" alt="wallet-icon" />
-          <span class="text--accent">{{ currentAccount ? currentAccountName : 'My Wallet' }}</span>
+      <div class="column-address-icons">
+        <div class="column__address">
+          <span>{{
+            width >= screenSize.xl ? currentAccount : getShortenAddress(currentAccount)
+          }}</span>
         </div>
-        <div class="column-address-icons">
-          <div class="column__address">
-            <span>{{
-              width >= screenSize.xl ? currentAccount : getShortenAddress(currentAccount)
-            }}</span>
+        <div class="column__icons">
+          <div>
+            <img
+              class="icon"
+              :src="isDarkTheme ? 'icons/icon-copy-dark.svg' : 'icons/icon-copy.svg'"
+              @click="copyAddress"
+            />
+            <q-tooltip>
+              <span class="text--md">{{ $t('copy') }}</span>
+            </q-tooltip>
           </div>
-          <div class="column__icons">
-            <div>
-              <img
-                class="icon"
-                :src="isDarkTheme ? 'icons/icon-copy-dark.svg' : 'icons/icon-copy.svg'"
-                @click="copyAddress"
-              />
-              <q-tooltip>
-                <span class="text--md">{{ $t('copy') }}</span>
-              </q-tooltip>
-            </div>
-            <a :href="isH160 ? blockscout : subScan" target="_blank" rel="noopener noreferrer">
-              <img
-                class="icon"
-                :src="
-                  isDarkTheme ? 'icons/icon-external-link-dark.svg' : 'icons/icon-external-link.svg'
-                "
-              />
-              <q-tooltip>
-                <span class="text--md">{{ $t(isH160 ? 'blockscout' : 'subscan') }}</span>
-              </q-tooltip>
-            </a>
-          </div>
+          <a :href="isH160 ? blockscout : subScan" target="_blank" rel="noopener noreferrer">
+            <img
+              class="icon"
+              :src="
+                isDarkTheme ? 'icons/icon-external-link-dark.svg' : 'icons/icon-external-link.svg'
+              "
+            />
+            <q-tooltip>
+              <span class="text--md">{{ $t(isH160 ? 'blockscout' : 'subscan') }}</span>
+            </q-tooltip>
+          </a>
         </div>
       </div>
+    </div>
 
-      <div class="border--separator" />
+    <div class="border--separator" />
 
-      <div class="row">
-        <span>{{ $t('assets.totalBalance') }}</span>
-        <!-- Todo: calculate total balance(usd) -->
-        <span class="text--total-balance">
-          {{ currentAccount ? '$30,123.233' : '$12,345.678' }}
-        </span>
-      </div>
+    <div class="row">
+      <span>{{ $t('assets.totalBalance') }}</span>
+      <!-- Todo: calculate total balance(usd) -->
+      <span class="text--total-balance">
+        {{ currentAccount ? '$30,123.233' : '$12,345.678' }}
+      </span>
     </div>
   </div>
 </template>
