@@ -24,10 +24,10 @@ body {
 }
 
 .wrapper {
-  @media (min-width: $xxl) {
+  @media (min-width: $xxxl) {
     // Memo: centralize the app
     margin: 0 auto !important;
-    max-width: $xxl;
+    max-width: $xxxl;
   }
 }
 
