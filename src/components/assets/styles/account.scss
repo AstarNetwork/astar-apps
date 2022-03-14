@@ -1,42 +1,45 @@
 @import 'src/css/quasar.variables.scss';
 
 .row {
+  padding: 16px 8px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 0px;
 }
 
 .row--details {
-  padding: 16px 0;
-  display: grid;
-  align-items: center;
-  grid-template-areas:
-    'name _'
-    'address icons';
+  padding: 16px 8px;
+  display: flex;
+  flex-direction: column;
   @media (min-width: $lg) {
-    grid-template-areas: 'name address icons';
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
   }
 }
 
 .column-account-name {
-  grid-area: name;
-  margin-bottom: 12px;
   display: flex;
-  flex-direction: row;
-  align-items: center;
   column-gap: 8px;
   @media (min-width: $lg) {
-    margin-bottom: 0;
+    flex-direction: row;
+    align-items: center;
   }
 }
 
-.column-address {
-  grid-area: address;
+.column-address-icons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.column__address {
+  @media (min-width: $lg) {
+    margin-left: 24px;
+  }
 }
 
 .column__icons {
-  grid-area: icons;
   display: flex;
   column-gap: 16px;
   justify-content: flex-end;

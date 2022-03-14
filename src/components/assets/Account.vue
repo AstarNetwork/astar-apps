@@ -16,33 +16,35 @@
         <img v-if="iconWallet" width="24" :src="iconWallet" alt="wallet-icon" />
         <span class="text--accent">{{ currentAccountName }}</span>
       </div>
-      <div class="column-address">
-        <span>{{
-          width >= screenSize.xl ? currentAccount : getShortenAddress(currentAccount)
-        }}</span>
-      </div>
-      <div class="column__icons">
-        <div>
-          <img
-            class="icon"
-            :src="isDarkTheme ? 'icons/icon-copy-dark.svg' : 'icons/icon-copy.svg'"
-            @click="copyAddress"
-          />
-          <q-tooltip>
-            <span class="text--md">{{ $t('copy') }}</span>
-          </q-tooltip>
+      <div class="column-address-icons">
+        <div class="column__address">
+          <span>{{
+            width >= screenSize.xl ? currentAccount : getShortenAddress(currentAccount)
+          }}</span>
         </div>
-        <a :href="isH160 ? blockscout : subScan" target="_blank" rel="noopener noreferrer">
-          <img
-            class="icon"
-            :src="
-              isDarkTheme ? 'icons/icon-external-link-dark.svg' : 'icons/icon-external-link.svg'
-            "
-          />
-          <q-tooltip>
-            <span class="text--md">{{ $t(isH160 ? 'blockscout' : 'subscan') }}</span>
-          </q-tooltip>
-        </a>
+        <div class="column__icons">
+          <div>
+            <img
+              class="icon"
+              :src="isDarkTheme ? 'icons/icon-copy-dark.svg' : 'icons/icon-copy.svg'"
+              @click="copyAddress"
+            />
+            <q-tooltip>
+              <span class="text--md">{{ $t('copy') }}</span>
+            </q-tooltip>
+          </div>
+          <a :href="isH160 ? blockscout : subScan" target="_blank" rel="noopener noreferrer">
+            <img
+              class="icon"
+              :src="
+                isDarkTheme ? 'icons/icon-external-link-dark.svg' : 'icons/icon-external-link.svg'
+              "
+            />
+            <q-tooltip>
+              <span class="text--md">{{ $t(isH160 ? 'blockscout' : 'subscan') }}</span>
+            </q-tooltip>
+          </a>
+        </div>
       </div>
     </div>
 
