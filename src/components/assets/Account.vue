@@ -78,7 +78,7 @@ export default defineComponent({
     const store = useStore();
     const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
-    const account = getSelectedAccount(substrateAccounts.value);
+
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const isEthWallet = computed(() => store.getters['general/isEthWallet']);
     const currentNetworkIdx = computed(() => {
@@ -103,11 +103,15 @@ export default defineComponent({
     };
 
     watchEffect(() => {
-      if (account) {
-        // @ts-ignore
-        iconWallet.value = supportWalletObj[account.source].img;
+      const account = getSelectedAccount(substrateAccounts.value);
+      if (!currentAccount.value) {
+        // Memo: placeholder
+        iconWallet.value = supportWalletObj[SupportWallet.PolkadotJs].img;
       } else if (isEthWallet.value) {
         iconWallet.value = supportWalletObj[SupportWallet.MetaMask].img;
+      } else if (account) {
+        // @ts-ignore
+        iconWallet.value = supportWalletObj[account.source].img;
       }
     });
 
