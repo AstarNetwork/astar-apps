@@ -1,0 +1,20 @@
+@import 'src/css/quasar.variables.scss';
+
+.btn {
+  font-family: 'SF Pro', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI,
+    Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji,
+    Segoe UI Symbol, Noto Color Emoji;
+}
+
+.btn--sm {
+  border-radius: 30px;
+  font-weight: 700;
+  width: 120px;
+  height: 24px;
+  @media (min-width: $lg) {
+    background-color: transparent !important;
+  }
+}
+
+.body--dark {
+}

@@ -4,6 +4,8 @@
 
 @use 'src/css/quasar.variables.scss';
 @use 'src/css/text.scss';
+@use 'src/css/button.scss';
+@use 'src/css/color.scss';
 
 .body--dark {
   background: $body-bg-dark;

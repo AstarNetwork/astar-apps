@@ -1,61 +1,59 @@
 <template>
   <div class="container">
     <div class="row">
-      <span class="text--title">{{
-        $t(isH160 ? 'assets.evmAccount' : 'assets.nativeAccount')
-      }}</span>
-      <span v-if="isEthWallet" class="text--switch-account" @click="toggleMetaMaskSchema">{{
-        $t(isH160 ? 'assets.switchToNative' : 'assets.switchToEvm')
-      }}</span>
+      <span class="text--title">{{ $t('assets.assets') }}</span>
     </div>
 
     <div class="border--separator" />
 
-    <div class="row--details">
-      <div class="column-account-name">
-        <img v-if="iconWallet" width="24" :src="iconWallet" alt="wallet-icon" />
-        <span class="text--accent">{{ currentAccount ? currentAccountName : 'My Wallet' }}</span>
-      </div>
-      <div class="column-address-icons">
-        <div class="column__address">
-          <span>{{
-            width >= screenSize.xl ? currentAccount : getShortenAddress(currentAccount)
-          }}</span>
-        </div>
-        <div class="column__icons">
-          <div>
-            <img
-              class="icon"
-              :src="isDarkTheme ? 'icons/icon-copy-dark.svg' : 'icons/icon-copy.svg'"
-              @click="copyAddress"
-            />
-            <q-tooltip>
-              <span class="text--tooltip">{{ $t('copy') }}</span>
-            </q-tooltip>
+    <div class="rows">
+      <div class="row row--details">
+        <div class="row__left">
+          <div class="column--currency">
+            <img width="24" src="icons/astar.png" alt="wallet-icon" />
+            <div class="column--ticker">
+              <span class="text--title">ASTR</span>
+              <span class="text--label--accent">Astar</span>
+            </div>
           </div>
-          <a :href="isH160 ? blockscout : subScan" target="_blank" rel="noopener noreferrer">
-            <img
-              class="icon"
-              :src="
-                isDarkTheme ? 'icons/icon-external-link-dark.svg' : 'icons/icon-external-link.svg'
-              "
-            />
-            <q-tooltip>
-              <span class="text--tooltip">{{ $t(isH160 ? 'blockscout' : 'subscan') }}</span>
-            </q-tooltip>
-          </a>
+        </div>
+        <div class="row__right">
+          <div class="column column--balance">
+            <div class="text--accent">
+              <span>100,000.125 ASTR</span>
+            </div>
+            <div class="text--label">
+              <span>100,000.125 USD</span>
+            </div>
+          </div>
+          <div class="column column--buttons">
+            <button class="btn btn--sm bg--astar">Transfer</button>
+            <!-- Memo: activate it when bridge feature is available in the native network -->
+            <!-- <button class="btn btn--sm bg--astar">Bridge</button> -->
+            <!-- Memo: if eligible to call faucet -->
+            <button class="btn btn--sm bg--astar">Faucet</button>
+          </div>
         </div>
       </div>
-    </div>
-
-    <div class="border--separator" />
-
-    <div class="row">
-      <span>{{ $t('assets.totalBalance') }}</span>
-      <!-- Todo: calculate total balance(usd) -->
-      <span class="text--total-balance">
-        {{ currentAccount ? '$30,123.233' : '$12,345.678' }}
-      </span>
+      <!-- EVM deposit -->
+      <div class="row--bg--extend row--details bg--accent">
+        <div class="row__left">
+          <span class="text--md">You have deposit from EVM account </span>
+        </div>
+        <div class="row__right">
+          <span class="text--lg">100.125 ASTR</span>
+        </div>
+      </div>
+      <!-- Vesting Info -->
+      <div class="row--bg--extend row--details bg--accent">
+        <div class="row__left">
+          <span class="text--md">Your Vesting Info</span>
+        </div>
+        <div class="row__right">
+          <!-- Memo: size change for laptop -->
+          <span class="text--lg">600,000.125 ASTR</span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -135,5 +133,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/assets/styles/account.scss';
+@use 'src/components/assets/styles/native-assets.scss';
 </style>

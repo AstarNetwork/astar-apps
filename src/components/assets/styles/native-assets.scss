@@ -1,0 +1,96 @@
+@import 'src/css/quasar.variables.scss';
+
+.row {
+  padding: 16px 8px;
+}
+
+.rows {
+  display: grid;
+  row-gap: 16px;
+}
+
+.row--bg--extend {
+  margin: 0 -16px;
+  padding: 16px 24px;
+}
+
+.row--details {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  @media (min-width: $lg) {
+    display: grid;
+    grid-template-columns: auto auto auto;
+  }
+}
+
+.row--bg--accent {
+  background: $gray-5-selected;
+}
+
+.row__left {
+  max-width: 160px;
+}
+
+.row__right {
+  display: flex;
+  flex-direction: column;
+  row-gap: 16px;
+  @media (min-width: $lg) {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.column--currency {
+  display: flex;
+  column-gap: 8px;
+  padding-top: 20px;
+  @media (min-width: $lg) {
+    padding-top: 0;
+  }
+}
+
+.column--ticker {
+  display: flex;
+  column-gap: 8px;
+  align-items: center;
+}
+
+.column--balance {
+  display: grid;
+  justify-items: center;
+  row-gap: 8px;
+  padding-top: 6px;
+  @media (min-width: $lg) {
+    padding-top: 0;
+  }
+}
+.column--buttons {
+  display: grid;
+  row-gap: 14px;
+  @media (min-width: $lg) {
+    row-gap: 8px;
+  }
+}
+
+.column__icons {
+  display: flex;
+  column-gap: 16px;
+  justify-content: flex-end;
+}
+
+.icon {
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+}
+
+.body--dark {
+}
