@@ -1,4 +1,3 @@
-import { SubstrateAccount } from './../general/state';
 import { ApiPromise } from '@polkadot/api';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { BTreeMap, Option, Struct, u32 } from '@polkadot/types';
@@ -12,15 +11,16 @@ import {
 import { ISubmittableResult, ITuple } from '@polkadot/types/types';
 import { formatBalance } from '@polkadot/util';
 import BN from 'bn.js';
+import { $api } from 'boot/api';
 import { addDapp, getDapps, uploadFile } from 'src/hooks/firebase';
 import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
-import { $api } from 'boot/api';
 import { ActionTree, Dispatch } from 'vuex';
 import { StateInterface } from '../index';
+import { GeneralStakerInfo } from './../../hooks/helper/claim';
 import { getInjector } from './../../hooks/helper/wallet';
-import { DappItem, DappStateInterface as State, NewDappItem } from './state';
+import { SubstrateAccount } from './../general/state';
 import { getIndividualClaimStakingInfo } from './calculation';
-import { StakersInfo } from 'src/hooks/helper/claim';
+import { DappItem, DappStateInterface as State, NewDappItem } from './state';
 
 let collectionKey: string;
 
@@ -597,15 +597,16 @@ const actions: ActionTree<State, StateInterface> = {
           };
 
           if (parameters.isEnableIndividualClaim) {
-            const stakersInfo = await parameters.api.query.dappsStaking.stakersInfo<StakersInfo>(
-              parameters.senderAddress,
-              {
-                Evm: parameters.dapp.address,
-              }
-            );
+            const stakerInfo =
+              await parameters.api.query.dappsStaking.generalStakerInfo<GeneralStakerInfo>(
+                parameters.senderAddress,
+                {
+                  Evm: parameters.dapp.address,
+                }
+              );
 
             const balance =
-              stakersInfo.stakes.length && stakersInfo.stakes.slice(-1)[0].staked.toString();
+              stakerInfo.stakes.length && stakerInfo.stakes.slice(-1)[0].staked.toString();
             if (balance) {
               yourStake = {
                 formatted: balanceFormatter(balance),

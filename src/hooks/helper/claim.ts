@@ -12,7 +12,7 @@ interface ContractEraStake extends Struct {
   readonly total: string;
 }
 
-export interface StakersInfo extends Struct {
+export interface GeneralStakerInfo extends Struct {
   // Todo: fix type annotation
   readonly stakes: any[];
 }
@@ -30,14 +30,14 @@ const getNumberOfUnclaimedEra = async ({
 }): Promise<number> => {
   let numberOfUnclaimedEra = 0;
   try {
-    const data = await api.query.dappsStaking.stakersInfo<Option<StakersInfo>>(
+    const data = await api.query.dappsStaking.stakersInfo<Option<GeneralStakerInfo>>(
       senderAddress,
       getAddressEnum(dappAddress)
     );
 
     if (data && !data.isEmpty) {
-      const stakersInfo: StakersInfo = data.toHuman() as any;
-      const stakes = stakersInfo && stakersInfo.stakes;
+      const stakerInfo: GeneralStakerInfo = data.toHuman() as any;
+      const stakes = stakerInfo && stakerInfo.stakes;
 
       for (let i = 0; i < stakes.length; i++) {
         const { era, staked } = stakes[i];
