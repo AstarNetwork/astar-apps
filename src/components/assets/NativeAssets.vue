@@ -17,7 +17,7 @@
             </div>
           </div>
         </div>
-        <div class="row__right">
+        <div class="row__right column--value-btn">
           <div class="column column--balance">
             <div class="text--accent">
               <span>100,000.125 ASTR</span>
@@ -26,7 +26,7 @@
               <span>100,000.125 USD</span>
             </div>
           </div>
-          <div class="column column--buttons">
+          <div class="column column--buttons color--astar">
             <button class="btn btn--sm bg--astar">{{ $t('assets.transfer') }}</button>
             <!-- Memo: activate it when bridge feature is available in the native network -->
             <!-- <button class="btn btn--sm bg--astar">Bridge</button> -->
@@ -38,13 +38,11 @@
       <!-- EVM deposit -->
       <div class="row--bg--extend row--details bg--accent">
         <div class="row__left">
-          <span class="text--md">{{ $t('assets.haveDepositFromEvm') }}</span>
+          <span class="text--md">{{ $t('assets.haveDepositedFromEvm') }}</span>
         </div>
-        <div class="row__right">
-          <div>
-            <span class="text--value">100.125 ASTR</span>
-          </div>
-          <button class="btn btn--sm bg--astar">{{ $t('assets.withdraw') }}</button>
+        <div class="row__right column--value-btn">
+          <span class="text--value">100.125 ASTR</span>
+          <button class="btn btn--sm bg--astar color--astar">{{ $t('assets.withdraw') }}</button>
         </div>
       </div>
       <!-- Vesting Info -->
@@ -57,13 +55,15 @@
             <span class="text--md">{{ $t('assets.inStaking') }}</span>
           </div>
         </div>
-        <div class="row__right">
+        <div class="row__right column--value-btn">
           <div class="column">
             <span class="text--value">600,000 ASTR</span>
             <span class="text--value">(500,000 ASTR)</span>
           </div>
-          <button class="btn btn--sm bg--astar">{{ $t('assets.view') }}</button>
-          <button class="btn btn--sm bg--astar">{{ $t('manage') }}</button>
+          <div class="column column--buttons color--astar">
+            <button class="btn btn--sm bg--astar">{{ $t('assets.view') }}</button>
+            <button class="btn btn--sm bg--astar">{{ $t('manage') }}</button>
+          </div>
         </div>
       </div>
     </div>

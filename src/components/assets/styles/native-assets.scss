@@ -6,20 +6,25 @@
 
 .rows {
   display: grid;
-  row-gap: 16px;
 }
 
 .row--bg--extend {
   margin: 0 -16px;
   padding: 16px 24px;
+  margin-bottom: 16px;
+  @media (min-width: $md) {
+    margin: 0 -6px;
+    padding: 16px 14px;
+    margin-bottom: 16px;
+    border-radius: 6px;
+  }
 }
 
 .row--details {
   display: flex;
   justify-content: space-between;
   @media (min-width: $md) {
-    display: grid;
-    grid-template-columns: auto auto auto;
+    align-items: center;
   }
 }
 
@@ -34,10 +39,19 @@
 .row__right {
   display: flex;
   flex-direction: column;
+  @media (min-width: $md) {
+    flex-direction: row !important;
+    justify-content: space-between;
+  }
+}
+
+.column--value-btn {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
   row-gap: 16px;
   @media (min-width: $md) {
-    flex-direction: row;
-    justify-content: space-between;
+    column-gap: 12px;
   }
 }
 
@@ -46,6 +60,9 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  @media (min-width: $md) {
+    row-gap: 10px;
+  }
 }
 
 .column--currency {
@@ -72,6 +89,7 @@
     padding-top: 0;
   }
 }
+
 .column--buttons {
   display: grid;
   row-gap: 14px;
@@ -108,8 +126,19 @@
   }
 }
 
+.color--astar {
+  @media (min-width: $md) {
+    color: $astar-blue;
+  }
+}
+
 .body--dark {
   .text--value {
     color: $gray-1;
+  }
+  .color--astar {
+    @media (min-width: $md) {
+      color: $astar-blue-dark;
+    }
   }
 }
