@@ -50,7 +50,7 @@
         </div>
       </div>
     </div>
-
+    <claim-all />
     <div class="store-container tw-grid tw-gap-x-12 xl:tw-gap-x-18 tw-justify-center">
       <div
         v-if="dapps.length === 0"
@@ -80,6 +80,7 @@ import Button from 'components/common/Button.vue';
 import IconBase from 'components/icons/IconBase.vue';
 import IconPlus from 'components/icons/IconPlus.vue';
 import ModalRegisterDapp from 'components/dapp-staking/modals/ModalRegisterDapp.vue';
+import ClaimAll from 'src/components/dapp-staking/ClaimAll.vue';
 import Dapp from 'src/components/dapp-staking/Dapp.vue';
 import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
@@ -107,6 +108,7 @@ export default defineComponent({
     Requirement,
     Withdraw,
     Era,
+    ClaimAll,
   },
   setup() {
     const store = useStore();
@@ -154,6 +156,7 @@ export default defineComponent({
       stakerApr,
       fasSeedling,
       accountData,
+      currentAccount,
     };
   },
 });

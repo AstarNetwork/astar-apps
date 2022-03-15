@@ -1,3 +1,4 @@
+import { ApiPromise } from '@polkadot/api';
 import { RegistryTypes } from '@polkadot/types/types';
 import * as typeDefs from 'src/config/api/polkadot/registry-types';
 
@@ -125,5 +126,19 @@ export const getProviderIndex = (chain: ASTAR_CHAIN) => {
       return endpointKey.SHIBUYA;
     default:
       return endpointKey.ASTAR;
+  }
+};
+
+export const checkIsEnableIndividualClaim = async (api: ApiPromise): Promise<boolean> => {
+  try {
+    const version = await api.query.dappsStaking.storageVersion();
+    if (!version) {
+      throw Error('invalid version');
+    }
+    const isEnableIndividualClaim = version.toHuman() !== 'V2_0_0';
+    return isEnableIndividualClaim;
+  } catch (error) {
+    // Memo: there is no `storageVersion` query in Astar network
+    return false;
   }
 };

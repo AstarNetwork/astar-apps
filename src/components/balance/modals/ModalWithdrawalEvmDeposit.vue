@@ -163,7 +163,7 @@ export default defineComponent({
     const acName = accountName;
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
     const { callFunc, dispatchError, isCustomSig, handleResult, handleTransactionError } =
-      useCustomSignature(closeModal);
+      useCustomSignature({ fn: closeModal });
 
     const formatBalance = computed(() => {
       const tokenDecimal = decimal.value;
