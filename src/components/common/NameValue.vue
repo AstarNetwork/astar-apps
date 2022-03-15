@@ -3,7 +3,7 @@
   while content can be any html element or Vue component.
 -->
 <template>
-  <div class="container tw-w-full">
+  <div class="container--label tw-w-full">
     <div class="item">{{ label }}</div>
     <div class="item">
       <slot></slot>
@@ -30,7 +30,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.container {
+.container--label {
   display: flex;
   flex-direction: row;
 }

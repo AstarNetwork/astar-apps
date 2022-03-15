@@ -1,0 +1,79 @@
+@import 'src/css/quasar.variables.scss';
+
+.row {
+  padding: 16px 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.row--details {
+  padding: 16px 8px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 12px;
+  @media (min-width: $lg) {
+    row-gap: 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+  }
+}
+
+.column-account-name {
+  display: flex;
+  column-gap: 8px;
+  @media (min-width: $lg) {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.column-address-icons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.column__address {
+  @media (min-width: $lg) {
+    margin-left: 24px;
+  }
+}
+
+.column__icons {
+  display: flex;
+  column-gap: 16px;
+  justify-content: flex-end;
+}
+
+.text--switch-account {
+  cursor: pointer;
+  color: $astar-blue;
+}
+
+.text--total-balance {
+  font-size: 16px;
+  font-weight: 700;
+  color: $gray-5;
+}
+
+.row__icons {
+  display: flex;
+  column-gap: 24px;
+}
+
+.icon {
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+}
+
+.body--dark {
+  .text--switch-account {
+    color: $astar-blue-dark;
+  }
+  .text--total-balance {
+    color: $gray-1;
+  }
+}

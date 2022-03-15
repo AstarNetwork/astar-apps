@@ -22,7 +22,8 @@
       </div>
 
       <nav class="flex-1">
-        <router-link
+        <!-- Todo: Remove -->
+        <!-- <router-link
           to="/balance"
           :class="[$route.path.split('/')[1] === 'balance' ? 'activeLink' : 'inactiveLink']"
           class="tw-items-center tw-justify-center"
@@ -36,6 +37,36 @@
           <span class="tw-ml-3 tw-flex-1">
             <p class="tw-font-bold">
               {{ $t('balance.balance') }}
+            </p>
+            <p
+              class="
+                tw-text-xs tw-text-blue-900
+                dark:tw-text-darkGray-100
+                tw-font-semibold tw-flex tw-justify-between
+              "
+            >
+              <span>{{ currentAccountName }}</span>
+            </p>
+            <p class="tw-text-xs tw-text-gray-500 dark:tw-text-darkGray-400">
+              {{ shortenAddress }}
+            </p>
+          </span>
+        </router-link> -->
+
+        <router-link
+          to="/assets"
+          :class="[$route.path.split('/')[1] === 'assets' ? 'activeLink' : 'inactiveLink']"
+          class="tw-items-center tw-justify-center"
+        >
+          <icon-base
+            :class="[$route.path.split('/')[1] === 'balance' ? 'activeSvg' : 'inactiveSvg']"
+            viewBox="0 0 24 24"
+          >
+            <icon-balance />
+          </icon-base>
+          <span class="tw-ml-3 tw-flex-1">
+            <p class="tw-font-bold">
+              {{ $t('assets.assets') }}
             </p>
             <p
               class="

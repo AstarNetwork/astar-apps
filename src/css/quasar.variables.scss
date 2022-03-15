@@ -1,24 +1,32 @@
-// Quasar SCSS (& Sass) Variables
-// --------------------------------------------------
-// To customize the look and feel of this app, you can override
-// the Sass/SCSS variables found in Quasar's source Sass/SCSS files.
+// Color
+$gray-1: #f7f7f8;
+$gray-5: #2c3335;
+$gray-6: #191d1f;
 
-// Check documentation for full list of Quasar variables
+$astar-blue: #0085ff;
+$astar-blue-dark: #05b6fd;
+$shiden-purple: #770cff;
+$shiden-purple-dark: #a67cff;
+$warning-red: #ff5621;
+$connected-green: #56f566;
 
-// Your own variables (that are declared here) and Quasar's own
-// ones will be available out of the box in your .vue/.scss/.sass files
+$body-bg-dark: #000000;
+$body-bg-light: #ffffff;
+$container-bg-dark: $gray-5;
+$container-bg-white: #ffffff;
+$border-separator-dark: $gray-6;
+$border-separator-light: #e6e9ee;
+$backdrop-transparent-dark: rgba(44, 51, 53, 0.5);
+$backdrop-transparent-light: rgba(44, 51, 53, 0.2);
 
-// It's highly recommended to change the default colors
-// to match your app's branding.
-// Tip: Use the "Theme Builder" on Quasar's documentation website.
+$container-border-shadow-dark: inset 0px 0px 4px rgba(0, 0, 0, 0.25);
+$container-border-shadow-light: 0px 0px 8px 1px rgba(0, 0, 0, 0.1);
 
-$primary   : #1976D2;
-$secondary : #26A69A;
-$accent    : #9C27B0;
+// Screen size
+$sm: 640px;
+$md: 768px;
+$lg: 1024px;
+$xl: 1280px;
+$xxl: 1440px;
 
-$dark      : #272E39;
-
-$positive  : #21BA45;
-$negative  : #C10015;
-$info      : #31CCEC;
-$warning   : #F2C037;
+$container-max-width: 976px;

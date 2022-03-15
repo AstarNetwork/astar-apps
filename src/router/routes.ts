@@ -1,10 +1,9 @@
 import { RouteRecordRaw } from 'vue-router';
 
 import Balance from 'pages/Balance.vue';
-// import DApps from 'src/pages/Contract.vue';
+import Assets from 'pages/Assets.vue';
 import Store from 'src/pages/DappStaking.vue';
 import ConnectWallet from 'src/components/balance/ConnectWallet.vue';
-// import CreateDappsTab from 'components/contracts/CreateDappsTab.vue';
 import DiscoverDappsTab from 'components/dapp-staking/DiscoverDappsTab.vue';
 import ManageDappsTab from 'components/dapp-staking/ManageDappsTab.vue';
 import EvmWidget from 'components/bridge/evm/EvmWidget.vue';
@@ -13,7 +12,7 @@ import Bridge from 'src/pages/Bridge.vue';
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    redirect: '/balance',
+    redirect: '/assets',
   },
   {
     path: '/store/discover-dapps',
@@ -43,6 +42,11 @@ const routes: RouteRecordRaw[] = [
         ],
       },
     ],
+  },
+  {
+    path: '/assets',
+    name: 'Assets',
+    component: Assets,
   },
   // {
   //   path: '/contracts',
