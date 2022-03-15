@@ -44,7 +44,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, toRefs, computed } from 'vue';
-import { PalletVestingVestingInfo } from '@polkadot/types/lookup';
+import { VestingInfo } from '@polkadot/types/interfaces';
 import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
 import { AccountData } from 'src/hooks';
 import Modal from 'src/components/common/Modal.vue';
@@ -74,7 +74,7 @@ export default defineComponent({
       emit('update:is-open', false);
     };
 
-    const getUntilBlock = (vesting: PalletVestingVestingInfo): BN => {
+    const getUntilBlock = (vesting: VestingInfo): BN => {
       return vesting.locked.div(vesting.perBlock).add(vesting.startingBlock);
     };
 

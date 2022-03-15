@@ -126,7 +126,7 @@ export default function useSendTx() {
   const onSend = async (currentItem: QueueTx, senderInfo: AddressProxy): Promise<void> => {
     const apiPromise: ApiPromise = $api?.value as ApiPromise;
 
-    const tip = new BN(0); // should be updated
+    const tip = '0'; // should be updated
 
     if (senderInfo.signAddress && apiPromise) {
       const [tx, [status, pairOrAddress, options]] = await Promise.all([

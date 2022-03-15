@@ -29,28 +29,28 @@ export const SubstrateWallets = [
 
 export const supportWalletObj = {
   [SupportWallet.PolkadotJs]: {
-    img: require('/src/assets/img/logo-polkadot-js.png'),
+    img: require('src/assets/img/logo-polkadot-js.png'),
     name: 'Polkadot.js',
     source: SupportWallet.PolkadotJs,
     walletUrl: 'https://polkadot.js.org/extension/',
     guideUrl: 'https://www.youtube.com/watch?v=r-fAy7Ta_vY',
   },
   [SupportWallet.MetaMask]: {
-    img: require('/src/assets/img/metamask.png'),
+    img: require('src/assets/img/metamask.png'),
     name: 'MetaMask',
     source: SupportWallet.MetaMask,
     walletUrl: 'https://metamask.io/',
     guideUrl: 'https://metamask.io/',
   },
   [SupportWallet.Clover]: {
-    img: require('/src/assets/img/logo-clover.png'),
+    img: require('src/assets/img/logo-clover.png'),
     name: 'Clover',
     source: SupportWallet.Clover,
     walletUrl: 'https://clover.finance/',
     guideUrl: 'https://docs.clover.finance/quick-start/about-clover',
   },
   [SupportWallet.Math]: {
-    img: require('/src/assets/img/logo-mathwallet.png'),
+    img: require('src/assets/img/logo-mathwallet.png'),
     name: 'Math Wallet',
     source: SupportWallet.Math,
     walletUrl: 'https://mathwallet.org/en-us/',

@@ -46,7 +46,8 @@ export default function useAbi(source: Code | null = null, isRequired = false) {
   const registry = $api?.value?.registry;
   const chainProperties = registry?.getChainProperties() as ChainProperties | undefined;
 
-  const abi = source ? ref(new Abi(source?.abi, chainProperties)) : ref(null);
+  const abi =
+    source && source?.abi ? ref(new Abi(source.abi.toString(), chainProperties)) : ref(null);
   const isAbiSupplied = ref(!!source?.abi);
   const isAbiValid = ref(!isRequired || !!source?.abi);
 

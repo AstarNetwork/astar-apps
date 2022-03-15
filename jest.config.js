@@ -8,6 +8,7 @@ const esModules = [
 
 /* eslint-env node */
 module.exports = {
+  modulePaths: ['<rootDir>'],
   globals: {
     __DEV__: true,
     // TODO: Remove if resolved natively

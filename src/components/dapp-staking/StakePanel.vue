@@ -96,6 +96,7 @@ import { ClaimParameters, getAddressEnum, StakingParameters } from 'src/store/da
 import { computed, defineComponent, ref, toRefs, watchEffect } from 'vue';
 import VueJsProgress from 'vue-js-progress';
 import './stake-panel.scss';
+import { Balance } from '@polkadot/types/interfaces';
 
 export default defineComponent({
   components: {
@@ -190,7 +191,7 @@ export default defineComponent({
 
       const stakeCustomExtrinsic = async () => {
         try {
-          const balance = formatBalance(amount, {
+          const balance = formatBalance(<Balance>amount, {
             withSi: true,
             decimals: stakeData.decimal,
             withUnit: unit,
@@ -249,7 +250,7 @@ export default defineComponent({
 
       const unstakeCustomExtrinsic = async () => {
         try {
-          const balance = formatBalance(amount, {
+          const balance = formatBalance(<Balance>amount, {
             withSi: true,
             decimals: stakeData.decimal,
             withUnit: stakeData.unit,

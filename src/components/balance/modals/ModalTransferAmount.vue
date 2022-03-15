@@ -171,6 +171,7 @@ import { computed, defineComponent, ref, toRefs, watchEffect, watch } from 'vue'
 import Web3 from 'web3';
 import ModalSelectAccount from './ModalSelectAccount.vue';
 import { createWeb3Instance } from 'src/config/web3';
+import { AccountInfo } from '@polkadot/types/interfaces';
 
 export enum Role {
   FromAddress = 'FromAddress',
@@ -265,7 +266,7 @@ export default defineComponent({
       const apiRef = $api.value;
       if (!apiRef || !toAddressRef) return;
       if (plasmUtils.isValidAddressPolkadotAddress(toAddressRef)) {
-        const { data } = await apiRef.query.system.account(toAddressRef);
+        const { data } = await apiRef.query.system.account<AccountInfo>(toAddressRef);
         toAddressBalance.value = data.free;
         return;
       }

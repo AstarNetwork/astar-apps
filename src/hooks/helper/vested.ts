@@ -1,3 +1,4 @@
+import { Balance } from '@polkadot/types/interfaces';
 import BN from 'bn.js';
 
 export const getVested = ({
@@ -12,10 +13,10 @@ export const getVested = ({
   locked: BN;
 }) => {
   if (currentBlock.lt(startBlock)) {
-    return new BN(0);
+    return <Balance>new BN(0);
   }
 
   const blockHasPast = currentBlock.sub(startBlock);
-  const vested = BN.min(locked, blockHasPast.mul(perBlock));
+  const vested = <Balance>BN.min(locked, blockHasPast.mul(perBlock));
   return vested;
 };

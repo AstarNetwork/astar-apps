@@ -19,7 +19,7 @@ export default defineComponent({
       () => props.balance,
       (balance) => {
         if (balance) {
-          const formatted = formatBalance(props.balance, {
+          const formatted = formatBalance(props.balance.toString(), {
             withSiFull: true,
             decimals: props.decimals,
           });

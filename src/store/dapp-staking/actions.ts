@@ -66,7 +66,7 @@ export const hasExtrinsicFailedEvent = (events: EventRecord[], dispatch: Dispatc
 
       if (section === 'system' && method === 'ExtrinsicFailed') {
         const [dispatchError] = data as unknown as ITuple<[DispatchError]>;
-        let message = dispatchError.type;
+        let message = dispatchError.type.toString();
 
         if (dispatchError.isModule) {
           try {
@@ -814,7 +814,7 @@ const getEstimatedClaimedAwards = (
 
   const result = api.createType('Balance', claimedSoFar);
   // console.log('claimed so far', result.toHuman());
-  return result;
+  return <Balance>result;
 };
 
 export interface RegisterParameters {
@@ -826,7 +826,7 @@ export interface RegisterParameters {
 
 export interface StakingParameters {
   dapp: DappItem;
-  amount: BN;
+  amount: Balance;
   senderAddress: string;
   api: ApiPromise;
   decimals: number;

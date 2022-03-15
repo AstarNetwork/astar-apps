@@ -347,7 +347,7 @@ export default defineComponent({
 
       try {
         callTx = props.contract.tx[message.method]({
-          gasLimit: toWeight,
+          gasLimit: toWeight.toString(),
           value: isPayable ? formData.endowment : 0,
         });
       } catch (e) {
@@ -422,7 +422,7 @@ export default defineComponent({
       props.contract.query[message.method](
         toAccount.value,
         {
-          gasLimit: toWeight,
+          gasLimit: toWeight.toString(),
           value: isPayable ? formData.endowment : 0,
         },
         ...params

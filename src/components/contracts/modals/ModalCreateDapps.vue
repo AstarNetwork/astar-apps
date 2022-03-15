@@ -482,7 +482,7 @@ export default defineComponent({
       let uploadTx: SubmittableExtrinsic<'promise'> | null = null;
 
       try {
-        const code = new CodePromise(apiPromise, abiData, wasm.value);
+        const code = new CodePromise(apiPromise, '', wasm.value);
         console.log('code', code);
 
         const unit = getUnit(selectUnitEndowment.value);
@@ -507,8 +507,8 @@ export default defineComponent({
           code && abi.value?.constructors[constructorIndex.value].method && formData.endowment
             ? code.tx[abi.value?.constructors[constructorIndex.value].method](
                 {
-                  gasLimit: toWeight,
-                  value: toEndowment.value,
+                  gasLimit: toWeight.toString(),
+                  value: toEndowment.value.toString(),
                 },
                 ...arrValues
               )

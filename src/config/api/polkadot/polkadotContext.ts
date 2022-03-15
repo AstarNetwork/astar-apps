@@ -4,8 +4,13 @@ import { ApiPromise } from '@polkadot/api';
 import { keyring } from '@polkadot/ui-keyring';
 import type { KeyringPair } from '@polkadot/keyring/types';
 import type { InjectedExtension } from '@polkadot/extension-inject/types';
-import { UnsubscribePromise } from '@polkadot/api/types';
+import {
+  GenericStorageEntryFunction,
+  PromiseResult,
+  UnsubscribePromise,
+} from '@polkadot/api/types';
 import BN from 'bn.js';
+import { AccountInfo } from '@polkadot/types/interfaces';
 // note: this is a simplified Redux-like state management pattern using the Vue composition API.
 // unlike Vuex; this method is not very strict, meaning that if someone really wanted to,
 // they could just directly inject the raw state symbol and mutate it
@@ -15,7 +20,7 @@ interface ProviderState {
   extensions?: InjectedExtension[];
   currentAccount?: KeyringPair;
   currentBalance?: BN;
-  unsubscribeAccountInfo?: UnsubscribePromise;
+  unsubscribeAccountInfo?: any;
 }
 
 // global state that holds the reference to the API instance. This will be exposed as a readonly reference
@@ -35,7 +40,7 @@ const mutations = {
   setExtensions: (extensions: InjectedExtension[]) => {
     state.extensions = extensions;
   },
-  setCurrentAccount: (accountIndex: number) => {
+  _setCurrentAccount: (accountIndex: number) => {
     const api = state.api;
     if (!api) {
       return;
@@ -58,9 +63,18 @@ const mutations = {
     state.currentAccount = currentAccount;
 
     // subscribe current AccountInfo
-    state.unsubscribeAccountInfo = api.query.system.account(currentAccount.address, (result) => {
-      state.currentBalance = result.data.free.toBn();
-    });
+    state.unsubscribeAccountInfo = api.query.system.account(
+      currentAccount.address,
+      (result: AccountInfo) => {
+        state.currentBalance = result.data.free.toBn();
+      }
+    );
+  },
+  get setCurrentAccount() {
+    return this._setCurrentAccount;
+  },
+  set setCurrentAccount(value) {
+    this._setCurrentAccount = value;
   },
 };
 

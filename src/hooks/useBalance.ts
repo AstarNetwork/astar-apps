@@ -1,12 +1,18 @@
 import { VoidFn } from '@polkadot/api/types';
-import { Balance, BalanceLockTo212 } from '@polkadot/types/interfaces';
-import { PalletVestingVestingInfo, PalletBalancesBalanceLock } from '@polkadot/types/lookup';
+import {
+  AccountInfoWithProviders,
+  Balance,
+  BalanceLock,
+  BalanceLockTo212,
+  VestingInfo,
+} from '@polkadot/types/interfaces';
 import BN from 'bn.js';
 import { useStore } from 'src/store';
 import { computed, onUnmounted, ref, Ref, watch } from 'vue';
 import { getVested } from './helper/vested';
 import { $api, $web3 } from 'boot/api';
 import { getBalance } from 'src/config/web3/utils/transactions';
+import { Option, u32, Vec } from '@polkadot/types-codec';
 
 function useCall(addressRef: Ref<string>) {
   const balanceRef = ref(new BN(0));
@@ -51,17 +57,17 @@ function useCall(addressRef: Ref<string>) {
     }
 
     const results = await Promise.all([
-      api.query.system.account(address),
-      api.query.vesting.vesting(address),
-      api.query.system.number(),
+      api.query.system.account<AccountInfoWithProviders>(address),
+      api.query.vesting.vesting<Option<Vec<VestingInfo>>>(address),
+      api.query.system.number<u32>(),
       api.derive.balances?.all(address),
     ]);
 
     const accountInfo = results[0];
-    const vesting: PalletVestingVestingInfo[] = results[1].unwrapOr(undefined) || [];
+    const vesting: VestingInfo[] = results[1].unwrapOr(undefined) || [];
     const currentBlock = results[2];
     const vestedClaimable = results[3].vestedClaimable;
-    const locks: (PalletBalancesBalanceLock | BalanceLockTo212)[] = results[3].lockedBreakdown;
+    const locks: (BalanceLock | BalanceLockTo212)[] = results[3].lockedBreakdown;
 
     const extendedVesting: ExtendedVestingInfo[] = [];
     vestedRef.value = new BN(0);
@@ -166,7 +172,7 @@ export class AccountData {
     vesting: ExtendedVestingInfo[],
     vestedClaimable: BN,
     remainingVests: BN,
-    locks: (PalletBalancesBalanceLock | BalanceLockTo212)[]
+    locks: (BalanceLock | BalanceLockTo212)[]
   ) {
     this.free = free.toBn();
     this.reserved = reserved.toBn();
@@ -195,7 +201,7 @@ export class AccountData {
   public vesting: ExtendedVestingInfo[];
   public vestedClaimable: BN;
   public remainingVests: BN;
-  public locks: (PalletBalancesBalanceLock | BalanceLockTo212)[];
+  public locks: (BalanceLock | BalanceLockTo212)[];
 }
 
 // FIXME: the class might be inherited by AccountData
@@ -209,7 +215,7 @@ export class AccountDataH160 {
     public vesting: ExtendedVestingInfo[],
     public vestedClaimable: BN,
     public remainingVests: BN,
-    public locks: (PalletBalancesBalanceLock | BalanceLockTo212)[]
+    public locks: (BalanceLock | BalanceLockTo212)[]
   ) {}
 
   public getUsableTransactionBalance(): BN {
@@ -222,5 +228,5 @@ export class AccountDataH160 {
 }
 
 export class ExtendedVestingInfo {
-  constructor(public basicInfo: PalletVestingVestingInfo, public vested: BN) {}
+  constructor(public basicInfo: VestingInfo, public vested: BN) {}
 }
