@@ -253,4 +253,12 @@ export default {
       TRANSFER_REFUNDED: 'Refunded',
     },
   },
+  assets: {
+    assets: 'Assets',
+    nativeAccount: 'Native Account',
+    evmAccount: 'EVM Account',
+    switchToNative: 'Switch to Native',
+    switchToEvm: 'Switch to EVM',
+    totalBalance: 'Total Balance',
+  },
 };

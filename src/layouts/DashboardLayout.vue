@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-h-screen tw-flex tw-overflow-hidden tw-bg-gray-50 dark:tw-bg-darkGray-900">
+  <div class="tw-h-screen tw-flex tw-overflow-hidden wrapper">
     <sidebar-desktop />
     <sidebar-mobile />
     <div class="tw-flex tw-flex-col tw-w-0 tw-flex-1 tw-overflow-y-auto lg:tw-overflow-hidden">
@@ -12,7 +12,7 @@
           focus:tw-outline-none
         "
       >
-        <div class="tw-px-4 sm:tw-px-8 tw-py-10 lg:tw-py-16">
+        <div class="tw-px-4 lg:tw-px-10 tw-py-4 lg:tw-py-10">
           <slot />
         </div>
       </main>

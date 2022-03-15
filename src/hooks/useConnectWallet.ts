@@ -38,6 +38,7 @@ export const useConnectWallet = () => {
     return getProviderIndex(chain);
   });
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
+  const isEthWallet = computed(() => store.getters['general/isEthWallet']);
   const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
   const isConnectedNetwork = computed(() => store.getters['general/networkStatus'] === 'connected');
 
@@ -193,6 +194,8 @@ export const useConnectWallet = () => {
     selectedWallet,
     modalAccountSelect,
     isH160,
+    isConnectedNetwork,
+    isEthWallet,
     openSelectModal,
     setCloseModal,
     setWalletModal,

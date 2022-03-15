@@ -1,5 +1,5 @@
 <template>
-  <div v-if="srcChain && selectedToken" class="container animate__animated animate__fadeIn">
+  <div v-if="srcChain && selectedToken" class="container--bridge animate__animated animate__fadeIn">
     <a
       v-if="currentNetworkIdx === endpointKey.SHIDEN"
       href="https://anyswap.exchange/#/bridge"

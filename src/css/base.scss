@@ -1,15 +1,45 @@
+@use 'tailwindcss/base';
+
+@use 'tailwindcss/components';
+
+@use 'tailwindcss/utilities';
+
 @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&display=swap');
 
-@import 'tailwindcss/base';
-
-@import 'tailwindcss/components';
-
-@import 'tailwindcss/utilities';
+@font-face {
+  font-family: 'SF Pro';
+  src: url('/fonts/SFPro-Regular.ttf');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'SF Pro';
+  src: url('/fonts/SFPro-Semibold.ttf');
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'SF Pro';
+  src: url('/fonts/SFPro-Bold.ttf');
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
 
 .tw-tooltip:hover span {
-    @apply tw-block;
+  @apply tw-block;
 }
 
 .checkbox:checked + span {
-    @apply tw-block;
+  @apply tw-block;
+}
+
+.dark\:tw-bg-blue-500 {
+  background-color: rgba(27, 109, 193, 0.1) !important;
+}
+
+.checked\:tw-border-blue-500:checked {
+  border-color: rgba(27, 109, 193, 1) !important;
 }

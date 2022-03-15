@@ -1,0 +1,30 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--assets {
+  position: relative;
+}
+
+.backdrop--transparent {
+  position: absolute;
+  border-radius: 6px;
+  width: 100%;
+  z-index: 10;
+  background: $backdrop-transparent-light;
+  backdrop-filter: blur(4px);
+  height: 216px;
+  @media (min-width: $lg) {
+    height: 180px;
+  }
+}
+
+.container--assets {
+  @media (min-width: $lg) {
+    margin-top: 24px;
+  }
+}
+
+.body--dark {
+  .backdrop--transparent {
+    background: $backdrop-transparent-dark;
+  }
+}
