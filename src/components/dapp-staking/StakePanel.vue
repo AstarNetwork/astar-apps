@@ -56,7 +56,7 @@
           :disabled="!stakeInfo?.hasStake"
           :small="true"
           :primary="false"
-          class="tw-ml-auto"
+          class="tw-ml-auto btn-unbond"
           @click="showUnstakeModal"
         >
           {{ canUnbondWithdraw ? $t('dappStaking.unbond') : $t('dappStaking.unstake') }}
@@ -387,3 +387,11 @@ export enum StakeAction {
   Unstake = 'Start unbonding',
 }
 </script>
+
+<style lang="scss" scoped>
+.btn-unbond {
+  background: lavender !important;
+  border-color: silver;
+  color: black;
+}
+</style>
