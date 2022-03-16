@@ -35,6 +35,7 @@
           </Button>
           <Button
             v-if="!isEnableIndividualClaim"
+            class="btn-unbond"
             :small="true"
             :primary="false"
             @click="showUnstakeModal"
@@ -52,8 +53,7 @@
         </Button>
 
         <Button
-          v-if="isEnableIndividualClaim"
-          :disabled="!stakeInfo?.hasStake"
+          v-if="isEnableIndividualClaim && stakeInfo?.hasStake"
           :small="true"
           :primary="false"
           class="tw-ml-auto btn-unbond"
@@ -62,7 +62,7 @@
           {{ canUnbondWithdraw ? $t('dappStaking.unbond') : $t('dappStaking.unstake') }}
         </Button>
         <Button
-          v-else
+          v-if="!isEnableIndividualClaim"
           :small="true"
           :primary="true"
           :disabled="isH160 || currentAddress === null"
