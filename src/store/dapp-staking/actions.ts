@@ -614,11 +614,12 @@ const actions: ActionTree<State, StateInterface> = {
               };
             }
 
+            const hasStake = Number(balance.toString()) > 0;
             return {
               totalStake: balanceFormatter(stakeInfo.total.toString()),
               yourStake,
               claimedRewards: '0', // always returns 0 in the below `getClaimInfo` function. (stakeInfo.claimedRewards)
-              hasStake: !!yourStake.formatted,
+              hasStake,
               stakersCount: Number(stakeInfo.numberOfStakers.toString()),
             } as StakeInfo;
           }
@@ -633,11 +634,12 @@ const actions: ActionTree<State, StateInterface> = {
             }
           }
 
+          const hasStake = Number(yourStake.denomAmount.toString()) > 0;
           return {
             totalStake: balanceFormatter(stakeInfo.total),
             yourStake,
             claimedRewards: balanceFormatter(stakeInfo.claimedRewards),
-            hasStake: !!yourStake.formatted,
+            hasStake,
             stakersCount: stakeInfo.stakers.size,
           } as StakeInfo;
         }
