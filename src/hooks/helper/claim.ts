@@ -30,7 +30,7 @@ const getNumberOfUnclaimedEra = async ({
 }): Promise<number> => {
   let numberOfUnclaimedEra = 0;
   try {
-    const data = await api.query.dappsStaking.stakersInfo<Option<GeneralStakerInfo>>(
+    const data = await api.query.dappsStaking.generalStakerInfo<Option<GeneralStakerInfo>>(
       senderAddress,
       getAddressEnum(dappAddress)
     );
