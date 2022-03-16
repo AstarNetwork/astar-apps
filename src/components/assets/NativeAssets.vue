@@ -10,10 +10,14 @@
       <div class="row row--details">
         <div class="row__left">
           <div class="column--currency">
-            <img width="24" src="icons/astar.png" alt="wallet-icon" />
+            <img
+              width="24"
+              :src="tokenSymbol === 'SDN' ? 'icons/sdn-token.png' : 'icons/astar.png'"
+              alt="sdn"
+            />
             <div class="column--ticker">
-              <span class="text--title">ASTR</span>
-              <span class="text--label--accent">Astar</span>
+              <span class="text--title">{{ tokenSymbol }}</span>
+              <span class="text--label--accent">{{ currentNetwork }}</span>
             </div>
           </div>
         </div>
@@ -21,10 +25,10 @@
           <div class="column column--balance">
             <div class="column__box">
               <div class="text--accent">
-                <span>100,000.125 ASTR</span>
+                <span>{{ $n(bal) }} {{ tokenSymbol }}</span>
               </div>
               <div class="text--label">
-                <span>100,000.125 USD</span>
+                <span>{{ $n(balUsd) }} {{ $t('usd') }}</span>
               </div>
             </div>
           </div>
@@ -45,7 +49,7 @@
         <div class="row__right">
           <div class="column--balance">
             <div class="column__box">
-              <span class="text--value">100.125 ASTR</span>
+              <span class="text--value">100.125 {{ tokenSymbol }}</span>
             </div>
           </div>
           <div class="column--buttons">
@@ -66,8 +70,8 @@
         <div class="row__right">
           <div class="column column--balance">
             <div class="column__box">
-              <span class="text--value">600,000 ASTR</span>
-              <span class="text--value">(500,000 ASTR)</span>
+              <span class="text--value">600,000 {{ tokenSymbol }}</span>
+              <span class="text--value">(500,000 {{ tokenSymbol }})</span>
             </div>
           </div>
           <div class="column column--buttons">
@@ -80,21 +84,43 @@
   </div>
 </template>
 <script lang="ts">
-import { getProviderIndex } from 'src/config/chainEndpoints';
+import { ethers } from 'ethers';
+import { useBalance } from 'src/hooks';
+import { getUsdPrice } from 'src/hooks/helper/price';
 import { useStore } from 'src/store';
-import { computed, defineComponent } from 'vue';
+import { computed, defineComponent, ref, watchEffect } from 'vue';
 
 export default defineComponent({
   setup() {
+    const bal = ref<number>(0);
+    const balUsd = ref<number>(0);
     const store = useStore();
-
-    const currentNetworkIdx = computed(() => {
+    const selectedAddress = computed(() => store.getters['general/selectedAddress']);
+    const { balance } = useBalance(selectedAddress);
+    const tokenSymbol = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
-      const chain = chainInfo ? chainInfo.chain : '';
-      return getProviderIndex(chain);
+      return chainInfo ? chainInfo.tokenSymbol : '';
+    });
+    const currentNetwork = computed(() => {
+      const chainInfo = store.getters['general/chainInfo'];
+      return chainInfo ? chainInfo.chain : '';
     });
 
-    return {};
+    watchEffect(async () => {
+      const tokenSymbolRef = tokenSymbol.value;
+      if (!balance.value || !tokenSymbolRef) return;
+      try {
+        bal.value = Number(ethers.utils.formatEther(balance.value.toString()));
+        const coingeckoTicker = tokenSymbolRef === 'SDN' ? 'shiden' : 'astar';
+        if (tokenSymbolRef !== 'SBY') {
+          balUsd.value = (await getUsdPrice(coingeckoTicker)) * bal.value;
+        }
+      } catch (error: any) {
+        console.error(error.message);
+      }
+    });
+
+    return { bal, tokenSymbol, balUsd, currentNetwork };
   },
 });
 </script>
