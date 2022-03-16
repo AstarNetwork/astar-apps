@@ -1,5 +1,9 @@
 @import 'src/css/quasar.variables.scss';
 
+.container--extra-padding-bottom {
+  padding-bottom: 16px;
+}
+
 .row {
   padding: 16px 8px;
 }
@@ -18,6 +22,12 @@
     margin-bottom: 16px;
     border-radius: 6px;
   }
+  @media (min-width: $xl) {
+    margin: 0;
+    padding-left: 16px;
+    padding-right: 8px;
+    margin-bottom: 16px;
+  }
 }
 
 .row--details {
@@ -28,10 +38,6 @@
   }
 }
 
-.row--bg--accent {
-  background: $gray-5-selected;
-}
-
 .row__left {
   max-width: 160px;
 }
@@ -39,19 +45,33 @@
 .row__right {
   display: flex;
   flex-direction: column;
-  @media (min-width: $md) {
-    flex-direction: row !important;
-    justify-content: space-between;
-  }
-}
-
-.column--value-btn {
-  display: flex;
-  flex-direction: column;
   text-align: center;
   row-gap: 16px;
   @media (min-width: $md) {
-    column-gap: 12px;
+    display: grid;
+    grid-template-columns: 200px 190px;
+  }
+  @media (min-width: $xl) {
+    grid-template-columns: 400px 190px;
+  }
+  @media (min-width: $xxl) {
+    grid-template-columns: 550px 190px;
+  }
+}
+
+.column__box {
+  display: flex;
+  flex-direction: column;
+  @media (min-width: $md) {
+    width: 200px;
+    text-align: right;
+    white-space: nowrap;
+  }
+  @media (min-width: $xl) {
+    width: 200px;
+  }
+  @media (min-width: $xxl) {
+    width: 250px;
   }
 }
 
@@ -62,6 +82,9 @@
   align-items: center;
   @media (min-width: $md) {
     row-gap: 10px;
+  }
+  @media (min-width: $md) {
+    justify-self: center;
   }
 }
 
@@ -88,6 +111,24 @@
   @media (min-width: $md) {
     padding-top: 0;
   }
+  @media (min-width: $xl) {
+    justify-self: start;
+  }
+}
+
+.column--asset-buttons {
+  display: grid;
+  row-gap: 14px;
+  @media (min-width: $md) {
+    row-gap: 8px;
+    justify-self: end;
+  }
+  @media (min-width: $xl) {
+    width: 200px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 }
 
 .column--buttons {
@@ -95,6 +136,11 @@
   row-gap: 14px;
   @media (min-width: $md) {
     row-gap: 8px;
+    justify-self: end;
+  }
+  @media (min-width: $xl) {
+    width: 200px;
+    justify-items: center;
   }
 }
 
@@ -128,17 +174,12 @@
 
 .color--astar {
   @media (min-width: $md) {
-    color: $astar-blue;
+    color: $astar-blue-dark;
   }
 }
 
 .body--dark {
   .text--value {
     color: $gray-1;
-  }
-  .color--astar {
-    @media (min-width: $md) {
-      color: $astar-blue-dark;
-    }
   }
 }

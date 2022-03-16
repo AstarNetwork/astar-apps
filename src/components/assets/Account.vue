@@ -30,7 +30,7 @@
               @click="copyAddress"
             />
             <q-tooltip>
-              <span class="text--tooltip">{{ $t('copy') }}</span>
+              <span class="text--md">{{ $t('copy') }}</span>
             </q-tooltip>
           </div>
           <a :href="isH160 ? blockscout : subScan" target="_blank" rel="noopener noreferrer">
@@ -41,7 +41,7 @@
               "
             />
             <q-tooltip>
-              <span class="text--tooltip">{{ $t(isH160 ? 'blockscout' : 'subscan') }}</span>
+              <span class="text--md">{{ $t(isH160 ? 'blockscout' : 'subscan') }}</span>
             </q-tooltip>
           </a>
         </div>
