@@ -394,4 +394,7 @@ export enum StakeAction {
   border-color: silver;
   color: black;
 }
+.btn-unbond:hover {
+  background: lightgray !important;
+}
 </style>
