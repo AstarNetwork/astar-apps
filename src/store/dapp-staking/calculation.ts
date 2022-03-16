@@ -66,7 +66,7 @@ export const getIndividualClaimReward = async (
   let reward = new BN(0);
   let erasToClaim: number[] = [];
 
-  const stakerInfo = await $api.value?.query.dappsStaking.stakersInfo<StakerInfo>(
+  const stakerInfo = await $api.value?.query.dappsStaking.generalStakerInfo<StakerInfo>(
     senderAddress,
     getAddressEnum(contractAddress)
   );
