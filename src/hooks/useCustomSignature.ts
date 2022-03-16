@@ -43,15 +43,12 @@ export function useCustomSignature({ fn, txType }: { fn?: () => void; txType?: T
       }
     }
     if (txType) {
-      // Memo: display the msg toast after displaying the ^block hash toast
-      setTimeout(() => {
-        displayCustomMessage({
-          txType,
-          result,
-          senderAddress: senderAddress.value,
-          dispatch: store.dispatch,
-        });
-      }, 3 * 1000);
+      displayCustomMessage({
+        txType,
+        result,
+        senderAddress: senderAddress.value,
+        dispatch: store.dispatch,
+      });
     }
   };
 
