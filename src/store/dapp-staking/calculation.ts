@@ -1,8 +1,7 @@
-import { bool, Option, Struct, u32, Vec } from '@polkadot/types';
+import { bool, Option, Struct, u32 } from '@polkadot/types';
 import { Balance } from '@polkadot/types/interfaces';
 import BN from 'bn.js';
 import { $api } from 'boot/api';
-import { storeKey } from 'vuex';
 import { ClaimInfo, EraRewardAndStake } from './actions';
 
 export const getAddressEnum = (address: string) => ({ Evm: address });
@@ -72,7 +71,7 @@ export const getIndividualClaimReward = async (
   );
 
   // Developer percentage string has format like 80.00%, get whole part as number.
-  const developerRewardPercentage = parseInt(
+  const developerRewardPercentage = Number(
     ((await $api.value?.consts.dappsStaking.developerRewardPercentage.toHuman()) || '0.0')
       .toString()
       .split('.')[0]

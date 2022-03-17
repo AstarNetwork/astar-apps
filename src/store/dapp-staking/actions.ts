@@ -110,7 +110,7 @@ const getEraStakes = async (
 
   let eraStakeMap = new Map();
   eraStakes.forEach(([key, stake]) => {
-    eraStakeMap.set(parseInt(key.args.map((k) => k.toString())[1]), stake);
+    eraStakeMap.set(Number(key.args.map((k) => k.toString())[1]), stake);
   });
 
   return eraStakeMap;
@@ -145,7 +145,7 @@ const getLowestClaimableEra = (
   currentEra: number,
   eraStakeMap: Map<number, Option<EraStakingPoints>>
 ) => {
-  const historyDepth = parseInt(api.consts.dappsStaking.historyDepth.toString());
+  const historyDepth = Number(api.consts.dappsStaking.historyDepth.toString());
   const firstStakedEra = Math.min(...eraStakeMap.keys());
   const lowestClaimableEra = Math.max(firstStakedEra, Math.max(1, currentEra - historyDepth));
 
@@ -614,11 +614,12 @@ const actions: ActionTree<State, StateInterface> = {
               };
             }
 
+            const hasStake = Number(balance.toString()) > 0;
             return {
               totalStake: balanceFormatter(stakeInfo.total.toString()),
               yourStake,
               claimedRewards: '0', // always returns 0 in the below `getClaimInfo` function. (stakeInfo.claimedRewards)
-              hasStake: !!yourStake.formatted,
+              hasStake,
               stakersCount: Number(stakeInfo.numberOfStakers.toString()),
             } as StakeInfo;
           }
@@ -633,11 +634,12 @@ const actions: ActionTree<State, StateInterface> = {
             }
           }
 
+          const hasStake = Number(yourStake.denomAmount.toString()) > 0;
           return {
             totalStake: balanceFormatter(stakeInfo.total),
             yourStake,
             claimedRewards: balanceFormatter(stakeInfo.claimedRewards),
-            hasStake: !!yourStake.formatted,
+            hasStake,
             stakersCount: stakeInfo.stakers.size,
           } as StakeInfo;
         }
@@ -666,9 +668,9 @@ const actions: ActionTree<State, StateInterface> = {
         );
       } else {
         const currentEraIndex = await parameters.api.query.dappsStaking.currentEra<EraIndex>();
-        const currentEra = parseInt(currentEraIndex.toString());
+        const currentEra = Number(currentEraIndex.toString());
         // Memo: historyDepth is not existing in the upgraded pallet
-        const historyDepth = parseInt(parameters.api.consts.dappsStaking.historyDepth.toString());
+        const historyDepth = Number(parameters.api.consts.dappsStaking.historyDepth.toString());
         const eraStakesMap = await getClaimableEraStakes(
           parameters.api,
           parameters.dapp.address,
@@ -676,7 +678,7 @@ const actions: ActionTree<State, StateInterface> = {
           historyDepth
         );
         const lowestClaimableEra = getLowestClaimableEra(parameters.api, currentEra, eraStakesMap);
-        const bonusEraDuration = parseInt(
+        const bonusEraDuration = Number(
           await parameters.api.consts.dappsStaking.bonusEraDuration.toString()
         );
         // console.log('lowest', lowestClaimableEra);
@@ -697,7 +699,7 @@ const actions: ActionTree<State, StateInterface> = {
         const entries =
           await parameters.api.query.dappsStaking.eraRewardsAndStakes.entries<EraRewardAndStake>();
         entries.forEach(([key, stake]) => {
-          eraRewardsAndStakeMap.set(parseInt(key.args.map((k) => k.toString())[0]), stake);
+          eraRewardsAndStakeMap.set(Number(key.args.map((k) => k.toString())[0]), stake);
         });
 
         // calculate reward

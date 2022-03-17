@@ -26,7 +26,7 @@ export default boot(async ({ store }) => {
   const networkIdxStore = localStorage.getItem(NETWORK_IDX);
   const customEndpoint = localStorage.getItem(CUSTOM_ENDPOINT);
   if (networkIdxStore) {
-    store.commit('general/setCurrentNetworkIdx', parseInt(networkIdxStore));
+    store.commit('general/setCurrentNetworkIdx', Number(networkIdxStore));
   }
   if (customEndpoint) {
     store.commit('general/setCurrentCustomEndpoint', customEndpoint);
@@ -40,7 +40,7 @@ export default boot(async ({ store }) => {
   }
 
   // set metadata header
-  const favicon = providerEndpoints[parseInt(networkIdx.value)].favicon;
+  const favicon = providerEndpoints[Number(networkIdx.value)].favicon;
   useMeta({
     title: '',
     titleTemplate: (title) => `${title} | Astar Portal - Astar & Shiden Network`,

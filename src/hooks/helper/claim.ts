@@ -17,6 +17,32 @@ export interface GeneralStakerInfo extends Struct {
   readonly stakes: any[];
 }
 
+export interface RegisteredDapps extends Struct {
+  readonly developer: string;
+  readonly state: string;
+}
+
+const checkIsDappOwner = async ({
+  dappAddress,
+  api,
+  senderAddress,
+}: {
+  dappAddress: string;
+  senderAddress: string;
+  api: ApiPromise;
+}): Promise<boolean> => {
+  try {
+    const data = await api.query.dappsStaking.registeredDapps<RegisteredDapps>(
+      getAddressEnum(dappAddress)
+    );
+    const owner = data.toHuman().developer;
+    return owner === senderAddress;
+  } catch (error: any) {
+    console.error(error.message);
+    return false;
+  }
+};
+
 const getNumberOfUnclaimedEra = async ({
   dappAddress,
   api,
@@ -251,7 +277,7 @@ const getLastEraClaimedForDapp = async ({
   return lastEraClaimed;
 };
 
-export const getIndividualClaimData = async ({
+export const getIndividualClaimTxs = async ({
   dappAddress,
   senderAddress,
   api,
@@ -261,34 +287,49 @@ export const getIndividualClaimData = async ({
   senderAddress: string;
   api: ApiPromise;
   currentEra: number;
-}): Promise<{ transactions: ExtrinsicPayload[]; numberOfUnclaimedEra: number }> => {
-  const numberOfUnclaimedEra = await getNumberOfUnclaimedEra({
-    dappAddress,
-    api,
-    senderAddress,
-    currentEra,
-  });
-  if (numberOfUnclaimedEra === 0) {
-    return { transactions: [], numberOfUnclaimedEra };
+}): Promise<ExtrinsicPayload[]> => {
+  try {
+    let txsForClaimStaker: ExtrinsicPayload[] = [];
+    let txsForClaimDapp: ExtrinsicPayload[] = [];
+
+    const [numberOfUnclaimedEra, isDappOwner] = await Promise.all([
+      getNumberOfUnclaimedEra({
+        dappAddress,
+        api,
+        senderAddress,
+        currentEra,
+      }),
+      checkIsDappOwner({
+        dappAddress,
+        api,
+        senderAddress,
+      }),
+    ]);
+
+    if (numberOfUnclaimedEra > 0) {
+      txsForClaimStaker = await getTxsForClaimStaker({
+        dappAddress,
+        api,
+        numberOfUnclaimedEra,
+      });
+    }
+
+    if (isDappOwner) {
+      txsForClaimDapp = await getTxsForClaimDapp({
+        dappAddress,
+        api,
+        currentEra,
+      });
+    }
+
+    const transactions = isDappOwner
+      ? txsForClaimStaker.concat(txsForClaimDapp)
+      : txsForClaimStaker;
+    return transactions;
+  } catch (error: any) {
+    console.error(error.message);
+    return [];
   }
-
-  const results = await Promise.all([
-    getTxsForClaimStaker({
-      dappAddress,
-      api,
-      numberOfUnclaimedEra,
-    }),
-    getTxsForClaimDapp({
-      dappAddress,
-      api,
-      currentEra,
-    }),
-  ]);
-
-  const txsForClaimStaker = results[0];
-  const txsForClaimDapp = results[1];
-  const transactions = txsForClaimStaker.concat(txsForClaimDapp);
-  return { transactions, numberOfUnclaimedEra };
 };
 
 export const calculateClaimedStaker = ({

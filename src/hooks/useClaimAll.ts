@@ -5,12 +5,11 @@ import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
 import { computed, ref, watchEffect } from 'vue';
 import { TxType } from './custom-signature/message';
 import { ExtrinsicPayload } from './helper';
-import { getIndividualClaimData } from './helper/claim';
+import { getIndividualClaimTxs } from './helper/claim';
 import { useCurrentEra, useCustomSignature } from './index';
 
 export function useClaimAll() {
   const batchTxs = ref<ExtrinsicPayload[]>([]);
-  const numOfRewardableDapp = ref<number>(0);
   const isLoading = ref<boolean>(true);
   const store = useStore();
   const senderAddress = computed(() => store.getters['general/selectedAddress']);
@@ -30,7 +29,6 @@ export function useClaimAll() {
   watchEffect(async () => {
     try {
       isLoading.value = true;
-      numOfRewardableDapp.value = 0;
       batchTxs.value = [];
       const api = $api.value;
       const senderAddressRef = senderAddress.value;
@@ -41,23 +39,19 @@ export function useClaimAll() {
         return;
       }
 
-      const txs = [];
-      for await (const { address } of dapps.value) {
-        const data = await getIndividualClaimData({
-          dappAddress: address,
-          api,
-          senderAddress: senderAddressRef,
-          currentEra: era.value,
-        }).catch((error: any) => {
-          console.error(error.message);
-          return { transactions: [], numberOfUnclaimedEra: 0 };
-        });
-        if (data.numberOfUnclaimedEra > 0) {
-          numOfRewardableDapp.value = numOfRewardableDapp.value + 1;
-          txs.push(data.transactions);
-        }
-      }
-      batchTxs.value = txs.flat();
+      const txs: ExtrinsicPayload[] = await Promise.all(
+        dapps.value.map(async ({ address }: { address: string }) => {
+          const transactions = await getIndividualClaimTxs({
+            dappAddress: address,
+            api,
+            senderAddress: senderAddressRef,
+            currentEra: era.value,
+          });
+          return transactions.length ? transactions : null;
+        })
+      );
+      const filteredTxs = txs.filter((it) => it !== null);
+      batchTxs.value = filteredTxs.flat();
     } catch (error: any) {
       console.error(error.message);
     } finally {
@@ -112,7 +106,6 @@ export function useClaimAll() {
   return {
     claimAll,
     batchTxs,
-    numOfRewardableDapp,
     isLoading,
     isEnableIndividualClaim: $isEnableIndividualClaim,
   };
