@@ -23,7 +23,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
-import PlasmHeader from 'components/common/Header.vue';
+import PlasmHeader from 'components/common/NewHeader.vue';
 import SidebarDesktop from 'components/common/SidebarDesktop.vue';
 import SidebarMobile from 'components/common/SidebarMobile.vue';
 
