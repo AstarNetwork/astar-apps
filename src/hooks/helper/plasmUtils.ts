@@ -81,7 +81,7 @@ export const reduceDenomToBalance = (bal: number, unit: number, decimal: number)
   if (arrDecimalBal.length === 2) {
     const intBal = arrDecimalBal[0];
     const minorityBal = arrDecimalBal[1];
-    const remainNum = parseInt(`${intBal}${minorityBal}`);
+    const remainNum = Number(`${intBal}${minorityBal}`);
     const decimalLength = minorityBal.length;
     // console.log('intBal', intBal)
     // console.log('minorityBal', minorityBal)
