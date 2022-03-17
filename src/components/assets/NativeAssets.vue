@@ -86,7 +86,7 @@
 </template>
 <script lang="ts">
 import { ethers } from 'ethers';
-import { useBalance, useEvmDeposit } from 'src/hooks';
+import { useBalance, useEvmDeposit, usePrice } from 'src/hooks';
 import { getUsdPrice } from 'src/hooks/helper/price';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
@@ -106,6 +106,7 @@ export default defineComponent({
     const selectedAddress = computed(() => store.getters['general/selectedAddress']);
     const { balance, accountData } = useBalance(selectedAddress);
     const { numEvmDeposit } = useEvmDeposit();
+    const { nativeTokenUsd } = usePrice();
     const tokenSymbol = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
       return chainInfo ? chainInfo.tokenSymbol : '';
@@ -122,9 +123,8 @@ export default defineComponent({
         isShibuya.value = tokenSymbolRef === 'SBY';
         bal.value = Number(ethers.utils.formatEther(balance.value.toString()));
         isFaucet.value = isShibuya.value || mainnetFaucetAmount > bal.value;
-        const coingeckoTicker = tokenSymbolRef === 'SDN' ? 'shiden' : 'astar';
-        if (!isShibuya.value) {
-          balUsd.value = (await getUsdPrice(coingeckoTicker)) * bal.value;
+        if (nativeTokenUsd.value) {
+          balUsd.value = nativeTokenUsd.value * bal.value;
         }
       } catch (error: any) {
         console.error(error.message);
