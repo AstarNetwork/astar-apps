@@ -7,7 +7,7 @@
     "
   >
     <Button
-      :disabled="numOfRewardableDapp === 0 || isLoading"
+      :disabled="batchTxs.length === 0 || isLoading"
       class="
         sm:tw-w-40
         tw-justify-center
@@ -45,14 +45,14 @@ export default defineComponent({
     IconBase,
   },
   setup() {
-    const { claimAll, numOfRewardableDapp, isLoading, isEnableIndividualClaim } = useClaimAll();
+    const { claimAll, batchTxs, isLoading, isEnableIndividualClaim } = useClaimAll();
     const { currentAccount } = useAccount();
 
     return {
       isEnableIndividualClaim,
       fasMoneyCheckAlt,
       claimAll,
-      numOfRewardableDapp,
+      batchTxs,
       isLoading,
       currentAccount,
     };

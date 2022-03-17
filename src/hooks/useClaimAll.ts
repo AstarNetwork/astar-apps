@@ -10,7 +10,6 @@ import { useCurrentEra, useCustomSignature } from './index';
 
 export function useClaimAll() {
   const batchTxs = ref<ExtrinsicPayload[]>([]);
-  const numOfRewardableDapp = ref<number>(0);
   const isLoading = ref<boolean>(true);
   const store = useStore();
   const senderAddress = computed(() => store.getters['general/selectedAddress']);
@@ -30,7 +29,6 @@ export function useClaimAll() {
   watchEffect(async () => {
     try {
       isLoading.value = true;
-      numOfRewardableDapp.value = 0;
       batchTxs.value = [];
       const api = $api.value;
       const senderAddressRef = senderAddress.value;
@@ -49,12 +47,7 @@ export function useClaimAll() {
             senderAddress: senderAddressRef,
             currentEra: era.value,
           });
-          if (transactions.length) {
-            numOfRewardableDapp.value++;
-            return transactions;
-          } else {
-            return null;
-          }
+          return transactions.length ? transactions : null;
         })
       );
       const filteredTxs = txs.filter((it) => it !== null);
@@ -113,7 +106,6 @@ export function useClaimAll() {
   return {
     claimAll,
     batchTxs,
-    numOfRewardableDapp,
     isLoading,
     isEnableIndividualClaim: $isEnableIndividualClaim,
   };
