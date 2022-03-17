@@ -4,9 +4,11 @@ import { computed, ref, watch } from 'vue';
 import { useAccount } from '.';
 import { $api } from 'boot/api';
 import { buildEvmAddress } from 'src/config/web3';
+import { ethers } from 'ethers';
 
 export function useEvmDeposit() {
   const evmDeposit = ref<BN>(new BN(0));
+  const numEvmDeposit = ref<number>(0);
   const isEvmDeposit = ref<boolean>(false);
   const { currentAccount } = useAccount();
   const store = useStore();
@@ -27,6 +29,7 @@ export function useEvmDeposit() {
         const h160Addr = buildEvmAddress(currentAccountVal);
         const deposit = await getData(h160Addr);
         evmDeposit.value = deposit;
+        numEvmDeposit.value = Number(ethers.utils.formatEther(deposit.toString()));
         isEvmDeposit.value = deposit.toString() !== '0' && !isH160.value ? true : false;
       }
     },
@@ -34,6 +37,7 @@ export function useEvmDeposit() {
   );
 
   return {
+    numEvmDeposit,
     evmDeposit,
     isEvmDeposit,
     currentAccount,

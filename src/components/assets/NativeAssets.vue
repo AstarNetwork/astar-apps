@@ -17,7 +17,9 @@
             />
             <div class="column--ticker">
               <span class="text--title">{{ tokenSymbol }}</span>
-              <span class="text--label--accent">{{ currentNetwork }}</span>
+              <span class="text--label--accent">{{
+                tokenSymbol === 'SBY' ? 'Shibuya' : currentNetwork
+              }}</span>
             </div>
           </div>
         </div>
@@ -32,24 +34,30 @@
               </div>
             </div>
           </div>
-          <div class="column--asset-buttons">
+          <div
+            class="column--asset-buttons"
+            :class="(isShibuya || mainnetFaucetAmount > bal) && 'column--buttons--2-columns'"
+          >
             <button class="btn btn--sm bg--astar color--astar">{{ $t('assets.transfer') }}</button>
             <!-- Memo: activate it when bridge feature is available in the native network -->
             <!-- <button class="btn btn--sm bg--astar">Bridge</button> -->
-            <!-- Memo: if eligible to call faucet -->
-            <button class="btn btn--sm bg--astar color--astar">{{ $t('assets.faucet') }}</button>
+            <button
+              v-if="isShibuya || mainnetFaucetAmount > bal"
+              class="btn btn--sm bg--astar color--astar"
+            >
+              {{ $t('assets.faucet') }}
+            </button>
           </div>
         </div>
       </div>
-      <!-- EVM deposit -->
-      <div class="row--bg--extend row--details bg--accent">
+      <div v-if="numEvmDeposit > 0" class="row--bg--extend row--details bg--accent">
         <div class="row__left">
           <span class="text--md">{{ $t('assets.haveDepositedFromEvm') }}</span>
         </div>
         <div class="row__right">
           <div class="column--balance">
             <div class="column__box">
-              <span class="text--value">100.125 {{ tokenSymbol }}</span>
+              <span class="text--value">{{ $n(numEvmDeposit) }} {{ tokenSymbol }}</span>
             </div>
           </div>
           <div class="column--buttons">
@@ -57,7 +65,6 @@
           </div>
         </div>
       </div>
-      <!-- Vesting Info -->
       <div class="row--bg--extend row--details bg--accent">
         <div class="row__left">
           <div>
@@ -70,8 +77,8 @@
         <div class="row__right">
           <div class="column column--balance">
             <div class="column__box">
-              <span class="text--value">600,000 {{ tokenSymbol }}</span>
-              <span class="text--value">(500,000 {{ tokenSymbol }})</span>
+              <span class="text--value">{{ $n(vestingTtl) }} {{ tokenSymbol }}</span>
+              <span class="text--value">({{ $n(lockInDappStaking) }} {{ tokenSymbol }})</span>
             </div>
           </div>
           <div class="column column--buttons">
@@ -85,7 +92,7 @@
 </template>
 <script lang="ts">
 import { ethers } from 'ethers';
-import { useBalance } from 'src/hooks';
+import { useBalance, useEvmDeposit } from 'src/hooks';
 import { getUsdPrice } from 'src/hooks/helper/price';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
@@ -94,9 +101,16 @@ export default defineComponent({
   setup() {
     const bal = ref<number>(0);
     const balUsd = ref<number>(0);
+    const vestingTtl = ref<number>(0);
+    const lockInDappStaking = ref<number>(0);
+    const isShibuya = ref<boolean>(false);
+    // Memo: defined by hard-coding to avoid sending too many requests to faucet API server
+    const mainnetFaucetAmount = 0.002;
+
     const store = useStore();
     const selectedAddress = computed(() => store.getters['general/selectedAddress']);
-    const { balance } = useBalance(selectedAddress);
+    const { balance, accountData } = useBalance(selectedAddress);
+    const { numEvmDeposit } = useEvmDeposit();
     const tokenSymbol = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
       return chainInfo ? chainInfo.tokenSymbol : '';
@@ -110,9 +124,10 @@ export default defineComponent({
       const tokenSymbolRef = tokenSymbol.value;
       if (!balance.value || !tokenSymbolRef) return;
       try {
+        isShibuya.value = tokenSymbolRef === 'SBY';
         bal.value = Number(ethers.utils.formatEther(balance.value.toString()));
         const coingeckoTicker = tokenSymbolRef === 'SDN' ? 'shiden' : 'astar';
-        if (tokenSymbolRef !== 'SBY') {
+        if (!isShibuya.value) {
           balUsd.value = (await getUsdPrice(coingeckoTicker)) * bal.value;
         }
       } catch (error: any) {
@@ -120,7 +135,34 @@ export default defineComponent({
       }
     });
 
-    return { bal, tokenSymbol, balUsd, currentNetwork };
+    watchEffect(() => {
+      const accountDataRef = accountData.value;
+      if (!accountDataRef) return;
+      // Memo: `vesting ` -> there has been inputted 1 space here
+      const vesting = accountDataRef.locks.find((it) => it.toHuman().id === 'vesting ');
+      const dappStake = accountDataRef.locks.find((it) => it.toHuman().id === 'dapstake');
+
+      if (vesting) {
+        const amount = String(vesting.toHuman().amount).replace(/,/g, '');
+        vestingTtl.value = Number(ethers.utils.formatEther(amount));
+      }
+      if (dappStake) {
+        const amount = String(dappStake.toHuman().amount).replace(/,/g, '');
+        lockInDappStaking.value = Number(ethers.utils.formatEther(amount));
+      }
+    });
+
+    return {
+      bal,
+      tokenSymbol,
+      balUsd,
+      currentNetwork,
+      numEvmDeposit,
+      isShibuya,
+      mainnetFaucetAmount,
+      vestingTtl,
+      lockInDappStaking,
+    };
   },
 });
 </script>
