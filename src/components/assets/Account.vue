@@ -52,10 +52,7 @@
 
     <div class="row">
       <span>{{ $t('assets.totalBalance') }}</span>
-      <!-- Todo: calculate total balance(usd) -->
-      <span class="text--total-balance">
-        {{ currentAccount ? '$30,123.233' : '$12,345.678' }}
-      </span>
+      <span class="text--total-balance"> ${{ $n(balUsd) }} </span>
     </div>
   </div>
 </template>
@@ -65,8 +62,9 @@ import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { SupportWallet, supportWalletObj } from 'src/config/wallets';
 import { useStore } from 'src/store';
 import { getSelectedAccount } from 'src/hooks/helper/wallet';
-import { useAccount, useBreakpoints, useConnectWallet } from 'src/hooks';
+import { useAccount, useBalance, useBreakpoints, useConnectWallet, usePrice } from 'src/hooks';
 import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
+import { ethers } from 'ethers';
 
 export default defineComponent({
   setup() {
@@ -74,6 +72,9 @@ export default defineComponent({
     const { currentAccount, currentAccountName } = useAccount();
     const { width, screenSize } = useBreakpoints();
     const iconWallet = ref<string>('');
+    const balUsd = ref<number>(0);
+    const { balance } = useBalance(currentAccount);
+    const { nativeTokenUsd } = usePrice();
 
     const store = useStore();
     const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
@@ -115,6 +116,14 @@ export default defineComponent({
       }
     });
 
+    watchEffect(() => {
+      if (!balance.value) return;
+      if (nativeTokenUsd.value) {
+        const bal = Number(ethers.utils.formatEther(balance.value.toString()));
+        balUsd.value = nativeTokenUsd.value * bal;
+      }
+    });
+
     return {
       iconWallet,
       currentAccountName,
@@ -126,6 +135,7 @@ export default defineComponent({
       screenSize,
       isH160,
       isEthWallet,
+      balUsd,
       getShortenAddress,
       copyAddress,
       toggleMetaMaskSchema,

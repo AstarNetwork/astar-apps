@@ -87,7 +87,6 @@
 <script lang="ts">
 import { ethers } from 'ethers';
 import { useBalance, useEvmDeposit, usePrice } from 'src/hooks';
-import { getUsdPrice } from 'src/hooks/helper/price';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
 
