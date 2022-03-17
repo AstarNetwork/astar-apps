@@ -34,17 +34,11 @@
               </div>
             </div>
           </div>
-          <div
-            class="column--asset-buttons"
-            :class="(isShibuya || mainnetFaucetAmount > bal) && 'column--buttons--2-columns'"
-          >
+          <div class="column--asset-buttons" :class="isFaucet && 'column--buttons--2-columns'">
             <button class="btn btn--sm bg--astar color--astar">{{ $t('assets.transfer') }}</button>
             <!-- Memo: activate it when bridge feature is available in the native network -->
             <!-- <button class="btn btn--sm bg--astar">Bridge</button> -->
-            <button
-              v-if="isShibuya || mainnetFaucetAmount > bal"
-              class="btn btn--sm bg--astar color--astar"
-            >
+            <button v-if="isFaucet" class="btn btn--sm bg--astar color--astar">
               {{ $t('assets.faucet') }}
             </button>
           </div>
@@ -104,6 +98,7 @@ export default defineComponent({
     const vestingTtl = ref<number>(0);
     const lockInDappStaking = ref<number>(0);
     const isShibuya = ref<boolean>(false);
+    const isFaucet = ref<boolean>(false);
     // Memo: defined by hard-coding to avoid sending too many requests to faucet API server
     const mainnetFaucetAmount = 0.002;
 
@@ -126,6 +121,7 @@ export default defineComponent({
       try {
         isShibuya.value = tokenSymbolRef === 'SBY';
         bal.value = Number(ethers.utils.formatEther(balance.value.toString()));
+        isFaucet.value = isShibuya.value || mainnetFaucetAmount > bal.value;
         const coingeckoTicker = tokenSymbolRef === 'SDN' ? 'shiden' : 'astar';
         if (!isShibuya.value) {
           balUsd.value = (await getUsdPrice(coingeckoTicker)) * bal.value;
@@ -162,6 +158,7 @@ export default defineComponent({
       mainnetFaucetAmount,
       vestingTtl,
       lockInDappStaking,
+      isFaucet,
     };
   },
 });

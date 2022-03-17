@@ -4,29 +4,7 @@
 
 @use 'tailwindcss/utilities';
 
-@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&display=swap');
-
-@font-face {
-  font-family: 'SF Pro';
-  src: url('/fonts/SFPro-Regular.ttf');
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'SF Pro';
-  src: url('/fonts/SFPro-Semibold.ttf');
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'SF Pro';
-  src: url('/fonts/SFPro-Bold.ttf');
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-}
+@import url('https://fonts.googleapis.com/css?family=Inter:300,400,500,700,900&display=swap');
 
 .tw-tooltip:hover span {
   @apply tw-block;
