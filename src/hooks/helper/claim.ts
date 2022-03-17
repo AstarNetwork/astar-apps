@@ -30,7 +30,7 @@ const checkIsDappOwner = async ({
   dappAddress: string;
   senderAddress: string;
   api: ApiPromise;
-}): Promise<Boolean> => {
+}): Promise<boolean> => {
   try {
     const data = await api.query.dappsStaking.registeredDapps<RegisteredDapps>(
       getAddressEnum(dappAddress)
@@ -277,7 +277,7 @@ const getLastEraClaimedForDapp = async ({
   return lastEraClaimed;
 };
 
-export const getIndividualClaimData = async ({
+export const getIndividualClaimTxs = async ({
   dappAddress,
   senderAddress,
   api,
@@ -287,42 +287,49 @@ export const getIndividualClaimData = async ({
   senderAddress: string;
   api: ApiPromise;
   currentEra: number;
-}): Promise<{ transactions: ExtrinsicPayload[]; numberOfUnclaimedEra: number }> => {
-  let txsForClaimStaker: ExtrinsicPayload[] = [];
-  let txsForClaimDapp: ExtrinsicPayload[] = [];
+}): Promise<ExtrinsicPayload[]> => {
+  try {
+    let txsForClaimStaker: ExtrinsicPayload[] = [];
+    let txsForClaimDapp: ExtrinsicPayload[] = [];
 
-  const [numberOfUnclaimedEra, isDappOwner] = await Promise.all([
-    getNumberOfUnclaimedEra({
-      dappAddress,
-      api,
-      senderAddress,
-      currentEra,
-    }),
-    checkIsDappOwner({
-      dappAddress,
-      api,
-      senderAddress,
-    }),
-  ]);
+    const [numberOfUnclaimedEra, isDappOwner] = await Promise.all([
+      getNumberOfUnclaimedEra({
+        dappAddress,
+        api,
+        senderAddress,
+        currentEra,
+      }),
+      checkIsDappOwner({
+        dappAddress,
+        api,
+        senderAddress,
+      }),
+    ]);
 
-  if (numberOfUnclaimedEra > 0) {
-    txsForClaimStaker = await getTxsForClaimStaker({
-      dappAddress,
-      api,
-      numberOfUnclaimedEra,
-    });
+    if (numberOfUnclaimedEra > 0) {
+      txsForClaimStaker = await getTxsForClaimStaker({
+        dappAddress,
+        api,
+        numberOfUnclaimedEra,
+      });
+    }
+
+    if (isDappOwner) {
+      txsForClaimDapp = await getTxsForClaimDapp({
+        dappAddress,
+        api,
+        currentEra,
+      });
+    }
+
+    const transactions = isDappOwner
+      ? txsForClaimStaker.concat(txsForClaimDapp)
+      : txsForClaimStaker;
+    return transactions;
+  } catch (error: any) {
+    console.error(error.message);
+    return [];
   }
-
-  if (isDappOwner) {
-    txsForClaimDapp = await getTxsForClaimDapp({
-      dappAddress,
-      api,
-      currentEra,
-    });
-  }
-
-  const transactions = isDappOwner ? txsForClaimStaker.concat(txsForClaimDapp) : txsForClaimStaker;
-  return { transactions, numberOfUnclaimedEra };
 };
 
 export const calculateClaimedStaker = ({
