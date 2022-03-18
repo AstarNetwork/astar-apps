@@ -19,5 +19,6 @@ export * from './useCustomSignature';
 export * from './useBreakpoints';
 export * from './usePrice';
 export * from './c-bridge/useCbridge';
+export * from './c-bridge/useCbridgeV2';
 export * from './c-bridge/useCbridgeHistory';
 export * from './c-bridge/useCbridgeApproval';

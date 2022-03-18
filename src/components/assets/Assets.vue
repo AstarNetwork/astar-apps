@@ -3,7 +3,7 @@
     <div v-if="!selectedAccountAddress" class="backdrop--transparent" />
     <div class="container--assets">
       <Account />
-      <div v-if="isH160">H160</div>
+      <div v-if="isH160"><EvmAssets /></div>
       <div v-else><NativeAssets /></div>
     </div>
   </div>
@@ -11,6 +11,7 @@
 <script lang="ts">
 import Account from 'src/components/assets/Account.vue';
 import NativeAssets from 'src/components/assets/NativeAssets.vue';
+import EvmAssets from 'src/components/assets/EvmAssets.vue';
 
 import { useStore } from 'src/store';
 import { defineComponent, computed } from 'vue';
@@ -19,6 +20,7 @@ export default defineComponent({
   components: {
     Account,
     NativeAssets,
+    EvmAssets,
   },
   setup() {
     const store = useStore();

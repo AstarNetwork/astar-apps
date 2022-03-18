@@ -1,0 +1,133 @@
+@import 'src/css/quasar.variables.scss';
+
+.row {
+  padding: 16px 8px;
+}
+
+.rows {
+  display: grid;
+}
+
+.row--details {
+  display: flex;
+  justify-content: space-between;
+  @media (min-width: $md) {
+    align-items: center;
+  }
+}
+
+.row__left {
+  max-width: 160px;
+}
+
+.row__right {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  row-gap: 16px;
+  @media (min-width: $md) {
+    display: grid;
+    grid-template-columns: 200px 190px;
+  }
+  @media (min-width: $xl) {
+    grid-template-columns: 400px 190px;
+  }
+  @media (min-width: $xxl) {
+    grid-template-columns: 550px 190px;
+  }
+}
+
+.column__box {
+  display: flex;
+  flex-direction: column;
+  @media (min-width: $md) {
+    width: 200px;
+    text-align: right;
+    white-space: nowrap;
+  }
+  @media (min-width: $xl) {
+    width: 200px;
+  }
+  @media (min-width: $xxl) {
+    width: 250px;
+  }
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  @media (min-width: $md) {
+    row-gap: 10px;
+  }
+  @media (min-width: $md) {
+    justify-self: center;
+  }
+}
+
+.column--currency {
+  display: flex;
+  column-gap: 8px;
+  padding-top: 20px;
+  @media (min-width: $md) {
+    padding-top: 0;
+  }
+}
+
+.column--ticker {
+  display: flex;
+  column-gap: 8px;
+  align-items: center;
+}
+
+.column--balance {
+  display: grid;
+  justify-items: center;
+  row-gap: 8px;
+  padding-top: 6px;
+  @media (min-width: $md) {
+    padding-top: 0;
+  }
+  @media (min-width: $xl) {
+    justify-self: start;
+  }
+}
+
+.column--asset-buttons {
+  display: grid;
+  align-items: center;
+  row-gap: 14px;
+  @media (min-width: $md) {
+    row-gap: 8px;
+    justify-self: end;
+  }
+  @media (min-width: $xl) {
+    justify-self: center;
+    padding-right: 12px;
+  }
+}
+
+.column--buttons--2-columns {
+  @media (min-width: $xl) {
+    display: flex !important;
+    padding-right: 0px !important;
+    justify-content: space-between;
+    width: 200px;
+  }
+}
+
+.column__icons {
+  display: flex;
+  column-gap: 16px;
+  justify-content: flex-end;
+}
+
+.color--astar {
+  @media (min-width: $md) {
+    color: $astar-blue-dark;
+  }
+}
+
+.body--dark {
+}
