@@ -39,7 +39,7 @@ export function useCbridgeV2() {
     if (!data || !data.tokens) {
       throw Error('Cannot fetch from cBridge API');
     }
-    tokens.value = await Promise.all(
+    tokens.value = (await Promise.all(
       objToArray(data.tokens[srcChainId])
         .flat()
         .map(async (token: CbridgeToken) => {
@@ -61,8 +61,8 @@ export function useCbridgeV2() {
           }
           const tokenWithBalance = { ...t, userBalance, userBalanceUsd: String(balUsd) };
           return tokenWithBalance;
-        }) as any
-    );
+        })
+    )) as SelectedToken[];
   };
 
   watch(
