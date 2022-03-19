@@ -13,7 +13,7 @@
 }
 
 .row--bg--extend {
-  margin: 0 -16px;
+  margin: 0 -24px;
   padding: 16px 24px;
   margin-bottom: 16px;
   @media (min-width: $md) {
@@ -39,7 +39,10 @@
 }
 
 .row__left {
-  max-width: 160px;
+  max-width: 146px;
+  @media (min-width: $sm) {
+    max-width: 300px;
+  }
 }
 
 .row__right {
@@ -92,15 +95,21 @@
   display: flex;
   column-gap: 8px;
   padding-top: 20px;
-  @media (min-width: $md) {
+  align-items: center;
+  @media (min-width: $sm) {
+    column-gap: 12px;
     padding-top: 0;
   }
 }
 
 .column--ticker {
-  display: flex;
-  column-gap: 8px;
+  grid-template-columns: 46px auto;
+  column-gap: 12px;
   align-items: center;
+  display: grid;
+  @media (min-width: $sm) {
+    grid-template-columns: 52px auto;
+  }
 }
 
 .column--balance {
@@ -184,6 +193,11 @@
   @media (min-width: $md) {
     color: $astar-blue-dark;
   }
+}
+
+.token-logo {
+  width: 24px;
+  height: 24px;
 }
 
 .body--dark {

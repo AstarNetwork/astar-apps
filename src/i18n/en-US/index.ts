@@ -263,6 +263,7 @@ export default {
     totalBalance: 'Total Balance',
     transfer: 'Transfer',
     faucet: 'Faucet',
+    bridge: 'Bridge',
     withdraw: 'Withdraw',
     view: 'View',
     haveDepositedFromEvm: 'You have deposited from EVM account',

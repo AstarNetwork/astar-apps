@@ -52,7 +52,7 @@
 
     <div class="row">
       <span>{{ $t('assets.totalBalance') }}</span>
-      <span class="text--total-balance"> ${{ $n(balUsd) }} </span>
+      <span class="text--total-balance"> ${{ $n(balUsd + ttlErc20Amount) }} </span>
     </div>
   </div>
 </template>
@@ -67,6 +67,12 @@ import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { ethers } from 'ethers';
 
 export default defineComponent({
+  props: {
+    ttlErc20Amount: {
+      type: Number,
+      required: true,
+    },
+  },
   setup() {
     const { toggleMetaMaskSchema } = useConnectWallet();
     const { currentAccount, currentAccountName } = useAccount();

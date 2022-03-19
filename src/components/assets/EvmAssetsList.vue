@@ -1,5 +1,5 @@
 <template>
-  <div class="container container--extra-padding-bottom">
+  <div v-if="tokens" class="container container--extra-padding-bottom">
     <div class="row">
       <span class="text--title">{{ $t('assets.assets') }}</span>
     </div>
@@ -11,9 +11,9 @@
         <div class="row__left">
           <div class="column--currency">
             <img
-              width="24"
+              class="token-logo"
               :src="tokenSymbol === 'SDN' ? 'icons/sdn-token.png' : 'icons/astar.png'"
-              alt="sdn"
+              :alt="tokenSymbol"
             />
             <div class="column--ticker">
               <span class="text--title">{{ tokenSymbol }}</span>
@@ -34,8 +34,9 @@
               </div>
             </div>
           </div>
-          <div class="column--asset-buttons" :class="isFaucet && 'column--buttons--2-columns'">
+          <div class="column--asset-buttons column--buttons--2-columns">
             <button class="btn btn--sm bg--astar color--astar">{{ $t('assets.transfer') }}</button>
+            <button class="btn btn--sm bg--astar color--astar">{{ $t('assets.bridge') }}</button>
             <button v-if="isFaucet" class="btn btn--sm bg--astar color--astar">
               {{ $t('assets.faucet') }}
             </button>
@@ -43,15 +44,30 @@
         </div>
       </div>
     </div>
+
+    <div v-for="token in tokens" :key="token.symbol">
+      <EvmToken :token="token" />
+    </div>
   </div>
 </template>
 <script lang="ts">
 import { ethers } from 'ethers';
-import { useBalance, useCbridgeV2, usePrice } from 'src/hooks';
+import { SelectedToken } from 'src/c-bridge';
+import EvmToken from 'src/components/assets/EvmToken.vue';
+import { useBalance, usePrice } from 'src/hooks';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, watchEffect } from 'vue';
+import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
 
 export default defineComponent({
+  components: {
+    EvmToken,
+  },
+  props: {
+    tokens: {
+      type: Object as PropType<SelectedToken[]>,
+      required: true,
+    },
+  },
   setup() {
     const bal = ref<number>(0);
     const balUsd = ref<number>(0);
@@ -63,7 +79,6 @@ export default defineComponent({
     const store = useStore();
     const selectedAddress = computed(() => store.getters['general/selectedAddress']);
     const { balance } = useBalance(selectedAddress);
-    useCbridgeV2();
     const { nativeTokenUsd } = usePrice();
     const tokenSymbol = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
@@ -103,5 +118,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/assets/styles/native-assets.scss';
+@use 'src/components/assets/styles/assets-list.scss';
 </style>

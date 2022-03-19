@@ -18,6 +18,9 @@
   }
   .border--separator {
     border: 1px solid $border-separator-dark;
+    border-bottom: 0px solid transparent;
+    border-left: 0px solid transparent;
+    border-right: 0px solid transparent;
   }
 }
 
@@ -41,7 +44,7 @@ main {
   box-shadow: $container-border-shadow-light;
   background: $container-bg-white;
   border-radius: 6px;
-  padding: 0px 16px;
+  padding: 8px 24px;
 }
 
 .screen--lg {

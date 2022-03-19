@@ -164,5 +164,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/assets/styles/native-assets.scss';
+@use 'src/components/assets/styles/assets-list.scss';
 </style>

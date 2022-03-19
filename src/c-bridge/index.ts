@@ -132,6 +132,7 @@ export interface SelectedToken {
   icon: string;
   decimal: number;
   userBalance: string;
+  userBalanceUsd: string;
 }
 
 export interface Quotation {
