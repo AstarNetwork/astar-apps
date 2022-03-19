@@ -34,6 +34,9 @@
             <button class="btn btn--sm bg--astar color--astar">
               {{ $t('assets.bridge') }}
             </button>
+            <button v-if="isFaucet" class="btn btn--sm bg--astar color--astar">
+              {{ $t('assets.faucet') }}
+            </button>
           </div>
         </div>
       </div>
@@ -48,6 +51,10 @@ export default defineComponent({
   props: {
     token: {
       type: Object as PropType<SelectedToken>,
+      required: true,
+    },
+    isFaucet: {
+      type: Boolean,
       required: true,
     },
   },

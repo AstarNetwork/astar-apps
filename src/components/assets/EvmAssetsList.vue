@@ -4,9 +4,9 @@
       <span class="text--title">{{ $t('assets.assets') }}</span>
     </div>
 
-    <div class="border--separator" />
+    <div v-if="tokenSymbol !== 'SDN'" class="border--separator" />
 
-    <div class="rows">
+    <div v-if="tokenSymbol !== 'SDN'" class="rows">
       <div class="row row--details">
         <div class="row__left">
           <div class="column--currency">
@@ -46,7 +46,7 @@
     </div>
 
     <div v-for="token in tokens" :key="token.symbol">
-      <EvmToken :token="token" />
+      <EvmToken :token="token" :is-faucet="token.symbol === 'SDN' && isFaucet" />
     </div>
   </div>
 </template>
