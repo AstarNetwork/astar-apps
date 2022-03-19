@@ -118,5 +118,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/assets/styles/assets-list.scss';
+@use 'src/components/assets/styles/asset-list.scss';
 </style>
