@@ -12,8 +12,12 @@
   background: $backdrop-transparent-light;
   backdrop-filter: blur(4px);
   height: 232px;
+
   @media (min-width: $lg) {
     height: 196px;
+  }
+  @supports (-moz-appearance: none) {
+    background: $backdrop-transparent-light-firefox;
   }
 }
 
@@ -28,5 +32,8 @@
 .body--dark {
   .backdrop--transparent {
     background: $backdrop-transparent-dark;
+    @supports (-moz-appearance: none) {
+      background: $backdrop-transparent-dark-firefox;
+    }
   }
 }

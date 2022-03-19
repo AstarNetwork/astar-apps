@@ -18,9 +18,10 @@ $container-bg-dark: $gray-5;
 $container-bg-white: #ffffff;
 $border-separator-dark: $gray-6;
 $border-separator-light: #e6e9ee;
-// Todo: fix for firefox
 $backdrop-transparent-dark: rgba(44, 51, 53, 0.5);
+$backdrop-transparent-dark-firefox: rgba(44, 51, 53, 0.9);
 $backdrop-transparent-light: rgba(44, 51, 53, 0.2);
+$backdrop-transparent-light-firefox: rgba(44, 51, 53, 0.8);
 
 $container-border-shadow-dark: inset 0px 0px 4px rgba(0, 0, 0, 0.25);
 $container-border-shadow-light: 0px 0px 8px 1px rgba(0, 0, 0, 0.1);
