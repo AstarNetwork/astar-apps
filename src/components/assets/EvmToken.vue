@@ -12,7 +12,7 @@
             />
             <div class="column--ticker">
               <span class="text--title">{{ token.symbol }}</span>
-              <span class="text--label--accent">{{ token.name }}</span>
+              <span class="text--label--accent">{{ formatTokenName(token.name) }}</span>
             </div>
           </div>
         </div>
@@ -58,9 +58,18 @@ export default defineComponent({
       required: true,
     },
   },
-  setup({ token }) {
+  setup() {
+    const formatTokenName = (name: string) => {
+      switch (name) {
+        case 'Shiden Network':
+          return 'Shiden';
+        default:
+          return name;
+      }
+    };
     return {
       getIcon,
+      formatTokenName,
     };
   },
 });

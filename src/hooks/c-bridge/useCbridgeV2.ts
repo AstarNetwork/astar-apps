@@ -63,6 +63,10 @@ export function useCbridgeV2() {
           return tokenWithBalance;
         })
     )) as SelectedToken[];
+
+    tokens.value.sort((a: SelectedToken, b: SelectedToken) => {
+      return Number(b.userBalance) - Number(a.userBalance);
+    });
   };
 
   watch(

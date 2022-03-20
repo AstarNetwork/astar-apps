@@ -258,7 +258,7 @@ export default {
     assets: 'Assets',
     nativeAccount: 'Native Account',
     evmAccount: 'EVM Account',
-    switchToNative: 'Switch to Native',
+    switchToNative: 'Switch to Lockdrop',
     switchToEvm: 'Switch to EVM',
     totalBalance: 'Total Balance',
     transfer: 'Transfer',
@@ -269,5 +269,9 @@ export default {
     haveDepositedFromEvm: 'You have deposited from EVM account',
     yourVestingInfo: 'Your Vesting Info',
     inStaking: '(in staking)',
+    lockdropAccount: 'Lockdrop Account',
+    inLockdropAccount: 'You are in a Lockdrop account',
+    cantTransferToExcahges: "You can't transfer to Exchanges",
+    noHash: 'Your transaction will not have a hash',
   },
 };

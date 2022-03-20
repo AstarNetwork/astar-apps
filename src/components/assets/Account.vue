@@ -1,70 +1,97 @@
 <template>
-  <div class="container">
-    <div class="row">
-      <span class="text--title">{{
-        $t(isH160 ? 'assets.evmAccount' : 'assets.nativeAccount')
-      }}</span>
-      <span v-if="isEthWallet" class="text--switch-account" @click="toggleMetaMaskSchema">{{
-        $t(isH160 ? 'assets.switchToNative' : 'assets.switchToEvm')
-      }}</span>
+  <div class="wrapper--account">
+    <div v-if="isLockdropAccount && !isH160 && currentAccount" class="container--lockdrop-warning">
+      <div>
+        <span class="text--warning-bold">{{ $t('assets.inLockdropAccount') }}</span>
+      </div>
+      <ul class="row--warning-list">
+        <li class="text--warning">
+          {{ $t('assets.cantTransferToExcahges') }}
+        </li>
+        <li class="text--warning">{{ $t('assets.noHash') }}</li>
+      </ul>
     </div>
 
-    <div class="border--separator" />
-
-    <div class="row--details">
-      <div class="column-account-name">
-        <img v-if="iconWallet" width="24" :src="iconWallet" alt="wallet-icon" />
-        <span class="text--accent">{{ currentAccount ? currentAccountName : 'My Wallet' }}</span>
+    <div class="container">
+      <div class="row">
+        <span class="text--title">{{
+          $t(
+            isH160
+              ? 'assets.evmAccount'
+              : isLockdropAccount
+              ? 'assets.lockdropAccount'
+              : 'assets.nativeAccount'
+          )
+        }}</span>
+        <span v-if="isLockdropAccount" class="text--switch-account" @click="toggleMetaMaskSchema">{{
+          $t(isH160 ? 'assets.switchToNative' : 'assets.switchToEvm')
+        }}</span>
       </div>
-      <div class="column-address-icons">
-        <div class="column__address">
-          <span>{{
-            width >= screenSize.xl ? currentAccount : getShortenAddress(currentAccount)
-          }}</span>
+
+      <div class="border--separator" />
+
+      <div class="row--details">
+        <div class="column-account-name">
+          <img v-if="iconWallet" width="24" :src="iconWallet" alt="wallet-icon" />
+          <span class="text--accent">{{ currentAccount ? currentAccountName : 'My Wallet' }}</span>
         </div>
-        <div class="column__icons">
-          <div>
-            <img
-              class="icon"
-              :src="isDarkTheme ? 'icons/icon-copy-dark.svg' : 'icons/icon-copy.svg'"
-              @click="copyAddress"
-            />
-            <q-tooltip>
-              <span class="text--md">{{ $t('copy') }}</span>
-            </q-tooltip>
+        <div class="column-address-icons">
+          <div class="column__address">
+            <span>{{
+              width >= screenSize.xl ? currentAccount : getShortenAddress(currentAccount)
+            }}</span>
           </div>
-          <a :href="isH160 ? blockscout : subScan" target="_blank" rel="noopener noreferrer">
-            <img
-              class="icon"
-              :src="
-                isDarkTheme ? 'icons/icon-external-link-dark.svg' : 'icons/icon-external-link.svg'
-              "
-            />
-            <q-tooltip>
-              <span class="text--md">{{ $t(isH160 ? 'blockscout' : 'subscan') }}</span>
-            </q-tooltip>
-          </a>
+          <div class="column__icons">
+            <div>
+              <img
+                class="icon"
+                :src="isDarkTheme ? 'icons/icon-copy-dark.svg' : 'icons/icon-copy.svg'"
+                @click="copyAddress"
+              />
+              <q-tooltip>
+                <span class="text--tooltip">{{ $t('copy') }}</span>
+              </q-tooltip>
+            </div>
+            <a :href="isH160 ? blockscout : subScan" target="_blank" rel="noopener noreferrer">
+              <img
+                class="icon"
+                :src="
+                  isDarkTheme ? 'icons/icon-external-link-dark.svg' : 'icons/icon-external-link.svg'
+                "
+              />
+              <q-tooltip>
+                <span class="text--tooltip">{{ $t(isH160 ? 'blockscout' : 'subscan') }}</span>
+              </q-tooltip>
+            </a>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="border--separator" />
+      <div class="border--separator" />
 
-    <div class="row">
-      <span>{{ $t('assets.totalBalance') }}</span>
-      <span class="text--total-balance"> ${{ $n(balUsd + ttlErc20Amount) }} </span>
+      <div class="row">
+        <span>{{ $t('assets.totalBalance') }}</span>
+        <span class="text--total-balance"> ${{ $n(balUsd + ttlErc20Amount) }} </span>
+      </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, watchEffect, computed } from 'vue';
-import { getShortenAddress } from 'src/hooks/helper/addressUtils';
+import { defineComponent, ref, watchEffect, computed, watch } from 'vue';
+import {
+  setAddressMapping,
+  getEvmMappedSs58Address,
+  getShortenAddress,
+} from 'src/hooks/helper/addressUtils';
 import { SupportWallet, supportWalletObj } from 'src/config/wallets';
 import { useStore } from 'src/store';
 import { getSelectedAccount } from 'src/hooks/helper/wallet';
 import { useAccount, useBalance, useBreakpoints, useConnectWallet, usePrice } from 'src/hooks';
 import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { ethers } from 'ethers';
+import { $api } from 'src/boot/api';
+import { isValidEvmAddress } from 'src/config/web3';
+import { useMetamask } from 'src/hooks/custom-signature/useMetamask';
 
 export default defineComponent({
   props: {
@@ -79,8 +106,11 @@ export default defineComponent({
     const { width, screenSize } = useBreakpoints();
     const iconWallet = ref<string>('');
     const balUsd = ref<number>(0);
+    const isCheckingSignature = ref<boolean>(false);
+    const isLockdropAccount = ref<boolean>(false);
     const { balance } = useBalance(currentAccount);
     const { nativeTokenUsd } = usePrice();
+    const { requestSignature } = useMetamask();
 
     const store = useStore();
     const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
@@ -130,6 +160,47 @@ export default defineComponent({
       }
     });
 
+    watchEffect(async () => {
+      try {
+        if (!isValidEvmAddress(currentAccount.value)) return;
+        isCheckingSignature.value = true;
+        await setAddressMapping({ evmAddress: currentAccount.value, requestSignature });
+      } catch (error: any) {
+        console.log(error.message);
+      } finally {
+        isCheckingSignature.value = false;
+      }
+    });
+
+    watch(
+      [isH160, isCheckingSignature],
+      async () => {
+        const apiRef = $api.value;
+        if (
+          !apiRef ||
+          !currentAccount.value ||
+          !isValidEvmAddress(currentAccount.value) ||
+          isCheckingSignature.value
+        ) {
+          return;
+        }
+        try {
+          const ss58 = getEvmMappedSs58Address(currentAccount.value);
+          if (!ss58) return;
+          const { data } = await apiRef.query.system.account(ss58);
+          if (Number(data.free.toString()) > 0) {
+            isLockdropAccount.value = true;
+          } else {
+            isLockdropAccount.value = false;
+          }
+        } catch (error: any) {
+          console.error(error.message);
+          isLockdropAccount.value = false;
+        }
+      },
+      { immediate: false }
+    );
+
     return {
       iconWallet,
       currentAccountName,
@@ -142,6 +213,7 @@ export default defineComponent({
       isH160,
       isEthWallet,
       balUsd,
+      isLockdropAccount,
       getShortenAddress,
       copyAddress,
       toggleMetaMaskSchema,
