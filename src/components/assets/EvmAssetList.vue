@@ -17,7 +17,7 @@
             />
             <div class="column--ticker">
               <span class="text--title">{{ tokenSymbol }}</span>
-              <span class="text--label--accent">{{
+              <span class="text--label">{{
                 tokenSymbol === 'SBY' ? 'Shibuya' : currentNetwork
               }}</span>
             </div>

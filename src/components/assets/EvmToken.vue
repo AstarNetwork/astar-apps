@@ -12,7 +12,7 @@
             />
             <div class="column--ticker">
               <span class="text--title">{{ token.symbol }}</span>
-              <span class="text--label--accent">{{ formatTokenName(token.name) }}</span>
+              <span class="text--label">{{ formatTokenName(token.name) }}</span>
             </div>
           </div>
         </div>
