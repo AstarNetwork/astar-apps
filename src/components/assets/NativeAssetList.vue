@@ -1,5 +1,5 @@
 <template>
-  <div class="container container--extra-padding-bottom">
+  <div class="container">
     <div class="row">
       <span class="text--title">{{ $t('assets.assets') }}</span>
     </div>
@@ -59,24 +59,34 @@
           </div>
         </div>
       </div>
-      <div class="row--bg--extend row--details bg--accent">
+
+      <div v-if="vestingTtl" class="row--bg--extend row--details bg--accent">
         <div class="row__left">
-          <div>
-            <span class="text--md">{{ $t('assets.yourVestingInfo') }}</span>
-          </div>
-          <div class="row--staking">
-            <span class="text--md">{{ $t('assets.inStaking') }}</span>
-          </div>
+          <span class="text--md">{{ $t('assets.yourVestingInfo') }}</span>
         </div>
         <div class="row__right">
-          <div class="column column--balance">
+          <div class="column--balance">
             <div class="column__box">
               <span class="text--value">{{ $n(vestingTtl) }} {{ tokenSymbol }}</span>
-              <span class="text--value">({{ $n(lockInDappStaking) }} {{ tokenSymbol }})</span>
             </div>
           </div>
-          <div class="column column--buttons">
+          <div class="column--buttons">
             <button class="btn btn--sm bg--astar color--astar">{{ $t('assets.view') }}</button>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="lockInDappStaking" class="row--bg--extend row--details bg--accent">
+        <div class="row__left">
+          <span class="text--md">{{ $t('assets.yourStaking') }}</span>
+        </div>
+        <div class="row__right">
+          <div class="column--balance">
+            <div class="column__box">
+              <span class="text--value">{{ $n(lockInDappStaking) }} {{ tokenSymbol }}</span>
+            </div>
+          </div>
+          <div class="column--buttons">
             <button class="btn btn--sm bg--astar color--astar">{{ $t('manage') }}</button>
           </div>
         </div>

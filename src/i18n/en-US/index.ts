@@ -268,7 +268,7 @@ export default {
     view: 'View',
     haveDepositedFromEvm: 'You have deposited from EVM account',
     yourVestingInfo: 'Your Vesting Info',
-    inStaking: '(in staking)',
+    yourStaking: 'Your Staking',
     lockdropAccount: 'Lockdrop Account',
     inLockdropAccount: 'You are in a Lockdrop account',
     cantTransferToExcahges: "You can't transfer to Exchanges",

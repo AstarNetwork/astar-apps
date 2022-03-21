@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper--account">
-    <div v-if="isLockdropAccount && !isH160 && currentAccount" class="container--lockdrop-warning">
+    <div v-if="isLockdropAccount && !isH160 && isEthWallet" class="container--lockdrop-warning">
       <div>
         <span class="text--warning-bold">{{ $t('assets.inLockdropAccount') }}</span>
       </div>

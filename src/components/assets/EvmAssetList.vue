@@ -1,5 +1,5 @@
 <template>
-  <div v-if="tokens" class="container container--extra-padding-bottom">
+  <div v-if="tokens" class="container">
     <div class="row">
       <span class="text--title">{{ $t('assets.assets') }}</span>
     </div>
