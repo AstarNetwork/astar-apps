@@ -72,6 +72,7 @@ export function useCbridgeV2() {
   watch(
     [currentAccount, currentNetworkIdx],
     async () => {
+      ttlErc20Amount.value = 0;
       if (!currentAccount.value || currentNetworkIdx.value === endpointKey.SHIBUYA) {
         return;
       }

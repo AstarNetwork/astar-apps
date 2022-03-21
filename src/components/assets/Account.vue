@@ -87,7 +87,7 @@ import { SupportWallet, supportWalletObj } from 'src/config/wallets';
 import { useStore } from 'src/store';
 import { getSelectedAccount } from 'src/hooks/helper/wallet';
 import { useAccount, useBalance, useBreakpoints, useConnectWallet, usePrice } from 'src/hooks';
-import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
+import { endpointKey, getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
 import { isValidEvmAddress } from 'src/config/web3';
@@ -152,13 +152,18 @@ export default defineComponent({
       }
     });
 
-    watchEffect(() => {
-      if (!balance.value) return;
-      if (nativeTokenUsd.value) {
+    watch(
+      [balance, nativeTokenUsd, currentAccount, isH160],
+      () => {
+        balUsd.value = 0;
+        const isEvmShiden = currentNetworkIdx.value === endpointKey.SHIDEN && isH160.value;
+        if (!balance.value || !nativeTokenUsd.value || isEvmShiden) return;
+
         const bal = Number(ethers.utils.formatEther(balance.value.toString()));
         balUsd.value = nativeTokenUsd.value * bal;
-      }
-    });
+      },
+      { immediate: true }
+    );
 
     watchEffect(async () => {
       try {
