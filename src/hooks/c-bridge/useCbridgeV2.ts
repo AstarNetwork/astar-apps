@@ -20,6 +20,7 @@ export function useCbridgeV2() {
   const isLoading = ref<boolean | null>(true);
   const ttlErc20Amount = ref<number>(0);
   const store = useStore();
+  const isH160 = computed(() => store.getters['general/isH160Formatted']);
   const { currentAccount } = useAccount();
   const currentNetworkIdx = computed(() => {
     const chainInfo = store.getters['general/chainInfo'];
@@ -70,10 +71,14 @@ export function useCbridgeV2() {
   };
 
   watch(
-    [currentAccount, currentNetworkIdx],
+    [currentAccount, currentNetworkIdx, isH160],
     async () => {
       ttlErc20Amount.value = 0;
-      if (!currentAccount.value || currentNetworkIdx.value === endpointKey.SHIBUYA) {
+      if (
+        !currentAccount.value ||
+        currentNetworkIdx.value === endpointKey.SHIBUYA ||
+        !isH160.value
+      ) {
         return;
       }
 

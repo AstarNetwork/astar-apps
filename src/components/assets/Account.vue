@@ -167,7 +167,7 @@ export default defineComponent({
 
     watchEffect(async () => {
       try {
-        if (!isValidEvmAddress(currentAccount.value)) return;
+        if (!isH160.value || !isValidEvmAddress(currentAccount.value)) return;
         isCheckingSignature.value = true;
         await setAddressMapping({ evmAddress: currentAccount.value, requestSignature });
       } catch (error: any) {
