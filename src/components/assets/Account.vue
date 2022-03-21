@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper--account">
-    <div v-if="isLockdropAccount && !isH160 && isEthWallet" class="container--lockdrop-warning">
+    <div v-if="isLockdropAccount && !isH160" class="container--lockdrop-warning">
       <div>
         <span class="text--warning-bold">{{ $t('assets.inLockdropAccount') }}</span>
       </div>
@@ -173,9 +173,13 @@ export default defineComponent({
     });
 
     watch(
-      [isH160, isCheckingSignature],
+      [isH160, isCheckingSignature, isEthWallet],
       async () => {
         const apiRef = $api.value;
+        if (!isEthWallet.value) {
+          isLockdropAccount.value = false;
+          return;
+        }
         if (
           !apiRef ||
           !currentAccount.value ||
