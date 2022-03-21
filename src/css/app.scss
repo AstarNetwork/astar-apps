@@ -35,8 +35,8 @@ main {
 .wrapper {
   @media (min-width: $xxl) {
     // Memo: centralize the app
-    margin: 0 auto !important;
-    max-width: $xxl;
+    // margin: 0 auto !important;
+    // max-width: $xxl;
   }
 }
 
