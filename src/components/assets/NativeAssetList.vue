@@ -6,7 +6,7 @@
 
     <div class="border--separator" />
 
-    <div class="rows">
+    <div v-if="tokenSymbol" class="rows">
       <div class="row row--details">
         <div class="row__left">
           <div class="column--currency">
