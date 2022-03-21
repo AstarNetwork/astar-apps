@@ -9,7 +9,7 @@
 }
 
 .row--bg--extend {
-  margin: 0 -24px;
+  margin: 0 -16px;
   padding: 16px 24px;
   margin-bottom: 16px;
   @media (min-width: $md) {
@@ -47,6 +47,7 @@
   text-align: center;
   row-gap: 16px;
   @media (min-width: $md) {
+    align-items: center;
     display: grid;
     grid-template-columns: 200px 190px;
   }
@@ -55,6 +56,22 @@
   }
   @media (min-width: $xxl) {
     grid-template-columns: 550px 190px;
+  }
+}
+
+.screen--mobile-buttons {
+  padding-top: 8px;
+  width: 100%;
+  @media (min-width: $md) {
+    display: none;
+  }
+}
+
+.screen--md-buttons {
+  display: none;
+  @media (min-width: $md) {
+    display: block;
+    justify-self: end;
   }
 }
 
@@ -112,7 +129,7 @@
   display: grid;
   justify-items: center;
   row-gap: 8px;
-  padding-top: 6px;
+  padding-top: 4px;
   @media (min-width: $md) {
     padding-top: 0;
   }
@@ -122,10 +139,15 @@
 }
 
 .column--asset-buttons {
-  display: grid;
-  align-items: center;
-  row-gap: 14px;
+  display: flex;
+  justify-content: space-between;
+  @media (min-width: $xs) {
+    justify-content: flex-end;
+    column-gap: 16px;
+  }
   @media (min-width: $md) {
+    display: grid;
+    align-items: center;
     row-gap: 8px;
     justify-self: end;
   }
@@ -171,11 +193,8 @@
 
 .text--value {
   font-weight: 400;
-  font-size: 16px;
+  font-size: 14px;
   color: $gray-5;
-  @media (min-width: $md) {
-    font-size: 14px;
-  }
 }
 
 .row--staking {
@@ -194,6 +213,28 @@
 .token-logo {
   width: 24px;
   height: 24px;
+}
+
+.btn--asset-xs {
+  border-radius: 30px;
+  font-weight: 700;
+  width: 90px;
+  height: 24px;
+  @media (min-width: $md) {
+    width: 100px;
+    background-color: transparent !important;
+  }
+}
+
+.btn--asset-sm {
+  border-radius: 30px;
+  font-weight: 700;
+  width: 120px;
+  height: 24px;
+  @media (min-width: $md) {
+    width: 100px;
+    background-color: transparent !important;
+  }
 }
 
 .body--dark {

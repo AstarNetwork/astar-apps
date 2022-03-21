@@ -34,11 +34,24 @@
               </div>
             </div>
           </div>
+          <div class="screen--md-buttons">
+            <div class="column--asset-buttons" :class="isFaucet && 'column--buttons--2-columns'">
+              <button class="btn btn--asset-sm bg--astar color--astar">
+                {{ $t('assets.transfer') }}
+              </button>
+              <button v-if="isFaucet" class="btn btn--asset-sm bg--astar color--astar">
+                {{ $t('assets.faucet') }}
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Fixme: This solution is not elegant. We might want to avoid DRY. -->
+        <div class="screen--mobile-buttons">
           <div class="column--asset-buttons" :class="isFaucet && 'column--buttons--2-columns'">
-            <button class="btn btn--sm bg--astar color--astar">{{ $t('assets.transfer') }}</button>
-            <!-- Memo: activate it when bridge feature is available in the native network -->
-            <!-- <button class="btn btn--sm bg--astar">Bridge</button> -->
-            <button v-if="isFaucet" class="btn btn--sm bg--astar color--astar">
+            <button class="btn btn--asset-sm bg--astar color--astar">
+              {{ $t('assets.transfer') }}
+            </button>
+            <button v-if="isFaucet" class="btn btn--asset-sm bg--astar color--astar">
               {{ $t('assets.faucet') }}
             </button>
           </div>
@@ -55,7 +68,9 @@
             </div>
           </div>
           <div class="column--buttons">
-            <button class="btn btn--sm bg--astar color--astar">{{ $t('assets.withdraw') }}</button>
+            <button class="btn btn--asset-sm bg--astar color--astar">
+              {{ $t('assets.withdraw') }}
+            </button>
           </div>
         </div>
       </div>
@@ -71,7 +86,9 @@
             </div>
           </div>
           <div class="column--buttons">
-            <button class="btn btn--sm bg--astar color--astar">{{ $t('assets.view') }}</button>
+            <button class="btn btn--asset-sm bg--astar color--astar">
+              {{ $t('assets.view') }}
+            </button>
           </div>
         </div>
       </div>
@@ -87,7 +104,7 @@
             </div>
           </div>
           <div class="column--buttons">
-            <button class="btn btn--sm bg--astar color--astar">{{ $t('manage') }}</button>
+            <button class="btn btn--asset-sm bg--astar color--astar">{{ $t('manage') }}</button>
           </div>
         </div>
       </div>

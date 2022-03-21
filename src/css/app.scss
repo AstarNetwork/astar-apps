@@ -32,19 +32,14 @@ main {
   background: $gray-1;
 }
 
-.wrapper {
-  @media (min-width: $xxl) {
-    // Memo: centralize the app
-    // margin: 0 auto !important;
-    // max-width: $xxl;
-  }
-}
-
 .container {
   box-shadow: $container-border-shadow-light;
   background: $container-bg-white;
   border-radius: 6px;
-  padding: 8px 24px;
+  padding: 8px 16px;
+  @media (min-width: $md) {
+    padding: 8px 24px;
+  }
 }
 
 .screen--lg {
