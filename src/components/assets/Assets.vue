@@ -3,7 +3,7 @@
     <div v-if="!selectedAddress" class="backdrop--transparent" />
     <div class="container--assets">
       <Account :ttl-erc20-amount="ttlErc20Amount" />
-      <div v-if="!isLoading && selectedAddress">
+      <div v-if="selectedAddress">
         <div v-if="isH160"><EvmAssetList :tokens="tokens" /></div>
         <div v-else><NativeAssetList /></div>
       </div>
@@ -26,7 +26,7 @@ export default defineComponent({
     EvmAssetList,
   },
   setup() {
-    const { tokens, isLoading, ttlErc20Amount } = useCbridgeV2();
+    const { tokens, ttlErc20Amount } = useCbridgeV2();
     const store = useStore();
     const selectedAddress = computed(() => store.getters['general/selectedAddress']);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
@@ -34,7 +34,6 @@ export default defineComponent({
       selectedAddress,
       isH160,
       tokens,
-      isLoading,
       ttlErc20Amount,
     };
   },

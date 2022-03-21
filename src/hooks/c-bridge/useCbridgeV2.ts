@@ -17,7 +17,6 @@ const { Astar, Shiden } = EvmChain;
 
 export function useCbridgeV2() {
   const tokens = ref<SelectedToken[] | null>(null);
-  const isLoading = ref<boolean | null>(true);
   const ttlErc20Amount = ref<number>(0);
   const store = useStore();
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
@@ -35,7 +34,6 @@ export function useCbridgeV2() {
     srcChainId: EvmChain;
     userAddress: string;
   }): Promise<void> => {
-    isLoading.value = true;
     const data = await getTransferConfigs(currentNetworkIdx.value);
     if (!data || !data.tokens) {
       throw Error('Cannot fetch from cBridge API');
@@ -84,16 +82,16 @@ export function useCbridgeV2() {
 
       const srcChainId = currentNetworkIdx.value === endpointKey.ASTAR ? Astar : Shiden;
       try {
-        isLoading.value = true;
+        store.commit('general/setLoading', true);
         await updateBridgeConfig({ srcChainId, userAddress: currentAccount.value });
       } catch (error: any) {
         console.error(error.message);
       } finally {
-        isLoading.value = false;
+        store.commit('general/setLoading', false);
       }
     },
     { immediate: false }
   );
 
-  return { tokens, isLoading, ttlErc20Amount };
+  return { tokens, ttlErc20Amount };
 }
