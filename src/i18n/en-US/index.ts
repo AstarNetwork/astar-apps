@@ -266,6 +266,7 @@ export default {
     bridge: 'Bridge',
     withdraw: 'Withdraw',
     view: 'View',
+    transferableBalance: 'Transferable Balance',
     haveDepositedFromEvm: 'You have deposited from EVM account',
     yourVestingInfo: 'Your Vesting Info',
     yourStaking: 'Your Staking',

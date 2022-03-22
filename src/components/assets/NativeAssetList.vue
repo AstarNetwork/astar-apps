@@ -34,17 +34,31 @@
               </div>
             </div>
           </div>
-          <div class="column--asset-buttons" :class="isFaucet && 'column--buttons--2-columns'">
-            <button class="btn btn--sm bg--astar color--astar">{{ $t('assets.transfer') }}</button>
-            <!-- Memo: activate it when bridge feature is available in the native network -->
-            <!-- <button class="btn btn--sm bg--astar">Bridge</button> -->
-            <button v-if="isFaucet" class="btn btn--sm bg--astar color--astar">
+          <div v-if="isFaucet" class="column--asset-buttons">
+            <button class="btn btn--sm bg--astar color--astar">
               {{ $t('assets.faucet') }}
             </button>
           </div>
         </div>
       </div>
-      <div v-if="numEvmDeposit > 0" class="row--bg--extend row--details bg--accent">
+
+      <div class="row--bg--extend row--details bg--accent">
+        <div class="row__left">
+          <span class="text--md">{{ $t('assets.transferableBalance') }}</span>
+        </div>
+        <div class="row__right">
+          <div class="column--balance">
+            <div class="column__box">
+              <span class="text--value">{{ $n(transferableBalance) }} {{ tokenSymbol }}</span>
+            </div>
+          </div>
+          <div class="column--buttons">
+            <button class="btn btn--sm bg--astar color--astar">{{ $t('assets.transfer') }}</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="row--bg--extend row--details bg--accent">
         <div class="row__left">
           <span class="text--md">{{ $t('assets.haveDepositedFromEvm') }}</span>
         </div>
@@ -60,7 +74,7 @@
         </div>
       </div>
 
-      <div v-if="vestingTtl" class="row--bg--extend row--details bg--accent">
+      <div class="row--bg--extend row--details bg--accent">
         <div class="row__left">
           <span class="text--md">{{ $t('assets.yourVestingInfo') }}</span>
         </div>
@@ -125,6 +139,13 @@ export default defineComponent({
       return chainInfo ? chainInfo.chain : '';
     });
 
+    const transferableBalance = computed(() => {
+      const balance = accountData.value
+        ? ethers.utils.formatEther(accountData.value.getUsableTransactionBalance().toString())
+        : '0';
+      return Number(balance);
+    });
+
     watchEffect(async () => {
       const tokenSymbolRef = tokenSymbol.value;
       if (!balance.value || !tokenSymbolRef) return;
@@ -168,6 +189,7 @@ export default defineComponent({
       vestingTtl,
       lockInDappStaking,
       isFaucet,
+      transferableBalance,
     };
   },
 });
