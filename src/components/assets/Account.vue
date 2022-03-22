@@ -43,22 +43,24 @@
           </div>
           <div class="column__icons">
             <div>
-              <img
+              <!-- <img
                 class="icon"
                 :src="isDarkTheme ? 'icons/icon-copy-dark.svg' : 'icons/icon-copy.svg'"
                 @click="copyAddress"
-              />
+              /> -->
+              <IconCopyBtn @click="copyAddress" />
               <q-tooltip>
                 <span class="text--tooltip">{{ $t('copy') }}</span>
               </q-tooltip>
             </div>
             <a :href="isH160 ? blockscout : subScan" target="_blank" rel="noopener noreferrer">
-              <img
+              <!-- <img
                 class="icon"
                 :src="
                   isDarkTheme ? 'icons/icon-external-link-dark.svg' : 'icons/icon-external-link.svg'
                 "
-              />
+              /> -->
+              <IconShareBtn @click="copyAddress" />
               <q-tooltip>
                 <span class="text--tooltip">{{ $t(isH160 ? 'blockscout' : 'subscan') }}</span>
               </q-tooltip>
@@ -92,8 +94,13 @@ import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
 import { isValidEvmAddress } from 'src/config/web3';
 import { useMetamask } from 'src/hooks/custom-signature/useMetamask';
+import { IconCopyBtn, IconShareBtn } from 'astar-ui';
 
 export default defineComponent({
+  components: {
+    IconCopyBtn,
+    IconShareBtn,
+  },
   props: {
     ttlErc20Amount: {
       type: Number,

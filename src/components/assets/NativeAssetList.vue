@@ -1,111 +1,122 @@
 <template>
-  <div class="container">
-    <div class="row">
-      <span class="text--title">{{ $t('assets.assets') }}</span>
-    </div>
+  <div>
+    <div class="container">
+      <div class="row">
+        <span class="text--title">{{ $t('assets.assets') }}</span>
+      </div>
 
-    <div class="border--separator" />
+      <div class="border--separator" />
 
-    <div v-if="tokenSymbol" class="rows">
-      <div class="row row--details">
-        <div class="row__left">
-          <div class="column--currency">
-            <img
-              width="24"
-              :src="tokenSymbol === 'SDN' ? 'icons/sdn-token.png' : 'icons/astar.png'"
-              alt="sdn"
-            />
-            <div class="column--ticker">
-              <span class="text--title">{{ tokenSymbol }}</span>
-              <span class="text--label">{{
-                tokenSymbol === 'SBY' ? 'Shibuya' : currentNetwork
-              }}</span>
-            </div>
-          </div>
-        </div>
-        <div class="row__right">
-          <div class="column column--balance">
-            <div class="column__box">
-              <div class="text--accent">
-                <span>{{ $n(bal) }} {{ tokenSymbol }}</span>
-              </div>
-              <div class="text--label">
-                <span>{{ $n(balUsd) }} {{ $t('usd') }}</span>
+      <div v-if="tokenSymbol" class="rows">
+        <div class="row row--details">
+          <div class="row__left">
+            <div class="column--currency">
+              <img
+                width="24"
+                :src="tokenSymbol === 'SDN' ? 'icons/sdn-token.png' : 'icons/astar.png'"
+                alt="sdn"
+              />
+              <div class="column--ticker">
+                <span class="text--title">{{ tokenSymbol }}</span>
+                <span class="text--label">{{
+                  tokenSymbol === 'SBY' ? 'Shibuya' : currentNetwork
+                }}</span>
               </div>
             </div>
           </div>
-          <div v-if="isFaucet" class="column--asset-buttons">
-            <button class="btn btn--sm bg--astar color--astar">
-              {{ $t('assets.faucet') }}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div class="row--bg--extend row--details bg--accent">
-        <div class="row__left">
-          <span class="text--md">{{ $t('assets.transferableBalance') }}</span>
-        </div>
-        <div class="row__right">
-          <div class="column--balance">
-            <div class="column__box">
-              <span class="text--value">{{ $n(transferableBalance) }} {{ tokenSymbol }}</span>
+          <div class="row__right">
+            <div class="column column--balance">
+              <div class="column__box">
+                <div class="text--accent">
+                  <span>{{ $n(bal) }} {{ tokenSymbol }}</span>
+                </div>
+                <div class="text--label">
+                  <span>{{ $n(balUsd) }} {{ $t('usd') }}</span>
+                </div>
+              </div>
+            </div>
+            <div v-if="isFaucet" class="column--asset-buttons">
+              <button class="btn btn--sm bg--astar color--astar">
+                {{ $t('assets.faucet') }}
+              </button>
             </div>
           </div>
-          <div class="column--buttons">
-            <button class="btn btn--sm bg--astar color--astar">{{ $t('assets.transfer') }}</button>
-          </div>
         </div>
-      </div>
 
-      <div class="row--bg--extend row--details bg--accent">
-        <div class="row__left">
-          <span class="text--md">{{ $t('assets.haveDepositedFromEvm') }}</span>
-        </div>
-        <div class="row__right">
-          <div class="column--balance">
-            <div class="column__box">
-              <span class="text--value">{{ $n(numEvmDeposit) }} {{ tokenSymbol }}</span>
+        <div class="row--bg--extend row--details bg--accent">
+          <div class="row__left">
+            <span class="text--md">{{ $t('assets.transferableBalance') }}</span>
+          </div>
+          <div class="row__right">
+            <div class="column--balance">
+              <div class="column__box">
+                <span class="text--value">{{ $n(transferableBalance) }} {{ tokenSymbol }}</span>
+              </div>
+            </div>
+            <div class="column--buttons">
+              <button class="btn btn--sm bg--astar color--astar" @click="openModalTransfer">
+                {{ $t('assets.transfer') }}
+              </button>
             </div>
           </div>
-          <div class="column--buttons">
-            <button class="btn btn--sm bg--astar color--astar">{{ $t('assets.withdraw') }}</button>
-          </div>
         </div>
-      </div>
 
-      <div class="row--bg--extend row--details bg--accent">
-        <div class="row__left">
-          <span class="text--md">{{ $t('assets.yourVestingInfo') }}</span>
-        </div>
-        <div class="row__right">
-          <div class="column--balance">
-            <div class="column__box">
-              <span class="text--value">{{ $n(vestingTtl) }} {{ tokenSymbol }}</span>
+        <div class="row--bg--extend row--details bg--accent">
+          <div class="row__left">
+            <span class="text--md">{{ $t('assets.haveDepositedFromEvm') }}</span>
+          </div>
+          <div class="row__right">
+            <div class="column--balance">
+              <div class="column__box">
+                <span class="text--value">{{ $n(numEvmDeposit) }} {{ tokenSymbol }}</span>
+              </div>
+            </div>
+            <div class="column--buttons">
+              <button class="btn btn--sm bg--astar color--astar">
+                {{ $t('assets.withdraw') }}
+              </button>
             </div>
           </div>
-          <div class="column--buttons">
-            <button class="btn btn--sm bg--astar color--astar">{{ $t('assets.view') }}</button>
-          </div>
         </div>
-      </div>
 
-      <div v-if="lockInDappStaking" class="row--bg--extend row--details bg--accent">
-        <div class="row__left">
-          <span class="text--md">{{ $t('assets.yourStaking') }}</span>
-        </div>
-        <div class="row__right">
-          <div class="column--balance">
-            <div class="column__box">
-              <span class="text--value">{{ $n(lockInDappStaking) }} {{ tokenSymbol }}</span>
+        <div class="row--bg--extend row--details bg--accent">
+          <div class="row__left">
+            <span class="text--md">{{ $t('assets.yourVestingInfo') }}</span>
+          </div>
+          <div class="row__right">
+            <div class="column--balance">
+              <div class="column__box">
+                <span class="text--value">{{ $n(vestingTtl) }} {{ tokenSymbol }}</span>
+              </div>
+            </div>
+            <div class="column--buttons">
+              <button class="btn btn--sm bg--astar color--astar">{{ $t('assets.view') }}</button>
             </div>
           </div>
-          <div class="column--buttons">
-            <button class="btn btn--sm bg--astar color--astar">{{ $t('manage') }}</button>
+        </div>
+
+        <div v-if="lockInDappStaking" class="row--bg--extend row--details bg--accent">
+          <div class="row__left">
+            <span class="text--md">{{ $t('assets.yourStaking') }}</span>
+          </div>
+          <div class="row__right">
+            <div class="column--balance">
+              <div class="column__box">
+                <span class="text--value">{{ $n(lockInDappStaking) }} {{ tokenSymbol }}</span>
+              </div>
+            </div>
+            <div class="column--buttons">
+              <button class="btn btn--sm bg--astar color--astar">{{ $t('manage') }}</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
+    <astar-simple-modal :show="isModalTransfer" title="Transfer">
+      <div>
+        <h1>hello world</h1>
+      </div>
+    </astar-simple-modal>
   </div>
 </template>
 <script lang="ts">
@@ -116,6 +127,13 @@ import { computed, defineComponent, ref, watchEffect } from 'vue';
 
 export default defineComponent({
   setup() {
+    const isModalTransfer = ref<boolean>(false);
+    const openModalTransfer = () => {
+      // console.log('isModalTransfer.value', isModalTransfer.value);
+      isModalTransfer.value = true;
+      console.log('isModalTransfer.value', isModalTransfer.value);
+    };
+
     const bal = ref<number>(0);
     const balUsd = ref<number>(0);
     const vestingTtl = ref<number>(0);
@@ -190,6 +208,8 @@ export default defineComponent({
       lockInDappStaking,
       isFaucet,
       transferableBalance,
+      isModalTransfer,
+      openModalTransfer,
     };
   },
 });
