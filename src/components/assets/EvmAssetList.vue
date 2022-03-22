@@ -46,7 +46,10 @@
     </div>
 
     <div v-for="token in tokens" :key="token.symbol">
-      <EvmToken :token="token" :is-faucet="token.symbol === 'SDN' && isFaucet" />
+      <EvmToken
+        :token="token"
+        :is-faucet="token.symbol === 'SDN' && isFaucet && currentNetwork === 'Shiden'"
+      />
     </div>
   </div>
 </template>

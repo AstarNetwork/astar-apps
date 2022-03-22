@@ -14,9 +14,8 @@
   width: 100%;
   z-index: 10;
   background: $backdrop-transparent-light;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(10px);
   height: 232px;
-
   @media (min-width: $md) {
     height: 196px;
   }

@@ -9,7 +9,7 @@
 }
 
 .row--bg--extend {
-  margin: 0 -24px;
+  margin: 0 -16px;
   padding: 16px 24px;
   margin-bottom: 16px;
   @media (min-width: $md) {
@@ -90,10 +90,9 @@
 .column--currency {
   display: flex;
   column-gap: 8px;
-  padding-top: 20px;
+  padding-top: 10px;
   align-items: center;
-  @media (min-width: $sm) {
-    column-gap: 12px;
+  @media (min-width: $md) {
     padding-top: 0;
   }
 }
@@ -112,10 +111,6 @@
   display: grid;
   justify-items: center;
   row-gap: 8px;
-  padding-top: 6px;
-  @media (min-width: $md) {
-    padding-top: 0;
-  }
   @media (min-width: $xl) {
     justify-self: start;
   }
@@ -171,11 +166,8 @@
 
 .text--value {
   font-weight: 400;
-  font-size: 16px;
+  font-size: 14px;
   color: $gray-5;
-  @media (min-width: $md) {
-    font-size: 14px;
-  }
 }
 
 .row--staking {
