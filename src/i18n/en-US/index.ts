@@ -275,4 +275,7 @@ export default {
     cantTransferToExcahges: "You can't transfer to Exchanges",
     noHash: 'Your transaction will not have a hash',
   },
+  dashboard: {
+    dashboard: 'Dashboard',
+  },
 };

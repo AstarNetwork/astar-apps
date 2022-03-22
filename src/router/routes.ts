@@ -3,6 +3,7 @@ import { RouteRecordRaw } from 'vue-router';
 import Balance from 'pages/Balance.vue';
 import Assets from 'pages/Assets.vue';
 import Store from 'src/pages/DappStaking.vue';
+import Dashboard from 'src/pages/Dashboard.vue';
 import ConnectWallet from 'src/components/balance/ConnectWallet.vue';
 import DiscoverDappsTab from 'components/dapp-staking/DiscoverDappsTab.vue';
 import ManageDappsTab from 'components/dapp-staking/ManageDappsTab.vue';
@@ -47,6 +48,11 @@ const routes: RouteRecordRaw[] = [
     path: '/assets',
     name: 'Assets',
     component: Assets,
+  },
+  {
+    path: '/dashboard',
+    name: 'Dashboard',
+    component: Dashboard,
   },
   // {
   //   path: '/contracts',
