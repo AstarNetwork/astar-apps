@@ -18,6 +18,13 @@ span {
   color: $gray-5;
 }
 
+.text--xlg {
+  font-weight: 400;
+  font-size: 22px;
+  color: $gray-5;
+  line-height: 26px;
+}
+
 .text--lg {
   font-weight: 400;
   font-size: 16px;
@@ -52,6 +59,7 @@ span {
   .text--page-title,
   .text--title,
   .text--accent,
+  .text--xlg,
   .text--lg,
   .text--md {
     color: $gray-1;

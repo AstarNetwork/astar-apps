@@ -1,0 +1,13 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--chart-panel {
+  display: grid;
+  row-gap: 24px;
+}
+
+.row {
+  padding: 16px 8px 0px 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
