@@ -3,7 +3,7 @@
     <div class="dot" :class="getDotClass(connectionType)"></div>
     <div class="statusTxt" :class="getDotClass(connectionType)">
       <div>{{ connectionType }}</div>
-      <div>v{{ version }}</div>
+      <div v-if="connectionType === 'connected'">v{{ version }}</div>
     </div>
   </div>
 </template>

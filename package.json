@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@astar-network/astar-api": "^0.1.5-3",
+    "@astar-network/astar-ui": "^0.0.11",
     "@ethersproject/bignumber": "^5.5.0",
     "@polkadot/api": "^6.8.1",
     "@polkadot/api-contract": "^6.8.1",
@@ -39,7 +40,6 @@
     "@quasar/extras": "^1.12.0",
     "animate.css": "^4.1.1",
     "apr-tools": "^0.1.3",
-    "astar-ui": "^0.0.8",
     "axios": "^0.24.0",
     "connect-history-api-fallback": "^1.6.0",
     "core-js": "^3.19.1",

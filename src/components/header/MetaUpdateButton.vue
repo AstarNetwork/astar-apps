@@ -1,6 +1,8 @@
 <template>
   <button
+    v-if="isNeedUpdate(extensionCount) && !isComplete"
     type="button"
+    :disabled="!isNeedUpdate(extensionCount) || isBusy || isComplete"
     :class="[
       'connect-btn',
       'tw-inline-flex',
@@ -22,29 +24,67 @@
       'dark-ring-dark-gray',
       'tw-mx-1',
     ]"
+    @click="updateMetadata"
   >
-    <icon-base class="tw-w-5 tw-h-5 tw-text-white tw--ml-1" stroke="currentColor" icon-name="plus">
-      <icon-plus />
+    <icon-base
+      class="tw-w-5 tw-h-5 tw-text-white tw--ml-1 tw-mr-1"
+      stroke="currentColor"
+      icon-name="network"
+    >
+      <icon-network />
     </icon-base>
-    Metadata Update
+    {{ $t('common.updateMetadata') }}
+    <!-- <template v-else>{{ $t('common.metadataAlreadyInstalled') }}</template> -->
   </button>
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs } from 'vue';
+import { defineComponent, computed, ref } from 'vue';
+import { useStore } from 'src/store';
 import IconBase from 'components/icons/IconBase.vue';
-import IconPlus from 'components/icons/IconPlus.vue';
+import IconNetwork from 'components/icons/IconNetwork.vue';
 
 export default defineComponent({
   components: {
     IconBase,
-    IconPlus,
+    IconNetwork,
   },
-  props: {},
-  setup(props) {
-    return {
-      ...toRefs(props),
+  setup() {
+    const store = useStore();
+
+    const chainInfo = computed(() => store.getters['general/chainInfo']);
+    const metaExtensions = computed(() => store.getters['general/metaExtensions']);
+    const extensionCount = computed(() => store.getters['general/extensionCount']);
+
+    const selectedIndex = 0;
+    const isBusy = ref(false);
+    const isComplete = ref(false);
+    const updateMetadata = () => {
+      const extensions = metaExtensions?.value?.extensions;
+
+      if (chainInfo.value && extensions?.[selectedIndex]) {
+        isBusy.value = true;
+
+        extensions[selectedIndex]
+          .update(JSON.parse(JSON.stringify(chainInfo.value)))
+          .then(() => {
+            isBusy.value = false;
+            isComplete.value = true;
+          })
+          .catch(console.error);
+      }
     };
+    return {
+      extensionCount,
+      updateMetadata,
+      isBusy,
+      isComplete,
+    };
+  },
+  methods: {
+    isNeedUpdate(extensionCount: number | undefined) {
+      return extensionCount && extensionCount > 0;
+    },
   },
 });
 </script>
@@ -56,5 +96,8 @@ export default defineComponent({
 .connect-btn:hover {
   background: linear-gradient(0deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)), #ff5621;
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
+}
+.connect-btn:disabled {
+  background: #d3d6dc;
 }
 </style>

@@ -24,25 +24,25 @@
     ]"
   >
     <icon-base
-      class="tw-w-5 tw-h-5 tw-text-astarblue tw--ml-1"
+      class="tw-w-5 tw-h-5 tw-text-astarblue tw--ml-1 tw-mr-1"
       stroke="currentColor"
-      icon-name="plus"
+      icon-name="wallet"
     >
-      <icon-plus />
+      <icon-wallet />
     </icon-base>
-    Connect
+    {{ $t('connect') }}
   </button>
 </template>
 
 <script lang="ts">
 import { defineComponent, toRefs } from 'vue';
 import IconBase from 'components/icons/IconBase.vue';
-import IconPlus from 'components/icons/IconPlus.vue';
+import IconWallet from 'components/icons/IconWallet.vue';
 
 export default defineComponent({
   components: {
     IconBase,
-    IconPlus,
+    IconWallet,
   },
   props: {},
   setup(props) {

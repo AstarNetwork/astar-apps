@@ -2,6 +2,7 @@ export default {
   confirm: 'Confirm',
   cancel: 'Cancel',
   change: 'Change',
+  connect: 'Connect',
   disconnect: 'Disconnect',
   copy: 'Copy',
   from: 'From',

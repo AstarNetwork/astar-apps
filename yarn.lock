@@ -34,6 +34,14 @@
     "@polkadot/typegen" "^6.5.2"
     "@polkadot/types" "^6.5.2"
 
+"@astar-network/astar-ui@^0.0.11":
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/@astar-network/astar-ui/-/astar-ui-0.0.11.tgz#ec020234345dfbc013affb6647590ed964726de2"
+  integrity sha512-p6Ml6Lq5dRb0djY3MXqAP4yU/Zt1Cm4bW4N51beKFiZgDbox6aVgczNOTxaKrQ35ubL2vtbxTeXWF8jrUZoq9g==
+  dependencies:
+    prismjs "^1.25.0"
+    vue "^3.2.23"
+
 "@babel/code-frame@7.12.11":
   version "7.12.11"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.12.11.tgz#f4ad435aa263db935b8f10f2c552d23fb716a63f"
@@ -4851,14 +4859,6 @@ assign-symbols@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/assign-symbols/-/assign-symbols-1.0.0.tgz#59667f41fadd4f20ccbc2bb96b8d4f7f78ec0367"
   integrity sha1-WWZ/QfrdTyDMvCu5a41Pf3jsA2c=
-
-astar-ui@^0.0.8:
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/astar-ui/-/astar-ui-0.0.8.tgz#f0969a4b10446cd784f2de9e6566e707237da72d"
-  integrity sha512-+UBDaFWxq9yF3Tz3MCboJMdbUYTIYhPTRr7XAGHqtfXcaWBy7MsoqbOQcX24NWdEs67EKGwlQmpol9kWTUGudw==
-  dependencies:
-    prismjs "^1.25.0"
-    vue "^3.2.23"
 
 astral-regex@^2.0.0:
   version "2.0.0"

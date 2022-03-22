@@ -26,42 +26,56 @@
     <icon-base
       class="tw-w-5 tw-h-5 tw-text-gray-500 tw--ml-1"
       stroke="currentColor"
-      icon-name="plus"
+      icon-name="network"
     >
-      <icon-plus />
+      <icon-network />
     </icon-base>
     <img class="tw-mx-1" width="16" src="~assets/img/ethereum.png" />
-    {{ network }}
+    {{ currentNetworkName }}
 
     <div class="divider tw-mx-2 tw-h-5" />
-    <ConnectionIndicator :version="version" />
+    <ConnectionIndicator :connection-type="currentNetworkStatus" :version="version" />
   </button>
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, computed } from 'vue';
+import { defineComponent, watch, computed, ref } from 'vue';
+import { useStore } from 'src/store';
+import { providerEndpoints } from 'src/config/chainEndpoints';
 import IconBase from 'components/icons/IconBase.vue';
-import IconPlus from 'components/icons/IconPlus.vue';
+import IconNetwork from 'components/icons/IconNetwork.vue';
 import ConnectionIndicator from 'components/header/ConnectionIndicator.vue';
 
 export default defineComponent({
   components: {
     IconBase,
-    IconPlus,
+    IconNetwork,
     ConnectionIndicator,
   },
-  props: {
-    network: {
-      type: String,
-      required: true,
-    },
-  },
-  setup(props) {
-    const version = '0.0.0';
+  setup() {
+    const store = useStore();
+    const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
+    const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
+    const metaExtensions = computed(() => store.getters['general/metaExtensions']);
+    const currentNetworkName = ref(providerEndpoints[currentNetworkIdx.value].displayName);
+    const version = ref('0.0.0');
+
+    watch(currentNetworkIdx, (networkIdx) => {
+      version.value = metaExtensions?.value?.extensions[networkIdx].version;
+      currentNetworkName.value = providerEndpoints[networkIdx].displayName;
+    });
+
+    watch(
+      () => metaExtensions.value,
+      () => {
+        version.value = metaExtensions?.value?.extensions[0].extension.version;
+      }
+    );
 
     return {
+      currentNetworkStatus,
+      currentNetworkName,
       version,
-      ...toRefs(props),
     };
   },
 });

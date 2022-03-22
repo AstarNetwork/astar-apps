@@ -26,9 +26,9 @@
     <icon-base
       class="tw-w-5 tw-h-5 tw-text-gray-500 tw--ml-1"
       stroke="currentColor"
-      icon-name="plus"
+      icon-name="wallet"
     >
-      <icon-plus />
+      <icon-wallet />
     </icon-base>
     <div v-if="isH160Formatted">
       <img class="tw-mx-1" width="16" src="~assets/img/ethereum.png" />
@@ -44,12 +44,12 @@
 import { defineComponent, toRefs, computed } from 'vue';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import IconBase from 'components/icons/IconBase.vue';
-import IconPlus from 'components/icons/IconPlus.vue';
+import IconWallet from 'components/icons/IconWallet.vue';
 
 export default defineComponent({
   components: {
     IconBase,
-    IconPlus,
+    IconWallet,
   },
   props: {
     account: {
