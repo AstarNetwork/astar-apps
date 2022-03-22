@@ -2,6 +2,10 @@
 
 .wrapper--assets {
   position: relative;
+  @media (min-width: $xxl) {
+    display: flex;
+    justify-content: center;
+  }
 }
 
 .backdrop--transparent {
@@ -10,21 +14,36 @@
   width: 100%;
   z-index: 10;
   background: $backdrop-transparent-light;
-  backdrop-filter: blur(4px);
-  height: 216px;
-  @media (min-width: $lg) {
-    height: 180px;
+  backdrop-filter: blur(10px);
+  height: 232px;
+  @media (min-width: $md) {
+    height: 196px;
+  }
+  @media (min-width: $xxl) {
+    top: 24px;
+    width: $container-max-width;
+  }
+  @supports (-moz-appearance: none) {
+    background: $backdrop-transparent-light-firefox;
   }
 }
 
 .container--assets {
+  display: grid;
+  row-gap: 24px;
   @media (min-width: $lg) {
     margin-top: 24px;
+  }
+  @media (min-width: $xxl) {
+    width: $container-max-width;
   }
 }
 
 .body--dark {
   .backdrop--transparent {
     background: $backdrop-transparent-dark;
+    @supports (-moz-appearance: none) {
+      background: $backdrop-transparent-dark-firefox;
+    }
   }
 }

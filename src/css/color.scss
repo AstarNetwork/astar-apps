@@ -1,0 +1,15 @@
+@import 'src/css/quasar.variables.scss';
+
+.bg--astar {
+  background-color: $astar-blue;
+}
+
+.bg--accent {
+  background-color: $gray-1;
+}
+
+.body--dark {
+  .bg--accent {
+    background-color: $gray-5-selected;
+  }
+}

@@ -1,6 +1,8 @@
 // Color
 $gray-1: #f7f7f8;
+$gray-3: #b1b7c1;
 $gray-5: #2c3335;
+$gray-5-selected: #222829;
 $gray-6: #191d1f;
 
 $astar-blue: #0085ff;
@@ -8,6 +10,7 @@ $astar-blue-dark: #05b6fd;
 $shiden-purple: #770cff;
 $shiden-purple-dark: #a67cff;
 $warning-red: #ff5621;
+$warning-yellow: #f2c94c;
 $connected-green: #56f566;
 
 $body-bg-dark: #000000;
@@ -17,7 +20,9 @@ $container-bg-white: #ffffff;
 $border-separator-dark: $gray-6;
 $border-separator-light: #e6e9ee;
 $backdrop-transparent-dark: rgba(44, 51, 53, 0.5);
+$backdrop-transparent-dark-firefox: rgba(44, 51, 53, 0.9);
 $backdrop-transparent-light: rgba(44, 51, 53, 0.2);
+$backdrop-transparent-light-firefox: rgba(44, 51, 53, 0.8);
 
 $container-border-shadow-dark: inset 0px 0px 4px rgba(0, 0, 0, 0.25);
 $container-border-shadow-light: 0px 0px 8px 1px rgba(0, 0, 0, 0.1);
@@ -29,4 +34,4 @@ $lg: 1024px;
 $xl: 1280px;
 $xxl: 1440px;
 
-$container-max-width: 976px;
+$container-max-width: 1100px;

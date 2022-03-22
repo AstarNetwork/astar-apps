@@ -1,5 +1,10 @@
 @import 'src/css/quasar.variables.scss';
 
+.wrapper--account {
+  display: grid;
+  row-gap: 24px;
+}
+
 .row {
   padding: 16px 8px;
   display: flex;
@@ -12,7 +17,7 @@
   display: flex;
   flex-direction: column;
   row-gap: 12px;
-  @media (min-width: $lg) {
+  @media (min-width: $md) {
     row-gap: 0;
     display: grid;
     grid-template-columns: auto 1fr;
@@ -23,7 +28,7 @@
 .column-account-name {
   display: flex;
   column-gap: 8px;
-  @media (min-width: $lg) {
+  @media (min-width: $md) {
     flex-direction: row;
     align-items: center;
   }
@@ -36,8 +41,8 @@
 }
 
 .column__address {
-  @media (min-width: $lg) {
-    margin-left: 24px;
+  @media (min-width: $md) {
+    margin-left: 42px;
   }
 }
 
@@ -67,6 +72,27 @@
   width: 32px;
   height: 32px;
   cursor: pointer;
+}
+
+.container--lockdrop-warning {
+  background: $warning-yellow;
+  border-radius: 6px;
+  padding: 16px 24px;
+}
+
+.text--warning-bold {
+  color: $gray-5;
+  font-weight: 700;
+}
+
+.row--warning-list {
+  padding-left: 24px;
+  padding-top: 4px;
+}
+
+.text--warning {
+  color: $gray-5;
+  list-style-type: initial;
 }
 
 .body--dark {

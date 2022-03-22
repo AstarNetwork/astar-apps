@@ -3,4 +3,5 @@ export enum LOCAL_STORAGE {
   NETWORK_IDX = 'networkIdx',
   CUSTOM_ENDPOINT = 'customEndpoint',
   SELECTED_ADDRESS = 'selectedAddress',
+  EVM_ADDRESS_MAPPING = 'evmAddressMapping',
 }
