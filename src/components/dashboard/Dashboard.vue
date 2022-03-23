@@ -1,7 +1,16 @@
 <template>
   <div>
     <chart-panel :data="priceData" title="Token Price" :default-value="currentTokenPrice" />
-    <chart-panel :data="data" title="Total Value Locked" :default-value="chartDefaultValue" />
+    <chart-panel
+      :data="data"
+      title="Dapps Staking Total Value Locked"
+      :default-value="chartDefaultValue"
+    />
+    <chart-panel
+      :data="transactionsData"
+      title="Total Transactions"
+      :default-value="currentNumberOfTransactions"
+    />
   </div>
 </template>
 
@@ -18,10 +27,13 @@ export default defineComponent({
   setup() {
     const tvlUrl = 'http://localhost:3000/api/v1/astar/dapps-staking/tvl/1%20year';
     const priceUrl = 'http://localhost:3000/api/v1/astar/token/price/1%20year';
+    const transactionsUrl = 'http://localhost:3000/api/v1/astar/node/tx-perblock/1%20year';
     const data = ref<ChartData>([[1, 1]]);
     const priceData = ref<ChartData>([[1, 1]]);
+    const transactionsData = ref<ChartData>([[1, 1]]);
     const chartDefaultValue = ref<string>('');
     const currentTokenPrice = ref<string>('');
+    const currentNumberOfTransactions = ref<string>('');
 
     const formatNumber = (value: number, digits: number): string => {
       const lookup = [
@@ -62,6 +74,18 @@ export default defineComponent({
       if (priceData.value) {
         currentTokenPrice.value = `\$${priceData.value[priceData.value.length - 1][1].toFixed(6)}`;
       }
+
+      const transactionsResult = await axios.get<ChartData>(transactionsUrl);
+      transactionsData.value = transactionsResult.data.map((pair) => {
+        return [Number(pair[0]), pair[1]];
+      });
+
+      if (transactionsData.value) {
+        currentNumberOfTransactions.value = `\$${formatNumber(
+          transactionsData.value[transactionsData.value.length - 1][1],
+          1
+        )}`;
+      }
     };
 
     loadData();
@@ -69,8 +93,10 @@ export default defineComponent({
     return {
       data,
       priceData,
+      transactionsData,
       chartDefaultValue,
       currentTokenPrice,
+      currentNumberOfTransactions,
     };
   },
 });

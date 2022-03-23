@@ -63,6 +63,13 @@ export default defineComponent({
       },
       plotOptions: {
         area: {
+          fillColor: {
+            linearGradient: { x1: 0.1, y1: 0.5, x2: 0.9, y2: 0.5 },
+            stops: [
+              [0, 'rgba(12, 134, 245, 0)'],
+              [1, 'rgba(7, 200, 254, 0.26)'],
+            ],
+          },
           // fillColor: {
           //     linearGradient: {
           //         x1: 0,
@@ -89,6 +96,7 @@ export default defineComponent({
       },
       series: [
         {
+          name: props.title,
           type: 'area',
           data: props.data,
         },
