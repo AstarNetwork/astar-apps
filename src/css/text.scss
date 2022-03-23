@@ -48,6 +48,13 @@ span {
   color: $gray-1;
 }
 
+.input--no-spin::-webkit-inner-spin-button,
+.input--no-spin::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+  -moz-appearance: textfield;
+}
+
 .body--dark {
   .text--page-title,
   .text--title,

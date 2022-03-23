@@ -116,6 +116,7 @@
       :is-modal-transfer="isModalTransfer"
       :handle-modal-transfer="handleModalTransfer"
       :token="tokenSymbol"
+      :account-data="accountData"
     />
   </div>
 </template>
@@ -211,6 +212,7 @@ export default defineComponent({
       isFaucet,
       transferableBalance,
       isModalTransfer,
+      accountData,
       handleModalTransfer,
     };
   },
