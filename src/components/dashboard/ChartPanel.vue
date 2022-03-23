@@ -7,7 +7,7 @@
       <div class="row">
         <span class="text--xlg">{{ defaultValue }}</span>
       </div>
-      <div>
+      <div class="chart">
         <highcharts :options="chartOptions"></highcharts>
       </div>
     </div>
@@ -32,8 +32,12 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    data: {
+      type: Object,
+      required: true,
+    },
   },
-  setup() {
+  setup(props) {
     const store = useStore();
     const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
     const getBackgroundColor = (): string => (isDarkTheme.value ? '#2c3335' : '#fff');
@@ -43,16 +47,60 @@ export default defineComponent({
       },
       chart: {
         backgroundColor: getBackgroundColor(),
+        zoomType: 'x',
+        height: '200px',
+      },
+      xAxis: {
+        type: 'datetime',
+      },
+      yAxis: {
+        title: {
+          text: '',
+        },
+      },
+      legend: {
+        enabled: false,
+      },
+      plotOptions: {
+        area: {
+          // fillColor: {
+          //     linearGradient: {
+          //         x1: 0,
+          //         y1: 0,
+          //         x2: 0,
+          //         y2: 1
+          //     },
+          //     stops: [
+          //         [0, Highcharts.getOptions().colors[0]],
+          //         [1, Highcharts.color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+          //     ]
+          // },
+          marker: {
+            radius: 2,
+          },
+          lineWidth: 1,
+          states: {
+            hover: {
+              lineWidth: 1,
+            },
+          },
+          threshold: null,
+        },
       },
       series: [
         {
-          data: [1, 2, 3], // sample data
+          type: 'area',
+          data: props.data,
         },
       ],
     });
 
     watch([isDarkTheme], () => {
       chartOptions.value.chart.backgroundColor = getBackgroundColor();
+    });
+
+    watch([props], () => {
+      chartOptions.value.series[0].data = props.data;
     });
 
     return {

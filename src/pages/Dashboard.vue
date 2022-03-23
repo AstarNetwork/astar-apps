@@ -5,18 +5,18 @@
         {{ $t('dashboard.dashboard') }}
       </span>
     </div>
-    <chart-panel title="Total Value Locked" default-value="$672.88milion" />
+    <dashboard />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useMeta } from 'quasar';
-import ChartPanel from 'src/components/dashboard/ChartPanel.vue';
+import Dashboard from 'src/components/dashboard/Dashboard.vue';
 
 export default defineComponent({
   components: {
-    ChartPanel,
+    Dashboard,
   },
   setup() {
     useMeta({ title: 'Dashboard' });
