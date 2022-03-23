@@ -1,5 +1,6 @@
 <template>
   <div>
+    <chart-panel :data="priceData" title="Token Price" :default-value="currentTokenPrice" />
     <chart-panel :data="data" title="Total Value Locked" :default-value="chartDefaultValue" />
   </div>
 </template>
@@ -16,8 +17,11 @@ export default defineComponent({
   },
   setup() {
     const tvlUrl = 'http://localhost:3000/api/v1/astar/dapps-staking/tvl/1%20year';
+    const priceUrl = 'http://localhost:3000/api/v1/astar/token/price/1%20year';
     const data = ref<ChartData>([[1, 1]]);
+    const priceData = ref<ChartData>([[1, 1]]);
     const chartDefaultValue = ref<string>('');
+    const currentTokenPrice = ref<string>('');
 
     const formatNumber = (value: number, digits: number): string => {
       const lookup = [
@@ -49,13 +53,24 @@ export default defineComponent({
       if (data.value) {
         chartDefaultValue.value = `\$${formatNumber(data.value[data.value.length - 1][1], 1)}`;
       }
+
+      const priceResult = await axios.get<ChartData>(priceUrl);
+      priceData.value = priceResult.data.map((pair) => {
+        return [Number(pair[0]), pair[1]];
+      });
+
+      if (priceData.value) {
+        currentTokenPrice.value = `\$${priceData.value[priceData.value.length - 1][1].toFixed(6)}`;
+      }
     };
 
     loadData();
 
     return {
       data,
+      priceData,
       chartDefaultValue,
+      currentTokenPrice,
     };
   },
 });
