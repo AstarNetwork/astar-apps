@@ -6,6 +6,7 @@ export default {
   copy: 'Copy',
   from: 'From',
   to: 'To',
+  add: 'Add',
   estimated: 'Estimated',
   forget: 'Forget',
   close: 'Close',

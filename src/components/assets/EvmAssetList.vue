@@ -35,7 +35,7 @@
                 </div>
               </div>
             </div>
-            <div class="column--asset-buttons column--buttons--2-columns">
+            <div class="column--asset-buttons column--buttons--multi">
               <button
                 class="btn btn--sm bg--astar color--astar"
                 @click="handleModalTransfer({ isOpen: true, currency: tokenSymbol })"
@@ -61,6 +61,7 @@
           :token="t"
           :is-faucet="t.symbol === 'SDN' && isFaucet && currentNetwork === 'Shiden'"
           :handle-modal-transfer="handleModalTransfer"
+          :is-erc20="t.symbol !== tokenSymbol"
         />
       </div>
     </div>

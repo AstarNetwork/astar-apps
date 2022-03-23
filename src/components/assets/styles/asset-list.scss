@@ -51,10 +51,10 @@
     grid-template-columns: 200px 190px;
   }
   @media (min-width: $xl) {
-    grid-template-columns: 400px 190px;
+    grid-template-columns: 300px 290px;
   }
   @media (min-width: $xxl) {
-    grid-template-columns: 550px 190px;
+    grid-template-columns: 400px 290px;
   }
 }
 
@@ -130,12 +130,12 @@
   }
 }
 
-.column--buttons--2-columns {
+.column--buttons--multi {
   @media (min-width: $xl) {
     display: flex !important;
     padding-right: 0px !important;
-    justify-content: space-between;
-    width: 200px;
+    justify-content: space-evenly;
+    width: 320px;
   }
 }
 

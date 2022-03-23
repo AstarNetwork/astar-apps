@@ -27,7 +27,7 @@
               </div>
             </div>
           </div>
-          <div class="column--asset-buttons column--buttons--2-columns">
+          <div class="column--asset-buttons column--buttons--multi">
             <button
               class="btn btn--sm bg--astar color--astar"
               @click="
@@ -49,6 +49,20 @@
             <button v-if="isFaucet" class="btn btn--sm bg--astar color--astar">
               {{ $t('assets.faucet') }}
             </button>
+            <button
+              v-if="isErc20"
+              class="btn btn--sm bg--astar color--astar"
+              @click="
+                addToEvmWallet({
+                  tokenAddress: token.address,
+                  symbol: token.symbol,
+                  decimals: token.decimal,
+                  image: getIcon({ symbol: token.symbol, icon: token.icon }),
+                })
+              "
+            >
+              {{ $t('add') }}
+            </button>
           </div>
         </div>
       </div>
@@ -58,6 +72,7 @@
 <script lang="ts">
 import { getIcon, SelectedToken } from 'src/c-bridge';
 import { defineComponent, PropType } from 'vue';
+import { addToEvmWallet } from 'src/hooks/helper/wallet';
 
 export default defineComponent({
   props: {
@@ -66,6 +81,10 @@ export default defineComponent({
       required: true,
     },
     isFaucet: {
+      type: Boolean,
+      required: true,
+    },
+    isErc20: {
       type: Boolean,
       required: true,
     },
@@ -86,6 +105,7 @@ export default defineComponent({
     return {
       getIcon,
       formatTokenName,
+      addToEvmWallet,
     };
   },
 });
