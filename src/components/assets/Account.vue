@@ -48,7 +48,8 @@
                 :src="isDarkTheme ? 'icons/icon-copy-dark.svg' : 'icons/icon-copy.svg'"
                 @click="copyAddress"
               /> -->
-              <IconCopyBtn @click="copyAddress" />
+              <!-- Todo: Apply light theme -->
+              <astar-icon-copy-btn @click="copyAddress" />
               <q-tooltip>
                 <span class="text--tooltip">{{ $t('copy') }}</span>
               </q-tooltip>
@@ -60,7 +61,7 @@
                   isDarkTheme ? 'icons/icon-external-link-dark.svg' : 'icons/icon-external-link.svg'
                 "
               /> -->
-              <IconShareBtn @click="copyAddress" />
+              <astar-icon-share-btn @click="copyAddress" />
               <q-tooltip>
                 <span class="text--tooltip">{{ $t(isH160 ? 'blockscout' : 'subscan') }}</span>
               </q-tooltip>
@@ -79,28 +80,33 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, watchEffect, computed, watch } from 'vue';
-import {
-  setAddressMapping,
-  getEvmMappedSs58Address,
-  getShortenAddress,
-} from 'src/hooks/helper/addressUtils';
-import { SupportWallet, supportWalletObj } from 'src/config/wallets';
-import { useStore } from 'src/store';
-import { getSelectedAccount } from 'src/hooks/helper/wallet';
-import { useAccount, useBalance, useBreakpoints, useConnectWallet, usePrice } from 'src/hooks';
-import { endpointKey, getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
+// import { IconCopyBtn, IconShareBtn } from 'astar-ui';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
+import { endpointKey, getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { isValidEvmAddress } from 'src/config/web3';
+import {
+  useAccount,
+  useBalance,
+  useBreakpoints,
+  useConnectWallet,
+  usePrice,
+  useWalletIcon,
+} from 'src/hooks';
 import { useMetamask } from 'src/hooks/custom-signature/useMetamask';
-import { IconCopyBtn, IconShareBtn } from 'astar-ui';
+import {
+  getEvmMappedSs58Address,
+  getShortenAddress,
+  setAddressMapping,
+} from 'src/hooks/helper/addressUtils';
+import { useStore } from 'src/store';
+import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 
 export default defineComponent({
-  components: {
-    IconCopyBtn,
-    IconShareBtn,
-  },
+  // components: {
+  //   IconCopyBtn,
+  //   IconShareBtn,
+  // },
   props: {
     ttlErc20Amount: {
       type: Number,
@@ -108,20 +114,19 @@ export default defineComponent({
     },
   },
   setup() {
-    const { toggleMetaMaskSchema } = useConnectWallet();
-    const { currentAccount, currentAccountName } = useAccount();
-    const { width, screenSize } = useBreakpoints();
-    const iconWallet = ref<string>('');
     const balUsd = ref<number>(0);
     const isCheckingSignature = ref<boolean>(false);
     const isLockdropAccount = ref<boolean>(false);
+    const { toggleMetaMaskSchema } = useConnectWallet();
+    const { currentAccount, currentAccountName } = useAccount();
+    const { width, screenSize } = useBreakpoints();
     const { balance } = useBalance(currentAccount);
     const { nativeTokenUsd } = usePrice();
     const { requestSignature } = useMetamask();
+    const { iconWallet } = useWalletIcon();
 
     const store = useStore();
     const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
-    const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
 
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const isEthWallet = computed(() => store.getters['general/isEthWallet']);
@@ -145,19 +150,6 @@ export default defineComponent({
         alertType: 'success',
       });
     };
-
-    watchEffect(() => {
-      const account = getSelectedAccount(substrateAccounts.value);
-      if (!currentAccount.value) {
-        // Memo: placeholder
-        iconWallet.value = supportWalletObj[SupportWallet.PolkadotJs].img;
-      } else if (isEthWallet.value) {
-        iconWallet.value = supportWalletObj[SupportWallet.MetaMask].img;
-      } else if (account) {
-        // @ts-ignore
-        iconWallet.value = supportWalletObj[account.source].img;
-      }
-    });
 
     watch(
       [balance, nativeTokenUsd, currentAccount, isH160],

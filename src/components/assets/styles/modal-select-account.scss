@@ -1,0 +1,117 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--select-account {
+  position: relative;
+}
+
+.row--input {
+  display: flex;
+  justify-content: space-between;
+}
+
+.column--icon-account {
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+}
+
+.column--icon {
+  height: 24px;
+  width: 24px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.column--checkbox {
+  position: relative;
+  width: 20px;
+  height: 20px;
+}
+
+.input--address {
+  width: 250px;
+  background-color: transparent;
+  &:focus {
+    outline: none;
+  }
+}
+
+.input--h160 {
+  width: 100% !important;
+}
+
+.icon--selector {
+  height: 20px;
+  width: 20px;
+  color: $gray-3;
+}
+
+.input--checkbox {
+  height: 16px;
+  width: 16px;
+  appearance: none;
+  border-width: 2px;
+  border-color: $gray-5;
+  border-radius: 100%;
+  background-color: $gray-6;
+  &:focus {
+    border-width: 4px;
+    border-color: $astar-blue;
+  }
+  &:checked {
+    border-width: 4px;
+    border-color: $astar-blue;
+  }
+}
+
+.box--account-option {
+  position: absolute;
+  width: 100%;
+  margin-top: 8px;
+  border-radius: 6px;
+  z-index: 10;
+  background-color: $gray-5-selected;
+}
+
+.container--accounts {
+  max-height: 214px;
+  border-radius: 6px;
+  padding: 4px 0;
+  overflow: auto;
+  &:focus {
+    outline: none;
+  }
+}
+
+.list {
+  position: relative;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 12px;
+  padding-right: 36px;
+  cursor: pointer;
+  &:hover {
+    background-color: #323b4a;
+  }
+}
+
+.list__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.text--account {
+  font-weight: 700;
+  font-size: 12px;
+  color: $gray-1;
+}
+
+.text--address {
+  font-weight: 400;
+  font-size: 12px;
+  color: $gray-3;
+}
+
+.body--dark {
+}

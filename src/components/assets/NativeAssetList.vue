@@ -54,7 +54,7 @@
               </div>
             </div>
             <div class="column--buttons">
-              <button class="btn btn--sm bg--astar color--astar" @click="openModalTransfer">
+              <button class="btn btn--sm bg--astar color--astar" @click="handleModalTransfer(true)">
                 {{ $t('assets.transfer') }}
               </button>
             </div>
@@ -112,11 +112,11 @@
         </div>
       </div>
     </div>
-    <astar-simple-modal :show="isModalTransfer" title="Transfer">
-      <div>
-        <h1>hello world</h1>
-      </div>
-    </astar-simple-modal>
+    <ModalTransfer
+      :is-modal-transfer="isModalTransfer"
+      :handle-modal-transfer="handleModalTransfer"
+      :token="tokenSymbol"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -124,14 +124,16 @@ import { ethers } from 'ethers';
 import { useBalance, useEvmDeposit, usePrice } from 'src/hooks';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
+import ModalTransfer from './modals/ModalTransfer.vue';
 
 export default defineComponent({
+  components: {
+    ModalTransfer,
+  },
   setup() {
-    const isModalTransfer = ref<boolean>(false);
-    const openModalTransfer = () => {
-      // console.log('isModalTransfer.value', isModalTransfer.value);
-      isModalTransfer.value = true;
-      console.log('isModalTransfer.value', isModalTransfer.value);
+    const isModalTransfer = ref<boolean>(true);
+    const handleModalTransfer = (isOpen: boolean) => {
+      isModalTransfer.value = isOpen;
     };
 
     const bal = ref<number>(0);
@@ -209,7 +211,7 @@ export default defineComponent({
       isFaucet,
       transferableBalance,
       isModalTransfer,
-      openModalTransfer,
+      handleModalTransfer,
     };
   },
 });
