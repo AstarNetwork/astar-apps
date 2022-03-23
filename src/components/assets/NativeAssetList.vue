@@ -54,7 +54,10 @@
               </div>
             </div>
             <div class="column--buttons">
-              <button class="btn btn--sm bg--astar color--astar" @click="handleModalTransfer(true)">
+              <button
+                class="btn btn--sm bg--astar color--astar"
+                @click="handleModalTransfer({ isOpen: true, currency: tokenSymbol })"
+              >
                 {{ $t('assets.transfer') }}
               </button>
             </div>
@@ -106,7 +109,9 @@
               </div>
             </div>
             <div class="column--buttons">
-              <button class="btn btn--sm bg--astar color--astar">{{ $t('manage') }}</button>
+              <router-link to="/dapp-staking">
+                <button class="btn btn--sm bg--astar color--astar">{{ $t('manage') }}</button>
+              </router-link>
             </div>
           </div>
         </div>
@@ -115,7 +120,7 @@
     <ModalTransfer
       :is-modal-transfer="isModalTransfer"
       :handle-modal-transfer="handleModalTransfer"
-      :token="tokenSymbol"
+      :symbol="tokenSymbol"
       :account-data="accountData"
     />
   </div>
@@ -132,8 +137,8 @@ export default defineComponent({
     ModalTransfer,
   },
   setup() {
-    const isModalTransfer = ref<boolean>(true);
-    const handleModalTransfer = (isOpen: boolean) => {
+    const isModalTransfer = ref<boolean>(false);
+    const handleModalTransfer = ({ currency, isOpen }: { isOpen: boolean; currency: string }) => {
       isModalTransfer.value = isOpen;
     };
 

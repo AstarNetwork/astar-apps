@@ -28,12 +28,24 @@
             </div>
           </div>
           <div class="column--asset-buttons column--buttons--2-columns">
-            <button class="btn btn--sm bg--astar color--astar">
+            <button
+              class="btn btn--sm bg--astar color--astar"
+              @click="
+                handleModalTransfer({
+                  isOpen: true,
+                  currency: token.symbol === tokenSymbol ? tokenSymbol : token,
+                })
+              "
+            >
               {{ $t('assets.transfer') }}
             </button>
-            <button class="btn btn--sm bg--astar color--astar">
-              {{ $t('assets.bridge') }}
-            </button>
+            <!-- Memo: temporary -->
+            <router-link to="/bridge">
+              <button class="btn btn--sm bg--astar color--astar">
+                {{ $t('assets.bridge') }}
+              </button>
+            </router-link>
+
             <button v-if="isFaucet" class="btn btn--sm bg--astar color--astar">
               {{ $t('assets.faucet') }}
             </button>
@@ -55,6 +67,10 @@ export default defineComponent({
     },
     isFaucet: {
       type: Boolean,
+      required: true,
+    },
+    handleModalTransfer: {
+      type: Function,
       required: true,
     },
   },

@@ -4,6 +4,15 @@
   display: grid;
   row-gap: 16px;
   margin-bottom: 40px;
+  position: relative;
+}
+
+.rows__row--error {
+  position: absolute;
+  bottom: -30px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .box__row {
@@ -77,12 +86,15 @@ input {
   background: transparent;
   text-align: right;
   font-weight: 600;
-  color: $gray-3;
+  color: $gray-5;
   justify-self: flex-end;
 }
 
 .body--dark {
   .text--to-balance {
     color: $gray-1;
+  }
+  input {
+    color: $gray-3;
   }
 }

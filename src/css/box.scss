@@ -16,12 +16,15 @@
   padding: 10px 16px;
   border-radius: 6px;
   width: 344px;
-  background: $gray-6;
+  background: $container-bg-white;
 }
 
 .body--dark {
   .container {
     background: $container-bg-dark;
     box-shadow: $container-border-shadow-dark;
+  }
+  .box--input {
+    background: $gray-6;
   }
 }

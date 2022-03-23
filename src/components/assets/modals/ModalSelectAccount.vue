@@ -3,13 +3,13 @@
     <div class="row--input">
       <div class="column--icon-account">
         <div class="column--icon">
-          <img v-if="isToEvmAddress" width="24" src="~assets/img/ethereum.png" />
+          <img v-if="isErc20Transfer || isToEvmAddress" width="24" src="~assets/img/ethereum.png" />
           <icon-base v-else width="24" viewBox="0 0 64 64">
             <icon-account-sample />
           </icon-base>
         </div>
         <input
-          v-model="selAddress"
+          :value="toAddress"
           class="input--address text--title"
           :class="isH160 && 'input--h160'"
           type="text"
@@ -71,6 +71,10 @@ export default defineComponent({
       required: false,
       default: '',
     },
+    isErc20Transfer: {
+      type: Boolean,
+      required: true,
+    },
   },
   emits: ['update:sel-address', 'sel-changed'],
   setup(props, { emit }) {
@@ -124,6 +128,12 @@ export default defineComponent({
 
     watchEffect(() => {
       isToEvmAddress.value = isValidEvmAddress(props.toAddress ? props.toAddress : '');
+    });
+
+    watchEffect(() => {
+      if (!props.toAddress && isH160.value) {
+        isToEvmAddress.value = true;
+      }
     });
 
     return {

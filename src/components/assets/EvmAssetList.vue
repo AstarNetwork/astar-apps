@@ -1,56 +1,76 @@
 <template>
-  <div v-if="isShibuya || tokens" class="container">
-    <div class="row">
-      <span class="text--title">{{ $t('assets.assets') }}</span>
-    </div>
+  <div>
+    <div v-if="isShibuya || tokens" class="container">
+      <div class="row">
+        <span class="text--title">{{ $t('assets.assets') }}</span>
+      </div>
 
-    <div v-if="tokenSymbol !== 'SDN'" class="border--separator" />
+      <div v-if="tokenSymbol !== 'SDN'" class="border--separator" />
 
-    <div v-if="tokenSymbol !== 'SDN'" class="rows">
-      <div class="row row--details">
-        <div class="row__left">
-          <div class="column--currency">
-            <img
-              class="token-logo"
-              :src="tokenSymbol === 'SDN' ? 'icons/sdn-token.png' : 'icons/astar.png'"
-              :alt="tokenSymbol"
-            />
-            <div class="column--ticker">
-              <span class="text--title">{{ tokenSymbol }}</span>
-              <span class="text--label">{{
-                tokenSymbol === 'SBY' ? 'Shibuya' : currentNetwork
-              }}</span>
-            </div>
-          </div>
-        </div>
-        <div class="row__right">
-          <div class="column column--balance">
-            <div class="column__box">
-              <div class="text--accent">
-                <span>{{ $n(bal) }} {{ tokenSymbol }}</span>
-              </div>
-              <div class="text--label">
-                <span>{{ $n(balUsd) }} {{ $t('usd') }}</span>
+      <div v-if="tokenSymbol !== 'SDN'" class="rows">
+        <div class="row row--details">
+          <div class="row__left">
+            <div class="column--currency">
+              <img
+                class="token-logo"
+                :src="tokenSymbol === 'SDN' ? 'icons/sdn-token.png' : 'icons/astar.png'"
+                :alt="tokenSymbol"
+              />
+              <div class="column--ticker">
+                <span class="text--title">{{ tokenSymbol }}</span>
+                <span class="text--label">{{
+                  tokenSymbol === 'SBY' ? 'Shibuya' : currentNetwork
+                }}</span>
               </div>
             </div>
           </div>
-          <div class="column--asset-buttons column--buttons--2-columns">
-            <button class="btn btn--sm bg--astar color--astar">{{ $t('assets.transfer') }}</button>
-            <button class="btn btn--sm bg--astar color--astar">{{ $t('assets.bridge') }}</button>
-            <button v-if="isFaucet" class="btn btn--sm bg--astar color--astar">
-              {{ $t('assets.faucet') }}
-            </button>
+          <div class="row__right">
+            <div class="column column--balance">
+              <div class="column__box">
+                <div class="text--accent">
+                  <span>{{ $n(bal) }} {{ tokenSymbol }}</span>
+                </div>
+                <div class="text--label">
+                  <span>{{ $n(balUsd) }} {{ $t('usd') }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="column--asset-buttons column--buttons--2-columns">
+              <button
+                class="btn btn--sm bg--astar color--astar"
+                @click="handleModalTransfer({ isOpen: true, currency: tokenSymbol })"
+              >
+                {{ $t('assets.transfer') }}
+              </button>
+              <!-- Memo: temporary -->
+              <router-link to="/bridge">
+                <button class="btn btn--sm bg--astar color--astar">
+                  {{ $t('assets.bridge') }}
+                </button>
+              </router-link>
+              <button v-if="isFaucet" class="btn btn--sm bg--astar color--astar">
+                {{ $t('assets.faucet') }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div v-for="token in tokens" :key="token.symbol">
-      <EvmToken
-        :token="token"
-        :is-faucet="token.symbol === 'SDN' && isFaucet && currentNetwork === 'Shiden'"
-      />
+      <div v-for="t in tokens" :key="t.symbol">
+        <EvmToken
+          :token="t"
+          :is-faucet="t.symbol === 'SDN' && isFaucet && currentNetwork === 'Shiden'"
+          :handle-modal-transfer="handleModalTransfer"
+        />
+      </div>
     </div>
+    <ModalTransfer
+      :is-modal-transfer="isModalTransfer"
+      :handle-modal-transfer="handleModalTransfer"
+      :symbol="symbol"
+      :account-data="null"
+      :token="token"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -60,18 +80,24 @@ import EvmToken from 'src/components/assets/EvmToken.vue';
 import { useBalance, usePrice } from 'src/hooks';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
+import ModalTransfer from './modals/ModalTransfer.vue';
 
 export default defineComponent({
   components: {
     EvmToken,
+    ModalTransfer,
   },
   props: {
     tokens: {
       type: Object as PropType<SelectedToken[]>,
-      required: true,
+      required: false,
+      default: null,
     },
   },
   setup() {
+    const isModalTransfer = ref<boolean>(false);
+    const token = ref<SelectedToken | string | null>(null);
+    const symbol = ref<string>('');
     const bal = ref<number>(0);
     const balUsd = ref<number>(0);
     const isShibuya = ref<boolean>(false);
@@ -91,6 +117,26 @@ export default defineComponent({
       const chainInfo = store.getters['general/chainInfo'];
       return chainInfo ? chainInfo.chain : '';
     });
+
+    const handleModalTransfer = ({
+      currency,
+      isOpen,
+    }: {
+      isOpen: boolean;
+      currency: SelectedToken | string;
+    }) => {
+      token.value = currency;
+      isModalTransfer.value = isOpen;
+      if (!isOpen) {
+        symbol.value = '';
+        return;
+      } else if (currency === tokenSymbol.value) {
+        symbol.value = tokenSymbol.value;
+      } else {
+        const c = currency as SelectedToken;
+        symbol.value = c.symbol;
+      }
+    };
 
     watchEffect(async () => {
       const tokenSymbolRef = tokenSymbol.value;
@@ -115,6 +161,10 @@ export default defineComponent({
       isShibuya,
       mainnetFaucetAmount,
       isFaucet,
+      isModalTransfer,
+      symbol,
+      token,
+      handleModalTransfer,
     };
   },
 });
