@@ -67,9 +67,7 @@ export default defineComponent({
       }
 
       const priceResult = await axios.get<ChartData>(priceUrl);
-      priceData.value = priceResult.data.map((pair) => {
-        return [Number(pair[0]), pair[1]];
-      });
+      priceData.value = priceResult.data;
 
       if (priceData.value) {
         currentTokenPrice.value = `\$${priceData.value[priceData.value.length - 1][1].toFixed(6)}`;
