@@ -1,11 +1,5 @@
 @import 'src/css/quasar.variables.scss';
 
-.wrapper--chart-panel {
-  display: grid;
-  row-gap: 24px;
-  margin-bottom: 16px;
-}
-
 .row {
   padding: 16px 8px 0px 8px;
   display: flex;
@@ -15,4 +9,20 @@
 
 .chart {
   margin-top: 16px;
+}
+
+.wrapper--charts {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.wrapper--chart {
+  width: 100%;
+  padding: 8px;
+
+  @media (min-width: $md) {
+    width: 50%;
+  }
 }

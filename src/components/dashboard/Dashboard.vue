@@ -1,15 +1,22 @@
 <template>
-  <div>
-    <chart-panel :data="priceData" title="Token Price" :default-value="currentTokenPrice" />
+  <div class="wrapper--charts">
+    <chart-panel
+      :data="priceData"
+      title="Token Price"
+      :default-value="currentTokenPrice"
+      class="wrapper--chart"
+    />
     <chart-panel
       :data="data"
       title="Dapps Staking Total Value Locked"
       :default-value="chartDefaultValue"
+      class="wrapper--chart"
     />
     <chart-panel
       :data="transactionsData"
       title="Total Transactions"
       :default-value="currentNumberOfTransactions"
+      class="wrapper--chart"
     />
   </div>
 </template>
@@ -99,3 +106,7 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss" scoped>
+@use 'src/components/dashboard/styles/chart-panel.scss';
+</style>

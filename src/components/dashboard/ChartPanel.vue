@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper--chart-panel">
+  <div>
     <div class="container">
       <div class="row">
         <span class="text--md">{{ title }}</span>
@@ -70,20 +70,8 @@ export default defineComponent({
               [1, 'rgba(7, 200, 254, 0.26)'],
             ],
           },
-          // fillColor: {
-          //     linearGradient: {
-          //         x1: 0,
-          //         y1: 0,
-          //         x2: 0,
-          //         y2: 1
-          //     },
-          //     stops: [
-          //         [0, Highcharts.getOptions().colors[0]],
-          //         [1, Highcharts.color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-          //     ]
-          // },
           marker: {
-            radius: 2,
+            radius: 0,
           },
           lineWidth: 1,
           states: {
