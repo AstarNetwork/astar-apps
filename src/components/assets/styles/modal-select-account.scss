@@ -86,7 +86,7 @@
   padding-right: 36px;
   cursor: pointer;
   &:hover {
-    background-color: #323b4a;
+    background-color: $gray-3;
   }
 }
 
@@ -146,5 +146,10 @@
 .body--dark {
   .box--account-option {
     background: $gray-6;
+  }
+  .list {
+    &:hover {
+      background-color: $item--bg--hover-dark;
+    }
   }
 }
