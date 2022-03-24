@@ -1,7 +1,7 @@
 <template>
   <div class="tw-flex tw-items-center">
     <div class="dot" :class="getDotClass(connectionType)"></div>
-    <div class="statusTxt" :class="getDotClass(connectionType)">
+    <div v-if="width >= screenSize.sm" class="statusTxt" :class="getDotClass(connectionType)">
       <div>{{ connectionType }}</div>
       <div v-if="connectionType === 'connected'">v{{ version }}</div>
     </div>
@@ -9,6 +9,7 @@
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { useBreakpoints } from 'src/hooks';
 
 export default defineComponent({
   props: {
@@ -21,6 +22,14 @@ export default defineComponent({
       type: String,
       default: '0.0.0',
     },
+  },
+  setup() {
+    const { width, screenSize } = useBreakpoints();
+
+    return {
+      width,
+      screenSize,
+    };
   },
   methods: {
     getDotClass(connectionType: string) {

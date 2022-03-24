@@ -1,28 +1,5 @@
 <template>
-  <button
-    type="button"
-    :class="[
-      'connect-btn',
-      'tw-inline-flex',
-      'tw-items-center',
-      'tw-px-4',
-      'tw-py-1',
-      'tw-border',
-      'tw-border-transparent',
-      'tw-text-sm',
-      'tw-font-medium',
-      'tw-rounded-full',
-      'tw-shadow-sm',
-      'tw-text-white',
-      'tw-bg-gray-500',
-      'hover:tw-bg-gray-500',
-      'focus:tw-outline-none',
-      'focus:tw-ring',
-      'focus:tw-ring-gray-100',
-      'dark-ring-dark-gray',
-      'tw-mx-1',
-    ]"
-  >
+  <button type="button" :class="width >= screenSize.sm ? 'btn--connect' : 'm-btn--connect'">
     <icon-base
       class="tw-w-5 tw-h-5 tw-text-astarblue tw--ml-1 tw-mr-1"
       stroke="currentColor"
@@ -30,12 +7,15 @@
     >
       <icon-wallet />
     </icon-base>
-    {{ $t('connect') }}
+    <template v-if="width >= screenSize.sm">
+      {{ $t('connect') }}
+    </template>
   </button>
 </template>
 
 <script lang="ts">
 import { defineComponent, toRefs } from 'vue';
+import { useBreakpoints } from 'src/hooks';
 import IconBase from 'components/icons/IconBase.vue';
 import IconWallet from 'components/icons/IconWallet.vue';
 
@@ -46,7 +26,11 @@ export default defineComponent({
   },
   props: {},
   setup(props) {
+    const { width, screenSize } = useBreakpoints();
+
     return {
+      width,
+      screenSize,
       ...toRefs(props),
     };
   },
@@ -54,10 +38,30 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.connect-btn {
+.btn--connect {
+  display: flex;
+  height: 32px;
+  color: #fff;
+  flex-direction: row;
+  align-items: center;
+  padding: 8px 16px 8px 16px;
   background: #2c3335;
+  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
+  border-radius: 16px;
 }
-.connect-btn:hover {
+.btn--connect:hover {
+  background: #3c4649;
+}
+
+.m-btn--connect {
+  padding-left: 10px;
+  width: 32px;
+  height: 32px;
+  background: #2c3335;
+  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
+  border-radius: 16px;
+}
+.m-btn--connect:hover {
   background: #3c4649;
 }
 </style>

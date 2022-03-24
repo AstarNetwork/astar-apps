@@ -39,6 +39,7 @@ export interface GeneralStateInterface {
   currentAddress: string;
   currentCustomEndpoint: string;
   currentTheme: Theme;
+  headerName: string;
 }
 
 function state(): GeneralStateInterface {
@@ -74,6 +75,7 @@ function state(): GeneralStateInterface {
       window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
         ? 'DARK'
         : 'LIGHT',
+    headerName: '',
   };
 }
 
