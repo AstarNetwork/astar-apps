@@ -47,11 +47,11 @@ export function useCbridgeV2() {
         .map(async (token: CbridgeToken) => {
           let balUsd = 0;
           const t = getSelectedToken({ srcChainId, token });
-          if (!t) return;
-          // Memo: Remove the duplicated contract address (ex: PKEX)
+          if (!t) return undefined;
           const isDuplicated = seen.has(t.address);
           seen.add(t.address);
-          if (isDuplicated) return null;
+          // Memo: Remove the duplicated contract address (ex: PKEX)
+          if (isDuplicated) return undefined;
           const userBalance = await getTokenBal({
             srcChainId,
             address: userAddress,
@@ -71,7 +71,7 @@ export function useCbridgeV2() {
     )) as SelectedToken[];
 
     tokens.value = tokens.value.filter((token) => {
-      return token !== null;
+      return token !== undefined;
     });
 
     tokens.value.sort((a: SelectedToken, b: SelectedToken) => {
