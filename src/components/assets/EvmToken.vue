@@ -51,7 +51,7 @@
             </button>
             <button
               v-if="isErc20"
-              class="btn btn--sm bg--astar color--astar"
+              class="btn btn--sm bg--astar color--astar screen--md"
               @click="
                 addToEvmWallet({
                   tokenAddress: token.address,

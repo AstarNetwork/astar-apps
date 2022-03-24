@@ -18,7 +18,7 @@
           <div class="box__space-between">
             <span>To</span>
             <div>
-              <span class="text--to-balance">
+              <span class="text--to--balance">
                 {{ $t('assets.modals.balance', { amount: $n(toAddressBalance), token: symbol }) }}
               </span>
             </div>
@@ -59,7 +59,7 @@
               />
               <span class="text--title">{{ symbol }}</span>
             </div>
-            <div class="box__column-input-amount">
+            <div class="box__column--input-amount">
               <input
                 :value="transferAmt"
                 inputmode="decimal"
@@ -67,7 +67,7 @@
                 min="0"
                 pattern="^[0-9]*(\.)?[0-9]*$"
                 placeholder="0.0"
-                class="input--no-spin"
+                class="input--amount input--no-spin"
                 @input="inputHandler"
               />
             </div>
@@ -77,10 +77,26 @@
           <span class="text--error">{{ errMsg }}</span>
         </div>
       </div>
-      <div class="box__row-button">
-        <astar-action-btn :disabled="errMsg !== '' || 0 >= Number(transferAmt)" @click="transfer">{{
-          $t('confirm')
-        }}</astar-action-btn>
+      <div
+        v-if="isRequiredCheck"
+        class="box--warning"
+        :class="isChecked && 'box--warning--checked'"
+      >
+        <div class="input--checkbox" :class="isChecked && 'input--checkbox--checked'">
+          <input id="do-not-send-to-cex" v-model="isChecked" type="checkbox" />
+          <label for="do-not-send-to-cex">
+            <span :class="isChecked ? 'color--white' : 'color--warning'">{{
+              $t('assets.modals.notSendToExchanges')
+            }}</span>
+          </label>
+        </div>
+      </div>
+      <div class="wrapper__row--button">
+        <astar-action-btn
+          :disabled="errMsg !== '' || 0 >= Number(transferAmt) || (isRequiredCheck && !isChecked)"
+          @click="transfer"
+          >{{ $t('confirm') }}</astar-action-btn
+        >
       </div>
     </div>
   </astar-simple-modal>
@@ -135,13 +151,27 @@ export default defineComponent({
     const toAddress = ref<string>('');
     const errMsg = ref<string>('');
     const selectedNetwork = ref<number>(0);
+    const isChecked = ref<boolean>(false);
     const { iconWallet } = useWalletIcon();
     const store = useStore();
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
+    const isEthWallet = computed(() => store.getters['general/isEthWallet']);
     const { currentAccount, currentAccountName } = useAccount();
     const tokenSymbol = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
       return chainInfo ? chainInfo.tokenSymbol : '';
+    });
+
+    const isRequiredCheck = computed(() => {
+      if (
+        isNativeToken.value &&
+        isEthWallet.value &&
+        isValidAddressPolkadotAddress(toAddress.value)
+      ) {
+        return true;
+      } else {
+        return false;
+      }
     });
 
     const evmNetworkIdx = computed(() => {
@@ -360,6 +390,8 @@ export default defineComponent({
       isNativeToken,
       getIcon,
       closeModal,
+      isChecked,
+      isRequiredCheck,
     };
   },
 });

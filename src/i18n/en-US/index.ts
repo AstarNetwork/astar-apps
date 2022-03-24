@@ -279,6 +279,7 @@ export default {
       max: 'Max',
       balance: 'Balance: {amount} {token}',
       available: 'Available: {amount} {token}',
+      notSendToExchanges: 'I’m NOT sending tokens to Exchanges',
     },
   },
 };

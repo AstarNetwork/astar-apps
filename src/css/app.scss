@@ -31,6 +31,13 @@ main {
   background: $gray-1;
 }
 
+.screen--md {
+  display: none;
+  @media (min-width: $md) {
+    display: block;
+  }
+}
+
 .screen--lg {
   display: none;
   @media (min-width: $lg) {
