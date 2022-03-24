@@ -5,11 +5,7 @@
       @updated-meta="isLatestChain = true"
     />
     <button v-else type="button" class="btn--network" @click="showNetworkModal">
-      <icon-base
-        class="tw-w-5 tw-h-5 tw-text-gray-500 tw--ml-1"
-        stroke="currentColor"
-        icon-name="network"
-      >
+      <icon-base class="iconbase tw-w-5 tw-h-5 tw--ml-1" stroke="currentColor" icon-name="network">
         <icon-network />
       </icon-base>
       <img class="icon" width="16" src="~assets/img/astr-token.png" />
@@ -89,13 +85,15 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import 'src/css/quasar.variables.scss';
+
 .btn--network {
   display: flex;
   height: 32px;
   flex-direction: row;
   align-items: center;
-  background: #2c3335;
+  background: $gray-5;
   padding: 8px 16px 8px 16px;
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
   border-radius: 16px;
@@ -110,6 +108,9 @@ export default defineComponent({
   border: 1px solid #000;
   margin: 0 6px;
   height: 22px;
+}
+.iconbase {
+  color: #5f656f;
 }
 .icon {
   margin: 0 6px;

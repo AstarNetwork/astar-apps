@@ -1,11 +1,7 @@
 <template>
   <div>
     <button type="button" class="btn--account">
-      <icon-base
-        class="tw-w-5 tw-h-5 tw-text-gray-500 tw--ml-1"
-        stroke="currentColor"
-        icon-name="wallet"
-      >
+      <icon-base class="iconbase tw-w-5 tw-h-5 tw--ml-1" stroke="currentColor" icon-name="wallet">
         <icon-wallet />
       </icon-base>
       <img class="icon" width="16" :src="iconWallet" />
@@ -72,13 +68,15 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import 'src/css/quasar.variables.scss';
+
 .btn--account {
   display: flex;
   height: 32px;
   flex-direction: row;
   align-items: center;
-  background: #2c3335;
+  background: $gray-5;
   padding: 8px 16px 8px 16px;
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
   border-radius: 16px;
@@ -87,6 +85,9 @@ export default defineComponent({
 }
 .btn--account:hover {
   background: #3c4649;
+}
+.iconbase {
+  color: #5f656f;
 }
 .icon {
   margin: 0 6px;

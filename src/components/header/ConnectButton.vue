@@ -37,7 +37,9 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import 'src/css/quasar.variables.scss';
+
 .btn--connect {
   display: flex;
   height: 32px;
@@ -45,7 +47,7 @@ export default defineComponent({
   flex-direction: row;
   align-items: center;
   padding: 8px 16px 8px 16px;
-  background: #2c3335;
+  background: $gray-5;
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
   border-radius: 16px;
 }
@@ -57,7 +59,7 @@ export default defineComponent({
   padding-left: 10px;
   width: 32px;
   height: 32px;
-  background: #2c3335;
+  background: $gray-5;
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
   border-radius: 16px;
 }
