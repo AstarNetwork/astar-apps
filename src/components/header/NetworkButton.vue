@@ -1,7 +1,7 @@
 <template>
   <div>
     <MetaUpdateButton
-      v-if="!isNeedUpdate(isLatestChain, extensionCount)"
+      v-if="isNeedUpdate(isLatestChain, extensionCount)"
       @updated-meta="isLatestChain = true"
     />
     <button v-else type="button" class="btn--network" @click="showNetworkModal">
