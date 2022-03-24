@@ -29,7 +29,7 @@
               @click="
                 handleModalTransfer({
                   isOpen: true,
-                  currency: token.symbol === tokenSymbol ? tokenSymbol : token,
+                  currency: token.symbol === nativeTokenSymbol ? nativeTokenSymbol : token,
                 })
               "
             >
@@ -68,6 +68,7 @@
 <script lang="ts">
 import { SelectedToken } from 'src/c-bridge';
 import { addToEvmWallet } from 'src/hooks/helper/wallet';
+import { useStore } from 'src/store';
 import { getTokenImage } from 'src/token';
 import { computed, defineComponent, PropType } from 'vue';
 
@@ -95,6 +96,12 @@ export default defineComponent({
       getTokenImage({ isNativeToken: false, symbol: props.token.symbol, iconUrl: props.token.icon })
     );
 
+    const store = useStore();
+    const nativeTokenSymbol = computed(() => {
+      const chainInfo = store.getters['general/chainInfo'];
+      return chainInfo ? chainInfo.tokenSymbol : '';
+    });
+
     const formatTokenName = (name: string) => {
       switch (name) {
         case 'Shiden Network':
@@ -107,6 +114,7 @@ export default defineComponent({
       formatTokenName,
       addToEvmWallet,
       tokenImg,
+      nativeTokenSymbol,
     };
   },
 });
