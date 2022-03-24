@@ -42,15 +42,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, onMounted, ref, computed } from 'vue';
-import { $api } from 'boot/api';
-import { useStore } from 'src/store';
-import { useChainMetadata } from 'src/hooks';
-import Modal from 'src/components/common/Modal.vue';
-import Button from 'src/components/common/Button.vue';
+import { $api, $isEnableIndividualClaim } from 'boot/api';
 import Avatar from 'src/components/common/Avatar.vue';
-import { StakingParameters, ClaimInfo } from 'src/store/dapp-staking/actions';
+import Button from 'src/components/common/Button.vue';
+import Modal from 'src/components/common/Modal.vue';
+import { useChainMetadata } from 'src/hooks';
 import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
+import { useStore } from 'src/store';
+import { ClaimInfo, StakingParameters } from 'src/store/dapp-staking/actions';
+import { computed, defineComponent, onMounted, ref, toRefs } from 'vue';
 
 export default defineComponent({
   components: {
@@ -85,7 +85,11 @@ export default defineComponent({
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
 
     const canClaim = computed(() => {
-      return claimInfo?.value && claimInfo.value.unclaimedEras.length > 0;
+      return (
+        !$isEnableIndividualClaim.value &&
+        claimInfo?.value &&
+        claimInfo.value.unclaimedEras.length > 0
+      );
     });
 
     onMounted(async () => {
@@ -99,6 +103,7 @@ export default defineComponent({
         dapp: props.dapp,
         decimals: decimal.value,
         substrateAccounts: substrateAccounts.value,
+        isEnableIndividualClaim: $isEnableIndividualClaim.value,
       } as StakingParameters);
       if (!claimInfo.value) return;
 
@@ -112,9 +117,10 @@ export default defineComponent({
     };
 
     const claim = async () => {
-      const erasToClaim = claimInfo.value?.unclaimedEras.sort().slice(0, maxErasPerClaim);
-      console.log('Eras to claim in batch', erasToClaim);
-      await props.claimAction(erasToClaim, getClaimInfo);
+      if (!$isEnableIndividualClaim.value) {
+        const erasToClaim = claimInfo.value?.unclaimedEras.sort().slice(0, maxErasPerClaim);
+        await props.claimAction(erasToClaim, getClaimInfo);
+      }
     };
 
     return {

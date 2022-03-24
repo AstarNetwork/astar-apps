@@ -1,7 +1,11 @@
 import { boot } from 'quasar/wrappers';
 import { ApiPromise } from '@polkadot/api';
 import { computed, ref, watchPostEffect } from 'vue';
-import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
+import {
+  providerEndpoints,
+  endpointKey,
+  checkIsEnableIndividualClaim,
+} from 'src/config/chainEndpoints';
 import { connectApi } from 'src/config/api/polkadot/connectApi';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useMeta } from 'quasar';
@@ -14,6 +18,7 @@ import Web3 from 'web3';
 
 const $api = ref<ApiPromise>();
 const $web3 = ref<Web3>();
+const $isEnableIndividualClaim = ref<boolean>(false);
 
 export default boot(async ({ store }) => {
   const { NETWORK_IDX, CUSTOM_ENDPOINT } = LOCAL_STORAGE;
@@ -21,7 +26,7 @@ export default boot(async ({ store }) => {
   const networkIdxStore = localStorage.getItem(NETWORK_IDX);
   const customEndpoint = localStorage.getItem(CUSTOM_ENDPOINT);
   if (networkIdxStore) {
-    store.commit('general/setCurrentNetworkIdx', parseInt(networkIdxStore));
+    store.commit('general/setCurrentNetworkIdx', Number(networkIdxStore));
   }
   if (customEndpoint) {
     store.commit('general/setCurrentCustomEndpoint', customEndpoint);
@@ -35,7 +40,7 @@ export default boot(async ({ store }) => {
   }
 
   // set metadata header
-  const favicon = providerEndpoints[parseInt(networkIdx.value)].favicon;
+  const favicon = providerEndpoints[Number(networkIdx.value)].favicon;
   useMeta({
     title: '',
     titleTemplate: (title) => `${title} | Astar Portal - Astar & Shiden Network`,
@@ -55,10 +60,12 @@ export default boot(async ({ store }) => {
   // update chaininfo
   const { chainInfo } = useChainInfo(api);
   const { metaExtensions, extensionCount } = useMetaExtensions(api, extensions)!!;
-  watchPostEffect(() => {
+  watchPostEffect(async () => {
     store.commit('general/setChainInfo', chainInfo.value);
     store.commit('general/setMetaExtensions', metaExtensions.value);
     store.commit('general/setExtensionCount', extensionCount.value);
+
+    $isEnableIndividualClaim.value = await checkIsEnableIndividualClaim(api);
 
     if (chainInfo.value?.chain) {
       const currentChain = chainInfo.value?.chain as ASTAR_CHAIN;
@@ -72,4 +79,4 @@ export default boot(async ({ store }) => {
   });
 });
 
-export { $api, $web3 };
+export { $api, $web3, $isEnableIndividualClaim };

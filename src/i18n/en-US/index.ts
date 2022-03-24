@@ -186,6 +186,7 @@ export default {
     blocksUntilNextEra: 'Blocks until next era',
     stakerApy: 'APY: {value}%',
     stakerApr: 'APR: {value}%',
+    ttlPendingRewards: 'Your Pending Rewards',
     modals: {
       alreadyClaimed: 'Already claimed:',
       contractRewards: 'Contract rewards:',
@@ -197,7 +198,7 @@ export default {
       register: 'Register',
       address: 'Address',
       estimatedRewards: 'Pending rewards',
-      unclaimedEras: 'Number of unclaimed eras',
+      unclaimedEras: 'Unclaimed eras:',
       estimatedClaimedRewards: 'Claimed rewards',
       next: 'Next',
       previous: 'Previous',
