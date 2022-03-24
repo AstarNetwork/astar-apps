@@ -9,7 +9,7 @@
 
 .rows__row--error {
   position: absolute;
-  bottom: -30px;
+  bottom: -26px;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -162,6 +162,6 @@
 
 .body--dark {
   input {
-    color: $gray-3;
+    color: white;
   }
 }

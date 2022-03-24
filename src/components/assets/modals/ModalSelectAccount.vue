@@ -3,15 +3,21 @@
     <div class="row--input">
       <div class="column--icon-account">
         <div class="column--icon">
-          <img v-if="isErc20Transfer || isToEvmAddress" width="24" src="~assets/img/ethereum.png" />
-          <icon-base v-else width="24" viewBox="0 0 64 64">
-            <icon-account-sample />
-          </icon-base>
+          <div v-if="isErc20Transfer || toAddress">
+            <img
+              v-if="isErc20Transfer || isToEvmAddress"
+              width="24"
+              src="~assets/img/ethereum.png"
+            />
+            <icon-base v-else width="24" viewBox="0 0 64 64">
+              <icon-account-sample />
+            </icon-base>
+          </div>
+          <div v-else class="placeholder--icon" />
         </div>
         <input
           :value="toAddress"
           class="input--address text--title"
-          :class="isH160 && 'input--h160'"
           type="text"
           spellcheck="false"
           @focus="openOption = !isEthWallet"

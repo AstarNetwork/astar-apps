@@ -103,10 +103,6 @@ import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 
 export default defineComponent({
-  // components: {
-  //   IconCopyBtn,
-  //   IconShareBtn,
-  // },
   props: {
     ttlErc20Amount: {
       type: Number,

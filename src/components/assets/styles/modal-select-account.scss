@@ -36,10 +36,6 @@
   }
 }
 
-.input--h160 {
-  width: 100% !important;
-}
-
 .icon--selector {
   height: 20px;
   width: 20px;
@@ -70,7 +66,7 @@
   margin-top: 8px;
   border-radius: 6px;
   z-index: 10;
-  background-color: $gray-5-selected;
+  background: $container-bg-white;
 }
 
 .container--accounts {
@@ -113,5 +109,12 @@
   color: $gray-3;
 }
 
+.placeholder--icon {
+  width: 24px;
+}
+
 .body--dark {
+  .box--account-option {
+    background: $gray-6;
+  }
 }
