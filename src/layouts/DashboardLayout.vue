@@ -24,7 +24,7 @@
 import { defineComponent } from 'vue';
 
 import PlasmHeader from 'components/common/Header.vue';
-import SidebarDesktop from 'components/common/SidebarDesktop.vue';
+import SidebarDesktop from 'components/sidenav/SidebarDesktop.vue';
 import SidebarMobile from 'components/common/SidebarMobile.vue';
 
 export default defineComponent({
