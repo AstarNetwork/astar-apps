@@ -46,17 +46,7 @@
           </div>
           <div class="box__row">
             <div class="box__row">
-              <img
-                width="24"
-                alt="token-logo"
-                :src="
-                  token && isErc20Transfer
-                    ? getIcon({ symbol: token.symbol, icon: token.icon })
-                    : token === 'SDN'
-                    ? 'icons/sdn-token.png'
-                    : 'icons/astar.png'
-                "
-              />
+              <img width="24" alt="token-logo" :src="tokenImg" />
               <span class="text--title">{{ symbol }}</span>
             </div>
             <div class="box__column--input-amount">
@@ -103,7 +93,6 @@
 </template>
 <script lang="ts">
 import { $api, $web3 } from 'src/boot/api';
-import { getIcon } from 'src/c-bridge';
 import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { getTokenBal } from 'src/config/web3';
 import { useAccount, useChainMetadata, useTransfer, useWalletIcon } from 'src/hooks';
@@ -111,6 +100,7 @@ import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
+import { getTokenImage } from 'src/token';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
 import Web3 from 'web3';
 import ModalSelectAccount from './ModalSelectAccount.vue';
@@ -161,6 +151,14 @@ export default defineComponent({
       const chainInfo = store.getters['general/chainInfo'];
       return chainInfo ? chainInfo.tokenSymbol : '';
     });
+
+    const tokenImg = computed(() =>
+      getTokenImage({
+        isNativeToken: props.symbol === tokenSymbol.value,
+        symbol: props.symbol,
+        iconUrl: props.token && props.token.icon,
+      })
+    );
 
     const isRequiredCheck = computed(() => {
       if (
@@ -388,10 +386,10 @@ export default defineComponent({
       errMsg,
       isErc20Transfer,
       isNativeToken,
-      getIcon,
       closeModal,
       isChecked,
       isRequiredCheck,
+      tokenImg,
     };
   },
 });

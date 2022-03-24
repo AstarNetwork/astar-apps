@@ -11,11 +11,7 @@
         <div class="row row--details">
           <div class="row__left">
             <div class="column--currency">
-              <img
-                width="24"
-                :src="tokenSymbol === 'SDN' ? 'icons/sdn-token.png' : 'icons/astar.png'"
-                alt="sdn"
-              />
+              <img width="24" :src="nativeTokenImg" :alt="tokenSymbol" />
               <div class="column--ticker">
                 <span class="text--title">{{ tokenSymbol }}</span>
                 <span class="text--label">{{
@@ -129,6 +125,7 @@
 import { ethers } from 'ethers';
 import { useBalance, useEvmDeposit, usePrice } from 'src/hooks';
 import { useStore } from 'src/store';
+import { getTokenImage } from 'src/token';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
 import ModalTransfer from './modals/ModalTransfer.vue';
 
@@ -164,6 +161,10 @@ export default defineComponent({
       const chainInfo = store.getters['general/chainInfo'];
       return chainInfo ? chainInfo.chain : '';
     });
+
+    const nativeTokenImg = computed(() =>
+      getTokenImage({ isNativeToken: true, symbol: tokenSymbol.value })
+    );
 
     const transferableBalance = computed(() => {
       const balance = accountData.value
@@ -218,6 +219,7 @@ export default defineComponent({
       transferableBalance,
       isModalTransfer,
       accountData,
+      nativeTokenImg,
       handleModalTransfer,
     };
   },
