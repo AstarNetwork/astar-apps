@@ -142,6 +142,7 @@
 .column--buttons {
   display: grid;
   row-gap: 14px;
+  align-items: center;
   @media (min-width: $md) {
     row-gap: 8px;
     justify-self: end;

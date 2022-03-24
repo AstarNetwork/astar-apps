@@ -42,11 +42,7 @@
               </button>
             </router-link>
 
-            <button v-if="isFaucet" class="btn btn--sm bg--astar color--astar">
-              {{ $t('assets.faucet') }}
-            </button>
             <button
-              v-if="isErc20"
               class="btn btn--sm bg--astar color--astar screen--md"
               @click="
                 addToEvmWallet({
@@ -76,14 +72,6 @@ export default defineComponent({
   props: {
     token: {
       type: Object as PropType<SelectedToken>,
-      required: true,
-    },
-    isFaucet: {
-      type: Boolean,
-      required: true,
-    },
-    isErc20: {
-      type: Boolean,
       required: true,
     },
     handleModalTransfer: {

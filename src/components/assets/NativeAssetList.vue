@@ -7,16 +7,14 @@
 
       <div class="border--separator" />
 
-      <div v-if="tokenSymbol" class="rows">
+      <div v-if="nativeTokenSymbol" class="rows">
         <div class="row row--details">
           <div class="row__left">
             <div class="column--currency">
-              <img width="24" :src="nativeTokenImg" :alt="tokenSymbol" />
+              <img width="24" :src="nativeTokenImg" :alt="nativeTokenSymbol" />
               <div class="column--ticker">
-                <span class="text--title">{{ tokenSymbol }}</span>
-                <span class="text--label">{{
-                  tokenSymbol === 'SBY' ? 'Shibuya' : currentNetwork
-                }}</span>
+                <span class="text--title">{{ nativeTokenSymbol }}</span>
+                <span class="text--label">{{ currentNetworkName }}</span>
               </div>
             </div>
           </div>
@@ -24,14 +22,14 @@
             <div class="column column--balance">
               <div class="column__box">
                 <div class="text--accent">
-                  <span>{{ $n(bal) }} {{ tokenSymbol }}</span>
+                  <span>{{ $n(bal) }} {{ nativeTokenSymbol }}</span>
                 </div>
                 <div class="text--label">
                   <span>{{ $n(balUsd) }} {{ $t('usd') }}</span>
                 </div>
               </div>
             </div>
-            <div v-if="isFaucet" class="column--asset-buttons">
+            <div v-if="isFaucet" class="column--buttons">
               <button class="btn btn--sm bg--astar color--astar">
                 {{ $t('assets.faucet') }}
               </button>
@@ -46,13 +44,15 @@
           <div class="row__right">
             <div class="column--balance">
               <div class="column__box">
-                <span class="text--value">{{ $n(transferableBalance) }} {{ tokenSymbol }}</span>
+                <span class="text--value"
+                  >{{ $n(transferableBalance) }} {{ nativeTokenSymbol }}</span
+                >
               </div>
             </div>
             <div class="column--buttons">
               <button
                 class="btn btn--sm bg--astar color--astar"
-                @click="handleModalTransfer({ isOpen: true, currency: tokenSymbol })"
+                @click="handleModalTransfer({ isOpen: true, currency: nativeTokenSymbol })"
               >
                 {{ $t('assets.transfer') }}
               </button>
@@ -67,7 +67,7 @@
           <div class="row__right">
             <div class="column--balance">
               <div class="column__box">
-                <span class="text--value">{{ $n(numEvmDeposit) }} {{ tokenSymbol }}</span>
+                <span class="text--value">{{ $n(numEvmDeposit) }} {{ nativeTokenSymbol }}</span>
               </div>
             </div>
             <div class="column--buttons">
@@ -85,7 +85,7 @@
           <div class="row__right">
             <div class="column--balance">
               <div class="column__box">
-                <span class="text--value">{{ $n(vestingTtl) }} {{ tokenSymbol }}</span>
+                <span class="text--value">{{ $n(vestingTtl) }} {{ nativeTokenSymbol }}</span>
               </div>
             </div>
             <div class="column--buttons">
@@ -94,14 +94,14 @@
           </div>
         </div>
 
-        <div v-if="lockInDappStaking" class="row--bg--extend row--details bg--accent">
+        <div class="row--bg--extend row--details bg--accent">
           <div class="row__left">
             <span class="text--md">{{ $t('assets.yourStaking') }}</span>
           </div>
           <div class="row__right">
             <div class="column--balance">
               <div class="column__box">
-                <span class="text--value">{{ $n(lockInDappStaking) }} {{ tokenSymbol }}</span>
+                <span class="text--value">{{ $n(lockInDappStaking) }} {{ nativeTokenSymbol }}</span>
               </div>
             </div>
             <div class="column--buttons">
@@ -116,7 +116,7 @@
     <ModalTransfer
       :is-modal-transfer="isModalTransfer"
       :handle-modal-transfer="handleModalTransfer"
-      :symbol="tokenSymbol"
+      :symbol="nativeTokenSymbol"
       :account-data="accountData"
     />
   </div>
@@ -153,17 +153,18 @@ export default defineComponent({
     const { balance, accountData } = useBalance(selectedAddress);
     const { numEvmDeposit } = useEvmDeposit();
     const { nativeTokenUsd } = usePrice();
-    const tokenSymbol = computed(() => {
+    const nativeTokenSymbol = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
       return chainInfo ? chainInfo.tokenSymbol : '';
     });
-    const currentNetwork = computed(() => {
+    const currentNetworkName = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
-      return chainInfo ? chainInfo.chain : '';
+      const chain = chainInfo ? chainInfo.chain : '';
+      return chain === 'Shibuya Testnet' ? 'Shibuya' : chain;
     });
 
     const nativeTokenImg = computed(() =>
-      getTokenImage({ isNativeToken: true, symbol: tokenSymbol.value })
+      getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
     );
 
     const transferableBalance = computed(() => {
@@ -174,7 +175,7 @@ export default defineComponent({
     });
 
     watchEffect(async () => {
-      const tokenSymbolRef = tokenSymbol.value;
+      const tokenSymbolRef = nativeTokenSymbol.value;
       if (!balance.value || !tokenSymbolRef) return;
       try {
         isShibuya.value = tokenSymbolRef === 'SBY';
@@ -207,9 +208,9 @@ export default defineComponent({
 
     return {
       bal,
-      tokenSymbol,
+      nativeTokenSymbol,
       balUsd,
-      currentNetwork,
+      currentNetworkName,
       numEvmDeposit,
       isShibuya,
       mainnetFaucetAmount,

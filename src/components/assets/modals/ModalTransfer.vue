@@ -39,7 +39,7 @@
                   $t('assets.modals.balance', { amount: $n(fromAddressBalance), token: symbol })
                 }}</span
               >
-              <button v-if="symbol !== tokenSymbol" class="btn--max" @click="toMaxAmount">
+              <button v-if="symbol !== nativeTokenSymbol" class="btn--max" @click="toMaxAmount">
                 {{ $t('assets.modals.max') }}
               </button>
             </div>
@@ -147,14 +147,14 @@ export default defineComponent({
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const isEthWallet = computed(() => store.getters['general/isEthWallet']);
     const { currentAccount, currentAccountName } = useAccount();
-    const tokenSymbol = computed(() => {
+    const nativeTokenSymbol = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
       return chainInfo ? chainInfo.tokenSymbol : '';
     });
 
     const tokenImg = computed(() =>
       getTokenImage({
-        isNativeToken: props.symbol === tokenSymbol.value,
+        isNativeToken: props.symbol === nativeTokenSymbol.value,
         symbol: props.symbol,
         iconUrl: props.token && props.token.icon,
       })
@@ -334,7 +334,7 @@ export default defineComponent({
     };
 
     const setIsNativeToken = (): void => {
-      isNativeToken.value = props.symbol === tokenSymbol.value;
+      isNativeToken.value = props.symbol === nativeTokenSymbol.value;
     };
 
     const setSelectedNetwork = async (): Promise<void> => {
@@ -374,7 +374,7 @@ export default defineComponent({
       iconWallet,
       currentAccount,
       currentAccountName,
-      tokenSymbol,
+      nativeTokenSymbol,
       getShortenAddress,
       inputHandler,
       toAddress,

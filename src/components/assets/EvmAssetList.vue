@@ -1,22 +1,20 @@
 <template>
   <div>
-    <div v-if="isShibuya || tokens" class="container">
+    <div v-if="isListReady" class="container">
       <div class="row">
         <span class="text--title">{{ $t('assets.assets') }}</span>
       </div>
 
-      <div v-if="tokenSymbol !== 'SDN'" class="border--separator" />
+      <div class="border--separator" />
 
-      <div v-if="tokenSymbol !== 'SDN'" class="rows">
+      <div class="rows">
         <div class="row row--details">
           <div class="row__left">
             <div class="column--currency">
-              <img class="token-logo" :src="nativeTokenImg" :alt="tokenSymbol" />
+              <img class="token-logo" :src="nativeTokenImg" :alt="nativeTokenSymbol" />
               <div class="column--ticker">
-                <span class="text--title">{{ tokenSymbol }}</span>
-                <span class="text--label">{{
-                  tokenSymbol === 'SBY' ? 'Shibuya' : currentNetwork
-                }}</span>
+                <span class="text--title">{{ nativeTokenSymbol }}</span>
+                <span class="text--label">{{ currentNetworkName }}</span>
               </div>
             </div>
           </div>
@@ -24,7 +22,7 @@
             <div class="column column--balance">
               <div class="column__box">
                 <div class="text--accent">
-                  <span>{{ $n(bal) }} {{ tokenSymbol }}</span>
+                  <span>{{ $n(bal) }} {{ nativeTokenSymbol }}</span>
                 </div>
                 <div class="text--label">
                   <span>{{ $n(balUsd) }} {{ $t('usd') }}</span>
@@ -34,12 +32,12 @@
             <div class="column--asset-buttons column--buttons--multi">
               <button
                 class="btn btn--sm bg--astar color--astar"
-                @click="handleModalTransfer({ isOpen: true, currency: tokenSymbol })"
+                @click="handleModalTransfer({ isOpen: true, currency: nativeTokenSymbol })"
               >
                 {{ $t('assets.transfer') }}
               </button>
-              <!-- Memo: temporary -->
-              <router-link to="/bridge">
+              <!-- Only SDN is able to bridge via cBridge at this moment -->
+              <router-link v-if="nativeTokenSymbol === 'SDN'" to="/bridge">
                 <button class="btn btn--sm bg--astar color--astar">
                   {{ $t('assets.bridge') }}
                 </button>
@@ -54,10 +52,9 @@
 
       <div v-for="t in tokens" :key="t.symbol">
         <EvmToken
+          v-if="t.symbol !== nativeTokenSymbol"
           :token="t"
-          :is-faucet="t.symbol === 'SDN' && isFaucet && currentNetwork === 'Shiden'"
           :handle-modal-transfer="handleModalTransfer"
-          :is-erc20="t.symbol !== tokenSymbol"
         />
       </div>
     </div>
@@ -92,7 +89,7 @@ export default defineComponent({
       default: null,
     },
   },
-  setup() {
+  setup(props) {
     const isModalTransfer = ref<boolean>(false);
     const token = ref<SelectedToken | string | null>(null);
     const symbol = ref<string>('');
@@ -107,18 +104,19 @@ export default defineComponent({
     const selectedAddress = computed(() => store.getters['general/selectedAddress']);
     const { balance } = useBalance(selectedAddress);
     const { nativeTokenUsd } = usePrice();
-    const tokenSymbol = computed(() => {
+    const nativeTokenSymbol = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
       return chainInfo ? chainInfo.tokenSymbol : '';
     });
-    const currentNetwork = computed(() => {
+    const currentNetworkName = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
-      return chainInfo ? chainInfo.chain : '';
+      const chain = chainInfo ? chainInfo.chain : '';
+      return chain === 'Shibuya Testnet' ? 'Shibuya' : chain;
     });
-
     const nativeTokenImg = computed(() =>
-      getTokenImage({ isNativeToken: true, symbol: tokenSymbol.value })
+      getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
     );
+    const isListReady = computed(() => isShibuya.value || props.tokens);
 
     const handleModalTransfer = ({
       currency,
@@ -132,8 +130,8 @@ export default defineComponent({
       if (!isOpen) {
         symbol.value = '';
         return;
-      } else if (currency === tokenSymbol.value) {
-        symbol.value = tokenSymbol.value;
+      } else if (currency === nativeTokenSymbol.value) {
+        symbol.value = nativeTokenSymbol.value;
       } else {
         const c = currency as SelectedToken;
         symbol.value = c.symbol;
@@ -141,10 +139,10 @@ export default defineComponent({
     };
 
     watchEffect(async () => {
-      const tokenSymbolRef = tokenSymbol.value;
-      if (!balance.value || !tokenSymbolRef) return;
+      const nativeTokenSymbolRef = nativeTokenSymbol.value;
+      if (!balance.value || !nativeTokenSymbolRef) return;
       try {
-        isShibuya.value = tokenSymbolRef === 'SBY';
+        isShibuya.value = nativeTokenSymbolRef === 'SBY';
         bal.value = Number(ethers.utils.formatEther(balance.value.toString()));
         isFaucet.value = isShibuya.value || mainnetFaucetAmount > bal.value;
         if (nativeTokenUsd.value) {
@@ -157,10 +155,9 @@ export default defineComponent({
 
     return {
       bal,
-      tokenSymbol,
+      nativeTokenSymbol,
       balUsd,
-      currentNetwork,
-      isShibuya,
+      currentNetworkName,
       mainnetFaucetAmount,
       isFaucet,
       isModalTransfer,
@@ -168,6 +165,7 @@ export default defineComponent({
       token,
       nativeTokenImg,
       handleModalTransfer,
+      isListReady,
     };
   },
 });
