@@ -1,36 +1,23 @@
 <template>
   <li role="option" class="list" @click="onChange(address)">
     <div class="list__row">
-      <div class="column--icon-account">
-        <div class="column--icon">
-          <icon-base viewBox="0 0 64 64">
-            <icon-account-sample />
-          </icon-base>
-        </div>
-        <div>
-          <div class="text--account">{{ addressName }}</div>
-          <div class="text--address">
-            {{ shortenAddress }}
+      <div class="box__row">
+        <img v-if="iconWallet" width="24" :src="iconWallet" alt="wallet-icon" />
+        <div class="column--wallet-address">
+          <div class="column--wallet-name">
+            <span class="text--title">{{ addressName }}</span>
           </div>
+          <span class="text--title">{{ shortenAddress }}</span>
         </div>
-      </div>
-      <div class="column--checkbox">
-        <input name="choose_account" type="radio" class="input--checkbox" :checked="checked" />
       </div>
     </div>
   </li>
 </template>
 <script lang="ts">
 import { defineComponent, toRefs, computed } from 'vue';
-import IconBase from 'components/icons/IconBase.vue';
-import IconAccountSample from 'components/icons/IconAccountSample.vue';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
-
+import { useWalletIcon } from 'src/hooks';
 export default defineComponent({
-  components: {
-    IconBase,
-    IconAccountSample,
-  },
   props: {
     address: {
       type: String,
@@ -47,7 +34,7 @@ export default defineComponent({
   emits: ['update:sel-checked', 'update:sel-option'],
   setup(props, { emit }) {
     const { address } = toRefs(props);
-
+    const { iconWallet } = useWalletIcon();
     const shortenAddress = computed(() => {
       return getShortenAddress(address.value);
     });
@@ -59,6 +46,7 @@ export default defineComponent({
 
     return {
       shortenAddress,
+      iconWallet,
       onChange,
     };
   },

@@ -22,12 +22,6 @@
   flex-shrink: 0;
 }
 
-.column--checkbox {
-  position: relative;
-  width: 20px;
-  height: 20px;
-}
-
 .input--address {
   width: 250px;
   background-color: transparent;
@@ -62,18 +56,22 @@
 
 .box--account-option {
   position: absolute;
-  width: 100%;
+  width: 344px !important;
   margin-top: 8px;
-  border-radius: 6px;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
   z-index: 10;
+  top: 22px;
+  left: -16px;
   background: $container-bg-white;
 }
 
 .container--accounts {
-  max-height: 214px;
+  max-height: 172px;
   border-radius: 6px;
-  padding: 4px 0;
+  padding-top: 4px;
   overflow: auto;
+  width: 344px !important;
   &:focus {
     outline: none;
   }
@@ -81,8 +79,9 @@
 
 .list {
   position: relative;
-  padding-top: 8px;
-  padding-bottom: 8px;
+  width: 344px !important;
+  padding-top: 16px;
+  padding-bottom: 16px;
   padding-left: 12px;
   padding-right: 36px;
   cursor: pointer;
@@ -111,6 +110,37 @@
 
 .placeholder--icon {
   width: 24px;
+}
+
+.box__row {
+  display: flex;
+  column-gap: 8px;
+  align-items: center;
+}
+
+.column--wallet-address {
+  display: flex;
+  column-gap: 12px;
+  align-items: center;
+}
+
+.column--wallet-name {
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.row--separator--account {
+  padding: 0 12px;
+  margin-top: 16px;
+}
+
+.border--separator--account {
+  border: 1px solid $gray-4;
+  border-bottom: 0px solid transparent;
+  border-left: 0px solid transparent;
+  border-right: 0px solid transparent;
 }
 
 .body--dark {
