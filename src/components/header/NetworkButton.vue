@@ -1,35 +1,10 @@
 <template>
   <div>
     <MetaUpdateButton
-      v-if="isNeedUpdate(isLatestChain, extensionCount)"
+      v-if="!isNeedUpdate(isLatestChain, extensionCount)"
       @updated-meta="isLatestChain = true"
     />
-    <button
-      v-else
-      type="button"
-      :class="[
-        'network-btn',
-        'tw-inline-flex',
-        'tw-items-center',
-        'tw-px-4',
-        'tw-py-1',
-        'tw-border',
-        'tw-border-transparent',
-        'tw-text-sm',
-        'tw-font-medium',
-        'tw-rounded-full',
-        'tw-shadow-sm',
-        'tw-text-white',
-        'tw-bg-gray-500',
-        'hover:tw-bg-gray-500',
-        'focus:tw-outline-none',
-        'focus:tw-ring',
-        'focus:tw-ring-gray-100',
-        'dark-ring-dark-gray',
-        'tw-mx-1',
-      ]"
-      @click="showNetworkModal"
-    >
+    <button v-else type="button" class="btn--network" @click="showNetworkModal">
       <icon-base
         class="tw-w-5 tw-h-5 tw-text-gray-500 tw--ml-1"
         stroke="currentColor"
@@ -37,12 +12,12 @@
       >
         <icon-network />
       </icon-base>
-      <img class="tw-mx-1" width="16" src="~assets/img/astr-token.png" />
+      <img class="icon" width="16" src="~assets/img/astr-token.png" />
       <template v-if="width >= screenSize.sm">
         {{ currentNetworkName }}
       </template>
 
-      <div class="divider tw-mx-2 tw-h-5" />
+      <div class="divider" />
       <ConnectionIndicator :connection-type="currentNetworkStatus" :version="version" />
     </button>
   </div>
@@ -115,16 +90,28 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.network-btn {
+.btn--network {
+  display: flex;
+  height: 32px;
+  flex-direction: row;
+  align-items: center;
   background: #2c3335;
+  padding: 8px 16px 8px 16px;
+  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
+  border-radius: 16px;
+  margin-left: 16px;
+  color: #fff;
 }
-.network-btn:hover {
+.btn--network:hover {
   /* gray005 selected */
   background: #3c4649;
-  /* gray basic */
-  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
 }
 .divider {
   border: 1px solid #000;
+  margin: 0 6px;
+  height: 22px;
+}
+.icon {
+  margin: 0 6px;
 }
 </style>

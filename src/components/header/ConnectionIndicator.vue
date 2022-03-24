@@ -1,7 +1,7 @@
 <template>
-  <div class="tw-flex tw-items-center">
+  <div class="wrapper--indicator">
     <div class="dot" :class="getDotClass(connectionType)"></div>
-    <div v-if="width >= screenSize.sm" class="statusTxt" :class="getDotClass(connectionType)">
+    <div v-if="width >= screenSize.sm" class="txt--status" :class="getDotClass(connectionType)">
       <div>{{ connectionType }}</div>
       <div v-if="connectionType === 'connected'">v{{ version }}</div>
     </div>
@@ -45,6 +45,10 @@ export default defineComponent({
 });
 </script>
 <style scoped>
+.wrapper--indicator {
+  display: flex;
+  align-items: center;
+}
 .dot {
   height: 7px;
   width: 7px;
@@ -59,7 +63,7 @@ export default defineComponent({
 .dot.red {
   background-color: #ff0000;
 }
-.statusTxt {
+.txt--status {
   font-weight: 400;
   font-size: 9px;
   line-height: 11px;
@@ -67,13 +71,4 @@ export default defineComponent({
   color: #b1b7c1;
   margin-left: 5px;
 }
-/* .statusTxt.green {
-  color: #00ff00;
-}
-.statusTxt.orange {
-  color: #ffa500;
-}
-.statusTxt.red {
-  color: #ff0000;
-} */
 </style>

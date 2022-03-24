@@ -1,55 +1,17 @@
 <template>
-  <div>
+  <button
+    type="button"
+    :disabled="isBusy || isComplete"
+    :class="width >= screenSize.sm ? 'btn--update' : 'm-btn--update'"
+    @click="updateMetadata"
+  >
+    <icon-base class="tw-w-5 tw-h-5 tw--ml-1 tw-mr-1" stroke="currentColor" icon-name="network">
+      <icon-network />
+    </icon-base>
     <template v-if="width >= screenSize.sm">
-      <button
-        type="button"
-        :disabled="isBusy || isComplete"
-        :class="[
-          'connect-btn',
-          'tw-inline-flex',
-          'tw-items-center',
-          'tw-px-4',
-          'tw-py-1',
-          'tw-border',
-          'tw-border-transparent',
-          'tw-text-sm',
-          'tw-font-medium',
-          'tw-rounded-full',
-          'tw-shadow-sm',
-          'tw-text-white',
-          'tw-bg-gray-500',
-          'hover:tw-bg-gray-500',
-          'focus:tw-outline-none',
-          'focus:tw-ring',
-          'focus:tw-ring-gray-100',
-          'dark-ring-dark-gray',
-          'tw-mx-1',
-        ]"
-        @click="updateMetadata"
-      >
-        <icon-base
-          class="tw-w-5 tw-h-5 tw-text-white tw--ml-1 tw-mr-1"
-          stroke="currentColor"
-          icon-name="network"
-        >
-          <icon-network />
-        </icon-base>
-        {{ $t('common.updateMetadata') }}
-      </button>
+      {{ $t('common.updateMetadata') }}
     </template>
-    <template v-else>
-      <button
-        type="button"
-        class="m-connect-btn"
-        :disabled="isBusy || isComplete"
-        @click="updateMetadata"
-      >
-        <icon-base class="tw-w-5 tw-h-5 tw--ml-1 tw-mr-1" stroke="currentColor" icon-name="network">
-          <icon-network />
-        </icon-base>
-      </button>
-    </template>
-  </div>
+  </button>
 </template>
 
 <script lang="ts">
@@ -105,17 +67,25 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.connect-btn {
+.btn--update {
+  display: flex;
+  height: 32px;
+  color: #fff;
+  flex-direction: row;
+  align-items: center;
+  padding: 8px 16px 8px 16px;
   background: #ff5621;
-}
-.connect-btn:hover {
-  background: linear-gradient(0deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)), #ff5621;
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
+  border-radius: 16px;
+  margin-left: 16px;
 }
-.connect-btn:disabled {
+.btn--update:hover {
+  background: linear-gradient(0deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)), #ff5621;
+}
+.btn--update:disabled {
   background: #d3d6dc;
 }
-.m-connect-btn {
+.m-btn--update {
   padding-left: 10px;
   width: 32px;
   height: 32px;
@@ -123,12 +93,14 @@ export default defineComponent({
   color: #ff5621;
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
   border-radius: 16px;
+  margin-left: 16px;
 }
-.m-connect-btn:hover {
+.m-btn--update:hover {
   background: linear-gradient(0deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)), #ff5621;
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
+  color: #fff;
 }
-.m-connect-btn:disabled {
+.m-btn--update:disabled {
   background: #d3d6dc;
 }
 </style>

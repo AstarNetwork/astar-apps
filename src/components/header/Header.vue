@@ -7,7 +7,7 @@
       <template v-else>
         <AccountButton :account="currentAccount" @click="disconnectAccount" />
       </template>
-      <NetworkButton network="Astar" @show-network="modalNetwork = true" />
+      <NetworkButton @show-network="modalNetwork = true" />
     </astar-header>
     <!-- Modals -->
     <ModalNetwork
@@ -107,15 +107,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped>
-.open-sidebar {
-  @apply tw--ml-3 tw-p-2 tw-rounded-full tw-group;
-}
-.open-sidebar:hover {
-  @apply tw-bg-blue-100 dark:tw-bg-darkGray-600 tw-text-gray-900;
-}
-.open-sidebar:focus {
-  @apply tw-outline-none tw-ring tw-ring-blue-100 tw-bg-blue-50;
-}
-</style>

@@ -1,29 +1,6 @@
 <template>
   <div>
-    <button
-      type="button"
-      :class="[
-        'account-btn',
-        'tw-inline-flex',
-        'tw-items-center',
-        'tw-px-4',
-        'tw-py-1',
-        'tw-border',
-        'tw-border-transparent',
-        'tw-text-sm',
-        'tw-font-medium',
-        'tw-rounded-full',
-        'tw-shadow-sm',
-        'tw-text-white',
-        'tw-bg-gray-500',
-        'hover:tw-bg-gray-500',
-        'focus:tw-outline-none',
-        'focus:tw-ring',
-        'focus:tw-ring-gray-100',
-        'dark-ring-dark-gray',
-        'tw-mx-1',
-      ]"
-    >
+    <button type="button" class="btn--account">
       <icon-base
         class="tw-w-5 tw-h-5 tw-text-gray-500 tw--ml-1"
         stroke="currentColor"
@@ -31,7 +8,7 @@
       >
         <icon-wallet />
       </icon-base>
-      <img class="tw-mx-1" width="16" :src="iconWallet" />
+      <img class="icon" width="16" :src="iconWallet" />
       <template v-if="width >= screenSize.sm">
         {{ shortenAddress }}
       </template>
@@ -96,23 +73,22 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.account-btn {
-  background: #2c3335;
-}
-.account-btn:hover {
-  background: #3c4649;
-  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
-}
-.m-account-btn {
-  padding-left: 10px;
-  width: 32px;
+.btn--account {
+  display: flex;
   height: 32px;
+  flex-direction: row;
+  align-items: center;
   background: #2c3335;
+  padding: 8px 16px 8px 16px;
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
   border-radius: 16px;
+  margin-left: 16px;
+  color: #fff;
 }
-.m-account-btn:hover {
+.btn--account:hover {
   background: #3c4649;
-  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
+}
+.icon {
+  margin: 0 6px;
 }
 </style>
