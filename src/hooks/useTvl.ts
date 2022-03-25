@@ -1,4 +1,5 @@
 import BN from 'bn.js';
+import { $isEnableIndividualClaim } from 'boot/api';
 import { ethers } from 'ethers';
 import { useStore } from 'src/store';
 import { computed, ref, watch } from 'vue';
@@ -16,9 +17,10 @@ export function useTvl(api: any) {
     const chainInfo = store.getters['general/chainInfo'];
     return chainInfo ? chainInfo.tokenSymbol : '';
   });
+  const isSendingTx = computed(() => store.getters['general/isLoading']);
 
   watch(
-    [api, dapps, tokenSymbol],
+    [api, dapps, tokenSymbol, isSendingTx],
     () => {
       const apiRef = api.value;
       const dappsRef = dapps.value;
@@ -26,9 +28,16 @@ export function useTvl(api: any) {
       if (!apiRef || !dappsRef || !tokenSymbolRef) return;
 
       const getTvl = async (): Promise<{ tvl: BN; tvlDefaultUnit: number }> => {
+        const isEnableIndividualClaim = $isEnableIndividualClaim.value;
         const era = await apiRef.query.dappsStaking.currentEra();
-        const result = await apiRef.query.dappsStaking.eraRewardsAndStakes(era);
-        const tvl = result.unwrap().staked.valueOf();
+        const result = isEnableIndividualClaim
+          ? await apiRef.query.dappsStaking.generalEraInfo(era)
+          : await apiRef.query.dappsStaking.eraRewardsAndStakes(era);
+
+        const tvl = isEnableIndividualClaim
+          ? result.unwrap().locked
+          : result.unwrap().staked.valueOf();
+
         const tvlDefaultUnit = Number(ethers.utils.formatUnits(tvl.toString(), decimal.value));
         return { tvl, tvlDefaultUnit };
       };

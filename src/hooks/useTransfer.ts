@@ -26,7 +26,7 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
   const isTxSuccess = ref(false);
 
-  const { callFunc, handleResult, handleTransactionError } = useCustomSignature(fn);
+  const { callFunc, handleResult, handleTransactionError } = useCustomSignature({ fn });
   const toastInvalidAddress = () =>
     store.dispatch('general/showAlertMsg', {
       msg: 'balance.modals.invalidAddress',
