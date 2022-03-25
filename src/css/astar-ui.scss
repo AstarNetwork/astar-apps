@@ -2,6 +2,19 @@
 
 // Memo: Overwriting the astar-ui component
 
+.header {
+  background: $gray-1 !important;
+  .header-left {
+    color: $gray-5 !important;
+  }
+  .header-right {
+    .btn--account {
+      background: white !important;
+      color: $gray-5 !important;
+    }
+  }
+}
+
 .modal.show {
   display: flex !important;
 }
@@ -30,6 +43,18 @@
 }
 
 .body--dark {
+  .header {
+    background: $gray-6 !important;
+    .header-left {
+      color: $gray-1 !important;
+    }
+    .header-right {
+      .btn--account {
+        background: $gray-5 !important;
+        color: white !important;
+      }
+    }
+  }
   .modal {
     background: rgba(25, 29, 31, 0.5) !important;
     .modal-content {
