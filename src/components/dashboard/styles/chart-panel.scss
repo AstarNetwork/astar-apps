@@ -2,9 +2,13 @@
 
 .row {
   padding: 16px 8px 0px 8px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  //display: flex;
+  //justify-content: space-between;
+  // align-items: center;
+}
+
+.align-rigth {
+  text-align: end;
 }
 
 .chart {
@@ -22,7 +26,7 @@
   width: 100%;
   padding: 8px;
 
-  @media (min-width: $md) {
+  @media (min-width: $lg) {
     width: 50%;
   }
 }
