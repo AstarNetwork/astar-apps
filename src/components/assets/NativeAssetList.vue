@@ -65,7 +65,7 @@
 
         <div class="row--bg--extend row--details bg--accent">
           <div class="row__left">
-            <span class="text--md">{{ $t('assets.haveDepositedFromEvm') }}</span>
+            <span class="text--md">{{ $t('assets.yourEvmDeposit') }}</span>
           </div>
           <div class="row__right">
             <div class="column--balance">

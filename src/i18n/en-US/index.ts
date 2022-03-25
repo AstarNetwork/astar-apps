@@ -270,7 +270,7 @@ export default {
     withdraw: 'Withdraw',
     view: 'View',
     transferableBalance: 'Transferable Balance',
-    haveDepositedFromEvm: 'You have deposited from EVM account',
+    yourEvmDeposit: 'Your EVM deposit',
     yourVestingInfo: 'Your Vesting Info',
     yourStaking: 'Your Staking',
     lockdropAccount: 'Lockdrop Account',
