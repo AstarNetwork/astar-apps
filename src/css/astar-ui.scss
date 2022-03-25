@@ -1,5 +1,7 @@
 @import 'src/css/quasar.variables.scss';
 
+// Memo: Overwriting the astar-ui component
+
 .modal.show {
   display: flex !important;
 }
@@ -15,13 +17,14 @@
     border-radius: 6px !important;
     background-color: $gray-1 !important;
     margin: auto !important;
+    box-shadow: 0 0 15px 4px #00000030 !important;
     .title {
       display: flex;
       justify-content: center;
       margin-top: 24px;
       margin-bottom: -24px;
       color: $gray-5 !important;
-      margin-left: 44px !important;
+      margin-left: 44px;
     }
   }
 }
@@ -30,6 +33,7 @@
   .modal {
     background: rgba(25, 29, 31, 0.5) !important;
     .modal-content {
+      box-shadow: 0 0 15px 4px #00000080 !important;
       background-color: $gray-5 !important;
       .title {
         color: $gray-1 !important;
