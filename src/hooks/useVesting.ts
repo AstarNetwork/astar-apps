@@ -14,7 +14,7 @@ export function useVesting(closeModal: () => void) {
   const { accountData } = useBalance(selectedAddress);
 
   const { callFunc, dispatchError, isCustomSig, handleResult, handleTransactionError } =
-    useCustomSignature(closeModal);
+    useCustomSignature({ fn: closeModal });
 
   const claimableAmount = computed(() => {
     try {

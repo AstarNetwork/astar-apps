@@ -20,7 +20,7 @@ export function useEvmDeposit(fn?: () => void) {
 
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const { callFunc, dispatchError, isCustomSig, handleResult, handleTransactionError } =
-    useCustomSignature(fn && fn);
+    useCustomSignature(fn ? { fn } : {});
 
   const withdrawCustomExtrinsic = async ({ amount, account }: { amount: BN; account: string }) => {
     try {

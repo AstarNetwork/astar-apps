@@ -42,7 +42,11 @@
                   {{ $t('assets.bridge') }}
                 </button>
               </router-link>
-              <button v-if="isFaucet" class="btn btn--sm bg--astar color--astar">
+              <button
+                v-if="isFaucet"
+                class="btn btn--sm bg--astar color--astar"
+                @click="handleModalFaucet({ isOpen: true })"
+              >
                 {{ $t('assets.faucet') }}
               </button>
             </div>
