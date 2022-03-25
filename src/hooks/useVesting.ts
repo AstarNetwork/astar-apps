@@ -16,60 +16,38 @@ export function useVesting(closeModal: () => void) {
   const { callFunc, dispatchError, isCustomSig, handleResult, handleTransactionError } =
     useCustomSignature({ fn: closeModal });
 
-  const claimableAmount = computed(() => {
-    try {
-      const amount = accountData.value
-        ? ethers.utils.formatEther(accountData.value.vestedClaimable.toString())
-        : 0;
-      return Number(amount);
-    } catch (error) {
-      return 0;
-    }
-  });
-
-  const vestedAmount = computed(() => {
-    try {
-      const vested = accountData.value
-        ? ethers.utils.formatEther(accountData.value.vesting[0].vested.toString())
-        : 0;
-      return Number(vested);
-    } catch (error) {
-      return 0;
-    }
-  });
-
-  const totalDistribution = computed(() => {
-    try {
-      const amount = accountData.value
-        ? ethers.utils.formatEther(accountData.value.vesting[0].basicInfo.locked.toString())
-        : 0;
-      return Number(amount);
-    } catch (error) {
-      return 0;
-    }
-  });
-
-  const unlockPerBlock = computed(() => {
-    try {
-      const perBlock = accountData.value
-        ? ethers.utils.formatEther(accountData.value.vesting[0].basicInfo.perBlock.toString())
-        : 0;
-      return Number(perBlock);
-    } catch (error) {
-      return 0;
-    }
-  });
-
-  const untilBlock = computed(() => {
+  const info = computed(() => {
+    const fallback = {
+      claimableAmount: 0,
+      vestedAmount: 0,
+      totalDistribution: 0,
+      unlockPerBlock: 0,
+      untilBlock: 0,
+    };
     try {
       if (accountData.value) {
         const { perBlock, locked, startingBlock } = accountData.value.vesting[0].basicInfo;
+        const claimableAmount = Number(
+          ethers.utils.formatEther(accountData.value.vestedClaimable.toString() ?? 0)
+        );
+        const vestedAmount = Number(
+          ethers.utils.formatEther(accountData.value.vesting[0].vested.toString() ?? 0)
+        );
+        const totalDistribution = Number(ethers.utils.formatEther(locked.toString() ?? 0));
+        const unlockPerBlock = Number(ethers.utils.formatEther(perBlock.toString() ?? 0));
         const block = locked.div(perBlock).add(startingBlock);
-        return block.toNumber();
+        const untilBlock = block.toNumber() ?? 0;
+        return {
+          claimableAmount,
+          vestedAmount,
+          totalDistribution,
+          unlockPerBlock,
+          untilBlock,
+        };
       }
-      return 0;
+      return fallback;
     } catch (error) {
-      return 0;
+      return fallback;
     }
   });
 
@@ -114,11 +92,7 @@ export function useVesting(closeModal: () => void) {
   };
 
   return {
-    claimableAmount,
-    vestedAmount,
-    totalDistribution,
-    unlockPerBlock,
-    untilBlock,
+    info,
     sendTransaction,
   };
 }

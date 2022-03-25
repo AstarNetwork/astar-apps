@@ -4,22 +4,22 @@
       <div class="box--vesting-info">
         <div class="box__row">
           <span>{{ $t('assets.modals.totalDistribution') }}</span>
-          <span>{{ $n(totalDistribution) }}</span>
+          <span>{{ $n(info.totalDistribution) }}</span>
         </div>
         <div class="box__row">
           <span>{{ $t('assets.modals.alreadyVested') }}</span>
-          <span>{{ $n(vestedAmount) }}</span>
+          <span>{{ $n(info.vestedAmount) }}</span>
         </div>
         <div class="box__row">
           <span>{{ $t('assets.modals.remainingVests') }}</span>
-          <span>{{ $n(totalDistribution - vestedAmount) }}</span>
+          <span>{{ $n(info.totalDistribution - info.vestedAmount) }}</span>
         </div>
         <div class="box__row--per-block">
           <span>{{
             $t('assets.modals.unlockPerBlock', {
-              perToken: $n(unlockPerBlock),
+              perToken: $n(info.unlockPerBlock),
               symbol: nativeTokenSymbol,
-              untilBlock: $n(untilBlock),
+              untilBlock: $n(info.untilBlock),
             })
           }}</span>
         </div>
@@ -27,11 +27,15 @@
       <div class="box--unlock-amount">
         <div class="box__column-amount">
           <span class="text--accent">{{ $t('assets.modals.availableToUnlocked') }}</span>
-          <span class="text--xl">{{ $n(claimableAmount) }} {{ nativeTokenSymbol }}</span>
+          <span class="text--xl">{{ $n(info.claimableAmount) }} {{ nativeTokenSymbol }}</span>
         </div>
       </div>
       <div class="wrapper__row--button">
-        <button class="btn btn--confirm" :disabled="0 >= claimableAmount" @click="sendTransaction">
+        <button
+          class="btn btn--confirm"
+          :disabled="0 >= info.claimableAmount"
+          @click="sendTransaction"
+        >
           {{ $t('assets.modals.unlock') }}
         </button>
       </div>
@@ -40,7 +44,7 @@
 </template>
 <script lang="ts">
 import { AccountData, useVesting } from 'src/hooks';
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, PropType, watchEffect } from 'vue';
 
 export default defineComponent({
   props: {
@@ -66,22 +70,15 @@ export default defineComponent({
     const closeModal = (): void => {
       props.handleModalVesting({ isOpen: false });
     };
-    const {
-      claimableAmount,
-      vestedAmount,
-      totalDistribution,
-      unlockPerBlock,
-      untilBlock,
-      sendTransaction,
-    } = useVesting(closeModal);
+    const { info, sendTransaction } = useVesting(closeModal);
+
+    watchEffect(() => {
+      console.log('info', info.value);
+    });
 
     return {
+      info,
       closeModal,
-      claimableAmount,
-      vestedAmount,
-      totalDistribution,
-      unlockPerBlock,
-      untilBlock,
       sendTransaction,
     };
   },
