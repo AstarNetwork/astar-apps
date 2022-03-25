@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@astar-network/astar-api": "^0.1.5-3",
+    "@astar-network/astar-ui": "^0.0.12",
     "@ethersproject/bignumber": "^5.5.0",
     "@polkadot/api": "^6.8.1",
     "@polkadot/api-contract": "^6.8.1",
@@ -48,6 +49,7 @@
     "firebase": "^9.5.0",
     "keccak": "byterose/keccak#stream-update",
     "luxon": "^2.1.1",
+    "path": "^0.12.7",
     "quasar": "^2.3.3",
     "query-string": "^7.1.0",
     "secp256k1": "^4.0.2",
