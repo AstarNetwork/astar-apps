@@ -105,7 +105,7 @@ export default defineComponent({
   background: #3c4649;
 }
 .divider {
-  border: 1px solid #000;
+  border-left: 1px solid #191d1f;
   margin: 0 6px;
   height: 22px;
 }

@@ -34,7 +34,7 @@ export enum endpointKey {
 export const providerEndpoints: ChainProvider[] = [
   {
     networkAlias: 'astar',
-    displayName: 'Astar Network (Polkadot)',
+    displayName: 'Astar Network',
     info: 'Smart contract platform for decentralized applications (dapps) on the Polkadot network',
     endpoint: 'wss://rpc.astar.network',
     favicon: 'https://polkadot.js.org/apps/static/astar.b48435e0.png',
@@ -51,7 +51,7 @@ export const providerEndpoints: ChainProvider[] = [
   },
   {
     networkAlias: 'shiden-shell',
-    displayName: 'Shiden Network (Kusama)',
+    displayName: 'Shiden Network',
     info: 'Smart contract platform for decentralized applications (dapps) on the Kusama network',
     endpoint: 'wss://rpc.shiden.astar.network',
     favicon: 'icons/shiden.png',
@@ -68,7 +68,7 @@ export const providerEndpoints: ChainProvider[] = [
   },
   {
     networkAlias: 'shibuya-testnet',
-    displayName: 'Shibuya Network (Testnet)',
+    displayName: 'Shibuya Network',
     info: 'The test network of the layer 2 scaling blockchain',
     endpoint: 'wss://rpc.shibuya.astar.network',
     favicon: 'https://polkadot.js.org/apps/static/shiden.a066789e.png',
