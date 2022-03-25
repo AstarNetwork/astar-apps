@@ -6,7 +6,7 @@
   </div>
 </template>
 
-<script lang='ts'>
+<script lang="ts">
 import { defineComponent, computed } from 'vue';
 import TokenPriceChart from 'src/components/dashboard/TokenPriceChart.vue';
 import TvlChart from 'src/components/dashboard/TvlChart.vue';

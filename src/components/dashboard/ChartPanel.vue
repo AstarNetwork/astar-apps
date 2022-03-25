@@ -109,4 +109,3 @@ export default defineComponent({
 <style lang="scss" scoped>
 @use 'src/components/dashboard/styles/chart-panel.scss';
 </style>
-
