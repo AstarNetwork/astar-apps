@@ -16,7 +16,7 @@
       </icon-base>
     </button>
 
-    <span class="tw-text-gray-300 dark:tw-text-darkGray-500">/</span>
+    <span class="tw-text-gray-400 dark:tw-text-darkGray-500">/</span>
 
     <button type="button" class="icon-dark" @click="switchThemeTo('DARK')">
       <icon-base

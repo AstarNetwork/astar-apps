@@ -41,15 +41,26 @@ export default defineComponent({
   display: block;
 }
 .select-language {
-  background: $gray-6;
-  color: $gray-1;
+  background: #d3d6dc;
+  color: $gray-5;
   width: 95px;
   height: 36px;
   padding-left: 15px;
   appearance: none;
   border-radius: 6px;
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05);
 }
 .icon--select {
-  color: $gray-1;
+  color: $gray-5;
+}
+
+.body--dark {
+  .select-language {
+    background: $gray-6;
+    color: $gray-1;
+  }
+  .icon--select {
+    color: $gray-1;
+  }
 }
 </style>

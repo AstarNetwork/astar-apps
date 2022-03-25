@@ -52,7 +52,7 @@
             <icon-staking />
           </icon-base>
           <div class="row--item">
-            <astar-text type="H4">{{ $t('common.dappStaking') }}</astar-text>
+            <astar-text type="H4">{{ $t('common.staking') }}</astar-text>
           </div>
         </router-link>
       </div>
@@ -155,7 +155,7 @@ export default defineComponent({
   width: 224px;
   height: 100%;
   padding-top: 40px;
-  background: #2c3335;
+  background: #e6e9ee;
   display: flex;
   flex-direction: column;
 }
@@ -179,16 +179,16 @@ export default defineComponent({
   padding: 8px;
   margin-bottom: 8px;
   border-radius: 6px;
-  color: #f7f7f8;
+  color: $gray-5;
 }
 .link:hover {
-  background: #313a3d;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05)), #e6e9ee;
 }
 .activeLink {
-  background: #3c4649;
+  background: #d3d6dc;
 }
 .activeLink:hover {
-  background: #3c4649;
+  background: #d3d6dc;
 }
 
 .wrapper--bottom {
@@ -205,7 +205,19 @@ export default defineComponent({
 
 .body--dark {
   .sidebar {
-    background: #e6e9ee;
+    background: $gray-5;
+  }
+  .link {
+    color: #f7f7f8;
+  }
+  .link:hover {
+    background: #313a3d;
+  }
+  .activeLink {
+    background: #3c4649;
+  }
+  .activeLink:hover {
+    background: #3c4649;
   }
 }
 </style>

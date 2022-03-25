@@ -69,7 +69,13 @@ export default defineComponent({
 @import 'src/css/quasar.variables.scss';
 
 .icon-link {
-  color: $gray-1;
-  padding: 11px;
+  color: #5f656f;
+  padding: 10px;
+}
+
+.body--dark {
+  .icon-link {
+    color: $gray-1;
+  }
 }
 </style>

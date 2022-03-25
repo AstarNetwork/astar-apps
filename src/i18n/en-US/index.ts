@@ -28,6 +28,7 @@ export default {
     darkMode: 'Dark mode',
     dApps: 'dApps',
     dappStaking: 'dApp Staking',
+    staking: 'Staking',
     contract: 'Contract',
     plasmLockdrop: 'Plasm Lockdrop',
     closeSidebar: 'Close sidebar',
