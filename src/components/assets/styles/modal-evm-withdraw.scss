@@ -1,0 +1,32 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper__row--button {
+  display: flex;
+  justify-content: center;
+}
+
+.wrapper--withdraw {
+  padding-top: 56px;
+  text-align: center;
+}
+
+.box--withdraw-amount {
+  display: grid;
+  padding: 16px 0;
+  border-radius: 6px;
+  width: 344px;
+  text-align: center;
+  background: $container-bg-white;
+  margin-bottom: 40px;
+}
+
+.box__column-amount {
+  display: grid;
+  row-gap: 16px;
+}
+
+.body--dark {
+  .box--withdraw-amount {
+    background: $gray-6;
+  }
+}

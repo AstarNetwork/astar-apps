@@ -43,25 +43,26 @@
           </div>
           <div class="column__icons">
             <div>
-              <!-- <img
+              <img
                 class="icon"
                 :src="isDarkTheme ? 'icons/icon-copy-dark.svg' : 'icons/icon-copy.svg'"
                 @click="copyAddress"
-              /> -->
+              />
               <!-- Todo: Apply light theme -->
-              <astar-icon-copy-btn @click="copyAddress" />
+              <!-- <astar-icon-copy-btn @click="copyAddress" /> -->
               <q-tooltip>
                 <span class="text--tooltip">{{ $t('copy') }}</span>
               </q-tooltip>
             </div>
             <a :href="isH160 ? blockscout : subScan" target="_blank" rel="noopener noreferrer">
-              <!-- <img
+              <img
                 class="icon"
                 :src="
                   isDarkTheme ? 'icons/icon-external-link-dark.svg' : 'icons/icon-external-link.svg'
                 "
-              /> -->
-              <astar-icon-share-btn @click="copyAddress" />
+              />
+              <!-- Todo: Apply light theme -->
+              <!-- <astar-icon-share-btn @click="copyAddress" /> -->
               <q-tooltip>
                 <span class="text--tooltip">{{ $t(isH160 ? 'blockscout' : 'subscan') }}</span>
               </q-tooltip>

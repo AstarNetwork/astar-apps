@@ -1,0 +1,38 @@
+@import 'src/css/quasar.variables.scss';
+
+.modal.show {
+  display: flex !important;
+}
+
+.modal {
+  background: rgba(255, 255, 255, 0.5) !important;
+  backdrop-filter: blur(8px) !important;
+  @supports (-moz-appearance: none) {
+    background: $backdrop-transparent-dark-firefox !important;
+  }
+  .modal-content {
+    border: 0px solid transparent !important;
+    border-radius: 6px !important;
+    background-color: $gray-1 !important;
+    margin: auto !important;
+    .title {
+      display: flex;
+      justify-content: center;
+      margin-top: 24px;
+      margin-bottom: -24px;
+      color: $gray-5 !important;
+    }
+  }
+}
+
+.body--dark {
+  .modal {
+    background: rgba(25, 29, 31, 0.5) !important;
+    .modal-content {
+      background-color: $gray-5 !important;
+      .title {
+        color: $gray-1 !important;
+      }
+    }
+  }
+}

@@ -30,7 +30,10 @@
               </div>
             </div>
             <div v-if="isFaucet" class="column--buttons">
-              <button class="btn btn--sm bg--astar color--astar">
+              <button
+                class="btn btn--sm bg--astar color--astar"
+                @click="handleModalFaucet({ isOpen: true })"
+              >
                 {{ $t('assets.faucet') }}
               </button>
             </div>
@@ -71,7 +74,10 @@
               </div>
             </div>
             <div class="column--buttons">
-              <button class="btn btn--sm bg--astar color--astar">
+              <button
+                class="btn btn--sm bg--astar color--astar"
+                @click="handleModalEvmWithdraw({ isOpen: true })"
+              >
                 {{ $t('assets.withdraw') }}
               </button>
             </div>
@@ -89,7 +95,12 @@
               </div>
             </div>
             <div class="column--buttons">
-              <button class="btn btn--sm bg--astar color--astar">{{ $t('assets.view') }}</button>
+              <button
+                class="btn btn--sm bg--astar color--astar"
+                @click="handleModalVesting({ isOpen: true })"
+              >
+                {{ $t('assets.view') }}
+              </button>
             </div>
           </div>
         </div>
@@ -113,10 +124,23 @@
         </div>
       </div>
     </div>
+
+    <ModalFaucet :is-modal-faucet="isModalFaucet" :handle-modal-faucet="handleModalFaucet" />
     <ModalTransfer
       :is-modal-transfer="isModalTransfer"
       :handle-modal-transfer="handleModalTransfer"
       :symbol="nativeTokenSymbol"
+      :account-data="accountData"
+    />
+    <ModalEvmWithdraw
+      :is-modal-evm-withdraw="isModalEvmWithdraw"
+      :handle-modal-evm-withdraw="handleModalEvmWithdraw"
+      :native-token-symbol="nativeTokenSymbol"
+    />
+    <ModalVesting
+      :is-modal-vesting="isModalVesting"
+      :handle-modal-vesting="handleModalVesting"
+      :native-token-symbol="nativeTokenSymbol"
       :account-data="accountData"
     />
   </div>
@@ -128,17 +152,22 @@ import { useStore } from 'src/store';
 import { getTokenImage } from 'src/token';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
 import ModalTransfer from './modals/ModalTransfer.vue';
+import ModalFaucet from './modals/ModalFaucet.vue';
+import ModalEvmWithdraw from './modals/ModalEvmWithdraw.vue';
+import ModalVesting from './modals/ModalVesting.vue';
 
 export default defineComponent({
   components: {
     ModalTransfer,
+    ModalFaucet,
+    ModalEvmWithdraw,
+    ModalVesting,
   },
   setup() {
     const isModalTransfer = ref<boolean>(false);
-    const handleModalTransfer = ({ currency, isOpen }: { isOpen: boolean; currency: string }) => {
-      isModalTransfer.value = isOpen;
-    };
-
+    const isModalFaucet = ref<boolean>(false);
+    const isModalEvmWithdraw = ref<boolean>(false);
+    const isModalVesting = ref<boolean>(false);
     const bal = ref<number>(0);
     const balUsd = ref<number>(0);
     const vestingTtl = ref<number>(0);
@@ -173,6 +202,19 @@ export default defineComponent({
         : '0';
       return Number(balance);
     });
+
+    const handleModalTransfer = ({ currency, isOpen }: { isOpen: boolean; currency: string }) => {
+      isModalTransfer.value = isOpen;
+    };
+    const handleModalFaucet = ({ isOpen }: { isOpen: boolean }) => {
+      isModalFaucet.value = isOpen;
+    };
+    const handleModalEvmWithdraw = ({ isOpen }: { isOpen: boolean }) => {
+      isModalEvmWithdraw.value = isOpen;
+    };
+    const handleModalVesting = ({ isOpen }: { isOpen: boolean }) => {
+      isModalVesting.value = isOpen;
+    };
 
     watchEffect(async () => {
       const tokenSymbolRef = nativeTokenSymbol.value;
@@ -221,7 +263,13 @@ export default defineComponent({
       isModalTransfer,
       accountData,
       nativeTokenImg,
+      isModalFaucet,
+      isModalEvmWithdraw,
+      isModalVesting,
+      handleModalVesting,
       handleModalTransfer,
+      handleModalFaucet,
+      handleModalEvmWithdraw,
     };
   },
 });

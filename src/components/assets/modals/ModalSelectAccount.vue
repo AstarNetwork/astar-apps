@@ -38,9 +38,6 @@
       </div>
     </div>
     <div v-if="openOption" class="box--account-option">
-      <div class="row--separator--account">
-        <div class="border--separator--account" />
-      </div>
       <ul class="container--accounts">
         <div v-if="!isEthWallet">
           <ModalSelectAccountOption

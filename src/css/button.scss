@@ -7,6 +7,19 @@
     Noto Color Emoji;
 }
 
+.btn--confirm {
+  width: 340px;
+  background-color: $astar-blue;
+  font-size: 20px;
+  font-weight: 600;
+  border-radius: 30px;
+  height: 52px;
+  &:hover {
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
+      linear-gradient(0deg, #0085ff, #0085ff);
+  }
+}
+
 .btn--sm {
   border-radius: 30px;
   font-weight: 700;
