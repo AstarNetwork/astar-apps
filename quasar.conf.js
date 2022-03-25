@@ -11,6 +11,8 @@
 const { configure } = require('quasar/wrappers');
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
+const path = require("path");
+
 
 module.exports = configure(function (ctx) {
   return {
@@ -30,7 +32,7 @@ module.exports = configure(function (ctx) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli/boot-files
-    boot: ['i18n', 'api'],
+    boot: ['i18n', 'api', 'uiLib'],
 
     // https://v2.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: ['app.scss', 'base.scss'],
@@ -76,6 +78,8 @@ module.exports = configure(function (ctx) {
         chain.plugin('node-polyfill').use(nodePolyfillWebpackPlugin);
         // Ref: https://quasar.dev/quasar-cli/linter
         chain.plugin('eslint-webpack-plugin').use(ESLintPlugin, [{ extensions: ['js', 'vue'] }]);
+        chain.resolve.symlinks(false);
+        chain.resolve.alias.set('vue', path.resolve('./node_modules/vue'));
       },
       extendWebpack(cfg) {
         cfg.plugins.push(new NodePolyfillPlugin({}));
@@ -225,6 +229,7 @@ module.exports = configure(function (ctx) {
     },
     htmlVariables: {
       analyticsId: ctx.dev ? 'G-GBPD0EVWBJ' : 'G-RKKEVC5VJY',
+      tagManagerId: ctx.dev ? 'GTM-W57JPZC' : 'GTM-W6Z3SH9',
     },
   };
 });

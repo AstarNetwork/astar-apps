@@ -1,72 +1,88 @@
 <template>
   <div class="sidebar">
-    <q-list padding class="menu-list">
-      <div class="icon">
-        <Logo />
+    <div class="icon">
+      <Logo />
+    </div>
+    <div class="menu">
+      <div>
+        <router-link
+          to="/dashboard"
+          :class="['link', $route.path.split('/')[1] === 'dashboard' ? 'activeLink' : '']"
+        >
+          <icon-base
+            :class="['iconbase', isShiden ? 'shiden' : '']"
+            stroke="currentColor"
+            icon-name="dashboard"
+          >
+            <icon-dashboard />
+          </icon-base>
+          <div class="row--item">
+            <astar-text type="H4">{{ $t('dashboard.dashboard') }}</astar-text>
+          </div>
+        </router-link>
       </div>
-      <div class="menu">
-        <div>
-          <router-link
-            to="/assets"
-            :class="['link', $route.path.split('/')[1] === 'assets' ? 'activeLink' : '']"
+      <div>
+        <router-link
+          to="/assets"
+          :class="['link', $route.path.split('/')[1] === 'assets' ? 'activeLink' : '']"
+        >
+          <icon-base
+            :class="['iconbase', isShiden ? 'shiden' : '']"
+            stroke="currentColor"
+            icon-name="assets"
           >
-            <icon-base
-              :class="[$route.path.split('/')[1] === 'balance' ? 'activeSvg' : 'inactiveSvg']"
-              viewBox="0 0 24 24"
-            >
-              <icon-balance />
-            </icon-base>
-            <div class="tw-ml-3 tw-flex-1">
-              {{ $t('assets.assets') }}
-            </div>
-          </router-link>
-        </div>
-        <div>
-          <router-link
-            v-if="network.isStoreEnabled"
-            to="/dapp-staking"
-            :class="['link', $route.path.split('/')[1] === 'dapp-staking' ? 'activeLink' : '']"
-          >
-            <icon-base
-              :class="[$route.path.split('/')[1] === 'dapp-staking' ? 'activeSvg' : 'inactiveSvg']"
-              viewBox="0 0 24 24"
-            >
-              <icon-store />
-            </icon-base>
-            <div class="tw-ml-3 tw-flex-1">
-              {{ $t('common.dappStaking') }}
-            </div>
-          </router-link>
-        </div>
-        <div>
-          <router-link
-            v-if="enableBridge"
-            to="/bridge"
-            :class="['link', $route.path.split('/')[1] === 'bridge' ? 'activeLink' : '']"
-          >
-            <icon-base
-              :class="[$route.path.split('/')[1] === 'bridge' ? 'activeSvg' : 'inactiveSvg']"
-              viewBox="0 0 24 24"
-            >
-              <icon-bridge />
-            </icon-base>
-            <span class="tw-ml-3 tw-flex-1">
-              {{ $t('bridge.bridge') }}
-            </span>
-          </router-link>
-        </div>
+            <icon-assets />
+          </icon-base>
+          <div class="row--item">
+            <astar-text type="H4">{{ $t('assets.assets') }}</astar-text>
+          </div>
+        </router-link>
       </div>
+      <div>
+        <router-link
+          v-if="network.isStoreEnabled"
+          to="/dapp-staking"
+          :class="['link', $route.path.split('/')[1] === 'dapp-staking' ? 'activeLink' : '']"
+        >
+          <icon-base
+            :class="['iconbase', isShiden ? 'shiden' : '']"
+            stroke="currentColor"
+            icon-name="staking"
+          >
+            <icon-staking />
+          </icon-base>
+          <div class="row--item">
+            <astar-text type="H4">{{ $t('common.dappStaking') }}</astar-text>
+          </div>
+        </router-link>
+      </div>
+      <div>
+        <router-link
+          v-if="enableBridge"
+          to="/bridge"
+          :class="['link', $route.path.split('/')[1] === 'bridge' ? 'activeLink' : '']"
+        >
+          <icon-base
+            :class="['iconbase', isShiden ? 'shiden' : '']"
+            stroke="currentColor"
+            icon-name="bridge"
+          >
+            <icon-bridge />
+          </icon-base>
+          <span class="row--item">
+            <astar-text type="H4">{{ $t('bridge.bridge') }}</astar-text>
+          </span>
+        </router-link>
+      </div>
+    </div>
 
-      <div
-        class="tw-flex-shrink-0 tw-p-4 tw-border-t tw-border-gray-200 dark:tw-border-darkGray-600"
-      >
-        <SocialMediaLinks />
-        <div class="tw-flex tw-items-center tw-justify-center">
-          <LightDarkMode />
-          <LocaleChanger />
-        </div>
+    <div class="wrapper--bottom">
+      <SocialMediaLinks />
+      <div class="wrapper--option">
+        <LightDarkMode />
+        <LocaleChanger />
       </div>
-    </q-list>
+    </div>
   </div>
 </template>
 
@@ -76,8 +92,9 @@ import { useStore } from 'src/store';
 import { useSidebar } from 'src/hooks';
 import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
 import IconBase from '../icons/IconBase.vue';
-import IconBalance from '../icons/IconBalance.vue';
-import IconStore from '../icons/IconStore.vue';
+import IconDashboard from '../icons/IconDashboard.vue';
+import IconAssets from '../icons/IconAssets.vue';
+import IconStaking from '../icons/IconDappStaking.vue';
 import IconBridge from '../icons/IconBridge.vue';
 import LocaleChanger from '../common/LocaleChanger.vue';
 import SocialMediaLinks from '../common/SocialMediaLinks.vue';
@@ -90,8 +107,9 @@ export default defineComponent({
     LightDarkMode,
     LocaleChanger,
     IconBase,
-    IconBalance,
-    IconStore,
+    IconDashboard,
+    IconAssets,
+    IconStaking,
     IconBridge,
     Logo,
   },
@@ -103,6 +121,7 @@ export default defineComponent({
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
 
     const network = ref(providerEndpoints[currentNetworkIdx.value]);
+    const isShiden = computed(() => currentNetworkIdx.value === endpointKey.SHIDEN);
     const enableBridge = computed(
       () => isH160.value && currentNetworkIdx.value !== endpointKey.SHIBUYA
     );
@@ -110,28 +129,46 @@ export default defineComponent({
     return {
       isOpen,
       network,
+      isShiden,
       enableBridge,
     };
   },
 });
 </script>
-<style scoped>
+<style lang="scss" scoped>
+@import 'src/css/quasar.variables.scss';
+
 .icon {
   text-align: center;
-  width: 140px;
-  margin-left: 20px;
+  width: 170px;
+  margin-left: 10px;
 }
-
+.iconbase {
+  color: $astar-blue-dark;
+  width: 20px;
+  height: 20px;
+}
+.shiden {
+  color: $shiden-purple-dark;
+}
 .sidebar {
   width: 224px;
   height: 100%;
   padding-top: 40px;
   background: #2c3335;
+  display: flex;
+  flex-direction: column;
 }
 
 .menu {
   margin-top: 50px;
   margin-left: 24px;
+  flex-grow: 1;
+
+  .row--item {
+    flex: 1 1 0%;
+    margin-left: 0.75rem;
+  }
 }
 
 .link {
@@ -142,6 +179,7 @@ export default defineComponent({
   padding: 8px;
   margin-bottom: 8px;
   border-radius: 6px;
+  color: #f7f7f8;
 }
 .link:hover {
   background: #313a3d;
@@ -153,13 +191,21 @@ export default defineComponent({
   background: #3c4649;
 }
 
-.activeSvg {
-  @apply tw-text-blue-500 dark:tw-text-white tw-h-6 tw-w-6;
+.wrapper--bottom {
+  flex-shrink: 0;
+  padding: 1rem;
+
+  .wrapper--option {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+  }
 }
-.inactiveSvg {
-  @apply tw-text-gray-500 group-hover:tw-text-gray-700 tw-h-6 tw-w-6 dark:tw-text-darkGray-300;
-}
-.inactiveSvg:group-hover {
-  @apply dark:tw-text-white;
+
+.body--dark {
+  .sidebar {
+    background: #e6e9ee;
+  }
 }
 </style>

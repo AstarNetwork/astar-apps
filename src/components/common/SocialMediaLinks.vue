@@ -1,58 +1,33 @@
 <template>
   <div class="flex items-center tw-justify-center">
-    <!-- TODO: Links -->
     <a :href="socialUrl.twitter" target="_blank" :class="classes.link" rel="noreferrer">
-      <!-- original icon -->
       <icon-base :class="classes.iconBase" viewBox="0 0 512 512" icon-name="Twitter">
         <icon-twitter />
       </icon-base>
-      <!-- Tooltip -->
-      <span :class="classes.tooltipText">
-        {{ $t('common.twitter') }}
-      </span>
     </a>
 
     <a :href="socialUrl.telegram" target="_blank" :class="classes.link" rel="noreferrer">
-      <!-- original icon -->
       <icon-base :class="classes.iconBase" viewBox="0 0 448 512" icon-name="Telegram">
         <icon-telegram />
       </icon-base>
-      <!-- Tooltip -->
-      <span :class="classes.tooltipText"> {{ $t('common.telegram') }} </span>
     </a>
 
     <a :href="socialUrl.discord" target="_blank" :class="classes.link" rel="noreferrer">
-      <!-- original icon -->
       <icon-base :class="classes.iconBase" viewBox="0 0 448 512" icon-name="Discord">
         <icon-discord />
       </icon-base>
-      <!-- Tooltip -->
-      <span :class="classes.tooltipText"> {{ $t('common.discord') }} </span>
     </a>
 
     <a :href="socialUrl.github" target="_blank" :class="classes.link" rel="noreferrer">
-      <!-- original icon -->
       <icon-base :class="classes.iconBase" viewBox="0 0 496 512" icon-name="GitHub">
         <icon-github />
       </icon-base>
-
-      <!-- Tooltip -->
-      <span :class="classes.tooltipText"> {{ $t('common.github') }} </span>
     </a>
 
     <a :href="docsUrl.topPage" target="_blank" :class="classes.link" rel="noreferrer">
-      <!-- Heroicon name: outline/document-text -->
-      <icon-base
-        :class="classes.iconBase"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        icon-color="none"
-        icon-name="Documentation"
-      >
+      <icon-base :class="classes.iconBase" viewBox="0 0 24 24" icon-name="Documentation">
         <icon-document />
       </icon-base>
-      <!-- Tooltip -->
-      <span :class="classes.tooltipText"> {{ $t('common.docs') }} </span>
     </a>
   </div>
 </template>
@@ -78,10 +53,8 @@ export default defineComponent({
   },
   setup() {
     const classes = reactive({
-      link: 'tw-tooltip icon-link',
-      iconBase: 'tw-text-blue-900 dark:tw-text-darkGray-300 tw-h-4 tw-w-4',
-      tooltipText:
-        'tw-pointer-events-none tw-hidden tw-absolute tw-top-0 tw-left-1/2 tw-z-10 tw-transform tw--translate-y-full tw--translate-x-1/2 tw-p-2 tw-text-xs tw-leading-tight tw-text-white tw-bg-gray-800 dark:tw-bg-darkGray-500 tw-rounded-md tw-shadow-lg tw-opacity-90 tw-whitespace-nowrap',
+      link: 'icon-link',
+      iconBase: 'tw-h-4 tw-w-4',
     });
     return {
       classes,
@@ -92,14 +65,11 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import 'src/css/quasar.variables.scss';
+
 .icon-link {
-  @apply tw-p-3 tw-rounded-full tw-relative;
-}
-.icon-link:hover {
-  @apply tw-bg-gray-100 dark:tw-bg-darkGray-600;
-}
-.icon-link:focus {
-  @apply tw-z-10 tw-outline-none tw-ring tw-ring-gray-100 dark:tw-ring-darkGray-600 tw-bg-blue-50 dark:tw-bg-darkGray-900;
+  color: $gray-1;
+  padding: 11px;
 }
 </style>

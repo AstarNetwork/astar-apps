@@ -1,12 +1,5 @@
 <template>
-  <div
-    class="
-      tw-relative tw-inline-block tw-border tw-border-gray-300
-      dark:tw-border-darkGray-600
-      tw-rounded-lg tw-bg-white
-      dark:tw-bg-darkGray-900
-    "
-  >
+  <div class="tw-relative tw-inline-block tw-rounded-lg tw-bg-black">
     <select v-model="$i18n.locale" class="select-language" placeholder="Regular input">
       <option v-for="(lang, i) in langs" :key="`Lang${i}`" :value="lang.code">
         {{ lang.text }}
@@ -15,8 +8,8 @@
 
     <div
       class="
+        icon--select
         tw-absolute tw-inset-y-0 tw-right-0 tw-flex tw-items-center tw-px-2 tw-pointer-events-none
-        dark:tw-text-darkGray-100
       "
     >
       <svg class="tw-w-4 tw-h-4 tw-fill-current" viewBox="0 0 20 20">
@@ -41,17 +34,22 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import 'src/css/quasar.variables.scss';
+
 .dropdown:hover .dropdown-menu {
   display: block;
 }
 .select-language {
-  @apply tw-w-full tw-h-8 tw-pl-3 tw-pr-6 tw-text-sm tw-rounded-lg tw-appearance-none tw-bg-white dark:tw-bg-darkGray-900 tw-font-medium tw-text-gray-700 dark:tw-text-darkGray-100 tw-cursor-pointer;
+  background: $gray-6;
+  color: $gray-1;
+  width: 95px;
+  height: 36px;
+  padding-left: 15px;
+  appearance: none;
+  border-radius: 6px;
 }
-.select-language:hover {
-  @apply tw-bg-gray-100 dark:tw-bg-darkGray-700;
-}
-.select-language:focus {
-  @apply tw-outline-none;
+.icon--select {
+  color: $gray-1;
 }
 </style>
