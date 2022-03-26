@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center tw-justify-center">
+  <div class="flex items-center tw-justify-evenly">
     <a :href="socialUrl.twitter" target="_blank" :class="classes.link" rel="noreferrer">
       <icon-base :class="classes.iconBase" viewBox="0 0 512 512" icon-name="Twitter">
         <icon-twitter />
@@ -71,6 +71,12 @@ export default defineComponent({
 .icon-link {
   color: #5f656f;
   padding: 10px;
+}
+
+@media (max-width: 768px) {
+  .icon-link {
+    color: $gray-1;
+  }
 }
 
 .body--dark {

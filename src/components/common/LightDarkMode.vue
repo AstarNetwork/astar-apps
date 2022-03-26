@@ -65,11 +65,11 @@ export default defineComponent({
 
 <style scoped>
 .icon-light {
-  @apply tw-p-3 tw-rounded-full tw-relative;
+  @apply tw-p-2 tw-rounded-full tw-relative;
 }
 
 .icon-dark {
-  @apply tw-p-3 tw-rounded-full tw-relative;
+  @apply tw-p-2 tw-rounded-full tw-relative;
 }
 
 .icon-outline-moon {

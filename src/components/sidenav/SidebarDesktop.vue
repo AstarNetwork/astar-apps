@@ -197,9 +197,9 @@ export default defineComponent({
 
   .wrapper--option {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    padding-top: 0.3rem;
   }
 }
 
