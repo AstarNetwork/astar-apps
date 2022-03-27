@@ -54,6 +54,7 @@
         </router-link> -->
 
         <router-link
+          v-if="hasDashboard"
           to="/dashboard"
           :class="[$route.path.split('/')[1] === 'dashboard' ? 'activeLink' : 'inactiveLink']"
         >
@@ -67,6 +68,7 @@
             {{ $t('dashboard.dashboard') }}
           </span>
         </router-link>
+        <router-link v-else to="/assets" />
 
         <router-link
           to="/assets"
@@ -254,6 +256,7 @@ export default defineComponent({
     });
 
     const isLocalChain = currentNetworkIdx.value === endpointKey.LOCAL;
+    const hasDashboard = currentNetworkIdx.value <= endpointKey.SHIDEN;
     const network = ref(providerEndpoints[currentNetworkIdx.value]);
 
     return {
@@ -269,6 +272,7 @@ export default defineComponent({
       currentAccountName,
       endpointKey,
       isH160,
+      hasDashboard,
     };
   },
   methods: {
