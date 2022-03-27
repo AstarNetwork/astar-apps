@@ -12,6 +12,7 @@ import { defineComponent, ref, watch } from 'vue';
 import axios from 'axios';
 import ChartPanel from 'src/components/dashboard/ChartPanel.vue';
 import { ChartData } from 'src/components/dashboard/ChartData';
+import { API_URL } from './utils';
 
 export default defineComponent({
   components: {
@@ -28,7 +29,8 @@ export default defineComponent({
     const currentPrice = ref<string>('');
 
     const loadData = async () => {
-      const priceUrl = `http://localhost:3000/api/v1/${props.network.toLowerCase()}/token/price/1%20year`;
+      if (!props.network) return;
+      const priceUrl = `${API_URL}/v1/${props.network.toLowerCase()}/token/price/1%20year`;
       const result = await axios.get<ChartData>(priceUrl);
       data.value = result.data;
 
@@ -36,6 +38,8 @@ export default defineComponent({
         currentPrice.value = `\$${data.value[data.value.length - 1][1].toFixed(6)}`;
       }
     };
+
+    loadData();
 
     watch([props], () => {
       if (props.network) {

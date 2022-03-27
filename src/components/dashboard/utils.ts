@@ -1,3 +1,5 @@
+export const API_URL = 'http://localhost:3001/api';
+
 /**
  * Formats number and adds weight prefix e.g. 10000 formats to 10k
  * @param value Value to format

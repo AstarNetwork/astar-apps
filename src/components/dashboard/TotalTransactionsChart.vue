@@ -12,7 +12,7 @@ import { defineComponent, ref, watch } from 'vue';
 import axios from 'axios';
 import ChartPanel from 'src/components/dashboard/ChartPanel.vue';
 import { ChartData } from 'src/components/dashboard/ChartData';
-import { formatNumber } from 'src/components/dashboard/utils';
+import { API_URL, formatNumber } from 'src/components/dashboard/utils';
 
 export default defineComponent({
   components: {
@@ -29,7 +29,8 @@ export default defineComponent({
     const currentTransactionsNumber = ref<string>('');
 
     const loadData = async () => {
-      const priceUrl = `http://localhost:3000/api/v1/${props.network.toLowerCase()}/node/tx-perblock/1%20year`;
+      if (!props.network) return;
+      const priceUrl = `${API_URL}/v1/${props.network.toLowerCase()}/node/tx-perblock/1%20year`;
       const result = await axios.get<ChartData>(priceUrl);
       data.value = result.data.map((pair) => {
         return [Number(pair[0]), pair[1]];
@@ -42,6 +43,8 @@ export default defineComponent({
         )}`;
       }
     };
+
+    loadData();
 
     watch([props], () => {
       if (props.network) {

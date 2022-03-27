@@ -4,7 +4,7 @@
       <div class="row">
         <span class="text--md">{{ title }}</span>
       </div>
-      <div class="row align-rigth text--xlg">{{ value }}</div>
+      <div class="align-rigth text--xlg">{{ value }}</div>
     </div>
   </div>
 </template>
