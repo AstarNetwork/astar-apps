@@ -47,6 +47,12 @@ const routes: RouteRecordRaw[] = [
     path: '/assets',
     name: 'Assets',
     component: Assets,
+    children: [
+      {
+        path: 'deeplink-metamask',
+        component: Assets,
+      },
+    ],
   },
   // {
   //   path: '/contracts',
