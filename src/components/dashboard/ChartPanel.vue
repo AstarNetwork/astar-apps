@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="hasData">
     <div class="container">
       <div class="row">
         <span class="text--md">{{ title }}</span>
@@ -41,6 +41,8 @@ export default defineComponent({
     const store = useStore();
     const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
     const getBackgroundColor = (): string => (isDarkTheme.value ? '#2c3335' : '#fff');
+    const hasData = ref<boolean>(false);
+
     const chartOptions = ref({
       title: {
         text: '',
@@ -97,10 +99,17 @@ export default defineComponent({
 
     watch([props], () => {
       chartOptions.value.series[0].data = props.data;
+
+      if (props.data && props.data.length > 0) {
+        hasData.value = true;
+      } else {
+        hasData.value = false;
+      }
     });
 
     return {
       chartOptions,
+      hasData,
     };
   },
 });
