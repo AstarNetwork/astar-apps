@@ -1,5 +1,6 @@
 <template>
   <chart-panel
+    v-if="hasData"
     :data="data"
     title="Total Transactions"
     :default-value="currentTransactionsNumber"
@@ -27,6 +28,7 @@ export default defineComponent({
   setup(props) {
     const data = ref<ChartData>([[1, 1]]);
     const currentTransactionsNumber = ref<string>('');
+    const hasData = ref<boolean>(false);
 
     const loadData = async () => {
       if (!props.network) return;
@@ -36,11 +38,14 @@ export default defineComponent({
         return [Number(pair[0]), pair[1]];
       });
 
-      if (data.value) {
+      if (data.value && data.value.length > 0) {
         currentTransactionsNumber.value = `${formatNumber(
           data.value[data.value.length - 1][1],
           1
         )}`;
+        hasData.value = true;
+      } else {
+        hasData.value = false;
       }
     };
 
@@ -55,6 +60,7 @@ export default defineComponent({
     return {
       data,
       currentTransactionsNumber,
+      hasData,
     };
   },
 });

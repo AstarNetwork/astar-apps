@@ -36,7 +36,7 @@ export default defineComponent({
         return [Number(pair[0]) * 1000, pair[1]];
       });
 
-      if (data.value) {
+      if (data.value && data.value.length > 0) {
         currentTvl.value = `\$${formatNumber(data.value[data.value.length - 1][1], 1)}`;
       }
     };

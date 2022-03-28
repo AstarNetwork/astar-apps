@@ -34,7 +34,7 @@ export default defineComponent({
       const result = await axios.get<ChartData>(priceUrl);
       data.value = result.data;
 
-      if (data.value) {
+      if (data.value && data.value.length > 0) {
         currentPrice.value = `\$${data.value[data.value.length - 1][1].toFixed(6)}`;
       }
     };
