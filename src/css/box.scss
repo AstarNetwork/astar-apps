@@ -18,7 +18,9 @@
   width: 344px;
   background: $container-bg-white;
   border: 1px solid transparent;
+  transition: all 0.3s ease 0s;
   &:hover {
+    transition: all 0.3s ease 0s;
     border: 1px solid $astar-blue;
   }
 }

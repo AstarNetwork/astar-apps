@@ -25,11 +25,30 @@
   font-weight: 700;
   width: 120px;
   height: 24px;
+  background-color: $astar-blue;
   @media (min-width: $md) {
     width: 100px;
-    background-color: transparent !important;
+    background-color: transparent;
+    color: $astar-blue;
+    transition: all 0.3s ease 0s;
+    &:hover {
+      transition: all 0.3s ease 0s;
+      color: #ffffff;
+      background-color: $astar-blue;
+    }
   }
 }
 
 .body--dark {
+  .btn--sm {
+    background-color: $astar-blue;
+    @media (min-width: $md) {
+      background-color: transparent;
+      color: $astar-blue-dark;
+      &:hover {
+        color: #ffffff;
+        background-color: $astar-blue;
+      }
+    }
+  }
 }

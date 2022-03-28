@@ -30,10 +30,7 @@
               </div>
             </div>
             <div v-if="isFaucet" class="column--buttons">
-              <button
-                class="btn btn--sm bg--astar color--astar"
-                @click="handleModalFaucet({ isOpen: true })"
-              >
+              <button class="btn btn--sm" @click="handleModalFaucet({ isOpen: true })">
                 {{ $t('assets.faucet') }}
               </button>
             </div>
@@ -54,7 +51,7 @@
             </div>
             <div class="column--buttons">
               <button
-                class="btn btn--sm bg--astar color--astar"
+                class="btn btn--sm"
                 @click="handleModalTransfer({ isOpen: true, currency: nativeTokenSymbol })"
               >
                 {{ $t('assets.transfer') }}
@@ -74,10 +71,7 @@
               </div>
             </div>
             <div class="column--buttons">
-              <button
-                class="btn btn--sm bg--astar color--astar"
-                @click="handleModalEvmWithdraw({ isOpen: true })"
-              >
+              <button class="btn btn--sm" @click="handleModalEvmWithdraw({ isOpen: true })">
                 {{ $t('assets.withdraw') }}
               </button>
             </div>
@@ -95,10 +89,7 @@
               </div>
             </div>
             <div class="column--buttons">
-              <button
-                class="btn btn--sm bg--astar color--astar"
-                @click="handleModalVesting({ isOpen: true })"
-              >
+              <button class="btn btn--sm" @click="handleModalVesting({ isOpen: true })">
                 {{ $t('assets.view') }}
               </button>
             </div>
@@ -117,7 +108,7 @@
             </div>
             <div class="column--buttons">
               <router-link to="/dapp-staking">
-                <button class="btn btn--sm bg--astar color--astar">{{ $t('manage') }}</button>
+                <button class="btn btn--sm">{{ $t('manage') }}</button>
               </router-link>
             </div>
           </div>

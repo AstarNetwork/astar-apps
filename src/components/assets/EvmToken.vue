@@ -25,7 +25,7 @@
           </div>
           <div class="column--asset-buttons column--buttons--multi">
             <button
-              class="btn btn--sm bg--astar color--astar"
+              class="btn btn--sm"
               @click="
                 handleModalTransfer({
                   isOpen: true,
@@ -37,13 +37,13 @@
             </button>
             <!-- Memo: temporary -->
             <router-link to="/bridge">
-              <button class="btn btn--sm bg--astar color--astar">
+              <button class="btn btn--sm">
                 {{ $t('assets.bridge') }}
               </button>
             </router-link>
 
             <button
-              class="btn btn--sm bg--astar color--astar screen--md"
+              class="btn btn--sm screen--md"
               @click="
                 addToEvmWallet({
                   tokenAddress: token.address,

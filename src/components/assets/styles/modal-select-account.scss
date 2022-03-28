@@ -84,7 +84,9 @@
   padding-left: 12px;
   padding-right: 36px;
   cursor: pointer;
+  transition: all 0.3s ease 0s;
   &:hover {
+    transition: all 0.3s ease 0s;
     background-color: $gray-1;
   }
 }

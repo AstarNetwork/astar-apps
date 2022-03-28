@@ -31,20 +31,20 @@
             </div>
             <div class="column--asset-buttons column--buttons--multi">
               <button
-                class="btn btn--sm bg--astar color--astar"
+                class="btn btn--sm"
                 @click="handleModalTransfer({ isOpen: true, currency: nativeTokenSymbol })"
               >
                 {{ $t('assets.transfer') }}
               </button>
               <!-- Only SDN is able to bridge via cBridge at this moment -->
               <router-link v-if="nativeTokenSymbol === 'SDN'" to="/bridge">
-                <button class="btn btn--sm bg--astar color--astar">
+                <button class="btn btn--sm">
                   {{ $t('assets.bridge') }}
                 </button>
               </router-link>
               <button
                 v-if="isFaucet"
-                class="btn btn--sm bg--astar color--astar"
+                class="btn btn--sm"
                 @click="handleModalFaucet({ isOpen: true })"
               >
                 {{ $t('assets.faucet') }}
