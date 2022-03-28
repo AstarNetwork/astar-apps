@@ -1,8 +1,8 @@
 <template>
-  <div class="wrapper--chart">
-    <div class="container">
+  <div class="wrapper--value">
+    <div class="container container--value">
       <div class="row">
-        <span class="text--md">{{ title }}</span>
+        <span class="text--accent container--title--color">{{ title }}</span>
       </div>
       <div class="align-rigth text--xlg">{{ value }}</div>
     </div>
