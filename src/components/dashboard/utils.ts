@@ -1,4 +1,4 @@
-export const API_URL = 'http://localhost:3000/api';
+export const API_URL = 'https://api.astar.network/api';
 
 /**
  * Formats number and adds weight prefix e.g. 10000 formats to 10k
