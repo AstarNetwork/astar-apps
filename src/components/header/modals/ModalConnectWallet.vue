@@ -15,7 +15,7 @@
         <div>{{ wallet.name }}</div>
       </div>
 
-      <div class="title--account-type">EVM Account</div>
+      <div class="title--account-type tw-mt-4">EVM Account</div>
       <div
         v-for="(wallet, index) in evmWallets"
         :key="index"
@@ -109,7 +109,6 @@ export default defineComponent({
   color: #2c3335;
   text-align: left;
   margin-left: 21px;
-  margin-top: 24px;
 }
 
 .box__row--wallet {
