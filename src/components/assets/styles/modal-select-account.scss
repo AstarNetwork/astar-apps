@@ -1,0 +1,155 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--select-account {
+  position: relative;
+}
+
+.row--input {
+  display: flex;
+  justify-content: space-between;
+}
+
+.column--icon-account {
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+}
+
+.column--icon {
+  height: 24px;
+  width: 24px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.input--address {
+  width: 250px;
+  background-color: transparent;
+  &:focus {
+    outline: none;
+  }
+}
+
+.icon--selector {
+  height: 20px;
+  width: 20px;
+  color: $gray-3;
+}
+
+.input--checkbox {
+  height: 16px;
+  width: 16px;
+  appearance: none;
+  border-width: 2px;
+  border-color: $gray-5;
+  border-radius: 100%;
+  background-color: $gray-6;
+  &:focus {
+    border-width: 4px;
+    border-color: $astar-blue;
+  }
+  &:checked {
+    border-width: 4px;
+    border-color: $astar-blue;
+  }
+}
+
+.box--account-option {
+  position: absolute;
+  width: 344px !important;
+  margin-top: 8px;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+  z-index: 10;
+  top: 22px;
+  left: -16px;
+  background: $container-bg-white;
+}
+
+.container--accounts {
+  max-height: 172px;
+  border-radius: 6px;
+  padding-top: 4px;
+  overflow: auto;
+  width: 344px !important;
+  &:focus {
+    outline: none;
+  }
+}
+
+.list {
+  position: relative;
+  width: 344px !important;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  padding-left: 12px;
+  padding-right: 36px;
+  cursor: pointer;
+  &:hover {
+    background-color: $gray-3;
+  }
+}
+
+.list__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.text--account {
+  font-weight: 700;
+  font-size: 12px;
+  color: $gray-1;
+}
+
+.text--address {
+  font-weight: 400;
+  font-size: 12px;
+  color: $gray-3;
+}
+
+.placeholder--icon {
+  width: 24px;
+}
+
+.box__row {
+  display: flex;
+  column-gap: 8px;
+  align-items: center;
+}
+
+.column--wallet-address {
+  display: flex;
+  column-gap: 12px;
+  align-items: center;
+}
+
+.column--wallet-name {
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.row--separator--account {
+  padding: 0 12px;
+  margin-top: 16px;
+}
+
+.border--separator--account {
+  border: 1px solid $gray-4;
+  border-bottom: 0px solid transparent;
+  border-left: 0px solid transparent;
+  border-right: 0px solid transparent;
+}
+
+.body--dark {
+  .box--account-option {
+    background: $gray-6;
+  }
+  .list {
+    &:hover {
+      background-color: $item--bg--hover-dark;
+    }
+  }
+}

@@ -1,0 +1,30 @@
+@import 'src/css/quasar.variables.scss';
+
+.container {
+  box-shadow: $container-border-shadow-light;
+  background: $container-bg-white;
+  border-radius: 6px;
+  padding: 8px 16px;
+  @media (min-width: $md) {
+    padding: 8px 24px;
+  }
+}
+
+.box--input {
+  display: grid;
+  row-gap: 12px;
+  padding: 10px 16px;
+  border-radius: 6px;
+  width: 344px;
+  background: $container-bg-white;
+}
+
+.body--dark {
+  .container {
+    background: $container-bg-dark;
+    box-shadow: $container-border-shadow-dark;
+  }
+  .box--input {
+    background: $gray-6;
+  }
+}

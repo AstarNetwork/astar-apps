@@ -38,13 +38,20 @@ export function useCbridgeV2() {
     if (!data || !data.tokens) {
       throw Error('Cannot fetch from cBridge API');
     }
+
+    const seen = new Set();
+    // Todo: use srcChain and destChainID to re-define token information for bridging (ex: PKEX)
     tokens.value = (await Promise.all(
       objToArray(data.tokens[srcChainId])
         .flat()
         .map(async (token: CbridgeToken) => {
           let balUsd = 0;
           const t = getSelectedToken({ srcChainId, token });
-          if (!t) return;
+          if (!t) return undefined;
+          const isDuplicated = seen.has(t.address);
+          seen.add(t.address);
+          // Memo: Remove the duplicated contract address (ex: PKEX)
+          if (isDuplicated) return undefined;
           const userBalance = await getTokenBal({
             srcChainId,
             address: userAddress,
@@ -62,6 +69,10 @@ export function useCbridgeV2() {
           return tokenWithBalance;
         })
     )) as SelectedToken[];
+
+    tokens.value = tokens.value.filter((token) => {
+      return token !== undefined;
+    });
 
     tokens.value.sort((a: SelectedToken, b: SelectedToken) => {
       return Number(b.userBalance) - Number(a.userBalance);

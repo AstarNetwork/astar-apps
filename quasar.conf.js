@@ -11,8 +11,7 @@
 const { configure } = require('quasar/wrappers');
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
-const path = require("path");
-
+const path = require('path');
 
 module.exports = configure(function (ctx) {
   return {

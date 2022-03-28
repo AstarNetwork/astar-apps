@@ -7,6 +7,7 @@ export default {
   copy: 'Copy',
   from: 'From',
   to: 'To',
+  add: 'Add',
   estimated: 'Estimated',
   forget: 'Forget',
   close: 'Close',
@@ -276,5 +277,11 @@ export default {
     inLockdropAccount: 'You are in a Lockdrop account',
     cantTransferToExcahges: "You can't transfer to Exchanges",
     noHash: 'Your transaction will not have a hash',
+    modals: {
+      max: 'Max',
+      balance: 'Balance: {amount} {token}',
+      available: 'Available: {amount} {token}',
+      notSendToExchanges: 'I’m NOT sending tokens to Exchanges',
+    },
   },
 };

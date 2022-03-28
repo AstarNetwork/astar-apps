@@ -23,3 +23,4 @@ export * from './c-bridge/useCbridge';
 export * from './c-bridge/useCbridgeV2';
 export * from './c-bridge/useCbridgeHistory';
 export * from './c-bridge/useCbridgeApproval';
+export * from './wallet/useWalletIcon';
