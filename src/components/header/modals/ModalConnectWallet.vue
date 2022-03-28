@@ -106,7 +106,7 @@ export default defineComponent({
   font-weight: 400;
   font-size: 14px;
   line-height: 17px;
-  color: $gray-1;
+  color: #2c3335;
   text-align: left;
   margin-left: 21px;
   margin-top: 24px;
@@ -115,14 +115,14 @@ export default defineComponent({
 .box__row--wallet {
   display: flex;
   align-items: center;
-  background: $gray-6;
+  background: #fff;
   border-radius: 6px;
   height: 3.5rem;
   width: 19.688rem;
   font-weight: 700;
   font-size: 16px;
   line-height: 18px;
-  color: $gray-1;
+  color: #2c3335;
   margin: 0 auto;
   margin-top: 16px;
   padding: 16px;
@@ -144,8 +144,12 @@ export default defineComponent({
 }
 
 .body--dark {
-  .box--withdraw-amount {
+  .title--account-type {
+    color: $gray-1;
+  }
+  .box__row--wallet {
     background: $gray-6;
+    color: $gray-1;
   }
 }
 </style>

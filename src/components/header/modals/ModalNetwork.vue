@@ -1,6 +1,6 @@
 <template>
   <astar-simple-modal :show="isOpen" title="Network" @close="closeModal">
-    <div class="wrapper--modal">
+    <div class="wrapper--modal-network">
       <div class="wrapper--select-network">
         <div class="row--separator--account">
           <div class="border--separator--account" />
@@ -22,7 +22,7 @@
                     ip--network
                     tw-appearance-none
                     tw-border-2
-                    tw-border-gray-300
+                    tw-border-gray-100
                     tw-rounded-full
                     tw-h-4
                     tw-w-4
@@ -34,9 +34,17 @@
                   @change="selNetwork = index"
                 />
                 <div class="tw-text-left tw-flex-1">
-                  <p :class="selNetwork === index ? 'class-radio-txt-on' : 'class-radio-txt-off'">
-                    {{ provider.displayName }}
-                  </p>
+                  <div class="tw-flex tw-pl-2">
+                    <img
+                      v-if="provider.defaultLogo"
+                      class="tw-mr-2"
+                      width="24"
+                      :src="provider.defaultLogo"
+                    />
+                    <p :class="selNetwork === index ? 'class-radio-txt-on' : 'class-radio-txt-off'">
+                      {{ provider.displayName }}
+                    </p>
+                  </div>
 
                   <!-- custom endpoint -->
                   <!-- <input
@@ -53,7 +61,7 @@
         </fieldset>
       </div>
       <div class="wrapper__row--button">
-        <button class="btn btn--connect">
+        <button class="btn btn--connect" @click="selectNetwork(selNetwork, newEndpoint)">
           {{ $t('connect') }}
         </button>
       </div>
@@ -132,7 +140,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
 
-.wrapper--modal {
+.wrapper--modal-network {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -172,12 +180,12 @@ export default defineComponent({
   }
 }
 
-.class-radio-tx-off {
-  // @apply tw-font-medium tw-text-gray-500 dark:tw-text-darkGray-400 tw-text-sm;
-}
-.class-radio-tx-off:group-hover {
-  // @apply tw-text-gray-700 dark:tw-text-darkGray-300;
-}
+// .class-radio-tx-off {
+//   @apply tw-font-medium tw-text-gray-500 dark:tw-text-darkGray-400 tw-text-sm;
+// }
+// .class-radio-tx-off:group-hover {
+//   @apply tw-text-gray-700 dark:tw-text-darkGray-300;
+// }
 
 .wrapper__row--button {
   display: flex;
@@ -191,6 +199,7 @@ export default defineComponent({
   font-weight: 600;
   border-radius: 30px;
   height: 52px;
+  margin-top: 24px;
   &:hover {
     background: linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
       linear-gradient(0deg, #0085ff, #0085ff);
@@ -198,13 +207,15 @@ export default defineComponent({
 }
 
 .body--dark {
-  .box--account-option {
-    background: $gray-6;
+  .class-radio {
+    color: #fff;
   }
-  .list {
-    &:hover {
-      // background-color: $item--bg--hover-dark;
-    }
+  .class-radio-off {
+    background: #191d1f;
+  }
+
+  .class-radio-on {
+    background: #222829;
   }
 }
 </style>
