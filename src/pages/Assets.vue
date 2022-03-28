@@ -12,7 +12,6 @@ export default defineComponent({
   components: { Assets },
   setup() {
     useMeta({ title: 'Assets' });
-
     const store = useStore();
     store.commit('general/setHeaderName', 'Assets');
   },
