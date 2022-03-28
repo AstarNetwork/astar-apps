@@ -19,6 +19,7 @@ export * from './useCustomSignature';
 export * from './useClaimAll';
 export * from './useBreakpoints';
 export * from './usePrice';
+export * from './useVesting';
 export * from './c-bridge/useCbridge';
 export * from './c-bridge/useCbridgeV2';
 export * from './c-bridge/useCbridgeHistory';

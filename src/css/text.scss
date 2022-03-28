@@ -12,6 +12,12 @@ span {
   color: $gray-5;
 }
 
+.text--xl {
+  font-weight: 600;
+  font-size: 22px;
+  color: $gray-5;
+}
+
 .text--title {
   font-weight: 700;
   font-size: 16px;
@@ -61,12 +67,17 @@ span {
   -moz-appearance: textfield;
 }
 
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
 .body--dark {
   .text--page-title,
   .text--title,
   .text--accent,
   .text--lg,
-  .text--md {
+  .text--md,
+  .text--xl {
     color: $gray-1;
   }
 }

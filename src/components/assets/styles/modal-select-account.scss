@@ -56,10 +56,9 @@
 
 .box--account-option {
   position: absolute;
-  width: 344px !important;
-  margin-top: 8px;
-  border-bottom-left-radius: 6px;
-  border-bottom-right-radius: 6px;
+  width: 344px;
+  margin-top: 12px;
+  border-radius: 6px;
   z-index: 10;
   top: 22px;
   left: -16px;
@@ -67,11 +66,11 @@
 }
 
 .container--accounts {
-  max-height: 172px;
+  max-height: 228px;
   border-radius: 6px;
   padding-top: 4px;
   overflow: auto;
-  width: 344px !important;
+  width: 344px;
   &:focus {
     outline: none;
   }
@@ -79,14 +78,16 @@
 
 .list {
   position: relative;
-  width: 344px !important;
+  width: 344px;
   padding-top: 16px;
   padding-bottom: 16px;
   padding-left: 12px;
   padding-right: 36px;
   cursor: pointer;
+  transition: all 0.3s ease 0s;
   &:hover {
-    background-color: $gray-3;
+    transition: all 0.3s ease 0s;
+    background-color: $gray-1;
   }
 }
 
@@ -134,13 +135,6 @@
 .row--separator--account {
   padding: 0 12px;
   margin-top: 16px;
-}
-
-.border--separator--account {
-  border: 1px solid $gray-4;
-  border-bottom: 0px solid transparent;
-  border-left: 0px solid transparent;
-  border-right: 0px solid transparent;
 }
 
 .body--dark {

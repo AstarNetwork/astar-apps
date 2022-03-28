@@ -31,18 +31,22 @@
             </div>
             <div class="column--asset-buttons column--buttons--multi">
               <button
-                class="btn btn--sm bg--astar color--astar"
+                class="btn btn--sm"
                 @click="handleModalTransfer({ isOpen: true, currency: nativeTokenSymbol })"
               >
                 {{ $t('assets.transfer') }}
               </button>
               <!-- Only SDN is able to bridge via cBridge at this moment -->
               <router-link v-if="nativeTokenSymbol === 'SDN'" to="/bridge">
-                <button class="btn btn--sm bg--astar color--astar">
+                <button class="btn btn--sm">
                   {{ $t('assets.bridge') }}
                 </button>
               </router-link>
-              <button v-if="isFaucet" class="btn btn--sm bg--astar color--astar">
+              <button
+                v-if="isFaucet"
+                class="btn btn--sm"
+                @click="handleModalFaucet({ isOpen: true })"
+              >
                 {{ $t('assets.faucet') }}
               </button>
             </div>
@@ -65,6 +69,7 @@
       :account-data="null"
       :token="token"
     />
+    <ModalFaucet :is-modal-faucet="isModalFaucet" :handle-modal-faucet="handleModalFaucet" />
   </div>
 </template>
 <script lang="ts">
@@ -76,11 +81,13 @@ import { useStore } from 'src/store';
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
 import ModalTransfer from './modals/ModalTransfer.vue';
 import { getTokenImage } from 'src/token';
+import ModalFaucet from './modals/ModalFaucet.vue';
 
 export default defineComponent({
   components: {
     EvmToken,
     ModalTransfer,
+    ModalFaucet,
   },
   props: {
     tokens: {
@@ -91,6 +98,7 @@ export default defineComponent({
   },
   setup(props) {
     const isModalTransfer = ref<boolean>(false);
+    const isModalFaucet = ref<boolean>(false);
     const token = ref<SelectedToken | string | null>(null);
     const symbol = ref<string>('');
     const bal = ref<number>(0);
@@ -138,6 +146,10 @@ export default defineComponent({
       }
     };
 
+    const handleModalFaucet = ({ isOpen }: { isOpen: boolean }) => {
+      isModalFaucet.value = isOpen;
+    };
+
     watchEffect(async () => {
       const nativeTokenSymbolRef = nativeTokenSymbol.value;
       if (!balance.value || !nativeTokenSymbolRef) return;
@@ -164,8 +176,10 @@ export default defineComponent({
       symbol,
       token,
       nativeTokenImg,
-      handleModalTransfer,
       isListReady,
+      isModalFaucet,
+      handleModalTransfer,
+      handleModalFaucet,
     };
   },
 });

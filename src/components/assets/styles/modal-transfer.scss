@@ -93,6 +93,12 @@
   color: $astar-blue-dark;
   font-weight: 500;
   font-size: 11px;
+  transition: all 0.3s ease 0s;
+  &:hover {
+    transition: all 0.3s ease 0s;
+    background-color: $astar-blue-dark;
+    color: white;
+  }
 }
 
 .input--amount {

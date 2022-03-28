@@ -14,7 +14,7 @@
             </div>
           </div>
         </div>
-        <div class="box--input">
+        <div class="box--input box--hover--active">
           <div class="box__space-between">
             <span>To</span>
             <div>
@@ -30,7 +30,7 @@
           />
         </div>
 
-        <div class="box--input">
+        <div class="box--input box--hover--active">
           <div class="box__space-between">
             <div />
             <div class="box__available">
@@ -82,11 +82,13 @@
         </div>
       </div>
       <div class="wrapper__row--button">
-        <astar-action-btn
+        <button
+          class="btn btn--confirm"
           :disabled="errMsg !== '' || 0 >= Number(transferAmt) || (isRequiredCheck && !isChecked)"
           @click="transfer"
-          >{{ $t('confirm') }}</astar-action-btn
         >
+          {{ $t('confirm') }}
+        </button>
       </div>
     </div>
   </astar-simple-modal>

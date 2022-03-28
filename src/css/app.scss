@@ -8,20 +8,7 @@
 @use 'src/css/color.scss';
 @use 'src/css/modal.scss';
 @use 'src/css/box.scss';
-
-.body--dark {
-  background: $body-bg-dark;
-  main {
-    background: $gray-6;
-  }
-
-  .border--separator {
-    border: 1px solid $border-separator-dark;
-    border-bottom: 0px solid transparent;
-    border-left: 0px solid transparent;
-    border-right: 0px solid transparent;
-  }
-}
+@use 'src/css/astar-ui.scss';
 
 body {
   background: $body-bg-light;
@@ -46,5 +33,19 @@ main {
 }
 
 .border--separator {
-  border: 1px solid $border-separator-light;
+  border-top: 1px solid $border-separator-light;
+  border-bottom: 0px solid transparent;
+  border-left: 0px solid transparent;
+  border-right: 0px solid transparent;
+}
+
+.body--dark {
+  background: $body-bg-dark;
+  main {
+    background: $gray-6;
+  }
+
+  .border--separator {
+    border-top: 1px solid $border-separator-dark;
+  }
 }
