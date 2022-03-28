@@ -8,6 +8,14 @@
   background-color: $gray-1;
 }
 
+.color--warning {
+  color: $warning-red !important;
+}
+
+.color--white {
+  color: white;
+}
+
 .body--dark {
   .bg--accent {
     background-color: $gray-5-selected;

@@ -1,12 +1,5 @@
 <template>
-  <div>
-    <div class="screen--lg">
-      <span class="text--page-title">
-        {{ $t('assets.assets') }}
-      </span>
-    </div>
-    <Assets />
-  </div>
+  <Assets />
 </template>
 
 <script lang="ts">
@@ -19,7 +12,6 @@ export default defineComponent({
   components: { Assets },
   setup() {
     useMeta({ title: 'Assets' });
-
     const store = useStore();
     store.commit('general/setHeaderName', 'Assets');
   },

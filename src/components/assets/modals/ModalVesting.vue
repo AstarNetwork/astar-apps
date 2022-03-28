@@ -1,0 +1,90 @@
+<template>
+  <astar-simple-modal :show="isModalVesting" title="Vesting info" @close="closeModal">
+    <div class="wrapper--modal wrapper--vesting">
+      <div class="box--vesting-info">
+        <div class="box__row">
+          <span>{{ $t('assets.modals.totalDistribution') }}</span>
+          <span>{{ $n(info.totalDistribution) }}</span>
+        </div>
+        <div class="box__row">
+          <span>{{ $t('assets.modals.alreadyVested') }}</span>
+          <span>{{ $n(info.vestedAmount) }}</span>
+        </div>
+        <div class="box__row">
+          <span>{{ $t('assets.modals.remainingVests') }}</span>
+          <span>{{ $n(info.totalDistribution - info.vestedAmount) }}</span>
+        </div>
+        <div class="box__row--per-block">
+          <span>{{
+            $t('assets.modals.unlockPerBlock', {
+              perToken: $n(info.unlockPerBlock),
+              symbol: nativeTokenSymbol,
+              untilBlock: $n(info.untilBlock),
+            })
+          }}</span>
+        </div>
+      </div>
+      <div class="box--unlock-amount">
+        <div class="box__column-amount">
+          <span class="text--accent">{{ $t('assets.modals.availableToUnlocked') }}</span>
+          <span class="text--xl">{{ $n(info.claimableAmount) }} {{ nativeTokenSymbol }}</span>
+        </div>
+      </div>
+      <div class="wrapper__row--button">
+        <button
+          class="btn btn--confirm"
+          :disabled="0 >= info.claimableAmount"
+          @click="sendTransaction"
+        >
+          {{ $t('assets.modals.unlock') }}
+        </button>
+      </div>
+    </div>
+  </astar-simple-modal>
+</template>
+<script lang="ts">
+import { AccountData, useVesting } from 'src/hooks';
+import { defineComponent, PropType, watchEffect } from 'vue';
+
+export default defineComponent({
+  props: {
+    nativeTokenSymbol: {
+      type: String,
+      required: true,
+    },
+    isModalVesting: {
+      type: Boolean,
+      required: true,
+    },
+    handleModalVesting: {
+      type: Function,
+      required: true,
+    },
+    accountData: {
+      type: Object as PropType<AccountData>,
+      required: false,
+      default: null,
+    },
+  },
+  setup(props) {
+    const closeModal = (): void => {
+      props.handleModalVesting({ isOpen: false });
+    };
+    const { info, sendTransaction } = useVesting(closeModal);
+
+    watchEffect(() => {
+      console.log('info', info.value);
+    });
+
+    return {
+      info,
+      closeModal,
+      sendTransaction,
+    };
+  },
+});
+</script>
+
+<style lang="scss" scoped>
+@use 'src/components/assets/styles/modal-vesting.scss';
+</style>

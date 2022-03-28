@@ -6,23 +6,9 @@
 @use 'src/css/text.scss';
 @use 'src/css/button.scss';
 @use 'src/css/color.scss';
-
-.body--dark {
-  background: $body-bg-dark;
-  main {
-    background: $gray-6;
-  }
-  .container {
-    background: $container-bg-dark;
-    box-shadow: $container-border-shadow-dark;
-  }
-  .border--separator {
-    border: 1px solid $border-separator-dark;
-    border-bottom: 0px solid transparent;
-    border-left: 0px solid transparent;
-    border-right: 0px solid transparent;
-  }
-}
+@use 'src/css/modal.scss';
+@use 'src/css/box.scss';
+@use 'src/css/astar-ui.scss';
 
 body {
   background: $body-bg-light;
@@ -32,13 +18,10 @@ main {
   background: $gray-1;
 }
 
-.container {
-  box-shadow: $container-border-shadow-light;
-  background: $container-bg-white;
-  border-radius: 6px;
-  padding: 8px 16px;
+.screen--md {
+  display: none;
   @media (min-width: $md) {
-    padding: 8px 24px;
+    display: block;
   }
 }
 
@@ -50,5 +33,19 @@ main {
 }
 
 .border--separator {
-  border: 1px solid $border-separator-light;
+  border-top: 1px solid $border-separator-light;
+  border-bottom: 0px solid transparent;
+  border-left: 0px solid transparent;
+  border-right: 0px solid transparent;
+}
+
+.body--dark {
+  background: $body-bg-dark;
+  main {
+    background: $gray-6;
+  }
+
+  .border--separator {
+    border-top: 1px solid $border-separator-dark;
+  }
 }
