@@ -1,6 +1,5 @@
 <template>
-  <div class="wrapper--assets">
-    <div v-if="!selectedAddress" class="backdrop--transparent" />
+  <div v-if="selectedAddress" class="wrapper--assets">
     <div class="container--assets">
       <Account :ttl-erc20-amount="ttlErc20Amount" />
       <div v-if="selectedAddress">
