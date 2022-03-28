@@ -17,11 +17,14 @@
   border-radius: 6px;
   width: 344px;
   background: $container-bg-white;
+}
+
+.box--hover--active {
   border: 1px solid transparent;
   transition: all 0.3s ease 0s;
   &:hover {
-    transition: all 0.3s ease 0s;
     border: 1px solid $astar-blue;
+    transition: all 0.3s ease 0s;
   }
 }
 

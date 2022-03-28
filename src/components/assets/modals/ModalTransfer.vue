@@ -14,7 +14,7 @@
             </div>
           </div>
         </div>
-        <div class="box--input">
+        <div class="box--input box--hover--active">
           <div class="box__space-between">
             <span>To</span>
             <div>
@@ -30,7 +30,7 @@
           />
         </div>
 
-        <div class="box--input">
+        <div class="box--input box--hover--active">
           <div class="box__space-between">
             <div />
             <div class="box__available">
