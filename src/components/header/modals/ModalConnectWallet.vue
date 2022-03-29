@@ -98,6 +98,8 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   justify-content: center;
+  padding-top: 32px;
+  padding-bottom: 40px;
 }
 
 .title--account-type {
