@@ -5,6 +5,9 @@
         <div class="row--separator--account">
           <div class="border--separator--account" />
         </div>
+        <div>
+          <SelectWallet />
+        </div>
         <fieldset>
           <ul role="radiogroup" class="list--account">
             <li v-for="(account, index) in substrateAccounts" :key="index" class="tw-mb-2">
@@ -82,8 +85,12 @@ import { castMobileSource } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
 import { useRouter } from 'vue-router';
+import SelectWallet from 'src/components/header/modals/SelectWallet.vue';
 
 export default defineComponent({
+  components: {
+    SelectWallet,
+  },
   props: {
     isOpen: {
       type: Boolean,

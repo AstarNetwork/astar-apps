@@ -19,7 +19,7 @@
       <div
         v-for="(wallet, index) in evmWallets"
         :key="index"
-        class="box__row--wallet"
+        class="box__row--wallet box--hover--active"
         :wallet="wallet"
         @click="setWalletModal(wallet.source)"
       >
