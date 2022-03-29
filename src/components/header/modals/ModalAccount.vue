@@ -39,7 +39,9 @@
                   <div class="wrapper--share">
                     <div class="box--share">
                       <img
-                        :src="isDarkTheme ? 'icons/icon-copy-dark.svg' : 'icons/icon-copy.svg'"
+                        :src="
+                          isDarkTheme ? 'icons/icon-copy-dark-nobg.svg' : 'icons/icon-copy-nobg.svg'
+                        "
                         @click="copyAddress"
                       />
                       <div>{{ $t('copy') }}</div>
@@ -49,8 +51,8 @@
                         <img
                           :src="
                             isDarkTheme
-                              ? 'icons/icon-external-link-dark.svg'
-                              : 'icons/icon-external-link.svg'
+                              ? 'icons/icon-external-link-dark-nobg.svg'
+                              : 'icons/icon-external-link-nobg.svg'
                           "
                         />
                         <div>{{ $t('subscan') }}</div>

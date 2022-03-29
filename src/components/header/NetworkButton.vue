@@ -93,19 +93,18 @@ export default defineComponent({
   height: 32px;
   flex-direction: row;
   align-items: center;
-  background: $gray-5;
+  background: #fff;
   padding: 8px 16px 8px 16px;
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
   border-radius: 16px;
   margin-left: 16px;
-  color: #fff;
+  color: $gray-5;
 }
 .btn--network:hover {
-  /* gray005 selected */
-  background: #3c4649;
+  background: #fff;
 }
 .divider {
-  border-left: 1px solid #191d1f;
+  border-left: 1px solid $gray-3;
   margin: 0 6px;
   height: 22px;
 }
@@ -114,5 +113,18 @@ export default defineComponent({
 }
 .icon {
   margin: 0 6px;
+}
+
+.body--dark {
+  .btn--network {
+    background: $gray-5;
+    color: #fff;
+  }
+  .btn--network:hover {
+    background: #3c4649;
+  }
+  .divider {
+    border-left: 1px solid #191d1f;
+  }
 }
 </style>

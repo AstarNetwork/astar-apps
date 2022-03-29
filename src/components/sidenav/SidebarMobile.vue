@@ -87,10 +87,11 @@ export default defineComponent({
   display: flex;
   justify-content: space-between;
   height: 40px;
-  background: rgba(44, 51, 53, 0.8) !important;
+  background: $gray-1;
   opacity: 0.8;
   box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(50px);
+  border-bottom: 1px solid $gray-3;
 }
 
 .tabs {
@@ -110,7 +111,7 @@ export default defineComponent({
 
 .activeLink {
   font-weight: 700;
-  color: $gray-1;
+  color: $gray-5;
 
   .indicator {
     position: absolute;
@@ -126,8 +127,7 @@ export default defineComponent({
 .button--option {
   width: 32px;
   height: 32px;
-  color: #fff;
-  background: $gray-5;
+  color: $gray-3;
   border-radius: 16px;
   margin-top: 4px;
   margin-right: 1rem;
@@ -150,6 +150,21 @@ export default defineComponent({
     padding-left: 1.8rem;
     padding-right: 1.8rem;
     padding-top: 0.3rem;
+  }
+}
+
+.body--dark {
+  .header {
+    background: rgba(44, 51, 53, 0.8);
+  }
+
+  .activeLink {
+    color: $gray-1;
+  }
+
+  .button--option {
+    color: #fff;
+    background: $gray-5;
   }
 }
 </style>

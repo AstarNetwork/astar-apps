@@ -16,7 +16,7 @@
           focus:tw-outline-none
         "
       >
-        <div class="tw-px-4 lg:tw-px-10 tw-py-4 lg:tw-py-0">
+        <div class="tw-px-4 lg:tw-px-10 tw-py-5 lg:tw-py-0">
           <slot />
         </div>
       </main>

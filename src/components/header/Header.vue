@@ -89,6 +89,10 @@ export default defineComponent({
       disconnectAccount,
     } = useConnectWallet();
 
+    if (!currentAccount.value) {
+      openSelectModal();
+    }
+
     const store = useStore();
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
     const route = useRoute();
