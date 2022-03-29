@@ -139,14 +139,16 @@ export const supportEvmWalletObj = {
 
 export const nativeAccountObj = {
   [SupportWallet.PolkadotJs]: supportWalletObj[SupportWallet.PolkadotJs],
+  [SupportWallet.Clover]: supportWalletObj[SupportWallet.Clover],
   [SupportWallet.Talisman]: supportWalletObj[SupportWallet.Talisman],
+  [SupportWallet.Math]: supportWalletObj[SupportWallet.Math],
+  [SupportWallet.SubWallet]: supportWalletObj[SupportWallet.SubWallet],
+  [SupportWallet.Metadot]: supportWalletObj[SupportWallet.Metadot],
+  [SupportWallet.Nova]: supportWalletObj[SupportWallet.Nova],
 };
 
 export const evmAccountObj = {
   [SupportWallet.MetaMask]: supportWalletObj[SupportWallet.MetaMask],
-  [SupportWallet.Math]: supportWalletObj[SupportWallet.Math],
-  [SupportWallet.Clover]: supportWalletObj[SupportWallet.Clover],
-  [SupportWallet.PolkadotJs]: supportWalletObj[SupportWallet.PolkadotJs],
 };
 
 export const supportEvmWallets = objToArray(supportEvmWalletObj) as Wallet[];
