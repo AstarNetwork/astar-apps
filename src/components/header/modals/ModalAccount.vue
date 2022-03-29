@@ -6,7 +6,7 @@
           <div class="border--separator--account" />
         </div>
         <div>
-          <SelectWallet />
+          <SelectWallet :set-wallet-modal="setWalletModal" />
         </div>
         <fieldset>
           <ul role="radiogroup" class="list--account">
@@ -98,6 +98,10 @@ export default defineComponent({
     },
     selectedWallet: {
       type: String,
+      required: true,
+    },
+    setWalletModal: {
+      type: Function,
       required: true,
     },
   },

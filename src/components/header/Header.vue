@@ -27,6 +27,7 @@
     <ModalAccount
       v-if="modalAccountSelect"
       v-model:isOpen="modalAccountSelect"
+      :set-wallet-modal="setWalletModal"
       :selected-wallet="selectedWallet"
     />
 

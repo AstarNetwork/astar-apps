@@ -29,7 +29,6 @@
   </div>
 </template>
 <script lang="ts">
-import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import {
   Wallet,
@@ -44,7 +43,6 @@ import { isMobileDevice } from 'src/hooks/helper/wallet';
 export default defineComponent({
   components: {
     SelectWalletOption,
-    // IconBase,
   },
   props: {
     isEvmOnly: {
@@ -52,8 +50,12 @@ export default defineComponent({
       required: false,
       default: false,
     },
+    setWalletModal: {
+      type: Function,
+      required: true,
+    },
   },
-  emits: ['update:sel-address', 'sel-changed'],
+  emits: ['sel-changed'],
   setup(props, { emit }) {
     const openOption = ref<boolean>(false);
     const selWalletIcon = ref(supportWalletObj[SupportWallet.PolkadotJs].img);
@@ -86,9 +88,11 @@ export default defineComponent({
       () => {
         const wallet = wallets.value.find((it: Wallet) => it.name === selWalletIdx.value);
         if (!wallet) return;
-        // selAddress.value = account.address;
-        // emit('update:sel-address', selAddress.value);
         selWalletIcon.value = wallet.img;
+
+        console.log('s', wallet.source);
+        props.setWalletModal(wallet.source);
+
         emit('sel-changed', selWalletIdx.value);
         openOption.value = false;
       },
