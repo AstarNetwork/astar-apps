@@ -87,7 +87,7 @@ export default defineComponent({
   background: #3c4649;
 }
 .iconbase {
-  color: #5f656f;
+  color: $gray-4;
 }
 .icon {
   margin: 0 6px;

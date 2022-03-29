@@ -209,7 +209,7 @@ export default defineComponent({
   background: #fff;
 
   &:checked {
-    background: #0085ff;
+    background: $astar-blue;
   }
 }
 
@@ -222,7 +222,7 @@ export default defineComponent({
     line-height: 18px;
   }
   .address {
-    color: #5f656f;
+    color: $gray-4;
     font-weight: 510;
     font-size: 12px;
     line-height: 20px;
@@ -261,7 +261,7 @@ export default defineComponent({
   margin-top: 24px;
   &:hover {
     background: linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
-      linear-gradient(0deg, #0085ff, #0085ff);
+      linear-gradient(0deg, $astar-blue, $astar-blue);
   }
 }
 

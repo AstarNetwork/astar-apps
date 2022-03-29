@@ -117,7 +117,7 @@ export default defineComponent({
     position: absolute;
     top: 0px;
     margin-left: 4px;
-    background: #0085ff;
+    background: $astar-blue;
     border-radius: 0px 0px 8px 8px;
     width: 36px;
     height: 4px;
@@ -140,7 +140,7 @@ export default defineComponent({
   background: rgba(44, 51, 53, 0.8);
   box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(50px);
-  border-top: 1px solid #5f656f;
+  border-top: 1px solid $gray-4;
 
   .wrapper--option {
     display: flex;

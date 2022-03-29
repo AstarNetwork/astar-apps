@@ -63,7 +63,9 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import 'src/css/quasar.variables.scss';
+
 .icon-light {
   @apply tw-p-2 tw-rounded-full tw-relative;
 }
@@ -73,7 +75,7 @@ export default defineComponent({
 }
 
 .icon-outline-moon {
-  color: #5f656f;
+  color: $gray-4;
   @apply tw-h-5 tw-w-5 dark:tw-text-darkGray-100;
 }
 </style>

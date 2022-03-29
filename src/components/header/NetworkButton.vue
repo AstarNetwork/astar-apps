@@ -109,7 +109,7 @@ export default defineComponent({
   height: 22px;
 }
 .iconbase {
-  color: #5f656f;
+  color: $gray-4;
 }
 .icon {
   margin: 0 6px;
