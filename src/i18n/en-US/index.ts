@@ -29,6 +29,7 @@ export default {
     darkMode: 'Dark mode',
     dApps: 'dApps',
     dappStaking: 'dApp Staking',
+    staking: 'Staking',
     contract: 'Contract',
     plasmLockdrop: 'Plasm Lockdrop',
     closeSidebar: 'Close sidebar',
@@ -296,5 +297,8 @@ export default {
       availableToUnlocked: 'Available to unlocked',
       unlock: 'Unlock',
     },
+  },
+  dashboard: {
+    dashboard: 'Dashboard',
   },
 };

@@ -36,9 +36,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, computed } from 'vue';
+import { defineComponent, reactive, toRefs, computed, ref, watch } from 'vue';
 import { useConnectWallet } from 'src/hooks';
 import { useStore } from 'src/store';
+import { useRoute } from 'vue-router';
 import ConnectButton from 'src/components/header/ConnectButton.vue';
 import AccountButton from 'src/components/header/AccountButton.vue';
 import NetworkButton from 'src/components/header/NetworkButton.vue';
@@ -82,7 +83,26 @@ export default defineComponent({
 
     const store = useStore();
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
-    const headerName = computed(() => store.getters['general/headerName']);
+    const route = useRoute();
+    const path = computed(() => route.path.split('/')[1]);
+    const headerName = ref('');
+    watch(
+      path,
+      () => {
+        if (path.value === 'dashboard') {
+          headerName.value = 'Dashboard';
+        } else if (path.value === 'assets') {
+          headerName.value = 'Assets';
+        } else if (path.value === 'dapp-staking') {
+          headerName.value = 'Staking';
+        } else if (path.value === 'bridge') {
+          headerName.value = 'Bridge';
+        }
+      },
+      {
+        immediate: true,
+      }
+    );
 
     return {
       ...toRefs(stateModal),

@@ -1,0 +1,155 @@
+<template>
+  <div>
+    <div class="header">
+      <div class="tabs">
+        <router-link
+          to="/dashboard"
+          :class="['link', $route.path.split('/')[1] === 'dashboard' ? 'activeLink' : '']"
+        >
+          <div class="indicator" />
+          <div class="col--item">
+            {{ $t('dashboard.dashboard') }}
+          </div>
+        </router-link>
+
+        <router-link
+          to="/assets"
+          :class="['link', $route.path.split('/')[1] === 'assets' ? 'activeLink' : '']"
+        >
+          <div class="indicator" />
+          <div class="col--item">
+            {{ $t('assets.assets') }}
+          </div>
+        </router-link>
+
+        <router-link
+          v-if="network.isStoreEnabled"
+          to="/dapp-staking"
+          :class="['link', $route.path.split('/')[1] === 'dapp-staking' ? 'activeLink' : '']"
+        >
+          <div class="indicator" />
+          <div class="col--item">
+            {{ $t('common.staking') }}
+          </div>
+        </router-link>
+      </div>
+
+      <button type="button" class="button--option" @click="showOption = !showOption">
+        <icon-base class="tw-w-5 tw-h-5" stroke="currentColor" icon-name="option">
+          <icon-3dots />
+        </icon-base>
+      </button>
+    </div>
+
+    <div v-if="showOption" class="wrapper--bottom">
+      <SocialMediaLinks />
+      <div class="wrapper--option">
+        <LightDarkMode />
+        <LocaleChanger />
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent, computed, ref } from 'vue';
+import { useStore } from 'src/store';
+import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
+import Icon3dots from 'components/icons/Icon3dots.vue';
+import LocaleChanger from '../common/LocaleChanger.vue';
+import SocialMediaLinks from '../common/SocialMediaLinks.vue';
+import LightDarkMode from '../common/LightDarkMode.vue';
+export default defineComponent({
+  components: {
+    Icon3dots,
+    LocaleChanger,
+    SocialMediaLinks,
+    LightDarkMode,
+  },
+  setup() {
+    const store = useStore();
+    const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
+    const network = ref(providerEndpoints[currentNetworkIdx.value]);
+    const showOption = ref(false);
+
+    return {
+      showOption,
+      network,
+    };
+  },
+});
+</script>
+<style lang="scss" scoped>
+@import 'src/css/quasar.variables.scss';
+
+.header {
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  height: 40px;
+  background: rgba(44, 51, 53, 0.8);
+  opacity: 0.8;
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(50px);
+}
+
+.tabs {
+  display: flex;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  text-align: center;
+  color: $gray-3;
+  padding: 12px;
+}
+
+.activeLink {
+  font-weight: 700;
+  color: $gray-1;
+
+  .indicator {
+    position: absolute;
+    top: 0px;
+    margin-left: 4px;
+    background: #0085ff;
+    border-radius: 0px 0px 8px 8px;
+    width: 36px;
+    height: 4px;
+  }
+}
+
+.button--option {
+  width: 32px;
+  height: 32px;
+  color: #fff;
+  background: $gray-5;
+  border-radius: 16px;
+  margin-top: 4px;
+  margin-right: 1rem;
+  padding-left: 4px;
+}
+
+.wrapper--bottom {
+  flex-shrink: 0;
+  padding: 1rem;
+  background: rgba(44, 51, 53, 0.8);
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(50px);
+  border-top: 1px solid #5f656f;
+
+  .wrapper--option {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 1.8rem;
+    padding-right: 1.8rem;
+    padding-top: 0.3rem;
+  }
+}
+</style>
