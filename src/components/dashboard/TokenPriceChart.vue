@@ -32,7 +32,9 @@ export default defineComponent({
       if (!props.network) return;
       const priceUrl = `${API_URL}/v1/${props.network.toLowerCase()}/token/price/1%20year`;
       const result = await axios.get<ChartData>(priceUrl);
-      data.value = result.data;
+      // filter out trading beginning
+      const startDate = new Date(2022, 1, 24);
+      data.value = result.data.filter((x) => x[0] >= startDate.getTime());
 
       if (data.value && data.value.length > 0) {
         currentPrice.value = `\$${data.value[data.value.length - 1][1].toFixed(6)}`;

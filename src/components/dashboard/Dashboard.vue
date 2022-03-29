@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper--charts">
     <value-panel title="Current Circulating Supply" :value="circulatingSupply" />
-    <value-panel title="Current Supply" :value="totalSupply" />
+    <value-panel title="Total Supply" :value="totalSupply" />
     <token-price-chart :network="chainInfo.chain" />
     <tvl-chart :network="chainInfo.chain" />
     <total-transactions-chart :network="chainInfo.chain" />
