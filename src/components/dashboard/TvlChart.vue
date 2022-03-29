@@ -4,6 +4,7 @@
     title="Total Value Locked"
     :default-value="currentTvl"
     class="wrapper--chart"
+    @filter-changed="handleFilterChanged"
   />
 </template>
 
@@ -13,6 +14,7 @@ import axios from 'axios';
 import ChartPanel from 'src/components/dashboard/ChartPanel.vue';
 import { ChartData } from 'src/components/dashboard/ChartData';
 import { API_URL, formatNumber } from 'src/components/dashboard/utils';
+import { DEFAULT_FILTER } from 'src/components/dashboard/ChartFilter.vue';
 
 export default defineComponent({
   components: {
@@ -27,10 +29,13 @@ export default defineComponent({
   setup(props) {
     const data = ref<ChartData>([[1, 1]]);
     const currentTvl = ref<string>('');
+    const currentFilter = ref<string>(DEFAULT_FILTER);
 
-    const loadData = async () => {
+    const loadData = async (): Promise<void> => {
       if (!props.network) return;
-      const priceUrl = `${API_URL}/v1/${props.network.toLowerCase()}/token/tvl/1%20year`;
+      const priceUrl = `${API_URL}/v1/${props.network.toLowerCase()}/token/tvl/${
+        currentFilter.value
+      }`;
       const result = await axios.get<ChartData>(priceUrl);
       data.value = result.data.map((pair) => {
         return [Number(pair[0]) * 1000, pair[1]];
@@ -41,7 +46,11 @@ export default defineComponent({
       }
     };
 
-    loadData();
+    const handleFilterChanged = async (filter: string): Promise<void> => {
+      console.log('filter changed', filter);
+      currentFilter.value = filter;
+      await loadData();
+    };
 
     watch([props], () => {
       if (props.network) {
@@ -52,6 +61,7 @@ export default defineComponent({
     return {
       data,
       currentTvl,
+      handleFilterChanged,
     };
   },
 });

@@ -8,6 +8,7 @@
         <span class="text--xlg">{{ defaultValue }}</span>
       </div>
       <div class="chart">
+        <chart-filter @filterChanged="handleFilterChanged" />
         <highcharts :options="chartOptions"></highcharts>
       </div>
     </div>
@@ -18,10 +19,12 @@
 import { defineComponent, computed, ref, watch } from 'vue';
 import { Chart } from 'highcharts-vue';
 import { useStore } from 'src/store';
+import ChartFilter from 'src/components/dashboard/ChartFilter.vue';
 
 export default defineComponent({
   components: {
     highcharts: Chart,
+    ChartFilter,
   },
   props: {
     title: {
@@ -37,7 +40,8 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
+  emits: ['filterChanged'],
+  setup(props, { emit }) {
     const store = useStore();
     const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
     const getBackgroundColor = (): string => (isDarkTheme.value ? '#2c3335' : '#fff');
@@ -115,6 +119,10 @@ export default defineComponent({
       chartOptions.value.series[0].fillColor = getChartFillColor();
     });
 
+    const handleFilterChanged = (filter: string): void => {
+      emit('filterChanged', filter);
+    };
+
     watch([props], () => {
       chartOptions.value.series[0].data = props.data;
 
@@ -128,6 +136,7 @@ export default defineComponent({
     return {
       chartOptions,
       hasData,
+      handleFilterChanged,
     };
   },
 });
