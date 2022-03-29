@@ -2,9 +2,9 @@
   <div v-if="hasData">
     <div class="container">
       <div class="row">
-        <span class="text--md">{{ title }}</span>
+        <span class="text--accent container--title--color">{{ title }}</span>
       </div>
-      <div class="row">
+      <div class="row chart--value">
         <span class="text--xlg">{{ defaultValue }}</span>
       </div>
       <div class="chart">
@@ -59,19 +59,13 @@ export default defineComponent({
         title: {
           text: '',
         },
+        gridLineColor: '#666',
       },
       legend: {
         enabled: false,
       },
       plotOptions: {
         area: {
-          fillColor: {
-            linearGradient: { x1: 0.1, y1: 0.5, x2: 0.9, y2: 0.5 },
-            stops: [
-              [0, 'rgba(12, 134, 245, 0)'],
-              [1, 'rgba(7, 200, 254, 0.26)'],
-            ],
-          },
           marker: {
             radius: 0,
           },
@@ -89,6 +83,7 @@ export default defineComponent({
           name: props.title,
           type: 'area',
           data: props.data,
+          color: '#05B6FD',
         },
       ],
     });

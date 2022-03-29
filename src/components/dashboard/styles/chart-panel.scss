@@ -10,7 +10,7 @@
 }
 
 .chart {
-  margin-top: 16px;
+  padding-bottom: 8px 24px 24px;
 }
 
 .wrapper--charts {
@@ -23,8 +23,25 @@
 .wrapper--chart {
   width: 100%;
   padding: 8px;
+}
+
+.wrapper--value {
+  width: 100%;
+  padding: 8px;
 
   @media (min-width: $lg) {
     width: 50%;
   }
+}
+
+.container--value {
+  padding: 8px 24px 32px;
+}
+
+.container--title--color {
+  color: #B1B7C1;
+}
+
+.chart--value {
+  padding: 8px 8px 24px;
 }
