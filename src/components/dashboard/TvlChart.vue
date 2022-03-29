@@ -47,7 +47,6 @@ export default defineComponent({
     };
 
     const handleFilterChanged = async (filter: string): Promise<void> => {
-      console.log('filter changed', filter);
       currentFilter.value = filter;
       await loadData();
     };
