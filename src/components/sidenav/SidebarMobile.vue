@@ -87,7 +87,7 @@ export default defineComponent({
   display: flex;
   justify-content: space-between;
   height: 40px;
-  background: rgba(44, 51, 53, 0.8);
+  background: rgba(44, 51, 53, 0.8) !important;
   opacity: 0.8;
   box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(50px);

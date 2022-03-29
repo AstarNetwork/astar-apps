@@ -1,6 +1,9 @@
 <template>
   <div>
-    <astar-header :title="headerName">
+    <astar-header :title="width >= screenSize.sm ? headerName : ''">
+      <template #left>
+        <div class="icon"><Logo /></div>
+      </template>
       <template v-if="!currentAccount">
         <ConnectButton @click="openSelectModal" />
       </template>
@@ -40,6 +43,7 @@ import { defineComponent, reactive, toRefs, computed, ref, watch } from 'vue';
 import { useConnectWallet } from 'src/hooks';
 import { useStore } from 'src/store';
 import { useRoute } from 'vue-router';
+import { useBreakpoints } from 'src/hooks';
 import ConnectButton from 'src/components/header/ConnectButton.vue';
 import AccountButton from 'src/components/header/AccountButton.vue';
 import NetworkButton from 'src/components/header/NetworkButton.vue';
@@ -47,6 +51,7 @@ import ModalConnectWallet from 'src/components/header/modals/ModalConnectWallet.
 import ModalAccount from 'src/components/header/modals/ModalAccount.vue';
 import ModalInstallWallet from 'src/components/balance/modals/ModalInstallWallet.vue';
 import ModalNetwork from 'src/components/header/modals/ModalNetwork.vue';
+import Logo from 'src/components/common/Logo.vue';
 
 interface Modal {
   modalNetwork: boolean;
@@ -61,8 +66,11 @@ export default defineComponent({
     ModalConnectWallet,
     ModalInstallWallet,
     ModalNetwork,
+    Logo,
   },
   setup() {
+    const { width, screenSize } = useBreakpoints();
+
     const stateModal = reactive<Modal>({
       modalNetwork: false,
     });
@@ -119,7 +127,14 @@ export default defineComponent({
       setWalletModal,
       openSelectModal,
       disconnectAccount,
+      width,
+      screenSize,
     };
   },
 });
 </script>
+<style scoped>
+.icon {
+  width: 102px;
+}
+</style>

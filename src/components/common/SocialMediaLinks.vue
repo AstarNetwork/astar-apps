@@ -73,6 +73,10 @@ export default defineComponent({
   padding: 10px;
 }
 
+.icon-link:hover {
+  color: $gray-1;
+}
+
 @media (max-width: 768px) {
   .icon-link {
     color: $gray-1;
@@ -82,6 +86,9 @@ export default defineComponent({
 .body--dark {
   .icon-link {
     color: $gray-1;
+  }
+  .icon-link:hover {
+    color: $gray-5-selected;
   }
 }
 </style>

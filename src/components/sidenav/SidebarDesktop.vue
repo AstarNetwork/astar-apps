@@ -6,23 +6,6 @@
     <div class="menu">
       <div>
         <router-link
-          to="/dashboard"
-          :class="['link', $route.path.split('/')[1] === 'dashboard' ? 'activeLink' : '']"
-        >
-          <icon-base
-            :class="['iconbase', isShiden ? 'shiden' : '']"
-            stroke="currentColor"
-            icon-name="dashboard"
-          >
-            <icon-dashboard />
-          </icon-base>
-          <div class="row--item">
-            <astar-text type="H4">{{ $t('dashboard.dashboard') }}</astar-text>
-          </div>
-        </router-link>
-      </div>
-      <div>
-        <router-link
           to="/assets"
           :class="['link', $route.path.split('/')[1] === 'assets' ? 'activeLink' : '']"
         >
@@ -35,6 +18,23 @@
           </icon-base>
           <div class="row--item">
             <astar-text type="H4">{{ $t('assets.assets') }}</astar-text>
+          </div>
+        </router-link>
+      </div>
+      <div>
+        <router-link
+          to="/dashboard"
+          :class="['link', $route.path.split('/')[1] === 'dashboard' ? 'activeLink' : '']"
+        >
+          <icon-base
+            :class="['iconbase', isShiden ? 'shiden' : '']"
+            stroke="currentColor"
+            icon-name="dashboard"
+          >
+            <icon-dashboard />
+          </icon-base>
+          <div class="row--item">
+            <astar-text type="H4">{{ $t('dashboard.dashboard') }}</astar-text>
           </div>
         </router-link>
       </div>
@@ -141,7 +141,7 @@ export default defineComponent({
 .icon {
   text-align: center;
   width: 170px;
-  margin-left: 10px;
+  margin-left: 8px;
 }
 .iconbase {
   color: $astar-blue-dark;
@@ -154,14 +154,14 @@ export default defineComponent({
 .sidebar {
   width: 224px;
   height: 100%;
-  padding-top: 40px;
+  padding-top: 18px;
   background: #e6e9ee;
   display: flex;
   flex-direction: column;
 }
 
 .menu {
-  margin-top: 50px;
+  margin-top: 2rem;
   margin-left: 24px;
   flex-grow: 1;
 
