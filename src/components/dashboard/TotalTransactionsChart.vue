@@ -2,7 +2,7 @@
   <chart-panel
     :data="data"
     title="Total Transactions"
-    :default-value="currentTransactionsNumber"
+    :default-value="totalTransactionsNumber"
     class="wrapper--chart"
   />
 </template>
@@ -26,7 +26,7 @@ export default defineComponent({
   },
   setup(props) {
     const data = ref<ChartData>([[1, 1]]);
-    const currentTransactionsNumber = ref<string>('');
+    const totalTransactionsNumber = ref<string>('');
 
     const loadData = async () => {
       if (!props.network) return;
@@ -36,11 +36,9 @@ export default defineComponent({
         return [Number(pair[0]), pair[1]];
       });
 
-      if (data.value && data.value.length > 0) {
-        currentTransactionsNumber.value = `${formatNumber(
-          data.value[data.value.length - 1][1],
-          1
-        )}`;
+      if (data.value) {
+        const sum = data.value.reduce((previous, current) => current[1] + previous, 0);
+        totalTransactionsNumber.value = formatNumber(sum, 1);
       }
     };
 
@@ -54,7 +52,7 @@ export default defineComponent({
 
     return {
       data,
-      currentTransactionsNumber,
+      totalTransactionsNumber,
     };
   },
 });
