@@ -60,15 +60,6 @@ export const supportWalletObj = {
     isSupportBrowserExtension: true,
     isSupportMobileApp: false,
   },
-  [SupportWallet.MetaMask]: {
-    img: require('/src/assets/img/metamask.png'),
-    name: 'MetaMask',
-    source: SupportWallet.MetaMask,
-    walletUrl: 'https://metamask.io/',
-    guideUrl: 'https://metamask.io/',
-    isSupportBrowserExtension: true,
-    isSupportMobileApp: true,
-  },
   [SupportWallet.Clover]: {
     img: require('/src/assets/img/logo-clover.png'),
     name: 'Clover',
@@ -137,21 +128,5 @@ export const supportEvmWalletObj = {
   },
 };
 
-export const nativeAccountObj = {
-  [SupportWallet.PolkadotJs]: supportWalletObj[SupportWallet.PolkadotJs],
-  [SupportWallet.Clover]: supportWalletObj[SupportWallet.Clover],
-  [SupportWallet.Talisman]: supportWalletObj[SupportWallet.Talisman],
-  [SupportWallet.Math]: supportWalletObj[SupportWallet.Math],
-  [SupportWallet.SubWallet]: supportWalletObj[SupportWallet.SubWallet],
-  [SupportWallet.Metadot]: supportWalletObj[SupportWallet.Metadot],
-  [SupportWallet.Nova]: supportWalletObj[SupportWallet.Nova],
-};
-
-export const evmAccountObj = {
-  [SupportWallet.MetaMask]: supportWalletObj[SupportWallet.MetaMask],
-};
-
 export const supportEvmWallets = objToArray(supportEvmWalletObj) as Wallet[];
 export const supportWallets = objToArray(supportWalletObj) as Wallet[];
-export const supportNativeAccountWallets = objToArray(nativeAccountObj) as Wallet[];
-export const supportEvmAccountWallets = objToArray(evmAccountObj) as Wallet[];

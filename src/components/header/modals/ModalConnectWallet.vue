@@ -1,7 +1,7 @@
 <template>
   <astar-simple-modal :show="isModalConnectWallet" title="Select a Wallet" @close="setCloseModal">
     <div class="wrapper--modal">
-      <div class="title--account-type">Native Account</div>
+      <div class="title--account-type">{{ $t('wallet.nativeAccount') }}</div>
       <div
         v-for="(wallet, index) in nativeWallets"
         :key="index"
@@ -15,7 +15,7 @@
         <div>{{ wallet.name }}</div>
       </div>
 
-      <div class="title--account-type tw-mt-4">EVM Account</div>
+      <div class="title--account-type tw-mt-4">{{ $t('wallet.evmAccount') }}</div>
       <div
         v-for="(wallet, index) in evmWallets"
         :key="index"
@@ -31,10 +31,10 @@
     </div>
   </astar-simple-modal>
 </template>
- <script lang="ts">
-import { defineComponent, watchEffect, ref } from 'vue';
-import { Wallet, supportNativeAccountWallets, supportEvmAccountWallets } from 'src/config/wallets';
+<script lang="ts">
+import { supportEvmWallets, supportWallets, Wallet } from 'src/config/wallets';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
+import { computed, defineComponent } from 'vue';
 
 export default defineComponent({
   props: {
@@ -56,33 +56,31 @@ export default defineComponent({
       default: false,
     },
   },
-  setup(props) {
-    const nativeWallets = ref<Wallet[]>(supportNativeAccountWallets);
-    watchEffect(() => {
-      nativeWallets.value = supportNativeAccountWallets
+  setup() {
+    const nativeWallets = computed(() => {
+      return supportWallets
         .map((it) => {
           const { isSupportMobileApp, isSupportBrowserExtension } = it;
           if (isMobileDevice) {
-            return isSupportMobileApp ? it : null;
+            return isSupportMobileApp ? it : undefined;
           } else {
-            return isSupportBrowserExtension ? it : null;
+            return isSupportBrowserExtension ? it : undefined;
           }
         })
-        .filter((it) => it !== null) as Wallet[];
+        .filter((it) => it !== undefined) as Wallet[];
     });
 
-    const evmWallets = ref<Wallet[]>(supportEvmAccountWallets);
-    watchEffect(() => {
-      evmWallets.value = supportEvmAccountWallets
+    const evmWallets = computed(() => {
+      return supportEvmWallets
         .map((it) => {
           const { isSupportMobileApp, isSupportBrowserExtension } = it;
           if (isMobileDevice) {
-            return isSupportMobileApp ? it : null;
+            return isSupportMobileApp ? it : undefined;
           } else {
-            return isSupportBrowserExtension ? it : null;
+            return isSupportBrowserExtension ? it : undefined;
           }
         })
-        .filter((it) => it !== null) as Wallet[];
+        .filter((it) => it !== undefined) as Wallet[];
     });
 
     return {
