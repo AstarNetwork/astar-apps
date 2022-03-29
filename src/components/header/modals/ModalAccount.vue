@@ -187,7 +187,7 @@ export default defineComponent({
   font-weight: 700;
   font-size: 16px;
   line-height: 18px;
-  color: #2c3335;
+  color: $gray-5;
   margin: 0 auto;
   margin-top: 16px;
   padding: 16px;
@@ -214,7 +214,7 @@ export default defineComponent({
 .wrapper--account-detail {
   width: 225px;
   .accountName {
-    color: #2c3335;
+    color: $gray-5;
     font-weight: 700;
     font-size: 16px;
     line-height: 18px;
@@ -237,7 +237,7 @@ export default defineComponent({
   .box--share {
     display: flex;
     align-items: center;
-    color: #05b6fd;
+    color: $astar-blue-dark;
     font-weight: 400;
     font-size: 14px;
     line-height: 17px;
@@ -268,19 +268,19 @@ export default defineComponent({
     color: #fff;
   }
   .class-radio-off {
-    background: #191d1f;
+    background: $gray-6;
   }
 
   .class-radio-on {
-    background: #222829;
+    background: $gray-5-selected;
   }
 
   .wrapper--account-detail {
     .accountName {
-      color: #f7f7f8;
+      color: $gray-1;
     }
     .address {
-      color: #b1b7c1;
+      color: $gray-3;
     }
   }
 }

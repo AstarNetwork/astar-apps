@@ -106,7 +106,7 @@ export default defineComponent({
   font-weight: 400;
   font-size: 14px;
   line-height: 17px;
-  color: #2c3335;
+  color: $gray-5;
   text-align: left;
   margin-left: 21px;
 }
@@ -121,7 +121,7 @@ export default defineComponent({
   font-weight: 700;
   font-size: 16px;
   line-height: 18px;
-  color: #2c3335;
+  color: $gray-5;
   margin: 0 auto;
   margin-top: 16px;
   padding: 16px;

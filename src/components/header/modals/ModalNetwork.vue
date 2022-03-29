@@ -156,7 +156,7 @@ export default defineComponent({
   font-weight: 700;
   font-size: 16px;
   line-height: 18px;
-  color: #2c3335;
+  color: $gray-5;
   margin: 0 auto;
   margin-top: 16px;
   padding: 16px;
@@ -211,11 +211,11 @@ export default defineComponent({
     color: #fff;
   }
   .class-radio-off {
-    background: #191d1f;
+    background: $gray-6;
   }
 
   .class-radio-on {
-    background: #222829;
+    background: $gray-5-selected;
   }
 }
 </style>
