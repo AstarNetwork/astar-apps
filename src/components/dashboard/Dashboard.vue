@@ -2,9 +2,9 @@
   <div class="wrapper--charts">
     <value-panel title="Current Circulating Supply" :value="circulatingSupply" />
     <value-panel title="Total Supply" :value="totalSupply" />
-    <token-price-chart :network="chainInfo.chain" />
     <tvl-chart :network="chainInfo.chain" />
     <total-transactions-chart :network="chainInfo.chain" />
+    <token-price-chart :network="chainInfo.chain" />
   </div>
 </template>
 
@@ -22,7 +22,7 @@ interface StatsData {
   generatedAt: number;
   totalSupply: number;
   circulatingSupply: number;
-}
+} 
 
 export default defineComponent({
   components: {
