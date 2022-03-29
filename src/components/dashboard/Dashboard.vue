@@ -22,7 +22,7 @@ interface StatsData {
   generatedAt: number;
   totalSupply: number;
   circulatingSupply: number;
-} 
+}
 
 export default defineComponent({
   components: {

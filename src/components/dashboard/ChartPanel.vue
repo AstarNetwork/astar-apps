@@ -41,6 +41,9 @@ export default defineComponent({
     const store = useStore();
     const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
     const getBackgroundColor = (): string => (isDarkTheme.value ? '#2c3335' : '#fff');
+    const getLineColor = (): string => (isDarkTheme.value ? '#3C4649' : '#F7F7F8');
+    const getTextColor = (): string => (isDarkTheme.value ? '#5F656F' : '#B1B7C1');
+    const getChartFillColor = (): string => (isDarkTheme.value ? '#1d2d36' : '#F7F7F8');
     const hasData = ref<boolean>(false);
 
     const chartOptions = ref({
@@ -54,12 +57,24 @@ export default defineComponent({
       },
       xAxis: {
         type: 'datetime',
+        lineColor: getLineColor(),
+        tickColor: getLineColor(),
+        labels: {
+          style: {
+            color: getTextColor(),
+          },
+        },
       },
       yAxis: {
         title: {
           text: '',
         },
-        gridLineColor: '#666',
+        gridLineColor: getLineColor(),
+        labels: {
+          style: {
+            color: getTextColor(),
+          },
+        },
       },
       legend: {
         enabled: false,
@@ -83,13 +98,21 @@ export default defineComponent({
           name: props.title,
           type: 'area',
           data: props.data,
-          color: '#05B6FD',
+          color: '#0085FF',
+          fillColor: getChartFillColor(),
+          lineWidth: '2px',
         },
       ],
     });
 
     watch([isDarkTheme], () => {
       chartOptions.value.chart.backgroundColor = getBackgroundColor();
+      chartOptions.value.xAxis.lineColor = getLineColor();
+      chartOptions.value.xAxis.tickColor = getLineColor();
+      chartOptions.value.yAxis.gridLineColor = getLineColor();
+      chartOptions.value.yAxis.labels.style.color = getTextColor();
+      chartOptions.value.xAxis.labels.style.color = getTextColor();
+      chartOptions.value.series[0].fillColor = getChartFillColor();
     });
 
     watch([props], () => {
