@@ -17,7 +17,7 @@ import { defineComponent, toRefs, computed, watchEffect, ref } from 'vue';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { useStore } from 'src/store';
 import { useBreakpoints } from 'src/hooks';
-import { SupportWallet, supportWalletObj } from 'src/config/wallets';
+import { supportEvmWalletObj, SupportWallet, supportWalletObj } from 'src/config/wallets';
 import { getSelectedAccount } from 'src/hooks/helper/wallet';
 import IconBase from 'components/icons/IconBase.vue';
 import IconWallet from 'components/icons/IconWallet.vue';
@@ -47,10 +47,8 @@ export default defineComponent({
 
     watchEffect(() => {
       const selAccount = getSelectedAccount(substrateAccounts.value);
-      if (!props.account) {
-        iconWallet.value = supportWalletObj[SupportWallet.PolkadotJs].img;
-      } else if (isEthWallet.value) {
-        iconWallet.value = supportWalletObj[SupportWallet.MetaMask].img;
+      if (isEthWallet.value) {
+        iconWallet.value = supportEvmWalletObj[SupportWallet.MetaMask].img;
       } else if (selAccount) {
         // @ts-ignore
         iconWallet.value = supportWalletObj[selAccount.source].img;
