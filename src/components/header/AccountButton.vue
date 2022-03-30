@@ -1,6 +1,10 @@
 <template>
   <div>
-    <button type="button" class="btn--account">
+    <button
+      type="button"
+      class="btn--account"
+      :class="width < screenSize.sm ? 'm-btn--account' : ''"
+    >
       <icon-base class="iconbase tw-w-5 tw-h-5 tw--ml-1" stroke="currentColor" icon-name="wallet">
         <icon-wallet />
       </icon-base>
@@ -84,10 +88,38 @@ export default defineComponent({
 .btn--account:hover {
   background: #3c4649;
 }
+
 .iconbase {
   color: $gray-4;
 }
+
+.m-btn--account {
+  border: 1px solid #e6e9ee;
+  box-shadow: none;
+  padding: 8px;
+
+  .iconbase {
+    color: #e6e9ee;
+  }
+}
+
 .icon {
   margin: 0 6px;
+}
+
+.body--dark {
+  .btn--account {
+    background: $gray-5 !important;
+    color: white !important;
+  }
+
+  .m-btn--account {
+    background: $gray-6 !important;
+    color: $gray-3;
+    border: 1px solid $gray-5;
+    .iconbase {
+      color: $gray-4;
+    }
+  }
 }
 </style>

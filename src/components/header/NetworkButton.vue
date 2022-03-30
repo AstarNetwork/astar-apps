@@ -4,7 +4,13 @@
       v-if="isNeedUpdate(isLatestChain, extensionCount)"
       @updated-meta="isLatestChain = true"
     />
-    <button v-else type="button" class="btn--network" @click="showNetworkModal">
+    <button
+      v-else
+      type="button"
+      class="btn--network"
+      :class="width < screenSize.sm ? 'm-btn--network' : ''"
+      @click="showNetworkModal"
+    >
       <icon-base class="iconbase tw-w-5 tw-h-5 tw--ml-1" stroke="currentColor" icon-name="network">
         <icon-network />
       </icon-base>
@@ -97,14 +103,14 @@ export default defineComponent({
   padding: 8px 16px 8px 16px;
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
   border-radius: 16px;
-  margin-left: 16px;
+  margin-left: 8px;
   color: $gray-5;
 }
 .btn--network:hover {
   background: #fff;
 }
 .divider {
-  border-left: 1px solid $gray-3;
+  border-left: 1px solid #e6e9ee;
   margin: 0 6px;
   height: 22px;
 }
@@ -115,16 +121,42 @@ export default defineComponent({
   margin: 0 6px;
 }
 
+.m-btn--network {
+  border: 1px solid #e6e9ee;
+  box-shadow: none;
+  padding: 8px;
+  .iconbase {
+    color: #e6e9ee;
+  }
+  .divider {
+    margin-right: 5px;
+    margin-left: -2px;
+  }
+}
+
 .body--dark {
   .btn--network {
     background: $gray-5;
     color: #fff;
+    border: 1px solid $gray-6;
   }
   .btn--network:hover {
     background: #3c4649;
   }
   .divider {
     border-left: 1px solid #191d1f;
+  }
+
+  .m-btn--network {
+    background: $gray-6;
+    color: $gray-3;
+    border: 1px solid $gray-5;
+    .iconbase {
+      color: $gray-4;
+    }
+    .divider {
+      border-left: 1px solid $gray-4;
+    }
   }
 }
 </style>

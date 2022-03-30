@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center tw-justify-evenly">
+  <div class="flex items-center tw-justify-evenly" :class="width < screenSize.sm ? 'm-header' : ''">
     <a :href="socialUrl.twitter" target="_blank" :class="classes.link" rel="noreferrer">
       <icon-base :class="classes.iconBase" viewBox="0 0 512 512" icon-name="Twitter">
         <icon-twitter />
@@ -40,6 +40,7 @@ import IconTelegram from '../icons/IconTelegram.vue';
 import IconDocument from '../icons/IconDocument.vue';
 import IconGithub from '../icons/IconGithub.vue';
 import IconDiscord from '../icons/IconDiscord.vue';
+import { useBreakpoints } from 'src/hooks';
 import { socialUrl, docsUrl } from 'src/links';
 
 export default defineComponent({
@@ -52,6 +53,7 @@ export default defineComponent({
     IconDiscord,
   },
   setup() {
+    const { width, screenSize } = useBreakpoints();
     const classes = reactive({
       link: 'icon-link',
       iconBase: 'tw-h-4 tw-w-4',
@@ -60,6 +62,8 @@ export default defineComponent({
       classes,
       socialUrl,
       docsUrl,
+      width,
+      screenSize,
     };
   },
 });
@@ -77,9 +81,14 @@ export default defineComponent({
   color: $gray-1;
 }
 
-@media (max-width: 768px) {
+// @media (max-width: 768px) {
+//   .icon-link {
+//     color: $gray-1;
+//   }
+// }
+.m-header {
   .icon-link {
-    color: $gray-1;
+    color: $gray-4;
   }
 }
 
