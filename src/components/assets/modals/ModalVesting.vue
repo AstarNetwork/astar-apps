@@ -44,7 +44,7 @@
 </template>
 <script lang="ts">
 import { AccountData, useVesting } from 'src/hooks';
-import { defineComponent, PropType, watchEffect } from 'vue';
+import { defineComponent, PropType } from 'vue';
 
 export default defineComponent({
   props: {
@@ -71,10 +71,6 @@ export default defineComponent({
       props.handleModalVesting({ isOpen: false });
     };
     const { info, sendTransaction } = useVesting(closeModal);
-
-    watchEffect(() => {
-      console.log('info', info.value);
-    });
 
     return {
       info,
