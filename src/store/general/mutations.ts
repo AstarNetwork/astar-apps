@@ -18,6 +18,7 @@ export interface GeneralMutations<S = State> {
   setCurrentNetworkIdx(state: S, networkIdx: number): void;
   setCurrentAddress(state: S, address: string): void;
   setCurrentCustomEndpoint(state: S, endpoint: string): void;
+  setHeaderName(state: S, name: string): void;
 }
 
 const mutation: MutationTree<State> & GeneralMutations = {
@@ -79,6 +80,9 @@ const mutation: MutationTree<State> & GeneralMutations = {
     }
 
     state.currentTheme = theme;
+  },
+  setHeaderName(state, name) {
+    state.headerName = name;
   },
 };
 

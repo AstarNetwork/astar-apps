@@ -1,26 +1,32 @@
-import { computed, watchEffect, Ref, ref } from 'vue';
-import { $api } from 'boot/api';
-import BN from 'bn.js';
 import type { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
-import { useStore } from 'src/store';
-import { useCustomSignature } from 'src/hooks';
+import BN from 'bn.js';
+import { $api } from 'boot/api';
 import {
-  isValidEvmAddress,
-  toSS58Address,
   buildEvmAddress,
   getDefaultEthProvider,
+  isValidEvmAddress,
   sendNativeTokenTransaction,
+  toSS58Address,
 } from 'src/config/web3';
+import { useCustomSignature } from 'src/hooks';
 import { isValidAddressPolkadotAddress, reduceDenomToBalance } from 'src/hooks/helper/plasmUtils';
 import { getUnit } from 'src/hooks/helper/units';
 import { getInjector } from 'src/hooks/helper/wallet';
+import { useStore } from 'src/store';
+import { computed, Ref, ref, watchEffect } from 'vue';
+import Web3 from 'web3';
+import { getEvmProvider } from './helper/wallet';
+import ABI from 'src/c-bridge/abi/ERC20.json';
+import { ethers } from 'ethers';
+import { TransactionConfig } from 'web3-eth';
+import { AbiItem } from 'web3-utils';
 
 export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: () => void) {
   const store = useStore();
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
   const isTxSuccess = ref(false);
 
-  const { callFunc, handleResult, handleTransactionError } = useCustomSignature(fn);
+  const { callFunc, handleResult, handleTransactionError } = useCustomSignature({ fn });
   const toastInvalidAddress = () =>
     store.dispatch('general/showAlertMsg', {
       msg: 'balance.modals.invalidAddress',
@@ -129,5 +135,58 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
     }
   };
 
-  return { callTransfer, isTxSuccess };
+  const callErc20Transfer = async ({
+    transferAmt,
+    fromAddress,
+    toAddress,
+    contractAddress,
+    decimals,
+  }: {
+    transferAmt: string;
+    fromAddress: string;
+    toAddress: string;
+    contractAddress: string;
+    decimals: number;
+  }): Promise<void> => {
+    if (!isH160.value) return;
+    if (!ethers.utils.isAddress(toAddress)) {
+      toastInvalidAddress();
+      return;
+    }
+    const provider = getEvmProvider();
+    const web3 = new Web3(provider as any);
+    const contract = new web3.eth.Contract(ABI as AbiItem[], contractAddress);
+    const gasPrice = await web3.eth.getGasPrice();
+
+    const value = ethers.utils.parseUnits(transferAmt, decimals);
+    const rawTx: TransactionConfig = {
+      nonce: await web3.eth.getTransactionCount(fromAddress),
+      gasPrice: web3.utils.toHex(gasPrice),
+      from: fromAddress,
+      to: contractAddress,
+      value: '0x0',
+      data: contract.methods.transfer(toAddress, value).encodeABI(),
+    };
+    const estimatedGas = await web3.eth.estimateGas(rawTx);
+
+    await web3.eth
+      .sendTransaction({ ...rawTx, gas: estimatedGas })
+      .once('transactionHash', (transactionHash) => {
+        const msg = `Completed at transaction hash #${transactionHash}`;
+        store.dispatch('general/showAlertMsg', { msg, alertType: 'success' });
+        store.commit('general/setLoading', false);
+        fn && fn();
+        isTxSuccess.value = true;
+      })
+      .catch((error: any) => {
+        isTxSuccess.value = false;
+        store.commit('general/setLoading', false);
+        store.dispatch('general/showAlertMsg', {
+          msg: error.message,
+          alertType: 'error',
+        });
+      });
+  };
+
+  return { callTransfer, isTxSuccess, callErc20Transfer };
 }

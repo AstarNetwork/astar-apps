@@ -1,10 +1,11 @@
-import { computed, ref } from 'vue';
+import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
-
 import { useStore } from 'src/store';
+import { computed, ref } from 'vue';
+import { displayCustomMessage, TxType } from './custom-signature/message';
 import { useExtrinsicCall } from './custom-signature/useExtrinsicCall';
 
-export function useCustomSignature(fn?: () => void) {
+export function useCustomSignature({ fn, txType }: { fn?: () => void; txType?: TxType }) {
   const customMsg = ref<string | null>(null);
 
   const store = useStore();
@@ -13,6 +14,7 @@ export function useCustomSignature(fn?: () => void) {
     const isH160 = store.getters['general/isH160Formatted'];
     return isEthWallet && !isH160;
   });
+  const senderAddress = computed(() => store.getters['general/selectedAddress']);
 
   const handleTransactionError = (e: Error): void => {
     console.error(e);
@@ -40,12 +42,24 @@ export function useCustomSignature(fn?: () => void) {
         store.commit('general/setLoading', true);
       }
     }
+    if (txType) {
+      displayCustomMessage({
+        txType,
+        result,
+        senderAddress: senderAddress.value,
+        dispatch: store.dispatch,
+      });
+    }
   };
 
   const { callFunc } = useExtrinsicCall({
     onResult: handleResult,
     onTransactionError: handleTransactionError,
   });
+
+  const handleCustomExtrinsic = async (method: SubmittableExtrinsic<'promise'>) => {
+    await callFunc(method);
+  };
 
   const dispatchError = (msg: string) => {
     console.error(msg);
@@ -62,5 +76,6 @@ export function useCustomSignature(fn?: () => void) {
     handleResult,
     handleTransactionError,
     customMsg,
+    handleCustomExtrinsic,
   };
 }

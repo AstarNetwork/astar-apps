@@ -20,7 +20,6 @@
     height: 196px;
   }
   @media (min-width: $xxl) {
-    top: 24px;
     width: $container-max-width;
   }
   @supports (-moz-appearance: none) {
@@ -32,7 +31,7 @@
   display: grid;
   row-gap: 24px;
   @media (min-width: $lg) {
-    margin-top: 24px;
+    // margin-top: 10px;
   }
   @media (min-width: $xxl) {
     width: $container-max-width;
