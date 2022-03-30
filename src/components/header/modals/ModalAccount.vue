@@ -77,7 +77,11 @@
         </fieldset>
       </div>
       <div class="wrapper__row--button">
-        <button :disabled="!selAccount" class="btn btn--connect" @click="selectAccount(selAccount)">
+        <button
+          :disabled="substrateAccounts.length > 0 && !selAccount"
+          class="btn btn--connect"
+          @click="selectAccount(selAccount)"
+        >
           {{ $t('connect') }}
         </button>
       </div>
@@ -140,7 +144,7 @@ export default defineComponent({
     const isSupportContract = ref(providerEndpoints[currentNetworkIdx.value].isSupportContract);
 
     const selectAccount = (account: string) => {
-      store.commit('general/setCurrentAddress', account);
+      account && store.commit('general/setCurrentAddress', account);
       emit('update:is-open', false);
     };
 
