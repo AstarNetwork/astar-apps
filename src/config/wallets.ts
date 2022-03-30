@@ -128,6 +128,11 @@ export const supportEvmWalletObj = {
   },
 };
 
+export const supportAllWalletsObj = {
+  ...supportEvmWalletObj,
+  ...supportWalletObj,
+};
+
 export const supportEvmWallets = objToArray(supportEvmWalletObj) as Wallet[];
 export const supportWallets = objToArray(supportWalletObj) as Wallet[];
 export const supportAllWallets = objToArray([...supportWallets, ...supportEvmWallets]) as Wallet[];

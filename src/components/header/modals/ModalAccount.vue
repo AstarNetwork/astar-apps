@@ -6,7 +6,7 @@
           <div class="border--separator--account" />
         </div>
         <div>
-          <SelectWallet :set-wallet-modal="setWalletModal" />
+          <SelectWallet :set-wallet-modal="setWalletModal" :selected-wallet="selectedWallet" />
         </div>
         <fieldset>
           <ul role="radiogroup" class="list--account">

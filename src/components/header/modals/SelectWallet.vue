@@ -3,8 +3,8 @@
     <div class="row--input">
       <div class="box__row--wallet" @click="openOption = !openOption">
         <div class="wrapper--row--wallet">
-          <img width="24" :src="selWalletIcon" />
-          <div class="txt--wallet-name">{{ selWalletIdx }}</div>
+          <img width="24" :src="selWallet.img" />
+          <div class="txt--wallet-name">{{ selWallet.name }}</div>
         </div>
         <template v-if="!openOption">
           <div class="txt--change">{{ $t('change') }}</div>
@@ -29,16 +29,16 @@
   </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import {
-  Wallet,
-  supportEvmWallets,
   supportAllWallets,
-  supportWalletObj,
+  supportAllWalletsObj,
   SupportWallet,
+  supportWalletObj,
+  Wallet,
 } from 'src/config/wallets';
-import SelectWalletOption from './SelectWalletOption.vue';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
+import { defineComponent, ref, watch, watchEffect, PropType, computed } from 'vue';
+import SelectWalletOption from './SelectWalletOption.vue';
 
 export default defineComponent({
   components: {
@@ -49,12 +49,17 @@ export default defineComponent({
       type: Function,
       required: true,
     },
+    selectedWallet: {
+      type: String as PropType<SupportWallet>,
+      required: true,
+    },
   },
   emits: ['sel-changed'],
   setup(props, { emit }) {
     const openOption = ref<boolean>(false);
-    const selWalletIcon = ref(supportWalletObj[SupportWallet.PolkadotJs].img);
-    const selWalletIdx = ref<string>(supportWalletObj[SupportWallet.PolkadotJs].name);
+    const selWalletIcon = ref<string>('');
+    const selWalletIdx = ref<string>('');
+    const selWallet = computed(() => supportAllWalletsObj[props.selectedWallet]);
 
     const closeOption = () => {
       setTimeout(() => {
@@ -82,10 +87,7 @@ export default defineComponent({
         const wallet = wallets.value.find((it: Wallet) => it.name === selWalletIdx.value);
         if (!wallet) return;
         selWalletIcon.value = wallet.img;
-
-        console.log('s', wallet.source);
         props.setWalletModal(wallet.source);
-
         emit('sel-changed', selWalletIdx.value);
         openOption.value = false;
       },
@@ -98,6 +100,7 @@ export default defineComponent({
       wallets,
       selWalletIdx,
       selWalletIcon,
+      selWallet,
     };
   },
 });
