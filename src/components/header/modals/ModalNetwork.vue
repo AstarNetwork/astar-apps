@@ -145,8 +145,8 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-top: 32px;
-  padding-bottom: 40px;
+  padding-top: 24px;
+  padding-bottom: 20px;
 }
 
 .class-radio {
