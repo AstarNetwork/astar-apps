@@ -103,6 +103,9 @@ export default defineComponent({
           lineWidth: '2px',
         },
       ],
+      credits: {
+        enabled: false,
+      },
     });
 
     watch([isDarkTheme], () => {
