@@ -182,7 +182,7 @@ export default defineComponent({
 @import 'src/css/utils.scss';
 
 .list--account {
-  max-height: 460px;
+  max-height: 480px;
   overflow-y: auto;
 }
 
