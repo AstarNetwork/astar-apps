@@ -9,7 +9,15 @@
           <SelectWallet :set-wallet-modal="setWalletModal" :selected-wallet="selectedWallet" />
         </div>
         <fieldset>
-          <ul role="radiogroup" class="list--account">
+          <div v-if="!substrateAccounts.length && selectedWallet === SupportWallet.Math">
+            <li v-if="currentNetworkIdx !== 1">
+              {{ $t('balance.modals.math.supportsNetwork') }}
+            </li>
+            <li v-if="!substrateAccounts.length">
+              {{ $t('balance.modals.math.switchNetwork') }}
+            </li>
+          </div>
+          <ul v-else role="radiogroup" class="list--account">
             <li v-for="(account, index) in substrateAccounts" :key="index" class="tw-mb-2">
               <label
                 :class="[
