@@ -44,7 +44,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const store = useStore();
     const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
-    const getBackgroundColor = (): string => (isDarkTheme.value ? '#2c3335' : '#fff');
+    const getBackgroundColor = (): string => (isDarkTheme.value ? '#222829' : '#fff');
     const getLineColor = (): string => (isDarkTheme.value ? '#3C4649' : '#F7F7F8');
     const getTextColor = (): string => (isDarkTheme.value ? '#5F656F' : '#B1B7C1');
     const getChartFillColor = (): string => (isDarkTheme.value ? '#1d2d36' : '#F7F7F8');

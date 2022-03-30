@@ -61,21 +61,29 @@
 
 .body--dark {
   .filter--tabs {
-    background-color: $gray-5;
-    border: 1px solid $gray-5-selected;
+    background-color: $gray-5-selected;
+    border: 1px solid $gray-5;
 
     div:not(:last-child) {
-      border-right: 1px solid $gray-5-selected;
+      border-right: 1px solid $gray-5;
     }
 
     .selected {
-      background-color: $gray-5-selected;
+      background-color: $gray-5;
     }
+  }
+
+  .container {
+    background-color: $gray-5-selected;
   }
 }
 
 .container--value {
-  padding: 8px 24px 32px;
+  padding: 8px 16px 32px;
+
+  @media (min-width: $sm) {
+    padding: 8px 24px 32px;
+  }
 }
 
 .container--title--color {
