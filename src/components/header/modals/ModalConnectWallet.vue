@@ -1,6 +1,6 @@
 <template>
   <astar-simple-modal :show="isModalConnectWallet" title="Select a Wallet" @close="setCloseModal">
-    <div class="wrapper--modal">
+    <div class="wrapper--modal--wallet">
       <div class="title--account-type">{{ $t('wallet.nativeAccount') }}</div>
       <div
         v-for="(wallet, index) in nativeWallets"
@@ -94,12 +94,12 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
 
-.wrapper--modal {
+.wrapper--modal--wallet {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-top: 32px;
-  padding-bottom: 40px;
+  padding-top: 24px;
+  padding-bottom: 20px;
 }
 
 .title--account-type {

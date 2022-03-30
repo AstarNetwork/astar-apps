@@ -76,7 +76,7 @@
     </div>
   </astar-simple-modal>
 </template>
- <script lang="ts">
+<script lang="ts">
 import { defineComponent, ref, computed } from 'vue';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { SupportWallet } from 'src/config/wallets';
@@ -177,7 +177,7 @@ export default defineComponent({
 });
 </script>
 
- <style lang="scss" scoped>
+<style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
 
 .list--account {
@@ -189,8 +189,8 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-top: 32px;
-  padding-bottom: 40px;
+  padding-top: 24px;
+  padding-bottom: 20px;
 }
 
 .class-radio {
