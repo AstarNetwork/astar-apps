@@ -14,7 +14,7 @@
         </template>
       </div>
     </div>
-    <div v-if="openOption" class="box--wallet-option">
+    <div v-if="openOption" v-click-away="closeOption" class="box--wallet-option">
       <ul class="container--wallet">
         <SelectWalletOption
           v-for="(wallet, index) in wallets"
@@ -29,13 +29,7 @@
   </div>
 </template>
 <script lang="ts">
-import {
-  supportAllWallets,
-  supportAllWalletsObj,
-  SupportWallet,
-  supportWalletObj,
-  Wallet,
-} from 'src/config/wallets';
+import { supportAllWallets, supportAllWalletsObj, SupportWallet, Wallet } from 'src/config/wallets';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
 import { defineComponent, ref, watch, watchEffect, PropType, computed } from 'vue';
 import SelectWalletOption from './SelectWalletOption.vue';
