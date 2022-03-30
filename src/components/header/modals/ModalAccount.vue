@@ -211,6 +211,7 @@ export default defineComponent({
 }
 .class-radio-off {
   background: #fff;
+  border: 1px solid transparent;
 }
 .class-radio-off:hover {
   border: 1px solid $astar-blue-dark;
