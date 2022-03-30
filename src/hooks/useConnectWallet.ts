@@ -136,6 +136,16 @@ export const useConnectWallet = () => {
     setWallet(wallet);
   };
 
+  const changeAccount = async () => {
+    const chosenWallet = selectedWallet.value;
+    disconnectAccount();
+    if (chosenWallet === SupportWallet.MetaMask) {
+      openSelectModal();
+    } else {
+      await setWalletModal(chosenWallet as SupportWallet);
+    }
+  };
+
   watchEffect(async () => {
     const lookupWallet = castMobileSource(modalName.value);
     if (SubstrateWallets.find((it) => it === lookupWallet)) {
@@ -204,5 +214,6 @@ export const useConnectWallet = () => {
     setWalletModal,
     disconnectAccount,
     toggleMetaMaskSchema,
+    changeAccount,
   };
 };

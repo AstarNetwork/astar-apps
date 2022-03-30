@@ -29,15 +29,9 @@
   </div>
 </template>
 <script lang="ts">
-import {
-  supportAllWallets,
-  supportAllWalletsObj,
-  SupportWallet,
-  supportWalletObj,
-  Wallet,
-} from 'src/config/wallets';
+import { supportAllWallets, supportAllWalletsObj, SupportWallet, Wallet } from 'src/config/wallets';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
-import { defineComponent, ref, watch, watchEffect, PropType, computed } from 'vue';
+import { computed, defineComponent, PropType, ref, watch, watchEffect } from 'vue';
 import SelectWalletOption from './SelectWalletOption.vue';
 
 export default defineComponent({
