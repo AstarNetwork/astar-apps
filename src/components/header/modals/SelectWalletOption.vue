@@ -11,7 +11,7 @@
   </li>
 </template>
 <script lang="ts">
-import { defineComponent, toRefs, computed } from 'vue';
+import { defineComponent } from 'vue';
 export default defineComponent({
   props: {
     iconWallet: {

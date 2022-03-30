@@ -77,7 +77,11 @@
         </fieldset>
       </div>
       <div class="wrapper__row--button">
-        <button class="btn btn--connect" @click="selectAccount(selAccount)">
+        <button
+          :disabled="substrateAccounts.length > 0 && !selAccount"
+          class="btn btn--connect"
+          @click="selectAccount(selAccount)"
+        >
           {{ $t('connect') }}
         </button>
       </div>
@@ -85,15 +89,15 @@
   </astar-simple-modal>
 </template>
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
+import SelectWallet from 'src/components/header/modals/SelectWallet.vue';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { SupportWallet } from 'src/config/wallets';
 import { useAccount } from 'src/hooks';
 import { castMobileSource } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
+import { computed, defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import SelectWallet from 'src/components/header/modals/SelectWallet.vue';
 
 export default defineComponent({
   components: {
@@ -140,13 +144,11 @@ export default defineComponent({
     const isSupportContract = ref(providerEndpoints[currentNetworkIdx.value].isSupportContract);
 
     const selectAccount = (account: string) => {
-      store.commit('general/setCurrentAddress', account);
+      account && store.commit('general/setCurrentAddress', account);
       emit('update:is-open', false);
     };
 
-    const selAccount = ref<string>(
-      substrateAccounts.value.length > 0 ? substrateAccounts.value[0].address : ''
-    );
+    const selAccount = ref<string>('');
 
     const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
 

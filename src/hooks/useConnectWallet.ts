@@ -15,6 +15,7 @@ import {
   checkIsWalletExtension,
   getDeepLinkUrl,
   getInjectedExtensions,
+  getSelectedAccount,
   isMobileDevice,
 } from './helper/wallet';
 
@@ -43,6 +44,16 @@ export const useConnectWallet = () => {
 
   const { SELECTED_ADDRESS } = LOCAL_STORAGE;
 
+  const selectedWalletSource = computed(() => {
+    try {
+      const accounts = store.getters['general/substrateAccounts'];
+      const selectedAccount = getSelectedAccount(accounts);
+      return selectedAccount ? selectedAccount.source : null;
+    } catch (error) {
+      return null;
+    }
+  });
+
   const setCloseModal = () => {
     modalName.value = '';
   };
@@ -50,6 +61,14 @@ export const useConnectWallet = () => {
   const openSelectModal = () => {
     modalName.value = WalletModalOption.SelectWallet;
   };
+
+  watchEffect(() => {
+    if (!selectedWalletSource.value) {
+      openSelectModal();
+    } else {
+      selectedWallet.value = selectedWalletSource.value;
+    }
+  });
 
   const loadMetaMask = async (ss58?: string): Promise<boolean> => {
     try {
@@ -136,6 +155,16 @@ export const useConnectWallet = () => {
     setWallet(wallet);
   };
 
+  const changeAccount = async () => {
+    const chosenWallet = selectedWallet.value;
+    disconnectAccount();
+    if (chosenWallet === SupportWallet.MetaMask) {
+      openSelectModal();
+    } else {
+      await setWalletModal(chosenWallet as SupportWallet);
+    }
+  };
+
   watchEffect(async () => {
     const lookupWallet = castMobileSource(modalName.value);
     if (SubstrateWallets.find((it) => it === lookupWallet)) {
@@ -204,5 +233,6 @@ export const useConnectWallet = () => {
     setWalletModal,
     disconnectAccount,
     toggleMetaMaskSchema,
+    changeAccount,
   };
 };

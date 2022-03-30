@@ -11,7 +11,7 @@
         <ConnectButton @click="openSelectModal" />
       </template>
       <template v-else>
-        <AccountButton :account="currentAccount" @click="disconnectAccount" />
+        <AccountButton :account="currentAccount" @click="changeAccount" />
       </template>
       <NetworkButton @show-network="modalNetwork = true" />
     </astar-header>
@@ -90,12 +90,8 @@ export default defineComponent({
       setCloseModal,
       setWalletModal,
       openSelectModal,
-      disconnectAccount,
+      changeAccount,
     } = useConnectWallet();
-
-    if (!currentAccount.value) {
-      openSelectModal();
-    }
 
     const store = useStore();
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
@@ -131,12 +127,12 @@ export default defineComponent({
       currentAccountName,
       selectedWallet,
       modalAccountSelect,
+      width,
+      screenSize,
       setCloseModal,
       setWalletModal,
       openSelectModal,
-      disconnectAccount,
-      width,
-      screenSize,
+      changeAccount,
     };
   },
 });
