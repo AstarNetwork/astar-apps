@@ -38,6 +38,10 @@
   display: flex;
   justify-content: right;
   margin: 8px 16px 24px 16px; 
+
+  @media (min-width: $sm) {
+    margin: 8px 32px 24px 32px; 
+  }
 }
 
 .filter--tabs {
@@ -46,8 +50,12 @@
   border-radius: 6px;
 
   div {
-    padding: 6px 18px;
+    padding: 4px 14px;
     cursor: pointer;
+
+    @media (min-width: $sm) {
+      padding: 4px 18px; 
+    }
   }
 
   div:not(:last-child) {
