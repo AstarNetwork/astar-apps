@@ -1,6 +1,6 @@
 <template>
   <astar-simple-modal :show="isModalConnectWallet" title="Select a Wallet" @close="setCloseModal">
-    <div class="wrapper--modal">
+    <div class="wrapper--modal--wallet">
       <div class="title--account-type">{{ $t('wallet.nativeAccount') }}</div>
       <div
         v-for="(wallet, index) in nativeWallets"
@@ -10,7 +10,7 @@
         @click="setWalletModal(wallet.source)"
       >
         <div class="box--img">
-          <img width="40" :src="wallet.img" />
+          <img :src="wallet.img" />
         </div>
         <div>{{ wallet.name }}</div>
       </div>
@@ -24,7 +24,7 @@
         @click="setWalletModal(wallet.source)"
       >
         <div class="box--img">
-          <img width="40" :src="wallet.img" />
+          <img :src="wallet.img" />
         </div>
         <div>{{ wallet.name }}</div>
       </div>
@@ -93,13 +93,14 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
+@import 'src/css/utils.scss';
 
-.wrapper--modal {
+.wrapper--modal--wallet {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-top: 32px;
-  padding-bottom: 40px;
+  padding-top: 24px;
+  padding-bottom: 20px;
 }
 
 .title--account-type {
@@ -116,8 +117,8 @@ export default defineComponent({
   align-items: center;
   background: #fff;
   border-radius: 6px;
-  height: 3.5rem;
-  width: 19.688rem;
+  height: rem(56);
+  width: rem(314);
   font-weight: 700;
   font-size: 16px;
   line-height: 18px;
@@ -125,6 +126,7 @@ export default defineComponent({
   margin: 0 auto;
   margin-top: 16px;
   padding: 16px;
+  padding-left: 24px;
   cursor: pointer;
 
   &:hover {
@@ -136,8 +138,8 @@ export default defineComponent({
   }
 
   .box--img {
-    width: 40px;
-    height: 40px;
+    width: 24px;
+    height: 24px;
     margin-right: 13px;
   }
 }

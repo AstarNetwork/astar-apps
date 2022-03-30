@@ -68,7 +68,7 @@
     </div>
   </astar-simple-modal>
 </template>
- <script lang="ts">
+<script lang="ts">
 import { defineComponent, ref, computed } from 'vue';
 import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
@@ -139,6 +139,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
+@import 'src/css/utils.scss';
 
 .wrapper--modal-network {
   display: flex;
@@ -153,8 +154,8 @@ export default defineComponent({
   align-items: center;
   background: #fff;
   border-radius: 6px;
-  height: 3.5rem;
-  width: 19.688rem;
+  height: rem(56);
+  width: rem(314);
   font-weight: 700;
   font-size: 16px;
   line-height: 18px;

@@ -76,7 +76,7 @@
     </div>
   </astar-simple-modal>
 </template>
- <script lang="ts">
+<script lang="ts">
 import { defineComponent, ref, computed } from 'vue';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { SupportWallet } from 'src/config/wallets';
@@ -177,8 +177,9 @@ export default defineComponent({
 });
 </script>
 
- <style lang="scss" scoped>
+<style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
+@import 'src/css/utils.scss';
 
 .list--account {
   max-height: 460px;
@@ -189,8 +190,8 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-top: 32px;
-  padding-bottom: 40px;
+  padding-top: 24px;
+  padding-bottom: 20px;
 }
 
 .class-radio {
@@ -198,7 +199,7 @@ export default defineComponent({
   align-items: center;
   background: #fff;
   border-radius: 6px;
-  width: 19.688rem;
+  width: rem(314);
   font-weight: 700;
   font-size: 16px;
   line-height: 18px;
