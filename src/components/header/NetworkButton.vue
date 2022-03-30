@@ -14,7 +14,7 @@
       <icon-base class="iconbase tw-w-5 tw-h-5 tw--ml-1" stroke="currentColor" icon-name="network">
         <icon-network />
       </icon-base>
-      <img class="icon" width="16" src="~assets/img/astr-token.png" />
+      <img v-show="currentLogo" class="icon" width="16" :src="currentLogo" />
       <template v-if="width >= screenSize.sm">
         {{ currentNetworkName }}
       </template>
@@ -51,12 +51,14 @@ export default defineComponent({
     const metaExtensions = computed(() => store.getters['general/metaExtensions']);
     const extensionCount = computed(() => store.getters['general/extensionCount']);
     const currentNetworkName = ref(providerEndpoints[currentNetworkIdx.value].displayName);
+    const currentLogo = ref(providerEndpoints[currentNetworkIdx.value].defaultLogo);
     const isLatestChain = ref(false);
     const version = ref('0.0.0');
 
     watch(currentNetworkIdx, (networkIdx) => {
       version.value = metaExtensions?.value?.extensions[networkIdx].version;
       currentNetworkName.value = providerEndpoints[networkIdx].displayName;
+      currentLogo.value = providerEndpoints[networkIdx].defaultLogo;
     });
 
     watch(
@@ -75,6 +77,7 @@ export default defineComponent({
     return {
       currentNetworkStatus,
       currentNetworkName,
+      currentLogo,
       isLatestChain,
       extensionCount,
       version,

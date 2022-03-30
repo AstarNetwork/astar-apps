@@ -33,7 +33,7 @@ import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import {
   Wallet,
   supportEvmWallets,
-  supportWallets,
+  supportAllWallets,
   supportWalletObj,
   SupportWallet,
 } from 'src/config/wallets';
@@ -45,11 +45,6 @@ export default defineComponent({
     SelectWalletOption,
   },
   props: {
-    isEvmOnly: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     setWalletModal: {
       type: Function,
       required: true,
@@ -67,20 +62,18 @@ export default defineComponent({
       }, 400);
     };
 
-    const wallets = ref<Wallet[]>(supportWallets);
+    const wallets = ref<Wallet[]>(supportAllWallets);
     watchEffect(() => {
-      wallets.value = props.isEvmOnly
-        ? supportEvmWallets
-        : (supportWallets
-            .map((it) => {
-              const { isSupportMobileApp, isSupportBrowserExtension } = it;
-              if (isMobileDevice) {
-                return isSupportMobileApp ? it : null;
-              } else {
-                return isSupportBrowserExtension ? it : null;
-              }
-            })
-            .filter((it) => it !== null) as Wallet[]);
+      wallets.value = supportAllWallets
+        .map((it) => {
+          const { isSupportMobileApp, isSupportBrowserExtension } = it;
+          if (isMobileDevice) {
+            return isSupportMobileApp ? it : null;
+          } else {
+            return isSupportBrowserExtension ? it : null;
+          }
+        })
+        .filter((it) => it !== null) as Wallet[];
     });
 
     watch(
@@ -176,6 +169,7 @@ export default defineComponent({
   border-radius: 6px;
   padding-top: 4px;
   overflow: auto;
+  overflow-x: hidden;
   width: rem(314);
   &:focus {
     outline: none;
