@@ -77,7 +77,7 @@
         </fieldset>
       </div>
       <div class="wrapper__row--button">
-        <button class="btn btn--connect" @click="selectAccount(selAccount)">
+        <button :disabled="!selAccount" class="btn btn--connect" @click="selectAccount(selAccount)">
           {{ $t('connect') }}
         </button>
       </div>
