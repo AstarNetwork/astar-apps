@@ -54,6 +54,12 @@ export default defineComponent({
   color: $gray-5;
 }
 
+@media (max-width: 768px) {
+  .select-language {
+    background: #fff;
+  }
+}
+
 .body--dark {
   .select-language {
     background: $gray-6;
