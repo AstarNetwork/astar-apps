@@ -30,7 +30,8 @@
 
 .body--dark {
   .container {
-    background: $container-bg-dark;
+    // background: $container-bg-dark;
+    background: $gray-5-selected;
     box-shadow: $container-border-shadow-dark;
   }
   .box--input {
