@@ -137,6 +137,7 @@ export default defineComponent({
 </script>
 <style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
+@import 'src/css/utils.scss';
 
 .icon {
   text-align: center;
@@ -161,13 +162,13 @@ export default defineComponent({
 }
 
 .menu {
-  margin-top: 2rem;
+  margin-top: rem(32);
   margin-left: 24px;
   flex-grow: 1;
 
   .row--item {
     flex: 1 1 0%;
-    margin-left: 0.75rem;
+    margin-left: rem(12);
   }
 }
 
@@ -193,13 +194,13 @@ export default defineComponent({
 
 .wrapper--bottom {
   flex-shrink: 0;
-  padding: 1rem;
+  padding: rem(16);
 
   .wrapper--option {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-top: 0.3rem;
+    padding-top: rem(4.8);
   }
 }
 

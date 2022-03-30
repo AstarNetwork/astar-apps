@@ -81,6 +81,7 @@ export default defineComponent({
 </script>
 <style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
+@import 'src/css/utils.scss';
 
 .header {
   overflow: hidden;
@@ -132,13 +133,13 @@ export default defineComponent({
   color: $gray-3;
   border-radius: 16px;
   margin-top: 4px;
-  margin-right: 1rem;
+  margin-right: rem(16);
   padding-left: 4px;
 }
 
 .wrapper--bottom {
   flex-shrink: 0;
-  padding: 1rem;
+  padding: rem(16);
   background: $gray-1;
   color: $gray-4;
   box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.1);
@@ -150,9 +151,9 @@ export default defineComponent({
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    padding-left: 1.8rem;
-    padding-right: 1.8rem;
-    padding-top: 0.3rem;
+    padding-left: rem(28.8);
+    padding-right: rem(28.8);
+    padding-top: rem(4.8);
   }
 }
 

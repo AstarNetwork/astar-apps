@@ -93,6 +93,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
+@import 'src/css/utils.scss';
 
 .wrapper--modal--wallet {
   display: flex;
@@ -116,8 +117,8 @@ export default defineComponent({
   align-items: center;
   background: #fff;
   border-radius: 6px;
-  height: 3.5rem;
-  width: 19.688rem;
+  height: rem(56);
+  width: rem(314);
   font-weight: 700;
   font-size: 16px;
   line-height: 18px;

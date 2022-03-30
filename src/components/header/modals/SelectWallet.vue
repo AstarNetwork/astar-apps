@@ -112,14 +112,16 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
+@import 'src/css/utils.scss';
+
 .box__row--wallet {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background: #fff;
   border-radius: 6px;
-  height: 3.5rem;
-  width: 19.688rem;
+  height: rem(56);
+  width: rem(314);
   font-weight: 700;
   font-size: 16px;
   line-height: 18px;
@@ -160,7 +162,7 @@ export default defineComponent({
 
 .box--wallet-option {
   position: absolute;
-  width: 19.688rem;
+  width: rem(314);
   margin-left: 20px;
   margin-top: 36px;
   border-radius: 6px;
@@ -174,7 +176,7 @@ export default defineComponent({
   border-radius: 6px;
   padding-top: 4px;
   overflow: auto;
-  width: 19.688rem;
+  width: rem(314);
   &:focus {
     outline: none;
   }

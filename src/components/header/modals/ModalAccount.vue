@@ -179,6 +179,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
+@import 'src/css/utils.scss';
 
 .list--account {
   max-height: 460px;
@@ -198,7 +199,7 @@ export default defineComponent({
   align-items: center;
   background: #fff;
   border-radius: 6px;
-  width: 19.688rem;
+  width: rem(314);
   font-weight: 700;
   font-size: 16px;
   line-height: 18px;
