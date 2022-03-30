@@ -144,7 +144,7 @@ export default defineComponent({
   color: $gray-4;
   box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(50px);
-  border-top: 1px solid $gray-4;
+  border-top: 1px solid #e6e9ee;
 
   .wrapper--option {
     display: flex;
@@ -175,6 +175,7 @@ export default defineComponent({
 
   .wrapper--bottom {
     background: rgba(44, 51, 53, 0.8);
+    border-top: 1px solid #2c3335;
   }
 }
 </style>

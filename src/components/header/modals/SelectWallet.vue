@@ -14,7 +14,7 @@
         </template>
       </div>
     </div>
-    <div v-if="openOption" class="box--wallet-option">
+    <div v-if="openOption" v-click-away="closeOption" class="box--wallet-option">
       <ul class="container--wallet">
         <SelectWalletOption
           v-for="(wallet, index) in wallets"
@@ -120,13 +120,10 @@ export default defineComponent({
   margin-top: 16px;
   padding: 16px;
   cursor: pointer;
+  border: 1px solid transparent;
 
   &:hover {
     border: 1px solid $astar-blue-dark;
-  }
-
-  &:active {
-    border: 2px solid $astar-blue-dark;
   }
 
   .box--img {

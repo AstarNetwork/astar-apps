@@ -10324,6 +10324,7 @@ keccak@byterose/keccak#stream-update:
   dependencies:
     node-addon-api "^2.0.0"
     node-gyp-build "^4.2.0"
+    readable-stream "^3.6.0"
 
 keyv@^3.0.0:
   version "3.1.0"
@@ -15527,6 +15528,11 @@ vue3-autocounter@^1.0.6:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/vue3-autocounter/-/vue3-autocounter-1.0.6.tgz#655e275707aeb084628facd7b231be09d383521d"
   integrity sha512-jOgCD2WaOjt/tOAAGKDm2DTyQRdKyfqJv5ElUz/vR0ZJgUd4yDd6UX6+2YU3LQpY4qoFNZkzLloAfALAqK041g==
+
+vue3-click-away@^1.2.4:
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/vue3-click-away/-/vue3-click-away-1.2.4.tgz#ee76a241e7cff2a345e14342d558f4801d14cc26"
+  integrity sha512-O9Z2KlvIhJT8OxaFy04eiZE9rc1Mk/bp+70dLok68ko3Kr8AW5dU+j8avSk4GDQu94FllSr4m5ul4BpzlKOw1A==
 
 vue3-dropzone@^0.0.7:
   version "0.0.7"
