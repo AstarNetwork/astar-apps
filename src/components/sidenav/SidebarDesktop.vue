@@ -149,9 +149,9 @@ export default defineComponent({
   width: 20px;
   height: 20px;
 }
-.shiden {
-  color: $shiden-purple-dark;
-}
+// .shiden {
+//   color: $shiden-purple-dark;
+// }
 .sidebar {
   width: 224px;
   height: 100%;
