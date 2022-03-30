@@ -5,6 +5,7 @@
         v-for="filter in availableFilters"
         :key="filter"
         :class="{ selected: filter === selected }"
+        class="text--filter"
         @click="selectFilter(filter)"
       >
         {{ filter }}
@@ -16,11 +17,11 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 
-export const DEFAULT_FILTER = '7 days';
+export const DEFAULT_FILTER = '1 year';
 export default defineComponent({
   emits: ['filterChanged'],
   setup(_, { emit }) {
-    const availableFilters = ref<string[]>([DEFAULT_FILTER, '30 days', '90 days', '1 year']);
+    const availableFilters = ref<string[]>(['7 days', '30 days', '90 days', '1 year']);
     const selected = ref<string>('');
 
     const selectFilter = (filter: string): void => {

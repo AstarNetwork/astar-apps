@@ -8,8 +8,8 @@
         <span class="text--xlg">{{ defaultValue }}</span>
       </div>
       <div class="chart">
-        <chart-filter @filterChanged="handleFilterChanged" />
         <highcharts :options="chartOptions"></highcharts>
+        <chart-filter @filterChanged="handleFilterChanged" />
       </div>
     </div>
   </div>
