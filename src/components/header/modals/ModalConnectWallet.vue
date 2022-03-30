@@ -10,7 +10,7 @@
         @click="setWalletModal(wallet.source)"
       >
         <div class="box--img">
-          <img width="40" :src="wallet.img" />
+          <img :src="wallet.img" />
         </div>
         <div>{{ wallet.name }}</div>
       </div>
@@ -24,7 +24,7 @@
         @click="setWalletModal(wallet.source)"
       >
         <div class="box--img">
-          <img width="40" :src="wallet.img" />
+          <img :src="wallet.img" />
         </div>
         <div>{{ wallet.name }}</div>
       </div>
@@ -126,6 +126,7 @@ export default defineComponent({
   margin: 0 auto;
   margin-top: 16px;
   padding: 16px;
+  padding-left: 24px;
   cursor: pointer;
 
   &:hover {
@@ -137,8 +138,8 @@ export default defineComponent({
   }
 
   .box--img {
-    width: 40px;
-    height: 40px;
+    width: 24px;
+    height: 24px;
     margin-right: 13px;
   }
 }
