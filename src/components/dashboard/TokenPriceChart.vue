@@ -4,6 +4,7 @@
     title="Token Price"
     :default-value="currentPrice"
     class="wrapper--chart"
+    range-filter="7 days"
     @filter-changed="handleFilterChanged"
   />
 </template>

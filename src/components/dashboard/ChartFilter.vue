@@ -19,8 +19,14 @@ import { defineComponent, ref } from 'vue';
 
 export const DEFAULT_FILTER = '1 year';
 export default defineComponent({
+  props: {
+    rangeFilter: {
+      type: String,
+      default: DEFAULT_FILTER,
+    },
+  },
   emits: ['filterChanged'],
-  setup(_, { emit }) {
+  setup(props, { emit }) {
     const availableFilters = ref<string[]>(['7 days', '30 days', '90 days', '1 year']);
     const selected = ref<string>('');
 
@@ -29,7 +35,7 @@ export default defineComponent({
       emit('filterChanged', filter);
     };
 
-    selectFilter(DEFAULT_FILTER);
+    selectFilter(props.rangeFilter);
 
     return {
       selected,

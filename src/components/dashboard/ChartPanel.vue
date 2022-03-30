@@ -9,7 +9,7 @@
       </div>
       <div class="chart">
         <highcharts :options="chartOptions"></highcharts>
-        <chart-filter @filterChanged="handleFilterChanged" />
+        <chart-filter :range-filter="rangeFilter" @filterChanged="handleFilterChanged" />
       </div>
     </div>
   </div>
@@ -19,7 +19,7 @@
 import { defineComponent, computed, ref, watch } from 'vue';
 import { Chart } from 'highcharts-vue';
 import { useStore } from 'src/store';
-import ChartFilter from 'src/components/dashboard/ChartFilter.vue';
+import ChartFilter, { DEFAULT_FILTER } from 'src/components/dashboard/ChartFilter.vue';
 
 export default defineComponent({
   components: {
@@ -38,6 +38,10 @@ export default defineComponent({
     data: {
       type: Object,
       required: true,
+    },
+    rangeFilter: {
+      type: String,
+      default: DEFAULT_FILTER,
     },
   },
   emits: ['filterChanged'],
