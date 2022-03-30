@@ -164,7 +164,7 @@ export default defineComponent({
   position: absolute;
   width: rem(314);
   margin-left: 20px;
-  margin-top: 36px;
+  margin-top: 16px;
   border-radius: 6px;
   z-index: 10;
   top: 150px;
