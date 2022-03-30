@@ -130,13 +130,10 @@ export default defineComponent({
   margin-top: 16px;
   padding: 16px;
   cursor: pointer;
+  border: 1px solid transparent;
 
   &:hover {
     border: 1px solid $astar-blue-dark;
-  }
-
-  &:active {
-    border: 2px solid $astar-blue-dark;
   }
 
   .box--img {
