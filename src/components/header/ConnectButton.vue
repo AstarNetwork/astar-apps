@@ -59,12 +59,12 @@ export default defineComponent({
   padding-left: 10px;
   width: 32px;
   height: 32px;
-  background: $gray-5;
-  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
+  background: #fff;
+  border: 1px solid #e6e9ee;
   border-radius: 16px;
 }
 .m-btn--connect:hover {
-  background: #3c4649;
+  background: #fff;
 }
 
 .body--dark {
@@ -73,6 +73,14 @@ export default defineComponent({
     color: #fff;
   }
   .btn--connect:hover {
+    background: #3c4649;
+  }
+
+  .m-btn--connect {
+    background: $gray-6;
+    border: 1px solid $gray-5;
+  }
+  .m-btn--connect:hover {
     background: #3c4649;
   }
 }

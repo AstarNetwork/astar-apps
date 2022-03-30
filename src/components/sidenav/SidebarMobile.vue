@@ -54,7 +54,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from 'vue';
 import { useStore } from 'src/store';
-import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
+import { providerEndpoints } from 'src/config/chainEndpoints';
 import Icon3dots from 'components/icons/Icon3dots.vue';
 import LocaleChanger from '../common/LocaleChanger.vue';
 import SocialMediaLinks from '../common/SocialMediaLinks.vue';
@@ -89,13 +89,14 @@ export default defineComponent({
   height: 40px;
   background: $gray-1;
   opacity: 0.8;
-  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(50px);
-  border-bottom: 1px solid $gray-3;
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.1);
+  border-top: 1px solid #e6e9ee;
+  border-bottom: 1px solid #e6e9ee;
 }
 
 .tabs {
   display: flex;
+  padding-left: 3px;
 }
 
 .link {
@@ -115,7 +116,8 @@ export default defineComponent({
 
   .indicator {
     position: absolute;
-    top: 0px;
+    // top: 0px;
+    margin-bottom: 35px;
     margin-left: 4px;
     background: $astar-blue;
     border-radius: 0px 0px 8px 8px;
@@ -137,8 +139,9 @@ export default defineComponent({
 .wrapper--bottom {
   flex-shrink: 0;
   padding: 1rem;
-  background: rgba(44, 51, 53, 0.8);
-  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.5);
+  background: $gray-1;
+  color: $gray-4;
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(50px);
   border-top: 1px solid $gray-4;
 
@@ -155,7 +158,9 @@ export default defineComponent({
 
 .body--dark {
   .header {
-    background: rgba(44, 51, 53, 0.8);
+    background: $gray-5 !important;
+    border-top: none;
+    border-bottom: 1px solid $gray-4;
   }
 
   .activeLink {
@@ -165,6 +170,10 @@ export default defineComponent({
   .button--option {
     color: #fff;
     background: $gray-5;
+  }
+
+  .wrapper--bottom {
+    background: rgba(44, 51, 53, 0.8);
   }
 }
 </style>

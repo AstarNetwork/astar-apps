@@ -1,6 +1,9 @@
 <template>
   <div>
-    <astar-header :title="width >= screenSize.sm ? headerName : ''">
+    <astar-header
+      :title="width >= screenSize.sm ? headerName : ''"
+      :class="width < screenSize.sm ? 'm-header' : ''"
+    >
       <template #left>
         <div class="icon"><Logo /></div>
       </template>
@@ -138,8 +141,20 @@ export default defineComponent({
   },
 });
 </script>
-<style scoped>
+<style lang="scss" scoped>
+@import 'src/css/quasar.variables.scss';
 .icon {
-  width: 102px;
+  width: 127px;
+  margin-left: -15px;
+}
+
+.m-header {
+  background: #fff !important;
+}
+
+.body--dark {
+  .m-header {
+    background: $gray-6 !important;
+  }
 }
 </style>
