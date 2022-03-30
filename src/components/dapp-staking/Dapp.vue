@@ -52,13 +52,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, ref, computed, watch } from 'vue';
-import { useStore } from 'src/store';
-import { $api } from 'boot/api';
+import { $api, $isEnableIndividualClaim } from 'boot/api';
 import Avatar from 'components/common/Avatar.vue';
-import StakePanel from 'components/dapp-staking/StakePanel.vue';
 import ModalDappDetails from 'components/dapp-staking/modals/ModalDappDetails.vue';
-import { StakingParameters, StakeInfo } from 'src/store/dapp-staking/actions';
+import StakePanel from 'components/dapp-staking/StakePanel.vue';
+import { useStore } from 'src/store';
+import { StakeInfo, StakingParameters } from 'src/store/dapp-staking/actions';
+import { computed, defineComponent, ref, toRefs, watch } from 'vue';
 
 export default defineComponent({
   components: {
@@ -106,6 +106,7 @@ export default defineComponent({
           senderAddress: senderAddress.value,
           dapp: props.dapp,
           substrateAccounts: substrateAccounts.value,
+          isEnableIndividualClaim: $isEnableIndividualClaim.value,
         } as StakingParameters)
         .then((info: StakeInfo) => {
           if (info) {

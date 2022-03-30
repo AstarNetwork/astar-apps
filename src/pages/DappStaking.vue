@@ -61,6 +61,7 @@ export default defineComponent({
   components: { Tab },
   setup() {
     const store = useStore();
+    store.commit('general/setHeaderName', 'dApp Staking');
     const maxNumberOfStakersPerContract = computed(
       () => store.getters['dapps/getMaxNumberOfStakersPerContract']
     );

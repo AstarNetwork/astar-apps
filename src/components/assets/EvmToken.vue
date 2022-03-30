@@ -5,11 +5,7 @@
       <div class="row row--details">
         <div class="row__left">
           <div class="column--currency">
-            <img
-              :src="getIcon({ symbol: token.symbol, icon: token.icon })"
-              :alt="token.name"
-              class="token-logo"
-            />
+            <img :src="tokenImg" :alt="token.name" class="token-logo" />
             <div class="column--ticker">
               <span class="text--title">{{ token.symbol }}</span>
               <span class="text--label">{{ formatTokenName(token.name) }}</span>
@@ -27,15 +23,37 @@
               </div>
             </div>
           </div>
-          <div class="column--asset-buttons column--buttons--2-columns">
-            <button class="btn btn--sm bg--astar color--astar">
+          <div class="column--asset-buttons column--buttons--multi">
+            <button
+              class="btn btn--sm"
+              @click="
+                handleModalTransfer({
+                  isOpen: true,
+                  currency: token.symbol === nativeTokenSymbol ? nativeTokenSymbol : token,
+                })
+              "
+            >
               {{ $t('assets.transfer') }}
             </button>
-            <button class="btn btn--sm bg--astar color--astar">
-              {{ $t('assets.bridge') }}
-            </button>
-            <button v-if="isFaucet" class="btn btn--sm bg--astar color--astar">
-              {{ $t('assets.faucet') }}
+            <!-- Memo: temporary -->
+            <router-link to="/bridge">
+              <button class="btn btn--sm">
+                {{ $t('assets.bridge') }}
+              </button>
+            </router-link>
+
+            <button
+              class="btn btn--sm screen--md"
+              @click="
+                addToEvmWallet({
+                  tokenAddress: token.address,
+                  symbol: token.symbol,
+                  decimals: token.decimal,
+                  image: tokenImg,
+                })
+              "
+            >
+              {{ $t('add') }}
             </button>
           </div>
         </div>
@@ -44,8 +62,11 @@
   </div>
 </template>
 <script lang="ts">
-import { getIcon, SelectedToken } from 'src/c-bridge';
-import { defineComponent, PropType } from 'vue';
+import { SelectedToken } from 'src/c-bridge';
+import { addToEvmWallet } from 'src/hooks/helper/wallet';
+import { useStore } from 'src/store';
+import { getTokenImage } from 'src/token';
+import { computed, defineComponent, PropType } from 'vue';
 
 export default defineComponent({
   props: {
@@ -53,12 +74,22 @@ export default defineComponent({
       type: Object as PropType<SelectedToken>,
       required: true,
     },
-    isFaucet: {
-      type: Boolean,
+    handleModalTransfer: {
+      type: Function,
       required: true,
     },
   },
-  setup() {
+  setup(props) {
+    const tokenImg = computed(() =>
+      getTokenImage({ isNativeToken: false, symbol: props.token.symbol, iconUrl: props.token.icon })
+    );
+
+    const store = useStore();
+    const nativeTokenSymbol = computed(() => {
+      const chainInfo = store.getters['general/chainInfo'];
+      return chainInfo ? chainInfo.tokenSymbol : '';
+    });
+
     const formatTokenName = (name: string) => {
       switch (name) {
         case 'Shiden Network':
@@ -68,8 +99,10 @@ export default defineComponent({
       }
     };
     return {
-      getIcon,
       formatTokenName,
+      addToEvmWallet,
+      tokenImg,
+      nativeTokenSymbol,
     };
   },
 });
