@@ -190,7 +190,7 @@ export default defineComponent({
 @import 'src/css/utils.scss';
 
 .list--account {
-  max-height: 460px;
+  max-height: 480px;
   overflow-y: auto;
 }
 
@@ -219,6 +219,7 @@ export default defineComponent({
 }
 .class-radio-off {
   background: #fff;
+  border: 1px solid transparent;
 }
 .class-radio-off:hover {
   border: 1px solid $astar-blue-dark;
