@@ -34,7 +34,7 @@
                   @change="selNetwork = index"
                 />
                 <div class="tw-text-left tw-flex-1">
-                  <div class="tw-flex tw-pl-2">
+                  <div class="tw-flex tw-pl-2 tw-items-center">
                     <img
                       v-if="provider.defaultLogo"
                       class="tw-mr-2"
@@ -145,8 +145,8 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-top: 32px;
-  padding-bottom: 40px;
+  padding-top: 24px;
+  padding-bottom: 20px;
 }
 
 .class-radio {
@@ -167,6 +167,7 @@ export default defineComponent({
 }
 .class-radio-off {
   background: #fff;
+  border: 1px solid transparent;
 }
 .class-radio-off:hover {
   border: 1px solid $astar-blue-dark;
