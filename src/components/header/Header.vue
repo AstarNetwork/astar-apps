@@ -47,6 +47,7 @@ import { defineComponent, reactive, toRefs, computed, ref, watch } from 'vue';
 import { useConnectWallet } from 'src/hooks';
 import { useStore } from 'src/store';
 import { useRoute } from 'vue-router';
+import { getHeaderName } from 'src/router/routes';
 import { useBreakpoints } from 'src/hooks';
 import ConnectButton from 'src/components/header/ConnectButton.vue';
 import AccountButton from 'src/components/header/AccountButton.vue';
@@ -101,15 +102,7 @@ export default defineComponent({
     watch(
       path,
       () => {
-        if (path.value === 'dashboard') {
-          headerName.value = 'Dashboard';
-        } else if (path.value === 'assets') {
-          headerName.value = 'Assets';
-        } else if (path.value === 'dapp-staking') {
-          headerName.value = 'Staking';
-        } else if (path.value === 'bridge') {
-          headerName.value = 'Bridge';
-        }
+        headerName.value = getHeaderName(path.value);
       },
       {
         immediate: true,
