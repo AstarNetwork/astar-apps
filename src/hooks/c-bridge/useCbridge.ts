@@ -176,6 +176,7 @@ export function useCbridge() {
   };
 
   const updateBridgeConfig = async (): Promise<void> => {
+    store.commit('general/setLoading', true);
     const data = await getTransferConfigs(currentNetworkIdx.value);
     const supportChain = data && data.supportChain;
     const tokens = data && data.tokens;
@@ -201,6 +202,7 @@ export function useCbridge() {
     });
     chains.value = supportChain;
     tokensObj.value = tokens;
+    store.commit('general/setLoading', false);
   };
 
   const watchSelectableChains = async (): Promise<void> => {

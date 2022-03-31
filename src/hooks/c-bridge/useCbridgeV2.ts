@@ -9,7 +9,7 @@ import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
 import { getTokenBal } from 'src/config/web3';
 import { objToArray } from 'src/hooks/helper/common';
 import { useStore } from 'src/store';
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 import { useAccount } from '../useAccount';
 import { calUsdAmount } from './../helper/price';
 
@@ -79,30 +79,22 @@ export function useCbridgeV2() {
     });
   };
 
-  watch(
-    [currentAccount, currentNetworkIdx, isH160],
-    async () => {
-      ttlErc20Amount.value = 0;
-      if (
-        !currentAccount.value ||
-        currentNetworkIdx.value === endpointKey.SHIBUYA ||
-        !isH160.value
-      ) {
-        return;
-      }
+  watchEffect(async () => {
+    ttlErc20Amount.value = 0;
+    if (!currentAccount.value || currentNetworkIdx.value === endpointKey.SHIBUYA || !isH160.value) {
+      return;
+    }
 
-      const srcChainId = currentNetworkIdx.value === endpointKey.ASTAR ? Astar : Shiden;
-      try {
-        store.commit('general/setLoading', true);
-        await updateBridgeConfig({ srcChainId, userAddress: currentAccount.value });
-      } catch (error: any) {
-        console.error(error.message);
-      } finally {
-        store.commit('general/setLoading', false);
-      }
-    },
-    { immediate: false }
-  );
+    const srcChainId = currentNetworkIdx.value === endpointKey.ASTAR ? Astar : Shiden;
+    try {
+      store.commit('general/setLoading', true);
+      await updateBridgeConfig({ srcChainId, userAddress: currentAccount.value });
+    } catch (error: any) {
+      console.error(error.message);
+    } finally {
+      store.commit('general/setLoading', false);
+    }
+  });
 
   return { tokens, ttlErc20Amount };
 }
