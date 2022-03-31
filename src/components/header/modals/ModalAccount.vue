@@ -296,7 +296,7 @@ export default defineComponent({
   flex-direction: column;
   text-align: left;
   row-gap: 8px;
-  padding-top: 16px;
+  padding-top: 24px;
   padding-left: 28px;
 }
 
