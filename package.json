@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@astar-network/astar-api": "^0.1.5-3",
-    "@astar-network/astar-ui": "^0.0.12",
+    "@astar-network/astar-ui": "^0.0.14",
     "@ethersproject/bignumber": "^5.5.0",
     "@polkadot/api": "^6.8.1",
     "@polkadot/api-contract": "^6.8.1",
@@ -63,6 +63,7 @@
     "vue-i18n": "^9.0.0-beta.0",
     "vue-js-progress": "^1.0.2",
     "vue3-autocounter": "^1.0.6",
+    "vue3-click-away": "^1.2.4",
     "vue3-dropzone": "^0.0.7",
     "vuex": "^4.0.1",
     "web3": "^1.6.1"

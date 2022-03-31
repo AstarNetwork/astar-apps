@@ -1,6 +1,10 @@
 <template>
   <div>
-    <button type="button" class="btn--account">
+    <button
+      type="button"
+      class="btn--account"
+      :class="width < screenSize.sm ? 'm-btn--account' : ''"
+    >
       <icon-base class="iconbase tw-w-5 tw-h-5 tw--ml-1" stroke="currentColor" icon-name="wallet">
         <icon-wallet />
       </icon-base>
@@ -17,7 +21,7 @@ import { defineComponent, toRefs, computed, watchEffect, ref } from 'vue';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { useStore } from 'src/store';
 import { useBreakpoints } from 'src/hooks';
-import { SupportWallet, supportWalletObj } from 'src/config/wallets';
+import { supportEvmWalletObj, SupportWallet, supportWalletObj } from 'src/config/wallets';
 import { getSelectedAccount } from 'src/hooks/helper/wallet';
 import IconBase from 'components/icons/IconBase.vue';
 import IconWallet from 'components/icons/IconWallet.vue';
@@ -47,10 +51,8 @@ export default defineComponent({
 
     watchEffect(() => {
       const selAccount = getSelectedAccount(substrateAccounts.value);
-      if (!props.account) {
-        iconWallet.value = supportWalletObj[SupportWallet.PolkadotJs].img;
-      } else if (isEthWallet.value) {
-        iconWallet.value = supportWalletObj[SupportWallet.MetaMask].img;
+      if (isEthWallet.value) {
+        iconWallet.value = supportEvmWalletObj[SupportWallet.MetaMask].img;
       } else if (selAccount) {
         // @ts-ignore
         iconWallet.value = supportWalletObj[selAccount.source].img;
@@ -86,10 +88,38 @@ export default defineComponent({
 .btn--account:hover {
   background: #3c4649;
 }
+
 .iconbase {
-  color: #5f656f;
+  color: $gray-4;
 }
+
+.m-btn--account {
+  border: 1px solid #e6e9ee;
+  box-shadow: none;
+  padding: 8px;
+
+  .iconbase {
+    color: #e6e9ee;
+  }
+}
+
 .icon {
   margin: 0 6px;
+}
+
+.body--dark {
+  .btn--account {
+    background: $gray-5 !important;
+    color: white !important;
+  }
+
+  .m-btn--account {
+    background: $gray-6 !important;
+    color: $gray-3;
+    border: 1px solid $gray-5;
+    .iconbase {
+      color: $gray-4;
+    }
+  }
 }
 </style>

@@ -122,4 +122,17 @@ const routes: RouteRecordRaw[] = [
   },
 ];
 
+export const getHeaderName = (path: string) => {
+  if (path === 'dashboard') {
+    return 'Dashboard';
+  } else if (path === 'assets') {
+    return 'Assets';
+  } else if (path === 'dapp-staking') {
+    return 'Staking';
+  } else if (path === 'bridge') {
+    return 'Bridge';
+  }
+  return '';
+};
+
 export default routes;

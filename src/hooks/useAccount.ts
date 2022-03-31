@@ -21,7 +21,6 @@ export const useAccount = () => {
       ss58: '',
       h160: '',
     });
-    localStorage.removeItem(SELECTED_ADDRESS);
   };
 
   const currentAccount = ref<string>('');

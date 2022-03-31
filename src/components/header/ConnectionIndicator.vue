@@ -44,7 +44,9 @@ export default defineComponent({
   },
 });
 </script>
-<style scoped>
+<style style="scss" scoped>
+@import 'src/css/quasar.variables.scss';
+
 .wrapper--indicator {
   display: flex;
   align-items: center;
@@ -68,7 +70,7 @@ export default defineComponent({
   font-size: 9px;
   line-height: 11px;
   text-align: left;
-  color: #b1b7c1;
+  color: $gray-3;
   margin-left: 5px;
 }
 </style>

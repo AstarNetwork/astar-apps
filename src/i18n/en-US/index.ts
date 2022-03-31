@@ -29,6 +29,7 @@ export default {
     darkMode: 'Dark mode',
     dApps: 'dApps',
     dappStaking: 'dApp Staking',
+    staking: 'Staking',
     contract: 'Contract',
     plasmLockdrop: 'Plasm Lockdrop',
     closeSidebar: 'Close sidebar',
@@ -41,6 +42,8 @@ export default {
   wallet: {
     connectWallet: 'Connect Wallet',
     select: 'Please select a wallet to connect to this portal',
+    nativeAccount: 'Native Account',
+    evmAccount: 'EVM Account',
   },
   installWallet: {
     getWallet: 'Haven’t got a {value} yet?',

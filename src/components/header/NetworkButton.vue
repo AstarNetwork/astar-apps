@@ -4,11 +4,17 @@
       v-if="isNeedUpdate(isLatestChain, extensionCount)"
       @updated-meta="isLatestChain = true"
     />
-    <button v-else type="button" class="btn--network" @click="showNetworkModal">
+    <button
+      v-else
+      type="button"
+      class="btn--network"
+      :class="width < screenSize.sm ? 'm-btn--network' : ''"
+      @click="showNetworkModal"
+    >
       <icon-base class="iconbase tw-w-5 tw-h-5 tw--ml-1" stroke="currentColor" icon-name="network">
         <icon-network />
       </icon-base>
-      <img class="icon" width="16" src="~assets/img/astr-token.png" />
+      <img v-show="currentLogo" class="icon" width="16" :src="currentLogo" />
       <template v-if="width >= screenSize.sm">
         {{ currentNetworkName }}
       </template>
@@ -45,12 +51,14 @@ export default defineComponent({
     const metaExtensions = computed(() => store.getters['general/metaExtensions']);
     const extensionCount = computed(() => store.getters['general/extensionCount']);
     const currentNetworkName = ref(providerEndpoints[currentNetworkIdx.value].displayName);
+    const currentLogo = ref(providerEndpoints[currentNetworkIdx.value].defaultLogo);
     const isLatestChain = ref(false);
     const version = ref('0.0.0');
 
     watch(currentNetworkIdx, (networkIdx) => {
       version.value = metaExtensions?.value?.extensions[networkIdx].version;
       currentNetworkName.value = providerEndpoints[networkIdx].displayName;
+      currentLogo.value = providerEndpoints[networkIdx].defaultLogo;
     });
 
     watch(
@@ -69,6 +77,7 @@ export default defineComponent({
     return {
       currentNetworkStatus,
       currentNetworkName,
+      currentLogo,
       isLatestChain,
       extensionCount,
       version,
@@ -93,26 +102,64 @@ export default defineComponent({
   height: 32px;
   flex-direction: row;
   align-items: center;
-  background: $gray-5;
+  background: #fff;
   padding: 8px 16px 8px 16px;
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
   border-radius: 16px;
-  margin-left: 16px;
-  color: #fff;
+  margin-left: 8px;
+  color: $gray-5;
 }
 .btn--network:hover {
-  /* gray005 selected */
-  background: #3c4649;
+  background: #fff;
 }
 .divider {
-  border-left: 1px solid #191d1f;
+  border-left: 1px solid #e6e9ee;
   margin: 0 6px;
   height: 22px;
 }
 .iconbase {
-  color: #5f656f;
+  color: $gray-4;
 }
 .icon {
   margin: 0 6px;
+}
+
+.m-btn--network {
+  border: 1px solid #e6e9ee;
+  box-shadow: none;
+  padding: 8px;
+  .iconbase {
+    color: #e6e9ee;
+  }
+  .divider {
+    margin-right: 5px;
+    margin-left: -2px;
+  }
+}
+
+.body--dark {
+  .btn--network {
+    background: $gray-5;
+    color: #fff;
+    border: 1px solid $gray-6;
+  }
+  .btn--network:hover {
+    background: #3c4649;
+  }
+  .divider {
+    border-left: 1px solid #191d1f;
+  }
+
+  .m-btn--network {
+    background: $gray-6;
+    color: $gray-3;
+    border: 1px solid $gray-5;
+    .iconbase {
+      color: $gray-4;
+    }
+    .divider {
+      border-left: 1px solid $gray-4;
+    }
+  }
 }
 </style>

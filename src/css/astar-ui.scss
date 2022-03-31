@@ -34,10 +34,8 @@
     .title {
       display: flex;
       justify-content: center;
-      margin-top: 24px;
-      margin-bottom: -24px;
       color: $gray-5 !important;
-      margin-left: 44px;
+      margin-top: -22px;
     }
   }
 }
@@ -50,8 +48,8 @@
     }
     .header-right {
       .btn--account {
-        background: $gray-5 !important;
-        color: white !important;
+        // background: $gray-5 !important;
+        // color: white !important;
       }
     }
   }

@@ -19,6 +19,7 @@ interface ChainProvider {
   evmChainId: string;
   evmRpc: string;
   faucetEndpoint: string;
+  defaultLogo?: any;
 }
 
 export type ASTAR_CHAIN = 'Shiden' | 'Astar' | 'Shibuya Testnet';
@@ -48,6 +49,7 @@ export const providerEndpoints: ChainProvider[] = [
     evmChainId: '592',
     evmRpc: 'https://rpc.astar.network:8545',
     faucetEndpoint: 'https://astar-discord-faucet.herokuapp.com/astar',
+    defaultLogo: require('/src/assets/img/ic_astar.png'),
   },
   {
     networkAlias: 'shiden-shell',
@@ -65,6 +67,7 @@ export const providerEndpoints: ChainProvider[] = [
     evmChainId: '336',
     evmRpc: 'https://evm.shiden.astar.network',
     faucetEndpoint: 'https://astar-discord-faucet.herokuapp.com/shiden',
+    defaultLogo: require('/src/assets/img/ic_shiden.png'),
   },
   {
     networkAlias: 'shibuya-testnet',
@@ -82,6 +85,7 @@ export const providerEndpoints: ChainProvider[] = [
     evmChainId: '81',
     evmRpc: 'https://rpc.shibuya.astar.network:8545',
     faucetEndpoint: 'https://astar-discord-faucet.herokuapp.com/shibuya',
+    defaultLogo: require('/src/assets/img/ic_shibuya.png'),
   },
   {
     networkAlias: 'local-node',

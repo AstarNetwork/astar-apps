@@ -43,27 +43,45 @@ export default defineComponent({
 .btn--connect {
   display: flex;
   height: 32px;
-  color: #fff;
+  color: $gray-5;
   flex-direction: row;
   align-items: center;
   padding: 8px 16px 8px 16px;
-  background: $gray-5;
+  background: #fff;
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
   border-radius: 16px;
 }
 .btn--connect:hover {
-  background: #3c4649;
+  background: #fff;
 }
 
 .m-btn--connect {
   padding-left: 10px;
   width: 32px;
   height: 32px;
-  background: $gray-5;
-  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
+  background: #fff;
+  border: 1px solid #e6e9ee;
   border-radius: 16px;
 }
 .m-btn--connect:hover {
-  background: #3c4649;
+  background: #fff;
+}
+
+.body--dark {
+  .btn--connect {
+    background: $gray-5;
+    color: #fff;
+  }
+  .btn--connect:hover {
+    background: #3c4649;
+  }
+
+  .m-btn--connect {
+    background: $gray-6;
+    border: 1px solid $gray-5;
+  }
+  .m-btn--connect:hover {
+    background: #3c4649;
+  }
 }
 </style>
