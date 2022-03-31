@@ -17,7 +17,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 
-export const DEFAULT_FILTER = '1 year';
+export const DEFAULT_FILTER = '7 days';
 export default defineComponent({
   props: {
     rangeFilter: {

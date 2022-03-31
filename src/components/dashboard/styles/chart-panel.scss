@@ -40,7 +40,7 @@
   margin: 8px 16px 24px 16px; 
 
   @media (min-width: $sm) {
-    margin: 8px 32px 24px 32px; 
+    margin: 8px 16px 24px 0px; 
   }
 }
 
@@ -48,6 +48,11 @@
   display: flex;
   border: 1px solid $gray-1;
   border-radius: 6px;
+  width: 100%;
+
+  @media (min-width: $sm) {
+    width: auto;
+  }
 
   div {
     padding: 4px 14px;
