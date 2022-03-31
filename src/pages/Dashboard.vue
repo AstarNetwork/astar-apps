@@ -1,12 +1,5 @@
 <template>
-  <div>
-    <div class="screen--lg">
-      <span class="text--page-title">
-        {{ $t('dashboard.dashboard') }}
-      </span>
-    </div>
-    <dashboard />
-  </div>
+  <dashboard />
 </template>
 
 <script lang="ts">
