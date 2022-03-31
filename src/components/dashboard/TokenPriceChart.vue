@@ -30,7 +30,7 @@ export default defineComponent({
   setup(props) {
     const data = ref<ChartData>([[1, 1]]);
     const currentPrice = ref<string>('');
-    const currentFilter = ref<string>(DEFAULT_FILTER);
+    const currentFilter = ref<string>('7 days');
 
     const loadData = async () => {
       if (!props.network) return;
