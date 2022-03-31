@@ -62,7 +62,7 @@
       <div class="wrapper__row--button">
         <button
           class="btn btn--connect"
-          :disabled="!newEndpoint"
+          :disabled="isDisabled"
           @click="selectNetwork(selNetwork, newEndpoint)"
         >
           {{ $t('connect') }}
@@ -123,6 +123,9 @@ export default defineComponent({
     };
 
     const selNetwork = ref(props.networkIdx);
+    const isDisabled = computed(() => {
+      return selNetwork.value === endpointKey.CUSTOM && !newEndpoint.value;
+    });
 
     return {
       closeModal,
@@ -135,6 +138,7 @@ export default defineComponent({
       classRadioTxtOff,
       providerEndpoints,
       endpointKey,
+      isDisabled,
     };
   },
 });
