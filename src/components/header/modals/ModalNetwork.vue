@@ -60,7 +60,11 @@
         </fieldset>
       </div>
       <div class="wrapper__row--button">
-        <button class="btn btn--connect" @click="selectNetwork(selNetwork, newEndpoint)">
+        <button
+          class="btn btn--connect"
+          :disabled="!newEndpoint"
+          @click="selectNetwork(selNetwork, newEndpoint)"
+        >
           {{ $t('connect') }}
         </button>
       </div>

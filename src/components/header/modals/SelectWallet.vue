@@ -151,9 +151,11 @@ export default defineComponent({
   position: absolute;
   width: rem(314);
   margin-left: 20px;
-  border-radius: 6px;
+  // border-radius: 6px;
   z-index: 10;
   background: $container-bg-white;
+  box-shadow: 0px 3px 0px rgba(180, 180, 180, 0.5);
+  border-radius: 0px 0px 10px 10px;
 }
 
 .container--wallet {
@@ -171,6 +173,7 @@ export default defineComponent({
 .body--dark {
   .box--wallet-option {
     background: $gray-6;
+    box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.5);
   }
   .box__row--wallet {
     background: $gray-6;
