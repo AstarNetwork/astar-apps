@@ -37,7 +37,7 @@
 .wrapper--filter {
   display: flex;
   justify-content: right;
-  margin: 8px 16px 24px 16px; 
+  margin: 8px 0px 24px 0px; 
 
   @media (min-width: $sm) {
     margin: 8px 16px 24px 0px; 
@@ -57,9 +57,12 @@
   div {
     padding: 4px 14px;
     cursor: pointer;
+    width: 25%;
+    text-align: center;
 
     @media (min-width: $sm) {
-      padding: 4px 18px; 
+      padding: 2px 18px;
+      width: auto; 
     }
   }
 
