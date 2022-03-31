@@ -24,7 +24,7 @@ function useCall(addressRef: Ref<string>) {
   const updateAccountH160 = async (address: string) => {
     try {
       const web3Ref = $web3.value;
-      if (!web3Ref || !web3Ref.utils.checkAddressChecksum(address)) {
+      if (!web3Ref || !web3Ref.utils.isAddress(address)) {
         return;
       }
       const rawBal = await getBalance(web3Ref, address);

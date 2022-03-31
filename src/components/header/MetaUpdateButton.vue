@@ -35,24 +35,24 @@ export default defineComponent({
     const metaExtensions = computed(() => store.getters['general/metaExtensions']);
     const extensionCount = computed(() => store.getters['general/extensionCount']);
 
-    const selectedIndex = 0;
-    const isBusy = ref(false);
-    const isComplete = ref(false);
+    const isBusy = ref<boolean>(false);
+    const isComplete = ref<boolean>(false);
     const updateMetadata = () => {
       const extensions = metaExtensions?.value?.extensions;
-
-      if (chainInfo.value && extensions?.[selectedIndex]) {
-        isBusy.value = true;
-
-        extensions[selectedIndex]
-          .update(JSON.parse(JSON.stringify(chainInfo.value)))
-          .then(() => {
-            isBusy.value = false;
-            isComplete.value = true;
-            emit('updated-meta');
-          })
-          .catch(console.error);
-      }
+      extensions.forEach((extension: any) => {
+        if (chainInfo.value && extension) {
+          isBusy.value = true;
+          isComplete.value = false;
+          extension
+            .update(JSON.parse(JSON.stringify(chainInfo.value)))
+            .then(() => {
+              isBusy.value = false;
+              isComplete.value = true;
+              emit('updated-meta');
+            })
+            .catch(console.error);
+        }
+      });
     };
     return {
       width,

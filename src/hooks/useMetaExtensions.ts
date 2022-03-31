@@ -72,14 +72,13 @@ function hasCurrentProperties(api: ApiPromise, { extension }: ExtensionKnown): b
 function filterAll(api: ApiPromise, all: ExtensionKnown[]): Extensions {
   const extensions = all
     .map((info): ExtensionInfo | null => {
+      // Memo: Talisman and Mathwallet return null
       const current = info.known.find(({ genesisHash }) => api.genesisHash.eq(genesisHash)) || null;
+      const isUpgradable =
+        (current && api.runtimeVersion.specVersion.gtn(current.specVersion)) ||
+        !hasCurrentProperties(api, info);
 
-      // if we cannot find it as known, or either the specVersion or properties mismatches, mark it as upgradable
-      return !current ||
-        api.runtimeVersion.specVersion.gtn(current.specVersion) ||
-        !hasCurrentProperties(api, info)
-        ? { ...info, current }
-        : null;
+      return isUpgradable ? { ...info, current } : null;
     })
     .filter((info): info is ExtensionInfo => !!info);
 
