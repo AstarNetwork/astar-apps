@@ -4,7 +4,7 @@
     title="Token Price"
     :default-value="currentPrice"
     class="wrapper--chart"
-    range-filter="7 days"
+    :range-filter="currentFilter"
     @filter-changed="handleFilterChanged"
   />
 </template>
@@ -48,8 +48,10 @@ export default defineComponent({
     };
 
     const handleFilterChanged = async (filter: string): Promise<void> => {
-      currentFilter.value = filter;
-      await loadData();
+      if (currentFilter.value !== filter) {
+        currentFilter.value = filter;
+        await loadData();
+      }
     };
 
     watch([props], () => {
@@ -58,9 +60,12 @@ export default defineComponent({
       }
     });
 
+    loadData();
+
     return {
       data,
       currentPrice,
+      currentFilter,
       handleFilterChanged,
     };
   },

@@ -47,8 +47,10 @@ export default defineComponent({
     };
 
     const handleFilterChanged = async (filter: string): Promise<void> => {
-      currentFilter.value = filter;
-      await loadData();
+      if (currentFilter.value !== filter) {
+        currentFilter.value = filter;
+        await loadData();
+      }
     };
 
     watch([props], () => {
@@ -56,6 +58,8 @@ export default defineComponent({
         loadData();
       }
     });
+
+    loadData();
 
     return {
       data,

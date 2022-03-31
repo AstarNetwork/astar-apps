@@ -42,7 +42,7 @@ export default defineComponent({
     });
 
     const loadStats = async () => {
-      // if (!chainInfo.value || !chainInfo.value.chain) return;
+      if (!chainInfo.value || !chainInfo.value.chain) return;
 
       const statsUrl = `${API_URL}/v1/${chainInfo.value.chain.toLowerCase()}/token/stats`;
       const result = await axios.get<StatsData>(statsUrl);

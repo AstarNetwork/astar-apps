@@ -31,8 +31,10 @@ export default defineComponent({
     const selected = ref<string>('');
 
     const selectFilter = (filter: string): void => {
-      selected.value = filter;
-      emit('filterChanged', filter);
+      if (selected.value !== filter) {
+        selected.value = filter;
+        emit('filterChanged', filter);
+      }
     };
 
     selectFilter(props.rangeFilter);
