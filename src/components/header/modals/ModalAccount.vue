@@ -9,8 +9,8 @@
           <SelectWallet :set-wallet-modal="setWalletModal" :selected-wallet="selectedWallet" />
         </div>
         <fieldset>
-          <div v-if="!substrateAccounts.length && selectedWallet === SupportWallet.Math">
-            <li v-if="currentNetworkIdx !== 1">
+          <div v-if="isMathWallet" class="column--remarks">
+            <li v-if="currentNetworkIdx !== endpointKey.SHIDEN">
               {{ $t('balance.modals.math.supportsNetwork') }}
             </li>
             <li v-if="!substrateAccounts.length">
@@ -90,14 +90,13 @@
 </template>
 <script lang="ts">
 import SelectWallet from 'src/components/header/modals/SelectWallet.vue';
-import { providerEndpoints } from 'src/config/chainEndpoints';
+import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { SupportWallet } from 'src/config/wallets';
 import { useAccount } from 'src/hooks';
-import { castMobileSource } from 'src/hooks/helper/wallet';
+import { castMobileSource, checkIsEthereumWallet } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
-import { computed, defineComponent, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { computed, defineComponent, PropType, ref } from 'vue';
 
 export default defineComponent({
   components: {
@@ -109,10 +108,14 @@ export default defineComponent({
       required: true,
     },
     selectedWallet: {
-      type: String,
+      type: String as PropType<SupportWallet>,
       required: true,
     },
     setWalletModal: {
+      type: Function,
+      required: true,
+    },
+    connectEthereumWallet: {
       type: Function,
       required: true,
     },
@@ -125,11 +128,6 @@ export default defineComponent({
 
     const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
     const { currentAccount } = useAccount();
-
-    const currentRoute = computed(() => {
-      return useRouter().currentRoute.value;
-    });
-    const isBalancePath = currentRoute.value.matched[0].path === '/balance';
     const store = useStore();
 
     const substrateAccounts = computed(() => {
@@ -141,17 +139,20 @@ export default defineComponent({
       return filteredAccounts;
     });
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
-    const isSupportContract = ref(providerEndpoints[currentNetworkIdx.value].isSupportContract);
+    const isMathWallet = computed(
+      () => !substrateAccounts.value.length && props.selectedWallet === SupportWallet.Math
+    );
 
-    const selectAccount = (account: string) => {
-      account && store.commit('general/setCurrentAddress', account);
+    const selectAccount = (substrateAccount: string) => {
+      if (checkIsEthereumWallet(props.selectedWallet)) {
+        props.connectEthereumWallet(props.selectedWallet);
+      }
+      substrateAccount && store.commit('general/setCurrentAddress', substrateAccount);
       emit('update:is-open', false);
     };
 
     const selAccount = ref<string>('');
-
     const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
-
     const subScan = computed(
       () => `${providerEndpoints[currentNetworkIdx.value].subscan}/account/${currentAccount.value}`
     );
@@ -166,10 +167,8 @@ export default defineComponent({
 
     return {
       selAccount,
-      isSupportContract,
       closeModal,
       selectAccount,
-      isBalancePath,
       currentNetworkStatus,
       substrateAccounts,
       SupportWallet,
@@ -177,6 +176,8 @@ export default defineComponent({
       isDarkTheme,
       subScan,
       copyAddress,
+      endpointKey,
+      isMathWallet,
     };
   },
   methods: {
@@ -288,6 +289,15 @@ export default defineComponent({
     background: linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
       linear-gradient(0deg, $astar-blue, $astar-blue);
   }
+}
+
+.column--remarks {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  row-gap: 8px;
+  padding-top: 16px;
+  padding-left: 28px;
 }
 
 .body--dark {

@@ -21,7 +21,7 @@
         :key="index"
         class="box__row--wallet box--hover--active"
         :wallet="wallet"
-        @click="setWalletModal(wallet.source)"
+        @click="connectEthereumWallet(wallet.source)"
       >
         <div class="box--img">
           <img :src="wallet.img" />
@@ -47,6 +47,10 @@ export default defineComponent({
       required: true,
     },
     setWalletModal: {
+      type: Function,
+      required: true,
+    },
+    connectEthereumWallet: {
       type: Function,
       required: true,
     },

@@ -25,6 +25,7 @@
       :is-modal-connect-wallet="modalName === WalletModalOption.SelectWallet"
       :set-wallet-modal="setWalletModal"
       :set-close-modal="setCloseModal"
+      :connect-ethereum-wallet="connectEthereumWallet"
     />
 
     <ModalAccount
@@ -32,6 +33,7 @@
       v-model:isOpen="modalAccountSelect"
       :set-wallet-modal="setWalletModal"
       :selected-wallet="selectedWallet"
+      :connect-ethereum-wallet="connectEthereumWallet"
     />
 
     <ModalInstallWallet
@@ -92,6 +94,7 @@ export default defineComponent({
       setWalletModal,
       openSelectModal,
       changeAccount,
+      connectEthereumWallet,
     } = useConnectWallet();
 
     const store = useStore();
@@ -126,6 +129,7 @@ export default defineComponent({
       setWalletModal,
       openSelectModal,
       changeAccount,
+      connectEthereumWallet,
     };
   },
 });
