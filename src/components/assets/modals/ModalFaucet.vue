@@ -35,7 +35,7 @@
 </template>
 <script lang="ts">
 import { useFaucet } from 'src/hooks';
-import { defineComponent } from 'vue';
+import { defineComponent, computed, watchEffect } from 'vue';
 
 export default defineComponent({
   props: {
@@ -49,7 +49,12 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { requestFaucet, isLoading, unit, isAbleToFaucet, countDown, faucetAmount } = useFaucet();
+    const isModalFaucet = computed(() => props.isModalFaucet);
+    watchEffect(() => {
+      console.log('effect isModalFaucet', isModalFaucet.value);
+    });
+    const { requestFaucet, isLoading, unit, isAbleToFaucet, countDown, faucetAmount } =
+      useFaucet(isModalFaucet);
 
     const closeModal = (): void => {
       props.handleModalFaucet({ isOpen: false });
