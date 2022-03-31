@@ -54,6 +54,23 @@
         </router-link> -->
 
         <router-link
+          v-if="hasDashboard"
+          to="/dashboard"
+          :class="[$route.path.split('/')[1] === 'dashboard' ? 'activeLink' : 'inactiveLink']"
+        >
+          <icon-base
+            :class="[$route.path.split('/')[1] === 'dashboard' ? 'activeSvg' : 'inactiveSvg']"
+            viewBox="0 0 24 24"
+          >
+            <icon-dashboard />
+          </icon-base>
+          <span class="tw-font-bold tw-ml-3 tw-flex-1">
+            {{ $t('dashboard.dashboard') }}
+          </span>
+        </router-link>
+        <router-link v-else to="/assets" />
+
+        <router-link
           to="/assets"
           :class="[$route.path.split('/')[1] === 'assets' ? 'activeLink' : 'inactiveLink']"
           class="tw-items-center tw-justify-center"
@@ -187,6 +204,7 @@ import IconBalance from '../icons/IconBalance.vue';
 import IconSolidChevronDown from '../icons/IconSolidChevronDown.vue';
 import IconStore from '../icons/IconStore.vue';
 import IconBridge from '../icons/IconBridge.vue';
+import IconDashboard from '../icons/IconDashboard.vue';
 import ModalNetwork from 'src/components/balance/modals/ModalNetwork.vue';
 import LocaleChanger from './LocaleChanger.vue';
 import AddressSmall from '../common/AddressSmall.vue';
@@ -210,6 +228,7 @@ export default defineComponent({
     IconSolidChevronDown,
     IconStore,
     IconBridge,
+    IconDashboard,
     ModalNetwork,
     AddressSmall,
     Logo,
@@ -237,6 +256,7 @@ export default defineComponent({
     });
 
     const isLocalChain = currentNetworkIdx.value === endpointKey.LOCAL;
+    const hasDashboard = currentNetworkIdx.value <= endpointKey.SHIDEN;
     const network = ref(providerEndpoints[currentNetworkIdx.value]);
 
     return {
@@ -252,6 +272,7 @@ export default defineComponent({
       currentAccountName,
       endpointKey,
       isH160,
+      hasDashboard,
     };
   },
   methods: {

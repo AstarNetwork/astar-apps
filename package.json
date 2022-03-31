@@ -48,6 +48,8 @@
     "ethers": "^5.5.4",
     "express": "^4.17.1",
     "firebase": "^9.5.0",
+    "highcharts": "^10.0.0",
+    "highcharts-vue": "^1.4.0",
     "keccak": "byterose/keccak#stream-update",
     "luxon": "^2.1.1",
     "path": "^0.12.7",

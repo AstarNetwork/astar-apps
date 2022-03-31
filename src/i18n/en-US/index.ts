@@ -297,4 +297,7 @@ export default {
       unlock: 'Unlock',
     },
   },
+  dashboard: {
+    dashboard: 'Dashboard',
+  },
 };

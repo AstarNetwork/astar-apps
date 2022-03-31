@@ -1,0 +1,111 @@
+@import 'src/css/quasar.variables.scss';
+
+.row {
+  padding: 16px 8px 0px 8px;
+}
+
+.align-rigth {
+  padding: 16px 8px 0px 8px;
+  text-align: end;
+}
+
+.chart {
+  padding-bottom: 8px 24px 24px;
+}
+
+.wrapper--charts {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.wrapper--chart {
+  width: 100%;
+  padding: 8px;
+}
+
+.wrapper--value {
+  width: 100%;
+  padding: 8px;
+
+  @media (min-width: $lg) {
+    width: 50%;
+  }
+}
+
+.wrapper--filter {
+  display: flex;
+  justify-content: right;
+  margin: 8px 0px 24px 0px; 
+
+  @media (min-width: $sm) {
+    margin: 8px 16px 24px 0px; 
+  }
+}
+
+.filter--tabs {
+  display: flex;
+  border: 1px solid $gray-1;
+  border-radius: 6px;
+  width: 100%;
+
+  @media (min-width: $sm) {
+    width: auto;
+  }
+
+  div {
+    padding: 4px 14px;
+    cursor: pointer;
+    width: 25%;
+    text-align: center;
+
+    @media (min-width: $sm) {
+      padding: 2px 18px;
+      width: auto; 
+    }
+  }
+
+  div:not(:last-child) {
+    border-right: 1px solid $gray-1;
+  }
+
+  .selected {
+    background-color: $gray-1;
+  }
+}
+
+.body--dark {
+  .filter--tabs {
+    background-color: $gray-5-selected;
+    border: 1px solid $gray-5;
+
+    div:not(:last-child) {
+      border-right: 1px solid $gray-5;
+    }
+
+    .selected {
+      background-color: $gray-5;
+    }
+  }
+
+  .container {
+    background-color: $gray-5-selected;
+  }
+}
+
+.container--value {
+  padding: 8px 16px 32px;
+
+  @media (min-width: $sm) {
+    padding: 8px 24px 32px;
+  }
+}
+
+.container--title--color {
+  color: #B1B7C1;
+}
+
+.chart--value {
+  padding: 8px 8px 24px;
+}
