@@ -13,18 +13,18 @@
           <div></div>
         </template>
       </div>
-    </div>
-    <div v-if="openOption" v-click-away="closeOption" class="box--wallet-option">
-      <ul class="container--wallet">
-        <SelectWalletOption
-          v-for="(wallet, index) in wallets"
-          :key="index"
-          v-model:selOption="selWalletIdx"
-          :icon-wallet="wallet.img"
-          :wallet-name="wallet.name"
-          :checked="selWalletIdx === wallet.name"
-        />
-      </ul>
+      <div v-if="openOption" v-click-away="closeOption" class="box--wallet-option">
+        <ul class="container--wallet">
+          <SelectWalletOption
+            v-for="(wallet, index) in wallets"
+            :key="index"
+            v-model:selOption="selWalletIdx"
+            :icon-wallet="wallet.img"
+            :wallet-name="wallet.name"
+            :checked="selWalletIdx === wallet.name"
+          />
+        </ul>
+      </div>
     </div>
   </div>
 </template>
@@ -151,10 +151,8 @@ export default defineComponent({
   position: absolute;
   width: rem(314);
   margin-left: 20px;
-  margin-top: 16px;
   border-radius: 6px;
   z-index: 10;
-  top: 150px;
   background: $container-bg-white;
 }
 
