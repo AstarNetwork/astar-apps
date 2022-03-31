@@ -1,6 +1,5 @@
 import { RouteRecordRaw } from 'vue-router';
 
-import Balance from 'pages/Balance.vue';
 import Assets from 'pages/Assets.vue';
 import Store from 'src/pages/DappStaking.vue';
 import ConnectWallet from 'src/components/balance/ConnectWallet.vue';
@@ -21,23 +20,24 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/balance',
     name: 'Balance',
-    component: Balance,
+    redirect: '/assets',
     children: [
       {
         path: '',
-        redirect: '/balance/wallet',
+        redirect: '/assets',
       },
       {
         path: 'balance-plasm',
-        redirect: '/balance/wallet',
+        redirect: '/assets',
       },
       {
         path: 'wallet',
         component: ConnectWallet,
+        redirect: '/assets',
         children: [
           {
             path: 'deeplink-metamask',
-            component: ConnectWallet,
+            redirect: '/assets',
           },
         ],
       },
