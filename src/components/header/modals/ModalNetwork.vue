@@ -45,17 +45,16 @@
                       {{ provider.displayName }}
                     </p>
                   </div>
-
-                  <!-- custom endpoint -->
-                  <!-- <input
-                    v-if="provider.key === endpointKey.CUSTOM"
-                    v-model="newEndpoint"
-                    type="text"
-                    placeholder="IP Address / Domain"
-                    class="ip-input"
-                  /> -->
                 </div>
               </label>
+              <!-- custom endpoint -->
+              <input
+                v-if="provider.key === endpointKey.CUSTOM && selNetwork === endpointKey.CUSTOM"
+                v-model="newEndpoint"
+                type="text"
+                placeholder="IP Address / Domain"
+                class="ip-input"
+              />
             </li>
           </ul>
         </fieldset>
@@ -183,12 +182,14 @@ export default defineComponent({
   }
 }
 
-// .class-radio-tx-off {
-//   @apply tw-font-medium tw-text-gray-500 dark:tw-text-darkGray-400 tw-text-sm;
-// }
-// .class-radio-tx-off:group-hover {
-//   @apply tw-text-gray-700 dark:tw-text-darkGray-300;
-// }
+.ip-input {
+  width: 330px;
+  text-align: center;
+  @apply tw-flex tw-appearance-none tw-bg-gray-50 dark:tw-bg-darkGray-800 tw-block tw-mx-3 tw-border tw-border-gray-300 dark:tw-border-darkGray-600 tw-rounded-md tw-mt-2 tw-px-5 tw-py-2 tw-text-sm tw-text-gray-700 dark:tw-text-darkGray-100  tw-placeholder-gray-300 dark:tw-placeholder-darkGray-600;
+}
+.ip-input:focus {
+  @apply tw-outline-none tw-bg-white dark:tw-bg-darkGray-900 tw-ring-blue-500 tw-border-blue-500;
+}
 
 .wrapper__row--button {
   display: flex;
