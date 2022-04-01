@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="isListReady" class="container">
+    <div v-if="isListReady" class="container container--evm-assets-list">
       <div class="row">
         <span class="text--title">{{ $t('assets.assets') }}</span>
       </div>
