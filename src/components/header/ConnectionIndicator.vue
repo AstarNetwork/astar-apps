@@ -44,7 +44,7 @@ export default defineComponent({
   },
 });
 </script>
-<style style="scss" scoped>
+<style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
 
 .wrapper--indicator {

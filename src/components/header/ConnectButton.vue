@@ -1,7 +1,7 @@
 <template>
   <button type="button" :class="width >= screenSize.sm ? 'btn--connect' : 'm-btn--connect'">
     <icon-base
-      class="tw-w-5 tw-h-5 tw-text-astarblue tw--ml-1 tw-mr-1"
+      class="iconbase tw-w-5 tw-h-5 tw--ml-1 tw-mr-1"
       stroke="currentColor"
       icon-name="wallet"
     >
@@ -65,6 +65,9 @@ export default defineComponent({
 }
 .m-btn--connect:hover {
   background: #fff;
+}
+.iconbase {
+  color: $astar-blue-dark;
 }
 
 .body--dark {
