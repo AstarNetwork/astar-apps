@@ -28,7 +28,7 @@
           <div class="tw-mb-8">
             <div class="tw-flex tw-items-center tw-justify-center tw-mb-4">
               <div class="tw-h-8 tw-w-8 tw-mr-3 tw-mb-2">
-                <img width="40" :src="img" />
+                <img width="40" :src="selWallet.img" />
               </div>
               <div
                 class="
@@ -37,11 +37,11 @@
                   tw-text-center tw-mb-2
                 "
               >
-                {{ $t('installWallet.getWallet', { value: $t(name) }) }}
+                {{ $t('installWallet.getWallet', { value: $t(selWallet.name) }) }}
               </div>
             </div>
             <div class="tw-text-md tw-text-blue-900 dark:tw-text-white tw-text-center">
-              {{ $t('installWallet.installWallet', { value: $t(name) }) }}
+              {{ $t('installWallet.installWallet', { value: $t(selWallet.name) }) }}
             </div>
           </div>
         </div>
@@ -53,7 +53,7 @@
           </a>
           <a :href="walletUrl" target="_blank" rel="noopener noreferrer">
             <button type="button" class="installButton">
-              {{ $t('installWallet.installExtension', { value: $t(name) }) }}
+              {{ $t('installWallet.installExtension', { value: $t(selWallet.name) }) }}
             </button>
           </a>
         </div>
@@ -63,8 +63,8 @@
 </template>
 
 <script lang="ts">
-import { supportWalletObj } from 'src/config/wallets';
-import { defineComponent } from 'vue';
+import { supportAllWalletsObj, SupportWallet } from 'src/config/wallets';
+import { defineComponent, computed, PropType } from 'vue';
 export default defineComponent({
   props: {
     setCloseModal: {
@@ -72,19 +72,15 @@ export default defineComponent({
       required: true,
     },
     selectedWallet: {
-      type: String,
+      type: String as PropType<SupportWallet>,
       required: true,
     },
   },
   setup(props) {
-    // @ts-ignore
-    const { img, walletUrl, guideUrl, name } = supportWalletObj[props.selectedWallet];
+    const selWallet = computed(() => supportAllWalletsObj[props.selectedWallet]);
 
     return {
-      img,
-      walletUrl,
-      guideUrl,
-      name,
+      selWallet,
     };
   },
 });
