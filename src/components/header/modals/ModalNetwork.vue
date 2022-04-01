@@ -77,6 +77,7 @@ import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { checkIsMobileMathWallet } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref } from 'vue';
+import { useQuasar } from 'quasar';
 
 export default defineComponent({
   props: {
@@ -98,6 +99,8 @@ export default defineComponent({
     // const classRadioTxtOn = 'tw-font-medium tw-text-blue-500 dark:tw-text-blue-400 tw-text-sm';
     const classRadioTxtOff = 'class-radio-tx-off';
 
+    const $q = useQuasar();
+    const isAndroid = $q.platform.is.android;
     const store = useStore();
     const newEndpoint = ref('');
     const customEndpoint = computed(() => store.getters['general/customEndpoint']);
@@ -118,7 +121,7 @@ export default defineComponent({
         localStorage.setItem(CUSTOM_ENDPOINT, endpoint);
       }
 
-      if (await checkIsMobileMathWallet()) {
+      if (isAndroid && (await checkIsMobileMathWallet())) {
         window.open(window.location.origin);
       } else {
         location.reload();
