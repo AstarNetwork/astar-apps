@@ -143,7 +143,7 @@ export default defineComponent({
     const copyAddress = async () => {
       await navigator.clipboard.writeText(currentAccount.value);
       store.dispatch('general/showAlertMsg', {
-        msg: 'Copy address success!!',
+        msg: 'Copy address success!',
         alertType: 'success',
       });
     };

@@ -242,13 +242,13 @@ export default defineComponent({
       this.showAlert(alertMsg);
     },
     copyAddress() {
-      this.copy('#hiddenAddr', 'Copy address success!!');
+      this.copy('#hiddenAddr', 'Copy address success!');
     },
     copyCodeHash() {
-      this.copy('#hiddenCodeHash', 'Copy codehash success!!');
+      this.copy('#hiddenCodeHash', 'Copy codehash success!');
     },
     copyABI() {
-      this.copy('#hiddenAbi', 'Copy ABI success!!');
+      this.copy('#hiddenAbi', 'Copy ABI success!');
     },
   },
 });
