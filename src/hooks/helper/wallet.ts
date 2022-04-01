@@ -116,3 +116,17 @@ export const checkIsWalletExtension = async (): Promise<boolean> => {
 export const checkIsEthereumWallet = (wallet: SupportWallet) => {
   return supportEvmWalletObj.hasOwnProperty(wallet);
 };
+
+export const checkIsMobileMathWallet = async (): Promise<boolean> => {
+  try {
+    if (isMobileDevice) {
+      const [wallet] = await getInjectedExtensions();
+      const isMath = wallet.hasOwnProperty('isMathWallet');
+      return isMath;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    return false;
+  }
+};

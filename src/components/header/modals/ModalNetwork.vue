@@ -72,10 +72,11 @@
   </astar-simple-modal>
 </template>
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
-import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
-import { useStore } from 'src/store';
+import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { checkIsMobileMathWallet } from 'src/hooks/helper/wallet';
+import { useStore } from 'src/store';
+import { computed, defineComponent, ref } from 'vue';
 
 export default defineComponent({
   props: {
@@ -109,14 +110,19 @@ export default defineComponent({
 
     const { NETWORK_IDX, CUSTOM_ENDPOINT } = LOCAL_STORAGE;
 
-    const selectNetwork = (networkIdx: number): void => {
+    const selectNetwork = async (networkIdx: number): Promise<void> => {
       localStorage.setItem(NETWORK_IDX, networkIdx.toString());
       if (newEndpoint.value) {
         let endpoint = `${newEndpoint.value}`;
         endpoint = !endpoint.includes('wss://') ? `wss://${endpoint}` : endpoint;
         localStorage.setItem(CUSTOM_ENDPOINT, endpoint);
       }
-      location.reload();
+
+      if (await checkIsMobileMathWallet()) {
+        window.open(window.location.origin);
+      } else {
+        location.reload();
+      }
 
       emit('update:is-open', false);
       emit('update:select-network', networkIdx);
