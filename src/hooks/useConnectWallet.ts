@@ -100,9 +100,7 @@ export const useConnectWallet = () => {
 
   const setMetaMask = async () => {
     selectedWallet.value = SupportWallet.MetaMask;
-
     const isMetamaskExtension = typeof window.ethereum !== 'undefined';
-
     if (!isMetamaskExtension) {
       modalName.value = WalletModalOption.NoExtension;
       return;
@@ -139,7 +137,12 @@ export const useConnectWallet = () => {
     modalName.value = wallet;
   };
 
-  const setWalletModal = async (wallet: SupportWallet): Promise<void> => {
+  // Todo: Delete after the balance page is removed
+  const setWalletModal = (wallet: SupportWallet): void => {
+    setWallet(wallet);
+  };
+
+  const connectEthereumWallet = async (wallet: SupportWallet): Promise<void> => {
     const isWalletExtension = await checkIsWalletExtension();
     const deepLinkUrl = getDeepLinkUrl(wallet);
     const isOpenMobileDappBrowser = isMobileDevice && deepLinkUrl && !isWalletExtension;
@@ -152,7 +155,6 @@ export const useConnectWallet = () => {
       setMetaMask();
       return;
     }
-    setWallet(wallet);
   };
 
   const changeAccount = async () => {
@@ -161,7 +163,7 @@ export const useConnectWallet = () => {
     if (chosenWallet === SupportWallet.MetaMask) {
       openSelectModal();
     } else {
-      await setWalletModal(chosenWallet as SupportWallet);
+      setWallet(chosenWallet as SupportWallet);
     }
   };
 
@@ -234,5 +236,6 @@ export const useConnectWallet = () => {
     disconnectAccount,
     toggleMetaMaskSchema,
     changeAccount,
+    connectEthereumWallet,
   };
 };
