@@ -12,20 +12,29 @@
           <div class="row__left">
             <div class="column--currency">
               <img width="24" :src="nativeTokenImg" :alt="nativeTokenSymbol" />
-              <div class="column--ticker">
+              <div v-if="nativeTokenSymbol && currentNetworkName" class="column--ticker">
                 <span class="text--title">{{ nativeTokenSymbol }}</span>
                 <span class="text--label">{{ currentNetworkName }}</span>
+              </div>
+              <div v-else>
+                <q-skeleton animation="fade" class="skeleton--md" />
               </div>
             </div>
           </div>
           <div class="row__right">
             <div class="column column--balance">
               <div class="column__box">
-                <div class="text--accent">
+                <div v-if="bal !== null && nativeTokenSymbol" class="text--accent">
                   <span>{{ $n(bal) }} {{ nativeTokenSymbol }}</span>
                 </div>
-                <div class="text--label">
+                <div v-else class="skeleton--right">
+                  <q-skeleton animation="fade" class="skeleton--md" />
+                </div>
+                <div v-if="balUsd !== null" class="text--label">
                   <span>{{ $n(balUsd) }} {{ $t('usd') }}</span>
+                </div>
+                <div v-else class="skeleton--right">
+                  <q-skeleton animation="fade" class="skeleton--md" />
                 </div>
               </div>
             </div>
@@ -43,10 +52,15 @@
           </div>
           <div class="row__right">
             <div class="column--balance">
-              <div class="column__box">
+              <div v-if="!checkIsNullOrUndefined(nativeTokenSymbol)" class="column__box">
                 <span class="text--value"
                   >{{ $n(transferableBalance) }} {{ nativeTokenSymbol }}</span
                 >
+              </div>
+              <div v-else class="column__box">
+                <div class="skeleton--right">
+                  <q-skeleton animation="fade" class="skeleton--md" />
+                </div>
               </div>
             </div>
             <div class="column--buttons">
@@ -66,8 +80,13 @@
           </div>
           <div class="row__right">
             <div class="column--balance">
-              <div class="column__box">
+              <div v-if="!checkIsNullOrUndefined(nativeTokenSymbol)" class="column__box">
                 <span class="text--value">{{ $n(numEvmDeposit) }} {{ nativeTokenSymbol }}</span>
+              </div>
+              <div v-else class="column__box">
+                <div class="skeleton--right">
+                  <q-skeleton animation="fade" class="skeleton--md" />
+                </div>
               </div>
             </div>
             <div class="column--buttons">
@@ -84,8 +103,13 @@
           </div>
           <div class="row__right">
             <div class="column--balance">
-              <div class="column__box">
+              <div v-if="!checkIsNullOrUndefined(nativeTokenSymbol)" class="column__box">
                 <span class="text--value">{{ $n(vestingTtl) }} {{ nativeTokenSymbol }}</span>
+              </div>
+              <div v-else class="column__box">
+                <div class="skeleton--right">
+                  <q-skeleton animation="fade" class="skeleton--md" />
+                </div>
               </div>
             </div>
             <div class="column--buttons">
@@ -102,8 +126,13 @@
           </div>
           <div class="row__right">
             <div class="column--balance">
-              <div class="column__box">
+              <div v-if="!checkIsNullOrUndefined(nativeTokenSymbol)" class="column__box">
                 <span class="text--value">{{ $n(lockInDappStaking) }} {{ nativeTokenSymbol }}</span>
+              </div>
+              <div v-else class="column__box">
+                <div class="skeleton--right">
+                  <q-skeleton animation="fade" class="skeleton--md" />
+                </div>
               </div>
             </div>
             <div class="column--buttons">
@@ -146,7 +175,7 @@ import ModalTransfer from './modals/ModalTransfer.vue';
 import ModalFaucet from './modals/ModalFaucet.vue';
 import ModalEvmWithdraw from './modals/ModalEvmWithdraw.vue';
 import ModalVesting from './modals/ModalVesting.vue';
-
+import { checkIsNullOrUndefined } from 'src/hooks/helper/common';
 export default defineComponent({
   components: {
     ModalTransfer,
@@ -159,8 +188,8 @@ export default defineComponent({
     const isModalFaucet = ref<boolean>(false);
     const isModalEvmWithdraw = ref<boolean>(false);
     const isModalVesting = ref<boolean>(false);
-    const bal = ref<number>(0);
-    const balUsd = ref<number>(0);
+    const bal = ref<number | null>(null);
+    const balUsd = ref<number | null>(null);
     const vestingTtl = ref<number>(0);
     const lockInDappStaking = ref<number>(0);
     const isShibuya = ref<boolean>(false);
@@ -261,6 +290,7 @@ export default defineComponent({
       handleModalTransfer,
       handleModalFaucet,
       handleModalEvmWithdraw,
+      checkIsNullOrUndefined,
     };
   },
 });
