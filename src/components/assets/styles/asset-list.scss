@@ -1,5 +1,11 @@
 @import 'src/css/quasar.variables.scss';
 
+.container--evm-assets-list {
+  @media (min-width: $lg) {
+    margin-bottom: 24px;
+  }
+}
+
 .row {
   padding: 16px 8px;
 }

@@ -110,7 +110,7 @@ export default defineComponent({
 
     const showAlert = () => {
       store.dispatch('general/showAlertMsg', {
-        msg: 'Copy codeHash success!!',
+        msg: 'Copy codeHash success!',
         alertType: 'success',
       });
     };

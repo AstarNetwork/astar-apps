@@ -75,6 +75,10 @@ export function useCbridgeV2() {
     });
 
     tokens.value.sort((a: SelectedToken, b: SelectedToken) => {
+      return a.symbol.localeCompare(b.symbol);
+    });
+
+    tokens.value.sort((a: SelectedToken, b: SelectedToken) => {
       return Number(b.userBalance) - Number(a.userBalance);
     });
   };

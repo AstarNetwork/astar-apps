@@ -48,16 +48,15 @@
                   <div class="accountName">{{ account.name }}</div>
                   <div class="address">{{ account.address }}</div>
                   <div class="wrapper--share">
-                    <div class="box--share">
+                    <div class="box--share" @click="copyAddress(account.address)">
                       <img
                         :src="
                           isDarkTheme ? 'icons/icon-copy-dark-nobg.svg' : 'icons/icon-copy-nobg.svg'
                         "
-                        @click="copyAddress"
                       />
                       <div>{{ $t('copy') }}</div>
                     </div>
-                    <a :href="subScan" target="_blank" rel="noopener noreferrer">
+                    <a :href="subScan + account.address" target="_blank" rel="noopener noreferrer">
                       <div class="box--share">
                         <img
                           :src="
@@ -154,13 +153,13 @@ export default defineComponent({
     const selAccount = ref<string>('');
     const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
     const subScan = computed(
-      () => `${providerEndpoints[currentNetworkIdx.value].subscan}/account/${currentAccount.value}`
+      () => `${providerEndpoints[currentNetworkIdx.value].subscan}/account/`
     );
 
-    const copyAddress = async () => {
-      await navigator.clipboard.writeText(currentAccount.value);
+    const copyAddress = async (address: string) => {
+      await navigator.clipboard.writeText(address);
       store.dispatch('general/showAlertMsg', {
-        msg: 'Copy address success!!',
+        msg: 'Copy address success!',
         alertType: 'success',
       });
     };
