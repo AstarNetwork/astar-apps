@@ -48,6 +48,7 @@ export default defineComponent({
     const store = useStore();
     const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
+    const chainInfo = computed(() => store.getters['general/chainInfo']);
     const metaExtensions = computed(() => store.getters['general/metaExtensions']);
     const extensionCount = computed(() => store.getters['general/extensionCount']);
     const currentNetworkName = ref(providerEndpoints[currentNetworkIdx.value].displayName);
@@ -56,10 +57,16 @@ export default defineComponent({
     const version = ref('0.0.0');
 
     watch(currentNetworkIdx, (networkIdx) => {
-      version.value = metaExtensions?.value?.extensions[networkIdx].version;
       currentNetworkName.value = providerEndpoints[networkIdx].displayName;
       currentLogo.value = providerEndpoints[networkIdx].defaultLogo;
     });
+
+    watch(
+      () => chainInfo.value,
+      () => {
+        version.value = `0.0.${chainInfo.value?.specVersion}`;
+      }
+    );
 
     watch(
       () => metaExtensions.value,
