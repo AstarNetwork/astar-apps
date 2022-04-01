@@ -6,8 +6,8 @@
           to="/dashboard"
           :class="['link', $route.path.split('/')[1] === 'dashboard' ? 'activeLink' : '']"
         >
-          <div class="indicator" />
           <div class="col--item">
+            <div class="indicator" />
             {{ $t('dashboard.dashboard') }}
           </div>
         </router-link>
@@ -16,8 +16,8 @@
           to="/assets"
           :class="['link', $route.path.split('/')[1] === 'assets' ? 'activeLink' : '']"
         >
-          <div class="indicator" />
           <div class="col--item">
+            <div class="indicator" />
             {{ $t('assets.assets') }}
           </div>
         </router-link>
@@ -27,8 +27,8 @@
           to="/dapp-staking"
           :class="['link', $route.path.split('/')[1] === 'dapp-staking' ? 'activeLink' : '']"
         >
-          <div class="indicator" />
           <div class="col--item">
+            <div class="indicator" />
             {{ $t('common.staking') }}
           </div>
         </router-link>
@@ -117,8 +117,7 @@ export default defineComponent({
 
   .indicator {
     position: absolute;
-    // top: 0px;
-    margin-bottom: 35px;
+    margin-top: -12px;
     margin-left: 4px;
     background: $astar-blue;
     border-radius: 0px 0px 8px 8px;

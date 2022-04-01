@@ -112,6 +112,9 @@ export default defineComponent({
     background: $gray-5 !important;
     color: white !important;
   }
+  .btn--account:hover {
+    background: #3c4649 !important;
+  }
 
   .m-btn--account {
     background: $gray-6 !important;
