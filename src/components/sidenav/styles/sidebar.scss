@@ -79,32 +79,17 @@
   width: 36px !important;
 }
 
-.link:nth-child(1) {
+.tabs__dashboard {
   width: 96px;
+  left: 38px;
 }
 
-.tabs__dashboard,
-.link:nth-child(1):hover ~ .tabs__indicator {
-  width: 96px;
-  left: 36px;
-}
-
-.link:nth-child(2) {
+.tabs__assets {
   width: 72px;
+  left: 120px;
 }
 
-.tabs__assets,
-.link:nth-child(2):hover ~ .tabs__indicator {
-  width: 72px;
-  left: 117px;
-}
-
-.link:nth-child(3) {
-  width: 74px;
-}
-
-.tabs__staking,
-.link:nth-child(3):hover ~ .tabs__indicator {
+.tabs__staking {
   width: 74px;
   left: 192px;
 }
@@ -112,6 +97,21 @@
 .icon--dot {
   width: 24px;
   height: 24px;
+}
+
+.column--item {
+  min-width: 50px;
+  font-size: 14px;
+  transition: all 0.2s ease 0s;
+  &:hover {
+    font-weight: 700;
+    color: $gray-5;
+    transition: all 0.2s ease 0s;
+  }
+}
+
+.column--item--dashboard {
+  min-width: 76px !important;
 }
 
 .body--dark {
@@ -123,6 +123,12 @@
 
   .active-link {
     color: $gray-1;
+  }
+
+  .column--item {
+    &:hover {
+      color: $gray-1;
+    }
   }
 
   .button--option {

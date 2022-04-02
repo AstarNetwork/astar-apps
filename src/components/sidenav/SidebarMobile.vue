@@ -3,14 +3,14 @@
     <div class="header">
       <nav class="tabs">
         <router-link to="/dashboard" :class="['link', path === 'dashboard' && 'active-link']">
-          <div>
-            <span>
+          <div class="column--item column--item--dashboard">
+            <span class="text--link">
               {{ $t('dashboard.dashboard') }}
             </span>
           </div>
         </router-link>
         <router-link to="/assets" :class="['link', path === 'assets' && 'active-link']">
-          <div>
+          <div class="column--item">
             <span>
               {{ $t('assets.assets') }}
             </span>
@@ -21,8 +21,8 @@
           to="/dapp-staking"
           :class="['link', path === 'dapp-staking' && 'active-link']"
         >
-          <div>
-            <span>
+          <div class="column--item">
+            <span class="text--link">
               {{ $t('common.staking') }}
             </span>
           </div>
@@ -48,14 +48,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watchEffect } from 'vue';
-import { useStore } from 'src/store';
-import { providerEndpoints } from 'src/config/chainEndpoints';
 import Icon3dots from 'components/icons/Icon3dots.vue';
+import { providerEndpoints } from 'src/config/chainEndpoints';
+import { useStore } from 'src/store';
+import { computed, defineComponent, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import LightDarkMode from '../common/LightDarkMode.vue';
 import LocaleChanger from '../common/LocaleChanger.vue';
 import SocialMediaLinks from '../common/SocialMediaLinks.vue';
-import LightDarkMode from '../common/LightDarkMode.vue';
-import { useRouter } from 'vue-router';
+
 export default defineComponent({
   components: {
     Icon3dots,
