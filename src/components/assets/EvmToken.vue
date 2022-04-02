@@ -43,7 +43,7 @@
             </router-link>
 
             <button
-              class="btn btn--sm screen--md"
+              class="btn btn--sm screen--md btn--icon"
               @click="
                 addToEvmWallet({
                   tokenAddress: token.address,
@@ -53,7 +53,12 @@
                 })
               "
             >
-              {{ $t('add') }}
+              <div class="icon--plus">
+                <span> + </span>
+              </div>
+              <q-tooltip>
+                <span class="text--tooltip">{{ $t('assets.addToWallet') }}</span>
+              </q-tooltip>
             </button>
           </div>
         </div>
