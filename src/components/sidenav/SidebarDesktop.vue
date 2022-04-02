@@ -156,7 +156,7 @@ export default defineComponent({
   width: 224px;
   height: 100%;
   padding-top: 18px;
-  background: #e6e9ee;
+  background: $border-separator-light;
   display: flex;
   flex-direction: column;
 }
@@ -183,7 +183,7 @@ export default defineComponent({
   color: $gray-5;
 }
 .link:hover {
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05)), #e6e9ee;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05)), $object-light;
 }
 .activeLink {
   background: #d3d6dc;
@@ -209,7 +209,7 @@ export default defineComponent({
     background: $gray-5;
   }
   .link {
-    color: #f7f7f8;
+    color: $gray-1;
   }
   .link:hover {
     background: #313a3d;

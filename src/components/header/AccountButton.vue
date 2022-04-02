@@ -94,12 +94,12 @@ export default defineComponent({
 }
 
 .m-btn--account {
-  border: 1px solid #e6e9ee;
+  border: 1px solid $object-light;
   box-shadow: none;
   padding: 8px;
 
   .iconbase {
-    color: #e6e9ee;
+    color: $object-light;
   }
 }
 
