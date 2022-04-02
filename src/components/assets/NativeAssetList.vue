@@ -245,6 +245,8 @@ export default defineComponent({
         isFaucet.value = isShibuya.value || mainnetFaucetAmount > bal.value;
         if (nativeTokenUsd.value) {
           balUsd.value = nativeTokenUsd.value * bal.value;
+        } else {
+          balUsd.value = 0;
         }
       } catch (error: any) {
         console.error(error.message);

@@ -281,6 +281,7 @@ export default {
     cantTransferToExcahges: "You can't transfer to Exchanges",
     noHash: 'Your transaction will not have a hash',
     addToWallet: 'Add to wallet',
+    noResults: 'No results found :(',
     modals: {
       max: 'Max',
       balance: 'Balance: {amount} {token}',

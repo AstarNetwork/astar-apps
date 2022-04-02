@@ -2,12 +2,36 @@
   <div>
     <div v-if="isListReady" class="container container--evm-assets-list">
       <div class="row">
-        <span class="text--title">{{ $t('assets.assets') }}</span>
+        <div>
+          <span class="text--title">{{ $t('assets.assets') }}</span>
+        </div>
+
+        <div :class="isSearch && 'search--active'">
+          <div class="box--search">
+            <table class="table--search">
+              <tr class="tr--search">
+                <td>
+                  <input
+                    v-model="search"
+                    type="text"
+                    placeholder="Search"
+                    class="input--search"
+                    @focus="setIsSearch(true)"
+                    @blur="setIsSearch(false)"
+                  />
+                </td>
+                <td>
+                  <q-icon :name="fasSearch" class="icon--search" />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
       </div>
 
       <div class="border--separator" />
 
-      <div class="rows">
+      <div v-if="isDisplayNativeToken" class="rows">
         <div class="row row--details">
           <div class="row__left">
             <div class="column--currency">
@@ -56,15 +80,18 @@
           </div>
         </div>
       </div>
-
-      <div v-for="t in tokens" :key="t.symbol">
+      <div v-for="t in filteredTokens" :key="t.symbol">
         <EvmToken
           v-if="t.symbol !== nativeTokenSymbol"
           :token="t"
           :handle-modal-transfer="handleModalTransfer"
         />
       </div>
+      <div v-if="!filteredTokens && !isDisplayNativeToken" class="box--no-result">
+        <span class="text--xl">{{ $t('assets.noResults') }}</span>
+      </div>
     </div>
+
     <ModalTransfer
       :is-modal-transfer="isModalTransfer"
       :handle-modal-transfer="handleModalTransfer"
@@ -85,6 +112,7 @@ import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
 import ModalTransfer from './modals/ModalTransfer.vue';
 import { getTokenImage } from 'src/token';
 import ModalFaucet from './modals/ModalFaucet.vue';
+import { fasSearch } from '@quasar/extras/fontawesome-v5';
 
 export default defineComponent({
   components: {
@@ -108,6 +136,8 @@ export default defineComponent({
     const balUsd = ref<number>(0);
     const isShibuya = ref<boolean>(false);
     const isFaucet = ref<boolean>(false);
+    const isSearch = ref<boolean>(false);
+    const search = ref<string>('');
     // Memo: defined by hard-coding to avoid sending too many requests to faucet API server
     const mainnetFaucetAmount = 0.002;
 
@@ -115,19 +145,45 @@ export default defineComponent({
     const selectedAddress = computed(() => store.getters['general/selectedAddress']);
     const { balance } = useBalance(selectedAddress);
     const { nativeTokenUsd } = usePrice();
+
     const nativeTokenSymbol = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
       return chainInfo ? chainInfo.tokenSymbol : '';
     });
+
     const currentNetworkName = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
       const chain = chainInfo ? chainInfo.chain : '';
       return chain === 'Shibuya Testnet' ? 'Shibuya' : chain;
     });
+
     const nativeTokenImg = computed(() =>
       getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
     );
     const isListReady = computed(() => isShibuya.value || props.tokens);
+
+    const isDisplayNativeToken = computed(() => {
+      return (
+        !search.value || nativeTokenSymbol.value.toLowerCase().includes(search.value.toLowerCase())
+      );
+    });
+
+    const filteredTokens = computed(() => {
+      if (!search.value) return props.tokens;
+      if (!props.tokens) return null;
+
+      const value = search.value.toLowerCase();
+      const result = props.tokens
+        .map((token: SelectedToken) => {
+          const isFoundToken =
+            value === token.address.toLowerCase() ||
+            token.symbol.toLowerCase().includes(value) ||
+            token.name.toLowerCase().includes(value);
+          return isFoundToken ? token : undefined;
+        })
+        .filter((it) => it !== undefined) as SelectedToken[];
+      return result.length > 0 ? result : null;
+    });
 
     const handleModalTransfer = ({
       currency,
@@ -151,6 +207,10 @@ export default defineComponent({
 
     const handleModalFaucet = ({ isOpen }: { isOpen: boolean }) => {
       isModalFaucet.value = isOpen;
+    };
+
+    const setIsSearch = (isTyping: boolean): void => {
+      isSearch.value = isTyping;
     };
 
     watchEffect(async () => {
@@ -181,6 +241,12 @@ export default defineComponent({
       nativeTokenImg,
       isListReady,
       isModalFaucet,
+      fasSearch,
+      isSearch,
+      search,
+      filteredTokens,
+      isDisplayNativeToken,
+      setIsSearch,
       handleModalTransfer,
       handleModalFaucet,
     };
