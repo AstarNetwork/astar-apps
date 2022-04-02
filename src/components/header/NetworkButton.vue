@@ -115,6 +115,9 @@ export default defineComponent({
   border-radius: 16px;
   margin-left: 8px;
   color: $gray-5;
+  @media (min-width: $lg) {
+    margin-left: 16px;
+  }
 }
 .btn--network:hover {
   background: #fff;
