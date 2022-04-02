@@ -1,41 +1,37 @@
 <template>
   <div>
     <div class="header">
-      <div class="tabs">
-        <router-link
-          to="/dashboard"
-          :class="['link', $route.path.split('/')[1] === 'dashboard' ? 'activeLink' : '']"
-        >
-          <div class="col--item">
-            <div class="indicator" />
-            {{ $t('dashboard.dashboard') }}
+      <nav class="tabs">
+        <router-link to="/dashboard" :class="['link', path === 'dashboard' && 'active-link']">
+          <div class="column--item column--item--dashboard">
+            <span class="text--link">
+              {{ $t('dashboard.dashboard') }}
+            </span>
           </div>
         </router-link>
-
-        <router-link
-          to="/assets"
-          :class="['link', $route.path.split('/')[1] === 'assets' ? 'activeLink' : '']"
-        >
-          <div class="col--item">
-            <div class="indicator" />
-            {{ $t('assets.assets') }}
+        <router-link to="/assets" :class="['link', path === 'assets' && 'active-link']">
+          <div class="column--item">
+            <span>
+              {{ $t('assets.assets') }}
+            </span>
           </div>
         </router-link>
-
         <router-link
           v-if="network.isStoreEnabled"
           to="/dapp-staking"
-          :class="['link', $route.path.split('/')[1] === 'dapp-staking' ? 'activeLink' : '']"
+          :class="['link', path === 'dapp-staking' && 'active-link']"
         >
-          <div class="col--item">
-            <div class="indicator" />
-            {{ $t('common.staking') }}
+          <div class="column--item">
+            <span class="text--link">
+              {{ $t('common.staking') }}
+            </span>
           </div>
         </router-link>
-      </div>
+        <div class="tabs__indicator" :class="getIndicatorClass(path)" />
+      </nav>
 
       <button type="button" class="button--option" @click="showOption = !showOption">
-        <icon-base class="tw-w-5 tw-h-5" stroke="currentColor" icon-name="option">
+        <icon-base class="icon--dot" stroke="currentColor" icon-name="option">
           <icon-3dots />
         </icon-base>
       </button>
@@ -52,13 +48,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from 'vue';
-import { useStore } from 'src/store';
-import { providerEndpoints } from 'src/config/chainEndpoints';
 import Icon3dots from 'components/icons/Icon3dots.vue';
+import { providerEndpoints } from 'src/config/chainEndpoints';
+import { useStore } from 'src/store';
+import { computed, defineComponent, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import LightDarkMode from '../common/LightDarkMode.vue';
 import LocaleChanger from '../common/LocaleChanger.vue';
 import SocialMediaLinks from '../common/SocialMediaLinks.vue';
-import LightDarkMode from '../common/LightDarkMode.vue';
+
 export default defineComponent({
   components: {
     Icon3dots,
@@ -71,110 +69,32 @@ export default defineComponent({
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
     const network = ref(providerEndpoints[currentNetworkIdx.value]);
     const showOption = ref(false);
+    const router = useRouter();
+    const path = computed(() => router.currentRoute.value.path.split('/')[1]);
+
+    const getIndicatorClass = (path: string): string => {
+      switch (path) {
+        case 'dashboard':
+          return 'tabs__dashboard';
+        case 'assets':
+          return 'tabs__assets';
+        case 'dapp-staking':
+          return 'tabs__staking';
+        default:
+          return 'tabs__staking';
+      }
+    };
 
     return {
       showOption,
       network,
+      getIndicatorClass,
+      path,
     };
   },
 });
 </script>
+
 <style lang="scss" scoped>
-@import 'src/css/quasar.variables.scss';
-@import 'src/css/utils.scss';
-
-.header {
-  overflow: hidden;
-  display: flex;
-  justify-content: space-between;
-  height: 40px;
-  background: $gray-1;
-  opacity: 0.8;
-  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.1);
-  border-top: 1px solid #e6e9ee;
-  border-bottom: 1px solid #e6e9ee;
-}
-
-.tabs {
-  display: flex;
-  padding-left: 3px;
-}
-
-.link {
-  display: flex;
-  align-items: center;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 17px;
-  text-align: center;
-  color: $gray-3;
-  padding: 12px;
-}
-
-.activeLink {
-  font-weight: 700;
-  color: $gray-5;
-
-  .indicator {
-    position: absolute;
-    margin-top: -12px;
-    margin-left: 4px;
-    background: $astar-blue;
-    border-radius: 0px 0px 8px 8px;
-    width: 36px;
-    height: 4px;
-  }
-}
-
-.button--option {
-  width: 32px;
-  height: 32px;
-  color: $gray-3;
-  border-radius: 16px;
-  margin-top: 4px;
-  margin-right: rem(16);
-  padding-left: 4px;
-}
-
-.wrapper--bottom {
-  flex-shrink: 0;
-  padding: rem(16);
-  background: $gray-1;
-  color: $gray-4;
-  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(50px);
-  border-top: 1px solid #e6e9ee;
-
-  .wrapper--option {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    padding-left: rem(28.8);
-    padding-right: rem(28.8);
-    padding-top: rem(4.8);
-  }
-}
-
-.body--dark {
-  .header {
-    background: $gray-5 !important;
-    border-top: none;
-    border-bottom: 1px solid $gray-4;
-  }
-
-  .activeLink {
-    color: $gray-1;
-  }
-
-  .button--option {
-    color: #fff;
-    background: $gray-5;
-  }
-
-  .wrapper--bottom {
-    background: rgba(44, 51, 53, 0.8);
-    border-top: 1px solid #2c3335;
-  }
-}
+@import './styles/sidebar.scss';
 </style>

@@ -5,6 +5,8 @@ $gray-5: #2c3335;
 $gray-5-selected: #222829;
 $gray-6: #191d1f;
 
+$object-light: #e6e9ee;
+
 $astar-blue: #0085ff;
 $astar-blue-dark: #05b6fd;
 $shiden-purple: #770cff;
@@ -19,7 +21,7 @@ $container-bg-dark: $gray-5;
 $container-bg-white: #ffffff;
 $item--bg--hover-dark: $gray-5-selected;
 $border-separator-dark: $gray-6;
-$border-separator-light: #e6e9ee;
+$border-separator-light: $object-light;
 $backdrop-transparent-dark: rgba(44, 51, 53, 0.5);
 $backdrop-transparent-dark-firefox: rgba(44, 51, 53, 0.9);
 $backdrop-transparent-light: rgba(44, 51, 53, 0.2);

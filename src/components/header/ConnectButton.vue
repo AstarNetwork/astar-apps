@@ -60,7 +60,7 @@ export default defineComponent({
   width: 32px;
   height: 32px;
   background: #fff;
-  border: 1px solid #e6e9ee;
+  border: 1px solid $object-light;
   border-radius: 16px;
 }
 .m-btn--connect:hover {

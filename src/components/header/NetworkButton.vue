@@ -120,7 +120,7 @@ export default defineComponent({
   background: #fff;
 }
 .divider {
-  border-left: 1px solid #e6e9ee;
+  border-left: 1px solid $border-separator-light;
   margin: 0 6px;
   height: 22px;
 }
@@ -132,11 +132,11 @@ export default defineComponent({
 }
 
 .m-btn--network {
-  border: 1px solid #e6e9ee;
+  border: 1px solid $object-light;
   box-shadow: none;
   padding: 8px;
   .iconbase {
-    color: #e6e9ee;
+    color: $object-light;
   }
   .divider {
     margin-right: 5px;
@@ -154,7 +154,7 @@ export default defineComponent({
     background: #3c4649;
   }
   .divider {
-    border-left: 1px solid #191d1f;
+    border-left: 1px solid $gray-6;
   }
 
   .m-btn--network {
