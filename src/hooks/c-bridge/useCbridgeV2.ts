@@ -38,7 +38,6 @@ export function useCbridgeV2() {
     if (!data || !data.tokens) {
       throw Error('Cannot fetch from cBridge API');
     }
-
     const seen = new Set();
     // Todo: use srcChain and destChainID to re-define token information for bridging (ex: PKEX)
     tokens.value = (await Promise.all(

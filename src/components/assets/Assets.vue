@@ -3,7 +3,9 @@
     <div class="container--assets">
       <Account :ttl-erc20-amount="ttlErc20Amount" />
       <div v-if="selectedAddress">
-        <div v-if="isH160"><EvmAssetList :tokens="tokens" /></div>
+        <div v-if="isH160">
+          <EvmAssetList :tokens="tokens" />
+        </div>
         <div v-else><NativeAssetList /></div>
       </div>
     </div>

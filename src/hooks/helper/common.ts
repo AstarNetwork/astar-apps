@@ -3,3 +3,7 @@ export const objToArray = (obj: any): any[] => {
   const array = keys.map((k) => obj[k]);
   return array;
 };
+
+export const checkIsNullOrUndefined = (value: any) => {
+  return value === null || value === undefined;
+};

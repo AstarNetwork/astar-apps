@@ -75,7 +75,8 @@
 
       <div class="row">
         <span>{{ $t('assets.totalBalance') }}</span>
-        <span class="text--total-balance"> ${{ $n(balUsd + ttlErc20Amount) }} </span>
+        <q-skeleton v-if="isSkeleton" animation="fade" class="skeleton--md" />
+        <span v-else class="text--total-balance"> ${{ $n(balUsd + ttlErc20Amount) }} </span>
       </div>
     </div>
   </div>
@@ -94,6 +95,7 @@ import {
   usePrice,
   useWalletIcon,
 } from 'src/hooks';
+import { checkIsNullOrUndefined } from 'src/hooks/helper/common';
 import { useMetamask } from 'src/hooks/custom-signature/useMetamask';
 import {
   getEvmMappedSs58Address,
@@ -111,7 +113,7 @@ export default defineComponent({
     },
   },
   setup() {
-    const balUsd = ref<number>(0);
+    const balUsd = ref<number | null>(null);
     const isCheckingSignature = ref<boolean>(false);
     const isLockdropAccount = ref<boolean>(false);
     const { toggleMetaMaskSchema } = useConnectWallet();
@@ -148,12 +150,27 @@ export default defineComponent({
       });
     };
 
+    const isSkeleton = computed(() => {
+      const isH160 = store.getters['general/isH160Formatted'];
+      const isLoadingState = store.getters['general/isLoading'];
+      if (isH160) {
+        return checkIsNullOrUndefined(balUsd.value) || isLoadingState;
+      } else {
+        return checkIsNullOrUndefined(balUsd.value);
+      }
+    });
+
     watch(
       [balance, nativeTokenUsd, currentAccount, isH160],
       () => {
-        balUsd.value = 0;
+        balUsd.value = null;
         const isEvmShiden = currentNetworkIdx.value === endpointKey.SHIDEN && isH160.value;
-        if (!balance.value || !nativeTokenUsd.value || isEvmShiden) return;
+        if (!balance.value || !nativeTokenUsd.value) return;
+        if (isEvmShiden) {
+          // Memo: get the value from cbridge hooks
+          balUsd.value = 0;
+          return;
+        }
 
         const bal = Number(ethers.utils.formatEther(balance.value.toString()));
         balUsd.value = nativeTokenUsd.value * bal;
@@ -222,6 +239,7 @@ export default defineComponent({
       getShortenAddress,
       copyAddress,
       toggleMetaMaskSchema,
+      isSkeleton,
     };
   },
 });

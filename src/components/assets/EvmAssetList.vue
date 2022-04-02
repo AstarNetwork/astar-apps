@@ -12,9 +12,12 @@
           <div class="row__left">
             <div class="column--currency">
               <img class="token-logo" :src="nativeTokenImg" :alt="nativeTokenSymbol" />
-              <div class="column--ticker">
+              <div v-if="nativeTokenSymbol && currentNetworkName" class="column--ticker">
                 <span class="text--title">{{ nativeTokenSymbol }}</span>
                 <span class="text--label">{{ currentNetworkName }}</span>
+              </div>
+              <div v-else>
+                <q-skeleton animation="fade" class="skeleton--md" />
               </div>
             </div>
           </div>

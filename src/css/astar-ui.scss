@@ -4,6 +4,10 @@
 
 .header {
   background: $gray-1 !important;
+  @media (min-width: $lg) {
+    padding-left: 28px !important;
+    padding-right: 28px !important;
+  }
   .header-left {
     color: $gray-5 !important;
   }

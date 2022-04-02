@@ -1,27 +1,26 @@
 <template>
   <astar-simple-modal :show="isModalConnectWallet" title="Select a Wallet" @close="setCloseModal">
     <div class="wrapper--modal--wallet">
-      <div class="title--account-type">{{ $t('wallet.nativeAccount') }}</div>
-      <div
-        v-for="(wallet, index) in nativeWallets"
-        :key="index"
-        class="box__row--wallet box--hover--active"
-        :wallet="wallet"
-        @click="setWalletModal(wallet.source)"
-      >
-        <div class="box--img">
-          <img :src="wallet.img" />
-        </div>
-        <div>{{ wallet.name }}</div>
-      </div>
-
-      <div class="title--account-type tw-mt-4">{{ $t('wallet.evmAccount') }}</div>
+      <div class="title--account-type">{{ $t('wallet.evmAccount') }}</div>
       <div
         v-for="(wallet, index) in evmWallets"
         :key="index"
         class="box__row--wallet box--hover--active"
         :wallet="wallet"
         @click="connectEthereumWallet(wallet.source)"
+      >
+        <div class="box--img">
+          <img :src="wallet.img" />
+        </div>
+        <div>{{ wallet.name }}</div>
+      </div>
+      <div class="title--account-type tw-mt-4">{{ $t('wallet.nativeAccount') }}</div>
+      <div
+        v-for="(wallet, index) in nativeWallets"
+        :key="index"
+        class="box__row--wallet box--hover--active"
+        :wallet="wallet"
+        @click="setWalletModal(wallet.source)"
       >
         <div class="box--img">
           <img :src="wallet.img" />
