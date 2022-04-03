@@ -21,7 +21,9 @@
                   />
                 </td>
                 <td>
-                  <q-icon :name="fasSearch" class="icon--search" />
+                  <div class="icon--search">
+                    <IconSearch />
+                  </div>
                 </td>
               </tr>
             </table>
@@ -112,13 +114,14 @@ import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
 import ModalTransfer from './modals/ModalTransfer.vue';
 import { getTokenImage } from 'src/token';
 import ModalFaucet from './modals/ModalFaucet.vue';
-import { fasSearch } from '@quasar/extras/fontawesome-v5';
+import IconSearch from 'src/components/icons/IconSearch.vue';
 
 export default defineComponent({
   components: {
     EvmToken,
     ModalTransfer,
     ModalFaucet,
+    IconSearch,
   },
   props: {
     tokens: {
@@ -241,7 +244,6 @@ export default defineComponent({
       nativeTokenImg,
       isListReady,
       isModalFaucet,
-      fasSearch,
       isSearch,
       search,
       filteredTokens,
