@@ -43,11 +43,12 @@
           </div>
           <div class="column__icons">
             <div>
-              <img
-                class="icon"
-                :src="isDarkTheme ? 'icons/icon-copy-dark.svg' : 'icons/icon-copy.svg'"
-                @click="copyAddress"
-              />
+              <button type="button" @click="copyAddress">
+                <img
+                  class="icon"
+                  :src="isDarkTheme ? 'icons/icon-copy-dark.svg' : 'icons/icon-copy.svg'"
+                />
+              </button>
               <!-- Todo: Apply light theme -->
               <!-- <astar-icon-copy-btn @click="copyAddress" /> -->
               <q-tooltip>
