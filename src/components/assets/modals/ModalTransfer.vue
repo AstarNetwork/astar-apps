@@ -64,7 +64,7 @@
           </div>
         </div>
 
-        <div v-if="isChosenWrongEvmNetwork" class="rows__row--wrong-evm">
+        <div v-if="isChoseWrongEvmNetwork" class="rows__row--wrong-evm">
           <span class="text--error">{{ $t('assets.wrongNetwork') }}</span>
           <span class="text--connect-rpc" @click="connectEvmNetwork">
             {{ $t('assets.connectNetwork', { network: currentNetworkName }) }}
@@ -185,12 +185,12 @@ export default defineComponent({
       return Number(providerEndpoints[networkIdx].evmChainId);
     });
 
-    const isChosenWrongEvmNetwork = computed(() => isH160.value && !isConnectedNetwork.value);
+    const isChoseWrongEvmNetwork = computed(() => isH160.value && !isConnectedNetwork.value);
 
     const isDisabledTransfer = computed(() => {
       const isLessAmount = 0 >= Number(transferAmt.value);
       const isMissedCheck = isRequiredCheck.value && !isChecked.value;
-      return errMsg.value !== '' || isLessAmount || isMissedCheck || isChosenWrongEvmNetwork.value;
+      return errMsg.value !== '' || isLessAmount || isMissedCheck || isChoseWrongEvmNetwork.value;
     });
 
     const inputHandler = (event: any): void => {
@@ -405,7 +405,7 @@ export default defineComponent({
       isRequiredCheck,
       tokenImg,
       isDisabledTransfer,
-      isChosenWrongEvmNetwork,
+      isChoseWrongEvmNetwork,
       currentNetworkName,
       connectEvmNetwork,
     };
