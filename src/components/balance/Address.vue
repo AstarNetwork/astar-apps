@@ -150,6 +150,7 @@ import { useAccount } from 'src/hooks';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { useStore } from 'src/store';
 import { computed, defineComponent } from 'vue';
+import { copyToClipboard } from 'quasar';
 
 export default defineComponent({
   components: {
@@ -179,7 +180,7 @@ export default defineComponent({
     );
 
     const copyAddress = async () => {
-      await navigator.clipboard.writeText(currentAccount.value);
+      await copyToClipboard(currentAccount.value);
       store.dispatch('general/showAlertMsg', {
         msg: 'Copy address success!',
         alertType: 'success',

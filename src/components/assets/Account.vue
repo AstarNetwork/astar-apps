@@ -104,6 +104,7 @@ import {
 } from 'src/hooks/helper/addressUtils';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
+import { copyToClipboard } from 'quasar';
 
 export default defineComponent({
   props: {
@@ -143,7 +144,7 @@ export default defineComponent({
     );
 
     const copyAddress = async () => {
-      await navigator.clipboard.writeText(currentAccount.value);
+      await copyToClipboard(currentAccount.value);
       store.dispatch('general/showAlertMsg', {
         msg: 'Copy address success!',
         alertType: 'success',

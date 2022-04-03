@@ -3,6 +3,9 @@
 .wrapper--modal {
   padding: 46px 4px;
   padding-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .body--dark {
