@@ -1,27 +1,31 @@
 <template>
   <astar-simple-modal :show="isModalVesting" title="Vesting info" @close="closeModal">
     <div class="wrapper--modal wrapper--vesting">
-      <div class="box--vesting-info">
-        <div class="box__row">
-          <span>{{ $t('assets.modals.totalDistribution') }}</span>
-          <span>{{ $n(info.totalDistribution) }}</span>
-        </div>
-        <div class="box__row">
-          <span>{{ $t('assets.modals.alreadyVested') }}</span>
-          <span>{{ $n(info.vestedAmount) }}</span>
-        </div>
-        <div class="box__row">
-          <span>{{ $t('assets.modals.remainingVests') }}</span>
-          <span>{{ $n(info.totalDistribution - info.vestedAmount) }}</span>
-        </div>
-        <div class="box__row--per-block">
-          <span>{{
-            $t('assets.modals.unlockPerBlock', {
-              perToken: $n(info.unlockPerBlock),
-              symbol: nativeTokenSymbol,
-              untilBlock: $n(info.untilBlock),
-            })
-          }}</span>
+      <div class="container--vestings">
+        <div v-for="(vesting, index) in info.vestings" :key="index">
+          <div class="box--vesting-info">
+            <div class="box__row">
+              <span>{{ $t('assets.modals.totalDistribution') }}</span>
+              <span>{{ $n(vesting.totalDistribution) }}</span>
+            </div>
+            <div class="box__row">
+              <span>{{ $t('assets.modals.alreadyVested') }}</span>
+              <span>{{ $n(vesting.vestedAmount) }}</span>
+            </div>
+            <div class="box__row">
+              <span>{{ $t('assets.modals.remainingVests') }}</span>
+              <span>{{ $n(vesting.totalDistribution - vesting.vestedAmount) }}</span>
+            </div>
+            <div class="box__row--per-block">
+              <span>{{
+                $t('assets.modals.unlockPerBlock', {
+                  perToken: $n(vesting.unlockPerBlock),
+                  symbol: nativeTokenSymbol,
+                  untilBlock: $n(vesting.untilBlock),
+                })
+              }}</span>
+            </div>
+          </div>
         </div>
       </div>
       <div class="box--unlock-amount">
