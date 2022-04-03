@@ -97,7 +97,7 @@ export default defineComponent({
     color: $gray-1;
   }
   .icon-link:hover {
-    color: $gray-5-selected;
+    color: $gray-5-selected-dark;
   }
 }
 </style>

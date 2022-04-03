@@ -237,7 +237,7 @@ export default defineComponent({
   }
 
   .class-radio-on {
-    background: $gray-5-selected;
+    background: $gray-5-selected-dark;
   }
 }
 </style>

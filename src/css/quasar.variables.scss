@@ -2,7 +2,8 @@ $gray-1: #f7f7f8;
 $gray-3: #b1b7c1;
 $gray-4: #5f656f;
 $gray-5: #2c3335;
-$gray-5-selected: #222829;
+$gray-5-selected: #3c4649;
+$gray-5-selected-dark: #222829;
 $gray-6: #191d1f;
 
 $object-light: #e6e9ee;
@@ -17,9 +18,9 @@ $connected-green: #56f566;
 
 $body-bg-dark: #000000;
 $body-bg-light: #ffffff;
-$container-bg-dark: $gray-5;
+$container-bg-dark: $gray-5-selected-dark;
 $container-bg-white: #ffffff;
-$item--bg--hover-dark: $gray-5-selected;
+$item--bg--hover-dark: $gray-5-selected-dark;
 $border-separator-dark: $gray-6;
 $border-separator-light: $object-light;
 $backdrop-transparent-dark: rgba(44, 51, 53, 0.5);
