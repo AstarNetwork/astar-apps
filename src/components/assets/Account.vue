@@ -106,7 +106,7 @@ import {
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import { copyToClipboard } from 'quasar';
-
+import copy from 'copy-to-clipboard';
 export default defineComponent({
   props: {
     ttlErc20Amount: {
@@ -145,7 +145,8 @@ export default defineComponent({
     );
 
     const copyAddress = async () => {
-      await copyToClipboard(currentAccount.value);
+      copy('Text');
+      // await copyToClipboard(currentAccount.value);
       store.dispatch('general/showAlertMsg', {
         msg: 'Copy address success!',
         alertType: 'success',
