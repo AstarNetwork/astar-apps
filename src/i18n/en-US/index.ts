@@ -282,6 +282,8 @@ export default {
     noHash: 'Your transaction will not have a hash',
     addToWallet: 'Add to wallet',
     noResults: 'No results found :(',
+    wrongNetwork: 'Wallet connected to the wrong network',
+    connectNetwork: 'Connect to {network} RPC',
     modals: {
       max: 'Max',
       balance: 'Balance: {amount} {token}',

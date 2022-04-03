@@ -16,7 +16,7 @@
         </div>
         <div class="box--input box--hover--active">
           <div class="box__space-between">
-            <span>To</span>
+            <span> {{ $t('to') }}</span>
             <div>
               <span class="text--to--balance">
                 {{ $t('assets.modals.balance', { amount: $n(toAddressBalance), token: symbol }) }}
@@ -63,7 +63,14 @@
             </div>
           </div>
         </div>
-        <div v-if="errMsg && toAddress" class="rows__row--error">
+
+        <div v-if="isChosenWrongEvmNetwork" class="rows__row--wrong-evm">
+          <span class="text--error">{{ $t('assets.wrongNetwork') }}</span>
+          <span class="text--connect-rpc" @click="connectEvmNetwork">
+            {{ $t('assets.connectNetwork', { network: currentNetworkName }) }}
+          </span>
+        </div>
+        <div v-else-if="errMsg && toAddress" class="rows__row--error">
           <span class="text--error">{{ errMsg }}</span>
         </div>
       </div>
@@ -82,11 +89,7 @@
         </div>
       </div>
       <div class="wrapper__row--button">
-        <button
-          class="btn btn--confirm"
-          :disabled="errMsg !== '' || 0 >= Number(transferAmt) || (isRequiredCheck && !isChecked)"
-          @click="transfer"
-        >
+        <button class="btn btn--confirm" :disabled="isDisabledTransfer" @click="transfer">
           {{ $t('confirm') }}
         </button>
       </div>
@@ -97,7 +100,7 @@
 import { $api, $web3 } from 'src/boot/api';
 import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { getTokenBal } from 'src/config/web3';
-import { useAccount, useChainMetadata, useTransfer, useWalletIcon } from 'src/hooks';
+import { useAccount, useChainMetadata, useEvmWallet, useTransfer, useWalletIcon } from 'src/hooks';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
@@ -145,6 +148,7 @@ export default defineComponent({
     const selectedNetwork = ref<number>(0);
     const isChecked = ref<boolean>(false);
     const { iconWallet } = useWalletIcon();
+    const { isConnectedNetwork, currentNetworkName, connectEvmNetwork } = useEvmWallet();
     const store = useStore();
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const isEthWallet = computed(() => store.getters['general/isEthWallet']);
@@ -179,6 +183,14 @@ export default defineComponent({
       const chain = chainInfo ? chainInfo.chain : '';
       const networkIdx = getProviderIndex(chain);
       return Number(providerEndpoints[networkIdx].evmChainId);
+    });
+
+    const isChosenWrongEvmNetwork = computed(() => isH160.value && !isConnectedNetwork.value);
+
+    const isDisabledTransfer = computed(() => {
+      const isLessAmount = 0 >= Number(transferAmt.value);
+      const isMissedCheck = isRequiredCheck.value && !isChecked.value;
+      return errMsg.value !== '' || isLessAmount || isMissedCheck || isChosenWrongEvmNetwork.value;
     });
 
     const inputHandler = (event: any): void => {
@@ -392,6 +404,10 @@ export default defineComponent({
       isChecked,
       isRequiredCheck,
       tokenImg,
+      isDisabledTransfer,
+      isChosenWrongEvmNetwork,
+      currentNetworkName,
+      connectEvmNetwork,
     };
   },
 });

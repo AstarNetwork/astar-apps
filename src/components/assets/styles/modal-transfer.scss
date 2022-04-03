@@ -15,6 +15,13 @@
   justify-content: center;
 }
 
+.rows__row--wrong-evm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: -18px;
+}
+
 .box--warning {
   display: grid;
   row-gap: 12px;
@@ -101,6 +108,13 @@
   }
 }
 
+.text--connect-rpc {
+  cursor: pointer;
+  color: $astar-blue;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
 .input--amount {
   width: 180px;
   font-size: 22px;
@@ -169,5 +183,9 @@
 .body--dark {
   input {
     color: white;
+  }
+
+  .text--connect-rpc {
+    color: $astar-blue-dark;
   }
 }
