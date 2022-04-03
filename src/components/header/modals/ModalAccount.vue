@@ -96,7 +96,7 @@ import { castMobileSource, checkIsEthereumWallet } from 'src/hooks/helper/wallet
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
 import { computed, defineComponent, PropType, ref } from 'vue';
-import { copyToClipboard } from 'quasar';
+import copy from 'copy-to-clipboard';
 
 export default defineComponent({
   components: {
@@ -158,7 +158,7 @@ export default defineComponent({
     );
 
     const copyAddress = async (address: string) => {
-      await copyToClipboard(address);
+      copy(address);
       store.dispatch('general/showAlertMsg', {
         msg: 'Copy address success!',
         alertType: 'success',

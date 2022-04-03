@@ -164,7 +164,7 @@ import IconDocumentDuplicate from 'components/icons/IconDocumentDuplicate.vue';
 import IconLink from 'components/icons/IconLink.vue';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { useAccount } from 'src/hooks';
-import { copyToClipboard } from 'quasar';
+import copy from 'copy-to-clipboard';
 
 export default defineComponent({
   components: {
@@ -207,7 +207,7 @@ export default defineComponent({
     const { disconnectAccount } = useAccount();
 
     const copyAddress = async () => {
-      await copyToClipboard(address.value);
+      copy(address.value);
       store.dispatch('general/showAlertMsg', {
         msg: 'Copy address success!',
         alertType: 'success',

@@ -105,7 +105,6 @@ import {
 } from 'src/hooks/helper/addressUtils';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
-import { copyToClipboard } from 'quasar';
 import copy from 'copy-to-clipboard';
 export default defineComponent({
   props: {
@@ -144,9 +143,8 @@ export default defineComponent({
       () => `${providerEndpoints[currentNetworkIdx.value].subscan}/account/${currentAccount.value}`
     );
 
-    const copyAddress = async () => {
-      copy('Text');
-      // await copyToClipboard(currentAccount.value);
+    const copyAddress = () => {
+      copy(currentAccount.value);
       store.dispatch('general/showAlertMsg', {
         msg: 'Copy address success!',
         alertType: 'success',
