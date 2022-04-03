@@ -179,7 +179,7 @@ export default defineComponent({
       () => `${providerEndpoints[currentNetworkIdx.value].subscan}/account/${currentAccount.value}`
     );
 
-    const copyAddress = async () => {
+    const copyAddress = () => {
       copy(currentAccount.value);
       store.dispatch('general/showAlertMsg', {
         msg: 'Copy address success!',

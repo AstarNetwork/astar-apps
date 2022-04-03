@@ -206,7 +206,7 @@ export default defineComponent({
     };
     const { disconnectAccount } = useAccount();
 
-    const copyAddress = async () => {
+    const copyAddress = () => {
       copy(address.value);
       store.dispatch('general/showAlertMsg', {
         msg: 'Copy address success!',
