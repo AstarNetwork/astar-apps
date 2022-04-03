@@ -72,16 +72,6 @@ export const useAccount = () => {
     { immediate: true }
   );
 
-  watchEffect(() => {
-    if (!currentEcdsaAccount.value.ethereum || !window.ethereum || !isH160Formatted.value) return;
-
-    window.ethereum.on('accountsChanged', (accounts: string[]) => {
-      if (accounts[0] !== currentAccount.value) {
-        disconnectAccount();
-      }
-    });
-  });
-
   return {
     substrateAccounts,
     currentAccount,

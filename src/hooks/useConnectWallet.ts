@@ -167,6 +167,22 @@ export const useConnectWallet = () => {
     }
   };
 
+  const changeEvmAccount = async () => {
+    if (!currentEcdsaAccount.value.ethereum || !window.ethereum || !isH160.value) {
+      return;
+    }
+    window.ethereum.on('accountsChanged', async (accounts: string[]) => {
+      if (accounts[0] !== currentAccount.value) {
+        disconnectAccount();
+        await setMetaMask();
+      }
+    });
+  };
+
+  watchEffect(async () => {
+    await changeEvmAccount();
+  });
+
   watchEffect(async () => {
     const lookupWallet = castMobileSource(modalName.value);
     if (SubstrateWallets.find((it) => it === lookupWallet)) {
