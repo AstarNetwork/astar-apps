@@ -20,6 +20,7 @@
           class="input--address text--title"
           type="text"
           spellcheck="false"
+          placeholder="Destination Address"
           @focus="openOption = !isEthWallet"
           @blur="closeOption"
           @change="changeAddress"

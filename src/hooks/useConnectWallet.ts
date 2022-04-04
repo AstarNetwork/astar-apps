@@ -20,29 +20,29 @@ import {
 } from './helper/wallet';
 
 export const useConnectWallet = () => {
+  const { SELECTED_ADDRESS } = LOCAL_STORAGE;
+
   const modalConnectWallet = ref<boolean>(false);
   const modalAccountSelect = ref<boolean>(false);
   const selectedWallet = ref<string>('');
   const modalName = ref<string>('');
 
-  const router = useRouter();
-  const currentRouter = computed(() => router.currentRoute.value.matched[0]);
-
-  const { requestAccounts, requestSignature } = useMetamask();
   const store = useStore();
+  const { requestAccounts, requestSignature } = useMetamask();
   const { currentAccount, currentAccountName, disconnectAccount } = useAccount();
+  const router = useRouter();
+
+  const currentRouter = computed(() => router.currentRoute.value.matched[0]);
   const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
+  const isH160 = computed(() => store.getters['general/isH160Formatted']);
+  const isEthWallet = computed(() => store.getters['general/isEthWallet']);
+  const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
+  const isConnectedNetwork = computed(() => store.getters['general/networkStatus'] === 'connected');
   const currentNetworkIdx = computed(() => {
     const chainInfo = store.getters['general/chainInfo'];
     const chain = chainInfo ? chainInfo.chain : '';
     return getProviderIndex(chain);
   });
-  const isH160 = computed(() => store.getters['general/isH160Formatted']);
-  const isEthWallet = computed(() => store.getters['general/isEthWallet']);
-  const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
-  const isConnectedNetwork = computed(() => store.getters['general/networkStatus'] === 'connected');
-
-  const { SELECTED_ADDRESS } = LOCAL_STORAGE;
 
   const selectedWalletSource = computed(() => {
     try {
@@ -157,17 +157,7 @@ export const useConnectWallet = () => {
     }
   };
 
-  const changeAccount = async () => {
-    const chosenWallet = selectedWallet.value;
-    disconnectAccount();
-    if (chosenWallet === SupportWallet.MetaMask) {
-      openSelectModal();
-    } else {
-      setWallet(chosenWallet as SupportWallet);
-    }
-  };
-
-  watchEffect(async () => {
+  const selectLoginWallet = async (): Promise<void> => {
     const lookupWallet = castMobileSource(modalName.value);
     if (SubstrateWallets.find((it) => it === lookupWallet)) {
       const injected = await getInjectedExtensions();
@@ -182,9 +172,21 @@ export const useConnectWallet = () => {
       modalAccountSelect.value = true;
       return;
     }
-  });
+  };
 
-  watchEffect(() => {
+  const deepLinkLogin = async (): Promise<void> => {
+    const isMetaMaskDeepLink = window.location.hash === deepLinkPath.metamask;
+    const isWalletExtension = await checkIsWalletExtension();
+    if (!isConnectedNetwork.value || !isWalletExtension) return;
+
+    if (isMetaMaskDeepLink) {
+      setTimeout(async () => {
+        await setMetaMask();
+      }, 800);
+    }
+  };
+
+  const loginWithStoredAccount = async (): Promise<void> => {
     const address = localStorage.getItem(SELECTED_ADDRESS);
     const isBridge =
       router.currentRoute.value.matched.length > 0 && currentRouter.value.path === '/bridge';
@@ -199,21 +201,46 @@ export const useConnectWallet = () => {
       }
     }, 800);
     store.commit('general/setCurrentAddress', address);
+  };
+
+  const changeAccount = async (): Promise<void> => {
+    const chosenWallet = selectedWallet.value;
+    disconnectAccount();
+    if (chosenWallet === SupportWallet.MetaMask) {
+      openSelectModal();
+    } else {
+      setWallet(chosenWallet as SupportWallet);
+    }
+  };
+
+  const changeEvmAccount = async (): Promise<void> => {
+    if (!currentEcdsaAccount.value.ethereum || !window.ethereum || !isH160.value) {
+      return;
+    }
+    window.ethereum.on('accountsChanged', async (accounts: string[]) => {
+      if (accounts[0] !== currentAccount.value) {
+        disconnectAccount();
+        await setMetaMask();
+      }
+    });
+  };
+
+  watchEffect(async () => {
+    await changeEvmAccount();
+  });
+
+  watchEffect(async () => {
+    await selectLoginWallet();
+  });
+
+  watchEffect(async () => {
+    await loginWithStoredAccount();
   });
 
   watch(
     [isConnectedNetwork],
     async () => {
-      const isMetaMaskDeepLink = window.location.hash === deepLinkPath.metamask;
-
-      const isWalletExtension = await checkIsWalletExtension();
-      if (!isConnectedNetwork.value || !isWalletExtension) return;
-
-      if (isMetaMaskDeepLink) {
-        setTimeout(async () => {
-          await setMetaMask();
-        }, 800);
-      }
+      await deepLinkLogin();
     },
     { immediate: true }
   );
