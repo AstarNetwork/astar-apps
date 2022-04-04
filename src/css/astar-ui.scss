@@ -36,6 +36,9 @@
     margin: auto !important;
     box-shadow: 0 0 15px 4px #00000030 !important;
     padding: 0 !important;
+    @media (min-width: $sm) {
+      padding: 20px !important;
+    }
     .title {
       display: flex;
       justify-content: center;
