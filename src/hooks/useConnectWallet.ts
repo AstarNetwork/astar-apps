@@ -128,7 +128,7 @@ export const useConnectWallet = () => {
       window.open(deepLinkUrl);
       return;
     }
-    if (wallet === SupportWallet.MetaMask) {
+    if (wallet === SupportWallet.MetaMask || wallet === SupportWallet.Wallet3) {
       setMetaMask();
       return;
     }

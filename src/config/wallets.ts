@@ -14,6 +14,7 @@ export enum SupportWallet {
   Talisman = 'talisman',
   SubWallet = 'subwallet-js',
   Metadot = 'metadot',
+  Wallet3 = 'wallet3',
 }
 
 export const WalletModalOption = {
@@ -28,6 +29,7 @@ export const WalletModalOption = {
   Talisman: SupportWallet.Talisman,
   SubWallet: SupportWallet.SubWallet,
   Metadot: SupportWallet.Metadot,
+  Wallet3: SupportWallet.Wallet3,
 };
 
 export const SubstrateWallets = [
@@ -38,6 +40,7 @@ export const SubstrateWallets = [
   SupportWallet.Talisman,
   SupportWallet.SubWallet,
   SupportWallet.Metadot,
+  SupportWallet.Wallet3,
 ];
 
 export interface Wallet {
@@ -123,6 +126,15 @@ export const supportWalletObj = {
     isSupportBrowserExtension: true,
     isSupportMobileApp: false,
   },
+  [SupportWallet.Wallet3]: {
+    img: require('/src/assets/img/logo-wallet3.svg'),
+    name: 'Wallet 3',
+    source: SupportWallet.Wallet3,
+    walletUrl: 'https://wallet3.io',
+    guideUrl: 'https://docs.wallet3.io',
+    isSupportBrowserExtension: false,
+    isSupportMobileApp: true,
+  },
 };
 
 export const supportEvmWalletObj = {
@@ -133,6 +145,15 @@ export const supportEvmWalletObj = {
     walletUrl: 'https://metamask.io/',
     guideUrl: 'https://metamask.io/',
     isSupportBrowserExtension: true,
+    isSupportMobileApp: true,
+  },
+  [SupportWallet.Wallet3]: {
+    img: require('/src/assets/img/logo-wallet3.svg'),
+    name: 'Wallet 3',
+    source: SupportWallet.Wallet3,
+    walletUrl: 'https://wallet3.io',
+    guideUrl: 'https://docs.wallet3.io',
+    isSupportBrowserExtension: false,
     isSupportMobileApp: true,
   },
 };

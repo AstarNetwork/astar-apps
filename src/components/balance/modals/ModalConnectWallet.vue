@@ -30,6 +30,7 @@ import Modal from 'src/components/common/Modal.vue';
 import { supportWallets, Wallet, supportEvmWallets } from 'src/config/wallets';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
 import { defineComponent, watchEffect, ref } from 'vue';
+import { useQuasar } from 'quasar';
 
 export default defineComponent({
   components: {
@@ -52,6 +53,7 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const $q = useQuasar();
     const wallets = ref<Wallet[]>(supportWallets);
     watchEffect(() => {
       wallets.value = props.isEvmOnly
@@ -59,7 +61,7 @@ export default defineComponent({
         : (supportWallets
             .map((it) => {
               const { isSupportMobileApp, isSupportBrowserExtension } = it;
-              if (isMobileDevice) {
+              if ($q.platform.is.mobile || isMobileDevice) {
                 return isSupportMobileApp ? it : null;
               } else {
                 return isSupportBrowserExtension ? it : null;

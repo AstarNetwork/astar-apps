@@ -37,6 +37,7 @@ export enum EVM {
 export const chainName = {
   [EVM.ETHEREUM_MAINNET]: 'Ethereum Mainnet',
   [EVM.SHIDEN_MAINNET]: 'Shiden Network Mainnet',
+  [EVM.ASTAR_MAINNET]: 'Astar Network Mainnet',
   [EVM.SHIBUYA_TESTNET]: 'Shibuya Testnet',
   [EVM.BSC]: 'Binance Smart Chain',
   [EVM.POLYGON]: 'Polygon Mainnet',
