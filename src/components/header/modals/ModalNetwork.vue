@@ -12,6 +12,9 @@
                 :class="[
                   'class-radio',
                   selNetwork === index ? 'class-radio-on' : 'class-radio-off',
+                  provider.key === endpointKey.CUSTOM &&
+                    isCustomNetwork &&
+                    'class-radio--custom-network',
                 ]"
               >
                 <input
@@ -26,7 +29,7 @@
                     tw-rounded-full
                     tw-h-4
                     tw-w-4
-                    tw-mr-3
+                    tw-mr-2
                     focus:tw-outline-none
                     tw-bg-white
                     checked:tw-border-4
@@ -45,18 +48,17 @@
                       {{ provider.displayName }}
                     </p>
                   </div>
+                  <div v-if="index === 4" class="row--ip-input">
+                    <input
+                      v-if="isCustomNetwork"
+                      v-model="newEndpoint"
+                      type="text"
+                      placeholder="IP Address / Domain"
+                      class="ip-input"
+                    />
+                  </div>
                 </div>
               </label>
-              <!-- custom endpoint -->
-              <div class="row--ip-input">
-                <input
-                  v-if="provider.key === endpointKey.CUSTOM && selNetwork === endpointKey.CUSTOM"
-                  v-model="newEndpoint"
-                  type="text"
-                  placeholder="IP Address / Domain"
-                  class="ip-input"
-                />
-              </div>
             </li>
           </ul>
         </fieldset>
@@ -138,6 +140,8 @@ export default defineComponent({
       return selNetwork.value === endpointKey.CUSTOM && !newEndpoint.value;
     });
 
+    const isCustomNetwork = computed(() => selNetwork.value === endpointKey.CUSTOM);
+
     return {
       closeModal,
       newEndpoint,
@@ -150,6 +154,7 @@ export default defineComponent({
       providerEndpoints,
       endpointKey,
       isDisabled,
+      isCustomNetwork,
     };
   },
 });
@@ -188,10 +193,10 @@ export default defineComponent({
   border: 1px solid transparent;
 }
 .class-radio-off:hover {
-  border: 1px solid $astar-blue-dark;
+  border: 1px solid $astar-blue;
 }
 .class-radio-on {
-  border: 2px solid $astar-blue-dark;
+  border: 2px solid $astar-blue;
 }
 
 .ip--network {
@@ -203,17 +208,31 @@ export default defineComponent({
 }
 
 .row--ip-input {
-  display: flex;
-  justify-content: center;
+  padding-left: 8px;
+}
+
+.class-radio--custom-network {
+  height: 120px;
+  background: #fff !important;
 }
 
 .ip-input {
-  width: 330px;
+  width: 246px;
+  height: 48px;
   text-align: center;
-  @apply tw-flex tw-appearance-none tw-bg-gray-50 dark:tw-bg-darkGray-800 tw-block tw-mx-3 tw-border tw-border-gray-300 dark:tw-border-darkGray-600 tw-rounded-md tw-mt-3 tw-px-5 tw-py-2 tw-text-sm tw-text-gray-700 dark:tw-text-darkGray-100  tw-placeholder-gray-300 dark:tw-placeholder-darkGray-600;
+  margin-top: 16px;
+  border-radius: 6px;
+  background-color: $gray-1;
+  border: 1px solid $gray-1;
+  padding: 0 16px;
+  text-align: left;
+  font-weight: 400;
+  font-size: 14px;
+  color: $gray-5;
 }
+
 .ip-input:focus {
-  @apply tw-outline-none tw-bg-white dark:tw-bg-darkGray-900 tw-ring-blue-500 tw-border-blue-500;
+  outline: none;
 }
 
 .wrapper__row--button {
@@ -245,6 +264,15 @@ export default defineComponent({
 
   .class-radio-on {
     background: $gray-5-selected-dark;
+  }
+  .class-radio--custom-network {
+    background: $gray-6 !important;
+  }
+
+  .ip-input {
+    background: $gray-5-selected-dark;
+    border: 1px solid $gray-4;
+    color: $gray-1;
   }
 }
 </style>
