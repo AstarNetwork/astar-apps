@@ -48,13 +48,15 @@
                 </div>
               </label>
               <!-- custom endpoint -->
-              <input
-                v-if="provider.key === endpointKey.CUSTOM && selNetwork === endpointKey.CUSTOM"
-                v-model="newEndpoint"
-                type="text"
-                placeholder="IP Address / Domain"
-                class="ip-input"
-              />
+              <div class="row--ip-input">
+                <input
+                  v-if="provider.key === endpointKey.CUSTOM && selNetwork === endpointKey.CUSTOM"
+                  v-model="newEndpoint"
+                  type="text"
+                  placeholder="IP Address / Domain"
+                  class="ip-input"
+                />
+              </div>
             </li>
           </ul>
         </fieldset>
@@ -200,10 +202,15 @@ export default defineComponent({
   }
 }
 
+.row--ip-input {
+  display: flex;
+  justify-content: center;
+}
+
 .ip-input {
   width: 330px;
   text-align: center;
-  @apply tw-flex tw-appearance-none tw-bg-gray-50 dark:tw-bg-darkGray-800 tw-block tw-mx-3 tw-border tw-border-gray-300 dark:tw-border-darkGray-600 tw-rounded-md tw-mt-2 tw-px-5 tw-py-2 tw-text-sm tw-text-gray-700 dark:tw-text-darkGray-100  tw-placeholder-gray-300 dark:tw-placeholder-darkGray-600;
+  @apply tw-flex tw-appearance-none tw-bg-gray-50 dark:tw-bg-darkGray-800 tw-block tw-mx-3 tw-border tw-border-gray-300 dark:tw-border-darkGray-600 tw-rounded-md tw-mt-3 tw-px-5 tw-py-2 tw-text-sm tw-text-gray-700 dark:tw-text-darkGray-100  tw-placeholder-gray-300 dark:tw-placeholder-darkGray-600;
 }
 .ip-input:focus {
   @apply tw-outline-none tw-bg-white dark:tw-bg-darkGray-900 tw-ring-blue-500 tw-border-blue-500;
