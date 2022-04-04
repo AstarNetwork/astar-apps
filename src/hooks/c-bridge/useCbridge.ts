@@ -344,7 +344,6 @@ export function useCbridge() {
     const balance = Number(await getSelectedTokenBal());
     const numAmount = Number(amount.value);
     const { minAmount, maxAmount } = quotation.value;
-    if (!minAmount || !maxAmount) return;
 
     if (!isH160.value) {
       errMsg.value = 'Selected invalid wallet';
