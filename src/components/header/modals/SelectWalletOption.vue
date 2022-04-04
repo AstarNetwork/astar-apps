@@ -41,5 +41,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/assets/styles/modal-select-account.scss';
+@use 'src/components/header/styles/modal-select-account.scss';
 </style>
