@@ -218,11 +218,11 @@ export default defineComponent({
 }
 
 .ip--account {
-  width: 1rem;
-  height: 1rem;
+  width: rem(16);
+  height: rem(16);
   background: #fff;
   appearance: none;
-  margin-right: 0.75rem;
+  margin-right: rem(12);
   border-radius: 9999px;
 
   &:checked {
