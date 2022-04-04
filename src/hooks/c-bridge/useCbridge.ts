@@ -1,3 +1,4 @@
+import { useRouter } from 'vue-router';
 import {
   BridgeMethod,
   CbridgeToken,
@@ -48,6 +49,8 @@ export function useCbridge() {
   const destTokenUrl = ref<string>('');
   const destTokenAddress = ref<string>('');
   const isClickReverseButton = ref<boolean>(false);
+
+  const router = useRouter();
 
   const store = useStore();
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
@@ -181,13 +184,21 @@ export function useCbridge() {
     const supportChain = data && data.supportChain;
     const tokens = data && data.tokens;
     const tokenIconsData = data && data.tokenIcons;
+    const query = router.currentRoute.value.query;
 
     if (!supportChain || !tokens || !tokenIconsData) {
       throw Error('Cannot fetch from cBridge API');
     }
 
     if (currentNetworkIdx.value === endpointKey.ASTAR) {
-      srcChain.value = supportChain.find((it) => it.id === Ethereum) as Chain;
+      if (query.from && query.from !== String(Ethereum)) {
+        const targetSrcChain = supportChain.find((it) => it.id === Number(query.from)) as Chain;
+        srcChain.value = targetSrcChain
+          ? targetSrcChain
+          : (supportChain.find((it) => it.id === Ethereum) as Chain);
+      } else {
+        srcChain.value = supportChain.find((it) => it.id === Ethereum) as Chain;
+      }
       destChain.value = supportChain.find((it) => it.id === Astar) as Chain;
     } else {
       srcChain.value = supportChain.find((it) => it.id === Shiden) as Chain;
@@ -310,6 +321,15 @@ export function useCbridge() {
         msg: error.message || 'Something went wrong',
         alertType: 'error',
       });
+    }
+  };
+
+  const setTokenByQueyParams = () => {
+    if (!tokens.value) return;
+    const query = router.currentRoute.value.query;
+    if (query.from && query.symbol) {
+      const token = tokens.value?.find((it) => it.symbol === query.symbol);
+      token && store.commit('bridge/setSelectedToken', token);
     }
   };
 
@@ -446,6 +466,14 @@ export function useCbridge() {
   onUnmounted(() => {
     clearInterval(handleUpdate);
   });
+
+  watch(
+    [tokens],
+    () => {
+      setTokenByQueyParams();
+    },
+    { immediate: false }
+  );
 
   return {
     destChains,
