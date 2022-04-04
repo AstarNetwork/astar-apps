@@ -1,14 +1,6 @@
 <template>
   <button
-    v-if="!isH160"
-    class="bridge-button"
-    :class="isDarkTheme && 'bridge-button-dark'"
-    @click="openSelectModal"
-  >
-    {{ $t('bridge.connectEvmWallet') }}
-  </button>
-  <button
-    v-else-if="isApprovalNeeded"
+    v-if="isApprovalNeeded"
     :disabled="selectedNetwork !== srcChainId"
     class="bridge-button"
     :class="isDarkTheme && 'bridge-button-dark'"
@@ -38,10 +30,6 @@ export default defineComponent({
       required: true,
     },
     handleApprove: {
-      type: Function,
-      required: true,
-    },
-    openSelectModal: {
       type: Function,
       required: true,
     },

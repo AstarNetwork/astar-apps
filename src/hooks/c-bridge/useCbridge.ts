@@ -448,6 +448,7 @@ export function useCbridge() {
 
   watchEffect(() => {
     if (
+      isH160.value &&
       quotation.value &&
       quotation.value.maxAmount !== undefined &&
       quotation.value.minAmount !== undefined &&
