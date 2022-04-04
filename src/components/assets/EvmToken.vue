@@ -36,7 +36,12 @@
               {{ $t('assets.transfer') }}
             </button>
             <!-- Memo: temporary -->
-            <router-link to="/bridge">
+            <router-link
+              :to="{
+                path: '/bridge',
+                query: { from: token.canonicalConfig.org_chain_id ?? '', symbol: token.symbol },
+              }"
+            >
               <button class="btn btn--sm">
                 {{ $t('assets.bridge') }}
               </button>
