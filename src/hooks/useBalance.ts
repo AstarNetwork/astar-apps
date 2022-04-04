@@ -100,10 +100,12 @@ function useCall(addressRef: Ref<string>) {
 
   const updateAccountBalance = () => {
     const address = addressRef.value;
-    if (isH160Formatted.value) {
-      updateAccountH160(address);
-    } else {
-      updateAccount(address);
+    if (address !== 'Ethereum Extension') {
+      if (isH160Formatted.value) {
+        updateAccountH160(address);
+      } else {
+        updateAccount(address);
+      }
     }
   };
 

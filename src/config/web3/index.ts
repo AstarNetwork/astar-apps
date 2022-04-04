@@ -39,6 +39,7 @@ export const chainName = {
   [EVM.ASTAR_MAINNET]: 'Astar Network Mainnet',
   [EVM.SHIDEN_MAINNET]: 'Shiden Network Mainnet',
   [EVM.SHIBUYA_TESTNET]: 'Shibuya Testnet',
+  [EVM.ASTAR_MAINNET]: 'Astar Network Mainnet',
   [EVM.BSC]: 'Binance Smart Chain',
   [EVM.POLYGON]: 'Polygon Mainnet',
 };
