@@ -417,7 +417,9 @@ export function useCbridge() {
       const { minAmount, maxAmount } = quotation.value;
       if (!minAmount || !maxAmount) return;
 
-      if (srcChain.value.id !== selectedNetwork.value) {
+      if (!isH160.value) {
+        errMsg.value = 'Selected invalid wallet';
+      } else if (srcChain.value.id !== selectedNetwork.value) {
         errMsg.value = 'Selected invalid network in your wallet';
       } else if (numAmount > balance) {
         errMsg.value = 'Insufficient balance';
