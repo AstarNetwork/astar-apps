@@ -150,8 +150,8 @@ export default defineComponent({
 .box--wallet-option {
   position: absolute;
   width: rem(314);
-  margin-left: 20px;
-  // border-radius: 6px;
+  left: 50%;
+  transform: translate(-50%);
   z-index: 10;
   background: $container-bg-white;
   box-shadow: 0px 3px 0px rgba(180, 180, 180, 0.5);

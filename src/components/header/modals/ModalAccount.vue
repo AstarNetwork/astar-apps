@@ -18,7 +18,7 @@
             </li>
           </div>
           <ul v-else role="radiogroup" class="list--account">
-            <li v-for="(account, index) in substrateAccounts" :key="index" class="tw-mb-2">
+            <li v-for="(account, index) in substrateAccounts" :key="index">
               <label
                 :class="[
                   'class-radio',
@@ -29,22 +29,10 @@
                   name="choose_account"
                   type="radio"
                   :checked="selAccount === account.address"
-                  class="
-                    ip--account
-                    tw-appearance-none
-                    tw-border-2
-                    tw-border-gray-100
-                    tw-rounded-full
-                    tw-h-4
-                    tw-w-4
-                    tw-mr-3
-                    focus:tw-outline-none
-                    tw-bg-white
-                    checked:tw-border-4
-                  "
+                  class="ip--account"
                   @change="selAccount = account.address"
                 />
-                <div class="wrapper--account-detail tw-text-left">
+                <div class="wrapper--account-detail">
                   <div class="accountName">{{ account.name }}</div>
                   <div class="address">{{ account.address }}</div>
                   <div class="wrapper--share">
@@ -91,7 +79,6 @@
 import SelectWallet from 'src/components/header/modals/SelectWallet.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { SupportWallet } from 'src/config/wallets';
-import { useAccount } from 'src/hooks';
 import { castMobileSource, checkIsEthereumWallet } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
@@ -127,7 +114,6 @@ export default defineComponent({
     };
 
     const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
-    const { currentAccount } = useAccount();
     const store = useStore();
 
     const substrateAccounts = computed(() => {
@@ -232,15 +218,22 @@ export default defineComponent({
 }
 
 .ip--account {
+  width: rem(16);
+  height: rem(16);
   background: #fff;
+  appearance: none;
+  margin-right: rem(12);
+  border-radius: 9999px;
 
   &:checked {
     background: $astar-blue;
+    border-width: 4px;
   }
 }
 
 .wrapper--account-detail {
   width: 225px;
+  text-align: left;
   .accountName {
     color: $gray-5;
     font-weight: 700;
