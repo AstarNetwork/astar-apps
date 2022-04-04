@@ -85,6 +85,7 @@ export function useCbridgeV2() {
   watchEffect(async () => {
     ttlErc20Amount.value = 0;
     if (!currentAccount.value || currentNetworkIdx.value === endpointKey.SHIBUYA || !isH160.value) {
+      tokens.value = null;
       return;
     }
 

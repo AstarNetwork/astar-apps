@@ -39,7 +39,7 @@
             <router-link
               :to="{
                 path: '/bridge',
-                query: { from: token.canonicalConfig.org_chain_id ?? '', symbol: token.symbol },
+                query: { from: sourceChainId, symbol: token.symbol },
               }"
             >
               <button class="btn btn--sm">
@@ -73,6 +73,8 @@
 </template>
 <script lang="ts">
 import { SelectedToken } from 'src/c-bridge';
+import { getProviderIndex } from 'src/config/chainEndpoints';
+import { getChainId } from 'src/config/web3';
 import { addToEvmWallet } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { getTokenImage } from 'src/token';
@@ -89,9 +91,9 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
+  setup({ token }) {
     const tokenImg = computed(() =>
-      getTokenImage({ isNativeToken: false, symbol: props.token.symbol, iconUrl: props.token.icon })
+      getTokenImage({ isNativeToken: false, symbol: token.symbol, iconUrl: token.icon })
     );
 
     const store = useStore();
@@ -108,11 +110,22 @@ export default defineComponent({
           return name;
       }
     };
+
+    const sourceChainId = computed(() => {
+      const chainInfo = store.getters['general/chainInfo'];
+      const chain = chainInfo ? chainInfo.chain : '';
+      const networkIdx = getProviderIndex(chain);
+      return token.hasOwnProperty('canonicalConfig')
+        ? token.canonicalConfig && token.canonicalConfig.org_chain_id
+        : getChainId(networkIdx);
+    });
+
     return {
       formatTokenName,
       addToEvmWallet,
       tokenImg,
       nativeTokenSymbol,
+      sourceChainId,
     };
   },
 });
