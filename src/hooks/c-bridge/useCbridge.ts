@@ -324,7 +324,72 @@ export function useCbridge() {
     }
   };
 
-  const setTokenByQueyParams = () => {
+  const handleQuotation = async (): Promise<void> => {
+    if (
+      !quotation.value ||
+      quotation.value === null ||
+      !srcChain.value ||
+      !selectedToken.value ||
+      !amount.value
+    ) {
+      errMsg.value = '';
+      return;
+    }
+
+    const { symbol } = getTokenInfo({
+      srcChainId: srcChain.value.id,
+      selectedToken: selectedToken.value,
+    });
+
+    const balance = Number(await getSelectedTokenBal());
+    const numAmount = Number(amount.value);
+    const { minAmount, maxAmount } = quotation.value;
+    if (!minAmount || !maxAmount) return;
+
+    if (!isH160.value) {
+      errMsg.value = 'Selected invalid wallet';
+    } else if (srcChain.value.id !== selectedNetwork.value) {
+      errMsg.value = 'Selected invalid network in your wallet';
+    } else if (numAmount > balance) {
+      errMsg.value = 'Insufficient balance';
+    } else if (minAmount >= numAmount) {
+      errMsg.value = `Amount must be greater than ${minAmount} ${symbol}`;
+    } else if (numAmount >= maxAmount) {
+      errMsg.value = `Amount must be less than ${maxAmount} ${symbol}`;
+    } else {
+      errMsg.value = '';
+    }
+  };
+
+  const setIsDisabledBridge = (): void => {
+    if (
+      isH160.value &&
+      quotation.value &&
+      quotation.value.maxAmount !== undefined &&
+      quotation.value.minAmount !== undefined &&
+      Number(amount.value) > 0
+    ) {
+      isDisabledBridge.value = errMsg.value !== '';
+    } else {
+      isDisabledBridge.value = true;
+    }
+  };
+
+  const monitorConnectedNetwork = async (): Promise<void> => {
+    const provider = getEvmProvider();
+    if (!isH160.value || !provider) return;
+
+    const web3 = new Web3(provider as any);
+    const chainId = await web3.eth.getChainId();
+    selectedNetwork.value = chainId;
+
+    provider &&
+      provider.on('chainChanged', (chainId: string) => {
+        selectedNetwork.value = Number(chainId);
+      });
+  };
+
+  const setTokenByQueyParams = (): void => {
     if (!tokens.value) return;
     const query = router.currentRoute.value.query;
     if (query.from && query.symbol) {
@@ -396,78 +461,17 @@ export function useCbridge() {
   watch(
     [quotation, selectedNetwork],
     async () => {
-      if (
-        !quotation.value ||
-        quotation.value === null ||
-        !srcChain.value ||
-        !selectedToken.value ||
-        !amount.value
-      ) {
-        errMsg.value = '';
-        return;
-      }
-
-      const { symbol } = getTokenInfo({
-        srcChainId: srcChain.value.id,
-        selectedToken: selectedToken.value,
-      });
-
-      const balance = Number(await getSelectedTokenBal());
-      const numAmount = Number(amount.value);
-      const { minAmount, maxAmount } = quotation.value;
-      if (!minAmount || !maxAmount) return;
-
-      if (!isH160.value) {
-        errMsg.value = 'Selected invalid wallet';
-      } else if (srcChain.value.id !== selectedNetwork.value) {
-        errMsg.value = 'Selected invalid network in your wallet';
-      } else if (numAmount > balance) {
-        errMsg.value = 'Insufficient balance';
-      } else if (minAmount >= numAmount) {
-        errMsg.value = `Amount must be greater than ${minAmount} ${symbol}`;
-      } else if (numAmount >= maxAmount) {
-        errMsg.value = `Amount must be less than ${maxAmount} ${symbol}`;
-      } else {
-        errMsg.value = '';
-      }
+      await handleQuotation();
     },
     { immediate: false }
   );
 
   watchEffect(async () => {
-    const provider = getEvmProvider();
-    if (!isH160.value || !provider) return;
-
-    const web3 = new Web3(provider as any);
-    const chainId = await web3.eth.getChainId();
-    selectedNetwork.value = chainId;
-
-    provider &&
-      provider.on('chainChanged', (chainId: string) => {
-        selectedNetwork.value = Number(chainId);
-      });
+    monitorConnectedNetwork();
   });
 
   watchEffect(() => {
-    if (
-      isH160.value &&
-      quotation.value &&
-      quotation.value.maxAmount !== undefined &&
-      quotation.value.minAmount !== undefined &&
-      Number(amount.value) > 0
-    ) {
-      isDisabledBridge.value = errMsg.value !== '';
-    } else {
-      isDisabledBridge.value = true;
-    }
-  });
-
-  const handleUpdate = setInterval(async () => {
-    await getEstimation();
-  }, 20 * 1000);
-
-  onUnmounted(() => {
-    clearInterval(handleUpdate);
+    setIsDisabledBridge();
   });
 
   watch(
@@ -477,6 +481,14 @@ export function useCbridge() {
     },
     { immediate: false }
   );
+
+  const handleUpdate = setInterval(async () => {
+    await getEstimation();
+  }, 20 * 1000);
+
+  onUnmounted(() => {
+    clearInterval(handleUpdate);
+  });
 
   return {
     destChains,
