@@ -52,10 +52,10 @@ export const providerEndpoints: ChainProvider[] = [
     defaultLogo: require('/src/assets/img/ic_astar.png'),
   },
   {
-    networkAlias: 'shiden-shell',
-    displayName: 'Shiden Network',
+    networkAlias: 'shiden',
+    displayName: 'Shiden Network (Kusama)',
     info: 'Smart contract platform for decentralized applications (dapps) on the Kusama network',
-    endpoint: 'wss://rpc.shiden.astar.network',
+    endpoint: 'wss://shiden.api.onfinality.io/public-ws',
     favicon: 'icons/shiden.png',
     isSupportContract: true,
     prefix: 0x150,
