@@ -325,38 +325,43 @@ export function useCbridge() {
   };
 
   const handleQuotation = async (): Promise<void> => {
-    if (
-      !quotation.value ||
-      quotation.value === null ||
-      !srcChain.value ||
-      !selectedToken.value ||
-      !amount.value
-    ) {
-      errMsg.value = '';
-      return;
-    }
+    try {
+      if (
+        !quotation.value ||
+        quotation.value === null ||
+        !srcChain.value ||
+        !selectedToken.value ||
+        !amount.value
+      ) {
+        errMsg.value = '';
+        return;
+      }
 
-    const { symbol } = getTokenInfo({
-      srcChainId: srcChain.value.id,
-      selectedToken: selectedToken.value,
-    });
+      const { symbol } = getTokenInfo({
+        srcChainId: srcChain.value.id,
+        selectedToken: selectedToken.value,
+      });
 
-    const balance = Number(await getSelectedTokenBal());
-    const numAmount = Number(amount.value);
-    const { minAmount, maxAmount } = quotation.value;
+      const balance = Number(await getSelectedTokenBal());
+      const numAmount = Number(amount.value);
+      const { minAmount, maxAmount } = quotation.value;
 
-    if (!isH160.value) {
-      errMsg.value = 'Selected invalid wallet';
-    } else if (srcChain.value.id !== selectedNetwork.value) {
-      errMsg.value = 'Selected invalid network in your wallet';
-    } else if (numAmount > balance) {
-      errMsg.value = 'Insufficient balance';
-    } else if (minAmount >= numAmount) {
-      errMsg.value = `Amount must be greater than ${minAmount} ${symbol}`;
-    } else if (numAmount >= maxAmount) {
-      errMsg.value = `Amount must be less than ${maxAmount} ${symbol}`;
-    } else {
-      errMsg.value = '';
+      if (!isH160.value) {
+        errMsg.value = 'Selected invalid wallet';
+      } else if (srcChain.value.id !== selectedNetwork.value) {
+        errMsg.value = 'Selected invalid network in your wallet';
+      } else if (numAmount > balance) {
+        errMsg.value = 'Insufficient balance';
+      } else if (minAmount >= numAmount) {
+        errMsg.value = `Amount must be greater than ${minAmount} ${symbol}`;
+      } else if (numAmount >= maxAmount) {
+        errMsg.value = `Amount must be less than ${maxAmount} ${symbol}`;
+      } else {
+        errMsg.value = '';
+      }
+    } catch (error: any) {
+      console.error(error);
+      errMsg.value = error.messages || 'Something went wrong';
     }
   };
 
