@@ -50,10 +50,10 @@ export const providerEndpoints: ChainProvider[] = [
     faucetEndpoint: 'https://astar-discord-faucet.herokuapp.com/astar',
   },
   {
-    networkAlias: 'shiden-shell',
+    networkAlias: 'shiden',
     displayName: 'Shiden Network (Kusama)',
     info: 'Smart contract platform for decentralized applications (dapps) on the Kusama network',
-    endpoint: 'wss://rpc.shiden.astar.network',
+    endpoint: 'wss://shiden.api.onfinality.io/public-ws',
     favicon: 'icons/shiden.png',
     isSupportContract: true,
     prefix: 0x150,
