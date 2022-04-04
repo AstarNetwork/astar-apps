@@ -4,7 +4,7 @@ import { ethers } from 'ethers';
 import { useStore } from 'src/store';
 import { computed } from 'vue';
 import { getInjector } from './helper/wallet';
-import { useBalance } from './useBalance';
+import { useBalance, ExtendedVestingInfo } from './useBalance';
 import { useCustomSignature } from './useCustomSignature';
 
 export function useVesting(closeModal: () => void) {
@@ -17,37 +17,49 @@ export function useVesting(closeModal: () => void) {
     useCustomSignature({ fn: closeModal });
 
   const info = computed(() => {
-    const fallback = {
+    const defaultData = {
       claimableAmount: 0,
-      vestedAmount: 0,
-      totalDistribution: 0,
-      unlockPerBlock: 0,
-      untilBlock: 0,
+      vestings: [
+        {
+          vestedAmount: 0,
+          totalDistribution: 0,
+          unlockPerBlock: 0,
+          untilBlock: 0,
+        },
+      ],
     };
     try {
-      if (accountData.value) {
-        const { perBlock, locked, startingBlock } = accountData.value.vesting[0].basicInfo;
+      if (accountData.value && accountData.value.vesting.length) {
         const claimableAmount = Number(
-          ethers.utils.formatEther(accountData.value.vestedClaimable.toString() ?? 0)
+          ethers.utils.formatEther(accountData.value.vestedClaimable.toString())
         );
-        const vestedAmount = Number(
-          ethers.utils.formatEther(accountData.value.vesting[0].vested.toString() ?? 0)
-        );
-        const totalDistribution = Number(ethers.utils.formatEther(locked.toString() ?? 0));
-        const unlockPerBlock = Number(ethers.utils.formatEther(perBlock.toString() ?? 0));
-        const block = locked.div(perBlock).add(startingBlock);
-        const untilBlock = block.toNumber() ?? 0;
-        return {
+
+        const vestings = accountData.value.vesting.map((vesting: ExtendedVestingInfo) => {
+          const { perBlock, locked, startingBlock } = vesting.basicInfo;
+          const vestedAmount = Number(ethers.utils.formatEther(vesting.vested.toString()));
+          const totalDistribution = Number(ethers.utils.formatEther(locked.toString()));
+          const unlockPerBlock = Number(ethers.utils.formatEther(perBlock.toString()));
+          const block = locked.div(perBlock).add(startingBlock);
+          const untilBlock = block.toNumber();
+          return {
+            vestedAmount,
+            totalDistribution,
+            unlockPerBlock,
+            untilBlock,
+          };
+        });
+
+        const data = {
           claimableAmount,
-          vestedAmount,
-          totalDistribution,
-          unlockPerBlock,
-          untilBlock,
+          vestings,
         };
+        return data;
+      } else {
+        return defaultData;
       }
-      return fallback;
     } catch (error) {
-      return fallback;
+      console.error(error);
+      return defaultData;
     }
   });
 

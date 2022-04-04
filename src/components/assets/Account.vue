@@ -43,11 +43,12 @@
           </div>
           <div class="column__icons">
             <div>
-              <img
-                class="icon"
-                :src="isDarkTheme ? 'icons/icon-copy-dark.svg' : 'icons/icon-copy.svg'"
-                @click="copyAddress"
-              />
+              <button type="button" @click="copyAddress">
+                <img
+                  class="icon"
+                  :src="isDarkTheme ? 'icons/icon-copy-dark.svg' : 'icons/icon-copy.svg'"
+                />
+              </button>
               <!-- Todo: Apply light theme -->
               <!-- <astar-icon-copy-btn @click="copyAddress" /> -->
               <q-tooltip>
@@ -104,7 +105,7 @@ import {
 } from 'src/hooks/helper/addressUtils';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
-
+import copy from 'copy-to-clipboard';
 export default defineComponent({
   props: {
     ttlErc20Amount: {
@@ -142,8 +143,8 @@ export default defineComponent({
       () => `${providerEndpoints[currentNetworkIdx.value].subscan}/account/${currentAccount.value}`
     );
 
-    const copyAddress = async () => {
-      await navigator.clipboard.writeText(currentAccount.value);
+    const copyAddress = () => {
+      copy(currentAccount.value);
       store.dispatch('general/showAlertMsg', {
         msg: 'Copy address success!',
         alertType: 'success',
