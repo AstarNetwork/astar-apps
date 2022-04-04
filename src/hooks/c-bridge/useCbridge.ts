@@ -389,6 +389,25 @@ export function useCbridge() {
       });
   };
 
+  const setDestTokenInformation = (): void => {
+    if (!destChain.value || !selectedToken.value) return;
+    const destTokenInfo = getDestTokenInfo({
+      destChainId: destChain.value.id,
+      selectedToken: selectedToken.value,
+    });
+    if (destTokenInfo && !destTokenInfo.isNativeToken) {
+      destTokenUrl.value = destTokenInfo.url;
+      destTokenAddress.value = destTokenInfo.address;
+    } else {
+      destTokenUrl.value = '';
+      destTokenAddress.value = '';
+    }
+  };
+
+  const updateSelectedTokenBal = async (): Promise<void> => {
+    selectedTokenBalance.value = await getSelectedTokenBal();
+  };
+
   const setTokenByQueyParams = (): void => {
     if (!tokens.value) return;
     const query = router.currentRoute.value.query;
@@ -413,18 +432,7 @@ export function useCbridge() {
   );
 
   watchEffect(() => {
-    if (!destChain.value || !selectedToken.value) return;
-    const destTokenInfo = getDestTokenInfo({
-      destChainId: destChain.value.id,
-      selectedToken: selectedToken.value,
-    });
-    if (destTokenInfo && !destTokenInfo.isNativeToken) {
-      destTokenUrl.value = destTokenInfo.url;
-      destTokenAddress.value = destTokenInfo.address;
-    } else {
-      destTokenUrl.value = '';
-      destTokenAddress.value = '';
-    }
+    setDestTokenInformation();
   });
 
   // Todo: enable after fix the debounce issue
@@ -445,7 +453,7 @@ export function useCbridge() {
   });
 
   watchEffect(async () => {
-    selectedTokenBalance.value = await getSelectedTokenBal();
+    await updateSelectedTokenBal();
   });
 
   watch(
@@ -467,7 +475,7 @@ export function useCbridge() {
   );
 
   watchEffect(async () => {
-    monitorConnectedNetwork();
+    await monitorConnectedNetwork();
   });
 
   watchEffect(() => {
@@ -484,6 +492,7 @@ export function useCbridge() {
 
   const handleUpdate = setInterval(async () => {
     await getEstimation();
+    await updateSelectedTokenBal();
   }, 20 * 1000);
 
   onUnmounted(() => {
