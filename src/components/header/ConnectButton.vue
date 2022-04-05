@@ -1,10 +1,6 @@
 <template>
   <button type="button" :class="width >= screenSize.sm ? 'btn--connect' : 'm-btn--connect'">
-    <icon-base
-      class="iconbase tw-w-5 tw-h-5 tw--ml-1 tw-mr-1"
-      stroke="currentColor"
-      icon-name="wallet"
-    >
+    <icon-base class="iconbase" stroke="currentColor" icon-name="wallet">
       <icon-wallet />
     </icon-base>
     <template v-if="width >= screenSize.sm">
@@ -39,6 +35,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
+@import 'src/css/utils.scss';
 
 .btn--connect {
   display: flex;
@@ -68,6 +65,10 @@ export default defineComponent({
 }
 .iconbase {
   color: $astar-blue-dark;
+  width: rem(20);
+  height: rem(20);
+  margin-left: -4px;
+  margin-right: 4px;
 }
 
 .body--dark {

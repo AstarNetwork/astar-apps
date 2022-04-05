@@ -5,7 +5,7 @@
     :class="width >= screenSize.sm ? 'btn--update' : 'm-btn--update'"
     @click="updateMetadata"
   >
-    <icon-base class="tw-w-5 tw-h-5 tw--ml-1 tw-mr-1" stroke="currentColor" icon-name="network">
+    <icon-base class="iconbase" stroke="currentColor" icon-name="network">
       <icon-network />
     </icon-base>
     <template v-if="width >= screenSize.sm">
@@ -68,6 +68,14 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
+@import 'src/css/utils.scss';
+
+.iconbase {
+  width: rem(20);
+  height: rem(20);
+  margin-left: -4px;
+  margin-right: 4px;
+}
 
 .btn--update {
   display: flex;

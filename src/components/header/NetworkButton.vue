@@ -11,7 +11,7 @@
       :class="width < screenSize.sm ? 'm-btn--network' : ''"
       @click="showNetworkModal"
     >
-      <icon-base class="iconbase tw-w-5 tw-h-5 tw--ml-1" stroke="currentColor" icon-name="network">
+      <icon-base class="iconbase" stroke="currentColor" icon-name="network">
         <icon-network />
       </icon-base>
       <img v-show="currentLogo" class="icon" width="16" :src="currentLogo" />
@@ -103,6 +103,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
+@import 'src/css/utils.scss';
 
 .btn--network {
   display: flex;
@@ -129,6 +130,9 @@ export default defineComponent({
 }
 .iconbase {
   color: $gray-4;
+  width: rem(20);
+  height: rem(20);
+  margin-left: -4px;
 }
 .icon {
   margin: 0 6px;
