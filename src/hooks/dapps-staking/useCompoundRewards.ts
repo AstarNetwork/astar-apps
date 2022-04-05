@@ -65,7 +65,14 @@ export function useCompoundRewards() {
         },
         async (result) => {
           if (result.status.isFinalized) {
-            if (!hasExtrinsicFailedEvent(result.events, store.dispatch)) {
+            let errorMessage = '';
+            if (
+              !hasExtrinsicFailedEvent(
+                result.events,
+                store.dispatch,
+                (message: string) => (errorMessage = message)
+              )
+            ) {
               store.dispatch(
                 'general/showAlertMsg',
                 {
@@ -74,6 +81,10 @@ export function useCompoundRewards() {
                 },
                 { root: true }
               );
+            } else {
+              if (errorMessage.includes('TooManyEraStakeValues')) {
+                errorMessage = `${errorMessage} - Disable compounding, claim your rewards and than enable compounding again.`;
+              }
             }
 
             store.commit('general/setLoading', false, { root: true });

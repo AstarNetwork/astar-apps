@@ -56,7 +56,11 @@ const getCollectionKey = async (): Promise<string> => {
   return collectionKey;
 };
 
-export const hasExtrinsicFailedEvent = (events: EventRecord[], dispatch: Dispatch): boolean => {
+export const hasExtrinsicFailedEvent = (
+  events: EventRecord[],
+  dispatch: Dispatch,
+  setMessage?: Function
+): boolean => {
   let result = false;
   events
     .filter((record): boolean => !!record.event && record.event.section !== 'democracy')
@@ -84,8 +88,8 @@ export const hasExtrinsicFailedEvent = (events: EventRecord[], dispatch: Dispatc
           message = `${dispatchError.type}.${dispatchError.asToken.type}`;
         }
 
-        if (message.includes('TooManyEraStakeValues')) {
-          message = `${message} - Disable compounding, claim your rewards and than enable compounding again.`;
+        if (setMessage) {
+          setMessage(message);
         }
 
         showError(dispatch, `action: ${section}.${method} ${message}`);
