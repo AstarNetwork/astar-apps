@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper--charts">
-    <div class="container--charts">
-      <div class="container--value-panels">
+    <div class="container--chart-panels">
+      <div class="container--value-panel">
         <value-panel title="Current Circulating Supply" :value="circulatingSupply" />
         <value-panel title="Total Supply" :value="totalSupply" />
       </div>

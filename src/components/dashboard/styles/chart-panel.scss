@@ -24,7 +24,7 @@
   }
 }
 
-.container--value-panels {
+.container--value-panel {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -35,7 +35,7 @@
   }
 }
 
-.container--charts {
+.container--chart-panels {
   display: flex;
   flex-wrap: wrap;
   row-gap: 24px;

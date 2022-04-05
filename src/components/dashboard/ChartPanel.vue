@@ -54,7 +54,7 @@ export default defineComponent({
     const getBackgroundColor = (): string => (isDarkTheme.value ? '#222829' : '#fff');
     const getLineColor = (): string => (isDarkTheme.value ? '#3C4649' : '#F7F7F8');
     const getTextColor = (): string => (isDarkTheme.value ? '#5F656F' : '#B1B7C1');
-    const getChartFillColor = (): string => (isDarkTheme.value ? '#1d2d36' : '#F7F7F8');
+    // const getChartFillColor = (): string => (isDarkTheme.value ? '#1d2d36' : '#F7F7F8');
     const hasData = ref<boolean>(false);
 
     const chartOptions = ref({
@@ -110,7 +110,14 @@ export default defineComponent({
           type: 'area',
           data: props.data,
           color: '#0085FF',
-          fillColor: getChartFillColor(),
+          // linear-gradient(90deg, rgba(12, 134, 245, 0) -21.78%, rgba(7, 200, 254, 0.26) 95.18%);
+          fillColor: {
+            linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+            stops: [
+              [0, 'rgba(7, 200, 254, 0.26)'],
+              [1, 'rgba(12, 134, 245, 0.2)'],
+            ],
+          },
           lineWidth: '2px',
         },
       ],
@@ -126,7 +133,7 @@ export default defineComponent({
       chartOptions.value.yAxis.gridLineColor = getLineColor();
       chartOptions.value.yAxis.labels.style.color = getTextColor();
       chartOptions.value.xAxis.labels.style.color = getTextColor();
-      chartOptions.value.series[0].fillColor = getChartFillColor();
+      // chartOptions.value.series[0].fillColor = getChartFillColor();
     });
 
     const handleFilterChanged = (filter: string): void => {
