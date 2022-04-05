@@ -84,7 +84,14 @@ input[type='number'] {
   -moz-appearance: textfield;
 }
 
+input::placeholder {
+  color: $gray-3 !important;
+}
+
 .body--dark {
+  input::placeholder {
+    color: $gray-4 !important;
+  }
   .text--page-title,
   .text--title,
   .text--accent,

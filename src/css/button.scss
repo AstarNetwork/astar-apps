@@ -8,7 +8,7 @@
 }
 
 .btn--confirm {
-  width: 340px;
+  width: 320px;
   background-color: $astar-blue;
   font-size: 20px;
   font-weight: 600;
@@ -17,6 +17,9 @@
   &:hover {
     background: linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
       linear-gradient(0deg, $astar-blue, $astar-blue);
+  }
+  @media (min-width: $xs) {
+    width: 340px;
   }
 }
 

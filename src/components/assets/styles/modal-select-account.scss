@@ -23,10 +23,13 @@
 }
 
 .input--address {
-  width: 250px;
+  width: 230px;
   background-color: transparent;
   &:focus {
     outline: none;
+  }
+  @media (min-width: $xs) {
+    width: 250px;
   }
 }
 
