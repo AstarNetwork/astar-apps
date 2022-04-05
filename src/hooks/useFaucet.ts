@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
-import { computed, ref, watch, onUnmounted, watchEffect } from 'vue';
+import { computed, ref, watch, onUnmounted, watchEffect, Ref } from 'vue';
 import { getProviderIndex } from './../config/chainEndpoints';
 import { useAccount } from './useAccount';
 import { DateTime } from 'luxon';
@@ -25,7 +25,7 @@ interface Countdown {
   seconds: number;
 }
 
-export function useFaucet() {
+export function useFaucet(isModalFaucet?: Ref<boolean>) {
   const timestamps = ref<Timestamps | null>(null);
   const faucetAmount = ref<number>(0);
   const unit = ref<string>('');
@@ -140,10 +140,11 @@ export function useFaucet() {
   });
 
   watch(
-    [hash, currentAccount, chainInfo],
+    [hash, currentAccount, chainInfo, isModalFaucet],
     async () => {
       const currentAccountRef = currentAccount.value;
-      if (!currentAccountRef || !chainInfo.value) return;
+      const isModalFaucetRef = isModalFaucet && isModalFaucet.value;
+      if (!currentAccountRef || !chainInfo.value || !isModalFaucetRef) return;
       const currentNetworkIdx = getProviderIndex(chainInfo.value.chain);
       const endpoint = providerEndpoints[currentNetworkIdx].faucetEndpoint;
 

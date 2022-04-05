@@ -1,22 +1,22 @@
 <template>
   <div v-if="!small">
-    <div v-if="currentNetworkIdx === endpointKey.SHIDEN" class="tw-px-6">
-      <img src="~assets/img/shiden.png" widht="152" height="44" />
+    <div v-if="currentNetworkIdx === endpointKey.SHIDEN">
+      <img src="~assets/img/shiden_logo.png" widht="152" height="44" />
     </div>
-    <div v-else-if="currentNetworkIdx === endpointKey.SHIBUYA" class="tw-px-6">
-      <img src="~assets/img/shibuya.svg" width="152" height="55" />
+    <div v-else-if="currentNetworkIdx === endpointKey.SHIBUYA">
+      <img src="~assets/img/shibuya_logo.png" width="152" height="55" />
     </div>
-    <img v-else src="~assets/img/astar.png" width="200" height="78" />
+    <img v-else src="~assets/img/astar_logo.png" width="200" height="78" />
   </div>
   <div v-else>
     <img
       v-if="currentNetworkIdx === endpointKey.SHIDEN"
-      src="~assets/img/sdn-token.png"
+      src="~assets/img/shiden_logo.png"
       alt="sdn"
     />
     <img
       v-if="currentNetworkIdx === endpointKey.ASTAR"
-      src="~assets/img/astr-token.png"
+      src="~assets/img/astar_logo.png"
       alt="astr"
     />
   </div>

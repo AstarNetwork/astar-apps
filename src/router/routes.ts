@@ -1,10 +1,9 @@
 import { RouteRecordRaw } from 'vue-router';
 
-import Balance from 'pages/Balance.vue';
-// import DApps from 'src/pages/Contract.vue';
+import Assets from 'pages/Assets.vue';
 import Store from 'src/pages/DappStaking.vue';
+import Dashboard from 'src/pages/Dashboard.vue';
 import ConnectWallet from 'src/components/balance/ConnectWallet.vue';
-// import CreateDappsTab from 'components/contracts/CreateDappsTab.vue';
 import DiscoverDappsTab from 'components/dapp-staking/DiscoverDappsTab.vue';
 import ManageDappsTab from 'components/dapp-staking/ManageDappsTab.vue';
 import EvmWidget from 'components/bridge/evm/EvmWidget.vue';
@@ -13,7 +12,7 @@ import Bridge from 'src/pages/Bridge.vue';
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    redirect: '/balance',
+    redirect: '/assets',
   },
   {
     path: '/store/discover-dapps',
@@ -22,27 +21,44 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/balance',
     name: 'Balance',
-    component: Balance,
+    redirect: '/assets',
     children: [
       {
         path: '',
-        redirect: '/balance/wallet',
+        redirect: '/assets',
       },
       {
         path: 'balance-plasm',
-        redirect: '/balance/wallet',
+        redirect: '/assets',
       },
       {
         path: 'wallet',
         component: ConnectWallet,
+        redirect: '/assets',
         children: [
           {
             path: 'deeplink-metamask',
-            component: ConnectWallet,
+            redirect: '/assets',
           },
         ],
       },
     ],
+  },
+  {
+    path: '/assets',
+    name: 'Assets',
+    component: Assets,
+    children: [
+      {
+        path: 'deeplink-metamask',
+        component: Assets,
+      },
+    ],
+  },
+  {
+    path: '/dashboard',
+    name: 'Dashboard',
+    component: Dashboard,
   },
   // {
   //   path: '/contracts',
@@ -105,5 +121,18 @@ const routes: RouteRecordRaw[] = [
     component: () => import('pages/Error404.vue'),
   },
 ];
+
+export const getHeaderName = (path: string) => {
+  if (path === 'dashboard') {
+    return 'Dashboard';
+  } else if (path === 'assets') {
+    return 'Assets';
+  } else if (path === 'dapp-staking') {
+    return 'Staking';
+  } else if (path === 'bridge') {
+    return 'Bridge';
+  }
+  return '';
+};
 
 export default routes;

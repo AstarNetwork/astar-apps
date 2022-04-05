@@ -1,3 +1,4 @@
+import { useRouter } from 'vue-router';
 import {
   BridgeMethod,
   CbridgeToken,
@@ -48,6 +49,8 @@ export function useCbridge() {
   const destTokenUrl = ref<string>('');
   const destTokenAddress = ref<string>('');
   const isClickReverseButton = ref<boolean>(false);
+
+  const router = useRouter();
 
   const store = useStore();
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
@@ -176,17 +179,26 @@ export function useCbridge() {
   };
 
   const updateBridgeConfig = async (): Promise<void> => {
+    store.commit('general/setLoading', true);
     const data = await getTransferConfigs(currentNetworkIdx.value);
     const supportChain = data && data.supportChain;
     const tokens = data && data.tokens;
     const tokenIconsData = data && data.tokenIcons;
+    const query = router.currentRoute.value.query;
 
     if (!supportChain || !tokens || !tokenIconsData) {
       throw Error('Cannot fetch from cBridge API');
     }
 
     if (currentNetworkIdx.value === endpointKey.ASTAR) {
-      srcChain.value = supportChain.find((it) => it.id === Ethereum) as Chain;
+      if (query.from && query.from !== String(Ethereum)) {
+        const targetSrcChain = supportChain.find((it) => it.id === Number(query.from)) as Chain;
+        srcChain.value = targetSrcChain
+          ? targetSrcChain
+          : (supportChain.find((it) => it.id === Ethereum) as Chain);
+      } else {
+        srcChain.value = supportChain.find((it) => it.id === Ethereum) as Chain;
+      }
       destChain.value = supportChain.find((it) => it.id === Astar) as Chain;
     } else {
       srcChain.value = supportChain.find((it) => it.id === Shiden) as Chain;
@@ -201,6 +213,7 @@ export function useCbridge() {
     });
     chains.value = supportChain;
     tokensObj.value = tokens;
+    store.commit('general/setLoading', false);
   };
 
   const watchSelectableChains = async (): Promise<void> => {
@@ -311,6 +324,103 @@ export function useCbridge() {
     }
   };
 
+  const handleQuotation = async (): Promise<void> => {
+    try {
+      if (
+        !quotation.value ||
+        quotation.value === null ||
+        !srcChain.value ||
+        !selectedToken.value ||
+        !amount.value
+      ) {
+        errMsg.value = '';
+        return;
+      }
+
+      const { symbol } = getTokenInfo({
+        srcChainId: srcChain.value.id,
+        selectedToken: selectedToken.value,
+      });
+
+      const balance = Number(await getSelectedTokenBal());
+      const numAmount = Number(amount.value);
+      const { minAmount, maxAmount } = quotation.value;
+
+      if (!isH160.value) {
+        errMsg.value = 'Selected invalid wallet';
+      } else if (srcChain.value.id !== selectedNetwork.value) {
+        errMsg.value = 'Selected invalid network in your wallet';
+      } else if (numAmount > balance) {
+        errMsg.value = 'Insufficient balance';
+      } else if (minAmount >= numAmount) {
+        errMsg.value = `Amount must be greater than ${minAmount} ${symbol}`;
+      } else if (numAmount >= maxAmount) {
+        errMsg.value = `Amount must be less than ${maxAmount} ${symbol}`;
+      } else {
+        errMsg.value = '';
+      }
+    } catch (error: any) {
+      console.error(error);
+      errMsg.value = error.messages || 'Something went wrong';
+    }
+  };
+
+  const setIsDisabledBridge = (): void => {
+    if (
+      isH160.value &&
+      quotation.value &&
+      quotation.value.maxAmount !== undefined &&
+      quotation.value.minAmount !== undefined &&
+      Number(amount.value) > 0
+    ) {
+      isDisabledBridge.value = errMsg.value !== '';
+    } else {
+      isDisabledBridge.value = true;
+    }
+  };
+
+  const monitorConnectedNetwork = async (): Promise<void> => {
+    const provider = getEvmProvider();
+    if (!isH160.value || !provider) return;
+
+    const web3 = new Web3(provider as any);
+    const chainId = await web3.eth.getChainId();
+    selectedNetwork.value = chainId;
+
+    provider &&
+      provider.on('chainChanged', (chainId: string) => {
+        selectedNetwork.value = Number(chainId);
+      });
+  };
+
+  const setDestTokenInformation = (): void => {
+    if (!destChain.value || !selectedToken.value) return;
+    const destTokenInfo = getDestTokenInfo({
+      destChainId: destChain.value.id,
+      selectedToken: selectedToken.value,
+    });
+    if (destTokenInfo && !destTokenInfo.isNativeToken) {
+      destTokenUrl.value = destTokenInfo.url;
+      destTokenAddress.value = destTokenInfo.address;
+    } else {
+      destTokenUrl.value = '';
+      destTokenAddress.value = '';
+    }
+  };
+
+  const updateSelectedTokenBal = async (): Promise<void> => {
+    selectedTokenBalance.value = await getSelectedTokenBal();
+  };
+
+  const setTokenByQueyParams = (): void => {
+    if (!tokens.value) return;
+    const query = router.currentRoute.value.query;
+    if (query.from && query.symbol) {
+      const token = tokens.value?.find((it) => it.symbol === query.symbol);
+      token && store.commit('bridge/setSelectedToken', token);
+    }
+  };
+
   watchEffect(async () => {
     if (!currentNetworkIdx.value || currentNetworkIdx.value !== null) {
       await updateBridgeConfig();
@@ -326,18 +436,7 @@ export function useCbridge() {
   );
 
   watchEffect(() => {
-    if (!destChain.value || !selectedToken.value) return;
-    const destTokenInfo = getDestTokenInfo({
-      destChainId: destChain.value.id,
-      selectedToken: selectedToken.value,
-    });
-    if (destTokenInfo && !destTokenInfo.isNativeToken) {
-      destTokenUrl.value = destTokenInfo.url;
-      destTokenAddress.value = destTokenInfo.address;
-    } else {
-      destTokenUrl.value = '';
-      destTokenAddress.value = '';
-    }
+    setDestTokenInformation();
   });
 
   // Todo: enable after fix the debounce issue
@@ -358,7 +457,7 @@ export function useCbridge() {
   });
 
   watchEffect(async () => {
-    selectedTokenBalance.value = await getSelectedTokenBal();
+    await updateSelectedTokenBal();
   });
 
   watch(
@@ -374,71 +473,30 @@ export function useCbridge() {
   watch(
     [quotation, selectedNetwork],
     async () => {
-      if (
-        !quotation.value ||
-        quotation.value === null ||
-        !srcChain.value ||
-        !selectedToken.value ||
-        !amount.value
-      ) {
-        errMsg.value = '';
-        return;
-      }
-
-      const { symbol } = getTokenInfo({
-        srcChainId: srcChain.value.id,
-        selectedToken: selectedToken.value,
-      });
-
-      const balance = Number(await getSelectedTokenBal());
-      const numAmount = Number(amount.value);
-      const { minAmount, maxAmount } = quotation.value;
-      if (!minAmount || !maxAmount) return;
-
-      if (srcChain.value.id !== selectedNetwork.value) {
-        errMsg.value = 'Selected invalid network in your wallet';
-      } else if (numAmount > balance) {
-        errMsg.value = 'Insufficient balance';
-      } else if (minAmount >= numAmount) {
-        errMsg.value = `Amount must be greater than ${minAmount} ${symbol}`;
-      } else if (numAmount >= maxAmount) {
-        errMsg.value = `Amount must be less than ${maxAmount} ${symbol}`;
-      } else {
-        errMsg.value = '';
-      }
+      await handleQuotation();
     },
     { immediate: false }
   );
 
   watchEffect(async () => {
-    const provider = getEvmProvider();
-    if (!isH160.value || !provider) return;
-
-    const web3 = new Web3(provider as any);
-    const chainId = await web3.eth.getChainId();
-    selectedNetwork.value = chainId;
-
-    provider &&
-      provider.on('chainChanged', (chainId: string) => {
-        selectedNetwork.value = Number(chainId);
-      });
+    await monitorConnectedNetwork();
   });
 
   watchEffect(() => {
-    if (
-      quotation.value &&
-      quotation.value.maxAmount !== undefined &&
-      quotation.value.minAmount !== undefined &&
-      Number(amount.value) > 0
-    ) {
-      isDisabledBridge.value = errMsg.value !== '';
-    } else {
-      isDisabledBridge.value = true;
-    }
+    setIsDisabledBridge();
   });
+
+  watch(
+    [tokens],
+    () => {
+      setTokenByQueyParams();
+    },
+    { immediate: false }
+  );
 
   const handleUpdate = setInterval(async () => {
     await getEstimation();
+    await updateSelectedTokenBal();
   }, 20 * 1000);
 
   onUnmounted(() => {

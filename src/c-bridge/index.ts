@@ -132,6 +132,7 @@ export interface SelectedToken {
   icon: string;
   decimal: number;
   userBalance: string;
+  userBalanceUsd: string;
 }
 
 export interface Quotation {
@@ -143,8 +144,8 @@ export interface Quotation {
   slippage_tolerance: number;
   max_slippage: number;
   estimated_receive_amt: string;
-  minAmount?: number;
-  maxAmount?: number;
+  minAmount: number;
+  maxAmount: number;
 }
 
 export interface History {

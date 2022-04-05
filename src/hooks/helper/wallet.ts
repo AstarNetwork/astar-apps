@@ -1,5 +1,5 @@
 import { EthereumProvider } from './../types/CustomSignature';
-import { SupportWallet } from 'src/config/wallets';
+import { supportEvmWalletObj, SupportWallet } from 'src/config/wallets';
 import { web3Enable } from '@polkadot/extension-dapp';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SubstrateAccount } from './../../store/general/state';
@@ -111,4 +111,22 @@ export const checkIsWalletExtension = async (): Promise<boolean> => {
   const isSubstrateDappBrowser = await getInjectedExtensions();
   const isMetamask = typeof window.ethereum !== 'undefined';
   return Boolean(isSubstrateDappBrowser.length || isMetamask);
+};
+
+export const checkIsEthereumWallet = (wallet: SupportWallet) => {
+  return supportEvmWalletObj.hasOwnProperty(wallet);
+};
+
+export const checkIsMobileMathWallet = async (): Promise<boolean> => {
+  try {
+    if (isMobileDevice) {
+      const [wallet] = await getInjectedExtensions();
+      const isMath = wallet.hasOwnProperty('isMathWallet');
+      return isMath;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    return false;
+  }
 };

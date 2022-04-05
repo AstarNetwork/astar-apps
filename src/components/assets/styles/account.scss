@@ -1,0 +1,105 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--account {
+  display: grid;
+  row-gap: 24px;
+}
+
+.row {
+  padding: 16px 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.row--details {
+  padding: 16px 8px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 12px;
+  @media (min-width: $md) {
+    row-gap: 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+  }
+}
+
+.column-account-name {
+  display: flex;
+  column-gap: 8px;
+  @media (min-width: $md) {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.column-address-icons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.column__address {
+  @media (min-width: $md) {
+    margin-left: 42px;
+  }
+}
+
+.column__icons {
+  display: flex;
+  column-gap: 16px;
+  justify-content: flex-end;
+}
+
+.text--switch-account {
+  cursor: pointer;
+  color: $astar-blue;
+}
+
+.text--total-balance {
+  font-size: 16px;
+  font-weight: 700;
+  color: $gray-5;
+}
+
+.row__icons {
+  display: flex;
+  column-gap: 24px;
+}
+
+.icon {
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+}
+
+.container--lockdrop-warning {
+  background: $warning-yellow;
+  border-radius: 6px;
+  padding: 16px 24px;
+}
+
+.text--warning-bold {
+  color: $gray-5;
+  font-weight: 700;
+}
+
+.row--warning-list {
+  padding-left: 24px;
+  padding-top: 4px;
+}
+
+.text--warning {
+  color: $gray-5;
+  list-style-type: initial;
+}
+
+.body--dark {
+  .text--switch-account {
+    color: $astar-blue-dark;
+  }
+  .text--total-balance {
+    color: $gray-1;
+  }
+}

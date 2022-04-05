@@ -164,6 +164,8 @@ import IconDocumentDuplicate from 'components/icons/IconDocumentDuplicate.vue';
 import IconLink from 'components/icons/IconLink.vue';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { useAccount } from 'src/hooks';
+import copy from 'copy-to-clipboard';
+
 export default defineComponent({
   components: {
     IconBase,
@@ -198,16 +200,16 @@ export default defineComponent({
     const isBlockscout = providerEndpoints[currentNetworkIdx.value].blockscout !== '';
     const showAlert = () => {
       store.dispatch('general/showAlertMsg', {
-        msg: 'Copy address success!!',
+        msg: 'Copy address success!',
         alertType: 'success',
       });
     };
     const { disconnectAccount } = useAccount();
 
-    const copyAddress = async () => {
-      await navigator.clipboard.writeText(address.value);
+    const copyAddress = () => {
+      copy(address.value);
       store.dispatch('general/showAlertMsg', {
-        msg: 'Copy address success!!',
+        msg: 'Copy address success!',
         alertType: 'success',
       });
     };

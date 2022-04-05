@@ -1,1 +1,53 @@
-// app global css in SCSS form
+// Memo: app global css in SCSS form
+// Memo: Following the BEM methodology
+// Ref:  https://css-tricks.com/bem-101/
+
+@use 'src/css/quasar.variables.scss';
+@use 'src/css/text.scss';
+@use 'src/css/button.scss';
+@use 'src/css/color.scss';
+@use 'src/css/modal.scss';
+@use 'src/css/box.scss';
+@use 'src/css/skeleton.scss';
+@use 'src/css/icon.scss';
+@use 'src/css/astar-ui.scss';
+
+body {
+  background: $body-bg-light;
+}
+
+main {
+  background: $gray-1;
+}
+
+.screen--md {
+  display: none;
+  @media (min-width: $md) {
+    display: block;
+  }
+}
+
+.screen--lg {
+  display: none;
+  @media (min-width: $lg) {
+    display: block;
+  }
+}
+
+.border--separator {
+  border-top: 1px solid $border-separator-light;
+  border-bottom: 0px solid transparent;
+  border-left: 0px solid transparent;
+  border-right: 0px solid transparent;
+}
+
+.body--dark {
+  background: $body-bg-dark;
+  main {
+    background: $gray-6;
+  }
+
+  .border--separator {
+    border-top: 1px solid $border-separator-dark;
+  }
+}
