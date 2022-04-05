@@ -43,14 +43,9 @@
           </div>
           <div class="column__icons">
             <div>
-              <button type="button" @click="copyAddress">
-                <img
-                  class="icon"
-                  :src="isDarkTheme ? 'icons/icon-copy-dark.svg' : 'icons/icon-copy.svg'"
-                />
+              <button type="button" class="icon--primary" @click="copyAddress">
+                <IconCopy />
               </button>
-              <!-- Todo: Apply light theme -->
-              <!-- <astar-icon-copy-btn @click="copyAddress" /> -->
               <q-tooltip>
                 <span class="text--tooltip">{{ $t('copy') }}</span>
               </q-tooltip>
@@ -106,7 +101,10 @@ import {
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import copy from 'copy-to-clipboard';
+import IconCopy from 'src/components/icons/IconCopy.vue';
+
 export default defineComponent({
+  components: { IconCopy },
   props: {
     ttlErc20Amount: {
       type: Number,
