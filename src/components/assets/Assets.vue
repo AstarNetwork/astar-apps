@@ -38,9 +38,11 @@ export default defineComponent({
       const address = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
       const isEthereumExtension = address === 'Ethereum Extension';
       if (!isDisplay.value && isEthereumExtension) {
+        // Memo: Wait for update the `isH160` state
+        const secDelay = 1 * 1000;
         setTimeout(() => {
           isDisplay.value = true;
-        }, 1000);
+        }, secDelay);
       } else {
         isDisplay.value = true;
       }
