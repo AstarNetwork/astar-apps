@@ -36,25 +36,19 @@
                   <div class="accountName">{{ account.name }}</div>
                   <div class="address">{{ account.address }}</div>
                   <div class="wrapper--share">
-                    <div class="box--share" @click="copyAddress(account.address)">
-                      <img
-                        :src="
-                          isDarkTheme ? 'icons/icon-copy-dark-nobg.svg' : 'icons/icon-copy-nobg.svg'
-                        "
-                      />
-                      <div>{{ $t('copy') }}</div>
-                    </div>
-                    <a :href="subScan + account.address" target="_blank" rel="noopener noreferrer">
-                      <div class="box--share">
-                        <img
-                          :src="
-                            isDarkTheme
-                              ? 'icons/icon-external-link-dark-nobg.svg'
-                              : 'icons/icon-external-link-nobg.svg'
-                          "
-                        />
-                        <div>{{ $t('subscan') }}</div>
+                    <button class="box--share btn--primary" @click="copyAddress(account.address)">
+                      <div class="icon--primary" @click="copyAddress">
+                        <IconCopy />
                       </div>
+                      <div>{{ $t('copy') }}</div>
+                    </button>
+                    <a :href="subScan + account.address" target="_blank" rel="noopener noreferrer">
+                      <button class="box--share btn--primary">
+                        <div class="icon--primary">
+                          <IconExternalLink />
+                        </div>
+                        <div>{{ $t('subscan') }}</div>
+                      </button>
                     </a>
                   </div>
                 </div>
@@ -84,10 +78,14 @@ import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
 import { computed, defineComponent, PropType, ref } from 'vue';
 import copy from 'copy-to-clipboard';
+import IconCopy from 'src/components/icons/IconCopy.vue';
+import IconExternalLink from 'src/components/icons/IconExternalLink.vue';
 
 export default defineComponent({
   components: {
     SelectWallet,
+    IconCopy,
+    IconExternalLink,
   },
   props: {
     isOpen: {
@@ -263,6 +261,21 @@ export default defineComponent({
     font-weight: 400;
     font-size: 14px;
     line-height: 17px;
+  }
+}
+
+.btn--primary {
+  transition: all 0.4s ease 0s;
+  border-radius: 16px;
+  padding: 0px 12px;
+  &:hover {
+    color: white;
+    stroke: white;
+    background-color: $astar-blue-dark;
+    .icon--primary {
+      stroke: white;
+      background-color: transparent;
+    }
   }
 }
 

@@ -43,27 +43,18 @@
           </div>
           <div class="column__icons">
             <div>
-              <button type="button" @click="copyAddress">
-                <img
-                  class="icon"
-                  :src="isDarkTheme ? 'icons/icon-copy-dark.svg' : 'icons/icon-copy.svg'"
-                />
+              <button type="button" class="icon--primary" @click="copyAddress">
+                <IconCopy />
               </button>
-              <!-- Todo: Apply light theme -->
-              <!-- <astar-icon-copy-btn @click="copyAddress" /> -->
               <q-tooltip>
                 <span class="text--tooltip">{{ $t('copy') }}</span>
               </q-tooltip>
             </div>
             <a :href="isH160 ? blockscout : subScan" target="_blank" rel="noopener noreferrer">
-              <img
-                class="icon"
-                :src="
-                  isDarkTheme ? 'icons/icon-external-link-dark.svg' : 'icons/icon-external-link.svg'
-                "
-              />
-              <!-- Todo: Apply light theme -->
-              <!-- <astar-icon-share-btn @click="copyAddress" /> -->
+              <button class="icon--primary">
+                <IconExternalLink />
+              </button>
+
               <q-tooltip>
                 <span class="text--tooltip">{{ $t(isH160 ? 'blockscout' : 'subscan') }}</span>
               </q-tooltip>
@@ -83,7 +74,6 @@
   </div>
 </template>
 <script lang="ts">
-// import { IconCopyBtn, IconShareBtn } from 'astar-ui';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
 import { endpointKey, getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
@@ -106,7 +96,11 @@ import {
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import copy from 'copy-to-clipboard';
+import IconCopy from 'src/components/icons/IconCopy.vue';
+import IconExternalLink from 'src/components/icons/IconExternalLink.vue';
+
 export default defineComponent({
+  components: { IconCopy, IconExternalLink },
   props: {
     ttlErc20Amount: {
       type: Number,
