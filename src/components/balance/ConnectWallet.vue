@@ -1,6 +1,6 @@
 <template>
   <div v-if="isConnected(currentNetworkStatus)">
-    <div v-if="!currentAccount" class="container">
+    <div v-if="!currentAccount" class="container--connect-wallet">
       <div class="connect-wallet" @click="openSelectModal">
         {{ $t('wallet.connectWallet') }}
       </div>

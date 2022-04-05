@@ -23,7 +23,11 @@ function useCall(addressRef: Ref<string>) {
 
   const updateAccountH160 = async (address: string) => {
     try {
-      const rawBal = await getBalance($web3.value!!, address);
+      const web3Ref = $web3.value;
+      if (!web3Ref || !web3Ref.utils.isAddress(address)) {
+        return;
+      }
+      const rawBal = await getBalance(web3Ref, address);
       accountDataRef.value = new AccountDataH160(
         new BN(rawBal),
         new BN(0),
@@ -96,10 +100,12 @@ function useCall(addressRef: Ref<string>) {
 
   const updateAccountBalance = () => {
     const address = addressRef.value;
-    if (isH160Formatted.value) {
-      updateAccountH160(address);
-    } else {
-      updateAccount(address);
+    if (address !== 'Ethereum Extension') {
+      if (isH160Formatted.value) {
+        updateAccountH160(address);
+      } else {
+        updateAccount(address);
+      }
     }
   };
 

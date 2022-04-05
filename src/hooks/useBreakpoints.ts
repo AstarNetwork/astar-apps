@@ -2,6 +2,12 @@ import { computed, onMounted, onUnmounted, ref } from 'vue';
 
 export const useBreakpoints = () => {
   const windowWidth = ref<number>(window.innerWidth);
+  const screenSize = {
+    sm: 640,
+    md: 768,
+    lg: 1024,
+    xl: 1280,
+  };
 
   const onWidthChange = () => (windowWidth.value = window.innerWidth);
   onMounted(() => window.addEventListener('resize', onWidthChange));
@@ -18,5 +24,5 @@ export const useBreakpoints = () => {
 
   const width = computed(() => windowWidth.value);
 
-  return { width, type };
+  return { width, type, screenSize };
 };

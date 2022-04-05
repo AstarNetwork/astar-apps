@@ -58,22 +58,6 @@ export default defineComponent({
 });
 </script>
 <style>
-::-webkit-scrollbar {
-  width: 7px;
-}
-
-::-webkit-scrollbar-track {
-  background: #cbd5e0;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #718096;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #2d3748;
-}
-
 .bg-black-alt {
   background: #191919;
 }

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="srcChain && selectedToken" class="container animate__animated animate__fadeIn">
+  <div v-if="srcChain && selectedToken" class="container--bridge animate__animated animate__fadeIn">
     <a
       v-if="currentNetworkIdx === endpointKey.SHIDEN"
       href="https://anyswap.exchange/#/bridge"
@@ -145,7 +145,6 @@
       <BridgeButtons
         :bridge="bridge"
         :handle-approve="handleApprove"
-        :open-select-modal="openSelectModal"
         :is-disabled-bridge="isDisabledBridge"
         :is-approval-needed="isApprovalNeeded"
         :selected-network="selectedNetwork"
@@ -225,19 +224,6 @@
       :modal="modal"
       :selected-chain="destChain"
     />
-
-    <modal-connect-wallet
-      v-if="walletModalName === WalletModalOption.SelectWallet"
-      :set-wallet-modal="setWalletModal"
-      :set-close-modal="closeWalletModal"
-      :is-evm-only="true"
-    />
-
-    <ModalInstallWallet
-      v-if="walletModalName === WalletModalOption.NoExtension"
-      :set-close-modal="closeWalletModal"
-      :selected-wallet="selectedWallet"
-    />
   </div>
 </template>
 
@@ -246,9 +232,7 @@ import { fasHistory } from '@quasar/extras/fontawesome-v5';
 import IconBase from 'components/icons/IconBase.vue';
 import { useMeta } from 'quasar';
 import { formatDecimals, getChainName, getIcon } from 'src/c-bridge';
-import ModalConnectWallet from 'src/components/balance/modals/ModalConnectWallet.vue';
-import ModalInstallWallet from 'src/components/balance/modals/ModalInstallWallet.vue';
-import { useCbridgeHistory, useCbridgeApproval, useCbridge, useConnectWallet } from 'src/hooks';
+import { useCbridgeHistory, useCbridgeApproval, useCbridge } from 'src/hooks';
 import { calUsdAmount } from 'src/hooks/helper/price';
 import { useStore } from 'src/store';
 import { computed, defineComponent } from 'vue';
@@ -264,8 +248,6 @@ export default defineComponent({
   components: {
     ModalChain,
     ModalToken,
-    ModalConnectWallet,
-    ModalInstallWallet,
     BridgeButtons,
     Remarks,
     IconBase,
@@ -309,17 +291,6 @@ export default defineComponent({
     const { isApprovalNeeded, handleApprove } = useCbridgeApproval();
     const { histories, isUpdatingHistories, isPendingTx } = useCbridgeHistory();
 
-    const {
-      WalletModalOption,
-      modalConnectWallet,
-      modalName: walletModalName,
-      selectedWallet,
-      isH160,
-      setCloseModal: closeWalletModal,
-      setWalletModal,
-      openSelectModal,
-    } = useConnectWallet();
-
     return {
       fasHistory,
       isDarkTheme,
@@ -347,6 +318,7 @@ export default defineComponent({
       currentNetworkIdx,
       endpointKey,
       nativeCurrency,
+      isApprovalNeeded,
       closeModal,
       openModal,
       selectChain,
@@ -357,15 +329,6 @@ export default defineComponent({
       getIcon,
       getChainName,
       formatDecimals,
-      WalletModalOption,
-      modalConnectWallet,
-      walletModalName,
-      selectedWallet,
-      isH160,
-      isApprovalNeeded,
-      closeWalletModal,
-      setWalletModal,
-      openSelectModal,
       inputHandler,
       handleApprove,
       calUsdAmount,

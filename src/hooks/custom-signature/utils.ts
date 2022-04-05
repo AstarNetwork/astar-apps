@@ -1,12 +1,12 @@
 // Copyright 2017-2021 @polkadot/app-custom-signature authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+import { hexToU8a, isHex, u8aToHex } from '@polkadot/util';
+import { blake2AsU8a, encodeAddress, isEthereumAddress } from '@polkadot/util-crypto';
 import * as ethUtils from 'ethereumjs-util';
 // import * as ethUtils from './ethereumjs-util';
 import { publicKeyConvert } from 'secp256k1';
-
-import { hexAddPrefix, hexToU8a, isHex, u8aToHex } from '@polkadot/util';
-import { blake2AsU8a, encodeAddress, isEthereumAddress } from '@polkadot/util-crypto';
+import { ASTAR_SS58_FORMAT } from 'src/hooks/helper/plasmUtils';
 
 /**
  * Converts ECDSA public key into a valid ss58 address for Substrate.
@@ -75,4 +75,17 @@ export const recoverPublicKeyFromSig = (
   const compressedKey = publicKeyConvert(Buffer.from(prefixedPubKey, 'hex'), true);
 
   return u8aToHex(compressedKey);
+};
+
+export const getSs58FromEvmPublicKey = async ({
+  evmAddress,
+  requestSignature,
+}: {
+  evmAddress: string;
+  requestSignature: (loginMsg: string, evmAddress: string) => Promise<string>;
+}) => {
+  const loginMsg = `Sign this message to login with address ${evmAddress}`;
+  const signature = await requestSignature(loginMsg, evmAddress);
+  const pubKey = recoverPublicKeyFromSig(evmAddress, loginMsg, signature);
+  return ecdsaPubKeyToSs58(pubKey, ASTAR_SS58_FORMAT);
 };

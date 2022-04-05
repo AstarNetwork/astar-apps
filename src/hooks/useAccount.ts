@@ -21,7 +21,6 @@ export const useAccount = () => {
       ss58: '',
       h160: '',
     });
-    localStorage.removeItem(SELECTED_ADDRESS);
   };
 
   const currentAccount = ref<string>('');
@@ -72,16 +71,6 @@ export const useAccount = () => {
     },
     { immediate: true }
   );
-
-  watchEffect(() => {
-    if (!currentEcdsaAccount.value.ethereum || !window.ethereum || !isH160Formatted.value) return;
-
-    window.ethereum.on('accountsChanged', (accounts: string[]) => {
-      if (accounts[0] !== currentAccount.value) {
-        disconnectAccount();
-      }
-    });
-  });
 
   return {
     substrateAccounts,
