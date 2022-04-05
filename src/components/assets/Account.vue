@@ -51,14 +51,10 @@
               </q-tooltip>
             </div>
             <a :href="isH160 ? blockscout : subScan" target="_blank" rel="noopener noreferrer">
-              <img
-                class="icon"
-                :src="
-                  isDarkTheme ? 'icons/icon-external-link-dark.svg' : 'icons/icon-external-link.svg'
-                "
-              />
-              <!-- Todo: Apply light theme -->
-              <!-- <astar-icon-share-btn @click="copyAddress" /> -->
+              <button class="icon--primary">
+                <IconExternalLink />
+              </button>
+
               <q-tooltip>
                 <span class="text--tooltip">{{ $t(isH160 ? 'blockscout' : 'subscan') }}</span>
               </q-tooltip>
@@ -78,7 +74,6 @@
   </div>
 </template>
 <script lang="ts">
-// import { IconCopyBtn, IconShareBtn } from 'astar-ui';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
 import { endpointKey, getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
@@ -102,9 +97,10 @@ import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import copy from 'copy-to-clipboard';
 import IconCopy from 'src/components/icons/IconCopy.vue';
+import IconExternalLink from 'src/components/icons/IconExternalLink.vue';
 
 export default defineComponent({
-  components: { IconCopy },
+  components: { IconCopy, IconExternalLink },
   props: {
     ttlErc20Amount: {
       type: Number,
