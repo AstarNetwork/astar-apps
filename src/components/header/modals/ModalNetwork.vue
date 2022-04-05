@@ -28,7 +28,7 @@
                       {{ provider.displayName }}
                     </p>
                   </div>
-                  <div v-if="index === 4" class="row--ip-input">
+                  <div v-if="index === endpointKey.CUSTOM">
                     <input
                       v-if="isCustomNetwork"
                       v-model="newEndpoint"
@@ -199,10 +199,6 @@ export default defineComponent({
   .box--display-name {
     margin-left: rem(8);
   }
-}
-
-.row--ip-input {
-  // padding-left: 8px;
 }
 
 .class-radio--custom-network {
