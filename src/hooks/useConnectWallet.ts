@@ -20,7 +20,7 @@ import {
 } from './helper/wallet';
 
 export const useConnectWallet = () => {
-  const { SELECTED_ADDRESS } = LOCAL_STORAGE;
+  const { SELECTED_ADDRESS, NETWORK_IDX } = LOCAL_STORAGE;
 
   const modalConnectWallet = ref<boolean>(false);
   const modalAccountSelect = ref<boolean>(false);
@@ -62,13 +62,16 @@ export const useConnectWallet = () => {
     modalName.value = WalletModalOption.SelectWallet;
   };
 
-  watchEffect(() => {
-    if (!selectedWalletSource.value) {
+  const initializeWalletAccount = () => {
+    const account = localStorage.getItem(SELECTED_ADDRESS);
+    if (!account) {
       openSelectModal();
     } else {
-      selectedWallet.value = selectedWalletSource.value;
+      if (selectedWalletSource.value) {
+        selectedWallet.value = selectedWalletSource.value;
+      }
     }
-  });
+  };
 
   const loadMetaMask = async (ss58?: string): Promise<boolean> => {
     try {
@@ -85,12 +88,13 @@ export const useConnectWallet = () => {
           };
 
       store.commit('general/setCurrentEcdsaAccount', data);
-      const chainId = getChainId(currentNetworkIdx.value);
+      const storedNetworkId = localStorage.getItem(NETWORK_IDX);
+      const chainId = getChainId(
+        storedNetworkId ? Number(storedNetworkId) : currentNetworkIdx.value
+      );
       const isBridge =
         router.currentRoute.value.matched.length > 0 && currentRouter.value.path === '/bridge';
-      setTimeout(async () => {
-        !isBridge && (await setupNetwork(chainId));
-      }, 500);
+      !isBridge && (await setupNetwork(chainId));
       return true;
     } catch (err: any) {
       console.error(err);
@@ -224,6 +228,10 @@ export const useConnectWallet = () => {
       }
     });
   };
+
+  watchEffect(() => {
+    initializeWalletAccount();
+  });
 
   watchEffect(async () => {
     await changeEvmAccount();
