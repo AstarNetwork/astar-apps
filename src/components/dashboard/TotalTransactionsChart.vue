@@ -54,9 +54,13 @@ export default defineComponent({
       }
     };
 
-    watch([props], () => {
-      if (props.network) {
-        loadData();
+    watch([props], async () => {
+      try {
+        if (props.network) {
+          await loadData();
+        }
+      } catch (error) {
+        console.error(error);
       }
     });
 

@@ -1,10 +1,14 @@
 <template>
   <div class="wrapper--charts">
-    <value-panel title="Current Circulating Supply" :value="circulatingSupply" />
-    <value-panel title="Total Supply" :value="totalSupply" />
-    <tvl-chart :network="chainInfo.chain" />
-    <total-transactions-chart :network="chainInfo.chain" />
-    <token-price-chart :network="chainInfo.chain" />
+    <div class="container--chart-panels">
+      <div class="container--value-panel">
+        <value-panel title="Current Circulating Supply" :value="circulatingSupply" />
+        <value-panel title="Total Supply" :value="totalSupply" />
+      </div>
+      <tvl-chart :network="chainInfo.chain" />
+      <total-transactions-chart :network="chainInfo.chain" />
+      <token-price-chart :network="chainInfo.chain" />
+    </div>
   </div>
 </template>
 
@@ -59,9 +63,13 @@ export default defineComponent({
 
     loadStats();
 
-    watch([chainInfo], () => {
-      if (chainInfo.value) {
-        loadStats();
+    watch([chainInfo], async () => {
+      try {
+        if (chainInfo.value) {
+          await loadStats();
+        }
+      } catch (error) {
+        console.error(error);
       }
     });
 
