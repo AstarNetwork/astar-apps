@@ -2,12 +2,9 @@
   <astar-simple-modal :show="isOpen" title="Network" @close="closeModal">
     <div class="wrapper--modal-network">
       <div class="wrapper--select-network">
-        <div class="row--separator--account">
-          <div class="border--separator--account" />
-        </div>
         <fieldset>
           <ul role="radiogroup">
-            <li v-for="(provider, index) in providerEndpoints" :key="index" class="tw-mb-2">
+            <li v-for="(provider, index) in providerEndpoints" :key="index">
               <label
                 :class="[
                   'class-radio',
@@ -21,34 +18,17 @@
                   name="choose_networks"
                   type="radio"
                   :checked="selNetwork === index"
-                  class="
-                    ip--network
-                    tw-appearance-none
-                    tw-border-2
-                    tw-border-gray-100
-                    tw-rounded-full
-                    tw-h-4
-                    tw-w-4
-                    tw-mr-2
-                    focus:tw-outline-none
-                    tw-bg-white
-                    checked:tw-border-4
-                  "
+                  class="ip--network"
                   @change="selNetwork = index"
                 />
-                <div class="tw-text-left tw-flex-1">
-                  <div class="tw-flex tw-pl-2 tw-items-center">
-                    <img
-                      v-if="provider.defaultLogo"
-                      class="tw-mr-2"
-                      width="24"
-                      :src="provider.defaultLogo"
-                    />
-                    <p :class="selNetwork === index ? 'class-radio-txt-on' : 'class-radio-txt-off'">
+                <div class="wrapper--network-detail">
+                  <div class="box--radio-network">
+                    <img v-if="provider.defaultLogo" width="24" :src="provider.defaultLogo" />
+                    <p class="box--display-name">
                       {{ provider.displayName }}
                     </p>
                   </div>
-                  <div v-if="index === 4" class="row--ip-input">
+                  <div v-if="index === endpointKey.CUSTOM">
                     <input
                       v-if="isCustomNetwork"
                       v-model="newEndpoint"
@@ -97,11 +77,7 @@ export default defineComponent({
   emits: ['update:select-network', 'update:is-open'],
   setup(props, { emit }) {
     const classRadioOn = 'class-radio-on';
-    // 'tw-rounded-lg tw-border tw-border-blue-500 tw-bg-blue-200 dark:tw-bg-blue-500 tw-bg-opacity-10 tw-px-4 tw-py-5 tw-flex tw-items-center tw-cursor-pointer';
     const classRadioOff = 'class-radio-off';
-    const classRadioTxtOn = 'class-radio-txt-on';
-    // const classRadioTxtOn = 'tw-font-medium tw-text-blue-500 dark:tw-text-blue-400 tw-text-sm';
-    const classRadioTxtOff = 'class-radio-tx-off';
 
     const $q = useQuasar();
     const isAndroid = $q.platform.is.android;
@@ -111,7 +87,6 @@ export default defineComponent({
     newEndpoint.value = customEndpoint.value;
 
     const closeModal = (): void => {
-      // props.handleModalNetwork({ isOpen: false });
       emit('update:is-open', false);
     };
 
@@ -149,8 +124,6 @@ export default defineComponent({
       selNetwork,
       classRadioOn,
       classRadioOff,
-      classRadioTxtOn,
-      classRadioTxtOff,
       providerEndpoints,
       endpointKey,
       isDisabled,
@@ -200,15 +173,32 @@ export default defineComponent({
 }
 
 .ip--network {
+  width: rem(16);
+  height: rem(16);
   background: #fff;
+  appearance: none;
+  margin-right: rem(12);
+  border-radius: 9999px;
+  border-width: 1px;
 
   &:checked {
     background: $astar-blue;
+    border-width: 3px;
   }
 }
 
-.row--ip-input {
-  padding-left: 8px;
+.wrapper--network-detail {
+  flex: 1 1 0%;
+  text-align: left;
+
+  .box--radio-network {
+    display: flex;
+    padding-left: rem(8);
+    align-items: center;
+  }
+  .box--display-name {
+    margin-left: rem(8);
+  }
 }
 
 .class-radio--custom-network {
@@ -217,10 +207,11 @@ export default defineComponent({
 }
 
 .ip-input {
-  width: 246px;
+  width: 236px;
   height: 48px;
   text-align: center;
   margin-top: 16px;
+  margin-left: 8px;
   border-radius: 6px;
   background-color: $gray-1;
   border: 1px solid $gray-1;
@@ -267,6 +258,16 @@ export default defineComponent({
   }
   .class-radio--custom-network {
     background: $gray-6 !important;
+  }
+
+  .ip--network {
+    background: $gray-6;
+    border: 1px solid $gray-3;
+
+    &:checked {
+      background: $astar-blue;
+      border-width: 3px;
+    }
   }
 
   .ip-input {
