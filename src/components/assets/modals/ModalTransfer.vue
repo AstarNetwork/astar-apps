@@ -3,7 +3,10 @@
     <div class="wrapper--modal">
       <div class="rows">
         <div class="box--input">
-          <span> {{ $t('from') }}</span>
+          <div class="box__space-between">
+            <span> {{ $t('from') }}</span>
+            <div />
+          </div>
           <div class="box__row">
             <img v-if="iconWallet" width="24" :src="iconWallet" alt="wallet-icon" />
             <div class="column--wallet-address">
