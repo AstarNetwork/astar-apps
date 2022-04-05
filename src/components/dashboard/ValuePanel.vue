@@ -4,7 +4,14 @@
       <div class="row">
         <span class="text--accent container--title--color">{{ title }}</span>
       </div>
-      <div class="align-rigth text--xlg">{{ value }}</div>
+      <div class="align-right text--xlg">
+        <span v-if="value">
+          {{ value }}
+        </span>
+        <div v-else class="skeleton--right">
+          <q-skeleton animation="fade" class="skeleton--lg" />
+        </div>
+      </div>
     </div>
   </div>
 </template>

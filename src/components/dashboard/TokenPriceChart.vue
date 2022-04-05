@@ -10,12 +10,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue';
 import axios from 'axios';
-import ChartPanel from 'src/components/dashboard/ChartPanel.vue';
 import { ChartData } from 'src/components/dashboard/ChartData';
+import ChartPanel from 'src/components/dashboard/ChartPanel.vue';
+import { defineComponent, ref, watch } from 'vue';
 import { API_URL } from './utils';
-import { DEFAULT_FILTER } from 'src/components/dashboard/ChartFilter.vue';
 
 export default defineComponent({
   components: {
@@ -54,9 +53,13 @@ export default defineComponent({
       }
     };
 
-    watch([props], () => {
-      if (props.network) {
-        loadData();
+    watch([props], async () => {
+      try {
+        if (props.network) {
+          await loadData();
+        }
+      } catch (error) {
+        console.error(error);
       }
     });
 

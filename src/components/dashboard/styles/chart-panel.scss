@@ -4,7 +4,7 @@
   padding: 16px 8px 0px 8px;
 }
 
-.align-rigth {
+.align-right {
   padding: 16px 8px 0px 8px;
   text-align: end;
 }
@@ -14,20 +14,42 @@
 }
 
 .wrapper--charts {
+  position: relative;
+  @media (min-width: $lg) {
+    margin-bottom: 24px;
+  }
+  @media (min-width: $xxl) {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.container--value-panels {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  row-gap: 24px;
+  column-gap: 24px;
+  @media (min-width: $lg) {
+    flex-direction: row;
+  }
+}
+
+.container--charts {
   display: flex;
   flex-wrap: wrap;
-  flex-direction: row;
-  justify-content: space-between;
+  row-gap: 24px;
+  @media (min-width: $xxl) {
+    width: $container-max-width;
+  }
 }
 
 .wrapper--chart {
   width: 100%;
-  padding: 8px;
 }
 
 .wrapper--value {
   width: 100%;
-  padding: 8px;
 
   @media (min-width: $lg) {
     width: 50%;
@@ -75,6 +97,10 @@
   }
 }
 
+.skeleton--chart {
+  height: 367px;
+}
+
 .body--dark {
   .filter--tabs {
     background-color: $gray-5-selected-dark;
@@ -96,6 +122,7 @@
 
 .container--value {
   padding: 8px 16px 32px;
+  height: 120px;
 
   @media (min-width: $sm) {
     padding: 8px 24px 32px;

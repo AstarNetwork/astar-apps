@@ -1,5 +1,8 @@
 <template>
-  <div v-if="hasData">
+  <div v-if="!hasData">
+    <q-skeleton class="skeleton--chart" />
+  </div>
+  <div v-else>
     <div class="container">
       <div class="row">
         <span class="text--accent container--title--color">{{ title }}</span>
