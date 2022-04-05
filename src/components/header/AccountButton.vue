@@ -5,7 +5,7 @@
       class="btn--account"
       :class="width < screenSize.sm ? 'm-btn--account' : ''"
     >
-      <icon-base class="iconbase tw-w-5 tw-h-5 tw--ml-1" stroke="currentColor" icon-name="wallet">
+      <icon-base class="iconbase" stroke="currentColor" icon-name="wallet">
         <icon-wallet />
       </icon-base>
       <img class="icon" width="16" :src="iconWallet" />
@@ -72,6 +72,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
+@import 'src/css/utils.scss';
 
 .btn--account {
   display: flex;
@@ -91,6 +92,9 @@ export default defineComponent({
 
 .iconbase {
   color: $gray-4;
+  width: rem(20);
+  height: rem(20);
+  margin-left: -4px;
 }
 
 .m-btn--account {

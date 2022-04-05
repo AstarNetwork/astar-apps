@@ -222,10 +222,11 @@ export default defineComponent({
   appearance: none;
   margin-right: rem(12);
   border-radius: 9999px;
+  border-width: 1px;
 
   &:checked {
     background: $astar-blue;
-    border-width: 4px;
+    border-width: 3px;
   }
 }
 
@@ -316,6 +317,16 @@ export default defineComponent({
 
   .class-radio-on {
     background: $gray-5-selected-dark;
+  }
+
+  .ip--account {
+    background: $gray-6;
+    border: 1px solid $gray-3;
+
+    &:checked {
+      background: $astar-blue;
+      border-width: 3px;
+    }
   }
 
   .wrapper--account-detail {
