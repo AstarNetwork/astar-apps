@@ -73,10 +73,13 @@
 }
 
 .column--wallet-name {
-  max-width: 110px;
+  max-width: 100px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  @media (min-width: $xs) {
+    max-width: 110px;
+  }
 }
 
 .text--to--balance {
