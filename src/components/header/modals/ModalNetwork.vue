@@ -202,7 +202,7 @@ export default defineComponent({
 }
 
 .row--ip-input {
-  padding-left: 8px;
+  // padding-left: 8px;
 }
 
 .class-radio--custom-network {
@@ -211,10 +211,11 @@ export default defineComponent({
 }
 
 .ip-input {
-  width: 246px;
+  width: 236px;
   height: 48px;
   text-align: center;
   margin-top: 16px;
+  margin-left: 8px;
   border-radius: 6px;
   background-color: $gray-1;
   border: 1px solid $gray-1;
