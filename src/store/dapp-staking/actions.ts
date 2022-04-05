@@ -84,6 +84,10 @@ export const hasExtrinsicFailedEvent = (events: EventRecord[], dispatch: Dispatc
           message = `${dispatchError.type}.${dispatchError.asToken.type}`;
         }
 
+        if (message.includes('TooManyEraStakeValues')) {
+          message = `${message} - Disable compounding, claim your rewards and than enable compounding again.`;
+        }
+
         showError(dispatch, `action: ${section}.${method} ${message}`);
         result = true;
       } else if (section === 'utility' && method === 'BatchInterrupted') {

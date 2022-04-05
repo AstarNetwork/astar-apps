@@ -26,25 +26,18 @@ import { useCompoundRewards, RewardDestination } from 'src/hooks/dapps-staking/u
 export default defineComponent({
   setup() {
     const { isSupported, rewardDestination, setRewardDestination } = useCompoundRewards();
-    // const autoCompound = ref<boolean>(false);
-
-    // watch([rewardDestination], () => {
-    //   autoCompound.value = rewardDestination.value === RewardDestination.StakeBalance;
-    // });
 
     const changeDestination = async () => {
-      // const newDestination =
-      //   <RewardDestination>rewardDestination.value === RewardDestination.FreeBalance
-      //     ? RewardDestination.StakeBalance
-      //     : RewardDestination.FreeBalance;
-      // console.log(newDestination, rewardDestination.value);
-      await setRewardDestination(RewardDestination.StakeBalance);
+      const newDestination =
+        rewardDestination.value.toString() === RewardDestination.FreeBalance
+          ? RewardDestination.StakeBalance
+          : RewardDestination.FreeBalance;
+      await setRewardDestination(newDestination);
     };
 
     return {
       isSupported,
       rewardDestination,
-      //autoCompound,
       changeDestination,
     };
   },

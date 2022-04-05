@@ -10,8 +10,8 @@ import { VoidFn } from '@polkadot/api/types';
 type EraIndex = u32;
 
 export enum RewardDestination {
-  FreeBalance,
-  StakeBalance,
+  FreeBalance = 'FreeBalance',
+  StakeBalance = 'StakeBalance',
 }
 
 interface UnlockingChunk extends Struct {
@@ -50,7 +50,6 @@ export function useCompoundRewards() {
       // Compounding rewards are not supported by a node if reading of ledger.rewardDestination fails
       // or in case of error while querying ledger value.
       console.warn(err);
-      isSupported.value = false;
     }
   };
 
@@ -65,15 +64,21 @@ export function useCompoundRewards() {
           nonce: -1,
         },
         async (result) => {
-          if (!hasExtrinsicFailedEvent(result.events, store.dispatch)) {
-            store.dispatch(
-              'general/showAlertMsg',
-              {
-                msg: 'You successfully set reward destination.',
-                alertType: 'success',
-              },
-              { root: true }
-            );
+          if (result.status.isFinalized) {
+            if (!hasExtrinsicFailedEvent(result.events, store.dispatch)) {
+              store.dispatch(
+                'general/showAlertMsg',
+                {
+                  msg: 'You successfully set reward destination.',
+                  alertType: 'success',
+                },
+                { root: true }
+              );
+            }
+
+            store.commit('general/setLoading', false, { root: true });
+          } else {
+            store.commit('general/setLoading', true, { root: true });
           }
         }
       );
