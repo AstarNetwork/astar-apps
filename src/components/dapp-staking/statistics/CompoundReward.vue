@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="isEnabled"
+    v-if="isSupported"
     class="
       tw-bg-white
       dark:tw-bg-darkGray-800
@@ -13,21 +13,39 @@
   >
     <div class="tw-text-xl tw-font-semibold tw-mb-4">Compounding rewards</div>
     <div class="tw-flex tw-flex-col tw-items-center">
-      <div class="tw-text-5xl tw-font-semibold"></div>
+      {{ rewardDestination }}
+      <button @click="changeDestination">Change destination</button>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { useCompoundRewards } from 'src/hooks/dapps-staking/useCompoundRewards';
+import { defineComponent, ref, watch } from 'vue';
+import { useCompoundRewards, RewardDestination } from 'src/hooks/dapps-staking/useCompoundRewards';
 
 export default defineComponent({
   setup() {
-    const { isEnabled } = useCompoundRewards();
+    const { isSupported, rewardDestination, setRewardDestination } = useCompoundRewards();
+    // const autoCompound = ref<boolean>(false);
+
+    // watch([rewardDestination], () => {
+    //   autoCompound.value = rewardDestination.value === RewardDestination.StakeBalance;
+    // });
+
+    const changeDestination = async () => {
+      // const newDestination =
+      //   <RewardDestination>rewardDestination.value === RewardDestination.FreeBalance
+      //     ? RewardDestination.StakeBalance
+      //     : RewardDestination.FreeBalance;
+      // console.log(newDestination, rewardDestination.value);
+      await setRewardDestination(RewardDestination.StakeBalance);
+    };
 
     return {
-      isEnabled,
+      isSupported,
+      rewardDestination,
+      //autoCompound,
+      changeDestination,
     };
   },
 });
