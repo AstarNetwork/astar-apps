@@ -35,6 +35,7 @@ export function useCompoundRewards() {
 
   const isSupported = ref<boolean>(false);
   const isCompounding = ref<boolean>(false);
+  const isStaker = ref<boolean>(false);
   const rewardDestination = ref<RewardDestination>(RewardDestination.FreeBalance);
 
   const getCompoundingType = async () => {
@@ -44,7 +45,8 @@ export function useCompoundRewards() {
         if (ledger) {
           rewardDestination.value = ledger.rewardDestination;
           isCompounding.value =
-            rewardDestination.value.toString() === RewardDestination.StakeBalance;
+            rewardDestination.value?.toString() === RewardDestination.StakeBalance;
+          isStaker.value = ledger.locked.toString() !== '0';
         }
       });
     } catch (err) {
@@ -113,6 +115,7 @@ export function useCompoundRewards() {
     isSupported,
     isCompounding,
     rewardDestination,
+    isStaker,
     setRewardDestination,
   };
 }

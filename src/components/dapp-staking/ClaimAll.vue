@@ -1,6 +1,11 @@
 <template>
   <div v-if="currentAccount && isEnableIndividualClaim">
-    <div class="title">Unclaimed Rewards</div>
+    <div class="title">
+      {{ $t('dappStaking.unclaimedRewards') }}
+      <IconTooltip>
+        {{ $t('dappStaking.unclaimedRewardsTooltip') }}
+      </IconTooltip>
+    </div>
     <div>
       <Button
         v-if="!isCompounding"
@@ -20,6 +25,7 @@
 <script lang="ts">
 import { fasMoneyCheckAlt } from '@quasar/extras/fontawesome-v5';
 import Button from 'src/components/common/Button.vue';
+import IconTooltip from 'components/common/IconTooltip.vue';
 import { useAccount, useClaimAll } from 'src/hooks';
 import { useCompoundRewards } from 'src/hooks/dapps-staking/useCompoundRewards';
 import { defineComponent } from 'vue';
@@ -27,6 +33,7 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   components: {
     Button,
+    IconTooltip,
   },
   setup() {
     const { claimAll, batchTxs, isLoading, isEnableIndividualClaim } = useClaimAll();
@@ -53,5 +60,6 @@ export default defineComponent({
 
 .title {
   margin-bottom: 12px;
+  display: flex;
 }
 </style>

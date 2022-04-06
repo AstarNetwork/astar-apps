@@ -1,5 +1,5 @@
 <template>
-  <div class="container user-rewards-container">
+  <div v-if="isStaker" class="container user-rewards-container">
     <div class="row">
       <span class="title container--title--color">Your Rewards</span>
     </div>
@@ -16,6 +16,7 @@
 import CompoundReward from 'src/components/dapp-staking/statistics/CompoundReward.vue';
 import ClaimAll from 'src/components/dapp-staking/ClaimAll.vue';
 import Withdraw from 'src/components/dapp-staking/statistics/Withdraw.vue';
+import { useCompoundRewards } from 'src/hooks/dapps-staking/useCompoundRewards';
 
 export default {
   components: {
@@ -23,7 +24,13 @@ export default {
     ClaimAll,
     Withdraw,
   },
-  setup() {},
+  setup() {
+    const { isStaker } = useCompoundRewards();
+
+    return {
+      isStaker,
+    };
+  },
 };
 </script>
 

@@ -1,7 +1,12 @@
 <template>
   <div v-if="canUnbondWithdraw">
     <div v-if="showUnbondedFunds">
-      <div class="title">{{ $t('dappStaking.unbondedFunds') }}</div>
+      <div class="title">
+        {{ $t('dappStaking.unbondedFunds') }}
+        <IconTooltip>
+          {{ $t('dappStaking.unbondedFundsTooltip') }}
+        </IconTooltip>
+      </div>
       <div>
         <div class="text--title balance">
           <FormatBalance :balance="totalToWithdraw" />
@@ -12,7 +17,12 @@
       </div>
     </div>
     <div v-if="showUnbondingChunks">
-      <div class="title">{{ $t('dappStaking.chunks') }}</div>
+      <div class="title">
+        {{ $t('dappStaking.chunks') }}
+        <IconTooltip>
+          {{ $t('dappStaking.chunksTooltip') }}
+        </IconTooltip>
+      </div>
       <div>
         <span class="text--title">
           {{ unlockingChunks?.length }}
@@ -51,12 +61,14 @@ import { WithdrawParameters } from 'src/store/dapp-staking/actions';
 import FormatBalance from 'components/balance/FormatBalance.vue';
 import ChunksModal from './ChunksModal.vue';
 import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
+import IconTooltip from 'components/common/IconTooltip.vue';
 
 export default defineComponent({
   components: {
     Button,
     FormatBalance,
     ChunksModal,
+    IconTooltip,
   },
   props: {
     showUnbondedFunds: {
@@ -179,6 +191,7 @@ export interface ChunkInfo extends Codec {
 
 .title {
   margin-bottom: 12px;
+  display: flex;
 }
 
 .balance {
