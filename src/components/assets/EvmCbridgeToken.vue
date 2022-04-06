@@ -47,6 +47,12 @@
               </button>
             </router-link>
 
+            <a :href="explorerLink" target="_blank" rel="noopener noreferrer" class="screen--xl">
+              <button class="btn btn--sm">
+                {{ $t('assets.explorer') }}
+              </button>
+            </a>
+
             <button
               class="btn btn--sm screen--md btn--icon"
               @click="
@@ -77,7 +83,7 @@ import { getProviderIndex } from 'src/config/chainEndpoints';
 import { getChainId } from 'src/config/web3';
 import { addToEvmWallet } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
-import { getTokenImage } from 'src/token';
+import { getErc20Explorer, getTokenImage } from 'src/modules/token';
 import { computed, defineComponent, PropType } from 'vue';
 
 export default defineComponent({
@@ -115,9 +121,18 @@ export default defineComponent({
       const chainInfo = store.getters['general/chainInfo'];
       const chain = chainInfo ? chainInfo.chain : '';
       const networkIdx = getProviderIndex(chain);
-      return token.hasOwnProperty('canonicalConfig')
+      const chainId = token.canonicalConfig
         ? token.canonicalConfig && token.canonicalConfig.org_chain_id
-        : getChainId(networkIdx);
+        : String(getChainId(networkIdx));
+      return chainId;
+    });
+
+    const explorerLink = computed(() => {
+      const chainInfo = store.getters['general/chainInfo'];
+      const chain = chainInfo ? chainInfo.chain : '';
+      const currentNetworkIdx = getProviderIndex(chain);
+      const tokenAddress = token.address;
+      return getErc20Explorer({ currentNetworkIdx, tokenAddress });
     });
 
     return {
@@ -126,6 +141,7 @@ export default defineComponent({
       tokenImg,
       nativeTokenSymbol,
       sourceChainId,
+      explorerLink,
     };
   },
 });

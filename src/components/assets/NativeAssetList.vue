@@ -169,7 +169,7 @@
 import { ethers } from 'ethers';
 import { useBalance, useEvmDeposit, usePrice } from 'src/hooks';
 import { useStore } from 'src/store';
-import { getTokenImage } from 'src/token';
+import { getTokenImage } from 'src/modules/token';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
 import ModalTransfer from './modals/ModalTransfer.vue';
 import ModalFaucet from './modals/ModalFaucet.vue';

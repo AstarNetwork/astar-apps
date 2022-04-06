@@ -108,10 +108,11 @@ import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
-import { getTokenImage } from 'src/token';
+import { getTokenImage } from 'src/modules/token';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
 import Web3 from 'web3';
 import ModalSelectAccount from './ModalSelectAccount.vue';
+import { registeredErc20Tokens } from 'src/modules/token';
 
 export default defineComponent({
   components: { ModalSelectAccount },
@@ -135,7 +136,7 @@ export default defineComponent({
       default: null,
     },
     token: {
-      type: Object,
+      type: Object || String,
       required: false,
       default: null,
     },
@@ -161,13 +162,22 @@ export default defineComponent({
       return chainInfo ? chainInfo.tokenSymbol : '';
     });
 
-    const tokenImg = computed(() =>
-      getTokenImage({
-        isNativeToken: props.symbol === nativeTokenSymbol.value,
-        symbol: props.symbol,
-        iconUrl: props.token && props.token.icon,
-      })
+    // Memo: check the selected token is either hard-coding token or cBridge token
+    const registeredToken = computed(() =>
+      registeredErc20Tokens.find((it) => it.symbol === props.symbol)
     );
+
+    const tokenImg = computed(() => {
+      if (registeredToken.value) {
+        return registeredToken.value.image;
+      } else {
+        return getTokenImage({
+          isNativeToken: props.symbol === nativeTokenSymbol.value,
+          symbol: props.symbol,
+          iconUrl: props.token && props.token.icon,
+        });
+      }
+    });
 
     const isRequiredCheck = computed(() => {
       if (
