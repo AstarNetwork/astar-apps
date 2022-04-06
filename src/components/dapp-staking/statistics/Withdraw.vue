@@ -1,31 +1,33 @@
 <template>
-  <div
-    v-if="canUnbondWithdraw"
-    class="
-      tw-bg-white
-      dark:tw-bg-darkGray-800
-      tw-mb-8 tw-w-72 tw-rounded-lg tw-text-white
-      dark:tw-text-darkGray-100
-      xl:tw-mx-2
-      tw-py-4 tw-pb-8 tw-px-4
-      box
-    "
-  >
-    <div class="tw-text-xl tw-font-semibold tw-mb-4 tw-uppercase">
-      {{ $t('dappStaking.unbondedFunds') }}
-    </div>
-    <div class="tw-flex tw-flex-col tw-items-center">
-      <FormatBalance :balance="totalToWithdraw" class="tw-flex tw-text-2xl tw-font-bold" />
-    </div>
-    <div class="tw-flex tw-flex-row tw-items-baseline tw-float-right">
-      <div class="tw-cursor-pointer tw-mr-4" @click="showModal = true">
-        {{ $t('dappStaking.chunks') }} ({{ unlockingChunks?.length }})
+  <div v-if="canUnbondWithdraw">
+    <div v-if="showUnbondedFunds">
+      <div class="title">{{ $t('dappStaking.unbondedFunds') }}</div>
+      <div>
+        <div class="text--title balance">
+          <FormatBalance :balance="totalToWithdraw" />
+        </div>
+        <Button v-if="canWithdraw" :small="true" :primary="true" class="button" @click="withdraw()">
+          {{ $t('dappStaking.withdraw') }}
+        </Button>
       </div>
-      <Button v-if="canWithdraw" :primary="false" class="tw-mt-4" @click="withdraw()">
-        {{ $t('dappStaking.withdraw') }}
-      </Button>
     </div>
-
+    <div v-if="showUnbondingChunks">
+      <div class="title">{{ $t('dappStaking.chunks') }}</div>
+      <div>
+        <span class="text--title">
+          {{ unlockingChunks?.length }}
+        </span>
+        <Button
+          v-if="unlockingChunks?.length > 0"
+          :small="true"
+          :primary="true"
+          class="button"
+          @click="showModal = true"
+        >
+          {{ $t('dappStaking.view') }}
+        </Button>
+      </div>
+    </div>
     <ChunksModal
       v-if="showModal"
       v-model:isOpen="showModal"
@@ -55,6 +57,16 @@ export default defineComponent({
     Button,
     FormatBalance,
     ChunksModal,
+  },
+  props: {
+    showUnbondedFunds: {
+      type: Boolean,
+      default: true,
+    },
+    showUnbondingChunks: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup() {
     const store = useStore();
@@ -161,8 +173,15 @@ export interface ChunkInfo extends Codec {
 </script>
 
 <style scoped>
-.box {
-  background: linear-gradient(83.83deg, #694ea4, #1b6dc1 37.5%, #1b6dc1 65.1%, #2ea0c4);
-  box-shadow: 0 2px 2px rgb(0 0 0 / 30%);
+.button {
+  float: right;
+}
+
+.title {
+  margin-bottom: 12px;
+}
+
+.balance {
+  float: left;
 }
 </style>

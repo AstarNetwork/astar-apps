@@ -183,7 +183,7 @@ export default {
     maxChunksWarning: 'You reached maximum unlocking chunks ({chunks}). Unstake rewards first.',
     withdraw: 'Withdraw',
     chunk: 'Chunk',
-    chunks: 'Chunks',
+    chunks: 'Unbonding chunks',
     amount: 'Amount',
     era: 'Era',
     unbondedFunds: 'Unbonded funds',
@@ -192,6 +192,8 @@ export default {
     stakerApy: 'APY: {value}%',
     stakerApr: 'APR: {value}%',
     ttlPendingRewards: 'Your Pending Rewards',
+    autoCompoundingRewards: 'Auto-compounding the rewards',
+    view: 'View',
     modals: {
       alreadyClaimed: 'Already claimed:',
       contractRewards: 'Contract rewards:',

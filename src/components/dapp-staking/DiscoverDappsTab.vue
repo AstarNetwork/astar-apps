@@ -8,10 +8,11 @@
       <DappsCount />
       <Requirement />
       <Era :progress="progress" :blocks-until-next-era="blocksUntilNextEra" :era="era" />
-      <Withdraw />
-      <CompoundReward />
+      <DappsCount />
     </div>
-
+    <div>
+      <UserRewards />
+    </div>
     <div class="tw-text-center tw-mb-8 tw-flex tw-items-center tw-justify-center sm:tw-gap-x-4">
       <Button @click="showRegisterDappModal = true">
         <icon-base
@@ -51,7 +52,6 @@
         </div>
       </div>
     </div>
-    <claim-all />
     <div class="store-container tw-grid tw-gap-x-12 xl:tw-gap-x-18 tw-justify-center">
       <div
         v-if="dapps.length === 0"
@@ -81,8 +81,8 @@ import Button from 'components/common/Button.vue';
 import IconBase from 'components/icons/IconBase.vue';
 import IconPlus from 'components/icons/IconPlus.vue';
 import ModalRegisterDapp from 'components/dapp-staking/modals/ModalRegisterDapp.vue';
-import ClaimAll from 'src/components/dapp-staking/ClaimAll.vue';
 import Dapp from 'src/components/dapp-staking/Dapp.vue';
+import UserRewards from 'src/components/dapp-staking/UserRewards.vue';
 import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { useCurrentEra, useApr, useAccount, useBalance } from 'src/hooks';
@@ -91,9 +91,7 @@ import { computed, defineComponent, ref, watchEffect } from 'vue';
 import TVL from './statistics/TVL.vue';
 import DappsCount from './statistics/DappsCount.vue';
 import Requirement from './statistics/Requirement.vue';
-import Withdraw from './statistics/Withdraw.vue';
 import Era from './statistics/Era.vue';
-import CompoundReward from './statistics/CompoundReward.vue';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
 import { fasSeedling } from '@quasar/extras/fontawesome-v5';
 import { useMeta } from 'quasar';
@@ -108,10 +106,8 @@ export default defineComponent({
     TVL,
     DappsCount,
     Requirement,
-    Withdraw,
     Era,
-    ClaimAll,
-    CompoundReward,
+    UserRewards,
   },
   setup() {
     const store = useStore();

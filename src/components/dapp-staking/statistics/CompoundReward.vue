@@ -1,43 +1,37 @@
 <template>
-  <div
-    v-if="isSupported"
-    class="
-      tw-bg-white
-      dark:tw-bg-darkGray-800
-      tw-shadow tw-mb-8 tw-w-72 tw-rounded-lg tw-text-white
-      dark:tw-text-darkGray-100
-      tw-py-4 tw-pb-8 tw-px-4
-      box
-      xl:tw-mx-2
-    "
-  >
-    <div class="tw-text-xl tw-font-semibold tw-mb-4">Compounding rewards</div>
-    <div class="tw-flex tw-flex-col tw-items-center">
-      {{ rewardDestination }}
-      <button @click="changeDestination">Change destination</button>
+  <div v-if="isSupported">
+    <div class="title">Auto Compound</div>
+    <div>
+      <span class="text--title">{{ isCompounding ? 'ON' : 'OFF' }}</span>
+      <Button :small="true" :primary="true" class="button" @click="changeDestination">
+        {{ isCompounding ? 'Turn off' : 'Turn on' }}
+      </Button>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue';
+import { defineComponent, computed } from 'vue';
 import { useCompoundRewards, RewardDestination } from 'src/hooks/dapps-staking/useCompoundRewards';
+import Button from 'components/common/Button.vue';
 
 export default defineComponent({
+  components: {
+    Button,
+  },
   setup() {
-    const { isSupported, rewardDestination, setRewardDestination } = useCompoundRewards();
+    const { isSupported, isCompounding, setRewardDestination } = useCompoundRewards();
 
     const changeDestination = async () => {
-      const newDestination =
-        rewardDestination.value.toString() === RewardDestination.FreeBalance
-          ? RewardDestination.StakeBalance
-          : RewardDestination.FreeBalance;
+      const newDestination = isCompounding.value
+        ? RewardDestination.FreeBalance
+        : RewardDestination.StakeBalance;
       await setRewardDestination(newDestination);
     };
 
     return {
       isSupported,
-      rewardDestination,
+      isCompounding,
       changeDestination,
     };
   },
@@ -45,8 +39,11 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.box {
-  background: linear-gradient(83.83deg, #694ea4, #1b6dc1 37.5%, #1b6dc1 65.1%, #2ea0c4);
-  box-shadow: 0 2px 2px rgb(0 0 0 / 30%);
+.button {
+  float: right;
+}
+
+.title {
+  margin-bottom: 12px;
 }
 </style>

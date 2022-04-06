@@ -5,7 +5,6 @@ import { Balance } from '@polkadot/types/interfaces';
 import { Struct, u32, Vec } from '@polkadot/types';
 import { getInjector } from 'src/hooks/helper/wallet';
 import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
-import { VoidFn } from '@polkadot/api/types';
 
 type EraIndex = u32;
 
@@ -33,9 +32,9 @@ export function useCompoundRewards() {
   const store = useStore();
   const currentAddress = computed(() => store.getters['general/selectedAddress']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
-  const unsub: Ref<VoidFn | undefined> = ref();
 
   const isSupported = ref<boolean>(false);
+  const isCompounding = ref<boolean>(false);
   const rewardDestination = ref<RewardDestination>(RewardDestination.FreeBalance);
 
   const getCompoundingType = async () => {
@@ -44,6 +43,8 @@ export function useCompoundRewards() {
         isSupported.value = !!ledger;
         if (ledger) {
           rewardDestination.value = ledger.rewardDestination;
+          isCompounding.value =
+            rewardDestination.value.toString() === RewardDestination.StakeBalance;
         }
       });
     } catch (err) {
@@ -110,6 +111,7 @@ export function useCompoundRewards() {
 
   return {
     isSupported,
+    isCompounding,
     rewardDestination,
     setRewardDestination,
   };
