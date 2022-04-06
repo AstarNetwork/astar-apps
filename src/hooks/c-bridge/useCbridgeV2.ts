@@ -11,7 +11,7 @@ import { endpointKey, getProviderIndex, providerEndpoints } from 'src/config/cha
 import { getTokenBal } from 'src/config/web3';
 import { objToArray } from 'src/hooks/helper/common';
 import { useStore } from 'src/store';
-import { computed, ref, watchEffect } from 'vue';
+import { computed, ref, watchEffect, onUnmounted } from 'vue';
 import { useAccount } from '../useAccount';
 import { calUsdAmount } from './../helper/price';
 import { checkIsWrappedToken, Erc20Token, registeredErc20Tokens } from 'src/modules/token';
@@ -62,7 +62,6 @@ export function useCbridgeV2() {
     balUsd: number;
     userBalance: string;
   }> => {
-    console.log('updateTokenBalanceHandler');
     let balUsd = 0;
     const userBalance = await getTokenBal({
       srcChainId: evmNetworkId.value,
@@ -70,9 +69,7 @@ export function useCbridgeV2() {
       tokenAddress: token.address,
       tokenSymbol: token.symbol,
     });
-    console.log('userBalance');
     if (Number(userBalance) > 0) {
-      console.log('userBalance');
       try {
         const isCbridgetoken = checkIsCbridgeToken(token);
         let symbol = '';
@@ -80,7 +77,6 @@ export function useCbridgeV2() {
         if (isCbridgetoken) {
           symbol = token.symbol;
         } else {
-          console.log('else');
           const isWrappedToken = checkIsWrappedToken({
             srcChainId: evmNetworkId.value,
             tokenAddress: token.address,
@@ -92,7 +88,6 @@ export function useCbridgeV2() {
           amount: Number(userBalance),
           symbol,
         });
-        console.log('balUsd');
       } catch (error) {
         console.error(error);
         balUsd = 0;
@@ -103,7 +98,6 @@ export function useCbridgeV2() {
   };
 
   const updateTokenBalances = async ({ userAddress }: { userAddress: string }): Promise<void> => {
-    console.log('updateTokenBalances');
     if (!tokens.value) return;
     tokens.value = await Promise.all(
       tokens.value.map(async (token: Token) => {
@@ -201,7 +195,6 @@ export function useCbridgeV2() {
   };
 
   const handleUpdateTokenBalances = async (): Promise<void> => {
-    console.log('handleUpdateTokenBalances');
     ttlErc20Amount.value = 0;
     if (!currentAccount.value || currentNetworkIdx.value === endpointKey.SHIBUYA || !isH160.value) {
       tokens.value = null;
@@ -216,6 +209,17 @@ export function useCbridgeV2() {
 
   watchEffect(async () => {
     await handleCbridgeConfiguration();
+  });
+
+  const secsUpdateBal = 60 * 1000;
+  const tokenBalUpdate = setInterval(() => {
+    if (tokens.value) {
+      handleUpdateTokenBalances();
+    }
+  }, secsUpdateBal);
+
+  onUnmounted(() => {
+    clearInterval(tokenBalUpdate);
   });
 
   return { tokens, ttlErc20Amount, handleUpdateTokenBalances };

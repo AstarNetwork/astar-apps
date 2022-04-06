@@ -106,6 +106,7 @@
       :symbol="symbol"
       :account-data="null"
       :token="token"
+      :handle-update-token-balances="handleUpdateTokenBalances"
     />
     <ModalFaucet :is-modal-faucet="isModalFaucet" :handle-modal-faucet="handleModalFaucet" />
   </div>
@@ -136,6 +137,10 @@ export default defineComponent({
       type: Object as PropType<SelectedToken[]>,
       required: false,
       default: null,
+    },
+    handleUpdateTokenBalances: {
+      type: Function,
+      required: true,
     },
   },
   setup(props) {
