@@ -33,7 +33,6 @@
                 })
               "
             >
-              <!-- <button class="btn btn--sm"> -->
               {{ $t('assets.transfer') }}
             </button>
             <div v-if="token.isWrappedToken">

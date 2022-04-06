@@ -167,7 +167,7 @@ export default defineComponent({
       return chainInfo ? chainInfo.tokenSymbol : '';
     });
 
-    // Memo: check the selected token is either hard-coding token or cBridge token
+    // Memo: check the selected token is either hard-coded token or cBridge token
     const registeredToken = computed(() =>
       registeredErc20Tokens.find((it) => it.symbol === props.symbol)
     );
