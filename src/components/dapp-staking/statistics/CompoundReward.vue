@@ -1,6 +1,9 @@
 <template>
   <div v-if="isSupported">
-    <div class="title">Auto Compound</div>
+    <div class="title">
+      Auto Compound
+      <q-icon :name="fasQuestionCircle" color="grey" />
+    </div>
     <div>
       <span class="text--title">{{ isCompounding ? 'ON' : 'OFF' }}</span>
       <Button :small="true" :primary="true" class="button" @click="changeDestination">
@@ -11,7 +14,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
+import { defineComponent } from 'vue';
+import { fasQuestionCircle } from '@quasar/extras/fontawesome-v5';
 import { useCompoundRewards, RewardDestination } from 'src/hooks/dapps-staking/useCompoundRewards';
 import Button from 'components/common/Button.vue';
 
@@ -33,6 +37,7 @@ export default defineComponent({
       isSupported,
       isCompounding,
       changeDestination,
+      fasQuestionCircle,
     };
   },
 });
