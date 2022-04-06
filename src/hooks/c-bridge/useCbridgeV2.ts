@@ -1,3 +1,4 @@
+import { LOCAL_STORAGE } from './../../config/localStorage';
 import {
   CbridgeToken,
   EvmChain,
@@ -21,11 +22,80 @@ export function useCbridgeV2() {
   const store = useStore();
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
   const { currentAccount } = useAccount();
+
   const currentNetworkIdx = computed(() => {
     const chainInfo = store.getters['general/chainInfo'];
     const chain = chainInfo ? chainInfo.chain : '';
     return getProviderIndex(chain);
   });
+
+  const filterTokens = (): void => {
+    if (!tokens.value) return;
+    tokens.value.sort((a: SelectedToken, b: SelectedToken) => {
+      return a.symbol.localeCompare(b.symbol);
+    });
+
+    tokens.value.sort((a: SelectedToken, b: SelectedToken) => {
+      return Number(b.userBalance) - Number(a.userBalance);
+    });
+  };
+
+  const updateTokenBalanceHandler = async ({
+    srcChainId,
+    userAddress,
+    token,
+  }: {
+    srcChainId: EvmChain;
+    userAddress: string;
+    token: SelectedToken;
+  }): Promise<{
+    balUsd: number;
+    userBalance: string;
+  }> => {
+    let balUsd = 0;
+    const userBalance = await getTokenBal({
+      srcChainId,
+      address: userAddress,
+      tokenAddress: token.address,
+      tokenSymbol: token.symbol,
+    });
+    if (Number(userBalance) > 0) {
+      try {
+        balUsd = await calUsdAmount({
+          amount: Number(userBalance),
+          symbol: token.symbol,
+        });
+      } catch (error) {
+        console.error(error);
+        balUsd = 0;
+      }
+      ttlErc20Amount.value += balUsd;
+    }
+    return { balUsd, userBalance };
+  };
+
+  const updateTokenBalances = async ({
+    srcChainId,
+    userAddress,
+  }: {
+    srcChainId: EvmChain;
+    userAddress: string;
+  }): Promise<void> => {
+    if (!tokens.value) return;
+    tokens.value = await Promise.all(
+      tokens.value.map(async (token: SelectedToken) => {
+        const { balUsd, userBalance } = await updateTokenBalanceHandler({
+          srcChainId,
+          userAddress,
+          token,
+        });
+        const tokenWithBalance = { ...token, userBalance, userBalanceUsd: String(balUsd) };
+        return tokenWithBalance;
+      })
+    );
+
+    filterTokens();
+  };
 
   const updateBridgeConfig = async ({
     srcChainId,
@@ -44,26 +114,18 @@ export function useCbridgeV2() {
       objToArray(data.tokens[srcChainId])
         .flat()
         .map(async (token: CbridgeToken) => {
-          let balUsd = 0;
           const t = getSelectedToken({ srcChainId, token });
           if (!t) return undefined;
           const isDuplicated = seen.has(t.address);
           seen.add(t.address);
           // Memo: Remove the duplicated contract address (ex: PKEX)
           if (isDuplicated) return undefined;
-          const userBalance = await getTokenBal({
+
+          const { balUsd, userBalance } = await updateTokenBalanceHandler({
             srcChainId,
-            address: userAddress,
-            tokenAddress: t.address,
-            tokenSymbol: t.symbol,
+            userAddress,
+            token: t,
           });
-          if (Number(userBalance) > 0) {
-            balUsd = await calUsdAmount({
-              amount: Number(userBalance),
-              symbol: t.symbol,
-            });
-            ttlErc20Amount.value += balUsd;
-          }
           const tokenWithBalance = { ...t, userBalance, userBalanceUsd: String(balUsd) };
           return tokenWithBalance;
         })
@@ -73,18 +135,16 @@ export function useCbridgeV2() {
       return token !== undefined;
     });
 
-    tokens.value.sort((a: SelectedToken, b: SelectedToken) => {
-      return a.symbol.localeCompare(b.symbol);
-    });
-
-    tokens.value.sort((a: SelectedToken, b: SelectedToken) => {
-      return Number(b.userBalance) - Number(a.userBalance);
-    });
+    filterTokens();
   };
 
-  watchEffect(async () => {
+  const handleCbridgeConfiguration = async (): Promise<void> => {
     ttlErc20Amount.value = 0;
-    if (!currentAccount.value || currentNetworkIdx.value === endpointKey.SHIBUYA || !isH160.value) {
+    const networkIdxStore = localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX);
+    const isShibuya =
+      currentNetworkIdx.value === endpointKey.SHIBUYA ||
+      networkIdxStore === String(endpointKey.SHIBUYA);
+    if (!currentAccount.value || isShibuya || !isH160.value) {
       tokens.value = null;
       return;
     }
@@ -98,7 +158,25 @@ export function useCbridgeV2() {
     } finally {
       store.commit('general/setLoading', false);
     }
+  };
+
+  const handleUpdateTokenBalances = async (): Promise<void> => {
+    ttlErc20Amount.value = 0;
+    if (!currentAccount.value || currentNetworkIdx.value === endpointKey.SHIBUYA || !isH160.value) {
+      tokens.value = null;
+      return;
+    }
+    const srcChainId = currentNetworkIdx.value === endpointKey.ASTAR ? Astar : Shiden;
+    try {
+      await updateTokenBalances({ srcChainId, userAddress: currentAccount.value });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  watchEffect(async () => {
+    await handleCbridgeConfiguration();
   });
 
-  return { tokens, ttlErc20Amount };
+  return { tokens, ttlErc20Amount, handleUpdateTokenBalances };
 }

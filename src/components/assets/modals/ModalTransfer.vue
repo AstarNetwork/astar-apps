@@ -139,6 +139,11 @@ export default defineComponent({
       required: false,
       default: null,
     },
+    handleUpdateTokenBalances: {
+      type: Function,
+      required: false,
+      default: null,
+    },
   },
   setup(props) {
     const transferAmt = ref<string | null>(null);
@@ -258,6 +263,7 @@ export default defineComponent({
           contractAddress: address,
           decimals: decimal,
         });
+        props.handleUpdateTokenBalances && props.handleUpdateTokenBalances();
       } else {
         await callTransfer(Number(transferAmtRef), fromAddress, toAddressRef);
       }
