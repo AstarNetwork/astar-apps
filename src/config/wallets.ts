@@ -63,15 +63,6 @@ export const supportWalletObj = {
     isSupportBrowserExtension: true,
     isSupportMobileApp: false,
   },
-  [SupportWallet.MetaMask]: {
-    img: require('/src/assets/img/metamask.png'),
-    name: 'MetaMask',
-    source: SupportWallet.MetaMask,
-    walletUrl: 'https://metamask.io/',
-    guideUrl: 'https://metamask.io/',
-    isSupportBrowserExtension: true,
-    isSupportMobileApp: true,
-  },
   [SupportWallet.Clover]: {
     img: require('/src/assets/img/logo-clover.png'),
     name: 'Clover',
@@ -158,5 +149,11 @@ export const supportEvmWalletObj = {
   },
 };
 
+export const supportAllWalletsObj = {
+  ...supportEvmWalletObj,
+  ...supportWalletObj,
+};
+
 export const supportEvmWallets = objToArray(supportEvmWalletObj) as Wallet[];
 export const supportWallets = objToArray(supportWalletObj) as Wallet[];
+export const supportAllWallets = objToArray(supportAllWalletsObj) as Wallet[];

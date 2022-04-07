@@ -19,6 +19,7 @@ interface ChainProvider {
   evmChainId: string;
   evmRpc: string;
   faucetEndpoint: string;
+  defaultLogo?: any;
 }
 
 export type ASTAR_CHAIN = 'Shiden' | 'Astar' | 'Shibuya Testnet';
@@ -34,7 +35,7 @@ export enum endpointKey {
 export const providerEndpoints: ChainProvider[] = [
   {
     networkAlias: 'astar',
-    displayName: 'Astar Network (Polkadot)',
+    displayName: 'Astar Network',
     info: 'Smart contract platform for decentralized applications (dapps) on the Polkadot network',
     endpoint: 'wss://rpc.astar.network',
     favicon: 'https://polkadot.js.org/apps/static/astar.b48435e0.png',
@@ -48,12 +49,13 @@ export const providerEndpoints: ChainProvider[] = [
     evmChainId: '592',
     evmRpc: 'https://rpc.astar.network:8545',
     faucetEndpoint: 'https://astar-discord-faucet.herokuapp.com/astar',
+    defaultLogo: require('/src/assets/img/ic_astar.png'),
   },
   {
-    networkAlias: 'shiden-shell',
+    networkAlias: 'shiden',
     displayName: 'Shiden Network (Kusama)',
     info: 'Smart contract platform for decentralized applications (dapps) on the Kusama network',
-    endpoint: 'wss://rpc.shiden.astar.network',
+    endpoint: 'wss://shiden.api.onfinality.io/public-ws',
     favicon: 'icons/shiden.png',
     isSupportContract: true,
     prefix: 0x150,
@@ -65,10 +67,11 @@ export const providerEndpoints: ChainProvider[] = [
     evmChainId: '336',
     evmRpc: 'https://evm.shiden.astar.network',
     faucetEndpoint: 'https://astar-discord-faucet.herokuapp.com/shiden',
+    defaultLogo: require('/src/assets/img/ic_shiden.png'),
   },
   {
     networkAlias: 'shibuya-testnet',
-    displayName: 'Shibuya Network (Testnet)',
+    displayName: 'Shibuya Network',
     info: 'The test network of the layer 2 scaling blockchain',
     endpoint: 'wss://rpc.shibuya.astar.network',
     favicon: 'https://polkadot.js.org/apps/static/shiden.a066789e.png',
@@ -82,6 +85,7 @@ export const providerEndpoints: ChainProvider[] = [
     evmChainId: '81',
     evmRpc: 'https://rpc.shibuya.astar.network:8545',
     faucetEndpoint: 'https://astar-discord-faucet.herokuapp.com/shibuya',
+    defaultLogo: require('/src/assets/img/ic_shibuya.png'),
   },
   {
     networkAlias: 'local-node',

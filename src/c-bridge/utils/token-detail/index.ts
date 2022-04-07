@@ -31,6 +31,7 @@ export const getSelectedToken = ({
       icon: tokenInfo.icon,
       decimal: tokenInfo.token.decimal,
       userBalance: '0',
+      userBalanceUsd: '0',
     };
     return data;
   }
@@ -47,6 +48,7 @@ export const getSelectedToken = ({
     icon: tokenPool.icon,
     decimal: tokenPool.token.decimal,
     userBalance: '0',
+    userBalanceUsd: '0',
   };
 };
 

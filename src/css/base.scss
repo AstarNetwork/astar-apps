@@ -1,15 +1,23 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&display=swap');
+@use 'tailwindcss/base';
 
-@import 'tailwindcss/base';
+@use 'tailwindcss/components';
 
-@import 'tailwindcss/components';
+@use 'tailwindcss/utilities';
 
-@import 'tailwindcss/utilities';
+@import url('https://fonts.googleapis.com/css?family=Inter:300,400,500,700,900&display=swap');
 
 .tw-tooltip:hover span {
-    @apply tw-block;
+  @apply tw-block;
 }
 
 .checkbox:checked + span {
-    @apply tw-block;
+  @apply tw-block;
+}
+
+.dark\:tw-bg-blue-500 {
+  background-color: rgba(27, 109, 193, 0.1) !important;
+}
+
+.checked\:tw-border-blue-500:checked {
+  border-color: rgba(27, 109, 193, 1) !important;
 }
