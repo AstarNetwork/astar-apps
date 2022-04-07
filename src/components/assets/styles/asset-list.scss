@@ -64,13 +64,25 @@
   row-gap: 16px;
   @media (min-width: $md) {
     display: grid;
-    grid-template-columns: 180px 60px;
+    grid-template-columns: 158px 68px;
+  }
+  @media (min-width: (($md + $lg) / 2)) {
+    grid-template-columns: 200px 90px;
   }
   @media (min-width: $lg) {
     grid-template-columns: 200px 190px;
   }
   @media (min-width: $xl) {
-    grid-template-columns: 300px auto;
+    grid-template-columns: 300px 290px;
+  }
+  @media (min-width: $xxl) {
+    grid-template-columns: 400px 290px;
+  }
+}
+
+.row__right--evm {
+  @media (min-width: $xl) {
+    grid-template-columns: 280px auto;
   }
   @media (min-width: $xxl) {
     grid-template-columns: 360px auto;
@@ -151,16 +163,29 @@
   }
 }
 
-.column--buttons--multi {
+.column--buttons--native-token {
   @media (min-width: $xl) {
     display: flex !important;
     padding-right: 0px !important;
     justify-content: space-evenly;
     width: 400px;
+    padding-left: 30px;
   }
-  @media (min-width: $xxl) {
+}
+
+.column--buttons--multi {
+  @media (min-width: $xl) {
+    display: grid;
+    width: 400px;
+    grid-template-columns: 100px 100px 70px 70px;
+    justify-content: end;
     column-gap: 2px;
-    width: 408px;
+  }
+}
+
+.adjuster--width {
+  @media (min-width: $xl) {
+    width: 70px !important;
   }
 }
 
@@ -192,6 +217,7 @@
 
 .btn--icon {
   position: relative;
+  margin-bottom: 4px;
 }
 
 .icon--plus {
@@ -284,6 +310,31 @@
   }
 }
 
+.box--explorer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container--explorer-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  stroke: $astar-blue;
+  transition: all 0.3s ease 0s;
+  border-radius: 30px;
+  width: 100px;
+  height: 24px;
+  svg {
+    height: 30px;
+    width: 30px;
+  }
+  &:hover {
+    stroke: white;
+    background-color: $astar-blue;
+  }
+}
+
 .body--dark {
   .text--value {
     color: $gray-1;
@@ -296,6 +347,12 @@
   }
   .icon--search {
     stroke: $gray-5;
+  }
+  .container--explorer-icon {
+    stroke: $astar-blue-dark;
+    &:hover {
+      stroke: white;
+    }
   }
   .search--active {
     .box--search {

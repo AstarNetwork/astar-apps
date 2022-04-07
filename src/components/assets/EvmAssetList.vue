@@ -47,7 +47,7 @@
               </div>
             </div>
           </div>
-          <div class="row__right">
+          <div class="row__right row__right--evm">
             <div class="column column--balance">
               <div class="column__box">
                 <div class="text--accent">
@@ -58,7 +58,7 @@
                 </div>
               </div>
             </div>
-            <div class="column--asset-buttons column--buttons--multi">
+            <div class="column--asset-buttons column--buttons--native-token">
               <button
                 class="btn btn--sm"
                 @click="handleModalTransfer({ isOpen: true, currency: nativeTokenSymbol })"
