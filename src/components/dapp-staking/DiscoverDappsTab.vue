@@ -11,9 +11,6 @@
       <APR />
       <UserRewards />
     </div>
-    <div class="user-rewards-wrapper">
-      <UserRewards />
-    </div>
     <div class="tw-text-center tw-mb-8 tw-flex tw-items-center tw-justify-center sm:tw-gap-x-4">
       <Button @click="showRegisterDappModal = true">
         <icon-base
