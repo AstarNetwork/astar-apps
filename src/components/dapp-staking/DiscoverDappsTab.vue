@@ -1,5 +1,25 @@
 <template>
   <div>
+    <div class="warning-wrapper">
+      <div class="warning-text-container">
+        {{
+          $t('dappStaking.warning', {
+            amount: minimumStakingAmount,
+            stakers: maxNumberOfStakersPerContract.toLocaleString('en-US'),
+          })
+        }}
+      </div>
+      <Button :small="true" class="register-button" @click="showRegisterDappModal = true">
+        <icon-base
+          class="tw-w-5 tw-h-5 tw-text-white tw--ml-1"
+          stroke="currentColor"
+          icon-name="plus"
+        >
+          <icon-plus />
+        </icon-base>
+        {{ $t('dappStaking.registerDapp') }}
+      </Button>
+    </div>
     <div
       v-if="dapps.length > 0"
       class="tw-flex tw-flex-wrap tw-gap-x-12 xl:tw-gap-x-18 tw-justify-center"
@@ -10,18 +30,6 @@
       <Era :progress="progress" :blocks-until-next-era="blocksUntilNextEra" :era="era" />
       <APR />
       <UserRewards />
-    </div>
-    <div class="tw-text-center tw-mb-8 tw-flex tw-items-center tw-justify-center sm:tw-gap-x-4">
-      <Button @click="showRegisterDappModal = true">
-        <icon-base
-          class="tw-w-5 tw-h-5 tw-text-white tw--ml-1"
-          stroke="currentColor"
-          icon-name="plus"
-        >
-          <icon-plus />
-        </icon-base>
-        {{ $t('dappStaking.registerDapp') }}
-      </Button>
     </div>
     <div class="store-container tw-grid tw-gap-x-12 xl:tw-gap-x-18 tw-justify-center">
       <div
@@ -145,5 +153,27 @@ export default defineComponent({
   @media (max-width: $xxl) {
     margin: 0px 00px;
   }
+}
+
+.warning-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.warning-text-container {
+  width: 100%;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19px;
+}
+
+.register-button {
+  height: 32px;
+  width: 160px;
 }
 </style>

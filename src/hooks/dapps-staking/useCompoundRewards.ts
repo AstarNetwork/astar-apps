@@ -41,12 +41,12 @@ export function useCompoundRewards() {
   const getCompoundingType = async () => {
     try {
       // Check if metadata contains set_reward_destination so we know
-      // if compounding is supported or not.
+      // if compounding is supported by a node or not.
       const metadata = $api.value?.runtimeMetadata;
       const metadataJson = JSON.stringify(metadata?.toJSON());
       isSupported.value = metadataJson.includes('set_reward_destination');
 
-      // Subscribe to cpompunding data.
+      // Subscribe to compounding data.
       await $api.value?.query.dappsStaking.ledger(currentAddress.value, (ledger: AccountLedger) => {
         if (ledger && isSupported.value) {
           rewardDestination.value = ledger.rewardDestination;

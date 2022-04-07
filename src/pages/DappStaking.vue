@@ -1,15 +1,5 @@
 <template>
-  <div>
-    <div class="warning-text-container">
-      {{
-        $t('dappStaking.warning', {
-          amount: minimumStakingAmount,
-          stakers: maxNumberOfStakersPerContract.toLocaleString('en-US'),
-        })
-      }}
-    </div>
-    <router-view />
-  </div>
+  <router-view />
 </template>
 
 <script lang="ts">
@@ -34,16 +24,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style lang="scss" scoped>
-.warning-text-container {
-  width: 100%;
-  height: 72px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 19px;
-}
-</style>
