@@ -143,10 +143,12 @@ export const useConnectWallet = () => {
 
   // Todo: Delete after the balance page is removed
   const setWalletModal = (wallet: SupportWallet): void => {
+    store.commit('general/setCurrentWallet', wallet);
     setWallet(wallet);
   };
 
   const connectEthereumWallet = async (wallet: SupportWallet): Promise<void> => {
+    store.commit('general/setCurrentWallet', wallet);
     const isWalletExtension = await checkIsWalletExtension();
     const deepLinkUrl = getDeepLinkUrl(wallet);
     const isOpenMobileDappBrowser = isMobileDevice && deepLinkUrl && !isWalletExtension;
@@ -210,7 +212,7 @@ export const useConnectWallet = () => {
   const changeAccount = async (): Promise<void> => {
     const chosenWallet = selectedWallet.value;
     disconnectAccount();
-    if (chosenWallet === SupportWallet.MetaMask) {
+    if (chosenWallet === SupportWallet.MetaMask || chosenWallet === SupportWallet.Wallet3) {
       openSelectModal();
     } else {
       setWallet(chosenWallet as SupportWallet);

@@ -27,6 +27,7 @@ export interface GeneralGetters {
   customEndpoint(state: State): string;
   theme(state: State): Theme;
   headerName(state: State): string;
+  currentWallet(state: State): string;
 }
 
 const getters: GetterTree<State, StateInterface> & GeneralGetters = {
@@ -48,6 +49,7 @@ const getters: GetterTree<State, StateInterface> & GeneralGetters = {
     return state.currentAddress;
   },
   headerName: (state: State) => state.headerName,
+  currentWallet: (state: State) => state.currentWallet,
 };
 
 export default getters;

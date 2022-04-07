@@ -40,6 +40,7 @@ export interface GeneralStateInterface {
   currentCustomEndpoint: string;
   currentTheme: Theme;
   headerName: string;
+  currentWallet: string;
 }
 
 function state(): GeneralStateInterface {
@@ -76,6 +77,8 @@ function state(): GeneralStateInterface {
         ? 'DARK'
         : 'LIGHT',
     headerName: '',
+
+    currentWallet: '',
   };
 }
 

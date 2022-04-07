@@ -117,15 +117,6 @@ export const supportWalletObj = {
     isSupportBrowserExtension: true,
     isSupportMobileApp: false,
   },
-  [SupportWallet.Wallet3]: {
-    img: require('/src/assets/img/logo-wallet3.svg'),
-    name: 'Wallet 3',
-    source: SupportWallet.Wallet3,
-    walletUrl: 'https://wallet3.io',
-    guideUrl: 'https://docs.wallet3.io',
-    isSupportBrowserExtension: false,
-    isSupportMobileApp: true,
-  },
 };
 
 export const supportEvmWalletObj = {
