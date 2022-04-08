@@ -27,6 +27,17 @@
             </span>
           </div>
         </router-link>
+        <router-link
+          v-if="enableBridge"
+          to="/bridge"
+          :class="['link', path === 'bridge' && 'active-link']"
+        >
+          <div class="column--item">
+            <span class="text--link">
+              {{ $t('bridge.bridge') }}
+            </span>
+          </div>
+        </router-link>
         <div class="tabs__indicator" :class="getIndicatorClass(path)" />
       </nav>
 
@@ -49,7 +60,7 @@
 
 <script lang="ts">
 import Icon3dots from 'components/icons/Icon3dots.vue';
-import { providerEndpoints } from 'src/config/chainEndpoints';
+import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -69,6 +80,10 @@ export default defineComponent({
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
     const network = ref(providerEndpoints[currentNetworkIdx.value]);
     const showOption = ref(false);
+    const isH160 = computed(() => store.getters['general/isH160Formatted']);
+    const enableBridge = computed(
+      () => isH160.value && currentNetworkIdx.value !== endpointKey.SHIBUYA
+    );
     const router = useRouter();
     const path = computed(() => router.currentRoute.value.path.split('/')[1]);
 
@@ -80,6 +95,8 @@ export default defineComponent({
           return 'tabs__assets';
         case 'dapp-staking':
           return 'tabs__staking';
+        case 'bridge':
+          return 'tabs__bridge';
         default:
           return 'tabs__staking';
       }
@@ -90,11 +107,12 @@ export default defineComponent({
       network,
       getIndicatorClass,
       path,
+      enableBridge,
     };
   },
 });
 </script>
 
 <style lang="scss" scoped>
-@import './styles/sidebar.scss';
+@import './styles/sidebar-mobile.scss';
 </style>
