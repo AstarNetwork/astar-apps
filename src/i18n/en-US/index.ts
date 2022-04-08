@@ -270,6 +270,8 @@ export default {
     transfer: 'Transfer',
     faucet: 'Faucet',
     bridge: 'Bridge',
+    wrap: 'Wrap',
+    explorer: 'Explorer',
     withdraw: 'Withdraw',
     view: 'View',
     transferableBalance: 'Transferable Balance',

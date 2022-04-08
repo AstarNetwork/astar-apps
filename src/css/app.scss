@@ -34,6 +34,13 @@ main {
   }
 }
 
+.screen--xl {
+  display: none;
+  @media (min-width: $xl) {
+    display: block;
+  }
+}
+
 .border--separator {
   border-top: 1px solid $border-separator-light;
   border-bottom: 0px solid transparent;
