@@ -20,17 +20,13 @@
         {{ $t('dappStaking.registerDapp') }}
       </Button>
     </div>
-    <div
-      v-if="dapps.length > 0"
-      class="tw-flex tw-flex-wrap tw-gap-x-12 xl:tw-gap-x-18 tw-justify-center"
-    >
+    <div v-if="dapps.length > 0" class="kpi-wrapper">
       <TVL />
       <DappsCount />
-      <Requirement />
       <Era :progress="progress" :blocks-until-next-era="blocksUntilNextEra" :era="era" />
       <APR />
-      <UserRewards />
     </div>
+    <UserRewards />
     <div class="store-container tw-grid tw-gap-x-12 xl:tw-gap-x-18 tw-justify-center">
       <div
         v-if="dapps.length === 0"
@@ -70,7 +66,6 @@ import { computed, defineComponent, ref, watchEffect } from 'vue';
 import TVL from './statistics/TVL.vue';
 import DappsCount from './statistics/DappsCount.vue';
 import APR from './statistics/APR.vue';
-import Requirement from './statistics/Requirement.vue';
 import Era from './statistics/Era.vue';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
 import { fasSeedling } from '@quasar/extras/fontawesome-v5';
@@ -85,7 +80,6 @@ export default defineComponent({
     Button,
     TVL,
     DappsCount,
-    Requirement,
     Era,
     UserRewards,
     APR,
@@ -140,30 +134,23 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
 
 .store-container {
   grid-template-columns: repeat(auto-fit, minmax(288px, max-content));
 }
 
-.user-rewards-wrapper {
-  margin: 0px 326px;
-
-  @media (max-width: $xxl) {
-    margin: 0px 00px;
-  }
-}
-
 .warning-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
 }
 
 .warning-text-container {
-  width: 100%;
-  height: 72px;
+  width: calc(100% - 150px);
+  min-height: 72px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -174,6 +161,17 @@ export default defineComponent({
 
 .register-button {
   height: 32px;
-  width: 160px;
+  width: 150px;
+}
+
+.kpi-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 48px;
+
+  div {
+    min-width: 288px;
+    flex: 1;
+  }
 }
 </style>

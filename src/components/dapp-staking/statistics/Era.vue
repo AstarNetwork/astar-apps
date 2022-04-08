@@ -3,11 +3,10 @@
     class="
       tw-bg-white
       dark:tw-bg-darkGray-800
-      tw-mb-8 tw-w-72 tw-rounded-lg tw-text-white
+      tw-mb-8 tw-rounded-lg tw-text-white
       dark:tw-text-darkGray-100
       tw-py-4 tw-pb-2 tw-px-4
       box
-      xl:tw-mx-2
     "
   >
     <div class="tw-text-xl tw-font-semibold tw-mb-2">{{ $t('dappStaking.currentEra') }}</div>
