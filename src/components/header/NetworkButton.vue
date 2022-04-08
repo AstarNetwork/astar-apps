@@ -8,15 +8,18 @@
       v-else
       type="button"
       class="btn--network"
-      :class="width < screenSize.sm ? 'm-btn--network' : ''"
+      :class="screenSize.md > width && 'm-btn--network'"
       @click="showNetworkModal"
     >
       <icon-base class="iconbase" stroke="currentColor" icon-name="network">
         <icon-network />
       </icon-base>
       <img v-show="currentLogo" class="icon" width="16" :src="currentLogo" />
-      <template v-if="width >= screenSize.sm">
+      <template v-if="width >= screenSize.lg">
         {{ currentNetworkName }}
+      </template>
+      <template v-else-if="width >= screenSize.md">
+        {{ currentNetworkName.replace('Network', '') }}
       </template>
 
       <div class="divider" />
@@ -129,7 +132,7 @@ export default defineComponent({
   height: 22px;
 }
 .iconbase {
-  color: $gray-4;
+  color: #e6e9ee;
   width: rem(20);
   height: rem(20);
   margin-left: -4px;
@@ -158,7 +161,7 @@ export default defineComponent({
     border: 1px solid $gray-6;
   }
   .btn--network:hover {
-    background: #3c4649;
+    background: $gray-5-selected;
   }
   .divider {
     border-left: 1px solid $gray-6;
@@ -168,12 +171,12 @@ export default defineComponent({
     background: $gray-6;
     color: $gray-3;
     border: 1px solid $gray-5;
-    .iconbase {
-      color: $gray-4;
-    }
-    .divider {
-      border-left: 1px solid $gray-4;
-    }
+  }
+  .divider {
+    border-left: 1px solid $gray-4;
+  }
+  .iconbase {
+    color: $gray-4;
   }
 }
 </style>

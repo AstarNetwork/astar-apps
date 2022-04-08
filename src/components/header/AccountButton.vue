@@ -40,7 +40,11 @@ export default defineComponent({
   setup(props) {
     const { width, screenSize } = useBreakpoints();
     const shortenAddress = computed(() => {
-      return getShortenAddress(props.account);
+      if (width.value > screenSize.md) {
+        return getShortenAddress(props.account);
+      } else {
+        return getShortenAddress(props.account, 2);
+      }
     });
 
     const iconWallet = ref<string>('');
@@ -87,11 +91,11 @@ export default defineComponent({
   color: #fff;
 }
 .btn--account:hover {
-  background: #3c4649;
+  background: $gray-5-selected;
 }
 
 .iconbase {
-  color: $gray-4;
+  color: #e6e9ee;
   width: rem(20);
   height: rem(20);
   margin-left: -4px;
@@ -113,20 +117,24 @@ export default defineComponent({
 
 .body--dark {
   .btn--account {
-    background: $gray-5 !important;
+    background: $gray-6 !important;
+    border: 1px solid $gray-5;
     color: white !important;
+    @media (min-width: $md) {
+      background: $gray-5 !important;
+    }
   }
   .btn--account:hover {
-    background: #3c4649 !important;
+    background: $gray-5-selected !important;
   }
 
   .m-btn--account {
     background: $gray-6 !important;
     color: $gray-3;
     border: 1px solid $gray-5;
-    .iconbase {
-      color: $gray-4;
-    }
+  }
+  .iconbase {
+    color: $gray-4;
   }
 }
 </style>

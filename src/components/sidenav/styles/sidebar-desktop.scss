@@ -8,14 +8,17 @@
   width: 170px;
   margin-left: 8px;
 }
+
 .iconbase {
   color: $astar-blue-dark;
   width: 20px;
   height: 20px;
 }
+
 // .shiden {
 //   color: $shiden-purple-dark;
 // }
+
 .sidebar {
   width: 224px;
   height: 100%;
@@ -49,6 +52,7 @@
   z-index: 1;
   position: relative;
 }
+
 .link:hover {
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05)), $object-light;
 }
@@ -71,7 +75,7 @@
 
 .menu__indicator {
   position: absolute;
-  background: #3c4649;
+  background: #d3d6dc;
   transition: all 0.3s ease 0s;
   border-radius: 6px;
   height: 38px;
@@ -89,11 +93,15 @@
 .menu__staking {
   top: 92px;
 }
+
 .menu__bridge {
   top: 136px;
 }
 
 .body--dark {
+  .menu__indicator {
+    background: $gray-5-selected;
+  }
   .sidebar {
     background: $gray-5;
   }
