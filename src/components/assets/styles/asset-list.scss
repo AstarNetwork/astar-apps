@@ -163,6 +163,7 @@
   display: grid;
   justify-items: center;
   row-gap: 8px;
+  min-width: 120px;
   @media (min-width: $xl) {
     justify-self: start;
   }
