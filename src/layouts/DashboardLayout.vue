@@ -1,11 +1,11 @@
 <template>
   <div class="tw-h-screen tw-flex tw-overflow-hidden">
-    <template v-if="width >= screenSize.sm">
+    <template v-if="width >= screenSize.lg">
       <sidebar-desktop />
     </template>
     <div class="tw-flex tw-flex-col tw-w-0 tw-flex-1 tw-overflow-y-auto lg:tw-overflow-hidden">
       <Header />
-      <template v-if="width < screenSize.sm">
+      <template v-if="screenSize.lg > width">
         <sidebar-mobile />
       </template>
       <main

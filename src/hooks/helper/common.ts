@@ -7,3 +7,8 @@ export const objToArray = (obj: any): any[] => {
 export const checkIsNullOrUndefined = (value: any) => {
   return value === null || value === undefined;
 };
+
+export const capitalize = (str: string): string => {
+  if (typeof str !== 'string' || !str) return str;
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+};
