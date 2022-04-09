@@ -8,14 +8,17 @@
   width: 170px;
   margin-left: 8px;
 }
+
 .iconbase {
   color: $astar-blue-dark;
   width: 20px;
   height: 20px;
 }
+
 // .shiden {
 //   color: $shiden-purple-dark;
 // }
+
 .sidebar {
   width: 224px;
   height: 100%;
@@ -46,9 +49,9 @@
   margin-bottom: 8px;
   border-radius: 6px;
   color: $gray-5;
-  z-index: 1;
   position: relative;
 }
+
 .link:hover {
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05)), $object-light;
 }
@@ -69,9 +72,9 @@
   }
 }
 
+// Memo: set the animation indicator from the bottom of the menu
 .menu__indicator {
-  position: absolute;
-  background: #3c4649;
+  background: #d3d6dc;
   transition: all 0.3s ease 0s;
   border-radius: 6px;
   height: 38px;
@@ -79,21 +82,28 @@
 }
 
 .menu__assets {
-  top: 0;
+  margin-top: -183px;
 }
 
 .menu__dashboard {
-  top: 45px;
+  margin-top: -139px;
 }
 
 .menu__staking {
-  top: 92px;
+  margin-top: -92px;
 }
 .menu__bridge {
-  top: 136px;
+  margin-top: -46px;
+}
+
+.dummy-row {
+  height: 46px;
 }
 
 .body--dark {
+  .menu__indicator {
+    background: $gray-5-selected;
+  }
   .sidebar {
     background: $gray-5;
   }
