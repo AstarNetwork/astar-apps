@@ -1,5 +1,5 @@
 <template>
-  <astar-simple-modal :show="isOpen" title="Wallet" @close="closeModal">
+  <ModalDrawer :show="isOpen" title="Wallet" @close="closeModal">
     <div class="wrapper--modal-account">
       <div class="wrapper--select-network">
         <div class="row--separator--account">
@@ -67,7 +67,7 @@
         </button>
       </div>
     </div>
-  </astar-simple-modal>
+  </ModalDrawer>
 </template>
 <script lang="ts">
 import SelectWallet from 'src/components/header/modals/SelectWallet.vue';
@@ -80,12 +80,14 @@ import { computed, defineComponent, PropType, ref } from 'vue';
 import copy from 'copy-to-clipboard';
 import IconCopy from 'src/components/icons/IconCopy.vue';
 import IconExternalLink from 'src/components/icons/IconExternalLink.vue';
+import ModalDrawer from './ModalDrawer.vue';
 
 export default defineComponent({
   components: {
     SelectWallet,
     IconCopy,
     IconExternalLink,
+    ModalDrawer,
   },
   props: {
     isOpen: {
