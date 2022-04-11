@@ -3,7 +3,7 @@
     <div class="icon">
       <Logo />
     </div>
-    <div class="menu">
+    <nav class="menu">
       <div>
         <router-link
           to="/assets"
@@ -55,6 +55,7 @@
             <astar-text type="H4">{{ $t('common.staking') }}</astar-text>
           </div>
         </router-link>
+        <div v-else class="dummy-row" />
       </div>
       <div>
         <router-link
@@ -73,8 +74,10 @@
             <astar-text type="H4">{{ $t('bridge.bridge') }}</astar-text>
           </span>
         </router-link>
+        <div v-else class="dummy-row" />
       </div>
-    </div>
+      <div class="menu__indicator" :class="getIndicatorClass(path)" />
+    </nav>
 
     <div class="wrapper--bottom">
       <SocialMediaLinks />
@@ -100,6 +103,7 @@ import LocaleChanger from '../common/LocaleChanger.vue';
 import SocialMediaLinks from '../common/SocialMediaLinks.vue';
 import LightDarkMode from '../common/LightDarkMode.vue';
 import Logo from '../common/Logo.vue';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   components: {
@@ -126,99 +130,36 @@ export default defineComponent({
       () => isH160.value && currentNetworkIdx.value !== endpointKey.SHIBUYA
     );
 
+    const router = useRouter();
+    const path = computed(() => router.currentRoute.value.path.split('/')[1]);
+
+    const getIndicatorClass = (path: string): string => {
+      switch (path) {
+        case 'dashboard':
+          return 'menu__dashboard';
+        case 'assets':
+          return 'menu__assets';
+        case 'dapp-staking':
+          return 'menu__staking';
+        case 'bridge':
+          return 'menu__bridge';
+        default:
+          return 'menu__staking';
+      }
+    };
+
     return {
       isOpen,
       network,
       isShiden,
       enableBridge,
+      getIndicatorClass,
+      router,
+      path,
     };
   },
 });
 </script>
 <style lang="scss" scoped>
-@import 'src/css/quasar.variables.scss';
-@import 'src/css/utils.scss';
-
-.icon {
-  text-align: center;
-  width: 170px;
-  margin-left: 8px;
-}
-.iconbase {
-  color: $astar-blue-dark;
-  width: 20px;
-  height: 20px;
-}
-// .shiden {
-//   color: $shiden-purple-dark;
-// }
-.sidebar {
-  width: 224px;
-  height: 100%;
-  padding-top: 18px;
-  background: $border-separator-light;
-  display: flex;
-  flex-direction: column;
-}
-
-.menu {
-  margin-top: rem(32);
-  margin-left: 24px;
-  flex-grow: 1;
-
-  .row--item {
-    flex: 1 1 0%;
-    margin-left: rem(12);
-  }
-}
-
-.link {
-  display: flex;
-  align-items: center;
-  width: 176px;
-  height: 38px;
-  padding: 8px;
-  margin-bottom: 8px;
-  border-radius: 6px;
-  color: $gray-5;
-}
-.link:hover {
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05)), $object-light;
-}
-.activeLink {
-  background: #d3d6dc;
-}
-.activeLink:hover {
-  background: #d3d6dc;
-}
-
-.wrapper--bottom {
-  flex-shrink: 0;
-  padding: rem(16);
-
-  .wrapper--option {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-top: rem(4.8);
-  }
-}
-
-.body--dark {
-  .sidebar {
-    background: $gray-5;
-  }
-  .link {
-    color: $gray-1;
-  }
-  .link:hover {
-    background: #313a3d;
-  }
-  .activeLink {
-    background: #3c4649;
-  }
-  .activeLink:hover {
-    background: #3c4649;
-  }
-}
+@import './styles/sidebar-desktop.scss';
 </style>

@@ -86,12 +86,17 @@
 
 .tabs__assets {
   width: 72px;
-  left: 120px;
+  left: 124px;
 }
 
 .tabs__staking {
   width: 74px;
-  left: 192px;
+  left: 199px;
+}
+
+.tabs__bridge {
+  width: 74px;
+  left: 277px;
 }
 
 .icon--dot {
@@ -100,7 +105,7 @@
 }
 
 .column--item {
-  min-width: 50px;
+  min-width: 53px;
   font-size: 14px;
   transition: all 0.2s ease 0s;
   &:hover {

@@ -1,0 +1,119 @@
+@import 'src/css/quasar.variables.scss';
+@import 'src/css/utils.scss';
+@import 'src/css/quasar.variables.scss';
+@import 'src/css/utils.scss';
+
+.icon {
+  text-align: center;
+  width: 170px;
+  margin-left: 8px;
+}
+
+.iconbase {
+  color: $astar-blue-dark;
+  width: 20px;
+  height: 20px;
+}
+
+// .shiden {
+//   color: $shiden-purple-dark;
+// }
+
+.sidebar {
+  width: 224px;
+  height: 100%;
+  padding-top: 18px;
+  background: $border-separator-light;
+  display: flex;
+  flex-direction: column;
+}
+
+.menu {
+  position: relative;
+  margin-top: rem(32);
+  margin-left: 24px;
+  flex-grow: 1;
+
+  .row--item {
+    flex: 1 1 0%;
+    margin-left: rem(12);
+  }
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  width: 176px;
+  height: 38px;
+  padding: 8px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  color: $gray-5;
+  position: relative;
+}
+
+.link:hover {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05)), $object-light;
+}
+
+.activeLink:hover {
+  background: transparent;
+}
+
+.wrapper--bottom {
+  flex-shrink: 0;
+  padding: rem(16);
+
+  .wrapper--option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: rem(4.8);
+  }
+}
+
+// Memo: set the animation indicator from the bottom of the menu
+.menu__indicator {
+  background: #d3d6dc;
+  transition: all 0.3s ease 0s;
+  border-radius: 6px;
+  height: 38px;
+  width: 176px;
+}
+
+.menu__assets {
+  margin-top: -183px;
+}
+
+.menu__dashboard {
+  margin-top: -139px;
+}
+
+.menu__staking {
+  margin-top: -92px;
+}
+.menu__bridge {
+  margin-top: -46px;
+}
+
+.dummy-row {
+  height: 46px;
+}
+
+.body--dark {
+  .menu__indicator {
+    background: $gray-5-selected;
+  }
+  .sidebar {
+    background: $gray-5;
+  }
+  .link {
+    color: $gray-1;
+  }
+  .link:hover {
+    background: #313a3d;
+  }
+  .activeLink:hover {
+    background: transparent;
+  }
+}

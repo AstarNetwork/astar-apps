@@ -34,7 +34,7 @@
     "@polkadot/typegen" "^6.5.2"
     "@polkadot/types" "^6.5.2"
 
-"@astar-network/astar-ui@^0.0.17":
+"@astar-network/astar-ui@0.0.17":
   version "0.0.17"
   resolved "https://registry.yarnpkg.com/@astar-network/astar-ui/-/astar-ui-0.0.17.tgz#3211757e4ab5ab7284a57bae7390103ac7b82b1f"
   integrity sha512-f4Jp+BqjYX2X1erLRox0AfKHmpNmphfglm0O9AfBIyOWMKVR+9mKtTWlnxhMkm8P6+dmTlk88GCNkVRT6M8UXA==
