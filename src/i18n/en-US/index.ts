@@ -19,6 +19,7 @@ export default {
   metamask: 'MetaMask',
   clover: 'Clover',
   mathwallet: 'Math Wallet',
+  wallet3: 'Wallet 3',
   warning: {
     insufficientFee: 'Warning! Transaction might failed due to insufficient fee',
   },

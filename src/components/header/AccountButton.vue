@@ -48,11 +48,14 @@ export default defineComponent({
     const store = useStore();
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
     const isEthWallet = computed(() => store.getters['general/isEthWallet']);
+    const currentWallet = computed(() => store.getters['general/currentWallet']);
 
     watchEffect(() => {
       const selAccount = getSelectedAccount(substrateAccounts.value);
       if (isEthWallet.value) {
-        iconWallet.value = supportEvmWalletObj[SupportWallet.MetaMask].img;
+        const wallet = currentWallet.value || SupportWallet.MetaMask;
+        // @ts-ignore
+        iconWallet.value = supportEvmWalletObj[wallet].img;
       } else if (selAccount) {
         // @ts-ignore
         iconWallet.value = supportWalletObj[selAccount.source].img;
