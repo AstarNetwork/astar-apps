@@ -128,7 +128,7 @@ export const getHeaderName = (path: string) => {
   } else if (path === 'assets') {
     return 'Assets';
   } else if (path === 'dapp-staking') {
-    return 'Staking';
+    return 'dApp Staking';
   } else if (path === 'bridge') {
     return 'Bridge';
   }

@@ -1,8 +1,8 @@
 <template>
   <div>
     <astar-header
-      :title="width >= screenSize.sm ? headerName : ''"
-      :class="width < screenSize.sm ? 'm-header' : ''"
+      :title="width >= screenSize.lg && headerName"
+      :class="screenSize.lg > width && 'm-header'"
     >
       <template #left>
         <div class="icon"><Logo /></div>
@@ -143,6 +143,12 @@ export default defineComponent({
 
 .m-header {
   background: #fff !important;
+  height: 64px !important;
+  padding-left: 20px !important;
+  padding-right: 16px !important;
+  @media (min-width: 500px) {
+    padding-left: 8px !important;
+  }
 }
 
 .body--dark {
