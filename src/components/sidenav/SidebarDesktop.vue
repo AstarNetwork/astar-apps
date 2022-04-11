@@ -55,6 +55,7 @@
             <astar-text type="H4">{{ $t('common.staking') }}</astar-text>
           </div>
         </router-link>
+        <div v-else class="dummy-row" />
       </div>
       <div>
         <router-link
@@ -73,6 +74,7 @@
             <astar-text type="H4">{{ $t('bridge.bridge') }}</astar-text>
           </span>
         </router-link>
+        <div v-else class="dummy-row" />
       </div>
       <div class="menu__indicator" :class="getIndicatorClass(path)" />
     </nav>
