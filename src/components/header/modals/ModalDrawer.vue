@@ -61,7 +61,6 @@ export default defineComponent({
   width: 395px;
   height: auto;
   max-height: 650px;
-  overflow: auto;
   text-align: center;
   background: rgba(255, 255, 255, 0.5);
   box-shadow: -5px 2px 8px 4px rgba(0, 0, 0, 0.5);
@@ -141,6 +140,7 @@ export default defineComponent({
     width: 100%;
     height: 100%;
     max-height: 100%;
+    overflow: auto;
     backdrop-filter: blur(8px);
     @supports (-moz-appearance: none) {
       background: $backdrop-transparent-dark-firefox !important;
