@@ -30,12 +30,18 @@
       </div>
       <div class="tw-flex">
         <div v-if="stakeInfo?.hasStake">
-          <Button :small="true" :primary="true" @click="showStakeModal">
+          <Button
+            :disabled="isPalletDisabled"
+            :small="true"
+            :primary="true"
+            @click="showStakeModal"
+          >
             {{ $t('dappStaking.add') }}
           </Button>
           <Button
             v-if="!isEnableIndividualClaim"
             class="btn-unbond"
+            :disabled="isPalletDisabled"
             :small="true"
             :primary="false"
             @click="showUnstakeModal"
@@ -46,7 +52,7 @@
         <Button
           v-else
           :small="true"
-          :disabled="isMaxStaker || isH160 || currentAddress === null"
+          :disabled="isMaxStaker || isH160 || currentAddress === null || isPalletDisabled"
           @click="showStakeModal"
         >
           {{ $t('dappStaking.stake') }}
@@ -56,6 +62,7 @@
           v-if="isEnableIndividualClaim && stakeInfo?.hasStake"
           :small="true"
           :primary="false"
+          :disabled="isPalletDisabled"
           class="tw-ml-auto btn-unbond"
           @click="showUnstakeModal"
         >
@@ -65,7 +72,7 @@
           v-if="!isEnableIndividualClaim"
           :small="true"
           :primary="true"
-          :disabled="isH160 || currentAddress === null"
+          :disabled="isH160 || currentAddress === null || isPalletDisabled"
           class="tw-ml-auto"
           @click="showClaimRewardModal = true"
         >
@@ -163,6 +170,7 @@ export default defineComponent({
 
     const currentAddress = computed(() => store.getters['general/selectedAddress']);
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
+    const isPalletDisabled = computed(() => store.getters['dapps/getIsPalletDisabled']);
 
     const showStakeModal = () => {
       modalTitle.value = `Stake on ${props.dapp.name}`;
@@ -378,6 +386,7 @@ export default defineComponent({
       isH160,
       currentAddress,
       isEnableIndividualClaim: $isEnableIndividualClaim,
+      isPalletDisabled,
     };
   },
 });

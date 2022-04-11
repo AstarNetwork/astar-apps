@@ -7,7 +7,7 @@
     "
   >
     <Button
-      :disabled="batchTxs.length === 0 || isLoading"
+      :disabled="batchTxs.length === 0 || isLoading || isPalletDisabled"
       class="
         sm:tw-w-40
         tw-justify-center
@@ -37,7 +37,8 @@ import { fasMoneyCheckAlt } from '@quasar/extras/fontawesome-v5';
 import IconBase from 'components/icons/IconBase.vue';
 import Button from 'src/components/common/Button.vue';
 import { useAccount, useClaimAll } from 'src/hooks';
-import { defineComponent } from 'vue';
+import { useStore } from 'src/store';
+import { defineComponent, computed } from 'vue';
 
 export default defineComponent({
   components: {
@@ -45,8 +46,10 @@ export default defineComponent({
     IconBase,
   },
   setup() {
+    const store = useStore();
     const { claimAll, batchTxs, isLoading, isEnableIndividualClaim } = useClaimAll();
     const { currentAccount } = useAccount();
+    const isPalletDisabled = computed(() => store.getters['dapps/getIsPalletDisabled']);
 
     return {
       isEnableIndividualClaim,
@@ -55,6 +58,7 @@ export default defineComponent({
       batchTxs,
       isLoading,
       currentAccount,
+      isPalletDisabled,
     };
   },
 });
