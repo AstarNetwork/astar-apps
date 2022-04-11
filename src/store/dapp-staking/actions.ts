@@ -1,6 +1,6 @@
 import { ApiPromise } from '@polkadot/api';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
-import { BTreeMap, Option, Struct, u32 } from '@polkadot/types';
+import { bool, BTreeMap, Option, Struct, u32 } from '@polkadot/types';
 import {
   AccountId,
   Balance,
@@ -796,6 +796,17 @@ const actions: ActionTree<State, StateInterface> = {
         commit('setMaxNumberOfStakersPerContract', maxNumberOfStakersPerContract?.toNumber());
         commit('setUnbondingPeriod', unbondingPeriod?.toNumber());
         commit('setMaxUnlockingChunks', maxUnlockingChunks?.toNumber());
+
+        // Check if dapps staking is enabled.
+        let isPalletDisabled = false;
+        try {
+          const isDisabled = await $api.value.query.dappsStaking.palletDisabled<bool>();
+          isPalletDisabled = isDisabled.valueOf();
+        } catch {
+          // palletDisabled storage item is not supported by a node;
+        }
+
+        commit('setIsPalletDisabled', isPalletDisabled);
       }
     } catch (e) {
       const error = e as unknown as Error;

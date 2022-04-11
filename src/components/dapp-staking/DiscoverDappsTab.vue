@@ -12,7 +12,7 @@
     </div>
 
     <div class="tw-text-center tw-mb-8 tw-flex tw-items-center tw-justify-center sm:tw-gap-x-4">
-      <Button @click="showRegisterDappModal = true">
+      <Button :disabled="isPalletDisabled" @click="showRegisterDappModal = true">
         <icon-base
           class="tw-w-5 tw-h-5 tw-text-white tw--ml-1"
           stroke="currentColor"
@@ -130,6 +130,7 @@ export default defineComponent({
     const showRegisterDappModal = ref<boolean>(false);
     const selectedDapp = ref<DappItem>();
     const selectedDappInfo = ref<StakeInfo>();
+    const isPalletDisabled = computed(() => store.getters['dapps/getIsPalletDisabled']);
 
     store.dispatch('dapps/getDapps');
     store.dispatch('dapps/getStakingInfo');
@@ -157,6 +158,7 @@ export default defineComponent({
       fasSeedling,
       accountData,
       currentAccount,
+      isPalletDisabled,
     };
   },
 });
