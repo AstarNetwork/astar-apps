@@ -49,7 +49,6 @@
   margin-bottom: 8px;
   border-radius: 6px;
   color: $gray-5;
-  z-index: 1;
   position: relative;
 }
 
@@ -73,8 +72,8 @@
   }
 }
 
+// Memo: set the animation indicator from the bottom of the menu
 .menu__indicator {
-  position: absolute;
   background: #d3d6dc;
   transition: all 0.3s ease 0s;
   border-radius: 6px;
@@ -83,19 +82,23 @@
 }
 
 .menu__assets {
-  top: 0;
+  margin-top: -183px;
 }
 
 .menu__dashboard {
-  top: 45px;
+  margin-top: -139px;
 }
 
 .menu__staking {
-  top: 92px;
+  margin-top: -92px;
 }
 
 .menu__bridge {
-  top: 136px;
+  margin-top: -46px;
+}
+
+.dummy-row {
+  height: 46px;
 }
 
 .body--dark {

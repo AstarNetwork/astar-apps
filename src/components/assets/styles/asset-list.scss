@@ -135,7 +135,9 @@
   column-gap: 12px;
   align-items: center;
   display: grid;
+  width: 100px;
   @media (min-width: $sm) {
+    width: auto;
     grid-template-columns: 60px auto;
   }
 }
