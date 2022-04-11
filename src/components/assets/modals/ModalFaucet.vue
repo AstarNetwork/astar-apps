@@ -1,5 +1,11 @@
 <template>
-  <astar-simple-modal v-if="!isLoading" :show="isModalFaucet" title="Faucet" @close="closeModal">
+  <astar-simple-modal
+    v-if="!isLoading"
+    :is-animation="true"
+    :show="isModalFaucet"
+    title="Faucet"
+    @close="closeModal"
+  >
     <div class="wrapper--modal wrapper--faucet">
       <div class="wrapper__row--title">
         <span class="text--accent">{{ $t('assets.modals.whatIsFaucet') }}</span>
