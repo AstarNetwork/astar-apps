@@ -1,10 +1,18 @@
 <template>
   <div class="flex items-center tw-justify-evenly" :class="width < screenSize.sm ? 'm-header' : ''">
-    <a :href="socialUrl.twitter" target="_blank" :class="classes.link" rel="noreferrer">
-      <icon-base :class="classes.iconBase" viewBox="0 0 512 512" icon-name="Twitter">
+    <!-- <a :href="socialUrl.twitter" target="_blank" :class="classes.link" rel="noreferrer"> -->
+    <ul>
+      <li>
+        <a :href="socialUrl.twitter" target="_blank" class="icon-link-twitter" rel="noreferrer">
+          <!-- <icon-base :class="classes.iconBase" viewBox="0 0 512 512" icon-name="Twitter">
         <icon-twitter />
-      </icon-base>
-    </a>
+      </icon-base> -->
+          <!-- <i class="fa fa-twitter" aria-hidden="true"></i> -->
+          <!-- <i class="fa-brands fa-twitter"></i> -->
+          <q-icon :name="fabTwitter" class="fa" />
+        </a>
+      </li>
+    </ul>
 
     <a :href="socialUrl.telegram" target="_blank" :class="classes.link" rel="noreferrer">
       <icon-base :class="classes.iconBase" viewBox="0 0 448 512" icon-name="Telegram">
@@ -42,11 +50,12 @@ import IconGithub from '../icons/IconGithub.vue';
 import IconDiscord from '../icons/IconDiscord.vue';
 import { useBreakpoints } from 'src/hooks';
 import { socialUrl, docsUrl } from 'src/links';
+import { fabTwitter } from '@quasar/extras/fontawesome-v5';
 
 export default defineComponent({
   components: {
     IconBase,
-    IconTwitter,
+    // IconTwitter,
     IconTelegram,
     IconDocument,
     IconGithub,
@@ -64,6 +73,7 @@ export default defineComponent({
       docsUrl,
       width,
       screenSize,
+      fabTwitter,
     };
   },
 });
@@ -71,6 +81,41 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
+
+ul li {
+  position: relative;
+  list-style: none;
+  margin: 0 20px;
+  cursor: pointer;
+}
+
+ul li a .fa {
+  /* font-size: 6em; */
+  font-size: 3em;
+  color: #222;
+}
+
+ul li::before {
+  font-family: fontAwesome;
+  position: absolute;
+  top: 0;
+  left: 0;
+  /* font-size: 6em; */
+  font-size: 3em;
+  height: 0;
+  overflow: hidden;
+  transition: 0.5s ease-in-out;
+}
+
+ul li:nth-child(1)::before {
+  content: '\f099';
+  color: #1da1f2;
+  border-bottom: 4px solid #1da1f2;
+}
+
+ul li:hover::before {
+  height: 100%;
+}
 
 .icon-link {
   color: $gray-4;
