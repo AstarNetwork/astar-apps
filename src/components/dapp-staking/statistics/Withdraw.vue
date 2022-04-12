@@ -21,13 +21,7 @@
       <div class="tw-cursor-pointer tw-mr-4" @click="showModal = true">
         {{ $t('dappStaking.chunks') }} ({{ unlockingChunks?.length }})
       </div>
-      <Button
-        v-if="canWithdraw"
-        :disabled="isPalletDisabled"
-        :primary="false"
-        class="tw-mt-4"
-        @click="withdraw()"
-      >
+      <Button v-if="canWithdraw" :primary="false" class="tw-mt-4" @click="withdraw()">
         {{ $t('dappStaking.withdraw') }}
       </Button>
     </div>
@@ -67,7 +61,6 @@ export default defineComponent({
     const selectedAccountAddress = computed(() => store.getters['general/selectedAddress']);
     const unlockingChunksCount = computed(() => store.getters['dapps/getUnlockingChunks']);
     const maxUnlockingChunks = computed(() => store.getters['dapps/getMaxUnlockingChunks']);
-    const isPalletDisabled = computed(() => store.getters['dapps/getIsPalletDisabled']);
     const unlockingChunks = ref<ChunkInfo[]>();
     const canWithdraw = ref<boolean>(false);
     const totalToWithdraw = ref<BN>(new BN(0));
@@ -148,7 +141,6 @@ export default defineComponent({
       showModal,
       maxUnlockingChunks,
       canUnbondWithdraw,
-      isPalletDisabled,
     };
   },
 });
