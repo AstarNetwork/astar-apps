@@ -12,7 +12,7 @@
     </div>
 
     <div class="tw-text-center tw-mb-8 tw-flex tw-items-center tw-justify-center sm:tw-gap-x-4">
-      <Button @click="showRegisterDappModal = true">
+      <Button :disabled="isPalletDisabled" @click="showRegisterDappModal = true">
         <icon-base
           class="tw-w-5 tw-h-5 tw-text-white tw--ml-1"
           stroke="currentColor"
@@ -67,11 +67,14 @@
       />
     </div>
 
-    <ModalRegisterDapp
-      v-if="showRegisterDappModal"
-      v-model:is-open="showRegisterDappModal"
-      :show-close-button="false"
-    />
+    <Teleport to="body">
+      <ModalRegisterDapp
+        v-if="showRegisterDappModal"
+        v-model:is-open="showRegisterDappModal"
+        :show-close-button="false"
+      />
+      <ModalMaintenance :show="isPalletDisabled" />
+    </Teleport>
   </div>
 </template>
 
@@ -80,6 +83,7 @@ import Button from 'components/common/Button.vue';
 import IconBase from 'components/icons/IconBase.vue';
 import IconPlus from 'components/icons/IconPlus.vue';
 import ModalRegisterDapp from 'components/dapp-staking/modals/ModalRegisterDapp.vue';
+import ModalMaintenance from 'components/dapp-staking/modals/ModalMaintenance.vue';
 import ClaimAll from 'src/components/dapp-staking/ClaimAll.vue';
 import Dapp from 'src/components/dapp-staking/Dapp.vue';
 import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
@@ -109,6 +113,7 @@ export default defineComponent({
     Withdraw,
     Era,
     ClaimAll,
+    ModalMaintenance,
   },
   setup() {
     const store = useStore();
@@ -130,6 +135,7 @@ export default defineComponent({
     const showRegisterDappModal = ref<boolean>(false);
     const selectedDapp = ref<DappItem>();
     const selectedDappInfo = ref<StakeInfo>();
+    const isPalletDisabled = computed(() => store.getters['dapps/getIsPalletDisabled']);
 
     store.dispatch('dapps/getDapps');
     store.dispatch('dapps/getStakingInfo');
@@ -157,6 +163,7 @@ export default defineComponent({
       fasSeedling,
       accountData,
       currentAccount,
+      isPalletDisabled,
     };
   },
 });
