@@ -1,5 +1,10 @@
 <template>
-  <astar-simple-modal :show="isModalVesting" title="Vesting info" @close="closeModal">
+  <astar-simple-modal
+    :is-animation="true"
+    :show="isModalVesting"
+    title="Vesting info"
+    @close="closeModal"
+  >
     <div class="wrapper--modal wrapper--vesting">
       <div class="container--vestings">
         <div v-for="(vesting, index) in info.vestings" :key="index">

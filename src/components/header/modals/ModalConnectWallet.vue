@@ -1,5 +1,10 @@
 <template>
-  <astar-simple-modal :show="isModalConnectWallet" title="Select a Wallet" @close="setCloseModal">
+  <astar-simple-modal
+    :is-animation="true"
+    :show="isModalConnectWallet"
+    title="Select a Wallet"
+    @close="setCloseModal"
+  >
     <div class="wrapper--modal--wallet">
       <div class="title--account-type">{{ $t('wallet.evmAccount') }}</div>
       <div

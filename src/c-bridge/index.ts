@@ -21,6 +21,7 @@ export {
   getDestTokenInfo,
   getMinAndMaxAmount,
   fetchEstimation,
+  checkIsCbridgeToken,
 } from './utils';
 
 export enum EvmChain {

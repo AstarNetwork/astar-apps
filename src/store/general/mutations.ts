@@ -19,6 +19,7 @@ export interface GeneralMutations<S = State> {
   setCurrentAddress(state: S, address: string): void;
   setCurrentCustomEndpoint(state: S, endpoint: string): void;
   setHeaderName(state: S, name: string): void;
+  setCurrentWallet(state: S, wallet: string): void;
 }
 
 const mutation: MutationTree<State> & GeneralMutations = {
@@ -83,6 +84,9 @@ const mutation: MutationTree<State> & GeneralMutations = {
   },
   setHeaderName(state, name) {
     state.headerName = name;
+  },
+  setCurrentWallet(state, walle: string) {
+    state.currentWallet = walle;
   },
 };
 

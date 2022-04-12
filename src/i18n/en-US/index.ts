@@ -19,6 +19,7 @@ export default {
   metamask: 'MetaMask',
   clover: 'Clover',
   mathwallet: 'Math Wallet',
+  wallet3: 'Wallet 3',
   warning: {
     insufficientFee: 'Warning! Transaction might failed due to insufficient fee',
   },
@@ -280,6 +281,8 @@ export default {
     transfer: 'Transfer',
     faucet: 'Faucet',
     bridge: 'Bridge',
+    wrap: 'Wrap',
+    explorer: 'Explorer',
     withdraw: 'Withdraw',
     view: 'View',
     transferableBalance: 'Transferable Balance',

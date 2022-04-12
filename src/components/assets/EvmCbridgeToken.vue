@@ -12,7 +12,7 @@
             </div>
           </div>
         </div>
-        <div class="row__right">
+        <div class="row__right row__right--evm">
           <div class="column column--balance">
             <div class="column__box">
               <div class="text--accent">
@@ -47,24 +47,44 @@
               </button>
             </router-link>
 
-            <button
-              class="btn btn--sm screen--md btn--icon"
-              @click="
-                addToEvmWallet({
-                  tokenAddress: token.address,
-                  symbol: token.symbol,
-                  decimals: token.decimal,
-                  image: tokenImg,
-                })
-              "
-            >
-              <div class="icon--plus">
-                <span> + </span>
-              </div>
+            <div class="screen--xl">
+              <a
+                class="box--explorer"
+                :href="explorerLink"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <button class="btn btn--sm btn--explorer adjuster--width">
+                  <div class="container--explorer-icon adjuster--width">
+                    <IconExternalLink />
+                  </div>
+                </button>
+              </a>
               <q-tooltip>
-                <span class="text--tooltip">{{ $t('assets.addToWallet') }}</span>
+                <span class="text--tooltip">{{ $t('blockscout') }}</span>
               </q-tooltip>
-            </button>
+            </div>
+
+            <div class="screen--md">
+              <button
+                class="btn btn--sm btn--icon adjuster--width"
+                @click="
+                  addToEvmWallet({
+                    tokenAddress: token.address,
+                    symbol: token.symbol,
+                    decimals: token.decimal,
+                    image: tokenImg,
+                  })
+                "
+              >
+                <div class="icon--plus">
+                  <span> + </span>
+                </div>
+                <q-tooltip>
+                  <span class="text--tooltip">{{ $t('assets.addToWallet') }}</span>
+                </q-tooltip>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -77,10 +97,14 @@ import { getProviderIndex } from 'src/config/chainEndpoints';
 import { getChainId } from 'src/config/web3';
 import { addToEvmWallet } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
-import { getTokenImage } from 'src/token';
+import { getErc20Explorer, getTokenImage } from 'src/modules/token';
 import { computed, defineComponent, PropType } from 'vue';
+import IconExternalLink from 'src/components/icons/IconExternalLink.vue';
 
 export default defineComponent({
+  components: {
+    IconExternalLink,
+  },
   props: {
     token: {
       type: Object as PropType<SelectedToken>,
@@ -115,9 +139,18 @@ export default defineComponent({
       const chainInfo = store.getters['general/chainInfo'];
       const chain = chainInfo ? chainInfo.chain : '';
       const networkIdx = getProviderIndex(chain);
-      return token.hasOwnProperty('canonicalConfig')
+      const chainId = token.canonicalConfig
         ? token.canonicalConfig && token.canonicalConfig.org_chain_id
-        : getChainId(networkIdx);
+        : String(getChainId(networkIdx));
+      return chainId;
+    });
+
+    const explorerLink = computed(() => {
+      const chainInfo = store.getters['general/chainInfo'];
+      const chain = chainInfo ? chainInfo.chain : '';
+      const currentNetworkIdx = getProviderIndex(chain);
+      const tokenAddress = token.address;
+      return getErc20Explorer({ currentNetworkIdx, tokenAddress });
     });
 
     return {
@@ -126,6 +159,7 @@ export default defineComponent({
       tokenImg,
       nativeTokenSymbol,
       sourceChainId,
+      explorerLink,
     };
   },
 });

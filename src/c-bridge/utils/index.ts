@@ -43,3 +43,7 @@ export const detectRemoveNetwork = (portalNetworkId: endpointKey) => {
       return EvmChain.Shiden;
   }
 };
+
+export const checkIsCbridgeToken = (token: any): boolean => {
+  return token.hasOwnProperty('bridgeMethod');
+};

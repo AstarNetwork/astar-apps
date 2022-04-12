@@ -3,8 +3,10 @@
 // Memo: Overwriting the astar-ui component
 
 .header {
-  background: $gray-1 !important;
+  background: white !important;
+  border-bottom: 0px solid transparent !important;
   @media (min-width: $lg) {
+    background: $gray-1 !important;
     padding-left: 28px !important;
     padding-right: 28px !important;
   }
@@ -12,6 +14,10 @@
     color: $gray-5 !important;
   }
   .header-right {
+    padding: 0 !important;
+    @media (min-width: $lg) {
+      padding-right: 12px !important;
+    }
     .btn--account {
       background: white !important;
       color: $gray-5 !important;
@@ -30,22 +36,18 @@
     background: $backdrop-transparent-dark-firefox !important;
   }
   .modal-content {
-    width: 360px !important;
     border: 0px solid transparent !important;
     border-radius: 6px !important;
     background-color: $gray-1 !important;
     margin: auto !important;
     box-shadow: 0 0 15px 4px #00000030 !important;
-    @media (min-width: $xs) {
-      width: 375px !important;
-    }
     @media (min-width: $sm) {
       width: 395px !important;
     }
     .close {
-      margin-right: 0;
+      margin-right: 12.8px;
       @media (min-width: $sm) {
-        margin-right: 12.8px;
+        margin-right: 0px;
       }
     }
     .title {

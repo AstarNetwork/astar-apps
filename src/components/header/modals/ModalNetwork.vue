@@ -1,5 +1,5 @@
 <template>
-  <astar-simple-modal :show="isOpen" title="Network" @close="closeModal">
+  <astar-simple-modal :is-animation="true" :show="isOpen" title="Network" @close="closeModal">
     <div class="wrapper--modal-network">
       <div class="wrapper--select-network">
         <fieldset>

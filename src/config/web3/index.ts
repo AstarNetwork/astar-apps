@@ -38,6 +38,7 @@ export const chainName = {
   [EVM.ETHEREUM_MAINNET]: 'Ethereum Mainnet',
   [EVM.ASTAR_MAINNET]: 'Astar Network Mainnet',
   [EVM.SHIDEN_MAINNET]: 'Shiden Network Mainnet',
+  [EVM.ASTAR_MAINNET]: 'Astar Network Mainnet',
   [EVM.SHIBUYA_TESTNET]: 'Shibuya Testnet',
   [EVM.ASTAR_MAINNET]: 'Astar Network Mainnet',
   [EVM.BSC]: 'Binance Smart Chain',
