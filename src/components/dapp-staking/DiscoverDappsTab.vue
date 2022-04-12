@@ -1,10 +1,5 @@
 <template>
   <div>
-    <q-banner v-if="isPalletDisabled" rounded class="bg-primary text-white tw-mb-8">
-      <div class="tw-text-lg">
-        {{ $t('dappStaking.palletDisabled') }}
-      </div>
-    </q-banner>
     <div
       v-if="dapps.length > 0"
       class="tw-flex tw-flex-wrap tw-gap-x-12 xl:tw-gap-x-18 tw-justify-center"
@@ -77,6 +72,7 @@
       v-model:is-open="showRegisterDappModal"
       :show-close-button="false"
     />
+    <ModalMaintenance :show="isPalletDisabled" />
   </div>
 </template>
 
@@ -85,6 +81,7 @@ import Button from 'components/common/Button.vue';
 import IconBase from 'components/icons/IconBase.vue';
 import IconPlus from 'components/icons/IconPlus.vue';
 import ModalRegisterDapp from 'components/dapp-staking/modals/ModalRegisterDapp.vue';
+import ModalMaintenance from 'components/dapp-staking/modals/ModalMaintenance.vue';
 import ClaimAll from 'src/components/dapp-staking/ClaimAll.vue';
 import Dapp from 'src/components/dapp-staking/Dapp.vue';
 import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
@@ -114,6 +111,7 @@ export default defineComponent({
     Withdraw,
     Era,
     ClaimAll,
+    ModalMaintenance,
   },
   setup() {
     const store = useStore();
