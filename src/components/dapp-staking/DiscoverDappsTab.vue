@@ -1,5 +1,10 @@
 <template>
   <div>
+    <q-banner v-if="isPalletDisabled" rounded class="bg-primary text-white tw-mb-8">
+      <div class="tw-text-lg">
+        {{ $t('dappStaking.palletDisabled') }}
+      </div>
+    </q-banner>
     <div
       v-if="dapps.length > 0"
       class="tw-flex tw-flex-wrap tw-gap-x-12 xl:tw-gap-x-18 tw-justify-center"
