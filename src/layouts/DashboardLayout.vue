@@ -5,6 +5,7 @@
     </template>
     <div class="tw-flex tw-flex-col tw-w-0 tw-flex-1 tw-overflow-y-auto lg:tw-overflow-hidden">
       <Header />
+      <!-- <template v-if="screenSize.sm > width"> -->
       <template v-if="width < screenSize.sm">
         <sidebar-mobile />
       </template>

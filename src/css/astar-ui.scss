@@ -43,10 +43,7 @@
       width: 395px !important;
     }
     .close {
-      margin-right: 0;
-      @media (min-width: $sm) {
-        margin-right: 12.8px;
-      }
+      margin-right: 12.8px;
     }
     .title {
       display: flex;
