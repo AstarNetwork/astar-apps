@@ -1,30 +1,25 @@
 <template>
   <div>
-    <button
-      type="button"
-      class="btn--account"
-      :class="width < screenSize.sm ? 'm-btn--account' : ''"
-    >
+    <button type="button" class="btn--account" :class="screenSize.sm > width && 'm-btn--account'">
       <icon-base class="iconbase" stroke="currentColor" icon-name="wallet">
         <icon-wallet />
       </icon-base>
       <img class="icon" width="16" :src="iconWallet" />
       <template v-if="width >= screenSize.sm">
-        {{ shortenAddress }}
+        <span class="text--md">
+          {{ shortenAddress }}
+        </span>
       </template>
     </button>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, computed, watchEffect, ref } from 'vue';
-import { getShortenAddress } from 'src/hooks/helper/addressUtils';
-import { useStore } from 'src/store';
-import { useBreakpoints } from 'src/hooks';
-import { supportEvmWalletObj, SupportWallet, supportWalletObj } from 'src/config/wallets';
-import { getSelectedAccount } from 'src/hooks/helper/wallet';
 import IconBase from 'components/icons/IconBase.vue';
 import IconWallet from 'components/icons/IconWallet.vue';
+import { useBreakpoints, useWalletIcon } from 'src/hooks';
+import { getShortenAddress } from 'src/hooks/helper/addressUtils';
+import { computed, defineComponent, toRefs } from 'vue';
 
 export default defineComponent({
   components: {
@@ -39,27 +34,9 @@ export default defineComponent({
   },
   setup(props) {
     const { width, screenSize } = useBreakpoints();
+    const { iconWallet } = useWalletIcon();
     const shortenAddress = computed(() => {
       return getShortenAddress(props.account);
-    });
-
-    const iconWallet = ref<string>('');
-
-    const store = useStore();
-    const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
-    const isEthWallet = computed(() => store.getters['general/isEthWallet']);
-    const currentWallet = computed(() => store.getters['general/currentWallet']);
-
-    watchEffect(() => {
-      const selAccount = getSelectedAccount(substrateAccounts.value);
-      if (isEthWallet.value) {
-        const wallet = currentWallet.value || SupportWallet.MetaMask;
-        // @ts-ignore
-        iconWallet.value = supportEvmWalletObj[wallet].img;
-      } else if (selAccount) {
-        // @ts-ignore
-        iconWallet.value = supportWalletObj[selAccount.source].img;
-      }
     });
 
     return {
@@ -82,22 +59,24 @@ export default defineComponent({
   height: 32px;
   flex-direction: row;
   align-items: center;
-  background: $gray-5;
-  padding: 8px 16px 8px 16px;
+  padding: 8px 16px 8px 12px;
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
   border-radius: 16px;
   margin-left: 16px;
   color: #fff;
 }
+
 .btn--account:hover {
-  background: #3c4649;
+  background: $gray-5-selected;
 }
 
 .iconbase {
-  color: $gray-4;
-  width: rem(20);
-  height: rem(20);
-  margin-left: -4px;
+  color: $gray-3 !important;
+  width: rem(22);
+  height: rem(22);
+  @media (min-width: $sm) {
+    color: #e6e9ee !important;
+  }
 }
 
 .m-btn--account {
@@ -117,18 +96,25 @@ export default defineComponent({
 .body--dark {
   .btn--account {
     background: $gray-5 !important;
-    color: white !important;
+    color: #fff;
+    border: 1px solid $gray-6 !important;
+    @media (min-width: $md) {
+      background: $gray-5 !important;
+    }
   }
   .btn--account:hover {
-    background: #3c4649 !important;
+    background: $gray-5-selected !important;
   }
 
   .m-btn--account {
     background: $gray-6 !important;
     color: $gray-3;
-    border: 1px solid $gray-5;
-    .iconbase {
-      color: $gray-4;
+    border: 1px solid $gray-5 !important;
+  }
+  .iconbase {
+    color: $astar-blue-dark !important;
+    @media (min-width: $md) {
+      color: $gray-4 !important;
     }
   }
 }

@@ -6,8 +6,8 @@ interface EvmMappedAddress {
   ss58: string;
 }
 
-export function getShortenAddress(address: string): string {
-  return address ? `${address.slice(0, 6)}${'.'.repeat(6)}${address.slice(-6)}` : '';
+export function getShortenAddress(address: string, place = 6): string {
+  return address ? `${address.slice(0, place)}${'.'.repeat(place)}${address.slice(-place)}` : '';
 }
 
 const storedEvmAddressMapping = (): EvmMappedAddress[] | [] => {

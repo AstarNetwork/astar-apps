@@ -8,16 +8,25 @@
       v-else
       type="button"
       class="btn--network"
-      :class="width < screenSize.sm ? 'm-btn--network' : ''"
+      :class="screenSize.sm > width && 'm-btn--network'"
       @click="showNetworkModal"
     >
       <icon-base class="iconbase" stroke="currentColor" icon-name="network">
         <icon-network />
       </icon-base>
       <img v-show="currentLogo" class="icon" width="16" :src="currentLogo" />
-      <template v-if="width >= screenSize.sm">
-        {{ currentNetworkName }}
-      </template>
+      <div class="column--network-name">
+        <template v-if="width >= screenSize.md">
+          <span class="text--md">
+            {{ currentNetworkName }}
+          </span>
+        </template>
+        <template v-else-if="width >= screenSize.sm">
+          <span class="text--md">
+            {{ currentNetworkName.replace('Network', '') }}
+          </span>
+        </template>
+      </div>
 
       <div class="divider" />
       <ConnectionIndicator :connection-type="currentNetworkStatus" :version="version" />
@@ -51,10 +60,10 @@ export default defineComponent({
     const chainInfo = computed(() => store.getters['general/chainInfo']);
     const metaExtensions = computed(() => store.getters['general/metaExtensions']);
     const extensionCount = computed(() => store.getters['general/extensionCount']);
-    const currentNetworkName = ref(providerEndpoints[currentNetworkIdx.value].displayName);
-    const currentLogo = ref(providerEndpoints[currentNetworkIdx.value].defaultLogo);
-    const isLatestChain = ref(false);
-    const version = ref('0.0.0');
+    const currentNetworkName = ref<string>(providerEndpoints[currentNetworkIdx.value].displayName);
+    const currentLogo = ref<string>(providerEndpoints[currentNetworkIdx.value].defaultLogo);
+    const isLatestChain = ref<boolean>(false);
+    const version = ref<string>('0.0.0');
 
     watch(currentNetworkIdx, (networkIdx) => {
       currentNetworkName.value = providerEndpoints[networkIdx].displayName;
@@ -111,31 +120,40 @@ export default defineComponent({
   flex-direction: row;
   align-items: center;
   background: #fff;
-  padding: 8px 16px 8px 16px;
+  padding: 8px 16px 8px 12px;
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
   border-radius: 16px;
   margin-left: 8px;
   color: $gray-5;
-  @media (min-width: $lg) {
+  @media (min-width: $sm) {
     margin-left: 16px;
   }
 }
+
 .btn--network:hover {
   background: #fff;
 }
+
 .divider {
   border-left: 1px solid $border-separator-light;
-  margin: 0 6px;
+  margin: 0 8px;
   height: 22px;
 }
+
 .iconbase {
-  color: $gray-4;
-  width: rem(20);
-  height: rem(20);
-  margin-left: -4px;
+  color: $gray-3 !important;
+  width: rem(22);
+  height: rem(22);
+  @media (min-width: $sm) {
+    color: #e6e9ee !important;
+  }
 }
+
 .icon {
-  margin: 0 6px;
+  margin-left: 8px;
+  @media (min-width: $sm) {
+    margin-right: 8px;
+  }
 }
 
 .m-btn--network {
@@ -146,9 +164,12 @@ export default defineComponent({
     color: $object-light;
   }
   .divider {
-    margin-right: 5px;
-    margin-left: -2px;
+    margin: 0 8px;
   }
+}
+
+.column--network-name {
+  margin-top: -1px;
 }
 
 .body--dark {
@@ -158,7 +179,7 @@ export default defineComponent({
     border: 1px solid $gray-6;
   }
   .btn--network:hover {
-    background: #3c4649;
+    background: $gray-5-selected;
   }
   .divider {
     border-left: 1px solid $gray-6;
@@ -168,11 +189,14 @@ export default defineComponent({
     background: $gray-6;
     color: $gray-3;
     border: 1px solid $gray-5;
-    .iconbase {
-      color: $gray-4;
-    }
-    .divider {
-      border-left: 1px solid $gray-4;
+  }
+  .divider {
+    border-left: 1px solid $gray-4;
+  }
+  .iconbase {
+    color: $astar-blue-dark !important;
+    @media (min-width: $md) {
+      color: $gray-4 !important;
     }
   }
 }

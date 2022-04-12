@@ -77,7 +77,7 @@ export default defineComponent({
     color: #fff;
   }
   .btn--connect:hover {
-    background: #3c4649;
+    background: $gray-5-selected;
   }
 
   .m-btn--connect {
@@ -85,7 +85,7 @@ export default defineComponent({
     border: 1px solid $gray-5;
   }
   .m-btn--connect:hover {
-    background: #3c4649;
+    background: $gray-5-selected;
   }
 }
 </style>
