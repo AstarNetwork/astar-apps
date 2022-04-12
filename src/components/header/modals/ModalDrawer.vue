@@ -59,8 +59,9 @@ export default defineComponent({
   top: 96px;
   right: 0px;
   width: 395px;
-  height: auto;
-  max-height: 650px;
+  height: 100%;
+  // height: auto;
+  // max-height: 650px;
   text-align: center;
   background: rgba(255, 255, 255, 0.5);
   box-shadow: -5px 2px 8px 4px rgba(0, 0, 0, 0.5);

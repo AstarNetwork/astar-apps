@@ -17,7 +17,12 @@
               {{ $t('balance.modals.math.switchNetwork') }}
             </li>
           </div>
-          <ul v-else role="radiogroup" class="list--account">
+          <ul
+            v-else
+            role="radiogroup"
+            class="list--account"
+            :style="`max-height: ${windowHeight}px`"
+          >
             <li v-for="(account, index) in substrateAccounts" :key="index">
               <label
                 :class="[
@@ -151,6 +156,14 @@ export default defineComponent({
       });
     };
 
+    const windowHeight = ref<number>(window.innerHeight);
+    const onHeightChange = () => {
+      windowHeight.value = window.innerHeight - 400;
+    };
+
+    window.addEventListener('resize', onHeightChange);
+    onHeightChange();
+
     return {
       selAccount,
       closeModal,
@@ -164,6 +177,7 @@ export default defineComponent({
       copyAddress,
       endpointKey,
       isMathWallet,
+      windowHeight,
     };
   },
   methods: {
@@ -178,9 +192,14 @@ export default defineComponent({
 @import 'src/css/quasar.variables.scss';
 @import 'src/css/utils.scss';
 
+.wrapper--select-network {
+  position: relative;
+  flex-grow: 1;
+}
+
 .list--account {
-  max-height: 360px;
-  height: auto;
+  // max-height: 360px;
+  // height: auto;
   overflow-y: auto;
 }
 
@@ -283,6 +302,7 @@ export default defineComponent({
 }
 
 .wrapper__row--button {
+  flex-shrink: 0;
   display: flex;
   justify-content: center;
 }
