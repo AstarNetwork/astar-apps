@@ -25,10 +25,10 @@ import { useApr } from 'src/hooks';
 
 export default defineComponent({
   setup() {
-    const { stakerApr } = useApr();
+    // const { stakerApr } = useApr();
 
     return {
-      stakerApr,
+      stakerApr: 10.8,
     };
   },
 });
