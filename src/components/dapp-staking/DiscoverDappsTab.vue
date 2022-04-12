@@ -67,12 +67,14 @@
       />
     </div>
 
-    <ModalRegisterDapp
-      v-if="showRegisterDappModal"
-      v-model:is-open="showRegisterDappModal"
-      :show-close-button="false"
-    />
-    <ModalMaintenance :show="isPalletDisabled" />
+    <Teleport to="body">
+      <ModalRegisterDapp
+        v-if="showRegisterDappModal"
+        v-model:is-open="showRegisterDappModal"
+        :show-close-button="false"
+      />
+      <ModalMaintenance :show="isPalletDisabled" />
+    </Teleport>
   </div>
 </template>
 
