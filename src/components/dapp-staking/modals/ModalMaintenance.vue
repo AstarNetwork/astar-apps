@@ -1,5 +1,5 @@
 <template>
-  <astar-simple-modal :show="show" title="Maintenance Mode">
+  <astar-simple-modal :show="show" :is-close-icon="false" title="Maintenance Mode">
     <div class="box container">
       <div>
         <span class="text--md">Dapps Staking Page Is Currently Under Maintenance.</span>
@@ -8,7 +8,7 @@
         <span class="text--md">We expect to be back soon!</span>
       </div>
       <div class="text--md">
-        While you are waiting you can check your <a href="#/assets/">assets</a>.
+        While you are waiting you can check your <a href="#/assets/">Assets</a>
       </div>
     </div>
   </astar-simple-modal>
@@ -35,6 +35,10 @@ export default defineComponent({
 
   div {
     margin: 10px 0px;
+  }
+
+  a {
+    color: $astar-blue;
   }
 }
 </style>

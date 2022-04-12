@@ -806,8 +806,7 @@ const actions: ActionTree<State, StateInterface> = {
           // palletDisabled storage item is not supported by a node;
         }
 
-        // commit('setIsPalletDisabled', isPalletDisabled);
-        commit('setIsPalletDisabled', true);
+        commit('setIsPalletDisabled', isPalletDisabled);
       }
     } catch (e) {
       const error = e as unknown as Error;
