@@ -100,15 +100,17 @@
       </div>
     </div>
 
-    <ModalTransfer
-      :is-modal-transfer="isModalTransfer"
-      :handle-modal-transfer="handleModalTransfer"
-      :symbol="symbol"
-      :account-data="null"
-      :token="token"
-      :handle-update-token-balances="handleUpdateTokenBalances"
-    />
-    <ModalFaucet :is-modal-faucet="isModalFaucet" :handle-modal-faucet="handleModalFaucet" />
+    <Teleport to="body">
+      <ModalTransfer
+        :is-modal-transfer="isModalTransfer"
+        :handle-modal-transfer="handleModalTransfer"
+        :symbol="symbol"
+        :account-data="null"
+        :token="token"
+        :handle-update-token-balances="handleUpdateTokenBalances"
+      />
+      <ModalFaucet :is-modal-faucet="isModalFaucet" :handle-modal-faucet="handleModalFaucet" />
+    </Teleport>
   </div>
 </template>
 <script lang="ts">

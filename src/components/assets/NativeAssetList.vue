@@ -145,24 +145,26 @@
       </div>
     </div>
 
-    <ModalFaucet :is-modal-faucet="isModalFaucet" :handle-modal-faucet="handleModalFaucet" />
-    <ModalTransfer
-      :is-modal-transfer="isModalTransfer"
-      :handle-modal-transfer="handleModalTransfer"
-      :symbol="nativeTokenSymbol"
-      :account-data="accountData"
-    />
-    <ModalEvmWithdraw
-      :is-modal-evm-withdraw="isModalEvmWithdraw"
-      :handle-modal-evm-withdraw="handleModalEvmWithdraw"
-      :native-token-symbol="nativeTokenSymbol"
-    />
-    <ModalVesting
-      :is-modal-vesting="isModalVesting"
-      :handle-modal-vesting="handleModalVesting"
-      :native-token-symbol="nativeTokenSymbol"
-      :account-data="accountData"
-    />
+    <Teleport to="body">
+      <ModalTransfer
+        :is-modal-transfer="isModalTransfer"
+        :handle-modal-transfer="handleModalTransfer"
+        :symbol="nativeTokenSymbol"
+        :account-data="accountData"
+      />
+      <ModalFaucet :is-modal-faucet="isModalFaucet" :handle-modal-faucet="handleModalFaucet" />
+      <ModalEvmWithdraw
+        :is-modal-evm-withdraw="isModalEvmWithdraw"
+        :handle-modal-evm-withdraw="handleModalEvmWithdraw"
+        :native-token-symbol="nativeTokenSymbol"
+      />
+      <ModalVesting
+        :is-modal-vesting="isModalVesting"
+        :handle-modal-vesting="handleModalVesting"
+        :native-token-symbol="nativeTokenSymbol"
+        :account-data="accountData"
+      />
+    </Teleport>
   </div>
 </template>
 <script lang="ts">

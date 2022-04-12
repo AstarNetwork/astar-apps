@@ -1,5 +1,5 @@
 <template>
-  <astar-simple-modal :show="isOpen" title="Wallet" @close="closeModal">
+  <astar-simple-modal :is-animation="true" :show="isOpen" title="Wallet" @close="closeModal">
     <div class="wrapper--modal-account">
       <div class="wrapper--select-network">
         <div class="row--separator--account">
