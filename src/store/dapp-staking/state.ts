@@ -28,6 +28,7 @@ export interface DappStateInterface {
   unbondingPeriod: number;
   maxUnlockingChunks: number;
   unlockingChunks: number;
+  isPalletDisabled: boolean;
 }
 
 export interface LooseObject {
@@ -42,6 +43,7 @@ function state(): DappStateInterface {
     unbondingPeriod: 0,
     maxUnlockingChunks: 0,
     unlockingChunks: 0,
+    isPalletDisabled: false,
   };
 }
 
