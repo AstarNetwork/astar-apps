@@ -772,7 +772,7 @@ const actions: ActionTree<State, StateInterface> = {
     return result;
   },
 
-  async getStakingInfo({ commit, dispatch, rootState }, endpoint: number) {
+  async getStakingInfo({ commit, dispatch, rootState }) {
     await $api?.value?.isReady;
 
     try {
@@ -797,21 +797,15 @@ const actions: ActionTree<State, StateInterface> = {
         commit('setMaxNumberOfStakersPerContract', maxNumberOfStakersPerContract?.toNumber());
         commit('setUnbondingPeriod', unbondingPeriod?.toNumber());
         commit('setMaxUnlockingChunks', maxUnlockingChunks?.toNumber());
-
-        if (endpoint === endpointKey.ASTAR) {
-          commit('setIsPalletDisabled', true);
-        } else {
-          //  Check if dapps staking is enabled.
-          let isPalletDisabled = false;
-          try {
-            const isDisabled = await $api.value.query.dappsStaking.palletDisabled<bool>();
-            isPalletDisabled = isDisabled.valueOf();
-          } catch {
-            // palletDisabled storage item is not supported by a node;
-          }
-
-          commit('setIsPalletDisabled', isPalletDisabled);
+        let isPalletDisabled = false;
+        try {
+          const isDisabled = await $api.value.query.dappsStaking.palletDisabled<bool>();
+          isPalletDisabled = isDisabled.valueOf();
+        } catch {
+          // palletDisabled storage item is not supported by a node;
         }
+
+        commit('setIsPalletDisabled', isPalletDisabled);
       }
     } catch (e) {
       const error = e as unknown as Error;

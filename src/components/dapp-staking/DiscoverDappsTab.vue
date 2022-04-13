@@ -136,10 +136,9 @@ export default defineComponent({
     const selectedDapp = ref<DappItem>();
     const selectedDappInfo = ref<StakeInfo>();
     const isPalletDisabled = computed(() => store.getters['dapps/getIsPalletDisabled']);
-    const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
 
     store.dispatch('dapps/getDapps');
-    store.dispatch('dapps/getStakingInfo', currentNetworkIdx.value);
+    store.dispatch('dapps/getStakingInfo');
 
     watchEffect(() => {
       if (isH160.value) {
