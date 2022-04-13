@@ -1,7 +1,7 @@
 import { Struct } from '@polkadot/types';
 import { Perbill } from '@polkadot/types/interfaces';
 import { aprToApy } from 'apr-tools';
-import { $api, $isEnableIndividualClaim } from 'boot/api';
+import { $api } from 'boot/api';
 import { ethers } from 'ethers';
 import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
@@ -78,26 +78,12 @@ export const useApr = () => {
 
     // Todo: fetch from token-api
     const getApr = async (): Promise<number> => {
-      const isEnableIndividualClaimRef = $isEnableIndividualClaim.value;
       try {
-        const getDeveloperPercentage = async () => {
-          if (isEnableIndividualClaimRef) {
-            const result =
-              await apiRef.query.blockReward.rewardDistributionConfigStorage<RewardDistributionConfig>();
-            const percentage = Number(result.dappsPercent.toHuman().replace('%', '')) * 0.01;
-            return percentage;
-          } else {
-            const result = apiRef.consts.dappsStaking.developerRewardPercentage.toHuman();
-            const percentage = Number(result && result.toString().replace('%', '')) * 0.01;
-            return percentage;
-          }
-        };
-
         const results = await Promise.all([
           apiRef.consts.blockReward.rewardAmount.toString(),
           apiRef.query.timestamp.now(),
           apiRef.rpc.chain.getHeader(),
-          getDeveloperPercentage(),
+          apiRef.query.blockReward.rewardDistributionConfigStorage<RewardDistributionConfig>(),
         ]);
 
         const rawBlockRewards = results[0];
@@ -114,7 +100,8 @@ export const useApr = () => {
         const dailyEraRate = avgBlocksPerDay / blocksPerEraRef;
         const annualRewards = eraRewards * dailyEraRate * 365.25;
         const totalStaked = Number(ethers.utils.formatUnits(tvlTokenRef.toString(), decimalRef));
-        const developerRewardPercentage = results[3];
+        const developerRewardPercentage =
+          Number(results[3].dappsPercent.toHuman().replace('%', '')) * 0.01;
         const stakerBlockReward = (1 - developerRewardPercentage) * DAPPS_REWARD_RATE;
         const stakerApr = (annualRewards / totalStaked) * stakerBlockReward * 100;
 
