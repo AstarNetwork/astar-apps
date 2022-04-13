@@ -25,60 +25,11 @@
   }
 }
 
-.modal.show {
-  display: flex !important;
-}
-
-.modal {
-  background: rgba(255, 255, 255, 0.5) !important;
-  backdrop-filter: blur(8px) !important;
-  @supports (-moz-appearance: none) {
-    background: $backdrop-transparent-dark-firefox !important;
-  }
-  .modal-content {
-    border: 0px solid transparent !important;
-    border-radius: 6px !important;
-    background-color: $gray-1 !important;
-    margin: auto !important;
-    box-shadow: 0 0 15px 4px #00000030 !important;
-    @media (min-width: $sm) {
-      width: 395px !important;
-    }
-    .close {
-      margin-right: 12.8px;
-      @media (min-width: $sm) {
-        margin-right: 0px;
-      }
-    }
-    .title {
-      display: flex;
-      justify-content: center;
-      color: $gray-5 !important;
-    }
-  }
-}
-
 .body--dark {
   .header {
     background: $gray-6 !important;
     .header-left {
       color: $gray-1 !important;
-    }
-    .header-right {
-      .btn--account {
-        // background: $gray-5 !important;
-        // color: white !important;
-      }
-    }
-  }
-  .modal {
-    background: rgba(25, 29, 31, 0.5) !important;
-    .modal-content {
-      box-shadow: 0 0 15px 4px #00000080 !important;
-      background-color: $gray-5 !important;
-      .title {
-        color: $gray-1 !important;
-      }
     }
   }
 }
