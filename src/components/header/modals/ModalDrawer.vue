@@ -1,5 +1,5 @@
 <template>
-  <div :class="`modal ${isShow ? 'show' : ''}`">
+  <div class="animate__animated animate__slideInRight" :class="`modal ${isShow ? 'show' : ''}`">
     <div class="modal-content">
       <span class="close" @click="close">&times;</span>
       <div class="title">{{ title }}</div>
@@ -60,8 +60,6 @@ export default defineComponent({
   right: 0px;
   width: 395px;
   height: 100%;
-  // height: auto;
-  // max-height: 650px;
   text-align: center;
   background: rgba(255, 255, 255, 0.5);
   box-shadow: -5px 2px 8px 4px rgba(0, 0, 0, 0.5);
@@ -71,7 +69,6 @@ export default defineComponent({
 }
 
 .modal-content {
-  box-shadow: 0 0 15px 4px #00000030;
   border-radius: 6px;
   background-color: $gray-1;
   border: 0px solid transparent;
@@ -119,10 +116,10 @@ export default defineComponent({
 
 .body--dark {
   .modal {
-    background: rgba(25, 29, 31, 0.5);
+    background-color: $gray-5;
+    box-shadow: none;
 
     .modal-content {
-      box-shadow: 0 0 15px 4px #00000080;
       background-color: $gray-5;
 
       .title {

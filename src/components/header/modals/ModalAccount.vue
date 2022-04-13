@@ -198,9 +198,8 @@ export default defineComponent({
 }
 
 .list--account {
-  // max-height: 360px;
-  // height: auto;
   overflow-y: auto;
+  margin-top: 8px;
 }
 
 .wrapper--modal-account {
@@ -222,7 +221,7 @@ export default defineComponent({
   line-height: 18px;
   color: $gray-5;
   margin: 0 auto;
-  margin-top: 16px;
+  margin-top: 8px;
   padding: 16px;
   cursor: pointer;
 }
@@ -246,9 +245,21 @@ export default defineComponent({
   border-radius: 9999px;
   border-width: 1px;
 
+  &:before {
+    content: '';
+    display: block;
+    width: 77%;
+    height: 77%;
+    margin: 15% 15%;
+    border-radius: 80%;
+  }
+
   &:checked {
+    background: #fff;
+    border: 1px solid $astar-blue;
+  }
+  &:checked:before {
     background: $astar-blue;
-    border-width: 3px;
   }
 }
 
@@ -314,7 +325,7 @@ export default defineComponent({
   font-weight: 600;
   border-radius: 30px;
   height: 52px;
-  margin-top: 24px;
+  margin-top: 40px;
   &:hover {
     background: linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
       linear-gradient(0deg, $astar-blue, $astar-blue);
@@ -343,12 +354,16 @@ export default defineComponent({
   }
 
   .ip--account {
+    -webkit-appearance: none;
     background: $gray-6;
     border: 1px solid $gray-3;
 
     &:checked {
+      background: #000;
+      border: 1px solid $astar-blue;
+    }
+    &:checked:before {
       background: $astar-blue;
-      border-width: 3px;
     }
   }
 
