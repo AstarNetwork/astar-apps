@@ -136,9 +136,12 @@ export default defineComponent({
     const selectedDapp = ref<DappItem>();
     const selectedDappInfo = ref<StakeInfo>();
     const isPalletDisabled = computed(() => store.getters['dapps/getIsPalletDisabled']);
+    const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
 
     store.dispatch('dapps/getDapps');
-    store.dispatch('dapps/getStakingInfo');
+
+    // Enable maintenance only on Astar
+    store.dispatch('dapps/getStakingInfo', currentNetworkIdx.value === 0);
 
     watchEffect(() => {
       if (isH160.value) {

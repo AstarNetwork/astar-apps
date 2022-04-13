@@ -771,7 +771,7 @@ const actions: ActionTree<State, StateInterface> = {
     return result;
   },
 
-  async getStakingInfo({ commit, dispatch, rootState }) {
+  async getStakingInfo({ commit, dispatch, rootState }, enableMaintenance = false) {
     await $api?.value?.isReady;
 
     try {
@@ -805,8 +805,7 @@ const actions: ActionTree<State, StateInterface> = {
         // } catch {
         //   // palletDisabled storage item is not supported by a node;
         // }
-
-        commit('setIsPalletDisabled', true);
+        commit('setIsPalletDisabled', enableMaintenance);
       }
     } catch (e) {
       const error = e as unknown as Error;
