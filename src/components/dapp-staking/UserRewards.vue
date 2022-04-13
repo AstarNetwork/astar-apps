@@ -1,13 +1,15 @@
 <template>
-  <div v-if="isStaker" class="container user-rewards-container">
-    <div class="row">
-      <span class="title container--title--color">Your Rewards</span>
-    </div>
-    <div class="user-rewards-panel">
-      <CompoundReward />
-      <ClaimAll />
-      <Withdraw :show-unbonded-funds="true" />
-      <Withdraw :show-unbonded-funds="false" :show-unbonding-chunks="true" />
+  <div v-if="isStaker" class="wrapper--user-rewards-container">
+    <div class="container user-rewards-container">
+      <div class="row">
+        <span class="title container--title--color">Your Rewards</span>
+      </div>
+      <div class="user-rewards-panel">
+        <CompoundReward />
+        <ClaimAll />
+        <Withdraw :show-unbonded-funds="true" />
+        <Withdraw :show-unbonded-funds="false" :show-unbonding-chunks="true" />
+      </div>
     </div>
   </div>
 </template>

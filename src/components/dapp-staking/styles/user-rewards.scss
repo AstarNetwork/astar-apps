@@ -8,9 +8,31 @@
   margin: 24px 0px;
 }
 
+.wrapper--user-rewards-container {
+  display: flex;
+  justify-content: center;
+  @media (min-width: $xl) {
+  }
+}
+
 .user-rewards-container {
   flex-grow: 1;
   margin-bottom: 32px;
+  @media (min-width: 656px) {
+    max-width: 622px;
+  }
+  @media (min-width: 992px) {
+    max-width: 100%;
+  }
+  @media (min-width: $lg) {
+    max-width: 622px;
+  }
+  @media (min-width: $xl) {
+    max-width: 990px;
+  }
+  @media (min-width: 1600px) {
+    max-width: 100%;
+  }
 }
 
 .user-rewards-panel {
