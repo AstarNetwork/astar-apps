@@ -19,6 +19,7 @@ export default {
   metamask: 'MetaMask',
   clover: 'Clover',
   mathwallet: 'Math Wallet',
+  wallet3: 'Wallet 3',
   warning: {
     insufficientFee: 'Warning! Transaction might failed due to insufficient fee',
   },
@@ -192,6 +193,8 @@ export default {
     stakerApy: 'APY: {value}%',
     stakerApr: 'APR: {value}%',
     ttlPendingRewards: 'Your Pending Rewards',
+    palletDisabled:
+      'Dapps staking is in maintenance mode. All actions are temporary disabled, but you can still browse dapps.',
     modals: {
       alreadyClaimed: 'Already claimed:',
       contractRewards: 'Contract rewards:',

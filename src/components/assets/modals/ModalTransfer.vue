@@ -1,5 +1,10 @@
 <template>
-  <astar-simple-modal :show="isModalTransfer" title="Transfer" @close="closeModal">
+  <astar-simple-modal
+    :is-animation="true"
+    :show="isModalTransfer"
+    title="Transfer"
+    @close="closeModal"
+  >
     <div class="wrapper--modal">
       <div class="rows">
         <div class="box--input">

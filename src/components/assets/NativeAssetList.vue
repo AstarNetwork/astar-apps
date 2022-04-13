@@ -9,10 +9,10 @@
 
       <div v-if="nativeTokenSymbol" class="rows">
         <div class="row row--details">
-          <div class="row__left">
+          <div class="row__left--native">
             <div class="column--currency">
               <img width="24" :src="nativeTokenImg" :alt="nativeTokenSymbol" />
-              <div v-if="nativeTokenSymbol && currentNetworkName" class="column--ticker">
+              <div v-if="nativeTokenSymbol && currentNetworkName" class="column--ticker--native">
                 <span class="text--title">{{ nativeTokenSymbol }}</span>
                 <span class="text--label">{{ currentNetworkName }}</span>
               </div>
@@ -22,7 +22,7 @@
             </div>
           </div>
           <div class="row__right">
-            <div class="column column--balance">
+            <div class="column--balance">
               <div class="column__box">
                 <div v-if="bal !== null && nativeTokenSymbol" class="text--accent">
                   <span>{{ $n(bal) }} {{ nativeTokenSymbol }}</span>
@@ -145,24 +145,26 @@
       </div>
     </div>
 
-    <ModalFaucet :is-modal-faucet="isModalFaucet" :handle-modal-faucet="handleModalFaucet" />
-    <ModalTransfer
-      :is-modal-transfer="isModalTransfer"
-      :handle-modal-transfer="handleModalTransfer"
-      :symbol="nativeTokenSymbol"
-      :account-data="accountData"
-    />
-    <ModalEvmWithdraw
-      :is-modal-evm-withdraw="isModalEvmWithdraw"
-      :handle-modal-evm-withdraw="handleModalEvmWithdraw"
-      :native-token-symbol="nativeTokenSymbol"
-    />
-    <ModalVesting
-      :is-modal-vesting="isModalVesting"
-      :handle-modal-vesting="handleModalVesting"
-      :native-token-symbol="nativeTokenSymbol"
-      :account-data="accountData"
-    />
+    <Teleport to="body">
+      <ModalTransfer
+        :is-modal-transfer="isModalTransfer"
+        :handle-modal-transfer="handleModalTransfer"
+        :symbol="nativeTokenSymbol"
+        :account-data="accountData"
+      />
+      <ModalFaucet :is-modal-faucet="isModalFaucet" :handle-modal-faucet="handleModalFaucet" />
+      <ModalEvmWithdraw
+        :is-modal-evm-withdraw="isModalEvmWithdraw"
+        :handle-modal-evm-withdraw="handleModalEvmWithdraw"
+        :native-token-symbol="nativeTokenSymbol"
+      />
+      <ModalVesting
+        :is-modal-vesting="isModalVesting"
+        :handle-modal-vesting="handleModalVesting"
+        :native-token-symbol="nativeTokenSymbol"
+        :account-data="accountData"
+      />
+    </Teleport>
   </div>
 </template>
 <script lang="ts">

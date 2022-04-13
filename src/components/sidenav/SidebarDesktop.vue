@@ -52,7 +52,7 @@
             <icon-staking />
           </icon-base>
           <div class="row--item">
-            <astar-text type="H4">{{ $t('common.staking') }}</astar-text>
+            <astar-text type="H4">{{ $t('common.dappStaking') }}</astar-text>
           </div>
         </router-link>
         <div v-else class="dummy-row" />
