@@ -798,13 +798,13 @@ const actions: ActionTree<State, StateInterface> = {
         commit('setMaxUnlockingChunks', maxUnlockingChunks?.toNumber());
 
         // Check if dapps staking is enabled.
-        let isPalletDisabled = false;
-        try {
-          const isDisabled = await $api.value.query.dappsStaking.palletDisabled<bool>();
-          isPalletDisabled = isDisabled.valueOf();
-        } catch {
-          // palletDisabled storage item is not supported by a node;
-        }
+        // let isPalletDisabled = false;
+        // try {
+        //   const isDisabled = await $api.value.query.dappsStaking.palletDisabled<bool>();
+        //   isPalletDisabled = isDisabled.valueOf();
+        // } catch {
+        //   // palletDisabled storage item is not supported by a node;
+        // }
 
         commit('setIsPalletDisabled', true);
       }
