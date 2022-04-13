@@ -12,6 +12,7 @@ import { ISubmittableResult, ITuple } from '@polkadot/types/types';
 import { formatBalance } from '@polkadot/util';
 import BN from 'bn.js';
 import { $api } from 'boot/api';
+import { endpointKey } from 'src/config/chainEndpoints';
 import { addDapp, getDapps, uploadFile } from 'src/hooks/firebase';
 import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
 import { ActionTree, Dispatch } from 'vuex';
@@ -771,7 +772,7 @@ const actions: ActionTree<State, StateInterface> = {
     return result;
   },
 
-  async getStakingInfo({ commit, dispatch, rootState }, enableMaintenance = false) {
+  async getStakingInfo({ commit, dispatch, rootState }, endpoint: number) {
     await $api?.value?.isReady;
 
     try {
@@ -797,15 +798,20 @@ const actions: ActionTree<State, StateInterface> = {
         commit('setUnbondingPeriod', unbondingPeriod?.toNumber());
         commit('setMaxUnlockingChunks', maxUnlockingChunks?.toNumber());
 
-        // Check if dapps staking is enabled.
-        // let isPalletDisabled = false;
-        // try {
-        //   const isDisabled = await $api.value.query.dappsStaking.palletDisabled<bool>();
-        //   isPalletDisabled = isDisabled.valueOf();
-        // } catch {
-        //   // palletDisabled storage item is not supported by a node;
-        // }
-        commit('setIsPalletDisabled', enableMaintenance);
+        if (endpoint === endpointKey.ASTAR) {
+          commit('setIsPalletDisabled', true);
+        } else {
+          //  Check if dapps staking is enabled.
+          let isPalletDisabled = false;
+          try {
+            const isDisabled = await $api.value.query.dappsStaking.palletDisabled<bool>();
+            isPalletDisabled = isDisabled.valueOf();
+          } catch {
+            // palletDisabled storage item is not supported by a node;
+          }
+
+          commit('setIsPalletDisabled', isPalletDisabled);
+        }
       }
     } catch (e) {
       const error = e as unknown as Error;

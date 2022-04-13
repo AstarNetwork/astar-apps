@@ -139,9 +139,7 @@ export default defineComponent({
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
 
     store.dispatch('dapps/getDapps');
-
-    // Enable maintenance only on Astar
-    store.dispatch('dapps/getStakingInfo', currentNetworkIdx.value === 0);
+    store.dispatch('dapps/getStakingInfo', currentNetworkIdx.value);
 
     watchEffect(() => {
       if (isH160.value) {
