@@ -97,7 +97,6 @@ export default defineComponent({
   line-height: 27px;
   letter-spacing: -0.02em;
   margin-left: 5px;
-  margin-top: -22px;
   color: $gray-5;
 }
 
