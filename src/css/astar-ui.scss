@@ -3,16 +3,6 @@
 // Memo: Overwriting the astar-ui component
 
 .header {
-  background: white !important;
-  border-bottom: 0px solid transparent !important;
-  @media (min-width: $lg) {
-    background: $gray-1 !important;
-    padding-left: 28px !important;
-    padding-right: 28px !important;
-  }
-  .header-left {
-    color: $gray-5 !important;
-  }
   .header-right {
     padding: 0 !important;
     @media (min-width: $lg) {

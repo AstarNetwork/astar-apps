@@ -1,5 +1,5 @@
 <template>
-  <astar-simple-modal :is-animation="true" :show="isOpen" title="Wallet" @close="closeModal">
+  <ModalDrawer :show="isOpen" title="Wallet" @close="closeModal">
     <div class="wrapper--modal-account">
       <div class="wrapper--select-network">
         <div class="row--separator--account">
@@ -17,7 +17,12 @@
               {{ $t('balance.modals.math.switchNetwork') }}
             </li>
           </div>
-          <ul v-else role="radiogroup" class="list--account">
+          <ul
+            v-else
+            role="radiogroup"
+            class="list--account"
+            :style="`max-height: ${windowHeight}px`"
+          >
             <li v-for="(account, index) in substrateAccounts" :key="index">
               <label
                 :class="[
@@ -52,6 +57,7 @@
                     </a>
                   </div>
                 </div>
+                <div v-if="index === previousSelIdx" class="dot"></div>
               </label>
             </li>
           </ul>
@@ -67,7 +73,7 @@
         </button>
       </div>
     </div>
-  </astar-simple-modal>
+  </ModalDrawer>
 </template>
 <script lang="ts">
 import SelectWallet from 'src/components/header/modals/SelectWallet.vue';
@@ -80,12 +86,14 @@ import { computed, defineComponent, PropType, ref } from 'vue';
 import copy from 'copy-to-clipboard';
 import IconCopy from 'src/components/icons/IconCopy.vue';
 import IconExternalLink from 'src/components/icons/IconExternalLink.vue';
+import ModalDrawer from './ModalDrawer.vue';
 
 export default defineComponent({
   components: {
     SelectWallet,
     IconCopy,
     IconExternalLink,
+    ModalDrawer,
   },
   props: {
     isOpen: {
@@ -140,6 +148,7 @@ export default defineComponent({
     const subScan = computed(
       () => `${providerEndpoints[currentNetworkIdx.value].subscan}/account/`
     );
+    const previousSelIdx = ref(0);
 
     const copyAddress = (address: string) => {
       copy(address);
@@ -149,10 +158,19 @@ export default defineComponent({
       });
     };
 
+    const windowHeight = ref<number>(window.innerHeight);
+    const onHeightChange = () => {
+      windowHeight.value = window.innerHeight - 400;
+    };
+
+    window.addEventListener('resize', onHeightChange);
+    onHeightChange();
+
     return {
       selAccount,
       closeModal,
       selectAccount,
+      previousSelIdx,
       currentNetworkStatus,
       substrateAccounts,
       SupportWallet,
@@ -162,6 +180,7 @@ export default defineComponent({
       copyAddress,
       endpointKey,
       isMathWallet,
+      windowHeight,
     };
   },
   methods: {
@@ -176,9 +195,14 @@ export default defineComponent({
 @import 'src/css/quasar.variables.scss';
 @import 'src/css/utils.scss';
 
+.wrapper--select-network {
+  position: relative;
+  flex-grow: 1;
+}
+
 .list--account {
-  max-height: 480px;
   overflow-y: auto;
+  margin-top: 8px;
 }
 
 .wrapper--modal-account {
@@ -200,7 +224,7 @@ export default defineComponent({
   line-height: 18px;
   color: $gray-5;
   margin: 0 auto;
-  margin-top: 16px;
+  margin-top: 8px;
   padding: 16px;
   cursor: pointer;
 }
@@ -224,9 +248,21 @@ export default defineComponent({
   border-radius: 9999px;
   border-width: 1px;
 
+  &:before {
+    content: '';
+    display: block;
+    width: 77%;
+    height: 77%;
+    margin: 15% 15%;
+    border-radius: 80%;
+  }
+
   &:checked {
+    background: #fff;
+    border: 1px solid $astar-blue;
+  }
+  &:checked:before {
     background: $astar-blue;
-    border-width: 3px;
   }
 }
 
@@ -280,6 +316,7 @@ export default defineComponent({
 }
 
 .wrapper__row--button {
+  flex-shrink: 0;
   display: flex;
   justify-content: center;
 }
@@ -291,7 +328,7 @@ export default defineComponent({
   font-weight: 600;
   border-radius: 30px;
   height: 52px;
-  margin-top: 24px;
+  margin-top: 40px;
   &:hover {
     background: linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
       linear-gradient(0deg, $astar-blue, $astar-blue);
@@ -307,6 +344,16 @@ export default defineComponent({
   padding-left: 28px;
 }
 
+.dot {
+  position: relative;
+  top: -60px;
+  left: 30px;
+  height: 7px;
+  width: 7px;
+  border-radius: 90%;
+  background-color: #00ff00;
+}
+
 .body--dark {
   .class-radio {
     color: #fff;
@@ -320,12 +367,16 @@ export default defineComponent({
   }
 
   .ip--account {
+    -webkit-appearance: none;
     background: $gray-6;
     border: 1px solid $gray-3;
 
     &:checked {
+      background: #000;
+      border: 1px solid $astar-blue;
+    }
+    &:checked:before {
       background: $astar-blue;
-      border-width: 3px;
     }
   }
 

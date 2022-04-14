@@ -1,5 +1,5 @@
 <template>
-  <astar-simple-modal :is-animation="true" :show="isOpen" title="Network" @close="closeModal">
+  <ModalDrawer :show="isOpen" title="Network" @close="closeModal">
     <div class="wrapper--modal-network">
       <div class="wrapper--select-network">
         <fieldset>
@@ -53,7 +53,7 @@
         </button>
       </div>
     </div>
-  </astar-simple-modal>
+  </ModalDrawer>
 </template>
 <script lang="ts">
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
@@ -62,8 +62,12 @@ import { checkIsMobileMathWallet } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref } from 'vue';
 import { useQuasar } from 'quasar';
+import ModalDrawer from './ModalDrawer.vue';
 
 export default defineComponent({
+  components: {
+    ModalDrawer,
+  },
   props: {
     isOpen: {
       type: Boolean,
@@ -232,7 +236,7 @@ export default defineComponent({
 }
 
 .btn--connect {
-  width: 340px;
+  width: 315px;
   background-color: $astar-blue;
   font-size: 20px;
   font-weight: 600;
