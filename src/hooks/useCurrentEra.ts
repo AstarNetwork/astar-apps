@@ -12,20 +12,22 @@ export function useCurrentEra() {
     const apiRef = $api && $api.value;
     if (!apiRef) return;
 
-    const result = await Promise.all([
+    const [currentEra, blockAmtPerEra, bestNum, nextEraStartingBlockHeight] = await Promise.all([
       apiRef.query.dappsStaking.currentEra(),
       apiRef.consts.dappsStaking.blockPerEra,
       apiRef.derive.chain.bestNumber,
+      apiRef.query.dappsStaking.nextEraStartingBlock(),
     ]);
 
-    const era = Number(result[0].toString());
-    const blockPerEra = Number(result[1].toString());
+    const era = Number(currentEra.toString());
+    const blockPerEra = Number(blockAmtPerEra.toString());
 
-    const handleBestNumber = result[2];
+    const handleBestNumber = bestNum;
     await handleBestNumber((bestNumber) => {
       const best = bestNumber.toNumber();
-      const progressRes = ((best % blockPerEra) / blockPerEra) * 100;
-      const countDown = blockPerEra - (best % blockPerEra);
+      const nextEraStartingBlock = Number(nextEraStartingBlockHeight.toString());
+      const countDown = nextEraStartingBlock - best;
+      const progressRes = ((blockPerEra - countDown) / blockPerEra) * 100;
       progress.value = Number(progressRes.toFixed(0));
       blocksUntilNextEra.value = countDown;
     });
@@ -50,7 +52,11 @@ export function useCurrentEra() {
       const apiRef = $api && $api.value;
       if (!apiRef) return;
       apiRef.isReady.then(() => {
-        updateEra();
+        try {
+          updateEra();
+        } catch (error) {
+          console.error(error);
+        }
       });
     },
     { immediate: true }
