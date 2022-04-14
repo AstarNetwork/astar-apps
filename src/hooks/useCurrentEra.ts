@@ -12,17 +12,19 @@ export function useCurrentEra() {
     const apiRef = $api && $api.value;
     if (!apiRef) return;
 
-    const [currentEra, blockAmtPerEra, bestNum, nextEraStartingBlockHeight] = await Promise.all([
-      apiRef.query.dappsStaking.currentEra(),
-      apiRef.consts.dappsStaking.blockPerEra,
-      apiRef.derive.chain.bestNumber,
-      apiRef.query.dappsStaking.nextEraStartingBlock(),
-    ]);
+    const [currentEra, blockAmtPerEra, blockHeight, nextEraStartingBlockHeight] = await Promise.all(
+      [
+        apiRef.query.dappsStaking.currentEra(),
+        apiRef.consts.dappsStaking.blockPerEra,
+        apiRef.derive.chain.bestNumber,
+        apiRef.query.dappsStaking.nextEraStartingBlock(),
+      ]
+    );
 
     const era = Number(currentEra.toString());
     const blockPerEra = Number(blockAmtPerEra.toString());
 
-    const handleBestNumber = bestNum;
+    const handleBestNumber = blockHeight;
     await handleBestNumber((bestNumber) => {
       const best = bestNumber.toNumber();
       const nextEraStartingBlock = Number(nextEraStartingBlockHeight.toString());
