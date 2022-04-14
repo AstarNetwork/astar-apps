@@ -53,7 +53,7 @@ export default defineComponent({
           console.error(error);
         }
       },
-      { immediate: false }
+      { immediate: true }
     );
 
     watch(
