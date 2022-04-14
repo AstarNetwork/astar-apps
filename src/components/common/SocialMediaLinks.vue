@@ -1,19 +1,34 @@
 <template>
   <div class="flex items-center tw-justify-evenly" :class="width < screenSize.sm ? 'm-header' : ''">
     <a :href="socialUrl.twitter" target="_blank" :class="classes.link" rel="noreferrer">
-      <icon-base :class="classes.iconBase" viewBox="0 0 512 512" icon-name="Twitter">
+      <icon-base
+        :class="classes.iconBase"
+        class="twitter icon"
+        viewBox="0 0 512 512"
+        icon-name="Twitter"
+      >
         <icon-twitter />
       </icon-base>
     </a>
 
     <a :href="socialUrl.telegram" target="_blank" :class="classes.link" rel="noreferrer">
-      <icon-base :class="classes.iconBase" viewBox="0 0 448 512" icon-name="Telegram">
+      <icon-base
+        :class="classes.iconBase"
+        class="telegram icon"
+        viewBox="0 0 448 512"
+        icon-name="Telegram"
+      >
         <icon-telegram />
       </icon-base>
     </a>
 
     <a :href="socialUrl.discord" target="_blank" :class="classes.link" rel="noreferrer">
-      <icon-base :class="classes.iconBase" viewBox="0 0 448 512" icon-name="Discord">
+      <icon-base
+        class="discord icon"
+        :class="classes.iconBase"
+        viewBox="0 0 448 512"
+        icon-name="Discord"
+      >
         <icon-discord />
       </icon-base>
     </a>
@@ -72,23 +87,59 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
 
+.icon {
+  -webkit-transition: all 0.2s ease;
+  -moz-transition: all 0.2s ease;
+  -o-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+  &:hover {
+    -webkit-transition: all 0.2s ease;
+    -moz-transition: all 0.2s ease;
+    -o-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+  }
+}
+
 .icon-link {
   color: $gray-4;
   padding: 10px;
+  height: 36px;
+  width: 36px;
+  -webkit-transition: all 0.2s ease;
+  -moz-transition: all 0.2s ease;
+  -o-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+  &:hover {
+    -webkit-transition: all 0.2s ease;
+    -moz-transition: all 0.2s ease;
+    -o-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+  }
 }
 
 .icon-link:hover {
-  color: $gray-1;
+  background: $gray-1;
+  border-radius: 100%;
+  .twitter {
+    color: #1da1f2;
+  }
+
+  .telegram {
+    color: #229ed9;
+  }
+
+  .discord {
+    color: #7289da;
+  }
 }
 
-// @media (max-width: 768px) {
-//   .icon-link {
-//     color: $gray-1;
-//   }
-// }
 .m-header {
   .icon-link {
     color: $gray-4;
+  }
+  .icon-link:hover {
+    background: white;
+    border-radius: 100%;
   }
 }
 
@@ -97,7 +148,12 @@ export default defineComponent({
     color: $gray-1;
   }
   .icon-link:hover {
-    color: $gray-5-selected-dark;
+    background: $gray-5-selected-dark;
+  }
+  .m-header {
+    .icon-link:hover {
+      background: $gray-6;
+    }
   }
 }
 </style>

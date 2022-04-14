@@ -5,10 +5,7 @@
       outlined
       label="Youtube Video link"
       maxlength="500"
-      :rules="[
-        (v) => (v && v.length > 0) || 'dApp video link is required.',
-        (v) => getVideoId(v) !== null || 'Enter a valid YouTube url',
-      ]"
+      :rules="[(v) => getVideoId(v) !== null || 'Enter a valid YouTube url']"
       class="tw-my-2"
       @update:model-value="videoUrlChanged"
     >
@@ -115,16 +112,23 @@ export default defineComponent({
     };
 
     const getVideoId = (url: string): string | null => {
-      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-      const match = url.match(regExp);
+      if (url) {
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+        const match = url.match(regExp);
 
-      return match && match[2].length === 11 ? match[2] : null;
+        return match && match[2].length === 11 ? match[2] : null;
+      } else {
+        return '';
+      }
     };
 
     const getEmbedUrl = (url: string): string | null => {
-      const id = getVideoId(url);
-
-      return 'https://www.youtube.com/embed/' + id;
+      if (url) {
+        const id = getVideoId(url);
+        return 'https://www.youtube.com/embed/' + id;
+      } else {
+        return '';
+      }
     };
 
     const videoUrlChanged = (url: string): void => {

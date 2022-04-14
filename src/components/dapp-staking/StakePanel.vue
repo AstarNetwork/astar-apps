@@ -10,22 +10,9 @@
           <div class="tw-w-20">{{ $t('dappStaking.totalStake') }}</div>
           <div class="tw-font-semibold">{{ stakeInfo?.totalStake }}</div>
         </div>
-        <div class="tw-mt-1">
+        <div class="tw-mt-1 tw-flex tw-flex-row">
           <div class="tw-w-20">{{ $t('dappStaking.stakersCount') }}</div>
-          <div class="tw-relative">
-            <VueJsProgress
-              :percentage="Number(((stakeInfo?.stakersCount / stakerMaxNumber) * 100).toFixed(0))"
-              :bg="stakeInfo?.stakersCount === stakerMaxNumber ? 'pinkglamour' : 'turquoise'"
-              :delay="600"
-              :striped="!isMaxStaker"
-              :animation="!isMaxStaker"
-            />
-            <div class="tw-absolute tw-bottom-0 tw-w-full tw-text-white tw-font-semibold">
-              <div class="tw-flex tw-justify-center">
-                {{ stakeInfo?.stakersCount.toLocaleString('en-US') }}
-              </div>
-            </div>
-          </div>
+          <div class="tw-font-semibold">{{ stakeInfo?.stakersCount }}</div>
         </div>
       </div>
       <div class="tw-flex">
@@ -110,7 +97,6 @@ import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
 import { useStore } from 'src/store';
 import { ClaimParameters, getAddressEnum, StakingParameters } from 'src/store/dapp-staking/actions';
 import { computed, defineComponent, ref, toRefs, watchEffect } from 'vue';
-import VueJsProgress from 'vue-js-progress';
 import './stake-panel.scss';
 
 export default defineComponent({
@@ -118,7 +104,6 @@ export default defineComponent({
     Button,
     StakeModal,
     ClaimRewardModal,
-    VueJsProgress,
   },
   props: {
     dapp: {
