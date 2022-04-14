@@ -9,12 +9,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, watchEffect } from 'vue';
 import axios from 'axios';
-import ChartPanel from 'src/components/dashboard/ChartPanel.vue';
 import { ChartData } from 'src/components/dashboard/ChartData';
-import { API_URL, formatNumber } from 'src/components/dashboard/utils';
 import { DEFAULT_FILTER } from 'src/components/dashboard/ChartFilter.vue';
+import ChartPanel from 'src/components/dashboard/ChartPanel.vue';
+import { API_URL, formatNumber } from 'src/components/dashboard/utils';
+import { defineComponent, ref, watch } from 'vue';
 
 export default defineComponent({
   components: {
@@ -27,22 +27,47 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const data = ref<ChartData>([[1, 1]]);
+    const data = ref<number[][] | ChartData>([[1, 1]]);
     const currentTvl = ref<string>('');
     const currentFilter = ref<string>(DEFAULT_FILTER);
 
+    // Memo: the length of ecosystem and dappStaking won't be same in some period
     const mergeArray = ({
       ecosystem,
       dappStaking,
     }: {
-      ecosystem: [number, number];
-      dappStaking: [string, number];
-    }) => {
-      const dappStakingLength = dappStaking.length;
+      ecosystem: [number, number][];
+      dappStaking: [string, number][];
+    }): number[][] => {
+      const isDappStakingLonger = dappStaking.length >= ecosystem.length;
+      if (isDappStakingLonger) {
+        const data = dappStaking.map((it, i) => {
+          const timestamp = Number(it[0]);
+          if (ecosystem[i]) {
+            const ecosystemItem = ecosystem[i];
+            return [timestamp, it[1] + ecosystemItem[1]];
+          } else {
+            return [timestamp, it[1]];
+          }
+        });
+        return data.reverse();
+      } else {
+        const data = ecosystem.map((it, i) => {
+          const timestamp = it[0] * 1000;
+          if (dappStaking[i]) {
+            const dappStakingItem = dappStaking[i];
+            return [timestamp, it[1] + dappStakingItem[1]];
+          } else {
+            return [timestamp, it[1]];
+          }
+        });
+        return data.reverse();
+      }
     };
 
     const loadData = async (): Promise<void> => {
       if (!props.network) return;
+      // Source: DefiLlama API
       const ecosystemTvlUrl = `${API_URL}/v1/${props.network.toLowerCase()}/token/tvl/${
         currentFilter.value
       }`;
@@ -53,17 +78,17 @@ export default defineComponent({
 
       const [ecosystem, dappStaking] = await Promise.all([
         axios.get<ChartData>(ecosystemTvlUrl),
-        axios.get<ChartData>(dappStakingTvlUrl),
+        axios.get<[string, number][]>(dappStakingTvlUrl),
       ]);
 
       console.log('ecosystem', ecosystem.data);
       console.log('dappStaking', dappStaking.data);
-
-      // console.log('result.data', result.data);
-      data.value = ecosystem.data.map((pair) => {
-        return [Number(pair[0]) * 1000, pair[1]];
+      const mergedArray = mergeArray({
+        ecosystem: ecosystem.data.reverse(),
+        dappStaking: dappStaking.data.reverse(),
       });
-      console.log('data.value', data.value);
+
+      data.value = mergedArray;
 
       if (data.value && data.value.length > 0) {
         currentTvl.value = `\$${formatNumber(data.value[data.value.length - 1][1], 1)}`;
@@ -88,11 +113,6 @@ export default defineComponent({
     });
 
     loadData();
-
-    // watchEffect(() => {
-    //   console.log('data', data.value);
-    //   console.log('currentTvl', currentTvl.value);
-    // });
 
     return {
       data,
