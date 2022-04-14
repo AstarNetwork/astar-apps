@@ -20,7 +20,7 @@ import TvlChart from 'src/components/dashboard/TvlChart.vue';
 import TotalTransactionsChart from 'src/components/dashboard/TotalTransactionsChart.vue';
 import ValuePanel from 'src/components/dashboard/ValuePanel.vue';
 import { useStore } from 'src/store';
-import { API_URL } from './utils';
+import { TOKEN_API_URL } from 'src/modules/token-api';
 
 interface StatsData {
   generatedAt: number;
@@ -48,7 +48,7 @@ export default defineComponent({
     const loadStats = async () => {
       if (!chainInfo.value || !chainInfo.value.chain) return;
 
-      const statsUrl = `${API_URL}/v1/${chainInfo.value.chain.toLowerCase()}/token/stats`;
+      const statsUrl = `${TOKEN_API_URL}/v1/${chainInfo.value.chain.toLowerCase()}/token/stats`;
       const result = await axios.get<StatsData>(statsUrl);
 
       if (result.data) {

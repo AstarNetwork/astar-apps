@@ -5,6 +5,7 @@
     :default-value="currentPrice"
     class="wrapper--chart"
     :range-filter="currentFilter"
+    y-label-prefix="$"
     @filter-changed="handleFilterChanged"
   />
 </template>
@@ -14,7 +15,7 @@ import axios from 'axios';
 import { ChartData } from 'src/components/dashboard/ChartData';
 import ChartPanel from 'src/components/dashboard/ChartPanel.vue';
 import { defineComponent, ref, watch } from 'vue';
-import { API_URL } from './utils';
+import { TOKEN_API_URL } from 'src/modules/token-api';
 
 export default defineComponent({
   components: {
@@ -33,7 +34,7 @@ export default defineComponent({
 
     const loadData = async () => {
       if (!props.network) return;
-      const priceUrl = `${API_URL}/v1/${props.network.toLowerCase()}/token/price/${
+      const priceUrl = `${TOKEN_API_URL}/v1/${props.network.toLowerCase()}/token/price/${
         currentFilter.value
       }`;
       const result = await axios.get<ChartData>(priceUrl);
