@@ -57,6 +57,7 @@
                     </a>
                   </div>
                 </div>
+                <div v-if="index === previousSelIdx" class="dot"></div>
               </label>
             </li>
           </ul>
@@ -147,6 +148,7 @@ export default defineComponent({
     const subScan = computed(
       () => `${providerEndpoints[currentNetworkIdx.value].subscan}/account/`
     );
+    const previousSelIdx = ref(0);
 
     const copyAddress = (address: string) => {
       copy(address);
@@ -168,6 +170,7 @@ export default defineComponent({
       selAccount,
       closeModal,
       selectAccount,
+      previousSelIdx,
       currentNetworkStatus,
       substrateAccounts,
       SupportWallet,
@@ -339,6 +342,16 @@ export default defineComponent({
   row-gap: 8px;
   padding-top: 24px;
   padding-left: 28px;
+}
+
+.dot {
+  position: relative;
+  top: -60px;
+  left: 30px;
+  height: 7px;
+  width: 7px;
+  border-radius: 90%;
+  background-color: #00ff00;
 }
 
 .body--dark {

@@ -12,6 +12,7 @@ import { ISubmittableResult, ITuple } from '@polkadot/types/types';
 import { formatBalance } from '@polkadot/util';
 import BN from 'bn.js';
 import { $api } from 'boot/api';
+import { endpointKey } from 'src/config/chainEndpoints';
 import { addDapp, getDapps, uploadFile } from 'src/hooks/firebase';
 import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
 import { ActionTree, Dispatch } from 'vuex';
@@ -796,8 +797,6 @@ const actions: ActionTree<State, StateInterface> = {
         commit('setMaxNumberOfStakersPerContract', maxNumberOfStakersPerContract?.toNumber());
         commit('setUnbondingPeriod', unbondingPeriod?.toNumber());
         commit('setMaxUnlockingChunks', maxUnlockingChunks?.toNumber());
-
-        // Check if dapps staking is enabled.
         let isPalletDisabled = false;
         try {
           const isDisabled = await $api.value.query.dappsStaking.palletDisabled<bool>();

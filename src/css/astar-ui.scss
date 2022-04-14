@@ -15,10 +15,11 @@
   }
 }
 
-.modal {
-  .modal-content {
-    .title {
-      margin-top: -22px;
+.body--dark {
+  .header {
+    background: $gray-6 !important;
+    .header-left {
+      color: $gray-1 !important;
     }
   }
 }
