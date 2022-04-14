@@ -24,7 +24,7 @@
           {{ dapp.name }}
         </div>
         <div class="tw-h-11 tw-w-48 description">
-          {{ dapp.description }}
+          {{ cleanMarkup(dapp.description) }}
         </div>
       </div>
     </div>
@@ -116,6 +116,16 @@ export default defineComponent({
         });
     };
 
+    const cleanMarkup = (text: string): string => {
+      // ATM remove only # and *
+      // Use split/join replacement method since replaceAll is not supported.
+      if (text) {
+        return text.split('*').join('').split('#').join('');
+      }
+
+      return text;
+    };
+
     watch(senderAddress, () => {
       getDappInfo();
     });
@@ -154,6 +164,7 @@ export default defineComponent({
       showStake,
       showStakeModal,
       handleStakeModalOpened,
+      cleanMarkup,
     };
   },
 });
