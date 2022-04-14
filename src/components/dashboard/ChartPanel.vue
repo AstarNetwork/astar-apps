@@ -24,6 +24,7 @@ import { Chart } from 'highcharts-vue';
 import { useStore } from 'src/store';
 import ChartFilter, { DEFAULT_FILTER } from 'src/components/dashboard/ChartFilter.vue';
 import { formatNumber } from 'src/modules/token-api';
+import Highcharts from 'highcharts';
 
 export default defineComponent({
   components: {
@@ -47,11 +48,6 @@ export default defineComponent({
       type: String,
       default: DEFAULT_FILTER,
     },
-    yLabelPrefix: {
-      type: String,
-      required: false,
-      default: '',
-    },
   },
   emits: ['filterChanged'],
   setup(props, { emit }) {
@@ -63,6 +59,11 @@ export default defineComponent({
     // const getChartFillColor = (): string => (isDarkTheme.value ? '#1d2d36' : '#F7F7F8');
     const hasData = ref<boolean>(false);
 
+    Highcharts.setOptions({
+      lang: {
+        thousandsSep: ',',
+      },
+    });
     const chartOptions = ref({
       title: {
         text: '',
@@ -92,7 +93,7 @@ export default defineComponent({
             color: getTextColor(),
           },
           formatter: (data: any) => {
-            const prefix = props.yLabelPrefix;
+            const prefix = props.title === 'Total Transactions' ? '' : '$';
             if (data.value > 999) {
               return prefix + formatNumber(data.value, 1);
             }
@@ -116,6 +117,9 @@ export default defineComponent({
           },
           threshold: null,
         },
+      },
+      tooltip: {
+        valueDecimals: props.title === 'Token Price' ? 4 : 0,
       },
       series: [
         {

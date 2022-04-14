@@ -5,7 +5,6 @@
     :default-value="currentPrice"
     class="wrapper--chart"
     :range-filter="currentFilter"
-    y-label-prefix="$"
     @filter-changed="handleFilterChanged"
   />
 </template>

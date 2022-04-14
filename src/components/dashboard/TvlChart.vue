@@ -4,7 +4,6 @@
     title="Total Value Locked"
     :default-value="currentTvl"
     class="wrapper--chart"
-    y-label-prefix="$"
     @filter-changed="handleFilterChanged"
   />
 </template>
