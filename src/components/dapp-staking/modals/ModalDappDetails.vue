@@ -22,6 +22,7 @@
                 :key="index"
                 :img-src="url"
                 :name="index.toString()"
+                class="uncropped-image"
               />
               <template #control>
                 <q-carousel-control position="bottom-right" :offset="[18, 18]">
@@ -164,5 +165,11 @@ export default defineComponent({
 
 .scroll {
   height: 350px;
+}
+
+.uncropped-image {
+  background-size: contain; /* don't crop the image  */
+  background-repeat: no-repeat; /* only show the image one time  */
+  background-color: grey; /* color to fill empty space with  */
 }
 </style>
