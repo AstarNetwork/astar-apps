@@ -79,6 +79,9 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
   };
 
   const callTransfer = async (transferAmt: number, fromAddress: string, toAddress: string) => {
+    console.log('callTransfer');
+    store.commit('general/setLoading', true);
+
     if (isH160.value) {
       const destinationAddress = buildEvmAddress(toAddress);
       if (!destinationAddress) {
@@ -86,7 +89,6 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
         return;
       }
 
-      store.commit('general/setLoading', true);
       const web3 = getDefaultEthProvider();
 
       sendNativeTokenTransaction(
