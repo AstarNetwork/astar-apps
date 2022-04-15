@@ -145,7 +145,7 @@
       </div>
     </div>
 
-    <Teleport to="body">
+    <Teleport to="#app--main">
       <ModalTransfer
         :is-modal-transfer="isModalTransfer"
         :handle-modal-transfer="handleModalTransfer"

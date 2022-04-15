@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-h-screen tw-flex tw-overflow-hidden">
+  <div id="app--main" class="tw-h-screen tw-flex tw-overflow-hidden">
     <template v-if="width >= screenSize.lg">
       <sidebar-desktop />
     </template>
