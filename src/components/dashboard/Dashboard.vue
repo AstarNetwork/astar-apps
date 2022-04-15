@@ -5,9 +5,11 @@
         <value-panel title="Current Circulating Supply" :value="circulatingSupply" />
         <value-panel title="Total Supply" :value="totalSupply" />
       </div>
-      <tvl-chart :network="chainInfo.chain" />
-      <total-transactions-chart :network="chainInfo.chain" />
-      <token-price-chart :network="chainInfo.chain" />
+      <template v-if="isMainnet">
+        <tvl-chart :network="chainInfo.chain" />
+        <total-transactions-chart :network="chainInfo.chain" />
+        <token-price-chart :network="chainInfo.chain" />
+      </template>
     </div>
   </div>
 </template>
@@ -45,6 +47,11 @@ export default defineComponent({
       return chainInfo ? chainInfo : {};
     });
 
+    const isMainnet = computed(() => {
+      const chainInfo = store.getters['general/chainInfo'];
+      return chainInfo ? chainInfo.chain !== 'Shibuya Testnet' : false;
+    });
+
     const loadStats = async () => {
       if (!chainInfo.value || !chainInfo.value.chain) return;
 
@@ -77,6 +84,7 @@ export default defineComponent({
       chainInfo,
       totalSupply,
       circulatingSupply,
+      isMainnet,
     };
   },
 });

@@ -67,14 +67,17 @@ export const getTvlData = async ({
     axios.get<[string, number][]>(dappStakingTvlUrl),
   ]);
 
-  const mergedData = mergeTvlArray({
-    ecosystem: ecosystem.data.reverse(),
-    dappStaking: dappStaking.data.reverse(),
-  });
+  const mergedData = dappStaking.data.length
+    ? mergeTvlArray({
+        ecosystem: ecosystem.data.reverse(),
+        dappStaking: dappStaking.data.reverse(),
+      })
+    : ecosystem.data.map((it) => [it[0] * 1000, it[1]]);
 
-  const tvl = `\$${formatNumber(mergedData[mergedData.length - 1][1], 1)}`;
+  const latestTvl = mergedData[mergedData.length - 1][1];
+  const tvlNum = formatNumber(latestTvl, 1);
 
-  return { mergedData, tvl };
+  return { mergedData, tvl: `\$${tvlNum}` };
 };
 
 export const filterTvlData = ({
