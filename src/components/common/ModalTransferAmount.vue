@@ -151,16 +151,15 @@
 </template>
 <script lang="ts">
 import BN from 'bn.js';
-import FormatBalance from 'components/balance/FormatBalance.vue';
+import { $api, $web3 } from 'boot/api';
+import FormatBalance from 'components/common/FormatBalance.vue';
 import InputAmount from 'components/common/InputAmount.vue';
 import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { useChainMetadata, useTransfer } from 'src/hooks';
-import { $api, $web3 } from 'boot/api';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { reduceBalanceToDenom } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, toRefs, watchEffect, watch } from 'vue';
-import Web3 from 'web3';
+import { computed, defineComponent, ref, toRefs, watchEffect } from 'vue';
 import ModalSelectAccount from './ModalSelectAccount.vue';
 
 export enum Role {
