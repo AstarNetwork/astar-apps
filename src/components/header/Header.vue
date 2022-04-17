@@ -35,6 +35,7 @@
       :selected-wallet="selectedWallet"
       :connect-ethereum-wallet="connectEthereumWallet"
       :disconnect-account="disconnectAccount"
+      :current-account="currentAccount"
     />
 
     <ModalInstallWallet

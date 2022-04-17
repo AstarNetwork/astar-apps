@@ -76,16 +76,16 @@
   </ModalDrawer>
 </template>
 <script lang="ts">
+import copy from 'copy-to-clipboard';
 import SelectWallet from 'src/components/header/modals/SelectWallet.vue';
+import IconCopy from 'src/components/icons/IconCopy.vue';
+import IconExternalLink from 'src/components/icons/IconExternalLink.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { SupportWallet } from 'src/config/wallets';
 import { castMobileSource, checkIsEthereumWallet } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
 import { computed, defineComponent, PropType, ref } from 'vue';
-import copy from 'copy-to-clipboard';
-import IconCopy from 'src/components/icons/IconCopy.vue';
-import IconExternalLink from 'src/components/icons/IconExternalLink.vue';
 import ModalDrawer from './ModalDrawer.vue';
 
 export default defineComponent({
@@ -116,6 +116,10 @@ export default defineComponent({
       type: Function,
       required: true,
     },
+    currentAccount: {
+      type: String,
+      required: true,
+    },
   },
   emits: ['update:is-open'],
   setup(props, { emit }) {
@@ -134,6 +138,7 @@ export default defineComponent({
       });
       return filteredAccounts;
     });
+
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
     const isMathWallet = computed(
       () => !substrateAccounts.value.length && props.selectedWallet === SupportWallet.Math
@@ -153,7 +158,17 @@ export default defineComponent({
     const subScan = computed(
       () => `${providerEndpoints[currentNetworkIdx.value].subscan}/account/`
     );
-    const previousSelIdx = ref(0);
+
+    const previousSelIdx = computed(() => {
+      if (substrateAccounts.value && props.currentAccount) {
+        const index = substrateAccounts.value.findIndex(
+          (it: SubstrateAccount) => it.address === props.currentAccount
+        );
+        return index;
+      } else {
+        return null;
+      }
+    });
 
     const copyAddress = (address: string) => {
       copy(address);
