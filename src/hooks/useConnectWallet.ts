@@ -165,7 +165,6 @@ export const useConnectWallet = () => {
 
   const selectLoginWallet = async (): Promise<void> => {
     const lookupWallet = castMobileSource(modalName.value);
-    // const isEthereumWallet = checkIsEthereumWallet(modalName.value as SupportWallet);
     if (SubstrateWallets.find((it) => it === lookupWallet)) {
       const injected = await getInjectedExtensions();
       const isInstalledExtension = injected.find((it) => lookupWallet === it.name);
