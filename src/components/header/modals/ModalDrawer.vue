@@ -1,14 +1,16 @@
 <template>
-  <div
-    class="animate__animated"
-    :class="`${isClosing ? slideOutClass : animation} modal ${isShow ? 'show' : ''}`"
-  >
-    <div class="modal-content">
-      <div class="row--close">
-        <span class="close" @click="close">&times;</span>
+  <div :class="isShow && 'wrapper--modal-drawer'" @click="closeHandler">
+    <div
+      class="animate__animated modal"
+      :class="[isClosing ? slideOutClass : slideInClass, isShow && 'show']"
+    >
+      <div class="modal-content">
+        <div class="row--close">
+          <span class="close">&times;</span>
+        </div>
+        <div class="title">{{ title }}</div>
+        <slot />
       </div>
-      <div class="title">{{ title }}</div>
-      <slot />
     </div>
   </div>
 </template>
@@ -22,7 +24,7 @@ const slideOutClass = 'animate__slideOutRight';
 export default defineComponent({
   name: 'ModalDrawer',
   props: {
-    show: {
+    isShow: {
       type: Boolean,
       default: false,
     },
@@ -38,32 +40,24 @@ export default defineComponent({
   },
   emits: ['close'],
   setup(props, { emit }) {
-    const isShow = ref<boolean>(props.show);
     const animation = ref<string>(slideInClass);
 
-    watchEffect(() => {
-      if (isShow.value !== props.show) {
-        isShow.value = props.show;
-      }
-    });
-
-    const close = (e: any) => {
-      animation.value = slideOutClass;
-      const animationDuration = 900;
-      if (e.target.className === 'modal show' || e.target.className === 'close') {
-        setTimeout(() => {
-          emit('close');
-          animation.value = slideInClass;
-        }, animationDuration);
+    const closeHandler = (e: any) => {
+      console.log('e.target.className', e.target.className);
+      const closeClass =
+        e.target.className === 'wrapper--modal-drawer' || e.target.className === 'close';
+      if (closeClass) {
+        emit('close');
       }
     };
 
     return {
       ...toRefs(props),
-      isShow,
-      close,
+      // isShow,
       animation,
       slideOutClass,
+      slideInClass,
+      closeHandler,
     };
   },
 });
@@ -72,6 +66,14 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
 @import 'src/css/utils.scss';
+
+.wrapper--modal-drawer {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  background: transparent;
+  z-index: 100;
+}
 
 .modal {
   display: none; /* Hidden by default */

@@ -165,6 +165,7 @@ export const useConnectWallet = () => {
 
   const selectLoginWallet = async (): Promise<void> => {
     const lookupWallet = castMobileSource(modalName.value);
+    // const isEthereumWallet = checkIsEthereumWallet(modalName.value as SupportWallet);
     if (SubstrateWallets.find((it) => it === lookupWallet)) {
       const injected = await getInjectedExtensions();
       const isInstalledExtension = injected.find((it) => lookupWallet === it.name);
@@ -212,7 +213,7 @@ export const useConnectWallet = () => {
   const changeAccount = async (): Promise<void> => {
     const chosenWallet = selectedWallet.value;
     if (chosenWallet === SupportWallet.MetaMask || chosenWallet === SupportWallet.Wallet3) {
-      openSelectModal();
+      modalAccountSelect.value = true;
     } else {
       setWallet(chosenWallet as SupportWallet);
     }

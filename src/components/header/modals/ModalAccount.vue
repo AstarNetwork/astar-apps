@@ -1,7 +1,6 @@
 <template>
   <ModalDrawer
-    id="modal--account"
-    :show="isOpen && !isSelected"
+    :is-show="isOpen && !isSelected"
     title="Wallet"
     :is-closing="isClosing"
     @close="closeModal"
