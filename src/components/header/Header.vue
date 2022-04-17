@@ -15,6 +15,7 @@
       </template>
       <NetworkButton @show-network="modalNetwork = true" />
     </astar-header>
+
     <!-- Modals -->
     <ModalNetwork
       v-model:isOpen="modalNetwork"

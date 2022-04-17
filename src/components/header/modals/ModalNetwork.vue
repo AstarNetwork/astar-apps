@@ -1,5 +1,5 @@
 <template>
-  <ModalDrawer :show="isOpen" title="Network" @close="closeModal">
+  <ModalDrawer :show="isOpen" title="Network" :is-closing="isClosing" @close="closeModal">
     <div class="wrapper--modal-network">
       <div class="wrapper--select-network">
         <fieldset>
@@ -90,8 +90,16 @@ export default defineComponent({
     const customEndpoint = computed(() => store.getters['general/customEndpoint']);
     newEndpoint.value = customEndpoint.value;
 
+    const isClosing = ref<boolean>(false);
+
     const closeModal = (): void => {
-      emit('update:is-open', false);
+      isClosing.value = true;
+      const animationDuration = 900;
+      setTimeout(() => {
+        isClosing.value = false;
+        emit('update:is-open', false);
+      }, animationDuration);
+      // emit('update:is-open', false);
     };
 
     const { NETWORK_IDX, CUSTOM_ENDPOINT } = LOCAL_STORAGE;
@@ -132,6 +140,7 @@ export default defineComponent({
       endpointKey,
       isDisabled,
       isCustomNetwork,
+      isClosing,
     };
   },
 });

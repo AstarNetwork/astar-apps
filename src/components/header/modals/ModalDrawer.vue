@@ -1,7 +1,12 @@
 <template>
-  <div class="animate__animated animate__slideInRight" :class="`modal ${isShow ? 'show' : ''}`">
+  <div
+    class="animate__animated"
+    :class="`${isClosing ? slideOutClass : animation} modal ${isShow ? 'show' : ''}`"
+  >
     <div class="modal-content">
-      <span class="close" @click="close">&times;</span>
+      <div class="row--close">
+        <span class="close" @click="close">&times;</span>
+      </div>
       <div class="title">{{ title }}</div>
       <slot />
     </div>
@@ -10,6 +15,9 @@
 
 <script lang="ts">
 import { defineComponent, ref, watchEffect, toRefs } from 'vue';
+
+const slideInClass = 'animate__slideInRight';
+const slideOutClass = 'animate__slideOutRight';
 
 export default defineComponent({
   name: 'ModalDrawer',
@@ -22,10 +30,16 @@ export default defineComponent({
       type: String,
       default: '',
     },
+    isClosing: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   emits: ['close'],
   setup(props, { emit }) {
-    const isShow = ref(props.show);
+    const isShow = ref<boolean>(props.show);
+    const animation = ref<string>(slideInClass);
 
     watchEffect(() => {
       if (isShow.value !== props.show) {
@@ -34,8 +48,13 @@ export default defineComponent({
     });
 
     const close = (e: any) => {
+      animation.value = slideOutClass;
+      const animationDuration = 900;
       if (e.target.className === 'modal show' || e.target.className === 'close') {
-        emit('close');
+        setTimeout(() => {
+          emit('close');
+          animation.value = slideInClass;
+        }, animationDuration);
       }
     };
 
@@ -43,6 +62,8 @@ export default defineComponent({
       ...toRefs(props),
       isShow,
       close,
+      animation,
+      slideOutClass,
     };
   },
 });
@@ -96,6 +117,11 @@ export default defineComponent({
   margin-left: 5px;
   margin-top: -17px;
   color: $gray-5;
+}
+
+.row--close {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .close {

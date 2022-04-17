@@ -1,5 +1,11 @@
 <template>
-  <ModalDrawer :show="isOpen" title="Wallet" @close="closeModal">
+  <ModalDrawer
+    id="modal--account"
+    :show="isOpen && !isSelected"
+    title="Wallet"
+    :is-closing="isClosing"
+    @close="closeModal"
+  >
     <div class="wrapper--modal-account">
       <div class="wrapper--select-network">
         <div class="row--separator--account">
@@ -123,8 +129,17 @@ export default defineComponent({
   },
   emits: ['update:is-open'],
   setup(props, { emit }) {
+    const isSelected = ref<boolean>(false);
+    const isClosing = ref<boolean>(false);
+
     const closeModal = (): void => {
-      emit('update:is-open', false);
+      // emit('update:is-open', false);
+      isClosing.value = true;
+      const animationDuration = 900;
+      setTimeout(() => {
+        isClosing.value = false;
+        emit('update:is-open', false);
+      }, animationDuration);
     };
 
     const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
@@ -150,7 +165,13 @@ export default defineComponent({
         props.connectEthereumWallet(props.selectedWallet);
       }
       substrateAccount && store.commit('general/setCurrentAddress', substrateAccount);
-      emit('update:is-open', false);
+      isClosing.value = true;
+      const animationDuration = 900;
+      setTimeout(() => {
+        isSelected.value = true;
+        isClosing.value = false;
+        emit('update:is-open', false);
+      }, animationDuration);
     };
 
     const selAccount = ref<string>('');
@@ -201,6 +222,8 @@ export default defineComponent({
       endpointKey,
       isMathWallet,
       windowHeight,
+      isSelected,
+      isClosing,
     };
   },
   methods: {
