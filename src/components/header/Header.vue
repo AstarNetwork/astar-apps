@@ -34,6 +34,7 @@
       :set-wallet-modal="setWalletModal"
       :selected-wallet="selectedWallet"
       :connect-ethereum-wallet="connectEthereumWallet"
+      :disconnect-account="disconnectAccount"
     />
 
     <ModalInstallWallet
@@ -95,6 +96,7 @@ export default defineComponent({
       openSelectModal,
       changeAccount,
       connectEthereumWallet,
+      disconnectAccount,
     } = useConnectWallet();
 
     const store = useStore();
@@ -130,6 +132,7 @@ export default defineComponent({
       openSelectModal,
       changeAccount,
       connectEthereumWallet,
+      disconnectAccount,
     };
   },
 });

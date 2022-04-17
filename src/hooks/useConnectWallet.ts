@@ -211,7 +211,6 @@ export const useConnectWallet = () => {
 
   const changeAccount = async (): Promise<void> => {
     const chosenWallet = selectedWallet.value;
-    disconnectAccount();
     if (chosenWallet === SupportWallet.MetaMask || chosenWallet === SupportWallet.Wallet3) {
       openSelectModal();
     } else {
@@ -225,7 +224,7 @@ export const useConnectWallet = () => {
     }
     window.ethereum.on('accountsChanged', async (accounts: string[]) => {
       if (accounts[0] !== currentAccount.value) {
-        disconnectAccount();
+        await disconnectAccount();
         await setMetaMask();
       }
     });

@@ -112,6 +112,10 @@ export default defineComponent({
       type: Function,
       required: true,
     },
+    disconnectAccount: {
+      type: Function,
+      required: true,
+    },
   },
   emits: ['update:is-open'],
   setup(props, { emit }) {
@@ -135,7 +139,8 @@ export default defineComponent({
       () => !substrateAccounts.value.length && props.selectedWallet === SupportWallet.Math
     );
 
-    const selectAccount = (substrateAccount: string) => {
+    const selectAccount = async (substrateAccount: string) => {
+      await props.disconnectAccount();
       if (checkIsEthereumWallet(props.selectedWallet)) {
         props.connectEthereumWallet(props.selectedWallet);
       }
