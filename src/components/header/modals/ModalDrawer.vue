@@ -53,7 +53,6 @@ export default defineComponent({
 
     return {
       ...toRefs(props),
-      // isShow,
       animation,
       slideOutClass,
       slideInClass,
