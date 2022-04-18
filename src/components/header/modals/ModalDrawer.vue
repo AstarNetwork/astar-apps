@@ -1,7 +1,7 @@
 <template>
   <div :class="isShow && 'wrapper--modal-drawer'" @click="closeHandler">
     <div
-      class="animate__animated modal"
+      class="animate__animated animate__faster modal"
       :class="[isClosing ? slideOutClass : slideInClass, isShow && 'show']"
     >
       <div class="modal-content">
@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watchEffect, toRefs } from 'vue';
+import { defineComponent, ref, toRefs } from 'vue';
 
 const slideInClass = 'animate__slideInRight';
 const slideOutClass = 'animate__slideOutRight';

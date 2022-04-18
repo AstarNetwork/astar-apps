@@ -94,7 +94,7 @@ export default defineComponent({
 
     const closeModal = (): void => {
       isClosing.value = true;
-      const animationDuration = 900;
+      const animationDuration = 500;
       setTimeout(() => {
         isClosing.value = false;
         emit('update:is-open', false);

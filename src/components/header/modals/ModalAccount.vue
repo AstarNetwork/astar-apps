@@ -164,7 +164,7 @@ export default defineComponent({
       }
       substrateAccount && store.commit('general/setCurrentAddress', substrateAccount);
       isClosing.value = true;
-      const animationDuration = 900;
+      const animationDuration = 500;
       setTimeout(() => {
         isSelected.value = true;
         isClosing.value = false;
