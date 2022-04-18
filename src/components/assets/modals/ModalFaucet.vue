@@ -21,11 +21,11 @@
       </div>
       <div v-if="!isAbleToFaucet" class="box--faucet--next-available">
         <span class="text--accent color--warning">
-          {{ $t('balance.modals.faucetNextRequest') }}</span
+          {{ $t('assets.modals.faucetNextRequest') }}</span
         >
         <span class="text--xl">
           {{
-            $t('balance.modals.countDown', {
+            $t('assets.modals.countDown', {
               hrs: countDown.hours,
               mins: countDown.minutes,
               secs: countDown.seconds,

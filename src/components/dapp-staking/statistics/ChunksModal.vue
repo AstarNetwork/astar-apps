@@ -34,7 +34,7 @@
 import { defineComponent, toRefs } from 'vue';
 import Modal from 'components/common/Modal.vue';
 import Button from 'components/common/Button.vue';
-import FormatBalance from 'components/balance/FormatBalance.vue';
+import FormatBalance from 'components/common/FormatBalance.vue';
 
 export default defineComponent({
   components: {
