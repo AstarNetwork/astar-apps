@@ -70,21 +70,28 @@ export default defineComponent({
   position: absolute;
   width: 100vw;
   height: 100vh;
+  height: calc(100vh - 104px);
   background: transparent;
   z-index: 100;
+  @media (min-width: $lg) {
+    height: calc(100vh - 96px);
+  }
 }
 
 .modal {
   display: none; /* Hidden by default */
   position: fixed;
   z-index: 10;
-  top: 96px;
+  top: 104px;
   right: 0px;
   width: 395px;
   height: 100%;
   text-align: center;
   background: rgba(255, 255, 255, 0.5);
-  box-shadow: -5px 2px 8px 4px rgba(0, 0, 0, 0.5);
+  box-shadow: -1px 0px 3px rgba(0, 0, 0, 0.1);
+  @media (min-width: $lg) {
+    top: 96px;
+  }
 }
 .modal.show {
   display: flex;
@@ -145,7 +152,7 @@ export default defineComponent({
 .body--dark {
   .modal {
     background-color: $gray-5;
-    box-shadow: none;
+    box-shadow: -2px 0px 6px rgba(0, 0, 0, 0.25);
 
     .modal-content {
       background-color: $gray-5;
