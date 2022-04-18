@@ -61,7 +61,6 @@ import BN from 'bn.js';
 import FormatBalance from 'components/common/FormatBalance.vue';
 import ModalSelectAccount from 'components/common/ModalSelectAccount.vue';
 import Modal from 'components/common/Modal.vue';
-import { Role } from 'src/components/common/ModalTransferAmount.vue';
 import Avatar from 'src/components/common/Avatar.vue';
 import Button from 'src/components/common/Button.vue';
 import InputAmount from 'src/components/common/InputAmount.vue';
@@ -72,6 +71,11 @@ import { getAmount, StakeModel } from 'src/hooks/store';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, toRefs } from 'vue';
 import { StakeAction } from '../StakePanel.vue';
+
+export enum Role {
+  FromAddress = 'FromAddress',
+  ToAddress = 'ToAddress',
+}
 
 export default defineComponent({
   components: {

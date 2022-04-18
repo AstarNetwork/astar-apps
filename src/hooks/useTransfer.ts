@@ -29,7 +29,7 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
   const { callFunc, handleResult, handleTransactionError } = useCustomSignature({ fn });
   const toastInvalidAddress = () =>
     store.dispatch('general/showAlertMsg', {
-      msg: 'balance.modals.invalidAddress',
+      msg: 'assets.invalidAddress',
       alertType: 'error',
     });
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
