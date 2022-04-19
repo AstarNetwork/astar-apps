@@ -1,5 +1,5 @@
 <template>
-  <ModalDrawer :show="isModalConnectWallet" title="Select a Wallet" @close="setCloseModal">
+  <ModalDrawer :is-show="isModalConnectWallet" title="Select a Wallet" @close="setCloseModal">
     <div class="wrapper--modal--wallet">
       <div class="title--account-type">{{ $t('wallet.evmAccount') }}</div>
       <div

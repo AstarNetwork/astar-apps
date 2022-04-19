@@ -1,20 +1,30 @@
 <template>
-  <div class="animate__animated animate__slideInRight" :class="`modal ${isShow ? 'show' : ''}`">
-    <div class="modal-content">
-      <span class="close" @click="close">&times;</span>
-      <div class="title">{{ title }}</div>
-      <slot />
+  <div :class="isShow && 'wrapper--modal-drawer'" @click="closeHandler">
+    <div
+      class="animate__animated animate__faster modal"
+      :class="[isClosing ? slideOutClass : slideInClass, isShow && 'show']"
+    >
+      <div class="modal-content">
+        <div class="row--close">
+          <span class="close">&times;</span>
+        </div>
+        <div class="title">{{ title }}</div>
+        <slot />
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watchEffect, toRefs } from 'vue';
+import { defineComponent, ref, toRefs } from 'vue';
+
+const slideInClass = 'animate__slideInRight';
+const slideOutClass = 'animate__slideOutRight';
 
 export default defineComponent({
   name: 'ModalDrawer',
   props: {
-    show: {
+    isShow: {
       type: Boolean,
       default: false,
     },
@@ -22,27 +32,31 @@ export default defineComponent({
       type: String,
       default: '',
     },
+    isClosing: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   emits: ['close'],
   setup(props, { emit }) {
-    const isShow = ref(props.show);
+    const animation = ref<string>(slideInClass);
 
-    watchEffect(() => {
-      if (isShow.value !== props.show) {
-        isShow.value = props.show;
-      }
-    });
-
-    const close = (e: any) => {
-      if (e.target.className === 'modal show' || e.target.className === 'close') {
+    const closeHandler = (e: any) => {
+      console.log('e.target.className', e.target.className);
+      const closeClass =
+        e.target.className === 'wrapper--modal-drawer' || e.target.className === 'close';
+      if (closeClass) {
         emit('close');
       }
     };
 
     return {
       ...toRefs(props),
-      isShow,
-      close,
+      animation,
+      slideOutClass,
+      slideInClass,
+      closeHandler,
     };
   },
 });
@@ -52,17 +66,32 @@ export default defineComponent({
 @import 'src/css/quasar.variables.scss';
 @import 'src/css/utils.scss';
 
+.wrapper--modal-drawer {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  height: calc(100vh - 104px);
+  background: transparent;
+  z-index: 100;
+  @media (min-width: $lg) {
+    height: calc(100vh - 96px);
+  }
+}
+
 .modal {
   display: none; /* Hidden by default */
   position: fixed;
   z-index: 10;
-  top: 96px;
+  top: 104px;
   right: 0px;
   width: 395px;
   height: 100%;
   text-align: center;
   background: rgba(255, 255, 255, 0.5);
-  box-shadow: -5px 2px 8px 4px rgba(0, 0, 0, 0.5);
+  box-shadow: -1px 0px 3px rgba(0, 0, 0, 0.1);
+  @media (min-width: $lg) {
+    top: 96px;
+  }
 }
 .modal.show {
   display: flex;
@@ -98,6 +127,11 @@ export default defineComponent({
   color: $gray-5;
 }
 
+.row--close {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .close {
   display: flex;
   color: #b1b7c1;
@@ -118,7 +152,7 @@ export default defineComponent({
 .body--dark {
   .modal {
     background-color: $gray-5;
-    box-shadow: none;
+    box-shadow: -2px 0px 6px rgba(0, 0, 0, 0.25);
 
     .modal-content {
       background-color: $gray-5;

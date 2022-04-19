@@ -29,6 +29,21 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   {
+    path: '/balance',
+    name: 'Balance',
+    redirect: '/assets',
+    children: [
+      {
+        path: '',
+        redirect: '/assets',
+      },
+      {
+        path: 'wallet',
+        redirect: '/assets',
+      },
+    ],
+  },
+  {
     path: '/dashboard',
     name: 'Dashboard',
     component: Dashboard,

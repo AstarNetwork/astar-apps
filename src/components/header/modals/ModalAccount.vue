@@ -1,5 +1,10 @@
 <template>
-  <ModalDrawer :show="isOpen" title="Wallet" @close="closeModal">
+  <ModalDrawer
+    :is-show="isOpen && !isSelected"
+    title="Wallet"
+    :is-closing="isClosing"
+    @close="closeModal"
+  >
     <div class="wrapper--modal-account">
       <div class="wrapper--select-network">
         <div class="row--separator--account">
@@ -76,16 +81,16 @@
   </ModalDrawer>
 </template>
 <script lang="ts">
+import copy from 'copy-to-clipboard';
 import SelectWallet from 'src/components/header/modals/SelectWallet.vue';
+import IconCopy from 'src/components/icons/IconCopy.vue';
+import IconExternalLink from 'src/components/icons/IconExternalLink.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { SupportWallet } from 'src/config/wallets';
 import { castMobileSource, checkIsEthereumWallet } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
 import { computed, defineComponent, PropType, ref } from 'vue';
-import copy from 'copy-to-clipboard';
-import IconCopy from 'src/components/icons/IconCopy.vue';
-import IconExternalLink from 'src/components/icons/IconExternalLink.vue';
 import ModalDrawer from './ModalDrawer.vue';
 
 export default defineComponent({
@@ -112,11 +117,27 @@ export default defineComponent({
       type: Function,
       required: true,
     },
+    disconnectAccount: {
+      type: Function,
+      required: true,
+    },
+    currentAccount: {
+      type: String,
+      required: true,
+    },
   },
   emits: ['update:is-open'],
   setup(props, { emit }) {
+    const isSelected = ref<boolean>(false);
+    const isClosing = ref<boolean>(false);
+
     const closeModal = (): void => {
-      emit('update:is-open', false);
+      isClosing.value = true;
+      const animationDuration = 900;
+      setTimeout(() => {
+        isClosing.value = false;
+        emit('update:is-open', false);
+      }, animationDuration);
     };
 
     const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
@@ -130,17 +151,25 @@ export default defineComponent({
       });
       return filteredAccounts;
     });
+
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
     const isMathWallet = computed(
       () => !substrateAccounts.value.length && props.selectedWallet === SupportWallet.Math
     );
 
-    const selectAccount = (substrateAccount: string) => {
+    const selectAccount = async (substrateAccount: string) => {
+      await props.disconnectAccount();
       if (checkIsEthereumWallet(props.selectedWallet)) {
         props.connectEthereumWallet(props.selectedWallet);
       }
       substrateAccount && store.commit('general/setCurrentAddress', substrateAccount);
-      emit('update:is-open', false);
+      isClosing.value = true;
+      const animationDuration = 500;
+      setTimeout(() => {
+        isSelected.value = true;
+        isClosing.value = false;
+        emit('update:is-open', false);
+      }, animationDuration);
     };
 
     const selAccount = ref<string>('');
@@ -148,7 +177,17 @@ export default defineComponent({
     const subScan = computed(
       () => `${providerEndpoints[currentNetworkIdx.value].subscan}/account/`
     );
-    const previousSelIdx = ref(0);
+
+    const previousSelIdx = computed(() => {
+      if (substrateAccounts.value && props.currentAccount) {
+        const index = substrateAccounts.value.findIndex(
+          (it: SubstrateAccount) => it.address === props.currentAccount
+        );
+        return index;
+      } else {
+        return null;
+      }
+    });
 
     const copyAddress = (address: string) => {
       copy(address);
@@ -181,6 +220,8 @@ export default defineComponent({
       endpointKey,
       isMathWallet,
       windowHeight,
+      isSelected,
+      isClosing,
     };
   },
   methods: {

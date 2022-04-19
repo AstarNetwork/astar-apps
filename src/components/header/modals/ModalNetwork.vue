@@ -1,5 +1,5 @@
 <template>
-  <ModalDrawer :show="isOpen" title="Network" @close="closeModal">
+  <ModalDrawer :is-show="isOpen" title="Network" :is-closing="isClosing" @close="closeModal">
     <div class="wrapper--modal-network">
       <div class="wrapper--select-network">
         <fieldset>
@@ -56,12 +56,12 @@
   </ModalDrawer>
 </template>
 <script lang="ts">
+import { useQuasar } from 'quasar';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { checkIsMobileMathWallet } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref } from 'vue';
-import { useQuasar } from 'quasar';
 import ModalDrawer from './ModalDrawer.vue';
 
 export default defineComponent({
@@ -90,8 +90,15 @@ export default defineComponent({
     const customEndpoint = computed(() => store.getters['general/customEndpoint']);
     newEndpoint.value = customEndpoint.value;
 
+    const isClosing = ref<boolean>(false);
+
     const closeModal = (): void => {
-      emit('update:is-open', false);
+      isClosing.value = true;
+      const animationDuration = 500;
+      setTimeout(() => {
+        isClosing.value = false;
+        emit('update:is-open', false);
+      }, animationDuration);
     };
 
     const { NETWORK_IDX, CUSTOM_ENDPOINT } = LOCAL_STORAGE;
@@ -132,6 +139,7 @@ export default defineComponent({
       endpointKey,
       isDisabled,
       isCustomNetwork,
+      isClosing,
     };
   },
 });
