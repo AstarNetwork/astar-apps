@@ -22,11 +22,11 @@ export default defineComponent({
       required: true,
     },
     tvlValue: {
-      type: Array,
+      type: String,
       required: true,
     },
     tvlData: {
-      type: Array,
+      type: String,
       required: true,
     },
     handleFilterChanged: {

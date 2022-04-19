@@ -127,6 +127,9 @@
 
 .skeleton--chart {
   height: 367px;
+  @media (min-width: $xxl) {
+    height: 417px;
+  }
 }
 
 .container--value {

@@ -29,21 +29,22 @@ export const formatNumber = (value: number, digits: number): string => {
   return item ? (value / item.value).toFixed(digits).replace(rx, '$1') + item.symbol : '0';
 };
 
-const mergeTvlArray = ({
+export const mergeTvlArray = ({
   ecosystem,
   dappStaking,
 }: {
-  ecosystem: [number, number][];
-  dappStaking: [string, number][];
+  ecosystem: number[][];
+  dappStaking: number[][];
 }): number[][] => {
-  const data = dappStaking
+  const ecosystemReverse = ecosystem.sort((a, b) => b[0] - a[0]);
+  const dappStakingReverse = dappStaking.sort((a, b) => b[0] - a[0]);
+  const data = dappStakingReverse
     .map((it, i) => {
-      const timestamp = Number(it[0]);
-      if (ecosystem[i]) {
-        const ecosystemItem = ecosystem[i];
-        return [timestamp, it[1] + ecosystemItem[1]];
+      if (ecosystemReverse[i]) {
+        const ecosystemItem = ecosystemReverse[i];
+        return [it[0], it[1] + ecosystemItem[1]];
       } else {
-        return [timestamp, it[1]];
+        return it;
       }
     })
     .reverse();
@@ -51,13 +52,28 @@ const mergeTvlArray = ({
   return data;
 };
 
+export const getTvlValue = (tvlArray: number[][]) => {
+  const latestTvl = tvlArray[tvlArray.length - 1][1];
+  const tvlNum = formatNumber(latestTvl, 1);
+  const tvl = `\$${tvlNum}`;
+  return tvl;
+};
+
 // Note: We filter with the longest duration (1 year) because the array length of the `ecosystem` and `dappStaking` won't be the same in some periods.
 // Note: We can fetch the data only once (no need to fetch the data again whenever users select a different duration).
+
 export const getTvlData = async ({
   network,
 }: {
   network: string;
-}): Promise<{ mergedData: number[][]; tvl: string }> => {
+}): Promise<{
+  mergedTvlData: number[][];
+  ecosystemTvlData: number[][];
+  dappStakingTvlData: number[][];
+  mergedTvlValue: string;
+  dappStakingTvlValue: string;
+  ecosystemTvlValue: string;
+}> => {
   // Original source: DefiLlama API
   const ecosystemTvlUrl = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/token/tvl/1%20year`;
   const dappStakingTvlUrl = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/dapps-staking/tvl/1%20year`;
@@ -67,17 +83,29 @@ export const getTvlData = async ({
     axios.get<[string, number][]>(dappStakingTvlUrl),
   ]);
 
-  const mergedData = dappStaking.data.length
+  const ecosystemTvlData = ecosystem.data.map((it: [number, number]) => [it[0] * 1000, it[1]]);
+
+  const dappStakingTvlData = dappStaking.data.map((it: [string, number]) => [Number(it[0]), it[1]]);
+
+  const mergedTvlData = dappStaking.data.length
     ? mergeTvlArray({
-        ecosystem: ecosystem.data.reverse(),
-        dappStaking: dappStaking.data.reverse(),
+        ecosystem: [...ecosystemTvlData],
+        dappStaking: [...dappStakingTvlData],
       })
-    : ecosystem.data.map((it) => [it[0] * 1000, it[1]]);
+    : ecosystemTvlData;
 
-  const latestTvl = mergedData[mergedData.length - 1][1];
-  const tvlNum = formatNumber(latestTvl, 1);
+  const mergedTvlValue = getTvlValue(mergedTvlData);
+  const dappStakingTvlValue = getTvlValue(dappStakingTvlData);
+  const ecosystemTvlValue = getTvlValue(ecosystemTvlData);
 
-  return { mergedData, tvl: `\$${tvlNum}` };
+  return {
+    mergedTvlData,
+    ecosystemTvlData,
+    dappStakingTvlData,
+    mergedTvlValue,
+    dappStakingTvlValue,
+    ecosystemTvlValue,
+  };
 };
 
 export const filterTvlData = ({
