@@ -3,7 +3,7 @@
     <q-skeleton class="skeleton--chart" />
   </div>
   <div v-else>
-    <div class="container">
+    <div class="container--chart">
       <div class="row">
         <span class="text--accent container--title--color">{{ title }}</span>
       </div>
@@ -25,6 +25,7 @@ import { useStore } from 'src/store';
 import ChartFilter, { DEFAULT_FILTER } from 'src/components/dashboard/ChartFilter.vue';
 import { formatNumber } from 'src/modules/token-api';
 import Highcharts from 'highcharts';
+import { useBreakpoints } from 'src/hooks';
 
 export default defineComponent({
   components: {
@@ -58,88 +59,91 @@ export default defineComponent({
     const getTextColor = (): string => (isDarkTheme.value ? '#5F656F' : '#B1B7C1');
     // const getChartFillColor = (): string => (isDarkTheme.value ? '#1d2d36' : '#F7F7F8');
     const hasData = ref<boolean>(false);
+    const { width, screenSize } = useBreakpoints();
 
     Highcharts.setOptions({
       lang: {
         thousandsSep: ',',
       },
     });
-    const chartOptions = ref({
-      title: {
-        text: '',
-      },
-      chart: {
-        backgroundColor: getBackgroundColor(),
-        zoomType: 'x',
-        height: '200px',
-      },
-      xAxis: {
-        type: 'datetime',
-        lineColor: getLineColor(),
-        tickColor: getLineColor(),
-        labels: {
-          style: {
-            color: getTextColor(),
-          },
-        },
-      },
-      yAxis: {
+    const chartOptions = computed(() => {
+      return {
         title: {
           text: '',
         },
-        gridLineColor: getLineColor(),
-        labels: {
-          style: {
-            color: getTextColor(),
-          },
-          formatter: (data: any) => {
-            const prefix = props.title === 'Total Transactions' ? '' : '$';
-            if (data.value > 999) {
-              return prefix + formatNumber(data.value, 1);
-            }
-            return prefix + data.value;
-          },
+        chart: {
+          backgroundColor: getBackgroundColor(),
+          zoomType: 'x',
+          height: width.value > screenSize.xxl ? '250px' : '200px',
         },
-      },
-      legend: {
-        enabled: false,
-      },
-      plotOptions: {
-        area: {
-          marker: {
-            radius: 0,
-          },
-          lineWidth: 1,
-          states: {
-            hover: {
-              lineWidth: 1,
+        xAxis: {
+          type: 'datetime',
+          lineColor: getLineColor(),
+          tickColor: getLineColor(),
+          labels: {
+            style: {
+              color: getTextColor(),
             },
           },
-          threshold: null,
         },
-      },
-      tooltip: {
-        valueDecimals: props.title === 'Token Price' ? 4 : 0,
-      },
-      series: [
-        {
-          name: props.title,
-          type: 'area',
-          data: props.data,
-          color: '#0085FF',
-          fillColor: {
-            linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
-            stops: [
-              [0, 'rgba(7, 200, 254, 0.26)'],
-              [1, 'rgba(12, 134, 245, 0.2)'],
-            ],
+        yAxis: {
+          title: {
+            text: '',
           },
-          lineWidth: '2px',
+          gridLineColor: getLineColor(),
+          labels: {
+            style: {
+              color: getTextColor(),
+            },
+            formatter: (data: any) => {
+              const prefix = props.title === 'Total Transactions' ? '' : '$';
+              if (data.value > 999) {
+                return prefix + formatNumber(data.value, 1);
+              }
+              return prefix + data.value;
+            },
+          },
         },
-      ],
-      credits: {
-        enabled: false,
-      },
+        legend: {
+          enabled: false,
+        },
+        plotOptions: {
+          area: {
+            marker: {
+              radius: 0,
+            },
+            lineWidth: 1,
+            states: {
+              hover: {
+                lineWidth: 1,
+              },
+            },
+            threshold: null,
+          },
+        },
+        tooltip: {
+          valueDecimals: props.title === 'Token Price' ? 4 : 0,
+        },
+        series: [
+          {
+            name: props.title,
+            type: 'area',
+            data: props.data,
+            color: '#0085FF',
+            fillColor: {
+              linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+              stops: [
+                [0, 'rgba(7, 200, 254, 0.26)'],
+                [1, 'rgba(12, 134, 245, 0.2)'],
+              ],
+            },
+            lineWidth: '2px',
+          },
+        ],
+        credits: {
+          enabled: false,
+        },
+      };
     });
 
     watch([isDarkTheme], () => {

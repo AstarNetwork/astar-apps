@@ -5,11 +5,13 @@
         <value-panel title="Current Circulating Supply" :value="circulatingSupply" />
         <value-panel title="Total Supply" :value="totalSupply" />
       </div>
-      <template v-if="isMainnet">
-        <tvl-chart :network="chainInfo.chain" />
+      <div v-if="isMainnet" class="container--charts">
+        <tvl-chart />
         <total-transactions-chart :network="chainInfo.chain" />
+        <tvl-chart />
+        <tvl-chart />
         <token-price-chart :network="chainInfo.chain" />
-      </template>
+      </div>
     </div>
   </div>
 </template>
