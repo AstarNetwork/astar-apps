@@ -16,10 +16,10 @@
         <fieldset>
           <div v-if="isMathWallet" class="column--remarks">
             <li v-if="currentNetworkIdx !== endpointKey.SHIDEN">
-              {{ $t('balance.modals.math.supportsNetwork') }}
+              {{ $t('wallet.math.supportsNetwork') }}
             </li>
             <li v-if="!substrateAccounts.length">
-              {{ $t('balance.modals.math.switchNetwork') }}
+              {{ $t('wallet.math.switchNetwork') }}
             </li>
           </div>
           <ul

@@ -21,16 +21,16 @@
       </icon-base>
       <slot></slot>
       <div v-if="file" class="tw-flex tw-text-sm tw-text-gray-500 dark:tw-text-darkGray-400">
-        <div>{{ $t('contracts.modals.file', { name: file.name }) }}</div>
+        <div>{{ $t('dappStaking.contracts.file', { name: file.name }) }}</div>
       </div>
       <div v-else class="tw-flex tw-text-sm tw-text-gray-500 dark:tw-text-darkGray-400">
         <div>
           <input v-bind="getInputProps()" />
           <div class="upload focus-within:tw-ring-offset-none">
-            {{ $t('contracts.modals.uploadFile') }}
+            {{ $t('dappStaking.contracts.uploadFile') }}
           </div>
-          <p v-if="isDragActive">{{ $t('contracts.modals.dropFile') }}</p>
-          <p v-else class="tw-pl-1">{{ $t('contracts.modals.orDrag') }}</p>
+          <p v-if="isDragActive">{{ $t('dappStaking.contracts.dropFile') }}</p>
+          <p v-else class="tw-pl-1">{{ $t('dappStaking.contracts.orDrag') }}</p>
         </div>
       </div>
     </div>
