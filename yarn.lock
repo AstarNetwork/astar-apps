@@ -34,10 +34,10 @@
     "@polkadot/typegen" "^6.5.2"
     "@polkadot/types" "^6.5.2"
 
-"@astar-network/astar-ui@0.0.23":
-  version "0.0.23"
-  resolved "https://registry.yarnpkg.com/@astar-network/astar-ui/-/astar-ui-0.0.23.tgz#347df126c569c8945452cab5af1ea52cb8543fc6"
-  integrity sha512-y8hLszTHOos1ail0nE7tIFpy8bjCJOepgH1+gAlTuOS1VOBcJB/lRaQ1ps4clyYZEzjI5vg/C/hPS5KJ2ZV2XA==
+"@astar-network/astar-ui@0.0.25":
+  version "0.0.27"
+  resolved "https://registry.yarnpkg.com/@astar-network/astar-ui/-/astar-ui-0.0.27.tgz#5784450ef68f8af34c6c67b41db6a4bc0a227726"
+  integrity sha512-KQkjeAU4+mf7aaYaJOt3BbEGNpy4cfXPfdXQ+eJwZawGd3x93bGMGgQUTzyswWQfXwT7pAJcy8N/Yr8PW6QeYA==
   dependencies:
     prismjs "^1.25.0"
     vue "^3.2.23"
@@ -10341,6 +10341,7 @@ keccak@byterose/keccak#stream-update:
   dependencies:
     node-addon-api "^2.0.0"
     node-gyp-build "^4.2.0"
+    readable-stream "^3.6.0"
 
 keyv@^3.0.0:
   version "3.1.0"
