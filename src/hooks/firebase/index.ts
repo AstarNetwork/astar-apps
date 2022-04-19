@@ -49,7 +49,7 @@ const addDapp = async (collectionName: string, dapp: NewDappItem): Promise<DappI
     url: dapp.url,
     iconUrl: dapp.iconUrl,
     license: dapp.license,
-    videoUrl: dapp.videoUrl,
+    videoUrl: dapp.videoUrl ?? '',
     tags: dapp.tags,
     forumUrl: dapp.forumUrl,
     authorContact: dapp.authorContact,
