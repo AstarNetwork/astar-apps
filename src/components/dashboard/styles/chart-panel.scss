@@ -108,25 +108,32 @@
     width: auto;
   }
 
-  div {
-    padding: 4px 14px;
-    cursor: pointer;
-    width: 25%;
-    text-align: center;
-
-    @media (min-width: $sm) {
-      padding: 2px 18px;
-      width: auto;
-    }
+  @media (min-width: $xxl) {
+    width: 100%;
   }
+}
+.btn--filter {
+  padding: 4px 14px;
+  cursor: pointer;
+  width: 25%;
+  text-align: center;
+  transition: all 0.2s ease-in-out;
 
-  div:not(:last-child) {
-    border-right: 1px solid $gray-1;
+  @media (min-width: $sm) {
+    padding: 2px 18px;
+    width: auto;
   }
+  @media (min-width: $xxl) {
+    width: 100%;
+  }
+}
 
-  .selected {
-    background-color: $gray-1;
-  }
+.btn--filter:not(:last-child) {
+  border-right: 1px solid $gray-1;
+}
+
+.selected {
+  background-color: $gray-1;
 }
 
 .skeleton--chart {

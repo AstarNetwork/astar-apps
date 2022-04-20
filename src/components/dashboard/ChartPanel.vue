@@ -5,7 +5,7 @@
   <div v-else>
     <div class="container--chart">
       <div class="row">
-        <span class="text--accent container--title--color">{{ title }}</span>
+        <span class="text--accent container--title--color">{{ $t(title) }}</span>
       </div>
       <div class="row chart--value">
         <span class="text--xlg">{{ defaultValue }}</span>
@@ -26,6 +26,7 @@ import ChartFilter, { DEFAULT_FILTER } from 'src/components/dashboard/ChartFilte
 import { titleFormatter, valueDecimalsFormatter, seriesFormatter } from 'src/modules/token-api';
 import Highcharts from 'highcharts';
 import { useBreakpoints } from 'src/hooks';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   components: {
@@ -72,6 +73,7 @@ export default defineComponent({
     const getTextColor = (): string => (isDarkTheme.value ? '#5F656F' : '#B1B7C1');
     const hasData = ref<boolean>(false);
     const { width, screenSize } = useBreakpoints();
+    const { t } = useI18n();
 
     Highcharts.setOptions({
       lang: {
@@ -108,7 +110,7 @@ export default defineComponent({
             style: {
               color: getTextColor(),
             },
-            formatter: (data: any) => titleFormatter(props.title, data),
+            formatter: (data: any) => titleFormatter(t(props.title), data),
           },
         },
         legend: {
@@ -147,9 +149,10 @@ export default defineComponent({
         },
         series: seriesFormatter({
           isMultipleLine: props.isMultipleLine,
-          tooltip: props.tooltip,
+          tooltip: t(props.tooltip),
           data: props.data,
           mergedData: props.mergedData,
+          textTvl: t('dashboard.tvl'),
         }),
         credits: {
           enabled: false,
@@ -171,7 +174,11 @@ export default defineComponent({
     };
 
     watch([props], () => {
-      chartOptions.value.series[0].data = props.data;
+      if (props.isMultipleLine) {
+        chartOptions.value.series[0].data = props.mergedData;
+      } else {
+        chartOptions.value.series[0].data = props.data;
+      }
 
       if (props.data && props.data.length > 0) {
         hasData.value = true;

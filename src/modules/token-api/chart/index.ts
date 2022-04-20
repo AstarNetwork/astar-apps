@@ -2,29 +2,29 @@ import { formatNumber } from './../utils';
 
 export const textChart = {
   tvl: {
-    title: 'Total Value Locked',
-    tooltip: 'TVL',
+    title: 'dashboard.chart.tvl.title',
+    tooltip: 'dashboard.chart.tvl.tooltip',
   },
   dappStaking: {
-    title: 'Total Value Locked in dApp Staking',
-    tooltip: 'TVL in dApp Staking',
+    title: 'dashboard.chart.dappStaking.title',
+    tooltip: 'dashboard.chart.dappStaking.tooltip',
   },
   ecosystem: {
-    title: 'Total Value Locked in Ecosystem',
-    tooltip: 'TVL in Ecosystem',
+    title: 'dashboard.chart.ecosystem.title',
+    tooltip: 'dashboard.chart.ecosystem.tooltip',
   },
   ttlTransactions: {
-    title: 'Total Transactions',
-    tooltip: 'Total Transactions',
+    title: 'dashboard.chart.ttlTransactions.title',
+    tooltip: 'dashboard.chart.ttlTransactions.tooltip',
   },
   tokenPrice: {
-    title: 'Token Price',
-    tooltip: 'Token Price',
+    title: 'dashboard.chart.tokenPrice.title',
+    tooltip: 'dashboard.chart.tokenPrice.tooltip',
   },
 };
 
 export const titleFormatter = (title: string, data: any) => {
-  const prefix = title === 'Total Transactions' ? '' : '$';
+  const prefix = title === textChart.ttlTransactions.title ? '' : '$';
   if (data.value > 999) {
     return prefix + formatNumber(data.value, 1);
   }
@@ -40,14 +40,24 @@ export const seriesFormatter = ({
   tooltip,
   data,
   mergedData,
+  textTvl,
 }: {
   isMultipleLine: boolean;
   tooltip: string;
   data: number[][] | null;
   mergedData: number[][] | null;
+  textTvl: string;
 }) => {
   if (isMultipleLine) {
     return [
+      {
+        name: textTvl,
+        type: 'area',
+        color: '#0085FF',
+        data: mergedData,
+        fillColor: 'transparent',
+        lineWidth: '1px',
+      },
       {
         name: tooltip,
         type: 'area',
@@ -65,14 +75,6 @@ export const seriesFormatter = ({
           ],
         },
         lineWidth: '2px',
-      },
-      {
-        name: 'TVL',
-        type: 'area',
-        color: '#0085FF',
-        data: mergedData,
-        fillColor: 'transparent',
-        lineWidth: '1px',
       },
     ];
   } else {

@@ -5,10 +5,12 @@
         v-for="filter in availableFilters"
         :key="filter"
         :class="{ selected: filter === selected }"
-        class="text--filter"
+        class="btn--filter"
         @click="selectFilter(filter)"
       >
-        {{ filter }}
+        <span class="text--filter">
+          {{ filter }}
+        </span>
       </div>
     </div>
   </div>

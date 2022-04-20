@@ -214,5 +214,28 @@ export default {
   },
   dashboard: {
     dashboard: 'Dashboard',
+    tvl: 'TVL',
+    chart: {
+      tvl: {
+        title: 'Total Value Locked',
+        tooltip: 'TVL',
+      },
+      dappStaking: {
+        title: 'Total Value Locked in dApp Staking',
+        tooltip: 'TVL in dApp Staking',
+      },
+      ecosystem: {
+        title: 'Total Value Locked in EVM Ecosystem',
+        tooltip: 'TVL in EVM Ecosystem',
+      },
+      ttlTransactions: {
+        title: 'Total Transactions',
+        tooltip: 'Total Transactions',
+      },
+      tokenPrice: {
+        title: 'Token Price',
+        tooltip: 'Token Price',
+      },
+    },
   },
 };
