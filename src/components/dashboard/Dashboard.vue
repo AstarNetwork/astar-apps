@@ -7,7 +7,8 @@
       </div>
       <template v-if="isMainnet">
         <tvl-chart :network="chainInfo.chain" />
-        <total-transactions-chart :network="chainInfo.chain" />
+        <!-- Memo: Hide until indexer has been synced -->
+        <!-- <total-transactions-chart :network="chainInfo.chain" /> -->
         <token-price-chart :network="chainInfo.chain" />
       </template>
     </div>
@@ -34,7 +35,7 @@ export default defineComponent({
   components: {
     TokenPriceChart,
     TvlChart,
-    TotalTransactionsChart,
+    // TotalTransactionsChart,
     ValuePanel,
   },
   setup() {
