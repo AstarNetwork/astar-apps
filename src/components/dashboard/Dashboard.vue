@@ -6,12 +6,6 @@
         <value-panel title="Total Supply" :value="totalSupply" />
       </div>
       <div v-if="isMainnet" class="container--charts">
-        <!-- <merged-tvl-chart
-          :title="TitleTvlChar.Tvl"
-          :dapp-staking-tvl-data="dappStakingTvl"
-          :ecosystem-tvl-data="ecosystemTvl"
-          :tvl-data="filteredMergedTvl"
-        /> -->
         <tvl-chart
           :title="textChart.tvl.title"
           :tooltip="textChart.tvl.tooltip"

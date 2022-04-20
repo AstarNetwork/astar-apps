@@ -3,6 +3,7 @@ import { computed, onMounted, onUnmounted, ref } from 'vue';
 export const useBreakpoints = () => {
   const windowWidth = ref<number>(window.innerWidth);
   const screenSize = {
+    xs: 375,
     sm: 640,
     md: 768,
     lg: 1024,
@@ -16,7 +17,8 @@ export const useBreakpoints = () => {
 
   const type = computed(() => {
     if (windowWidth.value < 375) return 'xs';
-    if (windowWidth.value >= 375 && windowWidth.value < 768) return 'sm';
+    if (windowWidth.value >= 375 && windowWidth.value < 640) return 'xs';
+    if (windowWidth.value >= 640 && windowWidth.value < 768) return 'sm';
     if (windowWidth.value >= 768 && windowWidth.value < 1024) return 'md';
     if (windowWidth.value >= 1024 && windowWidth.value < 1280) return 'lg';
     if (windowWidth.value >= 1024 && windowWidth.value < 1440) return 'xl';
