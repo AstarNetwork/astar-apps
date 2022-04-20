@@ -68,30 +68,42 @@ export function useTvlHistorical() {
   });
 
   const filteredDappStakingTvl = computed(() => {
+    const fallback = { merged: null, dappStaking: null };
     try {
-      if (!dappStakingTvl.value) return null;
-      const data = filterTvlData({
+      if (!dappStakingTvl.value || !mergedTvl.value) return fallback;
+      const dappStaking = filterTvlData({
         mergedArray: dappStakingTvl.value,
         duration: dappStakingFilter.value,
       });
-      return data;
+
+      const merged = filterTvlData({
+        mergedArray: mergedTvl.value,
+        duration: dappStakingFilter.value,
+      });
+      return { dappStaking, merged };
     } catch (error) {
       console.error(error);
-      return null;
+      return fallback;
     }
   });
 
   const filteredEcosystemTvl = computed(() => {
+    const fallback = { merged: null, ecosystem: null };
     try {
-      if (!ecosystemTvl.value) return null;
-      const data = filterTvlData({
+      if (!ecosystemTvl.value || !mergedTvl.value) return fallback;
+      const ecosystem = filterTvlData({
         mergedArray: ecosystemTvl.value,
         duration: ecosystemFilter.value,
       });
-      return data;
+
+      const merged = filterTvlData({
+        mergedArray: mergedTvl.value,
+        duration: ecosystemFilter.value,
+      });
+      return { ecosystem, merged };
     } catch (error) {
       console.error(error);
-      return null;
+      return fallback;
     }
   });
 

@@ -22,14 +22,14 @@
         <tvl-chart
           :title="TitleTvlChar.DappStaking"
           :tvl-value="dappStakingTvlAmount"
-          :tvl-data="filteredDappStakingTvl"
+          :tvl-data="filteredDappStakingTvl.dappStaking"
           :handle-filter-changed="handleDappStakingTvlFilterChanged"
         />
 
         <tvl-chart
           :title="TitleTvlChar.Ecosystem"
           :tvl-value="ecosystemTvlAmount"
-          :tvl-data="filteredEcosystemTvl"
+          :tvl-data="filteredEcosystemTvl.ecosystem"
           :handle-filter-changed="handleEcosystemTvlFilterChanged"
         />
 
@@ -74,8 +74,6 @@ export default defineComponent({
       filteredEcosystemTvl,
       dappStakingTvlAmount,
       ecosystemTvlAmount,
-      ecosystemTvl,
-      dappStakingTvl,
       handleDappStakingTvlFilterChanged,
       handleEcosystemTvlFilterChanged,
       handleMergedTvlFilterChanged,
