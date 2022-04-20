@@ -13,7 +13,7 @@ import { defineComponent, ref, watch } from 'vue';
 import axios from 'axios';
 import ChartPanel from 'src/components/dashboard/ChartPanel.vue';
 import { ChartData } from 'src/components/dashboard/ChartData';
-import { API_URL, formatNumber } from 'src/components/dashboard/utils';
+import { TOKEN_API_URL, formatNumber } from 'src/modules/token-api';
 import { DEFAULT_FILTER } from 'src/components/dashboard/ChartFilter.vue';
 
 export default defineComponent({
@@ -33,7 +33,7 @@ export default defineComponent({
 
     const loadData = async () => {
       if (!props.network) return;
-      const priceUrl = `${API_URL}/v1/${props.network.toLowerCase()}/node/tx-perblock/${
+      const priceUrl = `${TOKEN_API_URL}/v1/${props.network.toLowerCase()}/node/tx-perblock/${
         currentFilter.value
       }`;
       const result = await axios.get<ChartData>(priceUrl);

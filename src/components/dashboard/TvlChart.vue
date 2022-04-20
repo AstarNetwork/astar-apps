@@ -1,6 +1,6 @@
 <template>
   <chart-panel
-    :data="data"
+    :data="filteredData"
     title="Total Value Locked"
     :default-value="currentTvl"
     class="wrapper--chart"
@@ -9,12 +9,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue';
-import axios from 'axios';
-import ChartPanel from 'src/components/dashboard/ChartPanel.vue';
-import { ChartData } from 'src/components/dashboard/ChartData';
-import { API_URL, formatNumber } from 'src/components/dashboard/utils';
 import { DEFAULT_FILTER } from 'src/components/dashboard/ChartFilter.vue';
+import ChartPanel from 'src/components/dashboard/ChartPanel.vue';
+import { Duration, filterTvlData, getTvlData } from 'src/modules/token-api';
+import { defineComponent, ref, watch } from 'vue';
 
 export default defineComponent({
   components: {
@@ -27,46 +25,55 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const data = ref<ChartData>([[1, 1]]);
+    const mergedArray = ref<number[][] | null>(null);
+    const filteredData = ref<number[][] | null>(null);
     const currentTvl = ref<string>('');
-    const currentFilter = ref<string>(DEFAULT_FILTER);
+    const currentFilter = ref<Duration>(DEFAULT_FILTER);
 
-    const loadData = async (): Promise<void> => {
-      if (!props.network) return;
-      const priceUrl = `${API_URL}/v1/${props.network.toLowerCase()}/token/tvl/${
-        currentFilter.value
-      }`;
-      const result = await axios.get<ChartData>(priceUrl);
-      data.value = result.data.map((pair) => {
-        return [Number(pair[0]) * 1000, pair[1]];
-      });
-
-      if (data.value && data.value.length > 0) {
-        currentTvl.value = `\$${formatNumber(data.value[data.value.length - 1][1], 1)}`;
-      }
+    const loadData = async (network: string): Promise<void> => {
+      const { mergedData, tvl } = await getTvlData({ network });
+      mergedArray.value = mergedData;
+      currentTvl.value = tvl;
     };
 
-    const handleFilterChanged = async (filter: string): Promise<void> => {
+    const handleFilterChanged = async (filter: Duration): Promise<void> => {
       if (currentFilter.value !== filter) {
         currentFilter.value = filter;
-        await loadData();
       }
     };
 
-    watch([props], async () => {
-      if (props.network) {
+    watch(
+      [props],
+      async () => {
         try {
-          await loadData();
+          if (!props.network) return;
+          await loadData(props.network);
         } catch (error) {
           console.error(error);
         }
-      }
-    });
+      },
+      { immediate: true }
+    );
 
-    loadData();
+    watch(
+      [currentFilter, mergedArray],
+      () => {
+        try {
+          if (!mergedArray.value) return;
+          const data = filterTvlData({
+            mergedArray: mergedArray.value,
+            duration: currentFilter.value,
+          });
+          filteredData.value = data;
+        } catch (error) {
+          console.error(error);
+        }
+      },
+      { immediate: false }
+    );
 
     return {
-      data,
+      filteredData,
       currentTvl,
       handleFilterChanged,
     };

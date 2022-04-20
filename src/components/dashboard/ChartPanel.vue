@@ -23,6 +23,8 @@ import { defineComponent, computed, ref, watch } from 'vue';
 import { Chart } from 'highcharts-vue';
 import { useStore } from 'src/store';
 import ChartFilter, { DEFAULT_FILTER } from 'src/components/dashboard/ChartFilter.vue';
+import { formatNumber } from 'src/modules/token-api';
+import Highcharts from 'highcharts';
 
 export default defineComponent({
   components: {
@@ -57,6 +59,11 @@ export default defineComponent({
     // const getChartFillColor = (): string => (isDarkTheme.value ? '#1d2d36' : '#F7F7F8');
     const hasData = ref<boolean>(false);
 
+    Highcharts.setOptions({
+      lang: {
+        thousandsSep: ',',
+      },
+    });
     const chartOptions = ref({
       title: {
         text: '',
@@ -85,6 +92,13 @@ export default defineComponent({
           style: {
             color: getTextColor(),
           },
+          formatter: (data: any) => {
+            const prefix = props.title === 'Total Transactions' ? '' : '$';
+            if (data.value > 999) {
+              return prefix + formatNumber(data.value, 1);
+            }
+            return prefix + data.value;
+          },
         },
       },
       legend: {
@@ -104,13 +118,15 @@ export default defineComponent({
           threshold: null,
         },
       },
+      tooltip: {
+        valueDecimals: props.title === 'Token Price' ? 4 : 0,
+      },
       series: [
         {
           name: props.title,
           type: 'area',
           data: props.data,
           color: '#0085FF',
-          // linear-gradient(90deg, rgba(12, 134, 245, 0) -21.78%, rgba(7, 200, 254, 0.26) 95.18%);
           fillColor: {
             linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
             stops: [

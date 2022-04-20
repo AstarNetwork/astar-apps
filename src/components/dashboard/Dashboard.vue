@@ -5,9 +5,12 @@
         <value-panel title="Current Circulating Supply" :value="circulatingSupply" />
         <value-panel title="Total Supply" :value="totalSupply" />
       </div>
-      <tvl-chart :network="chainInfo.chain" />
-      <total-transactions-chart :network="chainInfo.chain" />
-      <token-price-chart :network="chainInfo.chain" />
+      <template v-if="isMainnet">
+        <tvl-chart :network="chainInfo.chain" />
+        <!-- Memo: Hide until indexer has been synced -->
+        <!-- <total-transactions-chart :network="chainInfo.chain" /> -->
+        <token-price-chart :network="chainInfo.chain" />
+      </template>
     </div>
   </div>
 </template>
@@ -20,7 +23,7 @@ import TvlChart from 'src/components/dashboard/TvlChart.vue';
 import TotalTransactionsChart from 'src/components/dashboard/TotalTransactionsChart.vue';
 import ValuePanel from 'src/components/dashboard/ValuePanel.vue';
 import { useStore } from 'src/store';
-import { API_URL } from './utils';
+import { TOKEN_API_URL } from 'src/modules/token-api';
 
 interface StatsData {
   generatedAt: number;
@@ -32,7 +35,7 @@ export default defineComponent({
   components: {
     TokenPriceChart,
     TvlChart,
-    TotalTransactionsChart,
+    // TotalTransactionsChart,
     ValuePanel,
   },
   setup() {
@@ -45,10 +48,15 @@ export default defineComponent({
       return chainInfo ? chainInfo : {};
     });
 
+    const isMainnet = computed(() => {
+      const chainInfo = store.getters['general/chainInfo'];
+      return chainInfo ? chainInfo.chain !== 'Shibuya Testnet' : false;
+    });
+
     const loadStats = async () => {
       if (!chainInfo.value || !chainInfo.value.chain) return;
 
-      const statsUrl = `${API_URL}/v1/${chainInfo.value.chain.toLowerCase()}/token/stats`;
+      const statsUrl = `${TOKEN_API_URL}/v1/${chainInfo.value.chain.toLowerCase()}/token/stats`;
       const result = await axios.get<StatsData>(statsUrl);
 
       if (result.data) {
@@ -77,6 +85,7 @@ export default defineComponent({
       chainInfo,
       totalSupply,
       circulatingSupply,
+      isMainnet,
     };
   },
 });
