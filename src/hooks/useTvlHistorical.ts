@@ -1,4 +1,4 @@
-import { Duration, filterTvlData, getTvlData } from 'src/modules/token-api';
+import { Duration, filterTvlData, getTvlData, mergeTvlArray } from 'src/modules/token-api';
 import { useStore } from 'src/store';
 import { computed, ref, watch } from 'vue';
 
@@ -57,7 +57,7 @@ export function useTvlHistorical() {
     try {
       if (!mergedTvl.value) return null;
       const data = filterTvlData({
-        mergedArray: mergedTvl.value,
+        data: mergedTvl.value,
         duration: mergedFilter.value,
       });
       return data;
@@ -72,12 +72,12 @@ export function useTvlHistorical() {
     try {
       if (!dappStakingTvl.value || !mergedTvl.value) return fallback;
       const dappStaking = filterTvlData({
-        mergedArray: dappStakingTvl.value,
+        data: dappStakingTvl.value,
         duration: dappStakingFilter.value,
       });
 
       const merged = filterTvlData({
-        mergedArray: mergedTvl.value,
+        data: mergedTvl.value,
         duration: dappStakingFilter.value,
       });
       return { dappStaking, merged };
@@ -90,14 +90,24 @@ export function useTvlHistorical() {
   const filteredEcosystemTvl = computed(() => {
     const fallback = { merged: null, ecosystem: null };
     try {
-      if (!ecosystemTvl.value || !mergedTvl.value) return fallback;
+      if (!ecosystemTvl.value || !mergedTvl.value || !dappStakingTvl.value) {
+        return fallback;
+      }
       const ecosystem = filterTvlData({
-        mergedArray: ecosystemTvl.value,
+        data: ecosystemTvl.value,
         duration: ecosystemFilter.value,
       });
 
+      const mergedTvlData = dappStakingTvl.value.length
+        ? mergeTvlArray({
+            ecosystem: [...ecosystemTvl.value],
+            dappStaking: [...dappStakingTvl.value],
+            base: 'ecosystem',
+          })
+        : ecosystemTvl.value;
+
       const merged = filterTvlData({
-        mergedArray: mergedTvl.value,
+        data: mergedTvlData,
         duration: ecosystemFilter.value,
       });
       return { ecosystem, merged };

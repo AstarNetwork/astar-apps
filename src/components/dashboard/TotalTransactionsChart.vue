@@ -1,8 +1,10 @@
 <template>
   <chart-panel
     :data="data"
-    title="Total Transactions"
+    :title="textChart.ttlTransactions.title"
+    :tooltip="textChart.ttlTransactions.tooltip"
     :default-value="totalTransactionsNumber"
+    :is-multiple-line="false"
     class="wrapper--chart"
     @filter-changed="handleFilterChanged"
   />
@@ -13,7 +15,7 @@ import { defineComponent, ref, watch } from 'vue';
 import axios from 'axios';
 import ChartPanel from 'src/components/dashboard/ChartPanel.vue';
 import { ChartData } from 'src/components/dashboard/ChartData';
-import { TOKEN_API_URL, formatNumber } from 'src/modules/token-api';
+import { TOKEN_API_URL, formatNumber, textChart } from 'src/modules/token-api';
 import { DEFAULT_FILTER } from 'src/components/dashboard/ChartFilter.vue';
 
 export default defineComponent({
@@ -70,6 +72,7 @@ export default defineComponent({
       data,
       totalTransactionsNumber,
       handleFilterChanged,
+      textChart,
     };
   },
 });

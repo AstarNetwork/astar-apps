@@ -32,22 +32,37 @@ export const formatNumber = (value: number, digits: number): string => {
 export const mergeTvlArray = ({
   ecosystem,
   dappStaking,
+  base,
 }: {
   ecosystem: number[][];
   dappStaking: number[][];
+  base: 'dappStaking' | 'ecosystem';
 }): number[][] => {
+  const isBaseDappStaking = base === 'dappStaking';
+
   const ecosystemReverse = ecosystem.sort((a, b) => b[0] - a[0]);
   const dappStakingReverse = dappStaking.sort((a, b) => b[0] - a[0]);
-  const data = dappStakingReverse
-    .map((it, i) => {
-      if (ecosystemReverse[i]) {
-        const ecosystemItem = ecosystemReverse[i];
-        return [it[0], it[1] + ecosystemItem[1]];
-      } else {
-        return it;
-      }
-    })
-    .reverse();
+  const data = isBaseDappStaking
+    ? dappStakingReverse
+        .map((it, i) => {
+          if (ecosystemReverse[i]) {
+            const ecosystemItem = ecosystemReverse[i];
+            return [it[0], it[1] + ecosystemItem[1]];
+          } else {
+            return it;
+          }
+        })
+        .reverse()
+    : ecosystemReverse
+        .map((it, i) => {
+          if (dappStakingReverse[i]) {
+            const dappStakingItem = dappStakingReverse[i];
+            return [it[0], it[1] + dappStakingItem[1]];
+          } else {
+            return it;
+          }
+        })
+        .reverse();
 
   return data;
 };
@@ -91,6 +106,7 @@ export const getTvlData = async ({
     ? mergeTvlArray({
         ecosystem: [...ecosystemTvlData],
         dappStaking: [...dappStakingTvlData],
+        base: 'dappStaking',
       })
     : ecosystemTvlData;
 
@@ -108,24 +124,18 @@ export const getTvlData = async ({
   };
 };
 
-export const filterTvlData = ({
-  mergedArray,
-  duration,
-}: {
-  mergedArray: number[][];
-  duration: Duration;
-}) => {
+export const filterTvlData = ({ data, duration }: { data: number[][]; duration: Duration }) => {
   switch (duration) {
     case '7 days':
-      return mergedArray.slice(-7);
+      return data.slice(-7);
     case '30 days':
-      return mergedArray.slice(-30);
+      return data.slice(-30);
     case '90 days':
-      return mergedArray.slice(-90);
+      return data.slice(-90);
     case '1 year':
-      return mergedArray.slice(-365);
+      return data.slice(-365);
 
     default:
-      return mergedArray.slice(-7);
+      return data.slice(-7);
   }
 };

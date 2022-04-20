@@ -19,11 +19,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch } from 'vue';
+import { defineComponent, computed, ref, watch, PropType } from 'vue';
 import { Chart } from 'highcharts-vue';
 import { useStore } from 'src/store';
 import ChartFilter, { DEFAULT_FILTER } from 'src/components/dashboard/ChartFilter.vue';
-import { formatNumber } from 'src/modules/token-api';
+import { titleFormatter, valueDecimalsFormatter, seriesFormatter } from 'src/modules/token-api';
 import Highcharts from 'highcharts';
 import { useBreakpoints } from 'src/hooks';
 
@@ -37,17 +37,30 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    tooltip: {
+      type: String,
+      required: true,
+    },
     defaultValue: {
       type: String,
       required: true,
     },
     data: {
-      type: Object,
+      type: Array as PropType<number[][] | null>,
       required: true,
+    },
+    mergedData: {
+      type: Array as PropType<number[][] | null>,
+      required: false,
+      default: null,
     },
     rangeFilter: {
       type: String,
       default: DEFAULT_FILTER,
+    },
+    isMultipleLine: {
+      type: Boolean,
+      required: true,
     },
   },
   emits: ['filterChanged'],
@@ -90,27 +103,35 @@ export default defineComponent({
           title: {
             text: '',
           },
+          opposite: true,
           gridLineColor: getLineColor(),
           labels: {
             style: {
               color: getTextColor(),
             },
-            formatter: (data: any) => {
-              const prefix = props.title === 'Total Transactions' ? '' : '$';
-              if (data.value > 999) {
-                return prefix + formatNumber(data.value, 1);
-              }
-              return prefix + data.value;
-            },
+            formatter: (data: any) => titleFormatter(props.title, data),
           },
         },
         legend: {
-          enabled: false,
+          enabled: props.isMultipleLine,
+          itemStyle: {
+            color: getTextColor(),
+          },
+          itemHoverStyle: {
+            color: '#0085FF',
+          },
         },
         plotOptions: {
           area: {
             marker: {
-              radius: 0,
+              enabled: false,
+              symbol: 'circle',
+              radius: 2,
+              states: {
+                hover: {
+                  enabled: true,
+                },
+              },
             },
             lineWidth: 1,
             states: {
@@ -122,24 +143,15 @@ export default defineComponent({
           },
         },
         tooltip: {
-          valueDecimals: props.title === 'Token Price' ? 4 : 0,
+          valueDecimals: valueDecimalsFormatter(props.title),
+          shared: true,
         },
-        series: [
-          {
-            name: props.title,
-            type: 'area',
-            data: props.data,
-            color: '#0085FF',
-            fillColor: {
-              linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
-              stops: [
-                [0, 'rgba(7, 200, 254, 0.26)'],
-                [1, 'rgba(12, 134, 245, 0.2)'],
-              ],
-            },
-            lineWidth: '2px',
-          },
-        ],
+        series: seriesFormatter({
+          isMultipleLine: props.isMultipleLine,
+          tooltip: props.tooltip,
+          data: props.data,
+          mergedData: props.mergedData,
+        }),
         credits: {
           enabled: false,
         },
@@ -153,7 +165,6 @@ export default defineComponent({
       chartOptions.value.yAxis.gridLineColor = getLineColor();
       chartOptions.value.yAxis.labels.style.color = getTextColor();
       chartOptions.value.xAxis.labels.style.color = getTextColor();
-      // chartOptions.value.series[0].fillColor = getChartFillColor();
     });
 
     const handleFilterChanged = (filter: string): void => {

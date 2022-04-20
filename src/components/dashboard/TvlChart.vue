@@ -1,9 +1,12 @@
 <template>
   <chart-panel
     :data="tvlData"
+    :merged-data="mergedTvlData"
     :title="title"
+    :tooltip="tooltip"
     :default-value="tvlValue"
     class="wrapper--chart"
+    :is-multiple-line="isMultipleLine"
     @filter-changed="handleFilterChanged"
   />
 </template>
@@ -21,6 +24,10 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    tooltip: {
+      type: String,
+      required: true,
+    },
     tvlValue: {
       type: Array,
       required: true,
@@ -29,8 +36,16 @@ export default defineComponent({
       type: Array,
       required: true,
     },
+    mergedTvlData: {
+      type: Array,
+      required: true,
+    },
     handleFilterChanged: {
       type: Function,
+      required: true,
+    },
+    isMultipleLine: {
+      type: Boolean,
       required: true,
     },
   },

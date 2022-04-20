@@ -13,7 +13,8 @@
           :tvl-data="filteredMergedTvl"
         /> -->
         <tvl-chart
-          :title="TitleTvlChar.Tvl"
+          :title="textChart.tvl.title"
+          :tooltip="textChart.tvl.tooltip"
           :tvl-value="mergedTvlAmount"
           :tvl-data="filteredMergedTvl"
           :handle-filter-changed="handleMergedTvlFilterChanged"
@@ -21,17 +22,23 @@
         <!-- Memo: Hide until indexer has been synced completely -->
         <!-- <total-transactions-chart :network="chainInfo.chain" /> -->
         <tvl-chart
-          :title="TitleTvlChar.DappStaking"
+          :title="textChart.dappStaking.title"
+          :tooltip="textChart.dappStaking.tooltip"
           :tvl-value="dappStakingTvlAmount"
           :tvl-data="filteredDappStakingTvl.dappStaking"
+          :merged-tvl-data="filteredDappStakingTvl.merged"
           :handle-filter-changed="handleDappStakingTvlFilterChanged"
+          :is-multiple-line="true"
         />
 
         <tvl-chart
-          :title="TitleTvlChar.Ecosystem"
+          :title="textChart.ecosystem.title"
+          :tooltip="textChart.ecosystem.tooltip"
           :tvl-value="ecosystemTvlAmount"
           :tvl-data="filteredEcosystemTvl.ecosystem"
+          :merged-tvl-data="filteredEcosystemTvl.merged"
           :handle-filter-changed="handleEcosystemTvlFilterChanged"
+          :is-multiple-line="true"
         />
 
         <token-price-chart :network="chainInfo.chain" />
@@ -43,11 +50,11 @@
 <script lang="ts">
 import axios from 'axios';
 import TokenPriceChart from 'src/components/dashboard/TokenPriceChart.vue';
-import TotalTransactionsChart from 'src/components/dashboard/TotalTransactionsChart.vue';
+// import TotalTransactionsChart from 'src/components/dashboard/TotalTransactionsChart.vue';
 import TvlChart from 'src/components/dashboard/TvlChart.vue';
 import ValuePanel from 'src/components/dashboard/ValuePanel.vue';
 import { useTvlHistorical } from 'src/hooks';
-import { TitleTvlChar, TOKEN_API_URL } from 'src/modules/token-api';
+import { textChart, TOKEN_API_URL } from 'src/modules/token-api';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch } from 'vue';
 
@@ -61,7 +68,6 @@ export default defineComponent({
   components: {
     TokenPriceChart,
     TvlChart,
-    // MergedTvlChart,
     // TotalTransactionsChart,
     ValuePanel,
   },
@@ -121,7 +127,7 @@ export default defineComponent({
     });
 
     return {
-      TitleTvlChar,
+      textChart,
       chainInfo,
       totalSupply,
       circulatingSupply,
