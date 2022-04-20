@@ -33,7 +33,7 @@
                 tw-mb-6 tw-text-center
               "
             >
-              {{ $t('balance.modals.alert') }}
+              {{ $t('alert') }}
             </h3>
             <div
               class="

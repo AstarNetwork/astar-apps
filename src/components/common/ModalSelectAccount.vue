@@ -95,8 +95,12 @@ import { getSelectedAccount } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
-import ModalSelectAccountOption from './ModalSelectAccountOption.vue';
-import { Role } from './ModalTransferAmount.vue';
+import ModalSelectAccountOption from 'src/components/common/ModalSelectAccountOption.vue';
+
+enum Role {
+  FromAddress = 'FromAddress',
+  ToAddress = 'ToAddress',
+}
 
 export default defineComponent({
   components: {

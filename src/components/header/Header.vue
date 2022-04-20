@@ -15,6 +15,7 @@
       </template>
       <NetworkButton @show-network="modalNetwork = true" />
     </astar-header>
+
     <!-- Modals -->
     <ModalNetwork
       v-model:isOpen="modalNetwork"
@@ -34,6 +35,8 @@
       :set-wallet-modal="setWalletModal"
       :selected-wallet="selectedWallet"
       :connect-ethereum-wallet="connectEthereumWallet"
+      :disconnect-account="disconnectAccount"
+      :current-account="currentAccount"
     />
 
     <ModalInstallWallet
@@ -56,7 +59,7 @@ import AccountButton from 'src/components/header/AccountButton.vue';
 import NetworkButton from 'src/components/header/NetworkButton.vue';
 import ModalConnectWallet from 'src/components/header/modals/ModalConnectWallet.vue';
 import ModalAccount from 'src/components/header/modals/ModalAccount.vue';
-import ModalInstallWallet from 'src/components/balance/modals/ModalInstallWallet.vue';
+import ModalInstallWallet from 'src/components/header/modals/ModalInstallWallet.vue';
 import ModalNetwork from 'src/components/header/modals/ModalNetwork.vue';
 import Logo from 'src/components/common/Logo.vue';
 
@@ -95,6 +98,7 @@ export default defineComponent({
       openSelectModal,
       changeAccount,
       connectEthereumWallet,
+      disconnectAccount,
     } = useConnectWallet();
 
     const store = useStore();
@@ -130,6 +134,7 @@ export default defineComponent({
       openSelectModal,
       changeAccount,
       connectEthereumWallet,
+      disconnectAccount,
     };
   },
 });

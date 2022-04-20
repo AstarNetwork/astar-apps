@@ -52,17 +52,15 @@
   </div>
 </template>
 <script lang="ts">
-import { PropType, reactive, watch, ref } from 'vue';
-import { NewDappItem } from 'src/store/dapp-staking/state';
-import { defineComponent } from 'vue';
-import { useFile, FileState } from 'src/hooks/useFile';
 import { isEthereumAddress } from '@polkadot/util-crypto';
-import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
-import InputFile from 'src/components/contracts/modals/InputFile.vue';
 import Avatar from 'components/common/Avatar.vue';
+import { isUrlValid } from 'components/common/Validators';
 import IconBase from 'components/icons/IconBase.vue';
 import IconDocument from 'components/icons/IconDocument.vue';
-import { isUrlValid } from 'components/common/Validators';
+import InputFile from 'src/components/dapp-staking/modals/InputFile.vue';
+import { FileState, useFile } from 'src/hooks/useFile';
+import { NewDappItem } from 'src/store/dapp-staking/state';
+import { defineComponent, PropType, reactive, watch } from 'vue';
 
 export default defineComponent({
   components: {

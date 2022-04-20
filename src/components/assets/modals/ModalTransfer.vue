@@ -1,8 +1,8 @@
 <template>
   <astar-simple-modal
-    :is-animation="true"
     :show="isModalTransfer"
     title="Transfer"
+    :is-closing="isClosingModal"
     @close="closeModal"
   >
     <div class="wrapper--modal">
@@ -118,6 +118,7 @@ import { computed, defineComponent, ref, watchEffect } from 'vue';
 import Web3 from 'web3';
 import ModalSelectAccount from './ModalSelectAccount.vue';
 import { registeredErc20Tokens } from 'src/modules/token';
+import { fadeDuration } from '@astar-network/astar-ui';
 
 export default defineComponent({
   components: { ModalSelectAccount },
@@ -161,6 +162,7 @@ export default defineComponent({
     const errMsg = ref<string>('');
     const selectedNetwork = ref<number>(0);
     const isChecked = ref<boolean>(false);
+    const isClosingModal = ref<boolean>(false);
     const { iconWallet } = useWalletIcon();
     const { isConnectedNetwork, currentNetworkName, connectEvmNetwork } = useEvmWallet();
     const store = useStore();
@@ -235,8 +237,12 @@ export default defineComponent({
     };
 
     const closeModal = (): void => {
+      isClosingModal.value = true;
       resetStates();
-      props.handleModalTransfer({ isOpen: false, currency: '' });
+      setTimeout(() => {
+        props.handleModalTransfer({ isOpen: false, currency: '' });
+        isClosingModal.value = false;
+      }, fadeDuration);
     };
 
     const toMaxAmount = async (): Promise<void> => {
@@ -432,6 +438,7 @@ export default defineComponent({
       isChoseWrongEvmNetwork,
       currentNetworkName,
       connectEvmNetwork,
+      isClosingModal,
     };
   },
 });

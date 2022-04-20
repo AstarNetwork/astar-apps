@@ -57,7 +57,7 @@ export default defineComponent({
   },
   setup(props) {
     const data = reactive<NewDappItem>(props.value);
-    const licenseTypes = ['GPL-3.0 License', 'MIT'];
+    const licenseTypes = ['GPL-3.0', 'MIT', 'GNU'];
 
     return {
       data,

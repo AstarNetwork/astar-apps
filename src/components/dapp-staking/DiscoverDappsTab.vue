@@ -67,7 +67,7 @@
       />
     </div>
 
-    <Teleport to="body">
+    <Teleport to="#app--main">
       <ModalRegisterDapp
         v-if="showRegisterDappModal"
         v-model:is-open="showRegisterDappModal"

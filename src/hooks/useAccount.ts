@@ -1,7 +1,7 @@
-import { SubstrateAccount } from './../store/general/state';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useStore } from 'src/store';
-import { computed, ref, watch, watchEffect } from 'vue';
+import { computed, ref, watch } from 'vue';
+import { SubstrateAccount } from './../store/general/state';
 
 export const useAccount = () => {
   const store = useStore();
@@ -12,14 +12,21 @@ export const useAccount = () => {
   const currentAddress = computed(() => store.getters['general/selectedAddress']);
   const { SELECTED_ADDRESS } = LOCAL_STORAGE;
 
-  const disconnectAccount = () => {
-    store.commit('general/setCurrentAddress', null);
-    store.commit('general/setIsH160Formatted', false);
-    store.commit('general/setIsEthWallet', false);
-    store.commit('general/setCurrentEcdsaAccount', {
-      ethereum: '',
-      ss58: '',
-      h160: '',
+  const disconnectAccount = async (): Promise<Boolean> => {
+    // Memo: Gives time for syncing
+    const delay = 100;
+    return await new Promise((resolve) => {
+      setTimeout(() => {
+        store.commit('general/setCurrentAddress', null);
+        store.commit('general/setIsH160Formatted', false);
+        store.commit('general/setIsEthWallet', false);
+        store.commit('general/setCurrentEcdsaAccount', {
+          ethereum: '',
+          ss58: '',
+          h160: '',
+        });
+        resolve(true);
+      }, delay);
     });
   };
 

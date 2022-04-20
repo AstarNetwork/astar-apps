@@ -34,10 +34,10 @@
     "@polkadot/typegen" "^6.5.2"
     "@polkadot/types" "^6.5.2"
 
-"@astar-network/astar-ui@0.0.20":
-  version "0.0.20"
-  resolved "https://registry.yarnpkg.com/@astar-network/astar-ui/-/astar-ui-0.0.20.tgz#23483afc5f7417c4b797aa3f11c727857ab31123"
-  integrity sha512-FqlF9HvMthlNRTI/Q3R/kMqok6T1REM/9dz+XwvurUGZRV+XH3LS/0QUnFXIRTVMI9aiK3ytuNKjMcpn5U1ZOg==
+"@astar-network/astar-ui@0.0.27":
+  version "0.0.27"
+  resolved "https://registry.yarnpkg.com/@astar-network/astar-ui/-/astar-ui-0.0.27.tgz#5784450ef68f8af34c6c67b41db6a4bc0a227726"
+  integrity sha512-KQkjeAU4+mf7aaYaJOt3BbEGNpy4cfXPfdXQ+eJwZawGd3x93bGMGgQUTzyswWQfXwT7pAJcy8N/Yr8PW6QeYA==
   dependencies:
     prismjs "^1.25.0"
     vue "^3.2.23"
