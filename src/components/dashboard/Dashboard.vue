@@ -18,7 +18,8 @@
           :tvl-data="filteredMergedTvl"
           :handle-filter-changed="handleMergedTvlFilterChanged"
         />
-        <total-transactions-chart :network="chainInfo.chain" />
+        <!-- Memo: Hide until indexer has been synced completely -->
+        <!-- <total-transactions-chart :network="chainInfo.chain" /> -->
         <tvl-chart
           :title="TitleTvlChar.DappStaking"
           :tvl-value="dappStakingTvlAmount"
@@ -61,7 +62,7 @@ export default defineComponent({
     TokenPriceChart,
     TvlChart,
     // MergedTvlChart,
-    TotalTransactionsChart,
+    // TotalTransactionsChart,
     ValuePanel,
   },
   setup() {
