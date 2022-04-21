@@ -68,7 +68,7 @@ export const mergeTvlArray = ({
 };
 
 export const getTvlValue = (tvlArray: number[][]) => {
-  const latestTvl = tvlArray[tvlArray.length - 1][1];
+  const latestTvl = tvlArray.length ? tvlArray[tvlArray.length - 1][1] : 0;
   const tvlNum = formatNumber(latestTvl, 1);
   const tvl = `\$${tvlNum}`;
   return tvl;
@@ -89,9 +89,10 @@ export const getTvlData = async ({
   dappStakingTvlValue: string;
   ecosystemTvlValue: string;
 }> => {
+  if (!network) throw Error('Invalid network');
   // Original source: DefiLlama API
-  const ecosystemTvlUrl = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/token/tvl/1%20year`;
-  const dappStakingTvlUrl = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/dapps-staking/tvl/1%20year`;
+  const ecosystemTvlUrl = `${TOKEN_API_URL}/v1/${network}/token/tvl/1%20year`;
+  const dappStakingTvlUrl = `${TOKEN_API_URL}/v1/${network}/dapps-staking/tvl/1%20year`;
 
   const [ecosystem, dappStaking] = await Promise.all([
     axios.get<ChartData>(ecosystemTvlUrl),
@@ -100,7 +101,9 @@ export const getTvlData = async ({
 
   const ecosystemTvlData = ecosystem.data.map((it: [number, number]) => [it[0] * 1000, it[1]]);
 
-  const dappStakingTvlData = dappStaking.data.map((it: [string, number]) => [Number(it[0]), it[1]]);
+  const dappStakingTvlData = dappStaking.data.length
+    ? dappStaking.data.map((it: [string, number]) => [Number(it[0]), it[1]])
+    : [];
 
   const mergedTvlData = dappStaking.data.length
     ? mergeTvlArray({

@@ -121,8 +121,8 @@ export function useTvlHistorical() {
     [network],
     async () => {
       try {
-        if (!network.value) return;
-        await loadData(network.value);
+        if (!network.value || !network.value.length) return;
+        await loadData(network.value.toLowerCase());
       } catch (error) {
         console.error(error);
       }
