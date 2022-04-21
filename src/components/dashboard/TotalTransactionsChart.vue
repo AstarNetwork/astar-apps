@@ -35,10 +35,10 @@ export default defineComponent({
 
     const loadData = async () => {
       if (!props.network) return;
-      const priceUrl = `${TOKEN_API_URL}/v1/${props.network.toLowerCase()}/node/tx-perblock/${
+      const txUrl = `${TOKEN_API_URL}/v1/${props.network.toLowerCase()}/node/tx-perblock/${
         currentFilter.value
       }`;
-      const result = await axios.get<ChartData>(priceUrl);
+      const result = await axios.get<ChartData>(txUrl);
       data.value = result.data.map((pair) => {
         return [Number(pair[0]), pair[1]];
       });

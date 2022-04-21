@@ -48,7 +48,8 @@ export default defineComponent({
     },
     data: {
       type: Array as PropType<number[][] | null>,
-      required: true,
+      required: false,
+      default: null,
     },
     mergedData: {
       type: Array as PropType<number[][] | null>,

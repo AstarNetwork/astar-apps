@@ -13,7 +13,7 @@
 
 <script lang="ts">
 import ChartPanel from 'src/components/dashboard/ChartPanel.vue';
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
 
 export default defineComponent({
   components: {
@@ -29,16 +29,18 @@ export default defineComponent({
       required: true,
     },
     tvlValue: {
-      type: Array,
+      type: String,
       required: true,
     },
     tvlData: {
-      type: Array,
-      required: true,
+      type: Array as PropType<number[][] | null>,
+      required: false,
+      default: null,
     },
     mergedTvlData: {
-      type: Array,
-      required: true,
+      type: Array as PropType<number[][] | null>,
+      required: false,
+      default: null,
     },
     handleFilterChanged: {
       type: Function,
@@ -46,7 +48,8 @@ export default defineComponent({
     },
     isMultipleLine: {
       type: Boolean,
-      required: true,
+      required: false,
+      default: false,
     },
   },
 });

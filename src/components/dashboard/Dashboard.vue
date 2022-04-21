@@ -13,7 +13,6 @@
           :tvl-data="filteredMergedTvl"
           :handle-filter-changed="handleMergedTvlFilterChanged"
         />
-        <!-- Memo: Hide until indexer has been synced completely -->
         <!-- <total-transactions-chart :network="chainInfo.chain" /> -->
         <tvl-chart
           :title="textChart.dappStaking.title"
