@@ -11,9 +11,9 @@ export function useTvlHistorical() {
   const dappStakingTvl = ref<number[][] | null>(null);
   const ecosystemTvl = ref<number[][] | null>(null);
 
-  const mergedFilter = ref<Duration>('7 days');
-  const dappStakingFilter = ref<Duration>('7 days');
-  const ecosystemFilter = ref<Duration>('7 days');
+  const mergedFilter = ref<Duration>('90 days');
+  const dappStakingFilter = ref<Duration>('90 days');
+  const ecosystemFilter = ref<Duration>('90 days');
 
   const store = useStore();
   const network = computed(() => {
