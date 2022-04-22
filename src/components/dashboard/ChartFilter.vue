@@ -5,10 +5,12 @@
         v-for="filter in availableFilters"
         :key="filter"
         :class="{ selected: filter === selected }"
-        class="text--filter"
+        class="btn--filter"
         @click="selectFilter(filter)"
       >
-        {{ filter }}
+        <span class="text--filter">
+          {{ filter }}
+        </span>
       </div>
     </div>
   </div>
@@ -17,7 +19,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 
-export const DEFAULT_FILTER = '7 days';
+export const DEFAULT_FILTER = '90 days';
 export default defineComponent({
   props: {
     rangeFilter: {

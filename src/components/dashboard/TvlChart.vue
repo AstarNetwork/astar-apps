@@ -1,82 +1,56 @@
 <template>
   <chart-panel
-    :data="filteredData"
-    title="Total Value Locked"
-    :default-value="currentTvl"
+    :data="tvlData"
+    :merged-data="mergedTvlData"
+    :title="title"
+    :tooltip="tooltip"
+    :default-value="tvlValue"
     class="wrapper--chart"
+    :is-multiple-line="isMultipleLine"
     @filter-changed="handleFilterChanged"
   />
 </template>
 
 <script lang="ts">
-import { DEFAULT_FILTER } from 'src/components/dashboard/ChartFilter.vue';
 import ChartPanel from 'src/components/dashboard/ChartPanel.vue';
-import { Duration, filterTvlData, getTvlData } from 'src/modules/token-api';
-import { defineComponent, ref, watch } from 'vue';
+import { defineComponent, PropType } from 'vue';
 
 export default defineComponent({
   components: {
     ChartPanel,
   },
   props: {
-    network: {
+    title: {
       type: String,
       required: true,
     },
-  },
-  setup(props) {
-    const mergedArray = ref<number[][] | null>(null);
-    const filteredData = ref<number[][] | null>(null);
-    const currentTvl = ref<string>('');
-    const currentFilter = ref<Duration>(DEFAULT_FILTER);
-
-    const loadData = async (network: string): Promise<void> => {
-      const { mergedData, tvl } = await getTvlData({ network });
-      mergedArray.value = mergedData;
-      currentTvl.value = tvl;
-    };
-
-    const handleFilterChanged = async (filter: Duration): Promise<void> => {
-      if (currentFilter.value !== filter) {
-        currentFilter.value = filter;
-      }
-    };
-
-    watch(
-      [props],
-      async () => {
-        try {
-          if (!props.network) return;
-          await loadData(props.network);
-        } catch (error) {
-          console.error(error);
-        }
-      },
-      { immediate: true }
-    );
-
-    watch(
-      [currentFilter, mergedArray],
-      () => {
-        try {
-          if (!mergedArray.value) return;
-          const data = filterTvlData({
-            mergedArray: mergedArray.value,
-            duration: currentFilter.value,
-          });
-          filteredData.value = data;
-        } catch (error) {
-          console.error(error);
-        }
-      },
-      { immediate: false }
-    );
-
-    return {
-      filteredData,
-      currentTvl,
-      handleFilterChanged,
-    };
+    tooltip: {
+      type: String,
+      required: true,
+    },
+    tvlValue: {
+      type: String,
+      required: true,
+    },
+    tvlData: {
+      type: Array as PropType<number[][] | null>,
+      required: false,
+      default: null,
+    },
+    mergedTvlData: {
+      type: Array as PropType<number[][] | null>,
+      required: false,
+      default: null,
+    },
+    handleFilterChanged: {
+      type: Function,
+      required: true,
+    },
+    isMultipleLine: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 });
 </script>

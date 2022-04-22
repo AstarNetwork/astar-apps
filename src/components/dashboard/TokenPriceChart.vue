@@ -1,10 +1,12 @@
 <template>
   <chart-panel
     :data="data"
-    title="Token Price"
+    :title="textChart.tokenPrice.title"
+    :tooltip="textChart.tokenPrice.tooltip"
     :default-value="currentPrice"
     class="wrapper--chart"
     :range-filter="currentFilter"
+    :is-multiple-line="false"
     @filter-changed="handleFilterChanged"
   />
 </template>
@@ -14,7 +16,7 @@ import axios from 'axios';
 import { ChartData } from 'src/components/dashboard/ChartData';
 import ChartPanel from 'src/components/dashboard/ChartPanel.vue';
 import { defineComponent, ref, watch } from 'vue';
-import { TOKEN_API_URL } from 'src/modules/token-api';
+import { TOKEN_API_URL, textChart } from 'src/modules/token-api';
 
 export default defineComponent({
   components: {
@@ -29,7 +31,7 @@ export default defineComponent({
   setup(props) {
     const data = ref<ChartData>([[1, 1]]);
     const currentPrice = ref<string>('');
-    const currentFilter = ref<string>('7 days');
+    const currentFilter = ref<string>('90 days');
 
     const loadData = async () => {
       if (!props.network) return;
@@ -70,6 +72,7 @@ export default defineComponent({
       currentPrice,
       currentFilter,
       handleFilterChanged,
+      textChart,
     };
   },
 });

@@ -43,7 +43,6 @@ export default defineComponent({
     const animation = ref<string>(slideInClass);
 
     const closeHandler = (e: any) => {
-      console.log('e.target.className', e.target.className);
       const closeClass =
         e.target.className === 'wrapper--modal-drawer' || e.target.className === 'close';
       if (closeClass) {

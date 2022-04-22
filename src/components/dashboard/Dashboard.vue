@@ -5,25 +5,51 @@
         <value-panel title="Current Circulating Supply" :value="circulatingSupply" />
         <value-panel title="Total Supply" :value="totalSupply" />
       </div>
-      <template v-if="isMainnet">
-        <tvl-chart :network="chainInfo.chain" />
-        <!-- Memo: Hide until indexer has been synced -->
+      <div v-if="isMainnet" class="container--charts">
+        <tvl-chart
+          :title="textChart.tvl.title"
+          :tooltip="textChart.tvl.tooltip"
+          :tvl-value="mergedTvlAmount"
+          :tvl-data="filteredMergedTvl"
+          :handle-filter-changed="handleMergedTvlFilterChanged"
+        />
         <!-- <total-transactions-chart :network="chainInfo.chain" /> -->
+        <tvl-chart
+          :title="textChart.dappStaking.title"
+          :tooltip="textChart.dappStaking.tooltip"
+          :tvl-value="dappStakingTvlAmount"
+          :tvl-data="filteredDappStakingTvl.dappStaking"
+          :merged-tvl-data="filteredDappStakingTvl.merged"
+          :handle-filter-changed="handleDappStakingTvlFilterChanged"
+          :is-multiple-line="true"
+        />
+
+        <tvl-chart
+          :title="textChart.ecosystem.title"
+          :tooltip="textChart.ecosystem.tooltip"
+          :tvl-value="ecosystemTvlAmount"
+          :tvl-data="filteredEcosystemTvl.ecosystem"
+          :merged-tvl-data="filteredEcosystemTvl.merged"
+          :handle-filter-changed="handleEcosystemTvlFilterChanged"
+          :is-multiple-line="true"
+        />
+
         <token-price-chart :network="chainInfo.chain" />
-      </template>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch } from 'vue';
 import axios from 'axios';
 import TokenPriceChart from 'src/components/dashboard/TokenPriceChart.vue';
+// import TotalTransactionsChart from 'src/components/dashboard/TotalTransactionsChart.vue';
 import TvlChart from 'src/components/dashboard/TvlChart.vue';
-import TotalTransactionsChart from 'src/components/dashboard/TotalTransactionsChart.vue';
 import ValuePanel from 'src/components/dashboard/ValuePanel.vue';
+import { useTvlHistorical } from 'src/hooks';
+import { textChart, TOKEN_API_URL } from 'src/modules/token-api';
 import { useStore } from 'src/store';
-import { TOKEN_API_URL } from 'src/modules/token-api';
+import { computed, defineComponent, ref, watch } from 'vue';
 
 interface StatsData {
   generatedAt: number;
@@ -42,6 +68,18 @@ export default defineComponent({
     const store = useStore();
     const totalSupply = ref<string>('');
     const circulatingSupply = ref<string>('');
+
+    const {
+      filteredDappStakingTvl,
+      filteredEcosystemTvl,
+      dappStakingTvlAmount,
+      ecosystemTvlAmount,
+      handleDappStakingTvlFilterChanged,
+      handleEcosystemTvlFilterChanged,
+      handleMergedTvlFilterChanged,
+      filteredMergedTvl,
+      mergedTvlAmount,
+    } = useTvlHistorical();
 
     const chainInfo = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
@@ -82,10 +120,20 @@ export default defineComponent({
     });
 
     return {
+      textChart,
       chainInfo,
       totalSupply,
       circulatingSupply,
       isMainnet,
+      filteredDappStakingTvl,
+      filteredEcosystemTvl,
+      dappStakingTvlAmount,
+      ecosystemTvlAmount,
+      handleDappStakingTvlFilterChanged,
+      handleEcosystemTvlFilterChanged,
+      handleMergedTvlFilterChanged,
+      filteredMergedTvl,
+      mergedTvlAmount,
     };
   },
 });

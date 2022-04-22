@@ -3,9 +3,9 @@
     <q-skeleton class="skeleton--chart" />
   </div>
   <div v-else>
-    <div class="container">
+    <div class="container--chart">
       <div class="row">
-        <span class="text--accent container--title--color">{{ title }}</span>
+        <span class="text--accent container--title--color">{{ $t(title) }}</span>
       </div>
       <div class="row chart--value">
         <span class="text--xlg">{{ defaultValue }}</span>
@@ -19,12 +19,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch } from 'vue';
+import { defineComponent, computed, ref, watch, PropType } from 'vue';
 import { Chart } from 'highcharts-vue';
 import { useStore } from 'src/store';
 import ChartFilter, { DEFAULT_FILTER } from 'src/components/dashboard/ChartFilter.vue';
-import { formatNumber } from 'src/modules/token-api';
+import { titleFormatter, valueDecimalsFormatter, seriesFormatter } from 'src/modules/token-api';
 import Highcharts from 'highcharts';
+import { useBreakpoints } from 'src/hooks';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   components: {
@@ -36,17 +38,31 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    tooltip: {
+      type: String,
+      required: true,
+    },
     defaultValue: {
       type: String,
       required: true,
     },
     data: {
-      type: Object,
-      required: true,
+      type: Array as PropType<number[][] | null>,
+      required: false,
+      default: null,
+    },
+    mergedData: {
+      type: Array as PropType<number[][] | null>,
+      required: false,
+      default: null,
     },
     rangeFilter: {
       type: String,
       default: DEFAULT_FILTER,
+    },
+    isMultipleLine: {
+      type: Boolean,
+      required: true,
     },
   },
   emits: ['filterChanged'],
@@ -56,90 +72,93 @@ export default defineComponent({
     const getBackgroundColor = (): string => (isDarkTheme.value ? '#222829' : '#fff');
     const getLineColor = (): string => (isDarkTheme.value ? 'rgba(108,111,111,0.1)' : '#F7F7F8');
     const getTextColor = (): string => (isDarkTheme.value ? '#5F656F' : '#B1B7C1');
-    // const getChartFillColor = (): string => (isDarkTheme.value ? '#1d2d36' : '#F7F7F8');
     const hasData = ref<boolean>(false);
+    const { width, screenSize } = useBreakpoints();
+    const { t } = useI18n();
 
     Highcharts.setOptions({
       lang: {
         thousandsSep: ',',
       },
     });
-    const chartOptions = ref({
-      title: {
-        text: '',
-      },
-      chart: {
-        backgroundColor: getBackgroundColor(),
-        zoomType: 'x',
-        height: '200px',
-      },
-      xAxis: {
-        type: 'datetime',
-        lineColor: getLineColor(),
-        tickColor: getLineColor(),
-        labels: {
-          style: {
-            color: getTextColor(),
-          },
-        },
-      },
-      yAxis: {
+    const chartOptions = computed(() => {
+      return {
         title: {
           text: '',
         },
-        gridLineColor: getLineColor(),
-        labels: {
-          style: {
-            color: getTextColor(),
-          },
-          formatter: (data: any) => {
-            const prefix = props.title === 'Total Transactions' ? '' : '$';
-            if (data.value > 999) {
-              return prefix + formatNumber(data.value, 1);
-            }
-            return prefix + data.value;
-          },
+        chart: {
+          backgroundColor: getBackgroundColor(),
+          zoomType: 'x',
+          height: width.value > screenSize.xxl ? '250px' : '200px',
         },
-      },
-      legend: {
-        enabled: false,
-      },
-      plotOptions: {
-        area: {
-          marker: {
-            radius: 0,
-          },
-          lineWidth: 1,
-          states: {
-            hover: {
-              lineWidth: 1,
+        xAxis: {
+          type: 'datetime',
+          lineColor: getLineColor(),
+          tickColor: getLineColor(),
+          labels: {
+            style: {
+              color: getTextColor(),
             },
           },
-          threshold: null,
         },
-      },
-      tooltip: {
-        valueDecimals: props.title === 'Token Price' ? 4 : 0,
-      },
-      series: [
-        {
-          name: props.title,
-          type: 'area',
-          data: props.data,
-          color: '#0085FF',
-          fillColor: {
-            linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
-            stops: [
-              [0, 'rgba(7, 200, 254, 0.26)'],
-              [1, 'rgba(12, 134, 245, 0.2)'],
-            ],
+        yAxis: {
+          title: {
+            text: '',
           },
-          lineWidth: '2px',
+          opposite: true,
+          gridLineColor: getLineColor(),
+          labels: {
+            style: {
+              color: getTextColor(),
+            },
+            formatter: (data: any) => titleFormatter(t(props.title), data),
+          },
         },
-      ],
-      credits: {
-        enabled: false,
-      },
+        legend: {
+          enabled: props.isMultipleLine,
+          itemStyle: {
+            color: getTextColor(),
+          },
+          itemHoverStyle: {
+            color: '#0085FF',
+          },
+        },
+        plotOptions: {
+          area: {
+            marker: {
+              enabled: false,
+              symbol: 'circle',
+              radius: 2,
+              states: {
+                hover: {
+                  enabled: true,
+                },
+              },
+            },
+            lineWidth: 1,
+            states: {
+              hover: {
+                lineWidth: 1,
+              },
+            },
+            threshold: null,
+          },
+        },
+        tooltip: {
+          valueDecimals: valueDecimalsFormatter(props.title),
+          shared: true,
+        },
+        series: seriesFormatter({
+          isMultipleLine: props.isMultipleLine,
+          tooltip: t(props.tooltip),
+          data: props.data,
+          mergedData: props.mergedData,
+          textTvl: t('dashboard.tvl'),
+        }),
+        credits: {
+          enabled: false,
+        },
+      };
     });
 
     watch([isDarkTheme], () => {
@@ -149,7 +168,6 @@ export default defineComponent({
       chartOptions.value.yAxis.gridLineColor = getLineColor();
       chartOptions.value.yAxis.labels.style.color = getTextColor();
       chartOptions.value.xAxis.labels.style.color = getTextColor();
-      // chartOptions.value.series[0].fillColor = getChartFillColor();
     });
 
     const handleFilterChanged = (filter: string): void => {
@@ -157,7 +175,11 @@ export default defineComponent({
     };
 
     watch([props], () => {
-      chartOptions.value.series[0].data = props.data;
+      if (props.isMultipleLine) {
+        chartOptions.value.series[0].data = props.mergedData;
+      } else {
+        chartOptions.value.series[0].data = props.data;
+      }
 
       if (props.data && props.data.length > 0) {
         hasData.value = true;
