@@ -15,9 +15,12 @@
               <span class="text--accent">{{ $t('dashboard.block.blockHeight') }}</span>
             </div>
             <div class="block__column--value">
-              <span class="text--status text-color--neon">
-                {{ $n(latestBlock) }}
-              </span>
+              <vue-odometer
+                class="text--status text-color--neon"
+                format=",ddd"
+                animation="smooth"
+                :value="latestBlock"
+              />
             </div>
           </div>
         </div>
@@ -89,11 +92,19 @@
 <script lang="ts">
 import { outlinedTipsAndUpdates } from '@quasar/extras/material-icons-outlined';
 import { useAvgBlockTime } from 'src/hooks';
-import { defineComponent } from 'vue';
+import VueOdometer from 'v-odometer/src';
+import { defineComponent, computed } from 'vue';
+import { useRouter } from 'vue-router';
+
 export default defineComponent({
+  components: {
+    'vue-odometer': VueOdometer,
+  },
   setup() {
+    const router = useRouter();
+    const path = computed(() => router.currentRoute.value.path.split('/')[1]);
     const { isLoading, avgBlockTime, latestBlock, era, blocksUntilNextEra, progress, etaNextEra } =
-      useAvgBlockTime();
+      useAvgBlockTime(path.value);
 
     return {
       avgBlockTime,
