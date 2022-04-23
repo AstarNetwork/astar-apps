@@ -215,6 +215,16 @@ export default {
   dashboard: {
     dashboard: 'Dashboard',
     tvl: 'TVL',
+    block: {
+      block: 'Block',
+      blockHeight: 'Block Height',
+      blockTime: 'Block Time',
+      erasAverage: '7 eras average',
+      secs: ' secs',
+      era: 'Era',
+      progress: '{value}%',
+      eta: 'ETA {value}',
+    },
     chart: {
       tvl: {
         title: 'Total Value Locked',

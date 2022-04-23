@@ -38,6 +38,10 @@
   }
 }
 
+.container--panel {
+  width: 100%;
+}
+
 .container--charts {
   display: flex;
   flex-direction: column;
@@ -82,10 +86,6 @@
 
 .wrapper--value {
   width: 100%;
-
-  @media (min-width: $lg) {
-    width: 50%;
-  }
 }
 
 .wrapper--filter {
@@ -136,6 +136,10 @@
   background-color: $gray-1;
 }
 
+.skeleton--value-panel {
+  height: 120px;
+}
+
 .skeleton--chart {
   height: 367px;
   @media (min-width: $xxl) {
@@ -162,6 +166,11 @@
 
 .chart--value {
   padding: 8px 8px 24px;
+}
+
+.text--value {
+  font-size: 22px;
+  font-weight: 600;
 }
 
 .body--dark {

@@ -24,6 +24,10 @@ span {
   color: $gray-5;
 }
 
+.text-color--neon {
+  color: $blue;
+}
+
 .text--xlg {
   font-weight: 400;
   font-size: 22px;
@@ -100,5 +104,8 @@ input::placeholder {
   .text--md,
   .text--xl {
     color: $gray-1;
+  }
+  .text-color--neon {
+    color: $astar-blue-dark;
   }
 }

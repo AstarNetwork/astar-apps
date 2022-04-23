@@ -7,6 +7,7 @@ export function useCurrentEra() {
   const blocksUntilNextEra = ref<number>(0);
   const progress = ref<number>(0);
   const interval = ref<number>(0);
+  const nextEraStartingBlock = ref<number>(0);
 
   const getEra = async (): Promise<{ era: number; blockPerEra: number } | void> => {
     const apiRef = $api && $api.value;
@@ -27,8 +28,8 @@ export function useCurrentEra() {
     const handleBestNumber = blockHeight;
     await handleBestNumber((bestNumber) => {
       const best = bestNumber.toNumber();
-      const nextEraStartingBlock = Number(nextEraStartingBlockHeight.toString());
-      const countDown = nextEraStartingBlock - best;
+      nextEraStartingBlock.value = Number(nextEraStartingBlockHeight.toString());
+      const countDown = nextEraStartingBlock.value - best;
       const progressRes = ((blockPerEra - countDown) / blockPerEra) * 100;
       progress.value = Number(progressRes.toFixed(0));
       blocksUntilNextEra.value = countDown;
@@ -73,5 +74,6 @@ export function useCurrentEra() {
     blockPerEra,
     progress,
     blocksUntilNextEra,
+    nextEraStartingBlock,
   };
 }
