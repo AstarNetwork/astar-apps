@@ -12,7 +12,7 @@
         <div class="box--block-information">
           <div class="column-block">
             <div class="column--label">
-              <span class="text--accent">{{ $t('dashboard.block.blockHeight') }}</span>
+              <span class="text--md">{{ $t('dashboard.block.blockHeight') }}</span>
             </div>
             <div class="block__column--value">
               <vue-odometer
@@ -29,7 +29,7 @@
           <div class="column-block">
             <div class="column--label">
               <div class="column--block-time">
-                <span class="text--accent">{{ $t('dashboard.block.blockTime') }}</span>
+                <span class="text--md">{{ $t('dashboard.block.blockTime') }}</span>
                 <div>
                   <div>
                     <span class="material-symbols-outlined icon--help"> help </span>
@@ -74,7 +74,7 @@
 
       <div v-if="progress" class="box--era-information">
         <div class="column--label">
-          <span class="text--accent">{{ $t('dashboard.block.era') }}</span>
+          <span class="text--md">{{ $t('dashboard.block.era') }}</span>
         </div>
         <div class="block__column--era">
           <div>
