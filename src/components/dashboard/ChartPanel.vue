@@ -8,7 +8,7 @@
         <span class="text--accent container--title--color">{{ $t(title) }}</span>
       </div>
       <div class="row chart--value">
-        <span class="text--xlg">{{ defaultValue }}</span>
+        <span class="text--value text-color--neon">{{ defaultValue }}</span>
       </div>
       <div class="chart">
         <highcharts :options="chartOptions"></highcharts>

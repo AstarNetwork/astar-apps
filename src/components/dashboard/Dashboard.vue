@@ -2,8 +2,15 @@
   <div class="wrapper--charts">
     <div class="container--chart-panels">
       <div class="container--value-panel">
-        <value-panel title="Current Circulating Supply" :value="circulatingSupply" />
-        <value-panel title="Total Supply" :value="totalSupply" />
+        <div class="container--panel">
+          <value-panel title="Current Circulating Supply" :value="circulatingSupply" />
+        </div>
+        <div class="container--panel">
+          <value-panel title="Total Supply" :value="totalSupply" />
+        </div>
+      </div>
+      <div class="container--panel">
+        <block-panel />
       </div>
       <div v-if="isMainnet" class="container--charts">
         <tvl-chart
@@ -42,6 +49,7 @@
 
 <script lang="ts">
 import axios from 'axios';
+import BlockPanel from 'src/components/dashboard/BlockPanel.vue';
 import TokenPriceChart from 'src/components/dashboard/TokenPriceChart.vue';
 // import TotalTransactionsChart from 'src/components/dashboard/TotalTransactionsChart.vue';
 import TvlChart from 'src/components/dashboard/TvlChart.vue';
@@ -61,6 +69,7 @@ export default defineComponent({
   components: {
     TokenPriceChart,
     TvlChart,
+    BlockPanel,
     // TotalTransactionsChart,
     ValuePanel,
   },
