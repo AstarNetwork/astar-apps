@@ -1,3 +1,4 @@
+import { BlockHash } from '@polkadot/types/interfaces';
 import { $api } from 'boot/api';
 import { DateTime } from 'luxon';
 import { computed, ref, watchEffect } from 'vue';
@@ -7,7 +8,9 @@ import { useCurrentEra } from '../useCurrentEra';
 export const useAvgBlockTime = (path: string) => {
   const { blockPerEra, era, progress, nextEraStartingBlock } = useCurrentEra();
 
-  const avgBlockTime = ref<number>(0);
+  const avgBlockTime1Era = ref<number>(0);
+  const avgBlockTime7Eras = ref<number>(0);
+  const avgBlockTime30Eras = ref<number>(0);
   const latestBlock = ref<number>(0);
   const internalLatestBlock = ref<number>(0);
   const blocksUntilNextEra = ref<number>(0);
@@ -33,12 +36,30 @@ export const useAvgBlockTime = (path: string) => {
   };
 
   const setLatestBlock = (): void => {
-    if (avgBlockTime.value > 0 && latestBlock.value === 0) {
+    if (avgBlockTime7Eras.value > 0 && latestBlock.value === 0) {
       const delay = 600;
       setTimeout(() => {
         latestBlock.value = internalLatestBlock.value;
       }, delay);
     }
+  };
+
+  const getAvgBlockTime = async ({
+    hash,
+    tsNow,
+    blockHeight,
+    blockErasAgo,
+  }: {
+    hash: BlockHash;
+    tsNow: number;
+    blockHeight: number;
+    blockErasAgo: number;
+  }): Promise<number> => {
+    if (!$api.value) return 0;
+    const block = await $api.value?.at(hash);
+    const tsBlockTimeAgo = await block.query.timestamp.now();
+    const spentSecs = (tsNow - tsBlockTimeAgo.toNumber()) / 1000;
+    return spentSecs / (blockHeight - blockErasAgo);
   };
 
   const updateAvgBlock = async (blockHeight: number): Promise<void> => {
@@ -49,20 +70,48 @@ export const useAvgBlockTime = (path: string) => {
     }
 
     try {
-      const blockSevenEra = blockPerEraRef * 7;
-      const blockWeekAgo = blockHeight - blockSevenEra;
-      const [tsNow, hashBlockWeekAgo] = await Promise.all([
+      const block1Era = blockPerEraRef * 1;
+      const block7Eras = blockPerEraRef * 7;
+      const block30Eras = blockPerEraRef * 30;
+      const block1EraAgo = blockHeight - block1Era;
+      const block7ErasAgo = blockHeight - block7Eras;
+      const block30EraAgo = blockHeight - block30Eras;
+
+      const [tsNow, hashBlock1EraAgo, hashBlock7ErasAgo, hashBlock30ErasAgo] = await Promise.all([
         apiRef.query.timestamp.now(),
-        apiRef.rpc.chain.getBlockHash(blockWeekAgo),
+        apiRef.rpc.chain.getBlockHash(block1EraAgo),
+        apiRef.rpc.chain.getBlockHash(block7ErasAgo),
+        apiRef.rpc.chain.getBlockHash(block30EraAgo),
       ]);
 
-      const tsBlockWeekAgo = await (await apiRef.at(hashBlockWeekAgo)).query.timestamp.now();
+      const numTsNow = tsNow.toNumber();
+      const [avg1Era, avg7Eras, avg30Eras] = await Promise.all([
+        getAvgBlockTime({
+          hash: hashBlock1EraAgo,
+          tsNow: numTsNow,
+          blockHeight,
+          blockErasAgo: block1EraAgo,
+        }),
+        getAvgBlockTime({
+          hash: hashBlock7ErasAgo,
+          tsNow: numTsNow,
+          blockHeight,
+          blockErasAgo: block7ErasAgo,
+        }),
+        getAvgBlockTime({
+          hash: hashBlock30ErasAgo,
+          tsNow: numTsNow,
+          blockHeight,
+          blockErasAgo: block30EraAgo,
+        }),
+      ]);
 
-      const spentSecs = (tsNow.toNumber() - tsBlockWeekAgo.toNumber()) / 1000;
-      avgBlockTime.value = spentSecs / (blockHeight - blockWeekAgo);
+      avgBlockTime1Era.value = avg1Era;
+      avgBlockTime7Eras.value = avg7Eras;
+      avgBlockTime30Eras.value = avg30Eras;
+
       blocksUntilNextEra.value = nextEraStartingBlock.value - blockHeight;
-
-      const countdownNextEraSecs = blocksUntilNextEra.value * avgBlockTime.value;
+      const countdownNextEraSecs = blocksUntilNextEra.value * avgBlockTime7Eras.value;
       etaNextEra.value = DateTime.local()
         .plus(countdownNextEraSecs * 1000)
         .toFormat('HH:mm dd-MMM');
@@ -86,5 +135,15 @@ export const useAvgBlockTime = (path: string) => {
     setLatestBlock();
   });
 
-  return { avgBlockTime, latestBlock, era, blocksUntilNextEra, progress, etaNextEra, isLoading };
+  return {
+    avgBlockTime1Era,
+    avgBlockTime7Eras,
+    avgBlockTime30Eras,
+    latestBlock,
+    era,
+    blocksUntilNextEra,
+    progress,
+    etaNextEra,
+    isLoading,
+  };
 };

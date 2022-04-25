@@ -4,7 +4,8 @@
   padding: 16px 8px 0px 8px;
   margin-bottom: 16px;
   @media (min-width: $md) {
-    margin-bottom: 6px;
+    margin-bottom: 24px;
+    padding-left: 16px;
   }
 }
 
@@ -18,10 +19,8 @@
   @media (min-width: $md) {
     display: grid;
     grid-template-columns: 50% 50%;
-  }
-  @media (min-width: $xl) {
-    display: grid;
-    grid-template-columns: 50% 50%;
+    padding-right: 16px;
+    padding-left: 16px;
   }
 }
 
@@ -31,26 +30,24 @@
   align-items: center;
   row-gap: 24px;
   @media (min-width: $md) {
-  }
-  @media (min-width: $md) {
     flex-direction: row;
     column-gap: 40px;
   }
 }
 
 .skeleton--chart {
-  height: 330px;
+  height: 350px;
   @media (min-width: $md) {
-    height: 150px;
+    height: 162px;
   }
 }
 
 .container--block {
   width: 100%;
   padding: 8px 16px 32px;
-  height: 330px;
+  height: 350px;
   @media (min-width: $md) {
-    height: 150px;
+    height: 162px;
   }
 }
 
@@ -58,13 +55,18 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  @media (min-width: $md) {
+    align-items: flex-start;
+  }
 }
 
 .column--label {
   margin-bottom: 8px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  @media (min-width: $md) {
+    align-items: flex-start;
+  }
 }
 
 .column--block-time {
@@ -75,13 +77,12 @@
 .block__column--era {
   display: flex;
   justify-content: space-between;
-  align-items: center;
   justify-items: center;
   padding-left: 36px;
   padding-right: 36px;
-  @media (min-width: $xl) {
-    padding-right: 74px;
-    padding-left: 74px;
+  align-items: baseline;
+  @media (min-width: $md) {
+    padding: 0;
   }
 }
 
@@ -89,23 +90,24 @@
   align-items: center;
   display: grid;
   min-width: 210px;
-  row-gap: 2px;
+  row-gap: 16px;
+  padding: 0 8px;
+
   @media (min-width: $md) {
     width: 80%;
-    padding: 0 12px;
   }
   @media (min-width: $xl) {
-    padding: 0;
+    min-width: 256px;
   }
-}
-
-.bar__top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 }
 
 .bar__bottom {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.bar__top {
   position: relative;
 }
 
@@ -139,8 +141,26 @@
   display: flex;
   flex-direction: column;
   width: 350px;
+  align-items: center;
   @media (min-width: $md) {
-    width: 100%;
+    align-items: flex-start;
+    width: 310px;
+    justify-self: end;
+    flex-direction: row;
+    column-gap: 36px;
+  }
+  @media (min-width: $lg) {
+    width: auto;
+    max-width: 350px;
+    justify-self: auto;
+    padding-left: 10%;
+  }
+  @media (min-width: $xl) {
+    column-gap: 72px;
+  }
+  @media (min-width: $xxl) {
+    padding-left: 56px;
+    column-gap: 72px;
   }
 }
 
@@ -148,8 +168,22 @@
   color: #b1b7c1;
 }
 
-.icon--tips {
+.box--avg-time {
+  display: flex;
+  flex-direction: column;
+}
+
+.row--avg-era {
+  display: grid;
+  grid-template-columns: 56px auto;
+}
+
+.icon--help {
   position: absolute;
+  font-size: 18px;
+  height: 18px;
+  width: 18px;
+  cursor: default;
 }
 
 .text--next-era {
@@ -157,13 +191,8 @@
 }
 
 .text--status {
-  font-size: 22px;
-  font-weight: 600;
-}
-
-.text--era {
-  font-size: 24px;
-  font-weight: 600;
+  font-size: 26px;
+  font-weight: 500;
 }
 
 .body--dark {

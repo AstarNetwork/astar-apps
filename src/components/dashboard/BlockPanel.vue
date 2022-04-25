@@ -31,16 +31,40 @@
               <div class="column--block-time">
                 <span class="text--accent">{{ $t('dashboard.block.blockTime') }}</span>
                 <div>
-                  <q-icon class="icon--tips" :name="outlinedTipsAndUpdates" size="18px" />
+                  <div>
+                    <span class="material-symbols-outlined icon--help"> help </span>
+                  </div>
                   <q-tooltip>
-                    <span class="text--tooltip">{{ $t('dashboard.block.erasAverage') }}</span>
+                    <div>
+                      <div>
+                        <span class="text--tooltip">{{ $t('dashboard.block.avgBlockTime') }}</span>
+                      </div>
+                      <div>
+                        <div class="box--avg-time">
+                          <div class="row--avg-era">
+                            <span class="text--tooltip">{{ $t('dashboard.block.oneEra') }}</span>
+                            <span class="text--tooltip"> {{ $n(avgBlockTime1Era) }}</span>
+                          </div>
+                          <div class="row--avg-era">
+                            <span class="text--tooltip">{{ $t('dashboard.block.sevenEras') }}</span>
+                            <span class="text--tooltip"> {{ $n(avgBlockTime7Eras) }} </span>
+                          </div>
+                          <div class="row--avg-era">
+                            <span class="text--tooltip">{{
+                              $t('dashboard.block.thirtyEras')
+                            }}</span>
+                            <span class="text--tooltip">{{ $n(avgBlockTime30Eras) }} </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </q-tooltip>
                 </div>
               </div>
             </div>
             <div class="block__column--value">
               <span class="text--status text-color--neon">
-                {{ $n(Number(avgBlockTime)) }}
+                {{ $n(Number(avgBlockTime1Era)) }}
               </span>
               <span class="text--xlg">{{ $t('dashboard.block.secs') }}</span>
             </div>
@@ -54,20 +78,12 @@
         </div>
         <div class="block__column--era">
           <div>
-            <span class="text--era text-color--neon">
+            <span class="text--label text-color--neon">
               {{ $n(era) }}
             </span>
           </div>
           <div class="column--bar">
             <div class="bar__top">
-              <span class="text--label">
-                {{ $t('dashboard.block.progress', { value: progress }) }}
-              </span>
-              <span class="text--label">
-                {{ $t('dashboard.block.eta', { value: etaNextEra }) }}
-              </span>
-            </div>
-            <div class="bar__bottom">
               <q-linear-progress rounded size="12px" :value="progress * 0.01"> </q-linear-progress>
               <div class="row--block-next-era">
                 <div class="column--block-next-era">
@@ -77,9 +93,17 @@
                 </div>
               </div>
             </div>
+            <div class="bar__bottom">
+              <span class="text--status text-color--neon">
+                {{ $t('dashboard.block.progress', { value: progress }) }}
+              </span>
+              <span class="text--label">
+                {{ $t('dashboard.block.eta', { value: etaNextEra }) }}
+              </span>
+            </div>
           </div>
           <div>
-            <span class="text--era text-color--neon">
+            <span class="text--label">
               {{ $n(era + 1) }}
             </span>
           </div>
@@ -90,7 +114,6 @@
 </template>
 
 <script lang="ts">
-import { outlinedTipsAndUpdates } from '@quasar/extras/material-icons-outlined';
 import { useAvgBlockTime } from 'src/hooks';
 import VueOdometer from 'v-odometer/src';
 import { defineComponent, computed } from 'vue';
@@ -103,18 +126,28 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const path = computed(() => router.currentRoute.value.path.split('/')[1]);
-    const { isLoading, avgBlockTime, latestBlock, era, blocksUntilNextEra, progress, etaNextEra } =
-      useAvgBlockTime(path.value);
+    const {
+      isLoading,
+      avgBlockTime1Era,
+      avgBlockTime7Eras,
+      avgBlockTime30Eras,
+      latestBlock,
+      era,
+      blocksUntilNextEra,
+      progress,
+      etaNextEra,
+    } = useAvgBlockTime(path.value);
 
     return {
-      avgBlockTime,
+      avgBlockTime1Era,
       latestBlock,
       era,
       blocksUntilNextEra,
       progress,
       etaNextEra,
       isLoading,
-      outlinedTipsAndUpdates,
+      avgBlockTime7Eras,
+      avgBlockTime30Eras,
     };
   },
 });
