@@ -30,12 +30,38 @@
                   </div>
                   <div v-if="index === endpointKey.CUSTOM">
                     <input
-                      v-if="isCustomNetwork"
+                      v-if="selNetwork === index"
                       v-model="newEndpoint"
                       type="text"
                       placeholder="IP Address / Domain"
                       class="ip-input"
                     />
+                  </div>
+                  <div v-else-if="index === endpointKey.LOCAL">
+                    <div />
+                  </div>
+                  <div v-else>
+                    <div v-if="selNetwork === index" class="box--endpoints">
+                      <div>
+                        <span class="text--md">{{ $t('drawer.endpoint') }}</span>
+                      </div>
+                      <div class="column--options">
+                        <div class="column--network-option">
+                          <div class="box-input--endpoint">
+                            <input
+                              name="choose_endpoint"
+                              type="radio"
+                              :checked="selNetwork === index"
+                              class="input--endpoint"
+                              @change="selNetwork = index"
+                            />
+                          </div>
+                          <span class="text--md">{{
+                            $t('drawer.viaEndpoint', { value: 'Finality' })
+                          }}</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </label>
@@ -146,146 +172,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import 'src/css/quasar.variables.scss';
-@import 'src/css/utils.scss';
-
-.wrapper--modal-network {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding-top: 24px;
-  padding-bottom: 20px;
-}
-
-.class-radio {
-  display: flex;
-  align-items: center;
-  background: #fff;
-  border-radius: 6px;
-  height: rem(56);
-  width: rem(314);
-  font-weight: 700;
-  font-size: 16px;
-  line-height: 18px;
-  color: $gray-5;
-  margin: 0 auto;
-  margin-top: 16px;
-  padding: 16px;
-  cursor: pointer;
-}
-.class-radio-off {
-  background: #fff;
-  border: 1px solid transparent;
-}
-.class-radio-off:hover {
-  border: 1px solid $astar-blue;
-}
-.class-radio-on {
-  border: 2px solid $astar-blue;
-}
-
-.ip--network {
-  width: rem(16);
-  height: rem(16);
-  background: #fff;
-  appearance: none;
-  margin-right: rem(12);
-  border-radius: 9999px;
-  border-width: 1px;
-
-  &:checked {
-    background: $astar-blue;
-    border-width: 3px;
-  }
-}
-
-.wrapper--network-detail {
-  flex: 1 1 0%;
-  text-align: left;
-
-  .box--radio-network {
-    display: flex;
-    padding-left: rem(8);
-    align-items: center;
-  }
-  .box--display-name {
-    margin-left: rem(8);
-  }
-}
-
-.class-radio--custom-network {
-  height: 120px;
-  background: #fff !important;
-}
-
-.ip-input {
-  width: 236px;
-  height: 48px;
-  text-align: center;
-  margin-top: 16px;
-  margin-left: 8px;
-  border-radius: 6px;
-  background-color: $gray-1;
-  border: 1px solid $gray-1;
-  padding: 0 16px;
-  text-align: left;
-  font-weight: 400;
-  font-size: 14px;
-  color: $gray-5;
-}
-
-.ip-input:focus {
-  outline: none;
-}
-
-.wrapper__row--button {
-  display: flex;
-  justify-content: center;
-}
-
-.btn--connect {
-  width: 315px;
-  background-color: $astar-blue;
-  font-size: 20px;
-  font-weight: 600;
-  border-radius: 30px;
-  height: 52px;
-  margin-top: 24px;
-  &:hover {
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
-      linear-gradient(0deg, $astar-blue, $astar-blue);
-  }
-}
-
-.body--dark {
-  .class-radio {
-    color: #fff;
-  }
-  .class-radio-off {
-    background: $gray-6;
-  }
-
-  .class-radio-on {
-    background: $gray-5-selected-dark;
-  }
-  .class-radio--custom-network {
-    background: $gray-6 !important;
-  }
-
-  .ip--network {
-    background: $gray-6;
-    border: 1px solid $gray-3;
-
-    &:checked {
-      background: $astar-blue;
-      border-width: 3px;
-    }
-  }
-
-  .ip-input {
-    background: $gray-5-selected-dark;
-    border: 1px solid $gray-4;
-    color: $gray-1;
-  }
-}
+@use 'src/components/header/styles/modal-network.scss';
 </style>
