@@ -280,30 +280,20 @@ export default defineComponent({
   border: 2px solid $astar-blue-dark;
 }
 
-.ip--account {
+.ip--account[type='radio'] {
   width: rem(16);
   height: rem(16);
-  background: #fff;
-  appearance: none;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px $gray-3;
+  -webkit-appearance: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
   margin-right: rem(12);
-  border-radius: 9999px;
-  border-width: 1px;
-
-  &:before {
-    content: '';
-    display: block;
-    width: 77%;
-    height: 77%;
-    margin: 15% 15%;
-    border-radius: 80%;
-  }
-
   &:checked {
-    background: #fff;
-    border: 1px solid $astar-blue;
-  }
-  &:checked:before {
-    background: $astar-blue;
+    border: 3px solid white;
+    background-color: $astar-blue;
+    box-shadow: 0 0 0 2px $astar-blue;
   }
 }
 
@@ -407,17 +397,12 @@ export default defineComponent({
     background: $gray-5-selected-dark;
   }
 
-  .ip--account {
-    -webkit-appearance: none;
-    background: $gray-6;
-    border: 1px solid $gray-3;
+  .ip--account[type='radio'] {
+    box-shadow: 0 0 0 1px white;
 
     &:checked {
-      background: #000;
-      border: 1px solid $astar-blue;
-    }
-    &:checked:before {
-      background: $astar-blue;
+      box-shadow: 0 0 0 2px $astar-blue;
+      border: 3px solid $gray-5;
     }
   }
 

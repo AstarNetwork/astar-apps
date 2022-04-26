@@ -41,24 +41,36 @@
                     <div />
                   </div>
                   <div v-else>
-                    <div v-if="selNetwork === index" class="box--endpoints">
+                    <div
+                      v-if="selNetwork === index && providerEndpoints[index].endpoints"
+                      class="box--endpoints"
+                    >
                       <div>
                         <span class="text--md">{{ $t('drawer.endpoint') }}</span>
                       </div>
                       <div class="column--options">
-                        <div class="column--network-option">
-                          <div class="box-input--endpoint">
-                            <input
-                              name="choose_endpoint"
-                              type="radio"
-                              :checked="selNetwork === index"
-                              class="input--endpoint"
-                              @change="selNetwork = index"
-                            />
+                        <div
+                          v-for="(endpointObj, i) in providerEndpoints[index].endpoints"
+                          :key="i"
+                        >
+                          <div
+                            class="column--network-option"
+                            @click="setSelEndpoint({ endpointObj, networkIdx: index })"
+                          >
+                            <div class="box-input--endpoint">
+                              <input
+                                name="choose_endpoint"
+                                type="radio"
+                                :checked="
+                                  checkIsCheckedEndpoint({ index, endpoint: endpointObj.endpoint })
+                                "
+                                class="input--endpoint"
+                              />
+                            </div>
+                            <span class="text--md">{{
+                              $t('drawer.viaEndpoint', { value: endpointObj.name })
+                            }}</span>
                           </div>
-                          <span class="text--md">{{
-                            $t('drawer.viaEndpoint', { value: 'Finality' })
-                          }}</span>
                         </div>
                       </div>
                     </div>
@@ -83,11 +95,12 @@
 </template>
 <script lang="ts">
 import { useQuasar } from 'quasar';
+import { $endpoint } from 'src/boot/api';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { checkIsMobileMathWallet } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref } from 'vue';
+import { computed, defineComponent, ref, watch, watchEffect, Ref } from 'vue';
 import ModalDrawer from './ModalDrawer.vue';
 
 export default defineComponent({
@@ -127,7 +140,7 @@ export default defineComponent({
       }, animationDuration);
     };
 
-    const { NETWORK_IDX, CUSTOM_ENDPOINT } = LOCAL_STORAGE;
+    const { NETWORK_IDX, CUSTOM_ENDPOINT, SELECTED_ENDPOINT } = LOCAL_STORAGE;
 
     const selectNetwork = async (networkIdx: number): Promise<void> => {
       localStorage.setItem(NETWORK_IDX, networkIdx.toString());
@@ -147,12 +160,83 @@ export default defineComponent({
       emit('update:select-network', networkIdx);
     };
 
-    const selNetwork = ref(props.networkIdx);
+    const selNetwork = ref<number>(props.networkIdx);
+    const selEndpointAstar = ref<string>('');
+    const selEndpointShiden = ref<string>('');
+    const selEndpointShibuya = ref<string>('');
+
     const isDisabled = computed(() => {
       return selNetwork.value === endpointKey.CUSTOM && !newEndpoint.value;
     });
 
     const isCustomNetwork = computed(() => selNetwork.value === endpointKey.CUSTOM);
+
+    const checkIsCheckedEndpoint = ({
+      index,
+      endpoint,
+    }: {
+      index: number;
+      endpoint: string;
+    }): boolean => {
+      return index === endpointKey.ASTAR
+        ? selEndpointAstar.value === endpoint
+        : index === endpointKey.SHIDEN
+        ? selEndpointShiden.value === endpoint
+        : selEndpointShibuya.value === endpoint;
+    };
+
+    const setSelEndpoint = ({
+      endpointObj,
+      networkIdx,
+    }: {
+      endpointObj: { name: string; endpoint: string };
+      networkIdx: number;
+      selEndpointRef: string;
+    }): void => {
+      localStorage.setItem(
+        SELECTED_ENDPOINT,
+        JSON.stringify({
+          [networkIdx]: endpointObj.endpoint,
+        })
+      );
+      if (networkIdx === endpointKey.ASTAR) {
+        selEndpointAstar.value = endpointObj.endpoint;
+      }
+      if (networkIdx === endpointKey.SHIDEN) {
+        selEndpointShiden.value = endpointObj.endpoint;
+      }
+      if (networkIdx === endpointKey.SHIBUYA) {
+        selEndpointShibuya.value = endpointObj.endpoint;
+      }
+    };
+
+    const setupInitialEndpointOption = (networkIdx: number) => {
+      if (networkIdx === endpointKey.ASTAR) {
+        selEndpointAstar.value = $endpoint.value;
+        selEndpointShiden.value = providerEndpoints[endpointKey.SHIDEN].endpoints[0].endpoint;
+        selEndpointShibuya.value = providerEndpoints[endpointKey.SHIBUYA].endpoints[0].endpoint;
+      }
+
+      if (networkIdx === endpointKey.SHIDEN) {
+        selEndpointAstar.value = providerEndpoints[endpointKey.ASTAR].endpoints[0].endpoint;
+        selEndpointShiden.value = $endpoint.value;
+        selEndpointShibuya.value = providerEndpoints[endpointKey.SHIBUYA].endpoints[0].endpoint;
+      }
+
+      if (networkIdx === endpointKey.SHIBUYA) {
+        selEndpointAstar.value = providerEndpoints[endpointKey.ASTAR].endpoints[0].endpoint;
+        selEndpointShiden.value = providerEndpoints[endpointKey.SHIDEN].endpoints[0].endpoint;
+        selEndpointShibuya.value = $endpoint.value;
+      }
+    };
+
+    watch(
+      [$endpoint],
+      () => {
+        setupInitialEndpointOption(props.networkIdx);
+      },
+      { immediate: true }
+    );
 
     return {
       closeModal,
@@ -166,6 +250,11 @@ export default defineComponent({
       isDisabled,
       isCustomNetwork,
       isClosing,
+      selEndpointAstar,
+      selEndpointShiden,
+      selEndpointShibuya,
+      setSelEndpoint,
+      checkIsCheckedEndpoint,
     };
   },
 });
