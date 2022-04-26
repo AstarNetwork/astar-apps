@@ -1,12 +1,14 @@
+import { options } from '@astar-network/astar-api';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { web3Accounts } from '@polkadot/extension-dapp';
 import type { InjectedExtension } from '@polkadot/extension-inject/types';
 import { keyring } from '@polkadot/ui-keyring';
 import { isTestChain } from '@polkadot/util';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
+import { providerEndpoints } from 'src/config/chainEndpoints';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { objToArray } from 'src/hooks/helper/common';
 import { getInjectedExtensions } from 'src/hooks/helper/wallet';
-import { options } from '@astar-network/astar-api';
 
 interface InjectedAccountExt {
   address: string;
@@ -50,17 +52,62 @@ const loadAccounts = async (api: ApiPromise) => {
   );
 };
 
+const fallBackConnection = async (networkIdx: number): Promise<void> => {
+  await Promise.race([
+    providerEndpoints[networkIdx].endpoints.map(async (it) => {
+      try {
+        const provider = new WsProvider(it.endpoint);
+        const api = new ApiPromise(options({ provider }));
+        await api.isReady;
+        const result = await api.rpc.system.health();
+        const isHealthy = result.toHuman().shouldHavePeers;
+        if (isHealthy) {
+          localStorage.setItem(
+            LOCAL_STORAGE.SELECTED_ENDPOINT,
+            JSON.stringify({
+              [networkIdx]: it.endpoint,
+            })
+          );
+          return window.location.reload();
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }),
+  ]);
+};
+
 export async function connectApi(endpoint: string, networkIdx: number, store: any) {
   const provider = new WsProvider(endpoint);
   const api = new ApiPromise(options({ provider }));
 
   store.commit('general/setCurrentNetworkStatus', 'connecting');
-
   api.on('error', (error: Error) => console.error(error.message));
+
   try {
-    await api.isReadyOrError;
+    const apiConnect = new Promise((resolve) => {
+      api.isReadyOrError.then(() => {
+        resolve('Connected API');
+      });
+    });
+
+    const resTimeout = 'timeout';
+    let timeout = new Promise((resolve) => {
+      const timeout = 3 * 1000;
+      setTimeout(() => {
+        resolve(resTimeout);
+      }, timeout);
+    });
+
+    let race = Promise.race([apiConnect, timeout]);
+    race.then((res) => {
+      if (res === resTimeout) {
+        fallBackConnection(networkIdx);
+      }
+    });
   } catch (e) {
     console.error(e);
+    fallBackConnection(networkIdx);
   }
 
   const injectedPromise = await getInjectedExtensions();
@@ -74,6 +121,7 @@ export async function connectApi(endpoint: string, networkIdx: number, store: an
   }
 
   try {
+    await api.isReady;
     await loadAccounts(api);
 
     keyring.accounts.subject.subscribe((accounts) => {

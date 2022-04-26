@@ -6,7 +6,6 @@ interface ChainProvider {
   networkAlias: string;
   displayName: string;
   info?: string;
-  endpoint: string;
   endpoints: { name: string; endpoint: string }[];
   favicon: string;
   isSupportContract: boolean;
@@ -37,9 +36,8 @@ export const providerEndpoints: ChainProvider[] = [
     networkAlias: 'astar',
     displayName: 'Astar Network',
     info: 'Smart contract platform for decentralized applications (dapps) on the Polkadot network',
-    endpoint: 'wss://rpc.astar.network',
     endpoints: [
-      { name: 'Astar', endpoint: 'wss://rpc.astar.network' },
+      { name: 'Astar', endpoint: 'wss://wss.astar.network' },
       { name: 'OnFinality', endpoint: 'wss://astar.api.onfinality.io/public-ws' },
       { name: 'Dwellir', endpoint: 'wss://astar-rpc.dwellir.com' },
     ],
@@ -60,7 +58,6 @@ export const providerEndpoints: ChainProvider[] = [
     networkAlias: 'shiden',
     displayName: 'Shiden Network',
     info: 'Smart contract platform for decentralized applications (dapps) on the Kusama network',
-    endpoint: 'wss://shiden.api.onfinality.io/public-ws',
     endpoints: [
       { name: 'Shiden', endpoint: 'wss://rpc.shiden.astar.network' },
       { name: 'OnFinality', endpoint: 'wss://shiden.api.onfinality.io/public-ws' },
@@ -84,7 +81,7 @@ export const providerEndpoints: ChainProvider[] = [
     networkAlias: 'shibuya-testnet',
     displayName: 'Shibuya Network',
     info: 'The test network of the layer 2 scaling blockchain',
-    endpoint: 'wss://rpc.shibuya.astar.network',
+    // endpoint: 'wss://rpc.shibuya.astar.network',
     endpoints: [{ name: 'Shibuya', endpoint: 'wss://rpc.shibuya.astar.network' }],
     favicon: 'https://polkadot.js.org/apps/static/shiden.a066789e.png',
     isSupportContract: true,
@@ -102,7 +99,6 @@ export const providerEndpoints: ChainProvider[] = [
   {
     networkAlias: 'local-node',
     displayName: 'Local Network',
-    endpoint: 'ws://127.0.0.1:9944',
     endpoints: [{ name: 'Local Network', endpoint: 'ws://127.0.0.1:9944' }],
     favicon: 'icons/astar.png',
     isSupportContract: true,
@@ -118,7 +114,7 @@ export const providerEndpoints: ChainProvider[] = [
   {
     networkAlias: 'custom-node',
     displayName: 'Custom Network',
-    endpoint: 'ws://127.0.0.1:9944',
+    // endpoint: 'ws://127.0.0.1:9944',
     endpoints: [{ name: '', endpoint: '' }],
     favicon: 'icons/astar.png',
     isSupportContract: true,

@@ -142,8 +142,8 @@ export function useMetaExtensions(api: ApiPromise, extensions: InjectedExtension
   const extensionCount = ref<number>(0);
 
   (async () => {
+    await api.isReady;
     const all = await getKnown(api, extensions);
-
     metaExtensions.value = filterAll(api, all);
     extensionCount.value = metaExtensions.value.count;
   })();

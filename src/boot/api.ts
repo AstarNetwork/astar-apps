@@ -63,7 +63,6 @@ export default boot(async ({ store }) => {
     },
     meta: opengraphMeta,
   });
-
   let { api, extensions } = await connectApi(endpoint, networkIdx.value, store);
   $api.value = api;
   $endpoint.value = endpoint;
