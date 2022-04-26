@@ -99,7 +99,7 @@ export async function connectApi(endpoint: string, networkIdx: number, store: an
       }, timeout);
     });
 
-    let race = Promise.race([apiConnect, timeout]);
+    const race = Promise.race([apiConnect, timeout]);
     race.then((res) => {
       if (res === resTimeout) {
         fallBackConnection(networkIdx);
