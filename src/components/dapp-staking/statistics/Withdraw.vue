@@ -19,7 +19,7 @@
     </div>
     <div class="tw-flex tw-flex-row tw-items-baseline tw-w-full tw-justify-center tw-mt-2">
       <div class="tw-cursor-pointer tw-font-bold" @click="showModal = true">
-        {{ $t('dappStaking.chunks') }} ({{ unlockingChunks?.length }})
+        {{ $t('dappStaking.chunks') }} ({{ unlockingChunks?.length ?? 0 }})
       </div>
       <Button v-if="canWithdraw" :primary="false" class="tw-ml-4" @click="withdraw()">
         {{ $t('dappStaking.withdraw') }}
