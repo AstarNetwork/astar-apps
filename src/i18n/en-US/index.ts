@@ -81,6 +81,7 @@ export default {
     withdraw: 'Withdraw',
     chunk: 'Chunk',
     chunks: 'Chunks',
+    unbondingEra: '*Unbonding takes {unbondingPeriod} era.',
     amount: 'Amount',
     era: 'Era',
     unbondedFunds: 'Unbonded funds',

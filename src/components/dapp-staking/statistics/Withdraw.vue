@@ -17,13 +17,16 @@
     <div class="tw-flex tw-flex-col tw-items-center">
       <FormatBalance :balance="totalToWithdraw" class="tw-flex tw-text-2xl tw-font-bold" />
     </div>
-    <div class="tw-flex tw-flex-row tw-items-baseline tw-float-right">
-      <div class="tw-cursor-pointer tw-mr-4" @click="showModal = true">
+    <div class="tw-flex tw-flex-row tw-items-baseline tw-w-full tw-justify-center tw-mt-2">
+      <div class="tw-cursor-pointer tw-font-bold" @click="showModal = true">
         {{ $t('dappStaking.chunks') }} ({{ unlockingChunks?.length }})
       </div>
-      <Button v-if="canWithdraw" :primary="false" class="tw-mt-4" @click="withdraw()">
+      <Button v-if="canWithdraw" :primary="false" class="tw-ml-4" @click="withdraw()">
         {{ $t('dappStaking.withdraw') }}
       </Button>
+    </div>
+    <div class="tw-w-full tw-text-xs tw-text-center tw-mt-3">
+      {{ $t('dappStaking.unbondingEra', { unbondingPeriod }) }}
     </div>
 
     <ChunksModal
@@ -61,6 +64,7 @@ export default defineComponent({
     const selectedAccountAddress = computed(() => store.getters['general/selectedAddress']);
     const unlockingChunksCount = computed(() => store.getters['dapps/getUnlockingChunks']);
     const maxUnlockingChunks = computed(() => store.getters['dapps/getMaxUnlockingChunks']);
+    const unbondingPeriod = computed(() => store.getters['dapps/getUnbondingPeriod']);
     const unlockingChunks = ref<ChunkInfo[]>();
     const canWithdraw = ref<boolean>(false);
     const totalToWithdraw = ref<BN>(new BN(0));
@@ -141,6 +145,7 @@ export default defineComponent({
       showModal,
       maxUnlockingChunks,
       canUnbondWithdraw,
+      unbondingPeriod,
     };
   },
 });
