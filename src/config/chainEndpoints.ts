@@ -37,7 +37,7 @@ export const providerEndpoints: ChainProvider[] = [
     networkAlias: 'astar',
     displayName: 'Astar Network',
     info: 'Smart contract platform for decentralized applications (dapps) on the Polkadot network',
-    endpoint: 'wss://rpc.astar.network',
+    endpoint: 'wss://wss.astar.network',
     favicon: 'https://polkadot.js.org/apps/static/astar.b48435e0.png',
     isSupportContract: true,
     prefix: 0x250,
