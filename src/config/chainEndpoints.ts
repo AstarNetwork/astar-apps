@@ -81,7 +81,6 @@ export const providerEndpoints: ChainProvider[] = [
     networkAlias: 'shibuya-testnet',
     displayName: 'Shibuya Network',
     info: 'The test network of the layer 2 scaling blockchain',
-    // endpoint: 'wss://rpc.shibuya.astar.network',
     endpoints: [{ name: 'Shibuya', endpoint: 'wss://rpc.shibuya.astar.network' }],
     favicon: 'https://polkadot.js.org/apps/static/shiden.a066789e.png',
     isSupportContract: true,
@@ -114,7 +113,6 @@ export const providerEndpoints: ChainProvider[] = [
   {
     networkAlias: 'custom-node',
     displayName: 'Custom Network',
-    // endpoint: 'ws://127.0.0.1:9944',
     endpoints: [{ name: '', endpoint: '' }],
     favicon: 'icons/astar.png',
     isSupportContract: true,
