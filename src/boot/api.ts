@@ -17,14 +17,18 @@ import { getProviderIndex, ASTAR_CHAIN } from 'src/config/chainEndpoints';
 import Web3 from 'web3';
 
 const $api = ref<ApiPromise>();
+const $endpoint = ref<string>('');
 const $web3 = ref<Web3>();
 const $isEnableIndividualClaim = ref<boolean>(false);
 
 export default boot(async ({ store }) => {
-  const { NETWORK_IDX, CUSTOM_ENDPOINT } = LOCAL_STORAGE;
+  const { NETWORK_IDX, CUSTOM_ENDPOINT, SELECTED_ENDPOINT } = LOCAL_STORAGE;
 
   const networkIdxStore = localStorage.getItem(NETWORK_IDX);
   const customEndpoint = localStorage.getItem(CUSTOM_ENDPOINT);
+  const selectedEndpointData = localStorage.getItem(SELECTED_ENDPOINT);
+  const selectedEndpoint = selectedEndpointData ? JSON.parse(selectedEndpointData) : {};
+
   if (networkIdxStore) {
     store.commit('general/setCurrentNetworkIdx', Number(networkIdxStore));
   }
@@ -33,7 +37,13 @@ export default boot(async ({ store }) => {
   }
 
   const networkIdx = computed(() => store.getters['general/networkIdx']);
-  let endpoint = providerEndpoints[networkIdx.value].endpoint;
+
+  const defaultEndpoint = providerEndpoints[networkIdx.value].endpoints[0].endpoint;
+
+  let endpoint = selectedEndpoint.hasOwnProperty(networkIdx.value)
+    ? selectedEndpoint[networkIdx.value]
+    : defaultEndpoint;
+
   if (networkIdx.value === endpointKey.CUSTOM) {
     const customEndpoint = computed(() => store.getters['general/customEndpoint']);
     endpoint = customEndpoint.value;
@@ -53,9 +63,9 @@ export default boot(async ({ store }) => {
     },
     meta: opengraphMeta,
   });
-
   let { api, extensions } = await connectApi(endpoint, networkIdx.value, store);
   $api.value = api;
+  $endpoint.value = endpoint;
 
   // update chaininfo
   const { chainInfo } = useChainInfo(api);
@@ -79,4 +89,4 @@ export default boot(async ({ store }) => {
   });
 });
 
-export { $api, $web3, $isEnableIndividualClaim };
+export { $api, $web3, $isEnableIndividualClaim, $endpoint };

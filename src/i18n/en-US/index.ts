@@ -41,6 +41,10 @@ export default {
     github: 'GitHub',
     docs: 'Documentation',
   },
+  drawer: {
+    endpoint: 'Endpoint',
+    viaEndpoint: 'via {value}',
+  },
   wallet: {
     connectWallet: 'Connect Wallet',
     select: 'Please select a wallet to connect to this portal',

@@ -111,7 +111,7 @@ export const useAvgBlockTime = (path: string) => {
       avgBlockTime30Eras.value = avg30Eras;
 
       blocksUntilNextEra.value = nextEraStartingBlock.value - blockHeight;
-      const countdownNextEraSecs = blocksUntilNextEra.value * avgBlockTime7Eras.value;
+      const countdownNextEraSecs = blocksUntilNextEra.value * avgBlockTime1Era.value;
       etaNextEra.value = DateTime.local()
         .plus(countdownNextEraSecs * 1000)
         .toFormat('HH:mm dd-MMM');
