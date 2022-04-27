@@ -273,6 +273,7 @@ export default defineComponent({
       if (isCustomSig.value) {
         await unstakeCustomExtrinsic();
         showModal.value = false;
+        store.commit('setUnlockingChunks', -1);
       } else {
         const result = await store.dispatch(dispatchCommand, {
           api: $api?.value,
