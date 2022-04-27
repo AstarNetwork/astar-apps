@@ -1,5 +1,9 @@
 <template>
-  <router-view />
+  <div class="wrapper--dapp-staking">
+    <div class="container--dapp-staking">
+      <router-view />
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -24,3 +28,24 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss" scoped>
+@use 'src/components/assets/styles/assets.scss';
+.container--dapp-staking {
+  display: grid;
+  row-gap: 24px;
+  max-width: 1300px;
+  @media (min-width: $xxl) {
+    /* width: $container-max-width; */
+    /* width: 1300px; */
+  }
+}
+
+.wrapper--dapp-staking {
+  position: relative;
+  @media (min-width: $xxl) {
+    display: flex;
+    justify-content: center;
+  }
+}
+</style>

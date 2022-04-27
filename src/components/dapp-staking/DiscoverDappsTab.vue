@@ -163,11 +163,15 @@ export default defineComponent({
 .kpi-wrapper {
   display: flex;
   flex-wrap: wrap;
-  column-gap: 48px;
+  column-gap: 66px;
 
   div {
     min-width: 288px;
     flex: 1;
+  }
+  @media (min-width: $xl) {
+    justify-content: center;
+    column-gap: 48px;
   }
 }
 </style>

@@ -34,9 +34,14 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import 'src/css/quasar.variables.scss';
+
 .box {
   background: linear-gradient(83.83deg, #694ea4, #1b6dc1 37.5%, #1b6dc1 65.1%, #2ea0c4);
   box-shadow: 0 2px 2px rgb(0 0 0 / 30%);
+  @media (min-width: $xl) {
+    max-width: 288px;
+  }
 }
 </style>
