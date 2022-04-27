@@ -92,14 +92,14 @@ export async function connectApi(endpoint: string, networkIdx: number, store: an
     });
 
     const resTimeout = 'timeout';
-    let timeout = new Promise((resolve) => {
-      const timeout = 3 * 1000;
+    const fallbackTimeout = new Promise((resolve) => {
+      const timeout = 8 * 1000;
       setTimeout(() => {
         resolve(resTimeout);
       }, timeout);
     });
 
-    const race = Promise.race([apiConnect, timeout]);
+    const race = Promise.race([apiConnect, fallbackTimeout]);
     race.then((res) => {
       if (res === resTimeout) {
         fallBackConnection(networkIdx);
@@ -143,7 +143,7 @@ export async function connectApi(endpoint: string, networkIdx: number, store: an
     store.commit('general/setCurrentNetworkStatus', 'connected');
   } catch (err) {
     console.error(err);
-    store.commit('general/setCurrentNetworkStatus', 'offline');
+    fallBackConnection(networkIdx);
   }
 
   return {

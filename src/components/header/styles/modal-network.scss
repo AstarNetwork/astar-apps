@@ -23,9 +23,9 @@
   margin: 0 auto;
   margin-top: 16px;
   padding: 16px;
-  cursor: pointer;
 }
 .class-radio-off {
+  cursor: pointer;
   background: #fff;
   border: 1px solid transparent;
 }
@@ -42,7 +42,6 @@
   border-radius: 50%;
   box-shadow: 0 0 0 1px $gray-3;
   -webkit-appearance: none;
-  cursor: pointer;
   display: flex;
   align-items: center;
   margin-right: rem(12);
@@ -132,7 +131,7 @@
 }
 
 .box--endpoints {
-  padding-left: 40px;
+  padding-left: 8px;
   margin-top: 16px;
   display: flex;
   column-gap: 24px;
@@ -148,6 +147,7 @@
   display: flex;
   align-items: center;
   column-gap: 8px;
+  cursor: pointer;
 }
 
 .body--dark {
