@@ -11,9 +11,9 @@
       :class="screenSize.sm > width && 'm-btn--network'"
       @click="showNetworkModal"
     >
-      <icon-base class="iconbase" stroke="currentColor" icon-name="network">
-        <icon-network />
-      </icon-base>
+      <astar-icon-base class="iconbase" stroke="currentColor" icon-name="network">
+        <astar-icon-network />
+      </astar-icon-base>
       <img v-show="currentLogo" class="icon" width="16" :src="currentLogo" />
       <div class="column--network-name">
         <template v-if="width >= screenSize.md">
@@ -29,7 +29,7 @@
       </div>
 
       <div class="divider" />
-      <ConnectionIndicator :connection-type="currentNetworkStatus" :version="version" />
+      <astar-connection-indicator :connection-type="currentNetworkStatus" :version="version" />
     </button>
   </div>
 </template>
@@ -39,16 +39,10 @@ import { defineComponent, watch, computed, ref } from 'vue';
 import { useStore } from 'src/store';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { useBreakpoints } from 'src/hooks';
-import IconBase from 'components/icons/IconBase.vue';
-import IconNetwork from 'components/icons/IconNetwork.vue';
-import ConnectionIndicator from 'components/header/ConnectionIndicator.vue';
 import MetaUpdateButton from 'src/components/header/MetaUpdateButton.vue';
 
 export default defineComponent({
   components: {
-    IconBase,
-    IconNetwork,
-    ConnectionIndicator,
     MetaUpdateButton,
   },
   emits: ['show-network'],

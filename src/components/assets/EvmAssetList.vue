@@ -22,7 +22,7 @@
                 </td>
                 <td>
                   <div class="icon--search">
-                    <IconSearch />
+                    <astar-icon-search />
                   </div>
                 </td>
               </tr>
@@ -118,7 +118,6 @@ import { ethers } from 'ethers';
 import { checkIsCbridgeToken, SelectedToken } from 'src/c-bridge';
 import Erc20Currency from 'src/components/assets/Erc20Currency.vue';
 import EvmCbridgeToken from 'src/components/assets/EvmCbridgeToken.vue';
-import IconSearch from 'src/components/icons/IconSearch.vue';
 import { useBalance, usePrice } from 'src/hooks';
 import { Erc20Token, getTokenImage } from 'src/modules/token';
 import { useStore } from 'src/store';
@@ -131,7 +130,6 @@ export default defineComponent({
     EvmCbridgeToken,
     ModalTransfer,
     ModalFaucet,
-    IconSearch,
     Erc20Currency,
   },
   props: {
