@@ -32,6 +32,7 @@
     <div class="tw-p-4">
       <StakePanel
         :dapp="dapp"
+        :dapps="dapps"
         :stake-info="stakeInfo"
         :is-max-staker="isMaxStaker"
         :staker-max-number="stakerMaxNumber"
@@ -69,6 +70,10 @@ export default defineComponent({
   props: {
     dapp: {
       type: Object,
+      required: true,
+    },
+    dapps: {
+      type: Array,
       required: true,
     },
     accountData: {

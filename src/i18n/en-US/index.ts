@@ -105,6 +105,7 @@ export default {
       logo: 'Logo',
       register: 'Register',
       address: 'Address',
+      fundsFrom: 'Where you would like to bring your funds from',
       estimatedRewards: 'Pending rewards',
       unclaimedEras: 'Unclaimed eras:',
       estimatedClaimedRewards: 'Claimed rewards',

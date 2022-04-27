@@ -64,6 +64,7 @@
         :dapp="dapp"
         :staker-max-number="maxNumberOfStakersPerContract"
         :account-data="accountData"
+        :dapps="dapps"
       />
     </div>
 
@@ -99,6 +100,9 @@ import Era from './statistics/Era.vue';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
 import { fasSeedling } from '@quasar/extras/fontawesome-v5';
 import { useMeta } from 'quasar';
+import BN from 'bn.js';
+import { $api } from 'src/boot/api';
+import { getStakingDappAddresses } from 'src/modules/dapp-staking';
 
 export default defineComponent({
   components: {
@@ -147,6 +151,36 @@ export default defineComponent({
           alertType: 'error',
         });
       }
+    });
+
+    const initialData = [
+      {
+        address: '',
+        name: 'Transferable Balance',
+        balance: new BN(0),
+      },
+    ];
+
+    const stakingList = ref(initialData);
+    watchEffect(async () => {
+      const dappsRef = dapps.value;
+      const accountDataRef = accountData.value;
+      const apiRef = $api.value;
+      const currentAccountRef = currentAccount.value;
+      if (!dapps.value || !accountDataRef || !apiRef || !currentAccountRef) return;
+
+      console.log('dapps', dappsRef);
+      console.log('balance', accountDataRef.getUsableFeeBalance());
+      const data = await getStakingDappAddresses({ api: apiRef, address: currentAccountRef });
+
+      // :balance="accountData?.getUsableFeeBalance()
+      // const data = [
+      //   {
+      //     address: '',
+      //     name: 'Transferable Balance',
+      //     balance: '',
+      //   },
+      // ];
     });
 
     return {

@@ -17,6 +17,23 @@
           @sel-changed="reloadAmount"
         />
       </div>
+      <div class="tw-mb-4">
+        <label
+          class="
+            tw-block tw-text-sm tw-font-medium tw-text-gray-500
+            dark:tw-text-darkGray-400
+            tw-mb-2
+          "
+          >{{ $t('dappStaking.modals.fundsFrom') }}</label
+        >
+        <ModalNominationTransfer
+          v-model:selAddress="data.address"
+          :balance="accountData?.getUsableFeeBalance()"
+          :role="Role.FromAddress"
+          :dapps="dapps"
+          @sel-changed="reloadAmount"
+        />
+      </div>
       <InputAmount
         v-model:amount="data.amount"
         v-model:selectedUnit="data.unit"
@@ -28,13 +45,13 @@
         "
         :is-max-button="actionName === StakeAction.Unstake ? true : false"
       />
-      <div v-if="accountData && actionName === StakeAction.Stake" class="tw-mt-1 tw-ml-1">
+      <!-- <div v-if="accountData && actionName === StakeAction.Stake" class="tw-mt-1 tw-ml-1">
         {{ $t('dappStaking.modals.availableToStake') }}
         <format-balance
           :balance="accountData?.getUsableFeeBalance()"
           class="tw-inline tw-font-semibold"
         />
-      </div>
+      </div> -->
       <div v-if="accountData && actionName === StakeAction.Unstake" class="tw-mt-1 tw-ml-1">
         {{ $t('dappStaking.yourStake') }}
         <format-balance :balance="stakeAmount" class="tw-inline tw-font-semibold" />
@@ -71,6 +88,7 @@ import { getAmount, StakeModel } from 'src/hooks/store';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, toRefs } from 'vue';
 import { StakeAction } from '../StakePanel.vue';
+import ModalNominationTransfer from 'src/components/dapp-staking/modals/ModalNominationTransfer.vue';
 
 export enum Role {
   FromAddress = 'FromAddress',
@@ -85,10 +103,15 @@ export default defineComponent({
     Button,
     Avatar,
     FormatBalance,
+    ModalNominationTransfer,
   },
   props: {
     dapp: {
       type: Object,
+      required: true,
+    },
+    dapps: {
+      type: Array,
       required: true,
     },
     accountData: {

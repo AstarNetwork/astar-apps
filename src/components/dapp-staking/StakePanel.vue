@@ -65,6 +65,7 @@
       v-if="showModal"
       v-model:isOpen="showModal"
       :dapp="dapp"
+      :dapps="dapps"
       :action="modalAction"
       :action-name="modalActionName"
       :title="modalTitle"
@@ -108,6 +109,10 @@ export default defineComponent({
   props: {
     dapp: {
       type: Object,
+      required: true,
+    },
+    dapps: {
+      type: Array,
       required: true,
     },
     accountData: {
