@@ -6,8 +6,7 @@ interface ChainProvider {
   networkAlias: string;
   displayName: string;
   info?: string;
-  endpoint: string;
-  fallback?: string;
+  endpoints: { name: string; endpoint: string }[];
   favicon: string;
   isSupportContract: boolean;
   prefix?: number; // Used in extrinsic transactions, also to determine if a network supports extensic transactions.
@@ -37,7 +36,11 @@ export const providerEndpoints: ChainProvider[] = [
     networkAlias: 'astar',
     displayName: 'Astar Network',
     info: 'Smart contract platform for decentralized applications (dapps) on the Polkadot network',
-    endpoint: 'wss://rpc.astar.network',
+    endpoints: [
+      { name: 'Astar', endpoint: 'wss://wss.astar.network' },
+      { name: 'OnFinality', endpoint: 'wss://astar.api.onfinality.io/public-ws' },
+      { name: 'Dwellir', endpoint: 'wss://astar-rpc.dwellir.com' },
+    ],
     favicon: 'https://polkadot.js.org/apps/static/astar.b48435e0.png',
     isSupportContract: true,
     prefix: 0x250,
@@ -47,15 +50,20 @@ export const providerEndpoints: ChainProvider[] = [
     subscan: 'https://astar.subscan.io',
     blockscout: 'https://blockscout.com/astar',
     evmChainId: '592',
-    evmRpc: 'https://rpc.astar.network:8545',
+    evmRpc: 'https://evm.astar.network',
     faucetEndpoint: 'https://astar-discord-faucet.herokuapp.com/astar',
     defaultLogo: require('/src/assets/img/ic_astar.png'),
   },
   {
     networkAlias: 'shiden',
-    displayName: 'Shiden Network (Kusama)',
+    displayName: 'Shiden Network',
     info: 'Smart contract platform for decentralized applications (dapps) on the Kusama network',
-    endpoint: 'wss://shiden.api.onfinality.io/public-ws',
+    endpoints: [
+      { name: 'Shiden', endpoint: 'wss://rpc.shiden.astar.network' },
+      { name: 'OnFinality', endpoint: 'wss://shiden.api.onfinality.io/public-ws' },
+      { name: 'Pinknode', endpoint: 'wss://rpc.pinknode.io/shiden/explorer' },
+      { name: 'Dwellir', endpoint: 'wss://shiden-rpc.dwellir.com' },
+    ],
     favicon: 'icons/shiden.png',
     isSupportContract: true,
     prefix: 0x150,
@@ -73,7 +81,7 @@ export const providerEndpoints: ChainProvider[] = [
     networkAlias: 'shibuya-testnet',
     displayName: 'Shibuya Network',
     info: 'The test network of the layer 2 scaling blockchain',
-    endpoint: 'wss://rpc.shibuya.astar.network',
+    endpoints: [{ name: 'Shibuya', endpoint: 'wss://rpc.shibuya.astar.network' }],
     favicon: 'https://polkadot.js.org/apps/static/shiden.a066789e.png',
     isSupportContract: true,
     prefix: 0xff51,
@@ -83,14 +91,14 @@ export const providerEndpoints: ChainProvider[] = [
     subscan: 'https://shibuya.subscan.io',
     blockscout: 'https://blockscout.com/shibuya',
     evmChainId: '81',
-    evmRpc: 'https://rpc.shibuya.astar.network:8545',
+    evmRpc: 'https://evm.shibuya.astar.network',
     faucetEndpoint: 'https://astar-discord-faucet.herokuapp.com/shibuya',
     defaultLogo: require('/src/assets/img/ic_shibuya.png'),
   },
   {
     networkAlias: 'local-node',
     displayName: 'Local Network',
-    endpoint: 'ws://127.0.0.1:9944',
+    endpoints: [{ name: 'Local Network', endpoint: 'ws://127.0.0.1:9944' }],
     favicon: 'icons/astar.png',
     isSupportContract: true,
     typeDef: typeDefs.plasmCollatorDefinitions,
@@ -105,7 +113,7 @@ export const providerEndpoints: ChainProvider[] = [
   {
     networkAlias: 'custom-node',
     displayName: 'Custom Network',
-    endpoint: 'ws://127.0.0.1:9944',
+    endpoints: [{ name: '', endpoint: '' }],
     favicon: 'icons/astar.png',
     isSupportContract: true,
     typeDef: typeDefs.plasmCollatorDefinitions,

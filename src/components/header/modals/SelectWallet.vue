@@ -6,12 +6,11 @@
           <img width="24" :src="selWallet.img" />
           <div class="txt--wallet-name">{{ selWallet.name }}</div>
         </div>
-        <template v-if="!openOption">
-          <div class="txt--change">{{ $t('change') }}</div>
-        </template>
-        <template v-else>
-          <div></div>
-        </template>
+        <div class="txt--change">
+          <span v-if="!openOption">
+            {{ $t('change') }}
+          </span>
+        </div>
       </div>
       <div v-if="openOption" v-click-away="closeOption" class="box--wallet-option">
         <ul class="container--wallet">

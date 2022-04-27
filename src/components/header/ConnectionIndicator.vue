@@ -2,14 +2,21 @@
   <div class="wrapper--indicator">
     <div class="dot" :class="getDotClass(connectionType)"></div>
     <div v-if="width >= screenSize.sm" class="txt--status" :class="getDotClass(connectionType)">
-      <div>{{ connectionType }}</div>
-      <div v-if="connectionType === 'connected'">v{{ version }}</div>
+      <div>
+        <span>
+          {{ capitalize(connectionType) }}
+        </span>
+      </div>
+      <div v-if="connectionType === 'connected'">
+        <span> v{{ version }} </span>
+      </div>
     </div>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useBreakpoints } from 'src/hooks';
+import { capitalize } from 'src/hooks/helper/common';
 
 export default defineComponent({
   props: {
@@ -29,6 +36,7 @@ export default defineComponent({
     return {
       width,
       screenSize,
+      capitalize,
     };
   },
   methods: {
@@ -55,6 +63,7 @@ export default defineComponent({
   height: 7px;
   width: 7px;
   border-radius: 90%;
+  margin-right: 4.6px;
 }
 .dot.green {
   background-color: #00ff00;
@@ -70,7 +79,13 @@ export default defineComponent({
   font-size: 9px;
   line-height: 11px;
   text-align: left;
-  color: $gray-3;
+  color: $gray-5;
   margin-left: 5px;
+}
+
+.body--dark {
+  .txt--status {
+    color: $gray-1;
+  }
 }
 </style>

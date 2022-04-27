@@ -1,3 +1,5 @@
+import { Struct } from '@polkadot/types';
+import { Perbill } from '@polkadot/types/interfaces';
 import { aprToApy } from 'apr-tools';
 import { $api } from 'boot/api';
 import { ethers } from 'ethers';
@@ -6,6 +8,15 @@ import { useStore } from 'src/store';
 import { computed, ref, watchEffect } from 'vue';
 import { useChainMetadata, useCurrentEra, useTvl } from '.';
 import { defaultAmountWithDecimals } from './helper/plasmUtils';
+
+interface RewardDistributionConfig extends Struct {
+  readonly baseTreasuryPercent: Perbill;
+  readonly baseStakerPercent: Perbill;
+  readonly dappsPercent: Perbill;
+  readonly collatorsPercent: Perbill;
+  readonly adjustablePercent: Perbill;
+  readonly idealDappsStakingTvl: Perbill;
+}
 
 // Ref: https://github.com/PlasmNetwork/Astar/blob/5b01ef3c2ca608126601c1bd04270ed08ece69c4/runtime/shiden/src/lib.rs#L435
 // Memo: 50% of block rewards goes to dappsStaking, 50% goes to block validator
@@ -65,13 +76,14 @@ export const useApr = () => {
       return;
     }
 
+    // Todo: fetch from token-api
     const getApr = async (): Promise<number> => {
       try {
         const results = await Promise.all([
           apiRef.consts.blockReward.rewardAmount.toString(),
           apiRef.query.timestamp.now(),
           apiRef.rpc.chain.getHeader(),
-          apiRef.consts.dappsStaking.developerRewardPercentage.toHuman(),
+          apiRef.query.blockReward.rewardDistributionConfigStorage<RewardDistributionConfig>(),
         ]);
 
         const rawBlockRewards = results[0];
@@ -88,7 +100,8 @@ export const useApr = () => {
         const dailyEraRate = avgBlocksPerDay / blocksPerEraRef;
         const annualRewards = eraRewards * dailyEraRate * 365.25;
         const totalStaked = Number(ethers.utils.formatUnits(tvlTokenRef.toString(), decimalRef));
-        const developerRewardPercentage = Number(results[3]?.toString().replace('%', '')) * 0.01;
+        const developerRewardPercentage =
+          Number(results[3].dappsPercent.toHuman().replace('%', '')) * 0.01;
         const stakerBlockReward = (1 - developerRewardPercentage) * DAPPS_REWARD_RATE;
         const stakerApr = (annualRewards / totalStaked) * stakerBlockReward * 100;
 

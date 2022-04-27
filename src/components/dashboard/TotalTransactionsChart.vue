@@ -1,8 +1,10 @@
 <template>
   <chart-panel
     :data="data"
-    title="Total Transactions"
+    :title="textChart.ttlTransactions.title"
+    :tooltip="textChart.ttlTransactions.tooltip"
     :default-value="totalTransactionsNumber"
+    :is-multiple-line="false"
     class="wrapper--chart"
     @filter-changed="handleFilterChanged"
   />
@@ -13,7 +15,7 @@ import { defineComponent, ref, watch } from 'vue';
 import axios from 'axios';
 import ChartPanel from 'src/components/dashboard/ChartPanel.vue';
 import { ChartData } from 'src/components/dashboard/ChartData';
-import { API_URL, formatNumber } from 'src/components/dashboard/utils';
+import { TOKEN_API_URL, formatNumber, textChart } from 'src/modules/token-api';
 import { DEFAULT_FILTER } from 'src/components/dashboard/ChartFilter.vue';
 
 export default defineComponent({
@@ -33,10 +35,10 @@ export default defineComponent({
 
     const loadData = async () => {
       if (!props.network) return;
-      const priceUrl = `${API_URL}/v1/${props.network.toLowerCase()}/node/tx-perblock/${
+      const txUrl = `${TOKEN_API_URL}/v1/${props.network.toLowerCase()}/node/tx-perblock/${
         currentFilter.value
       }`;
-      const result = await axios.get<ChartData>(priceUrl);
+      const result = await axios.get<ChartData>(txUrl);
       data.value = result.data.map((pair) => {
         return [Number(pair[0]), pair[1]];
       });
@@ -70,6 +72,7 @@ export default defineComponent({
       data,
       totalTransactionsNumber,
       handleFilterChanged,
+      textChart,
     };
   },
 });

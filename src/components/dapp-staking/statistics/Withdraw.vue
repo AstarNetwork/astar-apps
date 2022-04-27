@@ -58,7 +58,7 @@ import { Balance, EraIndex } from '@polkadot/types/interfaces';
 import { Codec } from '@polkadot/types/types';
 import Button from 'src/components/common/Button.vue';
 import { WithdrawParameters } from 'src/store/dapp-staking/actions';
-import FormatBalance from 'components/balance/FormatBalance.vue';
+import FormatBalance from 'components/common/FormatBalance.vue';
 import ChunksModal from './ChunksModal.vue';
 import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
 import IconTooltip from 'components/common/IconTooltip.vue';

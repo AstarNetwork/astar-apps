@@ -10,14 +10,7 @@
         }}
       </div>
       <Button :small="true" class="register-button" @click="showRegisterDappModal = true">
-        <icon-base
-          class="tw-w-5 tw-h-5 tw-text-white tw--ml-1"
-          stroke="currentColor"
-          icon-name="plus"
-        >
-          <icon-plus />
-        </icon-base>
-        {{ $t('dappStaking.registerDapp') }}
+        + {{ $t('dappStaking.registerDapp') }}
       </Button>
     </div>
     <div v-if="dapps.length > 0" class="kpi-wrapper">
@@ -43,19 +36,21 @@
       />
     </div>
 
-    <ModalRegisterDapp
-      v-if="showRegisterDappModal"
-      v-model:is-open="showRegisterDappModal"
-      :show-close-button="false"
-    />
+    <Teleport to="#app--main">
+      <ModalRegisterDapp
+        v-if="showRegisterDappModal"
+        v-model:is-open="showRegisterDappModal"
+        :show-close-button="false"
+      />
+      <ModalMaintenance :show="isPalletDisabled" />
+    </Teleport>
   </div>
 </template>
 
 <script lang="ts">
 import Button from 'components/common/Button.vue';
-import IconBase from 'components/icons/IconBase.vue';
-import IconPlus from 'components/icons/IconPlus.vue';
 import ModalRegisterDapp from 'components/dapp-staking/modals/ModalRegisterDapp.vue';
+import ModalMaintenance from 'components/dapp-staking/modals/ModalMaintenance.vue';
 import Dapp from 'src/components/dapp-staking/Dapp.vue';
 import UserRewards from 'src/components/dapp-staking/UserRewards.vue';
 import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
@@ -74,8 +69,6 @@ import { useMeta } from 'quasar';
 export default defineComponent({
   components: {
     Dapp,
-    IconPlus,
-    IconBase,
     ModalRegisterDapp,
     Button,
     TVL,
@@ -83,6 +76,7 @@ export default defineComponent({
     Era,
     UserRewards,
     APR,
+    ModalMaintenance,
   },
   setup() {
     const store = useStore();
@@ -103,6 +97,7 @@ export default defineComponent({
     const showRegisterDappModal = ref<boolean>(false);
     const selectedDapp = ref<DappItem>();
     const selectedDappInfo = ref<StakeInfo>();
+    const isPalletDisabled = computed(() => store.getters['dapps/getIsPalletDisabled']);
 
     store.dispatch('dapps/getDapps');
     store.dispatch('dapps/getStakingInfo');
@@ -129,6 +124,7 @@ export default defineComponent({
       fasSeedling,
       accountData,
       currentAccount,
+      isPalletDisabled,
     };
   },
 });

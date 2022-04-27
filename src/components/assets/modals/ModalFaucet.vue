@@ -1,5 +1,11 @@
 <template>
-  <astar-simple-modal v-if="!isLoading" :show="isModalFaucet" title="Faucet" @close="closeModal">
+  <astar-simple-modal
+    v-if="!isLoading"
+    :show="isModalFaucet"
+    title="Faucet"
+    :is-closing="isClosingModal"
+    @close="closeModal"
+  >
     <div class="wrapper--modal wrapper--faucet">
       <div class="wrapper__row--title">
         <span class="text--accent">{{ $t('assets.modals.whatIsFaucet') }}</span>
@@ -15,11 +21,11 @@
       </div>
       <div v-if="!isAbleToFaucet" class="box--faucet--next-available">
         <span class="text--accent color--warning">
-          {{ $t('balance.modals.faucetNextRequest') }}</span
+          {{ $t('assets.modals.faucetNextRequest') }}</span
         >
         <span class="text--xl">
           {{
-            $t('balance.modals.countDown', {
+            $t('assets.modals.countDown', {
               hrs: countDown.hours,
               mins: countDown.minutes,
               secs: countDown.seconds,
@@ -35,7 +41,8 @@
 </template>
 <script lang="ts">
 import { useFaucet } from 'src/hooks';
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, ref } from 'vue';
+import { fadeDuration } from '@astar-network/astar-ui';
 
 export default defineComponent({
   props: {
@@ -49,12 +56,18 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const isClosingModal = ref<boolean>(false);
     const isModalFaucet = computed(() => props.isModalFaucet);
     const { requestFaucet, isLoading, unit, isAbleToFaucet, countDown, faucetAmount } =
       useFaucet(isModalFaucet);
 
     const closeModal = (): void => {
-      props.handleModalFaucet({ isOpen: false });
+      isClosingModal.value = true;
+
+      setTimeout(() => {
+        props.handleModalFaucet({ isOpen: false });
+        isClosingModal.value = false;
+      }, fadeDuration);
     };
 
     const handleRequest = async () => {
@@ -72,6 +85,7 @@ export default defineComponent({
       unit,
       isAbleToFaucet,
       countDown,
+      isClosingModal,
       closeModal,
       handleRequest,
     };

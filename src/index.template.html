@@ -3,31 +3,33 @@
   <head>
     <!-- Google Tag Manager -->
     <script>
-      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-      })(window,document,'script','dataLayer','<%= tagManagerId %>');
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != 'dataLayer' ? '&l=' + l : '';
+        j.async = true;
+        j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, 'script', 'dataLayer', '<%= tagManagerId %>');
     </script>
     <!-- End Google Tag Manager -->
     <title><%= productName %></title>
-    <meta charset="utf-8">
-    <meta name="description" content="<%= productDescription %>">
-    <meta name="format-detection" content="telephone=no">
-    <meta name="msapplication-tap-highlight" content="no">
-    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width<% if (ctx.mode.cordova || ctx.mode.capacitor) { %>, viewport-fit=cover<% } %>">
+    <meta charset="utf-8" />
+    <meta name="description" content="<%= productDescription %>" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta
+      name="viewport"
+      content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width<% if (ctx.mode.cordova || ctx.mode.capacitor) { %>, viewport-fit=cover<% } %>"
+    />
     <meta name="robots" content="index, follow" />
 
     <!-- Open Graph Tags -->
-    <meta
-      property="og:title"
-      content="Astar Portal - Astar & Shiden Network"
-    />
+    <meta property="og:title" content="Astar Portal - Astar & Shiden Network" />
     <meta property="og:type" content="website" />
-    <meta
-      property="og:image"
-      content="https://portal.astar.network/images/card-img.jpg"
-    />
+    <meta property="og:image" content="https://portal.astar.network/images/card-img.jpg" />
     <meta
       property="og:description"
       content="Your one-stop platform for the Astar ecosystem - Wallet / Staking / Bridging"
@@ -39,56 +41,48 @@
     <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@AstarNetwork" />
-    <meta
-      name="twitter:title"
-      content="Astar Portal - Astar & Shiden Network"
-    />
+    <meta name="twitter:title" content="Astar Portal - Astar & Shiden Network" />
     <meta
       name="twitter:description"
       content="Your one-stop platform for the Astar ecosystem - Wallet / Staking / Bridging"
     />
-    <meta
-      name="twitter:image"
-      content="https://portal.astar.network/images/card-img.jpg"
-    />
+    <meta name="twitter:image" content="https://portal.astar.network/images/card-img.jpg" />
     <meta property="twitter:url" content="https://portal.astar.network" />
     <meta name="twitter:creator" content="@AstarNetwork" />
 
     <!-- Favicon -->
     <link rel="icon" href="favicon.png" />
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="favicon/apple-touch-icon.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="favicon/favicon-32x32.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="favicon/favicon-16x16.png"
-    />
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png" />
     <link rel="manifest" href="favicon/site.webmanifest" />
+    <link rel="mask-icon" href="favicon/safari-pinned-tab.svg" color="#1b6dc1" />
     <link
-      rel="mask-icon"
-      href="favicon/safari-pinned-tab.svg"
-      color="#1b6dc1"
+      rel="stylesheet"
+      href="https://fonts.sandbox.google.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css"
+      integrity="sha384-jLKHWM3JRmfMU0A5x5AkjWkw/EYfGUAGagvnfryNV3F9VqM98XiIH7VBGVoxVSc7"
+      crossorigin="anonymous"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/odometer.js"></script>
     <meta name="msapplication-TileColor" content="#ffffff" />
     <meta name="theme-color" content="#ffffff" />
   </head>
   <body>
     <!-- Google Tag Manager (noscript) -->
     <noscript>
-      <iframe src="https://www.googletagmanager.com/ns.html?id=<%= tagManagerId %>" height="0" width="0" style="display:none;visibility:hidden"></iframe>
+      <iframe
+        src="https://www.googletagmanager.com/ns.html?id=<%= tagManagerId %>"
+        height="0"
+        width="0"
+        style="display: none; visibility: hidden"
+      ></iframe>
     </noscript>
     <!-- End Google Tag Manager (noscript) -->
-    
+
     <!-- DO NOT touch the following DIV -->
     <div id="q-app"></div>
   </body>

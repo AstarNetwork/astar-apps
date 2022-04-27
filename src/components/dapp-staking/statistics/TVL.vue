@@ -27,7 +27,7 @@ import { defineComponent } from 'vue';
 import { numFormatter } from 'src/hooks/helper/price';
 import { useTvl } from 'src/hooks';
 import { $api } from 'boot/api';
-import FormatBalance from 'components/balance/FormatBalance.vue';
+import FormatBalance from 'components/common/FormatBalance.vue';
 export default defineComponent({
   components: { FormatBalance },
   setup() {

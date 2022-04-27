@@ -1,5 +1,10 @@
 <template>
-  <astar-simple-modal :show="isOpen" title="Wallet" @close="closeModal">
+  <ModalDrawer
+    :is-show="isOpen && !isSelected"
+    title="Wallet"
+    :is-closing="isClosing"
+    @close="closeModal"
+  >
     <div class="wrapper--modal-account">
       <div class="wrapper--select-network">
         <div class="row--separator--account">
@@ -11,13 +16,18 @@
         <fieldset>
           <div v-if="isMathWallet" class="column--remarks">
             <li v-if="currentNetworkIdx !== endpointKey.SHIDEN">
-              {{ $t('balance.modals.math.supportsNetwork') }}
+              {{ $t('wallet.math.supportsNetwork') }}
             </li>
             <li v-if="!substrateAccounts.length">
-              {{ $t('balance.modals.math.switchNetwork') }}
+              {{ $t('wallet.math.switchNetwork') }}
             </li>
           </div>
-          <ul v-else role="radiogroup" class="list--account">
+          <ul
+            v-else
+            role="radiogroup"
+            class="list--account"
+            :style="`max-height: ${windowHeight}px`"
+          >
             <li v-for="(account, index) in substrateAccounts" :key="index">
               <label
                 :class="[
@@ -52,6 +62,7 @@
                     </a>
                   </div>
                 </div>
+                <div v-if="index === previousSelIdx" class="dot"></div>
               </label>
             </li>
           </ul>
@@ -67,25 +78,27 @@
         </button>
       </div>
     </div>
-  </astar-simple-modal>
+  </ModalDrawer>
 </template>
 <script lang="ts">
+import copy from 'copy-to-clipboard';
 import SelectWallet from 'src/components/header/modals/SelectWallet.vue';
+import IconCopy from 'src/components/icons/IconCopy.vue';
+import IconExternalLink from 'src/components/icons/IconExternalLink.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { SupportWallet } from 'src/config/wallets';
 import { castMobileSource, checkIsEthereumWallet } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
 import { computed, defineComponent, PropType, ref } from 'vue';
-import copy from 'copy-to-clipboard';
-import IconCopy from 'src/components/icons/IconCopy.vue';
-import IconExternalLink from 'src/components/icons/IconExternalLink.vue';
+import ModalDrawer from './ModalDrawer.vue';
 
 export default defineComponent({
   components: {
     SelectWallet,
     IconCopy,
     IconExternalLink,
+    ModalDrawer,
   },
   props: {
     isOpen: {
@@ -104,11 +117,27 @@ export default defineComponent({
       type: Function,
       required: true,
     },
+    disconnectAccount: {
+      type: Function,
+      required: true,
+    },
+    currentAccount: {
+      type: String,
+      required: true,
+    },
   },
   emits: ['update:is-open'],
   setup(props, { emit }) {
+    const isSelected = ref<boolean>(false);
+    const isClosing = ref<boolean>(false);
+
     const closeModal = (): void => {
-      emit('update:is-open', false);
+      isClosing.value = true;
+      const animationDuration = 900;
+      setTimeout(() => {
+        isClosing.value = false;
+        emit('update:is-open', false);
+      }, animationDuration);
     };
 
     const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
@@ -122,17 +151,25 @@ export default defineComponent({
       });
       return filteredAccounts;
     });
+
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
     const isMathWallet = computed(
       () => !substrateAccounts.value.length && props.selectedWallet === SupportWallet.Math
     );
 
-    const selectAccount = (substrateAccount: string) => {
+    const selectAccount = async (substrateAccount: string) => {
+      await props.disconnectAccount();
       if (checkIsEthereumWallet(props.selectedWallet)) {
         props.connectEthereumWallet(props.selectedWallet);
       }
       substrateAccount && store.commit('general/setCurrentAddress', substrateAccount);
-      emit('update:is-open', false);
+      isClosing.value = true;
+      const animationDuration = 500;
+      setTimeout(() => {
+        isSelected.value = true;
+        isClosing.value = false;
+        emit('update:is-open', false);
+      }, animationDuration);
     };
 
     const selAccount = ref<string>('');
@@ -140,6 +177,17 @@ export default defineComponent({
     const subScan = computed(
       () => `${providerEndpoints[currentNetworkIdx.value].subscan}/account/`
     );
+
+    const previousSelIdx = computed(() => {
+      if (substrateAccounts.value && props.currentAccount) {
+        const index = substrateAccounts.value.findIndex(
+          (it: SubstrateAccount) => it.address === props.currentAccount
+        );
+        return index;
+      } else {
+        return null;
+      }
+    });
 
     const copyAddress = (address: string) => {
       copy(address);
@@ -149,10 +197,19 @@ export default defineComponent({
       });
     };
 
+    const windowHeight = ref<number>(window.innerHeight);
+    const onHeightChange = () => {
+      windowHeight.value = window.innerHeight - 400;
+    };
+
+    window.addEventListener('resize', onHeightChange);
+    onHeightChange();
+
     return {
       selAccount,
       closeModal,
       selectAccount,
+      previousSelIdx,
       currentNetworkStatus,
       substrateAccounts,
       SupportWallet,
@@ -162,6 +219,9 @@ export default defineComponent({
       copyAddress,
       endpointKey,
       isMathWallet,
+      windowHeight,
+      isSelected,
+      isClosing,
     };
   },
   methods: {
@@ -176,9 +236,14 @@ export default defineComponent({
 @import 'src/css/quasar.variables.scss';
 @import 'src/css/utils.scss';
 
+.wrapper--select-network {
+  position: relative;
+  flex-grow: 1;
+}
+
 .list--account {
-  max-height: 480px;
   overflow-y: auto;
+  margin-top: 8px;
 }
 
 .wrapper--modal-account {
@@ -200,7 +265,7 @@ export default defineComponent({
   line-height: 18px;
   color: $gray-5;
   margin: 0 auto;
-  margin-top: 16px;
+  margin-top: 8px;
   padding: 16px;
   cursor: pointer;
 }
@@ -215,18 +280,20 @@ export default defineComponent({
   border: 2px solid $astar-blue-dark;
 }
 
-.ip--account {
+.ip--account[type='radio'] {
   width: rem(16);
   height: rem(16);
-  background: #fff;
-  appearance: none;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px $gray-3;
+  -webkit-appearance: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
   margin-right: rem(12);
-  border-radius: 9999px;
-  border-width: 1px;
-
   &:checked {
-    background: $astar-blue;
-    border-width: 3px;
+    border: 3px solid white;
+    background-color: $astar-blue;
+    box-shadow: 0 0 0 2px $astar-blue;
   }
 }
 
@@ -280,6 +347,7 @@ export default defineComponent({
 }
 
 .wrapper__row--button {
+  flex-shrink: 0;
   display: flex;
   justify-content: center;
 }
@@ -291,7 +359,7 @@ export default defineComponent({
   font-weight: 600;
   border-radius: 30px;
   height: 52px;
-  margin-top: 24px;
+  margin-top: 40px;
   &:hover {
     background: linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
       linear-gradient(0deg, $astar-blue, $astar-blue);
@@ -307,6 +375,16 @@ export default defineComponent({
   padding-left: 28px;
 }
 
+.dot {
+  position: relative;
+  top: -60px;
+  left: 30px;
+  height: 7px;
+  width: 7px;
+  border-radius: 90%;
+  background-color: #00ff00;
+}
+
 .body--dark {
   .class-radio {
     color: #fff;
@@ -319,13 +397,12 @@ export default defineComponent({
     background: $gray-5-selected-dark;
   }
 
-  .ip--account {
-    background: $gray-6;
-    border: 1px solid $gray-3;
+  .ip--account[type='radio'] {
+    box-shadow: 0 0 0 1px white;
 
     &:checked {
-      background: $astar-blue;
-      border-width: 3px;
+      box-shadow: 0 0 0 2px $astar-blue;
+      border: 3px solid $gray-5;
     }
   }
 

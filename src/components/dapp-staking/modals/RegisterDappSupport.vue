@@ -3,10 +3,10 @@
     <q-input
       v-model="data.forumUrl"
       outlined
-      label="Astar forum post link"
+      label="Twitter link"
       maxlength="500"
       :rules="[
-        (v) => (v && v.length > 0) || 'Astar forum post link is required.',
+        (v) => (v && v.length > 0) || 'Twitter link is required.',
         (v) => isUrlValid(v) || 'Invalid url.',
       ]"
       class="tw-my-2"
@@ -57,7 +57,7 @@ export default defineComponent({
   },
   setup(props) {
     const data = reactive<NewDappItem>(props.value);
-    const licenseTypes = ['GPL-3.0 License', 'MIT'];
+    const licenseTypes = ['GPL-3.0', 'MIT', 'GNU'];
 
     return {
       data,

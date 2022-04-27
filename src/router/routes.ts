@@ -3,7 +3,6 @@ import { RouteRecordRaw } from 'vue-router';
 import Assets from 'pages/Assets.vue';
 import Store from 'src/pages/DappStaking.vue';
 import Dashboard from 'src/pages/Dashboard.vue';
-import ConnectWallet from 'src/components/balance/ConnectWallet.vue';
 import DiscoverDappsTab from 'components/dapp-staking/DiscoverDappsTab.vue';
 import ManageDappsTab from 'components/dapp-staking/ManageDappsTab.vue';
 import EvmWidget from 'components/bridge/evm/EvmWidget.vue';
@@ -19,32 +18,6 @@ const routes: RouteRecordRaw[] = [
     redirect: '/dapp-staking/discover',
   },
   {
-    path: '/balance',
-    name: 'Balance',
-    redirect: '/assets',
-    children: [
-      {
-        path: '',
-        redirect: '/assets',
-      },
-      {
-        path: 'balance-plasm',
-        redirect: '/assets',
-      },
-      {
-        path: 'wallet',
-        component: ConnectWallet,
-        redirect: '/assets',
-        children: [
-          {
-            path: 'deeplink-metamask',
-            redirect: '/assets',
-          },
-        ],
-      },
-    ],
-  },
-  {
     path: '/assets',
     name: 'Assets',
     component: Assets,
@@ -56,29 +29,25 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   {
+    path: '/balance',
+    name: 'Balance',
+    redirect: '/assets',
+    children: [
+      {
+        path: '',
+        redirect: '/assets',
+      },
+      {
+        path: 'wallet',
+        redirect: '/assets',
+      },
+    ],
+  },
+  {
     path: '/dashboard',
     name: 'Dashboard',
     component: Dashboard,
   },
-  // {
-  //   path: '/contracts',
-  //   name: 'Contracts',
-  //   component: DApps,
-  //   children: [
-  //     {
-  //       path: '',
-  //       redirect: '/contracts/create-contract',
-  //     },
-  //     {
-  //       path: 'create-dapps',
-  //       redirect: '/contracts/create-contract',
-  //     },
-  //     {
-  //       path: 'create-contract',
-  //       component: CreateDappsTab,
-  //     },
-  //   ],
-  // },
   {
     path: '/dapp-staking',
     name: 'dApp Staking',
@@ -128,7 +97,7 @@ export const getHeaderName = (path: string) => {
   } else if (path === 'assets') {
     return 'Assets';
   } else if (path === 'dapp-staking') {
-    return 'Staking';
+    return 'dApp Staking';
   } else if (path === 'bridge') {
     return 'Bridge';
   }

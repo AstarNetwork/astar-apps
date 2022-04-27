@@ -1,75 +1,56 @@
 <template>
   <chart-panel
-    :data="data"
-    title="Total Value Locked"
-    :default-value="currentTvl"
+    :data="tvlData"
+    :merged-data="mergedTvlData"
+    :title="title"
+    :tooltip="tooltip"
+    :default-value="tvlValue"
     class="wrapper--chart"
+    :is-multiple-line="isMultipleLine"
     @filter-changed="handleFilterChanged"
   />
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue';
-import axios from 'axios';
 import ChartPanel from 'src/components/dashboard/ChartPanel.vue';
-import { ChartData } from 'src/components/dashboard/ChartData';
-import { API_URL, formatNumber } from 'src/components/dashboard/utils';
-import { DEFAULT_FILTER } from 'src/components/dashboard/ChartFilter.vue';
+import { defineComponent, PropType } from 'vue';
 
 export default defineComponent({
   components: {
     ChartPanel,
   },
   props: {
-    network: {
+    title: {
       type: String,
       required: true,
     },
-  },
-  setup(props) {
-    const data = ref<ChartData>([[1, 1]]);
-    const currentTvl = ref<string>('');
-    const currentFilter = ref<string>(DEFAULT_FILTER);
-
-    const loadData = async (): Promise<void> => {
-      if (!props.network) return;
-      const priceUrl = `${API_URL}/v1/${props.network.toLowerCase()}/token/tvl/${
-        currentFilter.value
-      }`;
-      const result = await axios.get<ChartData>(priceUrl);
-      data.value = result.data.map((pair) => {
-        return [Number(pair[0]) * 1000, pair[1]];
-      });
-
-      if (data.value && data.value.length > 0) {
-        currentTvl.value = `\$${formatNumber(data.value[data.value.length - 1][1], 1)}`;
-      }
-    };
-
-    const handleFilterChanged = async (filter: string): Promise<void> => {
-      if (currentFilter.value !== filter) {
-        currentFilter.value = filter;
-        await loadData();
-      }
-    };
-
-    watch([props], async () => {
-      if (props.network) {
-        try {
-          await loadData();
-        } catch (error) {
-          console.error(error);
-        }
-      }
-    });
-
-    loadData();
-
-    return {
-      data,
-      currentTvl,
-      handleFilterChanged,
-    };
+    tooltip: {
+      type: String,
+      required: true,
+    },
+    tvlValue: {
+      type: String,
+      required: true,
+    },
+    tvlData: {
+      type: Array as PropType<number[][] | null>,
+      required: false,
+      default: null,
+    },
+    mergedTvlData: {
+      type: Array as PropType<number[][] | null>,
+      required: false,
+      default: null,
+    },
+    handleFilterChanged: {
+      type: Function,
+      required: true,
+    },
+    isMultipleLine: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 });
 </script>

@@ -36,6 +36,10 @@ const mutation: MutationTree<State> & ContractsMutations = {
   setUnlockingChunks(state: State, payload: number) {
     state.unlockingChunks = payload;
   },
+
+  setIsPalletDisabled(state: State, payload: boolean) {
+    state.isPalletDisabled = payload;
+  },
 };
 
 export default mutation;

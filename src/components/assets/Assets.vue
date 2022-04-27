@@ -4,7 +4,10 @@
       <Account :ttl-erc20-amount="ttlErc20Amount" />
       <div v-if="selectedAddress">
         <div v-if="isH160">
-          <EvmAssetList :tokens="tokens" />
+          <EvmAssetList
+            :tokens="tokens"
+            :handle-update-token-balances="handleUpdateTokenBalances"
+          />
         </div>
         <div v-else><NativeAssetList /></div>
       </div>
@@ -28,7 +31,7 @@ export default defineComponent({
     EvmAssetList,
   },
   setup() {
-    const { tokens, ttlErc20Amount } = useCbridgeV2();
+    const { tokens, ttlErc20Amount, handleUpdateTokenBalances } = useCbridgeV2();
     const isDisplay = ref<boolean>(false);
     const store = useStore();
     const selectedAddress = computed(() => store.getters['general/selectedAddress']);
@@ -58,6 +61,7 @@ export default defineComponent({
       tokens,
       ttlErc20Amount,
       isDisplay,
+      handleUpdateTokenBalances,
     };
   },
 });

@@ -1,8 +1,8 @@
 <template>
   <div>
     <astar-header
-      :title="width >= screenSize.sm ? headerName : ''"
-      :class="width < screenSize.sm ? 'm-header' : ''"
+      :title="width >= screenSize.lg && headerName"
+      :class="screenSize.lg > width && 'm-header'"
     >
       <template #left>
         <div class="icon"><Logo /></div>
@@ -15,6 +15,7 @@
       </template>
       <NetworkButton @show-network="modalNetwork = true" />
     </astar-header>
+
     <!-- Modals -->
     <ModalNetwork
       v-model:isOpen="modalNetwork"
@@ -34,6 +35,8 @@
       :set-wallet-modal="setWalletModal"
       :selected-wallet="selectedWallet"
       :connect-ethereum-wallet="connectEthereumWallet"
+      :disconnect-account="disconnectAccount"
+      :current-account="currentAccount"
     />
 
     <ModalInstallWallet
@@ -56,7 +59,7 @@ import AccountButton from 'src/components/header/AccountButton.vue';
 import NetworkButton from 'src/components/header/NetworkButton.vue';
 import ModalConnectWallet from 'src/components/header/modals/ModalConnectWallet.vue';
 import ModalAccount from 'src/components/header/modals/ModalAccount.vue';
-import ModalInstallWallet from 'src/components/balance/modals/ModalInstallWallet.vue';
+import ModalInstallWallet from 'src/components/header/modals/ModalInstallWallet.vue';
 import ModalNetwork from 'src/components/header/modals/ModalNetwork.vue';
 import Logo from 'src/components/common/Logo.vue';
 
@@ -95,6 +98,7 @@ export default defineComponent({
       openSelectModal,
       changeAccount,
       connectEthereumWallet,
+      disconnectAccount,
     } = useConnectWallet();
 
     const store = useStore();
@@ -130,6 +134,7 @@ export default defineComponent({
       openSelectModal,
       changeAccount,
       connectEthereumWallet,
+      disconnectAccount,
     };
   },
 });
@@ -143,6 +148,12 @@ export default defineComponent({
 
 .m-header {
   background: #fff !important;
+  height: 64px !important;
+  padding-left: 20px !important;
+  padding-right: 16px !important;
+  @media (min-width: 500px) {
+    padding-left: 8px !important;
+  }
 }
 
 .body--dark {

@@ -2,6 +2,7 @@
   <astar-simple-modal
     :show="isModalEvmWithdraw"
     :title="`Withdraw ${nativeTokenSymbol}`"
+    :is-closing="isClosingModal"
     @close="closeModal"
   >
     <div class="wrapper--modal wrapper--withdraw">
@@ -21,7 +22,8 @@
 </template>
 <script lang="ts">
 import { useEvmDeposit } from 'src/hooks';
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
+import { fadeDuration } from '@astar-network/astar-ui';
 
 export default defineComponent({
   props: {
@@ -39,14 +41,20 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const isClosingModal = ref<boolean>(false);
     const closeModal = (): void => {
-      props.handleModalEvmWithdraw({ isOpen: false });
+      isClosingModal.value = true;
+      setTimeout(() => {
+        props.handleModalEvmWithdraw({ isOpen: false });
+        isClosingModal.value = false;
+      }, fadeDuration);
     };
     const { numEvmDeposit, sendTransaction } = useEvmDeposit(closeModal);
     return {
       closeModal,
       numEvmDeposit,
       sendTransaction,
+      isClosingModal,
     };
   },
 });

@@ -1,6 +1,6 @@
 import { ApiPromise } from '@polkadot/api';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
-import { BTreeMap, Option, Struct, u32 } from '@polkadot/types';
+import { bool, BTreeMap, Option, Struct, u32 } from '@polkadot/types';
 import {
   AccountId,
   Balance,
@@ -12,6 +12,7 @@ import { ISubmittableResult, ITuple } from '@polkadot/types/types';
 import { formatBalance } from '@polkadot/util';
 import BN from 'bn.js';
 import { $api } from 'boot/api';
+import { endpointKey } from 'src/config/chainEndpoints';
 import { addDapp, getDapps, uploadFile } from 'src/hooks/firebase';
 import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
 import { ActionTree, Dispatch } from 'vuex';
@@ -295,6 +296,9 @@ const actions: ActionTree<State, StateInterface> = {
                     const error = e as unknown as Error;
                     console.log(error);
                     showError(dispatch, error.message);
+                    alert(
+                      `An unexpected error occured during dApp registration. Please screenshot this message and send to the Astar team. ${error.message}`
+                    );
                   }
                 }
 
@@ -804,6 +808,15 @@ const actions: ActionTree<State, StateInterface> = {
         commit('setMaxNumberOfStakersPerContract', maxNumberOfStakersPerContract?.toNumber());
         commit('setUnbondingPeriod', unbondingPeriod?.toNumber());
         commit('setMaxUnlockingChunks', maxUnlockingChunks?.toNumber());
+        let isPalletDisabled = false;
+        try {
+          const isDisabled = await $api.value.query.dappsStaking.palletDisabled<bool>();
+          isPalletDisabled = isDisabled.valueOf();
+        } catch {
+          // palletDisabled storage item is not supported by a node;
+        }
+
+        commit('setIsPalletDisabled', isPalletDisabled);
       }
     } catch (e) {
       const error = e as unknown as Error;

@@ -50,9 +50,10 @@
   }
 }
 
-.row__left {
-  max-width: 146px;
-  @media (min-width: $sm) {
+.row__left--native {
+  max-width: 140px;
+
+  @media (min-width: $lg) {
     max-width: 300px;
   }
 }
@@ -64,7 +65,10 @@
   row-gap: 16px;
   @media (min-width: $md) {
     display: grid;
-    grid-template-columns: 200px 190px;
+    grid-template-columns: 290px 190px;
+  }
+  @media (min-width: $lg) {
+    grid-template-columns: 280px 220px;
   }
   @media (min-width: $xl) {
     grid-template-columns: 300px 290px;
@@ -74,16 +78,31 @@
   }
 }
 
+.row__right--evm {
+  @media (min-width: $md) {
+    display: grid;
+    grid-template-columns: 260px 190px;
+  }
+  @media (min-width: $lg) {
+    grid-template-columns: 200px 190px;
+  }
+  @media (min-width: $xl) {
+    grid-template-columns: 280px auto;
+  }
+  @media (min-width: $xxl) {
+    grid-template-columns: 360px auto;
+  }
+}
+
 .column__box {
   display: flex;
   flex-direction: column;
   @media (min-width: $md) {
     width: 200px;
-    text-align: right;
     white-space: nowrap;
   }
   @media (min-width: $xl) {
-    width: 200px;
+    text-align: right;
   }
   @media (min-width: $xxl) {
     width: 250px;
@@ -97,8 +116,6 @@
   align-items: center;
   @media (min-width: $md) {
     row-gap: 10px;
-  }
-  @media (min-width: $md) {
     justify-self: center;
   }
 }
@@ -114,12 +131,27 @@
 }
 
 .column--ticker {
-  grid-template-columns: 46px auto;
+  grid-template-columns: 54px auto;
+  column-gap: 12px;
+  align-items: center;
+  display: grid;
+  width: 100px;
+  @media (min-width: $sm) {
+    width: auto;
+    grid-template-columns: 60px auto;
+  }
+}
+
+.column--ticker--native {
+  grid-template-columns: 54px auto;
   column-gap: 12px;
   align-items: center;
   display: grid;
   @media (min-width: $sm) {
-    grid-template-columns: 52px auto;
+    grid-template-columns: 50px auto;
+  }
+  @media (min-width: $lg) {
+    grid-template-columns: 60px auto;
   }
 }
 
@@ -127,6 +159,7 @@
   display: grid;
   justify-items: center;
   row-gap: 8px;
+  min-width: 120px;
   @media (min-width: $xl) {
     justify-self: start;
   }
@@ -146,12 +179,29 @@
   }
 }
 
-.column--buttons--multi {
+.column--buttons--native-token {
   @media (min-width: $xl) {
     display: flex !important;
     padding-right: 0px !important;
     justify-content: space-evenly;
-    width: 320px;
+    width: 400px;
+    padding-left: 30px;
+  }
+}
+
+.column--buttons--multi {
+  @media (min-width: $xl) {
+    display: grid;
+    width: 400px;
+    grid-template-columns: 100px 100px 70px 70px;
+    justify-content: end;
+    column-gap: 2px;
+  }
+}
+
+.adjuster--width {
+  @media (min-width: $xl) {
+    width: 70px !important;
   }
 }
 
@@ -183,6 +233,7 @@
 
 .btn--icon {
   position: relative;
+  margin-bottom: 4px;
 }
 
 .icon--plus {
@@ -194,6 +245,7 @@
   transform: translate(-50%, -50%);
   -webkit-transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
+  padding-bottom: 3px;
 }
 
 .text--value {
@@ -274,6 +326,31 @@
   }
 }
 
+.box--explorer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container--explorer-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  stroke: $astar-blue;
+  transition: all 0.3s ease 0s;
+  border-radius: 30px;
+  width: 100px;
+  height: 24px;
+  svg {
+    height: 30px;
+    width: 30px;
+  }
+  &:hover {
+    stroke: white;
+    background-color: $astar-blue;
+  }
+}
+
 .body--dark {
   .text--value {
     color: $gray-1;
@@ -286,6 +363,12 @@
   }
   .icon--search {
     stroke: $gray-5;
+  }
+  .container--explorer-icon {
+    stroke: $astar-blue-dark;
+    &:hover {
+      stroke: white;
+    }
   }
   .search--active {
     .box--search {

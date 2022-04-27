@@ -1,5 +1,10 @@
 <template>
-  <astar-simple-modal :show="isModalVesting" title="Vesting info" @close="closeModal">
+  <astar-simple-modal
+    :is-closing="isClosingModal"
+    :show="isModalVesting"
+    title="Vesting info"
+    @close="closeModal"
+  >
     <div class="wrapper--modal wrapper--vesting">
       <div class="container--vestings">
         <div v-for="(vesting, index) in info.vestings" :key="index">
@@ -48,7 +53,8 @@
 </template>
 <script lang="ts">
 import { AccountData, useVesting } from 'src/hooks';
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, PropType, ref } from 'vue';
+import { fadeDuration } from '@astar-network/astar-ui';
 
 export default defineComponent({
   props: {
@@ -71,13 +77,19 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const isClosingModal = ref<boolean>(false);
     const closeModal = (): void => {
-      props.handleModalVesting({ isOpen: false });
+      isClosingModal.value = true;
+      setTimeout(() => {
+        props.handleModalVesting({ isOpen: false });
+        isClosingModal.value = false;
+      }, fadeDuration);
     };
     const { info, sendTransaction } = useVesting(closeModal);
 
     return {
       info,
+      isClosingModal,
       closeModal,
       sendTransaction,
     };
