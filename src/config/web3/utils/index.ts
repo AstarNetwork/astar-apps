@@ -1,4 +1,4 @@
-import { endpointKey } from 'src/config/chainEndpoints';
+import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
 import Web3 from 'web3';
 import { blockExplorerUrls, CHAIN_INFORMATION } from '../index';
@@ -69,12 +69,24 @@ export const getChainId = (currentNetworkIdx: endpointKey): number => {
   return EVM.SHIBUYA_TESTNET;
 };
 
-export const createAstarWeb3Instance = (currentNetworkIdx: TNetworkId) => {
-  const chainId = getChainId(currentNetworkIdx);
-  const network = getChainData(chainId);
-  if (!network.rpcUrls[0]) return;
+export const createAstarWeb3Instance = async (currentNetworkIdx: TNetworkId) => {
+  try {
+    const chainId = getChainId(currentNetworkIdx);
+    const network = getChainData(chainId);
+    if (!network.rpcUrls[0]) return;
+    const web3 = new Web3(new Web3.providers.HttpProvider(network.rpcUrls[0]));
 
-  return new Web3(new Web3.providers.HttpProvider(network.rpcUrls[0]));
+    const blockHeight = await web3.eth.getBlockNumber();
+    if (blockHeight > 0) {
+      return web3;
+    } else {
+      throw Error(`${network.rpcUrls[0]} is not working`);
+    }
+  } catch (error) {
+    console.error(error);
+    const fallbackRpc = providerEndpoints[currentNetworkIdx].evmFallbackRpc;
+    return new Web3(new Web3.providers.HttpProvider(fallbackRpc));
+  }
 };
 
 export const buildWeb3Instance = (chainId: EVM) => {
