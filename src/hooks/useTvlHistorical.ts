@@ -1,10 +1,9 @@
 import { ApiPromise } from '@polkadot/api';
+import { $api } from 'src/boot/api';
+import { getDappStakers } from 'src/modules/dapp-staking';
 import { Duration, filterTvlData, getTvlData, mergeTvlArray } from 'src/modules/token-api';
 import { useStore } from 'src/store';
 import { computed, ref, watch } from 'vue';
-import { getDappStakers } from 'src/modules/dapp-staking';
-import { $api } from 'src/boot/api';
-import { useI18n } from 'vue-i18n';
 
 export function useTvlHistorical() {
   const mergedTvlAmount = ref<string>('');
@@ -21,7 +20,6 @@ export function useTvlHistorical() {
 
   const lenStakers = ref<string>('0');
 
-  const { t } = useI18n();
   const store = useStore();
   const network = computed(() => {
     const chainInfo = store.getters['general/chainInfo'];
@@ -30,9 +28,6 @@ export function useTvlHistorical() {
 
   const fetchDappStakers = async (api: ApiPromise) => {
     const result = await getDappStakers({ api });
-    console.log('result', result);
-    console.log('result.toLocaleString()', result.toLocaleString('en-US'));
-    // lenStakers.value = t('stakers', { value: result.toLocaleString('en-US') });
     lenStakers.value = `${result.toLocaleString('en-US')} stakers`;
   };
 
