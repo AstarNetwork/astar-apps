@@ -17,6 +17,7 @@ interface ChainProvider {
   blockscout: string;
   evmChainId: string;
   evmRpc: string;
+  evmFallbackRpc: string;
   faucetEndpoint: string;
   defaultLogo?: any;
 }
@@ -51,6 +52,7 @@ export const providerEndpoints: ChainProvider[] = [
     blockscout: 'https://blockscout.com/astar',
     evmChainId: '592',
     evmRpc: 'https://evm.astar.network',
+    evmFallbackRpc: 'https://astar.api.onfinality.io/public',
     faucetEndpoint: 'https://astar-discord-faucet.herokuapp.com/astar',
     defaultLogo: require('/src/assets/img/ic_astar.png'),
   },
@@ -74,6 +76,7 @@ export const providerEndpoints: ChainProvider[] = [
     blockscout: 'https://blockscout.com/shiden',
     evmChainId: '336',
     evmRpc: 'https://evm.shiden.astar.network',
+    evmFallbackRpc: 'https://shiden.api.onfinality.io/public',
     faucetEndpoint: 'https://astar-discord-faucet.herokuapp.com/shiden',
     defaultLogo: require('/src/assets/img/ic_shiden.png'),
   },
@@ -92,6 +95,7 @@ export const providerEndpoints: ChainProvider[] = [
     blockscout: 'https://blockscout.com/shibuya',
     evmChainId: '81',
     evmRpc: 'https://evm.shibuya.astar.network',
+    evmFallbackRpc: '',
     faucetEndpoint: 'https://astar-discord-faucet.herokuapp.com/shibuya',
     defaultLogo: require('/src/assets/img/ic_shibuya.png'),
   },
@@ -108,6 +112,7 @@ export const providerEndpoints: ChainProvider[] = [
     blockscout: '',
     evmChainId: '',
     evmRpc: '',
+    evmFallbackRpc: '',
     faucetEndpoint: '',
   },
   {
@@ -123,6 +128,7 @@ export const providerEndpoints: ChainProvider[] = [
     blockscout: '',
     evmChainId: '',
     evmRpc: '',
+    evmFallbackRpc: '',
     faucetEndpoint: '',
   },
 ];
