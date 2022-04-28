@@ -60,7 +60,11 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
-    const { callFunc, dispatchError, isCustomSig, customMsg } = useCustomSignature({});
+    const { callFunc, dispatchError, isCustomSig } = useCustomSignature({
+      fn: () => {
+        store.commit('dapps/setUnlockingChunks', -1);
+      },
+    });
     const selectedAccountAddress = computed(() => store.getters['general/selectedAddress']);
     const unlockingChunksCount = computed(() => store.getters['dapps/getUnlockingChunks']);
     const maxUnlockingChunks = computed(() => store.getters['dapps/getMaxUnlockingChunks']);
@@ -84,8 +88,7 @@ export default defineComponent({
       };
 
       if (isCustomSig.value) {
-        withdrawCustomExtrinsic();
-        store.commit('setUnlockingChunks', -1);
+        await withdrawCustomExtrinsic();
       } else {
         const result = await store.dispatch('dapps/withdrawUnbonded', {
           api: $api?.value,
