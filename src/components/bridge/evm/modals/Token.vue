@@ -33,13 +33,13 @@
           })
         "
       >
-        <icon-base
+        <astar-icon-base
           icon-name="plus"
           class="tw-w-5 tw-h-5 tw-text-gray-500 dark:tw-text-darkGray-300"
           stroke="currentColor"
         >
-          <icon-plus />
-        </icon-base>
+          <astar-icon-plus />
+        </astar-icon-base>
         <span class="tooltip">{{ $t('bridge.addWallet') }}</span>
       </button>
     </div>
@@ -49,17 +49,11 @@
 
 <script lang="ts">
 import { getIcon } from 'src/c-bridge';
-import IconBase from 'src/components/icons/IconBase.vue';
-import IconPlus from 'src/components/icons/IconPlus.vue';
 import { addToEvmWallet } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { nativeCurrency } from 'src/config/web3';
 import { computed, defineComponent } from 'vue';
 export default defineComponent({
-  components: {
-    IconBase,
-    IconPlus,
-  },
   props: {
     token: {
       type: Object,

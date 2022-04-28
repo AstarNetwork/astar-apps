@@ -17,9 +17,9 @@
             tw-flex-shrink-0
           "
         >
-          <icon-base class="tw-h-full tw-w-full" viewBox="0 0 64 64">
-            <icon-account-sample />
-          </icon-base>
+          <astar-icon-base class="tw-h-full tw-w-full" viewBox="0 0 64 64">
+            <astar-icon-account-sample />
+          </astar-icon-base>
         </div>
         <div>
           <div class="tw-text-sm tw-font-medium">{{ addressName }}</div>
@@ -52,15 +52,9 @@
 </template>
 <script lang="ts">
 import { defineComponent, toRefs, computed } from 'vue';
-import IconBase from 'components/icons/IconBase.vue';
-import IconAccountSample from 'components/icons/IconAccountSample.vue';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 
 export default defineComponent({
-  components: {
-    IconBase,
-    IconAccountSample,
-  },
   props: {
     address: {
       type: String,

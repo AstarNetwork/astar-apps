@@ -5,9 +5,9 @@
         <div class="tw-flex tw-items-center">
           <div class="tw-h-8 tw-w-8 tw-overflow-hidden tw-mr-3 tw-flex-shrink-0">
             <img v-if="isEvmAddress" width="80" src="~assets/img/ethereum.png" />
-            <icon-base v-else class="tw-h-full tw-w-full" viewBox="0 0 64 64">
-              <icon-account-sample />
-            </icon-base>
+            <astar-icon-base v-else class="tw-h-full tw-w-full" viewBox="0 0 64 64">
+              <astar-icon-account-sample />
+            </astar-icon-base>
           </div>
 
           <input
@@ -44,14 +44,14 @@
           tw-pointer-events-none
         "
       >
-        <icon-base
+        <astar-icon-base
           class="tw-h-5 tw-w-5 tw-text-gray-400 dark:tw-text-darkGray-300"
           icon-name="selector"
           viewBox="0 0 20 20"
           aria-hidden="true"
         >
-          <icon-solid-selector />
-        </icon-base>
+          <astar-icon-solid-selector />
+        </astar-icon-base>
       </span>
     </div>
 
@@ -85,9 +85,6 @@
   </div>
 </template>
 <script lang="ts">
-import IconAccountSample from 'components/icons/IconAccountSample.vue';
-import IconBase from 'components/icons/IconBase.vue';
-import IconSolidSelector from 'components/icons/IconSolidSelector.vue';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useAccount } from 'src/hooks';
 import { isValidEvmAddress } from 'src/config/web3';
@@ -105,9 +102,6 @@ enum Role {
 export default defineComponent({
   components: {
     ModalSelectAccountOption,
-    IconBase,
-    IconAccountSample,
-    IconSolidSelector,
   },
   props: {
     role: {

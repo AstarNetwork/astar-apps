@@ -16,14 +16,14 @@
     <div class="widget" :class="isDarkTheme && 'widget-dark'">
       <div class="row-tool">
         <div class="tw-tooltip tw-relative">
-          <icon-base
+          <astar-icon-base
             class="tool-icon"
             :class="isPendingTx && 'rotate'"
             icon-name="history"
             @click="openModal('history')"
           >
             <q-icon :name="fasHistory" :color="isDarkTheme ? 'grey' : 'blue'" />
-          </icon-base>
+          </astar-icon-base>
           <span class="tooltip">{{ $t('bridge.history') }}</span>
         </div>
       </div>
@@ -229,7 +229,6 @@
 
 <script lang="ts">
 import { fasHistory } from '@quasar/extras/fontawesome-v5';
-import IconBase from 'components/icons/IconBase.vue';
 import { useMeta } from 'quasar';
 import { formatDecimals, getChainName, getIcon } from 'src/c-bridge';
 import { useCbridgeHistory, useCbridgeApproval, useCbridge } from 'src/hooks';
@@ -250,7 +249,6 @@ export default defineComponent({
     ModalToken,
     BridgeButtons,
     Remarks,
-    IconBase,
     ModalHistory,
   },
   setup() {

@@ -22,9 +22,9 @@
       "
       @click="claimAll"
     >
-      <icon-base class="tw-w-5 tw-h-5 tw-text-white tw--ml-2 tw-mr-2" icon-name="sack-dollar">
+      <astar-icon-base class="tw-w-5 tw-h-5 tw-text-white tw--ml-2 tw-mr-2" icon-name="sack-dollar">
         <q-icon :name="fasMoneyCheckAlt" color="green" />
-      </icon-base>
+      </astar-icon-base>
       <span>
         {{ $t('dappStaking.claim') }}
       </span>
@@ -34,7 +34,6 @@
 
 <script lang="ts">
 import { fasMoneyCheckAlt } from '@quasar/extras/fontawesome-v5';
-import IconBase from 'components/icons/IconBase.vue';
 import Button from 'src/components/common/Button.vue';
 import { useAccount, useClaimAll } from 'src/hooks';
 import { defineComponent } from 'vue';
@@ -42,7 +41,6 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   components: {
     Button,
-    IconBase,
   },
   setup() {
     const { claimAll, batchTxs, isLoading, isEnableIndividualClaim } = useClaimAll();
