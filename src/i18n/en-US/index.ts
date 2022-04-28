@@ -219,6 +219,7 @@ export default {
   dashboard: {
     dashboard: 'Dashboard',
     tvl: 'TVL',
+    stakers: '{value} stakers',
     block: {
       block: 'Block',
       blockHeight: 'Block Height',

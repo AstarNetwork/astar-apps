@@ -8,7 +8,15 @@
         <span class="text--accent container--title--color">{{ $t(title) }}</span>
       </div>
       <div class="row chart--value">
-        <span class="text--value text-color--neon">{{ defaultValue }}</span>
+        <div>
+          <span class="text--value text-color--neon">{{ defaultValue }}</span>
+        </div>
+        <div v-if="secondValue">
+          <div v-if="secondValue === '0'">
+            <q-skeleton class="skeleton--staker" />
+          </div>
+          <span v-else class="text--second-value text-color--neon">{{ secondValue }}</span>
+        </div>
       </div>
       <div class="chart">
         <highcharts :options="chartOptions"></highcharts>
@@ -45,6 +53,11 @@ export default defineComponent({
     defaultValue: {
       type: String,
       required: true,
+    },
+    secondValue: {
+      type: String,
+      required: false,
+      default: '',
     },
     data: {
       type: Array as PropType<number[][] | null>,
