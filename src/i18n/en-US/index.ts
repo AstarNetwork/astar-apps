@@ -105,6 +105,8 @@ export default {
     unclaimedRewardsTooltip: 'Currently we are working on displayong number of unclaimed era.',
     palletDisabled:
       'Dapps staking is in maintenance mode. All actions are temporary disabled, but you can still browse dapps.',
+    turnOn: 'Turn on',
+    turnOff: 'Turn off',
     modals: {
       alreadyClaimed: 'Already claimed:',
       contractRewards: 'Contract rewards:',

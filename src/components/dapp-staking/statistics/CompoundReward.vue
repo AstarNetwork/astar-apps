@@ -9,7 +9,7 @@
     <div>
       <span class="text--title">{{ isCompounding ? 'ON' : 'OFF' }}</span>
       <Button :small="true" :primary="true" class="button" @click="changeDestination">
-        {{ isCompounding ? 'Turn off' : 'Turn on' }}
+        {{ isCompounding ? $t('dappStaking.turnOff') : $t('dappStaking.turnOn') }}
       </Button>
     </div>
   </div>
