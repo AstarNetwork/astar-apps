@@ -65,13 +65,13 @@
       v-if="showModal"
       v-model:isOpen="showModal"
       :dapp="dapp"
-      :dapps="dapps"
       :action="modalAction"
       :action-name="modalActionName"
       :title="modalTitle"
       :min-staking="formattedMinStake"
       :stake-amount="stakeInfo?.yourStake.denomAmount"
       :account-data="accountData"
+      :staking-list="stakingList"
     />
 
     <ClaimRewardModal
@@ -95,9 +95,10 @@ import { useChainMetadata, useCustomSignature, useGetMinStaking } from 'src/hook
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { getAmount, StakeModel } from 'src/hooks/store';
 import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
+import { StakingData } from 'src/modules/dapp-staking';
 import { useStore } from 'src/store';
 import { ClaimParameters, getAddressEnum, StakingParameters } from 'src/store/dapp-staking/actions';
-import { computed, defineComponent, ref, toRefs, watchEffect } from 'vue';
+import { computed, defineComponent, ref, toRefs, watchEffect, PropType } from 'vue';
 import './stake-panel.scss';
 
 export default defineComponent({
@@ -109,10 +110,6 @@ export default defineComponent({
   props: {
     dapp: {
       type: Object,
-      required: true,
-    },
-    dapps: {
-      type: Array,
       required: true,
     },
     accountData: {
@@ -134,6 +131,10 @@ export default defineComponent({
     showStake: {
       type: Boolean,
       default: false,
+    },
+    stakingList: {
+      type: Array as PropType<StakingData[]>,
+      required: true,
     },
   },
   emits: ['stakeChanged', 'stakeModalOpened'],

@@ -27,11 +27,10 @@
           >{{ $t('dappStaking.modals.fundsFrom') }}</label
         >
         <ModalNominationTransfer
-          v-model:selAddress="data.address"
-          :balance="accountData?.getUsableFeeBalance()"
-          :role="Role.FromAddress"
-          :dapps="dapps"
-          @sel-changed="reloadAmount"
+          :staking-list="stakingList"
+          :formatted-transfer-from="formattedTransferFrom"
+          :current-account="currentAccount"
+          :set-address-transfer-from="setAddressTransferFrom"
         />
       </div>
       <InputAmount
@@ -45,13 +44,6 @@
         "
         :is-max-button="actionName === StakeAction.Unstake ? true : false"
       />
-      <!-- <div v-if="accountData && actionName === StakeAction.Stake" class="tw-mt-1 tw-ml-1">
-        {{ $t('dappStaking.modals.availableToStake') }}
-        <format-balance
-          :balance="accountData?.getUsableFeeBalance()"
-          class="tw-inline tw-font-semibold"
-        />
-      </div> -->
       <div v-if="accountData && actionName === StakeAction.Unstake" class="tw-mt-1 tw-ml-1">
         {{ $t('dappStaking.yourStake') }}
         <format-balance :balance="stakeAmount" class="tw-inline tw-font-semibold" />
@@ -81,14 +73,15 @@ import Modal from 'components/common/Modal.vue';
 import Avatar from 'src/components/common/Avatar.vue';
 import Button from 'src/components/common/Button.vue';
 import InputAmount from 'src/components/common/InputAmount.vue';
-import { useChainMetadata, useUnbondWithdraw } from 'src/hooks';
+import { useAccount, useChainMetadata, useUnbondWithdraw } from 'src/hooks';
 import { $api } from 'boot/api';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { getAmount, StakeModel } from 'src/hooks/store';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, toRefs } from 'vue';
+import { computed, defineComponent, ref, toRefs, PropType } from 'vue';
 import { StakeAction } from '../StakePanel.vue';
 import ModalNominationTransfer from 'src/components/dapp-staking/modals/ModalNominationTransfer.vue';
+import { StakingData } from 'src/modules/dapp-staking';
 
 export enum Role {
   FromAddress = 'FromAddress',
@@ -108,10 +101,6 @@ export default defineComponent({
   props: {
     dapp: {
       type: Object,
-      required: true,
-    },
-    dapps: {
-      type: Array,
       required: true,
     },
     accountData: {
@@ -138,11 +127,34 @@ export default defineComponent({
       type: BN,
       required: true,
     },
+    stakingList: {
+      type: Array as PropType<StakingData[]>,
+      required: true,
+    },
   },
   emits: ['update:is-open'],
   setup(props, { emit }) {
     const store = useStore();
     const { decimal, defaultUnitToken } = useChainMetadata();
+    const { currentAccount } = useAccount();
+    const addressTransferFrom = ref<string>(currentAccount.value);
+    const setAddressTransferFrom = (address: string) => {
+      addressTransferFrom.value = address;
+    };
+
+    const formattedTransferFrom = computed(() => {
+      const item = props.stakingList.find((it) => it.address === addressTransferFrom.value);
+      if (!item) return null;
+
+      const name = item.name === currentAccount.value ? 'Transferable Balance' : item.name;
+      const isNominationTransfer = item.name !== currentAccount.value;
+
+      const formattedText = `${name} (${plasmUtils.balanceFormatter(
+        item.balance,
+        plasmUtils.ASTAR_DECIMALS
+      )})`;
+      return { text: formattedText, item, isNominationTransfer };
+    });
 
     const data = ref<StakeModel>({
       address: '',
@@ -200,6 +212,10 @@ export default defineComponent({
       canUnbondWithdraw,
       closeModal,
       Role,
+      formattedTransferFrom,
+      setAddressTransferFrom,
+      currentAccount,
+      addressTransferFrom,
       ...toRefs(props),
     };
   },

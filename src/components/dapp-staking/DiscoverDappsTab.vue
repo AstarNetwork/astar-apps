@@ -65,6 +65,8 @@
         :staker-max-number="maxNumberOfStakersPerContract"
         :account-data="accountData"
         :dapps="dapps"
+        :set-staking-list="setStakingList"
+        :staking-list="stakingList"
       />
     </div>
 
@@ -102,7 +104,7 @@ import { fasSeedling } from '@quasar/extras/fontawesome-v5';
 import { useMeta } from 'quasar';
 import BN from 'bn.js';
 import { $api } from 'src/boot/api';
-import { getStakingDappAddresses } from 'src/modules/dapp-staking';
+import { formatStakingList, StakingData } from 'src/modules/dapp-staking';
 
 export default defineComponent({
   components: {
@@ -153,34 +155,40 @@ export default defineComponent({
       }
     });
 
-    const initialData = [
+    const stakingList = ref<StakingData[]>([
       {
         address: '',
         name: 'Transferable Balance',
         balance: new BN(0),
       },
-    ];
+    ]);
 
-    const stakingList = ref(initialData);
-    watchEffect(async () => {
+    const setStakingList = async () => {
       const dappsRef = dapps.value;
       const accountDataRef = accountData.value;
       const apiRef = $api.value;
       const currentAccountRef = currentAccount.value;
       if (!dapps.value || !accountDataRef || !apiRef || !currentAccountRef) return;
 
-      console.log('dapps', dappsRef);
-      console.log('balance', accountDataRef.getUsableFeeBalance());
-      const data = await getStakingDappAddresses({ api: apiRef, address: currentAccountRef });
+      try {
+        const data = await formatStakingList({
+          api: apiRef,
+          address: currentAccountRef,
+          dapps: dappsRef,
+        });
+        data.unshift({
+          address: currentAccountRef,
+          name: 'Transferable Balance',
+          balance: accountDataRef.getUsableFeeBalance(),
+        });
+        stakingList.value = data;
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-      // :balance="accountData?.getUsableFeeBalance()
-      // const data = [
-      //   {
-      //     address: '',
-      //     name: 'Transferable Balance',
-      //     balance: '',
-      //   },
-      // ];
+    watchEffect(async () => {
+      await setStakingList();
     });
 
     return {
@@ -198,6 +206,8 @@ export default defineComponent({
       accountData,
       currentAccount,
       isPalletDisabled,
+      setStakingList,
+      stakingList,
     };
   },
 });

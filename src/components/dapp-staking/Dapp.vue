@@ -32,12 +32,12 @@
     <div class="tw-p-4">
       <StakePanel
         :dapp="dapp"
-        :dapps="dapps"
         :stake-info="stakeInfo"
         :is-max-staker="isMaxStaker"
         :staker-max-number="stakerMaxNumber"
         :account-data="accountData"
         :show-stake="showStakeModal"
+        :staking-list="stakingList"
         @stake-changed="handleStakeChanged"
         @stake-modal-opened="handleStakeModalOpened"
       />
@@ -57,9 +57,10 @@ import { $api, $isEnableIndividualClaim } from 'boot/api';
 import Avatar from 'components/common/Avatar.vue';
 import ModalDappDetails from 'components/dapp-staking/modals/ModalDappDetails.vue';
 import StakePanel from 'components/dapp-staking/StakePanel.vue';
+import { StakingData } from 'src/modules/dapp-staking';
 import { useStore } from 'src/store';
 import { StakeInfo, StakingParameters } from 'src/store/dapp-staking/actions';
-import { computed, defineComponent, ref, toRefs, watch } from 'vue';
+import { computed, defineComponent, ref, toRefs, watch, PropType } from 'vue';
 
 export default defineComponent({
   components: {
@@ -72,10 +73,6 @@ export default defineComponent({
       type: Object,
       required: true,
     },
-    dapps: {
-      type: Array,
-      required: true,
-    },
     accountData: {
       type: Object,
       required: true,
@@ -83,6 +80,14 @@ export default defineComponent({
     stakerMaxNumber: {
       type: Number,
       default: 0,
+    },
+    setStakingList: {
+      type: Function,
+      required: true,
+    },
+    stakingList: {
+      type: Array as PropType<StakingData[]>,
+      required: true,
     },
   },
   emits: ['dappClick'],
@@ -102,6 +107,7 @@ export default defineComponent({
 
     const handleStakeChanged = (): void => {
       getDappInfo();
+      props.setStakingList();
     };
 
     const getDappInfo = () => {

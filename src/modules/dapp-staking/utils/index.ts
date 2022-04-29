@@ -1,6 +1,7 @@
+import { DappItem } from './../../../store/dapp-staking/state';
 import { ApiPromise } from '@polkadot/api';
 import { GeneralStakerInfo } from 'src/hooks/helper/claim';
-import { ContractEvm } from './../index';
+import { ContractEvm, StakingData } from './../index';
 
 const getDapps = async (api: ApiPromise): Promise<string[]> => {
   try {
@@ -15,31 +16,37 @@ const getDapps = async (api: ApiPromise): Promise<string[]> => {
   }
 };
 
-export const getStakingDappAddresses = async ({
+export const formatStakingList = async ({
   api,
   address,
+  dapps,
 }: {
   api: ApiPromise;
   address: string;
-}): Promise<string[]> => {
-  const dApps = await getDapps(api);
-  const data = await Promise.all(
-    dApps.map(async (hash) => {
-      const stakerInfo = await api.query.dappsStaking.generalStakerInfo<GeneralStakerInfo>(
-        address,
-        {
-          Evm: hash,
+  dapps: DappItem[];
+}): Promise<StakingData[]> => {
+  const dappAddresses = await getDapps(api);
+  const data = (
+    await Promise.all(
+      dappAddresses.map(async (dappHash: string) => {
+        const stakerInfo = await api.query.dappsStaking.generalStakerInfo<GeneralStakerInfo>(
+          address,
+          {
+            Evm: dappHash,
+          }
+        );
+
+        const bnBalance = stakerInfo.stakes.length && stakerInfo.stakes.slice(-1)[0].staked;
+        const balance = Number(stakerInfo.stakes.length && bnBalance.toString());
+
+        if (balance > 0) {
+          const dapp = dapps.find((it) => it.address.toLowerCase() === dappHash.toLowerCase());
+          const name = dapp ? dapp.name : '';
+          return { address: dappHash, balance: bnBalance, name };
         }
-      );
+      })
+    )
+  ).filter((it) => it !== undefined) as StakingData[];
 
-      const balance = stakerInfo.stakes.length && stakerInfo.stakes.slice(-1)[0].staked.toString();
-
-      if (Number(balance) > 0) {
-        return hash;
-      }
-    })
-  );
-
-  const filteredData = data.filter((it) => it !== undefined) as string[];
-  return filteredData;
+  return data;
 };

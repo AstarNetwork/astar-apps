@@ -11,9 +11,10 @@
 }
 
 .input--transfer-from {
+  cursor: pointer;
   @apply tw-w-full tw-text-blue-900
   dark:tw-text-darkGray-100
-  tw-text-xl
+  tw-text-lg
   focus:tw-outline-none
   tw-bg-transparent tw-placeholder-gray-300
   dark:tw-placeholder-darkGray-600;
@@ -41,6 +42,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
 }
 
 .box--arrow {
