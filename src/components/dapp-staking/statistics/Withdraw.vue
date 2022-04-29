@@ -37,6 +37,7 @@
 
 <script lang="ts">
 import { defineComponent, onUnmounted, computed, ref, watch } from 'vue';
+import { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
 import BN from 'bn.js';
 import { $api } from 'boot/api';
 import { useStore } from 'src/store';
@@ -49,6 +50,7 @@ import { WithdrawParameters } from 'src/store/dapp-staking/actions';
 import FormatBalance from 'components/common/FormatBalance.vue';
 import ChunksModal from './ChunksModal.vue';
 import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
+import { useCustomSignature } from 'src/hooks';
 
 export default defineComponent({
   components: {
@@ -58,6 +60,11 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
+    const { callFunc, dispatchError, isCustomSig } = useCustomSignature({
+      fn: () => {
+        store.commit('dapps/setUnlockingChunks', -1);
+      },
+    });
     const selectedAccountAddress = computed(() => store.getters['general/selectedAddress']);
     const unlockingChunksCount = computed(() => store.getters['dapps/getUnlockingChunks']);
     const maxUnlockingChunks = computed(() => store.getters['dapps/getMaxUnlockingChunks']);
@@ -69,11 +76,26 @@ export default defineComponent({
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
 
     const withdraw = async (): Promise<void> => {
-      const result = await store.dispatch('dapps/withdrawUnbonded', {
-        api: $api?.value,
-        senderAddress: selectedAccountAddress.value,
-        substrateAccounts: substrateAccounts.value,
-      } as WithdrawParameters);
+      const withdrawCustomExtrinsic = async () => {
+        try {
+          const fn: SubmittableExtrinsicFunction<'promise'> | undefined =
+            $api?.value?.tx.dappsStaking.withdrawUnbonded;
+          const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn();
+          method && (await callFunc(method));
+        } catch (e) {
+          dispatchError((e as Error).message);
+        }
+      };
+
+      if (isCustomSig.value) {
+        await withdrawCustomExtrinsic();
+      } else {
+        const result = await store.dispatch('dapps/withdrawUnbonded', {
+          api: $api?.value,
+          senderAddress: selectedAccountAddress.value,
+          substrateAccounts: substrateAccounts.value,
+        } as WithdrawParameters);
+      }
     };
 
     const subscribeToEraChange = async (): Promise<VoidFn | undefined> => {
