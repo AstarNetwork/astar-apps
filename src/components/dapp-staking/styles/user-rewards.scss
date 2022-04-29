@@ -15,7 +15,7 @@
   }
 }
 
-.user-rewards-container {
+.user-rewards-container { 
   flex-grow: 1;
   margin-bottom: 32px;
   @media (min-width: 656px) {
@@ -67,4 +67,10 @@
       padding-left: 20px;
     }
   }
+}
+
+.widget-title {
+  font-size: 16px;
+  margin-bottom: 12px;
+  display: flex;
 }

@@ -85,7 +85,8 @@ export default {
     withdraw: 'Withdraw',
     chunk: 'Chunk',
     chunks: 'Unbonding chunks',
-    chunksTooltip: 'Number of chunks are in the process of being unbonded.',
+    chunksTooltip:
+      'Unbonding takes {era} eras (1 era is about 24 hours). {chunks} chunks are in the process of being unbonded.',
     amount: 'Amount',
     era: 'Era',
     unbondedFunds: 'Unbonded funds',
@@ -102,7 +103,7 @@ export default {
       'By turning on the Auto compound, your rewards will automatically re-stake.',
     view: 'View',
     unclaimedRewards: 'Unclaimed Rewards',
-    unclaimedRewardsTooltip: 'Currently we are working on displayong number of unclaimed era.',
+    unclaimedRewardsTooltip: 'Currently we are working on displaying number of unclaimed era.',
     palletDisabled:
       'Dapps staking is in maintenance mode. All actions are temporary disabled, but you can still browse dapps.',
     turnOn: 'Turn on',

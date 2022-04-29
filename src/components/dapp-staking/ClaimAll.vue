@@ -59,6 +59,7 @@ export default defineComponent({
 }
 
 .title {
+  font-size: 16px;
   margin-bottom: 12px;
   display: flex;
 }

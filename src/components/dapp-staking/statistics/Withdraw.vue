@@ -20,7 +20,12 @@
       <div class="title">
         {{ $t('dappStaking.chunks') }}
         <IconTooltip>
-          {{ $t('dappStaking.chunksTooltip') }}
+          {{
+            $t('dappStaking.chunksTooltip', {
+              era: unbondingPeriod,
+              chunks: unlockingChunksCount,
+            })
+          }}
         </IconTooltip>
       </div>
       <div>
@@ -92,6 +97,7 @@ export default defineComponent({
     const selectedAccountAddress = computed(() => store.getters['general/selectedAddress']);
     const unlockingChunksCount = computed(() => store.getters['dapps/getUnlockingChunks']);
     const maxUnlockingChunks = computed(() => store.getters['dapps/getMaxUnlockingChunks']);
+    const unbondingPeriod = computed(() => store.getters['dapps/getUnbondingPeriod']);
     const unlockingChunks = ref<ChunkInfo[]>();
     const canWithdraw = ref<boolean>(false);
     const totalToWithdraw = ref<BN>(new BN(0));
@@ -187,6 +193,8 @@ export default defineComponent({
       showModal,
       maxUnlockingChunks,
       canUnbondWithdraw,
+      unlockingChunksCount,
+      unbondingPeriod,
     };
   },
 });
@@ -212,6 +220,7 @@ export interface ChunkInfo extends Codec {
 }
 
 .title {
+  font-size: 16px;
   margin-bottom: 12px;
   display: flex;
 }

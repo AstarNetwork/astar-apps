@@ -1,6 +1,6 @@
 <template>
   <div v-if="isStaker" class="wrapper--user-rewards-container">
-    <div class="container user-rewards-container">
+    <div class="container user-rewards-container dark:tw-bg-darkGray-800">
       <div class="row">
         <span class="title container--title--color">Your Rewards</span>
       </div>
