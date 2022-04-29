@@ -1,13 +1,13 @@
 <template>
   <div v-if="canUnbondWithdraw">
-    <div v-if="showUnbondedFunds">
+    <div v-if="showUnbondedFunds" class="widget-container full-height">
       <div class="title">
         {{ $t('dappStaking.unbondedFunds') }}
         <IconTooltip>
           {{ $t('dappStaking.unbondedFundsTooltip') }}
         </IconTooltip>
       </div>
-      <div>
+      <div class="widget-content">
         <div class="text--title balance">
           <FormatBalance :balance="totalToWithdraw" />
         </div>
@@ -16,7 +16,7 @@
         </Button>
       </div>
     </div>
-    <div v-if="showUnbondingChunks">
+    <div v-if="showUnbondingChunks" class="widget-container full-height">
       <div class="title">
         {{ $t('dappStaking.chunks') }}
         <IconTooltip>
@@ -28,8 +28,8 @@
           }}
         </IconTooltip>
       </div>
-      <div>
-        <span class="text--title">
+      <div class="widget-content">
+        <span class="text--title balance">
           {{ unlockingChunks?.length }}
         </span>
         <Button
@@ -214,18 +214,14 @@ export interface ChunkInfo extends Codec {
 }
 </script>
 
-<style scoped>
-.button {
-  float: right;
-}
-
-.title {
-  font-size: 16px;
-  margin-bottom: 12px;
-  display: flex;
-}
+<style lang="scss" scoped>
+@use 'src/components/dapp-staking/styles/user-rewards-widget.scss';
 
 .balance {
   float: left;
+}
+
+.full-height {
+  height: 100%;
 }
 </style>

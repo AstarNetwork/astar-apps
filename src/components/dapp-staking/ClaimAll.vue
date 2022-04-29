@@ -1,12 +1,12 @@
 <template>
-  <div v-if="currentAccount && isEnableIndividualClaim">
+  <div v-if="currentAccount && isEnableIndividualClaim" class="widget-container">
     <div class="title">
       {{ $t('dappStaking.unclaimedRewards') }}
       <IconTooltip>
         {{ $t('dappStaking.unclaimedRewardsTooltip') }}
       </IconTooltip>
     </div>
-    <div>
+    <div class="widget-content">
       <Button
         v-if="!isCompounding"
         :small="true"
@@ -53,14 +53,6 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
-.button {
-  float: right;
-}
-
-.title {
-  font-size: 16px;
-  margin-bottom: 12px;
-  display: flex;
-}
+<style lang="scss" scoped>
+@use 'src/components/dapp-staking/styles/user-rewards-widget.scss';
 </style>
