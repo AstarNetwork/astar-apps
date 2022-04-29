@@ -7,6 +7,7 @@
     :default-value="tvlValue"
     class="wrapper--chart"
     :is-multiple-line="isMultipleLine"
+    :second-value="secondValue"
     @filter-changed="handleFilterChanged"
   />
 </template>
@@ -31,6 +32,11 @@ export default defineComponent({
     tvlValue: {
       type: String,
       required: true,
+    },
+    secondValue: {
+      type: String,
+      required: false,
+      default: '',
     },
     tvlData: {
       type: Array as PropType<number[][] | null>,

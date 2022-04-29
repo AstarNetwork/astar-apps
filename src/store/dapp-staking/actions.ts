@@ -490,7 +490,7 @@ const actions: ActionTree<State, StateInterface> = {
                 dispatch(
                   'general/showAlertMsg',
                   {
-                    msg: 'Sucessfully withdrawed',
+                    msg: 'Balance is sucessfully withdrawed.',
                     alertType: 'success',
                   },
                   { root: true }

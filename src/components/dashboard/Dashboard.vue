@@ -29,6 +29,7 @@
           :merged-tvl-data="filteredDappStakingTvl.merged"
           :handle-filter-changed="handleDappStakingTvlFilterChanged"
           :is-multiple-line="true"
+          :second-value="lenStakers"
         />
 
         <tvl-chart
@@ -40,7 +41,6 @@
           :handle-filter-changed="handleEcosystemTvlFilterChanged"
           :is-multiple-line="true"
         />
-
         <token-price-chart :network="chainInfo.chain" />
       </div>
     </div>
@@ -88,6 +88,7 @@ export default defineComponent({
       handleMergedTvlFilterChanged,
       filteredMergedTvl,
       mergedTvlAmount,
+      lenStakers,
     } = useTvlHistorical();
 
     const chainInfo = computed(() => {
@@ -143,6 +144,7 @@ export default defineComponent({
       handleMergedTvlFilterChanged,
       filteredMergedTvl,
       mergedTvlAmount,
+      lenStakers,
     };
   },
 });

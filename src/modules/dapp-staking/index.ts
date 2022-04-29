@@ -1,5 +1,5 @@
 import BN from 'bn.js';
-export { formatStakingList } from './utils';
+export { formatStakingList, getDappStakers } from './utils';
 
 export type ContractEvm = {
   Evm: string;

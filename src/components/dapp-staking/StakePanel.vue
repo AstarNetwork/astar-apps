@@ -150,7 +150,11 @@ export default defineComponent({
     const { decimal } = useChainMetadata();
     const { canUnbondWithdraw } = useUnbondWithdraw($api);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
-    const { callFunc, dispatchError, isCustomSig, customMsg } = useCustomSignature({});
+    const { callFunc, dispatchError, isCustomSig, customMsg } = useCustomSignature({
+      fn: () => {
+        store.commit('dapps/setUnlockingChunks', -1);
+      },
+    });
 
     const currentAddress = computed(() => store.getters['general/selectedAddress']);
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
@@ -269,7 +273,6 @@ export default defineComponent({
             fn && fn(getAddressEnum(props.dapp.address), amount);
 
           method && (await callFunc(method));
-          store.commit('setUnlockingChunks', -1);
           emitStakeChanged();
         } catch (e) {
           dispatchError((e as Error).message);
