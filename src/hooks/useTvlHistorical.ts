@@ -1,3 +1,6 @@
+import { ApiPromise } from '@polkadot/api';
+import { $api } from 'src/boot/api';
+import { getDappStakers } from 'src/modules/dapp-staking';
 import { Duration, filterTvlData, getTvlData, mergeTvlArray } from 'src/modules/token-api';
 import { useStore } from 'src/store';
 import { computed, ref, watch } from 'vue';
@@ -15,11 +18,18 @@ export function useTvlHistorical() {
   const dappStakingFilter = ref<Duration>('90 days');
   const ecosystemFilter = ref<Duration>('90 days');
 
+  const lenStakers = ref<string>('0');
+
   const store = useStore();
   const network = computed(() => {
     const chainInfo = store.getters['general/chainInfo'];
     return chainInfo ? chainInfo.chain : {};
   });
+
+  const fetchDappStakers = async (api: ApiPromise) => {
+    const result = await getDappStakers({ api });
+    lenStakers.value = `${result.toLocaleString('en-US')} stakers`;
+  };
 
   const loadData = async (network: string): Promise<void> => {
     const {
@@ -118,11 +128,12 @@ export function useTvlHistorical() {
   });
 
   watch(
-    [network],
+    [network, $api],
     async () => {
+      const api = $api.value;
       try {
-        if (!network.value || !network.value.length) return;
-        await loadData(network.value.toLowerCase());
+        if (!network.value || !network.value.length || !api) return;
+        await Promise.all([loadData(network.value.toLowerCase()), fetchDappStakers(api)]);
       } catch (error) {
         console.error(error);
       }
@@ -139,6 +150,7 @@ export function useTvlHistorical() {
     ecosystemTvlAmount,
     ecosystemTvl,
     dappStakingTvl,
+    lenStakers,
     handleMergedTvlFilterChanged,
     handleDappStakingTvlFilterChanged,
     handleEcosystemTvlFilterChanged,
