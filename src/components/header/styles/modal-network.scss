@@ -9,6 +9,10 @@
   padding-bottom: 20px;
 }
 
+.list--network {
+  overflow-y: auto;
+}
+
 .class-radio {
   display: flex;
   align-items: center;
@@ -70,6 +74,11 @@
     border: 1px solid white;
     background-color: $gray-3;
   }
+}
+
+.wrapper--select-network {
+  position: relative;
+  flex-grow: 1;
 }
 
 .wrapper--network-detail {
