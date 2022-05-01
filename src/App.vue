@@ -2,18 +2,18 @@
   <div>
     <dashboard-layout>
       <router-view v-slot="{ Component }">
-        <template v-if="Component">
-          <keep-alive>
-            <Suspense>
-              <template #default>
+        <keep-alive>
+          <Suspense>
+            <template #default>
+              <transition name="route" mode="out-in">
                 <component :is="Component"></component>
-              </template>
-              <template #fallback>
-                <modal-loading />
-              </template>
-            </Suspense>
-          </keep-alive>
-        </template>
+              </transition>
+            </template>
+            <template #fallback>
+              <modal-loading />
+            </template>
+          </Suspense>
+        </keep-alive>
       </router-view>
     </dashboard-layout>
 
@@ -57,7 +57,9 @@ export default defineComponent({
   },
 });
 </script>
-<style>
+
+<style lang="scss" scoped>
+@import 'src/css/quasar.variables.scss';
 .bg-black-alt {
   background: #191919;
 }
@@ -68,11 +70,21 @@ export default defineComponent({
   border-color: #191919;
 }
 
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.8s;
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+.route-enter-from {
   opacity: 0;
+  transform: translateX(50px);
+}
+
+.route-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.route-leave-to {
+  opacity: 0;
+  transform: translateX(-50px);
+}
+
+.route-leave-active {
+  transition: all 0.3s ease-in;
 }
 </style>
