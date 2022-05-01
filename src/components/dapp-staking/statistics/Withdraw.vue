@@ -8,9 +8,9 @@
         </IconTooltip>
       </div>
       <div class="widget-content">
-        <div class="text--title balance">
+        <span class="text--title balance">
           <FormatBalance :balance="totalToWithdraw" />
-        </div>
+        </span>
         <Button v-if="canWithdraw" :small="true" :primary="true" class="button" @click="withdraw()">
           {{ $t('dappStaking.withdraw') }}
         </Button>

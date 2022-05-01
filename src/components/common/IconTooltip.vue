@@ -1,6 +1,6 @@
 <template>
   <div class="tooltip-wrapper">
-    <q-icon :name="farQuestionCircle" color="tooltip" />
+    <q-icon :name="farQuestionCircle" />
     <q-tooltip
       :delay="200"
       max-width="250px"
@@ -10,7 +10,9 @@
       transition-show="scale"
       transition-hide="scale"
     >
-      <slot></slot>
+      <div class="slot">
+        <slot></slot>
+      </div>
     </q-tooltip>
   </div>
 </template>
@@ -44,5 +46,10 @@ export default defineComponent({
 
 .text-tooltip {
   color: #165398;
+}
+
+.slot {
+  width: 100%;
+  text-align: justify;
 }
 </style>
