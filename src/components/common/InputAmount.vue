@@ -30,6 +30,7 @@
               focus:tw-outline-none
               tw-bg-transparent tw-placeholder-gray-300
               dark:tw-placeholder-darkGray-600
+              input--no-spin
             "
             inputmode="decimal"
             type="number"

@@ -33,17 +33,22 @@
           :set-address-transfer-from="setAddressTransferFrom"
         />
       </div>
-      <InputAmount
-        v-model:amount="data.amount"
-        v-model:selectedUnit="data.unit"
-        title="Amount"
-        :max-in-default-unit="
-          actionName === StakeAction.Unstake
-            ? formatStakeAmount
-            : accountData?.getUsableFeeBalance()
-        "
-        :is-max-button="actionName === StakeAction.Unstake ? true : false"
-      />
+      <div class="container--amount">
+        <InputAmount
+          v-model:amount="data.amount"
+          v-model:selectedUnit="data.unit"
+          title="Amount"
+          :max-in-default-unit="
+            actionName === StakeAction.Unstake
+              ? formatStakeAmount
+              : accountData?.getUsableFeeBalance()
+          "
+          :is-max-button="actionName === StakeAction.Unstake ? true : false"
+        />
+        <div v-if="formattedTransferFrom.isNominationTransfer" class="box--max">
+          <Button type="button" :primary="true" :small="true" @click="setMaxAmount">Max</Button>
+        </div>
+      </div>
       <div v-if="accountData && actionName === StakeAction.Unstake" class="tw-mt-1 tw-ml-1">
         {{ $t('dappStaking.yourStake') }}
         <format-balance :balance="stakeAmount" class="tw-inline tw-font-semibold" />
@@ -59,7 +64,14 @@
       </div>
       <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row">
         <Button type="button" :primary="false" @click="closeModal">{{ $t('close') }}</Button>
-        <Button :disabled="!canExecuteAction" @click="action(data)">{{ actionName }}</Button>
+
+        <!-- Todo: Set disabled -->
+        <Button
+          v-if="formattedTransferFrom.isNominationTransfer"
+          @click="nominationTransfer({ amount: data.amount })"
+          >Nomination Transfer</Button
+        >
+        <Button v-else :disabled="!canExecuteAction" @click="action(data)">{{ actionName }}</Button>
       </div>
     </template>
   </Modal>
@@ -73,7 +85,7 @@ import Modal from 'components/common/Modal.vue';
 import Avatar from 'src/components/common/Avatar.vue';
 import Button from 'src/components/common/Button.vue';
 import InputAmount from 'src/components/common/InputAmount.vue';
-import { useAccount, useChainMetadata, useUnbondWithdraw } from 'src/hooks';
+import { useChainMetadata, useNominationTransfer, useUnbondWithdraw } from 'src/hooks';
 import { $api } from 'boot/api';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { getAmount, StakeModel } from 'src/hooks/store';
@@ -82,6 +94,7 @@ import { computed, defineComponent, ref, toRefs, PropType } from 'vue';
 import { StakeAction } from '../StakePanel.vue';
 import ModalNominationTransfer from 'src/components/dapp-staking/modals/ModalNominationTransfer.vue';
 import { StakingData } from 'src/modules/dapp-staking';
+import { ethers } from 'ethers';
 
 export enum Role {
   FromAddress = 'FromAddress',
@@ -136,25 +149,13 @@ export default defineComponent({
   setup(props, { emit }) {
     const store = useStore();
     const { decimal, defaultUnitToken } = useChainMetadata();
-    const { currentAccount } = useAccount();
-    const addressTransferFrom = ref<string>(currentAccount.value);
-    const setAddressTransferFrom = (address: string) => {
-      addressTransferFrom.value = address;
-    };
-
-    const formattedTransferFrom = computed(() => {
-      const item = props.stakingList.find((it) => it.address === addressTransferFrom.value);
-      if (!item) return null;
-
-      const name = item.name === currentAccount.value ? 'Transferable Balance' : item.name;
-      const isNominationTransfer = item.name !== currentAccount.value;
-
-      const formattedText = `${name} (${plasmUtils.balanceFormatter(
-        item.balance,
-        plasmUtils.ASTAR_DECIMALS
-      )})`;
-      return { text: formattedText, item, isNominationTransfer };
-    });
+    const {
+      setAddressTransferFrom,
+      formattedTransferFrom,
+      addressTransferFrom,
+      currentAccount,
+      nominationTransfer,
+    } = useNominationTransfer({ stakingList: props.stakingList });
 
     const data = ref<StakeModel>({
       address: '',
@@ -192,6 +193,13 @@ export default defineComponent({
       }
     });
 
+    const setMaxAmount = (): void => {
+      const amount = formattedTransferFrom.value
+        ? Number(ethers.utils.formatEther(formattedTransferFrom.value.item.balance.toString()))
+        : 0;
+      data.value = { ...data.value, amount };
+    };
+
     const reloadAmount = (address: string): void => {
       store.commit('general/setCurrentAddress', address);
     };
@@ -216,8 +224,22 @@ export default defineComponent({
       setAddressTransferFrom,
       currentAccount,
       addressTransferFrom,
+      nominationTransfer,
+      setMaxAmount,
       ...toRefs(props),
     };
   },
 });
 </script>
+
+<style lang="scss" scoped>
+.container--amount {
+  position: relative;
+}
+
+.box--max {
+  position: absolute;
+  bottom: 16px;
+  right: 100px;
+}
+</style>

@@ -1,3 +1,4 @@
+import { endpointKey } from './../../chainEndpoints';
 import { options } from '@astar-network/astar-api';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { web3Accounts } from '@polkadot/extension-dapp';
@@ -53,6 +54,12 @@ const loadAccounts = async (api: ApiPromise) => {
 };
 
 const fallBackConnection = async (networkIdx: number): Promise<void> => {
+  if (networkIdx === endpointKey.LOCAL || endpointKey.CUSTOM) {
+    localStorage.removeItem(LOCAL_STORAGE.SELECTED_ENDPOINT);
+    localStorage.removeItem(LOCAL_STORAGE.NETWORK_IDX);
+    window.location.reload();
+  }
+  // Todo: change to serialize method
   await Promise.race([
     providerEndpoints[networkIdx].endpoints.map(async (it) => {
       try {
