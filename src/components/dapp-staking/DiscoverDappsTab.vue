@@ -13,13 +13,13 @@
 
     <div class="tw-text-center tw-mb-8 tw-flex tw-items-center tw-justify-center sm:tw-gap-x-4">
       <Button :disabled="isPalletDisabled" @click="showRegisterDappModal = true">
-        <icon-base
+        <astar-icon-base
           class="tw-w-5 tw-h-5 tw-text-white tw--ml-1"
           stroke="currentColor"
           icon-name="plus"
         >
-          <icon-plus />
-        </icon-base>
+          <astar-icon-plus />
+        </astar-icon-base>
         {{ $t('dappStaking.registerDapp') }}
       </Button>
       <div
@@ -42,9 +42,9 @@
           tw-mx-1
         "
       >
-        <icon-base class="tw-w-5 tw-h-5 tw-text-white tw--ml-2 tw-mr-2" icon-name="seedling">
+        <astar-icon-base class="tw-w-5 tw-h-5 tw-text-white tw--ml-2 tw-mr-2" icon-name="seedling">
           <q-icon :name="fasSeedling" color="green" />
-        </icon-base>
+        </astar-icon-base>
         <div>
           {{ $t('dappStaking.stakerApr', { value: Number(stakerApr.toFixed(1)) }) }}
         </div>
@@ -80,8 +80,6 @@
 
 <script lang="ts">
 import Button from 'components/common/Button.vue';
-import IconBase from 'components/icons/IconBase.vue';
-import IconPlus from 'components/icons/IconPlus.vue';
 import ModalRegisterDapp from 'components/dapp-staking/modals/ModalRegisterDapp.vue';
 import ModalMaintenance from 'components/dapp-staking/modals/ModalMaintenance.vue';
 import ClaimAll from 'src/components/dapp-staking/ClaimAll.vue';
@@ -103,8 +101,6 @@ import { useMeta } from 'quasar';
 export default defineComponent({
   components: {
     Dapp,
-    IconPlus,
-    IconBase,
     ModalRegisterDapp,
     Button,
     TVL,

@@ -42,9 +42,9 @@
       </nav>
 
       <button type="button" class="button--option" @click="showOption = !showOption">
-        <icon-base class="icon--dot" stroke="currentColor" icon-name="option">
-          <icon-3dots />
-        </icon-base>
+        <astar-icon-base class="icon--dot" stroke="currentColor" icon-name="option">
+          <astar-icon-3dots />
+        </astar-icon-base>
       </button>
     </div>
 
@@ -59,7 +59,6 @@
 </template>
 
 <script lang="ts">
-import Icon3dots from 'components/icons/Icon3dots.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref } from 'vue';
@@ -70,7 +69,6 @@ import SocialMediaLinks from '../common/SocialMediaLinks.vue';
 
 export default defineComponent({
   components: {
-    Icon3dots,
     LocaleChanger,
     SocialMediaLinks,
     LightDarkMode,

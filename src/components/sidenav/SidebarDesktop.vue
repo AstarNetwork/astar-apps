@@ -9,13 +9,13 @@
           to="/assets"
           :class="['link', $route.path.split('/')[1] === 'assets' ? 'activeLink' : '']"
         >
-          <icon-base
+          <astar-icon-base
             :class="['iconbase', isShiden ? 'shiden' : '']"
             stroke="currentColor"
             icon-name="assets"
           >
-            <icon-assets />
-          </icon-base>
+            <astar-icon-assets />
+          </astar-icon-base>
           <div class="row--item">
             <astar-text type="H4">{{ $t('assets.assets') }}</astar-text>
           </div>
@@ -26,13 +26,13 @@
           to="/dashboard"
           :class="['link', $route.path.split('/')[1] === 'dashboard' ? 'activeLink' : '']"
         >
-          <icon-base
+          <astar-icon-base
             :class="['iconbase', isShiden ? 'shiden' : '']"
             stroke="currentColor"
             icon-name="dashboard"
           >
-            <icon-dashboard />
-          </icon-base>
+            <astar-icon-dashboard />
+          </astar-icon-base>
           <div class="row--item">
             <astar-text type="H4">{{ $t('dashboard.dashboard') }}</astar-text>
           </div>
@@ -44,13 +44,13 @@
           to="/dapp-staking"
           :class="['link', $route.path.split('/')[1] === 'dapp-staking' ? 'activeLink' : '']"
         >
-          <icon-base
+          <astar-icon-base
             :class="['iconbase', isShiden ? 'shiden' : '']"
             stroke="currentColor"
             icon-name="staking"
           >
-            <icon-staking />
-          </icon-base>
+            <astar-icon-dapp-staking />
+          </astar-icon-base>
           <div class="row--item">
             <astar-text type="H4">{{ $t('common.dappStaking') }}</astar-text>
           </div>
@@ -63,13 +63,13 @@
           to="/bridge"
           :class="['link', $route.path.split('/')[1] === 'bridge' ? 'activeLink' : '']"
         >
-          <icon-base
+          <astar-icon-base
             :class="['iconbase', isShiden ? 'shiden' : '']"
             stroke="currentColor"
             icon-name="bridge"
           >
-            <icon-bridge />
-          </icon-base>
+            <astar-icon-bridge />
+          </astar-icon-base>
           <span class="row--item">
             <astar-text type="H4">{{ $t('bridge.bridge') }}</astar-text>
           </span>
@@ -94,11 +94,6 @@ import { defineComponent, ref, computed } from 'vue';
 import { useStore } from 'src/store';
 import { useSidebar } from 'src/hooks';
 import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
-import IconBase from '../icons/IconBase.vue';
-import IconDashboard from '../icons/IconDashboard.vue';
-import IconAssets from '../icons/IconAssets.vue';
-import IconStaking from '../icons/IconDappStaking.vue';
-import IconBridge from '../icons/IconBridge.vue';
 import LocaleChanger from '../common/LocaleChanger.vue';
 import SocialMediaLinks from '../common/SocialMediaLinks.vue';
 import LightDarkMode from '../common/LightDarkMode.vue';
@@ -110,11 +105,6 @@ export default defineComponent({
     SocialMediaLinks,
     LightDarkMode,
     LocaleChanger,
-    IconBase,
-    IconDashboard,
-    IconAssets,
-    IconStaking,
-    IconBridge,
     Logo,
   },
   setup() {

@@ -1,8 +1,8 @@
 <template>
   <button type="button" :class="width >= screenSize.sm ? 'btn--connect' : 'm-btn--connect'">
-    <icon-base class="iconbase" stroke="currentColor" icon-name="wallet">
-      <icon-wallet />
-    </icon-base>
+    <astar-icon-base class="iconbase" stroke="currentColor" icon-name="wallet">
+      <astar-icon-wallet />
+    </astar-icon-base>
     <template v-if="width >= screenSize.sm">
       {{ $t('connect') }}
     </template>
@@ -12,14 +12,8 @@
 <script lang="ts">
 import { defineComponent, toRefs } from 'vue';
 import { useBreakpoints } from 'src/hooks';
-import IconBase from 'components/icons/IconBase.vue';
-import IconWallet from 'components/icons/IconWallet.vue';
 
 export default defineComponent({
-  components: {
-    IconBase,
-    IconWallet,
-  },
   props: {},
   setup(props) {
     const { width, screenSize } = useBreakpoints();

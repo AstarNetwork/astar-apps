@@ -56,7 +56,7 @@
               >
                 <button class="btn btn--sm btn--explorer adjuster--width">
                   <div class="container--explorer-icon adjuster--width">
-                    <IconExternalLink />
+                    <astar-icon-external-link />
                   </div>
                 </button>
               </a>
@@ -99,12 +99,8 @@ import { addToEvmWallet } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { getErc20Explorer, getTokenImage } from 'src/modules/token';
 import { computed, defineComponent, PropType } from 'vue';
-import IconExternalLink from 'src/components/icons/IconExternalLink.vue';
 
 export default defineComponent({
-  components: {
-    IconExternalLink,
-  },
   props: {
     token: {
       type: Object as PropType<SelectedToken>,

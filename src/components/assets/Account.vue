@@ -44,7 +44,7 @@
           <div class="column__icons">
             <div>
               <button type="button" class="icon--primary" @click="copyAddress">
-                <IconCopy />
+                <astar-icon-copy />
               </button>
               <q-tooltip>
                 <span class="text--tooltip">{{ $t('copy') }}</span>
@@ -52,7 +52,7 @@
             </div>
             <a :href="isH160 ? blockscout : subScan" target="_blank" rel="noopener noreferrer">
               <button class="icon--primary">
-                <IconExternalLink />
+                <astar-icon-external-link />
               </button>
 
               <q-tooltip>
@@ -96,11 +96,8 @@ import {
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import copy from 'copy-to-clipboard';
-import IconCopy from 'src/components/icons/IconCopy.vue';
-import IconExternalLink from 'src/components/icons/IconExternalLink.vue';
 
 export default defineComponent({
-  components: { IconCopy, IconExternalLink },
   props: {
     ttlErc20Amount: {
       type: Number,
