@@ -5,7 +5,7 @@ import type { InjectedExtension } from '@polkadot/extension-inject/types';
 import { keyring } from '@polkadot/ui-keyring';
 import { isTestChain } from '@polkadot/util';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
-import { providerEndpoints } from 'src/config/chainEndpoints';
+import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { objToArray } from 'src/hooks/helper/common';
 import { getInjectedExtensions } from 'src/hooks/helper/wallet';
@@ -52,29 +52,49 @@ const loadAccounts = async (api: ApiPromise) => {
   );
 };
 
-const fallBackConnection = async (networkIdx: number): Promise<void> => {
-  await Promise.race([
-    providerEndpoints[networkIdx].endpoints.map(async (it) => {
-      try {
-        const provider = new WsProvider(it.endpoint);
-        const api = new ApiPromise(options({ provider }));
-        await api.isReady;
-        const result = await api.rpc.system.health();
-        const isHealthy = result.toHuman().shouldHavePeers;
-        if (isHealthy) {
-          localStorage.setItem(
-            LOCAL_STORAGE.SELECTED_ENDPOINT,
-            JSON.stringify({
-              [networkIdx]: it.endpoint,
-            })
-          );
-          return window.location.reload();
-        }
-      } catch (error) {
-        console.error(error);
+const fallBackConnection = async ({
+  networkIdx,
+  endpoint,
+}: {
+  networkIdx: number;
+  endpoint: string;
+}): Promise<void> => {
+  if (networkIdx === endpointKey.LOCAL || networkIdx === endpointKey.CUSTOM) {
+    localStorage.removeItem(LOCAL_STORAGE.SELECTED_ENDPOINT);
+    localStorage.removeItem(LOCAL_STORAGE.NETWORK_IDX);
+    return window.location.reload();
+  }
+
+  const filteredEndpoints = providerEndpoints[networkIdx].endpoints.filter((it) => {
+    return it.endpoint !== endpoint;
+  });
+  if (1 >= filteredEndpoints.length) {
+    return window.location.reload();
+  }
+
+  for await (let it of filteredEndpoints) {
+    try {
+      const provider = new WsProvider(it.endpoint);
+      const api = new ApiPromise(options({ provider }));
+      await api.isReady;
+      const result = await api.rpc.system.health();
+      const isHealthy = result.toHuman().shouldHavePeers;
+      if (isHealthy) {
+        localStorage.setItem(
+          LOCAL_STORAGE.SELECTED_ENDPOINT,
+          JSON.stringify({
+            [networkIdx]: it.endpoint,
+          })
+        );
+        return window.location.reload();
+      } else {
+        continue;
       }
-    }),
-  ]);
+    } catch (error) {
+      console.error(error);
+      continue;
+    }
+  }
 };
 
 export async function connectApi(endpoint: string, networkIdx: number, store: any) {
@@ -102,12 +122,12 @@ export async function connectApi(endpoint: string, networkIdx: number, store: an
     const race = Promise.race([apiConnect, fallbackTimeout]);
     race.then((res) => {
       if (res === resTimeout) {
-        fallBackConnection(networkIdx);
+        fallBackConnection({ networkIdx, endpoint });
       }
     });
   } catch (e) {
     console.error(e);
-    fallBackConnection(networkIdx);
+    fallBackConnection({ networkIdx, endpoint });
   }
 
   const injectedPromise = await getInjectedExtensions();
@@ -143,7 +163,7 @@ export async function connectApi(endpoint: string, networkIdx: number, store: an
     store.commit('general/setCurrentNetworkStatus', 'connected');
   } catch (err) {
     console.error(err);
-    fallBackConnection(networkIdx);
+    fallBackConnection({ networkIdx, endpoint });
   }
 
   return {

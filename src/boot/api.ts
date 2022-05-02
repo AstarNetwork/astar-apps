@@ -1,3 +1,4 @@
+import { getRandomFromArray } from './../hooks/helper/common';
 import { boot } from 'quasar/wrappers';
 import { ApiPromise } from '@polkadot/api';
 import { computed, ref, watchPostEffect } from 'vue';
@@ -38,11 +39,11 @@ export default boot(async ({ store }) => {
 
   const networkIdx = computed(() => store.getters['general/networkIdx']);
 
-  const defaultEndpoint = providerEndpoints[networkIdx.value].endpoints[0].endpoint;
+  const randomEndpoint = getRandomFromArray(providerEndpoints[networkIdx.value].endpoints).endpoint;
 
   let endpoint = selectedEndpoint.hasOwnProperty(networkIdx.value)
     ? selectedEndpoint[networkIdx.value]
-    : defaultEndpoint;
+    : randomEndpoint;
 
   if (networkIdx.value === endpointKey.CUSTOM) {
     const customEndpoint = computed(() => store.getters['general/customEndpoint']);
