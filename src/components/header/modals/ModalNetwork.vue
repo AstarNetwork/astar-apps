@@ -214,12 +214,6 @@ export default defineComponent({
       networkIdx: number;
       selEndpointRef: string;
     }): void => {
-      localStorage.setItem(
-        SELECTED_ENDPOINT,
-        JSON.stringify({
-          [networkIdx]: endpointObj.endpoint,
-        })
-      );
       if (networkIdx === endpointKey.ASTAR) {
         selEndpointAstar.value = endpointObj.endpoint;
       } else if (networkIdx === endpointKey.SHIDEN) {
