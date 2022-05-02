@@ -2,6 +2,7 @@ import { getProviderIndex } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SubstrateWallets, SupportWallet, WalletModalOption } from 'src/config/wallets';
 import { getChainId, setupNetwork } from 'src/config/web3';
+import { checkSumEvmAddress } from 'src/config/web3/utils/convert';
 import { useAccount } from 'src/hooks';
 import * as utils from 'src/hooks/custom-signature/utils';
 import { deepLinkPath } from 'src/links';
@@ -76,7 +77,7 @@ export const useConnectWallet = () => {
   const loadMetaMask = async (ss58?: string): Promise<boolean> => {
     try {
       const accounts = await requestAccounts();
-      const ethereumAddr = accounts[0];
+      const ethereumAddr = checkSumEvmAddress(accounts[0]);
       const data = ss58
         ? {
             ethereum: ethereumAddr,
@@ -119,7 +120,7 @@ export const useConnectWallet = () => {
 
   const toggleMetaMaskSchema = async () => {
     const accounts = await requestAccounts();
-    const loadingAddr = accounts[0];
+    const loadingAddr = checkSumEvmAddress(accounts[0]);
     const loginMsg = `Sign this message to login with address ${loadingAddr}`;
     const signature = await requestSignature(loginMsg, loadingAddr);
     const pubKey = utils.recoverPublicKeyFromSig(loadingAddr, loginMsg, signature);
