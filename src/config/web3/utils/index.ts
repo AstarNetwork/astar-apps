@@ -1,3 +1,4 @@
+import { getRandomFromArray } from './../../../hooks/helper/common';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
 import Web3 from 'web3';
@@ -70,12 +71,12 @@ export const getChainId = (currentNetworkIdx: endpointKey): number => {
 };
 
 export const createAstarWeb3Instance = async (currentNetworkIdx: TNetworkId) => {
+  const chainId = getChainId(currentNetworkIdx);
+  const network = getChainData(chainId);
+  const endpoints = providerEndpoints[currentNetworkIdx].evmEndpoints;
+  const endpoint = getRandomFromArray(endpoints);
   try {
-    const chainId = getChainId(currentNetworkIdx);
-    const network = getChainData(chainId);
-    if (!network.rpcUrls[0]) return;
-    const web3 = new Web3(new Web3.providers.HttpProvider(network.rpcUrls[0]));
-
+    const web3 = new Web3(new Web3.providers.HttpProvider(endpoint));
     const blockHeight = await web3.eth.getBlockNumber();
     if (blockHeight > 0) {
       return web3;
@@ -84,8 +85,13 @@ export const createAstarWeb3Instance = async (currentNetworkIdx: TNetworkId) => 
     }
   } catch (error) {
     console.error(error);
-    const fallbackRpc = providerEndpoints[currentNetworkIdx].evmFallbackRpc;
-    return new Web3(new Web3.providers.HttpProvider(fallbackRpc));
+    if (endpoints.length > 1) {
+      const filteredEndpoints = endpoints.filter((it) => it !== endpoint);
+      const fallbackEndpoint = getRandomFromArray(filteredEndpoints);
+      return new Web3(new Web3.providers.HttpProvider(fallbackEndpoint));
+    } else {
+      return new Web3(new Web3.providers.HttpProvider(endpoint));
+    }
   }
 };
 
