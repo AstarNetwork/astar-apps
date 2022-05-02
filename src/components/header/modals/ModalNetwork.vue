@@ -98,6 +98,7 @@ import { useQuasar } from 'quasar';
 import { $endpoint } from 'src/boot/api';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { getRandomFromArray } from 'src/hooks/helper/common';
 import { checkIsMobileMathWallet } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect, Ref } from 'vue';
@@ -213,19 +214,37 @@ export default defineComponent({
     const setupInitialEndpointOption = (networkIdx: number) => {
       if (networkIdx === endpointKey.ASTAR) {
         selEndpointAstar.value = $endpoint.value;
-        selEndpointShiden.value = providerEndpoints[endpointKey.SHIDEN].endpoints[0].endpoint;
-        selEndpointShibuya.value = providerEndpoints[endpointKey.SHIBUYA].endpoints[0].endpoint;
+
+        selEndpointShiden.value = getRandomFromArray(
+          providerEndpoints[endpointKey.SHIDEN].endpoints
+        ).endpoint;
+
+        selEndpointShibuya.value = getRandomFromArray(
+          providerEndpoints[endpointKey.SHIBUYA].endpoints
+        ).endpoint;
       }
 
       if (networkIdx === endpointKey.SHIDEN) {
-        selEndpointAstar.value = providerEndpoints[endpointKey.ASTAR].endpoints[0].endpoint;
+        selEndpointAstar.value = getRandomFromArray(
+          providerEndpoints[endpointKey.ASTAR].endpoints
+        ).endpoint;
+
         selEndpointShiden.value = $endpoint.value;
-        selEndpointShibuya.value = providerEndpoints[endpointKey.SHIBUYA].endpoints[0].endpoint;
+
+        selEndpointShibuya.value = getRandomFromArray(
+          providerEndpoints[endpointKey.SHIBUYA].endpoints
+        ).endpoint;
       }
 
       if (networkIdx === endpointKey.SHIBUYA) {
-        selEndpointAstar.value = providerEndpoints[endpointKey.ASTAR].endpoints[0].endpoint;
-        selEndpointShiden.value = providerEndpoints[endpointKey.SHIDEN].endpoints[0].endpoint;
+        selEndpointAstar.value = getRandomFromArray(
+          providerEndpoints[endpointKey.ASTAR].endpoints
+        ).endpoint;
+
+        selEndpointShiden.value = getRandomFromArray(
+          providerEndpoints[endpointKey.SHIDEN].endpoints
+        ).endpoint;
+
         selEndpointShibuya.value = $endpoint.value;
       }
     };
