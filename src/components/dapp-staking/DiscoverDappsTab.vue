@@ -1,17 +1,27 @@
 <template>
   <div>
-    <div
-      v-if="dapps.length > 0"
-      class="tw-flex tw-flex-wrap tw-gap-x-12 xl:tw-gap-x-18 tw-justify-center"
-    >
+    <div class="warning-wrapper">
+      <div class="warning-text-container">
+        {{
+          $t('dappStaking.warning', {
+            amount: minimumStakingAmount,
+            stakers: maxNumberOfStakersPerContract.toLocaleString('en-US'),
+          })
+        }}
+      </div>
+      <Button :small="true" class="register-button" @click="showRegisterDappModal = true">
+        + {{ $t('dappStaking.registerDapp') }}
+      </Button>
+    </div>
+    <div v-if="dapps.length > 0" class="kpi-wrapper">
       <TVL />
       <DappsCount />
-      <Requirement />
       <Era :progress="progress" :blocks-until-next-era="blocksUntilNextEra" :era="era" />
-      <Withdraw />
+      <APR />
+      <!-- <Withdraw /> -->
     </div>
 
-    <div class="tw-text-center tw-mb-8 tw-flex tw-items-center tw-justify-center sm:tw-gap-x-4">
+    <!-- <div class="tw-text-center tw-mb-8 tw-flex tw-items-center tw-justify-center sm:tw-gap-x-4">
       <Button :disabled="isPalletDisabled" @click="showRegisterDappModal = true">
         <astar-icon-base
           class="tw-w-5 tw-h-5 tw-text-white tw--ml-1"
@@ -49,8 +59,8 @@
           {{ $t('dappStaking.stakerApr', { value: Number(stakerApr.toFixed(1)) }) }}
         </div>
       </div>
-    </div>
-    <claim-all />
+    </div> -->
+    <UserRewards />
     <div class="store-container tw-grid tw-gap-x-12 xl:tw-gap-x-18 tw-justify-center">
       <div
         v-if="dapps.length === 0"
@@ -82,17 +92,16 @@
 import Button from 'components/common/Button.vue';
 import ModalRegisterDapp from 'components/dapp-staking/modals/ModalRegisterDapp.vue';
 import ModalMaintenance from 'components/dapp-staking/modals/ModalMaintenance.vue';
-import ClaimAll from 'src/components/dapp-staking/ClaimAll.vue';
 import Dapp from 'src/components/dapp-staking/Dapp.vue';
+import UserRewards from 'src/components/dapp-staking/UserRewards.vue';
 import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
-import { useCurrentEra, useApr, useAccount, useBalance } from 'src/hooks';
+import { useCurrentEra, useAccount, useBalance } from 'src/hooks';
 import { DappItem } from 'src/store/dapp-staking/state';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
 import TVL from './statistics/TVL.vue';
 import DappsCount from './statistics/DappsCount.vue';
-import Requirement from './statistics/Requirement.vue';
-import Withdraw from './statistics/Withdraw.vue';
+import APR from './statistics/APR.vue';
 import Era from './statistics/Era.vue';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
 import { fasSeedling } from '@quasar/extras/fontawesome-v5';
@@ -105,17 +114,15 @@ export default defineComponent({
     Button,
     TVL,
     DappsCount,
-    Requirement,
-    Withdraw,
     Era,
-    ClaimAll,
+    UserRewards,
+    APR,
     ModalMaintenance,
   },
   setup() {
     const store = useStore();
     const dapps = computed(() => store.getters['dapps/getAllDapps']);
     useMeta({ title: 'Discover dApps' });
-    const { stakerApr } = useApr();
     const { progress, blocksUntilNextEra, era } = useCurrentEra();
     const { currentAccount } = useAccount();
     const { accountData } = useBalance(currentAccount);
@@ -155,7 +162,6 @@ export default defineComponent({
       progress,
       blocksUntilNextEra,
       era,
-      stakerApr,
       fasSeedling,
       accountData,
       currentAccount,
@@ -165,8 +171,48 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import 'src/css/quasar.variables.scss';
+
 .store-container {
   grid-template-columns: repeat(auto-fit, minmax(288px, max-content));
+}
+
+.warning-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.warning-text-container {
+  width: calc(100% - 150px);
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19px;
+}
+
+.register-button {
+  height: 32px;
+  width: 150px;
+}
+
+.kpi-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 66px;
+
+  div {
+    min-width: 288px;
+    flex: 1;
+  }
+  @media (min-width: $xl) {
+    justify-content: center;
+    column-gap: 48px;
+  }
 }
 </style>

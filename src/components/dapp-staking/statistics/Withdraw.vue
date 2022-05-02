@@ -1,34 +1,48 @@
 <template>
-  <div
-    v-if="canUnbondWithdraw"
-    class="
-      tw-bg-white
-      dark:tw-bg-darkGray-800
-      tw-mb-8 tw-w-72 tw-rounded-lg tw-text-white
-      dark:tw-text-darkGray-100
-      xl:tw-mx-2
-      tw-py-4 tw-pb-8 tw-px-4
-      box
-    "
-  >
-    <div class="tw-text-xl tw-font-semibold tw-mb-4 tw-uppercase">
-      {{ $t('dappStaking.unbondedFunds') }}
-    </div>
-    <div class="tw-flex tw-flex-col tw-items-center">
-      <FormatBalance :balance="totalToWithdraw" class="tw-flex tw-text-2xl tw-font-bold" />
-    </div>
-    <div class="tw-flex tw-flex-row tw-items-baseline tw-w-full tw-justify-center tw-mt-2">
-      <div class="tw-cursor-pointer tw-font-bold" @click="showModal = true">
-        {{ $t('dappStaking.chunks') }} ({{ unlockingChunks?.length ?? 0 }})
+  <div v-if="canUnbondWithdraw">
+    <div v-if="showUnbondedFunds" class="widget-container full-height">
+      <div class="title">
+        {{ $t('dappStaking.unbondedFunds') }}
+        <IconTooltip>
+          {{ $t('dappStaking.unbondedFundsTooltip') }}
+        </IconTooltip>
       </div>
-      <Button v-if="canWithdraw" :primary="false" class="tw-ml-4" @click="withdraw()">
-        {{ $t('dappStaking.withdraw') }}
-      </Button>
+      <div class="widget-content">
+        <span class="text--title balance">
+          <FormatBalance :balance="totalToWithdraw" />
+        </span>
+        <Button v-if="canWithdraw" :small="true" :primary="true" class="button" @click="withdraw()">
+          {{ $t('dappStaking.withdraw') }}
+        </Button>
+      </div>
     </div>
-    <div class="tw-w-full tw-text-xs tw-text-center tw-mt-3">
-      {{ $t('dappStaking.unbondingEra', { unbondingPeriod }) }}
+    <div v-if="showUnbondingChunks" class="widget-container full-height">
+      <div class="title">
+        {{ $t('dappStaking.chunks') }}
+        <IconTooltip>
+          {{
+            $t('dappStaking.chunksTooltip', {
+              era: unbondingPeriod,
+              chunks: unlockingChunksCount,
+            })
+          }}
+        </IconTooltip>
+      </div>
+      <div class="widget-content">
+        <span class="text--title balance">
+          {{ unlockingChunks?.length }}
+        </span>
+        <Button
+          v-if="unlockingChunks?.length > 0"
+          :small="true"
+          :primary="true"
+          class="button"
+          @click="showModal = true"
+        >
+          {{ $t('dappStaking.view') }}
+        </Button>
+      </div>
     </div>
-
     <ChunksModal
       v-if="showModal"
       v-model:isOpen="showModal"
@@ -53,6 +67,7 @@ import { WithdrawParameters } from 'src/store/dapp-staking/actions';
 import FormatBalance from 'components/common/FormatBalance.vue';
 import ChunksModal from './ChunksModal.vue';
 import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
+import IconTooltip from 'components/common/IconTooltip.vue';
 import { useCustomSignature } from 'src/hooks';
 
 export default defineComponent({
@@ -60,6 +75,17 @@ export default defineComponent({
     Button,
     FormatBalance,
     ChunksModal,
+    IconTooltip,
+  },
+  props: {
+    showUnbondedFunds: {
+      type: Boolean,
+      default: true,
+    },
+    showUnbondingChunks: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup() {
     const store = useStore();
@@ -167,6 +193,7 @@ export default defineComponent({
       showModal,
       maxUnlockingChunks,
       canUnbondWithdraw,
+      unlockingChunksCount,
       unbondingPeriod,
     };
   },
@@ -187,9 +214,14 @@ export interface ChunkInfo extends Codec {
 }
 </script>
 
-<style scoped>
-.box {
-  background: linear-gradient(83.83deg, #694ea4, #1b6dc1 37.5%, #1b6dc1 65.1%, #2ea0c4);
-  box-shadow: 0 2px 2px rgb(0 0 0 / 30%);
+<style lang="scss" scoped>
+@use 'src/components/dapp-staking/styles/user-rewards-widget.scss';
+
+.balance {
+  float: left;
+}
+
+.full-height {
+  height: 100%;
 }
 </style>

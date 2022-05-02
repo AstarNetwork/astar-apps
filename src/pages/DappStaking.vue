@@ -1,28 +1,8 @@
 <template>
-  <div>
-    <div class="sm:tw-flex tw-items-end tw-mb-8 tw-mx--4 sm:tw--mx-8 tw-px-4 sm:tw-px-8">
-      <div class="tw-flex tw-justify-between tw-items-center tw-w-full">
-        <div class="tw-flex"></div>
-        <div
-          class="
-            tw-hidden
-            lg:tw-block lg:tw-mb-2
-            tw-ml-4
-            2xl:tw-text-lg
-            tw-font-semibold tw-text-blue-900
-            dark:tw-text-white
-          "
-        >
-          {{
-            $t('dappStaking.warning', {
-              amount: minimumStakingAmount,
-              stakers: maxNumberOfStakersPerContract.toLocaleString('en-US'),
-            })
-          }}
-        </div>
-      </div>
+  <div class="wrapper--dapp-staking">
+    <div class="container--dapp-staking">
+      <router-view />
     </div>
-    <router-view />
   </div>
 </template>
 
@@ -48,3 +28,24 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss" scoped>
+@use 'src/components/assets/styles/assets.scss';
+.container--dapp-staking {
+  display: grid;
+  row-gap: 24px;
+  max-width: 1300px;
+  @media (min-width: $xxl) {
+    /* width: $container-max-width; */
+    /* width: 1300px; */
+  }
+}
+
+.wrapper--dapp-staking {
+  position: relative;
+  @media (min-width: $xxl) {
+    display: flex;
+    justify-content: center;
+  }
+}
+</style>
