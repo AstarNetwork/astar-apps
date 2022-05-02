@@ -52,7 +52,7 @@ const loadAccounts = async (api: ApiPromise) => {
   );
 };
 
-const fallBackConnection = async ({
+const fallbackConnection = async ({
   networkIdx,
   endpoint,
 }: {
@@ -74,22 +74,43 @@ const fallBackConnection = async ({
 
   for await (let it of filteredEndpoints) {
     try {
-      const provider = new WsProvider(it.endpoint);
-      const api = new ApiPromise(options({ provider }));
-      await api.isReady;
-      const result = await api.rpc.system.health();
-      const isHealthy = result.toHuman().shouldHavePeers;
-      if (isHealthy) {
-        localStorage.setItem(
-          LOCAL_STORAGE.SELECTED_ENDPOINT,
-          JSON.stringify({
-            [networkIdx]: it.endpoint,
-          })
-        );
-        return window.location.reload();
-      } else {
-        continue;
-      }
+      const resInvalidConnection = 'invalid connection';
+      const resConnectedApi = 'connected API';
+      const resTimeout = 'timeout';
+
+      const apiConnect = new Promise<string>((resolve) => {
+        const provider = new WsProvider(it.endpoint);
+        const api = new ApiPromise(options({ provider }));
+        api.isReadyOrError.then(async () => {
+          const result = await api.rpc.system.health();
+          const isHealthy = result.toHuman().shouldHavePeers;
+          if (isHealthy) {
+            localStorage.setItem(
+              LOCAL_STORAGE.SELECTED_ENDPOINT,
+              JSON.stringify({
+                [networkIdx]: it.endpoint,
+              })
+            );
+            resolve(resConnectedApi);
+          } else {
+            resolve(resInvalidConnection);
+          }
+        });
+      });
+
+      const fallbackTimeout = new Promise((resolve) => {
+        const timeout = 8 * 1000;
+        setTimeout(() => {
+          resolve(resTimeout);
+        }, timeout);
+      });
+
+      const race = Promise.race([apiConnect, fallbackTimeout]);
+      race.then((res) => {
+        if (res === resConnectedApi) {
+          return window.location.reload();
+        }
+      });
     } catch (error) {
       console.error(error);
       continue;
@@ -122,12 +143,12 @@ export async function connectApi(endpoint: string, networkIdx: number, store: an
     const race = Promise.race([apiConnect, fallbackTimeout]);
     race.then((res) => {
       if (res === resTimeout) {
-        fallBackConnection({ networkIdx, endpoint });
+        fallbackConnection({ networkIdx, endpoint });
       }
     });
   } catch (e) {
     console.error(e);
-    fallBackConnection({ networkIdx, endpoint });
+    fallbackConnection({ networkIdx, endpoint });
   }
 
   const injectedPromise = await getInjectedExtensions();
@@ -163,7 +184,7 @@ export async function connectApi(endpoint: string, networkIdx: number, store: an
     store.commit('general/setCurrentNetworkStatus', 'connected');
   } catch (err) {
     console.error(err);
-    fallBackConnection({ networkIdx, endpoint });
+    fallbackConnection({ networkIdx, endpoint });
   }
 
   return {
