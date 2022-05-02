@@ -3,7 +3,7 @@
     <div class="wrapper--modal-network">
       <div class="wrapper--select-network">
         <fieldset>
-          <ul role="radiogroup">
+          <ul role="radiogroup" class="list--network" :style="`max-height: ${windowHeight}px`">
             <li v-for="(provider, index) in providerEndpoints" :key="index">
               <label
                 :class="[
@@ -238,6 +238,14 @@ export default defineComponent({
       { immediate: true }
     );
 
+    const windowHeight = ref<number>(window.innerHeight);
+    const onHeightChange = () => {
+      windowHeight.value = window.innerHeight - 300;
+    };
+
+    window.addEventListener('resize', onHeightChange);
+    onHeightChange();
+
     return {
       closeModal,
       newEndpoint,
@@ -255,6 +263,7 @@ export default defineComponent({
       selEndpointShibuya,
       setSelEndpoint,
       checkIsCheckedEndpoint,
+      windowHeight,
     };
   },
 });

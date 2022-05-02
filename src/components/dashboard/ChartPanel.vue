@@ -19,7 +19,7 @@
         </div>
       </div>
       <div class="chart">
-        <highcharts :options="chartOptions"></highcharts>
+        <highcharts class="highcharts" :options="chartOptions"></highcharts>
         <chart-filter :range-filter="rangeFilter" @filterChanged="handleFilterChanged" />
       </div>
     </div>
