@@ -235,6 +235,14 @@ export default {
   dashboard: {
     dashboard: 'Dashboard',
     tvl: 'TVL',
+    circulating: {
+      circulatingSupply: 'Circulating Supply',
+      supply: 'of {totalSupply}: ',
+    },
+    earned: {
+      earnedRewardsDappStaking: 'Earned Rewards in dApp Staking',
+      earnedRewards: 'Earned Rewards',
+    },
     block: {
       block: 'Block',
       blockHeight: 'Block Height',
