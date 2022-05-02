@@ -109,6 +109,8 @@ const fallbackConnection = async ({
       race.then((res) => {
         if (res === resConnectedApi) {
           return window.location.reload();
+        } else {
+          return;
         }
       });
     } catch (error) {
