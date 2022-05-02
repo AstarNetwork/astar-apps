@@ -101,7 +101,7 @@ import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { getRandomFromArray } from 'src/hooks/helper/common';
 import { checkIsMobileMathWallet } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, watch, watchEffect, Ref } from 'vue';
+import { computed, defineComponent, ref, watch } from 'vue';
 import ModalDrawer from './ModalDrawer.vue';
 
 export default defineComponent({
@@ -143,8 +143,28 @@ export default defineComponent({
 
     const { NETWORK_IDX, CUSTOM_ENDPOINT, SELECTED_ENDPOINT } = LOCAL_STORAGE;
 
+    const getSelectedNetwork = (networkIdx: number): string => {
+      switch (networkIdx) {
+        case endpointKey.ASTAR:
+          return selEndpointAstar.value;
+        case endpointKey.SHIDEN:
+          return selEndpointShiden.value;
+        case endpointKey.SHIBUYA:
+          return selEndpointShibuya.value;
+
+        default:
+          return selEndpointAstar.value;
+      }
+    };
+
     const selectNetwork = async (networkIdx: number): Promise<void> => {
       localStorage.setItem(NETWORK_IDX, networkIdx.toString());
+      localStorage.setItem(
+        SELECTED_ENDPOINT,
+        JSON.stringify({
+          [networkIdx]: getSelectedNetwork(networkIdx),
+        })
+      );
       if (newEndpoint.value) {
         let endpoint = `${newEndpoint.value}`;
         endpoint = !endpoint.includes('wss://') ? `wss://${endpoint}` : endpoint;
@@ -202,55 +222,56 @@ export default defineComponent({
       );
       if (networkIdx === endpointKey.ASTAR) {
         selEndpointAstar.value = endpointObj.endpoint;
+      } else if (networkIdx === endpointKey.SHIDEN) {
+        selEndpointShiden.value = endpointObj.endpoint;
+      } else if (networkIdx === endpointKey.SHIBUYA) {
+        selEndpointShibuya.value = endpointObj.endpoint;
+      }
+    };
+
+    const randomizedEndpoint = (networkIdx: number) => {
+      if (networkIdx === endpointKey.ASTAR) {
+        selEndpointAstar.value = getRandomFromArray(
+          providerEndpoints[endpointKey.ASTAR].endpoints
+        ).endpoint;
       }
       if (networkIdx === endpointKey.SHIDEN) {
-        selEndpointShiden.value = endpointObj.endpoint;
+        selEndpointShiden.value = getRandomFromArray(
+          providerEndpoints[endpointKey.SHIDEN].endpoints
+        ).endpoint;
       }
       if (networkIdx === endpointKey.SHIBUYA) {
-        selEndpointShibuya.value = endpointObj.endpoint;
+        selEndpointShibuya.value = getRandomFromArray(
+          providerEndpoints[endpointKey.SHIBUYA].endpoints
+        ).endpoint;
       }
     };
 
     const setupInitialEndpointOption = (networkIdx: number) => {
       if (networkIdx === endpointKey.ASTAR) {
         selEndpointAstar.value = $endpoint.value;
-
-        selEndpointShiden.value = getRandomFromArray(
-          providerEndpoints[endpointKey.SHIDEN].endpoints
-        ).endpoint;
-
-        selEndpointShibuya.value = getRandomFromArray(
-          providerEndpoints[endpointKey.SHIBUYA].endpoints
-        ).endpoint;
+        randomizedEndpoint(endpointKey.SHIDEN);
+        randomizedEndpoint(endpointKey.SHIBUYA);
+        return;
       }
 
       if (networkIdx === endpointKey.SHIDEN) {
-        selEndpointAstar.value = getRandomFromArray(
-          providerEndpoints[endpointKey.ASTAR].endpoints
-        ).endpoint;
-
         selEndpointShiden.value = $endpoint.value;
-
-        selEndpointShibuya.value = getRandomFromArray(
-          providerEndpoints[endpointKey.SHIBUYA].endpoints
-        ).endpoint;
+        randomizedEndpoint(endpointKey.ASTAR);
+        randomizedEndpoint(endpointKey.SHIBUYA);
+        return;
       }
 
       if (networkIdx === endpointKey.SHIBUYA) {
-        selEndpointAstar.value = getRandomFromArray(
-          providerEndpoints[endpointKey.ASTAR].endpoints
-        ).endpoint;
-
-        selEndpointShiden.value = getRandomFromArray(
-          providerEndpoints[endpointKey.SHIDEN].endpoints
-        ).endpoint;
-
         selEndpointShibuya.value = $endpoint.value;
+        randomizedEndpoint(endpointKey.ASTAR);
+        randomizedEndpoint(endpointKey.SHIDEN);
+        return;
       }
     };
 
     watch(
-      [$endpoint],
+      [$endpoint, selNetwork],
       () => {
         setupInitialEndpointOption(props.networkIdx);
       },

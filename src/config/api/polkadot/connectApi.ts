@@ -54,7 +54,7 @@ const loadAccounts = async (api: ApiPromise): Promise<void> => {
   );
 };
 
-// Memo: Reach to a healthy node whenever the selected endpoint has failed to connect to API.
+// Memo: Reach to a healthy node whenever the selected endpoint has failed to connect to API
 const fallbackConnection = async ({
   networkIdx,
   endpoint,
@@ -77,7 +77,7 @@ const fallbackConnection = async ({
 
   for await (let it of filteredEndpoints) {
     try {
-      const apiConnect = new Promise<string>((resolve) => {
+      const resolveApiStatus = new Promise<string>((resolve) => {
         const provider = new WsProvider(it.endpoint);
         const api = new ApiPromise(options({ provider }));
         api.isReadyOrError.then(async () => {
@@ -104,7 +104,7 @@ const fallbackConnection = async ({
         }, timeout);
       });
 
-      const race = Promise.race<string>([apiConnect, fallbackTimeout]);
+      const race = Promise.race<string>([resolveApiStatus, fallbackTimeout]);
       race.then((res: string) => {
         if (res === RES_CONNECTED_API) {
           return window.location.reload();
@@ -119,6 +119,8 @@ const fallbackConnection = async ({
   }
 };
 
+// Memo: Connect to node API via selected endpoint
+// Memo: Invoke `fallbackConnection` function whenever failed to connect via selected endpoint or timeout
 export async function connectApi(
   endpoint: string,
   networkIdx: number,
