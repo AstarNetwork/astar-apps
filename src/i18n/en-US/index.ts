@@ -99,7 +99,8 @@ export default {
     apr: 'APR',
     ttlPendingRewards: 'Your Pending Rewards',
     autoCompound: 'Auto Compound',
-    autoCompoundingTooltip: 'By turning on the Auto compound, your clamed rewards will re-stake.',
+    autoCompoundingTooltip:
+      'By turning on the Auto compound, your clamed rewards will re-stake on claim.',
     view: 'View',
     unclaimedRewards: 'Unclaimed Rewards',
     unclaimedRewardsTooltip: 'Currently we are working on displaying number of unclaimed era.',
