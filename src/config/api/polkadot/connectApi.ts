@@ -54,6 +54,7 @@ const loadAccounts = async (api: ApiPromise): Promise<void> => {
   );
 };
 
+// Memo: Reach to a healthy node whenever the selected endpoint has failed to connect to API.
 const fallbackConnection = async ({
   networkIdx,
   endpoint,
