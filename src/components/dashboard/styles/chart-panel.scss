@@ -193,6 +193,13 @@
   }
 }
 
+.highcharts {
+  min-height: 200px;
+  @media (min-width: $xl) {
+    font-size: 250px;
+  }
+}
+
 .body--dark {
   .filter--tabs {
     background-color: $gray-5-selected-dark;

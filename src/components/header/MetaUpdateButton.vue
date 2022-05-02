@@ -5,9 +5,9 @@
     :class="width >= screenSize.sm ? 'btn--update' : 'm-btn--update'"
     @click="updateMetadata"
   >
-    <icon-base class="iconbase" stroke="currentColor" icon-name="network">
-      <icon-network />
-    </icon-base>
+    <astar-icon-base class="iconbase" stroke="currentColor" icon-name="network">
+      <astar-icon-network />
+    </astar-icon-base>
     <template v-if="width >= screenSize.sm">
       {{ $t('common.updateMetadata') }}
     </template>
@@ -18,14 +18,8 @@
 import { defineComponent, computed, ref } from 'vue';
 import { useStore } from 'src/store';
 import { useBreakpoints } from 'src/hooks';
-import IconBase from 'components/icons/IconBase.vue';
-import IconNetwork from 'components/icons/IconNetwork.vue';
 
 export default defineComponent({
-  components: {
-    IconBase,
-    IconNetwork,
-  },
   emits: ['updated-meta'],
   setup(props, { emit }) {
     const store = useStore();

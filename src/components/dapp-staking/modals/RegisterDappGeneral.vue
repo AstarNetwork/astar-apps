@@ -12,7 +12,7 @@
 
       <input-file :file="imageFromFile" :extension="fileExtensions" @dropFile="onDropFile">
         <Avatar v-if="!!data.iconFile" :url="data.iconFile" class="tw-mx-auto tw-w-20 tw-h-20" />
-        <icon-base
+        <astar-icon-base
           v-else
           class="tw-h-20 tw-w-20 tw-mx-auto dark:tw-text-darkGray-100"
           viewBox="0 0 20 20"
@@ -20,8 +20,8 @@
           stroke="currentColor"
           aria-hidden="true"
         >
-          <icon-document />
-        </icon-base>
+          <astar-icon-document />
+        </astar-icon-base>
       </input-file>
     </div>
 
@@ -55,8 +55,6 @@
 import { isEthereumAddress } from '@polkadot/util-crypto';
 import Avatar from 'components/common/Avatar.vue';
 import { isUrlValid } from 'components/common/Validators';
-import IconBase from 'components/icons/IconBase.vue';
-import IconDocument from 'components/icons/IconDocument.vue';
 import InputFile from 'src/components/dapp-staking/modals/InputFile.vue';
 import { FileState, useFile } from 'src/hooks/useFile';
 import { NewDappItem } from 'src/store/dapp-staking/state';
@@ -66,8 +64,6 @@ export default defineComponent({
   components: {
     InputFile,
     Avatar,
-    IconBase,
-    IconDocument,
   },
   props: {
     value: {

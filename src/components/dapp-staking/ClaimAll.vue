@@ -7,6 +7,7 @@
       </IconTooltip>
     </div>
     <div class="widget-content">
+      <span v-if="!isCompounding">&nbsp;</span>
       <Button
         v-if="!isCompounding"
         :small="true"

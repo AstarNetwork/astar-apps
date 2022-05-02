@@ -7,17 +7,17 @@
       </div>
 
       <div class="tw-transform tw-text-gray-400 dark:tw-text-darkGray-500">
-        <spinner />
+        <SpinnerV2 />
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
-import Spinner from 'components/common/Spinner.vue';
+import SpinnerV2 from 'components/common/SpinnerV2.vue';
 export default defineComponent({
   components: {
-    Spinner,
+    SpinnerV2,
   },
 });
 </script>

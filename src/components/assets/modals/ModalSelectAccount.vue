@@ -9,9 +9,9 @@
               width="24"
               src="~assets/img/ethereum.png"
             />
-            <icon-base v-else width="24" viewBox="0 0 64 64">
-              <icon-account-sample />
-            </icon-base>
+            <astar-icon-base v-else width="24" viewBox="0 0 64 64">
+              <astar-icon-account-sample />
+            </astar-icon-base>
           </div>
           <div v-else class="placeholder--icon" />
         </div>
@@ -28,14 +28,14 @@
       </div>
 
       <div v-if="!isEthWallet">
-        <icon-base
+        <astar-icon-base
           class="icon--selector"
           icon-name="selector"
           viewBox="0 0 20 20"
           aria-hidden="true"
         >
-          <icon-solid-selector />
-        </icon-base>
+          <astar-icon-solid-selector />
+        </astar-icon-base>
       </div>
     </div>
     <div v-if="openOption" class="box--account-option">
@@ -55,9 +55,6 @@
   </div>
 </template>
 <script lang="ts">
-import IconAccountSample from 'components/icons/IconAccountSample.vue';
-import IconBase from 'components/icons/IconBase.vue';
-import IconSolidSelector from 'components/icons/IconSolidSelector.vue';
 import { isValidEvmAddress } from 'src/config/web3';
 import { getSelectedAccount } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
@@ -68,9 +65,6 @@ import ModalSelectAccountOption from './ModalSelectAccountOption.vue';
 export default defineComponent({
   components: {
     ModalSelectAccountOption,
-    IconBase,
-    IconAccountSample,
-    IconSolidSelector,
   },
   props: {
     toAddress: {
