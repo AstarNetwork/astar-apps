@@ -19,10 +19,12 @@ interface InjectedAccountExt {
   };
 }
 
-const loadAccounts = async (api: ApiPromise) => {
-  // wait for the WASM crypto libraries to load first
-  await cryptoWaitReady();
+const RES_INVALID_CONNECTION = 'invalid connection';
+const RES_CONNECTED_API = 'connected';
+const RES_TIMEOUT = 'timeout';
 
+const loadAccounts = async (api: ApiPromise): Promise<void> => {
+  await cryptoWaitReady();
   const [systemChain, injectedAccounts] = await Promise.all([
     api.rpc.system.chain() as any,
     web3Accounts().then((accounts): InjectedAccountExt[] =>
@@ -74,10 +76,6 @@ const fallbackConnection = async ({
 
   for await (let it of filteredEndpoints) {
     try {
-      const resInvalidConnection = 'invalid connection';
-      const resConnectedApi = 'connected API';
-      const resTimeout = 'timeout';
-
       const apiConnect = new Promise<string>((resolve) => {
         const provider = new WsProvider(it.endpoint);
         const api = new ApiPromise(options({ provider }));
@@ -91,23 +89,23 @@ const fallbackConnection = async ({
                 [networkIdx]: it.endpoint,
               })
             );
-            resolve(resConnectedApi);
+            resolve(RES_CONNECTED_API);
           } else {
-            resolve(resInvalidConnection);
+            resolve(RES_INVALID_CONNECTION);
           }
         });
       });
 
-      const fallbackTimeout = new Promise((resolve) => {
+      const fallbackTimeout = new Promise<string>((resolve) => {
         const timeout = 8 * 1000;
         setTimeout(() => {
-          resolve(resTimeout);
+          resolve(RES_TIMEOUT);
         }, timeout);
       });
 
-      const race = Promise.race([apiConnect, fallbackTimeout]);
-      race.then((res) => {
-        if (res === resConnectedApi) {
+      const race = Promise.race<string>([apiConnect, fallbackTimeout]);
+      race.then((res: string) => {
+        if (res === RES_CONNECTED_API) {
           return window.location.reload();
         } else {
           return;
@@ -120,7 +118,14 @@ const fallbackConnection = async ({
   }
 };
 
-export async function connectApi(endpoint: string, networkIdx: number, store: any) {
+export async function connectApi(
+  endpoint: string,
+  networkIdx: number,
+  store: any
+): Promise<{
+  api: ApiPromise;
+  extensions: InjectedExtension[];
+}> {
   const provider = new WsProvider(endpoint);
   const api = new ApiPromise(options({ provider }));
 
@@ -128,23 +133,22 @@ export async function connectApi(endpoint: string, networkIdx: number, store: an
   api.on('error', (error: Error) => console.error(error.message));
 
   try {
-    const apiConnect = new Promise((resolve) => {
+    const apiConnect = new Promise<string>((resolve) => {
       api.isReadyOrError.then(() => {
-        resolve('Connected API');
+        resolve(RES_CONNECTED_API);
       });
     });
 
-    const resTimeout = 'timeout';
-    const fallbackTimeout = new Promise((resolve) => {
+    const fallbackTimeout = new Promise<string>((resolve) => {
       const timeout = 8 * 1000;
       setTimeout(() => {
-        resolve(resTimeout);
+        resolve(RES_TIMEOUT);
       }, timeout);
     });
 
-    const race = Promise.race([apiConnect, fallbackTimeout]);
-    race.then((res) => {
-      if (res === resTimeout) {
+    const race = Promise.race<string>([apiConnect, fallbackTimeout]);
+    race.then((res: string) => {
+      if (res === RES_TIMEOUT) {
         fallbackConnection({ networkIdx, endpoint });
       }
     });
@@ -154,9 +158,8 @@ export async function connectApi(endpoint: string, networkIdx: number, store: an
   }
 
   const injectedPromise = await getInjectedExtensions();
-
-  // load the web3 extension
   let extensions: InjectedExtension[] = [];
+
   try {
     extensions = await injectedPromise;
   } catch (e) {
