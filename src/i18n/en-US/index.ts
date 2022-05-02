@@ -108,6 +108,8 @@ export default {
       'Dapps staking is in maintenance mode. All actions are temporary disabled, but you can still browse dapps.',
     turnOn: 'Turn on',
     turnOff: 'Turn off',
+    on: 'ON',
+    off: 'OFF',
     modals: {
       alreadyClaimed: 'Already claimed:',
       contractRewards: 'Contract rewards:',

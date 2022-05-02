@@ -7,10 +7,12 @@
       </IconTooltip>
     </div>
     <div class="widget-content">
-      <span class="text--title">{{ isCompounding ? 'ON' : 'OFF' }}</span>
-      <Button :small="true" :primary="true" class="button" @click="changeDestination">
-        {{ isCompounding ? $t('dappStaking.turnOff') : $t('dappStaking.turnOn') }}
-      </Button>
+      <span class="text--title">
+        {{ isCompounding ? $t('dappStaking.on') : $t('dappStaking.off') }}
+      </span>
+      <Button :small="true" :primary="true" class="button" @click="changeDestination">{{
+        isCompounding ? $t('dappStaking.turnOff') : $t('dappStaking.turnOn')
+      }}</Button>
     </div>
   </div>
 </template>
