@@ -1,4 +1,5 @@
 import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { checkSumEvmAddress } from 'src/config/web3/utils/convert';
 import { getSs58FromEvmPublicKey } from '../custom-signature/utils';
 
 interface EvmMappedAddress {
@@ -18,7 +19,9 @@ const storedEvmAddressMapping = (): EvmMappedAddress[] | [] => {
 
 export const getEvmMappedSs58Address = (evmAddress: string): string => {
   const addressMap = storedEvmAddressMapping();
-  const address = addressMap.find((it: EvmMappedAddress) => it.evm === evmAddress);
+  const address = addressMap.find((it: EvmMappedAddress) => {
+    return checkSumEvmAddress(it.evm) === checkSumEvmAddress(evmAddress);
+  });
   return address ? address.ss58 : '';
 };
 
