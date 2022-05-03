@@ -1,6 +1,6 @@
 <template>
-  <ModalDrawer
-    :is-show="isOpen && !isSelected"
+  <astar-modal-drawer
+    :show="isOpen && !isSelected"
     title="Wallet"
     :is-closing="isClosing"
     @close="closeModal"
@@ -35,11 +35,8 @@
                   selAccount === account.address ? 'class-radio-on' : 'class-radio-off',
                 ]"
               >
-                <input
-                  name="choose_account"
-                  type="radio"
+                <astar-radio-btn
                   :checked="selAccount === account.address"
-                  class="ip--account"
                   @change="selAccount = account.address"
                 />
                 <div class="wrapper--account-detail">
@@ -78,7 +75,7 @@
         </button>
       </div>
     </div>
-  </ModalDrawer>
+  </astar-modal-drawer>
 </template>
 <script lang="ts">
 import copy from 'copy-to-clipboard';
@@ -89,12 +86,10 @@ import { castMobileSource, checkIsEthereumWallet } from 'src/hooks/helper/wallet
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
 import { computed, defineComponent, PropType, ref } from 'vue';
-import ModalDrawer from './ModalDrawer.vue';
 
 export default defineComponent({
   components: {
     SelectWallet,
-    ModalDrawer,
   },
   props: {
     isOpen: {
@@ -276,23 +271,6 @@ export default defineComponent({
   border: 2px solid $astar-blue-dark;
 }
 
-.ip--account[type='radio'] {
-  width: rem(16);
-  height: rem(16);
-  border-radius: 50%;
-  box-shadow: 0 0 0 1px $gray-3;
-  -webkit-appearance: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  margin-right: rem(12);
-  &:checked {
-    border: 3px solid white;
-    background-color: $astar-blue;
-    box-shadow: 0 0 0 2px $astar-blue;
-  }
-}
-
 .wrapper--account-detail {
   width: 225px;
   text-align: left;
@@ -391,15 +369,6 @@ export default defineComponent({
 
   .class-radio-on {
     background: $gray-5-selected-dark;
-  }
-
-  .ip--account[type='radio'] {
-    box-shadow: 0 0 0 1px white;
-
-    &:checked {
-      box-shadow: 0 0 0 2px $astar-blue;
-      border: 3px solid $gray-5;
-    }
   }
 
   .wrapper--account-detail {
