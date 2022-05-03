@@ -32,8 +32,7 @@ interface AccountLedger extends Struct {
 
 export function useCompoundRewards() {
   const store = useStore();
-  const { dispatchError, isCustomSig, handleTransactionError, handleCustomExtrinsic } =
-    useCustomSignature({});
+  const { isCustomSig, handleCustomExtrinsic } = useCustomSignature({});
   const currentAddress = computed(() => store.getters['general/selectedAddress']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
 
@@ -107,10 +106,8 @@ export function useCompoundRewards() {
         substrateAccounts: substrateAccounts.value,
         isCustomSignature: isCustomSig.value,
         txResHandler,
-        dispatchError,
         handleCustomExtrinsic,
-      }).catch((error: Error) => {
-        handleTransactionError(error);
+        dispatch: store.dispatch,
       });
     } catch (e: any) {
       console.error(e);

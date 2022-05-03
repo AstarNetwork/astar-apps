@@ -135,12 +135,11 @@ export default defineComponent({
     const { decimal } = useChainMetadata();
     const { canUnbondWithdraw } = useUnbondWithdraw($api);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
-    const { dispatchError, isCustomSig, customMsg, handleCustomExtrinsic, handleTransactionError } =
-      useCustomSignature({
-        fn: () => {
-          store.commit('dapps/setUnlockingChunks', -1);
-        },
-      });
+    const { isCustomSig, customMsg, handleCustomExtrinsic } = useCustomSignature({
+      fn: () => {
+        store.commit('dapps/setUnlockingChunks', -1);
+      },
+    });
 
     const currentAddress = computed(() => store.getters['general/selectedAddress']);
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
@@ -231,11 +230,9 @@ export default defineComponent({
           substrateAccounts: substrateAccounts.value,
           isCustomSignature: isCustomSig.value,
           txResHandler,
-          dispatchError,
           handleCustomExtrinsic,
           finalizeCallback: emitStakeChanged,
-        }).catch((error: Error) => {
-          handleTransactionError(error);
+          dispatch: store.dispatch,
         });
       } catch (error) {
         console.error(error);
@@ -284,11 +281,9 @@ export default defineComponent({
           substrateAccounts: substrateAccounts.value,
           isCustomSignature: isCustomSig.value,
           txResHandler,
-          dispatchError,
           handleCustomExtrinsic,
           finalizeCallback: emitStakeChanged,
-        }).catch((error: Error) => {
-          handleTransactionError(error);
+          dispatch: store.dispatch,
         });
       } catch (error) {
         console.error(error);

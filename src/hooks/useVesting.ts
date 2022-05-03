@@ -14,13 +14,9 @@ export function useVesting(closeModal: () => void) {
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const { accountData } = useBalance(selectedAddress);
 
-  const {
-    dispatchError,
-    isCustomSig,
-    handleResult,
-    handleTransactionError,
-    handleCustomExtrinsic,
-  } = useCustomSignature({ fn: closeModal });
+  const { isCustomSig, handleResult, handleCustomExtrinsic } = useCustomSignature({
+    fn: closeModal,
+  });
 
   const info = computed(() => {
     const defaultData = {
@@ -81,10 +77,8 @@ export function useVesting(closeModal: () => void) {
         substrateAccounts: substrateAccounts.value,
         isCustomSignature: isCustomSig.value,
         txResHandler,
-        dispatchError,
         handleCustomExtrinsic,
-      }).catch((error: Error) => {
-        handleTransactionError(error);
+        dispatch: store.dispatch,
       });
     } catch (e) {
       console.error(e);

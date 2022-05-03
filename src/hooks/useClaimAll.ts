@@ -19,13 +19,9 @@ export function useClaimAll() {
   const isSendingTx = computed(() => store.getters['general/isLoading']);
 
   const { era } = useCurrentEra();
-  const {
-    handleResult,
-    handleTransactionError,
-    dispatchError,
-    handleCustomExtrinsic,
-    isCustomSig,
-  } = useCustomSignature({ txType: TxType.dappsStaking });
+  const { handleResult, handleCustomExtrinsic, isCustomSig } = useCustomSignature({
+    txType: TxType.dappsStaking,
+  });
 
   watchEffect(async () => {
     try {
@@ -83,10 +79,8 @@ export function useClaimAll() {
       substrateAccounts: substrateAccounts.value,
       isCustomSignature: isCustomSig.value,
       txResHandler,
-      dispatchError,
       handleCustomExtrinsic,
-    }).catch((error: Error) => {
-      handleTransactionError(error);
+      dispatch: store.dispatch,
     });
   };
 

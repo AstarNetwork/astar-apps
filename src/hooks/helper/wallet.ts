@@ -137,30 +137,26 @@ export const checkIsMobileMathWallet = async (): Promise<boolean> => {
 
 type Transaction = SubmittableExtrinsic<'promise', ISubmittableResult>;
 
-// Memo:
-// dispatchError, handleCustomExtrinsic: useCustomSignature.ts
-// dispatch: vuex action
 export const signAndSend = async ({
   transaction,
   senderAddress,
   substrateAccounts,
   isCustomSignature = false,
+  dispatch,
   txResHandler,
-  dispatchError,
   handleCustomExtrinsic,
   finalizeCallback,
-  dispatch,
   tip = 1,
 }: {
   transaction: Transaction;
   senderAddress: string;
   substrateAccounts: SubstrateAccount[];
   isCustomSignature: boolean;
+  dispatch: Dispatch;
   txResHandler: (result: ISubmittableResult) => void;
-  dispatchError?: (msg: string) => void;
+  // from: useCustomSignature.ts
   handleCustomExtrinsic?: (method: Transaction) => Promise<void>;
   finalizeCallback?: () => void;
-  dispatch?: Dispatch;
   tip?: number;
 }): Promise<void> => {
   const sendSubstrateTransaction = async (): Promise<void> => {
@@ -191,9 +187,6 @@ export const signAndSend = async ({
     }
   } catch (error: any) {
     console.error(error.message);
-    // Memo: dispatch error toast from useCustomSignature
-    dispatchError && dispatchError(error.message);
-    // Memo: dispatch error toast from vuex action
-    dispatch && showError(dispatch, error.message);
+    showError(dispatch, error.message);
   }
 };

@@ -26,8 +26,7 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
   const isTxSuccess = ref(false);
 
-  const { handleResult, handleTransactionError, dispatchError, handleCustomExtrinsic } =
-    useCustomSignature({ fn });
+  const { handleResult, handleCustomExtrinsic } = useCustomSignature({ fn });
   const toastInvalidAddress = () =>
     store.dispatch('general/showAlertMsg', {
       msg: 'assets.invalidAddress',
@@ -55,11 +54,8 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
         substrateAccounts: substrateAccounts.value,
         isCustomSignature: isEthWallet.value,
         txResHandler,
-        dispatchError,
         handleCustomExtrinsic,
-      }).catch((error: Error) => {
-        handleTransactionError(error);
-        isTxSuccess.value = false;
+        dispatch: store.dispatch,
       });
       isTxSuccess.value = true;
     } catch (e) {

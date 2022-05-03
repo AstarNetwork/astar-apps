@@ -61,17 +61,8 @@ export function useCustomSignature({ fn, txType }: { fn?: () => void; txType?: T
     await callFunc(method);
   };
 
-  const dispatchError = (msg: string) => {
-    console.error(msg);
-    store.dispatch('general/showAlertMsg', {
-      msg,
-      alertType: 'error',
-    });
-  };
-
   return {
     callFunc,
-    dispatchError,
     isCustomSig,
     handleResult,
     handleTransactionError,

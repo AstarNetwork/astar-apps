@@ -19,13 +19,7 @@ export function useEvmDeposit(fn?: () => void) {
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
-  const {
-    dispatchError,
-    isCustomSig,
-    handleResult,
-    handleTransactionError,
-    handleCustomExtrinsic,
-  } = useCustomSignature(fn ? { fn } : {});
+  const { isCustomSig, handleResult, handleCustomExtrinsic } = useCustomSignature(fn ? { fn } : {});
 
   const withdraw = async ({ amount, account }: { amount: BN; account: string }) => {
     try {
@@ -50,10 +44,8 @@ export function useEvmDeposit(fn?: () => void) {
         substrateAccounts: substrateAccounts.value,
         isCustomSignature: isCustomSig.value,
         txResHandler,
-        dispatchError,
         handleCustomExtrinsic,
-      }).catch((error: Error) => {
-        handleTransactionError(error);
+        dispatch: store.dispatch,
       });
     } catch (e) {
       console.error(e);

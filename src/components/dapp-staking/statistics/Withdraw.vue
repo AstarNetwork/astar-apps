@@ -89,12 +89,11 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
-    const { dispatchError, isCustomSig, handleCustomExtrinsic, handleTransactionError } =
-      useCustomSignature({
-        fn: () => {
-          store.commit('dapps/setUnlockingChunks', -1);
-        },
-      });
+    const { isCustomSig, handleCustomExtrinsic } = useCustomSignature({
+      fn: () => {
+        store.commit('dapps/setUnlockingChunks', -1);
+      },
+    });
     const selectedAccountAddress = computed(() => store.getters['general/selectedAddress']);
     const unlockingChunksCount = computed(() => store.getters['dapps/getUnlockingChunks']);
     const maxUnlockingChunks = computed(() => store.getters['dapps/getMaxUnlockingChunks']);
@@ -135,9 +134,9 @@ export default defineComponent({
           substrateAccounts: substrateAccounts.value,
           isCustomSignature: isCustomSig.value,
           txResHandler,
-          dispatchError,
           handleCustomExtrinsic,
-        }).catch((error: Error) => handleTransactionError(error));
+          dispatch: store.dispatch,
+        });
       } catch (error) {
         console.error(error);
       }
