@@ -1,7 +1,6 @@
 import { hasExtrinsicFailedEvent } from './../../store/dapp-staking/actions';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { calculateClaimedStaker } from '../helper/claim';
-import { useCompoundRewards } from 'src/hooks/dapps-staking/useCompoundRewards';
 import { Dispatch } from 'vuex';
 
 export enum TxType {
@@ -43,13 +42,7 @@ const dispatchClaimMessage = ({
         events: result.events,
         senderAddress,
       });
-      const { isCompounding } = useCompoundRewards();
-      let msg = `Successfully claimed ${totalClaimedStaker}`;
-
-      if (isCompounding.value) {
-        let msg = `Successfully re-staked ${totalClaimedStaker}`;
-      }
-
+      const msg = `Successfully claimed ${totalClaimedStaker}`;
       dispatch(
         'general/showAlertMsg',
         {
