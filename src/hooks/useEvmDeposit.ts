@@ -1,13 +1,13 @@
+import { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
+import { $api } from 'boot/api';
+import { ethers } from 'ethers';
+import { buildEvmAddress } from 'src/config/web3';
 import { useStore } from 'src/store';
 import { computed, ref, watch } from 'vue';
+import { signAndSend } from './helper/wallet';
 import { useAccount } from './index';
-import { $api } from 'boot/api';
-import { buildEvmAddress } from 'src/config/web3';
-import { ethers } from 'ethers';
-import type { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
 import { useCustomSignature } from './useCustomSignature';
-import { getInjector } from './helper/wallet';
 
 export function useEvmDeposit(fn?: () => void) {
   const evmDeposit = ref<BN>(new BN(0));
@@ -19,19 +19,13 @@ export function useEvmDeposit(fn?: () => void) {
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
-  const { callFunc, dispatchError, isCustomSig, handleResult, handleTransactionError } =
-    useCustomSignature(fn ? { fn } : {});
-
-  const withdrawCustomExtrinsic = async ({ amount, account }: { amount: BN; account: string }) => {
-    try {
-      const h160Addr = buildEvmAddress(account);
-      const fn: SubmittableExtrinsicFunction<'promise'> | undefined = $api?.value?.tx.evm.withdraw;
-      const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn(h160Addr, amount);
-      method && callFunc(method);
-    } catch (e) {
-      dispatchError((e as Error).message);
-    }
-  };
+  const {
+    dispatchError,
+    isCustomSig,
+    handleResult,
+    handleTransactionError,
+    handleCustomExtrinsic,
+  } = useCustomSignature(fn ? { fn } : {});
 
   const withdraw = async ({ amount, account }: { amount: BN; account: string }) => {
     try {
@@ -39,24 +33,28 @@ export function useEvmDeposit(fn?: () => void) {
       if (!apiRef) {
         throw Error('Cannot connect to the API');
       }
-      const injector = await getInjector(substrateAccounts.value);
-      if (!injector) {
-        throw Error('Cannot reach to the injector');
-      }
+
       const h160Addr = buildEvmAddress(account);
       const transaction = await apiRef.tx.evm.withdraw(h160Addr, amount);
       if (!transaction) {
         throw Error('Cannot withdraw the deposit');
       }
-      transaction
-        .signAndSend(
-          account,
-          {
-            signer: injector.signer,
-          },
-          (result) => handleResult(result)
-        )
-        .catch((error: Error) => handleTransactionError(error));
+
+      const txResHandler = (result: ISubmittableResult) => {
+        handleResult(result);
+      };
+
+      await signAndSend({
+        transaction,
+        senderAddress: account,
+        substrateAccounts: substrateAccounts.value,
+        isCustomSignature: isCustomSig.value,
+        txResHandler,
+        dispatchError,
+        handleCustomExtrinsic,
+      }).catch((error: Error) => {
+        handleTransactionError(error);
+      });
     } catch (e) {
       console.error(e);
     }
@@ -70,11 +68,7 @@ export function useEvmDeposit(fn?: () => void) {
       });
       return;
     }
-    if (isCustomSig.value) {
-      await withdrawCustomExtrinsic({ amount: evmDeposit.value, account: currentAccount.value });
-    } else {
-      await withdraw({ amount: evmDeposit.value, account: currentAccount.value });
-    }
+    await withdraw({ amount: evmDeposit.value, account: currentAccount.value });
   };
 
   watch(

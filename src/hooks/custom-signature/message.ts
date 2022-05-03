@@ -1,7 +1,7 @@
-import { hasExtrinsicFailedEvent } from './../../store/dapp-staking/actions';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { calculateClaimedStaker } from '../helper/claim';
 import { Dispatch } from 'vuex';
+import { hasExtrinsicFailedEvent } from 'src/modules/extrinsic';
 
 export enum TxType {
   dappsStaking = 'dappsStaking',

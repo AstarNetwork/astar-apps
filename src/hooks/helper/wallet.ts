@@ -1,3 +1,5 @@
+import { ISubmittableResult } from '@polkadot/types/types';
+import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { EthereumProvider } from './../types/CustomSignature';
 import { supportEvmWalletObj, SupportWallet } from 'src/config/wallets';
 import { web3Enable } from '@polkadot/extension-dapp';
@@ -128,5 +130,59 @@ export const checkIsMobileMathWallet = async (): Promise<boolean> => {
     }
   } catch (error) {
     return false;
+  }
+};
+
+type Transaction = SubmittableExtrinsic<'promise', ISubmittableResult>;
+
+export const signAndSend = async ({
+  transaction,
+  senderAddress,
+  substrateAccounts,
+  isCustomSignature = false,
+  tip = 1,
+  txResHandler,
+  dispatchError,
+  handleCustomExtrinsic,
+  finalizeCallback,
+}: {
+  transaction: Transaction;
+  senderAddress: string;
+  substrateAccounts: SubstrateAccount[];
+  isCustomSignature: boolean;
+  tip?: number;
+  txResHandler?: (result: ISubmittableResult) => void;
+  dispatchError?: (msg: string) => void;
+  handleCustomExtrinsic?: (method: Transaction) => Promise<void>;
+  finalizeCallback?: () => void;
+}) => {
+  const sendSubstrateTransaction = async (): Promise<void> => {
+    const injector = await getInjector(substrateAccounts);
+    if (!injector) {
+      throw Error('Invalid injector');
+    }
+    await transaction.signAndSend(
+      senderAddress,
+      {
+        signer: injector.signer,
+        nonce: -1,
+        tip,
+      },
+      (result) => {
+        txResHandler && txResHandler(result);
+        finalizeCallback && finalizeCallback();
+      }
+    );
+  };
+  try {
+    if (isCustomSignature && handleCustomExtrinsic) {
+      await handleCustomExtrinsic(transaction);
+      finalizeCallback && finalizeCallback();
+    } else {
+      await sendSubstrateTransaction();
+    }
+  } catch (error: any) {
+    console.error(error.message);
+    dispatchError && dispatchError(error.message);
   }
 };

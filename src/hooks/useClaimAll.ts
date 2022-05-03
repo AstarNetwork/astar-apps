@@ -1,11 +1,12 @@
+import { ISubmittableResult } from '@polkadot/types/types';
 import { $api, $isEnableIndividualClaim } from 'boot/api';
-import { getInjector } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
-import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
+import { hasExtrinsicFailedEvent } from 'src/modules/extrinsic';
 import { computed, ref, watchEffect } from 'vue';
 import { TxType } from './custom-signature/message';
 import { ExtrinsicPayload } from './helper';
 import { getIndividualClaimTxs } from './helper/claim';
+import { signAndSend } from './helper/wallet';
 import { useCurrentEra, useCustomSignature } from './index';
 
 export function useClaimAll() {
@@ -71,36 +72,22 @@ export function useClaimAll() {
 
     const transaction = api.tx.utility.batch(batchTxsRef);
 
-    const sendSubstrateTransaction = async () => {
-      const injector = await getInjector(substrateAccounts.value);
-      await transaction
-        .signAndSend(
-          senderAddress.value,
-          {
-            signer: injector?.signer,
-            // Memo: Removing it can cause subsequent transactions to fail
-            nonce: -1,
-          },
-          (result) => {
-            handleResult(result);
-            hasExtrinsicFailedEvent(result.events, store.dispatch);
-          }
-        )
-        .catch((error: Error) => {
-          handleTransactionError(error);
-        });
+    const txResHandler = (result: ISubmittableResult) => {
+      handleResult(result);
+      hasExtrinsicFailedEvent(result.events, store.dispatch);
     };
 
-    try {
-      if (isCustomSig.value) {
-        await handleCustomExtrinsic(transaction);
-      } else {
-        await sendSubstrateTransaction();
-      }
-    } catch (error: any) {
-      console.error(error.message);
-      dispatchError(error.message);
-    }
+    await signAndSend({
+      transaction,
+      senderAddress: senderAddress.value,
+      substrateAccounts: substrateAccounts.value,
+      isCustomSignature: isCustomSig.value,
+      txResHandler,
+      dispatchError,
+      handleCustomExtrinsic,
+    }).catch((error: Error) => {
+      handleTransactionError(error);
+    });
   };
 
   return {

@@ -1,51 +1,23 @@
 import { ApiPromise } from '@polkadot/api';
-import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { bool, BTreeMap, Option, Struct, u32 } from '@polkadot/types';
-import {
-  AccountId,
-  Balance,
-  DispatchError,
-  EraIndex,
-  EventRecord,
-} from '@polkadot/types/interfaces';
-import { ISubmittableResult, ITuple } from '@polkadot/types/types';
-import { formatBalance } from '@polkadot/util';
+import { AccountId, Balance, EraIndex } from '@polkadot/types/interfaces';
+import { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 import { $api } from 'boot/api';
-import { endpointKey } from 'src/config/chainEndpoints';
 import { addDapp, getDapps, uploadFile } from 'src/hooks/firebase';
 import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
-import { ActionTree, Dispatch } from 'vuex';
+import { hasExtrinsicFailedEvent, showError } from 'src/modules/extrinsic';
+import { ActionTree } from 'vuex';
 import { StateInterface } from '../index';
 import { GeneralStakerInfo } from './../../hooks/helper/claim';
-import { getInjector } from './../../hooks/helper/wallet';
+import { signAndSend } from './../../hooks/helper/wallet';
 import { SubstrateAccount } from './../general/state';
 import { getIndividualClaimStakingInfo } from './calculation';
 import { DappItem, DappStateInterface as State, NewDappItem } from './state';
 
 let collectionKey: string;
 
-const showError = (dispatch: Dispatch, message: string): void => {
-  dispatch(
-    'general/showAlertMsg',
-    {
-      msg: message,
-      alertType: 'error',
-    },
-    { root: true }
-  );
-};
-
-// TODO refactor, detect address type, etc.....
 export const getAddressEnum = (address: string) => ({ Evm: address });
-
-const getFormattedBalance = (parameters: StakingParameters): string => {
-  return formatBalance(parameters.amount, {
-    withSi: true,
-    decimals: parameters.decimals,
-    withUnit: parameters.unit,
-  });
-};
 
 const getCollectionKey = async (): Promise<string> => {
   if (!collectionKey) {
@@ -55,58 +27,6 @@ const getCollectionKey = async (): Promise<string> => {
   }
 
   return collectionKey;
-};
-
-export const hasExtrinsicFailedEvent = (
-  events: EventRecord[],
-  dispatch: Dispatch,
-  setMessage?: Function
-): boolean => {
-  let result = false;
-  events
-    .filter((record): boolean => !!record.event && record.event.section !== 'democracy')
-    .map(({ event: { data, method, section } }) => {
-      console.log('event', method, section, data);
-      if (section === 'utility' && method === 'BatchInterrupted') {
-        console.log(data.toHuman());
-      }
-
-      if (section === 'system' && method === 'ExtrinsicFailed') {
-        const [dispatchError] = data as unknown as ITuple<[DispatchError]>;
-        let message = dispatchError.type;
-
-        if (dispatchError.isModule) {
-          try {
-            const mod = dispatchError.asModule;
-            const error = dispatchError.registry.findMetaError(mod);
-
-            message = `${error.section}.${error.name}`;
-          } catch (error) {
-            // swallow
-            console.error(error);
-          }
-        } else if (dispatchError.isToken) {
-          message = `${dispatchError.type}.${dispatchError.asToken.type}`;
-        }
-
-        if (setMessage) {
-          setMessage(message);
-        }
-
-        showError(dispatch, `action: ${section}.${method} ${message}`);
-        result = true;
-      } else if (section === 'utility' && method === 'BatchInterrupted') {
-        // TODO there should be a better way to extract error,
-        // for some reason cast data as unknown as ITuple<[DispatchError]>; doesn't work
-        const anyData = data as any;
-        const error = anyData[1].registry.findMetaError(anyData[1].asModule);
-        let message = `${error.section}.${error.name}`;
-        showError(dispatch, `action: ${section}.${method} ${message}`);
-        result = true;
-      }
-    });
-
-  return result;
 };
 
 const getEraStakes = async (
@@ -241,74 +161,74 @@ const actions: ActionTree<State, StateInterface> = {
   ): Promise<boolean> {
     try {
       if (parameters.api) {
-        const injector = await getInjector(parameters.substrateAccounts);
-        const unsub = await parameters.api.tx.dappsStaking
-          .register(getAddressEnum(parameters.dapp.address))
-          .signAndSend(
-            parameters.senderAddress,
-            {
-              signer: injector?.signer,
-              nonce: -1,
-            },
-            async (result) => {
-              if (result.status.isFinalized) {
-                if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
-                  try {
-                    const collectionKey = await getCollectionKey();
-                    if (parameters.dapp.iconFileName) {
-                      const fileName = `${parameters.dapp.address}_${parameters.dapp.iconFileName}`;
-                      parameters.dapp.iconUrl = await uploadFile(
-                        fileName,
-                        collectionKey,
-                        parameters.dapp.iconFile
-                      );
-                    } else {
-                      parameters.dapp.iconUrl = '/images/noimage.png';
-                    }
-
-                    if (!parameters.dapp.url) {
-                      parameters.dapp.url = '';
-                    }
-
-                    parameters.dapp.imagesUrl = [];
-                    for (let i = 0; i < parameters.dapp.imagesContent.length; i++) {
-                      const dappImage = parameters.dapp.imagesContent[i];
-                      const dappImageUrl = await uploadFile(
-                        `${parameters.dapp.address}_${i}_${parameters.dapp.images[i].name}`,
-                        collectionKey,
-                        dappImage
-                      );
-                      parameters.dapp.imagesUrl.push(dappImageUrl);
-                    }
-
-                    const addedDapp = await addDapp(collectionKey, parameters.dapp);
-                    commit('addDapp', addedDapp);
-
-                    dispatch(
-                      'general/showAlertMsg',
-                      {
-                        msg: `You successfully registered dApp ${parameters.dapp.name} to the store.`,
-                        alertType: 'success',
-                      },
-                      { root: true }
-                    );
-                  } catch (e) {
-                    const error = e as unknown as Error;
-                    console.log(error);
-                    showError(dispatch, error.message);
-                    alert(
-                      `An unexpected error occured during dApp registration. Please screenshot this message and send to the Astar team. ${error.message}`
-                    );
-                  }
+        const txResHandler = async (result: ISubmittableResult) => {
+          if (result.status.isFinalized) {
+            if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
+              try {
+                const collectionKey = await getCollectionKey();
+                if (parameters.dapp.iconFileName) {
+                  const fileName = `${parameters.dapp.address}_${parameters.dapp.iconFileName}`;
+                  parameters.dapp.iconUrl = await uploadFile(
+                    fileName,
+                    collectionKey,
+                    parameters.dapp.iconFile
+                  );
+                } else {
+                  parameters.dapp.iconUrl = '/images/noimage.png';
                 }
 
-                commit('general/setLoading', false, { root: true });
-                unsub();
-              } else {
-                commit('general/setLoading', true, { root: true });
+                if (!parameters.dapp.url) {
+                  parameters.dapp.url = '';
+                }
+
+                parameters.dapp.imagesUrl = [];
+                for (let i = 0; i < parameters.dapp.imagesContent.length; i++) {
+                  const dappImage = parameters.dapp.imagesContent[i];
+                  const dappImageUrl = await uploadFile(
+                    `${parameters.dapp.address}_${i}_${parameters.dapp.images[i].name}`,
+                    collectionKey,
+                    dappImage
+                  );
+                  parameters.dapp.imagesUrl.push(dappImageUrl);
+                }
+
+                const addedDapp = await addDapp(collectionKey, parameters.dapp);
+                commit('addDapp', addedDapp);
+
+                dispatch(
+                  'general/showAlertMsg',
+                  {
+                    msg: `You successfully registered dApp ${parameters.dapp.name} to the store.`,
+                    alertType: 'success',
+                  },
+                  { root: true }
+                );
+              } catch (e) {
+                const error = e as unknown as Error;
+                console.log(error);
+                showError(dispatch, error.message);
+                alert(
+                  `An unexpected error occured during dApp registration. Please screenshot this message and send to the Astar team. ${error.message}`
+                );
               }
             }
-          );
+
+            commit('general/setLoading', false, { root: true });
+          } else {
+            commit('general/setLoading', true, { root: true });
+          }
+        };
+
+        const transaction = parameters.api.tx.dappsStaking.register(
+          getAddressEnum(parameters.dapp.address)
+        );
+        await signAndSend({
+          transaction,
+          senderAddress: parameters.senderAddress,
+          substrateAccounts: parameters.substrateAccounts,
+          isCustomSignature: false,
+          txResHandler,
+        });
 
         return true;
       } else {
@@ -319,278 +239,6 @@ const actions: ActionTree<State, StateInterface> = {
     } catch (e) {
       const error = e as unknown as Error;
       console.log(error);
-      commit('general/setLoading', false, { root: true });
-      showError(dispatch, error.message);
-    }
-
-    return false;
-  },
-
-  async stake({ commit, dispatch }, parameters: StakingParameters): Promise<boolean> {
-    try {
-      if (parameters.api) {
-        const injector = await getInjector(parameters.substrateAccounts);
-        const unsub = await parameters.api.tx.dappsStaking
-          .bondAndStake(getAddressEnum(parameters.dapp.address), parameters.amount)
-          .signAndSend(
-            parameters.senderAddress,
-            {
-              signer: injector?.signer,
-              nonce: -1,
-            },
-            (result) => {
-              if (result.status.isFinalized) {
-                if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
-                  dispatch(
-                    'general/showAlertMsg',
-                    {
-                      msg: `You staked ${getFormattedBalance(parameters)} on ${
-                        parameters.dapp.name
-                      }.`,
-                      alertType: 'success',
-                    },
-                    { root: true }
-                  );
-
-                  parameters.finalizeCallback();
-                }
-
-                commit('general/setLoading', false, { root: true });
-                unsub();
-              } else {
-                commit('general/setLoading', true, { root: true });
-              }
-            }
-          );
-
-        return true;
-      } else {
-        showError(dispatch, 'Api is undefined');
-        return false;
-      }
-    } catch (e) {
-      const error = e as unknown as Error;
-      commit('general/setLoading', false, { root: true });
-      showError(dispatch, error.message);
-    }
-
-    return false;
-  },
-
-  async unstake({ commit, dispatch }, parameters: StakingParameters): Promise<boolean> {
-    try {
-      if (parameters.api) {
-        const injector = await getInjector(parameters.substrateAccounts);
-        const unsub = await parameters.api.tx.dappsStaking
-          .unbondUnstakeAndWithdraw(getAddressEnum(parameters.dapp.address), parameters.amount)
-          .signAndSend(
-            parameters.senderAddress,
-            {
-              signer: injector?.signer,
-              nonce: -1,
-            },
-            (result) => {
-              if (result.status.isFinalized) {
-                if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
-                  commit('setUnlockingChunks', -1);
-                  dispatch(
-                    'general/showAlertMsg',
-                    {
-                      msg: `You unstaked ${getFormattedBalance(parameters)} from ${
-                        parameters.dapp.name
-                      }.`,
-                      alertType: 'success',
-                    },
-                    { root: true }
-                  );
-
-                  parameters.finalizeCallback();
-                }
-
-                commit('general/setLoading', false, { root: true });
-                unsub();
-              } else {
-                commit('general/setLoading', true, { root: true });
-              }
-            }
-          );
-
-        return true;
-      } else {
-        showError(dispatch, 'Api is undefined');
-        return false;
-      }
-    } catch (e) {
-      const error = e as unknown as Error;
-      commit('general/setLoading', false, { root: true });
-      showError(dispatch, error.message);
-    }
-
-    return false;
-  },
-
-  async unbond({ commit, dispatch }, parameters: StakingParameters): Promise<boolean> {
-    try {
-      if (parameters.api) {
-        const injector = await getInjector(parameters.substrateAccounts);
-        const unsub = await parameters.api.tx.dappsStaking
-          .unbondAndUnstake(getAddressEnum(parameters.dapp.address), parameters.amount)
-          .signAndSend(
-            parameters.senderAddress,
-            {
-              signer: injector?.signer,
-              nonce: -1,
-            },
-            (result) => {
-              if (result.status.isFinalized) {
-                if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
-                  commit('setUnlockingChunks', -1);
-                  dispatch(
-                    'general/showAlertMsg',
-                    {
-                      msg: `You started unstaking of ${getFormattedBalance(parameters)} from ${
-                        parameters.dapp.name
-                      }.`,
-                      alertType: 'success',
-                    },
-                    { root: true }
-                  );
-
-                  parameters.finalizeCallback();
-                }
-
-                commit('general/setLoading', false, { root: true });
-                unsub();
-              } else {
-                commit('general/setLoading', true, { root: true });
-              }
-            }
-          );
-
-        return true;
-      } else {
-        showError(dispatch, 'Api is undefined');
-        return false;
-      }
-    } catch (e) {
-      const error = e as unknown as Error;
-      commit('general/setLoading', false, { root: true });
-      showError(dispatch, error.message);
-    }
-
-    return false;
-  },
-
-  async withdrawUnbonded({ commit, dispatch }, parameters: WithdrawParameters): Promise<boolean> {
-    try {
-      if (parameters.api) {
-        const injector = await getInjector(parameters.substrateAccounts);
-        const unsub = await parameters.api.tx.dappsStaking.withdrawUnbonded().signAndSend(
-          parameters.senderAddress,
-          {
-            signer: injector?.signer,
-            nonce: -1,
-          },
-          (result) => {
-            if (result.status.isFinalized) {
-              if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
-                commit('setUnlockingChunks', -1);
-                dispatch(
-                  'general/showAlertMsg',
-                  {
-                    msg: 'Balance is sucessfully withdrawed.',
-                    alertType: 'success',
-                  },
-                  { root: true }
-                );
-              }
-
-              commit('general/setLoading', false, { root: true });
-              unsub();
-            } else {
-              commit('general/setLoading', true, { root: true });
-            }
-          }
-        );
-
-        return true;
-      } else {
-        showError(dispatch, 'Api is undefined');
-        return false;
-      }
-    } catch (e) {
-      const error = e as unknown as Error;
-      commit('general/setLoading', false, { root: true });
-      showError(dispatch, error.message);
-    } finally {
-    }
-
-    return false;
-  },
-
-  async claimBatch({ commit, dispatch }, parameters: ClaimParameters): Promise<boolean> {
-    try {
-      if (parameters.api) {
-        //const erasToClaim = await getErasToClaim(parameters.api, parameters.dapp.address);
-        const erasToClaim = parameters.unclaimedEras;
-
-        if (erasToClaim.length === 0) {
-          dispatch(
-            'general/showAlertMsg',
-            {
-              msg: 'All rewards have been already claimed.',
-              alertType: 'warning',
-            },
-            { root: true }
-          );
-
-          return true;
-        }
-
-        const transactions: SubmittableExtrinsic<'promise', ISubmittableResult>[] = [];
-        for (let era of erasToClaim) {
-          transactions.push(
-            parameters.api.tx.dappsStaking.claim(getAddressEnum(parameters.dapp.address), era)
-          );
-        }
-
-        const injector = await getInjector(parameters.substrateAccounts);
-        const unsub = await parameters.api.tx.utility.batch(transactions).signAndSend(
-          parameters.senderAddress,
-          {
-            signer: injector?.signer,
-            nonce: -1,
-          },
-          (result) => {
-            if (result.isFinalized) {
-              if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
-                dispatch(
-                  'general/showAlertMsg',
-                  {
-                    msg: `You claimed from reward ${parameters.dapp.name} for ${erasToClaim.length} eras.`,
-                    alertType: 'success',
-                  },
-                  { root: true }
-                );
-
-                parameters.finalizeCallback();
-              }
-
-              commit('general/setLoading', false, { root: true });
-              unsub();
-            } else {
-              commit('general/setLoading', true, { root: true });
-            }
-          }
-        );
-
-        return true;
-      } else {
-        showError(dispatch, 'Api is undefined');
-        return false;
-      }
-    } catch (e) {
-      const error = e as unknown as Error;
       commit('general/setLoading', false, { root: true });
       showError(dispatch, error.message);
     }
