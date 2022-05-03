@@ -26,7 +26,7 @@
     <div v-if="openOption" class="container--option">
       <ul class="box--option">
         <ModalSelectTransferFrom
-          v-for="(item, index) in stakingList"
+          v-for="(item, index) in formattedStakingList"
           :key="index"
           :set-address-transfer-from="setAddressTransferFrom"
           :current-account="currentAccount"
@@ -40,7 +40,7 @@
 <script lang="ts">
 import ModalSelectTransferFrom from 'src/components/dapp-staking/modals/ModalSelectTransferFrom.vue';
 import { StakingData } from 'src/modules/dapp-staking';
-import { defineComponent, PropType, ref } from 'vue';
+import { defineComponent, PropType, ref, computed } from 'vue';
 
 export default defineComponent({
   components: {
@@ -64,9 +64,17 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    dappAddress: {
+      type: String,
+      required: true,
+    },
   },
   setup(props) {
     const openOption = ref<boolean>(false);
+
+    const formattedStakingList = computed(() => {
+      return props.stakingList.filter((it) => it.address !== props.dappAddress);
+    });
 
     const closeOption = () => {
       setTimeout(() => {
@@ -77,6 +85,7 @@ export default defineComponent({
     return {
       openOption,
       closeOption,
+      formattedStakingList,
     };
   },
 });

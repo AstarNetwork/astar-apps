@@ -1,9 +1,13 @@
+import { showError } from 'src/modules/extrinsic';
+import { ISubmittableResult } from '@polkadot/types/types';
+import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { EthereumProvider } from './../types/CustomSignature';
 import { supportEvmWalletObj, SupportWallet } from 'src/config/wallets';
 import { web3Enable } from '@polkadot/extension-dapp';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SubstrateAccount } from './../../store/general/state';
 import { deepLink } from 'src/links';
+import { Dispatch } from 'vuex';
 
 export const getInjectedExtensions = async (): Promise<any[]> => {
   const extensions = await web3Enable('AstarNetwork/astar-apps');
@@ -128,5 +132,61 @@ export const checkIsMobileMathWallet = async (): Promise<boolean> => {
     }
   } catch (error) {
     return false;
+  }
+};
+
+type Transaction = SubmittableExtrinsic<'promise', ISubmittableResult>;
+
+export const signAndSend = async ({
+  transaction,
+  senderAddress,
+  substrateAccounts,
+  isCustomSignature = false,
+  dispatch,
+  txResHandler,
+  handleCustomExtrinsic,
+  finalizeCallback,
+  tip = 1,
+}: {
+  transaction: Transaction;
+  senderAddress: string;
+  substrateAccounts: SubstrateAccount[];
+  isCustomSignature: boolean;
+  dispatch: Dispatch;
+  txResHandler: (result: ISubmittableResult) => void;
+  // from: useCustomSignature.ts
+  handleCustomExtrinsic?: (method: Transaction) => Promise<void>;
+  finalizeCallback?: () => void;
+  tip?: number;
+}): Promise<void> => {
+  const sendSubstrateTransaction = async (): Promise<void> => {
+    const injector = await getInjector(substrateAccounts);
+    if (!injector) {
+      throw Error('Invalid injector');
+    }
+    await transaction.signAndSend(
+      senderAddress,
+      {
+        signer: injector.signer,
+        nonce: -1,
+        tip,
+      },
+      (result) => {
+        txResHandler && txResHandler(result);
+        finalizeCallback && finalizeCallback();
+      }
+    );
+  };
+
+  try {
+    if (isCustomSignature && handleCustomExtrinsic) {
+      await handleCustomExtrinsic(transaction);
+      finalizeCallback && finalizeCallback();
+    } else {
+      await sendSubstrateTransaction();
+    }
+  } catch (error: any) {
+    console.error(error.message);
+    showError(dispatch, error.message);
   }
 };

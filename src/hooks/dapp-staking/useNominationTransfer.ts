@@ -1,17 +1,23 @@
+import { showError } from 'src/modules/extrinsic';
 import { useStore } from 'src/store';
 import { $api } from 'boot/api';
 import { ethers } from 'ethers';
-import { StakingData } from 'src/modules/dapp-staking';
+import { getAddressEnum, StakingData } from 'src/modules/dapp-staking';
 import { computed, ref, watchEffect } from 'vue';
 import { ASTAR_DECIMALS, balanceFormatter } from '../helper/plasmUtils';
 import { useAccount } from '../useAccount';
 import { useGetMinStaking } from '../useGetMinStaking';
+import { useCustomSignature } from '../useCustomSignature';
+import { ISubmittableResult } from '@polkadot/types/types';
+import { signAndSend } from '../helper/wallet';
 
 export function useNominationTransfer({ stakingList }: { stakingList: StakingData[] }) {
   const { currentAccount } = useAccount();
   const { minStaking } = useGetMinStaking($api);
   const store = useStore();
   const addressTransferFrom = ref<string>(currentAccount.value);
+  const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
+  const { isCustomSig, handleResult, handleCustomExtrinsic } = useCustomSignature({});
 
   const setAddressTransferFrom = (address: string) => {
     addressTransferFrom.value = address;
@@ -45,6 +51,7 @@ export function useNominationTransfer({ stakingList }: { stakingList: StakingDat
 
   const checkIsEnoughAmount = ({ amount }: { amount: number }): boolean => {
     const formattedMinStaking = Number(ethers.utils.formatEther(minStaking.value.toString()));
+    console.log('formattedMinStaking', formattedMinStaking);
 
     if (formattedMinStaking > amount) {
       throw Error(
@@ -55,21 +62,47 @@ export function useNominationTransfer({ stakingList }: { stakingList: StakingDat
     }
   };
 
-  const nominationTransfer = async ({ amount }: { amount: string }) => {
+  const nominationTransfer = async ({
+    amount,
+    targetContractId,
+  }: {
+    amount: string;
+    targetContractId: string;
+  }) => {
     try {
+      const apiRef = $api.value!;
+      const formattedMinStaking = Number(ethers.utils.formatEther(minStaking.value.toString()));
+      console.log('formattedMinStaking', formattedMinStaking);
       const transferFromRef = formattedTransferFrom.value;
       if (!transferFromRef) return;
 
       // const balTransferFrom = Number(
       //   ethers.utils.parseEther(transferFromRef.item.balance.toString())
       // );
-      checkIsEnoughAmount({ amount: Number(amount) });
+      // checkIsEnoughAmount({ amount: Number(amount) });
+      const value = ethers.utils.parseEther(String(amount)).toString();
+      const transaction = apiRef.tx.dappsStaking.nominationTransfer(
+        getAddressEnum(formattedTransferFrom.value.item.address),
+        value,
+        getAddressEnum(targetContractId)
+      );
+
+      const txResHandler = (result: ISubmittableResult) => {
+        handleResult(result);
+      };
+
+      await signAndSend({
+        transaction,
+        senderAddress: currentAccount.value,
+        substrateAccounts: substrateAccounts.value,
+        isCustomSignature: isCustomSig.value,
+        txResHandler,
+        handleCustomExtrinsic,
+        dispatch: store.dispatch,
+      });
     } catch (error: any) {
       console.error(error);
-      store.dispatch('general/showAlertMsg', {
-        msg: error.message,
-        alertType: 'error',
-      });
+      showError(store.dispatch, error.message);
     }
   };
 

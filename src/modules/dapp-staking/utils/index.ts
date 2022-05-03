@@ -63,3 +63,6 @@ export const getDappStakers = async ({ api }: { api: ApiPromise }): Promise<numb
     return 0;
   }
 };
+
+// TODO refactor, detect address type, etc.....
+export const getAddressEnum = (address: string) => ({ Evm: address });

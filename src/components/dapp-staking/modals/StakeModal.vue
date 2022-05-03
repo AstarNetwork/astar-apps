@@ -31,6 +31,7 @@
           :formatted-transfer-from="formattedTransferFrom"
           :current-account="currentAccount"
           :set-address-transfer-from="setAddressTransferFrom"
+          :dapp-address="dapp.address"
         />
       </div>
       <div class="container--amount">
@@ -68,7 +69,7 @@
         <!-- Todo: Set disabled -->
         <Button
           v-if="formattedTransferFrom.isNominationTransfer"
-          @click="nominationTransfer({ amount: data.amount })"
+          @click="nominationTransfer({ amount: data.amount, targetContractId: dapp.address })"
           >Nomination Transfer</Button
         >
         <Button v-else :disabled="!canExecuteAction" @click="action(data)">{{ actionName }}</Button>
