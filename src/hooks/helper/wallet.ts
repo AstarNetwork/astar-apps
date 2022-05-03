@@ -155,7 +155,7 @@ export const signAndSend = async ({
   dispatchError?: (msg: string) => void;
   handleCustomExtrinsic?: (method: Transaction) => Promise<void>;
   finalizeCallback?: () => void;
-}) => {
+}): Promise<void> => {
   const sendSubstrateTransaction = async (): Promise<void> => {
     const injector = await getInjector(substrateAccounts);
     if (!injector) {
