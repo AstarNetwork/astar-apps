@@ -10,15 +10,12 @@ export function useCurrentEra() {
   const nextEraStartingBlock = ref<number>(0);
 
   const getEra = async (): Promise<{ era: number; blockPerEra: number } | void> => {
-    const apiRef = $api && $api.value;
-    if (!apiRef) return;
-
     const [currentEra, blockAmtPerEra, blockHeight, nextEraStartingBlockHeight] = await Promise.all(
       [
-        apiRef.query.dappsStaking.currentEra(),
-        apiRef.consts.dappsStaking.blockPerEra,
-        apiRef.derive.chain.bestNumber,
-        apiRef.query.dappsStaking.nextEraStartingBlock(),
+        $api.value!.query.dappsStaking.currentEra(),
+        $api.value!.consts.dappsStaking.blockPerEra,
+        $api.value!.derive.chain.bestNumber,
+        $api.value!.query.dappsStaking.nextEraStartingBlock(),
       ]
     );
 
@@ -52,9 +49,7 @@ export function useCurrentEra() {
   watch(
     [$api, interval],
     () => {
-      const apiRef = $api && $api.value;
-      if (!apiRef) return;
-      apiRef.isReady.then(() => {
+      $api.value!.isReady.then(() => {
         try {
           updateEra();
         } catch (error) {

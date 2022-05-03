@@ -107,11 +107,7 @@ export default defineComponent({
 
     const withdraw = async (): Promise<void> => {
       try {
-        const apiRef = $api.value;
-        if (!apiRef) {
-          throw Error('Cannot connect to the API');
-        }
-        const transaction = apiRef.tx.dappsStaking.withdrawUnbonded();
+        const transaction = $api.value!.tx.dappsStaking.withdrawUnbonded();
         const txResHandler = (result: ISubmittableResult) => {
           if (result.status.isFinalized) {
             if (!hasExtrinsicFailedEvent(result.events, store.dispatch)) {

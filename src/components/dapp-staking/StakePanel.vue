@@ -184,12 +184,8 @@ export default defineComponent({
       const amount = getAmount(stakeData.amount, stakeData.unit);
       const unit = stakeData.unit;
       try {
-        const apiRef = $api?.value;
-        if (!apiRef) {
-          throw Error('Cannot connect to the API');
-        }
         const stakeAmount = plasmUtils.balanceFormatter(amount);
-        const transaction = apiRef.tx.dappsStaking.bondAndStake(
+        const transaction = $api.value!.tx.dappsStaking.bondAndStake(
           getAddressEnum(props.dapp.address),
           amount
         );
@@ -245,14 +241,10 @@ export default defineComponent({
     const unstake = async (stakeData: StakeModel): Promise<void> => {
       const amount = getAmount(stakeData.amount, stakeData.unit);
       const unstakeAmount = plasmUtils.balanceFormatter(amount);
-      const apiRef = $api.value;
       try {
-        if (!apiRef) {
-          throw Error('Cannot connect to the API');
-        }
         const transaction = canUnbondWithdraw.value
-          ? apiRef.tx.dappsStaking.unbondAndUnstake(getAddressEnum(props.dapp.address), amount)
-          : apiRef.tx.dappsStaking.unbondUnstakeAndWithdraw(
+          ? $api.value!.tx.dappsStaking.unbondAndUnstake(getAddressEnum(props.dapp.address), amount)
+          : $api.value!.tx.dappsStaking.unbondUnstakeAndWithdraw(
               getAddressEnum(props.dapp.address),
               amount
             );

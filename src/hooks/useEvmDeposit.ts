@@ -23,13 +23,8 @@ export function useEvmDeposit(fn?: () => void) {
 
   const withdraw = async ({ amount, account }: { amount: BN; account: string }) => {
     try {
-      const apiRef = $api.value;
-      if (!apiRef) {
-        throw Error('Cannot connect to the API');
-      }
-
       const h160Addr = buildEvmAddress(account);
-      const transaction = await apiRef.tx.evm.withdraw(h160Addr, amount);
+      const transaction = $api.value!.tx.evm.withdraw(h160Addr, amount);
       if (!transaction) {
         throw Error('Cannot withdraw the deposit');
       }
@@ -66,12 +61,11 @@ export function useEvmDeposit(fn?: () => void) {
   watch(
     [$api, currentAccount, isLoading],
     async () => {
-      const apiRef = $api.value;
       const currentAccountRef = currentAccount.value;
-      if (!apiRef || !currentAccountRef) return;
+      if (!currentAccountRef) return;
 
       const getData = async (h160Addr: string): Promise<BN> => {
-        return await apiRef.rpc.eth.getBalance(h160Addr);
+        return await $api.value!.rpc.eth.getBalance(h160Addr);
       };
 
       if (currentAccountRef) {

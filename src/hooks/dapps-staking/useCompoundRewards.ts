@@ -68,12 +68,7 @@ export function useCompoundRewards() {
 
   const setRewardDestination = async (rewardDestination: RewardDestination): Promise<void> => {
     try {
-      const apiRef = $api.value;
-      if (!apiRef) {
-        throw Error('Failed to connect to API');
-      }
-
-      const transaction = apiRef.tx.dappsStaking.setRewardDestination(rewardDestination);
+      const transaction = $api.value!.tx.dappsStaking.setRewardDestination(rewardDestination);
       const txResHandler = (result: ISubmittableResult) => {
         if (result.status.isFinalized) {
           let errorMessage = '';

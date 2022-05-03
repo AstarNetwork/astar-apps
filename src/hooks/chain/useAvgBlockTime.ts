@@ -55,17 +55,15 @@ export const useAvgBlockTime = (path: string) => {
     blockHeight: number;
     blockErasAgo: number;
   }): Promise<number> => {
-    if (!$api.value) return 0;
-    const block = await $api.value?.at(hash);
+    const block = await $api.value!.at(hash);
     const tsBlockTimeAgo = await block.query.timestamp.now();
     const spentSecs = (tsNow - tsBlockTimeAgo.toNumber()) / 1000;
     return spentSecs / (blockHeight - blockErasAgo);
   };
 
   const updateAvgBlock = async (blockHeight: number): Promise<void> => {
-    const apiRef = $api.value;
     const blockPerEraRef = blockPerEra.value;
-    if (!apiRef || !blockPerEraRef || blockHeight === 0) {
+    if (!blockPerEraRef || blockHeight === 0) {
       return;
     }
 
@@ -78,10 +76,10 @@ export const useAvgBlockTime = (path: string) => {
       const block30EraAgo = blockHeight - block30Eras;
 
       const [tsNow, hashBlock1EraAgo, hashBlock7ErasAgo, hashBlock30ErasAgo] = await Promise.all([
-        apiRef.query.timestamp.now(),
-        apiRef.rpc.chain.getBlockHash(block1EraAgo),
-        apiRef.rpc.chain.getBlockHash(block7ErasAgo),
-        apiRef.rpc.chain.getBlockHash(block30EraAgo),
+        $api.value!.query.timestamp.now(),
+        $api.value!.rpc.chain.getBlockHash(block1EraAgo),
+        $api.value!.rpc.chain.getBlockHash(block7ErasAgo),
+        $api.value!.rpc.chain.getBlockHash(block30EraAgo),
       ]);
 
       const numTsNow = tsNow.toNumber();

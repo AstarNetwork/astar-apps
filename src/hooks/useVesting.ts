@@ -86,11 +86,7 @@ export function useVesting(closeModal: () => void) {
   };
 
   const sendTransaction = async (): Promise<void> => {
-    const apiRef = $api.value;
-    if (!apiRef) {
-      throw Error('Cannot connect to the API');
-    }
-    await unlockVestedTokens(apiRef);
+    await unlockVestedTokens($api.value!);
   };
 
   return {

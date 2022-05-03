@@ -37,17 +37,12 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
 
   const transferNative = async (transferAmt: BN, fromAddress: string, toAddress: string) => {
     try {
-      const apiRef = $api.value;
-      if (!apiRef) {
-        throw Error('Cannot connect to the API');
-      }
-
       const txResHandler = (result: ISubmittableResult) => {
         handleResult(result);
         isTxSuccess.value = true;
       };
 
-      const transaction = apiRef.tx.balances.transfer(toAddress, transferAmt);
+      const transaction = $api.value!.tx.balances.transfer(toAddress, transferAmt);
       await signAndSend({
         transaction,
         senderAddress: fromAddress,
