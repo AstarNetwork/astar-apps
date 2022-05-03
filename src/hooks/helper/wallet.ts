@@ -1,3 +1,4 @@
+import { showError } from 'src/modules/extrinsic';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { EthereumProvider } from './../types/CustomSignature';
@@ -145,6 +146,7 @@ export const signAndSend = async ({
   dispatchError,
   handleCustomExtrinsic,
   finalizeCallback,
+  dispatch,
 }: {
   transaction: Transaction;
   senderAddress: string;
@@ -155,6 +157,7 @@ export const signAndSend = async ({
   dispatchError?: (msg: string) => void;
   handleCustomExtrinsic?: (method: Transaction) => Promise<void>;
   finalizeCallback?: () => void;
+  dispatch?: any;
 }): Promise<void> => {
   const sendSubstrateTransaction = async (): Promise<void> => {
     const injector = await getInjector(substrateAccounts);
@@ -183,6 +186,9 @@ export const signAndSend = async ({
     }
   } catch (error: any) {
     console.error(error.message);
+    // Memo: dispatch error toast from useCustomSignature
     dispatchError && dispatchError(error.message);
+    // Memo: dispatch error toast from vuex action
+    dispatch && showError(dispatch, error.message);
   }
 };

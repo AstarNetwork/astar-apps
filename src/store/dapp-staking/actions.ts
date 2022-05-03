@@ -228,12 +228,12 @@ const actions: ActionTree<State, StateInterface> = {
           substrateAccounts: parameters.substrateAccounts,
           isCustomSignature: false,
           txResHandler,
+          dispatch,
         });
 
         return true;
       } else {
         showError(dispatch, 'Api is undefined.');
-
         return false;
       }
     } catch (e) {
