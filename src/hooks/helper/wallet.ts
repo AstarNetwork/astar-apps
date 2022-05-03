@@ -181,6 +181,7 @@ export const signAndSend = async ({
       }
     );
   };
+
   try {
     if (isCustomSignature && handleCustomExtrinsic) {
       await handleCustomExtrinsic(transaction);
