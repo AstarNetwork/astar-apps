@@ -7,6 +7,7 @@ import { web3Enable } from '@polkadot/extension-dapp';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SubstrateAccount } from './../../store/general/state';
 import { deepLink } from 'src/links';
+import { Dispatch } from 'vuex';
 
 export const getInjectedExtensions = async (): Promise<any[]> => {
   const extensions = await web3Enable('AstarNetwork/astar-apps');
@@ -136,28 +137,31 @@ export const checkIsMobileMathWallet = async (): Promise<boolean> => {
 
 type Transaction = SubmittableExtrinsic<'promise', ISubmittableResult>;
 
+// Memo:
+// dispatchError, handleCustomExtrinsic: useCustomSignature.ts
+// dispatch: vuex action
 export const signAndSend = async ({
   transaction,
   senderAddress,
   substrateAccounts,
   isCustomSignature = false,
-  tip = 1,
   txResHandler,
   dispatchError,
   handleCustomExtrinsic,
   finalizeCallback,
   dispatch,
+  tip = 1,
 }: {
   transaction: Transaction;
   senderAddress: string;
   substrateAccounts: SubstrateAccount[];
   isCustomSignature: boolean;
-  tip?: number;
-  txResHandler?: (result: ISubmittableResult) => void;
+  txResHandler: (result: ISubmittableResult) => void;
   dispatchError?: (msg: string) => void;
   handleCustomExtrinsic?: (method: Transaction) => Promise<void>;
   finalizeCallback?: () => void;
-  dispatch?: any;
+  dispatch?: Dispatch;
+  tip?: number;
 }): Promise<void> => {
   const sendSubstrateTransaction = async (): Promise<void> => {
     const injector = await getInjector(substrateAccounts);
