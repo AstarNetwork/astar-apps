@@ -80,9 +80,9 @@ export const nativeCurrency = {
 
 export const rpcUrls = {
   [EVM.ETHEREUM_MAINNET]: ['https://mainnet-nethermind.blockscout.com/'],
-  [EVM.SHIDEN_MAINNET]: [chain.shiden?.evmRpc],
-  [EVM.SHIBUYA_TESTNET]: [chain.shibuya?.evmRpc],
-  [EVM.ASTAR_MAINNET]: [chain.astar?.evmRpc],
+  [EVM.SHIDEN_MAINNET]: [chain.shiden?.evmEndpoints[0]],
+  [EVM.SHIBUYA_TESTNET]: [chain.shibuya?.evmEndpoints[0]],
+  [EVM.ASTAR_MAINNET]: [chain.astar?.evmEndpoints[0]],
   [EVM.BSC]: ['https://bsc-dataseed.binance.org'],
   [EVM.POLYGON]: ['https://rpc-mainnet.maticvigil.com'],
 };

@@ -1,0 +1,80 @@
+@import 'src/css/quasar.variables.scss';
+
+.title {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 21px;
+  line-height: 25px;
+  margin: 24px 0px;
+}
+
+.wrapper--user-rewards-container {
+  display: flex;
+  justify-content: center;
+  @media (min-width: $xl) {
+  }
+}
+
+.user-rewards-container { 
+  flex-grow: 1;
+  margin-bottom: 32px;
+  @media (min-width: 656px) {
+    max-width: 622px;
+  }
+  @media (min-width: 992px) {
+    max-width: 100%;
+  }
+  @media (min-width: $lg) {
+    max-width: 622px;
+  }
+  @media (min-width: 1264px) {
+    max-width: 990px;
+  }
+  @media (min-width: 1600px) {
+    max-width: 100%;
+  }
+}
+
+.user-rewards-panel {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  div {
+    width: 100%;
+    padding-bottom: 16px;
+
+    @media (min-width: $lg) {
+      width: 25%;
+      padding-bottom: 0px;
+    }
+  }
+
+  div:not(:last-child) {
+    border-bottom: 1px solid $gray-1;
+    border-right: none;
+    margin-bottom: 16px;
+
+    @media (min-width: $lg) {
+      border-right: 1px solid $gray-1;
+      border-bottom: none;
+      padding-right: 16px;
+    }
+  }
+
+  div:not(:first-child) {
+    @media (min-width: $lg) {
+      padding-left: 20px;
+    }
+  }
+
+  div:last-child {
+    margin-bottom: 16px;
+  }
+}
+
+.widget-title {
+  font-size: 16px;
+  margin-bottom: 12px;
+  display: flex;
+}

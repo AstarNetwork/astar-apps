@@ -3,11 +3,10 @@
     class="
       tw-bg-white
       dark:tw-bg-darkGray-800
-      tw-mb-8 tw-w-72 tw-rounded-lg tw-text-white
+      tw-mb-8 tw-rounded-lg tw-text-white
       dark:tw-text-darkGray-100
       tw-py-4 tw-pb-8 tw-px-4
       box
-      xl:tw-mx-2
     "
   >
     <div class="tw-text-xl tw-font-semibold tw-mb-4">{{ $t('dappStaking.tvl') }}</div>
@@ -43,9 +42,13 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import 'src/css/quasar.variables.scss';
 .box {
   background: linear-gradient(83.83deg, #694ea4, #1b6dc1 37.5%, #1b6dc1 65.1%, #2ea0c4);
   box-shadow: 0 2px 2px rgb(0 0 0 / 30%);
+  @media (min-width: $xl) {
+    max-width: 288px;
+  }
 }
 </style>

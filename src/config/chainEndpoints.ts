@@ -16,8 +16,7 @@ interface ChainProvider {
   subscan: string;
   blockscout: string;
   evmChainId: string;
-  evmRpc: string;
-  evmFallbackRpc: string;
+  evmEndpoints: string[];
   faucetEndpoint: string;
   defaultLogo?: any;
 }
@@ -51,8 +50,7 @@ export const providerEndpoints: ChainProvider[] = [
     subscan: 'https://astar.subscan.io',
     blockscout: 'https://blockscout.com/astar',
     evmChainId: '592',
-    evmRpc: 'https://evm.astar.network',
-    evmFallbackRpc: 'https://astar.api.onfinality.io/public',
+    evmEndpoints: ['https://evm.astar.network', 'https://astar.api.onfinality.io/public'],
     faucetEndpoint: 'https://astar-discord-faucet.herokuapp.com/astar',
     defaultLogo: require('/src/assets/img/ic_astar.png'),
   },
@@ -75,8 +73,7 @@ export const providerEndpoints: ChainProvider[] = [
     subscan: 'https://shiden.subscan.io',
     blockscout: 'https://blockscout.com/shiden',
     evmChainId: '336',
-    evmRpc: 'https://evm.shiden.astar.network',
-    evmFallbackRpc: 'https://shiden.api.onfinality.io/public',
+    evmEndpoints: ['https://evm.shiden.astar.network', 'https://shiden.api.onfinality.io/public'],
     faucetEndpoint: 'https://astar-discord-faucet.herokuapp.com/shiden',
     defaultLogo: require('/src/assets/img/ic_shiden.png'),
   },
@@ -94,8 +91,7 @@ export const providerEndpoints: ChainProvider[] = [
     subscan: 'https://shibuya.subscan.io',
     blockscout: 'https://blockscout.com/shibuya',
     evmChainId: '81',
-    evmRpc: 'https://evm.shibuya.astar.network',
-    evmFallbackRpc: '',
+    evmEndpoints: ['https://evm.shibuya.astar.network'],
     faucetEndpoint: 'https://astar-discord-faucet.herokuapp.com/shibuya',
     defaultLogo: require('/src/assets/img/ic_shibuya.png'),
   },
@@ -111,8 +107,7 @@ export const providerEndpoints: ChainProvider[] = [
     subscan: '',
     blockscout: '',
     evmChainId: '',
-    evmRpc: '',
-    evmFallbackRpc: '',
+    evmEndpoints: [''],
     faucetEndpoint: '',
   },
   {
@@ -127,8 +122,7 @@ export const providerEndpoints: ChainProvider[] = [
     subscan: '',
     blockscout: '',
     evmChainId: '',
-    evmRpc: '',
-    evmFallbackRpc: '',
+    evmEndpoints: [''],
     faucetEndpoint: '',
   },
 ];
