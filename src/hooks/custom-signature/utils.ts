@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { hexToU8a, isHex, u8aToHex } from '@polkadot/util';
+import { checkSumEvmAddress } from 'src/config/web3/utils/convert';
 import { blake2AsU8a, encodeAddress, isEthereumAddress } from '@polkadot/util-crypto';
 import * as ethUtils from 'ethereumjs-util';
 // import * as ethUtils from './ethereumjs-util';
@@ -57,7 +58,9 @@ export const recoverPublicKeyFromSig = (
   }
 
   const publicKey = ethUtils.ecrecover(msgHash, signature.v, signature.r, signature.s);
-  const recoveredAddress = ethUtils.bufferToHex(ethUtils.pubToAddress(publicKey));
+  const recoveredAddress = checkSumEvmAddress(
+    ethUtils.bufferToHex(ethUtils.pubToAddress(publicKey))
+  );
 
   if (recoveredAddress !== address) {
     throw new Error(`Expected ${address}, but recovered address is ${recoveredAddress}`);

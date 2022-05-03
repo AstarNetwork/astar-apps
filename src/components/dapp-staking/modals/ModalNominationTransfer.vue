@@ -12,9 +12,14 @@
       />
 
       <div class="box--arrow">
-        <icon-base class="icon--arrow" icon-name="selector" viewBox="0 0 20 20" aria-hidden="true">
-          <icon-solid-selector />
-        </icon-base>
+        <astar-icon-base
+          class="icon--arrow"
+          icon-name="selector"
+          viewBox="0 0 20 20"
+          aria-hidden="true"
+        >
+          <astar-icon-solid-selector />
+        </astar-icon-base>
       </div>
     </div>
 
@@ -33,17 +38,13 @@
   </div>
 </template>
 <script lang="ts">
-import IconBase from 'components/icons/IconBase.vue';
-import IconSolidSelector from 'components/icons/IconSolidSelector.vue';
 import ModalSelectTransferFrom from 'src/components/dapp-staking/modals/ModalSelectTransferFrom.vue';
 import { StakingData } from 'src/modules/dapp-staking';
 import { defineComponent, PropType, ref } from 'vue';
 
 export default defineComponent({
   components: {
-    IconBase,
     ModalSelectTransferFrom,
-    IconSolidSelector,
   },
   props: {
     stakingList: {

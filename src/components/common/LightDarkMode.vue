@@ -6,27 +6,27 @@
       :class="{ 'tw-cursor-default': !isDarkTheme }"
       @click="switchThemeTo('LIGHT')"
     >
-      <icon-base
+      <astar-icon-base
         class="tw-h-5 tw-w-5 tw-text-gray-300 dark:tw-text-gray-300 dark:tw-text-darkGray-500"
         viewBox="0 0 24 24"
         stroke="currentColor"
         icon-color="none"
       >
-        <icon-outline-sun />
-      </icon-base>
+        <astar-icon-outline-sun />
+      </astar-icon-base>
     </button>
 
     <span class="tw-text-gray-400 dark:tw-text-darkGray-500">/</span>
 
     <button type="button" class="icon-dark" @click="switchThemeTo('DARK')">
-      <icon-base
+      <astar-icon-base
         class="icon-outline-moon"
         viewBox="0 0 24 24"
         stroke="currentColor"
         icon-color="none"
       >
-        <icon-outline-moon />
-      </icon-base>
+        <astar-icon-outline-moon />
+      </astar-icon-base>
     </button>
   </div>
 </template>
@@ -36,12 +36,8 @@ import { defineComponent, computed, watch } from 'vue';
 import { useQuasar } from 'quasar';
 import { useStore } from 'src/store';
 import { Theme } from 'src/store/general/state';
-import IconBase from '../icons/IconBase.vue';
-import IconOutlineSun from '../icons/IconOutlineSun.vue';
-import IconOutlineMoon from '../icons/IconOutlineMoon.vue';
 
 export default defineComponent({
-  components: { IconBase, IconOutlineSun, IconOutlineMoon },
   setup() {
     const store = useStore();
     const currentTheme = computed(() => store.getters['general/theme']);

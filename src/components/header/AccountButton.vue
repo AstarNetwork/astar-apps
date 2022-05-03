@@ -1,9 +1,9 @@
 <template>
   <div>
     <button type="button" class="btn--account" :class="screenSize.sm > width && 'm-btn--account'">
-      <icon-base class="iconbase" stroke="currentColor" icon-name="wallet">
-        <icon-wallet />
-      </icon-base>
+      <astar-icon-base class="iconbase" stroke="currentColor" icon-name="wallet">
+        <astar-icon-wallet />
+      </astar-icon-base>
       <img class="icon" width="16" :src="iconWallet" />
       <template v-if="width >= screenSize.sm">
         <span class="text--md">
@@ -15,17 +15,11 @@
 </template>
 
 <script lang="ts">
-import IconBase from 'components/icons/IconBase.vue';
-import IconWallet from 'components/icons/IconWallet.vue';
 import { useBreakpoints, useWalletIcon } from 'src/hooks';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { computed, defineComponent, toRefs } from 'vue';
 
 export default defineComponent({
-  components: {
-    IconBase,
-    IconWallet,
-  },
   props: {
     account: {
       type: String,

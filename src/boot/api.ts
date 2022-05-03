@@ -1,3 +1,4 @@
+import { getRandomFromArray } from './../hooks/helper/common';
 import { boot } from 'quasar/wrappers';
 import { ApiPromise } from '@polkadot/api';
 import { computed, ref, watchPostEffect } from 'vue';
@@ -38,15 +39,21 @@ export default boot(async ({ store }) => {
 
   const networkIdx = computed(() => store.getters['general/networkIdx']);
 
-  const defaultEndpoint = providerEndpoints[networkIdx.value].endpoints[0].endpoint;
+  const randomEndpoint = getRandomFromArray(providerEndpoints[networkIdx.value].endpoints).endpoint;
 
   let endpoint = selectedEndpoint.hasOwnProperty(networkIdx.value)
     ? selectedEndpoint[networkIdx.value]
-    : defaultEndpoint;
+      ? selectedEndpoint[networkIdx.value]
+      : randomEndpoint
+    : randomEndpoint;
 
   if (networkIdx.value === endpointKey.CUSTOM) {
     const customEndpoint = computed(() => store.getters['general/customEndpoint']);
     endpoint = customEndpoint.value;
+  }
+
+  if (networkIdx.value === endpointKey.LOCAL) {
+    endpoint = providerEndpoints[networkIdx.value].endpoints[0].endpoint;
   }
 
   // set metadata header
@@ -63,7 +70,6 @@ export default boot(async ({ store }) => {
     },
     meta: opengraphMeta,
   });
-
   let { api, extensions } = await connectApi(endpoint, networkIdx.value, store);
   $api.value = api;
   $endpoint.value = endpoint;

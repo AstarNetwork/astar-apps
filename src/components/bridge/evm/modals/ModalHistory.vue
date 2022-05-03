@@ -2,9 +2,9 @@
   <Modal title="Bridge History" class="animate__animated animate__fadeIn" @click="closeModal">
     <template #content>
       <div v-if="!histories.length && !isUpdatingHistories" class="no-history">
-        <icon-base class="history-icon" icon-name="history">
+        <astar-icon-base class="history-icon" icon-name="history">
           <q-icon :name="fasHistory" :color="isDarkTheme ? 'white' : 'blue'" />
-        </icon-base>
+        </astar-icon-base>
         <p>{{ $t('bridge.noHistory') }}</p>
         <p>{{ $t('bridge.updateTime', { from: 5, to: 20 }) }}</p>
       </div>
@@ -47,14 +47,12 @@ import { useStore } from 'src/store';
 import History from './History.vue';
 import Modal from 'src/components/common/Modal.vue';
 import { fasHistory } from '@quasar/extras/fontawesome-v5';
-import IconBase from 'components/icons/IconBase.vue';
 import { useBreakpoints } from 'src/hooks';
 
 export default defineComponent({
   components: {
     History,
     Modal,
-    IconBase,
   },
   props: {
     closeModal: {

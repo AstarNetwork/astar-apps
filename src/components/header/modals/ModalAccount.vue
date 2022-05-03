@@ -48,14 +48,14 @@
                   <div class="wrapper--share">
                     <button class="box--share btn--primary" @click="copyAddress(account.address)">
                       <div class="icon--primary" @click="copyAddress">
-                        <IconCopy />
+                        <astar-icon-copy />
                       </div>
                       <div>{{ $t('copy') }}</div>
                     </button>
                     <a :href="subScan + account.address" target="_blank" rel="noopener noreferrer">
                       <button class="box--share btn--primary">
                         <div class="icon--primary">
-                          <IconExternalLink />
+                          <astar-icon-external-link />
                         </div>
                         <div>{{ $t('subscan') }}</div>
                       </button>
@@ -83,8 +83,6 @@
 <script lang="ts">
 import copy from 'copy-to-clipboard';
 import SelectWallet from 'src/components/header/modals/SelectWallet.vue';
-import IconCopy from 'src/components/icons/IconCopy.vue';
-import IconExternalLink from 'src/components/icons/IconExternalLink.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { SupportWallet } from 'src/config/wallets';
 import { castMobileSource, checkIsEthereumWallet } from 'src/hooks/helper/wallet';
@@ -96,8 +94,6 @@ import ModalDrawer from './ModalDrawer.vue';
 export default defineComponent({
   components: {
     SelectWallet,
-    IconCopy,
-    IconExternalLink,
     ModalDrawer,
   },
   props: {

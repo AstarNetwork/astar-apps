@@ -12,3 +12,7 @@ export const capitalize = (str: string): string => {
   if (typeof str !== 'string' || !str) return str;
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 };
+
+export const getRandomFromArray = (list: any[]) => {
+  return list[Math.floor(Math.random() * list.length)];
+};
