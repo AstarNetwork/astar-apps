@@ -55,6 +55,7 @@
       :stake-amount="stakeInfo?.yourStake.denomAmount"
       :account-data="accountData"
       :staking-list="stakingList"
+      :finalize-callback="finalizeCallback"
     />
 
     <ClaimRewardModal
@@ -339,6 +340,11 @@ export default defineComponent({
       }
     };
 
+    const finalizeCallback = () => {
+      emitStakeChanged();
+      showModal.value = false;
+    };
+
     return {
       ...toRefs(props),
       showModal,
@@ -354,6 +360,7 @@ export default defineComponent({
       canUnbondWithdraw,
       isH160,
       currentAddress,
+      finalizeCallback,
     };
   },
 });

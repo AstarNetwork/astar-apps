@@ -82,7 +82,7 @@
         <!-- Todo: Set disabled -->
         <Button
           v-if="formattedTransferFrom.isNominationTransfer"
-          @click="nominationTransfer({ amount: data.amount, targetContractId: dapp.address })"
+          @click="handleNominationTransfer({ amount: data.amount, targetContractId: dapp.address })"
           >Nomination Transfer</Button
         >
         <Button v-else :disabled="!canExecuteAction" @click="action(data)">{{ actionName }}</Button>
@@ -142,6 +142,10 @@ export default defineComponent({
       type: Function,
       required: true,
     },
+    finalizeCallback: {
+      type: Function,
+      required: true,
+    },
     actionName: {
       type: String,
       required: true,
@@ -170,6 +174,24 @@ export default defineComponent({
       currentAccount,
       nominationTransfer,
     } = useNominationTransfer({ stakingList: props.stakingList });
+
+    const handleNominationTransfer = async ({
+      amount,
+      targetContractId,
+    }: {
+      amount: string;
+      targetContractId: string;
+    }) => {
+      try {
+        const result = await nominationTransfer({ amount, targetContractId });
+        console.log('result', result);
+        console.log('1');
+        props.finalizeCallback();
+        console.log('2');
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
     const data = ref<StakeModel>({
       address: '',
@@ -238,7 +260,7 @@ export default defineComponent({
       setAddressTransferFrom,
       currentAccount,
       addressTransferFrom,
-      nominationTransfer,
+      handleNominationTransfer,
       setMaxAmount,
       isEnableNominationTransfer: $isEnableNominationTransfer.value,
       ...toRefs(props),

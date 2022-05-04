@@ -68,13 +68,13 @@ export function useNominationTransfer({ stakingList }: { stakingList: StakingDat
   }: {
     amount: string;
     targetContractId: string;
-  }) => {
+  }): Promise<boolean> => {
     try {
       const apiRef = $api.value!;
       const formattedMinStaking = Number(ethers.utils.formatEther(minStaking.value.toString()));
       console.log('formattedMinStaking', formattedMinStaking);
       const transferFromRef = formattedTransferFrom.value;
-      if (!transferFromRef) return;
+      if (!transferFromRef) return false;
 
       // const balTransferFrom = Number(
       //   ethers.utils.parseEther(transferFromRef.item.balance.toString())
@@ -100,9 +100,11 @@ export function useNominationTransfer({ stakingList }: { stakingList: StakingDat
         handleCustomExtrinsic,
         dispatch: store.dispatch,
       });
+      return true;
     } catch (error: any) {
       console.error(error);
       showError(store.dispatch, error.message);
+      return false;
     }
   };
 
