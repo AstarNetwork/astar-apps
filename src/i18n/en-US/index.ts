@@ -100,7 +100,7 @@ export default {
     ttlPendingRewards: 'Your Pending Rewards',
     autoCompound: 'Auto-compound after claiming',
     autoCompoundingTooltip:
-      'By turning on the Auto compound, your clamed rewards will re-stake after claiming.',
+      'By turning on the Auto compound, your rewards will re-stake after claiming.',
     view: 'View',
     unclaimedRewards: 'Unclaimed Rewards',
     unclaimedRewardsTooltip: 'Currently we are working on displaying number of unclaimed era.',
