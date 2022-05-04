@@ -1,25 +1,27 @@
-import { getRandomFromArray } from './../hooks/helper/common';
-import { boot } from 'quasar/wrappers';
 import { ApiPromise } from '@polkadot/api';
-import { computed, ref, watchPostEffect } from 'vue';
-import {
-  providerEndpoints,
-  endpointKey,
-  checkIsEnableIndividualClaim,
-} from 'src/config/chainEndpoints';
-import { connectApi } from 'src/config/api/polkadot/connectApi';
-import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useMeta } from 'quasar';
+import { boot } from 'quasar/wrappers';
+import { connectApi } from 'src/config/api/polkadot/connectApi';
+import {
+  ASTAR_CHAIN,
+  checkIsEnableNominationTransfer,
+  endpointKey,
+  getProviderIndex,
+  providerEndpoints,
+} from 'src/config/chainEndpoints';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { opengraphMeta } from 'src/config/opengraph';
-import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
+import { createAstarWeb3Instance, TNetworkId } from 'src/config/web3';
 import { useChainInfo } from 'src/hooks/useChainInfo';
-import { TNetworkId, createAstarWeb3Instance } from 'src/config/web3';
-import { getProviderIndex, ASTAR_CHAIN } from 'src/config/chainEndpoints';
+import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
+import { computed, ref, watchPostEffect } from 'vue';
 import Web3 from 'web3';
+import { getRandomFromArray } from './../hooks/helper/common';
 
 const $api = ref<ApiPromise>();
 const $endpoint = ref<string>('');
 const $web3 = ref<Web3>();
+const $isEnableNominationTransfer = ref<boolean>(false);
 
 export default boot(async ({ store }) => {
   const { NETWORK_IDX, CUSTOM_ENDPOINT, SELECTED_ENDPOINT } = LOCAL_STORAGE;
@@ -81,6 +83,8 @@ export default boot(async ({ store }) => {
     store.commit('general/setMetaExtensions', metaExtensions.value);
     store.commit('general/setExtensionCount', extensionCount.value);
 
+    $isEnableNominationTransfer.value = await checkIsEnableNominationTransfer(api);
+
     if (chainInfo.value?.chain) {
       const currentChain = chainInfo.value?.chain as ASTAR_CHAIN;
       const currentNetworkIdx = getProviderIndex(currentChain);
@@ -93,4 +97,4 @@ export default boot(async ({ store }) => {
   });
 });
 
-export { $api, $web3, $endpoint };
+export { $api, $web3, $endpoint, $isEnableNominationTransfer };

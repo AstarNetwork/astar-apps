@@ -141,16 +141,14 @@ export const getProviderIndex = (chain: ASTAR_CHAIN) => {
   }
 };
 
-export const checkIsEnableIndividualClaim = async (api: ApiPromise): Promise<boolean> => {
+export const checkIsEnableNominationTransfer = async (api: ApiPromise): Promise<boolean> => {
   try {
-    const version = await api.query.dappsStaking.storageVersion();
-    if (!version) {
-      throw Error('invalid version');
-    }
-    const isEnableIndividualClaim = version.toHuman() !== 'V2_0_0';
-    return isEnableIndividualClaim;
+    const metadata = api.runtimeMetadata;
+    const metadataJson = JSON.stringify(metadata.toJSON());
+    const result = metadataJson.includes('nomination_transfer');
+    return result;
   } catch (error) {
-    // Memo: there is no `storageVersion` query in Astar network
+    console.error(error);
     return false;
   }
 };

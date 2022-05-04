@@ -16,18 +16,21 @@
         </div>
       </div>
       <div class="tw-flex">
-        <div v-if="stakeInfo?.hasStake">
-          <Button :small="true" :primary="true" @click="showStakeModal">
-            {{ $t('dappStaking.add') }}
+        <div>
+          <div v-if="stakeInfo?.hasStake">
+            <Button :small="true" :primary="true" @click="showStakeModal">
+              {{ $t('dappStaking.add') }}
+            </Button>
+          </div>
+          <Button
+            v-else
+            :small="true"
+            :disabled="isMaxStaker || isH160 || currentAddress === null"
+            @click="showStakeModal"
+          >
+            {{ $t('dappStaking.stake') }}
           </Button>
         </div>
-        <Button
-          :small="true"
-          :disabled="isMaxStaker || isH160 || currentAddress === null"
-          @click="showStakeModal"
-        >
-          {{ $t('dappStaking.stake') }}
-        </Button>
 
         <Button
           v-if="stakeInfo?.hasStake"

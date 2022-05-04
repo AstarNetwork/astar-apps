@@ -17,7 +17,7 @@
           @sel-changed="reloadAmount"
         />
       </div>
-      <div class="tw-mb-4">
+      <div v-if="isEnableNominationTransfer" class="tw-mb-4">
         <label
           class="
             tw-block tw-text-sm tw-font-medium tw-text-gray-500
@@ -46,8 +46,21 @@
           "
           :is-max-button="actionName === StakeAction.Unstake ? true : false"
         />
-        <div v-if="formattedTransferFrom.isNominationTransfer" class="box--max">
-          <Button type="button" :primary="true" :small="true" @click="setMaxAmount">Max</Button>
+        <div>
+          <div v-if="isEnableNominationTransfer">
+            <div v-if="formattedTransferFrom.isNominationTransfer" class="box--max">
+              <Button type="button" :primary="true" :small="true" @click="setMaxAmount">Max</Button>
+            </div>
+          </div>
+          <div v-else>
+            <div v-if="accountData && actionName === StakeAction.Stake" class="tw-mt-1 tw-ml-1">
+              {{ $t('dappStaking.modals.availableToStake') }}
+              <format-balance
+                :balance="accountData?.getUsableFeeBalance()"
+                class="tw-inline tw-font-semibold"
+              />
+            </div>
+          </div>
         </div>
       </div>
       <div v-if="accountData && actionName === StakeAction.Unstake" class="tw-mt-1 tw-ml-1">
@@ -87,7 +100,7 @@ import Avatar from 'src/components/common/Avatar.vue';
 import Button from 'src/components/common/Button.vue';
 import InputAmount from 'src/components/common/InputAmount.vue';
 import { useChainMetadata, useNominationTransfer, useUnbondWithdraw } from 'src/hooks';
-import { $api } from 'boot/api';
+import { $api, $isEnableNominationTransfer } from 'boot/api';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { getAmount, StakeModel } from 'src/hooks/store';
 import { useStore } from 'src/store';
@@ -227,6 +240,7 @@ export default defineComponent({
       addressTransferFrom,
       nominationTransfer,
       setMaxAmount,
+      isEnableNominationTransfer: $isEnableNominationTransfer.value,
       ...toRefs(props),
     };
   },
