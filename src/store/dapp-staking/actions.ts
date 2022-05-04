@@ -608,52 +608,50 @@ const actions: ActionTree<State, StateInterface> = {
             denomAmount: new BN('0'),
           };
 
-          if (parameters.isEnableIndividualClaim) {
-            const stakerInfo =
-              await parameters.api.query.dappsStaking.generalStakerInfo<GeneralStakerInfo>(
-                parameters.senderAddress,
-                {
-                  Evm: parameters.dapp.address,
-                }
-              );
+          const stakerInfo =
+            await parameters.api.query.dappsStaking.generalStakerInfo<GeneralStakerInfo>(
+              parameters.senderAddress,
+              {
+                Evm: parameters.dapp.address,
+              }
+            );
 
-            const balance =
-              stakerInfo.stakes.length && stakerInfo.stakes.slice(-1)[0].staked.toString();
-            if (balance) {
-              yourStake = {
-                formatted: balanceFormatter(balance),
-                denomAmount: new BN(balance.toString()),
-              };
-            }
-
-            const hasStake = Number(balance.toString()) > 0;
-            return {
-              totalStake: balanceFormatter(stakeInfo.total.toString()),
-              yourStake,
-              claimedRewards: '0', // always returns 0 in the below `getClaimInfo` function. (stakeInfo.claimedRewards)
-              hasStake,
-              stakersCount: Number(stakeInfo.numberOfStakers.toString()),
-            } as StakeInfo;
+          const balance =
+            stakerInfo.stakes.length && stakerInfo.stakes.slice(-1)[0].staked.toString();
+          if (balance) {
+            yourStake = {
+              formatted: balanceFormatter(balance),
+              denomAmount: new BN(balance.toString()),
+            };
           }
 
-          for (const [account, balance] of stakeInfo.stakers) {
-            if (account.toString() === parameters.senderAddress) {
-              yourStake = {
-                formatted: balanceFormatter(balance),
-                denomAmount: new BN(balance.toString()),
-              };
-              break;
-            }
-          }
-
-          const hasStake = Number(yourStake.denomAmount.toString()) > 0;
+          const hasStake = Number(balance.toString()) > 0;
           return {
-            totalStake: balanceFormatter(stakeInfo.total),
+            totalStake: balanceFormatter(stakeInfo.total.toString()),
             yourStake,
-            claimedRewards: balanceFormatter(stakeInfo.claimedRewards),
+            claimedRewards: '0', // always returns 0 in the below `getClaimInfo` function. (stakeInfo.claimedRewards)
             hasStake,
-            stakersCount: stakeInfo.stakers.size,
+            stakersCount: Number(stakeInfo.numberOfStakers.toString()),
           } as StakeInfo;
+
+          // for (const [account, balance] of stakeInfo.stakers) {
+          //   if (account.toString() === parameters.senderAddress) {
+          //     yourStake = {
+          //       formatted: balanceFormatter(balance),
+          //       denomAmount: new BN(balance.toString()),
+          //     };
+          //     break;
+          //   }
+          // }
+
+          // const hasStake = Number(yourStake.denomAmount.toString()) > 0;
+          // return {
+          //   totalStake: balanceFormatter(stakeInfo.total),
+          //   yourStake,
+          //   claimedRewards: balanceFormatter(stakeInfo.claimedRewards),
+          //   hasStake,
+          //   stakersCount: stakeInfo.stakers.size,
+          // } as StakeInfo;
         }
       } else {
         showError(dispatch, 'Api is undefined.');
@@ -672,120 +670,22 @@ const actions: ActionTree<State, StateInterface> = {
     commit('general/setLoading', true, { root: true });
 
     try {
-      const isEnableIndividualClaim = parameters.isEnableIndividualClaim;
-      if (isEnableIndividualClaim) {
-        result = await getIndividualClaimStakingInfo(
-          parameters.senderAddress,
-          parameters.dapp.address
-        );
-      } else {
-        const currentEraIndex = await parameters.api.query.dappsStaking.currentEra<EraIndex>();
-        const currentEra = Number(currentEraIndex.toString());
-        // Memo: historyDepth is not existing in the upgraded pallet
-        const historyDepth = Number(parameters.api.consts.dappsStaking.historyDepth.toString());
-        const eraStakesMap = await getClaimableEraStakes(
-          parameters.api,
-          parameters.dapp.address,
-          currentEra,
-          historyDepth
-        );
-        const lowestClaimableEra = getLowestClaimableEra(parameters.api, currentEra, eraStakesMap);
-        const bonusEraDuration = Number(
-          await parameters.api.consts.dappsStaking.bonusEraDuration.toString()
-        );
-        // console.log('lowest', lowestClaimableEra);
-
-        // Find a latest stake
-        let currentEraStakes: EraStakingPoints | null = null;
-        for (let era = currentEra - 1; era >= 1; era--) {
-          const eraStakes = eraStakesMap.get(era);
-
-          if (eraStakes?.isSome) {
-            currentEraStakes = eraStakes.unwrap();
-            break;
-          }
-        }
-
-        // Get rewards and stakes for all eras.
-        const eraRewardsAndStakeMap = new Map();
-        const entries =
-          await parameters.api.query.dappsStaking.eraRewardsAndStakes.entries<EraRewardAndStake>();
-        entries.forEach(([key, stake]) => {
-          eraRewardsAndStakeMap.set(Number(key.args.map((k) => k.toString())[0]), stake);
-        });
-
-        // calculate reward
-        result.unclaimedEras = await getErasToClaim(parameters.api, parameters.dapp.address);
-        for (let era of result.unclaimedEras) {
-          const eraStakes: EraStakingPoints | undefined = eraStakesMap
-            .get(era)
-            ?.unwrapOr(undefined);
-          if (eraStakes) {
-            currentEraStakes = eraStakes;
-
-            // Reward for the era is already claimed.
-            if (!eraStakes.claimedRewards.eq(new BN(0))) {
-              continue;
-            }
-
-            if (currentEraStakes) {
-              // TODO check why eraStakes.stakers.get is not working
-              for (const [account, balance] of currentEraStakes.stakers) {
-                if (account.toString() === parameters.senderAddress) {
-                  let eraRewardsAndStakes: EraRewardAndStake = eraRewardsAndStakeMap
-                    .get(era)
-                    .unwrap();
-                  if (eraRewardsAndStakes) {
-                    // temp to avoid staked = 0 in first blocks on test env
-                    if (eraRewardsAndStakes.staked.eq(new BN(0))) {
-                      break;
-                    }
-
-                    let eraReward = balance
-                      .mul(eraRewardsAndStakes.rewards)
-                      .divn(5) // 20% reward percentage
-                      .div(eraRewardsAndStakes.staked);
-
-                    accumulatedReward = accumulatedReward.add(eraReward);
-                  } else {
-                    console.warn('No EraRewardAndStake for era ', era);
-                  }
-
-                  break;
-                }
-              }
-            } else {
-              console.warn('No stakes found');
-            }
-          }
-
-          // Commented out becasue the calculation is not feasible in reasonable time
-          // on Shibuya, and soon the same will happen on Shiden (as number of era increases).
-
-          // result.estimatedClaimedRewards = getEstimatedClaimedAwards(
-          //   currentEra,
-          //   eraStakesMap,
-          //   eraRewardsAndStakeMap,
-          //   parameters.api,
-          //   parameters.senderAddress,
-          //   bonusEraDuration
-          // );
-          result.rewards = parameters.api.createType('Balance', accumulatedReward);
-        }
-      }
+      result = await getIndividualClaimStakingInfo(
+        parameters.senderAddress,
+        parameters.dapp.address
+      );
     } catch (err) {
       const error = err as unknown as Error;
       console.error(error);
       showError(dispatch, error.message);
+    } finally {
+      commit('general/setLoading', false, { root: true });
+      return result;
     }
-
-    commit('general/setLoading', false, { root: true });
-    return result;
   },
 
   async getStakingInfo({ commit, dispatch, rootState }) {
     await $api?.value?.isReady;
-
     try {
       if ($api?.value) {
         const [
@@ -891,7 +791,6 @@ export interface StakingParameters {
   unit: string;
   substrateAccounts: SubstrateAccount[];
   finalizeCallback: () => void;
-  isEnableIndividualClaim?: boolean;
 }
 
 export interface ClaimParameters extends StakingParameters {

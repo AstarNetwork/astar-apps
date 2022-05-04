@@ -37,12 +37,11 @@ export default defineComponent({
     IconTooltip,
   },
   setup() {
-    const { claimAll, batchTxs, isLoading, isEnableIndividualClaim } = useClaimAll();
+    const { claimAll, batchTxs, isLoading } = useClaimAll();
     const { currentAccount } = useAccount();
     const { isCompounding } = useCompoundRewards();
 
     return {
-      isEnableIndividualClaim,
       fasMoneyCheckAlt,
       claimAll,
       batchTxs,

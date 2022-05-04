@@ -20,18 +20,8 @@
           <Button :small="true" :primary="true" @click="showStakeModal">
             {{ $t('dappStaking.add') }}
           </Button>
-          <Button
-            v-if="!isEnableIndividualClaim"
-            class="btn-unbond"
-            :small="true"
-            :primary="false"
-            @click="showUnstakeModal"
-          >
-            {{ canUnbondWithdraw ? $t('dappStaking.unbond') : $t('dappStaking.unstake') }}
-          </Button>
         </div>
         <Button
-          v-else
           :small="true"
           :disabled="isMaxStaker || isH160 || currentAddress === null"
           @click="showStakeModal"
@@ -40,23 +30,13 @@
         </Button>
 
         <Button
-          v-if="isEnableIndividualClaim && stakeInfo?.hasStake"
+          v-if="stakeInfo?.hasStake"
           :small="true"
           :primary="false"
           class="tw-ml-auto btn-unbond"
           @click="showUnstakeModal"
         >
           {{ canUnbondWithdraw ? $t('dappStaking.unbond') : $t('dappStaking.unstake') }}
-        </Button>
-        <Button
-          v-if="!isEnableIndividualClaim"
-          :small="true"
-          :primary="true"
-          :disabled="isH160 || currentAddress === null"
-          class="tw-ml-auto"
-          @click="showClaimRewardModal = true"
-        >
-          {{ $t('dappStaking.claim') }}
         </Button>
       </div>
     </div>
@@ -87,7 +67,7 @@
 <script lang="ts">
 import { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
 import { formatBalance } from '@polkadot/util';
-import { $api, $isEnableIndividualClaim } from 'boot/api';
+import { $api } from 'boot/api';
 import Button from 'components/common/Button.vue';
 import ClaimRewardModal from 'components/dapp-staking/modals/ClaimRewardModal.vue';
 import StakeModal from 'components/dapp-staking/modals/StakeModal.vue';
@@ -98,7 +78,7 @@ import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
 import { StakingData } from 'src/modules/dapp-staking';
 import { useStore } from 'src/store';
 import { ClaimParameters, getAddressEnum, StakingParameters } from 'src/store/dapp-staking/actions';
-import { computed, defineComponent, ref, toRefs, watchEffect, PropType } from 'vue';
+import { computed, defineComponent, PropType, ref, toRefs, watchEffect } from 'vue';
 import './stake-panel.scss';
 
 export default defineComponent({
@@ -371,7 +351,6 @@ export default defineComponent({
       canUnbondWithdraw,
       isH160,
       currentAddress,
-      isEnableIndividualClaim: $isEnableIndividualClaim,
     };
   },
 });

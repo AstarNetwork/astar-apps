@@ -20,7 +20,6 @@ import Web3 from 'web3';
 const $api = ref<ApiPromise>();
 const $endpoint = ref<string>('');
 const $web3 = ref<Web3>();
-const $isEnableIndividualClaim = ref<boolean>(false);
 
 export default boot(async ({ store }) => {
   const { NETWORK_IDX, CUSTOM_ENDPOINT, SELECTED_ENDPOINT } = LOCAL_STORAGE;
@@ -82,8 +81,6 @@ export default boot(async ({ store }) => {
     store.commit('general/setMetaExtensions', metaExtensions.value);
     store.commit('general/setExtensionCount', extensionCount.value);
 
-    $isEnableIndividualClaim.value = await checkIsEnableIndividualClaim(api);
-
     if (chainInfo.value?.chain) {
       const currentChain = chainInfo.value?.chain as ASTAR_CHAIN;
       const currentNetworkIdx = getProviderIndex(currentChain);
@@ -96,4 +93,4 @@ export default boot(async ({ store }) => {
   });
 });
 
-export { $api, $web3, $isEnableIndividualClaim, $endpoint };
+export { $api, $web3, $endpoint };

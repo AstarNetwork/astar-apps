@@ -1,4 +1,4 @@
-import { $api, $isEnableIndividualClaim } from 'boot/api';
+import { $api } from 'boot/api';
 import { getInjector } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
@@ -35,7 +35,7 @@ export function useClaimAll() {
       if (!api) {
         throw Error('Failed to connect to API');
       }
-      if (!senderAddressRef || !era.value || isSendingTx.value || !$isEnableIndividualClaim.value) {
+      if (!senderAddressRef || !era.value || isSendingTx.value) {
         return;
       }
 
@@ -107,6 +107,5 @@ export function useClaimAll() {
     claimAll,
     batchTxs,
     isLoading,
-    isEnableIndividualClaim: $isEnableIndividualClaim,
   };
 }
