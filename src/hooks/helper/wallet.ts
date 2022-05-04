@@ -153,7 +153,7 @@ export const signAndSend = async ({
   substrateAccounts: SubstrateAccount[];
   isCustomSignature: boolean;
   dispatch: Dispatch;
-  txResHandler: (result: ISubmittableResult) => void;
+  txResHandler: (result: ISubmittableResult) => Promise<boolean>;
   // from: useCustomSignature.ts
   handleCustomExtrinsic?: (method: Transaction) => Promise<void>;
   finalizeCallback?: () => void;
@@ -173,9 +173,13 @@ export const signAndSend = async ({
           tip,
         },
         (result) => {
-          txResHandler && txResHandler(result);
-          finalizeCallback && finalizeCallback();
-          resolve(true);
+          (async () => {
+            const res = await txResHandler(result);
+            finalizeCallback && finalizeCallback();
+            console.log('here');
+            console.log('res', res);
+            resolve(res);
+          })();
         }
       );
     };

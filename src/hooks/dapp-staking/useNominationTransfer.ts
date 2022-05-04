@@ -87,8 +87,8 @@ export function useNominationTransfer({ stakingList }: { stakingList: StakingDat
         getAddressEnum(targetContractId)
       );
 
-      const txResHandler = (result: ISubmittableResult) => {
-        handleResult(result);
+      const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
+        return await handleResult(result);
       };
 
       await signAndSend({

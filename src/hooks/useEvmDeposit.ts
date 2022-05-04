@@ -54,7 +54,11 @@ export function useEvmDeposit(fn?: () => void) {
           {
             signer: injector.signer,
           },
-          (result) => handleResult(result)
+          (result) => {
+            (async () => {
+              await handleResult(result);
+            })();
+          }
         )
         .catch((error: Error) => handleTransactionError(error));
     } catch (e) {
