@@ -47,7 +47,7 @@ function useCall(addressRef: Ref<string>) {
 
   const updateAccount = async (address: string) => {
     if (!address) return;
-    const api = $api.value!!;
+    const api = $api!!;
 
     if (unsub.value) {
       unsub.value();
@@ -136,7 +136,7 @@ function useCall(addressRef: Ref<string>) {
 
 export function useBalance(addressRef: Ref<string>) {
   const balance = ref(new BN(0));
-  const accountData = ref<AccountData | AccountDataH160>();
+  let accountData: AccountData | AccountDataH160 | undefined;
 
   const { balanceRef, accountDataRef } = useCall(addressRef);
 
@@ -154,7 +154,7 @@ export function useBalance(addressRef: Ref<string>) {
     () => accountDataRef?.value,
     (info) => {
       if (info) {
-        accountData.value = info;
+        accountData = info;
       }
     },
     { immediate: true }

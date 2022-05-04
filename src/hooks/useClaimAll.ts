@@ -30,7 +30,7 @@ export function useClaimAll() {
     try {
       isLoading.value = true;
       batchTxs.value = [];
-      const api = $api.value;
+      const api = $api;
       const senderAddressRef = senderAddress.value;
       if (!api) {
         throw Error('Failed to connect to API');
@@ -60,7 +60,7 @@ export function useClaimAll() {
   });
 
   const claimAll = async (): Promise<void> => {
-    const api = $api.value;
+    const api = $api;
     const batchTxsRef = batchTxs.value;
     if (!api) {
       throw Error('Failed to connect to API');

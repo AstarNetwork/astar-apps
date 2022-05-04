@@ -17,7 +17,7 @@ import { TNetworkId, createAstarWeb3Instance } from 'src/config/web3';
 import { getProviderIndex, ASTAR_CHAIN } from 'src/config/chainEndpoints';
 import Web3 from 'web3';
 
-const $api = ref<ApiPromise>();
+let $api: ApiPromise | undefined;
 const $endpoint = ref<string>('');
 const $web3 = ref<Web3>();
 const $isEnableIndividualClaim = ref<boolean>(false);
@@ -65,7 +65,7 @@ export default boot(async ({ store }) => {
     meta: opengraphMeta,
   });
   let { api, extensions } = await connectApi(endpoint, networkIdx.value, store);
-  $api.value = api;
+  $api = api;
   $endpoint.value = endpoint;
 
   // update chaininfo

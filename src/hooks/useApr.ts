@@ -64,7 +64,7 @@ export const useApr = () => {
     const tvlTokenRef = tvlToken.value;
     const decimalRef = decimal.value;
     const blocksPerEraRef = Number(blockPerEra.value);
-    const apiRef = $api && $api.value;
+    const apiRef = $api;
     if (
       !apiRef ||
       !dappsRef ||

@@ -219,8 +219,8 @@ export default defineComponent({
     );
 
     const transferableBalance = computed(() => {
-      const balance = accountData.value
-        ? ethers.utils.formatEther(accountData.value.getUsableTransactionBalance().toString())
+      const balance = accountData
+        ? ethers.utils.formatEther(accountData.getUsableTransactionBalance().toString())
         : '0';
       return Number(balance);
     });
@@ -256,7 +256,7 @@ export default defineComponent({
     });
 
     watchEffect(() => {
-      const accountDataRef = accountData.value;
+      const accountDataRef = accountData;
       if (!accountDataRef) return;
       // Memo: `vesting ` -> there has been inputted 1 space here
       const vesting = accountDataRef.locks.find((it) => it.toHuman().id === 'vesting ');

@@ -29,12 +29,12 @@ export function useVesting(closeModal: () => void) {
       ],
     };
     try {
-      if (accountData.value && accountData.value.vesting.length) {
+      if (accountData && accountData.vesting.length) {
         const claimableAmount = Number(
-          ethers.utils.formatEther(accountData.value.vestedClaimable.toString())
+          ethers.utils.formatEther(accountData.vestedClaimable.toString())
         );
 
-        const vestings = accountData.value.vesting.map((vesting: ExtendedVestingInfo) => {
+        const vestings = accountData.vesting.map((vesting: ExtendedVestingInfo) => {
           const { perBlock, locked, startingBlock } = vesting.basicInfo;
           const vestedAmount = Number(ethers.utils.formatEther(vesting.vested.toString()));
           const totalDistribution = Number(ethers.utils.formatEther(locked.toString()));
@@ -65,7 +65,7 @@ export function useVesting(closeModal: () => void) {
 
   const unlockVestedTokensCustomExtrinsic = async (): Promise<void> => {
     try {
-      const fn: SubmittableExtrinsicFunction<'promise'> | undefined = $api?.value?.tx.vesting.vest;
+      const fn: SubmittableExtrinsicFunction<'promise'> | undefined = $api?.tx.vesting.vest;
       const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn();
       method && callFunc(method);
     } catch (e) {
@@ -75,7 +75,7 @@ export function useVesting(closeModal: () => void) {
 
   const unlockVestedTokens = async (): Promise<void> => {
     try {
-      const apiRef = $api.value;
+      const apiRef = $api;
       if (!apiRef) {
         throw Error('Cannot connect to the API');
       }

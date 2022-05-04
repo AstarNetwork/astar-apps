@@ -98,7 +98,7 @@ export default defineComponent({
 
     const getClaimInfo = async () => {
       claimInfo.value = await store.dispatch('dapps/getClaimInfo', {
-        api: $api?.value,
+        api: $api,
         senderAddress,
         dapp: props.dapp,
         decimals: decimal.value,

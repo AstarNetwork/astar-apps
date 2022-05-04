@@ -130,7 +130,7 @@ export function useTvlHistorical() {
   watch(
     [network, $api],
     async () => {
-      const api = $api.value;
+      const api = $api;
       try {
         if (!network.value || !network.value.length || !api) return;
         await Promise.all([loadData(network.value.toLowerCase()), fetchDappStakers(api)]);

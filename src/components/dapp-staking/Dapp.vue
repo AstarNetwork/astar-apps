@@ -103,7 +103,7 @@ export default defineComponent({
     const getDappInfo = () => {
       store
         .dispatch('dapps/getStakeInfo', {
-          api: $api?.value,
+          api: $api,
           senderAddress: senderAddress.value,
           dapp: props.dapp,
           substrateAccounts: substrateAccounts.value,

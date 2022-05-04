@@ -202,7 +202,7 @@ export default defineComponent({
           });
           customMsg.value = `You staked ${balance} on ${props.dapp.name}.`;
           const fn: SubmittableExtrinsicFunction<'promise'> | undefined =
-            $api?.value?.tx.dappsStaking.bondAndStake;
+            $api?.tx.dappsStaking.bondAndStake;
           const method: SubmittableExtrinsic<'promise'> | undefined =
             fn && fn(getAddressEnum(props.dapp.address), amount);
 
@@ -232,7 +232,7 @@ export default defineComponent({
         showModal.value = false;
       } else {
         const result = await store.dispatch('dapps/stake', {
-          api: $api?.value,
+          api: $api,
           senderAddress: stakeData.address,
           dapp: props.dapp,
           amount,
@@ -261,8 +261,8 @@ export default defineComponent({
           });
           customMsg.value = `You unstaked ${balance} on ${props.dapp.name}.`;
           const fn: SubmittableExtrinsicFunction<'promise'> | undefined = canUnbondWithdraw.value
-            ? $api?.value?.tx.dappsStaking.unbondAndUnstake
-            : $api?.value?.tx.dappsStaking.unbondUnstakeAndWithdraw;
+            ? $api?.tx.dappsStaking.unbondAndUnstake
+            : $api?.tx.dappsStaking.unbondUnstakeAndWithdraw;
           const method: SubmittableExtrinsic<'promise'> | undefined =
             fn && fn(getAddressEnum(props.dapp.address), amount);
 
@@ -278,7 +278,7 @@ export default defineComponent({
         showModal.value = false;
       } else {
         const result = await store.dispatch(dispatchCommand, {
-          api: $api?.value,
+          api: $api,
           senderAddress: stakeData.address,
           dapp: props.dapp,
           amount,
@@ -316,14 +316,11 @@ export default defineComponent({
         try {
           const transactions = [];
           for (let era of erasToClaim) {
-            transactions.push(
-              $api?.value?.tx.dappsStaking.claim(getAddressEnum(props.dapp.address), era)
-            );
+            transactions.push($api?.tx.dappsStaking.claim(getAddressEnum(props.dapp.address), era));
           }
 
           customMsg.value = 'All rewards have been already claimed.';
-          const fn: SubmittableExtrinsicFunction<'promise'> | undefined =
-            $api?.value?.tx.utility.batch;
+          const fn: SubmittableExtrinsicFunction<'promise'> | undefined = $api?.tx.utility.batch;
           const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn(transactions);
 
           method && (await callFunc(method));
@@ -337,7 +334,7 @@ export default defineComponent({
         await claimCustomExtrinsic();
       } else {
         await store.dispatch('dapps/claimBatch', {
-          api: $api?.value,
+          api: $api,
           senderAddress,
           dapp: props.dapp,
           substrateAccounts: substrateAccounts.value,

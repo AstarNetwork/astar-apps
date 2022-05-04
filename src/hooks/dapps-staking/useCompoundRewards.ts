@@ -45,12 +45,12 @@ export function useCompoundRewards() {
     try {
       // Check if metadata contains set_reward_destination so we know
       // if compounding is supported by a node or not.
-      const metadata = $api.value?.runtimeMetadata;
+      const metadata = $api?.runtimeMetadata;
       const metadataJson = JSON.stringify(metadata?.toJSON());
       isSupported.value = metadataJson.includes('set_reward_destination');
 
       // Subscribe to compounding data.
-      await $api.value?.query.dappsStaking.ledger(currentAddress.value, (ledger: AccountLedger) => {
+      await $api?.query.dappsStaking.ledger(currentAddress.value, (ledger: AccountLedger) => {
         if (ledger && isSupported.value) {
           rewardDestination.value = ledger.rewardDestination;
           isCompounding.value =
@@ -69,7 +69,7 @@ export function useCompoundRewards() {
   const setRewardDestinationCustomExtrinsic = async (rewardDestination: RewardDestination) => {
     try {
       const fn: SubmittableExtrinsicFunction<'promise'> | undefined =
-        $api.value?.tx.dappsStaking.setRewardDestination;
+        $api?.tx.dappsStaking.setRewardDestination;
       const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn(rewardDestination);
       method && (await callFunc(method));
     } catch (e) {
@@ -84,7 +84,7 @@ export function useCompoundRewards() {
       const injector = await getInjector(substrateAccounts.value);
 
       try {
-        await $api.value?.tx.dappsStaking.setRewardDestination(rewardDestination).signAndSend(
+        await $api?.tx.dappsStaking.setRewardDestination(rewardDestination).signAndSend(
           currentAddress.value,
           {
             signer: injector.signer,
