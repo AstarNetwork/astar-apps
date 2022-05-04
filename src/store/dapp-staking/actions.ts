@@ -73,7 +73,7 @@ export const hasExtrinsicFailedEvent = (
 
       if (section === 'system' && method === 'ExtrinsicFailed') {
         const [dispatchError] = data as unknown as ITuple<[DispatchError]>;
-        let message = dispatchError.type;
+        let message = dispatchError.type.toString();
 
         if (dispatchError.isModule) {
           try {

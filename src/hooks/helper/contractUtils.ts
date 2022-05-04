@@ -31,7 +31,7 @@ function getContractAbi(address: string | null, api: ApiPromise): Abi | null {
   try {
     const data = meta.contract && (JSON.parse(meta.contract.abi) as AnyJson);
 
-    abi = new Abi(data, api.registry.getChainProperties());
+    abi = data ? new Abi(data?.toString(), api.registry.getChainProperties()) : undefined;
   } catch (error) {
     console.error(error);
   }
