@@ -158,10 +158,12 @@ export default defineComponent({
       if (checkIsEthereumWallet(props.selectedWallet)) {
         props.connectEthereumWallet(props.selectedWallet);
       }
-      substrateAccount && store.commit('general/setCurrentAddress', substrateAccount);
+
       isClosing.value = true;
       const animationDuration = 500;
+
       setTimeout(() => {
+        substrateAccount && store.commit('general/setCurrentAddress', substrateAccount);
         isSelected.value = true;
         isClosing.value = false;
         emit('update:is-open', false);

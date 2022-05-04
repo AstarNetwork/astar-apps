@@ -137,15 +137,11 @@ export default defineComponent({
       return text;
     };
 
-    watch(senderAddress, () => {
-      getDappInfo();
-    });
-
     // Memo: update staking data for EthWallet account
     watch(
-      [isLoading],
+      [isLoading, senderAddress],
       () => {
-        if (isEthWallet.value && !isLoading.value) {
+        if (!isLoading.value) {
           getDappInfo();
         }
       },

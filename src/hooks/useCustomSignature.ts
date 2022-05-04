@@ -58,8 +58,7 @@ export function useCustomSignature({ fn, txType }: { fn?: () => void; txType?: T
         }
       });
     } catch (error: any) {
-      console.error(error);
-      dispatchError(error.message);
+      handleTransactionError(error);
       store.commit('general/setLoading', false);
       return false;
     }
