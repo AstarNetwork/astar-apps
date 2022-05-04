@@ -1,5 +1,5 @@
 <template>
-  <div v-if="currentAccount && isEnableIndividualClaim" class="widget-container">
+  <div v-if="currentAccount" class="widget-container">
     <div class="title">
       {{ $t('dappStaking.unclaimedRewards') }}
       <IconTooltip>
