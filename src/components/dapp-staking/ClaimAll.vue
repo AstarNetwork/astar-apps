@@ -7,9 +7,8 @@
       </IconTooltip>
     </div>
     <div class="widget-content">
-      <span v-if="!isCompounding">&nbsp;</span>
+      <span class="text--title">&nbsp;</span>
       <Button
-        v-if="!isCompounding"
         :small="true"
         :primary="true"
         :disabled="batchTxs.length === 0 || isLoading"
@@ -18,7 +17,6 @@
       >
         {{ $t('dappStaking.claim') }}
       </Button>
-      <span v-else class="text--title">{{ $t('dappStaking.autoCompoundingRewards') }}</span>
     </div>
   </div>
 </template>
@@ -28,7 +26,6 @@ import { fasMoneyCheckAlt } from '@quasar/extras/fontawesome-v5';
 import Button from 'src/components/common/Button.vue';
 import IconTooltip from 'components/common/IconTooltip.vue';
 import { useAccount, useClaimAll } from 'src/hooks';
-import { useCompoundRewards } from 'src/hooks/dapps-staking/useCompoundRewards';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
@@ -39,7 +36,6 @@ export default defineComponent({
   setup() {
     const { claimAll, batchTxs, isLoading } = useClaimAll();
     const { currentAccount } = useAccount();
-    const { isCompounding } = useCompoundRewards();
 
     return {
       fasMoneyCheckAlt,
@@ -47,7 +43,6 @@ export default defineComponent({
       batchTxs,
       isLoading,
       currentAccount,
-      isCompounding,
     };
   },
 });
