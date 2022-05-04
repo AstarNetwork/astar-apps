@@ -153,40 +153,47 @@ export const signAndSend = async ({
   substrateAccounts: SubstrateAccount[];
   isCustomSignature: boolean;
   dispatch: Dispatch;
-  txResHandler: (result: ISubmittableResult) => void;
+  txResHandler: (result: ISubmittableResult) => Promise<boolean>;
   // from: useCustomSignature.ts
   handleCustomExtrinsic?: (method: Transaction) => Promise<void>;
   finalizeCallback?: () => void;
   tip?: number;
-}): Promise<void> => {
-  const sendSubstrateTransaction = async (): Promise<void> => {
-    const injector = await getInjector(substrateAccounts);
-    if (!injector) {
-      throw Error('Invalid injector');
-    }
-    await transaction.signAndSend(
-      senderAddress,
-      {
-        signer: injector.signer,
-        nonce: -1,
-        tip,
-      },
-      (result) => {
-        txResHandler && txResHandler(result);
-        finalizeCallback && finalizeCallback();
+}): Promise<boolean> => {
+  return new Promise<boolean>(async (resolve) => {
+    const sendSubstrateTransaction = async (): Promise<void> => {
+      const injector = await getInjector(substrateAccounts);
+      if (!injector) {
+        throw Error('Invalid injector');
       }
-    );
-  };
+      await transaction.signAndSend(
+        senderAddress,
+        {
+          signer: injector.signer,
+          nonce: -1,
+          tip,
+        },
+        (result) => {
+          (async () => {
+            const res = await txResHandler(result);
+            finalizeCallback && finalizeCallback();
+            resolve(res);
+          })();
+        }
+      );
+    };
 
-  try {
-    if (isCustomSignature && handleCustomExtrinsic) {
-      await handleCustomExtrinsic(transaction);
-      finalizeCallback && finalizeCallback();
-    } else {
-      await sendSubstrateTransaction();
+    try {
+      if (isCustomSignature && handleCustomExtrinsic) {
+        await handleCustomExtrinsic(transaction);
+        finalizeCallback && finalizeCallback();
+        resolve(true);
+      } else {
+        await sendSubstrateTransaction();
+      }
+    } catch (error: any) {
+      console.error(error.message);
+      showError(dispatch, error.message);
+      resolve(false);
     }
-  } catch (error: any) {
-    console.error(error.message);
-    showError(dispatch, error.message);
-  }
+  });
 };

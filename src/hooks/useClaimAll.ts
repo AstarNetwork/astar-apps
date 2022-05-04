@@ -68,9 +68,10 @@ export function useClaimAll() {
 
     const transaction = api.tx.utility.batch(batchTxsRef);
 
-    const txResHandler = (result: ISubmittableResult) => {
-      handleResult(result);
+    const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
+      const res = handleResult(result);
       hasExtrinsicFailedEvent(result.events, store.dispatch);
+      return res;
     };
 
     await signAndSend({

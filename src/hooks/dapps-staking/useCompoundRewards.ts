@@ -6,7 +6,7 @@ import { useCustomSignature } from 'src/hooks';
 import { signAndSend } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { hasExtrinsicFailedEvent } from 'src/modules/extrinsic';
-import { computed, ref } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 
 type EraIndex = u32;
 
@@ -69,30 +69,34 @@ export function useCompoundRewards() {
   const setRewardDestination = async (rewardDestination: RewardDestination): Promise<void> => {
     try {
       const transaction = $api.value!.tx.dappsStaking.setRewardDestination(rewardDestination);
-      const txResHandler = (result: ISubmittableResult) => {
-        if (result.status.isFinalized) {
-          let errorMessage = '';
-          if (
-            !hasExtrinsicFailedEvent(
-              result.events,
-              store.dispatch,
-              (message: string) => (errorMessage = message)
-            )
-          ) {
-            store.dispatch('general/showAlertMsg', {
-              msg: 'You successfully set reward destination.',
-              alertType: 'success',
-            });
-          } else {
-            if (errorMessage.includes('TooManyEraStakeValues')) {
-              errorMessage = `${errorMessage} - Disable compounding, claim your rewards and then enable compounding again.`;
+      const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
+        return new Promise<boolean>(async (resolve) => {
+          if (result.status.isFinalized) {
+            let errorMessage = '';
+            if (
+              !hasExtrinsicFailedEvent(
+                result.events,
+                store.dispatch,
+                (message: string) => (errorMessage = message)
+              )
+            ) {
+              store.dispatch('general/showAlertMsg', {
+                msg: 'You successfully set reward destination.',
+                alertType: 'success',
+              });
+              resolve(true);
+            } else {
+              if (errorMessage.includes('TooManyEraStakeValues')) {
+                errorMessage = `${errorMessage} - Disable compounding, claim your rewards and then enable compounding again.`;
+                resolve(false);
+              }
             }
-          }
 
-          store.commit('general/setLoading', false);
-        } else {
-          store.commit('general/setLoading', true);
-        }
+            store.commit('general/setLoading', false);
+          } else {
+            store.commit('general/setLoading', true);
+          }
+        });
       };
 
       await signAndSend({
@@ -113,7 +117,9 @@ export function useCompoundRewards() {
     }
   };
 
-  getCompoundingType();
+  watchEffect(() => {
+    getCompoundingType();
+  });
 
   return {
     isSupported,

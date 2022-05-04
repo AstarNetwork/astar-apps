@@ -37,9 +37,10 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
 
   const transferNative = async (transferAmt: BN, fromAddress: string, toAddress: string) => {
     try {
-      const txResHandler = (result: ISubmittableResult) => {
-        handleResult(result);
+      const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
+        const res = await handleResult(result);
         isTxSuccess.value = true;
+        return res;
       };
 
       const transaction = $api.value!.tx.balances.transfer(toAddress, transferAmt);

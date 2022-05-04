@@ -206,18 +206,21 @@ export default defineComponent({
         const msg = `You staked ${stakeAmount} on ${props.dapp.name}.`;
         customMsg.value = msg;
 
-        const txResHandler = async (result: ISubmittableResult) => {
-          if (result.status.isFinalized) {
-            if (!hasExtrinsicFailedEvent(result.events, store.dispatch)) {
-              store.dispatch('general/showAlertMsg', {
-                msg,
-                alertType: 'success',
-              });
+        const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
+          return new Promise<boolean>(async (resolve) => {
+            if (result.status.isFinalized) {
+              if (!hasExtrinsicFailedEvent(result.events, store.dispatch)) {
+                store.dispatch('general/showAlertMsg', {
+                  msg,
+                  alertType: 'success',
+                });
+              }
+              store.commit('general/setLoading', false);
+              resolve(true);
+            } else {
+              store.commit('general/setLoading', true);
             }
-            store.commit('general/setLoading', false);
-          } else {
-            store.commit('general/setLoading', true);
-          }
+          });
         };
 
         await signAndSend({
@@ -252,19 +255,22 @@ export default defineComponent({
         const msg = `You unstaked ${unstakeAmount} on ${props.dapp.name}.`;
         customMsg.value = msg;
 
-        const txResHandler = async (result: ISubmittableResult) => {
-          if (result.status.isFinalized) {
-            if (!hasExtrinsicFailedEvent(result.events, store.dispatch)) {
-              store.commit('dapps/setUnlockingChunks', -1);
-              store.dispatch('general/showAlertMsg', {
-                msg,
-                alertType: 'success',
-              });
+        const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
+          return new Promise<boolean>(async (resolve) => {
+            if (result.status.isFinalized) {
+              if (!hasExtrinsicFailedEvent(result.events, store.dispatch)) {
+                store.commit('dapps/setUnlockingChunks', -1);
+                store.dispatch('general/showAlertMsg', {
+                  msg,
+                  alertType: 'success',
+                });
+              }
+              store.commit('general/setLoading', false);
+              resolve(true);
+            } else {
+              store.commit('general/setLoading', true);
             }
-            store.commit('general/setLoading', false);
-          } else {
-            store.commit('general/setLoading', true);
-          }
+          });
         };
 
         await signAndSend({

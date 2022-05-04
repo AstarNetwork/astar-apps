@@ -67,8 +67,8 @@ export function useVesting(closeModal: () => void) {
 
   const unlockVestedTokens = async (api: ApiPromise): Promise<void> => {
     try {
-      const txResHandler = (result: ISubmittableResult) => {
-        handleResult(result);
+      const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
+        return await handleResult(result);
       };
 
       await signAndSend({

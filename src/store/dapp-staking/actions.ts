@@ -161,62 +161,67 @@ const actions: ActionTree<State, StateInterface> = {
   ): Promise<boolean> {
     try {
       if (parameters.api) {
-        const txResHandler = async (result: ISubmittableResult) => {
-          if (result.status.isFinalized) {
-            if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
-              try {
-                const collectionKey = await getCollectionKey();
-                if (parameters.dapp.iconFileName) {
-                  const fileName = `${parameters.dapp.address}_${parameters.dapp.iconFileName}`;
-                  parameters.dapp.iconUrl = await uploadFile(
-                    fileName,
-                    collectionKey,
-                    parameters.dapp.iconFile
+        const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
+          return new Promise<boolean>(async (resolve) => {
+            if (result.status.isFinalized) {
+              if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
+                try {
+                  const collectionKey = await getCollectionKey();
+                  if (parameters.dapp.iconFileName) {
+                    const fileName = `${parameters.dapp.address}_${parameters.dapp.iconFileName}`;
+                    parameters.dapp.iconUrl = await uploadFile(
+                      fileName,
+                      collectionKey,
+                      parameters.dapp.iconFile
+                    );
+                  } else {
+                    parameters.dapp.iconUrl = '/images/noimage.png';
+                  }
+
+                  if (!parameters.dapp.url) {
+                    parameters.dapp.url = '';
+                  }
+
+                  parameters.dapp.imagesUrl = [];
+                  for (let i = 0; i < parameters.dapp.imagesContent.length; i++) {
+                    const dappImage = parameters.dapp.imagesContent[i];
+                    const dappImageUrl = await uploadFile(
+                      `${parameters.dapp.address}_${i}_${parameters.dapp.images[i].name}`,
+                      collectionKey,
+                      dappImage
+                    );
+                    parameters.dapp.imagesUrl.push(dappImageUrl);
+                  }
+
+                  const addedDapp = await addDapp(collectionKey, parameters.dapp);
+                  commit('addDapp', addedDapp);
+
+                  dispatch(
+                    'general/showAlertMsg',
+                    {
+                      msg: `You successfully registered dApp ${parameters.dapp.name} to the store.`,
+                      alertType: 'success',
+                    },
+                    { root: true }
                   );
-                } else {
-                  parameters.dapp.iconUrl = '/images/noimage.png';
-                }
 
-                if (!parameters.dapp.url) {
-                  parameters.dapp.url = '';
-                }
-
-                parameters.dapp.imagesUrl = [];
-                for (let i = 0; i < parameters.dapp.imagesContent.length; i++) {
-                  const dappImage = parameters.dapp.imagesContent[i];
-                  const dappImageUrl = await uploadFile(
-                    `${parameters.dapp.address}_${i}_${parameters.dapp.images[i].name}`,
-                    collectionKey,
-                    dappImage
+                  resolve(true);
+                } catch (e) {
+                  const error = e as unknown as Error;
+                  console.log(error);
+                  showError(dispatch, error.message);
+                  alert(
+                    `An unexpected error occured during dApp registration. Please screenshot this message and send to the Astar team. ${error.message}`
                   );
-                  parameters.dapp.imagesUrl.push(dappImageUrl);
+                  resolve(false);
                 }
-
-                const addedDapp = await addDapp(collectionKey, parameters.dapp);
-                commit('addDapp', addedDapp);
-
-                dispatch(
-                  'general/showAlertMsg',
-                  {
-                    msg: `You successfully registered dApp ${parameters.dapp.name} to the store.`,
-                    alertType: 'success',
-                  },
-                  { root: true }
-                );
-              } catch (e) {
-                const error = e as unknown as Error;
-                console.log(error);
-                showError(dispatch, error.message);
-                alert(
-                  `An unexpected error occured during dApp registration. Please screenshot this message and send to the Astar team. ${error.message}`
-                );
               }
-            }
 
-            commit('general/setLoading', false, { root: true });
-          } else {
-            commit('general/setLoading', true, { root: true });
-          }
+              commit('general/setLoading', false, { root: true });
+            } else {
+              commit('general/setLoading', true, { root: true });
+            }
+          });
         };
 
         const transaction = parameters.api.tx.dappsStaking.register(

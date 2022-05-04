@@ -29,8 +29,8 @@ export function useEvmDeposit(fn?: () => void) {
         throw Error('Cannot withdraw the deposit');
       }
 
-      const txResHandler = (result: ISubmittableResult) => {
-        handleResult(result);
+      const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
+        return await handleResult(result);
       };
 
       await signAndSend({
