@@ -25,37 +25,44 @@ export function useCustomSignature({ fn, txType }: { fn?: () => void; txType?: T
   };
 
   const handleResult = async (result: ISubmittableResult): Promise<boolean> => {
-    return new Promise<boolean>(async (resolve) => {
-      const status = result.status;
-      if (status.isInBlock) {
-        const msg = customMsg.value ?? `Completed at block hash #${status.asInBlock.toString()}`;
+    try {
+      return new Promise<boolean>(async (resolve) => {
+        const status = result.status;
+        if (status.isInBlock) {
+          const msg = customMsg.value ?? `Completed at block hash #${status.asInBlock.toString()}`;
 
-        store.dispatch('general/showAlertMsg', {
-          msg,
-          alertType: 'success',
-        });
+          store.dispatch('general/showAlertMsg', {
+            msg,
+            alertType: 'success',
+          });
 
-        store.commit('general/setLoading', false);
-        fn && fn();
-        customMsg.value = null;
-        resolve(true);
-      } else {
-        if (status.type !== 'Finalized') {
-          store.commit('general/setLoading', true);
+          store.commit('general/setLoading', false);
+          fn && fn();
+          customMsg.value = null;
+          resolve(true);
         } else {
-          resolve(false);
+          if (status.type !== 'Finalized') {
+            store.commit('general/setLoading', true);
+          } else {
+            resolve(false);
+          }
         }
-      }
 
-      if (txType) {
-        displayCustomMessage({
-          txType,
-          result,
-          senderAddress: senderAddress.value,
-          dispatch: store.dispatch,
-        });
-      }
-    });
+        if (txType) {
+          displayCustomMessage({
+            txType,
+            result,
+            senderAddress: senderAddress.value,
+            dispatch: store.dispatch,
+          });
+        }
+      });
+    } catch (error: any) {
+      console.error(error);
+      dispatchError(error.message);
+      store.commit('general/setLoading', false);
+      return false;
+    }
   };
 
   const { callFunc } = useExtrinsicCall({

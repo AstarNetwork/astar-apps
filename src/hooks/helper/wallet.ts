@@ -1,13 +1,13 @@
-import { showError } from 'src/modules/extrinsic';
-import { ISubmittableResult } from '@polkadot/types/types';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
-import { EthereumProvider } from './../types/CustomSignature';
-import { supportEvmWalletObj, SupportWallet } from 'src/config/wallets';
 import { web3Enable } from '@polkadot/extension-dapp';
+import { ISubmittableResult } from '@polkadot/types/types';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { SubstrateAccount } from './../../store/general/state';
+import { supportEvmWalletObj, SupportWallet } from 'src/config/wallets';
 import { deepLink } from 'src/links';
+import { showError } from 'src/modules/extrinsic';
 import { Dispatch } from 'vuex';
+import { SubstrateAccount } from './../../store/general/state';
+import { EthereumProvider } from './../types/CustomSignature';
 
 export const getInjectedExtensions = async (): Promise<any[]> => {
   const extensions = await web3Enable('AstarNetwork/astar-apps');
@@ -176,8 +176,6 @@ export const signAndSend = async ({
           (async () => {
             const res = await txResHandler(result);
             finalizeCallback && finalizeCallback();
-            console.log('here');
-            console.log('res', res);
             resolve(res);
           })();
         }
