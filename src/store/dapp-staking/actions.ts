@@ -540,6 +540,7 @@ export interface StakingParameters {
   senderAddress: string;
   api: ApiPromise;
   substrateAccounts: SubstrateAccount[];
+  decimals?: number;
   isEnableIndividualClaim?: boolean;
 }
 
