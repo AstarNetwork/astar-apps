@@ -25,36 +25,43 @@ export function useCustomSignature({ fn, txType }: { fn?: () => void; txType?: T
   };
 
   const handleResult = async (result: ISubmittableResult): Promise<boolean> => {
-    return new Promise<boolean>(async (resolve) => {
-      const status = result.status;
-      if (status.isInBlock) {
-        const msg = customMsg.value ?? `Completed at block hash #${status.asInBlock.toString()}`;
-        store.dispatch('general/showAlertMsg', {
-          msg,
-          alertType: 'success',
-        });
+    try {
+      return new Promise<boolean>(async (resolve) => {
+        const status = result.status;
+        if (status.isInBlock) {
+          const msg = customMsg.value ?? `Completed at block hash #${status.asInBlock.toString()}`;
 
-        store.commit('general/setLoading', false);
-        fn && fn();
-        customMsg.value = null;
-        resolve(true);
-      } else {
-        if (status.type !== 'Finalized') {
-          store.commit('general/setLoading', true);
+          store.dispatch('general/showAlertMsg', {
+            msg,
+            alertType: 'success',
+          });
+
+          store.commit('general/setLoading', false);
+          fn && fn();
+          customMsg.value = null;
+          resolve(true);
         } else {
-          resolve(false);
+          if (status.type !== 'Finalized') {
+            store.commit('general/setLoading', true);
+          } else {
+            resolve(false);
+          }
         }
-      }
 
-      if (txType) {
-        displayCustomMessage({
-          txType,
-          result,
-          senderAddress: senderAddress.value,
-          dispatch: store.dispatch,
-        });
-      }
-    });
+        if (txType) {
+          displayCustomMessage({
+            txType,
+            result,
+            senderAddress: senderAddress.value,
+            dispatch: store.dispatch,
+          });
+        }
+      });
+    } catch (error: any) {
+      handleTransactionError(error);
+      store.commit('general/setLoading', false);
+      return false;
+    }
   };
 
   const { callFunc } = useExtrinsicCall({

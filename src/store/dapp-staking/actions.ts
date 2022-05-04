@@ -537,13 +537,9 @@ export interface RegisterParameters {
 
 export interface StakingParameters {
   dapp: DappItem;
-  amount: BN;
   senderAddress: string;
   api: ApiPromise;
-  decimals: number;
-  unit: string;
   substrateAccounts: SubstrateAccount[];
-  finalizeCallback: () => void;
   isEnableIndividualClaim?: boolean;
 }
 
