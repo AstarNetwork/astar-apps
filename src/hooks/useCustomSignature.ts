@@ -38,13 +38,15 @@ export function useCustomSignature({ fn, txType }: { fn?: () => void; txType?: T
         store.commit('general/setLoading', false);
         fn && fn();
         customMsg.value = null;
-        console.log('handleResult!!');
         resolve(true);
       } else {
         if (status.type !== 'Finalized') {
           store.commit('general/setLoading', true);
+        } else {
+          resolve(false);
         }
       }
+
       if (txType) {
         displayCustomMessage({
           txType,
