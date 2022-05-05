@@ -28,24 +28,22 @@ export function useCustomSignature({ fn, txType }: { fn?: () => void; txType?: T
     try {
       return new Promise<boolean>(async (resolve) => {
         const status = result.status;
-        if (status.isInBlock) {
-          const msg = customMsg.value ?? `Completed at block hash #${status.asInBlock.toString()}`;
+        if (status.isFinalized) {
+          store.commit('general/setLoading', false);
+          fn && fn();
+          const msg = customMsg.value
+            ? customMsg.value
+            : `Completed at block hash #${status.asFinalized.toString()}`;
 
           store.dispatch('general/showAlertMsg', {
             msg,
             alertType: 'success',
           });
 
-          store.commit('general/setLoading', false);
-          fn && fn();
           customMsg.value = null;
           resolve(true);
         } else {
-          if (status.type !== 'Finalized') {
-            store.commit('general/setLoading', true);
-          } else {
-            resolve(false);
-          }
+          store.commit('general/setLoading', true);
         }
 
         if (txType) {

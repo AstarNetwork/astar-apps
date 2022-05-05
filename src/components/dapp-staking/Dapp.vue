@@ -39,7 +39,6 @@
         :account-data="accountData"
         :show-stake="showStakeModal"
         :staking-list="stakingList"
-        @stake-changed="handleStakeChanged"
         @stake-modal-opened="handleStakeModalOpened"
       />
     </div>
@@ -54,14 +53,12 @@
 </template>
 
 <script lang="ts">
-import { $api } from 'boot/api';
 import Avatar from 'components/common/Avatar.vue';
 import ModalDappDetails from 'components/dapp-staking/modals/ModalDappDetails.vue';
 import StakePanel from 'components/dapp-staking/StakePanel.vue';
 import { StakingData } from 'src/modules/dapp-staking';
-import { useStore } from 'src/store';
-import { StakeInfo, StakingParameters } from 'src/store/dapp-staking/actions';
-import { computed, defineComponent, PropType, ref, toRefs, watch } from 'vue';
+import { StakeInfo } from 'src/store/dapp-staking/actions';
+import { computed, defineComponent, PropType, ref, toRefs } from 'vue';
 
 export default defineComponent({
   components: {
@@ -74,13 +71,17 @@ export default defineComponent({
       type: Object,
       required: true,
     },
+    stakeInfos: {
+      type: Array as PropType<StakeInfo[]>,
+      required: true,
+    },
     accountData: {
       type: Object,
       required: true,
     },
     stakerMaxNumber: {
       type: Number,
-      default: 0,
+      required: true,
     },
     setStakingList: {
       type: Function,
@@ -91,41 +92,23 @@ export default defineComponent({
       required: true,
     },
   },
-  emits: ['dappClick'],
-  setup(props, { emit }) {
-    const store = useStore();
-    const stakeInfo = ref<StakeInfo>();
-    const senderAddress = computed(() => store.getters['general/selectedAddress']);
-    const isMaxStaker = ref<boolean>(false);
+  setup(props) {
+    const stakeInfo = computed(() => {
+      // Memo: return `undefined` for dapps hasn't registered in local node
+      return props.stakeInfos.find((it: StakeInfo | undefined) => {
+        if (!it) return undefined;
+        return it.dappAddress === props.dapp.address;
+      });
+    });
     const showDappDetailsModal = ref<boolean>(false);
     const showStakeModal = ref<boolean>(false);
-    const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
-    const isEthWallet = computed(() => store.getters['general/isEthWallet']);
-    const isLoading = computed(() => store.getters['general/isLoading']);
     const showDappDetails = (): void => {
       showDappDetailsModal.value = true;
     };
 
-    const handleStakeChanged = (): void => {
-      getDappInfo();
-      props.setStakingList();
-    };
-
-    const getDappInfo = () => {
-      store
-        .dispatch('dapps/getStakeInfo', {
-          api: $api?.value,
-          senderAddress: senderAddress.value,
-          dapp: props.dapp,
-          substrateAccounts: substrateAccounts.value,
-        } as StakingParameters)
-        .then((info: StakeInfo) => {
-          if (info) {
-            stakeInfo.value = info;
-            isMaxStaker.value = info.stakersCount === props.stakerMaxNumber;
-          }
-        });
-    };
+    const isMaxStaker = computed(() => {
+      return stakeInfo.value?.stakersCount === props.stakerMaxNumber;
+    });
 
     const cleanMarkup = (text: string): string => {
       // ATM remove only # and *
@@ -137,19 +120,7 @@ export default defineComponent({
       return text;
     };
 
-    // Memo: update staking data for EthWallet account
-    watch(
-      [isLoading, senderAddress],
-      () => {
-        if (!isLoading.value) {
-          getDappInfo();
-        }
-      },
-      { immediate: false }
-    );
-
     const showStake = (): void => {
-      console.log('show stake');
       showStakeModal.value = true;
     };
 
@@ -157,21 +128,16 @@ export default defineComponent({
       showStakeModal.value = false;
     };
 
-    if (senderAddress.value) {
-      getDappInfo();
-    }
-
     return {
       ...toRefs(props),
-      stakeInfo,
       showDappDetails,
-      handleStakeChanged,
       isMaxStaker,
       showDappDetailsModal,
       showStake,
       showStakeModal,
       handleStakeModalOpened,
       cleanMarkup,
+      stakeInfo,
     };
   },
 });

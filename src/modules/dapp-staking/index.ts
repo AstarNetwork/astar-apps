@@ -1,5 +1,11 @@
 import BN from 'bn.js';
-export { formatStakingList, getDappStakers, getAddressEnum } from './utils';
+export {
+  formatStakingList,
+  getDappStakers,
+  getAddressEnum,
+  getStakeInfo,
+  getLatestStakePoint,
+} from './utils';
 
 export type ContractEvm = {
   Evm: string;

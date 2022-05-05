@@ -42,9 +42,10 @@
             @focus="initInput"
           />
         </div>
-        <button v-if="isMaxButton" type="button" class="max" @click="setMaxAmount">
+        <button v-if="isMaxButton" type="button" class="max" @click="handleMaxButton">
           {{ $t('max') }}
         </button>
+
         <div
           class="
             tw-text-blue-900
@@ -86,6 +87,7 @@ import { defineComponent, PropType, ref, watchEffect, computed } from 'vue';
 import { getUnitNames, defaultUnitIndex } from 'src/hooks/helper/units';
 import { useStore } from 'src/store';
 import BN from 'bn.js';
+import { $isEnableNominationTransfer } from 'src/boot/api';
 export default defineComponent({
   props: {
     title: { type: String, default: '' },
@@ -94,6 +96,8 @@ export default defineComponent({
     fixUnit: { type: Boolean, default: false },
     amount: { default: new BN(0), type: (Object as PropType<BN>) || Number },
     isMaxButton: { type: Boolean },
+    setNominationTransferMaxAmount: { type: Function, required: true },
+    formattedTransferFrom: { type: Object, required: true },
   },
   emits: ['update:amount', 'update:selectedUnit', 'input'],
   setup(props, { emit }) {
@@ -156,7 +160,26 @@ export default defineComponent({
       }
     };
 
-    return { arrUnitNames, update, isMaxAmount, isInitInput, initInput, isH160, setMaxAmount };
+    const isNominationTransferMax = computed(() => {
+      return $isEnableNominationTransfer.value && props.formattedTransferFrom.isNominationTransfer;
+    });
+
+    const handleMaxButton = () => {
+      isNominationTransferMax.value ? props.setNominationTransferMaxAmount() : setMaxAmount();
+    };
+
+    return {
+      arrUnitNames,
+      update,
+      isMaxAmount,
+      isInitInput,
+      initInput,
+      isH160,
+      setMaxAmount,
+      isEnableNominationTransfer: $isEnableNominationTransfer.value,
+      isNominationTransferMax,
+      handleMaxButton,
+    };
   },
 });
 </script>

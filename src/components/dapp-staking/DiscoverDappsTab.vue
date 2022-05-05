@@ -18,49 +18,10 @@
       <DappsCount />
       <Era :progress="progress" :blocks-until-next-era="blocksUntilNextEra" :era="era" />
       <APR />
-      <!-- <Withdraw /> -->
     </div>
 
-    <!-- <div class="tw-text-center tw-mb-8 tw-flex tw-items-center tw-justify-center sm:tw-gap-x-4">
-      <Button :disabled="isPalletDisabled" @click="showRegisterDappModal = true">
-        <astar-icon-base
-          class="tw-w-5 tw-h-5 tw-text-white tw--ml-1"
-          stroke="currentColor"
-          icon-name="plus"
-        >
-          <astar-icon-plus />
-        </astar-icon-base>
-        {{ $t('dappStaking.registerDapp') }}
-      </Button>
-      <div
-        v-if="stakerApr > 0"
-        class="
-          sm:tw-w-40
-          tw-justify-center
-          tw-inline-flex
-          tw-items-center
-          tw-px-6
-          tw-py-3
-          tw-border
-          tw-border-transparent
-          tw-text-sm
-          tw-font-medium
-          tw-rounded-full
-          tw-shadow-sm
-          tw-text-white
-          tw-bg-indigo-500
-          tw-mx-1
-        "
-      >
-        <astar-icon-base class="tw-w-5 tw-h-5 tw-text-white tw--ml-2 tw-mr-2" icon-name="seedling">
-          <q-icon :name="fasSeedling" color="green" />
-        </astar-icon-base>
-        <div>
-          {{ $t('dappStaking.stakerApr', { value: Number(stakerApr.toFixed(1)) }) }}
-        </div>
-      </div>
-    </div> -->
     <UserRewards />
+
     <div class="store-container tw-grid tw-gap-x-12 xl:tw-gap-x-18 tw-justify-center">
       <div
         v-if="dapps.length === 0"
@@ -68,16 +29,19 @@
       >
         {{ $t('dappStaking.noDappsRegistered') }}
       </div>
-      <Dapp
-        v-for="(dapp, index) in dapps"
-        :key="index"
-        :dapp="dapp"
-        :staker-max-number="maxNumberOfStakersPerContract"
-        :account-data="accountData"
-        :dapps="dapps"
-        :set-staking-list="setStakingList"
-        :staking-list="stakingList"
-      />
+      <template v-if="stakeInfos">
+        <Dapp
+          v-for="(dapp, index) in dapps"
+          :key="index"
+          :dapp="dapp"
+          :staker-max-number="maxNumberOfStakersPerContract"
+          :account-data="accountData"
+          :dapps="dapps"
+          :set-staking-list="setStakingList"
+          :staking-list="stakingList"
+          :stake-infos="stakeInfos"
+        />
+      </template>
     </div>
 
     <Teleport to="#app--main">
@@ -93,25 +57,21 @@
 
 <script lang="ts">
 import Button from 'components/common/Button.vue';
-import ModalRegisterDapp from 'components/dapp-staking/modals/ModalRegisterDapp.vue';
 import ModalMaintenance from 'components/dapp-staking/modals/ModalMaintenance.vue';
+import ModalRegisterDapp from 'components/dapp-staking/modals/ModalRegisterDapp.vue';
+import { useMeta } from 'quasar';
 import Dapp from 'src/components/dapp-staking/Dapp.vue';
 import UserRewards from 'src/components/dapp-staking/UserRewards.vue';
+import { useAccount, useBalance, useCurrentEra, useListDapps } from 'src/hooks';
 import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
-import { useCurrentEra, useAccount, useBalance } from 'src/hooks';
-import { DappItem } from 'src/store/dapp-staking/state';
-import { computed, defineComponent, ref, watchEffect } from 'vue';
-import TVL from './statistics/TVL.vue';
-import DappsCount from './statistics/DappsCount.vue';
-import APR from './statistics/APR.vue';
-import Era from './statistics/Era.vue';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
-import { fasSeedling } from '@quasar/extras/fontawesome-v5';
-import { useMeta } from 'quasar';
-import BN from 'bn.js';
-import { $api } from 'src/boot/api';
-import { formatStakingList, StakingData } from 'src/modules/dapp-staking';
+import { DappItem } from 'src/store/dapp-staking/state';
+import { computed, defineComponent, ref } from 'vue';
+import APR from './statistics/APR.vue';
+import DappsCount from './statistics/DappsCount.vue';
+import Era from './statistics/Era.vue';
+import TVL from './statistics/TVL.vue';
 
 export default defineComponent({
   components: {
@@ -126,13 +86,12 @@ export default defineComponent({
     ModalMaintenance,
   },
   setup() {
-    const store = useStore();
-    const dapps = computed(() => store.getters['dapps/getAllDapps']);
     useMeta({ title: 'Discover dApps' });
+    const store = useStore();
     const { progress, blocksUntilNextEra, era } = useCurrentEra();
     const { currentAccount } = useAccount();
     const { accountData } = useBalance(currentAccount);
-    const isH160 = computed(() => store.getters['general/isH160Formatted']);
+    const { stakeInfos, dapps, stakingList } = useListDapps();
 
     const maxNumberOfStakersPerContract = computed(
       () => store.getters['dapps/getMaxNumberOfStakersPerContract']
@@ -146,54 +105,6 @@ export default defineComponent({
     const selectedDappInfo = ref<StakeInfo>();
     const isPalletDisabled = computed(() => store.getters['dapps/getIsPalletDisabled']);
 
-    store.dispatch('dapps/getDapps');
-    store.dispatch('dapps/getStakingInfo');
-
-    watchEffect(() => {
-      if (isH160.value) {
-        store.dispatch('general/showAlertMsg', {
-          msg: 'dApp staking only supports Substrate wallets',
-          alertType: 'error',
-        });
-      }
-    });
-
-    const stakingList = ref<StakingData[]>([
-      {
-        address: '',
-        name: 'Transferable Balance',
-        balance: new BN(0),
-      },
-    ]);
-
-    const setStakingList = async () => {
-      const dappsRef = dapps.value;
-      const accountDataRef = accountData.value;
-      const apiRef = $api.value;
-      const currentAccountRef = currentAccount.value;
-      if (!dapps.value || !accountDataRef || !apiRef || !currentAccountRef) return;
-
-      try {
-        const data = await formatStakingList({
-          api: apiRef,
-          address: currentAccountRef,
-          dapps: dappsRef,
-        });
-        data.unshift({
-          address: currentAccountRef,
-          name: 'Transferable Balance',
-          balance: accountDataRef.getUsableFeeBalance(),
-        });
-        stakingList.value = data;
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    watchEffect(async () => {
-      await setStakingList();
-    });
-
     return {
       dapps,
       selectedDapp,
@@ -204,11 +115,10 @@ export default defineComponent({
       progress,
       blocksUntilNextEra,
       era,
-      fasSeedling,
       accountData,
       currentAccount,
       isPalletDisabled,
-      setStakingList,
+      stakeInfos,
       stakingList,
     };
   },

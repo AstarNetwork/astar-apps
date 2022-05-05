@@ -1,7 +1,12 @@
+import BN from 'bn.js';
+import { StakeInfo, EraStakingPoints } from './../../../store/dapp-staking/actions';
 import { ApiPromise } from '@polkadot/api';
 import { DappItem } from './../../../store/dapp-staking/state';
 import { GeneralStakerInfo } from 'src/hooks/helper/claim';
 import { ContractEvm, StakingData } from './../index';
+import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
+import { EraIndex } from '@polkadot/types/interfaces';
+import { Option } from '@polkadot/types';
 
 const getDapps = async (api: ApiPromise): Promise<string[]> => {
   try {
@@ -66,3 +71,74 @@ export const getDappStakers = async ({ api }: { api: ApiPromise }): Promise<numb
 
 // TODO refactor, detect address type, etc.....
 export const getAddressEnum = (address: string) => ({ Evm: address });
+
+export const getLatestStakePoint = async (
+  api: ApiPromise,
+  contract: string
+): Promise<EraStakingPoints | undefined> => {
+  const currentEra = await (await api.query.dappsStaking.currentEra<EraIndex>()).toNumber();
+  const contractAddress = getAddressEnum(contract);
+  // iterate from currentEra backwards until you find record for ContractEraStake
+  for (let era = currentEra; era > 0; era -= 1) {
+    const stakeInfoPromise = await api.query.dappsStaking.contractEraStake<
+      Option<EraStakingPoints>
+    >(contractAddress, era);
+    const stakeInfo = await stakeInfoPromise.unwrapOr(undefined);
+
+    if (stakeInfo) {
+      return stakeInfo;
+    }
+  }
+
+  return undefined;
+};
+
+export const getStakeInfo = async ({
+  api,
+  dappAddress,
+  currentAccount,
+}: {
+  api: ApiPromise;
+  dappAddress: string;
+  currentAccount: string;
+}): Promise<StakeInfo | undefined> => {
+  const initialYourStake = {
+    formatted: '',
+    denomAmount: new BN('0'),
+  };
+
+  const stakeInfo = await getLatestStakePoint(api, dappAddress);
+  if (!stakeInfo) return undefined;
+
+  const data = {
+    totalStake: balanceFormatter(stakeInfo.total.toString()),
+    yourStake: initialYourStake,
+    claimedRewards: '0',
+    hasStake: false,
+    stakersCount: Number(stakeInfo.numberOfStakers.toString()),
+    dappAddress,
+  };
+
+  try {
+    const stakerInfo = await api.query.dappsStaking.generalStakerInfo<GeneralStakerInfo>(
+      currentAccount,
+      {
+        Evm: dappAddress,
+      }
+    );
+
+    const balance = stakerInfo.stakes.length && stakerInfo.stakes.slice(-1)[0].staked.toString();
+    const yourStake = {
+      formatted: balanceFormatter(balance),
+      denomAmount: new BN(balance.toString()),
+    };
+
+    return {
+      ...data,
+      hasStake: Number(balance.toString()) > 0,
+      yourStake,
+    };
+  } catch (error) {
+    return data;
+  }
+};

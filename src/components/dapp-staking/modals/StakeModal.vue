@@ -17,7 +17,7 @@
           @sel-changed="reloadAmount"
         />
       </div>
-      <div v-if="isEnableNominationTransfer" class="tw-mb-4">
+      <div v-if="isEnableNominationTransfer && actionName === StakeAction.Stake" class="tw-mb-4">
         <label
           class="
             tw-block tw-text-sm tw-font-medium tw-text-gray-500
@@ -39,27 +39,25 @@
           v-model:amount="data.amount"
           v-model:selectedUnit="data.unit"
           title="Amount"
+          :set-nomination-transfer-max-amount="setNominationTransferMaxAmount"
+          :formatted-transfer-from="formattedTransferFrom"
           :max-in-default-unit="
             actionName === StakeAction.Unstake
               ? formatStakeAmount
               : accountData?.getUsableFeeBalance()
           "
-          :is-max-button="actionName === StakeAction.Unstake ? true : false"
+          :is-max-button="isMaxButton"
         />
-        <div>
-          <div v-if="isEnableNominationTransfer">
-            <div v-if="formattedTransferFrom.isNominationTransfer" class="box--max">
-              <Button type="button" :primary="true" :small="true" @click="setMaxAmount">Max</Button>
-            </div>
+        <div class="box--information">
+          <div v-if="accountData && actionName === StakeAction.Stake" class="tw-mt-1 tw-ml-1">
+            {{ $t('dappStaking.modals.availableToStake') }}
+            <format-balance
+              :balance="accountData?.getUsableFeeBalance()"
+              class="tw-inline tw-font-semibold"
+            />
           </div>
-          <div v-else>
-            <div v-if="accountData && actionName === StakeAction.Stake" class="tw-mt-1 tw-ml-1">
-              {{ $t('dappStaking.modals.availableToStake') }}
-              <format-balance
-                :balance="accountData?.getUsableFeeBalance()"
-                class="tw-inline tw-font-semibold"
-              />
-            </div>
+          <div v-if="actionName === StakeAction.Stake" class="box__row--err-msg">
+            <span>{{ errMsg }}</span>
           </div>
         </div>
       </div>
@@ -79,11 +77,16 @@
       <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row">
         <Button type="button" :primary="false" @click="closeModal">{{ $t('close') }}</Button>
 
-        <!-- Todo: Set disabled -->
         <Button
-          v-if="formattedTransferFrom.isNominationTransfer"
+          v-if="isEnableNominationTransfer && formattedTransferFrom.isNominationTransfer"
+          :disabled="
+            isDisabledNominationTransfer({
+              amount: Number(data.amount),
+              stakedAmount: stakeAmount ? Number(stakeAmount) : 0,
+            })
+          "
           @click="handleNominationTransfer({ amount: data.amount, targetContractId: dapp.address })"
-          >Nomination Transfer</Button
+          >{{ actionName }}</Button
         >
         <Button v-else :disabled="!canExecuteAction" @click="action(data)">{{ actionName }}</Button>
       </div>
@@ -104,11 +107,12 @@ import { $api, $isEnableNominationTransfer } from 'boot/api';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { getAmount, StakeModel } from 'src/hooks/store';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, toRefs, PropType } from 'vue';
+import { computed, defineComponent, ref, toRefs, PropType, watchEffect } from 'vue';
 import { StakeAction } from '../StakePanel.vue';
 import ModalNominationTransfer from 'src/components/dapp-staking/modals/ModalNominationTransfer.vue';
 import { StakingData } from 'src/modules/dapp-staking';
 import { ethers } from 'ethers';
+import { useI18n } from 'vue-i18n';
 
 export enum Role {
   FromAddress = 'FromAddress',
@@ -172,8 +176,12 @@ export default defineComponent({
       formattedTransferFrom,
       addressTransferFrom,
       currentAccount,
+      formattedMinStaking,
+      nativeTokenSymbol,
       nominationTransfer,
+      isDisabledNominationTransfer,
     } = useNominationTransfer({ stakingList: props.stakingList });
+    const { t } = useI18n();
 
     const handleNominationTransfer = async ({
       amount,
@@ -183,11 +191,8 @@ export default defineComponent({
       targetContractId: string;
     }) => {
       try {
-        const result = await nominationTransfer({ amount, targetContractId });
-        console.log('result', result);
-        console.log('1');
+        await nominationTransfer({ amount, targetContractId });
         props.finalizeCallback();
-        console.log('2');
       } catch (error) {
         console.error(error);
       }
@@ -229,12 +234,53 @@ export default defineComponent({
       }
     });
 
-    const setMaxAmount = (): void => {
+    const errMsg = computed(() => {
+      const stakedAmount = props.stakeAmount ? Number(props.stakeAmount) : 0;
+      const inputAmount = Number(data.value.amount);
+      const stakingAmount = inputAmount + stakedAmount;
+      const isNotEnoughMinAmount = formattedMinStaking.value > stakingAmount;
+
+      if (isNotEnoughMinAmount) {
+        return t('dappStaking.error.notEnoughMinAmount', {
+          amount: formattedMinStaking.value,
+          symbol: nativeTokenSymbol.value,
+        });
+      }
+
+      if ($isEnableNominationTransfer.value) {
+        const isNominationTransfer = formattedTransferFrom.value?.isNominationTransfer;
+        if (isNominationTransfer) {
+          const balTransferFrom = Number(
+            ethers.utils.formatEther(formattedTransferFrom.value.item.balance.toString())
+          );
+          const targetBalAfterTransfer = balTransferFrom - inputAmount;
+          if (inputAmount >= balTransferFrom) {
+            return '';
+          } else if (formattedMinStaking.value > targetBalAfterTransfer) {
+            return t('dappStaking.error.allFundsWillBeTransferred', {
+              minStakingAmount: formattedMinStaking.value,
+              symbol: nativeTokenSymbol.value,
+            });
+          }
+        }
+      }
+      return '';
+    });
+
+    const setNominationTransferMaxAmount = (): void => {
       const amount = formattedTransferFrom.value
         ? Number(ethers.utils.formatEther(formattedTransferFrom.value.item.balance.toString()))
         : 0;
       data.value = { ...data.value, amount };
     };
+
+    const isMaxButton = computed(() => {
+      const isNominationTransferMax =
+        $isEnableNominationTransfer.value &&
+        formattedTransferFrom.value &&
+        formattedTransferFrom.value.isNominationTransfer;
+      return props.actionName === StakeAction.Unstake || isNominationTransferMax;
+    });
 
     const reloadAmount = (address: string): void => {
       store.commit('general/setCurrentAddress', address);
@@ -261,8 +307,11 @@ export default defineComponent({
       currentAccount,
       addressTransferFrom,
       handleNominationTransfer,
-      setMaxAmount,
+      isDisabledNominationTransfer,
+      setNominationTransferMaxAmount,
       isEnableNominationTransfer: $isEnableNominationTransfer.value,
+      errMsg,
+      isMaxButton,
       ...toRefs(props),
     };
   },
@@ -270,13 +319,20 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import 'src/css/quasar.variables.scss';
+
 .container--amount {
   position: relative;
 }
 
-.box--max {
+.box--information {
+  position: relative;
+}
+
+.box__row--err-msg {
   position: absolute;
-  bottom: 16px;
-  right: 100px;
+  color: $warning-red;
+  margin-top: 1px;
+  font-size: 12.4px;
 }
 </style>

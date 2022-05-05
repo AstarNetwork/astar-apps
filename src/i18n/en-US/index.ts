@@ -21,6 +21,7 @@ export default {
   mathwallet: 'Math Wallet',
   wallet3: 'Wallet 3',
   alert: 'Alert',
+  max: 'Max',
   warning: {
     insufficientFee: 'Warning! Transaction might failed due to insufficient fee',
   },
@@ -145,6 +146,13 @@ export default {
       uploadFile: 'Upload a file',
       dropFile: 'Drop the files here ...',
       orDrag: 'or drag and drop',
+    },
+    error: {
+      onlySupportsSubstrate: 'dApp staking only supports Substrate wallets',
+      notEnoughMinAmount:
+        'The amount of token to be staking must be greater than {amount} {symbol}',
+      allFundsWillBeTransferred:
+        'All funds will be transferred because the min. staking amount is {minStakingAmount} {symbol}',
     },
   },
   bridge: {

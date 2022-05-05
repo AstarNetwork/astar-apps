@@ -12,12 +12,9 @@ import { ISubmittableResult, ITuple } from '@polkadot/types/types';
 import { formatBalance } from '@polkadot/util';
 import BN from 'bn.js';
 import { $api } from 'boot/api';
-import { endpointKey } from 'src/config/chainEndpoints';
 import { addDapp, getDapps, uploadFile } from 'src/hooks/firebase';
-import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
 import { ActionTree, Dispatch } from 'vuex';
 import { StateInterface } from '../index';
-import { GeneralStakerInfo } from './../../hooks/helper/claim';
 import { getInjector } from './../../hooks/helper/wallet';
 import { SubstrateAccount } from './../general/state';
 import { getIndividualClaimStakingInfo } from './calculation';
@@ -195,27 +192,6 @@ const getErasToClaim2 = (eraStakeMap: Map<number, Option<EraStakingPoints>>): nu
   return result;
 };
 
-const getLatestStakePoint = async (
-  api: ApiPromise,
-  contract: string
-): Promise<EraStakingPoints | undefined> => {
-  const currentEra = await (await api.query.dappsStaking.currentEra<EraIndex>()).toNumber();
-  const contractAddress = getAddressEnum(contract);
-  // iterate from currentEra backwards until you find record for ContractEraStake
-  for (let era = currentEra; era > 0; era -= 1) {
-    const stakeInfoPromise = await api.query.dappsStaking.contractEraStake<
-      Option<EraStakingPoints>
-    >(contractAddress, era);
-    const stakeInfo = await stakeInfoPromise.unwrapOr(undefined);
-
-    if (stakeInfo) {
-      return stakeInfo;
-    }
-  }
-
-  return undefined;
-};
-
 const actions: ActionTree<State, StateInterface> = {
   async getDapps({ commit, dispatch, rootState }) {
     commit('general/setLoading', true, { root: true });
@@ -319,161 +295,6 @@ const actions: ActionTree<State, StateInterface> = {
     } catch (e) {
       const error = e as unknown as Error;
       console.log(error);
-      commit('general/setLoading', false, { root: true });
-      showError(dispatch, error.message);
-    }
-
-    return false;
-  },
-
-  async stake({ commit, dispatch }, parameters: StakingParameters): Promise<boolean> {
-    try {
-      if (parameters.api) {
-        const injector = await getInjector(parameters.substrateAccounts);
-        const unsub = await parameters.api.tx.dappsStaking
-          .bondAndStake(getAddressEnum(parameters.dapp.address), parameters.amount)
-          .signAndSend(
-            parameters.senderAddress,
-            {
-              signer: injector?.signer,
-              nonce: -1,
-            },
-            (result) => {
-              if (result.status.isFinalized) {
-                if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
-                  dispatch(
-                    'general/showAlertMsg',
-                    {
-                      msg: `You staked ${getFormattedBalance(parameters)} on ${
-                        parameters.dapp.name
-                      }.`,
-                      alertType: 'success',
-                    },
-                    { root: true }
-                  );
-
-                  parameters.finalizeCallback();
-                }
-
-                commit('general/setLoading', false, { root: true });
-                unsub();
-              } else {
-                commit('general/setLoading', true, { root: true });
-              }
-            }
-          );
-
-        return true;
-      } else {
-        showError(dispatch, 'Api is undefined');
-        return false;
-      }
-    } catch (e) {
-      const error = e as unknown as Error;
-      commit('general/setLoading', false, { root: true });
-      showError(dispatch, error.message);
-    }
-
-    return false;
-  },
-
-  async unstake({ commit, dispatch }, parameters: StakingParameters): Promise<boolean> {
-    try {
-      if (parameters.api) {
-        const injector = await getInjector(parameters.substrateAccounts);
-        const unsub = await parameters.api.tx.dappsStaking
-          .unbondUnstakeAndWithdraw(getAddressEnum(parameters.dapp.address), parameters.amount)
-          .signAndSend(
-            parameters.senderAddress,
-            {
-              signer: injector?.signer,
-              nonce: -1,
-            },
-            (result) => {
-              if (result.status.isFinalized) {
-                if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
-                  commit('setUnlockingChunks', -1);
-                  dispatch(
-                    'general/showAlertMsg',
-                    {
-                      msg: `You unstaked ${getFormattedBalance(parameters)} from ${
-                        parameters.dapp.name
-                      }.`,
-                      alertType: 'success',
-                    },
-                    { root: true }
-                  );
-
-                  parameters.finalizeCallback();
-                }
-
-                commit('general/setLoading', false, { root: true });
-                unsub();
-              } else {
-                commit('general/setLoading', true, { root: true });
-              }
-            }
-          );
-
-        return true;
-      } else {
-        showError(dispatch, 'Api is undefined');
-        return false;
-      }
-    } catch (e) {
-      const error = e as unknown as Error;
-      commit('general/setLoading', false, { root: true });
-      showError(dispatch, error.message);
-    }
-
-    return false;
-  },
-
-  async unbond({ commit, dispatch }, parameters: StakingParameters): Promise<boolean> {
-    try {
-      if (parameters.api) {
-        const injector = await getInjector(parameters.substrateAccounts);
-        const unsub = await parameters.api.tx.dappsStaking
-          .unbondAndUnstake(getAddressEnum(parameters.dapp.address), parameters.amount)
-          .signAndSend(
-            parameters.senderAddress,
-            {
-              signer: injector?.signer,
-              nonce: -1,
-            },
-            (result) => {
-              if (result.status.isFinalized) {
-                if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
-                  commit('setUnlockingChunks', -1);
-                  dispatch(
-                    'general/showAlertMsg',
-                    {
-                      msg: `You started unstaking of ${getFormattedBalance(parameters)} from ${
-                        parameters.dapp.name
-                      }.`,
-                      alertType: 'success',
-                    },
-                    { root: true }
-                  );
-
-                  parameters.finalizeCallback();
-                }
-
-                commit('general/setLoading', false, { root: true });
-                unsub();
-              } else {
-                commit('general/setLoading', true, { root: true });
-              }
-            }
-          );
-
-        return true;
-      } else {
-        showError(dispatch, 'Api is undefined');
-        return false;
-      }
-    } catch (e) {
-      const error = e as unknown as Error;
       commit('general/setLoading', false, { root: true });
       showError(dispatch, error.message);
     }
@@ -596,70 +417,6 @@ const actions: ActionTree<State, StateInterface> = {
     }
 
     return false;
-  },
-
-  async getStakeInfo({ dispatch }, parameters: StakingParameters): Promise<StakeInfo | undefined> {
-    try {
-      if (parameters.api) {
-        const stakeInfo = await getLatestStakePoint(parameters.api, parameters.dapp.address);
-        if (stakeInfo) {
-          let yourStake = {
-            formatted: '',
-            denomAmount: new BN('0'),
-          };
-
-          const stakerInfo =
-            await parameters.api.query.dappsStaking.generalStakerInfo<GeneralStakerInfo>(
-              parameters.senderAddress,
-              {
-                Evm: parameters.dapp.address,
-              }
-            );
-
-          const balance =
-            stakerInfo.stakes.length && stakerInfo.stakes.slice(-1)[0].staked.toString();
-          if (balance) {
-            yourStake = {
-              formatted: balanceFormatter(balance),
-              denomAmount: new BN(balance.toString()),
-            };
-          }
-
-          const hasStake = Number(balance.toString()) > 0;
-          return {
-            totalStake: balanceFormatter(stakeInfo.total.toString()),
-            yourStake,
-            claimedRewards: '0', // always returns 0 in the below `getClaimInfo` function. (stakeInfo.claimedRewards)
-            hasStake,
-            stakersCount: Number(stakeInfo.numberOfStakers.toString()),
-          } as StakeInfo;
-
-          // for (const [account, balance] of stakeInfo.stakers) {
-          //   if (account.toString() === parameters.senderAddress) {
-          //     yourStake = {
-          //       formatted: balanceFormatter(balance),
-          //       denomAmount: new BN(balance.toString()),
-          //     };
-          //     break;
-          //   }
-          // }
-
-          // const hasStake = Number(yourStake.denomAmount.toString()) > 0;
-          // return {
-          //   totalStake: balanceFormatter(stakeInfo.total),
-          //   yourStake,
-          //   claimedRewards: balanceFormatter(stakeInfo.claimedRewards),
-          //   hasStake,
-          //   stakersCount: stakeInfo.stakers.size,
-          // } as StakeInfo;
-        }
-      } else {
-        showError(dispatch, 'Api is undefined.');
-      }
-    } catch (e) {
-      // TODO check. There will me many calls to this method. Maybe is better not to show any popup in case of an error.
-      console.log(e);
-    }
   },
 
   async getClaimInfo({ dispatch, commit }, parameters: StakingParameters): Promise<ClaimInfo> {
@@ -815,6 +572,7 @@ export interface StakeInfo {
   claimedRewards: string;
   hasStake: boolean;
   stakersCount: number;
+  dappAddress?: string;
 }
 
 export interface ClaimInfo {
