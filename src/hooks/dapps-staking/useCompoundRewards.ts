@@ -4,8 +4,8 @@ import { ISubmittableResult } from '@polkadot/types/types';
 import { $api } from 'boot/api';
 import { useCustomSignature } from 'src/hooks';
 import { signAndSend } from 'src/hooks/helper/wallet';
-import { useStore } from 'src/store';
 import { hasExtrinsicFailedEvent } from 'src/modules/extrinsic';
+import { useStore } from 'src/store';
 import { computed, ref, watchEffect } from 'vue';
 
 type EraIndex = u32;

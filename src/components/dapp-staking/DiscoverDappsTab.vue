@@ -18,48 +18,7 @@
       <DappsCount />
       <Era :progress="progress" :blocks-until-next-era="blocksUntilNextEra" :era="era" />
       <APR />
-      <!-- <Withdraw /> -->
     </div>
-
-    <!-- <div class="tw-text-center tw-mb-8 tw-flex tw-items-center tw-justify-center sm:tw-gap-x-4">
-      <Button :disabled="isPalletDisabled" @click="showRegisterDappModal = true">
-        <astar-icon-base
-          class="tw-w-5 tw-h-5 tw-text-white tw--ml-1"
-          stroke="currentColor"
-          icon-name="plus"
-        >
-          <astar-icon-plus />
-        </astar-icon-base>
-        {{ $t('dappStaking.registerDapp') }}
-      </Button>
-      <div
-        v-if="stakerApr > 0"
-        class="
-          sm:tw-w-40
-          tw-justify-center
-          tw-inline-flex
-          tw-items-center
-          tw-px-6
-          tw-py-3
-          tw-border
-          tw-border-transparent
-          tw-text-sm
-          tw-font-medium
-          tw-rounded-full
-          tw-shadow-sm
-          tw-text-white
-          tw-bg-indigo-500
-          tw-mx-1
-        "
-      >
-        <astar-icon-base class="tw-w-5 tw-h-5 tw-text-white tw--ml-2 tw-mr-2" icon-name="seedling">
-          <q-icon :name="fasSeedling" color="green" />
-        </astar-icon-base>
-        <div>
-          {{ $t('dappStaking.stakerApr', { value: Number(stakerApr.toFixed(1)) }) }}
-        </div>
-      </div>
-    </div> -->
     <UserRewards />
     <div class="store-container tw-grid tw-gap-x-12 xl:tw-gap-x-18 tw-justify-center">
       <div
