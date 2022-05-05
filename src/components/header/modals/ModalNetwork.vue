@@ -158,6 +158,7 @@ export default defineComponent({
     };
 
     const selectNetwork = async (networkIdx: number): Promise<void> => {
+      localStorage.setItem(LOCAL_STORAGE.FIRST_ACCESS, 'true');
       localStorage.setItem(NETWORK_IDX, networkIdx.toString());
       localStorage.setItem(
         SELECTED_ENDPOINT,

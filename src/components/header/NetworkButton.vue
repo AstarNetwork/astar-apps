@@ -1,36 +1,41 @@
 <template>
   <div>
-    <MetaUpdateButton
-      v-if="isNeedUpdate(isLatestChain, extensionCount)"
-      @updated-meta="isLatestChain = true"
-    />
-    <button
-      v-else
-      type="button"
-      class="btn--network"
-      :class="screenSize.sm > width && 'm-btn--network'"
-      @click="showNetworkModal"
-    >
-      <astar-icon-base class="iconbase" stroke="currentColor" icon-name="network">
-        <astar-icon-network />
-      </astar-icon-base>
-      <img v-show="currentLogo" class="icon" width="16" :src="currentLogo" />
-      <div class="column--network-name">
-        <template v-if="width >= screenSize.md">
-          <span class="text--md">
-            {{ currentNetworkName }}
-          </span>
-        </template>
-        <template v-else-if="width >= screenSize.sm">
-          <span class="text--md">
-            {{ currentNetworkName.replace('Network', '') }}
-          </span>
-        </template>
-      </div>
+    <ConnectButton v-if="isFirstAccess" @click="showNetworkModal">
+      <astar-icon-network />
+    </ConnectButton>
+    <template v-else>
+      <MetaUpdateButton
+        v-if="isNeedUpdate(isLatestChain, extensionCount)"
+        @updated-meta="isLatestChain = true"
+      />
+      <button
+        v-else
+        type="button"
+        class="btn--network"
+        :class="screenSize.sm > width && 'm-btn--network'"
+        @click="showNetworkModal"
+      >
+        <astar-icon-base class="iconbase" stroke="currentColor" icon-name="network">
+          <astar-icon-network />
+        </astar-icon-base>
+        <img v-show="currentLogo" class="icon" width="16" :src="currentLogo" />
+        <div class="column--network-name">
+          <template v-if="width >= screenSize.md">
+            <span class="text--md">
+              {{ currentNetworkName }}
+            </span>
+          </template>
+          <template v-else-if="width >= screenSize.sm">
+            <span class="text--md">
+              {{ currentNetworkName.replace('Network', '') }}
+            </span>
+          </template>
+        </div>
 
-      <div class="divider" />
-      <astar-connection-indicator :connection-type="currentNetworkStatus" :version="version" />
-    </button>
+        <div class="divider" />
+        <astar-connection-indicator :connection-type="currentNetworkStatus" :version="version" />
+      </button>
+    </template>
   </div>
 </template>
 
@@ -39,16 +44,20 @@ import { defineComponent, watch, computed, ref } from 'vue';
 import { useStore } from 'src/store';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { useBreakpoints } from 'src/hooks';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 import MetaUpdateButton from 'src/components/header/MetaUpdateButton.vue';
+import ConnectButton from 'src/components/header/ConnectButton.vue';
 
 export default defineComponent({
   components: {
     MetaUpdateButton,
+    ConnectButton,
   },
   emits: ['show-network'],
   setup(props, { emit }) {
     const { width, screenSize } = useBreakpoints();
     const store = useStore();
+    const isFirstAccess = localStorage.getItem(LOCAL_STORAGE.FIRST_ACCESS) === null;
     const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
     const chainInfo = computed(() => store.getters['general/chainInfo']);
@@ -85,6 +94,7 @@ export default defineComponent({
     };
 
     return {
+      isFirstAccess,
       currentNetworkStatus,
       currentNetworkName,
       currentLogo,

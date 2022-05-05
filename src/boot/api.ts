@@ -23,8 +23,9 @@ const $web3 = ref<Web3>();
 const $isEnableIndividualClaim = ref<boolean>(false);
 
 export default boot(async ({ store }) => {
-  const { NETWORK_IDX, CUSTOM_ENDPOINT, SELECTED_ENDPOINT } = LOCAL_STORAGE;
+  const { FIRST_ACCESS, NETWORK_IDX, CUSTOM_ENDPOINT, SELECTED_ENDPOINT } = LOCAL_STORAGE;
 
+  const firstAccess = localStorage.getItem(FIRST_ACCESS);
   const networkIdxStore = localStorage.getItem(NETWORK_IDX);
   const customEndpoint = localStorage.getItem(CUSTOM_ENDPOINT);
   const selectedEndpointData = localStorage.getItem(SELECTED_ENDPOINT);
@@ -64,6 +65,13 @@ export default boot(async ({ store }) => {
     },
     meta: opengraphMeta,
   });
+
+  // skip boot process when the first time a user connects
+  if (firstAccess === null) {
+    console.log('FIRST_ACCESS');
+    return;
+  }
+
   let { api, extensions } = await connectApi(endpoint, networkIdx.value, store);
   $api.value = api;
   $endpoint.value = endpoint;
