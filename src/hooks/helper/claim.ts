@@ -66,8 +66,7 @@ const getNumberOfUnclaimedEra = async ({
     );
 
     if (data && !data.isEmpty) {
-      const stakerInfo = data;
-      const stakes = stakerInfo && stakerInfo.stakes;
+      const stakes = data && data.stakes;
 
       for (let i = 0; i < stakes.length; i++) {
         const { era, staked } = stakes[i];
