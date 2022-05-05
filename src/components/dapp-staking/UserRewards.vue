@@ -5,8 +5,8 @@
         <span class="title container--title--color">Your Rewards</span>
       </div>
       <div class="user-rewards-panel">
-        <CompoundReward />
         <ClaimAll />
+        <CompoundReward />
         <Withdraw :show-unbonded-funds="true" />
         <Withdraw :show-unbonded-funds="false" :show-unbonding-chunks="true" />
       </div>
