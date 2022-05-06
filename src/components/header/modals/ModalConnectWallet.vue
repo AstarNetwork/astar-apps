@@ -1,5 +1,5 @@
 <template>
-  <ModalDrawer :is-show="isModalConnectWallet" title="Select a Wallet" @close="setCloseModal">
+  <astar-modal-drawer :show="isModalConnectWallet" title="Select a Wallet" @close="setCloseModal">
     <div class="wrapper--modal--wallet">
       <div class="title--account-type">{{ $t('wallet.evmAccount') }}</div>
       <div
@@ -28,18 +28,14 @@
         <div>{{ wallet.name }}</div>
       </div>
     </div>
-  </ModalDrawer>
+  </astar-modal-drawer>
 </template>
 <script lang="ts">
 import { supportEvmWallets, supportWallets, Wallet } from 'src/config/wallets';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
 import { computed, defineComponent } from 'vue';
-import ModalDrawer from './ModalDrawer.vue';
 
 export default defineComponent({
-  components: {
-    ModalDrawer,
-  },
   props: {
     isModalConnectWallet: {
       type: Boolean,

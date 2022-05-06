@@ -1,5 +1,5 @@
 <template>
-  <ModalDrawer :is-show="isOpen" title="Network" :is-closing="isClosing" @close="closeModal">
+  <astar-modal-drawer :show="isOpen" title="Network" :is-closing="isClosing" @close="closeModal">
     <div class="wrapper--modal-network">
       <div class="wrapper--select-network">
         <fieldset>
@@ -14,11 +14,9 @@
                     'class-radio--custom-network',
                 ]"
               >
-                <input
-                  name="choose_networks"
-                  type="radio"
-                  :checked="selNetwork === index"
+                <astar-radio-btn
                   class="ip--network"
+                  :checked="selNetwork === index"
                   @change="selNetwork = index"
                 />
                 <div class="wrapper--network-detail">
@@ -91,7 +89,7 @@
         </button>
       </div>
     </div>
-  </ModalDrawer>
+  </astar-modal-drawer>
 </template>
 <script lang="ts">
 import { useQuasar } from 'quasar';
@@ -102,12 +100,8 @@ import { getRandomFromArray } from 'src/hooks/helper/common';
 import { checkIsMobileMathWallet } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch } from 'vue';
-import ModalDrawer from './ModalDrawer.vue';
 
 export default defineComponent({
-  components: {
-    ModalDrawer,
-  },
   props: {
     isOpen: {
       type: Boolean,
