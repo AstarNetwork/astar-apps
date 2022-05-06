@@ -136,7 +136,7 @@ function useCall(addressRef: Ref<string>) {
 
 export function useBalance(addressRef: Ref<string>) {
   const balance = ref(new BN(0));
-  let accountData: AccountData | AccountDataH160 | undefined;
+  const accountData = ref<AccountData | AccountDataH160>();
 
   const { balanceRef, accountDataRef } = useCall(addressRef);
 
@@ -154,7 +154,7 @@ export function useBalance(addressRef: Ref<string>) {
     () => accountDataRef?.value,
     (info) => {
       if (info) {
-        accountData = info;
+        accountData.value = info;
       }
     },
     { immediate: true }

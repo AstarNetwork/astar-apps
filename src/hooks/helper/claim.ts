@@ -1,6 +1,6 @@
 import { ApiPromise } from '@polkadot/api';
 import { Option, Struct } from '@polkadot/types';
-import { EventRecord } from '@polkadot/types/interfaces';
+import { EventRecord, Balance } from '@polkadot/types/interfaces';
 import BN from 'bn.js';
 import { getAddressEnum } from './../../store/dapp-staking/calculation';
 import { ExtrinsicPayload } from './index';
@@ -12,9 +12,13 @@ interface ContractEraStake extends Struct {
   readonly total: string;
 }
 
+export interface EraStake extends Struct {
+  staked: Balance;
+  era: number;
+}
+
 export interface GeneralStakerInfo extends Struct {
-  // Todo: fix type annotation
-  readonly stakes: any[];
+  readonly stakes: EraStake[];
 }
 
 export interface RegisteredDapps extends Struct {
@@ -35,7 +39,7 @@ const checkIsDappOwner = async ({
     const data = await api.query.dappsStaking.registeredDapps<RegisteredDapps>(
       getAddressEnum(dappAddress)
     );
-    const owner = data.toHuman().developer;
+    const owner = data.developer;
     return owner === senderAddress;
   } catch (error: any) {
     console.error(error.message);
@@ -56,18 +60,17 @@ const getNumberOfUnclaimedEra = async ({
 }): Promise<number> => {
   let numberOfUnclaimedEra = 0;
   try {
-    const data = await api.query.dappsStaking.generalStakerInfo<Option<GeneralStakerInfo>>(
+    const data = await api.query.dappsStaking.generalStakerInfo<GeneralStakerInfo>(
       senderAddress,
       getAddressEnum(dappAddress)
     );
 
     if (data && !data.isEmpty) {
-      const stakerInfo: GeneralStakerInfo = data.toHuman() as any;
-      const stakes = stakerInfo && stakerInfo.stakes;
+      const stakes = data && data.stakes;
 
       for (let i = 0; i < stakes.length; i++) {
         const { era, staked } = stakes[i];
-        if (staked === '0') continue;
+        if (staked.eq(new BN(0))) continue;
         const nextEraData = stakes[i + 1] ?? null;
         const nextEra = nextEraData && nextEraData.era;
         const isLastEra = i === stakes.length - 1;
@@ -115,7 +118,7 @@ const eraSkippedZeroStake = async ({
     for (let e = era + 1; e < currentEra; e++) {
       const data = await getContractEraStake({ dappAddress, era: e, api });
       if (!data.isNone) {
-        const { total } = data.unwrapOrDefault().toHuman();
+        const total = data.unwrapOrDefault()?.total;
         if (total !== '0') {
           result = e;
           break;
@@ -129,7 +132,7 @@ const eraSkippedZeroStake = async ({
   if (data.isNone) {
     return era;
   } else {
-    const { total } = data.unwrapOrDefault().toHuman();
+    const total = data.unwrapOrDefault()?.total;
     if (total !== '0') {
       return era;
     } else {
@@ -218,7 +221,7 @@ const getFirstEraDappHasNotClaimed = async ({
     try {
       const data = await getContractEraStake({ dappAddress, era, api });
       if (data && !data.isNone) {
-        const { contractRewardClaimed } = data.unwrapOrDefault().toHuman();
+        const contractRewardClaimed = data.unwrapOrDefault().contractRewardClaimed;
         if (!contractRewardClaimed) {
           firstEraDappHasNotClaimed = era;
           break;
@@ -252,7 +255,7 @@ const getLastEraClaimedForDapp = async ({
     try {
       const data = await getContractEraStake({ dappAddress, era, api });
       if (data && !data.isNone) {
-        const { contractRewardClaimed } = data.unwrapOrDefault().toHuman();
+        const contractRewardClaimed = data.unwrapOrDefault().contractRewardClaimed;
         if (contractRewardClaimed) {
           lastEraClaimed = era;
           break;

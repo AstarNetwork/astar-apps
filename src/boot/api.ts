@@ -29,27 +29,26 @@ export default boot(async ({ store }) => {
   const customEndpoint = localStorage.getItem(CUSTOM_ENDPOINT);
   const selectedEndpointData = localStorage.getItem(SELECTED_ENDPOINT);
   const selectedEndpoint = selectedEndpointData ? JSON.parse(selectedEndpointData) : {};
-
   if (networkIdxStore) {
     store.commit('general/setCurrentNetworkIdx', Number(networkIdxStore));
   }
   if (customEndpoint) {
     store.commit('general/setCurrentCustomEndpoint', customEndpoint);
   }
-
   const networkIdx = computed(() => store.getters['general/networkIdx']);
-
   const randomEndpoint = getRandomFromArray(providerEndpoints[networkIdx.value].endpoints).endpoint;
-
   let endpoint = selectedEndpoint.hasOwnProperty(networkIdx.value)
     ? selectedEndpoint[networkIdx.value]
+      ? selectedEndpoint[networkIdx.value]
+      : randomEndpoint
     : randomEndpoint;
-
   if (networkIdx.value === endpointKey.CUSTOM) {
     const customEndpoint = computed(() => store.getters['general/customEndpoint']);
     endpoint = customEndpoint.value;
   }
-
+  if (networkIdx.value === endpointKey.LOCAL) {
+    endpoint = providerEndpoints[networkIdx.value].endpoints[0].endpoint;
+  }
   // set metadata header
   const favicon = providerEndpoints[Number(networkIdx.value)].favicon;
   useMeta({
@@ -67,7 +66,6 @@ export default boot(async ({ store }) => {
   let { api, extensions } = await connectApi(endpoint, networkIdx.value, store);
   $api = api;
   $endpoint.value = endpoint;
-
   // update chaininfo
   const { chainInfo } = useChainInfo(api);
   const { metaExtensions, extensionCount } = useMetaExtensions(api, extensions)!!;
@@ -75,9 +73,7 @@ export default boot(async ({ store }) => {
     store.commit('general/setChainInfo', chainInfo.value);
     store.commit('general/setMetaExtensions', metaExtensions.value);
     store.commit('general/setExtensionCount', extensionCount.value);
-
     $isEnableIndividualClaim.value = await checkIsEnableIndividualClaim(api);
-
     if (chainInfo.value?.chain) {
       const currentChain = chainInfo.value?.chain as ASTAR_CHAIN;
       const currentNetworkIdx = getProviderIndex(currentChain);
@@ -89,5 +85,4 @@ export default boot(async ({ store }) => {
     }
   });
 });
-
 export { $api, $web3, $isEnableIndividualClaim, $endpoint };

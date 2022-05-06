@@ -84,10 +84,11 @@ export const useApr = () => {
           if (isEnableIndividualClaimRef) {
             const result =
               await apiRef.query.blockReward.rewardDistributionConfigStorage<RewardDistributionConfig>();
-            const percentage = Number(result.dappsPercent.toHuman().replace('%', '')) * 0.01;
+            const percentage = result.dappsPercent.toNumber() * 0.000000001;
             return percentage;
           } else {
-            const result = apiRef.consts.dappsStaking.developerRewardPercentage.toHuman();
+            // TODO consider removing this part since individual claim is deployed on all networks.
+            const result = apiRef.consts.dappsStaking.developerRewardPercentage;
             const percentage = Number(result && result.toString().replace('%', '')) * 0.01;
             return percentage;
           }
@@ -110,6 +111,15 @@ export const useApr = () => {
           latestBlock,
         });
 
+        console.log(
+          'data',
+          rawBlockRewards,
+          blockRewards,
+          eraRewards,
+          latestBlock,
+          avrBlockPerMins
+        );
+
         const avgBlocksPerDay = avrBlockPerMins * 60 * 24;
         const dailyEraRate = avgBlocksPerDay / blocksPerEraRef;
         const annualRewards = eraRewards * dailyEraRate * 365.25;
@@ -117,6 +127,8 @@ export const useApr = () => {
         const developerRewardPercentage = results[3];
         const stakerBlockReward = (1 - developerRewardPercentage) * DAPPS_REWARD_RATE;
         const stakerApr = (annualRewards / totalStaked) * stakerBlockReward * 100;
+
+        console.log('data 2', tvlTokenRef);
 
         if (stakerApr === Infinity) return 0;
         return stakerApr;

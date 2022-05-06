@@ -29,12 +29,12 @@ export function useVesting(closeModal: () => void) {
       ],
     };
     try {
-      if (accountData && accountData.vesting.length) {
+      if (accountData.value && accountData.value.vesting.length) {
         const claimableAmount = Number(
-          ethers.utils.formatEther(accountData.vestedClaimable.toString())
+          ethers.utils.formatEther(accountData.value.vestedClaimable.toString())
         );
 
-        const vestings = accountData.vesting.map((vesting: ExtendedVestingInfo) => {
+        const vestings = accountData.value.vesting.map((vesting: ExtendedVestingInfo) => {
           const { perBlock, locked, startingBlock } = vesting.basicInfo;
           const vestedAmount = Number(ethers.utils.formatEther(vesting.vested.toString()));
           const totalDistribution = Number(ethers.utils.formatEther(locked.toString()));

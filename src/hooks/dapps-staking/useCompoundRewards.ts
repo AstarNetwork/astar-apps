@@ -7,6 +7,7 @@ import { Struct, u32, Vec } from '@polkadot/types';
 import { getInjector } from 'src/hooks/helper/wallet';
 import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
 import { useCustomSignature } from 'src/hooks';
+import BN from 'bn.js';
 
 type EraIndex = u32;
 
@@ -54,10 +55,10 @@ export function useCompoundRewards() {
         if (ledger && isSupported.value) {
           rewardDestination.value = ledger.rewardDestination;
           isCompounding.value =
-            rewardDestination.value?.toString() === RewardDestination.StakeBalance;
+            ledger.rewardDestination.toString() === RewardDestination.StakeBalance;
         }
 
-        isStaker.value = ledger.locked.toString() !== '0';
+        isStaker.value = !ledger.locked.eq(new BN(0));
       });
     } catch (err) {
       // Compounding rewards are not supported by a node if reading of ledger.rewardDestination fails

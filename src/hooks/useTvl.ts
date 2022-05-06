@@ -1,3 +1,4 @@
+import { ApiPromise } from '@polkadot/api';
 import BN from 'bn.js';
 import { $isEnableIndividualClaim } from 'boot/api';
 import { ethers } from 'ethers';
@@ -20,19 +21,18 @@ export function useTvl(api: any) {
   const isSendingTx = computed(() => store.getters['general/isLoading']);
 
   watch(
-    [api, dapps, tokenSymbol, isSendingTx],
+    [dapps, tokenSymbol, isSendingTx],
     () => {
-      const apiRef = api.value;
       const dappsRef = dapps.value;
       const tokenSymbolRef = tokenSymbol.value;
-      if (!apiRef || !dappsRef || !tokenSymbolRef) return;
+      if (!api || !dappsRef || !tokenSymbolRef) return;
 
       const getTvl = async (): Promise<{ tvl: BN; tvlDefaultUnit: number }> => {
         const isEnableIndividualClaim = $isEnableIndividualClaim.value;
-        const era = await apiRef.query.dappsStaking.currentEra();
+        const era = await api.query.dappsStaking.currentEra();
         const result = isEnableIndividualClaim
-          ? await apiRef.query.dappsStaking.generalEraInfo(era)
-          : await apiRef.query.dappsStaking.eraRewardsAndStakes(era);
+          ? await api.query.dappsStaking.generalEraInfo(era)
+          : await api.query.dappsStaking.eraRewardsAndStakes(era);
 
         const tvl = isEnableIndividualClaim
           ? result.unwrap().locked
@@ -55,10 +55,11 @@ export function useTvl(api: any) {
         return 0;
       };
 
-      apiRef.isReady.then(() => {
+      api.isReady.then(() => {
         (async () => {
           const results = await Promise.all([getTvl(), priceUsd()]);
           const { tvl, tvlDefaultUnit } = results[0];
+          console.log('tvl', tvl, tvlDefaultUnit);
           const usd = results[1];
           tvlToken.value = tvl;
           tvlUsd.value = usd * tvlDefaultUnit;
