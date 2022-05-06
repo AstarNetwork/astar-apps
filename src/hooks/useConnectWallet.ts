@@ -64,9 +64,12 @@ export const useConnectWallet = () => {
   };
 
   const initializeWalletAccount = () => {
+    const isFirstAccess = localStorage.getItem(LOCAL_STORAGE.FIRST_ACCESS) === null;
     const account = localStorage.getItem(SELECTED_ADDRESS);
     if (!account) {
-      openSelectModal();
+      if (!isFirstAccess) {
+        openSelectModal();
+      }
     } else {
       if (selectedWalletSource.value) {
         selectedWallet.value = selectedWalletSource.value;
