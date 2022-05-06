@@ -6,10 +6,14 @@ import { SubstrateAccount } from './../../store/general/state';
 import { deepLink } from 'src/links';
 
 export const getInjectedExtensions = async (): Promise<any[]> => {
-  const extensions = await web3Enable('AstarNetwork/astar-apps');
-  // Memo: obtain the extension name
-  // console.log('extensions', extensions);
-  return extensions;
+  const firstAccess = localStorage.getItem(LOCAL_STORAGE.FIRST_ACCESS);
+  if (firstAccess !== null) {
+    const extensions = await web3Enable('AstarNetwork/astar-apps');
+    // Memo: obtain the extension name
+    // console.log('extensions', extensions);
+    return extensions;
+  }
+  return [];
 };
 
 export const getSelectedAccount = (accounts: SubstrateAccount[]) => {
