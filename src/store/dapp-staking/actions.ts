@@ -1,6 +1,6 @@
 import { ApiPromise } from '@polkadot/api';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
-import { bool, BTreeMap, Option, Struct, u32 } from '@polkadot/types';
+import { bool, BTreeMap, Struct, u32 } from '@polkadot/types';
 import {
   AccountId,
   Balance,
@@ -9,7 +9,6 @@ import {
   EventRecord,
 } from '@polkadot/types/interfaces';
 import { ISubmittableResult, ITuple } from '@polkadot/types/types';
-import { formatBalance } from '@polkadot/util';
 import BN from 'bn.js';
 import { $api } from 'boot/api';
 import { addDapp, getDapps, uploadFile } from 'src/hooks/firebase';
@@ -35,14 +34,6 @@ const showError = (dispatch: Dispatch, message: string): void => {
 
 // TODO refactor, detect address type, etc.....
 export const getAddressEnum = (address: string) => ({ Evm: address });
-
-const getFormattedBalance = (parameters: StakingParameters): string => {
-  return formatBalance(parameters.amount, {
-    withSi: true,
-    decimals: parameters.decimals,
-    withUnit: parameters.unit,
-  });
-};
 
 const getCollectionKey = async (): Promise<string> => {
   if (!collectionKey) {
@@ -103,92 +94,6 @@ export const hasExtrinsicFailedEvent = (
       }
     });
 
-  return result;
-};
-
-const getEraStakes = async (
-  api: ApiPromise,
-  contractAddress: string
-): Promise<Map<number, Option<EraStakingPoints>>> => {
-  const eraStakes = await api.query.dappsStaking.contractEraStake.entries<EraStakingPoints>(
-    getAddressEnum(contractAddress)
-  );
-
-  let eraStakeMap = new Map();
-  eraStakes.forEach(([key, stake]) => {
-    eraStakeMap.set(Number(key.args.map((k) => k.toString())[1]), stake);
-  });
-
-  return eraStakeMap;
-};
-
-const getClaimableEraStakes = async (
-  api: ApiPromise,
-  contractAddress: string,
-  currentEra: number,
-  historyDepth: number
-): Promise<Map<number, Option<EraStakingPoints>>> => {
-  let eraStakeMap = new Map();
-  const lowestEra = Math.max(currentEra - historyDepth, 1);
-  for (let era = currentEra - 1; era >= lowestEra; era--) {
-    const eraStake = await api.query.dappsStaking.contractEraStake<EraStakingPoints>(
-      getAddressEnum(contractAddress),
-      era
-    );
-
-    if (!eraStake.isEmpty) {
-      eraStakeMap.set(era, eraStake);
-    } else {
-      break;
-    }
-  }
-
-  return eraStakeMap;
-};
-
-const getLowestClaimableEra = (
-  api: ApiPromise,
-  currentEra: number,
-  eraStakeMap: Map<number, Option<EraStakingPoints>>
-) => {
-  const historyDepth = Number(api.consts.dappsStaking.historyDepth.toString());
-  const firstStakedEra = Math.min(...eraStakeMap.keys());
-  const lowestClaimableEra = Math.max(firstStakedEra, Math.max(1, currentEra - historyDepth));
-
-  return lowestClaimableEra;
-};
-
-const getErasToClaim = async (api: ApiPromise, contractAddress: string): Promise<number[]> => {
-  const currentEra = await (await api.query.dappsStaking.currentEra<EraIndex>()).toNumber();
-
-  const eraStakeMap = await getEraStakes(api, contractAddress);
-  if (eraStakeMap.size === 0) {
-    return [];
-  }
-
-  const lowestClaimableEra = getLowestClaimableEra(api, currentEra, eraStakeMap);
-  const result: number[] = [];
-
-  for (let era = lowestClaimableEra; era < currentEra; era++) {
-    const info: EraStakingPoints | undefined = eraStakeMap.get(era)?.unwrap();
-    if (info === undefined || info.claimedRewards.eq(new BN(0))) {
-      result.push(era);
-    }
-  }
-
-  console.log('Eras to claim', result);
-  return result;
-};
-
-const getErasToClaim2 = (eraStakeMap: Map<number, Option<EraStakingPoints>>): number[] => {
-  const result: number[] = [];
-  eraStakeMap.forEach((map: Option<EraStakingPoints>, era: number) => {
-    if (map.isNone || (map.isSome && map.unwrap().claimedRewards.eq(new BN(0)))) {
-      result.push(era);
-    }
-  });
-
-  console.log('Eras to claim', result);
   return result;
 };
 
@@ -354,7 +259,6 @@ const actions: ActionTree<State, StateInterface> = {
   async claimBatch({ commit, dispatch }, parameters: ClaimParameters): Promise<boolean> {
     try {
       if (parameters.api) {
-        //const erasToClaim = await getErasToClaim(parameters.api, parameters.dapp.address);
         const erasToClaim = parameters.unclaimedEras;
 
         if (erasToClaim.length === 0) {
@@ -483,56 +387,6 @@ const actions: ActionTree<State, StateInterface> = {
       showError(dispatch, error.message);
     }
   },
-};
-
-const getEstimatedClaimedAwards = (
-  currentEra: number,
-  eraStakesMap: Map<number, Option<EraStakingPoints>>,
-  eraRewardAndStake: Map<number, Option<EraRewardAndStake>>,
-  api: ApiPromise,
-  senderAddress: string,
-  bonusEraDuration: number
-): Balance => {
-  const firstStakedEra = Math.min(...eraStakesMap.keys());
-  let claimedSoFar = new BN(0);
-
-  if (firstStakedEra) {
-    for (let era = firstStakedEra; era < currentEra; era++) {
-      const stakingInfo = eraStakesMap.get(era)?.unwrap();
-
-      if (stakingInfo) {
-        for (const [account, balance] of stakingInfo.stakers) {
-          if (
-            !stakingInfo ||
-            stakingInfo.claimedRewards.eq(new BN(0)) ||
-            account.toString() !== senderAddress
-          ) {
-            continue;
-          }
-
-          const eraRewardsAndStakes = eraRewardAndStake.get(era)?.unwrap();
-
-          if (eraRewardsAndStakes) {
-            let claimedForEra = balance
-              .mul(eraRewardsAndStakes.rewards)
-              .divn(5) // 20% reward percentage
-              .div(eraRewardsAndStakes.staked);
-
-            if (era < bonusEraDuration) {
-              claimedForEra = claimedForEra.muln(2);
-            }
-
-            claimedSoFar = claimedSoFar.add(claimedForEra);
-          }
-          break;
-        }
-      }
-    }
-  }
-
-  const result = api.createType('Balance', claimedSoFar);
-  // console.log('claimed so far', result.toHuman());
-  return result;
 };
 
 export interface RegisterParameters {
