@@ -273,6 +273,11 @@ export default defineComponent({
       { immediate: true }
     );
 
+    const isFirstAccess = localStorage.getItem(LOCAL_STORAGE.FIRST_ACCESS) === null;
+    if (isFirstAccess) {
+      randomizedEndpoint(endpointKey.ASTAR);
+    }
+
     const windowHeight = ref<number>(window.innerHeight);
     const onHeightChange = () => {
       windowHeight.value = window.innerHeight - 300;
