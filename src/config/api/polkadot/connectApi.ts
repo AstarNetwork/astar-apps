@@ -1,4 +1,3 @@
-import { wait } from './../../../hooks/helper/common';
 import { options } from '@astar-network/astar-api';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { web3Accounts } from '@polkadot/extension-dapp';
@@ -8,7 +7,7 @@ import { isTestChain } from '@polkadot/util';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { objToArray } from 'src/hooks/helper/common';
+import { objToArray, wait } from 'src/hooks/helper/common';
 import { getInjectedExtensions } from 'src/hooks/helper/wallet';
 
 interface InjectedAccountExt {
