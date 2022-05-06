@@ -1,3 +1,4 @@
+import { wait } from './../../../hooks/helper/common';
 import { options } from '@astar-network/astar-api';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { web3Accounts } from '@polkadot/extension-dapp';
@@ -160,8 +161,10 @@ export async function connectApi(
     fallbackConnection({ networkIdx, endpoint });
   }
 
-  const injectedPromise = await getInjectedExtensions();
   let extensions: InjectedExtension[] = [];
+  // Memo: wait for load the wallet extensions in Firefox
+  await wait(400);
+  const injectedPromise = await getInjectedExtensions();
 
   try {
     extensions = await injectedPromise;
