@@ -1,25 +1,12 @@
-import BN from 'bn.js';
-import { StakeInfo, EraStakingPoints } from './../../../store/dapp-staking/actions';
 import { ApiPromise } from '@polkadot/api';
-import { DappItem } from './../../../store/dapp-staking/state';
-import { GeneralStakerInfo } from 'src/hooks/helper/claim';
-import { ContractEvm, StakingData } from './../index';
-import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
-import { EraIndex } from '@polkadot/types/interfaces';
 import { Option } from '@polkadot/types';
-
-const getDapps = async (api: ApiPromise): Promise<string[]> => {
-  try {
-    const dApps = (await api.query.dappsStaking.registeredDapps.entries()).map((it) => {
-      const dapp = it[0].toHuman() as ContractEvm[];
-      return dapp[0].Evm;
-    });
-    return dApps;
-  } catch (error: any) {
-    console.error(error.messages);
-    return [];
-  }
-};
+import { EraIndex } from '@polkadot/types/interfaces';
+import BN from 'bn.js';
+import { GeneralStakerInfo } from 'src/hooks/helper/claim';
+import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
+import { EraStakingPoints, StakeInfo } from './../../../store/dapp-staking/actions';
+import { DappItem } from './../../../store/dapp-staking/state';
+import { StakingData } from './../index';
 
 export const formatStakingList = async ({
   api,
@@ -30,24 +17,26 @@ export const formatStakingList = async ({
   address: string;
   dapps: DappItem[];
 }): Promise<StakingData[]> => {
-  const dappAddresses = await getDapps(api);
   const data = (
     await Promise.all(
-      dappAddresses.map(async (dappHash: string) => {
-        const stakerInfo = await api.query.dappsStaking.generalStakerInfo<GeneralStakerInfo>(
-          address,
-          {
-            Evm: dappHash,
+      dapps.map(async (dapp: DappItem) => {
+        try {
+          const stakerInfo = await api.query.dappsStaking.generalStakerInfo<GeneralStakerInfo>(
+            address,
+            {
+              Evm: dapp.address,
+            }
+          );
+          if (!stakerInfo) return undefined;
+
+          const bnBalance = stakerInfo.stakes.length && stakerInfo.stakes.slice(-1)[0].staked;
+          const balance = Number(stakerInfo.stakes.length && bnBalance.toString());
+
+          if (balance > 0) {
+            return { address: dapp.address, balance: bnBalance, name: dapp.name };
           }
-        );
-
-        const bnBalance = stakerInfo.stakes.length && stakerInfo.stakes.slice(-1)[0].staked;
-        const balance = Number(stakerInfo.stakes.length && bnBalance.toString());
-
-        if (balance > 0) {
-          const dapp = dapps.find((it) => it.address.toLowerCase() === dappHash.toLowerCase());
-          const name = dapp ? dapp.name : '';
-          return { address: dappHash, balance: bnBalance, name };
+        } catch (error) {
+          console.error(error);
         }
       })
     )
