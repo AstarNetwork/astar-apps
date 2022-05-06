@@ -89,6 +89,7 @@ export function useCompoundRewards() {
           {
             signer: injector.signer,
             nonce: -1,
+            tip: 1,
           },
           async (result) => {
             if (result.status.isFinalized) {

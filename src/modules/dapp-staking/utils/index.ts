@@ -128,10 +128,12 @@ export const getStakeInfo = async ({
     );
 
     const balance = stakerInfo.stakes.length && stakerInfo.stakes.slice(-1)[0].staked.toString();
-    const yourStake = {
-      formatted: balanceFormatter(balance),
-      denomAmount: new BN(balance.toString()),
-    };
+    const yourStake = balance
+      ? {
+          formatted: balanceFormatter(balance),
+          denomAmount: new BN(balance.toString()),
+        }
+      : initialYourStake;
 
     return {
       ...data,

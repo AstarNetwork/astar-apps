@@ -53,6 +53,8 @@ export function useEvmDeposit(fn?: () => void) {
           account,
           {
             signer: injector.signer,
+            nonce: -1,
+            tip: 1,
           },
           (result) => {
             (async () => {

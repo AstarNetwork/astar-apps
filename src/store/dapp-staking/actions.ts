@@ -225,6 +225,7 @@ const actions: ActionTree<State, StateInterface> = {
             {
               signer: injector?.signer,
               nonce: -1,
+              tip: 1,
             },
             async (result) => {
               if (result.status.isFinalized) {
@@ -311,6 +312,7 @@ const actions: ActionTree<State, StateInterface> = {
           {
             signer: injector?.signer,
             nonce: -1,
+            tip: 1,
           },
           (result) => {
             if (result.status.isFinalized) {
@@ -381,6 +383,7 @@ const actions: ActionTree<State, StateInterface> = {
           {
             signer: injector?.signer,
             nonce: -1,
+            tip: 1,
           },
           (result) => {
             if (result.isFinalized) {
