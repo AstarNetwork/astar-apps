@@ -9,9 +9,11 @@ import { deepLink } from 'src/links';
 export const getInjectedExtensions = async (): Promise<any[]> => {
   // Memo: Firefox takes some time to load the wallet extensions at the boot time.
   let extensions = await web3Enable('AstarNetwork/astar-apps');
+  // Memo: obtain the extension name
+  // console.log('extensions', extensions);
+
   const injectedWeb3 = window.injectedWeb3;
   const numWalletExtensions = injectedWeb3 ? Object.values(window.injectedWeb3).length : 0;
-
   const maxRetry = 20;
   let numRetry = 0;
   while (extensions.length !== numWalletExtensions) {
@@ -22,6 +24,7 @@ export const getInjectedExtensions = async (): Promise<any[]> => {
       break;
     }
   }
+
   return extensions;
 };
 
