@@ -140,6 +140,15 @@ export default {
       erasToGo: 'eras to pass: {era}',
       chunksModalDescription: 'This table shows when your funds will be eligible for withdrawal.',
       multipleClaimInfo: '{steps} requests are required to claim all unclaimed eras.',
+      title: {
+        stakeOn: 'Stake on {dapp}',
+        startUnbonding: 'Start unbonding from {dapp}',
+        unStakeFrom: 'Unstake from {dapp}',
+      },
+    },
+    toast: {
+      staked: 'You staked {amount} on {dapp}',
+      unstaked: 'You unstaked {amount} on {dapp}',
     },
     contracts: {
       file: 'File: {name}',

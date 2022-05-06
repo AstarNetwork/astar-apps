@@ -72,10 +72,10 @@ import { signAndSend } from 'src/hooks/helper/wallet';
 import { getAmount, StakeModel } from 'src/hooks/store';
 import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
 import { StakingData } from 'src/modules/dapp-staking';
-import { hasExtrinsicFailedEvent } from 'src/modules/extrinsic';
 import { useStore } from 'src/store';
 import { getAddressEnum } from 'src/store/dapp-staking/actions';
 import { computed, defineComponent, PropType, ref, toRefs, watchEffect } from 'vue';
+import { useI18n } from 'vue-i18n';
 import './stake-panel.scss';
 
 export default defineComponent({
@@ -125,6 +125,7 @@ export default defineComponent({
     const { decimal } = useChainMetadata();
     const { canUnbondWithdraw } = useUnbondWithdraw($api);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
+    const { t } = useI18n();
     const { isCustomSig, customMsg, handleCustomExtrinsic, handleResult } = useCustomSignature({
       fn: () => {
         store.commit('dapps/setUnlockingChunks', -1);
@@ -136,7 +137,7 @@ export default defineComponent({
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
 
     const showStakeModal = () => {
-      modalTitle.value = `Stake on ${props.dapp.name}`;
+      modalTitle.value = t('dappStaking.modals.title.stakeOn', { dapp: props.dapp.name });
       modalActionName.value = StakeAction.Stake;
       modalAction.value = stake;
       showModal.value = true;
@@ -145,8 +146,8 @@ export default defineComponent({
 
     const showUnstakeModal = () => {
       modalTitle.value = canUnbondWithdraw.value
-        ? `Start unbonbonding from ${props.dapp.name}`
-        : `Unstake from ${props.dapp.name}`;
+        ? t('dappStaking.modals.title.startUnbonding', { dapp: props.dapp.name })
+        : t('dappStaking.modals.title.unStakeFrom', { dapp: props.dapp.name });
       modalActionName.value = StakeAction.Unstake;
       modalAction.value = unstake;
       showModal.value = true;
@@ -166,6 +167,7 @@ export default defineComponent({
         showStakeModal();
       }
     });
+
     const stake = async (stakeData: StakeModel): Promise<void> => {
       const amount = getAmount(stakeData.amount, stakeData.unit);
       const unit = stakeData.unit;
@@ -178,8 +180,12 @@ export default defineComponent({
         if (props.stakeInfo) {
           const ttlStakeAmount = amount.add(props.stakeInfo.yourStake.denomAmount);
           if (ttlStakeAmount.lt(minStaking.value)) {
+            const msg = t('dappStaking.error.notEnoughMinAmount', {
+              amount: formattedMinStake.value,
+              symbol: unit,
+            });
             store.dispatch('general/showAlertMsg', {
-              msg: `The amount of token to be staking must greater than ${formattedMinStake.value} ${unit}`,
+              msg,
               alertType: 'error',
             });
             return;
@@ -189,7 +195,10 @@ export default defineComponent({
         }
 
         const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
-          customMsg.value = `You staked ${stakeAmount} on ${props.dapp.name}.`;
+          customMsg.value = t('dappStaking.toast.staked', {
+            amount: stakeAmount,
+            dapp: props.dapp.name,
+          });
           return await handleResult(result);
         };
 
@@ -222,7 +231,10 @@ export default defineComponent({
             );
 
         const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
-          customMsg.value = `You unstaked ${unstakeAmount} on ${props.dapp.name}.`;
+          customMsg.value = t('dappStaking.toast.staked', {
+            amount: unstakeAmount,
+            dapp: props.dapp.name,
+          });
           return await handleResult(result);
         };
 
