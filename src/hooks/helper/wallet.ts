@@ -1,3 +1,4 @@
+import { wait } from 'src/hooks/helper/common';
 import { EthereumProvider } from './../types/CustomSignature';
 import { supportEvmWalletObj, SupportWallet } from 'src/config/wallets';
 import { web3Enable } from '@polkadot/extension-dapp';
@@ -6,9 +7,21 @@ import { SubstrateAccount } from './../../store/general/state';
 import { deepLink } from 'src/links';
 
 export const getInjectedExtensions = async (): Promise<any[]> => {
-  const extensions = await web3Enable('AstarNetwork/astar-apps');
-  // Memo: obtain the extension name
-  // console.log('extensions', extensions);
+  // Memo: Firefox takes some time to load the wallet extensions at the boot time.
+  let extensions = await web3Enable('AstarNetwork/astar-apps');
+  const injectedWeb3 = window.injectedWeb3;
+  const numWalletExtensions = injectedWeb3 ? Object.values(window.injectedWeb3).length : 0;
+
+  const maxRetry = 20;
+  let numRetry = 0;
+  while (extensions.length !== numWalletExtensions) {
+    wait(400);
+    extensions = await web3Enable('AstarNetwork/astar-apps');
+    numRetry++;
+    if (numRetry > maxRetry) {
+      break;
+    }
+  }
   return extensions;
 };
 
