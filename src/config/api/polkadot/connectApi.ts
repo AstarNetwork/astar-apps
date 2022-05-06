@@ -7,7 +7,7 @@ import { isTestChain } from '@polkadot/util';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { objToArray, wait } from 'src/hooks/helper/common';
+import { objToArray } from 'src/hooks/helper/common';
 import { getInjectedExtensions } from 'src/hooks/helper/wallet';
 
 interface InjectedAccountExt {
@@ -160,10 +160,8 @@ export async function connectApi(
     fallbackConnection({ networkIdx, endpoint });
   }
 
-  let extensions: InjectedExtension[] = [];
-  // Memo: wait for load the wallet extensions in Firefox
-  await wait(400);
   const injectedPromise = await getInjectedExtensions();
+  let extensions: InjectedExtension[] = [];
 
   try {
     extensions = await injectedPromise;
