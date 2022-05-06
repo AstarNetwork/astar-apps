@@ -83,10 +83,6 @@ export default defineComponent({
       type: Number,
       required: true,
     },
-    setStakingList: {
-      type: Function,
-      required: true,
-    },
     stakingList: {
       type: Array as PropType<StakingData[]>,
       required: true,

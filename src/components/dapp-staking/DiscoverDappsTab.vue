@@ -37,7 +37,6 @@
           :staker-max-number="maxNumberOfStakersPerContract"
           :account-data="accountData"
           :dapps="dapps"
-          :set-staking-list="setStakingList"
           :staking-list="stakingList"
           :stake-infos="stakeInfos"
         />
@@ -62,7 +61,7 @@ import ModalRegisterDapp from 'components/dapp-staking/modals/ModalRegisterDapp.
 import { useMeta } from 'quasar';
 import Dapp from 'src/components/dapp-staking/Dapp.vue';
 import UserRewards from 'src/components/dapp-staking/UserRewards.vue';
-import { useAccount, useBalance, useCurrentEra, useListDapps } from 'src/hooks';
+import { useAccount, useBalance, useCurrentEra, useStakerInfo, useStakingList } from 'src/hooks';
 import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
@@ -91,7 +90,8 @@ export default defineComponent({
     const { progress, blocksUntilNextEra, era } = useCurrentEra();
     const { currentAccount } = useAccount();
     const { accountData } = useBalance(currentAccount);
-    const { stakeInfos, dapps, stakingList } = useListDapps();
+    const { stakeInfos } = useStakerInfo();
+    const { dapps, stakingList } = useStakingList();
 
     const maxNumberOfStakersPerContract = computed(
       () => store.getters['dapps/getMaxNumberOfStakersPerContract']

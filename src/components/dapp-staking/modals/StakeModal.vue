@@ -43,7 +43,10 @@
           :is-max-button="isMaxButton"
         />
         <div class="box--information">
-          <div v-if="accountData && actionName === StakeAction.Stake" class="tw-mt-1 tw-ml-1">
+          <div
+            v-if="!isEnableNominationTransfer && accountData && actionName === StakeAction.Stake"
+            class="tw-mt-1 tw-ml-1"
+          >
             {{ $t('dappStaking.modals.availableToStake') }}
             <format-balance
               :balance="accountData?.getUsableFeeBalance()"
@@ -175,7 +178,7 @@ export default defineComponent({
       isEnableNominationTransfer,
       nominationTransfer,
       isDisabledNominationTransfer,
-    } = useNominationTransfer({ stakingList: props.stakingList });
+    } = useNominationTransfer();
     const { t } = useI18n();
 
     const handleNominationTransfer = async ({
@@ -243,12 +246,15 @@ export default defineComponent({
       }
 
       if (isEnableNominationTransfer.value) {
-        const isNominationTransfer = formattedTransferFrom.value?.isNominationTransfer;
-        if (isNominationTransfer) {
+        const formattedTransferFromRef = formattedTransferFrom.value;
+        const isNominationTransfer = formattedTransferFromRef.isNominationTransfer;
+
+        if (isNominationTransfer && formattedTransferFromRef.item) {
           const balTransferFrom = Number(
-            ethers.utils.formatEther(formattedTransferFrom.value.item.balance.toString())
+            ethers.utils.formatEther(formattedTransferFromRef.item.balance.toString())
           );
           const targetBalAfterTransfer = balTransferFrom - inputAmount;
+
           if (inputAmount >= balTransferFrom) {
             return '';
           } else if (formattedMinStaking.value > targetBalAfterTransfer) {
@@ -263,6 +269,7 @@ export default defineComponent({
     });
 
     const nominationTransferMaxAmount = computed(() => {
+      if (!formattedTransferFrom.value.item) return 0;
       return formattedTransferFrom.value
         ? Number(ethers.utils.formatEther(formattedTransferFrom.value.item.balance.toString()))
         : 0;
@@ -270,9 +277,7 @@ export default defineComponent({
 
     const isMaxButton = computed(() => {
       const isNominationTransferMax =
-        isEnableNominationTransfer.value &&
-        formattedTransferFrom.value &&
-        formattedTransferFrom.value.isNominationTransfer;
+        isEnableNominationTransfer.value && formattedTransferFrom.value.isNominationTransfer;
       return props.actionName === StakeAction.Unstake || isNominationTransferMax;
     });
 
@@ -281,11 +286,7 @@ export default defineComponent({
         return formatStakeAmount;
       }
 
-      if (
-        isEnableNominationTransfer.value &&
-        formattedTransferFrom.value &&
-        formattedTransferFrom.value.isNominationTransfer
-      ) {
+      if (isEnableNominationTransfer.value && formattedTransferFrom.value.isNominationTransfer) {
         return nominationTransferMaxAmount.value;
       }
 

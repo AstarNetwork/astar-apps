@@ -2,6 +2,7 @@
   <div class="container--nomination-transfer">
     <div class="button-account">
       <input
+        v-if="formattedTransferFrom"
         :value="formattedTransferFrom.text"
         class="box--input input--transfer-from"
         type="text"

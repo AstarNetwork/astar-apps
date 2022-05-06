@@ -1,10 +1,11 @@
 import { ISubmittableResult } from '@polkadot/types/types';
 import { $api } from 'boot/api';
 import { ethers } from 'ethers';
-import { getAddressEnum, StakingData } from 'src/modules/dapp-staking';
+import { getAddressEnum } from 'src/modules/dapp-staking';
 import { showError } from 'src/modules/extrinsic';
 import { useStore } from 'src/store';
-import { computed, ref, watchEffect } from 'vue';
+import { computed, ref, watch, watchEffect } from 'vue';
+import { useStakingList } from '../index';
 import { TxType } from '../custom-signature/message';
 import { ASTAR_DECIMALS, balanceFormatter } from '../helper/plasmUtils';
 import { signAndSend } from '../helper/wallet';
@@ -12,9 +13,10 @@ import { useAccount } from '../useAccount';
 import { useCustomSignature } from '../useCustomSignature';
 import { useGetMinStaking } from '../useGetMinStaking';
 
-export function useNominationTransfer({ stakingList }: { stakingList: StakingData[] }) {
+export function useNominationTransfer() {
   const { currentAccount } = useAccount();
   const { minStaking } = useGetMinStaking($api);
+  const { stakingList } = useStakingList();
   const store = useStore();
   const addressTransferFrom = ref<string>(currentAccount.value);
   const isEnableNominationTransfer = ref<boolean>(false);
@@ -45,15 +47,22 @@ export function useNominationTransfer({ stakingList }: { stakingList: StakingDat
   });
 
   const formattedTransferFrom = computed(() => {
-    const stakingListRef = stakingList;
-    const item = stakingListRef.find((it) => it.address === addressTransferFrom.value);
-    if (!item) return null;
+    const defaultData = { text: '', item: null, isNominationTransfer: false };
+    try {
+      const stakingListRef = stakingList.value;
+      if (!stakingListRef) return defaultData;
+      const item = stakingListRef.find((it) => it.address === addressTransferFrom.value);
+      if (!item) return defaultData;
 
-    const name = item.name === currentAccount.value ? 'Transferable Balance' : item.name;
-    const isNominationTransfer = item.address !== currentAccount.value;
+      const name = item.name === currentAccount.value ? 'Transferable Balance' : item.name;
+      const isNominationTransfer = item.address !== currentAccount.value;
 
-    const formattedText = `${name} (${balanceFormatter(item.balance, ASTAR_DECIMALS)})`;
-    return { text: formattedText, item, isNominationTransfer };
+      const formattedText = `${name} (${balanceFormatter(item.balance, ASTAR_DECIMALS)})`;
+      return { text: formattedText, item, isNominationTransfer };
+    } catch (error) {
+      console.error(error);
+      return defaultData;
+    }
   });
 
   const formattedMinStaking = computed(() => {
@@ -67,6 +76,7 @@ export function useNominationTransfer({ stakingList }: { stakingList: StakingDat
     amount: number;
     stakedAmount: number;
   }): boolean => {
+    if (!formattedTransferFrom.value.item) return false;
     const stakeAmount = amount + stakedAmount;
     const isNotEnoughMinAmount = formattedMinStaking.value > stakeAmount;
     const transferFromRef = formattedTransferFrom.value;
@@ -91,7 +101,7 @@ export function useNominationTransfer({ stakingList }: { stakingList: StakingDat
     try {
       const apiRef = $api.value!;
       const transferFromRef = formattedTransferFrom.value;
-      if (!transferFromRef) return false;
+      if (!transferFromRef || !formattedTransferFrom.value.item) return false;
 
       const value = ethers.utils.parseEther(String(amount)).toString();
       const transaction = apiRef.tx.dappsStaking.nominationTransfer(
@@ -124,6 +134,14 @@ export function useNominationTransfer({ stakingList }: { stakingList: StakingDat
   watchEffect(() => {
     setIsEnableNominationTransfer();
   });
+
+  watch(
+    [currentAccount],
+    () => {
+      addressTransferFrom.value = currentAccount.value;
+    },
+    { immediate: true }
+  );
 
   return {
     formattedTransferFrom,
