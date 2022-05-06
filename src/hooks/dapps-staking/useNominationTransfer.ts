@@ -4,7 +4,7 @@ import { ethers } from 'ethers';
 import { getAddressEnum, StakingData } from 'src/modules/dapp-staking';
 import { showError } from 'src/modules/extrinsic';
 import { useStore } from 'src/store';
-import { computed, ref } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 import { TxType } from '../custom-signature/message';
 import { ASTAR_DECIMALS, balanceFormatter } from '../helper/plasmUtils';
 import { signAndSend } from '../helper/wallet';
@@ -17,10 +17,23 @@ export function useNominationTransfer({ stakingList }: { stakingList: StakingDat
   const { minStaking } = useGetMinStaking($api);
   const store = useStore();
   const addressTransferFrom = ref<string>(currentAccount.value);
+  const isEnableNominationTransfer = ref<boolean>(false);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const { isCustomSig, handleResult, handleCustomExtrinsic } = useCustomSignature({
     txType: TxType.requiredClaim,
   });
+
+  const setIsEnableNominationTransfer = () => {
+    try {
+      const metadata = $api.value!.runtimeMetadata;
+      const metadataJson = JSON.stringify(metadata.toJSON());
+      const result = metadataJson.includes('nomination_transfer');
+      isEnableNominationTransfer.value = result;
+    } catch (error) {
+      console.error(error);
+      isEnableNominationTransfer.value = false;
+    }
+  };
 
   const setAddressTransferFrom = (address: string) => {
     addressTransferFrom.value = address;
@@ -108,12 +121,17 @@ export function useNominationTransfer({ stakingList }: { stakingList: StakingDat
     }
   };
 
+  watchEffect(() => {
+    setIsEnableNominationTransfer();
+  });
+
   return {
     formattedTransferFrom,
     addressTransferFrom,
     currentAccount,
     formattedMinStaking,
     nativeTokenSymbol,
+    isEnableNominationTransfer,
     setAddressTransferFrom,
     nominationTransfer,
     isDisabledNominationTransfer,

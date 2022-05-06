@@ -4,7 +4,6 @@ import { boot } from 'quasar/wrappers';
 import { connectApi } from 'src/config/api/polkadot/connectApi';
 import {
   ASTAR_CHAIN,
-  checkIsEnableNominationTransfer,
   endpointKey,
   getProviderIndex,
   providerEndpoints,
@@ -21,7 +20,6 @@ import { getRandomFromArray } from './../hooks/helper/common';
 const $api = ref<ApiPromise>();
 const $endpoint = ref<string>('');
 const $web3 = ref<Web3>();
-const $isEnableNominationTransfer = ref<boolean>(false);
 
 export default boot(async ({ store }) => {
   const { NETWORK_IDX, CUSTOM_ENDPOINT, SELECTED_ENDPOINT } = LOCAL_STORAGE;
@@ -83,8 +81,6 @@ export default boot(async ({ store }) => {
     store.commit('general/setMetaExtensions', metaExtensions.value);
     store.commit('general/setExtensionCount', extensionCount.value);
 
-    $isEnableNominationTransfer.value = await checkIsEnableNominationTransfer(api);
-
     if (chainInfo.value?.chain) {
       const currentChain = chainInfo.value?.chain as ASTAR_CHAIN;
       const currentNetworkIdx = getProviderIndex(currentChain);
@@ -97,4 +93,4 @@ export default boot(async ({ store }) => {
   });
 });
 
-export { $api, $web3, $endpoint, $isEnableNominationTransfer };
+export { $api, $web3, $endpoint };

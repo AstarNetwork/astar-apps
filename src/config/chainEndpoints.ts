@@ -1,4 +1,3 @@
-import { ApiPromise } from '@polkadot/api';
 import { RegistryTypes } from '@polkadot/types/types';
 import * as typeDefs from 'src/config/api/polkadot/registry-types';
 
@@ -138,17 +137,5 @@ export const getProviderIndex = (chain: ASTAR_CHAIN) => {
       return endpointKey.SHIBUYA;
     default:
       return endpointKey.ASTAR;
-  }
-};
-
-export const checkIsEnableNominationTransfer = async (api: ApiPromise): Promise<boolean> => {
-  try {
-    const metadata = api.runtimeMetadata;
-    const metadataJson = JSON.stringify(metadata.toJSON());
-    const result = metadataJson.includes('nomination_transfer');
-    return result;
-  } catch (error) {
-    console.error(error);
-    return false;
   }
 };

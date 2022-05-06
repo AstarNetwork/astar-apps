@@ -39,13 +39,7 @@
           v-model:amount="data.amount"
           v-model:selectedUnit="data.unit"
           title="Amount"
-          :set-nomination-transfer-max-amount="setNominationTransferMaxAmount"
-          :formatted-transfer-from="formattedTransferFrom"
-          :max-in-default-unit="
-            actionName === StakeAction.Unstake
-              ? formatStakeAmount
-              : accountData?.getUsableFeeBalance()
-          "
+          :max-in-default-unit="maxAmount"
           :is-max-button="isMaxButton"
         />
         <div class="box--information">
@@ -103,11 +97,11 @@ import Avatar from 'src/components/common/Avatar.vue';
 import Button from 'src/components/common/Button.vue';
 import InputAmount from 'src/components/common/InputAmount.vue';
 import { useChainMetadata, useNominationTransfer, useUnbondWithdraw } from 'src/hooks';
-import { $api, $isEnableNominationTransfer } from 'boot/api';
+import { $api } from 'boot/api';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { getAmount, StakeModel } from 'src/hooks/store';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, toRefs, PropType, watchEffect } from 'vue';
+import { computed, defineComponent, ref, toRefs, PropType } from 'vue';
 import { StakeAction } from '../StakePanel.vue';
 import ModalNominationTransfer from 'src/components/dapp-staking/modals/ModalNominationTransfer.vue';
 import { StakingData } from 'src/modules/dapp-staking';
@@ -178,6 +172,7 @@ export default defineComponent({
       currentAccount,
       formattedMinStaking,
       nativeTokenSymbol,
+      isEnableNominationTransfer,
       nominationTransfer,
       isDisabledNominationTransfer,
     } = useNominationTransfer({ stakingList: props.stakingList });
@@ -247,7 +242,7 @@ export default defineComponent({
         });
       }
 
-      if ($isEnableNominationTransfer.value) {
+      if (isEnableNominationTransfer.value) {
         const isNominationTransfer = formattedTransferFrom.value?.isNominationTransfer;
         if (isNominationTransfer) {
           const balTransferFrom = Number(
@@ -267,19 +262,34 @@ export default defineComponent({
       return '';
     });
 
-    const setNominationTransferMaxAmount = (): void => {
-      const amount = formattedTransferFrom.value
+    const nominationTransferMaxAmount = computed(() => {
+      return formattedTransferFrom.value
         ? Number(ethers.utils.formatEther(formattedTransferFrom.value.item.balance.toString()))
         : 0;
-      data.value = { ...data.value, amount };
-    };
+    });
 
     const isMaxButton = computed(() => {
       const isNominationTransferMax =
-        $isEnableNominationTransfer.value &&
+        isEnableNominationTransfer.value &&
         formattedTransferFrom.value &&
         formattedTransferFrom.value.isNominationTransfer;
       return props.actionName === StakeAction.Unstake || isNominationTransferMax;
+    });
+
+    const maxAmount = computed(() => {
+      if (props.actionName === StakeAction.Unstake) {
+        return formatStakeAmount;
+      }
+
+      if (
+        isEnableNominationTransfer.value &&
+        formattedTransferFrom.value &&
+        formattedTransferFrom.value.isNominationTransfer
+      ) {
+        return nominationTransferMaxAmount.value;
+      }
+
+      return 0;
     });
 
     const reloadAmount = (address: string): void => {
@@ -308,10 +318,11 @@ export default defineComponent({
       addressTransferFrom,
       handleNominationTransfer,
       isDisabledNominationTransfer,
-      setNominationTransferMaxAmount,
-      isEnableNominationTransfer: $isEnableNominationTransfer.value,
+      nominationTransferMaxAmount,
+      isEnableNominationTransfer: isEnableNominationTransfer.value,
       errMsg,
       isMaxButton,
+      maxAmount,
       ...toRefs(props),
     };
   },
