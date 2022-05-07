@@ -9,7 +9,7 @@ import { ExtrinsicPayload } from './helper';
 import { getIndividualClaimTxs, PayloadWithWeight } from './helper/claim';
 import { useCurrentEra, useCustomSignature } from './index';
 
-const MAX_BATCH_WEIGHT = new BN('320000000000');
+const MAX_BATCH_WEIGHT = new BN('50000000000');
 
 export function useClaimAll() {
   const batchTxs = ref<PayloadWithWeight[]>([]);
