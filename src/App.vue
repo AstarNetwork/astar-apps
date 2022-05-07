@@ -32,7 +32,6 @@
 import { defineComponent, computed } from 'vue';
 import DashboardLayout from 'layouts/DashboardLayout.vue';
 import { useStore } from 'src/store';
-import Spinner from 'components/common/Spinner.vue';
 import ModalLoading from 'components/common/ModalLoading.vue';
 import AlertBox from 'components/common/AlertBox.vue';
 import 'animate.css';
@@ -41,7 +40,6 @@ export default defineComponent({
   name: 'App',
   components: {
     DashboardLayout,
-    Spinner,
     ModalLoading,
     AlertBox,
   },

@@ -98,7 +98,7 @@ export default {
     stakerApr: 'APR: {value}%',
     apr: 'APR',
     ttlPendingRewards: 'Your Pending Rewards',
-    autoCompound: 'Auto-compound after claiming',
+    autoCompound: 'Re-stake after claiming',
     autoCompoundingTooltip:
       'By turning on the Auto compound, your rewards will re-stake after claiming.',
     view: 'View',

@@ -16,3 +16,6 @@ export const capitalize = (str: string): string => {
 export const getRandomFromArray = (list: any[]) => {
   return list[Math.floor(Math.random() * list.length)];
 };
+
+//Ref: https://stackoverflow.com/questions/951021/what-is-the-javascript-version-of-sleep
+export const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
