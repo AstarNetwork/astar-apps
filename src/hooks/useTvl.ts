@@ -1,5 +1,6 @@
 import { ApiPromise } from '@polkadot/api';
-import BN from 'bn.js';
+import { Option, Struct, U32 } from '@polkadot/types-codec';
+import { Balance } from '@polkadot/types/interfaces';
 import { $isEnableIndividualClaim } from 'boot/api';
 import { ethers } from 'ethers';
 import { useStore } from 'src/store';
@@ -7,12 +8,21 @@ import { computed, ref, watch } from 'vue';
 import { useChainMetadata } from '.';
 import { getUsdPrice } from './helper/price';
 
-export function useTvl(api: any) {
+interface EraInfo extends Struct {
+  rewards: {
+    stakers: Balance;
+    dapps: Balance;
+  };
+  staked: Balance;
+  locked: Balance;
+}
+
+export function useTvl(api: ApiPromise | undefined) {
   const store = useStore();
   const { decimal } = useChainMetadata();
 
   const dapps = computed(() => store.getters['dapps/getAllDapps']);
-  const tvlToken = ref<BN>(new BN(0));
+  const tvlToken = ref<BigInt>(BigInt(0));
   const tvlUsd = ref<number>(0);
   const tokenSymbol = computed(() => {
     const chainInfo = store.getters['general/chainInfo'];
@@ -27,18 +37,14 @@ export function useTvl(api: any) {
       const tokenSymbolRef = tokenSymbol.value;
       if (!api || !dappsRef || !tokenSymbolRef) return;
 
-      const getTvl = async (): Promise<{ tvl: BN; tvlDefaultUnit: number }> => {
+      const getTvl = async (): Promise<{ tvl: BigInt; tvlDefaultUnit: number }> => {
         const isEnableIndividualClaim = $isEnableIndividualClaim.value;
-        const era = await api.query.dappsStaking.currentEra();
-        const result = isEnableIndividualClaim
-          ? await api.query.dappsStaking.generalEraInfo(era)
-          : await api.query.dappsStaking.eraRewardsAndStakes(era);
+        const era = await api.query.dappsStaking.currentEra<U32>();
+        const result = await api.query.dappsStaking.generalEraInfo<Option<EraInfo>>(era);
+        const tvl = result.unwrap().locked.toBigInt();
 
-        const tvl = isEnableIndividualClaim
-          ? result.unwrap().locked
-          : result.unwrap().staked.valueOf();
-
-        const tvlDefaultUnit = Number(ethers.utils.formatUnits(tvl.toString(), decimal.value));
+        const tvlDefaultUnit = Number(ethers.utils.formatUnits(tvl, decimal.value));
+        console.log('tvl:s', tvl, tvlDefaultUnit);
         return { tvl, tvlDefaultUnit };
       };
 
@@ -59,7 +65,6 @@ export function useTvl(api: any) {
         (async () => {
           const results = await Promise.all([getTvl(), priceUsd()]);
           const { tvl, tvlDefaultUnit } = results[0];
-          console.log('tvl', tvl, tvlDefaultUnit);
           const usd = results[1];
           tvlToken.value = tvl;
           tvlUsd.value = usd * tvlDefaultUnit;

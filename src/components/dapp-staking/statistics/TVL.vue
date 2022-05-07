@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { numFormatter } from 'src/hooks/helper/price';
 import { useTvl } from 'src/hooks';
 import { $api } from 'boot/api';

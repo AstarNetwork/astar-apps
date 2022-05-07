@@ -8,7 +8,10 @@ import { formatBalance } from '@polkadot/util';
 import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
 export default defineComponent({
   props: {
-    balance: { type: Object as PropType<BN> | undefined, required: true }, //the balance should be in `femto `
+    balance: {
+      type: Object as PropType<BN> | Object as PropType<string> | undefined,
+      required: true,
+    }, //the balance should be in `femto `
     decimals: { type: Number, required: true },
     unit: { type: String, required: true },
   },
@@ -24,7 +27,6 @@ export default defineComponent({
             decimals: props.decimals,
           });
 
-          // formattedBalance.value = formatted.split(' ').slice(0, 2).join(' ').replace('Unit', '');
           formattedBalance.value = balanceFormatter(props.balance);
         }
       },
