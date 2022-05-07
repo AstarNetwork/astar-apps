@@ -111,15 +111,6 @@ export const useApr = () => {
           latestBlock,
         });
 
-        console.log(
-          'data',
-          rawBlockRewards,
-          blockRewards,
-          eraRewards,
-          latestBlock,
-          avrBlockPerMins
-        );
-
         const avgBlocksPerDay = avrBlockPerMins * 60 * 24;
         const dailyEraRate = avgBlocksPerDay / blocksPerEraRef;
         const annualRewards = eraRewards * dailyEraRate * 365.25;
@@ -127,8 +118,6 @@ export const useApr = () => {
         const developerRewardPercentage = results[3];
         const stakerBlockReward = (1 - developerRewardPercentage) * DAPPS_REWARD_RATE;
         const stakerApr = (annualRewards / totalStaked) * stakerBlockReward * 100;
-
-        console.log('data 2', tvlTokenRef);
 
         if (stakerApr === Infinity) return 0;
         return stakerApr;

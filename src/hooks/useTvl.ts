@@ -8,6 +8,7 @@ import { computed, ref, watch } from 'vue';
 import { useChainMetadata } from '.';
 import { getUsdPrice } from './helper/price';
 
+// TODO typegeneration
 interface EraInfo extends Struct {
   rewards: {
     stakers: Balance;
@@ -42,9 +43,8 @@ export function useTvl(api: ApiPromise | undefined) {
         const era = await api.query.dappsStaking.currentEra<U32>();
         const result = await api.query.dappsStaking.generalEraInfo<Option<EraInfo>>(era);
         const tvl = result.unwrap().locked.toBigInt();
-
         const tvlDefaultUnit = Number(ethers.utils.formatUnits(tvl, decimal.value));
-        console.log('tvl:s', tvl, tvlDefaultUnit);
+
         return { tvl, tvlDefaultUnit };
       };
 
