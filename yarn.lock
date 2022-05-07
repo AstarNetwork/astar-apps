@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@astar-network/astar-ui@0.0.30":
-  version "0.0.30"
-  resolved "https://registry.yarnpkg.com/@astar-network/astar-ui/-/astar-ui-0.0.30.tgz#01e3bde5508cdb3ee8d0e4759a1616f7c9d92cea"
-  integrity sha512-j0V2HUlAhyY6YOlP3v507GXmPDUf9iwJtz1DEBwPaGQmZkY7j1Xlh+2GLN93zcN1f6ISW9j49U4PkI0BvfbZBw==
+"@astar-network/astar-ui@^0.0.41":
+  version "0.0.41"
+  resolved "https://registry.yarnpkg.com/@astar-network/astar-ui/-/astar-ui-0.0.41.tgz#885e925993d1e1f367b89e7915834247486a8ee7"
+  integrity sha512-Zp03otkTC7AktYmeuuve7SLJGlctsGXl1ilVtnLD1lUBti830BGBjw1GmwGTzjMYsPJ3dqI6rR7Ija+BKYp1Fw==
   dependencies:
     prismjs "^1.25.0"
     vue "^3.2.23"

@@ -81,6 +81,7 @@ export function useClaimAll() {
             signer: injector?.signer,
             // Memo: Removing it can cause subsequent transactions to fail
             nonce: -1,
+            tip: 1,
           },
           (result) => {
             handleResult(result);
