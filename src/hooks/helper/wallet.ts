@@ -17,7 +17,7 @@ export const getInjectedExtensions = async (): Promise<any[]> => {
   const maxRetry = 20;
   let numRetry = 0;
   while (extensions.length !== numWalletExtensions) {
-    wait(400);
+    await wait(400);
     extensions = await web3Enable('AstarNetwork/astar-apps');
     numRetry++;
     if (numRetry > maxRetry) {

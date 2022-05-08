@@ -7,7 +7,7 @@ import { isTestChain } from '@polkadot/util';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { objToArray } from 'src/hooks/helper/common';
+import { objToArray, wait } from 'src/hooks/helper/common';
 import { getInjectedExtensions } from 'src/hooks/helper/wallet';
 
 interface InjectedAccountExt {
@@ -97,11 +97,10 @@ const fallbackConnection = async ({
         });
       });
 
-      const fallbackTimeout = new Promise<string>((resolve) => {
+      const fallbackTimeout = new Promise<string>(async (resolve) => {
         const timeout = 8 * 1000;
-        setTimeout(() => {
-          resolve(RES_TIMEOUT);
-        }, timeout);
+        await wait(timeout);
+        resolve(RES_TIMEOUT);
       });
 
       const race = Promise.race<string>([resolveApiStatus, fallbackTimeout]);
@@ -142,11 +141,10 @@ export async function connectApi(
       });
     });
 
-    const fallbackTimeout = new Promise<string>((resolve) => {
+    const fallbackTimeout = new Promise<string>(async (resolve) => {
       const timeout = 8 * 1000;
-      setTimeout(() => {
-        resolve(RES_TIMEOUT);
-      }, timeout);
+      await wait(timeout);
+      resolve(RES_TIMEOUT);
     });
 
     const race = Promise.race<string>([apiConnect, fallbackTimeout]);

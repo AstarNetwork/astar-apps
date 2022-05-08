@@ -96,7 +96,7 @@ import { useQuasar } from 'quasar';
 import { $endpoint } from 'src/boot/api';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { getRandomFromArray } from 'src/hooks/helper/common';
+import { getRandomFromArray, wait } from 'src/hooks/helper/common';
 import { checkIsMobileMathWallet } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch } from 'vue';
@@ -126,13 +126,12 @@ export default defineComponent({
 
     const isClosing = ref<boolean>(false);
 
-    const closeModal = (): void => {
+    const closeModal = async (): Promise<void> => {
       isClosing.value = true;
       const animationDuration = 500;
-      setTimeout(() => {
-        isClosing.value = false;
-        emit('update:is-open', false);
-      }, animationDuration);
+      await wait(animationDuration);
+      isClosing.value = false;
+      emit('update:is-open', false);
     };
 
     const { NETWORK_IDX, CUSTOM_ENDPOINT, SELECTED_ENDPOINT } = LOCAL_STORAGE;
