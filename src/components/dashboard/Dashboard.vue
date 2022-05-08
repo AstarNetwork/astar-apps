@@ -57,7 +57,7 @@ import TvlChart from 'src/components/dashboard/TvlChart.vue';
 import { useTvlHistorical } from 'src/hooks';
 import { textChart, TOKEN_API_URL } from 'src/modules/token-api';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, watch } from 'vue';
+import { computed, defineComponent, ref, watchEffect } from 'vue';
 import axios from 'axios';
 
 export default defineComponent({
@@ -104,7 +104,8 @@ export default defineComponent({
         holders.value = `${result.data.toLocaleString('en-US')}`;
       }
     };
-    watch([chainInfo], async () => {
+
+    watchEffect(async () => {
       try {
         if (chainInfo.value) {
           const network = chainInfo.value.chain.toLowerCase();
