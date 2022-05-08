@@ -7,17 +7,12 @@
       </div>
 
       <div class="tw-transform tw-text-gray-400 dark:tw-text-darkGray-500">
-        <SpinnerV2 />
+        <astar-spinner />
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
-import SpinnerV2 from 'components/common/SpinnerV2.vue';
-export default defineComponent({
-  components: {
-    SpinnerV2,
-  },
-});
+export default defineComponent({});
 </script>

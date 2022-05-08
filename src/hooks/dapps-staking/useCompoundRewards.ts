@@ -1,4 +1,4 @@
-import { ref, computed, Ref } from 'vue';
+import { ref, computed, watchEffect } from 'vue';
 import { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
 import { $api } from 'boot/api';
 import { useStore } from 'src/store';
@@ -89,6 +89,7 @@ export function useCompoundRewards() {
           {
             signer: injector.signer,
             nonce: -1,
+            tip: 1,
           },
           async (result) => {
             if (result.status.isFinalized) {
@@ -134,7 +135,9 @@ export function useCompoundRewards() {
     }
   };
 
-  getCompoundingType();
+  watchEffect(() => {
+    getCompoundingType();
+  });
 
   return {
     isSupported,

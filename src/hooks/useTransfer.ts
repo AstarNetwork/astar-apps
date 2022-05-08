@@ -44,6 +44,8 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
           fromAddress,
           {
             signer: injector?.signer,
+            nonce: -1,
+            tip: 1,
           },
           (result) => {
             handleResult(result);

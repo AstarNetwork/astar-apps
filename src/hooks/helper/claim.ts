@@ -1,6 +1,6 @@
 import { ApiPromise } from '@polkadot/api';
 import { Option, Struct } from '@polkadot/types';
-import { EventRecord } from '@polkadot/types/interfaces';
+import { EventRecord, Balance } from '@polkadot/types/interfaces';
 import BN from 'bn.js';
 import { getAddressEnum } from './../../store/dapp-staking/calculation';
 import { ExtrinsicPayload } from './index';
@@ -12,9 +12,13 @@ interface ContractEraStake extends Struct {
   readonly total: string;
 }
 
+export interface EraStake extends Struct {
+  staked: Balance;
+  era: number;
+}
+
 export interface GeneralStakerInfo extends Struct {
-  // Todo: fix type annotation
-  readonly stakes: any[];
+  readonly stakes: EraStake[];
 }
 
 export interface RegisteredDapps extends Struct {
@@ -56,18 +60,17 @@ const getNumberOfUnclaimedEra = async ({
 }): Promise<number> => {
   let numberOfUnclaimedEra = 0;
   try {
-    const data = await api.query.dappsStaking.generalStakerInfo<Option<GeneralStakerInfo>>(
+    const data = await api.query.dappsStaking.generalStakerInfo<GeneralStakerInfo>(
       senderAddress,
       getAddressEnum(dappAddress)
     );
 
     if (data && !data.isEmpty) {
-      const stakerInfo: GeneralStakerInfo = data.toHuman() as any;
-      const stakes = stakerInfo && stakerInfo.stakes;
+      const stakes = data && data.stakes;
 
       for (let i = 0; i < stakes.length; i++) {
         const { era, staked } = stakes[i];
-        if (staked === '0') continue;
+        if (staked.eq(new BN(0))) continue;
         const nextEraData = stakes[i + 1] ?? null;
         const nextEra = nextEraData && nextEraData.era;
         const isLastEra = i === stakes.length - 1;
