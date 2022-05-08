@@ -6,7 +6,7 @@
           <circulating-panel :symbol="chainInfo.tokenSymbol" />
         </div>
         <div class="container--panel">
-          <rewards-panel :symbol="chainInfo.tokenSymbol" />
+          <value-panel title="Holders" :value="holders" />
         </div>
       </div>
       <div class="container--panel">
@@ -50,14 +50,15 @@
 <script lang="ts">
 import BlockPanel from 'src/components/dashboard/BlockPanel.vue';
 import CirculatingPanel from 'src/components/dashboard/CirculatingPanel.vue';
-import RewardsPanel from 'src/components/dashboard/RewardsPanel.vue';
+import ValuePanel from 'src/components/dashboard/ValuePanel.vue';
 import TokenPriceChart from 'src/components/dashboard/TokenPriceChart.vue';
 // import TotalTransactionsChart from 'src/components/dashboard/TotalTransactionsChart.vue';
 import TvlChart from 'src/components/dashboard/TvlChart.vue';
 import { useTvlHistorical } from 'src/hooks';
-import { textChart } from 'src/modules/token-api';
+import { textChart, TOKEN_API_URL } from 'src/modules/token-api';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref } from 'vue';
+import { computed, defineComponent, ref, watch } from 'vue';
+import axios from 'axios';
 
 export default defineComponent({
   components: {
@@ -65,13 +66,12 @@ export default defineComponent({
     TvlChart,
     BlockPanel,
     CirculatingPanel,
-    RewardsPanel,
+    ValuePanel,
     // TotalTransactionsChart,
   },
   setup() {
     const store = useStore();
-    const totalSupply = ref<number>(0);
-    const circulatingSupply = ref<number>(0);
+    const holders = ref<string>('');
 
     const {
       filteredDappStakingTvl,
@@ -96,11 +96,29 @@ export default defineComponent({
       return chainInfo ? chainInfo.chain !== 'Shibuya Testnet' : false;
     });
 
+    const loadStats = async (network: string) => {
+      if (!chainInfo.value || !chainInfo.value.chain) return;
+      const statsUrl = `${TOKEN_API_URL}/v1/${network}/token/holders`;
+      const result = await axios.get<number>(statsUrl);
+      if (result.data) {
+        holders.value = `${result.data.toLocaleString('en-US')}`;
+      }
+    };
+    watch([chainInfo], async () => {
+      try {
+        if (chainInfo.value) {
+          const network = chainInfo.value.chain.toLowerCase();
+          network && (await loadStats(network));
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
     return {
       textChart,
       chainInfo,
-      totalSupply,
-      circulatingSupply,
+      holders,
       isMainnet,
       filteredDappStakingTvl,
       filteredEcosystemTvl,
