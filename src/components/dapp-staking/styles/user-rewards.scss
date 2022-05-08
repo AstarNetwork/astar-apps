@@ -19,9 +19,27 @@
   border-radius: 6px;
   padding: 6px 8px;
   margin-top: 16px;
+  display: flex;
+  column-gap: 6px;
   @media (min-width: $sm) {
     margin-top: 0px;
   }
+}
+
+.text--symbol {
+  margin-bottom: -1px;
+}
+
+.skeleton--rewards {
+  display: inline-flex;
+  width: 120px;
+}
+
+.column--rewards-meter {
+  display: flex;
+  align-items: flex-end;
+  column-gap: 4px;
+  margin-top: -2px;
 }
 
 .title {

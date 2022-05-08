@@ -112,8 +112,8 @@ export default {
     off: 'OFF',
     yourRewards: 'Your Rewards',
     claimedRewards: {
-      short: 'Claimed rewards: {amount} {symbol}',
-      long: 'Total rewards you have claimed: {amount} {symbol}',
+      short: 'Claimed rewards: ',
+      long: 'Total rewards you have claimed: ',
     },
     modals: {
       alreadyClaimed: 'Already claimed:',

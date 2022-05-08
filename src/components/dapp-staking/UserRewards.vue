@@ -6,7 +6,15 @@
           <span class="title container--title--color">{{ $t('dappStaking.yourRewards') }}</span>
         </div>
         <div v-if="currentAccount" class="container--claimed">
-          <span> {{ claimedRewards }}</span>
+          <span class="text--lg"> {{ textClaimedRewards }} </span>
+
+          <div v-if="isLoadingClaimed">
+            <q-skeleton class="skeleton--rewards" />
+          </div>
+          <div v-else class="column--rewards-meter">
+            <vue-odometer class="text--title" format=",ddd" animation="smooth" :value="claimed" />
+            <span class="text--title text--symbol">{{ symbol }}</span>
+          </div>
         </div>
       </div>
       <div class="user-rewards-panel">
@@ -29,24 +37,32 @@ import { getClaimedAmount } from 'src/modules/token-api';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
-
+import VueOdometer from 'v-odometer/src';
+import { wait } from 'src/hooks/helper/common';
 export default defineComponent({
   components: {
     CompoundReward,
     ClaimAll,
     Withdraw,
+    'vue-odometer': VueOdometer,
   },
   setup() {
     const store = useStore();
-    const { t, n } = useI18n();
+    const { t } = useI18n();
     const { isStaker } = useCompoundRewards();
     const { width, screenSize } = useBreakpoints();
     const { currentAccount } = useAccount();
-    const claimed = ref<number>(0);
-    const isLoadingClaimed = ref<boolean>(true);
+    const pastClaimed = ref<number>(0);
+    const isLoadingClaimed = ref<boolean>(false);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
-    const nativeTokenSymbol = computed(() => {
+    const claimed = computed(() => {
+      // Memo: update the number of claimed rewards after users invoking claim action
+      const claimedAmount = store.getters['dapps/getClaimedRewards'];
+      return claimedAmount + pastClaimed.value;
+    });
+
+    const symbol = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
       return chainInfo ? chainInfo.tokenSymbol : '';
     });
@@ -57,41 +73,48 @@ export default defineComponent({
       return chain === 'Shibuya Testnet' ? 'Shibuya' : chain;
     });
 
-    const claimedRewards = computed(() => {
-      const amount = n(claimed.value);
+    const textClaimedRewards = computed(() => {
       const text =
         width.value > screenSize.sm
           ? 'dappStaking.claimedRewards.long'
           : 'dappStaking.claimedRewards.short';
-      return t(text, { amount, symbol: nativeTokenSymbol.value });
+      return t(text);
     });
 
-    watchEffect(async () => {
+    const setClaimedAmount = async () => {
+      const isLocalNode = currentNetworkName.value === 'Development';
+      const isFetch =
+        currentNetworkName.value && currentAccount.value && !isH160.value && !isLocalNode;
       try {
-        if (currentNetworkName.value && currentAccount.value && !isH160.value) {
-          isLoadingClaimed.value = true;
+        if (isFetch) {
           const result = await getClaimedAmount({
             network: currentNetworkName.value.toLowerCase(),
             account: currentAccount.value,
           });
-          claimed.value = result;
+          const animationDelay = 2000;
+          await wait(animationDelay);
+          pastClaimed.value = result;
           isLoadingClaimed.value = false;
         }
       } catch (error) {
         console.error(error);
         isLoadingClaimed.value = false;
       }
-      if (!currentAccount.value) {
-        isLoadingClaimed.value = false;
-      }
+    };
+
+    watchEffect(async () => {
+      await setClaimedAmount();
     });
 
     return {
       isStaker,
       width,
       screenSize,
-      claimedRewards,
+      textClaimedRewards,
       currentAccount,
+      claimed,
+      symbol,
+      isLoadingClaimed,
     };
   },
 });

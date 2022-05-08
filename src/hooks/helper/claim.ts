@@ -2,6 +2,7 @@ import { ApiPromise } from '@polkadot/api';
 import { Option, Struct } from '@polkadot/types';
 import { EventRecord, Balance } from '@polkadot/types/interfaces';
 import BN from 'bn.js';
+import { ethers } from 'ethers';
 import { getAddressEnum } from './../../store/dapp-staking/calculation';
 import { ExtrinsicPayload } from './index';
 import { balanceFormatter } from './plasmUtils';
@@ -341,7 +342,7 @@ export const calculateClaimedStaker = ({
 }: {
   events: EventRecord[];
   senderAddress: string;
-}): string => {
+}): { formattedAmount: string; claimedAmount: number } => {
   let totalClaimStaker = new BN(0);
   events.forEach(({ event: { data, method, section } }) => {
     if (section === 'dappsStaking' && method === 'Reward') {
@@ -354,5 +355,7 @@ export const calculateClaimedStaker = ({
       }
     }
   });
-  return balanceFormatter(totalClaimStaker);
+  const claimedAmount = Number(ethers.utils.formatEther(totalClaimStaker.toString()).toString());
+  const formattedAmount = balanceFormatter(totalClaimStaker);
+  return { claimedAmount, formattedAmount };
 };
