@@ -110,6 +110,11 @@ export default {
     turnOff: 'Turn off',
     on: 'ON',
     off: 'OFF',
+    yourRewards: 'Your Rewards',
+    claimedRewards: {
+      short: 'Claimed rewards: {amount} {symbol}',
+      long: 'Total rewards you have claimed: {amount} {symbol}',
+    },
     modals: {
       alreadyClaimed: 'Already claimed:',
       contractRewards: 'Contract rewards:',
@@ -237,10 +242,6 @@ export default {
     circulating: {
       circulatingSupply: 'Circulating Supply',
       supply: 'of {totalSupply}: ',
-    },
-    earned: {
-      earnedRewardsDappStaking: 'Earned Rewards in dApp Staking',
-      earnedRewards: 'Earned Rewards',
     },
     block: {
       block: 'Block',
