@@ -43,11 +43,17 @@ export default boot(async ({ store }) => {
 
   let endpoint = selectedEndpoint.hasOwnProperty(networkIdx.value)
     ? selectedEndpoint[networkIdx.value]
+      ? selectedEndpoint[networkIdx.value]
+      : randomEndpoint
     : randomEndpoint;
 
   if (networkIdx.value === endpointKey.CUSTOM) {
     const customEndpoint = computed(() => store.getters['general/customEndpoint']);
     endpoint = customEndpoint.value;
+  }
+
+  if (networkIdx.value === endpointKey.LOCAL) {
+    endpoint = providerEndpoints[networkIdx.value].endpoints[0].endpoint;
   }
 
   // set metadata header

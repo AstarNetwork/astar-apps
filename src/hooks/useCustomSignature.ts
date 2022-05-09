@@ -47,7 +47,7 @@ export function useCustomSignature({ fn, txType }: { fn?: () => void; txType?: T
         txType,
         result,
         senderAddress: senderAddress.value,
-        dispatch: store.dispatch,
+        store,
       });
     }
   };

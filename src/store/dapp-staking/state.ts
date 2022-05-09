@@ -29,6 +29,7 @@ export interface DappStateInterface {
   maxUnlockingChunks: number;
   unlockingChunks: number;
   isPalletDisabled: boolean;
+  claimedRewards: number;
 }
 
 export interface LooseObject {
@@ -44,6 +45,7 @@ function state(): DappStateInterface {
     maxUnlockingChunks: 0,
     unlockingChunks: 0,
     isPalletDisabled: false,
+    claimedRewards: 0,
   };
 }
 

@@ -6,6 +6,7 @@ export interface ContractsMutations<S = State> {
   addDapp(state: S, payload: DappItem): void;
   setMinimumStakingAmount(state: S, payload: string): void;
   setMaxNumberOfStakersPerContract(state: S, payload: number): void;
+  setClaimedRewardsAmount(state: S, payload: number): void;
 }
 
 const mutation: MutationTree<State> & ContractsMutations = {
@@ -23,6 +24,10 @@ const mutation: MutationTree<State> & ContractsMutations = {
 
   setMaxNumberOfStakersPerContract(state: State, payload: number) {
     state.maxNumberOfStakersPerContract = payload;
+  },
+
+  setClaimedRewardsAmount(state: State, payload: number) {
+    state.claimedRewards = payload;
   },
 
   setUnbondingPeriod(state: State, payload: number) {

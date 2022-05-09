@@ -1,3 +1,4 @@
+import { wait } from './../helper/common';
 import { useRouter } from 'vue-router';
 import {
   BridgeMethod,
@@ -463,9 +464,9 @@ export function useCbridge() {
   watch(
     [srcChain, isH160],
     async () => {
-      setTimeout(async () => {
-        isH160.value && srcChain.value && (await setupNetwork(srcChain.value.id));
-      }, 800);
+      const loadTime = 800;
+      await wait(loadTime);
+      isH160.value && srcChain.value && (await setupNetwork(srcChain.value.id));
     },
     { immediate: false }
   );
