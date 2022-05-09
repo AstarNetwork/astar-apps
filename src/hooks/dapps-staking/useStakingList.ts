@@ -1,5 +1,5 @@
 import BN from 'bn.js';
-import { $api } from 'boot/api';
+import { $api } from 'src/boot/api';
 import { useStore } from 'src/store';
 import { computed, ref, watchEffect } from 'vue';
 import { useAccount } from '../useAccount';
@@ -26,12 +26,11 @@ export function useStakingList() {
   const setStakingList = async () => {
     const dappsRef = dapps.value;
     const accountDataRef = accountData.value;
-    const apiRef = $api.value!;
     const currentAccountRef = currentAccount.value;
     if (!accountDataRef || !currentAccountRef || isH160.value) return;
     try {
       const data = await formatStakingList({
-        api: apiRef,
+        api: $api!,
         address: currentAccountRef,
         dapps: dappsRef,
       });

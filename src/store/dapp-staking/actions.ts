@@ -54,10 +54,10 @@ export const hasExtrinsicFailedEvent = (
   events
     .filter((record): boolean => !!record.event && record.event.section !== 'democracy')
     .map(({ event: { data, method, section } }) => {
-      console.log('event', method, section, data);
-      if (section === 'utility' && method === 'BatchInterrupted') {
-        console.log(data.toHuman());
-      }
+      // console.log('event', method, section, data);
+      // if (section === 'utility' && method === 'BatchInterrupted') {
+      //   console.log(data.toHuman());
+      // }
 
       if (section === 'system' && method === 'ExtrinsicFailed') {
         const [dispatchError] = data as unknown as ITuple<[DispatchError]>;
