@@ -6,6 +6,7 @@ import { hasExtrinsicFailedEvent } from './../../store/dapp-staking/actions';
 
 export enum TxType {
   dappsStaking = 'dappsStaking',
+  requiredClaim = 'requiredClaim',
 }
 
 export const displayCustomMessage = ({
@@ -24,6 +25,11 @@ export const displayCustomMessage = ({
       result,
       store,
       senderAddress,
+    });
+  } else if (txType === TxType.requiredClaim) {
+    dispatchRequiredClaimMessage({
+      result,
+      store,
     });
   }
 };
@@ -54,6 +60,36 @@ const dispatchClaimMessage = ({
         },
         { root: true }
       );
+    }
+  }
+};
+
+const dispatchRequiredClaimMessage = ({
+  store,
+  result,
+}: {
+  store: Store<StateInterface>;
+  result: ISubmittableResult;
+}): void => {
+  if (result.status.isFinalized) {
+    let errorMessage = '';
+    const res = hasExtrinsicFailedEvent(
+      result.events,
+      store.dispatch,
+      (message: string) => (errorMessage = message)
+    );
+    if (res) {
+      if (errorMessage.includes('TooManyEraStakeValues')) {
+        const msg = 'Please claim your rewards before sending transaction';
+        store.dispatch(
+          'general/showAlertMsg',
+          {
+            msg,
+            alertType: 'error',
+          },
+          { root: true }
+        );
+      }
     }
   }
 };

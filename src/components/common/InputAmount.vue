@@ -30,6 +30,7 @@
               focus:tw-outline-none
               tw-bg-transparent tw-placeholder-gray-300
               dark:tw-placeholder-darkGray-600
+              input--no-spin
             "
             inputmode="decimal"
             type="number"
@@ -44,6 +45,7 @@
         <button v-if="isMaxButton" type="button" class="max" @click="setMaxAmount">
           {{ $t('max') }}
         </button>
+
         <div
           class="
             tw-text-blue-900
@@ -81,10 +83,10 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, PropType, ref, watchEffect, computed } from 'vue';
-import { getUnitNames, defaultUnitIndex } from 'src/hooks/helper/units';
-import { useStore } from 'src/store';
 import BN from 'bn.js';
+import { defaultUnitIndex, getUnitNames } from 'src/hooks/helper/units';
+import { useStore } from 'src/store';
+import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
 export default defineComponent({
   props: {
     title: { type: String, default: '' },
@@ -155,14 +157,24 @@ export default defineComponent({
       }
     };
 
-    return { arrUnitNames, update, isMaxAmount, isInitInput, initInput, isH160, setMaxAmount };
+    return {
+      arrUnitNames,
+      update,
+      isMaxAmount,
+      isInitInput,
+      initInput,
+      isH160,
+      setMaxAmount,
+    };
   },
 });
 </script>
 
 <style scoped>
 .max {
-  @apply tw-bg-blue-100 dark:tw-bg-blue-200 tw-text-xs tw-rounded-full tw-px-3 tw-py-2 tw-text-blue-900 dark:tw-text-darkGray-900 tw-mx-3;
+  width: 42px;
+  padding: 6px 0;
+  @apply tw-bg-blue-100 dark:tw-bg-blue-200 tw-text-xs tw-rounded-full tw-text-blue-900 dark:tw-text-darkGray-900 tw-mx-3;
 }
 .max:hover {
   @apply tw-bg-blue-200 dark:tw-bg-blue-300;

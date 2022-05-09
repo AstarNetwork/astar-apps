@@ -19,7 +19,9 @@
       <Era :progress="progress" :blocks-until-next-era="blocksUntilNextEra" :era="era" />
       <APR />
     </div>
+
     <UserRewards />
+
     <div class="store-container tw-grid tw-gap-x-12 xl:tw-gap-x-18 tw-justify-center">
       <div
         v-if="dapps.length === 0"
@@ -27,13 +29,18 @@
       >
         {{ $t('dappStaking.noDappsRegistered') }}
       </div>
-      <Dapp
-        v-for="(dapp, index) in dapps"
-        :key="index"
-        :dapp="dapp"
-        :staker-max-number="maxNumberOfStakersPerContract"
-        :account-data="accountData"
-      />
+      <template v-if="stakeInfos">
+        <Dapp
+          v-for="(dapp, index) in dapps"
+          :key="index"
+          :dapp="dapp"
+          :staker-max-number="maxNumberOfStakersPerContract"
+          :account-data="accountData"
+          :dapps="dapps"
+          :staking-list="stakingList"
+          :stake-infos="stakeInfos"
+        />
+      </template>
     </div>
 
     <Teleport to="#app--main">
@@ -49,22 +56,21 @@
 
 <script lang="ts">
 import Button from 'components/common/Button.vue';
-import ModalRegisterDapp from 'components/dapp-staking/modals/ModalRegisterDapp.vue';
 import ModalMaintenance from 'components/dapp-staking/modals/ModalMaintenance.vue';
+import ModalRegisterDapp from 'components/dapp-staking/modals/ModalRegisterDapp.vue';
+import { useMeta } from 'quasar';
 import Dapp from 'src/components/dapp-staking/Dapp.vue';
 import UserRewards from 'src/components/dapp-staking/UserRewards.vue';
+import { useAccount, useBalance, useCurrentEra, useStakerInfo, useStakingList } from 'src/hooks';
 import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
-import { useCurrentEra, useAccount, useBalance } from 'src/hooks';
-import { DappItem } from 'src/store/dapp-staking/state';
-import { computed, defineComponent, ref, watchEffect } from 'vue';
-import TVL from './statistics/TVL.vue';
-import DappsCount from './statistics/DappsCount.vue';
-import APR from './statistics/APR.vue';
-import Era from './statistics/Era.vue';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
-import { fasSeedling } from '@quasar/extras/fontawesome-v5';
-import { useMeta } from 'quasar';
+import { DappItem } from 'src/store/dapp-staking/state';
+import { computed, defineComponent, ref } from 'vue';
+import APR from './statistics/APR.vue';
+import DappsCount from './statistics/DappsCount.vue';
+import Era from './statistics/Era.vue';
+import TVL from './statistics/TVL.vue';
 
 export default defineComponent({
   components: {
@@ -79,13 +85,13 @@ export default defineComponent({
     ModalMaintenance,
   },
   setup() {
-    const store = useStore();
-    const dapps = computed(() => store.getters['dapps/getAllDapps']);
     useMeta({ title: 'Discover dApps' });
+    const store = useStore();
     const { progress, blocksUntilNextEra, era } = useCurrentEra();
     const { currentAccount } = useAccount();
     const { accountData } = useBalance(currentAccount);
-    const isH160 = computed(() => store.getters['general/isH160Formatted']);
+    const { stakeInfos } = useStakerInfo();
+    const { dapps, stakingList } = useStakingList();
 
     const maxNumberOfStakersPerContract = computed(
       () => store.getters['dapps/getMaxNumberOfStakersPerContract']
@@ -99,18 +105,6 @@ export default defineComponent({
     const selectedDappInfo = ref<StakeInfo>();
     const isPalletDisabled = computed(() => store.getters['dapps/getIsPalletDisabled']);
 
-    store.dispatch('dapps/getDapps');
-    store.dispatch('dapps/getStakingInfo');
-
-    watchEffect(() => {
-      if (isH160.value) {
-        store.dispatch('general/showAlertMsg', {
-          msg: 'dApp staking only supports Substrate wallets',
-          alertType: 'error',
-        });
-      }
-    });
-
     return {
       dapps,
       selectedDapp,
@@ -121,10 +115,11 @@ export default defineComponent({
       progress,
       blocksUntilNextEra,
       era,
-      fasSeedling,
       accountData,
       currentAccount,
       isPalletDisabled,
+      stakeInfos,
+      stakingList,
     };
   },
 });
