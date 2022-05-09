@@ -11,6 +11,7 @@ import { connectApi } from 'src/config/api/polkadot/connectApi';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useMeta } from 'quasar';
 import { opengraphMeta } from 'src/config/opengraph';
+import { useExtensions } from 'src/hooks/useExtensions';
 import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
 import { useChainInfo } from 'src/hooks/useChainInfo';
 import { TNetworkId, createAstarWeb3Instance } from 'src/config/web3';
@@ -23,12 +24,12 @@ const $web3 = ref<Web3>();
 const $isEnableIndividualClaim = ref<boolean>(false);
 
 export default boot(async ({ store }) => {
-  const { FIRST_ACCESS, NETWORK_IDX, CUSTOM_ENDPOINT, SELECTED_ENDPOINT } = LOCAL_STORAGE;
+  const { NETWORK_IDX, CUSTOM_ENDPOINT, SELECTED_ENDPOINT, SELECTED_ADDRESS } = LOCAL_STORAGE;
 
-  const firstAccess = localStorage.getItem(FIRST_ACCESS);
   const networkIdxStore = localStorage.getItem(NETWORK_IDX);
   const customEndpoint = localStorage.getItem(CUSTOM_ENDPOINT);
   const selectedEndpointData = localStorage.getItem(SELECTED_ENDPOINT);
+  const selectedAddress = localStorage.getItem(SELECTED_ADDRESS);
   const selectedEndpoint = selectedEndpointData ? JSON.parse(selectedEndpointData) : {};
 
   if (networkIdxStore) {
@@ -66,23 +67,14 @@ export default boot(async ({ store }) => {
     meta: opengraphMeta,
   });
 
-  // skip boot process when the first time a user connects
-  if (firstAccess === null) {
-    console.log('FIRST_ACCESS');
-    return;
-  }
-
-  let { api, extensions } = await connectApi(endpoint, networkIdx.value, store);
+  const { api } = await connectApi(endpoint, networkIdx.value, store);
   $api.value = api;
   $endpoint.value = endpoint;
 
   // update chaininfo
   const { chainInfo } = useChainInfo(api);
-  const { metaExtensions, extensionCount } = useMetaExtensions(api, extensions)!!;
   watchPostEffect(async () => {
     store.commit('general/setChainInfo', chainInfo.value);
-    store.commit('general/setMetaExtensions', metaExtensions.value);
-    store.commit('general/setExtensionCount', extensionCount.value);
 
     $isEnableIndividualClaim.value = await checkIsEnableIndividualClaim(api);
 
@@ -96,6 +88,17 @@ export default boot(async ({ store }) => {
       $web3.value = web3;
     }
   });
+
+  // execute extension process automatically if selectedAddress is linked
+  if (selectedAddress !== null) {
+    console.log('extensions');
+    const { extensions } = useExtensions(api, store);
+    const { metaExtensions, extensionCount } = useMetaExtensions(api, extensions)!!;
+    watchPostEffect(async () => {
+      store.commit('general/setMetaExtensions', metaExtensions.value);
+      store.commit('general/setExtensionCount', extensionCount.value);
+    });
+  }
 });
 
 export { $api, $web3, $isEnableIndividualClaim, $endpoint };

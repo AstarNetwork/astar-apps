@@ -7,10 +7,13 @@ import { useAccount } from 'src/hooks';
 import * as utils from 'src/hooks/custom-signature/utils';
 import { deepLinkPath } from 'src/links';
 import { useStore } from 'src/store';
-import { computed, ref, watch, watchEffect } from 'vue';
+import { computed, ref, watch, watchEffect, watchPostEffect } from 'vue';
 import { useRouter } from 'vue-router';
 import { useMetamask } from './custom-signature/useMetamask';
+import { useExtensions } from 'src/hooks/useExtensions';
+import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
 import { ASTAR_SS58_FORMAT } from './helper/plasmUtils';
+import { $api } from 'boot/api';
 import {
   castMobileSource,
   checkIsWalletExtension,
@@ -64,12 +67,9 @@ export const useConnectWallet = () => {
   };
 
   const initializeWalletAccount = () => {
-    const isFirstAccess = localStorage.getItem(LOCAL_STORAGE.FIRST_ACCESS) === null;
     const account = localStorage.getItem(SELECTED_ADDRESS);
     if (!account) {
-      if (!isFirstAccess) {
-        openSelectModal();
-      }
+      openSelectModal();
     } else {
       if (selectedWalletSource.value) {
         selectedWallet.value = selectedWalletSource.value;
@@ -142,13 +142,27 @@ export const useConnectWallet = () => {
     modalName.value = wallet;
   };
 
+  const requestExtensionsIfFirstAccess = (wallet: SupportWallet): void => {
+    if (localStorage.getItem(SELECTED_ADDRESS) === null) {
+      const { extensions } = useExtensions($api.value!!, store);
+      const { metaExtensions, extensionCount } = useMetaExtensions($api.value!!, extensions)!!;
+      watchPostEffect(async () => {
+        store.commit('general/setMetaExtensions', metaExtensions.value);
+        store.commit('general/setExtensionCount', extensionCount.value);
+        setWallet(wallet);
+      });
+    }
+  };
+
   // Todo: Delete after the balance page is removed
   const setWalletModal = (wallet: SupportWallet): void => {
+    requestExtensionsIfFirstAccess(wallet);
     store.commit('general/setCurrentWallet', wallet);
     setWallet(wallet);
   };
 
   const connectEthereumWallet = async (wallet: SupportWallet): Promise<void> => {
+    requestExtensionsIfFirstAccess(wallet);
     store.commit('general/setCurrentWallet', wallet);
     const isWalletExtension = await checkIsWalletExtension();
     const deepLinkUrl = getDeepLinkUrl(wallet);
@@ -167,7 +181,7 @@ export const useConnectWallet = () => {
   const selectLoginWallet = async (): Promise<void> => {
     const lookupWallet = castMobileSource(modalName.value);
     if (SubstrateWallets.find((it) => it === lookupWallet)) {
-      const injected = await getInjectedExtensions();
+      const injected = await getInjectedExtensions(true);
       const isInstalledExtension = injected.find((it) => lookupWallet === it.name);
 
       if (!isInstalledExtension) {

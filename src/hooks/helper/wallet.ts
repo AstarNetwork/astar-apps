@@ -6,9 +6,10 @@ import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SubstrateAccount } from './../../store/general/state';
 import { deepLink } from 'src/links';
 
-export const getInjectedExtensions = async (): Promise<any[]> => {
-  const firstAccess = localStorage.getItem(LOCAL_STORAGE.FIRST_ACCESS);
-  if (firstAccess !== null) {
+export const getInjectedExtensions = async (forceRequest = false): Promise<any[]> => {
+  const selectedAddress = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
+  if (selectedAddress != null || forceRequest) {
+    // console.log('web3Enable');
     // Memo: Firefox takes some time to load the wallet extensions at the boot time.
     let extensions = await web3Enable('AstarNetwork/astar-apps');
     // Memo: obtain the extension name

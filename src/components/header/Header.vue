@@ -8,7 +8,7 @@
         <div class="icon"><Logo /></div>
       </template>
       <template v-if="!currentAccount">
-        <ConnectButton v-if="!isFirstAccess" @click="openSelectModal">
+        <ConnectButton @click="openSelectModal">
           <astar-icon-wallet />
         </ConnectButton>
       </template>
@@ -56,7 +56,6 @@ import { useStore } from 'src/store';
 import { useRoute } from 'vue-router';
 import { getHeaderName } from 'src/router/routes';
 import { useBreakpoints } from 'src/hooks';
-import { LOCAL_STORAGE } from 'src/config/localStorage';
 import ConnectButton from 'src/components/header/ConnectButton.vue';
 import AccountButton from 'src/components/header/AccountButton.vue';
 import NetworkButton from 'src/components/header/NetworkButton.vue';
@@ -105,7 +104,6 @@ export default defineComponent({
     } = useConnectWallet();
 
     const store = useStore();
-    const isFirstAccess = localStorage.getItem(LOCAL_STORAGE.FIRST_ACCESS) === null;
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
     const route = useRoute();
     const path = computed(() => route.path.split('/')[1]);
@@ -122,7 +120,6 @@ export default defineComponent({
 
     return {
       ...toRefs(stateModal),
-      isFirstAccess,
       headerName,
       currentNetworkIdx,
       WalletModalOption,

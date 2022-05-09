@@ -1,5 +1,4 @@
 export enum LOCAL_STORAGE {
-  FIRST_ACCESS = 'firstAccess',
   DEFAULT_CURRENCY = 'defaultCurrency',
   NETWORK_IDX = 'networkIdx',
   SELECTED_ENDPOINT = 'selectedEndpoint',

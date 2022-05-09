@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ConnectButton v-if="isFirstAccess" @click="showNetworkModal">
+    <ConnectButton v-if="isNotSelectedEndpoint" @click="showNetworkModal">
       <astar-icon-network />
     </ConnectButton>
     <template v-else>
@@ -57,7 +57,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { width, screenSize } = useBreakpoints();
     const store = useStore();
-    const isFirstAccess = localStorage.getItem(LOCAL_STORAGE.FIRST_ACCESS) === null;
+    const isNotSelectedEndpoint = localStorage.getItem(LOCAL_STORAGE.SELECTED_ENDPOINT) === null;
     const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
     const chainInfo = computed(() => store.getters['general/chainInfo']);
@@ -94,7 +94,7 @@ export default defineComponent({
     };
 
     return {
-      isFirstAccess,
+      isNotSelectedEndpoint,
       currentNetworkStatus,
       currentNetworkName,
       currentLogo,

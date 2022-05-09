@@ -152,7 +152,6 @@ export default defineComponent({
     };
 
     const selectNetwork = async (networkIdx: number): Promise<void> => {
-      localStorage.setItem(LOCAL_STORAGE.FIRST_ACCESS, 'true');
       localStorage.setItem(NETWORK_IDX, networkIdx.toString());
       localStorage.setItem(
         SELECTED_ENDPOINT,
@@ -266,11 +265,6 @@ export default defineComponent({
       },
       { immediate: true }
     );
-
-    const isFirstAccess = localStorage.getItem(LOCAL_STORAGE.FIRST_ACCESS) === null;
-    if (isFirstAccess) {
-      randomizedEndpoint(endpointKey.ASTAR);
-    }
 
     const windowHeight = ref<number>(window.innerHeight);
     const onHeightChange = () => {
