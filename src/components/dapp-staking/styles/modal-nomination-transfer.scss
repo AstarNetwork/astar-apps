@@ -1,0 +1,64 @@
+.button-account {
+  @apply tw-relative tw-text-blue-900 dark:tw-text-darkGray-100 tw-w-full tw-bg-white dark:tw-bg-darkGray-900 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-rounded-md tw-pl-3 tw-pr-10 tw-py-3 tw-text-left;
+}
+
+.button-account:hover {
+  @apply tw-bg-gray-50 dark:tw-bg-darkGray-800;
+}
+
+.button-account:focus {
+  @apply tw-outline-none tw-ring tw-ring-blue-100 dark:tw-ring-darkGray-600;
+}
+
+.input--transfer-from {
+  cursor: pointer;
+  @apply tw-w-full tw-text-blue-900
+  dark:tw-text-darkGray-100
+  tw-text-lg
+  focus:tw-outline-none
+  tw-bg-transparent tw-placeholder-gray-300
+  dark:tw-placeholder-darkGray-600;
+}
+
+.container--option {
+  @apply tw-block tw-absolute tw-mt-1 tw-w-full tw-rounded-md tw-bg-white
+  dark:tw-bg-darkGray-800
+  tw-shadow-lg tw-z-10 tw-border tw-border-gray-200
+  dark:tw-border-darkGray-600;
+}
+
+.box--option {
+  @apply tw-max-h-56 tw-rounded-md tw-py-1 tw-text-base tw-overflow-auto
+  focus:tw-outline-none;
+}
+
+.container--nomination-transfer {
+  position: relative;
+}
+
+.box--input {
+  padding: 0;
+  background-color: transparent;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.box--arrow {
+  display: flex;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  padding-right: 8px;
+  margin-left: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.icon--arrow {
+  height: 20px;
+  width: 20px;
+  @apply tw-text-gray-400 dark:tw-text-darkGray-300;
+}

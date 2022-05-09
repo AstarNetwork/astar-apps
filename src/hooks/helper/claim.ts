@@ -2,6 +2,7 @@ import { ApiPromise } from '@polkadot/api';
 import { Option, Struct } from '@polkadot/types';
 import { EventRecord, Balance } from '@polkadot/types/interfaces';
 import BN from 'bn.js';
+import { ethers } from 'ethers';
 import { getAddressEnum } from './../../store/dapp-staking/calculation';
 import { ExtrinsicPayload } from './index';
 import { balanceFormatter } from './plasmUtils';
@@ -24,6 +25,11 @@ export interface GeneralStakerInfo extends Struct {
 export interface RegisteredDapps extends Struct {
   readonly developer: string;
   readonly state: string;
+}
+
+export interface PayloadWithWeight {
+  payload: ExtrinsicPayload;
+  weight: BN;
 }
 
 const checkIsDappOwner = async ({
@@ -148,13 +154,15 @@ const getTxsForClaimDapp = async ({
   dappAddress,
   api,
   currentEra,
+  senderAddress,
 }: {
   dappAddress: string;
   api: ApiPromise;
   currentEra: number;
-}): Promise<ExtrinsicPayload[]> => {
+  senderAddress: string;
+}): Promise<PayloadWithWeight[]> => {
   // const eras = []; // used for debugging
-  const transactions = [];
+  const transactions: PayloadWithWeight[] = [];
   const lastEraClaimedForDapp = await getLastEraClaimedForDapp({
     dappAddress,
     api,
@@ -165,6 +173,11 @@ const getTxsForClaimDapp = async ({
   // Memo: This function has been covered in case dApp has been unstaked totally (total: 0) at some points of the past era (this is a rare case)
   // Ref: https://gyazo.com/e36c0ec019a08b9ab4a93c8d5f119cce
 
+  // Transaction weight should be alwas the same for the certain transaction, TODO check with Dino
+  const info = await api.tx.dappsStaking
+    .claimDapp(getAddressEnum(dappAddress), 1)
+    .paymentInfo(senderAddress);
+
   for (let era = lastEraClaimedForDapp + 1; era < currentEra; era++) {
     const e = await eraSkippedZeroStake({ dappAddress, api, currentEra, era });
 
@@ -174,13 +187,11 @@ const getTxsForClaimDapp = async ({
 
     if (era === e) {
       const tx = api.tx.dappsStaking.claimDapp(getAddressEnum(dappAddress), era);
-      transactions.push(tx);
-      // eras.push(era);
+      transactions.push({ payload: tx, weight: info.weight });
     } else {
       // Memo: e -> skip to the era that have been staked after unstaked
       const tx = api.tx.dappsStaking.claimDapp(getAddressEnum(dappAddress), e);
-      transactions.push(tx);
-      // eras.push(e);
+      transactions.push({ payload: tx, weight: info.weight });
       era = e;
     }
   }
@@ -192,15 +203,21 @@ const getTxsForClaimStaker = async ({
   dappAddress,
   api,
   numberOfUnclaimedEra,
+  senderAddress,
 }: {
   dappAddress: string;
   api: ApiPromise;
   numberOfUnclaimedEra: number;
-}): Promise<ExtrinsicPayload[]> => {
-  const transactions = [];
+  senderAddress: string;
+}): Promise<PayloadWithWeight[]> => {
+  const transactions: PayloadWithWeight[] = [];
+  const info = await api.tx.dappsStaking
+    .claimStaker(getAddressEnum(dappAddress))
+    .paymentInfo(senderAddress);
+
   for (let i = 0; i < numberOfUnclaimedEra; i++) {
     const tx = api.tx.dappsStaking.claimStaker(getAddressEnum(dappAddress));
-    transactions.push(tx);
+    transactions.push({ payload: tx, weight: info.weight });
   }
 
   return transactions;
@@ -290,10 +307,10 @@ export const getIndividualClaimTxs = async ({
   senderAddress: string;
   api: ApiPromise;
   currentEra: number;
-}): Promise<ExtrinsicPayload[]> => {
+}): Promise<PayloadWithWeight[]> => {
   try {
-    let txsForClaimStaker: ExtrinsicPayload[] = [];
-    let txsForClaimDapp: ExtrinsicPayload[] = [];
+    let txsForClaimStaker: PayloadWithWeight[] = [];
+    let txsForClaimDapp: PayloadWithWeight[] = [];
 
     const [numberOfUnclaimedEra, isDappOwner] = await Promise.all([
       getNumberOfUnclaimedEra({
@@ -314,6 +331,7 @@ export const getIndividualClaimTxs = async ({
         dappAddress,
         api,
         numberOfUnclaimedEra,
+        senderAddress,
       });
     }
 
@@ -322,6 +340,7 @@ export const getIndividualClaimTxs = async ({
         dappAddress,
         api,
         currentEra,
+        senderAddress,
       });
     }
 
@@ -341,7 +360,7 @@ export const calculateClaimedStaker = ({
 }: {
   events: EventRecord[];
   senderAddress: string;
-}): string => {
+}): { formattedAmount: string; claimedAmount: number } => {
   let totalClaimStaker = new BN(0);
   events.forEach(({ event: { data, method, section } }) => {
     if (section === 'dappsStaking' && method === 'Reward') {
@@ -354,5 +373,7 @@ export const calculateClaimedStaker = ({
       }
     }
   });
-  return balanceFormatter(totalClaimStaker);
+  const claimedAmount = Number(ethers.utils.formatEther(totalClaimStaker.toString()).toString());
+  const formattedAmount = balanceFormatter(totalClaimStaker);
+  return { claimedAmount, formattedAmount };
 };

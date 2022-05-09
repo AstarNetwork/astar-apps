@@ -10,6 +10,7 @@ import { useStore } from 'src/store';
 import { computed, ref, watch, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 import { useMetamask } from './custom-signature/useMetamask';
+import { wait } from './helper/common';
 import { ASTAR_SS58_FORMAT } from './helper/plasmUtils';
 import {
   castMobileSource,
@@ -184,9 +185,9 @@ export const useConnectWallet = () => {
     if (!isConnectedNetwork.value || !isWalletExtension) return;
 
     if (isMetaMaskDeepLink) {
-      setTimeout(async () => {
-        await setMetaMask();
-      }, 800);
+      const loadTime = 800;
+      await wait(loadTime);
+      await setMetaMask();
     }
   };
 
@@ -199,11 +200,11 @@ export const useConnectWallet = () => {
     }
 
     // Memo: wait for updating the chain id from the initial state 592 (to pass the `setupNetwork` function)
-    setTimeout(async () => {
-      if (address === 'Ethereum Extension') {
-        await setMetaMask();
-      }
-    }, 800);
+    const delay = 800;
+    await wait(delay);
+    if (address === 'Ethereum Extension') {
+      await setMetaMask();
+    }
     store.commit('general/setCurrentAddress', address);
   };
 

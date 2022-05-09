@@ -24,6 +24,7 @@
 import { useEvmDeposit } from 'src/hooks';
 import { defineComponent, ref } from 'vue';
 import { fadeDuration } from '@astar-network/astar-ui';
+import { wait } from 'src/hooks/helper/common';
 
 export default defineComponent({
   props: {
@@ -42,12 +43,11 @@ export default defineComponent({
   },
   setup(props) {
     const isClosingModal = ref<boolean>(false);
-    const closeModal = (): void => {
+    const closeModal = async (): Promise<void> => {
       isClosingModal.value = true;
-      setTimeout(() => {
-        props.handleModalEvmWithdraw({ isOpen: false });
-        isClosingModal.value = false;
-      }, fadeDuration);
+      await wait(fadeDuration);
+      props.handleModalEvmWithdraw({ isOpen: false });
+      isClosingModal.value = false;
     };
     const { numEvmDeposit, sendTransaction } = useEvmDeposit(closeModal);
     return {

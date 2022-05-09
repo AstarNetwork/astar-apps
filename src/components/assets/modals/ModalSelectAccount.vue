@@ -56,6 +56,7 @@
 </template>
 <script lang="ts">
 import { isValidEvmAddress } from 'src/config/web3';
+import { wait } from 'src/hooks/helper/common';
 import { getSelectedAccount } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
@@ -98,10 +99,11 @@ export default defineComponent({
     const isEthWallet = computed(() => store.getters['general/isEthWallet']);
     const selAddress = ref(!isH160 ? (account?.address as string) : '');
 
-    const closeOption = () => {
-      setTimeout(() => {
-        openOption.value = false;
-      }, 400);
+    const closeOption = async (): Promise<void> => {
+      // Memo: load the account data before closing
+      const delay = 400;
+      await wait(delay);
+      openOption.value = false;
     };
 
     const changeAddress = (e: any) => {

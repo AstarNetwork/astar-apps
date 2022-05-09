@@ -93,6 +93,7 @@ import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import ModalSelectAccountOption from 'src/components/common/ModalSelectAccountOption.vue';
+import { wait } from 'src/hooks/helper/common';
 
 enum Role {
   FromAddress = 'FromAddress',
@@ -173,10 +174,11 @@ export default defineComponent({
           : isH160.value;
     });
 
-    const closeOption = () => {
-      setTimeout(() => {
-        openOption.value = false;
-      }, 400);
+    const closeOption = async (): Promise<void> => {
+      // Memo: load the account data before closing
+      const delay = 400;
+      await wait(delay);
+      openOption.value = false;
     };
 
     const valueAddressOrWallet = ref<string>('');

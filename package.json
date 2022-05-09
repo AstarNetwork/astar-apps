@@ -26,7 +26,7 @@
     "@ethersproject/bignumber": "^5.5.0",
     "@polkadot/api": "^6.8.1",
     "@polkadot/api-contract": "^6.8.1",
-    "@polkadot/extension-dapp": "0.41.1",
+    "@polkadot/extension-dapp": "0.43.1",
     "@polkadot/keyring": "^7.8.2",
     "@polkadot/networks": "^7.8.2",
     "@polkadot/types": "^6.8.1",

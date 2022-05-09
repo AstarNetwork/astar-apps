@@ -124,6 +124,7 @@ import ModalSelectAccount from './ModalSelectAccount.vue';
 import { registeredErc20Tokens } from 'src/modules/token';
 import { fadeDuration } from '@astar-network/astar-ui';
 import SpeedMeter from 'src/components/common/SpeedMeter.vue';
+import { wait } from 'src/hooks/helper/common';
 
 export default defineComponent({
   components: { ModalSelectAccount, SpeedMeter },
@@ -244,13 +245,12 @@ export default defineComponent({
       isErc20Transfer.value = isH160.value && !isNativeToken.value;
     };
 
-    const closeModal = (): void => {
+    const closeModal = async (): Promise<void> => {
       isClosingModal.value = true;
       resetStates();
-      setTimeout(() => {
-        props.handleModalTransfer({ isOpen: false, currency: '' });
-        isClosingModal.value = false;
-      }, fadeDuration);
+      await wait(fadeDuration);
+      props.handleModalTransfer({ isOpen: false, currency: '' });
+      isClosingModal.value = false;
     };
 
     const toMaxAmount = async (): Promise<void> => {
