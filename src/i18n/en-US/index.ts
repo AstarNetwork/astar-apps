@@ -21,6 +21,7 @@ export default {
   mathwallet: 'Math Wallet',
   wallet3: 'Wallet 3',
   alert: 'Alert',
+  max: 'Max',
   warning: {
     insufficientFee: 'Warning! Transaction might failed due to insufficient fee',
   },
@@ -110,6 +111,11 @@ export default {
     turnOff: 'Turn off',
     on: 'ON',
     off: 'OFF',
+    yourRewards: 'Your Rewards',
+    claimedRewards: {
+      short: 'Claimed rewards: ',
+      long: 'Total rewards you have claimed: ',
+    },
     modals: {
       alreadyClaimed: 'Already claimed:',
       contractRewards: 'Contract rewards:',
@@ -120,6 +126,7 @@ export default {
       logo: 'Logo',
       register: 'Register',
       address: 'Address',
+      fundsFrom: 'Where you would like to bring your funds from',
       estimatedRewards: 'Pending rewards',
       unclaimedEras: 'Unclaimed eras:',
       estimatedClaimedRewards: 'Claimed rewards',
@@ -138,12 +145,28 @@ export default {
       erasToGo: 'eras to pass: {era}',
       chunksModalDescription: 'This table shows when your funds will be eligible for withdrawal.',
       multipleClaimInfo: '{steps} requests are required to claim all unclaimed eras.',
+      title: {
+        stakeOn: 'Stake on {dapp}',
+        startUnbonding: 'Start unbonding from {dapp}',
+        unStakeFrom: 'Unstake from {dapp}',
+      },
+    },
+    toast: {
+      staked: 'You staked {amount} on {dapp}',
+      unstaked: 'You unstaked {amount} on {dapp}',
     },
     contracts: {
       file: 'File: {name}',
       uploadFile: 'Upload a file',
       dropFile: 'Drop the files here ...',
       orDrag: 'or drag and drop',
+    },
+    error: {
+      onlySupportsSubstrate: 'dApp staking only supports Substrate wallets',
+      notEnoughMinAmount:
+        'The amount of token to be staking must be greater than {amount} {symbol}',
+      allFundsWillBeTransferred:
+        'All funds will be transferred because the min. staking amount is {minStakingAmount} {symbol}',
     },
   },
   bridge: {
@@ -234,6 +257,10 @@ export default {
   dashboard: {
     dashboard: 'Dashboard',
     tvl: 'TVL',
+    circulating: {
+      circulatingSupply: 'Circulating Supply',
+      supply: 'of {totalSupply}: ',
+    },
     block: {
       block: 'Block',
       blockHeight: 'Block Height',

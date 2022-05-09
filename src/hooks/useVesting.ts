@@ -89,7 +89,11 @@ export function useVesting(closeModal: () => void) {
             nonce: -1,
             tip: 1,
           },
-          (result) => handleResult(result)
+          (result) => {
+            (async () => {
+              await handleResult(result);
+            })();
+          }
         )
         .catch((error: Error) => handleTransactionError(error));
     } catch (e) {

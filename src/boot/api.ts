@@ -1,27 +1,26 @@
-import { getRandomFromArray } from './../hooks/helper/common';
-import { boot } from 'quasar/wrappers';
 import { ApiPromise } from '@polkadot/api';
-import { computed, ref, watchPostEffect } from 'vue';
-import {
-  providerEndpoints,
-  endpointKey,
-  checkIsEnableIndividualClaim,
-} from 'src/config/chainEndpoints';
-import { connectApi } from 'src/config/api/polkadot/connectApi';
-import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useMeta } from 'quasar';
+import { boot } from 'quasar/wrappers';
+import { connectApi } from 'src/config/api/polkadot/connectApi';
+import {
+  ASTAR_CHAIN,
+  endpointKey,
+  getProviderIndex,
+  providerEndpoints,
+} from 'src/config/chainEndpoints';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { opengraphMeta } from 'src/config/opengraph';
+import { createAstarWeb3Instance, TNetworkId } from 'src/config/web3';
 import { useExtensions } from 'src/hooks/useExtensions';
-import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
 import { useChainInfo } from 'src/hooks/useChainInfo';
-import { TNetworkId, createAstarWeb3Instance } from 'src/config/web3';
-import { getProviderIndex, ASTAR_CHAIN } from 'src/config/chainEndpoints';
+import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
+import { computed, ref, watchPostEffect } from 'vue';
 import Web3 from 'web3';
+import { getRandomFromArray } from './../hooks/helper/common';
 
 const $api = ref<ApiPromise>();
 const $endpoint = ref<string>('');
 const $web3 = ref<Web3>();
-const $isEnableIndividualClaim = ref<boolean>(false);
 
 export default boot(async ({ store }) => {
   const { NETWORK_IDX, CUSTOM_ENDPOINT, SELECTED_ENDPOINT, SELECTED_ADDRESS } = LOCAL_STORAGE;
@@ -45,11 +44,17 @@ export default boot(async ({ store }) => {
 
   let endpoint = selectedEndpoint.hasOwnProperty(networkIdx.value)
     ? selectedEndpoint[networkIdx.value]
+      ? selectedEndpoint[networkIdx.value]
+      : randomEndpoint
     : randomEndpoint;
 
   if (networkIdx.value === endpointKey.CUSTOM) {
     const customEndpoint = computed(() => store.getters['general/customEndpoint']);
     endpoint = customEndpoint.value;
+  }
+
+  if (networkIdx.value === endpointKey.LOCAL) {
+    endpoint = providerEndpoints[networkIdx.value].endpoints[0].endpoint;
   }
 
   // set metadata header
@@ -76,8 +81,6 @@ export default boot(async ({ store }) => {
   watchPostEffect(async () => {
     store.commit('general/setChainInfo', chainInfo.value);
 
-    $isEnableIndividualClaim.value = await checkIsEnableIndividualClaim(api);
-
     if (chainInfo.value?.chain) {
       const currentChain = chainInfo.value?.chain as ASTAR_CHAIN;
       const currentNetworkIdx = getProviderIndex(currentChain);
@@ -101,4 +104,4 @@ export default boot(async ({ store }) => {
   }
 });
 
-export { $api, $web3, $isEnableIndividualClaim, $endpoint };
+export { $api, $web3, $endpoint };

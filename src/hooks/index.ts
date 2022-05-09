@@ -26,5 +26,8 @@ export * from './c-bridge/useCbridge';
 export * from './c-bridge/useCbridgeV2';
 export * from './c-bridge/useCbridgeHistory';
 export * from './c-bridge/useCbridgeApproval';
+export * from './dapps-staking/useNominationTransfer';
+export * from './dapps-staking/useStakerInfo';
+export * from './dapps-staking/useStakingList';
 export * from './wallet/useWalletIcon';
 export * from './wallet/useEvmWallet';

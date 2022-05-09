@@ -142,3 +142,15 @@ export const filterTvlData = ({ data, duration }: { data: number[][]; duration: 
       return data.slice(-7);
   }
 };
+
+export const getClaimedAmount = async ({
+  network,
+  account,
+}: {
+  network: string;
+  account: string;
+}): Promise<number> => {
+  const url = `${TOKEN_API_URL}/v1/${network}/dapps-staking/earned/${account}`;
+  const result = await axios.get<number>(url);
+  return Number(result.data.toFixed(0));
+};

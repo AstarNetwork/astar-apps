@@ -3,10 +3,10 @@
     <div class="container--chart-panels">
       <div class="container--value-panel">
         <div class="container--panel">
-          <value-panel title="Current Circulating Supply" :value="circulatingSupply" />
+          <circulating-panel :symbol="chainInfo.tokenSymbol" />
         </div>
         <div class="container--panel">
-          <value-panel title="Total Supply" :value="totalSupply" />
+          <value-panel title="Holders" :value="holders" />
         </div>
       </div>
       <div class="container--panel">
@@ -48,35 +48,30 @@
 </template>
 
 <script lang="ts">
-import axios from 'axios';
 import BlockPanel from 'src/components/dashboard/BlockPanel.vue';
+import CirculatingPanel from 'src/components/dashboard/CirculatingPanel.vue';
+import ValuePanel from 'src/components/dashboard/ValuePanel.vue';
 import TokenPriceChart from 'src/components/dashboard/TokenPriceChart.vue';
 // import TotalTransactionsChart from 'src/components/dashboard/TotalTransactionsChart.vue';
 import TvlChart from 'src/components/dashboard/TvlChart.vue';
-import ValuePanel from 'src/components/dashboard/ValuePanel.vue';
 import { useTvlHistorical } from 'src/hooks';
 import { textChart, TOKEN_API_URL } from 'src/modules/token-api';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, watch } from 'vue';
-
-interface StatsData {
-  generatedAt: number;
-  totalSupply: number;
-  circulatingSupply: number;
-}
+import { computed, defineComponent, ref, watchEffect } from 'vue';
+import axios from 'axios';
 
 export default defineComponent({
   components: {
     TokenPriceChart,
     TvlChart,
     BlockPanel,
-    // TotalTransactionsChart,
+    CirculatingPanel,
     ValuePanel,
+    // TotalTransactionsChart,
   },
   setup() {
     const store = useStore();
-    const totalSupply = ref<string>('');
-    const circulatingSupply = ref<string>('');
+    const holders = ref<string>('');
 
     const {
       filteredDappStakingTvl,
@@ -101,28 +96,20 @@ export default defineComponent({
       return chainInfo ? chainInfo.chain !== 'Shibuya Testnet' : false;
     });
 
-    const loadStats = async () => {
+    const loadStats = async (network: string) => {
       if (!chainInfo.value || !chainInfo.value.chain) return;
-
-      const statsUrl = `${TOKEN_API_URL}/v1/${chainInfo.value.chain.toLowerCase()}/token/stats`;
-      const result = await axios.get<StatsData>(statsUrl);
-
+      const statsUrl = `${TOKEN_API_URL}/v1/${network}/token/holders`;
+      const result = await axios.get<number>(statsUrl);
       if (result.data) {
-        totalSupply.value = `${result.data.totalSupply.toLocaleString('en-US')} ${
-          chainInfo.value.tokenSymbol
-        }`;
-        circulatingSupply.value = `${result.data.circulatingSupply.toLocaleString('en-US')} ${
-          chainInfo.value.tokenSymbol
-        }`;
+        holders.value = `${result.data.toLocaleString('en-US')}`;
       }
     };
 
-    loadStats();
-
-    watch([chainInfo], async () => {
+    watchEffect(async () => {
       try {
         if (chainInfo.value) {
-          await loadStats();
+          const network = chainInfo.value.chain.toLowerCase();
+          network && (await loadStats(network));
         }
       } catch (error) {
         console.error(error);
@@ -132,8 +119,7 @@ export default defineComponent({
     return {
       textChart,
       chainInfo,
-      totalSupply,
-      circulatingSupply,
+      holders,
       isMainnet,
       filteredDappStakingTvl,
       filteredEcosystemTvl,

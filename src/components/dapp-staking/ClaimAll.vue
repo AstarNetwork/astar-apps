@@ -1,5 +1,5 @@
 <template>
-  <div v-if="currentAccount && isEnableIndividualClaim" class="widget-container">
+  <div v-if="currentAccount" class="widget-container">
     <div class="title">
       {{ $t('dappStaking.unclaimedRewards') }}
       <IconTooltip>
@@ -34,11 +34,10 @@ export default defineComponent({
     IconTooltip,
   },
   setup() {
-    const { claimAll, batchTxs, isLoading, isEnableIndividualClaim } = useClaimAll();
+    const { claimAll, batchTxs, isLoading } = useClaimAll();
     const { currentAccount } = useAccount();
 
     return {
-      isEnableIndividualClaim,
       fasMoneyCheckAlt,
       claimAll,
       batchTxs,

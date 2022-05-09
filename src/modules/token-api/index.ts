@@ -1,4 +1,11 @@
-export { getTvlData, filterTvlData, formatNumber, mergeTvlArray, getTvlValue } from './utils';
+export {
+  getTvlData,
+  filterTvlData,
+  formatNumber,
+  mergeTvlArray,
+  getTvlValue,
+  getClaimedAmount,
+} from './utils';
 
 export { textChart, titleFormatter, valueDecimalsFormatter, seriesFormatter } from './chart';
 

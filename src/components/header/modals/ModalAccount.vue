@@ -82,6 +82,7 @@ import copy from 'copy-to-clipboard';
 import SelectWallet from 'src/components/header/modals/SelectWallet.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { SupportWallet } from 'src/config/wallets';
+import { wait } from 'src/hooks/helper/common';
 import { castMobileSource, checkIsEthereumWallet } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
@@ -122,13 +123,12 @@ export default defineComponent({
     const isSelected = ref<boolean>(false);
     const isClosing = ref<boolean>(false);
 
-    const closeModal = (): void => {
+    const closeModal = async (): Promise<void> => {
       isClosing.value = true;
-      const animationDuration = 900;
-      setTimeout(() => {
-        isClosing.value = false;
-        emit('update:is-open', false);
-      }, animationDuration);
+      const animationDuration = 500;
+      await wait(animationDuration);
+      isClosing.value = false;
+      emit('update:is-open', false);
     };
 
     const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
@@ -153,14 +153,13 @@ export default defineComponent({
       if (checkIsEthereumWallet(props.selectedWallet)) {
         props.connectEthereumWallet(props.selectedWallet);
       }
-      substrateAccount && store.commit('general/setCurrentAddress', substrateAccount);
       isClosing.value = true;
       const animationDuration = 500;
-      setTimeout(() => {
-        isSelected.value = true;
-        isClosing.value = false;
-        emit('update:is-open', false);
-      }, animationDuration);
+      await wait(animationDuration);
+      substrateAccount && store.commit('general/setCurrentAddress', substrateAccount);
+      isSelected.value = true;
+      isClosing.value = false;
+      emit('update:is-open', false);
     };
 
     const selAccount = ref<string>('');

@@ -2,9 +2,13 @@ import { wait } from 'src/hooks/helper/common';
 import { EthereumProvider } from './../types/CustomSignature';
 import { supportEvmWalletObj, SupportWallet } from 'src/config/wallets';
 import { web3Enable } from '@polkadot/extension-dapp';
+import { ISubmittableResult } from '@polkadot/types/types';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { SubstrateAccount } from './../../store/general/state';
 import { deepLink } from 'src/links';
+import { showError } from 'src/modules/extrinsic';
+import { Dispatch } from 'vuex';
+import { SubstrateAccount } from './../../store/general/state';
+import { SubmittableExtrinsic } from '@polkadot/api/types';
 
 export const getInjectedExtensions = async (forceRequest = false): Promise<any[]> => {
   const selectedAddress = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
@@ -150,4 +154,67 @@ export const checkIsMobileMathWallet = async (): Promise<boolean> => {
   } catch (error) {
     return false;
   }
+};
+
+type Transaction = SubmittableExtrinsic<'promise', ISubmittableResult>;
+
+export const signAndSend = async ({
+  transaction,
+  senderAddress,
+  substrateAccounts,
+  isCustomSignature = false,
+  dispatch,
+  txResHandler,
+  handleCustomExtrinsic,
+  finalizeCallback,
+  tip = 1,
+}: {
+  transaction: Transaction;
+  senderAddress: string;
+  substrateAccounts: SubstrateAccount[];
+  isCustomSignature: boolean;
+  dispatch: Dispatch;
+  txResHandler: (result: ISubmittableResult) => Promise<boolean>;
+  // from: useCustomSignature.ts
+  handleCustomExtrinsic?: (method: Transaction) => Promise<void>;
+  finalizeCallback?: () => void;
+  tip?: number;
+}): Promise<boolean> => {
+  return new Promise<boolean>(async (resolve) => {
+    const sendSubstrateTransaction = async (): Promise<void> => {
+      const injector = await getInjector(substrateAccounts);
+      if (!injector) {
+        throw Error('Invalid injector');
+      }
+      await transaction.signAndSend(
+        senderAddress,
+        {
+          signer: injector.signer,
+          nonce: -1,
+          tip,
+        },
+        (result) => {
+          (async () => {
+            const res = await txResHandler(result);
+            finalizeCallback && finalizeCallback();
+            resolve(res);
+          })();
+        }
+      );
+    };
+
+    try {
+      if (isCustomSignature && handleCustomExtrinsic) {
+        await handleCustomExtrinsic(transaction);
+        finalizeCallback && finalizeCallback();
+        resolve(true);
+      } else {
+        await sendSubstrateTransaction();
+      }
+    } catch (error: any) {
+      console.error(error.message);
+      showError(dispatch, error.message);
+      resolve(false);
+    }
+  });
 };

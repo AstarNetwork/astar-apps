@@ -43,6 +43,7 @@
 import { useFaucet } from 'src/hooks';
 import { defineComponent, computed, ref } from 'vue';
 import { fadeDuration } from '@astar-network/astar-ui';
+import { wait } from 'src/hooks/helper/common';
 
 export default defineComponent({
   props: {
@@ -61,13 +62,12 @@ export default defineComponent({
     const { requestFaucet, isLoading, unit, isAbleToFaucet, countDown, faucetAmount } =
       useFaucet(isModalFaucet);
 
-    const closeModal = (): void => {
+    const closeModal = async (): Promise<void> => {
       isClosingModal.value = true;
 
-      setTimeout(() => {
-        props.handleModalFaucet({ isOpen: false });
-        isClosingModal.value = false;
-      }, fadeDuration);
+      await wait(fadeDuration);
+      props.handleModalFaucet({ isOpen: false });
+      isClosingModal.value = false;
     };
 
     const handleRequest = async () => {

@@ -16,47 +16,30 @@
         </div>
       </div>
       <div class="tw-flex">
-        <div v-if="stakeInfo?.hasStake">
-          <Button :small="true" :primary="true" @click="showStakeModal">
-            {{ $t('dappStaking.add') }}
-          </Button>
+        <div>
+          <div v-if="stakeInfo?.hasStake">
+            <Button :small="true" :primary="true" @click="showStakeModal">
+              {{ $t('dappStaking.add') }}
+            </Button>
+          </div>
           <Button
-            v-if="!isEnableIndividualClaim"
-            class="btn-unbond"
+            v-else
             :small="true"
-            :primary="false"
-            @click="showUnstakeModal"
+            :disabled="isMaxStaker || isH160 || !currentAddress"
+            @click="showStakeModal"
           >
-            {{ canUnbondWithdraw ? $t('dappStaking.unbond') : $t('dappStaking.unstake') }}
+            {{ $t('dappStaking.stake') }}
           </Button>
         </div>
-        <Button
-          v-else
-          :small="true"
-          :disabled="isMaxStaker || isH160 || currentAddress === null"
-          @click="showStakeModal"
-        >
-          {{ $t('dappStaking.stake') }}
-        </Button>
 
         <Button
-          v-if="isEnableIndividualClaim && stakeInfo?.hasStake"
+          v-if="stakeInfo?.hasStake"
           :small="true"
           :primary="false"
           class="tw-ml-auto btn-unbond"
           @click="showUnstakeModal"
         >
           {{ canUnbondWithdraw ? $t('dappStaking.unbond') : $t('dappStaking.unstake') }}
-        </Button>
-        <Button
-          v-if="!isEnableIndividualClaim"
-          :small="true"
-          :primary="true"
-          :disabled="isH160 || currentAddress === null"
-          class="tw-ml-auto"
-          @click="showClaimRewardModal = true"
-        >
-          {{ $t('dappStaking.claim') }}
         </Button>
       </div>
     </div>
@@ -71,39 +54,34 @@
       :min-staking="formattedMinStake"
       :stake-amount="stakeInfo?.yourStake.denomAmount"
       :account-data="accountData"
-    />
-
-    <ClaimRewardModal
-      v-if="dapp && showClaimRewardModal"
-      v-model:isOpen="showClaimRewardModal"
-      :dapp="dapp"
-      :stake-info="stakeInfo"
-      :claim-action="claim"
+      :staking-list="stakingList"
+      :finalize-callback="finalizeCallback"
     />
   </div>
 </template>
 
 <script lang="ts">
-import { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
-import { formatBalance } from '@polkadot/util';
-import { $api, $isEnableIndividualClaim } from 'boot/api';
+import { ISubmittableResult } from '@polkadot/types/types';
+import { $api } from 'boot/api';
 import Button from 'components/common/Button.vue';
-import ClaimRewardModal from 'components/dapp-staking/modals/ClaimRewardModal.vue';
 import StakeModal from 'components/dapp-staking/modals/StakeModal.vue';
 import { useChainMetadata, useCustomSignature, useGetMinStaking } from 'src/hooks';
+import { TxType } from 'src/hooks/custom-signature/message';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
+import { signAndSend } from 'src/hooks/helper/wallet';
 import { getAmount, StakeModel } from 'src/hooks/store';
 import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
+import { StakingData } from 'src/modules/dapp-staking';
 import { useStore } from 'src/store';
-import { ClaimParameters, getAddressEnum, StakingParameters } from 'src/store/dapp-staking/actions';
-import { computed, defineComponent, ref, toRefs, watchEffect } from 'vue';
+import { getAddressEnum } from 'src/store/dapp-staking/actions';
+import { computed, defineComponent, PropType, ref, toRefs, watchEffect } from 'vue';
+import { useI18n } from 'vue-i18n';
 import './stake-panel.scss';
 
 export default defineComponent({
   components: {
     Button,
     StakeModal,
-    ClaimRewardModal,
   },
   props: {
     dapp: {
@@ -130,31 +108,36 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    stakingList: {
+      type: Array as PropType<StakingData[]>,
+      required: true,
+    },
   },
-  emits: ['stakeChanged', 'stakeModalOpened'],
+  emits: ['stakeModalOpened'],
   setup(props, { emit }) {
     const store = useStore();
     const showModal = ref<boolean>(false);
-    const showClaimRewardModal = ref<boolean>(false);
     const modalTitle = ref<string>('');
-    const modalActionName = ref<string | ''>('');
+    const modalActionName = ref<StakeAction | ''>('');
     const formattedMinStake = ref<string>('');
-    const modalAction = ref();
+    const modalAction = ref<Function>();
     const { minStaking } = useGetMinStaking($api);
     const { decimal } = useChainMetadata();
     const { canUnbondWithdraw } = useUnbondWithdraw($api);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
-    const { callFunc, dispatchError, isCustomSig, customMsg } = useCustomSignature({
+    const { t } = useI18n();
+    const { isCustomSig, customMsg, handleCustomExtrinsic, handleResult } = useCustomSignature({
       fn: () => {
         store.commit('dapps/setUnlockingChunks', -1);
       },
+      txType: TxType.requiredClaim,
     });
 
     const currentAddress = computed(() => store.getters['general/selectedAddress']);
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
 
     const showStakeModal = () => {
-      modalTitle.value = `Stake on ${props.dapp.name}`;
+      modalTitle.value = t('dappStaking.modals.title.stakeOn', { dapp: props.dapp.name });
       modalActionName.value = StakeAction.Stake;
       modalAction.value = stake;
       showModal.value = true;
@@ -163,8 +146,8 @@ export default defineComponent({
 
     const showUnstakeModal = () => {
       modalTitle.value = canUnbondWithdraw.value
-        ? `Start unbonbonding from ${props.dapp.name}`
-        : `Unstake from ${props.dapp.name}`;
+        ? t('dappStaking.modals.title.startUnbonding', { dapp: props.dapp.name })
+        : t('dappStaking.modals.title.unStakeFrom', { dapp: props.dapp.name });
       modalActionName.value = StakeAction.Unstake;
       modalAction.value = unstake;
       showModal.value = true;
@@ -185,187 +168,111 @@ export default defineComponent({
       }
     });
 
-    const emitStakeChanged = () => {
-      emit('stakeChanged', props.dapp);
-    };
-
     const stake = async (stakeData: StakeModel): Promise<void> => {
       const amount = getAmount(stakeData.amount, stakeData.unit);
       const unit = stakeData.unit;
-
-      const stakeCustomExtrinsic = async () => {
-        try {
-          const balance = formatBalance(amount, {
-            withSi: true,
-            decimals: stakeData.decimal,
-            withUnit: unit,
-          });
-          customMsg.value = `You staked ${balance} on ${props.dapp.name}.`;
-          const fn: SubmittableExtrinsicFunction<'promise'> | undefined =
-            $api?.value?.tx.dappsStaking.bondAndStake;
-          const method: SubmittableExtrinsic<'promise'> | undefined =
-            fn && fn(getAddressEnum(props.dapp.address), amount);
-
-          method && (await callFunc(method));
-          emitStakeChanged();
-        } catch (e) {
-          dispatchError((e as Error).message);
+      try {
+        const stakeAmount = plasmUtils.balanceFormatter(amount);
+        const transaction = $api.value!.tx.dappsStaking.bondAndStake(
+          getAddressEnum(props.dapp.address),
+          amount
+        );
+        if (props.stakeInfo) {
+          const ttlStakeAmount = amount.add(props.stakeInfo.yourStake.denomAmount);
+          if (ttlStakeAmount.lt(minStaking.value)) {
+            const msg = t('dappStaking.error.notEnoughMinAmount', {
+              amount: formattedMinStake.value,
+              symbol: unit,
+            });
+            store.dispatch('general/showAlertMsg', {
+              msg,
+              alertType: 'error',
+            });
+            return;
+          }
+        } else {
+          console.warn('No stakeInfo available. The store is unable to check some constraints.');
         }
-      };
 
-      if (props.stakeInfo) {
-        const ttlStakeAmount = amount.add(props.stakeInfo.yourStake.denomAmount);
-
-        if (ttlStakeAmount.lt(minStaking.value)) {
-          store.dispatch('general/showAlertMsg', {
-            msg: `The amount of token to be staking must greater than ${formattedMinStake.value} ${unit}`,
-            alertType: 'error',
+        const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
+          customMsg.value = t('dappStaking.toast.staked', {
+            amount: stakeAmount,
+            dapp: props.dapp.name,
           });
-          return;
-        }
-      } else {
-        console.warn('No stakeInfo available. The store is unable to check some constraints.');
-      }
+          return await handleResult(result);
+        };
 
-      if (isCustomSig.value) {
-        await stakeCustomExtrinsic();
-        showModal.value = false;
-      } else {
-        const result = await store.dispatch('dapps/stake', {
-          api: $api?.value,
+        await signAndSend({
+          transaction,
           senderAddress: stakeData.address,
-          dapp: props.dapp,
-          amount,
-          decimals: stakeData.decimal,
-          unit,
-          finalizeCallback: emitStakeChanged,
           substrateAccounts: substrateAccounts.value,
-        } as StakingParameters);
-
-        if (result) {
-          showModal.value = false;
-        }
+          isCustomSignature: isCustomSig.value,
+          txResHandler,
+          handleCustomExtrinsic,
+          dispatch: store.dispatch,
+        });
+      } catch (error) {
+        console.error(error);
+      } finally {
+        showModal.value = false;
+        store.commit('general/setLoading', false);
       }
     };
 
     const unstake = async (stakeData: StakeModel): Promise<void> => {
-      const dispatchCommand = canUnbondWithdraw.value ? 'dapps/unbond' : 'dapps/unstake';
       const amount = getAmount(stakeData.amount, stakeData.unit);
+      const unstakeAmount = plasmUtils.balanceFormatter(amount);
+      try {
+        const transaction = canUnbondWithdraw.value
+          ? $api.value!.tx.dappsStaking.unbondAndUnstake(getAddressEnum(props.dapp.address), amount)
+          : $api.value!.tx.dappsStaking.unbondUnstakeAndWithdraw(
+              getAddressEnum(props.dapp.address),
+              amount
+            );
 
-      const unstakeCustomExtrinsic = async () => {
-        try {
-          const balance = formatBalance(amount, {
-            withSi: true,
-            decimals: stakeData.decimal,
-            withUnit: stakeData.unit,
+        const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
+          customMsg.value = t('dappStaking.toast.staked', {
+            amount: unstakeAmount,
+            dapp: props.dapp.name,
           });
-          customMsg.value = `You unstaked ${balance} on ${props.dapp.name}.`;
-          const fn: SubmittableExtrinsicFunction<'promise'> | undefined = canUnbondWithdraw.value
-            ? $api?.value?.tx.dappsStaking.unbondAndUnstake
-            : $api?.value?.tx.dappsStaking.unbondUnstakeAndWithdraw;
-          const method: SubmittableExtrinsic<'promise'> | undefined =
-            fn && fn(getAddressEnum(props.dapp.address), amount);
+          return await handleResult(result);
+        };
 
-          method && (await callFunc(method));
-          emitStakeChanged();
-        } catch (e) {
-          dispatchError((e as Error).message);
-        }
-      };
-
-      if (isCustomSig.value) {
-        await unstakeCustomExtrinsic();
-        showModal.value = false;
-      } else {
-        const result = await store.dispatch(dispatchCommand, {
-          api: $api?.value,
+        await signAndSend({
+          transaction,
           senderAddress: stakeData.address,
-          dapp: props.dapp,
-          amount,
-          decimals: stakeData.decimal,
-          unit: stakeData.unit,
-          finalizeCallback: emitStakeChanged,
           substrateAccounts: substrateAccounts.value,
-        } as StakingParameters);
-
-        if (result) {
-          showModal.value = false;
-        }
+          isCustomSignature: isCustomSig.value,
+          txResHandler,
+          handleCustomExtrinsic,
+          dispatch: store.dispatch,
+        });
+      } catch (error) {
+        console.error(error);
+      } finally {
+        store.commit('general/setLoading', false);
+        showModal.value = false;
       }
     };
 
-    const claim = async (unclaimedEras: number[], claimFinishedCallback: () => void) => {
-      // TODO maybe to add select address option to modal as in stake/unstake
-      const senderAddress = store.getters['general/selectedAddress'];
-
-      const claimCustomExtrinsic = async () => {
-        const erasToClaim = unclaimedEras;
-        if (erasToClaim.length === 0) {
-          store.dispatch(
-            'general/showAlertMsg',
-            {
-              msg: 'All rewards have been already claimed.',
-              alertType: 'warning',
-            },
-            { root: true }
-          );
-
-          return true;
-        }
-
-        try {
-          const transactions = [];
-          for (let era of erasToClaim) {
-            transactions.push(
-              $api?.value?.tx.dappsStaking.claim(getAddressEnum(props.dapp.address), era)
-            );
-          }
-
-          customMsg.value = 'All rewards have been already claimed.';
-          const fn: SubmittableExtrinsicFunction<'promise'> | undefined =
-            $api?.value?.tx.utility.batch;
-          const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn(transactions);
-
-          method && (await callFunc(method));
-          emitStakeChanged();
-        } catch (e) {
-          dispatchError((e as Error).message);
-        }
-      };
-
-      if (isCustomSig.value) {
-        await claimCustomExtrinsic();
-      } else {
-        await store.dispatch('dapps/claimBatch', {
-          api: $api?.value,
-          senderAddress,
-          dapp: props.dapp,
-          substrateAccounts: substrateAccounts.value,
-          finalizeCallback: function () {
-            emitStakeChanged();
-            claimFinishedCallback();
-          },
-          unclaimedEras,
-        } as ClaimParameters);
-      }
+    const finalizeCallback = () => {
+      showModal.value = false;
     };
 
     return {
       ...toRefs(props),
       showModal,
-      showClaimRewardModal,
       modalTitle,
       modalAction,
       modalActionName,
       showStakeModal,
       showUnstakeModal,
-      claim,
       formattedMinStake,
       unstake,
       canUnbondWithdraw,
       isH160,
       currentAddress,
-      isEnableIndividualClaim: $isEnableIndividualClaim,
+      finalizeCallback,
     };
   },
 });
