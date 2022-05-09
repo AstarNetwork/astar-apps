@@ -2,6 +2,7 @@ import { options } from '@astar-network/astar-api';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { wait } from 'src/hooks/helper/common';
 
 const RES_INVALID_CONNECTION = 'invalid connection';
 const RES_CONNECTED_API = 'connected';
