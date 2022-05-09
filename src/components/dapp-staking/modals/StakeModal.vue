@@ -39,7 +39,7 @@
           v-model:amount="data.amount"
           v-model:selectedUnit="data.unit"
           title="Amount"
-          :max-in-default-unit="maxAmount"
+          :max-in-default-unit="maxAmount.value"
           :is-max-button="isMaxButton"
         />
         <div class="box--information">

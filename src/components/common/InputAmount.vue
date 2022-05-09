@@ -91,7 +91,7 @@ export default defineComponent({
   props: {
     title: { type: String, default: '' },
     selectedUnit: { type: String, default: '' },
-    maxInDefaultUnit: { type: Object as PropType<BN>, default: new BN(0) },
+    maxInDefaultUnit: { type: String, default: '0' },
     fixUnit: { type: Boolean, default: false },
     amount: { default: new BN(0), type: (Object as PropType<BN>) || Number },
     isMaxButton: { type: Boolean },
@@ -120,7 +120,7 @@ export default defineComponent({
     watchEffect(() => {
       // Memo: cast from string
       const formattedAmount = new BN(Number(props.amount));
-      const formattedMaxInDefaultUnit = new BN(props.maxInDefaultUnit);
+      const formattedMaxInDefaultUnit = new BN(props.maxInDefaultUnit.valueOf());
       if (formattedMaxInDefaultUnit.eq(new BN(0))) {
         return;
       }
