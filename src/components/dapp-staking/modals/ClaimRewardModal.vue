@@ -42,7 +42,7 @@
 </template>
 
 <script lang="ts">
-import { $api, $isEnableIndividualClaim } from 'boot/api';
+import { $api } from 'boot/api';
 import Avatar from 'src/components/common/Avatar.vue';
 import Button from 'src/components/common/Button.vue';
 import Modal from 'src/components/common/Modal.vue';
@@ -85,11 +85,7 @@ export default defineComponent({
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
 
     const canClaim = computed(() => {
-      return (
-        !$isEnableIndividualClaim.value &&
-        claimInfo?.value &&
-        claimInfo.value.unclaimedEras.length > 0
-      );
+      return claimInfo?.value && claimInfo.value.unclaimedEras.length > 0;
     });
 
     onMounted(async () => {
@@ -103,7 +99,6 @@ export default defineComponent({
         dapp: props.dapp,
         decimals: decimal.value,
         substrateAccounts: substrateAccounts.value,
-        isEnableIndividualClaim: $isEnableIndividualClaim.value,
       } as StakingParameters);
       if (!claimInfo.value) return;
 
@@ -117,10 +112,8 @@ export default defineComponent({
     };
 
     const claim = async () => {
-      if (!$isEnableIndividualClaim.value) {
-        const erasToClaim = claimInfo.value?.unclaimedEras.sort().slice(0, maxErasPerClaim);
-        await props.claimAction(erasToClaim, getClaimInfo);
-      }
+      const erasToClaim = claimInfo.value?.unclaimedEras.sort().slice(0, maxErasPerClaim);
+      await props.claimAction(erasToClaim, getClaimInfo);
     };
 
     return {

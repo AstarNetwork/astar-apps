@@ -1,7 +1,7 @@
 import { Struct } from '@polkadot/types';
 import { Perbill } from '@polkadot/types/interfaces';
 import { aprToApy } from 'apr-tools';
-import { $api, $isEnableIndividualClaim } from 'boot/api';
+import { $api } from 'boot/api';
 import { ethers } from 'ethers';
 import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
@@ -78,20 +78,12 @@ export const useApr = () => {
 
     // Todo: fetch from token-api
     const getApr = async (): Promise<number> => {
-      const isEnableIndividualClaimRef = $isEnableIndividualClaim.value;
       try {
         const getDeveloperPercentage = async () => {
-          if (isEnableIndividualClaimRef) {
-            const result =
-              await apiRef.query.blockReward.rewardDistributionConfigStorage<RewardDistributionConfig>();
-            const percentage = result.dappsPercent.toNumber() * 0.000000001;
-            return percentage;
-          } else {
-            // TODO consider removing this part since individual claim is deployed on all networks.
-            const result = apiRef.consts.dappsStaking.developerRewardPercentage;
-            const percentage = Number(result && result.toString().replace('%', '')) * 0.01;
-            return percentage;
-          }
+          const result =
+            await apiRef.query.blockReward.rewardDistributionConfigStorage<RewardDistributionConfig>();
+          const percentage = result.dappsPercent.toNumber() * 0.000000001;
+          return percentage;
         };
 
         const results = await Promise.all([

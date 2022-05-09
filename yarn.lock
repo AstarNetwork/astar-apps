@@ -2721,6 +2721,16 @@
     "@types/websocket" "^1.0.5"
     websocket "^1.0.34"
 
+"@polkadot/x-ws@^9.1.1":
+  version "9.1.1"
+  resolved "https://registry.yarnpkg.com/@polkadot/x-ws/-/x-ws-9.1.1.tgz#5a0deef84bc22fa5b1f629acfbccb2cdb09ecdb7"
+  integrity sha512-jojrlEbeabRRCj0449IDg7BTOOntinMDZJJkABnPG3WnTtHa82TZQmrrdE51PIolGwFW6qDamh9IQcfI/Ir7Yw==
+  dependencies:
+    "@babel/runtime" "^7.17.9"
+    "@polkadot/x-global" "9.1.1"
+    "@types/websocket" "^1.0.5"
+    websocket "^1.0.34"
+
 "@positron/stack-trace@1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@positron/stack-trace/-/stack-trace-1.0.0.tgz#14fcc712a530038ef9be1ce6952315a839f466a8"
@@ -3412,6 +3422,14 @@
     "@types/node" "*"
     form-data "^3.0.0"
 
+"@types/node-fetch@^2.6.1":
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/@types/node-fetch/-/node-fetch-2.6.1.tgz#8f127c50481db65886800ef496f20bbf15518975"
+  integrity sha512-oMqjURCaxoSIsHSr1E47QHzbmzNR5rK8McHuNb11BOM9cHcIK3Avy0s/b2JlXHoQGTYS3NsvWzV1M0iK7l0wbA==
+  dependencies:
+    "@types/node" "*"
+    form-data "^3.0.0"
+
 "@types/node@*", "@types/node@>=12.12.47", "@types/node@>=13.7.0", "@types/node@^16.11.9":
   version "16.11.9"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-16.11.9.tgz#879be3ad7af29f4c1a5c433421bf99fab7047185"
@@ -3540,6 +3558,13 @@
     chokidar "^3.5.1"
     http-proxy-middleware "^2.0.0"
     webpack "*"
+
+"@types/websocket@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@types/websocket/-/websocket-1.0.5.tgz#3fb80ed8e07f88e51961211cd3682a3a4a81569c"
+  integrity sha512-NbsqiNX9CnEfC1Z0Vf4mE1SgAJ07JnRYcNex7AJ9zAVzmiGHmjKFEk7O4TJIsgv2B1sLEb6owKFZrACwdYngsQ==
+  dependencies:
+    "@types/node" "*"
 
 "@types/websocket@^1.0.5":
   version "1.0.5"

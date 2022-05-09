@@ -35,10 +35,6 @@ export default defineComponent({
   display: grid;
   row-gap: 24px;
   max-width: 1300px;
-  @media (min-width: $xxl) {
-    /* width: $container-max-width; */
-    /* width: 1300px; */
-  }
 }
 
 .wrapper--dapp-staking {
