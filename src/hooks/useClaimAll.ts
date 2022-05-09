@@ -1,3 +1,4 @@
+import BN from 'bn.js';
 import { $api, $isEnableIndividualClaim } from 'boot/api';
 import { getInjector } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
@@ -5,11 +6,13 @@ import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
 import { computed, ref, watchEffect } from 'vue';
 import { TxType } from './custom-signature/message';
 import { ExtrinsicPayload } from './helper';
-import { getIndividualClaimTxs } from './helper/claim';
+import { getIndividualClaimTxs, PayloadWithWeight } from './helper/claim';
 import { useCurrentEra, useCustomSignature } from './index';
 
+const MAX_BATCH_WEIGHT = new BN('50000000000');
+
 export function useClaimAll() {
-  let batchTxs: ExtrinsicPayload[] = [];
+  let batchTxs: PayloadWithWeight[] = [];
   const canClaim = ref<boolean>(false);
   const isLoading = ref<boolean>(true);
   const store = useStore();
@@ -39,7 +42,7 @@ export function useClaimAll() {
         return;
       }
 
-      const txs: ExtrinsicPayload[] = await Promise.all(
+      const txs: PayloadWithWeight[] = await Promise.all(
         dapps.value.map(async ({ address }: { address: string }) => {
           const transactions = await getIndividualClaimTxs({
             dappAddress: address,
@@ -63,6 +66,7 @@ export function useClaimAll() {
   const claimAll = async (): Promise<void> => {
     const api = $api;
     const batchTxsRef = batchTxs;
+
     if (!api) {
       throw Error('Failed to connect to API');
     }
@@ -70,7 +74,20 @@ export function useClaimAll() {
       throw Error('No dApps can be claimed');
     }
 
-    const transaction = api.tx.utility.batch(batchTxsRef);
+    const txsToExecute: ExtrinsicPayload[] = [];
+    let totalWeight: BN = new BN(0);
+    for (let i = 0; i < batchTxsRef.length; i++) {
+      const tx = batchTxsRef[i];
+      if (totalWeight.add(tx.weight).gt(MAX_BATCH_WEIGHT)) {
+        break;
+      }
+
+      txsToExecute.push(tx.payload as ExtrinsicPayload);
+      totalWeight = totalWeight.add(tx.weight);
+    }
+
+    console.log(`Batch weight: ${totalWeight.toString()}, transactions no. ${txsToExecute.length}`);
+    const transaction = api.tx.utility.batch(txsToExecute);
 
     const sendSubstrateTransaction = async () => {
       const injector = await getInjector(substrateAccounts.value);

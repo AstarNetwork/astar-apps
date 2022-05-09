@@ -55,9 +55,7 @@ export default defineComponent({
     const selWallet = computed(() => supportAllWalletsObj[props.selectedWallet]);
 
     const closeOption = () => {
-      setTimeout(() => {
-        openOption.value = false;
-      }, 400);
+      openOption.value = false;
     };
 
     const wallets = ref<Wallet[]>(supportAllWallets);

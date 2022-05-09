@@ -46,9 +46,11 @@ export default boot(async ({ store }) => {
     const customEndpoint = computed(() => store.getters['general/customEndpoint']);
     endpoint = customEndpoint.value;
   }
+
   if (networkIdx.value === endpointKey.LOCAL) {
     endpoint = providerEndpoints[networkIdx.value].endpoints[0].endpoint;
   }
+
   // set metadata header
   const favicon = providerEndpoints[Number(networkIdx.value)].favicon;
   useMeta({

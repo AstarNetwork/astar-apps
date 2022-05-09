@@ -3,6 +3,7 @@ import { $api } from 'boot/api';
 import { DateTime } from 'luxon';
 import { computed, ref, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
+import { wait } from '../helper/common';
 import { useCurrentEra } from '../useCurrentEra';
 
 export const useAvgBlockTime = (path: string) => {
@@ -35,12 +36,11 @@ export const useAvgBlockTime = (path: string) => {
     });
   };
 
-  const setLatestBlock = (): void => {
+  const setLatestBlock = async (): Promise<void> => {
     if (avgBlockTime7Eras.value > 0 && latestBlock.value === 0) {
-      const delay = 600;
-      setTimeout(() => {
-        latestBlock.value = internalLatestBlock.value;
-      }, delay);
+      const animationDelay = 600;
+      await wait(animationDelay);
+      latestBlock.value = internalLatestBlock.value;
     }
   };
 
@@ -131,8 +131,8 @@ export const useAvgBlockTime = (path: string) => {
     }
   });
 
-  watchEffect(() => {
-    setLatestBlock();
+  watchEffect(async () => {
+    await setLatestBlock();
   });
 
   return {

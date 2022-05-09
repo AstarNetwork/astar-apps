@@ -23,6 +23,7 @@ import { useStore } from 'src/store';
 import { defineComponent, computed, ref, watchEffect } from 'vue';
 import { useCbridgeV2 } from 'src/hooks';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { wait } from 'src/hooks/helper/common';
 
 export default defineComponent({
   components: {
@@ -37,15 +38,14 @@ export default defineComponent({
     const selectedAddress = computed(() => store.getters['general/selectedAddress']);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
-    const setIsDisplay = (): void => {
+    const setIsDisplay = async (): Promise<void> => {
       const address = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
       const isEthereumExtension = address === 'Ethereum Extension';
       if (!isDisplay.value && isEthereumExtension) {
         // Memo: Wait for update the `isH160` state
         const secDelay = 1 * 1000;
-        setTimeout(() => {
-          isDisplay.value = true;
-        }, secDelay);
+        await wait(secDelay);
+        isDisplay.value = true;
       } else {
         isDisplay.value = true;
       }

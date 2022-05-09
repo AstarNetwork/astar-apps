@@ -1,6 +1,7 @@
 import { getHistory, History, pendingStatus } from 'src/c-bridge';
 import { useStore } from 'src/store';
 import { computed, onUnmounted, ref, watchEffect } from 'vue';
+import { wait } from '../helper/common';
 
 export function useCbridgeHistory() {
   const histories = ref<History[] | []>([]);
@@ -31,9 +32,9 @@ export function useCbridgeHistory() {
       const { histories: historyArray, isPending } = await getHistory(selectedAddress.value);
       histories.value = historyArray;
       isPendingTx.value = isPending;
-      setTimeout(() => {
-        isUpdatingHistories.value = false;
-      }, 500);
+      const loadTime = 500;
+      await wait(loadTime);
+      isUpdatingHistories.value = false;
     }
   };
 

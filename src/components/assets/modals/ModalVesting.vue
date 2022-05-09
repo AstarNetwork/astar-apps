@@ -55,6 +55,7 @@
 import { AccountData, useVesting } from 'src/hooks';
 import { defineComponent, PropType, ref } from 'vue';
 import { fadeDuration } from '@astar-network/astar-ui';
+import { wait } from 'src/hooks/helper/common';
 
 export default defineComponent({
   props: {
@@ -78,12 +79,11 @@ export default defineComponent({
   },
   setup(props) {
     const isClosingModal = ref<boolean>(false);
-    const closeModal = (): void => {
+    const closeModal = async (): Promise<void> => {
       isClosingModal.value = true;
-      setTimeout(() => {
-        props.handleModalVesting({ isOpen: false });
-        isClosingModal.value = false;
-      }, fadeDuration);
+      await wait(fadeDuration);
+      props.handleModalVesting({ isOpen: false });
+      isClosingModal.value = false;
     };
     const { info, sendTransaction } = useVesting(closeModal);
 
