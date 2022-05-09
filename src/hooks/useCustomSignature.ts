@@ -40,12 +40,12 @@ export function useCustomSignature({ fn, txType }: { fn?: () => void; txType?: T
             alertType: 'success',
           });
 
-          store.commit('general/setLoading', false);
-          fn && fn();
           customMsg.value = null;
+          resolve(true);
         } else {
           store.commit('general/setLoading', true);
         }
+
         if (txType) {
           displayCustomMessage({
             txType,
