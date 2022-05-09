@@ -168,9 +168,10 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
       to: contractAddress,
       value: '0x0',
       data: contract.methods.transfer(toAddress, value).encodeABI(),
+      maxPriorityFeePerGas: '21000000',
+      maxFeePerGas: '1000000',
     };
     const estimatedGas = await web3.eth.estimateGas(rawTx);
-
     await web3.eth
       .sendTransaction({ ...rawTx, gas: estimatedGas })
       .once('transactionHash', (transactionHash) => {

@@ -11,11 +11,18 @@ export const sendNativeTokenTransaction = async (
   transferAmt: number,
   callback: Function
 ) => {
+  // const gasLimit;
   await web3.eth
     .sendTransaction({
       to: destinationAddress,
       from: fromAddress,
       value: web3.utils.toWei(String(transferAmt), 'ether'),
+      // type: 2,
+      // maxPriorityFeePerGas: 21000000,
+      // gasLimit: 21000,
+      // type: '0x2',
+      maxPriorityFeePerGas: '21000000',
+      maxFeePerGas: '1000000',
     })
     .once('confirmation', (confNumber, receipt) => {
       const hash = receipt.transactionHash;

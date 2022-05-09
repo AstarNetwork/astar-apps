@@ -72,6 +72,10 @@
           </div>
         </div>
 
+        <div v-if="isSpeedMeter">
+          <SpeedMeter />
+        </div>
+
         <div v-if="isChoseWrongEvmNetwork" class="rows__row--wrong-evm">
           <span class="text--error">{{ $t('assets.wrongNetwork') }}</span>
           <span class="text--connect-rpc" @click="connectEvmNetwork">
@@ -119,9 +123,10 @@ import Web3 from 'web3';
 import ModalSelectAccount from './ModalSelectAccount.vue';
 import { registeredErc20Tokens } from 'src/modules/token';
 import { fadeDuration } from '@astar-network/astar-ui';
+import SpeedMeter from 'src/components/common/SpeedMeter.vue';
 
 export default defineComponent({
-  components: { ModalSelectAccount },
+  components: { ModalSelectAccount, SpeedMeter },
   props: {
     isModalTransfer: {
       type: Boolean,
@@ -172,6 +177,9 @@ export default defineComponent({
     const nativeTokenSymbol = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
       return chainInfo ? chainInfo.tokenSymbol : '';
+    });
+    const isSpeedMeter = computed(() => {
+      return isH160.value;
     });
 
     // Memo: check the selected token is either hard-coded token or cBridge token
@@ -439,6 +447,7 @@ export default defineComponent({
       currentNetworkName,
       connectEvmNetwork,
       isClosingModal,
+      isSpeedMeter,
     };
   },
 });
