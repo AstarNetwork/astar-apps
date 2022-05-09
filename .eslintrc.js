@@ -137,7 +137,7 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
 
     'prettier-vue/prettier': [
-      'warn',
+      'error',
       {
         // Override all options of `prettier` here
         // @see https://prettier.io/docs/en/options.html
