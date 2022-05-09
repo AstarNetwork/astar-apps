@@ -161,17 +161,29 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
     const gasPrice = await web3.eth.getGasPrice();
 
     const value = ethers.utils.parseUnits(transferAmt, decimals);
+
     const rawTx: TransactionConfig = {
       nonce: await web3.eth.getTransactionCount(fromAddress),
-      gasPrice: web3.utils.toHex(gasPrice),
+      // gasPrice: web3.utils.toHex(gasPrice), // data.fast
+      gasPrice: web3.utils.toHex(13256478930), // data.fast
       from: fromAddress,
       to: contractAddress,
       value: '0x0',
       data: contract.methods.transfer(toAddress, value).encodeABI(),
-      maxPriorityFeePerGas: '21000000',
-      maxFeePerGas: '1000000',
     };
-    const estimatedGas = await web3.eth.estimateGas(rawTx);
+
+    // const rawTx: TransactionConfig = {
+    //   nonce: await web3.eth.getTransactionCount(fromAddress),
+    //   gasPrice: web3.utils.toHex(gasPrice),
+    //   from: fromAddress,
+    //   to: contractAddress,
+    //   value: '0x0',
+    //   data: contract.methods.transfer(toAddress, value).encodeABI(),
+    //   maxPriorityFeePerGas: '12256478930',
+    //   maxFeePerGas: '1000000000',
+    // };
+    const estimatedGas = await web3.eth.estimateGas(rawTx); //29387
+    console.log('estimatedGas', estimatedGas);
     await web3.eth
       .sendTransaction({ ...rawTx, gas: estimatedGas })
       .once('transactionHash', (transactionHash) => {
