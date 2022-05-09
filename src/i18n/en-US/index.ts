@@ -111,6 +111,11 @@ export default {
     turnOff: 'Turn off',
     on: 'ON',
     off: 'OFF',
+    yourRewards: 'Your Rewards',
+    claimedRewards: {
+      short: 'Claimed rewards: ',
+      long: 'Total rewards you have claimed: ',
+    },
     modals: {
       alreadyClaimed: 'Already claimed:',
       contractRewards: 'Contract rewards:',
@@ -252,6 +257,10 @@ export default {
   dashboard: {
     dashboard: 'Dashboard',
     tvl: 'TVL',
+    circulating: {
+      circulatingSupply: 'Circulating Supply',
+      supply: 'of {totalSupply}: ',
+    },
     block: {
       block: 'Block',
       blockHeight: 'Block Height',

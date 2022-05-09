@@ -4,6 +4,13 @@
   padding: 16px 8px 0px 8px;
 }
 
+.row--2-column {
+  padding: 16px 8px 0px 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .align-right {
   padding: 16px 8px 0px 8px;
   text-align: end;
@@ -137,11 +144,11 @@
 }
 
 .skeleton--value-panel {
-  height: 120px;
+  height: 138px;
 }
 
 .skeleton--staker {
-  width: 120px;
+  width: 138px;
   height: 39px;
   @media (min-width: $sm) {
     width: 200px;
@@ -159,7 +166,7 @@
 
 .container--value {
   padding: 8px 16px 32px;
-  height: 120px;
+  height: 138px;
 
   @media (min-width: $sm) {
     padding: 8px 24px 32px;

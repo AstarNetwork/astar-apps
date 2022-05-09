@@ -12,6 +12,7 @@ export interface ContractsGetters {
   getMaxUnlockingChunks(state: State): number;
   getUnlockingChunks(state: State): number;
   getIsPalletDisabled(state: State): boolean;
+  getClaimedRewards(state: State): number;
 }
 
 const getters: GetterTree<State, StateInterface> & ContractsGetters = {
@@ -22,6 +23,7 @@ const getters: GetterTree<State, StateInterface> & ContractsGetters = {
   getMaxUnlockingChunks: (state) => state.maxUnlockingChunks,
   getUnlockingChunks: (state) => state.unlockingChunks,
   getIsPalletDisabled: (state) => state.isPalletDisabled,
+  getClaimedRewards: (state) => state.claimedRewards,
 };
 
 export default getters;

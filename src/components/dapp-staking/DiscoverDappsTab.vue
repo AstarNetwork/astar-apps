@@ -137,6 +137,10 @@ export default defineComponent({
   align-items: center;
   justify-content: center;
   width: 100%;
+  margin-bottom: 24px;
+  @media (min-width: $sm) {
+    margin-bottom: 0px;
+  }
 }
 
 .warning-text-container {
