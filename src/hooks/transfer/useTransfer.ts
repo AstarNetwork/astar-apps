@@ -1,3 +1,4 @@
+import { useGasPrice } from './useGasPrice';
 import type { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
 import BN from 'bn.js';
 import { $api } from 'boot/api';
@@ -15,7 +16,7 @@ import { getInjector } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { computed, Ref, ref, watchEffect } from 'vue';
 import Web3 from 'web3';
-import { getEvmProvider } from './helper/wallet';
+import { getEvmProvider } from '../helper/wallet';
 import ABI from 'src/c-bridge/abi/ERC20.json';
 import { ethers } from 'ethers';
 import { TransactionConfig } from 'web3-eth';
@@ -34,6 +35,8 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
     });
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const isEthWallet = computed(() => store.getters['general/isEthWallet']);
+
+  const { evmGasPrice, selectedGasSpeed, setSelectedGasSpeed } = useGasPrice();
 
   const transferLocal = async (transferAmt: BN, fromAddress: string, toAddress: string) => {
     try {
@@ -203,5 +206,12 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
       });
   };
 
-  return { callTransfer, isTxSuccess, callErc20Transfer };
+  return {
+    callTransfer,
+    isTxSuccess,
+    callErc20Transfer,
+    evmGasPrice,
+    selectedGasSpeed,
+    setSelectedGasSpeed,
+  };
 }

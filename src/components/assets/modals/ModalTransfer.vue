@@ -73,7 +73,11 @@
         </div>
 
         <div v-if="isSpeedMeter">
-          <SpeedMeter />
+          <SpeedMeter
+            :evm-gas-price="evmGasPrice"
+            :selected-gas-speed="selectedGasSpeed"
+            :set-selected-gas-speed="setSelectedGasSpeed"
+          />
         </div>
 
         <div v-if="isChoseWrongEvmNetwork" class="rows__row--wrong-evm">
@@ -266,7 +270,8 @@ export default defineComponent({
     };
 
     const { defaultUnitToken, decimal } = useChainMetadata();
-    const { callTransfer, callErc20Transfer } = useTransfer(defaultUnitToken, decimal, closeModal);
+    const { callTransfer, callErc20Transfer, evmGasPrice, selectedGasSpeed, setSelectedGasSpeed } =
+      useTransfer(defaultUnitToken, decimal, closeModal);
 
     const transfer = async (): Promise<void> => {
       const isErc20TransferRef = isErc20Transfer.value;
@@ -448,6 +453,9 @@ export default defineComponent({
       connectEvmNetwork,
       isClosingModal,
       isSpeedMeter,
+      evmGasPrice,
+      selectedGasSpeed,
+      setSelectedGasSpeed,
     };
   },
 });
