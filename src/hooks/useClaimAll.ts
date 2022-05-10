@@ -12,7 +12,8 @@ import { useCurrentEra, useCustomSignature } from './index';
 const MAX_BATCH_WEIGHT = new BN('50000000000');
 
 export function useClaimAll() {
-  const batchTxs = ref<PayloadWithWeight[]>([]);
+  let batchTxs: PayloadWithWeight[] = [];
+  const canClaim = ref<boolean>(false);
   const isLoading = ref<boolean>(true);
   const store = useStore();
   const senderAddress = computed(() => store.getters['general/selectedAddress']);
@@ -32,8 +33,7 @@ export function useClaimAll() {
   watchEffect(async () => {
     try {
       isLoading.value = true;
-      batchTxs.value = [];
-      const api = $api.value;
+      const api = $api;
       const senderAddressRef = senderAddress.value;
       if (!api) {
         throw Error('Failed to connect to API');
@@ -54,7 +54,8 @@ export function useClaimAll() {
         })
       );
       const filteredTxs = txs.filter((it) => it !== null);
-      batchTxs.value = filteredTxs.flat();
+      batchTxs = filteredTxs.flat();
+      canClaim.value = batchTxs.length > 0;
     } catch (error: any) {
       console.error(error.message);
     } finally {
@@ -63,8 +64,8 @@ export function useClaimAll() {
   });
 
   const claimAll = async (): Promise<void> => {
-    const api = $api.value;
-    const batchTxsRef = batchTxs.value;
+    const api = $api;
+    const batchTxsRef = batchTxs;
 
     if (!api) {
       throw Error('Failed to connect to API');
@@ -123,7 +124,7 @@ export function useClaimAll() {
 
   return {
     claimAll,
-    batchTxs,
+    canClaim,
     isLoading,
   };
 }

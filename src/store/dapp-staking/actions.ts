@@ -37,8 +37,8 @@ export const getAddressEnum = (address: string) => ({ Evm: address });
 
 const getCollectionKey = async (): Promise<string> => {
   if (!collectionKey) {
-    await $api?.value?.isReady;
-    const chain = (await $api?.value?.rpc.system.chain()) || 'development-dapps';
+    await $api?.isReady;
+    const chain = (await $api?.rpc.system.chain()) || 'development-dapps';
     collectionKey = `${chain.toString().toLowerCase()}-dapps`.replace(' ', '-');
   }
 
@@ -54,14 +54,14 @@ export const hasExtrinsicFailedEvent = (
   events
     .filter((record): boolean => !!record.event && record.event.section !== 'democracy')
     .map(({ event: { data, method, section } }) => {
-      console.log('event', method, section, data);
-      if (section === 'utility' && method === 'BatchInterrupted') {
-        console.log(data.toHuman());
-      }
+      // console.log('event', method, section, data);
+      // if (section === 'utility' && method === 'BatchInterrupted') {
+      //   console.log(data.toHuman());
+      // }
 
       if (section === 'system' && method === 'ExtrinsicFailed') {
         const [dispatchError] = data as unknown as ITuple<[DispatchError]>;
-        let message = dispatchError.type;
+        let message = dispatchError.type.toString();
 
         if (dispatchError.isModule) {
           try {
@@ -349,32 +349,30 @@ const actions: ActionTree<State, StateInterface> = {
   },
 
   async getStakingInfo({ commit, dispatch, rootState }) {
-    await $api?.value?.isReady;
+    await $api?.isReady;
+
     try {
-      if ($api?.value) {
+      if ($api) {
         const [
           minimumStakingAmount,
           maxNumberOfStakersPerContract,
           maxUnlockingChunks,
           unbondingPeriod,
         ] = await Promise.all([
-          $api.value.consts.dappsStaking.minimumStakingAmount,
-          $api.value.consts.dappsStaking.maxNumberOfStakersPerContract as u32,
-          $api.value.consts.dappsStaking.maxUnlockingChunks as u32,
-          $api.value.consts.dappsStaking.unbondingPeriod as u32,
+          $api.consts.dappsStaking.minimumStakingAmount,
+          $api.consts.dappsStaking.maxNumberOfStakersPerContract as u32,
+          $api.consts.dappsStaking.maxUnlockingChunks as u32,
+          $api.consts.dappsStaking.unbondingPeriod as u32,
         ]);
 
-        const minimumStakingAmountBalance = $api?.value?.createType(
-          'Balance',
-          minimumStakingAmount
-        );
+        const minimumStakingAmountBalance = $api?.createType('Balance', minimumStakingAmount);
         commit('setMinimumStakingAmount', minimumStakingAmountBalance?.toHuman());
         commit('setMaxNumberOfStakersPerContract', maxNumberOfStakersPerContract?.toNumber());
         commit('setUnbondingPeriod', unbondingPeriod?.toNumber());
         commit('setMaxUnlockingChunks', maxUnlockingChunks?.toNumber());
         let isPalletDisabled = false;
         try {
-          const isDisabled = await $api.value.query.dappsStaking.palletDisabled<bool>();
+          const isDisabled = await $api.query.dappsStaking.palletDisabled<bool>();
           isPalletDisabled = isDisabled.valueOf();
         } catch {
           // palletDisabled storage item is not supported by a node;

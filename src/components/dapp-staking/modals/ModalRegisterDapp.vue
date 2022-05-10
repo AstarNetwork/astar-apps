@@ -85,7 +85,7 @@ export default defineComponent({
             const senderAddress = store.getters['general/selectedAddress'];
             const result = await store.dispatch('dapps/registerDapp', {
               dapp: data,
-              api: $api?.value,
+              api: $api,
               senderAddress,
               substrateAccounts: substrateAccounts.value,
             } as RegisterParameters);

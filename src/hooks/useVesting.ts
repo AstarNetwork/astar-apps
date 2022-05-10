@@ -65,7 +65,7 @@ export function useVesting(closeModal: () => void) {
 
   const unlockVestedTokensCustomExtrinsic = async (): Promise<void> => {
     try {
-      const fn: SubmittableExtrinsicFunction<'promise'> | undefined = $api?.value?.tx.vesting.vest;
+      const fn: SubmittableExtrinsicFunction<'promise'> | undefined = $api?.tx.vesting.vest;
       const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn();
       method && callFunc(method);
     } catch (e) {
@@ -75,7 +75,7 @@ export function useVesting(closeModal: () => void) {
 
   const unlockVestedTokens = async (): Promise<void> => {
     try {
-      const apiRef = $api.value;
+      const apiRef = $api;
       if (!apiRef) {
         throw Error('Cannot connect to the API');
       }

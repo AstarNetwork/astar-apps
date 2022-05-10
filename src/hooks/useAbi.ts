@@ -42,11 +42,13 @@ interface AbiSpecOutdated {
   };
 }
 
+// Memo. Not used anywhere in the code base. Should we remove the hook?
 export default function useAbi(source: Code | null = null, isRequired = false) {
-  const registry = $api?.value?.registry;
+  const registry = $api?.registry;
   const chainProperties = registry?.getChainProperties() as ChainProperties | undefined;
 
-  const abi = source ? ref(new Abi(source?.abi, chainProperties)) : ref(null);
+  const abi =
+    source && source?.abi ? ref(new Abi(source.abi.toString(), chainProperties)) : ref(null);
   const isAbiSupplied = ref(!!source?.abi);
   const isAbiValid = ref(!isRequired || !!source?.abi);
 
@@ -75,7 +77,7 @@ export default function useAbi(source: Code | null = null, isRequired = false) {
 
       source?.codeHash &&
         store.dispatch('contracts/saveCode', {
-          api: $api?.value,
+          api: $api,
           _codeHash: source?.codeHash,
           partial: { abi: json },
         });
@@ -98,7 +100,7 @@ export default function useAbi(source: Code | null = null, isRequired = false) {
 
     source?.codeHash &&
       store.dispatch('contracts/saveCode', {
-        api: $api?.value,
+        api: $api,
         _codeHash: source?.codeHash,
         partial: { abi: null },
       });

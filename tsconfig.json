@@ -2,5 +2,6 @@
   "extends": "@quasar/app/tsconfig-preset",
   "compilerOptions": {
     "baseUrl": ".",
+    "esModuleInterop": true,
   }
 }

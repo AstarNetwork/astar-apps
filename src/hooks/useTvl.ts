@@ -1,16 +1,28 @@
-import BN from 'bn.js';
+import { ApiPromise } from '@polkadot/api';
+import { Option, Struct, U32 } from '@polkadot/types-codec';
+import { Balance } from '@polkadot/types/interfaces';
 import { ethers } from 'ethers';
 import { useStore } from 'src/store';
 import { computed, ref, watch } from 'vue';
 import { useChainMetadata } from '.';
 import { getUsdPrice } from './helper/price';
 
-export function useTvl(api: any) {
+// TODO typegeneration
+interface EraInfo extends Struct {
+  rewards: {
+    stakers: Balance;
+    dapps: Balance;
+  };
+  staked: Balance;
+  locked: Balance;
+}
+
+export function useTvl(api: ApiPromise | undefined) {
   const store = useStore();
   const { decimal } = useChainMetadata();
 
   const dapps = computed(() => store.getters['dapps/getAllDapps']);
-  const tvlToken = ref<BN>(new BN(0));
+  const tvlToken = ref<BigInt>(BigInt(0));
   const tvlUsd = ref<number>(0);
   const tokenSymbol = computed(() => {
     const chainInfo = store.getters['general/chainInfo'];
@@ -19,18 +31,18 @@ export function useTvl(api: any) {
   const isSendingTx = computed(() => store.getters['general/isLoading']);
 
   watch(
-    [api, dapps, tokenSymbol, isSendingTx],
+    [dapps, tokenSymbol, isSendingTx],
     () => {
-      const apiRef = api.value;
       const dappsRef = dapps.value;
       const tokenSymbolRef = tokenSymbol.value;
-      if (!apiRef || !dappsRef || !tokenSymbolRef) return;
+      if (!api || !dappsRef || !tokenSymbolRef) return;
 
-      const getTvl = async (): Promise<{ tvl: BN; tvlDefaultUnit: number }> => {
-        const era = await apiRef.query.dappsStaking.currentEra();
-        const result = await apiRef.query.dappsStaking.generalEraInfo(era);
-        const tvl = result.unwrap().locked;
-        const tvlDefaultUnit = Number(ethers.utils.formatUnits(tvl.toString(), decimal.value));
+      const getTvl = async (): Promise<{ tvl: BigInt; tvlDefaultUnit: number }> => {
+        const era = await api.query.dappsStaking.currentEra<U32>();
+        const result = await api.query.dappsStaking.generalEraInfo<Option<EraInfo>>(era);
+        const tvl = result.unwrap().locked.toBigInt();
+        const tvlDefaultUnit = Number(ethers.utils.formatUnits(tvl, decimal.value));
+
         return { tvl, tvlDefaultUnit };
       };
 
@@ -47,7 +59,7 @@ export function useTvl(api: any) {
         return 0;
       };
 
-      apiRef.isReady.then(() => {
+      api.isReady.then(() => {
         (async () => {
           const results = await Promise.all([getTvl(), priceUsd()]);
           const { tvl, tvlDefaultUnit } = results[0];

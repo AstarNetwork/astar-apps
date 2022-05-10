@@ -1,5 +1,4 @@
-import BN from 'bn.js';
-import { $api } from 'boot/api';
+import { $api } from 'src/boot/api';
 import { useStore } from 'src/store';
 import { computed, ref, watchEffect } from 'vue';
 import { useAccount } from '../useAccount';
@@ -19,19 +18,18 @@ export function useStakingList() {
     {
       address: '',
       name: 'Transferable Balance',
-      balance: new BN(0),
+      balance: '0',
     },
   ]);
 
   const setStakingList = async () => {
     const dappsRef = dapps.value;
     const accountDataRef = accountData.value;
-    const apiRef = $api.value!;
     const currentAccountRef = currentAccount.value;
     if (!accountDataRef || !currentAccountRef || isH160.value) return;
     try {
       const data = await formatStakingList({
-        api: apiRef,
+        api: $api!,
         address: currentAccountRef,
         dapps: dappsRef,
       });
@@ -39,7 +37,7 @@ export function useStakingList() {
       data.unshift({
         address: currentAccountRef,
         name: 'Transferable Balance',
-        balance: accountDataRef.getUsableFeeBalance(),
+        balance: accountDataRef.getUsableFeeBalance().toString(),
       });
       stakingList.value = data;
     } catch (error) {

@@ -187,7 +187,7 @@ export default defineComponent({
     watch(
       [isH160, isCheckingSignature, isEthWallet],
       async () => {
-        const apiRef = $api.value;
+        const apiRef = $api;
         if (!isEthWallet.value) {
           isLockdropAccount.value = false;
           return;

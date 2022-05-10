@@ -45,7 +45,7 @@ const checkIsDappOwner = async ({
     const data = await api.query.dappsStaking.registeredDapps<RegisteredDapps>(
       getAddressEnum(dappAddress)
     );
-    const owner = data.toHuman().developer;
+    const owner = data.developer;
     return owner === senderAddress;
   } catch (error: any) {
     console.error(error.message);
@@ -124,7 +124,7 @@ const eraSkippedZeroStake = async ({
     for (let e = era + 1; e < currentEra; e++) {
       const data = await getContractEraStake({ dappAddress, era: e, api });
       if (!data.isNone) {
-        const { total } = data.unwrapOrDefault().toHuman();
+        const total = data.unwrapOrDefault()?.total;
         if (total !== '0') {
           result = e;
           break;
@@ -138,7 +138,7 @@ const eraSkippedZeroStake = async ({
   if (data.isNone) {
     return era;
   } else {
-    const { total } = data.unwrapOrDefault().toHuman();
+    const total = data.unwrapOrDefault()?.total;
     if (total !== '0') {
       return era;
     } else {
@@ -238,7 +238,7 @@ const getFirstEraDappHasNotClaimed = async ({
     try {
       const data = await getContractEraStake({ dappAddress, era, api });
       if (data && !data.isNone) {
-        const { contractRewardClaimed } = data.unwrapOrDefault().toHuman();
+        const contractRewardClaimed = data.unwrapOrDefault().contractRewardClaimed;
         if (!contractRewardClaimed) {
           firstEraDappHasNotClaimed = era;
           break;
@@ -272,7 +272,7 @@ const getLastEraClaimedForDapp = async ({
     try {
       const data = await getContractEraStake({ dappAddress, era, api });
       if (data && !data.isNone) {
-        const { contractRewardClaimed } = data.unwrapOrDefault().toHuman();
+        const contractRewardClaimed = data.unwrapOrDefault().contractRewardClaimed;
         if (contractRewardClaimed) {
           lastEraClaimed = era;
           break;

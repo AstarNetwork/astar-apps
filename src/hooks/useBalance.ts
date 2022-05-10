@@ -47,7 +47,7 @@ function useCall(addressRef: Ref<string>) {
 
   const updateAccount = async (address: string) => {
     if (!address) return;
-    const api = $api.value!!;
+    const api = $api!!;
 
     if (unsub.value) {
       unsub.value();

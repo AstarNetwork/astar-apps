@@ -1,11 +1,12 @@
+import { ApiPromise } from '@polkadot/api';
 import { ref, watchEffect } from 'vue';
 
-export const useUnbondWithdraw = (apiRef: any) => {
+export const useUnbondWithdraw = (apiRef: ApiPromise | undefined) => {
   const canUnbondWithdraw = ref<boolean>(false);
 
   watchEffect(() => {
     try {
-      const unbondingPeriod = apiRef.value?.consts.dappsStaking.unbondingPeriod;
+      const unbondingPeriod = apiRef?.consts.dappsStaking.unbondingPeriod;
       canUnbondWithdraw.value = !!unbondingPeriod;
     } catch {
       canUnbondWithdraw.value = false;

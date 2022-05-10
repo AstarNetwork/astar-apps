@@ -64,7 +64,7 @@ export const useApr = () => {
     const tvlTokenRef = tvlToken.value;
     const decimalRef = decimal.value;
     const blocksPerEraRef = Number(blockPerEra.value);
-    const apiRef = $api && $api.value;
+    const apiRef = $api;
     if (
       !apiRef ||
       !dappsRef ||
@@ -82,7 +82,7 @@ export const useApr = () => {
         const getDeveloperPercentage = async () => {
           const result =
             await apiRef.query.blockReward.rewardDistributionConfigStorage<RewardDistributionConfig>();
-          const percentage = Number(result.dappsPercent.toHuman().replace('%', '')) * 0.01;
+          const percentage = result.dappsPercent.toNumber() * 0.000000001;
           return percentage;
         };
 

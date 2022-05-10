@@ -11,7 +11,7 @@
       <Button
         :small="true"
         :primary="true"
-        :disabled="batchTxs.length === 0 || isLoading"
+        :disabled="!canClaim || isLoading"
         class="button"
         @click="claimAll"
       >
@@ -34,13 +34,13 @@ export default defineComponent({
     IconTooltip,
   },
   setup() {
-    const { claimAll, batchTxs, isLoading } = useClaimAll();
+    const { claimAll, canClaim, isLoading } = useClaimAll();
     const { currentAccount } = useAccount();
 
     return {
       fasMoneyCheckAlt,
       claimAll,
-      batchTxs,
+      canClaim,
       isLoading,
       currentAccount,
     };

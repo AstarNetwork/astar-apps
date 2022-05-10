@@ -7,6 +7,7 @@ import { Struct, u32, Vec } from '@polkadot/types';
 import { getInjector } from 'src/hooks/helper/wallet';
 import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
 import { useCustomSignature } from 'src/hooks';
+import BN from 'bn.js';
 
 type EraIndex = u32;
 
@@ -45,19 +46,19 @@ export function useCompoundRewards() {
     try {
       // Check if metadata contains set_reward_destination so we know
       // if compounding is supported by a node or not.
-      const metadata = $api.value?.runtimeMetadata;
+      const metadata = $api?.runtimeMetadata;
       const metadataJson = JSON.stringify(metadata?.toJSON());
       isSupported.value = metadataJson.includes('set_reward_destination');
 
       // Subscribe to compounding data.
-      await $api.value?.query.dappsStaking.ledger(currentAddress.value, (ledger: AccountLedger) => {
+      await $api?.query.dappsStaking.ledger(currentAddress.value, (ledger: AccountLedger) => {
         if (ledger && isSupported.value) {
           rewardDestination.value = ledger.rewardDestination;
           isCompounding.value =
-            rewardDestination.value?.toString() === RewardDestination.StakeBalance;
+            ledger.rewardDestination.toString() === RewardDestination.StakeBalance;
         }
 
-        isStaker.value = ledger.locked.toString() !== '0';
+        isStaker.value = !ledger.locked.eq(new BN(0));
       });
     } catch (err) {
       // Compounding rewards are not supported by a node if reading of ledger.rewardDestination fails
@@ -69,7 +70,7 @@ export function useCompoundRewards() {
   const setRewardDestinationCustomExtrinsic = async (rewardDestination: RewardDestination) => {
     try {
       const fn: SubmittableExtrinsicFunction<'promise'> | undefined =
-        $api.value?.tx.dappsStaking.setRewardDestination;
+        $api?.tx.dappsStaking.setRewardDestination;
       const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn(rewardDestination);
       method && (await callFunc(method));
     } catch (e) {
@@ -84,7 +85,7 @@ export function useCompoundRewards() {
       const injector = await getInjector(substrateAccounts.value);
 
       try {
-        await $api.value?.tx.dappsStaking.setRewardDestination(rewardDestination).signAndSend(
+        await $api?.tx.dappsStaking.setRewardDestination(rewardDestination).signAndSend(
           currentAddress.value,
           {
             signer: injector.signer,

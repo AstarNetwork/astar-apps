@@ -109,7 +109,7 @@ export default defineComponent({
       const withdrawCustomExtrinsic = async () => {
         try {
           const fn: SubmittableExtrinsicFunction<'promise'> | undefined =
-            $api?.value?.tx.dappsStaking.withdrawUnbonded;
+            $api?.tx.dappsStaking.withdrawUnbonded;
           const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn();
           method && (await callFunc(method));
         } catch (e) {
@@ -121,7 +121,7 @@ export default defineComponent({
         await withdrawCustomExtrinsic();
       } else {
         const result = await store.dispatch('dapps/withdrawUnbonded', {
-          api: $api?.value,
+          api: $api,
           senderAddress: selectedAccountAddress.value,
           substrateAccounts: substrateAccounts.value,
         } as WithdrawParameters);
@@ -129,7 +129,7 @@ export default defineComponent({
     };
 
     const subscribeToEraChange = async (): Promise<VoidFn | undefined> => {
-      const unsub = (await $api?.value?.query.dappsStaking.currentEra(async (era: u32) => {
+      const unsub = (await $api?.query.dappsStaking.currentEra(async (era: u32) => {
         await getChunks(era);
       })) as VoidFn | undefined;
 
@@ -143,7 +143,7 @@ export default defineComponent({
         return;
       }
 
-      const ledger = await $api?.value?.query.dappsStaking.ledger<PalletDappsStakingAccountLedger>(
+      const ledger = await $api?.query.dappsStaking.ledger<PalletDappsStakingAccountLedger>(
         selectedAccountAddress.value
       );
 
@@ -171,7 +171,7 @@ export default defineComponent({
       () => unlockingChunksCount.value,
       async (chunks) => {
         console.log('chunks count changed');
-        const era = await $api?.value?.query.dappsStaking.currentEra<u32>();
+        const era = await $api?.query.dappsStaking.currentEra<u32>();
         if (era) {
           await getChunks(era);
         }
