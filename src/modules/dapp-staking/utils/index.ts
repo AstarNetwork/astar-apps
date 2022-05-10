@@ -31,10 +31,10 @@ export const formatStakingList = async ({
           if (!stakerInfo) return undefined;
 
           const bnBalance = stakerInfo.stakes.length && stakerInfo.stakes.slice(-1)[0].staked;
-          const balance = Number(stakerInfo.stakes.length && bnBalance.toString());
+          const balance = stakerInfo.stakes.length && bnBalance.toString();
 
-          if (balance > 0) {
-            return { address: dapp.address, balance: bnBalance, name: dapp.name };
+          if (Number(balance) > 0) {
+            return { address: dapp.address, balance, name: dapp.name };
           }
         } catch (error) {
           console.error(error);

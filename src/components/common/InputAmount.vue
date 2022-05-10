@@ -91,7 +91,7 @@ export default defineComponent({
   props: {
     title: { type: String, default: '' },
     selectedUnit: { type: String, default: '' },
-    maxInDefaultUnit: { type: String, default: '0' },
+    maxInDefaultUnit: { type: Number, default: 0 },
     fixUnit: { type: Boolean, default: false },
     amount: { default: new BN(0), type: (Object as PropType<BN>) || Number },
     isMaxButton: { type: Boolean },

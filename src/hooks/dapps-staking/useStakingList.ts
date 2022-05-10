@@ -1,4 +1,3 @@
-import BN from 'bn.js';
 import { $api } from 'src/boot/api';
 import { useStore } from 'src/store';
 import { computed, ref, watchEffect } from 'vue';
@@ -19,7 +18,7 @@ export function useStakingList() {
     {
       address: '',
       name: 'Transferable Balance',
-      balance: new BN(0),
+      balance: '0',
     },
   ]);
 
@@ -38,7 +37,7 @@ export function useStakingList() {
       data.unshift({
         address: currentAccountRef,
         name: 'Transferable Balance',
-        balance: accountDataRef.getUsableFeeBalance(),
+        balance: accountDataRef.getUsableFeeBalance().toString(),
       });
       stakingList.value = data;
     } catch (error) {

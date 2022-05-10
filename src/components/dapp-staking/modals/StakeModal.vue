@@ -39,7 +39,7 @@
           v-model:amount="data.amount"
           v-model:selectedUnit="data.unit"
           title="Amount"
-          :max-in-default-unit="maxAmount.value"
+          :max-in-default-unit="maxAmount"
           :is-max-button="isMaxButton"
         />
         <div class="box--information">
@@ -283,7 +283,7 @@ export default defineComponent({
 
     const maxAmount = computed(() => {
       if (props.actionName === StakeAction.Unstake) {
-        return formatStakeAmount;
+        return Number(formatStakeAmount.value);
       }
 
       if (isEnableNominationTransfer.value && formattedTransferFrom.value.isNominationTransfer) {
