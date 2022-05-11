@@ -74,9 +74,9 @@
 
         <div v-if="isSpeedMeter">
           <SpeedMeter
-            :evm-gas-price="evmGasPrice"
-            :selected-gas-speed="selectedGasSpeed"
-            :set-selected-gas-speed="setSelectedGasSpeed"
+            :gas-cost="evmGasCost"
+            :selected-gas="selectedGas"
+            :set-selected-gas="setSelectedGas"
           />
         </div>
 
@@ -129,6 +129,10 @@ import { registeredErc20Tokens } from 'src/modules/token';
 import { fadeDuration } from '@astar-network/astar-ui';
 import SpeedMeter from 'src/components/common/SpeedMeter.vue';
 import { wait } from 'src/hooks/helper/common';
+import { sampleEvmWalletAddress, getEvmGasCost } from 'src/modules/gas-api';
+import { ethers } from 'ethers';
+import ABI from 'src/c-bridge/abi/ERC20.json';
+import { AbiItem } from 'web3-utils';
 
 export default defineComponent({
   components: { ModalSelectAccount, SpeedMeter },
@@ -270,8 +274,14 @@ export default defineComponent({
     };
 
     const { defaultUnitToken, decimal } = useChainMetadata();
-    const { callTransfer, callErc20Transfer, evmGasPrice, selectedGasSpeed, setSelectedGasSpeed } =
-      useTransfer(defaultUnitToken, decimal, closeModal);
+    const {
+      callTransfer,
+      callErc20Transfer,
+      evmGasPrice,
+      selectedGas,
+      setSelectedGas,
+      evmGasCost,
+    } = useTransfer(defaultUnitToken, decimal, closeModal);
 
     const transfer = async (): Promise<void> => {
       const isErc20TransferRef = isErc20Transfer.value;
@@ -300,6 +310,41 @@ export default defineComponent({
         props.handleUpdateTokenBalances && props.handleUpdateTokenBalances();
       } else {
         await callTransfer(Number(transferAmtRef), fromAddress, toAddressRef);
+      }
+    };
+
+    const setEvmGasCost = async () => {
+      try {
+        const isErc20Ref = isErc20Transfer.value;
+        const transferAmtRef = transferAmt.value || '1';
+        const value = isErc20Ref ? '0x0' : transferAmtRef;
+        const destination = ethers.utils.isAddress(toAddress.value)
+          ? toAddress.value
+          : sampleEvmWalletAddress;
+
+        const destAddress = isErc20Ref ? (props.token.address as string) : destination;
+
+        const contract = isErc20Ref
+          ? new $web3.value!.eth.Contract(ABI as AbiItem[], props.token.address)
+          : undefined;
+
+        const encodedData = isErc20Ref
+          ? contract!.methods
+              .transfer(destination, ethers.utils.parseUnits(transferAmtRef, props.token.decimal))
+              .encodeABI()
+          : undefined;
+
+        evmGasCost.value = await getEvmGasCost({
+          isNativeToken: !isErc20Ref,
+          evmGasPrice: evmGasPrice.value,
+          fromAddress: currentAccount.value,
+          toAddress: destAddress,
+          web3: $web3.value!,
+          value,
+          encodedData,
+        });
+      } catch (error) {
+        console.error(error);
       }
     };
 
@@ -427,6 +472,12 @@ export default defineComponent({
       await setFromAddressBalance();
     });
 
+    watchEffect(async () => {
+      if (isH160.value && props.isModalTransfer) {
+        await setEvmGasCost();
+      }
+    });
+
     return {
       iconWallet,
       currentAccount,
@@ -453,9 +504,9 @@ export default defineComponent({
       connectEvmNetwork,
       isClosingModal,
       isSpeedMeter,
-      evmGasPrice,
-      selectedGasSpeed,
-      setSelectedGasSpeed,
+      selectedGas,
+      setSelectedGas,
+      evmGasCost,
     };
   },
 });

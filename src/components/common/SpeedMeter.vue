@@ -6,42 +6,64 @@
         <div />
       </div>
       <div class="box__row">
-        <div class="column--gas-option" @click="selectedGasSpeed('slow')">
+        <div
+          class="column--gas-option"
+          :class="selectedGas.speed === 'slow' && 'selected-gas-option'"
+          @click="setSelectedGas('slow')"
+        >
           <span class="text--accent">{{ $t('common.speed.average') }}</span>
-          <span class="text--gas-price">0.002 ASTR</span>
+          <span class="text--gas-price">{{ Number(gasCost.slow.toFixed(5)) }} {{ symbol }}</span>
         </div>
-        <div class="column--gas-option" @click="selectedGasSpeed('average')">
+
+        <div
+          class="column--gas-option"
+          :class="selectedGas.speed === 'average' && 'selected-gas-option'"
+          @click="setSelectedGas('average')"
+        >
           <span class="text--accent">{{ $t('common.speed.fast') }}</span>
-          <span class="text--gas-price">0.002 ASTR</span>
+          <span class="text--gas-price">{{ Number(gasCost.average.toFixed(5)) }} {{ symbol }}</span>
         </div>
-        <div class="column--gas-option" @click="selectedGasSpeed('fast')">
+
+        <div
+          class="column--gas-option"
+          :class="selectedGas.speed === 'fast' && 'selected-gas-option'"
+          @click="setSelectedGas('fast')"
+        >
           <span class="text--accent">{{ $t('common.speed.superFast') }}</span>
-          <span class="text--gas-price">0.002 ASTR</span>
+          <span class="text--gas-price">{{ Number(gasCost.fast.toFixed(5)) }} {{ symbol }}</span>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { GasPrice, SelectedGas } from 'src/modules/gas-api';
+import { useStore } from 'src/store';
+import { defineComponent, computed, PropType } from 'vue';
 
 export default defineComponent({
   props: {
-    evmGasPrice: {
-      type: Object,
+    gasCost: {
+      type: Object as PropType<GasPrice>,
       required: true,
     },
-    selectedGasSpeed: {
-      type: String,
+    selectedGas: {
+      type: Object as PropType<SelectedGas>,
       required: true,
     },
-    setSelectedGasSpeed: {
+    setSelectedGas: {
       type: Function,
       required: true,
     },
   },
-  setup(props) {
-    return {};
+  setup() {
+    const store = useStore();
+    const symbol = computed(() => {
+      const chainInfo = store.getters['general/chainInfo'];
+      return chainInfo ? chainInfo.tokenSymbol : {};
+    });
+
+    return { symbol };
   },
 });
 </script>

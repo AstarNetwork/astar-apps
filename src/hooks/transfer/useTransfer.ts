@@ -21,6 +21,7 @@ import ABI from 'src/c-bridge/abi/ERC20.json';
 import { ethers } from 'ethers';
 import { TransactionConfig } from 'web3-eth';
 import { AbiItem } from 'web3-utils';
+import { getEvmGas } from 'src/modules/gas-api';
 
 export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: () => void) {
   const store = useStore();
@@ -36,7 +37,7 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const isEthWallet = computed(() => store.getters['general/isEthWallet']);
 
-  const { evmGasPrice, selectedGasSpeed, setSelectedGasSpeed } = useGasPrice();
+  const { evmGasPrice, selectedGas, setSelectedGas, evmGasCost } = useGasPrice();
 
   const transferLocal = async (transferAmt: BN, fromAddress: string, toAddress: string) => {
     try {
@@ -92,12 +93,14 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
 
       store.commit('general/setLoading', true);
       const web3 = getDefaultEthProvider();
+      const gasPrice = await getEvmGas(web3, selectedGas.value.price);
 
       sendNativeTokenTransaction(
         web3,
         fromAddress,
         destinationAddress,
         transferAmt,
+        gasPrice,
         (hash: string) => {
           const msg = `Completed at transaction hash #${hash}`;
           store.dispatch('general/showAlertMsg', { msg, alertType: 'success' });
@@ -123,12 +126,10 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
       }
 
       const receivingAddress = isValidEvmAddress(toAddress) ? toSS58Address(toAddress) : toAddress;
-      // console.log('receivingAddress', receivingAddress);
 
       watchEffect(async () => {
         const unit = getUnit(selectUnit.value);
         const toAmt = reduceDenomToBalance(transferAmt, unit, decimal.value);
-        // console.log('toAmt', toAmt.toString(10));
 
         if (isEthWallet.value) {
           await transferExtrinsic(toAmt, receivingAddress);
@@ -160,20 +161,19 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
     const provider = getEvmProvider();
     const web3 = new Web3(provider as any);
     const contract = new web3.eth.Contract(ABI as AbiItem[], contractAddress);
-    const gasPrice = await web3.eth.getGasPrice();
-
     const value = ethers.utils.parseUnits(transferAmt, decimals);
+    const gasPrice = await getEvmGas(web3, selectedGas.value.price);
 
     const rawTx: TransactionConfig = {
       nonce: await web3.eth.getTransactionCount(fromAddress),
-      // gasPrice: web3.utils.toHex(gasPrice), // data.fast
-      gasPrice: web3.utils.toHex(13256478930), // data.fast
+      gasPrice: web3.utils.toHex(gasPrice),
       from: fromAddress,
       to: contractAddress,
       value: '0x0',
       data: contract.methods.transfer(toAddress, value).encodeABI(),
     };
 
+    // Memo: EIP-1559 example
     // const rawTx: TransactionConfig = {
     //   nonce: await web3.eth.getTransactionCount(fromAddress),
     //   gasPrice: web3.utils.toHex(gasPrice),
@@ -184,8 +184,7 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
     //   maxPriorityFeePerGas: '12256478930',
     //   maxFeePerGas: '1000000000',
     // };
-    const estimatedGas = await web3.eth.estimateGas(rawTx); //29387
-    console.log('estimatedGas', estimatedGas);
+    const estimatedGas = await web3.eth.estimateGas(rawTx);
     await web3.eth
       .sendTransaction({ ...rawTx, gas: estimatedGas })
       .once('transactionHash', (transactionHash) => {
@@ -210,7 +209,8 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
     isTxSuccess,
     callErc20Transfer,
     evmGasPrice,
-    selectedGasSpeed,
-    setSelectedGasSpeed,
+    selectedGas,
+    setSelectedGas,
+    evmGasCost,
   };
 }

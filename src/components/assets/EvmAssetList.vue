@@ -230,10 +230,9 @@ export default defineComponent({
     };
 
     watchEffect(async () => {
-      const nativeTokenSymbolRef = nativeTokenSymbol.value;
-      if (!balance.value || !nativeTokenSymbolRef) return;
+      if (!balance.value || !nativeTokenSymbol.value) return;
       try {
-        isShibuya.value = nativeTokenSymbolRef === 'SBY';
+        isShibuya.value = nativeTokenSymbol.value === 'SBY';
         bal.value = Number(ethers.utils.formatEther(balance.value.toString()));
         isFaucet.value = isShibuya.value || mainnetFaucetAmount > bal.value;
         if (nativeTokenUsd.value) {

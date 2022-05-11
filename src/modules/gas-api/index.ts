@@ -1,6 +1,8 @@
-export { getEvmGasPrice } from './utils';
+export { fetchEvmGasPrice, getEvmGas, getEvmGasCost } from './utils';
 
 export const GAS_API_URL = 'https://astar-gas-station.herokuapp.com/api';
+
+export const sampleEvmWalletAddress = '0xc9ec54736DD2A2ef6A56AB0330bb04E1aCA43472';
 
 export interface GasPrice {
   slow: number;
@@ -31,4 +33,11 @@ interface PriorityFee {
   slow: number;
   average: number;
   fast: number;
+}
+
+export type Speed = 'slow' | 'average' | 'fast';
+
+export interface SelectedGas {
+  speed: Speed;
+  price: number;
 }

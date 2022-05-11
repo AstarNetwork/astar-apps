@@ -7,7 +7,7 @@
 
 .box__row {
   display: flex;
-  column-gap: 8px;
+  column-gap: 4px;
   align-items: center;
   justify-content: space-between;
   margin-top: -8px;
@@ -18,13 +18,18 @@
   flex-direction: column;
   cursor: pointer;
   border: 2px solid transparent;
-  padding: 6px 8px;
+  padding: 6px 7px;
   border-radius: 6px;
   transition: all 0.3s ease 0s;
   &:hover {
     border: 2px solid $astar-blue-dark;
     transition: all 0.3s ease 0s;
   }
+}
+
+.selected-gas-option {
+  transition: all 0.3s ease 0s;
+  border: 2px solid $astar-blue-dark !important;
 }
 
 .text--gas-price {
