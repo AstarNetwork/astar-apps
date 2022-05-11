@@ -56,30 +56,43 @@ export const getEvmGasCost = async ({
 export const fetchEvmGasPrice = async ({
   network,
   isEip1559,
+  web3,
 }: {
   network: string;
   isEip1559: boolean;
+  web3: Web3;
 }): Promise<GasPrice> => {
-  const url = `${GAS_API_URL}/${network}/gasnow`;
-  const { data } = await axios.get<ApiGasNow>(url);
-  if (!data || data.code !== 200) {
-    throw Error('something went wrong');
-  }
+  try {
+    const url = `${GAS_API_URL}/${network}/gasnow`;
+    const { data } = await axios.get<ApiGasNow>(url);
+    if (!data || data.code !== 200) {
+      throw Error('something went wrong');
+    }
 
-  if (isEip1559) {
-    const { slow, average, fast } = data.data.eip1559.priorityFeePerGas;
+    if (isEip1559) {
+      const { slow, average, fast } = data.data.eip1559.priorityFeePerGas;
+      return {
+        slow,
+        average,
+        fast,
+        baseFeePerGas: data.data.eip1559.baseFeePerGas,
+      };
+    } else {
+      const { slow, average, fast } = data.data;
+      return {
+        slow,
+        average,
+        fast,
+        baseFeePerGas: 0,
+      };
+    }
+  } catch (error) {
+    console.error(error);
+    const fallbackGasPrice = Number(await web3.eth.getGasPrice());
     return {
-      slow,
-      average,
-      fast,
-      baseFeePerGas: data.data.eip1559.baseFeePerGas,
-    };
-  } else {
-    const { slow, average, fast } = data.data;
-    return {
-      slow,
-      average,
-      fast,
+      slow: fallbackGasPrice,
+      average: Math.floor(fallbackGasPrice * 1.1),
+      fast: Math.floor(fallbackGasPrice * 1.3),
       baseFeePerGas: 0,
     };
   }

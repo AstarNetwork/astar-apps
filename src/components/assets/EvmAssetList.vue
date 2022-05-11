@@ -115,10 +115,12 @@
 </template>
 <script lang="ts">
 import { ethers } from 'ethers';
+import { $web3 } from 'src/boot/api';
 import { checkIsCbridgeToken, SelectedToken } from 'src/c-bridge';
 import Erc20Currency from 'src/components/assets/Erc20Currency.vue';
 import EvmCbridgeToken from 'src/components/assets/EvmCbridgeToken.vue';
-import { useBalance, usePrice } from 'src/hooks';
+import { getBalance } from 'src/config/web3';
+import { useAccount, usePrice } from 'src/hooks';
 import { Erc20Token, getTokenImage } from 'src/modules/token';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
@@ -157,9 +159,9 @@ export default defineComponent({
     // Memo: defined by hard-coding to avoid sending too many requests to faucet API server
     const mainnetFaucetAmount = 0.002;
 
+    const { currentAccount } = useAccount();
     const store = useStore();
-    const selectedAddress = computed(() => store.getters['general/selectedAddress']);
-    const { balance } = useBalance(selectedAddress);
+    const isLoading = computed(() => store.getters['general/isLoading']);
     const { nativeTokenUsd } = usePrice();
 
     const nativeTokenSymbol = computed(() => {
@@ -230,10 +232,11 @@ export default defineComponent({
     };
 
     watchEffect(async () => {
-      if (!balance.value || !nativeTokenSymbol.value) return;
+      if (isLoading.value || !nativeTokenSymbol.value) return;
       try {
+        const balWei = await getBalance($web3.value!, currentAccount.value);
+        bal.value = Number(ethers.utils.formatEther(balWei));
         isShibuya.value = nativeTokenSymbol.value === 'SBY';
-        bal.value = Number(ethers.utils.formatEther(balance.value.toString()));
         isFaucet.value = isShibuya.value || mainnetFaucetAmount > bal.value;
         if (nativeTokenUsd.value) {
           balUsd.value = nativeTokenUsd.value * bal.value;

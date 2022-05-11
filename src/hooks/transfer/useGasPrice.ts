@@ -1,3 +1,4 @@
+import { $web3 } from 'boot/api';
 import { useStore } from 'src/store';
 import { ref, watchEffect, computed } from 'vue';
 import { GasPrice, fetchEvmGasPrice, SelectedGas, Speed } from './../../modules/gas-api';
@@ -38,7 +39,7 @@ export const useGasPrice = () => {
 
   const setEvmGasPrice = async (network: string): Promise<void> => {
     try {
-      evmGasPrice.value = await fetchEvmGasPrice({ network, isEip1559: false });
+      evmGasPrice.value = await fetchEvmGasPrice({ network, isEip1559: false, web3: $web3.value! });
     } catch (error) {
       console.error(error);
       evmGasPrice.value = initialEvmGasPrice;
