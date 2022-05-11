@@ -124,7 +124,7 @@ export default function useSendTx() {
   }
 
   const onSend = async (currentItem: QueueTx, senderInfo: AddressProxy): Promise<void> => {
-    const apiPromise: ApiPromise = $api?.value as ApiPromise;
+    const apiPromise: ApiPromise = $api as ApiPromise;
 
     const tip = new BN(0); // should be updated
 

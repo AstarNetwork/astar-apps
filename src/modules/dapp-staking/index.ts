@@ -1,10 +1,9 @@
-import BN from 'bn.js';
 export {
   formatStakingList,
-  getDappStakers,
   getAddressEnum,
-  getStakeInfo,
+  getDappStakers,
   getLatestStakePoint,
+  getStakeInfo,
 } from './utils';
 
 export type ContractEvm = {
@@ -14,5 +13,5 @@ export type ContractEvm = {
 export interface StakingData {
   address: string;
   name: string;
-  balance: BN;
+  balance: string;
 }

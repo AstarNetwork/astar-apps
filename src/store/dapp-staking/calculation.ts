@@ -65,14 +65,14 @@ export const getIndividualClaimReward = async (
   let reward = new BN(0);
   let erasToClaim: number[] = [];
 
-  const stakerInfo = await $api.value?.query.dappsStaking.generalStakerInfo<StakerInfo>(
+  const stakerInfo = await $api?.query.dappsStaking.generalStakerInfo<StakerInfo>(
     senderAddress,
     getAddressEnum(contractAddress)
   );
 
   // Developer percentage string has format like 80.00%, get whole part as number.
   const developerRewardPercentage = Number(
-    ((await $api.value?.consts.dappsStaking.developerRewardPercentage.toHuman()) || '0.0')
+    ((await $api?.consts.dappsStaking.developerRewardPercentage.toHuman()) || '0.0')
       .toString()
       .split('.')[0]
   );
@@ -80,7 +80,7 @@ export const getIndividualClaimReward = async (
   const stakerRewardPercentage = 100 / (100 - developerRewardPercentage);
 
   if (stakerInfo) {
-    const currentEra = Number(await $api.value?.query.dappsStaking.currentEra());
+    const currentEra = Number(await $api?.query.dappsStaking.currentEra());
     const claimableEras = await getClaimableEras(stakerInfo, currentEra);
 
     if (claimableEras.length > 0) {
@@ -92,9 +92,10 @@ export const getIndividualClaimReward = async (
       let totalForEra = new BN(0);
       for (const claimableEra of claimableEras) {
         const eraStake = (
-          await $api.value?.query.dappsStaking.contractEraStake<
-            Option<EraStakingPointsIndividualClaim>
-          >(getAddressEnum(contractAddress), claimableEras[0].era)
+          await $api?.query.dappsStaking.contractEraStake<Option<EraStakingPointsIndividualClaim>>(
+            getAddressEnum(contractAddress),
+            claimableEras[0].era
+          )
         )?.unwrapOrDefault();
 
         if (eraStake) {
@@ -103,7 +104,7 @@ export const getIndividualClaimReward = async (
           totalForEra = eraStake?.total.toBn() || new BN(0);
         }
         const eraInfo = (
-          await $api.value?.query.dappsStaking.eraRewardsAndStakes<Option<EraRewardAndStake>>(
+          await $api?.query.dappsStaking.eraRewardsAndStakes<Option<EraRewardAndStake>>(
             claimableEra.era
           )
         )?.unwrapOrDefault();

@@ -1,3 +1,4 @@
+import { useAccount } from './../useAccount';
 import { wait } from './../helper/common';
 import { useRouter } from 'vue-router';
 import {
@@ -55,7 +56,7 @@ export function useCbridge() {
 
   const store = useStore();
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
-  const selectedAddress = computed(() => store.getters['general/selectedAddress']);
+  const { currentAccount } = useAccount();
   const currentNetworkIdx = computed(() => {
     const chainInfo = store.getters['general/chainInfo'];
     const chain = chainInfo ? chainInfo.chain : '';
@@ -84,7 +85,7 @@ export function useCbridge() {
 
   const getSelectedTokenBal = async (): Promise<string> => {
     if (
-      !selectedAddress.value ||
+      !currentAccount.value ||
       !srcChain.value ||
       !selectedToken.value ||
       !selectedNetwork.value
@@ -93,7 +94,7 @@ export function useCbridge() {
     }
 
     return await getTokenBalCbridge({
-      address: selectedAddress.value,
+      address: currentAccount.value,
       srcChainId: srcChain.value.id,
       selectedToken: selectedToken.value,
     }).catch((error: any) => {
@@ -120,7 +121,7 @@ export function useCbridge() {
       }
 
       const address = isH160.value
-        ? selectedAddress.value
+        ? currentAccount.value
         : '0xaa47c83316edc05cf9ff7136296b026c5de7eccd'; // random address from docs
       const estimation = await fetchEstimation({
         amount: numAmount,
@@ -272,7 +273,7 @@ export function useCbridge() {
   const bridge = async (): Promise<void> => {
     try {
       const provider = getEvmProvider();
-      if (!isH160.value || !selectedAddress.value) {
+      if (!isH160.value || !currentAccount.value) {
         throw Error('Failed loading wallet address');
       }
       if (!provider) {
@@ -299,7 +300,7 @@ export function useCbridge() {
           selectedToken: selectedToken.value,
           amount: amount.value,
           srcChainId: srcChain.value.id,
-          address: selectedAddress.value,
+          address: currentAccount.value,
         });
         const msg = `Transaction submitted at transaction hash #${hash}`;
         store.dispatch('general/showAlertMsg', { msg, alertType: 'success' });
@@ -310,7 +311,7 @@ export function useCbridge() {
           amount: amount.value,
           srcChainId: srcChain.value.id,
           destChainId: destChain.value.id,
-          address: selectedAddress.value,
+          address: currentAccount.value,
         });
         const msg = `Transaction submitted at transaction hash #${hash}`;
         store.dispatch('general/showAlertMsg', { msg, alertType: 'success' });

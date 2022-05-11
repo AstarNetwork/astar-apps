@@ -3,6 +3,7 @@ import { Option } from '@polkadot/types';
 import { EraIndex } from '@polkadot/types/interfaces';
 import BN from 'bn.js';
 import { GeneralStakerInfo } from 'src/hooks/helper/claim';
+import { wait } from 'src/hooks/helper/common';
 import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
 import { EraStakingPoints, StakeInfo } from './../../../store/dapp-staking/actions';
 import { DappItem } from './../../../store/dapp-staking/state';
@@ -30,10 +31,10 @@ export const formatStakingList = async ({
           if (!stakerInfo) return undefined;
 
           const bnBalance = stakerInfo.stakes.length && stakerInfo.stakes.slice(-1)[0].staked;
-          const balance = Number(stakerInfo.stakes.length && bnBalance.toString());
+          const balance = stakerInfo.stakes.length && bnBalance.toString();
 
-          if (balance > 0) {
-            return { address: dapp.address, balance: bnBalance, name: dapp.name };
+          if (Number(balance) > 0) {
+            return { address: dapp.address, balance, name: dapp.name };
           }
         } catch (error) {
           console.error(error);
@@ -82,7 +83,7 @@ export const getLatestStakePoint = async (
   return undefined;
 };
 
-export const getStakeInfo = async ({
+export const handleGetStakeInfo = async ({
   api,
   dappAddress,
   currentAccount,
@@ -131,5 +132,40 @@ export const getStakeInfo = async ({
     };
   } catch (error) {
     return data;
+  }
+};
+
+export const getStakeInfo = async ({
+  api,
+  dappAddress,
+  currentAccount,
+}: {
+  api: ApiPromise;
+  dappAddress: string;
+  currentAccount: string;
+}): Promise<StakeInfo | undefined> => {
+  try {
+    const stakeInfo = new Promise<StakeInfo | undefined>(async (resolve) => {
+      const data = await handleGetStakeInfo({ api, dappAddress, currentAccount });
+      resolve(data);
+    });
+    const fallbackTimeout = new Promise<string>(async (resolve) => {
+      const timeout = 4 * 1000;
+      await wait(timeout);
+      resolve('timeout');
+    });
+
+    const race = Promise.race<StakeInfo | undefined | string>([stakeInfo, fallbackTimeout]);
+    const result = race.then((res) => {
+      if (res === 'timeout') {
+        return undefined;
+      } else {
+        return res as StakeInfo;
+      }
+    });
+    return result;
+  } catch (error) {
+    console.error(error);
+    return undefined;
   }
 };

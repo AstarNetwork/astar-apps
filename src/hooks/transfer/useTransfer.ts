@@ -41,7 +41,7 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
   const transferLocal = async (transferAmt: BN, fromAddress: string, toAddress: string) => {
     try {
       const injector = await getInjector(substrateAccounts.value);
-      const transfer = await $api?.value?.tx.balances.transfer(toAddress, transferAmt);
+      const transfer = await $api?.tx.balances.transfer(toAddress, transferAmt);
       transfer
         ?.signAndSend(
           fromAddress,
@@ -67,8 +67,7 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
 
   const transferExtrinsic = async (transferAmt: BN, toAddress: string) => {
     try {
-      const fn: SubmittableExtrinsicFunction<'promise'> | undefined =
-        $api?.value?.tx.balances.transfer;
+      const fn: SubmittableExtrinsicFunction<'promise'> | undefined = $api?.tx.balances.transfer;
       const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn(toAddress, transferAmt);
 
       method && callFunc(method);

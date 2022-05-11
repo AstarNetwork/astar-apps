@@ -10,7 +10,7 @@ export function useCurrentEra() {
   const nextEraStartingBlock = ref<number>(0);
 
   const getEra = async (): Promise<{ era: number; blockPerEra: number } | void> => {
-    const apiRef = $api && $api.value;
+    const apiRef = $api;
     if (!apiRef) return;
 
     const [currentEra, blockAmtPerEra, blockHeight, nextEraStartingBlockHeight] = await Promise.all(
@@ -52,7 +52,7 @@ export function useCurrentEra() {
   watch(
     [$api, interval],
     () => {
-      const apiRef = $api && $api.value;
+      const apiRef = $api;
       if (!apiRef) return;
       apiRef.isReady.then(() => {
         try {

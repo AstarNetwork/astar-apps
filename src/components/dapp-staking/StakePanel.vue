@@ -173,7 +173,7 @@ export default defineComponent({
       const unit = stakeData.unit;
       try {
         const stakeAmount = plasmUtils.balanceFormatter(amount);
-        const transaction = $api.value!.tx.dappsStaking.bondAndStake(
+        const transaction = $api!.tx.dappsStaking.bondAndStake(
           getAddressEnum(props.dapp.address),
           amount
         );
@@ -224,8 +224,8 @@ export default defineComponent({
       const unstakeAmount = plasmUtils.balanceFormatter(amount);
       try {
         const transaction = canUnbondWithdraw.value
-          ? $api.value!.tx.dappsStaking.unbondAndUnstake(getAddressEnum(props.dapp.address), amount)
-          : $api.value!.tx.dappsStaking.unbondUnstakeAndWithdraw(
+          ? $api!.tx.dappsStaking.unbondAndUnstake(getAddressEnum(props.dapp.address), amount)
+          : $api!.tx.dappsStaking.unbondUnstakeAndWithdraw(
               getAddressEnum(props.dapp.address),
               amount
             );

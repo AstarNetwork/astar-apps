@@ -169,6 +169,7 @@
 </template>
 <script lang="ts">
 import { ethers } from 'ethers';
+import { u8aToString } from '@polkadot/util';
 import { useBalance, useEvmDeposit, usePrice } from 'src/hooks';
 import { useStore } from 'src/store';
 import { getTokenImage } from 'src/modules/token';
@@ -259,15 +260,15 @@ export default defineComponent({
       const accountDataRef = accountData.value;
       if (!accountDataRef) return;
       // Memo: `vesting ` -> there has been inputted 1 space here
-      const vesting = accountDataRef.locks.find((it) => it.toHuman().id === 'vesting ');
-      const dappStake = accountDataRef.locks.find((it) => it.toHuman().id === 'dapstake');
+      const vesting = accountDataRef.locks.find((it) => u8aToString(it.id) === 'vesting ');
+      const dappStake = accountDataRef.locks.find((it) => u8aToString(it.id) === 'dapstake');
 
       if (vesting) {
-        const amount = String(vesting.toHuman().amount).replace(/,/g, '');
+        const amount = String(vesting.amount);
         vestingTtl.value = Number(ethers.utils.formatEther(amount));
       }
       if (dappStake) {
-        const amount = String(dappStake.toHuman().amount).replace(/,/g, '');
+        const amount = String(dappStake.amount);
         lockInDappStaking.value = Number(ethers.utils.formatEther(amount));
       }
     });

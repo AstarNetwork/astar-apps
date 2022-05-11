@@ -1,4 +1,3 @@
-import { options } from '@astar-network/astar-api';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { web3Accounts } from '@polkadot/extension-dapp';
 import type { InjectedExtension } from '@polkadot/extension-inject/types';
@@ -79,7 +78,7 @@ const fallbackConnection = async ({
     try {
       const resolveApiStatus = new Promise<string>((resolve) => {
         const provider = new WsProvider(it.endpoint);
-        const api = new ApiPromise(options({ provider }));
+        const api = new ApiPromise({ provider });
         api.isReadyOrError.then(async () => {
           const result = await api.rpc.system.health();
           const isHealthy = result.toHuman().shouldHavePeers;
@@ -129,7 +128,7 @@ export async function connectApi(
   extensions: InjectedExtension[];
 }> {
   const provider = new WsProvider(endpoint);
-  const api = new ApiPromise(options({ provider }));
+  const api = new ApiPromise({ provider });
 
   store.commit('general/setCurrentNetworkStatus', 'connecting');
   api.on('error', (error: Error) => console.error(error.message));

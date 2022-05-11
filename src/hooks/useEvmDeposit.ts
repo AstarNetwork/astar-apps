@@ -25,7 +25,7 @@ export function useEvmDeposit(fn?: () => void) {
   const withdrawCustomExtrinsic = async ({ amount, account }: { amount: BN; account: string }) => {
     try {
       const h160Addr = buildEvmAddress(account);
-      const fn: SubmittableExtrinsicFunction<'promise'> | undefined = $api?.value?.tx.evm.withdraw;
+      const fn: SubmittableExtrinsicFunction<'promise'> | undefined = $api?.tx.evm.withdraw;
       const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn(h160Addr, amount);
       method && callFunc(method);
     } catch (e) {
@@ -35,7 +35,7 @@ export function useEvmDeposit(fn?: () => void) {
 
   const withdraw = async ({ amount, account }: { amount: BN; account: string }) => {
     try {
-      const apiRef = $api.value;
+      const apiRef = $api;
       if (!apiRef) {
         throw Error('Cannot connect to the API');
       }
@@ -86,7 +86,7 @@ export function useEvmDeposit(fn?: () => void) {
   watch(
     [$api, currentAccount, isLoading],
     async () => {
-      const apiRef = $api.value;
+      const apiRef = $api;
       const currentAccountRef = currentAccount.value;
       if (!apiRef || !currentAccountRef) return;
 

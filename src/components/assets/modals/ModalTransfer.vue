@@ -305,7 +305,7 @@ export default defineComponent({
 
     const getNativeTokenBalance = async (address: string): Promise<number> => {
       const web3Ref = $web3.value;
-      const apiRef = $api.value;
+      const apiRef = $api;
       if (!apiRef || !address || !web3Ref) return 0;
       if (isValidAddressPolkadotAddress(address)) {
         const { data } = await apiRef.query.system.account(address);

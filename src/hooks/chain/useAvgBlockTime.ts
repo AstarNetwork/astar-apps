@@ -23,7 +23,7 @@ export const useAvgBlockTime = (path: string) => {
   const isUnsubscribe = computed(() => currentPath.value !== path);
 
   const updateBlock = () => {
-    $api.value?.derive.chain.subscribeNewHeads((header) => {
+    $api?.derive.chain.subscribeNewHeads((header) => {
       try {
         const blockHeight = Number(header.number);
         internalLatestBlock.value = blockHeight;
@@ -55,15 +55,15 @@ export const useAvgBlockTime = (path: string) => {
     blockHeight: number;
     blockErasAgo: number;
   }): Promise<number> => {
-    if (!$api.value) return 0;
-    const block = await $api.value?.at(hash);
+    if (!$api) return 0;
+    const block = await $api?.at(hash);
     const tsBlockTimeAgo = await block.query.timestamp.now();
     const spentSecs = (tsNow - tsBlockTimeAgo.toNumber()) / 1000;
     return spentSecs / (blockHeight - blockErasAgo);
   };
 
   const updateAvgBlock = async (blockHeight: number): Promise<void> => {
-    const apiRef = $api.value;
+    const apiRef = $api;
     const blockPerEraRef = blockPerEra.value;
     if (!apiRef || !blockPerEraRef || blockHeight === 0) {
       return;
