@@ -217,6 +217,7 @@ export default {
     transfer: 'Transfer',
     faucet: 'Faucet',
     bridge: 'Bridge',
+    xcm: 'XCM',
     wrap: 'Wrap',
     explorer: 'Explorer',
     withdraw: 'Withdraw',

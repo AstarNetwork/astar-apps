@@ -83,6 +83,8 @@
         </div>
       </div>
 
+      <XcmAssetList />
+
       <div v-for="t in filteredTokens" :key="t.symbol">
         <div v-if="checkIsCbridgeToken(t)">
           <EvmCbridgeToken
@@ -118,6 +120,7 @@ import { ethers } from 'ethers';
 import { checkIsCbridgeToken, SelectedToken } from 'src/c-bridge';
 import Erc20Currency from 'src/components/assets/Erc20Currency.vue';
 import EvmCbridgeToken from 'src/components/assets/EvmCbridgeToken.vue';
+import XcmAssetList from 'src/components/assets/XcmAssetList.vue';
 import { useBalance, usePrice } from 'src/hooks';
 import { Erc20Token, getTokenImage } from 'src/modules/token';
 import { useStore } from 'src/store';
@@ -131,6 +134,7 @@ export default defineComponent({
     ModalTransfer,
     ModalFaucet,
     Erc20Currency,
+    XcmAssetList,
   },
   props: {
     tokens: {
@@ -212,7 +216,6 @@ export default defineComponent({
       isModalTransfer.value = isOpen;
       if (!isOpen) {
         symbol.value = '';
-        return;
       } else if (currency === nativeTokenSymbol.value) {
         symbol.value = nativeTokenSymbol.value;
       } else {

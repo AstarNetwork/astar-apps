@@ -7,6 +7,8 @@ import DiscoverDappsTab from 'components/dapp-staking/DiscoverDappsTab.vue';
 import ManageDappsTab from 'components/dapp-staking/ManageDappsTab.vue';
 import EvmWidget from 'components/bridge/evm/EvmWidget.vue';
 import Bridge from 'src/pages/Bridge.vue';
+import Xcm from 'src/pages/Xcm.vue';
+import RelayWidget from 'components/xcm/RelayWidget.vue';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -79,6 +81,21 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'evm',
         component: EvmWidget,
+      },
+    ],
+  },
+  {
+    path: '/xcm',
+    name: 'Xcm',
+    component: Xcm,
+    children: [
+      {
+        path: '',
+        redirect: '/xcm/relay',
+      },
+      {
+        path: 'relay',
+        component: RelayWidget,
       },
     ],
   },
