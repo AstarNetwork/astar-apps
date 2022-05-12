@@ -1,13 +1,13 @@
-import { ref, computed, watchEffect } from 'vue';
-import { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
-import { $api } from 'boot/api';
-import { useStore } from 'src/store';
-import { Balance } from '@polkadot/types/interfaces';
 import { Struct, u32, Vec } from '@polkadot/types';
-import { getInjector } from 'src/hooks/helper/wallet';
-import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
-import { useCustomSignature } from 'src/hooks';
+import { Balance } from '@polkadot/types/interfaces';
+import { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
+import { $api } from 'boot/api';
+import { useCustomSignature } from 'src/hooks';
+import { signAndSend } from 'src/hooks/helper/wallet';
+import { hasExtrinsicFailedEvent } from 'src/modules/extrinsic';
+import { useStore } from 'src/store';
+import { computed, ref, watchEffect } from 'vue';
 
 type EraIndex = u32;
 
@@ -33,7 +33,7 @@ interface AccountLedger extends Struct {
 
 export function useCompoundRewards() {
   const store = useStore();
-  const { callFunc, dispatchError, isCustomSig } = useCustomSignature({});
+  const { isCustomSig, handleCustomExtrinsic } = useCustomSignature({});
   const currentAddress = computed(() => store.getters['general/selectedAddress']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
 
@@ -46,12 +46,12 @@ export function useCompoundRewards() {
     try {
       // Check if metadata contains set_reward_destination so we know
       // if compounding is supported by a node or not.
-      const metadata = $api?.runtimeMetadata;
+      const metadata = $api!.runtimeMetadata;
       const metadataJson = JSON.stringify(metadata?.toJSON());
       isSupported.value = metadataJson.includes('set_reward_destination');
 
       // Subscribe to compounding data.
-      await $api?.query.dappsStaking.ledger(currentAddress.value, (ledger: AccountLedger) => {
+      await $api!.query.dappsStaking.ledger(currentAddress.value, (ledger: AccountLedger) => {
         if (ledger && isSupported.value) {
           rewardDestination.value = ledger.rewardDestination;
           isCompounding.value =
@@ -67,72 +67,58 @@ export function useCompoundRewards() {
     }
   };
 
-  const setRewardDestinationCustomExtrinsic = async (rewardDestination: RewardDestination) => {
-    try {
-      const fn: SubmittableExtrinsicFunction<'promise'> | undefined =
-        $api?.tx.dappsStaking.setRewardDestination;
-      const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn(rewardDestination);
-      method && (await callFunc(method));
-    } catch (e) {
-      dispatchError((e as Error).message);
-    }
-  };
-
   const setRewardDestination = async (rewardDestination: RewardDestination): Promise<void> => {
-    if (isCustomSig.value) {
-      await setRewardDestinationCustomExtrinsic(rewardDestination);
-    } else {
-      const injector = await getInjector(substrateAccounts.value);
-
-      try {
-        await $api?.tx.dappsStaking.setRewardDestination(rewardDestination).signAndSend(
-          currentAddress.value,
-          {
-            signer: injector.signer,
-            nonce: -1,
-            tip: 1,
-          },
-          async (result) => {
-            if (result.status.isFinalized) {
-              let errorMessage = '';
-              if (
-                !hasExtrinsicFailedEvent(
-                  result.events,
-                  store.dispatch,
-                  (message: string) => (errorMessage = message)
-                )
-              ) {
-                store.dispatch(
-                  'general/showAlertMsg',
-                  {
-                    msg: 'You successfully set reward destination.',
-                    alertType: 'success',
-                  },
-                  { root: true }
-                );
-              } else {
-                if (errorMessage.includes('TooManyEraStakeValues')) {
-                  errorMessage = `${errorMessage} - Disable compounding, claim your rewards and then enable compounding again.`;
-                }
-              }
-
-              store.commit('general/setLoading', false, { root: true });
+    try {
+      const transaction = $api!.tx.dappsStaking.setRewardDestination(rewardDestination);
+      const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
+        return new Promise<boolean>(async (resolve) => {
+          if (result.status.isFinalized) {
+            let errorMessage = '';
+            if (
+              !hasExtrinsicFailedEvent(
+                result.events,
+                store.dispatch,
+                (message: string) => (errorMessage = message)
+              )
+            ) {
+              store.dispatch(
+                'general/showAlertMsg',
+                {
+                  msg: 'You successfully set reward destination.',
+                  alertType: 'success',
+                },
+                { root: true }
+              );
+              resolve(true);
             } else {
-              store.commit('general/setLoading', true, { root: true });
+              if (errorMessage.includes('TooManyEraStakeValues')) {
+                errorMessage = `${errorMessage} - Disable compounding, claim your rewards and then enable compounding again.`;
+                resolve(false);
+              }
             }
+
+            store.commit('general/setLoading', false, { root: true });
+          } else {
+            store.commit('general/setLoading', true);
           }
-        );
-      } catch (e) {
-        const error = e as unknown as Error;
-        store.dispatch(
-          'general/showAlertMsg',
-          {
-            msg: error.message,
-            alertType: 'error',
-          },
-          { root: true }
-        );
-      }
+        });
+      };
+
+      await signAndSend({
+        transaction,
+        senderAddress: currentAddress.value,
+        substrateAccounts: substrateAccounts.value,
+        isCustomSignature: isCustomSig.value,
+        txResHandler,
+        handleCustomExtrinsic,
+        dispatch: store.dispatch,
+      });
+    } catch (e: any) {
+      console.error(e);
+      store.dispatch('general/showAlertMsg', {
+        msg: e.message,
+        alertType: 'error',
+      });
     }
   };
 

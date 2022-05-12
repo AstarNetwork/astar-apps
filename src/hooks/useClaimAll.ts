@@ -1,12 +1,13 @@
+import { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 import { $api } from 'boot/api';
-import { getInjector } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
 import { computed, ref, watchEffect } from 'vue';
 import { TxType } from './custom-signature/message';
 import { ExtrinsicPayload } from './helper';
 import { getIndividualClaimTxs, PayloadWithWeight } from './helper/claim';
+import { signAndSend } from './helper/wallet';
 import { useCurrentEra, useCustomSignature } from './index';
 
 const MAX_BATCH_WEIGHT = new BN('50000000000');
@@ -22,13 +23,9 @@ export function useClaimAll() {
   const isSendingTx = computed(() => store.getters['general/isLoading']);
 
   const { era } = useCurrentEra();
-  const {
-    handleResult,
-    handleTransactionError,
-    dispatchError,
-    handleCustomExtrinsic,
-    isCustomSig,
-  } = useCustomSignature({ txType: TxType.dappsStaking });
+  const { handleResult, handleCustomExtrinsic, isCustomSig } = useCustomSignature({
+    txType: TxType.dappsStaking,
+  });
 
   watchEffect(async () => {
     try {
@@ -89,36 +86,24 @@ export function useClaimAll() {
     console.log(`Batch weight: ${totalWeight.toString()}, transactions no. ${txsToExecute.length}`);
     const transaction = api.tx.utility.batch(txsToExecute);
 
-    const sendSubstrateTransaction = async () => {
-      const injector = await getInjector(substrateAccounts.value);
-      await transaction
-        .signAndSend(
-          senderAddress.value,
-          {
-            signer: injector?.signer,
-            // Memo: Removing it can cause subsequent transactions to fail
-            nonce: -1,
-            tip: 1,
-          },
-          (result) => {
-            handleResult(result);
-            hasExtrinsicFailedEvent(result.events, store.dispatch);
-          }
-        )
-        .catch((error: Error) => {
-          handleTransactionError(error);
-        });
-    };
-
     try {
-      if (isCustomSig.value) {
-        await handleCustomExtrinsic(transaction);
-      } else {
-        await sendSubstrateTransaction();
-      }
+      const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
+        const res = await handleResult(result);
+        hasExtrinsicFailedEvent(result.events, store.dispatch);
+        return res;
+      };
+
+      await signAndSend({
+        transaction,
+        senderAddress: senderAddress.value,
+        substrateAccounts: substrateAccounts.value,
+        isCustomSignature: isCustomSig.value,
+        txResHandler,
+        handleCustomExtrinsic,
+        dispatch: store.dispatch,
+      });
     } catch (error: any) {
       console.error(error.message);
-      dispatchError(error.message);
     }
   };
 
