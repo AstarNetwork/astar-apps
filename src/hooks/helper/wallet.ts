@@ -174,7 +174,7 @@ export const signAndSend = async ({
   // from: useCustomSignature.ts
   handleCustomExtrinsic?: (method: Transaction) => Promise<void>;
   finalizeCallback?: () => void;
-  tip?: number;
+  tip?: string;
 }): Promise<boolean> => {
   return new Promise<boolean>(async (resolve) => {
     const sendSubstrateTransaction = async (): Promise<void> => {

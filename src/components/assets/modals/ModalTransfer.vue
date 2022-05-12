@@ -72,13 +72,11 @@
           </div>
         </div>
 
-        <div v-if="isSpeedMeter">
-          <SpeedMeter
-            :gas-cost="evmGasCost"
-            :selected-gas="selectedGas"
-            :set-selected-gas="setSelectedGas"
-          />
-        </div>
+        <SpeedMeter
+          :gas-cost="isH160 ? evmGasCost : nativeTipsPrice"
+          :selected-gas="isH160 ? selectedGas : selectedTips"
+          :set-selected-gas="isH160 ? setSelectedGas : setSelectedTips"
+        />
 
         <div v-if="isChoseWrongEvmNetwork" class="rows__row--wrong-evm">
           <span class="text--error">{{ $t('assets.wrongNetwork') }}</span>
@@ -187,9 +185,6 @@ export default defineComponent({
       const chainInfo = store.getters['general/chainInfo'];
       return chainInfo ? chainInfo.tokenSymbol : '';
     });
-    const isSpeedMeter = computed(() => {
-      return isH160.value;
-    });
 
     // Memo: check the selected token is either hard-coded token or cBridge token
     const registeredToken = computed(() =>
@@ -281,6 +276,9 @@ export default defineComponent({
       selectedGas,
       setSelectedGas,
       evmGasCost,
+      selectedTips,
+      nativeTipsPrice,
+      setSelectedTips,
     } = useTransfer(defaultUnitToken, decimal, closeModal);
 
     const transfer = async (): Promise<void> => {
@@ -503,10 +501,13 @@ export default defineComponent({
       currentNetworkName,
       connectEvmNetwork,
       isClosingModal,
-      isSpeedMeter,
       selectedGas,
       setSelectedGas,
       evmGasCost,
+      selectedTips,
+      nativeTipsPrice,
+      setSelectedTips,
+      isH160,
     };
   },
 });

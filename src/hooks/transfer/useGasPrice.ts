@@ -4,15 +4,15 @@ import { ref, watchEffect, computed } from 'vue';
 import { GasPrice, fetchEvmGasPrice, SelectedGas, Speed } from './../../modules/gas-api';
 
 const initialGasPrice = {
-  slow: 0,
-  average: 0,
-  fast: 0,
-  baseFeePerGas: 0,
+  slow: '0',
+  average: '0',
+  fast: '0',
+  baseFeePerGas: '0',
 };
 
 export const useGasPrice = () => {
-  const selectedGas = ref<SelectedGas>({ speed: 'average', price: 0 });
-  const selectedTips = ref<SelectedGas>({ speed: 'average', price: 0 });
+  const selectedGas = ref<SelectedGas>({ speed: 'average', price: '0' });
+  const selectedTips = ref<SelectedGas>({ speed: 'average', price: '0' });
   const evmGasPrice = ref<GasPrice>(initialGasPrice);
   const nativeTipsPrice = ref<GasPrice>(initialGasPrice);
 
@@ -20,7 +20,6 @@ export const useGasPrice = () => {
   const evmGasCost = ref<GasPrice>(initialGasPrice);
 
   const store = useStore();
-  const isH160 = computed(() => store.getters['general/isH160Formatted']);
   const network = computed<string>(() => {
     const chainInfo = store.getters['general/chainInfo'];
     const network = chainInfo ? chainInfo.chain : '';
@@ -42,11 +41,10 @@ export const useGasPrice = () => {
   };
 
   const updateDefaultSelectedGasValue = (): void => {
-    if (selectedGas.value.price === 0 && evmGasCost.value.average > 0) {
+    if (selectedGas.value.price === '0' && evmGasCost.value.average === '0') {
       setSelectedGas('average');
     }
-    console.log('nativeTipsPrice.value.average', nativeTipsPrice.value.average);
-    if (selectedTips.value.price === 0 && nativeTipsPrice.value.average > 0) {
+    if (selectedTips.value.price === '0' && nativeTipsPrice.value.average === '0') {
       setSelectedTips('average');
     }
   };
@@ -60,7 +58,6 @@ export const useGasPrice = () => {
       });
       evmGasPrice.value = result.evmGasPrice;
       nativeTipsPrice.value = result.nativeTipsPrice;
-      console.log('nativeTipsPrice.value', nativeTipsPrice.value);
     } catch (error) {
       console.error(error);
       evmGasPrice.value = initialGasPrice;
@@ -76,10 +73,6 @@ export const useGasPrice = () => {
   watchEffect(async () => {
     if (!network.value) return;
     updateDefaultSelectedGasValue();
-  });
-
-  watchEffect(async () => {
-    console.log('selectedTips.value.price', selectedTips.value.price);
   });
 
   return {

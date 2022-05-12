@@ -12,7 +12,10 @@
           @click="setSelectedGas('slow')"
         >
           <span class="text--accent">{{ $t('common.speed.average') }}</span>
-          <span class="text--gas-price">{{ Number(gasCost.slow.toFixed(5)) }} {{ symbol }}</span>
+          <span class="text--gas-price">
+            {{ Number(gasCost.slow).toFixed(decimal) }}
+            {{ symbol }}
+          </span>
         </div>
 
         <div
@@ -21,7 +24,10 @@
           @click="setSelectedGas('average')"
         >
           <span class="text--accent">{{ $t('common.speed.fast') }}</span>
-          <span class="text--gas-price">{{ Number(gasCost.average.toFixed(5)) }} {{ symbol }}</span>
+          <span class="text--gas-price">
+            {{ Number(gasCost.average).toFixed(decimal) }}
+            {{ symbol }}
+          </span>
         </div>
 
         <div
@@ -30,7 +36,10 @@
           @click="setSelectedGas('fast')"
         >
           <span class="text--accent">{{ $t('common.speed.superFast') }}</span>
-          <span class="text--gas-price">{{ Number(gasCost.fast.toFixed(5)) }} {{ symbol }}</span>
+          <span class="text--gas-price">
+            {{ Number(gasCost.fast).toFixed(decimal) }}
+            {{ symbol }}
+          </span>
         </div>
       </div>
     </div>
@@ -58,12 +67,14 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
+    const isH160 = computed(() => store.getters['general/isH160Formatted']);
+    const decimal = computed(() => (isH160.value ? 5 : 8));
     const symbol = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
       return chainInfo ? chainInfo.tokenSymbol : {};
     });
 
-    return { symbol };
+    return { symbol, decimal };
   },
 });
 </script>

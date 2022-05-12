@@ -64,7 +64,7 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
         txResHandler,
         handleCustomExtrinsic,
         dispatch: store.dispatch,
-        // tip: selectedTips.value.price,
+        tip: selectedTips.value.price,
       });
       isTxSuccess.value = true;
     } catch (e) {
@@ -197,5 +197,8 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
     selectedGas,
     setSelectedGas,
     evmGasCost,
+    selectedTips,
+    nativeTipsPrice,
+    setSelectedTips,
   };
 }

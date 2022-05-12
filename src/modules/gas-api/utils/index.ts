@@ -1,14 +1,13 @@
-import { ASTAR_DECIMALS } from './../../../hooks/helper/plasmUtils';
-import { TransactionConfig } from 'web3-eth';
 import axios from 'axios';
-import Web3 from 'web3';
-import { GAS_API_URL, ApiGasNow, GasPrice } from './../index';
 import { ethers } from 'ethers';
+import Web3 from 'web3';
+import { TransactionConfig } from 'web3-eth';
+import { ApiGasNow, GasPrice, GAS_API_URL } from './../index';
 
-export const getEvmGas = async (web3: Web3, selectedGasPrice: number) => {
+export const getEvmGas = async (web3: Web3, selectedGasPrice: string) => {
   const gasPriceFallback = await web3.eth.getGasPrice();
-  const gasPrice = selectedGasPrice > 0 ? selectedGasPrice : gasPriceFallback;
-  return String(gasPrice);
+  const gasPrice = selectedGasPrice !== '0' ? selectedGasPrice : gasPriceFallback;
+  return gasPrice;
 };
 
 export const getEvmGasCost = async ({
@@ -32,7 +31,6 @@ export const getEvmGasCost = async ({
     ? {
         from: fromAddress,
         to: toAddress,
-        // value: web3.utils.toWei(value, 'ether'),
         value: ethers.utils.parseEther(value).toString(),
       }
     : {
@@ -46,18 +44,18 @@ export const getEvmGasCost = async ({
   const estimatedGas = await web3.eth.estimateGas(tx);
   const data = {
     ...evmGasPrice,
-    slow: Number(ethers.utils.formatEther(estimatedGas * evmGasPrice.slow)),
-    average: Number(ethers.utils.formatEther(estimatedGas * evmGasPrice.average)),
-    fast: Number(ethers.utils.formatEther(estimatedGas * evmGasPrice.fast)),
+    slow: ethers.utils.formatEther(estimatedGas * Number(evmGasPrice.slow)),
+    average: ethers.utils.formatEther(estimatedGas * Number(evmGasPrice.average)),
+    fast: ethers.utils.formatEther(estimatedGas * Number(evmGasPrice.fast)),
   };
 
   return data;
 };
 
 // Ref: https://stakesg.slack.com/archives/C028YNW1PED/p1652346083299849?thread_ts=1652338487.358459&cid=C028YNW1PED
-export const priorityFeeToTips = (fee: number) => {
-  const rate = 0.000000000000001;
-  return Number((fee * rate).toFixed(ASTAR_DECIMALS));
+export const priorityFeeToTips = (fee: number): string => {
+  const price = ethers.utils.formatUnits(String(fee), 15).toString();
+  return price;
 };
 
 export const fetchEvmGasPrice = async ({
@@ -77,17 +75,17 @@ export const fetchEvmGasPrice = async ({
     }
     const { priorityFeePerGas } = data.data.eip1559;
     const nativeTipsPrice = {
-      slow: priorityFeeToTips(priorityFeePerGas.slow),
-      average: priorityFeeToTips(priorityFeePerGas.average),
-      fast: priorityFeeToTips(priorityFeePerGas.fast),
+      slow: priorityFeeToTips(priorityFeePerGas.slow).toString(),
+      average: priorityFeeToTips(priorityFeePerGas.average).toString(),
+      fast: priorityFeeToTips(priorityFeePerGas.fast).toString(),
     };
 
     if (isEip1559) {
       const evmGasPrice = {
-        slow: priorityFeePerGas.slow,
-        average: priorityFeePerGas.average,
-        fast: priorityFeePerGas.fast,
-        baseFeePerGas: data.data.eip1559.baseFeePerGas,
+        slow: String(priorityFeePerGas.slow),
+        average: String(priorityFeePerGas.average),
+        fast: String(priorityFeePerGas.fast),
+        baseFeePerGas: String(data.data.eip1559.baseFeePerGas),
       };
       return {
         evmGasPrice,
@@ -96,10 +94,10 @@ export const fetchEvmGasPrice = async ({
     } else {
       const { slow, average, fast } = data.data;
       const evmGasPrice = {
-        slow,
-        average,
-        fast,
-        baseFeePerGas: 0,
+        slow: String(slow),
+        average: String(average),
+        fast: String(fast),
+        baseFeePerGas: '0',
       };
       return {
         evmGasPrice,
@@ -110,15 +108,15 @@ export const fetchEvmGasPrice = async ({
     console.error(error);
     const fallbackGasPrice = Number(await web3.eth.getGasPrice());
     const evmGasPrice = {
-      slow: fallbackGasPrice,
-      average: Math.floor(fallbackGasPrice * 1.1),
-      fast: Math.floor(fallbackGasPrice * 1.3),
-      baseFeePerGas: 0,
+      slow: String(fallbackGasPrice),
+      average: String(Math.floor(fallbackGasPrice * 1.1)),
+      fast: String(Math.floor(fallbackGasPrice * 1.3)),
+      baseFeePerGas: '0',
     };
     const nativeTipsPrice = {
-      slow: 1,
-      average: 5,
-      fast: 10,
+      slow: '1',
+      average: '500',
+      fast: '10000',
     };
     return { evmGasPrice, nativeTipsPrice };
   }
