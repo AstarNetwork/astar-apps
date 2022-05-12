@@ -41,6 +41,12 @@ export default {
     discord: 'Discord',
     github: 'GitHub',
     docs: 'Documentation',
+    speed: {
+      speed: 'Speed',
+      average: 'Average',
+      fast: 'Fast',
+      superFast: 'Super Fast',
+    },
   },
   drawer: {
     endpoint: 'Endpoint',

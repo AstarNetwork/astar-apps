@@ -9,20 +9,27 @@ const getUsdPriceViaDia = async (symbol: string): Promise<number> => {
     return price;
   } catch (error) {
     console.error(error);
+    console.error(`symbol: ${symbol}`);
     return 0;
   }
 };
 
 export const getUsdBySymbol = async (symbol: string): Promise<number> => {
   try {
-    const url = 'https://api.coingecko.com/api/v3/coins/list';
-    const { data } = await axios.get<{ id: string; symbol: string }[]>(url);
-    const item = data.find((it) => it.symbol.toLowerCase() === symbol.toLowerCase());
-    if (!item) return 0;
-    return (await getUsdPrice(item.id)) ?? 0;
+    return getUsdPriceViaDia(symbol);
   } catch (error) {
     console.error(error);
-    return getUsdPriceViaDia(symbol);
+    try {
+      const url = 'https://api.coingecko.com/api/v3/coins/list';
+      const { data } = await axios.get<{ id: string; symbol: string }[]>(url);
+      const item = data.find((it) => it.symbol.toLowerCase() === symbol.toLowerCase());
+      if (!item) return 0;
+      return await getUsdPrice(item.id);
+    } catch (error) {
+      console.error(error);
+      console.error(`symbol: ${symbol}`);
+      return 0;
+    }
   }
 };
 
@@ -34,6 +41,7 @@ export const getUsdPrice = async (currency: string): Promise<number> => {
     return Number(price);
   } catch (error) {
     console.error(error);
+    console.error(`currency: ${currency}`);
     return getUsdPriceViaDia(currency);
   }
 };
