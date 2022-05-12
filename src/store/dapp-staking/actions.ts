@@ -1,6 +1,5 @@
 import { ApiPromise } from '@polkadot/api';
-import { SubmittableExtrinsic } from '@polkadot/api/types';
-import { bool, BTreeMap, Struct, u32 } from '@polkadot/types';
+import { BTreeMap, Struct } from '@polkadot/types';
 import {
   AccountId,
   Balance,
@@ -14,10 +13,9 @@ import { $api } from 'boot/api';
 import { addDapp, getDapps, uploadFile } from 'src/hooks/firebase';
 import { ActionTree, Dispatch } from 'vuex';
 import { StateInterface } from '../index';
-import { getInjector, signAndSend } from './../../hooks/helper/wallet';
+import { signAndSend } from './../../hooks/helper/wallet';
 import { SubstrateAccount } from './../general/state';
-import { getIndividualClaimStakingInfo } from './calculation';
-import { DappItem, DappStateInterface as State, NewDappItem } from './state';
+import { DappStateInterface as State, NewDappItem } from './state';
 
 let collectionKey: string;
 
@@ -211,206 +209,12 @@ const actions: ActionTree<State, StateInterface> = {
 
     return false;
   },
-
-  async withdrawUnbonded({ commit, dispatch }, parameters: WithdrawParameters): Promise<boolean> {
-    try {
-      if (parameters.api) {
-        const injector = await getInjector(parameters.substrateAccounts);
-        const unsub = await parameters.api.tx.dappsStaking.withdrawUnbonded().signAndSend(
-          parameters.senderAddress,
-          {
-            signer: injector?.signer,
-            nonce: -1,
-            tip: 1,
-          },
-          (result) => {
-            if (result.status.isFinalized) {
-              if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
-                commit('setUnlockingChunks', -1);
-                dispatch(
-                  'general/showAlertMsg',
-                  {
-                    msg: 'Balance is sucessfully withdrawed.',
-                    alertType: 'success',
-                  },
-                  { root: true }
-                );
-              }
-
-              commit('general/setLoading', false, { root: true });
-              unsub();
-            } else {
-              commit('general/setLoading', true, { root: true });
-            }
-          }
-        );
-
-        return true;
-      } else {
-        showError(dispatch, 'Api is undefined');
-        return false;
-      }
-    } catch (e) {
-      const error = e as unknown as Error;
-      commit('general/setLoading', false, { root: true });
-      showError(dispatch, error.message);
-    } finally {
-    }
-
-    return false;
-  },
-
-  async claimBatch({ commit, dispatch }, parameters: ClaimParameters): Promise<boolean> {
-    try {
-      if (parameters.api) {
-        const erasToClaim = parameters.unclaimedEras;
-
-        if (erasToClaim.length === 0) {
-          dispatch(
-            'general/showAlertMsg',
-            {
-              msg: 'All rewards have been already claimed.',
-              alertType: 'warning',
-            },
-            { root: true }
-          );
-
-          return true;
-        }
-
-        const transactions: SubmittableExtrinsic<'promise', ISubmittableResult>[] = [];
-        for (let era of erasToClaim) {
-          transactions.push(
-            parameters.api.tx.dappsStaking.claim(getAddressEnum(parameters.dapp.address), era)
-          );
-        }
-
-        const injector = await getInjector(parameters.substrateAccounts);
-        const unsub = await parameters.api.tx.utility.batch(transactions).signAndSend(
-          parameters.senderAddress,
-          {
-            signer: injector?.signer,
-            nonce: -1,
-            tip: 1,
-          },
-          (result) => {
-            if (result.isFinalized) {
-              if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
-                dispatch(
-                  'general/showAlertMsg',
-                  {
-                    msg: `You claimed from reward ${parameters.dapp.name} for ${erasToClaim.length} eras.`,
-                    alertType: 'success',
-                  },
-                  { root: true }
-                );
-
-                parameters.finalizeCallback();
-              }
-
-              commit('general/setLoading', false, { root: true });
-              unsub();
-            } else {
-              commit('general/setLoading', true, { root: true });
-            }
-          }
-        );
-
-        return true;
-      } else {
-        showError(dispatch, 'Api is undefined');
-        return false;
-      }
-    } catch (e) {
-      const error = e as unknown as Error;
-      commit('general/setLoading', false, { root: true });
-      showError(dispatch, error.message);
-    }
-
-    return false;
-  },
-
-  async getClaimInfo({ dispatch, commit }, parameters: StakingParameters): Promise<ClaimInfo> {
-    let accumulatedReward = new BN(0);
-    let result: ClaimInfo = {} as ClaimInfo;
-    result.rewards = parameters.api.createType('Balance', accumulatedReward);
-    result.estimatedClaimedRewards = parameters.api.createType('Balance', 0);
-    commit('general/setLoading', true, { root: true });
-
-    try {
-      result = await getIndividualClaimStakingInfo(
-        parameters.senderAddress,
-        parameters.dapp.address
-      );
-    } catch (err) {
-      const error = err as unknown as Error;
-      console.error(error);
-      showError(dispatch, error.message);
-    } finally {
-      commit('general/setLoading', false, { root: true });
-      return result;
-    }
-  },
-
-  async getStakingInfo({ commit, dispatch, rootState }) {
-    await $api?.isReady;
-
-    try {
-      if ($api) {
-        const [
-          minimumStakingAmount,
-          maxNumberOfStakersPerContract,
-          maxUnlockingChunks,
-          unbondingPeriod,
-        ] = await Promise.all([
-          $api.consts.dappsStaking.minimumStakingAmount,
-          $api.consts.dappsStaking.maxNumberOfStakersPerContract as u32,
-          $api.consts.dappsStaking.maxUnlockingChunks as u32,
-          $api.consts.dappsStaking.unbondingPeriod as u32,
-        ]);
-
-        const minimumStakingAmountBalance = $api?.createType('Balance', minimumStakingAmount);
-        commit('setMinimumStakingAmount', minimumStakingAmountBalance?.toHuman());
-        commit('setMaxNumberOfStakersPerContract', maxNumberOfStakersPerContract?.toNumber());
-        commit('setUnbondingPeriod', unbondingPeriod?.toNumber());
-        commit('setMaxUnlockingChunks', maxUnlockingChunks?.toNumber());
-        let isPalletDisabled = false;
-        try {
-          const isDisabled = await $api.query.dappsStaking.palletDisabled<bool>();
-          isPalletDisabled = isDisabled.valueOf();
-        } catch {
-          // palletDisabled storage item is not supported by a node;
-        }
-
-        commit('setIsPalletDisabled', isPalletDisabled);
-      }
-    } catch (e) {
-      const error = e as unknown as Error;
-      showError(dispatch, error.message);
-    }
-  },
 };
 
 export interface RegisterParameters {
   dapp: NewDappItem;
   senderAddress: string;
   api: ApiPromise;
-  substrateAccounts: SubstrateAccount[];
-}
-
-export interface StakingParameters {
-  dapp: DappItem;
-  amount: BN;
-  senderAddress: string;
-  api: ApiPromise;
-  decimals: number;
-  unit: string;
-  substrateAccounts: SubstrateAccount[];
-  finalizeCallback: () => void;
-}
-
-export interface ClaimParameters extends StakingParameters {
-  unclaimedEras: number[];
   substrateAccounts: SubstrateAccount[];
 }
 
