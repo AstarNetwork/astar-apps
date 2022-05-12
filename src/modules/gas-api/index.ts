@@ -8,7 +8,7 @@ export interface GasPrice {
   slow: number;
   average: number;
   fast: number;
-  baseFeePerGas: number;
+  baseFeePerGas?: number;
 }
 
 export interface ApiGasNow {

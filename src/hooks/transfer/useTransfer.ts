@@ -1,7 +1,8 @@
-import { useGasPrice } from './useGasPrice';
-import type { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
+import { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 import { $api } from 'boot/api';
+import { ethers } from 'ethers';
+import ABI from 'src/c-bridge/abi/ERC20.json';
 import {
   buildEvmAddress,
   getDefaultEthProvider,
@@ -12,23 +13,22 @@ import {
 import { useCustomSignature } from 'src/hooks';
 import { isValidAddressPolkadotAddress, reduceDenomToBalance } from 'src/hooks/helper/plasmUtils';
 import { getUnit } from 'src/hooks/helper/units';
-import { getInjector } from 'src/hooks/helper/wallet';
+import { getEvmGas } from 'src/modules/gas-api';
 import { useStore } from 'src/store';
 import { computed, Ref, ref, watchEffect } from 'vue';
 import Web3 from 'web3';
-import { getEvmProvider } from '../helper/wallet';
-import ABI from 'src/c-bridge/abi/ERC20.json';
-import { ethers } from 'ethers';
 import { TransactionConfig } from 'web3-eth';
 import { AbiItem } from 'web3-utils';
-import { getEvmGas } from 'src/modules/gas-api';
+import { getEvmProvider } from '../helper/wallet';
+import { signAndSend } from './../helper/wallet';
+import { useGasPrice } from './useGasPrice';
 
 export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: () => void) {
   const store = useStore();
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
   const isTxSuccess = ref(false);
 
-  const { callFunc, handleResult, handleTransactionError } = useCustomSignature({ fn });
+  const { handleResult, handleCustomExtrinsic } = useCustomSignature({ fn });
   const toastInvalidAddress = () =>
     store.dispatch('general/showAlertMsg', {
       msg: 'assets.invalidAddress',
@@ -37,48 +37,38 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const isEthWallet = computed(() => store.getters['general/isEthWallet']);
 
-  const { evmGasPrice, selectedGas, setSelectedGas, evmGasCost } = useGasPrice();
+  const {
+    evmGasPrice,
+    selectedGas,
+    setSelectedGas,
+    evmGasCost,
+    selectedTips,
+    nativeTipsPrice,
+    setSelectedTips,
+  } = useGasPrice();
 
-  const transferLocal = async (transferAmt: BN, fromAddress: string, toAddress: string) => {
+  const transferNative = async (transferAmt: BN, fromAddress: string, toAddress: string) => {
     try {
-      const injector = await getInjector(substrateAccounts.value);
-      const transfer = await $api?.tx.balances.transfer(toAddress, transferAmt);
-      transfer
-        ?.signAndSend(
-          fromAddress,
-          {
-            signer: injector?.signer,
-            nonce: -1,
-            tip: 1,
-          },
-          (result) => {
-            handleResult(result);
-            isTxSuccess.value = true;
-          }
-        )
-        .catch((error: Error) => {
-          handleTransactionError(error);
-          isTxSuccess.value = false;
-        });
-    } catch (e) {
-      console.error(e);
-      isTxSuccess.value = false;
-    }
-  };
+      const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
+        const res = await handleResult(result);
+        isTxSuccess.value = true;
+        return res;
+      };
 
-  const transferExtrinsic = async (transferAmt: BN, toAddress: string) => {
-    try {
-      const fn: SubmittableExtrinsicFunction<'promise'> | undefined = $api?.tx.balances.transfer;
-      const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn(toAddress, transferAmt);
-
-      method && callFunc(method);
+      const transaction = $api!.tx.balances.transfer(toAddress, transferAmt);
+      await signAndSend({
+        transaction,
+        senderAddress: fromAddress,
+        substrateAccounts: substrateAccounts.value,
+        isCustomSignature: isEthWallet.value,
+        txResHandler,
+        handleCustomExtrinsic,
+        dispatch: store.dispatch,
+        // tip: selectedTips.value.price,
+      });
       isTxSuccess.value = true;
     } catch (e) {
       console.error(e);
-      store.dispatch('general/showAlertMsg', {
-        msg: (e as Error).message,
-        alertType: 'error',
-      });
       isTxSuccess.value = false;
     }
   };
@@ -130,12 +120,7 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
       watchEffect(async () => {
         const unit = getUnit(selectUnit.value);
         const toAmt = reduceDenomToBalance(transferAmt, unit, decimal.value);
-
-        if (isEthWallet.value) {
-          await transferExtrinsic(toAmt, receivingAddress);
-        } else {
-          await transferLocal(toAmt, fromAddress, receivingAddress);
-        }
+        await transferNative(toAmt, fromAddress, receivingAddress);
       });
     }
   };
