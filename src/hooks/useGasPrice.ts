@@ -35,17 +35,21 @@ export const useGasPrice = (isFetch = false) => {
   };
 
   const setSelectedTip = (speed: Speed): void => {
+    console.log('speed', speed);
+    console.log('nativeTipPrice.value[speed]', nativeTipPrice.value[speed]);
     selectedTip.value = {
       speed,
       price: nativeTipPrice.value[speed],
     };
+    console.log('selectedTip.value', selectedTip.value);
   };
 
   const updateDefaultSelectedGasValue = (): void => {
-    if (selectedGas.value.price === '0' && evmGasCost.value.average === '0') {
+    if (selectedGas.value.price === '0') {
       setSelectedGas('average');
     }
-    if (selectedTip.value.price === '0' && nativeTipPrice.value.average === '0') {
+    if (selectedTip.value.price === '0') {
+      console.log('update');
       setSelectedTip('average');
     }
   };
@@ -83,9 +87,21 @@ export const useGasPrice = (isFetch = false) => {
     setGasPrice();
   });
 
+  // watch(
+  //   [network, evmGasPrice, nativeTipPrice],
+  //   async () => {
+  //     if (!network.value) return;
+  //     updateDefaultSelectedGasValue();
+  //   },
+  //   { immediate: false }
+  // );
+
   watchEffect(async () => {
     if (!network.value) return;
     updateDefaultSelectedGasValue();
+  });
+  watchEffect(() => {
+    console.log('nativeTipPrice.value ', nativeTipPrice.value);
   });
 
   return {
