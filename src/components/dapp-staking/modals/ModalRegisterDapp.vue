@@ -83,7 +83,6 @@ export default defineComponent({
       registerForm?.value?.validate().then(async (success: boolean) => {
         if (success) {
           if (step === stepsCount) {
-            // sanitizeData(data);
             const senderAddress = store.getters['general/selectedAddress'];
             const result = await store.dispatch('dapps/registerDapp', {
               dapp: data,

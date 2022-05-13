@@ -83,8 +83,8 @@
         </div>
         <q-card class="tw-mt-4">
           <q-scroll-area class="scroll tw-m-2">
-            <!-- <q-markdown :src="dapp.description" :no-html="true" class="tw-m-2"></q-markdown> -->
-            {{ sanitize(dapp.description) }}
+            <!-- eslint-disable vue/no-v-html -->
+            <div class="markdown" v-html="sanitize(dapp.description)"></div>
           </q-scroll-area>
         </q-card>
       </div>
@@ -148,6 +148,8 @@ export default defineComponent({
     const sanitize = (data: string): string => {
       return sanitizeData(data);
     };
+
+    console.log(sanitize(props.dapp.description));
 
     return {
       slide,
