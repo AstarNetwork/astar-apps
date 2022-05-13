@@ -1,3 +1,4 @@
+import { useGasPrice } from './useGasPrice';
 import { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 import { $api } from 'boot/api';
@@ -21,6 +22,7 @@ export function useClaimAll() {
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const dapps = computed(() => store.getters['dapps/getAllDapps']);
   const isSendingTx = computed(() => store.getters['general/isLoading']);
+  const { selectedTip } = useGasPrice();
 
   const { era } = useCurrentEra();
   const { handleResult, handleCustomExtrinsic, isCustomSig } = useCustomSignature({
@@ -101,6 +103,7 @@ export function useClaimAll() {
         txResHandler,
         handleCustomExtrinsic,
         dispatch: store.dispatch,
+        tip: selectedTip.value.price,
       });
     } catch (error: any) {
       console.error(error.message);

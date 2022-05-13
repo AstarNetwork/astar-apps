@@ -25,7 +25,7 @@ export function useNominationTransfer() {
   const { isCustomSig, handleResult, handleCustomExtrinsic } = useCustomSignature({
     txType: TxType.requiredClaim,
   });
-  const { selectedTips, nativeTipsPrice, setSelectedTips } = useGasPrice();
+  const { selectedTip, nativeTipPrice, setSelectedTip } = useGasPrice();
 
   const setIsEnableNominationTransfer = () => {
     try {
@@ -124,7 +124,7 @@ export function useNominationTransfer() {
         txResHandler,
         handleCustomExtrinsic,
         dispatch: store.dispatch,
-        tip: selectedTips.value.price,
+        tip: selectedTip.value.price,
       });
       return true;
     } catch (error: any) {
@@ -156,8 +156,8 @@ export function useNominationTransfer() {
     setAddressTransferFrom,
     nominationTransfer,
     isDisabledNominationTransfer,
-    selectedTips,
-    nativeTipsPrice,
-    setSelectedTips,
+    selectedTip,
+    nativeTipPrice,
+    setSelectedTip,
   };
 }

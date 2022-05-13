@@ -41,3 +41,8 @@ export interface SelectedGas {
   speed: Speed;
   price: string;
 }
+
+export interface GasTip {
+  evmGasPrice: GasPrice;
+  nativeTipPrice: GasPrice;
+}

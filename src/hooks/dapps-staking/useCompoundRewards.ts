@@ -1,3 +1,4 @@
+import { useGasPrice } from './../useGasPrice';
 import { Struct, u32, Vec } from '@polkadot/types';
 import { Balance } from '@polkadot/types/interfaces';
 import { ISubmittableResult } from '@polkadot/types/types';
@@ -36,6 +37,7 @@ export function useCompoundRewards() {
   const { isCustomSig, handleCustomExtrinsic } = useCustomSignature({});
   const currentAddress = computed(() => store.getters['general/selectedAddress']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
+  const { selectedTip } = useGasPrice();
 
   const isSupported = ref<boolean>(false);
   const isCompounding = ref<boolean>(false);
@@ -112,6 +114,7 @@ export function useCompoundRewards() {
         txResHandler,
         handleCustomExtrinsic,
         dispatch: store.dispatch,
+        tip: selectedTip.value.price,
       });
     } catch (e: any) {
       console.error(e);

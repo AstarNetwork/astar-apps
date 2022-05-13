@@ -193,6 +193,7 @@ const actions: ActionTree<State, StateInterface> = {
           isCustomSignature: false,
           txResHandler,
           dispatch,
+          tip: parameters.tip,
         });
 
         return true;
@@ -216,6 +217,7 @@ export interface RegisterParameters {
   senderAddress: string;
   api: ApiPromise;
   substrateAccounts: SubstrateAccount[];
+  tip: string;
 }
 
 export interface WithdrawParameters {

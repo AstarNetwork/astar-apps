@@ -18,7 +18,7 @@ export function useEvmDeposit(fn?: () => void) {
   const store = useStore();
   const isLoading = computed(() => store.getters['general/isLoading']);
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
-  const { selectedTips, nativeTipsPrice, setSelectedTips } = useGasPrice();
+  const { selectedTip, nativeTipPrice, setSelectedTip } = useGasPrice();
 
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const { isCustomSig, handleResult, handleCustomExtrinsic } = useCustomSignature(fn ? { fn } : {});
@@ -43,7 +43,7 @@ export function useEvmDeposit(fn?: () => void) {
         txResHandler,
         handleCustomExtrinsic,
         dispatch: store.dispatch,
-        tip: selectedTips.value.price,
+        tip: selectedTip.value.price,
       });
     } catch (e) {
       console.error(e);
@@ -88,8 +88,8 @@ export function useEvmDeposit(fn?: () => void) {
     isEvmDeposit,
     currentAccount,
     sendTransaction,
-    selectedTips,
-    nativeTipsPrice,
-    setSelectedTips,
+    selectedTip,
+    nativeTipPrice,
+    setSelectedTip,
   };
 }

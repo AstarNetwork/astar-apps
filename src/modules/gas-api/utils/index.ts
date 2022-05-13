@@ -53,7 +53,7 @@ export const getEvmGasCost = async ({
 };
 
 // Ref: https://stakesg.slack.com/archives/C028YNW1PED/p1652346083299849?thread_ts=1652338487.358459&cid=C028YNW1PED
-export const priorityFeeToTips = (fee: number): string => {
+export const priorityFeeToTip = (fee: number): string => {
   const price = ethers.utils.formatUnits(String(fee), 15).toString();
   return price;
 };
@@ -66,7 +66,7 @@ export const fetchEvmGasPrice = async ({
   network: string;
   isEip1559: boolean;
   web3: Web3;
-}): Promise<{ evmGasPrice: GasPrice; nativeTipsPrice: GasPrice }> => {
+}): Promise<{ evmGasPrice: GasPrice; nativeTipPrice: GasPrice }> => {
   try {
     const url = `${GAS_API_URL}/${network}/gasnow`;
     const { data } = await axios.get<ApiGasNow>(url);
@@ -74,10 +74,10 @@ export const fetchEvmGasPrice = async ({
       throw Error('something went wrong');
     }
     const { priorityFeePerGas } = data.data.eip1559;
-    const nativeTipsPrice = {
-      slow: priorityFeeToTips(priorityFeePerGas.slow).toString(),
-      average: priorityFeeToTips(priorityFeePerGas.average).toString(),
-      fast: priorityFeeToTips(priorityFeePerGas.fast).toString(),
+    const nativeTipPrice = {
+      slow: priorityFeeToTip(priorityFeePerGas.slow).toString(),
+      average: priorityFeeToTip(priorityFeePerGas.average).toString(),
+      fast: priorityFeeToTip(priorityFeePerGas.fast).toString(),
     };
 
     if (isEip1559) {
@@ -89,7 +89,7 @@ export const fetchEvmGasPrice = async ({
       };
       return {
         evmGasPrice,
-        nativeTipsPrice,
+        nativeTipPrice,
       };
     } else {
       const { slow, average, fast } = data.data;
@@ -101,7 +101,7 @@ export const fetchEvmGasPrice = async ({
       };
       return {
         evmGasPrice,
-        nativeTipsPrice,
+        nativeTipPrice,
       };
     }
   } catch (error) {
@@ -113,11 +113,11 @@ export const fetchEvmGasPrice = async ({
       fast: String(Math.floor(fallbackGasPrice * 1.3)),
       baseFeePerGas: '0',
     };
-    const nativeTipsPrice = {
+    const nativeTipPrice = {
       slow: '1',
       average: '500',
       fast: '10000',
     };
-    return { evmGasPrice, nativeTipsPrice };
+    return { evmGasPrice, nativeTipPrice };
   }
 };

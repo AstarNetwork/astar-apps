@@ -42,9 +42,9 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
     selectedGas,
     setSelectedGas,
     evmGasCost,
-    selectedTips,
-    nativeTipsPrice,
-    setSelectedTips,
+    selectedTip,
+    nativeTipPrice,
+    setSelectedTip,
   } = useGasPrice();
 
   const transferNative = async (transferAmt: BN, fromAddress: string, toAddress: string) => {
@@ -64,7 +64,7 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
         txResHandler,
         handleCustomExtrinsic,
         dispatch: store.dispatch,
-        tip: selectedTips.value.price,
+        tip: selectedTip.value.price,
       });
       isTxSuccess.value = true;
     } catch (e) {
@@ -197,8 +197,8 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
     selectedGas,
     setSelectedGas,
     evmGasCost,
-    selectedTips,
-    nativeTipsPrice,
-    setSelectedTips,
+    selectedTip,
+    nativeTipPrice,
+    setSelectedTip,
   };
 }

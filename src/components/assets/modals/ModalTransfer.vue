@@ -73,9 +73,9 @@
         </div>
 
         <SpeedConfiguration
-          :gas-cost="isH160 ? evmGasCost : nativeTipsPrice"
-          :selected-gas="isH160 ? selectedGas : selectedTips"
-          :set-selected-gas="isH160 ? setSelectedGas : setSelectedTips"
+          :gas-cost="isH160 ? evmGasCost : nativeTipPrice"
+          :selected-gas="isH160 ? selectedGas : selectedTip"
+          :set-selected-gas="isH160 ? setSelectedGas : setSelectedTip"
         />
 
         <div v-if="isChoseWrongEvmNetwork" class="rows__row--wrong-evm">
@@ -276,9 +276,9 @@ export default defineComponent({
       selectedGas,
       setSelectedGas,
       evmGasCost,
-      selectedTips,
-      nativeTipsPrice,
-      setSelectedTips,
+      selectedTip,
+      nativeTipPrice,
+      setSelectedTip,
     } = useTransfer(defaultUnitToken, decimal, closeModal);
 
     const transfer = async (): Promise<void> => {
@@ -504,9 +504,9 @@ export default defineComponent({
       selectedGas,
       setSelectedGas,
       evmGasCost,
-      selectedTips,
-      nativeTipsPrice,
-      setSelectedTips,
+      selectedTip,
+      nativeTipPrice,
+      setSelectedTip,
       isH160,
     };
   },

@@ -174,15 +174,15 @@ export default defineComponent({
       type: Array as PropType<StakingData[]>,
       required: true,
     },
-    nativeTipsPrice: {
+    nativeTipPrice: {
       type: Object as PropType<GasPrice>,
       required: true,
     },
-    selectedTips: {
+    selectedTip: {
       type: Object as PropType<SelectedGas>,
       required: true,
     },
-    setSelectedTips: {
+    setSelectedTip: {
       type: Function,
       required: true,
     },
@@ -201,9 +201,9 @@ export default defineComponent({
       isEnableNominationTransfer,
       nominationTransfer,
       isDisabledNominationTransfer,
-      selectedTips: selectedTipsNominationTransfer,
-      nativeTipsPrice: nativeTipsPriceNominationTransfer,
-      setSelectedTips: setSelectedTipsNominationTransfer,
+      selectedTip: selectedTipNominationTransfer,
+      nativeTipPrice: nativeTipPriceNominationTransfer,
+      setSelectedTip: setSelectedTipNominationTransfer,
     } = useNominationTransfer();
     const { t } = useI18n();
 
@@ -328,17 +328,17 @@ export default defineComponent({
     };
 
     const selectedGas = computed(() =>
-      isEnableNominationTransfer.value ? selectedTipsNominationTransfer.value : props.selectedTips
+      isEnableNominationTransfer.value ? selectedTipNominationTransfer.value : props.selectedTip
     );
 
     const gasCost = computed(() =>
       isEnableNominationTransfer.value
-        ? nativeTipsPriceNominationTransfer.value
-        : props.nativeTipsPrice
+        ? nativeTipPriceNominationTransfer.value
+        : props.nativeTipPrice
     );
 
     const setSelectedGas = computed(() =>
-      isEnableNominationTransfer.value ? setSelectedTipsNominationTransfer : props.setSelectedTips
+      isEnableNominationTransfer.value ? setSelectedTipNominationTransfer : props.setSelectedTip
     );
 
     return {

@@ -56,9 +56,9 @@
       :account-data="accountData"
       :staking-list="stakingList"
       :finalize-callback="finalizeCallback"
-      :selected-tips="selectedTips"
-      :native-tips-price="nativeTipsPrice"
-      :set-selected-tips="setSelectedTips"
+      :selected-tip="selectedTip"
+      :native-tip-price="nativeTipPrice"
+      :set-selected-tip="setSelectedTip"
     />
   </div>
 </template>
@@ -129,7 +129,7 @@ export default defineComponent({
     const { canUnbondWithdraw } = useUnbondWithdraw($api);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const { t } = useI18n();
-    const { selectedTips, nativeTipsPrice, setSelectedTips } = useGasPrice();
+    const { selectedTip, nativeTipPrice, setSelectedTip } = useGasPrice();
     const { isCustomSig, customMsg, handleCustomExtrinsic, handleResult } = useCustomSignature({
       fn: () => {
         store.commit('dapps/setUnlockingChunks', -1);
@@ -214,7 +214,7 @@ export default defineComponent({
           txResHandler,
           handleCustomExtrinsic,
           dispatch: store.dispatch,
-          tip: selectedTips.value.price,
+          tip: selectedTip.value.price,
         });
       } catch (error) {
         console.error(error);
@@ -251,7 +251,7 @@ export default defineComponent({
           txResHandler,
           handleCustomExtrinsic,
           dispatch: store.dispatch,
-          tip: selectedTips.value.price,
+          tip: selectedTip.value.price,
         });
       } catch (error) {
         console.error(error);
@@ -279,9 +279,9 @@ export default defineComponent({
       isH160,
       currentAddress,
       finalizeCallback,
-      selectedTips,
-      nativeTipsPrice,
-      setSelectedTips,
+      selectedTip,
+      nativeTipPrice,
+      setSelectedTip,
     };
   },
 });

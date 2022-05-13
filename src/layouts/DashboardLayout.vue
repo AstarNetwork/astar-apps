@@ -26,7 +26,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useBreakpoints } from 'src/hooks';
+import { useBreakpoints, useGasPrice } from 'src/hooks';
 import Header from 'src/components/header/Header.vue';
 import SidebarDesktop from 'components/sidenav/SidebarDesktop.vue';
 import SidebarMobile from 'components/sidenav/SidebarMobile.vue';
@@ -43,6 +43,10 @@ export default defineComponent({
     isDark
       ? document.documentElement.classList.add('dark')
       : document.documentElement.classList.remove('dark');
+
+    const isFetchGas = true;
+    useGasPrice(isFetchGas);
+
     return {
       width,
       screenSize,

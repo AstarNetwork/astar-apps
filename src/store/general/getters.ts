@@ -1,3 +1,4 @@
+import { GasTip } from './../../modules/gas-api/index';
 import { GetterTree } from 'vuex';
 import { StateInterface } from '../index';
 import {
@@ -28,6 +29,7 @@ export interface GeneralGetters {
   theme(state: State): Theme;
   headerName(state: State): string;
   currentWallet(state: State): string;
+  getGas(state: State): GasTip | undefined;
 }
 
 const getters: GetterTree<State, StateInterface> & GeneralGetters = {
@@ -50,6 +52,7 @@ const getters: GetterTree<State, StateInterface> & GeneralGetters = {
   },
   headerName: (state: State) => state.headerName,
   currentWallet: (state: State) => state.currentWallet,
+  getGas: (state: State) => state.gas,
 };
 
 export default getters;

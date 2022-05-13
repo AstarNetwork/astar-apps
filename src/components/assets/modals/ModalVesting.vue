@@ -40,9 +40,9 @@
         </div>
       </div>
       <SpeedConfiguration
-        :gas-cost="nativeTipsPrice"
-        :selected-gas="selectedTips"
-        :set-selected-gas="setSelectedTips"
+        :gas-cost="nativeTipPrice"
+        :selected-gas="selectedTip"
+        :set-selected-gas="setSelectedTip"
       />
       <div class="wrapper__row--button">
         <button
@@ -92,7 +92,7 @@ export default defineComponent({
       props.handleModalVesting({ isOpen: false });
       isClosingModal.value = false;
     };
-    const { info, sendTransaction, selectedTips, nativeTipsPrice, setSelectedTips } =
+    const { info, sendTransaction, selectedTip, nativeTipPrice, setSelectedTip } =
       useVesting(closeModal);
 
     return {
@@ -100,9 +100,9 @@ export default defineComponent({
       isClosingModal,
       closeModal,
       sendTransaction,
-      selectedTips,
-      nativeTipsPrice,
-      setSelectedTips,
+      selectedTip,
+      nativeTipPrice,
+      setSelectedTip,
     };
   },
 });

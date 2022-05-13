@@ -1,3 +1,4 @@
+import { GasTip } from './../../modules/gas-api/index';
 import type { Extensions } from 'src/hooks/useMetaExtensions';
 import { endpointKey } from 'src/config/chainEndpoints';
 
@@ -41,6 +42,7 @@ export interface GeneralStateInterface {
   currentTheme: Theme;
   headerName: string;
   currentWallet: string;
+  gas: GasTip | undefined;
 }
 
 function state(): GeneralStateInterface {
@@ -79,6 +81,7 @@ function state(): GeneralStateInterface {
     headerName: '',
 
     currentWallet: '',
+    gas: undefined,
   };
 }
 

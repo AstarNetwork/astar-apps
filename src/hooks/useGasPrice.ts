@@ -1,6 +1,6 @@
 import { $web3 } from 'boot/api';
 import { useStore } from 'src/store';
-import { ref, watchEffect, computed } from 'vue';
+import { ref, watchEffect, computed, watch } from 'vue';
 import { GasPrice, fetchEvmGasPrice, SelectedGas, Speed } from '../modules/gas-api';
 
 const initialGasPrice = {
@@ -10,16 +10,17 @@ const initialGasPrice = {
   baseFeePerGas: '0',
 };
 
-export const useGasPrice = () => {
+export const useGasPrice = (isFetch = false) => {
   const selectedGas = ref<SelectedGas>({ speed: 'average', price: '0' });
-  const selectedTips = ref<SelectedGas>({ speed: 'average', price: '0' });
+  const selectedTip = ref<SelectedGas>({ speed: 'average', price: '0' });
   const evmGasPrice = ref<GasPrice>(initialGasPrice);
-  const nativeTipsPrice = ref<GasPrice>(initialGasPrice);
+  const nativeTipPrice = ref<GasPrice>(initialGasPrice);
 
   // Memo: Actual gas cost calculated by evmGasPrice and transaction data
   const evmGasCost = ref<GasPrice>(initialGasPrice);
 
   const store = useStore();
+  const gas = computed(() => store.getters['general/getGas']);
   const network = computed<string>(() => {
     const chainInfo = store.getters['general/chainInfo'];
     const network = chainInfo ? chainInfo.chain : '';
@@ -33,10 +34,10 @@ export const useGasPrice = () => {
     };
   };
 
-  const setSelectedTips = (speed: Speed): void => {
-    selectedTips.value = {
+  const setSelectedTip = (speed: Speed): void => {
+    selectedTip.value = {
       speed,
-      price: nativeTipsPrice.value[speed],
+      price: nativeTipPrice.value[speed],
     };
   };
 
@@ -44,30 +45,42 @@ export const useGasPrice = () => {
     if (selectedGas.value.price === '0' && evmGasCost.value.average === '0') {
       setSelectedGas('average');
     }
-    if (selectedTips.value.price === '0' && nativeTipsPrice.value.average === '0') {
-      setSelectedTips('average');
+    if (selectedTip.value.price === '0' && nativeTipPrice.value.average === '0') {
+      setSelectedTip('average');
     }
   };
 
-  const setGasPrice = async (network: string): Promise<void> => {
+  const setGasPrice = (): void => {
+    if (!network.value || !gas.value) return;
+    evmGasPrice.value = gas.value.evmGasPrice;
+    nativeTipPrice.value = gas.value.nativeTipPrice;
+  };
+
+  const dispatchGasPrice = async (network: string): Promise<void> => {
     try {
       const result = await fetchEvmGasPrice({
         network,
         isEip1559: false,
         web3: $web3.value!,
       });
-      evmGasPrice.value = result.evmGasPrice;
-      nativeTipsPrice.value = result.nativeTipsPrice;
+      store.commit('general/setGas', result);
     } catch (error) {
-      console.error(error);
-      evmGasPrice.value = initialGasPrice;
-      nativeTipsPrice.value = initialGasPrice;
+      console.log(error);
     }
   };
 
+  watch(
+    [network],
+    async () => {
+      if (isFetch && network.value && !gas.value) {
+        await dispatchGasPrice(network.value);
+      }
+    },
+    { immediate: false }
+  );
+
   watchEffect(async () => {
-    if (!network.value) return;
-    await setGasPrice(network.value);
+    setGasPrice();
   });
 
   watchEffect(async () => {
@@ -80,8 +93,8 @@ export const useGasPrice = () => {
     selectedGas,
     setSelectedGas,
     evmGasCost,
-    selectedTips,
-    nativeTipsPrice,
-    setSelectedTips,
+    selectedTip,
+    nativeTipPrice,
+    setSelectedTip,
   };
 };

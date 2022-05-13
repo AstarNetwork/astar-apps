@@ -13,9 +13,9 @@
         </div>
       </div>
       <SpeedConfiguration
-        :gas-cost="nativeTipsPrice"
-        :selected-gas="selectedTips"
-        :set-selected-gas="setSelectedTips"
+        :gas-cost="nativeTipPrice"
+        :selected-gas="selectedTip"
+        :set-selected-gas="setSelectedTip"
       />
       <div class="wrapper__row--button">
         <button :disabled="0 >= numEvmDeposit" class="btn btn--confirm" @click="sendTransaction">
@@ -56,16 +56,16 @@ export default defineComponent({
       props.handleModalEvmWithdraw({ isOpen: false });
       isClosingModal.value = false;
     };
-    const { numEvmDeposit, sendTransaction, selectedTips, nativeTipsPrice, setSelectedTips } =
+    const { numEvmDeposit, sendTransaction, selectedTip, nativeTipPrice, setSelectedTip } =
       useEvmDeposit(closeModal);
     return {
       closeModal,
       numEvmDeposit,
       sendTransaction,
       isClosingModal,
-      selectedTips,
-      nativeTipsPrice,
-      setSelectedTips,
+      selectedTip,
+      nativeTipPrice,
+      setSelectedTip,
     };
   },
 });

@@ -62,7 +62,7 @@ import { $api } from 'boot/api';
 import FormatBalance from 'components/common/FormatBalance.vue';
 import IconTooltip from 'components/common/IconTooltip.vue';
 import Button from 'src/components/common/Button.vue';
-import { useCustomSignature } from 'src/hooks';
+import { useCustomSignature, useGasPrice } from 'src/hooks';
 import { signAndSend } from 'src/hooks/helper/wallet';
 import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
 import { hasExtrinsicFailedEvent } from 'src/modules/extrinsic';
@@ -94,6 +94,7 @@ export default defineComponent({
         store.commit('dapps/setUnlockingChunks', -1);
       },
     });
+    const { selectedTip } = useGasPrice();
     const selectedAccountAddress = computed(() => store.getters['general/selectedAddress']);
     const unlockingChunksCount = computed(() => store.getters['dapps/getUnlockingChunks']);
     const maxUnlockingChunks = computed(() => store.getters['dapps/getMaxUnlockingChunks']);
@@ -134,6 +135,7 @@ export default defineComponent({
           txResHandler,
           handleCustomExtrinsic,
           dispatch: store.dispatch,
+          tip: selectedTip.value.price,
         });
       } catch (error) {
         console.error(error);
