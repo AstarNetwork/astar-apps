@@ -1,43 +1,53 @@
 import { ref, watchEffect, computed, onUnmounted } from 'vue';
+import { useRouter } from 'vue-router';
 import { useStore } from 'src/store';
 import { useAccount } from 'src/hooks/useAccount';
 import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
 import Web3 from 'web3';
+import { ChainAsset } from 'src/hooks/xcm/useXcmAssets';
 import { transferToParachain } from './utils';
 
+// MEMO: temporary use :: will change to ChainAsset.
 export interface Chain {
   id: number;
   name: string;
-  icon: string;
-  block_delay: number;
-  gas_token_symbol: string;
-  explore_url: string;
-  contract_addr: string;
-  drop_gas_amt: string;
-  drop_gas_cost_amt: string;
-  drop_gas_balance_alert: string;
-  suggested_gas_cost: string;
 }
 
+const CHAINS = [
+  {
+    id: 1,
+    name: 'DOT',
+  },
+  {
+    id: 2,
+    name: 'Kusama',
+  },
+  {
+    id: 3,
+    name: 'Astar',
+  },
+  {
+    id: 4,
+    name: 'Shiden',
+  },
+];
+
 export function useXcmBridge() {
-  const srcChain = ref<Chain | null>(null);
-  const destChain = ref<Chain | null>(null);
   const srcChains = ref<Chain[] | null>(null);
   const destChains = ref<Chain[] | null>(null);
+
+  const srcChain = ref<Chain | null>(null);
+  const destChain = ref<Chain | null>(null);
   const selectedNetwork = ref<number>(0);
-  const chains = ref<Chain[] | null>(null);
-  // const tokens = ref<SelectedToken[] | null>(null);
-  const tokensObj = ref<any | null>(null);
   const selectedTokenBalance = ref<string>('0');
   const modal = ref<'src' | 'dest' | 'token' | null>(null);
   const amount = ref<string | null>(null);
   const errMsg = ref<string>('');
   const isDisabledBridge = ref<boolean>(true);
-  const destTokenUrl = ref<string>('');
-  const destTokenAddress = ref<string>('');
 
   const store = useStore();
+  const router = useRouter();
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
   const { currentAccount } = useAccount();
   const currentNetworkIdx = computed(() => {
@@ -45,12 +55,10 @@ export function useXcmBridge() {
     const chain = chainInfo ? chainInfo.chain : '';
     return getProviderIndex(chain);
   });
-  const selectedToken = computed(() => store.getters['bridge/selectedToken']);
 
   const resetStates = (): void => {
     isDisabledBridge.value = true;
     amount.value = null;
-    // usdValue.value = 0;
   };
 
   const closeModal = (): boolean => modal.value === null;
@@ -59,23 +67,13 @@ export function useXcmBridge() {
     modal.value = scene;
   };
 
-  // const selectToken = (token: SelectedToken): void => {
-  //   store.commit('bridge/setSelectedToken', token);
-  //   modal.value = null;
-  //   resetStates();
-  // };
-
   const getSelectedTokenBal = async (): Promise<string> => {
-    if (
-      !currentAccount.value ||
-      !srcChain.value ||
-      !selectedToken.value ||
-      !selectedNetwork.value
-    ) {
+    if (!currentAccount.value || !srcChain.value || !selectedNetwork.value) {
       return '0';
     }
 
-    // return await getTokenBalCbridge({
+    //// TODO
+    // return await getTokenBal({
     //   address: currentAccount.value,
     //   srcChainId: srcChain.value.id,
     //   selectedToken: selectedToken.value,
@@ -93,10 +91,8 @@ export function useXcmBridge() {
   };
 
   const selectChain = (chainId: number): void => {
-    if (!chains.value) return;
     const isSrcChain = modal.value === 'src';
-    const chain = chains.value.find((it) => it.id === chainId);
-    if (!chain) return;
+    const chain = destChain.value;
 
     if (isSrcChain) {
       srcChain.value = chain;
@@ -105,6 +101,45 @@ export function useXcmBridge() {
     }
     modal.value = null;
     resetStates();
+  };
+
+  const updateBridgeConfig = async (): Promise<void> => {
+    store.commit('general/setLoading', true);
+    const query = router.currentRoute.value.query;
+
+    // MEMO : Temporary: it should be replaced by fetching all assets
+    if (currentNetworkIdx.value === endpointKey.ASTAR) {
+      srcChains.value = [
+        {
+          id: 1,
+          name: 'Polkadot',
+        },
+      ];
+      destChains.value = [
+        {
+          id: 3,
+          name: 'Astar',
+        },
+      ];
+    } else {
+      srcChains.value = [
+        {
+          id: 2,
+          name: 'Kusama',
+        },
+      ];
+      destChains.value = [
+        {
+          id: 4,
+          name: 'Shiden',
+        },
+      ];
+    }
+
+    srcChain.value = srcChains.value[0];
+    destChain.value = destChains.value[0];
+
+    store.commit('general/setLoading', false);
   };
 
   const monitorConnectedNetwork = async (): Promise<void> => {
@@ -121,21 +156,6 @@ export function useXcmBridge() {
       });
   };
 
-  // const setDestTokenInformation = (): void => {
-  //   if (!destChain.value || !selectedToken.value) return;
-  //   const destTokenInfo = getDestTokenInfo({
-  //     destChainId: destChain.value.id,
-  //     selectedToken: selectedToken.value,
-  //   });
-  //   if (destTokenInfo && !destTokenInfo.isNativeToken) {
-  //     destTokenUrl.value = destTokenInfo.url;
-  //     destTokenAddress.value = destTokenInfo.address;
-  //   } else {
-  //     destTokenUrl.value = '';
-  //     destTokenAddress.value = '';
-  //   }
-  // };
-
   const bridge = async (): Promise<void> => {
     try {
       const provider = getEvmProvider();
@@ -145,13 +165,14 @@ export function useXcmBridge() {
       if (!provider) {
         throw Error('Failed loading wallet provider');
       }
-      if (!selectedToken.value || !srcChain.value || !destChain.value) {
-        throw Error('Something went wrong with cBridge API');
+      if (!srcChain.value || !destChain.value) {
+        throw Error('Something went wrong while bridging');
       }
       if (!amount.value) {
         throw Error('Invalid amount');
       }
 
+      // TODO:
       // const hash = await transferToParachain({
       //   provider,
       //   selectedToken: selectedToken.value,
@@ -176,6 +197,12 @@ export function useXcmBridge() {
   };
 
   watchEffect(async () => {
+    if (!currentNetworkIdx.value || currentNetworkIdx.value !== null) {
+      await updateBridgeConfig();
+    }
+  });
+
+  watchEffect(async () => {
     await monitorConnectedNetwork();
   });
 
@@ -192,7 +219,6 @@ export function useXcmBridge() {
     destChain,
     srcChains,
     destChains,
-    chains,
     closeModal,
     openModal,
     inputHandler,

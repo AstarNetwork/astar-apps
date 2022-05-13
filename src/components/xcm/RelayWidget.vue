@@ -142,7 +142,7 @@ import { fasHistory } from '@quasar/extras/fontawesome-v5';
 import { useMeta } from 'quasar';
 import { formatDecimals, getChainName, getIcon } from 'src/c-bridge';
 import { useStore } from 'src/store';
-import { computed, defineComponent } from 'vue';
+import { computed, defineComponent, watchEffect } from 'vue';
 import BridgeButtons from './BridgeButtons.vue';
 import ModalChain from './modals/ModalChain.vue';
 import ModalToken from './modals/ModalToken.vue';
@@ -167,7 +167,6 @@ export default defineComponent({
       destChain,
       srcChains,
       destChains,
-      chains,
       closeModal,
       openModal,
       inputHandler,
@@ -183,7 +182,6 @@ export default defineComponent({
       srcChains,
       destChains,
       selectedToken,
-      chains,
       closeModal,
       openModal,
       inputHandler,
