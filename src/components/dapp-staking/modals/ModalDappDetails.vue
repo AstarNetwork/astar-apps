@@ -82,8 +82,9 @@
           </div>
         </div>
         <q-card class="tw-mt-4">
-          <q-scroll-area class="scroll">
-            <q-markdown :src="dapp.description" :no-html="true" class="tw-m-2"></q-markdown>
+          <q-scroll-area class="scroll tw-m-2">
+            <!-- <q-markdown :src="dapp.description" :no-html="true" class="tw-m-2"></q-markdown> -->
+            {{ sanitize(dapp.description) }}
           </q-scroll-area>
         </q-card>
       </div>
@@ -111,6 +112,7 @@ import Button from 'components/common/Button.vue';
 import NameValue from 'components/common/NameValue.vue';
 import { DappItem } from 'src/store/dapp-staking/state';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
+import { sanitizeData } from 'src/hooks/helper/markdown';
 
 export default defineComponent({
   components: {
@@ -143,6 +145,10 @@ export default defineComponent({
       emit('update:is-open', false);
     };
 
+    const sanitize = (data: string): string => {
+      return sanitizeData(data);
+    };
+
     return {
       slide,
       isFullScreen,
@@ -150,6 +156,7 @@ export default defineComponent({
       getShortenAddress,
       showStakeModal,
       closeModal,
+      sanitize,
     };
   },
 });

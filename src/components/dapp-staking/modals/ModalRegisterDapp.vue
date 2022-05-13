@@ -49,8 +49,6 @@
 
 <script lang="ts">
 import { defineComponent, reactive, ref, computed } from 'vue';
-import { marked } from 'marked';
-import { sanitize } from 'dompurify';
 import Modal from 'components/common/Modal.vue';
 import RegisterDappGeneral from 'components/dapp-staking/modals/RegisterDappGeneral.vue';
 import RegisterDappDescription from 'components/dapp-staking/modals/RegisterDappDescription.vue';
@@ -61,6 +59,7 @@ import { useStore } from 'src/store';
 import { $api } from 'boot/api';
 import { NewDappItem } from 'src/store/dapp-staking/state';
 import { RegisterParameters } from 'src/store/dapp-staking/actions';
+import { sanitizeData } from 'src/hooks/helper/markdown';
 
 export default defineComponent({
   components: {
@@ -105,18 +104,10 @@ export default defineComponent({
 
     const handleDataChange = (newData: NewDappItem): void => {
       if (newData.description) {
-        newData.description = sanitizeData(newData.description);
+        newData.descriptionMarkdown = sanitizeData(newData.description);
       }
 
       data.ref = newData;
-    };
-
-    const sanitizeData = (data: string): string => {
-      if (data) {
-        return sanitize(marked(data));
-      }
-
-      return data;
     };
 
     const close = () => {
