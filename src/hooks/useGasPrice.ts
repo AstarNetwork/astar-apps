@@ -65,7 +65,7 @@ export const useGasPrice = (isFetch = false) => {
       });
       store.commit('general/setGas', result);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
