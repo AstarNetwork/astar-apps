@@ -1,7 +1,7 @@
 import { $web3 } from 'boot/api';
 import { useStore } from 'src/store';
 import { ref, watchEffect, computed } from 'vue';
-import { GasPrice, fetchEvmGasPrice, SelectedGas, Speed } from './../../modules/gas-api';
+import { GasPrice, fetchEvmGasPrice, SelectedGas, Speed } from '../modules/gas-api';
 
 const initialGasPrice = {
   slow: '0',

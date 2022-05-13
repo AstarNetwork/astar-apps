@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="box--input">
+    <div class="container--speed-configuration">
       <div class="box__space-between">
         <span> {{ $t('common.speed.speed') }}</span>
         <div />

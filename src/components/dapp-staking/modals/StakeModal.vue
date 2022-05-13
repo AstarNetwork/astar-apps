@@ -71,6 +71,13 @@
       >
         {{ $t('dappStaking.maxChunksWarning', { chunks: maxUnlockingChunks }) }}
       </div>
+      <div class="container--speed-configuration">
+        <SpeedConfiguration
+          :gas-cost="nativeTipsPrice"
+          :selected-gas="selectedTips"
+          :set-selected-gas="setSelectedTips"
+        />
+      </div>
       <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row">
         <Button type="button" :primary="false" @click="closeModal">{{ $t('close') }}</Button>
 
@@ -110,6 +117,8 @@ import ModalNominationTransfer from 'src/components/dapp-staking/modals/ModalNom
 import { StakingData } from 'src/modules/dapp-staking';
 import { ethers } from 'ethers';
 import { useI18n } from 'vue-i18n';
+import { GasPrice, SelectedGas } from 'src/modules/gas-api';
+import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 
 export enum Role {
   FromAddress = 'FromAddress',
@@ -125,6 +134,7 @@ export default defineComponent({
     Avatar,
     FormatBalance,
     ModalNominationTransfer,
+    SpeedConfiguration,
   },
   props: {
     dapp: {
@@ -161,6 +171,18 @@ export default defineComponent({
     },
     stakingList: {
       type: Array as PropType<StakingData[]>,
+      required: true,
+    },
+    nativeTipsPrice: {
+      type: Object as PropType<GasPrice>,
+      required: true,
+    },
+    selectedTips: {
+      type: Object as PropType<SelectedGas>,
+      required: true,
+    },
+    setSelectedTips: {
+      type: Function,
       required: true,
     },
   },
@@ -346,5 +368,10 @@ export default defineComponent({
   color: $warning-red;
   margin-top: 1px;
   font-size: 12.4px;
+}
+
+.container--speed-configuration {
+  margin-top: 40px;
+  width: 100%;
 }
 </style>

@@ -1,4 +1,4 @@
-import { useGasPrice } from './transfer/useGasPrice';
+import { useGasPrice } from './useGasPrice';
 import { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 import { $api } from 'boot/api';

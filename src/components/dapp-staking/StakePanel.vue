@@ -56,6 +56,9 @@
       :account-data="accountData"
       :staking-list="stakingList"
       :finalize-callback="finalizeCallback"
+      :selected-tips="selectedTips"
+      :native-tips-price="nativeTipsPrice"
+      :set-selected-tips="setSelectedTips"
     />
   </div>
 </template>
@@ -65,7 +68,7 @@ import { ISubmittableResult } from '@polkadot/types/types';
 import { $api } from 'boot/api';
 import Button from 'components/common/Button.vue';
 import StakeModal from 'components/dapp-staking/modals/StakeModal.vue';
-import { useChainMetadata, useCustomSignature, useGetMinStaking } from 'src/hooks';
+import { useChainMetadata, useCustomSignature, useGasPrice, useGetMinStaking } from 'src/hooks';
 import { TxType } from 'src/hooks/custom-signature/message';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { signAndSend } from 'src/hooks/helper/wallet';
@@ -126,6 +129,7 @@ export default defineComponent({
     const { canUnbondWithdraw } = useUnbondWithdraw($api);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const { t } = useI18n();
+    const { selectedTips, nativeTipsPrice, setSelectedTips } = useGasPrice();
     const { isCustomSig, customMsg, handleCustomExtrinsic, handleResult } = useCustomSignature({
       fn: () => {
         store.commit('dapps/setUnlockingChunks', -1);
@@ -210,6 +214,7 @@ export default defineComponent({
           txResHandler,
           handleCustomExtrinsic,
           dispatch: store.dispatch,
+          tip: selectedTips.value.price,
         });
       } catch (error) {
         console.error(error);
@@ -246,6 +251,7 @@ export default defineComponent({
           txResHandler,
           handleCustomExtrinsic,
           dispatch: store.dispatch,
+          tip: selectedTips.value.price,
         });
       } catch (error) {
         console.error(error);
@@ -273,6 +279,9 @@ export default defineComponent({
       isH160,
       currentAddress,
       finalizeCallback,
+      selectedTips,
+      nativeTipsPrice,
+      setSelectedTips,
     };
   },
 });

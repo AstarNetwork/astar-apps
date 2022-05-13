@@ -1,5 +1,18 @@
 @import 'src/css/quasar.variables.scss';
 
+.container--speed-configuration {
+  display: grid;
+  row-gap: 12px;
+  padding: 9px 15px;
+  border-radius: 6px;
+  width: 320px;
+  background: $container-bg-white;
+  @media (min-width: $xs) {
+    // width: 344px;
+    width: 380px;
+  }
+}
+
 .box__space-between {
   display: flex;
   justify-content: space-between;

@@ -21,7 +21,7 @@ import { TransactionConfig } from 'web3-eth';
 import { AbiItem } from 'web3-utils';
 import { getEvmProvider } from '../helper/wallet';
 import { signAndSend } from './../helper/wallet';
-import { useGasPrice } from './useGasPrice';
+import { useGasPrice } from '../useGasPrice';
 
 export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: () => void) {
   const store = useStore();

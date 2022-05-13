@@ -1,4 +1,4 @@
-import { useGasPrice } from './transfer/useGasPrice';
+import { useGasPrice } from './useGasPrice';
 import { ApiPromise } from '@polkadot/api';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { $api } from 'boot/api';
