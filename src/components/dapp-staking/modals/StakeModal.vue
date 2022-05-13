@@ -73,9 +73,10 @@
       </div>
       <div class="container--speed-configuration">
         <SpeedConfiguration
-          :gas-cost="nativeTipsPrice"
-          :selected-gas="selectedTips"
-          :set-selected-gas="setSelectedTips"
+          :is-responsible="true"
+          :selected-gas="selectedGas"
+          :gas-cost="gasCost"
+          :set-selected-gas="setSelectedGas"
         />
       </div>
       <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row">
@@ -200,6 +201,9 @@ export default defineComponent({
       isEnableNominationTransfer,
       nominationTransfer,
       isDisabledNominationTransfer,
+      selectedTips: selectedTipsNominationTransfer,
+      nativeTipsPrice: nativeTipsPriceNominationTransfer,
+      setSelectedTips: setSelectedTipsNominationTransfer,
     } = useNominationTransfer();
     const { t } = useI18n();
 
@@ -323,6 +327,20 @@ export default defineComponent({
       emit('update:is-open', false);
     };
 
+    const selectedGas = computed(() =>
+      isEnableNominationTransfer.value ? selectedTipsNominationTransfer.value : props.selectedTips
+    );
+
+    const gasCost = computed(() =>
+      isEnableNominationTransfer.value
+        ? nativeTipsPriceNominationTransfer.value
+        : props.nativeTipsPrice
+    );
+
+    const setSelectedGas = computed(() =>
+      isEnableNominationTransfer.value ? setSelectedTipsNominationTransfer : props.setSelectedTips
+    );
+
     return {
       data,
       formatStakeAmount,
@@ -346,6 +364,9 @@ export default defineComponent({
       errMsg,
       isMaxButton,
       maxAmount,
+      selectedGas,
+      gasCost,
+      setSelectedGas,
       ...toRefs(props),
     };
   },

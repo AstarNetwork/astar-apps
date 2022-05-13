@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="container--speed-configuration">
+    <div class="container--speed-configuration" :class="isResponsible && 'container--responsible'">
       <div class="box__space-between">
         <span> {{ $t('common.speed.speed') }}</span>
         <div />
@@ -64,6 +64,12 @@ export default defineComponent({
       type: Function,
       required: true,
     },
+    // Memo: parameter for modals made by tailwind css
+    isResponsible: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   setup() {
     const store = useStore();
@@ -80,5 +86,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/common/styles/speed-meter.scss';
+@use 'src/components/common/styles/speed-configuration.scss';
 </style>

@@ -8,9 +8,12 @@
   width: 320px;
   background: $container-bg-white;
   @media (min-width: $xs) {
-    // width: 344px;
-    width: 380px;
+    width: 344px;
   }
+}
+
+.container--responsible {
+  width: 100% !important;
 }
 
 .box__space-between {
@@ -29,11 +32,13 @@
 .column--gas-option {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   cursor: pointer;
   border: 2px solid transparent;
   padding: 6px 7px;
   border-radius: 6px;
   transition: all 0.3s ease 0s;
+  text-align: center;
   &:hover {
     border: 2px solid $astar-blue-dark;
     transition: all 0.3s ease 0s;
@@ -54,5 +59,8 @@
 .body--dark {
   .text--gas-price {
     color: $gray-1;
+  }
+  .container--speed-configuration {
+    background: $gray-6;
   }
 }
