@@ -12,6 +12,11 @@
           <span class="text--xl">{{ $n(numEvmDeposit) }} {{ nativeTokenSymbol }}</span>
         </div>
       </div>
+      <SpeedConfiguration
+        :gas-cost="nativeTipsPrice"
+        :selected-gas="selectedTips"
+        :set-selected-gas="setSelectedTips"
+      />
       <div class="wrapper__row--button">
         <button :disabled="0 >= numEvmDeposit" class="btn btn--confirm" @click="sendTransaction">
           {{ $t('confirm') }}
@@ -25,8 +30,10 @@ import { useEvmDeposit } from 'src/hooks';
 import { defineComponent, ref } from 'vue';
 import { fadeDuration } from '@astar-network/astar-ui';
 import { wait } from 'src/hooks/helper/common';
+import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 
 export default defineComponent({
+  components: { SpeedConfiguration },
   props: {
     nativeTokenSymbol: {
       type: String,
@@ -49,12 +56,16 @@ export default defineComponent({
       props.handleModalEvmWithdraw({ isOpen: false });
       isClosingModal.value = false;
     };
-    const { numEvmDeposit, sendTransaction } = useEvmDeposit(closeModal);
+    const { numEvmDeposit, sendTransaction, selectedTips, nativeTipsPrice, setSelectedTips } =
+      useEvmDeposit(closeModal);
     return {
       closeModal,
       numEvmDeposit,
       sendTransaction,
       isClosingModal,
+      selectedTips,
+      nativeTipsPrice,
+      setSelectedTips,
     };
   },
 });

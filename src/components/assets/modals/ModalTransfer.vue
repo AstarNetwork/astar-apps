@@ -72,7 +72,7 @@
           </div>
         </div>
 
-        <SpeedMeter
+        <SpeedConfiguration
           :gas-cost="isH160 ? evmGasCost : nativeTipsPrice"
           :selected-gas="isH160 ? selectedGas : selectedTips"
           :set-selected-gas="isH160 ? setSelectedGas : setSelectedTips"
@@ -125,7 +125,7 @@ import Web3 from 'web3';
 import ModalSelectAccount from './ModalSelectAccount.vue';
 import { registeredErc20Tokens } from 'src/modules/token';
 import { fadeDuration } from '@astar-network/astar-ui';
-import SpeedMeter from 'src/components/common/SpeedMeter.vue';
+import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 import { wait } from 'src/hooks/helper/common';
 import { sampleEvmWalletAddress, getEvmGasCost } from 'src/modules/gas-api';
 import { ethers } from 'ethers';
@@ -133,7 +133,7 @@ import ABI from 'src/c-bridge/abi/ERC20.json';
 import { AbiItem } from 'web3-utils';
 
 export default defineComponent({
-  components: { ModalSelectAccount, SpeedMeter },
+  components: { ModalSelectAccount, SpeedConfiguration },
   props: {
     isModalTransfer: {
       type: Boolean,

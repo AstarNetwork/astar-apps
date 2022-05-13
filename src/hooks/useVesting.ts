@@ -1,3 +1,4 @@
+import { useGasPrice } from './transfer/useGasPrice';
 import { ApiPromise } from '@polkadot/api';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { $api } from 'boot/api';
@@ -13,6 +14,7 @@ export function useVesting(closeModal: () => void) {
   const selectedAddress = computed(() => store.getters['general/selectedAddress']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const { accountData } = useBalance(selectedAddress);
+  const { selectedTips, nativeTipsPrice, setSelectedTips } = useGasPrice();
 
   const { isCustomSig, handleResult, handleCustomExtrinsic } = useCustomSignature({
     fn: closeModal,
@@ -79,6 +81,7 @@ export function useVesting(closeModal: () => void) {
         txResHandler,
         handleCustomExtrinsic,
         dispatch: store.dispatch,
+        tip: selectedTips.value.price,
       });
     } catch (e) {
       console.error(e);
@@ -92,5 +95,8 @@ export function useVesting(closeModal: () => void) {
   return {
     info,
     sendTransaction,
+    selectedTips,
+    nativeTipsPrice,
+    setSelectedTips,
   };
 }
