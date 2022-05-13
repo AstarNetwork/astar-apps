@@ -55,6 +55,10 @@ export const getEvmGasCost = async ({
 // Ref: https://stakesg.slack.com/archives/C028YNW1PED/p1652346083299849?thread_ts=1652338487.358459&cid=C028YNW1PED
 export const priorityFeeToTip = (fee: number): string => {
   const price = ethers.utils.formatUnits(String(fee), 15).toString();
+  // Memo: throw an error whenever provided price is too way expensive
+  if (Number(price) > 1) {
+    throw Error('Calculated tip amount is more than 1 ASTR/SDN');
+  }
   return price;
 };
 
