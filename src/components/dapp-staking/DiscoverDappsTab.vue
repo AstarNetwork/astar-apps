@@ -13,20 +13,17 @@
         + {{ $t('dappStaking.registerDapp') }}
       </Button>
     </div>
-    <div v-if="dapps.length > 0" class="kpi-wrapper">
+    <div v-if="isDapps" class="kpi-wrapper">
       <TVL />
       <DappsCount />
       <Era :progress="progress" :blocks-until-next-era="blocksUntilNextEra" :era="era" />
       <APR />
     </div>
 
-    <UserRewards />
+    <UserRewards v-if="isDapps" />
 
     <div class="store-container tw-grid tw-gap-x-12 xl:tw-gap-x-18 tw-justify-center">
-      <div
-        v-if="dapps.length === 0"
-        class="tw-text-xl tx-font-semibold tw-mt-4 dark:tw-text-darkGray-100"
-      >
+      <div v-if="!isDapps" class="tw-text-xl tx-font-semibold tw-mt-4 dark:tw-text-darkGray-100">
         {{ $t('dappStaking.noDappsRegistered') }}
       </div>
       <template v-if="stakeInfos">
@@ -104,8 +101,10 @@ export default defineComponent({
     const selectedDapp = ref<DappItem>();
     const selectedDappInfo = ref<StakeInfo>();
     const isPalletDisabled = computed(() => store.getters['dapps/getIsPalletDisabled']);
+    const isDapps = computed(() => dapps.value.length > 0);
 
     return {
+      isDapps,
       dapps,
       selectedDapp,
       selectedDappInfo,
