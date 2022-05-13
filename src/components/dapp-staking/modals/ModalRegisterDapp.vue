@@ -49,6 +49,8 @@
 
 <script lang="ts">
 import { defineComponent, reactive, ref, computed } from 'vue';
+import { marked } from 'marked';
+import { sanitize } from 'dompurify';
 import Modal from 'components/common/Modal.vue';
 import RegisterDappGeneral from 'components/dapp-staking/modals/RegisterDappGeneral.vue';
 import RegisterDappDescription from 'components/dapp-staking/modals/RegisterDappDescription.vue';
@@ -82,7 +84,7 @@ export default defineComponent({
       registerForm?.value?.validate().then(async (success: boolean) => {
         if (success) {
           if (step === stepsCount) {
-            sanitizeData(data);
+            // sanitizeData(data);
             const senderAddress = store.getters['general/selectedAddress'];
             const result = await store.dispatch('dapps/registerDapp', {
               dapp: data,
@@ -102,12 +104,19 @@ export default defineComponent({
     };
 
     const handleDataChange = (newData: NewDappItem): void => {
+      if (newData.description) {
+        newData.description = sanitizeData(newData.description);
+      }
+
       data.ref = newData;
     };
 
-    const sanitizeData = (data: NewDappItem) => {
-      data.description = encodeURIComponent(data.description);
-      data.name = encodeURIComponent(data.name);
+    const sanitizeData = (data: string): string => {
+      if (data) {
+        return sanitize(marked(data));
+      }
+
+      return data;
     };
 
     const close = () => {
