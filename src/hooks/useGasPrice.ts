@@ -70,9 +70,9 @@ export const useGasPrice = (isFetch = false) => {
   };
 
   watch(
-    [network],
+    [network, $web3],
     async () => {
-      if (isFetch && network.value && !gas.value) {
+      if (isFetch && network.value && !gas.value && $web3.value) {
         await dispatchGasPrice(network.value);
       }
     },

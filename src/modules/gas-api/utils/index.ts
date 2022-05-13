@@ -75,9 +75,9 @@ export const fetchEvmGasPrice = async ({
     }
     const { priorityFeePerGas } = data.data.eip1559;
     const nativeTipPrice = {
-      slow: priorityFeeToTip(priorityFeePerGas.slow).toString(),
-      average: priorityFeeToTip(priorityFeePerGas.average).toString(),
-      fast: priorityFeeToTip(priorityFeePerGas.fast).toString(),
+      slow: priorityFeeToTip(priorityFeePerGas.slow),
+      average: priorityFeeToTip(priorityFeePerGas.average),
+      fast: priorityFeeToTip(priorityFeePerGas.fast),
     };
 
     if (isEip1559) {
@@ -106,17 +106,27 @@ export const fetchEvmGasPrice = async ({
     }
   } catch (error) {
     console.error(error);
-    const fallbackGasPrice = Number(await web3.eth.getGasPrice());
+    const fallbackGasPrice = Number(
+      await web3.eth.getGasPrice().catch(() => {
+        const oneGwei = '1000000000';
+        return oneGwei;
+      })
+    );
+
+    //Rate: https://stakesg.slack.com/archives/C028YNW1PED/p1652343972144359?thread_ts=1652338487.358459&cid=C028YNW1PED
+    const slow = fallbackGasPrice;
+    const average = Math.floor(fallbackGasPrice * 9);
+    const fast = Math.floor(fallbackGasPrice * 56);
     const evmGasPrice = {
-      slow: String(fallbackGasPrice),
-      average: String(Math.floor(fallbackGasPrice * 1.1)),
-      fast: String(Math.floor(fallbackGasPrice * 1.3)),
+      slow: String(slow),
+      average: String(average),
+      fast: String(fast),
       baseFeePerGas: '0',
     };
     const nativeTipPrice = {
-      slow: '1',
-      average: '500',
-      fast: '10000',
+      slow: priorityFeeToTip(10000000000),
+      average: priorityFeeToTip(50000000000),
+      fast: priorityFeeToTip(50000000000000),
     };
     return { evmGasPrice, nativeTipPrice };
   }
