@@ -65,7 +65,17 @@
             </div>
 
             <div class="screen--md">
-              <button class="btn btn--sm btn--icon adjuster--width">
+              <button
+                class="btn btn--sm btn--icon adjuster--width"
+                @click="
+                  addToEvmWallet({
+                    tokenAddress: token.mappedERC20Addr,
+                    symbol: token.metadata.symbol,
+                    decimals: token.metadata.decimals,
+                    image: '',
+                  })
+                "
+              >
                 <div class="icon--plus">
                   <span> + </span>
                 </div>

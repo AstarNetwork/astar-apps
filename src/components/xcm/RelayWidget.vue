@@ -1,24 +1,19 @@
 <template>
-  <div v-if="srcChain && selectedToken" class="container--bridge animate__animated animate__fadeIn">
+  <div class="container--bridge animate__animated animate__fadeIn">
     <div class="widget" :class="isDarkTheme && 'widget-dark'">
       <div class="row">
         <div class="currency">
           <span class="label">{{ $t('from') }}</span>
           <div class="chain" :class="isDarkTheme && 'chain-dark'" @click="openModal('src')">
-            <img :src="srcChain.icon" alt="src-chain-logo" class="chain-logo" />
-            <span class="chain-name">
-              {{ getChainName(srcChain.id) }}
-            </span>
+            <!-- <img :src="srcChain.icon" alt="src-chain-logo" class="chain-logo" /> -->
+            <span class="chain-name"> Kusama </span>
             <span class="under-arrow">▼</span>
           </div>
         </div>
         <div>
           <div
             class="input-row"
-            :class="[
-              isDarkTheme && 'input-row-dark',
-              nativeCurrency[srcChain.id].name === selectedToken.symbol && 'input-row-native-token',
-            ]"
+            :class="[isDarkTheme && 'input-row-dark', 'input-row-native-token']"
           >
             <input
               :value="amount"
@@ -27,31 +22,28 @@
               min="0"
               pattern="^[0-9]*(\.)?[0-9]*$"
               placeholder="0"
-              :class="
-                nativeCurrency[srcChain.id].name === selectedToken.symbol && 'input-native-token'
-              "
+              :class="'input-native-token'"
               @input="inputHandler"
             />
-            <button
+            <!-- <button
               v-if="nativeCurrency[srcChain.id].name !== selectedToken.symbol"
               class="max-button"
               :class="isDarkTheme && 'max-button-dark'"
               @click="toMaxAmount"
             >
               {{ $t('bridge.max') }}
-            </button>
-            <div v-else />
+            </button> -->
             <div
               class="token-selector"
               :class="isDarkTheme && 'token-selector-dark'"
               @click="openModal('token')"
             >
-              <img
+              <!-- <img
                 :src="getIcon({ symbol: selectedToken.symbol, icon: selectedToken.icon })"
                 alt="token-logo"
                 class="token-logo"
-              />
-              <span>{{ selectedToken.symbol }}</span>
+              /> -->
+              <span>{{ selectedToken.metadata.symbol }}</span>
               <span>▼</span>
             </div>
           </div>
@@ -67,7 +59,7 @@
                     })
                   )
                 }}
-                {{ selectedToken.symbol }}
+                {{ selectedToken.metadata.symbol }}
               </p>
             </div>
           </div>
@@ -80,13 +72,13 @@
         <div class="currency">
           <span class="label">{{ $t('to') }}</span>
           <div class="chain" :class="isDarkTheme && 'chain-dark'" @click="openModal('dest')">
-            <img
+            <!-- <img
               v-if="destChain"
               :src="destChain.icon"
               alt="destChain-chain-logo"
               class="chain-logo"
-            />
-            <span class="chain-name">{{ getChainName(destChain.id) }}</span>
+            /> -->
+            <span class="chain-name">Shiden</span>
             <span class="under-arrow">▼</span>
           </div>
         </div>
@@ -94,14 +86,14 @@
       <div v-if="errMsg && amount" class="err-msg-container">
         <p class="err-msg">{{ errMsg }}</p>
       </div>
-      <BridgeButtons
+      <!-- <BridgeButtons
         :bridge="bridge"
         :handle-approve="handleApprove"
         :is-disabled-bridge="isDisabledBridge"
         :is-approval-needed="isApprovalNeeded"
         :selected-network="selectedNetwork"
         :src-chain-id="srcChain.id"
-      />
+      /> -->
     </div>
 
     <ModalToken
@@ -140,7 +132,6 @@
 <script lang="ts">
 import { fasHistory } from '@quasar/extras/fontawesome-v5';
 import { useMeta } from 'quasar';
-import { formatDecimals, getChainName, getIcon } from 'src/c-bridge';
 import { useStore } from 'src/store';
 import { computed, defineComponent, watchEffect } from 'vue';
 import BridgeButtons from './BridgeButtons.vue';
@@ -148,49 +139,59 @@ import ModalChain from './modals/ModalChain.vue';
 import ModalToken from './modals/ModalToken.vue';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { nativeCurrency } from 'src/config/web3';
-import { useXcmBridge } from 'src/hooks/xcm/useXcmBridge';
+import { useXcmBridge, formatDecimals } from 'src/hooks/xcm/useXcmBridge';
 
 export default defineComponent({
   components: {
     ModalChain,
     ModalToken,
-    BridgeButtons,
+    // BridgeButtons,
   },
   setup() {
     useMeta({ title: 'Relay Bridge' });
     const store = useStore();
     const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
-    const selectedToken = computed(() => store.getters['bridge/selectedToken']);
+    const selectedToken = computed(() => store.getters['xcm/selectedToken']);
 
     const {
       srcChain,
       destChain,
       srcChains,
       destChains,
+      tokens,
+      modal,
+      errMsg,
+      selectedTokenBalance,
+      amount,
       closeModal,
       openModal,
       inputHandler,
       selectChain,
+      selectToken,
       bridge,
     } = useXcmBridge();
 
     return {
       fasHistory,
       isDarkTheme,
+      amount,
       srcChain,
       destChain,
       srcChains,
       destChains,
+      tokens,
+      modal,
+      errMsg,
       selectedToken,
+      selectedTokenBalance,
       closeModal,
       openModal,
       inputHandler,
       selectChain,
+      selectToken,
       bridge,
       endpointKey,
       nativeCurrency,
-      getIcon,
-      getChainName,
       formatDecimals,
     };
   },

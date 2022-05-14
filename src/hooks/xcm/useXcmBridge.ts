@@ -47,6 +47,10 @@ const CHAINS = [
   },
 ];
 
+export const formatDecimals = ({ amount, decimals }: { amount: string; decimals: number }) => {
+  return Number(Number(amount).toFixed(decimals));
+};
+
 export function useXcmBridge() {
   const srcChains = ref<Chain[] | null>(null);
   const destChains = ref<Chain[] | null>(null);
@@ -55,6 +59,8 @@ export function useXcmBridge() {
   const destChain = ref<Chain | null>(null);
   const destParaId = ref<number>(parachainIds.SDN);
   // const selectedNetwork = ref<number>(0);
+  const tokens = ref<ChainAsset[] | null>(null);
+  // const tokensObj = ref<any | null>(null);
   const selectedTokenBalance = ref<string>('0');
   const modal = ref<'src' | 'dest' | 'token' | null>(null);
   const amount = ref<string | null>(null);
@@ -71,6 +77,7 @@ export function useXcmBridge() {
     const chain = chainInfo ? chainInfo.chain : '';
     return getProviderIndex(chain);
   });
+  const selectedToken = computed(() => store.getters['xcm/selectedToken']);
   const { handleResult, handleTransactionError } = useCustomSignature({});
   let relayChainApi: RelaychainApi | null = null;
 
@@ -83,6 +90,12 @@ export function useXcmBridge() {
 
   const openModal = (scene: 'src' | 'dest' | 'token'): void => {
     modal.value = scene;
+  };
+
+  const selectToken = (token: ChainAsset): void => {
+    store.commit('xcm/setSelectedToken', token);
+    modal.value = null;
+    resetStates();
   };
 
   const getSelectedTokenBal = async (): Promise<string> => {
@@ -118,6 +131,8 @@ export function useXcmBridge() {
   const updateBridgeConfig = async (): Promise<void> => {
     const query = router.currentRoute.value.query;
     // TODO : need to bind with query for specific token
+    // TODO : add token list by fetching assets
+    //const tokens = data && data.tokens;
 
     // MEMO : Temporary: it should be replaced by fetching all assets
     if (currentNetworkIdx.value === endpointKey.ASTAR) {
@@ -235,6 +250,15 @@ export function useXcmBridge() {
     selectedTokenBalance.value = await getSelectedTokenBal();
   };
 
+  const setTokenByQueyParams = (): void => {
+    if (!tokens.value) return;
+    const query = router.currentRoute.value.query;
+    if (query.from && query.symbol) {
+      const token = tokens.value?.find((it) => it.metadata.symbol.toString() === query.symbol);
+      token && store.commit('xcm/setSelectedToken', token);
+    }
+  };
+
   watchEffect(async () => {
     if (!currentNetworkIdx.value || currentNetworkIdx.value !== null) {
       await updateBridgeConfig();
@@ -259,6 +283,14 @@ export function useXcmBridge() {
   //   { immediate: false }
   // );
 
+  watch(
+    [tokens],
+    () => {
+      setTokenByQueyParams();
+    },
+    { immediate: false }
+  );
+
   const handleUpdate = setInterval(async () => {
     await updateSelectedTokenBal();
   }, 20 * 1000);
@@ -268,14 +300,20 @@ export function useXcmBridge() {
   });
 
   return {
+    amount,
     srcChain,
     destChain,
     srcChains,
     destChains,
+    modal,
+    tokens,
+    errMsg,
+    selectedTokenBalance,
     closeModal,
     openModal,
     inputHandler,
     selectChain,
+    selectToken,
     bridge,
   };
 }
