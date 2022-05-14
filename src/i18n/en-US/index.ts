@@ -43,6 +43,7 @@ export default {
     docs: 'Documentation',
     speed: {
       speed: 'Speed',
+      trafficTip: 'Traffic Tip',
       average: 'Average',
       fast: 'Fast',
       superFast: 'Super Fast',

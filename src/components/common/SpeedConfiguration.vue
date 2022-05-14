@@ -2,7 +2,7 @@
   <div>
     <div class="container--speed-configuration" :class="isResponsible && 'container--responsible'">
       <div class="box__space-between">
-        <span> {{ $t('common.speed.speed') }}</span>
+        <span> {{ $t(isH160 ? 'common.speed.speed' : 'common.speed.trafficTip') }}</span>
         <div />
       </div>
       <div class="box__row">
@@ -13,7 +13,7 @@
         >
           <span class="text--accent">{{ $t('common.speed.average') }}</span>
           <span class="text--gas-price">
-            {{ Number(gasCost.slow).toFixed(decimal) }}
+            {{ formatPrice(gasCost.slow) }}
             {{ symbol }}
           </span>
         </div>
@@ -25,7 +25,7 @@
         >
           <span class="text--accent">{{ $t('common.speed.fast') }}</span>
           <span class="text--gas-price">
-            {{ Number(gasCost.average).toFixed(decimal) }}
+            {{ formatPrice(gasCost.average) }}
             {{ symbol }}
           </span>
         </div>
@@ -37,7 +37,7 @@
         >
           <span class="text--accent">{{ $t('common.speed.superFast') }}</span>
           <span class="text--gas-price">
-            {{ Number(gasCost.fast).toFixed(decimal) }}
+            {{ formatPrice(gasCost.fast) }}
             {{ symbol }}
           </span>
         </div>
@@ -80,7 +80,13 @@ export default defineComponent({
       return chainInfo ? chainInfo.tokenSymbol : {};
     });
 
-    return { symbol, decimal };
+    const formatPrice = (price: string): string => {
+      const num = Number(price).toFixed(decimal.value);
+      // Memo: remove the number of '0' after decimal
+      return num.replace(/\.?0+$/, '');
+    };
+
+    return { symbol, isH160, formatPrice };
   },
 });
 </script>
