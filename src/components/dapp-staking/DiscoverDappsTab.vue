@@ -95,14 +95,9 @@ export default defineComponent({
     );
     const minimumStakingAmount = computed(() => {
       const amount = store.getters['dapps/getMinimumStakingAmount'];
-      console.log('amount', amount);
       return formatUnitAmount(amount);
     });
-    watchEffect(() => {
-      console.log('effect');
-      console.log('maxNumberOfStakersPerContract', maxNumberOfStakersPerContract.value);
-      console.log('minimumStakingAmount', minimumStakingAmount.value);
-    });
+
     const showRegisterDappModal = ref<boolean>(false);
     const selectedDapp = ref<DappItem>();
     const selectedDappInfo = ref<StakeInfo>();

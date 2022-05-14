@@ -167,7 +167,7 @@ const actions: ActionTree<State, StateInterface> = {
                   resolve(true);
                 } catch (e) {
                   const error = e as unknown as Error;
-                  console.log(error);
+                  console.error(error);
                   showError(dispatch, error.message);
                   alert(
                     `An unexpected error occured during dApp registration. Please screenshot this message and send to the Astar team. ${error.message}`
@@ -203,7 +203,7 @@ const actions: ActionTree<State, StateInterface> = {
       }
     } catch (e) {
       const error = e as unknown as Error;
-      console.log(error);
+      console.error(error);
       commit('general/setLoading', false, { root: true });
       showError(dispatch, error.message);
     }
