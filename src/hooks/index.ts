@@ -21,6 +21,7 @@ export * from './useBreakpoints';
 export * from './usePrice';
 export * from './useVesting';
 export * from './useTvlHistorical';
+export * from './useGasPrice';
 export * from './chain/useAvgBlockTime';
 export * from './c-bridge/useCbridge';
 export * from './c-bridge/useCbridgeV2';

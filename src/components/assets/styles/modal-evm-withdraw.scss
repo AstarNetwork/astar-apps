@@ -8,6 +8,7 @@
 .wrapper--withdraw {
   padding-top: 56px;
   text-align: center;
+  row-gap: 40px;
 }
 
 .box--withdraw-amount {
@@ -17,7 +18,6 @@
   width: 344px;
   text-align: center;
   background: $container-bg-white;
-  margin-bottom: 40px;
 }
 
 .box__column-amount {
