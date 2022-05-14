@@ -2,8 +2,14 @@
   <div>
     <div class="container--speed-configuration" :class="isResponsible && 'container--responsible'">
       <div class="box__space-between">
-        <span> {{ $t(isH160 ? 'common.speed.speed' : 'common.speed.trafficTip') }}</span>
-        <div />
+        <span> {{ $t(isH160 ? 'common.speed.speed' : 'common.speed.speedTip') }}</span>
+        <div v-if="isH160" class="placeholder--height" />
+        <div v-else>
+          <IconHelp />
+          <q-tooltip>
+            <span class="text--tooltip">{{ $t('common.speed.tipHelp') }}</span>
+          </q-tooltip>
+        </div>
       </div>
       <div class="box__row">
         <div
@@ -49,8 +55,10 @@
 import { GasPrice, SelectedGas } from 'src/modules/gas-api';
 import { useStore } from 'src/store';
 import { defineComponent, computed, PropType } from 'vue';
+import IconHelp from 'src/components/common/IconHelp.vue';
 
 export default defineComponent({
+  components: { IconHelp },
   props: {
     gasCost: {
       type: Object as PropType<GasPrice>,

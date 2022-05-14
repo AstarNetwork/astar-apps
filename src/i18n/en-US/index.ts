@@ -42,11 +42,12 @@ export default {
     github: 'GitHub',
     docs: 'Documentation',
     speed: {
-      speed: 'Speed',
-      trafficTip: 'Traffic Tip',
+      speed: 'Transaction speed',
+      speedTip: 'Transaction speed (Tip)',
       average: 'Average',
       fast: 'Fast',
       superFast: 'Super Fast',
+      tipHelp: 'A tip is important to help speed up transactions',
     },
   },
   drawer: {
