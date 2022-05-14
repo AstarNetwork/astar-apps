@@ -63,7 +63,7 @@ import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
 import { DappItem } from 'src/store/dapp-staking/state';
-import { computed, defineComponent, ref } from 'vue';
+import { computed, defineComponent, ref, watchEffect } from 'vue';
 import APR from './statistics/APR.vue';
 import DappsCount from './statistics/DappsCount.vue';
 import Era from './statistics/Era.vue';
@@ -95,7 +95,13 @@ export default defineComponent({
     );
     const minimumStakingAmount = computed(() => {
       const amount = store.getters['dapps/getMinimumStakingAmount'];
+      console.log('amount', amount);
       return formatUnitAmount(amount);
+    });
+    watchEffect(() => {
+      console.log('effect');
+      console.log('maxNumberOfStakersPerContract', maxNumberOfStakersPerContract.value);
+      console.log('minimumStakingAmount', minimumStakingAmount.value);
     });
     const showRegisterDappModal = ref<boolean>(false);
     const selectedDapp = ref<DappItem>();

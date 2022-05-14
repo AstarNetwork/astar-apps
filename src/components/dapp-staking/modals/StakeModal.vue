@@ -112,7 +112,7 @@ import { $api } from 'boot/api';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { getAmount, StakeModel } from 'src/hooks/store';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, toRefs, PropType } from 'vue';
+import { computed, defineComponent, ref, toRefs, PropType, watchEffect } from 'vue';
 import { StakeAction } from '../StakePanel.vue';
 import ModalNominationTransfer from 'src/components/dapp-staking/modals/ModalNominationTransfer.vue';
 import { StakingData } from 'src/modules/dapp-staking';
@@ -387,7 +387,8 @@ export default defineComponent({
 .box__row--err-msg {
   position: absolute;
   color: $warning-red;
-  margin-top: 1px;
+  margin-top: 2px;
+  margin-left: 4px;
   font-size: 12.4px;
 }
 

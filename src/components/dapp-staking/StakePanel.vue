@@ -68,6 +68,7 @@ import { ISubmittableResult } from '@polkadot/types/types';
 import { $api } from 'boot/api';
 import Button from 'components/common/Button.vue';
 import StakeModal from 'components/dapp-staking/modals/StakeModal.vue';
+import { ethers } from 'ethers';
 import { useChainMetadata, useCustomSignature, useGasPrice, useGetMinStaking } from 'src/hooks';
 import { TxType } from 'src/hooks/custom-signature/message';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
@@ -124,7 +125,7 @@ export default defineComponent({
     const modalActionName = ref<StakeAction | ''>('');
     const formattedMinStake = ref<string>('');
     const modalAction = ref<Function>();
-    const { minStaking } = useGetMinStaking($api);
+    const { minStaking } = useGetMinStaking();
     const { decimal } = useChainMetadata();
     const { canUnbondWithdraw } = useUnbondWithdraw($api);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
@@ -159,13 +160,13 @@ export default defineComponent({
     };
 
     watchEffect(() => {
-      const minStakingAmount = plasmUtils.reduceBalanceToDenom(minStaking.value, decimal.value);
+      const minStakingAmount = Number(ethers.utils.formatEther(minStaking.value).toString());
       const stakedAmount =
         props.stakeInfo?.yourStake.denomAmount &&
         plasmUtils.reduceBalanceToDenom(props.stakeInfo?.yourStake.denomAmount, decimal.value);
 
       formattedMinStake.value =
-        Number(stakedAmount) >= Number(minStakingAmount) ? '0' : minStakingAmount;
+        Number(stakedAmount) >= Number(minStakingAmount) ? '0' : String(minStakingAmount);
 
       if (props.showStake) {
         showStakeModal();
@@ -183,7 +184,7 @@ export default defineComponent({
         );
         if (props.stakeInfo) {
           const ttlStakeAmount = amount.add(props.stakeInfo.yourStake.denomAmount);
-          if (ttlStakeAmount.lt(minStaking.value)) {
+          if (Number(minStaking.value) > Number(ttlStakeAmount.toString())) {
             const msg = t('dappStaking.error.notEnoughMinAmount', {
               amount: formattedMinStake.value,
               symbol: unit,

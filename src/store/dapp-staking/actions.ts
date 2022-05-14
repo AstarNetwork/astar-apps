@@ -1,5 +1,5 @@
 import { ApiPromise } from '@polkadot/api';
-import { BTreeMap, Struct } from '@polkadot/types';
+import { bool, BTreeMap, Struct, u32 } from '@polkadot/types';
 import {
   AccountId,
   Balance,
@@ -209,6 +209,44 @@ const actions: ActionTree<State, StateInterface> = {
     }
 
     return false;
+  },
+
+  async getStakingInfo({ commit, dispatch, rootState }) {
+    await $api?.isReady;
+
+    try {
+      if ($api) {
+        const [
+          minimumStakingAmount,
+          maxNumberOfStakersPerContract,
+          maxUnlockingChunks,
+          unbondingPeriod,
+        ] = await Promise.all([
+          $api.consts.dappsStaking.minimumStakingAmount,
+          $api.consts.dappsStaking.maxNumberOfStakersPerContract as u32,
+          $api.consts.dappsStaking.maxUnlockingChunks as u32,
+          $api.consts.dappsStaking.unbondingPeriod as u32,
+        ]);
+
+        const minimumStakingAmountBalance = $api?.createType('Balance', minimumStakingAmount);
+        commit('setMinimumStakingAmount', minimumStakingAmountBalance?.toHuman());
+        commit('setMaxNumberOfStakersPerContract', maxNumberOfStakersPerContract?.toNumber());
+        commit('setUnbondingPeriod', unbondingPeriod?.toNumber());
+        commit('setMaxUnlockingChunks', maxUnlockingChunks?.toNumber());
+        let isPalletDisabled = false;
+        try {
+          const isDisabled = await $api.query.dappsStaking.palletDisabled<bool>();
+          isPalletDisabled = isDisabled.valueOf();
+        } catch {
+          // palletDisabled storage item is not supported by a node;
+        }
+
+        commit('setIsPalletDisabled', isPalletDisabled);
+      }
+    } catch (e) {
+      const error = e as unknown as Error;
+      showError(dispatch, error.message);
+    }
   },
 };
 
