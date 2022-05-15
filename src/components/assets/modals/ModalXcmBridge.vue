@@ -80,7 +80,6 @@ import { wait } from 'src/hooks/helper/common';
 import { computed, defineComponent, PropType, ref } from 'vue';
 
 export default defineComponent({
-  components: {},
   props: {
     isModalXcmBridge: {
       type: Boolean,
@@ -99,8 +98,6 @@ export default defineComponent({
   },
   setup(props) {
     const isClosingModal = ref<boolean>(false);
-
-    // const selectedToken = computed(() => store.getters['xcm/selectedToken']);
     const token = computed(() => props.token);
 
     const {
