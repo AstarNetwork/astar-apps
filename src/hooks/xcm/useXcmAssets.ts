@@ -122,13 +122,14 @@ export function useXcmAssets() {
             //@ts-ignore
             const assetId = (i[0].toHuman() as string[])[0].replaceAll(',', '');
             const mappedXC20 = mappedXC20Asset(assetId);
-            console.log('mapped', mappedXC20);
+            // console.log('mapped', mappedXC20);
             //const assetId = i[0].toHuman() as any as AssetId;
             const assetInfo = i[1].toHuman() as any as AssetDetails;
             const metadata = assetMetadataListRaw[index][1].toHuman() as any as AssetMetadata;
             return {
               id: assetId,
               ...assetInfo,
+              mappedERC20Addr: mappedXC20,
               metadata,
             } as ChainAsset;
           });

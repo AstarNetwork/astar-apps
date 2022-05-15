@@ -21,6 +21,7 @@ import { useCustomSignature } from 'src/hooks';
 import { getEvmMappedSs58Address, getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
 import { evmToAddress } from '@polkadot/util-crypto';
 import { RelaychainApi } from './SubstrateApi';
+import { useXcmAssets } from 'src/hooks';
 
 // MEMO: temporary use :: will change to ChainAsset.
 export interface Chain {
@@ -72,6 +73,7 @@ export function useXcmBridge() {
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const { currentAccount } = useAccount();
+  const { xcmAssets } = useXcmAssets();
   const currentNetworkIdx = computed(() => {
     const chainInfo = store.getters['general/chainInfo'];
     const chain = chainInfo ? chainInfo.chain : '';
@@ -103,9 +105,10 @@ export function useXcmBridge() {
       return '0';
     }
 
-    const balance = await relayChainApi.getBalance(currentAccount.value);
     //// TODO - convert it to proper unit
-    return balance.toString();
+    // const balance = await relayChainApi.getBalance(currentAccount.value);
+    // return balance.toString();
+    return '0';
   };
 
   const inputHandler = (event: any): void => {
@@ -133,6 +136,7 @@ export function useXcmBridge() {
     // TODO : need to bind with query for specific token
     // TODO : add token list by fetching assets
     //const tokens = data && data.tokens;
+    tokens.value = xcmAssets.value;
 
     // MEMO : Temporary: it should be replaced by fetching all assets
     if (currentNetworkIdx.value === endpointKey.ASTAR) {
@@ -181,6 +185,7 @@ export function useXcmBridge() {
 
     srcChain.value = srcChains.value[0];
     destChain.value = destChains.value[0];
+    tokens.value && store.commit('xcm/setSelectedToken', tokens.value[0]);
   };
 
   // const monitorConnectedNetwork = async (): Promise<void> => {
@@ -253,14 +258,14 @@ export function useXcmBridge() {
   const setTokenByQueyParams = (): void => {
     if (!tokens.value) return;
     const query = router.currentRoute.value.query;
-    if (query.from && query.symbol) {
+    if (query.symbol) {
       const token = tokens.value?.find((it) => it.metadata.symbol.toString() === query.symbol);
       token && store.commit('xcm/setSelectedToken', token);
     }
   };
 
   watchEffect(async () => {
-    if (!currentNetworkIdx.value || currentNetworkIdx.value !== null) {
+    if (!currentNetworkIdx.value || currentNetworkIdx.value !== null || xcmAssets.value !== null) {
       await updateBridgeConfig();
     }
   });

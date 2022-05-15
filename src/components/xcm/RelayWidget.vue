@@ -1,5 +1,5 @@
 <template>
-  <div class="container--bridge animate__animated animate__fadeIn">
+  <div v-if="srcChain && selectedToken" class="container--bridge animate__animated animate__fadeIn">
     <div class="widget" :class="isDarkTheme && 'widget-dark'">
       <div class="row">
         <div class="currency">
@@ -86,14 +86,14 @@
       <div v-if="errMsg && amount" class="err-msg-container">
         <p class="err-msg">{{ errMsg }}</p>
       </div>
-      <!-- <BridgeButtons
+      <BridgeButtons
         :bridge="bridge"
         :handle-approve="handleApprove"
         :is-disabled-bridge="isDisabledBridge"
         :is-approval-needed="isApprovalNeeded"
         :selected-network="selectedNetwork"
         :src-chain-id="srcChain.id"
-      /> -->
+      />
     </div>
 
     <ModalToken
@@ -145,7 +145,7 @@ export default defineComponent({
   components: {
     ModalChain,
     ModalToken,
-    // BridgeButtons,
+    BridgeButtons,
   },
   setup() {
     useMeta({ title: 'Relay Bridge' });
