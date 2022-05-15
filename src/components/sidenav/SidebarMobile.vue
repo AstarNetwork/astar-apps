@@ -38,6 +38,17 @@
             </span>
           </div>
         </router-link>
+        <router-link
+          v-if="enableXcm"
+          to="/xcm/relay"
+          :class="['link', path === 'bridge' && 'active-link']"
+        >
+          <div class="column--item">
+            <span class="text--link">
+              {{ $t('bridge.xcm') }}
+            </span>
+          </div>
+        </router-link>
         <div class="tabs__indicator" :class="getIndicatorClass(path)" />
       </nav>
 
@@ -82,6 +93,10 @@ export default defineComponent({
     const enableBridge = computed(
       () => isH160.value && currentNetworkIdx.value !== endpointKey.SHIBUYA
     );
+    const enableXcm = computed(
+      () => !isH160.value && currentNetworkIdx.value !== endpointKey.SHIBUYA
+    );
+
     const router = useRouter();
     const path = computed(() => router.currentRoute.value.path.split('/')[1]);
 
@@ -95,6 +110,8 @@ export default defineComponent({
           return 'tabs__staking';
         case 'bridge':
           return 'tabs__bridge';
+        case 'xcm':
+          return 'tabs__bridge';
         default:
           return 'tabs__staking';
       }
@@ -106,6 +123,7 @@ export default defineComponent({
       getIndicatorClass,
       path,
       enableBridge,
+      enableXcm,
     };
   },
 });

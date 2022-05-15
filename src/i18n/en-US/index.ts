@@ -179,6 +179,7 @@ export default {
   },
   bridge: {
     bridge: 'Bridge',
+    xcm: 'XCM',
     connectEvmWallet: 'Connect EVM wallet',
     max: 'MAX',
     balance: 'Available Balance:',
