@@ -18,7 +18,9 @@
       </q-tab-panel>
       <q-tab-panel name="preview">
         <q-scroll-area class="tw-h-96">
-          <q-markdown :src="data.description" :no-html="noHtml"></q-markdown>
+          <!-- eslint-disable vue/no-v-html -->
+          <!-- data descriptionMarkdown is sanitized so no XSS can happen. -->
+          <div v-html="data.descriptionMarkdown"></div>
         </q-scroll-area>
       </q-tab-panel>
     </q-tab-panels>
