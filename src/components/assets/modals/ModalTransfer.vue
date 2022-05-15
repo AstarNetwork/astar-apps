@@ -72,13 +72,11 @@
           </div>
         </div>
 
-        <div v-if="isSpeedMeter">
-          <SpeedMeter
-            :gas-cost="evmGasCost"
-            :selected-gas="selectedGas"
-            :set-selected-gas="setSelectedGas"
-          />
-        </div>
+        <SpeedConfiguration
+          :gas-cost="isH160 ? evmGasCost : nativeTipPrice"
+          :selected-gas="isH160 ? selectedGas : selectedTip"
+          :set-selected-gas="isH160 ? setSelectedGas : setSelectedTip"
+        />
 
         <div v-if="isChoseWrongEvmNetwork" class="rows__row--wrong-evm">
           <span class="text--error">{{ $t('assets.wrongNetwork') }}</span>
@@ -127,7 +125,7 @@ import Web3 from 'web3';
 import ModalSelectAccount from './ModalSelectAccount.vue';
 import { registeredErc20Tokens } from 'src/modules/token';
 import { fadeDuration } from '@astar-network/astar-ui';
-import SpeedMeter from 'src/components/common/SpeedMeter.vue';
+import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 import { wait } from 'src/hooks/helper/common';
 import { sampleEvmWalletAddress, getEvmGasCost } from 'src/modules/gas-api';
 import { ethers } from 'ethers';
@@ -135,7 +133,7 @@ import ABI from 'src/c-bridge/abi/ERC20.json';
 import { AbiItem } from 'web3-utils';
 
 export default defineComponent({
-  components: { ModalSelectAccount, SpeedMeter },
+  components: { ModalSelectAccount, SpeedConfiguration },
   props: {
     isModalTransfer: {
       type: Boolean,
@@ -186,9 +184,6 @@ export default defineComponent({
     const nativeTokenSymbol = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
       return chainInfo ? chainInfo.tokenSymbol : '';
-    });
-    const isSpeedMeter = computed(() => {
-      return isH160.value;
     });
 
     // Memo: check the selected token is either hard-coded token or cBridge token
@@ -281,6 +276,9 @@ export default defineComponent({
       selectedGas,
       setSelectedGas,
       evmGasCost,
+      selectedTip,
+      nativeTipPrice,
+      setSelectedTip,
     } = useTransfer(defaultUnitToken, decimal, closeModal);
 
     const transfer = async (): Promise<void> => {
@@ -503,10 +501,13 @@ export default defineComponent({
       currentNetworkName,
       connectEvmNetwork,
       isClosingModal,
-      isSpeedMeter,
       selectedGas,
       setSelectedGas,
       evmGasCost,
+      selectedTip,
+      nativeTipPrice,
+      setSelectedTip,
+      isH160,
     };
   },
 });

@@ -53,22 +53,22 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onUnmounted, computed, ref, watch } from 'vue';
-import { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
+import { VoidFn } from '@polkadot/api/types';
+import { u32 } from '@polkadot/types';
+import { Balance, EraIndex } from '@polkadot/types/interfaces';
+import { Codec, ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 import { $api } from 'boot/api';
-import { useStore } from 'src/store';
-import { u32 } from '@polkadot/types';
-import { VoidFn } from '@polkadot/api/types';
-import { Balance, EraIndex } from '@polkadot/types/interfaces';
-import { Codec } from '@polkadot/types/types';
-import Button from 'src/components/common/Button.vue';
-import { WithdrawParameters } from 'src/store/dapp-staking/actions';
 import FormatBalance from 'components/common/FormatBalance.vue';
-import ChunksModal from './ChunksModal.vue';
-import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
 import IconTooltip from 'components/common/IconTooltip.vue';
-import { useCustomSignature } from 'src/hooks';
+import Button from 'src/components/common/Button.vue';
+import { useCustomSignature, useGasPrice } from 'src/hooks';
+import { signAndSend } from 'src/hooks/helper/wallet';
+import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
+import { hasExtrinsicFailedEvent } from 'src/modules/extrinsic';
+import { useStore } from 'src/store';
+import { computed, defineComponent, onUnmounted, ref, watch } from 'vue';
+import ChunksModal from './ChunksModal.vue';
 
 export default defineComponent({
   components: {
@@ -89,11 +89,12 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
-    const { callFunc, dispatchError, isCustomSig } = useCustomSignature({
+    const { isCustomSig, handleCustomExtrinsic } = useCustomSignature({
       fn: () => {
         store.commit('dapps/setUnlockingChunks', -1);
       },
     });
+    const { selectedTip } = useGasPrice();
     const selectedAccountAddress = computed(() => store.getters['general/selectedAddress']);
     const unlockingChunksCount = computed(() => store.getters['dapps/getUnlockingChunks']);
     const maxUnlockingChunks = computed(() => store.getters['dapps/getMaxUnlockingChunks']);
@@ -106,25 +107,38 @@ export default defineComponent({
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
 
     const withdraw = async (): Promise<void> => {
-      const withdrawCustomExtrinsic = async () => {
-        try {
-          const fn: SubmittableExtrinsicFunction<'promise'> | undefined =
-            $api?.tx.dappsStaking.withdrawUnbonded;
-          const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn();
-          method && (await callFunc(method));
-        } catch (e) {
-          dispatchError((e as Error).message);
-        }
-      };
+      try {
+        const transaction = $api!.tx.dappsStaking.withdrawUnbonded();
+        const txResHandler = (result: ISubmittableResult): Promise<boolean> => {
+          return new Promise<boolean>(async (resolve) => {
+            if (result.status.isFinalized) {
+              if (!hasExtrinsicFailedEvent(result.events, store.dispatch)) {
+                store.commit('dapps/setUnlockingChunks', -1);
+                store.dispatch('general/showAlertMsg', {
+                  msg: 'Balance is successfully withdrew.',
+                  alertType: 'success',
+                });
+              }
+              store.commit('general/setLoading', false);
+              resolve(true);
+            } else {
+              store.commit('general/setLoading', true);
+            }
+          });
+        };
 
-      if (isCustomSig.value) {
-        await withdrawCustomExtrinsic();
-      } else {
-        const result = await store.dispatch('dapps/withdrawUnbonded', {
-          api: $api,
+        await signAndSend({
+          transaction,
           senderAddress: selectedAccountAddress.value,
           substrateAccounts: substrateAccounts.value,
-        } as WithdrawParameters);
+          isCustomSignature: isCustomSig.value,
+          txResHandler,
+          handleCustomExtrinsic,
+          dispatch: store.dispatch,
+          tip: selectedTip.value.price,
+        });
+      } catch (error) {
+        console.error(error);
       }
     };
 

@@ -60,6 +60,7 @@ import { $api } from 'boot/api';
 import { NewDappItem } from 'src/store/dapp-staking/state';
 import { RegisterParameters } from 'src/store/dapp-staking/actions';
 import { sanitizeData } from 'src/hooks/helper/markdown';
+import { useGasPrice } from 'src/hooks';
 
 export default defineComponent({
   components: {
@@ -78,6 +79,7 @@ export default defineComponent({
     const registerForm = ref();
     const stepper = ref();
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
+    const { selectedTip } = useGasPrice();
 
     const registerDapp = async (step: number): Promise<void> => {
       registerForm?.value?.validate().then(async (success: boolean) => {
@@ -89,6 +91,7 @@ export default defineComponent({
               api: $api,
               senderAddress,
               substrateAccounts: substrateAccounts.value,
+              tip: selectedTip.value.price,
             } as RegisterParameters);
 
             if (result) {

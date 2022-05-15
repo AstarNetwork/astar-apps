@@ -5,10 +5,10 @@ export const GAS_API_URL = 'https://astar-gas-station.herokuapp.com/api';
 export const sampleEvmWalletAddress = '0xc9ec54736DD2A2ef6A56AB0330bb04E1aCA43472';
 
 export interface GasPrice {
-  slow: number;
-  average: number;
-  fast: number;
-  baseFeePerGas: number;
+  slow: string;
+  average: string;
+  fast: string;
+  baseFeePerGas?: string;
 }
 
 export interface ApiGasNow {
@@ -39,5 +39,10 @@ export type Speed = 'slow' | 'average' | 'fast';
 
 export interface SelectedGas {
   speed: Speed;
-  price: number;
+  price: string;
+}
+
+export interface GasTip {
+  evmGasPrice: GasPrice;
+  nativeTipPrice: GasPrice;
 }

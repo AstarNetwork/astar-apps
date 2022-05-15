@@ -39,6 +39,11 @@
           <span class="text--xl">{{ $n(info.claimableAmount) }} {{ nativeTokenSymbol }}</span>
         </div>
       </div>
+      <SpeedConfiguration
+        :gas-cost="nativeTipPrice"
+        :selected-gas="selectedTip"
+        :set-selected-gas="setSelectedTip"
+      />
       <div class="wrapper__row--button">
         <button
           class="btn btn--confirm"
@@ -56,8 +61,10 @@ import { AccountData, useVesting } from 'src/hooks';
 import { defineComponent, PropType, ref } from 'vue';
 import { fadeDuration } from '@astar-network/astar-ui';
 import { wait } from 'src/hooks/helper/common';
+import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 
 export default defineComponent({
+  components: { SpeedConfiguration },
   props: {
     nativeTokenSymbol: {
       type: String,
@@ -85,13 +92,17 @@ export default defineComponent({
       props.handleModalVesting({ isOpen: false });
       isClosingModal.value = false;
     };
-    const { info, sendTransaction } = useVesting(closeModal);
+    const { info, sendTransaction, selectedTip, nativeTipPrice, setSelectedTip } =
+      useVesting(closeModal);
 
     return {
       info,
       isClosingModal,
       closeModal,
       sendTransaction,
+      selectedTip,
+      nativeTipPrice,
+      setSelectedTip,
     };
   },
 });

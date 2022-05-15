@@ -56,6 +56,9 @@
       :account-data="accountData"
       :staking-list="stakingList"
       :finalize-callback="finalizeCallback"
+      :selected-tip="selectedTip"
+      :native-tip-price="nativeTipPrice"
+      :set-selected-tip="setSelectedTip"
     />
   </div>
 </template>
@@ -65,7 +68,8 @@ import { ISubmittableResult } from '@polkadot/types/types';
 import { $api } from 'boot/api';
 import Button from 'components/common/Button.vue';
 import StakeModal from 'components/dapp-staking/modals/StakeModal.vue';
-import { useChainMetadata, useCustomSignature, useGetMinStaking } from 'src/hooks';
+import { ethers } from 'ethers';
+import { useChainMetadata, useCustomSignature, useGasPrice, useGetMinStaking } from 'src/hooks';
 import { TxType } from 'src/hooks/custom-signature/message';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { signAndSend } from 'src/hooks/helper/wallet';
@@ -121,11 +125,12 @@ export default defineComponent({
     const modalActionName = ref<StakeAction | ''>('');
     const formattedMinStake = ref<string>('');
     const modalAction = ref<Function>();
-    const { minStaking } = useGetMinStaking($api);
+    const { minStaking } = useGetMinStaking();
     const { decimal } = useChainMetadata();
     const { canUnbondWithdraw } = useUnbondWithdraw($api);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const { t } = useI18n();
+    const { selectedTip, nativeTipPrice, setSelectedTip } = useGasPrice();
     const { isCustomSig, customMsg, handleCustomExtrinsic, handleResult } = useCustomSignature({
       fn: () => {
         store.commit('dapps/setUnlockingChunks', -1);
@@ -155,13 +160,13 @@ export default defineComponent({
     };
 
     watchEffect(() => {
-      const minStakingAmount = plasmUtils.reduceBalanceToDenom(minStaking.value, decimal.value);
+      const minStakingAmount = Number(ethers.utils.formatEther(minStaking.value).toString());
       const stakedAmount =
         props.stakeInfo?.yourStake.denomAmount &&
         plasmUtils.reduceBalanceToDenom(props.stakeInfo?.yourStake.denomAmount, decimal.value);
 
       formattedMinStake.value =
-        Number(stakedAmount) >= Number(minStakingAmount) ? '0' : minStakingAmount;
+        Number(stakedAmount) >= Number(minStakingAmount) ? '0' : String(minStakingAmount);
 
       if (props.showStake) {
         showStakeModal();
@@ -179,7 +184,7 @@ export default defineComponent({
         );
         if (props.stakeInfo) {
           const ttlStakeAmount = amount.add(props.stakeInfo.yourStake.denomAmount);
-          if (ttlStakeAmount.lt(minStaking.value)) {
+          if (Number(minStaking.value) > Number(ttlStakeAmount.toString())) {
             const msg = t('dappStaking.error.notEnoughMinAmount', {
               amount: formattedMinStake.value,
               symbol: unit,
@@ -210,6 +215,7 @@ export default defineComponent({
           txResHandler,
           handleCustomExtrinsic,
           dispatch: store.dispatch,
+          tip: selectedTip.value.price,
         });
       } catch (error) {
         console.error(error);
@@ -246,6 +252,7 @@ export default defineComponent({
           txResHandler,
           handleCustomExtrinsic,
           dispatch: store.dispatch,
+          tip: selectedTip.value.price,
         });
       } catch (error) {
         console.error(error);
@@ -273,6 +280,9 @@ export default defineComponent({
       isH160,
       currentAddress,
       finalizeCallback,
+      selectedTip,
+      nativeTipPrice,
+      setSelectedTip,
     };
   },
 });

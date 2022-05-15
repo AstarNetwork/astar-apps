@@ -1,10 +1,12 @@
-import type { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
+import { useGasPrice } from './useGasPrice';
+import { ApiPromise } from '@polkadot/api';
+import { ISubmittableResult } from '@polkadot/types/types';
 import { $api } from 'boot/api';
 import { ethers } from 'ethers';
 import { useStore } from 'src/store';
 import { computed } from 'vue';
-import { getInjector } from './helper/wallet';
-import { useBalance, ExtendedVestingInfo } from './useBalance';
+import { signAndSend } from './helper/wallet';
+import { ExtendedVestingInfo, useBalance } from './useBalance';
 import { useCustomSignature } from './useCustomSignature';
 
 export function useVesting(closeModal: () => void) {
@@ -12,9 +14,11 @@ export function useVesting(closeModal: () => void) {
   const selectedAddress = computed(() => store.getters['general/selectedAddress']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const { accountData } = useBalance(selectedAddress);
+  const { selectedTip, nativeTipPrice, setSelectedTip } = useGasPrice();
 
-  const { callFunc, dispatchError, isCustomSig, handleResult, handleTransactionError } =
-    useCustomSignature({ fn: closeModal });
+  const { isCustomSig, handleResult, handleCustomExtrinsic } = useCustomSignature({
+    fn: closeModal,
+  });
 
   const info = computed(() => {
     const defaultData = {
@@ -63,54 +67,36 @@ export function useVesting(closeModal: () => void) {
     }
   });
 
-  const unlockVestedTokensCustomExtrinsic = async (): Promise<void> => {
+  const unlockVestedTokens = async (api: ApiPromise): Promise<void> => {
     try {
-      const fn: SubmittableExtrinsicFunction<'promise'> | undefined = $api?.tx.vesting.vest;
-      const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn();
-      method && callFunc(method);
-    } catch (e) {
-      dispatchError((e as Error).message);
-    }
-  };
+      const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
+        return await handleResult(result);
+      };
 
-  const unlockVestedTokens = async (): Promise<void> => {
-    try {
-      const apiRef = $api;
-      if (!apiRef) {
-        throw Error('Cannot connect to the API');
-      }
-      const injector = await getInjector(substrateAccounts.value);
-      apiRef.tx.vesting
-        .vest()
-        .signAndSend(
-          selectedAddress.value,
-          {
-            signer: injector.signer,
-            nonce: -1,
-            tip: 1,
-          },
-          (result) => {
-            (async () => {
-              await handleResult(result);
-            })();
-          }
-        )
-        .catch((error: Error) => handleTransactionError(error));
+      await signAndSend({
+        transaction: api.tx.vesting.vest(),
+        senderAddress: selectedAddress.value,
+        substrateAccounts: substrateAccounts.value,
+        isCustomSignature: isCustomSig.value,
+        txResHandler,
+        handleCustomExtrinsic,
+        dispatch: store.dispatch,
+        tip: selectedTip.value.price,
+      });
     } catch (e) {
       console.error(e);
     }
   };
 
-  const sendTransaction = async (amount: number): Promise<void> => {
-    if (isCustomSig.value) {
-      await unlockVestedTokensCustomExtrinsic();
-    } else {
-      await unlockVestedTokens();
-    }
+  const sendTransaction = async (): Promise<void> => {
+    await unlockVestedTokens($api!);
   };
 
   return {
     info,
     sendTransaction,
+    selectedTip,
+    nativeTipPrice,
+    setSelectedTip,
   };
 }
