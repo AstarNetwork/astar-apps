@@ -131,6 +131,34 @@ export function useXcmBridge() {
     resetStates();
   };
 
+  const chainIcon = computed<{ src: string; dest: string }>(() => {
+    if (currentNetworkIdx.value === endpointKey.ASTAR) {
+      return {
+        src: require('/src/assets/img/ic_polkadot.png'),
+        dest: require('/src/assets/img/ic_astar.png'),
+      };
+    } else {
+      return {
+        src: require('/src/assets/img/ic_kusama.png'),
+        dest: require('/src/assets/img/ic_shiden.png'),
+      };
+    }
+  });
+
+  const chainName = computed<{ src: string; dest: string }>(() => {
+    if (currentNetworkIdx.value === endpointKey.ASTAR) {
+      return {
+        src: 'Polkadot',
+        dest: 'Astar',
+      };
+    } else {
+      return {
+        src: 'Kusama',
+        dest: 'Shiden',
+      };
+    }
+  });
+
   const updateBridgeConfig = async (): Promise<void> => {
     const query = router.currentRoute.value.query;
     // TODO : need to bind with query for specific token
@@ -314,6 +342,8 @@ export function useXcmBridge() {
     tokens,
     errMsg,
     selectedTokenBalance,
+    chainIcon,
+    chainName,
     closeModal,
     openModal,
     inputHandler,
