@@ -1,3 +1,4 @@
+import { useGasPrice } from './../useGasPrice';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { ethers } from 'ethers';
 import { getAddressEnum } from 'src/modules/dapp-staking';
@@ -15,7 +16,7 @@ import { $api } from 'src/boot/api';
 
 export function useNominationTransfer() {
   const { currentAccount } = useAccount();
-  const { minStaking } = useGetMinStaking($api);
+  const { minStaking } = useGetMinStaking();
   const { stakingList } = useStakingList();
   const store = useStore();
   const addressTransferFrom = ref<string>(currentAccount.value);
@@ -24,6 +25,7 @@ export function useNominationTransfer() {
   const { isCustomSig, handleResult, handleCustomExtrinsic } = useCustomSignature({
     txType: TxType.requiredClaim,
   });
+  const { selectedTip, nativeTipPrice, setSelectedTip } = useGasPrice();
 
   const setIsEnableNominationTransfer = () => {
     try {
@@ -66,7 +68,7 @@ export function useNominationTransfer() {
   });
 
   const formattedMinStaking = computed(() => {
-    return Number(ethers.utils.formatEther(minStaking.value.toString()));
+    return Number(ethers.utils.formatEther(minStaking.value).toString());
   });
 
   const isDisabledNominationTransfer = ({
@@ -122,6 +124,7 @@ export function useNominationTransfer() {
         txResHandler,
         handleCustomExtrinsic,
         dispatch: store.dispatch,
+        tip: selectedTip.value.price,
       });
       return true;
     } catch (error: any) {
@@ -153,5 +156,8 @@ export function useNominationTransfer() {
     setAddressTransferFrom,
     nominationTransfer,
     isDisabledNominationTransfer,
+    selectedTip,
+    nativeTipPrice,
+    setSelectedTip,
   };
 }

@@ -80,7 +80,10 @@ export const providerEndpoints: ChainProvider[] = [
     networkAlias: 'shibuya-testnet',
     displayName: 'Shibuya Network',
     info: 'The test network of the layer 2 scaling blockchain',
-    endpoints: [{ name: 'Shibuya', endpoint: 'wss://rpc.shibuya.astar.network' }],
+    endpoints: [
+      { name: 'Shibuya', endpoint: 'wss://rpc.shibuya.astar.network' },
+      { name: 'Dwellir', endpoint: 'wss://shibuya-rpc.dwellir.com' },
+    ],
     favicon: 'https://polkadot.js.org/apps/static/shiden.a066789e.png',
     isSupportContract: true,
     prefix: 0xff51,

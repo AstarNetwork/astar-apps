@@ -8,12 +8,12 @@
 .wrapper--vesting {
   padding-top: 56px;
   text-align: center;
+  row-gap: 40px;
 }
 
 .container--vestings {
   display: grid;
   row-gap: 16px;
-  margin-bottom: 40px;
 }
 
 .box--vesting-info {
@@ -43,7 +43,6 @@
   width: 344px;
   text-align: center;
   background: $container-bg-white;
-  margin-bottom: 40px;
 }
 
 .box__column-amount {

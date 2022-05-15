@@ -91,13 +91,18 @@ export default defineComponent({
       return chainInfo ? chainInfo : {};
     });
 
+    const network = computed(() => {
+      const network = chainInfo.value ? chainInfo.value.chain : '';
+      return network === 'Shibuya Testnet' ? 'shibuya' : network;
+    });
+
     const isMainnet = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
       return chainInfo ? chainInfo.chain !== 'Shibuya Testnet' : false;
     });
 
     const loadStats = async (network: string) => {
-      if (!chainInfo.value || !chainInfo.value.chain) return;
+      if (!network) return;
       const statsUrl = `${TOKEN_API_URL}/v1/${network}/token/holders`;
       const result = await axios.get<number>(statsUrl);
       if (result.data) {
@@ -107,9 +112,8 @@ export default defineComponent({
 
     watchEffect(async () => {
       try {
-        if (chainInfo.value) {
-          const network = chainInfo.value.chain.toLowerCase();
-          network && (await loadStats(network));
+        if (chainInfo.value && network.value) {
+          await loadStats(network.value.toLowerCase());
         }
       } catch (error) {
         console.error(error);

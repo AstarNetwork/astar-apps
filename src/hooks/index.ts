@@ -1,7 +1,7 @@
 export * from './useSidebar';
 export * from './useAccount';
 export * from './useBalance';
-export * from './useTransfer';
+export * from './transfer/useTransfer';
 export * from './useContracts';
 export * from './useMessages';
 export * from './useWasm';
@@ -21,6 +21,7 @@ export * from './useBreakpoints';
 export * from './usePrice';
 export * from './useVesting';
 export * from './useTvlHistorical';
+export * from './useGasPrice';
 export * from './chain/useAvgBlockTime';
 export * from './c-bridge/useCbridge';
 export * from './c-bridge/useCbridgeV2';

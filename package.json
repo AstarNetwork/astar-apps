@@ -69,7 +69,7 @@
     "vue3-click-away": "^1.2.4",
     "vue3-dropzone": "^0.0.7",
     "vuex": "^4.0.1",
-    "web3": "^1.6.1"
+    "web3": "^1.7.3"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.13.14",
