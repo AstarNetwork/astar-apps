@@ -158,15 +158,15 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
     } else {
       return {
         // src: 'Kusama',
-        src: 'Kusama Relay Chain',
         // dest: 'Shiden',
+        src: 'Kusama Relay Chain',
         dest: 'Shiden Network',
       };
     }
   });
 
   const formattedSelectedTokenBalance = computed<string>(() => {
-    if (!selectedToken) return '0';
+    if (!selectedToken || !selectedToken.value) return '0';
     const decimals = Number(String(selectedToken.value.metadata.decimals));
     const balance = ethers.utils.formatUnits(selectedTokenBalance.value, decimals).toString();
     return balance;

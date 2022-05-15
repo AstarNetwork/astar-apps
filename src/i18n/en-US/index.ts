@@ -265,6 +265,7 @@ export default {
       availableToUnlocked: 'Available to unlocked',
       unlock: 'Unlock',
       xcmBridge: 'XCM Bridge',
+      transfer: 'Transfer',
     },
   },
   dashboard: {
