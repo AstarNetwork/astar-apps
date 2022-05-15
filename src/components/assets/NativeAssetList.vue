@@ -143,6 +143,8 @@
           </div>
         </div>
       </div>
+
+      <XcmAssetList />
     </div>
 
     <Teleport to="#app--main">
@@ -174,6 +176,7 @@ import { useBalance, useEvmDeposit, usePrice } from 'src/hooks';
 import { useStore } from 'src/store';
 import { getTokenImage } from 'src/modules/token';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
+import XcmAssetList from 'src/components/assets/XcmAssetList.vue';
 import ModalTransfer from './modals/ModalTransfer.vue';
 import ModalFaucet from './modals/ModalFaucet.vue';
 import ModalEvmWithdraw from './modals/ModalEvmWithdraw.vue';
@@ -185,6 +188,7 @@ export default defineComponent({
     ModalFaucet,
     ModalEvmWithdraw,
     ModalVesting,
+    XcmAssetList,
   },
   setup() {
     const isModalTransfer = ref<boolean>(false);

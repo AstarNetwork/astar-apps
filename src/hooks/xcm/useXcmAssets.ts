@@ -21,6 +21,7 @@ export function useXcmAssets() {
   const xcmAssets = ref<ChainAsset[]>([]);
   const store = useStore();
   const { currentAccount } = useAccount();
+  const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
   const currentNetworkIdx = computed(() => {
     const chainInfo = store.getters['general/chainInfo'];
@@ -49,42 +50,29 @@ export function useXcmAssets() {
     userAddress: string;
     token: ChainAsset;
   }): Promise<{
-    balUsd: number;
     userBalance: string;
   }> => {
-    let balUsd = 0;
-    const userBalance = await getTokenBal({
-      srcChainId: evmNetworkId.value,
-      address: userAddress,
-      tokenAddress: token.mappedERC20Addr,
-      tokenSymbol: token.metadata.symbol.toString(),
-    });
-    if (Number(userBalance) > 0) {
-      try {
-        let symbol = token.metadata.symbol.toString();
-
-        balUsd = await calUsdAmount({
-          amount: Number(userBalance),
-          symbol,
-        });
-      } catch (error) {
-        console.error(error);
-        balUsd = 0;
-      }
-      // ttlErc20Amount.value += balUsd;
+    if (isH160.value) {
+      const userBalance = await getTokenBal({
+        srcChainId: evmNetworkId.value,
+        address: userAddress,
+        tokenAddress: token.mappedERC20Addr,
+        tokenSymbol: token.metadata.symbol.toString(),
+      });
+      return { userBalance };
+    } else {
+      return { userBalance: '0' };
     }
-    return { balUsd, userBalance };
   };
 
   const updateTokenBalances = async ({ userAddress }: { userAddress: string }): Promise<void> => {
-    if (!xcmAssets.value) return;
     xcmAssets.value = await Promise.all(
       xcmAssets.value.map(async (token: ChainAsset) => {
-        const { balUsd, userBalance } = await updateTokenBalanceHandler({
+        const { userBalance } = await updateTokenBalanceHandler({
           userAddress,
           token,
         });
-        const tokenWithBalance = { ...token, userBalance, userBalanceUsd: String(balUsd) };
+        const tokenWithBalance = { ...token, userBalance };
         return tokenWithBalance as ChainAsset;
       })
     );
@@ -97,10 +85,12 @@ export function useXcmAssets() {
     //   tokens.value = null;
     //   return;
     // }
-    try {
-      await updateTokenBalances({ userAddress: currentAccount.value });
-    } catch (error) {
-      console.error(error);
+    if (!xcmAssets.value) {
+      try {
+        await updateTokenBalances({ userAddress: currentAccount.value });
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 

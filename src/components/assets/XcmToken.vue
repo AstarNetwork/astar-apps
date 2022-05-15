@@ -66,6 +66,7 @@
 
             <div class="screen--md">
               <button
+                v-if="isH160"
                 class="btn btn--sm btn--icon adjuster--width"
                 @click="
                   addToEvmWallet({
@@ -117,6 +118,7 @@ export default defineComponent({
     // );
 
     const store = useStore();
+    const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const nativeTokenSymbol = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
       return chainInfo ? chainInfo.tokenSymbol : '';
@@ -152,6 +154,7 @@ export default defineComponent({
     return {
       formatTokenName,
       addToEvmWallet,
+      isH160,
       // tokenImg,
       nativeTokenSymbol,
       // sourceChainId,
