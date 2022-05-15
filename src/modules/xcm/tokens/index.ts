@@ -5,6 +5,7 @@ export const xcmToken = {
   [endpointKey.SHIDEN]: [
     {
       symbol: 'KSM',
+      isNativeToken: true,
       logo: require('/src/assets/img/ic_kusama.png'),
     },
   ],

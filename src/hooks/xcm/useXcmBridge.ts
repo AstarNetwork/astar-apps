@@ -1,4 +1,4 @@
-import { ref, watch, watchEffect, computed, onUnmounted } from 'vue';
+import { ref, watch, watchEffect, computed, onUnmounted, Ref } from 'vue';
 import { wait } from 'src/hooks/helper/common';
 import { useRouter } from 'vue-router';
 import { useStore } from 'src/store';
@@ -22,6 +22,8 @@ import { getEvmMappedSs58Address, getPubkeyFromSS58Addr } from 'src/hooks/helper
 import { evmToAddress } from '@polkadot/util-crypto';
 import { RelaychainApi } from './SubstrateApi';
 import { useXcmAssets } from 'src/hooks';
+import { ethers } from 'ethers';
+import { from } from 'rxjs';
 
 // MEMO: temporary use :: will change to ChainAsset.
 export interface Chain {
@@ -52,7 +54,7 @@ export const formatDecimals = ({ amount, decimals }: { amount: string; decimals:
   return Number(Number(amount).toFixed(decimals));
 };
 
-export function useXcmBridge(selectedToken?: ChainAsset) {
+export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
   const srcChains = ref<Chain[] | null>(null);
   const destChains = ref<Chain[] | null>(null);
 
@@ -153,13 +155,24 @@ export function useXcmBridge(selectedToken?: ChainAsset) {
       };
     } else {
       return {
-        src: 'Kusama',
-        // src: 'Kusama Relay Chain',
-        dest: 'Shiden',
-        // dest: 'Shiden Network',
+        // src: 'Kusama',
+        src: 'Kusama Relay Chain',
+        // dest: 'Shiden',
+        dest: 'Shiden Network',
       };
     }
   });
+
+  const formattedSelectedTokenBalance = computed<string>(() => {
+    if (!selectedToken) return '0';
+    const decimals = Number(String(selectedToken.value.metadata.decimals));
+    const balance = ethers.utils.formatUnits(selectedTokenBalance.value, decimals).toString();
+    return balance;
+  });
+
+  const toMaxAmount = (): void => {
+    amount.value = formattedSelectedTokenBalance.value;
+  };
 
   const updateBridgeConfig = async (): Promise<void> => {
     const query = router.currentRoute.value.query;
@@ -318,6 +331,10 @@ export function useXcmBridge(selectedToken?: ChainAsset) {
   //   { immediate: false }
   // );
 
+  // watchEffect(() => {
+  //   console.log('selectedToken effect', selectedToken && selectedToken.value);
+  // });
+
   watch(
     [tokens],
     () => {
@@ -344,6 +361,7 @@ export function useXcmBridge(selectedToken?: ChainAsset) {
     tokens,
     errMsg,
     selectedTokenBalance,
+    formattedSelectedTokenBalance,
     chainIcon,
     chainName,
     closeModal,
@@ -353,5 +371,6 @@ export function useXcmBridge(selectedToken?: ChainAsset) {
     selectToken,
     bridge,
     isDisabledBridge,
+    toMaxAmount,
   };
 }

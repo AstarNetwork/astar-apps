@@ -16,7 +16,9 @@
           <div class="column column--balance">
             <div class="column__box">
               <div class="text--accent">
-                <span>{{ token.deposit }} {{ token.metadata.symbol }}</span>
+                <span
+                  >{{ $n(Number(formattedSelectedTokenBalance)) }} {{ token.metadata.symbol }}</span
+                >
               </div>
               <!-- <div class="text--label">
                 <span>{{ $n(Number(token.userBalanceUsd)) }} {{ $t('usd') }}</span>
@@ -55,12 +57,12 @@
   </div>
 </template>
 <script lang="ts">
-import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
-import { addToEvmWallet } from 'src/hooks/helper/wallet';
+import { getProviderIndex } from 'src/config/chainEndpoints';
+import { useXcmBridge } from 'src/hooks';
+import { ChainAsset } from 'src/hooks/xcm/useXcmAssets';
+import { getXcmToken } from 'src/modules/xcm';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType } from 'vue';
-import { ChainAsset } from 'src/hooks/xcm/useXcmAssets';
-import { XcmTokenInformation, xcmToken } from 'src/modules/xcm';
 
 export default defineComponent({
   props: {
@@ -79,10 +81,8 @@ export default defineComponent({
   },
   setup({ token }) {
     const store = useStore();
-    const nativeTokenSymbol = computed(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      return chainInfo ? chainInfo.tokenSymbol : '';
-    });
+    const t = computed(() => token);
+    const { formattedSelectedTokenBalance } = useXcmBridge(t);
 
     const currentNetworkIdx = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
@@ -91,17 +91,16 @@ export default defineComponent({
     });
 
     const tokenImage = computed(() => {
-      const symbol = String(token.metadata.symbol);
-      type typeNetworkIdx = endpointKey.ASTAR | endpointKey.SHIDEN | endpointKey.SHIBUYA;
-      const networkIdx = currentNetworkIdx.value as typeNetworkIdx;
-      const t = xcmToken[networkIdx].find((it: XcmTokenInformation) => it.symbol === symbol);
+      const t = getXcmToken({
+        symbol: String(token.metadata.symbol),
+        currentNetworkIdx: currentNetworkIdx.value,
+      });
       return t ? t.logo : require('/src/assets/img/ic_coin-placeholder.png');
     });
 
     return {
-      addToEvmWallet,
-      nativeTokenSymbol,
       tokenImage,
+      formattedSelectedTokenBalance,
     };
   },
 });

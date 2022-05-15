@@ -33,12 +33,17 @@
             <div />
             <div class="box__available">
               <span class="text--available">
-                {{ $t('assets.modals.balance', { amount: $n(100), token: 'KSM' }) }}</span
+                {{
+                  $t('assets.modals.balance', {
+                    amount: $n(Number(formattedSelectedTokenBalance)),
+                    token: String(token.metadata.symbol),
+                  })
+                }}</span
               >
               <!-- Todo -->
-              <!-- <button v-if="symbol !== nativeTokenSymbol" class="btn--max" @click="toMaxAmount">
+              <button v-if="!isNativeToken" class="btn--max" @click="toMaxAmount">
                 {{ $t('assets.modals.max') }}
-              </button> -->
+              </button>
             </div>
           </div>
           <div class="box__row">
@@ -71,11 +76,11 @@
 </template>
 <script lang="ts">
 import { fadeDuration } from '@astar-network/astar-ui';
-import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
+import { getProviderIndex } from 'src/config/chainEndpoints';
 import { ChainAsset, useXcmBridge } from 'src/hooks';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { wait } from 'src/hooks/helper/common';
-import { xcmToken, XcmTokenInformation } from 'src/modules/xcm';
+import { getXcmToken } from 'src/modules/xcm';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType, ref } from 'vue';
 
@@ -100,7 +105,9 @@ export default defineComponent({
   setup(props) {
     const isClosingModal = ref<boolean>(false);
     const store = useStore();
+
     // const selectedToken = computed(() => store.getters['xcm/selectedToken']);
+    const token = computed(() => props.token);
 
     const {
       srcChain,
@@ -120,7 +127,9 @@ export default defineComponent({
       selectChain,
       selectToken,
       bridge,
-    } = useXcmBridge(props.token);
+      toMaxAmount,
+      formattedSelectedTokenBalance,
+    } = useXcmBridge(token);
 
     const resetStates = (): void => {
       amount.value = '';
@@ -142,11 +151,18 @@ export default defineComponent({
     });
 
     const tokenImage = computed(() => {
-      const symbol = String(props.token.metadata.symbol);
-      type typeNetworkIdx = endpointKey.ASTAR | endpointKey.SHIDEN | endpointKey.SHIBUYA;
-      const networkIdx = currentNetworkIdx.value as typeNetworkIdx;
-      const t = xcmToken[networkIdx].find((it: XcmTokenInformation) => it.symbol === symbol);
+      const t = getXcmToken({
+        symbol: String(props.token.metadata.symbol),
+        currentNetworkIdx: currentNetworkIdx.value,
+      });
       return t ? t.logo : require('/src/assets/img/ic_coin-placeholder.png');
+    });
+    const isNativeToken = computed(() => {
+      const t = getXcmToken({
+        symbol: String(props.token.metadata.symbol),
+        currentNetworkIdx: currentNetworkIdx.value,
+      });
+      return t ? t.isNativeToken : false;
     });
 
     return {
@@ -171,6 +187,9 @@ export default defineComponent({
       selectChain,
       selectToken,
       bridge,
+      isNativeToken,
+      toMaxAmount,
+      formattedSelectedTokenBalance,
     };
   },
 });
