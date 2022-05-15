@@ -4,6 +4,7 @@ import { ref, watchEffect, computed, onUnmounted } from 'vue';
 import { endpointKey, getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { getTokenBal } from 'src/config/web3';
 import { useStore } from 'src/store';
+import { calUsdAmount } from './../helper/price';
 import { useAccount } from '../useAccount';
 import Web3 from 'web3';
 import BN from 'bn.js';
@@ -13,6 +14,7 @@ export interface ChainAsset extends AssetDetails {
   mappedERC20Addr: string;
   metadata: AssetMetadata;
   userBalance: string;
+  userBalanceUsd: string;
 }
 
 export function useXcmAssets() {
@@ -47,8 +49,10 @@ export function useXcmAssets() {
     userAddress: string;
     token: ChainAsset;
   }): Promise<{
+    balUsd: number;
     userBalance: string;
   }> => {
+    let balUsd = 0;
     const userBalance = await getTokenBal({
       srcChainId: evmNetworkId.value,
       address: userAddress,
@@ -58,22 +62,29 @@ export function useXcmAssets() {
     if (Number(userBalance) > 0) {
       try {
         let symbol = token.metadata.symbol.toString();
+
+        balUsd = await calUsdAmount({
+          amount: Number(userBalance),
+          symbol,
+        });
       } catch (error) {
         console.error(error);
+        balUsd = 0;
       }
+      // ttlErc20Amount.value += balUsd;
     }
-    return { userBalance };
+    return { balUsd, userBalance };
   };
 
   const updateTokenBalances = async ({ userAddress }: { userAddress: string }): Promise<void> => {
     if (!xcmAssets.value) return;
     xcmAssets.value = await Promise.all(
       xcmAssets.value.map(async (token: ChainAsset) => {
-        const { userBalance } = await updateTokenBalanceHandler({
+        const { balUsd, userBalance } = await updateTokenBalanceHandler({
           userAddress,
           token,
         });
-        const tokenWithBalance = { ...token, userBalance };
+        const tokenWithBalance = { ...token, userBalance, userBalanceUsd: String(balUsd) };
         return tokenWithBalance as ChainAsset;
       })
     );
@@ -122,14 +133,13 @@ export function useXcmAssets() {
             //@ts-ignore
             const assetId = (i[0].toHuman() as string[])[0].replaceAll(',', '');
             const mappedXC20 = mappedXC20Asset(assetId);
-            // console.log('mapped', mappedXC20);
+            console.log('mapped', mappedXC20);
             //const assetId = i[0].toHuman() as any as AssetId;
             const assetInfo = i[1].toHuman() as any as AssetDetails;
             const metadata = assetMetadataListRaw[index][1].toHuman() as any as AssetMetadata;
             return {
               id: assetId,
               ...assetInfo,
-              mappedERC20Addr: mappedXC20,
               metadata,
             } as ChainAsset;
           });

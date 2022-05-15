@@ -264,6 +264,7 @@ export default {
       unlockPerBlock: '{perToken} {symbol} per block until block {untilBlock}',
       availableToUnlocked: 'Available to unlocked',
       unlock: 'Unlock',
+      xcmBridge: 'XCM Bridge',
     },
   },
   dashboard: {

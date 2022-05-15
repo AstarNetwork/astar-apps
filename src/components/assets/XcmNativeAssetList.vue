@@ -11,7 +11,6 @@
           :handle-modal-xcm-transfer="handleModalXcmTransfer"
           :handle-modal-xcm-bridge="handleModalXcmBridge"
         />
-        <!-- {{ t.id }} -->
       </div>
     </div>
 
@@ -24,29 +23,28 @@
         :account-data="accountData"
       /> -->
 
-      <!-- <ModalXcmBridge
-        :is-modal-transfer="isModalTransfer"
-        :handle-modal-transfer="handleModalTransfer"
+      <ModalXcmBridge
+        :is-modal-xcm-bridge="isModalXcmBridge"
+        :handle-modal-xcm-bridge="handleModalXcmBridge"
         :symbol="nativeTokenSymbol"
         :account-data="accountData"
-      /> -->
+        :token="token"
+      />
     </Teleport>
   </div>
 </template>
 <script lang="ts">
-import { useXcmAssets } from 'src/hooks';
-import { useStore } from 'src/store';
-import { defineComponent, ref, watchEffect } from 'vue';
+import { ChainAsset, useXcmAssets } from 'src/hooks';
+import { defineComponent, ref } from 'vue';
+import ModalXcmBridge from './modals/ModalXcmBridge.vue';
 import XcmCurrency from './XcmCurrency.vue';
 
 export default defineComponent({
-  components: { XcmCurrency },
+  components: { XcmCurrency, ModalXcmBridge },
   setup() {
     const isModalXcmTransfer = ref<boolean>(false);
     const isModalXcmBridge = ref<boolean>(false);
-    const token = ref();
-
-    const store = useStore();
+    const token = ref<ChainAsset | null>(null);
 
     const handleModalXcmTransfer = ({ isOpen, currency }: { isOpen: boolean; currency: any }) => {
       isModalXcmTransfer.value = isOpen;
@@ -60,14 +58,12 @@ export default defineComponent({
 
     const { xcmAssets, handleUpdateTokenBalances } = useXcmAssets();
 
-    watchEffect(() => {
-      console.log('xcmAssets', xcmAssets.value);
-    });
-
     return {
       handleModalXcmTransfer,
       handleModalXcmBridge,
       xcmAssets,
+      isModalXcmBridge,
+      token,
     };
   },
 });

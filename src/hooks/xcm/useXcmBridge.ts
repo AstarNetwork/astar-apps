@@ -52,7 +52,7 @@ export const formatDecimals = ({ amount, decimals }: { amount: string; decimals:
   return Number(Number(amount).toFixed(decimals));
 };
 
-export function useXcmBridge() {
+export function useXcmBridge(selectedToken?: ChainAsset) {
   const srcChains = ref<Chain[] | null>(null);
   const destChains = ref<Chain[] | null>(null);
 
@@ -79,7 +79,7 @@ export function useXcmBridge() {
     const chain = chainInfo ? chainInfo.chain : '';
     return getProviderIndex(chain);
   });
-  const selectedToken = computed(() => store.getters['xcm/selectedToken']);
+  // const selectedToken = computed(() => store.getters['xcm/selectedToken']);
   const { handleResult, handleTransactionError } = useCustomSignature({});
   let relayChainApi: RelaychainApi | null = null;
 
@@ -148,13 +148,15 @@ export function useXcmBridge() {
   const chainName = computed<{ src: string; dest: string }>(() => {
     if (currentNetworkIdx.value === endpointKey.ASTAR) {
       return {
-        src: 'Polkadot',
-        dest: 'Astar',
+        src: 'Polkadot Relay Chain',
+        dest: 'Astar Network',
       };
     } else {
       return {
         src: 'Kusama',
+        // src: 'Kusama Relay Chain',
         dest: 'Shiden',
+        // dest: 'Shiden Network',
       };
     }
   });
@@ -350,5 +352,6 @@ export function useXcmBridge() {
     selectChain,
     selectToken,
     bridge,
+    isDisabledBridge,
   };
 }
