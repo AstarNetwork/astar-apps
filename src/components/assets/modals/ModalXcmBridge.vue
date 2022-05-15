@@ -40,7 +40,6 @@
                   })
                 }}</span
               >
-              <!-- Todo -->
               <button v-if="!isNativeToken" class="btn--max" @click="toMaxAmount">
                 {{ $t('assets.modals.max') }}
               </button>
@@ -76,12 +75,8 @@
 </template>
 <script lang="ts">
 import { fadeDuration } from '@astar-network/astar-ui';
-import { getProviderIndex } from 'src/config/chainEndpoints';
 import { ChainAsset, useXcmBridge } from 'src/hooks';
-import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { wait } from 'src/hooks/helper/common';
-import { getXcmToken } from 'src/modules/xcm';
-import { useStore } from 'src/store';
 import { computed, defineComponent, PropType, ref } from 'vue';
 
 export default defineComponent({
@@ -104,37 +99,24 @@ export default defineComponent({
   },
   setup(props) {
     const isClosingModal = ref<boolean>(false);
-    const store = useStore();
 
     // const selectedToken = computed(() => store.getters['xcm/selectedToken']);
     const token = computed(() => props.token);
 
     const {
-      srcChain,
-      destChain,
-      srcChains,
-      destChains,
-      tokens,
-      modal,
       errMsg,
-      selectedTokenBalance,
       amount,
       chainIcon,
       chainName,
       isDisabledBridge,
-      openModal,
+      formattedSelectedTokenBalance,
+      tokenImage,
+      isNativeToken,
       inputHandler,
-      selectChain,
-      selectToken,
       bridge,
       toMaxAmount,
-      formattedSelectedTokenBalance,
+      resetStates,
     } = useXcmBridge(token);
-
-    const resetStates = (): void => {
-      amount.value = '';
-      errMsg.value = '';
-    };
 
     const closeModal = async (): Promise<void> => {
       isClosingModal.value = true;
@@ -144,52 +126,20 @@ export default defineComponent({
       isClosingModal.value = false;
     };
 
-    const currentNetworkIdx = computed(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      const chain = chainInfo ? chainInfo.chain : '';
-      return getProviderIndex(chain);
-    });
-
-    const tokenImage = computed(() => {
-      const t = getXcmToken({
-        symbol: String(props.token.metadata.symbol),
-        currentNetworkIdx: currentNetworkIdx.value,
-      });
-      return t ? t.logo : require('/src/assets/img/ic_coin-placeholder.png');
-    });
-    const isNativeToken = computed(() => {
-      const t = getXcmToken({
-        symbol: String(props.token.metadata.symbol),
-        currentNetworkIdx: currentNetworkIdx.value,
-      });
-      return t ? t.isNativeToken : false;
-    });
-
     return {
-      getShortenAddress,
-      inputHandler,
       errMsg,
-      closeModal,
       isClosingModal,
-      srcChain,
-      destChain,
-      srcChains,
-      destChains,
-      tokens,
-      modal,
-      selectedTokenBalance,
       amount,
       chainIcon,
       chainName,
       isDisabledBridge,
       tokenImage,
-      openModal,
-      selectChain,
-      selectToken,
-      bridge,
       isNativeToken,
-      toMaxAmount,
       formattedSelectedTokenBalance,
+      inputHandler,
+      closeModal,
+      bridge,
+      toMaxAmount,
     };
   },
 });

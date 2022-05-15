@@ -24,6 +24,7 @@ import { RelaychainApi } from './SubstrateApi';
 import { useXcmAssets } from 'src/hooks';
 import { ethers } from 'ethers';
 import { from } from 'rxjs';
+import { getXcmToken } from 'src/modules/xcm';
 
 // MEMO: temporary use :: will change to ChainAsset.
 export interface Chain {
@@ -88,6 +89,7 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
   const resetStates = (): void => {
     isDisabledBridge.value = true;
     amount.value = null;
+    errMsg.value = '';
   };
 
   const closeModal = (): boolean => modal.value === null;
@@ -168,6 +170,28 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
     const decimals = Number(String(selectedToken.value.metadata.decimals));
     const balance = ethers.utils.formatUnits(selectedTokenBalance.value, decimals).toString();
     return balance;
+  });
+
+  const tokenImage = computed(() => {
+    if (!selectedToken || !selectedToken.value) {
+      return require('/src/assets/img/ic_coin-placeholder.png');
+    }
+    const t = getXcmToken({
+      symbol: String(selectedToken.value.metadata.symbol),
+      currentNetworkIdx: currentNetworkIdx.value,
+    });
+    return t ? t.logo : require('/src/assets/img/ic_coin-placeholder.png');
+  });
+
+  const isNativeToken = computed(() => {
+    if (!selectedToken || !selectedToken.value) {
+      return false;
+    }
+    const t = getXcmToken({
+      symbol: String(selectedToken.value.metadata.symbol),
+      currentNetworkIdx: currentNetworkIdx.value,
+    });
+    return t ? t.isNativeToken : false;
   });
 
   const toMaxAmount = (): void => {
@@ -364,13 +388,16 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
     formattedSelectedTokenBalance,
     chainIcon,
     chainName,
+    isDisabledBridge,
+    tokenImage,
+    isNativeToken,
     closeModal,
     openModal,
     inputHandler,
     selectChain,
     selectToken,
     bridge,
-    isDisabledBridge,
     toMaxAmount,
+    resetStates,
   };
 }

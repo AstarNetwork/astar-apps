@@ -57,11 +57,8 @@
   </div>
 </template>
 <script lang="ts">
-import { getProviderIndex } from 'src/config/chainEndpoints';
 import { useXcmBridge } from 'src/hooks';
 import { ChainAsset } from 'src/hooks/xcm/useXcmAssets';
-import { getXcmToken } from 'src/modules/xcm';
-import { useStore } from 'src/store';
 import { computed, defineComponent, PropType } from 'vue';
 
 export default defineComponent({
@@ -80,23 +77,8 @@ export default defineComponent({
     },
   },
   setup({ token }) {
-    const store = useStore();
     const t = computed(() => token);
-    const { formattedSelectedTokenBalance } = useXcmBridge(t);
-
-    const currentNetworkIdx = computed(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      const chain = chainInfo ? chainInfo.chain : '';
-      return getProviderIndex(chain);
-    });
-
-    const tokenImage = computed(() => {
-      const t = getXcmToken({
-        symbol: String(token.metadata.symbol),
-        currentNetworkIdx: currentNetworkIdx.value,
-      });
-      return t ? t.logo : require('/src/assets/img/ic_coin-placeholder.png');
-    });
+    const { formattedSelectedTokenBalance, tokenImage } = useXcmBridge(t);
 
     return {
       tokenImage,
