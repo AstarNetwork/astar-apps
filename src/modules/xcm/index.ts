@@ -6,6 +6,7 @@ export interface XcmTokenInformation {
   symbol: string;
   logo: string;
   isNativeToken: boolean;
+  isXcmCompatible: boolean;
 }
 
 export type XcmNetworkIdx = endpointKey.ASTAR | endpointKey.SHIDEN | endpointKey.SHIBUYA;

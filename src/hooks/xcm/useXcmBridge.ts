@@ -24,7 +24,7 @@ import { RelaychainApi } from './SubstrateApi';
 import { useXcmAssets } from 'src/hooks';
 import { ethers } from 'ethers';
 import { from } from 'rxjs';
-import { getXcmToken } from 'src/modules/xcm';
+import { getXcmToken, XcmTokenInformation } from 'src/modules/xcm';
 
 // MEMO: temporary use :: will change to ChainAsset.
 export interface Chain {
@@ -172,26 +172,44 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
     return balance;
   });
 
-  const tokenImage = computed(() => {
+  const tokenDetails = computed<XcmTokenInformation | undefined>(() => {
     if (!selectedToken || !selectedToken.value) {
-      return require('/src/assets/img/ic_coin-placeholder.png');
+      return undefined;
     }
     const t = getXcmToken({
       symbol: String(selectedToken.value.metadata.symbol),
       currentNetworkIdx: currentNetworkIdx.value,
     });
-    return t ? t.logo : require('/src/assets/img/ic_coin-placeholder.png');
+    return t;
   });
 
-  const isNativeToken = computed(() => {
-    if (!selectedToken || !selectedToken.value) {
+  const tokenImage = computed<string>(() => {
+    if (!tokenDetails || !tokenDetails.value) {
+      return require('/src/assets/img/ic_coin-placeholder.png');
+    }
+    return tokenDetails.value.logo;
+  });
+
+  const isNativeToken = computed<boolean>(() => {
+    if (!tokenDetails || !tokenDetails.value) {
       return false;
     }
-    const t = getXcmToken({
-      symbol: String(selectedToken.value.metadata.symbol),
-      currentNetworkIdx: currentNetworkIdx.value,
-    });
-    return t ? t.isNativeToken : false;
+    return tokenDetails.value.isNativeToken;
+  });
+
+  const isDisplayToken = computed<boolean>(() => {
+    const isDisplay =
+      Number(formattedSelectedTokenBalance.value) > 0 || tokenDetails.value?.isXcmCompatible;
+    if (isDisplay) {
+      return true;
+    } else {
+      return false;
+    }
+  });
+
+  const isXcmCompatible = computed<boolean>(() => {
+    if (!tokenDetails.value) return false;
+    return tokenDetails.value.isXcmCompatible;
   });
 
   const toMaxAmount = (): void => {
@@ -391,6 +409,9 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
     isDisabledBridge,
     tokenImage,
     isNativeToken,
+    tokenDetails,
+    isDisplayToken,
+    isXcmCompatible,
     closeModal,
     openModal,
     inputHandler,

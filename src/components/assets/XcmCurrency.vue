@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="isDisplayToken">
     <div class="border--separator" />
     <div class="rows">
       <div class="row row--details">
@@ -39,6 +39,7 @@
             </button>
             <div>
               <button
+                v-if="isXcmCompatible"
                 class="btn btn--sm"
                 @click="
                   handleModalXcmBridge({
@@ -78,11 +79,20 @@ export default defineComponent({
   },
   setup({ token }) {
     const t = computed(() => token);
-    const { formattedSelectedTokenBalance, tokenImage } = useXcmBridge(t);
+    const {
+      formattedSelectedTokenBalance,
+      tokenImage,
+      tokenDetails,
+      isDisplayToken,
+      isXcmCompatible,
+    } = useXcmBridge(t);
 
     return {
       tokenImage,
       formattedSelectedTokenBalance,
+      tokenDetails,
+      isDisplayToken,
+      isXcmCompatible,
     };
   },
 });
