@@ -179,6 +179,7 @@ export default {
   },
   bridge: {
     bridge: 'Bridge',
+    send: 'Send',
     xcm: 'XCM',
     connectEvmWallet: 'Connect EVM wallet',
     max: 'MAX',
@@ -218,6 +219,7 @@ export default {
   },
   assets: {
     assets: 'Assets',
+    xcmAssets: 'XCM Assets',
     nativeAccount: 'Native Account',
     evmAccount: 'EVM Account',
     switchToNative: 'Switch to Lockdrop',

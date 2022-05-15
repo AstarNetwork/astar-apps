@@ -40,7 +40,7 @@
           <div class="information label">
             <div />
             <div v-if="selectedTokenBalance" class="balance">
-              <p>{{ $t('bridge.balance') }}</p>
+              <p>{{ $t('bridge.send') }}</p>
               <p>
                 {{
                   $n(

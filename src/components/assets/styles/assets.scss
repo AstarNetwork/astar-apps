@@ -29,7 +29,8 @@
 
 .container--assets {
   display: grid;
-  row-gap: 24px;
+  row-gap: 56px;
+  margin-bottom: 24px;
   @media (min-width: $xxl) {
     width: $container-max-width;
   }
