@@ -200,11 +200,7 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
   const isDisplayToken = computed<boolean>(() => {
     const isDisplay =
       Number(formattedSelectedTokenBalance.value) > 0 || tokenDetails.value?.isXcmCompatible;
-    if (isDisplay) {
-      return true;
-    } else {
-      return false;
-    }
+    return isDisplay || false;
   });
 
   const isXcmCompatible = computed<boolean>(() => {
