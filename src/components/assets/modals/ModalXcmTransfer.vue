@@ -137,6 +137,7 @@ export default defineComponent({
     const { iconWallet } = useWalletIcon();
     const store = useStore();
     const { currentAccount, currentAccountName } = useAccount();
+
     const nativeTokenSymbol = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
       return chainInfo ? chainInfo.tokenSymbol : '';
