@@ -14,7 +14,7 @@
         </div>
         <div v-else class="container--assets">
           <NativeAssetList />
-          <XcmNativeAssetList v-if="isEnableXcm && xcmAssets.length > 0" :xcm-assets="xcmAssets" />
+          <XcmNativeAssetList v-if="isEnableXcm" :xcm-assets="xcmAssets" />
         </div>
       </div>
     </div>
@@ -53,7 +53,9 @@ export default defineComponent({
       return getProviderIndex(chain);
     });
 
-    const isEnableXcm = computed(() => currentNetworkIdx.value !== endpointKey.SHIBUYA);
+    const isEnableXcm = computed(
+      () => currentNetworkIdx.value !== endpointKey.SHIBUYA && xcmAssets.value.length > 0
+    );
 
     const setIsDisplay = async (): Promise<void> => {
       const address = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
