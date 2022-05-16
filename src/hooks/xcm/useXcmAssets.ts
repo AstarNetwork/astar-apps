@@ -133,7 +133,7 @@ export function useXcmAssets() {
   }, secsUpdateBal);
 
   watch(
-    [currentAccount],
+    [currentAccount, isH160],
     () => {
       handleUpdateTokenBalances();
     },

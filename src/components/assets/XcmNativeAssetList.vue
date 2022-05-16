@@ -32,18 +32,18 @@
   </div>
 </template>
 <script lang="ts">
-import { ChainAsset, useBalance, useXcmAssets } from 'src/hooks';
-import { computed, defineComponent, ref } from 'vue';
-import ModalXcmTransfer from './modals/ModalXcmTransfer.vue';
-import ModalXcmBridge from './modals/ModalXcmBridge.vue';
-import XcmCurrency from './XcmCurrency.vue';
+import { ChainAsset, useBalance } from 'src/hooks';
 import { useStore } from 'src/store';
+import { computed, defineComponent, PropType, ref } from 'vue';
+import ModalXcmBridge from './modals/ModalXcmBridge.vue';
+import ModalXcmTransfer from './modals/ModalXcmTransfer.vue';
+import XcmCurrency from './XcmCurrency.vue';
 
 export default defineComponent({
   components: { XcmCurrency, ModalXcmBridge, ModalXcmTransfer },
   props: {
     xcmAssets: {
-      type: Array,
+      type: Array as PropType<ChainAsset[]>,
       required: true,
     },
   },
@@ -55,7 +55,6 @@ export default defineComponent({
     const store = useStore();
     const selectedAddress = computed(() => store.getters['general/selectedAddress']);
     const { accountData } = useBalance(selectedAddress);
-    // const { xcmAssets } = useXcmAssets();
 
     const handleModalXcmTransfer = ({
       isOpen,
@@ -80,7 +79,6 @@ export default defineComponent({
     };
 
     return {
-      // xcmAssets,
       isModalXcmBridge,
       isModalXcmTransfer,
       token,

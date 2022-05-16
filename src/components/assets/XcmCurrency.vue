@@ -79,10 +79,6 @@ export default defineComponent({
     const t = computed(() => token);
     const { tokenImage, tokenDetails, isDisplayToken, isXcmCompatible } = useXcmBridge(t);
 
-    watchEffect(() => {
-      console.log('token', token);
-    });
-
     return {
       tokenImage,
       tokenDetails,
