@@ -1,7 +1,7 @@
 <template>
   <astar-simple-modal
     :show="isModalTransfer"
-    title="Transfer"
+    :title="$t('assets.modals.transfer')"
     :is-closing="isClosingModal"
     @close="closeModal"
   >

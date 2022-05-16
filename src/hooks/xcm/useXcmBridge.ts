@@ -1,4 +1,4 @@
-import { ref, watch, watchEffect, computed, onUnmounted } from 'vue';
+import { ref, watch, watchEffect, computed, onUnmounted, Ref } from 'vue';
 import { wait } from 'src/hooks/helper/common';
 import { useRouter } from 'vue-router';
 import { useStore } from 'src/store';
@@ -21,6 +21,9 @@ import { getEvmMappedSs58Address, getPubkeyFromSS58Addr } from 'src/hooks/helper
 import { evmToAddress } from '@polkadot/util-crypto';
 import { RelaychainApi } from './SubstrateApi';
 import { useXcmAssets } from 'src/hooks';
+import { ethers } from 'ethers';
+import { from } from 'rxjs';
+import { getXcmToken, XcmTokenInformation } from 'src/modules/xcm';
 
 // MEMO: temporary use :: will change to ChainAsset.
 export interface Chain {
@@ -51,7 +54,7 @@ export const formatDecimals = ({ amount, decimals }: { amount: string; decimals:
   return Number(Number(amount).toFixed(decimals));
 };
 
-export function useXcmBridge() {
+export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
   const srcChains = ref<Chain[] | null>(null);
   const destChains = ref<Chain[] | null>(null);
 
@@ -66,6 +69,8 @@ export function useXcmBridge() {
   const amount = ref<string | null>(null);
   const errMsg = ref<string>('');
   const isDisabledBridge = ref<boolean>(true);
+  const isNativeBridge = ref<boolean>(true);
+  const destEvmAddress = ref<string>('');
 
   const store = useStore();
   const router = useRouter();
@@ -78,7 +83,7 @@ export function useXcmBridge() {
     const chain = chainInfo ? chainInfo.chain : '';
     return getProviderIndex(chain);
   });
-  const selectedToken = computed(() => store.getters['xcm/selectedToken']);
+  // const selectedToken = computed(() => store.getters['xcm/selectedToken']);
   const { handleResult, handleTransactionError } = useCustomSignature({});
   const { balance } = useBalance(currentAccount);
   let relayChainApi: RelaychainApi | null = null;
@@ -86,6 +91,7 @@ export function useXcmBridge() {
   const resetStates = (): void => {
     isDisabledBridge.value = true;
     amount.value = null;
+    errMsg.value = '';
   };
 
   const closeModal = (): boolean => modal.value === null;
@@ -129,6 +135,89 @@ export function useXcmBridge() {
     }
     modal.value = null;
     resetStates();
+  };
+
+  const chainIcon = computed<{ src: string; dest: string }>(() => {
+    if (currentNetworkIdx.value === endpointKey.ASTAR) {
+      return {
+        src: require('/src/assets/img/ic_polkadot.png'),
+        dest: require('/src/assets/img/ic_astar.png'),
+      };
+    } else {
+      return {
+        src: require('/src/assets/img/ic_kusama.png'),
+        dest: require('/src/assets/img/ic_shiden.png'),
+      };
+    }
+  });
+
+  const chainName = computed<{ src: string; dest: string }>(() => {
+    if (currentNetworkIdx.value === endpointKey.ASTAR) {
+      return {
+        src: 'Polkadot Relay Chain',
+        dest: 'Astar Network',
+      };
+    } else {
+      return {
+        // src: 'Kusama',
+        // dest: 'Shiden',
+        src: 'Kusama Relay Chain',
+        dest: 'Shiden Network',
+      };
+    }
+  });
+
+  const formattedSelectedTokenBalance = computed<string>(() => {
+    if (!selectedToken || !selectedToken.value) return '0';
+    const decimals = Number(String(selectedToken.value.metadata.decimals));
+    const balance = ethers.utils.formatUnits(selectedTokenBalance.value, decimals).toString();
+    return balance;
+  });
+
+  const tokenDetails = computed<XcmTokenInformation | undefined>(() => {
+    if (!selectedToken || !selectedToken.value) {
+      return undefined;
+    }
+    const t = getXcmToken({
+      symbol: String(selectedToken.value.metadata.symbol),
+      currentNetworkIdx: currentNetworkIdx.value,
+    });
+    return t;
+  });
+
+  const tokenImage = computed<string>(() => {
+    if (!tokenDetails || !tokenDetails.value) {
+      return require('/src/assets/img/ic_coin-placeholder.png');
+    }
+    return tokenDetails.value.logo;
+  });
+
+  const isNativeToken = computed<boolean>(() => {
+    if (!tokenDetails || !tokenDetails.value) {
+      return false;
+    }
+    return tokenDetails.value.isNativeToken;
+  });
+
+  const isDisplayToken = computed<boolean>(() => {
+    // Todo: fetch the balance in relaychain
+    const formattedRelaychainBalance = formattedSelectedTokenBalance.value;
+    const isDisplay = Number(formattedRelaychainBalance) > 0 || tokenDetails.value?.isXcmCompatible;
+    return isDisplay || false;
+  });
+
+  const isXcmCompatible = computed<boolean>(() => {
+    if (!tokenDetails.value) return false;
+    return tokenDetails.value.isXcmCompatible;
+  });
+
+  const toMaxAmount = (): void => {
+    amount.value = formattedSelectedTokenBalance.value;
+  };
+
+  const setIsNativeBridge = (isNative: boolean): void => {
+    resetStates();
+    isNativeBridge.value = isNative;
   };
 
   const updateBridgeConfig = async (): Promise<void> => {
@@ -321,11 +410,25 @@ export function useXcmBridge() {
     tokens,
     errMsg,
     selectedTokenBalance,
+    formattedSelectedTokenBalance,
+    chainIcon,
+    chainName,
+    isDisabledBridge,
+    tokenImage,
+    isNativeToken,
+    tokenDetails,
+    isDisplayToken,
+    isXcmCompatible,
+    isNativeBridge,
+    destEvmAddress,
     closeModal,
     openModal,
     inputHandler,
     selectChain,
     selectToken,
     bridge,
+    toMaxAmount,
+    resetStates,
+    setIsNativeBridge,
   };
 }

@@ -1,0 +1,159 @@
+@import 'src/css/quasar.variables.scss';
+
+.row {
+  padding: 16px 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rows {
+  display: grid;
+}
+
+.row--details {
+  display: flex;
+  justify-content: space-between;
+  @media (min-width: $md) {
+    align-items: center;
+  }
+}
+
+.row__right {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  row-gap: 16px;
+  @media (min-width: $md) {
+    display: grid;
+    grid-template-columns: 290px 190px;
+  }
+  @media (min-width: $lg) {
+    grid-template-columns: 280px 220px;
+  }
+  @media (min-width: $xl) {
+    grid-template-columns: 300px 290px;
+  }
+  @media (min-width: $xxl) {
+    grid-template-columns: 400px 290px;
+  }
+}
+
+.row__right--evm {
+  @media (min-width: $md) {
+    display: grid;
+    grid-template-columns: 260px 190px;
+  }
+  @media (min-width: $lg) {
+    grid-template-columns: 200px 190px;
+  }
+  @media (min-width: $xl) {
+    grid-template-columns: 280px auto;
+  }
+  @media (min-width: $xxl) {
+    grid-template-columns: 360px auto;
+  }
+}
+
+.column__box {
+  display: flex;
+  flex-direction: column;
+  @media (min-width: $md) {
+    width: 200px;
+    white-space: nowrap;
+  }
+  @media (min-width: $xl) {
+    text-align: right;
+  }
+  @media (min-width: $xxl) {
+    width: 250px;
+  }
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  @media (min-width: $md) {
+    row-gap: 10px;
+    justify-self: center;
+  }
+}
+
+.column--currency {
+  display: flex;
+  column-gap: 8px;
+  padding-top: 10px;
+  align-items: center;
+  @media (min-width: $md) {
+    padding-top: 0;
+  }
+}
+
+.column--ticker {
+  grid-template-columns: 54px auto;
+  column-gap: 12px;
+  align-items: center;
+  display: grid;
+  width: 100px;
+  @media (min-width: $sm) {
+    width: auto;
+    grid-template-columns: 60px auto;
+  }
+}
+
+.column--balance {
+  display: grid;
+  justify-items: center;
+  row-gap: 8px;
+  min-width: 120px;
+  @media (min-width: $xl) {
+    justify-self: start;
+  }
+}
+
+.column--asset-buttons {
+  display: grid;
+  align-items: center;
+  row-gap: 14px;
+  @media (min-width: $md) {
+    row-gap: 8px;
+    justify-self: end;
+  }
+  @media (min-width: $xl) {
+    justify-self: center;
+    padding-right: 12px;
+  }
+}
+
+.column--buttons--native {
+  @media (min-width: $xl) {
+    display: grid;
+    width: 400px;
+    grid-template-columns: 100px 100px;
+    justify-content: end;
+    column-gap: 2px;
+    margin-right: 64px;
+  }
+}
+
+.icon--plus {
+  position: absolute;
+  font-size: 24px;
+  font-weight: 500;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  padding-bottom: 3px;
+}
+
+.token-logo {
+  width: 24px;
+  height: 24px;
+}
+
+.body--dark {
+}

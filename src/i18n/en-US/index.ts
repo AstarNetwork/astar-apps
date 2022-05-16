@@ -179,6 +179,8 @@ export default {
   },
   bridge: {
     bridge: 'Bridge',
+    send: 'Send',
+    xcm: 'XCM',
     connectEvmWallet: 'Connect EVM wallet',
     max: 'MAX',
     balance: 'Available Balance:',
@@ -217,6 +219,7 @@ export default {
   },
   assets: {
     assets: 'Assets',
+    xcmAssets: 'XCM Assets',
     nativeAccount: 'Native Account',
     evmAccount: 'EVM Account',
     switchToNative: 'Switch to Lockdrop',
@@ -261,6 +264,11 @@ export default {
       unlockPerBlock: '{perToken} {symbol} per block until block {untilBlock}',
       availableToUnlocked: 'Available to unlocked',
       unlock: 'Unlock',
+      xcmBridge: 'XCM Bridge',
+      transfer: 'Transfer',
+      bridgeToNative: 'Bridge to Native',
+      bridgeToEvm: 'Bridge to EVM',
+      evmWalletAddress: 'EVM Wallet Address',
     },
   },
   dashboard: {
