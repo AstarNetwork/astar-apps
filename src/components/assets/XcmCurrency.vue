@@ -16,6 +16,7 @@
           <div class="column column--balance">
             <div class="column__box">
               <div class="text--accent">
+                <!-- Todo: display the token balance in parachain-->
                 <span>
                   {{ $n(Number(formattedSelectedTokenBalance)) }} {{ token.metadata.symbol }}
                 </span>

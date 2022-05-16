@@ -198,8 +198,9 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
   });
 
   const isDisplayToken = computed<boolean>(() => {
-    const isDisplay =
-      Number(formattedSelectedTokenBalance.value) > 0 || tokenDetails.value?.isXcmCompatible;
+    // Todo: fetch the balance in relaychain
+    const formattedRelaychainBalance = formattedSelectedTokenBalance.value;
+    const isDisplay = Number(formattedRelaychainBalance) > 0 || tokenDetails.value?.isXcmCompatible;
     return isDisplay || false;
   });
 
