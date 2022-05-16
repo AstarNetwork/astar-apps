@@ -83,8 +83,6 @@
         </div>
       </div>
 
-      <XcmAssetList />
-
       <div v-for="t in filteredTokens" :key="t.symbol">
         <div v-if="checkIsCbridgeToken(t)">
           <EvmCbridgeToken
@@ -121,7 +119,6 @@ import { $web3 } from 'src/boot/api';
 import { checkIsCbridgeToken, SelectedToken } from 'src/c-bridge';
 import Erc20Currency from 'src/components/assets/Erc20Currency.vue';
 import EvmCbridgeToken from 'src/components/assets/EvmCbridgeToken.vue';
-import XcmAssetList from 'src/components/assets/XcmAssetList.vue';
 import { getBalance } from 'src/config/web3';
 import { useAccount, usePrice } from 'src/hooks';
 import { Erc20Token, getTokenImage } from 'src/modules/token';
@@ -136,7 +133,6 @@ export default defineComponent({
     ModalTransfer,
     ModalFaucet,
     Erc20Currency,
-    XcmAssetList,
   },
   props: {
     tokens: {

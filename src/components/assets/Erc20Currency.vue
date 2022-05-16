@@ -35,11 +35,15 @@
             >
               {{ $t('assets.transfer') }}
             </button>
-            <div v-if="token.isWrappedToken">
+            <div v-if="token.isWrappedToken && !token.isXC20">
               <a :href="token.wrapUrl" target="_blank" rel="noopener noreferrer">
                 <button class="btn btn--sm">{{ $t('assets.wrap') }}</button>
               </a>
             </div>
+
+            <!-- Todo: We can add an action button for XC20 tokens here -->
+            <div v-if="token.isXC20" />
+
             <div class="screen--xl">
               <a
                 class="box--explorer"
