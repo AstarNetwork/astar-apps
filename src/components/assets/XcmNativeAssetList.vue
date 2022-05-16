@@ -49,6 +49,7 @@ export default defineComponent({
     const store = useStore();
     const selectedAddress = computed(() => store.getters['general/selectedAddress']);
     const { accountData } = useBalance(selectedAddress);
+    const { xcmAssets } = useXcmAssets();
 
     const handleModalXcmTransfer = ({
       isOpen,
@@ -71,8 +72,6 @@ export default defineComponent({
       isModalXcmBridge.value = isOpen;
       token.value = currency;
     };
-
-    const { xcmAssets, handleUpdateTokenBalances } = useXcmAssets();
 
     return {
       xcmAssets,

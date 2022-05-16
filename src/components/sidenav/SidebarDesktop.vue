@@ -57,8 +57,9 @@
         </router-link>
         <div v-else class="dummy-row" />
       </div>
-      <div v-if="enableBridge">
+      <div>
         <router-link
+          v-if="enableBridge"
           to="/bridge"
           :class="['link', $route.path.split('/')[1] === 'bridge' ? 'activeLink' : '']"
         >
@@ -73,25 +74,8 @@
             <astar-text type="H4">{{ $t('bridge.bridge') }}</astar-text>
           </span>
         </router-link>
+        <div v-else class="dummy-row" />
       </div>
-      <div v-else-if="enableXcm">
-        <router-link
-          to="/xcm/relay"
-          :class="['link', $route.path.split('/')[1] === 'xcm' ? 'activeLink' : '']"
-        >
-          <astar-icon-base
-            :class="['iconbase', isShiden ? 'shiden' : '']"
-            stroke="currentColor"
-            icon-name="bridge"
-          >
-            <astar-icon-bridge />
-          </astar-icon-base>
-          <span class="row--item">
-            <astar-text type="H4">{{ $t('bridge.xcm') }}</astar-text>
-          </span>
-        </router-link>
-      </div>
-      <div v-else class="dummy-row" />
       <div class="menu__indicator" :class="getIndicatorClass(path)" />
     </nav>
 
@@ -135,9 +119,6 @@ export default defineComponent({
     const enableBridge = computed(
       () => isH160.value && currentNetworkIdx.value !== endpointKey.SHIBUYA
     );
-    const enableXcm = computed(
-      () => !isH160.value && currentNetworkIdx.value !== endpointKey.SHIBUYA
-    );
 
     const router = useRouter();
     const path = computed(() => router.currentRoute.value.path.split('/')[1]);
@@ -152,8 +133,6 @@ export default defineComponent({
           return 'menu__staking';
         case 'bridge':
           return 'menu__bridge';
-        case 'xcm':
-          return 'menu__bridge';
         default:
           return 'menu__staking';
       }
@@ -167,7 +146,6 @@ export default defineComponent({
       getIndicatorClass,
       router,
       path,
-      enableXcm,
     };
   },
 });
