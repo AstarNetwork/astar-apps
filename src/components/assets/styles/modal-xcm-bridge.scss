@@ -19,7 +19,7 @@
 }
 
 .selected-bridge-option {
-  border-bottom: 1px solid $blue;
+  border-bottom: 3px solid $blue;
   transition: all 0.3s ease 0s;
 }
 
@@ -116,6 +116,6 @@
     background: $gray-6;
   }
   .selected-bridge-option {
-    border-bottom: 1px solid $astar-blue-dark;
+    border-bottom: 3px solid $astar-blue-dark;
   }
 }

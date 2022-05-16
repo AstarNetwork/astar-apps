@@ -49,7 +49,7 @@
                   })
                 "
               >
-                {{ $t('assets.bridge') }}
+                {{ $t('assets.xcm') }}
               </button>
             </div>
           </div>
