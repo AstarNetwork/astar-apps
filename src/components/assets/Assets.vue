@@ -49,9 +49,7 @@ export default defineComponent({
       return getProviderIndex(chain);
     });
 
-    const isEnableXcm = computed(
-      () => !isH160.value && currentNetworkIdx.value !== endpointKey.SHIBUYA
-    );
+    const isEnableXcm = computed(() => currentNetworkIdx.value !== endpointKey.SHIBUYA);
 
     const setIsDisplay = async (): Promise<void> => {
       const address = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
