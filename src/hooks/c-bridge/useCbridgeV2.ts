@@ -48,7 +48,7 @@ export function useCbridgeV2() {
     });
 
     tokens.value.sort((a: Token, b: Token) => {
-      return Number(b.userBalance) - Number(a.userBalance);
+      return Number(b.userBalanceUsd) - Number(a.userBalanceUsd);
     });
   };
 
