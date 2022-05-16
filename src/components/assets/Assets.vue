@@ -1,7 +1,10 @@
 <template>
   <div v-if="selectedAddress && isDisplay" class="wrapper--assets">
     <div class="container--assets">
-      <Account :ttl-erc20-amount="ttlErc20Amount" />
+      <Account
+        :ttl-erc20-amount="ttlErc20Amount"
+        :ttl-native-xcm-usd-amount="ttlNativeXcmUsdAmount"
+      />
       <div v-if="selectedAddress">
         <div v-if="isH160">
           <EvmAssetList
@@ -11,7 +14,7 @@
         </div>
         <div v-else class="container--assets">
           <NativeAssetList />
-          <XcmNativeAssetList v-if="isEnableXcm" />
+          <XcmNativeAssetList v-if="isEnableXcm" :xcm-assets="xcmAssets" />
         </div>
       </div>
     </div>
@@ -25,7 +28,7 @@ import EvmAssetList from 'src/components/assets/EvmAssetList.vue';
 
 import { useStore } from 'src/store';
 import { defineComponent, computed, ref, watchEffect } from 'vue';
-import { useCbridgeV2 } from 'src/hooks';
+import { useCbridgeV2, useXcmAssets } from 'src/hooks';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { wait } from 'src/hooks/helper/common';
 import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
@@ -39,6 +42,7 @@ export default defineComponent({
   },
   setup() {
     const { tokens, ttlErc20Amount, handleUpdateTokenBalances } = useCbridgeV2();
+    const { xcmAssets, ttlNativeXcmUsdAmount } = useXcmAssets();
     const isDisplay = ref<boolean>(false);
     const store = useStore();
     const selectedAddress = computed(() => store.getters['general/selectedAddress']);
@@ -49,7 +53,9 @@ export default defineComponent({
       return getProviderIndex(chain);
     });
 
-    const isEnableXcm = computed(() => currentNetworkIdx.value !== endpointKey.SHIBUYA);
+    const isEnableXcm = computed(
+      () => currentNetworkIdx.value !== endpointKey.SHIBUYA && xcmAssets.value.length > 0
+    );
 
     const setIsDisplay = async (): Promise<void> => {
       const address = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
@@ -76,6 +82,8 @@ export default defineComponent({
       isDisplay,
       handleUpdateTokenBalances,
       isEnableXcm,
+      xcmAssets,
+      ttlNativeXcmUsdAmount,
     };
   },
 });

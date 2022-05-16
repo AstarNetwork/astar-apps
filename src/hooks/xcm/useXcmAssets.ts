@@ -1,13 +1,10 @@
-import { AssetMetadata, AssetDetails } from '@polkadot/types/interfaces';
+import { AssetDetails, AssetMetadata } from '@polkadot/types/interfaces';
 import { $api } from 'boot/api';
-import { ref, watchEffect, computed, onUnmounted } from 'vue';
-import { endpointKey, getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
-import { getTokenBal } from 'src/config/web3';
+import { fetchXcmBalance } from 'src/modules/xcm';
 import { useStore } from 'src/store';
-import { calUsdAmount } from './../helper/price';
-import { useAccount } from '../useAccount';
+import { computed, onUnmounted, ref, watch, watchEffect } from 'vue';
 import Web3 from 'web3';
-import BN from 'bn.js';
+import { useAccount } from '../useAccount';
 
 export interface ChainAsset extends AssetDetails {
   id: string;
@@ -22,16 +19,7 @@ export function useXcmAssets() {
   const store = useStore();
   const { currentAccount } = useAccount();
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
-
-  const currentNetworkIdx = computed(() => {
-    const chainInfo = store.getters['general/chainInfo'];
-    const chain = chainInfo ? chainInfo.chain : '';
-    return getProviderIndex(chain);
-  });
-
-  const evmNetworkId = computed(() => {
-    return Number(providerEndpoints[currentNetworkIdx.value].evmChainId);
-  });
+  const ttlNativeXcmUsdAmount = ref<number>(0);
 
   const filterTokens = (): void => {
     xcmAssets.value.sort((a: ChainAsset, b: ChainAsset) => {
@@ -39,40 +27,23 @@ export function useXcmAssets() {
     });
 
     xcmAssets.value.sort((a: ChainAsset, b: ChainAsset) => {
-      return Number(b.userBalance) - Number(a.userBalance);
+      return Number(b.userBalanceUsd) - Number(a.userBalanceUsd);
     });
   };
 
-  const updateTokenBalanceHandler = async ({
-    userAddress,
-    token,
-  }: {
-    userAddress: string;
-    token: ChainAsset;
-  }): Promise<{
-    userBalance: string;
-  }> => {
-    if (isH160.value) {
-      const userBalance = await getTokenBal({
-        srcChainId: evmNetworkId.value,
-        address: userAddress,
-        tokenAddress: token.mappedERC20Addr,
-        tokenSymbol: token.metadata.symbol.toString(),
-      });
-      return { userBalance };
-    } else {
-      return { userBalance: '0' };
-    }
-  };
-
   const updateTokenBalances = async ({ userAddress }: { userAddress: string }): Promise<void> => {
+    if (isH160.value) return;
+
+    ttlNativeXcmUsdAmount.value = 0;
     xcmAssets.value = await Promise.all(
       xcmAssets.value.map(async (token: ChainAsset) => {
-        const { userBalance } = await updateTokenBalanceHandler({
-          userAddress,
+        const { userBalance, userBalanceUsd } = await fetchXcmBalance({
           token,
+          userAddress: userAddress,
+          api: $api!,
         });
-        const tokenWithBalance = { ...token, userBalance };
+        ttlNativeXcmUsdAmount.value = ttlNativeXcmUsdAmount.value + Number(userBalanceUsd);
+        const tokenWithBalance = { ...token, userBalance, userBalanceUsd };
         return tokenWithBalance as ChainAsset;
       })
     );
@@ -81,16 +52,10 @@ export function useXcmAssets() {
   };
 
   const handleUpdateTokenBalances = async (): Promise<void> => {
-    // if (!currentAccount.value || currentNetworkIdx.value === endpointKey.SHIBUYA || !isH160.value) {
-    //   tokens.value = null;
-    //   return;
-    // }
-    if (!xcmAssets.value) {
-      try {
-        await updateTokenBalances({ userAddress: currentAccount.value });
-      } catch (error) {
-        console.error(error);
-      }
+    try {
+      await updateTokenBalances({ userAddress: currentAccount.value });
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -109,31 +74,46 @@ export function useXcmAssets() {
 
       //const assetIds = assetIdsRaw.map((i) => i.toHuman() as string).flat().map((i) => i.replaceAll(',', ''));
       if (assetsListRaw && assetMetadataListRaw) {
-        xcmAssets.value = assetsListRaw
-          // .filter((i) => {
-          //   //@ts-ignore
-          //   const assetId = (i[0].toHuman() as string[])[0].replaceAll(',', '');
-          //   //the ID is between 2^64 ~ 2^128-1,
-          //   return (
-          //     new BN(assetId).gte(new BN(Math.pow(2, 64))) &&
-          //     new BN(assetId).lt(new BN(Math.pow(2, 128)))
-          //   );
-          // })
-          .map((i, index) => {
-            //@ts-ignore
-            const assetId = (i[0].toHuman() as string[])[0].replaceAll(',', '');
-            const mappedXC20 = mappedXC20Asset(assetId);
-            console.log('mapped', mappedXC20);
-            //const assetId = i[0].toHuman() as any as AssetId;
-            const assetInfo = i[1].toHuman() as any as AssetDetails;
-            const metadata = assetMetadataListRaw[index][1].toHuman() as any as AssetMetadata;
-            return {
-              id: assetId,
-              ...assetInfo,
-              metadata,
-            } as ChainAsset;
-          });
-        console.log('assetInfos', xcmAssets.value);
+        xcmAssets.value = await Promise.all(
+          assetsListRaw
+            // .filter((i) => {
+            //   //@ts-ignore
+            //   const assetId = (i[0].toHuman() as string[])[0].replaceAll(',', '');
+            //   //the ID is between 2^64 ~ 2^128-1,
+            //   return (
+            //     new BN(assetId).gte(new BN(Math.pow(2, 64))) &&
+            //     new BN(assetId).lt(new BN(Math.pow(2, 128)))
+            //   );
+            // })
+            .map(async (i, index) => {
+              //@ts-ignore
+              const assetId = (i[0].toHuman() as string[])[0].replaceAll(',', '');
+              const mappedXC20 = mappedXC20Asset(assetId);
+              console.log('mapped', mappedXC20);
+              //const assetId = i[0].toHuman() as any as AssetId;
+              const assetInfo = i[1].toHuman() as any as AssetDetails;
+              const metadata = assetMetadataListRaw[index][1].toHuman() as any as AssetMetadata;
+              const token = {
+                id: assetId,
+                ...assetInfo,
+                metadata,
+                userBalance: '0',
+                userBalanceUsd: '0',
+              } as ChainAsset;
+
+              if (currentAccount.value) {
+                const { userBalance, userBalanceUsd } = await fetchXcmBalance({
+                  token,
+                  userAddress: currentAccount.value,
+                  api: $api!,
+                });
+                ttlNativeXcmUsdAmount.value = ttlNativeXcmUsdAmount.value + Number(userBalanceUsd);
+                return { ...token, userBalance, userBalanceUsd } as ChainAsset;
+              } else {
+                return token;
+              }
+            })
+        );
       }
       // convert the list into a string array of numbers without the comma and no nested entries
     } catch (e) {
@@ -152,6 +132,14 @@ export function useXcmAssets() {
     }
   }, secsUpdateBal);
 
+  watch(
+    [currentAccount, isH160],
+    () => {
+      handleUpdateTokenBalances();
+    },
+    { immediate: true }
+  );
+
   onUnmounted(() => {
     clearInterval(tokenBalUpdate);
   });
@@ -160,5 +148,6 @@ export function useXcmAssets() {
     xcmAssets,
     mappedXC20Asset,
     handleUpdateTokenBalances,
+    ttlNativeXcmUsdAmount,
   };
 }

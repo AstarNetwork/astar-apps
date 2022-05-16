@@ -50,7 +50,7 @@
               <span class="text--available">
                 {{
                   $t('assets.modals.balance', {
-                    amount: $n(Number(formattedSelectedTokenBalance)),
+                    amount: $n(Number(token.userBalance)),
                     token: String(token.metadata.symbol),
                   })
                 }}</span
@@ -144,7 +144,7 @@ export default defineComponent({
     });
 
     const t = computed(() => props.token);
-    const { formattedSelectedTokenBalance, tokenImage, isNativeToken } = useXcmBridge(t);
+    const { tokenImage, isNativeToken } = useXcmBridge(t);
 
     // Todo
     const isDisabledTransfer = computed(() => {
@@ -172,10 +172,8 @@ export default defineComponent({
       isClosingModal.value = false;
     };
 
-    // Todo
     const toMaxAmount = async (): Promise<void> => {
-      console.log('update the amount');
-      transferAmt.value = '0';
+      transferAmt.value = props.token.userBalance;
     };
 
     // Memo: todo
@@ -186,7 +184,7 @@ export default defineComponent({
     // Todo
     const setErrorMsg = (): void => {
       const transferAmtRef = Number(transferAmt.value);
-      const fromAccountBalance = Number(formattedSelectedTokenBalance.value);
+      const fromAccountBalance = props.token ? Number(props.token.userBalance) : 0;
       try {
         if (transferAmtRef > fromAccountBalance) {
           errMsg.value = 'Insufficient balance';
@@ -211,7 +209,6 @@ export default defineComponent({
     // });
 
     return {
-      formattedSelectedTokenBalance,
       iconWallet,
       currentAccount,
       currentAccountName,

@@ -112,7 +112,7 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
     isDisabledBridge.value =
       !amount.value ||
       Number(amount.value) === 0 ||
-      Number(amount.value) > Number(formattedSelectedTokenBalance.value) ||
+      Number(amount.value) > Number(formattedRelayChainBalance.value) ||
       balance.value.lten(0);
     errMsg.value = '';
   };
@@ -159,7 +159,8 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
     }
   });
 
-  const formattedSelectedTokenBalance = computed<string>(() => {
+  // Memo: Relaychain balance
+  const formattedRelayChainBalance = computed<string>(() => {
     if (!selectedToken || !selectedToken.value) return '0';
     const decimals = Number(String(selectedToken.value.metadata.decimals));
     const balance = ethers.utils.formatUnits(selectedTokenBalance.value, decimals).toString();
@@ -193,8 +194,8 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
 
   const isDisplayToken = computed<boolean>(() => {
     // Todo: fetch the balance in relaychain
-    const formattedRelaychainBalance = formattedSelectedTokenBalance.value;
-    const isDisplay = Number(formattedRelaychainBalance) > 0 || tokenDetails.value?.isXcmCompatible;
+    const isDisplay =
+      Number(selectedToken?.value.userBalance) > 0 || tokenDetails.value?.isXcmCompatible;
     return isDisplay || false;
   });
 
@@ -204,7 +205,7 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
   });
 
   const toMaxAmount = (): void => {
-    amount.value = formattedSelectedTokenBalance.value;
+    amount.value = String(selectedToken?.value.userBalance);
   };
 
   const setIsNativeBridge = (isNative: boolean): void => {
@@ -377,7 +378,6 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
     tokens,
     errMsg,
     selectedTokenBalance,
-    formattedSelectedTokenBalance,
     chainIcon,
     chainName,
     isDisabledBridge,
@@ -388,6 +388,7 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
     isXcmCompatible,
     isNativeBridge,
     destEvmAddress,
+    formattedRelayChainBalance,
     closeModal,
     openModal,
     inputHandler,

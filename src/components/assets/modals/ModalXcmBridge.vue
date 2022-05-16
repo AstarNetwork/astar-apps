@@ -68,7 +68,7 @@
               <span class="text--available">
                 {{
                   $t('assets.modals.balance', {
-                    amount: $n(Number(formattedSelectedTokenBalance)),
+                    amount: $n(Number(formattedRelayChainBalance)),
                     token: String(token.metadata.symbol),
                   })
                 }}</span
@@ -141,11 +141,11 @@ export default defineComponent({
       chainIcon,
       chainName,
       isDisabledBridge,
-      formattedSelectedTokenBalance,
       tokenImage,
       isNativeToken,
       isNativeBridge,
       destEvmAddress,
+      formattedRelayChainBalance,
       inputHandler,
       bridge,
       toMaxAmount,
@@ -170,9 +170,9 @@ export default defineComponent({
       isDisabledBridge,
       tokenImage,
       isNativeToken,
-      formattedSelectedTokenBalance,
       isNativeBridge,
       destEvmAddress,
+      formattedRelayChainBalance,
       inputHandler,
       closeModal,
       bridge,
