@@ -1,6 +1,7 @@
 import { ref, watch, watchEffect, computed, onUnmounted, Ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'src/store';
+import { isValidEvmAddress, toSS58Address } from 'src/config/web3';
 import { useAccount } from 'src/hooks/useAccount';
 import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
 import {
@@ -285,6 +286,9 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
       const injector = await getInjector(substrateAccounts.value);
       // for H160 address, should mapped ss58 address and public key
       if (!isNativeBridge.value) {
+        if (!isValidEvmAddress(destEvmAddress.value)) {
+          throw Error('Invalid evm destination address');
+        }
         const ss58MappedAddr = evmToAddress(destEvmAddress.value, PREFIX_ASTAR);
         console.log('ss58MappedAddr', ss58MappedAddr);
         const hexPublicKey = getPubkeyFromSS58Addr(ss58MappedAddr);
@@ -303,7 +307,7 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
         new BN(10 ** Number(decimals)).muln(Number(amount.value)) // new BN(10 ** 12).muln(0.01)
       );
       relayChainApi
-        .signAndSend(recipientAccountId, injector.signer, txCall, handleResult)
+        .signAndSend(currentAccount.value, injector.signer, txCall, handleResult)
         .catch((error: Error) => {
           handleTransactionError(error);
           isDisabledBridge.value = false;
