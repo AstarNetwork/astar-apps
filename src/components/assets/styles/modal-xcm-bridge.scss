@@ -7,6 +7,28 @@
   position: relative;
 }
 
+.row--mode-tab {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.box--bridge-option {
+  padding-bottom: 8px;
+}
+
+.selected-bridge-option {
+  border-bottom: 1px solid $blue;
+  transition: all 0.3s ease 0s;
+}
+
+.unselected-bridge-option {
+  cursor: pointer;
+  border-bottom: 0px solid transparent;
+  transition: all 0.3s ease 0s;
+}
+
 .box__space-between {
   display: flex;
   justify-content: space-between;
@@ -92,5 +114,8 @@
   }
   .box--input-chain {
     background: $gray-6;
+  }
+  .selected-bridge-option {
+    border-bottom: 1px solid $astar-blue-dark;
   }
 }

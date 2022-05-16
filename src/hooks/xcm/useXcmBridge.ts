@@ -70,6 +70,8 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
   const amount = ref<string | null>(null);
   const errMsg = ref<string>('');
   const isDisabledBridge = ref<boolean>(true);
+  const isNativeBridge = ref<boolean>(true);
+  const destEvmAddress = ref<string>('');
 
   const store = useStore();
   const router = useRouter();
@@ -211,6 +213,11 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
 
   const toMaxAmount = (): void => {
     amount.value = formattedSelectedTokenBalance.value;
+  };
+
+  const setIsNativeBridge = (isNative: boolean): void => {
+    resetStates();
+    isNativeBridge.value = isNative;
   };
 
   const updateBridgeConfig = async (): Promise<void> => {
@@ -370,10 +377,6 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
   //   { immediate: false }
   // );
 
-  // watchEffect(() => {
-  //   console.log('selectedToken effect', selectedToken && selectedToken.value);
-  // });
-
   watch(
     [tokens],
     () => {
@@ -409,6 +412,8 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
     tokenDetails,
     isDisplayToken,
     isXcmCompatible,
+    isNativeBridge,
+    destEvmAddress,
     closeModal,
     openModal,
     inputHandler,
@@ -417,5 +422,6 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
     bridge,
     toMaxAmount,
     resetStates,
+    setIsNativeBridge,
   };
 }

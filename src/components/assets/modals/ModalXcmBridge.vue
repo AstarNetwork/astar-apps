@@ -6,6 +6,26 @@
     @close="closeModal"
   >
     <div v-if="token" class="wrapper--modal">
+      <div class="row--mode-tab">
+        <div
+          class="box--bridge-option"
+          :class="isNativeBridge ? 'selected-bridge-option' : 'unselected-bridge-option'"
+          @click="setIsNativeBridge(true)"
+        >
+          <span class="text--lg" :class="isNativeBridge && 'text-color--neon'">
+            {{ $t('assets.modals.bridgeToNative') }}
+          </span>
+        </div>
+        <div
+          class="box--bridge-option"
+          :class="!isNativeBridge ? 'selected-bridge-option' : 'unselected-bridge-option'"
+          @click="setIsNativeBridge(false)"
+        >
+          <span class="text--lg" :class="!isNativeBridge && 'text-color--neon'">
+            {{ $t('assets.modals.bridgeToEvm') }}
+          </span>
+        </div>
+      </div>
       <div class="rows">
         <div class="box--input-chain">
           <div class="box__space-between">
@@ -26,6 +46,19 @@
             <img :src="chainIcon.dest" alt="src-chain-logo" class="logo" />
             <span class="text--xl"> {{ chainName.dest }} </span>
           </div>
+        </div>
+
+        <div v-if="!isNativeBridge" class="box--input box--hover--active">
+          <div class="box__space-between">
+            <span> {{ $t('assets.modals.evmWalletAddress') }} </span>
+            <div>
+              <!-- Todo -->
+              <!-- <span class="text--to--balance">
+                {{ $t('assets.modals.balance', { amount: $n(toAddressBalance), token: symbol }) }}
+              </span> -->
+            </div>
+          </div>
+          <ModalH160AddressInput v-model:selAddress="destEvmAddress" :to-address="destEvmAddress" />
         </div>
 
         <div class="box--input box--hover--active">
@@ -78,8 +111,10 @@ import { fadeDuration } from '@astar-network/astar-ui';
 import { ChainAsset, useXcmBridge } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { computed, defineComponent, PropType, ref } from 'vue';
+import ModalH160AddressInput from './ModalH160AddressInput.vue';
 
 export default defineComponent({
+  components: { ModalH160AddressInput },
   props: {
     isModalXcmBridge: {
       type: Boolean,
@@ -109,10 +144,13 @@ export default defineComponent({
       formattedSelectedTokenBalance,
       tokenImage,
       isNativeToken,
+      isNativeBridge,
+      destEvmAddress,
       inputHandler,
       bridge,
       toMaxAmount,
       resetStates,
+      setIsNativeBridge,
     } = useXcmBridge(token);
 
     const closeModal = async (): Promise<void> => {
@@ -133,10 +171,13 @@ export default defineComponent({
       tokenImage,
       isNativeToken,
       formattedSelectedTokenBalance,
+      isNativeBridge,
+      destEvmAddress,
       inputHandler,
       closeModal,
       bridge,
       toMaxAmount,
+      setIsNativeBridge,
     };
   },
 });

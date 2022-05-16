@@ -266,6 +266,9 @@ export default {
       unlock: 'Unlock',
       xcmBridge: 'XCM Bridge',
       transfer: 'Transfer',
+      bridgeToNative: 'Bridge to Native',
+      bridgeToEvm: 'Bridge to EVM',
+      evmWalletAddress: 'EVM Wallet Address',
     },
   },
   dashboard: {
