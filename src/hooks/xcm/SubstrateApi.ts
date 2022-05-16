@@ -115,7 +115,12 @@ class ChainApi {
   }
 
   public async getBalance(address: string) {
-    return ((await this._api?.query.system.account(address)) as any).data.free.toBn() as BN;
+    try {
+      return ((await this._api.query.system.account(address)) as any).data.free.toBn() as BN;
+    } catch (e) {
+      console.error(e);
+      return new BN(0);
+    }
   }
 
   public async signAndSend(

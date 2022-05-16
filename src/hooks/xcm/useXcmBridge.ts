@@ -1,5 +1,4 @@
 import { ref, watch, watchEffect, computed, onUnmounted, Ref } from 'vue';
-import { wait } from 'src/hooks/helper/common';
 import { useRouter } from 'vue-router';
 import { useStore } from 'src/store';
 import { useAccount } from 'src/hooks/useAccount';
@@ -10,11 +9,8 @@ import {
   parachainIds,
   PREFIX_ASTAR,
 } from 'src/config/xcmChainEndpoints';
-import { getEvmProvider } from 'src/hooks/helper/wallet';
-import Web3 from 'web3';
 import { ChainAsset } from 'src/hooks/xcm/useXcmAssets';
 import { getInjector } from 'src/hooks/helper/wallet';
-import { setupNetwork } from 'src/config/web3';
 import BN from 'bn.js';
 import { useCustomSignature, useBalance } from 'src/hooks';
 import { getEvmMappedSs58Address, getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
@@ -22,10 +18,8 @@ import { evmToAddress } from '@polkadot/util-crypto';
 import { RelaychainApi } from './SubstrateApi';
 import { useXcmAssets } from 'src/hooks';
 import { ethers } from 'ethers';
-import { from } from 'rxjs';
 import { getXcmToken, XcmTokenInformation } from 'src/modules/xcm';
 
-// MEMO: temporary use :: will change to ChainAsset.
 export interface Chain {
   id: number;
   name: string;
@@ -61,9 +55,7 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
   const srcChain = ref<Chain | null>(null);
   const destChain = ref<Chain | null>(null);
   const destParaId = ref<number>(parachainIds.SDN);
-  // const selectedNetwork = ref<number>(0);
   const tokens = ref<ChainAsset[] | null>(null);
-  // const tokensObj = ref<any | null>(null);
   const selectedTokenBalance = ref<string>('0');
   const modal = ref<'src' | 'dest' | 'token' | null>(null);
   const amount = ref<string | null>(null);
@@ -74,7 +66,6 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
 
   const store = useStore();
   const router = useRouter();
-  const isH160 = computed(() => store.getters['general/isH160Formatted']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const { currentAccount } = useAccount();
   const { xcmAssets } = useXcmAssets();
@@ -83,7 +74,6 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
     const chain = chainInfo ? chainInfo.chain : '';
     return getProviderIndex(chain);
   });
-  // const selectedToken = computed(() => store.getters['xcm/selectedToken']);
   const { handleResult, handleTransactionError } = useCustomSignature({});
   const { balance } = useBalance(currentAccount);
   let relayChainApi: RelaychainApi | null = null;
@@ -111,15 +101,18 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
       return '0';
     }
 
-    //// TODO - convert it to proper unit
-    // const balance = await relayChainApi.getBalance(currentAccount.value);
-    // return balance.toString();
-    return '0';
+    const balance = await relayChainApi.getBalance(currentAccount.value);
+    return balance.toString();
   };
 
   const inputHandler = (event: any): void => {
     amount.value = event.target.value;
-    isDisabledBridge.value = true;
+    // check if recipient account has non-zero native asset. (it cannot be transferred to an account with 0 nonce)
+    isDisabledBridge.value =
+      !amount.value ||
+      Number(amount.value) === 0 ||
+      Number(amount.value) > Number(formattedSelectedTokenBalance.value) ||
+      balance.value.lten(0);
     errMsg.value = '';
   };
 
@@ -159,8 +152,6 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
       };
     } else {
       return {
-        // src: 'Kusama',
-        // dest: 'Shiden',
         src: 'Kusama Relay Chain',
         dest: 'Shiden Network',
       };
@@ -220,14 +211,25 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
     isNativeBridge.value = isNative;
   };
 
+  const connectRelaychain = async (): Promise<void> => {
+    let endpoint;
+    if (currentNetworkIdx.value === endpointKey.ASTAR) {
+      endpoint = xcmProviderEndpoints[xcmEndpointKey.POLKADOT].endpoint;
+    } else {
+      endpoint = xcmProviderEndpoints[xcmEndpointKey.KUSAMA].endpoint;
+    }
+
+    try {
+      relayChainApi = new RelaychainApi(endpoint);
+      await relayChainApi.start();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const updateBridgeConfig = async (): Promise<void> => {
-    const query = router.currentRoute.value.query;
-    // TODO : need to bind with query for specific token
-    // TODO : add token list by fetching assets
-    //const tokens = data && data.tokens;
     tokens.value = xcmAssets.value;
 
-    // MEMO : Temporary: it should be replaced by fetching all assets
     if (currentNetworkIdx.value === endpointKey.ASTAR) {
       srcChains.value = [
         {
@@ -242,13 +244,6 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
         },
       ];
       destParaId.value = parachainIds.ASTAR;
-
-      try {
-        relayChainApi = new RelaychainApi(xcmProviderEndpoints[xcmEndpointKey.POLKADOT].endpoint);
-        await relayChainApi.start();
-      } catch (err) {
-        console.error(err);
-      }
     } else {
       srcChains.value = [
         {
@@ -263,13 +258,6 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
         },
       ];
       destParaId.value = parachainIds.SDN;
-
-      try {
-        relayChainApi = new RelaychainApi(xcmProviderEndpoints[xcmEndpointKey.KUSAMA].endpoint);
-        await relayChainApi.start();
-      } catch (err) {
-        console.error(err);
-      }
     }
 
     srcChain.value = srcChains.value[0];
@@ -277,30 +265,12 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
     tokens.value && store.commit('xcm/setSelectedToken', tokens.value[0]);
   };
 
-  // const monitorConnectedNetwork = async (): Promise<void> => {
-  //   const provider = getEvmProvider();
-  //   if (!isH160.value || !provider) return;
-
-  //   const web3 = new Web3(provider as any);
-  //   const chainId = await web3.eth.getChainId();
-  //   selectedNetwork.value = chainId;
-
-  //   provider &&
-  //     provider.on('chainChanged', (chainId: string) => {
-  //       selectedNetwork.value = Number(chainId);
-  //     });
-  // };
-
   const bridge = async (): Promise<void> => {
     try {
-      // const provider = getEvmProvider();
       if (!currentAccount.value) {
         throw Error('Failed loading wallet address');
       }
-      // if (!provider) {
-      //   throw Error('Failed loading wallet provider');
-      // }
-      if (!srcChain.value || !destChain.value || !relayChainApi) {
+      if (!srcChain.value || !destChain.value || !selectedToken?.value || !relayChainApi) {
         throw Error('Something went wrong while bridging');
       }
       if (!amount.value) {
@@ -314,29 +284,33 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
       let recipientAccountId = currentAccount.value;
       const injector = await getInjector(substrateAccounts.value);
       // for H160 address, should mapped ss58 address and public key
-      if (isH160.value) {
-        const ss58MappedAddr = evmToAddress(currentAccount.value, PREFIX_ASTAR);
+      if (!isNativeBridge.value) {
+        const ss58MappedAddr = evmToAddress(destEvmAddress.value, PREFIX_ASTAR);
         console.log('ss58MappedAddr', ss58MappedAddr);
         const hexPublicKey = getPubkeyFromSS58Addr(ss58MappedAddr);
         console.log('hexPublicKey', hexPublicKey);
         recipientAccountId = hexPublicKey;
+
+        //TODO: need check EVM balance is non-zero
+        //updateTokenBalanceHandler in useXcmAssets
       }
 
-      // token.metadata.decimals
+      console.log('amount', amount.value);
+      const decimals = selectedToken.value.metadata.decimals;
       const txCall = await relayChainApi.transferToParachain(
         destParaId.value,
         recipientAccountId,
-        // new BN(10 ** 12).muln(0.01)
-        new BN(amount.value)
+        new BN(10 ** Number(decimals)).muln(Number(amount.value)) // new BN(10 ** 12).muln(0.01)
       );
       relayChainApi
         .signAndSend(recipientAccountId, injector.signer, txCall, handleResult)
         .catch((error: Error) => {
           handleTransactionError(error);
+          isDisabledBridge.value = false;
+          return;
         });
 
-      // const msg = `Transaction submitted at transaction hash #${hash}`;
-      // store.dispatch('general/showAlertMsg', { msg, alertType: 'success' });
+      isDisabledBridge.value = true;
       amount.value = null;
     } catch (error: any) {
       console.error(error.message);
@@ -361,28 +335,17 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
   };
 
   watchEffect(async () => {
-    if (!currentNetworkIdx.value || currentNetworkIdx.value !== null || xcmAssets.value !== null) {
-      await updateBridgeConfig();
+    if (!currentNetworkIdx.value || currentNetworkIdx.value !== null) {
+      await connectRelaychain();
     }
   });
 
-  // watchEffect(async () => {
-  //   await monitorConnectedNetwork();
-  // });
-
   watchEffect(async () => {
-    await updateSelectedTokenBal();
+    if (!currentNetworkIdx.value || currentNetworkIdx.value !== null || xcmAssets.value !== null) {
+      await updateBridgeConfig();
+      await updateSelectedTokenBal();
+    }
   });
-
-  // watch(
-  //   [srcChain, isH160],
-  //   async () => {
-  //     const loadTime = 800;
-  //     await wait(loadTime);
-  //     isH160.value && srcChain.value && (await setupNetwork(srcChain.value.id));
-  //   },
-  //   { immediate: false }
-  // );
 
   watch(
     [tokens],
