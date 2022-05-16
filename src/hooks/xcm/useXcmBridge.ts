@@ -15,9 +15,8 @@ import Web3 from 'web3';
 import { ChainAsset } from 'src/hooks/xcm/useXcmAssets';
 import { getInjector } from 'src/hooks/helper/wallet';
 import { setupNetwork } from 'src/config/web3';
-import { transferToParachain } from './utils';
 import BN from 'bn.js';
-import { useCustomSignature } from 'src/hooks';
+import { useCustomSignature, useBalance } from 'src/hooks';
 import { getEvmMappedSs58Address, getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
 import { evmToAddress } from '@polkadot/util-crypto';
 import { RelaychainApi } from './SubstrateApi';
@@ -81,6 +80,7 @@ export function useXcmBridge() {
   });
   const selectedToken = computed(() => store.getters['xcm/selectedToken']);
   const { handleResult, handleTransactionError } = useCustomSignature({});
+  const { balance } = useBalance(currentAccount);
   let relayChainApi: RelaychainApi | null = null;
 
   const resetStates = (): void => {
@@ -217,6 +217,10 @@ export function useXcmBridge() {
       if (!amount.value) {
         throw Error('Invalid amount');
       }
+      // check if recipient account has non-zero native asset. (it cannot be transferred to an account with 0 nonce)
+      if (balance.value.eqn(0)) {
+        throw Error('the balance of recipient account should be above zero');
+      }
 
       let recipientAccountId = currentAccount.value;
       const injector = await getInjector(substrateAccounts.value);
@@ -228,9 +232,12 @@ export function useXcmBridge() {
         console.log('hexPublicKey', hexPublicKey);
         recipientAccountId = hexPublicKey;
       }
-      const txCall = await transferToParachain(
+
+      // token.metadata.decimals
+      const txCall = await relayChainApi.transferToParachain(
         destParaId.value,
         recipientAccountId,
+        // new BN(10 ** 12).muln(0.01)
         new BN(amount.value)
       );
       relayChainApi
