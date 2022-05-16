@@ -99,7 +99,7 @@
         </div>
       </div>
       <div class="wrapper__row--button">
-        <button class="btn btn--confirm" :disabled="isDisabledBridge" @click="transfer">
+        <button class="btn btn--confirm" :disabled="isDisabledBridge" @click="bridge">
           {{ $t('confirm') }}
         </button>
       </div>
