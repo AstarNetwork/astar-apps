@@ -314,7 +314,7 @@ export default defineComponent({
     const setEvmGasCost = async () => {
       try {
         const isErc20Ref = isErc20Transfer.value;
-        const transferAmtRef = transferAmt.value || '1';
+        const transferAmtRef = transferAmt.value || '0';
         const value = isErc20Ref ? '0x0' : transferAmtRef;
         const destination = ethers.utils.isAddress(toAddress.value)
           ? toAddress.value

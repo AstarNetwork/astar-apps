@@ -1,7 +1,7 @@
 <template>
   <astar-simple-modal
     :show="isModalXcmBridge"
-    :title="$t('assets.modals.xcmBridge')"
+    :title="$t('assets.xcm')"
     :is-closing="isClosingModal"
     @close="closeModal"
   >
@@ -12,8 +12,8 @@
           :class="isNativeBridge ? 'selected-bridge-option' : 'unselected-bridge-option'"
           @click="setIsNativeBridge(true)"
         >
-          <span class="text--lg" :class="isNativeBridge && 'text-color--neon'">
-            {{ $t('assets.modals.bridgeToNative') }}
+          <span class="text--title" :class="isNativeBridge && 'text-color--neon'">
+            {{ $t('assets.modals.depositToNative') }}
           </span>
         </div>
         <div
@@ -21,8 +21,8 @@
           :class="!isNativeBridge ? 'selected-bridge-option' : 'unselected-bridge-option'"
           @click="setIsNativeBridge(false)"
         >
-          <span class="text--lg" :class="!isNativeBridge && 'text-color--neon'">
-            {{ $t('assets.modals.bridgeToEvm') }}
+          <span class="text--title" :class="!isNativeBridge && 'text-color--neon'">
+            {{ $t('assets.modals.depositToEvm') }}
           </span>
         </div>
       </div>

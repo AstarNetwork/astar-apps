@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div v-if="isListReady" class="container container--evm-assets-list">
+  <div v-if="isListReady" class="container--assets">
+    <div class="container">
       <div class="row">
         <div>
           <span class="text--title">{{ $t('assets.assets') }}</span>
@@ -83,8 +83,6 @@
         </div>
       </div>
 
-      <XcmAssetList />
-
       <div v-for="t in filteredTokens" :key="t.symbol">
         <div v-if="checkIsCbridgeToken(t)">
           <EvmCbridgeToken
@@ -94,11 +92,28 @@
           />
         </div>
         <div v-else>
-          <Erc20Currency :token="t" :handle-modal-transfer="handleModalTransfer" />
+          <Erc20Currency v-if="!t.isXC20" :token="t" :handle-modal-transfer="handleModalTransfer" />
         </div>
       </div>
       <div v-if="!filteredTokens && !isDisplayNativeToken" class="box--no-result">
         <span class="text--xl">{{ $t('assets.noResults') }}</span>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <div>
+          <span class="text--title">{{ $t('assets.xcmAssets') }}</span>
+        </div>
+        <div />
+      </div>
+
+      <div v-for="t in filteredTokens" :key="t.symbol">
+        <Erc20Currency
+          v-if="!checkIsCbridgeToken(t) && t.isXC20"
+          :token="t"
+          :handle-modal-transfer="handleModalTransfer"
+        />
       </div>
     </div>
 
@@ -121,7 +136,6 @@ import { $web3 } from 'src/boot/api';
 import { checkIsCbridgeToken, SelectedToken } from 'src/c-bridge';
 import Erc20Currency from 'src/components/assets/Erc20Currency.vue';
 import EvmCbridgeToken from 'src/components/assets/EvmCbridgeToken.vue';
-import XcmAssetList from 'src/components/assets/XcmAssetList.vue';
 import { getBalance } from 'src/config/web3';
 import { useAccount, usePrice } from 'src/hooks';
 import { Erc20Token, getTokenImage } from 'src/modules/token';
@@ -136,7 +150,6 @@ export default defineComponent({
     ModalTransfer,
     ModalFaucet,
     Erc20Currency,
-    XcmAssetList,
   },
   props: {
     tokens: {
