@@ -1,7 +1,7 @@
 import { endpointKey } from 'src/config/chainEndpoints';
 
 export { xcmToken } from './tokens';
-export { getXcmToken } from './utils';
+export { getXcmToken, fetchXcmBalance } from './utils';
 export interface XcmTokenInformation {
   symbol: string;
   logo: string;

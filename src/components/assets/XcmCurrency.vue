@@ -17,13 +17,11 @@
             <div class="column__box">
               <div class="text--accent">
                 <!-- Todo: display the token balance in parachain-->
-                <span>
-                  {{ $n(Number(formattedSelectedTokenBalance)) }} {{ token.metadata.symbol }}
-                </span>
+                <span> {{ $n(Number(token.userBalance)) }} {{ token.metadata.symbol }} </span>
               </div>
-              <!-- <div class="text--label">
+              <div class="text--label">
                 <span>{{ $n(Number(token.userBalanceUsd)) }} {{ $t('usd') }}</span>
-              </div> -->
+              </div>
             </div>
           </div>
           <div class="column--asset-buttons column--buttons--native">
@@ -80,17 +78,10 @@ export default defineComponent({
   },
   setup({ token }) {
     const t = computed(() => token);
-    const {
-      formattedSelectedTokenBalance,
-      tokenImage,
-      tokenDetails,
-      isDisplayToken,
-      isXcmCompatible,
-    } = useXcmBridge(t);
+    const { tokenImage, tokenDetails, isDisplayToken, isXcmCompatible } = useXcmBridge(t);
 
     return {
       tokenImage,
-      formattedSelectedTokenBalance,
       tokenDetails,
       isDisplayToken,
       isXcmCompatible,

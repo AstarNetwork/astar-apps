@@ -8,6 +8,7 @@ import { calUsdAmount } from './../helper/price';
 import { useAccount } from '../useAccount';
 import Web3 from 'web3';
 import BN from 'bn.js';
+import { fetchXcmBalance } from 'src/modules/xcm';
 
 export interface ChainAsset extends AssetDetails {
   id: string;
@@ -109,31 +110,45 @@ export function useXcmAssets() {
 
       //const assetIds = assetIdsRaw.map((i) => i.toHuman() as string).flat().map((i) => i.replaceAll(',', ''));
       if (assetsListRaw && assetMetadataListRaw) {
-        xcmAssets.value = assetsListRaw
-          // .filter((i) => {
-          //   //@ts-ignore
-          //   const assetId = (i[0].toHuman() as string[])[0].replaceAll(',', '');
-          //   //the ID is between 2^64 ~ 2^128-1,
-          //   return (
-          //     new BN(assetId).gte(new BN(Math.pow(2, 64))) &&
-          //     new BN(assetId).lt(new BN(Math.pow(2, 128)))
-          //   );
-          // })
-          .map((i, index) => {
-            //@ts-ignore
-            const assetId = (i[0].toHuman() as string[])[0].replaceAll(',', '');
-            const mappedXC20 = mappedXC20Asset(assetId);
-            console.log('mapped', mappedXC20);
-            //const assetId = i[0].toHuman() as any as AssetId;
-            const assetInfo = i[1].toHuman() as any as AssetDetails;
-            const metadata = assetMetadataListRaw[index][1].toHuman() as any as AssetMetadata;
-            return {
-              id: assetId,
-              ...assetInfo,
-              metadata,
-            } as ChainAsset;
-          });
-        console.log('assetInfos', xcmAssets.value);
+        xcmAssets.value = await Promise.all(
+          assetsListRaw
+            // .filter((i) => {
+            //   //@ts-ignore
+            //   const assetId = (i[0].toHuman() as string[])[0].replaceAll(',', '');
+            //   //the ID is between 2^64 ~ 2^128-1,
+            //   return (
+            //     new BN(assetId).gte(new BN(Math.pow(2, 64))) &&
+            //     new BN(assetId).lt(new BN(Math.pow(2, 128)))
+            //   );
+            // })
+            .map(async (i, index) => {
+              //@ts-ignore
+              const assetId = (i[0].toHuman() as string[])[0].replaceAll(',', '');
+              const mappedXC20 = mappedXC20Asset(assetId);
+              console.log('mapped', mappedXC20);
+              //const assetId = i[0].toHuman() as any as AssetId;
+              const assetInfo = i[1].toHuman() as any as AssetDetails;
+              const metadata = assetMetadataListRaw[index][1].toHuman() as any as AssetMetadata;
+              const token = {
+                id: assetId,
+                ...assetInfo,
+                metadata,
+                userBalance: '0',
+                userBalanceUsd: '0',
+              } as ChainAsset;
+
+              if (currentAccount.value) {
+                const { userBalance, userBalanceUsd } = await fetchXcmBalance({
+                  token,
+                  userAddress: currentAccount.value,
+                  api: $api!,
+                });
+                return { ...token, userBalance, userBalanceUsd } as ChainAsset;
+              } else {
+                return token;
+              }
+            })
+        );
       }
       // convert the list into a string array of numbers without the comma and no nested entries
     } catch (e) {
