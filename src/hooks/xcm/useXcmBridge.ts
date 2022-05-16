@@ -111,7 +111,7 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
     isDisabledBridge.value =
       !amount.value ||
       Number(amount.value) === 0 ||
-      Number(amount.value) > Number(formattedSelectedTokenBalance.value) ||
+      Number(amount.value) > Number(formattedRelayChainBalance.value) ||
       balance.value.lten(0);
     errMsg.value = '';
   };
@@ -156,6 +156,14 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
         dest: 'Shiden Network',
       };
     }
+  });
+
+  // Memo: Relaychain balance
+  const formattedRelayChainBalance = computed<string>(() => {
+    if (!selectedToken || !selectedToken.value) return '0';
+    const decimals = Number(String(selectedToken.value.metadata.decimals));
+    const balance = ethers.utils.formatUnits(selectedTokenBalance.value, decimals).toString();
+    return balance;
   });
 
   const tokenDetails = computed<XcmTokenInformation | undefined>(() => {
@@ -376,6 +384,7 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
     isXcmCompatible,
     isNativeBridge,
     destEvmAddress,
+    formattedRelayChainBalance,
     closeModal,
     openModal,
     inputHandler,
