@@ -71,6 +71,14 @@
       >
         {{ $t('dappStaking.maxChunksWarning', { chunks: maxUnlockingChunks }) }}
       </div>
+      <div class="container--speed-configuration">
+        <SpeedConfiguration
+          :is-responsible="true"
+          :selected-gas="selectedGas"
+          :gas-cost="gasCost"
+          :set-selected-gas="setSelectedGas"
+        />
+      </div>
       <div class="tw-mt-6 tw-flex tw-justify-center tw-flex-row">
         <Button type="button" :primary="false" @click="closeModal">{{ $t('close') }}</Button>
 
@@ -104,12 +112,14 @@ import { $api } from 'boot/api';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { getAmount, StakeModel } from 'src/hooks/store';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, toRefs, PropType } from 'vue';
+import { computed, defineComponent, ref, toRefs, PropType, watchEffect } from 'vue';
 import { StakeAction } from '../StakePanel.vue';
 import ModalNominationTransfer from 'src/components/dapp-staking/modals/ModalNominationTransfer.vue';
 import { StakingData } from 'src/modules/dapp-staking';
 import { ethers } from 'ethers';
 import { useI18n } from 'vue-i18n';
+import { GasPrice, SelectedGas } from 'src/modules/gas-api';
+import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 
 export enum Role {
   FromAddress = 'FromAddress',
@@ -125,6 +135,7 @@ export default defineComponent({
     Avatar,
     FormatBalance,
     ModalNominationTransfer,
+    SpeedConfiguration,
   },
   props: {
     dapp: {
@@ -163,6 +174,18 @@ export default defineComponent({
       type: Array as PropType<StakingData[]>,
       required: true,
     },
+    nativeTipPrice: {
+      type: Object as PropType<GasPrice>,
+      required: true,
+    },
+    selectedTip: {
+      type: Object as PropType<SelectedGas>,
+      required: true,
+    },
+    setSelectedTip: {
+      type: Function,
+      required: true,
+    },
   },
   emits: ['update:is-open'],
   setup(props, { emit }) {
@@ -178,6 +201,9 @@ export default defineComponent({
       isEnableNominationTransfer,
       nominationTransfer,
       isDisabledNominationTransfer,
+      selectedTip: selectedTipNominationTransfer,
+      nativeTipPrice: nativeTipPriceNominationTransfer,
+      setSelectedTip: setSelectedTipNominationTransfer,
     } = useNominationTransfer();
     const { t } = useI18n();
 
@@ -283,7 +309,7 @@ export default defineComponent({
 
     const maxAmount = computed(() => {
       if (props.actionName === StakeAction.Unstake) {
-        return formatStakeAmount;
+        return Number(formatStakeAmount.value);
       }
 
       if (isEnableNominationTransfer.value && formattedTransferFrom.value.isNominationTransfer) {
@@ -300,6 +326,20 @@ export default defineComponent({
     const closeModal = () => {
       emit('update:is-open', false);
     };
+
+    const selectedGas = computed(() =>
+      isEnableNominationTransfer.value ? selectedTipNominationTransfer.value : props.selectedTip
+    );
+
+    const gasCost = computed(() =>
+      isEnableNominationTransfer.value
+        ? nativeTipPriceNominationTransfer.value
+        : props.nativeTipPrice
+    );
+
+    const setSelectedGas = computed(() =>
+      isEnableNominationTransfer.value ? setSelectedTipNominationTransfer : props.setSelectedTip
+    );
 
     return {
       data,
@@ -324,6 +364,9 @@ export default defineComponent({
       errMsg,
       isMaxButton,
       maxAmount,
+      selectedGas,
+      gasCost,
+      setSelectedGas,
       ...toRefs(props),
     };
   },
@@ -344,7 +387,13 @@ export default defineComponent({
 .box__row--err-msg {
   position: absolute;
   color: $warning-red;
-  margin-top: 1px;
+  margin-top: 2px;
+  margin-left: 4px;
   font-size: 12.4px;
+}
+
+.container--speed-configuration {
+  margin-top: 40px;
+  width: 100%;
 }
 </style>

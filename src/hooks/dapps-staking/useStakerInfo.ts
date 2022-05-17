@@ -23,7 +23,7 @@ export function useStakerInfo() {
     const data = await Promise.all<StakeInfo>(
       dapps.value.map(async (it: DappItem) => {
         return await getStakeInfo({
-          api: $api.value!,
+          api: $api!,
           dappAddress: it.address,
           currentAccount: currentAccount.value,
         });

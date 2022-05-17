@@ -1,4 +1,3 @@
-import { options } from '@astar-network/astar-api';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
@@ -33,7 +32,7 @@ const fallbackConnection = async ({
     try {
       const resolveApiStatus = new Promise<string>((resolve) => {
         const provider = new WsProvider(it.endpoint);
-        const api = new ApiPromise(options({ provider }));
+        const api = new ApiPromise({ provider });
         api.isReadyOrError.then(async () => {
           const result = await api.rpc.system.health();
           const isHealthy = result.toHuman().shouldHavePeers;
@@ -82,7 +81,7 @@ export async function connectApi(
   api: ApiPromise;
 }> {
   const provider = new WsProvider(endpoint);
-  const api = new ApiPromise(options({ provider }));
+  const api = new ApiPromise({ provider });
 
   store.commit('general/setCurrentNetworkStatus', 'connecting');
   api.on('error', (error: Error) => console.error(error.message));

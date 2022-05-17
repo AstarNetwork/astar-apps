@@ -9,6 +9,7 @@ import { showError } from 'src/modules/extrinsic';
 import { Dispatch } from 'vuex';
 import { SubstrateAccount } from './../../store/general/state';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
+import { ethers } from 'ethers';
 
 export const getInjectedExtensions = async (forceRequest = false): Promise<any[]> => {
   const selectedAddress = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
@@ -37,7 +38,7 @@ export const getInjectedExtensions = async (forceRequest = false): Promise<any[]
   return [];
 };
 
-export const getSelectedAccount = (accounts: SubstrateAccount[]) => {
+export const getSelectedAccount = (accounts: SubstrateAccount[]): SubstrateAccount | undefined => {
   try {
     const selectedAddress = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
     if (selectedAddress === 'Ethereum Extension') {
@@ -62,7 +63,7 @@ export const getInjector = async (accounts: SubstrateAccount[]) => {
 export const isMobileDevice =
   'ontouchstart' in document.documentElement && navigator.userAgent.match(/Mobi/);
 
-export const castMobileSource = (source: string) => {
+export const castMobileSource = (source: string): string => {
   if (isMobileDevice) {
     // Memo: source as 'polkadot-js' in mobile app
     const polkadotJsWallets = [SupportWallet.Math, SupportWallet.Nova];
@@ -91,7 +92,7 @@ export const addToMetamask = ({
   decimals: number;
   image: string;
   provider: EthereumProvider;
-}) => {
+}): void => {
   provider.request({
     method: 'wallet_watchAsset',
     params: {
@@ -116,7 +117,7 @@ export const addToEvmWallet = ({
   symbol: string;
   decimals: number;
   image: string;
-}) => {
+}): void => {
   const provider = getEvmProvider();
   if (!provider) return;
   addToMetamask({ tokenAddress, symbol, decimals, image, provider });
@@ -138,7 +139,7 @@ export const checkIsWalletExtension = async (): Promise<boolean> => {
   return Boolean(isSubstrateDappBrowser.length || isMetamask);
 };
 
-export const checkIsEthereumWallet = (wallet: SupportWallet) => {
+export const checkIsEthereumWallet = (wallet: SupportWallet): boolean => {
   return supportEvmWalletObj.hasOwnProperty(wallet);
 };
 
@@ -167,7 +168,7 @@ export const signAndSend = async ({
   txResHandler,
   handleCustomExtrinsic,
   finalizeCallback,
-  tip = 1,
+  tip,
 }: {
   transaction: Transaction;
   senderAddress: string;
@@ -178,7 +179,7 @@ export const signAndSend = async ({
   // from: useCustomSignature.ts
   handleCustomExtrinsic?: (method: Transaction) => Promise<void>;
   finalizeCallback?: () => void;
-  tip?: number;
+  tip?: string;
 }): Promise<boolean> => {
   return new Promise<boolean>(async (resolve) => {
     const sendSubstrateTransaction = async (): Promise<void> => {
@@ -191,7 +192,7 @@ export const signAndSend = async ({
         {
           signer: injector.signer,
           nonce: -1,
-          tip,
+          tip: tip ? ethers.utils.parseEther(String(tip)).toString() : '1',
         },
         (result) => {
           (async () => {

@@ -1,5 +1,5 @@
+import { useGasPrice } from './../useGasPrice';
 import { ISubmittableResult } from '@polkadot/types/types';
-import { $api } from 'boot/api';
 import { ethers } from 'ethers';
 import { getAddressEnum } from 'src/modules/dapp-staking';
 import { showError } from 'src/modules/extrinsic';
@@ -12,10 +12,11 @@ import { signAndSend } from '../helper/wallet';
 import { useAccount } from '../useAccount';
 import { useCustomSignature } from '../useCustomSignature';
 import { useGetMinStaking } from '../useGetMinStaking';
+import { $api } from 'src/boot/api';
 
 export function useNominationTransfer() {
   const { currentAccount } = useAccount();
-  const { minStaking } = useGetMinStaking($api);
+  const { minStaking } = useGetMinStaking();
   const { stakingList } = useStakingList();
   const store = useStore();
   const addressTransferFrom = ref<string>(currentAccount.value);
@@ -24,10 +25,11 @@ export function useNominationTransfer() {
   const { isCustomSig, handleResult, handleCustomExtrinsic } = useCustomSignature({
     txType: TxType.requiredClaim,
   });
+  const { selectedTip, nativeTipPrice, setSelectedTip } = useGasPrice();
 
   const setIsEnableNominationTransfer = () => {
     try {
-      const metadata = $api.value!.runtimeMetadata;
+      const metadata = $api!.runtimeMetadata;
       const metadataJson = JSON.stringify(metadata.toJSON());
       const result = metadataJson.includes('nomination_transfer');
       isEnableNominationTransfer.value = result;
@@ -66,7 +68,7 @@ export function useNominationTransfer() {
   });
 
   const formattedMinStaking = computed(() => {
-    return Number(ethers.utils.formatEther(minStaking.value.toString()));
+    return Number(ethers.utils.formatEther(minStaking.value).toString());
   });
 
   const isDisabledNominationTransfer = ({
@@ -99,7 +101,7 @@ export function useNominationTransfer() {
     targetContractId: string;
   }): Promise<boolean> => {
     try {
-      const apiRef = $api.value!;
+      const apiRef = $api!;
       const transferFromRef = formattedTransferFrom.value;
       if (!transferFromRef || !formattedTransferFrom.value.item) return false;
 
@@ -122,6 +124,7 @@ export function useNominationTransfer() {
         txResHandler,
         handleCustomExtrinsic,
         dispatch: store.dispatch,
+        tip: selectedTip.value.price,
       });
       return true;
     } catch (error: any) {
@@ -153,5 +156,8 @@ export function useNominationTransfer() {
     setAddressTransferFrom,
     nominationTransfer,
     isDisabledNominationTransfer,
+    selectedTip,
+    nativeTipPrice,
+    setSelectedTip,
   };
 }

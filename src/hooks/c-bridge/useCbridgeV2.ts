@@ -11,7 +11,7 @@ import { endpointKey, getProviderIndex, providerEndpoints } from 'src/config/cha
 import { getTokenBal } from 'src/config/web3';
 import { objToArray } from 'src/hooks/helper/common';
 import { useStore } from 'src/store';
-import { computed, ref, watchEffect, onUnmounted } from 'vue';
+import { computed, ref, watchEffect, onUnmounted, watch } from 'vue';
 import { useAccount } from '../useAccount';
 import { calUsdAmount } from './../helper/price';
 import { checkIsWrappedToken, Erc20Token, registeredErc20Tokens } from 'src/modules/token';
@@ -92,7 +92,6 @@ export function useCbridgeV2() {
         console.error(error);
         balUsd = 0;
       }
-      ttlErc20Amount.value += balUsd;
     }
     return { balUsd, userBalance };
   };
@@ -105,6 +104,7 @@ export function useCbridgeV2() {
           userAddress,
           token,
         });
+        ttlErc20Amount.value += balUsd;
         const tokenWithBalance = { ...token, userBalance, userBalanceUsd: String(balUsd) };
         return tokenWithBalance;
       })
@@ -125,6 +125,7 @@ export function useCbridgeV2() {
     }
     const seen = new Set();
     // Todo: use srcChain and destChainID to re-define token information for bridging (ex: PKEX)
+    ttlErc20Amount.value = 0;
     const cbridgeTokens = (await Promise.all(
       objToArray(data.tokens[srcChainId])
         .flat()
@@ -210,6 +211,19 @@ export function useCbridgeV2() {
   watchEffect(async () => {
     await handleCbridgeConfiguration();
   });
+
+  // Memo: Calculate the `ttlErc20Amount` after fetching `tokens` data
+  watch(
+    [tokens],
+    () => {
+      const isInitialErc20Amount =
+        tokens.value && tokens.value.length > 0 && ttlErc20Amount.value === 0;
+      if (isInitialErc20Amount) {
+        handleUpdateTokenBalances();
+      }
+    },
+    { immediate: false }
+  );
 
   const secsUpdateBal = 60 * 1000;
   const tokenBalUpdate = setInterval(() => {

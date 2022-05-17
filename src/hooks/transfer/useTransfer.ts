@@ -1,6 +1,8 @@
-import type { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
+import { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 import { $api } from 'boot/api';
+import { ethers } from 'ethers';
+import ABI from 'src/c-bridge/abi/ERC20.json';
 import {
   buildEvmAddress,
   getDefaultEthProvider,
@@ -11,22 +13,22 @@ import {
 import { useCustomSignature } from 'src/hooks';
 import { isValidAddressPolkadotAddress, reduceDenomToBalance } from 'src/hooks/helper/plasmUtils';
 import { getUnit } from 'src/hooks/helper/units';
-import { getInjector } from 'src/hooks/helper/wallet';
+import { getEvmGas } from 'src/modules/gas-api';
 import { useStore } from 'src/store';
 import { computed, Ref, ref, watchEffect } from 'vue';
 import Web3 from 'web3';
-import { getEvmProvider } from './helper/wallet';
-import ABI from 'src/c-bridge/abi/ERC20.json';
-import { ethers } from 'ethers';
 import { TransactionConfig } from 'web3-eth';
 import { AbiItem } from 'web3-utils';
+import { getEvmProvider } from '../helper/wallet';
+import { signAndSend } from './../helper/wallet';
+import { useGasPrice } from '../useGasPrice';
 
 export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: () => void) {
   const store = useStore();
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
   const isTxSuccess = ref(false);
 
-  const { callFunc, handleResult, handleTransactionError } = useCustomSignature({ fn });
+  const { handleResult, handleCustomExtrinsic } = useCustomSignature({ fn });
   const toastInvalidAddress = () =>
     store.dispatch('general/showAlertMsg', {
       msg: 'assets.invalidAddress',
@@ -35,47 +37,38 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const isEthWallet = computed(() => store.getters['general/isEthWallet']);
 
-  const transferLocal = async (transferAmt: BN, fromAddress: string, toAddress: string) => {
-    try {
-      const injector = await getInjector(substrateAccounts.value);
-      const transfer = await $api?.value?.tx.balances.transfer(toAddress, transferAmt);
-      transfer
-        ?.signAndSend(
-          fromAddress,
-          {
-            signer: injector?.signer,
-            nonce: -1,
-            tip: 1,
-          },
-          (result) => {
-            handleResult(result);
-            isTxSuccess.value = true;
-          }
-        )
-        .catch((error: Error) => {
-          handleTransactionError(error);
-          isTxSuccess.value = false;
-        });
-    } catch (e) {
-      console.error(e);
-      isTxSuccess.value = false;
-    }
-  };
+  const {
+    evmGasPrice,
+    selectedGas,
+    setSelectedGas,
+    evmGasCost,
+    selectedTip,
+    nativeTipPrice,
+    setSelectedTip,
+  } = useGasPrice();
 
-  const transferExtrinsic = async (transferAmt: BN, toAddress: string) => {
+  const transferNative = async (transferAmt: BN, fromAddress: string, toAddress: string) => {
     try {
-      const fn: SubmittableExtrinsicFunction<'promise'> | undefined =
-        $api?.value?.tx.balances.transfer;
-      const method: SubmittableExtrinsic<'promise'> | undefined = fn && fn(toAddress, transferAmt);
+      const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
+        const res = await handleResult(result);
+        isTxSuccess.value = true;
+        return res;
+      };
 
-      method && callFunc(method);
+      const transaction = $api!.tx.balances.transfer(toAddress, transferAmt);
+      await signAndSend({
+        transaction,
+        senderAddress: fromAddress,
+        substrateAccounts: substrateAccounts.value,
+        isCustomSignature: isEthWallet.value,
+        txResHandler,
+        handleCustomExtrinsic,
+        dispatch: store.dispatch,
+        tip: selectedTip.value.price,
+      });
       isTxSuccess.value = true;
     } catch (e) {
       console.error(e);
-      store.dispatch('general/showAlertMsg', {
-        msg: (e as Error).message,
-        alertType: 'error',
-      });
       isTxSuccess.value = false;
     }
   };
@@ -90,12 +83,14 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
 
       store.commit('general/setLoading', true);
       const web3 = getDefaultEthProvider();
+      const gasPrice = await getEvmGas(web3, selectedGas.value.price);
 
       sendNativeTokenTransaction(
         web3,
         fromAddress,
         destinationAddress,
         transferAmt,
+        gasPrice,
         (hash: string) => {
           const msg = `Completed at transaction hash #${hash}`;
           store.dispatch('general/showAlertMsg', { msg, alertType: 'success' });
@@ -121,18 +116,11 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
       }
 
       const receivingAddress = isValidEvmAddress(toAddress) ? toSS58Address(toAddress) : toAddress;
-      // console.log('receivingAddress', receivingAddress);
 
       watchEffect(async () => {
         const unit = getUnit(selectUnit.value);
         const toAmt = reduceDenomToBalance(transferAmt, unit, decimal.value);
-        // console.log('toAmt', toAmt.toString(10));
-
-        if (isEthWallet.value) {
-          await transferExtrinsic(toAmt, receivingAddress);
-        } else {
-          await transferLocal(toAmt, fromAddress, receivingAddress);
-        }
+        await transferNative(toAmt, fromAddress, receivingAddress);
       });
     }
   };
@@ -158,9 +146,9 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
     const provider = getEvmProvider();
     const web3 = new Web3(provider as any);
     const contract = new web3.eth.Contract(ABI as AbiItem[], contractAddress);
-    const gasPrice = await web3.eth.getGasPrice();
-
     const value = ethers.utils.parseUnits(transferAmt, decimals);
+    const gasPrice = await getEvmGas(web3, selectedGas.value.price);
+
     const rawTx: TransactionConfig = {
       nonce: await web3.eth.getTransactionCount(fromAddress),
       gasPrice: web3.utils.toHex(gasPrice),
@@ -169,8 +157,19 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
       value: '0x0',
       data: contract.methods.transfer(toAddress, value).encodeABI(),
     };
-    const estimatedGas = await web3.eth.estimateGas(rawTx);
 
+    // Memo: EIP-1559 example
+    // const rawTx: TransactionConfig = {
+    //   nonce: await web3.eth.getTransactionCount(fromAddress),
+    //   gasPrice: web3.utils.toHex(gasPrice),
+    //   from: fromAddress,
+    //   to: contractAddress,
+    //   value: '0x0',
+    //   data: contract.methods.transfer(toAddress, value).encodeABI(),
+    //   maxPriorityFeePerGas: '12256478930',
+    //   maxFeePerGas: '1000000000',
+    // };
+    const estimatedGas = await web3.eth.estimateGas(rawTx);
     await web3.eth
       .sendTransaction({ ...rawTx, gas: estimatedGas })
       .once('transactionHash', (transactionHash) => {
@@ -190,5 +189,16 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
       });
   };
 
-  return { callTransfer, isTxSuccess, callErc20Transfer };
+  return {
+    callTransfer,
+    isTxSuccess,
+    callErc20Transfer,
+    evmGasPrice,
+    selectedGas,
+    setSelectedGas,
+    evmGasCost,
+    selectedTip,
+    nativeTipPrice,
+    setSelectedTip,
+  };
 }

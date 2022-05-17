@@ -2,6 +2,7 @@ export interface DappItem extends LooseObject {
   name: string;
   iconUrl: string;
   description: string;
+  descriptionMarkdown: string;
   url: string;
   address: string;
   license: string;
