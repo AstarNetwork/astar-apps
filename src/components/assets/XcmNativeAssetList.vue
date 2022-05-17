@@ -27,6 +27,7 @@
         :handle-modal-xcm-bridge="handleModalXcmBridge"
         :account-data="accountData"
         :token="token"
+        :handle-update-xcm-token-balances="handleUpdateXcmTokenBalances"
       />
     </Teleport>
   </div>
@@ -44,6 +45,10 @@ export default defineComponent({
   props: {
     xcmAssets: {
       type: Array as PropType<ChainAsset[]>,
+      required: true,
+    },
+    handleUpdateXcmTokenBalances: {
+      type: Function,
       required: true,
     },
   },

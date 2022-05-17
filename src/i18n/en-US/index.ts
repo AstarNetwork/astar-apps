@@ -268,6 +268,12 @@ export default {
       depositToNative: 'Deposit to Native',
       depositToEvm: 'Deposit to EVM',
       evmWalletAddress: 'EVM Wallet Address',
+      xcmWarning: {
+        avoidRisk: 'Avoid risk of losing your balance',
+        fee: 'Fee will be taken from inputted amount',
+        tooltip:
+          "Account with balance below the existential deposit will be reaped ({amount} {symbol} for {network}'s existential deposit)",
+      },
     },
   },
   dashboard: {

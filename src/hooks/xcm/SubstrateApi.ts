@@ -1,20 +1,11 @@
 import { ApiPromise, WsProvider } from '@polkadot/api';
-import { ISubmittableResult } from '@polkadot/types/types';
-import { SignerOptions } from '@polkadot/api/types';
-import { ITuple } from '@polkadot/types/types';
-import { Vec, u32, TypeRegistry } from '@polkadot/types';
-import {
-  DispatchError,
-  VersionedXcm,
-  MultiLocation,
-  AssetMetadata,
-  AssetDetails,
-  MultiAsset,
-} from '@polkadot/types/interfaces';
+import { TypeRegistry } from '@polkadot/types';
+import { DispatchError, MultiAsset, MultiLocation, VersionedXcm } from '@polkadot/types/interfaces';
+import { ISubmittableResult, ITuple } from '@polkadot/types/types';
+import { decodeAddress } from '@polkadot/util-crypto';
 import BN from 'bn.js';
 import { ExtrinsicPayload } from 'src/hooks/helper';
-import { decodeAddress } from '@polkadot/util-crypto';
-import Web3 from 'web3';
+import { ExistentialDeposit, fetchExistentialDeposit } from 'src/modules/xcm';
 
 const AUTO_CONNECT_MS = 10_000; // [ms]
 
@@ -90,6 +81,10 @@ class ChainApi {
     return await this._api?.rpc.chain.getBlockHash(blockNumber);
   }
 
+  public async getExistentialDeposit(): Promise<ExistentialDeposit> {
+    return await fetchExistentialDeposit(this._api);
+  }
+
   public buildTxCall(extrinsic: string, method: string, ...args: any[]): ExtrinsicPayload {
     const ext = this._api?.tx[extrinsic][method](...args);
     if (ext) return ext;
@@ -116,6 +111,7 @@ class ChainApi {
 
   public async getBalance(address: string) {
     try {
+      await this._api?.isReady;
       return ((await this._api.query.system.account(address)) as any).data.free.toBn() as BN;
     } catch (e) {
       console.error(e);
@@ -123,10 +119,19 @@ class ChainApi {
     }
   }
 
+  public async isReady(): Promise<void> {
+    try {
+      await this._api?.isReady;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   public async signAndSend(
     account: string,
     signer: any,
     tx: ExtrinsicPayload,
+    finalizedCallback: () => Promise<void>,
     handleResult?: (result: ISubmittableResult) => Promise<boolean>
   ) {
     const txsToExecute: ExtrinsicPayload[] = [];
@@ -135,11 +140,15 @@ class ChainApi {
     // ensure that we automatically increment the nonce per transaction
     return await transaction.signAndSend(account, { signer, nonce: -1, tip: 1 }, (result) => {
       console.log('r', result);
-      handleResult && handleResult(result);
+      handleResult &&
+        handleResult(result).then(async () => {
+          // await wait(5000);
+          await finalizedCallback();
+        });
       // handle transaction errors
       result.events
         .filter((record): boolean => !!record.event && record.event.section !== 'democracy')
-        .map(({ event: { data, method, section } }) => {
+        .map(async ({ event: { data, method, section } }) => {
           if (section === 'system' && method === 'ExtrinsicFailed') {
             const [dispatchError] = data as unknown as ITuple<[DispatchError]>;
             let message = dispatchError.type.toString();
@@ -184,7 +193,9 @@ export class RelaychainApi extends ChainApi {
     // check if the connected network implements xcmPallet
   }
 
-  public transferToParachain(toPara: number, recipientAccountId: string, amount: BN) {
+  public transferToParachain(toPara: number, recipientAccountId: string, amount: string) {
+    // public transferToParachain(toPara: number, recipientAccountId: string, amount: string) {
+    console.log('amount', amount.toString());
     // the target parachain connected to the current relaychain
     const dest = {
       V1: {
@@ -215,7 +226,7 @@ export class RelaychainApi extends ChainApi {
       V1: [
         {
           fun: {
-            Fungible: amount,
+            Fungible: new BN(amount),
           },
           id: {
             Concrete: {

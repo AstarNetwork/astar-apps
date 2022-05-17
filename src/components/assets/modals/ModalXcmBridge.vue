@@ -5,6 +5,7 @@
     :is-closing="isClosingModal"
     @close="closeModal"
   >
+    <ModalLoading v-if="isLoading" />
     <div v-if="token" class="wrapper--modal">
       <div class="row--mode-tab">
         <div
@@ -34,7 +35,7 @@
           </div>
           <div class="row__chain">
             <img :src="chainIcon.src" alt="src-chain-logo" class="logo" />
-            <span class="text--xl"> {{ chainName.src }} </span>
+            <span class="text--title"> {{ chainName.src }} </span>
           </div>
         </div>
         <div class="box--input-chain">
@@ -43,8 +44,8 @@
             <div />
           </div>
           <div class="row__chain">
-            <img :src="chainIcon.dest" alt="src-chain-logo" class="logo" />
-            <span class="text--xl"> {{ chainName.dest }} </span>
+            <img :src="chainIcon.dest" alt="dest-chain-logo" class="logo" />
+            <span class="text--title"> {{ chainName.dest }} </span>
           </div>
         </div>
 
@@ -98,8 +99,40 @@
           </div>
         </div>
       </div>
+      <div class="container--warning">
+        <div class="row--warning">
+          <div class="column--title">
+            <span class="text--dot">・</span>
+            <span class="text--warning">{{ $t('assets.modals.xcmWarning.avoidRisk') }}</span>
+          </div>
+          <div class="icon--help">
+            <IconHelp />
+          </div>
+          <q-tooltip class="box--tooltip-warning">
+            <div>
+              <span v-if="existentialDeposit"
+                >{{
+                  $t('assets.modals.xcmWarning.tooltip', {
+                    amount: Number(existentialDeposit.amount),
+                    symbol: existentialDeposit.symbol,
+                    network: existentialDeposit.chain,
+                  })
+                }}
+              </span>
+            </div>
+          </q-tooltip>
+        </div>
+        <div class="row--warning">
+          <div class="column--title">
+            <span class="text--dot">・</span>
+            <span class="text--warning">
+              {{ $t('assets.modals.xcmWarning.fee') }}
+            </span>
+          </div>
+        </div>
+      </div>
       <div class="wrapper__row--button">
-        <button class="btn btn--confirm" :disabled="isDisabledBridge" @click="bridge">
+        <button class="btn btn--confirm" :disabled="isDisabledBridge" @click="handleBridge">
           {{ $t('confirm') }}
         </button>
       </div>
@@ -112,9 +145,11 @@ import { ChainAsset, useXcmBridge } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { computed, defineComponent, PropType, ref } from 'vue';
 import ModalH160AddressInput from './ModalH160AddressInput.vue';
+import IconHelp from '/src/components/common/IconHelp.vue';
+import ModalLoading from '/src/components/common/ModalLoading.vue';
 
 export default defineComponent({
-  components: { ModalH160AddressInput },
+  components: { ModalH160AddressInput, IconHelp, ModalLoading },
   props: {
     isModalXcmBridge: {
       type: Boolean,
@@ -122,6 +157,10 @@ export default defineComponent({
       default: false,
     },
     handleModalXcmBridge: {
+      type: Function,
+      required: true,
+    },
+    handleUpdateXcmTokenBalances: {
       type: Function,
       required: true,
     },
@@ -146,12 +185,18 @@ export default defineComponent({
       isNativeBridge,
       destEvmAddress,
       formattedRelayChainBalance,
+      existentialDeposit,
       inputHandler,
       bridge,
       toMaxAmount,
       resetStates,
       setIsNativeBridge,
+      updateRelayChainTokenBal,
     } = useXcmBridge(token);
+
+    const isLoading = computed(() => {
+      return existentialDeposit.value === null;
+    });
 
     const closeModal = async (): Promise<void> => {
       isClosingModal.value = true;
@@ -159,6 +204,18 @@ export default defineComponent({
       await wait(fadeDuration);
       props.handleModalXcmBridge({ isOpen: false, currency: null });
       isClosingModal.value = false;
+    };
+
+    const finalizedCallback = async (): Promise<void> => {
+      await Promise.all([
+        closeModal(),
+        props.handleUpdateXcmTokenBalances(),
+        updateRelayChainTokenBal(),
+      ]);
+    };
+
+    const handleBridge = async (): Promise<void> => {
+      await bridge(finalizedCallback);
     };
 
     return {
@@ -173,11 +230,14 @@ export default defineComponent({
       isNativeBridge,
       destEvmAddress,
       formattedRelayChainBalance,
+      existentialDeposit,
+      isLoading,
       inputHandler,
       closeModal,
       bridge,
       toMaxAmount,
       setIsNativeBridge,
+      handleBridge,
     };
   },
 });

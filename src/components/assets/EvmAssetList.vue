@@ -3,6 +3,23 @@
     <div class="container">
       <div class="row">
         <div>
+          <span class="text--title">{{ $t('assets.xcmAssets') }}</span>
+        </div>
+        <div />
+      </div>
+
+      <div v-for="t in filteredTokens" :key="t.symbol">
+        <Erc20Currency
+          v-if="!checkIsCbridgeToken(t) && t.isXC20"
+          :token="t"
+          :handle-modal-transfer="handleModalTransfer"
+        />
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <div>
           <span class="text--title">{{ $t('assets.assets') }}</span>
         </div>
 
@@ -97,23 +114,6 @@
       </div>
       <div v-if="!filteredTokens && !isDisplayNativeToken" class="box--no-result">
         <span class="text--xl">{{ $t('assets.noResults') }}</span>
-      </div>
-    </div>
-
-    <div class="container">
-      <div class="row">
-        <div>
-          <span class="text--title">{{ $t('assets.xcmAssets') }}</span>
-        </div>
-        <div />
-      </div>
-
-      <div v-for="t in filteredTokens" :key="t.symbol">
-        <Erc20Currency
-          v-if="!checkIsCbridgeToken(t) && t.isXC20"
-          :token="t"
-          :handle-modal-transfer="handleModalTransfer"
-        />
       </div>
     </div>
 

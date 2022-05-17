@@ -4,7 +4,7 @@ import { ethers } from 'ethers';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { ChainAsset } from 'src/hooks';
 import { getUsdBySymbol } from 'src/hooks/helper/price';
-import { XcmNetworkIdx, XcmTokenInformation } from '..';
+import { ExistentialDeposit, XcmNetworkIdx, XcmTokenInformation } from '..';
 import { xcmToken } from '../tokens';
 
 interface Account extends Struct {
@@ -51,4 +51,25 @@ export const fetchXcmBalance = async ({
     console.error(error);
     return { userBalance, userBalanceUsd };
   }
+};
+
+export const fetchExistentialDeposit = async (api: ApiPromise): Promise<ExistentialDeposit> => {
+  const amount = api.consts.balances.existentialDeposit.toString();
+
+  const [properties, chain] = await Promise.all([
+    api.rpc.system.properties(),
+    api.rpc.system.chain(),
+  ]);
+  // Fixme: gives correct interface
+  const formattedProperties = properties.toHuman() as any;
+  const decimals = formattedProperties.tokenDecimals[0] as string;
+  const symbol = formattedProperties.tokenSymbol[0] as string;
+
+  const data = {
+    amount: Number(ethers.utils.formatUnits(amount, decimals)).toFixed(7),
+    symbol,
+    chain: chain.toString(),
+  };
+
+  return data;
 };
