@@ -144,7 +144,7 @@ export default defineComponent({
     });
 
     const t = computed(() => props.token);
-    const { tokenImage, isNativeToken } = useXcmBridge(t);
+    const { tokenImage, isNativeToken, transferAsset } = useXcmBridge(t);
 
     // Todo
     const isDisabledTransfer = computed(() => {
@@ -178,7 +178,8 @@ export default defineComponent({
 
     // Memo: todo
     const transfer = async (): Promise<void> => {
-      console.log('start transfer');
+      await transferAsset(Number(transferAmt.value ? transferAmt.value : 0), toAddress.value);
+      closeModal();
     };
 
     // Todo

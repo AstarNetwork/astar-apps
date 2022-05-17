@@ -16,10 +16,14 @@ import BN from 'bn.js';
 import { useCustomSignature, useBalance } from 'src/hooks';
 import { getEvmMappedSs58Address, getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
 import { evmToAddress } from '@polkadot/util-crypto';
+import { ISubmittableResult } from '@polkadot/types/types';
 import { RelaychainApi } from './SubstrateApi';
 import { useXcmAssets } from 'src/hooks';
 import { ethers } from 'ethers';
 import { getXcmToken, XcmTokenInformation } from 'src/modules/xcm';
+import { $api } from 'boot/api';
+import { signAndSend } from './../helper/wallet';
+import Web3 from 'web3';
 
 export interface Chain {
   id: number;
@@ -75,7 +79,7 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
     const chain = chainInfo ? chainInfo.chain : '';
     return getProviderIndex(chain);
   });
-  const { handleResult, handleTransactionError } = useCustomSignature({});
+  const { handleResult, handleTransactionError, handleCustomExtrinsic } = useCustomSignature({});
   const { balance } = useBalance(currentAccount);
   let relayChainApi: RelaychainApi | null = null;
 
@@ -326,6 +330,41 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
     }
   };
 
+  const transferAsset = async (transferAmt: number, toAddress: string): Promise<void> => {
+    try {
+      if (!selectedToken?.value) {
+        throw Error('Token is not selected');
+      }
+
+      const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
+        const res = await handleResult(result);
+        return res;
+      };
+
+      const decimals = selectedToken.value.metadata.decimals;
+      const transaction = $api!.tx.assets.transfer(
+        new BN(selectedToken.value.id),
+        toAddress,
+        new BN(10 ** Number(decimals)).muln(transferAmt)
+      );
+      await signAndSend({
+        transaction,
+        senderAddress: currentAccount.value,
+        substrateAccounts: substrateAccounts.value,
+        isCustomSignature: false, // isEthWallet.value - ATM we can't send assets from EVM account,
+        txResHandler,
+        handleCustomExtrinsic,
+        dispatch: store.dispatch,
+      });
+    } catch (e: any) {
+      console.error(e);
+      store.dispatch('general/showAlertMsg', {
+        msg: e.message || 'Something went wrong during asset transfer.',
+        alertType: 'error',
+      });
+    }
+  };
+
   const updateSelectedTokenBal = async (): Promise<void> => {
     selectedTokenBalance.value = await getSelectedTokenBal();
   };
@@ -398,5 +437,6 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
     toMaxAmount,
     resetStates,
     setIsNativeBridge,
+    transferAsset,
   };
 }
