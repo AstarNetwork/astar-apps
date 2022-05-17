@@ -43,7 +43,7 @@
             <div />
           </div>
           <div class="row__chain">
-            <img :src="chainIcon.dest" alt="src-chain-logo" class="logo" />
+            <img :src="chainIcon.dest" alt="dest-chain-logo" class="logo" />
             <span class="text--title"> {{ chainName.dest }} </span>
           </div>
         </div>
