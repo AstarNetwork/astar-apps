@@ -99,22 +99,35 @@
           </div>
         </div>
       </div>
-      <div>
+      <div class="container--warning">
         <div class="row--warning">
-          <span class="text--warning">{{ $t('assets.modals.xcmWarning.avoidRisk') }}</span>
-          <div>
+          <div class="column--title">
+            <span class="text--dot">・</span>
+            <span class="text--warning">{{ $t('assets.modals.xcmWarning.avoidRisk') }}</span>
+          </div>
+          <div class="icon--help">
             <IconHelp />
-            <q-tooltip class="box--tooltip-warning">
-              <div>
-                <span v-if="existentialDeposit">{{
+          </div>
+          <q-tooltip class="box--tooltip-warning">
+            <div>
+              <span v-if="existentialDeposit"
+                >{{
                   $t('assets.modals.xcmWarning.tooltip', {
                     amount: Number(existentialDeposit.amount),
                     symbol: existentialDeposit.symbol,
                     network: existentialDeposit.chain,
                   })
-                }}</span>
-              </div>
-            </q-tooltip>
+                }}
+              </span>
+            </div>
+          </q-tooltip>
+        </div>
+        <div class="row--warning">
+          <div class="column--title">
+            <span class="text--dot">・</span>
+            <span class="text--warning">
+              {{ $t('assets.modals.xcmWarning.fee') }}
+            </span>
           </div>
         </div>
       </div>

@@ -3,7 +3,7 @@
 .rows {
   display: grid;
   row-gap: 16px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   position: relative;
 }
 
@@ -52,9 +52,41 @@
   display: grid;
 }
 
+.column--title {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+// Memo: `list-style-type` is not working
+.text--dot {
+  left: -28px;
+  position: absolute;
+  font-size: 32px;
+  font-weight: 700;
+}
+
 .row__chain {
   display: flex;
   column-gap: 12px;
+}
+
+.icon--help {
+  font-size: 20px;
+  margin-bottom: -12px;
+}
+
+.container--warning {
+  display: flex;
+  flex-direction: column;
+  row-gap: 6px;
+  margin-bottom: 24px;
+  border: 1px solid $warning-red;
+  padding: 8px 0;
+  padding-left: 26px;
+  padding-right: 14px;
+  border-radius: 6px;
+  background: white;
 }
 
 .row--warning {
@@ -62,7 +94,6 @@
   align-items: normal;
   column-gap: 6px;
   color: $warning-red;
-  margin-bottom: 20px;
 }
 
 .logo {
@@ -138,5 +169,8 @@
   }
   .selected-bridge-option {
     border-bottom: 3px solid $astar-blue-dark;
+  }
+  .container--warning {
+    background: $gray-5;
   }
 }
