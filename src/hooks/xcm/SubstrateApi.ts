@@ -9,11 +9,6 @@ import { ExistentialDeposit, fetchExistentialDeposit } from 'src/modules/xcm';
 
 const AUTO_CONNECT_MS = 10_000; // [ms]
 
-interface Property extends Struct {
-  tokenDecimals: string[];
-  tokenSymbol: string[];
-}
-
 interface ChainProperty {
   tokenSymbols: string[];
   tokenDecimals: number[];
