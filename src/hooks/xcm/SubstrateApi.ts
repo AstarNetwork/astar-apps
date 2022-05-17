@@ -5,8 +5,7 @@ import { ISubmittableResult, ITuple } from '@polkadot/types/types';
 import { decodeAddress } from '@polkadot/util-crypto';
 import BN from 'bn.js';
 import { ExtrinsicPayload } from 'src/hooks/helper';
-import { ExistentialDeposit } from 'src/modules/xcm';
-import { fetchExistentialDeposit } from './../../modules/xcm/utils/index';
+import { ExistentialDeposit, fetchExistentialDeposit } from 'src/modules/xcm';
 
 const AUTO_CONNECT_MS = 10_000; // [ms]
 
