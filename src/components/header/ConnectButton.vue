@@ -1,7 +1,7 @@
 <template>
   <button type="button" :class="width >= screenSize.sm ? 'btn--connect' : 'm-btn--connect'">
-    <astar-icon-base class="iconbase" stroke="currentColor" icon-name="wallet">
-      <astar-icon-wallet />
+    <astar-icon-base class="iconbase" stroke="currentColor">
+      <slot />
     </astar-icon-base>
     <template v-if="width >= screenSize.sm">
       {{ $t('connect') }}
@@ -41,6 +41,7 @@ export default defineComponent({
   background: #fff;
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
   border-radius: 16px;
+  margin-left: 8px;
 }
 .btn--connect:hover {
   background: #fff;
@@ -53,6 +54,7 @@ export default defineComponent({
   background: #fff;
   border: 1px solid $object-light;
   border-radius: 16px;
+  margin-left: 16px;
 }
 .m-btn--connect:hover {
   background: #fff;

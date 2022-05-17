@@ -57,7 +57,7 @@ export const useAccount = () => {
   );
 
   watch(
-    [currentAddress],
+    [currentAddress, substrateAccounts],
     () => {
       if (
         !substrateAccounts.value ||
