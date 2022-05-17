@@ -145,8 +145,8 @@ export const useConnectWallet = () => {
 
   const requestExtensionsIfFirstAccess = (wallet: SupportWallet): void => {
     if (localStorage.getItem(SELECTED_ADDRESS) === null) {
-      const { extensions } = useExtensions($api.value!!, store);
-      const { metaExtensions, extensionCount } = useMetaExtensions($api.value!!, extensions)!!;
+      const { extensions } = useExtensions($api!!, store);
+      const { metaExtensions, extensionCount } = useMetaExtensions($api!!, extensions)!!;
       watchPostEffect(async () => {
         store.commit('general/setMetaExtensions', metaExtensions.value);
         store.commit('general/setExtensionCount', extensionCount.value);
