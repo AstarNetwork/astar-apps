@@ -148,12 +148,12 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
   const chainName = computed<{ src: string; dest: string }>(() => {
     if (currentNetworkIdx.value === endpointKey.ASTAR) {
       return {
-        src: 'Polkadot Relay Chain',
+        src: 'Polkadot',
         dest: 'Astar Network',
       };
     } else {
       return {
-        src: 'Kusama Relay Chain',
+        src: 'Kusama',
         dest: 'Shiden Network',
       };
     }

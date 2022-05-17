@@ -34,7 +34,7 @@
           </div>
           <div class="row__chain">
             <img :src="chainIcon.src" alt="src-chain-logo" class="logo" />
-            <span class="text--xl"> {{ chainName.src }} </span>
+            <span class="text--title"> {{ chainName.src }} </span>
           </div>
         </div>
         <div class="box--input-chain">
@@ -44,7 +44,7 @@
           </div>
           <div class="row__chain">
             <img :src="chainIcon.dest" alt="src-chain-logo" class="logo" />
-            <span class="text--xl"> {{ chainName.dest }} </span>
+            <span class="text--title"> {{ chainName.dest }} </span>
           </div>
         </div>
 
