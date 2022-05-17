@@ -14,7 +14,7 @@ import { ChainAsset } from 'src/hooks/xcm/useXcmAssets';
 import { getInjector } from 'src/hooks/helper/wallet';
 import BN from 'bn.js';
 import { useCustomSignature, useBalance } from 'src/hooks';
-import { getEvmMappedSs58Address, getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
+import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
 import { evmToAddress } from '@polkadot/util-crypto';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { RelaychainApi } from './SubstrateApi';
@@ -73,7 +73,7 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
   const router = useRouter();
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const { currentAccount } = useAccount();
-  const { xcmAssets } = useXcmAssets();
+  const { xcmAssets, handleUpdateTokenBalances } = useXcmAssets();
   const currentNetworkIdx = computed(() => {
     const chainInfo = store.getters['general/chainInfo'];
     const chain = chainInfo ? chainInfo.chain : '';
@@ -352,6 +352,7 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
 
       const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
         const res = await handleResult(result);
+        await handleUpdateTokenBalances();
         return res;
       };
 

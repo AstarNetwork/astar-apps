@@ -94,7 +94,7 @@
 </template>
 <script lang="ts">
 import { fadeDuration } from '@astar-network/astar-ui';
-import { ChainAsset, useAccount, useWalletIcon, useXcmBridge, useXcmAssets } from 'src/hooks';
+import { ChainAsset, useAccount, useWalletIcon, useXcmBridge } from 'src/hooks';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { wait } from 'src/hooks/helper/common';
 import { useStore } from 'src/store';
@@ -145,9 +145,7 @@ export default defineComponent({
 
     const t = computed(() => props.token);
     const { tokenImage, isNativeToken, transferAsset } = useXcmBridge(t);
-    const { handleUpdateTokenBalances } = useXcmAssets();
 
-    // Todo
     const isDisabledTransfer = computed(() => {
       const isLessAmount =
         0 >= Number(transferAmt.value) ||
@@ -183,11 +181,9 @@ export default defineComponent({
 
     const transfer = async (): Promise<void> => {
       await transferAsset(Number(transferAmt.value ? transferAmt.value : 0), toAddress.value);
-      await handleUpdateTokenBalances();
       closeModal();
     };
 
-    // Todo
     const setErrorMsg = (): void => {
       const transferAmtRef = Number(transferAmt.value);
       const fromAccountBalance = props.token ? Number(props.token.userBalance) : 0;
