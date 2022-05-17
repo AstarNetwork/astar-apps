@@ -20,6 +20,8 @@ import { RelaychainApi } from './SubstrateApi';
 import { useXcmAssets } from 'src/hooks';
 import { ethers } from 'ethers';
 import { getXcmToken, XcmTokenInformation } from 'src/modules/xcm';
+import { $web3 } from 'src/boot/api';
+import { getBalance } from 'src/config/web3';
 
 export interface Chain {
   id: number;
@@ -290,17 +292,18 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
         if (!isValidEvmAddress(destEvmAddress.value)) {
           throw Error('Invalid evm destination address');
         }
+        const balWei = await getBalance($web3.value!, destEvmAddress.value);
+        if (Number(ethers.utils.formatEther(balWei)) === 0) {
+          throw Error('the balance of recipient account should be above zero');
+        }
         const ss58MappedAddr = evmToAddress(destEvmAddress.value, PREFIX_ASTAR);
-        console.log('ss58MappedAddr', ss58MappedAddr);
+        // console.log('ss58MappedAddr', ss58MappedAddr);
         const hexPublicKey = getPubkeyFromSS58Addr(ss58MappedAddr);
-        console.log('hexPublicKey', hexPublicKey);
+        // console.log('hexPublicKey', hexPublicKey);
         recipientAccountId = hexPublicKey;
-
-        //TODO: need check EVM balance is non-zero
-        //updateTokenBalanceHandler in useXcmAssets
       }
 
-      console.log('amount', amount.value);
+      // console.log('amount', amount.value);
       const decimals = selectedToken.value.metadata.decimals;
       const txCall = await relayChainApi.transferToParachain(
         destParaId.value,
