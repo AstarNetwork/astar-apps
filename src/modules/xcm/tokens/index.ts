@@ -5,7 +5,7 @@ export const xcmToken = {
     {
       symbol: 'DOT',
       isNativeToken: true,
-      logo: require('/src/assets/img/ic_polkadot.png'),
+      logo: require('/src/assets/img/ic_dot.png'),
       isXcmCompatible: true,
     },
   ],

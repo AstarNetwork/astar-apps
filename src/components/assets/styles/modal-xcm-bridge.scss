@@ -3,7 +3,7 @@
 .rows {
   display: grid;
   row-gap: 16px;
-  margin-bottom: 40px;
+  margin-bottom: 24px;
   position: relative;
 }
 
@@ -52,14 +52,60 @@
   display: grid;
 }
 
+.column--title {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+// Memo: `list-style-type` is not working
+.text--dot {
+  left: -28px;
+  position: absolute;
+  font-size: 32px;
+  font-weight: 700;
+}
+
 .row__chain {
   display: flex;
   column-gap: 12px;
 }
 
+.icon--help {
+  font-size: 20px;
+  margin-bottom: -12px;
+}
+
+.container--warning {
+  display: flex;
+  flex-direction: column;
+  row-gap: 6px;
+  margin-bottom: 24px;
+  border: 1px solid $warning-red;
+  padding: 8px 0;
+  padding-left: 26px;
+  padding-right: 14px;
+  border-radius: 6px;
+  background: white;
+}
+
+.row--warning {
+  display: flex;
+  align-items: normal;
+  column-gap: 6px;
+  color: $warning-red;
+}
+
 .logo {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
+}
+
+.loader {
+  position: absolute;
+  z-index: 100;
+  height: 100px;
+  width: 100px;
 }
 
 .btn--max {
@@ -108,6 +154,12 @@
   font-size: 12px;
 }
 
+.text--warning {
+  font-weight: 700;
+  font-size: 14px;
+  color: $warning-red;
+}
+
 .body--dark {
   input {
     color: white;
@@ -117,5 +169,8 @@
   }
   .selected-bridge-option {
     border-bottom: 3px solid $astar-blue-dark;
+  }
+  .container--warning {
+    background: $gray-5;
   }
 }

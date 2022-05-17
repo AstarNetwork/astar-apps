@@ -1,29 +1,30 @@
-import { ref, watch, watchEffect, computed, onUnmounted, Ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useStore } from 'src/store';
-import { isValidEvmAddress, toSS58Address } from 'src/config/web3';
-import { useAccount } from 'src/hooks/useAccount';
-import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
-import {
-  endpointKey as xcmEndpointKey,
-  providerEndpoints as xcmProviderEndpoints,
-  parachainIds,
-  PREFIX_ASTAR,
-} from 'src/config/xcmChainEndpoints';
-import { ChainAsset } from 'src/hooks/xcm/useXcmAssets';
-import { getInjector } from 'src/hooks/helper/wallet';
-import BN from 'bn.js';
-import { useCustomSignature, useBalance } from 'src/hooks';
-import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
 import { evmToAddress } from '@polkadot/util-crypto';
 import { ISubmittableResult } from '@polkadot/types/types';
-import { RelaychainApi } from './SubstrateApi';
-import { useXcmAssets } from 'src/hooks';
 import { ethers } from 'ethers';
-import { getXcmToken, XcmTokenInformation } from 'src/modules/xcm';
-import { $api } from 'boot/api';
-import { signAndSend } from './../helper/wallet';
+import BN from 'bn.js';
+import { $web3 } from 'src/boot/api';
+import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
+import { getBalance, isValidEvmAddress } from 'src/config/web3';
+import {
+  endpointKey as xcmEndpointKey,
+  parachainIds,
+  PREFIX_ASTAR,
+  providerEndpoints as xcmProviderEndpoints,
+} from 'src/config/xcmChainEndpoints';
+import { useBalance, useCustomSignature, useXcmAssets } from 'src/hooks';
+import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
+import { getInjector } from 'src/hooks/helper/wallet';
+import { useAccount } from 'src/hooks/useAccount';
+import { ChainAsset } from 'src/hooks/xcm/useXcmAssets';
+import { ExistentialDeposit, getXcmToken, XcmTokenInformation } from 'src/modules/xcm';
+import { useStore } from 'src/store';
+import { computed, onUnmounted, ref, Ref, watch, watchEffect } from 'vue';
+import { useRouter } from 'vue-router';
+import { RelaychainApi } from './SubstrateApi';
 import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
+import { toSS58Address } from 'src/config/web3';
+import { signAndSend } from './../helper/wallet';
+import { $api } from 'boot/api';
 
 export interface Chain {
   id: number;
@@ -54,6 +55,8 @@ export const formatDecimals = ({ amount, decimals }: { amount: string; decimals:
 };
 
 export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
+  // Todo: remove unused states
+
   const srcChains = ref<Chain[] | null>(null);
   const destChains = ref<Chain[] | null>(null);
 
@@ -68,6 +71,7 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
   const isDisabledBridge = ref<boolean>(true);
   const isNativeBridge = ref<boolean>(true);
   const destEvmAddress = ref<string>('');
+  const existentialDeposit = ref<ExistentialDeposit | null>(null);
 
   const store = useStore();
   const router = useRouter();
@@ -108,6 +112,12 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
 
     const balance = await relayChainApi.getBalance(currentAccount.value);
     return balance.toString();
+  };
+
+  const getExistentialDeposit = async () => {
+    if (!relayChainApi) return;
+    const result = await relayChainApi.getExistentialDeposit();
+    existentialDeposit.value = result;
   };
 
   const inputHandler = (event: any): void => {
@@ -152,18 +162,17 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
   const chainName = computed<{ src: string; dest: string }>(() => {
     if (currentNetworkIdx.value === endpointKey.ASTAR) {
       return {
-        src: 'Polkadot Relay Chain',
+        src: 'Polkadot',
         dest: 'Astar Network',
       };
     } else {
       return {
-        src: 'Kusama Relay Chain',
+        src: 'Kusama',
         dest: 'Shiden Network',
       };
     }
   });
 
-  // Memo: Relaychain balance
   const formattedRelayChainBalance = computed<string>(() => {
     if (!selectedToken || !selectedToken.value) return '0';
     const decimals = Number(String(selectedToken.value.metadata.decimals));
@@ -271,7 +280,7 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
     tokens.value && store.commit('xcm/setSelectedToken', tokens.value[0]);
   };
 
-  const bridge = async (): Promise<void> => {
+  const bridge = async (finalizedCallback: () => Promise<void>): Promise<void> => {
     try {
       if (!currentAccount.value) {
         throw Error('Failed loading wallet address');
@@ -294,33 +303,33 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
         if (!isValidEvmAddress(destEvmAddress.value)) {
           throw Error('Invalid evm destination address');
         }
+        const balWei = await getBalance($web3.value!, destEvmAddress.value);
+        if (Number(ethers.utils.formatEther(balWei)) === 0) {
+          throw Error('the balance of recipient account should be above zero');
+        }
         const ss58MappedAddr = evmToAddress(destEvmAddress.value, PREFIX_ASTAR);
-        console.log('ss58MappedAddr', ss58MappedAddr);
+        // console.log('ss58MappedAddr', ss58MappedAddr);
         const hexPublicKey = getPubkeyFromSS58Addr(ss58MappedAddr);
-        console.log('hexPublicKey', hexPublicKey);
+        // console.log('hexPublicKey', hexPublicKey);
         recipientAccountId = hexPublicKey;
-
-        //TODO: need check EVM balance is non-zero
-        //updateTokenBalanceHandler in useXcmAssets
       }
-
-      console.log('amount', amount.value);
-      const decimals = selectedToken.value.metadata.decimals;
+      const decimals = Number(selectedToken.value.metadata.decimals);
       const txCall = await relayChainApi.transferToParachain(
         destParaId.value,
         recipientAccountId,
-        new BN(10 ** Number(decimals)).muln(Number(amount.value)) // new BN(10 ** 12).muln(0.01)
+        ethers.utils.parseUnits(amount.value, decimals).toString()
       );
       relayChainApi
-        .signAndSend(currentAccount.value, injector.signer, txCall, handleResult)
+        .signAndSend(currentAccount.value, injector.signer, txCall, finalizedCallback, handleResult)
         .catch((error: Error) => {
           handleTransactionError(error);
           isDisabledBridge.value = false;
           return;
+        })
+        .finally(async () => {
+          isDisabledBridge.value = true;
+          amount.value = null;
         });
-
-      isDisabledBridge.value = true;
-      amount.value = null;
     } catch (error: any) {
       console.error(error.message);
       store.dispatch('general/showAlertMsg', {
@@ -380,7 +389,7 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
     }
   };
 
-  const updateSelectedTokenBal = async (): Promise<void> => {
+  const updateRelayChainTokenBal = async (): Promise<void> => {
     selectedTokenBalance.value = await getSelectedTokenBal();
   };
 
@@ -402,7 +411,10 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
   watchEffect(async () => {
     if (!currentNetworkIdx.value || currentNetworkIdx.value !== null || xcmAssets.value !== null) {
       await updateBridgeConfig();
-      await updateSelectedTokenBal();
+      if (relayChainApi) {
+        await relayChainApi.isReady();
+        await Promise.all([updateRelayChainTokenBal(), getExistentialDeposit()]);
+      }
     }
   });
 
@@ -415,7 +427,7 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
   );
 
   const handleUpdate = setInterval(async () => {
-    await updateSelectedTokenBal();
+    await updateRelayChainTokenBal();
   }, 20 * 1000);
 
   onUnmounted(() => {
@@ -443,6 +455,7 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
     isNativeBridge,
     destEvmAddress,
     formattedRelayChainBalance,
+    existentialDeposit,
     closeModal,
     openModal,
     inputHandler,
@@ -453,5 +466,6 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
     resetStates,
     setIsNativeBridge,
     transferAsset,
+    updateRelayChainTokenBal,
   };
 }

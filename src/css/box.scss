@@ -31,6 +31,19 @@
   }
 }
 
+.box--tooltip-warning {
+  background-color: $warning-red;
+  max-width: 320px;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
 .body--dark {
   .container {
     background: $container-bg-dark;
