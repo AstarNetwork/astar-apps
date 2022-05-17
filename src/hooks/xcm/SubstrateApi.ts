@@ -1,22 +1,19 @@
 import { ApiPromise, WsProvider } from '@polkadot/api';
-import { ISubmittableResult } from '@polkadot/types/types';
-import { SignerOptions } from '@polkadot/api/types';
-import { ITuple } from '@polkadot/types/types';
-import { Vec, u32, TypeRegistry } from '@polkadot/types';
-import {
-  DispatchError,
-  VersionedXcm,
-  MultiLocation,
-  AssetMetadata,
-  AssetDetails,
-  MultiAsset,
-} from '@polkadot/types/interfaces';
+import { Struct, TypeRegistry } from '@polkadot/types';
+import { DispatchError, MultiAsset, MultiLocation, VersionedXcm } from '@polkadot/types/interfaces';
+import { ISubmittableResult, ITuple } from '@polkadot/types/types';
+import { decodeAddress } from '@polkadot/util-crypto';
 import BN from 'bn.js';
 import { ExtrinsicPayload } from 'src/hooks/helper';
-import { decodeAddress } from '@polkadot/util-crypto';
-import Web3 from 'web3';
+import { ExistentialDeposit } from 'src/modules/xcm';
+import { fetchExistentialDeposit } from './../../modules/xcm/utils/index';
 
 const AUTO_CONNECT_MS = 10_000; // [ms]
+
+interface Property extends Struct {
+  tokenDecimals: string[];
+  tokenSymbol: string[];
+}
 
 interface ChainProperty {
   tokenSymbols: string[];
@@ -90,6 +87,10 @@ class ChainApi {
     return await this._api?.rpc.chain.getBlockHash(blockNumber);
   }
 
+  public async getExistentialDeposit(): Promise<ExistentialDeposit> {
+    return await fetchExistentialDeposit(this._api);
+  }
+
   public buildTxCall(extrinsic: string, method: string, ...args: any[]): ExtrinsicPayload {
     const ext = this._api?.tx[extrinsic][method](...args);
     if (ext) return ext;
@@ -116,10 +117,19 @@ class ChainApi {
 
   public async getBalance(address: string) {
     try {
+      await this._api?.isReady;
       return ((await this._api.query.system.account(address)) as any).data.free.toBn() as BN;
     } catch (e) {
       console.error(e);
       return new BN(0);
+    }
+  }
+
+  public async isReady(): Promise<void> {
+    try {
+      await this._api?.isReady;
+    } catch (e) {
+      console.error(e);
     }
   }
 

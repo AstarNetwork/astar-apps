@@ -5,6 +5,7 @@
     :is-closing="isClosingModal"
     @close="closeModal"
   >
+    <ModalLoading v-if="isLoading" />
     <div v-if="token" class="wrapper--modal">
       <div class="row--mode-tab">
         <div
@@ -98,6 +99,25 @@
           </div>
         </div>
       </div>
+      <div>
+        <div class="row--warning">
+          <span class="text--warning">{{ $t('assets.modals.xcmWarning.avoidRisk') }}</span>
+          <div>
+            <IconHelp />
+            <q-tooltip class="box--tooltip-warning">
+              <div>
+                <span v-if="existentialDeposit">{{
+                  $t('assets.modals.xcmWarning.tooltip', {
+                    amount: Number(existentialDeposit.amount),
+                    symbol: existentialDeposit.symbol,
+                    network: existentialDeposit.chain,
+                  })
+                }}</span>
+              </div>
+            </q-tooltip>
+          </div>
+        </div>
+      </div>
       <div class="wrapper__row--button">
         <button class="btn btn--confirm" :disabled="isDisabledBridge" @click="bridge">
           {{ $t('confirm') }}
@@ -112,9 +132,11 @@ import { ChainAsset, useXcmBridge } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { computed, defineComponent, PropType, ref } from 'vue';
 import ModalH160AddressInput from './ModalH160AddressInput.vue';
+import IconHelp from '/src/components/common/IconHelp.vue';
+import ModalLoading from '/src/components/common/ModalLoading.vue';
 
 export default defineComponent({
-  components: { ModalH160AddressInput },
+  components: { ModalH160AddressInput, IconHelp, ModalLoading },
   props: {
     isModalXcmBridge: {
       type: Boolean,
@@ -146,12 +168,17 @@ export default defineComponent({
       isNativeBridge,
       destEvmAddress,
       formattedRelayChainBalance,
+      existentialDeposit,
       inputHandler,
       bridge,
       toMaxAmount,
       resetStates,
       setIsNativeBridge,
     } = useXcmBridge(token);
+
+    const isLoading = computed(() => {
+      return existentialDeposit.value === null;
+    });
 
     const closeModal = async (): Promise<void> => {
       isClosingModal.value = true;
@@ -173,6 +200,8 @@ export default defineComponent({
       isNativeBridge,
       destEvmAddress,
       formattedRelayChainBalance,
+      existentialDeposit,
+      isLoading,
       inputHandler,
       closeModal,
       bridge,

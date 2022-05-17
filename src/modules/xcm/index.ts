@@ -1,7 +1,7 @@
 import { endpointKey } from 'src/config/chainEndpoints';
 
 export { xcmToken } from './tokens';
-export { getXcmToken, fetchXcmBalance } from './utils';
+export { getXcmToken, fetchXcmBalance, fetchExistentialDeposit } from './utils';
 export interface XcmTokenInformation {
   symbol: string;
   logo: string;
@@ -10,3 +10,9 @@ export interface XcmTokenInformation {
 }
 
 export type XcmNetworkIdx = endpointKey.ASTAR | endpointKey.SHIDEN | endpointKey.SHIBUYA;
+
+export interface ExistentialDeposit {
+  amount: string;
+  chain: string;
+  symbol: string;
+}
