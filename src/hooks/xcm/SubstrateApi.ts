@@ -188,7 +188,9 @@ export class RelaychainApi extends ChainApi {
     // check if the connected network implements xcmPallet
   }
 
-  public transferToParachain(toPara: number, recipientAccountId: string, amount: BN) {
+  public transferToParachain(toPara: number, recipientAccountId: string, amount: string) {
+    // public transferToParachain(toPara: number, recipientAccountId: string, amount: string) {
+    console.log('amount', amount.toString());
     // the target parachain connected to the current relaychain
     const dest = {
       V1: {
@@ -219,7 +221,7 @@ export class RelaychainApi extends ChainApi {
       V1: [
         {
           fun: {
-            Fungible: amount,
+            Fungible: new BN(amount),
           },
           id: {
             Concrete: {

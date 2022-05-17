@@ -306,13 +306,12 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
         //TODO: need check EVM balance is non-zero
         //updateTokenBalanceHandler in useXcmAssets
       }
-
       console.log('amount', amount.value);
-      const decimals = selectedToken.value.metadata.decimals;
+      const decimals = Number(selectedToken.value.metadata.decimals);
       const txCall = await relayChainApi.transferToParachain(
         destParaId.value,
         recipientAccountId,
-        new BN(10 ** Number(decimals)).muln(Number(amount.value)) // new BN(10 ** 12).muln(0.01)
+        ethers.utils.parseUnits(amount.value, decimals).toString()
       );
       relayChainApi
         .signAndSend(currentAccount.value, injector.signer, txCall, handleResult)
