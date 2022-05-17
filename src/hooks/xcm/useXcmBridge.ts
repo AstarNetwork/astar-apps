@@ -23,7 +23,7 @@ import { ethers } from 'ethers';
 import { getXcmToken, XcmTokenInformation } from 'src/modules/xcm';
 import { $api } from 'boot/api';
 import { signAndSend } from './../helper/wallet';
-import Web3 from 'web3';
+import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 
 export interface Chain {
   id: number;
@@ -336,6 +336,20 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
         throw Error('Token is not selected');
       }
 
+      const isValidSS58Address =
+        isValidAddressPolkadotAddress(currentAccount.value) &&
+        isValidAddressPolkadotAddress(toAddress);
+
+      if (!isValidSS58Address && !isValidEvmAddress(toAddress)) {
+        store.dispatch('general/showAlertMsg', {
+          msg: 'assets.invalidAddress',
+          alertType: 'error',
+        });
+        return;
+      }
+
+      const receivingAddress = isValidEvmAddress(toAddress) ? toSS58Address(toAddress) : toAddress;
+
       const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
         const res = await handleResult(result);
         return res;
@@ -344,7 +358,7 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
       const decimals = selectedToken.value.metadata.decimals;
       const transaction = $api!.tx.assets.transfer(
         new BN(selectedToken.value.id),
-        toAddress,
+        receivingAddress,
         new BN(10 ** Number(decimals)).muln(transferAmt)
       );
       await signAndSend({

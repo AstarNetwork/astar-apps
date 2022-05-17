@@ -94,7 +94,7 @@
 </template>
 <script lang="ts">
 import { fadeDuration } from '@astar-network/astar-ui';
-import { ChainAsset, useAccount, useWalletIcon, useXcmBridge } from 'src/hooks';
+import { ChainAsset, useAccount, useWalletIcon, useXcmBridge, useXcmAssets } from 'src/hooks';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { wait } from 'src/hooks/helper/common';
 import { useStore } from 'src/store';
@@ -145,11 +145,16 @@ export default defineComponent({
 
     const t = computed(() => props.token);
     const { tokenImage, isNativeToken, transferAsset } = useXcmBridge(t);
+    const { handleUpdateTokenBalances } = useXcmAssets();
 
     // Todo
     const isDisabledTransfer = computed(() => {
-      const isLessAmount = 0 >= Number(transferAmt.value);
-      return errMsg.value !== '' || isLessAmount;
+      const isLessAmount =
+        0 >= Number(transferAmt.value) ||
+        Number(props.token.userBalance) < Number(transferAmt.value);
+      const noAddress = !toAddress.value;
+
+      return errMsg.value !== '' || isLessAmount || noAddress;
     });
 
     const inputHandler = (event: any): void => {
@@ -176,9 +181,9 @@ export default defineComponent({
       transferAmt.value = props.token.userBalance;
     };
 
-    // Memo: todo
     const transfer = async (): Promise<void> => {
       await transferAsset(Number(transferAmt.value ? transferAmt.value : 0), toAddress.value);
+      await handleUpdateTokenBalances();
       closeModal();
     };
 
