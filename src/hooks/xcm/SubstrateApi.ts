@@ -1,5 +1,5 @@
 import { ApiPromise, WsProvider } from '@polkadot/api';
-import { Struct, TypeRegistry } from '@polkadot/types';
+import { TypeRegistry } from '@polkadot/types';
 import { DispatchError, MultiAsset, MultiLocation, VersionedXcm } from '@polkadot/types/interfaces';
 import { ISubmittableResult, ITuple } from '@polkadot/types/types';
 import { decodeAddress } from '@polkadot/util-crypto';
@@ -131,6 +131,7 @@ class ChainApi {
     account: string,
     signer: any,
     tx: ExtrinsicPayload,
+    finalizedCallback: () => Promise<void>,
     handleResult?: (result: ISubmittableResult) => Promise<boolean>
   ) {
     const txsToExecute: ExtrinsicPayload[] = [];
@@ -139,11 +140,15 @@ class ChainApi {
     // ensure that we automatically increment the nonce per transaction
     return await transaction.signAndSend(account, { signer, nonce: -1, tip: 1 }, (result) => {
       console.log('r', result);
-      handleResult && handleResult(result);
+      handleResult &&
+        handleResult(result).then(async () => {
+          // await wait(5000);
+          await finalizedCallback();
+        });
       // handle transaction errors
       result.events
         .filter((record): boolean => !!record.event && record.event.section !== 'democracy')
-        .map(({ event: { data, method, section } }) => {
+        .map(async ({ event: { data, method, section } }) => {
           if (section === 'system' && method === 'ExtrinsicFailed') {
             const [dispatchError] = data as unknown as ITuple<[DispatchError]>;
             let message = dispatchError.type.toString();

@@ -132,7 +132,7 @@
         </div>
       </div>
       <div class="wrapper__row--button">
-        <button class="btn btn--confirm" :disabled="isDisabledBridge" @click="bridge">
+        <button class="btn btn--confirm" :disabled="isDisabledBridge" @click="handleBridge">
           {{ $t('confirm') }}
         </button>
       </div>
@@ -157,6 +157,10 @@ export default defineComponent({
       default: false,
     },
     handleModalXcmBridge: {
+      type: Function,
+      required: true,
+    },
+    handleUpdateXcmTokenBalances: {
       type: Function,
       required: true,
     },
@@ -187,6 +191,7 @@ export default defineComponent({
       toMaxAmount,
       resetStates,
       setIsNativeBridge,
+      updateRelayChainTokenBal,
     } = useXcmBridge(token);
 
     const isLoading = computed(() => {
@@ -199,6 +204,18 @@ export default defineComponent({
       await wait(fadeDuration);
       props.handleModalXcmBridge({ isOpen: false, currency: null });
       isClosingModal.value = false;
+    };
+
+    const finalizedCallback = async (): Promise<void> => {
+      await Promise.all([
+        closeModal(),
+        props.handleUpdateXcmTokenBalances(),
+        updateRelayChainTokenBal(),
+      ]);
+    };
+
+    const handleBridge = async (): Promise<void> => {
+      await bridge(finalizedCallback);
     };
 
     return {
@@ -220,6 +237,7 @@ export default defineComponent({
       bridge,
       toMaxAmount,
       setIsNativeBridge,
+      handleBridge,
     };
   },
 });

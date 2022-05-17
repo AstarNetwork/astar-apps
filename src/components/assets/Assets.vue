@@ -14,7 +14,11 @@
         </div>
         <div v-else class="container--assets">
           <NativeAssetList />
-          <XcmNativeAssetList v-if="isEnableXcm" :xcm-assets="xcmAssets" />
+          <XcmNativeAssetList
+            v-if="isEnableXcm"
+            :xcm-assets="xcmAssets"
+            :handle-update-xcm-token-balances="handleUpdateXcmTokenBalances"
+          />
         </div>
       </div>
     </div>
@@ -42,7 +46,11 @@ export default defineComponent({
   },
   setup() {
     const { tokens, ttlErc20Amount, handleUpdateTokenBalances } = useCbridgeV2();
-    const { xcmAssets, ttlNativeXcmUsdAmount } = useXcmAssets();
+    const {
+      xcmAssets,
+      ttlNativeXcmUsdAmount,
+      handleUpdateTokenBalances: handleUpdateXcmTokenBalances,
+    } = useXcmAssets();
     const isDisplay = ref<boolean>(false);
     const store = useStore();
     const selectedAddress = computed(() => store.getters['general/selectedAddress']);
@@ -80,10 +88,11 @@ export default defineComponent({
       tokens,
       ttlErc20Amount,
       isDisplay,
-      handleUpdateTokenBalances,
       isEnableXcm,
       xcmAssets,
       ttlNativeXcmUsdAmount,
+      handleUpdateXcmTokenBalances,
+      handleUpdateTokenBalances,
     };
   },
 });

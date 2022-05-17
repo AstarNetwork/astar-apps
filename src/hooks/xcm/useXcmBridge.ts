@@ -274,7 +274,7 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
     tokens.value && store.commit('xcm/setSelectedToken', tokens.value[0]);
   };
 
-  const bridge = async (): Promise<void> => {
+  const bridge = async (finalizedCallback: () => Promise<void>): Promise<void> => {
     try {
       if (!currentAccount.value) {
         throw Error('Failed loading wallet address');
@@ -307,7 +307,6 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
         // console.log('hexPublicKey', hexPublicKey);
         recipientAccountId = hexPublicKey;
       }
-      console.log('amount', amount.value);
       const decimals = Number(selectedToken.value.metadata.decimals);
       const txCall = await relayChainApi.transferToParachain(
         destParaId.value,
@@ -315,15 +314,16 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
         ethers.utils.parseUnits(amount.value, decimals).toString()
       );
       relayChainApi
-        .signAndSend(currentAccount.value, injector.signer, txCall, handleResult)
+        .signAndSend(currentAccount.value, injector.signer, txCall, finalizedCallback, handleResult)
         .catch((error: Error) => {
           handleTransactionError(error);
           isDisabledBridge.value = false;
           return;
+        })
+        .finally(async () => {
+          isDisabledBridge.value = true;
+          amount.value = null;
         });
-
-      isDisabledBridge.value = true;
-      amount.value = null;
     } catch (error: any) {
       console.error(error.message);
       store.dispatch('general/showAlertMsg', {
@@ -409,5 +409,6 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
     toMaxAmount,
     resetStates,
     setIsNativeBridge,
+    updateRelayChainTokenBal,
   };
 }
