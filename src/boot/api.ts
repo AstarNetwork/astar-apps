@@ -11,6 +11,7 @@ import {
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { opengraphMeta } from 'src/config/opengraph';
 import { createAstarWeb3Instance, TNetworkId } from 'src/config/web3';
+import { useExtensions } from 'src/hooks/useExtensions';
 import { useChainInfo } from 'src/hooks/useChainInfo';
 import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
 import { computed, ref, watchPostEffect } from 'vue';
@@ -22,11 +23,12 @@ const $endpoint = ref<string>('');
 const $web3 = ref<Web3>();
 
 export default boot(async ({ store }) => {
-  const { NETWORK_IDX, CUSTOM_ENDPOINT, SELECTED_ENDPOINT } = LOCAL_STORAGE;
+  const { NETWORK_IDX, CUSTOM_ENDPOINT, SELECTED_ENDPOINT, SELECTED_ADDRESS } = LOCAL_STORAGE;
 
   const networkIdxStore = localStorage.getItem(NETWORK_IDX);
   const customEndpoint = localStorage.getItem(CUSTOM_ENDPOINT);
   const selectedEndpointData = localStorage.getItem(SELECTED_ENDPOINT);
+  const selectedAddress = localStorage.getItem(SELECTED_ADDRESS);
   const selectedEndpoint = selectedEndpointData ? JSON.parse(selectedEndpointData) : {};
   if (networkIdxStore) {
     store.commit('general/setCurrentNetworkIdx', Number(networkIdxStore));
@@ -64,16 +66,13 @@ export default boot(async ({ store }) => {
     },
     meta: opengraphMeta,
   });
-  let { api, extensions } = await connectApi(endpoint, networkIdx.value, store);
+  let { api } = await connectApi(endpoint, networkIdx.value, store);
   $api = api;
   $endpoint.value = endpoint;
   // update chaininfo
   const { chainInfo } = useChainInfo(api);
-  const { metaExtensions, extensionCount } = useMetaExtensions(api, extensions)!!;
   watchPostEffect(async () => {
     store.commit('general/setChainInfo', chainInfo.value);
-    store.commit('general/setMetaExtensions', metaExtensions.value);
-    store.commit('general/setExtensionCount', extensionCount.value);
     if (chainInfo.value?.chain) {
       const currentChain = chainInfo.value?.chain as ASTAR_CHAIN;
       const currentNetworkIdx = getProviderIndex(currentChain);
@@ -84,6 +83,17 @@ export default boot(async ({ store }) => {
       $web3.value = web3;
     }
   });
+
+  // execute extension process automatically if selectedAddress is linked
+  if (selectedAddress !== null) {
+    console.log('extensions');
+    const { extensions } = useExtensions(api, store);
+    const { metaExtensions, extensionCount } = useMetaExtensions(api, extensions)!!;
+    watchPostEffect(async () => {
+      store.commit('general/setMetaExtensions', metaExtensions.value);
+      store.commit('general/setExtensionCount', extensionCount.value);
+    });
+  }
 });
 
 export { $api, $web3, $endpoint };

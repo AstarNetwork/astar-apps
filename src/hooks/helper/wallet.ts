@@ -11,26 +11,31 @@ import { SubstrateAccount } from './../../store/general/state';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ethers } from 'ethers';
 
-export const getInjectedExtensions = async (): Promise<any[]> => {
-  // Memo: Firefox takes some time to load the wallet extensions at the boot time.
-  let extensions = await web3Enable('AstarNetwork/astar-apps');
-  // Memo: obtain the extension name
-  // console.log('extensions', extensions);
+export const getInjectedExtensions = async (forceRequest = false): Promise<any[]> => {
+  const selectedAddress = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
+  if (selectedAddress != null || forceRequest) {
+    // console.log('web3Enable');
+    // Memo: Firefox takes some time to load the wallet extensions at the boot time.
+    let extensions = await web3Enable('AstarNetwork/astar-apps');
+    // Memo: obtain the extension name
+    // console.log('extensions', extensions);
 
-  const injectedWeb3 = window.injectedWeb3;
-  const numWalletExtensions = injectedWeb3 ? Object.values(window.injectedWeb3).length : 0;
-  const maxRetry = 20;
-  let numRetry = 0;
-  while (extensions.length !== numWalletExtensions) {
-    await wait(400);
-    extensions = await web3Enable('AstarNetwork/astar-apps');
-    numRetry++;
-    if (numRetry > maxRetry) {
-      break;
+    const injectedWeb3 = window.injectedWeb3;
+    const numWalletExtensions = injectedWeb3 ? Object.values(window.injectedWeb3).length : 0;
+    const maxRetry = 20;
+    let numRetry = 0;
+    while (extensions.length !== numWalletExtensions) {
+      wait(400);
+      extensions = await web3Enable('AstarNetwork/astar-apps');
+      numRetry++;
+      if (numRetry > maxRetry) {
+        break;
+      }
     }
-  }
 
-  return extensions;
+    return extensions;
+  }
+  return [];
 };
 
 export const getSelectedAccount = (accounts: SubstrateAccount[]): SubstrateAccount | undefined => {

@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { ref, Ref, watchEffect } from 'vue';
 import store from 'store';
 import type { ApiPromise } from '@polkadot/api';
 import type {
@@ -135,18 +135,23 @@ async function getKnown(
   return all.filter((info): info is ExtensionKnown => !!info);
 }
 
-export function useMetaExtensions(api: ApiPromise, extensions: InjectedExtension[]) {
+export function useMetaExtensions(
+  api: ApiPromise,
+  extensions: Ref<InjectedExtension[] | undefined>
+) {
   if (!api || !extensions) return;
 
   const metaExtensions = ref<any>(null);
   const extensionCount = ref<number>(0);
 
-  (async () => {
-    await api.isReady;
-    const all = await getKnown(api, extensions);
-    metaExtensions.value = filterAll(api, all);
-    extensionCount.value = metaExtensions.value.count;
-  })();
+  watchEffect(async () => {
+    if (extensions.value) {
+      await api.isReady;
+      const all = await getKnown(api, extensions.value);
+      metaExtensions.value = filterAll(api, all);
+      extensionCount.value = metaExtensions.value.count;
+    }
+  });
 
   return { metaExtensions, extensionCount };
 }

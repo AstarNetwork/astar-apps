@@ -8,7 +8,9 @@
         <div class="icon"><Logo /></div>
       </template>
       <template v-if="!currentAccount">
-        <ConnectButton @click="openSelectModal" />
+        <ConnectButton @click="openSelectModal">
+          <astar-icon-wallet />
+        </ConnectButton>
       </template>
       <template v-else>
         <AccountButton :account="currentAccount" @click="changeAccount" />
