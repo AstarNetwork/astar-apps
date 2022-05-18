@@ -16,8 +16,7 @@ import { useAccount } from 'src/hooks/useAccount';
 import { ChainAsset } from 'src/hooks/xcm/useXcmAssets';
 import { ExistentialDeposit } from 'src/modules/xcm';
 import { useStore } from 'src/store';
-import { computed, onUnmounted, ref, Ref, watch, watchEffect } from 'vue';
-import { useRouter } from 'vue-router';
+import { computed, onUnmounted, ref, Ref, watchEffect } from 'vue';
 import { RelaychainApi } from './SubstrateApi';
 
 export interface Chain {
@@ -42,7 +41,6 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   const existentialDeposit = ref<ExistentialDeposit | null>(null);
 
   const store = useStore();
-  const router = useRouter();
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const { currentAccount } = useAccount();
   const { xcmAssets } = useXcmAssets();
@@ -250,15 +248,6 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     relayChainNativeBalance.value = await getRelayChainNativeBal();
   };
 
-  const setTokenByQueyParams = (): void => {
-    if (!tokens.value) return;
-    const query = router.currentRoute.value.query;
-    if (query.symbol) {
-      const token = tokens.value?.find((it) => it.metadata.symbol.toString() === query.symbol);
-      token && store.commit('xcm/setSelectedToken', token);
-    }
-  };
-
   watchEffect(async () => {
     if (!currentNetworkIdx.value || currentNetworkIdx.value !== null) {
       await connectRelaychain();
@@ -274,14 +263,6 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
       }
     }
   });
-
-  watch(
-    [tokens],
-    () => {
-      setTokenByQueyParams();
-    },
-    { immediate: false }
-  );
 
   const handleUpdate = setInterval(async () => {
     await updateRelayChainTokenBal();

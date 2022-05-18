@@ -10,7 +10,6 @@ import general from './general';
 import contracts from './contracts';
 import dapps from './dapp-staking';
 import bridge from './bridge';
-import xcm from './xcm';
 
 /*
  * If not building with SSR mode, you can
@@ -47,7 +46,6 @@ export default store(function (/* { ssrContext } */) {
       contracts,
       dapps,
       bridge,
-      xcm,
     },
 
     // enable strict mode (adds overhead!)
