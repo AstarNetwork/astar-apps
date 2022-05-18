@@ -1,8 +1,8 @@
 import { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
-import { $api } from 'boot/api';
+import { $api, $web3 } from 'boot/api';
 import { ethers } from 'ethers';
-import { isValidEvmAddress, toSS58Address } from 'src/config/web3';
+import { getBalance, isValidEvmAddress, toSS58Address } from 'src/config/web3';
 import { useCustomSignature } from 'src/hooks';
 import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { useAccount } from 'src/hooks/useAccount';
@@ -89,6 +89,19 @@ export function useXcmTokenTransfer(selectedToken: Ref<ChainAsset>) {
           alertType: 'error',
         });
         return;
+      }
+
+      // check if recipient account has non-zero native asset. (it cannot be transferred to an account with 0 nonce)
+      if (isValidEvmAddress(toAddress)) {
+        const balWei = await getBalance($web3.value!, toAddress);
+        if (Number(ethers.utils.formatEther(balWei)) === 0) {
+          throw Error('the balance of recipient account should be above zero');
+        }
+      } else {
+        const balData = ((await $api!.query.system.account(toAddress)) as any).data;
+        if (balData.free.toBn().eqn(0)) {
+          throw Error('the balance of recipient account should be above zero');
+        }
       }
 
       const receivingAddress = isValidEvmAddress(toAddress) ? toSS58Address(toAddress) : toAddress;
