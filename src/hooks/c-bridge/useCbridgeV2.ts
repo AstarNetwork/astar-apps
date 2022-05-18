@@ -25,6 +25,7 @@ export function useCbridgeV2() {
   const store = useStore();
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
   const { currentAccount } = useAccount();
+  const isLoadingErc20Amount = ref<boolean>(false);
 
   const nativeTokenSymbol = computed(() => {
     const chainInfo = store.getters['general/chainInfo'];
@@ -98,6 +99,8 @@ export function useCbridgeV2() {
 
   const updateTokenBalances = async ({ userAddress }: { userAddress: string }): Promise<void> => {
     if (!tokens.value) return;
+    isLoadingErc20Amount.value = true;
+    console.log('updateTokenBalances');
     tokens.value = await Promise.all(
       tokens.value.map(async (token: Token) => {
         const { balUsd, userBalance } = await updateTokenBalanceHandler({
@@ -111,6 +114,7 @@ export function useCbridgeV2() {
     );
 
     filterTokens();
+    isLoadingErc20Amount.value = false;
   };
 
   const updateBridgeConfig = async ({
@@ -236,5 +240,5 @@ export function useCbridgeV2() {
     clearInterval(tokenBalUpdate);
   });
 
-  return { tokens, ttlErc20Amount, handleUpdateTokenBalances };
+  return { tokens, isLoadingErc20Amount, ttlErc20Amount, handleUpdateTokenBalances };
 }

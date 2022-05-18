@@ -182,7 +182,6 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
 
     srcChain.value = srcChains.value[0];
     destChain.value = destChains.value[0];
-    tokens.value && store.commit('xcm/setSelectedToken', tokens.value[0]);
   };
 
   const bridge = async (finalizedCallback: () => Promise<void>): Promise<void> => {

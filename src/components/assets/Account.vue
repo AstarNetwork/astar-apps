@@ -109,8 +109,12 @@ export default defineComponent({
       type: Number,
       required: true,
     },
+    isLoadingErc20Amount: {
+      type: Boolean,
+      required: true,
+    },
   },
-  setup() {
+  setup(props) {
     const balUsd = ref<number | null>(null);
     const isCheckingSignature = ref<boolean>(false);
     const isLockdropAccount = ref<boolean>(false);
@@ -151,6 +155,7 @@ export default defineComponent({
     const isSkeleton = computed(() => {
       const isH160 = store.getters['general/isH160Formatted'];
       const isLoadingState = store.getters['general/isLoading'];
+      if (props.isLoadingErc20Amount) return true;
       if (!nativeTokenUsd.value) return false;
 
       if (isH160) {

@@ -4,6 +4,7 @@
       <Account
         :ttl-erc20-amount="ttlErc20Amount"
         :ttl-native-xcm-usd-amount="ttlNativeXcmUsdAmount"
+        :is-loading-erc20-amount="isLoadingErc20Amount"
       />
       <div v-if="selectedAddress">
         <div v-if="isH160">
@@ -45,7 +46,8 @@ export default defineComponent({
     XcmNativeAssetList,
   },
   setup() {
-    const { tokens, ttlErc20Amount, handleUpdateTokenBalances } = useCbridgeV2();
+    const { tokens, isLoadingErc20Amount, ttlErc20Amount, handleUpdateTokenBalances } =
+      useCbridgeV2();
     const {
       xcmAssets,
       ttlNativeXcmUsdAmount,
@@ -83,6 +85,7 @@ export default defineComponent({
     });
 
     return {
+      isLoadingErc20Amount,
       selectedAddress,
       isH160,
       tokens,
