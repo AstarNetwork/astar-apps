@@ -144,12 +144,15 @@ export default defineComponent({
     });
 
     const t = computed(() => props.token);
-    const { tokenImage, isNativeToken } = useXcmBridge(t);
+    const { tokenImage, isNativeToken, transferAsset } = useXcmBridge(t);
 
-    // Todo
     const isDisabledTransfer = computed(() => {
-      const isLessAmount = 0 >= Number(transferAmt.value);
-      return errMsg.value !== '' || isLessAmount;
+      const isLessAmount =
+        0 >= Number(transferAmt.value) ||
+        Number(props.token.userBalance) < Number(transferAmt.value);
+      const noAddress = !toAddress.value;
+
+      return errMsg.value !== '' || isLessAmount || noAddress;
     });
 
     const inputHandler = (event: any): void => {
@@ -176,12 +179,11 @@ export default defineComponent({
       transferAmt.value = props.token.userBalance;
     };
 
-    // Memo: todo
     const transfer = async (): Promise<void> => {
-      console.log('start transfer');
+      await transferAsset(Number(transferAmt.value ? transferAmt.value : 0), toAddress.value);
+      closeModal();
     };
 
-    // Todo
     const setErrorMsg = (): void => {
       const transferAmtRef = Number(transferAmt.value);
       const fromAccountBalance = props.token ? Number(props.token.userBalance) : 0;

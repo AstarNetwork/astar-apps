@@ -1,5 +1,7 @@
 import { evmToAddress } from '@polkadot/util-crypto';
+import { ISubmittableResult } from '@polkadot/types/types';
 import { ethers } from 'ethers';
+import BN from 'bn.js';
 import { $web3 } from 'src/boot/api';
 import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
 import { getBalance, isValidEvmAddress } from 'src/config/web3';
@@ -19,6 +21,10 @@ import { useStore } from 'src/store';
 import { computed, onUnmounted, ref, Ref, watch, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 import { RelaychainApi } from './SubstrateApi';
+import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
+import { toSS58Address } from 'src/config/web3';
+import { signAndSend } from './../helper/wallet';
+import { $api } from 'boot/api';
 
 export interface Chain {
   id: number;
@@ -71,13 +77,13 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
   const router = useRouter();
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const { currentAccount } = useAccount();
-  const { xcmAssets } = useXcmAssets();
+  const { xcmAssets, handleUpdateTokenBalances } = useXcmAssets();
   const currentNetworkIdx = computed(() => {
     const chainInfo = store.getters['general/chainInfo'];
     const chain = chainInfo ? chainInfo.chain : '';
     return getProviderIndex(chain);
   });
-  const { handleResult, handleTransactionError } = useCustomSignature({});
+  const { handleResult, handleTransactionError, handleCustomExtrinsic } = useCustomSignature({});
   const { balance } = useBalance(currentAccount);
   let relayChainApi: RelaychainApi | null = null;
 
@@ -333,6 +339,56 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
     }
   };
 
+  const transferAsset = async (transferAmt: number, toAddress: string): Promise<void> => {
+    try {
+      if (!selectedToken?.value) {
+        throw Error('Token is not selected');
+      }
+
+      const isValidSS58Address =
+        isValidAddressPolkadotAddress(currentAccount.value) &&
+        isValidAddressPolkadotAddress(toAddress);
+
+      if (!isValidSS58Address && !isValidEvmAddress(toAddress)) {
+        store.dispatch('general/showAlertMsg', {
+          msg: 'assets.invalidAddress',
+          alertType: 'error',
+        });
+        return;
+      }
+
+      const receivingAddress = isValidEvmAddress(toAddress) ? toSS58Address(toAddress) : toAddress;
+
+      const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
+        const res = await handleResult(result);
+        await handleUpdateTokenBalances();
+        return res;
+      };
+
+      const decimals = selectedToken.value.metadata.decimals;
+      const transaction = $api!.tx.assets.transfer(
+        new BN(selectedToken.value.id),
+        receivingAddress,
+        new BN(10 ** Number(decimals)).muln(transferAmt)
+      );
+      await signAndSend({
+        transaction,
+        senderAddress: currentAccount.value,
+        substrateAccounts: substrateAccounts.value,
+        isCustomSignature: false, // isEthWallet.value - ATM we can't send assets from EVM account,
+        txResHandler,
+        handleCustomExtrinsic,
+        dispatch: store.dispatch,
+      });
+    } catch (e: any) {
+      console.error(e);
+      store.dispatch('general/showAlertMsg', {
+        msg: e.message || 'Something went wrong during asset transfer.',
+        alertType: 'error',
+      });
+    }
+  };
+
   const updateRelayChainTokenBal = async (): Promise<void> => {
     selectedTokenBalance.value = await getSelectedTokenBal();
   };
@@ -409,6 +465,7 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
     toMaxAmount,
     resetStates,
     setIsNativeBridge,
+    transferAsset,
     updateRelayChainTokenBal,
   };
 }
