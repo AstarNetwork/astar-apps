@@ -112,7 +112,8 @@ class ChainApi {
   public async getBalance(address: string) {
     try {
       await this._api?.isReady;
-      return ((await this._api.query.system.account(address)) as any).data.free.toBn() as BN;
+      const balData = ((await this._api.query.system.account(address)) as any).data;
+      return (balData.free.toBn() as BN).sub(new BN(balData.miscFrozen));
     } catch (e) {
       console.error(e);
       return new BN(0);
