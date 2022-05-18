@@ -1,10 +1,11 @@
-import { evmToAddress } from '@polkadot/util-crypto';
 import { ISubmittableResult } from '@polkadot/types/types';
-import { ethers } from 'ethers';
+import { evmToAddress } from '@polkadot/util-crypto';
 import BN from 'bn.js';
+import { $api } from 'boot/api';
+import { ethers } from 'ethers';
 import { $web3 } from 'src/boot/api';
 import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
-import { getBalance, isValidEvmAddress } from 'src/config/web3';
+import { getBalance, isValidEvmAddress, toSS58Address } from 'src/config/web3';
 import {
   endpointKey as xcmEndpointKey,
   parachainIds,
@@ -13,19 +14,17 @@ import {
 } from 'src/config/xcmChainEndpoints';
 import { useBalance, useCustomSignature, useXcmAssets, useXcmTokenDetails } from 'src/hooks';
 import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
+import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { getInjector } from 'src/hooks/helper/wallet';
 import { useAccount } from 'src/hooks/useAccount';
 import { ChainAsset } from 'src/hooks/xcm/useXcmAssets';
-import { ExistentialDeposit, getXcmToken, XcmTokenInformation } from 'src/modules/xcm';
+import { ExistentialDeposit } from 'src/modules/xcm';
 import { useStore } from 'src/store';
 import { computed, onUnmounted, ref, Ref, watch, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
-import { RelaychainApi } from './SubstrateApi';
-import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
-import { toSS58Address } from 'src/config/web3';
-import { signAndSend } from './../helper/wallet';
-import { $api } from 'boot/api';
 import { useGasPrice } from '../useGasPrice';
+import { signAndSend } from './../helper/wallet';
+import { RelaychainApi } from './SubstrateApi';
 
 export interface Chain {
   id: number;
@@ -55,7 +54,7 @@ export const formatDecimals = ({ amount, decimals }: { amount: string; decimals:
   return Number(Number(amount).toFixed(decimals));
 };
 
-export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
+export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   // Todo: remove unused states
 
   const srcChains = ref<Chain[] | null>(null);
@@ -88,7 +87,7 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
   const { balance } = useBalance(currentAccount);
   const { selectedTip, nativeTipPrice, setSelectedTip } = useGasPrice();
   const { tokenImage, isNativeToken, tokenDetails, isDisplayToken, isXcmCompatible } =
-    useXcmTokenDetails(selectedToken!);
+    useXcmTokenDetails(selectedToken);
 
   let relayChainApi: RelaychainApi | null = null;
 
@@ -179,14 +178,14 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
   });
 
   const formattedRelayChainBalance = computed<string>(() => {
-    if (!selectedToken || !selectedToken.value) return '0';
+    if (!selectedToken.value) return '0';
     const decimals = Number(String(selectedToken.value.metadata.decimals));
     const balance = ethers.utils.formatUnits(selectedTokenBalance.value, decimals).toString();
     return balance;
   });
 
   const toMaxAmount = (): void => {
-    amount.value = String(selectedToken?.value.userBalance);
+    amount.value = String(selectedToken.value.userBalance);
   };
 
   const setIsNativeBridge = (isNative: boolean): void => {

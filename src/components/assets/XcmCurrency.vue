@@ -58,7 +58,7 @@
 <script lang="ts">
 import { useXcmBridge } from 'src/hooks';
 import { ChainAsset } from 'src/hooks/xcm/useXcmAssets';
-import { computed, defineComponent, PropType, watchEffect } from 'vue';
+import { computed, defineComponent, PropType } from 'vue';
 
 export default defineComponent({
   props: {
