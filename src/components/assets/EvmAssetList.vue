@@ -88,13 +88,14 @@
                   {{ $t('assets.bridge') }}
                 </button>
               </router-link>
-              <button
+              <!-- Memo: Disable the faucet button temporary -->
+              <!-- <button
                 v-if="isFaucet"
                 class="btn btn--sm"
                 @click="handleModalFaucet({ isOpen: true })"
               >
                 {{ $t('assets.faucet') }}
-              </button>
+              </button> -->
             </div>
           </div>
         </div>

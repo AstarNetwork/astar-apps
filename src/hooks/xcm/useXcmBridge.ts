@@ -197,7 +197,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
       }
       // check if recipient account has non-zero native asset. (it cannot be transferred to an account with 0 nonce)
       if (balance.value.eqn(0)) {
-        throw Error('the balance of recipient account should be above zero');
+        throw Error(t('assets.modals.xcmWarning.nonzeroBalance'));
       }
 
       let recipientAccountId = currentAccount.value;
@@ -209,7 +209,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
         }
         const balWei = await getBalance($web3.value!, destEvmAddress.value);
         if (Number(ethers.utils.formatEther(balWei)) === 0) {
-          throw Error('the balance of recipient account should be above zero');
+          throw Error(t('assets.modals.xcmWarning.nonzeroBalance'));
         }
         const ss58MappedAddr = evmToAddress(destEvmAddress.value, PREFIX_ASTAR);
         // console.log('ss58MappedAddr', ss58MappedAddr);

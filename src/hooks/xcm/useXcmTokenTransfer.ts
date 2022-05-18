@@ -11,6 +11,7 @@ import { useStore } from 'src/store';
 import { computed, ref, Ref, watchEffect } from 'vue';
 import { useGasPrice } from '../useGasPrice';
 import { signAndSend } from '../helper/wallet';
+import { useI18n } from 'vue-i18n';
 
 export function useXcmTokenTransfer(selectedToken: Ref<ChainAsset>) {
   const transferAmt = ref<string | null>(null);
@@ -19,6 +20,7 @@ export function useXcmTokenTransfer(selectedToken: Ref<ChainAsset>) {
   const toAddress = ref<string>('');
   const errMsg = ref<string>('');
 
+  const { t } = useI18n();
   const store = useStore();
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const { currentAccount } = useAccount();
@@ -95,12 +97,12 @@ export function useXcmTokenTransfer(selectedToken: Ref<ChainAsset>) {
       if (isValidEvmAddress(toAddress)) {
         const balWei = await getBalance($web3.value!, toAddress);
         if (Number(ethers.utils.formatEther(balWei)) === 0) {
-          throw Error('the balance of recipient account should be above zero');
+          throw Error(t('assets.modals.xcmWarning.nonzeroBalance'));
         }
       } else {
         const balData = ((await $api!.query.system.account(toAddress)) as any).data;
         if (balData.free.toBn().eqn(0)) {
-          throw Error('the balance of recipient account should be above zero');
+          throw Error(t('assets.modals.xcmWarning.nonzeroBalance'));
         }
       }
 

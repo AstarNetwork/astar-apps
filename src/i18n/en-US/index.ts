@@ -273,6 +273,7 @@ export default {
         fee: 'Fee is deducted from the amount entered',
         tooltip:
           "Account with balance below the existential deposit will be reaped ({amount} {symbol} for {network}'s existential deposit)",
+        nonzeroBalance: 'the balance of recipient account should be above zero',
       },
     },
   },
