@@ -365,12 +365,14 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
         return res;
       };
 
-      const decimals = selectedToken.value.metadata.decimals;
+      const decimals = Number(selectedToken.value.metadata.decimals);
+      const amount = ethers.utils.parseUnits(String(transferAmt), decimals).toString();
       const transaction = $api!.tx.assets.transfer(
         new BN(selectedToken.value.id),
         receivingAddress,
-        new BN(10 ** Number(decimals)).muln(transferAmt)
+        amount
       );
+
       await signAndSend({
         transaction,
         senderAddress: currentAccount.value,
