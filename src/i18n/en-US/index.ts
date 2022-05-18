@@ -179,6 +179,8 @@ export default {
   },
   bridge: {
     bridge: 'Bridge',
+    send: 'Send',
+    xcm: 'XCM',
     connectEvmWallet: 'Connect EVM wallet',
     max: 'MAX',
     balance: 'Available Balance:',
@@ -217,6 +219,7 @@ export default {
   },
   assets: {
     assets: 'Assets',
+    xcmAssets: 'XCM Assets',
     nativeAccount: 'Native Account',
     evmAccount: 'EVM Account',
     switchToNative: 'Switch to Lockdrop',
@@ -225,6 +228,7 @@ export default {
     transfer: 'Transfer',
     faucet: 'Faucet',
     bridge: 'Bridge',
+    xcm: 'XCM',
     wrap: 'Wrap',
     explorer: 'Explorer',
     withdraw: 'Withdraw',
@@ -260,6 +264,17 @@ export default {
       unlockPerBlock: '{perToken} {symbol} per block until block {untilBlock}',
       availableToUnlocked: 'Available to unlocked',
       unlock: 'Unlock',
+      transfer: 'Transfer',
+      depositToNative: 'Deposit to Native',
+      depositToEvm: 'Deposit to EVM',
+      evmWalletAddress: 'EVM Wallet Address',
+      xcmWarning: {
+        avoidRisk: 'Avoid risk of losing your balance',
+        fee: 'Fee is deducted from the amount entered',
+        tooltip:
+          "Account with balance below the existential deposit will be reaped ({amount} {symbol} for {network}'s existential deposit)",
+        nonzeroBalance: 'the balance of recipient account should be above zero',
+      },
     },
   },
   dashboard: {

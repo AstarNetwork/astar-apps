@@ -5,10 +5,10 @@
       <div class="row row--details">
         <div class="row__left">
           <div class="column--currency">
-            <img :src="token.image" :alt="token.name" class="token-logo" />
+            <!-- <img :src="tokenImg" :alt="token.name" class="token-logo" /> -->
             <div class="column--ticker">
-              <span class="text--title">{{ token.symbol }}</span>
-              <span class="text--label">{{ token.name }}</span>
+              <span class="text--title">{{ token.metadata.symbol }}</span>
+              <span class="text--label">{{ token.metadata.name }}</span>
             </div>
           </div>
         </div>
@@ -16,11 +16,11 @@
           <div class="column column--balance">
             <div class="column__box">
               <div class="text--accent">
-                <span>{{ $n(Number(token.userBalance)) }} {{ token.symbol }}</span>
+                <span>{{ token.deposit }} {{ token.metadata.symbol }}</span>
               </div>
-              <div class="text--label">
+              <!-- <div class="text--label">
                 <span>{{ $n(Number(token.userBalanceUsd)) }} {{ $t('usd') }}</span>
-              </div>
+              </div> -->
             </div>
           </div>
           <div class="column--asset-buttons column--buttons--multi">
@@ -35,14 +35,16 @@
             >
               {{ $t('assets.transfer') }}
             </button>
-            <div v-if="token.isWrappedToken && !token.isXC20">
-              <a :href="token.wrapUrl" target="_blank" rel="noopener noreferrer">
-                <button class="btn btn--sm">{{ $t('assets.wrap') }}</button>
-              </a>
-            </div>
-
-            <!-- Todo: We can add an action button for XC20 tokens here -->
-            <div v-if="token.isXC20" />
+            <router-link
+              :to="{
+                path: '/xcm',
+                query: { from: sourceChainId, symbol: token.metadata.symbol },
+              }"
+            >
+              <button class="btn btn--sm">
+                {{ $t('assets.xcm') }}
+              </button>
+            </router-link>
 
             <div class="screen--xl">
               <a
@@ -61,15 +63,17 @@
                 <span class="text--tooltip">{{ $t('blockscout') }}</span>
               </q-tooltip>
             </div>
+
             <div class="screen--md">
               <button
+                v-if="isH160"
                 class="btn btn--sm btn--icon adjuster--width"
                 @click="
                   addToEvmWallet({
-                    tokenAddress: token.address,
-                    symbol: token.symbol,
-                    decimals: token.decimal,
-                    image: token.image,
+                    tokenAddress: token.mappedERC20Addr,
+                    symbol: token.metadata.symbol,
+                    decimals: token.metadata.decimals,
+                    image: '',
                   })
                 "
               >
@@ -88,16 +92,19 @@
   </div>
 </template>
 <script lang="ts">
+import { SelectedToken } from 'src/c-bridge';
 import { getProviderIndex } from 'src/config/chainEndpoints';
+import { getChainId } from 'src/config/web3';
 import { addToEvmWallet } from 'src/hooks/helper/wallet';
-import { Erc20Token, getErc20Explorer } from 'src/modules/token';
 import { useStore } from 'src/store';
+import { getErc20Explorer, getTokenImage } from 'src/modules/token';
 import { computed, defineComponent, PropType } from 'vue';
+import { ChainAsset } from 'src/hooks/xcm/useXcmAssets';
 
 export default defineComponent({
   props: {
     token: {
-      type: Object as PropType<Erc20Token>,
+      type: Object as PropType<ChainAsset>,
       required: true,
     },
     handleModalTransfer: {
@@ -106,18 +113,51 @@ export default defineComponent({
     },
   },
   setup({ token }) {
+    // const tokenImg = computed(() =>
+    //   getTokenImage({ isNativeToken: false, symbol: token.symbol, iconUrl: token.icon })
+    // );
+
     const store = useStore();
+    const isH160 = computed(() => store.getters['general/isH160Formatted']);
+    const nativeTokenSymbol = computed(() => {
+      const chainInfo = store.getters['general/chainInfo'];
+      return chainInfo ? chainInfo.tokenSymbol : '';
+    });
+
+    const formatTokenName = (name: string) => {
+      switch (name) {
+        case 'Shiden Network':
+          return 'Shiden';
+        default:
+          return name;
+      }
+    };
+
+    // const sourceChainId = computed(() => {
+    //   const chainInfo = store.getters['general/chainInfo'];
+    //   const chain = chainInfo ? chainInfo.chain : '';
+    //   const networkIdx = getProviderIndex(chain);
+    //   const chainId = token.canonicalConfig
+    //     ? token.canonicalConfig && token.canonicalConfig.org_chain_id
+    //     : String(getChainId(networkIdx));
+    //   return chainId;
+    // });
 
     const explorerLink = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
       const chain = chainInfo ? chainInfo.chain : '';
       const currentNetworkIdx = getProviderIndex(chain);
-      const tokenAddress = token.address;
+      const tokenAddress = token.owner.toString();
       return getErc20Explorer({ currentNetworkIdx, tokenAddress });
     });
 
     return {
+      formatTokenName,
       addToEvmWallet,
+      isH160,
+      // tokenImg,
+      nativeTokenSymbol,
+      // sourceChainId,
       explorerLink,
     };
   },

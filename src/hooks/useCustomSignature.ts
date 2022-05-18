@@ -4,6 +4,7 @@ import { useStore } from 'src/store';
 import { computed, ref } from 'vue';
 import { displayCustomMessage, TxType } from './custom-signature/message';
 import { useExtrinsicCall } from './custom-signature/useExtrinsicCall';
+import { hasExtrinsicFailedEvent } from 'src/modules/extrinsic';
 
 export function useCustomSignature({ fn, txType }: { fn?: () => void; txType?: TxType }) {
   const customMsg = ref<string | null>(null);
@@ -30,18 +31,22 @@ export function useCustomSignature({ fn, txType }: { fn?: () => void; txType?: T
         const status = result.status;
         if (status.isFinalized) {
           store.commit('general/setLoading', false);
-          fn && fn();
-          const msg = customMsg.value
-            ? customMsg.value
-            : `Completed at block hash #${status.asFinalized.toString()}`;
+          if (!hasExtrinsicFailedEvent(result.events, store.dispatch)) {
+            fn && fn();
+            const msg = customMsg.value
+              ? customMsg.value
+              : `Completed at block hash #${status.asFinalized.toString()}`;
 
-          store.dispatch('general/showAlertMsg', {
-            msg,
-            alertType: 'success',
-          });
+            store.dispatch('general/showAlertMsg', {
+              msg,
+              alertType: 'success',
+            });
 
-          customMsg.value = null;
-          resolve(true);
+            customMsg.value = null;
+            resolve(true);
+          } else {
+            resolve(false);
+          }
         } else {
           store.commit('general/setLoading', true);
         }

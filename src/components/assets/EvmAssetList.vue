@@ -1,6 +1,23 @@
 <template>
-  <div>
-    <div v-if="isListReady" class="container container--evm-assets-list">
+  <div v-if="isListReady" class="container--assets">
+    <div class="container">
+      <div class="row">
+        <div>
+          <span class="text--title">{{ $t('assets.xcmAssets') }}</span>
+        </div>
+        <div />
+      </div>
+
+      <div v-for="t in filteredTokens" :key="t.symbol">
+        <Erc20Currency
+          v-if="!checkIsCbridgeToken(t) && t.isXC20"
+          :token="t"
+          :handle-modal-transfer="handleModalTransfer"
+        />
+      </div>
+    </div>
+
+    <div class="container">
       <div class="row">
         <div>
           <span class="text--title">{{ $t('assets.assets') }}</span>
@@ -71,13 +88,14 @@
                   {{ $t('assets.bridge') }}
                 </button>
               </router-link>
-              <button
+              <!-- Memo: Disable the faucet button temporary -->
+              <!-- <button
                 v-if="isFaucet"
                 class="btn btn--sm"
                 @click="handleModalFaucet({ isOpen: true })"
               >
                 {{ $t('assets.faucet') }}
-              </button>
+              </button> -->
             </div>
           </div>
         </div>
@@ -92,7 +110,7 @@
           />
         </div>
         <div v-else>
-          <Erc20Currency :token="t" :handle-modal-transfer="handleModalTransfer" />
+          <Erc20Currency v-if="!t.isXC20" :token="t" :handle-modal-transfer="handleModalTransfer" />
         </div>
       </div>
       <div v-if="!filteredTokens && !isDisplayNativeToken" class="box--no-result">
@@ -214,7 +232,6 @@ export default defineComponent({
       isModalTransfer.value = isOpen;
       if (!isOpen) {
         symbol.value = '';
-        return;
       } else if (currency === nativeTokenSymbol.value) {
         symbol.value = nativeTokenSymbol.value;
       } else {

@@ -1,0 +1,178 @@
+<template>
+  <div v-if="srcChain && selectedToken" class="container--bridge animate__animated animate__fadeIn">
+    <div class="widget">
+      <div class="row">
+        <div class="column--chain-direction">
+          <div class="column--currency">
+            <span class="label">{{ $t('from') }}</span>
+            <div class="chain">
+              <img :src="chainIcon.src" alt="src-chain-logo" class="chain-logo" />
+              <span class="chain-name"> {{ chainName.src }} </span>
+            </div>
+          </div>
+          <div>
+            <span class="column--direction"> -> </span>
+          </div>
+          <div class="column--currency">
+            <span class="label">{{ $t('to') }}</span>
+            <div class="chain" @click="openModal('dest')">
+              <img :src="chainIcon.dest" alt="src-chain-logo" class="chain-logo" />
+              <span class="chain-name">{{ chainName.dest }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="row--amount">
+          <div class="input-row">
+            <input
+              :value="amount"
+              inputmode="decimal"
+              type="number"
+              min="0"
+              pattern="^[0-9]*(\.)?[0-9]*$"
+              placeholder="0"
+              :class="'input-native-token'"
+              @input="inputHandler"
+            />
+            <div class="token-ticker">
+              <span>{{ selectedToken.metadata.symbol }}</span>
+            </div>
+          </div>
+          <div class="information label">
+            <div />
+            <div v-if="selectedTokenBalance" class="balance">
+              <p>{{ $t('bridge.send') }}</p>
+              <p>
+                {{
+                  $n(
+                    formatDecimals({
+                      amount: selectedTokenBalance,
+                      decimals: 6,
+                    })
+                  )
+                }}
+                {{ selectedToken.metadata.symbol }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-if="errMsg && amount" class="err-msg-container">
+        <p class="err-msg">{{ errMsg }}</p>
+      </div>
+      <BridgeButtons
+        :bridge="bridge"
+        :handle-approve="handleApprove"
+        :is-disabled-bridge="isDisabledBridge"
+        :is-approval-needed="isApprovalNeeded"
+        :selected-network="selectedNetwork"
+        :src-chain-id="srcChain.id"
+      />
+    </div>
+
+    <!-- <ModalToken
+      v-if="modal === 'token'"
+      v-model:isOpen="modal"
+      :close-modal="closeModal"
+      :select-token="selectToken"
+      :tokens="tokens"
+      :selected-token="selectedToken"
+      :src-chain-id="srcChain.id"
+      :modal="modal"
+    /> -->
+
+    <!-- <ModalChain
+      v-if="modal === 'src'"
+      v-model:isOpen="modal"
+      :close-modal="closeModal"
+      :select-chain="selectChain"
+      :chains="srcChains"
+      :modal="modal"
+      :selected-chain="srcChain"
+    /> -->
+
+    <!-- <ModalChain
+      v-if="modal === 'dest'"
+      v-model:isOpen="modal"
+      :close-modal="closeModal"
+      :select-chain="selectChain"
+      :chains="destChains"
+      :modal="modal"
+      :selected-chain="destChain"
+    /> -->
+  </div>
+</template>
+
+<script lang="ts">
+import { fasHistory } from '@quasar/extras/fontawesome-v5';
+import { useMeta } from 'quasar';
+import { useStore } from 'src/store';
+import { computed, defineComponent, watchEffect } from 'vue';
+import BridgeButtons from './BridgeButtons.vue';
+// import ModalChain from './modals/ModalChain.vue';
+// import ModalToken from './modals/ModalToken.vue';
+import { endpointKey } from 'src/config/chainEndpoints';
+import { nativeCurrency } from 'src/config/web3';
+import { useXcmBridge, formatDecimals } from 'src/hooks/xcm/useXcmBridge';
+
+export default defineComponent({
+  components: {
+    // ModalChain,
+    // ModalToken,
+    BridgeButtons,
+  },
+  setup() {
+    // useMeta({ title: 'Relay Bridge' });
+    const store = useStore();
+    const selectedToken = computed(() => store.getters['xcm/selectedToken']);
+
+    const {
+      srcChain,
+      destChain,
+      srcChains,
+      destChains,
+      tokens,
+      modal,
+      errMsg,
+      selectedTokenBalance,
+      amount,
+      chainIcon,
+      chainName,
+      closeModal,
+      openModal,
+      inputHandler,
+      selectChain,
+      selectToken,
+      bridge,
+    } = useXcmBridge();
+
+    return {
+      fasHistory,
+      amount,
+      srcChain,
+      destChain,
+      srcChains,
+      destChains,
+      tokens,
+      modal,
+      errMsg,
+      selectedToken,
+      chainIcon,
+      chainName,
+      selectedTokenBalance,
+      closeModal,
+      openModal,
+      inputHandler,
+      selectChain,
+      selectToken,
+      bridge,
+      endpointKey,
+      nativeCurrency,
+      formatDecimals,
+    };
+  },
+});
+</script>
+
+<style lang="scss" scoped>
+@import './styles/xcm-bridge.scss';
+</style>

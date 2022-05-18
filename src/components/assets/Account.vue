@@ -68,7 +68,9 @@
       <div class="row">
         <span>{{ $t('assets.totalBalance') }}</span>
         <q-skeleton v-if="isSkeleton" animation="fade" class="skeleton--md" />
-        <span v-else class="text--total-balance"> ${{ $n(balUsd + ttlErc20Amount) }} </span>
+        <span v-else class="text--total-balance">
+          ${{ $n(balUsd + ttlErc20Amount + ttlNativeXcmUsdAmount) }}
+        </span>
       </div>
     </div>
   </div>
@@ -100,6 +102,10 @@ import copy from 'copy-to-clipboard';
 export default defineComponent({
   props: {
     ttlErc20Amount: {
+      type: Number,
+      required: true,
+    },
+    ttlNativeXcmUsdAmount: {
       type: Number,
       required: true,
     },
