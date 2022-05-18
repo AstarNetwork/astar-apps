@@ -17,6 +17,7 @@ import { ChainAsset } from 'src/hooks/xcm/useXcmAssets';
 import { ExistentialDeposit } from 'src/modules/xcm';
 import { useStore } from 'src/store';
 import { computed, onUnmounted, ref, Ref, watchEffect } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { RelaychainApi } from './SubstrateApi';
 
 export interface Chain {
@@ -40,6 +41,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   const destEvmAddress = ref<string>('');
   const existentialDeposit = ref<ExistentialDeposit | null>(null);
 
+  const { t } = useI18n();
   const store = useStore();
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const { currentAccount } = useAccount();
