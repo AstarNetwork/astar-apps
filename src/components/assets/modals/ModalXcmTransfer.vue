@@ -55,7 +55,7 @@
                   })
                 }}</span
               >
-              <button v-if="!isNativeToken" class="btn--max" @click="toMaxAmount">
+              <button class="btn--max" @click="toMaxAmount">
                 {{ $t('assets.modals.max') }}
               </button>
             </div>
@@ -147,7 +147,7 @@ export default defineComponent({
     const store = useStore();
     const { currentAccount, currentAccountName } = useAccount();
     const token = computed(() => props.token);
-    const { tokenImage, isNativeToken } = useXcmTokenDetails(token);
+    const { tokenImage } = useXcmTokenDetails(token);
 
     const nativeTokenSymbol = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
@@ -180,7 +180,7 @@ export default defineComponent({
 
     const transfer = async (): Promise<void> => {
       await transferAsset({
-        transferAmt: Number(transferAmt.value ? transferAmt.value : 0),
+        transferAmt: Number(transferAmt.value),
         toAddress: toAddress.value,
         finalizeCallback: closeModal,
       });
@@ -196,7 +196,6 @@ export default defineComponent({
       fromAddressBalance,
       transferAmt,
       errMsg,
-      isNativeToken,
       isClosingModal,
       isDisabledTransfer,
       tokenImage,
