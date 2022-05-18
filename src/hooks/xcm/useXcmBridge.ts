@@ -1,11 +1,8 @@
-import { ISubmittableResult } from '@polkadot/types/types';
 import { evmToAddress } from '@polkadot/util-crypto';
-import BN from 'bn.js';
-import { $api } from 'boot/api';
 import { ethers } from 'ethers';
 import { $web3 } from 'src/boot/api';
 import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
-import { getBalance, isValidEvmAddress, toSS58Address } from 'src/config/web3';
+import { getBalance, isValidEvmAddress } from 'src/config/web3';
 import {
   endpointKey as xcmEndpointKey,
   parachainIds,
@@ -14,7 +11,6 @@ import {
 } from 'src/config/xcmChainEndpoints';
 import { useBalance, useCustomSignature, useXcmAssets, useXcmTokenDetails } from 'src/hooks';
 import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
-import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { getInjector } from 'src/hooks/helper/wallet';
 import { useAccount } from 'src/hooks/useAccount';
 import { ChainAsset } from 'src/hooks/xcm/useXcmAssets';
@@ -22,8 +18,6 @@ import { ExistentialDeposit } from 'src/modules/xcm';
 import { useStore } from 'src/store';
 import { computed, onUnmounted, ref, Ref, watch, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
-import { useGasPrice } from '../useGasPrice';
-import { signAndSend } from './../helper/wallet';
 import { RelaychainApi } from './SubstrateApi';
 
 export interface Chain {
@@ -31,32 +25,7 @@ export interface Chain {
   name: string;
 }
 
-const CHAINS = [
-  {
-    id: 1,
-    name: 'DOT',
-  },
-  {
-    id: 2,
-    name: 'Kusama',
-  },
-  {
-    id: 3,
-    name: 'Astar',
-  },
-  {
-    id: 4,
-    name: 'Shiden',
-  },
-];
-
-export const formatDecimals = ({ amount, decimals }: { amount: string; decimals: number }) => {
-  return Number(Number(amount).toFixed(decimals));
-};
-
 export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
-  // Todo: remove unused states
-
   const srcChains = ref<Chain[] | null>(null);
   const destChains = ref<Chain[] | null>(null);
 
@@ -64,8 +33,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   const destChain = ref<Chain | null>(null);
   const destParaId = ref<number>(parachainIds.SDN);
   const tokens = ref<ChainAsset[] | null>(null);
-  const selectedTokenBalance = ref<string>('0');
-  const modal = ref<'src' | 'dest' | 'token' | null>(null);
+  const relayChainNativeBalance = ref<string>('0');
   const amount = ref<string | null>(null);
   const errMsg = ref<string>('');
   const isDisabledBridge = ref<boolean>(true);
@@ -77,7 +45,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   const router = useRouter();
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const { currentAccount } = useAccount();
-  const { xcmAssets, handleUpdateTokenBalances } = useXcmAssets();
+  const { xcmAssets } = useXcmAssets();
   const currentNetworkIdx = computed(() => {
     const chainInfo = store.getters['general/chainInfo'];
     const chain = chainInfo ? chainInfo.chain : '';
@@ -85,9 +53,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   });
   const { handleResult, handleTransactionError, handleCustomExtrinsic } = useCustomSignature({});
   const { balance } = useBalance(currentAccount);
-  const { selectedTip, nativeTipPrice, setSelectedTip } = useGasPrice();
-  const { tokenImage, isNativeToken, tokenDetails, isDisplayToken, isXcmCompatible } =
-    useXcmTokenDetails(selectedToken);
+  const { tokenImage, isNativeToken } = useXcmTokenDetails(selectedToken);
 
   let relayChainApi: RelaychainApi | null = null;
 
@@ -97,19 +63,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     errMsg.value = '';
   };
 
-  const closeModal = (): boolean => modal.value === null;
-
-  const openModal = (scene: 'src' | 'dest' | 'token'): void => {
-    modal.value = scene;
-  };
-
-  const selectToken = (token: ChainAsset): void => {
-    store.commit('xcm/setSelectedToken', token);
-    modal.value = null;
-    resetStates();
-  };
-
-  const getSelectedTokenBal = async (): Promise<string> => {
+  const getRelayChainNativeBal = async (): Promise<string> => {
     if (!currentAccount.value || !srcChain.value || !relayChainApi) {
       return '0';
     }
@@ -133,20 +87,6 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
       Number(amount.value) > Number(formattedRelayChainBalance.value) ||
       balance.value.lten(0);
     errMsg.value = '';
-  };
-
-  const selectChain = (chainId: number): void => {
-    const isSrcChain = modal.value === 'src';
-    const chain = CHAINS.find((it) => it.id === chainId);
-    if (!chain) return;
-
-    if (isSrcChain) {
-      srcChain.value = chain;
-    } else {
-      destChain.value = chain;
-    }
-    modal.value = null;
-    resetStates();
   };
 
   const chainIcon = computed<{ src: string; dest: string }>(() => {
@@ -180,7 +120,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   const formattedRelayChainBalance = computed<string>(() => {
     if (!selectedToken.value) return '0';
     const decimals = Number(String(selectedToken.value.metadata.decimals));
-    const balance = ethers.utils.formatUnits(selectedTokenBalance.value, decimals).toString();
+    const balance = ethers.utils.formatUnits(relayChainNativeBalance.value, decimals).toString();
     return balance;
   });
 
@@ -306,70 +246,8 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     }
   };
 
-  const transferAsset = async ({
-    transferAmt,
-    toAddress,
-    finalizeCallback,
-  }: {
-    transferAmt: number;
-    toAddress: string;
-    finalizeCallback: () => Promise<void>;
-  }): Promise<void> => {
-    try {
-      if (!selectedToken?.value) {
-        throw Error('Token is not selected');
-      }
-
-      const isValidSS58Address =
-        isValidAddressPolkadotAddress(currentAccount.value) &&
-        isValidAddressPolkadotAddress(toAddress);
-
-      if (!isValidSS58Address && !isValidEvmAddress(toAddress)) {
-        store.dispatch('general/showAlertMsg', {
-          msg: 'assets.invalidAddress',
-          alertType: 'error',
-        });
-        return;
-      }
-
-      const receivingAddress = isValidEvmAddress(toAddress) ? toSS58Address(toAddress) : toAddress;
-
-      const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
-        const res = await handleResult(result);
-        await finalizeCallback();
-        await handleUpdateTokenBalances();
-        return res;
-      };
-
-      const decimals = Number(selectedToken.value.metadata.decimals);
-      const amount = ethers.utils.parseUnits(String(transferAmt), decimals).toString();
-      const transaction = $api!.tx.assets.transfer(
-        new BN(selectedToken.value.id),
-        receivingAddress,
-        amount
-      );
-
-      await signAndSend({
-        transaction,
-        senderAddress: currentAccount.value,
-        substrateAccounts: substrateAccounts.value,
-        isCustomSignature: false, // isEthWallet.value - ATM we can't send assets from EVM account,
-        txResHandler,
-        handleCustomExtrinsic,
-        dispatch: store.dispatch,
-        tip: selectedTip.value.price,
-      });
-    } catch (e: any) {
-      console.error(e);
-      store.dispatch('general/showAlertMsg', {
-        msg: e.message || 'Something went wrong during asset transfer.',
-        alertType: 'error',
-      });
-    }
-  };
-
   const updateRelayChainTokenBal = async (): Promise<void> => {
-    selectedTokenBalance.value = await getSelectedTokenBal();
+    relayChainNativeBalance.value = await getRelayChainNativeBal();
   };
 
   const setTokenByQueyParams = (): void => {
@@ -415,39 +293,21 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
 
   return {
     amount,
-    srcChain,
-    destChain,
-    srcChains,
-    destChains,
-    modal,
-    tokens,
     errMsg,
-    selectedTokenBalance,
     chainIcon,
     chainName,
     isDisabledBridge,
     tokenImage,
     isNativeToken,
-    tokenDetails,
-    isDisplayToken,
-    isXcmCompatible,
     isNativeBridge,
     destEvmAddress,
     formattedRelayChainBalance,
     existentialDeposit,
-    selectedTip,
-    nativeTipPrice,
-    closeModal,
-    openModal,
     inputHandler,
-    selectChain,
-    selectToken,
     bridge,
     toMaxAmount,
     resetStates,
     setIsNativeBridge,
-    transferAsset,
     updateRelayChainTokenBal,
-    setSelectedTip,
   };
 }

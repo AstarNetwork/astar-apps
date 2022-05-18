@@ -270,7 +270,7 @@ export default {
       evmWalletAddress: 'EVM Wallet Address',
       xcmWarning: {
         avoidRisk: 'Avoid risk of losing your balance',
-        fee: 'Fee will be taken from inputted amount',
+        fee: 'Fee is deducted from the amount entered',
         tooltip:
           "Account with balance below the existential deposit will be reaped ({amount} {symbol} for {network}'s existential deposit)",
       },
