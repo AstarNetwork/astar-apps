@@ -140,10 +140,9 @@ class ChainApi {
     const transaction = this._api.tx.utility.batch(txsToExecute);
     // ensure that we automatically increment the nonce per transaction
     return await transaction.signAndSend(account, { signer, nonce: -1, tip: 1 }, (result) => {
-      console.log('r', result);
+      // console.log('r', result);
       handleResult &&
         handleResult(result).then(async () => {
-          // await wait(5000);
           await finalizedCallback();
         });
       // handle transaction errors
@@ -196,7 +195,6 @@ export class RelaychainApi extends ChainApi {
 
   public transferToParachain(toPara: number, recipientAccountId: string, amount: string) {
     // public transferToParachain(toPara: number, recipientAccountId: string, amount: string) {
-    console.log('amount', amount.toString());
     // the target parachain connected to the current relaychain
     const dest = {
       V1: {
