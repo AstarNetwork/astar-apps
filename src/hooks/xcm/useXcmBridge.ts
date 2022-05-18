@@ -25,6 +25,7 @@ import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { toSS58Address } from 'src/config/web3';
 import { signAndSend } from './../helper/wallet';
 import { $api } from 'boot/api';
+import { useI18n } from 'vue-i18n';
 
 export interface Chain {
   id: number;
@@ -50,8 +51,6 @@ const CHAINS = [
   },
 ];
 
-const WARNING_NON_ZERO_BALANCE = 'the balance of recipient account should be above zero';
-
 export const formatDecimals = ({ amount, decimals }: { amount: string; decimals: number }) => {
   return Number(Number(amount).toFixed(decimals));
 };
@@ -75,6 +74,7 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
   const destEvmAddress = ref<string>('');
   const existentialDeposit = ref<ExistentialDeposit | null>(null);
 
+  const { t } = useI18n();
   const store = useStore();
   const router = useRouter();
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
@@ -295,7 +295,7 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
       }
       // check if recipient account has non-zero native asset. (it cannot be transferred to an account with 0 nonce)
       if (balance.value.eqn(0)) {
-        throw Error(WARNING_NON_ZERO_BALANCE);
+        throw Error(t('assets.modals.xcmWarning.nonzeroBalance'));
       }
 
       let recipientAccountId = currentAccount.value;
@@ -307,7 +307,7 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
         }
         const balWei = await getBalance($web3.value!, destEvmAddress.value);
         if (Number(ethers.utils.formatEther(balWei)) === 0) {
-          throw Error(WARNING_NON_ZERO_BALANCE);
+          throw Error(t('assets.modals.xcmWarning.nonzeroBalance'));
         }
         const ss58MappedAddr = evmToAddress(destEvmAddress.value, PREFIX_ASTAR);
         // console.log('ss58MappedAddr', ss58MappedAddr);
@@ -363,12 +363,12 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
       if (isValidEvmAddress(toAddress)) {
         const balWei = await getBalance($web3.value!, toAddress);
         if (Number(ethers.utils.formatEther(balWei)) === 0) {
-          throw Error(WARNING_NON_ZERO_BALANCE);
+          throw Error(t('assets.modals.xcmWarning.nonzeroBalance'));
         }
       } else {
         const balData = ((await $api!.query.system.account(toAddress)) as any).data;
         if (balData.free.toBn().eqn(0)) {
-          throw Error(WARNING_NON_ZERO_BALANCE);
+          throw Error(t('assets.modals.xcmWarning.nonzeroBalance'));
         }
       }
 
