@@ -20,6 +20,7 @@ export function useXcmAssets() {
   const { currentAccount } = useAccount();
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
   const ttlNativeXcmUsdAmount = ref<number>(0);
+  const isLoadingXcmAssetsAmount = ref<boolean>(false);
 
   const filterTokens = (): void => {
     xcmAssets.value.sort((a: ChainAsset, b: ChainAsset) => {
@@ -33,6 +34,7 @@ export function useXcmAssets() {
 
   const updateTokenBalances = async ({ userAddress }: { userAddress: string }): Promise<void> => {
     if (isH160.value) return;
+    isLoadingXcmAssetsAmount.value = true;
 
     ttlNativeXcmUsdAmount.value = 0;
     xcmAssets.value = await Promise.all(
@@ -49,6 +51,7 @@ export function useXcmAssets() {
     );
 
     filterTokens();
+    isLoadingXcmAssetsAmount.value = false;
   };
 
   const handleUpdateTokenBalances = async (): Promise<void> => {
@@ -147,6 +150,7 @@ export function useXcmAssets() {
   return {
     xcmAssets,
     ttlNativeXcmUsdAmount,
+    isLoadingXcmAssetsAmount,
     mappedXC20Asset,
     handleUpdateTokenBalances,
   };

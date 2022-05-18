@@ -113,6 +113,10 @@ export default defineComponent({
       type: Boolean,
       required: true,
     },
+    isLoadingXcmAssetsAmount: {
+      type: Boolean,
+      required: true,
+    },
   },
   setup(props) {
     const balUsd = ref<number | null>(null);
@@ -155,7 +159,7 @@ export default defineComponent({
     const isSkeleton = computed(() => {
       const isH160 = store.getters['general/isH160Formatted'];
       const isLoadingState = store.getters['general/isLoading'];
-      if (props.isLoadingErc20Amount) return true;
+      if (props.isLoadingErc20Amount || props.isLoadingXcmAssetsAmount) return true;
       if (!nativeTokenUsd.value) return false;
 
       if (isH160) {
