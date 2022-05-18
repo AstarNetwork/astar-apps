@@ -180,8 +180,11 @@ export default defineComponent({
     };
 
     const transfer = async (): Promise<void> => {
-      await transferAsset(Number(transferAmt.value ? transferAmt.value : 0), toAddress.value);
-      closeModal();
+      await transferAsset({
+        transferAmt: Number(transferAmt.value ? transferAmt.value : 0),
+        toAddress: toAddress.value,
+        finalizeCallback: closeModal,
+      });
     };
 
     const setErrorMsg = (): void => {

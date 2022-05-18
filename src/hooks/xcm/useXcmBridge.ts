@@ -339,7 +339,15 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
     }
   };
 
-  const transferAsset = async (transferAmt: number, toAddress: string): Promise<void> => {
+  const transferAsset = async ({
+    transferAmt,
+    toAddress,
+    finalizeCallback,
+  }: {
+    transferAmt: number;
+    toAddress: string;
+    finalizeCallback: () => Promise<void>;
+  }): Promise<void> => {
     try {
       if (!selectedToken?.value) {
         throw Error('Token is not selected');
@@ -361,16 +369,19 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
 
       const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
         const res = await handleResult(result);
+        await finalizeCallback();
         await handleUpdateTokenBalances();
         return res;
       };
 
-      const decimals = selectedToken.value.metadata.decimals;
+      const decimals = Number(selectedToken.value.metadata.decimals);
+      const amount = ethers.utils.parseUnits(String(transferAmt), decimals).toString();
       const transaction = $api!.tx.assets.transfer(
         new BN(selectedToken.value.id),
         receivingAddress,
-        new BN(10 ** Number(decimals)).muln(transferAmt)
+        amount
       );
+
       await signAndSend({
         transaction,
         senderAddress: currentAccount.value,
