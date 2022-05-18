@@ -18,6 +18,7 @@
       <ModalXcmTransfer
         :is-modal-xcm-transfer="isModalXcmTransfer"
         :handle-modal-xcm-transfer="handleModalXcmTransfer"
+        :handle-update-xcm-token-balances="handleUpdateXcmTokenBalances"
         :account-data="accountData"
         :token="token"
       />

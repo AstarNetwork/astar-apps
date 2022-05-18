@@ -39,7 +39,7 @@
           <modal-select-account
             v-model:selAddress="toAddress"
             :to-address="toAddress"
-            :is-erc20-transfer="isErc20Transfer"
+            :is-erc20-transfer="false"
           />
         </div>
 
@@ -80,6 +80,12 @@
           </div>
         </div>
 
+        <SpeedConfiguration
+          :gas-cost="nativeTipPrice"
+          :selected-gas="selectedTip"
+          :set-selected-gas="setSelectedTip"
+        />
+
         <div v-if="errMsg && toAddress" class="rows__row--error">
           <span class="text--error">{{ errMsg }}</span>
         </div>
@@ -94,16 +100,22 @@
 </template>
 <script lang="ts">
 import { fadeDuration } from '@astar-network/astar-ui';
-import { ChainAsset, useAccount, useWalletIcon, useXcmBridge } from 'src/hooks';
+import {
+  ChainAsset,
+  useAccount,
+  useWalletIcon,
+  useXcmTokenDetails,
+  useXcmTokenTransfer,
+} from 'src/hooks';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { wait } from 'src/hooks/helper/common';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
 import ModalSelectAccount from './ModalSelectAccount.vue';
+import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 
-// Todo: change the transaction logic to XCM transfer
 export default defineComponent({
-  components: { ModalSelectAccount },
+  components: { ModalSelectAccount, SpeedConfiguration },
   props: {
     isModalXcmTransfer: {
       type: Boolean,
@@ -124,59 +136,46 @@ export default defineComponent({
       required: false,
       default: null,
     },
+    handleUpdateXcmTokenBalances: {
+      type: Function,
+      required: true,
+    },
   },
   setup(props) {
-    const transferAmt = ref<string | null>(null);
-    const toAddressBalance = ref<number>(0);
-    const fromAddressBalance = ref<number>(0);
-    const isErc20Transfer = ref<boolean>(false);
-    const toAddress = ref<string>('');
-    const errMsg = ref<string>('');
-    const isChecked = ref<boolean>(false);
     const isClosingModal = ref<boolean>(false);
     const { iconWallet } = useWalletIcon();
     const store = useStore();
     const { currentAccount, currentAccountName } = useAccount();
+    const token = computed(() => props.token);
+    const { tokenImage, isNativeToken } = useXcmTokenDetails(token);
 
     const nativeTokenSymbol = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
-      return chainInfo ? chainInfo.tokenSymbol : '';
+      return 1 ? chainInfo.tokenSymbol : '';
     });
 
-    const t = computed(() => props.token);
-    const { tokenImage, isNativeToken, transferAsset } = useXcmBridge(t);
-
-    const isDisabledTransfer = computed(() => {
-      const isLessAmount =
-        0 >= Number(transferAmt.value) ||
-        Number(props.token.userBalance) < Number(transferAmt.value);
-      const noAddress = !toAddress.value;
-
-      return errMsg.value !== '' || isLessAmount || noAddress;
-    });
-
-    const inputHandler = (event: any): void => {
-      transferAmt.value = event.target.value;
-      errMsg.value = '';
-    };
-
-    const resetStates = (): void => {
-      transferAmt.value = '';
-      toAddress.value = '';
-      errMsg.value = '';
-      toAddressBalance.value = 0;
-    };
+    const {
+      selectedTip,
+      nativeTipPrice,
+      transferAmt,
+      toAddressBalance,
+      fromAddressBalance,
+      toAddress,
+      errMsg,
+      isDisabledTransfer,
+      inputHandler,
+      setSelectedTip,
+      resetStates,
+      transferAsset,
+      toMaxAmount,
+    } = useXcmTokenTransfer(token);
 
     const closeModal = async (): Promise<void> => {
       isClosingModal.value = true;
       resetStates();
-      await wait(fadeDuration);
+      await Promise.all([wait(fadeDuration), props.handleUpdateXcmTokenBalances()]);
       props.handleModalXcmTransfer({ isOpen: false, currency: null });
       isClosingModal.value = false;
-    };
-
-    const toMaxAmount = async (): Promise<void> => {
-      transferAmt.value = props.token.userBalance;
     };
 
     const transfer = async (): Promise<void> => {
@@ -186,32 +185,6 @@ export default defineComponent({
         finalizeCallback: closeModal,
       });
     };
-
-    const setErrorMsg = (): void => {
-      const transferAmtRef = Number(transferAmt.value);
-      const fromAccountBalance = props.token ? Number(props.token.userBalance) : 0;
-      try {
-        if (transferAmtRef > fromAccountBalance) {
-          errMsg.value = 'Insufficient balance';
-        } else {
-          errMsg.value = '';
-        }
-      } catch (error: any) {
-        errMsg.value = error.message;
-      }
-    };
-
-    watchEffect(() => {
-      setErrorMsg();
-    });
-
-    // watchEffect(async () => {
-    //   await setToAddressBalance();
-    // });
-
-    // watchEffect(async () => {
-    //   await setFromAddressBalance();
-    // });
 
     return {
       iconWallet,
@@ -223,12 +196,13 @@ export default defineComponent({
       fromAddressBalance,
       transferAmt,
       errMsg,
-      isErc20Transfer,
       isNativeToken,
-      isChecked,
       isClosingModal,
       isDisabledTransfer,
       tokenImage,
+      selectedTip,
+      nativeTipPrice,
+      setSelectedTip,
       transfer,
       toMaxAmount,
       closeModal,

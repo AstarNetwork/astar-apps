@@ -11,7 +11,7 @@ import {
   PREFIX_ASTAR,
   providerEndpoints as xcmProviderEndpoints,
 } from 'src/config/xcmChainEndpoints';
-import { useBalance, useCustomSignature, useXcmAssets } from 'src/hooks';
+import { useBalance, useCustomSignature, useXcmAssets, useXcmTokenDetails } from 'src/hooks';
 import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
 import { getInjector } from 'src/hooks/helper/wallet';
 import { useAccount } from 'src/hooks/useAccount';
@@ -25,6 +25,7 @@ import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { toSS58Address } from 'src/config/web3';
 import { signAndSend } from './../helper/wallet';
 import { $api } from 'boot/api';
+import { useGasPrice } from '../useGasPrice';
 
 export interface Chain {
   id: number;
@@ -85,6 +86,10 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
   });
   const { handleResult, handleTransactionError, handleCustomExtrinsic } = useCustomSignature({});
   const { balance } = useBalance(currentAccount);
+  const { selectedTip, nativeTipPrice, setSelectedTip } = useGasPrice();
+  const { tokenImage, isNativeToken, tokenDetails, isDisplayToken, isXcmCompatible } =
+    useXcmTokenDetails(selectedToken!);
+
   let relayChainApi: RelaychainApi | null = null;
 
   const resetStates = (): void => {
@@ -178,43 +183,6 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
     const decimals = Number(String(selectedToken.value.metadata.decimals));
     const balance = ethers.utils.formatUnits(selectedTokenBalance.value, decimals).toString();
     return balance;
-  });
-
-  const tokenDetails = computed<XcmTokenInformation | undefined>(() => {
-    if (!selectedToken || !selectedToken.value) {
-      return undefined;
-    }
-    const t = getXcmToken({
-      symbol: String(selectedToken.value.metadata.symbol),
-      currentNetworkIdx: currentNetworkIdx.value,
-    });
-    return t;
-  });
-
-  const tokenImage = computed<string>(() => {
-    if (!tokenDetails || !tokenDetails.value) {
-      return require('/src/assets/img/ic_coin-placeholder.png');
-    }
-    return tokenDetails.value.logo;
-  });
-
-  const isNativeToken = computed<boolean>(() => {
-    if (!tokenDetails || !tokenDetails.value) {
-      return false;
-    }
-    return tokenDetails.value.isNativeToken;
-  });
-
-  const isDisplayToken = computed<boolean>(() => {
-    // Todo: fetch the balance in relaychain
-    const isDisplay =
-      Number(selectedToken?.value.userBalance) > 0 || tokenDetails.value?.isXcmCompatible;
-    return isDisplay || false;
-  });
-
-  const isXcmCompatible = computed<boolean>(() => {
-    if (!tokenDetails.value) return false;
-    return tokenDetails.value.isXcmCompatible;
   });
 
   const toMaxAmount = (): void => {
@@ -390,6 +358,7 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
         txResHandler,
         handleCustomExtrinsic,
         dispatch: store.dispatch,
+        tip: selectedTip.value.price,
       });
     } catch (e: any) {
       console.error(e);
@@ -467,6 +436,8 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
     destEvmAddress,
     formattedRelayChainBalance,
     existentialDeposit,
+    selectedTip,
+    nativeTipPrice,
     closeModal,
     openModal,
     inputHandler,
@@ -478,5 +449,6 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
     setIsNativeBridge,
     transferAsset,
     updateRelayChainTokenBal,
+    setSelectedTip,
   };
 }
