@@ -100,7 +100,6 @@ export function useCbridgeV2() {
   const updateTokenBalances = async ({ userAddress }: { userAddress: string }): Promise<void> => {
     if (!tokens.value) return;
     isLoadingErc20Amount.value = true;
-    console.log('updateTokenBalances');
     tokens.value = await Promise.all(
       tokens.value.map(async (token: Token) => {
         const { balUsd, userBalance } = await updateTokenBalanceHandler({
