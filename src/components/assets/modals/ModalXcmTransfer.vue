@@ -55,7 +55,7 @@
                   })
                 }}</span
               >
-              <button v-if="!isNativeToken" class="btn--max" @click="toMaxAmount">
+              <button class="btn--max" @click="toMaxAmount">
                 {{ $t('assets.modals.max') }}
               </button>
             </div>

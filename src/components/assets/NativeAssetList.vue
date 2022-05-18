@@ -38,11 +38,12 @@
                 </div>
               </div>
             </div>
-            <div v-if="isFaucet" class="column--buttons">
+            <!-- Memo: Disable the faucet button temporary -->
+            <!-- <div v-if="isFaucet" class="column--buttons">
               <button class="btn btn--sm" @click="handleModalFaucet({ isOpen: true })">
                 {{ $t('assets.faucet') }}
               </button>
-            </div>
+            </div> -->
           </div>
         </div>
 
