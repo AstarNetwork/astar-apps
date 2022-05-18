@@ -28,6 +28,12 @@ export default boot(async ({ store }) => {
   const networkIdxStore = localStorage.getItem(NETWORK_IDX);
   const customEndpoint = localStorage.getItem(CUSTOM_ENDPOINT);
   const selectedEndpointData = localStorage.getItem(SELECTED_ENDPOINT);
+  if (!selectedEndpointData) {
+    localStorage.setItem(
+      LOCAL_STORAGE.SELECTED_ENDPOINT,
+      JSON.stringify({ '0': providerEndpoints[0].endpoints[0].endpoint })
+    );
+  }
   const selectedAddress = localStorage.getItem(SELECTED_ADDRESS);
   const selectedEndpoint = selectedEndpointData ? JSON.parse(selectedEndpointData) : {};
   if (networkIdxStore) {
