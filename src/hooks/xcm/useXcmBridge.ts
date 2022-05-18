@@ -357,6 +357,19 @@ export function useXcmBridge(selectedToken?: Ref<ChainAsset>) {
         return;
       }
 
+      // check if recipient account has non-zero native asset. (it cannot be transferred to an account with 0 nonce)
+      if (isValidEvmAddress(toAddress)) {
+        const balWei = await getBalance($web3.value!, toAddress);
+        if (Number(ethers.utils.formatEther(balWei)) === 0) {
+          throw Error('the balance of recipient account should be above zero');
+        }
+      } else {
+        const balData = ((await $api!.query.system.account(toAddress)) as any).data;
+        if (balData.free.toBn().eqn(0)) {
+          throw Error('the balance of recipient account should be above zero');
+        }
+      }
+
       const receivingAddress = isValidEvmAddress(toAddress) ? toSS58Address(toAddress) : toAddress;
 
       const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
