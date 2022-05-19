@@ -74,7 +74,7 @@ export default defineComponent({
 
       if (isLoading) return;
       if (!isDisplay.value && isEthereumExtension) {
-        // Memo: Wait for update the `isH160` state
+        // Memo: Wait for updating the `isH160` state
         const secDelay = 1 * 1000;
         await wait(secDelay);
         isDisplay.value = true;
