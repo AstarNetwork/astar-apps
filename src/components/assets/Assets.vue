@@ -71,13 +71,14 @@ export default defineComponent({
       const isEthereumExtension = address === 'Ethereum Extension';
       const isLoading = !isShibuya.value && !isEnableXcm.value;
 
-      // if (isLoading) {
-      //   isDisplay.value = false;
-      //   store.commit('general/setLoading', true);
-      //   return;
-      // } else {
-      //   store.commit('general/setLoading', false);
-      // }
+      if (isLoading) {
+        isDisplay.value = false;
+        // Memo: isEthereumExtension -> loading state is controlled under useCbridgeV2.ts
+        !isEthereumExtension && store.commit('general/setLoading', true);
+        return;
+      } else {
+        !isEthereumExtension && store.commit('general/setLoading', false);
+      }
 
       if (!isDisplay.value && isEthereumExtension) {
         // Memo: Wait for update the `isH160` state
