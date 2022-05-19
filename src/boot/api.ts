@@ -17,6 +17,8 @@ import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
 import { computed, ref, watchPostEffect } from 'vue';
 import Web3 from 'web3';
 import { getRandomFromArray } from './../hooks/helper/common';
+import { keyring } from '@polkadot/ui-keyring';
+import { objToArray } from 'src/hooks/helper/common';
 
 let $api: ApiPromise | undefined;
 const $endpoint = ref<string>('');
@@ -75,6 +77,25 @@ export default boot(async ({ store }) => {
   let { api } = await connectApi(endpoint, networkIdx.value, store);
   $api = api;
   $endpoint.value = endpoint;
+
+  keyring.accounts.subject.subscribe((accounts) => {
+    if (accounts) {
+      const accountArray = objToArray(accounts);
+      const accountMap = accountArray.map((account) => {
+        const { address, meta } = account.json;
+        return {
+          address,
+          name: meta.name.replace('\n              ', ''),
+          source: meta.source,
+        };
+      });
+
+      console.log('accountMap', accountMap);
+
+      store.commit('general/setSubstrateAccounts', accountMap);
+    }
+  });
+
   // update chaininfo
   const { chainInfo } = useChainInfo(api);
   watchPostEffect(async () => {

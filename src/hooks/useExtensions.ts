@@ -57,22 +57,6 @@ export function useExtensions(api: ApiPromise, store: any) {
       extensions.value = await injectedPromise;
 
       await loadAccounts(api);
-
-      keyring.accounts.subject.subscribe((accounts) => {
-        if (accounts) {
-          const accountArray = objToArray(accounts);
-          const accountMap = accountArray.map((account) => {
-            const { address, meta } = account.json;
-            return {
-              address,
-              name: meta.name.replace('\n              ', ''),
-              source: meta.source,
-            };
-          });
-
-          store.commit('general/setSubstrateAccounts', accountMap);
-        }
-      });
     } catch (err) {
       console.error(err);
     }
