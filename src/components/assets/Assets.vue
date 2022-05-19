@@ -15,12 +15,12 @@
           />
         </div>
         <div v-else class="container--assets">
-          <NativeAssetList />
           <XcmNativeAssetList
             v-if="isEnableXcm"
             :xcm-assets="xcmAssets"
             :handle-update-xcm-token-balances="handleUpdateXcmTokenBalances"
           />
+          <NativeAssetList />
         </div>
       </div>
     </div>
@@ -28,16 +28,15 @@
 </template>
 <script lang="ts">
 import Account from 'src/components/assets/Account.vue';
+import EvmAssetList from 'src/components/assets/EvmAssetList.vue';
 import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
 import XcmNativeAssetList from 'src/components/assets/XcmNativeAssetList.vue';
-import EvmAssetList from 'src/components/assets/EvmAssetList.vue';
-
-import { useStore } from 'src/store';
-import { defineComponent, computed, ref, watchEffect } from 'vue';
-import { useCbridgeV2, useXcmAssets } from 'src/hooks';
-import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { wait } from 'src/hooks/helper/common';
 import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { useCbridgeV2, useXcmAssets } from 'src/hooks';
+import { wait } from 'src/hooks/helper/common';
+import { useStore } from 'src/store';
+import { computed, defineComponent, ref, watchEffect } from 'vue';
 
 export default defineComponent({
   components: {
@@ -65,13 +64,26 @@ export default defineComponent({
       return getProviderIndex(chain);
     });
 
+    const isShibuya = computed(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
+
     const isEnableXcm = computed(
-      () => currentNetworkIdx.value !== endpointKey.SHIBUYA && xcmAssets.value.length > 0
+      () => !isShibuya.value && xcmAssets.value && xcmAssets.value.length > 0
     );
 
     const setIsDisplay = async (): Promise<void> => {
       const address = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
       const isEthereumExtension = address === 'Ethereum Extension';
+      const isLoading = !isShibuya.value && !isEnableXcm.value;
+
+      if (isLoading) {
+        isDisplay.value = false;
+        // Memo: isEthereumExtension -> loading state is controlled under useCbridgeV2.ts
+        !isEthereumExtension && store.commit('general/setLoading', true);
+        return;
+      } else {
+        !isEthereumExtension && store.commit('general/setLoading', false);
+      }
+
       if (!isDisplay.value && isEthereumExtension) {
         // Memo: Wait for update the `isH160` state
         const secDelay = 1 * 1000;

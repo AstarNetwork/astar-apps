@@ -8,6 +8,7 @@
 - [ ] modifies existing feature (bug fix or improvements)
 - [ ] relies on other tasks
 - [ ] documentation changes
+- [ ] tested on mobile devices
 
 **This pull request makes the following changes:**
 
