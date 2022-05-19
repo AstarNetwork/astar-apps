@@ -22,6 +22,9 @@ type Token = CbridgeCurrency | Erc20Token;
 export function useCbridgeV2() {
   const tokens = ref<Token[] | null>(null);
   const ttlErc20Amount = ref<number>(0);
+  const isCalculated = ref<boolean>(false);
+  const startCalculation = ref<boolean>(false);
+
   const store = useStore();
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
   const { currentAccount } = useAccount();
@@ -205,6 +208,8 @@ export function useCbridgeV2() {
       await updateTokenBalances({ userAddress: currentAccount.value });
     } catch (error) {
       console.error(error);
+    } finally {
+      isCalculated.value = true;
     }
   };
 
@@ -217,8 +222,10 @@ export function useCbridgeV2() {
     [tokens],
     () => {
       const isInitialErc20Amount =
-        tokens.value && tokens.value.length > 0 && ttlErc20Amount.value === 0;
+        tokens.value && tokens.value.length > 0 && !isCalculated.value && !startCalculation.value;
       if (isInitialErc20Amount) {
+        // Memo: to avoid calling this function twice
+        startCalculation.value = true;
         handleUpdateTokenBalances();
       }
     },
