@@ -32,6 +32,7 @@ import XcmNativeAssetList from 'src/components/assets/XcmNativeAssetList.vue';
 import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useCbridgeV2, useXcmAssets } from 'src/hooks';
+import { wait } from 'src/hooks/helper/common';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
 
@@ -70,15 +71,18 @@ export default defineComponent({
       const isEthereumExtension = address === 'Ethereum Extension';
       const isLoading = !isShibuya.value && !isEnableXcm.value;
 
-      if (isLoading) {
-        isDisplay.value = false;
-        store.commit('general/setLoading', true);
-        return;
-      } else {
-        store.commit('general/setLoading', false);
-      }
+      // if (isLoading) {
+      //   isDisplay.value = false;
+      //   store.commit('general/setLoading', true);
+      //   return;
+      // } else {
+      //   store.commit('general/setLoading', false);
+      // }
 
       if (!isDisplay.value && isEthereumExtension) {
+        // Memo: Wait for update the `isH160` state
+        const secDelay = 1 * 1000;
+        await wait(secDelay);
         isDisplay.value = true;
       } else {
         isDisplay.value = true;
