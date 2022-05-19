@@ -13,12 +13,12 @@
           />
         </div>
         <div v-else class="container--assets">
-          <NativeAssetList />
           <XcmNativeAssetList
             v-if="isEnableXcm"
             :xcm-assets="xcmAssets"
             :handle-update-xcm-token-balances="handleUpdateXcmTokenBalances"
           />
+          <NativeAssetList />
         </div>
       </div>
     </div>
@@ -61,13 +61,22 @@ export default defineComponent({
       return getProviderIndex(chain);
     });
 
+    const isShibuya = computed(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
+
     const isEnableXcm = computed(
-      () => currentNetworkIdx.value !== endpointKey.SHIBUYA && xcmAssets.value.length > 0
+      () => !isShibuya.value && xcmAssets.value && xcmAssets.value.length > 0
     );
 
     const setIsDisplay = async (): Promise<void> => {
       const address = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
       const isEthereumExtension = address === 'Ethereum Extension';
+      const isLoading = !isShibuya.value && !isEnableXcm.value;
+
+      if (isLoading) {
+        isDisplay.value = false;
+        return;
+      }
+
       if (!isDisplay.value && isEthereumExtension) {
         // Memo: Wait for update the `isH160` state
         const secDelay = 1 * 1000;
