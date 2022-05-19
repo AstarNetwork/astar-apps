@@ -91,7 +91,7 @@ export default boot(async ({ store }) => {
         };
       });
 
-      console.log('accountMap', accountMap);
+      // console.log('accountMap', accountMap);
 
       store.commit('general/setSubstrateAccounts', accountMap);
     }
