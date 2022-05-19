@@ -72,11 +72,7 @@ export default defineComponent({
       const isEthereumExtension = address === 'Ethereum Extension';
       const isLoading = !isShibuya.value && !isEnableXcm.value;
 
-      if (isLoading) {
-        isDisplay.value = false;
-        return;
-      }
-
+      if (isLoading) return;
       if (!isDisplay.value && isEthereumExtension) {
         // Memo: Wait for update the `isH160` state
         const secDelay = 1 * 1000;
