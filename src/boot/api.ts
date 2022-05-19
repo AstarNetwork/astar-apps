@@ -19,6 +19,7 @@ import Web3 from 'web3';
 import { getRandomFromArray } from './../hooks/helper/common';
 import { keyring } from '@polkadot/ui-keyring';
 import { objToArray } from 'src/hooks/helper/common';
+import { isMobileDevice } from 'src/hooks/helper/wallet';
 
 let $api: ApiPromise | undefined;
 const $endpoint = ref<string>('');
@@ -111,8 +112,8 @@ export default boot(async ({ store }) => {
     }
   });
 
-  // execute extension process automatically if selectedAddress is linked
-  if (selectedAddress !== null) {
+  // execute extension process automatically if selectedAddress is linked or mobile device
+  if (selectedAddress !== null || isMobileDevice) {
     console.log('extensions');
     const { extensions } = useExtensions(api, store);
     const { metaExtensions, extensionCount } = useMetaExtensions(api, extensions)!!;
