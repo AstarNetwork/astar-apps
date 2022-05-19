@@ -22,14 +22,15 @@ interface PriceData {
   fast: number;
   timestamp: number;
   eip1559: Eip1559;
+  tip: Fee;
 }
 
 interface Eip1559 {
-  priorityFeePerGas: PriorityFee;
+  priorityFeePerGas: Fee;
   baseFeePerGas: number;
 }
 
-interface PriorityFee {
+interface Fee {
   slow: number;
   average: number;
   fast: number;

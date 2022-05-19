@@ -53,8 +53,8 @@ export const getEvmGasCost = async ({
 };
 
 // Ref: https://stakesg.slack.com/archives/C028YNW1PED/p1652346083299849?thread_ts=1652338487.358459&cid=C028YNW1PED
-export const priorityFeeToTip = (fee: number): string => {
-  const price = ethers.utils.formatUnits(String(fee), 15).toString();
+export const formatTip = (fee: number): string => {
+  const price = ethers.utils.formatEther(String(fee));
   // Memo: throw an error whenever provided price is too way expensive
   if (Number(price) > 1) {
     throw Error('Calculated tip amount is more than 1 ASTR/SDN');
@@ -77,11 +77,12 @@ export const fetchEvmGasPrice = async ({
     if (!data || data.code !== 200) {
       throw Error('something went wrong');
     }
+    const { tip } = data.data;
     const { priorityFeePerGas } = data.data.eip1559;
     const nativeTipPrice = {
-      slow: priorityFeeToTip(priorityFeePerGas.slow),
-      average: priorityFeeToTip(priorityFeePerGas.average),
-      fast: priorityFeeToTip(priorityFeePerGas.fast),
+      slow: formatTip(tip.slow),
+      average: formatTip(tip.average),
+      fast: formatTip(tip.fast),
     };
 
     if (isEip1559) {
@@ -128,9 +129,9 @@ export const fetchEvmGasPrice = async ({
       baseFeePerGas: '0',
     };
     const nativeTipPrice = {
-      slow: priorityFeeToTip(10000000000),
-      average: priorityFeeToTip(50000000000),
-      fast: priorityFeeToTip(50000000000000),
+      slow: formatTip(10000000000000),
+      average: formatTip(50000000000000),
+      fast: formatTip(5000000000000000),
     };
     return { evmGasPrice, nativeTipPrice };
   }
