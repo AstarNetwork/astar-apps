@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { BN } from 'bn.js';
 import { ethers } from 'ethers';
 import Web3 from 'web3';
 import { TransactionConfig } from 'web3-eth';
@@ -41,20 +42,21 @@ export const getEvmGasCost = async ({
         data: encodedData,
       };
 
-  const estimatedGas = await web3.eth.estimateGas(tx);
+  const numEstimatedGas = await web3.eth.estimateGas(tx);
+  const estimatedGas = new BN(numEstimatedGas);
   const data = {
     ...evmGasPrice,
-    slow: ethers.utils.formatEther(estimatedGas * Number(evmGasPrice.slow)),
-    average: ethers.utils.formatEther(estimatedGas * Number(evmGasPrice.average)),
-    fast: ethers.utils.formatEther(estimatedGas * Number(evmGasPrice.fast)),
+    slow: ethers.utils.formatEther(estimatedGas.mul(new BN(evmGasPrice.slow)).toString()),
+    average: ethers.utils.formatEther(estimatedGas.mul(new BN(evmGasPrice.average)).toString()),
+    fast: ethers.utils.formatEther(estimatedGas.mul(new BN(evmGasPrice.fast)).toString()),
   };
 
   return data;
 };
 
 // Ref: https://stakesg.slack.com/archives/C028YNW1PED/p1652346083299849?thread_ts=1652338487.358459&cid=C028YNW1PED
-export const formatTip = (fee: number): string => {
-  const price = ethers.utils.formatEther(String(fee));
+export const formatTip = (fee: string): string => {
+  const price = ethers.utils.formatEther(fee);
   // Memo: throw an error whenever provided price is too way expensive
   if (Number(price) > 1) {
     throw Error('Calculated tip amount is more than 1 ASTR/SDN');
@@ -87,10 +89,10 @@ export const fetchEvmGasPrice = async ({
 
     if (isEip1559) {
       const evmGasPrice = {
-        slow: String(priorityFeePerGas.slow),
-        average: String(priorityFeePerGas.average),
-        fast: String(priorityFeePerGas.fast),
-        baseFeePerGas: String(data.data.eip1559.baseFeePerGas),
+        slow: priorityFeePerGas.slow,
+        average: priorityFeePerGas.average,
+        fast: priorityFeePerGas.fast,
+        baseFeePerGas: data.data.eip1559.baseFeePerGas,
       };
       return {
         evmGasPrice,
@@ -99,9 +101,9 @@ export const fetchEvmGasPrice = async ({
     } else {
       const { slow, average, fast } = data.data;
       const evmGasPrice = {
-        slow: String(slow),
-        average: String(average),
-        fast: String(fast),
+        slow: slow,
+        average: average,
+        fast: fast,
         baseFeePerGas: '0',
       };
       return {
@@ -129,9 +131,9 @@ export const fetchEvmGasPrice = async ({
       baseFeePerGas: '0',
     };
     const nativeTipPrice = {
-      slow: formatTip(10000000000000),
-      average: formatTip(50000000000000),
-      fast: formatTip(5000000000000000),
+      slow: formatTip('10000000000000'),
+      average: formatTip('50000000000000'),
+      fast: formatTip('5000000000000000'),
     };
     return { evmGasPrice, nativeTipPrice };
   }
