@@ -16,6 +16,7 @@ export default {
   blockscout: 'Blockscout',
   usd: 'USD',
   'polkadot-js': 'Polkadot.js',
+  'polkadot-js-app': 'Polkadot.js App',
   metamask: 'MetaMask',
   clover: 'Clover',
   mathwallet: 'Math Wallet',

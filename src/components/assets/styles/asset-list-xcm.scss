@@ -131,11 +131,42 @@
   @media (min-width: $xl) {
     display: grid;
     width: 400px;
-    grid-template-columns: 100px 100px;
+    grid-template-columns: 100px 100px 70px;
     justify-content: end;
     column-gap: 2px;
-    margin-right: 64px;
+    margin-right: 80px;
   }
+}
+
+.container--explorer-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  stroke: $astar-blue;
+  transition: all 0.3s ease 0s;
+  border-radius: 30px;
+  width: 100px;
+  height: 24px;
+  svg {
+    height: 30px;
+    width: 30px;
+  }
+  &:hover {
+    stroke: white;
+    background-color: $astar-blue;
+  }
+}
+
+.adjuster--width {
+  @media (min-width: $xl) {
+    width: 70px !important;
+  }
+}
+
+.box--explorer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .icon--plus {
@@ -156,4 +187,10 @@
 }
 
 .body--dark {
+  .container--explorer-icon {
+    stroke: $astar-blue-dark;
+    &:hover {
+      stroke: white;
+    }
+  }
 }
