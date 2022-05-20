@@ -17,22 +17,23 @@ export interface ApiGasNow {
 }
 
 interface PriceData {
-  slow: number;
-  average: number;
-  fast: number;
+  slow: string;
+  average: string;
+  fast: string;
   timestamp: number;
   eip1559: Eip1559;
+  tip: Fee;
 }
 
 interface Eip1559 {
-  priorityFeePerGas: PriorityFee;
-  baseFeePerGas: number;
+  priorityFeePerGas: Fee;
+  baseFeePerGas: string;
 }
 
-interface PriorityFee {
-  slow: number;
-  average: number;
-  fast: number;
+interface Fee {
+  slow: string;
+  average: string;
+  fast: string;
 }
 
 export type Speed = 'slow' | 'average' | 'fast';
