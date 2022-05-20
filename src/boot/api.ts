@@ -17,6 +17,9 @@ import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
 import { computed, ref, watchPostEffect } from 'vue';
 import Web3 from 'web3';
 import { getRandomFromArray } from './../hooks/helper/common';
+import { keyring } from '@polkadot/ui-keyring';
+import { objToArray } from 'src/hooks/helper/common';
+import { isMobileDevice } from 'src/hooks/helper/wallet';
 
 let $api: ApiPromise | undefined;
 const $endpoint = ref<string>('');
@@ -28,6 +31,12 @@ export default boot(async ({ store }) => {
   const networkIdxStore = localStorage.getItem(NETWORK_IDX);
   const customEndpoint = localStorage.getItem(CUSTOM_ENDPOINT);
   const selectedEndpointData = localStorage.getItem(SELECTED_ENDPOINT);
+  if (!selectedEndpointData) {
+    localStorage.setItem(
+      LOCAL_STORAGE.SELECTED_ENDPOINT,
+      JSON.stringify({ '0': providerEndpoints[0].endpoints[0].endpoint })
+    );
+  }
   const selectedAddress = localStorage.getItem(SELECTED_ADDRESS);
   const selectedEndpoint = selectedEndpointData ? JSON.parse(selectedEndpointData) : {};
   if (networkIdxStore) {
@@ -69,6 +78,23 @@ export default boot(async ({ store }) => {
   let { api } = await connectApi(endpoint, networkIdx.value, store);
   $api = api;
   $endpoint.value = endpoint;
+
+  keyring.accounts.subject.subscribe((accounts) => {
+    if (accounts) {
+      const accountArray = objToArray(accounts);
+      const accountMap = accountArray.map((account) => {
+        const { address, meta } = account.json;
+        return {
+          address,
+          name: meta.name.replace('\n              ', ''),
+          source: meta.source,
+        };
+      });
+
+      store.commit('general/setSubstrateAccounts', accountMap);
+    }
+  });
+
   // update chaininfo
   const { chainInfo } = useChainInfo(api);
   watchPostEffect(async () => {
@@ -84,8 +110,8 @@ export default boot(async ({ store }) => {
     }
   });
 
-  // execute extension process automatically if selectedAddress is linked
-  if (selectedAddress !== null) {
+  // execute extension process automatically if selectedAddress is linked or mobile device
+  if (selectedAddress !== null || isMobileDevice) {
     console.log('extensions');
     const { extensions } = useExtensions(api, store);
     const { metaExtensions, extensionCount } = useMetaExtensions(api, extensions)!!;
