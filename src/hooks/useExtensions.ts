@@ -3,9 +3,9 @@ import { ref } from 'vue';
 import type { InjectedExtension } from '@polkadot/extension-inject/types';
 import { web3Accounts } from '@polkadot/extension-dapp';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { getInjectedExtensions } from 'src/hooks/helper/wallet';
 import { keyring } from '@polkadot/ui-keyring';
-import { objToArray } from 'src/hooks/helper/common';
 import { isTestChain } from '@polkadot/util';
 
 interface InjectedAccountExt {
@@ -17,7 +17,7 @@ interface InjectedAccountExt {
   };
 }
 
-const loadAccounts = async (api: ApiPromise): Promise<void> => {
+const loadAccounts = async (api: ApiPromise) => {
   await cryptoWaitReady();
   const [systemChain, injectedAccounts] = await Promise.all([
     api.rpc.system.chain() as any,
@@ -38,14 +38,10 @@ const loadAccounts = async (api: ApiPromise): Promise<void> => {
 
   const isDevelopment = isTestChain(systemChain ? systemChain.toString() : '<unknown>');
 
-  keyring.loadAll(
-    {
-      genesisHash: api.genesisHash,
-      isDevelopment,
-      ss58Format: 5,
-    },
-    injectedAccounts
-  );
+  return {
+    isDevelopment,
+    injectedAccounts,
+  };
 };
 
 export function useExtensions(api: ApiPromise, store: any) {
@@ -56,7 +52,21 @@ export function useExtensions(api: ApiPromise, store: any) {
       const injectedPromise = await getInjectedExtensions(true);
       extensions.value = await injectedPromise;
 
-      await loadAccounts(api);
+      // MEMO: tricky way to fix this : after approving extension first, web3Accounts is not retrieving extension address to add
+      const selectedAddress = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
+      if (!selectedAddress) {
+        await loadAccounts(api);
+      }
+      const { isDevelopment, injectedAccounts } = await loadAccounts(api);
+
+      keyring.loadAll(
+        {
+          genesisHash: api.genesisHash,
+          isDevelopment,
+          ss58Format: 5,
+        },
+        injectedAccounts
+      );
     } catch (err) {
       console.error(err);
     }
