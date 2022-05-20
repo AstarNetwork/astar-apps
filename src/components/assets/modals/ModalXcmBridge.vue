@@ -175,8 +175,8 @@ export default defineComponent({
     const token = computed(() => props.token);
 
     const {
-      errMsg,
       amount,
+      errMsg,
       chainIcon,
       chainName,
       isDisabledBridge,

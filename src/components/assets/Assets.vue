@@ -4,6 +4,8 @@
       <Account
         :ttl-erc20-amount="ttlErc20Amount"
         :ttl-native-xcm-usd-amount="ttlNativeXcmUsdAmount"
+        :is-loading-erc20-amount="isLoadingErc20Amount"
+        :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
       />
       <div v-if="selectedAddress">
         <div v-if="isH160">
@@ -44,10 +46,12 @@ export default defineComponent({
     XcmNativeAssetList,
   },
   setup() {
-    const { tokens, ttlErc20Amount, handleUpdateTokenBalances } = useCbridgeV2();
+    const { tokens, isLoadingErc20Amount, ttlErc20Amount, handleUpdateTokenBalances } =
+      useCbridgeV2();
     const {
       xcmAssets,
       ttlNativeXcmUsdAmount,
+      isLoadingXcmAssetsAmount,
       handleUpdateTokenBalances: handleUpdateXcmTokenBalances,
     } = useXcmAssets();
     const isDisplay = ref<boolean>(false);
@@ -95,6 +99,8 @@ export default defineComponent({
     });
 
     return {
+      isLoadingErc20Amount,
+      isLoadingXcmAssetsAmount,
       selectedAddress,
       isH160,
       tokens,

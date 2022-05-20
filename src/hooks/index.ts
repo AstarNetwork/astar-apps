@@ -34,3 +34,5 @@ export * from './wallet/useWalletIcon';
 export * from './wallet/useEvmWallet';
 export * from './xcm/useXcmAssets';
 export * from './xcm/useXcmBridge';
+export * from './xcm/useXcmTokenTransfer';
+export * from './xcm/useXcmTokenDetails';
