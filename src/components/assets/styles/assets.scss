@@ -2,6 +2,7 @@
 
 .wrapper--assets {
   position: relative;
+  margin-top: 16px;
   @media (min-width: $xxl) {
     display: flex;
     justify-content: center;
@@ -29,7 +30,7 @@
 
 .container--assets {
   display: grid;
-  row-gap: 56px;
+  row-gap: 32px;
   margin-bottom: 24px;
   @media (min-width: $xxl) {
     width: $container-max-width;

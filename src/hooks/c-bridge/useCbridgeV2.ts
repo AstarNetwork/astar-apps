@@ -22,9 +22,13 @@ type Token = CbridgeCurrency | Erc20Token;
 export function useCbridgeV2() {
   const tokens = ref<Token[] | null>(null);
   const ttlErc20Amount = ref<number>(0);
+  const isCalculated = ref<boolean>(false);
+  const startCalculation = ref<boolean>(false);
+
   const store = useStore();
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
   const { currentAccount } = useAccount();
+  const isLoadingErc20Amount = ref<boolean>(false);
 
   const nativeTokenSymbol = computed(() => {
     const chainInfo = store.getters['general/chainInfo'];
@@ -98,6 +102,7 @@ export function useCbridgeV2() {
 
   const updateTokenBalances = async ({ userAddress }: { userAddress: string }): Promise<void> => {
     if (!tokens.value) return;
+    isLoadingErc20Amount.value = true;
     tokens.value = await Promise.all(
       tokens.value.map(async (token: Token) => {
         const { balUsd, userBalance } = await updateTokenBalanceHandler({
@@ -111,6 +116,7 @@ export function useCbridgeV2() {
     );
 
     filterTokens();
+    isLoadingErc20Amount.value = false;
   };
 
   const updateBridgeConfig = async ({
@@ -205,6 +211,8 @@ export function useCbridgeV2() {
       await updateTokenBalances({ userAddress: currentAccount.value });
     } catch (error) {
       console.error(error);
+    } finally {
+      isCalculated.value = true;
     }
   };
 
@@ -217,8 +225,10 @@ export function useCbridgeV2() {
     [tokens],
     () => {
       const isInitialErc20Amount =
-        tokens.value && tokens.value.length > 0 && ttlErc20Amount.value === 0;
+        tokens.value && tokens.value.length > 0 && !isCalculated.value && !startCalculation.value;
       if (isInitialErc20Amount) {
+        // Memo: to avoid calling this function twice
+        startCalculation.value = true;
         handleUpdateTokenBalances();
       }
     },
@@ -236,5 +246,5 @@ export function useCbridgeV2() {
     clearInterval(tokenBalUpdate);
   });
 
-  return { tokens, ttlErc20Amount, handleUpdateTokenBalances };
+  return { tokens, isLoadingErc20Amount, ttlErc20Amount, handleUpdateTokenBalances };
 }

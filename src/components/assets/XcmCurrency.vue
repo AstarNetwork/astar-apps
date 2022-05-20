@@ -56,9 +56,9 @@
   </div>
 </template>
 <script lang="ts">
-import { useXcmBridge } from 'src/hooks';
+import { useXcmTokenDetails } from 'src/hooks';
 import { ChainAsset } from 'src/hooks/xcm/useXcmAssets';
-import { computed, defineComponent, PropType, watchEffect } from 'vue';
+import { computed, defineComponent, PropType } from 'vue';
 
 export default defineComponent({
   props: {
@@ -77,7 +77,7 @@ export default defineComponent({
   },
   setup({ token }) {
     const t = computed(() => token);
-    const { tokenImage, tokenDetails, isDisplayToken, isXcmCompatible } = useXcmBridge(t);
+    const { tokenImage, tokenDetails, isDisplayToken, isXcmCompatible } = useXcmTokenDetails(t);
 
     return {
       tokenImage,
