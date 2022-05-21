@@ -49,6 +49,23 @@
                 {{ $t('assets.xcm') }}
               </button>
             </div>
+            <div class="screen--xl">
+              <a
+                class="box--explorer"
+                :href="explorerLink"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <button class="btn btn--sm adjuster--width">
+                  <div class="container--explorer-icon adjuster--width">
+                    <astar-icon-external-link />
+                  </div>
+                </button>
+              </a>
+              <q-tooltip>
+                <span class="text--tooltip">{{ $t('polkadot-js-app') }}</span>
+              </q-tooltip>
+            </div>
           </div>
         </div>
       </div>
@@ -56,8 +73,10 @@
   </div>
 </template>
 <script lang="ts">
+import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
 import { useXcmTokenDetails } from 'src/hooks';
 import { ChainAsset } from 'src/hooks/xcm/useXcmAssets';
+import { useStore } from 'src/store';
 import { computed, defineComponent, PropType } from 'vue';
 
 export default defineComponent({
@@ -78,12 +97,27 @@ export default defineComponent({
   setup({ token }) {
     const t = computed(() => token);
     const { tokenImage, tokenDetails, isDisplayToken, isXcmCompatible } = useXcmTokenDetails(t);
+    const store = useStore();
+
+    const explorerLink = computed(() => {
+      const chainInfo = store.getters['general/chainInfo'];
+      const chain = chainInfo ? chainInfo.chain : '';
+      const currentNetworkIdx = getProviderIndex(chain);
+
+      const astarBalanceUrl =
+        'https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc.astar.network#/assets/balances';
+      const shidenBalanceUrl =
+        'https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc.shiden.astar.network#/assets/balances';
+
+      return currentNetworkIdx === endpointKey.ASTAR ? astarBalanceUrl : shidenBalanceUrl;
+    });
 
     return {
       tokenImage,
       tokenDetails,
       isDisplayToken,
       isXcmCompatible,
+      explorerLink,
     };
   },
 });
