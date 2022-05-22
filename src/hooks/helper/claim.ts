@@ -1,6 +1,6 @@
 import { ApiPromise } from '@polkadot/api';
-import { Option, Struct } from '@polkadot/types';
-import { EventRecord, Balance } from '@polkadot/types/interfaces';
+import { bool, Option, Struct } from '@polkadot/types';
+import { EventRecord, Balance, AccountId } from '@polkadot/types/interfaces';
 import BN from 'bn.js';
 import { ethers } from 'ethers';
 import { getAddressEnum } from './../../store/dapp-staking/calculation';
@@ -8,7 +8,7 @@ import { ExtrinsicPayload } from './index';
 import { balanceFormatter } from './plasmUtils';
 
 interface ContractEraStake extends Struct {
-  readonly contractRewardClaimed: boolean;
+  readonly contractRewardClaimed: bool;
   readonly numberOfStakers: string;
   readonly total: string;
 }
@@ -23,7 +23,7 @@ export interface GeneralStakerInfo extends Struct {
 }
 
 export interface RegisteredDapps extends Struct {
-  readonly developer: string;
+  readonly developer: AccountId;
   readonly state: string;
 }
 
@@ -42,10 +42,11 @@ const checkIsDappOwner = async ({
   api: ApiPromise;
 }): Promise<boolean> => {
   try {
-    const data = await api.query.dappsStaking.registeredDapps<RegisteredDapps>(
+    const result = await api.query.dappsStaking.registeredDapps<Option<RegisteredDapps>>(
       getAddressEnum(dappAddress)
     );
-    const owner = data.developer;
+    const data = result.unwrapOrDefault();
+    const owner = data?.developer.toString();
     return owner === senderAddress;
   } catch (error: any) {
     console.error(error.message);
@@ -239,7 +240,7 @@ const getFirstEraDappHasNotClaimed = async ({
       const data = await getContractEraStake({ dappAddress, era, api });
       if (data && !data.isNone) {
         const contractRewardClaimed = data.unwrapOrDefault().contractRewardClaimed;
-        if (!contractRewardClaimed) {
+        if (!contractRewardClaimed.valueOf()) {
           firstEraDappHasNotClaimed = era;
           break;
         }
@@ -273,7 +274,7 @@ const getLastEraClaimedForDapp = async ({
       const data = await getContractEraStake({ dappAddress, era, api });
       if (data && !data.isNone) {
         const contractRewardClaimed = data.unwrapOrDefault().contractRewardClaimed;
-        if (contractRewardClaimed) {
+        if (contractRewardClaimed.valueOf()) {
           lastEraClaimed = era;
           break;
         }
@@ -286,6 +287,7 @@ const getLastEraClaimedForDapp = async ({
           api,
           currentEra,
         });
+
         lastEraClaimed = firstEraDappStaked - 1;
         break;
       }
@@ -347,6 +349,7 @@ export const getIndividualClaimTxs = async ({
     const transactions = isDappOwner
       ? txsForClaimStaker.concat(txsForClaimDapp)
       : txsForClaimStaker;
+
     return transactions;
   } catch (error: any) {
     console.error(error.message);
