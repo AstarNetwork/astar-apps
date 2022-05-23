@@ -16,7 +16,7 @@
           <div class="column column--balance">
             <div class="column__box">
               <div class="text--accent">
-                <span> {{ $n(Number(token.userBalance)) }} {{ token.metadata.symbol }} </span>
+                <span> {{ $n(truncate(token.userBalance)) }} {{ token.metadata.symbol }} </span>
               </div>
               <div class="text--label">
                 <span>{{ $n(Number(token.userBalanceUsd)) }} {{ $t('usd') }}</span>
@@ -75,6 +75,7 @@
 <script lang="ts">
 import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
 import { useXcmTokenDetails } from 'src/hooks';
+import { truncate } from 'src/hooks/helper/common';
 import { ChainAsset } from 'src/hooks/xcm/useXcmAssets';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType } from 'vue';
@@ -118,6 +119,7 @@ export default defineComponent({
       isDisplayToken,
       isXcmCompatible,
       explorerLink,
+      truncate,
     };
   },
 });

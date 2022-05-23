@@ -9,7 +9,7 @@
       <div class="box--withdraw-amount">
         <div class="box__column-amount">
           <span class="text--accent">{{ $t('assets.modals.availableToWithdraw') }}</span>
-          <span class="text--xl">{{ $n(numEvmDeposit) }} {{ nativeTokenSymbol }}</span>
+          <span class="text--xl">{{ $n(truncate(numEvmDeposit)) }} {{ nativeTokenSymbol }}</span>
         </div>
       </div>
       <SpeedConfiguration
@@ -31,6 +31,7 @@ import { defineComponent, ref } from 'vue';
 import { fadeDuration } from '@astar-network/astar-ui';
 import { wait } from 'src/hooks/helper/common';
 import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
+import { truncate } from 'src/hooks/helper/common';
 
 export default defineComponent({
   components: { SpeedConfiguration },
@@ -66,6 +67,7 @@ export default defineComponent({
       selectedTip,
       nativeTipPrice,
       setSelectedTip,
+      truncate,
     };
   },
 });

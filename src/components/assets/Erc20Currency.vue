@@ -16,7 +16,7 @@
           <div class="column column--balance">
             <div class="column__box">
               <div class="text--accent">
-                <span>{{ $n(Number(token.userBalance)) }} {{ token.symbol }}</span>
+                <span>{{ $n(truncate(token.userBalance)) }} {{ token.symbol }}</span>
               </div>
               <div class="text--label">
                 <span>{{ $n(Number(token.userBalanceUsd)) }} {{ $t('usd') }}</span>
@@ -93,6 +93,7 @@ import { addToEvmWallet } from 'src/hooks/helper/wallet';
 import { Erc20Token, getErc20Explorer } from 'src/modules/token';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType } from 'vue';
+import { truncate } from 'src/hooks/helper/common';
 
 export default defineComponent({
   props: {
@@ -119,6 +120,7 @@ export default defineComponent({
     return {
       addToEvmWallet,
       explorerLink,
+      truncate,
     };
   },
 });
