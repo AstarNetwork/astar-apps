@@ -69,7 +69,7 @@
               <span class="text--available">
                 {{
                   $t('assets.modals.balance', {
-                    amount: $n(Number(formattedRelayChainBalance)),
+                    amount: $n(truncate(formattedRelayChainBalance)),
                     token: String(token.metadata.symbol),
                   })
                 }}</span
@@ -147,6 +147,7 @@ import { computed, defineComponent, PropType, ref } from 'vue';
 import ModalH160AddressInput from './ModalH160AddressInput.vue';
 import IconHelp from '/src/components/common/IconHelp.vue';
 import ModalLoading from '/src/components/common/ModalLoading.vue';
+import { truncate } from 'src/hooks/helper/common';
 
 export default defineComponent({
   components: { ModalH160AddressInput, IconHelp, ModalLoading },
@@ -238,6 +239,7 @@ export default defineComponent({
       toMaxAmount,
       setIsNativeBridge,
       handleBridge,
+      truncate,
     };
   },
 });

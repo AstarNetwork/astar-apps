@@ -19,3 +19,9 @@ export const getRandomFromArray = (list: any[]) => {
 
 //Ref: https://stackoverflow.com/questions/951021/what-is-the-javascript-version-of-sleep
 export const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// Ref: https://stackoverflow.com/questions/4912788/truncate-not-round-off-decimal-numbers-in-javascript
+export const truncate = (num: number | string, places = 3) => {
+  const formattedNum = Number(num);
+  return Math.trunc(formattedNum * Math.pow(10, places)) / Math.pow(10, places);
+};

@@ -27,7 +27,12 @@
             <span> {{ $t('to') }}</span>
             <div>
               <span class="text--to--balance">
-                {{ $t('assets.modals.balance', { amount: $n(toAddressBalance), token: symbol }) }}
+                {{
+                  $t('assets.modals.balance', {
+                    amount: $n(truncate(toAddressBalance)),
+                    token: symbol,
+                  })
+                }}
               </span>
             </div>
           </div>
@@ -44,7 +49,10 @@
             <div class="box__available">
               <span class="text--available">
                 {{
-                  $t('assets.modals.balance', { amount: $n(fromAddressBalance), token: symbol })
+                  $t('assets.modals.balance', {
+                    amount: $n(truncate(fromAddressBalance)),
+                    token: symbol,
+                  })
                 }}</span
               >
               <button v-if="symbol !== nativeTokenSymbol" class="btn--max" @click="toMaxAmount">
@@ -131,6 +139,7 @@ import { sampleEvmWalletAddress, getEvmGasCost } from 'src/modules/gas-api';
 import { ethers } from 'ethers';
 import ABI from 'src/c-bridge/abi/ERC20.json';
 import { AbiItem } from 'web3-utils';
+import { truncate } from 'src/hooks/helper/common';
 
 export default defineComponent({
   components: { ModalSelectAccount, SpeedConfiguration },
@@ -508,6 +517,7 @@ export default defineComponent({
       nativeTipPrice,
       setSelectedTip,
       isH160,
+      truncate,
     };
   },
 });

@@ -29,7 +29,7 @@
               <span class="text--to--balance">
                 {{
                   $t('assets.modals.balance', {
-                    amount: $n(toAddressBalance),
+                    amount: $n(truncate(toAddressBalance)),
                     token: String(token.metadata.symbol),
                   })
                 }}
@@ -50,7 +50,7 @@
               <span class="text--available">
                 {{
                   $t('assets.modals.balance', {
-                    amount: $n(Number(token.userBalance)),
+                    amount: $n(truncate(token.userBalance)),
                     token: String(token.metadata.symbol),
                   })
                 }}</span
@@ -113,6 +113,7 @@ import { useStore } from 'src/store';
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
 import ModalSelectAccount from './ModalSelectAccount.vue';
 import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
+import { truncate } from 'src/hooks/helper/common';
 
 export default defineComponent({
   components: { ModalSelectAccount, SpeedConfiguration },
@@ -207,6 +208,7 @@ export default defineComponent({
       closeModal,
       getShortenAddress,
       inputHandler,
+      truncate,
     };
   },
 });

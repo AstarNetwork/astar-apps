@@ -11,15 +11,15 @@
           <div class="box--vesting-info">
             <div class="box__row">
               <span>{{ $t('assets.modals.totalDistribution') }}</span>
-              <span>{{ $n(vesting.totalDistribution) }}</span>
+              <span>{{ $n(truncate(vesting.totalDistribution)) }}</span>
             </div>
             <div class="box__row">
               <span>{{ $t('assets.modals.alreadyVested') }}</span>
-              <span>{{ $n(vesting.vestedAmount) }}</span>
+              <span>{{ $n(truncate(vesting.vestedAmount)) }}</span>
             </div>
             <div class="box__row">
               <span>{{ $t('assets.modals.remainingVests') }}</span>
-              <span>{{ $n(vesting.totalDistribution - vesting.vestedAmount) }}</span>
+              <span>{{ $n(truncate(vesting.totalDistribution - vesting.vestedAmount)) }}</span>
             </div>
             <div class="box__row--per-block">
               <span>{{
@@ -36,7 +36,9 @@
       <div class="box--unlock-amount">
         <div class="box__column-amount">
           <span class="text--accent">{{ $t('assets.modals.availableToUnlocked') }}</span>
-          <span class="text--xl">{{ $n(info.claimableAmount) }} {{ nativeTokenSymbol }}</span>
+          <span class="text--xl"
+            >{{ $n(truncate(info.claimableAmount)) }} {{ nativeTokenSymbol }}</span
+          >
         </div>
       </div>
       <SpeedConfiguration
@@ -62,6 +64,7 @@ import { defineComponent, PropType, ref } from 'vue';
 import { fadeDuration } from '@astar-network/astar-ui';
 import { wait } from 'src/hooks/helper/common';
 import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
+import { truncate } from 'src/hooks/helper/common';
 
 export default defineComponent({
   components: { SpeedConfiguration },
@@ -103,6 +106,7 @@ export default defineComponent({
       selectedTip,
       nativeTipPrice,
       setSelectedTip,
+      truncate,
     };
   },
 });

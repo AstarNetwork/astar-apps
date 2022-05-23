@@ -68,7 +68,7 @@
             <div class="column column--balance">
               <div class="column__box">
                 <div class="text--accent">
-                  <span>{{ $n(bal) }} {{ nativeTokenSymbol }}</span>
+                  <span>{{ $n(truncate(bal)) }} {{ nativeTokenSymbol }}</span>
                 </div>
                 <div class="text--label">
                   <span>{{ $n(balUsd) }} {{ $t('usd') }}</span>
@@ -144,6 +144,7 @@ import { useStore } from 'src/store';
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
 import ModalFaucet from './modals/ModalFaucet.vue';
 import ModalTransfer from './modals/ModalTransfer.vue';
+import { truncate } from 'src/hooks/helper/common';
 
 export default defineComponent({
   components: {
@@ -284,6 +285,7 @@ export default defineComponent({
       handleModalTransfer,
       handleModalFaucet,
       checkIsCbridgeToken,
+      truncate,
     };
   },
 });

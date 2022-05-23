@@ -25,7 +25,7 @@
             <div class="column--balance">
               <div class="column__box">
                 <div v-if="bal !== null && nativeTokenSymbol" class="text--accent">
-                  <span>{{ $n(bal) }} {{ nativeTokenSymbol }}</span>
+                  <span>{{ $n(truncate(bal)) }} {{ nativeTokenSymbol }}</span>
                 </div>
                 <div v-else class="skeleton--right">
                   <q-skeleton animation="fade" class="skeleton--md" />
@@ -55,7 +55,7 @@
             <div class="column--balance">
               <div v-if="!checkIsNullOrUndefined(nativeTokenSymbol)" class="column__box">
                 <span class="text--value"
-                  >{{ $n(transferableBalance) }} {{ nativeTokenSymbol }}</span
+                  >{{ $n(truncate(transferableBalance)) }} {{ nativeTokenSymbol }}</span
                 >
               </div>
               <div v-else class="column__box">
@@ -82,7 +82,9 @@
           <div class="row__right">
             <div class="column--balance">
               <div v-if="!checkIsNullOrUndefined(nativeTokenSymbol)" class="column__box">
-                <span class="text--value">{{ $n(numEvmDeposit) }} {{ nativeTokenSymbol }}</span>
+                <span class="text--value"
+                  >{{ $n(truncate(numEvmDeposit)) }} {{ nativeTokenSymbol }}</span
+                >
               </div>
               <div v-else class="column__box">
                 <div class="skeleton--right">
@@ -105,7 +107,9 @@
           <div class="row__right">
             <div class="column--balance">
               <div v-if="!checkIsNullOrUndefined(nativeTokenSymbol)" class="column__box">
-                <span class="text--value">{{ $n(vestingTtl) }} {{ nativeTokenSymbol }}</span>
+                <span class="text--value"
+                  >{{ $n(truncate(vestingTtl)) }} {{ nativeTokenSymbol }}</span
+                >
               </div>
               <div v-else class="column__box">
                 <div class="skeleton--right">
@@ -128,7 +132,9 @@
           <div class="row__right">
             <div class="column--balance">
               <div v-if="!checkIsNullOrUndefined(nativeTokenSymbol)" class="column__box">
-                <span class="text--value">{{ $n(lockInDappStaking) }} {{ nativeTokenSymbol }}</span>
+                <span class="text--value"
+                  >{{ $n(truncate(lockInDappStaking)) }} {{ nativeTokenSymbol }}</span
+                >
               </div>
               <div v-else class="column__box">
                 <div class="skeleton--right">
@@ -180,6 +186,8 @@ import ModalFaucet from './modals/ModalFaucet.vue';
 import ModalEvmWithdraw from './modals/ModalEvmWithdraw.vue';
 import ModalVesting from './modals/ModalVesting.vue';
 import { checkIsNullOrUndefined } from 'src/hooks/helper/common';
+import { truncate } from 'src/hooks/helper/common';
+
 export default defineComponent({
   components: {
     ModalTransfer,
@@ -297,6 +305,7 @@ export default defineComponent({
       handleModalFaucet,
       handleModalEvmWithdraw,
       checkIsNullOrUndefined,
+      truncate,
     };
   },
 });
