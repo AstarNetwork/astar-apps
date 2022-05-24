@@ -33,20 +33,14 @@
             <span> {{ $t('from') }}</span>
             <div />
           </div>
-          <div class="row__chain">
-            <img :src="srcChain.img" alt="src-chain-logo" class="logo" />
-            <span class="text--title"> {{ srcChain.name }} </span>
-          </div>
+          <ModalSelectChain :chains="chains" :chain="srcChain" :set-chain="setSrcChain" />
         </div>
         <div class="box--input-chain">
           <div class="box__space-between">
             <span> {{ $t('to') }}</span>
             <div />
           </div>
-          <div class="row__chain">
-            <img :src="destChain.img" alt="dest-chain-logo" class="logo" />
-            <span class="text--title"> {{ destChain.name }} </span>
-          </div>
+          <ModalSelectChain :chains="chains" :chain="destChain" :set-chain="setDestChain" />
         </div>
 
         <div v-if="!isNativeBridge" class="box--input box--hover--active">
@@ -147,10 +141,16 @@ import { computed, defineComponent, PropType, ref } from 'vue';
 import ModalH160AddressInput from './ModalH160AddressInput.vue';
 import IconHelp from '/src/components/common/IconHelp.vue';
 import ModalLoading from '/src/components/common/ModalLoading.vue';
+import ModalSelectChain from 'src/components/assets/modals/ModalSelectChain.vue';
 import { truncate } from 'src/hooks/helper/common';
 
 export default defineComponent({
-  components: { ModalH160AddressInput, IconHelp, ModalLoading },
+  components: {
+    ModalH160AddressInput,
+    ModalSelectChain,
+    IconHelp,
+    ModalLoading,
+  },
   props: {
     isModalXcmBridge: {
       type: Boolean,
@@ -187,12 +187,15 @@ export default defineComponent({
       destEvmAddress,
       formattedRelayChainBalance,
       existentialDeposit,
+      chains,
       inputHandler,
       bridge,
       toMaxAmount,
       resetStates,
       setIsNativeBridge,
       updateRelayChainTokenBal,
+      setSrcChain,
+      setDestChain,
     } = useXcmBridge(token);
 
     const isLoadingApi = computed(() => {
@@ -238,6 +241,7 @@ export default defineComponent({
       existentialDeposit,
       isLoadingApi,
       isReady,
+      chains,
       inputHandler,
       closeModal,
       bridge,
@@ -245,6 +249,8 @@ export default defineComponent({
       setIsNativeBridge,
       handleBridge,
       truncate,
+      setSrcChain,
+      setDestChain,
     };
   },
 });

@@ -67,11 +67,6 @@
   font-weight: 700;
 }
 
-.row__chain {
-  display: flex;
-  column-gap: 12px;
-}
-
 .icon--help {
   font-size: 20px;
   margin-bottom: -12px;
@@ -95,11 +90,6 @@
   align-items: normal;
   column-gap: 6px;
   color: $warning-red;
-}
-
-.logo {
-  width: 24px;
-  height: 24px;
 }
 
 .loader {

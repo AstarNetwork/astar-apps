@@ -81,6 +81,6 @@ export const isFromRelayChain = (fromChain: Chain): boolean => {
 };
 
 export const getChains = (networkIdx: endpointKey): XcmChain[] => {
-  const relayChain = networkIdx === endpointKey.ASTAR ? Chain.Astar : Chain.Kusama;
+  const relayChain = networkIdx === endpointKey.ASTAR ? Chain.Polkadot : Chain.Kusama;
   return xcmChains.filter((it) => it.relayChain === relayChain);
 };

@@ -59,6 +59,10 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     return getProviderIndex(chain);
   });
 
+  const isAstar = computed(() => {
+    return currentNetworkIdx.value === endpointKey.ASTAR;
+  });
+
   const { handleResult, handleTransactionError } = useCustomSignature({});
   const { balance } = useBalance(currentAccount);
   const { tokenImage, isNativeToken } = useXcmTokenDetails(selectedToken);
@@ -69,6 +73,28 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     isDisabledBridge.value = true;
     amount.value = null;
     errMsg.value = '';
+  };
+
+  const setSrcChain = (chain: XcmChain): void => {
+    srcChain.value = chain;
+    if (chain.name === destChain.value.name) {
+      if (isAstar.value) {
+        destChain.value = destChain.value.name === chainAstar.name ? chainPolkadot : chainAstar;
+      } else {
+        destChain.value = destChain.value.name === chainShiden.name ? chainKusama : chainShiden;
+      }
+    }
+  };
+
+  const setDestChain = (chain: XcmChain): void => {
+    destChain.value = chain;
+    if (chain.name === srcChain.value.name) {
+      if (isAstar.value) {
+        srcChain.value = srcChain.value.name === chainAstar.name ? chainPolkadot : chainAstar;
+      } else {
+        srcChain.value = srcChain.value.name === chainShiden.name ? chainKusama : chainShiden;
+      }
+    }
   };
 
   const getRelayChainNativeBal = async (): Promise<string> => {
@@ -134,7 +160,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     const networkChains = getChains(currentNetworkIdx.value);
     chains.value = networkChains;
 
-    if (currentNetworkIdx.value === endpointKey.ASTAR) {
+    if (isAstar.value) {
       destParaId.value = parachainIds.ASTAR;
       srcChain.value = chainPolkadot;
       destChain.value = chainAstar;
@@ -204,7 +230,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
           });
       } else {
         // Todo
-        console.log('Send assets from Parachains');
+        console.log('Send assets from Parachain');
       }
     } catch (error: any) {
       console.error(error.message);
@@ -235,12 +261,6 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     }
   });
 
-  watchEffect(() => {
-    console.log('chains', chains.value);
-    console.log('srcChain', srcChain.value);
-    console.log('destChain', destChain.value);
-  });
-
   const handleUpdate = setInterval(async () => {
     await updateRelayChainTokenBal();
   }, 20 * 1000);
@@ -261,11 +281,14 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     destEvmAddress,
     formattedRelayChainBalance,
     existentialDeposit,
+    chains,
     inputHandler,
     bridge,
     toMaxAmount,
     resetStates,
     setIsNativeBridge,
     updateRelayChainTokenBal,
+    setSrcChain,
+    setDestChain,
   };
 }
