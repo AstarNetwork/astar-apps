@@ -7,6 +7,7 @@ import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { getInjectedExtensions } from 'src/hooks/helper/wallet';
 import { keyring } from '@polkadot/ui-keyring';
 import { isTestChain } from '@polkadot/util';
+import { isMobileDevice } from 'src/hooks/helper/wallet';
 
 interface InjectedAccountExt {
   address: string;
@@ -54,7 +55,7 @@ export function useExtensions(api: ApiPromise, store: any) {
 
       // MEMO: tricky way to fix this : after approving extension first, web3Accounts is not retrieving extension address to add
       const selectedAddress = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
-      if (!selectedAddress) {
+      if (!selectedAddress || isMobileDevice) {
         await loadAccounts(api);
       }
       const { isDevelopment, injectedAccounts } = await loadAccounts(api);
