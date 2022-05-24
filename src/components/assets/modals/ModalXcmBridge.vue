@@ -5,8 +5,8 @@
     :is-closing="isClosingModal"
     @close="closeModal"
   >
-    <ModalLoading v-if="isLoading" />
-    <div v-if="token" class="wrapper--modal">
+    <ModalLoading v-if="isLoadingApi" />
+    <div v-if="isReady" class="wrapper--modal">
       <div class="row--mode-tab">
         <div
           class="box--bridge-option"
@@ -14,7 +14,7 @@
           @click="setIsNativeBridge(true)"
         >
           <span class="text--title" :class="isNativeBridge && 'text-color--neon'">
-            {{ $t('assets.modals.depositToNative') }}
+            {{ $t('assets.modals.nativeXcm') }}
           </span>
         </div>
         <div
@@ -23,7 +23,7 @@
           @click="setIsNativeBridge(false)"
         >
           <span class="text--title" :class="!isNativeBridge && 'text-color--neon'">
-            {{ $t('assets.modals.depositToEvm') }}
+            {{ $t('assets.modals.evmXcm') }}
           </span>
         </div>
       </div>
@@ -34,8 +34,8 @@
             <div />
           </div>
           <div class="row__chain">
-            <img :src="chainIcon.src" alt="src-chain-logo" class="logo" />
-            <span class="text--title"> {{ chainName.src }} </span>
+            <img :src="srcChain.img" alt="src-chain-logo" class="logo" />
+            <span class="text--title"> {{ srcChain.name }} </span>
           </div>
         </div>
         <div class="box--input-chain">
@@ -44,8 +44,8 @@
             <div />
           </div>
           <div class="row__chain">
-            <img :src="chainIcon.dest" alt="dest-chain-logo" class="logo" />
-            <span class="text--title"> {{ chainName.dest }} </span>
+            <img :src="destChain.img" alt="dest-chain-logo" class="logo" />
+            <span class="text--title"> {{ destChain.name }} </span>
           </div>
         </div>
 
@@ -178,8 +178,8 @@ export default defineComponent({
     const {
       amount,
       errMsg,
-      chainIcon,
-      chainName,
+      srcChain,
+      destChain,
       isDisabledBridge,
       tokenImage,
       isNativeToken,
@@ -195,8 +195,12 @@ export default defineComponent({
       updateRelayChainTokenBal,
     } = useXcmBridge(token);
 
-    const isLoading = computed(() => {
+    const isLoadingApi = computed(() => {
       return existentialDeposit.value === null;
+    });
+
+    const isReady = computed(() => {
+      return token.value && srcChain.value && destChain.value;
     });
 
     const closeModal = async (): Promise<void> => {
@@ -223,8 +227,8 @@ export default defineComponent({
       errMsg,
       isClosingModal,
       amount,
-      chainIcon,
-      chainName,
+      srcChain,
+      destChain,
       isDisabledBridge,
       tokenImage,
       isNativeToken,
@@ -232,7 +236,8 @@ export default defineComponent({
       destEvmAddress,
       formattedRelayChainBalance,
       existentialDeposit,
-      isLoading,
+      isLoadingApi,
+      isReady,
       inputHandler,
       closeModal,
       bridge,

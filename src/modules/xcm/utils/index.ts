@@ -1,3 +1,4 @@
+import { Chain, relayChains, xcmChains, XcmChain } from './../index';
 import { ApiPromise } from '@polkadot/api';
 import { Struct } from '@polkadot/types';
 import { ethers } from 'ethers';
@@ -72,4 +73,14 @@ export const fetchExistentialDeposit = async (api: ApiPromise): Promise<Existent
   };
 
   return data;
+};
+
+export const isFromRelayChain = (fromChain: Chain): boolean => {
+  const found = relayChains.find((it) => it === fromChain);
+  return found ? true : false;
+};
+
+export const getChains = (networkIdx: endpointKey): XcmChain[] => {
+  const relayChain = networkIdx === endpointKey.ASTAR ? Chain.Astar : Chain.Kusama;
+  return xcmChains.filter((it) => it.relayChain === relayChain);
 };

@@ -266,8 +266,8 @@ export default {
       availableToUnlocked: 'Available to unlocked',
       unlock: 'Unlock',
       transfer: 'Transfer',
-      depositToNative: 'Deposit to Native',
-      depositToEvm: 'Deposit to EVM',
+      nativeXcm: 'Native',
+      evmXcm: 'EVM (Deposit)',
       evmWalletAddress: 'EVM Wallet Address',
       xcmWarning: {
         avoidRisk: 'Avoid risk of losing your balance',
