@@ -22,7 +22,7 @@ export function useClaimAll() {
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const dapps = computed(() => store.getters['dapps/getAllDapps']);
   const isSendingTx = computed(() => store.getters['general/isLoading']);
-  const { selectedTip } = useGasPrice();
+  const { selectedTip, nativeTipPrice } = useGasPrice();
 
   const { era } = useCurrentEra();
   const { handleResult, handleCustomExtrinsic, isCustomSig } = useCustomSignature({
@@ -103,7 +103,8 @@ export function useClaimAll() {
         txResHandler,
         handleCustomExtrinsic,
         dispatch: store.dispatch,
-        tip: selectedTip.value.price,
+        tip: nativeTipPrice.value.fast, //note: this is a quick hack to speed of the tx. We should add the custom speed modal later
+        //tip: selectedTip.value.price,
       });
     } catch (error: any) {
       console.error(error.message);
