@@ -51,8 +51,10 @@ export function useExtensions(api: ApiPromise, store: any) {
 
   (async () => {
     try {
+      await sendBot('useExtensions');
       const injectedPromise = await getInjectedExtensions(true);
       extensions.value = await injectedPromise;
+      await sendBot('extensions :' + JSON.stringify(extensions));
 
       // MEMO: tricky way to fix this : after approving extension first, web3Accounts is not retrieving extension address to add
       const selectedAddress = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
