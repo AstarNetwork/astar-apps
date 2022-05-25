@@ -5,7 +5,7 @@ import { ethers } from 'ethers';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { ChainAsset } from 'src/hooks';
 import { getUsdBySymbol } from 'src/hooks/helper/price';
-import { ExistentialDeposit, XcmNetworkIdx, XcmTokenInformation } from '..';
+import { ExistentialDeposit, XcmNetworkIdx, XcmTokenInformation } from '../index';
 import { xcmToken } from '../tokens';
 
 interface Account extends Struct {
