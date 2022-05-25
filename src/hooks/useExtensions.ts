@@ -8,6 +8,7 @@ import { getInjectedExtensions } from 'src/hooks/helper/wallet';
 import { keyring } from '@polkadot/ui-keyring';
 import { isTestChain } from '@polkadot/util';
 import { sendBot } from 'src/hooks/helper/sendbot';
+import { wait } from './helper/common';
 
 interface InjectedAccountExt {
   address: string;
@@ -51,7 +52,8 @@ export function useExtensions(api: ApiPromise, store: any) {
 
   (async () => {
     try {
-      await sendBot('useExtensions' + api);
+      // await sendBot('useExtensions' + api);
+      await wait(400);
       const injectedPromise = await getInjectedExtensions(true);
       extensions.value = await injectedPromise;
       // await sendBot('extensions :' + JSON.stringify(extensions));
