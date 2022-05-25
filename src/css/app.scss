@@ -50,6 +50,10 @@ main {
   border-right: 0px solid transparent;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
 .body--dark {
   background: $body-bg-dark;
   main {

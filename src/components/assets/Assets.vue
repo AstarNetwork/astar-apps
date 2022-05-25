@@ -12,6 +12,8 @@
           <EvmAssetList
             :tokens="tokens"
             :handle-update-token-balances="handleUpdateTokenBalances"
+            :handle-update-xcm-token-balances="handleUpdateXcmTokenBalances"
+            :xcm-assets="xcmAssets"
           />
         </div>
         <div v-else class="container--assets">

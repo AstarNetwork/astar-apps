@@ -1,16 +1,18 @@
 <template>
   <div class="wrapper--select-chain">
-    <div class="row__chain" @click="isOpen = true">
+    <div class="row__chain" :class="isEnableSetChain && 'cursor-pointer'" @click="isOpen = true">
       <img :src="chain.img" alt="chain-logo" class="logo" />
       <input
         :value="chain.name"
         class="input--chain text--title"
+        :class="isEnableSetChain && 'cursor-pointer'"
         type="text"
         spellcheck="false"
         :readonly="true"
         @blur="closeOption"
       />
       <astar-icon-base
+        v-if="isEnableSetChain"
         class="icon--selector"
         icon-name="selector"
         viewBox="0 0 20 20"
@@ -20,7 +22,7 @@
       </astar-icon-base>
     </div>
 
-    <div v-if="isOpen" class="box--chain-option">
+    <div v-if="isOpen && isEnableSetChain" class="box--chain-option">
       <ul v-for="(c, index) in filteredChains" :key="index" class="container--chain">
         <li role="option" class="list" @click="setChain(c)">
           <div class="list__row">
@@ -53,6 +55,10 @@ export default defineComponent({
     },
     setChain: {
       type: Function,
+      required: true,
+    },
+    isEnableSetChain: {
+      type: Boolean,
       required: true,
     },
   },

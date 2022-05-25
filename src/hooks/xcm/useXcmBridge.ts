@@ -170,12 +170,13 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
 
     if (isAstar.value) {
       destParaId.value = parachainIds.ASTAR;
-      srcChain.value = chainPolkadot;
-      destChain.value = chainAstar;
+      // Memo: withdrawal mode for H160 accounts
+      srcChain.value = isH160.value ? chainAstar : chainPolkadot;
+      destChain.value = isH160.value ? chainPolkadot : chainAstar;
     } else {
       destParaId.value = parachainIds.SDN;
-      srcChain.value = chainKusama;
-      destChain.value = chainShiden;
+      srcChain.value = isH160.value ? chainShiden : chainKusama;
+      destChain.value = isH160.value ? chainKusama : chainShiden;
     }
   };
 

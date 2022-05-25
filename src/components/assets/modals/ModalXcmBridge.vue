@@ -10,37 +10,56 @@
       <div class="row--mode-tab">
         <div
           class="box--bridge-option"
-          :class="isNativeBridge ? 'selected-bridge-option' : 'unselected-bridge-option'"
-          @click="setIsNativeBridge(true)"
+          :class="[
+            isNativeBridge ? 'selected-bridge-option' : 'unselected-bridge-option',
+            isH160 && 'option--disabled',
+          ]"
+          @click="!isH160 && setIsNativeBridge(true)"
         >
-          <span class="text--title" :class="isNativeBridge && 'text-color--neon'">
+          <span
+            class="text--title"
+            :class="[isNativeBridge && 'text-color--neon', isH160 && 'text-color--disabled']"
+          >
             {{ $t('native') }}
           </span>
         </div>
         <div
-          class="box--bridge-option"
-          :class="!isNativeBridge ? 'selected-bridge-option' : 'unselected-bridge-option'"
+          :class="[
+            !isNativeBridge ? 'selected-bridge-option' : 'unselected-bridge-option',
+            isH160 ? 'bridge-option-evm-withdrawal' : 'box--bridge-option',
+          ]"
           @click="setIsNativeBridge(false)"
         >
           <span class="text--title" :class="!isNativeBridge && 'text-color--neon'">
-            {{ $t('evm') }}
+            {{ $t(isH160 ? 'assets.modals.evmXcmWithdrawal' : 'assets.modals.evmXcmDeposit') }}
           </span>
         </div>
       </div>
       <div class="rows">
-        <div class="box--input-chain box--hover--active">
+        <div class="box--input-chain" :class="isNativeBridge && 'box--hover--active'">
           <div class="box__space-between">
             <span> {{ $t('from') }}</span>
             <div />
           </div>
-          <ModalSelectChain :chains="chains" :chain="srcChain" :set-chain="setSrcChain" />
+          <!-- Memo: one way bridge for 'from / to' EVM account -->
+          <ModalSelectChain
+            :chains="chains"
+            :chain="srcChain"
+            :set-chain="setSrcChain"
+            :is-enable-set-chain="isNativeBridge"
+          />
         </div>
-        <div class="box--input-chain box--hover--active">
+        <div class="box--input-chain" :class="isNativeBridge && 'box--hover--active'">
           <div class="box__space-between">
             <span> {{ $t('to') }}</span>
             <div />
           </div>
-          <ModalSelectChain :chains="chains" :chain="destChain" :set-chain="setDestChain" />
+          <ModalSelectChain
+            :chains="chains"
+            :chain="destChain"
+            :set-chain="setDestChain"
+            :is-enable-set-chain="isNativeBridge"
+          />
         </div>
 
         <div v-if="!isNativeBridge">

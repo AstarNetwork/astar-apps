@@ -16,7 +16,16 @@
 
 .box--bridge-option {
   padding-bottom: 8px;
-  width: 100px;
+  width: 140px;
+}
+
+.bridge-option-evm-withdrawal {
+  padding-bottom: 8px;
+  width: 160px;
+}
+
+.option--disabled {
+  cursor: not-allowed !important;
 }
 
 .selected-bridge-option {

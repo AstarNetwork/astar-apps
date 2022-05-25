@@ -270,6 +270,8 @@ export default {
       availableToUnlocked: 'Available to unlocked',
       unlock: 'Unlock',
       transfer: 'Transfer',
+      evmXcmDeposit: 'EVM (Deposit)',
+      evmXcmWithdrawal: 'EVM (Withdrawal)',
       xcmWarning: {
         avoidRisk: 'Avoid risk of losing your balance',
         fee: 'Fee is deducted from the amount entered',
