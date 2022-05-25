@@ -1,3 +1,4 @@
+import { isValidAddressPolkadotAddress } from './../helper/plasmUtils';
 import { evmToAddress } from '@polkadot/util-crypto';
 import { ethers } from 'ethers';
 import { $web3 } from 'src/boot/api';
@@ -44,8 +45,10 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   const errMsg = ref<string>('');
   const isDisabledBridge = ref<boolean>(true);
   const isNativeBridge = ref<boolean>(true);
-  const destEvmAddress = ref<string>('');
   const existentialDeposit = ref<ExistentialDeposit | null>(null);
+
+  // Format: SS58(withdrawal) or H160(deposit)
+  const evmDestAddress = ref<string>('');
 
   const { t } = useI18n();
   const store = useStore();
@@ -53,6 +56,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   const { currentAccount } = useAccount();
   const { xcmAssets } = useXcmAssets();
 
+  const isH160 = computed(() => store.getters['general/isH160Formatted']);
   const currentNetworkIdx = computed(() => {
     const chainInfo = store.getters['general/chainInfo'];
     const chain = chainInfo ? chainInfo.chain : '';
@@ -61,6 +65,10 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
 
   const isAstar = computed(() => {
     return currentNetworkIdx.value === endpointKey.ASTAR;
+  });
+
+  const isDepositToEvm = computed(() => {
+    return isFromRelayChain(srcChain.value.name);
   });
 
   const { handleResult, handleTransactionError } = useCustomSignature({});
@@ -171,6 +179,26 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     }
   };
 
+  // const setToAddressBalance = async (): Promise<void> => {
+  //   const address = toAddress.value;
+  //   const srcChainId = evmNetworkIdx.value;
+  //   if (!address || !srcChainId) return;
+  //   if (isNativeToken.value) {
+  //     toAddressBalance.value = await getNativeTokenBalance(address);
+  //   }
+  //   if (!isNativeToken.value) {
+  //     if (isH160.value) {
+  //       const balance = await getTokenBal({
+  //         srcChainId,
+  //         address,
+  //         tokenAddress: props.token.address,
+  //         tokenSymbol: props.token.symbol,
+  //       });
+  //       toAddressBalance.value = Number(balance);
+  //     }
+  //   }
+  // };
+
   const bridge = async (finalizedCallback: () => Promise<void>): Promise<void> => {
     try {
       if (!currentAccount.value) {
@@ -192,14 +220,14 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
         const injector = await getInjector(substrateAccounts.value);
         // for H160 address, should mapped ss58 address and public key
         if (!isNativeBridge.value) {
-          if (!isValidEvmAddress(destEvmAddress.value)) {
+          if (!isValidEvmAddress(evmDestAddress.value)) {
             throw Error('Invalid evm destination address');
           }
-          const balWei = await getBalance($web3.value!, destEvmAddress.value);
+          const balWei = await getBalance($web3.value!, evmDestAddress.value);
           if (Number(ethers.utils.formatEther(balWei)) === 0) {
             throw Error(t('assets.modals.xcmWarning.nonzeroBalance'));
           }
-          const ss58MappedAddr = evmToAddress(destEvmAddress.value, PREFIX_ASTAR);
+          const ss58MappedAddr = evmToAddress(evmDestAddress.value, PREFIX_ASTAR);
           const hexPublicKey = getPubkeyFromSS58Addr(ss58MappedAddr);
           recipientAccountId = hexPublicKey;
         }
@@ -229,8 +257,15 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
             amount.value = null;
           });
       } else {
-        // Todo
-        console.log('Send assets from Parachain');
+        // Todo: Implement the withdrawal logic here
+        if (!isNativeBridge.value) {
+          if (!isValidAddressPolkadotAddress(evmDestAddress.value)) {
+            throw Error('Invalid destination address');
+          }
+          console.log('Send assets from Parachain(EVM)');
+        } else {
+          console.log('Send assets from Parachain');
+        }
       }
     } catch (error: any) {
       console.error(error.message);
@@ -244,6 +279,12 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   const updateRelayChainTokenBal = async (): Promise<void> => {
     relayChainNativeBalance.value = await getRelayChainNativeBal();
   };
+
+  watchEffect(() => {
+    if (isH160.value) {
+      isNativeBridge.value = false;
+    }
+  });
 
   watchEffect(async () => {
     if (!currentNetworkIdx.value || currentNetworkIdx.value !== null) {
@@ -278,10 +319,12 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     tokenImage,
     isNativeToken,
     isNativeBridge,
-    destEvmAddress,
+    evmDestAddress,
     formattedRelayChainBalance,
     existentialDeposit,
     chains,
+    isDepositToEvm,
+    isH160,
     inputHandler,
     bridge,
     toMaxAmount,

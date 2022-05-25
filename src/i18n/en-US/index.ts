@@ -23,6 +23,10 @@ export default {
   wallet3: 'Wallet 3',
   alert: 'Alert',
   max: 'Max',
+  native: 'Native',
+  evm: 'EVM',
+  addressFormat: '{network} Wallet Address',
+  addressPlaceholder: 'Destination {network} Address',
   warning: {
     insufficientFee: 'Warning! Transaction might failed due to insufficient fee',
   },
@@ -266,9 +270,6 @@ export default {
       availableToUnlocked: 'Available to unlocked',
       unlock: 'Unlock',
       transfer: 'Transfer',
-      nativeXcm: 'Native',
-      evmXcm: 'EVM (Deposit)',
-      evmWalletAddress: 'EVM Wallet Address',
       xcmWarning: {
         avoidRisk: 'Avoid risk of losing your balance',
         fee: 'Fee is deducted from the amount entered',

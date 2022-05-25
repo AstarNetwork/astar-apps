@@ -14,7 +14,7 @@
           @click="setIsNativeBridge(true)"
         >
           <span class="text--title" :class="isNativeBridge && 'text-color--neon'">
-            {{ $t('assets.modals.nativeXcm') }}
+            {{ $t('native') }}
           </span>
         </div>
         <div
@@ -23,19 +23,19 @@
           @click="setIsNativeBridge(false)"
         >
           <span class="text--title" :class="!isNativeBridge && 'text-color--neon'">
-            {{ $t('assets.modals.evmXcm') }}
+            {{ $t('evm') }}
           </span>
         </div>
       </div>
       <div class="rows">
-        <div class="box--input-chain">
+        <div class="box--input-chain box--hover--active">
           <div class="box__space-between">
             <span> {{ $t('from') }}</span>
             <div />
           </div>
           <ModalSelectChain :chains="chains" :chain="srcChain" :set-chain="setSrcChain" />
         </div>
-        <div class="box--input-chain">
+        <div class="box--input-chain box--hover--active">
           <div class="box__space-between">
             <span> {{ $t('to') }}</span>
             <div />
@@ -43,17 +43,17 @@
           <ModalSelectChain :chains="chains" :chain="destChain" :set-chain="setDestChain" />
         </div>
 
-        <div v-if="!isNativeBridge" class="box--input box--hover--active">
-          <div class="box__space-between">
-            <span> {{ $t('assets.modals.evmWalletAddress') }} </span>
-            <div>
-              <!-- Todo -->
-              <!-- <span class="text--to--balance">
-                {{ $t('assets.modals.balance', { amount: $n(toAddressBalance), token: symbol }) }}
-              </span> -->
-            </div>
-          </div>
-          <ModalH160AddressInput v-model:selAddress="destEvmAddress" :to-address="destEvmAddress" />
+        <div v-if="!isNativeBridge">
+          <AddressInput
+            v-model:selAddress="evmDestAddress"
+            :to-address="evmDestAddress"
+            :is-evm="isDepositToEvm"
+            :is-display-balance="true"
+            :placeholder="evmInputPlaceholder"
+            :title="evmInputTitle"
+            :symbol="token.metadata.symbol"
+            :address-balance="0"
+          />
         </div>
 
         <div class="box--input box--hover--active">
@@ -138,15 +138,16 @@ import { fadeDuration } from '@astar-network/astar-ui';
 import { ChainAsset, useXcmBridge } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { computed, defineComponent, PropType, ref } from 'vue';
-import ModalH160AddressInput from './ModalH160AddressInput.vue';
+import AddressInput from 'src/components/common/AddressInput.vue';
 import IconHelp from '/src/components/common/IconHelp.vue';
 import ModalLoading from '/src/components/common/ModalLoading.vue';
 import ModalSelectChain from 'src/components/assets/modals/ModalSelectChain.vue';
 import { truncate } from 'src/hooks/helper/common';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   components: {
-    ModalH160AddressInput,
+    AddressInput,
     ModalSelectChain,
     IconHelp,
     ModalLoading,
@@ -174,6 +175,7 @@ export default defineComponent({
   setup(props) {
     const isClosingModal = ref<boolean>(false);
     const token = computed(() => props.token);
+    const { t } = useI18n();
 
     const {
       amount,
@@ -184,10 +186,12 @@ export default defineComponent({
       tokenImage,
       isNativeToken,
       isNativeBridge,
-      destEvmAddress,
+      evmDestAddress,
       formattedRelayChainBalance,
       existentialDeposit,
       chains,
+      isDepositToEvm,
+      isH160,
       inputHandler,
       bridge,
       toMaxAmount,
@@ -204,6 +208,16 @@ export default defineComponent({
 
     const isReady = computed(() => {
       return token.value && srcChain.value && destChain.value;
+    });
+
+    const evmInputPlaceholder = computed<string>(() => {
+      const network = isDepositToEvm.value ? 'EVM' : destChain.value.name;
+      return t('addressPlaceholder', { network });
+    });
+
+    const evmInputTitle = computed<string>(() => {
+      const network = isDepositToEvm.value ? 'EVM' : destChain.value.name;
+      return t('addressFormat', { network });
     });
 
     const closeModal = async (): Promise<void> => {
@@ -236,12 +250,16 @@ export default defineComponent({
       tokenImage,
       isNativeToken,
       isNativeBridge,
-      destEvmAddress,
+      evmDestAddress,
       formattedRelayChainBalance,
       existentialDeposit,
       isLoadingApi,
       isReady,
       chains,
+      isDepositToEvm,
+      evmInputPlaceholder,
+      evmInputTitle,
+      isH160,
       inputHandler,
       closeModal,
       bridge,

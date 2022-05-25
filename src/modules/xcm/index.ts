@@ -60,4 +60,4 @@ export const xcmChains: XcmChain[] = [
   },
 ];
 
-export const relayChains = [Chain.Astar, Chain.Kusama];
+export const relayChains = [Chain.Polkadot, Chain.Kusama];
