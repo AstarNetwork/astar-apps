@@ -7,6 +7,7 @@ import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { getInjectedExtensions } from 'src/hooks/helper/wallet';
 import { keyring } from '@polkadot/ui-keyring';
 import { isTestChain } from '@polkadot/util';
+import { wait } from './helper/common';
 
 interface InjectedAccountExt {
   address: string;
@@ -49,6 +50,8 @@ export function useExtensions(api: ApiPromise, store: any) {
 
   (async () => {
     try {
+      // MEMO: resolve the issue that do not sync accounts in nova wallet
+      await wait(400);
       const injectedPromise = await getInjectedExtensions(true);
       extensions.value = await injectedPromise;
 
