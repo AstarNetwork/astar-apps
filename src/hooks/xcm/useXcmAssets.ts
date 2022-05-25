@@ -56,6 +56,7 @@ export function useXcmAssets() {
 
   const handleUpdateTokenBalances = async (): Promise<void> => {
     try {
+      if (isH160.value) return;
       await updateTokenBalances({ userAddress: currentAccount.value });
     } catch (error) {
       console.error(error);
@@ -74,48 +75,35 @@ export function useXcmAssets() {
 
       const assetsListRaw = await $api?.query.assets.asset.entries();
       const assetMetadataListRaw = await $api?.query.assets.metadata.entries();
-
-      //const assetIds = assetIdsRaw.map((i) => i.toHuman() as string).flat().map((i) => i.replaceAll(',', ''));
       if (assetsListRaw && assetMetadataListRaw) {
         xcmAssets.value = await Promise.all(
-          assetsListRaw
-            // .filter((i) => {
-            //   //@ts-ignore
-            //   const assetId = (i[0].toHuman() as string[])[0].replaceAll(',', '');
-            //   //the ID is between 2^64 ~ 2^128-1,
-            //   return (
-            //     new BN(assetId).gte(new BN(Math.pow(2, 64))) &&
-            //     new BN(assetId).lt(new BN(Math.pow(2, 128)))
-            //   );
-            // })
-            .map(async (i, index) => {
-              //@ts-ignore
-              const assetId = (i[0].toHuman() as string[])[0].replaceAll(',', '');
-              const mappedXC20 = mappedXC20Asset(assetId);
-              // console.log('mapped', mappedXC20);
-              //const assetId = i[0].toHuman() as any as AssetId;
-              const assetInfo = i[1].toHuman() as any as AssetDetails;
-              const metadata = assetMetadataListRaw[index][1].toHuman() as any as AssetMetadata;
-              const token = {
-                id: assetId,
-                ...assetInfo,
-                metadata,
-                userBalance: '0',
-                userBalanceUsd: '0',
-              } as ChainAsset;
+          assetsListRaw.map(async (i, index) => {
+            const assetId = (i[0].toHuman() as string[])[0].replace(',', '');
+            const mappedXC20 = mappedXC20Asset(assetId);
+            const assetInfo = i[1].toHuman() as any as AssetDetails;
+            const metadata = assetMetadataListRaw[index][1].toHuman() as any as AssetMetadata;
 
-              if (currentAccount.value) {
-                const { userBalance, userBalanceUsd } = await fetchXcmBalance({
-                  token,
-                  userAddress: currentAccount.value,
-                  api: $api!,
-                });
-                ttlNativeXcmUsdAmount.value = ttlNativeXcmUsdAmount.value + Number(userBalanceUsd);
-                return { ...token, userBalance, userBalanceUsd } as ChainAsset;
-              } else {
-                return token;
-              }
-            })
+            const token = {
+              id: assetId,
+              ...assetInfo,
+              metadata,
+              mappedERC20Addr: mappedXC20,
+              userBalance: '0',
+              userBalanceUsd: '0',
+            } as ChainAsset;
+
+            if (currentAccount.value && !isH160.value) {
+              const { userBalance, userBalanceUsd } = await fetchXcmBalance({
+                token,
+                userAddress: currentAccount.value,
+                api: $api!,
+              });
+              ttlNativeXcmUsdAmount.value = ttlNativeXcmUsdAmount.value + Number(userBalanceUsd);
+              return { ...token, userBalance, userBalanceUsd } as ChainAsset;
+            } else {
+              return token;
+            }
+          })
         );
       }
       // convert the list into a string array of numbers without the comma and no nested entries

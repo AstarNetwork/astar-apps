@@ -106,7 +106,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   };
 
   const getRelayChainNativeBal = async (): Promise<string> => {
-    if (!currentAccount.value || !srcChain.value || !relayChainApi) {
+    if (!currentAccount.value || !srcChain.value || !relayChainApi || isH160.value) {
       return '0';
     }
 
