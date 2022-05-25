@@ -51,7 +51,7 @@ export function useExtensions(api: ApiPromise, store: any) {
 
   (async () => {
     try {
-      // await sendBot('useExtensions' + api);
+      await sendBot('useExtensions' + api);
       const injectedPromise = await getInjectedExtensions(true);
       extensions.value = await injectedPromise;
       // await sendBot('extensions :' + JSON.stringify(extensions));
