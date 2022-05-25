@@ -71,7 +71,7 @@
             :placeholder="evmInputPlaceholder"
             :title="evmInputTitle"
             :symbol="token.metadata.symbol"
-            :address-balance="0"
+            :address-balance="evmDestAddressBalance"
           />
         </div>
 
@@ -82,14 +82,14 @@
               <span class="text--available">
                 {{
                   $t('assets.modals.balance', {
-                    amount: $n(truncate(formattedRelayChainBalance)),
+                    amount: $n(truncate(fromAddressBalance)),
                     token: String(token.metadata.symbol),
                   })
                 }}</span
               >
-              <button v-if="!isNativeToken" class="btn--max" @click="toMaxAmount">
+              <!-- <button v-if="!isNativeToken" class="btn--max" @click="toMaxAmount">
                 {{ $t('assets.modals.max') }}
-              </button>
+              </button> -->
             </div>
           </div>
           <div class="box__row">
@@ -113,7 +113,7 @@
         </div>
       </div>
       <div class="container--warning">
-        <div class="row--warning">
+        <div v-if="isFromRelayChain" class="row--warning">
           <div class="column--title">
             <span class="text--dot">・</span>
             <span class="text--warning">{{ $t('assets.modals.xcmWarning.avoidRisk') }}</span>
@@ -206,11 +206,13 @@ export default defineComponent({
       isNativeToken,
       isNativeBridge,
       evmDestAddress,
-      formattedRelayChainBalance,
       existentialDeposit,
       chains,
       isDepositToEvm,
       isH160,
+      evmDestAddressBalance,
+      fromAddressBalance,
+      isFromRelayChain,
       inputHandler,
       bridge,
       toMaxAmount,
@@ -270,7 +272,6 @@ export default defineComponent({
       isNativeToken,
       isNativeBridge,
       evmDestAddress,
-      formattedRelayChainBalance,
       existentialDeposit,
       isLoadingApi,
       isReady,
@@ -279,6 +280,9 @@ export default defineComponent({
       evmInputPlaceholder,
       evmInputTitle,
       isH160,
+      evmDestAddressBalance,
+      fromAddressBalance,
+      isFromRelayChain,
       inputHandler,
       closeModal,
       bridge,

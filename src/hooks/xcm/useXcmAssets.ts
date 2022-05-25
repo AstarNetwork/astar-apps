@@ -78,7 +78,8 @@ export function useXcmAssets() {
       if (assetsListRaw && assetMetadataListRaw) {
         xcmAssets.value = await Promise.all(
           assetsListRaw.map(async (i, index) => {
-            const assetId = (i[0].toHuman() as string[])[0].replace(',', '');
+            const searchRegExp = /,/g;
+            const assetId = (i[0].toHuman() as string[])[0].replace(searchRegExp, '');
             const mappedXC20 = mappedXC20Asset(assetId);
             const assetInfo = i[1].toHuman() as any as AssetDetails;
             const metadata = assetMetadataListRaw[index][1].toHuman() as any as AssetMetadata;

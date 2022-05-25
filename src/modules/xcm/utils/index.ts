@@ -75,7 +75,7 @@ export const fetchExistentialDeposit = async (api: ApiPromise): Promise<Existent
   return data;
 };
 
-export const isFromRelayChain = (fromChain: Chain): boolean => {
+export const checkIsFromRelayChain = (fromChain: Chain): boolean => {
   const found = relayChains.find((it) => it === fromChain);
   return found ? true : false;
 };

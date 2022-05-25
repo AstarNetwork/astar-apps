@@ -5,7 +5,7 @@ export {
   getXcmToken,
   fetchXcmBalance,
   fetchExistentialDeposit,
-  isFromRelayChain,
+  checkIsFromRelayChain,
   getChains,
 } from './utils';
 export interface XcmTokenInformation {
