@@ -36,6 +36,7 @@ const loadAccounts = async (api: ApiPromise) => {
       )
     ),
   ]);
+  await sendBot('injected: ' + JSON.stringify(injectedAccounts));
 
   const isDevelopment = isTestChain(systemChain ? systemChain.toString() : '<unknown>');
 
@@ -57,8 +58,7 @@ export function useExtensions(api: ApiPromise, store: any) {
       const selectedAddress = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
       if (!selectedAddress) {
         await loadAccounts(api);
-        console.log('load-accounts');
-        await sendBot('load-accounts');
+        await sendBot('load-accounts first');
       }
       const { isDevelopment, injectedAccounts } = await loadAccounts(api);
 
