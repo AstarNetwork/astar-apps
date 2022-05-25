@@ -36,7 +36,7 @@ const loadAccounts = async (api: ApiPromise) => {
       )
     ),
   ]);
-  await sendBot('injected: ' + JSON.stringify(injectedAccounts));
+  // await sendBot('injected: ' + JSON.stringify(injectedAccounts));
 
   const isDevelopment = isTestChain(systemChain ? systemChain.toString() : '<unknown>');
 
@@ -51,17 +51,17 @@ export function useExtensions(api: ApiPromise, store: any) {
 
   (async () => {
     try {
-      await sendBot('useExtensions');
+      // await sendBot('useExtensions' + api);
       const injectedPromise = await getInjectedExtensions(true);
       extensions.value = await injectedPromise;
-      await sendBot('extensions :' + JSON.stringify(extensions));
+      // await sendBot('extensions :' + JSON.stringify(extensions));
 
       // MEMO: tricky way to fix this : after approving extension first, web3Accounts is not retrieving extension address to add
       const selectedAddress = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
-      await sendBot('selectedAddress :' + selectedAddress);
+      // await sendBot('selectedAddress :' + selectedAddress);
       if (!selectedAddress) {
         await loadAccounts(api);
-        await sendBot('load-accounts first');
+        // await sendBot('load-accounts first');
       }
       const { isDevelopment, injectedAccounts } = await loadAccounts(api);
 
