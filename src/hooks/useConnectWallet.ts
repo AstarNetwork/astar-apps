@@ -144,7 +144,7 @@ export const useConnectWallet = () => {
   };
 
   const requestExtensionsIfFirstAccess = (wallet: SupportWallet): void => {
-    if (localStorage.getItem(SELECTED_ADDRESS) === null || isMobileDevice) {
+    if (localStorage.getItem(SELECTED_ADDRESS) === null) {
       const { extensions } = useExtensions($api!!, store);
       const { metaExtensions, extensionCount } = useMetaExtensions($api!!, extensions)!!;
       watchPostEffect(async () => {
