@@ -20,6 +20,7 @@ import { getRandomFromArray } from './../hooks/helper/common';
 import { keyring } from '@polkadot/ui-keyring';
 import { objToArray } from 'src/hooks/helper/common';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
+import { sendBot } from 'src/hooks/helper/sendbot';
 
 let $api: ApiPromise | undefined;
 const $endpoint = ref<string>('');
@@ -111,8 +112,10 @@ export default boot(async ({ store }) => {
   });
 
   // execute extension process automatically if selectedAddress is linked or mobile device
+  await sendBot('start!!');
   if (selectedAddress !== null || isMobileDevice) {
     console.log('extensions');
+    await sendBot('start extensions');
     const { extensions } = useExtensions(api, store);
     const { metaExtensions, extensionCount } = useMetaExtensions(api, extensions)!!;
     watchPostEffect(async () => {
