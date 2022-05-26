@@ -6,6 +6,7 @@
     @close="closeModal"
   >
     <ModalLoading v-if="isLoadingApi" />
+
     <div v-if="isReady" class="wrapper--modal">
       <div class="row--mode-tab">
         <div
@@ -66,7 +67,7 @@
           <AddressInput
             v-model:selAddress="evmDestAddress"
             :to-address="evmDestAddress"
-            :is-evm="isDepositToEvm"
+            :is-evm="isDeposit"
             :is-display-balance="true"
             :placeholder="evmInputPlaceholder"
             :title="evmInputTitle"
@@ -87,9 +88,6 @@
                   })
                 }}</span
               >
-              <!-- <button v-if="!isNativeToken" class="btn--max" @click="toMaxAmount">
-                {{ $t('assets.modals.max') }}
-              </button> -->
             </div>
           </div>
           <div class="box__row">
@@ -113,7 +111,7 @@
         </div>
       </div>
       <div class="container--warning">
-        <div v-if="isFromRelayChain" class="row--warning">
+        <div v-if="isDeposit" class="row--warning">
           <div class="column--title">
             <span class="text--dot">・</span>
             <span class="text--warning">{{ $t('assets.modals.xcmWarning.avoidRisk') }}</span>
@@ -208,22 +206,20 @@ export default defineComponent({
       evmDestAddress,
       existentialDeposit,
       chains,
-      isDepositToEvm,
       isH160,
       evmDestAddressBalance,
       fromAddressBalance,
-      isFromRelayChain,
+      isDeposit,
       inputHandler,
       bridge,
-      toMaxAmount,
       resetStates,
       setIsNativeBridge,
-      updateRelayChainTokenBal,
+      updateFromAddressBalance,
       setSrcChain,
       setDestChain,
     } = useXcmBridge(token);
 
-    const isLoadingApi = computed(() => {
+    const isLoadingApi = computed<boolean>(() => {
       return existentialDeposit.value === null;
     });
 
@@ -231,14 +227,14 @@ export default defineComponent({
       return token.value && srcChain.value && destChain.value;
     });
 
+    const getNetworkName = (): string => (isDeposit.value ? 'EVM' : destChain.value.name);
+
     const evmInputPlaceholder = computed<string>(() => {
-      const network = isDepositToEvm.value ? 'EVM' : destChain.value.name;
-      return t('addressPlaceholder', { network });
+      return t('addressPlaceholder', { network: getNetworkName() });
     });
 
     const evmInputTitle = computed<string>(() => {
-      const network = isDepositToEvm.value ? 'EVM' : destChain.value.name;
-      return t('addressFormat', { network });
+      return t('addressFormat', { network: getNetworkName() });
     });
 
     const closeModal = async (): Promise<void> => {
@@ -253,7 +249,7 @@ export default defineComponent({
       await Promise.all([
         closeModal(),
         props.handleUpdateXcmTokenBalances(),
-        updateRelayChainTokenBal(),
+        updateFromAddressBalance(),
       ]);
     };
 
@@ -276,17 +272,15 @@ export default defineComponent({
       isLoadingApi,
       isReady,
       chains,
-      isDepositToEvm,
       evmInputPlaceholder,
       evmInputTitle,
       isH160,
       evmDestAddressBalance,
       fromAddressBalance,
-      isFromRelayChain,
+      isDeposit,
       inputHandler,
       closeModal,
       bridge,
-      toMaxAmount,
       setIsNativeBridge,
       handleBridge,
       truncate,

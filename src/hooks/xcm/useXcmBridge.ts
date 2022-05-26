@@ -35,6 +35,8 @@ const chainShiden = xcmChains.find((it) => it.name === Chain.Shiden) as XcmChain
 const initialChains = getChains(endpointKey.ASTAR);
 
 export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
+  let relayChainApi: RelaychainApi | null = null;
+
   const chains = ref<XcmChain[]>(initialChains);
   const srcChain = ref<XcmChain>(chainPolkadot);
   const destChain = ref<XcmChain>(chainAstar);
@@ -58,19 +60,13 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   const { xcmAssets } = useXcmAssets();
 
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
-  const isFromRelayChain = computed(() => checkIsFromRelayChain(srcChain.value.name));
+  const isDeposit = computed(() => checkIsFromRelayChain(srcChain.value.name));
+  const isAstar = computed(() => currentNetworkIdx.value === endpointKey.ASTAR);
+
   const currentNetworkIdx = computed(() => {
     const chainInfo = store.getters['general/chainInfo'];
     const chain = chainInfo ? chainInfo.chain : '';
     return getProviderIndex(chain);
-  });
-
-  const isAstar = computed(() => {
-    return currentNetworkIdx.value === endpointKey.ASTAR;
-  });
-
-  const isDepositToEvm = computed(() => {
-    return isFromRelayChain.value;
   });
 
   const evmNetworkIdx = computed(() => {
@@ -83,8 +79,6 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   const { handleResult, handleTransactionError } = useCustomSignature({});
   const { balance } = useBalance(currentAccount);
   const { tokenImage, isNativeToken } = useXcmTokenDetails(selectedToken);
-
-  let relayChainApi: RelaychainApi | null = null;
 
   const resetStates = (): void => {
     isDisabledBridge.value = true;
@@ -141,10 +135,6 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     errMsg.value = '';
   };
 
-  const toMaxAmount = (): void => {
-    amount.value = String(selectedToken.value.userBalance);
-  };
-
   const setIsNativeBridge = (isNative: boolean): void => {
     resetStates();
     isNativeBridge.value = isNative;
@@ -185,6 +175,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     }
   };
 
+  // Memo: update the `balance` displayed on the 'destination wallet address' in 'EVM' tab on the XCM bridge modal
   const setEvmDestAddressBalance = async (): Promise<void> => {
     if (!selectedToken.value) return;
     const address = evmDestAddress.value;
@@ -202,7 +193,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
       evmDestAddressBalance.value = Number(formattedBalance);
     } else {
       // Memo: Deposit to Astar/Shiden EVM
-      if (!isValidEvmAddress(address) || !isDepositToEvm.value) {
+      if (!isValidEvmAddress(address)) {
         evmDestAddressBalance.value = 0;
         return;
       }
@@ -233,7 +224,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
         throw Error(t('assets.modals.xcmWarning.nonzeroBalance'));
       }
 
-      if (isFromRelayChain.value) {
+      if (isDeposit.value) {
         let recipientAccountId = currentAccount.value;
         const injector = await getInjector(substrateAccounts.value);
         // for H160 address, should mapped ss58 address and public key
@@ -294,10 +285,10 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     }
   };
 
-  const updateRelayChainTokenBal = async (): Promise<void> => {
+  const updateFromAddressBalance = async (): Promise<void> => {
     if (!selectedToken.value) return;
 
-    if (isFromRelayChain.value) {
+    if (isDeposit.value) {
       if (!relayChainApi) return;
       await relayChainApi.isReady();
       const rawBalance = await getRelayChainNativeBal();
@@ -361,7 +352,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   );
 
   watchEffect(async () => {
-    await Promise.all([updateRelayChainTokenBal(), setEvmDestAddressBalance()]);
+    await Promise.all([updateFromAddressBalance(), setEvmDestAddressBalance()]);
   });
 
   watchEffect(async () => {
@@ -369,7 +360,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   });
 
   const handleUpdate = setInterval(async () => {
-    await Promise.all([updateRelayChainTokenBal(), setEvmDestAddressBalance()]);
+    await Promise.all([updateFromAddressBalance(), setEvmDestAddressBalance()]);
   }, 20 * 1000);
 
   onUnmounted(() => {
@@ -388,17 +379,15 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     evmDestAddress,
     existentialDeposit,
     chains,
-    isDepositToEvm,
     isH160,
     evmDestAddressBalance,
     fromAddressBalance,
-    isFromRelayChain,
+    isDeposit,
     inputHandler,
     bridge,
-    toMaxAmount,
     resetStates,
     setIsNativeBridge,
-    updateRelayChainTokenBal,
+    updateFromAddressBalance,
     setSrcChain,
     setDestChain,
   };
