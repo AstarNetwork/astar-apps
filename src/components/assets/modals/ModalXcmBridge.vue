@@ -10,20 +10,20 @@
       <div class="row--mode-tab">
         <div
           class="box--bridge-option"
-          :class="isNativeBridge ? 'selected-bridge-option' : 'unselected-bridge-option'"
-          @click="setIsNativeBridge(true)"
-        >
-          <span class="text--title" :class="isNativeBridge && 'text-color--neon'">
-            {{ $t('assets.modals.depositToNative') }}
-          </span>
-        </div>
-        <div
-          class="box--bridge-option"
           :class="!isNativeBridge ? 'selected-bridge-option' : 'unselected-bridge-option'"
           @click="setIsNativeBridge(false)"
         >
           <span class="text--title" :class="!isNativeBridge && 'text-color--neon'">
             {{ $t('assets.modals.depositToEvm') }}
+          </span>
+        </div>
+        <div
+          class="box--bridge-option"
+          :class="isNativeBridge ? 'selected-bridge-option' : 'unselected-bridge-option'"
+          @click="setIsNativeBridge(true)"
+        >
+          <span class="text--title" :class="isNativeBridge && 'text-color--neon'">
+            {{ $t('assets.modals.depositToNative') }}
           </span>
         </div>
       </div>
