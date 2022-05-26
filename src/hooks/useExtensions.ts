@@ -50,8 +50,11 @@ export function useExtensions(api: ApiPromise, store: any) {
 
   (async () => {
     try {
-      // MEMO: resolve the issue that do not sync accounts in nova wallet
-      await wait(400);
+      // @ts-ignore
+      if (window.walletExtension.isNovaWallet) {
+        // MEMO: resolve the issue that do not sync accounts in nova wallet
+        await wait(400);
+      }
       const injectedPromise = await getInjectedExtensions(true);
       extensions.value = await injectedPromise;
 
