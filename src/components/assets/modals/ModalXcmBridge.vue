@@ -107,20 +107,20 @@
           </div>
           <div class="icon--help">
             <IconHelp />
+            <q-tooltip class="box--tooltip-warning">
+              <div>
+                <span v-if="existentialDeposit"
+                  >{{
+                    $t('assets.modals.xcmWarning.tooltip', {
+                      amount: Number(existentialDeposit.amount),
+                      symbol: existentialDeposit.symbol,
+                      network: existentialDeposit.chain,
+                    })
+                  }}
+                </span>
+              </div>
+            </q-tooltip>
           </div>
-          <q-tooltip class="box--tooltip-warning">
-            <div>
-              <span v-if="existentialDeposit"
-                >{{
-                  $t('assets.modals.xcmWarning.tooltip', {
-                    amount: Number(existentialDeposit.amount),
-                    symbol: existentialDeposit.symbol,
-                    network: existentialDeposit.chain,
-                  })
-                }}
-              </span>
-            </div>
-          </q-tooltip>
         </div>
         <div class="row--warning">
           <div class="column--title">
