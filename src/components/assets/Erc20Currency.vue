@@ -41,8 +41,6 @@
               </a>
             </div>
 
-            <!-- Todo: We can add an action button for XC20 tokens here -->
-            <!-- <div v-if="token.isXC20" /> -->
             <div v-if="token.isXC20">
               <button
                 class="btn btn--sm"

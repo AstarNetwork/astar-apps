@@ -72,23 +72,12 @@ export default defineComponent({
       required: true,
     },
   },
-  // emits: ['update:sel-address', 'sel-changed'],
   emits: ['update:sel-address'],
   setup(props, { emit }) {
-    // const openOption = ref<boolean>(false);
-
-    // const closeOption = async (): Promise<void> => {
-    //   // Memo: load the account data before closing
-    //   const delay = 400;
-    //   await wait(delay);
-    //   openOption.value = false;
-    // };
-
     const changeAddress = (e: any) => {
       emit('update:sel-address', e.currentTarget.value);
     };
     return {
-      // closeOption,
       changeAddress,
       truncate,
     };

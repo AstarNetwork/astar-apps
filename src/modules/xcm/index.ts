@@ -34,7 +34,7 @@ export enum Chain {
 export interface XcmChain {
   name: Chain;
   relayChain: Chain;
-  img: any;
+  img: string;
 }
 
 export const xcmChains: XcmChain[] = [

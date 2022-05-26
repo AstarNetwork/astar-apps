@@ -112,7 +112,7 @@ export default boot(async ({ store }) => {
 
   // execute extension process automatically if selectedAddress is linked or mobile device
   if (selectedAddress !== null || isMobileDevice) {
-    console.log('extensions');
+    // console.log('extensions');
     const { extensions } = useExtensions(api, store);
     const { metaExtensions, extensionCount } = useMetaExtensions(api, extensions)!!;
     watchPostEffect(async () => {

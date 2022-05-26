@@ -200,36 +200,37 @@ export default defineComponent({
     const mainnetFaucetAmount = 0.002;
 
     const { currentAccount } = useAccount();
-    const store = useStore();
-    const isLoading = computed(() => store.getters['general/isLoading']);
     const { nativeTokenUsd } = usePrice();
 
-    const nativeTokenSymbol = computed(() => {
+    const store = useStore();
+    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
+    const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
+
+    const nativeTokenSymbol = computed<string>(() => {
       const chainInfo = store.getters['general/chainInfo'];
       return chainInfo ? chainInfo.tokenSymbol : '';
     });
 
-    const currentNetworkName = computed(() => {
+    const currentNetworkName = computed<string>(() => {
       const chainInfo = store.getters['general/chainInfo'];
       const chain = chainInfo ? chainInfo.chain : '';
       return chain === 'Shibuya Testnet' ? 'Shibuya' : chain;
     });
 
-    // const selectedAddress = computed(() => store.getters['general/selectedAddress']);
     const { accountData } = useBalance(currentAccount);
 
-    const nativeTokenImg = computed(() =>
+    const nativeTokenImg = computed<string>(() =>
       getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
     );
-    const isListReady = computed(() => isShibuya.value || props.tokens);
+    const isListReady = computed<boolean>(() => isShibuya.value || !!props.tokens);
 
-    const isDisplayNativeToken = computed(() => {
+    const isDisplayNativeToken = computed<boolean>(() => {
       return (
         !search.value || nativeTokenSymbol.value.toLowerCase().includes(search.value.toLowerCase())
       );
     });
 
-    const filteredTokens = computed(() => {
+    const filteredTokens = computed<SelectedToken[] | null>(() => {
       if (!search.value) return props.tokens;
       if (!props.tokens) return null;
 
@@ -252,7 +253,7 @@ export default defineComponent({
     }: {
       isOpen: boolean;
       currency: Erc20Token | null;
-    }) => {
+    }): void => {
       isModalXcmBridge.value = isOpen;
       if (currency === null) {
         xcmToken.value = currency;
@@ -270,7 +271,7 @@ export default defineComponent({
     }: {
       isOpen: boolean;
       currency: SelectedToken | Erc20Token | string;
-    }) => {
+    }): void => {
       token.value = currency;
       isModalTransfer.value = isOpen;
       if (!isOpen) {
@@ -283,7 +284,7 @@ export default defineComponent({
       }
     };
 
-    const handleModalFaucet = ({ isOpen }: { isOpen: boolean }) => {
+    const handleModalFaucet = ({ isOpen }: { isOpen: boolean }): void => {
       isModalFaucet.value = isOpen;
     };
 
@@ -291,8 +292,8 @@ export default defineComponent({
       isSearch.value = isTyping;
     };
 
-    watchEffect(async () => {
-      if (isLoading.value || !nativeTokenSymbol.value) return;
+    const updateStates = async (): Promise<void> => {
+      if (isLoading.value || !nativeTokenSymbol.value || !isH160.value) return;
       try {
         const balWei = await getBalance($web3.value!, currentAccount.value);
         bal.value = Number(ethers.utils.formatEther(balWei));
@@ -304,6 +305,10 @@ export default defineComponent({
       } catch (error: any) {
         console.error(error.message);
       }
+    };
+
+    watchEffect(async () => {
+      await updateStates();
     });
 
     return {
