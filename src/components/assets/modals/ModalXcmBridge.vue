@@ -223,8 +223,8 @@ export default defineComponent({
       return existentialDeposit.value === null;
     });
 
-    const isReady = computed(() => {
-      return token.value && srcChain.value && destChain.value;
+    const isReady = computed<boolean>(() => {
+      return !!(token.value && srcChain.value && destChain.value);
     });
 
     const getNetworkName = (): string => (isDeposit.value ? 'EVM' : destChain.value.name);
