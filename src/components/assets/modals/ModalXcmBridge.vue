@@ -10,20 +10,20 @@
       <div class="row--mode-tab">
         <div
           class="box--bridge-option"
-          :class="isNativeBridge ? 'selected-bridge-option' : 'unselected-bridge-option'"
-          @click="setIsNativeBridge(true)"
-        >
-          <span class="text--title" :class="isNativeBridge && 'text-color--neon'">
-            {{ $t('assets.modals.depositToNative') }}
-          </span>
-        </div>
-        <div
-          class="box--bridge-option"
           :class="!isNativeBridge ? 'selected-bridge-option' : 'unselected-bridge-option'"
           @click="setIsNativeBridge(false)"
         >
           <span class="text--title" :class="!isNativeBridge && 'text-color--neon'">
             {{ $t('assets.modals.depositToEvm') }}
+          </span>
+        </div>
+        <div
+          class="box--bridge-option"
+          :class="isNativeBridge ? 'selected-bridge-option' : 'unselected-bridge-option'"
+          @click="setIsNativeBridge(true)"
+        >
+          <span class="text--title" :class="isNativeBridge && 'text-color--neon'">
+            {{ $t('assets.modals.depositToNative') }}
           </span>
         </div>
       </div>
@@ -107,20 +107,20 @@
           </div>
           <div class="icon--help">
             <IconHelp />
+            <q-tooltip class="box--tooltip-warning">
+              <div>
+                <span v-if="existentialDeposit"
+                  >{{
+                    $t('assets.modals.xcmWarning.tooltip', {
+                      amount: Number(existentialDeposit.amount),
+                      symbol: existentialDeposit.symbol,
+                      network: existentialDeposit.chain,
+                    })
+                  }}
+                </span>
+              </div>
+            </q-tooltip>
           </div>
-          <q-tooltip class="box--tooltip-warning">
-            <div>
-              <span v-if="existentialDeposit"
-                >{{
-                  $t('assets.modals.xcmWarning.tooltip', {
-                    amount: Number(existentialDeposit.amount),
-                    symbol: existentialDeposit.symbol,
-                    network: existentialDeposit.chain,
-                  })
-                }}
-              </span>
-            </div>
-          </q-tooltip>
         </div>
         <div class="row--warning">
           <div class="column--title">

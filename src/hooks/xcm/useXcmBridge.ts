@@ -37,7 +37,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   const amount = ref<string | null>(null);
   const errMsg = ref<string>('');
   const isDisabledBridge = ref<boolean>(true);
-  const isNativeBridge = ref<boolean>(true);
+  const isNativeBridge = ref<boolean>(false);
   const destEvmAddress = ref<string>('');
   const existentialDeposit = ref<ExistentialDeposit | null>(null);
 
@@ -61,6 +61,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     isDisabledBridge.value = true;
     amount.value = null;
     errMsg.value = '';
+    destEvmAddress.value = '';
   };
 
   const getRelayChainNativeBal = async (): Promise<string> => {
