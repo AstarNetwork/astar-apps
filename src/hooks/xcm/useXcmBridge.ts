@@ -45,7 +45,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   const amount = ref<string | null>(null);
   const errMsg = ref<string>('');
   const isDisabledBridge = ref<boolean>(true);
-  const isNativeBridge = ref<boolean>(true);
+  const isNativeBridge = ref<boolean>(false);
   const existentialDeposit = ref<ExistentialDeposit | null>(null);
 
   // Format: SS58(withdrawal) or H160(deposit)
@@ -84,6 +84,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     isDisabledBridge.value = true;
     amount.value = null;
     errMsg.value = '';
+    evmDestAddress.value = '';
   };
 
   const setSrcChain = (chain: XcmChain): void => {

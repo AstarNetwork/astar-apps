@@ -10,6 +10,17 @@
     <div v-if="isReady" class="wrapper--modal">
       <div class="row--mode-tab">
         <div
+          :class="[
+            !isNativeBridge ? 'selected-bridge-option' : 'unselected-bridge-option',
+            isH160 ? 'bridge-option-evm-withdrawal' : 'box--bridge-option',
+          ]"
+          @click="setIsNativeBridge(false)"
+        >
+          <span class="text--title" :class="!isNativeBridge && 'text-color--neon'">
+            {{ $t(isH160 ? 'assets.modals.evmXcmWithdrawal' : 'assets.modals.evmXcmDeposit') }}
+          </span>
+        </div>
+        <div
           class="box--bridge-option"
           :class="[
             isNativeBridge ? 'selected-bridge-option' : 'unselected-bridge-option',
@@ -22,17 +33,6 @@
             :class="[isNativeBridge && 'text-color--neon', isH160 && 'text-color--disabled']"
           >
             {{ $t('native') }}
-          </span>
-        </div>
-        <div
-          :class="[
-            !isNativeBridge ? 'selected-bridge-option' : 'unselected-bridge-option',
-            isH160 ? 'bridge-option-evm-withdrawal' : 'box--bridge-option',
-          ]"
-          @click="setIsNativeBridge(false)"
-        >
-          <span class="text--title" :class="!isNativeBridge && 'text-color--neon'">
-            {{ $t(isH160 ? 'assets.modals.evmXcmWithdrawal' : 'assets.modals.evmXcmDeposit') }}
           </span>
         </div>
       </div>
@@ -118,20 +118,20 @@
           </div>
           <div class="icon--help">
             <IconHelp />
+            <q-tooltip class="box--tooltip-warning">
+              <div>
+                <span v-if="existentialDeposit"
+                  >{{
+                    $t('assets.modals.xcmWarning.tooltip', {
+                      amount: Number(existentialDeposit.amount),
+                      symbol: existentialDeposit.symbol,
+                      network: existentialDeposit.chain,
+                    })
+                  }}
+                </span>
+              </div>
+            </q-tooltip>
           </div>
-          <q-tooltip class="box--tooltip-warning">
-            <div>
-              <span v-if="existentialDeposit"
-                >{{
-                  $t('assets.modals.xcmWarning.tooltip', {
-                    amount: Number(existentialDeposit.amount),
-                    symbol: existentialDeposit.symbol,
-                    network: existentialDeposit.chain,
-                  })
-                }}
-              </span>
-            </div>
-          </q-tooltip>
         </div>
         <div class="row--warning">
           <div class="column--title">
