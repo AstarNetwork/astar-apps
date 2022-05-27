@@ -35,7 +35,7 @@
             >
               {{ $t('assets.transfer') }}
             </button>
-            <a :href="cbridgeLink" target="_blank" rel="noopener noreferrer">
+            <a :href="cbridgeAppLink" target="_blank" rel="noopener noreferrer">
               <button class="btn btn--sm">
                 {{ $t('assets.bridge') }}
               </button>
@@ -94,6 +94,7 @@ import { useStore } from 'src/store';
 import { getErc20Explorer, getTokenImage } from 'src/modules/token';
 import { computed, defineComponent, PropType } from 'vue';
 import { truncate } from 'src/hooks/helper/common';
+import { cbridgeAppLink } from 'src/c-bridge';
 
 export default defineComponent({
   props: {
@@ -134,15 +135,13 @@ export default defineComponent({
       return getErc20Explorer({ currentNetworkIdx, tokenAddress });
     });
 
-    const cbridgeLink = 'https://cbridge.celer.network/#/transfer';
-
     return {
       formatTokenName,
       addToEvmWallet,
       tokenImg,
       nativeTokenSymbol,
       explorerLink,
-      cbridgeLink,
+      cbridgeAppLink,
       truncate,
     };
   },

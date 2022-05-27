@@ -1,4 +1,3 @@
-import EvmWidget from 'components/bridge/evm/EvmWidget.vue';
 import DiscoverDappsTab from 'components/dapp-staking/DiscoverDappsTab.vue';
 import ManageDappsTab from 'components/dapp-staking/ManageDappsTab.vue';
 import Assets from 'pages/Assets.vue';

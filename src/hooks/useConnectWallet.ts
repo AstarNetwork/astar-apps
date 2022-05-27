@@ -94,9 +94,7 @@ export const useConnectWallet = () => {
 
       store.commit('general/setCurrentEcdsaAccount', data);
       const chainId = getChainId(currentNetworkIdx.value);
-      const isBridge =
-        router.currentRoute.value.matched.length > 0 && currentRouter.value.path === '/bridge';
-      !isBridge && (await setupNetwork(chainId));
+      await setupNetwork(chainId);
       return true;
     } catch (err: any) {
       console.error(err);
@@ -210,9 +208,7 @@ export const useConnectWallet = () => {
 
   const loginWithStoredAccount = async (): Promise<void> => {
     const address = localStorage.getItem(SELECTED_ADDRESS);
-    const isBridge =
-      router.currentRoute.value.matched.length > 0 && currentRouter.value.path === '/bridge';
-    if (isBridge || currentRouter.value === undefined || !address || !isConnectedNetwork.value) {
+    if (currentRouter.value === undefined || !address || !isConnectedNetwork.value) {
       return;
     }
 

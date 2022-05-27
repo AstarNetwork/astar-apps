@@ -26,6 +26,8 @@ export const cBridgeEndpoint = {
   Configs: cBridgeBaseEndpoint + '/getTransferConfigsForAll',
 };
 
+export const cbridgeAppLink = 'https://cbridge.celer.network/#/transfer';
+
 export interface TransferConfigs {
   err: null;
   chains: Chain[];
