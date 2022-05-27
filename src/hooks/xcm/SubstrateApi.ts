@@ -17,18 +17,22 @@ interface ChainProperty {
 }
 
 class ChainApi {
-  private _provider: WsProvider;
+  private _provider?: WsProvider;
   private _api: ApiPromise;
   private _chainProperty: ChainProperty | undefined;
   private _registry: TypeRegistry;
 
-  constructor(endpoint: string) {
-    this._provider = new WsProvider(endpoint, AUTO_CONNECT_MS);
+  constructor(api: ApiPromise | null, endpoint?: string) {
+    if (api) {
+      this._api = api;
+    } else {
+      this._provider = new WsProvider(endpoint, AUTO_CONNECT_MS);
 
-    console.log('connecting to ' + endpoint);
-    this._api = new ApiPromise({
-      provider: this._provider,
-    });
+      console.log('connecting to ' + endpoint);
+      this._api = new ApiPromise({
+        provider: this._provider,
+      });
+    }
 
     this._registry = new TypeRegistry();
   }
@@ -183,7 +187,7 @@ class ChainApi {
 
 export class RelaychainApi extends ChainApi {
   constructor(endpoint: string) {
-    super(endpoint);
+    super(null, endpoint);
   }
   override async start() {
     await super.start();
@@ -269,5 +273,60 @@ export class RelaychainApi extends ChainApi {
 
   public xcmSend(dest: MultiLocation, message: VersionedXcm) {
     return this.buildTxCall('xcmPallet', 'send', dest, message);
+  }
+}
+
+export class ParachainApi extends ChainApi {
+  constructor(api: ApiPromise) {
+    super(api);
+  }
+
+  /// should move to function in relay chain ($api)
+  public transferToRelaychain(recipientAccountId: string, amount: string) {
+    const dest = {
+      V1: {
+        interior: 'Here',
+        parents: new BN(1),
+      },
+    };
+    // the account ID within the destination parachain
+    const beneficiary = {
+      V1: {
+        interior: {
+          X1: {
+            AccountId32: {
+              network: 'Any',
+              id: decodeAddress(recipientAccountId),
+            },
+          },
+        },
+        parents: new BN(0),
+      },
+    };
+    // amount of fungible tokens to be transferred
+    const assets = {
+      V1: [
+        {
+          fun: {
+            Fungible: new BN(amount),
+          },
+          id: {
+            Concrete: {
+              interior: 'Here',
+              parents: new BN(1),
+            },
+          },
+        },
+      ],
+    };
+
+    return this.buildTxCall(
+      'polkadotXcm',
+      'reserveTransferAssets',
+      dest,
+      beneficiary,
+      assets,
+      new BN(0)
+    );
   }
 }

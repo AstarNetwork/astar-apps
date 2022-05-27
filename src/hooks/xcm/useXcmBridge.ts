@@ -1,7 +1,7 @@
 import { isValidAddressPolkadotAddress } from './../helper/plasmUtils';
 import { evmToAddress } from '@polkadot/util-crypto';
 import { ethers } from 'ethers';
-import { $web3 } from 'src/boot/api';
+import { $api, $web3 } from 'src/boot/api';
 import { endpointKey, getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { getBalance, getTokenBal, isValidEvmAddress } from 'src/config/web3';
 import {
@@ -26,7 +26,7 @@ import {
 import { useStore } from 'src/store';
 import { computed, onUnmounted, ref, Ref, watchEffect, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { RelaychainApi } from './SubstrateApi';
+import { ParachainApi, RelaychainApi } from './SubstrateApi';
 
 const chainPolkadot = xcmChains.find((it) => it.name === Chain.Polkadot) as XcmChain;
 const chainAstar = xcmChains.find((it) => it.name === Chain.Astar) as XcmChain;
@@ -267,7 +267,9 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
             amount.value = null;
           });
       } else {
-        // Todo: Implement the withdrawal logic here
+        // Withdrawal
+        let recipientAccountId = getPubkeyFromSS58Addr(currentAccount.value);
+        const injector = await getInjector(substrateAccounts.value);
         if (!isNativeBridge.value) {
           if (!isValidAddressPolkadotAddress(evmDestAddress.value)) {
             throw Error('Invalid destination address');
@@ -275,6 +277,33 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
           console.log('Send assets from Parachain(EVM)');
         } else {
           console.log('Send assets from Parachain');
+          const paraChainApi = new ParachainApi($api!!);
+          const decimals = Number(selectedToken.value.metadata.decimals);
+          console.log('decimal', decimals);
+          console.log('recipient', recipientAccountId);
+          console.log('amount', amount.value);
+          console.log('unit', ethers.utils.parseUnits(amount.value, decimals).toString());
+          const txCall = paraChainApi.transferToRelaychain(
+            recipientAccountId,
+            ethers.utils.parseUnits(amount.value, decimals).toString()
+          );
+
+          await paraChainApi
+            .signAndSend(
+              currentAccount.value,
+              injector.signer,
+              txCall,
+              finalizedCallback,
+              handleResult
+            )
+            .catch((error: Error) => {
+              handleTransactionError(error);
+              isDisabledBridge.value = false;
+            })
+            .finally(async () => {
+              isDisabledBridge.value = true;
+              amount.value = null;
+            });
         }
       }
     } catch (error: any) {
