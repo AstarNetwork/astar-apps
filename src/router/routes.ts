@@ -2,7 +2,6 @@ import EvmWidget from 'components/bridge/evm/EvmWidget.vue';
 import DiscoverDappsTab from 'components/dapp-staking/DiscoverDappsTab.vue';
 import ManageDappsTab from 'components/dapp-staking/ManageDappsTab.vue';
 import Assets from 'pages/Assets.vue';
-import Bridge from 'src/pages/Bridge.vue';
 import Store from 'src/pages/DappStaking.vue';
 import Dashboard from 'src/pages/Dashboard.vue';
 import { RouteRecordRaw } from 'vue-router';
@@ -66,21 +65,6 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
-  {
-    path: '/bridge',
-    name: 'Bridge',
-    component: Bridge,
-    children: [
-      {
-        path: '',
-        redirect: '/bridge/evm',
-      },
-      {
-        path: 'evm',
-        component: EvmWidget,
-      },
-    ],
-  },
 
   // Always leave this as last one,
   // but you can also remove it
@@ -97,8 +81,6 @@ export const getHeaderName = (path: string) => {
     return 'Assets';
   } else if (path === 'dapp-staking') {
     return 'dApp Staking';
-  } else if (path === 'bridge') {
-    return 'Bridge';
   }
   return '';
 };
