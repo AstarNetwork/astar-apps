@@ -1,28 +1,6 @@
 // Docs: https://cbridge-docs.celer.network/developer/api-reference/gateway-gettransferconfigs
 
-export {
-  getTransferConfigs,
-  getChainName,
-  sortChainName,
-  formatDecimals,
-  getTokenBalCbridge,
-  getPeggedTokenInfo,
-  pushToSelectableChains,
-  approve,
-  mintOrBurn,
-  getTokenInfo,
-  getSelectedToken,
-  getMinimalMaxSlippage,
-  poolTransfer,
-  getIcon,
-  getHistory,
-  getTxStatus,
-  detectRemoveNetwork,
-  getDestTokenInfo,
-  getMinAndMaxAmount,
-  fetchEstimation,
-  checkIsCbridgeToken,
-} from './utils';
+export { getTransferConfigs, getSelectedToken, getIcon, checkIsCbridgeToken } from './utils';
 
 export enum EvmChain {
   Ethereum = 1,
@@ -46,9 +24,9 @@ export const cBridgeBaseEndpoint = 'https://cbridge-prod2.celer.network/v1';
 
 export const cBridgeEndpoint = {
   Configs: cBridgeBaseEndpoint + '/getTransferConfigsForAll',
-  Quotation: cBridgeBaseEndpoint + '/estimateAmt',
-  History: cBridgeBaseEndpoint + '/transferHistory',
 };
+
+export const cbridgeAppLink = 'https://cbridge.celer.network/#/transfer';
 
 export interface TransferConfigs {
   err: null;
@@ -58,7 +36,7 @@ export interface TransferConfigs {
   pegged_pair_configs: PeggedPairConfig[];
 }
 
-export interface ChainToken {
+interface ChainToken {
   token: Token[];
 }
 
@@ -70,21 +48,14 @@ export interface Token {
   chain?: EvmChain;
 }
 
-export interface TokenDetail {
+interface TokenDetail {
   symbol: string;
   address: string;
   decimal: number;
   xfer_disabled: boolean;
 }
 
-export interface TokenInfo {
-  contractAddress: string;
-  tokenAddress: string;
-  symbol: string;
-  decimals: number;
-}
-
-export interface Chain {
+interface Chain {
   id: number;
   name: string;
   icon: string;
@@ -109,7 +80,7 @@ export interface CbridgeToken {
   pool: PoolConfig | null;
 }
 
-export type PoolConfig = {
+type PoolConfig = {
   [key: number]: Token;
 };
 
@@ -135,35 +106,3 @@ export interface SelectedToken {
   userBalance: string;
   userBalanceUsd: string;
 }
-
-export interface Quotation {
-  err: null;
-  eq_value_token_amt: string;
-  bridge_rate: number;
-  perc_fee: string;
-  base_fee: string;
-  slippage_tolerance: number;
-  max_slippage: number;
-  estimated_receive_amt: string;
-  minAmount: number;
-  maxAmount: number;
-}
-
-export interface History {
-  transfer_id: string;
-  src_send_info: HistoryInfo;
-  dst_received_info: HistoryInfo;
-  ts: string;
-  src_block_tx_link: string;
-  dst_block_tx_link: string;
-  status: number;
-  refund_reason: number;
-}
-
-export interface HistoryInfo {
-  chain: Chain;
-  token: Token;
-  amount: string;
-}
-
-export const pendingStatus = [0, 1, 2, 3, 4];

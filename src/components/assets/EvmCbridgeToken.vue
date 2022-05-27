@@ -35,17 +35,11 @@
             >
               {{ $t('assets.transfer') }}
             </button>
-            <!-- Memo: temporary -->
-            <router-link
-              :to="{
-                path: '/bridge',
-                query: { from: sourceChainId, symbol: token.symbol },
-              }"
-            >
+            <a :href="cbridgeAppLink" target="_blank" rel="noopener noreferrer">
               <button class="btn btn--sm">
                 {{ $t('assets.bridge') }}
               </button>
-            </router-link>
+            </a>
 
             <div class="screen--xl">
               <a
@@ -100,6 +94,7 @@ import { useStore } from 'src/store';
 import { getErc20Explorer, getTokenImage } from 'src/modules/token';
 import { computed, defineComponent, PropType } from 'vue';
 import { truncate } from 'src/hooks/helper/common';
+import { cbridgeAppLink } from 'src/c-bridge';
 
 export default defineComponent({
   props: {
@@ -132,16 +127,6 @@ export default defineComponent({
       }
     };
 
-    const sourceChainId = computed(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      const chain = chainInfo ? chainInfo.chain : '';
-      const networkIdx = getProviderIndex(chain);
-      const chainId = token.canonicalConfig
-        ? token.canonicalConfig && token.canonicalConfig.org_chain_id
-        : String(getChainId(networkIdx));
-      return chainId;
-    });
-
     const explorerLink = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
       const chain = chainInfo ? chainInfo.chain : '';
@@ -155,8 +140,8 @@ export default defineComponent({
       addToEvmWallet,
       tokenImg,
       nativeTokenSymbol,
-      sourceChainId,
       explorerLink,
+      cbridgeAppLink,
       truncate,
     };
   },
