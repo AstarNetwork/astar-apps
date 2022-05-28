@@ -322,7 +322,7 @@ export class ParachainApi extends ChainApi {
 
     return this.buildTxCall(
       'polkadotXcm',
-      'reserveTransferAssets',
+      'reserveWithdrawAssets',
       dest,
       beneficiary,
       assets,
