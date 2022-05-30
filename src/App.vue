@@ -88,8 +88,4 @@ export default defineComponent({
 .route-leave-active {
   transition: all 0.3s ease-in;
 }
-
-.rc-anchor-dark {
-  background: red !important;
-}
 </style>

@@ -80,9 +80,9 @@ export default defineComponent({
     const recaptchaResponse = ref<string>('');
 
     const store = useStore();
-    const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
+    const isDarkTheme = computed<boolean>(() => store.getters['general/theme'] === 'DARK');
 
-    const isModalFaucet = computed(() => props.isModalFaucet);
+    const isModalFaucet = computed<boolean>(() => props.isModalFaucet);
     const { requestFaucet, isLoading, unit, isAbleToFaucet, countDown, faucetAmount } =
       useFaucet(isModalFaucet);
 
@@ -94,7 +94,7 @@ export default defineComponent({
       isClosingModal.value = false;
     };
 
-    const handleRequest = async () => {
+    const handleRequest = async (): Promise<void> => {
       try {
         await requestFaucet(recaptchaResponse.value);
       } catch (error) {
@@ -104,15 +104,15 @@ export default defineComponent({
       }
     };
 
-    const recaptchaVerified = (response: string) => {
+    const recaptchaVerified = (response: string): void => {
       recaptchaResponse.value = response;
     };
 
-    const recaptchaExpired = () => {
+    const recaptchaExpired = (): void => {
       recaptchaResponse.value = '';
     };
 
-    const recaptchaFailed = () => {
+    const recaptchaFailed = (): void => {
       console.error('something went wrong');
       recaptchaResponse.value = '';
     };
