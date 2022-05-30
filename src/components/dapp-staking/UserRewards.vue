@@ -35,7 +35,7 @@ import { useAccount, useBreakpoints } from 'src/hooks';
 import { useCompoundRewards } from 'src/hooks/dapps-staking/useCompoundRewards';
 import { getClaimedAmount } from 'src/modules/token-api';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, watchEffect } from 'vue';
+import { computed, defineComponent, ref, watchEffect, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VueOdometer from 'v-odometer/src';
 import { wait } from 'src/hooks/helper/common';
@@ -105,6 +105,16 @@ export default defineComponent({
     watchEffect(async () => {
       await setClaimedAmount();
     });
+
+    // Memo: Reset the state whenever users access staking page
+    // (to avoid the 'double sum bug' after claiming)
+    watch(
+      [currentNetworkName],
+      () => {
+        store.commit('dapps/setClaimedRewardsAmount', 0);
+      },
+      { immediate: true }
+    );
 
     return {
       isStaker,

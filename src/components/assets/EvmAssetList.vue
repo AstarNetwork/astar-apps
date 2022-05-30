@@ -85,11 +85,17 @@
                 {{ $t('assets.transfer') }}
               </button>
               <!-- Only SDN is able to bridge via cBridge at this moment -->
-              <router-link v-if="nativeTokenSymbol === 'SDN'" to="/bridge">
+              <a
+                v-if="nativeTokenSymbol === 'SDN'"
+                :href="cbridgeAppLink"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <button class="btn btn--sm">
                   {{ $t('assets.bridge') }}
                 </button>
-              </router-link>
+              </a>
+
               <!-- Memo: Disable the faucet button temporary -->
               <!-- <button
                 v-if="isFaucet"
@@ -149,6 +155,7 @@ import EvmCbridgeToken from 'src/components/assets/EvmCbridgeToken.vue';
 import { getBalance } from 'src/config/web3';
 import { ChainAsset, useAccount, useBalance, usePrice } from 'src/hooks';
 import { Erc20Token, getTokenImage } from 'src/modules/token';
+import { cbridgeAppLink } from 'src/c-bridge';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
 import ModalFaucet from './modals/ModalFaucet.vue';
@@ -332,6 +339,7 @@ export default defineComponent({
       accountData,
       xcmToken,
       handleModalXcmBridge,
+      cbridgeAppLink,
       setIsSearch,
       handleModalTransfer,
       handleModalFaucet,

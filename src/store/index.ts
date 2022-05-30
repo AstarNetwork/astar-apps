@@ -9,7 +9,6 @@ import { DappStateInterface } from './dapp-staking/state';
 import general from './general';
 import contracts from './contracts';
 import dapps from './dapp-staking';
-import bridge from './bridge';
 
 /*
  * If not building with SSR mode, you can
@@ -45,7 +44,6 @@ export default store(function (/* { ssrContext } */) {
       general,
       contracts,
       dapps,
-      bridge,
     },
 
     // enable strict mode (adds overhead!)

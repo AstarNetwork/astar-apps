@@ -57,25 +57,6 @@
         </router-link>
         <div v-else class="dummy-row" />
       </div>
-      <div>
-        <router-link
-          v-if="enableBridge"
-          to="/bridge"
-          :class="['link', $route.path.split('/')[1] === 'bridge' ? 'activeLink' : '']"
-        >
-          <astar-icon-base
-            :class="['iconbase', isShiden ? 'shiden' : '']"
-            stroke="currentColor"
-            icon-name="bridge"
-          >
-            <astar-icon-bridge />
-          </astar-icon-base>
-          <span class="row--item">
-            <astar-text type="H4">{{ $t('bridge.bridge') }}</astar-text>
-          </span>
-        </router-link>
-        <div v-else class="dummy-row" />
-      </div>
       <div class="menu__indicator" :class="getIndicatorClass(path)" />
     </nav>
 
@@ -111,14 +92,10 @@ export default defineComponent({
     const { isOpen } = useSidebar();
 
     const store = useStore();
-    const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
 
     const network = ref(providerEndpoints[currentNetworkIdx.value]);
     const isShiden = computed(() => currentNetworkIdx.value === endpointKey.SHIDEN);
-    const enableBridge = computed(
-      () => isH160.value && currentNetworkIdx.value !== endpointKey.SHIBUYA
-    );
 
     const router = useRouter();
     const path = computed(() => router.currentRoute.value.path.split('/')[1]);
@@ -131,8 +108,6 @@ export default defineComponent({
           return 'menu__assets';
         case 'dapp-staking':
           return 'menu__staking';
-        case 'bridge':
-          return 'menu__bridge';
         default:
           return 'menu__staking';
       }
@@ -142,7 +117,6 @@ export default defineComponent({
       isOpen,
       network,
       isShiden,
-      enableBridge,
       getIndicatorClass,
       router,
       path,
