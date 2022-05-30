@@ -78,7 +78,7 @@ export function useFaucet(isModalFaucet?: Ref<boolean>) {
     }
   };
 
-  const requestFaucet = async (): Promise<void> => {
+  const requestFaucet = async (recaptchaResponse: string): Promise<void> => {
     if (!currentAccount.value) {
       throw Error('Address is empty');
     }
@@ -94,6 +94,7 @@ export function useFaucet(isModalFaucet?: Ref<boolean>) {
       const url = `${endpoint}/drip`;
       const { data } = await axios.post<{ hash: string }>(url, {
         destination: currentAccount.value,
+        recaptchaResponse,
       });
 
       const msg = `Completed at block hash #${data.hash}`;

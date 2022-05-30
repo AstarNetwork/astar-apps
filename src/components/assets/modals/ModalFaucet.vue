@@ -33,8 +33,21 @@
           }}</span
         >
       </div>
+      <vue-recaptcha
+        v-show="isAbleToFaucet"
+        ref="vueRecaptcha"
+        :sitekey="RECAPCHA_SITE_KEY"
+        size="normal"
+        :theme="isDarkTheme ? 'dark' : 'light'"
+        @verify="recaptchaVerified"
+        @expire="recaptchaExpired"
+        @fail="recaptchaFailed"
+      >
+      </vue-recaptcha>
       <div v-if="isAbleToFaucet" class="wrapper__row--button">
-        <button class="btn btn--confirm" @click="handleRequest">{{ $t('confirm') }}</button>
+        <button class="btn btn--confirm" :disabled="!recaptchaResponse" @click="handleRequest">
+          {{ $t('confirm') }}
+        </button>
       </div>
     </div>
   </astar-simple-modal>
@@ -44,8 +57,14 @@ import { useFaucet } from 'src/hooks';
 import { defineComponent, computed, ref } from 'vue';
 import { fadeDuration } from '@astar-network/astar-ui';
 import { wait } from 'src/hooks/helper/common';
+import vueRecaptcha from 'vue3-recaptcha2';
+import { RECAPCHA_SITE_KEY } from 'src/config/recapcha';
+import { useStore } from 'src/store';
 
 export default defineComponent({
+  components: {
+    vueRecaptcha,
+  },
   props: {
     isModalFaucet: {
       type: Boolean,
@@ -58,6 +77,11 @@ export default defineComponent({
   },
   setup(props) {
     const isClosingModal = ref<boolean>(false);
+    const recaptchaResponse = ref<string>('');
+
+    const store = useStore();
+    const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
+
     const isModalFaucet = computed(() => props.isModalFaucet);
     const { requestFaucet, isLoading, unit, isAbleToFaucet, countDown, faucetAmount } =
       useFaucet(isModalFaucet);
@@ -72,13 +96,27 @@ export default defineComponent({
 
     const handleRequest = async () => {
       try {
-        await requestFaucet();
+        await requestFaucet(recaptchaResponse.value);
       } catch (error) {
         console.error(error);
       } finally {
         closeModal();
       }
     };
+
+    const recaptchaVerified = (response: string) => {
+      recaptchaResponse.value = response;
+    };
+
+    const recaptchaExpired = () => {
+      recaptchaResponse.value = '';
+    };
+
+    const recaptchaFailed = () => {
+      console.error('something went wrong');
+      recaptchaResponse.value = '';
+    };
+
     return {
       faucetAmount,
       isLoading,
@@ -86,8 +124,14 @@ export default defineComponent({
       isAbleToFaucet,
       countDown,
       isClosingModal,
+      RECAPCHA_SITE_KEY,
+      recaptchaResponse,
+      isDarkTheme,
       closeModal,
       handleRequest,
+      recaptchaVerified,
+      recaptchaExpired,
+      recaptchaFailed,
     };
   },
 });

@@ -14766,6 +14766,11 @@ vue3-dropzone@^0.0.7:
     attr-accept "^2.2.2"
     file-selector "^0.2.4"
 
+vue3-recaptcha2@^1.7.0:
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/vue3-recaptcha2/-/vue3-recaptcha2-1.7.0.tgz#713687d09d20a0dcd42c669cebeb49fd24e2821b"
+  integrity sha512-/YNFhARYmaXurTIcT/H35FJuYwkWUIqj5XeAcr7M0NDF8aaUmPHxTWtbR0BVVSteZxrFPZ09rExmVdgBI4Yd/Q==
+
 vue@3.2.22:
   version "3.2.22"
   resolved "https://registry.yarnpkg.com/vue/-/vue-3.2.22.tgz#46e4dd89e98cc4b851ae1eb35f00ced413a34bb7"
