@@ -279,10 +279,6 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
           console.log('Send assets from Parachain');
           const paraChainApi = new ParachainApi($api!!);
           const decimals = Number(selectedToken.value.metadata.decimals);
-          console.log('decimal', decimals);
-          console.log('recipient', recipientAccountId);
-          console.log('amount', amount.value);
-          console.log('unit', ethers.utils.parseUnits(amount.value, decimals).toString());
           const txCall = paraChainApi.transferToRelaychain(
             recipientAccountId,
             ethers.utils.parseUnits(amount.value, decimals).toString()

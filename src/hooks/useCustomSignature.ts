@@ -36,7 +36,6 @@ export function useCustomSignature({ fn, txType }: { fn?: () => void; txType?: T
             const msg = customMsg.value
               ? customMsg.value
               : `Completed at block hash #${status.asFinalized.toString()}`;
-            console.log('success', msg);
 
             store.dispatch('general/showAlertMsg', {
               msg,
