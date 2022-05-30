@@ -74,7 +74,7 @@ export const fetchEvmGasPrice = async ({
   web3: Web3;
 }): Promise<{ evmGasPrice: GasPrice; nativeTipPrice: GasPrice }> => {
   try {
-    const url = `${GAS_API_URL}/${network}/gasnow`;
+    const url = `${GAS_API_URL}/gasnow?network=${network}`;
     const { data } = await axios.get<ApiGasNow>(url);
     if (!data || data.code !== 200) {
       throw Error('something went wrong');
