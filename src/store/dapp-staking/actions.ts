@@ -97,14 +97,11 @@ export const hasExtrinsicFailedEvent = (
 };
 
 const actions: ActionTree<State, StateInterface> = {
-  async getDapps({ commit, dispatch, rootState }) {
+  async getDapps({ commit, dispatch, rootState }, network: string) {
     commit('general/setLoading', true, { root: true });
 
     try {
-      const network = rootState.general.chainInfo?.chain?.toLowerCase();
-      // const generalState = { ...rootState.general };
-      console.log('network', network);
-      const collection = await getDapps(network);
+      const collection = await getDapps(network.toLowerCase());
       commit('addDapps', collection);
     } catch (e) {
       const error = e as unknown as Error;

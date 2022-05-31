@@ -1,6 +1,6 @@
 import { $api } from 'boot/api';
 import { useStore } from 'src/store';
-import { computed, ref, watchEffect } from 'vue';
+import { computed, ref, watchEffect, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useAccount } from '../useAccount';
 import { getStakeInfo } from './../../modules/dapp-staking/utils/index';
@@ -11,9 +11,14 @@ export function useStakerInfo() {
   const { currentAccount } = useAccount();
   const { t } = useI18n();
   const store = useStore();
-  store.dispatch('dapps/getStakingInfo');
-  store.dispatch('dapps/getDapps');
 
+  const currentNetwork = computed(() => {
+    const chainInfo = store.getters['general/chainInfo'];
+    const chain = chainInfo ? chainInfo.chain : '';
+    return chain.toString().split(' ')[0];
+  });
+
+  store.dispatch('dapps/getStakingInfo');
   const stakeInfos = ref<StakeInfo[]>();
   const isLoading = computed(() => store.getters['general/isLoading']);
   const dapps = computed(() => store.getters['dapps/getAllDapps']);
@@ -31,6 +36,12 @@ export function useStakerInfo() {
     );
     stakeInfos.value = data;
   };
+
+  watch([currentNetwork], () => {
+    if (currentNetwork.value) {
+      store.dispatch('dapps/getDapps', currentNetwork.value);
+    }
+  });
 
   watchEffect(async () => {
     if (isLoading.value || !dapps.value) {
