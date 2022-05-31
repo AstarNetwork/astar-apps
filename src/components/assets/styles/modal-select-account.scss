@@ -60,18 +60,18 @@
 .box--account-option {
   position: absolute;
   width: 344px;
-  margin-top: 12px;
+  margin-top: 18px;
   border-radius: 6px;
   z-index: 10;
   top: 22px;
   left: -16px;
   background: $container-bg-white;
+  border: 1px solid $astar-blue;
 }
 
 .container--accounts {
   max-height: 228px;
   border-radius: 6px;
-  padding-top: 4px;
   overflow: auto;
   width: 344px;
   &:focus {
@@ -81,7 +81,8 @@
 
 .list {
   position: relative;
-  width: 344px;
+  width: 342px;
+  border-radius: 6px;
   padding-top: 16px;
   padding-bottom: 16px;
   padding-left: 12px;
