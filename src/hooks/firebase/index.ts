@@ -8,9 +8,11 @@ import {
   QuerySnapshot,
   DocumentData,
 } from 'firebase/firestore/lite';
+import axios from 'axios';
 import { getStorage, ref, uploadString, getDownloadURL } from 'firebase/storage';
 import { getAuth, signInAnonymously } from 'firebase/auth';
 import { DappItem, NewDappItem } from 'src/store/dapp-staking/state';
+import { TOKEN_API_URL } from 'src/modules/token-api';
 
 // firebase init - add your own config here
 const firebaseConfig = {
@@ -35,10 +37,11 @@ signInAnonymously(auth)
     console.error(error.message);
   });
 
-const getDapps = async (collectionName: string): Promise<QuerySnapshot<DocumentData>> => {
-  const dbCollection = collection(db, collectionName);
-  const docs = await getDocs(dbCollection);
-  return docs;
+const getDapps = async (network: string): Promise<DappItem> => {
+  const dappsUrl = `${TOKEN_API_URL}/v1/${network}/dapps-staking/dapps`;
+  const result = await axios.get<DappItem>(dappsUrl);
+
+  return result.data;
 };
 
 const addDapp = async (collectionName: string, dapp: NewDappItem): Promise<DappItem> => {

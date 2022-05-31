@@ -11,6 +11,7 @@ import { ISubmittableResult, ITuple } from '@polkadot/types/types';
 import BN from 'bn.js';
 import { $api } from 'boot/api';
 import { addDapp, getDapps, uploadFile } from 'src/hooks/firebase';
+import { json } from 'stream/consumers';
 import { ActionTree, Dispatch } from 'vuex';
 import { StateInterface } from '../index';
 import { signAndSend } from './../../hooks/helper/wallet';
@@ -100,12 +101,11 @@ const actions: ActionTree<State, StateInterface> = {
     commit('general/setLoading', true, { root: true });
 
     try {
-      const collectionKey = await getCollectionKey();
-      const collection = await getDapps(collectionKey);
-      commit(
-        'addDapps',
-        collection.docs.map((x) => x.data())
-      );
+      const network = rootState.general.chainInfo?.chain?.toLowerCase();
+      // const generalState = { ...rootState.general };
+      console.log('network', network);
+      const collection = await getDapps(network);
+      commit('addDapps', collection);
     } catch (e) {
       const error = e as unknown as Error;
       showError(dispatch, error.message);
