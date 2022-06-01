@@ -18,6 +18,10 @@ export function useStakerInfo() {
     return chain.toString().split(' ')[0];
   });
 
+  if (currentNetwork.value) {
+    store.dispatch('dapps/getDapps', currentNetwork.value);
+  }
+
   store.dispatch('dapps/getStakingInfo');
   const stakeInfos = ref<StakeInfo[]>();
   const isLoading = computed(() => store.getters['general/isLoading']);
