@@ -129,6 +129,15 @@ export const supportEvmWalletObj = {
     isSupportBrowserExtension: true,
     isSupportMobileApp: true,
   },
+  [SupportWallet.Talisman]: {
+    img: require('/src/assets/img/logo-talisman.svg'),
+    name: 'Talisman',
+    source: SupportWallet.Talisman,
+    walletUrl: 'https://app.talisman.xyz/',
+    guideUrl: 'https://app.talisman.xyz/',
+    isSupportBrowserExtension: true,
+    isSupportMobileApp: false,
+  },
   [SupportWallet.Wallet3]: {
     img: require('/src/assets/img/logo-wallet3.svg'),
     name: 'Wallet 3',
