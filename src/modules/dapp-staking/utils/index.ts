@@ -2,7 +2,7 @@ import { ApiPromise } from '@polkadot/api';
 import { Option } from '@polkadot/types';
 import { EraIndex } from '@polkadot/types/interfaces';
 import BN from 'bn.js';
-import { GeneralStakerInfo } from 'src/hooks/helper/claim';
+import { checkIsDappRegistered, GeneralStakerInfo } from 'src/hooks/helper/claim';
 import { wait } from 'src/hooks/helper/common';
 import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
 import { EraStakingPoints, StakeInfo } from './../../../store/dapp-staking/actions';
@@ -107,15 +107,16 @@ export const handleGetStakeInfo = async ({
     hasStake: false,
     stakersCount: Number(stakeInfo.numberOfStakers.toString()),
     dappAddress,
+    isRegistered: true,
   };
 
   try {
-    const stakerInfo = await api.query.dappsStaking.generalStakerInfo<GeneralStakerInfo>(
-      currentAccount,
-      {
+    const [stakerInfo, { isRegistered }] = await Promise.all([
+      api.query.dappsStaking.generalStakerInfo<GeneralStakerInfo>(currentAccount, {
         Evm: dappAddress,
-      }
-    );
+      }),
+      checkIsDappRegistered({ dappAddress, api }),
+    ]);
 
     const balance = stakerInfo.stakes.length && stakerInfo.stakes.slice(-1)[0].staked.toString();
     const yourStake = balance
@@ -129,6 +130,7 @@ export const handleGetStakeInfo = async ({
       ...data,
       hasStake: Number(balance.toString()) > 0,
       yourStake,
+      isRegistered,
     };
   } catch (error) {
     return data;

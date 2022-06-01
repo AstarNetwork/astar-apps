@@ -54,6 +54,36 @@ const checkIsDappOwner = async ({
   }
 };
 
+export const checkIsDappRegistered = async ({
+  dappAddress,
+  api,
+}: {
+  dappAddress: string;
+  api: ApiPromise;
+}): Promise<{ isRegistered: boolean; eraUnregistered: number }> => {
+  try {
+    const result = await api.query.dappsStaking.registeredDapps<Option<RegisteredDapps>>(
+      getAddressEnum(dappAddress)
+    );
+    const data = result.unwrapOrDefault();
+    const registered = data?.state.toString();
+    const isRegistered = registered === 'Registered';
+    // Memo: 0 for `registered` dapps
+    const eraUnregistered = isRegistered ? 0 : JSON.parse(data.state.toString()).unregistered;
+
+    return {
+      isRegistered,
+      eraUnregistered,
+    };
+  } catch (error: any) {
+    console.error(error.message);
+    return {
+      isRegistered: true,
+      eraUnregistered: 0,
+    };
+  }
+};
+
 const getNumberOfUnclaimedEra = async ({
   dappAddress,
   api,
@@ -75,6 +105,11 @@ const getNumberOfUnclaimedEra = async ({
     if (data && !data.isEmpty) {
       const stakes = data && data.stakes;
 
+      const registeredData = await checkIsDappRegistered({
+        dappAddress,
+        api,
+      });
+
       for (let i = 0; i < stakes.length; i++) {
         const { era, staked } = stakes[i];
         if (staked.eq(new BN(0))) continue;
@@ -82,10 +117,17 @@ const getNumberOfUnclaimedEra = async ({
         const nextEra = nextEraData && nextEraData.era;
         const isLastEra = i === stakes.length - 1;
 
-        const eraToClaim = isLastEra ? currentEra - era : nextEra - era;
-        numberOfUnclaimedEra += eraToClaim;
+        const { eraUnregistered, isRegistered } = registeredData;
+        if (isRegistered) {
+          const eraToClaim = isLastEra ? currentEra - era : nextEra - era;
+          numberOfUnclaimedEra += eraToClaim;
+        } else {
+          const eraToClaim = isLastEra ? eraUnregistered - era : nextEra - era;
+          numberOfUnclaimedEra += eraToClaim;
+        }
       }
     }
+
     return numberOfUnclaimedEra;
   } catch (error: any) {
     console.error(error.message);
@@ -212,12 +254,24 @@ const getTxsForClaimStaker = async ({
   senderAddress: string;
 }): Promise<PayloadWithWeight[]> => {
   const transactions: PayloadWithWeight[] = [];
-  const info = await api.tx.dappsStaking
-    .claimStaker(getAddressEnum(dappAddress))
-    .paymentInfo(senderAddress);
+  const [info, registerData] = await Promise.all([
+    api.tx.dappsStaking.claimStaker(getAddressEnum(dappAddress)).paymentInfo(senderAddress),
+    checkIsDappRegistered({
+      dappAddress,
+      api,
+    }),
+  ]);
 
   for (let i = 0; i < numberOfUnclaimedEra; i++) {
     const tx = api.tx.dappsStaking.claimStaker(getAddressEnum(dappAddress));
+    transactions.push({ payload: tx, weight: info.weight });
+  }
+
+  if (!registerData.isRegistered) {
+    const tx = api.tx.dappsStaking.withdrawFromUnregistered(getAddressEnum(dappAddress));
+    const info = await api.tx.dappsStaking
+      .withdrawFromUnregistered(getAddressEnum(dappAddress))
+      .paymentInfo(senderAddress);
     transactions.push({ payload: tx, weight: info.weight });
   }
 

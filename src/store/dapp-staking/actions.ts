@@ -276,6 +276,7 @@ export interface StakeInfo {
   hasStake: boolean;
   stakersCount: number;
   dappAddress?: string;
+  isRegistered: boolean;
 }
 
 export interface ClaimInfo {
