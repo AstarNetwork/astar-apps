@@ -101,8 +101,9 @@ const getNumberOfUnclaimedEra = async ({
   senderAddress: string;
   api: ApiPromise;
   currentEra: number;
-}): Promise<number> => {
+}): Promise<{ numberOfUnclaimedEra: number; isRequiredWithdraw: boolean }> => {
   let numberOfUnclaimedEra = 0;
+  let isRequiredWithdraw = false;
   try {
     const data = await api.query.dappsStaking.generalStakerInfo<GeneralStakerInfo>(
       senderAddress,
@@ -116,6 +117,7 @@ const getNumberOfUnclaimedEra = async ({
         dappAddress,
         api,
       });
+      const { eraUnregistered, isRegistered } = registeredData;
 
       for (let i = 0; i < stakes.length; i++) {
         const { era, staked } = stakes[i];
@@ -124,7 +126,6 @@ const getNumberOfUnclaimedEra = async ({
         const nextEra = nextEraData && nextEraData.era;
         const isLastEra = i === stakes.length - 1;
 
-        const { eraUnregistered, isRegistered } = registeredData;
         if (isRegistered) {
           const eraToClaim = isLastEra ? currentEra - era : nextEra - era;
           numberOfUnclaimedEra += eraToClaim;
@@ -133,12 +134,15 @@ const getNumberOfUnclaimedEra = async ({
           numberOfUnclaimedEra += eraToClaim;
         }
       }
+      if (numberOfUnclaimedEra === 0 && !isRegistered) {
+        isRequiredWithdraw = true;
+      }
     }
 
-    return numberOfUnclaimedEra;
+    return { numberOfUnclaimedEra, isRequiredWithdraw };
   } catch (error: any) {
     console.error(error.message);
-    return numberOfUnclaimedEra;
+    return { numberOfUnclaimedEra, isRequiredWithdraw };
   }
 };
 
@@ -261,7 +265,7 @@ const getTxsForClaimStaker = async ({
   senderAddress: string;
 }): Promise<PayloadWithWeight[]> => {
   const transactions: PayloadWithWeight[] = [];
-  const [info, registerData] = await Promise.all([
+  const [claimInfo, { isRegistered }] = await Promise.all([
     api.tx.dappsStaking.claimStaker(getAddressEnum(dappAddress)).paymentInfo(senderAddress),
     checkIsDappRegistered({
       dappAddress,
@@ -271,15 +275,15 @@ const getTxsForClaimStaker = async ({
 
   for (let i = 0; i < numberOfUnclaimedEra; i++) {
     const tx = api.tx.dappsStaking.claimStaker(getAddressEnum(dappAddress));
-    transactions.push({ payload: tx, weight: info.weight });
+    transactions.push({ payload: tx, weight: claimInfo.weight });
   }
 
-  if (!registerData.isRegistered) {
+  if (!isRegistered) {
     const tx = api.tx.dappsStaking.withdrawFromUnregistered(getAddressEnum(dappAddress));
-    const info = await api.tx.dappsStaking
+    const withdrawalInfo = await api.tx.dappsStaking
       .withdrawFromUnregistered(getAddressEnum(dappAddress))
       .paymentInfo(senderAddress);
-    transactions.push({ payload: tx, weight: info.weight });
+    transactions.push({ payload: tx, weight: withdrawalInfo.weight });
   }
 
   return transactions;
@@ -375,7 +379,7 @@ export const getIndividualClaimTxs = async ({
     let txsForClaimStaker: PayloadWithWeight[] = [];
     let txsForClaimDapp: PayloadWithWeight[] = [];
 
-    const [numberOfUnclaimedEra, isDappOwner] = await Promise.all([
+    const [{ numberOfUnclaimedEra, isRequiredWithdraw }, isDappOwner] = await Promise.all([
       getNumberOfUnclaimedEra({
         dappAddress,
         api,
@@ -389,7 +393,7 @@ export const getIndividualClaimTxs = async ({
       }),
     ]);
 
-    if (numberOfUnclaimedEra > 0) {
+    if (numberOfUnclaimedEra > 0 || isRequiredWithdraw) {
       txsForClaimStaker = await getTxsForClaimStaker({
         dappAddress,
         api,
