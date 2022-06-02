@@ -49,6 +49,12 @@ const dispatchClaimMessage = ({
         events: result.events,
         senderAddress,
       });
+
+      // Memo: users invoked withdraw transaction from unregistered dapps
+      if (totalClaimedStaker.claimedAmount === 0) {
+        return;
+      }
+
       store.commit('dapps/setClaimedRewardsAmount', totalClaimedStaker.claimedAmount);
 
       const msg = `Successfully claimed ${totalClaimedStaker.formattedAmount}`;
