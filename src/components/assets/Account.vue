@@ -156,15 +156,16 @@ export default defineComponent({
       });
     };
 
-    const isSkeleton = computed(() => {
+    const isSkeleton = computed<boolean>(() => {
       const isH160 = store.getters['general/isH160Formatted'];
       const isLoadingState = store.getters['general/isLoading'];
-      if (props.isLoadingErc20Amount || props.isLoadingXcmAssetsAmount) return true;
-      if (!nativeTokenUsd.value) return false;
 
+      if (!nativeTokenUsd.value) return false;
       if (isH160) {
+        if (props.isLoadingErc20Amount) return true;
         return checkIsNullOrUndefined(balUsd.value) || isLoadingState;
       } else {
+        if (props.isLoadingXcmAssetsAmount) return true;
         return checkIsNullOrUndefined(balUsd.value);
       }
     });
