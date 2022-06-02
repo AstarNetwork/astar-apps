@@ -24,7 +24,15 @@ export interface GeneralStakerInfo extends Struct {
 
 export interface RegisteredDapps extends Struct {
   readonly developer: AccountId;
-  readonly state: string;
+  readonly state: State;
+}
+
+export interface State {
+  isUnregistered: boolean;
+  asUnregistered: {
+    // Memo: era of unregistered
+    words: number[];
+  };
 }
 
 export interface PayloadWithWeight {
@@ -66,10 +74,9 @@ export const checkIsDappRegistered = async ({
       getAddressEnum(dappAddress)
     );
     const data = result.unwrapOrDefault();
-    const registered = data?.state.toString();
-    const isRegistered = registered === 'Registered';
+    const isRegistered = !data.state.isUnregistered;
     // Memo: 0 for `registered` dapps
-    const eraUnregistered = isRegistered ? 0 : JSON.parse(data.state.toString()).unregistered;
+    const eraUnregistered = isRegistered ? 0 : data.state.asUnregistered.words[0];
 
     return {
       isRegistered,

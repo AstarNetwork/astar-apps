@@ -54,6 +54,7 @@ export function useClaimAll() {
       );
       const filteredTxs = txs.filter((it) => it !== null);
       batchTxs = filteredTxs.flat();
+      console.log(filteredTxs.flat());
       canClaim.value = batchTxs.length > 0;
     } catch (error: any) {
       console.error(error.message);
