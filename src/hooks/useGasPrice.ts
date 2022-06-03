@@ -24,7 +24,8 @@ export const useGasPrice = (isFetch = false) => {
   const network = computed<string>(() => {
     const chainInfo = store.getters['general/chainInfo'];
     const network = chainInfo ? chainInfo.chain : '';
-    return network === 'Shibuya Testnet' ? 'shibuya' : network.toLowerCase();
+    const isTestnet = network === 'Development' || network === 'Shibuya Testnet';
+    return isTestnet ? 'shibuya' : network.toLowerCase();
   });
 
   const setSelectedGas = (speed: Speed): void => {

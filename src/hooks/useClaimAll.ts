@@ -22,7 +22,7 @@ export function useClaimAll() {
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const dapps = computed(() => store.getters['dapps/getAllDapps']);
   const isSendingTx = computed(() => store.getters['general/isLoading']);
-  const { selectedTip, nativeTipPrice } = useGasPrice();
+  const { nativeTipPrice } = useGasPrice();
 
   const { era } = useCurrentEra();
   const { handleResult, handleCustomExtrinsic, isCustomSig } = useCustomSignature({

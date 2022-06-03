@@ -10,13 +10,19 @@ export function usePrice() {
     return chainInfo ? chainInfo.tokenSymbol : '';
   });
 
+  const isMainnet = computed<boolean>(() => {
+    const chainInfo = store.getters['general/chainInfo'];
+    const network = chainInfo ? chainInfo.chain : '';
+    const isTestnet = network === 'Development' || network === 'Shibuya Testnet';
+    return !isTestnet;
+  });
+
   watchEffect(async () => {
     const tokenSymbolRef = tokenSymbol.value;
     if (!tokenSymbolRef) return;
     try {
-      const isShibuya = tokenSymbolRef === 'SBY';
       const coingeckoTicker = tokenSymbolRef === 'SDN' ? 'shiden' : 'astar';
-      if (!isShibuya) {
+      if (isMainnet.value) {
         nativeTokenUsd.value = await getUsdPrice(coingeckoTicker);
       }
     } catch (error: any) {
