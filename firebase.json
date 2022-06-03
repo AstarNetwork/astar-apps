@@ -12,8 +12,8 @@
         "destination": "/index.html"
       }
     ],
-    "headers": {
-      "source": "**",
+    "headers": [{
+      "source": "**/*",
       "headers": [
         {
           "key": "X-Frame-Options",
@@ -24,6 +24,6 @@
           "value": "frame-ancestors 'none'"
         }
       ]
-    }
+    }]
   }
 }
