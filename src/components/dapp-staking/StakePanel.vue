@@ -255,7 +255,7 @@ export default defineComponent({
             );
 
         const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
-          customMsg.value = t('dappStaking.toast.staked', {
+          customMsg.value = t('dappStaking.toast.unstaked', {
             amount: unstakeAmount,
             dapp: props.dapp.name,
           });
