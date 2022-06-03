@@ -9,6 +9,8 @@ import { signAndSend } from 'src/hooks/helper/wallet';
 import { hasExtrinsicFailedEvent } from 'src/modules/extrinsic';
 import { useStore } from 'src/store';
 import { computed, ref, watchEffect } from 'vue';
+import { checkIsDappOwner, getNumberOfUnclaimedEra } from '../helper/claim';
+import { useCurrentEra } from '../useCurrentEra';
 
 type EraIndex = u32;
 
@@ -37,11 +39,15 @@ export function useCompoundRewards() {
   const { isCustomSig, handleCustomExtrinsic } = useCustomSignature({});
   const currentAddress = computed(() => store.getters['general/selectedAddress']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
+  const dapps = computed(() => store.getters['dapps/getAllDapps']);
   const { selectedTip } = useGasPrice();
+  const { era } = useCurrentEra();
 
   const isSupported = ref<boolean>(false);
   const isCompounding = ref<boolean>(false);
   const isStaker = ref<boolean>(false);
+  const isUnclaimedEra = ref<boolean>(false);
+  const isDappOwner = ref<boolean>(false);
   const rewardDestination = ref<RewardDestination>(RewardDestination.FreeBalance);
 
   const getCompoundingType = async () => {
@@ -125,8 +131,37 @@ export function useCompoundRewards() {
     }
   };
 
-  watchEffect(() => {
-    getCompoundingType();
+  const checkIsClaimable = async () => {
+    if (!dapps.value || !currentAddress.value || !era.value) return;
+    await Promise.all(
+      dapps.value.map(async ({ address }: { address: string }) => {
+        const [resIsDappOwner, { numberOfUnclaimedEra, isRequiredWithdraw }] = await Promise.all([
+          checkIsDappOwner({
+            dappAddress: address,
+            api: $api!,
+            senderAddress: currentAddress.value,
+          }),
+          getNumberOfUnclaimedEra({
+            dappAddress: address,
+            api: $api!,
+            senderAddress: currentAddress.value,
+            currentEra: era.value,
+          }),
+        ]);
+
+        if (resIsDappOwner) {
+          isDappOwner.value = true;
+        }
+
+        if (numberOfUnclaimedEra > 0 || isRequiredWithdraw) {
+          isUnclaimedEra.value = true;
+        }
+      })
+    );
+  };
+
+  watchEffect(async () => {
+    await Promise.all([checkIsClaimable(), getCompoundingType()]);
   });
 
   return {
@@ -134,6 +169,8 @@ export function useCompoundRewards() {
     isCompounding,
     rewardDestination,
     isStaker,
+    isDappOwner,
+    isUnclaimedEra,
     setRewardDestination,
   };
 }

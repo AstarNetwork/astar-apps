@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isStaker" class="wrapper--user-rewards-container">
+  <div v-if="isEnabled" class="wrapper--user-rewards-container">
     <div class="container user-rewards-container dark:tw-bg-darkGray-800">
       <div class="row">
         <div>
@@ -49,7 +49,7 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const { t } = useI18n();
-    const { isStaker } = useCompoundRewards();
+    const { isStaker, isDappOwner, isUnclaimedEra } = useCompoundRewards();
     const { width, screenSize } = useBreakpoints();
     const { currentAccount } = useAccount();
     const pastClaimed = ref<number>(0);
@@ -79,6 +79,10 @@ export default defineComponent({
           ? 'dappStaking.claimedRewards.long'
           : 'dappStaking.claimedRewards.short';
       return t(text);
+    });
+
+    const isEnabled = computed(() => {
+      return isDappOwner.value || isStaker.value || isUnclaimedEra.value;
     });
 
     const setClaimedAmount = async () => {
@@ -117,7 +121,7 @@ export default defineComponent({
     );
 
     return {
-      isStaker,
+      isEnabled,
       width,
       screenSize,
       textClaimedRewards,

@@ -40,7 +40,7 @@ export interface PayloadWithWeight {
   weight: BN;
 }
 
-const checkIsDappOwner = async ({
+export const checkIsDappOwner = async ({
   dappAddress,
   api,
   senderAddress,
@@ -91,7 +91,7 @@ export const checkIsDappRegistered = async ({
   }
 };
 
-const getNumberOfUnclaimedEra = async ({
+export const getNumberOfUnclaimedEra = async ({
   dappAddress,
   api,
   senderAddress,
