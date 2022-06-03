@@ -12,15 +12,18 @@
         "destination": "/index.html"
       }
     ],
-    "headers": [ 
-      {
-        "key": "X-Frame-Options",
-        "value": "DENY"
-      },
-      {
-        "key": "Content-Security-Policy", 
-        "value": "frame-ancestors 'none'"
-      }
-    ]
+    "headers": {
+      "source": "**",
+      "headers": [
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "frame-ancestors 'none'"
+        }
+      ]
+    }
   }
 }
