@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isEnabled" class="wrapper--user-rewards-container">
+  <div v-if="isEnable" class="wrapper--user-rewards-container">
     <div class="container user-rewards-container dark:tw-bg-darkGray-800">
       <div class="row">
         <div>
@@ -56,24 +56,24 @@ export default defineComponent({
     const isLoadingClaimed = ref<boolean>(false);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
-    const claimed = computed(() => {
+    const claimed = computed<number>(() => {
       // Memo: update the number of claimed rewards after users invoking claim action
       const claimedAmount = store.getters['dapps/getClaimedRewards'];
       return claimedAmount + pastClaimed.value;
     });
 
-    const symbol = computed(() => {
+    const symbol = computed<string>(() => {
       const chainInfo = store.getters['general/chainInfo'];
       return chainInfo ? chainInfo.tokenSymbol : '';
     });
 
-    const currentNetworkName = computed(() => {
+    const currentNetworkName = computed<string>(() => {
       const chainInfo = store.getters['general/chainInfo'];
       const chain = chainInfo ? chainInfo.chain : '';
       return chain === 'Shibuya Testnet' ? 'Shibuya' : chain;
     });
 
-    const textClaimedRewards = computed(() => {
+    const textClaimedRewards = computed<string>(() => {
       const text =
         width.value > screenSize.sm
           ? 'dappStaking.claimedRewards.long'
@@ -81,7 +81,7 @@ export default defineComponent({
       return t(text);
     });
 
-    const isEnabled = computed(() => {
+    const isEnable = computed<boolean>(() => {
       return isDappOwner.value || isStaker.value || isUnclaimedEra.value;
     });
 
@@ -121,7 +121,7 @@ export default defineComponent({
     );
 
     return {
-      isEnabled,
+      isEnable,
       width,
       screenSize,
       textClaimedRewards,
