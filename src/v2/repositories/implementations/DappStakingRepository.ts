@@ -2,9 +2,9 @@ import { BN } from '@polkadot/util';
 import { u32, Option, Struct } from '@polkadot/types';
 import { Balance } from '@polkadot/types/interfaces';
 import { injectable, inject } from 'inversify-props';
-import { Guard } from '../../common';
-import { IDappStakRepository } from '../';
-import { IApi } from '../../integration';
+import { Guard } from 'src/v2/common';
+import { IDappStakingRepository } from 'src/v2/repositories';
+import { IApi } from 'src/v2/integration';
 
 // TODO type generation
 interface EraInfo extends Struct {
@@ -17,7 +17,7 @@ interface EraInfo extends Struct {
 }
 
 @injectable()
-export class DappStakingRepository implements IDappStakRepository {
+export class DappStakingRepository implements IDappStakingRepository {
   constructor(@inject() private api: IApi) {
     Guard.ThrowIfUndefined('api', api);
   }

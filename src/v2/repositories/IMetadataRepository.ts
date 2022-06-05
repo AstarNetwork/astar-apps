@@ -1,4 +1,4 @@
-import { ChainMetadata } from '../models';
+import { ChainMetadata } from 'src/v2/models';
 
 /**
  * Definition of repository for accessing chain metadata.

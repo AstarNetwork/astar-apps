@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { Guard } from '../../common';
-import { IPriceRepository } from '../';
+import { Guard } from 'src/v2//common';
+import { IPriceRepository } from 'src/v2/repositories';
 import { injectable } from 'inversify-props';
 
 @injectable()

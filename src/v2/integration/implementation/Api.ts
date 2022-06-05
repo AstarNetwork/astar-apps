@@ -1,7 +1,7 @@
 import { ApiPromise } from '@polkadot/api';
 import { injectable } from 'inversify';
 import { $api } from 'src/boot/api';
-import { IApi } from '../';
+import { IApi } from 'src/v2/integration';
 
 /**
  * Wrapper arrount Polkadot ApiPromise

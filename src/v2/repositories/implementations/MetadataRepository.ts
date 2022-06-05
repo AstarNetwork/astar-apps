@@ -1,6 +1,6 @@
 import { inject, injectable } from 'inversify-props';
-import { IMetadataRepository } from '../';
-import { ChainMetadata } from '../../models';
+import { IMetadataRepository } from 'src/v2/repositories';
+import { ChainMetadata } from 'src/v2/models';
 import { IApi } from 'src/v2/integration';
 import { Guard } from 'src/v2/common';
 
