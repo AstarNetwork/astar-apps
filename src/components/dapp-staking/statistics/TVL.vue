@@ -24,13 +24,23 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
+import { container, cid } from 'inversify-props';
 import { numFormatter } from 'src/hooks/helper/price';
 import { useTvl } from 'src/hooks';
 import { $api } from 'boot/api';
 import FormatBalance from 'components/common/FormatBalance.vue';
+import { IDappStakingService } from 'src/v2/services';
 export default defineComponent({
   components: { FormatBalance },
   setup() {
+    const getTvlFromService = async (): Promise<void> => {
+      const dappService = container.get<IDappStakingService>(cid.IDappStakingService);
+      const tvlModel = await dappService.getTvl();
+      console.log(tvlModel);
+    };
+
+    getTvlFromService();
+
     const { tvlToken, tvlUsd } = useTvl($api);
 
     return {
