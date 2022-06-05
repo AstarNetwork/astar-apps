@@ -6,7 +6,7 @@ import { AccountInfo } from '@polkadot/types/interfaces';
 import { ISubmittableResult } from '@polkadot/types/types';
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import { getPayload } from 'src/hooks/extrinsic/payload';
-import { useMetamask } from 'src/hooks/custom-signature/useMetamask';
+import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 
 interface CallOptions {
@@ -15,7 +15,7 @@ interface CallOptions {
 }
 
 export function useExtrinsicCall({ onResult, onTransactionError }: CallOptions) {
-  const { requestSignature } = useMetamask();
+  const { requestSignature } = useEvmAccount();
   const store = useStore();
 
   const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);

@@ -1,13 +1,13 @@
 import { ref, watch } from 'vue';
 import { useEthProvider } from './useEthProvider';
 
-export function useMetamask() {
+export function useEvmAccount() {
   const { ethProvider } = useEthProvider();
   const loadedAccounts = ref<string[]>([]);
 
   const requestAccounts = async () => {
     if (!ethProvider.value) {
-      throw new Error('Cannot detect Metamask');
+      throw new Error('Cannot detect any EVM Account');
     }
 
     const accounts = (await ethProvider.value.request({

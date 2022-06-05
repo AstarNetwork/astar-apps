@@ -74,7 +74,7 @@ export const supportWalletObj = {
   },
   [SupportWallet.Talisman]: {
     img: require('/src/assets/img/logo-talisman.svg'),
-    name: 'Talisman',
+    name: 'Talisman (Native)',
     source: SupportWallet.Talisman,
     walletUrl: 'https://app.talisman.xyz/',
     guideUrl: 'https://app.talisman.xyz/',
@@ -131,7 +131,7 @@ export const supportEvmWalletObj = {
   },
   [SupportWallet.Talisman]: {
     img: require('/src/assets/img/logo-talisman.svg'),
-    name: 'Talisman',
+    name: 'Talisman (EVM)',
     source: SupportWallet.Talisman,
     walletUrl: 'https://app.talisman.xyz/',
     guideUrl: 'https://app.talisman.xyz/',
