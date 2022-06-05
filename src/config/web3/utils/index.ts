@@ -54,7 +54,7 @@ export const setupNetwork = async (network: number): Promise<boolean> => {
       });
       return true;
     } catch (error) {
-      console.error('Failed to setup the network in Metamask:', error);
+      console.error('Failed to setup the network in EVM extension:', error);
       return false;
     }
   }

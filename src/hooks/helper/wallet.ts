@@ -75,12 +75,12 @@ export const castMobileSource = (source: string): string => {
 };
 
 export const getEvmProvider = () => {
-  // TODO integrate with other wallet
-  const metamaskProvider = typeof window !== 'undefined' && window.ethereum;
-  return metamaskProvider;
+  // TODO find a way to se if is talisman or metamask
+  const evmProvider = typeof window !== 'undefined' && window.ethereum;
+  return evmProvider;
 };
 
-export const addToMetamask = ({
+export const addToEvmProvider = ({
   tokenAddress,
   symbol,
   decimals,
@@ -120,7 +120,7 @@ export const addToEvmWallet = ({
 }): void => {
   const provider = getEvmProvider();
   if (!provider) return;
-  addToMetamask({ tokenAddress, symbol, decimals, image, provider });
+  addToEvmProvider({ tokenAddress, symbol, decimals, image, provider });
 };
 
 export const getDeepLinkUrl = (wallet: SupportWallet): string | false => {
@@ -135,8 +135,8 @@ export const getDeepLinkUrl = (wallet: SupportWallet): string | false => {
 
 export const checkIsWalletExtension = async (): Promise<boolean> => {
   const isSubstrateDappBrowser = await getInjectedExtensions();
-  const isMetamask = typeof window.ethereum !== 'undefined';
-  return Boolean(isSubstrateDappBrowser.length || isMetamask);
+  const isEvmWalletExtension = typeof window.ethereum !== 'undefined';
+  return Boolean(isSubstrateDappBrowser.length || isEvmWalletExtension);
 };
 
 export const checkIsEthereumWallet = (wallet: SupportWallet): boolean => {

@@ -232,7 +232,7 @@ export const useConnectWallet = () => {
 
   const changeAccount = async (): Promise<void> => {
     const chosenWallet = selectedWallet.value;
-    if (chosenWallet === SupportWallet.MetaMask || chosenWallet === SupportWallet.Wallet3) {
+    if (supportEvmWalletObj.hasOwnProperty(chosenWallet)) {
       modalAccountSelect.value = true;
     } else {
       setWallet(chosenWallet as SupportWallet);

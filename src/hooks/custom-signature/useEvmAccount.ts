@@ -34,7 +34,7 @@ export function useEvmAccount() {
   };
 
   watch(ethProvider, () => {
-    if (ethProvider.value?.isMetaMask) {
+    if (ethProvider.value?.isMetaMask || ethProvider.value?.isTalisman) {
       const ethereum = ethProvider.value;
 
       ethereum.on('accountsChanged', (accounts: string[]) => {
