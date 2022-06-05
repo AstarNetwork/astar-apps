@@ -23,7 +23,7 @@ export function useEthProvider() {
     if (
       typeof window.talismanEth !== 'undefined' &&
       window.talismanEth &&
-      currentWallet.value === SupportWallet.Talisman
+      currentWallet.value === SupportWallet.TalismanEvm
     ) {
       ethProvider.value = window.talismanEth;
     }
