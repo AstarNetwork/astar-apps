@@ -11,11 +11,11 @@
   >
     <div class="tw-text-xl tw-font-semibold tw-mb-4">{{ $t('dappStaking.tvl') }}</div>
     <div class="tw-flex tw-flex-col tw-items-center">
-      <div class="tw-font-bold" :class="tvlUsd === 0 ? 'tw-text-2xl tw-pt-1' : 'tw-text-xl'">
-        <format-balance :balance="tvlToken" />
+      <div class="tw-font-bold" :class="tvl.tvlUsd === 0 ? 'tw-text-2xl tw-pt-1' : 'tw-text-xl'">
+        <format-balance :balance="tvl.tvl" />
       </div>
-      <div v-if="tvlUsd !== 0" class="tw-flex tw-text-xl tw-font-bold">
-        <div>${{ numFormatter(tvlUsd) }}</div>
+      <div v-if="tvl.tvlUsd !== 0" class="tw-flex tw-text-xl tw-font-bold">
+        <div>${{ numFormatter(tvl.tvlUsd) }}</div>
         <div class="tw-ml-1">{{ $t('usd') }}</div>
       </div>
     </div>
@@ -23,29 +23,20 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { container, cid } from 'inversify-props';
+import { defineComponent, computed } from 'vue';
 import { numFormatter } from 'src/hooks/helper/price';
-import { useTvl } from 'src/hooks';
-import { $api } from 'boot/api';
 import FormatBalance from 'components/common/FormatBalance.vue';
-import { IDappStakingService } from 'src/v2/services';
+import { useStore } from 'src/store';
+
 export default defineComponent({
   components: { FormatBalance },
   setup() {
-    const getTvlFromService = async (): Promise<void> => {
-      const dappService = container.get<IDappStakingService>(cid.IDappStakingService);
-      const tvlModel = await dappService.getTvl();
-      console.log(tvlModel);
-    };
-
-    getTvlFromService();
-
-    const { tvlToken, tvlUsd } = useTvl($api);
+    const store = useStore();
+    const tvl = computed(() => store.getters['dapps/getTvl']);
+    store.dispatch('dapps/getTvl');
 
     return {
-      tvlToken,
-      tvlUsd,
+      tvl,
       numFormatter,
     };
   },
