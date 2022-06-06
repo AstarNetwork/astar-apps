@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { describe, it, expect } from '@jest/globals';
+import { describe, it, expect, beforeEach } from '@jest/globals';
 import { resetContainer, cid, container } from 'inversify-props';
 import { IDappStakingRepository, IMetadataRepository, IPriceRepository } from 'src/v2/repositories';
 import { DappStakingRepositoryMock } from 'src/v2/test/mocks/repositories/DappStakingRepositoryMock';
