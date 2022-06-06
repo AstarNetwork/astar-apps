@@ -125,6 +125,8 @@ export default {
       short: 'Claimed rewards: ',
       long: 'Total rewards you have claimed: ',
     },
+    projectUnregistered: 'This project has been unregistered.',
+    fundsWillBeUnstaked: 'Your funds will be unstaked automatically after claiming your rewards.',
     modals: {
       alreadyClaimed: 'Already claimed:',
       contractRewards: 'Contract rewards:',

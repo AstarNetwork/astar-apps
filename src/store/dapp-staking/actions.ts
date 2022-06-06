@@ -11,6 +11,7 @@ import { ISubmittableResult, ITuple } from '@polkadot/types/types';
 import BN from 'bn.js';
 import { $api } from 'boot/api';
 import { addDapp, getDapps, uploadFile } from 'src/hooks/firebase';
+import { json } from 'stream/consumers';
 import { ActionTree, Dispatch } from 'vuex';
 import { StateInterface } from '../index';
 import { signAndSend } from './../../hooks/helper/wallet';
@@ -96,16 +97,12 @@ export const hasExtrinsicFailedEvent = (
 };
 
 const actions: ActionTree<State, StateInterface> = {
-  async getDapps({ commit, dispatch, rootState }) {
+  async getDapps({ commit, dispatch, rootState }, network: string) {
     commit('general/setLoading', true, { root: true });
 
     try {
-      const collectionKey = await getCollectionKey();
-      const collection = await getDapps(collectionKey);
-      commit(
-        'addDapps',
-        collection.docs.map((x) => x.data())
-      );
+      const collection = await getDapps(network.toLowerCase());
+      commit('addDapps', collection);
     } catch (e) {
       const error = e as unknown as Error;
       showError(dispatch, error.message);
@@ -276,6 +273,7 @@ export interface StakeInfo {
   hasStake: boolean;
   stakersCount: number;
   dappAddress?: string;
+  isRegistered: boolean;
 }
 
 export interface ClaimInfo {
