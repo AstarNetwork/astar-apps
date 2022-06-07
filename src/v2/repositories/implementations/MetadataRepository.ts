@@ -2,15 +2,12 @@ import { inject, injectable } from 'inversify-props';
 import { IMetadataRepository } from 'src/v2/repositories';
 import { ChainMetadata } from 'src/v2/models';
 import { IApi } from 'src/v2/integration';
-import { Guard } from 'src/v2/common';
 
 @injectable()
 export class MetadataRepository implements IMetadataRepository {
   private metadata!: ChainMetadata;
 
-  constructor(@inject() private api: IApi) {
-    Guard.ThrowIfUndefined('api', api);
-  }
+  constructor(@inject() private api: IApi) {}
 
   public async getChainMetadata(): Promise<ChainMetadata> {
     if (!this.metadata) {

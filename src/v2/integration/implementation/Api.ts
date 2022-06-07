@@ -5,7 +5,7 @@ import { IApi } from 'src/v2/integration';
 
 /**
  * Wrapper arrount Polkadot ApiPromise
- * Wrapper already created by the portal to be used
+ * ApiPromise already created by the portal to be used for now
  * TODO refactor later to create ApiPromise instance here.
  */
 @injectable()
