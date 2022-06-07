@@ -52,6 +52,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   const evmDestAddress = ref<string>('');
   const evmDestAddressBalance = ref<number>(0);
   const fromAddressBalance = ref<number>(0);
+  const relaychainBal = ref<number>(0);
 
   const { t } = useI18n();
   const store = useStore();
@@ -125,6 +126,27 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     existentialDeposit.value = result;
   };
 
+  const setRelaychainBal = async (): Promise<void> => {
+    if (!relayChainApi || !selectedToken.value) return;
+    await relayChainApi.isReady();
+    const rawBalance = await getRelayChainNativeBal();
+    const decimals = Number(String(selectedToken.value.metadata.decimals));
+    const balance = ethers.utils.formatUnits(rawBalance, decimals).toString();
+    relaychainBal.value = Number(balance);
+  };
+
+  const checkIsEnoughEd = (amount: number): boolean => {
+    const relaychainMinBal = existentialDeposit.value?.relaychainMinBal;
+    if (!relaychainMinBal) return false;
+
+    if (isDeposit.value) {
+      const relayBalAfterTransfer = relaychainBal.value - amount;
+      return relayBalAfterTransfer > relaychainMinBal;
+    } else {
+      return relaychainBal.value > relaychainMinBal;
+    }
+  };
+
   const inputHandler = (event: any): void => {
     amount.value = event.target.value;
     // check if recipient account has non-zero native asset. (it cannot be transferred to an account with 0 nonce)
@@ -132,7 +154,8 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
       !amount.value ||
       Number(amount.value) === 0 ||
       Number(amount.value) > fromAddressBalance.value ||
-      balance.value.lten(0);
+      balance.value.lten(0) ||
+      !checkIsEnoughEd(Number(amount.value));
     errMsg.value = '';
   };
 
@@ -276,7 +299,6 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
           }
           console.log('Send assets from Parachain(EVM)');
         } else {
-          console.log('Send assets from Parachain');
           const paraChainApi = new ParachainApi($api!!);
           const decimals = Number(selectedToken.value.metadata.decimals);
           const txCall = paraChainApi.transferToRelaychain(
@@ -315,12 +337,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     if (!selectedToken.value) return;
 
     if (isDeposit.value) {
-      if (!relayChainApi) return;
-      await relayChainApi.isReady();
-      const rawBalance = await getRelayChainNativeBal();
-      const decimals = Number(String(selectedToken.value.metadata.decimals));
-      const balance = ethers.utils.formatUnits(rawBalance, decimals).toString();
-      fromAddressBalance.value = Number(balance);
+      fromAddressBalance.value = relaychainBal.value;
     } else {
       const address = currentAccount.value;
       // Memo: Withdraw
@@ -378,7 +395,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   );
 
   watchEffect(async () => {
-    await Promise.all([updateFromAddressBalance(), setEvmDestAddressBalance()]);
+    await Promise.all([updateFromAddressBalance(), setEvmDestAddressBalance(), setRelaychainBal()]);
   });
 
   watchEffect(async () => {
@@ -386,7 +403,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   });
 
   const handleUpdate = setInterval(async () => {
-    await Promise.all([updateFromAddressBalance(), setEvmDestAddressBalance()]);
+    await Promise.all([updateFromAddressBalance(), setEvmDestAddressBalance(), setRelaychainBal()]);
   }, 20 * 1000);
 
   onUnmounted(() => {

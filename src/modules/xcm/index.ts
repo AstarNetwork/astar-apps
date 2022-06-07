@@ -21,6 +21,8 @@ export interface ExistentialDeposit {
   amount: string;
   chain: string;
   symbol: string;
+  // Memo: minimum balance keeps in relaychain
+  relaychainMinBal: number;
 }
 
 // Ref: RPC calls -> system -> chain()
