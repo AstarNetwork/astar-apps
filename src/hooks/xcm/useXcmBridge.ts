@@ -136,15 +136,14 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   };
 
   const checkIsEnoughEd = (amount: number): boolean => {
-    if (!existentialDeposit.value?.relaychainMinBal) return false;
+    const relaychainMinBal = existentialDeposit.value?.relaychainMinBal;
+    if (!relaychainMinBal) return false;
 
     if (isDeposit.value) {
       const relayBalAfterTransfer = relaychainBal.value - amount;
-      const result = relayBalAfterTransfer > existentialDeposit.value.relaychainMinBal;
-      return result;
+      return relayBalAfterTransfer > relaychainMinBal;
     } else {
-      const result = relaychainBal.value > existentialDeposit.value.relaychainMinBal;
-      return result;
+      return relaychainBal.value > relaychainMinBal;
     }
   };
 
