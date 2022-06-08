@@ -10,7 +10,12 @@ export class CoinGeckoPriceRepository implements IPriceRepository {
 
     const url = `https://api.coingecko.com/api/v3/simple/price?ids=${tokenSymbol}&vs_currencies=usd`;
     const result = await axios.get(url);
-    const price = result.data[tokenSymbol].usd;
-    return Number(price);
+
+    if (result.data[tokenSymbol]) {
+      const price = result.data[tokenSymbol].usd;
+      return Number(price);
+    }
+
+    return 0;
   }
 }

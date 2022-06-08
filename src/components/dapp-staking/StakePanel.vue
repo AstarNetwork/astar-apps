@@ -83,6 +83,8 @@
 
 <script lang="ts">
 import { ISubmittableResult } from '@polkadot/types/types';
+import { container, cid } from 'inversify-props';
+import { IDappStakingService } from 'src/v2/services';
 import { $api } from 'boot/api';
 import Button from 'components/common/Button.vue';
 import StakeModal from 'components/dapp-staking/modals/StakeModal.vue';
@@ -217,24 +219,31 @@ export default defineComponent({
           console.warn('No stakeInfo available. The store is unable to check some constraints.');
         }
 
-        const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
-          customMsg.value = t('dappStaking.toast.staked', {
-            amount: stakeAmount,
-            dapp: props.dapp.name,
-          });
-          return await handleResult(result);
-        };
+        const dappStakingService = container.get<IDappStakingService>(cid.IDappStakingService);
+        await dappStakingService.stake(
+          props.dapp.address,
+          '5DUCu1DL27kB8WViDKogZnezzECcTamY7RWjFBNP2SBJXzwS',
+          amount
+        );
 
-        await signAndSend({
-          transaction,
-          senderAddress: stakeData.address,
-          substrateAccounts: substrateAccounts.value,
-          isCustomSignature: isCustomSig.value,
-          txResHandler,
-          handleCustomExtrinsic,
-          dispatch: store.dispatch,
-          tip: selectedTip.value.price,
-        });
+        // const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
+        //   customMsg.value = t('dappStaking.toast.staked', {
+        //     amount: stakeAmount,
+        //     dapp: props.dapp.name,
+        //   });
+        //   return await handleResult(result);
+        // };
+
+        // await signAndSend({
+        //   transaction,
+        //   senderAddress: stakeData.address,
+        //   substrateAccounts: substrateAccounts.value,
+        //   isCustomSignature: isCustomSig.value,
+        //   txResHandler,
+        //   handleCustomExtrinsic,
+        //   dispatch: store.dispatch,
+        //   tip: selectedTip.value.price,
+        // });
       } catch (error) {
         console.error(error);
       } finally {
