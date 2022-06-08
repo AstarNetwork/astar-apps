@@ -3,20 +3,22 @@ import { ISubmittableResult, Signer, ITuple } from '@polkadot/types/types';
 import { InjectedExtension } from '@polkadot/extension-inject/types';
 import { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
 import { EventRecord, DispatchError } from '@polkadot/types/interfaces';
-import { injectable } from 'inversify-props';
+import { inject, injectable } from 'inversify-props';
 import { IWalletService } from 'src/v2/services';
 import { Account } from 'src/v2/models';
+import { IMetadataRepository } from 'src/v2/repositories';
 
 @injectable()
 export class PolkadotWalletService implements IWalletService {
   private readonly extensions: InjectedExtension[] = [];
+
+  constructor(@inject() private metadataRepository: IMetadataRepository) {}
 
   public async signAndSend(
     extrinsic: SubmittableExtrinsic<'promise', ISubmittableResult>,
     senderAddress: string
   ): Promise<void> {
     await this.checkExtension();
-
     await extrinsic.signAndSend(
       senderAddress,
       {
@@ -25,6 +27,9 @@ export class PolkadotWalletService implements IWalletService {
       },
       (result) => {
         if (result.isFinalized) {
+          if (this.isExtrinsicFailed(result.events)) {
+            // TODO raise event
+          }
         }
       }
     );
@@ -33,7 +38,8 @@ export class PolkadotWalletService implements IWalletService {
 
   private async getAccounts(): Promise<Account[]> {
     await this.checkExtension();
-    const accounts = await web3Accounts();
+    const metadata = await this.metadataRepository.getChainMetadata();
+    const accounts = await web3Accounts({ ss58Format: metadata.ss58format });
     const result = accounts.map((x) => {
       return new Account(x.address, x.meta.genesisHash, x.meta.name, x.meta.source);
     });

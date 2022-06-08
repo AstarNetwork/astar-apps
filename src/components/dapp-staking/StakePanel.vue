@@ -220,11 +220,7 @@ export default defineComponent({
         }
 
         const dappStakingService = container.get<IDappStakingService>(cid.IDappStakingService);
-        await dappStakingService.stake(
-          props.dapp.address,
-          '5DUCu1DL27kB8WViDKogZnezzECcTamY7RWjFBNP2SBJXzwS',
-          amount
-        );
+        await dappStakingService.stake(props.dapp.address, currentAddress.value, amount);
 
         // const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
         //   customMsg.value = t('dappStaking.toast.staked', {
