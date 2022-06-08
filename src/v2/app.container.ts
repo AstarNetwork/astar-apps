@@ -9,8 +9,10 @@ import { IDappStakingService, IWalletService, WalletType } from './services';
 import { DappStakingService, PolkadotWalletService } from './services/implementations';
 import { Symbols } from './symbols';
 import { MetadataRepository } from './repositories/implementations/MetadataRepository';
+import { IEventAggregator, EventAggregator } from './messaging';
 
 export default function buildDependencyContainer(): void {
+  container.addSingleton<IEventAggregator>(EventAggregator);
   container.addSingleton<IApi>(Api);
 
   // need to specify id because not following name convention IService -> Service

@@ -31,13 +31,16 @@
 <script lang="ts">
 // Fix for breaking change introduced in polkadot js v7.x
 // https://polkadot.js.org/docs/api/FAQ/#since-upgrading-to-the-7x-series-typescript-augmentation-is-missing
+import 'reflect-metadata';
 import '@polkadot/api-augment';
 import { defineComponent, computed } from 'vue';
+import { container, cid } from 'inversify-props';
 import DashboardLayout from 'layouts/DashboardLayout.vue';
 import { useStore } from 'src/store';
 import ModalLoading from 'components/common/ModalLoading.vue';
 import AlertBox from 'components/common/AlertBox.vue';
 import 'animate.css';
+import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 
 export default defineComponent({
   name: 'App',
@@ -50,6 +53,25 @@ export default defineComponent({
     const store = useStore();
     const isLoading = computed(() => store.getters['general/isLoading']);
     const showAlert = computed(() => store.getters['general/showAlert']);
+
+    // Handle busy and extrisnsic call status messages.
+    const eventAggregator = container.get<IEventAggregator>(cid.IEventAggregator);
+    eventAggregator.subscribe(ExtrinsicStatusMessage.name, (m) => {
+      const message = m as ExtrinsicStatusMessage;
+      store.dispatch(
+        'general/showAlertMsg',
+        {
+          msg: message.message,
+          alertType: message.success ? 'success' : 'error',
+        },
+        { root: true }
+      );
+    });
+
+    eventAggregator.subscribe(BusyMessage.name, (m) => {
+      const message = m as BusyMessage;
+      store.commit('general/setLoading', message.isBusy, { root: true });
+    });
 
     return {
       isLoading,

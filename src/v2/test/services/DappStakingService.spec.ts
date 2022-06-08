@@ -16,6 +16,7 @@ describe('DappStakingService.ts', () => {
       DappStakingRepositoryMock,
       cid.IDappStakingRepository
     );
+
     container.addSingleton<IPriceRepository>(PriceRepositoryMock, Symbols.CoinGecko);
     container.addSingleton<IMetadataRepository>(MetadataRepositoryMock, cid.IMetadataRepository);
     container.addSingleton<IDappStakingService>(DappStakingService);

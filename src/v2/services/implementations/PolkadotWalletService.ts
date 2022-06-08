@@ -7,33 +7,45 @@ import { inject, injectable } from 'inversify-props';
 import { IWalletService } from 'src/v2/services';
 import { Account } from 'src/v2/models';
 import { IMetadataRepository } from 'src/v2/repositories';
+import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 
 @injectable()
 export class PolkadotWalletService implements IWalletService {
   private readonly extensions: InjectedExtension[] = [];
 
-  constructor(@inject() private metadataRepository: IMetadataRepository) {}
+  constructor(
+    @inject() private metadataRepository: IMetadataRepository,
+    @inject() private eventAggregator: IEventAggregator
+  ) {}
 
   public async signAndSend(
     extrinsic: SubmittableExtrinsic<'promise', ISubmittableResult>,
     senderAddress: string
   ): Promise<void> {
-    await this.checkExtension();
-    await extrinsic.signAndSend(
-      senderAddress,
-      {
-        signer: await this.getSigner(senderAddress),
-        nonce: -1,
-      },
-      (result) => {
-        if (result.isFinalized) {
-          if (this.isExtrinsicFailed(result.events)) {
-            // TODO raise event
+    try {
+      await this.checkExtension();
+      await extrinsic.signAndSend(
+        senderAddress,
+        {
+          signer: await this.getSigner(senderAddress),
+          nonce: -1,
+        },
+        (result) => {
+          if (result.isFinalized) {
+            if (!this.isExtrinsicFailed(result.events)) {
+              this.eventAggregator.publish(new ExtrinsicStatusMessage(true, 'Success'));
+            }
+
+            this.eventAggregator.publish(new BusyMessage(false));
+          } else {
+            this.eventAggregator.publish(new BusyMessage(true));
           }
         }
-      }
-    );
-    // TODO handle errors
+      );
+    } catch (e) {
+      const error = e as unknown as Error;
+      this.eventAggregator.publish(new ExtrinsicStatusMessage(false, error.message));
+    }
   }
 
   private async getAccounts(): Promise<Account[]> {
@@ -84,12 +96,13 @@ export class PolkadotWalletService implements IWalletService {
 
   private isExtrinsicFailed(events: EventRecord[]): boolean {
     let result = false;
+    let message = '';
     events
       .filter((record): boolean => !!record.event && record.event.section !== 'democracy')
       .map(({ event: { data, method, section } }) => {
         if (section === 'system' && method === 'ExtrinsicFailed') {
           const [dispatchError] = data as unknown as ITuple<[DispatchError]>;
-          let message = dispatchError.type.toString();
+          message = dispatchError.type.toString();
 
           if (dispatchError.isModule) {
             try {
@@ -105,12 +118,6 @@ export class PolkadotWalletService implements IWalletService {
             message = `${dispatchError.type}.${dispatchError.asToken.type}`;
           }
 
-          // TODO send messages with transaction status
-          // if (setMessage) {
-          //   setMessage(message);
-          // }
-
-          // showError(dispatch, `action: ${section}.${method} ${message}`);
           result = true;
         } else if (section === 'utility' && method === 'BatchInterrupted') {
           // TODO there should be a better way to extract error,
@@ -118,10 +125,14 @@ export class PolkadotWalletService implements IWalletService {
           const anyData = data as any;
           const error = anyData[1].registry.findMetaError(anyData[1].asModule);
           let message = `${error.section}.${error.name}`;
-          // showError(dispatch, `action: ${section}.${method} ${message}`);
+          message = `action: ${section}.${method} ${message}`;
           result = true;
         }
       });
+
+    if (result) {
+      this.eventAggregator.publish(new ExtrinsicStatusMessage(false, message));
+    }
 
     return result;
   }
