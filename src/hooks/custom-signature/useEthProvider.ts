@@ -9,8 +9,6 @@ export function useEthProvider() {
   const store = useStore();
   const currentWallet = computed(() => store.getters['general/currentWallet']);
 
-  // TODO find a way to se if is talisman or metamask
-
   watchEffect(() => {
     if (
       typeof window.ethereum !== 'undefined' &&

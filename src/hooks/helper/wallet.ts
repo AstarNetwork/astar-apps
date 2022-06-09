@@ -10,6 +10,8 @@ import { Dispatch } from 'vuex';
 import { SubstrateAccount } from './../../store/general/state';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ethers } from 'ethers';
+import { useStore } from 'src/store';
+import { computed } from 'vue';
 
 export const getInjectedExtensions = async (forceRequest = false): Promise<any[]> => {
   const selectedAddress = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
@@ -75,8 +77,23 @@ export const castMobileSource = (source: string): string => {
 };
 
 export const getEvmProvider = () => {
-  // TODO find a way to se if is talisman or metamask
-  const evmProvider = typeof window !== 'undefined' && window.ethereum;
+  const store = useStore();
+  const currentWallet = computed(() => store.getters['general/currentWallet']);
+
+  let evmProvider;
+
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  if (currentWallet.value === SupportWallet.TalismanEvm) {
+    evmProvider = window.talismanEth;
+  }
+
+  if (currentWallet.value === SupportWallet.MetaMask) {
+    evmProvider = window.ethereum;
+  }
+
   return evmProvider;
 };
 
