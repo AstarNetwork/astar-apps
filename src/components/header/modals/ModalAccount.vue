@@ -87,6 +87,7 @@ import { castMobileSource, checkIsEthereumWallet } from 'src/hooks/helper/wallet
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
 import { computed, defineComponent, PropType, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   components: {
@@ -133,6 +134,7 @@ export default defineComponent({
 
     const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
     const store = useStore();
+    const { t } = useI18n();
 
     const substrateAccounts = computed(() => {
       const accounts = store.getters['general/substrateAccounts'];
@@ -182,7 +184,7 @@ export default defineComponent({
     const copyAddress = (address: string) => {
       copy(address);
       store.dispatch('general/showAlertMsg', {
-        msg: 'Copy address success!',
+        msg: t('toast.copyAddressSuccessfully'),
         alertType: 'success',
       });
     };
