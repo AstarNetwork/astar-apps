@@ -2,7 +2,7 @@ import { getProviderIndex } from 'src/config/chainEndpoints';
 import { ChainAsset } from 'src/hooks/xcm/useXcmAssets';
 import { getXcmToken, XcmTokenInformation } from 'src/modules/xcm';
 import { useStore } from 'src/store';
-import { computed, Ref, ref } from 'vue';
+import { computed, Ref } from 'vue';
 
 export function useXcmTokenDetails(selectedToken: Ref<ChainAsset>) {
   const store = useStore();
@@ -37,13 +37,6 @@ export function useXcmTokenDetails(selectedToken: Ref<ChainAsset>) {
     return tokenDetails.value.isNativeToken;
   });
 
-  const isDisplayToken = computed<boolean>(() => {
-    // Todo: fetch the balance in relaychain
-    const isDisplay =
-      Number(selectedToken?.value.userBalance) > 0 || tokenDetails.value?.isXcmCompatible;
-    return isDisplay || false;
-  });
-
   const isXcmCompatible = computed<boolean>(() => {
     if (!tokenDetails.value) return false;
     return tokenDetails.value.isXcmCompatible;
@@ -53,7 +46,6 @@ export function useXcmTokenDetails(selectedToken: Ref<ChainAsset>) {
     tokenImage,
     isNativeToken,
     tokenDetails,
-    isDisplayToken,
     isXcmCompatible,
   };
 }

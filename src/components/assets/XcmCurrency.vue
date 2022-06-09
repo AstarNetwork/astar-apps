@@ -95,10 +95,16 @@ export default defineComponent({
       required: true,
     },
   },
-  setup({ token }) {
-    const t = computed(() => token);
-    const { tokenImage, tokenDetails, isDisplayToken, isXcmCompatible } = useXcmTokenDetails(t);
+  setup(props) {
+    const t = computed(() => props.token);
+    const { tokenImage, tokenDetails, isXcmCompatible } = useXcmTokenDetails(t);
     const store = useStore();
+
+    const isDisplayToken = computed<boolean>(() => {
+      // Todo: fetch the balance in relaychain
+      const isDisplay = Number(props.token.userBalance) > 0 || tokenDetails.value?.isXcmCompatible;
+      return isDisplay || false;
+    });
 
     const explorerLink = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
