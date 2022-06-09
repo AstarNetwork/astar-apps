@@ -44,14 +44,12 @@ export class DappStakingService implements IDappStakingService {
     Guard.ThrowIfNegative('amount', amount);
 
     const api = await this.api.getApi();
-    const stakeCall = api.tx.dappsStaking.bondAndStake(
-      this.getAddressEnum(contractAddress),
-      amount
+    const stakeCall = await this.dappStakingRepository.getBondAndStakeCall(contractAddress, amount);
+    this.wallet.signAndSend(
+      stakeCall,
+      stakerAddress,
+      undefined,
+      `You successfully staked to ${contractAddress}`
     );
-    this.wallet.signAndSend(stakeCall, stakerAddress);
-  }
-
-  private getAddressEnum(address: string) {
-    return { Evm: address };
   }
 }

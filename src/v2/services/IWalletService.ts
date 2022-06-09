@@ -6,5 +6,10 @@ export enum WalletType {
 }
 
 export interface IWalletService {
-  signAndSend(extrinsic: SubmittableExtrinsic<'promise'>, senderAddress: string): Promise<void>;
+  signAndSend(
+    extrinsic: SubmittableExtrinsic<'promise'>,
+    senderAddress: string,
+    tip?: string,
+    successMessage?: string
+  ): Promise<void>;
 }

@@ -3,6 +3,7 @@ import { ISubmittableResult, Signer } from '@polkadot/types/types';
 import { InjectedExtension } from '@polkadot/extension-inject/types';
 import { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
 import { inject, injectable } from 'inversify-props';
+import { ethers } from 'ethers';
 import { IWalletService } from 'src/v2/services';
 import { Account } from 'src/v2/models';
 import { IMetadataRepository } from 'src/v2/repositories';
@@ -22,7 +23,9 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
 
   public async signAndSend(
     extrinsic: SubmittableExtrinsic<'promise', ISubmittableResult>,
-    senderAddress: string
+    senderAddress: string,
+    tip?: string,
+    successMessage?: string
   ): Promise<void> {
     try {
       await this.checkExtension();
@@ -31,11 +34,17 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
         {
           signer: await this.getSigner(senderAddress),
           nonce: -1,
+          tip: tip ? ethers.utils.parseEther(String(tip)).toString() : '1',
         },
         (result) => {
           if (result.isFinalized) {
             if (!this.isExtrinsicFailed(result.events)) {
-              this.eventAggregator.publish(new ExtrinsicStatusMessage(true, 'Success'));
+              this.eventAggregator.publish(
+                new ExtrinsicStatusMessage(
+                  true,
+                  successMessage ?? 'Transaction successfully executed'
+                )
+              );
             }
 
             this.eventAggregator.publish(new BusyMessage(false));
