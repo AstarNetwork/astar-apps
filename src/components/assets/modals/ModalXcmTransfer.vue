@@ -87,7 +87,7 @@
         />
 
         <div v-if="errMsg && toAddress" class="rows__row--error">
-          <span class="text--error">{{ errMsg }}</span>
+          <span class="text--error"> {{ $t(errMsg) }}</span>
         </div>
       </div>
       <div class="wrapper__row--button">

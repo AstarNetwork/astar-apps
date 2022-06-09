@@ -1,3 +1,4 @@
+import { useI18n } from 'vue-i18n';
 import { computed } from 'vue';
 import { useStore } from 'src/store';
 import { $api } from 'boot/api';
@@ -17,6 +18,7 @@ interface CallOptions {
 export function useExtrinsicCall({ onResult, onTransactionError }: CallOptions) {
   const { requestSignature } = useMetamask();
   const store = useStore();
+  const { t } = useI18n();
 
   const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
   const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
@@ -41,7 +43,7 @@ export function useExtrinsicCall({ onResult, onTransactionError }: CallOptions) 
         .catch((e: Error) => onTransactionError(e));
     } else {
       store.dispatch('general/showAlertMsg', {
-        msg: 'Unable to to callculate message payload.',
+        msg: t('toast.unableCalculateMsgPayload'),
         alertType: 'error',
       });
     }
