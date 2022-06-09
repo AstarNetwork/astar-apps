@@ -11,11 +11,11 @@
   >
     <div class="tw-text-xl tw-font-semibold tw-mb-4">{{ $t('dappStaking.tvl') }}</div>
     <div class="tw-flex tw-flex-col tw-items-center">
-      <div class="tw-font-bold" :class="tvlUsd === 0 ? 'tw-text-2xl tw-pt-1' : 'tw-text-xl'">
-        <format-balance :balance="tvlToken" />
+      <div class="tw-font-bold" :class="tvl.tvlUsd === 0 ? 'tw-text-2xl tw-pt-1' : 'tw-text-xl'">
+        <format-balance :balance="tvl.tvl" />
       </div>
-      <div v-if="tvlUsd !== 0" class="tw-flex tw-text-xl tw-font-bold">
-        <div>${{ numFormatter(tvlUsd) }}</div>
+      <div v-if="tvl.tvlUsd !== 0" class="tw-flex tw-text-xl tw-font-bold">
+        <div>${{ numFormatter(tvl.tvlUsd) }}</div>
         <div class="tw-ml-1">{{ $t('usd') }}</div>
       </div>
     </div>
@@ -23,19 +23,20 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, computed } from 'vue';
 import { numFormatter } from 'src/hooks/helper/price';
-import { useTvl } from 'src/hooks';
-import { $api } from 'boot/api';
 import FormatBalance from 'components/common/FormatBalance.vue';
+import { useStore } from 'src/store';
+
 export default defineComponent({
   components: { FormatBalance },
   setup() {
-    const { tvlToken, tvlUsd } = useTvl($api);
+    const store = useStore();
+    const tvl = computed(() => store.getters['dapps/getTvl']);
+    store.dispatch('dapps/getTvl');
 
     return {
-      tvlToken,
-      tvlUsd,
+      tvl,
       numFormatter,
     };
   },

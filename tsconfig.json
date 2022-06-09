@@ -3,5 +3,6 @@
   "compilerOptions": {
     "baseUrl": ".",
     "esModuleInterop": true,
+    "experimentalDecorators": true,
   }
 }

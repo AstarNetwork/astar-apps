@@ -79,19 +79,29 @@ export default boot(async ({ store }) => {
   $api = api;
   $endpoint.value = endpoint;
 
+  const seen = new Set();
+  const accountMap: { address: string; name: string; source: string }[] = [];
   keyring.accounts.subject.subscribe((accounts) => {
     if (accounts) {
       const accountArray = objToArray(accounts);
-      const accountMap = accountArray.map((account) => {
+      accountArray.forEach((account) => {
         const { address, meta } = account.json;
-        return {
-          address,
-          name: meta.name.replace('\n              ', ''),
-          source: meta.source,
-        };
-      });
+        const source = meta.source;
+        const addressWithSource = address + source;
+        const isSeen = seen.has(addressWithSource);
 
-      store.commit('general/setSubstrateAccounts', accountMap);
+        if (!isSeen) {
+          const data = {
+            address,
+            name: meta.name.replace('\n              ', ''),
+            source,
+          };
+
+          seen.add(addressWithSource);
+          accountMap.push(data);
+          store.commit('general/setSubstrateAccounts', accountMap);
+        }
+      });
     }
   });
 

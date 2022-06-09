@@ -1,3 +1,4 @@
+import { useI18n } from 'vue-i18n';
 import { useGasPrice } from './useGasPrice';
 import { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
@@ -16,6 +17,7 @@ export function useEvmDeposit(fn?: () => void) {
   const isEvmDeposit = ref<boolean>(false);
   const { currentAccount } = useAccount();
   const store = useStore();
+  const { t } = useI18n();
   const isLoading = computed(() => store.getters['general/isLoading']);
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
   const { selectedTip, nativeTipPrice, setSelectedTip } = useGasPrice();
@@ -53,7 +55,7 @@ export function useEvmDeposit(fn?: () => void) {
   const sendTransaction = async (amount: number) => {
     if (Number(amount) === 0) {
       store.dispatch('general/showAlertMsg', {
-        msg: 'The amount of token to be transmitted must not be zero',
+        msg: t('toast.amountMustNotBeZero'),
         alertType: 'error',
       });
       return;

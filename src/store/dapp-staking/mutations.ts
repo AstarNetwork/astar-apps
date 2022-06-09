@@ -1,3 +1,4 @@
+import { TvlModel } from 'src/v2/models';
 import { MutationTree } from 'vuex';
 import { DappStateInterface as State, DappItem } from './state';
 
@@ -44,6 +45,10 @@ const mutation: MutationTree<State> & ContractsMutations = {
 
   setIsPalletDisabled(state: State, payload: boolean) {
     state.isPalletDisabled = payload;
+  },
+
+  setTvl(state: State, payload: TvlModel) {
+    state.tvl = payload;
   },
 };
 
