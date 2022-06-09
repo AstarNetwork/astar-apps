@@ -15,7 +15,7 @@ export {
   sendNativeTokenTransaction,
 } from './utils';
 
-export { contractInstance, Staking } from './contracts';
+export { contractInstance, Staking, XCM } from './contracts';
 
 export type TNetworkId = endpointKey.SHIDEN | endpointKey.SHIBUYA | endpointKey.ASTAR;
 
