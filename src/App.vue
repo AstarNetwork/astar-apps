@@ -33,7 +33,7 @@
 // https://polkadot.js.org/docs/api/FAQ/#since-upgrading-to-the-7x-series-typescript-augmentation-is-missing
 import 'reflect-metadata';
 import '@polkadot/api-augment';
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, watch } from 'vue';
 import { container, cid } from 'inversify-props';
 import DashboardLayout from 'layouts/DashboardLayout.vue';
 import { useStore } from 'src/store';
@@ -41,6 +41,7 @@ import ModalLoading from 'components/common/ModalLoading.vue';
 import AlertBox from 'components/common/AlertBox.vue';
 import 'animate.css';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
+import { setCurrentWallet } from './v2/app.container';
 
 export default defineComponent({
   name: 'App',
@@ -53,6 +54,7 @@ export default defineComponent({
     const store = useStore();
     const isLoading = computed(() => store.getters['general/isLoading']);
     const showAlert = computed(() => store.getters['general/showAlert']);
+    const isEthWallet = computed<boolean>(() => store.getters['general/isEthWallet']);
 
     // Handle busy and extrisnsic call status messages.
     const eventAggregator = container.get<IEventAggregator>(cid.IEventAggregator);
@@ -71,6 +73,12 @@ export default defineComponent({
     eventAggregator.subscribe(BusyMessage.name, (m) => {
       const message = m as BusyMessage;
       store.commit('general/setLoading', message.isBusy, { root: true });
+    });
+
+    // Handle wallet change so we can inject proper wallet
+    watch([isEthWallet], () => {
+      console.log('is ETH wallet', isEthWallet);
+      setCurrentWallet(isEthWallet.value);
     });
 
     return {

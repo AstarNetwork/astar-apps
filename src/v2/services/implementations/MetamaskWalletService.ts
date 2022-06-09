@@ -1,43 +1,67 @@
 import { SubmittableExtrinsic } from '@polkadot/api-base/types';
 import { ISubmittableResult } from '@polkadot/types/types';
-import { u16, u32, TypeRegistry } from '@polkadot/types';
-import { keccakFromArray } from 'ethereumjs-util';
 import { IWalletService } from 'src/v2/services';
 import { useEthProvider } from 'src/hooks/custom-signature/useEthProvider';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
-import { injectable } from 'inversify-props';
+import { inject, injectable } from 'inversify-props';
+import { IEthCallRepository, ISystemRepository } from 'src/v2/repositories';
+import { Guard } from 'src/v2/common';
+import { WalletService } from 'src/v2/services/implementations';
+import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 
 @injectable()
-export class MetamaskWalletService implements IWalletService {
-  private provider: EthereumProvider | undefined;
-  constructor() {
+export class MetamaskWalletService extends WalletService implements IWalletService {
+  private provider!: EthereumProvider;
+
+  constructor(
+    @inject() private systemRepository: ISystemRepository,
+    @inject() private ethCallRepository: IEthCallRepository,
+    @inject() eventAggregator: IEventAggregator
+  ) {
+    super(eventAggregator);
     const { ethProvider } = useEthProvider();
-    this.provider = ethProvider.value;
+
+    if (ethProvider.value) {
+      this.provider = ethProvider.value;
+    } else {
+      Guard.ThrowIfUndefined('provider', this.provider);
+    }
   }
 
   public async signAndSend(
     extrinsic: SubmittableExtrinsic<'promise', ISubmittableResult>,
     senderAddress: string
   ): Promise<void> {
-    throw new Error('Method not implemented.');
-  }
+    Guard.ThrowIfUndefined('extrinsic', extrinsic);
+    Guard.ThrowIfUndefined('senderAddress', senderAddress);
 
-  private getPayload(
-    method: SubmittableExtrinsic<'promise'>,
-    nonce: u32,
-    networkPrefix: number
-  ): Uint8Array {
-    const methodPayload: Uint8Array = method.toU8a(true).slice(1);
-    const prefix = new u16(new TypeRegistry(), networkPrefix);
-    let payload = new Uint8Array(0);
+    try {
+      const account = await this.systemRepository.getAccountInfo(senderAddress);
+      const payload = this.ethCallRepository.getPayload(extrinsic, account.nonce, 0xff51);
 
-    const payloadLength = prefix.byteLength() + nonce.byteLength() + methodPayload.byteLength;
-    payload = new Uint8Array(payloadLength);
-    payload.set(prefix.toU8a(), 0);
-    payload.set(nonce.toU8a(), prefix.byteLength());
-    payload.set(methodPayload, prefix.byteLength() + nonce.byteLength());
-    const buffer = keccakFromArray(Array.from(payload));
+      const signedPayload = await this.provider.request({
+        method: 'personal_sign',
+        params: ['0xe42A2ADF3BEe1c195f4D72410421ad7908388A6a', payload],
+      });
 
-    return new Uint8Array(buffer);
+      const call = await this.ethCallRepository.getCall(
+        extrinsic,
+        senderAddress,
+        signedPayload as string,
+        account.nonce
+      );
+
+      await call.send((result) => {
+        if (result.isFinalized) {
+          if (!this.isExtrinsicFailed(result.events)) {
+            this.eventAggregator.publish(new ExtrinsicStatusMessage(true, 'Success'));
+          }
+
+          this.eventAggregator.publish(new BusyMessage(false));
+        } else {
+          this.eventAggregator.publish(new BusyMessage(true));
+        }
+      });
+    } catch (e) {}
   }
 }
