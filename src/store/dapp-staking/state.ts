@@ -1,3 +1,6 @@
+import { BN } from '@polkadot/util';
+import { TvlModel } from 'src/v2/models';
+
 export interface DappItem extends LooseObject {
   name: string;
   iconUrl: string;
@@ -31,6 +34,7 @@ export interface DappStateInterface {
   unlockingChunks: number;
   isPalletDisabled: boolean;
   claimedRewards: number;
+  tvl: TvlModel;
 }
 
 export interface LooseObject {
@@ -47,6 +51,7 @@ function state(): DappStateInterface {
     unlockingChunks: 0,
     isPalletDisabled: false,
     claimedRewards: 0,
+    tvl: new TvlModel(new BN(0), 0, 0),
   };
 }
 

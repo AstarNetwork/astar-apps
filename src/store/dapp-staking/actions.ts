@@ -1,3 +1,4 @@
+import { container, cid } from 'inversify-props';
 import { ApiPromise } from '@polkadot/api';
 import { bool, BTreeMap, Struct, u32 } from '@polkadot/types';
 import {
@@ -11,12 +12,12 @@ import { ISubmittableResult, ITuple } from '@polkadot/types/types';
 import BN from 'bn.js';
 import { $api } from 'boot/api';
 import { addDapp, getDapps, uploadFile } from 'src/hooks/firebase';
-import { json } from 'stream/consumers';
 import { ActionTree, Dispatch } from 'vuex';
 import { StateInterface } from '../index';
 import { signAndSend } from './../../hooks/helper/wallet';
 import { SubstrateAccount } from './../general/state';
 import { DappStateInterface as State, NewDappItem } from './state';
+import { IDappStakingService } from 'src/v2/services';
 
 let collectionKey: string;
 
@@ -240,6 +241,19 @@ const actions: ActionTree<State, StateInterface> = {
 
         commit('setIsPalletDisabled', isPalletDisabled);
       }
+    } catch (e) {
+      const error = e as unknown as Error;
+      showError(dispatch, error.message);
+    }
+  },
+
+  async getTvl({ commit, dispatch }) {
+    try {
+      const dappService = container.get<IDappStakingService>(cid.IDappStakingService);
+      const tvl = await dappService.getTvl();
+      commit('setTvl', tvl);
+
+      return tvl;
     } catch (e) {
       const error = e as unknown as Error;
       showError(dispatch, error.message);

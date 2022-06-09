@@ -1,5 +1,6 @@
 import { state } from '@polkadot/types/interfaces/definitions';
 import { stat } from 'fs';
+import { TvlModel } from 'src/v2/models';
 import { GetterTree } from 'vuex';
 import { StateInterface } from '../index';
 import { DappStateInterface as State, DappItem } from './state';
@@ -13,6 +14,7 @@ export interface ContractsGetters {
   getUnlockingChunks(state: State): number;
   getIsPalletDisabled(state: State): boolean;
   getClaimedRewards(state: State): number;
+  getTvl(state: State): TvlModel;
 }
 
 const getters: GetterTree<State, StateInterface> & ContractsGetters = {
@@ -24,6 +26,7 @@ const getters: GetterTree<State, StateInterface> & ContractsGetters = {
   getUnlockingChunks: (state) => state.unlockingChunks,
   getIsPalletDisabled: (state) => state.isPalletDisabled,
   getClaimedRewards: (state) => state.claimedRewards,
+  getTvl: (state) => state.tvl,
 };
 
 export default getters;
