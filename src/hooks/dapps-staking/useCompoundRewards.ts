@@ -1,3 +1,4 @@
+import { useI18n } from 'vue-i18n';
 import { useGasPrice } from './../useGasPrice';
 import { Struct, u32, Vec } from '@polkadot/types';
 import { Balance } from '@polkadot/types/interfaces';
@@ -36,6 +37,7 @@ interface AccountLedger extends Struct {
 
 export function useCompoundRewards() {
   const store = useStore();
+  const { t } = useI18n();
   const { isCustomSig, handleCustomExtrinsic } = useCustomSignature({});
   const currentAddress = computed(() => store.getters['general/selectedAddress']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
@@ -92,7 +94,7 @@ export function useCompoundRewards() {
               store.dispatch(
                 'general/showAlertMsg',
                 {
-                  msg: 'You successfully set reward destination.',
+                  msg: t('dappStaking.toast.successfullySetRewardDest'),
                   alertType: 'success',
                 },
                 { root: true }
@@ -100,7 +102,9 @@ export function useCompoundRewards() {
               resolve(true);
             } else {
               if (errorMessage.includes('TooManyEraStakeValues')) {
-                errorMessage = `${errorMessage} - Disable compounding, claim your rewards and then enable compounding again.`;
+                errorMessage = t('dappStaking.toast.requiredClaimFirstCompounding', {
+                  message: errorMessage,
+                });
                 resolve(false);
               }
             }

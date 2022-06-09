@@ -24,7 +24,17 @@ export default {
   alert: 'Alert',
   max: 'Max',
   warning: {
+    insufficientBalance: 'Insufficient balance',
     insufficientFee: 'Warning! Transaction might failed due to insufficient fee',
+    inputtedInvalidDestAddress: 'Inputted invalid destination address',
+    selectedInvalidNetworkInWallet: 'Selected invalid network in your wallet',
+  },
+  toast: {
+    transactionFailed: 'Transaction failed with error: {message}',
+    completedHash: 'Completed at block hash #{hash}',
+    unableCalculateMsgPayload: 'Unable to calculate the message payload',
+    amountMustNotBeZero: 'The amount of token to be transmitted must not be zero',
+    copyAddressSuccessfully: 'Copy address success!',
   },
   common: {
     updateMetadata: 'Update Metadata',
@@ -113,7 +123,7 @@ export default {
       'By turning on the Auto compound, your rewards will re-stake after claiming.',
     view: 'View',
     unclaimedRewards: 'Unclaimed Rewards',
-    unclaimedRewardsTooltip: 'Currently we are working on displaying number of unclaimed era.',
+    unclaimedRewardsTooltip: 'Currently we are working on displaying the number of unclaimed eras.',
     palletDisabled:
       'Dapps staking is in maintenance mode. All actions are temporary disabled, but you can still browse dapps.',
     turnOn: 'Turn on',
@@ -165,6 +175,12 @@ export default {
     toast: {
       staked: 'You staked {amount} on {dapp}',
       unstaked: 'You unstaked {amount} on {dapp}',
+      successfullyClaimed: 'Successfully claimed {amount}',
+      requiredClaimFirst: 'Please claim your rewards before sending transaction',
+      requiredClaimFirstCompounding:
+        '{message} -Disable compounding, claim your rewards and then enable compounding again',
+      successfullyWithdrew: 'Balance is successfully withdrew',
+      successfullySetRewardDest: 'You successfully set reward destination',
     },
     contracts: {
       file: 'File: {name}',

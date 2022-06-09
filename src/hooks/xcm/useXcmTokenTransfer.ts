@@ -58,7 +58,7 @@ export function useXcmTokenTransfer(selectedToken: Ref<ChainAsset>) {
     const fromAccountBalance = selectedToken.value ? Number(selectedToken.value.userBalance) : 0;
     try {
       if (transferAmtRef > fromAccountBalance) {
-        errMsg.value = 'Insufficient balance';
+        errMsg.value = 'warning.insufficientBalance';
       } else {
         errMsg.value = '';
       }

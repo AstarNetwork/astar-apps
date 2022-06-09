@@ -98,6 +98,7 @@ import {
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import copy from 'copy-to-clipboard';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   props: {
@@ -131,6 +132,7 @@ export default defineComponent({
     const { iconWallet } = useWalletIcon();
 
     const store = useStore();
+    const { t } = useI18n();
     const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
 
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
@@ -151,7 +153,7 @@ export default defineComponent({
     const copyAddress = () => {
       copy(currentAccount.value);
       store.dispatch('general/showAlertMsg', {
-        msg: 'Copy address success!',
+        msg: t('toast.copyAddressSuccessfully'),
         alertType: 'success',
       });
     };
