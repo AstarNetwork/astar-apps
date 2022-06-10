@@ -4,15 +4,17 @@
   display: grid;
   row-gap: 16px;
   margin-bottom: 40px;
-  position: relative;
 }
 
-.rows__row--error {
-  position: absolute;
-  bottom: -26px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
+.row--box-error {
+  padding: 10px 20px;
+  border-radius: 6px;
+  width: 344px;
+  margin-bottom: 24px;
+  margin-top: -14px;
+  border: 1px solid $warning-red;
+  background: $warning-red;
+  text-align: left;
 }
 
 .rows__row--wrong-evm {
@@ -25,7 +27,7 @@
 .box--warning {
   display: grid;
   row-gap: 12px;
-  padding: 20px 16px;
+  padding: 10px 16px;
   border-radius: 6px;
   width: 344px;
   background: transparent;

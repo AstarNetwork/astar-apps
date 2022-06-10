@@ -11,7 +11,7 @@ import { useMetamask } from 'src/hooks/custom-signature/useMetamask';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 
 interface CallOptions {
-  onResult: (_: ISubmittableResult) => void;
+  onResult: (_: ISubmittableResult) => Promise<boolean>;
   onTransactionError: (_: Error) => void;
 }
 
@@ -39,8 +39,11 @@ export function useExtrinsicCall({ onResult, onTransactionError }: CallOptions) 
         account.nonce
       );
       call
-        ?.send((result: ISubmittableResult) => onResult(result))
-        .catch((e: Error) => onTransactionError(e));
+        ?.send(async (result: ISubmittableResult) => {
+          await onResult(result);
+        })
+        .catch((e: Error) => onTransactionError(e))
+        .finally(() => store.commit('general/setLoading', false));
     } else {
       store.dispatch('general/showAlertMsg', {
         msg: t('toast.unableCalculateMsgPayload'),

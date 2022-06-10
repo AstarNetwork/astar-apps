@@ -19,6 +19,7 @@ export function useXcmTokenTransfer(selectedToken: Ref<ChainAsset>) {
   const fromAddressBalance = ref<number>(0);
   const toAddress = ref<string>('');
   const errMsg = ref<string>('');
+  const isChecked = ref<boolean>(false);
 
   const { t } = useI18n();
   const store = useStore();
@@ -34,7 +35,7 @@ export function useXcmTokenTransfer(selectedToken: Ref<ChainAsset>) {
       Number(selectedToken.value.userBalance) < Number(transferAmt.value);
     const noAddress = !toAddress.value;
 
-    return errMsg.value !== '' || isLessAmount || noAddress;
+    return errMsg.value !== '' || isLessAmount || noAddress || !isChecked.value;
   });
 
   const inputHandler = (event: any): void => {
@@ -46,6 +47,7 @@ export function useXcmTokenTransfer(selectedToken: Ref<ChainAsset>) {
     transferAmt.value = '';
     toAddress.value = '';
     errMsg.value = '';
+    isChecked.value = false;
     toAddressBalance.value = 0;
   };
 
@@ -56,9 +58,14 @@ export function useXcmTokenTransfer(selectedToken: Ref<ChainAsset>) {
   const setErrorMsg = (): void => {
     const transferAmtRef = Number(transferAmt.value);
     const fromAccountBalance = selectedToken.value ? Number(selectedToken.value.userBalance) : 0;
+    const isValidDestAddress =
+      isValidAddressPolkadotAddress(toAddress.value) || isValidEvmAddress(toAddress.value);
+
     try {
       if (transferAmtRef > fromAccountBalance) {
         errMsg.value = 'warning.insufficientBalance';
+      } else if (toAddress.value && !isValidDestAddress) {
+        errMsg.value = 'warning.inputtedInvalidDestAddress';
       } else {
         errMsg.value = '';
       }
@@ -79,18 +86,6 @@ export function useXcmTokenTransfer(selectedToken: Ref<ChainAsset>) {
     try {
       if (!selectedToken?.value) {
         throw Error('Token is not selected');
-      }
-
-      const isValidSS58Address =
-        isValidAddressPolkadotAddress(currentAccount.value) &&
-        isValidAddressPolkadotAddress(toAddress);
-
-      if (!isValidSS58Address && !isValidEvmAddress(toAddress)) {
-        store.dispatch('general/showAlertMsg', {
-          msg: 'assets.invalidAddress',
-          alertType: 'error',
-        });
-        return;
       }
 
       // check if recipient account has non-zero native asset. (it cannot be transferred to an account with 0 nonce)
@@ -154,6 +149,7 @@ export function useXcmTokenTransfer(selectedToken: Ref<ChainAsset>) {
     toAddress,
     errMsg,
     isDisabledTransfer,
+    isChecked,
     setSelectedTip,
     inputHandler,
     resetStates,

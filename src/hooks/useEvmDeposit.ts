@@ -64,7 +64,7 @@ export function useEvmDeposit(fn?: () => void) {
   };
 
   watch(
-    [$api, currentAccount, isLoading],
+    [currentAccount, isLoading],
     async () => {
       const currentAccountRef = currentAccount.value;
       if (!currentAccountRef) return;

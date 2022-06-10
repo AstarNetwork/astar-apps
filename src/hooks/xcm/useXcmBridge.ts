@@ -127,7 +127,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   };
 
   const setRelaychainBal = async (): Promise<void> => {
-    if (!relayChainApi || !selectedToken.value) return;
+    if (!relayChainApi || !selectedToken.value || selectedToken.value.metadata === null) return;
     await relayChainApi.isReady();
     const rawBalance = await getRelayChainNativeBal();
     const decimals = Number(String(selectedToken.value.metadata.decimals));

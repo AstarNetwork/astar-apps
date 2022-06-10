@@ -33,7 +33,6 @@ export function useCustomSignature({ fn, txType }: { fn?: () => void; txType?: T
       return new Promise<boolean>(async (resolve) => {
         const status = result.status;
         if (status.isFinalized) {
-          store.commit('general/setLoading', false);
           if (!hasExtrinsicFailedEvent(result.events, store.dispatch)) {
             fn && fn();
             const msg = customMsg.value
