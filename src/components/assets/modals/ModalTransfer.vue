@@ -93,7 +93,7 @@
           </span>
         </div>
         <div v-else-if="errMsg && toAddress" class="rows__row--error">
-          <span class="text--error">{{ errMsg }}</span>
+          <span class="text--error">{{ $t(errMsg) }}</span>
         </div>
       </div>
       <div
@@ -140,6 +140,7 @@ import { ethers } from 'ethers';
 import ABI from 'src/c-bridge/abi/ERC20.json';
 import { AbiItem } from 'web3-utils';
 import { truncate } from 'src/hooks/helper/common';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   components: { ModalSelectAccount, SpeedConfiguration },
@@ -187,6 +188,7 @@ export default defineComponent({
     const { iconWallet } = useWalletIcon();
     const { isConnectedNetwork, currentNetworkName, connectEvmNetwork } = useEvmWallet();
     const store = useStore();
+    const { t } = useI18n();
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const isEthWallet = computed(() => store.getters['general/isEthWallet']);
     const { currentAccount, currentAccountName } = useAccount();
@@ -299,7 +301,7 @@ export default defineComponent({
 
       if (Number(transferAmtRef) === 0) {
         store.dispatch('general/showAlertMsg', {
-          msg: 'The amount of token to be transmitted must not be zero',
+          msg: t('toast.amountMustNotBeZero'),
           alertType: 'error',
         });
         return;
@@ -423,17 +425,17 @@ export default defineComponent({
         : fromAddressBalance.value;
       try {
         if (transferAmtRef > fromAccountBalance) {
-          errMsg.value = 'Insufficient balance';
+          errMsg.value = 'warning.insufficientBalance';
         } else if (isErc20TransferRef && evmNetworkIdx.value !== selectedNetworkRef) {
-          errMsg.value = 'Selected invalid network in your wallet';
+          errMsg.value = 'warning.selectedInvalidNetworkInWallet';
         } else if (isErc20TransferRef && !web3Ref?.utils.isAddress(toAddress.value)) {
-          errMsg.value = 'Inputted invalid destination address';
+          errMsg.value = 'warning.inputtedInvalidDestAddress';
         } else if (
           isNativeToken.value &&
           !isValidAddressPolkadotAddress(toAddress.value) &&
           !web3Ref?.utils.isAddress(toAddress.value)
         ) {
-          errMsg.value = 'Inputted invalid destination address';
+          errMsg.value = 'warning.inputtedInvalidDestAddress';
         } else {
           errMsg.value = '';
         }

@@ -14,22 +14,26 @@ export const displayCustomMessage = ({
   store,
   result,
   senderAddress,
+  t,
 }: {
   txType: TxType;
   store: Store<StateInterface>;
   result: ISubmittableResult;
   senderAddress: string;
+  t: (...arg: any) => void;
 }): void => {
   if (txType === TxType.dappsStaking) {
     dispatchClaimMessage({
       result,
       store,
       senderAddress,
+      t,
     });
   } else if (txType === TxType.requiredClaim) {
     dispatchRequiredClaimMessage({
       result,
       store,
+      t,
     });
   }
 };
@@ -38,10 +42,12 @@ const dispatchClaimMessage = ({
   store,
   result,
   senderAddress,
+  t,
 }: {
   store: Store<StateInterface>;
   result: ISubmittableResult;
   senderAddress: string;
+  t: (...arg: any) => void;
 }): void => {
   if (result.status.isFinalized) {
     if (!hasExtrinsicFailedEvent(result.events, store.dispatch)) {
@@ -49,9 +55,17 @@ const dispatchClaimMessage = ({
         events: result.events,
         senderAddress,
       });
+
+      // Memo: users invoked withdraw transaction from unregistered dapps
+      if (totalClaimedStaker.claimedAmount === 0) {
+        return;
+      }
+
       store.commit('dapps/setClaimedRewardsAmount', totalClaimedStaker.claimedAmount);
 
-      const msg = `Successfully claimed ${totalClaimedStaker.formattedAmount}`;
+      const msg = t('dappStaking.toast.successfullyClaimed', {
+        amount: totalClaimedStaker.formattedAmount,
+      });
       store.dispatch(
         'general/showAlertMsg',
         {
@@ -67,9 +81,11 @@ const dispatchClaimMessage = ({
 const dispatchRequiredClaimMessage = ({
   store,
   result,
+  t,
 }: {
   store: Store<StateInterface>;
   result: ISubmittableResult;
+  t: (...arg: any) => void;
 }): void => {
   if (result.status.isFinalized) {
     let errorMessage = '';
@@ -80,7 +96,8 @@ const dispatchRequiredClaimMessage = ({
     );
     if (res) {
       if (errorMessage.includes('TooManyEraStakeValues')) {
-        const msg = 'Please claim your rewards before sending transaction';
+        const msg = t('dappStaking.toast.requiredClaimFirst');
+
         store.dispatch(
           'general/showAlertMsg',
           {

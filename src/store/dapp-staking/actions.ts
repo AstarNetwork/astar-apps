@@ -1,3 +1,4 @@
+import { container, cid } from 'inversify-props';
 import { ApiPromise } from '@polkadot/api';
 import { bool, BTreeMap, Struct, u32 } from '@polkadot/types';
 import {
@@ -16,6 +17,7 @@ import { StateInterface } from '../index';
 import { signAndSend } from './../../hooks/helper/wallet';
 import { SubstrateAccount } from './../general/state';
 import { DappStateInterface as State, NewDappItem } from './state';
+import { IDappStakingService } from 'src/v2/services';
 
 let collectionKey: string;
 
@@ -96,16 +98,12 @@ export const hasExtrinsicFailedEvent = (
 };
 
 const actions: ActionTree<State, StateInterface> = {
-  async getDapps({ commit, dispatch, rootState }) {
+  async getDapps({ commit, dispatch, rootState }, network: string) {
     commit('general/setLoading', true, { root: true });
 
     try {
-      const collectionKey = await getCollectionKey();
-      const collection = await getDapps(collectionKey);
-      commit(
-        'addDapps',
-        collection.docs.map((x) => x.data())
-      );
+      const collection = await getDapps(network.toLowerCase());
+      commit('addDapps', collection);
     } catch (e) {
       const error = e as unknown as Error;
       showError(dispatch, error.message);
@@ -248,6 +246,19 @@ const actions: ActionTree<State, StateInterface> = {
       showError(dispatch, error.message);
     }
   },
+
+  async getTvl({ commit, dispatch }) {
+    try {
+      const dappService = container.get<IDappStakingService>(cid.IDappStakingService);
+      const tvl = await dappService.getTvl();
+      commit('setTvl', tvl);
+
+      return tvl;
+    } catch (e) {
+      const error = e as unknown as Error;
+      showError(dispatch, error.message);
+    }
+  },
 };
 
 export interface RegisterParameters {
@@ -276,6 +287,7 @@ export interface StakeInfo {
   hasStake: boolean;
   stakersCount: number;
   dappAddress?: string;
+  isRegistered: boolean;
 }
 
 export interface ClaimInfo {

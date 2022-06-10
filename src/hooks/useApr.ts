@@ -18,6 +18,8 @@ interface RewardDistributionConfig extends Struct {
   readonly idealDappsStakingTvl: Perbill;
 }
 
+type AstarChain = endpointKey.SHIBUYA | endpointKey.ASTAR | endpointKey.SHIDEN;
+
 // Ref: https://github.com/PlasmNetwork/Astar/blob/5b01ef3c2ca608126601c1bd04270ed08ece69c4/runtime/shiden/src/lib.rs#L435
 // Memo: 50% of block rewards goes to dappsStaking, 50% goes to block validator
 // Fixme: ideally get the value from API
@@ -49,7 +51,7 @@ export const useApr = () => {
     latestBlock,
     timestampMillis,
   }: {
-    chainId: endpointKey.SHIBUYA | endpointKey.ASTAR | endpointKey.SHIDEN;
+    chainId: AstarChain;
     latestBlock: number;
     timestampMillis: number;
   }): number => {
@@ -98,7 +100,7 @@ export const useApr = () => {
         const eraRewards = blocksPerEraRef * blockRewards;
         const latestBlock = results[2].toJSON().number as number;
         const avrBlockPerMins = getAveBlocksPerMins({
-          chainId: currentNetworkIdx.value,
+          chainId: currentNetworkIdx.value as AstarChain,
           timestampMillis: results[1].toNumber(),
           latestBlock,
         });
