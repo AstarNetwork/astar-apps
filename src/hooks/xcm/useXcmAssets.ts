@@ -106,6 +106,7 @@ export function useXcmAssets() {
             }
           })
         );
+        filterTokens();
       }
       // convert the list into a string array of numbers without the comma and no nested entries
     } catch (e) {
