@@ -72,11 +72,10 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
           this.eventAggregator.publish(new BusyMessage(true));
         }
       });
-    } catch (e) {}
-  }
-
-  private async getEvmGas(web3: Web3, selectedGasPrice: string) {
-    const gasPriceFallback = await web3.eth.getGasPrice();
-    return selectedGasPrice !== '0' ? selectedGasPrice : gasPriceFallback;
+    } catch (e) {
+      const error = e as unknown as Error;
+      this.eventAggregator.publish(new ExtrinsicStatusMessage(false, error.message));
+      this.eventAggregator.publish(new BusyMessage(false));
+    }
   }
 }

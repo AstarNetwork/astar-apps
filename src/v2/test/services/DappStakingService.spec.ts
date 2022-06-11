@@ -1,24 +1,14 @@
-import 'reflect-metadata';
+// import 'reflect-metadata';
 import { describe, it, expect, beforeEach } from '@jest/globals';
 import { resetContainer, cid, container } from 'inversify-props';
-import { IDappStakingRepository, IMetadataRepository, IPriceRepository } from 'src/v2/repositories';
-import { DappStakingRepositoryMock } from 'src/v2/test/mocks/repositories/DappStakingRepositoryMock';
-import { PriceRepositoryMock } from '../mocks/repositories/PriceRepositoryMock';
-import { MetadataRepositoryMock } from '../mocks/repositories/MetadataRepositoryMock';
 import { IDappStakingService } from 'src/v2/services';
-import { DappStakingService } from 'src/v2/services/implementations';
-import { Symbols } from 'src/v2/symbols';
+import { initTestContainer } from '../helpers';
+import BN from 'bn.js';
 
 describe('DappStakingService.ts', () => {
   beforeEach(() => {
     resetContainer();
-    container.addSingleton<IDappStakingRepository>(
-      DappStakingRepositoryMock,
-      cid.IDappStakingRepository
-    );
-    container.addSingleton<IPriceRepository>(PriceRepositoryMock, Symbols.CoinGecko);
-    container.addSingleton<IMetadataRepository>(MetadataRepositoryMock, cid.IMetadataRepository);
-    container.addSingleton<IDappStakingService>(DappStakingService);
+    initTestContainer();
   });
 
   it('calculates TVL in USD', async () => {
@@ -28,4 +18,19 @@ describe('DappStakingService.ts', () => {
 
     expect(tvl.tvlUsd).toStrictEqual(100000000000000);
   });
+
+  // WIP see how to use mocks with the container.
+  // it('stakes given amount to a contract', () => {
+  //   const mocksignAndSend = jest.fn();
+  //   jest.mock('src/v2/services/implementations/PolkadotWalletService', () => {
+  //     return jest.fn().mockImplementation(() => {
+  //       return { signAndSend: mocksignAndSend };
+  //     });
+  //   });
+
+  //   const sut = container.get<IDappStakingService>(cid.IDappStakingService);
+
+  //   sut.stake('123', '456', new BN(1));
+  //   expect(mocksignAndSend).toBeCalledTimes(1);
+  // });
 });

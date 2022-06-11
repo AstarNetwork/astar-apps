@@ -9,6 +9,7 @@ import { Account } from 'src/v2/models';
 import { IMetadataRepository } from 'src/v2/repositories';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { WalletService } from './WalletService';
+import { wait } from 'src/v2/common';
 
 @injectable()
 export class PolkadotWalletService extends WalletService implements IWalletService {
@@ -31,6 +32,7 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
       await this.checkExtension();
       const tip = this.gasPriceProvider.getTip().price;
       console.log('transaction tip', tip);
+
       await extrinsic.signAndSend(
         senderAddress,
         {
@@ -58,6 +60,7 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
     } catch (e) {
       const error = e as unknown as Error;
       this.eventAggregator.publish(new ExtrinsicStatusMessage(false, error.message));
+      this.eventAggregator.publish(new BusyMessage(false));
     }
   }
 
@@ -95,7 +98,7 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
       let extensions: InjectedExtension[] = [];
       do {
         extensions = await web3Enable('Astar portal');
-        await this.wait(100);
+        await wait(100);
         retryCount++;
       } while (extensions.length === 0 && retryCount <= maxRetryCount);
 
@@ -105,10 +108,5 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
 
       this.extensions.push(...extensions);
     }
-  }
-
-  // TODO move to common lib
-  wait(ms: number): Promise<number> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }

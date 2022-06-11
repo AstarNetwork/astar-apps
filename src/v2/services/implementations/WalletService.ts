@@ -31,8 +31,6 @@ export class WalletService {
 
           result = true;
         } else if (section === 'utility' && method === 'BatchInterrupted') {
-          // TODO there should be a better way to extract error,
-          // for some reason cast data as unknown as ITuple<[DispatchError]>; doesn't work
           const anyData = data as any;
           const error = anyData[1].registry.findMetaError(anyData[1].asModule);
           let message = `${error.section}.${error.name}`;

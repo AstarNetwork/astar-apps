@@ -6,7 +6,6 @@ import { IDappStakingRepository, IMetadataRepository, IPriceRepository } from 's
 import { Symbols } from 'src/v2/symbols';
 import { IDappStakingService } from 'src/v2/services';
 import { Guard } from 'src/v2/common';
-import { IApi } from 'src/v2/integration';
 import { IWalletService } from '../IWalletService';
 
 @injectable()
@@ -17,7 +16,6 @@ export class DappStakingService implements IDappStakingService {
     @inject() private dappStakingRepository: IDappStakingRepository,
     @inject(Symbols.CoinGecko) private priceRepository: IPriceRepository,
     @inject() private metadataRepository: IMetadataRepository,
-    @inject() private api: IApi,
     @inject(Symbols.WalletFactory) walletFactory: () => IWalletService
   ) {
     this.wallet = walletFactory();
@@ -43,7 +41,6 @@ export class DappStakingService implements IDappStakingService {
     Guard.ThrowIfUndefined('stakerAddress', stakerAddress);
     Guard.ThrowIfNegative('amount', amount);
 
-    const api = await this.api.getApi();
     const stakeCall = await this.dappStakingRepository.getBondAndStakeCall(contractAddress, amount);
     this.wallet.signAndSend(
       stakeCall,
