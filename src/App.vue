@@ -77,7 +77,6 @@ export default defineComponent({
 
     // Handle wallet change so we can inject proper wallet
     watch([isEthWallet], () => {
-      console.log('is ETH wallet', isEthWallet);
       setCurrentWallet(isEthWallet.value);
     });
 

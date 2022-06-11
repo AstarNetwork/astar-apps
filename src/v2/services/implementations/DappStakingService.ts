@@ -48,7 +48,6 @@ export class DappStakingService implements IDappStakingService {
     this.wallet.signAndSend(
       stakeCall,
       stakerAddress,
-      undefined,
       `You successfully staked to ${contractAddress}`
     );
   }

@@ -4,7 +4,7 @@ import { InjectedExtension } from '@polkadot/extension-inject/types';
 import { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
 import { inject, injectable } from 'inversify-props';
 import { ethers } from 'ethers';
-import { IWalletService } from 'src/v2/services';
+import { IWalletService, IGasPriceProvider } from 'src/v2/services';
 import { Account } from 'src/v2/models';
 import { IMetadataRepository } from 'src/v2/repositories';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
@@ -15,8 +15,9 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
   private readonly extensions: InjectedExtension[] = [];
 
   constructor(
-    @inject() private metadataRepository: IMetadataRepository,
-    @inject() eventAggregator: IEventAggregator
+    @inject() private readonly metadataRepository: IMetadataRepository,
+    @inject() readonly eventAggregator: IEventAggregator,
+    @inject() private readonly gasPriceProvider: IGasPriceProvider
   ) {
     super(eventAggregator);
   }
@@ -24,11 +25,12 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
   public async signAndSend(
     extrinsic: SubmittableExtrinsic<'promise', ISubmittableResult>,
     senderAddress: string,
-    tip?: string,
     successMessage?: string
   ): Promise<void> {
     try {
       await this.checkExtension();
+      const tip = this.gasPriceProvider.getTip().price;
+      console.log('transaction tip', tip);
       await extrinsic.signAndSend(
         senderAddress,
         {

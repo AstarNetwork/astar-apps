@@ -32,7 +32,6 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
   public async signAndSend(
     extrinsic: SubmittableExtrinsic<'promise', ISubmittableResult>,
     senderAddress: string,
-    tip?: string,
     successMessage?: string
   ): Promise<void> {
     Guard.ThrowIfUndefined('extrinsic', extrinsic);
