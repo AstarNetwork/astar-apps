@@ -32,6 +32,8 @@ export default {
     insufficientFee: 'Warning! Transaction might failed due to insufficient fee',
     inputtedInvalidDestAddress: 'Inputted invalid destination address',
     selectedInvalidNetworkInWallet: 'Selected invalid network in your wallet',
+    insufficientExistentialDeposit:
+      'Account balances in {network} network is below than the existential deposit amount',
   },
   toast: {
     transactionFailed: 'Transaction failed with error: {message}',

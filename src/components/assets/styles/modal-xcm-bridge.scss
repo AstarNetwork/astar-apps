@@ -14,6 +14,16 @@
   margin-bottom: 24px;
 }
 
+.row--box-error {
+  padding: 10px 20px;
+  border-radius: 6px;
+  width: 344px;
+  margin-bottom: 24px;
+  border: 1px solid $warning-red;
+  background: $warning-red;
+  text-align: left;
+}
+
 .box--bridge-option {
   padding-bottom: 8px;
   width: 140px;
@@ -70,7 +80,7 @@
 
 // Memo: `list-style-type` is not working
 .text--dot {
-  left: -28px;
+  left: -30px;
   position: absolute;
   font-size: 32px;
   font-weight: 700;
@@ -88,8 +98,8 @@
   margin-bottom: 24px;
   border: 1px solid $warning-red;
   padding: 8px 0;
-  padding-left: 26px;
-  padding-right: 14px;
+  padding-left: 34px;
+  padding-right: 24px;
   border-radius: 6px;
   background: rgba(255, 86, 33, 0.2);
 }
