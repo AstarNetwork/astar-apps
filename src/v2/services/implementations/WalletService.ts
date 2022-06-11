@@ -3,7 +3,7 @@ import { EventRecord, DispatchError } from '@polkadot/types/interfaces';
 import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 
 export class WalletService {
-  constructor(protected eventAggregator: IEventAggregator) {}
+  constructor(protected readonly eventAggregator: IEventAggregator) {}
 
   protected isExtrinsicFailed(events: EventRecord[]): boolean {
     let result = false;

@@ -19,6 +19,13 @@ import {
 import { Symbols } from 'src/v2/symbols';
 import { EventAggregator, IEventAggregator } from 'src/v2/messaging';
 
+const walletSignAndSendMock = jest.fn();
+jest.mock('src/v2/services/implementations/PolkadotWalletService', () => {
+  return jest.fn().mockImplementation(() => {
+    return { signAndSend: walletSignAndSendMock };
+  });
+});
+
 const initTestContainer = () => {
   container.addSingleton<IEventAggregator>(EventAggregator);
   container.addSingleton<IGasPriceProvider>(GasPriceProvider);
@@ -28,14 +35,17 @@ const initTestContainer = () => {
   );
   container.addSingleton<IPriceRepository>(PriceRepositoryMock, Symbols.CoinGecko);
   container.addSingleton<IMetadataRepository>(MetadataRepositoryMock, cid.IMetadataRepository);
-  container.addSingleton<IWalletService>(PolkadotWalletService, WalletType.Polkadot);
+  // container.addSingleton<IWalletService>(PolkadotWalletService, WalletType.Polkadot);
   container.addSingleton<IDappStakingService>(DappStakingService);
   // Wallet factory
   container.bind<interfaces.Factory<IWalletService>>(Symbols.WalletFactory).toFactory(() => {
-    return () => {
-      return container.get<IWalletService>(WalletType.Polkadot);
-    };
+    // return () => {
+    //   return container.get<IWalletService>(WalletType.Polkadot);
+    // };
+    return jest.fn().mockImplementation(() => {
+      return { signAndSend: walletSignAndSendMock };
+    });
   });
 };
 
-export { initTestContainer };
+export { initTestContainer, walletSignAndSendMock };

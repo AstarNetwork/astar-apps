@@ -39,7 +39,7 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
 
     try {
       const account = await this.systemRepository.getAccountInfo(senderAddress);
-      const payload = this.ethCallRepository.getPayload(extrinsic, account.nonce, 0xff51);
+      const payload = await this.ethCallRepository.getPayload(extrinsic, account.nonce);
 
       const web3 = new Web3(this.provider as any);
       const accounts = await web3.eth.getAccounts();

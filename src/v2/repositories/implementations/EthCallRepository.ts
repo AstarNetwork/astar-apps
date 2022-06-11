@@ -35,20 +35,17 @@ export class EthCallRepository implements IEthCallRepository {
   /**
    * Gets payload to sign for ETH call.
    */
-  public getPayload(
-    method: SubmittableExtrinsic<'promise'>,
-    nonce: BN,
-    networkPrefix: number
-  ): string {
+  public async getPayload(method: SubmittableExtrinsic<'promise'>, nonce: BN): Promise<string> {
+    const api = await this.api.getApi();
     const methodPayload: Uint8Array = method.toU8a(true).slice(1);
-    const prefix = new u16(new TypeRegistry(), networkPrefix);
+    const magicNumber = <u16>api.consts.ethCall.callMagicNumber;
     let payload = new Uint8Array(0);
 
-    const payloadLength = prefix.byteLength() + nonce.byteLength() + methodPayload.byteLength;
+    const payloadLength = magicNumber.byteLength() + nonce.byteLength() + methodPayload.byteLength;
     payload = new Uint8Array(payloadLength);
-    payload.set(prefix.toU8a(), 0);
-    payload.set(new u32(new TypeRegistry(), nonce).toU8a(), prefix.byteLength());
-    payload.set(methodPayload, prefix.byteLength() + nonce.byteLength());
+    payload.set(magicNumber.toU8a(), 0);
+    payload.set(new u32(new TypeRegistry(), nonce).toU8a(), magicNumber.byteLength());
+    payload.set(methodPayload, magicNumber.byteLength() + nonce.byteLength());
     const buffer = keccakFromArray(Array.from(payload));
 
     return u8aToHex(new Uint8Array(buffer));

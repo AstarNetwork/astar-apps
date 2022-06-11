@@ -19,5 +19,5 @@ export interface IEthCallRepository {
   /**
    * Gets payload to sign for ETH call.
    */
-  getPayload(method: SubmittableExtrinsic<'promise'>, nonce: BN, networkPrefix: number): string;
+  getPayload(method: SubmittableExtrinsic<'promise'>, nonce: BN): Promise<string>;
 }
