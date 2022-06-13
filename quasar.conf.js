@@ -12,7 +12,6 @@ const { configure } = require('quasar/wrappers');
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const path = require('path');
-const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = configure(function (ctx) {
   return {
@@ -51,8 +50,6 @@ module.exports = configure(function (ctx) {
       'material-icons', // optional, you are not bound to it
     ],
 
-    minify: 'terser',
-
     // Full list of options: https://v2.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
       vueRouterMode: 'hash', // available values: 'hash', 'history'
@@ -85,18 +82,6 @@ module.exports = configure(function (ctx) {
       },
       extendWebpack(cfg) {
         cfg.plugins.push(new NodePolyfillPlugin({}));
-
-        // Don't uglify class names or inversify props won't work
-        // because cid would be messed up with obfuscated symbols.
-        cfg.optimization.minimize = true;
-        cfg.optimization.minimizer = [
-          new TerserPlugin({
-            terserOptions: {
-              keep_classnames: true,
-              keep_fnames: true,
-            },
-          }),
-        ];
         // cfg.resolve.fallback = {
         //   stream: require.resolve('stream-browserify')
         // }
