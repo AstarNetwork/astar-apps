@@ -120,7 +120,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     return balance.toString();
   };
 
-  const getExistentialDeposit = async () => {
+  const getExistentialDeposit = async (): Promise<void> => {
     if (!relayChainApi) return;
     await relayChainApi.isReady();
     const result = await relayChainApi.getExistentialDeposit();
@@ -169,43 +169,38 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
       : isValidEvmAddress(evmDestAddress.value);
   };
 
-  const setErrMsg = async () => {
+  const setErrMsg = async (): Promise<void> => {
     errMsg.value = '';
 
     if (Number(amount.value) > fromAddressBalance.value) {
       errMsg.value = t('warning.insufficientBalance');
-      return;
     }
     if (isH160.value || !isNativeBridge.value) {
       // Memo: withdrawal from EVM || Deposit from native to EVM
 
       if (!evmDestAddress.value) {
         errMsg.value = '';
-        return;
       }
       if (Number(amount.value) > fromAddressBalance.value) {
         errMsg.value = t('warning.insufficientBalance');
+      } else if (!evmDestAddress.value) {
         return;
       } else if (!checkIsEvmDestAddress()) {
         errMsg.value = t('warning.inputtedInvalidDestAddress');
-        return;
       } else if (!(await checkIsEnoughEd(Number(amount.value)))) {
         errMsg.value = t('warning.insufficientExistentialDeposit', {
           network: existentialDeposit.value?.chain,
         });
-        return;
       }
     } else {
       // Memo: deposit / withdrawal in native to native
 
       if (Number(amount.value) > fromAddressBalance.value) {
         errMsg.value = t('warning.insufficientBalance');
-        return;
       } else if (!(await checkIsEnoughEd(Number(amount.value)))) {
         errMsg.value = t('warning.insufficientExistentialDeposit', {
           network: existentialDeposit.value?.chain,
         });
-        return;
       }
     }
   };
@@ -215,9 +210,15 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   };
 
   const setIsDisabledBridge = (): void => {
+    const isRequiredInputAddress = isH160.value || (!isH160.value && !isNativeBridge.value);
+    const isFulfilledAddress = isRequiredInputAddress && evmDestAddress.value;
     // check if recipient account has non-zero native asset. (it cannot be transferred to an account with 0 nonce)
     isDisabledBridge.value =
-      !amount.value || Number(amount.value) === 0 || balance.value.lten(0) || errMsg.value !== '';
+      !amount.value ||
+      Number(amount.value) === 0 ||
+      balance.value.lten(0) ||
+      errMsg.value !== '' ||
+      !isFulfilledAddress;
   };
 
   const setIsNativeBridge = (isNative: boolean): void => {
@@ -247,7 +248,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     chains.value = networkChains;
   };
 
-  const setDefaultChain = () => {
+  const setDefaultChain = (): void => {
     if (isAstar.value) {
       destParaId.value = parachainIds.ASTAR;
       // Memo: withdrawal mode for H160 accounts
