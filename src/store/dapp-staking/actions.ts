@@ -249,6 +249,7 @@ const actions: ActionTree<State, StateInterface> = {
 
   async getTvl({ commit, dispatch }) {
     try {
+      console.log('cud', cid);
       const dappService = container.get<IDappStakingService>(cid.IDappStakingService);
       const tvl = await dappService.getTvl();
       commit('setTvl', tvl);

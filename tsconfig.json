@@ -3,6 +3,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "esModuleInterop": true,
+    // "lib": ["es5"],
+    "types": ["reflect-metadata"],
     "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
   }
 }
