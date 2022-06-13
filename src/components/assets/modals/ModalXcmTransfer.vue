@@ -90,7 +90,7 @@
         <div class="input--checkbox" :class="isChecked && 'input--checkbox--checked'">
           <input id="do-not-send-to-cex" v-model="isChecked" type="checkbox" />
           <label for="do-not-send-to-cex">
-            <span :class="isChecked ? 'color--white' : 'color--warning'">{{
+            <span :class="isChecked ? 'color--gray1' : 'color--not-checked'">{{
               $t('assets.modals.notSendToExchanges')
             }}</span>
           </label>

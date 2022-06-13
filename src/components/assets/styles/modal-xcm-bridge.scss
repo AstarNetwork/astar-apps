@@ -20,8 +20,9 @@
   width: 344px;
   margin-bottom: 24px;
   border: 1px solid $warning-red;
-  background: $warning-red;
+  background: $box-red;
   text-align: left;
+  margin-top: -16px;
 }
 
 .box--bridge-option {
@@ -80,9 +81,9 @@
 
 // Memo: `list-style-type` is not working
 .text--dot {
-  left: -30px;
+  left: -24px;
   position: absolute;
-  font-size: 32px;
+  font-size: 24px;
   font-weight: 700;
 }
 
@@ -96,19 +97,19 @@
   flex-direction: column;
   row-gap: 6px;
   margin-bottom: 24px;
-  border: 1px solid $warning-red;
+  border: 1px solid $border-yellow;
   padding: 8px 0;
   padding-left: 34px;
-  padding-right: 24px;
+  width: 344px;
   border-radius: 6px;
-  background: rgba(255, 86, 33, 0.2);
+  background: $transparent-yellow;
 }
 
 .row--warning {
   display: flex;
   align-items: normal;
   column-gap: 6px;
-  color: $warning-red;
+  color: $warning-yellow;
 }
 
 .loader {
@@ -165,9 +166,9 @@
 }
 
 .text--warning {
-  font-weight: 700;
+  font-weight: 500;
   font-size: 14px;
-  color: $warning-red;
+  color: $warning-yellow;
 }
 
 .body--dark {
@@ -185,5 +186,8 @@
   }
   .row--warning {
     color: $gray-1;
+  }
+  .row--box-error {
+    background: $box-red-dark;
   }
 }

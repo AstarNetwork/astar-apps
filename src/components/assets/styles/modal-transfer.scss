@@ -13,7 +13,7 @@
   margin-bottom: 24px;
   margin-top: -14px;
   border: 1px solid $warning-red;
-  background: $warning-red;
+  background: $box-red;
   text-align: left;
 }
 
@@ -30,14 +30,14 @@
   padding: 10px 16px;
   border-radius: 6px;
   width: 344px;
-  background: transparent;
+  background: $transparent-red;
   margin-bottom: 24px;
   margin-top: -14px;
   border: 1px solid $warning-red;
 }
 
 .box--warning--checked {
-  background: $warning-red;
+  background: $box-red;
 }
 
 .box__row {
@@ -162,7 +162,7 @@
   margin-top: -10px;
   left: 0;
   top: 50%;
-  border: 2px solid;
+  border: 1px solid;
   border-color: $warning-red;
   background-color: transparent;
   border-radius: 4px;
@@ -188,6 +188,10 @@
   border-color: white;
 }
 
+.color--not-checked {
+  color: $warning-red;
+}
+
 .body--dark {
   input {
     color: white;
@@ -195,5 +199,14 @@
 
   .text--connect-rpc {
     color: $astar-blue-dark;
+  }
+  .row--box-error {
+    background: $box-red-dark;
+  }
+  .box--warning--checked {
+    background: $box-red-dark;
+  }
+  .color--not-checked {
+    color: $gray-1;
   }
 }
