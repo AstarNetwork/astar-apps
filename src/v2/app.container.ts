@@ -1,5 +1,4 @@
 import 'reflect-metadata';
-import { container, cid } from 'inversify-props';
 import { interfaces } from 'inversify';
 import { IApi } from './integration';
 import { Api } from './integration/implementation';
@@ -26,6 +25,7 @@ import {
 } from './services/implementations';
 import { Symbols } from './symbols';
 import { IEventAggregator, EventAggregator } from './messaging';
+import { container } from './common';
 
 let currentWallet = WalletType.Polkadot;
 
@@ -60,5 +60,5 @@ export default function buildDependencyContainer(): void {
   container.addSingleton<IGasPriceProvider>(GasPriceProvider); // Singleton because it listens and caches gas/tip prices.
 
   // Create GasPriceProvider instace so it can catch price change messages from the portal.
-  container.get<IGasPriceProvider>(cid.IGasPriceProvider);
+  container.get<IGasPriceProvider>(Symbols.GasPriceProvider);
 }

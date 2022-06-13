@@ -53,7 +53,7 @@
     "firebase": "^9.5.0",
     "highcharts": "^10.0.0",
     "highcharts-vue": "^1.4.0",
-    "inversify-props": "^2.2.6",
+    "inversify": "^6.0.1",
     "keccak": "byterose/keccak#stream-update",
     "luxon": "^2.1.1",
     "marked": "^4.0.15",

@@ -1,15 +1,16 @@
-import { inject, injectable } from 'inversify-props';
+import { inject, injectable } from 'inversify';
 import { defaults as addressDefaults } from '@polkadot/util-crypto/address/defaults';
 import { TypeRegistry } from '@polkadot/types/create';
 import { IMetadataRepository } from 'src/v2/repositories';
 import { ChainMetadata } from 'src/v2/models';
 import { IApi } from 'src/v2/integration';
+import { Symbols } from 'src/v2/symbols';
 
 @injectable()
 export class MetadataRepository implements IMetadataRepository {
   private metadata!: ChainMetadata;
 
-  constructor(@inject() private api: IApi) {}
+  constructor(@inject(Symbols.Api) private api: IApi) {}
 
   public async getChainMetadata(): Promise<ChainMetadata> {
     if (!this.metadata) {

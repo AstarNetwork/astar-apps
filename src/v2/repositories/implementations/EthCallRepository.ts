@@ -3,14 +3,15 @@ import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import { BN, u8aToHex } from '@polkadot/util';
 import { TypeRegistry, u32, u16 } from '@polkadot/types';
 import { keccakFromArray } from 'ethereumjs-util';
-import { injectable, inject } from 'inversify-props';
+import { injectable, inject } from 'inversify';
 import { IApi } from 'src/v2/integration';
 import { IEthCallRepository } from 'src/v2/repositories';
 import { Guard } from 'src/v2/common';
+import { Symbols } from 'src/v2/symbols';
 
 @injectable()
 export class EthCallRepository implements IEthCallRepository {
-  constructor(@inject() private api: IApi) {}
+  constructor(@inject(Symbols.Api) private api: IApi) {}
 
   public async getCall(
     extrinsic: SubmittableExtrinsic<'promise', ISubmittableResult>,

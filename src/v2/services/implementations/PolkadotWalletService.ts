@@ -2,7 +2,7 @@ import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult, Signer } from '@polkadot/types/types';
 import { InjectedExtension } from '@polkadot/extension-inject/types';
 import { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
-import { inject, injectable } from 'inversify-props';
+import { inject, injectable } from 'inversify';
 import { ethers } from 'ethers';
 import { IWalletService, IGasPriceProvider } from 'src/v2/services';
 import { Account } from 'src/v2/models';
@@ -10,15 +10,16 @@ import { IMetadataRepository } from 'src/v2/repositories';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { WalletService } from './WalletService';
 import { wait } from 'src/v2/common';
+import { Symbols } from 'src/v2/symbols';
 
 @injectable()
 export class PolkadotWalletService extends WalletService implements IWalletService {
   private readonly extensions: InjectedExtension[] = [];
 
   constructor(
-    @inject() private readonly metadataRepository: IMetadataRepository,
-    @inject() readonly eventAggregator: IEventAggregator,
-    @inject() private readonly gasPriceProvider: IGasPriceProvider
+    @inject(Symbols.MetadataRepository) private readonly metadataRepository: IMetadataRepository,
+    @inject(Symbols.EventAggregator) readonly eventAggregator: IEventAggregator,
+    @inject(Symbols.GasPriceProvider) private readonly gasPriceProvider: IGasPriceProvider
   ) {
     super(eventAggregator);
   }

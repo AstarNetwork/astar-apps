@@ -1,6 +1,5 @@
 import 'reflect-metadata';
 import { interfaces } from 'inversify';
-import { cid, container } from 'inversify-props';
 import { IDappStakingRepository, IMetadataRepository, IPriceRepository } from 'src/v2/repositories';
 import { DappStakingRepositoryMock } from 'src/v2/test/mocks/repositories/DappStakingRepositoryMock';
 import { PriceRepositoryMock } from './mocks/repositories/PriceRepositoryMock';
@@ -18,6 +17,7 @@ import {
 } from 'src/v2/services/implementations';
 import { Symbols } from 'src/v2/symbols';
 import { EventAggregator, IEventAggregator } from 'src/v2/messaging';
+import { container } from '../common';
 
 const walletSignAndSendMock = jest.fn();
 jest.mock('src/v2/services/implementations/PolkadotWalletService', () => {
@@ -31,10 +31,10 @@ const initTestContainer = () => {
   container.addSingleton<IGasPriceProvider>(GasPriceProvider);
   container.addSingleton<IDappStakingRepository>(
     DappStakingRepositoryMock,
-    cid.IDappStakingRepository
+    Symbols.DappStakingRepository
   );
   container.addSingleton<IPriceRepository>(PriceRepositoryMock, Symbols.CoinGecko);
-  container.addSingleton<IMetadataRepository>(MetadataRepositoryMock, cid.IMetadataRepository);
+  container.addSingleton<IMetadataRepository>(MetadataRepositoryMock, Symbols.MetadataRepository);
   // container.addSingleton<IWalletService>(PolkadotWalletService, WalletType.Polkadot);
   container.addSingleton<IDappStakingService>(DappStakingService);
   // Wallet factory

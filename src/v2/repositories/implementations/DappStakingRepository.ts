@@ -3,9 +3,10 @@ import { u32, Option, Struct } from '@polkadot/types';
 import { ISubmittableResult } from '@polkadot/types/types';
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import { Balance } from '@polkadot/types/interfaces';
-import { injectable, inject } from 'inversify-props';
+import { injectable, inject } from 'inversify';
 import { IDappStakingRepository } from 'src/v2/repositories';
 import { IApi } from 'src/v2/integration';
+import { Symbols } from 'src/v2/symbols';
 
 // TODO type generation
 interface EraInfo extends Struct {
@@ -19,7 +20,7 @@ interface EraInfo extends Struct {
 
 @injectable()
 export class DappStakingRepository implements IDappStakingRepository {
-  constructor(@inject() private api: IApi) {}
+  constructor(@inject(Symbols.Api) private api: IApi) {}
 
   public async getTvl(): Promise<BN> {
     const api = await this.api.getApi();

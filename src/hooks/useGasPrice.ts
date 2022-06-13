@@ -1,9 +1,10 @@
-import { container, cid } from 'inversify-props';
 import { $web3 } from 'boot/api';
 import { useStore } from 'src/store';
 import { ref, watchEffect, computed, watch } from 'vue';
 import { GasPrice, fetchEvmGasPrice, SelectedGas, Speed } from '../modules/gas-api';
 import { GasPriceChangedMessage, TipPriceChangedMessage, IEventAggregator } from 'src/v2/messaging';
+import { container } from 'src/v2/common';
+import { Symbols } from 'src/v2/symbols';
 
 const initialGasPrice = {
   slow: '0',
@@ -37,7 +38,7 @@ export const useGasPrice = (isFetch = false) => {
     };
 
     // Notify of gas price change.
-    const eventAggregator = container.get<IEventAggregator>(cid.IEventAggregator);
+    const eventAggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
     eventAggregator.publish(new GasPriceChangedMessage(selectedGas.value));
   };
 
@@ -48,7 +49,7 @@ export const useGasPrice = (isFetch = false) => {
     };
 
     // Notify of tip price change.
-    const eventAggregator = container.get<IEventAggregator>(cid.IEventAggregator);
+    const eventAggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
     eventAggregator.publish(new TipPriceChangedMessage(selectedTip.value));
   };
 

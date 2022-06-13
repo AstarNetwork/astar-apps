@@ -34,7 +34,6 @@
 import 'reflect-metadata';
 import '@polkadot/api-augment';
 import { defineComponent, computed, watch } from 'vue';
-import { container, cid } from 'inversify-props';
 import DashboardLayout from 'layouts/DashboardLayout.vue';
 import { useStore } from 'src/store';
 import ModalLoading from 'components/common/ModalLoading.vue';
@@ -42,6 +41,8 @@ import AlertBox from 'components/common/AlertBox.vue';
 import 'animate.css';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { setCurrentWallet } from './v2/app.container';
+import { container } from './v2/common';
+import { Symbols } from './v2/symbols';
 
 export default defineComponent({
   name: 'App',
@@ -57,7 +58,7 @@ export default defineComponent({
     const isEthWallet = computed<boolean>(() => store.getters['general/isEthWallet']);
 
     // Handle busy and extrisnsic call status messages.
-    const eventAggregator = container.get<IEventAggregator>(cid.IEventAggregator);
+    const eventAggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
     eventAggregator.subscribe(ExtrinsicStatusMessage.name, (m) => {
       const message = m as ExtrinsicStatusMessage;
       store.dispatch(

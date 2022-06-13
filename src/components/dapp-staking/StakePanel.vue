@@ -83,7 +83,6 @@
 
 <script lang="ts">
 import { ISubmittableResult } from '@polkadot/types/types';
-import { container, cid } from 'inversify-props';
 import { IDappStakingService } from 'src/v2/services';
 import { $api } from 'boot/api';
 import Button from 'components/common/Button.vue';
@@ -101,6 +100,8 @@ import { getAddressEnum } from 'src/store/dapp-staking/actions';
 import { computed, defineComponent, PropType, ref, toRefs, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import './stake-panel.scss';
+import { container } from 'src/v2/common';
+import { Symbols } from 'src/v2/symbols';
 
 export default defineComponent({
   components: {
@@ -219,7 +220,7 @@ export default defineComponent({
           console.warn('No stakeInfo available. The store is unable to check some constraints.');
         }
 
-        const dappStakingService = container.get<IDappStakingService>(cid.IDappStakingService);
+        const dappStakingService = container.get<IDappStakingService>(Symbols.DappStakingService);
         await dappStakingService.stake(props.dapp.address, currentAddress.value, amount);
 
         // const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {

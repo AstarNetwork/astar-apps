@@ -3,21 +3,22 @@ import { ISubmittableResult } from '@polkadot/types/types';
 import { IWalletService } from 'src/v2/services';
 import { useEthProvider } from 'src/hooks/custom-signature/useEthProvider';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
-import { inject, injectable } from 'inversify-props';
+import { inject, injectable } from 'inversify';
 import { IEthCallRepository, ISystemRepository } from 'src/v2/repositories';
 import { Guard } from 'src/v2/common';
 import { WalletService } from 'src/v2/services/implementations';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import Web3 from 'web3';
+import { Symbols } from 'src/v2/symbols';
 
 @injectable()
 export class MetamaskWalletService extends WalletService implements IWalletService {
   private provider!: EthereumProvider;
 
   constructor(
-    @inject() private systemRepository: ISystemRepository,
-    @inject() private ethCallRepository: IEthCallRepository,
-    @inject() eventAggregator: IEventAggregator
+    @inject(Symbols.SystemRepository) private systemRepository: ISystemRepository,
+    @inject(Symbols.EthCallRepository) private ethCallRepository: IEthCallRepository,
+    @inject(Symbols.EventAggregator) eventAggregator: IEventAggregator
   ) {
     super(eventAggregator);
     const { ethProvider } = useEthProvider();

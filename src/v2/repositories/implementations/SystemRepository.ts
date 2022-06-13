@@ -1,14 +1,15 @@
-import { inject, injectable } from 'inversify-props';
+import { inject, injectable } from 'inversify';
 import '@polkadot/api-augment';
 import type { FrameSystemAccountInfo } from '@polkadot/types/lookup';
 import { Guard } from 'src/v2/common';
 import { IApi } from 'src/v2/integration';
 import { AccountDataModel, AccountInfoModel } from 'src/v2/models';
 import { ISystemRepository } from 'src/v2/repositories';
+import { Symbols } from 'src/v2/symbols';
 
 @injectable()
 export class SystemRepository implements ISystemRepository {
-  constructor(@inject() private api: IApi) {}
+  constructor(@inject(Symbols.Api) private api: IApi) {}
 
   public async getAccountInfo(address: string): Promise<AccountInfoModel> {
     Guard.ThrowIfUndefined('address', address);

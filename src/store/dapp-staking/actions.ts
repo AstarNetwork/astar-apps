@@ -1,4 +1,3 @@
-import { container, cid } from 'inversify-props';
 import { ApiPromise } from '@polkadot/api';
 import { bool, BTreeMap, Struct, u32 } from '@polkadot/types';
 import {
@@ -18,6 +17,8 @@ import { signAndSend } from './../../hooks/helper/wallet';
 import { SubstrateAccount } from './../general/state';
 import { DappStateInterface as State, NewDappItem } from './state';
 import { IDappStakingService } from 'src/v2/services';
+import { container } from 'src/v2/common';
+import { Symbols } from 'src/v2/symbols';
 
 let collectionKey: string;
 
@@ -249,12 +250,13 @@ const actions: ActionTree<State, StateInterface> = {
 
   async getTvl({ commit, dispatch }) {
     try {
-      const dappService = container.get<IDappStakingService>(cid.IDappStakingService);
+      const dappService = container.get<IDappStakingService>(Symbols.DappStakingService);
       const tvl = await dappService.getTvl();
       commit('setTvl', tvl);
 
       return tvl;
     } catch (e) {
+      console.error(e);
       const error = e as unknown as Error;
       showError(dispatch, error.message);
     }

@@ -1,18 +1,19 @@
 import 'reflect-metadata';
-import { container, cid, resetContainer } from 'inversify-props';
+import { container } from 'src/v2/common';
 import { GasPriceChangedMessage, IEventAggregator, TipPriceChangedMessage } from 'src/v2/messaging';
 import { IGasPriceProvider } from 'src/v2/services';
+import { Symbols } from 'src/v2/symbols';
 import { initTestContainer } from '../helpers';
 
 describe('GasPriceProvide.ts', () => {
   beforeEach(() => {
-    resetContainer();
+    // resetContainer();
     initTestContainer();
   });
 
   it('provides a valid gas price', () => {
-    const eventAggregator = container.get<IEventAggregator>(cid.IEventAggregator);
-    const gasPriceProvider = container.get<IGasPriceProvider>(cid.IGasPriceProvider);
+    const eventAggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
+    const gasPriceProvider = container.get<IGasPriceProvider>(Symbols.GasPriceProvider);
 
     eventAggregator.publish(
       new GasPriceChangedMessage({
@@ -27,8 +28,8 @@ describe('GasPriceProvide.ts', () => {
   });
 
   it('provides a valid tip price', () => {
-    const eventAggregator = container.get<IEventAggregator>(cid.IEventAggregator);
-    const gasPriceProvider = container.get<IGasPriceProvider>(cid.IGasPriceProvider);
+    const eventAggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
+    const gasPriceProvider = container.get<IGasPriceProvider>(Symbols.GasPriceProvider);
 
     eventAggregator.publish(
       new TipPriceChangedMessage({

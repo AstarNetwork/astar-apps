@@ -1,18 +1,19 @@
 import 'reflect-metadata';
 import { describe, it, expect, beforeEach } from '@jest/globals';
-import { resetContainer, cid, container } from 'inversify-props';
 import { IDappStakingService } from 'src/v2/services';
 import { initTestContainer, walletSignAndSendMock } from '../helpers';
 import BN from 'bn.js';
+import { container } from 'src/v2/common';
+import { Symbols } from 'src/v2/symbols';
 
 describe('DappStakingService.ts', () => {
   beforeEach(() => {
-    resetContainer();
+    // resetContainer();
     initTestContainer();
   });
 
   it('calculates TVL in USD', async () => {
-    const sut = container.get<IDappStakingService>(cid.IDappStakingService);
+    const sut = container.get<IDappStakingService>(Symbols.DappStakingService);
 
     const tvl = await sut.getTvl();
 

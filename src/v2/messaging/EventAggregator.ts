@@ -1,4 +1,4 @@
-import { injectable } from 'inversify-props';
+import { injectable } from 'inversify';
 import { EventMessage, IEventAggregator } from 'src/v2/messaging';
 
 export type CallbackFunction = (message: EventMessage) => void;
