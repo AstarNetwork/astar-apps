@@ -6,6 +6,12 @@ import { IDappStakingRepository } from 'src/v2/repositories';
 
 @injectable()
 export class DappStakingRepositoryMock implements IDappStakingRepository {
+  public readonly bondAndStakeCallMock = jest.fn();
+
+  constructor() {
+    this.bondAndStakeCallMock.mockReset();
+  }
+
   getTvl(): Promise<BN> {
     return Promise.resolve(new BN('100000000000000000000'));
   }
@@ -14,6 +20,8 @@ export class DappStakingRepositoryMock implements IDappStakingRepository {
     contractAddress: string,
     amount: BN
   ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> {
+    this.bondAndStakeCallMock.call(this, contractAddress, amount);
+
     return {} as SubmittableExtrinsic<'promise', ISubmittableResult>;
   }
 }

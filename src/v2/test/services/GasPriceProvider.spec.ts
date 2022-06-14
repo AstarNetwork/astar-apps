@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { container } from 'src/v2/common';
+import { container, resetContainer } from 'src/v2/common';
 import { GasPriceChangedMessage, IEventAggregator, TipPriceChangedMessage } from 'src/v2/messaging';
 import { IGasPriceProvider } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
@@ -7,7 +7,7 @@ import { initTestContainer } from '../helpers';
 
 describe('GasPriceProvide.ts', () => {
   beforeEach(() => {
-    // resetContainer();
+    resetContainer();
     initTestContainer();
   });
 
