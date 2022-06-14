@@ -152,7 +152,7 @@
 </template>
 <script lang="ts">
 import { fadeDuration } from '@astar-network/astar-ui';
-import { ChainAsset, useXcmBridge } from 'src/hooks';
+import { ChainAsset, useXcmBridge, useXcmEvm, useAccount } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { computed, defineComponent, PropType, ref } from 'vue';
 import AddressInput from 'src/components/common/AddressInput.vue';
@@ -161,6 +161,7 @@ import ModalLoading from '/src/components/common/ModalLoading.vue';
 import ModalSelectChain from 'src/components/assets/modals/ModalSelectChain.vue';
 import { truncate } from 'src/hooks/helper/common';
 import { useI18n } from 'vue-i18n';
+import { KSM } from 'src/modules/token';
 
 export default defineComponent({
   components: {
@@ -219,6 +220,9 @@ export default defineComponent({
       setDestChain,
     } = useXcmBridge(token);
 
+    const { currentAccount } = useAccount();
+    const { callAssetWithdrawToPara } = useXcmEvm(currentAccount);
+
     const isLoadingApi = computed<boolean>(() => {
       return existentialDeposit.value === null;
     });
@@ -254,7 +258,17 @@ export default defineComponent({
     };
 
     const handleBridge = async (): Promise<void> => {
-      await bridge(finalizedCallback);
+      if (isH160) {
+        await callAssetWithdrawToPara(
+          KSM.address,
+          amount.value!!,
+          evmDestAddress.value,
+          KSM.decimal,
+          finalizedCallback
+        );
+      } else {
+        await bridge(finalizedCallback);
+      }
     };
 
     return {
