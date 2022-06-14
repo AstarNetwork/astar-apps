@@ -34,8 +34,8 @@ export function setCurrentWallet(isEthWallet: boolean): void {
 }
 
 export default function buildDependencyContainer(): void {
-  container.addSingleton<IEventAggregator>(EventAggregator);
-  container.addSingleton<IApi>(Api);
+  container.addSingleton<IEventAggregator>(EventAggregator, Symbols.EventAggregator);
+  container.addSingleton<IApi>(Api, Symbols.Api);
 
   // need to specify id because not following name convention IService -> Service
   container.addSingleton<IWalletService>(PolkadotWalletService, WalletType.Polkadot);
@@ -49,15 +49,18 @@ export default function buildDependencyContainer(): void {
   });
 
   // Repositories
-  container.addSingleton<IDappStakingRepository>(DappStakingRepository);
+  container.addSingleton<IDappStakingRepository>(
+    DappStakingRepository,
+    Symbols.DappStakingRepository
+  );
   container.addSingleton<IPriceRepository>(CoinGeckoPriceRepository, Symbols.CoinGecko);
-  container.addSingleton<IMetadataRepository>(MetadataRepository);
-  container.addSingleton<ISystemRepository>(SystemRepository);
-  container.addSingleton<IEthCallRepository>(EthCallRepository);
+  container.addSingleton<IMetadataRepository>(MetadataRepository, Symbols.MetadataRepository);
+  container.addSingleton<ISystemRepository>(SystemRepository, Symbols.SystemRepository);
+  container.addSingleton<IEthCallRepository>(EthCallRepository, Symbols.EthCallRepository);
 
   // Services
-  container.addTransient<IDappStakingService>(DappStakingService);
-  container.addSingleton<IGasPriceProvider>(GasPriceProvider); // Singleton because it listens and caches gas/tip prices.
+  container.addTransient<IDappStakingService>(DappStakingService, Symbols.DappStakingService);
+  container.addSingleton<IGasPriceProvider>(GasPriceProvider, Symbols.GasPriceProvider); // Singleton because it listens and caches gas/tip prices.
 
   // Create GasPriceProvider instace so it can catch price change messages from the portal.
   container.get<IGasPriceProvider>(Symbols.GasPriceProvider);
