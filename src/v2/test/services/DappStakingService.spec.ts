@@ -7,6 +7,8 @@ import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
 
 describe('DappStakingService.ts', () => {
+  let sut: IDappStakingService;
+
   beforeEach(() => {
     // resetContainer();
     initTestContainer();

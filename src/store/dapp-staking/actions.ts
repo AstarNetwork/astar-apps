@@ -33,7 +33,6 @@ const showError = (dispatch: Dispatch, message: string): void => {
   );
 };
 
-// TODO refactor, detect address type, etc.....
 export const getAddressEnum = (address: string) => ({ Evm: address });
 
 const getCollectionKey = async (): Promise<string> => {
