@@ -13,6 +13,14 @@
         <div>
           <SelectWallet :set-wallet-modal="setWalletModal" :selected-wallet="selectedWallet" />
         </div>
+        <div v-if="isNativeWallet" class="row--balance-option">
+          <div class="column--balance-option">
+            <span class="text--option-label">
+              {{ $t('wallet.showBalance', { token: nativeTokenSymbol }) }}
+            </span>
+            <q-toggle v-model="isShowBalance" color="light-blue" />
+          </div>
+        </div>
         <fieldset>
           <div v-if="isMathWallet" class="column--remarks">
             <li v-if="currentNetworkIdx !== endpointKey.SHIDEN">
@@ -41,22 +49,39 @@
                 />
                 <div class="wrapper--account-detail">
                   <div class="accountName">{{ account.name }}</div>
-                  <div class="address">{{ account.address }}</div>
-                  <div class="wrapper--share">
-                    <button class="box--share btn--primary" @click="copyAddress(account.address)">
-                      <div class="icon--primary" @click="copyAddress">
-                        <astar-icon-copy />
-                      </div>
-                      <div>{{ $t('copy') }}</div>
-                    </button>
-                    <a :href="subScan + account.address" target="_blank" rel="noopener noreferrer">
-                      <button class="box--share btn--primary">
-                        <div class="icon--primary">
-                          <astar-icon-external-link />
+                  <div class="row--address-icons">
+                    <div class="address">{{ getShortenAddress(account.address) }}</div>
+                    <div class="icons">
+                      <button class="box--share btn--primary" @click="copyAddress(account.address)">
+                        <div class="icon--primary" @click="copyAddress">
+                          <astar-icon-copy />
                         </div>
-                        <div>{{ $t('subscan') }}</div>
+                        <q-tooltip>
+                          <span class="text--tooltip">{{ $t('copy') }}</span>
+                        </q-tooltip>
                       </button>
-                    </a>
+                      <a
+                        :href="subScan + account.address"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <button class="box--share btn--primary">
+                          <div class="icon--primary">
+                            <astar-icon-external-link />
+                          </div>
+                          <q-tooltip>
+                            <span class="text--tooltip">{{ $t('subscan') }}</span>
+                          </q-tooltip>
+                        </button>
+                      </a>
+                    </div>
+                  </div>
+                  <div>
+                    <span v-if="isShowBalance && !isLoadingBalance" class="text--balance">
+                      {{ $n(displayBalance(account.address)) }}
+                      {{ nativeTokenSymbol }}
+                    </span>
+                    <span v-else class="text--balance-hide"> ----- {{ nativeTokenSymbol }} </span>
                   </div>
                 </div>
                 <div v-if="index === previousSelIdx" class="dot"></div>
@@ -79,15 +104,22 @@
 </template>
 <script lang="ts">
 import copy from 'copy-to-clipboard';
+import { ethers } from 'ethers';
 import SelectWallet from 'src/components/header/modals/SelectWallet.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { SupportWallet } from 'src/config/wallets';
+import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { wait } from 'src/hooks/helper/common';
 import { castMobileSource, checkIsEthereumWallet } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
-import { computed, defineComponent, PropType, ref } from 'vue';
+import { computed, defineComponent, PropType, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { checkIsNativeWallet } from 'src/hooks/helper/wallet';
+import { truncate } from 'src/hooks/helper/common';
+import { fetchNativeBalance } from 'src/modules/account';
+import { ApiPromise } from '@polkadot/api';
+import { $api } from 'src/boot/api';
 
 export default defineComponent({
   components: {
@@ -123,6 +155,9 @@ export default defineComponent({
   setup(props, { emit }) {
     const isSelected = ref<boolean>(false);
     const isClosing = ref<boolean>(false);
+    const isShowBalance = ref<boolean>(false);
+    const isLoadingBalance = ref<boolean>(false);
+    const accountBalanceMap = ref<SubstrateAccount[]>([]);
 
     const closeModal = async (): Promise<void> => {
       isClosing.value = true;
@@ -136,13 +171,27 @@ export default defineComponent({
     const store = useStore();
     const { t } = useI18n();
 
-    const substrateAccounts = computed(() => {
-      const accounts = store.getters['general/substrateAccounts'];
-      const filteredAccounts = accounts.filter((it: SubstrateAccount) => {
+    const isNativeWallet = computed<boolean>(() => checkIsNativeWallet(props.selectedWallet));
+
+    const substrateAccounts = computed<SubstrateAccount[]>(() => {
+      const accounts: SubstrateAccount[] = accountBalanceMap.value || [];
+      const filteredAccounts = accounts.filter((it) => {
         const lookupWallet = castMobileSource(props.selectedWallet);
         return it.source === lookupWallet;
       });
-      return filteredAccounts;
+
+      return filteredAccounts.sort((a, b) => Number(b.balance) - Number(a.balance));
+    });
+
+    const substrateAccountsAll = computed<SubstrateAccount[]>(
+      () => store.getters['general/substrateAccounts']
+    );
+
+    const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
+
+    const nativeTokenSymbol = computed<string>(() => {
+      const chainInfo = store.getters['general/chainInfo'];
+      return chainInfo ? chainInfo.tokenSymbol : '';
     });
 
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
@@ -191,11 +240,48 @@ export default defineComponent({
 
     const windowHeight = ref<number>(window.innerHeight);
     const onHeightChange = () => {
-      windowHeight.value = window.innerHeight - 400;
+      windowHeight.value = window.innerHeight - 432;
     };
 
     window.addEventListener('resize', onHeightChange);
     onHeightChange();
+
+    const displayBalance = (address: string): number => {
+      if (!accountBalanceMap.value) return 0;
+      const account = accountBalanceMap.value.find((it) => it.address === address);
+      const balance = account ? account.balance : '0';
+      return truncate(ethers.utils.formatEther(balance || '0'));
+    };
+
+    const updateAccountMap = async (): Promise<void> => {
+      isLoadingBalance.value = true;
+      const updatedAccountMap = await Promise.all(
+        substrateAccountsAll.value.map(async (it) => {
+          const balance = await fetchNativeBalance({
+            api: $api as ApiPromise,
+            address: it.address,
+          });
+          return { ...it, balance };
+        })
+      );
+      // Memo: we are using local `accountBalanceMap` state because updating global `substrateAccounts` state triggers UI bug on this drawer
+      accountBalanceMap.value = updatedAccountMap;
+    };
+
+    watch(
+      [isLoading, isShowBalance],
+      async () => {
+        if (!substrateAccountsAll.value.length || isLoading.value) return;
+        try {
+          await updateAccountMap();
+        } catch (error) {
+          console.error(error);
+        } finally {
+          isLoadingBalance.value = false;
+        }
+      },
+      { immediate: true }
+    );
 
     return {
       selAccount,
@@ -208,12 +294,19 @@ export default defineComponent({
       currentNetworkIdx,
       isDarkTheme,
       subScan,
+      isNativeWallet,
+      nativeTokenSymbol,
+      isLoadingBalance,
+      accountBalanceMap,
       copyAddress,
+      getShortenAddress,
       endpointKey,
       isMathWallet,
       windowHeight,
       isSelected,
       isClosing,
+      isShowBalance,
+      displayBalance,
     };
   },
   methods: {
@@ -225,160 +318,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import 'src/css/quasar.variables.scss';
-@import 'src/css/utils.scss';
-
-.wrapper--select-network {
-  position: relative;
-  flex-grow: 1;
-}
-
-.list--account {
-  overflow-y: auto;
-  margin-top: 8px;
-}
-
-.wrapper--modal-account {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding-top: 24px;
-  padding-bottom: 20px;
-}
-
-.class-radio {
-  display: flex;
-  align-items: center;
-  background: #fff;
-  border-radius: 6px;
-  width: rem(314);
-  font-weight: 700;
-  font-size: 16px;
-  line-height: 18px;
-  color: $gray-5;
-  margin: 0 auto;
-  margin-top: 8px;
-  padding: 16px;
-  cursor: pointer;
-}
-.class-radio-off {
-  background: #fff;
-  border: 1px solid transparent;
-}
-.class-radio-off:hover {
-  border: 1px solid $astar-blue-dark;
-}
-.class-radio-on {
-  border: 2px solid $astar-blue-dark;
-}
-
-.wrapper--account-detail {
-  width: 225px;
-  text-align: left;
-  .accountName {
-    color: $gray-5;
-    font-weight: 700;
-    font-size: 16px;
-    line-height: 18px;
-  }
-  .address {
-    color: $gray-4;
-    font-weight: 510;
-    font-size: 12px;
-    line-height: 20px;
-    word-wrap: break-word;
-    margin-top: 9px;
-  }
-}
-.wrapper--share {
-  display: flex;
-  column-gap: 16px;
-  justify-content: center;
-  cursor: pointer;
-  margin-top: 10px;
-  .box--share {
-    display: flex;
-    align-items: center;
-    color: $astar-blue-dark;
-    font-weight: 400;
-    font-size: 14px;
-    line-height: 17px;
-  }
-}
-
-.btn--primary {
-  transition: all 0.4s ease 0s;
-  border-radius: 16px;
-  padding: 0px 12px;
-  &:hover {
-    color: white;
-    stroke: white;
-    background-color: $astar-blue-dark;
-    .icon--primary {
-      stroke: white;
-      background-color: transparent;
-    }
-  }
-}
-
-.wrapper__row--button {
-  flex-shrink: 0;
-  display: flex;
-  justify-content: center;
-}
-
-.btn--connect {
-  width: 340px;
-  background-color: $astar-blue;
-  font-size: 20px;
-  font-weight: 600;
-  border-radius: 30px;
-  height: 52px;
-  margin-top: 40px;
-  &:hover {
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
-      linear-gradient(0deg, $astar-blue, $astar-blue);
-  }
-}
-
-.column--remarks {
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-  row-gap: 8px;
-  padding-top: 24px;
-  padding-left: 28px;
-}
-
-.dot {
-  position: relative;
-  top: -60px;
-  left: 30px;
-  height: 7px;
-  width: 7px;
-  border-radius: 90%;
-  background-color: #00ff00;
-}
-
-.body--dark {
-  .class-radio {
-    color: #fff;
-  }
-  .class-radio-off {
-    background: $gray-6;
-  }
-
-  .class-radio-on {
-    background: $gray-5-selected-dark;
-  }
-
-  .wrapper--account-detail {
-    .accountName {
-      color: $gray-1;
-    }
-    .address {
-      color: $gray-3;
-    }
-  }
-}
+@use 'src/components/header/styles/modal-account.scss';
 </style>
