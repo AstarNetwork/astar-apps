@@ -13,7 +13,7 @@ $astar-blue-dark: #05b6fd;
 $shiden-purple: #770cff;
 $shiden-purple-dark: #a67cff;
 $warning-red: #ff5621;
-$warning-yellow: #f2c94c;
+$warning-yellow: #d8a400;
 $connected-green: #56f566;
 
 $blue: rgb(33, 89, 254);
@@ -25,6 +25,7 @@ $container-bg-white: #ffffff;
 $item--bg--hover-dark: $gray-5-selected-dark;
 $border-separator-dark: $gray-6;
 $border-separator-light: $object-light;
+$border-yellow: #f0b90b;
 $backdrop-transparent-dark: rgba(44, 51, 53, 0.5);
 $backdrop-transparent-dark-firefox: rgba(44, 51, 53, 0.9);
 $backdrop-transparent-light: rgba(44, 51, 53, 0.2);
@@ -32,6 +33,11 @@ $backdrop-transparent-light-firefox: rgba(44, 51, 53, 0.8);
 
 $container-border-shadow-dark: inset 0px 0px 4px rgba(0, 0, 0, 0.25);
 $container-border-shadow-light: 0px 0px 8px 1px rgba(0, 0, 0, 0.1);
+
+$box-red: rgba(255, 86, 33, 0.8);
+$box-red-dark: rgba(255, 86, 33, 0.6);
+$transparent-red: rgba(255, 86, 33, 0.2);
+$transparent-yellow: rgba(242, 201, 76, 0.2);
 
 $xs: 375px;
 $sm: 640px;

@@ -4,15 +4,17 @@
   display: grid;
   row-gap: 16px;
   margin-bottom: 40px;
-  position: relative;
 }
 
-.rows__row--error {
-  position: absolute;
-  bottom: -26px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
+.row--box-error {
+  padding: 10px 20px;
+  border-radius: 6px;
+  width: 344px;
+  margin-bottom: 24px;
+  margin-top: -14px;
+  border: 1px solid $warning-red;
+  background: $box-red;
+  text-align: left;
 }
 
 .rows__row--wrong-evm {
@@ -25,17 +27,17 @@
 .box--warning {
   display: grid;
   row-gap: 12px;
-  padding: 20px 16px;
+  padding: 10px 16px;
   border-radius: 6px;
   width: 344px;
-  background: transparent;
+  background: $transparent-red;
   margin-bottom: 24px;
   margin-top: -14px;
   border: 1px solid $warning-red;
 }
 
 .box--warning--checked {
-  background: $warning-red;
+  background: $box-red;
 }
 
 .box__row {
@@ -160,7 +162,7 @@
   margin-top: -10px;
   left: 0;
   top: 50%;
-  border: 2px solid;
+  border: 1px solid;
   border-color: $warning-red;
   background-color: transparent;
   border-radius: 4px;
@@ -186,6 +188,10 @@
   border-color: white;
 }
 
+.color--not-checked {
+  color: $warning-red;
+}
+
 .body--dark {
   input {
     color: white;
@@ -193,5 +199,14 @@
 
   .text--connect-rpc {
     color: $astar-blue-dark;
+  }
+  .row--box-error {
+    background: $box-red-dark;
+  }
+  .box--warning--checked {
+    background: $box-red-dark;
+  }
+  .color--not-checked {
+    color: $gray-1;
   }
 }

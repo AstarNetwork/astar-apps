@@ -27,6 +27,7 @@ import { useStore } from 'src/store';
 import { computed, onUnmounted, ref, Ref, watchEffect, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ParachainApi, RelaychainApi } from './SubstrateApi';
+import { wait } from '../helper/common';
 
 const chainPolkadot = xcmChains.find((it) => it.name === Chain.Polkadot) as XcmChain;
 const chainAstar = xcmChains.find((it) => it.name === Chain.Astar) as XcmChain;
@@ -119,7 +120,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     return balance.toString();
   };
 
-  const getExistentialDeposit = async () => {
+  const getExistentialDeposit = async (): Promise<void> => {
     if (!relayChainApi) return;
     await relayChainApi.isReady();
     const result = await relayChainApi.getExistentialDeposit();
@@ -127,7 +128,14 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   };
 
   const setRelaychainBal = async (): Promise<void> => {
-    if (!relayChainApi || !selectedToken.value) return;
+    if (
+      !relayChainApi ||
+      !selectedToken.value ||
+      selectedToken.value.metadata === null ||
+      isH160.value
+    ) {
+      return;
+    }
     await relayChainApi.isReady();
     const rawBalance = await getRelayChainNativeBal();
     const decimals = Number(String(selectedToken.value.metadata.decimals));
@@ -135,7 +143,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     relaychainBal.value = Number(balance);
   };
 
-  const checkIsEnoughEd = (amount: number): boolean => {
+  const checkIsEnoughEd = async (amount: number): Promise<boolean> => {
     const relaychainMinBal = existentialDeposit.value?.relaychainMinBal;
     if (!relaychainMinBal) return false;
 
@@ -143,20 +151,74 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
       const relayBalAfterTransfer = relaychainBal.value - amount;
       return relayBalAfterTransfer > relaychainMinBal;
     } else {
-      return relaychainBal.value > relaychainMinBal;
+      // Memo: wait for updating relaychainBalance
+      await wait(500);
+      const relaychainBalance = isH160.value ? evmDestAddressBalance.value : relaychainBal.value;
+      return relaychainBalance > relaychainMinBal;
+    }
+  };
+
+  const checkIsEvmDestAddress = (): boolean => {
+    const isEvmWithdraw = isH160.value && !isDeposit.value;
+    if (isEvmWithdraw && !evmDestAddress.value) {
+      return true;
+    }
+
+    return isH160.value
+      ? isValidAddressPolkadotAddress(evmDestAddress.value)
+      : isValidEvmAddress(evmDestAddress.value);
+  };
+
+  const setErrMsg = async (): Promise<void> => {
+    errMsg.value = '';
+
+    if (Number(amount.value) > fromAddressBalance.value) {
+      errMsg.value = t('warning.insufficientBalance');
+    }
+    if (isH160.value || !isNativeBridge.value) {
+      // Memo: withdrawal from EVM || Deposit from native to EVM
+
+      if (!evmDestAddress.value) {
+        errMsg.value = '';
+      }
+      if (Number(amount.value) > fromAddressBalance.value) {
+        errMsg.value = t('warning.insufficientBalance');
+      } else if (!evmDestAddress.value) {
+        return;
+      } else if (!checkIsEvmDestAddress()) {
+        errMsg.value = t('warning.inputtedInvalidDestAddress');
+      } else if (!(await checkIsEnoughEd(Number(amount.value)))) {
+        errMsg.value = t('warning.insufficientExistentialDeposit', {
+          network: existentialDeposit.value?.chain,
+        });
+      }
+    } else {
+      // Memo: deposit / withdrawal in native to native
+
+      if (Number(amount.value) > fromAddressBalance.value) {
+        errMsg.value = t('warning.insufficientBalance');
+      } else if (!(await checkIsEnoughEd(Number(amount.value)))) {
+        errMsg.value = t('warning.insufficientExistentialDeposit', {
+          network: existentialDeposit.value?.chain,
+        });
+      }
     }
   };
 
   const inputHandler = (event: any): void => {
     amount.value = event.target.value;
+  };
+
+  const setIsDisabledBridge = (): void => {
+    const isRequiredInputAddress = isH160.value || (!isH160.value && !isNativeBridge.value);
+    const isFulfilledAddress = isRequiredInputAddress && evmDestAddress.value;
     // check if recipient account has non-zero native asset. (it cannot be transferred to an account with 0 nonce)
     isDisabledBridge.value =
       !amount.value ||
       Number(amount.value) === 0 ||
-      Number(amount.value) > fromAddressBalance.value ||
       balance.value.lten(0) ||
-      !checkIsEnoughEd(Number(amount.value));
-    errMsg.value = '';
+      errMsg.value !== '' ||
+      !isFulfilledAddress;
   };
 
   const setIsNativeBridge = (isNative: boolean): void => {
@@ -186,7 +248,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     chains.value = networkChains;
   };
 
-  const setDefaultChain = () => {
+  const setDefaultChain = (): void => {
     if (isAstar.value) {
       destParaId.value = parachainIds.ASTAR;
       // Memo: withdrawal mode for H160 accounts
@@ -395,15 +457,23 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   );
 
   watchEffect(async () => {
-    await Promise.all([updateFromAddressBalance(), setEvmDestAddressBalance(), setRelaychainBal()]);
-  });
-
-  watchEffect(async () => {
     await setEvmDestAddressBalance();
   });
 
+  watchEffect(async () => {
+    await setErrMsg();
+  });
+
+  watchEffect(() => {
+    setIsDisabledBridge();
+  });
+
+  watchEffect(async () => {
+    await Promise.all([updateFromAddressBalance(), setRelaychainBal()]);
+  });
+
   const handleUpdate = setInterval(async () => {
-    await Promise.all([updateFromAddressBalance(), setEvmDestAddressBalance(), setRelaychainBal()]);
+    await Promise.all([updateFromAddressBalance(), setRelaychainBal()]);
   }, 20 * 1000);
 
   onUnmounted(() => {

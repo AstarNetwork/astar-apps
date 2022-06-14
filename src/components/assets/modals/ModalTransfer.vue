@@ -92,9 +92,6 @@
             {{ $t('assets.connectNetwork', { network: currentNetworkName }) }}
           </span>
         </div>
-        <div v-else-if="errMsg && toAddress" class="rows__row--error">
-          <span class="text--error">{{ $t(errMsg) }}</span>
-        </div>
       </div>
       <div
         v-if="isRequiredCheck"
@@ -104,11 +101,14 @@
         <div class="input--checkbox" :class="isChecked && 'input--checkbox--checked'">
           <input id="do-not-send-to-cex" v-model="isChecked" type="checkbox" />
           <label for="do-not-send-to-cex">
-            <span :class="isChecked ? 'color--white' : 'color--warning'">{{
+            <span :class="isChecked ? 'color--gray1' : 'color--not-checked'">{{
               $t('assets.modals.notSendToExchanges')
             }}</span>
           </label>
         </div>
+      </div>
+      <div v-if="errMsg" class="row--box-error">
+        <span class="color--white"> {{ $t(errMsg) }}</span>
       </div>
       <div class="wrapper__row--button">
         <button class="btn btn--confirm" :disabled="isDisabledTransfer" @click="transfer">
@@ -121,7 +121,7 @@
 <script lang="ts">
 import { $api, $web3 } from 'src/boot/api';
 import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
-import { getTokenBal } from 'src/config/web3';
+import { getTokenBal, isValidEvmAddress } from 'src/config/web3';
 import { useAccount, useChainMetadata, useEvmWallet, useTransfer, useWalletIcon } from 'src/hooks';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
@@ -220,6 +220,8 @@ export default defineComponent({
         isEthWallet.value &&
         isValidAddressPolkadotAddress(toAddress.value)
       ) {
+        return true;
+      } else if (!isNativeToken.value && isH160.value) {
         return true;
       } else {
         return false;
@@ -423,18 +425,21 @@ export default defineComponent({
       const fromAccountBalance = isErc20TransferRef
         ? Number(props.token ? props.token.userBalance : 0)
         : fromAddressBalance.value;
+      const isValidDestAddress =
+        isValidAddressPolkadotAddress(toAddress.value) || isValidEvmAddress(toAddress.value);
+
       try {
         if (transferAmtRef > fromAccountBalance) {
           errMsg.value = 'warning.insufficientBalance';
         } else if (isErc20TransferRef && evmNetworkIdx.value !== selectedNetworkRef) {
           errMsg.value = 'warning.selectedInvalidNetworkInWallet';
-        } else if (isErc20TransferRef && !web3Ref?.utils.isAddress(toAddress.value)) {
-          errMsg.value = 'warning.inputtedInvalidDestAddress';
         } else if (
-          isNativeToken.value &&
-          !isValidAddressPolkadotAddress(toAddress.value) &&
-          !web3Ref?.utils.isAddress(toAddress.value)
+          isErc20TransferRef &&
+          !web3Ref?.utils.isAddress(toAddress.value) &&
+          toAddress.value
         ) {
+          errMsg.value = 'warning.inputtedInvalidDestAddress';
+        } else if (toAddress.value && !isValidDestAddress) {
           errMsg.value = 'warning.inputtedInvalidDestAddress';
         } else {
           errMsg.value = '';
