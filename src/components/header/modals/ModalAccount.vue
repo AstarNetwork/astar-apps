@@ -264,7 +264,7 @@ export default defineComponent({
           return { ...it, balance };
         })
       );
-      // Memo: we are using local `accountBalanceMap` state because updating global `substrateAccounts` state triggers UI bug on this drawer
+      // Memo: we use local `accountBalanceMap` state because updating global `substrateAccounts` state triggers UI bug on this drawer
       accountBalanceMap.value = updatedAccountMap;
     };
 
