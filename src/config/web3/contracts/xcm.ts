@@ -32,12 +32,10 @@ export class XCM {
         )
         .send({ from: this.fromAddr })
         .on('transactionHash', (hash: string) => {
-          console.log('hash', hash);
           resolve(hash);
         })
         .on('receipt', (receipt: EthReceipt) => {
-          // resolve(receipt.transactionHash);
-          console.log('receipt', receipt.transactionHash);
+          // console.log('receipt', receipt.transactionHash);
           finalizedCallback();
         })
         .on('error', (error: Error) => {

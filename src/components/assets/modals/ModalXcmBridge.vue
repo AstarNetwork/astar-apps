@@ -164,7 +164,6 @@ import ModalLoading from '/src/components/common/ModalLoading.vue';
 import ModalSelectChain from 'src/components/assets/modals/ModalSelectChain.vue';
 import { truncate } from 'src/hooks/helper/common';
 import { useI18n } from 'vue-i18n';
-import { KSM } from 'src/modules/token';
 
 export default defineComponent({
   components: {
@@ -262,13 +261,16 @@ export default defineComponent({
 
     const handleBridge = async (): Promise<void> => {
       if (isH160) {
-        await callAssetWithdrawToPara(
-          KSM.address,
+        const txHash = await callAssetWithdrawToPara(
           amount.value!!,
           evmDestAddress.value,
-          KSM.decimal,
           finalizedCallback
         );
+
+        if (txHash) {
+          isDisabledBridge.value = true;
+          amount.value = null;
+        }
       } else {
         await bridge(finalizedCallback);
       }
