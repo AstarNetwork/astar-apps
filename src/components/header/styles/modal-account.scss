@@ -14,9 +14,13 @@
 }
 
 .row--balance-option {
-  text-align: right;
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
+  padding-left: 130px;
+  @media (min-width: $sm) {
+    padding-left: 0px;
+    justify-content: flex-end;
+  }
 }
 
 .column--balance-option {

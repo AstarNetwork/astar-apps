@@ -269,7 +269,7 @@ export default defineComponent({
     };
 
     watch(
-      [isLoading, isShowBalance],
+      [isLoading, isShowBalance, substrateAccountsAll],
       async () => {
         if (!substrateAccountsAll.value.length || isLoading.value) return;
         try {
@@ -308,11 +308,6 @@ export default defineComponent({
       isShowBalance,
       displayBalance,
     };
-  },
-  methods: {
-    isConnected(networkStatus: string) {
-      return networkStatus === 'connected';
-    },
   },
 });
 </script>
