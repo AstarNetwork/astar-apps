@@ -1,21 +1,39 @@
 <template>
   <div>
     <div>
-      <div v-if="stakeInfo" class="tw-mb-4">
+      <div
+        v-if="stakeInfo"
+        :class="stakeInfo.isRegistered || stakeInfo.hasStake ? 'tw-mb-4' : 'tw--mb-4'"
+      >
         <div :style="{ opacity: stakeInfo?.hasStake ? '1' : '0' }" class="tw-flex tw-flex-row">
           <div class="tw-w-20">{{ $t('dappStaking.yourStake') }}</div>
           <div class="tw-font-semibold">{{ stakeInfo?.yourStake.formatted }}</div>
         </div>
-        <div class="tw-flex tw-flex-row">
-          <div class="tw-w-20">{{ $t('dappStaking.totalStake') }}</div>
-          <div class="tw-font-semibold">{{ stakeInfo?.totalStake }}</div>
+        <template v-if="stakeInfo.isRegistered">
+          <div class="tw-flex tw-flex-row">
+            <div class="tw-w-20">{{ $t('dappStaking.totalStake') }}</div>
+            <div class="tw-font-semibold">{{ stakeInfo.totalStake }}</div>
+          </div>
+          <div class="tw-mt-1 tw-flex tw-flex-row">
+            <div class="tw-w-20">{{ $t('dappStaking.stakersCount') }}</div>
+            <div class="tw-font-semibold">{{ stakeInfo.stakersCount }}</div>
+          </div>
+        </template>
+      </div>
+
+      <div v-if="!stakeInfo?.isRegistered && stakeInfo?.stakersCount > 0">
+        <div>
+          <span class="text--accent">
+            {{ $t('dappStaking.projectUnregistered') }}
+          </span>
         </div>
-        <div class="tw-mt-1 tw-flex tw-flex-row">
-          <div class="tw-w-20">{{ $t('dappStaking.stakersCount') }}</div>
-          <div class="tw-font-semibold">{{ stakeInfo?.stakersCount }}</div>
+        <div v-if="stakeInfo?.hasStake">
+          <span class="text--md">
+            {{ $t('dappStaking.fundsWillBeUnstaked') }}
+          </span>
         </div>
       </div>
-      <div class="tw-flex">
+      <div v-else class="tw-flex">
         <div>
           <div v-if="stakeInfo?.hasStake">
             <Button :small="true" :primary="true" @click="showStakeModal">
@@ -237,7 +255,7 @@ export default defineComponent({
             );
 
         const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
-          customMsg.value = t('dappStaking.toast.staked', {
+          customMsg.value = t('dappStaking.toast.unstaked', {
             amount: unstakeAmount,
             dapp: props.dapp.name,
           });

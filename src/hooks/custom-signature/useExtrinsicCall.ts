@@ -1,3 +1,4 @@
+import { useI18n } from 'vue-i18n';
 import { computed } from 'vue';
 import { useStore } from 'src/store';
 import { $api } from 'boot/api';
@@ -10,13 +11,14 @@ import { useMetamask } from 'src/hooks/custom-signature/useMetamask';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 
 interface CallOptions {
-  onResult: (_: ISubmittableResult) => void;
+  onResult: (_: ISubmittableResult) => Promise<boolean>;
   onTransactionError: (_: Error) => void;
 }
 
 export function useExtrinsicCall({ onResult, onTransactionError }: CallOptions) {
   const { requestSignature } = useMetamask();
   const store = useStore();
+  const { t } = useI18n();
 
   const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
   const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
@@ -37,11 +39,14 @@ export function useExtrinsicCall({ onResult, onTransactionError }: CallOptions) 
         account.nonce
       );
       call
-        ?.send((result: ISubmittableResult) => onResult(result))
-        .catch((e: Error) => onTransactionError(e));
+        ?.send(async (result: ISubmittableResult) => {
+          await onResult(result);
+        })
+        .catch((e: Error) => onTransactionError(e))
+        .finally(() => store.commit('general/setLoading', false));
     } else {
       store.dispatch('general/showAlertMsg', {
-        msg: 'Unable to to callculate message payload.',
+        msg: t('toast.unableCalculateMsgPayload'),
         alertType: 'error',
       });
     }

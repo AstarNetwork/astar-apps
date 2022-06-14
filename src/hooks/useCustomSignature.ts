@@ -1,3 +1,4 @@
+import { useI18n } from 'vue-i18n';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { useStore } from 'src/store';
@@ -8,6 +9,7 @@ import { hasExtrinsicFailedEvent } from 'src/modules/extrinsic';
 
 export function useCustomSignature({ fn, txType }: { fn?: () => void; txType?: TxType }) {
   const customMsg = ref<string | null>(null);
+  const { t } = useI18n();
 
   const store = useStore();
   const isCustomSig = computed(() => {
@@ -19,8 +21,9 @@ export function useCustomSignature({ fn, txType }: { fn?: () => void; txType?: T
 
   const handleTransactionError = (e: Error): void => {
     console.error(e);
+    const message = e.message;
     store.dispatch('general/showAlertMsg', {
-      msg: `Transaction failed with error: ${e.message}`,
+      msg: t('toast.transactionFailed', { message }),
       alertType: 'error',
     });
   };
@@ -30,12 +33,11 @@ export function useCustomSignature({ fn, txType }: { fn?: () => void; txType?: T
       return new Promise<boolean>(async (resolve) => {
         const status = result.status;
         if (status.isFinalized) {
-          store.commit('general/setLoading', false);
           if (!hasExtrinsicFailedEvent(result.events, store.dispatch)) {
             fn && fn();
             const msg = customMsg.value
               ? customMsg.value
-              : `Completed at block hash #${status.asFinalized.toString()}`;
+              : t('toast.completedHash', { hash: status.asFinalized.toString() });
 
             store.dispatch('general/showAlertMsg', {
               msg,
@@ -57,6 +59,7 @@ export function useCustomSignature({ fn, txType }: { fn?: () => void; txType?: T
             result,
             senderAddress: senderAddress.value,
             store,
+            t,
           });
         }
       });

@@ -1,3 +1,4 @@
+import { useI18n } from 'vue-i18n';
 import { useGasPrice } from './../useGasPrice';
 import { Struct, u32, Vec } from '@polkadot/types';
 import { Balance } from '@polkadot/types/interfaces';
@@ -9,6 +10,8 @@ import { signAndSend } from 'src/hooks/helper/wallet';
 import { hasExtrinsicFailedEvent } from 'src/modules/extrinsic';
 import { useStore } from 'src/store';
 import { computed, ref, watchEffect } from 'vue';
+import { checkIsDappOwner, getNumberOfUnclaimedEra } from '../helper/claim';
+import { useCurrentEra } from '../useCurrentEra';
 
 type EraIndex = u32;
 
@@ -34,14 +37,19 @@ interface AccountLedger extends Struct {
 
 export function useCompoundRewards() {
   const store = useStore();
+  const { t } = useI18n();
   const { isCustomSig, handleCustomExtrinsic } = useCustomSignature({});
   const currentAddress = computed(() => store.getters['general/selectedAddress']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
+  const dapps = computed(() => store.getters['dapps/getAllDapps']);
   const { selectedTip } = useGasPrice();
+  const { era } = useCurrentEra();
 
   const isSupported = ref<boolean>(false);
   const isCompounding = ref<boolean>(false);
   const isStaker = ref<boolean>(false);
+  const isUnclaimedEra = ref<boolean>(false);
+  const isDappOwner = ref<boolean>(false);
   const rewardDestination = ref<RewardDestination>(RewardDestination.FreeBalance);
 
   const getCompoundingType = async () => {
@@ -86,7 +94,7 @@ export function useCompoundRewards() {
               store.dispatch(
                 'general/showAlertMsg',
                 {
-                  msg: 'You successfully set reward destination.',
+                  msg: t('dappStaking.toast.successfullySetRewardDest'),
                   alertType: 'success',
                 },
                 { root: true }
@@ -94,7 +102,9 @@ export function useCompoundRewards() {
               resolve(true);
             } else {
               if (errorMessage.includes('TooManyEraStakeValues')) {
-                errorMessage = `${errorMessage} - Disable compounding, claim your rewards and then enable compounding again.`;
+                errorMessage = t('dappStaking.toast.requiredClaimFirstCompounding', {
+                  message: errorMessage,
+                });
                 resolve(false);
               }
             }
@@ -125,8 +135,37 @@ export function useCompoundRewards() {
     }
   };
 
-  watchEffect(() => {
-    getCompoundingType();
+  const checkIsClaimable = async () => {
+    if (!dapps.value || !currentAddress.value || !era.value) return;
+    await Promise.all(
+      dapps.value.map(async ({ address }: { address: string }) => {
+        const [resIsDappOwner, { numberOfUnclaimedEra, isRequiredWithdraw }] = await Promise.all([
+          checkIsDappOwner({
+            dappAddress: address,
+            api: $api!,
+            senderAddress: currentAddress.value,
+          }),
+          getNumberOfUnclaimedEra({
+            dappAddress: address,
+            api: $api!,
+            senderAddress: currentAddress.value,
+            currentEra: era.value,
+          }),
+        ]);
+
+        if (resIsDappOwner) {
+          isDappOwner.value = true;
+        }
+
+        if (numberOfUnclaimedEra > 0 || isRequiredWithdraw) {
+          isUnclaimedEra.value = true;
+        }
+      })
+    );
+  };
+
+  watchEffect(async () => {
+    await Promise.all([checkIsClaimable(), getCompoundingType()]);
   });
 
   return {
@@ -134,6 +173,8 @@ export function useCompoundRewards() {
     isCompounding,
     rewardDestination,
     isStaker,
+    isDappOwner,
+    isUnclaimedEra,
     setRewardDestination,
   };
 }

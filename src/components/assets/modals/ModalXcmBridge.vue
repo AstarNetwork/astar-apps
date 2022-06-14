@@ -111,7 +111,7 @@
         </div>
       </div>
       <div class="container--warning">
-        <div v-if="isDeposit" class="row--warning">
+        <div class="row--warning">
           <div class="column--title">
             <span class="text--dot">・</span>
             <span class="text--warning">{{ $t('assets.modals.xcmWarning.avoidRisk') }}</span>
@@ -141,6 +141,9 @@
             </span>
           </div>
         </div>
+      </div>
+      <div v-if="errMsg" class="row--box-error">
+        <span class="color--white"> {{ $t(errMsg) }}</span>
       </div>
       <div class="wrapper__row--button">
         <button class="btn btn--confirm" :disabled="isDisabledBridge" @click="handleBridge">

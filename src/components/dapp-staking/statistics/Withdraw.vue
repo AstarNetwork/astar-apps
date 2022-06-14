@@ -68,6 +68,7 @@ import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
 import { hasExtrinsicFailedEvent } from 'src/modules/extrinsic';
 import { useStore } from 'src/store';
 import { computed, defineComponent, onUnmounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import ChunksModal from './ChunksModal.vue';
 
 export default defineComponent({
@@ -89,6 +90,7 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
+    const { t } = useI18n();
     const { isCustomSig, handleCustomExtrinsic } = useCustomSignature({
       fn: () => {
         store.commit('dapps/setUnlockingChunks', -1);
@@ -115,7 +117,7 @@ export default defineComponent({
               if (!hasExtrinsicFailedEvent(result.events, store.dispatch)) {
                 store.commit('dapps/setUnlockingChunks', -1);
                 store.dispatch('general/showAlertMsg', {
-                  msg: 'Balance is successfully withdrew.',
+                  msg: t('dappStaking.toast.successfullyWithdrew'),
                   alertType: 'success',
                 });
               }

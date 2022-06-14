@@ -85,10 +85,19 @@
           :selected-gas="selectedTip"
           :set-selected-gas="setSelectedTip"
         />
-
-        <div v-if="errMsg && toAddress" class="rows__row--error">
-          <span class="text--error">{{ errMsg }}</span>
+      </div>
+      <div class="box--warning" :class="isChecked && 'box--warning--checked'">
+        <div class="input--checkbox" :class="isChecked && 'input--checkbox--checked'">
+          <input id="do-not-send-to-cex" v-model="isChecked" type="checkbox" />
+          <label for="do-not-send-to-cex">
+            <span :class="isChecked ? 'color--gray1' : 'color--not-checked'">{{
+              $t('assets.modals.notSendToExchanges')
+            }}</span>
+          </label>
         </div>
+      </div>
+      <div v-if="errMsg" class="row--box-error">
+        <span class="color--white"> {{ $t(errMsg) }}</span>
       </div>
       <div class="wrapper__row--button">
         <button class="btn btn--confirm" :disabled="isDisabledTransfer" @click="transfer">
@@ -164,6 +173,7 @@ export default defineComponent({
       toAddress,
       errMsg,
       isDisabledTransfer,
+      isChecked,
       inputHandler,
       setSelectedTip,
       resetStates,
@@ -174,16 +184,20 @@ export default defineComponent({
     const closeModal = async (): Promise<void> => {
       isClosingModal.value = true;
       resetStates();
-      await Promise.all([wait(fadeDuration), props.handleUpdateXcmTokenBalances()]);
+      await wait(fadeDuration);
       props.handleModalXcmTransfer({ isOpen: false, currency: null });
       isClosingModal.value = false;
     };
 
     const transfer = async (): Promise<void> => {
+      const finalizeCallback = async (): Promise<void> => {
+        await Promise.all([closeModal(), props.handleUpdateXcmTokenBalances()]);
+      };
+
       await transferAsset({
         transferAmt: Number(transferAmt.value),
         toAddress: toAddress.value,
-        finalizeCallback: closeModal,
+        finalizeCallback,
       });
     };
 
@@ -202,6 +216,7 @@ export default defineComponent({
       tokenImage,
       selectedTip,
       nativeTipPrice,
+      isChecked,
       setSelectedTip,
       transfer,
       toMaxAmount,

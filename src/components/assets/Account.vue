@@ -99,6 +99,7 @@ import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import copy from 'copy-to-clipboard';
 import { FrameSystemAccountInfo } from '@polkadot/types/lookup';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   props: {
@@ -132,6 +133,7 @@ export default defineComponent({
     const { iconWallet } = useWalletIcon();
 
     const store = useStore();
+    const { t } = useI18n();
     const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
 
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
@@ -152,20 +154,21 @@ export default defineComponent({
     const copyAddress = () => {
       copy(currentAccount.value);
       store.dispatch('general/showAlertMsg', {
-        msg: 'Copy address success!',
+        msg: t('toast.copyAddressSuccessfully'),
         alertType: 'success',
       });
     };
 
-    const isSkeleton = computed(() => {
+    const isSkeleton = computed<boolean>(() => {
       const isH160 = store.getters['general/isH160Formatted'];
       const isLoadingState = store.getters['general/isLoading'];
-      if (props.isLoadingErc20Amount || props.isLoadingXcmAssetsAmount) return true;
-      if (!nativeTokenUsd.value) return false;
 
+      if (!nativeTokenUsd.value) return false;
       if (isH160) {
+        if (props.isLoadingErc20Amount) return true;
         return checkIsNullOrUndefined(balUsd.value) || isLoadingState;
       } else {
+        if (props.isLoadingXcmAssetsAmount) return true;
         return checkIsNullOrUndefined(balUsd.value);
       }
     });
