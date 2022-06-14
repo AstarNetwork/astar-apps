@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Guard } from 'src/v2//common';
 import { IPriceRepository } from 'src/v2/repositories';
-import { injectable } from 'inversify-props';
+import { injectable } from 'inversify';
 
 @injectable()
 export class CoinGeckoPriceRepository implements IPriceRepository {

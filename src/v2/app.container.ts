@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { container } from 'inversify-props';
+import { Container } from 'inversify';
 import { IApi } from './integration';
 import { Api } from './integration/implementation';
 import { IDappStakingRepository, IMetadataRepository, IPriceRepository } from './repositories';
@@ -9,14 +9,28 @@ import { DappStakingService } from './services/implementations';
 import { Symbols } from './symbols';
 import { MetadataRepository } from './repositories/implementations/MetadataRepository';
 
-export default function buildDependencyContainer(): void {
-  container.addSingleton<IApi>(Api);
+const container = new Container();
 
-  // Repositories
-  container.addSingleton<IDappStakingRepository>(DappStakingRepository);
-  container.addSingleton<IPriceRepository>(CoinGeckoPriceRepository, Symbols.CoinGecko);
-  container.addSingleton<IMetadataRepository>(MetadataRepository);
+container.bind<IApi>(Symbols.Api).to(Api).inSingletonScope();
 
-  // Services
-  container.addTransient<IDappStakingService>(DappStakingService);
-}
+// Repositories
+container
+  .bind<IDappStakingRepository>(Symbols.DappStakingRepository)
+  .to(DappStakingRepository)
+  .inSingletonScope();
+container
+  .bind<IPriceRepository>(Symbols.PriceRepository)
+  .to(CoinGeckoPriceRepository)
+  .inSingletonScope();
+container
+  .bind<IMetadataRepository>(Symbols.MetadataRepository)
+  .to(MetadataRepository)
+  .inSingletonScope();
+
+// Services
+container
+  .bind<IDappStakingService>(Symbols.DappStakingService)
+  .to(DappStakingService)
+  .inRequestScope();
+
+export default container;
