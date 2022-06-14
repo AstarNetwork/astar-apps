@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { inject, injectable } from 'inversify-props';
+import { inject, injectable } from 'inversify';
 import { TvlModel } from 'src/v2/models';
 import { IDappStakingRepository, IMetadataRepository, IPriceRepository } from 'src/v2/repositories';
 import { Symbols } from 'src/v2/symbols';
@@ -8,9 +8,9 @@ import { IDappStakingService } from 'src/v2/services';
 @injectable()
 export class DappStakingService implements IDappStakingService {
   constructor(
-    @inject() private dappStakingRepository: IDappStakingRepository,
-    @inject(Symbols.CoinGecko) private priceRepository: IPriceRepository,
-    @inject() private metadataRepository: IMetadataRepository
+    @inject(Symbols.DappStakingRepository) private dappStakingRepository: IDappStakingRepository,
+    @inject(Symbols.PriceRepository) private priceRepository: IPriceRepository,
+    @inject(Symbols.MetadataRepository) private metadataRepository: IMetadataRepository
   ) {}
 
   public async getTvl(): Promise<TvlModel> {
