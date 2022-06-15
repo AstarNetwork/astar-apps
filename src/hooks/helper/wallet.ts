@@ -1,6 +1,6 @@
 import { wait } from 'src/hooks/helper/common';
 import { EthereumProvider } from './../types/CustomSignature';
-import { supportEvmWalletObj, SupportWallet } from 'src/config/wallets';
+import { supportEvmWalletObj, SupportWallet, supportWalletObj } from 'src/config/wallets';
 import { web3Enable } from '@polkadot/extension-dapp';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
@@ -235,4 +235,8 @@ export const signAndSend = async ({
       resolve(false);
     }
   });
+};
+
+export const checkIsNativeWallet = (selectedWallet: SupportWallet): boolean => {
+  return supportWalletObj.hasOwnProperty(selectedWallet);
 };
