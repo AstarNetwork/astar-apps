@@ -18,10 +18,10 @@
             <span class="text--option-label">
               {{ $t('wallet.showBalance', { token: nativeTokenSymbol }) }}
             </span>
-            <q-toggle
-              v-model="isShowBalance"
-              :color="isShowBalance ? 'light-blue' : isDarkTheme ? 'grey-4' : 'white'"
-            />
+            <!-- Memo: `toggle--custom`: defined in app.scss due to unable to define in this file -->
+            <div class="toggle--custom">
+              <q-toggle v-model="isShowBalance" color="light-blue" />
+            </div>
           </div>
         </div>
         <fieldset>
