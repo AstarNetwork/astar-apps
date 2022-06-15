@@ -18,7 +18,10 @@
             <span class="text--option-label">
               {{ $t('wallet.showBalance', { token: nativeTokenSymbol }) }}
             </span>
-            <q-toggle v-model="isShowBalance" color="light-blue" />
+            <q-toggle
+              v-model="isShowBalance"
+              :color="isShowBalance ? 'light-blue' : isDarkTheme ? 'grey-4' : 'white'"
+            />
           </div>
         </div>
         <fieldset>
@@ -45,6 +48,7 @@
               >
                 <astar-radio-btn
                   :checked="selAccount === account.address"
+                  class="radio-btn"
                   @change="selAccount = account.address"
                 />
                 <div class="wrapper--account-detail">
@@ -167,7 +171,7 @@ export default defineComponent({
       emit('update:is-open', false);
     };
 
-    const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
+    const isDarkTheme = computed<boolean>(() => store.getters['general/theme'] === 'DARK');
     const store = useStore();
     const { t } = useI18n();
 
@@ -194,8 +198,8 @@ export default defineComponent({
       return chainInfo ? chainInfo.tokenSymbol : '';
     });
 
-    const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
-    const isMathWallet = computed(
+    const currentNetworkIdx = computed<number>(() => store.getters['general/networkIdx']);
+    const isMathWallet = computed<boolean>(
       () => !substrateAccounts.value.length && props.selectedWallet === SupportWallet.Math
     );
 
@@ -219,7 +223,7 @@ export default defineComponent({
       () => `${providerEndpoints[currentNetworkIdx.value].subscan}/account/`
     );
 
-    const previousSelIdx = computed(() => {
+    const previousSelIdx = computed<number | null>(() => {
       if (substrateAccounts.value && props.currentAccount) {
         const index = substrateAccounts.value.findIndex(
           (it: SubstrateAccount) => it.address === props.currentAccount
@@ -230,7 +234,7 @@ export default defineComponent({
       }
     });
 
-    const copyAddress = (address: string) => {
+    const copyAddress = (address: string): void => {
       copy(address);
       store.dispatch('general/showAlertMsg', {
         msg: t('toast.copyAddressSuccessfully'),
@@ -240,7 +244,7 @@ export default defineComponent({
 
     const windowHeight = ref<number>(window.innerHeight);
     const onHeightChange = () => {
-      windowHeight.value = window.innerHeight - 432;
+      windowHeight.value = window.innerHeight - 414;
     };
 
     window.addEventListener('resize', onHeightChange);

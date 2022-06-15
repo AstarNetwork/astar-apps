@@ -58,6 +58,7 @@
   padding: 24px 16px;
   cursor: pointer;
 }
+
 .class-radio-off {
   background: #fff;
   border: 1px solid transparent;
@@ -75,11 +76,16 @@
   align-items: center;
 }
 
+.radio-btn {
+  width: 18px !important;
+  margin-right: 16px !important;
+}
+
 .icons {
   display: flex;
   align-items: flex-start;
   column-gap: 8px;
-  margin-top: 6px;
+  margin-top: 10px;
 }
 
 .wrapper--account-detail {
@@ -119,6 +125,12 @@
 .btn--primary {
   transition: all 0.4s ease 0s;
   border-radius: 16px;
+  .icon--primary {
+    svg {
+      height: 24px;
+      width: 24px;
+    }
+  }
   &:hover {
     color: white;
     stroke: white;
@@ -143,8 +155,7 @@
   font-weight: 600;
   border-radius: 30px;
   height: 52px;
-  margin-top: 40px;
-  // margin-top: 16px;
+  margin-top: 24px;
   &:hover {
     background: linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
       linear-gradient(0deg, $astar-blue, $astar-blue);
@@ -164,7 +175,7 @@
   position: relative;
   top: -40px;
   height: 7px;
-  width: 7px;
+  width: 8px;
   border-radius: 90%;
   background-color: #00ff00;
 }
