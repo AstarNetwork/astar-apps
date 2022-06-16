@@ -155,7 +155,7 @@
 </template>
 <script lang="ts">
 import { fadeDuration } from '@astar-network/astar-ui';
-import { ChainAsset, useXcmBridge } from 'src/hooks';
+import { ChainAsset, useXcmBridge, useXcmEvm, useAccount } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { computed, defineComponent, PropType, ref } from 'vue';
 import AddressInput from 'src/components/common/AddressInput.vue';
@@ -222,6 +222,9 @@ export default defineComponent({
       setDestChain,
     } = useXcmBridge(token);
 
+    const { currentAccount } = useAccount();
+    const { callAssetWithdrawToPara } = useXcmEvm(currentAccount);
+
     const isLoadingApi = computed<boolean>(() => {
       return existentialDeposit.value === null;
     });
@@ -257,7 +260,20 @@ export default defineComponent({
     };
 
     const handleBridge = async (): Promise<void> => {
-      await bridge(finalizedCallback);
+      if (isH160) {
+        const txHash = await callAssetWithdrawToPara(
+          amount.value!!,
+          evmDestAddress.value,
+          finalizedCallback
+        );
+
+        if (txHash) {
+          isDisabledBridge.value = true;
+          amount.value = null;
+        }
+      } else {
+        await bridge(finalizedCallback);
+      }
     };
 
     return {
