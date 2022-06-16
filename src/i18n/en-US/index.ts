@@ -23,6 +23,8 @@ export default {
   wallet3: 'Wallet 3',
   alert: 'Alert',
   max: 'Max',
+  cookiePolicy:
+    'We use cookies to provide you with the best experience and to help improve our website and application. Please read our Privacy Policy for more information. By clicking "Accept all", you agree to the storing of cookies on your device to enhance site navigation, analyze site usage and provide customer support.',
   warning: {
     insufficientBalance: 'Insufficient balance',
     insufficientFee: 'Warning! Transaction might failed due to insufficient fee',
