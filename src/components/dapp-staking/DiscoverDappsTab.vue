@@ -9,9 +9,25 @@
           })
         }}
       </div>
-      <Button :small="true" class="register-button" @click="showRegisterDappModal = true">
+      <Button
+        v-if="false"
+        :small="true"
+        class="register-button"
+        @click="showRegisterDappModal = true"
+      >
         + {{ $t('dappStaking.registerDapp') }}
       </Button>
+      <div
+        class="
+          tw-bg-white
+          dark:tw-bg-darkGray-800
+          tw-shadow tw-rounded-lg tw-text-blue-900
+          dark:tw-text-darkGray-100
+          tw-p-2 tw-w-48
+        "
+      >
+        Dapp registration is temporarily unavailable.
+      </div>
     </div>
     <div v-if="isDapps" class="kpi-wrapper">
       <TVL />
