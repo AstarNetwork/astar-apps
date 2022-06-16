@@ -23,28 +23,31 @@
           <span class="text--title">{{ $t('assets.assets') }}</span>
         </div>
 
-        <div :class="isSearch && 'search--active'">
-          <div class="box--search">
-            <table class="table--search">
-              <tr class="tr--search">
-                <td>
-                  <input
-                    v-model="search"
-                    type="text"
-                    placeholder="Search"
-                    class="input--search"
-                    @focus="setIsSearch(true)"
-                    @blur="setIsSearch(false)"
-                  />
-                </td>
-                <td>
-                  <div class="icon--search">
-                    <astar-icon-search />
-                  </div>
-                </td>
-              </tr>
-            </table>
+        <div class="row--search-option">
+          <div :class="isSearch && 'search--active'">
+            <div class="box--search">
+              <table class="table--search">
+                <tr class="tr--search">
+                  <td>
+                    <input
+                      v-model="search"
+                      type="text"
+                      placeholder="Search"
+                      class="input--search"
+                      @focus="setIsSearch(true)"
+                      @blur="setIsSearch(false)"
+                    />
+                  </td>
+                  <td>
+                    <div class="icon--search">
+                      <astar-icon-search />
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </div>
           </div>
+          <EvmAssetOptions />
         </div>
       </div>
 
@@ -141,6 +144,7 @@ import { ethers } from 'ethers';
 import { $web3 } from 'src/boot/api';
 import { checkIsCbridgeToken, SelectedToken } from 'src/c-bridge';
 import Erc20Currency from 'src/components/assets/Erc20Currency.vue';
+import EvmAssetOptions from 'src/components/assets/EvmAssetOptions.vue';
 import EvmCbridgeToken from 'src/components/assets/EvmCbridgeToken.vue';
 import { getBalance } from 'src/config/web3';
 import { useAccount, usePrice } from 'src/hooks';
@@ -158,6 +162,7 @@ export default defineComponent({
     ModalTransfer,
     ModalFaucet,
     Erc20Currency,
+    EvmAssetOptions,
   },
   props: {
     tokens: {

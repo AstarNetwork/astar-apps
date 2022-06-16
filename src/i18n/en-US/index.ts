@@ -23,6 +23,7 @@ export default {
   wallet3: 'Wallet 3',
   alert: 'Alert',
   max: 'Max',
+  ticker: 'Ticker',
   warning: {
     insufficientBalance: 'Insufficient balance',
     insufficientFee: 'Warning! Transaction might failed due to insufficient fee',
@@ -266,6 +267,8 @@ export default {
     wrongNetwork: 'Wallet connected to the wrong network',
     connectNetwork: 'Connect to {network} RPC',
     invalidAddress: 'The address is not valid',
+    importTokens: 'Import tokens',
+    hideSmallBalances: 'Hide small balances',
     modals: {
       max: 'Max',
       balance: 'Balance: {amount} {token}',
@@ -288,6 +291,9 @@ export default {
       depositToNative: 'Deposit to Native',
       depositToEvm: 'Deposit to EVM',
       evmWalletAddress: 'EVM Wallet Address',
+      riskOfImportTokens:
+        'Please be aware of the risk that anyone can create a token, including creating fake versions of existing tokens.',
+      tokenContractAddress: 'Token Contract Address',
       xcmWarning: {
         avoidRisk: 'Avoid risk of losing your balance',
         fee: 'Fee is deducted from the amount entered',
