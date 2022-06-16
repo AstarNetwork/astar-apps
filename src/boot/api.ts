@@ -1,4 +1,6 @@
+import { SubstrateAccount } from 'src/store/general/state';
 import { ApiPromise } from '@polkadot/api';
+import { keyring } from '@polkadot/ui-keyring';
 import { useMeta } from 'quasar';
 import { boot } from 'quasar/wrappers';
 import { connectApi } from 'src/config/api/polkadot/connectApi';
@@ -11,15 +13,14 @@ import {
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { opengraphMeta } from 'src/config/opengraph';
 import { createAstarWeb3Instance, TNetworkId } from 'src/config/web3';
-import { useExtensions } from 'src/hooks/useExtensions';
+import { objToArray } from 'src/hooks/helper/common';
+import { isMobileDevice } from 'src/hooks/helper/wallet';
 import { useChainInfo } from 'src/hooks/useChainInfo';
+import { useExtensions } from 'src/hooks/useExtensions';
 import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
 import { computed, ref, watchPostEffect } from 'vue';
 import Web3 from 'web3';
 import { getRandomFromArray } from './../hooks/helper/common';
-import { keyring } from '@polkadot/ui-keyring';
-import { objToArray } from 'src/hooks/helper/common';
-import { isMobileDevice } from 'src/hooks/helper/wallet';
 
 let $api: ApiPromise | undefined;
 const $endpoint = ref<string>('');
@@ -80,7 +81,7 @@ export default boot(async ({ store }) => {
   $endpoint.value = endpoint;
 
   const seen = new Set();
-  const accountMap: { address: string; name: string; source: string }[] = [];
+  const accountMap: SubstrateAccount[] = [];
   keyring.accounts.subject.subscribe((accounts) => {
     if (accounts) {
       const accountArray = objToArray(accounts);

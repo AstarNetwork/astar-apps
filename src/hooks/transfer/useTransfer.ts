@@ -116,12 +116,9 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
       }
 
       const receivingAddress = isValidEvmAddress(toAddress) ? toSS58Address(toAddress) : toAddress;
-
-      watchEffect(async () => {
-        const unit = getUnit(selectUnit.value);
-        const toAmt = reduceDenomToBalance(transferAmt, unit, decimal.value);
-        await transferNative(toAmt, fromAddress, receivingAddress);
-      });
+      const unit = getUnit(selectUnit.value);
+      const toAmt = reduceDenomToBalance(transferAmt, unit, decimal.value);
+      await transferNative(toAmt, fromAddress, receivingAddress);
     }
   };
 

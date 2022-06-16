@@ -81,6 +81,7 @@ export default {
       switchNetwork:
         "Switch your network to 'Shiden' in the Math Wallet extension and refresh this page",
     },
+    showBalance: 'Show {token} balance',
   },
   installWallet: {
     getWallet: 'Haven’t got a {value} yet?',

@@ -16,7 +16,7 @@ $warning-red: #ff5621;
 $warning-yellow: #d8a400;
 $connected-green: #56f566;
 
-$blue: rgb(33, 89, 254);
+$neon-blue: rgb(33, 89, 254);
 
 $body-bg-dark: #000000;
 $body-bg-light: #ffffff;
@@ -47,3 +47,8 @@ $xl: 1280px;
 $xxl: 1440px;
 
 $container-max-width: 1100px;
+
+// Note: overwrite quasar color palette for the quasar components
+// Ref: https://quasar.dev/style/color-palette
+$blue: $astar-blue;
+$light-blue: $astar-blue-dark;

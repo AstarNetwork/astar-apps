@@ -6,6 +6,7 @@ export type SubstrateAccount = {
   address: string;
   name: string;
   source: string;
+  balance?: string;
 };
 
 export type AlertBox = {

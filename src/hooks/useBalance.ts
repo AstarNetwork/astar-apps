@@ -1,12 +1,13 @@
+import { SystemAccount } from 'src/modules/account';
 import { VoidFn } from '@polkadot/api/types';
-import { Balance, BalanceLockTo212 } from '@polkadot/types/interfaces';
-import { PalletVestingVestingInfo, PalletBalancesBalanceLock } from '@polkadot/types/lookup';
+import { BalanceLockTo212 } from '@polkadot/types/interfaces';
+import { PalletBalancesBalanceLock, PalletVestingVestingInfo } from '@polkadot/types/lookup';
 import BN from 'bn.js';
+import { $api, $web3 } from 'boot/api';
+import { getBalance } from 'src/config/web3';
 import { useStore } from 'src/store';
 import { computed, onUnmounted, ref, Ref, watch } from 'vue';
 import { getVested } from './helper/vested';
-import { $api, $web3 } from 'boot/api';
-import { getBalance } from 'src/config/web3';
 
 function useCall(addressRef: Ref<string>) {
   const balanceRef = ref(new BN(0));
@@ -55,7 +56,7 @@ function useCall(addressRef: Ref<string>) {
     }
 
     const results = await Promise.all([
-      api.query.system.account(address),
+      api.query.system.account<SystemAccount>(address),
       api.query.vesting.vesting(address),
       api.query.system.number(),
       api.derive.balances?.all(address),
@@ -95,7 +96,7 @@ function useCall(addressRef: Ref<string>) {
       locks
     );
 
-    balanceRef.value = accountInfo.data.free.toBn();
+    balanceRef.value = accountInfo.data.free;
   };
 
   const updateAccountBalance = () => {
@@ -164,20 +165,20 @@ export function useBalance(addressRef: Ref<string>) {
 
 export class AccountData {
   constructor(
-    free: Balance,
-    reserved: Balance,
-    miscFrozen: Balance,
-    feeFrozen: Balance,
+    free: BN,
+    reserved: BN,
+    miscFrozen: BN,
+    feeFrozen: BN,
     vested: BN,
     vesting: ExtendedVestingInfo[],
     vestedClaimable: BN,
     remainingVests: BN,
     locks: (PalletBalancesBalanceLock | BalanceLockTo212)[]
   ) {
-    this.free = free.toBn();
-    this.reserved = reserved.toBn();
-    this.miscFrozen = miscFrozen.toBn();
-    this.feeFrozen = feeFrozen.toBn();
+    this.free = free;
+    this.reserved = reserved;
+    this.miscFrozen = miscFrozen;
+    this.feeFrozen = feeFrozen;
     this.vested = vested;
     this.vesting = vesting;
     this.vestedClaimable = vestedClaimable;

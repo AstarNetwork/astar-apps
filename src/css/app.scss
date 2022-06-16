@@ -63,4 +63,11 @@ main {
   .border--separator {
     border-top: 1px solid $border-separator-dark;
   }
+  .toggle--custom {
+    .q-toggle__inner--falsy {
+      .q-toggle__thumb:after {
+        background: $gray-4 !important;
+      }
+    }
+  }
 }
