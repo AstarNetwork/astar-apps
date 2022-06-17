@@ -1,4 +1,3 @@
-import { useQuasar } from 'quasar';
 import {
   CbridgeToken,
   checkIsCbridgeToken,
