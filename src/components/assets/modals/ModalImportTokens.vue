@@ -1,6 +1,5 @@
 <template>
   <astar-simple-modal
-    v-if="!isLoading"
     :show="isModalImportTokens"
     :title="$t('assets.importTokens')"
     :is-closing="isClosingModal"
@@ -29,12 +28,12 @@
           <span class="text--md">{{ $t('ticker') }}</span>
         </div>
         <div>
-          <span class="text--title">{{ tokenTicker }}</span>
+          <span v-if="token" class="text--title">{{ token.symbol }}</span>
         </div>
       </div>
 
       <div class="wrapper__row--button">
-        <button class="btn btn--confirm" :disabled="false" @click="handleRequest">
+        <button class="btn btn--confirm" :disabled="isDisabled" @click="handleRequest">
           {{ $t('confirm') }}
         </button>
       </div>
@@ -42,9 +41,16 @@
   </astar-simple-modal>
 </template>
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
 import { fadeDuration } from '@astar-network/astar-ui';
+import { $web3 } from 'src/boot/api';
+import { SelectedToken } from 'src/c-bridge';
+import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { fetchErc20TokenInfo } from 'src/config/web3';
 import { wait } from 'src/hooks/helper/common';
+import { Erc20Token, storeImportedERC20Token } from 'src/modules/token';
+import { useStore } from 'src/store';
+import { computed, defineComponent, PropType, ref, watch } from 'vue';
 
 export default defineComponent({
   props: {
@@ -56,16 +62,42 @@ export default defineComponent({
       type: Function,
       required: true,
     },
+    tokens: {
+      type: Object as PropType<SelectedToken[]>,
+      required: false,
+      default: null,
+    },
   },
   setup(props) {
     const isClosingModal = ref<boolean>(false);
-    const tokenTicker = ref<string>('');
+    const token = ref<Erc20Token | null>(null);
     const search = ref<string>('');
 
     const resetStates = (): void => {
-      tokenTicker.value = '';
+      token.value = null;
       search.value = '';
     };
+
+    const store = useStore();
+    const evmNetworkIdx = computed<number>(() => {
+      const chainInfo = store.getters['general/chainInfo'];
+      const chain = chainInfo ? chainInfo.chain : '';
+      const networkIdx = getProviderIndex(chain);
+      return Number(providerEndpoints[networkIdx].evmChainId);
+    });
+
+    const isDisabled = computed<boolean>(() => {
+      const isToken = !token.value;
+      let isDuplicated = false;
+
+      props.tokens.forEach((it) => {
+        if (it.address.toLowerCase() === search.value.toLowerCase()) {
+          isDuplicated = true;
+        }
+      });
+      const result = isToken || isDuplicated;
+      return result;
+    });
 
     const closeModal = async (): Promise<void> => {
       isClosingModal.value = true;
@@ -76,20 +108,52 @@ export default defineComponent({
     };
 
     const handleRequest = async (): Promise<void> => {
+      if (!token.value) return;
       try {
-        // todo
-        console.log('handleRequest');
+        storeImportedERC20Token(token.value);
       } catch (error) {
         console.error(error);
       } finally {
         closeModal();
+        // Memo: Update tokens in useCbridgeV2.ts
+        window.dispatchEvent(new CustomEvent(LOCAL_STORAGE.EVM_TOKEN_IMPORTS));
       }
     };
 
+    const handleSearchResult = async () => {
+      const web3 = $web3.value!;
+      const isValidAddress = search.value ? web3.utils.isAddress(search.value) : false;
+
+      if (!isValidAddress && search.value) {
+        // Todo: add error message
+        token.value = null;
+        return;
+      }
+
+      if (search.value) {
+        token.value = await fetchErc20TokenInfo({
+          web3,
+          address: search.value,
+          srcChainId: evmNetworkIdx.value,
+        });
+      } else {
+        token.value = null;
+      }
+    };
+
+    watch(
+      [search],
+      async () => {
+        await handleSearchResult();
+      },
+      { immediate: false }
+    );
+
     return {
       search,
-      tokenTicker,
+      token,
       isClosingModal,
+      isDisabled,
       closeModal,
       handleRequest,
     };

@@ -50,6 +50,7 @@
           <EvmAssetOptions
             :toggle-is-hide-small-balances="toggleIsHideSmallBalances"
             :is-hide-small-balances="isHideSmallBalances"
+            :tokens="tokens"
           />
         </div>
       </div>

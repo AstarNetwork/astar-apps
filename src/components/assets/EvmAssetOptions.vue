@@ -28,16 +28,18 @@
       <ModalImportTokens
         :is-modal-import-tokens="isModalImportTokens"
         :handle-modal-import-tokens="handleModalImportTokens"
+        :tokens="tokens"
       />
     </Teleport>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, PropType } from 'vue';
 import IconVert from '/src/components/common/IconVert.vue';
 import IconHide from '/src/components/common/IconHide.vue';
 import IconUnhide from '/src/components/common/IconUnhide.vue';
 import ModalImportTokens from 'src/components/assets/modals/ModalImportTokens.vue';
+import { SelectedToken } from 'src/c-bridge';
 
 export default defineComponent({
   components: {
@@ -54,6 +56,11 @@ export default defineComponent({
     toggleIsHideSmallBalances: {
       type: Function,
       required: true,
+    },
+    tokens: {
+      type: Object as PropType<SelectedToken[]>,
+      required: false,
+      default: null,
     },
   },
   setup(props) {

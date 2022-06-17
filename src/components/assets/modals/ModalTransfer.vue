@@ -119,28 +119,26 @@
   </astar-simple-modal>
 </template>
 <script lang="ts">
+import { fadeDuration } from '@astar-network/astar-ui';
+import { ethers } from 'ethers';
 import { $api, $web3 } from 'src/boot/api';
+import ABI from 'src/c-bridge/abi/ERC20.json';
+import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { getTokenBal } from 'src/config/web3';
 import { useAccount, useChainMetadata, useEvmWallet, useTransfer, useWalletIcon } from 'src/hooks';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
+import { truncate, wait } from 'src/hooks/helper/common';
 import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
+import { getEvmGasCost, sampleEvmWalletAddress } from 'src/modules/gas-api';
+import { getRegisteredERC20Token, getTokenImage } from 'src/modules/token';
 import { useStore } from 'src/store';
-import { getTokenImage } from 'src/modules/token';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
-import Web3 from 'web3';
-import ModalSelectAccount from './ModalSelectAccount.vue';
-import { registeredErc20Tokens } from 'src/modules/token';
-import { fadeDuration } from '@astar-network/astar-ui';
-import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
-import { wait } from 'src/hooks/helper/common';
-import { sampleEvmWalletAddress, getEvmGasCost } from 'src/modules/gas-api';
-import { ethers } from 'ethers';
-import ABI from 'src/c-bridge/abi/ERC20.json';
-import { AbiItem } from 'web3-utils';
-import { truncate } from 'src/hooks/helper/common';
 import { useI18n } from 'vue-i18n';
+import Web3 from 'web3';
+import { AbiItem } from 'web3-utils';
+import ModalSelectAccount from './ModalSelectAccount.vue';
 
 export default defineComponent({
   components: { ModalSelectAccount, SpeedConfiguration },
@@ -198,9 +196,11 @@ export default defineComponent({
     });
 
     // Memo: check the selected token is either hard-coded token or cBridge token
-    const registeredToken = computed(() =>
-      registeredErc20Tokens.find((it) => it.symbol === props.symbol)
-    );
+    const registeredToken = computed(() => {
+      const tokens = getRegisteredERC20Token();
+      const result = tokens.find((it) => it.symbol === props.symbol);
+      return result;
+    });
 
     const tokenImg = computed(() => {
       if (registeredToken.value) {

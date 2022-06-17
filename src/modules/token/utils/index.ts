@@ -1,4 +1,5 @@
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { registeredErc20Tokens, Erc20Token } from '..';
 import { getIcon } from '../../../c-bridge';
 
@@ -29,6 +30,16 @@ export const getErc20Explorer = ({
   return base + '/token/' + tokenAddress;
 };
 
+export const getRegisteredERC20Token = () => {
+  const storedTokens = getStoredERC20Tokens().map((it) => {
+    return {
+      ...it,
+      image: require('/src/assets/img/ic_coin-placeholder.png'),
+    };
+  });
+  return registeredErc20Tokens.concat(storedTokens);
+};
+
 export const checkIsWrappedToken = ({
   tokenAddress,
   srcChainId,
@@ -36,7 +47,7 @@ export const checkIsWrappedToken = ({
   tokenAddress: string;
   srcChainId: number;
 }) => {
-  const token = registeredErc20Tokens.find(
+  const token = getRegisteredERC20Token().find(
     (it: Erc20Token) => it.srcChainId === srcChainId && it.address === tokenAddress
   );
   if (!token) {
@@ -44,4 +55,15 @@ export const checkIsWrappedToken = ({
   }
 
   return token.isWrappedToken && token.srcChainId === srcChainId;
+};
+
+export const getStoredERC20Tokens = (): Erc20Token[] => {
+  const data = localStorage.getItem(LOCAL_STORAGE.EVM_TOKEN_IMPORTS);
+  return data ? JSON.parse(data) : [];
+};
+
+export const storeImportedERC20Token = (token: Erc20Token) => {
+  const tokens = getStoredERC20Tokens();
+  tokens.push(token);
+  localStorage.setItem(LOCAL_STORAGE.EVM_TOKEN_IMPORTS, JSON.stringify(tokens));
 };

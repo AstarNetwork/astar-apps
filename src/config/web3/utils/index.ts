@@ -7,6 +7,8 @@ import { EVM, nativeCurrency, TNetworkId } from './../index';
 import { ethers } from 'ethers';
 import ABI from 'src/c-bridge/abi/ERC20.json';
 import { AbiItem } from 'web3-utils';
+import { Erc20Token } from 'src/modules/token';
+import axios from 'axios';
 export { buildEvmAddress, isValidEvmAddress, toSS58Address } from './convert';
 export { getBalance, sendNativeTokenTransaction } from './transactions';
 
@@ -159,4 +161,45 @@ export const getDefaultEthProvider = () => {
   const provider = typeof window !== 'undefined' && window.ethereum;
   const web3 = new Web3(provider as any);
   return web3;
+};
+
+export const isXc20Token = (address: string): boolean => {
+  const addr = address.toLowerCase();
+  return addr.slice(0, 10) === '0xffffffff';
+};
+
+export const fetchErc20TokenInfo = async ({
+  web3,
+  address,
+  srcChainId,
+}: {
+  web3: Web3;
+  address: string;
+  srcChainId: number;
+}): Promise<Erc20Token | null> => {
+  try {
+    const contract = new web3.eth.Contract(ABI as AbiItem[], address);
+    const [decimal, name, symbol] = await Promise.all([
+      contract.methods.decimals().call(),
+      contract.methods.name().call(),
+      contract.methods.symbol().call(),
+    ]);
+
+    const data = {
+      srcChainId,
+      address,
+      decimal,
+      symbol,
+      name,
+      image: '',
+      isWrappedToken: false,
+      isXC20: isXc20Token(address),
+      wrapUrl: null,
+    };
+
+    return data;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 };

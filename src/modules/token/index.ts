@@ -1,4 +1,11 @@
-export { getTokenImage, getErc20Explorer, checkIsWrappedToken } from './utils';
+export {
+  getTokenImage,
+  getErc20Explorer,
+  checkIsWrappedToken,
+  storeImportedERC20Token,
+  getStoredERC20Tokens,
+  getRegisteredERC20Token,
+} from './utils';
 
 // Memo: ERC20 tokens information that is not supported by cBridge
 
