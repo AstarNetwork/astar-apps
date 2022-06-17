@@ -13,10 +13,17 @@
       </button>
       <button class="row--option" @click="handleHideSmallBalances">
         <!-- Todo: load from astar-ui -->
-        <IconHide class="icon-hide" />
-        <span class="text--option">{{ $t('assets.hideSmallBalances') }}</span>
+        <template v-if="isHideSmallBalances">
+          <IconUnhide class="icon-hide" />
+          <span class="text--option">{{ $t('assets.unhideSmallBalances') }}</span>
+        </template>
+        <template v-else>
+          <IconHide class="icon-hide" />
+          <span class="text--option">{{ $t('assets.hideSmallBalances') }}</span>
+        </template>
       </button>
     </div>
+
     <Teleport to="#app--main">
       <ModalImportTokens
         :is-modal-import-tokens="isModalImportTokens"
@@ -29,20 +36,26 @@
 import { defineComponent, ref } from 'vue';
 import IconVert from '/src/components/common/IconVert.vue';
 import IconHide from '/src/components/common/IconHide.vue';
+import IconUnhide from '/src/components/common/IconUnhide.vue';
 import ModalImportTokens from 'src/components/assets/modals/ModalImportTokens.vue';
 
 export default defineComponent({
   components: {
     IconVert,
     IconHide,
+    IconUnhide,
     ModalImportTokens,
   },
-  // props: {
-  //   handleUpdateTokenBalances: {
-  //     type: Function,
-  //     required: true,
-  //   },
-  // },
+  props: {
+    isHideSmallBalances: {
+      type: Boolean,
+      required: true,
+    },
+    toggleIsHideSmallBalances: {
+      type: Function,
+      required: true,
+    },
+  },
   setup(props) {
     const isOptionsOpen = ref<boolean>(false);
     const isModalImportTokens = ref<boolean>(false);
@@ -61,7 +74,7 @@ export default defineComponent({
     };
 
     const handleHideSmallBalances = (): void => {
-      console.log('handleHideSmallBalances');
+      props.toggleIsHideSmallBalances();
       closeOption();
     };
 

@@ -47,7 +47,10 @@
               </table>
             </div>
           </div>
-          <EvmAssetOptions />
+          <EvmAssetOptions
+            :toggle-is-hide-small-balances="toggleIsHideSmallBalances"
+            :is-hide-small-balances="isHideSmallBalances"
+          />
         </div>
       </div>
 
@@ -178,6 +181,7 @@ export default defineComponent({
   setup(props) {
     const isModalTransfer = ref<boolean>(false);
     const isModalFaucet = ref<boolean>(false);
+    const isHideSmallBalances = ref<boolean>(false);
     const token = ref<SelectedToken | Erc20Token | string | null>(null);
     const symbol = ref<string>('');
     const bal = ref<number>(0);
@@ -194,34 +198,38 @@ export default defineComponent({
     const isLoading = computed(() => store.getters['general/isLoading']);
     const { nativeTokenUsd } = usePrice();
 
-    const nativeTokenSymbol = computed(() => {
+    const nativeTokenSymbol = computed<string>(() => {
       const chainInfo = store.getters['general/chainInfo'];
       return chainInfo ? chainInfo.tokenSymbol : '';
     });
 
-    const currentNetworkName = computed(() => {
+    const currentNetworkName = computed<string>(() => {
       const chainInfo = store.getters['general/chainInfo'];
       const chain = chainInfo ? chainInfo.chain : '';
       return chain === 'Shibuya Testnet' ? 'Shibuya' : chain;
     });
 
-    const nativeTokenImg = computed(() =>
+    const nativeTokenImg = computed<string>(() =>
       getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
     );
-    const isListReady = computed(() => isShibuya.value || props.tokens);
+    const isListReady = computed<boolean>(() => !!(isShibuya.value || props.tokens));
 
-    const isDisplayNativeToken = computed(() => {
+    const isDisplayNativeToken = computed<boolean>(() => {
       return (
         !search.value || nativeTokenSymbol.value.toLowerCase().includes(search.value.toLowerCase())
       );
     });
 
-    const filteredTokens = computed(() => {
-      if (!search.value) return props.tokens;
+    const filteredTokens = computed<SelectedToken[] | null>(() => {
       if (!props.tokens) return null;
+      const tokens = isHideSmallBalances.value
+        ? props.tokens.filter((it) => Number(it.userBalance) > 0)
+        : props.tokens;
+
+      if (!search.value) return tokens;
 
       const value = search.value.toLowerCase();
-      const result = props.tokens
+      const result = tokens
         .map((token: SelectedToken) => {
           const isFoundToken =
             value === token.address.toLowerCase() ||
@@ -232,6 +240,10 @@ export default defineComponent({
         .filter((it) => it !== undefined) as SelectedToken[];
       return result.length > 0 ? result : null;
     });
+
+    const toggleIsHideSmallBalances = (): void => {
+      isHideSmallBalances.value = !isHideSmallBalances.value;
+    };
 
     const handleModalTransfer = ({
       currency,
@@ -293,11 +305,13 @@ export default defineComponent({
       filteredTokens,
       isDisplayNativeToken,
       cbridgeAppLink,
+      isHideSmallBalances,
       setIsSearch,
       handleModalTransfer,
       handleModalFaucet,
       checkIsCbridgeToken,
       truncate,
+      toggleIsHideSmallBalances,
     };
   },
 });

@@ -269,6 +269,7 @@ export default {
     invalidAddress: 'The address is not valid',
     importTokens: 'Import tokens',
     hideSmallBalances: 'Hide small balances',
+    unhideSmallBalances: 'Unhide small balances',
     modals: {
       max: 'Max',
       balance: 'Balance: {amount} {token}',
