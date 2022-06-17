@@ -1,12 +1,18 @@
 <template>
   <div v-if="open" class="fixed-bottom q-pa-md q-gutter-sm">
-    <q-banner rounded class="banner bg-blue-8 text-white">
-      We use cookies to provide you with the best experience and to help improve our website and
-      application. Please read our <a :href="policyURL" target="_blank">Privacy Policy</a> for more
-      information. By clicking "Accept", you agree to the storing of cookies on your device to
-      enhance site navigation, analyze site usage and provide customer support.
+    <q-banner rounded class="banner text-white">
+      Our website uses cookies to enhance site navigation and analyze site usage. Please let us know
+      you agree to all of our cookies. You can find out more on our
+      <a :href="policyURL" target="_blank">privacy policy page.</a>
       <template #action>
-        <q-btn rounded color="white" text-color="primary" label="Accept" @click="accept" />
+        <q-btn
+          class="btnAccept"
+          rounded
+          color="white"
+          text-color="primary"
+          label="Accept"
+          @click="accept"
+        />
       </template>
     </q-banner>
   </div>
@@ -37,6 +43,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
 .banner {
+  background: #0085ff;
   max-width: 500px;
   @media (min-width: $sm) {
     margin-left: 240px;
@@ -45,6 +52,11 @@ export default defineComponent({
   a {
     text-decoration: underline;
     font-weight: 600;
+  }
+
+  .btnAccept {
+    font-weight: 700;
+    height: 32px;
   }
 }
 </style>
