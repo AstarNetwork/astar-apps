@@ -15,10 +15,11 @@ import { ActionTree, Dispatch } from 'vuex';
 import { StateInterface } from '../index';
 import { signAndSend } from './../../hooks/helper/wallet';
 import { SubstrateAccount } from './../general/state';
-import { DappStateInterface as State, NewDappItem } from './state';
+import { DappStateInterface as State, NewDappItem, FileInfo } from './state';
 import { IDappStakingService } from 'src/v2/services';
 import container from 'src/v2/app.container';
 import { Symbols } from 'src/v2/symbols';
+import axios from 'axios';
 
 let collectionKey: string;
 
@@ -111,6 +112,97 @@ const actions: ActionTree<State, StateInterface> = {
     } finally {
       commit('general/setLoading', false, { root: true });
     }
+  },
+
+  async registerDappApi(
+    { commit, dispatch, rootState },
+    parameters: RegisterParameters
+  ): Promise<boolean> {
+    try {
+      if (parameters.api) {
+        const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
+          return new Promise<boolean>(async (resolve) => {
+            if (result.status.isFinalized) {
+              if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
+                try {
+                  const payload = {
+                    name: parameters.dapp.name,
+                    description: parameters.dapp.description,
+                    url: parameters.dapp.url,
+                    address: parameters.dapp.address,
+                    license: parameters.dapp.license,
+                    videoUrl: parameters.dapp.videoUrl,
+                    tags: parameters.dapp.tags,
+                    forumUrl: parameters.dapp.forumUrl,
+                    authorContact: parameters.dapp.authorContact,
+                    gitHubUrl: parameters.dapp.gitHubUrl,
+                    senderAddress: parameters.senderAddress,
+                    signature: parameters.dapp.signature,
+                    iconFile: getFileInfo(parameters.dapp.iconFileName, parameters.dapp.iconFile),
+                    images: getImagesInfo(parameters.dapp),
+                  };
+
+                  const result = await axios.post(
+                    'http://localhost:3000/api/v1/dev/dapps-staking/register',
+                    payload
+                  );
+
+                  commit('addDapp', result.data);
+
+                  dispatch(
+                    'general/showAlertMsg',
+                    {
+                      msg: `You successfully registered dApp ${parameters.dapp.name} to the store.`,
+                      alertType: 'success',
+                    },
+                    { root: true }
+                  );
+
+                  resolve(true);
+                } catch (e) {
+                  const error = e as unknown as Error;
+                  console.error(error);
+                  showError(dispatch, error.message);
+                  alert(
+                    `An unexpected error occured during dApp registration. Please screenshot this message and send to the Astar team. ${error.message}`
+                  );
+                  resolve(false);
+                }
+              }
+
+              commit('general/setLoading', false, { root: true });
+            } else {
+              commit('general/setLoading', true, { root: true });
+            }
+          });
+        };
+
+        const transaction = parameters.api.tx.dappsStaking.register(
+          getAddressEnum(parameters.dapp.address)
+        );
+        await signAndSend({
+          transaction,
+          senderAddress: parameters.senderAddress,
+          substrateAccounts: parameters.substrateAccounts,
+          isCustomSignature: false,
+          txResHandler,
+          dispatch,
+          tip: parameters.tip,
+        });
+
+        return true;
+      } else {
+        showError(dispatch, 'Api is undefined.');
+        return false;
+      }
+    } catch (e) {
+      const error = e as unknown as Error;
+      console.error(error);
+      commit('general/setLoading', false, { root: true });
+      showError(dispatch, error.message);
+    }
+
+    return false;
   },
 
   async registerDapp(
@@ -260,6 +352,20 @@ const actions: ActionTree<State, StateInterface> = {
       showError(dispatch, error.message);
     }
   },
+};
+
+const getFileInfo = (fileName: string, dataUrl: string): FileInfo => {
+  const urlParts = dataUrl.split(/[:;,]+/);
+
+  return {
+    name: fileName,
+    base64content: urlParts[3],
+    contentType: urlParts[1],
+  };
+};
+
+const getImagesInfo = (dapp: NewDappItem): FileInfo[] => {
+  return dapp.images.map((image, index) => getFileInfo(image.name, dapp.imagesContent[index]));
 };
 
 export interface RegisterParameters {

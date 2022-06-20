@@ -23,6 +23,7 @@ export interface NewDappItem extends DappItem {
   images: File[];
   imagesContent: string[];
   videoUrlInput: string;
+  signature: string;
 }
 
 export interface DappStateInterface {
@@ -39,6 +40,12 @@ export interface DappStateInterface {
 
 export interface LooseObject {
   [key: string]: any;
+}
+
+export interface FileInfo {
+  name: string;
+  base64content: string;
+  contentType: string;
 }
 
 function state(): DappStateInterface {
