@@ -11,7 +11,6 @@ export {
   getBalance,
   isValidEvmAddress,
   toSS58Address,
-  getDefaultEthProvider,
   sendNativeTokenTransaction,
   fetchErc20TokenInfo,
 } from './utils';

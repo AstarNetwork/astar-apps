@@ -137,12 +137,12 @@ import { useAccount, useChainMetadata, useEvmWallet, useTransfer, useWalletIcon 
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { truncate, wait } from 'src/hooks/helper/common';
 import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
-import { getEvmProvider } from 'src/hooks/helper/wallet';
 import { getEvmGasCost, sampleEvmWalletAddress } from 'src/modules/gas-api';
 import { getRegisteredERC20Token, getTokenImage } from 'src/modules/token';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useEthProvider } from 'src/hooks/custom-signature/useEthProvider';
 import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
 import ModalSelectAccount from './ModalSelectAccount.vue';
@@ -196,6 +196,8 @@ export default defineComponent({
     const store = useStore();
     const { t } = useI18n();
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
+    const { ethProvider } = useEthProvider();
+
     const isEthWallet = computed(() => store.getters['general/isEthWallet']);
     const { currentAccount, currentAccountName } = useAccount();
     const nativeTokenSymbol = computed(() => {
@@ -457,13 +459,12 @@ export default defineComponent({
     };
 
     const setSelectedNetwork = async (): Promise<void> => {
-      const provider = getEvmProvider();
-      if (!isH160.value || !provider) return;
-      const web3 = new Web3(provider as any);
+      if (!isH160.value || !ethProvider.value) return;
+      const web3 = new Web3(ethProvider.value as any);
       const chainId = await web3.eth.getChainId();
       selectedNetwork.value = chainId;
-      provider &&
-        provider.on('chainChanged', (chainId: string) => {
+      ethProvider.value &&
+        ethProvider.value.on('chainChanged', (chainId: string) => {
           selectedNetwork.value = Number(chainId);
         });
     };
