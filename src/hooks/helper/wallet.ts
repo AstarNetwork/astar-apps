@@ -104,22 +104,6 @@ export const addToEvmProvider = ({
   });
 };
 
-export const addToEvmWallet = ({
-  tokenAddress,
-  symbol,
-  decimals,
-  image,
-}: {
-  tokenAddress: string;
-  symbol: string;
-  decimals: number;
-  image: string;
-}): void => {
-  const { ethProvider } = useEthProvider();
-  if (!ethProvider.value) return;
-  addToEvmProvider({ tokenAddress, symbol, decimals, image, provider: ethProvider.value });
-};
-
 export const getDeepLinkUrl = (wallet: SupportWallet): string | false => {
   switch (wallet) {
     case SupportWallet.MetaMask:
