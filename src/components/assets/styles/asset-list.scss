@@ -266,6 +266,16 @@
   height: 24px;
 }
 
+.row--search-option {
+  display: flex;
+  column-gap: 4px;
+  align-items: center;
+  @media (min-width: $xl) {
+    margin-right: 32px;
+    column-gap: 12px;
+  }
+}
+
 .box--search {
   position: relative;
   border-radius: 6px;
