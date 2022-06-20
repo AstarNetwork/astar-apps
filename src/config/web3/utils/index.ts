@@ -159,9 +159,3 @@ export const getTokenExplorer = ({
       return blockExplorerUrls[chainId] + `/token/${address}`;
   }
 };
-
-export const getDefaultEthProvider = () => {
-  const provider = typeof window !== 'undefined' && window.ethereum;
-  const web3 = new Web3(provider as any);
-  return web3;
-};

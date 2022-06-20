@@ -54,8 +54,6 @@ export default defineComponent({
     const selWalletIdx = ref<string>('');
     const selWallet = computed(() => supportAllWalletsObj[props.selectedWallet]);
 
-    console.log(supportAllWallets);
-
     const closeOption = () => {
       openOption.value = false;
     };

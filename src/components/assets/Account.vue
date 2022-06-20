@@ -72,7 +72,7 @@
         <span>{{ $t('assets.totalBalance') }}</span>
         <q-skeleton v-if="isSkeleton" animation="fade" class="skeleton--md" />
         <span v-else class="text--total-balance">
-          ${{ $n(balUsd + ttlErc20Amount + ttlNativeXcmUsdAmount) }}
+          ${{ $n(balUsd || 0 + ttlErc20Amount + ttlNativeXcmUsdAmount) }}
         </span>
       </div>
     </div>

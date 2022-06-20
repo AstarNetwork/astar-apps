@@ -1,5 +1,3 @@
-import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { SupportWallet } from 'src/config/wallets';
 import { ref, watch } from 'vue';
 import { useEthProvider } from './useEthProvider';
 

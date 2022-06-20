@@ -5,7 +5,6 @@ import { ethers } from 'ethers';
 import ABI from 'src/c-bridge/abi/ERC20.json';
 import {
   buildEvmAddress,
-  getDefaultEthProvider,
   isValidEvmAddress,
   sendNativeTokenTransaction,
   toSS58Address,
@@ -84,7 +83,9 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
       }
 
       store.commit('general/setLoading', true);
-      const web3 = getDefaultEthProvider();
+
+      const web3 = new Web3(ethProvider.value as any);
+
       const gasPrice = await getEvmGas(web3, selectedGas.value.price);
 
       sendNativeTokenTransaction(
