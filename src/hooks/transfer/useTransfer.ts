@@ -15,17 +15,19 @@ import { isValidAddressPolkadotAddress, reduceDenomToBalance } from 'src/hooks/h
 import { getUnit } from 'src/hooks/helper/units';
 import { getEvmGas } from 'src/modules/gas-api';
 import { useStore } from 'src/store';
-import { computed, Ref, ref, watchEffect } from 'vue';
+import { computed, Ref, ref } from 'vue';
 import Web3 from 'web3';
 import { TransactionConfig } from 'web3-eth';
 import { AbiItem } from 'web3-utils';
-import { getEvmProvider } from '../helper/wallet';
 import { signAndSend } from './../helper/wallet';
 import { useGasPrice } from '../useGasPrice';
+import { useEthProvider } from '../custom-signature/useEthProvider';
 
 export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: () => void) {
   const store = useStore();
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
+  const { ethProvider } = useEthProvider();
+
   const isTxSuccess = ref(false);
 
   const { handleResult, handleCustomExtrinsic } = useCustomSignature({ fn });
@@ -140,8 +142,7 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
       toastInvalidAddress();
       return;
     }
-    const provider = getEvmProvider();
-    const web3 = new Web3(provider as any);
+    const web3 = new Web3(ethProvider.value as any);
     const contract = new web3.eth.Contract(ABI as AbiItem[], contractAddress);
     const value = ethers.utils.parseUnits(transferAmt, decimals);
     const gasPrice = await getEvmGas(web3, selectedGas.value.price);

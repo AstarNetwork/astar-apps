@@ -125,7 +125,6 @@ import { getTokenBal } from 'src/config/web3';
 import { useAccount, useChainMetadata, useEvmWallet, useTransfer, useWalletIcon } from 'src/hooks';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
-import { getEvmProvider } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { getTokenImage } from 'src/modules/token';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
@@ -141,6 +140,7 @@ import ABI from 'src/c-bridge/abi/ERC20.json';
 import { AbiItem } from 'web3-utils';
 import { truncate } from 'src/hooks/helper/common';
 import { useI18n } from 'vue-i18n';
+import { useEthProvider } from 'src/hooks/custom-signature/useEthProvider';
 
 export default defineComponent({
   components: { ModalSelectAccount, SpeedConfiguration },
@@ -190,6 +190,8 @@ export default defineComponent({
     const store = useStore();
     const { t } = useI18n();
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
+    const { ethProvider } = useEthProvider();
+
     const isEthWallet = computed(() => store.getters['general/isEthWallet']);
     const { currentAccount, currentAccountName } = useAccount();
     const nativeTokenSymbol = computed(() => {
@@ -449,13 +451,12 @@ export default defineComponent({
     };
 
     const setSelectedNetwork = async (): Promise<void> => {
-      const provider = getEvmProvider();
-      if (!isH160.value || !provider) return;
-      const web3 = new Web3(provider as any);
+      if (!isH160.value || !ethProvider.value) return;
+      const web3 = new Web3(ethProvider.value as any);
       const chainId = await web3.eth.getChainId();
       selectedNetwork.value = chainId;
-      provider &&
-        provider.on('chainChanged', (chainId: string) => {
+      ethProvider.value &&
+        ethProvider.value.on('chainChanged', (chainId: string) => {
           selectedNetwork.value = Number(chainId);
         });
     };

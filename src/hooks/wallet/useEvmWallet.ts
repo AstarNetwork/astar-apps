@@ -1,13 +1,15 @@
 import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
-import { getEvmProvider } from 'src/hooks/helper/wallet';
+
 import { useStore } from 'src/store';
 import { computed, ref, watchEffect } from 'vue';
 import Web3 from 'web3';
 import { setupNetwork } from 'src/config/web3';
+import { useEthProvider } from '../custom-signature/useEthProvider';
 
 export const useEvmWallet = () => {
   const walletNetworkId = ref<number | null>(null);
   const store = useStore();
+  const { ethProvider } = useEthProvider();
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
   const evmNetworkId = computed(() => {
@@ -30,7 +32,11 @@ export const useEvmWallet = () => {
 
   const connectEvmNetwork = async () => {
     try {
-      await setupNetwork(evmNetworkId.value);
+      if (!ethProvider.value) {
+        throw new Error('No Ethereum provider found');
+      }
+
+      await setupNetwork({ network: evmNetworkId.value, provider: ethProvider.value });
     } catch (error) {
       console.error(error);
     }
@@ -38,15 +44,14 @@ export const useEvmWallet = () => {
 
   watchEffect(async () => {
     try {
-      const provider = getEvmProvider();
-      if (!isH160.value || !provider) return;
+      if (!isH160.value || !ethProvider.value) return;
 
-      const web3 = new Web3(provider as any);
+      const web3 = new Web3(ethProvider.value as any);
       const chainId = await web3.eth.getChainId();
       walletNetworkId.value = chainId;
 
-      provider &&
-        provider.on('chainChanged', (chainId: string) => {
+      ethProvider.value &&
+        ethProvider.value.on('chainChanged', (chainId: string) => {
           walletNetworkId.value = Number(chainId);
         });
     } catch (error) {

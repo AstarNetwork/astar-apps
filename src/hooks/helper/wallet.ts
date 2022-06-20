@@ -12,6 +12,7 @@ import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ethers } from 'ethers';
 import { useStore } from 'src/store';
 import { computed } from 'vue';
+import { useEthProvider } from '../custom-signature/useEthProvider';
 
 export const getInjectedExtensions = async (forceRequest = false): Promise<any[]> => {
   const selectedAddress = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
@@ -76,27 +77,6 @@ export const castMobileSource = (source: string): string => {
   return source;
 };
 
-export const getEvmProvider = () => {
-  const store = useStore();
-  const currentWallet = computed(() => store.getters['general/currentWallet']);
-
-  let evmProvider;
-
-  if (typeof window === 'undefined') {
-    return;
-  }
-
-  if (currentWallet.value === SupportWallet.TalismanEvm) {
-    evmProvider = window.talismanEth;
-  }
-
-  if (currentWallet.value === SupportWallet.MetaMask) {
-    evmProvider = window.ethereum;
-  }
-
-  return evmProvider;
-};
-
 export const addToEvmProvider = ({
   tokenAddress,
   symbol,
@@ -135,9 +115,9 @@ export const addToEvmWallet = ({
   decimals: number;
   image: string;
 }): void => {
-  const provider = getEvmProvider();
-  if (!provider) return;
-  addToEvmProvider({ tokenAddress, symbol, decimals, image, provider });
+  const { ethProvider } = useEthProvider();
+  if (!ethProvider.value) return;
+  addToEvmProvider({ tokenAddress, symbol, decimals, image, provider: ethProvider.value });
 };
 
 export const getDeepLinkUrl = (wallet: SupportWallet): string | false => {

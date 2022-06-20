@@ -1,12 +1,12 @@
 import { getRandomFromArray } from './../../../hooks/helper/common';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
-import { getEvmProvider } from 'src/hooks/helper/wallet';
 import Web3 from 'web3';
 import { blockExplorerUrls, CHAIN_INFORMATION } from '../index';
 import { EVM, nativeCurrency, TNetworkId } from './../index';
 import { ethers } from 'ethers';
 import ABI from 'src/c-bridge/abi/ERC20.json';
 import { AbiItem } from 'web3-utils';
+import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 export { buildEvmAddress, isValidEvmAddress, toSS58Address } from './convert';
 export { getBalance, sendNativeTokenTransaction } from './transactions';
 
@@ -21,8 +21,13 @@ export const getChainData = (chainId: number) => {
   };
 };
 
-export const setupNetwork = async (network: number): Promise<boolean> => {
-  const provider = getEvmProvider();
+export const setupNetwork = async ({
+  network,
+  provider,
+}: {
+  network: number;
+  provider: EthereumProvider;
+}): Promise<boolean> => {
   if (provider) {
     const chainId = `0x${network.toString(16)}`;
     const { chainName, nativeCurrency, rpcUrls, blockExplorerUrls } = getChainData(network);

@@ -1,3 +1,5 @@
+import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { SupportWallet } from 'src/config/wallets';
 import { ref, watch } from 'vue';
 import { useEthProvider } from './useEthProvider';
 
@@ -6,11 +8,13 @@ export function useEvmAccount() {
   const loadedAccounts = ref<string[]>([]);
 
   const requestAccounts = async () => {
-    if (!ethProvider.value) {
+    let provider = ethProvider.value;
+
+    if (!provider) {
       throw new Error('Cannot detect any EVM Account');
     }
 
-    const accounts = (await ethProvider.value.request({
+    const accounts = (await provider.request({
       method: 'eth_requestAccounts',
     })) as string[];
     loadedAccounts.value = accounts;
