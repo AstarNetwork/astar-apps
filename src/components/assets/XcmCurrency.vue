@@ -5,7 +5,14 @@
       <div class="row row--details">
         <div class="row__left">
           <div class="column--currency">
-            <img :src="tokenImage" alt="logo" class="token-logo" />
+            <div class="token-logo">
+              <jazzicon
+                v-if="tokenImage.includes('custom-token')"
+                :address="token.id"
+                :diameter="24"
+              />
+              <img v-else :src="tokenImage" alt="logo" />
+            </div>
             <div class="column--ticker">
               <span class="text--title">{{ token.metadata.symbol }}</span>
               <span class="text--label">{{ token.metadata.name }}</span>
@@ -79,8 +86,10 @@ import { truncate } from 'src/hooks/helper/common';
 import { ChainAsset } from 'src/hooks/xcm/useXcmAssets';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType } from 'vue';
+import Jazzicon from 'vue3-jazzicon/src/components';
 
 export default defineComponent({
+  components: { [Jazzicon.name]: Jazzicon },
   props: {
     token: {
       type: Object as PropType<ChainAsset>,

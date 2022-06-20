@@ -1,0 +1,73 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper__row--button {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.wrapper--import-tokens {
+  padding-top: 56px;
+  text-align: center;
+}
+
+.wrapper__row--information {
+  padding: 0 16px;
+  margin-bottom: 24px;
+}
+
+.box--import-tokens {
+  display: grid;
+  padding: 16px;
+  border-radius: 6px;
+  width: 344px;
+  height: 90px;
+  text-align: left;
+  background: $container-bg-white;
+  margin-bottom: 16px;
+}
+
+.box__title {
+  display: grid;
+  row-gap: 16px;
+  text-align: left;
+  margin-bottom: 8px;
+}
+
+.input--search {
+  border: none;
+  height: 100%;
+  width: 100%;
+  padding: 0 4px;
+  font-weight: 500;
+  font-size: 16px;
+  background-color: $container-bg-white;
+  transition: all 0.5s ease 0s;
+  &:focus {
+    transition: all 0.5s ease 0s;
+    outline: none;
+  }
+}
+
+.row--box-error {
+  padding: 10px 20px;
+  border-radius: 6px;
+  width: 344px;
+  bottom: 80px;
+  border: 1px solid $warning-red;
+  background: $box-red;
+  text-align: left;
+  margin-bottom: -8px;
+}
+
+.body--dark {
+  .box--import-tokens {
+    background: $gray-6;
+  }
+  .input--search {
+    background-color: $gray-6;
+  }
+  .row--box-error {
+    background: $box-red-dark;
+  }
+}

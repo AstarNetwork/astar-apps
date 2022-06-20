@@ -12,6 +12,7 @@ export {
   isValidEvmAddress,
   toSS58Address,
   sendNativeTokenTransaction,
+  fetchErc20TokenInfo,
 } from './utils';
 
 export { contractInstance, Staking } from './contracts';

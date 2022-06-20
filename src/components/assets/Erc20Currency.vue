@@ -5,7 +5,14 @@
       <div class="row row--details">
         <div class="row__left">
           <div class="column--currency">
-            <img :src="token.image" :alt="token.name" class="token-logo" />
+            <div class="token-logo">
+              <jazzicon
+                v-if="token.image.includes('custom-token')"
+                :address="token.address"
+                :diameter="24"
+              />
+              <img v-else :src="token.image" :alt="token.name" />
+            </div>
             <div class="column--ticker">
               <span class="text--title">{{ token.symbol }}</span>
               <span class="text--label">{{ token.name }}</span>
@@ -43,6 +50,8 @@
 
             <!-- Todo: We can add an action button for XC20 tokens here -->
             <div v-if="token.isXC20" />
+
+            <div v-if="isImportedToken" />
 
             <div class="screen--xl">
               <a
@@ -90,12 +99,16 @@
 <script lang="ts">
 import { getProviderIndex } from 'src/config/chainEndpoints';
 import { addToEvmWallet } from 'src/hooks/helper/wallet';
-import { Erc20Token, getErc20Explorer } from 'src/modules/token';
+import { Erc20Token, getErc20Explorer, getStoredERC20Tokens } from 'src/modules/token';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType } from 'vue';
 import { truncate } from 'src/hooks/helper/common';
+import Jazzicon from 'vue3-jazzicon/src/components';
 
 export default defineComponent({
+  components: {
+    [Jazzicon.name]: Jazzicon,
+  },
   props: {
     token: {
       type: Object as PropType<Erc20Token>,
@@ -117,10 +130,15 @@ export default defineComponent({
       return getErc20Explorer({ currentNetworkIdx, tokenAddress });
     });
 
+    const isImportedToken = computed<boolean>(
+      () => !!getStoredERC20Tokens().find((it) => it.symbol === token.symbol)
+    );
+
     return {
       addToEvmWallet,
       explorerLink,
       truncate,
+      isImportedToken,
     };
   },
 });
