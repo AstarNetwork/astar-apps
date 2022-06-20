@@ -51,6 +51,8 @@
             <!-- Todo: We can add an action button for XC20 tokens here -->
             <div v-if="token.isXC20" />
 
+            <div v-if="isImportedToken" />
+
             <div class="screen--xl">
               <a
                 class="box--explorer"
@@ -97,7 +99,7 @@
 <script lang="ts">
 import { getProviderIndex } from 'src/config/chainEndpoints';
 import { addToEvmWallet } from 'src/hooks/helper/wallet';
-import { Erc20Token, getErc20Explorer } from 'src/modules/token';
+import { Erc20Token, getErc20Explorer, getStoredERC20Tokens } from 'src/modules/token';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType } from 'vue';
 import { truncate } from 'src/hooks/helper/common';
@@ -128,10 +130,15 @@ export default defineComponent({
       return getErc20Explorer({ currentNetworkIdx, tokenAddress });
     });
 
+    const isImportedToken = computed<boolean>(
+      () => !!getStoredERC20Tokens().find((it) => it.symbol === token.symbol)
+    );
+
     return {
       addToEvmWallet,
       explorerLink,
       truncate,
+      isImportedToken,
     };
   },
 });

@@ -1,6 +1,6 @@
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { registeredErc20Tokens, Erc20Token, tokenImageMap } from '..';
+import { registeredErc20Tokens, Erc20Token, tokenImageMap } from '../index';
 import { getIcon } from '../../../c-bridge';
 
 export const getTokenImage = ({
@@ -30,7 +30,7 @@ export const getErc20Explorer = ({
   return base + '/token/' + tokenAddress;
 };
 
-export const getRegisteredERC20Token = () => {
+export const getRegisteredERC20Token = (): Erc20Token[] => {
   const storedTokens = getStoredERC20Tokens().map((it: Erc20Token) => {
     return {
       ...it,
