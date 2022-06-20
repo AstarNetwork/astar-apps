@@ -63,11 +63,12 @@
               <button
                 class="btn btn--sm btn--icon adjuster--width"
                 @click="
-                  addToEvmWallet({
+                  addToEvmProvider({
                     tokenAddress: token.address,
                     symbol: token.symbol,
                     decimals: token.decimal,
                     image: tokenImg,
+                    provider,
                   })
                 "
               >
@@ -89,12 +90,13 @@
 import { SelectedToken } from 'src/c-bridge';
 import { getProviderIndex } from 'src/config/chainEndpoints';
 import { getChainId } from 'src/config/web3';
-import { addToEvmWallet } from 'src/hooks/helper/wallet';
+import { addToEvmProvider } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { getErc20Explorer, getTokenImage } from 'src/modules/token';
 import { computed, defineComponent, PropType } from 'vue';
 import { truncate } from 'src/hooks/helper/common';
 import { cbridgeAppLink } from 'src/c-bridge';
+import { SupportWallet } from 'src/config/wallets';
 
 export default defineComponent({
   props: {
@@ -135,14 +137,39 @@ export default defineComponent({
       return getErc20Explorer({ currentNetworkIdx, tokenAddress });
     });
 
+    const currentWallet = computed(() => store.getters['general/currentWallet']);
+
+    let provider;
+
+    if (
+      typeof window.ethereum !== 'undefined' &&
+      window.ethereum &&
+      currentWallet.value === SupportWallet.MetaMask
+    ) {
+      provider = window.ethereum;
+    }
+
+    if (
+      typeof window.talismanEth !== 'undefined' &&
+      window.talismanEth &&
+      currentWallet.value === SupportWallet.TalismanEvm
+    ) {
+      provider = window.talismanEth;
+    }
+
+    if (!provider) {
+      throw new Error("Can't find provider");
+    }
+
     return {
       formatTokenName,
-      addToEvmWallet,
+      addToEvmProvider,
       tokenImg,
       nativeTokenSymbol,
       explorerLink,
       cbridgeAppLink,
       truncate,
+      provider,
     };
   },
 });

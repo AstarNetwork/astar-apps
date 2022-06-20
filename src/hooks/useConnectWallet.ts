@@ -267,9 +267,12 @@ export const useConnectWallet = () => {
   const loginWithStoredAccount = async (): Promise<void> => {
     const address = localStorage.getItem(SELECTED_ADDRESS);
     const wallet = localStorage.getItem(LOCAL_STORAGE.ETHEREUM_WALLET);
+
     if (currentRouter.value === undefined || !address || !isConnectedNetwork.value) {
       return;
     }
+
+    store.commit('general/setCurrentWallet', wallet);
 
     // Memo: wait for updating the chain id from the initial state 592 (to pass the `setupNetwork` function)
     const delay = 800;
@@ -283,8 +286,6 @@ export const useConnectWallet = () => {
       await setEvmWallet(wallet as SupportWallet);
     }
     store.commit('general/setCurrentAddress', address);
-
-    store.commit('general/setCurrentWallet', wallet);
   };
 
   const changeAccount = async (): Promise<void> => {

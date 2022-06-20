@@ -74,11 +74,12 @@
               <button
                 class="btn btn--sm btn--icon adjuster--width"
                 @click="
-                  addToEvmWallet({
+                  addToEvmProvider({
                     tokenAddress: token.address,
                     symbol: token.symbol,
                     decimals: token.decimal,
                     image: token.image,
+                    provider,
                   })
                 "
               >
@@ -98,12 +99,13 @@
 </template>
 <script lang="ts">
 import { getProviderIndex } from 'src/config/chainEndpoints';
-import { addToEvmWallet } from 'src/hooks/helper/wallet';
+import { addToEvmProvider } from 'src/hooks/helper/wallet';
 import { Erc20Token, getErc20Explorer, getStoredERC20Tokens } from 'src/modules/token';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType } from 'vue';
 import { truncate } from 'src/hooks/helper/common';
 import Jazzicon from 'vue3-jazzicon/src/components';
+import { SupportWallet } from 'src/config/wallets';
 
 export default defineComponent({
   components: {
@@ -134,11 +136,36 @@ export default defineComponent({
       () => !!getStoredERC20Tokens().find((it) => it.symbol === token.symbol)
     );
 
+    const currentWallet = computed(() => store.getters['general/currentWallet']);
+
+    let provider;
+
+    if (
+      typeof window.ethereum !== 'undefined' &&
+      window.ethereum &&
+      currentWallet.value === SupportWallet.MetaMask
+    ) {
+      provider = window.ethereum;
+    }
+
+    if (
+      typeof window.talismanEth !== 'undefined' &&
+      window.talismanEth &&
+      currentWallet.value === SupportWallet.TalismanEvm
+    ) {
+      provider = window.talismanEth;
+    }
+
+    if (!provider) {
+      throw new Error("Can't find provider");
+    }
+
     return {
-      addToEvmWallet,
+      addToEvmProvider,
       explorerLink,
       truncate,
       isImportedToken,
+      provider,
     };
   },
 });
