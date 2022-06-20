@@ -6,4 +6,5 @@ export enum LOCAL_STORAGE {
   SELECTED_ADDRESS = 'selectedAddress',
   EVM_ADDRESS_MAPPING = 'evmAddressMapping',
   EVM_TOKEN_IMPORTS = 'evmTokenImports',
+  CONFIRM_COOKIE_POLICY = 'confirmCookiePolicy',
 }

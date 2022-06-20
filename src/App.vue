@@ -26,6 +26,8 @@
         :alert-type="showAlert.alertType"
       />
     </transition>
+
+    <cookie-policy />
   </div>
 </template>
 <script lang="ts">
@@ -37,6 +39,7 @@ import DashboardLayout from 'layouts/DashboardLayout.vue';
 import { useStore } from 'src/store';
 import ModalLoading from 'components/common/ModalLoading.vue';
 import AlertBox from 'components/common/AlertBox.vue';
+import CookiePolicy from 'components//common/CookiePolicy.vue';
 import 'animate.css';
 
 export default defineComponent({
@@ -45,6 +48,7 @@ export default defineComponent({
     DashboardLayout,
     ModalLoading,
     AlertBox,
+    CookiePolicy,
   },
   setup() {
     const store = useStore();
