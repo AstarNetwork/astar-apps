@@ -42,13 +42,6 @@ export function useCbridgeV2() {
     return getProviderIndex(chain);
   });
 
-  const evmNetworkIdx = computed<number>(() => {
-    const chainInfo = store.getters['general/chainInfo'];
-    const chain = chainInfo ? chainInfo.chain : '';
-    const networkIdx = getProviderIndex(chain);
-    return Number(providerEndpoints[networkIdx].evmChainId);
-  });
-
   const evmNetworkId = computed(() => {
     return Number(providerEndpoints[currentNetworkIdx.value].evmChainId);
   });
@@ -226,6 +219,7 @@ export function useCbridgeV2() {
     }
   };
 
+  // Memo: triggered after users have imported tokens
   const handleImportingCustomToken = async (): Promise<void> => {
     window.addEventListener(LOCAL_STORAGE.EVM_TOKEN_IMPORTS, async () => {
       await handleCbridgeConfiguration();
