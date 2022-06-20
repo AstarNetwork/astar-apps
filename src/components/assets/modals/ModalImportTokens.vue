@@ -32,6 +32,9 @@
         </div>
       </div>
 
+      <div v-if="errMsg && search" class="row--box-error">
+        <span class="color--white"> {{ $t(errMsg) }}</span>
+      </div>
       <div class="wrapper__row--button">
         <button class="btn btn--confirm" :disabled="isDisabled" @click="handleRequest">
           {{ $t('confirm') }}
@@ -72,6 +75,7 @@ export default defineComponent({
     const isClosingModal = ref<boolean>(false);
     const token = ref<Erc20Token | null>(null);
     const search = ref<string>('');
+    const errMsg = ref<string>('');
 
     const resetStates = (): void => {
       token.value = null;
@@ -93,10 +97,10 @@ export default defineComponent({
       props.tokens.forEach((it) => {
         if (it.address.toLowerCase() === search.value.toLowerCase()) {
           isDuplicated = true;
+          errMsg.value = 'assets.tokenHasBeenAdded';
         }
       });
-      const result = isToken || isDuplicated;
-      return result;
+      return isToken || isDuplicated;
     });
 
     const closeModal = async (): Promise<void> => {
@@ -121,23 +125,32 @@ export default defineComponent({
     };
 
     const handleSearchResult = async () => {
-      const web3 = $web3.value!;
-      const isValidAddress = search.value ? web3.utils.isAddress(search.value) : false;
+      try {
+        const web3 = $web3.value!;
+        const isValidAddress = search.value ? web3.utils.isAddress(search.value) : false;
 
-      if (!isValidAddress && search.value) {
-        // Todo: add error message
-        token.value = null;
-        return;
-      }
+        if (!isValidAddress && search.value) {
+          token.value = null;
+          throw Error('warning.inputtedInvalidAddress');
+        }
 
-      if (search.value) {
-        token.value = await fetchErc20TokenInfo({
-          web3,
-          address: search.value,
-          srcChainId: evmNetworkIdx.value,
-        });
-      } else {
-        token.value = null;
+        if (search.value) {
+          const tokenInfo = await fetchErc20TokenInfo({
+            web3,
+            address: search.value,
+            srcChainId: evmNetworkIdx.value,
+          });
+          if (!tokenInfo) {
+            throw Error('warning.inputtedInvalidAddress');
+          }
+          token.value = tokenInfo;
+        } else {
+          token.value = null;
+        }
+        errMsg.value = '';
+      } catch (error: any) {
+        console.error(error);
+        errMsg.value = error.message;
       }
     };
 
@@ -154,6 +167,7 @@ export default defineComponent({
       token,
       isClosingModal,
       isDisabled,
+      errMsg,
       closeModal,
       handleRequest,
     };

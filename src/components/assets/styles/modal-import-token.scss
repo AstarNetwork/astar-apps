@@ -49,11 +49,25 @@
   }
 }
 
+.row--box-error {
+  padding: 10px 20px;
+  border-radius: 6px;
+  width: 344px;
+  bottom: 80px;
+  border: 1px solid $warning-red;
+  background: $box-red;
+  text-align: left;
+  margin-bottom: -8px;
+}
+
 .body--dark {
   .box--import-tokens {
     background: $gray-6;
   }
   .input--search {
     background-color: $gray-6;
+  }
+  .row--box-error {
+    background: $box-red-dark;
   }
 }

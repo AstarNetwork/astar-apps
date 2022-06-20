@@ -28,6 +28,7 @@ export default {
     insufficientBalance: 'Insufficient balance',
     insufficientFee: 'Warning! Transaction might failed due to insufficient fee',
     inputtedInvalidDestAddress: 'Inputted invalid destination address',
+    inputtedInvalidAddress: 'Inputted invalid address',
     selectedInvalidNetworkInWallet: 'Selected invalid network in your wallet',
   },
   toast: {
@@ -270,6 +271,7 @@ export default {
     importTokens: 'Import tokens',
     hideSmallBalances: 'Hide small balances',
     unhideSmallBalances: 'Unhide small balances',
+    tokenHasBeenAdded: 'The token has been added already',
     modals: {
       max: 'Max',
       balance: 'Balance: {amount} {token}',
