@@ -60,3 +60,9 @@ export const KSM = {
 };
 
 export const registeredErc20Tokens = [WASTR, DOT, KSM];
+
+// Memo: Define the token image source
+export const tokenImageMap = {
+  ARSW: 'https://assets.coingecko.com/coins/images/26048/small/arsw.png?1655440190',
+  LAY: 'https://assets.coingecko.com/coins/images/25795/small/WKBrkX4y_400x400.png?1653920060',
+};

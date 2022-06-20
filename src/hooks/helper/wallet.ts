@@ -101,7 +101,7 @@ export const addToMetamask = ({
         address: tokenAddress,
         symbol,
         decimals,
-        image,
+        image: image.includes('custom-token') ? null : image,
       },
     },
   });

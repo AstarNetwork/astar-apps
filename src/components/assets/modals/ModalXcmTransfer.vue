@@ -62,7 +62,14 @@
           </div>
           <div class="box__row">
             <div class="box__row">
-              <img width="24" alt="token-logo" :src="tokenImage" />
+              <div class="token-logo">
+                <jazzicon
+                  v-if="tokenImage.includes('custom-token')"
+                  :address="token.id"
+                  :diameter="24"
+                />
+                <img v-else width="24" alt="token-logo" :src="tokenImage" />
+              </div>
               <span class="text--title">{{ String(token.metadata.symbol) }}</span>
             </div>
             <div class="box__column--input-amount">
@@ -110,13 +117,14 @@ import {
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { wait } from 'src/hooks/helper/common';
 import { useStore } from 'src/store';
-import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
+import { computed, defineComponent, PropType, ref } from 'vue';
 import ModalSelectAccount from './ModalSelectAccount.vue';
 import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 import { truncate } from 'src/hooks/helper/common';
+import Jazzicon from 'vue3-jazzicon/src/components';
 
 export default defineComponent({
-  components: { ModalSelectAccount, SpeedConfiguration },
+  components: { ModalSelectAccount, SpeedConfiguration, [Jazzicon.name]: Jazzicon },
   props: {
     isModalXcmTransfer: {
       type: Boolean,

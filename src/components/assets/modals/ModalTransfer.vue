@@ -62,7 +62,14 @@
           </div>
           <div class="box__row">
             <div class="box__row">
-              <img width="24" alt="token-logo" :src="tokenImg" />
+              <div class="token-logo">
+                <jazzicon
+                  v-if="tokenImg.includes('custom-token')"
+                  :address="token.address"
+                  :diameter="24"
+                />
+                <img v-else width="24" alt="token-logo" :src="tokenImg" />
+              </div>
               <span class="text--title">{{ symbol }}</span>
             </div>
             <div class="box__column--input-amount">
@@ -139,9 +146,10 @@ import { useI18n } from 'vue-i18n';
 import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
 import ModalSelectAccount from './ModalSelectAccount.vue';
+import Jazzicon from 'vue3-jazzicon/src/components';
 
 export default defineComponent({
-  components: { ModalSelectAccount, SpeedConfiguration },
+  components: { ModalSelectAccount, SpeedConfiguration, [Jazzicon.name]: Jazzicon },
   props: {
     isModalTransfer: {
       type: Boolean,

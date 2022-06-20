@@ -5,7 +5,14 @@
       <div class="row row--details">
         <div class="row__left">
           <div class="column--currency">
-            <img :src="token.image" :alt="token.name" class="token-logo" />
+            <div class="token-logo">
+              <jazzicon
+                v-if="token.image.includes('custom-token')"
+                :address="token.address"
+                :diameter="24"
+              />
+              <img v-else :src="token.image" :alt="token.name" />
+            </div>
             <div class="column--ticker">
               <span class="text--title">{{ token.symbol }}</span>
               <span class="text--label">{{ token.name }}</span>
@@ -94,8 +101,12 @@ import { Erc20Token, getErc20Explorer } from 'src/modules/token';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType } from 'vue';
 import { truncate } from 'src/hooks/helper/common';
+import Jazzicon from 'vue3-jazzicon/src/components';
 
 export default defineComponent({
+  components: {
+    [Jazzicon.name]: Jazzicon,
+  },
   props: {
     token: {
       type: Object as PropType<Erc20Token>,

@@ -1,6 +1,6 @@
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { registeredErc20Tokens, Erc20Token } from '..';
+import { registeredErc20Tokens, Erc20Token, tokenImageMap } from '..';
 import { getIcon } from '../../../c-bridge';
 
 export const getTokenImage = ({
@@ -31,10 +31,12 @@ export const getErc20Explorer = ({
 };
 
 export const getRegisteredERC20Token = () => {
-  const storedTokens = getStoredERC20Tokens().map((it) => {
+  const storedTokens = getStoredERC20Tokens().map((it: Erc20Token) => {
     return {
       ...it,
-      image: require('/src/assets/img/ic_coin-placeholder.png'),
+      image: tokenImageMap.hasOwnProperty(it.symbol)
+        ? tokenImageMap[it.symbol as keyof typeof tokenImageMap]
+        : 'custom-token',
     };
   });
   return registeredErc20Tokens.concat(storedTokens);
