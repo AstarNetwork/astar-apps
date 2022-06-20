@@ -54,7 +54,7 @@
     "highcharts": "^10.0.0",
     "highcharts-vue": "^1.4.0",
     "inversify": "^6.0.1",
-    "keccak": "byterose/keccak#stream-update",
+    "keccak": "^3.0.2",
     "luxon": "^2.1.1",
     "marked": "^4.0.15",
     "path": "^0.12.7",
