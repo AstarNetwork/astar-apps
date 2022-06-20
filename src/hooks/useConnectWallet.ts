@@ -147,6 +147,11 @@ export const useConnectWallet = () => {
     }
 
     if (!isEvmWalletAvailable) {
+      if (wallet === SupportWallet.TalismanEvm) {
+        modalName.value = WalletModalOption.OutdatedWallet;
+        return;
+      }
+
       modalName.value = WalletModalOption.NoExtension;
       return;
     }

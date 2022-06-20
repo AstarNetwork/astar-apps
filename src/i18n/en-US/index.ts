@@ -84,6 +84,12 @@ export default {
     installExtension: 'Install {value} extension',
     howToConnect: 'Learn how to Connect',
   },
+  updateWallet: {
+    getUpdatedWallet: 'Haven’t updated {value} yet?',
+    updateWallet:
+      "You'll need to update {value} to continue. Once you have it updated to the latest version, go ahead and refresh this page",
+    updateExtension: 'Update {value} extension',
+  },
   dappStaking: {
     dappsStore: 'dApps Store',
     dappStaking: 'dApp Staking',

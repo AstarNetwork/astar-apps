@@ -37,23 +37,18 @@
                   tw-text-center tw-mb-2
                 "
               >
-                {{ $t('installWallet.getWallet', { value: $t(selWallet.name) }) }}
+                {{ $t('updateWallet.getUpdatedWallet', { value: $t(selWallet.name) }) }}
               </div>
             </div>
             <div class="tw-text-md tw-text-blue-900 dark:tw-text-white tw-text-center">
-              {{ $t('installWallet.installWallet', { value: $t(selWallet.name) }) }}
+              {{ $t('updateWallet.updateWallet', { value: $t(selWallet.name) }) }}
             </div>
           </div>
         </div>
         <div class="tw-mt-6 tw-flex tw-justify-center">
           <a :href="selWallet.guideUrl" target="_blank" rel="noopener noreferrer">
             <button type="button" class="learnButton">
-              {{ $t('installWallet.howToConnect') }}
-            </button>
-          </a>
-          <a :href="selWallet.walletUrl" target="_blank" rel="noopener noreferrer">
-            <button type="button" class="installButton">
-              {{ $t('installWallet.installExtension', { value: $t(selWallet.name) }) }}
+              {{ $t('updateWallet.updateExtension') }}
             </button>
           </a>
         </div>

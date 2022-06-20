@@ -22,6 +22,7 @@ export const WalletModalOption = {
   SelectWallet: 'SelectWallet',
   SelectSubstrateAccount: 'SelectSubstrateAccount',
   NoExtension: 'NoExtension',
+  OutdatedWallet: 'OutdatedWallet',
   PolkadotJs: SupportWallet.PolkadotJs,
   Clover: SupportWallet.Clover,
   MetaMask: SupportWallet.MetaMask,
