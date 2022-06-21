@@ -297,12 +297,13 @@ export const useConnectWallet = () => {
   });
 
   const changeEvmAccount: WatchCallback<[string, any, string, any]> = (
-    [wallet, acdsaAccount, account, h160],
+    [wallet, ecdsaAccount, account, h160],
     _,
     registerCleanup
   ) => {
     const provider = getEvmProvider(wallet as SupportWallet);
-    if (!acdsaAccount.ethereum || !provider || !h160) {
+
+    if (!ecdsaAccount.ethereum || !provider || !h160) {
       return;
     }
 
@@ -316,7 +317,7 @@ export const useConnectWallet = () => {
     provider.on('accountsChanged', handleAccountsChanged);
 
     registerCleanup(() => {
-      provider.off('accountsChanged', handleAccountsChanged);
+      provider.removeListener('accountsChanged', handleAccountsChanged);
     });
   };
 

@@ -41,7 +41,7 @@ export function useEvmAccount() {
     _,
     registerCleanup
   ) => {
-    if (provider?.isMetaMask || provider?.isTalisman) {
+    if (provider) {
       const handleAccountsChanged = (accounts: string[]) => {
         loadedAccounts.value = accounts;
       };
@@ -56,8 +56,8 @@ export function useEvmAccount() {
 
       // unsubscribe / prevent memory leak
       registerCleanup(() => {
-        provider.off('accountsChanged', handleAccountsChanged);
-        provider.off('chainChanged', handleChainChanged);
+        provider.removeListener('accountsChanged', handleAccountsChanged);
+        provider.removeListener('chainChanged', handleChainChanged);
       });
     }
   };

@@ -65,7 +65,7 @@ export const useEvmWallet = () => {
 
       registerCleanup(() => {
         // unsubscribe from chainChanged event to prevent memory leak
-        provider.off('chainChanged', handleChainChanged);
+        provider.removeListener('chainChanged', handleChainChanged);
       });
     } catch (error) {
       console.error(error);

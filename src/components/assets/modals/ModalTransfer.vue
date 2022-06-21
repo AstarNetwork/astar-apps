@@ -476,8 +476,9 @@ export default defineComponent({
       };
 
       provider.on('chainChanged', handleChainChanged);
+
       registerCleanup(() => {
-        provider.off('chainChanged', handleChainChanged);
+        provider.removeListener('chainChanged', handleChainChanged);
       });
     };
 
