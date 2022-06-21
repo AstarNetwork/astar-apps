@@ -4,17 +4,9 @@ import { IDappStakingRepository, IMetadataRepository, IPriceRepository } from 's
 import { DappStakingRepositoryMock } from 'src/v2/test/mocks/repositories/DappStakingRepositoryMock';
 import { PriceRepositoryMock } from './mocks/repositories/PriceRepositoryMock';
 import { MetadataRepositoryMock } from './mocks/repositories/MetadataRepositoryMock';
-import {
-  IDappStakingService,
-  IGasPriceProvider,
-  IWalletService,
-  WalletType,
-} from 'src/v2/services';
-import {
-  DappStakingService,
-  GasPriceProvider,
-  PolkadotWalletService,
-} from 'src/v2/services/implementations';
+import { IDappStakingService, IGasPriceProvider, IWalletService } from 'src/v2/services';
+import { DappStakingService } from 'src/v2/services/implementations/DappStakingService';
+import { GasPriceProvider } from 'src/v2/services/implementations/GasPriceProvider';
 import { Symbols } from 'src/v2/symbols';
 import { EventAggregator, IEventAggregator } from 'src/v2/messaging';
 import { container } from '../common';
