@@ -1,4 +1,5 @@
-import { ref, watch } from 'vue';
+import { ref, watch, WatchCallback } from 'vue';
+import { EthereumProvider } from '../types/CustomSignature';
 import { useEthProvider } from './useEthProvider';
 
 export function useEvmAccount() {
@@ -35,31 +36,33 @@ export function useEvmAccount() {
     return sigResponse;
   };
 
-  watch(
-    ethProvider,
-    (provider, _, registerCleanup) => {
-      if (provider?.isMetaMask || provider?.isTalisman) {
-        const handleAccountsChanged = (accounts: string[]) => {
-          loadedAccounts.value = accounts;
-        };
-        const handleChainChanged = () => {
-          // refresh the page if the user changes the network
-          window.location.reload();
-        };
+  const setLoadedAccounts: WatchCallback<EthereumProvider | undefined> = (
+    provider,
+    _,
+    registerCleanup
+  ) => {
+    if (provider?.isMetaMask || provider?.isTalisman) {
+      const handleAccountsChanged = (accounts: string[]) => {
+        loadedAccounts.value = accounts;
+      };
+      const handleChainChanged = () => {
+        // refresh the page if the user changes the network
+        window.location.reload();
+      };
 
-        // subscribe to changes
-        provider.on('accountsChanged', handleAccountsChanged);
-        provider.on('chainChanged', handleChainChanged);
+      // subscribe to changes
+      provider.on('accountsChanged', handleAccountsChanged);
+      provider.on('chainChanged', handleChainChanged);
 
-        // unsubscribe / prevent memory leak
-        registerCleanup(() => {
-          provider.off('accountsChanged', handleAccountsChanged);
-          provider.off('chainChanged', handleChainChanged);
-        });
-      }
-    },
-    { immediate: true }
-  );
+      // unsubscribe / prevent memory leak
+      registerCleanup(() => {
+        provider.off('accountsChanged', handleAccountsChanged);
+        provider.off('chainChanged', handleChainChanged);
+      });
+    }
+  };
+
+  watch(ethProvider, setLoadedAccounts, { immediate: true });
 
   return { loadedAccounts, requestAccounts, requestSignature };
 }

@@ -12,7 +12,7 @@ import { useAccount } from 'src/hooks';
 import * as utils from 'src/hooks/custom-signature/utils';
 import { deepLinkPath } from 'src/links';
 import { useStore } from 'src/store';
-import { computed, ref, watch, watchEffect, watchPostEffect } from 'vue';
+import { computed, ref, watch, watchEffect, watchPostEffect, WatchCallback } from 'vue';
 import { useRouter } from 'vue-router';
 import { useEvmAccount } from './custom-signature/useEvmAccount';
 import { useExtensions } from 'src/hooks/useExtensions';
@@ -296,28 +296,31 @@ export const useConnectWallet = () => {
     initializeWalletAccount();
   });
 
-  watch(
-    [selectedWallet, currentEcdsaAccount, currentAccount, isH160],
-    ([wallet, acdsaAccount, account, h160], _, registerCleanup) => {
-      const provider = getEvmProvider(wallet as SupportWallet);
-      if (!acdsaAccount.ethereum || !provider || !h160) {
-        return;
-      }
-
-      const handleAccountsChanged = async (accounts: string[]) => {
-        if (accounts[0] !== account) {
-          await disconnectAccount();
-          await setEvmWallet(wallet as SupportWallet);
-        }
-      };
-
-      provider.on('accountsChanged', handleAccountsChanged);
-
-      registerCleanup(() => {
-        provider.off('accountsChanged', handleAccountsChanged);
-      });
+  const changeEvmAccount: WatchCallback<[string, any, string, any]> = (
+    [wallet, acdsaAccount, account, h160],
+    _,
+    registerCleanup
+  ) => {
+    const provider = getEvmProvider(wallet as SupportWallet);
+    if (!acdsaAccount.ethereum || !provider || !h160) {
+      return;
     }
-  );
+
+    const handleAccountsChanged = async (accounts: string[]) => {
+      if (accounts[0] !== account) {
+        await disconnectAccount();
+        await setEvmWallet(wallet as SupportWallet);
+      }
+    };
+
+    provider.on('accountsChanged', handleAccountsChanged);
+
+    registerCleanup(() => {
+      provider.off('accountsChanged', handleAccountsChanged);
+    });
+  };
+
+  watch([selectedWallet, currentEcdsaAccount, currentAccount, isH160], changeEvmAccount);
 
   watchEffect(async () => {
     await selectLoginWallet();

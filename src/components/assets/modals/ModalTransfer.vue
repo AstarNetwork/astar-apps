@@ -140,13 +140,14 @@ import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { getEvmGasCost, sampleEvmWalletAddress } from 'src/modules/gas-api';
 import { getRegisteredERC20Token, getTokenImage } from 'src/modules/token';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, watchEffect, watch } from 'vue';
+import { computed, defineComponent, ref, watchEffect, watch, WatchCallback } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useEthProvider } from 'src/hooks/custom-signature/useEthProvider';
 import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
 import ModalSelectAccount from './ModalSelectAccount.vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
+import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 
 export default defineComponent({
   components: { ModalSelectAccount, SpeedConfiguration, [Jazzicon.name]: Jazzicon },
@@ -458,6 +459,28 @@ export default defineComponent({
       isNativeToken.value = props.symbol === nativeTokenSymbol.value;
     };
 
+    const setSelectedNetwork: WatchCallback<[any, EthereumProvider | undefined]> = async (
+      [h160, provider],
+      _,
+      registerCleanup
+    ) => {
+      if (!h160 || !provider) return;
+
+      const web3 = new Web3(provider as any);
+
+      const chainId = await web3.eth.getChainId();
+      if (selectedNetwork.value !== chainId) selectedNetwork.value = chainId;
+
+      const handleChainChanged = (chainId: string) => {
+        if (selectedNetwork.value !== Number(chainId)) selectedNetwork.value = Number(chainId);
+      };
+
+      provider.on('chainChanged', handleChainChanged);
+      registerCleanup(() => {
+        provider.off('chainChanged', handleChainChanged);
+      });
+    };
+
     watchEffect(() => {
       setIsNativeToken();
       setIsErc20Transfer();
@@ -467,27 +490,7 @@ export default defineComponent({
       setErrorMsg();
     });
 
-    watch(
-      [isH160, ethProvider],
-      async ([h160, provider], _, registerCleanup) => {
-        if (!h160 || !provider) return;
-
-        const web3 = new Web3(provider as any);
-
-        const chainId = await web3.eth.getChainId();
-        if (selectedNetwork.value !== chainId) selectedNetwork.value = chainId;
-
-        const handleChainChanged = (chainId: string) => {
-          if (selectedNetwork.value !== Number(chainId)) selectedNetwork.value = Number(chainId);
-        };
-
-        provider.on('chainChanged', handleChainChanged);
-        registerCleanup(() => {
-          provider.off('chainChanged', handleChainChanged);
-        });
-      },
-      { immediate: true }
-    );
+    watch([isH160, ethProvider], setSelectedNetwork, { immediate: true });
 
     watchEffect(async () => {
       await setToAddressBalance();
