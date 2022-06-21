@@ -12,7 +12,7 @@ import { useAccount } from 'src/hooks';
 import * as utils from 'src/hooks/custom-signature/utils';
 import { deepLinkPath } from 'src/links';
 import { useStore } from 'src/store';
-import { computed, ref, watch, watchEffect, watchPostEffect } from 'vue';
+import { computed, ref, watch, watchEffect, watchPostEffect, WatchCallback } from 'vue';
 import { useRouter } from 'vue-router';
 import { useEvmAccount } from './custom-signature/useEvmAccount';
 import { useExtensions } from 'src/hooks/useExtensions';
@@ -292,25 +292,36 @@ export const useConnectWallet = () => {
     modalAccountSelect.value = true;
   };
 
-  const changeEvmAccount = async (): Promise<void> => {
-    if (!currentEcdsaAccount.value.ethereum || !window.ethereum || !isH160.value) {
-      return;
-    }
-    window.ethereum.on('accountsChanged', async (accounts: string[]) => {
-      if (accounts[0] !== currentAccount.value) {
-        await disconnectAccount();
-        await setEvmWallet(selectedWallet.value as SupportWallet);
-      }
-    });
-  };
-
   watchEffect(() => {
     initializeWalletAccount();
   });
 
-  watchEffect(async () => {
-    await changeEvmAccount();
-  });
+  const changeEvmAccount: WatchCallback<[string, any, string, any]> = (
+    [wallet, ecdsaAccount, account, h160],
+    _,
+    registerCleanup
+  ) => {
+    const provider = getEvmProvider(wallet as SupportWallet);
+
+    if (!ecdsaAccount.ethereum || !provider || !h160) {
+      return;
+    }
+
+    const handleAccountsChanged = async (accounts: string[]) => {
+      if (accounts[0] !== account) {
+        await disconnectAccount();
+        await setEvmWallet(wallet as SupportWallet);
+      }
+    };
+
+    provider.on('accountsChanged', handleAccountsChanged);
+
+    registerCleanup(() => {
+      provider.removeListener('accountsChanged', handleAccountsChanged);
+    });
+  };
+
+  watch([selectedWallet, currentEcdsaAccount, currentAccount, isH160], changeEvmAccount);
 
   watchEffect(async () => {
     await selectLoginWallet();

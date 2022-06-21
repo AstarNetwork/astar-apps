@@ -1,4 +1,5 @@
-import { ref, watch } from 'vue';
+import { ref, watch, WatchCallback } from 'vue';
+import { EthereumProvider } from '../types/CustomSignature';
 import { useEthProvider } from './useEthProvider';
 
 export function useEvmAccount() {
@@ -35,20 +36,33 @@ export function useEvmAccount() {
     return sigResponse;
   };
 
-  watch(ethProvider, () => {
-    if (ethProvider.value?.isMetaMask || ethProvider.value?.isTalisman) {
-      const ethereum = ethProvider.value;
-
-      ethereum.on('accountsChanged', (accounts: string[]) => {
+  const setLoadedAccounts: WatchCallback<EthereumProvider | undefined> = (
+    provider,
+    _,
+    registerCleanup
+  ) => {
+    if (provider) {
+      const handleAccountsChanged = (accounts: string[]) => {
         loadedAccounts.value = accounts;
-      });
-
-      ethereum.on('chainChanged', () => {
+      };
+      const handleChainChanged = () => {
         // refresh the page if the user changes the network
         window.location.reload();
+      };
+
+      // subscribe to changes
+      provider.on('accountsChanged', handleAccountsChanged);
+      provider.on('chainChanged', handleChainChanged);
+
+      // unsubscribe / prevent memory leak
+      registerCleanup(() => {
+        provider.removeListener('accountsChanged', handleAccountsChanged);
+        provider.removeListener('chainChanged', handleChainChanged);
       });
     }
-  });
+  };
+
+  watch(ethProvider, setLoadedAccounts, { immediate: true });
 
   return { loadedAccounts, requestAccounts, requestSignature };
 }
