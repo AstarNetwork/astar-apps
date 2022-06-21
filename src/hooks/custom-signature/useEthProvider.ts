@@ -1,6 +1,6 @@
 import { SupportWallet } from 'src/config/wallets';
 import { useStore } from 'src/store';
-import { ref, watchEffect, computed } from 'vue';
+import { ref, computed, watch, WatchCallback } from 'vue';
 import { EthereumProvider } from '../types/CustomSignature';
 
 export function useEthProvider() {
@@ -9,11 +9,11 @@ export function useEthProvider() {
   const store = useStore();
   const currentWallet = computed(() => store.getters['general/currentWallet']);
 
-  watchEffect(() => {
+  const setEthProvider: WatchCallback<SupportWallet> = (wallet) => {
     if (
       typeof window.ethereum !== 'undefined' &&
       window.ethereum &&
-      currentWallet.value === SupportWallet.MetaMask
+      wallet === SupportWallet.MetaMask
     ) {
       ethProvider.value = window.ethereum;
     }
@@ -21,11 +21,13 @@ export function useEthProvider() {
     if (
       typeof window.talismanEth !== 'undefined' &&
       window.talismanEth &&
-      currentWallet.value === SupportWallet.TalismanEvm
+      wallet === SupportWallet.TalismanEvm
     ) {
       ethProvider.value = window.talismanEth;
     }
-  });
+  };
+
+  watch(currentWallet, setEthProvider, { immediate: true });
 
   return { ethProvider };
 }

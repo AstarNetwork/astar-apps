@@ -141,14 +141,18 @@ import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { getEvmGasCost, sampleEvmWalletAddress } from 'src/modules/gas-api';
 import { getRegisteredERC20Token, getTokenImage } from 'src/modules/token';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, watchEffect } from 'vue';
+import { computed, defineComponent, ref, watchEffect, watch, WatchCallback } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useEthProvider } from 'src/hooks/custom-signature/useEthProvider';
 import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
 import ModalSelectAccount from './ModalSelectAccount.vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
+<<<<<<< HEAD
 import { SupportWallet } from 'src/config/wallets';
+=======
+import { EthereumProvider } from 'src/hooks/types/CustomSignature';
+>>>>>>> 169265c757b8c97960ac8b5966ca2746cb70ce95
 
 export default defineComponent({
   components: { ModalSelectAccount, SpeedConfiguration, [Jazzicon.name]: Jazzicon },
@@ -465,15 +469,27 @@ export default defineComponent({
       isNativeToken.value = props.symbol === nativeTokenSymbol.value;
     };
 
-    const setSelectedNetwork = async (): Promise<void> => {
-      if (!isH160.value || !ethProvider.value) return;
-      const web3 = new Web3(ethProvider.value as any);
+    const setSelectedNetwork: WatchCallback<[any, EthereumProvider | undefined]> = async (
+      [h160, provider],
+      _,
+      registerCleanup
+    ) => {
+      if (!h160 || !provider) return;
+
+      const web3 = new Web3(provider as any);
+
       const chainId = await web3.eth.getChainId();
-      selectedNetwork.value = chainId;
-      ethProvider.value &&
-        ethProvider.value.on('chainChanged', (chainId: string) => {
-          selectedNetwork.value = Number(chainId);
-        });
+      if (selectedNetwork.value !== chainId) selectedNetwork.value = chainId;
+
+      const handleChainChanged = (chainId: string) => {
+        if (selectedNetwork.value !== Number(chainId)) selectedNetwork.value = Number(chainId);
+      };
+
+      provider.on('chainChanged', handleChainChanged);
+
+      registerCleanup(() => {
+        provider.removeListener('chainChanged', handleChainChanged);
+      });
     };
 
     watchEffect(() => {
@@ -485,9 +501,7 @@ export default defineComponent({
       setErrorMsg();
     });
 
-    watchEffect(async () => {
-      await setSelectedNetwork();
-    });
+    watch([isH160, ethProvider], setSelectedNetwork, { immediate: true });
 
     watchEffect(async () => {
       await setToAddressBalance();

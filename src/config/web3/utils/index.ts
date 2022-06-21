@@ -162,12 +162,6 @@ export const getTokenExplorer = ({
   }
 };
 
-export const getDefaultEthProvider = () => {
-  const provider = typeof window !== 'undefined' && window.ethereum;
-  const web3 = new Web3(provider as any);
-  return web3;
-};
-
 export const isXc20Token = (address: string): boolean => {
   const addr = address.toLowerCase();
   return addr.slice(0, 10) === '0xffffffff';
