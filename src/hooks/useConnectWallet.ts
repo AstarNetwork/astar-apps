@@ -292,25 +292,32 @@ export const useConnectWallet = () => {
     modalAccountSelect.value = true;
   };
 
-  const changeEvmAccount = async (): Promise<void> => {
-    if (!currentEcdsaAccount.value.ethereum || !window.ethereum || !isH160.value) {
-      return;
-    }
-    window.ethereum.on('accountsChanged', async (accounts: string[]) => {
-      if (accounts[0] !== currentAccount.value) {
-        await disconnectAccount();
-        await setEvmWallet(selectedWallet.value as SupportWallet);
-      }
-    });
-  };
-
   watchEffect(() => {
     initializeWalletAccount();
   });
 
-  watchEffect(async () => {
-    await changeEvmAccount();
-  });
+  watch(
+    [selectedWallet, currentEcdsaAccount, currentAccount, isH160],
+    ([wallet, acdsaAccount, account, h160], _, registerCleanup) => {
+      const provider = getEvmProvider(wallet as SupportWallet);
+      if (!acdsaAccount.ethereum || !provider || !h160) {
+        return;
+      }
+
+      const handleAccountsChanged = async (accounts: string[]) => {
+        if (accounts[0] !== account) {
+          await disconnectAccount();
+          await setEvmWallet(wallet as SupportWallet);
+        }
+      };
+
+      provider.on('accountsChanged', handleAccountsChanged);
+
+      registerCleanup(() => {
+        provider.off('accountsChanged', handleAccountsChanged);
+      });
+    }
+  );
 
   watchEffect(async () => {
     await selectLoginWallet();

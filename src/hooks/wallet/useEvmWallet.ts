@@ -1,7 +1,7 @@
 import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 
 import { useStore } from 'src/store';
-import { computed, ref, watchEffect } from 'vue';
+import { computed, ref, watch } from 'vue';
 import Web3 from 'web3';
 import { setupNetwork } from 'src/config/web3';
 import { useEthProvider } from '../custom-signature/useEthProvider';
@@ -42,23 +42,35 @@ export const useEvmWallet = () => {
     }
   };
 
-  watchEffect(async () => {
-    try {
-      if (!isH160.value || !ethProvider.value) return;
+  watch(
+    [isH160, ethProvider],
+    async ([h160, provider], _, registerCleanup) => {
+      try {
+        if (!h160 || !provider) return;
 
-      const web3 = new Web3(ethProvider.value as any);
-      const chainId = await web3.eth.getChainId();
-      walletNetworkId.value = chainId;
+        const web3 = new Web3(provider as any);
 
-      ethProvider.value &&
-        ethProvider.value.on('chainChanged', (chainId: string) => {
+        const chainId = await web3.eth.getChainId();
+        walletNetworkId.value = chainId;
+
+        const handleChainChanged = (chainId: string) => {
           walletNetworkId.value = Number(chainId);
+        };
+
+        //subscribe to chainChanged event
+        provider.on('chainChanged', handleChainChanged);
+
+        registerCleanup(() => {
+          // unsubscribe from chainChanged event to prevent memory leak
+          provider.off('chainChanged', handleChainChanged);
         });
-    } catch (error) {
-      console.error(error);
-      walletNetworkId.value = null;
-    }
-  });
+      } catch (error) {
+        console.error(error);
+        walletNetworkId.value = null;
+      }
+    },
+    { immediate: true }
+  );
 
   return {
     isConnectedNetwork,

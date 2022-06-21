@@ -140,7 +140,7 @@ import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { getEvmGasCost, sampleEvmWalletAddress } from 'src/modules/gas-api';
 import { getRegisteredERC20Token, getTokenImage } from 'src/modules/token';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, watchEffect } from 'vue';
+import { computed, defineComponent, ref, watchEffect, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useEthProvider } from 'src/hooks/custom-signature/useEthProvider';
 import Web3 from 'web3';
@@ -458,17 +458,6 @@ export default defineComponent({
       isNativeToken.value = props.symbol === nativeTokenSymbol.value;
     };
 
-    const setSelectedNetwork = async (): Promise<void> => {
-      if (!isH160.value || !ethProvider.value) return;
-      const web3 = new Web3(ethProvider.value as any);
-      const chainId = await web3.eth.getChainId();
-      selectedNetwork.value = chainId;
-      ethProvider.value &&
-        ethProvider.value.on('chainChanged', (chainId: string) => {
-          selectedNetwork.value = Number(chainId);
-        });
-    };
-
     watchEffect(() => {
       setIsNativeToken();
       setIsErc20Transfer();
@@ -478,9 +467,27 @@ export default defineComponent({
       setErrorMsg();
     });
 
-    watchEffect(async () => {
-      await setSelectedNetwork();
-    });
+    watch(
+      [isH160, ethProvider],
+      async ([h160, provider], _, registerCleanup) => {
+        if (!h160 || !provider) return;
+
+        const web3 = new Web3(provider as any);
+
+        const chainId = await web3.eth.getChainId();
+        if (selectedNetwork.value !== chainId) selectedNetwork.value = chainId;
+
+        const handleChainChanged = (chainId: string) => {
+          if (selectedNetwork.value !== Number(chainId)) selectedNetwork.value = Number(chainId);
+        };
+
+        provider.on('chainChanged', handleChainChanged);
+        registerCleanup(() => {
+          provider.off('chainChanged', handleChainChanged);
+        });
+      },
+      { immediate: true }
+    );
 
     watchEffect(async () => {
       await setToAddressBalance();

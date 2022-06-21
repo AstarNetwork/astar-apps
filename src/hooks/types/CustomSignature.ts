@@ -17,6 +17,7 @@ export interface EthereumProvider {
   isMetaMask?: boolean;
   isTalisman?: boolean;
   on: (event: string, handler: (response: any) => void) => void;
+  off: (event: string, handler: (response: any) => void) => void;
   request: (args: RequestArguments) => Promise<unknown>;
 }
 

@@ -35,20 +35,31 @@ export function useEvmAccount() {
     return sigResponse;
   };
 
-  watch(ethProvider, () => {
-    if (ethProvider.value?.isMetaMask || ethProvider.value?.isTalisman) {
-      const ethereum = ethProvider.value;
+  watch(
+    ethProvider,
+    (provider, _, registerCleanup) => {
+      if (provider?.isMetaMask || provider?.isTalisman) {
+        const handleAccountsChanged = (accounts: string[]) => {
+          loadedAccounts.value = accounts;
+        };
+        const handleChainChanged = () => {
+          // refresh the page if the user changes the network
+          window.location.reload();
+        };
 
-      ethereum.on('accountsChanged', (accounts: string[]) => {
-        loadedAccounts.value = accounts;
-      });
+        // subscribe to changes
+        provider.on('accountsChanged', handleAccountsChanged);
+        provider.on('chainChanged', handleChainChanged);
 
-      ethereum.on('chainChanged', () => {
-        // refresh the page if the user changes the network
-        window.location.reload();
-      });
-    }
-  });
+        // unsubscribe / prevent memory leak
+        registerCleanup(() => {
+          provider.off('accountsChanged', handleAccountsChanged);
+          provider.off('chainChanged', handleChainChanged);
+        });
+      }
+    },
+    { immediate: true }
+  );
 
   return { loadedAccounts, requestAccounts, requestSignature };
 }
