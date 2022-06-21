@@ -83,6 +83,7 @@
 
 <script lang="ts">
 import { ISubmittableResult } from '@polkadot/types/types';
+import { IDappStakingService } from 'src/v2/services';
 import { $api } from 'boot/api';
 import Button from 'components/common/Button.vue';
 import StakeModal from 'components/dapp-staking/modals/StakeModal.vue';
@@ -99,6 +100,8 @@ import { getAddressEnum } from 'src/store/dapp-staking/actions';
 import { computed, defineComponent, PropType, ref, toRefs, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import './stake-panel.scss';
+import { container } from 'src/v2/common';
+import { Symbols } from 'src/v2/symbols';
 
 export default defineComponent({
   components: {
@@ -217,24 +220,27 @@ export default defineComponent({
           console.warn('No stakeInfo available. The store is unable to check some constraints.');
         }
 
-        const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
-          customMsg.value = t('dappStaking.toast.staked', {
-            amount: stakeAmount,
-            dapp: props.dapp.name,
-          });
-          return await handleResult(result);
-        };
+        const dappStakingService = container.get<IDappStakingService>(Symbols.DappStakingService);
+        await dappStakingService.stake(props.dapp.address, currentAddress.value, amount);
 
-        await signAndSend({
-          transaction,
-          senderAddress: stakeData.address,
-          substrateAccounts: substrateAccounts.value,
-          isCustomSignature: isCustomSig.value,
-          txResHandler,
-          handleCustomExtrinsic,
-          dispatch: store.dispatch,
-          tip: selectedTip.value.price,
-        });
+        // const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
+        //   customMsg.value = t('dappStaking.toast.staked', {
+        //     amount: stakeAmount,
+        //     dapp: props.dapp.name,
+        //   });
+        //   return await handleResult(result);
+        // };
+
+        // await signAndSend({
+        //   transaction,
+        //   senderAddress: stakeData.address,
+        //   substrateAccounts: substrateAccounts.value,
+        //   isCustomSignature: isCustomSig.value,
+        //   txResHandler,
+        //   handleCustomExtrinsic,
+        //   dispatch: store.dispatch,
+        //   tip: selectedTip.value.price,
+        // });
       } catch (error) {
         console.error(error);
       } finally {
