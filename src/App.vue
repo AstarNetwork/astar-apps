@@ -26,6 +26,8 @@
         :alert-type="showAlert.alertType"
       />
     </transition>
+
+    <cookie-policy />
   </div>
 </template>
 <script lang="ts">
@@ -38,6 +40,7 @@ import DashboardLayout from 'layouts/DashboardLayout.vue';
 import { useStore } from 'src/store';
 import ModalLoading from 'components/common/ModalLoading.vue';
 import AlertBox from 'components/common/AlertBox.vue';
+import CookiePolicy from 'components//common/CookiePolicy.vue';
 import 'animate.css';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { setCurrentWallet } from './v2/app.container';
@@ -50,6 +53,7 @@ export default defineComponent({
     DashboardLayout,
     ModalLoading,
     AlertBox,
+    CookiePolicy,
   },
   setup() {
     const store = useStore();

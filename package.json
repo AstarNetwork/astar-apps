@@ -54,7 +54,7 @@
     "highcharts": "^10.0.0",
     "highcharts-vue": "^1.4.0",
     "inversify": "^6.0.1",
-    "keccak": "byterose/keccak#stream-update",
+    "keccak": "^3.0.2",
     "luxon": "^2.1.1",
     "marked": "^4.0.15",
     "path": "^0.12.7",
@@ -72,6 +72,7 @@
     "vue3-autocounter": "^1.0.6",
     "vue3-click-away": "^1.2.4",
     "vue3-dropzone": "^0.0.7",
+    "vue3-jazzicon": "^0.1.2",
     "vue3-recaptcha2": "^1.7.0",
     "vuex": "^4.0.1",
     "web3": "^1.7.3"

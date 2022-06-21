@@ -23,9 +23,12 @@
               : 'assets.nativeAccount'
           )
         }}</span>
-        <span v-if="isLockdropAccount" class="text--switch-account" @click="toggleMetaMaskSchema">{{
-          $t(isH160 ? 'assets.switchToNative' : 'assets.switchToEvm')
-        }}</span>
+        <span
+          v-if="isLockdropAccount"
+          class="text--switch-account"
+          @click="toggleEvmWalletSchema"
+          >{{ $t(isH160 ? 'assets.switchToNative' : 'assets.switchToEvm') }}</span
+        >
       </div>
 
       <div class="border--separator" />
@@ -89,7 +92,7 @@ import {
   useWalletIcon,
 } from 'src/hooks';
 import { checkIsNullOrUndefined } from 'src/hooks/helper/common';
-import { useMetamask } from 'src/hooks/custom-signature/useMetamask';
+import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
 import {
   getEvmMappedSs58Address,
   getShortenAddress,
@@ -123,12 +126,12 @@ export default defineComponent({
     const balUsd = ref<number | null>(null);
     const isCheckingSignature = ref<boolean>(false);
     const isLockdropAccount = ref<boolean>(false);
-    const { toggleMetaMaskSchema } = useConnectWallet();
+    const { toggleEvmWalletSchema } = useConnectWallet();
     const { currentAccount, currentAccountName } = useAccount();
     const { width, screenSize } = useBreakpoints();
     const { balance } = useBalance(currentAccount);
     const { nativeTokenUsd } = usePrice();
-    const { requestSignature } = useMetamask();
+    const { requestSignature } = useEvmAccount();
     const { iconWallet } = useWalletIcon();
 
     const store = useStore();
@@ -250,7 +253,7 @@ export default defineComponent({
       isLockdropAccount,
       getShortenAddress,
       copyAddress,
-      toggleMetaMaskSchema,
+      toggleEvmWalletSchema,
       isSkeleton,
     };
   },

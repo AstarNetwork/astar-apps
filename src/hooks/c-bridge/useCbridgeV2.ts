@@ -1,20 +1,21 @@
-import { LOCAL_STORAGE } from './../../config/localStorage';
 import {
   CbridgeToken,
+  checkIsCbridgeToken,
   EvmChain,
   getSelectedToken,
   getTransferConfigs,
-  checkIsCbridgeToken,
   SelectedToken,
 } from 'src/c-bridge';
 import { endpointKey, getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { getTokenBal } from 'src/config/web3';
 import { objToArray } from 'src/hooks/helper/common';
+import { checkIsWrappedToken, Erc20Token } from 'src/modules/token';
 import { useStore } from 'src/store';
-import { computed, ref, watchEffect, onUnmounted, watch } from 'vue';
+import { computed, onUnmounted, ref, watch, watchEffect } from 'vue';
 import { useAccount } from '../useAccount';
+import { LOCAL_STORAGE } from './../../config/localStorage';
+import { getRegisteredERC20Token } from './../../modules/token/utils/index';
 import { calUsdAmount } from './../helper/price';
-import { checkIsWrappedToken, Erc20Token, registeredErc20Tokens } from 'src/modules/token';
 
 type CbridgeCurrency = SelectedToken;
 type Token = CbridgeCurrency | Erc20Token;
@@ -158,8 +159,9 @@ export function useCbridgeV2() {
   };
 
   const updateRegisteredToken = async ({ userAddress }: { userAddress: string }) => {
+    const tokens = getRegisteredERC20Token();
     const registeredTokens = await Promise.all(
-      registeredErc20Tokens.map(async (token: Erc20Token) => {
+      tokens.map(async (token: Erc20Token) => {
         if (token.srcChainId === evmNetworkId.value) {
           const { balUsd, userBalance } = await updateTokenBalanceHandler({
             userAddress,
@@ -185,6 +187,7 @@ export function useCbridgeV2() {
       tokens.value = null;
       return;
     }
+    console.log('handleCbridgeConfiguration');
 
     try {
       store.commit('general/setLoading', true);
@@ -216,29 +219,41 @@ export function useCbridgeV2() {
     }
   };
 
+  // Memo: triggered after users have imported tokens
+  const handleImportingCustomToken = async (): Promise<void> => {
+    window.addEventListener(LOCAL_STORAGE.EVM_TOKEN_IMPORTS, async () => {
+      await handleCbridgeConfiguration();
+      await handleUpdateTokenBalances();
+    });
+  };
+
   watchEffect(async () => {
     await handleCbridgeConfiguration();
+  });
+
+  watchEffect(async () => {
+    await handleImportingCustomToken();
   });
 
   // Memo: Calculate the `ttlErc20Amount` after fetching `tokens` data
   watch(
     [tokens],
-    () => {
+    async () => {
       const isInitialErc20Amount =
         tokens.value && tokens.value.length > 0 && !isCalculated.value && !startCalculation.value;
       if (isInitialErc20Amount) {
         // Memo: to avoid calling this function twice
         startCalculation.value = true;
-        handleUpdateTokenBalances();
+        await handleUpdateTokenBalances();
       }
     },
     { immediate: false }
   );
 
   const secsUpdateBal = 60 * 1000;
-  const tokenBalUpdate = setInterval(() => {
+  const tokenBalUpdate = setInterval(async () => {
     if (tokens.value) {
-      handleUpdateTokenBalances();
+      await handleUpdateTokenBalances();
     }
   }, secsUpdateBal);
 
