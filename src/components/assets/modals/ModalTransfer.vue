@@ -148,11 +148,8 @@ import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
 import ModalSelectAccount from './ModalSelectAccount.vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
-<<<<<<< HEAD
 import { SupportWallet } from 'src/config/wallets';
-=======
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
->>>>>>> 169265c757b8c97960ac8b5966ca2746cb70ce95
 
 export default defineComponent({
   components: { ModalSelectAccount, SpeedConfiguration, [Jazzicon.name]: Jazzicon },
