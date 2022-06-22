@@ -13,13 +13,13 @@ import { $api } from 'boot/api';
 import { addDapp, getDapps, uploadFile } from 'src/hooks/firebase';
 import { ActionTree, Dispatch } from 'vuex';
 import { StateInterface } from '../index';
-import { signAndSend } from './../../hooks/helper/wallet';
+import { signAndSend, sign } from './../../hooks/helper/wallet';
 import { SubstrateAccount } from './../general/state';
 import { DappStateInterface as State, NewDappItem, FileInfo } from './state';
 import { IDappStakingService } from 'src/v2/services';
 import container from 'src/v2/app.container';
 import { Symbols } from 'src/v2/symbols';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 let collectionKey: string;
 
@@ -118,188 +118,69 @@ const actions: ActionTree<State, StateInterface> = {
     { commit, dispatch, rootState },
     parameters: RegisterParameters
   ): Promise<boolean> {
-    try {
-      if (parameters.api) {
-        const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
-          return new Promise<boolean>(async (resolve) => {
-            if (result.status.isFinalized) {
-              if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
-                try {
-                  const payload = {
-                    name: parameters.dapp.name,
-                    description: parameters.dapp.description,
-                    url: parameters.dapp.url,
-                    address: parameters.dapp.address,
-                    license: parameters.dapp.license,
-                    videoUrl: parameters.dapp.videoUrl,
-                    tags: parameters.dapp.tags,
-                    forumUrl: parameters.dapp.forumUrl,
-                    authorContact: parameters.dapp.authorContact,
-                    gitHubUrl: parameters.dapp.gitHubUrl,
-                    senderAddress: parameters.senderAddress,
-                    signature: parameters.dapp.signature,
-                    iconFile: getFileInfo(parameters.dapp.iconFileName, parameters.dapp.iconFile),
-                    images: getImagesInfo(parameters.dapp),
-                  };
+    if (parameters.api) {
+      const transaction = parameters.api.tx.dappsStaking.register(
+        getAddressEnum(parameters.dapp.address)
+      );
 
-                  const result = await axios.post(
-                    'http://localhost:3000/api/v1/dev/dapps-staking/register',
-                    payload
-                  );
-
-                  commit('addDapp', result.data);
-
-                  dispatch(
-                    'general/showAlertMsg',
-                    {
-                      msg: `You successfully registered dApp ${parameters.dapp.name} to the store.`,
-                      alertType: 'success',
-                    },
-                    { root: true }
-                  );
-
-                  resolve(true);
-                } catch (e) {
-                  const error = e as unknown as Error;
-                  console.error(error);
-                  showError(dispatch, error.message);
-                  alert(
-                    `An unexpected error occured during dApp registration. Please screenshot this message and send to the Astar team. ${error.message}`
-                  );
-                  resolve(false);
-                }
-              }
-
-              commit('general/setLoading', false, { root: true });
-            } else {
-              commit('general/setLoading', true, { root: true });
-            }
-          });
-        };
-
-        const transaction = parameters.api.tx.dappsStaking.register(
-          getAddressEnum(parameters.dapp.address)
-        );
-        await signAndSend({
+      try {
+        const signedTransaction = await sign({
           transaction,
           senderAddress: parameters.senderAddress,
           substrateAccounts: parameters.substrateAccounts,
-          isCustomSignature: false,
-          txResHandler,
-          dispatch,
           tip: parameters.tip,
         });
 
-        return true;
-      } else {
-        showError(dispatch, 'Api is undefined.');
-        return false;
-      }
-    } catch (e) {
-      const error = e as unknown as Error;
-      console.error(error);
-      commit('general/setLoading', false, { root: true });
-      showError(dispatch, error.message);
-    }
-
-    return false;
-  },
-
-  async registerDapp(
-    { commit, dispatch, rootState },
-    parameters: RegisterParameters
-  ): Promise<boolean> {
-    try {
-      if (parameters.api) {
-        const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
-          return new Promise<boolean>(async (resolve) => {
-            if (result.status.isFinalized) {
-              if (!hasExtrinsicFailedEvent(result.events, dispatch)) {
-                try {
-                  const collectionKey = await getCollectionKey();
-                  if (parameters.dapp.iconFileName) {
-                    const fileName = `${parameters.dapp.address}_${parameters.dapp.iconFileName}`;
-                    parameters.dapp.iconUrl = await uploadFile(
-                      fileName,
-                      collectionKey,
-                      parameters.dapp.iconFile
-                    );
-                  } else {
-                    parameters.dapp.iconUrl = '/images/noimage.png';
-                  }
-
-                  if (!parameters.dapp.url) {
-                    parameters.dapp.url = '';
-                  }
-
-                  parameters.dapp.imagesUrl = [];
-                  for (let i = 0; i < parameters.dapp.imagesContent.length; i++) {
-                    const dappImage = parameters.dapp.imagesContent[i];
-                    const dappImageUrl = await uploadFile(
-                      `${parameters.dapp.address}_${i}_${parameters.dapp.images[i].name}`,
-                      collectionKey,
-                      dappImage
-                    );
-                    parameters.dapp.imagesUrl.push(dappImageUrl);
-                  }
-
-                  const addedDapp = await addDapp(collectionKey, parameters.dapp);
-                  commit('addDapp', addedDapp);
-
-                  dispatch(
-                    'general/showAlertMsg',
-                    {
-                      msg: `You successfully registered dApp ${parameters.dapp.name} to the store.`,
-                      alertType: 'success',
-                    },
-                    { root: true }
-                  );
-
-                  resolve(true);
-                } catch (e) {
-                  const error = e as unknown as Error;
-                  console.error(error);
-                  showError(dispatch, error.message);
-                  alert(
-                    `An unexpected error occured during dApp registration. Please screenshot this message and send to the Astar team. ${error.message}`
-                  );
-                  resolve(false);
-                }
-              }
-
-              commit('general/setLoading', false, { root: true });
-            } else {
-              commit('general/setLoading', true, { root: true });
-            }
-          });
+        const payload = {
+          name: parameters.dapp.name,
+          description: parameters.dapp.description,
+          url: parameters.dapp.url,
+          address: parameters.dapp.address,
+          license: parameters.dapp.license,
+          videoUrl: parameters.dapp.videoUrl,
+          tags: parameters.dapp.tags,
+          forumUrl: parameters.dapp.forumUrl,
+          authorContact: parameters.dapp.authorContact,
+          gitHubUrl: parameters.dapp.gitHubUrl,
+          senderAddress: parameters.senderAddress,
+          signature: signedTransaction.toJSON(),
+          iconFile: getFileInfo(parameters.dapp.iconFileName, parameters.dapp.iconFile),
+          images: getImagesInfo(parameters.dapp),
         };
 
-        const transaction = parameters.api.tx.dappsStaking.register(
-          getAddressEnum(parameters.dapp.address)
+        commit('general/setLoading', true, { root: true });
+        const result = await axios.post(
+          'http://localhost:5000/api/v1/development/dapps-staking/register',
+          payload
         );
-        await signAndSend({
-          transaction,
-          senderAddress: parameters.senderAddress,
-          substrateAccounts: parameters.substrateAccounts,
-          isCustomSignature: false,
-          txResHandler,
-          dispatch,
-          tip: parameters.tip,
-        });
+
+        commit('addDapp', result.data);
+
+        dispatch(
+          'general/showAlertMsg',
+          {
+            msg: `You successfully registered dApp ${parameters.dapp.name} to the store.`,
+            alertType: 'success',
+          },
+          { root: true }
+        );
 
         return true;
-      } else {
-        showError(dispatch, 'Api is undefined.');
+      } catch (e) {
+        const error = e as unknown as AxiosError;
+        console.error(error);
+        showError(dispatch, error.response?.data);
+        alert(
+          `An unexpected error occured during dApp registration. Please screenshot this message and send to the Astar team. ${error.response?.data}`
+        );
         return false;
+      } finally {
+        commit('general/setLoading', false, { root: true });
       }
-    } catch (e) {
-      const error = e as unknown as Error;
-      console.error(error);
-      commit('general/setLoading', false, { root: true });
-      showError(dispatch, error.message);
+    } else {
+      showError(dispatch, 'Api is undefined.');
+      return false;
     }
-
-    return false;
   },
 
   async getStakingInfo({ commit, dispatch, rootState }) {

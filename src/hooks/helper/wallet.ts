@@ -159,6 +159,32 @@ export const checkIsMobileMathWallet = async (): Promise<boolean> => {
 
 type Transaction = SubmittableExtrinsic<'promise', ISubmittableResult>;
 
+export const sign = async ({
+  transaction,
+  senderAddress,
+  substrateAccounts,
+  tip,
+}: {
+  transaction: Transaction;
+  senderAddress: string;
+  substrateAccounts: SubstrateAccount[];
+  tip?: string;
+}): Promise<Transaction> => {
+  const injector = await getInjector(substrateAccounts);
+  if (!injector) {
+    throw Error('Invalid injector');
+  }
+
+  //TODO. Only native wallet supported ATM
+  const result = await transaction.signAsync(senderAddress, {
+    signer: injector.signer,
+    nonce: -1,
+    tip: tip ? ethers.utils.parseEther(String(tip)).toString() : '1',
+  });
+
+  return result;
+};
+
 export const signAndSend = async ({
   transaction,
   senderAddress,

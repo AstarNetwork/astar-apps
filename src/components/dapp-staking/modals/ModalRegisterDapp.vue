@@ -60,7 +60,7 @@ import { $api } from 'boot/api';
 import { NewDappItem } from 'src/store/dapp-staking/state';
 import { RegisterParameters } from 'src/store/dapp-staking/actions';
 import { sanitizeData } from 'src/hooks/helper/markdown';
-import { useGasPrice, useSignPayload } from 'src/hooks';
+import { useGasPrice } from 'src/hooks';
 
 export default defineComponent({
   components: {
@@ -80,7 +80,6 @@ export default defineComponent({
     const stepper = ref();
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
     const { selectedTip } = useGasPrice();
-    const { signPayload } = useSignPayload();
 
     const registerDapp = async (step: number): Promise<void> => {
       registerForm?.value?.validate().then(async (success: boolean) => {
@@ -98,9 +97,6 @@ export default defineComponent({
             if (result) {
               emit('update:is-open', false);
             }
-          } else if (step === 1) {
-            data.signature = await signPayload(data.address);
-            stepper.value.next();
           } else {
             stepper.value.next();
           }
@@ -114,7 +110,6 @@ export default defineComponent({
       }
 
       data.ref = newData;
-      console.log(data.ref);
     };
 
     const close = () => {
