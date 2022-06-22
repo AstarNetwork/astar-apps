@@ -1,5 +1,6 @@
 <template>
   <astar-simple-modal
+    v-if="isModalXcmBridge"
     :show="isModalXcmBridge"
     :title="$t('assets.xcm')"
     :is-closing="isClosingModal"
@@ -105,9 +106,9 @@
             <span class="text--dot">・</span>
             <span class="text--warning">{{ $t('assets.modals.xcmWarning.avoidRisk') }}</span>
           </div>
-          <div class="icon--help">
-            <IconHelp />
-            <q-tooltip class="box--tooltip-warning">
+          <div v-click-away="setIsMobileDisplayTooltip" class="icon--help">
+            <IconHelp class="icon--tooltip-xcm-warning" @click="setIsMobileDisplayTooltip" />
+            <q-tooltip v-model="isDisplayTooltip" class="box--tooltip-warning">
               <div>
                 <span v-if="existentialDeposit"
                   >{{
@@ -148,6 +149,7 @@ import ModalH160AddressInput from './ModalH160AddressInput.vue';
 import IconHelp from '/src/components/common/IconHelp.vue';
 import ModalLoading from '/src/components/common/ModalLoading.vue';
 import { truncate } from 'src/hooks/helper/common';
+import { isMobileDevice } from 'src/hooks/helper/wallet';
 
 export default defineComponent({
   components: { ModalH160AddressInput, IconHelp, ModalLoading },
@@ -173,7 +175,23 @@ export default defineComponent({
   },
   setup(props) {
     const isClosingModal = ref<boolean>(false);
+    const isMobileDisplayTooltip = ref<boolean>(false);
     const token = computed(() => props.token);
+
+    const isDisplayTooltip = computed<boolean | null>(() => {
+      if (isMobileDevice) {
+        return isMobileDisplayTooltip.value;
+      } else {
+        return null;
+      }
+    });
+
+    const setIsMobileDisplayTooltip = (e: { target: { className: string } }): void => {
+      if (isMobileDevice) {
+        const isOpen = e.target.className.includes('icon--tooltip-xcm-warning');
+        isMobileDisplayTooltip.value = isOpen;
+      }
+    };
 
     const {
       amount,
@@ -233,6 +251,8 @@ export default defineComponent({
       formattedRelayChainBalance,
       existentialDeposit,
       isLoading,
+      isDisplayTooltip,
+      setIsMobileDisplayTooltip,
       inputHandler,
       closeModal,
       bridge,

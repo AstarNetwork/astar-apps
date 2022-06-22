@@ -42,6 +42,25 @@
   flex-direction: column;
   justify-content: center;
   text-align: center;
+  @media (min-width: $sm) {
+    max-width: 340px;
+  }
+}
+
+.box--tooltip-info {
+  background-color: $astar-blue;
+  max-width: 320px;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  @media (min-width: $sm) {
+    max-width: 340px;
+  }
 }
 
 .body--dark {
@@ -51,5 +70,8 @@
   }
   .box--input {
     background: $gray-6;
+  }
+  .box--tooltip-info {
+    background-color: $astar-blue-dark;
   }
 }

@@ -1,5 +1,6 @@
 <template>
   <astar-simple-modal
+    v-if="isModalTransfer"
     :show="isModalTransfer"
     :title="$t('assets.modals.transfer')"
     :is-closing="isClosingModal"

@@ -4,9 +4,9 @@
       <div class="box__space-between">
         <span> {{ $t(isH160 ? 'common.speed.speed' : 'common.speed.speedTip') }}</span>
         <div v-if="isH160" class="placeholder--height" />
-        <div v-else>
-          <IconHelp />
-          <q-tooltip>
+        <div v-else v-click-away="setIsMobileDisplayTooltip">
+          <IconHelp class="icon--tooltip-speed-configuration" @click="setIsMobileDisplayTooltip" />
+          <q-tooltip v-model="isDisplayTooltip" class="box--tooltip-info">
             <span class="text--tooltip">{{ $t('common.speed.tipHelp') }}</span>
           </q-tooltip>
         </div>
@@ -54,8 +54,9 @@
 <script lang="ts">
 import { GasPrice, SelectedGas } from 'src/modules/gas-api';
 import { useStore } from 'src/store';
-import { defineComponent, computed, PropType } from 'vue';
+import { defineComponent, computed, PropType, ref } from 'vue';
 import IconHelp from 'src/components/common/IconHelp.vue';
+import { isMobileDevice } from 'src/hooks/helper/wallet';
 
 export default defineComponent({
   components: { IconHelp },
@@ -80,6 +81,7 @@ export default defineComponent({
     },
   },
   setup() {
+    const isMobileDisplayTooltip = ref<boolean>(false);
     const store = useStore();
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const decimal = computed(() => (isH160.value ? 5 : 8));
@@ -88,13 +90,28 @@ export default defineComponent({
       return chainInfo ? chainInfo.tokenSymbol : {};
     });
 
+    const isDisplayTooltip = computed<boolean | null>(() => {
+      if (isMobileDevice) {
+        return isMobileDisplayTooltip.value;
+      } else {
+        return null;
+      }
+    });
+
+    const setIsMobileDisplayTooltip = (e: { target: { className: string } }): void => {
+      if (isMobileDevice) {
+        const isOpen = e.target.className.includes('icon--tooltip-speed-configuration');
+        isMobileDisplayTooltip.value = isOpen;
+      }
+    };
+
     const formatPrice = (price: string): string => {
       const num = Number(price).toFixed(decimal.value);
       // Memo: remove the number of '0' after decimal
       return num.replace(/\.?0+$/, '');
     };
 
-    return { symbol, isH160, formatPrice };
+    return { symbol, isH160, isDisplayTooltip, setIsMobileDisplayTooltip, formatPrice };
   },
 });
 </script>

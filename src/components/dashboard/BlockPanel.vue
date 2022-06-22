@@ -30,11 +30,11 @@
             <div class="column--label">
               <div class="column--block-time">
                 <span class="text--md">{{ $t('dashboard.block.blockTime') }}</span>
-                <div>
+                <div v-click-away="setIsMobileDisplayTooltip">
                   <div>
-                    <IconHelp />
+                    <IconHelp class="icon--tooltip-block-time" @click="setIsMobileDisplayTooltip" />
                   </div>
-                  <q-tooltip>
+                  <q-tooltip v-model="isDisplayTooltip" class="box--tooltip-info">
                     <div>
                       <div>
                         <span class="text--tooltip">{{ $t('dashboard.block.avgBlockTime') }}</span>
@@ -114,11 +114,12 @@
 </template>
 
 <script lang="ts">
-import { useAvgBlockTime } from 'src/hooks';
-import VueOdometer from 'v-odometer/src';
-import { defineComponent, computed } from 'vue';
-import { useRouter } from 'vue-router';
 import IconHelp from 'src/components/common/IconHelp.vue';
+import { useAvgBlockTime } from 'src/hooks';
+import { isMobileDevice } from 'src/hooks/helper/wallet';
+import VueOdometer from 'v-odometer/src';
+import { computed, defineComponent, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   components: {
@@ -127,7 +128,24 @@ export default defineComponent({
   },
   setup() {
     const router = useRouter();
+    const isMobileDisplayTooltip = ref<boolean>(false);
     const path = computed(() => router.currentRoute.value.path.split('/')[1]);
+
+    const isDisplayTooltip = computed<boolean | null>(() => {
+      if (isMobileDevice) {
+        return isMobileDisplayTooltip.value;
+      } else {
+        return null;
+      }
+    });
+
+    const setIsMobileDisplayTooltip = (e: { target: { className: string } }): void => {
+      if (isMobileDevice) {
+        const isOpen = e.target.className.includes('icon--tooltip-block-time');
+        isMobileDisplayTooltip.value = isOpen;
+      }
+    };
+
     const {
       isLoading,
       avgBlockTime1Era,
@@ -150,6 +168,9 @@ export default defineComponent({
       isLoading,
       avgBlockTime7Eras,
       avgBlockTime30Eras,
+      isMobileDisplayTooltip,
+      isDisplayTooltip,
+      setIsMobileDisplayTooltip,
     };
   },
 });
