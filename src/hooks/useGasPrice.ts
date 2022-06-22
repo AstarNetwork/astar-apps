@@ -85,7 +85,7 @@ export const useGasPrice = (isFetch = false) => {
     [network, $web3],
     async () => {
       if (isFetch && network.value && !gas.value && $web3.value) {
-        console.log('gas price', network.value, gas.value);
+        // console.info('gas price', network.value, gas.value);
         await dispatchGasPrice(network.value);
       }
     },

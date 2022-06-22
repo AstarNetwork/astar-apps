@@ -32,7 +32,7 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
     try {
       await this.checkExtension();
       const tip = this.gasPriceProvider.getTip().price;
-      console.log('transaction tip', tip);
+      console.info('transaction tip', tip);
 
       await extrinsic.signAndSend(
         senderAddress,

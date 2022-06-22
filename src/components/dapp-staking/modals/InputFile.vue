@@ -79,8 +79,8 @@ export default defineComponent({
     }
 
     const onDrop = (files: any, rejectReasons: any): void => {
-      console.log(files);
-      console.log(rejectReasons);
+      // console.log(files);
+      // console.log(rejectReasons);
 
       if (rejectReasons.length > 0) {
         alert('file upload is rejected.');

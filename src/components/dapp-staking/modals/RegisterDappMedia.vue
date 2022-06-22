@@ -107,7 +107,7 @@ export default defineComponent({
         reader.onload = () => {
           data.imagesContent.push(reader.result?.toString() || '');
         };
-        reader.onerror = (error) => console.log(error);
+        reader.onerror = (error) => console.error(error);
       });
     };
 

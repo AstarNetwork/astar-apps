@@ -28,7 +28,7 @@ const actions: ActionTree<State, StateInterface> = {
       const api: ApiPromise = param.api;
       const genesisHash = api.genesisHash?.toHex();
 
-      console.log('genesisHash', genesisHash);
+      console.info('genesisHash', genesisHash);
 
       store.each((json: CodeJson, key: string): void => {
         if (json && json.genesisHash === genesisHash && key.startsWith(KEY_CODE)) {
@@ -53,8 +53,8 @@ const actions: ActionTree<State, StateInterface> = {
     };
     const key = `${KEY_CODE}${json.codeHash}`;
 
-    console.log('key', key);
-    console.log('json', json);
+    // console.log('key', key);
+    // console.log('json', json);
 
     store.set(key, json);
     const newJson = getCodeJson(api, json as CodeJson);

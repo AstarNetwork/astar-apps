@@ -31,7 +31,7 @@ const storage = getStorage();
 const auth = getAuth(app);
 signInAnonymously(auth)
   .then(() => {
-    console.log('Firebase user signed in.');
+    console.info('Firebase user signed in.');
   })
   .catch((error) => {
     console.error(error.message);
