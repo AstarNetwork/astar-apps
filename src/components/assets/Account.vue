@@ -199,7 +199,7 @@ export default defineComponent({
         isCheckingSignature.value = true;
         await setAddressMapping({ evmAddress: currentAccount.value, requestSignature });
       } catch (error: any) {
-        console.log(error.message);
+        console.error(error.message);
       } finally {
         isCheckingSignature.value = false;
       }

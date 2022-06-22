@@ -187,7 +187,6 @@ export function useCbridgeV2() {
       tokens.value = null;
       return;
     }
-    console.log('handleCbridgeConfiguration');
 
     try {
       store.commit('general/setLoading', true);

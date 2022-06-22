@@ -94,12 +94,13 @@ export default defineComponent({
       const isToken = !token.value;
       let isDuplicated = false;
 
-      props.tokens.forEach((it) => {
-        if (it.address.toLowerCase() === search.value.toLowerCase()) {
-          isDuplicated = true;
-          errMsg.value = 'assets.tokenHasBeenAdded';
-        }
-      });
+      props.tokens &&
+        props.tokens.forEach((it) => {
+          if (it.address.toLowerCase() === search.value.toLowerCase()) {
+            isDuplicated = true;
+            errMsg.value = 'assets.tokenHasBeenAdded';
+          }
+        });
       return isToken || isDuplicated;
     });
 

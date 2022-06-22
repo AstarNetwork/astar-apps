@@ -18,7 +18,7 @@ export class MetadataRepository implements IMetadataRepository {
       const decimals = api.registry.chainDecimals[0];
       const token = api.registry.chainTokens[0];
       const chain = await api.rpc.system.chain();
-      console.log('metadata', api.registry.metadata.toHuman());
+      console.info('metadata', api.registry.metadata.toHuman());
 
       const registry = new TypeRegistry();
       const defaultSS58Format = registry.createType('u32', addressDefaults.prefix);

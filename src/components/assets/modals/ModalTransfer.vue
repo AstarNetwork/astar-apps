@@ -88,6 +88,7 @@
         </div>
 
         <SpeedConfiguration
+          v-if="isEnableSpeedConfiguration"
           :gas-cost="isH160 ? evmGasCost : nativeTipPrice"
           :selected-gas="isH160 ? selectedGas : selectedTip"
           :set-selected-gas="isH160 ? setSelectedGas : setSelectedTip"
@@ -147,6 +148,7 @@ import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
 import ModalSelectAccount from './ModalSelectAccount.vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
+import { SupportWallet } from 'src/config/wallets';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 
 export default defineComponent({
@@ -200,6 +202,11 @@ export default defineComponent({
     const { ethProvider } = useEthProvider();
 
     const isEthWallet = computed(() => store.getters['general/isEthWallet']);
+
+    const isEnableSpeedConfiguration = computed<boolean>(() => {
+      const currentWallet = store.getters['general/currentWallet'];
+      return currentWallet !== SupportWallet.TalismanEvm;
+    });
     const { currentAccount, currentAccountName } = useAccount();
     const nativeTokenSymbol = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
@@ -540,6 +547,7 @@ export default defineComponent({
       setSelectedTip,
       isH160,
       truncate,
+      isEnableSpeedConfiguration,
     };
   },
 });
