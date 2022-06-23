@@ -30,14 +30,8 @@
             <div class="column--label">
               <div class="column--block-time">
                 <span class="text--md">{{ $t('dashboard.block.blockTime') }}</span>
-                <div v-click-away="setIsMobileDisplayTooltip">
-                  <div>
-                    <astar-icon-help
-                      size="18"
-                      class="icon--tooltip-block-time"
-                      @click="setIsMobileDisplayTooltip"
-                    />
-                  </div>
+                <div v-click-away="setIsMobileDisplayTooltip" @click="setIsMobileDisplayTooltip">
+                  <astar-icon-help size="18" />
                   <q-tooltip v-model="isDisplayTooltip" class="box--tooltip-info">
                     <div>
                       <div>
@@ -144,7 +138,10 @@ export default defineComponent({
 
     const setIsMobileDisplayTooltip = (e: { target: { className: string } }): void => {
       if (isMobileDevice) {
-        const isOpen = e.target.className.includes('icon--tooltip-block-time');
+        // const isOpen = e.target.className.includes('icon--tooltip-block-time');
+        const isOpen = e.target.className.includes('icon');
+        console.log('e.target.className', e.target.className);
+        console.log('isOpen', isOpen);
         isMobileDisplayTooltip.value = isOpen;
       }
     };

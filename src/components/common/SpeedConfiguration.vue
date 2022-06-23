@@ -4,11 +4,8 @@
       <div class="box__space-between">
         <span> {{ $t(isH160 ? 'common.speed.speed' : 'common.speed.speedTip') }}</span>
         <div v-if="isH160" class="placeholder--height" />
-        <div v-else v-click-away="setIsMobileDisplayTooltip">
-          <astar-icon-help
-            class="icon--tooltip-speed-configuration"
-            @click="setIsMobileDisplayTooltip"
-          />
+        <div v-else v-click-away="setIsMobileDisplayTooltip" @click="setIsMobileDisplayTooltip">
+          <astar-icon-help />
           <q-tooltip v-model="isDisplayTooltip" class="box--tooltip-info">
             <span class="text--tooltip">{{ $t('common.speed.tipHelp') }}</span>
           </q-tooltip>
@@ -100,8 +97,12 @@ export default defineComponent({
     });
 
     const setIsMobileDisplayTooltip = (e: { target: { className: string } }): void => {
+      console.log('1');
       if (isMobileDevice) {
-        const isOpen = e.target.className.includes('icon--tooltip-speed-configuration');
+        console.log('2');
+        // const isOpen = e.target.className.includes('icon--tooltip-speed-configuration');
+        const isOpen = e.target.className.includes('icon');
+        console.log('e.target.className', e.target.className);
         isMobileDisplayTooltip.value = isOpen;
       }
     };

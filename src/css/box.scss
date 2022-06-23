@@ -42,8 +42,10 @@
   flex-direction: column;
   justify-content: center;
   text-align: center;
+  margin: 0 8px;
   @media (min-width: $sm) {
     max-width: 340px;
+    margin: 0;
   }
 }
 
@@ -58,8 +60,10 @@
   flex-direction: column;
   justify-content: center;
   text-align: center;
+  margin: 0 8px;
   @media (min-width: $sm) {
     max-width: 340px;
+    margin: 0;
   }
 }
 

@@ -106,12 +106,12 @@
             <span class="text--dot">・</span>
             <span class="text--warning">{{ $t('assets.modals.xcmWarning.avoidRisk') }}</span>
           </div>
-          <div v-click-away="setIsMobileDisplayTooltip" class="icon--help">
-            <astar-icon-help
-              size="20"
-              class="icon--tooltip-xcm-warning"
-              @click="setIsMobileDisplayTooltip"
-            />
+          <div
+            v-click-away="setIsMobileDisplayTooltip"
+            class="icon--help"
+            @click="setIsMobileDisplayTooltip"
+          >
+            <astar-icon-help size="20" />
             <q-tooltip v-model="isDisplayTooltip" class="box--tooltip-warning">
               <div>
                 <span v-if="existentialDeposit"
@@ -191,7 +191,7 @@ export default defineComponent({
 
     const setIsMobileDisplayTooltip = (e: { target: { className: string } }): void => {
       if (isMobileDevice) {
-        const isOpen = e.target.className.includes('icon--tooltip-xcm-warning');
+        const isOpen = e.target.className.includes('icon');
         isMobileDisplayTooltip.value = isOpen;
       }
     };
