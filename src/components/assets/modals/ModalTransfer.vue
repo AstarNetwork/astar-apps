@@ -62,7 +62,14 @@
           </div>
           <div class="box__row">
             <div class="box__row">
-              <img width="24" alt="token-logo" :src="tokenImg" />
+              <div class="token-logo">
+                <jazzicon
+                  v-if="tokenImg.includes('custom-token')"
+                  :address="token.address"
+                  :diameter="24"
+                />
+                <img v-else width="24" alt="token-logo" :src="tokenImg" />
+              </div>
               <span class="text--title">{{ symbol }}</span>
             </div>
             <div class="box__column--input-amount">
@@ -81,6 +88,7 @@
         </div>
 
         <SpeedConfiguration
+          v-if="isEnableSpeedConfiguration"
           :gas-cost="isH160 ? evmGasCost : nativeTipPrice"
           :selected-gas="isH160 ? selectedGas : selectedTip"
           :set-selected-gas="isH160 ? setSelectedGas : setSelectedTip"
@@ -119,31 +127,32 @@
   </astar-simple-modal>
 </template>
 <script lang="ts">
+import { fadeDuration } from '@astar-network/astar-ui';
+import { ethers } from 'ethers';
 import { $api, $web3 } from 'src/boot/api';
+import ABI from 'src/c-bridge/abi/ERC20.json';
+import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { getTokenBal, isValidEvmAddress } from 'src/config/web3';
 import { useAccount, useChainMetadata, useEvmWallet, useTransfer, useWalletIcon } from 'src/hooks';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
+import { truncate, wait } from 'src/hooks/helper/common';
 import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
-import { getEvmProvider } from 'src/hooks/helper/wallet';
+import { getEvmGasCost, sampleEvmWalletAddress } from 'src/modules/gas-api';
+import { getRegisteredERC20Token, getTokenImage } from 'src/modules/token';
 import { useStore } from 'src/store';
-import { getTokenImage } from 'src/modules/token';
-import { computed, defineComponent, ref, watchEffect } from 'vue';
-import Web3 from 'web3';
-import ModalSelectAccount from './ModalSelectAccount.vue';
-import { registeredErc20Tokens } from 'src/modules/token';
-import { fadeDuration } from '@astar-network/astar-ui';
-import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
-import { wait } from 'src/hooks/helper/common';
-import { sampleEvmWalletAddress, getEvmGasCost } from 'src/modules/gas-api';
-import { ethers } from 'ethers';
-import ABI from 'src/c-bridge/abi/ERC20.json';
-import { AbiItem } from 'web3-utils';
-import { truncate } from 'src/hooks/helper/common';
+import { computed, defineComponent, ref, watchEffect, watch, WatchCallback } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useEthProvider } from 'src/hooks/custom-signature/useEthProvider';
+import Web3 from 'web3';
+import { AbiItem } from 'web3-utils';
+import ModalSelectAccount from './ModalSelectAccount.vue';
+import Jazzicon from 'vue3-jazzicon/src/components';
+import { SupportWallet } from 'src/config/wallets';
+import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 
 export default defineComponent({
-  components: { ModalSelectAccount, SpeedConfiguration },
+  components: { ModalSelectAccount, SpeedConfiguration, [Jazzicon.name]: Jazzicon },
   props: {
     isModalTransfer: {
       type: Boolean,
@@ -190,7 +199,14 @@ export default defineComponent({
     const store = useStore();
     const { t } = useI18n();
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
+    const { ethProvider } = useEthProvider();
+
     const isEthWallet = computed(() => store.getters['general/isEthWallet']);
+
+    const isEnableSpeedConfiguration = computed<boolean>(() => {
+      const currentWallet = store.getters['general/currentWallet'];
+      return currentWallet !== SupportWallet.TalismanEvm;
+    });
     const { currentAccount, currentAccountName } = useAccount();
     const nativeTokenSymbol = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
@@ -198,9 +214,11 @@ export default defineComponent({
     });
 
     // Memo: check the selected token is either hard-coded token or cBridge token
-    const registeredToken = computed(() =>
-      registeredErc20Tokens.find((it) => it.symbol === props.symbol)
-    );
+    const registeredToken = computed(() => {
+      const tokens = getRegisteredERC20Token();
+      const result = tokens.find((it) => it.symbol === props.symbol);
+      return result;
+    });
 
     const tokenImg = computed(() => {
       if (registeredToken.value) {
@@ -453,16 +471,27 @@ export default defineComponent({
       isNativeToken.value = props.symbol === nativeTokenSymbol.value;
     };
 
-    const setSelectedNetwork = async (): Promise<void> => {
-      const provider = getEvmProvider();
-      if (!isH160.value || !provider) return;
+    const setSelectedNetwork: WatchCallback<[any, EthereumProvider | undefined]> = async (
+      [h160, provider],
+      _,
+      registerCleanup
+    ) => {
+      if (!h160 || !provider) return;
+
       const web3 = new Web3(provider as any);
+
       const chainId = await web3.eth.getChainId();
-      selectedNetwork.value = chainId;
-      provider &&
-        provider.on('chainChanged', (chainId: string) => {
-          selectedNetwork.value = Number(chainId);
-        });
+      if (selectedNetwork.value !== chainId) selectedNetwork.value = chainId;
+
+      const handleChainChanged = (chainId: string) => {
+        if (selectedNetwork.value !== Number(chainId)) selectedNetwork.value = Number(chainId);
+      };
+
+      provider.on('chainChanged', handleChainChanged);
+
+      registerCleanup(() => {
+        provider.removeListener('chainChanged', handleChainChanged);
+      });
     };
 
     watchEffect(() => {
@@ -474,9 +503,7 @@ export default defineComponent({
       setErrorMsg();
     });
 
-    watchEffect(async () => {
-      await setSelectedNetwork();
-    });
+    watch([isH160, ethProvider], setSelectedNetwork, { immediate: true });
 
     watchEffect(async () => {
       await setToAddressBalance();
@@ -525,6 +552,7 @@ export default defineComponent({
       setSelectedTip,
       isH160,
       truncate,
+      isEnableSpeedConfiguration,
     };
   },
 });

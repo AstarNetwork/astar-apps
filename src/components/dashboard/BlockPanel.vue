@@ -32,7 +32,7 @@
                 <span class="text--md">{{ $t('dashboard.block.blockTime') }}</span>
                 <div>
                   <div>
-                    <IconHelp />
+                    <astar-icon-help size="18" />
                   </div>
                   <q-tooltip>
                     <div>
@@ -118,12 +118,10 @@ import { useAvgBlockTime } from 'src/hooks';
 import VueOdometer from 'v-odometer/src';
 import { defineComponent, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import IconHelp from 'src/components/common/IconHelp.vue';
 
 export default defineComponent({
   components: {
     'vue-odometer': VueOdometer,
-    IconHelp,
   },
   setup() {
     const router = useRouter();

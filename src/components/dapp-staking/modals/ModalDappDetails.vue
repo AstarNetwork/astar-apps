@@ -149,7 +149,7 @@ export default defineComponent({
       return sanitizeData(data);
     };
 
-    console.log(sanitize(props.dapp.description));
+    console.info(sanitize(props.dapp.description));
 
     return {
       slide,

@@ -17,7 +17,7 @@ import { signAndSend } from './../../hooks/helper/wallet';
 import { SubstrateAccount } from './../general/state';
 import { DappStateInterface as State, NewDappItem } from './state';
 import { IDappStakingService } from 'src/v2/services';
-import container from 'src/v2/app.container';
+import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
 
 let collectionKey: string;
@@ -33,7 +33,6 @@ const showError = (dispatch: Dispatch, message: string): void => {
   );
 };
 
-// TODO refactor, detect address type, etc.....
 export const getAddressEnum = (address: string) => ({ Evm: address });
 
 const getCollectionKey = async (): Promise<string> => {
@@ -256,6 +255,7 @@ const actions: ActionTree<State, StateInterface> = {
 
       return tvl;
     } catch (e) {
+      console.error(e);
       const error = e as unknown as Error;
       showError(dispatch, error.message);
     }
