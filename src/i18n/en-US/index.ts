@@ -28,6 +28,7 @@ export default {
   addressFormat: '{network} Wallet Address',
   addressPlaceholder: 'Destination {network} Address',
   ticker: 'Ticker',
+  isComingSoon: '{value} is coming soon',
   warning: {
     insufficientBalance: 'Insufficient balance',
     insufficientFee: 'Warning! Transaction might failed due to insufficient fee',

@@ -174,6 +174,12 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     const sendingAmount = Number(amount.value);
     const selectedTokenRef = selectedToken.value;
     const minBridgeAmount = Number(selectedTokenRef && selectedTokenRef.minBridgeAmount);
+    const isAstarWithdrawal = !isDeposit.value && currentNetworkIdx.value === endpointKey.ASTAR;
+
+    // Memo: We will remove this condition whenever we confirmed both native and evm Dot withdrawal is ready
+    if (isAstarWithdrawal) {
+      errMsg.value = t('isComingSoon', { value: 'DOT withdrawal' });
+    }
 
     if (sendingAmount > fromAddressBalance.value) {
       errMsg.value = t('warning.insufficientBalance');
