@@ -26,12 +26,13 @@ export function useXcmEvm(addressRef: Ref<string>) {
     return getProviderIndex(chain);
   });
   const isAstar = computed(() => currentNetworkIdx.value === endpointKey.ASTAR);
+  const currentWallet = computed(() => store.getters['general/currentWallet']);
 
   watch(
     () => [addressRef.value],
     async () => {
       if (addressRef.value) {
-        const provider = getEvmProvider();
+        const provider = getEvmProvider(currentWallet.value);
         const web3 = new Web3(provider as any);
         const ci = contractInstance(web3, xcmContractAbi, PRECOMPILED_ADDR, addressRef.value);
         xcmRef.value = new XCM(ci, addressRef.value);

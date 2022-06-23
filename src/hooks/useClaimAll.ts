@@ -85,7 +85,9 @@ export function useClaimAll() {
       totalWeight = totalWeight.add(tx.weight);
     }
 
-    console.log(`Batch weight: ${totalWeight.toString()}, transactions no. ${txsToExecute.length}`);
+    console.info(
+      `Batch weight: ${totalWeight.toString()}, transactions no. ${txsToExecute.length}`
+    );
     const transaction = api.tx.utility.batch(txsToExecute);
 
     try {

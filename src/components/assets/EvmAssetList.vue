@@ -25,28 +25,35 @@
           <span class="text--title">{{ $t('assets.assets') }}</span>
         </div>
 
-        <div :class="isSearch && 'search--active'">
-          <div class="box--search">
-            <table class="table--search">
-              <tr class="tr--search">
-                <td>
-                  <input
-                    v-model="search"
-                    type="text"
-                    placeholder="Search"
-                    class="input--search"
-                    @focus="setIsSearch(true)"
-                    @blur="setIsSearch(false)"
-                  />
-                </td>
-                <td>
-                  <div class="icon--search">
-                    <astar-icon-search />
-                  </div>
-                </td>
-              </tr>
-            </table>
+        <div class="row--search-option">
+          <div :class="isSearch && 'search--active'">
+            <div class="box--search">
+              <table class="table--search">
+                <tr class="tr--search">
+                  <td>
+                    <input
+                      v-model="search"
+                      type="text"
+                      placeholder="Search"
+                      class="input--search"
+                      @focus="setIsSearch(true)"
+                      @blur="setIsSearch(false)"
+                    />
+                  </td>
+                  <td>
+                    <div class="icon--search">
+                      <astar-icon-search />
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </div>
           </div>
+          <EvmAssetOptions
+            :toggle-is-hide-small-balances="toggleIsHideSmallBalances"
+            :is-hide-small-balances="isHideSmallBalances"
+            :tokens="tokens"
+          />
         </div>
       </div>
 
@@ -150,6 +157,7 @@ import { ethers } from 'ethers';
 import { $web3 } from 'src/boot/api';
 import { checkIsCbridgeToken, SelectedToken } from 'src/c-bridge';
 import Erc20Currency from 'src/components/assets/Erc20Currency.vue';
+import EvmAssetOptions from 'src/components/assets/EvmAssetOptions.vue';
 import EvmCbridgeToken from 'src/components/assets/EvmCbridgeToken.vue';
 import { getBalance } from 'src/config/web3';
 import { ChainAsset, useAccount, useBalance, usePrice } from 'src/hooks';
@@ -169,6 +177,7 @@ export default defineComponent({
     ModalFaucet,
     Erc20Currency,
     ModalXcmBridge,
+    EvmAssetOptions,
   },
   props: {
     tokens: {
@@ -194,6 +203,7 @@ export default defineComponent({
     const isModalFaucet = ref<boolean>(false);
     const isModalXcmBridge = ref<boolean>(false);
     const xcmToken = ref<ChainAsset | null>(null);
+    const isHideSmallBalances = ref<boolean>(false);
     const token = ref<SelectedToken | Erc20Token | string | null>(null);
     const symbol = ref<string>('');
     const bal = ref<number>(0);
@@ -207,6 +217,7 @@ export default defineComponent({
 
     const { currentAccount } = useAccount();
     const { nativeTokenUsd } = usePrice();
+    const { accountData } = useBalance(currentAccount);
 
     const store = useStore();
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
@@ -223,12 +234,10 @@ export default defineComponent({
       return chain === 'Shibuya Testnet' ? 'Shibuya' : chain;
     });
 
-    const { accountData } = useBalance(currentAccount);
-
     const nativeTokenImg = computed<string>(() =>
       getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
     );
-    const isListReady = computed<boolean>(() => isShibuya.value || !!props.tokens);
+    const isListReady = computed<boolean>(() => !!(isShibuya.value || props.tokens));
 
     const isDisplayNativeToken = computed<boolean>(() => {
       return (
@@ -239,9 +248,14 @@ export default defineComponent({
     const filteredTokens = computed<SelectedToken[] | null>(() => {
       if (!search.value) return props.tokens;
       if (!props.tokens) return null;
+      const tokens = isHideSmallBalances.value
+        ? props.tokens.filter((it) => Number(it.userBalance) > 0)
+        : props.tokens;
+
+      if (!search.value) return tokens;
 
       const value = search.value.toLowerCase();
-      const result = props.tokens
+      const result = tokens
         .map((token: SelectedToken) => {
           const isFoundToken =
             value === token.address.toLowerCase() ||
@@ -269,6 +283,9 @@ export default defineComponent({
           xcmToken.value = t;
         }
       }
+    };
+    const toggleIsHideSmallBalances = (): void => {
+      isHideSmallBalances.value = !isHideSmallBalances.value;
     };
 
     const handleModalTransfer = ({
@@ -339,11 +356,13 @@ export default defineComponent({
       xcmToken,
       handleModalXcmBridge,
       cbridgeAppLink,
+      isHideSmallBalances,
       setIsSearch,
       handleModalTransfer,
       handleModalFaucet,
       checkIsCbridgeToken,
       truncate,
+      toggleIsHideSmallBalances,
     };
   },
 });

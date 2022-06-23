@@ -117,7 +117,7 @@
             <span class="text--warning">{{ $t('assets.modals.xcmWarning.avoidRisk') }}</span>
           </div>
           <div class="icon--help">
-            <IconHelp />
+            <astar-icon-help size="20" />
             <q-tooltip class="box--tooltip-warning">
               <div>
                 <span v-if="existentialDeposit"
@@ -159,7 +159,6 @@ import { ChainAsset, useXcmBridge, useXcmEvm, useAccount } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { computed, defineComponent, PropType, ref } from 'vue';
 import AddressInput from 'src/components/common/AddressInput.vue';
-import IconHelp from '/src/components/common/IconHelp.vue';
 import ModalLoading from '/src/components/common/ModalLoading.vue';
 import ModalSelectChain from 'src/components/assets/modals/ModalSelectChain.vue';
 import { truncate } from 'src/hooks/helper/common';
@@ -169,7 +168,6 @@ export default defineComponent({
   components: {
     AddressInput,
     ModalSelectChain,
-    IconHelp,
     ModalLoading,
   },
   props: {

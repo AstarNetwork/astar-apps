@@ -1,16 +1,19 @@
-import { ref, watch } from 'vue';
+import { ref, watch, WatchCallback } from 'vue';
+import { EthereumProvider } from '../types/CustomSignature';
 import { useEthProvider } from './useEthProvider';
 
-export function useMetamask() {
+export function useEvmAccount() {
   const { ethProvider } = useEthProvider();
   const loadedAccounts = ref<string[]>([]);
 
   const requestAccounts = async () => {
-    if (!ethProvider.value) {
-      throw new Error('Cannot detect Metamask');
+    let provider = ethProvider.value;
+
+    if (!provider) {
+      throw new Error('Cannot detect any EVM Account');
     }
 
-    const accounts = (await ethProvider.value.request({
+    const accounts = (await provider.request({
       method: 'eth_requestAccounts',
     })) as string[];
     loadedAccounts.value = accounts;
@@ -33,20 +36,33 @@ export function useMetamask() {
     return sigResponse;
   };
 
-  watch(ethProvider, () => {
-    if (ethProvider.value?.isMetaMask) {
-      const ethereum = ethProvider.value;
-
-      ethereum.on('accountsChanged', (accounts: string[]) => {
+  const setLoadedAccounts: WatchCallback<EthereumProvider | undefined> = (
+    provider,
+    _,
+    registerCleanup
+  ) => {
+    if (provider) {
+      const handleAccountsChanged = (accounts: string[]) => {
         loadedAccounts.value = accounts;
-      });
-
-      ethereum.on('chainChanged', () => {
+      };
+      const handleChainChanged = () => {
         // refresh the page if the user changes the network
         window.location.reload();
+      };
+
+      // subscribe to changes
+      provider.on('accountsChanged', handleAccountsChanged);
+      provider.on('chainChanged', handleChainChanged);
+
+      // unsubscribe / prevent memory leak
+      registerCleanup(() => {
+        provider.removeListener('accountsChanged', handleAccountsChanged);
+        provider.removeListener('chainChanged', handleChainChanged);
       });
     }
-  });
+  };
+
+  watch(ethProvider, setLoadedAccounts, { immediate: true });
 
   return { loadedAccounts, requestAccounts, requestSignature };
 }

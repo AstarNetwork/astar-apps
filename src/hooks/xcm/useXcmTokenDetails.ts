@@ -25,7 +25,7 @@ export function useXcmTokenDetails(selectedToken: Ref<ChainAsset>) {
 
   const tokenImage = computed<string>(() => {
     if (!tokenDetails || !tokenDetails.value) {
-      return require('/src/assets/img/ic_coin-placeholder.png');
+      return 'custom-token';
     }
     return tokenDetails.value.logo;
   });

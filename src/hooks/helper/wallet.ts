@@ -10,6 +10,9 @@ import { Dispatch } from 'vuex';
 import { SubstrateAccount } from './../../store/general/state';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ethers } from 'ethers';
+import { useStore } from 'src/store';
+import { computed } from 'vue';
+import { useEthProvider } from '../custom-signature/useEthProvider';
 
 export const getInjectedExtensions = async (forceRequest = false): Promise<any[]> => {
   const selectedAddress = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
@@ -74,13 +77,7 @@ export const castMobileSource = (source: string): string => {
   return source;
 };
 
-export const getEvmProvider = () => {
-  // Todo: integrate with other wallet
-  const metamaskProvider = typeof window !== 'undefined' && window.ethereum;
-  return metamaskProvider;
-};
-
-export const addToMetamask = ({
+export const addToEvmProvider = ({
   tokenAddress,
   symbol,
   decimals,
@@ -101,26 +98,10 @@ export const addToMetamask = ({
         address: tokenAddress,
         symbol,
         decimals,
-        image,
+        image: image.includes('custom-token') ? null : image,
       },
     },
   });
-};
-
-export const addToEvmWallet = ({
-  tokenAddress,
-  symbol,
-  decimals,
-  image,
-}: {
-  tokenAddress: string;
-  symbol: string;
-  decimals: number;
-  image: string;
-}): void => {
-  const provider = getEvmProvider();
-  if (!provider) return;
-  addToMetamask({ tokenAddress, symbol, decimals, image, provider });
 };
 
 export const getDeepLinkUrl = (wallet: SupportWallet): string | false => {
@@ -135,8 +116,8 @@ export const getDeepLinkUrl = (wallet: SupportWallet): string | false => {
 
 export const checkIsWalletExtension = async (): Promise<boolean> => {
   const isSubstrateDappBrowser = await getInjectedExtensions();
-  const isMetamask = typeof window.ethereum !== 'undefined';
-  return Boolean(isSubstrateDappBrowser.length || isMetamask);
+  const isEvmWalletExtension = typeof window.ethereum !== 'undefined';
+  return Boolean(isSubstrateDappBrowser.length || isEvmWalletExtension);
 };
 
 export const checkIsEthereumWallet = (wallet: SupportWallet): boolean => {
@@ -222,4 +203,16 @@ export const signAndSend = async ({
 
 export const checkIsNativeWallet = (selectedWallet: SupportWallet): boolean => {
   return supportWalletObj.hasOwnProperty(selectedWallet);
+};
+
+export const getEvmProvider = (wallet: SupportWallet) => {
+  if (wallet === SupportWallet.MetaMask) {
+    return window.ethereum;
+  }
+
+  if (wallet === SupportWallet.TalismanEvm) {
+    return window.talismanEth;
+  }
+
+  return null;
 };

@@ -21,7 +21,7 @@
     "heroku-deploy": "git push heroku main"
   },
   "dependencies": {
-    "@astar-network/astar-ui": "^0.0.41",
+    "@astar-network/astar-ui": "^0.0.42",
     "@ethersproject/bignumber": "^5.5.0",
     "@polkadot/api": "^8.3.1",
     "@polkadot/api-contract": "^8.3.1",
@@ -54,7 +54,7 @@
     "highcharts": "^10.0.0",
     "highcharts-vue": "^1.4.0",
     "inversify": "^6.0.1",
-    "keccak": "byterose/keccak#stream-update",
+    "keccak": "^3.0.2",
     "luxon": "^2.1.1",
     "marked": "^4.0.15",
     "path": "^0.12.7",
@@ -72,6 +72,7 @@
     "vue3-autocounter": "^1.0.6",
     "vue3-click-away": "^1.2.4",
     "vue3-dropzone": "^0.0.7",
+    "vue3-jazzicon": "^0.1.2",
     "vue3-recaptcha2": "^1.7.0",
     "vuex": "^4.0.1",
     "web3": "^1.7.3"
@@ -87,6 +88,7 @@
     "@types/bn.js": "^5.1.0",
     "@types/create-hash": "^1.2.2",
     "@types/dompurify": "^2.3.3",
+    "@types/jest": "^28.1.1",
     "@types/keccak": "^3.0.1",
     "@types/luxon": "^2.0.7",
     "@types/marked": "^4.0.3",

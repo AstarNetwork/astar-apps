@@ -28,7 +28,7 @@ class ChainApi {
     } else {
       this._provider = new WsProvider(endpoint, AUTO_CONNECT_MS);
 
-      console.log('connecting to ' + endpoint);
+      console.info('connecting to ' + endpoint);
       this._api = new ApiPromise({
         provider: this._provider,
       });

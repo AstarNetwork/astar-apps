@@ -46,12 +46,12 @@
           </div>
         </div>
         <div class="tw-mt-6 tw-flex tw-justify-center">
-          <a :href="guideUrl" target="_blank" rel="noopener noreferrer">
+          <a :href="selWallet.guideUrl" target="_blank" rel="noopener noreferrer">
             <button type="button" class="learnButton">
               {{ $t('installWallet.howToConnect') }}
             </button>
           </a>
-          <a :href="walletUrl" target="_blank" rel="noopener noreferrer">
+          <a :href="selWallet.walletUrl" target="_blank" rel="noopener noreferrer">
             <button type="button" class="installButton">
               {{ $t('installWallet.installExtension', { value: $t(selWallet.name) }) }}
             </button>
