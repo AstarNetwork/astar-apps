@@ -9,7 +9,7 @@
           <q-tooltip
             v-model="isDisplayTooltip"
             anchor="top middle"
-            self="bottom middle"
+            :self="`bottom ${$q.platform.is.mobile ? 'end' : 'middle'}`"
             class="box--tooltip"
           >
             <span class="text--tooltip">{{ $t('common.speed.tipHelp') }}</span>
