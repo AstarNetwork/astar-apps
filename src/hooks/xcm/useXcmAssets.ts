@@ -91,6 +91,10 @@ export function useXcmAssets() {
             const mappedXC20 = mappedXC20Asset(assetId);
             const assetInfo = i[1].toHuman() as any as AssetDetails;
             const metadata = assetMetadataListRaw[index][1].toHuman() as any as AssetMetadata;
+            const registeredData = xcmToken[currentNetworkIdx.value].find(
+              (it) => it.assetId === assetId
+            );
+            const minBridgeAmount = registeredData ? registeredData.minBridgeAmount : '0';
 
             const token = {
               id: assetId,
@@ -99,7 +103,7 @@ export function useXcmAssets() {
               mappedERC20Addr: mappedXC20,
               userBalance: '0',
               userBalanceUsd: '0',
-              minBridgeAmount: '0',
+              minBridgeAmount,
             } as ChainAsset;
 
             if (currentAccount.value && !isH160.value) {
@@ -109,11 +113,7 @@ export function useXcmAssets() {
                 api: $api!,
               });
               ttlNativeXcmUsdAmount.value = ttlNativeXcmUsdAmount.value + Number(userBalanceUsd);
-              const registeredData = xcmToken[currentNetworkIdx.value].find(
-                (it) => it.assetId === token.id
-              );
-              const minBridgeAmount = registeredData ? registeredData.minBridgeAmount : '0';
-              return { ...token, userBalance, userBalanceUsd, minBridgeAmount } as ChainAsset;
+              return { ...token, userBalance, userBalanceUsd } as ChainAsset;
             } else {
               return token;
             }

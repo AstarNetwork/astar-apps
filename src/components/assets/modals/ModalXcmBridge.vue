@@ -1,6 +1,5 @@
 <template>
   <astar-simple-modal
-    v-if="isModalXcmBridge"
     :show="isModalXcmBridge"
     :title="$t('assets.xcm')"
     :is-closing="isClosingModal"
