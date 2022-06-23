@@ -56,8 +56,11 @@ export function useEvmAccount() {
 
       // unsubscribe / prevent memory leak
       registerCleanup(() => {
-        provider.removeListener('accountsChanged', handleAccountsChanged);
-        provider.removeListener('chainChanged', handleChainChanged);
+        // Memo: this block calls a lot of `watchs` / `watchEffects` way too much after hot-reload
+        if (!process.env.DEV) {
+          provider.removeListener('accountsChanged', handleAccountsChanged);
+          provider.removeListener('chainChanged', handleChainChanged);
+        }
       });
     }
   };
