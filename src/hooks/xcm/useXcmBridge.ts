@@ -61,7 +61,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   const { currentAccount } = useAccount();
   const { xcmAssets } = useXcmAssets();
 
-  const isH160 = computed(() => store.getters['general/isH160Formatted']);
+  const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const isDeposit = computed(() => checkIsFromRelayChain(srcChain.value.name));
   const isAstar = computed(() => currentNetworkIdx.value === endpointKey.ASTAR);
 
