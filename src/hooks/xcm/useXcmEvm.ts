@@ -68,7 +68,7 @@ export function useXcmEvm(addressRef: Ref<string>) {
     // TODO: need refactor as more scalable later
     let asset_id = KSM.address;
     let decimal = KSM.decimal;
-    if (isAstar) {
+    if (isAstar.value) {
       asset_id = DOT.address;
       decimal = DOT.decimal;
     }

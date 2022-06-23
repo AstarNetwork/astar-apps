@@ -260,7 +260,7 @@ export default defineComponent({
     };
 
     const handleBridge = async (): Promise<void> => {
-      if (isH160) {
+      if (isH160.value) {
         const txHash = await callAssetWithdrawToPara(
           amount.value!!,
           evmDestAddress.value,
