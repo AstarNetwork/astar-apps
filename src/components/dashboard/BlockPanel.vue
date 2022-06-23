@@ -143,10 +143,7 @@ export default defineComponent({
 
     const setIsMobileDisplayTooltip = (e: { target: { className: string } }): void => {
       if (isMobileDevice) {
-        // const isOpen = e.target.className.includes('icon--tooltip-block-time');
         const isOpen = e.target.className.includes('icon');
-        console.log('e.target.className', e.target.className);
-        console.log('isOpen', isOpen);
         isMobileDisplayTooltip.value = isOpen;
       }
     };

@@ -102,12 +102,8 @@ export default defineComponent({
     });
 
     const setIsMobileDisplayTooltip = (e: { target: { className: string } }): void => {
-      console.log('1');
       if (isMobileDevice) {
-        console.log('2');
-        // const isOpen = e.target.className.includes('icon--tooltip-speed-configuration');
         const isOpen = e.target.className.includes('icon');
-        console.log('e.target.className', e.target.className);
         isMobileDisplayTooltip.value = isOpen;
       }
     };
