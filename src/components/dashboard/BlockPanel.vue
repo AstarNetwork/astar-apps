@@ -32,7 +32,12 @@
                 <span class="text--md">{{ $t('dashboard.block.blockTime') }}</span>
                 <div v-click-away="setIsMobileDisplayTooltip" @click="setIsMobileDisplayTooltip">
                   <astar-icon-help size="18" />
-                  <q-tooltip v-model="isDisplayTooltip" class="box--tooltip-info">
+                  <q-tooltip
+                    v-model="isDisplayTooltip"
+                    anchor="top middle"
+                    self="bottom middle"
+                    class="box--tooltip width-auto"
+                  >
                     <div>
                       <div>
                         <span class="text--tooltip">{{ $t('dashboard.block.avgBlockTime') }}</span>

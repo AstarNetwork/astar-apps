@@ -31,28 +31,10 @@
   }
 }
 
-.box--tooltip-warning {
-  background-color: $warning-red;
-  max-width: 320px;
-  font-size: 14px;
-  font-weight: 600;
-  padding: 8px;
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
-  margin: 0 8px;
-  @media (min-width: $sm) {
-    max-width: 340px;
-    margin: 0;
-  }
-}
-
-.box--tooltip-info {
+.box--tooltip {
   background-color: $astar-blue;
-  max-width: 320px;
-  font-size: 14px;
+  width: 240px;
+  font-size: 12px;
   font-weight: 600;
   padding: 8px;
   border-radius: 8px;
@@ -61,8 +43,8 @@
   justify-content: center;
   text-align: center;
   margin: 0 8px;
+  text-align: left;
   @media (min-width: $sm) {
-    max-width: 340px;
     margin: 0;
   }
 }
@@ -74,8 +56,5 @@
   }
   .box--input {
     background: $gray-6;
-  }
-  .box--tooltip-info {
-    background-color: $astar-blue-dark;
   }
 }

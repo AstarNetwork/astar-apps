@@ -6,7 +6,12 @@
         <div v-if="isH160" class="placeholder--height" />
         <div v-else v-click-away="setIsMobileDisplayTooltip" @click="setIsMobileDisplayTooltip">
           <astar-icon-help />
-          <q-tooltip v-model="isDisplayTooltip" class="box--tooltip-info">
+          <q-tooltip
+            v-model="isDisplayTooltip"
+            anchor="top middle"
+            self="bottom middle"
+            class="box--tooltip"
+          >
             <span class="text--tooltip">{{ $t('common.speed.tipHelp') }}</span>
           </q-tooltip>
         </div>

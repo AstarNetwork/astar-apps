@@ -112,7 +112,12 @@
             @click="setIsMobileDisplayTooltip"
           >
             <astar-icon-help size="20" />
-            <q-tooltip v-model="isDisplayTooltip" class="box--tooltip-warning">
+            <q-tooltip
+              v-model="isDisplayTooltip"
+              anchor="top middle"
+              self="bottom middle"
+              class="box--tooltip"
+            >
               <div>
                 <span v-if="existentialDeposit"
                   >{{
