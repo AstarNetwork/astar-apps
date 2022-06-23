@@ -107,7 +107,11 @@
             <span class="text--warning">{{ $t('assets.modals.xcmWarning.avoidRisk') }}</span>
           </div>
           <div v-click-away="setIsMobileDisplayTooltip" class="icon--help">
-            <IconHelp class="icon--tooltip-xcm-warning" @click="setIsMobileDisplayTooltip" />
+            <astar-icon-help
+              size="20"
+              class="icon--tooltip-xcm-warning"
+              @click="setIsMobileDisplayTooltip"
+            />
             <q-tooltip v-model="isDisplayTooltip" class="box--tooltip-warning">
               <div>
                 <span v-if="existentialDeposit"
@@ -146,13 +150,12 @@ import { ChainAsset, useXcmBridge } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { computed, defineComponent, PropType, ref } from 'vue';
 import ModalH160AddressInput from './ModalH160AddressInput.vue';
-import IconHelp from '/src/components/common/IconHelp.vue';
 import ModalLoading from '/src/components/common/ModalLoading.vue';
 import { truncate } from 'src/hooks/helper/common';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
 
 export default defineComponent({
-  components: { ModalH160AddressInput, IconHelp, ModalLoading },
+  components: { ModalH160AddressInput, ModalLoading },
   props: {
     isModalXcmBridge: {
       type: Boolean,

@@ -5,7 +5,10 @@
         <span> {{ $t(isH160 ? 'common.speed.speed' : 'common.speed.speedTip') }}</span>
         <div v-if="isH160" class="placeholder--height" />
         <div v-else v-click-away="setIsMobileDisplayTooltip">
-          <IconHelp class="icon--tooltip-speed-configuration" @click="setIsMobileDisplayTooltip" />
+          <astar-icon-help
+            class="icon--tooltip-speed-configuration"
+            @click="setIsMobileDisplayTooltip"
+          />
           <q-tooltip v-model="isDisplayTooltip" class="box--tooltip-info">
             <span class="text--tooltip">{{ $t('common.speed.tipHelp') }}</span>
           </q-tooltip>
@@ -55,11 +58,9 @@
 import { GasPrice, SelectedGas } from 'src/modules/gas-api';
 import { useStore } from 'src/store';
 import { defineComponent, computed, PropType, ref } from 'vue';
-import IconHelp from 'src/components/common/IconHelp.vue';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
 
 export default defineComponent({
-  components: { IconHelp },
   props: {
     gasCost: {
       type: Object as PropType<GasPrice>,

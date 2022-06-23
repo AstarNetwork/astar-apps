@@ -32,7 +32,11 @@
                 <span class="text--md">{{ $t('dashboard.block.blockTime') }}</span>
                 <div v-click-away="setIsMobileDisplayTooltip">
                   <div>
-                    <IconHelp class="icon--tooltip-block-time" @click="setIsMobileDisplayTooltip" />
+                    <astar-icon-help
+                      size="18"
+                      class="icon--tooltip-block-time"
+                      @click="setIsMobileDisplayTooltip"
+                    />
                   </div>
                   <q-tooltip v-model="isDisplayTooltip" class="box--tooltip-info">
                     <div>
@@ -124,12 +128,11 @@ import { useRouter } from 'vue-router';
 export default defineComponent({
   components: {
     'vue-odometer': VueOdometer,
-    IconHelp,
   },
   setup() {
     const router = useRouter();
-    const isMobileDisplayTooltip = ref<boolean>(false);
     const path = computed(() => router.currentRoute.value.path.split('/')[1]);
+    const isMobileDisplayTooltip = ref<boolean>(false);
 
     const isDisplayTooltip = computed<boolean | null>(() => {
       if (isMobileDevice) {
