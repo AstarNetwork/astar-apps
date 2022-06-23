@@ -8,9 +8,9 @@ import BN from 'bn.js';
 import Web3 from 'web3';
 import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
 import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
-import { buildEvmAddress } from 'src/config/web3/utils/convert';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
 import { DOT, KSM } from 'src/modules/token';
+import { getPubkeyFromSS58Addr } from '../helper/addressUtils';
 
 export function useXcmEvm(addressRef: Ref<string>) {
   const store = useStore();
@@ -75,8 +75,7 @@ export function useXcmEvm(addressRef: Ref<string>) {
     }
 
     const assetAmount = ethers.utils.parseUnits(asset_amount, decimal).toString();
-    // console.log('amount', assetAmount);
-    const recipientEvmAccountId = buildEvmAddress(recipient_account_id);
+    const recipientEvmAccountId = getPubkeyFromSS58Addr(recipient_account_id);
 
     try {
       const txHash: string = await xcmRef.value.callAssetsWithdraw(
