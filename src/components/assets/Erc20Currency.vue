@@ -152,7 +152,10 @@ export default defineComponent({
     });
 
     const isImportedToken = computed<boolean>(
-      () => !!getStoredERC20Tokens().find((it) => it.symbol === token.symbol)
+      () =>
+        !!getStoredERC20Tokens().find(
+          (it) => it.address.toLowerCase() === token.address.toLowerCase()
+        )
     );
 
     const currentWallet = computed(() => store.getters['general/currentWallet']);
