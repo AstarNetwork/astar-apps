@@ -171,9 +171,18 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
 
   const setErrMsg = async (): Promise<void> => {
     errMsg.value = '';
+    const sendingAmount = Number(amount.value);
+    const selectedTokenRef = selectedToken.value;
+    const minBridgeAmount = Number(selectedTokenRef && selectedTokenRef.minBridgeAmount);
 
-    if (Number(amount.value) > fromAddressBalance.value) {
+    if (sendingAmount > fromAddressBalance.value) {
       errMsg.value = t('warning.insufficientBalance');
+    }
+    if (sendingAmount && minBridgeAmount > sendingAmount) {
+      errMsg.value = t('warning.insufficientBridgeAmount', {
+        amount: minBridgeAmount,
+        token: String(selectedTokenRef.metadata.symbol),
+      });
     }
     if (isH160.value || !isNativeBridge.value) {
       // Memo: withdrawal from EVM || Deposit from native to EVM
@@ -181,13 +190,13 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
       if (!evmDestAddress.value) {
         errMsg.value = '';
       }
-      if (Number(amount.value) > fromAddressBalance.value) {
+      if (sendingAmount > fromAddressBalance.value) {
         errMsg.value = t('warning.insufficientBalance');
       } else if (!evmDestAddress.value) {
         return;
       } else if (!checkIsEvmDestAddress()) {
         errMsg.value = t('warning.inputtedInvalidDestAddress');
-      } else if (!(await checkIsEnoughEd(Number(amount.value)))) {
+      } else if (!(await checkIsEnoughEd(sendingAmount))) {
         errMsg.value = t('warning.insufficientExistentialDeposit', {
           network: existentialDeposit.value?.chain,
         });

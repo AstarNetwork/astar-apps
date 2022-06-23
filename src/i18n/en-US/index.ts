@@ -34,6 +34,7 @@ export default {
     inputtedInvalidDestAddress: 'Inputted invalid destination address',
     inputtedInvalidAddress: 'Inputted invalid address',
     selectedInvalidNetworkInWallet: 'Selected invalid network in your wallet',
+    insufficientBridgeAmount: 'Minimum transfer amount is {amount} {token}',
     insufficientExistentialDeposit:
       'Account balances in {network} network is below than the existential deposit amount',
   },

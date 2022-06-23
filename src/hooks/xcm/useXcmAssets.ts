@@ -1,6 +1,7 @@
 import { AssetDetails, AssetMetadata } from '@polkadot/types/interfaces';
 import { $api } from 'boot/api';
-import { fetchXcmBalance } from 'src/modules/xcm';
+import { getProviderIndex } from 'src/config/chainEndpoints';
+import { fetchXcmBalance, xcmToken } from 'src/modules/xcm';
 import { useStore } from 'src/store';
 import { computed, onUnmounted, ref, watch, watchEffect } from 'vue';
 import Web3 from 'web3';
@@ -12,6 +13,7 @@ export interface ChainAsset extends AssetDetails {
   metadata: AssetMetadata;
   userBalance: string;
   userBalanceUsd: string;
+  minBridgeAmount: string;
 }
 
 export function useXcmAssets() {
@@ -21,6 +23,12 @@ export function useXcmAssets() {
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
   const ttlNativeXcmUsdAmount = ref<number>(0);
   const isLoadingXcmAssetsAmount = ref<boolean>(false);
+
+  const currentNetworkIdx = computed(() => {
+    const chainInfo = store.getters['general/chainInfo'];
+    const chain = chainInfo ? chainInfo.chain : '';
+    return getProviderIndex(chain);
+  });
 
   const filterTokens = (): void => {
     xcmAssets.value.sort((a: ChainAsset, b: ChainAsset) => {
@@ -91,6 +99,7 @@ export function useXcmAssets() {
               mappedERC20Addr: mappedXC20,
               userBalance: '0',
               userBalanceUsd: '0',
+              minBridgeAmount: '0',
             } as ChainAsset;
 
             if (currentAccount.value && !isH160.value) {
@@ -100,7 +109,11 @@ export function useXcmAssets() {
                 api: $api!,
               });
               ttlNativeXcmUsdAmount.value = ttlNativeXcmUsdAmount.value + Number(userBalanceUsd);
-              return { ...token, userBalance, userBalanceUsd } as ChainAsset;
+              const registeredData = xcmToken[currentNetworkIdx.value].find(
+                (it) => it.assetId === token.id
+              );
+              const minBridgeAmount = registeredData ? registeredData.minBridgeAmount : '0';
+              return { ...token, userBalance, userBalanceUsd, minBridgeAmount } as ChainAsset;
             } else {
               return token;
             }
