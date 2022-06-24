@@ -172,13 +172,17 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
     await web3.eth
       .sendTransaction({ ...rawTx, gas: estimatedGas })
       .once('transactionHash', (transactionHash) => {
-        const msg = `Completed at transaction hash #${transactionHash}`;
+        store.commit('general/setLoading', true);
+      })
+      .once('confirmation', (confNumber, receipt) => {
+        const msg = `Completed at transaction hash #${receipt.transactionHash}`;
         store.dispatch('general/showAlertMsg', { msg, alertType: 'success' });
         store.commit('general/setLoading', false);
         fn && fn();
         isTxSuccess.value = true;
       })
       .catch((error: any) => {
+        console.error(error);
         isTxSuccess.value = false;
         store.commit('general/setLoading', false);
         store.dispatch('general/showAlertMsg', {

@@ -1,6 +1,8 @@
-import { EthReceipt } from '@polkadot/types/interfaces';
-import type { Contract } from 'web3-eth-contract/types';
 import BN from 'bn.js';
+import { StateInterface } from 'src/store';
+import { Store } from 'vuex';
+import { TransactionReceipt } from 'web3-core';
+import type { Contract } from 'web3-eth-contract/types';
 
 export class XCM {
   public ci: Contract;
@@ -18,7 +20,7 @@ export class XCM {
     is_relay: boolean,
     parachain_id: number,
     fee_index: number,
-    finalizedCallback: () => Promise<void>
+    store: Store<StateInterface>
   ) => {
     return new Promise((resolve, reject) => {
       return this.ci.methods
@@ -31,14 +33,22 @@ export class XCM {
           fee_index
         )
         .send({ from: this.fromAddr })
-        .on('transactionHash', (hash: string) => {
-          resolve(hash);
+        .once('transactionHash', (transactionHash: string) => {
+          store.commit('general/setLoading', true);
         })
-        .on('receipt', (receipt: EthReceipt) => {
-          // console.log('receipt', receipt.transactionHash);
-          finalizedCallback();
+        .once('confirmation', (confNumber: number, receipt: TransactionReceipt) => {
+          const msg = `Completed at transaction hash #${receipt.transactionHash}`;
+          store.dispatch('general/showAlertMsg', { msg, alertType: 'success' });
+          store.commit('general/setLoading', false);
+          resolve(receipt.transactionHash);
         })
-        .on('error', (error: Error) => {
+        .catch((error: any) => {
+          console.error(error);
+          store.commit('general/setLoading', false);
+          store.dispatch('general/showAlertMsg', {
+            msg: error.message,
+            alertType: 'error',
+          });
           reject(error.message);
         });
     });
