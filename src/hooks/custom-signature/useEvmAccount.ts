@@ -56,7 +56,7 @@ export function useEvmAccount() {
 
       // unsubscribe / prevent memory leak
       registerCleanup(() => {
-        // Memo: this block calls a lot of `watchs` / `watchEffects` way too much after hot-reload
+        // Memo: this block calls a lot of `watchs` / `watchEffects` (that outside of this file) way too much after hot reloading
         if (!process.env.DEV) {
           provider.removeListener('accountsChanged', handleAccountsChanged);
           provider.removeListener('chainChanged', handleChainChanged);
