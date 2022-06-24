@@ -7,15 +7,14 @@ import {
   EraIndex,
   EventRecord,
 } from '@polkadot/types/interfaces';
-import { ISubmittableResult, ITuple } from '@polkadot/types/types';
+import { ITuple } from '@polkadot/types/types';
 import BN from 'bn.js';
 import { $api } from 'boot/api';
-import { addDapp, getDapps, uploadFile } from 'src/hooks/firebase';
 import { ActionTree, Dispatch } from 'vuex';
 import { StateInterface } from '../index';
-import { signAndSend, sign } from './../../hooks/helper/wallet';
+import { sign } from './../../hooks/helper/wallet';
 import { SubstrateAccount } from './../general/state';
-import { DappStateInterface as State, NewDappItem, FileInfo } from './state';
+import { DappStateInterface as State, NewDappItem, FileInfo, DappItem } from './state';
 import { IDappStakingService } from 'src/v2/services';
 import container from 'src/v2/app.container';
 import { Symbols } from 'src/v2/symbols';
@@ -100,8 +99,9 @@ const actions: ActionTree<State, StateInterface> = {
     commit('general/setLoading', true, { root: true });
 
     try {
-      const collection = await getDapps(network.toLowerCase());
-      commit('addDapps', collection);
+      const dappsUrl = `${TOKEN_API_URL}/v1/${network}/dapps-staking/dapps`;
+      const result = await axios.get<DappItem>(dappsUrl);
+      commit('addDapps', result.data);
     } catch (e) {
       const error = e as unknown as Error;
       showError(dispatch, error.message);
@@ -142,7 +142,7 @@ const actions: ActionTree<State, StateInterface> = {
         };
 
         commit('general/setLoading', true, { root: true });
-        const url = `${TOKEN_API_URL}/v1/${parameters.network}/dapps-staking/register`;
+        const url = `${TOKEN_API_URL}/v1/${parameters.network.toLocaleLowerCase()}/dapps-staking/register`;
         const result = await axios.post(url, payload);
 
         commit('addDapp', result.data);
