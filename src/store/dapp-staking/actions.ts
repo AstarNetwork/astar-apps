@@ -20,6 +20,7 @@ import { IDappStakingService } from 'src/v2/services';
 import container from 'src/v2/app.container';
 import { Symbols } from 'src/v2/symbols';
 import axios, { AxiosError } from 'axios';
+import { TOKEN_API_URL } from 'src/modules/token-api';
 
 let collectionKey: string;
 
@@ -56,11 +57,6 @@ export const hasExtrinsicFailedEvent = (
   events
     .filter((record): boolean => !!record.event && record.event.section !== 'democracy')
     .map(({ event: { data, method, section } }) => {
-      // console.log('event', method, section, data);
-      // if (section === 'utility' && method === 'BatchInterrupted') {
-      //   console.log(data.toHuman());
-      // }
-
       if (section === 'system' && method === 'ExtrinsicFailed') {
         const [dispatchError] = data as unknown as ITuple<[DispatchError]>;
         let message = dispatchError.type.toString();
@@ -100,7 +96,7 @@ export const hasExtrinsicFailedEvent = (
 };
 
 const actions: ActionTree<State, StateInterface> = {
-  async getDapps({ commit, dispatch, rootState }, network: string) {
+  async getDapps({ commit, dispatch }, network: string) {
     commit('general/setLoading', true, { root: true });
 
     try {
@@ -114,10 +110,7 @@ const actions: ActionTree<State, StateInterface> = {
     }
   },
 
-  async registerDappApi(
-    { commit, dispatch, rootState },
-    parameters: RegisterParameters
-  ): Promise<boolean> {
+  async registerDappApi({ commit, dispatch }, parameters: RegisterParameters): Promise<boolean> {
     if (parameters.api) {
       const transaction = parameters.api.tx.dappsStaking.register(
         getAddressEnum(parameters.dapp.address)
@@ -149,10 +142,8 @@ const actions: ActionTree<State, StateInterface> = {
         };
 
         commit('general/setLoading', true, { root: true });
-        const result = await axios.post(
-          'http://localhost:5000/api/v1/development/dapps-staking/register',
-          payload
-        );
+        const url = `${TOKEN_API_URL}/v1/${parameters.network}/dapps-staking/register`;
+        const result = await axios.post(url, payload);
 
         commit('addDapp', result.data);
 
@@ -255,6 +246,7 @@ export interface RegisterParameters {
   api: ApiPromise;
   substrateAccounts: SubstrateAccount[];
   tip: string;
+  network: string;
 }
 
 export interface WithdrawParameters {

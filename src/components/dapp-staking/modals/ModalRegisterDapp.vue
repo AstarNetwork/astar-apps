@@ -86,12 +86,18 @@ export default defineComponent({
         if (success && data.iconFile) {
           if (step === stepsCount) {
             const senderAddress = store.getters['general/selectedAddress'];
+            const currentNetwork = computed(() => {
+              const chainInfo = store.getters['general/chainInfo'];
+              const chain = chainInfo ? chainInfo.chain : '';
+              return chain.toString().split(' ')[0];
+            });
             const result = await store.dispatch('dapps/registerDappApi', {
               dapp: data,
               api: $api,
               senderAddress,
               substrateAccounts: substrateAccounts.value,
               tip: selectedTip.value.price,
+              network: currentNetwork.value,
             } as RegisterParameters);
 
             if (result) {
