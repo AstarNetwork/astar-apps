@@ -250,11 +250,8 @@ export default defineComponent({
     };
 
     const finalizedCallback = async (): Promise<void> => {
-      await Promise.all([
-        closeModal(),
-        props.handleUpdateXcmTokenBalances(),
-        updateFromAddressBalance(),
-      ]);
+      await closeModal();
+      await Promise.all([props.handleUpdateXcmTokenBalances(), updateFromAddressBalance()]);
     };
 
     const handleBridge = async (): Promise<void> => {
