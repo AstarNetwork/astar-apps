@@ -1,6 +1,7 @@
-import { EthReceipt } from '@polkadot/types/interfaces';
-import type { Contract } from 'web3-eth-contract/types';
 import BN from 'bn.js';
+import { StateInterface } from 'src/store';
+import { Store } from 'vuex';
+import type { Contract } from 'web3-eth-contract/types';
 
 export class XCM {
   public ci: Contract;
@@ -18,7 +19,7 @@ export class XCM {
     is_relay: boolean,
     parachain_id: number,
     fee_index: number,
-    finalizedCallback: () => Promise<void>
+    store: Store<StateInterface>
   ) => {
     return new Promise((resolve, reject) => {
       return this.ci.methods
@@ -31,15 +32,19 @@ export class XCM {
           fee_index
         )
         .send({ from: this.fromAddr })
-        .on('transactionHash', (hash: string) => {
-          resolve(hash);
+        .once('transactionHash', (transactionHash: string) => {
+          store.commit('general/setLoading', true);
         })
-        .on('receipt', (receipt: EthReceipt) => {
-          // console.log('receipt', receipt.transactionHash);
-          finalizedCallback();
-        })
-        .on('error', (error: Error) => {
-          reject(error.message);
+        .once(
+          'confirmation',
+          (confNumber: number, { transactionHash }: { transactionHash: string }) => {
+            store.commit('general/setLoading', false);
+            resolve(transactionHash);
+          }
+        )
+        .catch((error: any) => {
+          console.error(error);
+          throw Error(error.message);
         });
     });
   };

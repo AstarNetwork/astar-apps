@@ -86,15 +86,15 @@ export function useXcmEvm(addressRef: Ref<string>) {
         true,
         0,
         0,
-        finalizedCallback
+        store
       );
 
-      // console.log('txHash', txHash);
-      store.commit('general/setLoading', false);
       store.dispatch('general/showAlertMsg', {
-        msg: t('toast.completedHash', { hash: txHash }),
+        msg: t('toast.completedTxHash', { hash: txHash }),
         alertType: 'success',
       });
+      finalizedCallback();
+
       return txHash;
     } catch (e) {
       handleError(e);
