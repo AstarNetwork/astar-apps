@@ -1,3 +1,4 @@
+import { useI18n } from 'vue-i18n';
 import { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 import { $api } from 'boot/api';
@@ -26,6 +27,7 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
   const store = useStore();
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
   const { ethProvider } = useEthProvider();
+  const { t } = useI18n();
 
   const isTxSuccess = ref(false);
 
@@ -95,8 +97,10 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
         transferAmt,
         gasPrice,
         (hash: string) => {
-          const msg = `Completed at transaction hash #${hash}`;
-          store.dispatch('general/showAlertMsg', { msg, alertType: 'success' });
+          store.dispatch('general/showAlertMsg', {
+            msg: t('toast.completedTxHash', { hash }),
+            alertType: 'success',
+          });
           store.commit('general/setLoading', false);
           fn && fn();
           isTxSuccess.value = true;
@@ -174,9 +178,11 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
       .once('transactionHash', (transactionHash) => {
         store.commit('general/setLoading', true);
       })
-      .once('confirmation', (confNumber, receipt) => {
-        const msg = `Completed at transaction hash #${receipt.transactionHash}`;
-        store.dispatch('general/showAlertMsg', { msg, alertType: 'success' });
+      .once('confirmation', (confNumber, { transactionHash }) => {
+        store.dispatch('general/showAlertMsg', {
+          msg: t('toast.completedTxHash', { hash: transactionHash }),
+          alertType: 'success',
+        });
         store.commit('general/setLoading', false);
         fn && fn();
         isTxSuccess.value = true;

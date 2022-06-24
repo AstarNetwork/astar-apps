@@ -1,7 +1,6 @@
 import BN from 'bn.js';
 import { StateInterface } from 'src/store';
 import { Store } from 'vuex';
-import { TransactionReceipt } from 'web3-core';
 import type { Contract } from 'web3-eth-contract/types';
 
 export class XCM {
@@ -36,20 +35,16 @@ export class XCM {
         .once('transactionHash', (transactionHash: string) => {
           store.commit('general/setLoading', true);
         })
-        .once('confirmation', (confNumber: number, receipt: TransactionReceipt) => {
-          const msg = `Completed at transaction hash #${receipt.transactionHash}`;
-          store.dispatch('general/showAlertMsg', { msg, alertType: 'success' });
-          store.commit('general/setLoading', false);
-          resolve(receipt.transactionHash);
-        })
+        .once(
+          'confirmation',
+          (confNumber: number, { transactionHash }: { transactionHash: string }) => {
+            store.commit('general/setLoading', false);
+            resolve(transactionHash);
+          }
+        )
         .catch((error: any) => {
           console.error(error);
-          store.commit('general/setLoading', false);
-          store.dispatch('general/showAlertMsg', {
-            msg: error.message,
-            alertType: 'error',
-          });
-          reject(error.message);
+          throw Error(error.message);
         });
     });
   };

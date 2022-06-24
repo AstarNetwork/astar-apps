@@ -1,19 +1,21 @@
-import BN from 'bn.js';
-import { ethers } from 'ethers';
-import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
+import { useStore } from 'src/store';
+import { useI18n } from 'vue-i18n';
+import { Ref, watch, ref, computed } from 'vue';
 import { contractInstance, XCM } from 'src/config/web3';
 import xcmContractAbi from 'src/config/web3/abi/xcm-abi.json';
+import { ethers } from 'ethers';
+import BN from 'bn.js';
+import Web3 from 'web3';
+import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
 import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
 import { DOT, KSM } from 'src/modules/token';
-import { useStore } from 'src/store';
-import { computed, Ref, ref, watch } from 'vue';
-import Web3 from 'web3';
 import { getPubkeyFromSS58Addr } from '../helper/addressUtils';
 
 export function useXcmEvm(addressRef: Ref<string>) {
   const store = useStore();
   const xcmRef = ref();
+  const { t } = useI18n();
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
 
   // xcm precompiled contract address
@@ -87,6 +89,10 @@ export function useXcmEvm(addressRef: Ref<string>) {
         store
       );
 
+      store.dispatch('general/showAlertMsg', {
+        msg: t('toast.completedTxHash', { hash: txHash }),
+        alertType: 'success',
+      });
       finalizedCallback();
 
       return txHash;

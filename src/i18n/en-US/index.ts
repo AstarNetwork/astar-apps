@@ -42,6 +42,7 @@ export default {
   toast: {
     transactionFailed: 'Transaction failed with error: {message}',
     completedHash: 'Completed at block hash #{hash}',
+    completedTxHash: 'Completed at transaction hash #{hash}',
     unableCalculateMsgPayload: 'Unable to calculate the message payload',
     amountMustNotBeZero: 'The amount of token to be transmitted must not be zero',
     copyAddressSuccessfully: 'Copy address success!',
