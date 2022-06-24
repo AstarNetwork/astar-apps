@@ -1,13 +1,16 @@
 import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
-import { getEvmProvider } from 'src/hooks/helper/wallet';
+
 import { useStore } from 'src/store';
-import { computed, ref, watchEffect } from 'vue';
+import { computed, ref, watch, WatchCallback } from 'vue';
 import Web3 from 'web3';
 import { setupNetwork } from 'src/config/web3';
+import { useEthProvider } from '../custom-signature/useEthProvider';
+import { EthereumProvider } from '../types/CustomSignature';
 
 export const useEvmWallet = () => {
   const walletNetworkId = ref<number | null>(null);
   const store = useStore();
+  const { ethProvider } = useEthProvider();
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
   const evmNetworkId = computed(() => {
@@ -30,30 +33,47 @@ export const useEvmWallet = () => {
 
   const connectEvmNetwork = async () => {
     try {
-      await setupNetwork(evmNetworkId.value);
+      if (!ethProvider.value) {
+        throw new Error('No Ethereum provider found');
+      }
+
+      await setupNetwork({ network: evmNetworkId.value, provider: ethProvider.value });
     } catch (error) {
       console.error(error);
     }
   };
 
-  watchEffect(async () => {
+  const setWalletNetworkId: WatchCallback<[any, EthereumProvider | undefined]> = async (
+    [h160, provider],
+    _,
+    registerCleanup
+  ) => {
     try {
-      const provider = getEvmProvider();
-      if (!isH160.value || !provider) return;
+      if (!h160 || !provider) return;
 
       const web3 = new Web3(provider as any);
+
       const chainId = await web3.eth.getChainId();
       walletNetworkId.value = chainId;
 
-      provider &&
-        provider.on('chainChanged', (chainId: string) => {
-          walletNetworkId.value = Number(chainId);
-        });
+      const handleChainChanged = (chainId: string) => {
+        walletNetworkId.value = Number(chainId);
+      };
+
+      //subscribe to chainChanged event
+      provider.on('chainChanged', handleChainChanged);
+
+      registerCleanup(() => {
+        // unsubscribe from chainChanged event to prevent memory leak
+        provider.removeListener('chainChanged', handleChainChanged);
+      });
     } catch (error) {
       console.error(error);
       walletNetworkId.value = null;
     }
-  });
+  };
+
+  watch([isH160, ethProvider], setWalletNetworkId, { immediate: true });
 
   return {
     isConnectedNetwork,

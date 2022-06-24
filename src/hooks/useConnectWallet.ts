@@ -1,15 +1,20 @@
 import { getProviderIndex } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { SubstrateWallets, SupportWallet, WalletModalOption } from 'src/config/wallets';
+import {
+  SubstrateWallets,
+  supportEvmWalletObj,
+  SupportWallet,
+  WalletModalOption,
+} from 'src/config/wallets';
 import { getChainId, setupNetwork } from 'src/config/web3';
 import { checkSumEvmAddress } from 'src/config/web3/utils/convert';
 import { useAccount } from 'src/hooks';
 import * as utils from 'src/hooks/custom-signature/utils';
 import { deepLinkPath } from 'src/links';
 import { useStore } from 'src/store';
-import { computed, ref, watch, watchEffect, watchPostEffect } from 'vue';
+import { computed, ref, watch, watchEffect, watchPostEffect, WatchCallback } from 'vue';
 import { useRouter } from 'vue-router';
-import { useMetamask } from './custom-signature/useMetamask';
+import { useEvmAccount } from './custom-signature/useEvmAccount';
 import { useExtensions } from 'src/hooks/useExtensions';
 import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
 import { wait } from './helper/common';
@@ -33,7 +38,7 @@ export const useConnectWallet = () => {
   const modalName = ref<string>('');
 
   const store = useStore();
-  const { requestAccounts, requestSignature } = useMetamask();
+  const { requestAccounts, requestSignature } = useEvmAccount();
   const { currentAccount, currentAccountName, disconnectAccount } = useAccount();
   const router = useRouter();
 
@@ -78,7 +83,25 @@ export const useConnectWallet = () => {
     }
   };
 
-  const loadMetaMask = async (ss58?: string): Promise<boolean> => {
+  const getEvmProvider = (wallet: SupportWallet) => {
+    if (wallet === SupportWallet.MetaMask) {
+      return window.ethereum;
+    }
+
+    if (wallet === SupportWallet.TalismanEvm) {
+      return window.talismanEth;
+    }
+
+    return null;
+  };
+
+  const loadEvmWallet = async ({
+    ss58,
+    currentWallet,
+  }: {
+    ss58?: string;
+    currentWallet: SupportWallet;
+  }): Promise<boolean> => {
     try {
       const accounts = await requestAccounts();
       const ethereumAddr = checkSumEvmAddress(accounts[0]);
@@ -94,7 +117,15 @@ export const useConnectWallet = () => {
 
       store.commit('general/setCurrentEcdsaAccount', data);
       const chainId = getChainId(currentNetworkIdx.value);
-      await setupNetwork(chainId);
+
+      const provider = getEvmProvider(currentWallet);
+
+      if (!provider) {
+        return false;
+      }
+
+      await setupNetwork({ network: chainId, provider });
+
       return true;
     } catch (err: any) {
       console.error(err);
@@ -102,22 +133,39 @@ export const useConnectWallet = () => {
     }
   };
 
-  const setMetaMask = async () => {
-    selectedWallet.value = SupportWallet.MetaMask;
-    const isMetamaskExtension = typeof window.ethereum !== 'undefined';
-    if (!isMetamaskExtension) {
+  const setEvmWallet = async (wallet: SupportWallet): Promise<void> => {
+    selectedWallet.value = wallet;
+
+    let isEvmWalletAvailable = false;
+
+    if (wallet === SupportWallet.TalismanEvm) {
+      isEvmWalletAvailable = window.talismanEth !== undefined;
+    }
+
+    if (wallet === SupportWallet.MetaMask) {
+      isEvmWalletAvailable = window.ethereum !== undefined;
+    }
+
+    if (!isEvmWalletAvailable) {
+      if (wallet === SupportWallet.TalismanEvm) {
+        modalName.value = WalletModalOption.OutdatedWallet;
+        return;
+      }
+
       modalName.value = WalletModalOption.NoExtension;
       return;
     }
     const ss58 = currentEcdsaAccount.value.ss58 ?? '';
-    const result = await loadMetaMask(ss58);
+
+    let result = await loadEvmWallet({ ss58, currentWallet: wallet });
+
     if (result) {
       modalName.value = '';
       return;
     }
   };
 
-  const toggleMetaMaskSchema = async () => {
+  const toggleEvmWalletSchema = async () => {
     const accounts = await requestAccounts();
     const loadingAddr = checkSumEvmAddress(accounts[0]);
     const loginMsg = `Sign this message to login with address ${loadingAddr}`;
@@ -132,7 +180,7 @@ export const useConnectWallet = () => {
         ss58: ss58Address,
       });
     } else {
-      await loadMetaMask();
+      await loadEvmWallet({ currentWallet: selectedWallet.value as SupportWallet });
     }
   };
 
@@ -157,12 +205,22 @@ export const useConnectWallet = () => {
   const setWalletModal = (wallet: SupportWallet): void => {
     requestExtensionsIfFirstAccess(wallet);
     store.commit('general/setCurrentWallet', wallet);
+
+    if (supportEvmWalletObj.hasOwnProperty(wallet)) {
+      localStorage.setItem(LOCAL_STORAGE.ETHEREUM_WALLET, wallet);
+    }
+
     setWallet(wallet);
   };
 
   const connectEthereumWallet = async (wallet: SupportWallet): Promise<void> => {
     requestExtensionsIfFirstAccess(wallet);
     store.commit('general/setCurrentWallet', wallet);
+
+    if (supportEvmWalletObj.hasOwnProperty(wallet)) {
+      localStorage.setItem(LOCAL_STORAGE.ETHEREUM_WALLET, wallet);
+    }
+
     const isWalletExtension = await checkIsWalletExtension();
     const deepLinkUrl = getDeepLinkUrl(wallet);
     const isOpenMobileDappBrowser = isMobileDevice && deepLinkUrl && !isWalletExtension;
@@ -171,8 +229,8 @@ export const useConnectWallet = () => {
       window.open(deepLinkUrl);
       return;
     }
-    if (wallet === SupportWallet.MetaMask || wallet === SupportWallet.Wallet3) {
-      setMetaMask();
+    if (supportEvmWalletObj.hasOwnProperty(wallet)) {
+      setEvmWallet(wallet);
       return;
     }
   };
@@ -202,53 +260,68 @@ export const useConnectWallet = () => {
     if (isMetaMaskDeepLink) {
       const loadTime = 800;
       await wait(loadTime);
-      await setMetaMask();
+      await setEvmWallet(SupportWallet.MetaMask);
     }
   };
 
   const loginWithStoredAccount = async (): Promise<void> => {
     const address = localStorage.getItem(SELECTED_ADDRESS);
+    const wallet = localStorage.getItem(LOCAL_STORAGE.ETHEREUM_WALLET);
+
     if (currentRouter.value === undefined || !address || !isConnectedNetwork.value) {
       return;
     }
 
+    store.commit('general/setCurrentWallet', wallet);
+
     // Memo: wait for updating the chain id from the initial state 592 (to pass the `setupNetwork` function)
     const delay = 800;
     await wait(delay);
+
     if (address === 'Ethereum Extension') {
-      await setMetaMask();
+      if (!wallet) {
+        return;
+      }
+
+      await setEvmWallet(wallet as SupportWallet);
     }
     store.commit('general/setCurrentAddress', address);
   };
 
   const changeAccount = async (): Promise<void> => {
-    const chosenWallet = selectedWallet.value;
-    if (chosenWallet === SupportWallet.MetaMask || chosenWallet === SupportWallet.Wallet3) {
-      modalAccountSelect.value = true;
-    } else {
-      setWallet(chosenWallet as SupportWallet);
-    }
-  };
-
-  const changeEvmAccount = async (): Promise<void> => {
-    if (!currentEcdsaAccount.value.ethereum || !window.ethereum || !isH160.value) {
-      return;
-    }
-    window.ethereum.on('accountsChanged', async (accounts: string[]) => {
-      if (accounts[0] !== currentAccount.value) {
-        await disconnectAccount();
-        await setMetaMask();
-      }
-    });
+    modalAccountSelect.value = true;
   };
 
   watchEffect(() => {
     initializeWalletAccount();
   });
 
-  watchEffect(async () => {
-    await changeEvmAccount();
-  });
+  const changeEvmAccount: WatchCallback<[string, any, string, any]> = (
+    [wallet, ecdsaAccount, account, h160],
+    _,
+    registerCleanup
+  ) => {
+    const provider = getEvmProvider(wallet as SupportWallet);
+
+    if (!ecdsaAccount.ethereum || !provider || !h160) {
+      return;
+    }
+
+    const handleAccountsChanged = async (accounts: string[]) => {
+      if (accounts[0] !== account) {
+        await disconnectAccount();
+        await setEvmWallet(wallet as SupportWallet);
+      }
+    };
+
+    provider.on('accountsChanged', handleAccountsChanged);
+
+    registerCleanup(() => {
+      provider.removeListener('accountsChanged', handleAccountsChanged);
+    });
+  };
+
+  watch([selectedWallet, currentEcdsaAccount, currentAccount, isH160], changeEvmAccount);
 
   watchEffect(async () => {
     await selectLoginWallet();
@@ -282,7 +355,7 @@ export const useConnectWallet = () => {
     setCloseModal,
     setWalletModal,
     disconnectAccount,
-    toggleMetaMaskSchema,
+    toggleEvmWalletSchema,
     changeAccount,
     connectEthereumWallet,
   };

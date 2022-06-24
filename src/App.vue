@@ -26,18 +26,26 @@
         :alert-type="showAlert.alertType"
       />
     </transition>
+
+    <cookie-policy />
   </div>
 </template>
 <script lang="ts">
 // Fix for breaking change introduced in polkadot js v7.x
 // https://polkadot.js.org/docs/api/FAQ/#since-upgrading-to-the-7x-series-typescript-augmentation-is-missing
+import 'reflect-metadata';
 import '@polkadot/api-augment';
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, watch } from 'vue';
 import DashboardLayout from 'layouts/DashboardLayout.vue';
 import { useStore } from 'src/store';
 import ModalLoading from 'components/common/ModalLoading.vue';
 import AlertBox from 'components/common/AlertBox.vue';
+import CookiePolicy from 'components//common/CookiePolicy.vue';
 import 'animate.css';
+import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
+import { setCurrentWallet } from './v2/app.container';
+import { container } from './v2/common';
+import { Symbols } from './v2/symbols';
 
 export default defineComponent({
   name: 'App',
@@ -45,11 +53,37 @@ export default defineComponent({
     DashboardLayout,
     ModalLoading,
     AlertBox,
+    CookiePolicy,
   },
   setup() {
     const store = useStore();
     const isLoading = computed(() => store.getters['general/isLoading']);
     const showAlert = computed(() => store.getters['general/showAlert']);
+    const isEthWallet = computed<boolean>(() => store.getters['general/isEthWallet']);
+
+    // Handle busy and extrisnsic call status messages.
+    const eventAggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
+    eventAggregator.subscribe(ExtrinsicStatusMessage.name, (m) => {
+      const message = m as ExtrinsicStatusMessage;
+      store.dispatch(
+        'general/showAlertMsg',
+        {
+          msg: message.message,
+          alertType: message.success ? 'success' : 'error',
+        },
+        { root: true }
+      );
+    });
+
+    eventAggregator.subscribe(BusyMessage.name, (m) => {
+      const message = m as BusyMessage;
+      store.commit('general/setLoading', message.isBusy, { root: true });
+    });
+
+    // Handle wallet change so we can inject proper wallet
+    watch([isEthWallet], () => {
+      setCurrentWallet(isEthWallet.value);
+    });
 
     return {
       isLoading,

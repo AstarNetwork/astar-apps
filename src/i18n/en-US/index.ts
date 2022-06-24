@@ -23,10 +23,12 @@ export default {
   wallet3: 'Wallet 3',
   alert: 'Alert',
   max: 'Max',
+  ticker: 'Ticker',
   warning: {
     insufficientBalance: 'Insufficient balance',
     insufficientFee: 'Warning! Transaction might failed due to insufficient fee',
     inputtedInvalidDestAddress: 'Inputted invalid destination address',
+    inputtedInvalidAddress: 'Inputted invalid address',
     selectedInvalidNetworkInWallet: 'Selected invalid network in your wallet',
   },
   toast: {
@@ -83,6 +85,12 @@ export default {
       "You'll need to install {value} to continue. Once you have it installed, go ahead and refresh this page",
     installExtension: 'Install {value} extension',
     howToConnect: 'Learn how to Connect',
+  },
+  updateWallet: {
+    getUpdatedWallet: 'Haven’t updated {value} yet?',
+    updateWallet:
+      "You'll need to update {value} to continue. Once you have it updated to the latest version, go ahead and refresh this page",
+    updateExtension: 'Update {value} extension',
   },
   dappStaking: {
     dappsStore: 'dApps Store',
@@ -266,6 +274,10 @@ export default {
     wrongNetwork: 'Wallet connected to the wrong network',
     connectNetwork: 'Connect to {network} RPC',
     invalidAddress: 'The address is not valid',
+    importTokens: 'Import tokens',
+    hideSmallBalances: 'Hide small balances',
+    unhideSmallBalances: 'Unhide small balances',
+    tokenHasBeenAdded: 'The token has been added already',
     modals: {
       max: 'Max',
       balance: 'Balance: {amount} {token}',
@@ -288,6 +300,9 @@ export default {
       depositToNative: 'Deposit to Native',
       depositToEvm: 'Deposit to EVM',
       evmWalletAddress: 'EVM Wallet Address',
+      riskOfImportTokens:
+        'Please be aware of the risk that anyone can create a token, including creating fake versions of existing tokens.',
+      tokenContractAddress: 'Token Contract Address',
       xcmWarning: {
         avoidRisk: 'Avoid risk of losing your balance',
         fee: 'Fee is deducted from the amount entered',

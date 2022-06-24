@@ -1,4 +1,11 @@
-export { getTokenImage, getErc20Explorer, checkIsWrappedToken } from './utils';
+export {
+  getTokenImage,
+  getErc20Explorer,
+  checkIsWrappedToken,
+  storeImportedERC20Token,
+  getStoredERC20Tokens,
+  getRegisteredERC20Token,
+} from './utils';
 
 // Memo: ERC20 tokens information that is not supported by cBridge
 
@@ -53,3 +60,9 @@ export const KSM = {
 };
 
 export const registeredErc20Tokens = [WASTR, DOT, KSM];
+
+// Memo: Define the token image source
+export const tokenImageMap = {
+  ARSW: 'https://assets.coingecko.com/coins/images/26048/small/arsw.png?1655440190',
+  LAY: 'https://assets.coingecko.com/coins/images/25795/small/WKBrkX4y_400x400.png?1653920060',
+};
