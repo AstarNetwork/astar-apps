@@ -16,6 +16,7 @@ interface RequestArguments {
 export interface EthereumProvider {
   isMetaMask?: boolean;
   isTalisman?: boolean;
+  isSubWallet?: boolean;
   on: (event: string, handler: (response: any) => void) => void;
   removeListener: (event: string, handler: (response: any) => void) => void;
   request: (args: RequestArguments) => Promise<unknown>;
@@ -31,5 +32,6 @@ declare global {
   interface Window {
     ethereum?: EthereumProvider;
     talismanEth?: EthereumProvider;
+    SubWallet?: EthereumProvider;
   }
 }
