@@ -16,6 +16,7 @@ export function useXcmEvm(addressRef: Ref<string>) {
   const store = useStore();
   const xcmRef = ref();
   const { t } = useI18n();
+  const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
 
   // xcm precompiled contract address
   const PRECOMPILED_ADDR = '0x0000000000000000000000000000000000005004';
@@ -29,9 +30,9 @@ export function useXcmEvm(addressRef: Ref<string>) {
   const currentWallet = computed(() => store.getters['general/currentWallet']);
 
   watch(
-    () => [addressRef.value],
+    () => [addressRef.value, isH160.value],
     async () => {
-      if (addressRef.value) {
+      if (addressRef.value && isH160.value) {
         const provider = getEvmProvider(currentWallet.value);
         const web3 = new Web3(provider as any);
         const ci = contractInstance(web3, xcmContractAbi, PRECOMPILED_ADDR, addressRef.value);

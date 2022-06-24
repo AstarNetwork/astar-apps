@@ -28,12 +28,14 @@ export default {
   addressFormat: '{network} Wallet Address',
   addressPlaceholder: 'Destination {network} Address',
   ticker: 'Ticker',
+  isComingSoon: '{value} is coming soon',
   warning: {
     insufficientBalance: 'Insufficient balance',
     insufficientFee: 'Warning! Transaction might failed due to insufficient fee',
     inputtedInvalidDestAddress: 'Inputted invalid destination address',
     inputtedInvalidAddress: 'Inputted invalid address',
     selectedInvalidNetworkInWallet: 'Selected invalid network in your wallet',
+    insufficientBridgeAmount: 'Minimum transfer amount is {amount} {token}',
     insufficientExistentialDeposit:
       'Account balances in {network} network is below than the existential deposit amount',
   },

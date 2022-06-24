@@ -61,7 +61,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   const { currentAccount } = useAccount();
   const { xcmAssets } = useXcmAssets();
 
-  const isH160 = computed(() => store.getters['general/isH160Formatted']);
+  const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const isDeposit = computed(() => checkIsFromRelayChain(srcChain.value.name));
   const isAstar = computed(() => currentNetworkIdx.value === endpointKey.ASTAR);
 
@@ -171,9 +171,24 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
 
   const setErrMsg = async (): Promise<void> => {
     errMsg.value = '';
+    const sendingAmount = Number(amount.value);
+    const selectedTokenRef = selectedToken.value;
+    const minBridgeAmount = Number(selectedTokenRef && selectedTokenRef.minBridgeAmount);
+    const isAstarWithdrawal = !isDeposit.value && currentNetworkIdx.value === endpointKey.ASTAR;
 
-    if (Number(amount.value) > fromAddressBalance.value) {
+    // Memo: We will remove this condition whenever we confirmed both native and evm Dot withdrawal is ready
+    if (isAstarWithdrawal) {
+      errMsg.value = t('isComingSoon', { value: 'DOT withdrawal' });
+    }
+
+    if (sendingAmount > fromAddressBalance.value) {
       errMsg.value = t('warning.insufficientBalance');
+    }
+    if (sendingAmount && minBridgeAmount > sendingAmount) {
+      errMsg.value = t('warning.insufficientBridgeAmount', {
+        amount: minBridgeAmount,
+        token: String(selectedTokenRef.metadata.symbol),
+      });
     }
     if (isH160.value || !isNativeBridge.value) {
       // Memo: withdrawal from EVM || Deposit from native to EVM
@@ -181,13 +196,13 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
       if (!evmDestAddress.value) {
         errMsg.value = '';
       }
-      if (Number(amount.value) > fromAddressBalance.value) {
+      if (sendingAmount > fromAddressBalance.value) {
         errMsg.value = t('warning.insufficientBalance');
       } else if (!evmDestAddress.value) {
         return;
       } else if (!checkIsEvmDestAddress()) {
         errMsg.value = t('warning.inputtedInvalidDestAddress');
-      } else if (!(await checkIsEnoughEd(Number(amount.value)))) {
+      } else if (!(await checkIsEnoughEd(sendingAmount))) {
         errMsg.value = t('warning.insufficientExistentialDeposit', {
           network: existentialDeposit.value?.chain,
         });
