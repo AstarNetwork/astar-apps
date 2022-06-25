@@ -178,7 +178,7 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
       .once('transactionHash', (transactionHash) => {
         store.commit('general/setLoading', true);
       })
-      .once('confirmation', (confNumber, { transactionHash }) => {
+      .then(({ transactionHash }) => {
         store.dispatch('general/showAlertMsg', {
           msg: t('toast.completedTxHash', { hash: transactionHash }),
           alertType: 'success',
