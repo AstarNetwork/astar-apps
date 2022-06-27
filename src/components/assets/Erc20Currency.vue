@@ -178,6 +178,14 @@ export default defineComponent({
       provider = window.talismanEth;
     }
 
+    if (
+      typeof window.SubWallet !== 'undefined' &&
+      window.SubWallet &&
+      currentWallet.value === SupportWallet.SubWalletEvm
+    ) {
+      provider = window.SubWallet;
+    }
+
     if (!provider) {
       throw new Error("Can't find provider");
     }
