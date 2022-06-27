@@ -117,11 +117,9 @@
 </template>
 
 <script lang="ts">
-import IconHelp from 'src/components/common/IconHelp.vue';
-import { useAvgBlockTime } from 'src/hooks';
-import { isMobileDevice } from 'src/hooks/helper/wallet';
+import { useAvgBlockTime, useTooltip } from 'src/hooks';
 import VueOdometer from 'v-odometer/src';
-import { computed, defineComponent, ref } from 'vue';
+import { computed, defineComponent } from 'vue';
 import { useRouter } from 'vue-router';
 
 export default defineComponent({
@@ -131,22 +129,8 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const path = computed(() => router.currentRoute.value.path.split('/')[1]);
-    const isMobileDisplayTooltip = ref<boolean>(false);
 
-    const isDisplayTooltip = computed<boolean | null>(() => {
-      if (isMobileDevice) {
-        return isMobileDisplayTooltip.value;
-      } else {
-        return null;
-      }
-    });
-
-    const setIsMobileDisplayTooltip = (e: { target: { className: string } }): void => {
-      if (isMobileDevice) {
-        const isOpen = e.target.className.includes('icon');
-        isMobileDisplayTooltip.value = isOpen;
-      }
-    };
+    const { isDisplayTooltip, setIsMobileDisplayTooltip } = useTooltip('icon');
 
     const {
       isLoading,
@@ -170,7 +154,6 @@ export default defineComponent({
       isLoading,
       avgBlockTime7Eras,
       avgBlockTime30Eras,
-      isMobileDisplayTooltip,
       isDisplayTooltip,
       setIsMobileDisplayTooltip,
     };

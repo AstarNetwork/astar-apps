@@ -57,10 +57,10 @@
   </div>
 </template>
 <script lang="ts">
+import { useTooltip } from 'src/hooks';
 import { GasPrice, SelectedGas } from 'src/modules/gas-api';
 import { useStore } from 'src/store';
-import { defineComponent, computed, PropType, ref } from 'vue';
-import { isMobileDevice } from 'src/hooks/helper/wallet';
+import { computed, defineComponent, PropType } from 'vue';
 
 export default defineComponent({
   props: {
@@ -84,7 +84,6 @@ export default defineComponent({
     },
   },
   setup() {
-    const isMobileDisplayTooltip = ref<boolean>(false);
     const store = useStore();
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const decimal = computed(() => (isH160.value ? 5 : 8));
@@ -93,20 +92,7 @@ export default defineComponent({
       return chainInfo ? chainInfo.tokenSymbol : {};
     });
 
-    const isDisplayTooltip = computed<boolean | null>(() => {
-      if (isMobileDevice) {
-        return isMobileDisplayTooltip.value;
-      } else {
-        return null;
-      }
-    });
-
-    const setIsMobileDisplayTooltip = (e: { target: { className: string } }): void => {
-      if (isMobileDevice) {
-        const isOpen = e.target.className.includes('icon');
-        isMobileDisplayTooltip.value = isOpen;
-      }
-    };
+    const { isDisplayTooltip, setIsMobileDisplayTooltip } = useTooltip('icon');
 
     const formatPrice = (price: string): string => {
       const num = Number(price).toFixed(decimal.value);

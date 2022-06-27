@@ -151,13 +151,12 @@
 </template>
 <script lang="ts">
 import { fadeDuration } from '@astar-network/astar-ui';
-import { ChainAsset, useXcmBridge } from 'src/hooks';
+import { ChainAsset, useTooltip, useXcmBridge } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { computed, defineComponent, PropType, ref } from 'vue';
 import ModalH160AddressInput from './ModalH160AddressInput.vue';
 import ModalLoading from '/src/components/common/ModalLoading.vue';
 import { truncate } from 'src/hooks/helper/common';
-import { isMobileDevice } from 'src/hooks/helper/wallet';
 
 export default defineComponent({
   components: { ModalH160AddressInput, ModalLoading },
@@ -183,23 +182,8 @@ export default defineComponent({
   },
   setup(props) {
     const isClosingModal = ref<boolean>(false);
-    const isMobileDisplayTooltip = ref<boolean>(false);
     const token = computed(() => props.token);
-
-    const isDisplayTooltip = computed<boolean | null>(() => {
-      if (isMobileDevice) {
-        return isMobileDisplayTooltip.value;
-      } else {
-        return null;
-      }
-    });
-
-    const setIsMobileDisplayTooltip = (e: { target: { className: string } }): void => {
-      if (isMobileDevice) {
-        const isOpen = e.target.className.includes('icon');
-        isMobileDisplayTooltip.value = isOpen;
-      }
-    };
+    const { isDisplayTooltip, setIsMobileDisplayTooltip } = useTooltip('icon');
 
     const {
       amount,
