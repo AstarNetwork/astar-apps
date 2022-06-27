@@ -99,7 +99,7 @@ const actions: ActionTree<State, StateInterface> = {
     commit('general/setLoading', true, { root: true });
 
     try {
-      const dappsUrl = `${TOKEN_API_URL}/v1/${network}/dapps-staking/dapps`;
+      const dappsUrl = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/dapps-staking/dapps`;
       const result = await axios.get<DappItem>(dappsUrl);
       commit('addDapps', result.data);
     } catch (e) {
@@ -127,8 +127,6 @@ const actions: ActionTree<State, StateInterface> = {
           getCallFunc: parameters.getCallFunc,
         });
 
-        console.log(signedTransaction?.toJSON());
-
         const payload = {
           name: parameters.dapp.name,
           description: parameters.dapp.description,
@@ -147,9 +145,7 @@ const actions: ActionTree<State, StateInterface> = {
         };
 
         commit('general/setLoading', true, { root: true });
-        // const url = `${TOKEN_API_URL}/v1/${parameters.network.toLocaleLowerCase()}/dapps-staking/register`;
-        const url =
-          'http://localhost:5001/astar-token-api/us-central1/app/api/v1/development/dapps-staking/register';
+        const url = `${TOKEN_API_URL}/v1/${parameters.network.toLocaleLowerCase()}/dapps-staking/register`;
         const result = await axios.post(url, payload);
 
         commit('addDapp', result.data);
