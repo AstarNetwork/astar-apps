@@ -205,7 +205,9 @@ export default defineComponent({
 
     const isEnableSpeedConfiguration = computed<boolean>(() => {
       const currentWallet = store.getters['general/currentWallet'];
-      return currentWallet !== SupportWallet.TalismanEvm;
+      return (
+        currentWallet !== SupportWallet.TalismanEvm && currentWallet !== SupportWallet.SubWalletEvm
+      );
     });
     const { currentAccount, currentAccountName } = useAccount();
     const nativeTokenSymbol = computed(() => {

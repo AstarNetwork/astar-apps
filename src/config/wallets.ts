@@ -13,7 +13,8 @@ export enum SupportWallet {
   Nova = 'nova',
   TalismanEvm = 'talismanEth',
   TalismanNative = 'talisman',
-  SubWallet = 'subwallet-js',
+  SubWalletNative = 'subwallet-js',
+  SubWalletEvm = 'SubWallet',
   Metadot = 'metadot',
   Wallet3 = 'wallet3',
 }
@@ -30,7 +31,8 @@ export const WalletModalOption = {
   Nova: SupportWallet.Nova,
   TalismanEvm: SupportWallet.TalismanEvm,
   TalismanNative: SupportWallet.TalismanNative,
-  SubWallet: SupportWallet.SubWallet,
+  SubWallet: SupportWallet.SubWalletNative,
+  SubWalletEvm: SupportWallet.SubWalletEvm,
   Metadot: SupportWallet.Metadot,
   Wallet3: SupportWallet.Wallet3,
 };
@@ -41,7 +43,7 @@ export const SubstrateWallets = [
   SupportWallet.Math,
   SupportWallet.Nova,
   SupportWallet.TalismanNative,
-  SupportWallet.SubWallet,
+  SupportWallet.SubWalletNative,
   SupportWallet.Metadot,
   SupportWallet.Wallet3,
 ];
@@ -75,10 +77,10 @@ export const supportWalletObj = {
     isSupportBrowserExtension: true,
     isSupportMobileApp: false,
   },
-  [SupportWallet.SubWallet]: {
+  [SupportWallet.SubWalletNative]: {
     img: require('/src/assets/img/logo-subwallet.svg'),
-    name: 'SubWallet',
-    source: SupportWallet.SubWallet,
+    name: 'SubWallet (Native)',
+    source: SupportWallet.SubWalletNative,
     walletUrl: 'https://subwallet.app/',
     guideUrl: 'https://docs.subwallet.app/user-guide/how-to-install-subwallet',
     isSupportBrowserExtension: true,
@@ -138,6 +140,15 @@ export const supportEvmWalletObj = {
     source: SupportWallet.TalismanEvm,
     walletUrl: 'https://app.talisman.xyz/',
     guideUrl: 'https://app.talisman.xyz/',
+    isSupportBrowserExtension: true,
+    isSupportMobileApp: false,
+  },
+  [SupportWallet.SubWalletEvm]: {
+    img: require('/src/assets/img/logo-subwallet.svg'),
+    name: 'SubWallet (EVM)',
+    source: SupportWallet.SubWalletEvm,
+    walletUrl: 'https://subwallet.app/',
+    guideUrl: 'https://docs.subwallet.app/user-guide/how-to-install-subwallet/',
     isSupportBrowserExtension: true,
     isSupportMobileApp: false,
   },
