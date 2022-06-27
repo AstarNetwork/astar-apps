@@ -85,18 +85,6 @@ export default defineComponent({
     const { getCallFunc } = useExtrinsicCall({ onResult: () => {}, onTransactionError: () => {} });
 
     const registerDapp = async (step: number): Promise<void> => {
-      // const result = await store.dispatch('dapps/registerDappApi', {
-      //   dapp: data,
-      //   api: $api,
-      //   senderAddress: store.getters['general/selectedAddress'],
-      //   substrateAccounts: substrateAccounts.value,
-      //   tip: selectedTip.value.price,
-      //   network: 'shibuya',
-      //   isCustomSignature: isCustomSig.value,
-      //   getCallFunc,
-      // } as RegisterParameters);
-      // return;
-
       registerForm?.value?.validate().then(async (success: boolean) => {
         if (success && data.iconFile) {
           if (step === stepsCount) {
