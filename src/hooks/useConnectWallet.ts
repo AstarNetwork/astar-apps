@@ -92,6 +92,10 @@ export const useConnectWallet = () => {
       return window.talismanEth;
     }
 
+    if (wallet === SupportWallet.SubWalletEvm) {
+      return window.SubWallet;
+    }
+
     return null;
   };
 
@@ -102,9 +106,8 @@ export const useConnectWallet = () => {
     ss58?: string;
     currentWallet: SupportWallet;
   }): Promise<boolean> => {
-    try {
-      const accounts = await requestAccounts();
-      const ethereumAddr = checkSumEvmAddress(accounts[0]);
+    const setCurrentEcdsaAccount = (address: string) => {
+      const ethereumAddr = checkSumEvmAddress(address);
       const data = ss58
         ? {
             ethereum: ethereumAddr,
@@ -116,6 +119,13 @@ export const useConnectWallet = () => {
           };
 
       store.commit('general/setCurrentEcdsaAccount', data);
+    };
+
+    try {
+      const accounts = await requestAccounts();
+
+      accounts?.length && setCurrentEcdsaAccount(accounts[0]);
+
       const chainId = getChainId(currentNetworkIdx.value);
 
       const provider = getEvmProvider(currentWallet);
@@ -125,6 +135,14 @@ export const useConnectWallet = () => {
       }
 
       await setupNetwork({ network: chainId, provider });
+
+      // If SubWallet return empty evm accounts, it required to switch to evm network and will request accounts again.
+      // This setep will not require from version 0.4.8
+      if (accounts?.length === 0 && currentWallet === SupportWallet.SubWalletEvm) {
+        const reCheckAccounts = await requestAccounts();
+
+        reCheckAccounts?.length && setCurrentEcdsaAccount(reCheckAccounts[0]);
+      }
 
       return true;
     } catch (err: any) {
@@ -142,12 +160,21 @@ export const useConnectWallet = () => {
       isEvmWalletAvailable = window.talismanEth !== undefined;
     }
 
+    if (wallet === SupportWallet.SubWalletEvm) {
+      isEvmWalletAvailable = window.SubWallet !== undefined;
+    }
+
     if (wallet === SupportWallet.MetaMask) {
       isEvmWalletAvailable = window.ethereum !== undefined;
     }
 
     if (!isEvmWalletAvailable) {
       if (wallet === SupportWallet.TalismanEvm) {
+        modalName.value = WalletModalOption.OutdatedWallet;
+        return;
+      }
+
+      if (wallet === SupportWallet.SubWalletEvm) {
         modalName.value = WalletModalOption.OutdatedWallet;
         return;
       }

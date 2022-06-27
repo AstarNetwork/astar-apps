@@ -25,6 +25,14 @@ export function useEthProvider() {
     ) {
       ethProvider.value = window.talismanEth;
     }
+
+    if (
+      typeof window.SubWallet !== 'undefined' &&
+      window.SubWallet &&
+      wallet === SupportWallet.SubWalletEvm
+    ) {
+      ethProvider.value = window.SubWallet;
+    }
   };
 
   watch(currentWallet, setEthProvider, { immediate: true });
