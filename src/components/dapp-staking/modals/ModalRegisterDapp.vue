@@ -60,7 +60,8 @@ import { $api } from 'boot/api';
 import { NewDappItem } from 'src/store/dapp-staking/state';
 import { RegisterParameters } from 'src/store/dapp-staking/actions';
 import { sanitizeData } from 'src/hooks/helper/markdown';
-import { useGasPrice } from 'src/hooks';
+import { useGasPrice, useCustomSignature } from 'src/hooks';
+import { useExtrinsicCall } from 'src/hooks/custom-signature/useExtrinsicCall';
 
 export default defineComponent({
   components: {
@@ -80,8 +81,22 @@ export default defineComponent({
     const stepper = ref();
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
     const { selectedTip } = useGasPrice();
+    const { isCustomSig } = useCustomSignature({});
+    const { getCallFunc } = useExtrinsicCall({ onResult: () => {}, onTransactionError: () => {} });
 
     const registerDapp = async (step: number): Promise<void> => {
+      // const result = await store.dispatch('dapps/registerDappApi', {
+      //   dapp: data,
+      //   api: $api,
+      //   senderAddress: store.getters['general/selectedAddress'],
+      //   substrateAccounts: substrateAccounts.value,
+      //   tip: selectedTip.value.price,
+      //   network: 'shibuya',
+      //   isCustomSignature: isCustomSig.value,
+      //   getCallFunc,
+      // } as RegisterParameters);
+      // return;
+
       registerForm?.value?.validate().then(async (success: boolean) => {
         if (success && data.iconFile) {
           if (step === stepsCount) {
@@ -98,6 +113,8 @@ export default defineComponent({
               substrateAccounts: substrateAccounts.value,
               tip: selectedTip.value.price,
               network: currentNetwork.value,
+              isCustomSignature: isCustomSig.value,
+              getCallFunc,
             } as RegisterParameters);
 
             if (result) {

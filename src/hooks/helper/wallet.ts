@@ -10,9 +10,6 @@ import { Dispatch } from 'vuex';
 import { SubstrateAccount } from './../../store/general/state';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ethers } from 'ethers';
-import { useStore } from 'src/store';
-import { computed } from 'vue';
-import { useEthProvider } from '../custom-signature/useEthProvider';
 
 export const getInjectedExtensions = async (forceRequest = false): Promise<any[]> => {
   const selectedAddress = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
@@ -138,32 +135,42 @@ export const checkIsMobileMathWallet = async (): Promise<boolean> => {
   }
 };
 
-type Transaction = SubmittableExtrinsic<'promise', ISubmittableResult>;
+export type Transaction = SubmittableExtrinsic<'promise', ISubmittableResult>;
 
 export const sign = async ({
   transaction,
   senderAddress,
   substrateAccounts,
+  isCustomSignature,
+  dispatch,
+  getCallFunc,
   tip,
 }: {
   transaction: Transaction;
   senderAddress: string;
   substrateAccounts: SubstrateAccount[];
+  isCustomSignature: boolean;
+  dispatch: Dispatch;
+  getCallFunc: (call: Transaction) => Promise<Transaction>;
   tip?: string;
-}): Promise<Transaction> => {
-  const injector = await getInjector(substrateAccounts);
-  if (!injector) {
-    throw Error('Invalid injector');
+}): Promise<Transaction | undefined> => {
+  if (isCustomSignature && getCallFunc) {
+    const result = await getCallFunc(transaction);
+    return result;
+  } else {
+    const injector = await getInjector(substrateAccounts);
+    if (!injector) {
+      throw Error('Invalid injector');
+    }
+
+    const result = await transaction.signAsync(senderAddress, {
+      signer: injector.signer,
+      nonce: -1,
+      tip: tip ? ethers.utils.parseEther(String(tip)).toString() : '1',
+    });
+
+    return result;
   }
-
-  //TODO. Only native wallet supported ATM
-  const result = await transaction.signAsync(senderAddress, {
-    signer: injector.signer,
-    nonce: -1,
-    tip: tip ? ethers.utils.parseEther(String(tip)).toString() : '1',
-  });
-
-  return result;
 };
 
 export const signAndSend = async ({

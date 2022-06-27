@@ -20,6 +20,7 @@ import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
 import axios, { AxiosError } from 'axios';
 import { TOKEN_API_URL } from 'src/modules/token-api';
+import type { Transaction } from 'src/hooks/helper/wallet';
 
 let collectionKey: string;
 
@@ -120,8 +121,13 @@ const actions: ActionTree<State, StateInterface> = {
           transaction,
           senderAddress: parameters.senderAddress,
           substrateAccounts: parameters.substrateAccounts,
+          isCustomSignature: parameters.isCustomSignature,
+          dispatch,
           tip: parameters.tip,
+          getCallFunc: parameters.getCallFunc,
         });
+
+        console.log(signedTransaction?.toJSON());
 
         const payload = {
           name: parameters.dapp.name,
@@ -135,13 +141,15 @@ const actions: ActionTree<State, StateInterface> = {
           authorContact: parameters.dapp.authorContact,
           gitHubUrl: parameters.dapp.gitHubUrl,
           senderAddress: parameters.senderAddress,
-          signature: signedTransaction.toJSON(),
+          signature: signedTransaction?.toJSON(),
           iconFile: getFileInfo(parameters.dapp.iconFileName, parameters.dapp.iconFile),
           images: getImagesInfo(parameters.dapp),
         };
 
         commit('general/setLoading', true, { root: true });
-        const url = `${TOKEN_API_URL}/v1/${parameters.network.toLocaleLowerCase()}/dapps-staking/register`;
+        // const url = `${TOKEN_API_URL}/v1/${parameters.network.toLocaleLowerCase()}/dapps-staking/register`;
+        const url =
+          'http://localhost:5001/astar-token-api/us-central1/app/api/v1/development/dapps-staking/register';
         const result = await axios.post(url, payload);
 
         commit('addDapp', result.data);
@@ -247,6 +255,8 @@ export interface RegisterParameters {
   substrateAccounts: SubstrateAccount[];
   tip: string;
   network: string;
+  isCustomSignature: boolean;
+  getCallFunc: (transaction: Transaction) => Promise<Transaction>;
 }
 
 export interface WithdrawParameters {
