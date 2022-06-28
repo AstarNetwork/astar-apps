@@ -31,10 +31,10 @@
   }
 }
 
-.box--tooltip-warning {
-  background-color: $warning-red;
-  max-width: 320px;
-  font-size: 14px;
+.box--tooltip {
+  background-color: $astar-blue;
+  width: 240px;
+  font-size: 12px;
   font-weight: 600;
   padding: 8px;
   border-radius: 8px;
@@ -42,6 +42,11 @@
   flex-direction: column;
   justify-content: center;
   text-align: center;
+  margin: 0 8px;
+  text-align: left;
+  @media (min-width: $sm) {
+    margin: 0;
+  }
 }
 
 .body--dark {

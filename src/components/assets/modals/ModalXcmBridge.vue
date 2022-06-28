@@ -1,5 +1,6 @@
 <template>
   <astar-simple-modal
+    v-if="isModalXcmBridge"
     :show="isModalXcmBridge"
     :title="$t('assets.xcm')"
     :is-closing="isClosingModal"
@@ -105,9 +106,18 @@
             <span class="text--dot">・</span>
             <span class="text--warning">{{ $t('assets.modals.xcmWarning.avoidRisk') }}</span>
           </div>
-          <div class="icon--help">
+          <div
+            v-click-away="setIsMobileDisplayTooltip"
+            class="icon--help"
+            @click="setIsMobileDisplayTooltip"
+          >
             <astar-icon-help size="20" />
-            <q-tooltip class="box--tooltip-warning">
+            <q-tooltip
+              v-model="isDisplayTooltip"
+              anchor="top middle"
+              :self="`bottom ${$q.platform.is.mobile ? 'end' : 'middle'}`"
+              class="box--tooltip"
+            >
               <div>
                 <span v-if="existentialDeposit"
                   >{{
@@ -141,7 +151,7 @@
 </template>
 <script lang="ts">
 import { fadeDuration } from '@astar-network/astar-ui';
-import { ChainAsset, useXcmBridge } from 'src/hooks';
+import { ChainAsset, useTooltip, useXcmBridge } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { computed, defineComponent, PropType, ref } from 'vue';
 import ModalH160AddressInput from './ModalH160AddressInput.vue';
@@ -173,6 +183,7 @@ export default defineComponent({
   setup(props) {
     const isClosingModal = ref<boolean>(false);
     const token = computed(() => props.token);
+    const { isDisplayTooltip, setIsMobileDisplayTooltip } = useTooltip('icon');
 
     const {
       amount,
@@ -232,6 +243,8 @@ export default defineComponent({
       formattedRelayChainBalance,
       existentialDeposit,
       isLoading,
+      isDisplayTooltip,
+      setIsMobileDisplayTooltip,
       inputHandler,
       closeModal,
       bridge,

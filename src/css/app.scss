@@ -50,6 +50,10 @@ main {
   border-right: 0px solid transparent;
 }
 
+.width-auto {
+  width: auto !important;
+}
+
 .body--dark {
   background: $body-bg-dark;
   main {

@@ -1,5 +1,6 @@
 <template>
   <astar-simple-modal
+    v-if="isModalImportTokens"
     :show="isModalImportTokens"
     :title="$t('assets.importTokens')"
     :is-closing="isClosingModal"
