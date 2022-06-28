@@ -323,6 +323,8 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
         throw Error(t('assets.modals.xcmWarning.nonzeroBalance'));
       }
 
+      store.commit('general/setLoading', true);
+
       if (isDeposit.value) {
         let recipientAccountId = currentAccount.value;
         const injector = await getInjector(substrateAccounts.value);
@@ -480,14 +482,6 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
 
   watchEffect(async () => {
     await Promise.all([updateFromAddressBalance(), setRelaychainBal()]);
-  });
-
-  const handleUpdate = setInterval(async () => {
-    await Promise.all([updateFromAddressBalance(), setRelaychainBal()]);
-  }, 20 * 1000);
-
-  onUnmounted(() => {
-    clearInterval(handleUpdate);
   });
 
   return {

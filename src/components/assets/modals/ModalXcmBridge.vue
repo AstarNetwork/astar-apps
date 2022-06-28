@@ -97,8 +97,8 @@
                     amount: $n(truncate(fromAddressBalance)),
                     token: String(token.metadata.symbol),
                   })
-                }}</span
-              >
+                }}
+              </span>
             </div>
           </div>
           <div class="box__row">
@@ -260,17 +260,12 @@ export default defineComponent({
       isClosingModal.value = false;
     };
 
-    const finalizedCallback = async (): Promise<void> => {
-      await closeModal();
-      await Promise.all([props.handleUpdateXcmTokenBalances(), updateFromAddressBalance()]);
-    };
-
     const handleBridge = async (): Promise<void> => {
       if (isH160.value) {
         const txHash = await callAssetWithdrawToPara(
           amount.value!!,
           evmDestAddress.value,
-          finalizedCallback
+          closeModal
         );
 
         if (txHash) {
@@ -278,7 +273,8 @@ export default defineComponent({
           amount.value = null;
         }
       } else {
-        await bridge(finalizedCallback);
+        await bridge(closeModal);
+        await props.handleUpdateXcmTokenBalances();
       }
     };
 
