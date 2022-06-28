@@ -113,7 +113,10 @@ export const getDeepLinkUrl = (wallet: SupportWallet): string | false => {
 
 export const checkIsWalletExtension = async (): Promise<boolean> => {
   const isSubstrateDappBrowser = await getInjectedExtensions();
-  const isEvmWalletExtension = typeof window.ethereum !== 'undefined';
+  const isEvmWalletExtension =
+    typeof window.ethereum !== 'undefined' ||
+    typeof window.SubWallet !== 'undefined' ||
+    typeof window.talismanEth !== 'undefined';
   return Boolean(isSubstrateDappBrowser.length || isEvmWalletExtension);
 };
 
