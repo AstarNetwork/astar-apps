@@ -363,43 +363,38 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
           .finally(async () => {
             isDisabledBridge.value = true;
             amount.value = null;
+            store.commit('general/setLoading', false);
           });
       } else {
-        // Withdrawal
+        // Withdrawal (native parachains -> relaychain)
         let recipientAccountId = getPubkeyFromSS58Addr(currentAccount.value);
         const injector = await getInjector(substrateAccounts.value);
-        if (!isNativeBridge.value) {
-          if (!isValidAddressPolkadotAddress(evmDestAddress.value)) {
-            throw Error('Invalid destination address');
-          }
-          console.log('Send assets from Parachain(EVM)');
-        } else {
-          const paraChainApi = new ParachainApi($api!!);
-          const decimals = Number(selectedToken.value.metadata.decimals);
-          const txCall = paraChainApi.transferToRelaychain(
-            recipientAccountId,
-            ethers.utils.parseUnits(amount.value, decimals).toString()
-          );
+        const paraChainApi = new ParachainApi($api!!);
+        const decimals = Number(selectedToken.value.metadata.decimals);
+        const txCall = paraChainApi.transferToRelaychain(
+          recipientAccountId,
+          ethers.utils.parseUnits(amount.value, decimals).toString()
+        );
 
-          const tip = ethers.utils.parseEther(nativeTipPrice.value.fast).toString();
-          await paraChainApi
-            .signAndSend(
-              currentAccount.value,
-              injector.signer,
-              txCall,
-              finalizedCallback,
-              handleResult,
-              tip
-            )
-            .catch((error: Error) => {
-              handleTransactionError(error);
-              isDisabledBridge.value = false;
-            })
-            .finally(async () => {
-              isDisabledBridge.value = true;
-              amount.value = null;
-            });
-        }
+        const tip = ethers.utils.parseEther(nativeTipPrice.value.fast).toString();
+        await paraChainApi
+          .signAndSend(
+            currentAccount.value,
+            injector.signer,
+            txCall,
+            finalizedCallback,
+            handleResult,
+            tip
+          )
+          .catch((error: Error) => {
+            handleTransactionError(error);
+            isDisabledBridge.value = false;
+          })
+          .finally(async () => {
+            isDisabledBridge.value = true;
+            amount.value = null;
+            store.commit('general/setLoading', false);
+          });
       }
     } catch (error: any) {
       console.error(error.message);
