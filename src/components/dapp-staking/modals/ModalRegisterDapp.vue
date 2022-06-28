@@ -60,7 +60,8 @@ import { $api } from 'boot/api';
 import { NewDappItem } from 'src/store/dapp-staking/state';
 import { RegisterParameters } from 'src/store/dapp-staking/actions';
 import { sanitizeData } from 'src/hooks/helper/markdown';
-import { useGasPrice } from 'src/hooks';
+import { useGasPrice, useCustomSignature } from 'src/hooks';
+import { useExtrinsicCall } from 'src/hooks/custom-signature/useExtrinsicCall';
 
 export default defineComponent({
   components: {
@@ -80,18 +81,28 @@ export default defineComponent({
     const stepper = ref();
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
     const { selectedTip } = useGasPrice();
+    const { isCustomSig } = useCustomSignature({});
+    const { getCallFunc } = useExtrinsicCall({ onResult: () => {}, onTransactionError: () => {} });
 
     const registerDapp = async (step: number): Promise<void> => {
       registerForm?.value?.validate().then(async (success: boolean) => {
-        if (success) {
+        if (success && data.iconFile) {
           if (step === stepsCount) {
             const senderAddress = store.getters['general/selectedAddress'];
-            const result = await store.dispatch('dapps/registerDapp', {
+            const currentNetwork = computed(() => {
+              const chainInfo = store.getters['general/chainInfo'];
+              const chain = chainInfo ? chainInfo.chain : '';
+              return chain.toString().split(' ')[0];
+            });
+            const result = await store.dispatch('dapps/registerDappApi', {
               dapp: data,
               api: $api,
               senderAddress,
               substrateAccounts: substrateAccounts.value,
               tip: selectedTip.value.price,
+              network: currentNetwork.value,
+              isCustomSignature: isCustomSig.value,
+              getCallFunc,
             } as RegisterParameters);
 
             if (result) {

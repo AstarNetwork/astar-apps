@@ -41,6 +41,12 @@ export interface LooseObject {
   [key: string]: any;
 }
 
+export interface FileInfo {
+  name: string;
+  base64content: string;
+  contentType: string;
+}
+
 function state(): DappStateInterface {
   return {
     dapps: [],
