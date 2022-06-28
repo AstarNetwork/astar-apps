@@ -11,11 +11,13 @@ export enum endpointKey {
   KUSAMA = 1,
 }
 
+// Todo: reconnect or change the WSS endpoint whenever it disconnected
 export const providerEndpoints: ChainProvider[] = [
   {
     networkAlias: 'Polkadot',
     displayName: 'Polkadot Network',
-    endpoint: 'wss://rpc.polkadot.io',
+    // endpoint: 'wss://rpc.polkadot.io',
+    endpoint: 'wss://polkadot.api.onfinality.io/public-ws',
   },
   {
     networkAlias: 'kusama',

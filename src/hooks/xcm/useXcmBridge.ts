@@ -28,6 +28,7 @@ import { computed, onUnmounted, ref, Ref, watchEffect, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ParachainApi, RelaychainApi } from './SubstrateApi';
 import { wait } from '../helper/common';
+import { useGasPrice } from 'src/hooks/useGasPrice';
 
 const chainPolkadot = xcmChains.find((it) => it.name === Chain.Polkadot) as XcmChain;
 const chainAstar = xcmChains.find((it) => it.name === Chain.Astar) as XcmChain;
@@ -48,6 +49,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   const isDisabledBridge = ref<boolean>(true);
   const isNativeBridge = ref<boolean>(false);
   const existentialDeposit = ref<ExistentialDeposit | null>(null);
+  const { nativeTipPrice } = useGasPrice();
 
   // Format: SS58(withdrawal) or H160(deposit)
   const evmDestAddress = ref<string>('');
@@ -174,12 +176,6 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     const sendingAmount = Number(amount.value);
     const selectedTokenRef = selectedToken.value;
     const minBridgeAmount = Number(selectedTokenRef && selectedTokenRef.minBridgeAmount);
-    const isAstarWithdrawal = !isDeposit.value && currentNetworkIdx.value === endpointKey.ASTAR;
-
-    // Memo: We will remove this condition whenever we confirmed both native and evm Dot withdrawal is ready
-    if (isAstarWithdrawal) {
-      errMsg.value = t('isComingSoon', { value: 'DOT withdrawal' });
-    }
 
     if (sendingAmount > fromAddressBalance.value) {
       errMsg.value = t('warning.insufficientBalance');
@@ -327,6 +323,8 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
         throw Error(t('assets.modals.xcmWarning.nonzeroBalance'));
       }
 
+      store.commit('general/setLoading', true);
+
       if (isDeposit.value) {
         let recipientAccountId = currentAccount.value;
         const injector = await getInjector(substrateAccounts.value);
@@ -367,41 +365,38 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
           .finally(async () => {
             isDisabledBridge.value = true;
             amount.value = null;
+            store.commit('general/setLoading', false);
           });
       } else {
-        // Withdrawal
+        // Withdrawal (native parachains -> relaychain)
         let recipientAccountId = getPubkeyFromSS58Addr(currentAccount.value);
         const injector = await getInjector(substrateAccounts.value);
-        if (!isNativeBridge.value) {
-          if (!isValidAddressPolkadotAddress(evmDestAddress.value)) {
-            throw Error('Invalid destination address');
-          }
-          console.log('Send assets from Parachain(EVM)');
-        } else {
-          const paraChainApi = new ParachainApi($api!!);
-          const decimals = Number(selectedToken.value.metadata.decimals);
-          const txCall = paraChainApi.transferToRelaychain(
-            recipientAccountId,
-            ethers.utils.parseUnits(amount.value, decimals).toString()
-          );
+        const paraChainApi = new ParachainApi($api!!);
+        const decimals = Number(selectedToken.value.metadata.decimals);
+        const txCall = paraChainApi.transferToRelaychain(
+          recipientAccountId,
+          ethers.utils.parseUnits(amount.value, decimals).toString()
+        );
 
-          await paraChainApi
-            .signAndSend(
-              currentAccount.value,
-              injector.signer,
-              txCall,
-              finalizedCallback,
-              handleResult
-            )
-            .catch((error: Error) => {
-              handleTransactionError(error);
-              isDisabledBridge.value = false;
-            })
-            .finally(async () => {
-              isDisabledBridge.value = true;
-              amount.value = null;
-            });
-        }
+        const tip = ethers.utils.parseEther(nativeTipPrice.value.fast).toString();
+        await paraChainApi
+          .signAndSend(
+            currentAccount.value,
+            injector.signer,
+            txCall,
+            finalizedCallback,
+            handleResult,
+            tip
+          )
+          .catch((error: Error) => {
+            handleTransactionError(error);
+            isDisabledBridge.value = false;
+          })
+          .finally(async () => {
+            isDisabledBridge.value = true;
+            amount.value = null;
+            store.commit('general/setLoading', false);
+          });
       }
     } catch (error: any) {
       console.error(error.message);
@@ -487,14 +482,6 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
 
   watchEffect(async () => {
     await Promise.all([updateFromAddressBalance(), setRelaychainBal()]);
-  });
-
-  const handleUpdate = setInterval(async () => {
-    await Promise.all([updateFromAddressBalance(), setRelaychainBal()]);
-  }, 20 * 1000);
-
-  onUnmounted(() => {
-    clearInterval(handleUpdate);
   });
 
   return {
