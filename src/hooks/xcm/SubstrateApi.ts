@@ -137,13 +137,14 @@ class ChainApi {
     signer: any,
     tx: ExtrinsicPayload,
     finalizedCallback: () => Promise<void>,
-    handleResult?: (result: ISubmittableResult) => Promise<boolean>
+    handleResult: (result: ISubmittableResult) => Promise<boolean>,
+    tip = '1'
   ) {
     const txsToExecute: ExtrinsicPayload[] = [];
     txsToExecute.push(tx);
     const transaction = this._api.tx.utility.batch(txsToExecute);
     // ensure that we automatically increment the nonce per transaction
-    return await transaction.signAndSend(account, { signer, nonce: -1, tip: 1 }, (result) => {
+    return await transaction.signAndSend(account, { signer, nonce: -1, tip }, (result) => {
       // console.log('r', result);
       handleResult &&
         handleResult(result).then(async () => {

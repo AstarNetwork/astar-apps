@@ -28,6 +28,7 @@ import { computed, onUnmounted, ref, Ref, watchEffect, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ParachainApi, RelaychainApi } from './SubstrateApi';
 import { wait } from '../helper/common';
+import { useGasPrice } from 'src/hooks/useGasPrice';
 
 const chainPolkadot = xcmChains.find((it) => it.name === Chain.Polkadot) as XcmChain;
 const chainAstar = xcmChains.find((it) => it.name === Chain.Astar) as XcmChain;
@@ -48,6 +49,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   const isDisabledBridge = ref<boolean>(true);
   const isNativeBridge = ref<boolean>(false);
   const existentialDeposit = ref<ExistentialDeposit | null>(null);
+  const { nativeTipPrice } = useGasPrice();
 
   // Format: SS58(withdrawal) or H160(deposit)
   const evmDestAddress = ref<string>('');
@@ -379,13 +381,15 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
             ethers.utils.parseUnits(amount.value, decimals).toString()
           );
 
+          const tip = ethers.utils.parseEther(nativeTipPrice.value.fast).toString();
           await paraChainApi
             .signAndSend(
               currentAccount.value,
               injector.signer,
               txCall,
               finalizedCallback,
-              handleResult
+              handleResult,
+              tip
             )
             .catch((error: Error) => {
               handleTransactionError(error);
