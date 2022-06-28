@@ -54,6 +54,10 @@ main {
   cursor: pointer;
 }
 
+.width-auto {
+  width: auto !important;
+}
+
 .body--dark {
   background: $body-bg-dark;
   main {

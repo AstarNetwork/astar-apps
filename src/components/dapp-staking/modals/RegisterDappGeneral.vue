@@ -23,6 +23,7 @@
           <astar-icon-document />
         </astar-icon-base>
       </input-file>
+      <div v-if="!data.iconFile" class="error">dApp logo is required.</div>
     </div>
 
     <q-input
@@ -111,3 +112,12 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss" scoped>
+.error {
+  color: var(--q-negative);
+  font-size: 12px;
+  margin-top: 8px;
+  margin-left: 12px;
+}
+</style>

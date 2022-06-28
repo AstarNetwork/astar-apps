@@ -1,5 +1,6 @@
 <template>
   <astar-simple-modal
+    v-if="isModalEvmWithdraw"
     :show="isModalEvmWithdraw"
     :title="`Withdraw ${nativeTokenSymbol}`"
     :is-closing="isClosingModal"

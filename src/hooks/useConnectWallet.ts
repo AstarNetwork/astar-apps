@@ -217,10 +217,7 @@ export const useConnectWallet = () => {
   const setWalletModal = (wallet: SupportWallet): void => {
     requestExtensionsIfFirstAccess(wallet);
     store.commit('general/setCurrentWallet', wallet);
-
-    if (supportEvmWalletObj.hasOwnProperty(wallet)) {
-      localStorage.setItem(LOCAL_STORAGE.ETHEREUM_WALLET, wallet);
-    }
+    localStorage.setItem(LOCAL_STORAGE.SELECTED_WALLET, wallet);
 
     setWallet(wallet);
   };
@@ -228,10 +225,7 @@ export const useConnectWallet = () => {
   const connectEthereumWallet = async (wallet: SupportWallet): Promise<void> => {
     requestExtensionsIfFirstAccess(wallet);
     store.commit('general/setCurrentWallet', wallet);
-
-    if (supportEvmWalletObj.hasOwnProperty(wallet)) {
-      localStorage.setItem(LOCAL_STORAGE.ETHEREUM_WALLET, wallet);
-    }
+    localStorage.setItem(LOCAL_STORAGE.SELECTED_WALLET, wallet);
 
     const isWalletExtension = await checkIsWalletExtension();
     const deepLinkUrl = getDeepLinkUrl(wallet);
@@ -278,7 +272,7 @@ export const useConnectWallet = () => {
 
   const loginWithStoredAccount = async (): Promise<void> => {
     const address = localStorage.getItem(SELECTED_ADDRESS);
-    const wallet = localStorage.getItem(LOCAL_STORAGE.ETHEREUM_WALLET);
+    const wallet = localStorage.getItem(LOCAL_STORAGE.SELECTED_WALLET);
 
     if (currentRouter.value === undefined || !address || !isConnectedNetwork.value) {
       return;

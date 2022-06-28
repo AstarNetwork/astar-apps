@@ -7,5 +7,5 @@ export enum LOCAL_STORAGE {
   EVM_ADDRESS_MAPPING = 'evmAddressMapping',
   EVM_TOKEN_IMPORTS = 'evmTokenImports',
   CONFIRM_COOKIE_POLICY = 'confirmCookiePolicy',
-  ETHEREUM_WALLET = 'ethereumWallet',
+  SELECTED_WALLET = 'selectedWallet',
 }

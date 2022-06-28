@@ -23,7 +23,9 @@ export function useExtrinsicCall({ onResult, onTransactionError }: CallOptions) 
   const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
   const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
 
-  const callFunc = async (method: SubmittableExtrinsic<'promise'>) => {
+  const getCallFunc = async (
+    method: SubmittableExtrinsic<'promise', ISubmittableResult>
+  ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult> | undefined> => {
     const account = <AccountInfo>await $api?.query.system.account(currentEcdsaAccount.value.ss58);
     const callPayload = u8aToHex(
       getPayload(method, account.nonce, providerEndpoints[currentNetworkIdx.value].prefix || 0)
@@ -38,21 +40,25 @@ export function useExtrinsicCall({ onResult, onTransactionError }: CallOptions) 
         signature,
         account.nonce
       );
-      call
-        ?.send(async (result: ISubmittableResult) => {
-          await onResult(result);
-        })
-        .catch((e: Error) => onTransactionError(e))
-        .finally(() => store.commit('general/setLoading', false));
+      return call;
     } else {
       store.dispatch('general/showAlertMsg', {
         msg: t('toast.unableCalculateMsgPayload'),
         alertType: 'error',
       });
+      return undefined;
     }
+  };
+
+  const callFunc = async (method: SubmittableExtrinsic<'promise'>) => {
+    const call = await getCallFunc(method);
+    call
+      ?.send((result: ISubmittableResult) => onResult(result))
+      .catch((e: Error) => onTransactionError(e));
   };
 
   return {
     callFunc,
+    getCallFunc,
   };
 }

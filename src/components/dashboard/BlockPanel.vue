@@ -30,11 +30,14 @@
             <div class="column--label">
               <div class="column--block-time">
                 <span class="text--md">{{ $t('dashboard.block.blockTime') }}</span>
-                <div>
-                  <div>
-                    <astar-icon-help size="18" />
-                  </div>
-                  <q-tooltip>
+                <div v-click-away="setIsMobileDisplayTooltip" @click="setIsMobileDisplayTooltip">
+                  <astar-icon-help size="18" />
+                  <q-tooltip
+                    v-model="isDisplayTooltip"
+                    anchor="top middle"
+                    self="bottom middle"
+                    class="box--tooltip width-auto"
+                  >
                     <div>
                       <div>
                         <span class="text--tooltip">{{ $t('dashboard.block.avgBlockTime') }}</span>
@@ -114,9 +117,9 @@
 </template>
 
 <script lang="ts">
-import { useAvgBlockTime } from 'src/hooks';
+import { useAvgBlockTime, useTooltip } from 'src/hooks';
 import VueOdometer from 'v-odometer/src';
-import { defineComponent, computed } from 'vue';
+import { computed, defineComponent } from 'vue';
 import { useRouter } from 'vue-router';
 
 export default defineComponent({
@@ -126,6 +129,9 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const path = computed(() => router.currentRoute.value.path.split('/')[1]);
+
+    const { isDisplayTooltip, setIsMobileDisplayTooltip } = useTooltip('icon');
+
     const {
       isLoading,
       avgBlockTime1Era,
@@ -148,6 +154,8 @@ export default defineComponent({
       isLoading,
       avgBlockTime7Eras,
       avgBlockTime30Eras,
+      isDisplayTooltip,
+      setIsMobileDisplayTooltip,
     };
   },
 });

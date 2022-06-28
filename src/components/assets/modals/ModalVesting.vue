@@ -1,5 +1,6 @@
 <template>
   <astar-simple-modal
+    v-if="isModalVesting"
     :is-closing="isClosingModal"
     :show="isModalVesting"
     title="Vesting info"
