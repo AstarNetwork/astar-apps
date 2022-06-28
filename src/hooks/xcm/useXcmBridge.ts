@@ -222,6 +222,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     const isRequiredInputAddress = isH160.value || (!isH160.value && !isNativeBridge.value);
     const isFulfilledAddress =
       !isRequiredInputAddress || (isRequiredInputAddress && evmDestAddress.value);
+
     // check if recipient account has non-zero native asset. (it cannot be transferred to an account with 0 nonce)
     isDisabledBridge.value =
       !amount.value ||
