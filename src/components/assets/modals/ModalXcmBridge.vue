@@ -125,7 +125,7 @@
         <div class="row--warning">
           <div class="column--title">
             <span class="text--dot">・</span>
-            <span class="text--warning">{{ $t('assets.modals.xcmWarning.avoidRisk') }}</span>
+            <span class="text--warning">{{ $t('assets.modals.xcmWarning.minBalIsRequired') }}</span>
           </div>
           <div class="icon--help">
             <astar-icon-help size="20" />
@@ -134,7 +134,7 @@
                 <span v-if="existentialDeposit"
                   >{{
                     $t('assets.modals.xcmWarning.tooltip', {
-                      amount: Number(existentialDeposit.amount),
+                      amount: Number(existentialDeposit.relaychainMinBal),
                       symbol: existentialDeposit.symbol,
                       network: existentialDeposit.chain,
                     })
