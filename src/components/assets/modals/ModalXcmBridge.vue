@@ -74,6 +74,17 @@
             :symbol="token.metadata.symbol"
             :address-balance="evmDestAddressBalance"
           />
+          <div v-if="isH160" class="row--withdrawal-address-format">
+            <a
+              href="https://docs.astar.network/xcm/faq#q-where-can-i-find-my-polkadot-kusama-addresses"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span class="text--available">
+                {{ $t('assets.modals.tipDestAddressFormat', { chain: destChain.name }) }}
+              </span>
+            </a>
+          </div>
         </div>
 
         <div class="box--input box--hover--active">
@@ -86,8 +97,8 @@
                     amount: $n(truncate(fromAddressBalance)),
                     token: String(token.metadata.symbol),
                   })
-                }}</span
-              >
+                }}
+              </span>
             </div>
           </div>
           <div class="box__row">
@@ -114,7 +125,7 @@
         <div class="row--warning">
           <div class="column--title">
             <span class="text--dot">・</span>
-            <span class="text--warning">{{ $t('assets.modals.xcmWarning.avoidRisk') }}</span>
+            <span class="text--warning">{{ $t('assets.modals.xcmWarning.minBalIsRequired') }}</span>
           </div>
           <div class="icon--help">
             <astar-icon-help size="20" />
@@ -123,7 +134,7 @@
                 <span v-if="existentialDeposit"
                   >{{
                     $t('assets.modals.xcmWarning.tooltip', {
-                      amount: Number(existentialDeposit.amount),
+                      amount: Number(existentialDeposit.relaychainMinBal),
                       symbol: existentialDeposit.symbol,
                       network: existentialDeposit.chain,
                     })
@@ -249,17 +260,12 @@ export default defineComponent({
       isClosingModal.value = false;
     };
 
-    const finalizedCallback = async (): Promise<void> => {
-      await closeModal();
-      await Promise.all([props.handleUpdateXcmTokenBalances(), updateFromAddressBalance()]);
-    };
-
     const handleBridge = async (): Promise<void> => {
       if (isH160.value) {
         const txHash = await callAssetWithdrawToPara(
           amount.value!!,
           evmDestAddress.value,
-          finalizedCallback
+          closeModal
         );
 
         if (txHash) {
@@ -267,7 +273,8 @@ export default defineComponent({
           amount.value = null;
         }
       } else {
-        await bridge(finalizedCallback);
+        await bridge(closeModal);
+        await props.handleUpdateXcmTokenBalances();
       }
     };
 
