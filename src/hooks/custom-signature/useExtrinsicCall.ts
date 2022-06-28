@@ -11,7 +11,7 @@ import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 
 interface CallOptions {
-  onResult: (_: ISubmittableResult) => Promise<boolean>;
+  onResult: (_: ISubmittableResult) => void;
   onTransactionError: (_: Error) => void;
 }
 
