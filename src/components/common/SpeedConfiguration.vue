@@ -4,9 +4,14 @@
       <div class="box__space-between">
         <span> {{ $t(isH160 ? 'common.speed.speed' : 'common.speed.speedTip') }}</span>
         <div v-if="isH160" class="placeholder--height" />
-        <div v-else>
+        <div v-else v-click-away="setIsMobileDisplayTooltip" @click="setIsMobileDisplayTooltip">
           <astar-icon-help />
-          <q-tooltip>
+          <q-tooltip
+            v-model="isDisplayTooltip"
+            anchor="top middle"
+            :self="`bottom ${$q.platform.is.mobile ? 'end' : 'middle'}`"
+            class="box--tooltip"
+          >
             <span class="text--tooltip">{{ $t('common.speed.tipHelp') }}</span>
           </q-tooltip>
         </div>
@@ -52,9 +57,10 @@
   </div>
 </template>
 <script lang="ts">
+import { useTooltip } from 'src/hooks';
 import { GasPrice, SelectedGas } from 'src/modules/gas-api';
 import { useStore } from 'src/store';
-import { defineComponent, computed, PropType } from 'vue';
+import { computed, defineComponent, PropType } from 'vue';
 
 export default defineComponent({
   props: {
@@ -86,13 +92,15 @@ export default defineComponent({
       return chainInfo ? chainInfo.tokenSymbol : {};
     });
 
+    const { isDisplayTooltip, setIsMobileDisplayTooltip } = useTooltip('icon');
+
     const formatPrice = (price: string): string => {
       const num = Number(price).toFixed(decimal.value);
       // Memo: remove the number of '0' after decimal
       return num.replace(/\.?0+$/, '');
     };
 
-    return { symbol, isH160, formatPrice };
+    return { symbol, isH160, isDisplayTooltip, setIsMobileDisplayTooltip, formatPrice };
   },
 });
 </script>
