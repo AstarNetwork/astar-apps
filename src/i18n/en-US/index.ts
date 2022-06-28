@@ -314,6 +314,7 @@ export default {
       riskOfImportTokens:
         'Please be aware of the risk that anyone can create a token, including creating fake versions of existing tokens.',
       tokenContractAddress: 'Token Contract Address',
+      tipDestAddressFormat: 'Where can I find my {chain} address?',
       xcmWarning: {
         avoidRisk: 'Avoid risk of losing your balance',
         fee: 'Fee is deducted from the amount entered',

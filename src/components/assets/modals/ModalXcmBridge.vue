@@ -74,6 +74,17 @@
             :symbol="token.metadata.symbol"
             :address-balance="evmDestAddressBalance"
           />
+          <div v-if="isH160" class="row--withdrawal-address-format">
+            <a
+              href="https://docs.astar.network/xcm/faq#q-where-can-i-find-my-polkadot-kusama-addresses"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span class="text--available">
+                {{ $t('assets.modals.tipDestAddressFormat', { chain: destChain.name }) }}
+              </span>
+            </a>
+          </div>
         </div>
 
         <div class="box--input box--hover--active">
