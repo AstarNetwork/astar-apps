@@ -206,7 +206,8 @@ export default defineComponent({
     const isShibuya = ref<boolean>(false);
     const isFaucet = ref<boolean>(false);
     // Memo: defined by hard-coding to avoid sending too many requests to faucet API server
-    const mainnetFaucetAmount = 0.002;
+    // Ref: https://github.com/AstarNetwork/astar-faucet-bot/blob/main/src/clients/astar.ts#L207
+    const mainnetFaucetAmount = 0.002 / 2;
 
     const store = useStore();
     const selectedAddress = computed(() => store.getters['general/selectedAddress']);

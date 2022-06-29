@@ -1,0 +1,101 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--select-chain {
+  position: relative;
+}
+
+.row__chain {
+  display: flex;
+  column-gap: 12px;
+}
+
+.logo {
+  width: 24px;
+  height: 24px;
+}
+
+.box--chain-option {
+  position: absolute;
+  width: 344px;
+  margin-top: 18px;
+  border-radius: 6px;
+  z-index: 10;
+  top: 22px;
+  left: -16px;
+  background: $container-bg-white;
+  border: 1px solid $astar-blue;
+}
+
+.container--chains {
+  max-height: 228px;
+  border-radius: 6px;
+  padding-top: 4px;
+  overflow: auto;
+  width: 344px;
+  &:focus {
+    outline: none;
+  }
+}
+
+.list__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.list {
+  position: relative;
+  width: 342px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  padding-left: 12px;
+  padding-right: 36px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease 0s;
+  &:hover {
+    transition: all 0.3s ease 0s;
+    background-color: $gray-1;
+  }
+}
+
+.box__row {
+  display: flex;
+  column-gap: 8px;
+  align-items: center;
+}
+
+.column--chain-name {
+  display: flex;
+  column-gap: 12px;
+  align-items: center;
+}
+
+.input--chain {
+  width: 230px;
+  // cursor: pointer;
+  background-color: transparent;
+  &:focus {
+    outline: none;
+  }
+  @media (min-width: $xs) {
+    width: 250px;
+  }
+}
+
+.icon--selector {
+  height: 20px;
+  width: 20px;
+  color: $gray-3;
+}
+
+.body--dark {
+  .box--chain-option {
+    background: $gray-6;
+  }
+  .list {
+    &:hover {
+      background-color: $item--bg--hover-dark;
+    }
+  }
+}

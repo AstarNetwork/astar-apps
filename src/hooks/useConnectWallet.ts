@@ -1,3 +1,4 @@
+import { getEvmProvider } from 'src/hooks/helper/wallet';
 import { getProviderIndex } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import {
@@ -81,22 +82,6 @@ export const useConnectWallet = () => {
         selectedWallet.value = selectedWalletSource.value;
       }
     }
-  };
-
-  const getEvmProvider = (wallet: SupportWallet) => {
-    if (wallet === SupportWallet.MetaMask) {
-      return window.ethereum;
-    }
-
-    if (wallet === SupportWallet.TalismanEvm) {
-      return window.talismanEth;
-    }
-
-    if (wallet === SupportWallet.SubWalletEvm) {
-      return window.SubWallet;
-    }
-
-    return null;
   };
 
   const loadEvmWallet = async ({

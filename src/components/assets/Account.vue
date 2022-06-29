@@ -101,6 +101,7 @@ import {
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import copy from 'copy-to-clipboard';
+import { FrameSystemAccountInfo } from '@polkadot/types/lookup';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
@@ -224,7 +225,7 @@ export default defineComponent({
         try {
           const ss58 = getEvmMappedSs58Address(currentAccount.value);
           if (!ss58) return;
-          const { data } = await apiRef.query.system.account(ss58);
+          const { data } = await apiRef.query.system.account<FrameSystemAccountInfo>(ss58);
           if (Number(data.free.toString()) > 0) {
             isLockdropAccount.value = true;
           } else {

@@ -23,7 +23,6 @@ type Token = CbridgeCurrency | Erc20Token;
 export function useCbridgeV2() {
   const tokens = ref<Token[] | null>(null);
   const ttlErc20Amount = ref<number>(0);
-  const isCalculated = ref<boolean>(false);
   const startCalculation = ref<boolean>(false);
 
   const store = useStore();
@@ -213,8 +212,6 @@ export function useCbridgeV2() {
       await updateTokenBalances({ userAddress: currentAccount.value });
     } catch (error) {
       console.error(error);
-    } finally {
-      isCalculated.value = true;
     }
   };
 
@@ -239,7 +236,7 @@ export function useCbridgeV2() {
     [tokens],
     async () => {
       const isInitialErc20Amount =
-        tokens.value && tokens.value.length > 0 && !isCalculated.value && !startCalculation.value;
+        tokens.value && tokens.value.length > 0 && !startCalculation.value;
       if (isInitialErc20Amount) {
         // Memo: to avoid calling this function twice
         startCalculation.value = true;

@@ -17,18 +17,22 @@ interface ChainProperty {
 }
 
 class ChainApi {
-  private _provider: WsProvider;
+  private _provider?: WsProvider;
   private _api: ApiPromise;
   private _chainProperty: ChainProperty | undefined;
   private _registry: TypeRegistry;
 
-  constructor(endpoint: string) {
-    this._provider = new WsProvider(endpoint, AUTO_CONNECT_MS);
+  constructor(api: ApiPromise | null, endpoint?: string) {
+    if (api) {
+      this._api = api;
+    } else {
+      this._provider = new WsProvider(endpoint, AUTO_CONNECT_MS);
 
-    console.info('connecting to ' + endpoint);
-    this._api = new ApiPromise({
-      provider: this._provider,
-    });
+      console.info('connecting to ' + endpoint);
+      this._api = new ApiPromise({
+        provider: this._provider,
+      });
+    }
 
     this._registry = new TypeRegistry();
   }
@@ -133,57 +137,68 @@ class ChainApi {
     signer: any,
     tx: ExtrinsicPayload,
     finalizedCallback: () => Promise<void>,
-    handleResult?: (result: ISubmittableResult) => Promise<boolean>
+    handleResult: (result: ISubmittableResult) => Promise<boolean>,
+    tip = '1'
   ) {
-    const txsToExecute: ExtrinsicPayload[] = [];
-    txsToExecute.push(tx);
-    const transaction = this._api.tx.utility.batch(txsToExecute);
-    // ensure that we automatically increment the nonce per transaction
-    return await transaction.signAndSend(account, { signer, nonce: -1, tip: 1 }, (result) => {
-      // console.log('r', result);
-      handleResult &&
-        handleResult(result).then(async () => {
-          await finalizedCallback();
-        });
-      // handle transaction errors
-      result.events
-        .filter((record): boolean => !!record.event && record.event.section !== 'democracy')
-        .map(async ({ event: { data, method, section } }) => {
-          if (section === 'system' && method === 'ExtrinsicFailed') {
-            const [dispatchError] = data as unknown as ITuple<[DispatchError]>;
-            let message = dispatchError.type.toString();
+    return new Promise<boolean>(async (resolve) => {
+      const txsToExecute: ExtrinsicPayload[] = [];
+      txsToExecute.push(tx);
+      const transaction = this._api.tx.utility.batch(txsToExecute);
+      try {
+        // ensure that we automatically increment the nonce per transaction
+        await transaction.signAndSend(account, { signer, nonce: -1, tip }, (result) => {
+          // console.log('r', result);
+          handleResult &&
+            handleResult(result).then(async () => {
+              await finalizedCallback();
+              resolve(true);
+            });
+          // handle transaction errors
+          result.events
+            .filter((record): boolean => !!record.event && record.event.section !== 'democracy')
+            .map(async ({ event: { data, method, section } }) => {
+              if (section === 'system' && method === 'ExtrinsicFailed') {
+                const [dispatchError] = data as unknown as ITuple<[DispatchError]>;
+                let message = dispatchError.type.toString();
 
-            if (dispatchError.isModule) {
-              try {
-                const mod = dispatchError.asModule;
-                const error = dispatchError.registry.findMetaError(mod);
+                if (dispatchError.isModule) {
+                  try {
+                    const mod = dispatchError.asModule;
+                    const error = dispatchError.registry.findMetaError(mod);
 
-                message = `${error.section}.${error.name}`;
-              } catch (error) {
-                console.error(error);
+                    message = `${error.section}.${error.name}`;
+                    resolve(false);
+                  } catch (error) {
+                    console.error(error);
+                    resolve(false);
+                  }
+                } else if (dispatchError.isToken) {
+                  message = `${dispatchError.type}.${dispatchError.asToken.type}`;
+                }
+
+                const errorMessage = `${section}.${method} ${message}`;
+                console.error(`error: ${errorMessage}`);
+                throw new Error(message);
+              } else if (section === 'utility' && method === 'BatchInterrupted') {
+                const anyData = data as any;
+                const error = anyData[1].registry.findMetaError(anyData[1].asModule);
+                let message = `${error.section}.${error.name}`;
+                console.error(`error: ${section}.${method} ${message}`);
+                resolve(false);
               }
-            } else if (dispatchError.isToken) {
-              message = `${dispatchError.type}.${dispatchError.asToken.type}`;
-            }
-
-            const errorMessage = `${section}.${method} ${message}`;
-            console.error(`error: ${errorMessage}`);
-
-            throw new Error(message);
-          } else if (section === 'utility' && method === 'BatchInterrupted') {
-            const anyData = data as any;
-            const error = anyData[1].registry.findMetaError(anyData[1].asModule);
-            let message = `${error.section}.${error.name}`;
-            console.error(`error: ${section}.${method} ${message}`);
-          }
+            });
         });
+      } catch (error) {
+        console.error(error);
+        resolve(false);
+      }
     });
   }
 }
 
 export class RelaychainApi extends ChainApi {
   constructor(endpoint: string) {
-    super(endpoint);
+    super(null, endpoint);
   }
   override async start() {
     await super.start();
@@ -269,5 +284,60 @@ export class RelaychainApi extends ChainApi {
 
   public xcmSend(dest: MultiLocation, message: VersionedXcm) {
     return this.buildTxCall('xcmPallet', 'send', dest, message);
+  }
+}
+
+export class ParachainApi extends ChainApi {
+  constructor(api: ApiPromise) {
+    super(api);
+  }
+
+  /// should move to function in relay chain ($api)
+  public transferToRelaychain(recipientAccountId: string, amount: string) {
+    const dest = {
+      V1: {
+        interior: 'Here',
+        parents: new BN(1),
+      },
+    };
+    // the account ID within the destination parachain
+    const beneficiary = {
+      V1: {
+        interior: {
+          X1: {
+            AccountId32: {
+              network: 'Any',
+              id: decodeAddress(recipientAccountId),
+            },
+          },
+        },
+        parents: new BN(0),
+      },
+    };
+    // amount of fungible tokens to be transferred
+    const assets = {
+      V1: [
+        {
+          fun: {
+            Fungible: new BN(amount),
+          },
+          id: {
+            Concrete: {
+              interior: 'Here',
+              parents: new BN(1),
+            },
+          },
+        },
+      ],
+    };
+
+    return this.buildTxCall(
+      'polkadotXcm',
+      'reserveWithdrawAssets',
+      dest,
+      beneficiary,
+      assets,
+      new BN(0)
+    );
   }
 }

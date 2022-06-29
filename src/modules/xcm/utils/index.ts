@@ -1,10 +1,11 @@
+import { Chain, relayChains, xcmChains, XcmChain } from './../index';
 import { ApiPromise } from '@polkadot/api';
 import { Struct } from '@polkadot/types';
 import { ethers } from 'ethers';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { ChainAsset } from 'src/hooks';
 import { getUsdBySymbol } from 'src/hooks/helper/price';
-import { ExistentialDeposit, XcmNetworkIdx, XcmTokenInformation } from '..';
+import { ExistentialDeposit, XcmNetworkIdx, XcmTokenInformation } from '../index';
 import { xcmToken } from '../tokens';
 
 interface Account extends Struct {
@@ -53,6 +54,18 @@ export const fetchXcmBalance = async ({
   }
 };
 
+const calRelaychainMinBal = (existentialDeposit: number): number => {
+  // Memo: hardcode it because ED for KSM is too small
+  const ksmMinBal = 0.0001;
+  const minBal = existentialDeposit * 1.1;
+
+  if (existentialDeposit > ksmMinBal) {
+    return minBal;
+  } else {
+    return ksmMinBal;
+  }
+};
+
 export const fetchExistentialDeposit = async (api: ApiPromise): Promise<ExistentialDeposit> => {
   const amount = api.consts.balances.existentialDeposit.toString();
 
@@ -64,12 +77,25 @@ export const fetchExistentialDeposit = async (api: ApiPromise): Promise<Existent
   const formattedProperties = properties.toHuman() as any;
   const decimals = formattedProperties.tokenDecimals[0] as string;
   const symbol = formattedProperties.tokenSymbol[0] as string;
+  const existentialDeposit = Number(ethers.utils.formatUnits(amount, decimals)).toFixed(7);
+  const relaychainMinBal = calRelaychainMinBal(Number(existentialDeposit));
 
   const data = {
-    amount: Number(ethers.utils.formatUnits(amount, decimals)).toFixed(7),
+    amount: existentialDeposit,
     symbol,
     chain: chain.toString(),
+    relaychainMinBal,
   };
 
   return data;
+};
+
+export const checkIsFromRelayChain = (fromChain: Chain): boolean => {
+  const found = relayChains.find((it) => it === fromChain);
+  return found ? true : false;
+};
+
+export const getChains = (networkIdx: endpointKey): XcmChain[] => {
+  const relayChain = networkIdx === endpointKey.ASTAR ? Chain.Polkadot : Chain.Kusama;
+  return xcmChains.filter((it) => it.relayChain === relayChain);
 };

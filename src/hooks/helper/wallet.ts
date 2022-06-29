@@ -240,3 +240,19 @@ export const signAndSend = async ({
 export const checkIsNativeWallet = (selectedWallet: SupportWallet): boolean => {
   return supportWalletObj.hasOwnProperty(selectedWallet);
 };
+
+export const getEvmProvider = (wallet: SupportWallet) => {
+  if (wallet === SupportWallet.MetaMask) {
+    return window.ethereum;
+  }
+
+  if (wallet === SupportWallet.TalismanEvm) {
+    return window.talismanEth;
+  }
+
+  if (wallet === SupportWallet.SubWalletEvm) {
+    return window.SubWallet;
+  }
+
+  return null;
+};

@@ -13,6 +13,8 @@
           v-if="!checkIsCbridgeToken(t) && t.isXC20"
           :token="t"
           :handle-modal-transfer="handleModalTransfer"
+          :is-xcm="true"
+          :handle-modal-xcm-bridge="handleModalXcmBridge"
         />
       </div>
     </div>
@@ -140,6 +142,13 @@
         :handle-update-token-balances="handleUpdateTokenBalances"
       />
       <ModalFaucet :is-modal-faucet="isModalFaucet" :handle-modal-faucet="handleModalFaucet" />
+      <ModalXcmBridge
+        :is-modal-xcm-bridge="isModalXcmBridge"
+        :handle-modal-xcm-bridge="handleModalXcmBridge"
+        :account-data="accountData"
+        :token="xcmToken"
+        :handle-update-xcm-token-balances="handleUpdateXcmTokenBalances"
+      />
     </Teleport>
   </div>
 </template>
@@ -151,7 +160,7 @@ import Erc20Currency from 'src/components/assets/Erc20Currency.vue';
 import EvmAssetOptions from 'src/components/assets/EvmAssetOptions.vue';
 import EvmCbridgeToken from 'src/components/assets/EvmCbridgeToken.vue';
 import { getBalance } from 'src/config/web3';
-import { useAccount, usePrice } from 'src/hooks';
+import { ChainAsset, useAccount, useBalance, usePrice } from 'src/hooks';
 import { Erc20Token, getTokenImage } from 'src/modules/token';
 import { cbridgeAppLink } from 'src/c-bridge';
 import { useStore } from 'src/store';
@@ -159,6 +168,7 @@ import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
 import ModalFaucet from './modals/ModalFaucet.vue';
 import ModalTransfer from './modals/ModalTransfer.vue';
 import { truncate } from 'src/hooks/helper/common';
+import ModalXcmBridge from './modals/ModalXcmBridge.vue';
 
 export default defineComponent({
   components: {
@@ -166,6 +176,7 @@ export default defineComponent({
     ModalTransfer,
     ModalFaucet,
     Erc20Currency,
+    ModalXcmBridge,
     EvmAssetOptions,
   },
   props: {
@@ -178,10 +189,20 @@ export default defineComponent({
       type: Function,
       required: true,
     },
+    handleUpdateXcmTokenBalances: {
+      type: Function,
+      required: true,
+    },
+    xcmAssets: {
+      type: Array as PropType<ChainAsset[]>,
+      required: true,
+    },
   },
   setup(props) {
     const isModalTransfer = ref<boolean>(false);
     const isModalFaucet = ref<boolean>(false);
+    const isModalXcmBridge = ref<boolean>(false);
+    const xcmToken = ref<ChainAsset | null>(null);
     const isHideSmallBalances = ref<boolean>(false);
     const token = ref<SelectedToken | Erc20Token | string | null>(null);
     const symbol = ref<string>('');
@@ -195,9 +216,12 @@ export default defineComponent({
     const mainnetFaucetAmount = 0.002;
 
     const { currentAccount } = useAccount();
-    const store = useStore();
-    const isLoading = computed(() => store.getters['general/isLoading']);
     const { nativeTokenUsd } = usePrice();
+    const { accountData } = useBalance(currentAccount);
+
+    const store = useStore();
+    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
+    const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
 
     const nativeTokenSymbol = computed<string>(() => {
       const chainInfo = store.getters['general/chainInfo'];
@@ -222,6 +246,7 @@ export default defineComponent({
     });
 
     const filteredTokens = computed<SelectedToken[] | null>(() => {
+      if (!search.value) return props.tokens;
       if (!props.tokens) return null;
       const tokens = isHideSmallBalances.value
         ? props.tokens.filter((it) => Number(it.userBalance) > 0)
@@ -242,6 +267,23 @@ export default defineComponent({
       return result.length > 0 ? result : null;
     });
 
+    const handleModalXcmBridge = ({
+      isOpen,
+      currency,
+    }: {
+      isOpen: boolean;
+      currency: Erc20Token | null;
+    }): void => {
+      isModalXcmBridge.value = isOpen;
+      if (currency === null) {
+        xcmToken.value = currency;
+      } else {
+        const t = props.xcmAssets.find((it) => String(it.metadata.symbol) === currency.symbol);
+        if (t) {
+          xcmToken.value = t;
+        }
+      }
+    };
     const toggleIsHideSmallBalances = (): void => {
       isHideSmallBalances.value = !isHideSmallBalances.value;
     };
@@ -252,7 +294,7 @@ export default defineComponent({
     }: {
       isOpen: boolean;
       currency: SelectedToken | Erc20Token | string;
-    }) => {
+    }): void => {
       token.value = currency;
       isModalTransfer.value = isOpen;
       if (!isOpen) {
@@ -265,7 +307,7 @@ export default defineComponent({
       }
     };
 
-    const handleModalFaucet = ({ isOpen }: { isOpen: boolean }) => {
+    const handleModalFaucet = ({ isOpen }: { isOpen: boolean }): void => {
       isModalFaucet.value = isOpen;
     };
 
@@ -273,8 +315,8 @@ export default defineComponent({
       isSearch.value = isTyping;
     };
 
-    watchEffect(async () => {
-      if (isLoading.value || !nativeTokenSymbol.value) return;
+    const updateStates = async (): Promise<void> => {
+      if (isLoading.value || !nativeTokenSymbol.value || !isH160.value) return;
       try {
         const balWei = await getBalance($web3.value!, currentAccount.value);
         bal.value = Number(ethers.utils.formatEther(balWei));
@@ -286,6 +328,10 @@ export default defineComponent({
       } catch (error: any) {
         console.error(error.message);
       }
+    };
+
+    watchEffect(async () => {
+      await updateStates();
     });
 
     return {
@@ -305,6 +351,10 @@ export default defineComponent({
       search,
       filteredTokens,
       isDisplayNativeToken,
+      isModalXcmBridge,
+      accountData,
+      xcmToken,
+      handleModalXcmBridge,
       cbridgeAppLink,
       isHideSmallBalances,
       setIsSearch,

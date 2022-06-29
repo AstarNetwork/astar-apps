@@ -33,4 +33,5 @@ export * from './xcm/useXcmAssets';
 export * from './xcm/useXcmBridge';
 export * from './xcm/useXcmTokenTransfer';
 export * from './xcm/useXcmTokenDetails';
+export * from './xcm/useXcmEvm';
 export * from './ui/useTooltip';

@@ -1,7 +1,7 @@
 <template>
   <div>
     <astar-header
-      :title="width >= screenSize.lg && headerName"
+      :title="width >= screenSize.lg ? headerName : ''"
       :class="screenSize.lg > width && 'm-header'"
     >
       <template #left>

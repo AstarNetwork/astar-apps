@@ -48,11 +48,20 @@
               </a>
             </div>
 
-            <!-- Todo: We can add an action button for XC20 tokens here -->
-            <div v-if="token.isXC20" />
-
+            <div v-if="token.isXC20">
+              <button
+                class="btn btn--sm"
+                @click="
+                  handleModalXcmBridge({
+                    isOpen: true,
+                    currency: token,
+                  })
+                "
+              >
+                {{ $t('assets.xcm') }}
+              </button>
+            </div>
             <div v-if="isImportedToken" />
-
             <div class="screen--xl">
               <a
                 class="box--explorer"
@@ -120,6 +129,16 @@ export default defineComponent({
       type: Function,
       required: true,
     },
+    handleModalXcmBridge: {
+      type: Function,
+      required: false,
+      default: null,
+    },
+    isXcm: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   setup({ token }) {
     const store = useStore();
@@ -133,7 +152,10 @@ export default defineComponent({
     });
 
     const isImportedToken = computed<boolean>(
-      () => !!getStoredERC20Tokens().find((it) => it.symbol === token.symbol)
+      () =>
+        !!getStoredERC20Tokens().find(
+          (it) => it.address.toLowerCase() === token.address.toLowerCase()
+        )
     );
 
     const currentWallet = computed(() => store.getters['general/currentWallet']);

@@ -28,6 +28,10 @@ span {
   color: $neon-blue;
 }
 
+.text-color--disabled {
+  color: $gray-3 !important;
+}
+
 .text--xlg {
   font-weight: 400;
   font-size: 22px;
@@ -107,5 +111,9 @@ input::placeholder {
   }
   .text-color--neon {
     color: $astar-blue-dark;
+  }
+
+  .text-color--disabled {
+    color: $gray-4 !important;
   }
 }
