@@ -27,22 +27,22 @@ import { useStore } from 'src/store';
 import { computed, ref, Ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { wait } from '../helper/common';
-import { isValidAddressPolkadotAddress } from './../helper/plasmUtils';
+import { isValidAddressPolkadotAddress } from '../helper/plasmUtils';
 import { ParachainApi, RelaychainApi } from './SubstrateApi';
 
-const chainPolkadot = xcmChains.find((it) => it.name === Chain.Polkadot) as XcmChain;
 const chainAstar = xcmChains.find((it) => it.name === Chain.Astar) as XcmChain;
-const chainKusama = xcmChains.find((it) => it.name === Chain.Kusama) as XcmChain;
 const chainShiden = xcmChains.find((it) => it.name === Chain.Shiden) as XcmChain;
-const initialChains = getChains(endpointKey.ASTAR);
+const chainKarura = xcmChains.find((it) => it.name === Chain.Karura) as XcmChain;
+const initialChains = getChains(endpointKey.SHIDEN);
 
-export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
+export function useHrmpBridge(selectedToken: Ref<ChainAsset>) {
   let relayChainApi: RelaychainApi | null = null;
 
   const chains = ref<XcmChain[]>(initialChains);
-  const srcChain = ref<XcmChain>(chainPolkadot);
-  const destChain = ref<XcmChain>(chainAstar);
-  const destParaId = ref<number>(parachainIds.ASTAR);
+  const srcChain = ref<XcmChain>(chainKarura);
+  const destChain = ref<XcmChain>(chainShiden);
+  const destParaId = ref<number>(parachainIds.SHIDEN);
+  // check
   const tokens = ref<ChainAsset[] | null>(null);
   const amount = ref<string | null>(null);
   const errMsg = ref<string>('');
@@ -93,22 +93,28 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
 
   const setSrcChain = (chain: XcmChain): void => {
     srcChain.value = chain;
+    const parachain = xcmChains.find((it) => it.name === selectedToken.value.originChain);
+    if (!selectedToken.value || !parachain) return;
+
     if (chain.name === destChain.value.name) {
       if (isAstar.value) {
-        destChain.value = destChain.value.name === chainAstar.name ? chainPolkadot : chainAstar;
+        destChain.value = destChain.value.name === chainAstar.name ? parachain : chainAstar;
       } else {
-        destChain.value = destChain.value.name === chainShiden.name ? chainKusama : chainShiden;
+        destChain.value = destChain.value.name === chainShiden.name ? parachain : chainShiden;
       }
     }
   };
 
   const setDestChain = (chain: XcmChain): void => {
     destChain.value = chain;
+    const parachain = xcmChains.find((it) => it.name === selectedToken.value.originChain);
+    if (!selectedToken.value || !parachain) return;
+
     if (chain.name === srcChain.value.name) {
       if (isAstar.value) {
-        srcChain.value = srcChain.value.name === chainAstar.name ? chainPolkadot : chainAstar;
+        srcChain.value = srcChain.value.name === chainAstar.name ? parachain : chainAstar;
       } else {
-        srcChain.value = srcChain.value.name === chainShiden.name ? chainKusama : chainShiden;
+        srcChain.value = srcChain.value.name === chainShiden.name ? parachain : chainShiden;
       }
     }
   };
@@ -240,14 +246,13 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   };
 
   const connectRelaychain = async (): Promise<void> => {
-    let endpoint;
-    if (currentNetworkIdx.value === endpointKey.ASTAR) {
-      endpoint = xcmProviderEndpoints[xcmEndpointKey.POLKADOT].endpoint;
-    } else {
-      endpoint = xcmProviderEndpoints[xcmEndpointKey.KUSAMA].endpoint;
-    }
-
     try {
+      console.log('connect!');
+      const endpoint = xcmProviderEndpoints.find(
+        (it) => it.networkAlias.toLowerCase() === selectedToken.value.originChain.toLowerCase()
+      )?.endpoint;
+      console.log('endpoint', endpoint);
+      if (!selectedToken.value || !endpoint) return;
       relayChainApi = new RelaychainApi(endpoint);
       await relayChainApi.start();
     } catch (err) {
@@ -262,15 +267,17 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   };
 
   const setDefaultChain = (): void => {
+    const parachain = xcmChains.find((it) => it.name === selectedToken.value.originChain);
+    if (!selectedToken.value || !parachain) return;
     if (isAstar.value) {
       destParaId.value = parachainIds.ASTAR;
       // Memo: withdrawal mode for H160 accounts
-      srcChain.value = isH160.value ? chainAstar : chainPolkadot;
-      destChain.value = isH160.value ? chainPolkadot : chainAstar;
+      srcChain.value = isH160.value ? chainAstar : parachain;
+      destChain.value = isH160.value ? parachain : chainAstar;
     } else {
       destParaId.value = parachainIds.SHIDEN;
-      srcChain.value = isH160.value ? chainShiden : chainKusama;
-      destChain.value = isH160.value ? chainKusama : chainShiden;
+      srcChain.value = isH160.value ? chainShiden : parachain;
+      destChain.value = isH160.value ? parachain : chainShiden;
     }
   };
 
@@ -432,6 +439,9 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   };
 
   const initializeXcmApi = async (): Promise<void> => {
+    const isHrmpToken = selectedToken.value ? selectedToken.value.originChain === 'Karura' : false;
+    console.log('isHrmpToken', isHrmpToken);
+    if (!isHrmpToken) return;
     if (
       currentNetworkIdx.value === endpointKey.ASTAR ||
       currentNetworkIdx.value === endpointKey.SHIDEN
@@ -453,8 +463,10 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   });
 
   watch(
-    [currentNetworkIdx],
+    [currentNetworkIdx, selectedToken],
     async () => {
+      const isHrmpToken = selectedToken.value && selectedToken.value.originChain === 'Karura';
+      if (!isHrmpToken) return;
       await initializeXcmApi();
     },
     { immediate: true }
@@ -463,6 +475,10 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   watch(
     [isNativeBridge, isAstar],
     async () => {
+      const isHrmpToken = selectedToken.value
+        ? selectedToken.value.originChain === 'Karura'
+        : false;
+      if (!isHrmpToken) return;
       setDefaultChain();
     },
     { immediate: true }
@@ -482,6 +498,10 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
 
   watchEffect(async () => {
     await Promise.all([updateFromAddressBalance(), setRelaychainBal()]);
+  });
+
+  watchEffect(() => {
+    console.log('hrmp hooks');
   });
 
   return {

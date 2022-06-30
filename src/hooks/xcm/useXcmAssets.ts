@@ -14,6 +14,7 @@ export interface ChainAsset extends AssetDetails {
   userBalance: string;
   userBalanceUsd: string;
   minBridgeAmount: string;
+  originChain: string;
 }
 
 export function useXcmAssets() {
@@ -95,6 +96,7 @@ export function useXcmAssets() {
               (it) => it.assetId === assetId
             );
             const minBridgeAmount = registeredData ? registeredData.minBridgeAmount : '0';
+            const originChain = registeredData ? registeredData.originChain : '';
 
             const token = {
               id: assetId,
@@ -103,6 +105,7 @@ export function useXcmAssets() {
               mappedERC20Addr: mappedXC20,
               userBalance: '0',
               userBalanceUsd: '0',
+              originChain,
               minBridgeAmount,
             } as ChainAsset;
 

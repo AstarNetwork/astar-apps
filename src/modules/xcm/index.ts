@@ -32,6 +32,7 @@ export enum Chain {
   Astar = 'Astar',
   Kusama = 'Kusama',
   Shiden = 'Shiden',
+  Karura = 'Karura',
 }
 
 export interface XcmChain {
@@ -61,6 +62,13 @@ export const xcmChains: XcmChain[] = [
     relayChain: Chain.Kusama,
     img: require('/src/assets/img/ic_shiden.png'),
   },
+  {
+    name: Chain.Karura,
+    relayChain: Chain.Kusama,
+    img: 'https://polkadot.js.org/apps/static/karura.6540c949..svg',
+  },
 ];
 
 export const relayChains = [Chain.Polkadot, Chain.Kusama];
+
+export const parachains = [Chain.Karura];
