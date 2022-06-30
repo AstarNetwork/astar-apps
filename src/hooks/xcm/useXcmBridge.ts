@@ -24,7 +24,7 @@ import {
   xcmChains,
 } from 'src/modules/xcm';
 import { useStore } from 'src/store';
-import { computed, onUnmounted, ref, Ref, watchEffect, watch } from 'vue';
+import { computed, ref, Ref, watchEffect, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ParachainApi, RelaychainApi } from './SubstrateApi';
 import { wait } from '../helper/common';
@@ -504,7 +504,6 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     bridge,
     resetStates,
     setIsNativeBridge,
-    updateFromAddressBalance,
     setSrcChain,
     setDestChain,
   };

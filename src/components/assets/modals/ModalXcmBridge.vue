@@ -237,7 +237,6 @@ export default defineComponent({
       bridge,
       resetStates,
       setIsNativeBridge,
-      updateFromAddressBalance,
       setSrcChain,
       setDestChain,
     } = useXcmBridge(token);
