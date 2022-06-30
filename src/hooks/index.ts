@@ -17,7 +17,7 @@ export * from './useConnectWallet';
 export * from './useUnbondWithdraw';
 export * from './useCustomSignature';
 export * from './useClaimAll';
-export * from './useBreakpoints';
+export * from './ui/useBreakpoints';
 export * from './usePrice';
 export * from './useVesting';
 export * from './useTvlHistorical';
