@@ -110,8 +110,7 @@ export default defineComponent({
     const store = useStore();
 
     const isDisplayToken = computed<boolean>(() => {
-      // Todo: fetch the balance in relaychain
-      const isDisplay = Number(props.token.userBalance) > 0 || tokenDetails.value?.isXcmCompatible;
+      const isDisplay = Number(props.token.userBalance) > 0 || !!tokenDetails.value;
       return isDisplay || false;
     });
 

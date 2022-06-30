@@ -13,14 +13,14 @@ interface Account extends Struct {
 }
 
 export const getXcmToken = ({
-  symbol,
+  id,
   currentNetworkIdx,
 }: {
-  symbol: string;
+  id: string;
   currentNetworkIdx: endpointKey;
 }): XcmTokenInformation | undefined => {
   const networkIdx = currentNetworkIdx as XcmNetworkIdx;
-  const t = xcmToken[networkIdx].find((it: XcmTokenInformation) => it.symbol === symbol);
+  const t = xcmToken[networkIdx].find((it: XcmTokenInformation) => it.assetId === id);
   return t;
 };
 

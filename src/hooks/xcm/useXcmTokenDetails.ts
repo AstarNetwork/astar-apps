@@ -17,7 +17,7 @@ export function useXcmTokenDetails(selectedToken: Ref<ChainAsset>) {
       return undefined;
     }
     const t = getXcmToken({
-      symbol: String(selectedToken.value.metadata.symbol),
+      id: selectedToken.value.id,
       currentNetworkIdx: currentNetworkIdx.value,
     });
     return t;

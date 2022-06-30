@@ -129,6 +129,7 @@ export function useXcmAssets() {
 
   watchEffect(async () => {
     await fetchAssets();
+    console.log(' xcmAssets.value ', xcmAssets.value);
   });
 
   const secsUpdateBal = 60 * 1000;

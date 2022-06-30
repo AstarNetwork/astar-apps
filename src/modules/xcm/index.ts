@@ -10,6 +10,7 @@ export {
 } from './utils';
 export interface XcmTokenInformation {
   symbol: string;
+  assetId: string;
   logo: string;
   isNativeToken: boolean;
   isXcmCompatible: boolean;
