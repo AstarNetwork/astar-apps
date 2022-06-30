@@ -12,11 +12,11 @@ import { computed, ref, Ref, watchEffect } from 'vue';
 import { useGasPrice } from '../useGasPrice';
 import { signAndSend } from '../helper/wallet';
 import { useI18n } from 'vue-i18n';
+import { fetchXcmBalance } from 'src/modules/xcm';
 
 export function useXcmTokenTransfer(selectedToken: Ref<ChainAsset>) {
   const transferAmt = ref<string | null>(null);
   const toAddressBalance = ref<number>(0);
-  const fromAddressBalance = ref<number>(0);
   const toAddress = ref<string>('');
   const errMsg = ref<string>('');
   const isChecked = ref<boolean>(false);
@@ -29,7 +29,7 @@ export function useXcmTokenTransfer(selectedToken: Ref<ChainAsset>) {
   const { handleResult, handleCustomExtrinsic } = useCustomSignature({});
   const { selectedTip, nativeTipPrice, setSelectedTip } = useGasPrice();
 
-  const isDisabledTransfer = computed(() => {
+  const isDisabledTransfer = computed<boolean>(() => {
     const isLessAmount =
       0 >= Number(transferAmt.value) ||
       Number(selectedToken.value.userBalance) < Number(transferAmt.value);
@@ -136,16 +136,29 @@ export function useXcmTokenTransfer(selectedToken: Ref<ChainAsset>) {
     }
   };
 
-  watchEffect(() => {
-    setErrorMsg();
-  });
+  const setToAddressBalance = async (): Promise<void> => {
+    const isValidAddress =
+      isValidEvmAddress(toAddress.value) || isValidAddressPolkadotAddress(toAddress.value);
+    if (!isValidAddress) return;
+
+    const isSendToH160 = isValidEvmAddress(toAddress.value);
+    const destAddress = isSendToH160 ? toSS58Address(toAddress.value) : toAddress.value;
+    const { userBalance } = await fetchXcmBalance({
+      token: selectedToken.value,
+      userAddress: destAddress,
+      api: $api!,
+    });
+    toAddressBalance.value = Number(userBalance);
+  };
+
+  watchEffect(setErrorMsg);
+  watchEffect(setToAddressBalance);
 
   return {
     selectedTip,
     nativeTipPrice,
     transferAmt,
     toAddressBalance,
-    fromAddressBalance,
     toAddress,
     errMsg,
     isDisabledTransfer,
