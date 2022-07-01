@@ -29,6 +29,7 @@ import { useI18n } from 'vue-i18n';
 import { wait } from '../helper/common';
 import { isValidAddressPolkadotAddress } from '../helper/plasmUtils';
 import { ParachainApi, RelaychainApi } from './SubstrateApi';
+import { AcalaApi } from './parachainApi';
 
 const chainAstar = xcmChains.find((it) => it.name === Chain.Astar) as XcmChain;
 const chainShiden = xcmChains.find((it) => it.name === Chain.Shiden) as XcmChain;
@@ -36,7 +37,7 @@ const chainKarura = xcmChains.find((it) => it.name === Chain.Karura) as XcmChain
 const initialChains = getChains(endpointKey.SHIDEN);
 
 export function useHrmpBridge(selectedToken: Ref<ChainAsset>) {
-  let relayChainApi: RelaychainApi | null = null;
+  let relayChainApi: AcalaApi | null = null;
 
   const chains = ref<XcmChain[]>(initialChains);
   const srcChain = ref<XcmChain>(chainKarura);
@@ -56,6 +57,8 @@ export function useHrmpBridge(selectedToken: Ref<ChainAsset>) {
   const evmDestAddressBalance = ref<number>(0);
   const fromAddressBalance = ref<number>(0);
   const relaychainBal = ref<number>(0);
+
+  const isApiReady = ref<boolean>(false);
 
   const { t } = useI18n();
   const store = useStore();
@@ -247,14 +250,15 @@ export function useHrmpBridge(selectedToken: Ref<ChainAsset>) {
 
   const connectRelaychain = async (): Promise<void> => {
     try {
-      console.log('connect!');
       const endpoint = xcmProviderEndpoints.find(
         (it) => it.networkAlias.toLowerCase() === selectedToken.value.originChain.toLowerCase()
       )?.endpoint;
       console.log('endpoint', endpoint);
       if (!selectedToken.value || !endpoint) return;
-      relayChainApi = new RelaychainApi(endpoint);
+      relayChainApi = new AcalaApi(endpoint);
       await relayChainApi.start();
+      await relayChainApi.isReady();
+      isApiReady.value = true;
     } catch (err) {
       console.error(err);
     }
@@ -350,11 +354,12 @@ export function useHrmpBridge(selectedToken: Ref<ChainAsset>) {
         }
 
         const decimals = Number(selectedToken.value.metadata.decimals);
-        const txCall = relayChainApi.transferToParachain(
-          destParaId.value,
-          recipientAccountId,
-          ethers.utils.parseUnits(amount.value, decimals).toString()
-        );
+        const txCall = relayChainApi.transferToParachain({
+          toPara: destParaId.value,
+          recipientAccountId: recipientAccountId,
+          amount: amount.value,
+          token: String(selectedToken.value.metadata.symbol).toUpperCase(),
+        });
 
         await relayChainApi
           .signAndSend(
@@ -415,10 +420,15 @@ export function useHrmpBridge(selectedToken: Ref<ChainAsset>) {
   };
 
   const updateFromAddressBalance = async (): Promise<void> => {
-    if (!selectedToken.value) return;
+    if (!selectedToken.value || !relayChainApi) return;
 
     if (isDeposit.value) {
-      fromAddressBalance.value = relaychainBal.value;
+      fromAddressBalance.value = Number(
+        await relayChainApi.getTokenBalances({
+          address: currentAccount.value,
+          token: String(selectedToken.value.metadata.symbol),
+        })
+      );
     } else {
       const address = currentAccount.value;
       // Memo: Withdraw
@@ -440,7 +450,6 @@ export function useHrmpBridge(selectedToken: Ref<ChainAsset>) {
 
   const initializeXcmApi = async (): Promise<void> => {
     const isHrmpToken = selectedToken.value ? selectedToken.value.originChain === 'Karura' : false;
-    console.log('isHrmpToken', isHrmpToken);
     if (!isHrmpToken) return;
     if (
       currentNetworkIdx.value === endpointKey.ASTAR ||
@@ -497,11 +506,8 @@ export function useHrmpBridge(selectedToken: Ref<ChainAsset>) {
   });
 
   watchEffect(async () => {
+    if (!isApiReady.value || !relayChainApi) return;
     await Promise.all([updateFromAddressBalance(), setRelaychainBal()]);
-  });
-
-  watchEffect(() => {
-    console.log('hrmp hooks');
   });
 
   return {

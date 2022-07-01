@@ -208,7 +208,17 @@ export class RelaychainApi extends ChainApi {
     // check if the connected network implements xcmPallet
   }
 
-  public transferToParachain(toPara: number, recipientAccountId: string, amount: string) {
+  public transferToParachain({
+    toPara,
+    recipientAccountId,
+    amount,
+    token,
+  }: {
+    toPara: number;
+    recipientAccountId: string;
+    amount: string;
+    token?: string;
+  }) {
     // public transferToParachain(toPara: number, recipientAccountId: string, amount: string) {
     // the target parachain connected to the current relaychain
     const dest = {

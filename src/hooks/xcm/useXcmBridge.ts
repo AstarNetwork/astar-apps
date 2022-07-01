@@ -343,11 +343,12 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
         }
 
         const decimals = Number(selectedToken.value.metadata.decimals);
-        const txCall = relayChainApi.transferToParachain(
-          destParaId.value,
-          recipientAccountId,
-          ethers.utils.parseUnits(amount.value, decimals).toString()
-        );
+
+        const txCall = relayChainApi.transferToParachain({
+          toPara: destParaId.value,
+          recipientAccountId: recipientAccountId,
+          amount: ethers.utils.parseUnits(amount.value, decimals).toString(),
+        });
 
         await relayChainApi
           .signAndSend(

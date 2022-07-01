@@ -1,4 +1,4 @@
-import { Chain, relayChains, xcmChains, XcmChain } from './../index';
+import { Chain, relayChains, xcmChains, XcmChain, parachains } from './../index';
 import { ApiPromise } from '@polkadot/api';
 import { Struct } from '@polkadot/types';
 import { ethers } from 'ethers';
@@ -91,7 +91,8 @@ export const fetchExistentialDeposit = async (api: ApiPromise): Promise<Existent
 };
 
 export const checkIsFromRelayChain = (fromChain: Chain): boolean => {
-  const found = relayChains.find((it) => it === fromChain);
+  const found =
+    relayChains.find((it) => it === fromChain) || parachains.find((it) => it === fromChain);
   return found ? true : false;
 };
 
