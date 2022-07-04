@@ -22,11 +22,11 @@
             :xcm-assets="xcmAssets"
             :handle-update-xcm-token-balances="handleUpdateXcmTokenBalances"
           />
-          <!-- <XcmNativeAssetList
+          <XcmNativeAssetList
             v-if="isEnableXcm"
             :xcm-assets="xcmAssetsV2"
             :handle-update-xcm-token-balances="handleUpdateXcmTokenBalances"
-          /> -->
+          />
           <NativeAssetList />
         </div>
       </div>
@@ -60,7 +60,7 @@ export default defineComponent({
     const { tokens, isLoadingErc20Amount, ttlErc20Amount, handleUpdateTokenBalances } =
       useCbridgeV2();
     const {
-      // xcmAssets,
+      xcmAssets,
       ttlNativeXcmUsdAmount,
       isLoadingXcmAssetsAmount,
       handleUpdateTokenBalances: handleUpdateXcmTokenBalances,
@@ -76,24 +76,6 @@ export default defineComponent({
     });
 
     const isShibuya = computed(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
-
-    // v2
-    const xcmAssets = ref<Asset[]>([]);
-
-    const getAssetsV2 = async (address: string): Promise<Asset[]> => {
-      const repo = container.get<IXcmService>(Symbols.XcmService);
-      const assets = await repo.getAssets(address);
-      console.log(assets);
-
-      return assets;
-    };
-
-    watch([selectedAddress], async (newValue, oldValue) => {
-      if (newValue && oldValue !== newValue) {
-        xcmAssets.value = await getAssetsV2(newValue.toString());
-      }
-    });
-    // v2 end
 
     const isEnableXcm = computed(
       () => !isShibuya.value && xcmAssets.value && xcmAssets.value.length > 0
@@ -127,6 +109,24 @@ export default defineComponent({
       setIsDisplay();
     });
 
+    // v2
+    const xcmAssetsV2 = ref<Asset[]>([]);
+
+    const getAssetsV2 = async (address: string): Promise<Asset[]> => {
+      const repo = container.get<IXcmService>(Symbols.XcmService);
+      const assets = await repo.getAssets(address);
+      console.log(assets);
+
+      return assets;
+    };
+
+    watch([selectedAddress], async (newValue, oldValue) => {
+      if (newValue && oldValue !== newValue) {
+        xcmAssetsV2.value = await getAssetsV2(newValue.toString());
+      }
+    });
+    // v2 end
+
     return {
       isLoadingErc20Amount,
       isLoadingXcmAssetsAmount,
@@ -140,7 +140,7 @@ export default defineComponent({
       ttlNativeXcmUsdAmount,
       handleUpdateXcmTokenBalances,
       handleUpdateTokenBalances,
-      // xcmAssetsV2,
+      xcmAssetsV2,
     };
   },
 });

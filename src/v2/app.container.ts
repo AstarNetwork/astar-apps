@@ -16,6 +16,7 @@ import {
   DiaDataPriceRepository,
   EthCallRepository,
   MetadataRepository,
+  PriceRepositoryWithFailover,
   SystemRepository,
   XcmRepository,
 } from './repositories/implementations';
@@ -65,8 +66,16 @@ export default function buildDependencyContainer(): void {
     DappStakingRepository,
     Symbols.DappStakingRepository
   );
-  container.addTransient<IPriceRepository>(DiaDataPriceRepository, Symbols.DiaData);
-  container.addTransient<IPriceRepository>(CoinGeckoPriceRepository, Symbols.CoinGecko);
+
+  // container.getAll will follow registration order. In our case DIA repository will be first in the list.
+  // Feel free to implement aditional price repositories if needed.
+  container.addTransient<IPriceRepository>(DiaDataPriceRepository, Symbols.PriceRepository);
+  container.addTransient<IPriceRepository>(CoinGeckoPriceRepository, Symbols.PriceRepository);
+
+  container.addTransient<IPriceRepository>(
+    PriceRepositoryWithFailover,
+    Symbols.PriceRepositoryWithFailover
+  );
   container.addTransient<IMetadataRepository>(MetadataRepository, Symbols.MetadataRepository);
   container.addTransient<ISystemRepository>(SystemRepository, Symbols.SystemRepository);
   container.addTransient<IEthCallRepository>(EthCallRepository, Symbols.EthCallRepository);

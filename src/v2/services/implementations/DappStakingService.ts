@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { inject, injectable } from 'inversify';
 import { BN } from '@polkadot/util';
-import { TvlModel } from 'src/v2/models';
+import { TokenInfo, TvlModel } from 'src/v2/models';
 import { IDappStakingRepository, IMetadataRepository, IPriceRepository } from 'src/v2/repositories';
 import { Symbols } from 'src/v2/symbols';
 import { IDappStakingService } from 'src/v2/services';
@@ -14,7 +14,7 @@ export class DappStakingService implements IDappStakingService {
 
   constructor(
     @inject(Symbols.DappStakingRepository) private dappStakingRepository: IDappStakingRepository,
-    @inject(Symbols.CoinGecko) private priceRepository: IPriceRepository,
+    @inject(Symbols.PriceRepositoryWithFailover) private priceRepository: IPriceRepository,
     @inject(Symbols.MetadataRepository) private metadataRepository: IMetadataRepository,
     @inject(Symbols.WalletFactory) walletFactory: () => IWalletService
   ) {
@@ -25,7 +25,7 @@ export class DappStakingService implements IDappStakingService {
     const metadata = await this.metadataRepository.getChainMetadata();
     const [tvl, priceUsd] = await Promise.all([
       this.dappStakingRepository.getTvl(),
-      this.priceRepository.getUsdPrice(metadata.chain.toLowerCase()),
+      this.priceRepository.getUsdPrice(new TokenInfo(metadata.chain.toLowerCase(), metadata.token)),
     ]);
 
     const tvlDefaultUnit = Number(

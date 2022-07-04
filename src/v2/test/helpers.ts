@@ -23,7 +23,10 @@ const initTestContainer = () => {
     DappStakingRepositoryMock,
     Symbols.DappStakingRepository
   );
-  container.addSingleton<IPriceRepository>(PriceRepositoryMock, Symbols.CoinGecko);
+  container.addSingleton<IPriceRepository>(
+    PriceRepositoryMock,
+    Symbols.PriceRepositoryWithFailover
+  );
   container.addSingleton<IMetadataRepository>(MetadataRepositoryMock, Symbols.MetadataRepository);
   container.addSingleton<IDappStakingService>(DappStakingService);
   container.addSingleton<IWalletService>(WalletServiceMock);

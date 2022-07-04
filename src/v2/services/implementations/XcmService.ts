@@ -1,7 +1,7 @@
 import { BN } from '@polkadot/util';
 import { inject, injectable } from 'inversify';
 import { Guard } from 'src/v2/common';
-import { Asset } from 'src/v2/models';
+import { Asset, TokenInfo } from 'src/v2/models';
 import { IPriceRepository, IXcmRepository } from 'src/v2/repositories';
 import { IBalanceFormatterService, IXcmService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
@@ -10,7 +10,7 @@ import { Symbols } from 'src/v2/symbols';
 export class XcmService implements IXcmService {
   constructor(
     @inject(Symbols.XcmRepository) private xcmRepository: IXcmRepository,
-    @inject(Symbols.CoinGecko) private priceRepository: IPriceRepository,
+    @inject(Symbols.PriceRepositoryWithFailover) private priceRepository: IPriceRepository,
     @inject(Symbols.BalanceFormatterService)
     private balanceFormatterService: IBalanceFormatterService
   ) {}
@@ -26,7 +26,9 @@ export class XcmService implements IXcmService {
           asset.balance,
           asset.metadata.decimals
         );
-        const price = await this.priceRepository.getUsdPrice(asset.metadata.name.toLowerCase());
+        const price = await this.priceRepository.getUsdPrice(
+          new TokenInfo(asset.metadata.name.toLowerCase(), asset.metadata.symbol)
+        );
         asset.userBalanceUsd = (Number(asset.userBalance) * price).toString();
       }
     }

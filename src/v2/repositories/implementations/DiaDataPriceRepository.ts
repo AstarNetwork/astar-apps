@@ -2,18 +2,18 @@ import axios from 'axios';
 import { Guard } from 'src/v2//common';
 import { IPriceRepository } from 'src/v2/repositories';
 import { injectable } from 'inversify';
+import { TokenInfo } from 'src/v2/models';
 
 @injectable()
 export class DiaDataPriceRepository implements IPriceRepository {
-  public async getUsdPrice(tokenSymbol: string): Promise<number> {
-    Guard.ThrowIfUndefined('tokenSymbol', tokenSymbol);
+  public async getUsdPrice(tokenInfo: TokenInfo): Promise<number> {
+    Guard.ThrowIfUndefined('tokenInfo', tokenInfo);
 
-    const url = `https://api.coingecko.com/api/v3/simple/price?ids=${tokenSymbol}&vs_currencies=usd`;
+    const url = `https://api.diadata.org/v1/quotation/${tokenInfo.symbol}`;
     const result = await axios.get(url);
 
-    if (result.data[tokenSymbol]) {
-      const price = result.data[tokenSymbol].usd;
-      return Number(price);
+    if (result.data) {
+      return Number(result.data.Price);
     }
 
     return 0;
