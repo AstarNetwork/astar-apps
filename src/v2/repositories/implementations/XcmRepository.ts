@@ -53,7 +53,6 @@ export class XcmRepository implements IXcmRepository {
       if (x.isSome) {
         const balance = x.unwrap();
         assets[index].balance = balance.balance.toBn();
-        assets[index].userBalance = balance.balance.toString();
       }
     });
 

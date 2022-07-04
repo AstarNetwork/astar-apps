@@ -1,4 +1,5 @@
 export const Symbols = {
+  DiaData: Symbol.for('DiaData'),
   CoinGecko: Symbol.for('CoinGecko'),
   WalletFactory: Symbol.for('Factory<IWalletService>'),
   EventAggregator: Symbol.for('EventAggregator'),
@@ -11,4 +12,5 @@ export const Symbols = {
   EthCallRepository: Symbol.for('EthCallRepository'),
   XcmRepository: Symbol.for('XcmRepository'),
   XcmService: Symbol.for('XcmService'),
+  BalanceFormatterService: Symbol.for('BalanceFormatterService'),
 };

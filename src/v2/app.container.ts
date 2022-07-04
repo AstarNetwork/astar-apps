@@ -13,12 +13,14 @@ import {
 import {
   CoinGeckoPriceRepository,
   DappStakingRepository,
+  DiaDataPriceRepository,
   EthCallRepository,
   MetadataRepository,
   SystemRepository,
   XcmRepository,
 } from './repositories/implementations';
 import {
+  IBalanceFormatterService,
   IDappStakingService,
   IGasPriceProvider,
   IWalletService,
@@ -31,6 +33,7 @@ import {
   MetamaskWalletService,
   GasPriceProvider,
   XcmService,
+  BalanceFormatterService,
 } from './services/implementations';
 import { Symbols } from './symbols';
 import { IEventAggregator, EventAggregator } from './messaging';
@@ -62,6 +65,7 @@ export default function buildDependencyContainer(): void {
     DappStakingRepository,
     Symbols.DappStakingRepository
   );
+  container.addTransient<IPriceRepository>(DiaDataPriceRepository, Symbols.DiaData);
   container.addTransient<IPriceRepository>(CoinGeckoPriceRepository, Symbols.CoinGecko);
   container.addTransient<IMetadataRepository>(MetadataRepository, Symbols.MetadataRepository);
   container.addTransient<ISystemRepository>(SystemRepository, Symbols.SystemRepository);
@@ -72,6 +76,10 @@ export default function buildDependencyContainer(): void {
   container.addTransient<IDappStakingService>(DappStakingService, Symbols.DappStakingService);
   container.addSingleton<IGasPriceProvider>(GasPriceProvider, Symbols.GasPriceProvider); // Singleton because it listens and caches gas/tip prices.
   container.addTransient<IXcmService>(XcmService, Symbols.XcmService);
+  container.addTransient<IBalanceFormatterService>(
+    BalanceFormatterService,
+    Symbols.BalanceFormatterService
+  );
 
   // Create GasPriceProvider instace so it can catch price change messages from the portal.
   container.get<IGasPriceProvider>(Symbols.GasPriceProvider);
