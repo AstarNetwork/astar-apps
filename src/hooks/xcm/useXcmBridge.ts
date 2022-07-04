@@ -51,6 +51,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   const fromAddressBalance = ref<number>(0);
   const relaychainNativeBal = ref<number>(0);
   const isLoadingApi = ref<boolean>(false);
+  const hasConnectedApi = ref<boolean>(false);
 
   const { t } = useI18n();
   const store = useStore();
@@ -451,7 +452,12 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   };
 
   const initializeXcmApi = async (): Promise<void> => {
-    if (!isLoadOriginApi.value) return;
+    const hasConnectedApi =
+      originChainApi &&
+      selectedToken.value &&
+      originChainApi.chainProperty?.chainName === selectedToken.value.originChain;
+    if (!isLoadOriginApi.value || hasConnectedApi) return;
+
     isLoadingApi.value = true;
     try {
       await connectOriginChain();
@@ -463,19 +469,16 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     }
   };
 
+  const monitorBalances = async (): Promise<void> => {
+    await Promise.all([updateFromAddressBalance(), setRelaychainBal()]);
+  };
+
   watch([currentNetworkIdx, selectedToken], initializeXcmApi);
   watch([isNativeBridge, isAstar, selectedToken], setDefaultChain);
   watchEffect(setErrMsg);
   watchEffect(setIsDisabledBridge);
-
-  watchEffect(async () => {
-    if (!isLoadOriginApi.value) return;
-    await setEvmDestAddressBalance();
-  });
-
-  watchEffect(async () => {
-    await Promise.all([updateFromAddressBalance(), setRelaychainBal()]);
-  });
+  watchEffect(setEvmDestAddressBalance);
+  watchEffect(monitorBalances);
 
   watchEffect(() => {
     console.log('selectedToken', selectedToken.value);

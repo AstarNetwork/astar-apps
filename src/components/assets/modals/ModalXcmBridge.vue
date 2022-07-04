@@ -6,7 +6,7 @@
     :is-closing="isClosingModal"
     @close="closeModal"
   >
-    <ModalLoading v-if="isLoadingApi && !fromAddressBalance" />
+    <ModalLoading v-if="isLoadingApi" />
 
     <div v-if="isReady" class="wrapper--modal">
       <div class="row--mode-tab">
@@ -123,7 +123,7 @@
         </div>
       </div>
       <div class="container--warning">
-        <div class="row--warning">
+        <div v-if="isNativeToken" class="row--warning">
           <div class="column--title">
             <span class="text--dot">・</span>
             <span class="text--warning">{{ $t('assets.modals.xcmWarning.minBalIsRequired') }}</span>
