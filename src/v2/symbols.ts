@@ -9,4 +9,6 @@ export const Symbols = {
   MetadataRepository: Symbol.for('MetadataRepository'),
   SystemRepository: Symbol.for('SystemRepository'),
   EthCallRepository: Symbol.for('EthCallRepository'),
+  XcmRepository: Symbol.for('XcmRepository'),
+  XcmService: Symbol.for('XcmService'),
 };

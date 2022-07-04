@@ -22,6 +22,11 @@
             :xcm-assets="xcmAssets"
             :handle-update-xcm-token-balances="handleUpdateXcmTokenBalances"
           />
+          <XcmNativeAssetList
+            v-if="isEnableXcm"
+            :xcm-assets="xcmAssetsV2"
+            :handle-update-xcm-token-balances="handleUpdateXcmTokenBalances"
+          />
           <NativeAssetList />
         </div>
       </div>
@@ -38,7 +43,11 @@ import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useCbridgeV2, useXcmAssets } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, watchEffect } from 'vue';
+import { container } from 'src/v2/common';
+import { Asset } from 'src/v2/models/Asset';
+import { IXcmService } from 'src/v2/services';
+import { Symbols } from 'src/v2/symbols';
+import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 
 export default defineComponent({
   components: {
@@ -100,6 +109,24 @@ export default defineComponent({
       setIsDisplay();
     });
 
+    // v2
+    const xcmAssetsV2 = ref<Asset[]>([]);
+
+    const getAssetsV2 = async (address: string): Promise<Asset[]> => {
+      const repo = container.get<IXcmService>(Symbols.XcmService);
+      const assets = await repo.getAssets(address);
+      console.log(assets);
+
+      return assets;
+    };
+
+    watch([selectedAddress], async (newValue, oldValue) => {
+      if (newValue && oldValue !== newValue) {
+        xcmAssetsV2.value = await getAssetsV2(newValue.toString());
+      }
+    });
+    // v2 end
+
     return {
       isLoadingErc20Amount,
       isLoadingXcmAssetsAmount,
@@ -113,6 +140,7 @@ export default defineComponent({
       ttlNativeXcmUsdAmount,
       handleUpdateXcmTokenBalances,
       handleUpdateTokenBalances,
+      xcmAssetsV2,
     };
   },
 });

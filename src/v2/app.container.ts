@@ -8,6 +8,7 @@ import {
   IMetadataRepository,
   IPriceRepository,
   ISystemRepository,
+  IXcmRepository,
 } from './repositories';
 import {
   CoinGeckoPriceRepository,
@@ -15,13 +16,21 @@ import {
   EthCallRepository,
   MetadataRepository,
   SystemRepository,
+  XcmRepository,
 } from './repositories/implementations';
-import { IDappStakingService, IGasPriceProvider, IWalletService, WalletType } from './services';
+import {
+  IDappStakingService,
+  IGasPriceProvider,
+  IWalletService,
+  IXcmService,
+  WalletType,
+} from './services';
 import {
   DappStakingService,
   PolkadotWalletService,
   MetamaskWalletService,
   GasPriceProvider,
+  XcmService,
 } from './services/implementations';
 import { Symbols } from './symbols';
 import { IEventAggregator, EventAggregator } from './messaging';
@@ -53,14 +62,16 @@ export default function buildDependencyContainer(): void {
     DappStakingRepository,
     Symbols.DappStakingRepository
   );
-  container.addSingleton<IPriceRepository>(CoinGeckoPriceRepository, Symbols.CoinGecko);
-  container.addSingleton<IMetadataRepository>(MetadataRepository, Symbols.MetadataRepository);
-  container.addSingleton<ISystemRepository>(SystemRepository, Symbols.SystemRepository);
-  container.addSingleton<IEthCallRepository>(EthCallRepository, Symbols.EthCallRepository);
+  container.addTransient<IPriceRepository>(CoinGeckoPriceRepository, Symbols.CoinGecko);
+  container.addTransient<IMetadataRepository>(MetadataRepository, Symbols.MetadataRepository);
+  container.addTransient<ISystemRepository>(SystemRepository, Symbols.SystemRepository);
+  container.addTransient<IEthCallRepository>(EthCallRepository, Symbols.EthCallRepository);
+  container.addTransient<IXcmRepository>(XcmRepository, Symbols.XcmRepository);
 
   // Services
   container.addTransient<IDappStakingService>(DappStakingService, Symbols.DappStakingService);
   container.addSingleton<IGasPriceProvider>(GasPriceProvider, Symbols.GasPriceProvider); // Singleton because it listens and caches gas/tip prices.
+  container.addTransient<IXcmService>(XcmService, Symbols.XcmService);
 
   // Create GasPriceProvider instace so it can catch price change messages from the portal.
   container.get<IGasPriceProvider>(Symbols.GasPriceProvider);
