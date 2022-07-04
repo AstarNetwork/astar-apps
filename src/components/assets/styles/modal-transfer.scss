@@ -195,6 +195,9 @@
 .token-logo {
   width: 24px;
   height: 24px;
+  img {
+    border-radius: 50%;
+  }
 }
 
 .body--dark {

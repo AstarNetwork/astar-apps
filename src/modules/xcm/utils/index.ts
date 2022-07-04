@@ -95,8 +95,3 @@ export const checkIsFromRelayChain = (fromChain: Chain): boolean => {
     relayChains.find((it) => it === fromChain) || parachains.find((it) => it === fromChain);
   return found ? true : false;
 };
-
-export const getChains = (networkIdx: endpointKey): XcmChain[] => {
-  const relayChain = networkIdx === endpointKey.ASTAR ? Chain.Polkadot : Chain.Kusama;
-  return xcmChains.filter((it) => it.relayChain === relayChain);
-};

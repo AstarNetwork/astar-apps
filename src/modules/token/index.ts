@@ -59,7 +59,31 @@ export const KSM = {
   wrapUrl: null,
 };
 
-export const registeredErc20Tokens = [WASTR, DOT, KSM];
+export const KAR = {
+  srcChainId: 336,
+  address: '0xffffffff00000000000000010000000000000002',
+  decimal: 12,
+  symbol: 'KAR',
+  name: 'Karura',
+  image: 'https://assets.coingecko.com/coins/images/17172/small/karura.jpeg?1626782066',
+  isWrappedToken: false,
+  isXC20: true,
+  wrapUrl: null,
+};
+
+export const KUSD = {
+  srcChainId: 336,
+  address: '0xffffffff00000000000000010000000000000000',
+  decimal: 12,
+  symbol: 'AUSD',
+  name: 'Acala Dollar',
+  image: 'https://assets.coingecko.com/coins/images/25812/small/ezgif-1-f4612f5260.png?1653987299',
+  isWrappedToken: false,
+  isXC20: true,
+  wrapUrl: null,
+};
+
+export const registeredErc20Tokens = [WASTR, DOT, KSM, KUSD, KAR];
 
 // Memo: Define the token image source
 export const tokenImageMap = {

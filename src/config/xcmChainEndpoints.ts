@@ -29,10 +29,16 @@ export const providerEndpoints: SubstrateChainProvider[] = [
     displayName: 'Karura Network',
     endpoint: 'wss://karura.api.onfinality.io/public-ws',
   },
+  {
+    networkAlias: 'Acala',
+    displayName: 'Acala Network',
+    endpoint: 'wss://acala-polkadot.api.onfinality.io/public-ws',
+  },
 ];
 
 export enum parachainIds {
   ASTAR = 2006,
   SHIDEN = 2007,
   KARURA = 2000,
+  ACALA = 2000,
 }

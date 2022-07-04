@@ -31,7 +31,6 @@ export * from './wallet/useWalletIcon';
 export * from './wallet/useEvmWallet';
 export * from './xcm/useXcmAssets';
 export * from './xcm/useXcmBridge';
-export * from './xcm/useHrmpBridge';
 export * from './xcm/useXcmTokenTransfer';
 export * from './xcm/useXcmTokenDetails';
 export * from './xcm/useXcmEvm';

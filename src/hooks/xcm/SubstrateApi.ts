@@ -6,6 +6,7 @@ import { decodeAddress } from '@polkadot/util-crypto';
 import BN from 'bn.js';
 import { ExtrinsicPayload } from 'src/hooks/helper';
 import { ExistentialDeposit, fetchExistentialDeposit } from 'src/modules/xcm';
+import { ChainAsset } from './useXcmAssets';
 
 const AUTO_CONNECT_MS = 10_000; // [ms]
 
@@ -113,7 +114,7 @@ class ChainApi {
     throw 'Undefined sudo';
   }
 
-  public async getBalance(address: string) {
+  public async getNativeBalance(address: string) {
     try {
       await this._api?.isReady;
       const balData = ((await this._api.query.system.account(address)) as any).data;
@@ -121,6 +122,31 @@ class ChainApi {
     } catch (e) {
       console.error(e);
       return new BN(0);
+    }
+  }
+
+  public async getTokenBalances({
+    selectedToken,
+    address,
+    isNativeToken,
+  }: {
+    selectedToken: ChainAsset;
+    address: string;
+    isNativeToken: boolean;
+  }): Promise<string> {
+    try {
+      // const tokenName = this.convertTokenName(token);
+      // const bal = await this.apiInst.query.tokens.accounts<TokensAccounts>(address, {
+      //   Token: tokenName,
+      // });
+      // const decimals = this._tokens.find((it) => it.token === tokenName)?.decimals;
+      // return ethers.utils.formatUnits(bal.free.toString(), decimals);
+
+      // Memo
+      return (await this.getNativeBalance(address)).toString();
+    } catch (e) {
+      console.error(e);
+      return '0';
     }
   }
 
@@ -212,12 +238,12 @@ export class RelaychainApi extends ChainApi {
     toPara,
     recipientAccountId,
     amount,
-    token,
+    selectedToken,
   }: {
     toPara: number;
     recipientAccountId: string;
     amount: string;
-    token?: string;
+    selectedToken?: ChainAsset;
   }) {
     // public transferToParachain(toPara: number, recipientAccountId: string, amount: string) {
     // the target parachain connected to the current relaychain

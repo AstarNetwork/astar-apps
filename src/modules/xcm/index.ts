@@ -6,7 +6,6 @@ export {
   fetchXcmBalance,
   fetchExistentialDeposit,
   checkIsFromRelayChain,
-  getChains,
 } from './utils';
 export interface XcmTokenInformation {
   symbol: string;
@@ -33,6 +32,7 @@ export enum Chain {
   Kusama = 'Kusama',
   Shiden = 'Shiden',
   Karura = 'Karura',
+  Acala = 'Acala',
 }
 
 export interface XcmChain {
@@ -66,6 +66,11 @@ export const xcmChains: XcmChain[] = [
     name: Chain.Karura,
     relayChain: Chain.Kusama,
     img: 'https://polkadot.js.org/apps/static/karura.6540c949..svg',
+  },
+  {
+    name: Chain.Acala,
+    relayChain: Chain.Polkadot,
+    img: 'https://polkadot.js.org/apps/static/acala.696aa448..svg',
   },
 ];
 

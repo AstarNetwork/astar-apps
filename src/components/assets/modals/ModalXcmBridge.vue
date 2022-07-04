@@ -6,7 +6,7 @@
     :is-closing="isClosingModal"
     @close="closeModal"
   >
-    <ModalLoading v-if="isLoadingApi" />
+    <ModalLoading v-if="isLoadingApi && !fromAddressBalance" />
 
     <div v-if="isReady" class="wrapper--modal">
       <div class="row--mode-tab">
@@ -233,6 +233,7 @@ export default defineComponent({
       evmDestAddressBalance,
       fromAddressBalance,
       isDeposit,
+      isLoadingApi,
       inputHandler,
       bridge,
       resetStates,
@@ -244,9 +245,9 @@ export default defineComponent({
     const { currentAccount } = useAccount();
     const { callAssetWithdrawToPara } = useXcmEvm(currentAccount);
 
-    const isLoadingApi = computed<boolean>(() => {
-      return existentialDeposit.value === null;
-    });
+    // const isLoadingApi = computed<boolean>(() => {
+    //   return existentialDeposit.value === null;
+    // });
 
     const isReady = computed<boolean>(() => {
       return !!(token.value && srcChain.value && destChain.value);
