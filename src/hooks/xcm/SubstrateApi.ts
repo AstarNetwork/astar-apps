@@ -329,13 +329,36 @@ export class ParachainApi extends ChainApi {
   }
 
   /// should move to function in relay chain ($api)
-  public transferToRelaychain(recipientAccountId: string, amount: string) {
-    const dest = {
-      V1: {
-        interior: 'Here',
-        parents: new BN(1),
-      },
-    };
+  public transferToOriginChain({
+    selectedToken,
+    recipientAccountId,
+    amount,
+    isNativeToken,
+    paraId,
+  }: {
+    selectedToken: ChainAsset;
+    recipientAccountId: string;
+    amount: string;
+    isNativeToken: boolean;
+    paraId: number;
+  }): ExtrinsicPayload {
+    const dest = paraId
+      ? {
+          V1: {
+            interior: {
+              X1: {
+                Parachain: new BN(paraId),
+              },
+            },
+            parents: new BN(1),
+          },
+        }
+      : {
+          V1: {
+            interior: 'Here',
+            parents: new BN(1),
+          },
+        };
     // the account ID within the destination parachain
     const beneficiary = {
       V1: {
@@ -350,6 +373,28 @@ export class ParachainApi extends ChainApi {
         parents: new BN(0),
       },
     };
+
+    const asset = isNativeToken
+      ? {
+          Concrete: {
+            interior: 'Here',
+            parents: new BN(1),
+          },
+        }
+      : {
+          Concrete: {
+            interior: {
+              X2: {
+                Parachain: new BN(paraId),
+                // Parachain: '2000',
+                // Todo: fetch the correct id
+                GeneralKey: String(selectedToken.id),
+              },
+            },
+            parents: new BN(1),
+          },
+        };
+    console.log('asset', asset);
     // amount of fungible tokens to be transferred
     const assets = {
       V1: [
@@ -357,12 +402,7 @@ export class ParachainApi extends ChainApi {
           fun: {
             Fungible: new BN(amount),
           },
-          id: {
-            Concrete: {
-              interior: 'Here',
-              parents: new BN(1),
-            },
-          },
+          id: asset,
         },
       ],
     };

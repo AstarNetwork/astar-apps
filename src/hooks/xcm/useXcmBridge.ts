@@ -383,15 +383,18 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
         // Withdrawal (native parachains -> relaychain)
         let recipientAccountId = getPubkeyFromSS58Addr(currentAccount.value);
         const injector = await getInjector(substrateAccounts.value);
-        const paraChainApi = new ParachainApi($api!!);
+        const parachainApi = new ParachainApi($api!!);
         // Todo: change to transferToOriginChain
-        const txCall = paraChainApi.transferToRelaychain(
+        const txCall = parachainApi.transferToOriginChain({
+          selectedToken: selectedToken.value,
           recipientAccountId,
-          ethers.utils.parseUnits(amount.value, decimals.value).toString()
-        );
+          amount: ethers.utils.parseUnits(amount.value, decimals.value).toString(),
+          isNativeToken: isNativeToken.value,
+          paraId: destChain.value.parachainId,
+        });
 
         const tip = ethers.utils.parseEther(nativeTipPrice.value.fast).toString();
-        await paraChainApi
+        await parachainApi
           .signAndSend(
             currentAccount.value,
             injector.signer,

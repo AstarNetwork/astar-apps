@@ -1,6 +1,7 @@
 import { Struct } from '@polkadot/types';
 import { decodeAddress } from '@polkadot/util-crypto';
 import BN from 'bn.js';
+import { ExtrinsicPayload } from 'src/hooks/helper';
 import { RelaychainApi } from '../SubstrateApi';
 import { ChainAsset } from '../useXcmAssets';
 
@@ -49,7 +50,7 @@ export class AcalaApi extends RelaychainApi {
     recipientAccountId: string;
     amount: string;
     selectedToken: ChainAsset;
-  }) {
+  }): ExtrinsicPayload {
     const t = {
       Token: selectedToken.originAssetId,
     };
