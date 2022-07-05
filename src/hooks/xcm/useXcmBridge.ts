@@ -49,9 +49,8 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   const evmDestAddress = ref<string>('');
   const evmDestAddressBalance = ref<number>(0);
   const fromAddressBalance = ref<number>(0);
-  const relaychainNativeBal = ref<number>(0);
+  const originChainNativeBal = ref<number>(0);
   const isLoadingApi = ref<boolean>(false);
-  const hasConnectedApi = ref<boolean>(false);
 
   const { t } = useI18n();
   const store = useStore();
@@ -127,7 +126,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     }
   };
 
-  const getRelayChainNativeBal = async (): Promise<string> => {
+  const getOriginChainNativeBal = async (): Promise<string> => {
     if (!currentAccount.value || !srcChain.value || !originChainApi || isH160.value) {
       return '0';
     }
@@ -143,7 +142,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     existentialDeposit.value = result;
   };
 
-  const setRelaychainBal = async (): Promise<void> => {
+  const setOriginChainNativeBal = async (): Promise<void> => {
     if (
       !originChainApi ||
       !selectedToken.value ||
@@ -153,9 +152,9 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
       return;
     }
     await originChainApi.isReady();
-    const rawBalance = await getRelayChainNativeBal();
+    const rawBalance = await getOriginChainNativeBal();
     const balance = ethers.utils.formatUnits(rawBalance, decimals.value).toString();
-    relaychainNativeBal.value = Number(balance);
+    originChainNativeBal.value = Number(balance);
   };
 
   const checkIsEnoughEd = async (amount: number): Promise<boolean> => {
@@ -163,14 +162,14 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     if (!relaychainMinBal) return false;
 
     if (isDeposit.value) {
-      const relayBalAfterTransfer = relaychainNativeBal.value - amount;
+      const relayBalAfterTransfer = originChainNativeBal.value - amount;
       return relayBalAfterTransfer > relaychainMinBal;
     } else {
       // Memo: wait for updating relaychainNativeBalance
       await wait(500);
       const relaychainNativeBalance = isH160.value
         ? evmDestAddressBalance.value
-        : relaychainNativeBal.value;
+        : originChainNativeBal.value;
       return relaychainNativeBalance > relaychainMinBal;
     }
   };
@@ -384,9 +383,10 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
         let recipientAccountId = getPubkeyFromSS58Addr(currentAccount.value);
         const injector = await getInjector(substrateAccounts.value);
         const parachainApi = new ParachainApi($api!!);
+
         // Todo: change to transferToOriginChain
-        const txCall = parachainApi.transferToOriginChain({
-          selectedToken: selectedToken.value,
+        const txCall = await parachainApi.transferToOriginChain({
+          assetId: selectedToken.value.id,
           recipientAccountId,
           amount: ethers.utils.parseUnits(amount.value, decimals.value).toString(),
           isNativeToken: isNativeToken.value,
@@ -423,6 +423,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   };
 
   const updateFromAddressBalance = async (): Promise<void> => {
+    console.log('updateFromAddressBalance');
     if (!selectedToken.value || !originChainApi || isLoadingApi.value) return;
 
     if (isDeposit.value) {
@@ -431,6 +432,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
         selectedToken: selectedToken.value,
         isNativeToken: isNativeToken.value,
       });
+      console.log('fromAddressBalFull', fromAddressBalFull);
 
       fromAddressBalance.value = Number(
         ethers.utils.formatUnits(fromAddressBalFull, decimals.value).toString()
@@ -439,7 +441,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
       const address = currentAccount.value;
       // Memo: Withdraw
       if (isH160.value) {
-        // Memo: ASTAR/SHIDEN from account(EVM) balance
+        // Memo: EVM balance
         const balance = await getTokenBal({
           srcChainId: evmNetworkIdx.value,
           address,
@@ -448,7 +450,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
         });
         fromAddressBalance.value = Number(balance);
       } else {
-        // Memo: ASTAR/SHIDEN from account(Native) balance
+        // Memo: Native balance
         fromAddressBalance.value = Number(selectedToken.value.userBalance);
       }
     }
@@ -473,7 +475,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   };
 
   const monitorBalances = async (): Promise<void> => {
-    await Promise.all([updateFromAddressBalance(), setRelaychainBal()]);
+    await Promise.all([updateFromAddressBalance(), setOriginChainNativeBal()]);
   };
 
   watch([currentNetworkIdx, selectedToken], initializeXcmApi);

@@ -1,5 +1,5 @@
 import { ApiPromise, WsProvider } from '@polkadot/api';
-import { TypeRegistry } from '@polkadot/types';
+import { Option, Struct, TypeRegistry } from '@polkadot/types';
 import { DispatchError, MultiAsset, MultiLocation, VersionedXcm } from '@polkadot/types/interfaces';
 import { ISubmittableResult, ITuple } from '@polkadot/types/types';
 import { decodeAddress } from '@polkadot/util-crypto';
@@ -15,6 +15,22 @@ interface ChainProperty {
   tokenDecimals: number[];
   chainName: string;
   ss58Prefix: number;
+}
+
+interface AssetConfig extends Struct {
+  v1: {
+    parents: number;
+    interior: Interior;
+  };
+}
+
+interface Interior {
+  x2: X2[];
+}
+
+interface X2 {
+  parachain: number;
+  generalKey: string;
 }
 
 class ChainApi {
@@ -135,14 +151,6 @@ class ChainApi {
     isNativeToken: boolean;
   }): Promise<string> {
     try {
-      // const tokenName = this.convertTokenName(token);
-      // const bal = await this.apiInst.query.tokens.accounts<TokensAccounts>(address, {
-      //   Token: tokenName,
-      // });
-      // const decimals = this._tokens.find((it) => it.token === tokenName)?.decimals;
-      // return ethers.utils.formatUnits(bal.free.toString(), decimals);
-
-      // Memo
       return (await this.getNativeBalance(address)).toString();
     } catch (e) {
       console.error(e);
@@ -328,21 +336,32 @@ export class ParachainApi extends ChainApi {
     super(api);
   }
 
-  /// should move to function in relay chain ($api)
-  public transferToOriginChain({
-    selectedToken,
+  public async fetchAssetConfig(assetId: string): Promise<{
+    parents: number;
+    interior: Interior;
+  }> {
+    const config = await this.apiInst.query.xcAssetConfig.assetIdToLocation<Option<AssetConfig>>(
+      assetId
+    );
+    const formattedAssetConfig = JSON.parse(config.toString());
+    return formattedAssetConfig.v1;
+  }
+
+  public async transferToOriginChain({
+    assetId,
     recipientAccountId,
     amount,
     isNativeToken,
     paraId,
   }: {
-    selectedToken: ChainAsset;
+    assetId: string;
     recipientAccountId: string;
     amount: string;
     isNativeToken: boolean;
     paraId: number;
-  }): ExtrinsicPayload {
-    const dest = paraId
+  }): Promise<ExtrinsicPayload> {
+    const isSendToParachain = paraId > 0;
+    const dest = isSendToParachain
       ? {
           V1: {
             interior: {
@@ -359,7 +378,7 @@ export class ParachainApi extends ChainApi {
             parents: new BN(1),
           },
         };
-    // the account ID within the destination parachain
+
     const beneficiary = {
       V1: {
         interior: {
@@ -374,28 +393,17 @@ export class ParachainApi extends ChainApi {
       },
     };
 
-    const asset = isNativeToken
+    const asset = isSendToParachain
       ? {
+          Concrete: await this.fetchAssetConfig(assetId),
+        }
+      : {
           Concrete: {
             interior: 'Here',
             parents: new BN(1),
           },
-        }
-      : {
-          Concrete: {
-            interior: {
-              X2: {
-                Parachain: new BN(paraId),
-                // Parachain: '2000',
-                // Todo: fetch the correct id
-                GeneralKey: String(selectedToken.id),
-              },
-            },
-            parents: new BN(1),
-          },
         };
-    console.log('asset', asset);
-    // amount of fungible tokens to be transferred
+
     const assets = {
       V1: [
         {

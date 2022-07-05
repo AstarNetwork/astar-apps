@@ -3,10 +3,22 @@ import axios from 'axios';
 const getUsdPriceViaDia = async (symbol: string): Promise<number> => {
   try {
     // Ref: https://docs.diadata.org/documentation/api-1/api-endpoints#quotation
-    const url = `https://api.diadata.org/v1/quotation/${symbol}`;
+    const url = `https://api.diadata.org/v1/quotation/${symbol.toUpperCase()}`;
     const result = await axios.get(url);
     const price = result.data.Price;
     return price;
+  } catch (error) {
+    return getUsdBySymbolViaCoingecko(symbol);
+  }
+};
+
+export const getUsdBySymbolViaCoingecko = async (symbol: string): Promise<number> => {
+  try {
+    const url = 'https://api.coingecko.com/api/v3/coins/list';
+    const { data } = await axios.get<{ id: string; symbol: string }[]>(url);
+    const item = data.find((it) => it.symbol.toLowerCase() === symbol.toLowerCase());
+    if (!item) return 0;
+    return await getUsdPrice(item.id);
   } catch (error) {
     console.error(error);
     console.error(`symbol: ${symbol}`);
@@ -20,11 +32,7 @@ export const getUsdBySymbol = async (symbol: string): Promise<number> => {
   } catch (error) {
     console.error(error);
     try {
-      const url = 'https://api.coingecko.com/api/v3/coins/list';
-      const { data } = await axios.get<{ id: string; symbol: string }[]>(url);
-      const item = data.find((it) => it.symbol.toLowerCase() === symbol.toLowerCase());
-      if (!item) return 0;
-      return await getUsdPrice(item.id);
+      return getUsdBySymbolViaCoingecko(symbol);
     } catch (error) {
       console.error(error);
       console.error(`symbol: ${symbol}`);
