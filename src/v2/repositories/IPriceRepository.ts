@@ -8,5 +8,5 @@ export interface IPriceRepository {
    * Gets current token price in USD.
    * @param tokenInfo Token information.
    */
-  getUsdPrice(TokenInfo: TokenInfo): Promise<number>;
+  getUsdPrice(tokenInfo: TokenInfo): Promise<number>;
 }

@@ -25,7 +25,7 @@ export class DappStakingService implements IDappStakingService {
     const metadata = await this.metadataRepository.getChainMetadata();
     const [tvl, priceUsd] = await Promise.all([
       this.dappStakingRepository.getTvl(),
-      this.priceRepository.getUsdPrice(new TokenInfo(metadata.chain.toLowerCase(), metadata.token)),
+      this.priceRepository.getUsdPrice(new TokenInfo(metadata.chain, metadata.token)),
     ]);
 
     const tvlDefaultUnit = Number(

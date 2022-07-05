@@ -27,7 +27,7 @@ export class XcmService implements IXcmService {
           asset.metadata.decimals
         );
         const price = await this.priceRepository.getUsdPrice(
-          new TokenInfo(asset.metadata.name.toLowerCase(), asset.metadata.symbol)
+          new TokenInfo(asset.metadata.name, asset.metadata.symbol)
         );
         asset.userBalanceUsd = (Number(asset.userBalance) * price).toString();
       }

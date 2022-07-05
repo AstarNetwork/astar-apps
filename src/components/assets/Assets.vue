@@ -22,11 +22,6 @@
             :xcm-assets="xcmAssets"
             :handle-update-xcm-token-balances="handleUpdateXcmTokenBalances"
           />
-          <!-- <XcmNativeAssetList
-            v-if="isEnableXcm"
-            :xcm-assets="xcmAssetsV2"
-            :handle-update-xcm-token-balances="handleUpdateXcmTokenBalances"
-          /> -->
           <NativeAssetList />
         </div>
       </div>
@@ -43,10 +38,6 @@ import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useCbridgeV2, useXcmAssets } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { useStore } from 'src/store';
-import { container } from 'src/v2/common';
-import { Asset } from 'src/v2/models/Asset';
-import { IXcmService } from 'src/v2/services';
-import { Symbols } from 'src/v2/symbols';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 
 export default defineComponent({
@@ -60,7 +51,6 @@ export default defineComponent({
     const { tokens, isLoadingErc20Amount, ttlErc20Amount, handleUpdateTokenBalances } =
       useCbridgeV2();
     const {
-      // xcmAssets,
       ttlNativeXcmUsdAmount,
       isLoadingXcmAssetsAmount,
       handleUpdateTokenBalances: handleUpdateXcmTokenBalances,
@@ -140,7 +130,6 @@ export default defineComponent({
       ttlNativeXcmUsdAmount,
       handleUpdateXcmTokenBalances,
       handleUpdateTokenBalances,
-      //xcmAssetsV2,
     };
   },
 });
