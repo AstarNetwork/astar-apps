@@ -245,10 +245,6 @@ export default defineComponent({
     const { currentAccount } = useAccount();
     const { callAssetWithdrawToPara } = useXcmEvm(currentAccount);
 
-    // const isLoadingApi = computed<boolean>(() => {
-    //   return existentialDeposit.value === null;
-    // });
-
     const isReady = computed<boolean>(() => {
       return !!(token.value && srcChain.value && destChain.value);
     });
