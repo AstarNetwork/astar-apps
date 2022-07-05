@@ -17,7 +17,6 @@ export class XcmRepository implements IXcmRepository {
   public async getAssets(currentAccount: string): Promise<Asset[]> {
     Guard.ThrowIfUndefined('currentAccount', currentAccount);
 
-    const mappedXC20Asset = (assetId: string) => `0xffffffff${Web3.utils.toHex(assetId).slice(2)}`;
     const api = await this.api.getApi();
     const metadata = await api.query.assets.metadata.entries();
 
@@ -31,7 +30,7 @@ export class XcmRepository implements IXcmRepository {
       const isFrozen = value.isFrozen.valueOf();
 
       const metadata = new AssetMetadata(name, symbol, decimals, isFrozen, deposit);
-      const asset = new Asset(id, mappedXC20Asset(id), metadata);
+      const asset = new Asset(id, this.getMappedXC20Asset(id), metadata);
 
       result.push(asset);
     });
@@ -57,5 +56,25 @@ export class XcmRepository implements IXcmRepository {
     });
 
     return assets.sort((a1, a2) => a2.balance.sub(a1.balance).toNumber());
+  }
+
+  private getMappedXC20Asset(assetId: string): string {
+    const hexedAddress = `0xffffffff${Web3.utils.toHex(assetId).slice(2)}`;
+    const requirementLength = 42;
+    const mappedLength = hexedAddress.length;
+    const paddingDiffer = requirementLength - mappedLength;
+
+    if (paddingDiffer === 0) {
+      return hexedAddress;
+    } else {
+      // Memo: modify the mapped address due to padding issue
+      // Ref: https://stakesg.slack.com/archives/C028H2ZSGRK/p1656924498917399?thread_ts=1656690608.831049&cid=C028H2ZSGRK
+      // Memo: -> 0xffffffff
+      const a = hexedAddress.slice(0, 10);
+      const b = '0'.repeat(paddingDiffer);
+      const c = hexedAddress.slice(10);
+      const fixedAddress = a + b + c;
+      return fixedAddress;
+    }
   }
 }

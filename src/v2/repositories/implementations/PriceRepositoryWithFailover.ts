@@ -22,6 +22,7 @@ export class PriceRepositoryWithFailover implements IPriceRepository {
       try {
         return await provider.getUsdPrice(tokenInfo);
       } catch (error) {
+        // execution will move to next price repository
         console.log(error);
       }
     }
