@@ -5,10 +5,12 @@ import { createStore, Store as VuexStore, useStore as vuexUseStore } from 'vuex'
 import { GeneralStateInterface } from './general/state';
 import { ContractsStateInterface } from './contracts/state';
 import { DappStateInterface } from './dapp-staking/state';
+import { AssetsStateInterface } from './assets/state';
 
 import general from './general';
 import contracts from './contracts';
 import dapps from './dapp-staking';
+import assets from './assets';
 
 /*
  * If not building with SSR mode, you can
@@ -26,6 +28,7 @@ export interface StateInterface {
   general: GeneralStateInterface;
   contracts: ContractsStateInterface;
   dapps: DappStateInterface;
+  assets: AssetsStateInterface;
 }
 
 // provide typings for `this.$store`
@@ -44,6 +47,7 @@ export default store(function (/* { ssrContext } */) {
       general,
       contracts,
       dapps,
+      assets,
     },
 
     // enable strict mode (adds overhead!)

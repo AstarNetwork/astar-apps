@@ -398,6 +398,8 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
             store.commit('general/setLoading', false);
           });
       }
+
+      store.dispatch('assets/getAssets', currentAccount.value);
     } catch (error: any) {
       console.error(error.message);
       store.dispatch('general/showAlertMsg', {

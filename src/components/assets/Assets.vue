@@ -78,12 +78,10 @@ export default defineComponent({
     const isShibuya = computed(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
 
     // v2
-    const xcmAssets = ref<Asset[]>([]);
+    const xcmAssets = computed(() => store.getters['assets/getAllAssets']);
 
     const getAssetsV2 = async (address: string): Promise<void> => {
-      const repo = container.get<IXcmService>(Symbols.XcmService);
-      const assets = await repo.getAssets(address);
-      xcmAssets.value = assets;
+      store.dispatch('assets/getAssets', address);
     };
 
     watch([selectedAddress], async (newValue, oldValue) => {
