@@ -75,7 +75,7 @@ export const KUSD = {
   srcChainId: 336,
   address: '0xffffffff00000000000000010000000000000000',
   decimal: 12,
-  symbol: 'AUSD',
+  symbol: 'aUSD',
   name: 'Acala Dollar',
   image: 'https://assets.coingecko.com/coins/images/25812/small/ezgif-1-f4612f5260.png?1653987299',
   isWrappedToken: false,

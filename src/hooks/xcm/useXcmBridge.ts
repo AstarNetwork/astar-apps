@@ -162,15 +162,18 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     if (!relaychainMinBal) return false;
 
     if (isDeposit.value) {
-      const relayBalAfterTransfer = originChainNativeBal.value - amount;
-      return relayBalAfterTransfer > relaychainMinBal;
+      // const relayBalAfterTransfer = originChainNativeBal.value - amount;
+      // return relayBalAfterTransfer > relaychainMinBal;
+
+      // Memo: ED is not required for the deposit transaction
+      return true;
     } else {
       // Memo: wait for updating relaychainNativeBalance
       await wait(500);
-      const relaychainNativeBalance = isH160.value
+      const originChainNativeBalance = isH160.value
         ? evmDestAddressBalance.value
         : originChainNativeBal.value;
-      return relaychainNativeBalance > relaychainMinBal;
+      return originChainNativeBalance > relaychainMinBal;
     }
   };
 
@@ -241,11 +244,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
 
     // check if recipient account has non-zero native asset. (it cannot be transferred to an account with 0 nonce)
     isDisabledBridge.value =
-      !amount.value ||
-      Number(amount.value) === 0 ||
-      balance.value.lten(0) ||
-      errMsg.value !== '' ||
-      !isFulfilledAddress;
+      !amount.value || Number(amount.value) === 0 || errMsg.value !== '' || !isFulfilledAddress;
   };
 
   const setIsNativeBridge = (isNative: boolean): void => {
@@ -328,10 +327,6 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
       }
       if (!amount.value) {
         throw Error('Invalid amount');
-      }
-      // check if recipient account has non-zero native asset. (it cannot be transferred to an account with 0 nonce)
-      if (balance.value.eqn(0)) {
-        throw Error(t('assets.modals.xcmWarning.nonzeroBalance'));
       }
 
       store.commit('general/setLoading', true);

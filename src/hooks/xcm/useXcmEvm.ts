@@ -59,7 +59,7 @@ export function useXcmEvm(addressRef: Ref<string>) {
       const assetIds = [asset_id];
       const assetAmounts = [new BN(assetAmount)];
       const recipientAccountId = recipientEvmAccountId;
-      const idRelay = true;
+      const isRelay = true;
       const parachainId = 0;
       const feeIndex = 0;
 
@@ -83,7 +83,7 @@ export function useXcmEvm(addressRef: Ref<string>) {
               assetIds,
               assetAmounts,
               recipientAccountId,
-              idRelay,
+              isRelay,
               parachainId,
               feeIndex
             )
