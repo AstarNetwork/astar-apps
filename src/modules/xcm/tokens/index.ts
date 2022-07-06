@@ -46,6 +46,16 @@ export const xcmToken = {
       originChain: 'Karura',
       minBridgeAmount: '0.004948',
     },
+    {
+      symbol: 'LKSM',
+      isNativeToken: false,
+      assetId: '18446744073709551619',
+      originAssetId: 'LKSM',
+      logo: 'https://resources.acala.network/tokens/LKSM.png',
+      isXcmCompatible: true,
+      originChain: 'Karura',
+      minBridgeAmount: '0.0024',
+    },
   ],
   [endpointKey.SHIBUYA]: [],
 };

@@ -1,3 +1,4 @@
+import { wrappedTokenMap } from './../../modules/token/index';
 import axios from 'axios';
 
 const getUsdPriceViaDia = async (symbol: string): Promise<number> => {
@@ -27,12 +28,16 @@ export const getUsdBySymbolViaCoingecko = async (symbol: string): Promise<number
 };
 
 export const getUsdBySymbol = async (symbol: string): Promise<number> => {
+  let tokenSymbol = symbol;
+  if (wrappedTokenMap.hasOwnProperty(symbol)) {
+    tokenSymbol = wrappedTokenMap[symbol as keyof typeof wrappedTokenMap];
+  }
   try {
-    return getUsdPriceViaDia(symbol);
+    return getUsdPriceViaDia(tokenSymbol);
   } catch (error) {
     console.error(error);
     try {
-      return getUsdBySymbolViaCoingecko(symbol);
+      return getUsdBySymbolViaCoingecko(tokenSymbol);
     } catch (error) {
       console.error(error);
       console.error(`symbol: ${symbol}`);

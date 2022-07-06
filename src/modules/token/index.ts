@@ -1,7 +1,6 @@
 export {
   getTokenImage,
   getErc20Explorer,
-  checkIsWrappedToken,
   storeImportedERC20Token,
   getStoredERC20Tokens,
   getRegisteredERC20Token,
@@ -83,10 +82,26 @@ export const KUSD = {
   wrapUrl: null,
 };
 
-export const registeredErc20Tokens = [WASTR, DOT, KSM, KUSD, KAR];
+export const LKSM = {
+  srcChainId: 336,
+  address: '0xffffffff00000000000000010000000000000003',
+  decimal: 12,
+  symbol: 'LKSM',
+  name: 'Liquid KSM',
+  image: 'https://resources.acala.network/tokens/LKSM.png',
+  isWrappedToken: false,
+  isXC20: true,
+  wrapUrl: null,
+};
+
+export const registeredErc20Tokens = [WASTR, DOT, KSM, KUSD, KAR, LKSM];
 
 // Memo: Define the token image source
 export const tokenImageMap = {
   ARSW: 'https://assets.coingecko.com/coins/images/26048/small/arsw.png?1655440190',
   LAY: 'https://assets.coingecko.com/coins/images/25795/small/WKBrkX4y_400x400.png?1653920060',
+};
+
+export const wrappedTokenMap = {
+  WASTR: 'ASTR',
 };
