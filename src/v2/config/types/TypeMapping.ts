@@ -1,0 +1,7 @@
+type Class = {
+  new (...args: unknown[]): unknown;
+};
+
+export type TypeMapping = {
+  [key: string]: Class;
+};
