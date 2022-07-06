@@ -12,7 +12,7 @@ import { Guard } from 'src/v2/common';
 
 @injectable()
 export class XcmRepository implements IXcmRepository {
-  constructor(@inject(Symbols.Api) private api: IApi) {}
+  constructor(@inject(Symbols.DefaultApi) private api: IApi) {}
 
   public async getAssets(currentAccount: string): Promise<Asset[]> {
     Guard.ThrowIfUndefined('currentAccount', currentAccount);

@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { interfaces } from 'inversify';
-import { IApi } from './integration';
-import { Api } from './integration/implementation';
+import { IApi, IApiFactory } from './integration';
+import { ApiFactory, DefaultApi } from './integration/implementation';
 import {
   IDappStakingRepository,
   IEthCallRepository,
@@ -48,9 +48,9 @@ export function setCurrentWallet(isEthWallet: boolean): void {
 
 export default function buildDependencyContainer(): void {
   container.addSingleton<IEventAggregator>(EventAggregator, Symbols.EventAggregator);
-  container.addSingleton<IApi>(Api, Symbols.Api);
+  container.addSingleton<IApi>(DefaultApi, Symbols.DefaultApi);
+  container.addSingleton<IApiFactory>(ApiFactory, Symbols.ApiFactory);
 
-  // need to specify id because not following name convention IService -> Service
   container.addSingleton<IWalletService>(PolkadotWalletService, WalletType.Polkadot);
   container.addSingleton<IWalletService>(MetamaskWalletService, WalletType.Metamask);
 
