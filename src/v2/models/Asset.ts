@@ -1,14 +1,14 @@
 import { BN } from '@polkadot/util';
 
 export class Asset {
-  public userBalance: string;
-  public userBalanceUsd: string;
+  public userBalance: number;
+  public userBalanceUsd: number;
   public balance: BN;
 
   constructor(public id: string, public mappedERC20Addr: string, public metadata: AssetMetadata) {
     this.balance = new BN(0);
-    this.userBalance = '0';
-    this.userBalanceUsd = '0';
+    this.userBalance = 0;
+    this.userBalanceUsd = 0;
   }
 }
 

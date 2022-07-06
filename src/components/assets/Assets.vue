@@ -70,19 +70,15 @@ export default defineComponent({
     // v2
     const xcmAssets = computed(() => store.getters['assets/getAllAssets']);
 
-    const getAssetsV2 = async (address: string): Promise<void> => {
-      store.dispatch('assets/getAssets', address);
-    };
-
-    watch([selectedAddress], async (newValue, oldValue) => {
-      if (newValue && oldValue !== newValue) {
-        await getAssetsV2(newValue.toString());
-      }
-    });
-
-    if (selectedAddress.value) {
-      getAssetsV2(selectedAddress.value);
-    }
+    watch(
+      selectedAddress,
+      (newValue) => {
+        if (newValue) {
+          store.dispatch('assets/getAssets', newValue);
+        }
+      },
+      { immediate: true }
+    );
     // v2 end
 
     const isEnableXcm = computed(

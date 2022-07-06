@@ -15,7 +15,7 @@ describe('XcmService.ts', () => {
     const assets = await service.getAssets('123');
 
     expect(assets).toBeTruthy();
-    expect(assets[0].userBalance).toStrictEqual('0.001');
-    expect(assets[0].userBalanceUsd).toStrictEqual('0.1');
+    expect(assets[0].userBalance).toBeCloseTo(0.001, 3);
+    expect(assets[0].userBalanceUsd).toBeCloseTo(0.1, 3);
   });
 });

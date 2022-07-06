@@ -55,7 +55,7 @@ export class XcmRepository implements IXcmRepository {
       }
     });
 
-    return assets.sort((a1, a2) => a2.balance.sub(a1.balance).toNumber());
+    return assets;
   }
 
   private getMappedXC20Asset(assetId: string): string {

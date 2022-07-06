@@ -21,18 +21,17 @@ export class XcmService implements IXcmService {
     const assets = await this.xcmRepository.getAssets(currentAccount);
 
     for (const asset of assets) {
-      if (asset.balance > new BN(0)) {
-        asset.userBalance = this.balanceFormatterService.format(
-          asset.balance,
-          asset.metadata.decimals
+      if (asset.balance.gt(new BN(0))) {
+        asset.userBalance = Number(
+          this.balanceFormatterService.format(asset.balance, asset.metadata.decimals)
         );
         const price = await this.priceRepository.getUsdPrice(
           new TokenInfo(asset.metadata.name, asset.metadata.symbol)
         );
-        asset.userBalanceUsd = (Number(asset.userBalance) * price).toString();
+        asset.userBalanceUsd = asset.userBalance * price;
       }
     }
 
-    return assets;
+    return assets.sort((a1, a2) => a2.userBalanceUsd - a1.userBalanceUsd);
   }
 }
