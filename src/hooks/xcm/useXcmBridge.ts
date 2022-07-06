@@ -541,6 +541,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     fromAddressBalance,
     isDeposit,
     isLoadingApi,
+    isAstarNativeTransfer,
     inputHandler,
     bridge,
     resetStates,

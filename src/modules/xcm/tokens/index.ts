@@ -64,6 +64,7 @@ export const idAstarNativePlaceholder = '0000000000000000000';
 
 export const generateAstarNativeTokenObject = (symbol: string) => {
   const name = symbol === 'ASTR' ? 'Astar' : symbol === 'SDN' ? 'Shiden' : 'Shibuya';
+  const tokenImage = symbol === 'ASTR' ? ASTR.logo : symbol === 'SDN' ? SDN.logo : SBY.logo;
   return {
     accounts: '',
     admin: '',
@@ -91,6 +92,9 @@ export const generateAstarNativeTokenObject = (symbol: string) => {
     supply: '',
     userBalance: '0',
     userBalanceUsd: '0',
+    tokenImage,
+    isNativeToken: true,
+    isXcmCompatible: true,
   };
 };
 
