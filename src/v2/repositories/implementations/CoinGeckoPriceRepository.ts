@@ -6,11 +6,13 @@ import { TokenInfo } from 'src/v2/models';
 
 @injectable()
 export class CoinGeckoPriceRepository implements IPriceRepository {
+  public static BaseUrl = 'https://api.coingecko.com/api/v3';
+
   public async getUsdPrice(tokenInfo: TokenInfo): Promise<number> {
     Guard.ThrowIfUndefined('tokenInfo', tokenInfo);
 
     const tokenSymbol = tokenInfo.name.toLowerCase();
-    const url = `https://api.coingecko.com/api/v3/simple/price?ids=${tokenSymbol}&vs_currencies=usd`;
+    const url = `${CoinGeckoPriceRepository.BaseUrl}/simple/price?ids=${tokenSymbol}&vs_currencies=usd`;
     const result = await axios.get(url);
 
     if (result.data[tokenSymbol]) {

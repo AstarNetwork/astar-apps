@@ -6,13 +6,15 @@ import { TokenInfo } from 'src/v2/models';
 
 @injectable()
 export class DiaDataPriceRepository implements IPriceRepository {
+  public static BaseUrl = 'https://api.diadata.org/v1/quotation';
+
   public async getUsdPrice(tokenInfo: TokenInfo): Promise<number> {
     Guard.ThrowIfUndefined('tokenInfo', tokenInfo);
 
-    const url = `https://api.diadata.org/v1/quotation/${tokenInfo.symbol}`;
+    const url = `${DiaDataPriceRepository.BaseUrl}/${tokenInfo.symbol}`;
     const result = await axios.get(url);
 
-    if (result.data) {
+    if (result.data && result.data.Price) {
       return Number(result.data.Price);
     }
 
