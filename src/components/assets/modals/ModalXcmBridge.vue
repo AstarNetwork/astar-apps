@@ -144,7 +144,7 @@
                 <span v-if="existentialDeposit"
                   >{{
                     $t('assets.modals.xcmWarning.tooltip', {
-                      amount: Number(existentialDeposit.relaychainMinBal),
+                      amount: Number(existentialDeposit.originChainMinBal),
                       symbol: existentialDeposit.symbol,
                       network: existentialDeposit.chain,
                     })
@@ -242,8 +242,7 @@ export default defineComponent({
       setDestChain,
     } = useXcmBridge(token);
 
-    const { currentAccount } = useAccount();
-    const { callAssetWithdrawToPara } = useXcmEvm(currentAccount);
+    const { callAssetWithdrawToPara } = useXcmEvm(token);
 
     const isReady = computed<boolean>(() => {
       return !!(token.value && srcChain.value && destChain.value);

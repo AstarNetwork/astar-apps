@@ -1,4 +1,3 @@
-import { Chain, relayChains, xcmChains, XcmChain, parachains } from './../index';
 import { ApiPromise } from '@polkadot/api';
 import { Struct } from '@polkadot/types';
 import { ethers } from 'ethers';
@@ -7,6 +6,7 @@ import { ChainAsset } from 'src/hooks';
 import { getUsdBySymbol } from 'src/hooks/helper/price';
 import { ExistentialDeposit, XcmNetworkIdx, XcmTokenInformation } from '../index';
 import { xcmToken } from '../tokens';
+import { Chain, parachains, relayChains } from './../index';
 
 interface Account extends Struct {
   balance: string;
@@ -78,13 +78,13 @@ export const fetchExistentialDeposit = async (api: ApiPromise): Promise<Existent
   const decimals = formattedProperties.tokenDecimals[0] as string;
   const symbol = formattedProperties.tokenSymbol[0] as string;
   const existentialDeposit = Number(ethers.utils.formatUnits(amount, decimals)).toFixed(7);
-  const relaychainMinBal = calRelaychainMinBal(Number(existentialDeposit));
+  const originChainMinBal = calRelaychainMinBal(Number(existentialDeposit));
 
   const data = {
     amount: existentialDeposit,
     symbol,
     chain: chain.toString(),
-    relaychainMinBal,
+    originChainMinBal,
   };
 
   return data;

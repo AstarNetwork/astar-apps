@@ -158,14 +158,14 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   };
 
   const checkIsEnoughEd = async (amount: number): Promise<boolean> => {
-    const relaychainMinBal = existentialDeposit.value?.relaychainMinBal;
-    if (!relaychainMinBal) return false;
+    const originChainMinBal = existentialDeposit.value?.originChainMinBal;
+    if (!originChainMinBal) return false;
 
     if (isDeposit.value) {
       // const relayBalAfterTransfer = originChainNativeBal.value - amount;
-      // return relayBalAfterTransfer > relaychainMinBal;
+      // return relayBalAfterTransfer > originChainMinBal;
 
-      // Memo: ED is not required for the deposit transaction
+      // Memo: ED is no longer required for the deposit transaction
       return true;
     } else {
       // Memo: wait for updating relaychainNativeBalance
@@ -173,7 +173,8 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
       const originChainNativeBalance = isH160.value
         ? evmDestAddressBalance.value
         : originChainNativeBal.value;
-      return originChainNativeBalance > relaychainMinBal;
+
+      return originChainNativeBalance > originChainMinBal;
     }
   };
 
@@ -294,8 +295,11 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
         evmDestAddressBalance.value = 0;
         return;
       }
-      await originChainApi.isReady();
-      const balance = await originChainApi.getNativeBalance(address);
+      const balance = await originChainApi.getTokenBalances({
+        selectedToken: selectedToken.value,
+        address,
+        isNativeToken: isNativeToken.value,
+      });
       const formattedBalance = ethers.utils
         .formatUnits(balance.toString(), decimals.value)
         .toString();
@@ -479,10 +483,6 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   watchEffect(setIsDisabledBridge);
   watchEffect(setEvmDestAddressBalance);
   watchEffect(monitorBalances);
-
-  watchEffect(() => {
-    console.log('selectedToken', selectedToken.value);
-  });
 
   return {
     amount,
