@@ -104,7 +104,7 @@
           </div>
           <div class="box__row">
             <div class="box__row">
-              <img width="24" alt="token-logo" :src="tokenImage" />
+              <img width="24" alt="token-logo" :src="token.tokenImage" />
               <span class="text--title">{{ String(token.metadata.symbol) }}</span>
             </div>
             <div class="box__column--input-amount">
@@ -123,7 +123,7 @@
         </div>
       </div>
       <div class="container--warning">
-        <div v-if="isNativeToken" class="row--warning">
+        <div v-if="token.isNativeToken" class="row--warning">
           <div class="column--title">
             <span class="text--dot">・</span>
             <span class="text--warning">{{ $t('assets.modals.xcmWarning.minBalIsRequired') }}</span>
@@ -176,14 +176,13 @@
 </template>
 <script lang="ts">
 import { fadeDuration } from '@astar-network/astar-ui';
-import { ChainAsset, useXcmBridge, useXcmEvm, useAccount, useTooltip } from 'src/hooks';
-import { wait } from 'src/hooks/helper/common';
-import { computed, defineComponent, PropType, ref } from 'vue';
-import AddressInput from 'src/components/common/AddressInput.vue';
-import ModalLoading from '/src/components/common/ModalLoading.vue';
 import ModalSelectChain from 'src/components/assets/modals/ModalSelectChain.vue';
-import { truncate } from 'src/hooks/helper/common';
+import AddressInput from 'src/components/common/AddressInput.vue';
+import { ChainAsset, useTooltip, useXcmBridge, useXcmEvm } from 'src/hooks';
+import { truncate, wait } from 'src/hooks/helper/common';
+import { computed, defineComponent, PropType, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import ModalLoading from '/src/components/common/ModalLoading.vue';
 
 export default defineComponent({
   components: {
@@ -223,8 +222,6 @@ export default defineComponent({
       srcChain,
       destChain,
       isDisabledBridge,
-      tokenImage,
-      isNativeToken,
       isNativeBridge,
       evmDestAddress,
       existentialDeposit,
@@ -291,8 +288,6 @@ export default defineComponent({
       srcChain,
       destChain,
       isDisabledBridge,
-      tokenImage,
-      isNativeToken,
       isNativeBridge,
       evmDestAddress,
       existentialDeposit,

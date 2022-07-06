@@ -97,7 +97,7 @@ export const generateAstarNativeTokenObject = (symbol: string) => {
 export const SDN: XcmTokenInformation = {
   symbol: 'SDN',
   isNativeToken: true,
-  assetId: '0000000000000000000',
+  assetId: idAstarNativePlaceholder,
   originAssetId: 'SDN',
   logo: require('src/assets/img/sdn-token.png'),
   isXcmCompatible: true,
@@ -109,7 +109,7 @@ export const SDN: XcmTokenInformation = {
 export const ASTR: XcmTokenInformation = {
   symbol: 'ASTR',
   isNativeToken: true,
-  assetId: '0000000000000000000',
+  assetId: idAstarNativePlaceholder,
   originAssetId: 'ASTR',
   logo: require('src/assets/img/astr-token.png'),
   isXcmCompatible: true,
@@ -121,7 +121,7 @@ export const ASTR: XcmTokenInformation = {
 export const SBY: XcmTokenInformation = {
   symbol: 'ASTR',
   isNativeToken: true,
-  assetId: '0000000000000000000',
+  assetId: idAstarNativePlaceholder,
   originAssetId: 'SBY',
   logo: require('src/assets/img/astr-token.png'),
   isXcmCompatible: true,

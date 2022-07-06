@@ -7,11 +7,11 @@
           <div class="column--currency">
             <div class="token-logo">
               <jazzicon
-                v-if="tokenImage.includes('custom-token')"
+                v-if="token.tokenImage.includes('custom-token')"
                 :address="token.id"
                 :diameter="24"
               />
-              <img v-else :src="tokenImage" alt="logo" />
+              <img v-else :src="token.tokenImage" alt="logo" />
             </div>
             <div class="column--ticker">
               <span class="text--title">{{ token.metadata.symbol }}</span>
@@ -44,7 +44,7 @@
             </button>
             <div>
               <button
-                v-if="isXcmCompatible"
+                v-if="token.isXcmCompatible"
                 class="btn btn--sm"
                 @click="
                   handleModalXcmBridge({
@@ -81,9 +81,9 @@
 </template>
 <script lang="ts">
 import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
-import { useXcmTokenDetails } from 'src/hooks';
 import { truncate } from 'src/hooks/helper/common';
 import { ChainAsset } from 'src/hooks/xcm/useXcmAssets';
+import { getXcmToken } from 'src/modules/xcm';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
@@ -106,11 +106,20 @@ export default defineComponent({
   },
   setup(props) {
     const t = computed(() => props.token);
-    const { tokenImage, tokenDetails, isXcmCompatible } = useXcmTokenDetails(t);
     const store = useStore();
 
+    const currentNetworkIdx = computed(() => {
+      const chainInfo = store.getters['general/chainInfo'];
+      const chain = chainInfo ? chainInfo.chain : '';
+      return getProviderIndex(chain);
+    });
+
     const isDisplayToken = computed<boolean>(() => {
-      const isDisplay = Number(props.token.userBalance) > 0 || !!tokenDetails.value;
+      const token = getXcmToken({
+        id: t.value.id,
+        currentNetworkIdx: currentNetworkIdx.value,
+      });
+      const isDisplay = Number(props.token.userBalance) > 0 || !!token;
       return isDisplay || false;
     });
 
@@ -118,18 +127,13 @@ export default defineComponent({
       const chainInfo = store.getters['general/chainInfo'];
       const chain = chainInfo ? chainInfo.chain : '';
       const currentNetworkIdx = getProviderIndex(chain);
-
       const astarBalanceUrl = 'https://astar.subscan.io/assets/' + t.value.id;
       const shidenBalanceUrl = 'https://shiden.subscan.io/assets/' + t.value.id;
-
       return currentNetworkIdx === endpointKey.ASTAR ? astarBalanceUrl : shidenBalanceUrl;
     });
 
     return {
-      tokenImage,
-      tokenDetails,
       isDisplayToken,
-      isXcmCompatible,
       explorerLink,
       truncate,
     };

@@ -1,3 +1,4 @@
+import { tokenImageMap } from './../../modules/token/index';
 import { AssetDetails, AssetMetadata } from '@polkadot/types/interfaces';
 import { $api } from 'boot/api';
 import { getProviderIndex } from 'src/config/chainEndpoints';
@@ -16,6 +17,9 @@ export interface ChainAsset extends AssetDetails {
   minBridgeAmount: string;
   originChain: string;
   originAssetId: string;
+  tokenImage: string;
+  isNativeToken: boolean;
+  isXcmCompatible: boolean;
 }
 
 export function useXcmAssets() {
@@ -117,6 +121,9 @@ export function useXcmAssets() {
             const minBridgeAmount = registeredData ? registeredData.minBridgeAmount : '0';
             const originChain = registeredData ? registeredData.originChain : '';
             const originAssetId = registeredData ? registeredData.originAssetId : '';
+            const tokenImage = registeredData ? (registeredData.logo as string) : 'custom-token';
+            const isNativeToken = registeredData ? registeredData.isNativeToken : false;
+            const isXcmCompatible = registeredData ? registeredData.isXcmCompatible : false;
 
             const token = {
               id: assetId,
@@ -128,6 +135,9 @@ export function useXcmAssets() {
               originChain,
               minBridgeAmount,
               originAssetId,
+              tokenImage,
+              isNativeToken,
+              isXcmCompatible,
             } as ChainAsset;
 
             if (currentAccount.value && !isH160.value) {
@@ -153,7 +163,6 @@ export function useXcmAssets() {
 
   watchEffect(async () => {
     await fetchAssets();
-    console.log('xcmAssets.value ', xcmAssets.value);
   });
 
   const secsUpdateBal = 60 * 1000;

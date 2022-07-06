@@ -8,7 +8,7 @@ import {
   PREFIX_ASTAR,
   providerEndpoints as xcmProviderEndpoints,
 } from 'src/config/xcmChainEndpoints';
-import { useBalance, useCustomSignature, useXcmTokenDetails } from 'src/hooks';
+import { useBalance, useCustomSignature } from 'src/hooks';
 import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
 import { getInjector } from 'src/hooks/helper/wallet';
 import { useAccount } from 'src/hooks/useAccount';
@@ -107,7 +107,6 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
 
   const { handleResult, handleTransactionError } = useCustomSignature({});
   const { accountData } = useBalance(currentAccount);
-  const { tokenImage, isNativeToken } = useXcmTokenDetails(selectedToken);
 
   const resetStates = (): void => {
     isDisabledBridge.value = true;
@@ -331,7 +330,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
       const balance = await originChainApi.getTokenBalances({
         selectedToken: selectedToken.value,
         address,
-        isNativeToken: isNativeToken.value,
+        isNativeToken: selectedToken.value.isNativeToken,
       });
       const formattedBalance = ethers.utils
         .formatUnits(balance.toString(), decimals.value)
@@ -417,7 +416,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
           assetId: selectedToken.value.id,
           recipientAccountId,
           amount: ethers.utils.parseUnits(amount.value, decimals.value).toString(),
-          isNativeToken: isNativeToken.value,
+          isNativeToken: selectedToken.value.isNativeToken,
           paraId: destChain.value.parachainId,
         });
 
@@ -457,7 +456,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
       const fromAddressBalFull = await originChainApi.getTokenBalances({
         address: currentAccount.value,
         selectedToken: selectedToken.value,
-        isNativeToken: isNativeToken.value,
+        isNativeToken: selectedToken.value.isNativeToken,
       });
 
       fromAddressBalance.value = Number(
@@ -533,8 +532,6 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     srcChain,
     destChain,
     isDisabledBridge,
-    tokenImage,
-    isNativeToken,
     isNativeBridge,
     evmDestAddress,
     existentialDeposit,
