@@ -6,6 +6,7 @@ import { decodeAddress } from '@polkadot/util-crypto';
 import BN from 'bn.js';
 import { ExtrinsicPayload } from 'src/hooks/helper';
 import { ExistentialDeposit, fetchExistentialDeposit } from 'src/modules/xcm';
+import { idAstarNativePlaceholder } from 'src/modules/xcm/tokens';
 import { ChainAsset } from './useXcmAssets';
 
 const AUTO_CONNECT_MS = 10_000; // [ms]
@@ -360,6 +361,8 @@ export class ParachainApi extends ChainApi {
     isNativeToken: boolean;
     paraId: number;
   }): Promise<ExtrinsicPayload> {
+    const isWithdrawAssets = assetId !== idAstarNativePlaceholder;
+    const functionName = isWithdrawAssets ? 'reserveWithdrawAssets' : 'reserveTransferAssets';
     const isSendToParachain = paraId > 0;
     const dest = isSendToParachain
       ? {
@@ -393,14 +396,16 @@ export class ParachainApi extends ChainApi {
       },
     };
 
-    const asset = isSendToParachain
+    const isRegisteredAsset = isSendToParachain && isWithdrawAssets;
+
+    const asset = isRegisteredAsset
       ? {
           Concrete: await this.fetchAssetConfig(assetId),
         }
       : {
           Concrete: {
             interior: 'Here',
-            parents: new BN(1),
+            parents: new BN(isSendToParachain ? 0 : 1),
           },
         };
 
@@ -415,13 +420,6 @@ export class ParachainApi extends ChainApi {
       ],
     };
 
-    return this.buildTxCall(
-      'polkadotXcm',
-      'reserveWithdrawAssets',
-      dest,
-      beneficiary,
-      assets,
-      new BN(0)
-    );
+    return this.buildTxCall('polkadotXcm', functionName, dest, beneficiary, assets, new BN(0));
   }
 }

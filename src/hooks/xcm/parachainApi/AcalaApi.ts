@@ -12,8 +12,11 @@ interface TokensAccounts extends Struct {
 }
 
 export class AcalaApi extends RelaychainApi {
+  private _AstarTokenId: { SDN: string; ASTR: string };
   constructor(endpoint: string) {
     super(endpoint);
+    //Todo: Check the ForeignAsset ID for ASTR
+    this._AstarTokenId = { SDN: '18', ASTR: '18' };
   }
 
   public async getTokenBalances({
@@ -25,7 +28,16 @@ export class AcalaApi extends RelaychainApi {
     address: string;
     isNativeToken: boolean;
   }): Promise<string> {
+    const symbol = String(selectedToken.metadata.symbol);
+    const isAstarNativeTransfer = symbol === 'SDN' || symbol === 'ASTR';
     try {
+      if (isAstarNativeTransfer) {
+        const bal = await this.apiInst.query.tokens.accounts<TokensAccounts>(address, {
+          ForeignAsset: this._AstarTokenId[symbol],
+        });
+        return bal.free.toString();
+      }
+
       if (isNativeToken) {
         return (await this.getNativeBalance(address)).toString();
       } else {
@@ -51,9 +63,19 @@ export class AcalaApi extends RelaychainApi {
     amount: string;
     selectedToken: ChainAsset;
   }): ExtrinsicPayload {
-    const t = {
-      Token: selectedToken.originAssetId,
-    };
+    let token;
+    const symbol = String(selectedToken.metadata.symbol);
+    const isAstarNativeTransfer = symbol === 'SDN' || symbol === 'ASTR';
+
+    if (isAstarNativeTransfer) {
+      token = {
+        ForeignAsset: this._AstarTokenId[symbol],
+      };
+    } else {
+      token = {
+        Token: selectedToken.originAssetId,
+      };
+    }
 
     const dest = {
       V1: {
@@ -76,8 +98,9 @@ export class AcalaApi extends RelaychainApi {
       },
     };
 
-    // Ref: https://stakesg.slack.com/archives/C03BN19LBQ8/p1656916640753869?thread_ts=1656877596.595339&cid=C03BN19LBQ8
-    const destWeight = '5000000000';
-    return this.buildTxCall('xTokens', 'transfer', t, amount, dest, destWeight);
+    //Memo: each XCM instruction is weighted to be 1_000_000_000 units of weight and for this op to execute
+    // weight value of 5 * 10^9 is generally good
+    const destWeight = new BN(10).pow(new BN(9)).muln(5);
+    return this.buildTxCall('xTokens', 'transfer', token, amount, dest, destWeight);
   }
 }

@@ -70,6 +70,17 @@
               >
                 {{ $t('assets.transfer') }}
               </button>
+              <button
+                class="btn btn--sm"
+                @click="
+                  handleModalXcmBridge({
+                    isOpen: true,
+                    currency: xcmNativeToken,
+                  })
+                "
+              >
+                {{ $t('assets.xcm') }}
+              </button>
             </div>
           </div>
         </div>
@@ -174,18 +185,18 @@
   </div>
 </template>
 <script lang="ts">
-import { ethers } from 'ethers';
 import { u8aToString } from '@polkadot/util';
+import { ethers } from 'ethers';
 import { useBalance, useEvmDeposit, usePrice } from 'src/hooks';
-import { useStore } from 'src/store';
+import { checkIsNullOrUndefined, truncate } from 'src/hooks/helper/common';
 import { getTokenImage } from 'src/modules/token';
+import { generateAstarNativeTokenObject } from 'src/modules/xcm/tokens';
+import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
-import ModalTransfer from './modals/ModalTransfer.vue';
-import ModalFaucet from './modals/ModalFaucet.vue';
 import ModalEvmWithdraw from './modals/ModalEvmWithdraw.vue';
+import ModalFaucet from './modals/ModalFaucet.vue';
+import ModalTransfer from './modals/ModalTransfer.vue';
 import ModalVesting from './modals/ModalVesting.vue';
-import { checkIsNullOrUndefined } from 'src/hooks/helper/common';
-import { truncate } from 'src/hooks/helper/common';
 
 export default defineComponent({
   components: {
@@ -194,7 +205,14 @@ export default defineComponent({
     ModalEvmWithdraw,
     ModalVesting,
   },
+  props: {
+    handleModalXcmBridge: {
+      type: Function,
+      required: true,
+    },
+  },
   setup() {
+    // const sdn = nativeToken;
     const isModalTransfer = ref<boolean>(false);
     const isModalFaucet = ref<boolean>(false);
     const isModalEvmWithdraw = ref<boolean>(false);
@@ -216,8 +234,11 @@ export default defineComponent({
     const { nativeTokenUsd } = usePrice();
     const nativeTokenSymbol = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
-      return chainInfo ? chainInfo.tokenSymbol : '';
+      return (chainInfo ? chainInfo.tokenSymbol : '') as 'ASTR' | 'SDN' | 'SBY';
     });
+
+    const xcmNativeToken = computed(() => generateAstarNativeTokenObject(nativeTokenSymbol.value));
+
     const currentNetworkName = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
       const chain = chainInfo ? chainInfo.chain : '';
@@ -300,6 +321,7 @@ export default defineComponent({
       isModalFaucet,
       isModalEvmWithdraw,
       isModalVesting,
+      xcmNativeToken,
       handleModalVesting,
       handleModalTransfer,
       handleModalFaucet,

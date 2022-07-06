@@ -1,6 +1,7 @@
 import { getProviderIndex } from 'src/config/chainEndpoints';
 import { ChainAsset } from 'src/hooks/xcm/useXcmAssets';
 import { getXcmToken, XcmTokenInformation } from 'src/modules/xcm';
+import { SDN } from 'src/modules/xcm/tokens';
 import { useStore } from 'src/store';
 import { computed, Ref } from 'vue';
 
@@ -12,21 +13,31 @@ export function useXcmTokenDetails(selectedToken: Ref<ChainAsset>) {
     return getProviderIndex(chain);
   });
 
+  const isAstarNativeTransfer = computed<boolean>(() => {
+    const symbol = String(selectedToken.value.metadata.symbol);
+    return symbol === 'SDN' || symbol === 'ASTR';
+  });
+
   const tokenDetails = computed<XcmTokenInformation | undefined>(() => {
     if (!selectedToken || !selectedToken.value) {
       return undefined;
     }
-    const t = getXcmToken({
-      id: selectedToken.value.id,
-      currentNetworkIdx: currentNetworkIdx.value,
-    });
-    return t;
+    if (isAstarNativeTransfer.value) {
+      return SDN;
+    } else {
+      const t = getXcmToken({
+        id: selectedToken.value.id,
+        currentNetworkIdx: currentNetworkIdx.value,
+      });
+      return t;
+    }
   });
 
   const tokenImage = computed<string>(() => {
     if (!tokenDetails || !tokenDetails.value) {
       return 'custom-token';
     }
+
     return tokenDetails.value.logo;
   });
 
@@ -34,6 +45,7 @@ export function useXcmTokenDetails(selectedToken: Ref<ChainAsset>) {
     if (!tokenDetails || !tokenDetails.value) {
       return false;
     }
+
     return tokenDetails.value.isNativeToken;
   });
 

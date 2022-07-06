@@ -1,4 +1,6 @@
+import { XcmTokenInformation } from 'src/modules/xcm';
 import { endpointKey } from 'src/config/chainEndpoints';
+import { ASTAR_DECIMALS } from 'src/hooks/helper/plasmUtils';
 
 export const xcmToken = {
   [endpointKey.ASTAR]: [
@@ -47,3 +49,75 @@ export const xcmToken = {
   ],
   [endpointKey.SHIBUYA]: [],
 };
+
+export const idAstarNativePlaceholder = '0000000000000000000';
+
+export const generateAstarNativeTokenObject = (symbol: string) => {
+  const name = symbol === 'ASTR' ? 'Astar' : symbol === 'SDN' ? 'Shiden' : 'Shibuya';
+  return {
+    accounts: '',
+    admin: '',
+    approvals: '',
+    deposit: '',
+    freezer: '',
+    id: idAstarNativePlaceholder,
+    isFrozen: false,
+    isSufficient: true,
+    issuer: '',
+    mappedERC20Addr: '0x0000000000000000000000000000000000000000',
+    metadata: {
+      decimals: String(ASTAR_DECIMALS),
+      deposit: '0',
+      isFrozen: false,
+      name,
+      symbol,
+    },
+    minBalance: '0.1',
+    minBridgeAmount: '0.1',
+    originAssetId: symbol,
+    originChain: name,
+    owner: '',
+    sufficients: '',
+    supply: '',
+    userBalance: '0',
+    userBalanceUsd: '0',
+  };
+};
+
+export const SDN: XcmTokenInformation = {
+  symbol: 'SDN',
+  isNativeToken: true,
+  assetId: '0000000000000000000',
+  originAssetId: 'SDN',
+  logo: require('src/assets/img/sdn-token.png'),
+  isXcmCompatible: true,
+  originChain: 'Shiden',
+  minBridgeAmount: '0.1',
+  parachains: ['Karura'],
+};
+
+export const ASTR: XcmTokenInformation = {
+  symbol: 'ASTR',
+  isNativeToken: true,
+  assetId: '0000000000000000000',
+  originAssetId: 'ASTR',
+  logo: require('src/assets/img/astr-token.png'),
+  isXcmCompatible: true,
+  originChain: 'Astar',
+  minBridgeAmount: '0.1',
+  parachains: ['Acala'],
+};
+
+export const SBY: XcmTokenInformation = {
+  symbol: 'ASTR',
+  isNativeToken: true,
+  assetId: '0000000000000000000',
+  originAssetId: 'SBY',
+  logo: require('src/assets/img/astr-token.png'),
+  isXcmCompatible: true,
+  originChain: 'Shibuya',
+  minBridgeAmount: '0.1',
+  parachains: [''],
+};
+
+export const xcmAstarNativeToken = { SDN, ASTR, SBY };

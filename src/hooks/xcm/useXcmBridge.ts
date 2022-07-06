@@ -1,9 +1,8 @@
-import { AcalaApi } from './parachainApi/AcalaApi';
 import { evmToAddress } from '@polkadot/util-crypto';
 import { ethers } from 'ethers';
-import { $api, $web3 } from 'src/boot/api';
+import { $api } from 'src/boot/api';
 import { endpointKey, getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
-import { getBalance, getTokenBal, isValidEvmAddress } from 'src/config/web3';
+import { getTokenBal, isValidEvmAddress } from 'src/config/web3';
 import {
   parachainIds,
   PREFIX_ASTAR,
@@ -22,16 +21,19 @@ import {
   XcmChain,
   xcmChains,
 } from 'src/modules/xcm';
+import { xcmAstarNativeToken } from 'src/modules/xcm/tokens';
 import { useStore } from 'src/store';
-import { computed, ref, Ref, watchEffect, watch } from 'vue';
+import { computed, ref, Ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { wait } from '../helper/common';
 import { isValidAddressPolkadotAddress } from './../helper/plasmUtils';
+import { AcalaApi } from './parachainApi/AcalaApi';
 import { ParachainApi, RelaychainApi } from './SubstrateApi';
 
 const chainPolkadot = xcmChains.find((it) => it.name === Chain.Polkadot) as XcmChain;
 const chainAstar = xcmChains.find((it) => it.name === Chain.Astar) as XcmChain;
 const chainShiden = xcmChains.find((it) => it.name === Chain.Shiden) as XcmChain;
+const chainKarura = xcmChains.find((it) => it.name === Chain.Karura) as XcmChain;
 
 export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   let originChainApi: RelaychainApi | null = null;
@@ -60,9 +62,20 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const isDeposit = computed(() => checkIsFromRelayChain(srcChain.value.name));
   const isAstar = computed(() => currentNetworkIdx.value === endpointKey.ASTAR);
-  const chains = computed<XcmChain[]>(() => [astarChain.value, originChain.value]);
-  const decimals = computed<number>(() => Number(String(selectedToken.value.metadata.decimals)));
 
+  const isAstarNativeTransfer = computed<boolean>(() => {
+    const symbol = String(selectedToken.value.metadata.symbol);
+    return symbol === 'SDN' || symbol === 'ASTR';
+  });
+
+  const chains = computed<XcmChain[]>(() => {
+    if (isAstarNativeTransfer.value) {
+      return [astarChain.value, chainKarura];
+    } else {
+      return [astarChain.value, originChain.value];
+    }
+  });
+  const decimals = computed<number>(() => Number(String(selectedToken.value.metadata.decimals)));
   const originChain = computed<XcmChain>(() => {
     return xcmChains.find((it) => it.name === selectedToken.value.originChain)!;
   });
@@ -93,7 +106,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   );
 
   const { handleResult, handleTransactionError } = useCustomSignature({});
-  const { balance } = useBalance(currentAccount);
+  const { accountData } = useBalance(currentAccount);
   const { tokenImage, isNativeToken } = useXcmTokenDetails(selectedToken);
 
   const resetStates = (): void => {
@@ -105,23 +118,28 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
 
   const setSrcChain = (chain: XcmChain): void => {
     srcChain.value = chain;
+    // Todo: refactor to make it more scalable
+    const firstParachain = chainKarura;
+    const origin = isAstarNativeTransfer.value ? firstParachain : originChain.value;
     if (chain.name === destChain.value.name) {
       if (isAstar.value) {
-        destChain.value = destChain.value.name === chainAstar.name ? originChain.value : chainAstar;
+        destChain.value = destChain.value.name === chainAstar.name ? origin : chainAstar;
       } else {
-        destChain.value =
-          destChain.value.name === chainShiden.name ? originChain.value : chainShiden;
+        destChain.value = destChain.value.name === chainShiden.name ? origin : chainShiden;
       }
     }
   };
 
   const setDestChain = (chain: XcmChain): void => {
     destChain.value = chain;
+    // Todo: refactor to make it more scalable
+    const firstParachain = chainKarura;
+    const origin = isAstarNativeTransfer.value ? firstParachain : originChain.value;
     if (chain.name === srcChain.value.name) {
       if (isAstar.value) {
-        srcChain.value = srcChain.value.name === chainAstar.name ? originChain.value : chainAstar;
+        srcChain.value = srcChain.value.name === chainAstar.name ? origin : chainAstar;
       } else {
-        srcChain.value = srcChain.value.name === chainShiden.name ? originChain.value : chainShiden;
+        srcChain.value = srcChain.value.name === chainShiden.name ? origin : chainShiden;
       }
     }
   };
@@ -151,8 +169,9 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     ) {
       return;
     }
-    await originChainApi.isReady();
-    const rawBalance = await getOriginChainNativeBal();
+    const rawBalance = isAstarNativeTransfer.value
+      ? accountData.value!.getUsableTransactionBalance().toString()
+      : await getOriginChainNativeBal();
     const balance = ethers.utils.formatUnits(rawBalance, decimals.value).toString();
     originChainNativeBal.value = Number(balance);
   };
@@ -162,9 +181,6 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     if (!originChainMinBal) return false;
 
     if (isDeposit.value) {
-      // const relayBalAfterTransfer = originChainNativeBal.value - amount;
-      // return relayBalAfterTransfer > originChainMinBal;
-
       // Memo: ED is no longer required for the deposit transaction
       return true;
     } else {
@@ -254,12 +270,22 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   };
 
   const connectOriginChain = async (): Promise<void> => {
-    const endpoint = xcmProviderEndpoints.find(
-      (it) => it.networkAlias.toLowerCase() === selectedToken.value.originChain.toLowerCase()
-    )?.endpoint as string;
+    const endpoint = xcmProviderEndpoints.find((it) => {
+      if (isAstarNativeTransfer.value) {
+        const symbol = String(selectedToken.value.metadata.symbol) as 'ASTR' | 'SDN' | 'SBY';
+        const defaultParachain = xcmAstarNativeToken[symbol].parachains![0];
+        return it.networkAlias.toLowerCase() === defaultParachain.toLowerCase();
+      } else {
+        return it.networkAlias.toLowerCase() === selectedToken.value.originChain.toLowerCase();
+      }
+    })?.endpoint as string;
 
     try {
-      if (originChain.value.name === 'Karura' || originChain.value.name === 'Acala') {
+      if (
+        originChain.value.name === 'Karura' ||
+        originChain.value.name === 'Acala' ||
+        isAstarNativeTransfer.value // Todo: refactor when support other parachains
+      ) {
         originChainApi = new AcalaApi(endpoint);
       } else {
         originChainApi = new RelaychainApi(endpoint);
@@ -278,9 +304,15 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
       srcChain.value = isH160.value ? chainAstar : originChain.value;
       destChain.value = isH160.value ? originChain.value : chainAstar;
     } else {
-      destParaId.value = parachainIds.SHIDEN;
-      srcChain.value = isH160.value ? chainShiden : originChain.value;
-      destChain.value = isH160.value ? originChain.value : chainShiden;
+      if (isAstarNativeTransfer.value) {
+        destParaId.value = parachainIds.SHIDEN;
+        srcChain.value = chainKarura;
+        destChain.value = chainShiden;
+      } else {
+        destParaId.value = parachainIds.SHIDEN;
+        srcChain.value = isH160.value ? chainShiden : originChain.value;
+        destChain.value = isH160.value ? originChain.value : chainShiden;
+      }
     }
   };
 
@@ -342,10 +374,6 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
         if (!isNativeBridge.value) {
           if (!isValidEvmAddress(evmDestAddress.value)) {
             throw Error('Invalid evm destination address');
-          }
-          const balWei = await getBalance($web3.value!, evmDestAddress.value);
-          if (Number(ethers.utils.formatEther(balWei)) === 0) {
-            throw Error(t('assets.modals.xcmWarning.nonzeroBalance'));
           }
           const ss58MappedAddr = evmToAddress(evmDestAddress.value, PREFIX_ASTAR);
           const hexPublicKey = getPubkeyFromSS58Addr(ss58MappedAddr);
@@ -422,7 +450,6 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   };
 
   const updateFromAddressBalance = async (): Promise<void> => {
-    console.log('updateFromAddressBalance');
     if (!selectedToken.value || !originChainApi || isLoadingApi.value) return;
 
     if (isDeposit.value) {
@@ -431,7 +458,6 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
         selectedToken: selectedToken.value,
         isNativeToken: isNativeToken.value,
       });
-      console.log('fromAddressBalFull', fromAddressBalFull);
 
       fromAddressBalance.value = Number(
         ethers.utils.formatUnits(fromAddressBalFull, decimals.value).toString()
@@ -449,8 +475,18 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
         });
         fromAddressBalance.value = Number(balance);
       } else {
-        // Memo: Native balance
-        fromAddressBalance.value = Number(selectedToken.value.userBalance);
+        if (isAstarNativeTransfer.value) {
+          const formattedBalance = ethers.utils
+            .formatUnits(
+              accountData.value!.getUsableTransactionBalance().toString(),
+              decimals.value
+            )
+            .toString();
+          fromAddressBalance.value = Number(formattedBalance);
+        } else {
+          // Memo: Native balance
+          fromAddressBalance.value = Number(selectedToken.value.userBalance);
+        }
       }
     }
   };
@@ -483,6 +519,12 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   watchEffect(setIsDisabledBridge);
   watchEffect(setEvmDestAddressBalance);
   watchEffect(monitorBalances);
+
+  watchEffect(() => {
+    if (selectedToken.value && isAstarNativeTransfer.value) {
+      isNativeBridge.value = true;
+    }
+  });
 
   return {
     amount,
