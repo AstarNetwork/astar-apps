@@ -70,7 +70,7 @@
                 </button>
               </a>
               <q-tooltip>
-                <span class="text--tooltip">{{ $t('polkadot-js-app') }}</span>
+                <span class="text--tooltip">{{ $t('subscan') }}</span>
               </q-tooltip>
             </div>
           </div>
@@ -119,10 +119,8 @@ export default defineComponent({
       const chain = chainInfo ? chainInfo.chain : '';
       const currentNetworkIdx = getProviderIndex(chain);
 
-      const astarBalanceUrl =
-        'https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc.astar.network#/assets/balances';
-      const shidenBalanceUrl =
-        'https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc.shiden.astar.network#/assets/balances';
+      const astarBalanceUrl = 'https://astar.subscan.io/assets/' + t.value.id;
+      const shidenBalanceUrl = 'https://shiden.subscan.io/assets/' + t.value.id;
 
       return currentNetworkIdx === endpointKey.ASTAR ? astarBalanceUrl : shidenBalanceUrl;
     });
