@@ -206,6 +206,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   };
 
   const setErrMsg = async (): Promise<void> => {
+    if (isLoadingApi.value) return;
     errMsg.value = '';
     const sendingAmount = Number(amount.value);
     const selectedTokenRef = selectedToken.value;

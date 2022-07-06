@@ -208,8 +208,14 @@
     justify-self: end;
   }
   @media (min-width: $xl) {
-    width: 200px;
+    width: 210px;
     justify-items: center;
+  }
+}
+
+.column--two-buttons {
+  @media (min-width: $md) {
+    grid-template-columns: auto auto;
   }
 }
 
