@@ -1,7 +1,12 @@
 import { evmToAddress } from '@polkadot/util-crypto';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
-import { endpointKey, getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
+import {
+  ASTAR_NATIVE_TOKEN,
+  endpointKey,
+  getProviderIndex,
+  providerEndpoints,
+} from 'src/config/chainEndpoints';
 import { getTokenBal, isValidEvmAddress } from 'src/config/web3';
 import {
   parachainIds,
@@ -272,7 +277,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   const connectOriginChain = async (): Promise<void> => {
     const endpoint = xcmProviderEndpoints.find((it) => {
       if (isAstarNativeTransfer.value) {
-        const symbol = String(selectedToken.value.metadata.symbol) as 'ASTR' | 'SDN' | 'SBY';
+        const symbol = String(selectedToken.value.metadata.symbol) as ASTAR_NATIVE_TOKEN;
         const defaultParachain = xcmAstarNativeToken[symbol].parachains![0];
         return it.networkAlias.toLowerCase() === defaultParachain.toLowerCase();
       } else {

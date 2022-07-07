@@ -1,5 +1,5 @@
 import { XcmTokenInformation } from 'src/modules/xcm';
-import { endpointKey } from 'src/config/chainEndpoints';
+import { ASTAR_NATIVE_TOKEN, endpointKey } from 'src/config/chainEndpoints';
 import { ASTAR_DECIMALS } from 'src/hooks/helper/plasmUtils';
 
 export const xcmToken = {
@@ -63,7 +63,7 @@ export const xcmToken = {
 // Memo: placeholder for assetId of ASTR/SDN/SBY
 export const idAstarNativeToken = '0000000000000000000';
 
-export const generateAstarNativeTokenObject = (symbol: string) => {
+export const generateAstarNativeTokenObject = (symbol: ASTAR_NATIVE_TOKEN) => {
   const name = symbol === 'ASTR' ? 'Astar' : symbol === 'SDN' ? 'Shiden' : 'Shibuya';
   const tokenImage = symbol === 'ASTR' ? ASTR.logo : symbol === 'SDN' ? SDN.logo : SBY.logo;
   return {

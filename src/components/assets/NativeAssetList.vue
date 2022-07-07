@@ -234,7 +234,7 @@ export default defineComponent({
     const { nativeTokenUsd } = usePrice();
     const nativeTokenSymbol = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
-      return (chainInfo ? chainInfo.tokenSymbol : '') as 'ASTR' | 'SDN' | 'SBY';
+      return chainInfo ? chainInfo.tokenSymbol : '';
     });
 
     const xcmNativeToken = computed(() => generateAstarNativeTokenObject(nativeTokenSymbol.value));
