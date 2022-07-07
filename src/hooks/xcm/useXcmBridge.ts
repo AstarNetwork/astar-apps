@@ -297,7 +297,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   };
 
   const setDefaultChain = (): void => {
-    if (!isLoadOriginApi.value) return;
+    if (!selectedToken.value) return;
     if (isAstar.value) {
       destParaId.value = parachainIds.ASTAR;
       // Memo: withdrawal mode for H160 accounts
