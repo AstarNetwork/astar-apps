@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { TypeFactory } from 'src/v2/config/types';
 
 abstract class TestBase {
@@ -8,24 +9,24 @@ abstract class TestBase {
   }
 }
 
-class TestA extends TestBase {
+class AcalaXCM extends TestBase {
   constructor() {
     super();
-    super.name = 'A';
+    super.name = 'Acala';
   }
 }
 
-class TestB extends TestBase {
+class MoonbeamXCM extends TestBase {
   constructor() {
     super();
-    super.name = 'B';
+    super.name = 'Moonebam';
   }
 }
 
 describe('TypeFactory.ts', () => {
   const mapping = {
-    a: TestA,
-    b: TestB,
+    acala: AcalaXCM,
+    moonbeam: MoonbeamXCM,
   };
 
   it('can create a factory instance', () => {
@@ -37,15 +38,17 @@ describe('TypeFactory.ts', () => {
   it('returns instance of a registered type', () => {
     var factory = new TypeFactory(mapping);
 
-    const instace = factory.getInstance('a');
+    const instace = factory.getInstance('acala');
 
     expect(instace).toBeTruthy();
-    expect(instace).toBeInstanceOf(TestA);
+    expect(instace).toBeInstanceOf(AcalaXCM);
   });
 
   it('throws error if type is not registered', () => {
     var factory = new TypeFactory(mapping);
 
-    expect(() => factory.getInstance('c')).toThrow(Error);
+    expect(() => factory.getInstance('statemint')).toThrow(
+      'statemint can not be found in provided typeMappings'
+    );
   });
 });

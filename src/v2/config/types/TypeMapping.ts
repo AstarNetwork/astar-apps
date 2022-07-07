@@ -1,4 +1,4 @@
-type Class = {
+export type Class = {
   new (...args: unknown[]): unknown;
 };
 

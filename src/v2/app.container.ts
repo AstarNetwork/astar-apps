@@ -39,6 +39,8 @@ import {
 import { Symbols } from './symbols';
 import { IEventAggregator, EventAggregator } from './messaging';
 import { container } from './common';
+import { ITypeFactory, TypeFactory, TypeMapping } from './config/types';
+import { XcmConfiguration } from './config/xcm/XcmConfiguration';
 
 let currentWallet = WalletType.Polkadot;
 
@@ -51,6 +53,7 @@ export default function buildDependencyContainer(): void {
   container.addSingleton<IApi>(DefaultApi, Symbols.DefaultApi);
   container.addSingleton<IApiFactory>(ApiFactory, Symbols.ApiFactory);
 
+  // Wallets
   container.addSingleton<IWalletService>(PolkadotWalletService, WalletType.Polkadot);
   container.addSingleton<IWalletService>(MetamaskWalletService, WalletType.Metamask);
 
@@ -89,6 +92,15 @@ export default function buildDependencyContainer(): void {
     BalanceFormatterService,
     Symbols.BalanceFormatterService
   );
+
+  // TypeFactory. Define typeMappings here that can be used by TypeFactory later to provide a rquired type instance.
+  const typeMappings = XcmConfiguration.reduce(
+    (result, { networkAlias, repository }) => ({ ...result, [networkAlias]: repository }),
+    {} as TypeMapping
+  );
+
+  container.addConstant<TypeMapping>(Symbols.TypeMappings, typeMappings);
+  container.addSingleton<ITypeFactory>(TypeFactory, Symbols.TypeFactory);
 
   // Create GasPriceProvider instace so it can catch price change messages from the portal.
   container.get<IGasPriceProvider>(Symbols.GasPriceProvider);
