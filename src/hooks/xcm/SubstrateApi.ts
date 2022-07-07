@@ -7,7 +7,7 @@ import BN from 'bn.js';
 import { ExtrinsicPayload } from 'src/hooks/helper';
 import { showLoading } from 'src/modules/extrinsic/utils';
 import { ExistentialDeposit, fetchExistentialDeposit } from 'src/modules/xcm';
-import { idAstarNativePlaceholder } from 'src/modules/xcm/tokens';
+import { idAstarNativeToken } from 'src/modules/xcm/tokens';
 import { Dispatch } from 'vuex';
 import { ChainAsset } from './useXcmAssets';
 
@@ -370,7 +370,7 @@ export class ParachainApi extends ChainApi {
     isNativeToken: boolean;
     paraId: number;
   }): Promise<ExtrinsicPayload> {
-    const isWithdrawAssets = assetId !== idAstarNativePlaceholder;
+    const isWithdrawAssets = assetId !== idAstarNativeToken;
     const functionName = isWithdrawAssets ? 'reserveWithdrawAssets' : 'reserveTransferAssets';
     const isSendToParachain = paraId > 0;
     const dest = isSendToParachain

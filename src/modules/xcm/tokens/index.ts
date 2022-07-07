@@ -60,7 +60,8 @@ export const xcmToken = {
   [endpointKey.SHIBUYA]: [],
 };
 
-export const idAstarNativePlaceholder = '0000000000000000000';
+// Memo: placeholder for assetId of ASTR/SDN/SBY
+export const idAstarNativeToken = '0000000000000000000';
 
 export const generateAstarNativeTokenObject = (symbol: string) => {
   const name = symbol === 'ASTR' ? 'Astar' : symbol === 'SDN' ? 'Shiden' : 'Shibuya';
@@ -71,7 +72,7 @@ export const generateAstarNativeTokenObject = (symbol: string) => {
     approvals: '',
     deposit: '',
     freezer: '',
-    id: idAstarNativePlaceholder,
+    id: idAstarNativeToken,
     isFrozen: false,
     isSufficient: true,
     issuer: '',
@@ -101,7 +102,7 @@ export const generateAstarNativeTokenObject = (symbol: string) => {
 export const SDN: XcmTokenInformation = {
   symbol: 'SDN',
   isNativeToken: true,
-  assetId: idAstarNativePlaceholder,
+  assetId: idAstarNativeToken,
   originAssetId: 'SDN',
   logo: require('src/assets/img/sdn-token.png'),
   isXcmCompatible: true,
@@ -113,7 +114,7 @@ export const SDN: XcmTokenInformation = {
 export const ASTR: XcmTokenInformation = {
   symbol: 'ASTR',
   isNativeToken: true,
-  assetId: idAstarNativePlaceholder,
+  assetId: idAstarNativeToken,
   originAssetId: 'ASTR',
   logo: require('src/assets/img/astr-token.png'),
   isXcmCompatible: true,
@@ -125,7 +126,7 @@ export const ASTR: XcmTokenInformation = {
 export const SBY: XcmTokenInformation = {
   symbol: 'ASTR',
   isNativeToken: true,
-  assetId: idAstarNativePlaceholder,
+  assetId: idAstarNativeToken,
   originAssetId: 'SBY',
   logo: require('src/assets/img/astr-token.png'),
   isXcmCompatible: true,

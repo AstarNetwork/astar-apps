@@ -213,7 +213,6 @@ export default defineComponent({
     },
   },
   setup() {
-    // const sdn = nativeToken;
     const isModalTransfer = ref<boolean>(false);
     const isModalFaucet = ref<boolean>(false);
     const isModalEvmWithdraw = ref<boolean>(false);
@@ -257,7 +256,7 @@ export default defineComponent({
       return Number(balance);
     });
 
-    // Todo: enable button for ASTAR
+    // Todo: enable button for ASTAR after opened channel with other parachains
     const isDisplayXcmButton = computed<boolean>(() => currentNetworkName.value === 'Shiden');
 
     const handleModalTransfer = ({ currency, isOpen }: { isOpen: boolean; currency: string }) => {

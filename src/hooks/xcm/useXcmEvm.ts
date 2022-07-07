@@ -1,6 +1,5 @@
 import BN from 'bn.js';
 import { ethers } from 'ethers';
-import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
 import xcmContractAbi from 'src/config/web3/abi/xcm-abi.json';
 import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
@@ -44,7 +43,6 @@ export function useXcmEvm(selectedToken: Ref<ChainAsset>) {
 
       store.commit('general/setLoading', true);
 
-      // TODO: need refactor as more scalable later
       const asset_id = selectedToken.value.mappedERC20Addr;
       const decimal = Number(selectedToken.value.metadata.decimals);
       const assetAmount = ethers.utils.parseUnits(asset_amount, decimal).toString();
@@ -65,13 +63,6 @@ export function useXcmEvm(selectedToken: Ref<ChainAsset>) {
           web3.eth.getTransactionCount(currentAccount.value),
           getEvmGas(web3, evmGasPrice.value.fast),
         ]);
-
-        // console.log('assetIds', assetIds);
-        // console.log('assetAmounts', assetAmounts.toString());
-        // console.log('recipientAccountId', recipientAccountId);
-        // console.log('isRelay', isRelay);
-        // console.log('parachainId', parachainId);
-        // console.log('feeIndex', feeIndex);
 
         const rawTx: TransactionConfig = {
           nonce,

@@ -49,7 +49,8 @@
             </div>
 
             <div v-if="token.isXC20">
-              <!-- Memo: remove the 'disabled' after runtime upgrading -->
+              <!-- Memo: disabled EVM withdrawal because there is a bug in backend -->
+              <!-- Todo: remove the 'disabled' after runtime upgrading -->
               <button
                 :disabled="token.symbol !== 'DOT' && token.symbol !== 'KSM'"
                 class="btn btn--sm"

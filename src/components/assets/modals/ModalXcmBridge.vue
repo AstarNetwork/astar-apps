@@ -111,7 +111,7 @@
           </div>
           <div class="box__row">
             <div class="box__row">
-              <img width="24" alt="token-logo" :src="tokenData.tokenImage" />
+              <img width="24" alt="token-logo" :src="token.tokenImage" />
               <span class="text--title">{{ String(token.metadata.symbol) }}</span>
             </div>
             <div class="box__column--input-amount">
@@ -310,7 +310,6 @@ export default defineComponent({
       isDeposit,
       isDisplayTooltip,
       isAstarNativeTransfer,
-      tokenData,
       setIsMobileDisplayTooltip,
       inputHandler,
       closeModal,
