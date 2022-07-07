@@ -2,6 +2,16 @@ import { DispatchError, EventRecord } from '@polkadot/types/interfaces';
 import { ITuple } from '@polkadot/types/types';
 import { Dispatch } from 'vuex';
 
+export const showLoading = (dispatch: Dispatch, result: boolean) => {
+  dispatch(
+    'general/setLoading',
+    {
+      result,
+    },
+    { root: true }
+  );
+};
+
 export const showError = (dispatch: Dispatch, message: string): void => {
   dispatch(
     'general/showAlertMsg',

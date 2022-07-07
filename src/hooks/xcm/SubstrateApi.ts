@@ -5,8 +5,10 @@ import { ISubmittableResult, ITuple } from '@polkadot/types/types';
 import { decodeAddress } from '@polkadot/util-crypto';
 import BN from 'bn.js';
 import { ExtrinsicPayload } from 'src/hooks/helper';
+import { showLoading } from 'src/modules/extrinsic/utils';
 import { ExistentialDeposit, fetchExistentialDeposit } from 'src/modules/xcm';
 import { idAstarNativePlaceholder } from 'src/modules/xcm/tokens';
+import { Dispatch } from 'vuex';
 import { ChainAsset } from './useXcmAssets';
 
 const AUTO_CONNECT_MS = 10_000; // [ms]
@@ -167,14 +169,21 @@ class ChainApi {
     }
   }
 
-  public async signAndSend(
-    account: string,
-    signer: any,
-    tx: ExtrinsicPayload,
-    finalizedCallback: () => Promise<void>,
-    handleResult: (result: ISubmittableResult) => Promise<boolean>,
-    tip = '1'
-  ) {
+  public async signAndSend({
+    account,
+    signer,
+    tx,
+    finalizedCallback,
+    handleResult,
+    tip,
+  }: {
+    account: string;
+    signer: any;
+    tx: ExtrinsicPayload;
+    finalizedCallback: () => Promise<void>;
+    handleResult: (result: ISubmittableResult) => Promise<boolean>;
+    tip: string;
+  }) {
     return new Promise<boolean>(async (resolve) => {
       const txsToExecute: ExtrinsicPayload[] = [];
       txsToExecute.push(tx);

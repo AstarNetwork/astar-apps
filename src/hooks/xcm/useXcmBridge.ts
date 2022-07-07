@@ -365,8 +365,6 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
         throw Error('Invalid amount');
       }
 
-      store.commit('general/setLoading', true);
-
       if (isDeposit.value) {
         let recipientAccountId = currentAccount.value;
         const injector = await getInjector(substrateAccounts.value);
@@ -388,13 +386,14 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
         });
 
         await originChainApi
-          .signAndSend(
-            currentAccount.value,
-            injector.signer,
-            txCall,
+          .signAndSend({
+            account: currentAccount.value,
+            signer: injector.signer,
+            tx: txCall,
             finalizedCallback,
-            handleResult
-          )
+            handleResult,
+            tip: '1',
+          })
           .catch((error: Error) => {
             handleTransactionError(error);
             isDisabledBridge.value = false;
@@ -403,7 +402,6 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
           .finally(async () => {
             isDisabledBridge.value = true;
             amount.value = null;
-            store.commit('general/setLoading', false);
           });
       } else {
         // Withdrawal (native parachains -> relaychain)
@@ -422,14 +420,14 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
 
         const tip = ethers.utils.parseEther(nativeTipPrice.value.fast).toString();
         await parachainApi
-          .signAndSend(
-            currentAccount.value,
-            injector.signer,
-            txCall,
+          .signAndSend({
+            account: currentAccount.value,
+            signer: injector.signer,
+            tx: txCall,
             finalizedCallback,
             handleResult,
-            tip
-          )
+            tip,
+          })
           .catch((error: Error) => {
             handleTransactionError(error);
             isDisabledBridge.value = false;
@@ -437,7 +435,6 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
           .finally(async () => {
             isDisabledBridge.value = true;
             amount.value = null;
-            store.commit('general/setLoading', false);
           });
       }
     } catch (error: any) {

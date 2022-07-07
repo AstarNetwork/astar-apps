@@ -289,13 +289,6 @@ export default defineComponent({
       }
     };
 
-    watchEffect(() => {
-      if (tokenData.value) {
-        console.log('tokenData.value', tokenData.value);
-        console.log('token.tokenImage', tokenData.value.tokenImage);
-      }
-    });
-
     return {
       errMsg,
       isClosingModal,

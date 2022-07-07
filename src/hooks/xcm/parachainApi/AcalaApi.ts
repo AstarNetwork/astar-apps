@@ -29,9 +29,9 @@ export class AcalaApi extends RelaychainApi {
     isNativeToken: boolean;
   }): Promise<string> {
     const symbol = String(selectedToken.metadata.symbol);
-    const isAstarNativeTransfer = symbol === 'SDN' || symbol === 'ASTR';
+    const isAstarNativeToken = symbol === 'SDN' || symbol === 'ASTR';
     try {
-      if (isAstarNativeTransfer) {
+      if (isAstarNativeToken) {
         const bal = await this.apiInst.query.tokens.accounts<TokensAccounts>(address, {
           ForeignAsset: this._AstarTokenId[symbol],
         });
@@ -65,9 +65,9 @@ export class AcalaApi extends RelaychainApi {
   }): ExtrinsicPayload {
     let token;
     const symbol = String(selectedToken.metadata.symbol);
-    const isAstarNativeTransfer = symbol === 'SDN' || symbol === 'ASTR';
+    const isAstarNativeToken = symbol === 'SDN' || symbol === 'ASTR';
 
-    if (isAstarNativeTransfer) {
+    if (isAstarNativeToken) {
       token = {
         ForeignAsset: this._AstarTokenId[symbol],
       };

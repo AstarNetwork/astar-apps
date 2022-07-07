@@ -1,4 +1,3 @@
-import { tokenImageMap } from './../../modules/token/index';
 import { AssetDetails, AssetMetadata } from '@polkadot/types/interfaces';
 import { $api } from 'boot/api';
 import { getProviderIndex } from 'src/config/chainEndpoints';

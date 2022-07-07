@@ -102,15 +102,13 @@ export default defineComponent({
     const setIsDisplay = async (): Promise<void> => {
       const address = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
       const isEthereumExtension = address === 'Ethereum Extension';
-      const isLoading = !isShibuya.value && !isEnableXcm.value;
+      const isLoading = !isShibuya.value && !isEnableXcm.value && isEthereumExtension;
 
       if (isLoading) {
         isDisplay.value = false;
         // Memo: isEthereumExtension -> loading state is controlled under useCbridgeV2.ts
-        !isEthereumExtension && store.commit('general/setLoading', true);
+        isEthereumExtension && store.commit('general/setLoading', true);
         return;
-      } else {
-        !isEthereumExtension && store.commit('general/setLoading', false);
       }
 
       if (!isDisplay.value && isEthereumExtension) {
