@@ -52,7 +52,7 @@
               <!-- Memo: disabled EVM withdrawal because there is a bug in backend -->
               <!-- Todo: remove the 'disabled' after runtime upgrading -->
               <button
-                :disabled="token.symbol !== 'DOT' && token.symbol !== 'KSM'"
+                :disabled="isDisabledXcm"
                 class="btn btn--sm"
                 @click="
                   handleModalXcmBridge({
@@ -161,6 +161,7 @@ export default defineComponent({
         )
     );
 
+    const isDisabledXcm = computed<boolean>(() => token.symbol !== 'DOT' && token.symbol !== 'KSM');
     const currentWallet = computed(() => store.getters['general/currentWallet']);
 
     let provider;
@@ -199,6 +200,7 @@ export default defineComponent({
       truncate,
       isImportedToken,
       provider,
+      isDisabledXcm,
     };
   },
 });
