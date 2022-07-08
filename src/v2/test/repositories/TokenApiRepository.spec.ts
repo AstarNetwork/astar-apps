@@ -1,28 +1,25 @@
 import 'reflect-metadata';
 import axios from 'axios';
-import { TokenInfo } from 'src/v2/models';
-import { DiaDataPriceRepository } from 'src/v2/repositories/implementations/DiaDataPriceRepository';
+import { TokenApiRepository } from 'src/v2/repositories/implementations/TokenApiRepository';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe('CoinGeckoPriceRepository.ts', () => {
-  const token = new TokenInfo('Astar', 'ASTR');
+  const symbol = 'ASTR';
 
   afterEach(() => {
     jest.resetAllMocks();
   });
 
   it('returns data received from API', async () => {
-    const expectedUrl = `${DiaDataPriceRepository.BaseUrl}/${token.symbol}`;
+    const expectedUrl = `${TokenApiRepository.BaseUrl}/v1/token/price/${symbol}`;
     mockedAxios.get.mockResolvedValueOnce({
-      data: {
-        Price: 100,
-      },
+      data: 100,
     });
-    const repo = new DiaDataPriceRepository();
+    const repo = new TokenApiRepository();
 
-    const price = await repo.getUsdPrice(token);
+    const price = await repo.getUsdPrice(symbol);
 
     expect(mockedAxios.get).toHaveBeenCalledWith(expectedUrl);
     expect(price).toBeCloseTo(100, 0);
@@ -31,8 +28,8 @@ describe('CoinGeckoPriceRepository.ts', () => {
   it('throws exception in case of error', async () => {
     const message = 'Network error';
     mockedAxios.get.mockRejectedValueOnce(new Error(message));
-    const repo = new DiaDataPriceRepository();
+    const repo = new TokenApiRepository();
 
-    await expect(repo.getUsdPrice(token)).rejects.toThrow(Error);
+    await expect(repo.getUsdPrice(symbol)).rejects.toThrow(Error);
   });
 });

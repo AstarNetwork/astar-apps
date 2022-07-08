@@ -38,10 +38,7 @@ const initTestContainer = () => {
     DappStakingRepositoryMock,
     Symbols.DappStakingRepository
   );
-  container.addSingleton<IPriceRepository>(
-    PriceRepositoryMock,
-    Symbols.PriceRepositoryWithFailover
-  );
+  container.addSingleton<IPriceRepository>(PriceRepositoryMock, Symbols.PriceRepository);
   container.addSingleton<IMetadataRepository>(MetadataRepositoryMock, Symbols.MetadataRepository);
   container.addSingleton<IXcmRepository>(XcmRepositoryMock, Symbols.XcmRepository);
 

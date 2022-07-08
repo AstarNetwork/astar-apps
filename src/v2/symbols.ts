@@ -1,6 +1,5 @@
 export const Symbols = {
   PriceRepository: Symbol.for('PriceRepository'),
-  PriceRepositoryWithFailover: Symbol.for('PriceRepositoryWithFailover'),
   WalletFactory: Symbol.for('Factory<IWalletService>'),
   EventAggregator: Symbol.for('EventAggregator'),
   Api: Symbol.for('Api'),
