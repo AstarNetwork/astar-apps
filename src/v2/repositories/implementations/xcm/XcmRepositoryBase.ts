@@ -3,7 +3,7 @@ import { container } from 'src/v2/common';
 import { Chain, Network } from 'src/v2/config/types';
 import { XcmConfiguration } from 'src/v2/config/xcm/XcmConfiguration';
 import { ExtrinsicPayload, IApiFactory } from 'src/v2/integration';
-import { TokenInfo } from 'src/v2/models/TokenInfo';
+import { Asset } from 'src/v2/models';
 import { Symbols } from 'src/v2/symbols';
 
 /**
@@ -21,7 +21,7 @@ export abstract class XcmRepositoryBase {
   public abstract transferToParachain(
     recipientAccountId: string,
     amount: string,
-    token: TokenInfo
+    token: Asset
   ): Promise<ExtrinsicPayload>;
 
   protected async buildTxCall(

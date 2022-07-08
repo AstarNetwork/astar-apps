@@ -1,7 +1,7 @@
 import { BN } from '@polkadot/util';
 import { Chain } from 'src/v2/config/types';
 import { ExtrinsicPayload } from 'src/v2/integration';
-import { TokenInfo } from 'src/v2/models/TokenInfo';
+import { Asset } from 'src/v2/models';
 import { XcmRepositoryBase } from './XcmRepositoryBase';
 
 export class AcalaXcmRepository extends XcmRepositoryBase {
@@ -14,7 +14,7 @@ export class AcalaXcmRepository extends XcmRepositoryBase {
   public async transferToParachain(
     recipientAccountId: string,
     amount: string,
-    token: TokenInfo
+    token: Asset
   ): Promise<ExtrinsicPayload> {
     const dest = {
       V1: {

@@ -2,7 +2,7 @@ import { BN } from '@polkadot/util';
 import { inject, injectable } from 'inversify';
 import { Guard } from 'src/v2/common';
 import { Network } from 'src/v2/config/types';
-import { Asset, TokenInfo } from 'src/v2/models';
+import { Asset } from 'src/v2/models';
 import { IPriceRepository, IXcmRepository } from 'src/v2/repositories';
 import { IBalanceFormatterService, IXcmService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
@@ -11,17 +11,12 @@ import { Symbols } from 'src/v2/symbols';
 export class XcmService implements IXcmService {
   constructor(
     @inject(Symbols.XcmRepository) private xcmRepository: IXcmRepository,
-    @inject(Symbols.PriceRepositoryWithFailover) private priceRepository: IPriceRepository,
+    @inject(Symbols.PriceRepository) private priceRepository: IPriceRepository,
     @inject(Symbols.BalanceFormatterService)
     private balanceFormatterService: IBalanceFormatterService
   ) {}
 
-  public async transfer(
-    from: Network,
-    to: Network,
-    token: TokenInfo,
-    amount: number
-  ): Promise<void> {}
+  public async transfer(from: Network, to: Network, token: Asset, amount: number): Promise<void> {}
 
   public async getAssets(currentAccount: string): Promise<Asset[]> {
     Guard.ThrowIfUndefined('currentAccount', currentAccount);
@@ -33,9 +28,7 @@ export class XcmService implements IXcmService {
         asset.userBalance = Number(
           this.balanceFormatterService.format(asset.balance, asset.metadata.decimals)
         );
-        const price = await this.priceRepository.getUsdPrice(
-          new TokenInfo(asset.metadata.name, asset.metadata.symbol)
-        );
+        const price = await this.priceRepository.getUsdPrice(asset.metadata.symbol);
         asset.userBalanceUsd = asset.userBalance * price;
       }
     }
