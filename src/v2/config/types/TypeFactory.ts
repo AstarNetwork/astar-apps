@@ -3,6 +3,10 @@ import { Guard } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
 import { TypeMapping } from './TypeMapping';
 
+export interface ITypeFactory {
+  getInstance(key: string, ...args: unknown[]): unknown;
+}
+
 /**
  * Creates an instance of a registered type from a given string, based on provided mapping between key and type.
  */
@@ -10,7 +14,7 @@ import { TypeMapping } from './TypeMapping';
 export class TypeFactory {
   constructor(@inject(Symbols.TypeMappings) private mapping: TypeMapping) {}
 
-  public getInstance(key: string) {
+  public getInstance(key: string, ...args: unknown[]) {
     Guard.ThrowIfUndefined('key', key);
 
     const type = this.mapping[key];
@@ -19,10 +23,6 @@ export class TypeFactory {
       throw new Error(`${key} can not be found in provided typeMappings`);
     }
 
-    return new type();
+    return new type(args);
   }
-}
-
-export interface ITypeFactory {
-  getInstance(key: string): unknown;
 }

@@ -1,31 +1,26 @@
-import { AcalaXcmRepository, PolkadotXcmRepository } from 'src/v2/repositories/implementations';
-import { Endpoint } from '../types/Endpoint';
+import { Chain, Endpoint } from '../types/Endpoint';
 
 export const XcmConfiguration: Endpoint[] = [
   {
-    networkAlias: 'Polkadot',
+    networkAlias: Chain.Polkadot,
     displayName: 'Polkadot Network',
     endpoint: 'wss://rpc.polkadot.io',
-    repository: PolkadotXcmRepository,
   },
   {
-    networkAlias: 'Kusama',
+    networkAlias: Chain.Kusama,
     displayName: 'Kusama Network',
     endpoint: 'wss://kusama-rpc.polkadot.io',
-    repository: PolkadotXcmRepository,
   },
   {
-    networkAlias: 'Karura',
+    networkAlias: Chain.Karura,
     displayName: 'Karura Network',
     endpoint: 'wss://karura.api.onfinality.io/public-ws',
-    repository: AcalaXcmRepository,
     parachainId: 2000,
   },
   {
-    networkAlias: 'Acala',
+    networkAlias: Chain.Acala,
     displayName: 'Acala Network',
     endpoint: 'wss://acala-polkadot.api.onfinality.io/public-ws',
-    repository: AcalaXcmRepository,
     parachainId: 2000,
   },
 ];

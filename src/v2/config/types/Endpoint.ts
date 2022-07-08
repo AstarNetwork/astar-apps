@@ -1,9 +1,15 @@
 import { Class } from './TypeMapping';
 
+export enum Chain {
+  Polkadot = 'Polkadot',
+  Kusama = 'Kusama',
+  Acala = 'Acala',
+  Karura = 'Karura',
+}
+
 export type Endpoint = {
-  networkAlias: string;
+  networkAlias: Chain;
   displayName: string;
   endpoint: string;
-  repository: Class;
   parachainId?: number;
 };

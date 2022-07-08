@@ -41,6 +41,7 @@ import { IEventAggregator, EventAggregator } from './messaging';
 import { container } from './common';
 import { ITypeFactory, TypeFactory, TypeMapping } from './config/types';
 import { XcmConfiguration } from './config/xcm/XcmConfiguration';
+import { XcmRepositoryConfiguration } from './config/xcm/XcmRepositoryConfiguration';
 
 let currentWallet = WalletType.Polkadot;
 
@@ -93,14 +94,17 @@ export default function buildDependencyContainer(): void {
     Symbols.BalanceFormatterService
   );
 
-  // TypeFactory. Define typeMappings here that can be used by TypeFactory later to provide a rquired type instance.
-  const typeMappings = XcmConfiguration.reduce(
-    (result, { networkAlias, repository }) => ({ ...result, [networkAlias]: repository }),
-    {} as TypeMapping
-  );
+  // const typeMappings = XcmConfiguration.reduce(
+  //   (result, { networkAlias, repository }) => ({ ...result, [networkAlias]: repository }),
+  //   {} as TypeMapping
+  // );
 
-  container.addConstant<TypeMapping>(Symbols.TypeMappings, typeMappings);
+  // Type factory
+  container.addConstant<TypeMapping>(Symbols.TypeMappings, XcmRepositoryConfiguration);
   container.addSingleton<ITypeFactory>(TypeFactory, Symbols.TypeFactory);
+
+  // const factory = container.get<ITypeFactory>(Symbols.TypeFactory);
+  // const repo = factory.getInstance('Acala');
 
   // Create GasPriceProvider instace so it can catch price change messages from the portal.
   container.get<IGasPriceProvider>(Symbols.GasPriceProvider);

@@ -6,5 +6,6 @@ export * from './SystemRepository';
 export * from './EthCallRepository';
 export * from './XcmRepository';
 export * from './PriceRepositoryWithFailover';
+export * from './xcm/XcmRepositoryBase';
 export * from './xcm/AcalaXcmRepository';
 export * from './xcm/PolkadotXcmRepository';
