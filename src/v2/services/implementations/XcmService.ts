@@ -1,6 +1,7 @@
 import { BN } from '@polkadot/util';
 import { inject, injectable } from 'inversify';
 import { Guard } from 'src/v2/common';
+import { Network } from 'src/v2/config/types';
 import { Asset, TokenInfo } from 'src/v2/models';
 import { IPriceRepository, IXcmRepository } from 'src/v2/repositories';
 import { IBalanceFormatterService, IXcmService } from 'src/v2/services';
@@ -14,6 +15,13 @@ export class XcmService implements IXcmService {
     @inject(Symbols.BalanceFormatterService)
     private balanceFormatterService: IBalanceFormatterService
   ) {}
+
+  public async transfer(
+    from: Network,
+    to: Network,
+    token: TokenInfo,
+    amount: number
+  ): Promise<void> {}
 
   public async getAssets(currentAccount: string): Promise<Asset[]> {
     Guard.ThrowIfUndefined('currentAccount', currentAccount);

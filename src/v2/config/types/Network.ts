@@ -7,8 +7,8 @@ export enum Chain {
   Karura = 'Karura',
 }
 
-export type Endpoint = {
-  networkAlias: Chain;
+export type Network = {
+  chain: Chain;
   displayName: string;
   endpoint: string;
   parachainId?: number;

@@ -1,24 +1,24 @@
-import { Chain, Endpoint } from '../types/Endpoint';
+import { Chain, Network } from '../types/Network';
 
-export const XcmConfiguration: Endpoint[] = [
+export const XcmConfiguration: Network[] = [
   {
-    networkAlias: Chain.Polkadot,
+    chain: Chain.Polkadot,
     displayName: 'Polkadot Network',
     endpoint: 'wss://rpc.polkadot.io',
   },
   {
-    networkAlias: Chain.Kusama,
+    chain: Chain.Kusama,
     displayName: 'Kusama Network',
     endpoint: 'wss://kusama-rpc.polkadot.io',
   },
   {
-    networkAlias: Chain.Karura,
+    chain: Chain.Karura,
     displayName: 'Karura Network',
     endpoint: 'wss://karura.api.onfinality.io/public-ws',
     parachainId: 2000,
   },
   {
-    networkAlias: Chain.Acala,
+    chain: Chain.Acala,
     displayName: 'Acala Network',
     endpoint: 'wss://acala-polkadot.api.onfinality.io/public-ws',
     parachainId: 2000,
