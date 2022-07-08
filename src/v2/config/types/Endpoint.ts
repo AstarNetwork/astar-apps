@@ -5,4 +5,5 @@ export type Endpoint = {
   displayName: string;
   endpoint: string;
   repository: Class;
+  parachainId?: number;
 };

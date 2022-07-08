@@ -19,11 +19,13 @@ export const XcmConfiguration: Endpoint[] = [
     displayName: 'Karura Network',
     endpoint: 'wss://karura.api.onfinality.io/public-ws',
     repository: AcalaXcmRepository,
+    parachainId: 2000,
   },
   {
     networkAlias: 'Acala',
     displayName: 'Acala Network',
     endpoint: 'wss://acala-polkadot.api.onfinality.io/public-ws',
     repository: AcalaXcmRepository,
+    parachainId: 2000,
   },
 ];
