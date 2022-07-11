@@ -9,6 +9,7 @@ import { injectable, inject } from 'inversify';
 import { IApi } from 'src/v2/integration';
 import { Symbols } from 'src/v2/symbols';
 import { Guard } from 'src/v2/common';
+import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 
 @injectable()
 export class XcmRepository implements IXcmRepository {
@@ -35,7 +36,10 @@ export class XcmRepository implements IXcmRepository {
       result.push(asset);
     });
 
-    result = await this.getBalances(currentAccount, result);
+    if (isValidAddressPolkadotAddress(currentAccount)) {
+      // fetch balances for Substrate acounts only.
+      result = await this.getBalances(currentAccount, result);
+    }
 
     return result;
   }

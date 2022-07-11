@@ -4,11 +4,13 @@ export class Asset {
   public userBalance: number;
   public userBalanceUsd: number;
   public balance: BN;
+  public minBridgeAmount: string;
 
   constructor(public id: string, public mappedERC20Addr: string, public metadata: AssetMetadata) {
     this.balance = new BN(0);
     this.userBalance = 0;
     this.userBalanceUsd = 0;
+    this.minBridgeAmount = '0';
   }
 }
 
