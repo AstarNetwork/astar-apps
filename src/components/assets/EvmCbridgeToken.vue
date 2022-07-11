@@ -89,8 +89,7 @@
 <script lang="ts">
 import { SelectedToken } from 'src/c-bridge';
 import { getProviderIndex } from 'src/config/chainEndpoints';
-import { getChainId } from 'src/config/web3';
-import { addToEvmProvider } from 'src/hooks/helper/wallet';
+import { addToEvmProvider, getEvmProvider } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { getErc20Explorer, getTokenImage } from 'src/modules/token';
 import { computed, defineComponent, PropType } from 'vue';
@@ -137,47 +136,18 @@ export default defineComponent({
       return getErc20Explorer({ currentNetworkIdx, tokenAddress });
     });
 
-    const currentWallet = computed(() => store.getters['general/currentWallet']);
-
-    let provider;
-
-    if (
-      typeof window.ethereum !== 'undefined' &&
-      window.ethereum &&
-      currentWallet.value === SupportWallet.MetaMask
-    ) {
-      provider = window.ethereum;
-    }
-
-    if (
-      typeof window.talismanEth !== 'undefined' &&
-      window.talismanEth &&
-      currentWallet.value === SupportWallet.TalismanEvm
-    ) {
-      provider = window.talismanEth;
-    }
-
-    if (
-      typeof window.SubWallet !== 'undefined' &&
-      window.SubWallet &&
-      currentWallet.value === SupportWallet.SubWalletEvm
-    ) {
-      provider = window.SubWallet;
-    }
-
-    if (!provider) {
-      throw new Error("Can't find provider");
-    }
+    const currentWallet = computed<SupportWallet>(() => store.getters['general/currentWallet']);
+    const provider = getEvmProvider(currentWallet.value);
 
     return {
-      formatTokenName,
-      addToEvmProvider,
       tokenImg,
       nativeTokenSymbol,
       explorerLink,
       cbridgeAppLink,
-      truncate,
       provider,
+      formatTokenName,
+      addToEvmProvider,
+      truncate,
     };
   },
 });

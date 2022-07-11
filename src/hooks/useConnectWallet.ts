@@ -4,6 +4,7 @@ import { LOCAL_STORAGE } from 'src/config/localStorage';
 import {
   SubstrateWallets,
   supportEvmWalletObj,
+  supportEvmWallets,
   SupportWallet,
   WalletModalOption,
 } from 'src/config/wallets';
@@ -138,39 +139,27 @@ export const useConnectWallet = () => {
 
   const setEvmWallet = async (wallet: SupportWallet): Promise<void> => {
     selectedWallet.value = wallet;
-
     let isEvmWalletAvailable = false;
 
-    if (wallet === SupportWallet.TalismanEvm) {
-      isEvmWalletAvailable = window.talismanEth !== undefined;
-    }
+    supportEvmWallets.forEach((it) => {
+      if (wallet === it.source) {
+        isEvmWalletAvailable = it.ethExtension !== undefined;
+        if (!isEvmWalletAvailable) {
+          modalName.value = WalletModalOption.OutdatedWallet;
+        }
+      }
+    });
 
-    if (wallet === SupportWallet.SubWalletEvm) {
-      isEvmWalletAvailable = window.SubWallet !== undefined;
-    }
-
-    if (wallet === SupportWallet.MetaMask) {
-      isEvmWalletAvailable = window.ethereum !== undefined;
+    if (!isEvmWalletAvailable && modalName.value !== WalletModalOption.OutdatedWallet) {
+      modalName.value = WalletModalOption.NoExtension;
     }
 
     if (!isEvmWalletAvailable) {
-      if (wallet === SupportWallet.TalismanEvm) {
-        modalName.value = WalletModalOption.OutdatedWallet;
-        return;
-      }
-
-      if (wallet === SupportWallet.SubWalletEvm) {
-        modalName.value = WalletModalOption.OutdatedWallet;
-        return;
-      }
-
-      modalName.value = WalletModalOption.NoExtension;
-      return;
+      throw new Error(`Cannot detect ${wallet} EVM extension`);
     }
+
     const ss58 = currentEcdsaAccount.value.ss58 ?? '';
-
     let result = await loadEvmWallet({ ss58, currentWallet: wallet });
-
     if (result) {
       modalName.value = '';
       return;
@@ -208,7 +197,6 @@ export const useConnectWallet = () => {
       watchPostEffect(async () => {
         store.commit('general/setMetaExtensions', metaExtensions.value);
         store.commit('general/setExtensionCount', extensionCount.value);
-        setWallet(wallet);
       });
     }
   };

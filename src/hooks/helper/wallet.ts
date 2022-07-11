@@ -241,18 +241,11 @@ export const checkIsNativeWallet = (selectedWallet: SupportWallet): boolean => {
   return supportWalletObj.hasOwnProperty(selectedWallet);
 };
 
-export const getEvmProvider = (wallet: SupportWallet) => {
-  if (wallet === SupportWallet.MetaMask) {
-    return window.ethereum;
-  }
+export const getEvmProvider = (walletName: SupportWallet): EthereumProvider | null => {
+  const wallet = supportEvmWalletObj[walletName as keyof typeof supportEvmWalletObj];
+  const provider = wallet ? wallet.ethExtension : undefined;
+  const isExtension =
+    wallet && walletName === wallet.source && typeof provider !== undefined && provider;
 
-  if (wallet === SupportWallet.TalismanEvm) {
-    return window.talismanEth;
-  }
-
-  if (wallet === SupportWallet.SubWalletEvm) {
-    return window.SubWallet;
-  }
-
-  return null;
+  return isExtension ? provider : null;
 };

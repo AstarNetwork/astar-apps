@@ -1,3 +1,4 @@
+import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 import { objToArray } from 'src/hooks/helper/common';
 
 // Memo: enum value comes from:
@@ -56,6 +57,7 @@ export interface Wallet {
   guideUrl: string;
   isSupportBrowserExtension: boolean;
   isSupportMobileApp: boolean;
+  ethExtension?: EthereumProvider;
 }
 
 export const supportWalletObj = {
@@ -133,6 +135,7 @@ export const supportEvmWalletObj = {
     guideUrl: 'https://metamask.io/',
     isSupportBrowserExtension: true,
     isSupportMobileApp: true,
+    ethExtension: window.ethereum,
   },
   [SupportWallet.TalismanEvm]: {
     img: require('/src/assets/img/logo-talisman.svg'),
@@ -142,6 +145,7 @@ export const supportEvmWalletObj = {
     guideUrl: 'https://app.talisman.xyz/',
     isSupportBrowserExtension: true,
     isSupportMobileApp: false,
+    ethExtension: window.talismanEth,
   },
   [SupportWallet.SubWalletEvm]: {
     img: require('/src/assets/img/logo-subwallet.svg'),
@@ -151,6 +155,7 @@ export const supportEvmWalletObj = {
     guideUrl: 'https://docs.subwallet.app/user-guide/how-to-install-subwallet/',
     isSupportBrowserExtension: true,
     isSupportMobileApp: false,
+    ethExtension: window.SubWallet,
   },
   [SupportWallet.Wallet3]: {
     img: require('/src/assets/img/logo-wallet3.svg'),
@@ -160,6 +165,7 @@ export const supportEvmWalletObj = {
     guideUrl: 'https://docs.wallet3.io',
     isSupportBrowserExtension: false,
     isSupportMobileApp: true,
+    ethExtension: window.ethereum,
   },
 };
 
