@@ -40,6 +40,9 @@ export enum Chain {
   Acala = 'Acala',
 }
 
+// Memo: give it 0 ide for convenience in checking para/relay chain logic
+export const relaychainParaId = 0;
+
 export interface XcmChain {
   name: Chain;
   relayChain: Chain;
@@ -52,7 +55,7 @@ export const xcmChains: XcmChain[] = [
     name: Chain.Polkadot,
     relayChain: Chain.Polkadot,
     img: require('/src/assets/img/ic_polkadot.png'),
-    parachainId: 0,
+    parachainId: relaychainParaId,
   },
   {
     name: Chain.Astar,
@@ -64,7 +67,7 @@ export const xcmChains: XcmChain[] = [
     name: Chain.Kusama,
     relayChain: Chain.Kusama,
     img: require('/src/assets/img/ic_kusama.png'),
-    parachainId: 0,
+    parachainId: relaychainParaId,
   },
   {
     name: Chain.Shiden,
