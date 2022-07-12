@@ -167,6 +167,16 @@ export const supportEvmWalletObj = {
     isSupportMobileApp: true,
     ethExtension: window.ethereum,
   },
+  [SupportWallet.Nova]: {
+    img: require('/src/assets/img/logo-nova.png'),
+    name: 'Nova Wallet',
+    source: SupportWallet.Nova,
+    walletUrl: 'https://novawallet.io/',
+    guideUrl: 'https://novawallet.io/',
+    isSupportBrowserExtension: false,
+    isSupportMobileApp: true,
+    ethExtension: window.ethereum,
+  },
 };
 
 export const supportAllWalletsObj = {

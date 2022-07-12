@@ -197,6 +197,9 @@ export const useConnectWallet = () => {
       watchPostEffect(async () => {
         store.commit('general/setMetaExtensions', metaExtensions.value);
         store.commit('general/setExtensionCount', extensionCount.value);
+        // if (wallet === SupportWallet.Nova) {
+        setWallet(wallet);
+        // }
       });
     }
   };
