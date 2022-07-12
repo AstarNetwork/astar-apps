@@ -1,10 +1,9 @@
-import { getEvmProvider } from 'src/hooks/helper/wallet';
+import { $api } from 'boot/api';
 import { getProviderIndex } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import {
   SubstrateWallets,
   supportEvmWalletObj,
-  supportEvmWallets,
   SupportWallet,
   WalletModalOption,
 } from 'src/config/wallets';
@@ -12,16 +11,16 @@ import { getChainId, setupNetwork } from 'src/config/web3';
 import { checkSumEvmAddress } from 'src/config/web3/utils/convert';
 import { useAccount } from 'src/hooks';
 import * as utils from 'src/hooks/custom-signature/utils';
-import { deepLinkPath } from 'src/links';
-import { useStore } from 'src/store';
-import { computed, ref, watch, watchEffect, watchPostEffect, WatchCallback } from 'vue';
-import { useRouter } from 'vue-router';
-import { useEvmAccount } from './custom-signature/useEvmAccount';
+import { getEvmProvider } from 'src/hooks/helper/wallet';
 import { useExtensions } from 'src/hooks/useExtensions';
 import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
+import { deepLinkPath } from 'src/links';
+import { useStore } from 'src/store';
+import { computed, ref, watch, WatchCallback, watchEffect, watchPostEffect } from 'vue';
+import { useRouter } from 'vue-router';
+import { useEvmAccount } from './custom-signature/useEvmAccount';
 import { wait } from './helper/common';
 import { ASTAR_SS58_FORMAT } from './helper/plasmUtils';
-import { $api } from 'boot/api';
 import {
   castMobileSource,
   checkIsWalletExtension,
@@ -141,14 +140,15 @@ export const useConnectWallet = () => {
     selectedWallet.value = wallet;
     let isEvmWalletAvailable = false;
 
-    supportEvmWallets.forEach((it) => {
-      if (wallet === it.source) {
-        isEvmWalletAvailable = it.ethExtension !== undefined;
-        if (!isEvmWalletAvailable) {
-          modalName.value = WalletModalOption.OutdatedWallet;
-        }
+    const evmWallet = supportEvmWalletObj[wallet as keyof typeof supportEvmWalletObj];
+    if (wallet === evmWallet.source) {
+      const provider = window[evmWallet.ethExtension as any];
+      isEvmWalletAvailable = provider !== undefined;
+
+      if (!isEvmWalletAvailable) {
+        modalName.value = WalletModalOption.OutdatedWallet;
       }
-    });
+    }
 
     if (!isEvmWalletAvailable && modalName.value !== WalletModalOption.OutdatedWallet) {
       modalName.value = WalletModalOption.NoExtension;
@@ -197,9 +197,7 @@ export const useConnectWallet = () => {
       watchPostEffect(async () => {
         store.commit('general/setMetaExtensions', metaExtensions.value);
         store.commit('general/setExtensionCount', extensionCount.value);
-        // if (wallet === SupportWallet.Nova) {
-        setWallet(wallet);
-        // }
+        // setWallet(wallet);
       });
     }
   };

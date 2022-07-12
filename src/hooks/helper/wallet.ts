@@ -243,7 +243,9 @@ export const checkIsNativeWallet = (selectedWallet: SupportWallet): boolean => {
 
 export const getEvmProvider = (walletName: SupportWallet): EthereumProvider | null => {
   const wallet = supportEvmWalletObj[walletName as keyof typeof supportEvmWalletObj];
-  const provider = wallet ? wallet.ethExtension : undefined;
+  const provider = wallet
+    ? ((window as { [key: string]: any })[wallet.ethExtension] as EthereumProvider)
+    : undefined;
   const isExtension =
     wallet && walletName === wallet.source && typeof provider !== undefined && provider;
 
