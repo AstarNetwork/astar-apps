@@ -73,7 +73,7 @@ export default defineComponent({
     watch(
       selectedAddress,
       (newValue) => {
-        if (newValue) {
+        if (newValue && (!isH160.value || (isH160.value && newValue !== selectedAddress.value))) {
           store.dispatch('assets/getAssets', newValue);
         }
       },
