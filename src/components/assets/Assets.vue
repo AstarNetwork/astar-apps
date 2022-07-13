@@ -100,6 +100,8 @@ export default defineComponent({
     watch(
       selectedAddress,
       (newValue) => {
+        // TODO investigate why when we use metamask and sett asset to vuex, address is changed in store for some reason
+        // and wathcer is called again, whiche ends in infinite loop.
         if (newValue && (!isH160.value || (isH160.value && newValue !== selectedAddress.value))) {
           store.dispatch('assets/getAssets', newValue);
         }

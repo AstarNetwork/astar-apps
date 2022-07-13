@@ -11,7 +11,13 @@ export class XcmRepositoryMock implements IXcmRepository {
       new Asset(
         '1',
         '0x111111',
-        new AssetMetadata('Astar', 'ASTR', 6, false, new BN('10000000000000000000'))
+        new AssetMetadata('Astar', 'ASTR', 6, false, new BN('10000000000000000000')),
+        '0.1',
+        'Shiden',
+        '11',
+        'image',
+        true,
+        true
       )
     );
 

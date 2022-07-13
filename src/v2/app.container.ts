@@ -37,6 +37,8 @@ import {
 import { Symbols } from './symbols';
 import { IEventAggregator, EventAggregator } from './messaging';
 import { container } from './common';
+import { endpointKey } from 'src/config/chainEndpoints';
+import { xcmToken, XcmTokenInformation } from 'src/modules/xcm';
 
 let currentWallet = WalletType.Polkadot;
 
@@ -44,7 +46,9 @@ export function setCurrentWallet(isEthWallet: boolean): void {
   currentWallet = isEthWallet ? WalletType.Metamask : WalletType.Polkadot;
 }
 
-export default function buildDependencyContainer(): void {
+export default function buildDependencyContainer(network: endpointKey): void {
+  container.addConstant<XcmTokenInformation[]>(Symbols.RegisteredTokens, xcmToken[network]);
+
   container.addSingleton<IEventAggregator>(EventAggregator, Symbols.EventAggregator);
   container.addSingleton<IApi>(Api, Symbols.Api);
 

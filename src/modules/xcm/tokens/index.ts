@@ -58,6 +58,8 @@ export const xcmToken = {
     },
   ],
   [endpointKey.SHIBUYA]: [],
+  [endpointKey.LOCAL]: [],
+  [endpointKey.CUSTOM]: [],
 };
 
 // Memo: placeholder for assetId of ASTR/SDN/SBY
