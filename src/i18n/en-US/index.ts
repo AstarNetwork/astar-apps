@@ -316,10 +316,10 @@ export default {
       tokenContractAddress: 'Token Contract Address',
       tipDestAddressFormat: 'Where can I find my {chain} address?',
       xcmWarning: {
-        minBalIsRequired: 'Min. balance is required on Relaychain',
+        minBalIsRequired: 'Min. balance is required on origin chain',
         fee: 'Fee is deducted from the amount entered',
         tooltip:
-          'We keep {amount} {symbol} in Relaychain account to avoid losing the funds (existential deposit). When depositing from Relaychain, only tokens that are above the minimum balance are transferable. When withdrawing the receiver Relaychain must have more than {amount} {symbol}.',
+          'We keep {amount} {symbol} in origin chain account to avoid losing the funds (existential deposit). When depositing from origin chain, only tokens that are above the minimum balance are transferable. When withdrawing the receiver origin chain must have more than {amount} {symbol}.',
         nonzeroBalance: 'the balance of recipient account should be above zero',
       },
     },

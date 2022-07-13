@@ -281,7 +281,7 @@ export const useConnectWallet = () => {
     store.commit('general/setCurrentWallet', wallet);
 
     // Memo: wait for updating the chain id from the initial state 592 (to pass the `setupNetwork` function)
-    const delay = 800;
+    const delay = 3000;
     await wait(delay);
 
     if (address === 'Ethereum Extension') {

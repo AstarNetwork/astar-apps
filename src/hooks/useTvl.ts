@@ -1,3 +1,4 @@
+import { getUsdBySymbol } from 'src/hooks/helper/price';
 import { ApiPromise } from '@polkadot/api';
 import { Option, Struct, U32 } from '@polkadot/types-codec';
 import { Balance } from '@polkadot/types/interfaces';
@@ -5,7 +6,6 @@ import { ethers } from 'ethers';
 import { useStore } from 'src/store';
 import { computed, ref, watch } from 'vue';
 import { useChainMetadata } from '.';
-import { getUsdPrice } from './helper/price';
 
 // TODO typegeneration
 interface EraInfo extends Struct {
@@ -49,8 +49,7 @@ export function useTvl(api: ApiPromise | undefined) {
       const priceUsd = async (): Promise<number> => {
         if (tokenSymbolRef === 'SDN' || tokenSymbolRef === 'ASTR') {
           try {
-            const coingeckoTicker = tokenSymbolRef === 'SDN' ? 'shiden' : 'astar';
-            return await getUsdPrice(coingeckoTicker);
+            return await getUsdBySymbol(tokenSymbolRef);
           } catch (error) {
             console.error(error);
             return 0;

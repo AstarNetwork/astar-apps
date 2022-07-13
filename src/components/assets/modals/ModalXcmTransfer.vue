@@ -65,11 +65,11 @@
             <div class="box__row">
               <div class="token-logo">
                 <jazzicon
-                  v-if="tokenImage.includes('custom-token')"
+                  v-if="token.tokenImage.includes('custom-token')"
                   :address="token.id"
                   :diameter="24"
                 />
-                <img v-else width="24" alt="token-logo" :src="tokenImage" />
+                <img v-else width="24" alt="token-logo" :src="token.tokenImage" />
               </div>
               <span class="text--title">{{ String(token.metadata.symbol) }}</span>
             </div>
@@ -117,13 +117,7 @@
 </template>
 <script lang="ts">
 import { fadeDuration } from '@astar-network/astar-ui';
-import {
-  ChainAsset,
-  useAccount,
-  useWalletIcon,
-  useXcmTokenDetails,
-  useXcmTokenTransfer,
-} from 'src/hooks';
+import { ChainAsset, useAccount, useWalletIcon, useXcmTokenTransfer } from 'src/hooks';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { wait } from 'src/hooks/helper/common';
 import { useStore } from 'src/store';
@@ -166,7 +160,6 @@ export default defineComponent({
     const store = useStore();
     const { currentAccount, currentAccountName } = useAccount();
     const token = computed(() => props.token);
-    const { tokenImage } = useXcmTokenDetails(token);
 
     const nativeTokenSymbol = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
@@ -220,7 +213,6 @@ export default defineComponent({
       errMsg,
       isClosingModal,
       isDisabledTransfer,
-      tokenImage,
       selectedTip,
       nativeTipPrice,
       isChecked,

@@ -14,10 +14,17 @@
           :class="[
             !isNativeBridge ? 'selected-bridge-option' : 'unselected-bridge-option',
             isH160 ? 'bridge-option-evm-withdrawal' : 'box--bridge-option',
+            isAstarNativeTransfer && 'option--disabled',
           ]"
-          @click="setIsNativeBridge(false)"
+          @click="!isAstarNativeTransfer && setIsNativeBridge(false)"
         >
-          <span class="text--title" :class="!isNativeBridge && 'text-color--neon'">
+          <span
+            class="text--title"
+            :class="[
+              !isNativeBridge && 'text-color--neon',
+              isAstarNativeTransfer && 'text-color--disabled',
+            ]"
+          >
             {{ $t(isH160 ? 'assets.modals.evmXcmWithdrawal' : 'assets.modals.evmXcmDeposit') }}
           </span>
         </div>
@@ -104,7 +111,7 @@
           </div>
           <div class="box__row">
             <div class="box__row">
-              <img width="24" alt="token-logo" :src="tokenImage" />
+              <img width="24" alt="token-logo" :src="token.tokenImage" />
               <span class="text--title">{{ String(token.metadata.symbol) }}</span>
             </div>
             <div class="box__column--input-amount">
@@ -123,7 +130,7 @@
         </div>
       </div>
       <div class="container--warning">
-        <div class="row--warning">
+        <div v-if="token.isNativeToken" class="row--warning">
           <div class="column--title">
             <span class="text--dot">・</span>
             <span class="text--warning">{{ $t('assets.modals.xcmWarning.minBalIsRequired') }}</span>
@@ -144,7 +151,7 @@
                 <span v-if="existentialDeposit"
                   >{{
                     $t('assets.modals.xcmWarning.tooltip', {
-                      amount: Number(existentialDeposit.relaychainMinBal),
+                      amount: Number(existentialDeposit.originChainMinBal),
                       symbol: existentialDeposit.symbol,
                       network: existentialDeposit.chain,
                     })
@@ -176,14 +183,13 @@
 </template>
 <script lang="ts">
 import { fadeDuration } from '@astar-network/astar-ui';
-import { ChainAsset, useXcmBridge, useXcmEvm, useAccount, useTooltip } from 'src/hooks';
-import { wait } from 'src/hooks/helper/common';
-import { computed, defineComponent, PropType, ref } from 'vue';
-import AddressInput from 'src/components/common/AddressInput.vue';
-import ModalLoading from '/src/components/common/ModalLoading.vue';
 import ModalSelectChain from 'src/components/assets/modals/ModalSelectChain.vue';
-import { truncate } from 'src/hooks/helper/common';
+import AddressInput from 'src/components/common/AddressInput.vue';
+import { ChainAsset, useTooltip, useXcmBridge, useXcmEvm } from 'src/hooks';
+import { truncate, wait } from 'src/hooks/helper/common';
+import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
+import ModalLoading from '/src/components/common/ModalLoading.vue';
 
 export default defineComponent({
   components: {
@@ -213,7 +219,7 @@ export default defineComponent({
   },
   setup(props) {
     const isClosingModal = ref<boolean>(false);
-    const token = computed(() => props.token);
+    const tokenData = computed(() => props.token);
     const { t } = useI18n();
     const { isDisplayTooltip, setIsMobileDisplayTooltip } = useTooltip('icon');
 
@@ -223,8 +229,6 @@ export default defineComponent({
       srcChain,
       destChain,
       isDisabledBridge,
-      tokenImage,
-      isNativeToken,
       isNativeBridge,
       evmDestAddress,
       existentialDeposit,
@@ -233,23 +237,20 @@ export default defineComponent({
       evmDestAddressBalance,
       fromAddressBalance,
       isDeposit,
+      isLoadingApi,
+      isAstarNativeTransfer,
       inputHandler,
       bridge,
       resetStates,
       setIsNativeBridge,
       setSrcChain,
       setDestChain,
-    } = useXcmBridge(token);
+    } = useXcmBridge(tokenData);
 
-    const { currentAccount } = useAccount();
-    const { callAssetWithdrawToPara } = useXcmEvm(currentAccount);
-
-    const isLoadingApi = computed<boolean>(() => {
-      return existentialDeposit.value === null;
-    });
+    const { callAssetWithdrawToPara } = useXcmEvm(tokenData);
 
     const isReady = computed<boolean>(() => {
-      return !!(token.value && srcChain.value && destChain.value);
+      return !!(tokenData.value && srcChain.value && destChain.value);
     });
 
     const getNetworkName = (): string => (isDeposit.value ? 'EVM' : destChain.value.name);
@@ -295,8 +296,6 @@ export default defineComponent({
       srcChain,
       destChain,
       isDisabledBridge,
-      tokenImage,
-      isNativeToken,
       isNativeBridge,
       evmDestAddress,
       existentialDeposit,
@@ -310,6 +309,7 @@ export default defineComponent({
       fromAddressBalance,
       isDeposit,
       isDisplayTooltip,
+      isAstarNativeTransfer,
       setIsMobileDisplayTooltip,
       inputHandler,
       closeModal,
