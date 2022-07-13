@@ -11,6 +11,12 @@ import { Dispatch } from 'vuex';
 import { SubstrateAccount } from './../../store/general/state';
 import { EthereumProvider } from './../types/CustomSignature';
 
+declare global {
+  interface Window {
+    [key: string]: EthereumProvider;
+  }
+}
+
 export const getInjectedExtensions = async (forceRequest = false): Promise<any[]> => {
   const selectedAddress = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
   if (selectedAddress != null || forceRequest) {
@@ -243,9 +249,8 @@ export const checkIsNativeWallet = (selectedWallet: SupportWallet): boolean => {
 
 export const getEvmProvider = (walletName: SupportWallet): EthereumProvider | null => {
   const wallet = supportEvmWalletObj[walletName as keyof typeof supportEvmWalletObj];
-  const provider = wallet
-    ? ((window as { [key: string]: any })[wallet.ethExtension] as EthereumProvider)
-    : undefined;
+  const provider = wallet ? (window[wallet.ethExtension] as EthereumProvider) : undefined;
+
   const isExtension =
     wallet && walletName === wallet.source && typeof provider !== undefined && provider;
 
