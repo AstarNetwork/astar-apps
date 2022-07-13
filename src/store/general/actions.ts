@@ -13,6 +13,10 @@ const actions: ActionTree<State, StateInterface> = {
       commit('setShowAlertMsg', false);
     }, toastTimeout);
   },
+
+  setLoading({ commit }, { result }: { result: boolean }) {
+    commit('setLoading', result);
+  },
 };
 
 export default actions;

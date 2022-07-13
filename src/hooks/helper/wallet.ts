@@ -1,15 +1,15 @@
-import { wait } from 'src/hooks/helper/common';
-import { EthereumProvider } from './../types/CustomSignature';
-import { supportEvmWalletObj, SupportWallet, supportWalletObj } from 'src/config/wallets';
+import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { web3Enable } from '@polkadot/extension-dapp';
 import { ISubmittableResult } from '@polkadot/types/types';
+import { ethers } from 'ethers';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { supportEvmWalletObj, SupportWallet, supportWalletObj } from 'src/config/wallets';
+import { wait } from 'src/hooks/helper/common';
 import { deepLink } from 'src/links';
 import { showError } from 'src/modules/extrinsic';
 import { Dispatch } from 'vuex';
 import { SubstrateAccount } from './../../store/general/state';
-import { SubmittableExtrinsic } from '@polkadot/api/types';
-import { ethers } from 'ethers';
+import { EthereumProvider } from './../types/CustomSignature';
 
 export const getInjectedExtensions = async (forceRequest = false): Promise<any[]> => {
   const selectedAddress = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);

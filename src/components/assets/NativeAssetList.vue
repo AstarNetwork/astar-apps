@@ -63,12 +63,24 @@
                 </div>
               </div>
             </div>
-            <div class="column--buttons">
+            <div class="column--buttons" :class="isDisplayXcmButton && 'column--two-buttons'">
               <button
                 class="btn btn--sm"
                 @click="handleModalTransfer({ isOpen: true, currency: nativeTokenSymbol })"
               >
                 {{ $t('assets.transfer') }}
+              </button>
+              <button
+                v-if="isDisplayXcmButton"
+                class="btn btn--sm"
+                @click="
+                  handleModalXcmBridge({
+                    isOpen: true,
+                    currency: xcmNativeToken,
+                  })
+                "
+              >
+                {{ $t('assets.xcm') }}
               </button>
             </div>
           </div>
@@ -174,18 +186,18 @@
   </div>
 </template>
 <script lang="ts">
-import { ethers } from 'ethers';
 import { u8aToString } from '@polkadot/util';
+import { ethers } from 'ethers';
 import { useBalance, useEvmDeposit, usePrice } from 'src/hooks';
-import { useStore } from 'src/store';
+import { checkIsNullOrUndefined, truncate } from 'src/hooks/helper/common';
 import { getTokenImage } from 'src/modules/token';
+import { generateAstarNativeTokenObject } from 'src/modules/xcm/tokens';
+import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
-import ModalTransfer from './modals/ModalTransfer.vue';
-import ModalFaucet from './modals/ModalFaucet.vue';
 import ModalEvmWithdraw from './modals/ModalEvmWithdraw.vue';
+import ModalFaucet from './modals/ModalFaucet.vue';
+import ModalTransfer from './modals/ModalTransfer.vue';
 import ModalVesting from './modals/ModalVesting.vue';
-import { checkIsNullOrUndefined } from 'src/hooks/helper/common';
-import { truncate } from 'src/hooks/helper/common';
 
 export default defineComponent({
   components: {
@@ -193,6 +205,12 @@ export default defineComponent({
     ModalFaucet,
     ModalEvmWithdraw,
     ModalVesting,
+  },
+  props: {
+    handleModalXcmBridge: {
+      type: Function,
+      required: true,
+    },
   },
   setup() {
     const isModalTransfer = ref<boolean>(false);
@@ -218,6 +236,9 @@ export default defineComponent({
       const chainInfo = store.getters['general/chainInfo'];
       return chainInfo ? chainInfo.tokenSymbol : '';
     });
+
+    const xcmNativeToken = computed(() => generateAstarNativeTokenObject(nativeTokenSymbol.value));
+
     const currentNetworkName = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
       const chain = chainInfo ? chainInfo.chain : '';
@@ -234,6 +255,9 @@ export default defineComponent({
         : '0';
       return Number(balance);
     });
+
+    // Todo: enable button for ASTAR after opened channel with other parachains
+    const isDisplayXcmButton = computed<boolean>(() => currentNetworkName.value === 'Shiden');
 
     const handleModalTransfer = ({ currency, isOpen }: { isOpen: boolean; currency: string }) => {
       isModalTransfer.value = isOpen;
@@ -300,6 +324,8 @@ export default defineComponent({
       isModalFaucet,
       isModalEvmWithdraw,
       isModalVesting,
+      xcmNativeToken,
+      isDisplayXcmButton,
       handleModalVesting,
       handleModalTransfer,
       handleModalFaucet,

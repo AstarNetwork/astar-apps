@@ -21,6 +21,7 @@ interface ChainProvider {
 }
 
 export type ASTAR_CHAIN = 'Shiden' | 'Astar' | 'Shibuya Testnet';
+export type ASTAR_NATIVE_TOKEN = 'ASTR' | 'SDN' | 'SBY';
 
 export enum endpointKey {
   ASTAR = 0,

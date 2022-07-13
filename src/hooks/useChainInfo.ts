@@ -4,10 +4,12 @@ import { getSpecTypes } from '@polkadot/types-known';
 import { TypeRegistry } from '@polkadot/types/create';
 import { formatBalance, isNumber } from '@polkadot/util';
 import { defaults as addressDefaults } from '@polkadot/util-crypto/address/defaults';
+import { ASTAR_NATIVE_TOKEN } from 'src/config/chainEndpoints';
 import { ref } from 'vue';
 
 export interface ChainInfo extends MetadataDef {
   color: string | undefined;
+  tokenSymbol: ASTAR_NATIVE_TOKEN;
 }
 
 const registry = new TypeRegistry();
@@ -31,7 +33,8 @@ function createInfo(
     specVersion: api.runtimeVersion.specVersion.toNumber(),
     ss58Format: isNumber(api.registry.chainSS58) ? api.registry.chainSS58 : DEFAULT_SS58.toNumber(),
     tokenDecimals: (api.registry.chainDecimals || [DEFAULT_DECIMALS.toNumber()])[0],
-    tokenSymbol: (api.registry.chainTokens || formatBalance.getDefaults().unit)[0],
+    tokenSymbol: (api.registry.chainTokens ||
+      formatBalance.getDefaults().unit)[0] as ASTAR_NATIVE_TOKEN,
     types: getSpecTypes(
       api.registry,
       systemChain,
