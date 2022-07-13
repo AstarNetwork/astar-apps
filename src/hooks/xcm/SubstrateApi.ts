@@ -1,11 +1,15 @@
 import { ApiPromise, WsProvider } from '@polkadot/api';
-import { TypeRegistry } from '@polkadot/types';
+import { Option, Struct, TypeRegistry } from '@polkadot/types';
 import { DispatchError, MultiAsset, MultiLocation, VersionedXcm } from '@polkadot/types/interfaces';
 import { ISubmittableResult, ITuple } from '@polkadot/types/types';
 import { decodeAddress } from '@polkadot/util-crypto';
 import BN from 'bn.js';
 import { ExtrinsicPayload } from 'src/hooks/helper';
+import { showLoading } from 'src/modules/extrinsic/utils';
 import { ExistentialDeposit, fetchExistentialDeposit } from 'src/modules/xcm';
+import { idAstarNativeToken } from 'src/modules/xcm/tokens';
+import { Dispatch } from 'vuex';
+import { ChainAsset } from './useXcmAssets';
 
 const AUTO_CONNECT_MS = 10_000; // [ms]
 
@@ -14,6 +18,22 @@ interface ChainProperty {
   tokenDecimals: number[];
   chainName: string;
   ss58Prefix: number;
+}
+
+interface AssetConfig extends Struct {
+  v1: {
+    parents: number;
+    interior: Interior;
+  };
+}
+
+interface Interior {
+  x2: X2[];
+}
+
+interface X2 {
+  parachain: number;
+  generalKey: string;
 }
 
 class ChainApi {
@@ -113,7 +133,7 @@ class ChainApi {
     throw 'Undefined sudo';
   }
 
-  public async getBalance(address: string) {
+  public async getNativeBalance(address: string) {
     try {
       await this._api?.isReady;
       const balData = ((await this._api.query.system.account(address)) as any).data;
@@ -121,6 +141,23 @@ class ChainApi {
     } catch (e) {
       console.error(e);
       return new BN(0);
+    }
+  }
+
+  public async getTokenBalances({
+    selectedToken,
+    address,
+    isNativeToken,
+  }: {
+    selectedToken: ChainAsset;
+    address: string;
+    isNativeToken: boolean;
+  }): Promise<string> {
+    try {
+      return (await this.getNativeBalance(address)).toString();
+    } catch (e) {
+      console.error(e);
+      return '0';
     }
   }
 
@@ -132,14 +169,21 @@ class ChainApi {
     }
   }
 
-  public async signAndSend(
-    account: string,
-    signer: any,
-    tx: ExtrinsicPayload,
-    finalizedCallback: () => Promise<void>,
-    handleResult: (result: ISubmittableResult) => Promise<boolean>,
-    tip = '1'
-  ) {
+  public async signAndSend({
+    account,
+    signer,
+    tx,
+    finalizedCallback,
+    handleResult,
+    tip,
+  }: {
+    account: string;
+    signer: any;
+    tx: ExtrinsicPayload;
+    finalizedCallback: () => Promise<void>;
+    handleResult: (result: ISubmittableResult) => Promise<boolean>;
+    tip: string;
+  }) {
     return new Promise<boolean>(async (resolve) => {
       const txsToExecute: ExtrinsicPayload[] = [];
       txsToExecute.push(tx);
@@ -208,7 +252,17 @@ export class RelaychainApi extends ChainApi {
     // check if the connected network implements xcmPallet
   }
 
-  public transferToParachain(toPara: number, recipientAccountId: string, amount: string) {
+  public transferToParachain({
+    toPara,
+    recipientAccountId,
+    amount,
+    selectedToken,
+  }: {
+    toPara: number;
+    recipientAccountId: string;
+    amount: string;
+    selectedToken?: ChainAsset;
+  }) {
     // public transferToParachain(toPara: number, recipientAccountId: string, amount: string) {
     // the target parachain connected to the current relaychain
     const dest = {
@@ -292,15 +346,51 @@ export class ParachainApi extends ChainApi {
     super(api);
   }
 
-  /// should move to function in relay chain ($api)
-  public transferToRelaychain(recipientAccountId: string, amount: string) {
-    const dest = {
-      V1: {
-        interior: 'Here',
-        parents: new BN(1),
-      },
-    };
-    // the account ID within the destination parachain
+  public async fetchAssetConfig(assetId: string): Promise<{
+    parents: number;
+    interior: Interior;
+  }> {
+    const config = await this.apiInst.query.xcAssetConfig.assetIdToLocation<Option<AssetConfig>>(
+      assetId
+    );
+    const formattedAssetConfig = JSON.parse(config.toString());
+    return formattedAssetConfig.v1;
+  }
+
+  public async transferToOriginChain({
+    assetId,
+    recipientAccountId,
+    amount,
+    isNativeToken,
+    paraId,
+  }: {
+    assetId: string;
+    recipientAccountId: string;
+    amount: string;
+    isNativeToken: boolean;
+    paraId: number;
+  }): Promise<ExtrinsicPayload> {
+    const isWithdrawAssets = assetId !== idAstarNativeToken;
+    const functionName = isWithdrawAssets ? 'reserveWithdrawAssets' : 'reserveTransferAssets';
+    const isSendToParachain = paraId > 0;
+    const dest = isSendToParachain
+      ? {
+          V1: {
+            interior: {
+              X1: {
+                Parachain: new BN(paraId),
+              },
+            },
+            parents: new BN(1),
+          },
+        }
+      : {
+          V1: {
+            interior: 'Here',
+            parents: new BN(1),
+          },
+        };
+
     const beneficiary = {
       V1: {
         interior: {
@@ -314,30 +404,31 @@ export class ParachainApi extends ChainApi {
         parents: new BN(0),
       },
     };
-    // amount of fungible tokens to be transferred
+
+    const isRegisteredAsset = isSendToParachain && isWithdrawAssets;
+
+    const asset = isRegisteredAsset
+      ? {
+          Concrete: await this.fetchAssetConfig(assetId),
+        }
+      : {
+          Concrete: {
+            interior: 'Here',
+            parents: new BN(isSendToParachain ? 0 : 1),
+          },
+        };
+
     const assets = {
       V1: [
         {
           fun: {
             Fungible: new BN(amount),
           },
-          id: {
-            Concrete: {
-              interior: 'Here',
-              parents: new BN(1),
-            },
-          },
+          id: asset,
         },
       ],
     };
 
-    return this.buildTxCall(
-      'polkadotXcm',
-      'reserveWithdrawAssets',
-      dest,
-      beneficiary,
-      assets,
-      new BN(0)
-    );
+    return this.buildTxCall('polkadotXcm', functionName, dest, beneficiary, assets, new BN(0));
   }
 }

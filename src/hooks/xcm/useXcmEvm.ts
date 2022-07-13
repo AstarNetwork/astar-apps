@@ -1,11 +1,9 @@
 import BN from 'bn.js';
 import { ethers } from 'ethers';
-import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
 import xcmContractAbi from 'src/config/web3/abi/xcm-abi.json';
 import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
 import { getEvmGas } from 'src/modules/gas-api';
-import { DOT, KSM } from 'src/modules/token';
 import { useStore } from 'src/store';
 import { computed, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -13,22 +11,20 @@ import Web3 from 'web3';
 import { TransactionConfig } from 'web3-eth';
 import { AbiItem } from 'web3-utils';
 import { getPubkeyFromSS58Addr } from '../helper/addressUtils';
+import { useAccount } from '../useAccount';
 import { useGasPrice } from '../useGasPrice';
+import { relaychainParaId, xcmChains } from './../../modules/xcm/index';
+import { ChainAsset } from './useXcmAssets';
 
 // xcm precompiled contract address
 const PRECOMPILED_ADDR = '0x0000000000000000000000000000000000005004';
 
-export function useXcmEvm(addressRef: Ref<string>) {
+export function useXcmEvm(selectedToken: Ref<ChainAsset>) {
   const store = useStore();
   const { t } = useI18n();
   const { evmGasPrice } = useGasPrice();
+  const { currentAccount } = useAccount();
 
-  const currentNetworkIdx = computed(() => {
-    const chainInfo = store.getters['general/chainInfo'];
-    const chain = chainInfo ? chainInfo.chain : '';
-    return getProviderIndex(chain);
-  });
-  const isAstar = computed(() => currentNetworkIdx.value === endpointKey.ASTAR);
   const currentWallet = computed(() => store.getters['general/currentWallet']);
 
   const callAssetWithdrawToPara = async (
@@ -47,20 +43,16 @@ export function useXcmEvm(addressRef: Ref<string>) {
 
       store.commit('general/setLoading', true);
 
-      // TODO: need refactor as more scalable later
-      let asset_id = KSM.address;
-      let decimal = KSM.decimal;
-      if (isAstar.value) {
-        asset_id = DOT.address;
-        decimal = DOT.decimal;
-      }
+      const asset_id = selectedToken.value.mappedERC20Addr;
+      const decimal = Number(selectedToken.value.metadata.decimals);
       const assetAmount = ethers.utils.parseUnits(asset_amount, decimal).toString();
       const recipientEvmAccountId = getPubkeyFromSS58Addr(recipient_account_id);
       const assetIds = [asset_id];
       const assetAmounts = [new BN(assetAmount)];
       const recipientAccountId = recipientEvmAccountId;
-      const idRelay = true;
-      const parachainId = 0;
+      const withdrawalChain = xcmChains.find((it) => it.name === selectedToken.value.originChain);
+      const isRelay = Number(withdrawalChain && withdrawalChain.parachainId) === relaychainParaId;
+      const parachainId = withdrawalChain?.parachainId;
       const feeIndex = 0;
 
       try {
@@ -68,14 +60,14 @@ export function useXcmEvm(addressRef: Ref<string>) {
         const web3 = new Web3(provider as any);
         const contract = new web3.eth.Contract(xcmContractAbi as AbiItem[], PRECOMPILED_ADDR);
         const [nonce, gasPrice] = await Promise.all([
-          web3.eth.getTransactionCount(addressRef.value),
+          web3.eth.getTransactionCount(currentAccount.value),
           getEvmGas(web3, evmGasPrice.value.fast),
         ]);
 
         const rawTx: TransactionConfig = {
           nonce,
           gasPrice: web3.utils.toHex(gasPrice),
-          from: addressRef.value,
+          from: currentAccount.value,
           to: PRECOMPILED_ADDR,
           value: '0x0',
           data: contract.methods
@@ -83,7 +75,7 @@ export function useXcmEvm(addressRef: Ref<string>) {
               assetIds,
               assetAmounts,
               recipientAccountId,
-              idRelay,
+              isRelay,
               parachainId,
               feeIndex
             )

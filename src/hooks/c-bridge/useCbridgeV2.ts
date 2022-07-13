@@ -1,6 +1,5 @@
 import {
   CbridgeToken,
-  checkIsCbridgeToken,
   EvmChain,
   getSelectedToken,
   getTransferConfigs,
@@ -9,7 +8,7 @@ import {
 import { endpointKey, getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { getTokenBal } from 'src/config/web3';
 import { objToArray } from 'src/hooks/helper/common';
-import { checkIsWrappedToken, Erc20Token } from 'src/modules/token';
+import { Erc20Token } from 'src/modules/token';
 import { useStore } from 'src/store';
 import { computed, onUnmounted, ref, watch, watchEffect } from 'vue';
 import { useAccount } from '../useAccount';
@@ -75,22 +74,9 @@ export function useCbridgeV2() {
     });
     if (Number(userBalance) > 0) {
       try {
-        const isCbridgetoken = checkIsCbridgeToken(token);
-        let symbol = '';
-
-        if (isCbridgetoken) {
-          symbol = token.symbol;
-        } else {
-          const isWrappedToken = checkIsWrappedToken({
-            srcChainId: evmNetworkId.value,
-            tokenAddress: token.address,
-          });
-          symbol = isWrappedToken ? nativeTokenSymbol.value : token.symbol;
-        }
-
         balUsd = await calUsdAmount({
           amount: Number(userBalance),
-          symbol,
+          symbol: token.symbol,
         });
       } catch (error) {
         console.error(error);

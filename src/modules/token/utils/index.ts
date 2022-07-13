@@ -42,23 +42,6 @@ export const getRegisteredERC20Token = (): Erc20Token[] => {
   return registeredErc20Tokens.concat(storedTokens);
 };
 
-export const checkIsWrappedToken = ({
-  tokenAddress,
-  srcChainId,
-}: {
-  tokenAddress: string;
-  srcChainId: number;
-}) => {
-  const token = getRegisteredERC20Token().find(
-    (it: Erc20Token) => it.srcChainId === srcChainId && it.address === tokenAddress
-  );
-  if (!token) {
-    throw Error(`token address ${tokenAddress} is not registered`);
-  }
-
-  return token.isWrappedToken && token.srcChainId === srcChainId;
-};
-
 export const getStoredERC20Tokens = (): Erc20Token[] => {
   const data = localStorage.getItem(LOCAL_STORAGE.EVM_TOKEN_IMPORTS);
   return data ? JSON.parse(data) : [];
