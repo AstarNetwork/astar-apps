@@ -14,6 +14,11 @@ export interface ChainAsset extends AssetDetails {
   userBalance: string;
   userBalanceUsd: string;
   minBridgeAmount: string;
+  originChain: string;
+  originAssetId: string;
+  tokenImage: string;
+  isNativeToken: boolean;
+  isXcmCompatible: boolean;
 }
 
 export function useXcmAssets() {
@@ -71,7 +76,25 @@ export function useXcmAssets() {
     }
   };
 
-  const mappedXC20Asset = (assetId: string) => `0xffffffff${Web3.utils.toHex(assetId).slice(2)}`;
+  const mappedXC20Asset = (assetId: string) => {
+    const hexedAddress = `0xffffffff${Web3.utils.toHex(assetId).slice(2)}`;
+    const requirementLength = 42;
+    const mappedLength = hexedAddress.length;
+    const paddingDiffer = requirementLength - mappedLength;
+    if (paddingDiffer === 0) {
+      return hexedAddress;
+    } else {
+      // Memo: modify the mapped address due to padding issue
+      // Ref: https://stakesg.slack.com/archives/C028H2ZSGRK/p1656924498917399?thread_ts=1656690608.831049&cid=C028H2ZSGRK
+
+      // Memo: -> 0xffffffff
+      const a = hexedAddress.slice(0, 10);
+      const b = '0'.repeat(paddingDiffer);
+      const c = hexedAddress.slice(10);
+      const fixedAddress = a + b + c;
+      return fixedAddress;
+    }
+  };
 
   const fetchAssets = async () => {
     try {
@@ -95,6 +118,11 @@ export function useXcmAssets() {
               (it) => it.assetId === assetId
             );
             const minBridgeAmount = registeredData ? registeredData.minBridgeAmount : '0';
+            const originChain = registeredData ? registeredData.originChain : '';
+            const originAssetId = registeredData ? registeredData.originAssetId : '';
+            const tokenImage = registeredData ? (registeredData.logo as string) : 'custom-token';
+            const isNativeToken = registeredData ? registeredData.isNativeToken : false;
+            const isXcmCompatible = registeredData ? registeredData.isXcmCompatible : false;
 
             const token = {
               id: assetId,
@@ -103,7 +131,12 @@ export function useXcmAssets() {
               mappedERC20Addr: mappedXC20,
               userBalance: '0',
               userBalanceUsd: '0',
+              originChain,
               minBridgeAmount,
+              originAssetId,
+              tokenImage,
+              isNativeToken,
+              isXcmCompatible,
             } as ChainAsset;
 
             if (currentAccount.value && !isH160.value) {

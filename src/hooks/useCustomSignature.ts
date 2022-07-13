@@ -6,6 +6,7 @@ import { computed, ref } from 'vue';
 import { displayCustomMessage, TxType } from './custom-signature/message';
 import { useExtrinsicCall } from './custom-signature/useExtrinsicCall';
 import { hasExtrinsicFailedEvent } from 'src/modules/extrinsic';
+import { showLoading } from 'src/modules/extrinsic/utils';
 
 export function useCustomSignature({ fn, txType }: { fn?: () => void; txType?: TxType }) {
   const customMsg = ref<string | null>(null);
@@ -43,6 +44,7 @@ export function useCustomSignature({ fn, txType }: { fn?: () => void; txType?: T
               msg,
               alertType: 'success',
             });
+            showLoading(store.dispatch, false);
 
             customMsg.value = null;
             resolve(true);
@@ -50,7 +52,7 @@ export function useCustomSignature({ fn, txType }: { fn?: () => void; txType?: T
             resolve(false);
           }
         } else {
-          store.commit('general/setLoading', true);
+          showLoading(store.dispatch, true);
         }
 
         if (txType) {
@@ -65,7 +67,7 @@ export function useCustomSignature({ fn, txType }: { fn?: () => void; txType?: T
       });
     } catch (error: any) {
       handleTransactionError(error);
-      store.commit('general/setLoading', false);
+      showLoading(store.dispatch, false);
       return false;
     }
   };

@@ -15,7 +15,7 @@ export {
   fetchErc20TokenInfo,
 } from './utils';
 
-export { contractInstance, Staking, XCM } from './contracts';
+export { contractInstance, Staking } from './contracts';
 
 export type TNetworkId = endpointKey.SHIDEN | endpointKey.SHIBUYA | endpointKey.ASTAR;
 
