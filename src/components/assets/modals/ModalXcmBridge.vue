@@ -174,7 +174,7 @@
         <span class="color--white"> {{ $t(errMsg) }}</span>
       </div>
       <div class="wrapper__row--button">
-        <button class="btn btn--confirm" :disabled="isDisabledBridge" @click="handleBridge">
+        <button class="btn btn--confirm" :disabled="isDisabledBridge" @click="handleBridgeV2">
           {{ $t('confirm') }}
         </button>
       </div>
@@ -185,8 +185,15 @@
 import { fadeDuration } from '@astar-network/astar-ui';
 import ModalSelectChain from 'src/components/assets/modals/ModalSelectChain.vue';
 import AddressInput from 'src/components/common/AddressInput.vue';
-import { ChainAsset, useTooltip, useXcmBridge, useXcmEvm } from 'src/hooks';
+import { ChainAsset, useAccount, useTooltip, useXcmBridge, useXcmEvm } from 'src/hooks';
 import { truncate, wait } from 'src/hooks/helper/common';
+import { useStore } from 'src/store';
+import { container } from 'src/v2/common';
+import { Chain } from 'src/v2/config/types';
+import { XcmConfiguration } from 'src/v2/config/xcm/XcmConfiguration';
+import { Asset } from 'src/v2/models';
+import { IXcmService } from 'src/v2/services';
+import { Symbols } from 'src/v2/symbols';
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ModalLoading from '/src/components/common/ModalLoading.vue';
@@ -271,6 +278,25 @@ export default defineComponent({
       isClosingModal.value = false;
     };
 
+    // V2 PoC start
+    const store = useStore();
+    const { currentAccount } = useAccount();
+    const handleBridgeV2 = async (): Promise<void> => {
+      const xcmService = container.get<IXcmService>(Symbols.XcmService);
+      const from = XcmConfiguration.find((x) => x.chain === Chain.Kusama);
+      const to = XcmConfiguration.find((x) => x.chain === Chain.Shiden);
+      const assets = computed<Asset[]>(() => store.getters['assets/getAllAssets']);
+      const token = assets.value[0];
+      const amount = 0.001;
+
+      if (from && to) {
+        await xcmService.transfer(from, to, token, currentAccount.value, amount);
+      }
+    };
+
+    // handleBridgeV2();
+    // v2 end
+
     const handleBridge = async (): Promise<void> => {
       if (isH160.value) {
         const txHash = await callAssetWithdrawToPara(
@@ -319,6 +345,7 @@ export default defineComponent({
       truncate,
       setSrcChain,
       setDestChain,
+      handleBridgeV2,
     };
   },
 });

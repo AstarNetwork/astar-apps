@@ -24,14 +24,28 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
     super(eventAggregator);
   }
 
+  /**
+   * Signs given transaction.
+   * @param extrinsic Transaction to sign.
+   * @param senderAddress Sender address.
+   * @param successMessage Mesage to be displayed to user in case of successful tansaction.
+   * If not defined, default message will be shown.
+   * @param tip Transaction tip, If not provided it will be fetched from gas price provider,
+   */
   public async signAndSend(
     extrinsic: SubmittableExtrinsic<'promise', ISubmittableResult>,
     senderAddress: string,
-    successMessage?: string
+    successMessage?: string,
+    transactionTip?: number
   ): Promise<void> {
     try {
       await this.checkExtension();
-      const tip = this.gasPriceProvider.getTip().price;
+      let tip = transactionTip?.toString();
+      if (!tip) {
+        tip = this.gasPriceProvider.getTip().price;
+        tip = tip ? ethers.utils.parseEther(tip).toString() : '1';
+      }
+
       console.info('transaction tip', tip);
 
       await extrinsic.signAndSend(
@@ -39,7 +53,7 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
         {
           signer: await this.getSigner(senderAddress),
           nonce: -1,
-          tip: tip ? ethers.utils.parseEther(String(tip)).toString() : '1',
+          tip,
         },
         (result) => {
           if (result.isFinalized) {

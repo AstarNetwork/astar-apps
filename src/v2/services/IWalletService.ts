@@ -9,6 +9,7 @@ export interface IWalletService {
   signAndSend(
     extrinsic: SubmittableExtrinsic<'promise'>,
     senderAddress: string,
-    successMessage?: string
+    successMessage?: string,
+    transactionTip?: number
   ): Promise<void>;
 }

@@ -3,6 +3,8 @@ import { Class } from './TypeMapping';
 export enum Chain {
   Polkadot = 'Polkadot',
   Kusama = 'Kusama',
+  Astar = 'Astar',
+  Shiden = 'Shiden',
   Acala = 'Acala',
   Karura = 'Karura',
 }

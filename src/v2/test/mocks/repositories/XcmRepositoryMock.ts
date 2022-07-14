@@ -1,5 +1,7 @@
 import { BN } from '@polkadot/util';
 import { injectable } from 'inversify';
+import { Network } from 'src/v2/config/types';
+import { ExtrinsicPayload } from 'src/v2/integration';
 import { Asset, AssetMetadata } from 'src/v2/models';
 import { IXcmRepository } from 'src/v2/repositories';
 
@@ -24,5 +26,14 @@ export class XcmRepositoryMock implements IXcmRepository {
     result[0].balance = new BN('1000');
 
     return result;
+  }
+
+  public getTransferToParachainCall(
+    from: Network,
+    to: Network,
+    recipientAddress: string,
+    amount: BN
+  ): Promise<ExtrinsicPayload> {
+    return Promise.resolve({} as ExtrinsicPayload);
   }
 }

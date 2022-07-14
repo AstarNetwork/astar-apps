@@ -6,17 +6,19 @@ import Web3 from 'web3';
 import { Asset, AssetMetadata } from 'src/v2/models';
 import { IXcmRepository } from 'src/v2/repositories';
 import { injectable, inject } from 'inversify';
-import { IApi } from 'src/v2/integration';
+import { ExtrinsicPayload, IApi, IApiFactory } from 'src/v2/integration';
 import { Symbols } from 'src/v2/symbols';
 import { Guard } from 'src/v2/common';
 import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { XcmTokenInformation } from 'src/modules/xcm';
-import { min } from 'bn.js';
+import { decodeAddress } from '@polkadot/util-crypto';
+import { Network } from 'src/v2/config/types';
 
 @injectable()
 export class XcmRepository implements IXcmRepository {
   constructor(
     @inject(Symbols.DefaultApi) private api: IApi,
+    @inject(Symbols.ApiFactory) private apiFactory: IApiFactory,
     @inject(Symbols.RegisteredTokens) private registeredTokens: XcmTokenInformation[]
   ) {}
 
@@ -67,6 +69,69 @@ export class XcmRepository implements IXcmRepository {
     return result;
   }
 
+  public async getTransferToParachainCall(
+    from: Network,
+    to: Network,
+    recipientAddress: string,
+    amount: BN
+  ): Promise<ExtrinsicPayload> {
+    if (!to.parachainId) {
+      throw `Parachain id for ${to.displayName} is not defined`;
+    }
+
+    // the target parachain connected to the current relaychain
+    const destination = {
+      V1: {
+        interior: {
+          X1: {
+            Parachain: new BN(to.parachainId),
+          },
+        },
+        parents: new BN(0),
+      },
+    };
+    // the account ID within the destination parachain
+    const beneficiary = {
+      V1: {
+        interior: {
+          X1: {
+            AccountId32: {
+              network: 'Any',
+              id: decodeAddress(recipientAddress),
+            },
+          },
+        },
+        parents: new BN(0),
+      },
+    };
+    // amount of fungible tokens to be transferred
+    const assets = {
+      V1: [
+        {
+          fun: {
+            Fungible: amount,
+          },
+          id: {
+            Concrete: {
+              interior: 'Here',
+              parents: new BN(0),
+            },
+          },
+        },
+      ],
+    };
+
+    return await this.buildTxCall(
+      from,
+      'xcmPallet',
+      'reserveTransferAssets',
+      destination,
+      beneficiary,
+      assets,
+      new BN(0)
+    );
+  }
+
   private async getBalances(address: string, assets: Asset[]): Promise<Asset[]> {
     const queries: QueryableStorageMultiArg<'promise'>[] = [];
     const api = await this.api.getApi();
@@ -103,5 +168,20 @@ export class XcmRepository implements IXcmRepository {
       const fixedAddress = a + b + c;
       return fixedAddress;
     }
+  }
+
+  private async buildTxCall(
+    network: Network,
+    extrinsic: string,
+    method: string,
+    ...args: any[]
+  ): Promise<ExtrinsicPayload> {
+    const api = await this.apiFactory.get(network.endpoint);
+    const call = api.tx[extrinsic][method](...args);
+    if (call) {
+      return call;
+    }
+
+    throw `Undefined extrinsic call ${extrinsic} with method ${method}`;
   }
 }

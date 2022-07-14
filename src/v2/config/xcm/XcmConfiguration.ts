@@ -12,6 +12,12 @@ export const XcmConfiguration: Network[] = [
     endpoint: 'wss://kusama-rpc.polkadot.io',
   },
   {
+    chain: Chain.Shiden,
+    displayName: 'Shiden Network',
+    endpoint: 'wss://shiden.api.onfinality.io/public-ws',
+    parachainId: 2007,
+  },
+  {
     chain: Chain.Karura,
     displayName: 'Karura Network',
     endpoint: 'wss://karura.api.onfinality.io/public-ws',
@@ -24,3 +30,7 @@ export const XcmConfiguration: Network[] = [
     parachainId: 2000,
   },
 ];
+
+export const isParachain = (network: Network): boolean => !!network.parachainId;
+
+export const isRelayChain = (network: Network): boolean => !isParachain(network);
