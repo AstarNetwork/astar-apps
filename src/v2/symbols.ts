@@ -15,4 +15,5 @@ export const Symbols = {
   BalanceFormatterService: Symbol.for('BalanceFormatterService'),
   TypeFactory: Symbol.for('TypeFactory'),
   TypeMappings: Symbol.for('TypeMappings'),
+  RegisteredTokens: Symbol.for('RegisteredTokens'),
 };

@@ -1,49 +1,50 @@
-import { isValidAddressPolkadotAddress } from './../helper/plasmUtils';
 import { evmToAddress } from '@polkadot/util-crypto';
 import { ethers } from 'ethers';
-import { $api, $web3 } from 'src/boot/api';
-import { endpointKey, getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
-import { getBalance, getTokenBal, isValidEvmAddress } from 'src/config/web3';
+import { $api } from 'src/boot/api';
 import {
-  endpointKey as xcmEndpointKey,
+  ASTAR_NATIVE_TOKEN,
+  endpointKey,
+  getProviderIndex,
+  providerEndpoints,
+} from 'src/config/chainEndpoints';
+import { getTokenBal, isValidEvmAddress } from 'src/config/web3';
+import {
   parachainIds,
   PREFIX_ASTAR,
   providerEndpoints as xcmProviderEndpoints,
 } from 'src/config/xcmChainEndpoints';
-import { useBalance, useCustomSignature, useXcmAssets, useXcmTokenDetails } from 'src/hooks';
+import { useBalance, useCustomSignature } from 'src/hooks';
 import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
 import { getInjector } from 'src/hooks/helper/wallet';
 import { useAccount } from 'src/hooks/useAccount';
+import { useGasPrice } from 'src/hooks/useGasPrice';
 import { ChainAsset } from 'src/hooks/xcm/useXcmAssets';
 import {
-  ExistentialDeposit,
-  checkIsFromRelayChain,
   Chain,
+  checkIsFromRelayChain,
+  ExistentialDeposit,
   XcmChain,
-  getChains,
   xcmChains,
 } from 'src/modules/xcm';
+import { xcmAstarNativeToken } from 'src/modules/xcm/tokens';
 import { useStore } from 'src/store';
-import { computed, ref, Ref, watchEffect, watch } from 'vue';
+import { computed, ref, Ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { ParachainApi, RelaychainApi } from './SubstrateApi';
 import { wait } from '../helper/common';
-import { useGasPrice } from 'src/hooks/useGasPrice';
+import { isValidAddressPolkadotAddress } from './../helper/plasmUtils';
+import { AcalaApi } from './parachainApi/AcalaApi';
+import { ParachainApi, RelaychainApi } from './SubstrateApi';
 
 const chainPolkadot = xcmChains.find((it) => it.name === Chain.Polkadot) as XcmChain;
 const chainAstar = xcmChains.find((it) => it.name === Chain.Astar) as XcmChain;
-const chainKusama = xcmChains.find((it) => it.name === Chain.Kusama) as XcmChain;
 const chainShiden = xcmChains.find((it) => it.name === Chain.Shiden) as XcmChain;
-const initialChains = getChains(endpointKey.ASTAR);
+const chainKarura = xcmChains.find((it) => it.name === Chain.Karura) as XcmChain;
 
 export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
-  let relayChainApi: RelaychainApi | null = null;
-
-  const chains = ref<XcmChain[]>(initialChains);
+  let originChainApi: RelaychainApi | null = null;
   const srcChain = ref<XcmChain>(chainPolkadot);
   const destChain = ref<XcmChain>(chainAstar);
   const destParaId = ref<number>(parachainIds.ASTAR);
-  const tokens = ref<ChainAsset[] | null>(null);
   const amount = ref<string | null>(null);
   const errMsg = ref<string>('');
   const isDisabledBridge = ref<boolean>(true);
@@ -55,34 +56,62 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   const evmDestAddress = ref<string>('');
   const evmDestAddressBalance = ref<number>(0);
   const fromAddressBalance = ref<number>(0);
-  const relaychainBal = ref<number>(0);
+  const originChainNativeBal = ref<number>(0);
+  const isLoadingApi = ref<boolean>(false);
 
   const { t } = useI18n();
   const store = useStore();
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const { currentAccount } = useAccount();
-  const { xcmAssets } = useXcmAssets();
 
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const isDeposit = computed(() => checkIsFromRelayChain(srcChain.value.name));
   const isAstar = computed(() => currentNetworkIdx.value === endpointKey.ASTAR);
 
-  const currentNetworkIdx = computed(() => {
+  const isAstarNativeTransfer = computed<boolean>(() => {
+    const symbol = String(selectedToken.value.metadata.symbol);
+    return symbol === 'SDN' || symbol === 'ASTR';
+  });
+
+  const chains = computed<XcmChain[]>(() => {
+    if (isAstarNativeTransfer.value) {
+      return [astarChain.value, chainKarura];
+    } else {
+      return [astarChain.value, originChain.value];
+    }
+  });
+  const decimals = computed<number>(() => Number(String(selectedToken.value.metadata.decimals)));
+  const originChain = computed<XcmChain>(() => {
+    return xcmChains.find((it) => it.name === selectedToken.value.originChain)!;
+  });
+
+  const astarChain = computed<XcmChain>(() => {
+    return xcmChains.find((it) =>
+      currentNetworkIdx.value === endpointKey.ASTAR
+        ? it.name === Chain.Astar
+        : it.name === Chain.Shiden
+    )!;
+  });
+
+  const currentNetworkIdx = computed<endpointKey>(() => {
     const chainInfo = store.getters['general/chainInfo'];
     const chain = chainInfo ? chainInfo.chain : '';
     return getProviderIndex(chain);
   });
 
-  const evmNetworkIdx = computed(() => {
+  const evmNetworkIdx = computed<number>(() => {
     const chainInfo = store.getters['general/chainInfo'];
     const chain = chainInfo ? chainInfo.chain : '';
     const networkIdx = getProviderIndex(chain);
     return Number(providerEndpoints[networkIdx].evmChainId);
   });
 
+  const isLoadOriginApi = computed<boolean>(
+    () => !!(selectedToken.value && selectedToken.value.originChain)
+  );
+
   const { handleResult, handleTransactionError } = useCustomSignature({});
-  const { balance } = useBalance(currentAccount);
-  const { tokenImage, isNativeToken } = useXcmTokenDetails(selectedToken);
+  const { accountData } = useBalance(currentAccount);
 
   const resetStates = (): void => {
     isDisabledBridge.value = true;
@@ -93,70 +122,79 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
 
   const setSrcChain = (chain: XcmChain): void => {
     srcChain.value = chain;
+    // Todo: refactor to make it more scalable
+    const firstParachain = chainKarura;
+    const origin = isAstarNativeTransfer.value ? firstParachain : originChain.value;
     if (chain.name === destChain.value.name) {
       if (isAstar.value) {
-        destChain.value = destChain.value.name === chainAstar.name ? chainPolkadot : chainAstar;
+        destChain.value = destChain.value.name === chainAstar.name ? origin : chainAstar;
       } else {
-        destChain.value = destChain.value.name === chainShiden.name ? chainKusama : chainShiden;
+        destChain.value = destChain.value.name === chainShiden.name ? origin : chainShiden;
       }
     }
   };
 
   const setDestChain = (chain: XcmChain): void => {
     destChain.value = chain;
+    // Todo: refactor to make it more scalable
+    const firstParachain = chainKarura;
+    const origin = isAstarNativeTransfer.value ? firstParachain : originChain.value;
     if (chain.name === srcChain.value.name) {
       if (isAstar.value) {
-        srcChain.value = srcChain.value.name === chainAstar.name ? chainPolkadot : chainAstar;
+        srcChain.value = srcChain.value.name === chainAstar.name ? origin : chainAstar;
       } else {
-        srcChain.value = srcChain.value.name === chainShiden.name ? chainKusama : chainShiden;
+        srcChain.value = srcChain.value.name === chainShiden.name ? origin : chainShiden;
       }
     }
   };
 
-  const getRelayChainNativeBal = async (): Promise<string> => {
-    if (!currentAccount.value || !srcChain.value || !relayChainApi || isH160.value) {
+  const getOriginChainNativeBal = async (): Promise<string> => {
+    if (!currentAccount.value || !srcChain.value || !originChainApi || isH160.value) {
       return '0';
     }
 
-    const balance = await relayChainApi.getBalance(currentAccount.value);
+    const balance = await originChainApi.getNativeBalance(currentAccount.value);
     return balance.toString();
   };
 
   const getExistentialDeposit = async (): Promise<void> => {
-    if (!relayChainApi) return;
-    await relayChainApi.isReady();
-    const result = await relayChainApi.getExistentialDeposit();
+    if (!originChainApi) return;
+    await originChainApi.isReady();
+    const result = await originChainApi.getExistentialDeposit();
     existentialDeposit.value = result;
   };
 
-  const setRelaychainBal = async (): Promise<void> => {
+  const setOriginChainNativeBal = async (): Promise<void> => {
     if (
-      !relayChainApi ||
+      !originChainApi ||
       !selectedToken.value ||
       selectedToken.value.metadata === null ||
       isH160.value
     ) {
       return;
     }
-    await relayChainApi.isReady();
-    const rawBalance = await getRelayChainNativeBal();
-    const decimals = Number(String(selectedToken.value.metadata.decimals));
-    const balance = ethers.utils.formatUnits(rawBalance, decimals).toString();
-    relaychainBal.value = Number(balance);
+    const rawBalance = isAstarNativeTransfer.value
+      ? accountData.value!.getUsableTransactionBalance().toString()
+      : await getOriginChainNativeBal();
+    const balance = ethers.utils.formatUnits(rawBalance, decimals.value).toString();
+    originChainNativeBal.value = Number(balance);
   };
 
   const checkIsEnoughEd = async (amount: number): Promise<boolean> => {
-    const relaychainMinBal = existentialDeposit.value?.relaychainMinBal;
-    if (!relaychainMinBal) return false;
+    const originChainMinBal = existentialDeposit.value?.originChainMinBal;
+    if (!originChainMinBal) return false;
 
     if (isDeposit.value) {
-      const relayBalAfterTransfer = relaychainBal.value - amount;
-      return relayBalAfterTransfer > relaychainMinBal;
+      // Memo: ED is no longer required for the deposit transaction
+      return true;
     } else {
-      // Memo: wait for updating relaychainBalance
+      // Memo: wait for updating relaychainNativeBalance
       await wait(500);
-      const relaychainBalance = isH160.value ? evmDestAddressBalance.value : relaychainBal.value;
-      return relaychainBalance > relaychainMinBal;
+      const originChainNativeBalance = isH160.value
+        ? evmDestAddressBalance.value
+        : originChainNativeBal.value;
+
+      return originChainNativeBalance > originChainMinBal;
     }
   };
 
@@ -172,6 +210,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   };
 
   const setErrMsg = async (): Promise<void> => {
+    if (isLoadingApi.value) return;
     errMsg.value = '';
     const sendingAmount = Number(amount.value);
     const selectedTokenRef = selectedToken.value;
@@ -227,11 +266,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
 
     // check if recipient account has non-zero native asset. (it cannot be transferred to an account with 0 nonce)
     isDisabledBridge.value =
-      !amount.value ||
-      Number(amount.value) === 0 ||
-      balance.value.lten(0) ||
-      errMsg.value !== '' ||
-      !isFulfilledAddress;
+      !amount.value || Number(amount.value) === 0 || errMsg.value !== '' || !isFulfilledAddress;
   };
 
   const setIsNativeBridge = (isNative: boolean): void => {
@@ -239,56 +274,72 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     isNativeBridge.value = isNative;
   };
 
-  const connectRelaychain = async (): Promise<void> => {
-    let endpoint;
-    if (currentNetworkIdx.value === endpointKey.ASTAR) {
-      endpoint = xcmProviderEndpoints[xcmEndpointKey.POLKADOT].endpoint;
-    } else {
-      endpoint = xcmProviderEndpoints[xcmEndpointKey.KUSAMA].endpoint;
-    }
+  const connectOriginChain = async (): Promise<void> => {
+    const endpoint = xcmProviderEndpoints.find((it) => {
+      if (isAstarNativeTransfer.value) {
+        const symbol = String(selectedToken.value.metadata.symbol) as ASTAR_NATIVE_TOKEN;
+        const defaultParachain = xcmAstarNativeToken[symbol].parachains![0];
+        return it.networkAlias.toLowerCase() === defaultParachain.toLowerCase();
+      } else {
+        return it.networkAlias.toLowerCase() === selectedToken.value.originChain.toLowerCase();
+      }
+    })?.endpoint as string;
 
     try {
-      relayChainApi = new RelaychainApi(endpoint);
-      await relayChainApi.start();
+      if (
+        originChain.value.name === 'Karura' ||
+        originChain.value.name === 'Acala' ||
+        isAstarNativeTransfer.value // Todo: refactor when support other parachains
+      ) {
+        originChainApi = new AcalaApi(endpoint);
+      } else {
+        originChainApi = new RelaychainApi(endpoint);
+      }
+      await originChainApi.start();
     } catch (err) {
       console.error(err);
     }
   };
 
-  const updateBridgeConfig = async (): Promise<void> => {
-    tokens.value = xcmAssets.value;
-    const networkChains = getChains(currentNetworkIdx.value);
-    chains.value = networkChains;
-  };
-
   const setDefaultChain = (): void => {
+    if (!selectedToken.value) return;
     if (isAstar.value) {
       destParaId.value = parachainIds.ASTAR;
       // Memo: withdrawal mode for H160 accounts
-      srcChain.value = isH160.value ? chainAstar : chainPolkadot;
-      destChain.value = isH160.value ? chainPolkadot : chainAstar;
+      srcChain.value = isH160.value ? chainAstar : originChain.value;
+      destChain.value = isH160.value ? originChain.value : chainAstar;
     } else {
-      destParaId.value = parachainIds.SDN;
-      srcChain.value = isH160.value ? chainShiden : chainKusama;
-      destChain.value = isH160.value ? chainKusama : chainShiden;
+      if (isAstarNativeTransfer.value) {
+        destParaId.value = parachainIds.SHIDEN;
+        srcChain.value = chainKarura;
+        destChain.value = chainShiden;
+      } else {
+        destParaId.value = parachainIds.SHIDEN;
+        srcChain.value = isH160.value ? chainShiden : originChain.value;
+        destChain.value = isH160.value ? originChain.value : chainShiden;
+      }
     }
   };
 
   // Memo: update the `balance` displayed on the 'destination wallet address' in 'EVM' tab on the XCM bridge modal
   const setEvmDestAddressBalance = async (): Promise<void> => {
-    if (!selectedToken.value) return;
+    if (!isLoadOriginApi.value) return;
     const address = evmDestAddress.value;
 
     if (isH160.value) {
       //Memo: Withdraw to Parachain
-      if (!isValidAddressPolkadotAddress(address) || !relayChainApi) {
+      if (!isValidAddressPolkadotAddress(address) || !originChainApi) {
         evmDestAddressBalance.value = 0;
         return;
       }
-      await relayChainApi.isReady();
-      const balance = await relayChainApi.getBalance(address);
-      const decimals = Number(String(selectedToken.value.metadata.decimals));
-      const formattedBalance = ethers.utils.formatUnits(balance.toString(), decimals).toString();
+      const balance = await originChainApi.getTokenBalances({
+        selectedToken: selectedToken.value,
+        address,
+        isNativeToken: selectedToken.value.isNativeToken,
+      });
+      const formattedBalance = ethers.utils
+        .formatUnits(balance.toString(), decimals.value)
+        .toString();
       evmDestAddressBalance.value = Number(formattedBalance);
     } else {
       // Memo: Deposit to Astar/Shiden EVM
@@ -312,18 +363,12 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
       if (!currentAccount.value) {
         throw Error('Failed loading wallet address');
       }
-      if (!srcChain.value || !destChain.value || !selectedToken?.value || !relayChainApi) {
+      if (!srcChain.value || !destChain.value || !selectedToken?.value || !originChainApi) {
         throw Error('Something went wrong while bridging');
       }
       if (!amount.value) {
         throw Error('Invalid amount');
       }
-      // check if recipient account has non-zero native asset. (it cannot be transferred to an account with 0 nonce)
-      if (balance.value.eqn(0)) {
-        throw Error(t('assets.modals.xcmWarning.nonzeroBalance'));
-      }
-
-      store.commit('general/setLoading', true);
 
       if (isDeposit.value) {
         let recipientAccountId = currentAccount.value;
@@ -333,30 +378,27 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
           if (!isValidEvmAddress(evmDestAddress.value)) {
             throw Error('Invalid evm destination address');
           }
-          const balWei = await getBalance($web3.value!, evmDestAddress.value);
-          if (Number(ethers.utils.formatEther(balWei)) === 0) {
-            throw Error(t('assets.modals.xcmWarning.nonzeroBalance'));
-          }
           const ss58MappedAddr = evmToAddress(evmDestAddress.value, PREFIX_ASTAR);
           const hexPublicKey = getPubkeyFromSS58Addr(ss58MappedAddr);
           recipientAccountId = hexPublicKey;
         }
 
-        const decimals = Number(selectedToken.value.metadata.decimals);
-        const txCall = relayChainApi.transferToParachain(
-          destParaId.value,
-          recipientAccountId,
-          ethers.utils.parseUnits(amount.value, decimals).toString()
-        );
+        const txCall = originChainApi.transferToParachain({
+          toPara: destParaId.value,
+          recipientAccountId: recipientAccountId,
+          amount: ethers.utils.parseUnits(amount.value, decimals.value).toString(),
+          selectedToken: selectedToken.value,
+        });
 
-        await relayChainApi
-          .signAndSend(
-            currentAccount.value,
-            injector.signer,
-            txCall,
+        await originChainApi
+          .signAndSend({
+            account: currentAccount.value,
+            signer: injector.signer,
+            tx: txCall,
             finalizedCallback,
-            handleResult
-          )
+            handleResult,
+            tip: '1',
+          })
           .catch((error: Error) => {
             handleTransactionError(error);
             isDisabledBridge.value = false;
@@ -365,29 +407,32 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
           .finally(async () => {
             isDisabledBridge.value = true;
             amount.value = null;
-            store.commit('general/setLoading', false);
           });
       } else {
         // Withdrawal (native parachains -> relaychain)
         let recipientAccountId = getPubkeyFromSS58Addr(currentAccount.value);
         const injector = await getInjector(substrateAccounts.value);
-        const paraChainApi = new ParachainApi($api!!);
-        const decimals = Number(selectedToken.value.metadata.decimals);
-        const txCall = paraChainApi.transferToRelaychain(
+        const parachainApi = new ParachainApi($api!!);
+
+        // Todo: change to transferToOriginChain
+        const txCall = await parachainApi.transferToOriginChain({
+          assetId: selectedToken.value.id,
           recipientAccountId,
-          ethers.utils.parseUnits(amount.value, decimals).toString()
-        );
+          amount: ethers.utils.parseUnits(amount.value, decimals.value).toString(),
+          isNativeToken: selectedToken.value.isNativeToken,
+          paraId: destChain.value.parachainId,
+        });
 
         const tip = ethers.utils.parseEther(nativeTipPrice.value.fast).toString();
-        await paraChainApi
-          .signAndSend(
-            currentAccount.value,
-            injector.signer,
-            txCall,
+        await parachainApi
+          .signAndSend({
+            account: currentAccount.value,
+            signer: injector.signer,
+            tx: txCall,
             finalizedCallback,
             handleResult,
-            tip
-          )
+            tip,
+          })
           .catch((error: Error) => {
             handleTransactionError(error);
             isDisabledBridge.value = false;
@@ -395,7 +440,6 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
           .finally(async () => {
             isDisabledBridge.value = true;
             amount.value = null;
-            store.commit('general/setLoading', false);
           });
       }
 
@@ -410,15 +454,23 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   };
 
   const updateFromAddressBalance = async (): Promise<void> => {
-    if (!selectedToken.value) return;
+    if (!selectedToken.value || !originChainApi || isLoadingApi.value) return;
 
     if (isDeposit.value) {
-      fromAddressBalance.value = relaychainBal.value;
+      const fromAddressBalFull = await originChainApi.getTokenBalances({
+        address: currentAccount.value,
+        selectedToken: selectedToken.value,
+        isNativeToken: selectedToken.value.isNativeToken,
+      });
+
+      fromAddressBalance.value = Number(
+        ethers.utils.formatUnits(fromAddressBalFull, decimals.value).toString()
+      );
     } else {
       const address = currentAccount.value;
       // Memo: Withdraw
       if (isH160.value) {
-        // Memo: ASTAR/SHIDEN from account(EVM) balance
+        // Memo: EVM balance
         const balance = await getTokenBal({
           srcChainId: evmNetworkIdx.value,
           address,
@@ -427,63 +479,55 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
         });
         fromAddressBalance.value = Number(balance);
       } else {
-        // Memo: ASTAR/SHIDEN from account(Native) balance
-        fromAddressBalance.value = Number(selectedToken.value.userBalance);
+        if (isAstarNativeTransfer.value) {
+          const formattedBalance = ethers.utils
+            .formatUnits(
+              accountData.value!.getUsableTransactionBalance().toString(),
+              decimals.value
+            )
+            .toString();
+          fromAddressBalance.value = Number(formattedBalance);
+        } else {
+          // Memo: Native balance
+          fromAddressBalance.value = Number(selectedToken.value.userBalance);
+        }
       }
     }
   };
 
   const initializeXcmApi = async (): Promise<void> => {
-    if (
-      currentNetworkIdx.value === endpointKey.ASTAR ||
-      currentNetworkIdx.value === endpointKey.SHIDEN
-    ) {
-      try {
-        await connectRelaychain();
-        await updateBridgeConfig();
-        await getExistentialDeposit();
-      } catch (error) {
-        console.error(error);
-      }
+    const hasConnectedApi =
+      originChainApi &&
+      selectedToken.value &&
+      originChainApi.chainProperty?.chainName === selectedToken.value.originChain;
+    if (!isLoadOriginApi.value || hasConnectedApi) return;
+
+    isLoadingApi.value = true;
+    try {
+      await connectOriginChain();
+      await originChainApi?.isReady;
+      await getExistentialDeposit();
+      isLoadingApi.value = false;
+    } catch (error) {
+      console.error(error);
     }
   };
 
+  const monitorBalances = async (): Promise<void> => {
+    await Promise.all([updateFromAddressBalance(), setOriginChainNativeBal()]);
+  };
+
+  watch([currentNetworkIdx, selectedToken], initializeXcmApi);
+  watch([isNativeBridge, isAstar, selectedToken], setDefaultChain);
+  watchEffect(setErrMsg);
+  watchEffect(setIsDisabledBridge);
+  watchEffect(setEvmDestAddressBalance);
+  watchEffect(monitorBalances);
+
   watchEffect(() => {
-    if (isH160.value) {
-      isNativeBridge.value = false;
+    if (selectedToken.value && isAstarNativeTransfer.value) {
+      isNativeBridge.value = true;
     }
-  });
-
-  watch(
-    [currentNetworkIdx],
-    async () => {
-      await initializeXcmApi();
-    },
-    { immediate: true }
-  );
-
-  watch(
-    [isNativeBridge, isAstar],
-    async () => {
-      setDefaultChain();
-    },
-    { immediate: true }
-  );
-
-  watchEffect(async () => {
-    await setEvmDestAddressBalance();
-  });
-
-  watchEffect(async () => {
-    await setErrMsg();
-  });
-
-  watchEffect(() => {
-    setIsDisabledBridge();
-  });
-
-  watchEffect(async () => {
-    await Promise.all([updateFromAddressBalance(), setRelaychainBal()]);
   });
 
   return {
@@ -492,8 +536,6 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     srcChain,
     destChain,
     isDisabledBridge,
-    tokenImage,
-    isNativeToken,
     isNativeBridge,
     evmDestAddress,
     existentialDeposit,
@@ -502,6 +544,8 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     evmDestAddressBalance,
     fromAddressBalance,
     isDeposit,
+    isLoadingApi,
+    isAstarNativeTransfer,
     inputHandler,
     bridge,
     resetStates,

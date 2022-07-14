@@ -1,4 +1,4 @@
-interface ChainProvider {
+export interface SubstrateChainProvider {
   networkAlias: string;
   displayName: string;
   endpoint: string;
@@ -12,7 +12,7 @@ export enum endpointKey {
 }
 
 // Todo: reconnect or change the WSS endpoint whenever it disconnected
-export const providerEndpoints: ChainProvider[] = [
+export const providerEndpoints: SubstrateChainProvider[] = [
   {
     networkAlias: 'Polkadot',
     displayName: 'Polkadot Network',
@@ -24,9 +24,21 @@ export const providerEndpoints: ChainProvider[] = [
     displayName: 'Kusama Network',
     endpoint: 'wss://kusama-rpc.polkadot.io',
   },
+  {
+    networkAlias: 'Karura',
+    displayName: 'Karura Network',
+    endpoint: 'wss://karura.api.onfinality.io/public-ws',
+  },
+  {
+    networkAlias: 'Acala',
+    displayName: 'Acala Network',
+    endpoint: 'wss://acala-polkadot.api.onfinality.io/public-ws',
+  },
 ];
 
 export enum parachainIds {
   ASTAR = 2006,
-  SDN = 2007,
+  SHIDEN = 2007,
+  KARURA = 2000,
+  ACALA = 2000,
 }

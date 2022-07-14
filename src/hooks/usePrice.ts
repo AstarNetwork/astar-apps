@@ -1,6 +1,6 @@
+import { getUsdBySymbol } from 'src/hooks/helper/price';
 import { useStore } from 'src/store';
 import { computed, ref, watchEffect } from 'vue';
-import { getUsdPrice } from './helper/price';
 
 export function usePrice() {
   const store = useStore();
@@ -21,9 +21,8 @@ export function usePrice() {
     const tokenSymbolRef = tokenSymbol.value;
     if (!tokenSymbolRef) return;
     try {
-      const coingeckoTicker = tokenSymbolRef === 'SDN' ? 'shiden' : 'astar';
       if (isMainnet.value) {
-        nativeTokenUsd.value = await getUsdPrice(coingeckoTicker);
+        nativeTokenUsd.value = await getUsdBySymbol(tokenSymbolRef);
       }
     } catch (error: any) {
       console.error(error.message);

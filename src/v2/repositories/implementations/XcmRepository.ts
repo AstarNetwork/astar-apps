@@ -9,10 +9,16 @@ import { injectable, inject } from 'inversify';
 import { IApi } from 'src/v2/integration';
 import { Symbols } from 'src/v2/symbols';
 import { Guard } from 'src/v2/common';
+import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
+import { XcmTokenInformation } from 'src/modules/xcm';
+import { min } from 'bn.js';
 
 @injectable()
 export class XcmRepository implements IXcmRepository {
-  constructor(@inject(Symbols.DefaultApi) private api: IApi) {}
+  constructor(
+    @inject(Symbols.DefaultApi) private api: IApi,
+    @inject(Symbols.RegisteredTokens) private registeredTokens: XcmTokenInformation[]
+  ) {}
 
   public async getAssets(currentAccount: string): Promise<Asset[]> {
     Guard.ThrowIfUndefined('currentAccount', currentAccount);
@@ -28,14 +34,35 @@ export class XcmRepository implements IXcmRepository {
       const symbol = u8aToString(value.symbol);
       const decimals = value.decimals.toNumber();
       const isFrozen = value.isFrozen.valueOf();
-
       const metadata = new AssetMetadata(name, symbol, decimals, isFrozen, deposit);
-      const asset = new Asset(id, this.getMappedXC20Asset(id), metadata);
+
+      const registeredData = this.registeredTokens.find((x) => x.assetId === id);
+      const minBridgeAmount = registeredData ? registeredData.minBridgeAmount : '0';
+      const originChain = registeredData ? registeredData.originChain : '';
+      const originAssetId = registeredData ? registeredData.originAssetId : '';
+      const tokenImage = registeredData ? (registeredData.logo as string) : 'custom-token';
+      const isNativeToken = registeredData ? registeredData.isNativeToken : false;
+      const isXcmCompatible = registeredData ? registeredData.isXcmCompatible : false;
+
+      const asset = new Asset(
+        id,
+        this.getMappedXC20Asset(id),
+        metadata,
+        minBridgeAmount,
+        originChain,
+        originAssetId,
+        tokenImage,
+        isNativeToken,
+        isXcmCompatible
+      );
 
       result.push(asset);
     });
 
-    result = await this.getBalances(currentAccount, result);
+    if (isValidAddressPolkadotAddress(currentAccount)) {
+      // fetch balances for Substrate acounts only.
+      result = await this.getBalances(currentAccount, result);
+    }
 
     return result;
   }
