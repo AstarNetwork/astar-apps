@@ -63,7 +63,8 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
             this.eventAggregator.publish(
               new ExtrinsicStatusMessage(
                 true,
-                successMessage ?? 'Transaction successfully executed'
+                successMessage ?? 'Transaction successfully executed',
+                `${extrinsic.method.section}.${extrinsic.method.method}`
               )
             );
           }

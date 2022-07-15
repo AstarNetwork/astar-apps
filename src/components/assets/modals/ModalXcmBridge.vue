@@ -187,10 +187,12 @@ import ModalSelectChain from 'src/components/assets/modals/ModalSelectChain.vue'
 import AddressInput from 'src/components/common/AddressInput.vue';
 import { ChainAsset, useAccount, useTooltip, useXcmBridge, useXcmEvm } from 'src/hooks';
 import { truncate, wait } from 'src/hooks/helper/common';
+import { XcmChain } from 'src/modules/xcm';
 import { useStore } from 'src/store';
 import { container } from 'src/v2/common';
-import { Chain } from 'src/v2/config/types';
+import { Chain, Network } from 'src/v2/config/types';
 import { XcmConfiguration } from 'src/v2/config/xcm/XcmConfiguration';
+import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { Asset } from 'src/v2/models';
 import { IXcmService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
@@ -281,20 +283,34 @@ export default defineComponent({
     // V2 PoC start
     const store = useStore();
     const { currentAccount } = useAccount();
+
     const handleBridgeV2 = async (): Promise<void> => {
       const xcmService = container.get<IXcmService>(Symbols.XcmService);
-      const from = XcmConfiguration.find((x) => x.chain === Chain.Kusama);
-      const to = XcmConfiguration.find((x) => x.chain === Chain.Shiden);
+      const from = getV2Chain(srcChain.value);
+      const to = getV2Chain(destChain.value);
       const assets = computed<Asset[]>(() => store.getters['assets/getAllAssets']);
-      const token = assets.value[0];
-      const amount = 0.001;
+      const selectedToken = assets.value.find((x) => x.id === props.token.id);
+      const amountToTransfer = amount.value ? Number(amount.value) : 0;
 
-      if (from && to) {
-        await xcmService.transfer(to, from, token, currentAccount.value, amount);
+      if (from && to && selectedToken) {
+        await xcmService.transfer(from, to, selectedToken, currentAccount.value, amountToTransfer);
       }
     };
 
-    // handleBridgeV2();
+    const getV2Chain = (v1chain: XcmChain): Network | undefined => {
+      const chain = <Chain>v1chain.name;
+      return XcmConfiguration.find((x) => x.chain === chain);
+    };
+
+    // Handle XCM call end so we can close a modal.
+    const eventAggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
+    eventAggregator.subscribe(ExtrinsicStatusMessage.name, async (m) => {
+      const message = m as ExtrinsicStatusMessage;
+      if (message.method.startsWith('xcmPallet') || message.message.startsWith('polkadotXcm')) {
+        store.dispatch('assets/getAssets', currentAccount.value);
+        await closeModal();
+      }
+    });
     // v2 end
 
     const handleBridge = async (): Promise<void> => {

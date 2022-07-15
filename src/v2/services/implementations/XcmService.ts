@@ -54,8 +54,10 @@ export class XcmService implements IXcmService {
         amountBn
       );
       tip = 1; // TODO Not sure why is tip 1.
-    } else {
+    } else if (isParachain(from) && isParachain(to)) {
       // HRMP
+    } else {
+      throw 'Transfer type not supported. Currently supported transfers are UMP, DMP and HRMP.';
     }
 
     if (call) {
@@ -66,7 +68,7 @@ export class XcmService implements IXcmService {
         tip
       );
     } else {
-      throw 'Call for transfer method can not be build';
+      throw 'Call for XCM transfer can not be build';
     }
   }
 
