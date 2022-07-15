@@ -9,6 +9,9 @@ import { IPriceRepository, IXcmRepository } from 'src/v2/repositories';
 import { IBalanceFormatterService, IXcmService, IWalletService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 
+export const isParachain = (network: Network): boolean => !!network.parachainId;
+export const isRelayChain = (network: Network): boolean => !isParachain(network);
+
 @injectable()
 export class XcmService implements IXcmService {
   private readonly wallet: IWalletService;
@@ -27,24 +30,30 @@ export class XcmService implements IXcmService {
     from: Network,
     to: Network,
     token: Asset,
-    recepientAddress: string,
+    recipientAddress: string,
     amount: number
   ): Promise<void> {
+    Guard.ThrowIfUndefined('recipientAddress', recipientAddress);
+
     let call: ExtrinsicPayload | null = null;
+    let tip: number | undefined; // If tip stays undefined, wallet infrastrucutre will fetch it.
+
     const amountBn = new BN(
       ethers.utils.parseUnits(amount.toString(), token.metadata.decimals).toString()
     );
 
-    if (from.parachainId && !to.parachainId) {
+    if (isParachain(from) && isRelayChain(to)) {
       // UMP
-    } else if (!from.parachainId && to.parachainId) {
+      call = await this.xcmRepository.getTransferToRelayChainCall(from, recipientAddress, amountBn);
+    } else if (isRelayChain(from) && isParachain(to)) {
       // DMP
       call = await this.xcmRepository.getTransferToParachainCall(
         from,
         to,
-        recepientAddress,
+        recipientAddress,
         amountBn
       );
+      tip = 1; // TODO Not sure why is tip 1.
     } else {
       // HRMP
     }
@@ -52,9 +61,9 @@ export class XcmService implements IXcmService {
     if (call) {
       this.wallet.signAndSend(
         call,
-        recepientAddress,
-        `You successfully transfered ${amount} to ${recepientAddress}`,
-        1
+        recipientAddress,
+        `You successfully transfered ${amount} ${token.metadata.symbol} to ${recipientAddress}`,
+        tip
       );
     } else {
       throw 'Call for transfer method can not be build';

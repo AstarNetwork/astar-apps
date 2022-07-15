@@ -8,7 +8,7 @@ export interface IXcmService {
     from: Network,
     to: Network,
     token: Asset,
-    recepientAddress: string,
+    recipientAddress: string,
     amount: number
   ): Promise<void>;
 }

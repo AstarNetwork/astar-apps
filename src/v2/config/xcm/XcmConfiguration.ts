@@ -30,7 +30,3 @@ export const XcmConfiguration: Network[] = [
     parachainId: 2000,
   },
 ];
-
-export const isParachain = (network: Network): boolean => !!network.parachainId;
-
-export const isRelayChain = (network: Network): boolean => !isParachain(network);

@@ -290,7 +290,7 @@ export default defineComponent({
       const amount = 0.001;
 
       if (from && to) {
-        await xcmService.transfer(from, to, token, currentAccount.value, amount);
+        await xcmService.transfer(to, from, token, currentAccount.value, amount);
       }
     };
 

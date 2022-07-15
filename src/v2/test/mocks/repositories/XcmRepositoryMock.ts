@@ -36,4 +36,12 @@ export class XcmRepositoryMock implements IXcmRepository {
   ): Promise<ExtrinsicPayload> {
     return Promise.resolve({} as ExtrinsicPayload);
   }
+
+  getTransferToRelayChainCall(
+    from: Network,
+    recipientAddress: string,
+    amount: BN
+  ): Promise<ExtrinsicPayload> {
+    return Promise.resolve({} as ExtrinsicPayload);
+  }
 }

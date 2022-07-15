@@ -13,6 +13,7 @@ import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { XcmTokenInformation } from 'src/modules/xcm';
 import { decodeAddress } from '@polkadot/util-crypto';
 import { Network } from 'src/v2/config/types';
+import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
 
 @injectable()
 export class XcmRepository implements IXcmRepository {
@@ -125,6 +126,63 @@ export class XcmRepository implements IXcmRepository {
       from,
       'xcmPallet',
       'reserveTransferAssets',
+      destination,
+      beneficiary,
+      assets,
+      new BN(0)
+    );
+  }
+
+  public async getTransferToRelayChainCall(
+    from: Network,
+    recipientAddress: string,
+    amount: BN
+  ): Promise<ExtrinsicPayload> {
+    const recipientAccountId = getPubkeyFromSS58Addr(recipientAddress);
+
+    const destination = {
+      V1: {
+        interior: 'Here',
+        parents: new BN(1),
+      },
+    };
+
+    const beneficiary = {
+      V1: {
+        interior: {
+          X1: {
+            AccountId32: {
+              network: 'Any',
+              id: decodeAddress(recipientAccountId),
+            },
+          },
+        },
+        parents: new BN(0),
+      },
+    };
+
+    const asset = {
+      Concrete: {
+        interior: 'Here',
+        parents: new BN(1),
+      },
+    };
+
+    const assets = {
+      V1: [
+        {
+          fun: {
+            Fungible: new BN(amount),
+          },
+          id: asset,
+        },
+      ],
+    };
+
+    return await this.buildTxCall(
+      from,
+      'polkadotXcm',
+      'reserveWithdrawAssets',
       destination,
       beneficiary,
       assets,

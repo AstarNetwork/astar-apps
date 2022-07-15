@@ -12,4 +12,10 @@ export interface IXcmRepository {
     recipientAddress: string,
     amount: BN
   ): Promise<ExtrinsicPayload>;
+
+  getTransferToRelayChainCall(
+    from: Network,
+    recipientAddress: string,
+    amount: BN
+  ): Promise<ExtrinsicPayload>;
 }
