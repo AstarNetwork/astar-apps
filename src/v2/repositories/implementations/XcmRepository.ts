@@ -1,7 +1,7 @@
 import { u8aToString, BN } from '@polkadot/util';
 import { QueryableStorageMultiArg } from '@polkadot/api/types';
 import { PalletAssetsAssetAccount } from '@polkadot/types/lookup';
-import { Option } from '@polkadot/types';
+import { Option, Struct } from '@polkadot/types';
 import Web3 from 'web3';
 import { Asset, AssetMetadata } from 'src/v2/models';
 import { IXcmRepository } from 'src/v2/repositories';
@@ -14,6 +14,22 @@ import { XcmTokenInformation } from 'src/modules/xcm';
 import { decodeAddress } from '@polkadot/util-crypto';
 import { Network } from 'src/v2/config/types';
 import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
+
+interface AssetConfig extends Struct {
+  v1: {
+    parents: number;
+    interior: Interior;
+  };
+}
+
+interface Interior {
+  x2: X2[];
+}
+
+interface X2 {
+  parachain: number;
+  generalKey: string;
+}
 
 @injectable()
 export class XcmRepository implements IXcmRepository {
@@ -134,7 +150,7 @@ export class XcmRepository implements IXcmRepository {
     );
   }
 
-  public async getTransferToRelayChainCall(
+  public async getTransferToOriginChainCall(
     from: Network,
     recipientAddress: string,
     amount: BN
@@ -191,6 +207,16 @@ export class XcmRepository implements IXcmRepository {
     );
   }
 
+  public getTransferCall(
+    from: Network,
+    to: Network,
+    recipientAddress: string,
+    token: Asset,
+    amount: BN
+  ): Promise<ExtrinsicPayload> {
+    throw 'Not implemented.';
+  }
+
   protected async buildTxCall(
     network: Network,
     extrinsic: string,
@@ -204,6 +230,21 @@ export class XcmRepository implements IXcmRepository {
     }
 
     throw `Undefined extrinsic call ${extrinsic} with method ${method}`;
+  }
+
+  protected async fetchAssetConfig(
+    source: Network,
+    token: Asset
+  ): Promise<{
+    parents: number;
+    interior: Interior;
+  }> {
+    const api = await this.apiFactory.get(source.endpoint);
+    const config = await api.query.xcAssetConfig.assetIdToLocation<Option<AssetConfig>>(token.id);
+
+    // return config.unwrap().v1;
+    const formattedAssetConfig = JSON.parse(config.toString());
+    return formattedAssetConfig.v1;
   }
 
   private async getBalances(address: string, assets: Asset[]): Promise<Asset[]> {

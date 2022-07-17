@@ -14,9 +14,17 @@ export interface IXcmRepository {
     amount: BN
   ): Promise<ExtrinsicPayload>;
 
-  getTransferToRelayChainCall(
+  getTransferToOriginChainCall(
     from: Network,
     recipientAddress: string,
+    amount: BN
+  ): Promise<ExtrinsicPayload>;
+
+  getTransferCall(
+    from: Network,
+    to: Network,
+    recipientAddress: string,
+    token: Asset,
     amount: BN
   ): Promise<ExtrinsicPayload>;
 }

@@ -46,7 +46,11 @@ export class XcmService implements IXcmService {
 
     if (isParachain(from) && isRelayChain(to)) {
       // UMP
-      call = await this.xcmRepository.getTransferToRelayChainCall(from, recipientAddress, amountBn);
+      call = await this.xcmRepository.getTransferToOriginChainCall(
+        from,
+        recipientAddress,
+        amountBn
+      );
     } else if (isRelayChain(from) && isParachain(to)) {
       // DMP
       call = await this.xcmRepository.getTransferToParachainCall(
@@ -61,13 +65,7 @@ export class XcmService implements IXcmService {
       // HRMP
       // Dinamically determine parachain repository to use.
       const repository = <IXcmRepository>this.typeFactory.getInstance(from.chain);
-      call = await repository.getTransferToParachainCall(
-        from,
-        to,
-        recipientAddress,
-        token,
-        amountBn
-      );
+      call = await repository.getTransferCall(from, to, recipientAddress, token, amountBn);
     } else {
       throw `Transfer between ${from.displayName} to ${to.displayName} is not supported. Currently supported transfers are UMP, DMP and HRMP.`;
     }

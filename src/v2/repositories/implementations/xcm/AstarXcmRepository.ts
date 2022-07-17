@@ -1,5 +1,6 @@
 import { BN } from '@polkadot/util';
 import { decodeAddress } from '@polkadot/util-crypto';
+import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
 import { XcmTokenInformation } from 'src/modules/xcm';
 import { container } from 'src/v2/common';
 import { Network } from 'src/v2/config/types';
@@ -9,16 +10,16 @@ import { Symbols } from 'src/v2/symbols';
 import { XcmRepository } from '../XcmRepository';
 
 /**
- * Used to transfer assets from Acala/Karura
+ * Used to transfer assets from Astar/Shiden.
  */
-export class AcalaXcmRepository extends XcmRepository {
+export class AstarXcmRepository extends XcmRepository {
   constructor() {
     const defaultApi = container.get<IApi>(Symbols.DefaultApi);
     const apiFactory = container.get<IApiFactory>(Symbols.ApiFactory);
     const registeredTokens = container.get<XcmTokenInformation[]>(Symbols.RegisteredTokens);
 
     super(defaultApi, apiFactory, registeredTokens);
-    console.log('AcalaXcmRepository has been created');
+    console.log('AstarXcmRepository has been created');
   }
 
   public async getTransferCall(
@@ -32,42 +33,55 @@ export class AcalaXcmRepository extends XcmRepository {
       throw `Parachain id for ${to.displayName} is not defined`;
     }
 
-    const tokenData = {
-      Token: token.originAssetId,
-    };
+    const recipientAccountId = getPubkeyFromSS58Addr(recipientAddress);
 
+    // the target parachain connected to the current relaychain
     const destination = {
       V1: {
-        parents: '1',
         interior: {
-          X2: [
-            {
-              Parachain: to.parachainId,
-            },
-            {
-              AccountId32: {
-                network: {
-                  Any: null,
-                },
-                id: decodeAddress(recipientAddress),
-              },
-            },
-          ],
+          X1: {
+            Parachain: new BN(to.parachainId),
+          },
         },
+        parents: new BN(1),
       },
     };
+    // the account ID within the destination parachain
+    const beneficiary = {
+      V1: {
+        interior: {
+          X1: {
+            AccountId32: {
+              network: 'Any',
+              id: decodeAddress(recipientAccountId),
+            },
+          },
+        },
+        parents: new BN(0),
+      },
+    };
+    // amount of fungible tokens to be transferred
+    const assets = {
+      V1: [
+        {
+          fun: {
+            Fungible: amount,
+          },
+          id: {
+            Concrete: await this.fetchAssetConfig(from, token),
+          },
+        },
+      ],
+    };
 
-    //Memo: each XCM instruction is weighted to be 1_000_000_000 units of weight and for this op to execute
-    //weight value of 5 * 10^9 is generally good
-    const destWeight = new BN(10).pow(new BN(9)).muln(5);
     return await this.buildTxCall(
       from,
-      'xTokens',
-      'transfer',
-      tokenData,
-      amount,
+      'polkadotXcm',
+      'reserveWithdrawAssets',
       destination,
-      destWeight
+      beneficiary,
+      assets,
+      new BN(0)
     );
   }
 }
