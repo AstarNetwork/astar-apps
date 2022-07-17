@@ -74,6 +74,7 @@ export class XcmRepository implements IXcmRepository {
     from: Network,
     to: Network,
     recipientAddress: string,
+    token: Asset,
     amount: BN
   ): Promise<ExtrinsicPayload> {
     if (!to.parachainId) {
@@ -190,6 +191,21 @@ export class XcmRepository implements IXcmRepository {
     );
   }
 
+  protected async buildTxCall(
+    network: Network,
+    extrinsic: string,
+    method: string,
+    ...args: any[]
+  ): Promise<ExtrinsicPayload> {
+    const api = await this.apiFactory.get(network.endpoint);
+    const call = api.tx[extrinsic][method](...args);
+    if (call) {
+      return call;
+    }
+
+    throw `Undefined extrinsic call ${extrinsic} with method ${method}`;
+  }
+
   private async getBalances(address: string, assets: Asset[]): Promise<Asset[]> {
     const queries: QueryableStorageMultiArg<'promise'>[] = [];
     const api = await this.api.getApi();
@@ -226,20 +242,5 @@ export class XcmRepository implements IXcmRepository {
       const fixedAddress = a + b + c;
       return fixedAddress;
     }
-  }
-
-  private async buildTxCall(
-    network: Network,
-    extrinsic: string,
-    method: string,
-    ...args: any[]
-  ): Promise<ExtrinsicPayload> {
-    const api = await this.apiFactory.get(network.endpoint);
-    const call = api.tx[extrinsic][method](...args);
-    if (call) {
-      return call;
-    }
-
-    throw `Undefined extrinsic call ${extrinsic} with method ${method}`;
   }
 }

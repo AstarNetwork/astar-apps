@@ -10,6 +10,7 @@ export interface IXcmRepository {
     from: Network,
     to: Network,
     recipientAddress: string,
+    token: Asset,
     amount: BN
   ): Promise<ExtrinsicPayload>;
 

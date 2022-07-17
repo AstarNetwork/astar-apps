@@ -2,7 +2,7 @@ import { BN } from '@polkadot/util';
 import { ethers } from 'ethers';
 import { inject, injectable } from 'inversify';
 import { Guard } from 'src/v2/common';
-import { Network } from 'src/v2/config/types';
+import { ITypeFactory, Network } from 'src/v2/config/types';
 import { ExtrinsicPayload } from 'src/v2/integration';
 import { Asset } from 'src/v2/models';
 import { IPriceRepository, IXcmRepository } from 'src/v2/repositories';
@@ -21,7 +21,8 @@ export class XcmService implements IXcmService {
     @inject(Symbols.PriceRepository) private priceRepository: IPriceRepository,
     @inject(Symbols.BalanceFormatterService)
     private balanceFormatterService: IBalanceFormatterService,
-    @inject(Symbols.WalletFactory) walletFactory: () => IWalletService
+    @inject(Symbols.WalletFactory) walletFactory: () => IWalletService,
+    @inject(Symbols.TypeFactory) private typeFactory: ITypeFactory
   ) {
     this.wallet = walletFactory();
   }
@@ -34,6 +35,7 @@ export class XcmService implements IXcmService {
     amount: number
   ): Promise<void> {
     Guard.ThrowIfUndefined('recipientAddress', recipientAddress);
+    Guard.ThrowIfNegative('amount', amount);
 
     let call: ExtrinsicPayload | null = null;
     let tip: number | undefined; // If tip stays undefined, wallet infrastrucutre will fetch it.
@@ -51,13 +53,23 @@ export class XcmService implements IXcmService {
         from,
         to,
         recipientAddress,
+        token,
         amountBn
       );
       tip = 1; // TODO Not sure why is tip 1.
     } else if (isParachain(from) && isParachain(to)) {
       // HRMP
+      // Dinamically determine parachain repository to use.
+      const repository = <IXcmRepository>this.typeFactory.getInstance(from.chain);
+      call = await repository.getTransferToParachainCall(
+        from,
+        to,
+        recipientAddress,
+        token,
+        amountBn
+      );
     } else {
-      throw 'Transfer type not supported. Currently supported transfers are UMP, DMP and HRMP.';
+      throw `Transfer between ${from.displayName} to ${to.displayName} is not supported. Currently supported transfers are UMP, DMP and HRMP.`;
     }
 
     if (call) {

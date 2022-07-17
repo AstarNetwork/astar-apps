@@ -306,7 +306,12 @@ export default defineComponent({
     const eventAggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
     eventAggregator.subscribe(ExtrinsicStatusMessage.name, async (m) => {
       const message = m as ExtrinsicStatusMessage;
-      if (message.method.startsWith('xcmPallet') || message.message.startsWith('polkadotXcm')) {
+
+      if (
+        message.method.startsWith('xcmPallet') ||
+        message.method.startsWith('polkadotXcm') ||
+        message.method.startsWith('xToken')
+      ) {
         store.dispatch('assets/getAssets', currentAccount.value);
         await closeModal();
       }
