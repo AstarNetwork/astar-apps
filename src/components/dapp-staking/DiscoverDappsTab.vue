@@ -22,23 +22,46 @@
 
     <UserRewards v-if="isDapps" />
 
-    <div class="store-container tw-grid tw-gap-x-12 xl:tw-gap-x-18 tw-justify-center">
-      <div v-if="!isDapps" class="tw-text-xl tx-font-semibold tw-mt-4 dark:tw-text-darkGray-100">
-        {{ $t('dappStaking.noDappsRegistered') }}
+    <div class="row--tab">
+      <div
+        :class="[isNativeStaking ? 'selected-staking-option' : 'unselected-staking-option']"
+        @click="isNativeStaking = true"
+      >
+        <span class="text--title">
+          {{ $t('dappStaking.dappStakingNative') }}
+        </span>
       </div>
-      <template v-if="stakeInfos">
-        <Dapp
-          v-for="(dapp, index) in dapps"
-          :key="index"
-          :dapp="dapp"
-          :staker-max-number="maxNumberOfStakersPerContract"
-          :account-data="accountData"
-          :dapps="dapps"
-          :staking-list="stakingList"
-          :stake-infos="stakeInfos"
-        />
-      </template>
+      <div
+        :class="[!isNativeStaking ? 'selected-staking-option' : 'unselected-staking-option']"
+        @click="isNativeStaking = false"
+      >
+        <span class="text--title">
+          {{ $t('dappStaking.liquidStakingEVM') }}
+        </span>
+      </div>
     </div>
+
+    <template v-if="isNativeStaking">
+      <div class="store-container tw-grid tw-gap-x-12 xl:tw-gap-x-18 tw-justify-center">
+        <div v-if="!isDapps" class="tw-text-xl tx-font-semibold tw-mt-4 dark:tw-text-darkGray-100">
+          {{ $t('dappStaking.noDappsRegistered') }}
+        </div>
+        <template v-if="stakeInfos">
+          <Dapp
+            v-for="(dapp, index) in dapps"
+            :key="index"
+            :dapp="dapp"
+            :staker-max-number="maxNumberOfStakersPerContract"
+            :account-data="accountData"
+            :dapps="dapps"
+            :staking-list="stakingList"
+            :stake-infos="stakeInfos"
+          />
+        </template>
+      </div>
+    </template>
+
+    <template v-else> Algem </template>
 
     <Teleport to="#app--main">
       <ModalRegisterDapp
@@ -63,7 +86,7 @@ import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
 import { DappItem } from 'src/store/dapp-staking/state';
-import { computed, defineComponent, ref, watchEffect } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
 import APR from './statistics/APR.vue';
 import DappsCount from './statistics/DappsCount.vue';
 import Era from './statistics/Era.vue';
@@ -103,9 +126,11 @@ export default defineComponent({
     const selectedDappInfo = ref<StakeInfo>();
     const isPalletDisabled = computed(() => store.getters['dapps/getIsPalletDisabled']);
     const isDapps = computed(() => dapps.value.length > 0);
+    const isNativeStaking = ref<boolean>(true);
 
     return {
       isDapps,
+      isNativeStaking,
       dapps,
       selectedDapp,
       selectedDappInfo,
@@ -172,5 +197,24 @@ export default defineComponent({
     justify-content: center;
     column-gap: 48px;
   }
+}
+
+.row--tab {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.selected-staking-option {
+  padding-bottom: 8px;
+  border-bottom: 3px solid $blue;
+  transition: all 0.3s ease 0s;
+}
+
+.unselected-staking-option {
+  cursor: pointer;
+  border-bottom: 0px solid transparent;
+  transition: all 0.3s ease 0s;
 }
 </style>

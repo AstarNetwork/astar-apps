@@ -155,6 +155,8 @@ export default {
     },
     projectUnregistered: 'This project has been unregistered.',
     fundsWillBeUnstaked: 'Your funds will be unstaked automatically after claiming your rewards.',
+    dappStakingNative: 'dApp Staking (Native)',
+    liquidStakingEVM: 'Liquid Staking (EVM)',
     modals: {
       alreadyClaimed: 'Already claimed:',
       contractRewards: 'Contract rewards:',
