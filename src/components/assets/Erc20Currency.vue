@@ -108,7 +108,7 @@
 </template>
 <script lang="ts">
 import { getProviderIndex } from 'src/config/chainEndpoints';
-import { addToEvmProvider } from 'src/hooks/helper/wallet';
+import { addToEvmProvider, getEvmProvider } from 'src/hooks/helper/wallet';
 import { Erc20Token, getErc20Explorer, getStoredERC20Tokens } from 'src/modules/token';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType } from 'vue';
@@ -158,44 +158,15 @@ export default defineComponent({
         )
     );
 
-    const currentWallet = computed(() => store.getters['general/currentWallet']);
-
-    let provider;
-
-    if (
-      typeof window.ethereum !== 'undefined' &&
-      window.ethereum &&
-      currentWallet.value === SupportWallet.MetaMask
-    ) {
-      provider = window.ethereum;
-    }
-
-    if (
-      typeof window.talismanEth !== 'undefined' &&
-      window.talismanEth &&
-      currentWallet.value === SupportWallet.TalismanEvm
-    ) {
-      provider = window.talismanEth;
-    }
-
-    if (
-      typeof window.SubWallet !== 'undefined' &&
-      window.SubWallet &&
-      currentWallet.value === SupportWallet.SubWalletEvm
-    ) {
-      provider = window.SubWallet;
-    }
-
-    if (!provider) {
-      throw new Error("Can't find provider");
-    }
+    const currentWallet = computed<SupportWallet>(() => store.getters['general/currentWallet']);
+    const provider = getEvmProvider(currentWallet.value);
 
     return {
-      addToEvmProvider,
       explorerLink,
-      truncate,
       isImportedToken,
       provider,
+      truncate,
+      addToEvmProvider,
     };
   },
 });

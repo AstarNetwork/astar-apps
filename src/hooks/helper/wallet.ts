@@ -11,6 +11,12 @@ import { Dispatch } from 'vuex';
 import { SubstrateAccount } from './../../store/general/state';
 import { EthereumProvider } from './../types/CustomSignature';
 
+declare global {
+  interface Window {
+    [key: string]: EthereumProvider;
+  }
+}
+
 export const getInjectedExtensions = async (forceRequest = false): Promise<any[]> => {
   const selectedAddress = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
   if (selectedAddress != null || forceRequest) {
@@ -241,18 +247,12 @@ export const checkIsNativeWallet = (selectedWallet: SupportWallet): boolean => {
   return supportWalletObj.hasOwnProperty(selectedWallet);
 };
 
-export const getEvmProvider = (wallet: SupportWallet) => {
-  if (wallet === SupportWallet.MetaMask) {
-    return window.ethereum;
-  }
+export const getEvmProvider = (walletName: SupportWallet): EthereumProvider | null => {
+  const wallet = supportEvmWalletObj[walletName as keyof typeof supportEvmWalletObj];
+  const provider = wallet ? (window[wallet.ethExtension] as EthereumProvider) : undefined;
 
-  if (wallet === SupportWallet.TalismanEvm) {
-    return window.talismanEth;
-  }
+  const isExtension =
+    wallet && walletName === wallet.source && typeof provider !== undefined && provider;
 
-  if (wallet === SupportWallet.SubWalletEvm) {
-    return window.SubWallet;
-  }
-
-  return null;
+  return isExtension ? provider : null;
 };
