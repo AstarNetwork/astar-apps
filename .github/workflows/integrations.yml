@@ -1,4 +1,4 @@
-name: Release Build
+name: RPC tests
 on: pull_request
 
 jobs:
