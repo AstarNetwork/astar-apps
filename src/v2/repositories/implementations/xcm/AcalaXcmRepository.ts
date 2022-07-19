@@ -36,13 +36,7 @@ export class AcalaXcmRepository extends XcmRepository {
       throw `Parachain id for ${to.displayName} is not defined`;
     }
 
-    const tokenData = this.isAstarNativeToken(token)
-      ? {
-          ForeignAsset: this.astarTokens[token.metadata.symbol],
-        }
-      : {
-          Token: token.originAssetId,
-        };
+    const tokenData = this.getTokenData(token);
 
     const destination = {
       V1: {
@@ -77,5 +71,15 @@ export class AcalaXcmRepository extends XcmRepository {
       destination,
       destWeight
     );
+  }
+
+  private getTokenData(token: Asset) {
+    return this.isAstarNativeToken(token)
+      ? {
+          ForeignAsset: this.astarTokens[token.metadata.symbol],
+        }
+      : {
+          Token: token.originAssetId,
+        };
   }
 }

@@ -31,6 +31,7 @@ export class XcmService implements IXcmService {
     from: Network,
     to: Network,
     token: Asset,
+    senderAddress: string,
     recipientAddress: string,
     amount: number
   ): Promise<void> {
@@ -74,7 +75,7 @@ export class XcmService implements IXcmService {
     if (call) {
       this.wallet.signAndSend(
         call,
-        recipientAddress,
+        senderAddress,
         `You successfully transfered ${amount} ${token.metadata.symbol} to ${recipientAddress}`,
         tip
       );
@@ -101,8 +102,7 @@ export class XcmService implements IXcmService {
     return assets.sort((a1, a2) => a2.userBalanceUsd - a1.userBalanceUsd);
   }
 
-
-  private GuardTransfer(amount: number, token:Asset) {
-
+  private GuardTransfer(amount: number, token: Asset) {
+    // TODO implement balance and existential deposit check.
   }
 }

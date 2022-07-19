@@ -25,18 +25,32 @@ describe('XcmService.ts', () => {
   describe('transfer', () => {
     const from = {} as Network;
     const to = {} as Network;
-    const token = new Asset('1', '2', new AssetMetadata('Test', 'TST', 10, false, new BN(1000000)), '1', 'Origin', '111', 'image', true, true);
+    const token = new Asset(
+      '1',
+      '2',
+      new AssetMetadata('Test', 'TST', 10, false, new BN(1000000)),
+      '1',
+      'Origin',
+      '111',
+      'image',
+      true,
+      true
+    );
 
     it('throws exception if recipient address is empty', async () => {
       const service = container.get<IXcmService>(Symbols.XcmService);
 
-      await expect(service.transfer(from, to, token, '', 1)).rejects.toThrow(Error);
+      await expect(service.transfer(from, to, token, 'sender', 'recipient', 1)).rejects.toThrow(
+        Error
+      );
     });
 
     it('throws exception if recipient amount is negative', async () => {
       const service = container.get<IXcmService>(Symbols.XcmService);
 
-      await expect(service.transfer(from, to, token, '123', -1)).rejects.toThrow(Error);
+      await expect(service.transfer(from, to, token, 'sender', 'recipient', -1)).rejects.toThrow(
+        Error
+      );
     });
   });
 });

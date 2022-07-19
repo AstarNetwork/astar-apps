@@ -11,9 +11,10 @@ import { Symbols } from 'src/v2/symbols';
 import { Guard } from 'src/v2/common';
 import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { XcmTokenInformation } from 'src/modules/xcm';
-import { decodeAddress } from '@polkadot/util-crypto';
+import { decodeAddress, evmToAddress } from '@polkadot/util-crypto';
 import { Network, TokenId } from 'src/v2/config/types';
 import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
+import { isValidEvmAddress } from 'src/config/web3';
 
 interface AssetConfig extends Struct {
   v1: {
@@ -30,6 +31,8 @@ interface X2 {
   parachain: number;
   generalKey: string;
 }
+
+export const ASTAR_ADDRESS_PREFIX = 5;
 
 @injectable()
 export class XcmRepository implements IXcmRepository {
@@ -113,6 +116,9 @@ export class XcmRepository implements IXcmRepository {
         parents: new BN(0),
       },
     };
+
+    const recipientAddressId = this.getAddress(recipientAddress);
+
     // the account ID within the destination parachain
     const beneficiary = {
       V1: {
@@ -120,7 +126,7 @@ export class XcmRepository implements IXcmRepository {
           X1: {
             AccountId32: {
               network: 'Any',
-              id: decodeAddress(recipientAddress),
+              id: decodeAddress(recipientAddressId),
             },
           },
         },
@@ -272,6 +278,18 @@ export class XcmRepository implements IXcmRepository {
     });
 
     return assets;
+  }
+
+  private getAddress(address: string): string {
+    if (isValidAddressPolkadotAddress(address)) {
+      return address;
+    } else if (isValidEvmAddress(address)) {
+      const ss58MappedAddr = evmToAddress(address, ASTAR_ADDRESS_PREFIX);
+      const hexPublicKey = getPubkeyFromSS58Addr(ss58MappedAddr);
+      return hexPublicKey;
+    } else {
+      throw `The address ${address} is not valid.`;
+    }
   }
 
   private getMappedXC20Asset(assetId: string): string {
