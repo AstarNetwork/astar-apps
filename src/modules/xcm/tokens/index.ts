@@ -3,7 +3,7 @@ import { ASTAR_NATIVE_TOKEN, endpointKey } from 'src/config/chainEndpoints';
 import { ASTAR_DECIMALS } from 'src/hooks/helper/plasmUtils';
 
 // Acala Note: There is no endpoint to get minBridgeAmount.  But the rule is that Acala doesn't allow transfers that are less value than the equivalent of $0.01USD
-// Ref: https://gyazo.com/238da2ef7891a79ba34901026982ba7a
+// Ref: https://www.notion.so/astarnetwork/HRMP-Portal-Support-for-Acala-Karura-UI-2eaab2e1d93c4e0f90609ea7039942a9#5c5a40f95c7b4c93a201feef233cb0fa
 
 export const xcmToken = {
   [endpointKey.ASTAR]: [
