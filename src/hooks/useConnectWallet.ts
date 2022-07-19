@@ -3,6 +3,7 @@ import { getProviderIndex } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import {
   SubstrateWallets,
+  supportWalletObj,
   supportEvmWalletObj,
   SupportWallet,
   WalletModalOption,
@@ -197,12 +198,15 @@ export const useConnectWallet = () => {
       watchPostEffect(async () => {
         store.commit('general/setMetaExtensions', metaExtensions.value);
         store.commit('general/setExtensionCount', extensionCount.value);
-        // setWallet(wallet);
+        const isSubstrateWallet = supportWalletObj.hasOwnProperty(wallet);
+        // Memo: displays accounts menu for users who use the portal first time
+        if (isSubstrateWallet) {
+          setWallet(wallet);
+        }
       });
     }
   };
 
-  // Todo: Delete after the balance page is removed
   const setWalletModal = (wallet: SupportWallet): void => {
     requestExtensionsIfFirstAccess(wallet);
     store.commit('general/setCurrentWallet', wallet);
