@@ -13,13 +13,15 @@ import { XcmRepository } from '../XcmRepository';
  * Used to transfer assets from Astar/Shiden.
  */
 export class AstarXcmRepository extends XcmRepository {
+  private astarNativeTokenId;
+
   constructor() {
     const defaultApi = container.get<IApi>(Symbols.DefaultApi);
     const apiFactory = container.get<IApiFactory>(Symbols.ApiFactory);
     const registeredTokens = container.get<XcmTokenInformation[]>(Symbols.RegisteredTokens);
 
     super(defaultApi, apiFactory, registeredTokens);
-    console.log('AstarXcmRepository has been created');
+    this.astarNativeTokenId = '0000000000000000000';
   }
 
   public async getTransferCall(
@@ -35,18 +37,27 @@ export class AstarXcmRepository extends XcmRepository {
 
     const recipientAccountId = getPubkeyFromSS58Addr(recipientAddress);
 
-    // the target parachain connected to the current relaychain
-    const destination = {
-      V1: {
-        interior: {
-          X1: {
-            Parachain: new BN(to.parachainId),
+    const isWithdrawAssets = token.id !== this.astarNativeTokenId;
+    const functionName = isWithdrawAssets ? 'reserveWithdrawAssets' : 'reserveTransferAssets';
+    const isSendToParachain = to.parachainId > 0;
+    const destination = isSendToParachain
+      ? {
+          V1: {
+            interior: {
+              X1: {
+                Parachain: new BN(to.parachainId),
+              },
+            },
+            parents: new BN(1),
           },
-        },
-        parents: new BN(1),
-      },
-    };
-    // the account ID within the destination parachain
+        }
+      : {
+          V1: {
+            interior: 'Here',
+            parents: new BN(1),
+          },
+        };
+
     const beneficiary = {
       V1: {
         interior: {
@@ -60,24 +71,74 @@ export class AstarXcmRepository extends XcmRepository {
         parents: new BN(0),
       },
     };
-    // amount of fungible tokens to be transferred
+
+    const isRegisteredAsset = isSendToParachain && isWithdrawAssets;
+
+    const asset = isRegisteredAsset
+      ? {
+          Concrete: await this.fetchAssetConfig(from, token),
+        }
+      : {
+          Concrete: {
+            interior: 'Here',
+            parents: new BN(isSendToParachain ? 0 : 1),
+          },
+        };
+
     const assets = {
       V1: [
         {
           fun: {
-            Fungible: amount,
+            Fungible: new BN(amount),
           },
-          id: {
-            Concrete: await this.fetchAssetConfig(from, token),
-          },
+          id: asset,
         },
       ],
     };
 
+    // // the target parachain connected to the current relaychain
+    // const destination = {
+    //   V1: {
+    //     interior: {
+    //       X1: {
+    //         Parachain: new BN(to.parachainId),
+    //       },
+    //     },
+    //     parents: new BN(1),
+    //   },
+    // };
+    // // the account ID within the destination parachain
+    // const beneficiary = {
+    //   V1: {
+    //     interior: {
+    //       X1: {
+    //         AccountId32: {
+    //           network: 'Any',
+    //           id: decodeAddress(recipientAccountId),
+    //         },
+    //       },
+    //     },
+    //     parents: new BN(0),
+    //   },
+    // };
+    // // amount of fungible tokens to be transferred
+    // const assets = {
+    //   V1: [
+    //     {
+    //       fun: {
+    //         Fungible: amount,
+    //       },
+    //       id: {
+    //         Concrete: await this.fetchAssetConfig(from, token),
+    //       },
+    //     },
+    //   ],
+    // };
+
     return await this.buildTxCall(
       from,
       'polkadotXcm',
-      'reserveWithdrawAssets',
+      functionName,
       destination,
       beneficiary,
       assets,

@@ -12,7 +12,7 @@ import { Guard } from 'src/v2/common';
 import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { XcmTokenInformation } from 'src/modules/xcm';
 import { decodeAddress } from '@polkadot/util-crypto';
-import { Network } from 'src/v2/config/types';
+import { Network, TokenId } from 'src/v2/config/types';
 import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
 
 interface AssetConfig extends Struct {
@@ -33,11 +33,16 @@ interface X2 {
 
 @injectable()
 export class XcmRepository implements IXcmRepository {
+  // Ids of Astar tokens on foreign network. To be initialized in iherited class.
+  protected astarTokens: TokenId;
+
   constructor(
     @inject(Symbols.DefaultApi) private api: IApi,
     @inject(Symbols.ApiFactory) private apiFactory: IApiFactory,
     @inject(Symbols.RegisteredTokens) private registeredTokens: XcmTokenInformation[]
-  ) {}
+  ) {
+    this.astarTokens = {};
+  }
 
   public async getAssets(currentAccount: string): Promise<Asset[]> {
     Guard.ThrowIfUndefined('currentAccount', currentAccount);
@@ -245,6 +250,10 @@ export class XcmRepository implements IXcmRepository {
     // return config.unwrap().v1;
     const formattedAssetConfig = JSON.parse(config.toString());
     return formattedAssetConfig.v1;
+  }
+
+  protected isAstarNativeToken(token: Asset): boolean {
+    return !!this.astarTokens[token.metadata.symbol];
   }
 
   private async getBalances(address: string, assets: Asset[]): Promise<Asset[]> {

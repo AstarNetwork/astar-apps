@@ -174,7 +174,7 @@
         <span class="color--white"> {{ $t(errMsg) }}</span>
       </div>
       <div class="wrapper__row--button">
-        <button class="btn btn--confirm" :disabled="isDisabledBridge" @click="handleBridgeV2">
+        <button class="btn btn--confirm" :disabled="isDisabledBridge" @click="handleBridge">
           {{ $t('confirm') }}
         </button>
       </div>
@@ -288,8 +288,9 @@ export default defineComponent({
       const xcmService = container.get<IXcmService>(Symbols.XcmService);
       const from = getV2Chain(srcChain.value);
       const to = getV2Chain(destChain.value);
-      const assets = computed<Asset[]>(() => store.getters['assets/getAllAssets']);
-      const selectedToken = assets.value.find((x) => x.id === props.token.id);
+      // const assets = computed<Asset[]>(() => store.getters['assets/getAllAssets']);
+      // const selectedToken = assets.value.find((x) => x.id === props.token.id);
+      const selectedToken = props.token as unknown as Asset;
       const amountToTransfer = amount.value ? Number(amount.value) : 0;
 
       if (from && to && selectedToken) {

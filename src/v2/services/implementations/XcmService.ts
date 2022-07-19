@@ -36,6 +36,7 @@ export class XcmService implements IXcmService {
   ): Promise<void> {
     Guard.ThrowIfUndefined('recipientAddress', recipientAddress);
     Guard.ThrowIfNegative('amount', amount);
+    this.GuardTransfer(amount, token);
 
     let call: ExtrinsicPayload | null = null;
     let tip: number | undefined; // If tip stays undefined, wallet infrastrucutre will fetch it.
@@ -98,5 +99,10 @@ export class XcmService implements IXcmService {
     }
 
     return assets.sort((a1, a2) => a2.userBalanceUsd - a1.userBalanceUsd);
+  }
+
+
+  private GuardTransfer(amount: number, token:Asset) {
+
   }
 }

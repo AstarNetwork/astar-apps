@@ -18,7 +18,11 @@ export class AcalaXcmRepository extends XcmRepository {
     const registeredTokens = container.get<XcmTokenInformation[]>(Symbols.RegisteredTokens);
 
     super(defaultApi, apiFactory, registeredTokens);
-    console.log('AcalaXcmRepository has been created');
+
+    this.astarTokens = {
+      SDN: 18,
+      ASTR: 18,
+    };
   }
 
   public async getTransferCall(
@@ -32,9 +36,13 @@ export class AcalaXcmRepository extends XcmRepository {
       throw `Parachain id for ${to.displayName} is not defined`;
     }
 
-    const tokenData = {
-      Token: token.originAssetId,
-    };
+    const tokenData = this.isAstarNativeToken(token)
+      ? {
+          ForeignAsset: this.astarTokens[token.metadata.symbol],
+        }
+      : {
+          Token: token.originAssetId,
+        };
 
     const destination = {
       V1: {
