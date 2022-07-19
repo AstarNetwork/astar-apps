@@ -442,6 +442,8 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
             amount.value = null;
           });
       }
+
+      store.dispatch('assets/getAssets', currentAccount.value);
     } catch (error: any) {
       console.error(error.message);
       store.dispatch('general/showAlertMsg', {

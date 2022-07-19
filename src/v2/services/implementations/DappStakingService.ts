@@ -14,7 +14,7 @@ export class DappStakingService implements IDappStakingService {
 
   constructor(
     @inject(Symbols.DappStakingRepository) private dappStakingRepository: IDappStakingRepository,
-    @inject(Symbols.CoinGecko) private priceRepository: IPriceRepository,
+    @inject(Symbols.PriceRepository) private priceRepository: IPriceRepository,
     @inject(Symbols.MetadataRepository) private metadataRepository: IMetadataRepository,
     @inject(Symbols.WalletFactory) walletFactory: () => IWalletService
   ) {
@@ -25,7 +25,7 @@ export class DappStakingService implements IDappStakingService {
     const metadata = await this.metadataRepository.getChainMetadata();
     const [tvl, priceUsd] = await Promise.all([
       this.dappStakingRepository.getTvl(),
-      this.priceRepository.getUsdPrice(metadata.chain.toLowerCase()),
+      this.priceRepository.getUsdPrice(metadata.token),
     ]);
 
     const tvlDefaultUnit = Number(

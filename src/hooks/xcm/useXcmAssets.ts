@@ -160,9 +160,11 @@ export function useXcmAssets() {
     }
   };
 
-  watchEffect(async () => {
-    await fetchAssets();
-  });
+  // Not needed since assets are fetched through XcmService
+  // TODO remove later together with fetchAssets implementation
+  // watchEffect(async () => {
+  //   await fetchAssets();
+  // });
 
   const secsUpdateBal = 60 * 1000;
   const tokenBalUpdate = setInterval(() => {

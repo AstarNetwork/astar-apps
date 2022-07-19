@@ -1,5 +1,5 @@
 <template>
-  <div v-if="selectedAddress && isDisplay" class="wrapper--assets">
+  <div v-if="currentAccount && isDisplay" class="wrapper--assets">
     <div class="container--assets">
       <Account
         :ttl-erc20-amount="ttlErc20Amount"
@@ -7,7 +7,7 @@
         :is-loading-erc20-amount="isLoadingErc20Amount"
         :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
       />
-      <div v-if="selectedAddress">
+      <div v-if="currentAccount">
         <div v-if="isH160">
           <EvmAssetList
             :tokens="tokens"
@@ -53,10 +53,10 @@ import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
 import XcmNativeAssetList from 'src/components/assets/XcmNativeAssetList.vue';
 import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { ChainAsset, useBalance, useCbridgeV2, useXcmAssets } from 'src/hooks';
+import { ChainAsset, useAccount, useBalance, useCbridgeV2, useXcmAssets } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, watchEffect } from 'vue';
+import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import ModalXcmBridge from './modals/ModalXcmBridge.vue';
 import ModalXcmTransfer from './modals/ModalXcmTransfer.vue';
 
@@ -78,14 +78,13 @@ export default defineComponent({
     const { tokens, isLoadingErc20Amount, ttlErc20Amount, handleUpdateTokenBalances } =
       useCbridgeV2();
     const {
-      xcmAssets,
       ttlNativeXcmUsdAmount,
       isLoadingXcmAssetsAmount,
       handleUpdateTokenBalances: handleUpdateXcmTokenBalances,
     } = useXcmAssets();
     const store = useStore();
-    const selectedAddress = computed(() => store.getters['general/selectedAddress']);
-    const { accountData } = useBalance(selectedAddress);
+    const { currentAccount } = useAccount();
+    const { accountData } = useBalance(currentAccount);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const currentNetworkIdx = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
@@ -94,6 +93,19 @@ export default defineComponent({
     });
 
     const isShibuya = computed(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
+
+    // v2
+    const xcmAssets = computed(() => store.getters['assets/getAllAssets']);
+
+    watch(
+      currentAccount,
+      (newValue) => {
+        if (!newValue) return;
+        store.dispatch('assets/getAssets', newValue);
+      },
+      { immediate: true }
+    );
+    // v2 end
 
     const isEnableXcm = computed(
       () => !isShibuya.value && xcmAssets.value && xcmAssets.value.length > 0
@@ -150,7 +162,7 @@ export default defineComponent({
     return {
       isLoadingErc20Amount,
       isLoadingXcmAssetsAmount,
-      selectedAddress,
+      currentAccount,
       isH160,
       tokens,
       ttlErc20Amount,
