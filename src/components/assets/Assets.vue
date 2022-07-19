@@ -149,6 +149,7 @@ export default defineComponent({
       currency,
     }: {
       isOpen: boolean;
+      // Memo: currency type is `Erc20Token` in H160 mode
       currency: ChainAsset | Erc20Token;
     }) => {
       isModalXcmBridge.value = isOpen;
