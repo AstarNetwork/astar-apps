@@ -61,7 +61,9 @@
       </div>
     </template>
 
-    <template v-else> Algem </template>
+    <template v-else>
+      <AlgemPanel />
+    </template>
 
     <Teleport to="#app--main">
       <ModalRegisterDapp
@@ -91,6 +93,7 @@ import APR from './statistics/APR.vue';
 import DappsCount from './statistics/DappsCount.vue';
 import Era from './statistics/Era.vue';
 import TVL from './statistics/TVL.vue';
+import AlgemPanel from './AlgemPanel.vue';
 
 export default defineComponent({
   components: {
@@ -103,6 +106,7 @@ export default defineComponent({
     UserRewards,
     APR,
     ModalMaintenance,
+    AlgemPanel,
   },
   setup() {
     useMeta({ title: 'Discover dApps' });
