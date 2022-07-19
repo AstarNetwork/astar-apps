@@ -28,9 +28,9 @@
       </svg>
     </div>
     <div class="tw-ml-3 tw-flex-1 tw-pt-0.5">
-      <p :class="`tw-text-sm tw-break-all tw-font-medium ${txtColor(alertType)}`">
+      <span :class="`tw-text-sm tw-break-all tw-font-medium ${txtColor(alertType)}`">
         {{ $t(msg) }}
-      </p>
+      </span>
     </div>
   </div>
 </template>
