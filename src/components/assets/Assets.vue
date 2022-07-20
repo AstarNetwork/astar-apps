@@ -140,7 +140,6 @@ export default defineComponent({
       token.value = currency;
     };
 
-    // const handleModalXcmBridge = ({ isOpen, currency }: { isOpen: boolean; currency: Asset }) => {
     const handleModalXcmBridge = ({
       isOpen,
       currency,

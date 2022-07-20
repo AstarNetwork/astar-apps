@@ -32,7 +32,6 @@ export class XcmService implements IXcmService {
       }
     }
 
-    // return assets.sort((a1, a2) => a2.userBalanceUsd - a1.userBalanceUsd);
     assets.sort((a1, a2) => a2.userBalanceUsd - a1.userBalanceUsd);
     return { assets, ttlNativeXcmUsdAmount };
   }
