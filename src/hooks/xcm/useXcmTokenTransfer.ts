@@ -23,6 +23,7 @@ export function useXcmTokenTransfer(selectedToken: Ref<ChainAsset>) {
 
   const { t } = useI18n();
   const store = useStore();
+  const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const { currentAccount } = useAccount();
 
@@ -56,6 +57,7 @@ export function useXcmTokenTransfer(selectedToken: Ref<ChainAsset>) {
   };
 
   const setErrorMsg = (): void => {
+    if (isLoading.value) return;
     const transferAmtRef = Number(transferAmt.value);
     const fromAccountBalance = selectedToken.value ? Number(selectedToken.value.userBalance) : 0;
     const isValidDestAddress =
