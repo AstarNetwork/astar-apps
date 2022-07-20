@@ -6,6 +6,7 @@ import {
   supportWalletObj,
   supportEvmWalletObj,
   SupportWallet,
+  supportWalletObj,
   WalletModalOption,
 } from 'src/config/wallets';
 import { getChainId, setupNetwork } from 'src/config/web3';
