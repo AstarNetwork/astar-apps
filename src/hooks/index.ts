@@ -22,7 +22,7 @@ export * from './usePrice';
 export * from './useVesting';
 export * from './useTvlHistorical';
 export * from './useGasPrice';
-export * from './useIsMainnet';
+export * from './useNetworkInfo';
 export * from './chain/useAvgBlockTime';
 export * from './c-bridge/useCbridgeV2';
 export * from './dapps-staking/useNominationTransfer';

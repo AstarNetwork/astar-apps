@@ -51,15 +51,15 @@ import Account from 'src/components/assets/Account.vue';
 import EvmAssetList from 'src/components/assets/EvmAssetList.vue';
 import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
 import XcmNativeAssetList from 'src/components/assets/XcmNativeAssetList.vue';
-import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
+import { endpointKey } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import {
   ChainAsset,
   useAccount,
   useBalance,
   useCbridgeV2,
-  useIsMainnet,
   useXcmAssets,
+  useNetworkInfo,
 } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { useStore } from 'src/store';
@@ -88,13 +88,8 @@ export default defineComponent({
     const store = useStore();
     const { currentAccount } = useAccount();
     const { accountData } = useBalance(currentAccount);
-    const { isMainnet } = useIsMainnet();
+    const { isMainnet, currentNetworkIdx } = useNetworkInfo();
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
-    const currentNetworkIdx = computed(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      const chain = chainInfo ? chainInfo.chain : '';
-      return getProviderIndex(chain);
-    });
 
     const isShibuya = computed(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
 

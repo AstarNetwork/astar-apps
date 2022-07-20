@@ -1,19 +1,14 @@
 import { evmToAddress } from '@polkadot/util-crypto';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
-import {
-  ASTAR_NATIVE_TOKEN,
-  endpointKey,
-  getProviderIndex,
-  providerEndpoints,
-} from 'src/config/chainEndpoints';
+import { ASTAR_NATIVE_TOKEN, endpointKey } from 'src/config/chainEndpoints';
 import { getTokenBal, isValidEvmAddress } from 'src/config/web3';
 import {
   parachainIds,
   PREFIX_ASTAR,
   providerEndpoints as xcmProviderEndpoints,
 } from 'src/config/xcmChainEndpoints';
-import { useBalance, useCustomSignature } from 'src/hooks';
+import { useBalance, useCustomSignature, useNetworkInfo } from 'src/hooks';
 import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
 import { getInjector } from 'src/hooks/helper/wallet';
 import { useAccount } from 'src/hooks/useAccount';
@@ -93,18 +88,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     )!;
   });
 
-  const currentNetworkIdx = computed<endpointKey>(() => {
-    const chainInfo = store.getters['general/chainInfo'];
-    const chain = chainInfo ? chainInfo.chain : '';
-    return getProviderIndex(chain);
-  });
-
-  const evmNetworkIdx = computed<number>(() => {
-    const chainInfo = store.getters['general/chainInfo'];
-    const chain = chainInfo ? chainInfo.chain : '';
-    const networkIdx = getProviderIndex(chain);
-    return Number(providerEndpoints[networkIdx].evmChainId);
-  });
+  const { currentNetworkIdx, evmNetworkIdx } = useNetworkInfo();
 
   const isLoadOriginApi = computed<boolean>(
     () => !!(selectedToken.value && selectedToken.value.originChain)

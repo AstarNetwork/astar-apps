@@ -1,7 +1,7 @@
 import { BN } from '@polkadot/util';
 import { inject, injectable } from 'inversify';
+import { XcmAssets } from 'src/store/assets/state';
 import { Guard } from 'src/v2/common';
-import { Asset } from 'src/v2/models';
 import { IPriceRepository, IXcmRepository } from 'src/v2/repositories';
 import { IBalanceFormatterService, IXcmService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
@@ -15,9 +15,7 @@ export class XcmService implements IXcmService {
     private balanceFormatterService: IBalanceFormatterService
   ) {}
 
-  public async getAssets(
-    currentAccount: string
-  ): Promise<{ assets: Asset[]; ttlNativeXcmUsdAmount: number }> {
+  public async getAssets(currentAccount: string): Promise<XcmAssets> {
     Guard.ThrowIfUndefined('currentAccount', currentAccount);
 
     const assets = await this.xcmRepository.getAssets(currentAccount);

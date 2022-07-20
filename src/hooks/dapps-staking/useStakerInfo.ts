@@ -3,6 +3,7 @@ import { useStore } from 'src/store';
 import { computed, ref, watchEffect, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useAccount } from '../useAccount';
+import { useNetworkInfo } from '../useNetworkInfo';
 import { getStakeInfo } from './../../modules/dapp-staking/utils/index';
 import { StakeInfo } from './../../store/dapp-staking/actions';
 import { DappItem } from './../../store/dapp-staking/state';
@@ -12,15 +13,7 @@ export function useStakerInfo() {
   const { t } = useI18n();
   const store = useStore();
 
-  const currentNetwork = computed(() => {
-    const chainInfo = store.getters['general/chainInfo'];
-    const chain = chainInfo ? chainInfo.chain : '';
-    return chain.toString().split(' ')[0];
-  });
-
-  if (currentNetwork.value) {
-    store.dispatch('dapps/getDapps', currentNetwork.value);
-  }
+  const { currentNetworkName } = useNetworkInfo();
 
   store.dispatch('dapps/getStakingInfo');
   const stakeInfos = ref<StakeInfo[]>();
@@ -41,9 +34,9 @@ export function useStakerInfo() {
     stakeInfos.value = data;
   };
 
-  watch([currentNetwork], () => {
-    if (currentNetwork.value) {
-      store.dispatch('dapps/getDapps', currentNetwork.value);
+  watch([currentNetworkName], () => {
+    if (currentNetworkName.value) {
+      store.dispatch('dapps/getDapps', currentNetworkName.value);
     }
   });
 

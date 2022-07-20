@@ -1,10 +1,10 @@
 import { ApiPromise } from '@polkadot/api';
 import { Struct } from '@polkadot/types';
 import { ethers } from 'ethers';
-import { endpointKey } from 'src/config/chainEndpoints';
+import { ASTAR_NETWORK_IDX, endpointKey } from 'src/config/chainEndpoints';
 import { ChainAsset } from 'src/hooks';
 import { getUsdBySymbol } from 'src/hooks/helper/price';
-import { ExistentialDeposit, XcmNetworkIdx, XcmTokenInformation } from '../index';
+import { ExistentialDeposit, XcmTokenInformation } from '../index';
 import { xcmToken } from '../tokens';
 import { Chain, parachains, relayChains } from './../index';
 
@@ -19,7 +19,7 @@ export const getXcmToken = ({
   id: string;
   currentNetworkIdx: endpointKey;
 }): XcmTokenInformation | undefined => {
-  const networkIdx = currentNetworkIdx as XcmNetworkIdx;
+  const networkIdx = currentNetworkIdx as ASTAR_NETWORK_IDX;
   const t = xcmToken[networkIdx].find((it: XcmTokenInformation) => it.assetId === id);
   return t;
 };

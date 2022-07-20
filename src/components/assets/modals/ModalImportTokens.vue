@@ -48,12 +48,11 @@
 import { fadeDuration } from '@astar-network/astar-ui';
 import { $web3 } from 'src/boot/api';
 import { SelectedToken } from 'src/c-bridge';
-import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { fetchErc20TokenInfo } from 'src/config/web3';
+import { useNetworkInfo } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { Erc20Token, storeImportedERC20Token } from 'src/modules/token';
-import { useStore } from 'src/store';
 import { computed, defineComponent, PropType, ref, watch } from 'vue';
 
 export default defineComponent({
@@ -83,13 +82,7 @@ export default defineComponent({
       search.value = '';
     };
 
-    const store = useStore();
-    const evmNetworkIdx = computed<number>(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      const chain = chainInfo ? chainInfo.chain : '';
-      const networkIdx = getProviderIndex(chain);
-      return Number(providerEndpoints[networkIdx].evmChainId);
-    });
+    const { evmNetworkIdx } = useNetworkInfo();
 
     const isDisabled = computed<boolean>(() => {
       const isToken = !token.value;

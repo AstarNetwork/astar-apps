@@ -81,13 +81,14 @@
 <script lang="ts">
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
-import { endpointKey, getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
+import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { isValidEvmAddress } from 'src/config/web3';
 import {
   useAccount,
   useBalance,
   useBreakpoints,
   useConnectWallet,
+  useNetworkInfo,
   usePrice,
   useWalletIcon,
 } from 'src/hooks';
@@ -141,11 +142,8 @@ export default defineComponent({
 
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const isEthWallet = computed(() => store.getters['general/isEthWallet']);
-    const currentNetworkIdx = computed(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      const chain = chainInfo ? chainInfo.chain : '';
-      return getProviderIndex(chain);
-    });
+
+    const { currentNetworkIdx } = useNetworkInfo();
     const blockscout = computed(
       () =>
         `${providerEndpoints[currentNetworkIdx.value].blockscout}/address/${currentAccount.value}`

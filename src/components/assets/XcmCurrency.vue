@@ -80,11 +80,11 @@
   </div>
 </template>
 <script lang="ts">
-import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
+import { endpointKey } from 'src/config/chainEndpoints';
+import { useNetworkInfo } from 'src/hooks';
 import { truncate } from 'src/hooks/helper/common';
 import { ChainAsset } from 'src/hooks/xcm/useXcmAssets';
 import { getXcmToken } from 'src/modules/xcm';
-import { useStore } from 'src/store';
 import { computed, defineComponent, PropType } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
 
@@ -105,14 +105,8 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const t = computed(() => props.token);
-    const store = useStore();
-
-    const currentNetworkIdx = computed(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      const chain = chainInfo ? chainInfo.chain : '';
-      return getProviderIndex(chain);
-    });
+    const t = computed<ChainAsset>(() => props.token);
+    const { currentNetworkIdx } = useNetworkInfo();
 
     const isDisplayToken = computed<boolean>(() => {
       const token = getXcmToken({
@@ -124,12 +118,9 @@ export default defineComponent({
     });
 
     const explorerLink = computed(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      const chain = chainInfo ? chainInfo.chain : '';
-      const currentNetworkIdx = getProviderIndex(chain);
       const astarBalanceUrl = 'https://astar.subscan.io/assets/' + t.value.id;
       const shidenBalanceUrl = 'https://shiden.subscan.io/assets/' + t.value.id;
-      return currentNetworkIdx === endpointKey.ASTAR ? astarBalanceUrl : shidenBalanceUrl;
+      return currentNetworkIdx.value === endpointKey.ASTAR ? astarBalanceUrl : shidenBalanceUrl;
     });
 
     return {

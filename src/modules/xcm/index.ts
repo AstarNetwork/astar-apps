@@ -1,4 +1,3 @@
-import { endpointKey } from 'src/config/chainEndpoints';
 import { parachainIds } from 'src/config/xcmChainEndpoints';
 
 export { xcmToken } from './tokens';
@@ -19,8 +18,6 @@ export interface XcmTokenInformation {
   originChain: string;
   minBridgeAmount: string;
 }
-
-export type XcmNetworkIdx = endpointKey.ASTAR | endpointKey.SHIDEN | endpointKey.SHIBUYA;
 
 export interface ExistentialDeposit {
   amount: string;
