@@ -3,7 +3,6 @@ import { getProviderIndex } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import {
   SubstrateWallets,
-  supportWalletObj,
   supportEvmWalletObj,
   SupportWallet,
   supportWalletObj,
