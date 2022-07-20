@@ -23,6 +23,7 @@ import {
   IDappStakingService,
   IGasPriceProvider,
   IWalletService,
+  IXcmEvmService,
   IXcmService,
   WalletType,
 } from './services';
@@ -33,6 +34,7 @@ import {
   GasPriceProvider,
   XcmService,
   BalanceFormatterService,
+  XcmEvmService,
 } from './services/implementations';
 import { Symbols } from './symbols';
 import { IEventAggregator, EventAggregator } from './messaging';
@@ -42,14 +44,20 @@ import { XcmRepositoryConfiguration } from './config/xcm/XcmRepositoryConfigurat
 import { endpointKey } from 'src/config/chainEndpoints';
 import { xcmToken, XcmTokenInformation } from 'src/modules/xcm';
 
-let currentWallet = WalletType.Polkadot;
+let currentWalletType = WalletType.Polkadot;
+let currentWalletName = '';
 
-export function setCurrentWallet(isEthWallet: boolean): void {
-  currentWallet = isEthWallet ? WalletType.Metamask : WalletType.Polkadot;
+export function setCurrentWallet(isEthWallet: boolean, currentWallet: string): void {
+  currentWalletType = isEthWallet ? WalletType.Metamask : WalletType.Polkadot;
+  currentWalletName = currentWallet;
+
+  container.removeConstant(Symbols.CurrentWallet);
+  container.addConstant<string>(Symbols.CurrentWallet, currentWalletName);
 }
 
 export default function buildDependencyContainer(network: endpointKey): void {
   container.addConstant<XcmTokenInformation[]>(Symbols.RegisteredTokens, xcmToken[network]);
+  container.addConstant<string>(Symbols.CurrentWallet, currentWalletName);
 
   container.addSingleton<IEventAggregator>(EventAggregator, Symbols.EventAggregator);
   container.addSingleton<IApi>(DefaultApi, Symbols.DefaultApi);
@@ -62,7 +70,7 @@ export default function buildDependencyContainer(network: endpointKey): void {
   // Wallet factory
   container.bind<interfaces.Factory<IWalletService>>(Symbols.WalletFactory).toFactory(() => {
     return () => {
-      return container.get<IWalletService>(currentWallet);
+      return container.get<IWalletService>(currentWalletType);
     };
   });
 
@@ -82,6 +90,7 @@ export default function buildDependencyContainer(network: endpointKey): void {
   container.addTransient<IDappStakingService>(DappStakingService, Symbols.DappStakingService);
   container.addSingleton<IGasPriceProvider>(GasPriceProvider, Symbols.GasPriceProvider); // Singleton because it listens and caches gas/tip prices.
   container.addTransient<IXcmService>(XcmService, Symbols.XcmService);
+  container.addTransient<IXcmEvmService>(XcmEvmService, Symbols.XcmEvmService);
   container.addTransient<IBalanceFormatterService>(
     BalanceFormatterService,
     Symbols.BalanceFormatterService

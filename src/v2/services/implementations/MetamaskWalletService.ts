@@ -21,12 +21,18 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
     @inject(Symbols.EventAggregator) eventAggregator: IEventAggregator
   ) {
     super(eventAggregator);
-    const { ethProvider } = useEthProvider();
 
-    if (ethProvider.value) {
-      this.provider = ethProvider.value;
-    } else {
-      Guard.ThrowIfUndefined('provider', this.provider);
+    try {
+      const { ethProvider } = useEthProvider();
+
+      if (ethProvider.value) {
+        this.provider = ethProvider.value;
+      } else {
+        Guard.ThrowIfUndefined('provider', this.provider);
+      }
+    } catch (e) {
+      console.error(e);
+      // TODO see why useEthProvider is failing?
     }
   }
 

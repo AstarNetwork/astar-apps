@@ -194,7 +194,7 @@ import { Chain, Network } from 'src/v2/config/types';
 import { XcmConfiguration } from 'src/v2/config/xcm/XcmConfiguration';
 import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { Asset } from 'src/v2/models';
-import { IXcmService } from 'src/v2/services';
+import { IXcmEvmService, IXcmService, IXcmTransfer } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -285,7 +285,14 @@ export default defineComponent({
     const { currentAccount } = useAccount();
 
     const handleBridgeV2 = async (): Promise<void> => {
-      const xcmService = container.get<IXcmService>(Symbols.XcmService);
+      let xcmService: IXcmTransfer;
+
+      if (isH160.value) {
+        xcmService = container.get<IXcmEvmService>(Symbols.XcmEvmService);
+      } else {
+        xcmService = container.get<IXcmService>(Symbols.XcmService);
+      }
+
       const from = getV2Chain(srcChain.value);
       const to = getV2Chain(destChain.value);
       const selectedToken = props.token as unknown as Asset;
@@ -317,7 +324,8 @@ export default defineComponent({
       if (
         message.method.startsWith('xcmPallet') ||
         message.method.startsWith('polkadotXcm') ||
-        message.method.startsWith('xToken')
+        message.method.startsWith('xToken') ||
+        message.method.startsWith('evmXcm')
       ) {
         store.dispatch('assets/getAssets', currentAccount.value);
         await closeModal();
