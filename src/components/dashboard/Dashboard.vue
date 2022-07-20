@@ -54,7 +54,7 @@ import ValuePanel from 'src/components/dashboard/ValuePanel.vue';
 import TokenPriceChart from 'src/components/dashboard/TokenPriceChart.vue';
 // import TotalTransactionsChart from 'src/components/dashboard/TotalTransactionsChart.vue';
 import TvlChart from 'src/components/dashboard/TvlChart.vue';
-import { useTvlHistorical } from 'src/hooks';
+import { useIsMainnet, useTvlHistorical } from 'src/hooks';
 import { textChart, TOKEN_API_URL } from 'src/modules/token-api';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
@@ -96,10 +96,7 @@ export default defineComponent({
       return network === 'Shibuya Testnet' ? 'shibuya' : network;
     });
 
-    const isMainnet = computed(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      return chainInfo ? chainInfo.chain !== 'Shibuya Testnet' : false;
-    });
+    const { isMainnet } = useIsMainnet();
 
     const loadStats = async (network: string) => {
       if (!network) return;

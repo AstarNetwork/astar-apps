@@ -1,12 +1,12 @@
 import { Asset } from 'src/v2/models';
 
 export interface AssetsStateInterface {
-  assets: Asset[];
+  assets: { assets: Asset[]; ttlNativeXcmUsdAmount: number };
 }
 
 function state(): AssetsStateInterface {
   return {
-    assets: [],
+    assets: { assets: [], ttlNativeXcmUsdAmount: 0 },
   };
 }
 

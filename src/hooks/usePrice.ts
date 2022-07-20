@@ -1,6 +1,7 @@
 import { getUsdBySymbol } from 'src/hooks/helper/price';
 import { useStore } from 'src/store';
 import { computed, ref, watchEffect } from 'vue';
+import { useIsMainnet } from './useIsMainnet';
 
 export function usePrice() {
   const store = useStore();
@@ -10,12 +11,7 @@ export function usePrice() {
     return chainInfo ? chainInfo.tokenSymbol : '';
   });
 
-  const isMainnet = computed<boolean>(() => {
-    const chainInfo = store.getters['general/chainInfo'];
-    const network = chainInfo ? chainInfo.chain : '';
-    const isTestnet = network === 'Development' || network === 'Shibuya Testnet';
-    return !isTestnet;
-  });
+  const { isMainnet } = useIsMainnet();
 
   watchEffect(async () => {
     const tokenSymbolRef = tokenSymbol.value;

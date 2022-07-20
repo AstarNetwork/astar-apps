@@ -15,10 +15,13 @@ export class XcmService implements IXcmService {
     private balanceFormatterService: IBalanceFormatterService
   ) {}
 
-  public async getAssets(currentAccount: string): Promise<Asset[]> {
+  public async getAssets(
+    currentAccount: string
+  ): Promise<{ assets: Asset[]; ttlNativeXcmUsdAmount: number }> {
     Guard.ThrowIfUndefined('currentAccount', currentAccount);
 
     const assets = await this.xcmRepository.getAssets(currentAccount);
+    let ttlNativeXcmUsdAmount = 0;
 
     for (const asset of assets) {
       if (asset.balance.gt(new BN(0))) {
@@ -27,9 +30,12 @@ export class XcmService implements IXcmService {
         );
         const price = await this.priceRepository.getUsdPrice(asset.metadata.symbol);
         asset.userBalanceUsd = asset.userBalance * price;
+        ttlNativeXcmUsdAmount += asset.userBalanceUsd;
       }
     }
 
-    return assets.sort((a1, a2) => a2.userBalanceUsd - a1.userBalanceUsd);
+    // return assets.sort((a1, a2) => a2.userBalanceUsd - a1.userBalanceUsd);
+    assets.sort((a1, a2) => a2.userBalanceUsd - a1.userBalanceUsd);
+    return { assets, ttlNativeXcmUsdAmount };
   }
 }

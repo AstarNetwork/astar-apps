@@ -13,13 +13,13 @@
             :tokens="tokens"
             :handle-update-token-balances="handleUpdateTokenBalances"
             :handle-update-xcm-token-balances="handleUpdateXcmTokenBalances"
-            :xcm-assets="xcmAssets"
+            :xcm-assets="xcmAssets.assets"
           />
         </div>
         <div v-else class="container--assets">
           <XcmNativeAssetList
             v-if="isEnableXcm"
-            :xcm-assets="xcmAssets"
+            :xcm-assets="xcmAssets.assets"
             :handle-modal-xcm-bridge="handleModalXcmBridge"
             :handle-modal-xcm-transfer="handleModalXcmTransfer"
           />
@@ -53,7 +53,14 @@ import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
 import XcmNativeAssetList from 'src/components/assets/XcmNativeAssetList.vue';
 import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { ChainAsset, useAccount, useBalance, useCbridgeV2, useXcmAssets } from 'src/hooks';
+import {
+  ChainAsset,
+  useAccount,
+  useBalance,
+  useCbridgeV2,
+  useIsMainnet,
+  useXcmAssets,
+} from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
@@ -77,14 +84,11 @@ export default defineComponent({
 
     const { tokens, isLoadingErc20Amount, ttlErc20Amount, handleUpdateTokenBalances } =
       useCbridgeV2();
-    const {
-      ttlNativeXcmUsdAmount,
-      isLoadingXcmAssetsAmount,
-      handleUpdateTokenBalances: handleUpdateXcmTokenBalances,
-    } = useXcmAssets();
+    const { handleUpdateTokenBalances: handleUpdateXcmTokenBalances } = useXcmAssets();
     const store = useStore();
     const { currentAccount } = useAccount();
     const { accountData } = useBalance(currentAccount);
+    const { isMainnet } = useIsMainnet();
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const currentNetworkIdx = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
@@ -96,6 +100,15 @@ export default defineComponent({
 
     // v2
     const xcmAssets = computed(() => store.getters['assets/getAllAssets']);
+    const ttlNativeXcmUsdAmount = computed<number>(() => xcmAssets.value.ttlNativeXcmUsdAmount);
+
+    const isLoadingXcmAssetsAmount = computed<boolean>(() => {
+      if (isMainnet.value) {
+        return !xcmAssets.value.assets.length;
+      } else {
+        return false;
+      }
+    });
 
     watch(
       currentAccount,
@@ -108,7 +121,7 @@ export default defineComponent({
     // v2 end
 
     const isEnableXcm = computed(
-      () => !isShibuya.value && xcmAssets.value && xcmAssets.value.length > 0
+      () => !isShibuya.value && xcmAssets.value.assets && xcmAssets.value.assets.length > 0
     );
 
     const setIsDisplay = async (): Promise<void> => {
