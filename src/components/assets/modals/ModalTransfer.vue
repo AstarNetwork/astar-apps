@@ -210,6 +210,7 @@ export default defineComponent({
     const { evmNetworkIdx, nativeTokenSymbol } = useNetworkInfo();
 
     const isEthWallet = computed(() => store.getters['general/isEthWallet']);
+    const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
 
     const isEnableSpeedConfiguration = computed<boolean>(() => {
       const currentWallet = store.getters['general/currentWallet'];
@@ -435,6 +436,7 @@ export default defineComponent({
     };
 
     const setErrorMsg = (): void => {
+      if (isLoading.value) return;
       const web3Ref = $web3.value;
       const transferAmtRef = Number(transferAmt.value);
       const selectedNetworkRef = selectedNetwork.value;

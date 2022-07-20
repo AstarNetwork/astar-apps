@@ -11,7 +11,6 @@ import { Symbols } from 'src/v2/symbols';
 import { Guard } from 'src/v2/common';
 import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { XcmTokenInformation } from 'src/modules/xcm';
-import { min } from 'bn.js';
 
 @injectable()
 export class XcmRepository implements IXcmRepository {
@@ -60,7 +59,7 @@ export class XcmRepository implements IXcmRepository {
     });
 
     if (isValidAddressPolkadotAddress(currentAccount)) {
-      // fetch balances for Substrate acounts only.
+      // fetch balances for Substrate accounts only.
       result = await this.getBalances(currentAccount, result);
     }
 

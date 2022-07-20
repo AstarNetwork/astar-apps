@@ -55,7 +55,9 @@ import { endpointKey } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useAccount, useBalance, useCbridgeV2, useNetworkInfo } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
+import { Erc20Token } from 'src/modules/token';
 import { useStore } from 'src/store';
+import { XcmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import ModalXcmBridge from './modals/ModalXcmBridge.vue';
@@ -87,7 +89,7 @@ export default defineComponent({
     const isShibuya = computed(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
 
     // v2
-    const xcmAssets = computed(() => store.getters['assets/getAllAssets']);
+    const xcmAssets = computed<XcmAssets>(() => store.getters['assets/getAllAssets']);
     const ttlNativeXcmUsdAmount = computed<number>(() => xcmAssets.value.ttlNativeXcmUsdAmount);
 
     const isLoadingXcmAssetsAmount = computed<boolean>(() => {
@@ -139,9 +141,29 @@ export default defineComponent({
       token.value = currency;
     };
 
-    const handleModalXcmBridge = ({ isOpen, currency }: { isOpen: boolean; currency: Asset }) => {
+    // const handleModalXcmBridge = ({ isOpen, currency }: { isOpen: boolean; currency: Asset }) => {
+    const handleModalXcmBridge = ({
+      isOpen,
+      currency,
+    }: {
+      isOpen: boolean;
+      // Memo: currency type is `Erc20Token` in H160 mode
+      currency: Asset | Erc20Token;
+    }) => {
       isModalXcmBridge.value = isOpen;
-      token.value = currency;
+      if (isH160.value) {
+        if (currency === null) {
+          token.value = null;
+        } else {
+          const c = currency as Erc20Token;
+          const t = xcmAssets.value.assets.find((it) => it.mappedERC20Addr === c.address);
+          if (t) {
+            token.value = t;
+          }
+        }
+      } else {
+        token.value = currency as Asset;
+      }
     };
 
     watchEffect(() => {

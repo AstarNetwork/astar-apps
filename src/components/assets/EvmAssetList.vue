@@ -142,34 +142,25 @@
         :handle-update-token-balances="handleUpdateTokenBalances"
       />
       <ModalFaucet :is-modal-faucet="isModalFaucet" :handle-modal-faucet="handleModalFaucet" />
-      <ModalXcmBridge
-        :is-modal-xcm-bridge="isModalXcmBridge"
-        :handle-modal-xcm-bridge="handleModalXcmBridge"
-        :account-data="accountData"
-        :token="xcmToken"
-        :handle-update-xcm-token-balances="handleUpdateXcmTokenBalances"
-      />
     </Teleport>
   </div>
 </template>
 <script lang="ts">
 import { ethers } from 'ethers';
 import { $web3 } from 'src/boot/api';
-import { checkIsCbridgeToken, SelectedToken } from 'src/c-bridge';
+import { cbridgeAppLink, checkIsCbridgeToken, SelectedToken } from 'src/c-bridge';
 import Erc20Currency from 'src/components/assets/Erc20Currency.vue';
 import EvmAssetOptions from 'src/components/assets/EvmAssetOptions.vue';
 import EvmCbridgeToken from 'src/components/assets/EvmCbridgeToken.vue';
 import { getBalance } from 'src/config/web3';
 import { useAccount, useBalance, useNetworkInfo, usePrice } from 'src/hooks';
+import { truncate } from 'src/hooks/helper/common';
 import { Erc20Token, getTokenImage } from 'src/modules/token';
-import { cbridgeAppLink } from 'src/c-bridge';
 import { useStore } from 'src/store';
+import { Asset } from 'src/v2/models';
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
 import ModalFaucet from './modals/ModalFaucet.vue';
 import ModalTransfer from './modals/ModalTransfer.vue';
-import { truncate } from 'src/hooks/helper/common';
-import ModalXcmBridge from './modals/ModalXcmBridge.vue';
-import { Asset } from 'src/v2/models';
 
 export default defineComponent({
   components: {
@@ -177,7 +168,6 @@ export default defineComponent({
     ModalTransfer,
     ModalFaucet,
     Erc20Currency,
-    ModalXcmBridge,
     EvmAssetOptions,
   },
   props: {
@@ -190,7 +180,7 @@ export default defineComponent({
       type: Function,
       required: true,
     },
-    handleUpdateXcmTokenBalances: {
+    handleModalXcmBridge: {
       type: Function,
       required: true,
     },
@@ -259,23 +249,6 @@ export default defineComponent({
       return result.length > 0 ? result : null;
     });
 
-    const handleModalXcmBridge = ({
-      isOpen,
-      currency,
-    }: {
-      isOpen: boolean;
-      currency: Erc20Token | null;
-    }): void => {
-      isModalXcmBridge.value = isOpen;
-      if (currency === null) {
-        xcmToken.value = currency;
-      } else {
-        const t = props.xcmAssets.find((it) => String(it.metadata.symbol) === currency.symbol);
-        if (t) {
-          xcmToken.value = t;
-        }
-      }
-    };
     const toggleIsHideSmallBalances = (): void => {
       isHideSmallBalances.value = !isHideSmallBalances.value;
     };
@@ -343,10 +316,7 @@ export default defineComponent({
       search,
       filteredTokens,
       isDisplayNativeToken,
-      isModalXcmBridge,
       accountData,
-      xcmToken,
-      handleModalXcmBridge,
       cbridgeAppLink,
       isHideSmallBalances,
       setIsSearch,

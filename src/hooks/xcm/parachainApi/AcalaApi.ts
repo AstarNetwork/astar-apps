@@ -14,8 +14,7 @@ export class AcalaApi extends RelaychainApi {
   private _AstarTokenId: { SDN: string; ASTR: string };
   constructor(endpoint: string) {
     super(endpoint);
-    //Todo: Check the ForeignAsset ID for ASTR
-    this._AstarTokenId = { SDN: '18', ASTR: '18' };
+    this._AstarTokenId = { SDN: '18', ASTR: '2' };
   }
 
   public async getTokenBalances({

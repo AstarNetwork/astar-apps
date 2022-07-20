@@ -63,7 +63,7 @@
                 </div>
               </div>
             </div>
-            <div class="column--buttons" :class="isDisplayXcmButton && 'column--two-buttons'">
+            <div class="column--two-buttons">
               <button
                 class="btn btn--sm"
                 @click="handleModalTransfer({ isOpen: true, currency: nativeTokenSymbol })"
@@ -71,7 +71,6 @@
                 {{ $t('assets.transfer') }}
               </button>
               <button
-                v-if="isDisplayXcmButton"
                 class="btn btn--sm"
                 @click="
                   handleModalXcmBridge({
@@ -247,9 +246,6 @@ export default defineComponent({
       return Number(balance);
     });
 
-    // Todo: enable button for ASTAR after opened channel with other parachains
-    const isDisplayXcmButton = computed<boolean>(() => currentNetworkName.value === 'Shiden');
-
     const handleModalTransfer = ({ currency, isOpen }: { isOpen: boolean; currency: string }) => {
       isModalTransfer.value = isOpen;
     };
@@ -316,7 +312,6 @@ export default defineComponent({
       isModalEvmWithdraw,
       isModalVesting,
       xcmNativeToken,
-      isDisplayXcmButton,
       handleModalVesting,
       handleModalTransfer,
       handleModalFaucet,

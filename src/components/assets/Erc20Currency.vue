@@ -50,6 +50,7 @@
 
             <div v-if="token.isXC20">
               <button
+                :disabled="isDisabledXcmButton"
                 class="btn btn--sm"
                 @click="
                   handleModalXcmBridge({
@@ -107,6 +108,7 @@
   </div>
 </template>
 <script lang="ts">
+import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
 import { addToEvmProvider, getEvmProvider } from 'src/hooks/helper/wallet';
 import { Erc20Token, getErc20Explorer, getStoredERC20Tokens } from 'src/modules/token';
 import { useStore } from 'src/store';
@@ -149,6 +151,14 @@ export default defineComponent({
       return getErc20Explorer({ currentNetworkIdx: currentNetworkIdx.value, tokenAddress });
     });
 
+    // Memo: Remove after runtime upgrading in astar network to enable EVM withdrawal
+    const isDisabledXcmButton = computed(() => {
+      const chainInfo = store.getters['general/chainInfo'];
+      const chain = chainInfo ? chainInfo.chain : '';
+      const currentNetworkIdx = getProviderIndex(chain);
+      return currentNetworkIdx === endpointKey.ASTAR && token.symbol !== 'DOT';
+    });
+
     const isImportedToken = computed<boolean>(
       () =>
         !!getStoredERC20Tokens().find(
@@ -163,6 +173,7 @@ export default defineComponent({
       explorerLink,
       isImportedToken,
       provider,
+      isDisabledXcmButton,
       truncate,
       addToEvmProvider,
     };
