@@ -5,6 +5,7 @@ import {
   SubstrateWallets,
   supportEvmWalletObj,
   SupportWallet,
+  supportWalletObj,
   WalletModalOption,
 } from 'src/config/wallets';
 import { getChainId, setupNetwork } from 'src/config/web3';
@@ -197,7 +198,11 @@ export const useConnectWallet = () => {
       watchPostEffect(async () => {
         store.commit('general/setMetaExtensions', metaExtensions.value);
         store.commit('general/setExtensionCount', extensionCount.value);
-        // setWallet(wallet);
+        const isSubstrateWallet = supportWalletObj.hasOwnProperty(wallet);
+        // Memo: displays accounts menu for users who use the portal first time
+        if (isSubstrateWallet) {
+          setWallet(wallet);
+        }
       });
     }
   };
