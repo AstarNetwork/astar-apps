@@ -303,7 +303,7 @@ export default {
       alreadyVested: 'Already vested',
       remainingVests: 'Remaining vests',
       unlockPerBlock: '{perToken} {symbol} per block until block {untilBlock}',
-      availableToUnlocked: 'Available to unlock',
+      availableToUnlock: 'Available to unlock',
       unlock: 'Unlock',
       transfer: 'Transfer',
       evmXcmDeposit: 'EVM (Deposit)',
