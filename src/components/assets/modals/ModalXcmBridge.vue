@@ -185,7 +185,8 @@
 import { fadeDuration } from '@astar-network/astar-ui';
 import ModalSelectChain from 'src/components/assets/modals/ModalSelectChain.vue';
 import AddressInput from 'src/components/common/AddressInput.vue';
-import { ChainAsset, useTooltip, useXcmBridge, useXcmEvm } from 'src/hooks';
+import { useTooltip, useXcmBridge, useXcmEvm } from 'src/hooks';
+import { Asset } from 'src/v2/models';
 import { truncate, wait } from 'src/hooks/helper/common';
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -212,7 +213,7 @@ export default defineComponent({
       required: true,
     },
     token: {
-      type: (Object as PropType<ChainAsset>) || null,
+      type: (Object as PropType<Asset>) || null,
       required: false,
       default: null,
     },

@@ -13,7 +13,7 @@ import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
 import { getInjector } from 'src/hooks/helper/wallet';
 import { useAccount } from 'src/hooks/useAccount';
 import { useGasPrice } from 'src/hooks/useGasPrice';
-import { ChainAsset } from 'src/hooks/xcm/useXcmAssets';
+import { Asset } from 'src/v2/models';
 import {
   Chain,
   checkIsFromRelayChain,
@@ -35,7 +35,7 @@ const chainAstar = xcmChains.find((it) => it.name === Chain.Astar) as XcmChain;
 const chainShiden = xcmChains.find((it) => it.name === Chain.Shiden) as XcmChain;
 const chainKarura = xcmChains.find((it) => it.name === Chain.Karura) as XcmChain;
 
-export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
+export function useXcmBridge(selectedToken: Ref<Asset>) {
   let originChainApi: RelaychainApi | null = null;
   const srcChain = ref<XcmChain>(chainPolkadot);
   const destChain = ref<XcmChain>(chainAstar);

@@ -2,7 +2,7 @@ import { ApiPromise } from '@polkadot/api';
 import { Struct } from '@polkadot/types';
 import { ethers } from 'ethers';
 import { ASTAR_NETWORK_IDX, endpointKey } from 'src/config/chainEndpoints';
-import { ChainAsset } from 'src/hooks';
+import { Asset } from 'src/v2/models';
 import { getUsdBySymbol } from 'src/hooks/helper/price';
 import { ExistentialDeposit, XcmTokenInformation } from '../index';
 import { xcmToken } from '../tokens';
@@ -30,7 +30,7 @@ export const fetchXcmBalance = async ({
   api,
 }: {
   userAddress: string;
-  token: ChainAsset;
+  token: Asset;
   api: ApiPromise;
 }): Promise<{ userBalance: string; userBalanceUsd: string }> => {
   let userBalanceUsd = '0';

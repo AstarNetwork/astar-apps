@@ -12,7 +12,7 @@
           <EvmAssetList
             :tokens="tokens"
             :handle-update-token-balances="handleUpdateTokenBalances"
-            :handle-update-xcm-token-balances="handleUpdateXcmTokenBalances"
+            :handle-update-xcm-token-balances="handleUpdateXcmTokenAssets"
             :xcm-assets="xcmAssets.assets"
           />
         </div>
@@ -31,7 +31,7 @@
       <ModalXcmTransfer
         :is-modal-xcm-transfer="isModalXcmTransfer"
         :handle-modal-xcm-transfer="handleModalXcmTransfer"
-        :handle-update-xcm-token-balances="handleUpdateXcmTokenBalances"
+        :handle-update-xcm-token-balances="handleUpdateXcmTokenAssets"
         :account-data="accountData"
         :token="token"
       />
@@ -41,7 +41,7 @@
         :handle-modal-xcm-bridge="handleModalXcmBridge"
         :account-data="accountData"
         :token="token"
-        :handle-update-xcm-token-balances="handleUpdateXcmTokenBalances"
+        :handle-update-xcm-token-balances="handleUpdateXcmTokenAssets"
       />
     </Teleport>
   </div>
@@ -53,16 +53,10 @@ import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
 import XcmNativeAssetList from 'src/components/assets/XcmNativeAssetList.vue';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import {
-  ChainAsset,
-  useAccount,
-  useBalance,
-  useCbridgeV2,
-  useXcmAssets,
-  useNetworkInfo,
-} from 'src/hooks';
+import { useAccount, useBalance, useCbridgeV2, useNetworkInfo } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { useStore } from 'src/store';
+import { Asset } from 'src/v2/models';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import ModalXcmBridge from './modals/ModalXcmBridge.vue';
 import ModalXcmTransfer from './modals/ModalXcmTransfer.vue';
@@ -77,14 +71,13 @@ export default defineComponent({
     ModalXcmTransfer,
   },
   setup() {
-    const token = ref<ChainAsset | null>(null);
+    const token = ref<Asset | null>(null);
     const isModalXcmBridge = ref<boolean>(false);
     const isModalXcmTransfer = ref<boolean>(false);
     const isDisplay = ref<boolean>(false);
 
     const { tokens, isLoadingErc20Amount, ttlErc20Amount, handleUpdateTokenBalances } =
       useCbridgeV2();
-    const { handleUpdateTokenBalances: handleUpdateXcmTokenBalances } = useXcmAssets();
     const store = useStore();
     const { currentAccount } = useAccount();
     const { accountData } = useBalance(currentAccount);
@@ -105,14 +98,14 @@ export default defineComponent({
       }
     });
 
-    watch(
-      currentAccount,
-      (newValue) => {
-        if (!newValue) return;
-        store.dispatch('assets/getAssets', newValue);
-      },
-      { immediate: true }
-    );
+    const handleUpdateXcmTokenAssets = () => {
+      if (currentAccount) {
+        console.log('called');
+        store.dispatch('assets/getAssets', currentAccount.value);
+      }
+    };
+
+    watch([currentAccount], handleUpdateXcmTokenAssets, { immediate: true });
     // v2 end
 
     const isEnableXcm = computed(
@@ -141,24 +134,12 @@ export default defineComponent({
       }
     };
 
-    const handleModalXcmTransfer = ({
-      isOpen,
-      currency,
-    }: {
-      isOpen: boolean;
-      currency: ChainAsset;
-    }) => {
+    const handleModalXcmTransfer = ({ isOpen, currency }: { isOpen: boolean; currency: Asset }) => {
       isModalXcmTransfer.value = isOpen;
       token.value = currency;
     };
 
-    const handleModalXcmBridge = ({
-      isOpen,
-      currency,
-    }: {
-      isOpen: boolean;
-      currency: ChainAsset;
-    }) => {
+    const handleModalXcmBridge = ({ isOpen, currency }: { isOpen: boolean; currency: Asset }) => {
       isModalXcmBridge.value = isOpen;
       token.value = currency;
     };
@@ -182,7 +163,7 @@ export default defineComponent({
       token,
       accountData,
       isModalXcmBridge,
-      handleUpdateXcmTokenBalances,
+      handleUpdateXcmTokenAssets,
       handleUpdateTokenBalances,
       handleModalXcmBridge,
       handleModalXcmTransfer,

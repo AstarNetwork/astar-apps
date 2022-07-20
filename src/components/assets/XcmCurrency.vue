@@ -83,8 +83,8 @@
 import { endpointKey } from 'src/config/chainEndpoints';
 import { useNetworkInfo } from 'src/hooks';
 import { truncate } from 'src/hooks/helper/common';
-import { ChainAsset } from 'src/hooks/xcm/useXcmAssets';
 import { getXcmToken } from 'src/modules/xcm';
+import { Asset } from 'src/v2/models';
 import { computed, defineComponent, PropType } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
 
@@ -92,7 +92,7 @@ export default defineComponent({
   components: { [Jazzicon.name]: Jazzicon },
   props: {
     token: {
-      type: Object as PropType<ChainAsset>,
+      type: Object as PropType<Asset>,
       required: true,
     },
     handleModalXcmTransfer: {
@@ -105,7 +105,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const t = computed<ChainAsset>(() => props.token);
+    const t = computed<Asset>(() => props.token);
     const { currentNetworkIdx } = useNetworkInfo();
 
     const isDisplayToken = computed<boolean>(() => {

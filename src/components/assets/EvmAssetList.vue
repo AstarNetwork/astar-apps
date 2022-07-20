@@ -160,7 +160,7 @@ import Erc20Currency from 'src/components/assets/Erc20Currency.vue';
 import EvmAssetOptions from 'src/components/assets/EvmAssetOptions.vue';
 import EvmCbridgeToken from 'src/components/assets/EvmCbridgeToken.vue';
 import { getBalance } from 'src/config/web3';
-import { ChainAsset, useAccount, useBalance, useNetworkInfo, usePrice } from 'src/hooks';
+import { useAccount, useBalance, useNetworkInfo, usePrice } from 'src/hooks';
 import { Erc20Token, getTokenImage } from 'src/modules/token';
 import { cbridgeAppLink } from 'src/c-bridge';
 import { useStore } from 'src/store';
@@ -169,6 +169,7 @@ import ModalFaucet from './modals/ModalFaucet.vue';
 import ModalTransfer from './modals/ModalTransfer.vue';
 import { truncate } from 'src/hooks/helper/common';
 import ModalXcmBridge from './modals/ModalXcmBridge.vue';
+import { Asset } from 'src/v2/models';
 
 export default defineComponent({
   components: {
@@ -194,7 +195,7 @@ export default defineComponent({
       required: true,
     },
     xcmAssets: {
-      type: Array as PropType<ChainAsset[]>,
+      type: Array as PropType<Asset[]>,
       required: true,
     },
   },
@@ -202,7 +203,7 @@ export default defineComponent({
     const isModalTransfer = ref<boolean>(false);
     const isModalFaucet = ref<boolean>(false);
     const isModalXcmBridge = ref<boolean>(false);
-    const xcmToken = ref<ChainAsset | null>(null);
+    const xcmToken = ref<Asset | null>(null);
     const isHideSmallBalances = ref<boolean>(false);
     const token = ref<SelectedToken | Erc20Token | string | null>(null);
     const symbol = ref<string>('');
