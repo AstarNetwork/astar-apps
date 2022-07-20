@@ -102,7 +102,6 @@ export default defineComponent({
 
     const handleUpdateXcmTokenAssets = () => {
       if (currentAccount) {
-        console.log('called');
         store.dispatch('assets/getAssets', currentAccount.value);
       }
     };
