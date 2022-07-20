@@ -36,7 +36,7 @@
       </div>
       <div class="box--unlock-amount">
         <div class="box__column-amount">
-          <span class="text--accent">{{ $t('assets.modals.availableToUnlocked') }}</span>
+          <span class="text--accent">{{ $t('assets.modals.availableToUnlock') }}</span>
           <span class="text--xl"
             >{{ $n(truncate(info.claimableAmount)) }} {{ nativeTokenSymbol }}</span
           >
