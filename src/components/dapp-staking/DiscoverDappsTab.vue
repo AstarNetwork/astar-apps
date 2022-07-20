@@ -205,14 +205,15 @@ export default defineComponent({
 
 .row--tab {
   display: flex;
-  justify-content: space-around;
   width: 100%;
-  margin-bottom: 24px;
+  margin-bottom: 50px;
+  gap: 80px;
+  justify-content: center;
 }
 
 .selected-staking-option {
   padding-bottom: 8px;
-  border-bottom: 3px solid $blue;
+  border-bottom: 3px solid $astar-blue-dark;
   transition: all 0.3s ease 0s;
 }
 

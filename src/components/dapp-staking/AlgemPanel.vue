@@ -1,5 +1,8 @@
 <template>
-  <div class="liquid-wrapper">
+  <div
+    class="liquid-wrapper"
+    :style="`background-image: url('${require('/src/assets/img/algem/algem_landing.jpg')}')`"
+  >
     <div class="text--title">
       Liquid Staking is the most flexible way to earn on Astar Network and Polkadot
     </div>
@@ -42,13 +45,20 @@
         <li>
           Learn about the risk of providing liquidity on a DEX, impermanent loss (IL) and the
           possibility of a depeg.
+          <a
+            href="https://docs.algem.io/algem-protocol/liquid-staking/liquid-staking-faq"
+            target="_blank"
+            ><span class="icon-external"> <astar-icon-external-link /> </span
+          ></a>
         </li>
       </ul>
     </div>
     <div class="text--final">Enjoy The Magic of Liquid Staking And Seize The Extra Earnings!</div>
-    <button class="button btn--launch">
-      <span class="icon-external"><astar-icon-external-link /></span> Launch Algem App
-    </button>
+    <a href="https://app.algem.io/liquid-staking" target="_blank">
+      <button class="button btn--launch">
+        <span class="icon-external"><astar-icon-external-link /></span> Launch Algem App
+      </button>
+    </a>
   </div>
 </template>
 
@@ -65,6 +75,7 @@ export default defineComponent({
   padding-top: 64px;
   padding-bottom: 80px;
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2));
+  margin-bottom: 50px;
 }
 
 .text--title {
@@ -83,6 +94,7 @@ export default defineComponent({
   line-height: 19px;
   color: #fff;
   margin-left: 64px;
+  margin-bottom: 36px;
   display: inline-flex;
   align-items: center;
 
@@ -93,7 +105,7 @@ export default defineComponent({
 
 .wrapper--feature {
   background: linear-gradient(270deg, rgba(0, 0, 0, 0) -7.41%, rgba(16, 4, 4, 0.7) 45.98%);
-  padding: 24px 64px;
+  padding: 12px 64px;
 }
 
 .text--subtitle {
@@ -101,11 +113,16 @@ export default defineComponent({
   font-weight: 700;
   font-size: 18px;
   line-height: 32px;
-  margin-top: 24px;
   display: inline-flex;
+  margin-top: 12px;
 
   img {
     margin-right: 16px;
+
+    @media (max-width: $md) {
+      width: 30px;
+      height: 30px;
+    }
   }
 }
 
@@ -113,7 +130,15 @@ export default defineComponent({
   font-weight: 500;
   font-size: 18px;
   line-height: 32px;
+  margin-bottom: 12px;
   color: #fff;
+}
+
+.icon-external {
+  stroke: $gray-6;
+  margin-left: 28px;
+  margin-right: 28px;
+  cursor: pointer;
 }
 
 .row--warn {
@@ -122,7 +147,7 @@ export default defineComponent({
   font-weight: 500;
   font-size: 14px;
   line-height: 24px;
-  color: #b1b7c1;
+  color: $gray-3;
   background: linear-gradient(270deg, rgba(16, 4, 4, 0) 4.77%, rgba(16, 4, 4, 0.8) 65.26%);
   margin-top: 32px;
   margin-bottom: 32px;
@@ -133,6 +158,14 @@ export default defineComponent({
   }
   li {
     margin-left: 25px;
+  }
+  .icon-external {
+    display: inline-flex;
+    position: relative;
+    top: 10px;
+    stroke: $gray-3;
+    margin-left: 2px;
+    margin-right: 0px;
   }
 }
 
@@ -159,11 +192,5 @@ export default defineComponent({
   font-size: 20px;
   margin-top: 32px;
   margin-left: 64px;
-}
-
-.icon-external {
-  stroke: $gray-6;
-  margin-left: 28px;
-  margin-right: 28px;
 }
 </style>
