@@ -2,6 +2,9 @@ import { XcmTokenInformation } from 'src/modules/xcm';
 import { ASTAR_NATIVE_TOKEN, endpointKey } from 'src/config/chainEndpoints';
 import { ASTAR_DECIMALS } from 'src/hooks/helper/plasmUtils';
 
+// Acala Note: There is no endpoint to get minBridgeAmount.  But the rule is that Acala doesn't allow transfers that are less value than the equivalent of $0.01USD
+// Ref: https://www.notion.so/astarnetwork/HRMP-Portal-Support-for-Acala-Karura-UI-2eaab2e1d93c4e0f90609ea7039942a9#5c5a40f95c7b4c93a201feef233cb0fa
+
 export const xcmToken = {
   [endpointKey.ASTAR]: [
     {
@@ -13,6 +16,36 @@ export const xcmToken = {
       isXcmCompatible: true,
       originChain: 'Polkadot',
       minBridgeAmount: '1.1',
+    },
+    {
+      symbol: 'ACA',
+      isNativeToken: true,
+      assetId: '18446744073709551616',
+      originAssetId: 'ACA',
+      logo: 'https://assets.coingecko.com/coins/images/20634/small/upOKBONH_400x400.jpg?1647420536',
+      isXcmCompatible: true,
+      originChain: 'Acala',
+      minBridgeAmount: '0.4',
+    },
+    {
+      symbol: 'LDOT',
+      isNativeToken: false,
+      assetId: '18446744073709551618',
+      originAssetId: 'LDOT',
+      logo: 'https://assets.coingecko.com/coins/images/25847/small/iShot2022-06-02_13.14.07-removebg-preview.png?1654146888',
+      isXcmCompatible: true,
+      originChain: 'Acala',
+      minBridgeAmount: '0.13',
+    },
+    {
+      symbol: 'AUSD',
+      isNativeToken: false,
+      assetId: '18446744073709551617',
+      originAssetId: 'AUSD',
+      logo: 'https://assets.coingecko.com/coins/images/25812/small/ezgif-1-f4612f5260.png?1653987299',
+      isXcmCompatible: true,
+      originChain: 'Acala',
+      minBridgeAmount: '0.0193',
     },
   ],
   [endpointKey.SHIDEN]: [

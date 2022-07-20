@@ -111,7 +111,7 @@
           </div>
           <div class="box__row">
             <div class="box__row">
-              <img width="24" alt="token-logo" :src="token.tokenImage" />
+              <img width="24" alt="token-logo" class="token-logo" :src="token.tokenImage" />
               <span class="text--title">{{ String(token.metadata.symbol) }}</span>
             </div>
             <div class="box__column--input-amount">
@@ -151,7 +151,7 @@
                 <span v-if="existentialDeposit"
                   >{{
                     $t('assets.modals.xcmWarning.tooltip', {
-                      amount: Number(existentialDeposit.originChainMinBal),
+                      amount: truncate(Number(existentialDeposit.originChainMinBal), 8),
                       symbol: existentialDeposit.symbol,
                       network: existentialDeposit.chain,
                     })

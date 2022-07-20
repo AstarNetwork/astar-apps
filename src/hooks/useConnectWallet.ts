@@ -207,7 +207,6 @@ export const useConnectWallet = () => {
     }
   };
 
-  // Todo: Delete after the balance page is removed
   const setWalletModal = (wallet: SupportWallet): void => {
     requestExtensionsIfFirstAccess(wallet);
     store.commit('general/setCurrentWallet', wallet);

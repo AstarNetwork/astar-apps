@@ -2,12 +2,7 @@ import { endpointKey } from 'src/config/chainEndpoints';
 import { parachainIds } from 'src/config/xcmChainEndpoints';
 
 export { xcmToken } from './tokens';
-export {
-  getXcmToken,
-  fetchXcmBalance,
-  fetchExistentialDeposit,
-  checkIsFromRelayChain,
-} from './utils';
+export { getXcmToken, fetchXcmBalance, fetchExistentialDeposit, checkIsDeposit } from './utils';
 export interface XcmTokenInformation {
   symbol: string;
   assetId: string;
@@ -91,4 +86,4 @@ export const xcmChains: XcmChain[] = [
 
 export const relayChains = [Chain.Polkadot, Chain.Kusama];
 
-export const parachains = [Chain.Karura];
+export const parachains = [Chain.Karura, Chain.Acala];
