@@ -24,20 +24,24 @@
 
     <div class="row--tab">
       <div
+        class="tab"
         :class="[isNativeStaking ? 'selected-staking-option' : 'unselected-staking-option']"
         @click="isNativeStaking = true"
       >
         <span class="text--title">
           {{ $t('dappStaking.dappStakingNative') }}
         </span>
+        <div v-if="isNativeStaking" class="tab--border"></div>
       </div>
       <div
+        class="tab"
         :class="[!isNativeStaking ? 'selected-staking-option' : 'unselected-staking-option']"
         @click="isNativeStaking = false"
       >
         <span class="text--title">
           {{ $t('dappStaking.liquidStakingEVM') }}
         </span>
+        <div v-if="!isNativeStaking" class="tab--border"></div>
       </div>
     </div>
 
@@ -207,19 +211,44 @@ export default defineComponent({
   display: flex;
   width: 100%;
   margin-bottom: 50px;
-  gap: 80px;
+  gap: 32px;
   justify-content: center;
+
+  .text--title {
+    font-weight: 500;
+  }
+}
+
+.tab {
+  width: 208px;
+  text-align: center;
+  @media (max-width: $md) {
+    width: 150px;
+  }
+}
+.tab--border {
+  width: 100%;
+  height: 3px;
+  margin-top: 8px;
+  background: $astar-blue-dark;
+  border-radius: 10px;
+  transition: all 0.3s ease 0s;
 }
 
 .selected-staking-option {
-  padding-bottom: 8px;
-  border-bottom: 3px solid $astar-blue-dark;
-  transition: all 0.3s ease 0s;
+  .text--title {
+    font-weight: 700;
+  }
 }
 
 .unselected-staking-option {
   cursor: pointer;
   border-bottom: 0px solid transparent;
   transition: all 0.3s ease 0s;
+  &:hover {
+    .text--title {
+      font-weight: 700;
+    }
+  }
 }
 </style>

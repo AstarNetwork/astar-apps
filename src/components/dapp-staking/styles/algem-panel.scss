@@ -5,6 +5,10 @@
   padding-bottom: 80px;
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2));
   margin-bottom: 50px;
+  border-radius: .5rem;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-clip: border-box;
 }
 
 .text--title {
@@ -95,12 +99,13 @@
     margin-left: 25px;
   }
   .icon-external {
-    display: inline-flex;
-    position: relative;
-    top: 10px;
-    stroke: $gray-3;
-    margin-left: 2px;
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    margin-left: 0px;
     margin-right: 0px;
+    margin-bottom: -8px;
+    stroke: $gray-3;
   }
 }
 
