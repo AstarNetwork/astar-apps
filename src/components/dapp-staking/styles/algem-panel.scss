@@ -6,7 +6,8 @@
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2));
   margin-bottom: 50px;
   border-radius: .5rem;
-  background-size: 100% 100%;
+  background-size: auto 100%;
+  background-position: center;
   background-repeat: no-repeat;
   background-clip: border-box;
   @media (max-width: $md) {
@@ -111,11 +112,6 @@
   margin-bottom: 32px;
   padding: 16px 64px;
 
-  &:hover {
-    text-decoration: underline;
-    text-decoration-color: $warning-yellow;
-  }
-
   ul {
     list-style-type: disc;
   }
@@ -123,8 +119,13 @@
     margin-left: 25px;
 
     .li--row {
-      display: inline-flex;
-      align-items: center;  
+      cursor: pointer;
+      align-items: center;
+
+      &:hover {
+        text-decoration: underline;
+        text-decoration-color: $warning-yellow;
+      }
     }
   }
   .icon-external {
@@ -134,7 +135,7 @@
     margin-left: 0px;
     margin-right: 0px;
     margin-bottom: -8px;
-    stroke: $warning-yellow;
+    stroke: $gray-3;
   }
 
   @media (max-width: $md) {

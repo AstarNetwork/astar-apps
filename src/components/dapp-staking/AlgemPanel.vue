@@ -40,16 +40,11 @@
           {{ $t('dappStaking.algem.warnRow0') }}
         </li>
         <li>
-          <div class="li--row">
+          <div class="li--row" @click="linkAlgemFaq">
             {{ $t('dappStaking.algem.warnRow1') }}
-            <a
-              href="https://docs.algem.io/algem-protocol/liquid-staking/liquid-staking-faq"
-              target="_blank"
-            >
-              <span class="icon-external">
-                <astar-icon-external-link width="24" height="24" />
-              </span>
-            </a>
+            <span class="icon-external">
+              <astar-icon-external-link width="24" height="24" />
+            </span>
           </div>
         </li>
       </ul>
@@ -70,8 +65,16 @@ export default defineComponent({
       window.open('https://app.algem.io/liquid-staking', '_blank');
     };
 
+    const linkAlgemFaq = () => {
+      window.open(
+        'https://docs.algem.io/algem-protocol/liquid-staking/liquid-staking-faq',
+        '_blank'
+      );
+    };
+
     return {
       linkLaunchApp,
+      linkAlgemFaq,
     };
   },
 });
