@@ -91,12 +91,7 @@ export default defineComponent({
       return chainInfo ? chainInfo : {};
     });
 
-    const network = computed(() => {
-      const network = chainInfo.value ? chainInfo.value.chain : '';
-      return network === 'Shibuya Testnet' ? 'shibuya' : network;
-    });
-
-    const { isMainnet } = useNetworkInfo();
+    const { isMainnet, currentNetworkName } = useNetworkInfo();
 
     const loadStats = async (network: string) => {
       if (!network) return;
@@ -109,8 +104,8 @@ export default defineComponent({
 
     watchEffect(async () => {
       try {
-        if (chainInfo.value && network.value) {
-          await loadStats(network.value.toLowerCase());
+        if (chainInfo.value && currentNetworkName.value) {
+          await loadStats(currentNetworkName.value.toLowerCase());
         }
       } catch (error) {
         console.error(error);

@@ -1,4 +1,5 @@
 import {
+  astarChain,
   ASTAR_EVM_NETWORK_IDX,
   ASTAR_NATIVE_TOKEN,
   ASTAR_NETWORK_IDX,
@@ -14,7 +15,7 @@ export function useNetworkInfo() {
   const isMainnet = computed<boolean>(() => {
     const chainInfo = store.getters['general/chainInfo'];
     const network = chainInfo ? chainInfo.chain : '';
-    const isTestnet = network === 'Development' || network === 'Shibuya Testnet';
+    const isTestnet = network === astarChain.DEVELOPMENT || network === astarChain.SHIBUYA;
     return !isTestnet;
   });
 
@@ -31,7 +32,7 @@ export function useNetworkInfo() {
   const currentNetworkName = computed<string>(() => {
     const chainInfo = store.getters['general/chainInfo'];
     const chain = chainInfo ? chainInfo.chain : '';
-    return chain === 'Shibuya Testnet' ? 'Shibuya' : chain;
+    return chain === astarChain.SHIBUYA ? 'Shibuya' : chain;
   });
 
   const nativeTokenSymbol = computed<ASTAR_NATIVE_TOKEN>(() => {
