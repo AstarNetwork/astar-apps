@@ -40,12 +40,17 @@
           {{ $t('dappStaking.algem.warnRow0') }}
         </li>
         <li>
-          {{ $t('dappStaking.algem.warnRow1') }}
-          <!-- <a
-            href="https://docs.algem.io/algem-protocol/liquid-staking/liquid-staking-faq"
-            target="_blank"
-            > -->
-          <span class="icon-external"> <astar-icon-external-link width="24" height="24" /> </span>
+          <div class="li--row">
+            {{ $t('dappStaking.algem.warnRow1') }}
+            <a
+              href="https://docs.algem.io/algem-protocol/liquid-staking/liquid-staking-faq"
+              target="_blank"
+            >
+              <span class="icon-external">
+                <astar-icon-external-link width="24" height="24" />
+              </span>
+            </a>
+          </div>
         </li>
       </ul>
     </div>
