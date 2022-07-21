@@ -1,6 +1,6 @@
 import { $api } from 'boot/api';
 import { useStore } from 'src/store';
-import { computed, ref, watchEffect, watch } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useAccount } from '../useAccount';
 import { useNetworkInfo } from '../useNetworkInfo';
@@ -34,7 +34,7 @@ export function useStakerInfo() {
     stakeInfos.value = data;
   };
 
-  watch([currentNetworkName], () => {
+  watchEffect(() => {
     if (currentNetworkName.value) {
       store.dispatch('dapps/getDapps', currentNetworkName.value);
     }
