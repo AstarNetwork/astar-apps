@@ -12,7 +12,7 @@
           <EvmAssetList
             :tokens="tokens"
             :handle-update-token-balances="handleUpdateTokenBalances"
-            :handle-update-xcm-token-balances="handleUpdateXcmTokenAssets"
+            :handle-modal-xcm-bridge="handleModalXcmBridge"
             :xcm-assets="xcmAssets.assets"
           />
         </div>
