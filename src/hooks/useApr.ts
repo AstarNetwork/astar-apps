@@ -3,10 +3,10 @@ import { Perbill } from '@polkadot/types/interfaces';
 import { aprToApy } from 'apr-tools';
 import { $api } from 'boot/api';
 import { ethers } from 'ethers';
-import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
+import { endpointKey } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
 import { computed, ref, watchEffect } from 'vue';
-import { useChainMetadata, useCurrentEra, useTvl } from '.';
+import { useChainMetadata, useCurrentEra, useNetworkInfo, useTvl } from '.';
 import { defaultAmountWithDecimals } from './helper/plasmUtils';
 
 interface RewardDistributionConfig extends Struct {
@@ -36,11 +36,7 @@ export const useApr = () => {
   const { decimal } = useChainMetadata();
   const { tvlToken } = useTvl($api);
   const { blockPerEra } = useCurrentEra();
-  const currentNetworkIdx = computed(() => {
-    const chainInfo = store.getters['general/chainInfo'];
-    const chain = chainInfo ? chainInfo.chain : '';
-    return getProviderIndex(chain);
-  });
+  const { currentNetworkIdx } = useNetworkInfo();
 
   const dapps = computed(() => store.getters['dapps/getAllDapps']);
   const stakerApr = ref<number>(0);

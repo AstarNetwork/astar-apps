@@ -133,9 +133,15 @@ import { ethers } from 'ethers';
 import { $api, $web3 } from 'src/boot/api';
 import ABI from 'src/c-bridge/abi/ERC20.json';
 import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
-import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { getTokenBal, isValidEvmAddress } from 'src/config/web3';
-import { useAccount, useChainMetadata, useEvmWallet, useTransfer, useWalletIcon } from 'src/hooks';
+import {
+  useAccount,
+  useChainMetadata,
+  useEvmWallet,
+  useNetworkInfo,
+  useTransfer,
+  useWalletIcon,
+} from 'src/hooks';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { truncate, wait } from 'src/hooks/helper/common';
 import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
@@ -201,8 +207,10 @@ export default defineComponent({
     const { t } = useI18n();
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const { ethProvider } = useEthProvider();
+    const { evmNetworkIdx, nativeTokenSymbol } = useNetworkInfo();
 
     const isEthWallet = computed(() => store.getters['general/isEthWallet']);
+    const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
 
     const isEnableSpeedConfiguration = computed<boolean>(() => {
       const currentWallet = store.getters['general/currentWallet'];
@@ -211,10 +219,6 @@ export default defineComponent({
       );
     });
     const { currentAccount, currentAccountName } = useAccount();
-    const nativeTokenSymbol = computed(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      return chainInfo ? chainInfo.tokenSymbol : '';
-    });
 
     // Memo: check the selected token is either hard-coded token or cBridge token
     const registeredToken = computed(() => {
@@ -247,13 +251,6 @@ export default defineComponent({
       } else {
         return false;
       }
-    });
-
-    const evmNetworkIdx = computed(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      const chain = chainInfo ? chainInfo.chain : '';
-      const networkIdx = getProviderIndex(chain);
-      return Number(providerEndpoints[networkIdx].evmChainId);
     });
 
     const isChoseWrongEvmNetwork = computed(() => isH160.value && !isConnectedNetwork.value);
@@ -439,6 +436,7 @@ export default defineComponent({
     };
 
     const setErrorMsg = (): void => {
+      if (isLoading.value) return;
       const web3Ref = $web3.value;
       const transferAmtRef = Number(transferAmt.value);
       const selectedNetworkRef = selectedNetwork.value;

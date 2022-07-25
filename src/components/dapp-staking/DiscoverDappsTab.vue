@@ -63,7 +63,7 @@ import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
 import { DappItem } from 'src/store/dapp-staking/state';
-import { computed, defineComponent, ref, watchEffect } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
 import APR from './statistics/APR.vue';
 import DappsCount from './statistics/DappsCount.vue';
 import Era from './statistics/Era.vue';

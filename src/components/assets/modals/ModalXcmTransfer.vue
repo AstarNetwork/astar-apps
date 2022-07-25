@@ -117,7 +117,8 @@
 </template>
 <script lang="ts">
 import { fadeDuration } from '@astar-network/astar-ui';
-import { ChainAsset, useAccount, useWalletIcon, useXcmTokenTransfer } from 'src/hooks';
+import { useAccount, useWalletIcon, useXcmTokenTransfer } from 'src/hooks';
+import { Asset } from 'src/v2/models';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { wait } from 'src/hooks/helper/common';
 import { useStore } from 'src/store';
@@ -145,7 +146,7 @@ export default defineComponent({
       default: null,
     },
     token: {
-      type: (Object as PropType<ChainAsset>) || null,
+      type: (Object as PropType<Asset>) || null,
       required: false,
       default: null,
     },

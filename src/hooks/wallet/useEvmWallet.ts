@@ -1,11 +1,10 @@
-import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
-
 import { useStore } from 'src/store';
 import { computed, ref, watch, WatchCallback } from 'vue';
 import Web3 from 'web3';
 import { setupNetwork } from 'src/config/web3';
 import { useEthProvider } from '../custom-signature/useEthProvider';
 import { EthereumProvider } from '../types/CustomSignature';
+import { useNetworkInfo } from '../useNetworkInfo';
 
 export const useEvmWallet = () => {
   const walletNetworkId = ref<number | null>(null);
@@ -13,22 +12,11 @@ export const useEvmWallet = () => {
   const { ethProvider } = useEthProvider();
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
-  const evmNetworkId = computed(() => {
-    const chainInfo = store.getters['general/chainInfo'];
-    const chain = chainInfo ? chainInfo.chain : '';
-    const networkId = getProviderIndex(chain);
-    return Number(providerEndpoints[networkId].evmChainId);
-  });
+  const { currentNetworkName, evmNetworkIdx } = useNetworkInfo();
 
   const isConnectedNetwork = computed(() => {
     if (!isH160.value) return false;
-    return evmNetworkId.value === walletNetworkId.value;
-  });
-
-  const currentNetworkName = computed(() => {
-    const chainInfo = store.getters['general/chainInfo'];
-    const chain = chainInfo ? chainInfo.chain : '';
-    return chain === 'Shibuya Testnet' ? 'Shibuya' : chain;
+    return evmNetworkIdx.value === walletNetworkId.value;
   });
 
   const connectEvmNetwork = async () => {
@@ -37,7 +25,7 @@ export const useEvmWallet = () => {
         throw new Error('No Ethereum provider found');
       }
 
-      await setupNetwork({ network: evmNetworkId.value, provider: ethProvider.value });
+      await setupNetwork({ network: evmNetworkIdx.value, provider: ethProvider.value });
     } catch (error) {
       console.error(error);
     }
@@ -78,7 +66,6 @@ export const useEvmWallet = () => {
   return {
     isConnectedNetwork,
     currentNetworkName,
-    evmNetworkId,
     connectEvmNetwork,
   };
 };

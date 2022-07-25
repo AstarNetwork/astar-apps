@@ -5,11 +5,9 @@ import { ISubmittableResult, ITuple } from '@polkadot/types/types';
 import { decodeAddress } from '@polkadot/util-crypto';
 import BN from 'bn.js';
 import { ExtrinsicPayload } from 'src/hooks/helper';
-import { showLoading } from 'src/modules/extrinsic/utils';
 import { ExistentialDeposit, fetchExistentialDeposit } from 'src/modules/xcm';
 import { idAstarNativeToken } from 'src/modules/xcm/tokens';
-import { Dispatch } from 'vuex';
-import { ChainAsset } from './useXcmAssets';
+import { Asset } from 'src/v2/models';
 
 const AUTO_CONNECT_MS = 10_000; // [ms]
 
@@ -149,7 +147,7 @@ class ChainApi {
     address,
     isNativeToken,
   }: {
-    selectedToken: ChainAsset;
+    selectedToken: Asset;
     address: string;
     isNativeToken: boolean;
   }): Promise<string> {
@@ -261,7 +259,7 @@ export class RelaychainApi extends ChainApi {
     toPara: number;
     recipientAccountId: string;
     amount: string;
-    selectedToken?: ChainAsset;
+    selectedToken?: Asset;
   }) {
     // public transferToParachain(toPara: number, recipientAccountId: string, amount: string) {
     // the target parachain connected to the current relaychain

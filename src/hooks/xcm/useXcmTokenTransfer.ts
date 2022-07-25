@@ -6,7 +6,7 @@ import { getBalance, isValidEvmAddress, toSS58Address } from 'src/config/web3';
 import { useCustomSignature } from 'src/hooks';
 import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { useAccount } from 'src/hooks/useAccount';
-import { ChainAsset } from 'src/hooks/xcm/useXcmAssets';
+import { Asset } from 'src/v2/models';
 import { useStore } from 'src/store';
 import { computed, ref, Ref, watchEffect } from 'vue';
 import { useGasPrice } from '../useGasPrice';
@@ -14,7 +14,7 @@ import { signAndSend } from '../helper/wallet';
 import { useI18n } from 'vue-i18n';
 import { fetchXcmBalance } from 'src/modules/xcm';
 
-export function useXcmTokenTransfer(selectedToken: Ref<ChainAsset>) {
+export function useXcmTokenTransfer(selectedToken: Ref<Asset>) {
   const transferAmt = ref<string | null>(null);
   const toAddressBalance = ref<number>(0);
   const toAddress = ref<string>('');
@@ -23,6 +23,7 @@ export function useXcmTokenTransfer(selectedToken: Ref<ChainAsset>) {
 
   const { t } = useI18n();
   const store = useStore();
+  const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const { currentAccount } = useAccount();
 
@@ -52,10 +53,11 @@ export function useXcmTokenTransfer(selectedToken: Ref<ChainAsset>) {
   };
 
   const toMaxAmount = async (): Promise<void> => {
-    transferAmt.value = selectedToken.value.userBalance;
+    transferAmt.value = String(selectedToken.value.userBalance);
   };
 
   const setErrorMsg = (): void => {
+    if (isLoading.value) return;
     const transferAmtRef = Number(transferAmt.value);
     const fromAccountBalance = selectedToken.value ? Number(selectedToken.value.userBalance) : 0;
     const isValidDestAddress =

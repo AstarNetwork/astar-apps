@@ -3,8 +3,7 @@ import { decodeAddress } from '@polkadot/util-crypto';
 import BN from 'bn.js';
 import { ExtrinsicPayload } from 'src/hooks/helper';
 import { RelaychainApi } from '../SubstrateApi';
-import { ChainAsset } from '../useXcmAssets';
-
+import { Asset } from 'src/v2/models';
 interface TokensAccounts extends Struct {
   readonly free: BN;
   readonly reserved: BN;
@@ -15,8 +14,7 @@ export class AcalaApi extends RelaychainApi {
   private _AstarTokenId: { SDN: string; ASTR: string };
   constructor(endpoint: string) {
     super(endpoint);
-    //Todo: Check the ForeignAsset ID for ASTR
-    this._AstarTokenId = { SDN: '18', ASTR: '18' };
+    this._AstarTokenId = { SDN: '18', ASTR: '2' };
   }
 
   public async getTokenBalances({
@@ -24,7 +22,7 @@ export class AcalaApi extends RelaychainApi {
     address,
     isNativeToken,
   }: {
-    selectedToken: ChainAsset;
+    selectedToken: Asset;
     address: string;
     isNativeToken: boolean;
   }): Promise<string> {
@@ -61,7 +59,7 @@ export class AcalaApi extends RelaychainApi {
     toPara: number;
     recipientAccountId: string;
     amount: string;
-    selectedToken: ChainAsset;
+    selectedToken: Asset;
   }): ExtrinsicPayload {
     let token;
     const symbol = String(selectedToken.metadata.symbol);

@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { ChainAsset } from 'src/hooks';
+import { Asset } from 'src/v2/models';
 import { defineComponent, PropType } from 'vue';
 import XcmCurrency from './XcmCurrency.vue';
 export default defineComponent({
@@ -26,7 +26,7 @@ export default defineComponent({
   },
   props: {
     xcmAssets: {
-      type: Array as PropType<ChainAsset[]>,
+      type: Array as PropType<Asset[]>,
       required: true,
     },
 

@@ -1,5 +1,5 @@
 export const Symbols = {
-  CoinGecko: Symbol.for('CoinGecko'),
+  PriceRepository: Symbol.for('PriceRepository'),
   WalletFactory: Symbol.for('Factory<IWalletService>'),
   EventAggregator: Symbol.for('EventAggregator'),
   Api: Symbol.for('Api'),
@@ -9,4 +9,8 @@ export const Symbols = {
   MetadataRepository: Symbol.for('MetadataRepository'),
   SystemRepository: Symbol.for('SystemRepository'),
   EthCallRepository: Symbol.for('EthCallRepository'),
+  XcmRepository: Symbol.for('XcmRepository'),
+  XcmService: Symbol.for('XcmService'),
+  BalanceFormatterService: Symbol.for('BalanceFormatterService'),
+  RegisteredTokens: Symbol.for('RegisteredTokens'),
 };
