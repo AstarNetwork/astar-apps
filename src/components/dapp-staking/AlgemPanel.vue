@@ -66,10 +66,7 @@ export default defineComponent({
     };
 
     const linkAlgemFaq = () => {
-      window.open(
-        'https://docs.algem.io/algem-protocol/liquid-staking/liquid-staking-faq',
-        '_blank'
-      );
+      window.open('https://docs.algem.io/algem-protocol/risk-management', '_blank');
     };
 
     return {

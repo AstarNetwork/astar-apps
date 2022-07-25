@@ -7,7 +7,7 @@
   margin-bottom: 50px;
   border-radius: .5rem;
   background-size: auto 100%;
-  background-position: center;
+  background-position: left;
   background-repeat: no-repeat;
   background-clip: border-box;
   @media (max-width: $md) {
@@ -122,10 +122,8 @@
       cursor: pointer;
       align-items: center;
 
-      &:hover {
-        text-decoration: underline;
-        text-decoration-color: $warning-yellow;
-      }
+      text-decoration: underline;
+      text-decoration-color: $warning-yellow;
     }
   }
   .icon-external {
