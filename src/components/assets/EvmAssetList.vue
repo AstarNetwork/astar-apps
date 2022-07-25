@@ -148,19 +148,19 @@
 <script lang="ts">
 import { ethers } from 'ethers';
 import { $web3 } from 'src/boot/api';
-import { checkIsCbridgeToken, SelectedToken } from 'src/c-bridge';
+import { cbridgeAppLink, checkIsCbridgeToken, SelectedToken } from 'src/c-bridge';
 import Erc20Currency from 'src/components/assets/Erc20Currency.vue';
 import EvmAssetOptions from 'src/components/assets/EvmAssetOptions.vue';
 import EvmCbridgeToken from 'src/components/assets/EvmCbridgeToken.vue';
 import { getBalance } from 'src/config/web3';
-import { ChainAsset, useAccount, useBalance, usePrice } from 'src/hooks';
+import { useAccount, useBalance, useNetworkInfo, usePrice } from 'src/hooks';
+import { truncate } from 'src/hooks/helper/common';
 import { Erc20Token, getTokenImage } from 'src/modules/token';
-import { cbridgeAppLink } from 'src/c-bridge';
 import { useStore } from 'src/store';
+import { Asset } from 'src/v2/models';
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
 import ModalFaucet from './modals/ModalFaucet.vue';
 import ModalTransfer from './modals/ModalTransfer.vue';
-import { truncate } from 'src/hooks/helper/common';
 
 export default defineComponent({
   components: {
@@ -184,10 +184,16 @@ export default defineComponent({
       type: Function,
       required: true,
     },
+    xcmAssets: {
+      type: Array as PropType<Asset[]>,
+      required: true,
+    },
   },
   setup(props) {
     const isModalTransfer = ref<boolean>(false);
     const isModalFaucet = ref<boolean>(false);
+    const isModalXcmBridge = ref<boolean>(false);
+    const xcmToken = ref<Asset | null>(null);
     const isHideSmallBalances = ref<boolean>(false);
     const token = ref<SelectedToken | Erc20Token | string | null>(null);
     const symbol = ref<string>('');
@@ -208,16 +214,7 @@ export default defineComponent({
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
 
-    const nativeTokenSymbol = computed<string>(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      return chainInfo ? chainInfo.tokenSymbol : '';
-    });
-
-    const currentNetworkName = computed<string>(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      const chain = chainInfo ? chainInfo.chain : '';
-      return chain === 'Shibuya Testnet' ? 'Shibuya' : chain;
-    });
+    const { currentNetworkName, nativeTokenSymbol } = useNetworkInfo();
 
     const nativeTokenImg = computed<string>(() =>
       getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })

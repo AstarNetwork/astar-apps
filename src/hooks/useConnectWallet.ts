@@ -1,5 +1,4 @@
 import { $api } from 'boot/api';
-import { getProviderIndex } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import {
   SubstrateWallets,
@@ -10,7 +9,7 @@ import {
 } from 'src/config/wallets';
 import { getChainId, setupNetwork } from 'src/config/web3';
 import { checkSumEvmAddress } from 'src/config/web3/utils/convert';
-import { useAccount } from 'src/hooks';
+import { useAccount, useNetworkInfo } from 'src/hooks';
 import * as utils from 'src/hooks/custom-signature/utils';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
 import { useExtensions } from 'src/hooks/useExtensions';
@@ -50,11 +49,7 @@ export const useConnectWallet = () => {
   const isEthWallet = computed(() => store.getters['general/isEthWallet']);
   const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
   const isConnectedNetwork = computed(() => store.getters['general/networkStatus'] === 'connected');
-  const currentNetworkIdx = computed(() => {
-    const chainInfo = store.getters['general/chainInfo'];
-    const chain = chainInfo ? chainInfo.chain : '';
-    return getProviderIndex(chain);
-  });
+  const { currentNetworkIdx } = useNetworkInfo();
 
   const selectedWalletSource = computed(() => {
     try {

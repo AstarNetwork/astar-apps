@@ -1,5 +1,5 @@
-import { Asset } from 'src/v2/models';
+import { XcmAssets } from 'src/store/assets/state';
 
 export interface IXcmService {
-  getAssets(currentAccount: string): Promise<Asset[]>;
+  getAssets(currentAccount: string): Promise<XcmAssets>;
 }

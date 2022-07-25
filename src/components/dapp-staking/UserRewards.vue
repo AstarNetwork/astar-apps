@@ -13,7 +13,7 @@
           </div>
           <div v-else class="column--rewards-meter">
             <vue-odometer class="text--title" format=",ddd" animation="smooth" :value="claimed" />
-            <span class="text--title text--symbol">{{ symbol }}</span>
+            <span class="text--title text--symbol">{{ nativeTokenSymbol }}</span>
           </div>
         </div>
       </div>
@@ -31,7 +31,7 @@
 import ClaimAll from 'src/components/dapp-staking/ClaimAll.vue';
 import CompoundReward from 'src/components/dapp-staking/statistics/CompoundReward.vue';
 import Withdraw from 'src/components/dapp-staking/statistics/Withdraw.vue';
-import { useAccount, useBreakpoints } from 'src/hooks';
+import { useAccount, useBreakpoints, useNetworkInfo } from 'src/hooks';
 import { useCompoundRewards } from 'src/hooks/dapps-staking/useCompoundRewards';
 import { getClaimedAmount } from 'src/modules/token-api';
 import { useStore } from 'src/store';
@@ -62,16 +62,7 @@ export default defineComponent({
       return claimedAmount + pastClaimed.value;
     });
 
-    const symbol = computed<string>(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      return chainInfo ? chainInfo.tokenSymbol : '';
-    });
-
-    const currentNetworkName = computed<string>(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      const chain = chainInfo ? chainInfo.chain : '';
-      return chain === 'Shibuya Testnet' ? 'Shibuya' : chain;
-    });
+    const { currentNetworkName, nativeTokenSymbol } = useNetworkInfo();
 
     const textClaimedRewards = computed<string>(() => {
       const text =
@@ -127,7 +118,7 @@ export default defineComponent({
       textClaimedRewards,
       currentAccount,
       claimed,
-      symbol,
+      nativeTokenSymbol,
       isLoadingClaimed,
     };
   },

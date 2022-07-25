@@ -22,9 +22,9 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, computed, toRefs } from 'vue';
-import { useStore } from 'src/store';
-import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
+import { endpointKey } from 'src/config/chainEndpoints';
+import { useNetworkInfo } from 'src/hooks';
+import { defineComponent, toRefs } from 'vue';
 
 export default defineComponent({
   props: {
@@ -34,12 +34,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const store = useStore();
-    const currentNetworkIdx = computed(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      const chain = chainInfo ? chainInfo.chain : '';
-      return getProviderIndex(chain);
-    });
+    const { currentNetworkIdx } = useNetworkInfo();
 
     return {
       currentNetworkIdx,

@@ -116,6 +116,7 @@ import { computed, defineComponent, PropType } from 'vue';
 import { truncate } from 'src/hooks/helper/common';
 import Jazzicon from 'vue3-jazzicon/src/components';
 import { SupportWallet } from 'src/config/wallets';
+import { useNetworkInfo } from 'src/hooks';
 
 export default defineComponent({
   components: {
@@ -143,13 +144,11 @@ export default defineComponent({
   },
   setup({ token }) {
     const store = useStore();
+    const { currentNetworkIdx } = useNetworkInfo();
 
     const explorerLink = computed(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      const chain = chainInfo ? chainInfo.chain : '';
-      const currentNetworkIdx = getProviderIndex(chain);
       const tokenAddress = token.address;
-      return getErc20Explorer({ currentNetworkIdx, tokenAddress });
+      return getErc20Explorer({ currentNetworkIdx: currentNetworkIdx.value, tokenAddress });
     });
 
     // Memo: Remove after runtime upgrading in astar network to enable EVM withdrawal

@@ -5,13 +5,14 @@ import {
   getTransferConfigs,
   SelectedToken,
 } from 'src/c-bridge';
-import { endpointKey, getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
+import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { getTokenBal } from 'src/config/web3';
 import { objToArray } from 'src/hooks/helper/common';
 import { Erc20Token } from 'src/modules/token';
 import { useStore } from 'src/store';
 import { computed, onUnmounted, ref, watch, watchEffect } from 'vue';
 import { useAccount } from '../useAccount';
+import { useNetworkInfo } from '../useNetworkInfo';
 import { LOCAL_STORAGE } from './../../config/localStorage';
 import { getRegisteredERC20Token } from './../../modules/token/utils/index';
 import { calUsdAmount } from './../helper/price';
@@ -29,16 +30,7 @@ export function useCbridgeV2() {
   const { currentAccount } = useAccount();
   const isLoadingErc20Amount = ref<boolean>(false);
 
-  const nativeTokenSymbol = computed(() => {
-    const chainInfo = store.getters['general/chainInfo'];
-    return chainInfo ? chainInfo.tokenSymbol : '';
-  });
-
-  const currentNetworkIdx = computed(() => {
-    const chainInfo = store.getters['general/chainInfo'];
-    const chain = chainInfo ? chainInfo.chain : '';
-    return getProviderIndex(chain);
-  });
+  const { currentNetworkIdx } = useNetworkInfo();
 
   const evmNetworkId = computed(() => {
     return Number(providerEndpoints[currentNetworkIdx.value].evmChainId);

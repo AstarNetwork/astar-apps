@@ -1,27 +1,22 @@
 import { evmToAddress } from '@polkadot/util-crypto';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
-import {
-  ASTAR_NATIVE_TOKEN,
-  endpointKey,
-  getProviderIndex,
-  providerEndpoints,
-} from 'src/config/chainEndpoints';
+import { ASTAR_NATIVE_TOKEN, endpointKey } from 'src/config/chainEndpoints';
 import { getTokenBal, isValidEvmAddress } from 'src/config/web3';
 import {
   parachainIds,
   PREFIX_ASTAR,
   providerEndpoints as xcmProviderEndpoints,
 } from 'src/config/xcmChainEndpoints';
-import { useBalance, useCustomSignature } from 'src/hooks';
+import { useBalance, useCustomSignature, useNetworkInfo } from 'src/hooks';
 import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
 import { getInjector } from 'src/hooks/helper/wallet';
 import { useAccount } from 'src/hooks/useAccount';
 import { useGasPrice } from 'src/hooks/useGasPrice';
-import { ChainAsset } from 'src/hooks/xcm/useXcmAssets';
 import { Chain, checkIsDeposit, ExistentialDeposit, XcmChain, xcmChains } from 'src/modules/xcm';
 import { xcmAstarNativeToken } from 'src/modules/xcm/tokens';
 import { useStore } from 'src/store';
+import { Asset } from 'src/v2/models';
 import { computed, ref, Ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { wait } from '../helper/common';
@@ -35,7 +30,7 @@ const chainShiden = xcmChains.find((it) => it.name === Chain.Shiden) as XcmChain
 const chainKarura = xcmChains.find((it) => it.name === Chain.Karura) as XcmChain;
 const chainAcala = xcmChains.find((it) => it.name === Chain.Acala) as XcmChain;
 
-export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
+export function useXcmBridge(selectedToken: Ref<Asset>) {
   let originChainApi: RelaychainApi | null = null;
   const srcChain = ref<XcmChain>(chainPolkadot);
   const destChain = ref<XcmChain>(chainAstar);
@@ -93,18 +88,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     )!;
   });
 
-  const currentNetworkIdx = computed<endpointKey>(() => {
-    const chainInfo = store.getters['general/chainInfo'];
-    const chain = chainInfo ? chainInfo.chain : '';
-    return getProviderIndex(chain);
-  });
-
-  const evmNetworkIdx = computed<number>(() => {
-    const chainInfo = store.getters['general/chainInfo'];
-    const chain = chainInfo ? chainInfo.chain : '';
-    const networkIdx = getProviderIndex(chain);
-    return Number(providerEndpoints[networkIdx].evmChainId);
-  });
+  const { currentNetworkIdx, evmNetworkIdx } = useNetworkInfo();
 
   const isLoadOriginApi = computed<boolean>(
     () => !!(selectedToken.value && selectedToken.value.originChain)

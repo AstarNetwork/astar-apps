@@ -1,10 +1,10 @@
 import { ApiPromise } from '@polkadot/api';
 import { Struct } from '@polkadot/types';
 import { ethers } from 'ethers';
-import { endpointKey } from 'src/config/chainEndpoints';
-import { ChainAsset } from 'src/hooks';
+import { ASTAR_NETWORK_IDX, endpointKey } from 'src/config/chainEndpoints';
+import { Asset } from 'src/v2/models';
 import { getUsdBySymbol } from 'src/hooks/helper/price';
-import { ExistentialDeposit, XcmNetworkIdx, XcmTokenInformation } from '../index';
+import { ExistentialDeposit, XcmTokenInformation } from '../index';
 import { xcmToken } from '../tokens';
 import { Chain, parachains, relayChains } from './../index';
 
@@ -19,7 +19,7 @@ export const getXcmToken = ({
   id: string;
   currentNetworkIdx: endpointKey;
 }): XcmTokenInformation | undefined => {
-  const networkIdx = currentNetworkIdx as XcmNetworkIdx;
+  const networkIdx = currentNetworkIdx as ASTAR_NETWORK_IDX;
   const t = xcmToken[networkIdx].find((it: XcmTokenInformation) => it.assetId === id);
   return t;
 };
@@ -30,7 +30,7 @@ export const fetchXcmBalance = async ({
   api,
 }: {
   userAddress: string;
-  token: ChainAsset;
+  token: Asset;
   api: ApiPromise;
 }): Promise<{ userBalance: string; userBalanceUsd: string }> => {
   let userBalanceUsd = '0';

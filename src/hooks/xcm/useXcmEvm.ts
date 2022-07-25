@@ -14,12 +14,12 @@ import { getPubkeyFromSS58Addr } from '../helper/addressUtils';
 import { useAccount } from '../useAccount';
 import { useGasPrice } from '../useGasPrice';
 import { relaychainParaId, xcmChains } from './../../modules/xcm/index';
-import { ChainAsset } from './useXcmAssets';
+import { Asset } from 'src/v2/models';
 
 // xcm precompiled contract address
 const PRECOMPILED_ADDR = '0x0000000000000000000000000000000000005004';
 
-export function useXcmEvm(selectedToken: Ref<ChainAsset>) {
+export function useXcmEvm(selectedToken: Ref<Asset>) {
   const store = useStore();
   const { t } = useI18n();
   const { evmGasPrice } = useGasPrice();

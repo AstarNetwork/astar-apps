@@ -13,12 +13,13 @@
             :tokens="tokens"
             :handle-update-token-balances="handleUpdateTokenBalances"
             :handle-modal-xcm-bridge="handleModalXcmBridge"
+            :xcm-assets="xcmAssets.assets"
           />
         </div>
         <div v-else class="container--assets">
           <XcmNativeAssetList
             v-if="isEnableXcm"
-            :xcm-assets="xcmAssets"
+            :xcm-assets="xcmAssets.assets"
             :handle-modal-xcm-bridge="handleModalXcmBridge"
             :handle-modal-xcm-transfer="handleModalXcmTransfer"
           />
@@ -30,7 +31,7 @@
       <ModalXcmTransfer
         :is-modal-xcm-transfer="isModalXcmTransfer"
         :handle-modal-xcm-transfer="handleModalXcmTransfer"
-        :handle-update-xcm-token-balances="handleUpdateXcmTokenBalances"
+        :handle-update-xcm-token-balances="handleUpdateXcmTokenAssets"
         :account-data="accountData"
         :token="token"
       />
@@ -40,7 +41,7 @@
         :handle-modal-xcm-bridge="handleModalXcmBridge"
         :account-data="accountData"
         :token="token"
-        :handle-update-xcm-token-balances="handleUpdateXcmTokenBalances"
+        :handle-update-xcm-token-balances="handleUpdateXcmTokenAssets"
       />
     </Teleport>
   </div>
@@ -50,12 +51,14 @@ import Account from 'src/components/assets/Account.vue';
 import EvmAssetList from 'src/components/assets/EvmAssetList.vue';
 import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
 import XcmNativeAssetList from 'src/components/assets/XcmNativeAssetList.vue';
-import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
+import { endpointKey } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { ChainAsset, useAccount, useBalance, useCbridgeV2, useXcmAssets } from 'src/hooks';
+import { useAccount, useBalance, useCbridgeV2, useNetworkInfo } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { Erc20Token } from 'src/modules/token';
 import { useStore } from 'src/store';
+import { XcmAssets } from 'src/store/assets/state';
+import { Asset } from 'src/v2/models';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import ModalXcmBridge from './modals/ModalXcmBridge.vue';
 import ModalXcmTransfer from './modals/ModalXcmTransfer.vue';
@@ -70,45 +73,44 @@ export default defineComponent({
     ModalXcmTransfer,
   },
   setup() {
-    const token = ref<ChainAsset | null>(null);
+    const token = ref<Asset | null>(null);
     const isModalXcmBridge = ref<boolean>(false);
     const isModalXcmTransfer = ref<boolean>(false);
     const isDisplay = ref<boolean>(false);
 
     const { tokens, isLoadingErc20Amount, ttlErc20Amount, handleUpdateTokenBalances } =
       useCbridgeV2();
-    const {
-      ttlNativeXcmUsdAmount,
-      isLoadingXcmAssetsAmount,
-      handleUpdateTokenBalances: handleUpdateXcmTokenBalances,
-    } = useXcmAssets();
     const store = useStore();
     const { currentAccount } = useAccount();
     const { accountData } = useBalance(currentAccount);
+    const { isMainnet, currentNetworkIdx } = useNetworkInfo();
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
-    const currentNetworkIdx = computed(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      const chain = chainInfo ? chainInfo.chain : '';
-      return getProviderIndex(chain);
-    });
 
     const isShibuya = computed(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
 
     // v2
-    const xcmAssets = computed<ChainAsset[]>(() => store.getters['assets/getAllAssets']);
+    const xcmAssets = computed<XcmAssets>(() => store.getters['assets/getAllAssets']);
+    const ttlNativeXcmUsdAmount = computed<number>(() => xcmAssets.value.ttlNativeXcmUsdAmount);
 
-    watch(
-      currentAccount,
-      (newValue) => {
-        if (!newValue) return;
-        store.dispatch('assets/getAssets', newValue);
-      },
-      { immediate: true }
-    );
+    const isLoadingXcmAssetsAmount = computed<boolean>(() => {
+      if (isMainnet.value) {
+        return !xcmAssets.value.assets.length;
+      } else {
+        return false;
+      }
+    });
+
+    const handleUpdateXcmTokenAssets = () => {
+      if (currentAccount.value) {
+        store.dispatch('assets/getAssets', currentAccount.value);
+      }
+    };
+
+    watch([currentAccount], handleUpdateXcmTokenAssets, { immediate: true });
     // v2 end
 
     const isEnableXcm = computed(
-      () => !isShibuya.value && xcmAssets.value && xcmAssets.value.length > 0
+      () => !isShibuya.value && xcmAssets.value.assets && xcmAssets.value.assets.length > 0
     );
 
     const setIsDisplay = async (): Promise<void> => {
@@ -133,13 +135,7 @@ export default defineComponent({
       }
     };
 
-    const handleModalXcmTransfer = ({
-      isOpen,
-      currency,
-    }: {
-      isOpen: boolean;
-      currency: ChainAsset;
-    }) => {
+    const handleModalXcmTransfer = ({ isOpen, currency }: { isOpen: boolean; currency: Asset }) => {
       isModalXcmTransfer.value = isOpen;
       token.value = currency;
     };
@@ -150,7 +146,7 @@ export default defineComponent({
     }: {
       isOpen: boolean;
       // Memo: currency type is `Erc20Token` in H160 mode
-      currency: ChainAsset | Erc20Token;
+      currency: Asset | Erc20Token;
     }) => {
       isModalXcmBridge.value = isOpen;
       if (isH160.value) {
@@ -158,13 +154,13 @@ export default defineComponent({
           token.value = null;
         } else {
           const c = currency as Erc20Token;
-          const t = xcmAssets.value.find((it) => it.mappedERC20Addr === c.address);
+          const t = xcmAssets.value.assets.find((it) => it.mappedERC20Addr === c.address);
           if (t) {
             token.value = t;
           }
         }
       } else {
-        token.value = currency as ChainAsset;
+        token.value = currency as Asset;
       }
     };
 
@@ -187,7 +183,7 @@ export default defineComponent({
       token,
       accountData,
       isModalXcmBridge,
-      handleUpdateXcmTokenBalances,
+      handleUpdateXcmTokenAssets,
       handleUpdateTokenBalances,
       handleModalXcmBridge,
       handleModalXcmTransfer,

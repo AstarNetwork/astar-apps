@@ -7,7 +7,6 @@ import { AssetsStateInterface as State } from './state';
 
 const actions: ActionTree<State, StateInterface> = {
   async getAssets({ commit }, address: string): Promise<void> {
-    //commit('setAssets', []);
     const xcmService = container.get<IXcmService>(Symbols.XcmService);
     const assets = await xcmService.getAssets(address);
     commit('setAssets', assets);
