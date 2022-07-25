@@ -1,3 +1,4 @@
+import { isValidEvmAddress } from './../../config/web3/utils/convert';
 import BN from 'bn.js';
 import { ethers } from 'ethers';
 import xcmContractAbi from 'src/config/web3/abi/xcm-abi.json';
@@ -15,6 +16,7 @@ import { useAccount } from '../useAccount';
 import { useGasPrice } from '../useGasPrice';
 import { relaychainParaId, xcmChains } from './../../modules/xcm/index';
 import { Asset } from 'src/v2/models';
+import { MOVR } from 'src/modules/token';
 
 // xcm precompiled contract address
 const PRECOMPILED_ADDR = '0x0000000000000000000000000000000000005004';
@@ -26,6 +28,9 @@ export function useXcmEvm(selectedToken: Ref<Asset>) {
   const { currentAccount } = useAccount();
 
   const currentWallet = computed(() => store.getters['general/currentWallet']);
+  const isMoonbeamWithdrawal = computed<boolean>(() => {
+    return selectedToken.value.mappedERC20Addr === MOVR.address;
+  });
 
   const callAssetWithdrawToPara = async (
     asset_amount: string,
@@ -37,7 +42,10 @@ export function useXcmEvm(selectedToken: Ref<Asset>) {
         throw Error('Invalid amount');
       }
 
-      if (!isValidAddressPolkadotAddress(recipient_account_id)) {
+      const isValidDestAddress =
+        (!isMoonbeamWithdrawal.value && isValidAddressPolkadotAddress(recipient_account_id)) ||
+        (isMoonbeamWithdrawal.value && isValidEvmAddress(recipient_account_id));
+      if (!isValidDestAddress) {
         throw Error('Invalid destination address');
       }
 

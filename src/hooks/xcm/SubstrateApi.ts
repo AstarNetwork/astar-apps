@@ -5,7 +5,7 @@ import { ISubmittableResult, ITuple } from '@polkadot/types/types';
 import { decodeAddress } from '@polkadot/util-crypto';
 import BN from 'bn.js';
 import { ExtrinsicPayload } from 'src/hooks/helper';
-import { ExistentialDeposit, fetchExistentialDeposit } from 'src/modules/xcm';
+import { ExistentialDeposit, fetchExistentialDeposit, parachainIds } from 'src/modules/xcm';
 import { idAstarNativeToken } from 'src/modules/xcm/tokens';
 import { Asset } from 'src/v2/models';
 
@@ -98,7 +98,19 @@ class ChainApi {
       ss58Prefix,
     };
   }
-
+  public async evmTransferToParachain({
+    toPara,
+    recipientAccountId,
+    amount,
+    selectedToken,
+  }: {
+    toPara: number;
+    recipientAccountId: string;
+    amount: string;
+    selectedToken: Asset;
+  }): Promise<string> {
+    return '';
+  }
   public async getBlockHash(blockNumber: number) {
     return await this._api?.rpc.chain.getBlockHash(blockNumber);
   }
@@ -389,15 +401,25 @@ export class ParachainApi extends ChainApi {
           },
         };
 
+    const isAccountId20 = paraId === parachainIds.MOONBEAM || paraId === parachainIds.MOONRIVER;
+    const X1 = isAccountId20
+      ? {
+          AccountKey20: {
+            network: 'Any',
+            key: recipientAccountId,
+          },
+        }
+      : {
+          AccountId32: {
+            network: 'Any',
+            id: decodeAddress(recipientAccountId),
+          },
+        };
+
     const beneficiary = {
       V1: {
         interior: {
-          X1: {
-            AccountId32: {
-              network: 'Any',
-              id: decodeAddress(recipientAccountId),
-            },
-          },
+          X1,
         },
         parents: new BN(0),
       },

@@ -91,7 +91,6 @@ export const fetchExistentialDeposit = async (api: ApiPromise): Promise<Existent
 };
 
 export const checkIsDeposit = (fromChain: Chain): boolean => {
-  const found =
-    relayChains.find((it) => it === fromChain) || parachains.find((it) => it === fromChain);
-  return found ? true : false;
+  const astarChain = [Chain.ASTAR, Chain.SHIDEN];
+  return !astarChain.includes(fromChain);
 };

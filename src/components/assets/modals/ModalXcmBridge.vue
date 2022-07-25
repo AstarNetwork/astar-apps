@@ -71,7 +71,7 @@
           />
         </div>
 
-        <div v-if="!isNativeBridge">
+        <div v-if="!isNativeBridge || isMoonbeamWithdrawal">
           <AddressInput
             v-model:selAddress="evmDestAddress"
             :to-address="evmDestAddress"
@@ -191,6 +191,7 @@ import { truncate, wait } from 'src/hooks/helper/common';
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ModalLoading from '/src/components/common/ModalLoading.vue';
+import { Chain } from 'src/modules/xcm';
 
 export default defineComponent({
   components: {
@@ -240,6 +241,7 @@ export default defineComponent({
       isDeposit,
       isLoadingApi,
       isAstarNativeTransfer,
+      isMoonbeamWithdrawal,
       inputHandler,
       bridge,
       resetStates,
@@ -311,6 +313,7 @@ export default defineComponent({
       isDeposit,
       isDisplayTooltip,
       isAstarNativeTransfer,
+      isMoonbeamWithdrawal,
       setIsMobileDisplayTooltip,
       inputHandler,
       closeModal,
