@@ -12,12 +12,11 @@ import { XcmConfiguration } from 'src/v2/config/xcm/XcmConfiguration';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { Asset } from 'src/v2/models';
 import { Symbols } from 'src/v2/symbols';
-import { IXcmEvmService } from '../IXcmEvmService';
+import { IXcmEvmService, IGasPriceProvider } from 'src/v2/services';
 import xcmContractAbi from 'src/config/web3/abi/xcm-abi.json';
-import { IGasPriceProvider } from '../IGasPriceProvider';
 import { getEvmGas } from 'src/modules/gas-api';
 
-// xcm precompiled contract address
+// XCM precompiled contract address
 const PRECOMPILED_ADDR = '0x0000000000000000000000000000000000005004';
 
 @injectable()
@@ -40,14 +39,6 @@ export class XcmEvmService implements IXcmEvmService {
     Guard.ThrowIfNegative('amount', amount);
 
     new Promise<string>(async (resolve, reject) => {
-      // if (!asset_amount) {
-      //   throw Error('Invalid amount');
-      // }
-
-      // if (!isValidAddressPolkadotAddress(recipient_account_id)) {
-      //   throw Error('Invalid destination address');
-      // }
-
       this.eventAggregator.publish(new BusyMessage(true));
 
       const asset_id = token.mappedERC20Addr;
@@ -67,7 +58,6 @@ export class XcmEvmService implements IXcmEvmService {
         const web3 = new Web3(provider as any);
         const contract = new web3.eth.Contract(xcmContractAbi as AbiItem[], PRECOMPILED_ADDR);
 
-        // TODO refactor to use GasPriceProvider
         const [nonce, gasPrice] = await Promise.all([
           web3.eth.getTransactionCount(senderAddress),
           getEvmGas(web3, this.gasPriceProvider.getGas().price),
@@ -99,8 +89,7 @@ export class XcmEvmService implements IXcmEvmService {
             this.eventAggregator.publish(
               new ExtrinsicStatusMessage(
                 true,
-                // t('toast.completedTxHash', { hash: transactionHash })
-                'ddddd',
+                `Completed at transaction hash #${transactionHash}`, //TODO implement translation service.
                 'evmXcm'
               )
             );

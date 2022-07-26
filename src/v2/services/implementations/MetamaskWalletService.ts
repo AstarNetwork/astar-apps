@@ -1,7 +1,7 @@
 import { SubmittableExtrinsic } from '@polkadot/api-base/types';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { IWalletService } from 'src/v2/services';
-import { useEthProvider } from 'src/hooks/custom-signature/useEthProvider';
+// import { useEthProvider } from 'src/hooks/custom-signature/useEthProvider';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 import { inject, injectable } from 'inversify';
 import { IEthCallRepository, ISystemRepository } from 'src/v2/repositories';
@@ -10,6 +10,7 @@ import { WalletService } from 'src/v2/services/implementations';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import Web3 from 'web3';
 import { Symbols } from 'src/v2/symbols';
+import { getEvmProvider } from 'src/hooks/helper/wallet';
 
 @injectable()
 export class MetamaskWalletService extends WalletService implements IWalletService {
@@ -18,21 +19,17 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
   constructor(
     @inject(Symbols.SystemRepository) private systemRepository: ISystemRepository,
     @inject(Symbols.EthCallRepository) private ethCallRepository: IEthCallRepository,
-    @inject(Symbols.EventAggregator) eventAggregator: IEventAggregator
+    @inject(Symbols.EventAggregator) eventAggregator: IEventAggregator,
+    @inject(Symbols.CurrentWallet) private currentWallet: string
   ) {
     super(eventAggregator);
 
-    try {
-      const { ethProvider } = useEthProvider();
+    const ethProvider = getEvmProvider(currentWallet as any);
 
-      if (ethProvider.value) {
-        this.provider = ethProvider.value;
-      } else {
-        Guard.ThrowIfUndefined('provider', this.provider);
-      }
-    } catch (e) {
-      console.error(e);
-      // TODO see why useEthProvider is failing?
+    if (ethProvider) {
+      this.provider = ethProvider;
+    } else {
+      Guard.ThrowIfUndefined('provider', this.provider);
     }
   }
 
