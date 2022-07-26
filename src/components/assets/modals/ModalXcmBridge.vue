@@ -71,6 +71,14 @@
           />
         </div>
 
+        <div v-if="isMoonbeamDeposit" class="box--input-chain box--hover--active">
+          <div class="box__space-between">
+            <span> {{ $t('assets.modals.evmWalletAddress') }}</span>
+            <div />
+          </div>
+          <ModalSelectEvmWallet :initialize-xcm-api="initializeXcmApi" />
+        </div>
+
         <div v-if="!isNativeBridge || isMoonbeamWithdrawal">
           <AddressInput
             v-model:selAddress="evmDestAddress"
@@ -184,20 +192,21 @@
 <script lang="ts">
 import { fadeDuration } from '@astar-network/astar-ui';
 import ModalSelectChain from 'src/components/assets/modals/ModalSelectChain.vue';
+import ModalSelectEvmWallet from 'src/components/assets/modals/ModalSelectEvmWallet.vue';
 import AddressInput from 'src/components/common/AddressInput.vue';
 import { useTooltip, useXcmBridge, useXcmEvm } from 'src/hooks';
-import { Asset } from 'src/v2/models';
 import { truncate, wait } from 'src/hooks/helper/common';
-import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
+import { Asset } from 'src/v2/models';
+import { computed, defineComponent, PropType, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ModalLoading from '/src/components/common/ModalLoading.vue';
-import { Chain } from 'src/modules/xcm';
 
 export default defineComponent({
   components: {
     AddressInput,
     ModalSelectChain,
     ModalLoading,
+    ModalSelectEvmWallet,
   },
   props: {
     isModalXcmBridge: {
@@ -221,7 +230,7 @@ export default defineComponent({
   },
   setup(props) {
     const isClosingModal = ref<boolean>(false);
-    const tokenData = computed(() => props.token);
+    const tokenData = computed<Asset>(() => props.token);
     const { t } = useI18n();
     const { isDisplayTooltip, setIsMobileDisplayTooltip } = useTooltip('icon');
 
@@ -242,12 +251,14 @@ export default defineComponent({
       isLoadingApi,
       isAstarNativeTransfer,
       isMoonbeamWithdrawal,
+      isMoonbeamDeposit,
       inputHandler,
       bridge,
       resetStates,
       setIsNativeBridge,
       setSrcChain,
       setDestChain,
+      initializeXcmApi,
     } = useXcmBridge(tokenData);
 
     const { callAssetWithdrawToPara } = useXcmEvm(tokenData);
@@ -314,6 +325,7 @@ export default defineComponent({
       isDisplayTooltip,
       isAstarNativeTransfer,
       isMoonbeamWithdrawal,
+      isMoonbeamDeposit,
       setIsMobileDisplayTooltip,
       inputHandler,
       closeModal,
@@ -323,6 +335,7 @@ export default defineComponent({
       truncate,
       setSrcChain,
       setDestChain,
+      initializeXcmApi,
     };
   },
 });

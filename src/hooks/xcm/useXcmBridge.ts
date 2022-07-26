@@ -128,7 +128,6 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
 
   const setSrcChain = (chain: XcmChain): void => {
     srcChain.value = chain;
-    // Todo: refactor to make it more scalable
     const firstParachain = defaultNativeTokenTransferChain.value;
     const origin = isAstarNativeTransfer.value ? firstParachain : originChain.value;
     if (chain.name === destChain.value.name) {
@@ -142,7 +141,6 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
 
   const setDestChain = (chain: XcmChain): void => {
     destChain.value = chain;
-    // Todo: refactor to make it more scalable
     const firstParachain = defaultNativeTokenTransferChain.value;
     const origin = isAstarNativeTransfer.value ? firstParachain : originChain.value;
     if (chain.name === srcChain.value.name) {
@@ -207,11 +205,20 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
     } else {
       // Memo: wait for updating relaychainNativeBalance
       await wait(500);
+
+      const fetchMoonbeamNativeBal = async (): Promise<number> => {
+        const bal = (await originChainApi?.getNativeBalance(evmDestAddress.value)) || '0';
+        return Number(ethers.utils.formatEther(bal.toString()));
+      };
+
+      const destOriginChainNativeBal = isMoonbeamWithdrawal
+        ? await fetchMoonbeamNativeBal()
+        : originChainNativeBal.value;
       const originChainNativeBalance = isH160.value
         ? evmDestAddressBalance.value
-        : originChainNativeBal.value;
+        : destOriginChainNativeBal;
 
-      return originChainNativeBalance > originChainMinBal;
+      return originChainNativeBalance - amount > originChainMinBal;
     }
   };
 
@@ -247,7 +254,7 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
       });
     }
     if (isH160.value || !isNativeBridge.value) {
-      // Memo: withdrawal from EVM || Deposit from native to EVM
+      // if: withdrawal from EVM or Deposit from native to EVM
 
       if (!evmDestAddress.value) {
         errMsg.value = '';
@@ -264,11 +271,16 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
         });
       }
     } else {
-      // Memo: deposit / withdrawal in native to native
+      // if: deposit / withdrawal from native to native
 
+      if (isMoonbeamWithdrawal.value && !evmDestAddress.value) {
+        return;
+      }
+
+      const isEnoughEd = await checkIsEnoughEd(Number(amount.value));
       if (Number(amount.value) > fromAddressBalance.value) {
         errMsg.value = t('warning.insufficientBalance');
-      } else if (!(await checkIsEnoughEd(Number(amount.value)))) {
+      } else if (!isEnoughEd) {
         errMsg.value = t('warning.insufficientExistentialDeposit', {
           network: existentialDeposit.value?.chain,
         });
@@ -382,15 +394,10 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
 
   const bridge = async (finalizedCallback: () => Promise<void>): Promise<void> => {
     try {
-      if (!currentAccount.value) {
-        throw Error('Failed loading wallet address');
-      }
-      if (!srcChain.value || !destChain.value || !selectedToken?.value || !originChainApi) {
+      if (!originChainApi) {
         throw Error('Something went wrong while bridging');
       }
-      if (!amount.value) {
-        throw Error('Invalid amount');
-      }
+      if (!amount.value) throw Error('Invalid amount');
 
       if (isDeposit.value) {
         let recipientAccountId = currentAccount.value;
@@ -453,14 +460,13 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
             amount.value = null;
           });
       } else {
-        // Withdrawal
+        // if: Withdrawal
         let recipientAccountId = isMoonbeamWithdrawal
           ? evmDestAddress.value
           : getPubkeyFromSS58Addr(currentAccount.value);
         const injector = await getInjector(substrateAccounts.value);
         const parachainApi = new ParachainApi($api!!);
 
-        // Todo: change to transferToOriginChain
         const txCall = await parachainApi.transferToOriginChain({
           assetId: selectedToken.value.id,
           recipientAccountId,
@@ -542,11 +548,12 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
     }
   };
 
-  const initializeXcmApi = async (): Promise<void> => {
+  const initializeXcmApi = async (reset = false): Promise<void> => {
     const hasConnectedApi =
       originChainApi &&
       selectedToken.value &&
-      originChainApi.chainProperty?.chainName === selectedToken.value.originChain;
+      originChainApi.chainProperty?.chainName === selectedToken.value.originChain &&
+      reset === false;
     if (!isLoadOriginApi.value || hasConnectedApi) return;
 
     isLoadingApi.value = true;
@@ -616,11 +623,13 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
     isLoadingApi,
     isAstarNativeTransfer,
     isMoonbeamWithdrawal,
+    isMoonbeamDeposit,
     inputHandler,
     bridge,
     resetStates,
     setIsNativeBridge,
     setSrcChain,
     setDestChain,
+    initializeXcmApi,
   };
 }

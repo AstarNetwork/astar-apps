@@ -1,9 +1,9 @@
+import { LOCAL_STORAGE } from './../../../config/localStorage';
 import { EthereumProvider } from './../../types/CustomSignature';
-import { Struct } from '@polkadot/types';
 import { u8aToHex } from '@polkadot/util';
 import { decodeAddress } from '@polkadot/util-crypto';
 import BN from 'bn.js';
-import { SupportWallet } from 'src/config/wallets';
+import { supportEvmWallets, SupportWallet } from 'src/config/wallets';
 import { getTokenBal, setupNetwork } from 'src/config/web3';
 import moonbeamXcmAbi from 'src/config/web3/abi/moonbeam-xcm-abi.json';
 import { wait } from 'src/hooks/helper/common';
@@ -18,9 +18,6 @@ import { ethers } from 'ethers';
 
 type chainName = 'Moonriver' | 'Moonbeam';
 
-// Todo
-// selectable wallet (Metamask, Talisman, Subwallet)
-
 // Ref: https://docs.moonbeam.network/builders/build/canonical-contracts/precompiles/erc20/
 const NATIVE_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000802';
 const PRE_COMPILED_ADDRESS = '0x0000000000000000000000000000000000000804';
@@ -29,26 +26,42 @@ export class MoonbeamApi extends RelaychainApi {
   private _AstarTokenId: { SDN: string; ASTR: string };
   private _RpcEndpoint: { Moonriver: string; Moonbeam: string };
   private _EvmId: { Moonriver: number; Moonbeam: number };
-  private _evmProvider: any;
   private _networkName: chainName;
   private _web3: Web3 | null;
   constructor(endpoint: string) {
     super(endpoint);
     this._networkName = endpoint.includes('moonriver') ? 'Moonriver' : 'Moonbeam';
+    // Todo: check the token address for ASTR
     this._AstarTokenId = { SDN: '0xffffffff0ca324c842330521525e7de111f38972', ASTR: '0xToDo' };
     this._RpcEndpoint = {
       Moonriver: 'https://rpc.api.moonriver.moonbeam.network',
       Moonbeam: 'https://rpc.api.moonbeam.network',
     };
     this._EvmId = { Moonriver: 1285, Moonbeam: 1284 };
-    const provider = this.getEvmProvider() as any;
-    this._evmProvider = provider;
-    this._web3 = new Web3(provider);
+    this._web3 = new Web3(this.getEvmProvider() as any);
   }
 
   public getEvmProvider(): EthereumProvider | null {
     try {
-      const provider = getEvmProvider(SupportWallet.MetaMask) as any;
+      let providerName: SupportWallet;
+      const storedProvider = localStorage.getItem(LOCAL_STORAGE.XCM_DEPOSIT_EVM_WALLET);
+      if (storedProvider) {
+        providerName = storedProvider as SupportWallet;
+      } else {
+        const evmExtensions = supportEvmWallets.filter((it) => it.isSupportBrowserExtension);
+        const wallets = evmExtensions.map((it) => {
+          const provider = getEvmProvider(it.source);
+          if (provider) {
+            return it.source;
+          }
+        });
+        providerName = wallets[0] as SupportWallet;
+      }
+
+      if (!providerName) {
+        throw Error('EVM wallet extensions are not installed on this browser');
+      }
+      const provider = getEvmProvider(providerName) as any;
       const network = this._EvmId[this._networkName];
       setupNetwork({ network, provider });
       return provider ? (provider as EthereumProvider) : null;
@@ -159,6 +172,8 @@ export class MoonbeamApi extends RelaychainApi {
 
     const destinationParents = '1';
     const paraId = String(toPara);
+
+    // Ref: https://docs.moonbeam.network/builders/xcm/xcm-transactor/
     const parachainId = '0x00000007d' + paraId[paraId.length - 1];
     const stripPrefixDestAddr = this._web3.utils.stripHexPrefix(
       u8aToHex(decodeAddress(recipientAccountId))
