@@ -111,7 +111,7 @@
           </div>
           <div class="box__row">
             <div class="box__row">
-              <img width="24" alt="token-logo" :src="token.tokenImage" />
+              <img width="24" alt="token-logo" class="token-logo" :src="token.tokenImage" />
               <span class="text--title">{{ String(token.metadata.symbol) }}</span>
             </div>
             <div class="box__column--input-amount">
@@ -151,7 +151,7 @@
                 <span v-if="existentialDeposit"
                   >{{
                     $t('assets.modals.xcmWarning.tooltip', {
-                      amount: Number(existentialDeposit.originChainMinBal),
+                      amount: truncate(Number(existentialDeposit.originChainMinBal), 8),
                       symbol: existentialDeposit.symbol,
                       network: existentialDeposit.chain,
                     })
@@ -185,7 +185,7 @@
 import { fadeDuration } from '@astar-network/astar-ui';
 import ModalSelectChain from 'src/components/assets/modals/ModalSelectChain.vue';
 import AddressInput from 'src/components/common/AddressInput.vue';
-import { ChainAsset, useAccount, useTooltip, useXcmBridge, useXcmEvm } from 'src/hooks';
+import { useAccount, useTooltip, useXcmBridge, useXcmEvm } from 'src/hooks';
 import { truncate, wait } from 'src/hooks/helper/common';
 import { XcmChain } from 'src/modules/xcm';
 import { useStore } from 'src/store';
@@ -221,7 +221,7 @@ export default defineComponent({
       required: true,
     },
     token: {
-      type: (Object as PropType<ChainAsset>) || null,
+      type: (Object as PropType<Asset>) || null,
       required: false,
       default: null,
     },

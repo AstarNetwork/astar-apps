@@ -25,7 +25,7 @@
           <span class="text--accent">{{ $t('common.speed.average') }}</span>
           <span class="text--gas-price">
             {{ formatPrice(gasCost.slow) }}
-            {{ symbol }}
+            {{ nativeTokenSymbol }}
           </span>
         </div>
 
@@ -37,7 +37,7 @@
           <span class="text--accent">{{ $t('common.speed.fast') }}</span>
           <span class="text--gas-price">
             {{ formatPrice(gasCost.average) }}
-            {{ symbol }}
+            {{ nativeTokenSymbol }}
           </span>
         </div>
 
@@ -49,7 +49,7 @@
           <span class="text--accent">{{ $t('common.speed.superFast') }}</span>
           <span class="text--gas-price">
             {{ formatPrice(gasCost.fast) }}
-            {{ symbol }}
+            {{ nativeTokenSymbol }}
           </span>
         </div>
       </div>
@@ -57,7 +57,7 @@
   </div>
 </template>
 <script lang="ts">
-import { useTooltip } from 'src/hooks';
+import { useNetworkInfo, useTooltip } from 'src/hooks';
 import { GasPrice, SelectedGas } from 'src/modules/gas-api';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType } from 'vue';
@@ -87,11 +87,7 @@ export default defineComponent({
     const store = useStore();
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const decimal = computed(() => (isH160.value ? 5 : 8));
-    const symbol = computed(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      return chainInfo ? chainInfo.tokenSymbol : {};
-    });
-
+    const { nativeTokenSymbol } = useNetworkInfo();
     const { isDisplayTooltip, setIsMobileDisplayTooltip } = useTooltip('icon');
 
     const formatPrice = (price: string): string => {
@@ -100,7 +96,7 @@ export default defineComponent({
       return num.replace(/\.?0+$/, '');
     };
 
-    return { symbol, isH160, isDisplayTooltip, setIsMobileDisplayTooltip, formatPrice };
+    return { nativeTokenSymbol, isH160, isDisplayTooltip, setIsMobileDisplayTooltip, formatPrice };
   },
 });
 </script>

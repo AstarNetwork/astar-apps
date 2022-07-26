@@ -63,7 +63,7 @@
                 </div>
               </div>
             </div>
-            <div class="column--buttons" :class="isDisplayXcmButton && 'column--two-buttons'">
+            <div class="column--two-buttons">
               <button
                 class="btn btn--sm"
                 @click="handleModalTransfer({ isOpen: true, currency: nativeTokenSymbol })"
@@ -71,7 +71,6 @@
                 {{ $t('assets.transfer') }}
               </button>
               <button
-                v-if="isDisplayXcmButton"
                 class="btn btn--sm"
                 @click="
                   handleModalXcmBridge({
@@ -188,7 +187,7 @@
 <script lang="ts">
 import { u8aToString } from '@polkadot/util';
 import { ethers } from 'ethers';
-import { useBalance, useEvmDeposit, usePrice } from 'src/hooks';
+import { useBalance, useEvmDeposit, useNetworkInfo, usePrice } from 'src/hooks';
 import { checkIsNullOrUndefined, truncate } from 'src/hooks/helper/common';
 import { getTokenImage } from 'src/modules/token';
 import { generateAstarNativeTokenObject } from 'src/modules/xcm/tokens';
@@ -232,18 +231,9 @@ export default defineComponent({
     const { balance, accountData } = useBalance(selectedAddress);
     const { numEvmDeposit } = useEvmDeposit();
     const { nativeTokenUsd } = usePrice();
-    const nativeTokenSymbol = computed(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      return chainInfo ? chainInfo.tokenSymbol : '';
-    });
+    const { currentNetworkName, nativeTokenSymbol } = useNetworkInfo();
 
     const xcmNativeToken = computed(() => generateAstarNativeTokenObject(nativeTokenSymbol.value));
-
-    const currentNetworkName = computed(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      const chain = chainInfo ? chainInfo.chain : '';
-      return chain === 'Shibuya Testnet' ? 'Shibuya' : chain;
-    });
 
     const nativeTokenImg = computed(() =>
       getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
@@ -255,9 +245,6 @@ export default defineComponent({
         : '0';
       return Number(balance);
     });
-
-    // Todo: enable button for ASTAR after opened channel with other parachains
-    const isDisplayXcmButton = computed<boolean>(() => currentNetworkName.value === 'Shiden');
 
     const handleModalTransfer = ({ currency, isOpen }: { isOpen: boolean; currency: string }) => {
       isModalTransfer.value = isOpen;
@@ -325,7 +312,6 @@ export default defineComponent({
       isModalEvmWithdraw,
       isModalVesting,
       xcmNativeToken,
-      isDisplayXcmButton,
       handleModalVesting,
       handleModalTransfer,
       handleModalFaucet,

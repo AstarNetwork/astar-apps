@@ -1,33 +1,22 @@
 import { evmToAddress } from '@polkadot/util-crypto';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
-import {
-  ASTAR_NATIVE_TOKEN,
-  endpointKey,
-  getProviderIndex,
-  providerEndpoints,
-} from 'src/config/chainEndpoints';
+import { ASTAR_NATIVE_TOKEN, endpointKey } from 'src/config/chainEndpoints';
 import { getTokenBal, isValidEvmAddress } from 'src/config/web3';
 import {
   parachainIds,
   PREFIX_ASTAR,
   providerEndpoints as xcmProviderEndpoints,
 } from 'src/config/xcmChainEndpoints';
-import { useBalance, useCustomSignature } from 'src/hooks';
+import { useBalance, useCustomSignature, useNetworkInfo } from 'src/hooks';
 import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
 import { getInjector } from 'src/hooks/helper/wallet';
 import { useAccount } from 'src/hooks/useAccount';
 import { useGasPrice } from 'src/hooks/useGasPrice';
-import { ChainAsset } from 'src/hooks/xcm/useXcmAssets';
-import {
-  Chain,
-  checkIsFromRelayChain,
-  ExistentialDeposit,
-  XcmChain,
-  xcmChains,
-} from 'src/modules/xcm';
+import { Chain, checkIsDeposit, ExistentialDeposit, XcmChain, xcmChains } from 'src/modules/xcm';
 import { xcmAstarNativeToken } from 'src/modules/xcm/tokens';
 import { useStore } from 'src/store';
+import { Asset } from 'src/v2/models';
 import { computed, ref, Ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { wait } from '../helper/common';
@@ -39,8 +28,9 @@ const chainPolkadot = xcmChains.find((it) => it.name === Chain.Polkadot) as XcmC
 const chainAstar = xcmChains.find((it) => it.name === Chain.Astar) as XcmChain;
 const chainShiden = xcmChains.find((it) => it.name === Chain.Shiden) as XcmChain;
 const chainKarura = xcmChains.find((it) => it.name === Chain.Karura) as XcmChain;
+const chainAcala = xcmChains.find((it) => it.name === Chain.Acala) as XcmChain;
 
-export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
+export function useXcmBridge(selectedToken: Ref<Asset>) {
   let originChainApi: RelaychainApi | null = null;
   const srcChain = ref<XcmChain>(chainPolkadot);
   const destChain = ref<XcmChain>(chainAstar);
@@ -65,7 +55,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   const { currentAccount } = useAccount();
 
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
-  const isDeposit = computed(() => checkIsFromRelayChain(srcChain.value.name));
+  const isDeposit = computed(() => checkIsDeposit(srcChain.value.name));
   const isAstar = computed(() => currentNetworkIdx.value === endpointKey.ASTAR);
 
   const isAstarNativeTransfer = computed<boolean>(() => {
@@ -73,9 +63,14 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     return symbol === 'SDN' || symbol === 'ASTR';
   });
 
+  // Fixme: variable name is too long
+  const defaultNativeTokenTransferChain = computed(() =>
+    isAstar.value ? chainAcala : chainKarura
+  );
+
   const chains = computed<XcmChain[]>(() => {
     if (isAstarNativeTransfer.value) {
-      return [astarChain.value, chainKarura];
+      return [astarChain.value, defaultNativeTokenTransferChain.value];
     } else {
       return [astarChain.value, originChain.value];
     }
@@ -93,18 +88,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
     )!;
   });
 
-  const currentNetworkIdx = computed<endpointKey>(() => {
-    const chainInfo = store.getters['general/chainInfo'];
-    const chain = chainInfo ? chainInfo.chain : '';
-    return getProviderIndex(chain);
-  });
-
-  const evmNetworkIdx = computed<number>(() => {
-    const chainInfo = store.getters['general/chainInfo'];
-    const chain = chainInfo ? chainInfo.chain : '';
-    const networkIdx = getProviderIndex(chain);
-    return Number(providerEndpoints[networkIdx].evmChainId);
-  });
+  const { currentNetworkIdx, evmNetworkIdx } = useNetworkInfo();
 
   const isLoadOriginApi = computed<boolean>(
     () => !!(selectedToken.value && selectedToken.value.originChain)
@@ -123,7 +107,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   const setSrcChain = (chain: XcmChain): void => {
     srcChain.value = chain;
     // Todo: refactor to make it more scalable
-    const firstParachain = chainKarura;
+    const firstParachain = defaultNativeTokenTransferChain.value;
     const origin = isAstarNativeTransfer.value ? firstParachain : originChain.value;
     if (chain.name === destChain.value.name) {
       if (isAstar.value) {
@@ -137,7 +121,7 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
   const setDestChain = (chain: XcmChain): void => {
     destChain.value = chain;
     // Todo: refactor to make it more scalable
-    const firstParachain = chainKarura;
+    const firstParachain = defaultNativeTokenTransferChain.value;
     const origin = isAstarNativeTransfer.value ? firstParachain : originChain.value;
     if (chain.name === srcChain.value.name) {
       if (isAstar.value) {
@@ -303,22 +287,17 @@ export function useXcmBridge(selectedToken: Ref<ChainAsset>) {
 
   const setDefaultChain = (): void => {
     if (!selectedToken.value) return;
-    if (isAstar.value) {
-      destParaId.value = parachainIds.ASTAR;
-      // Memo: withdrawal mode for H160 accounts
-      srcChain.value = isH160.value ? chainAstar : originChain.value;
-      destChain.value = isH160.value ? originChain.value : chainAstar;
-    } else {
-      if (isAstarNativeTransfer.value) {
-        destParaId.value = parachainIds.SHIDEN;
-        srcChain.value = chainKarura;
-        destChain.value = chainShiden;
-      } else {
-        destParaId.value = parachainIds.SHIDEN;
-        srcChain.value = isH160.value ? chainShiden : originChain.value;
-        destChain.value = isH160.value ? originChain.value : chainShiden;
-      }
-    }
+    // Fixme: rename the variable name
+    const astarChain = isAstar.value ? chainAstar : chainShiden;
+
+    const nativeSourceChain = isAstarNativeTransfer.value // memo: ASTR/SDN
+      ? defaultNativeTokenTransferChain.value // Karura or Acala
+      : originChain.value;
+
+    destParaId.value = isAstar.value ? parachainIds.ASTAR : parachainIds.SHIDEN;
+    // Memo: H160: withdrawal mode
+    srcChain.value = isH160.value ? astarChain : nativeSourceChain;
+    destChain.value = isH160.value ? originChain.value : astarChain;
   };
 
   // Memo: update the `balance` displayed on the 'destination wallet address' in 'EVM' tab on the XCM bridge modal

@@ -87,7 +87,7 @@ export class XcmRepository implements IXcmRepository {
     });
 
     if (isValidAddressPolkadotAddress(currentAccount)) {
-      // fetch balances for Substrate acounts only.
+      // fetch balances for Substrate accounts only.
       result = await this.getBalances(currentAccount, result);
     }
 

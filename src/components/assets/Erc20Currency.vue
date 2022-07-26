@@ -50,6 +50,7 @@
 
             <div v-if="token.isXC20">
               <button
+                :disabled="isDisabledXcmButton"
                 class="btn btn--sm"
                 @click="
                   handleModalXcmBridge({
@@ -107,7 +108,7 @@
   </div>
 </template>
 <script lang="ts">
-import { getProviderIndex } from 'src/config/chainEndpoints';
+import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
 import { addToEvmProvider, getEvmProvider } from 'src/hooks/helper/wallet';
 import { Erc20Token, getErc20Explorer, getStoredERC20Tokens } from 'src/modules/token';
 import { useStore } from 'src/store';
@@ -115,6 +116,7 @@ import { computed, defineComponent, PropType } from 'vue';
 import { truncate } from 'src/hooks/helper/common';
 import Jazzicon from 'vue3-jazzicon/src/components';
 import { SupportWallet } from 'src/config/wallets';
+import { useNetworkInfo } from 'src/hooks';
 
 export default defineComponent({
   components: {
@@ -142,13 +144,19 @@ export default defineComponent({
   },
   setup({ token }) {
     const store = useStore();
+    const { currentNetworkIdx } = useNetworkInfo();
 
     const explorerLink = computed(() => {
+      const tokenAddress = token.address;
+      return getErc20Explorer({ currentNetworkIdx: currentNetworkIdx.value, tokenAddress });
+    });
+
+    // Memo: Remove after runtime upgrading in astar network to enable EVM withdrawal
+    const isDisabledXcmButton = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
       const chain = chainInfo ? chainInfo.chain : '';
       const currentNetworkIdx = getProviderIndex(chain);
-      const tokenAddress = token.address;
-      return getErc20Explorer({ currentNetworkIdx, tokenAddress });
+      return currentNetworkIdx === endpointKey.ASTAR && token.symbol !== 'DOT';
     });
 
     const isImportedToken = computed<boolean>(
@@ -165,6 +173,7 @@ export default defineComponent({
       explorerLink,
       isImportedToken,
       provider,
+      isDisabledXcmButton,
       truncate,
       addToEvmProvider,
     };

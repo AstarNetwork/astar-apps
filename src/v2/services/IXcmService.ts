@@ -1,8 +1,9 @@
+import { XcmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
 import { Network } from '../config/types';
 
 export interface IXcmService extends IXcmTransfer {
-  getAssets(currentAccount: string): Promise<Asset[]>;
+  getAssets(currentAccount: string): Promise<XcmAssets>;
 }
 
 export interface IXcmTransfer {

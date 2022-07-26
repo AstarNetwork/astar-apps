@@ -94,7 +94,44 @@ export const LKSM = {
   wrapUrl: null,
 };
 
-export const registeredErc20Tokens = [WASTR, DOT, KSM, KUSD, KAR, LKSM];
+export const ACA = {
+  srcChainId: 592,
+  address: '0xffffffff00000000000000010000000000000000',
+  decimal: 12,
+  symbol: 'ACA',
+  name: 'Acala',
+  image: 'https://assets.coingecko.com/coins/images/20634/small/upOKBONH_400x400.jpg?1647420536',
+  isWrappedToken: false,
+  isXC20: true,
+  wrapUrl: null,
+};
+
+export const LDOT = {
+  srcChainId: 592,
+  address: '0xffffffff00000000000000010000000000000002',
+  decimal: 10,
+  symbol: 'LDOT',
+  name: 'Liquid DOT',
+  image:
+    'https://assets.coingecko.com/coins/images/25847/small/iShot2022-06-02_13.14.07-removebg-preview.png?1654146888',
+  isWrappedToken: false,
+  isXC20: true,
+  wrapUrl: null,
+};
+
+export const AUSD = {
+  srcChainId: 592,
+  address: '0xffffffff00000000000000010000000000000001',
+  decimal: 12,
+  symbol: 'AUSD',
+  name: 'Acala Dollar',
+  image: 'https://assets.coingecko.com/coins/images/25812/small/ezgif-1-f4612f5260.png?1653987299',
+  isWrappedToken: false,
+  isXC20: true,
+  wrapUrl: null,
+};
+
+export const registeredErc20Tokens = [WASTR, DOT, KSM, KUSD, KAR, LKSM, ACA, LDOT, AUSD];
 
 // Memo: Define the token image source
 export const tokenImageMap = {
