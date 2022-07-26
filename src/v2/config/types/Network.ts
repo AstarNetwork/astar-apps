@@ -7,6 +7,8 @@ export enum Chain {
   Shiden = 'Shiden',
   Acala = 'Acala',
   Karura = 'Karura',
+  Moonbeam = 'Moonbeam',
+  Moonriver = 'Moonriver',
 }
 
 export type Network = {

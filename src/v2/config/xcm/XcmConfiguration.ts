@@ -29,4 +29,16 @@ export const XcmConfiguration: Network[] = [
     endpoint: 'wss://acala-polkadot.api.onfinality.io/public-ws',
     parachainId: 2000,
   },
+  {
+    chain: Chain.Moonriver,
+    displayName: 'Moonriver Network',
+    endpoint: 'wss://wss.api.moonriver.moonbeam.network',
+    parachainId: 2023,
+  },
+  {
+    chain: Chain.Moonbeam,
+    displayName: 'Moonbeam Network',
+    endpoint: 'wss://wss.api.moonbeam.network',
+    parachainId: 2004,
+  },
 ];

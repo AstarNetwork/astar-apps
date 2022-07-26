@@ -5,4 +5,5 @@ export * from './EthCallRepository';
 export * from './XcmRepository';
 export * from './xcm/AcalaXcmRepository';
 export * from './xcm/AstarXcmRepository';
+export * from './xcm/MoonbeamXcmRepository';
 export * from './TokenApiRepository';
