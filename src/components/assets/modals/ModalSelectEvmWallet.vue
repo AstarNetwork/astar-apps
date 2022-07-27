@@ -1,10 +1,15 @@
 <template>
   <div class="wrapper--select-chain">
-    <div class="row__chain cursor-pointer" @click="isOpen = true">
+    <div
+      class="row__chain"
+      :class="selectableAccounts.length && 'cursor-pointer'"
+      @click="isOpen = true"
+    >
       <img v-if="selectedAccount.img" width="24" :src="selectedAccount.img" />
       <input
         :value="displayWalletAddr(selectedAccount.name, selectedAccount.address)"
-        class="input--chain text--title cursor-pointer"
+        class="input--chain text--title"
+        :class="selectableAccounts.length && 'cursor-pointer'"
         type="text"
         spellcheck="false"
         :readonly="true"
@@ -12,6 +17,7 @@
       />
 
       <astar-icon-base
+        v-if="selectableAccounts.length"
         class="icon--selector"
         icon-name="selector"
         viewBox="0 0 20 20"
@@ -21,8 +27,8 @@
       </astar-icon-base>
     </div>
 
-    <div v-if="isOpen" class="box--chain-option">
-      <ul v-for="(account, index) in filteredAccounts" :key="index" class="container--chain">
+    <div v-if="isOpen && selectableAccounts.length" class="box--chain-option">
+      <ul v-for="(account, index) in selectableAccounts" :key="index" class="container--chain">
         <li role="option" class="list" @click="setAccount(account)">
           <div class="list__row">
             <div class="box__row">
@@ -73,7 +79,7 @@ export default defineComponent({
       isOpen.value = false;
     };
 
-    const filteredAccounts = computed<EvmAccount[]>(() => {
+    const selectableAccounts = computed<EvmAccount[]>(() => {
       const accounts = evmAccounts.value.filter((it) => it.name !== selectedAccount.value.name);
       return accounts;
     });
@@ -89,13 +95,18 @@ export default defineComponent({
       const evmExtensions = supportEvmWallets.filter((it) => it.isSupportBrowserExtension);
       const accounts = await Promise.all(
         evmExtensions.map(async (it) => {
-          const provider = getEvmProvider(it.source);
-          if (!provider) return undefined;
-          const [address] = (await provider.request({
-            method: 'eth_requestAccounts',
-          })) as string;
-          if (address) {
-            return { address, name: it.name, source: it.source, img: it.img };
+          try {
+            const provider = getEvmProvider(it.source);
+            if (!provider) return undefined;
+            const [address] = (await provider.request({
+              method: 'eth_requestAccounts',
+            })) as string;
+            if (address) {
+              return { address, name: it.name, source: it.source, img: it.img };
+            }
+          } catch (error) {
+            console.error(error);
+            return undefined;
           }
         })
       );
@@ -129,7 +140,7 @@ export default defineComponent({
 
     return {
       isOpen,
-      filteredAccounts,
+      selectableAccounts,
       evmAccounts,
       selectedAccount,
       closeOption,
