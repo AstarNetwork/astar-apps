@@ -124,7 +124,7 @@ export default defineComponent({
     watchEffect(handleUpdateEvmWallet);
 
     const displayWalletAddr = (name: string, address: string): string => {
-      return name + ' ' + ' ' + getShortenAddress(address, 4);
+      return name + ' ' + ' ' + getShortenAddress(address.toLowerCase(), 4);
     };
 
     return {

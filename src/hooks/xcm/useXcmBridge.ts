@@ -335,7 +335,6 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
 
   const setDefaultChain = (): void => {
     if (!selectedToken.value) return;
-    // Fixme: rename the variable name
     const astarChain = isAstar.value ? Astar : Shiden;
 
     const nativeSourceChain = isAstarNativeTransfer.value // memo: ASTR/SDN
