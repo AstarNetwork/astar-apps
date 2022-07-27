@@ -18,8 +18,8 @@ import {
   parachainIds,
   PREFIX_ASTAR,
   XcmChain,
-  kusamaChains,
-  polkadotChains,
+  kusamaParachains,
+  polkadotParachains,
   xcmChainObj,
 } from 'src/modules/xcm';
 import { useStore } from 'src/store';
@@ -76,7 +76,7 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
 
   const chains = computed<XcmChain[]>(() => {
     if (isAstarNativeTransfer.value) {
-      return isAstar.value ? polkadotChains : kusamaChains;
+      return isAstar.value ? polkadotParachains : kusamaParachains;
     } else {
       return [astarChain.value, originChain.value];
     }
