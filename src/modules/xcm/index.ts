@@ -119,5 +119,10 @@ export const xcmChainObj: XcmChainObj = {
 };
 
 const xcmChains = objToArray(xcmChainObj);
-export const kusamaChains = xcmChains.filter((it) => it.relayChain === Chain.KUSAMA);
-export const polkadotChains = xcmChains.filter((it) => it.relayChain === Chain.POLKADOT);
+
+export const kusamaChains = xcmChains.filter(
+  (it) => it.relayChain === Chain.KUSAMA && it.name !== Chain.KUSAMA
+);
+export const polkadotChains = xcmChains.filter(
+  (it) => it.relayChain === Chain.POLKADOT && it.name !== Chain.POLKADOT
+);
