@@ -141,12 +141,10 @@ export default defineComponent({
     return {
       isOpen,
       selectableAccounts,
-      evmAccounts,
       selectedAccount,
       closeOption,
       setAccount,
       displayWalletAddr,
-      getShortenAddress,
     };
   },
 });
