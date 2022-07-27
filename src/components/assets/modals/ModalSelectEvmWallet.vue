@@ -7,13 +7,13 @@
     >
       <img v-if="selectedAccount.img" width="24" :src="selectedAccount.img" />
       <input
+        v-click-away="closeOption"
         :value="displayWalletAddr(selectedAccount.name, selectedAccount.address)"
         class="input--chain text--title"
         :class="selectableAccounts.length && 'cursor-pointer'"
         type="text"
         spellcheck="false"
         :readonly="true"
-        @blur="closeOption"
       />
 
       <astar-icon-base
@@ -72,10 +72,7 @@ export default defineComponent({
     const evmAccounts = ref<EvmAccount[]>([]);
     const selectedAccount = ref<EvmAccount>({ address: '', name: '', source: '', img: '' });
 
-    const closeOption = async (): Promise<void> => {
-      // Memo: wait for updating the `selectedAccount` state before closing
-      const delay = 200;
-      await wait(delay);
+    const closeOption = (): void => {
       isOpen.value = false;
     };
 
