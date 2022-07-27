@@ -73,7 +73,7 @@ export default defineComponent({
     const selectedAccount = ref<EvmAccount>({ address: '', name: '', source: '', img: '' });
 
     const closeOption = async (): Promise<void> => {
-      // Memo: wait for updating the chain state before closing
+      // Memo: wait for updating the `selectedAccount` state before closing
       const delay = 200;
       await wait(delay);
       isOpen.value = false;
