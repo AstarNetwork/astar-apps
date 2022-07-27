@@ -10,11 +10,11 @@ interface TokensAccounts extends Struct {
   readonly frozen: BN;
 }
 
+const ASTAR_TOKEN_ID = { SDN: '18', ASTR: '2' };
+
 export class AcalaApi extends ChainApi {
-  private _AstarTokenId: { SDN: string; ASTR: string };
   constructor(endpoint: string) {
     super(endpoint);
-    this._AstarTokenId = { SDN: '18', ASTR: '2' };
   }
 
   public async getTokenBalances({
@@ -31,7 +31,7 @@ export class AcalaApi extends ChainApi {
     try {
       if (isAstarNativeToken) {
         const bal = await this.apiInst.query.tokens.accounts<TokensAccounts>(address, {
-          ForeignAsset: this._AstarTokenId[symbol],
+          ForeignAsset: ASTAR_TOKEN_ID[symbol],
         });
         return bal.free.toString();
       }
@@ -67,7 +67,7 @@ export class AcalaApi extends ChainApi {
 
     if (isAstarNativeToken) {
       token = {
-        ForeignAsset: this._AstarTokenId[symbol],
+        ForeignAsset: ASTAR_TOKEN_ID[symbol],
       };
     } else {
       token = {
