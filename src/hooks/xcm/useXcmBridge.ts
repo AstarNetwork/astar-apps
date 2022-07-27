@@ -29,12 +29,12 @@ import { useI18n } from 'vue-i18n';
 import { wait } from '../helper/common';
 import { isValidAddressPolkadotAddress } from './../helper/plasmUtils';
 import { AcalaApi, MoonbeamApi } from './parachainApi';
-import { ParachainApi, RelaychainApi } from './SubstrateApi';
+import { AstarApi, ChainApi } from './SubstrateApi';
 
 const { Acala, Astar, Karura, Moonriver, Polkadot, Shiden } = xcmChainObj;
 
 export function useXcmBridge(selectedToken: Ref<Asset>) {
-  let originChainApi: RelaychainApi | null = null;
+  let originChainApi: ChainApi | null = null;
   const srcChain = ref<XcmChain>(Polkadot);
   const destChain = ref<XcmChain>(Astar);
   const destParaId = ref<number>(parachainIds.ASTAR);
@@ -325,7 +325,8 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
       } else if (shouldConnectAcala) {
         originChainApi = new AcalaApi(endpoint);
       } else {
-        originChainApi = new RelaychainApi(endpoint);
+        // if: Connect to Relaychain API
+        originChainApi = new ChainApi(endpoint);
       }
       await originChainApi.start();
     } catch (err) {
@@ -458,7 +459,7 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
           ? evmDestAddress.value
           : getPubkeyFromSS58Addr(currentAccount.value);
         const injector = await getInjector(substrateAccounts.value);
-        const parachainApi = new ParachainApi($api!!);
+        const parachainApi = new AstarApi($api!!);
 
         const txCall = await parachainApi.transferToOriginChain({
           assetId: selectedToken.value.id,

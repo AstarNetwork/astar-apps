@@ -34,7 +34,7 @@ interface X2 {
   generalKey: string;
 }
 
-class ChainApi {
+class BaseApi {
   private _provider?: WsProvider;
   private _api: ApiPromise;
   private _chainProperty: ChainProperty | undefined;
@@ -250,7 +250,7 @@ class ChainApi {
   }
 }
 
-export class RelaychainApi extends ChainApi {
+export class ChainApi extends BaseApi {
   constructor(endpoint: string) {
     super(null, endpoint);
   }
@@ -321,33 +321,9 @@ export class RelaychainApi extends ChainApi {
       new BN(0)
     );
   }
-
-  public xcmReserveTransferAsset(
-    dest: MultiLocation,
-    beneficiary: MultiLocation,
-    assets: MultiAsset,
-    feeAssetItem: BN
-  ) {
-    return this.buildTxCall(
-      'xcmPallet',
-      'reserveTransferAssets',
-      dest,
-      beneficiary,
-      assets,
-      feeAssetItem
-    );
-  }
-
-  public xcmExecute(message: VersionedXcm, maxWeight: BN) {
-    return this.buildTxCall('xcmPallet', 'execute', message, maxWeight);
-  }
-
-  public xcmSend(dest: MultiLocation, message: VersionedXcm) {
-    return this.buildTxCall('xcmPallet', 'send', dest, message);
-  }
 }
 
-export class ParachainApi extends ChainApi {
+export class AstarApi extends BaseApi {
   constructor(api: ApiPromise) {
     super(api);
   }

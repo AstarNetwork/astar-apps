@@ -1,3 +1,4 @@
+import { ChainApi } from './../SubstrateApi';
 import { LOCAL_STORAGE } from './../../../config/localStorage';
 import { EthereumProvider } from './../../types/CustomSignature';
 import { u8aToHex } from '@polkadot/util';
@@ -11,7 +12,6 @@ import { Asset } from 'src/v2/models';
 import Web3 from 'web3';
 import { TransactionConfig } from 'web3-eth';
 import { AbiItem } from 'web3-utils';
-import { RelaychainApi } from '../SubstrateApi';
 import { isValidEvmAddress } from './../../../config/web3/utils/convert';
 import { getEvmProvider } from './../../helper/wallet';
 import { ethers } from 'ethers';
@@ -22,7 +22,7 @@ type chainName = 'Moonriver' | 'Moonbeam';
 const NATIVE_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000802';
 const PRE_COMPILED_ADDRESS = '0x0000000000000000000000000000000000000804';
 
-export class MoonbeamApi extends RelaychainApi {
+export class MoonbeamApi extends ChainApi {
   private _AstarTokenId: { SDN: string; ASTR: string };
   private _RpcEndpoint: { Moonriver: string; Moonbeam: string };
   private _EvmId: { Moonriver: number; Moonbeam: number };
