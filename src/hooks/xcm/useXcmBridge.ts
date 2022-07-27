@@ -124,6 +124,8 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
     amount.value = null;
     errMsg.value = '';
     evmDestAddress.value = '';
+    evmDestAddressBalance.value = 0;
+    originChainNativeBal.value = 0;
   };
 
   const setSrcChain = (chain: XcmChain): void => {
@@ -211,7 +213,7 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
         return Number(ethers.utils.formatEther(bal.toString()));
       };
 
-      const destOriginChainNativeBal = isMoonbeamWithdrawal
+      const destOriginChainNativeBal = isMoonbeamWithdrawal.value
         ? await fetchMoonbeamNativeBal()
         : originChainNativeBal.value;
       const originChainNativeBalance = isH160.value
@@ -461,7 +463,7 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
           });
       } else {
         // if: Withdrawal
-        let recipientAccountId = isMoonbeamWithdrawal
+        let recipientAccountId = isMoonbeamWithdrawal.value
           ? evmDestAddress.value
           : getPubkeyFromSS58Addr(currentAccount.value);
         const injector = await getInjector(substrateAccounts.value);
