@@ -1,3 +1,5 @@
+import { objToArray } from 'src/hooks/helper/common';
+
 export { xcmToken } from './tokens';
 export { getXcmToken, fetchXcmBalance, fetchExistentialDeposit, checkIsDeposit } from './utils';
 
@@ -55,63 +57,67 @@ export interface XcmChain {
   endpoint?: string;
 }
 
-export const xcmChains: XcmChain[] = [
-  {
+type XcmChainObj = {
+  [key in Chain]: XcmChain;
+};
+
+export const xcmChainObj: XcmChainObj = {
+  [Chain.POLKADOT]: {
     name: Chain.POLKADOT,
     relayChain: Chain.POLKADOT,
     img: require('/src/assets/img/ic_polkadot.png'),
     parachainId: relaychainParaId,
     endpoint: 'wss://polkadot.api.onfinality.io/public-ws',
   },
-  {
+  [Chain.ASTAR]: {
     name: Chain.ASTAR,
     relayChain: Chain.POLKADOT,
     img: require('/src/assets/img/ic_astar.png'),
     parachainId: parachainIds.ASTAR,
   },
-  {
+  [Chain.KUSAMA]: {
     name: Chain.KUSAMA,
     relayChain: Chain.KUSAMA,
     img: require('/src/assets/img/ic_kusama.png'),
     parachainId: relaychainParaId,
     endpoint: 'wss://kusama-rpc.polkadot.io',
   },
-  {
+  [Chain.SHIDEN]: {
     name: Chain.SHIDEN,
     relayChain: Chain.KUSAMA,
     img: require('/src/assets/img/ic_shiden.png'),
     parachainId: parachainIds.SHIDEN,
   },
-  {
+  [Chain.KARURA]: {
     name: Chain.KARURA,
     relayChain: Chain.KUSAMA,
     img: 'https://polkadot.js.org/apps/static/karura.6540c949..svg',
     parachainId: parachainIds.KARURA,
     endpoint: 'wss://karura.api.onfinality.io/public-ws',
   },
-  {
+  [Chain.ACALA]: {
     name: Chain.ACALA,
     relayChain: Chain.POLKADOT,
     img: 'https://polkadot.js.org/apps/static/acala.696aa448..svg',
     parachainId: parachainIds.ACALA,
     endpoint: 'wss://acala-polkadot.api.onfinality.io/public-ws',
   },
-  {
+  [Chain.MOONRIVER]: {
     name: Chain.MOONRIVER,
     relayChain: Chain.KUSAMA,
     img: 'https://assets.coingecko.com/coins/images/17984/small/9285.png?1630028620',
     parachainId: parachainIds.MOONRIVER,
     endpoint: 'wss://wss.api.moonriver.moonbeam.network',
   },
-  {
+  [Chain.MOONBEAM]: {
     name: Chain.MOONBEAM,
     relayChain: Chain.POLKADOT,
     img: 'https://polkadot.js.org/apps/static/moonbeam.3204d901..png',
     parachainId: parachainIds.MOONBEAM,
     endpoint: 'wss://wss.api.moonbeam.network',
   },
-];
+};
 
-export const relayChains = [Chain.POLKADOT, Chain.KUSAMA];
-
-export const parachains = [Chain.KARURA, Chain.ACALA];
+const xcmChains = objToArray(xcmChainObj);
+export const kusamaChains = xcmChains.filter((it) => it.relayChain === Chain.KUSAMA);
+export const polkadotChains = xcmChains.filter((it) => it.relayChain === Chain.POLKADOT);

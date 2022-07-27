@@ -18,7 +18,9 @@ import {
   parachainIds,
   PREFIX_ASTAR,
   XcmChain,
-  xcmChains,
+  kusamaChains,
+  polkadotChains,
+  xcmChainObj,
 } from 'src/modules/xcm';
 import { useStore } from 'src/store';
 import { Asset } from 'src/v2/models';
@@ -29,20 +31,12 @@ import { isValidAddressPolkadotAddress } from './../helper/plasmUtils';
 import { AcalaApi, MoonbeamApi } from './parachainApi';
 import { ParachainApi, RelaychainApi } from './SubstrateApi';
 
-const chainPolkadot = xcmChains.find((it) => it.name === Chain.POLKADOT) as XcmChain;
-const chainAstar = xcmChains.find((it) => it.name === Chain.ASTAR) as XcmChain;
-const chainShiden = xcmChains.find((it) => it.name === Chain.SHIDEN) as XcmChain;
-const chainKarura = xcmChains.find((it) => it.name === Chain.KARURA) as XcmChain;
-const chainAcala = xcmChains.find((it) => it.name === Chain.ACALA) as XcmChain;
-const chainMoonriver = xcmChains.find((it) => it.name === Chain.MOONRIVER) as XcmChain;
-
-const kusamaChains = [chainAstar, chainKarura, chainMoonriver];
-const polkadotChains = [chainShiden, chainAcala];
+const { Acala, Astar, Karura, Moonriver, Polkadot, Shiden } = xcmChainObj;
 
 export function useXcmBridge(selectedToken: Ref<Asset>) {
   let originChainApi: RelaychainApi | null = null;
-  const srcChain = ref<XcmChain>(chainPolkadot);
-  const destChain = ref<XcmChain>(chainAstar);
+  const srcChain = ref<XcmChain>(Polkadot);
+  const destChain = ref<XcmChain>(Astar);
   const destParaId = ref<number>(parachainIds.ASTAR);
   const amount = ref<string | null>(null);
   const errMsg = ref<string>('');
@@ -77,7 +71,7 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
 
   // Fixme: variable name is too long
   const defaultNativeTokenTransferChain = computed<XcmChain>(() =>
-    isAstar.value ? chainAcala : chainKarura
+    isAstar.value ? Acala : Karura
   );
 
   const chains = computed<XcmChain[]>(() => {
@@ -91,15 +85,13 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
     selectedToken.value ? Number(selectedToken.value.metadata.decimals) : 0
   );
   const originChain = computed<XcmChain>(() => {
-    return xcmChains.find((it) => it.name === selectedToken.value.originChain)!;
+    return xcmChainObj[selectedToken.value.originChain as Chain];
   });
 
   const astarChain = computed<XcmChain>(() => {
-    return xcmChains.find((it) =>
-      currentNetworkIdx.value === endpointKey.ASTAR
-        ? it.name === Chain.ASTAR
-        : it.name === Chain.SHIDEN
-    )!;
+    const astarChainName =
+      currentNetworkIdx.value === endpointKey.ASTAR ? Chain.ASTAR : Chain.SHIDEN;
+    return xcmChainObj[astarChainName];
   });
 
   const { currentNetworkIdx, evmNetworkIdx } = useNetworkInfo();
@@ -134,9 +126,9 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
     const origin = isAstarNativeTransfer.value ? firstParachain : originChain.value;
     if (chain.name === destChain.value.name) {
       if (isAstar.value) {
-        destChain.value = destChain.value.name === chainAstar.name ? origin : chainAstar;
+        destChain.value = destChain.value.name === Astar.name ? origin : Astar;
       } else {
-        destChain.value = destChain.value.name === chainShiden.name ? origin : chainShiden;
+        destChain.value = destChain.value.name === Shiden.name ? origin : Shiden;
       }
     }
   };
@@ -147,21 +139,21 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
     const origin = isAstarNativeTransfer.value ? firstParachain : originChain.value;
     if (chain.name === srcChain.value.name) {
       if (isAstar.value) {
-        srcChain.value = srcChain.value.name === chainAstar.name ? origin : chainAstar;
+        srcChain.value = srcChain.value.name === Astar.name ? origin : Astar;
       } else {
-        srcChain.value = srcChain.value.name === chainShiden.name ? origin : chainShiden;
+        srcChain.value = srcChain.value.name === Shiden.name ? origin : Shiden;
       }
     }
   };
 
   // Memo: to avoid without selecting Astar/SDN e.g.: Karura <-> Moonriver
   const setDestChainToAstar = (): void => {
-    const astarChains = [chainAstar.name, chainShiden.name];
+    const astarChains = [Astar.name, Shiden.name];
     const isAstarDeposit = astarChains.includes(srcChain.value.name);
     const isAstarWithdrawal = astarChains.includes(destChain.value.name);
     const isAstrOrSdn = isAstarDeposit || isAstarWithdrawal;
     if (!isAstrOrSdn) {
-      destChain.value = isAstar.value ? chainAstar : chainShiden;
+      destChain.value = isAstar.value ? Astar : Shiden;
     }
   };
 
@@ -313,8 +305,8 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
     let endpoint = '';
 
     if (isAstarNativeTransfer.value) {
-      const defaultParachainEndpoint = xcmChains.find((it) => it.name === srcChain.value.name);
-      endpoint = defaultParachainEndpoint!.endpoint as string;
+      const defaultParachainEndpoint = xcmChainObj[srcChain.value.name];
+      endpoint = defaultParachainEndpoint.endpoint as string;
     } else {
       endpoint = originChain.value.endpoint!;
     }
@@ -324,8 +316,8 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
     };
 
     // Todo: add Moonbeam
-    const shouldConnectMoonbeam = shouldConnectApi([chainMoonriver.name]);
-    const shouldConnectAcala = shouldConnectApi([chainAcala.name, chainKarura.name]);
+    const shouldConnectMoonbeam = shouldConnectApi([Moonriver.name]);
+    const shouldConnectAcala = shouldConnectApi([Acala.name, Karura.name]);
 
     try {
       if (shouldConnectMoonbeam) {
@@ -344,7 +336,7 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
   const setDefaultChain = (): void => {
     if (!selectedToken.value) return;
     // Fixme: rename the variable name
-    const astarChain = isAstar.value ? chainAstar : chainShiden;
+    const astarChain = isAstar.value ? Astar : Shiden;
 
     const nativeSourceChain = isAstarNativeTransfer.value // memo: ASTR/SDN
       ? defaultNativeTokenTransferChain.value // Karura or Acala
@@ -583,8 +575,8 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
   // Memo: Create a Parachain instance for ASTR/SDN transfer
   const connectParaApiForAstrShiden = async () => {
     if (
-      srcChain.value.name === chainAstar.name ||
-      srcChain.value.name === chainShiden.name ||
+      srcChain.value.name === Astar.name ||
+      srcChain.value.name === Shiden.name ||
       !isAstarNativeTransfer.value
     ) {
       return;

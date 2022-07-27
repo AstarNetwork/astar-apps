@@ -14,7 +14,7 @@ import { AbiItem } from 'web3-utils';
 import { getPubkeyFromSS58Addr } from '../helper/addressUtils';
 import { useAccount } from '../useAccount';
 import { useGasPrice } from '../useGasPrice';
-import { relaychainParaId, xcmChains } from './../../modules/xcm/index';
+import { Chain, relaychainParaId, xcmChainObj } from './../../modules/xcm/index';
 import { Asset } from 'src/v2/models';
 import { MOVR } from 'src/modules/token';
 
@@ -58,7 +58,7 @@ export function useXcmEvm(selectedToken: Ref<Asset>) {
       const assetIds = [asset_id];
       const assetAmounts = [new BN(assetAmount)];
       const recipientAccountId = recipientEvmAccountId;
-      const withdrawalChain = xcmChains.find((it) => it.name === selectedToken.value.originChain);
+      const withdrawalChain = xcmChainObj[selectedToken.value.originChain as Chain];
       const isRelay = Number(withdrawalChain && withdrawalChain.parachainId) === relaychainParaId;
       const parachainId = withdrawalChain?.parachainId;
       const feeIndex = 0;

@@ -6,7 +6,7 @@ import { Asset } from 'src/v2/models';
 import { getUsdBySymbol } from 'src/hooks/helper/price';
 import { ExistentialDeposit, XcmTokenInformation } from '../index';
 import { xcmToken } from '../tokens';
-import { Chain, parachains, relayChains } from './../index';
+import { Chain } from './../index';
 
 interface Account extends Struct {
   balance: string;

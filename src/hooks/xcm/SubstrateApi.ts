@@ -256,10 +256,6 @@ export class RelaychainApi extends ChainApi {
   }
   override async start() {
     await super.start();
-
-    // const parachains = (await this.buildStorageQuery('paras', 'parachains')) as Vec<u32>;
-    // this._parachains = parachains.map((i) => i.toNumber());
-    // check if the connected network implements xcmPallet
   }
 
   public transferToParachain({
