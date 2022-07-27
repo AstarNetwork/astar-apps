@@ -110,7 +110,7 @@
 <script lang="ts">
 import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
 import { addToEvmProvider, getEvmProvider } from 'src/hooks/helper/wallet';
-import { Erc20Token, getErc20Explorer, getStoredERC20Tokens } from 'src/modules/token';
+import { Erc20Token, getErc20Explorer, getStoredERC20Tokens, MOVR } from 'src/modules/token';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType } from 'vue';
 import { truncate } from 'src/hooks/helper/common';
@@ -157,7 +157,7 @@ export default defineComponent({
       const currentNetworkIdx = getProviderIndex(chain);
 
       // Memo: Remove after runtime upgrading in shinde
-      const isMovr = token.symbol === 'MOVR';
+      const isMovr = token.symbol === MOVR.symbol;
       // Memo: Remove after runtime upgrading in astar network to enable EVM withdrawal
       const isAstar = currentNetworkIdx === endpointKey.ASTAR;
 

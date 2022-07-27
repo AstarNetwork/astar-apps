@@ -87,8 +87,7 @@ export default defineComponent({
     const setAccount = async (account: EvmAccount): Promise<void> => {
       selectedAccount.value = account;
       localStorage.setItem(LOCAL_STORAGE.XCM_DEPOSIT_EVM_WALLET, account.source);
-      const reset = true;
-      await props.initializeXcmApi(reset);
+      await props.initializeXcmApi(true);
     };
 
     const displayWalletAddr = (name: string, address: string): string => {
@@ -107,6 +106,8 @@ export default defineComponent({
             })) as string;
             if (address) {
               return { address, name: it.name, source: it.source, img: it.img };
+            } else {
+              return undefined;
             }
           } catch (error) {
             console.error(error);
