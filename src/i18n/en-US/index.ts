@@ -212,6 +212,8 @@ export default {
         'The amount of token to be staking must be greater than {amount} {symbol}',
       allFundsWillBeTransferred:
         'All funds will be transferred because the min. staking amount is {minStakingAmount} {symbol}',
+      allFundsWillBeUnbonded:
+        'All funds will be unbonded because the min. staking amount is {minStakingAmount} {symbol}',
     },
   },
   bridge: {
