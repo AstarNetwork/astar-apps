@@ -91,6 +91,10 @@ export default defineComponent({
       await props.initializeXcmApi(reset);
     };
 
+    const displayWalletAddr = (name: string, address: string): string => {
+      return name + ' ' + ' ' + getShortenAddress(address.toLowerCase(), 4);
+    };
+
     const setEvmAccounts = async (): Promise<void> => {
       const evmExtensions = supportEvmWallets.filter((it) => it.isSupportBrowserExtension);
       const accounts = await Promise.all(
@@ -133,10 +137,6 @@ export default defineComponent({
     };
 
     watchEffect(handleUpdateEvmWallet);
-
-    const displayWalletAddr = (name: string, address: string): string => {
-      return name + ' ' + ' ' + getShortenAddress(address.toLowerCase(), 4);
-    };
 
     return {
       isOpen,
