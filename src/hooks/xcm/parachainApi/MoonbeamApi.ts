@@ -1,20 +1,19 @@
-import { LOCAL_STORAGE } from './../../../config/localStorage';
-import { EthereumProvider } from './../../types/CustomSignature';
 import { u8aToHex } from '@polkadot/util';
 import { decodeAddress } from '@polkadot/util-crypto';
 import BN from 'bn.js';
+import { ethers } from 'ethers';
 import { supportEvmWallets, SupportWallet } from 'src/config/wallets';
 import { EVM, getTokenBal, rpcUrls, setupNetwork } from 'src/config/web3';
 import moonbeamXcmAbi from 'src/config/web3/abi/moonbeam-xcm-abi.json';
-import { wait } from 'src/hooks/helper/common';
 import { Asset } from 'src/v2/models';
 import Web3 from 'web3';
 import { TransactionConfig } from 'web3-eth';
 import { AbiItem } from 'web3-utils';
 import { AstarNativeToken, ChainApi } from '../SubstrateApi';
+import { LOCAL_STORAGE } from './../../../config/localStorage';
 import { isValidEvmAddress } from './../../../config/web3/utils/convert';
 import { getEvmProvider } from './../../helper/wallet';
-import { ethers } from 'ethers';
+import { EthereumProvider } from './../../types/CustomSignature';
 
 type ChainName = 'Moonriver' | 'Moonbeam';
 
@@ -192,9 +191,6 @@ export class MoonbeamApi extends ChainApi {
     const estimatedGas = await this._web3.eth.estimateGas(rawTx);
     const txDetails = await this._web3.eth.sendTransaction({ ...rawTx, gas: estimatedGas });
 
-    const blockMilliSec = 15000;
-    // Memo: wait for syncing in Astar chain
-    await wait(blockMilliSec);
     return txDetails.transactionHash;
   }
 }

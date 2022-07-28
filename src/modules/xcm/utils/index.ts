@@ -94,3 +94,38 @@ export const checkIsDeposit = (fromChain: Chain): boolean => {
   const astarChain = [Chain.ASTAR, Chain.SHIDEN];
   return !astarChain.includes(fromChain);
 };
+
+export const monitorBalanceIncreasing = async ({
+  originTokenData,
+  api,
+  userAddress,
+}: {
+  originTokenData: Asset;
+  api: ApiPromise;
+  userAddress: string;
+}): Promise<boolean> => {
+  return new Promise<boolean>(async (resolve) => {
+    try {
+      const monitorBal = async (timer?: NodeJS.Timer) => {
+        const balance = await fetchXcmBalance({
+          userAddress,
+          token: originTokenData,
+          api,
+        });
+        const bal = Number(balance.userBalance);
+        if (bal > originTokenData.userBalance) {
+          timer && clearInterval(timer);
+          resolve(true);
+        }
+      };
+      const intervalMilliSec = 3000;
+      const updateIntervalHandler = setInterval(async () => {
+        await monitorBal(updateIntervalHandler);
+      }, intervalMilliSec);
+      await monitorBal();
+    } catch (error) {
+      console.error(error);
+      resolve(false);
+    }
+  });
+};

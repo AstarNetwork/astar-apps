@@ -1,9 +1,9 @@
-import { SubstrateAccount } from 'src/store/general/state';
 import { evmToAddress } from '@polkadot/util-crypto';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { getTokenBal, isValidEvmAddress } from 'src/config/web3';
+import { SubstrateAccount } from 'src/store/general/state';
 
 import { useBalance, useCustomSignature, useNetworkInfo } from 'src/hooks';
 import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
@@ -15,11 +15,12 @@ import {
   Chain,
   checkIsDeposit,
   ExistentialDeposit,
+  kusamaParachains,
+  monitorBalanceIncreasing,
   parachainIds,
+  polkadotParachains,
   PREFIX_ASTAR,
   XcmChain,
-  kusamaParachains,
-  polkadotParachains,
   xcmChainObj,
 } from 'src/modules/xcm';
 import { useStore } from 'src/store';
@@ -29,8 +30,8 @@ import { useI18n } from 'vue-i18n';
 import { wait } from '../helper/common';
 import { isValidAddressPolkadotAddress } from './../helper/plasmUtils';
 import { AcalaApi, MoonbeamApi } from './parachainApi';
-import { AstarApi, ChainApi, AstarToken } from './SubstrateApi';
 import { MOONBEAM_ASTAR_TOKEN_ID } from './parachainApi/MoonbeamApi';
+import { AstarApi, AstarToken, ChainApi } from './SubstrateApi';
 
 const { Acala, Astar, Karura, Moonriver, Polkadot, Shiden, Kusama } = xcmChainObj;
 
@@ -431,7 +432,13 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
             amount: ethers.utils.parseUnits(amount.value, decimals.value).toString(),
             selectedToken: selectedToken.value,
           });
-
+          if (isNativeBridge.value) {
+            await monitorBalanceIncreasing({
+              api: $api!,
+              userAddress: currentAccount.value,
+              originTokenData: selectedToken.value,
+            });
+          }
           const msg = t('toast.completedHash', { hash });
           store.dispatch('general/showAlertMsg', {
             msg,
@@ -453,12 +460,23 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
           selectedToken: selectedToken.value,
         });
 
+        const callBack = async (): Promise<void> => {
+          if (isNativeBridge.value) {
+            await monitorBalanceIncreasing({
+              api: $api!,
+              userAddress: currentAccount.value,
+              originTokenData: selectedToken.value,
+            });
+          }
+          await finalizedCallback();
+        };
+
         await originChainApi
           .signAndSend({
             account: currentAccount.value,
             signer: injector.signer,
             tx: txCall,
-            finalizedCallback,
+            finalizedCallback: callBack,
             handleResult,
             tip: '1',
           })

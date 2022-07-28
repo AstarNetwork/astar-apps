@@ -1,7 +1,13 @@
 import { objToArray } from 'src/hooks/helper/common';
 
 export { xcmToken } from './tokens';
-export { getXcmToken, fetchXcmBalance, fetchExistentialDeposit, checkIsDeposit } from './utils';
+export {
+  getXcmToken,
+  fetchXcmBalance,
+  fetchExistentialDeposit,
+  checkIsDeposit,
+  monitorBalanceIncreasing,
+} from './utils';
 
 export const PREFIX_ASTAR = 5;
 
