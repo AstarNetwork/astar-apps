@@ -58,6 +58,15 @@
             :is-enable-set-chain="isNativeBridge"
           />
         </div>
+
+        <div v-if="isMoonbeamDeposit" class="box--input-chain box--hover--active">
+          <div class="box__space-between">
+            <span> {{ $t('assets.modals.evmWalletAddress') }}</span>
+            <div />
+          </div>
+          <ModalSelectEvmWallet :initialize-xcm-api="initializeXcmApi" />
+        </div>
+
         <div class="box--input-chain" :class="isNativeBridge && 'box--hover--active'">
           <div class="box__space-between">
             <span> {{ $t('to') }}</span>
@@ -69,14 +78,6 @@
             :set-chain="setDestChain"
             :is-enable-set-chain="isNativeBridge"
           />
-        </div>
-
-        <div v-if="isMoonbeamDeposit" class="box--input-chain box--hover--active">
-          <div class="box__space-between">
-            <span> {{ $t('assets.modals.evmWalletAddress') }}</span>
-            <div />
-          </div>
-          <ModalSelectEvmWallet :initialize-xcm-api="initializeXcmApi" />
         </div>
 
         <div v-if="!isNativeBridge || isMoonbeamWithdrawal">
