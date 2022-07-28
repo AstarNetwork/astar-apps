@@ -71,7 +71,7 @@ export default defineComponent({
     const isOpen = ref<boolean>(false);
     const evmAccounts = ref<EvmAccount[]>([]);
     const selectedAccount = ref<EvmAccount>({ address: '', name: '', source: '', img: '' });
-    const selectedProvider = ref();
+    const selectedProvider = ref<EthereumProvider>();
 
     const closeOption = (): void => {
       isOpen.value = false;
@@ -128,7 +128,10 @@ export default defineComponent({
         const { address, name, source, img } = evmAccounts.value[0];
         selectedAccount.value = { address, name, source, img };
       }
-      selectedProvider.value = getEvmProvider(selectedAccount.value.source as SupportWallet);
+      const provider = getEvmProvider(selectedAccount.value.source as SupportWallet);
+      if (provider) {
+        selectedProvider.value = provider;
+      }
     };
 
     const handleUpdateEvmWallet = async (): Promise<void> => {
