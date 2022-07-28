@@ -11,6 +11,11 @@ import { Asset } from 'src/v2/models';
 
 const AUTO_CONNECT_MS = 10_000; // [ms]
 
+export type AstarToken = 'ASTR' | 'SDN';
+export type AstarNativeToken = {
+  [key in AstarToken]: string;
+};
+
 interface ChainProperty {
   tokenSymbols: string[];
   tokenDecimals: number[];

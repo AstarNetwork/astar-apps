@@ -83,7 +83,7 @@
           <AddressInput
             v-model:selAddress="evmDestAddress"
             :to-address="evmDestAddress"
-            :is-evm="isDeposit"
+            :is-evm="isDeposit || isMoonbeamWithdrawal"
             :is-display-balance="true"
             :placeholder="evmInputPlaceholder"
             :title="evmInputTitle"

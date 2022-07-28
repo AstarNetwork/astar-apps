@@ -11,18 +11,21 @@ import { Asset } from 'src/v2/models';
 import Web3 from 'web3';
 import { TransactionConfig } from 'web3-eth';
 import { AbiItem } from 'web3-utils';
-import { ChainApi } from '../SubstrateApi';
+import { AstarNativeToken, ChainApi } from '../SubstrateApi';
 import { isValidEvmAddress } from './../../../config/web3/utils/convert';
 import { getEvmProvider } from './../../helper/wallet';
 import { ethers } from 'ethers';
 
-type chainName = 'Moonriver' | 'Moonbeam';
+type ChainName = 'Moonriver' | 'Moonbeam';
 
 // Ref: https://docs.moonbeam.network/builders/build/canonical-contracts/precompiles/erc20/
 const NATIVE_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000802';
 const PRE_COMPILED_ADDRESS = '0x0000000000000000000000000000000000000804';
 // Todo: check the token address for ASTR
-const ASTAR_TOKEN_ID = { SDN: '0xffffffff0ca324c842330521525e7de111f38972', ASTR: '0xToDo' };
+export const MOONBEAM_ASTAR_TOKEN_ID: AstarNativeToken = {
+  SDN: '0xffffffff0ca324c842330521525e7de111f38972',
+  ASTR: '0xToDo',
+};
 const RPC_ENDPOINT = {
   Moonriver: rpcUrls[EVM.MOONRIVER][0] as string,
   Moonbeam: rpcUrls[EVM.MOONBEAM][0] as string,
@@ -30,7 +33,7 @@ const RPC_ENDPOINT = {
 const EVM_ID = { Moonriver: EVM.MOONRIVER, Moonbeam: EVM.MOONBEAM };
 
 export class MoonbeamApi extends ChainApi {
-  private _networkName: chainName;
+  private _networkName: ChainName;
   private _web3: Web3 | null;
   constructor(endpoint: string) {
     super(endpoint);
@@ -81,7 +84,7 @@ export class MoonbeamApi extends ChainApi {
     try {
       if (!this._web3) return false;
       const networkId = await this._web3.eth.net.getId();
-      const chainName = this.chainProperty?.chainName as chainName;
+      const chainName = this.chainProperty?.chainName as ChainName;
       return networkId === EVM_ID[chainName];
     } catch (error) {
       return false;
@@ -116,7 +119,7 @@ export class MoonbeamApi extends ChainApi {
       if (isAstarNativeToken) {
         // if: SDN or ASTR
         const addr = await this.getEvmWalletAddress();
-        const tokenAddress = ASTAR_TOKEN_ID[symbol];
+        const tokenAddress = MOONBEAM_ASTAR_TOKEN_ID[symbol];
         const srcChainId = EVM_ID[this._networkName];
         const balance = await getTokenBal({
           address: addr,
@@ -161,7 +164,7 @@ export class MoonbeamApi extends ChainApi {
     const symbol = selectedToken.metadata.symbol;
     const isAstarNativeToken = symbol === 'SDN' || symbol === 'ASTR';
     if (isAstarNativeToken) {
-      currencyAddress = ASTAR_TOKEN_ID[symbol];
+      currencyAddress = MOONBEAM_ASTAR_TOKEN_ID[symbol];
     } else {
       currencyAddress = NATIVE_TOKEN_ADDRESS;
     }

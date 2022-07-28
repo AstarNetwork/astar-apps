@@ -2,7 +2,7 @@ import { Struct } from '@polkadot/types';
 import { decodeAddress } from '@polkadot/util-crypto';
 import BN from 'bn.js';
 import { ExtrinsicPayload } from 'src/hooks/helper';
-import { ChainApi } from '../SubstrateApi';
+import { AstarNativeToken, ChainApi } from '../SubstrateApi';
 import { Asset } from 'src/v2/models';
 interface TokensAccounts extends Struct {
   readonly free: BN;
@@ -10,7 +10,7 @@ interface TokensAccounts extends Struct {
   readonly frozen: BN;
 }
 
-const ASTAR_TOKEN_ID = { SDN: '18', ASTR: '2' };
+const ASTAR_TOKEN_ID: AstarNativeToken = { SDN: '18', ASTR: '2' };
 
 export class AcalaApi extends ChainApi {
   constructor(endpoint: string) {

@@ -29,7 +29,8 @@ import { useI18n } from 'vue-i18n';
 import { wait } from '../helper/common';
 import { isValidAddressPolkadotAddress } from './../helper/plasmUtils';
 import { AcalaApi, MoonbeamApi } from './parachainApi';
-import { AstarApi, ChainApi } from './SubstrateApi';
+import { AstarApi, ChainApi, AstarToken } from './SubstrateApi';
+import { MOONBEAM_ASTAR_TOKEN_ID } from './parachainApi/MoonbeamApi';
 
 const { Acala, Astar, Karura, Moonriver, Polkadot, Shiden } = xcmChainObj;
 
@@ -305,14 +306,20 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
     let endpoint = '';
 
     if (isAstarNativeTransfer.value) {
-      const defaultParachainEndpoint = xcmChainObj[srcChain.value.name];
+      const isFromAstar = srcChain.value.name === Astar.name || srcChain.value.name === Shiden.name;
+      const chainName = isFromAstar ? destChain.value.name : srcChain.value.name;
+      const defaultParachainEndpoint = xcmChainObj[chainName];
       endpoint = defaultParachainEndpoint.endpoint as string;
     } else {
       endpoint = originChain.value.endpoint!;
     }
 
     const shouldConnectApi = (chains: string[]): boolean => {
-      return chains.includes(originChain.value.name) || chains.includes(srcChain.value.name);
+      if (isAstarNativeTransfer.value) {
+        return chains.includes(srcChain.value.name) || chains.includes(destChain.value.name);
+      } else {
+        return chains.includes(originChain.value.name);
+      }
     };
 
     // Todo: add Moonbeam
@@ -376,10 +383,16 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
       const srcChainId = isMoonbeamWithdrawal.value
         ? originChainApi!.chainProperty!.ss58Prefix!
         : evmNetworkIdx.value;
+
+      const isWithdrawAstrToMoonbeam = isAstarNativeTransfer.value && isMoonbeamWithdrawal.value;
+      const tokenAddress = isWithdrawAstrToMoonbeam
+        ? MOONBEAM_ASTAR_TOKEN_ID[selectedToken.value.metadata.symbol as AstarToken]
+        : selectedToken.value.mappedERC20Addr;
+
       const balance = await getTokenBal({
         srcChainId,
         address,
-        tokenAddress: selectedToken.value.mappedERC20Addr,
+        tokenAddress,
         tokenSymbol: selectedToken.value.metadata.symbol,
       });
       evmDestAddressBalance.value = Number(balance);
@@ -565,27 +578,9 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
     await Promise.all([updateFromAddressBalance(), setOriginChainNativeBal()]);
   };
 
-  // Memo: Create a Relaychain/Parachain instance for xcm assets transfer
-  const connectParaApiForXcmAssets = async () => {
-    if (!isAstarNativeTransfer.value && selectedToken.value) {
-      await initializeXcmApi();
-    }
-  };
-
-  // Memo: Create a Parachain instance for ASTR/SDN transfer
-  const connectParaApiForAstrShiden = async () => {
-    if (
-      srcChain.value.name === Astar.name ||
-      srcChain.value.name === Shiden.name ||
-      !isAstarNativeTransfer.value
-    ) {
-      return;
-    }
+  watchEffect(async () => {
     await initializeXcmApi();
-  };
-
-  watch([selectedToken], connectParaApiForXcmAssets);
-  watch([srcChain, isAstarNativeTransfer], connectParaApiForAstrShiden);
+  });
 
   watch([isNativeBridge, isAstar, selectedToken], setDefaultChain);
   watchEffect(setErrMsg);
