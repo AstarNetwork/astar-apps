@@ -47,11 +47,11 @@
 </template>
 <script lang="ts">
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { supportEvmWallets } from 'src/config/wallets';
-import { wait } from 'src/hooks/helper/common';
+import { supportEvmWallets, SupportWallet } from 'src/config/wallets';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
-import { computed, defineComponent, ref, watchEffect } from 'vue';
+import { computed, defineComponent, ref, watchEffect, WatchCallback, watch } from 'vue';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
+import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 
 interface EvmAccount {
   address: string;
@@ -71,6 +71,7 @@ export default defineComponent({
     const isOpen = ref<boolean>(false);
     const evmAccounts = ref<EvmAccount[]>([]);
     const selectedAccount = ref<EvmAccount>({ address: '', name: '', source: '', img: '' });
+    const selectedProvider = ref();
 
     const closeOption = (): void => {
       isOpen.value = false;
@@ -127,6 +128,7 @@ export default defineComponent({
         const { address, name, source, img } = evmAccounts.value[0];
         selectedAccount.value = { address, name, source, img };
       }
+      selectedProvider.value = getEvmProvider(selectedAccount.value.source as SupportWallet);
     };
 
     const handleUpdateEvmWallet = async (): Promise<void> => {
@@ -134,7 +136,30 @@ export default defineComponent({
       setEvmAccount();
     };
 
+    // Memo: monitor the account that is selected on the EVM wallet
+    const handleEvmAccountChange: WatchCallback<EthereumProvider | undefined> = (
+      provider,
+      _,
+      registerCleanup
+    ) => {
+      if (provider) {
+        const handleAccountsChanged = async () => {
+          await handleUpdateEvmWallet();
+          await props.initializeXcmApi(true);
+        };
+
+        // Memo: subscribe to changes
+        provider.on('accountsChanged', handleAccountsChanged);
+
+        // Memo: unsubscribe / prevent memory leak
+        registerCleanup(() => {
+          provider.removeListener('accountsChanged', handleAccountsChanged);
+        });
+      }
+    };
+
     watchEffect(handleUpdateEvmWallet);
+    watch(selectedProvider, handleEvmAccountChange, { immediate: true });
 
     return {
       isOpen,
