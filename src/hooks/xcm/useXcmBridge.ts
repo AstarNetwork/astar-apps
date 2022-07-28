@@ -32,7 +32,7 @@ import { AcalaApi, MoonbeamApi } from './parachainApi';
 import { AstarApi, ChainApi, AstarToken } from './SubstrateApi';
 import { MOONBEAM_ASTAR_TOKEN_ID } from './parachainApi/MoonbeamApi';
 
-const { Acala, Astar, Karura, Moonriver, Polkadot, Shiden } = xcmChainObj;
+const { Acala, Astar, Karura, Moonriver, Polkadot, Shiden, Kusama } = xcmChainObj;
 
 export function useXcmBridge(selectedToken: Ref<Asset>) {
   let originChainApi: ChainApi | null = null;
@@ -191,8 +191,10 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
   };
 
   const checkIsEnoughEd = async (amount: number): Promise<boolean> => {
-    const originChainMinBal = existentialDeposit.value?.originChainMinBal;
-    if (!originChainMinBal) return false;
+    const originChainMinBal =
+      destChain.value.name === Kusama.name
+        ? existentialDeposit.value?.originChainMinBal
+        : existentialDeposit.value?.amount;
 
     if (isDeposit.value) {
       // Memo: ED is no longer required for the deposit transaction
@@ -213,7 +215,10 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
         ? evmDestAddressBalance.value
         : destOriginChainNativeBal;
 
-      return originChainNativeBalance - amount > originChainMinBal;
+      const amt = isAstarNativeTransfer.value ? 0 : amount;
+      const originChainMinBalance = originChainMinBal || 0;
+
+      return originChainNativeBalance - amt >= originChainMinBalance;
     }
   };
 
@@ -268,7 +273,7 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
     } else {
       // if: deposit / withdrawal from native to native
 
-      if (isMoonbeamWithdrawal.value && !evmDestAddress.value) {
+      if (!evmDestAddress.value) {
         return;
       }
 

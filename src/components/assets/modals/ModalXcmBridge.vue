@@ -138,7 +138,10 @@
         </div>
       </div>
       <div class="container--warning">
-        <div v-if="token.isNativeToken" class="row--warning">
+        <div
+          v-if="token.isNativeToken && existentialDeposit && Number(existentialDeposit.amount) > 0"
+          class="row--warning"
+        >
           <div class="column--title">
             <span class="text--dot">・</span>
             <span class="text--warning">{{ $t('assets.modals.xcmWarning.minBalIsRequired') }}</span>
