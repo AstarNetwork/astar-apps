@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="wrapper">
     <astar-header
       :title="width >= screenSize.lg ? headerName : ''"
       :class="screenSize.lg > width && 'm-header'"
@@ -151,6 +151,9 @@ export default defineComponent({
 </script>
 <style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
+.wrapper {
+  z-index: 100;
+}
 .icon {
   width: 127px;
   margin-left: -15px;

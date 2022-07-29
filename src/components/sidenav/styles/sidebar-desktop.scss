@@ -15,10 +15,6 @@
   height: 20px;
 }
 
-// .shiden {
-//   color: $shiden-purple-dark;
-// }
-
 .sidebar {
   width: 224px;
   height: 100%;
@@ -26,6 +22,7 @@
   background: $border-separator-light;
   display: flex;
   flex-direction: column;
+  z-index: 100;
 }
 
 .menu {
