@@ -1,14 +1,7 @@
 <template>
-  <div class="tw-fixed tw-z-10 tw-inset-0 tw-overflow-y-auto">
-    <div class="tw-flex tw-items-center tw-justify-center tw-min-h-screen">
-      <!-- Background overlay -->
-      <div class="tw-fixed tw-inset-0 tw-transition-opacity" aria-hidden="true">
-        <div class="tw-absolute tw-inset-0 tw-bg-gray-900 dark:tw-bg-black tw-opacity-75"></div>
-      </div>
-
-      <div class="tw-transform tw-text-gray-400 dark:tw-text-darkGray-500 loader">
-        <astar-spinner />
-      </div>
+  <div class="overlay">
+    <div class="spinner-box">
+      <astar-spinner />
     </div>
   </div>
 </template>
@@ -16,9 +9,36 @@
 import { defineComponent } from 'vue';
 export default defineComponent({});
 </script>
-<style scoped>
+<style scoped lang="scss">
+@import 'src/css/quasar.variables.scss';
 .loader {
   min-height: 100px;
   min-width: 100px;
+}
+
+.overlay {
+  background: rgba(0, 0, 0, 0.1);
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 104px;
+  @media (min-width: $lg) {
+    top: 96px;
+    left: 224px;
+  }
+}
+.spinner-box {
+  position: absolute;
+  width: 100vw;
+  top: 38%;
+  @media (min-width: $lg) {
+    margin-left: -224px;
+  }
+}
+
+.body--dark {
+  .overlay {
+    background: rgba(0, 0, 0, 0.5);
+  }
 }
 </style>
