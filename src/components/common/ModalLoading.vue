@@ -31,6 +31,7 @@ export default defineComponent({});
   position: absolute;
   width: 100vw;
   top: 38%;
+  left: -18px;
   @media (min-width: $lg) {
     margin-left: -224px;
   }

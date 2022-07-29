@@ -17,7 +17,8 @@
       </router-view>
     </dashboard-layout>
 
-    <modal-loading v-if="isLoading" />
+    <!-- <modal-loading v-if="isLoading" /> -->
+    <modal-loading v-if="true" />
 
     <transition name="fade">
       <alert-box
