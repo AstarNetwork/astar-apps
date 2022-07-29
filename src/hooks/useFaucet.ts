@@ -141,7 +141,7 @@ export function useFaucet(isModalFaucet?: Ref<boolean>) {
     async () => {
       const currentAccountRef = currentAccount.value;
       const isModalFaucetRef = isModalFaucet && isModalFaucet.value;
-      if (!currentAccountRef || !currentNetworkIdx.value || !isModalFaucetRef) return;
+      if (!currentAccountRef || !isModalFaucetRef) return;
       const endpoint = providerEndpoints[currentNetworkIdx.value].faucetEndpoint;
 
       const data = await getFaucetInfo({ account: currentAccountRef, endpoint });
