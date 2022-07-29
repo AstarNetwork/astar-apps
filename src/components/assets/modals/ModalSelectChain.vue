@@ -3,13 +3,13 @@
     <div class="row__chain" :class="isEnableSetChain && 'cursor-pointer'" @click="isOpen = true">
       <img :src="chain.img" alt="chain-logo" class="logo" />
       <input
+        v-click-away="closeOption"
         :value="chain.name"
         class="input--chain text--title"
         :class="isEnableSetChain && 'cursor-pointer'"
         type="text"
         spellcheck="false"
         :readonly="true"
-        @blur="closeOption"
       />
       <astar-icon-base
         v-if="isEnableSetChain"
@@ -39,7 +39,6 @@
   </div>
 </template>
 <script lang="ts">
-import { wait } from 'src/hooks/helper/common';
 import { XcmChain } from 'src/modules/xcm';
 import { computed, defineComponent, PropType, ref } from 'vue';
 
@@ -65,10 +64,7 @@ export default defineComponent({
   setup(props) {
     const isOpen = ref<boolean>(false);
 
-    const closeOption = async (): Promise<void> => {
-      // Memo: wait for updating the chain state before closing
-      const delay = 200;
-      await wait(delay);
+    const closeOption = (): void => {
       isOpen.value = false;
     };
 

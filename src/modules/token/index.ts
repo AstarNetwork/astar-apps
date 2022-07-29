@@ -131,7 +131,19 @@ export const AUSD = {
   wrapUrl: null,
 };
 
-export const registeredErc20Tokens = [WASTR, DOT, KSM, KUSD, KAR, LKSM, ACA, LDOT, AUSD];
+export const MOVR = {
+  srcChainId: 336,
+  address: '0xffffffff00000000000000010000000000000004',
+  decimal: 18,
+  symbol: 'MOVR',
+  name: 'Moonriver',
+  image: 'https://assets.coingecko.com/coins/images/17984/small/9285.png?1630028620',
+  isWrappedToken: false,
+  isXC20: true,
+  wrapUrl: null,
+};
+
+export const registeredErc20Tokens = [WASTR, DOT, KSM, KUSD, KAR, LKSM, ACA, LDOT, AUSD, MOVR];
 
 // Memo: Define the token image source
 export const tokenImageMap = {

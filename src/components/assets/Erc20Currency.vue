@@ -110,7 +110,7 @@
 <script lang="ts">
 import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
 import { addToEvmProvider, getEvmProvider } from 'src/hooks/helper/wallet';
-import { Erc20Token, getErc20Explorer, getStoredERC20Tokens } from 'src/modules/token';
+import { Erc20Token, getErc20Explorer, getStoredERC20Tokens, MOVR } from 'src/modules/token';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType } from 'vue';
 import { truncate } from 'src/hooks/helper/common';
@@ -151,12 +151,17 @@ export default defineComponent({
       return getErc20Explorer({ currentNetworkIdx: currentNetworkIdx.value, tokenAddress });
     });
 
-    // Memo: Remove after runtime upgrading in astar network to enable EVM withdrawal
     const isDisabledXcmButton = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
       const chain = chainInfo ? chainInfo.chain : '';
       const currentNetworkIdx = getProviderIndex(chain);
-      return currentNetworkIdx === endpointKey.ASTAR && token.symbol !== 'DOT';
+
+      // Memo: Remove after runtime upgrading in shinde
+      const isMovr = token.symbol === MOVR.symbol;
+      // Memo: Remove after runtime upgrading in astar network to enable EVM withdrawal
+      const isAstar = currentNetworkIdx === endpointKey.ASTAR;
+
+      return (isAstar && token.symbol !== 'DOT') || isMovr;
     });
 
     const isImportedToken = computed<boolean>(
