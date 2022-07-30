@@ -1,10 +1,9 @@
 <template>
-  <astar-simple-modal
-    v-if="!isLoading"
-    :show="isModalFaucet"
-    title="Faucet"
+  <AstarModal
+    :is-modal-open="isModalFaucet"
+    :title="$t('assets.faucet')"
     :is-closing="isClosingModal"
-    @close="closeModal"
+    :close-modal="closeModal"
   >
     <div class="wrapper--modal wrapper--faucet">
       <div class="wrapper__row--title">
@@ -50,7 +49,7 @@
         </button>
       </div>
     </div>
-  </astar-simple-modal>
+  </AstarModal>
 </template>
 <script lang="ts">
 import { useFaucet } from 'src/hooks';
@@ -60,10 +59,12 @@ import { wait } from 'src/hooks/helper/common';
 import vueRecaptcha from 'vue3-recaptcha2';
 import { RECAPCHA_SITE_KEY } from 'src/config/recapcha';
 import { useStore } from 'src/store';
+import AstarModal from 'src/components/common/AstarModal.vue';
 
 export default defineComponent({
   components: {
     vueRecaptcha,
+    AstarModal,
   },
   props: {
     isModalFaucet: {

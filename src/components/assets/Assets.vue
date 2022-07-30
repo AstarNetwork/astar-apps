@@ -27,25 +27,21 @@
         </div>
       </div>
     </div>
-    <Teleport to="#app--main">
-      <div :class="!isLoading && 'highest-z-index'">
-        <ModalXcmTransfer
-          :is-modal-xcm-transfer="isModalXcmTransfer"
-          :handle-modal-xcm-transfer="handleModalXcmTransfer"
-          :handle-update-xcm-token-balances="handleUpdateXcmTokenAssets"
-          :account-data="accountData"
-          :token="token"
-        />
+    <ModalXcmTransfer
+      :is-modal-xcm-transfer="isModalXcmTransfer"
+      :handle-modal-xcm-transfer="handleModalXcmTransfer"
+      :handle-update-xcm-token-balances="handleUpdateXcmTokenAssets"
+      :account-data="accountData"
+      :token="token"
+    />
 
-        <ModalXcmBridge
-          :is-modal-xcm-bridge="isModalXcmBridge"
-          :handle-modal-xcm-bridge="handleModalXcmBridge"
-          :account-data="accountData"
-          :token="token"
-          :handle-update-xcm-token-balances="handleUpdateXcmTokenAssets"
-        />
-      </div>
-    </Teleport>
+    <ModalXcmBridge
+      :is-modal-xcm-bridge="isModalXcmBridge"
+      :handle-modal-xcm-bridge="handleModalXcmBridge"
+      :account-data="accountData"
+      :token="token"
+      :handle-update-xcm-token-balances="handleUpdateXcmTokenAssets"
+    />
   </div>
 </template>
 <script lang="ts">

@@ -26,15 +26,11 @@
       </button>
     </div>
 
-    <Teleport to="#app--main">
-      <div :class="!isLoading && 'highest-z-index'">
-        <ModalImportTokens
-          :is-modal-import-tokens="isModalImportTokens"
-          :handle-modal-import-tokens="handleModalImportTokens"
-          :tokens="tokens"
-        />
-      </div>
-    </Teleport>
+    <ModalImportTokens
+      :is-modal-import-tokens="isModalImportTokens"
+      :handle-modal-import-tokens="handleModalImportTokens"
+      :tokens="tokens"
+    />
   </div>
 </template>
 <script lang="ts">

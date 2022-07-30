@@ -132,19 +132,15 @@
       </div>
     </div>
 
-    <Teleport to="#app--main">
-      <div :class="!isLoading && 'highest-z-index'">
-        <ModalTransfer
-          :is-modal-transfer="isModalTransfer"
-          :handle-modal-transfer="handleModalTransfer"
-          :symbol="symbol"
-          :account-data="null"
-          :token="token"
-          :handle-update-token-balances="handleUpdateTokenBalances"
-        />
-        <ModalFaucet :is-modal-faucet="isModalFaucet" :handle-modal-faucet="handleModalFaucet" />
-      </div>
-    </Teleport>
+    <ModalTransfer
+      :is-modal-transfer="isModalTransfer"
+      :handle-modal-transfer="handleModalTransfer"
+      :symbol="symbol"
+      :account-data="null"
+      :token="token"
+      :handle-update-token-balances="handleUpdateTokenBalances"
+    />
+    <ModalFaucet :is-modal-faucet="isModalFaucet" :handle-modal-faucet="handleModalFaucet" />
   </div>
 </template>
 <script lang="ts">
