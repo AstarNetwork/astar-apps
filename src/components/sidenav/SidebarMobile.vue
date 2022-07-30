@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div>
     <div class="header">
       <nav class="tabs">
         <router-link to="/dashboard" :class="['link', path === 'dashboard' && 'active-link']">
