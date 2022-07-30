@@ -133,15 +133,17 @@
     </div>
 
     <Teleport to="#app--main">
-      <ModalTransfer
-        :is-modal-transfer="isModalTransfer"
-        :handle-modal-transfer="handleModalTransfer"
-        :symbol="symbol"
-        :account-data="null"
-        :token="token"
-        :handle-update-token-balances="handleUpdateTokenBalances"
-      />
-      <ModalFaucet :is-modal-faucet="isModalFaucet" :handle-modal-faucet="handleModalFaucet" />
+      <div :class="!isLoading && 'highest-z-index'">
+        <ModalTransfer
+          :is-modal-transfer="isModalTransfer"
+          :handle-modal-transfer="handleModalTransfer"
+          :symbol="symbol"
+          :account-data="null"
+          :token="token"
+          :handle-update-token-balances="handleUpdateTokenBalances"
+        />
+        <ModalFaucet :is-modal-faucet="isModalFaucet" :handle-modal-faucet="handleModalFaucet" />
+      </div>
     </Teleport>
   </div>
 </template>
@@ -192,8 +194,6 @@ export default defineComponent({
   setup(props) {
     const isModalTransfer = ref<boolean>(false);
     const isModalFaucet = ref<boolean>(false);
-    const isModalXcmBridge = ref<boolean>(false);
-    const xcmToken = ref<Asset | null>(null);
     const isHideSmallBalances = ref<boolean>(false);
     const token = ref<SelectedToken | Erc20Token | string | null>(null);
     const symbol = ref<string>('');
@@ -319,6 +319,7 @@ export default defineComponent({
       accountData,
       cbridgeAppLink,
       isHideSmallBalances,
+      isLoading,
       setIsSearch,
       handleModalTransfer,
       handleModalFaucet,
