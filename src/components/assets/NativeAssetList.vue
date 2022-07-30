@@ -64,6 +64,7 @@
               </div>
             </div>
             <div class="column--two-buttons">
+              <!-- <div class="column--buttons"> -->
               <button
                 class="btn btn--sm"
                 @click="handleModalTransfer({ isOpen: true, currency: nativeTokenSymbol })"
