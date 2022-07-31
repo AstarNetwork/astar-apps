@@ -26,19 +26,18 @@
       </button>
     </div>
 
-    <Teleport to="#app--main">
-      <ModalImportTokens
-        :is-modal-import-tokens="isModalImportTokens"
-        :handle-modal-import-tokens="handleModalImportTokens"
-        :tokens="tokens"
-      />
-    </Teleport>
+    <ModalImportTokens
+      :is-modal-import-tokens="isModalImportTokens"
+      :handle-modal-import-tokens="handleModalImportTokens"
+      :tokens="tokens"
+    />
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, PropType } from 'vue';
+import { defineComponent, ref, PropType, computed } from 'vue';
 import ModalImportTokens from 'src/components/assets/modals/ModalImportTokens.vue';
 import { SelectedToken } from 'src/c-bridge';
+import { useStore } from 'src/store';
 
 export default defineComponent({
   components: {
@@ -80,10 +79,13 @@ export default defineComponent({
       props.toggleIsHideSmallBalances();
       closeOption();
     };
+    const store = useStore();
+    const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
 
     return {
       isModalImportTokens,
       isOptionsOpen,
+      isLoading,
       closeOption,
       handleHideSmallBalances,
       handleImportTokens,

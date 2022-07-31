@@ -1,10 +1,9 @@
 <template>
-  <astar-simple-modal
-    v-if="isModalXcmBridge"
-    :show="isModalXcmBridge"
+  <AstarModal
+    :is-modal-open="isModalXcmBridge"
     :title="$t('assets.xcm')"
     :is-closing="isClosingModal"
-    @close="closeModal"
+    :close-modal="closeModal"
   >
     <ModalLoading v-if="isLoadingApi" />
 
@@ -179,7 +178,7 @@
         </button>
       </div>
     </div>
-  </astar-simple-modal>
+  </AstarModal>
 </template>
 <script lang="ts">
 import { fadeDuration } from '@astar-network/astar-ui';
@@ -188,15 +187,17 @@ import AddressInput from 'src/components/common/AddressInput.vue';
 import { useTooltip, useXcmBridge, useXcmEvm } from 'src/hooks';
 import { Asset } from 'src/v2/models';
 import { truncate, wait } from 'src/hooks/helper/common';
-import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
+import { computed, defineComponent, PropType, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ModalLoading from '/src/components/common/ModalLoading.vue';
+import AstarModal from 'src/components/common/AstarModal.vue';
 
 export default defineComponent({
   components: {
     AddressInput,
     ModalSelectChain,
     ModalLoading,
+    AstarModal,
   },
   props: {
     isModalXcmBridge: {

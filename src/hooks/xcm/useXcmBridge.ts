@@ -19,7 +19,6 @@ import { useStore } from 'src/store';
 import { Asset } from 'src/v2/models';
 import { computed, ref, Ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { wait } from '../helper/common';
 import { isValidAddressPolkadotAddress } from './../helper/plasmUtils';
 import { AcalaApi } from './parachainApi/AcalaApi';
 import { ParachainApi, RelaychainApi } from './SubstrateApi';
@@ -168,18 +167,13 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
     const originChainMinBal = existentialDeposit.value?.originChainMinBal;
     if (!originChainMinBal) return false;
 
-    if (isDeposit.value) {
-      // Memo: ED is no longer required for the deposit transaction
-      return true;
-    } else {
-      // Memo: wait for updating relaychainNativeBalance
-      await wait(500);
-      const originChainNativeBalance = isH160.value
-        ? evmDestAddressBalance.value
-        : originChainNativeBal.value;
+    const originChainNativeBalance = isH160.value
+      ? evmDestAddressBalance.value
+      : originChainNativeBal.value;
 
-      return originChainNativeBalance > originChainMinBal;
-    }
+    const isCountSendingAmount = isDeposit.value && selectedToken.value.isNativeToken;
+    const sendingAmount = isCountSendingAmount ? amount : 0;
+    return originChainNativeBalance - sendingAmount > originChainMinBal;
   };
 
   const checkIsEvmDestAddress = (): boolean => {
@@ -229,9 +223,9 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
     } else {
       // Memo: deposit / withdrawal in native to native
 
-      if (Number(amount.value) > fromAddressBalance.value) {
+      if (sendingAmount > fromAddressBalance.value) {
         errMsg.value = t('warning.insufficientBalance');
-      } else if (!(await checkIsEnoughEd(Number(amount.value)))) {
+      } else if (!(await checkIsEnoughEd(sendingAmount))) {
         errMsg.value = t('warning.insufficientExistentialDeposit', {
           network: existentialDeposit.value?.chain,
         });

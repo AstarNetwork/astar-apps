@@ -162,26 +162,24 @@
       </div>
     </div>
 
-    <Teleport to="#app--main">
-      <ModalTransfer
-        :is-modal-transfer="isModalTransfer"
-        :handle-modal-transfer="handleModalTransfer"
-        :symbol="nativeTokenSymbol"
-        :account-data="accountData"
-      />
-      <ModalFaucet :is-modal-faucet="isModalFaucet" :handle-modal-faucet="handleModalFaucet" />
-      <ModalEvmWithdraw
-        :is-modal-evm-withdraw="isModalEvmWithdraw"
-        :handle-modal-evm-withdraw="handleModalEvmWithdraw"
-        :native-token-symbol="nativeTokenSymbol"
-      />
-      <ModalVesting
-        :is-modal-vesting="isModalVesting"
-        :handle-modal-vesting="handleModalVesting"
-        :native-token-symbol="nativeTokenSymbol"
-        :account-data="accountData"
-      />
-    </Teleport>
+    <ModalTransfer
+      :is-modal-transfer="isModalTransfer"
+      :handle-modal-transfer="handleModalTransfer"
+      :symbol="nativeTokenSymbol"
+      :account-data="accountData"
+    />
+    <ModalFaucet :is-modal-faucet="isModalFaucet" :handle-modal-faucet="handleModalFaucet" />
+    <ModalEvmWithdraw
+      :is-modal-evm-withdraw="isModalEvmWithdraw"
+      :handle-modal-evm-withdraw="handleModalEvmWithdraw"
+      :native-token-symbol="nativeTokenSymbol"
+    />
+    <ModalVesting
+      :is-modal-vesting="isModalVesting"
+      :handle-modal-vesting="handleModalVesting"
+      :native-token-symbol="nativeTokenSymbol"
+      :account-data="accountData"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -227,6 +225,7 @@ export default defineComponent({
     const mainnetFaucetAmount = 0.002 / 2;
 
     const store = useStore();
+    const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const selectedAddress = computed(() => store.getters['general/selectedAddress']);
     const { balance, accountData } = useBalance(selectedAddress);
     const { numEvmDeposit } = useEvmDeposit();
@@ -312,6 +311,7 @@ export default defineComponent({
       isModalEvmWithdraw,
       isModalVesting,
       xcmNativeToken,
+      isLoading,
       handleModalVesting,
       handleModalTransfer,
       handleModalFaucet,
