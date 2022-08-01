@@ -188,7 +188,9 @@ export class MoonbeamApi extends ChainApi {
       value: '0x0',
       data: contract.methods.transfer(currencyAddress, amount, destination, weight).encodeABI(),
     };
-    const estimatedGas = await this._web3.eth.estimateGas(rawTx);
+    const estimatedGas = await this._web3.eth.estimateGas(rawTx).catch((error) => {
+      throw Error('Insufficient funds to cover the cost of gas');
+    });
     const txDetails = await this._web3.eth.sendTransaction({ ...rawTx, gas: estimatedGas });
 
     return txDetails.transactionHash;

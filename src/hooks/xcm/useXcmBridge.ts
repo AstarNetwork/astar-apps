@@ -27,11 +27,11 @@ import { useStore } from 'src/store';
 import { Asset } from 'src/v2/models';
 import { computed, ref, Ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { wait } from '../helper/common';
 import { isValidAddressPolkadotAddress } from './../helper/plasmUtils';
 import { AcalaApi, MoonbeamApi } from './parachainApi';
 import { MOONBEAM_ASTAR_TOKEN_ID } from './parachainApi/MoonbeamApi';
 import { AstarApi, AstarToken, ChainApi } from './SubstrateApi';
+import { wait } from '../helper/common';
 
 const { Acala, Astar, Karura, Moonriver, Polkadot, Shiden, Kusama } = xcmChainObj;
 
@@ -119,7 +119,6 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
     errMsg.value = '';
     evmDestAddress.value = '';
     evmDestAddressBalance.value = 0;
-    originChainNativeBal.value = 0;
   };
 
   const setSrcChain = (chain: XcmChain): void => {
@@ -197,30 +196,23 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
         ? existentialDeposit.value?.originChainMinBal
         : existentialDeposit.value?.amount;
 
-    if (isDeposit.value) {
-      // Memo: ED is no longer required for the deposit transaction
-      return true;
-    } else {
-      // Memo: wait for updating relaychainNativeBalance
-      await wait(500);
+    const fetchMoonbeamNativeBal = async (): Promise<number> => {
+      const bal = (await originChainApi?.getNativeBalance(evmDestAddress.value)) || '0';
+      return Number(ethers.utils.formatEther(bal.toString()));
+    };
 
-      const fetchMoonbeamNativeBal = async (): Promise<number> => {
-        const bal = (await originChainApi?.getNativeBalance(evmDestAddress.value)) || '0';
-        return Number(ethers.utils.formatEther(bal.toString()));
-      };
+    const fromOriginChainNativeBal = isMoonbeamWithdrawal.value
+      ? await fetchMoonbeamNativeBal()
+      : originChainNativeBal.value;
 
-      const destOriginChainNativeBal = isMoonbeamWithdrawal.value
-        ? await fetchMoonbeamNativeBal()
-        : originChainNativeBal.value;
-      const originChainNativeBalance = isH160.value
-        ? evmDestAddressBalance.value
-        : destOriginChainNativeBal;
+    const originChainNativeBalance = isH160.value
+      ? evmDestAddressBalance.value
+      : fromOriginChainNativeBal;
 
-      const amt = isAstarNativeTransfer.value ? 0 : amount;
-      const originChainMinBalance = originChainMinBal || 0;
-
-      return originChainNativeBalance - amt >= originChainMinBalance;
-    }
+    const isCountSendingAmount =
+      isDeposit.value && selectedToken.value && selectedToken.value.isNativeToken;
+    const sendingAmount = isCountSendingAmount ? amount : 0;
+    return originChainNativeBalance - sendingAmount > (originChainMinBal || 0);
   };
 
   const checkIsEvmDestAddress = (): boolean => {
@@ -274,12 +266,8 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
     } else {
       // if: deposit / withdrawal from native to native
 
-      if (!evmDestAddress.value) {
-        return;
-      }
-
-      const isEnoughEd = await checkIsEnoughEd(Number(amount.value));
-      if (Number(amount.value) > fromAddressBalance.value) {
+      const isEnoughEd = await checkIsEnoughEd(sendingAmount);
+      if (sendingAmount > fromAddressBalance.value) {
         errMsg.value = t('warning.insufficientBalance');
       } else if (!isEnoughEd) {
         errMsg.value = t('warning.insufficientExistentialDeposit', {

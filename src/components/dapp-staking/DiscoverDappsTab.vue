@@ -41,12 +41,14 @@
     </div>
 
     <Teleport to="#app--main">
-      <ModalRegisterDapp
-        v-if="showRegisterDappModal"
-        v-model:is-open="showRegisterDappModal"
-        :show-close-button="false"
-      />
-      <ModalMaintenance :show="isPalletDisabled" />
+      <div :class="!isLoading && 'highest-z-index'">
+        <ModalRegisterDapp
+          v-if="showRegisterDappModal"
+          v-model:is-open="showRegisterDappModal"
+          :show-close-button="false"
+        />
+        <ModalMaintenance :show="isPalletDisabled" />
+      </div>
     </Teleport>
   </div>
 </template>
@@ -84,6 +86,7 @@ export default defineComponent({
   setup() {
     useMeta({ title: 'Discover dApps' });
     const store = useStore();
+    const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const { progress, blocksUntilNextEra, era } = useCurrentEra();
     const { currentAccount } = useAccount();
     const { accountData } = useBalance(currentAccount);
@@ -120,6 +123,7 @@ export default defineComponent({
       isPalletDisabled,
       stakeInfos,
       stakingList,
+      isLoading,
     };
   },
 });
