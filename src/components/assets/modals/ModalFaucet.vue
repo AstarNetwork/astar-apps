@@ -1,5 +1,6 @@
 <template>
   <AstarModal
+    v-if="!isLoading"
     :is-modal-open="isModalFaucet"
     :title="$t('assets.faucet')"
     :is-closing="isClosingModal"
