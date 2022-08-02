@@ -1,6 +1,8 @@
 import DiscoverDappsTab from 'components/dapp-staking/DiscoverDappsTab.vue';
 import ManageDappsTab from 'components/dapp-staking/ManageDappsTab.vue';
-import Assets from 'pages/Assets.vue';
+import AssetsPage from 'pages/AssetsPage.vue';
+import Assets from 'components/assets/Assets.vue';
+import Transfer from 'pages/Transfer.vue';
 import Store from 'src/pages/DappStaking.vue';
 import Dashboard from 'src/pages/Dashboard.vue';
 import { RouteRecordRaw } from 'vue-router';
@@ -17,13 +19,26 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/assets',
     name: 'Assets',
-    component: Assets,
+    component: AssetsPage,
     children: [
       {
         path: 'deeplink-metamask',
         component: Assets,
       },
+      {
+        path: '',
+        component: Assets,
+      },
+      {
+        path: 'transfer',
+        component: Transfer,
+      },
     ],
+  },
+  {
+    path: '/transfer',
+    name: 'Transfer',
+    component: Transfer,
   },
   {
     path: '/balance',

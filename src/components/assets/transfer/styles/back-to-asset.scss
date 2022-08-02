@@ -1,0 +1,13 @@
+@import 'src/css/quasar.variables.scss';
+
+.container--back {
+  color: $gray-4;
+  display: flex;
+  align-items: center;
+  column-gap: 6px;
+  font-weight: 500;
+}
+
+.icon--back {
+  font-size: 18px;
+}

@@ -1,0 +1,10 @@
+@import 'src/css/quasar.variables.scss';
+
+.container--mobile-navigator {
+  display: flex;
+  column-gap: 18px;
+  padding: 32px 0;
+  @media (min-width: $lg) {
+    display: none;
+  }
+}
