@@ -1,10 +1,9 @@
 <template>
-  <astar-simple-modal
-    v-if="isModalTransfer"
-    :show="isModalTransfer"
+  <AstarModal
+    :is-modal-open="isModalTransfer"
     :title="$t('assets.modals.transfer')"
     :is-closing="isClosingModal"
-    @close="closeModal"
+    :close-modal="closeModal"
   >
     <div class="wrapper--modal">
       <div class="rows">
@@ -125,7 +124,7 @@
         </button>
       </div>
     </div>
-  </astar-simple-modal>
+  </AstarModal>
 </template>
 <script lang="ts">
 import { fadeDuration } from '@astar-network/astar-ui';
@@ -157,9 +156,15 @@ import ModalSelectAccount from './ModalSelectAccount.vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
 import { SupportWallet } from 'src/config/wallets';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
+import AstarModal from 'src/components/common/AstarModal.vue';
 
 export default defineComponent({
-  components: { ModalSelectAccount, SpeedConfiguration, [Jazzicon.name]: Jazzicon },
+  components: {
+    ModalSelectAccount,
+    SpeedConfiguration,
+    AstarModal,
+    [Jazzicon.name]: Jazzicon,
+  },
   props: {
     isModalTransfer: {
       type: Boolean,

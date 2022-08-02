@@ -214,8 +214,18 @@
 }
 
 .column--two-buttons {
+  display: grid;
+  row-gap: 14px;
+  align-items: center;
   @media (min-width: $md) {
     grid-template-columns: auto auto;
+  }
+  @media (min-width: $lg) {
+    display: block;
+    margin-right: -16px;
+  }
+  @media (min-width: $xl) {
+    margin-right: -56px;
   }
 }
 
