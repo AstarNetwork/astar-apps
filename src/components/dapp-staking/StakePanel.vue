@@ -251,7 +251,8 @@ export default defineComponent({
 
     const unstake = async (stakeData: StakeModel): Promise<void> => {
       const amount = getAmount(stakeData.amount, stakeData.unit);
-      const unstakeAmount = plasmUtils.balanceFormatter(amount);
+      const amountActual = getAmount(stakeData.unbondedActual, stakeData.unit);
+      const unstakeAmount = plasmUtils.balanceFormatter(amountActual);
       try {
         const transaction = canUnbondWithdraw.value
           ? $api!.tx.dappsStaking.unbondAndUnstake(getAddressEnum(props.dapp.address), amount)

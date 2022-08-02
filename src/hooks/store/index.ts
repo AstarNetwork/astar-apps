@@ -8,6 +8,7 @@ export interface StakeModel {
   amount: number;
   unit: string;
   decimal: number;
+  unbondedActual: number;
 }
 
 export const getAmount = (amount: number, unit: string): BN => {
