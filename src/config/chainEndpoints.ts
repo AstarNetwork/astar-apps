@@ -47,8 +47,9 @@ export const providerEndpoints: ChainProvider[] = [
     info: 'Smart contract platform for decentralized applications (dapps) on the Polkadot network',
     endpoints: [
       { name: 'Astar', endpoint: 'wss://wss.astar.network' },
-      { name: 'OnFinality', endpoint: 'wss://astar.api.onfinality.io/public-ws' },
       { name: 'Dwellir', endpoint: 'wss://astar-rpc.dwellir.com' },
+      { name: 'Pinknode', endpoint: 'wss://public-rpc.pinknode.io/astar' },
+      { name: 'OnFinality', endpoint: 'wss://astar.api.onfinality.io/public-ws' },
     ],
     favicon: 'https://polkadot.js.org/apps/static/astar.b48435e0.png',
     isSupportContract: true,
@@ -69,9 +70,9 @@ export const providerEndpoints: ChainProvider[] = [
     info: 'Smart contract platform for decentralized applications (dapps) on the Kusama network',
     endpoints: [
       { name: 'Shiden', endpoint: 'wss://rpc.shiden.astar.network' },
-      { name: 'OnFinality', endpoint: 'wss://shiden.api.onfinality.io/public-ws' },
-      { name: 'Pinknode', endpoint: 'wss://rpc.pinknode.io/shiden/explorer' },
       { name: 'Dwellir', endpoint: 'wss://shiden-rpc.dwellir.com' },
+      { name: 'Pinknode', endpoint: 'wss://rpc.pinknode.io/shiden/explorer' },
+      { name: 'OnFinality', endpoint: 'wss://shiden.api.onfinality.io/public-ws' },
     ],
     favicon: 'icons/shiden.png',
     isSupportContract: true,
