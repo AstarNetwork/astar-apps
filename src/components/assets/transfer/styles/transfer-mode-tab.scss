@@ -1,0 +1,32 @@
+@import 'src/css/quasar.variables.scss';
+
+.box--tab {
+  width: 170px;
+  display: flex;
+  justify-content: center;
+  height: 42px;
+}
+
+.selected-tab {
+  border-bottom: 3px solid $blue;
+  transition: all 0.3s ease 0s;
+}
+
+.unselected-tab {
+  cursor: pointer;
+  border-bottom: 0px solid transparent;
+  transition: all 0.3s ease 0s;
+}
+
+.text--selected {
+  font-weight: 600;
+}
+
+.row--tab {
+  display: flex;
+}
+
+.row--mode-tab {
+  display: flex;
+  column-gap: 12px;
+}

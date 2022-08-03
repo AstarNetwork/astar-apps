@@ -4,10 +4,10 @@
     <MobileNavigator />
     <div class="wrapper--transfer">
       <div class="container--transfer">
-        <div class="row--tab">
-          <div>XCM</div>
-          <div>Transfer</div>
-        </div>
+        <TransferModeTab
+          :is-local-transfer="isLocalTransfer"
+          :set-is-local-transfer="setIsLocalTransfer"
+        />
         <div class="wrapper-containers">
           <div>left</div>
           <div>right</div>
@@ -17,14 +17,19 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import BackToAsset from 'src/components/assets/transfer/BackToAsset.vue';
 import MobileNavigator from 'src/components/assets/transfer/MobileNavigator.vue';
+import TransferModeTab from 'src/components/assets/transfer/TransferModeTab.vue';
 
 export default defineComponent({
-  components: { BackToAsset, MobileNavigator },
+  components: { BackToAsset, MobileNavigator, TransferModeTab },
   setup() {
-    return {};
+    const isLocalTransfer = ref<boolean>(true);
+    const setIsLocalTransfer = (result: boolean): void => {
+      isLocalTransfer.value = result;
+    };
+    return { isLocalTransfer, setIsLocalTransfer };
   },
 });
 </script>
