@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper--information">
-    <div class="container--information">
+    <div id="faq" class="container--information">
       <div class="row--title">
         <astar-icon-group size="20" />
         <span>FAQ</span>
@@ -20,7 +20,7 @@
         </div>
       </div>
     </div>
-    <div class="container--information">
+    <div id="history" class="container--information">
       <div class="row--title">
         <astar-icon-history size="20" />
         <span>Recent History</span>
@@ -33,7 +33,7 @@
         <TransactionHistory :is-high-lighted="false" />
       </div>
     </div>
-    <div class="container--information">
+    <div id="hot-topics" class="container--information">
       <div class="row--title">
         <astar-icon-group size="20" />
         <span>Hot Topics</span>
