@@ -26,8 +26,10 @@
 .wrapper-containers {
   display: flex;
   flex-direction: column;
+  row-gap: 48px;
   @media (min-width: $lg) {
     flex-direction: row;
     column-gap: 40px;
+    row-gap: 0px;
   }
 }

@@ -9,7 +9,8 @@
           :set-is-local-transfer="setIsLocalTransfer"
         />
         <div class="wrapper-containers">
-          <div>Transaction UI</div>
+          <div v-if="isLocalTransfer">Todo: Local Transfer UI</div>
+          <div v-else>Todo: XCM UI</div>
           <Information />
         </div>
       </div>
