@@ -1,0 +1,55 @@
+@import 'src/css/quasar.variables.scss';
+
+.box--history {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.history--left {
+  display: flex;
+  column-gap: 8px;
+  align-items: center;
+}
+
+.icon--check-active {
+  color: $connected-green;
+}
+
+.icon--check {
+  color: $gray-4;
+}
+
+.history-description-active {
+  color: $astar-blue;
+  font-weight: 500;
+}
+
+.history-description {
+  font-weight: 500;
+}
+
+.container--explorer-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  stroke: $astar-blue;
+  transition: all 0.3s ease 0s;
+  border-radius: 30px;
+  height: 24px;
+  svg {
+    height: 30px;
+    width: 30px;
+  }
+  &:hover {
+    stroke: white;
+    background-color: $astar-blue;
+  }
+}
+
+.explorer-icon-active {
+  stroke: $astar-blue;
+}
+.explorer-icon {
+  stroke: $gray-4;
+}

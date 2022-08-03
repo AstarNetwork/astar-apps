@@ -9,8 +9,8 @@
           :set-is-local-transfer="setIsLocalTransfer"
         />
         <div class="wrapper-containers">
-          <div>left</div>
-          <div>right</div>
+          <div>Transaction UI</div>
+          <Information />
         </div>
       </div>
     </div>
@@ -21,9 +21,10 @@ import { defineComponent, ref } from 'vue';
 import BackToAsset from 'src/components/assets/transfer/BackToAsset.vue';
 import MobileNavigator from 'src/components/assets/transfer/MobileNavigator.vue';
 import TransferModeTab from 'src/components/assets/transfer/TransferModeTab.vue';
+import Information from 'src/components/assets/transfer/Information.vue';
 
 export default defineComponent({
-  components: { BackToAsset, MobileNavigator, TransferModeTab },
+  components: { BackToAsset, MobileNavigator, TransferModeTab, Information },
   setup() {
     const isLocalTransfer = ref<boolean>(true);
     const setIsLocalTransfer = (result: boolean): void => {
