@@ -4,22 +4,14 @@
   position: relative;
   display: flex;
   justify-content: center;
-  // margin-top: 16px;
-  // @media (min-width: $xxl) {
-  //   display: flex;
-  //   justify-content: center;
-  // }
-}
-
-.container--back {
 }
 
 .container--transfer {
   display: grid;
   row-gap: 32px;
   margin-bottom: 24px;
-  @media (min-width: $xxl) {
-    width: $container-max-width;
+  @media (min-width: $xl) {
+    justify-content: center;
   }
 }
 
@@ -27,9 +19,16 @@
   display: flex;
   flex-direction: column;
   row-gap: 48px;
+  @media (min-width: $md) {
+    flex-direction: row;
+    column-gap: 24px;
+    row-gap: 0px;
+  }
   @media (min-width: $lg) {
     flex-direction: row;
     column-gap: 40px;
-    row-gap: 0px;
+  }
+  @media (min-width: $xl) {
+    column-gap: 50px;
   }
 }

@@ -5,14 +5,17 @@
   flex-direction: column;
   row-gap: 16px;
   max-width: 400px;
+  @media (min-width: $xl) {
+    max-width: 420px;
+  }
 }
 
 .container--information {
-  border: 1px solid $gray-4;
+  border: 1px solid $gray-3;
   border-radius: 6px;
   box-sizing: border-box;
   padding: 16px;
-  color: $gray-4;
+  color: $gray-3;
 }
 
 .box--contents {
@@ -57,11 +60,20 @@
   transition: all 0.3s ease 0s;
   border-radius: 30px;
   height: 24px;
+  opacity: 0.5;
   svg {
     height: 30px;
     width: 30px;
   }
-  &:hover {
-    stroke: white;
+}
+
+.body--dark {
+  .container--information {
+    color: $gray-4;
+    background: $gray-6;
+    border: 1px solid $gray-4;
+  }
+  .container--explorer-icon {
+    opacity: 1;
   }
 }

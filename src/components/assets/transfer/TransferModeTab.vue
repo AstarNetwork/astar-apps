@@ -2,18 +2,19 @@
   <div class="row--tab">
     <div class="row--mode-tab">
       <div
-        :class="[isLocalTransfer ? 'selected-tab' : 'unselected-tab']"
+        :class="[isLocalTransfer ? 'selected-tab text--selected' : 'unselected-tab']"
         class="box--tab"
         @click="setIsLocalTransfer(true)"
       >
-        <span :class="[isLocalTransfer && 'text--selected']"> Transfer </span>
+        <span class="text--title-tab"> Transfer </span>
       </div>
       <div
-        :class="[!isLocalTransfer ? 'selected-tab' : 'unselected-tab']"
+        :class="[!isLocalTransfer ? 'selected-tab text--selected' : 'unselected-tab']"
         class="box--tab"
         @click="setIsLocalTransfer(false)"
       >
-        <span :class="[!isLocalTransfer && 'text--selected']"> Cross-chain Transfer </span>
+        <span class="text--title-tab"> Cross-chain Transfer </span>
+        <span class="text--xcm"> (XCM) </span>
       </div>
     </div>
   </div>

@@ -17,7 +17,8 @@
 }
 
 .icon--check {
-  color: $gray-4;
+  opacity: 0.5;
+  color: $connected-green;
 }
 
 .history-description-active {
@@ -41,10 +42,6 @@
     height: 30px;
     width: 30px;
   }
-  &:hover {
-    stroke: white;
-    background-color: $astar-blue;
-  }
 }
 
 .explorer-icon-active {
@@ -52,4 +49,16 @@
 }
 .explorer-icon {
   stroke: $gray-4;
+  opacity: 0.5;
+}
+
+.body--dark {
+  .icon--check {
+    opacity: 1;
+    color: $gray-4;
+  }
+  .explorer-icon {
+    opacity: 1;
+    stroke: $gray-4;
+  }
 }
