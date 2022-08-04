@@ -1,8 +1,7 @@
 import { useI18n } from 'vue-i18n';
 import { useGasPrice } from './useGasPrice';
 import { ISubmittableResult } from '@polkadot/types/types';
-import BN from 'bn.js';
-import { $api } from 'boot/api';
+import { $api, $web3 } from 'boot/api';
 import { ethers } from 'ethers';
 import { buildEvmAddress } from 'src/config/web3';
 import { useStore } from 'src/store';
@@ -12,7 +11,7 @@ import { useAccount } from './index';
 import { useCustomSignature } from './useCustomSignature';
 
 export function useEvmDeposit(fn?: () => void) {
-  const evmDeposit = ref<BN>(new BN(0));
+  const evmDeposit = ref<string>('0');
   const numEvmDeposit = ref<number>(0);
   const isEvmDeposit = ref<boolean>(false);
   const { currentAccount } = useAccount();
@@ -25,7 +24,7 @@ export function useEvmDeposit(fn?: () => void) {
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const { isCustomSig, handleResult, handleCustomExtrinsic } = useCustomSignature(fn ? { fn } : {});
 
-  const withdraw = async ({ amount, account }: { amount: BN; account: string }) => {
+  const withdraw = async ({ amount, account }: { amount: string; account: string }) => {
     try {
       const h160Addr = buildEvmAddress(account);
       const transaction = $api!.tx.evm.withdraw(h160Addr, amount);
@@ -69,8 +68,8 @@ export function useEvmDeposit(fn?: () => void) {
       const currentAccountRef = currentAccount.value;
       if (!currentAccountRef) return;
 
-      const getData = async (h160Addr: string): Promise<BN> => {
-        return await $api!.rpc.eth.getBalance(h160Addr);
+      const getData = async (h160Addr: string): Promise<string> => {
+        return (await $web3.value?.eth.getBalance(h160Addr)) || '0';
       };
 
       if (currentAccountRef) {
@@ -86,7 +85,6 @@ export function useEvmDeposit(fn?: () => void) {
 
   return {
     numEvmDeposit,
-    evmDeposit,
     isEvmDeposit,
     currentAccount,
     sendTransaction,

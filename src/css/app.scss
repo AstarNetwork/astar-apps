@@ -58,6 +58,10 @@ main {
   width: auto !important;
 }
 
+.highest-z-index {
+  z-index: 999 !important;
+}
+
 .body--dark {
   background: $body-bg-dark;
   main {

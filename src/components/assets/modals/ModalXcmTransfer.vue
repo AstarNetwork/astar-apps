@@ -1,10 +1,9 @@
 <template>
-  <astar-simple-modal
-    v-if="isModalXcmTransfer"
-    :show="isModalXcmTransfer"
+  <AstarModal
+    :is-modal-open="isModalXcmTransfer"
     :title="$t('assets.modals.transfer')"
     :is-closing="isClosingModal"
-    @close="closeModal"
+    :close-modal="closeModal"
   >
     <div v-if="token" class="wrapper--modal">
       <div class="rows">
@@ -113,7 +112,7 @@
         </button>
       </div>
     </div>
-  </astar-simple-modal>
+  </AstarModal>
 </template>
 <script lang="ts">
 import { fadeDuration } from '@astar-network/astar-ui';
@@ -127,9 +126,10 @@ import ModalSelectAccount from './ModalSelectAccount.vue';
 import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 import { truncate } from 'src/hooks/helper/common';
 import Jazzicon from 'vue3-jazzicon/src/components';
+import AstarModal from 'src/components/common/AstarModal.vue';
 
 export default defineComponent({
-  components: { ModalSelectAccount, SpeedConfiguration, [Jazzicon.name]: Jazzicon },
+  components: { ModalSelectAccount, SpeedConfiguration, AstarModal, [Jazzicon.name]: Jazzicon },
   props: {
     isModalXcmTransfer: {
       type: Boolean,
