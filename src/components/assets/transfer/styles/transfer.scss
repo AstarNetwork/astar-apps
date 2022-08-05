@@ -15,6 +15,11 @@
   }
 }
 
+.half-opacity {
+  opacity: 0.4;
+  transition: all 0.3s ease 0s;
+}
+
 .wrapper-containers {
   display: flex;
   flex-direction: column;

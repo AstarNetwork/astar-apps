@@ -1,0 +1,77 @@
+@import 'src/css/quasar.variables.scss';
+
+.container--select-chain {
+  border: 1px solid $gray-3;
+  border-radius: 6px;
+  box-sizing: border-box;
+  padding: 16px;
+  color: $gray-3;
+  height: 470px;
+  width: 348px;
+  @media (min-width: $md) {
+    width: 320px;
+  }
+  @media (min-width: $xl) {
+    width: 420px;
+  }
+}
+
+.container--select-chain-mobile {
+  border-radius: 6px;
+  box-sizing: border-box;
+  color: $gray-3;
+  background-color: transparent;
+  padding: 14px;
+}
+
+.row--title {
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+  margin-bottom: 12px;
+  font-size: 16px;
+}
+
+.container--chains {
+  display: flex;
+  flex-direction: column;
+}
+
+.row--chain {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  border-radius: 8px;
+  margin-left: -8px;
+  margin-right: -8px;
+  &:hover {
+    background: rgba(255, 255, 255, 0.02);
+  }
+}
+
+.column--chain-name {
+  display: flex;
+  column-gap: 8px;
+  align-items: center;
+  font-size: 16px;
+  padding: 16px;
+  color: $gray-5;
+}
+
+.chain-logo {
+  width: 24px;
+  height: 24px;
+  img {
+    border-radius: 50%;
+  }
+}
+
+.body--dark {
+  .container--select-chain {
+    color: $gray-1;
+    background: $gray-6;
+  }
+  .column--chain-name {
+    color: $gray-1;
+  }
+}

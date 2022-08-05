@@ -4,9 +4,16 @@
   display: flex;
   flex-direction: column;
   row-gap: 16px;
-  max-width: 400px;
+  // max-width: 400px;
+  // @media (min-width: $xl) {
+  //   max-width: 420px;
+  // }
+  width: 348px;
+  @media (min-width: $md) {
+    width: 320px;
+  }
   @media (min-width: $xl) {
-    max-width: 420px;
+    width: 420px;
   }
 }
 

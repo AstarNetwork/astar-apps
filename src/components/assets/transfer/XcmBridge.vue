@@ -4,7 +4,11 @@
 
     <div v-if="isReady" class="wrapper--xcm-bridge">
       <div class="rows">
-        <div class="box--input-chain" :class="isNativeBridge && 'box--hover--active'">
+        <div
+          class="box--input-chain"
+          :class="[isNativeBridge && 'box--hover--active', !isHighlightRightUi && 'cursor-pointer']"
+          @click="setRightUi('select-chain')"
+        >
           <div class="box__space-between">
             <span> {{ $t('from') }}</span>
             <div />
@@ -14,10 +18,14 @@
             :chains="chains"
             :chain="srcChain"
             :set-chain="setSrcChain"
-            :is-enable-set-chain="isNativeBridge"
+            :is-enable-set-chain="false"
           />
         </div>
-        <div class="box--input-chain" :class="isNativeBridge && 'box--hover--active'">
+        <div
+          class="box--input-chain"
+          :class="isNativeBridge && 'box--hover--active'"
+          @click="setRightUi('select-chain')"
+        >
           <div class="box__space-between">
             <span> {{ $t('to') }}</span>
             <div />
@@ -26,7 +34,7 @@
             :chains="chains"
             :chain="destChain"
             :set-chain="setDestChain"
-            :is-enable-set-chain="isNativeBridge"
+            :is-enable-set-chain="false"
           />
         </div>
 
@@ -166,6 +174,14 @@ export default defineComponent({
     //   type: Function,
     //   required: true,
     // },
+    setRightUi: {
+      type: Function,
+      required: true,
+    },
+    isHighlightRightUi: {
+      type: Boolean,
+      required: true,
+    },
     token: {
       type: (Object as PropType<Asset>) || null,
       required: false,
