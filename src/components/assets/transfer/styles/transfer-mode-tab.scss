@@ -42,6 +42,10 @@
 
 .row--tab {
   display: flex;
+  justify-content: center;
+  @media (min-width: $md) {
+    justify-content: flex-start;
+  }
 }
 
 .row--mode-tab {

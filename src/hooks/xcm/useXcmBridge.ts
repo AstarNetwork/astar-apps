@@ -58,7 +58,7 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
   const isAstar = computed(() => currentNetworkIdx.value === endpointKey.ASTAR);
 
   const isAstarNativeTransfer = computed<boolean>(() => {
-    const symbol = String(selectedToken.value.metadata.symbol);
+    const symbol = selectedToken.value ? selectedToken.value.metadata.symbol : '';
     return symbol === 'SDN' || symbol === 'ASTR';
   });
 
