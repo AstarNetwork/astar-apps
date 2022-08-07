@@ -38,7 +38,6 @@
     <ModalXcmBridge
       :is-modal-xcm-bridge="isModalXcmBridge"
       :handle-modal-xcm-bridge="handleModalXcmBridge"
-      :account-data="accountData"
       :token="token"
       :handle-update-xcm-token-balances="handleUpdateXcmTokenAssets"
     />
