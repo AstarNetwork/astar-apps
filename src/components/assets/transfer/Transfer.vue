@@ -109,7 +109,7 @@ export default defineComponent({
     watchEffect(() => {
       console.log('xcmAssets.value', xcmAssets.value);
       if (xcmAssets.value) {
-        token.value = xcmAssets.value.assets[0];
+        token.value = xcmAssets.value.assets.find((it) => it.metadata.symbol === 'DOT') as any;
       }
     });
     return {

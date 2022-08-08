@@ -54,7 +54,7 @@ export default defineComponent({
 
     watchEffect(() => {
       const relayChainId =
-        currentNetworkIdx.value === endpointKey.ASTAR ? Chain.Polkadot : Chain.Kusama;
+        currentNetworkIdx.value === endpointKey.ASTAR ? Chain.POLKADOT : Chain.KUSAMA;
       const selectableChains = xcmChains.filter((it) => {
         return it.relayChain === relayChainId;
       });

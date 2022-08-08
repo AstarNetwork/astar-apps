@@ -2,7 +2,7 @@ import { Struct } from '@polkadot/types';
 import { decodeAddress } from '@polkadot/util-crypto';
 import BN from 'bn.js';
 import { ExtrinsicPayload } from 'src/hooks/helper';
-import { RelaychainApi } from '../SubstrateApi';
+import { AstarNativeToken, ChainApi } from '../SubstrateApi';
 import { Asset } from 'src/v2/models';
 interface TokensAccounts extends Struct {
   readonly free: BN;
@@ -10,11 +10,11 @@ interface TokensAccounts extends Struct {
   readonly frozen: BN;
 }
 
-export class AcalaApi extends RelaychainApi {
-  private _AstarTokenId: { SDN: string; ASTR: string };
+const ASTAR_TOKEN_ID: AstarNativeToken = { SDN: '18', ASTR: '2' };
+
+export class AcalaApi extends ChainApi {
   constructor(endpoint: string) {
     super(endpoint);
-    this._AstarTokenId = { SDN: '18', ASTR: '2' };
   }
 
   public async getTokenBalances({
@@ -31,7 +31,7 @@ export class AcalaApi extends RelaychainApi {
     try {
       if (isAstarNativeToken) {
         const bal = await this.apiInst.query.tokens.accounts<TokensAccounts>(address, {
-          ForeignAsset: this._AstarTokenId[symbol],
+          ForeignAsset: ASTAR_TOKEN_ID[symbol],
         });
         return bal.free.toString();
       }
@@ -67,7 +67,7 @@ export class AcalaApi extends RelaychainApi {
 
     if (isAstarNativeToken) {
       token = {
-        ForeignAsset: this._AstarTokenId[symbol],
+        ForeignAsset: ASTAR_TOKEN_ID[symbol],
       };
     } else {
       token = {
