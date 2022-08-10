@@ -152,16 +152,9 @@ export default defineComponent({
     });
 
     const isDisabledXcmButton = computed(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      const chain = chainInfo ? chainInfo.chain : '';
-      const currentNetworkIdx = getProviderIndex(chain);
-
       // Memo: Remove after runtime upgrading in shinde
       const isMovr = token.symbol === MOVR.symbol;
-      // Memo: Remove after runtime upgrading in astar network to enable EVM withdrawal
-      const isAstar = currentNetworkIdx === endpointKey.ASTAR;
-
-      return (isAstar && token.symbol !== 'DOT') || isMovr;
+      return isMovr;
     });
 
     const isImportedToken = computed<boolean>(
