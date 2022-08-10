@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <!-- <ModalLoading v-if="isLoadingApi" /> -->
+    <ModalLoading v-if="isLoadingApi" />
 
     <div v-if="isReady" class="wrapper--xcm-bridge">
       <div class="rows">
@@ -156,18 +156,18 @@
 import { fadeDuration } from '@astar-network/astar-ui';
 import ModalSelectChain from 'src/components/assets/modals/ModalSelectChain.vue';
 import AddressInputV2 from 'src/components/common/AddressInputV2.vue';
-import { useTooltip, useXcmBridge, useXcmEvm } from 'src/hooks';
+import { useTooltip, useXcmBridgeV2, useXcmEvm } from 'src/hooks';
 import { Asset } from 'src/v2/models';
 import { truncate, wait } from 'src/hooks/helper/common';
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
-// import ModalLoading from '/src/components/common/ModalLoading.vue';
+import ModalLoading from '/src/components/common/ModalLoading.vue';
 
 export default defineComponent({
   components: {
     AddressInputV2,
     ModalSelectChain,
-    // ModalLoading,
+    ModalLoading,
   },
   props: {
     // handleUpdateXcmTokenBalances: {
@@ -216,7 +216,7 @@ export default defineComponent({
       setIsNativeBridge,
       setSrcChain,
       setDestChain,
-    } = useXcmBridge(tokenData);
+    } = useXcmBridgeV2(tokenData);
 
     const { callAssetWithdrawToPara } = useXcmEvm(tokenData);
 

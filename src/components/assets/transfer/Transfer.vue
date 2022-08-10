@@ -82,22 +82,6 @@ export default defineComponent({
     const isModalSelectChain = ref<boolean>(false);
     const rightUi = ref<RightUi>('information');
     const isLocalTransfer = ref<boolean>(false);
-    const setIsLocalTransfer = (result: boolean): void => {
-      isLocalTransfer.value = result;
-      const query = router.currentRoute.value.query;
-      const symbol = query.token as string;
-      const network = query.network as string;
-      // if (result) {
-      router.replace({
-        path: '/assets/transfer',
-        query: { token: symbol.toLowerCase(), network, mode: result ? 'local' : 'xcm' },
-      });
-      // router.replace({ query: { token: 'dot', network: 'astar', mode: result ? 'local' : 'xcm' } });
-      // router.push({
-      //   query: { mode: result ? 'local' : 'xcm' },
-      // });
-      // }
-    };
     const token = ref<Asset | null>(null);
     const router = useRouter();
     const { currentAccount } = useAccount();
@@ -108,13 +92,24 @@ export default defineComponent({
     const isHighlightRightUi = computed<boolean>(() => rightUi.value !== 'information');
     const { nativeTokenSymbol } = useNetworkInfo();
 
-    const isTransferNativeToken = computed(() => {
+    const isTransferNativeToken = computed<boolean>(() => {
       const query = router.currentRoute.value.query;
       const symbol = query.token as string;
       return symbol.toLowerCase() === nativeTokenSymbol.value.toLowerCase();
     });
 
-    const handleModalSelectChain = ({ isOpen }: { isOpen: boolean }) => {
+    const setIsLocalTransfer = (result: boolean): void => {
+      isLocalTransfer.value = result;
+      const query = router.currentRoute.value.query;
+      const symbol = query.token as string;
+      const network = query.network as string;
+      router.replace({
+        path: '/assets/transfer',
+        query: { token: symbol.toLowerCase(), network, mode: result ? 'local' : 'xcm' },
+      });
+    };
+
+    const handleModalSelectChain = ({ isOpen }: { isOpen: boolean }): void => {
       isModalSelectChain.value = isOpen;
     };
 
@@ -128,71 +123,69 @@ export default defineComponent({
       }
     };
 
-    const cancelHighlight = async (e: any) => {
+    const redirect = (): void => {
+      router.push({
+        path: '/assets/transfer',
+        query: { token: 'astr', network: 'astar', mode: 'local' },
+      });
+    };
+
+    const cancelHighlight = async (e: any): Promise<void> => {
       const openClass = 'container--select-chain';
       if (isHighlightRightUi.value && e.target.className !== openClass) {
-        setRightUi('information');
+        await setRightUi('information');
       }
     };
-    const handleUpdateXcmTokenAssets = () => {
+
+    const handleUpdateXcmTokenAssets = (): void => {
       if (currentAccount.value) {
         store.dispatch('assets/getAssets', currentAccount.value);
       }
     };
 
-    watch([currentAccount], handleUpdateXcmTokenAssets, { immediate: true });
-
-    const redirect = () => {
-      router.push({
-        path: '/assets/transfer',
-        query: { token: 'dot', network: 'astar', mode: 'local' },
-      });
-    };
-
-    const handleDefaultConfig = () => {
+    const handleDefaultConfig = (): void => {
+      const nativeTokenSymbolRef = nativeTokenSymbol.value;
       const query = router.currentRoute.value.query;
-      const symbol = query.token as string;
+      const s = query.token as string;
+      const symbol = s.toLowerCase() || '';
       const mode = query.mode as string;
-      if (mode === 'xcm') {
-        isLocalTransfer.value = false;
-      } else {
-        isLocalTransfer.value = true;
+      isLocalTransfer.value = mode === 'local';
+
+      if (!symbol) return redirect();
+      if (!xcmAssets.value || xcmAssets.value.assets.length === 0) {
+        return;
       }
 
-      if (xcmAssets.value && xcmAssets.value.assets.length > 0) {
-        try {
-          console.log('symbol', symbol);
-          console.log('nativeTokenSymbol.value', nativeTokenSymbol.value);
-          if (symbol.toLowerCase() === nativeTokenSymbol.value.toLowerCase()) {
-            token.value = generateAstarNativeTokenObject(nativeTokenSymbol.value) as any;
-          } else {
-            token.value = xcmAssets.value.assets.find(
-              (it) => it.metadata.symbol.toLowerCase() === symbol.toLowerCase()
-            ) as Asset;
-          }
-          // console.log('symbol', symbol);
-          // console.log('token.value', token.value);
-          if (!token.value) throw Error('No token is found');
-        } catch (error) {
-          console.error('error', error);
-          redirect();
+      try {
+        if (symbol === nativeTokenSymbolRef.toLowerCase()) {
+          token.value = generateAstarNativeTokenObject(nativeTokenSymbolRef) as any;
+        } else {
+          token.value = xcmAssets.value.assets.find(
+            (it) => it.metadata.symbol.toLowerCase() === symbol
+          ) as Asset;
         }
+        if (!token.value) throw Error('No token is found');
+      } catch (error) {
+        console.error('error', error);
+        redirect();
       }
     };
 
+    watch([currentAccount], handleUpdateXcmTokenAssets, { immediate: true });
     watchEffect(handleDefaultConfig);
+
     return {
       isLocalTransfer,
       accountData,
-      setIsLocalTransfer,
       token,
       isHighlightRightUi,
       rightUi,
-      setRightUi,
-      cancelHighlight,
-      handleModalSelectChain,
-      isModalSelectChain,
       isTransferNativeToken,
+      isModalSelectChain,
+      setRightUi,
+      handleModalSelectChain,
+      cancelHighlight,
+      setIsLocalTransfer,
     };
   },
 });
