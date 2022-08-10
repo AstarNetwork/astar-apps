@@ -10,11 +10,21 @@
           :class="isHighlightRightUi && 'half-opacity'"
         />
         <div class="wrapper-containers">
-          <LocalTransfer
-            v-if="isLocalTransfer"
-            :account-data="accountData"
-            :class="isHighlightRightUi && 'half-opacity'"
-          />
+          <div v-if="isLocalTransfer">
+            <LocalTransfer
+              v-if="isTransferNativeToken"
+              :account-data="accountData"
+              :class="isHighlightRightUi && 'half-opacity'"
+              :symbol="token ? token.metadata.symbol : 'ASTR'"
+            />
+            <LocalXcmTransfer
+              v-else
+              :account-data="accountData"
+              :class="isHighlightRightUi && 'half-opacity'"
+              :symbol="token ? token.metadata.symbol : 'ASTR'"
+              :token="token"
+            />
+          </div>
           <div v-else>
             <XcmBridge
               v-if="token !== null"
@@ -42,14 +52,17 @@ import MobileNavigator from 'src/components/assets/transfer/MobileNavigator.vue'
 import TransferModeTab from 'src/components/assets/transfer/TransferModeTab.vue';
 import Information from 'src/components/assets/transfer/Information.vue';
 import LocalTransfer from 'src/components/assets/transfer/LocalTransfer.vue';
+import LocalXcmTransfer from 'src/components/assets/transfer/LocalXcmTransfer.vue';
 import SelectChain from 'src/components/assets/transfer/SelectChain.vue';
 import XcmBridge from 'src/components/assets/transfer/XcmBridge.vue';
 import ModalSelectChain from 'src/components/assets/transfer/ModalSelectChain.vue';
-import { useAccount, useBalance, useBreakpoints } from 'src/hooks';
+import { useAccount, useBalance, useBreakpoints, useNetworkInfo } from 'src/hooks';
 import { useStore } from 'src/store';
 import { XcmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
 import { wait } from 'src/hooks/helper/common';
+import { useRouter } from 'vue-router';
+import { generateAstarNativeTokenObject } from 'src/modules/xcm/tokens';
 
 type RightUi = 'information' | 'select-chain';
 
@@ -63,6 +76,7 @@ export default defineComponent({
     XcmBridge,
     SelectChain,
     ModalSelectChain,
+    LocalXcmTransfer,
   },
   setup() {
     const isModalSelectChain = ref<boolean>(false);
@@ -70,14 +84,35 @@ export default defineComponent({
     const isLocalTransfer = ref<boolean>(false);
     const setIsLocalTransfer = (result: boolean): void => {
       isLocalTransfer.value = result;
+      const query = router.currentRoute.value.query;
+      const symbol = query.token as string;
+      const network = query.network as string;
+      // if (result) {
+      router.replace({
+        path: '/assets/transfer',
+        query: { token: symbol.toLowerCase(), network, mode: result ? 'local' : 'xcm' },
+      });
+      // router.replace({ query: { token: 'dot', network: 'astar', mode: result ? 'local' : 'xcm' } });
+      // router.push({
+      //   query: { mode: result ? 'local' : 'xcm' },
+      // });
+      // }
     };
     const token = ref<Asset | null>(null);
+    const router = useRouter();
     const { currentAccount } = useAccount();
     const { accountData } = useBalance(currentAccount);
     const store = useStore();
     const { screenSize, width } = useBreakpoints();
     const xcmAssets = computed<XcmAssets>(() => store.getters['assets/getAllAssets']);
     const isHighlightRightUi = computed<boolean>(() => rightUi.value !== 'information');
+    const { nativeTokenSymbol } = useNetworkInfo();
+
+    const isTransferNativeToken = computed(() => {
+      const query = router.currentRoute.value.query;
+      const symbol = query.token as string;
+      return symbol.toLowerCase() === nativeTokenSymbol.value.toLowerCase();
+    });
 
     const handleModalSelectChain = ({ isOpen }: { isOpen: boolean }) => {
       isModalSelectChain.value = isOpen;
@@ -106,12 +141,46 @@ export default defineComponent({
     };
 
     watch([currentAccount], handleUpdateXcmTokenAssets, { immediate: true });
-    watchEffect(() => {
-      console.log('xcmAssets.value', xcmAssets.value);
-      if (xcmAssets.value) {
-        token.value = xcmAssets.value.assets.find((it) => it.metadata.symbol === 'DOT') as any;
+
+    const redirect = () => {
+      router.push({
+        path: '/assets/transfer',
+        query: { token: 'dot', network: 'astar', mode: 'local' },
+      });
+    };
+
+    const handleDefaultConfig = () => {
+      const query = router.currentRoute.value.query;
+      const symbol = query.token as string;
+      const mode = query.mode as string;
+      if (mode === 'xcm') {
+        isLocalTransfer.value = false;
+      } else {
+        isLocalTransfer.value = true;
       }
-    });
+
+      if (xcmAssets.value && xcmAssets.value.assets.length > 0) {
+        try {
+          console.log('symbol', symbol);
+          console.log('nativeTokenSymbol.value', nativeTokenSymbol.value);
+          if (symbol.toLowerCase() === nativeTokenSymbol.value.toLowerCase()) {
+            token.value = generateAstarNativeTokenObject(nativeTokenSymbol.value) as any;
+          } else {
+            token.value = xcmAssets.value.assets.find(
+              (it) => it.metadata.symbol.toLowerCase() === symbol.toLowerCase()
+            ) as Asset;
+          }
+          // console.log('symbol', symbol);
+          // console.log('token.value', token.value);
+          if (!token.value) throw Error('No token is found');
+        } catch (error) {
+          console.error('error', error);
+          redirect();
+        }
+      }
+    };
+
+    watchEffect(handleDefaultConfig);
     return {
       isLocalTransfer,
       accountData,
@@ -123,6 +192,7 @@ export default defineComponent({
       cancelHighlight,
       handleModalSelectChain,
       isModalSelectChain,
+      isTransferNativeToken,
     };
   },
 });

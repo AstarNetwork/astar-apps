@@ -161,8 +161,7 @@ export default defineComponent({
   props: {
     symbol: {
       type: String,
-      default: 'ASTR',
-      // required: true,
+      required: true,
     },
     accountData: {
       type: Object,

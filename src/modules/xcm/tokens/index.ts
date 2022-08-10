@@ -179,5 +179,3 @@ export const SBY: XcmTokenInformation = {
   minBridgeAmount: '0.1',
   parachains: [''],
 };
-
-export const xcmAstarNativeToken = { SDN, ASTR, SBY };
