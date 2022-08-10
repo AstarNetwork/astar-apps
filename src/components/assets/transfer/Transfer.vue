@@ -7,6 +7,7 @@
         <TransferModeTab
           :is-local-transfer="isLocalTransfer"
           :set-is-local-transfer="setIsLocalTransfer"
+          :is-disabled-xcm="isShibuya"
           :class="isHighlightRightUi && 'half-opacity'"
         />
         <div class="wrapper-containers">
@@ -63,6 +64,7 @@ import { Asset } from 'src/v2/models';
 import { wait } from 'src/hooks/helper/common';
 import { useRouter } from 'vue-router';
 import { generateAstarNativeTokenObject } from 'src/modules/xcm/tokens';
+import { endpointKey } from 'src/config/chainEndpoints';
 
 type RightUi = 'information' | 'select-chain';
 
@@ -90,7 +92,9 @@ export default defineComponent({
     const { screenSize, width } = useBreakpoints();
     const xcmAssets = computed<XcmAssets>(() => store.getters['assets/getAllAssets']);
     const isHighlightRightUi = computed<boolean>(() => rightUi.value !== 'information');
-    const { nativeTokenSymbol } = useNetworkInfo();
+    const { nativeTokenSymbol, currentNetworkName, currentNetworkIdx } = useNetworkInfo();
+
+    const isShibuya = computed(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
 
     const isTransferNativeToken = computed<boolean>(() => {
       const query = router.currentRoute.value.query;
@@ -124,9 +128,11 @@ export default defineComponent({
     };
 
     const redirect = (): void => {
+      const token = nativeTokenSymbol.value.toLowerCase();
+      const network = currentNetworkName.value.toLowerCase();
       router.push({
         path: '/assets/transfer',
-        query: { token: 'astr', network: 'astar', mode: 'local' },
+        query: { token, network, mode: 'local' },
       });
     };
 
@@ -153,25 +159,24 @@ export default defineComponent({
       const s = (query.token as string) || '';
       const symbol = s.toLowerCase();
       const mode = query.mode as string;
+      const network = query.network as string;
       isLocalTransfer.value = mode === 'local';
+      const isRedirect =
+        !symbol || network.toLowerCase() !== currentNetworkName.value.toLowerCase();
 
-      if (!symbol) return redirect();
+      if (isRedirect) return redirect();
       if (!xcmAssets.value || xcmAssets.value.assets.length === 0) {
-        return;
-      }
+        try {
+          const isNativeToken = symbol === nativeTokenSymbolRef.toLowerCase();
+          token.value = isNativeToken
+            ? (generateAstarNativeTokenObject(nativeTokenSymbolRef) as any)
+            : xcmAssets.value.assets.find((it) => it.metadata.symbol.toLowerCase() === symbol);
 
-      try {
-        if (symbol === nativeTokenSymbolRef.toLowerCase()) {
-          token.value = generateAstarNativeTokenObject(nativeTokenSymbolRef) as any;
-        } else {
-          token.value = xcmAssets.value.assets.find(
-            (it) => it.metadata.symbol.toLowerCase() === symbol
-          ) as Asset;
+          if (!token.value) throw Error('No token is found');
+        } catch (error) {
+          console.error('error', error);
+          redirect();
         }
-        if (!token.value) throw Error('No token is found');
-      } catch (error) {
-        console.error('error', error);
-        redirect();
       }
     };
 
@@ -186,6 +191,7 @@ export default defineComponent({
       rightUi,
       isTransferNativeToken,
       isModalSelectChain,
+      isShibuya,
       setRightUi,
       handleModalSelectChain,
       cancelHighlight,

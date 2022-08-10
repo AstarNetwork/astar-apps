@@ -2,7 +2,7 @@
   <div class="container--back">
     <router-link to="/assets">
       <span class="icon--back"> &#60; </span>
-      <span>Back to Assets</span>
+      <span> {{ $t('assets.transferPage.backToAssets') }}</span>
     </router-link>
   </div>
 </template>

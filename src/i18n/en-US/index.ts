@@ -290,6 +290,14 @@ export default {
     hideSmallBalances: 'Hide small balances',
     unhideSmallBalances: 'Unhide small balances',
     tokenHasBeenAdded: 'The token has been added already',
+    transferPage: {
+      backToAssets: 'Back to Assets',
+      crossChainTransfer: 'Cross-chain Transfer',
+      xcm: '(XCM)',
+      faq: 'FAQ',
+      recentHistory: 'Recent History',
+      hotTopic: 'Hot Topic',
+    },
     modals: {
       max: 'Max',
       balance: 'Balance: {amount} {token}',

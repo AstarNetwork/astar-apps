@@ -3,7 +3,7 @@
     <div id="faq" class="container--information">
       <div class="row--title">
         <astar-icon-group size="20" />
-        <span>FAQ</span>
+        <span>{{ $t('assets.transferPage.faq') }}</span>
       </div>
       <div class="box--contents">
         <div>
@@ -23,7 +23,7 @@
     <div id="history" class="container--information">
       <div class="row--title">
         <astar-icon-history size="20" />
-        <span>Recent History</span>
+        <span>{{ $t('assets.transferPage.recentHistory') }}</span>
       </div>
       <div class="box--histories">
         <TransactionHistory :is-high-lighted="true" />
@@ -36,7 +36,7 @@
     <div id="hot-topics" class="container--information">
       <div class="row--title">
         <astar-icon-group size="20" />
-        <span>Hot Topics</span>
+        <span>{{ $t('assets.transferPage.hotTopic') }}</span>
       </div>
       <div class="box--contents">
         <div class="container--hot-topics-contents">

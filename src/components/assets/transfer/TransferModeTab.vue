@@ -6,15 +6,19 @@
         class="box--tab"
         @click="setIsLocalTransfer(true)"
       >
-        <span class="text--title-tab"> Transfer </span>
+        <span class="text--title-tab"> {{ $t('assets.transfer') }} </span>
       </div>
       <div
-        :class="[!isLocalTransfer ? 'selected-tab text--selected' : 'unselected-tab']"
+        :class="[
+          !isLocalTransfer ? 'selected-tab text--selected' : 'unselected-tab',
+          isDisabledXcm && 'option--disabled',
+          isDisabledXcm && 'text-color--disabled',
+        ]"
         class="box--tab"
-        @click="setIsLocalTransfer(false)"
+        @click="!isDisabledXcm && setIsLocalTransfer(false)"
       >
-        <span class="text--title-tab"> Cross-chain Transfer </span>
-        <span class="text--xcm"> (XCM) </span>
+        <span class="text--title-tab"> {{ $t('assets.transferPage.crossChainTransfer') }} </span>
+        <span class="text--xcm"> {{ $t('assets.transferPage.xcm') }} </span>
       </div>
     </div>
   </div>
@@ -30,6 +34,10 @@ export default defineComponent({
     },
     setIsLocalTransfer: {
       type: Function,
+      required: true,
+    },
+    isDisabledXcm: {
+      type: Boolean,
       required: true,
     },
   },
