@@ -17,13 +17,8 @@
           />
         </div>
         <div v-else class="container--assets">
-          <XcmNativeAssetList
-            v-if="isEnableXcm"
-            :xcm-assets="xcmAssets.assets"
-            :handle-modal-xcm-bridge="handleModalXcmBridge"
-            :handle-modal-xcm-transfer="handleModalXcmTransfer"
-          />
-          <NativeAssetList :handle-modal-xcm-bridge="handleModalXcmBridge" />
+          <XcmNativeAssetList v-if="isEnableXcm" :xcm-assets="xcmAssets.assets" />
+          <NativeAssetList />
         </div>
       </div>
     </div>

@@ -6,11 +6,7 @@
       </div>
 
       <div v-for="t in xcmAssets" :key="t.id">
-        <XcmCurrency
-          :token="t"
-          :handle-modal-xcm-transfer="handleModalXcmTransfer"
-          :handle-modal-xcm-bridge="handleModalXcmBridge"
-        />
+        <XcmCurrency :token="t" />
       </div>
     </div>
   </div>
@@ -27,15 +23,6 @@ export default defineComponent({
   props: {
     xcmAssets: {
       type: Array as PropType<Asset[]>,
-      required: true,
-    },
-
-    handleModalXcmBridge: {
-      type: Function,
-      required: true,
-    },
-    handleModalXcmTransfer: {
-      type: Function,
       required: true,
     },
   },

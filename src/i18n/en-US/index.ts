@@ -267,6 +267,7 @@ export default {
     transfer: 'Transfer',
     faucet: 'Faucet',
     bridge: 'Bridge',
+    manage: 'Manage',
     xcm: 'XCM',
     wrap: 'Wrap',
     explorer: 'Explorer',

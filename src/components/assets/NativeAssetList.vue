@@ -63,24 +63,12 @@
                 </div>
               </div>
             </div>
-            <div class="column--two-buttons">
-              <button
-                class="btn btn--sm"
-                @click="handleModalTransfer({ isOpen: true, currency: nativeTokenSymbol })"
-              >
-                {{ $t('assets.transfer') }}
-              </button>
-              <button
-                class="btn btn--sm"
-                @click="
-                  handleModalXcmBridge({
-                    isOpen: true,
-                    currency: xcmNativeToken,
-                  })
-                "
-              >
-                {{ $t('assets.xcm') }}
-              </button>
+            <div class="column--buttons">
+              <router-link :to="transferLink">
+                <button class="btn btn--sm">
+                  {{ $t('assets.manage') }}
+                </button>
+              </router-link>
             </div>
           </div>
         </div>
@@ -162,12 +150,12 @@
       </div>
     </div>
 
-    <ModalTransfer
+    <!-- <ModalTransfer
       :is-modal-transfer="isModalTransfer"
       :handle-modal-transfer="handleModalTransfer"
       :symbol="nativeTokenSymbol"
       :account-data="accountData"
-    />
+    /> -->
     <ModalFaucet :is-modal-faucet="isModalFaucet" :handle-modal-faucet="handleModalFaucet" />
     <ModalEvmWithdraw
       :is-modal-evm-withdraw="isModalEvmWithdraw"
@@ -193,21 +181,14 @@ import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
 import ModalEvmWithdraw from './modals/ModalEvmWithdraw.vue';
 import ModalFaucet from './modals/ModalFaucet.vue';
-import ModalTransfer from './modals/ModalTransfer.vue';
+// import ModalTransfer from './modals/ModalTransfer.vue';
 import ModalVesting from './modals/ModalVesting.vue';
 
 export default defineComponent({
   components: {
-    ModalTransfer,
     ModalFaucet,
     ModalEvmWithdraw,
     ModalVesting,
-  },
-  props: {
-    handleModalXcmBridge: {
-      type: Function,
-      required: true,
-    },
   },
   setup() {
     const isModalTransfer = ref<boolean>(false);
@@ -245,9 +226,6 @@ export default defineComponent({
       return Number(balance);
     });
 
-    const handleModalTransfer = ({ currency, isOpen }: { isOpen: boolean; currency: string }) => {
-      isModalTransfer.value = isOpen;
-    };
     const handleModalFaucet = ({ isOpen }: { isOpen: boolean }) => {
       isModalFaucet.value = isOpen;
     };
@@ -257,6 +235,12 @@ export default defineComponent({
     const handleModalVesting = ({ isOpen }: { isOpen: boolean }) => {
       isModalVesting.value = isOpen;
     };
+
+    const transferLink = computed<string>(() => {
+      const symbol = nativeTokenSymbol.value.toLowerCase();
+      const network = currentNetworkName.value.toLowerCase();
+      return `/assets/transfer?token=${symbol}&network=${network}&mode=local`;
+    });
 
     watchEffect(async () => {
       const tokenSymbolRef = nativeTokenSymbol.value;
@@ -312,8 +296,8 @@ export default defineComponent({
       isModalVesting,
       xcmNativeToken,
       isLoading,
+      transferLink,
       handleModalVesting,
-      handleModalTransfer,
       handleModalFaucet,
       handleModalEvmWithdraw,
       checkIsNullOrUndefined,

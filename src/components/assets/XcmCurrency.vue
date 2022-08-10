@@ -31,31 +31,11 @@
             </div>
           </div>
           <div class="column--asset-buttons column--buttons--native">
-            <button
-              class="btn btn--sm"
-              @click="
-                handleModalXcmTransfer({
-                  isOpen: true,
-                  currency: token,
-                })
-              "
-            >
-              {{ $t('assets.transfer') }}
-            </button>
-            <div>
-              <button
-                v-if="token.isXcmCompatible"
-                class="btn btn--sm"
-                @click="
-                  handleModalXcmBridge({
-                    isOpen: true,
-                    currency: token,
-                  })
-                "
-              >
-                {{ $t('assets.xcm') }}
+            <router-link :to="transferLink">
+              <button class="btn btn--sm">
+                {{ $t('assets.manage') }}
               </button>
-            </div>
+            </router-link>
             <div class="screen--xl">
               <a
                 class="box--explorer"
@@ -95,18 +75,10 @@ export default defineComponent({
       type: Object as PropType<Asset>,
       required: true,
     },
-    handleModalXcmTransfer: {
-      type: Function,
-      required: true,
-    },
-    handleModalXcmBridge: {
-      type: Function,
-      required: true,
-    },
   },
   setup(props) {
     const t = computed<Asset>(() => props.token);
-    const { currentNetworkIdx } = useNetworkInfo();
+    const { currentNetworkIdx, currentNetworkName } = useNetworkInfo();
 
     const isDisplayToken = computed<boolean>(() => {
       const token = getXcmToken({
@@ -117,15 +89,22 @@ export default defineComponent({
       return isDisplay || false;
     });
 
-    const explorerLink = computed(() => {
+    const explorerLink = computed<string>(() => {
       const astarBalanceUrl = 'https://astar.subscan.io/assets/' + t.value.id;
       const shidenBalanceUrl = 'https://shiden.subscan.io/assets/' + t.value.id;
       return currentNetworkIdx.value === endpointKey.ASTAR ? astarBalanceUrl : shidenBalanceUrl;
     });
 
+    const transferLink = computed<string>(() => {
+      const symbol = t.value.metadata.symbol.toLowerCase();
+      const network = currentNetworkName.value.toLowerCase();
+      return `/assets/transfer?token=${symbol}&network=${network}&mode=local`;
+    });
+
     return {
       isDisplayToken,
       explorerLink,
+      transferLink,
       truncate,
     };
   },

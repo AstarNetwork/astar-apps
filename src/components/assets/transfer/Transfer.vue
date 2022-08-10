@@ -144,10 +144,14 @@ export default defineComponent({
     };
 
     const handleDefaultConfig = (): void => {
+      const currentRouteRef = router.currentRoute.value;
+      // Memo: avoid triggering this function whenever users go back to assets page
+      if (!currentRouteRef.fullPath.includes('transfer')) return;
+
       const nativeTokenSymbolRef = nativeTokenSymbol.value;
-      const query = router.currentRoute.value.query;
-      const s = query.token as string;
-      const symbol = s.toLowerCase() || '';
+      const query = currentRouteRef.query;
+      const s = (query.token as string) || '';
+      const symbol = s.toLowerCase();
       const mode = query.mode as string;
       isLocalTransfer.value = mode === 'local';
 
