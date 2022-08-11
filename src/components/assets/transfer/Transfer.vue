@@ -35,7 +35,7 @@
               :is-highlight-right-ui="isHighlightRightUi"
             />
           </div>
-          <Information v-if="rightUi === 'information'" />
+          <Information v-if="rightUi === 'information'" :is-local-transfer="isLocalTransfer" />
           <SelectChain v-if="rightUi === 'select-chain'" v-click-away="cancelHighlight" />
         </div>
       </div>

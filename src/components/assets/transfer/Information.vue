@@ -6,18 +6,16 @@
         <span>{{ $t('assets.transferPage.faq') }}</span>
       </div>
       <div class="box--contents">
-        <div>
-          <span class="text-contents">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua.
-          </span>
-        </div>
-        <div>
-          <span class="text-faq-link">How do I know my Polkadot address?</span>
-        </div>
-        <div>
-          <span class="text-faq-link">How do I know my Polkadot address?</span>
-        </div>
+        <a
+          v-for="faq in faqs"
+          :key="faq.title"
+          :href="faq.url"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-faq-link"
+        >
+          {{ faq.title }}
+        </a>
       </div>
     </div>
     <div id="history" class="container--information">
@@ -39,21 +37,57 @@
         <span>{{ $t('assets.transferPage.hotTopic') }}</span>
       </div>
       <div class="box--contents">
-        <div class="container--hot-topics-contents">
-          <span class="text-topics-link"> DOT festival!! Event 1 is on! </span>
+        <a
+          v-for="hotTopic in hotTopics"
+          :key="hotTopic.title"
+          :href="hotTopic.url"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="container--hot-topics-contents"
+        >
+          <span class="text-topics-link">
+            {{ hotTopic.title }}
+          </span>
           <div class="container--explorer-icon">
             <astar-icon-external-link />
           </div>
-        </div>
+        </a>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
 import TransactionHistory from 'src/components/assets/transfer/TransactionHistory.vue';
+import { useStore } from 'src/store';
+import {
+  Faq,
+  faqH160Transfer,
+  faqH160XcmBridge,
+  faqSs58Transfer,
+  faqSs58XcmBridge,
+  hotTopics,
+} from 'src/modules/transfer';
 export default defineComponent({
   components: { TransactionHistory },
+  props: {
+    isLocalTransfer: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  setup(props) {
+    const store = useStore();
+    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
+    const faqs = computed<Faq[]>(() => {
+      if (isH160.value) {
+        return props.isLocalTransfer ? faqH160Transfer : faqH160XcmBridge;
+      } else {
+        return props.isLocalTransfer ? faqSs58Transfer : faqSs58XcmBridge;
+      }
+    });
+    return { faqs, hotTopics };
+  },
 });
 </script>
 
