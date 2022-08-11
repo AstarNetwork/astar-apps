@@ -165,7 +165,8 @@ export default defineComponent({
         !symbol || network.toLowerCase() !== currentNetworkName.value.toLowerCase();
 
       if (isRedirect) return redirect();
-      if (!xcmAssets.value || xcmAssets.value.assets.length === 0) {
+      const isFetchedAssets = xcmAssets.value && xcmAssets.value.assets.length !== 0;
+      if (isFetchedAssets) {
         try {
           const isNativeToken = symbol === nativeTokenSymbolRef.toLowerCase();
           token.value = isNativeToken
