@@ -21,8 +21,13 @@
             :is-enable-set-chain="false"
           />
         </div>
+        <div class="row--reverse">
+          <div class="icon--reverse">
+            <astar-icon-sync size="20" class="cursor-pointer" />
+          </div>
+        </div>
         <div
-          class="box--input-chain"
+          class="box--input-chain adjust--to-input"
           :class="isNativeBridge && 'box--hover--active'"
           @click="setRightUi('select-chain')"
         >

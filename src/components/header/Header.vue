@@ -114,8 +114,8 @@ export default defineComponent({
     const store = useStore();
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
     const route = useRoute();
-    const path = computed(() => route.path.split('/')[1]);
-    const headerName = ref('');
+    const path = computed(() => route.path);
+    const headerName = ref<string>('');
     watch(
       path,
       () => {
@@ -160,7 +160,6 @@ export default defineComponent({
 }
 
 .m-header {
-  background: #fff !important;
   height: 64px !important;
   padding-left: 20px !important;
   padding-right: 16px !important;
@@ -170,8 +169,8 @@ export default defineComponent({
 }
 
 .body--dark {
-  .m-header {
-    background: $gray-6 !important;
+  .wrapper {
+    background: $body-bg-dark !important;
   }
 }
 </style>

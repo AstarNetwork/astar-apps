@@ -88,12 +88,14 @@ const routes: RouteRecordRaw[] = [
   },
 ];
 
-export const getHeaderName = (path: string) => {
-  if (path === 'dashboard') {
+export const getHeaderName = (path: string): string => {
+  if (path.includes('dashboard')) {
     return 'Dashboard';
-  } else if (path === 'assets') {
+  } else if (path.includes('transfer')) {
+    return 'Manage Assets';
+  } else if (path.includes('assets')) {
     return 'Assets';
-  } else if (path === 'dapp-staking') {
+  } else if (path.includes('dapp-staking')) {
     return 'dApp Staking';
   }
   return '';

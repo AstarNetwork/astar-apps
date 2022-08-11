@@ -161,10 +161,11 @@ export default defineComponent({
       const mode = query.mode as string;
       const network = query.network as string;
       isLocalTransfer.value = mode === 'local';
+
       const isRedirect =
         !symbol || network.toLowerCase() !== currentNetworkName.value.toLowerCase();
-
       if (isRedirect) return redirect();
+
       const isFetchedAssets = xcmAssets.value && xcmAssets.value.assets.length !== 0;
       if (isFetchedAssets) {
         try {

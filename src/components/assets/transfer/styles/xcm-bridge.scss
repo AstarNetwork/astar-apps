@@ -55,6 +55,31 @@
   text-align: end;
 }
 
+.row--reverse {
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+
+.icon--reverse {
+  position: absolute;
+  height: 32px;
+  width: 32px;
+  padding: 4px;
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid $gray-3;
+  cursor: pointer !important;
+  margin-top: -24px;
+  background: $body-bg-light;
+}
+
+.adjust--to-input {
+  margin-top: -16px;
+}
+
 .option--disabled {
   cursor: not-allowed !important;
 }
@@ -232,5 +257,9 @@
   }
   .row--box-error {
     background: $box-red-dark;
+  }
+  .icon--reverse {
+    border: 1px solid $gray-3;
+    background: $body-bg-dark;
   }
 }
