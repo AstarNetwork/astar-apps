@@ -107,7 +107,7 @@
         </label>
       </div>
     </div>
-    <div v-if="errMsg" class="row--box-error">
+    <div v-if="errMsg && currentAccount" class="row--box-error">
       <span class="color--white"> {{ $t(errMsg) }}</span>
     </div>
     <div class="wrapper__row--button">

@@ -142,7 +142,7 @@
           </div>
         </div>
       </div>
-      <div v-if="errMsg" class="row--box-error">
+      <div v-if="errMsg && currentAccount" class="row--box-error">
         <span class="color--white"> {{ $t(errMsg) }}</span>
       </div>
       <div class="wrapper__row--button">
@@ -161,7 +161,7 @@
 import { fadeDuration } from '@astar-network/astar-ui';
 import ModalSelectChain from 'src/components/assets/modals/ModalSelectChain.vue';
 import AddressInputV2 from 'src/components/common/AddressInputV2.vue';
-import { useTooltip, useXcmBridgeV2, useXcmEvm } from 'src/hooks';
+import { useAccount, useTooltip, useXcmBridgeV2, useXcmEvm } from 'src/hooks';
 import { Asset } from 'src/v2/models';
 import { truncate, wait } from 'src/hooks/helper/common';
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
@@ -198,6 +198,7 @@ export default defineComponent({
     const tokenData = computed(() => props.token);
     const { t } = useI18n();
     const { isDisplayTooltip, setIsMobileDisplayTooltip } = useTooltip('icon');
+    const { currentAccount } = useAccount();
 
     const {
       amount,
@@ -294,6 +295,7 @@ export default defineComponent({
       isDisplayTooltip,
       isAstarNativeTransfer,
       tokenData,
+      currentAccount,
       setIsMobileDisplayTooltip,
       inputHandler,
       closeModal,

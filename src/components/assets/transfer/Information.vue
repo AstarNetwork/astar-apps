@@ -13,10 +13,10 @@
           </span>
         </div>
         <div>
-          <span class="text--active">How do I know my Polkadot address?</span>
+          <span class="text-faq-link">How do I know my Polkadot address?</span>
         </div>
         <div>
-          <span class="text-contents">How do I know my Polkadot address?</span>
+          <span class="text-faq-link">How do I know my Polkadot address?</span>
         </div>
       </div>
     </div>
@@ -26,11 +26,11 @@
         <span>{{ $t('assets.transferPage.recentHistory') }}</span>
       </div>
       <div class="box--histories">
-        <TransactionHistory :is-high-lighted="true" />
-        <TransactionHistory :is-high-lighted="false" />
-        <TransactionHistory :is-high-lighted="false" />
-        <TransactionHistory :is-high-lighted="false" />
-        <TransactionHistory :is-high-lighted="false" />
+        <TransactionHistory />
+        <TransactionHistory />
+        <TransactionHistory />
+        <TransactionHistory />
+        <TransactionHistory />
       </div>
     </div>
     <div id="hot-topics" class="container--information">
@@ -40,7 +40,7 @@
       </div>
       <div class="box--contents">
         <div class="container--hot-topics-contents">
-          <span class="text-contents"> DOT festival!! Event 1 is on! </span>
+          <span class="text-topics-link"> DOT festival!! Event 1 is on! </span>
           <div class="container--explorer-icon">
             <astar-icon-external-link />
           </div>

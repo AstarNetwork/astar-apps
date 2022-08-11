@@ -4,6 +4,21 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  cursor: pointer;
+  &:hover {
+    .icon--check {
+      transition: all 0.3s ease 0s;
+      color: $connected-green;
+    }
+    .history-description {
+      transition: all 0.3s ease 0s;
+      color: $astar-blue;
+    }
+    .explorer-icon {
+      transition: all 0.3s ease 0s;
+      stroke: $astar-blue;
+    }
+  }
 }
 
 .history--left {
@@ -12,21 +27,14 @@
   align-items: center;
 }
 
-.icon--check-active {
-  color: $connected-green;
-}
-
 .icon--check {
   opacity: 0.5;
   color: $connected-green;
-}
-
-.history-description-active {
-  color: $astar-blue;
-  font-weight: 500;
+  transition: all 0.3s ease 0s;
 }
 
 .history-description {
+  transition: all 0.3s ease 0s;
   font-weight: 500;
 }
 
@@ -35,7 +43,6 @@
   align-items: center;
   justify-content: center;
   stroke: $astar-blue;
-  transition: all 0.3s ease 0s;
   border-radius: 30px;
   height: 24px;
   svg {
@@ -44,12 +51,10 @@
   }
 }
 
-.explorer-icon-active {
-  stroke: $astar-blue;
-}
 .explorer-icon {
   stroke: $gray-4;
   opacity: 0.5;
+  transition: all 0.3s ease 0s;
 }
 
 .body--dark {

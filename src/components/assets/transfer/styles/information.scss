@@ -14,7 +14,7 @@
 }
 
 .container--information {
-  border: 1px solid $gray-3;
+  border: 1px solid $object-light;
   border-radius: 6px;
   box-sizing: border-box;
   padding: 16px;
@@ -25,6 +25,19 @@
   display: flex;
   flex-direction: column;
   row-gap: 8px;
+  cursor: pointer;
+  &:hover {
+    .container--explorer-icon {
+      transition: all 0.3s ease 0s;
+      stroke: $astar-blue;
+    }
+    .text-topics-link {
+      transition: all 0.3s ease 0s;
+      color: $astar-blue;
+      font-weight: 500;
+      cursor: pointer;
+    }
+  }
 }
 
 .row--title {
@@ -34,14 +47,20 @@
   margin-bottom: 12px;
 }
 
-.text-contents {
+.text-faq-link {
   font-weight: 500;
+  transition: all 0.3s ease 0s;
+  &:hover {
+    transition: all 0.3s ease 0s;
+    color: $astar-blue;
+    font-weight: 500;
+    cursor: pointer;
+  }
 }
 
-.text--active {
-  color: $astar-blue;
+.text-topics-link {
   font-weight: 500;
-  cursor: pointer;
+  transition: all 0.3s ease 0s;
 }
 
 .box--histories {
@@ -74,7 +93,7 @@
   .container--information {
     color: $gray-4;
     background: $gray-6;
-    border: 1px solid $gray-4;
+    border: 1px solid $gray-5;
   }
   .container--explorer-icon {
     opacity: 1;
