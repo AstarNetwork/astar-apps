@@ -13,7 +13,6 @@
             <span> {{ $t('from') }}</span>
             <div />
           </div>
-          <!-- Memo: one way bridge for 'from / to' EVM account -->
           <ModalSelectChain
             :chains="chains"
             :chain="srcChain"
@@ -158,13 +157,12 @@
   </div>
 </template>
 <script lang="ts">
-import { fadeDuration } from '@astar-network/astar-ui';
 import ModalSelectChain from 'src/components/assets/modals/ModalSelectChain.vue';
 import AddressInputV2 from 'src/components/common/AddressInputV2.vue';
 import { useAccount, useTooltip, useXcmBridgeV2, useXcmEvm } from 'src/hooks';
+import { truncate } from 'src/hooks/helper/common';
 import { Asset } from 'src/v2/models';
-import { truncate, wait } from 'src/hooks/helper/common';
-import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
+import { computed, defineComponent, PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ModalLoading from '/src/components/common/ModalLoading.vue';
 
@@ -175,10 +173,11 @@ export default defineComponent({
     ModalLoading,
   },
   props: {
-    // handleUpdateXcmTokenBalances: {
-    //   type: Function,
-    //   required: true,
-    // },
+    handleFinalizedCallback: {
+      type: Function,
+      required: false,
+      default: null,
+    },
     setRightUi: {
       type: Function,
       required: true,
@@ -194,7 +193,6 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const isClosingModal = ref<boolean>(false);
     const tokenData = computed(() => props.token);
     const { t } = useI18n();
     const { isDisplayTooltip, setIsMobileDisplayTooltip } = useTooltip('icon');
@@ -218,7 +216,6 @@ export default defineComponent({
       isAstarNativeTransfer,
       inputHandler,
       bridge,
-      resetStates,
       setIsNativeBridge,
       setSrcChain,
       setDestChain,
@@ -241,12 +238,9 @@ export default defineComponent({
       return t('addressFormat', { network: getNetworkName() });
     });
 
-    const closeModal = async (): Promise<void> => {
-      isClosingModal.value = true;
-      resetStates();
-      await wait(fadeDuration);
-      // props.handleModalXcmBridge({ isOpen: false, currency: null });
-      isClosingModal.value = false;
+    // Todo: remove async
+    const finalizeCallback = async (): Promise<void> => {
+      props.handleFinalizedCallback();
     };
 
     const handleBridge = async (): Promise<void> => {
@@ -254,7 +248,7 @@ export default defineComponent({
         const txHash = await callAssetWithdrawToPara(
           amount.value!!,
           evmDestAddress.value,
-          closeModal
+          finalizeCallback
         );
 
         if (txHash) {
@@ -262,20 +256,12 @@ export default defineComponent({
           amount.value = null;
         }
       } else {
-        await bridge(closeModal);
-        // await props.handleUpdateXcmTokenBalances();
+        await bridge(finalizeCallback);
       }
     };
 
-    watchEffect(() => {
-      console.log('token', props.token);
-      // console.log('isReady', isReady.value);
-      // console.log('tokenData', tokenData.value);
-    });
-
     return {
       errMsg,
-      isClosingModal,
       amount,
       srcChain,
       destChain,
@@ -298,7 +284,6 @@ export default defineComponent({
       currentAccount,
       setIsMobileDisplayTooltip,
       inputHandler,
-      closeModal,
       bridge,
       setIsNativeBridge,
       handleBridge,

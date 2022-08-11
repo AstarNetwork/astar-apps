@@ -17,6 +17,7 @@
               :account-data="accountData"
               :class="isHighlightRightUi && 'half-opacity'"
               :symbol="token ? token.metadata.symbol : 'ASTR'"
+              :handle-finalized-callback="handleFinalizedCallback"
             />
             <LocalXcmTransfer
               v-else
@@ -24,6 +25,7 @@
               :class="isHighlightRightUi && 'half-opacity'"
               :symbol="token ? token.metadata.symbol : 'ASTR'"
               :token="token"
+              :handle-finalized-callback="handleFinalizedCallback"
             />
           </div>
           <div v-else>
@@ -33,6 +35,7 @@
               :class="isHighlightRightUi && 'half-opacity'"
               :set-right-ui="setRightUi"
               :is-highlight-right-ui="isHighlightRightUi"
+              :handle-finalized-callback="handleFinalizedCallback"
             />
           </div>
           <Information v-if="rightUi === 'information'" :is-local-transfer="isLocalTransfer" />
@@ -116,6 +119,10 @@ export default defineComponent({
 
     const handleModalSelectChain = ({ isOpen }: { isOpen: boolean }): void => {
       isModalSelectChain.value = isOpen;
+    };
+
+    const handleFinalizedCallback = (): void => {
+      router.push('/assets');
     };
 
     const setRightUi = async (ui: RightUi): Promise<void> => {
@@ -203,6 +210,7 @@ export default defineComponent({
       handleModalSelectChain,
       cancelHighlight,
       setIsLocalTransfer,
+      handleFinalizedCallback,
     };
   },
 });

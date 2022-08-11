@@ -115,15 +115,14 @@
   </div>
 </template>
 <script lang="ts">
-import { fadeDuration } from '@astar-network/astar-ui';
 import ModalSelectAccount from 'src/components/assets/modals/ModalSelectAccount.vue';
 import SpeedConfigurationV2 from 'src/components/common/SpeedConfigurationV2.vue';
 import { useAccount, useWalletIcon, useXcmTokenTransfer } from 'src/hooks';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
-import { truncate, wait } from 'src/hooks/helper/common';
+import { truncate } from 'src/hooks/helper/common';
 import { useStore } from 'src/store';
 import { Asset } from 'src/v2/models';
-import { computed, defineComponent, ref, PropType, watchEffect } from 'vue';
+import { computed, defineComponent, PropType } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
 
 export default defineComponent({
@@ -135,7 +134,6 @@ export default defineComponent({
   props: {
     symbol: {
       type: String,
-      // default: 'ASTR',
       required: true,
     },
     accountData: {
@@ -148,14 +146,13 @@ export default defineComponent({
       required: false,
       default: null,
     },
-    // handleUpdateTokenBalances: {
-    //   type: Function,
-    //   required: false,
-    //   default: null,
-    // },
+    handleFinalizedCallback: {
+      type: Function,
+      required: false,
+      default: null,
+    },
   },
   setup(props) {
-    const isClosingModal = ref<boolean>(false);
     const { iconWallet } = useWalletIcon();
     const store = useStore();
     const { currentAccount, currentAccountName } = useAccount();
@@ -177,37 +174,22 @@ export default defineComponent({
       isChecked,
       inputHandler,
       setSelectedTip,
-      resetStates,
       transferAsset,
       toMaxAmount,
     } = useXcmTokenTransfer(token);
 
-    const closeModal = async (): Promise<void> => {
-      isClosingModal.value = true;
-      resetStates();
-      await wait(fadeDuration);
-      // props.handleModalXcmTransfer({ isOpen: false, currency: null });
-      isClosingModal.value = false;
+    // Todo: remove async
+    const finalizeCallback = async (): Promise<void> => {
+      props.handleFinalizedCallback();
     };
 
     const transfer = async (): Promise<void> => {
-      const finalizeCallback = async (): Promise<void> => {
-        await Promise.all([
-          closeModal(),
-          // props.handleUpdateXcmTokenBalances()
-        ]);
-      };
-
       await transferAsset({
         transferAmt: Number(transferAmt.value),
         toAddress: toAddress.value,
         finalizeCallback,
       });
     };
-
-    watchEffect(() => {
-      console.log('token', token.value);
-    });
 
     return {
       iconWallet,
@@ -218,7 +200,6 @@ export default defineComponent({
       toAddressBalance,
       transferAmt,
       errMsg,
-      isClosingModal,
       isDisabledTransfer,
       selectedTip,
       nativeTipPrice,
@@ -226,7 +207,6 @@ export default defineComponent({
       setSelectedTip,
       transfer,
       toMaxAmount,
-      closeModal,
       getShortenAddress,
       inputHandler,
       truncate,

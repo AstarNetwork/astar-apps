@@ -122,7 +122,6 @@
   </div>
 </template>
 <script lang="ts">
-import { fadeDuration } from '@astar-network/astar-ui';
 import { ethers } from 'ethers';
 import { $api, $web3 } from 'src/boot/api';
 import ABI from 'src/c-bridge/abi/ERC20.json';
@@ -137,10 +136,10 @@ import {
   useWalletIcon,
 } from 'src/hooks';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
-import { truncate, wait } from 'src/hooks/helper/common';
+import { truncate } from 'src/hooks/helper/common';
 import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { getEvmGasCost, sampleEvmWalletAddress } from 'src/modules/gas-api';
-import { getRegisteredERC20Token, getTokenImage } from 'src/modules/token';
+import { Erc20Token, getRegisteredERC20Token, getTokenImage } from 'src/modules/token';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect, watch, WatchCallback } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -173,7 +172,7 @@ export default defineComponent({
       required: false,
       default: null,
     },
-    handleUpdateTokenBalances: {
+    handleFinalizedCallback: {
       type: Function,
       required: false,
       default: null,
@@ -189,16 +188,15 @@ export default defineComponent({
     const errMsg = ref<string>('');
     const selectedNetwork = ref<number>(0);
     const isChecked = ref<boolean>(false);
-    const isClosingModal = ref<boolean>(false);
     const { iconWallet } = useWalletIcon();
     const { isConnectedNetwork, currentNetworkName, connectEvmNetwork } = useEvmWallet();
     const store = useStore();
     const { t } = useI18n();
-    const isH160 = computed(() => store.getters['general/isH160Formatted']);
+    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const { ethProvider } = useEthProvider();
     const { evmNetworkIdx, nativeTokenSymbol } = useNetworkInfo();
 
-    const isEthWallet = computed(() => store.getters['general/isEthWallet']);
+    const isEthWallet = computed<boolean>(() => store.getters['general/isEthWallet']);
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
 
     const isEnableSpeedConfiguration = computed<boolean>(() => {
@@ -210,13 +208,13 @@ export default defineComponent({
     const { currentAccount, currentAccountName } = useAccount();
 
     // Memo: check the selected token is either hard-coded token or cBridge token
-    const registeredToken = computed(() => {
+    const registeredToken = computed<Erc20Token | undefined>(() => {
       const tokens = getRegisteredERC20Token();
       const result = tokens.find((it) => it.symbol === props.symbol);
       return result;
     });
 
-    const tokenImg = computed(() => {
+    const tokenImg = computed<string>(() => {
       if (registeredToken.value) {
         return registeredToken.value.image;
       } else {
@@ -228,7 +226,7 @@ export default defineComponent({
       }
     });
 
-    const isRequiredCheck = computed(() => {
+    const isRequiredCheck = computed<boolean>(() => {
       if (
         isNativeToken.value &&
         isEthWallet.value &&
@@ -242,9 +240,11 @@ export default defineComponent({
       }
     });
 
-    const isChoseWrongEvmNetwork = computed(() => isH160.value && !isConnectedNetwork.value);
+    const isChoseWrongEvmNetwork = computed<boolean>(
+      () => isH160.value && !isConnectedNetwork.value
+    );
 
-    const isDisabledTransfer = computed(() => {
+    const isDisabledTransfer = computed<boolean>(() => {
       const isLessAmount = 0 >= Number(transferAmt.value);
       const isMissedCheck = isRequiredCheck.value && !isChecked.value;
       return errMsg.value !== '' || isLessAmount || isMissedCheck || isChoseWrongEvmNetwork.value;
@@ -255,25 +255,12 @@ export default defineComponent({
       errMsg.value = '';
     };
 
-    const resetStates = (): void => {
-      transferAmt.value = '';
-      toAddress.value = '';
-      errMsg.value = '';
-      toAddressBalance.value = 0;
-      fromAddressBalance.value = 0;
-      isErc20Transfer.value = false;
-    };
-
     const setIsErc20Transfer = (): void => {
       isErc20Transfer.value = isH160.value && !isNativeToken.value;
     };
 
-    const closeModal = async (): Promise<void> => {
-      isClosingModal.value = true;
-      resetStates();
-      await wait(fadeDuration);
-      // props.handleModalTransfer({ isOpen: false, currency: '' });
-      isClosingModal.value = false;
+    const finalizedCallback = (): void => {
+      props.handleFinalizedCallback();
     };
 
     const toMaxAmount = async (): Promise<void> => {
@@ -299,7 +286,7 @@ export default defineComponent({
       selectedTip,
       nativeTipPrice,
       setSelectedTip,
-    } = useTransfer(defaultUnitToken, decimal, closeModal);
+    } = useTransfer(defaultUnitToken, decimal, finalizedCallback);
 
     const transfer = async (): Promise<void> => {
       const isErc20TransferRef = isErc20Transfer.value;
@@ -525,7 +512,7 @@ export default defineComponent({
       errMsg,
       isErc20Transfer,
       isNativeToken,
-      closeModal,
+      finalizedCallback,
       isChecked,
       isRequiredCheck,
       tokenImg,
@@ -533,7 +520,6 @@ export default defineComponent({
       isChoseWrongEvmNetwork,
       currentNetworkName,
       connectEvmNetwork,
-      isClosingModal,
       selectedGas,
       setSelectedGas,
       evmGasCost,

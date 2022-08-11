@@ -52,15 +52,17 @@ export default defineComponent({
     const { currentNetworkIdx } = useNetworkInfo();
     const chains = ref<XcmChain[]>([]);
 
-    watchEffect(() => {
+    const setChains = (): void => {
       const relayChainId =
         currentNetworkIdx.value === endpointKey.ASTAR ? Chain.POLKADOT : Chain.KUSAMA;
+      const disabledChain = [Chain.MOONBEAM];
       const selectableChains = xcmChains.filter((it) => {
-        return it.relayChain === relayChainId;
+        return it.relayChain === relayChainId && !disabledChain.includes(it.name);
       });
       chains.value = selectableChains;
-      console.log('chains.value', chains.value);
-    });
+    };
+
+    watchEffect(setChains);
 
     return { chains, closeModal, isClosingModal };
   },
