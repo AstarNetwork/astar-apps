@@ -1,6 +1,8 @@
+import { Asset } from 'src/v2/models';
 import { XcmTokenInformation } from 'src/modules/xcm';
 import { ASTAR_NATIVE_TOKEN, endpointKey } from 'src/config/chainEndpoints';
 import { ASTAR_DECIMALS } from 'src/hooks/helper/plasmUtils';
+import { BN } from 'bn.js';
 
 // Acala Note: There is no endpoint to get minBridgeAmount.  But the rule is that Acala doesn't allow transfers that are less value than the equivalent of $0.01USD
 // Ref: https://www.notion.so/astarnetwork/HRMP-Portal-Support-for-Acala-Karura-UI-2eaab2e1d93c4e0f90609ea7039942a9#5c5a40f95c7b4c93a201feef233cb0fa
@@ -144,6 +146,36 @@ export const generateAstarNativeTokenObject = (symbol: ASTAR_NATIVE_TOKEN) => {
   };
 };
 
+export const generateNativeAsset = (symbol: ASTAR_NATIVE_TOKEN): Asset => {
+  const name = symbol === 'ASTR' ? 'Astar' : symbol === 'SDN' ? 'Shiden' : 'Shibuya';
+  const tokenImage = symbol === 'ASTR' ? ASTR.logo : symbol === 'SDN' ? SDN.logo : SBY.logo;
+  const mappedERC20Addr = '0x0000000000000000000000000000000000000000';
+  const metadata = {
+    decimals: ASTAR_DECIMALS,
+    deposit: new BN(0),
+    isFrozen: false,
+    name,
+    symbol,
+  };
+  const minBridgeAmount = '0.1';
+  const originChain = name;
+  const originAssetId = symbol;
+  const isNativeToken = true;
+  const isXcmCompatible = true;
+
+  return new Asset(
+    idAstarNativeToken,
+    mappedERC20Addr,
+    metadata,
+    minBridgeAmount,
+    originChain,
+    originAssetId,
+    tokenImage,
+    isNativeToken,
+    isXcmCompatible
+  );
+};
+
 export const SDN: XcmTokenInformation = {
   symbol: 'SDN',
   isNativeToken: true,
@@ -153,7 +185,6 @@ export const SDN: XcmTokenInformation = {
   isXcmCompatible: true,
   originChain: 'Shiden',
   minBridgeAmount: '0.1',
-  parachains: ['Karura'],
 };
 
 export const ASTR: XcmTokenInformation = {
@@ -165,7 +196,6 @@ export const ASTR: XcmTokenInformation = {
   isXcmCompatible: true,
   originChain: 'Astar',
   minBridgeAmount: '0.1',
-  parachains: ['Acala'],
 };
 
 export const SBY: XcmTokenInformation = {
@@ -177,5 +207,4 @@ export const SBY: XcmTokenInformation = {
   isXcmCompatible: true,
   originChain: 'Shibuya',
   minBridgeAmount: '0.1',
-  parachains: [''],
 };

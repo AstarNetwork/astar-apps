@@ -63,7 +63,7 @@ import { XcmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
 import { wait } from 'src/hooks/helper/common';
 import { useRouter } from 'vue-router';
-import { generateAstarNativeTokenObject } from 'src/modules/xcm/tokens';
+import { generateNativeAsset } from 'src/modules/xcm/tokens';
 import { endpointKey } from 'src/config/chainEndpoints';
 
 type RightUi = 'information' | 'select-chain';
@@ -84,7 +84,8 @@ export default defineComponent({
     const isModalSelectChain = ref<boolean>(false);
     const rightUi = ref<RightUi>('information');
     const isLocalTransfer = ref<boolean>(false);
-    const token = ref<Asset | null>(null);
+    // Memo: default value is only for displaying placeholder in UI during loading
+    const token = ref<Asset>(generateNativeAsset('ASTR'));
     const router = useRouter();
     const { currentAccount } = useAccount();
     const { accountData } = useBalance(currentAccount);
@@ -152,7 +153,9 @@ export default defineComponent({
     const handleDefaultConfig = (): void => {
       const currentRouteRef = router.currentRoute.value;
       // Memo: avoid triggering this function whenever users go back to assets page
-      if (!currentRouteRef.fullPath.includes('transfer')) return;
+      if (!currentRouteRef.fullPath.includes('transfer') || !currentNetworkName.value) {
+        return;
+      }
 
       const nativeTokenSymbolRef = nativeTokenSymbol.value;
       const query = currentRouteRef.query;
@@ -171,8 +174,10 @@ export default defineComponent({
         try {
           const isNativeToken = symbol === nativeTokenSymbolRef.toLowerCase();
           token.value = isNativeToken
-            ? (generateAstarNativeTokenObject(nativeTokenSymbolRef) as any)
-            : xcmAssets.value.assets.find((it) => it.metadata.symbol.toLowerCase() === symbol);
+            ? generateNativeAsset(nativeTokenSymbolRef)
+            : (xcmAssets.value.assets.find(
+                (it) => it.metadata.symbol.toLowerCase() === symbol
+              ) as Asset);
 
           if (!token.value) throw Error('No token is found');
         } catch (error) {

@@ -22,9 +22,9 @@
           />
         </div>
         <div class="row--reverse">
-          <div class="icon--reverse">
+          <button class="icon--reverse" @click="reverseChain">
             <astar-icon-sync size="20" class="cursor-pointer" />
-          </div>
+          </button>
         </div>
         <div
           class="box--input-chain adjust--to-input"
@@ -221,6 +221,7 @@ export default defineComponent({
       setIsNativeBridge,
       setSrcChain,
       setDestChain,
+      reverseChain,
     } = useXcmBridgeV2(tokenData);
 
     const { callAssetWithdrawToPara } = useXcmEvm(tokenData);
@@ -302,6 +303,7 @@ export default defineComponent({
       truncate,
       setSrcChain,
       setDestChain,
+      reverseChain,
     };
   },
 });

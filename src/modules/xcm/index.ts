@@ -17,7 +17,6 @@ export interface XcmTokenInformation {
   logo: string;
   isNativeToken: boolean;
   isXcmCompatible: boolean;
-  parachains?: string[];
   originAssetId: string;
   originChain: string;
   minBridgeAmount: string;

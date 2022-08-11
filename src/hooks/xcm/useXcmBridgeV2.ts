@@ -120,6 +120,13 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     evmDestAddressBalance.value = 0;
   };
 
+  const reverseChain = (): void => {
+    const newSrcChain = destChain.value;
+    const newDestChain = srcChain.value;
+    srcChain.value = newSrcChain;
+    destChain.value = newDestChain;
+  };
+
   const setSrcChain = (chain: XcmChain): void => {
     srcChain.value = chain;
     const firstParachain = defaultNativeTokenTransferChain.value;
@@ -631,5 +638,6 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     setSrcChain,
     setDestChain,
     initializeXcmApi,
+    reverseChain,
   };
 }
