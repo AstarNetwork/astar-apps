@@ -81,7 +81,7 @@
             </div>
           </div>
           <div class="box__row">
-            <div class="box__row">
+            <div class="box__row" @click="setRightUi('select-token')">
               <img width="24" alt="token-logo" class="token-logo" :src="token.tokenImage" />
               <span class="text--title">{{ token.metadata.symbol }}</span>
             </div>

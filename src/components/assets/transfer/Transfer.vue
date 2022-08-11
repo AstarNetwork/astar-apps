@@ -18,6 +18,7 @@
               :class="isHighlightRightUi && 'half-opacity'"
               :symbol="token ? token.metadata.symbol : 'ASTR'"
               :handle-finalized-callback="handleFinalizedCallback"
+              :set-right-ui="setRightUi"
             />
             <LocalXcmTransfer
               v-else
@@ -26,6 +27,7 @@
               :symbol="token ? token.metadata.symbol : 'ASTR'"
               :token="token"
               :handle-finalized-callback="handleFinalizedCallback"
+              :set-right-ui="setRightUi"
             />
           </div>
           <div v-else>
@@ -40,12 +42,22 @@
           </div>
           <Information v-if="rightUi === 'information'" :is-local-transfer="isLocalTransfer" />
           <SelectChain v-if="rightUi === 'select-chain'" v-click-away="cancelHighlight" />
+          <SelectToken
+            v-if="rightUi === 'select-token'"
+            v-click-away="cancelHighlight"
+            :set-token="setToken"
+          />
         </div>
       </div>
     </div>
     <ModalSelectChain
       :is-modal-select-chain="isModalSelectChain"
       :handle-modal-select-chain="handleModalSelectChain"
+    />
+    <ModalSelectToken
+      :is-modal-select-token="isModalSelectToken"
+      :handle-modal-select-token="handleModalSelectToken"
+      :set-token="setToken"
     />
   </div>
 </template>
@@ -58,8 +70,10 @@ import Information from 'src/components/assets/transfer/Information.vue';
 import LocalTransfer from 'src/components/assets/transfer/LocalTransfer.vue';
 import LocalXcmTransfer from 'src/components/assets/transfer/LocalXcmTransfer.vue';
 import SelectChain from 'src/components/assets/transfer/SelectChain.vue';
+import SelectToken from 'src/components/assets/transfer/SelectToken.vue';
 import XcmBridge from 'src/components/assets/transfer/XcmBridge.vue';
 import ModalSelectChain from 'src/components/assets/transfer/ModalSelectChain.vue';
+import ModalSelectToken from 'src/components/assets/transfer/ModalSelectToken.vue';
 import { useAccount, useBalance, useBreakpoints, useNetworkInfo } from 'src/hooks';
 import { useStore } from 'src/store';
 import { XcmAssets } from 'src/store/assets/state';
@@ -69,7 +83,7 @@ import { useRouter } from 'vue-router';
 import { generateNativeAsset } from 'src/modules/xcm/tokens';
 import { endpointKey } from 'src/config/chainEndpoints';
 
-type RightUi = 'information' | 'select-chain';
+type RightUi = 'information' | 'select-chain' | 'select-token';
 
 export default defineComponent({
   components: {
@@ -82,13 +96,15 @@ export default defineComponent({
     SelectChain,
     ModalSelectChain,
     LocalXcmTransfer,
+    SelectToken,
+    ModalSelectToken,
   },
   setup() {
     const isModalSelectChain = ref<boolean>(false);
+    const isModalSelectToken = ref<boolean>(false);
     const rightUi = ref<RightUi>('information');
     const isLocalTransfer = ref<boolean>(false);
-    // Memo: default value is only for displaying placeholder in UI during loading
-    const token = ref<Asset>(generateNativeAsset('ASTR'));
+    const token = ref<Asset>();
     const router = useRouter();
     const { currentAccount } = useAccount();
     const { accountData } = useBalance(currentAccount);
@@ -121,6 +137,10 @@ export default defineComponent({
       isModalSelectChain.value = isOpen;
     };
 
+    const handleModalSelectToken = ({ isOpen }: { isOpen: boolean }): void => {
+      isModalSelectToken.value = isOpen;
+    };
+
     const handleFinalizedCallback = (): void => {
       router.push('/assets');
     };
@@ -131,7 +151,11 @@ export default defineComponent({
         await wait(100);
         rightUi.value = ui;
       } else {
-        isModalSelectChain.value = true;
+        if (ui === 'select-chain') {
+          isModalSelectChain.value = true;
+        } else {
+          isModalSelectToken.value = true;
+        }
       }
     };
 
@@ -149,6 +173,18 @@ export default defineComponent({
       if (isHighlightRightUi.value && e.target.className !== openClass) {
         await setRightUi('information');
       }
+    };
+
+    const setToken = async (t: Asset): Promise<void> => {
+      const query = router.currentRoute.value.query;
+      const network = query.network as string;
+      const mode = isLocalTransfer.value ? 'local' : 'xcm';
+      router.replace({
+        path: '/assets/transfer',
+        query: { token: t.metadata.symbol.toLowerCase(), network, mode },
+      });
+      await setRightUi('information');
+      isModalSelectToken.value && handleModalSelectChain({ isOpen: false });
     };
 
     const handleUpdateXcmTokenAssets = (): void => {
@@ -176,16 +212,16 @@ export default defineComponent({
         !symbol || network.toLowerCase() !== currentNetworkName.value.toLowerCase();
       if (isRedirect) return redirect();
 
+      token.value = generateNativeAsset(nativeTokenSymbolRef);
       const isFetchedAssets = xcmAssets.value && xcmAssets.value.assets.length !== 0;
       if (isFetchedAssets) {
         try {
-          const isNativeToken = symbol === nativeTokenSymbolRef.toLowerCase();
-          token.value = isNativeToken
-            ? generateNativeAsset(nativeTokenSymbolRef)
-            : (xcmAssets.value.assets.find(
-                (it) => it.metadata.symbol.toLowerCase() === symbol
-              ) as Asset);
-
+          const isXcmAsset = symbol !== nativeTokenSymbolRef.toLowerCase();
+          if (isXcmAsset) {
+            token.value = xcmAssets.value.assets.find(
+              (it) => it.metadata.symbol.toLowerCase() === symbol
+            );
+          }
           if (!token.value) throw Error('No token is found');
         } catch (error) {
           console.error('error', error);
@@ -205,12 +241,16 @@ export default defineComponent({
       rightUi,
       isTransferNativeToken,
       isModalSelectChain,
+      isModalSelectToken,
       isShibuya,
+      xcmAssets,
       setRightUi,
+      handleModalSelectToken,
       handleModalSelectChain,
       cancelHighlight,
       setIsLocalTransfer,
       handleFinalizedCallback,
+      setToken,
     };
   },
 });

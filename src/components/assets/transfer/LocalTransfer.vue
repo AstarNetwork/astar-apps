@@ -55,7 +55,7 @@
           </div>
         </div>
         <div class="box__row">
-          <div class="box__row">
+          <div class="box__row" @click="setRightUi('select-token')">
             <div class="token-logo">
               <jazzicon
                 v-if="tokenImg.includes('custom-token')"
@@ -176,6 +176,10 @@ export default defineComponent({
       type: Function,
       required: false,
       default: null,
+    },
+    setRightUi: {
+      type: Function,
+      required: true,
     },
   },
   setup(props) {
