@@ -4,7 +4,12 @@
       <span>Select Chain</span>
     </div>
     <div class="container--chains">
-      <div v-for="chain in chains" :key="chain.name" class="row--chain">
+      <div
+        v-for="chain in chains"
+        :key="chain.name"
+        class="row--chain"
+        @click="setChain(chain.name)"
+      >
         <div class="column--chain-name">
           <img :src="chain.img" :alt="chain.name" class="chain-logo" />
           <span>{{ chain.name }}</span>
@@ -20,6 +25,12 @@ import { useNetworkInfo } from 'src/hooks';
 import { Chain, XcmChain, xcmChains } from 'src/modules/xcm';
 import { defineComponent, ref, watchEffect } from 'vue';
 export default defineComponent({
+  props: {
+    setChain: {
+      type: Function,
+      required: true,
+    },
+  },
   setup() {
     const { currentNetworkIdx } = useNetworkInfo();
     const chains = ref<XcmChain[]>([]);

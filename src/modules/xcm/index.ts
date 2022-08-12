@@ -7,6 +7,7 @@ export {
   fetchExistentialDeposit,
   checkIsDeposit,
   monitorBalanceIncreasing,
+  checkIsRelayChain,
 } from './utils';
 
 export const PREFIX_ASTAR = 5;

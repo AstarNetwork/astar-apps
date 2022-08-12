@@ -33,12 +33,9 @@
 import { fadeDuration } from '@astar-network/astar-ui';
 import AstarModal from 'src/components/common/AstarModal.vue';
 import { useNetworkInfo } from 'src/hooks';
-import { generateNativeAsset } from 'src/modules/xcm/tokens';
-import { useStore } from 'src/store';
-import { XcmAssets } from 'src/store/assets/state';
 import { wait } from 'src/v2/common';
 import { Asset } from 'src/v2/models';
-import { computed, defineComponent, ref, watchEffect } from 'vue';
+import { defineComponent, PropType, ref } from 'vue';
 
 export default defineComponent({
   components: {
@@ -57,6 +54,10 @@ export default defineComponent({
       type: Function,
       required: true,
     },
+    tokens: {
+      type: Object as PropType<Asset[]>,
+      required: true,
+    },
   },
   setup(props) {
     const isClosingModal = ref<boolean>(false);
@@ -68,23 +69,8 @@ export default defineComponent({
     };
 
     const { nativeTokenSymbol } = useNetworkInfo();
-    const tokens = ref<Asset[]>([]);
-    const store = useStore();
-    const xcmAssets = computed<XcmAssets>(() => store.getters['assets/getAllAssets']);
 
-    const setTokens = (): void => {
-      if (xcmAssets.value && nativeTokenSymbol.value) {
-        const nativeToken = generateNativeAsset(nativeTokenSymbol.value);
-        tokens.value = xcmAssets.value.assets.filter((it) => {
-          return it.isXcmCompatible;
-        });
-        tokens.value.unshift(nativeToken);
-      }
-    };
-
-    watchEffect(setTokens);
-
-    return { tokens, nativeTokenSymbol, closeModal, isClosingModal };
+    return { nativeTokenSymbol, closeModal, isClosingModal };
   },
 });
 </script>

@@ -7,7 +7,12 @@
   >
     <div class="container--select-chain-mobile">
       <div class="container--chains">
-        <div v-for="chain in chains" :key="chain.name" class="row--chain">
+        <div
+          v-for="chain in chains"
+          :key="chain.name"
+          class="row--chain"
+          @click="setChain(chain.name)"
+        >
           <div class="column--chain-name">
             <img :src="chain.img" :alt="chain.name" class="chain-logo" />
             <span>{{ chain.name }}</span>
@@ -23,7 +28,7 @@ import { endpointKey } from 'src/config/chainEndpoints';
 import { useNetworkInfo } from 'src/hooks';
 import { fadeDuration } from '@astar-network/astar-ui';
 import { Chain, XcmChain, xcmChains } from 'src/modules/xcm';
-import { defineComponent, ref, watchEffect, computed } from 'vue';
+import { defineComponent, ref, watchEffect } from 'vue';
 import AstarModal from 'src/components/common/AstarModal.vue';
 import { wait } from 'src/v2/common';
 export default defineComponent({
@@ -36,6 +41,10 @@ export default defineComponent({
       required: true,
     },
     handleModalSelectChain: {
+      type: Function,
+      required: true,
+    },
+    setChain: {
       type: Function,
       required: true,
     },

@@ -38,14 +38,20 @@
               :set-right-ui="setRightUi"
               :is-highlight-right-ui="isHighlightRightUi"
               :handle-finalized-callback="handleFinalizedCallback"
+              :set-is-select-from-chain="setIsSelectFromChain"
             />
           </div>
           <Information v-if="rightUi === 'information'" :is-local-transfer="isLocalTransfer" />
-          <SelectChain v-if="rightUi === 'select-chain'" v-click-away="cancelHighlight" />
+          <SelectChain
+            v-if="rightUi === 'select-chain'"
+            v-click-away="cancelHighlight"
+            :set-chain="setChain"
+          />
           <SelectToken
             v-if="rightUi === 'select-token'"
             v-click-away="cancelHighlight"
             :set-token="setToken"
+            :tokens="tokens"
           />
         </div>
       </div>
@@ -53,11 +59,13 @@
     <ModalSelectChain
       :is-modal-select-chain="isModalSelectChain"
       :handle-modal-select-chain="handleModalSelectChain"
+      :set-chain="setChain"
     />
     <ModalSelectToken
       :is-modal-select-token="isModalSelectToken"
       :handle-modal-select-token="handleModalSelectToken"
       :set-token="setToken"
+      :tokens="tokens"
     />
   </div>
 </template>
@@ -80,8 +88,9 @@ import { XcmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
 import { wait } from 'src/hooks/helper/common';
 import { useRouter } from 'vue-router';
-import { generateNativeAsset } from 'src/modules/xcm/tokens';
+import { generateNativeAsset, xcmToken } from 'src/modules/xcm/tokens';
 import { endpointKey } from 'src/config/chainEndpoints';
+import { Chain, checkIsRelayChain } from 'src/modules/xcm';
 
 type RightUi = 'information' | 'select-chain' | 'select-token';
 
@@ -101,9 +110,10 @@ export default defineComponent({
   },
   setup() {
     const isModalSelectChain = ref<boolean>(false);
+    const isSelectFromChain = ref<boolean>(false);
     const isModalSelectToken = ref<boolean>(false);
     const rightUi = ref<RightUi>('information');
-    const isLocalTransfer = ref<boolean>(false);
+    const isLocalTransfer = ref<boolean>(true);
     const token = ref<Asset>();
     const router = useRouter();
     const { currentAccount } = useAccount();
@@ -122,15 +132,73 @@ export default defineComponent({
       return symbol.toLowerCase() === nativeTokenSymbol.value.toLowerCase();
     });
 
+    const getNetworkName = (chain?: string): string => {
+      const query = router.currentRoute.value.query;
+      const symbol = query.token as string;
+      const isNativeToken = symbol.toLowerCase() === nativeTokenSymbol.value.toLowerCase();
+      const currentNetwork = currentNetworkName.value.toLowerCase();
+      const defaultXcmBridgeForNative =
+        currentNetworkIdx.value === endpointKey.ASTAR
+          ? Chain.ACALA.toLowerCase()
+          : Chain.KARURA.toLowerCase();
+
+      if (chain) {
+        // if: users select chain via SelectChain UI
+        if (chain.toLowerCase() === currentNetwork) {
+          return currentNetwork + '-' + defaultXcmBridgeForNative;
+        } else {
+          const c = chain.toLowerCase();
+          return isSelectFromChain.value ? c + '-' + currentNetwork : currentNetwork + '-' + c;
+        }
+      } else {
+        const originChain = isLocalTransfer.value
+          ? ''
+          : isNativeToken
+          ? defaultXcmBridgeForNative
+          : token.value?.originChain.toLowerCase();
+        return isLocalTransfer.value ? currentNetwork : currentNetwork + '-' + originChain;
+      }
+    };
+
     const setIsLocalTransfer = (result: boolean): void => {
       isLocalTransfer.value = result;
       const query = router.currentRoute.value.query;
       const symbol = query.token as string;
-      const network = query.network as string;
+      const network = getNetworkName();
       router.replace({
         path: '/assets/transfer',
         query: { token: symbol.toLowerCase(), network, mode: result ? 'local' : 'xcm' },
       });
+    };
+
+    const setIsSelectFromChain = (result: boolean) => {
+      isSelectFromChain.value = result;
+    };
+
+    const setToken = async (t: Asset): Promise<void> => {
+      const network = getNetworkName();
+      const mode = isLocalTransfer.value ? 'local' : 'xcm';
+      router.replace({
+        path: '/assets/transfer',
+        query: { token: t.metadata.symbol.toLowerCase(), network, mode },
+      });
+      await setRightUi('information');
+      isModalSelectToken.value && handleModalSelectToken({ isOpen: false });
+    };
+
+    const setChain = async (chain: string): Promise<void> => {
+      const network = getNetworkName(chain);
+      const selectedNetwork = network.split('-')[1].toLowerCase();
+      const t =
+        xcmToken[currentNetworkIdx.value].find((it) => {
+          return it.originChain.toLowerCase() === selectedNetwork && it.isNativeToken;
+        })?.symbol || nativeTokenSymbol.value;
+      router.replace({
+        path: '/assets/transfer',
+        query: { token: t.toLowerCase(), network, mode: 'xcm' },
+      });
+      await setRightUi('information');
+      isModalSelectChain.value && handleModalSelectChain({ isOpen: false });
     };
 
     const handleModalSelectChain = ({ isOpen }: { isOpen: boolean }): void => {
@@ -153,7 +221,8 @@ export default defineComponent({
       } else {
         if (ui === 'select-chain') {
           isModalSelectChain.value = true;
-        } else {
+        }
+        if (ui === 'select-token') {
           isModalSelectToken.value = true;
         }
       }
@@ -173,18 +242,6 @@ export default defineComponent({
       if (isHighlightRightUi.value && e.target.className !== openClass) {
         await setRightUi('information');
       }
-    };
-
-    const setToken = async (t: Asset): Promise<void> => {
-      const query = router.currentRoute.value.query;
-      const network = query.network as string;
-      const mode = isLocalTransfer.value ? 'local' : 'xcm';
-      router.replace({
-        path: '/assets/transfer',
-        query: { token: t.metadata.symbol.toLowerCase(), network, mode },
-      });
-      await setRightUi('information');
-      isModalSelectToken.value && handleModalSelectChain({ isOpen: false });
     };
 
     const handleUpdateXcmTokenAssets = (): void => {
@@ -209,7 +266,7 @@ export default defineComponent({
       isLocalTransfer.value = mode === 'local';
 
       const isRedirect =
-        !symbol || network.toLowerCase() !== currentNetworkName.value.toLowerCase();
+        !symbol || !network.toLowerCase().includes(currentNetworkName.value.toLowerCase());
       if (isRedirect) return redirect();
 
       token.value = generateNativeAsset(nativeTokenSymbolRef);
@@ -230,8 +287,39 @@ export default defineComponent({
       }
     };
 
+    const tokens = computed<Asset[]>(() => {
+      let tokens: Asset[];
+      const currentRouteRef = router.currentRoute.value;
+      const query = currentRouteRef.query;
+      const network = query.network as string;
+      if (!xcmAssets.value || !nativeTokenSymbol.value) return [];
+
+      const nativeToken = generateNativeAsset(nativeTokenSymbol.value);
+      let selectableTokens;
+      if (isLocalTransfer.value) {
+        selectableTokens = xcmAssets.value.assets;
+        tokens = selectableTokens.filter(({ isXcmCompatible }) => isXcmCompatible);
+        tokens.unshift(nativeToken);
+      } else {
+        const selectedNetwork = network.split('-')[1].toLowerCase();
+        const isSelectedRelayChain = checkIsRelayChain(selectedNetwork);
+        selectableTokens = xcmAssets.value.assets.filter(
+          (it) => it.originChain.toLowerCase() === selectedNetwork
+        );
+        tokens = selectableTokens.filter(({ isXcmCompatible }) => isXcmCompatible);
+        !isSelectedRelayChain && tokens.push(nativeToken);
+      }
+
+      return tokens;
+    });
+
     watch([currentAccount], handleUpdateXcmTokenAssets, { immediate: true });
     watchEffect(handleDefaultConfig);
+
+    // watchEffect(() => {
+    //   console.log('token', token.value);
+    //   console.log('isLocalTransfer', isLocalTransfer.value);
+    // });
 
     return {
       isLocalTransfer,
@@ -244,6 +332,7 @@ export default defineComponent({
       isModalSelectToken,
       isShibuya,
       xcmAssets,
+      tokens,
       setRightUi,
       handleModalSelectToken,
       handleModalSelectChain,
@@ -251,6 +340,8 @@ export default defineComponent({
       setIsLocalTransfer,
       handleFinalizedCallback,
       setToken,
+      setChain,
+      setIsSelectFromChain,
     };
   },
 });

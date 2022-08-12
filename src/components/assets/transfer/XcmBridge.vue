@@ -7,7 +7,7 @@
         <div
           class="box--input-chain"
           :class="[isNativeBridge && 'box--hover--active', !isHighlightRightUi && 'cursor-pointer']"
-          @click="setRightUi('select-chain')"
+          @click="handleDisplayTokenSelector(true)"
         >
           <div class="box__space-between">
             <span> {{ $t('from') }}</span>
@@ -28,7 +28,7 @@
         <div
           class="box--input-chain adjust--to-input"
           :class="isNativeBridge && 'box--hover--active'"
-          @click="setRightUi('select-chain')"
+          @click="handleDisplayTokenSelector(false)"
         >
           <div class="box__space-between">
             <span> {{ $t('to') }}</span>
@@ -182,6 +182,10 @@ export default defineComponent({
       type: Function,
       required: true,
     },
+    setIsSelectFromChain: {
+      type: Function,
+      required: true,
+    },
     isHighlightRightUi: {
       type: Boolean,
       required: true,
@@ -223,6 +227,11 @@ export default defineComponent({
     } = useXcmBridgeV2(tokenData);
 
     const { callAssetWithdrawToPara } = useXcmEvm(tokenData);
+
+    const handleDisplayTokenSelector = (isFrom: boolean): void => {
+      props.setRightUi('select-chain');
+      props.setIsSelectFromChain(isFrom);
+    };
 
     const isReady = computed<boolean>(() => {
       return !!(tokenData.value && srcChain.value && destChain.value);
@@ -291,6 +300,7 @@ export default defineComponent({
       setSrcChain,
       setDestChain,
       reverseChain,
+      handleDisplayTokenSelector,
     };
   },
 });
