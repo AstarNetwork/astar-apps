@@ -193,7 +193,8 @@
         <span class="color--white"> {{ $t(errMsg) }}</span>
       </div>
       <div class="wrapper__row--button">
-        <button class="btn btn--confirm" :disabled="isDisabledBridge" @click="handleBridge">
+        <!-- <button class="btn btn--confirm" :disabled="isDisabledBridge" @click="handleBridge"> -->
+        <button class="btn btn--confirm" @click="handleBridge">
           {{ $t('confirm') }}
         </button>
       </div>
