@@ -31,7 +31,6 @@ import { isValidAddressPolkadotAddress } from './../helper/plasmUtils';
 import { AcalaApi, MoonbeamApi } from './parachainApi';
 import { MOONBEAM_ASTAR_TOKEN_ID } from './parachainApi/MoonbeamApi';
 import { AstarApi, AstarToken, ChainApi } from './SubstrateApi';
-import { wait } from '../helper/common';
 
 const { Acala, Astar, Karura, Moonriver, Polkadot, Shiden, Kusama } = xcmChainObj;
 
@@ -103,11 +102,15 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
   );
 
   const isMoonbeamWithdrawal = computed<boolean>(() => {
-    return destChain.value.name === Chain.MOONRIVER || destChain.value.name === Chain.MOONBEAM;
+    // Todo: un-comment-out after channel between Astar and Moonbeam has been opened
+    // return destChain.value.name === Chain.MOONRIVER || destChain.value.name === Chain.MOONBEAM;
+    return destChain.value.name === Chain.MOONRIVER;
   });
 
   const isMoonbeamDeposit = computed<boolean>(() => {
-    return srcChain.value.name === Chain.MOONRIVER || srcChain.value.name === Chain.MOONBEAM;
+    // Todo: un-comment-out after channel between Astar and Moonbeam has been opened
+    // return srcChain.value.name === Chain.MOONRIVER || srcChain.value.name === Chain.MOONBEAM;
+    return srcChain.value.name === Chain.MOONRIVER;
   });
 
   const { handleResult, handleTransactionError } = useCustomSignature({});

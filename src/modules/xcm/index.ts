@@ -39,7 +39,7 @@ export enum Chain {
   KARURA = 'Karura',
   ACALA = 'Acala',
   MOONRIVER = 'Moonriver',
-  MOONBEAM = 'Moonbeam',
+  // MOONBEAM = 'Moonbeam',
 }
 
 export enum parachainIds {
@@ -48,7 +48,7 @@ export enum parachainIds {
   KARURA = 2000,
   ACALA = 2000,
   MOONRIVER = 2023,
-  MOONBEAM = 2004,
+  // MOONBEAM = 2004,
 }
 
 // Memo: give it 0 ide for convenience in checking para/relay chain logic
@@ -114,13 +114,14 @@ export const xcmChainObj: XcmChainObj = {
     parachainId: parachainIds.MOONRIVER,
     endpoint: 'wss://wss.api.moonriver.moonbeam.network',
   },
-  [Chain.MOONBEAM]: {
-    name: Chain.MOONBEAM,
-    relayChain: Chain.POLKADOT,
-    img: 'https://polkadot.js.org/apps/static/moonbeam.3204d901..png',
-    parachainId: parachainIds.MOONBEAM,
-    endpoint: 'wss://wss.api.moonbeam.network',
-  },
+  // Todo: un-comment-out after channel between Astar and Moonbeam has been opened
+  // [Chain.MOONBEAM]: {
+  //   name: Chain.MOONBEAM,
+  //   relayChain: Chain.POLKADOT,
+  //   img: 'https://polkadot.js.org/apps/static/moonbeam.3204d901..png',
+  //   parachainId: parachainIds.MOONBEAM,
+  //   endpoint: 'wss://wss.api.moonbeam.network',
+  // },
 };
 
 const xcmChains = objToArray(xcmChainObj);
