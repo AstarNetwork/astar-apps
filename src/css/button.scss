@@ -39,6 +39,9 @@
       transition: all 0.3s ease 0s;
       color: #ffffff;
       background-color: $astar-blue;
+      &:disabled {
+        background-color: $gray-3 !important;
+      }
     }
   }
 }
@@ -52,6 +55,9 @@
       &:hover {
         color: #ffffff;
         background-color: $astar-blue;
+        &:disabled {
+          background-color: $gray-5 !important;
+        }
       }
     }
   }
