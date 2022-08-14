@@ -72,6 +72,7 @@
               </button>
               <button
                 class="btn btn--sm"
+                :disabled="isDisabledXcmButton"
                 @click="
                   handleModalXcmBridge({
                     isOpen: true,
@@ -185,6 +186,7 @@
 <script lang="ts">
 import { u8aToString } from '@polkadot/util';
 import { ethers } from 'ethers';
+import { endpointKey } from 'src/config/chainEndpoints';
 import { useBalance, useEvmDeposit, useNetworkInfo, usePrice } from 'src/hooks';
 import { checkIsNullOrUndefined, truncate } from 'src/hooks/helper/common';
 import { getTokenImage } from 'src/modules/token';
@@ -230,7 +232,7 @@ export default defineComponent({
     const { balance, accountData } = useBalance(selectedAddress);
     const { numEvmDeposit } = useEvmDeposit();
     const { nativeTokenUsd } = usePrice();
-    const { currentNetworkName, nativeTokenSymbol } = useNetworkInfo();
+    const { currentNetworkName, nativeTokenSymbol, currentNetworkIdx } = useNetworkInfo();
 
     const xcmNativeToken = computed(() => generateAstarNativeTokenObject(nativeTokenSymbol.value));
 
@@ -257,6 +259,11 @@ export default defineComponent({
     const handleModalVesting = ({ isOpen }: { isOpen: boolean }) => {
       isModalVesting.value = isOpen;
     };
+
+    const isDisabledXcmButton = computed(() => {
+      // Memo: disabled until backend turns 'XCM transfer between Astar and Acala' on again.
+      return currentNetworkIdx.value === endpointKey.ASTAR;
+    });
 
     watchEffect(async () => {
       const tokenSymbolRef = nativeTokenSymbol.value;
@@ -312,6 +319,7 @@ export default defineComponent({
       isModalVesting,
       xcmNativeToken,
       isLoading,
+      isDisabledXcmButton,
       handleModalVesting,
       handleModalTransfer,
       handleModalFaucet,
