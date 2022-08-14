@@ -126,7 +126,9 @@ export default defineComponent({
 
     const isDisabledXcmButton = computed(() => {
       const acalaTokens = xcmToken[endpointKey.ASTAR].filter((it) => it.originChain === 'Acala');
-      const isAcalaToken = !!acalaTokens.find((it) => it.symbol === t.value.metadata.symbol);
+      const isAcalaToken = !!acalaTokens.find(
+        (it) => it.symbol.toLowerCase() === t.value.metadata.symbol.toLowerCase()
+      );
       return isAcalaToken;
     });
 
