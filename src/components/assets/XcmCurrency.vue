@@ -128,6 +128,7 @@ export default defineComponent({
       const acalaTokens = xcmToken[endpointKey.ASTAR].filter(
         (it) => it.originChain === Chain.ACALA
       );
+      // Memo: disabled until backend turns XCM transfer on again.
       const isAcalaToken = !!acalaTokens.find(
         (it) => it.symbol.toLowerCase() === t.value.metadata.symbol.toLowerCase()
       );

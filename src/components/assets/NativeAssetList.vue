@@ -261,6 +261,7 @@ export default defineComponent({
     };
 
     const isDisabledXcmButton = computed(() => {
+      // Memo: disabled until backend turns 'XCM transfer between Astar and Acala' on again.
       return currentNetworkIdx.value === endpointKey.ASTAR;
     });
 
