@@ -84,7 +84,7 @@
 import { endpointKey } from 'src/config/chainEndpoints';
 import { useNetworkInfo } from 'src/hooks';
 import { truncate } from 'src/hooks/helper/common';
-import { getXcmToken, xcmToken } from 'src/modules/xcm';
+import { Chain, getXcmToken, xcmToken } from 'src/modules/xcm';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, PropType } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
@@ -125,7 +125,9 @@ export default defineComponent({
     });
 
     const isDisabledXcmButton = computed(() => {
-      const acalaTokens = xcmToken[endpointKey.ASTAR].filter((it) => it.originChain === 'Acala');
+      const acalaTokens = xcmToken[endpointKey.ASTAR].filter(
+        (it) => it.originChain === Chain.ACALA
+      );
       const isAcalaToken = !!acalaTokens.find(
         (it) => it.symbol.toLowerCase() === t.value.metadata.symbol.toLowerCase()
       );
