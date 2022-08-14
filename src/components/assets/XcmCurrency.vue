@@ -45,6 +45,7 @@
             <div>
               <button
                 v-if="token.isXcmCompatible"
+                :disabled="isDisabledXcmButton"
                 class="btn btn--sm"
                 @click="
                   handleModalXcmBridge({
@@ -83,7 +84,7 @@
 import { endpointKey } from 'src/config/chainEndpoints';
 import { useNetworkInfo } from 'src/hooks';
 import { truncate } from 'src/hooks/helper/common';
-import { getXcmToken } from 'src/modules/xcm';
+import { getXcmToken, xcmToken } from 'src/modules/xcm';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, PropType } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
@@ -123,9 +124,16 @@ export default defineComponent({
       return currentNetworkIdx.value === endpointKey.ASTAR ? astarBalanceUrl : shidenBalanceUrl;
     });
 
+    const isDisabledXcmButton = computed(() => {
+      const acalaTokens = xcmToken[endpointKey.ASTAR].filter((it) => it.originChain === 'Acala');
+      const isAcalaToken = !!acalaTokens.find((it) => it.symbol === t.value.metadata.symbol);
+      return isAcalaToken;
+    });
+
     return {
       isDisplayToken,
       explorerLink,
+      isDisabledXcmButton,
       truncate,
     };
   },
