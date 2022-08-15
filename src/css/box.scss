@@ -26,7 +26,7 @@
   border: 1px solid transparent;
   transition: all 0.3s ease 0s;
   &:hover {
-    border: 1px solid $astar-blue;
+    border: 1px solid $astar-blue !important;
     transition: all 0.3s ease 0s;
   }
 }

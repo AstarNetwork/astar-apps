@@ -82,12 +82,17 @@ import SelectToken from 'src/components/assets/transfer/SelectToken.vue';
 import XcmBridge from 'src/components/assets/transfer/XcmBridge.vue';
 import ModalSelectChain from 'src/components/assets/transfer/ModalSelectChain.vue';
 import ModalSelectToken from 'src/components/assets/transfer/ModalSelectToken.vue';
-import { useAccount, useBalance, useBreakpoints, useNetworkInfo } from 'src/hooks';
+import {
+  useAccount,
+  useBalance,
+  useBreakpoints,
+  useNetworkInfo,
+  useTransferRouter,
+} from 'src/hooks';
 import { useStore } from 'src/store';
 import { XcmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
 import { wait } from 'src/hooks/helper/common';
-import { useRouter } from 'vue-router';
 import { generateNativeAsset, xcmToken } from 'src/modules/xcm/tokens';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { Chain, checkIsRelayChain } from 'src/modules/xcm';
@@ -115,27 +120,25 @@ export default defineComponent({
     const rightUi = ref<RightUi>('information');
     const isLocalTransfer = ref<boolean>(true);
     const token = ref<Asset>();
-    const router = useRouter();
     const { currentAccount } = useAccount();
     const { accountData } = useBalance(currentAccount);
     const store = useStore();
     const { screenSize, width } = useBreakpoints();
+    const { chainFrom, chainTo, tokenSymbol, router, isTransferPage, redirect, mode, network } =
+      useTransferRouter();
+
     const xcmAssets = computed<XcmAssets>(() => store.getters['assets/getAllAssets']);
     const isHighlightRightUi = computed<boolean>(() => rightUi.value !== 'information');
     const { nativeTokenSymbol, currentNetworkName, currentNetworkIdx } = useNetworkInfo();
 
-    const isShibuya = computed(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
+    const isShibuya = computed<boolean>(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
 
     const isTransferNativeToken = computed<boolean>(() => {
-      const query = router.currentRoute.value.query;
-      const symbol = query.token as string;
-      return symbol.toLowerCase() === nativeTokenSymbol.value.toLowerCase();
+      return tokenSymbol.value === nativeTokenSymbol.value.toLowerCase();
     });
 
     const getNetworkName = (chain?: string): string => {
-      const query = router.currentRoute.value.query;
-      const symbol = query.token as string;
-      const isNativeToken = symbol.toLowerCase() === nativeTokenSymbol.value.toLowerCase();
+      const isNativeToken = tokenSymbol.value === nativeTokenSymbol.value.toLowerCase();
       const currentNetwork = currentNetworkName.value.toLowerCase();
       const defaultXcmBridgeForNative =
         currentNetworkIdx.value === endpointKey.ASTAR
@@ -143,12 +146,20 @@ export default defineComponent({
           : Chain.KARURA.toLowerCase();
 
       if (chain) {
-        // if: users select chain via SelectChain UI
-        if (chain.toLowerCase() === currentNetwork) {
-          return currentNetwork + '-' + defaultXcmBridgeForNative;
+        if (isSelectFromChain.value) {
+          const c = chain.toLowerCase();
+          if (chain.toLowerCase() === chainFrom.value.toLowerCase()) {
+            return c + '-' + defaultXcmBridgeForNative;
+          } else {
+            return c + '-' + currentNetwork;
+          }
         } else {
           const c = chain.toLowerCase();
-          return isSelectFromChain.value ? c + '-' + currentNetwork : currentNetwork + '-' + c;
+          if (chain.toLowerCase() === chainTo.value.toLowerCase()) {
+            return defaultXcmBridgeForNative + '-' + c;
+          } else {
+            return currentNetwork + '-' + c;
+          }
         }
       } else {
         const originChain = isLocalTransfer.value
@@ -156,18 +167,17 @@ export default defineComponent({
           : isNativeToken
           ? defaultXcmBridgeForNative
           : token.value?.originChain.toLowerCase();
-        return isLocalTransfer.value ? currentNetwork : currentNetwork + '-' + originChain;
+        return isLocalTransfer.value ? currentNetwork : originChain + '-' + currentNetwork;
       }
     };
 
     const setIsLocalTransfer = (result: boolean): void => {
       isLocalTransfer.value = result;
-      const query = router.currentRoute.value.query;
-      const symbol = query.token as string;
+      const mode = result ? 'local' : 'xcm';
       const network = getNetworkName();
       router.replace({
         path: '/assets/transfer',
-        query: { token: symbol.toLowerCase(), network, mode: result ? 'local' : 'xcm' },
+        query: { token: tokenSymbol.value, network, mode },
       });
     };
 
@@ -228,15 +238,6 @@ export default defineComponent({
       }
     };
 
-    const redirect = (): void => {
-      const token = nativeTokenSymbol.value.toLowerCase();
-      const network = currentNetworkName.value.toLowerCase();
-      router.push({
-        path: '/assets/transfer',
-        query: { token, network, mode: 'local' },
-      });
-    };
-
     const cancelHighlight = async (e: any): Promise<void> => {
       const openClass = 'container--select-chain';
       if (isHighlightRightUi.value && e.target.className !== openClass) {
@@ -251,22 +252,17 @@ export default defineComponent({
     };
 
     const handleDefaultConfig = (): void => {
-      const currentRouteRef = router.currentRoute.value;
       // Memo: avoid triggering this function whenever users go back to assets page
-      if (!currentRouteRef.fullPath.includes('transfer') || !currentNetworkName.value) {
+      if (!isTransferPage.value || !currentNetworkName.value) {
         return;
       }
 
       const nativeTokenSymbolRef = nativeTokenSymbol.value;
-      const query = currentRouteRef.query;
-      const s = (query.token as string) || '';
-      const symbol = s.toLowerCase();
-      const mode = query.mode as string;
-      const network = query.network as string;
-      isLocalTransfer.value = mode === 'local';
+      const symbol = tokenSymbol.value;
+      isLocalTransfer.value = mode.value === 'local';
 
       const isRedirect =
-        !symbol || !network.toLowerCase().includes(currentNetworkName.value.toLowerCase());
+        !symbol || !network.value.toLowerCase().includes(currentNetworkName.value.toLowerCase());
       if (isRedirect) return redirect();
 
       token.value = generateNativeAsset(nativeTokenSymbolRef);
@@ -289,9 +285,6 @@ export default defineComponent({
 
     const tokens = computed<Asset[]>(() => {
       let tokens: Asset[];
-      const currentRouteRef = router.currentRoute.value;
-      const query = currentRouteRef.query;
-      const network = query.network as string;
       if (!xcmAssets.value || !nativeTokenSymbol.value) return [];
 
       const nativeToken = generateNativeAsset(nativeTokenSymbol.value);
@@ -301,7 +294,7 @@ export default defineComponent({
         tokens = selectableTokens.filter(({ isXcmCompatible }) => isXcmCompatible);
         tokens.unshift(nativeToken);
       } else {
-        const selectedNetwork = network.split('-')[1].toLowerCase();
+        const selectedNetwork = network.value.split('-')[1].toLowerCase();
         const isSelectedRelayChain = checkIsRelayChain(selectedNetwork);
         selectableTokens = xcmAssets.value.assets.filter(
           (it) => it.originChain.toLowerCase() === selectedNetwork
@@ -315,11 +308,6 @@ export default defineComponent({
 
     watch([currentAccount], handleUpdateXcmTokenAssets, { immediate: true });
     watchEffect(handleDefaultConfig);
-
-    // watchEffect(() => {
-    //   console.log('token', token.value);
-    //   console.log('isLocalTransfer', isLocalTransfer.value);
-    // });
 
     return {
       isLocalTransfer,

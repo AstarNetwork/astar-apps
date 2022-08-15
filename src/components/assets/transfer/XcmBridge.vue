@@ -1,46 +1,26 @@
 <template>
-  <div class="">
+  <div>
     <ModalLoading v-if="isLoadingApi" />
-
-    <div v-if="isReady" class="wrapper--xcm-bridge">
+    <div class="wrapper--xcm-bridge">
       <div class="rows">
-        <div
-          class="box--input-chain"
-          :class="[isNativeBridge && 'box--hover--active', !isHighlightRightUi && 'cursor-pointer']"
-          @click="handleDisplayTokenSelector(true)"
-        >
-          <div class="box__space-between">
-            <span> {{ $t('from') }}</span>
-            <div />
-          </div>
-          <ModalSelectChain
-            :chains="chains"
-            :chain="srcChain"
-            :set-chain="setSrcChain"
-            :is-enable-set-chain="false"
-          />
-        </div>
+        <InputSelectChain
+          :chain="srcChain"
+          title="from"
+          :handle-display-token-selector="handleDisplayTokenSelector"
+          :is-highlight-right-ui="isHighlightRightUi"
+        />
         <div class="row--reverse">
           <button class="icon--reverse" @click="reverseChain">
             <astar-icon-sync size="20" class="cursor-pointer" />
           </button>
         </div>
-        <div
-          class="box--input-chain adjust--to-input"
-          :class="isNativeBridge && 'box--hover--active'"
-          @click="handleDisplayTokenSelector(false)"
-        >
-          <div class="box__space-between">
-            <span> {{ $t('to') }}</span>
-            <div />
-          </div>
-          <ModalSelectChain
-            :chains="chains"
-            :chain="destChain"
-            :set-chain="setDestChain"
-            :is-enable-set-chain="false"
-          />
-        </div>
+        <InputSelectChain
+          class="adjust--to-input"
+          :chain="destChain"
+          title="to"
+          :handle-display-token-selector="handleDisplayTokenSelector"
+          :is-highlight-right-ui="isHighlightRightUi"
+        />
 
         <div v-if="!isNativeBridge">
           <AddressInputV2
@@ -157,7 +137,7 @@
   </div>
 </template>
 <script lang="ts">
-import ModalSelectChain from 'src/components/assets/modals/ModalSelectChain.vue';
+import InputSelectChain from 'src/components/assets/transfer/InputSelectChain.vue';
 import AddressInputV2 from 'src/components/common/AddressInputV2.vue';
 import { useAccount, useTooltip, useXcmBridgeV2, useXcmEvm } from 'src/hooks';
 import { truncate } from 'src/hooks/helper/common';
@@ -169,7 +149,7 @@ import ModalLoading from '/src/components/common/ModalLoading.vue';
 export default defineComponent({
   components: {
     AddressInputV2,
-    ModalSelectChain,
+    InputSelectChain,
     ModalLoading,
   },
   props: {
@@ -211,7 +191,7 @@ export default defineComponent({
       isNativeBridge,
       evmDestAddress,
       existentialDeposit,
-      chains,
+      // chains,
       isH160,
       evmDestAddressBalance,
       fromAddressBalance,
@@ -221,8 +201,6 @@ export default defineComponent({
       inputHandler,
       bridge,
       setIsNativeBridge,
-      setSrcChain,
-      setDestChain,
       reverseChain,
     } = useXcmBridgeV2(tokenData);
 
@@ -232,10 +210,6 @@ export default defineComponent({
       props.setRightUi('select-chain');
       props.setIsSelectFromChain(isFrom);
     };
-
-    const isReady = computed<boolean>(() => {
-      return !!(tokenData.value && srcChain.value && destChain.value);
-    });
 
     const getNetworkName = (): string => (isDeposit.value ? 'EVM' : destChain.value.name);
 
@@ -279,8 +253,6 @@ export default defineComponent({
       evmDestAddress,
       existentialDeposit,
       isLoadingApi,
-      isReady,
-      chains,
       evmInputPlaceholder,
       evmInputTitle,
       isH160,
@@ -297,8 +269,6 @@ export default defineComponent({
       setIsNativeBridge,
       handleBridge,
       truncate,
-      setSrcChain,
-      setDestChain,
       reverseChain,
       handleDisplayTokenSelector,
     };

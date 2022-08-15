@@ -5,11 +5,16 @@ import { endpointKey } from 'src/config/chainEndpoints';
 import { getTokenBal, isValidEvmAddress } from 'src/config/web3';
 import { SubstrateAccount } from 'src/store/general/state';
 
-import { useBalance, useCustomSignature, useNetworkInfo } from 'src/hooks';
+import {
+  useBalance,
+  useCustomSignature,
+  useNetworkInfo,
+  useTransferRouter,
+  useGasPrice,
+  useAccount,
+} from 'src/hooks';
 import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
 import { getInjector } from 'src/hooks/helper/wallet';
-import { useAccount } from 'src/hooks/useAccount';
-import { useGasPrice } from 'src/hooks/useGasPrice';
 import { showLoading } from 'src/modules/extrinsic/utils';
 import {
   Chain,
@@ -45,6 +50,7 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   const isNativeBridge = ref<boolean>(true);
   const existentialDeposit = ref<ExistentialDeposit | null>(null);
   const { nativeTipPrice } = useGasPrice();
+  const { xcmOpponentChain, chainFrom, chainTo, isTransferPage } = useTransferRouter();
 
   // Format: SS58(withdrawal) or H160(deposit)
   const evmDestAddress = ref<string>('');
@@ -70,18 +76,23 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     return symbol === 'SDN' || symbol === 'ASTR';
   });
 
-  // Fixme: variable name is too long
-  const defaultNativeTokenTransferChain = computed<XcmChain>(() =>
-    isAstar.value ? Acala : Karura
-  );
-
-  const chains = computed<XcmChain[]>(() => {
-    if (isAstarNativeTransfer.value) {
-      return isAstar.value ? polkadotParachains : kusamaParachains;
-    } else {
-      return [astarChain.value, originChain.value];
+  const opponentChain = computed<XcmChain>(() => {
+    try {
+      return xcmChainObj[xcmOpponentChain.value as keyof typeof xcmChainObj];
+    } catch (error) {
+      console.error(error);
+      return isAstar.value ? Acala : Karura;
     }
   });
+
+  // const chains = computed<XcmChain[]>(() => {
+  //   if (isAstarNativeTransfer.value) {
+  //     return isAstar.value ? polkadotParachains : kusamaParachains;
+  //   } else {
+  //     return [astarChain.value, originChain.value];
+  //   }
+  // });
+
   const decimals = computed<number>(() =>
     selectedToken.value ? Number(selectedToken.value.metadata.decimals) : 0
   );
@@ -127,28 +138,26 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     destChain.value = newDestChain;
   };
 
+  // Checked
   const setSrcChain = (chain: XcmChain): void => {
     srcChain.value = chain;
-    const firstParachain = defaultNativeTokenTransferChain.value;
-    const origin = isAstarNativeTransfer.value ? firstParachain : originChain.value;
     if (chain.name === destChain.value.name) {
       if (isAstar.value) {
-        destChain.value = destChain.value.name === Astar.name ? origin : Astar;
+        destChain.value = destChain.value.name === Astar.name ? opponentChain.value : Astar;
       } else {
-        destChain.value = destChain.value.name === Shiden.name ? origin : Shiden;
+        destChain.value = destChain.value.name === Shiden.name ? opponentChain.value : Shiden;
       }
     }
   };
 
+  // Checked
   const setDestChain = (chain: XcmChain): void => {
     destChain.value = chain;
-    const firstParachain = defaultNativeTokenTransferChain.value;
-    const origin = isAstarNativeTransfer.value ? firstParachain : originChain.value;
     if (chain.name === srcChain.value.name) {
       if (isAstar.value) {
-        srcChain.value = srcChain.value.name === Astar.name ? origin : Astar;
+        srcChain.value = srcChain.value.name === Astar.name ? opponentChain.value : Astar;
       } else {
-        srcChain.value = srcChain.value.name === Shiden.name ? origin : Shiden;
+        srcChain.value = srcChain.value.name === Shiden.name ? opponentChain.value : Shiden;
       }
     }
   };
@@ -354,13 +363,13 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     if (!selectedToken.value) return;
     const astarChain = isAstar.value ? Astar : Shiden;
 
-    const nativeSourceChain = isAstarNativeTransfer.value // memo: ASTR/SDN
-      ? defaultNativeTokenTransferChain.value // Karura or Acala
-      : originChain.value;
+    // const nativeSourceChain = isAstarNativeTransfer.value // memo: ASTR/SDN
+    //   ? defaultNativeTokenTransferChain.value // Karura or Acala
+    //   : originChain.value;
 
     destParaId.value = isAstar.value ? parachainIds.ASTAR : parachainIds.SHIDEN;
     // Memo: H160: withdrawal mode
-    srcChain.value = isH160.value ? astarChain : nativeSourceChain;
+    srcChain.value = isH160.value ? astarChain : opponentChain.value;
     destChain.value = isH160.value ? originChain.value : astarChain;
   };
 
@@ -616,10 +625,19 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   watch([isNativeBridge, isAstar, selectedToken], setDefaultChain, { immediate: true });
 
   watchEffect(() => {
+    // console.log('useXcmBridgeV2');
+    // console.log('srcChain', srcChain.value);
     // if (selectedToken.value && isAstarNativeTransfer.value) {
     // isNativeBridge.value = true;
     // }
   });
+
+  const updateChain = (): void => {
+    if (!isTransferPage.value) return;
+    setSrcChain(xcmChainObj[chainFrom.value]);
+    setDestChain(xcmChainObj[chainTo.value]);
+  };
+  watchEffect(updateChain);
 
   return {
     amount,
@@ -630,7 +648,6 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     isNativeBridge,
     evmDestAddress,
     existentialDeposit,
-    chains,
     isH160,
     evmDestAddressBalance,
     fromAddressBalance,
@@ -643,8 +660,6 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     bridge,
     resetStates,
     setIsNativeBridge,
-    setSrcChain,
-    setDestChain,
     initializeXcmApi,
     reverseChain,
   };
