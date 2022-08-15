@@ -55,6 +55,14 @@ export function useTransferRouter() {
     });
   };
 
+  const reverseChain = (): void => {
+    const network = (chainTo.value + '-' + chainFrom.value).toLowerCase();
+    router.push({
+      path: '/assets/transfer',
+      query: { token: tokenSymbol.value, network, mode: mode.value },
+    });
+  };
+
   const redirectForRelaychain = (): void => {
     if (!isTransferPage.value) return;
     try {
@@ -87,5 +95,6 @@ export function useTransferRouter() {
     isTransferPage,
     router,
     redirect,
+    reverseChain,
   };
 }

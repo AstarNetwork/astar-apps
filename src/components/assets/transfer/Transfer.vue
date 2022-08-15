@@ -32,7 +32,7 @@
           </div>
           <div v-else>
             <XcmBridge
-              v-if="token !== null"
+              v-if="tokens"
               :token="token"
               :class="isHighlightRightUi && 'half-opacity'"
               :set-right-ui="setRightUi"
@@ -124,8 +124,17 @@ export default defineComponent({
     const { accountData } = useBalance(currentAccount);
     const store = useStore();
     const { screenSize, width } = useBreakpoints();
-    const { chainFrom, chainTo, tokenSymbol, router, isTransferPage, redirect, mode, network } =
-      useTransferRouter();
+    const {
+      chainFrom,
+      chainTo,
+      tokenSymbol,
+      router,
+      isTransferPage,
+      redirect,
+      mode,
+      network,
+      xcmOpponentChain,
+    } = useTransferRouter();
 
     const xcmAssets = computed<XcmAssets>(() => store.getters['assets/getAllAssets']);
     const isHighlightRightUi = computed<boolean>(() => rightUi.value !== 'information');
@@ -146,20 +155,15 @@ export default defineComponent({
           : Chain.KARURA.toLowerCase();
 
       if (chain) {
+        // if: users select chain via SelectChain UI
+        const isDuplicated = chain === chainFrom.value || chain === chainTo.value;
+        const c = chain.toLowerCase();
         if (isSelectFromChain.value) {
-          const c = chain.toLowerCase();
-          if (chain.toLowerCase() === chainFrom.value.toLowerCase()) {
-            return c + '-' + defaultXcmBridgeForNative;
-          } else {
-            return c + '-' + currentNetwork;
-          }
+          const toNetwork = isDuplicated ? defaultXcmBridgeForNative : currentNetwork;
+          return c + '-' + toNetwork;
         } else {
-          const c = chain.toLowerCase();
-          if (chain.toLowerCase() === chainTo.value.toLowerCase()) {
-            return defaultXcmBridgeForNative + '-' + c;
-          } else {
-            return currentNetwork + '-' + c;
-          }
+          const fromNetwork = isDuplicated ? defaultXcmBridgeForNative : currentNetwork;
+          return fromNetwork + '-' + c;
         }
       } else {
         const originChain = isLocalTransfer.value
@@ -257,17 +261,19 @@ export default defineComponent({
         return;
       }
 
-      const nativeTokenSymbolRef = nativeTokenSymbol.value;
       const symbol = tokenSymbol.value;
+      const nativeTokenSymbolRef = nativeTokenSymbol.value;
       isLocalTransfer.value = mode.value === 'local';
 
-      const isRedirect =
-        !symbol || !network.value.toLowerCase().includes(currentNetworkName.value.toLowerCase());
+      const isRedirect = !network.value
+        .toLowerCase()
+        .includes(currentNetworkName.value.toLowerCase());
+
       if (isRedirect) return redirect();
 
       token.value = generateNativeAsset(nativeTokenSymbolRef);
       const isFetchedAssets = xcmAssets.value && xcmAssets.value.assets.length !== 0;
-      if (isFetchedAssets) {
+      if (isFetchedAssets && symbol) {
         try {
           const isXcmAsset = symbol !== nativeTokenSymbolRef.toLowerCase();
           if (isXcmAsset) {
@@ -294,10 +300,10 @@ export default defineComponent({
         tokens = selectableTokens.filter(({ isXcmCompatible }) => isXcmCompatible);
         tokens.unshift(nativeToken);
       } else {
-        const selectedNetwork = network.value.split('-')[1].toLowerCase();
+        const selectedNetwork = xcmOpponentChain.value;
         const isSelectedRelayChain = checkIsRelayChain(selectedNetwork);
         selectableTokens = xcmAssets.value.assets.filter(
-          (it) => it.originChain.toLowerCase() === selectedNetwork
+          (it) => it.originChain.toLowerCase() === selectedNetwork.toLowerCase()
         );
         tokens = selectableTokens.filter(({ isXcmCompatible }) => isXcmCompatible);
         !isSelectedRelayChain && tokens.push(nativeToken);

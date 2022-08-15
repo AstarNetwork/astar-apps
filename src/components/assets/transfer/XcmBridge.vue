@@ -8,10 +8,11 @@
           title="from"
           :handle-display-token-selector="handleDisplayTokenSelector"
           :is-highlight-right-ui="isHighlightRightUi"
+          :is-select-from="true"
         />
         <div class="row--reverse">
-          <button class="icon--reverse" @click="reverseChain">
-            <astar-icon-sync size="20" class="cursor-pointer" />
+          <button class="icon--reverse cursor-pointer" @click="reverseChain">
+            <astar-icon-sync size="20" />
           </button>
         </div>
         <InputSelectChain
@@ -20,6 +21,7 @@
           title="to"
           :handle-display-token-selector="handleDisplayTokenSelector"
           :is-highlight-right-ui="isHighlightRightUi"
+          :is-select-from="false"
         />
 
         <div v-if="!isNativeBridge">
@@ -30,7 +32,7 @@
             :is-display-balance="true"
             :placeholder="evmInputPlaceholder"
             :title="evmInputTitle"
-            :symbol="tokenData.metadata.symbol"
+            :symbol="token.metadata.symbol"
             :address-balance="evmDestAddressBalance"
           />
           <div v-if="isH160" class="row--withdrawal-address-format">
@@ -243,6 +245,10 @@ export default defineComponent({
       }
     };
 
+    // watchEffect(() => {
+    //   console.log(props.token);
+    // });
+
     return {
       errMsg,
       amount,
@@ -261,7 +267,7 @@ export default defineComponent({
       isDeposit,
       isDisplayTooltip,
       isAstarNativeTransfer,
-      tokenData,
+      // tokenData,
       currentAccount,
       setIsMobileDisplayTooltip,
       inputHandler,

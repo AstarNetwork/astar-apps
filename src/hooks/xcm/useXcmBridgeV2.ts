@@ -6,12 +6,12 @@ import { getTokenBal, isValidEvmAddress } from 'src/config/web3';
 import { SubstrateAccount } from 'src/store/general/state';
 
 import {
+  useAccount,
   useBalance,
   useCustomSignature,
+  useGasPrice,
   useNetworkInfo,
   useTransferRouter,
-  useGasPrice,
-  useAccount,
 } from 'src/hooks';
 import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
 import { getInjector } from 'src/hooks/helper/wallet';
@@ -20,10 +20,8 @@ import {
   Chain,
   checkIsDeposit,
   ExistentialDeposit,
-  kusamaParachains,
   monitorBalanceIncreasing,
   parachainIds,
-  polkadotParachains,
   PREFIX_ASTAR,
   XcmChain,
   xcmChainObj,
@@ -50,7 +48,8 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   const isNativeBridge = ref<boolean>(true);
   const existentialDeposit = ref<ExistentialDeposit | null>(null);
   const { nativeTipPrice } = useGasPrice();
-  const { xcmOpponentChain, chainFrom, chainTo, isTransferPage } = useTransferRouter();
+  const { xcmOpponentChain, chainFrom, chainTo, isTransferPage, reverseChain } =
+    useTransferRouter();
 
   // Format: SS58(withdrawal) or H160(deposit)
   const evmDestAddress = ref<string>('');
@@ -100,11 +99,11 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     return xcmChainObj[selectedToken.value.originChain as Chain];
   });
 
-  const astarChain = computed<XcmChain>(() => {
-    const astarChainName =
-      currentNetworkIdx.value === endpointKey.ASTAR ? Chain.ASTAR : Chain.SHIDEN;
-    return xcmChainObj[astarChainName];
-  });
+  // const astarChain = computed<XcmChain>(() => {
+  //   const astarChainName =
+  //     currentNetworkIdx.value === endpointKey.ASTAR ? Chain.ASTAR : Chain.SHIDEN;
+  //   return xcmChainObj[astarChainName];
+  // });
 
   const { currentNetworkIdx, evmNetworkIdx } = useNetworkInfo();
 
@@ -129,13 +128,6 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     errMsg.value = '';
     evmDestAddress.value = '';
     evmDestAddressBalance.value = 0;
-  };
-
-  const reverseChain = (): void => {
-    const newSrcChain = destChain.value;
-    const newDestChain = srcChain.value;
-    srcChain.value = newSrcChain;
-    destChain.value = newDestChain;
   };
 
   // Checked
@@ -293,7 +285,7 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
       const isEnoughEd = await checkIsEnoughEd(sendingAmount);
       if (sendingAmount > fromAddressBalance.value) {
         errMsg.value = t('warning.insufficientBalance');
-      } else if (!isEnoughEd) {
+      } else if (!isEnoughEd && existentialDeposit.value?.amount) {
         errMsg.value = t('warning.insufficientExistentialDeposit', {
           network: existentialDeposit.value?.chain,
         });
@@ -345,6 +337,7 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     const shouldConnectAcala = shouldConnectApi([Acala.name, Karura.name]);
 
     try {
+      console.log('endpoint', endpoint);
       if (shouldConnectMoonbeam) {
         originChainApi = new MoonbeamApi(endpoint);
       } else if (shouldConnectAcala) {
@@ -596,6 +589,7 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
       selectedToken.value &&
       originChainApi.chainProperty?.chainName === selectedToken.value.originChain &&
       reset === false;
+
     if (!isLoadOriginApi.value || hasConnectedApi) return;
 
     isLoadingApi.value = true;
@@ -613,9 +607,17 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     await Promise.all([updateFromAddressBalance(), setOriginChainNativeBal()]);
   };
 
-  watchEffect(async () => {
-    await initializeXcmApi();
-  });
+  watch(
+    [selectedToken],
+    async () => {
+      console.log('xcmOpponentChain', xcmOpponentChain.value);
+      if (!originChain.value || !srcChain.value || !destChain.value) {
+        return;
+      }
+      await initializeXcmApi();
+    },
+    { immediate: false }
+  );
 
   watchEffect(setErrMsg);
   watchEffect(setIsDisabledBridge);
@@ -625,7 +627,8 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   watch([isNativeBridge, isAstar, selectedToken], setDefaultChain, { immediate: true });
 
   watchEffect(() => {
-    // console.log('useXcmBridgeV2');
+    console.log('useXcmBridgeV2');
+    console.log('errMsg', errMsg.value);
     // console.log('srcChain', srcChain.value);
     // if (selectedToken.value && isAstarNativeTransfer.value) {
     // isNativeBridge.value = true;

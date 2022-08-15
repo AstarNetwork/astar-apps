@@ -2,7 +2,7 @@
   <div
     class="box--input-chain"
     :class="[!isHighlightRightUi && 'cursor-pointer box--hover--active']"
-    @click="handleDisplayTokenSelector(true)"
+    @click="handleDisplayTokenSelector(isSelectFrom)"
   >
     <div class="box__space-between">
       <span> {{ $t(title) }}</span>
@@ -24,7 +24,7 @@
 </template>
 <script lang="ts">
 import { XcmChain } from 'src/modules/xcm';
-import { computed, defineComponent, PropType, ref } from 'vue';
+import { defineComponent, PropType } from 'vue';
 
 export default defineComponent({
   props: {
@@ -40,13 +40,14 @@ export default defineComponent({
       type: Boolean,
       required: true,
     },
-    title: {
+    isSelectFrom: {
       type: Boolean,
       required: true,
     },
-  },
-  setup(props) {
-    return {};
+    title: {
+      type: String,
+      required: true,
+    },
   },
 });
 </script>
