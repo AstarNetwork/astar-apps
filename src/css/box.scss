@@ -31,6 +31,11 @@
   }
 }
 
+.box--active {
+  border: 1px solid $astar-blue !important;
+  transition: all 0.3s ease 0s;
+}
+
 .box--tooltip-warning {
   background-color: $astar-blue;
   max-width: 320px;

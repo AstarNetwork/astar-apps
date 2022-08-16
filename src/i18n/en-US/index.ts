@@ -297,6 +297,8 @@ export default {
       faq: 'FAQ',
       recentHistory: 'Recent History',
       hotTopic: 'Hot Topic',
+      inputAddressManually: 'Input an address manually',
+      goBack: 'Go back',
     },
     modals: {
       max: 'Max',

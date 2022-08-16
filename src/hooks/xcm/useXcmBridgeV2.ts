@@ -45,6 +45,11 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   const amount = ref<string | null>(null);
   const errMsg = ref<string>('');
   const isDisabledBridge = ref<boolean>(true);
+
+  const isInputDestAddrManually = ref<boolean>(false);
+  // const inputtedDestAddress = ref<string>('');
+
+  // Memo: remove?
   const isNativeBridge = ref<boolean>(true);
   const existentialDeposit = ref<ExistentialDeposit | null>(null);
   const { nativeTipPrice } = useGasPrice();
@@ -52,8 +57,10 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     useTransferRouter();
 
   // Format: SS58(withdrawal) or H160(deposit)
+  // Todo: Rename
   const evmDestAddress = ref<string>('');
   const evmDestAddressBalance = ref<number>(0);
+
   const fromAddressBalance = ref<number>(0);
   const originChainNativeBal = ref<number>(0);
   const isLoadingApi = ref<boolean>(false);
@@ -111,10 +118,12 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     () => !!(selectedToken.value && selectedToken.value.originChain)
   );
 
+  // Todo: refactoring
   const isMoonbeamWithdrawal = computed<boolean>(() => {
     return destChain.value.name === Chain.MOONRIVER || destChain.value.name === Chain.MOONBEAM;
   });
 
+  // Todo: refactoring
   const isMoonbeamDeposit = computed<boolean>(() => {
     return srcChain.value.name === Chain.MOONRIVER || srcChain.value.name === Chain.MOONBEAM;
   });
@@ -127,7 +136,13 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     amount.value = null;
     errMsg.value = '';
     evmDestAddress.value = '';
+    isInputDestAddrManually.value = false;
+    // inputtedDestAddress.value = '';
     evmDestAddressBalance.value = 0;
+  };
+
+  const toggleIsInputDestAddrManually = (): void => {
+    isInputDestAddrManually.value = !isInputDestAddrManually.value;
   };
 
   // Checked
@@ -237,6 +252,13 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
       return true;
     }
 
+    if (isDeposit.value) {
+      // Todo: EVM deposit logic
+      if (evmDestAddress.value) {
+        return isValidAddressPolkadotAddress(evmDestAddress.value);
+      }
+    }
+
     if (isMoonbeamWithdrawal.value) {
       return isValidEvmAddress(evmDestAddress.value);
     } else {
@@ -255,12 +277,13 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
 
     if (sendingAmount > fromAddressBalance.value) {
       errMsg.value = t('warning.insufficientBalance');
-    }
-    if (sendingAmount && minBridgeAmount > sendingAmount) {
+    } else if (sendingAmount && minBridgeAmount > sendingAmount) {
       errMsg.value = t('warning.insufficientBridgeAmount', {
         amount: minBridgeAmount,
         token: selectedTokenRef.metadata.symbol,
       });
+    } else if (evmDestAddress.value && !checkIsEvmDestAddress()) {
+      errMsg.value = t('warning.inputtedInvalidDestAddress');
     }
     if (isH160.value || !isNativeBridge.value) {
       // if: withdrawal from EVM or Deposit from native to EVM
@@ -337,7 +360,6 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     const shouldConnectAcala = shouldConnectApi([Acala.name, Karura.name]);
 
     try {
-      console.log('endpoint', endpoint);
       if (shouldConnectMoonbeam) {
         originChainApi = new MoonbeamApi(endpoint);
       } else if (shouldConnectAcala) {
@@ -367,6 +389,7 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   };
 
   // Memo: update the `balance` displayed on the 'destination wallet address' in 'EVM' tab on the XCM bridge modal
+  // Todo: update for EVM Astar network
   const setEvmDestAddressBalance = async (): Promise<void> => {
     if (!isLoadOriginApi.value) return;
     const address = evmDestAddress.value;
@@ -417,8 +440,11 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
       }
       if (!amount.value) throw Error('Invalid amount');
 
+      const destinationAddress = isInputDestAddrManually.value
+        ? evmDestAddress.value
+        : currentAccount.value;
       if (isDeposit.value) {
-        let recipientAccountId = currentAccount.value;
+        let recipientAccountId = destinationAddress;
         // for H160 address, should mapped ss58 address and public key
         if (!isNativeBridge.value) {
           if (!isValidEvmAddress(evmDestAddress.value)) {
@@ -498,7 +524,7 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
         // if: Withdrawal
         let recipientAccountId = isMoonbeamWithdrawal.value
           ? evmDestAddress.value
-          : getPubkeyFromSS58Addr(currentAccount.value);
+          : getPubkeyFromSS58Addr(destinationAddress);
         const injector = await getInjector(substrateAccounts.value);
         const parachainApi = new AstarApi($api!!);
 
@@ -610,7 +636,6 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   watch(
     [selectedToken],
     async () => {
-      console.log('xcmOpponentChain', xcmOpponentChain.value);
       if (!originChain.value || !srcChain.value || !destChain.value) {
         return;
       }
@@ -629,6 +654,7 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   watchEffect(() => {
     console.log('useXcmBridgeV2');
     console.log('errMsg', errMsg.value);
+    console.log('evmDestAddressBalance', evmDestAddressBalance.value);
     // console.log('srcChain', srcChain.value);
     // if (selectedToken.value && isAstarNativeTransfer.value) {
     // isNativeBridge.value = true;
@@ -659,11 +685,14 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     isAstarNativeTransfer,
     isMoonbeamWithdrawal,
     isMoonbeamDeposit,
+    isInputDestAddrManually,
+    // inputtedDestAddress,
     inputHandler,
     bridge,
     resetStates,
     setIsNativeBridge,
     initializeXcmApi,
     reverseChain,
+    toggleIsInputDestAddrManually,
   };
 }

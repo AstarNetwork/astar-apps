@@ -47,6 +47,39 @@
             </a>
           </div>
         </div>
+        <div v-else>
+          <div v-if="!isInputDestAddrManually" class="row--msg-input-address">
+            <div />
+            <span class="text--available cursor-pointer" @click="toggleIsInputDestAddrManually">
+              {{ $t('assets.transferPage.inputAddressManually') }}
+            </span>
+          </div>
+          <div v-else>
+            <div
+              class="box--input-address"
+              :class="[
+                !isHighlightRightUi && 'box--hover--active',
+                isInputtingAddress && 'box--active',
+              ]"
+            >
+              <input
+                v-model="evmDestAddress"
+                class="input--address text--title"
+                type="text"
+                spellcheck="false"
+                placeholder="Destination Address"
+                @focus="toggleIsInputtingAddress"
+                @blur="toggleIsInputtingAddress"
+              />
+            </div>
+            <div class="row--msg-input-address">
+              <div />
+              <span class="text--available cursor-pointer" @click="toggleIsInputDestAddrManually">
+                {{ $t('assets.transferPage.goBack') }}
+              </span>
+            </div>
+          </div>
+        </div>
 
         <div class="box--input-field box--hover--active">
           <div class="box__space-between">
@@ -144,7 +177,7 @@ import AddressInputV2 from 'src/components/common/AddressInputV2.vue';
 import { useAccount, useTooltip, useXcmBridgeV2, useXcmEvm } from 'src/hooks';
 import { truncate } from 'src/hooks/helper/common';
 import { Asset } from 'src/v2/models';
-import { computed, defineComponent, PropType } from 'vue';
+import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ModalLoading from '/src/components/common/ModalLoading.vue';
 
@@ -183,6 +216,10 @@ export default defineComponent({
     const { t } = useI18n();
     const { isDisplayTooltip, setIsMobileDisplayTooltip } = useTooltip('icon');
     const { currentAccount } = useAccount();
+    const isInputtingAddress = ref<boolean>(false);
+    const toggleIsInputtingAddress = (): void => {
+      isInputtingAddress.value = !isInputtingAddress.value;
+    };
 
     const {
       amount,
@@ -200,10 +237,13 @@ export default defineComponent({
       isDeposit,
       isLoadingApi,
       isAstarNativeTransfer,
+      isInputDestAddrManually,
+      // inputtedDestAddress,
       inputHandler,
       bridge,
       setIsNativeBridge,
       reverseChain,
+      toggleIsInputDestAddrManually,
     } = useXcmBridgeV2(tokenData);
 
     const { callAssetWithdrawToPara } = useXcmEvm(tokenData);
@@ -245,9 +285,9 @@ export default defineComponent({
       }
     };
 
-    // watchEffect(() => {
-    //   console.log(props.token);
-    // });
+    watchEffect(() => {
+      console.log('evmDestAddress', evmDestAddress.value);
+    });
 
     return {
       errMsg,
@@ -269,6 +309,9 @@ export default defineComponent({
       isAstarNativeTransfer,
       // tokenData,
       currentAccount,
+      isInputDestAddrManually,
+      isInputtingAddress,
+      // inputtedDestAddress,
       setIsMobileDisplayTooltip,
       inputHandler,
       bridge,
@@ -277,6 +320,8 @@ export default defineComponent({
       truncate,
       reverseChain,
       handleDisplayTokenSelector,
+      toggleIsInputDestAddrManually,
+      toggleIsInputtingAddress,
     };
   },
 });
