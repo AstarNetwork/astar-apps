@@ -26,14 +26,14 @@
 
         <div v-if="!isNativeBridge">
           <AddressInputV2
-            v-model:selAddress="evmDestAddress"
-            :to-address="evmDestAddress"
+            v-model:selAddress="inputtedAddress"
+            :to-address="inputtedAddress"
             :is-evm="isDeposit"
             :is-display-balance="true"
             :placeholder="evmInputPlaceholder"
             :title="evmInputTitle"
             :symbol="token.metadata.symbol"
-            :address-balance="evmDestAddressBalance"
+            :address-balance="inputtedAddressBalance"
           />
           <div v-if="isH160" class="row--withdrawal-address-format">
             <a
@@ -63,7 +63,7 @@
               ]"
             >
               <input
-                v-model="evmDestAddress"
+                v-model="inputtedAddress"
                 class="input--address text--title"
                 type="text"
                 spellcheck="false"
@@ -228,11 +228,11 @@ export default defineComponent({
       destChain,
       isDisabledBridge,
       isNativeBridge,
-      evmDestAddress,
+      inputtedAddress,
       existentialDeposit,
       // chains,
       isH160,
-      evmDestAddressBalance,
+      inputtedAddressBalance,
       fromAddressBalance,
       isDeposit,
       isLoadingApi,
@@ -272,7 +272,7 @@ export default defineComponent({
       if (isH160.value) {
         const txHash = await callAssetWithdrawToPara(
           amount.value!!,
-          evmDestAddress.value,
+          inputtedAddress.value,
           finalizeCallback
         );
 
@@ -286,7 +286,7 @@ export default defineComponent({
     };
 
     watchEffect(() => {
-      console.log('evmDestAddress', evmDestAddress.value);
+      console.log('inputtedAddress', inputtedAddress.value);
     });
 
     return {
@@ -296,13 +296,13 @@ export default defineComponent({
       destChain,
       isDisabledBridge,
       isNativeBridge,
-      evmDestAddress,
+      inputtedAddress,
       existentialDeposit,
       isLoadingApi,
       evmInputPlaceholder,
       evmInputTitle,
       isH160,
-      evmDestAddressBalance,
+      inputtedAddressBalance,
       fromAddressBalance,
       isDeposit,
       isDisplayTooltip,

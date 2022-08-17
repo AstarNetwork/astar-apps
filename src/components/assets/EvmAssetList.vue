@@ -9,13 +9,7 @@
       </div>
 
       <div v-for="t in filteredTokens" :key="t.symbol">
-        <Erc20Currency
-          v-if="!checkIsCbridgeToken(t) && t.isXC20"
-          :token="t"
-          :handle-modal-transfer="handleModalTransfer"
-          :is-xcm="true"
-          :handle-modal-xcm-bridge="handleModalXcmBridge"
-        />
+        <Erc20Currency v-if="!checkIsCbridgeToken(t) && t.isXC20" :token="t" :is-xcm="true" />
       </div>
     </div>
 
@@ -85,12 +79,11 @@
               </div>
             </div>
             <div class="column--asset-buttons column--buttons--native-token">
-              <button
-                class="btn btn--sm"
-                @click="handleModalTransfer({ isOpen: true, currency: nativeTokenSymbol })"
-              >
-                {{ $t('assets.transfer') }}
-              </button>
+              <router-link :to="transferLink">
+                <button class="btn btn--sm">
+                  {{ $t('assets.manage') }}
+                </button>
+              </router-link>
               <!-- Only SDN is able to bridge via cBridge at this moment -->
               <a
                 v-if="nativeTokenSymbol === 'SDN'"
@@ -117,29 +110,16 @@
 
       <div v-for="t in filteredTokens" :key="t.symbol">
         <div v-if="checkIsCbridgeToken(t)">
-          <EvmCbridgeToken
-            v-if="t.symbol !== nativeTokenSymbol"
-            :token="t"
-            :handle-modal-transfer="handleModalTransfer"
-          />
+          <EvmCbridgeToken v-if="t.symbol !== nativeTokenSymbol" :token="t" />
         </div>
         <div v-else>
-          <Erc20Currency v-if="!t.isXC20" :token="t" :handle-modal-transfer="handleModalTransfer" />
+          <Erc20Currency v-if="!t.isXC20" :token="t" />
         </div>
       </div>
       <div v-if="!filteredTokens && !isDisplayNativeToken" class="box--no-result">
         <span class="text--xl">{{ $t('assets.noResults') }}</span>
       </div>
     </div>
-
-    <ModalTransfer
-      :is-modal-transfer="isModalTransfer"
-      :handle-modal-transfer="handleModalTransfer"
-      :symbol="symbol"
-      :account-data="null"
-      :token="token"
-      :handle-update-token-balances="handleUpdateTokenBalances"
-    />
     <ModalFaucet :is-modal-faucet="isModalFaucet" :handle-modal-faucet="handleModalFaucet" />
   </div>
 </template>
@@ -163,7 +143,7 @@ import ModalTransfer from './modals/ModalTransfer.vue';
 export default defineComponent({
   components: {
     EvmCbridgeToken,
-    ModalTransfer,
+    // ModalTransfer,
     ModalFaucet,
     Erc20Currency,
     EvmAssetOptions,
@@ -174,21 +154,13 @@ export default defineComponent({
       required: false,
       default: null,
     },
-    handleUpdateTokenBalances: {
-      type: Function,
-      required: true,
-    },
-    handleModalXcmBridge: {
-      type: Function,
-      required: true,
-    },
     xcmAssets: {
       type: Array as PropType<Asset[]>,
       required: true,
     },
   },
   setup(props) {
-    const isModalTransfer = ref<boolean>(false);
+    // const isModalTransfer = ref<boolean>(false);
     const isModalFaucet = ref<boolean>(false);
     const isHideSmallBalances = ref<boolean>(false);
     const token = ref<SelectedToken | Erc20Token | string | null>(null);
@@ -249,24 +221,30 @@ export default defineComponent({
       isHideSmallBalances.value = !isHideSmallBalances.value;
     };
 
-    const handleModalTransfer = ({
-      currency,
-      isOpen,
-    }: {
-      isOpen: boolean;
-      currency: SelectedToken | Erc20Token | string;
-    }): void => {
-      token.value = currency;
-      isModalTransfer.value = isOpen;
-      if (!isOpen) {
-        symbol.value = '';
-      } else if (currency === nativeTokenSymbol.value) {
-        symbol.value = nativeTokenSymbol.value;
-      } else {
-        const c = currency as SelectedToken | Erc20Token;
-        symbol.value = c.symbol;
-      }
-    };
+    // const handleModalTransfer = ({
+    //   currency,
+    //   isOpen,
+    // }: {
+    //   isOpen: boolean;
+    //   currency: SelectedToken | Erc20Token | string;
+    // }): void => {
+    //   token.value = currency;
+    //   isModalTransfer.value = isOpen;
+    //   if (!isOpen) {
+    //     symbol.value = '';
+    //   } else if (currency === nativeTokenSymbol.value) {
+    //     symbol.value = nativeTokenSymbol.value;
+    //   } else {
+    //     const c = currency as SelectedToken | Erc20Token;
+    //     symbol.value = c.symbol;
+    //   }
+    // };
+
+    const transferLink = computed<string>(() => {
+      const symbol = nativeTokenSymbol.value.toLowerCase();
+      const network = currentNetworkName.value.toLowerCase();
+      return `/assets/transfer?token=${symbol}&network=${network}&mode=local`;
+    });
 
     const handleModalFaucet = ({ isOpen }: { isOpen: boolean }): void => {
       isModalFaucet.value = isOpen;
@@ -302,7 +280,7 @@ export default defineComponent({
       currentNetworkName,
       mainnetFaucetAmount,
       isFaucet,
-      isModalTransfer,
+      // isModalTransfer,
       symbol,
       token,
       nativeTokenImg,
@@ -316,8 +294,9 @@ export default defineComponent({
       cbridgeAppLink,
       isHideSmallBalances,
       isLoading,
+      transferLink,
       setIsSearch,
-      handleModalTransfer,
+      // handleModalTransfer,
       handleModalFaucet,
       checkIsCbridgeToken,
       truncate,

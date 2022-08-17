@@ -12,7 +12,6 @@
           <EvmAssetList
             :tokens="tokens"
             :handle-update-token-balances="handleUpdateTokenBalances"
-            :handle-modal-xcm-bridge="handleModalXcmBridge"
             :xcm-assets="xcmAssets.assets"
           />
         </div>
@@ -22,20 +21,6 @@
         </div>
       </div>
     </div>
-    <ModalXcmTransfer
-      :is-modal-xcm-transfer="isModalXcmTransfer"
-      :handle-modal-xcm-transfer="handleModalXcmTransfer"
-      :handle-update-xcm-token-balances="handleUpdateXcmTokenAssets"
-      :account-data="accountData"
-      :token="token"
-    />
-
-    <ModalXcmBridge
-      :is-modal-xcm-bridge="isModalXcmBridge"
-      :handle-modal-xcm-bridge="handleModalXcmBridge"
-      :token="token"
-      :handle-update-xcm-token-balances="handleUpdateXcmTokenAssets"
-    />
   </div>
 </template>
 <script lang="ts">
@@ -61,8 +46,8 @@ export default defineComponent({
     NativeAssetList,
     EvmAssetList,
     XcmNativeAssetList,
-    ModalXcmBridge,
-    ModalXcmTransfer,
+    // ModalXcmBridge,
+    // ModalXcmTransfer,
   },
   setup() {
     const token = ref<Asset | null>(null);
@@ -128,34 +113,34 @@ export default defineComponent({
       }
     };
 
-    const handleModalXcmTransfer = ({ isOpen, currency }: { isOpen: boolean; currency: Asset }) => {
-      isModalXcmTransfer.value = isOpen;
-      token.value = currency;
-    };
+    // const handleModalXcmTransfer = ({ isOpen, currency }: { isOpen: boolean; currency: Asset }) => {
+    //   isModalXcmTransfer.value = isOpen;
+    //   token.value = currency;
+    // };
 
-    const handleModalXcmBridge = ({
-      isOpen,
-      currency,
-    }: {
-      isOpen: boolean;
-      // Memo: currency type is `Erc20Token` in H160 mode
-      currency: Asset | Erc20Token;
-    }) => {
-      isModalXcmBridge.value = isOpen;
-      if (isH160.value) {
-        if (currency === null) {
-          token.value = null;
-        } else {
-          const c = currency as Erc20Token;
-          const t = xcmAssets.value.assets.find((it) => it.mappedERC20Addr === c.address);
-          if (t) {
-            token.value = t;
-          }
-        }
-      } else {
-        token.value = currency as Asset;
-      }
-    };
+    // const handleModalXcmBridge = ({
+    //   isOpen,
+    //   currency,
+    // }: {
+    //   isOpen: boolean;
+    //   // Memo: currency type is `Erc20Token` in H160 mode
+    //   currency: Asset | Erc20Token;
+    // }) => {
+    //   isModalXcmBridge.value = isOpen;
+    //   if (isH160.value) {
+    //     if (currency === null) {
+    //       token.value = null;
+    //     } else {
+    //       const c = currency as Erc20Token;
+    //       const t = xcmAssets.value.assets.find((it) => it.mappedERC20Addr === c.address);
+    //       if (t) {
+    //         token.value = t;
+    //       }
+    //     }
+    //   } else {
+    //     token.value = currency as Asset;
+    //   }
+    // };
 
     watchEffect(() => {
       setIsDisplay();
@@ -179,8 +164,8 @@ export default defineComponent({
       isLoading,
       handleUpdateXcmTokenAssets,
       handleUpdateTokenBalances,
-      handleModalXcmBridge,
-      handleModalXcmTransfer,
+      // handleModalXcmBridge,
+      // handleModalXcmTransfer,
     };
   },
 });

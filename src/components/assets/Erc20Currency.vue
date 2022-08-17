@@ -31,36 +31,16 @@
             </div>
           </div>
           <div class="column--asset-buttons column--buttons--multi">
-            <button
-              class="btn btn--sm"
-              @click="
-                handleModalTransfer({
-                  isOpen: true,
-                  currency: token,
-                })
-              "
-            >
-              {{ $t('assets.transfer') }}
-            </button>
+            <div v-if="token.isXC20" />
+            <router-link :to="transferLink">
+              <button class="btn btn--sm">
+                {{ $t('assets.manage') }}
+              </button>
+            </router-link>
             <div v-if="token.isWrappedToken && !token.isXC20">
               <a :href="token.wrapUrl" target="_blank" rel="noopener noreferrer">
                 <button class="btn btn--sm">{{ $t('assets.wrap') }}</button>
               </a>
-            </div>
-
-            <div v-if="token.isXC20">
-              <button
-                :disabled="isDisabledXcmButton"
-                class="btn btn--sm"
-                @click="
-                  handleModalXcmBridge({
-                    isOpen: true,
-                    currency: token,
-                  })
-                "
-              >
-                {{ $t('assets.xcm') }}
-              </button>
             </div>
             <div v-if="isImportedToken" />
             <div class="screen--xl">
@@ -127,15 +107,6 @@ export default defineComponent({
       type: Object as PropType<Erc20Token>,
       required: true,
     },
-    handleModalTransfer: {
-      type: Function,
-      required: true,
-    },
-    handleModalXcmBridge: {
-      type: Function,
-      required: false,
-      default: null,
-    },
     isXcm: {
       type: Boolean,
       required: false,
@@ -144,7 +115,7 @@ export default defineComponent({
   },
   setup({ token }) {
     const store = useStore();
-    const { currentNetworkIdx } = useNetworkInfo();
+    const { currentNetworkIdx, currentNetworkName } = useNetworkInfo();
 
     const explorerLink = computed(() => {
       const tokenAddress = token.address;
@@ -155,6 +126,12 @@ export default defineComponent({
       // Memo: Remove after runtime upgrading in shinde
       const isMovr = token.symbol === MOVR.symbol;
       return isMovr;
+    });
+
+    const transferLink = computed<string>(() => {
+      const symbol = token.symbol.toLowerCase();
+      const network = currentNetworkName.value.toLowerCase();
+      return `/assets/transfer?token=${symbol}&network=${network}&mode=local`;
     });
 
     const isImportedToken = computed<boolean>(
@@ -172,6 +149,7 @@ export default defineComponent({
       isImportedToken,
       provider,
       isDisabledXcmButton,
+      transferLink,
       truncate,
       addToEvmProvider,
     };

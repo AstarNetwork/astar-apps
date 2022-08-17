@@ -24,7 +24,12 @@
             </div>
           </div>
           <div class="column--asset-buttons column--buttons--multi">
-            <button
+            <router-link :to="transferLink">
+              <button class="btn btn--sm">
+                {{ $t('assets.manage') }}
+              </button>
+            </router-link>
+            <!-- <button
               class="btn btn--sm"
               @click="
                 handleModalTransfer({
@@ -34,7 +39,7 @@
               "
             >
               {{ $t('assets.transfer') }}
-            </button>
+            </button> -->
             <a :href="cbridgeAppLink" target="_blank" rel="noopener noreferrer">
               <button class="btn btn--sm">
                 {{ $t('assets.bridge') }}
@@ -103,15 +108,12 @@ export default defineComponent({
       type: Object as PropType<SelectedToken>,
       required: true,
     },
-    handleModalTransfer: {
-      type: Function,
-      required: true,
-    },
   },
   setup({ token }) {
     const tokenImg = computed(() =>
       getTokenImage({ isNativeToken: false, symbol: token.symbol, iconUrl: token.icon })
     );
+    const { currentNetworkName } = useNetworkInfo();
 
     const store = useStore();
 
@@ -123,6 +125,12 @@ export default defineComponent({
           return name;
       }
     };
+
+    const transferLink = computed<string>(() => {
+      const symbol = token.symbol.toLowerCase();
+      const network = currentNetworkName.value.toLowerCase();
+      return `/assets/transfer?token=${symbol}&network=${network}&mode=local`;
+    });
 
     const { currentNetworkIdx, nativeTokenSymbol } = useNetworkInfo();
 
@@ -140,6 +148,7 @@ export default defineComponent({
       explorerLink,
       cbridgeAppLink,
       provider,
+      transferLink,
       formatTokenName,
       addToEvmProvider,
       truncate,
