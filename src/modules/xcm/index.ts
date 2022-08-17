@@ -8,6 +8,7 @@ export {
   checkIsDeposit,
   monitorBalanceIncreasing,
   checkIsRelayChain,
+  castChainName,
 } from './utils';
 
 export const PREFIX_ASTAR = 5;
@@ -35,8 +36,10 @@ export interface ExistentialDeposit {
 export enum Chain {
   POLKADOT = 'Polkadot',
   ASTAR = 'Astar',
+  ASTAR_EVM = 'Astar_evm',
   KUSAMA = 'Kusama',
   SHIDEN = 'Shiden',
+  SHIDEN_EVM = 'Shiden_evm',
   KARURA = 'Karura',
   ACALA = 'Acala',
   MOONRIVER = 'Moonriver',
@@ -81,6 +84,12 @@ export const xcmChainObj: XcmChainObj = {
     img: require('/src/assets/img/ic_astar.png'),
     parachainId: parachainIds.ASTAR,
   },
+  [Chain.ASTAR_EVM]: {
+    name: Chain.ASTAR_EVM,
+    relayChain: Chain.POLKADOT,
+    img: require('/src/assets/img/ic_astar.png'),
+    parachainId: parachainIds.ASTAR,
+  },
   [Chain.KUSAMA]: {
     name: Chain.KUSAMA,
     relayChain: Chain.KUSAMA,
@@ -90,6 +99,12 @@ export const xcmChainObj: XcmChainObj = {
   },
   [Chain.SHIDEN]: {
     name: Chain.SHIDEN,
+    relayChain: Chain.KUSAMA,
+    img: require('/src/assets/img/ic_shiden.png'),
+    parachainId: parachainIds.SHIDEN,
+  },
+  [Chain.SHIDEN_EVM]: {
+    name: Chain.SHIDEN_EVM,
     relayChain: Chain.KUSAMA,
     img: require('/src/assets/img/ic_shiden.png'),
     parachainId: parachainIds.SHIDEN,

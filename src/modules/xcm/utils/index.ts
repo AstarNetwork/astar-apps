@@ -134,3 +134,12 @@ export const checkIsRelayChain = (chain: string): boolean => {
   const c = chain.toLowerCase();
   return c === Chain.POLKADOT.toLowerCase() || c === Chain.KUSAMA.toLowerCase();
 };
+
+export const castChainName = (chain: string): string => {
+  const isEvm = chain.includes('_evm');
+  if (isEvm) {
+    const network = chain.split('_')[0];
+    return network + ' ' + 'EVM';
+  }
+  return chain;
+};

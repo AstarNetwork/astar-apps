@@ -299,6 +299,7 @@ export default {
       hotTopic: 'Hot Topic',
       inputAddressManually: 'Input an address manually',
       goBack: 'Go back',
+      selectChain: 'Select Chain',
     },
     modals: {
       max: 'Max',

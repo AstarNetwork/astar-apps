@@ -12,7 +12,7 @@
       <div class="row__chain">
         <img :src="chain.img" alt="chain-logo" class="logo" />
         <input
-          :value="chain.name"
+          :value="castChainName(chain.name)"
           class="input--chain text--title"
           type="text"
           spellcheck="false"
@@ -25,7 +25,7 @@
 <script lang="ts">
 import { XcmChain } from 'src/modules/xcm';
 import { defineComponent, PropType } from 'vue';
-
+import { castChainName } from 'src/modules/xcm';
 export default defineComponent({
   props: {
     chain: {
@@ -48,6 +48,9 @@ export default defineComponent({
       type: String,
       required: true,
     },
+  },
+  setup() {
+    return { castChainName };
   },
 });
 </script>

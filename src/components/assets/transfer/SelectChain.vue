@@ -1,7 +1,7 @@
 <template>
   <div class="container--select-chain">
     <div class="row--title">
-      <span>Select Chain</span>
+      <span>{{ $t('assets.transferPage.selectChain') }}</span>
     </div>
     <div class="container--chains">
       <div
@@ -12,7 +12,7 @@
       >
         <div class="column--chain-name">
           <img :src="chain.img" :alt="chain.name" class="chain-logo" />
-          <span>{{ chain.name }}</span>
+          <span>{{ castChainName(chain.name) }}</span>
         </div>
         <div />
       </div>
@@ -20,34 +20,21 @@
   </div>
 </template>
 <script lang="ts">
-import { endpointKey } from 'src/config/chainEndpoints';
-import { useNetworkInfo } from 'src/hooks';
-import { Chain, XcmChain, xcmChains } from 'src/modules/xcm';
-import { defineComponent, ref, watchEffect } from 'vue';
+import { castChainName, XcmChain } from 'src/modules/xcm';
+import { defineComponent, PropType } from 'vue';
 export default defineComponent({
   props: {
     setChain: {
       type: Function,
       required: true,
     },
+    chains: {
+      type: Object as PropType<XcmChain[]>,
+      required: true,
+    },
   },
   setup() {
-    const { currentNetworkIdx } = useNetworkInfo();
-    const chains = ref<XcmChain[]>([]);
-
-    const setChains = (): void => {
-      const relayChainId =
-        currentNetworkIdx.value === endpointKey.ASTAR ? Chain.POLKADOT : Chain.KUSAMA;
-      const disabledChain = [Chain.MOONBEAM];
-      const selectableChains = xcmChains.filter((it) => {
-        return it.relayChain === relayChainId && !disabledChain.includes(it.name);
-      });
-      chains.value = selectableChains;
-    };
-
-    watchEffect(setChains);
-
-    return { chains };
+    return { castChainName };
   },
 });
 </script>

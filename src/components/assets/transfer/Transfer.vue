@@ -46,6 +46,7 @@
             v-if="rightUi === 'select-chain'"
             v-click-away="cancelHighlight"
             :set-chain="setChain"
+            :chains="selectableChains"
           />
           <SelectToken
             v-if="rightUi === 'select-token'"
@@ -60,6 +61,7 @@
       :is-modal-select-chain="isModalSelectChain"
       :handle-modal-select-chain="handleModalSelectChain"
       :set-chain="setChain"
+      :chains="selectableChains"
     />
     <ModalSelectToken
       :is-modal-select-token="isModalSelectToken"
@@ -95,7 +97,7 @@ import { Asset } from 'src/v2/models';
 import { wait } from 'src/hooks/helper/common';
 import { generateNativeAsset, xcmToken } from 'src/modules/xcm/tokens';
 import { endpointKey } from 'src/config/chainEndpoints';
-import { Chain, checkIsRelayChain } from 'src/modules/xcm';
+import { Chain, checkIsRelayChain, XcmChain, xcmChains } from 'src/modules/xcm';
 
 type RightUi = 'information' | 'select-chain' | 'select-token';
 
@@ -147,6 +149,7 @@ export default defineComponent({
     });
 
     const getNetworkName = (chain?: string): string => {
+      console.log('getNetworkName');
       const isNativeToken = tokenSymbol.value === nativeTokenSymbol.value.toLowerCase();
       const currentNetwork = currentNetworkName.value.toLowerCase();
       const defaultXcmBridgeForNative =
@@ -157,13 +160,29 @@ export default defineComponent({
       if (chain) {
         // if: users select chain via SelectChain UI
         const isDuplicated = chain === chainFrom.value || chain === chainTo.value;
-        const c = chain.toLowerCase();
+        // const c = chain.toLowerCase();
+        // Todo: check: chainFrom
+        const isAstarEvm = chain.includes('evm') || chainTo.value.includes('evm');
+        console.log('chain', chain);
+        console.log('isDuplicated', isDuplicated);
         if (isSelectFromChain.value) {
-          const toNetwork = isDuplicated ? defaultXcmBridgeForNative : currentNetwork;
-          return c + '-' + toNetwork;
+          const toNetwork = isDuplicated
+            ? defaultXcmBridgeForNative
+            : isAstarEvm
+            ? chainTo.value
+            : currentNetwork;
+          console.log('isAstarEvm', isAstarEvm);
+          console.log('toNetwork', toNetwork);
+          return (chain + '-' + toNetwork).toLowerCase();
         } else {
-          const fromNetwork = isDuplicated ? defaultXcmBridgeForNative : currentNetwork;
-          return fromNetwork + '-' + c;
+          console.log('isAstarEvm', isAstarEvm);
+          const fromNetwork = isDuplicated
+            ? defaultXcmBridgeForNative
+            : isAstarEvm
+            ? chainFrom.value
+            : currentNetwork;
+          console.log('fromNetwork', fromNetwork);
+          return (fromNetwork + '-' + chain).toLowerCase();
         }
       } else {
         const originChain = isLocalTransfer.value
@@ -202,7 +221,9 @@ export default defineComponent({
 
     const setChain = async (chain: string): Promise<void> => {
       const network = getNetworkName(chain);
+      console.log('network', network);
       const selectedNetwork = network.split('-')[1].toLowerCase();
+      console.log('selectedNetwork', selectedNetwork);
       const t =
         xcmToken[currentNetworkIdx.value].find((it) => {
           return it.originChain.toLowerCase() === selectedNetwork && it.isNativeToken;
@@ -312,8 +333,34 @@ export default defineComponent({
       return tokens;
     });
 
+    const chains = computed<XcmChain[]>(() => {
+      const relayChainId =
+        currentNetworkIdx.value === endpointKey.ASTAR ? Chain.POLKADOT : Chain.KUSAMA;
+      const disabledChain = [Chain.MOONBEAM];
+      const selectableChains = xcmChains.filter((it) => {
+        return it.relayChain === relayChainId && !disabledChain.includes(it.name);
+      });
+      selectableChains.sort((a, b) => {
+        return a.name.localeCompare(b.name);
+      });
+      return selectableChains;
+    });
+
+    const selectableFromChains = computed<XcmChain[]>(() => {
+      return chains.value.filter((it) => !it.name.includes('_evm'));
+    });
+
+    const selectableChains = computed<XcmChain[]>(() => {
+      return isSelectFromChain.value ? selectableFromChains.value : chains.value;
+    });
+
     watch([currentAccount], handleUpdateXcmTokenAssets, { immediate: true });
     watchEffect(handleDefaultConfig);
+
+    watchEffect(() => {
+      // console.log('chains', chains.value);
+      // console.log('selectableChains', selectableChains.value);
+    });
 
     return {
       isLocalTransfer,
@@ -327,6 +374,7 @@ export default defineComponent({
       isShibuya,
       xcmAssets,
       tokens,
+      selectableChains,
       setRightUi,
       handleModalSelectToken,
       handleModalSelectChain,

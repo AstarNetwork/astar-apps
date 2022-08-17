@@ -1,7 +1,7 @@
 <template>
   <AstarModal
     :is-modal-open="isModalSelectChain"
-    title="Select Chain"
+    :title="$t('assets.transferPage.selectChain')"
     :is-closing="isClosingModal"
     :close-modal="closeModal"
   >
@@ -15,7 +15,7 @@
         >
           <div class="column--chain-name">
             <img :src="chain.img" :alt="chain.name" class="chain-logo" />
-            <span>{{ chain.name }}</span>
+            <span>{{ castChainName(chain.name) }}</span>
           </div>
           <div />
         </div>
@@ -28,9 +28,10 @@ import { endpointKey } from 'src/config/chainEndpoints';
 import { useNetworkInfo } from 'src/hooks';
 import { fadeDuration } from '@astar-network/astar-ui';
 import { Chain, XcmChain, xcmChains } from 'src/modules/xcm';
-import { defineComponent, ref, watchEffect } from 'vue';
+import { defineComponent, ref, watchEffect, PropType } from 'vue';
 import AstarModal from 'src/components/common/AstarModal.vue';
 import { wait } from 'src/v2/common';
+import { castChainName } from 'src/modules/xcm';
 export default defineComponent({
   components: {
     AstarModal,
@@ -48,6 +49,10 @@ export default defineComponent({
       type: Function,
       required: true,
     },
+    chains: {
+      type: Object as PropType<XcmChain[]>,
+      required: true,
+    },
   },
   setup(props) {
     const isClosingModal = ref<boolean>(false);
@@ -58,22 +63,7 @@ export default defineComponent({
       isClosingModal.value = false;
     };
 
-    const { currentNetworkIdx } = useNetworkInfo();
-    const chains = ref<XcmChain[]>([]);
-
-    const setChains = (): void => {
-      const relayChainId =
-        currentNetworkIdx.value === endpointKey.ASTAR ? Chain.POLKADOT : Chain.KUSAMA;
-      const disabledChain = [Chain.MOONBEAM];
-      const selectableChains = xcmChains.filter((it) => {
-        return it.relayChain === relayChainId && !disabledChain.includes(it.name);
-      });
-      chains.value = selectableChains;
-    };
-
-    watchEffect(setChains);
-
-    return { chains, closeModal, isClosingModal };
+    return { closeModal, isClosingModal, castChainName };
   },
 });
 </script>

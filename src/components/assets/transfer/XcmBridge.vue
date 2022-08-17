@@ -10,13 +10,13 @@
           :is-highlight-right-ui="isHighlightRightUi"
           :is-select-from="true"
         />
-        <div class="row--reverse">
+        <div v-if="isReverseButton" class="row--reverse">
           <button class="icon--reverse cursor-pointer" @click="reverseChain">
             <astar-icon-sync size="20" />
           </button>
         </div>
         <InputSelectChain
-          class="adjust--to-input"
+          :class="isReverseButton && 'adjust--to-input'"
           :chain="destChain"
           title="to"
           :handle-display-token-selector="handleDisplayTokenSelector"
@@ -24,7 +24,7 @@
           :is-select-from="false"
         />
 
-        <div v-if="!isNativeBridge">
+        <div v-if="isBridgeToEvm">
           <AddressInputV2
             v-model:selAddress="inputtedAddress"
             :to-address="inputtedAddress"
@@ -227,7 +227,7 @@ export default defineComponent({
       srcChain,
       destChain,
       isDisabledBridge,
-      isNativeBridge,
+      isBridgeToEvm,
       inputtedAddress,
       existentialDeposit,
       // chains,
@@ -245,6 +245,10 @@ export default defineComponent({
       reverseChain,
       toggleIsInputDestAddrManually,
     } = useXcmBridgeV2(tokenData);
+
+    const isReverseButton = computed<boolean>(() => {
+      return !srcChain.value.name.includes('evm') && !destChain.value.name.includes('evm');
+    });
 
     const { callAssetWithdrawToPara } = useXcmEvm(tokenData);
 
@@ -286,7 +290,8 @@ export default defineComponent({
     };
 
     watchEffect(() => {
-      console.log('inputtedAddress', inputtedAddress.value);
+      // console.log('inputtedAddress', inputtedAddress.value);
+      // console.log('destChain', destChain.value);
     });
 
     return {
@@ -295,7 +300,7 @@ export default defineComponent({
       srcChain,
       destChain,
       isDisabledBridge,
-      isNativeBridge,
+      isBridgeToEvm,
       inputtedAddress,
       existentialDeposit,
       isLoadingApi,
@@ -311,6 +316,7 @@ export default defineComponent({
       currentAccount,
       isInputDestAddrManually,
       isInputtingAddress,
+      isReverseButton,
       // inputtedDestAddress,
       setIsMobileDisplayTooltip,
       inputHandler,

@@ -5,7 +5,7 @@ import { useRouter } from 'vue-router';
 import { checkIsRelayChain } from './../../modules/xcm/utils/index';
 import { capitalize } from './../helper/common';
 
-export type TransferMode = 'local' | 'xcm';
+export type TransferMode = 'local' | 'local-evm' | 'xcm';
 
 export function useTransferRouter() {
   const router = useRouter();
