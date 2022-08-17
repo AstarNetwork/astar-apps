@@ -74,12 +74,12 @@ export default defineComponent({
 }
 
 .m-btn--account {
-  border: 1px solid $object-light;
+  border: 1px solid $gray-3;
   box-shadow: none;
   padding: 8px;
 
   .iconbase {
-    color: $object-light;
+    color: $gray-3;
   }
 }
 
@@ -103,13 +103,10 @@ export default defineComponent({
   .m-btn--account {
     background: $gray-6 !important;
     color: $gray-3;
-    border: 1px solid $gray-5 !important;
+    border: 1px solid $gray-4 !important;
   }
   .iconbase {
-    color: $astar-blue-dark !important;
-    @media (min-width: $md) {
-      color: $gray-4 !important;
-    }
+    color: $gray-4 !important;
   }
 }
 </style>
