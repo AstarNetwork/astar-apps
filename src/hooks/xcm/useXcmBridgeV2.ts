@@ -126,12 +126,12 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
 
   // Todo: refactoring
   const isMoonbeamWithdrawal = computed<boolean>(() => {
-    return destChain.value.name === Chain.MOONRIVER || destChain.value.name === Chain.MOONBEAM;
+    return destChain.value.name === Chain.MOONRIVER;
   });
 
   // Todo: refactoring
   const isMoonbeamDeposit = computed<boolean>(() => {
-    return srcChain.value.name === Chain.MOONRIVER || srcChain.value.name === Chain.MOONBEAM;
+    return srcChain.value.name === Chain.MOONRIVER;
   });
 
   const { handleResult, handleTransactionError } = useCustomSignature({});

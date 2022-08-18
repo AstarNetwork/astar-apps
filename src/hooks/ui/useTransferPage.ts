@@ -214,9 +214,11 @@ export function useTransferPage() {
   const chains = computed<XcmChain[]>(() => {
     const relayChainId =
       currentNetworkIdx.value === endpointKey.ASTAR ? Chain.POLKADOT : Chain.KUSAMA;
-    const disabledChain = [Chain.MOONBEAM];
+    // const disabledChain = [Chain.MOONBEAM];
+    // const disabledChain = [];
     const selectableChains = xcmChains.filter((it) => {
-      return it.relayChain === relayChainId && !disabledChain.includes(it.name);
+      // return it.relayChain === relayChainId && !disabledChain.includes(it.name);
+      return it.relayChain === relayChainId;
     });
     selectableChains.sort((a, b) => {
       return a.name.localeCompare(b.name);

@@ -97,6 +97,7 @@ import { truncate } from 'src/hooks/helper/common';
 import Jazzicon from 'vue3-jazzicon/src/components';
 import { SupportWallet } from 'src/config/wallets';
 import { useNetworkInfo } from 'src/hooks';
+import { Chain, xcmToken } from 'src/modules/xcm';
 
 export default defineComponent({
   components: {
@@ -125,7 +126,12 @@ export default defineComponent({
     const isDisabledXcmButton = computed(() => {
       // Memo: Remove after runtime upgrading in shinde
       const isMovr = token.symbol === MOVR.symbol;
-      return isMovr;
+      const acalaTokens = xcmToken[endpointKey.ASTAR].filter(
+        (it) => it.originChain === Chain.ACALA
+      );
+      // Memo: disabled until backend turns XCM transfer on again.
+      const isAcalaToken = !!acalaTokens.find((it) => it.symbol === token.symbol);
+      return isMovr || isAcalaToken;
     });
 
     const transferLink = computed<string>(() => {
