@@ -1,8 +1,8 @@
 import { endpointKey } from 'src/config/chainEndpoints';
 import { useNetworkInfo } from 'src/hooks';
-import { Chain } from 'src/modules/xcm';
+import { Chain, checkIsRelayChain, removeEvmName, xcmToken } from 'src/modules/xcm';
 import { useStore } from 'src/store';
-import { computed, watchEffect } from 'vue';
+import { computed, watchEffect, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { capitalize } from './../helper/common';
 
@@ -60,31 +60,32 @@ export function useTransferRouter() {
     });
   };
 
-  // Todo: check if this is necessary
-  // const redirectForRelaychain = (): void => {
-  //   if (!isTransferPage.value) return;
-  //   try {
-  //     const isRelaychain = checkIsRelayChain(xcmOpponentChain.value);
-  //     if (!isRelaychain || mode.value !== 'xcm') return;
+  // Memo: configure the token data since astar native token is not supported on the Relaychain
+  const redirectForRelaychain = (): void => {
+    if (!isTransferPage.value || !xcmOpponentChain.value) return;
+    try {
+      const isRelaychain = checkIsRelayChain(xcmOpponentChain.value);
+      if (!isRelaychain || mode.value !== 'xcm') return;
 
-  //     const relayChainToken = xcmToken[currentNetworkIdx.value]
-  //       .find((it) => it.originChain === xcmOpponentChain.value)
-  //       ?.symbol.toLowerCase();
-  //     if (tokenSymbol.value !== relayChainToken) {
-  //       router.replace({
-  //         path: '/assets/transfer',
-  //         query: {
-  //           ...route.query,
-  //           token: relayChainToken?.toLowerCase(),
-  //           network: network.value,
-  //           mode: 'xcm',
-  //         },
-  //       });
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
+      const relayChainToken = xcmToken[currentNetworkIdx.value]
+        .find((it) => it.originChain === xcmOpponentChain.value)
+        ?.symbol.toLowerCase();
+      if (!relayChainToken) return;
+      if (tokenSymbol.value !== relayChainToken) {
+        console.log('relayChainToken', relayChainToken);
+        router.replace({
+          path: '/assets/transfer',
+          query: {
+            ...route.query,
+            token: relayChainToken?.toLowerCase(),
+            network: network.value,
+          },
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   // Memo: to avoid without selecting Astar/SDN e.g.: Karura <-> Moonriver
   const setDestChainToAstar = (): void => {
@@ -106,6 +107,29 @@ export function useTransferRouter() {
     }
   };
 
+  const defaultXcmBridgeForNative = computed<string>(() => {
+    return currentNetworkIdx.value === endpointKey.ASTAR
+      ? Chain.ACALA.toLowerCase()
+      : Chain.KARURA.toLowerCase();
+  });
+
+  const monitorProhibitedPair = () => {
+    if (!isTransferPage.value) return;
+    const f = removeEvmName(from.value);
+    const t = removeEvmName(to.value);
+    if (f === t) {
+      router.replace({
+        path: '/assets/transfer',
+        query: {
+          ...route.query,
+          from: currentNetworkName.value.toLowerCase(),
+          to: defaultXcmBridgeForNative.value,
+        },
+      });
+    }
+    // const pair = [from.value, to.value]
+  };
+
   const getFromToParams = ({
     chain,
     isSelectFromChain,
@@ -113,23 +137,21 @@ export function useTransferRouter() {
     chain: string;
     isSelectFromChain: boolean;
   }): NetworkFromTo => {
-    const defaultXcmBridgeForNative =
-      currentNetworkIdx.value === endpointKey.ASTAR
-        ? Chain.ACALA.toLowerCase()
-        : Chain.KARURA.toLowerCase();
-
-    const isDuplicated = chain === from.value || chain === to.value;
+    const isDuplicated =
+      chain.toLowerCase() === from.value.toLowerCase() ||
+      chain.toLowerCase() === to.value.toLowerCase();
     if (isSelectFromChain) {
-      const toParam = isDuplicated ? defaultXcmBridgeForNative : to.value;
+      const toParam = isDuplicated ? from.value : to.value;
       return { from: chain.toLowerCase(), to: toParam.toLowerCase() };
     } else {
-      const fromParam = isDuplicated ? defaultXcmBridgeForNative : from.value;
+      const fromParam = isDuplicated ? to.value : from.value;
       return { from: fromParam.toLowerCase(), to: chain.toLowerCase() };
     }
   };
 
-  // watchEffect(redirectForRelaychain);
+  watchEffect(redirectForRelaychain);
   watchEffect(setDestChainToAstar);
+  watch([from, to], monitorProhibitedPair, { immediate: false });
 
   watchEffect(() => {
     console.log('useTransferRouter');
@@ -144,6 +166,7 @@ export function useTransferRouter() {
     xcmOpponentChain,
     isTransferPage,
     router,
+    route,
     isEvmBridge,
     redirect,
     reverseChain,

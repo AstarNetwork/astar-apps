@@ -143,3 +143,10 @@ export const castChainName = (chain: string): string => {
   }
   return chain;
 };
+
+export const removeEvmName = (chain: string) => {
+  if (chain.includes('-evm')) {
+    return chain.split('-')[0];
+  }
+  return chain;
+};

@@ -62,7 +62,7 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
 
   const fromAddressBalance = ref<number>(0);
   const originChainNativeBal = ref<number>(0);
-  const isLoadingApi = ref<boolean>(false);
+  const isLoadingApi = ref<boolean>(true);
 
   const { t } = useI18n();
   const store = useStore();
@@ -151,51 +151,51 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     isInputDestAddrManually.value = !isInputDestAddrManually.value;
   };
 
-  // Checked
   const setSrcChain = (chain: XcmChain): void => {
-    console.log('chain', chain);
+    // console.log('setSrcChain');
     srcChain.value = chain;
+    // console.log(1);
     if (chain.name === destChain.value.name) {
+      // console.log(2);
       if (isAstar.value) {
-        console.log('called???');
-        console.log(
-          'destChain.value.name === Astar.name ? opponentChain.value : Astar',
-          destChain.value.name === Astar.name ? opponentChain.value : Astar
-        );
-        destChain.value = destChain.value.name === Astar.name ? opponentChain.value : Astar;
+        // console.log(3);
+        // destChain.value = destChain.value.name === Astar.name ? opponentChain.value : Astar;
       } else {
-        console.log('called 2???');
-        destChain.value = destChain.value.name === Shiden.name ? opponentChain.value : Shiden;
+        // console.log(4);
+        // destChain.value = destChain.value.name === Shiden.name ? opponentChain.value : Shiden;
       }
     }
   };
 
-  // Checked
   const setDestChain = (chain: XcmChain): void => {
-    console.log('chain', chain);
+    // console.log('setDestChain');
     destChain.value = chain;
+    // console.log(1);
     if (chain.name === srcChain.value.name) {
+      // console.log(2);
       if (isAstar.value) {
-        srcChain.value = srcChain.value.name === Astar.name ? opponentChain.value : Astar;
+        // console.log(3);
+        // srcChain.value = srcChain.value.name === Astar.name ? opponentChain.value : Astar;
       } else {
-        srcChain.value = srcChain.value.name === Shiden.name ? opponentChain.value : Shiden;
+        // console.log(4);
+        // srcChain.value = srcChain.value.name === Shiden.name ? opponentChain.value : Shiden;
       }
     }
   };
 
   // Memo: to avoid without selecting Astar/SDN e.g.: Karura <-> Moonriver
-  const setDestChainToAstar = (): void => {
-    if (!destChain.value || !srcChain.value) return;
-    const astarChains = [Astar.name, Shiden.name];
-    const isAstarDeposit = astarChains.includes(srcChain.value.name);
-    const isAstarWithdrawal = astarChains.includes(destChain.value.name);
-    const isAstarEvm = srcChain.value.name.includes('evm') || destChain.value.name.includes('evm');
-    const isAstrOrSdn = isAstarDeposit || isAstarWithdrawal || isAstarEvm;
-    if (!isAstrOrSdn) {
-      console.log('setDestChainToAstar');
-      destChain.value = isAstar.value ? Astar : Shiden;
-    }
-  };
+  // const setDestChainToAstar = (): void => {
+  //   if (!destChain.value || !srcChain.value) return;
+  //   const astarChains = [Astar.name, Shiden.name];
+  //   const isAstarDeposit = astarChains.includes(srcChain.value.name);
+  //   const isAstarWithdrawal = astarChains.includes(destChain.value.name);
+  //   const isAstarEvm = srcChain.value.name.includes('evm') || destChain.value.name.includes('evm');
+  //   const isAstrOrSdn = isAstarDeposit || isAstarWithdrawal || isAstarEvm;
+  //   if (!isAstrOrSdn) {
+  //     console.log('setDestChainToAstar');
+  //     destChain.value = isAstar.value ? Astar : Shiden;
+  //   }
+  // };
 
   const getOriginChainNativeBal = async (): Promise<string> => {
     if (!currentAccount.value || !srcChain.value || !originChainApi || isH160.value) {
@@ -304,7 +304,7 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     } else if (inputtedAddress.value && !checkIsEvmDestAddress()) {
       errMsg.value = t('warning.inputtedInvalidDestAddress');
     }
-    console.log('isEvmBridge.value', isEvmBridge.value);
+    // console.log('isEvmBridge.value', isEvmBridge.value);
     if (isH160.value || isEvmBridge.value) {
       // if: withdrawal from EVM or Deposit from native to EVM
 
@@ -374,16 +374,23 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     const shouldConnectMoonbeam = shouldConnectApi([Moonriver.name]);
     const shouldConnectAcala = shouldConnectApi([Acala.name, Karura.name]);
 
+    console.log('endpoint', endpoint);
     try {
+      if (!endpoint) return;
       if (shouldConnectMoonbeam) {
+        console.log('shouldConnectMoonbeam');
         originChainApi = new MoonbeamApi(endpoint);
       } else if (shouldConnectAcala) {
+        console.log('shouldConnectAcala');
         originChainApi = new AcalaApi(endpoint);
       } else {
+        console.log('else');
         // if: Connect to Relaychain API
         originChainApi = new ChainApi(endpoint);
       }
       await originChainApi.start();
+      await getExistentialDeposit();
+      isLoadingApi.value = false;
     } catch (err) {
       console.error(err);
     }
@@ -400,9 +407,9 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     destParaId.value = isAstar.value ? parachainIds.ASTAR : parachainIds.SHIDEN;
     // Memo: H160: withdrawal mode
     srcChain.value = isH160.value ? astarChain : opponentChain.value;
-    console.log('setDefaultChain');
+    // console.log('setDefaultChain');
     destChain.value = isH160.value ? originChain.value : astarChain;
-    console.log('destChain.value', destChain.value);
+    // console.log('destChain.value', destChain.value);
   };
 
   // Memo: update the `balance` displayed on the 'destination wallet address' in 'EVM' tab on the XCM bridge modal
@@ -637,42 +644,32 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     isLoadingApi.value = true;
     try {
       await connectOriginChain();
-      await originChainApi?.isReady;
-      await getExistentialDeposit();
-      isLoadingApi.value = false;
     } catch (error) {
       console.error(error);
     }
   };
 
+  // watchEffect(getExistentialDeposit);
+
   const monitorBalances = async (): Promise<void> => {
     await Promise.all([updateFromAddressBalance(), setOriginChainNativeBal()]);
   };
-
-  watch(
-    [selectedToken],
-    async () => {
-      if (!originChain.value || !srcChain.value || !destChain.value) {
-        return;
-      }
-      await initializeXcmApi();
-    },
-    { immediate: false }
-  );
 
   watchEffect(setErrMsg);
   watchEffect(setIsDisabledBridge);
   watchEffect(setInputtedAddressBalance);
   watchEffect(monitorBalances);
-  watchEffect(setDestChainToAstar);
+  watchEffect(async () => {
+    await initializeXcmApi();
+  });
   watch([isEvmBridge, isAstar, selectedToken], setDefaultChain, { immediate: true });
 
   watchEffect(() => {
-    console.log('useXcmBridgeV2');
+    // console.log('useXcmBridgeV2');
     // console.log('errMsg', errMsg.value);
     // console.log('inputtedAddressBalance', inputtedAddressBalance.value);
-    console.log('destChain.value', destChain.value);
-    console.log('srcChain', srcChain.value);
+    // console.log('destChain.value', destChain.value);
+    // console.log('srcChain', srcChain.value);
     // if (selectedToken.value && isAstarNativeTransfer.value) {
     // isEvmBridge.value = true;
     // }

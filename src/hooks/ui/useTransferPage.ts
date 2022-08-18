@@ -7,7 +7,7 @@ import {
   useTransferRouter,
 } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
-import { Chain, checkIsRelayChain, XcmChain, xcmChains } from 'src/modules/xcm';
+import { Chain, checkIsRelayChain, removeEvmName, XcmChain, xcmChains } from 'src/modules/xcm';
 import { generateNativeAsset, xcmToken } from 'src/modules/xcm/tokens';
 import { useStore } from 'src/store';
 import { XcmAssets } from 'src/store/assets/state';
@@ -31,6 +31,7 @@ export function useTransferPage() {
   const {
     tokenSymbol,
     router,
+    route,
     isTransferPage,
     redirect,
     mode,
@@ -103,9 +104,11 @@ export function useTransferPage() {
       xcmToken[currentNetworkIdx.value].find((it) => {
         return it.originChain.toLowerCase() === to && it.isNativeToken;
       })?.symbol || nativeTokenSymbol.value;
+    const isAstarEvm = chain.includes('-evm');
+    const token = isAstarEvm ? tokenSymbol.value : t.toLowerCase();
     router.replace({
       path: '/assets/transfer',
-      query: { token: t.toLowerCase(), network, from, to, mode: 'xcm' },
+      query: { ...route.query, token, network, from, to, mode: 'xcm' },
     });
     await setRightUi('information');
     isModalSelectChain.value && handleModalSelectChain({ isOpen: false });
@@ -222,11 +225,28 @@ export function useTransferPage() {
   });
 
   const selectableFromChains = computed<XcmChain[]>(() => {
-    return chains.value.filter((it) => !it.name.includes('-evm'));
+    return chains.value.filter(
+      (it) => !it.name.includes('-evm') && from.value !== it.name.toLowerCase()
+    );
   });
 
   const selectableChains = computed<XcmChain[]>(() => {
-    return isSelectFromChain.value ? selectableFromChains.value : chains.value;
+    if (isSelectFromChain.value) {
+      return selectableFromChains.value;
+    } else {
+      if (from.value === currentNetworkName.value.toLowerCase()) {
+        // if: from = Astar/Shiden
+        return chains.value.filter((it) => {
+          const name = removeEvmName(it.name);
+          return (
+            currentNetworkName.value.toLowerCase() !== name.toLowerCase() &&
+            to.value !== it.name.toLowerCase()
+          );
+        });
+      } else {
+        return chains.value.filter((it) => to.value !== it.name.toLowerCase());
+      }
+    }
   });
 
   watch([currentAccount], handleUpdateXcmTokenAssets, { immediate: true });

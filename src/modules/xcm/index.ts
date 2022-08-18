@@ -9,6 +9,7 @@ export {
   monitorBalanceIncreasing,
   checkIsRelayChain,
   castChainName,
+  removeEvmName,
 } from './utils';
 
 export const PREFIX_ASTAR = 5;
