@@ -28,11 +28,11 @@ import { Asset } from 'src/v2/models';
 import { computed, ref, Ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { isValidAddressPolkadotAddress } from './../helper/plasmUtils';
-import { AcalaApi, MoonbeamApi } from './parachainApi';
+import { AcalaApi, MoonbeamApi, StatemintApi } from './parachainApi';
 import { MOONBEAM_ASTAR_TOKEN_ID } from './parachainApi/MoonbeamApi';
 import { AstarApi, AstarToken, ChainApi } from './SubstrateApi';
 
-const { Acala, Astar, Karura, Moonriver, Polkadot, Shiden, Kusama } = xcmChainObj;
+const { Acala, Astar, Karura, Moonriver, Polkadot, Shiden, Kusama, Statemine } = xcmChainObj;
 
 export function useXcmBridge(selectedToken: Ref<Asset>) {
   let originChainApi: ChainApi | null = null;
@@ -330,12 +330,15 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
     // Todo: add Moonbeam
     const shouldConnectMoonbeam = shouldConnectApi([Moonriver.name]);
     const shouldConnectAcala = shouldConnectApi([Acala.name, Karura.name]);
+    const shouldConnectStatemint = shouldConnectApi([Statemine.name]);
 
     try {
       if (shouldConnectMoonbeam) {
         originChainApi = new MoonbeamApi(endpoint);
       } else if (shouldConnectAcala) {
         originChainApi = new AcalaApi(endpoint);
+      } else if (shouldConnectStatemint) {
+        originChainApi = new StatemintApi(endpoint);
       } else {
         // if: Connect to Relaychain API
         originChainApi = new ChainApi(endpoint);
@@ -544,6 +547,7 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
         selectedToken: selectedToken.value,
         isNativeToken: selectedToken.value.isNativeToken,
       });
+      console.log('fromAddressBalFull', fromAddressBalFull);
 
       fromAddressBalance.value = Number(
         ethers.utils.formatUnits(fromAddressBalFull, decimals.value).toString()

@@ -143,7 +143,31 @@ export const MOVR = {
   wrapUrl: null,
 };
 
-export const registeredErc20Tokens = [WASTR, DOT, KSM, KUSD, KAR, LKSM, ACA, LDOT, AUSD, MOVR];
+export const USDT_SHIDEN = {
+  srcChainId: 336,
+  address: '0xffffffff000000000000000000000001000007c0',
+  decimal: 6,
+  symbol: 'USDT',
+  name: 'Tether USD',
+  image: 'https://assets.coingecko.com/coins/images/325/small/Tether-logo.png?1598003707',
+  isWrappedToken: false,
+  isXC20: true,
+  wrapUrl: null,
+};
+
+export const registeredErc20Tokens = [
+  WASTR,
+  DOT,
+  KSM,
+  KUSD,
+  KAR,
+  LKSM,
+  ACA,
+  LDOT,
+  AUSD,
+  MOVR,
+  USDT_SHIDEN,
+];
 
 // Memo: Define the token image source
 export const tokenImageMap = {
