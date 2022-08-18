@@ -113,7 +113,7 @@ import InputAmount from 'src/components/common/InputAmount.vue';
 import { useChainMetadata, useNominationTransfer, useUnbondWithdraw } from 'src/hooks';
 import { $api } from 'boot/api';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
-import { getAmount, StakeModel } from 'src/hooks/store';
+import { StakeModel } from 'src/hooks/store';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, toRefs, PropType, watch } from 'vue';
 import { StakeAction } from '../StakePanel.vue';
@@ -243,7 +243,7 @@ export default defineComponent({
 
     const canExecuteAction = computed(() => {
       if (data.value) {
-        const amount = getAmount(data.value.amount, data.value.unit);
+        const amount = plasmUtils.parseTo18Decimals(data.value.amount);
         const useableStakeAmount = props.accountData.getUsableFeeBalance();
 
         let canExecute =
