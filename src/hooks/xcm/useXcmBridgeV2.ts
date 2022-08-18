@@ -49,10 +49,9 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   const isInputDestAddrManually = ref<boolean>(false);
   // const inputtedDestAddress = ref<string>('');
 
-  const isBridgeToEvm = ref<boolean>(false);
   const existentialDeposit = ref<ExistentialDeposit | null>(null);
   const { nativeTipPrice } = useGasPrice();
-  const { xcmOpponentChain, chainFrom, chainTo, isTransferPage, reverseChain } =
+  const { xcmOpponentChain, chainFrom, chainTo, isEvmBridge, isTransferPage, reverseChain } =
     useTransferRouter();
 
   // Format: SS58(withdrawal) or H160(deposit)
@@ -263,14 +262,17 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   };
 
   const checkIsEvmDestAddress = (): boolean => {
+    console.log('checkIsEvmDestAddress');
     const isEvmWithdraw = isH160.value && !isDeposit.value;
     if (isEvmWithdraw && !inputtedAddress.value) {
       return true;
     }
 
     if (isDeposit.value) {
-      // Todo: EVM deposit logic
-      if (inputtedAddress.value) {
+      if (inputtedAddress.value && isEvmBridge.value) {
+        return isValidEvmAddress(inputtedAddress.value);
+      }
+      if (inputtedAddress.value && !isEvmBridge.value) {
         return isValidAddressPolkadotAddress(inputtedAddress.value);
       }
     }
@@ -301,7 +303,8 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     } else if (inputtedAddress.value && !checkIsEvmDestAddress()) {
       errMsg.value = t('warning.inputtedInvalidDestAddress');
     }
-    if (isH160.value || isBridgeToEvm.value) {
+    console.log('isEvmBridge.value', isEvmBridge.value);
+    if (isH160.value || isEvmBridge.value) {
       // if: withdrawal from EVM or Deposit from native to EVM
 
       if (!inputtedAddress.value) {
@@ -337,18 +340,13 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   };
 
   const setIsDisabledBridge = (): void => {
-    const isRequiredInputAddress = isH160.value || (!isH160.value && isBridgeToEvm.value);
+    const isRequiredInputAddress = isH160.value || (!isH160.value && isEvmBridge.value);
     const isFulfilledAddress =
       !isRequiredInputAddress || (isRequiredInputAddress && inputtedAddress.value);
 
     // check if recipient account has non-zero native asset. (it cannot be transferred to an account with 0 nonce)
     isDisabledBridge.value =
       !amount.value || Number(amount.value) === 0 || errMsg.value !== '' || !isFulfilledAddress;
-  };
-
-  const setIsNativeBridge = (isNative: boolean): void => {
-    resetStates();
-    isBridgeToEvm.value = isNative;
   };
 
   const connectOriginChain = async (): Promise<void> => {
@@ -463,7 +461,7 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
         : currentAccount.value;
       if (isDeposit.value) {
         let recipientAccountId = destinationAddress;
-        if (isBridgeToEvm.value) {
+        if (isEvmBridge.value) {
           if (!isValidEvmAddress(inputtedAddress.value)) {
             throw Error('Invalid evm destination address');
           }
@@ -480,7 +478,7 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
             amount: ethers.utils.parseUnits(amount.value, decimals.value).toString(),
             selectedToken: selectedToken.value,
           });
-          if (!isBridgeToEvm.value) {
+          if (!isEvmBridge.value) {
             await monitorBalanceIncreasing({
               api: $api!,
               userAddress: currentAccount.value,
@@ -509,7 +507,7 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
         });
 
         const callBack = async (): Promise<void> => {
-          if (!isBridgeToEvm.value) {
+          if (!isEvmBridge.value) {
             await monitorBalanceIncreasing({
               api: $api!,
               userAddress: currentAccount.value,
@@ -666,7 +664,7 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   watchEffect(setInputtedAddressBalance);
   watchEffect(monitorBalances);
   watchEffect(setDestChainToAstar);
-  watch([isBridgeToEvm, isAstar, selectedToken], setDefaultChain, { immediate: true });
+  watch([isEvmBridge, isAstar, selectedToken], setDefaultChain, { immediate: true });
 
   watchEffect(() => {
     console.log('useXcmBridgeV2');
@@ -675,7 +673,7 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     // console.log('destChain.value', destChain.value);
     // console.log('srcChain', srcChain.value);
     // if (selectedToken.value && isAstarNativeTransfer.value) {
-    // isBridgeToEvm.value = true;
+    // isEvmBridge.value = true;
     // }
   });
 
@@ -696,7 +694,7 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     srcChain,
     destChain,
     isDisabledBridge,
-    isBridgeToEvm,
+    isEvmBridge,
     inputtedAddress,
     existentialDeposit,
     isH160,
@@ -712,7 +710,7 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     inputHandler,
     bridge,
     resetStates,
-    setIsNativeBridge,
+    // setIsNativeBridge,
     initializeXcmApi,
     reverseChain,
     toggleIsInputDestAddrManually,

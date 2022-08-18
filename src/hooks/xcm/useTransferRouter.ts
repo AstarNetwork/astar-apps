@@ -15,6 +15,10 @@ export function useTransferRouter() {
   const isTransferPage = computed<boolean>(() =>
     router.currentRoute.value.fullPath.includes('transfer')
   );
+  const isEvmBridge = computed<boolean>(() => {
+    if (!isTransferPage.value) return false;
+    return network.value.includes('evm');
+  });
   const { nativeTokenSymbol, currentNetworkName, currentNetworkIdx } = useNetworkInfo();
 
   const chainFrom = computed<Chain>(() => {
@@ -94,6 +98,7 @@ export function useTransferRouter() {
     xcmOpponentChain,
     isTransferPage,
     router,
+    isEvmBridge,
     redirect,
     reverseChain,
   };

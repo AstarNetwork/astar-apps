@@ -36,3 +36,4 @@ export * from './xcm/useXcmTokenTransfer';
 export * from './xcm/useXcmEvm';
 export * from './xcm/useTransferRouter';
 export * from './ui/useTooltip';
+export * from './ui/useTransferPage';

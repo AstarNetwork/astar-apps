@@ -24,7 +24,7 @@
           :is-select-from="false"
         />
 
-        <div v-if="isBridgeToEvm">
+        <div v-if="isEvmBridge">
           <AddressInputV2
             v-model:selAddress="inputtedAddress"
             :to-address="inputtedAddress"
@@ -227,7 +227,7 @@ export default defineComponent({
       srcChain,
       destChain,
       isDisabledBridge,
-      isBridgeToEvm,
+      isEvmBridge,
       inputtedAddress,
       existentialDeposit,
       // chains,
@@ -241,7 +241,7 @@ export default defineComponent({
       // inputtedDestAddress,
       inputHandler,
       bridge,
-      setIsNativeBridge,
+      // setIsNativeBridge,
       reverseChain,
       toggleIsInputDestAddrManually,
     } = useXcmBridgeV2(tokenData);
@@ -300,7 +300,7 @@ export default defineComponent({
       srcChain,
       destChain,
       isDisabledBridge,
-      isBridgeToEvm,
+      isEvmBridge,
       inputtedAddress,
       existentialDeposit,
       isLoadingApi,
@@ -321,7 +321,7 @@ export default defineComponent({
       setIsMobileDisplayTooltip,
       inputHandler,
       bridge,
-      setIsNativeBridge,
+      // setIsNativeBridge,
       handleBridge,
       truncate,
       reverseChain,
