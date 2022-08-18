@@ -378,7 +378,9 @@ export class AstarApi extends BaseApi {
           },
         };
 
-    const isAccountId20 = paraId === parachainIds.MOONBEAM || paraId === parachainIds.MOONRIVER;
+    // Todo: un-comment-out after channel between Astar and Moonbeam has been opened
+    // const isAccountId20 = paraId === parachainIds.MOONBEAM || paraId === parachainIds.MOONRIVER;
+    const isAccountId20 = paraId === parachainIds.MOONRIVER;
     const X1 = isAccountId20
       ? {
           AccountKey20: {
