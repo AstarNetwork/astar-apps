@@ -36,10 +36,10 @@ export interface ExistentialDeposit {
 export enum Chain {
   POLKADOT = 'Polkadot',
   ASTAR = 'Astar',
-  ASTAR_EVM = 'Astar_evm',
+  ASTAR_EVM = 'Astar-evm',
   KUSAMA = 'Kusama',
   SHIDEN = 'Shiden',
-  SHIDEN_EVM = 'Shiden_evm',
+  SHIDEN_EVM = 'Shiden-evm',
   KARURA = 'Karura',
   ACALA = 'Acala',
   MOONRIVER = 'Moonriver',

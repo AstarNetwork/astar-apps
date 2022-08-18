@@ -23,13 +23,12 @@ export function useTransferPage() {
   const rightUi = ref<RightUi>('information');
   const isLocalTransfer = ref<boolean>(true);
   const token = ref<Asset>();
+
   const { currentAccount } = useAccount();
   const { accountData } = useBalance(currentAccount);
   const store = useStore();
   const { screenSize, width } = useBreakpoints();
   const {
-    chainFrom,
-    chainTo,
     tokenSymbol,
     router,
     isTransferPage,
@@ -37,6 +36,9 @@ export function useTransferPage() {
     mode,
     network,
     xcmOpponentChain,
+    from,
+    to,
+    getFromToParams,
   } = useTransferRouter();
 
   const xcmAssets = computed<XcmAssets>(() => store.getters['assets/getAllAssets']);
@@ -49,56 +51,24 @@ export function useTransferPage() {
     return tokenSymbol.value === nativeTokenSymbol.value.toLowerCase();
   });
 
-  const getNetworkName = (chain?: string): string => {
-    console.log('getNetworkName');
-    const isNativeToken = tokenSymbol.value === nativeTokenSymbol.value.toLowerCase();
-    const currentNetwork = currentNetworkName.value.toLowerCase();
+  const setIsLocalTransfer = (isLocal: boolean): void => {
+    isLocalTransfer.value = isLocal;
+    const mode = isLocal ? 'local' : 'xcm';
+    const network = currentNetworkName.value.toLowerCase();
+    const isNativeAstarToken = tokenSymbol.value === nativeTokenSymbol.value.toLowerCase();
     const defaultXcmBridgeForNative =
-      currentNetworkIdx.value === endpointKey.ASTAR
-        ? Chain.ACALA.toLowerCase()
-        : Chain.KARURA.toLowerCase();
+      currentNetworkIdx.value === endpointKey.ASTAR ? Chain.ACALA : Chain.KARURA;
+    const from = isNativeAstarToken
+      ? defaultXcmBridgeForNative
+      : token.value?.originChain.toLowerCase();
+    const to = currentNetworkName.value.toLowerCase();
 
-    if (chain) {
-      // if: users select chain via SelectChain UI
-      const isDuplicated = chain === chainFrom.value || chain === chainTo.value;
-      const isAstarEvm = chain.includes('evm') || chainTo.value.includes('evm');
-      // Todo: check: chainFrom
-      if (isSelectFromChain.value) {
-        const toNetwork = isDuplicated
-          ? defaultXcmBridgeForNative
-          : isAstarEvm
-          ? chainTo.value
-          : currentNetwork;
-        return (chain + '-' + toNetwork).toLowerCase();
-      } else {
-        const fromNetwork = isDuplicated
-          ? defaultXcmBridgeForNative
-          : isAstarEvm
-          ? chainFrom.value
-          : currentNetwork;
-        return (fromNetwork + '-' + chain).toLowerCase();
-      }
-    } else {
-      const isAstarEvm = chainFrom.value.includes('evm') || chainTo.value.includes('evm');
-      const originChain = isLocalTransfer.value
-        ? ''
-        : isNativeToken
-        ? defaultXcmBridgeForNative
-        : token.value?.originChain.toLowerCase();
-      const selectedNetwork = isAstarEvm ? chainTo.value : currentNetwork;
-      return (
-        isLocalTransfer.value ? currentNetwork : originChain + '-' + selectedNetwork
-      ).toLowerCase();
-    }
-  };
-
-  const setIsLocalTransfer = (result: boolean): void => {
-    isLocalTransfer.value = result;
-    const mode = result ? 'local' : 'xcm';
-    const network = getNetworkName();
+    const query = isLocal
+      ? { token: tokenSymbol.value, network, mode }
+      : { token: tokenSymbol.value, network, from, to, mode };
     router.replace({
       path: '/assets/transfer',
-      query: { token: tokenSymbol.value, network, mode },
+      query,
     });
   };
 
@@ -107,26 +77,35 @@ export function useTransferPage() {
   };
 
   const setToken = async (t: Asset): Promise<void> => {
-    const network = getNetworkName();
+    const network = currentNetworkName.value.toLowerCase();
     const mode = isLocalTransfer.value ? 'local' : 'xcm';
+    const token = t.metadata.symbol.toLowerCase();
+    const baseQuery = { token, network, mode };
+    const xcmQuery = {
+      ...baseQuery,
+      from: from.value,
+      to: to.value,
+    };
+
     router.replace({
       path: '/assets/transfer',
-      query: { token: t.metadata.symbol.toLowerCase(), network, mode },
+      query: isLocalTransfer.value ? baseQuery : xcmQuery,
     });
     await setRightUi('information');
     isModalSelectToken.value && handleModalSelectToken({ isOpen: false });
   };
 
   const setChain = async (chain: string): Promise<void> => {
-    const network = getNetworkName(chain);
-    const selectedNetwork = network.split('-')[1].toLowerCase();
+    const { from, to } = getFromToParams({ chain, isSelectFromChain: isSelectFromChain.value });
+    const network = currentNetworkName.value.toLowerCase();
+
     const t =
       xcmToken[currentNetworkIdx.value].find((it) => {
-        return it.originChain.toLowerCase() === selectedNetwork && it.isNativeToken;
+        return it.originChain.toLowerCase() === to && it.isNativeToken;
       })?.symbol || nativeTokenSymbol.value;
     router.replace({
       path: '/assets/transfer',
-      query: { token: t.toLowerCase(), network, mode: 'xcm' },
+      query: { token: t.toLowerCase(), network, from, to, mode: 'xcm' },
     });
     await setRightUi('information');
     isModalSelectChain.value && handleModalSelectChain({ isOpen: false });
@@ -243,7 +222,7 @@ export function useTransferPage() {
   });
 
   const selectableFromChains = computed<XcmChain[]>(() => {
-    return chains.value.filter((it) => !it.name.includes('_evm'));
+    return chains.value.filter((it) => !it.name.includes('-evm'));
   });
 
   const selectableChains = computed<XcmChain[]>(() => {

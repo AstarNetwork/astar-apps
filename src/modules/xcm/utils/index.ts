@@ -136,9 +136,9 @@ export const checkIsRelayChain = (chain: string): boolean => {
 };
 
 export const castChainName = (chain: string): string => {
-  const isEvm = chain.includes('_evm');
+  const isEvm = chain.includes('-evm');
   if (isEvm) {
-    const network = chain.split('_')[0];
+    const network = chain.split('-')[0];
     return network + ' ' + 'EVM';
   }
   return chain;

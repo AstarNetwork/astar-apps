@@ -1,3 +1,4 @@
+import { capitalize } from './../helper/common';
 import { evmToAddress } from '@polkadot/util-crypto';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
@@ -51,7 +52,7 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
 
   const existentialDeposit = ref<ExistentialDeposit | null>(null);
   const { nativeTipPrice } = useGasPrice();
-  const { xcmOpponentChain, chainFrom, chainTo, isEvmBridge, isTransferPage, reverseChain } =
+  const { xcmOpponentChain, from, to, isEvmBridge, isTransferPage, reverseChain } =
     useTransferRouter();
 
   // Format: SS58(withdrawal) or H160(deposit)
@@ -83,13 +84,13 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   const opponentChain = computed<XcmChain>(() => {
     try {
       let chain = xcmOpponentChain.value;
-      if (xcmOpponentChain.value === 'Astar_evm') {
+      if (xcmOpponentChain.value === 'Astar-evm') {
         chain = Astar.name;
       }
-      if (xcmOpponentChain.value === 'Shiden_evm') {
+      if (xcmOpponentChain.value === 'Shiden-evm') {
         chain = Shiden.name;
       }
-      return xcmChainObj[xcmOpponentChain.value as keyof typeof xcmChainObj];
+      return xcmChainObj[chain as keyof typeof xcmChainObj];
     } catch (error) {
       console.error(error);
       return isAstar.value ? Acala : Karura;
@@ -670,8 +671,8 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     console.log('useXcmBridgeV2');
     // console.log('errMsg', errMsg.value);
     // console.log('inputtedAddressBalance', inputtedAddressBalance.value);
-    // console.log('destChain.value', destChain.value);
-    // console.log('srcChain', srcChain.value);
+    console.log('destChain.value', destChain.value);
+    console.log('srcChain', srcChain.value);
     // if (selectedToken.value && isAstarNativeTransfer.value) {
     // isEvmBridge.value = true;
     // }
@@ -679,12 +680,8 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
 
   const updateChain = (): void => {
     if (!isTransferPage.value) return;
-    // console.log('updateChain');
-    // console.log('chainFrom.value', chainFrom.value);
-    console.log('chainTo.value', chainTo.value);
-    setSrcChain(xcmChainObj[chainFrom.value]);
-    setDestChain(xcmChainObj[chainTo.value]);
-    // console.log('destChain.value', destChain.value);
+    setSrcChain(xcmChainObj[capitalize(from.value) as keyof typeof xcmChainObj]);
+    setDestChain(xcmChainObj[capitalize(to.value) as keyof typeof xcmChainObj]);
   };
   watchEffect(updateChain);
 
