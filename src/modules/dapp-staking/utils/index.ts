@@ -2,12 +2,35 @@ import { ApiPromise } from '@polkadot/api';
 import { Option } from '@polkadot/types';
 import { EraIndex } from '@polkadot/types/interfaces';
 import BN from 'bn.js';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { checkIsDappRegistered, GeneralStakerInfo } from 'src/hooks/helper/claim';
 import { wait } from 'src/hooks/helper/common';
 import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
 import { EraStakingPoints, StakeInfo } from './../../../store/dapp-staking/actions';
 import { DappItem } from './../../../store/dapp-staking/state';
 import { StakingData } from './../index';
+
+interface StakeData {
+  address: string;
+  balance: string;
+  name: string;
+}
+
+export const checkIsLimitedProvider = (): boolean => {
+  const limitedProvider = ['onfinality'];
+  const selectedEndpoint = JSON.parse(
+    String(localStorage.getItem(LOCAL_STORAGE.SELECTED_ENDPOINT))
+  );
+  const endpoint = String(Object.values(selectedEndpoint)[0]);
+  let result = false;
+  limitedProvider.forEach((it) => {
+    const res = endpoint.includes(it);
+    if (res) {
+      result = true;
+    }
+  });
+  return result;
+};
 
 export const formatStakingList = async ({
   api,
@@ -18,32 +41,44 @@ export const formatStakingList = async ({
   address: string;
   dapps: DappItem[];
 }): Promise<StakingData[]> => {
-  const data = (
-    await Promise.all(
-      dapps.map(async (dapp: DappItem) => {
-        try {
-          const stakerInfo = await api.query.dappsStaking.generalStakerInfo<GeneralStakerInfo>(
-            address,
-            {
-              Evm: dapp.address,
-            }
-          );
-          if (!stakerInfo) return undefined;
+  let data = [];
 
-          const bnBalance = stakerInfo.stakes.length && stakerInfo.stakes.slice(-1)[0].staked;
-          const balance = stakerInfo.stakes.length && bnBalance.toString();
-
-          if (Number(balance) > 0) {
-            return { address: dapp.address, balance, name: dapp.name };
-          }
-        } catch (error) {
-          console.error(error);
+  const getData = async (dapp: DappItem): Promise<StakeData | undefined> => {
+    try {
+      const stakerInfo = await api.query.dappsStaking.generalStakerInfo<GeneralStakerInfo>(
+        address,
+        {
+          Evm: dapp.address,
         }
-      })
-    )
-  ).filter((it) => it !== undefined) as StakingData[];
+      );
+      if (!stakerInfo) return undefined;
 
-  return data;
+      const bnBalance = stakerInfo.stakes.length && stakerInfo.stakes.slice(-1)[0].staked;
+      const bal = stakerInfo.stakes.length && bnBalance.toString();
+
+      if (Number(bal) > 0) {
+        return { address: dapp.address, balance: String(bal), name: dapp.name };
+      }
+    } catch (error) {
+      return undefined;
+    }
+  };
+
+  if (checkIsLimitedProvider()) {
+    for await (let dapp of dapps) {
+      const dappData = await getData(dapp);
+      data.push(dappData);
+    }
+  } else {
+    data = await Promise.all(
+      dapps.map(async (dapp: DappItem) => {
+        return await getData(dapp);
+      })
+    );
+  }
+
+  data.filter((it) => it !== undefined);
+  return data as StakingData[];
 };
 
 export const getDappStakers = async ({ api }: { api: ApiPromise }): Promise<number> => {
@@ -70,11 +105,12 @@ export const getLatestStakePoint = async (
   const contractAddress = getAddressEnum(contract);
   // iterate from currentEra backwards until you find record for ContractEraStake
   for (let era = currentEra; era > 0; era -= 1) {
+    // Memo: wait for avoiding provider limitation
+    checkIsLimitedProvider() && (await wait(200));
     const stakeInfoPromise = await api.query.dappsStaking.contractEraStake<
       Option<EraStakingPoints>
     >(contractAddress, era);
-    const stakeInfo = await stakeInfoPromise.unwrapOr(undefined);
-
+    const stakeInfo = stakeInfoPromise.unwrapOr(undefined);
     if (stakeInfo) {
       return stakeInfo;
     }
