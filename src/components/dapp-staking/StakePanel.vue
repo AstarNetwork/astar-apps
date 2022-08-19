@@ -23,17 +23,14 @@
       <div v-else class="tw-mb-4">
         <div class="tw-flex tw-flex-row" style="opacity: 0">
           <div class="tw-w-20">{{ $t('dappStaking.yourStake') }}</div>
-          <!-- <div class="tw-font-semibold">0</div> -->
         </div>
         <div>
           <div class="tw-flex tw-flex-row">
             <div class="tw-w-20">{{ $t('dappStaking.totalStake') }}</div>
-            <!-- <div class="tw-font-semibold">0</div> -->
             <q-skeleton animation="fade" class="skeleton--md" />
           </div>
           <div class="tw-mt-1 tw-flex tw-flex-row">
             <div class="tw-w-20">{{ $t('dappStaking.stakersCount') }}</div>
-            <!-- <div class="tw-font-semibold">0</div> -->
             <q-skeleton animation="fade" class="skeleton--md" />
           </div>
         </div>
