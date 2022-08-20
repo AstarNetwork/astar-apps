@@ -131,6 +131,7 @@ export const monitorBalanceIncreasing = async ({
 };
 
 export const checkIsRelayChain = (chain: string): boolean => {
+  if (!chain) return false;
   const c = chain.toLowerCase();
   return c === Chain.POLKADOT.toLowerCase() || c === Chain.KUSAMA.toLowerCase();
 };

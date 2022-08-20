@@ -8,7 +8,7 @@
       <span> {{ $t(title) }}</span>
       <div />
     </div>
-    <div class="wrapper--select-chain">
+    <div v-if="chain" class="wrapper--select-chain">
       <div class="row__chain">
         <img :src="chain.img" alt="chain-logo" class="logo" />
         <input

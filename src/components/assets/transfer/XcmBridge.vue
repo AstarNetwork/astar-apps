@@ -10,6 +10,7 @@
           :is-highlight-right-ui="isHighlightRightUi"
           :is-select-from="true"
         />
+        <SelectEvmWallet v-if="isMoonbeamDeposit" :initialize-xcm-api="initializeXcmApi" />
         <div v-if="isReverseButton" class="row--reverse">
           <button class="icon--reverse cursor-pointer" @click="reverseChain">
             <astar-icon-sync size="20" />
@@ -174,6 +175,7 @@
 <script lang="ts">
 import InputSelectChain from 'src/components/assets/transfer/InputSelectChain.vue';
 import AddressInputV2 from 'src/components/common/AddressInputV2.vue';
+import SelectEvmWallet from 'src/components/assets/transfer/SelectEvmWallet.vue';
 import { useAccount, useTooltip, useXcmBridgeV2, useXcmEvm } from 'src/hooks';
 import { truncate } from 'src/hooks/helper/common';
 import { Asset } from 'src/v2/models';
@@ -186,6 +188,7 @@ export default defineComponent({
     AddressInputV2,
     InputSelectChain,
     ModalLoading,
+    SelectEvmWallet,
   },
   props: {
     handleFinalizedCallback: {
@@ -238,15 +241,16 @@ export default defineComponent({
       isLoadingApi,
       isAstarNativeTransfer,
       isInputDestAddrManually,
-      // inputtedDestAddress,
+      isMoonbeamDeposit,
+      initializeXcmApi,
       inputHandler,
       bridge,
-      // setIsNativeBridge,
       reverseChain,
       toggleIsInputDestAddrManually,
     } = useXcmBridgeV2(tokenData);
 
     const isReverseButton = computed<boolean>(() => {
+      if (!srcChain.value || !destChain.value) return false;
       return !srcChain.value.name.includes('evm') && !destChain.value.name.includes('evm');
     });
 
@@ -317,6 +321,7 @@ export default defineComponent({
       isInputDestAddrManually,
       isInputtingAddress,
       isReverseButton,
+      isMoonbeamDeposit,
       // inputtedDestAddress,
       setIsMobileDisplayTooltip,
       inputHandler,
@@ -328,6 +333,7 @@ export default defineComponent({
       handleDisplayTokenSelector,
       toggleIsInputDestAddrManually,
       toggleIsInputtingAddress,
+      initializeXcmApi,
     };
   },
 });
