@@ -1,6 +1,6 @@
 import { objToArray } from 'src/hooks/helper/common';
 
-export { xcmToken } from './tokens';
+export { xcmToken, generateAssetFromEvmToken } from './tokens';
 export {
   getXcmToken,
   fetchXcmBalance,

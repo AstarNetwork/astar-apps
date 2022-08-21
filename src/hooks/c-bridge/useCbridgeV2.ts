@@ -11,6 +11,7 @@ import { objToArray } from 'src/hooks/helper/common';
 import { Erc20Token } from 'src/modules/token';
 import { useStore } from 'src/store';
 import { computed, onUnmounted, ref, watch, watchEffect } from 'vue';
+import { useRoute } from 'vue-router';
 import { useAccount } from '../useAccount';
 import { useNetworkInfo } from '../useNetworkInfo';
 import { LOCAL_STORAGE } from './../../config/localStorage';
@@ -24,6 +25,9 @@ export function useCbridgeV2() {
   const tokens = ref<Token[] | null>(null);
   const ttlErc20Amount = ref<number>(0);
   const startCalculation = ref<boolean>(false);
+
+  const route = useRoute();
+  const isTransferPage = computed<boolean>(() => route.fullPath.includes('transfer'));
 
   const store = useStore();
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
@@ -58,6 +62,9 @@ export function useCbridgeV2() {
     userBalance: string;
   }> => {
     let balUsd = 0;
+    if (isTransferPage.value) {
+      return { balUsd, userBalance: '0' };
+    }
     const userBalance = await getTokenBal({
       srcChainId: evmNetworkId.value,
       address: userAddress,
@@ -144,7 +151,12 @@ export function useCbridgeV2() {
             userAddress,
             token,
           });
-          const tokenWithBalance = { ...token, userBalance, userBalanceUsd: String(balUsd) };
+          const tokenWithBalance = {
+            ...token,
+            icon: token.image,
+            userBalance,
+            userBalanceUsd: String(balUsd),
+          };
           return tokenWithBalance;
         } else {
           return undefined;
@@ -171,6 +183,8 @@ export function useCbridgeV2() {
         updateBridgeConfig({ userAddress: currentAccount.value }),
         updateRegisteredToken({ userAddress: currentAccount.value }),
       ]);
+      console.log('registeredTokens', registeredTokens);
+      console.log('cbridgeTokens', cbridgeTokens);
       tokens.value = cbridgeTokens.concat(registeredTokens as any);
       filterTokens();
     } catch (error) {
@@ -195,6 +209,7 @@ export function useCbridgeV2() {
 
   // Memo: triggered after users have imported tokens
   const handleImportingCustomToken = async (): Promise<void> => {
+    if (!isH160.value) return;
     window.addEventListener(LOCAL_STORAGE.EVM_TOKEN_IMPORTS, async () => {
       await handleCbridgeConfiguration();
       await handleUpdateTokenBalances();
@@ -213,6 +228,7 @@ export function useCbridgeV2() {
   watch(
     [tokens],
     async () => {
+      if (!isH160.value) return;
       const isInitialErc20Amount =
         tokens.value && tokens.value.length > 0 && !startCalculation.value;
       if (isInitialErc20Amount) {

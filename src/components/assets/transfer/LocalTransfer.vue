@@ -58,8 +58,8 @@
           <div class="box__row" @click="setRightUi('select-token')">
             <div class="token-logo">
               <jazzicon
-                v-if="tokenImg.includes('custom-token')"
-                :address="token.address"
+                v-if="token && tokenImg.includes('custom-token')"
+                :address="token.mappedERC20Addr"
                 :diameter="24"
               />
               <img v-else width="24" alt="token-logo" :src="tokenImg" />
@@ -125,7 +125,9 @@
 import { ethers } from 'ethers';
 import { $api, $web3 } from 'src/boot/api';
 import ABI from 'src/c-bridge/abi/ERC20.json';
+import ModalSelectAccount from 'src/components/assets/modals/ModalSelectAccount.vue';
 import SpeedConfigurationV2 from 'src/components/common/SpeedConfigurationV2.vue';
+import { SupportWallet } from 'src/config/wallets';
 import { getTokenBal, isValidEvmAddress } from 'src/config/web3';
 import {
   useAccount,
@@ -133,23 +135,21 @@ import {
   useEvmWallet,
   useNetworkInfo,
   useTransfer,
+  useTransferRouter,
   useWalletIcon,
 } from 'src/hooks';
+import { useEthProvider } from 'src/hooks/custom-signature/useEthProvider';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { truncate } from 'src/hooks/helper/common';
 import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
+import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 import { getEvmGasCost, sampleEvmWalletAddress } from 'src/modules/gas-api';
-import { Erc20Token, getRegisteredERC20Token, getTokenImage } from 'src/modules/token';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, watchEffect, watch, WatchCallback } from 'vue';
+import { computed, defineComponent, ref, watch, WatchCallback, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useEthProvider } from 'src/hooks/custom-signature/useEthProvider';
+import Jazzicon from 'vue3-jazzicon/src/components';
 import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
-import ModalSelectAccount from 'src/components/assets/modals/ModalSelectAccount.vue';
-import Jazzicon from 'vue3-jazzicon/src/components';
-import { SupportWallet } from 'src/config/wallets';
-import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 
 export default defineComponent({
   components: {
@@ -164,11 +164,6 @@ export default defineComponent({
     },
     accountData: {
       type: Object,
-      required: false,
-      default: null,
-    },
-    token: {
-      type: Object || String,
       required: false,
       default: null,
     },
@@ -199,7 +194,7 @@ export default defineComponent({
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const { ethProvider } = useEthProvider();
     const { evmNetworkIdx, nativeTokenSymbol } = useNetworkInfo();
-
+    const { token } = useTransferRouter();
     const isEthWallet = computed<boolean>(() => store.getters['general/isEthWallet']);
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
 
@@ -212,22 +207,27 @@ export default defineComponent({
     const { currentAccount, currentAccountName } = useAccount();
 
     // Memo: check the selected token is either hard-coded token or cBridge token
-    const registeredToken = computed<Erc20Token | undefined>(() => {
-      const tokens = getRegisteredERC20Token();
-      const result = tokens.find((it) => it.symbol === props.symbol);
-      return result;
-    });
+    // const registeredToken = computed<Erc20Token | undefined>(() => {
+    //   const tokens = getRegisteredERC20Token();
+    //   const result = tokens.find((it) => it.symbol === props.symbol);
+    //   return result;
+    // });
 
     const tokenImg = computed<string>(() => {
-      if (registeredToken.value) {
-        return registeredToken.value.image;
+      if (!token.value || !token.value.tokenImage) {
+        return 'custom-token';
       } else {
-        return getTokenImage({
-          isNativeToken: props.symbol === nativeTokenSymbol.value,
-          symbol: props.symbol,
-          iconUrl: props.token && props.token.icon,
-        });
+        return token.value.tokenImage;
       }
+      // if (registeredToken.value) {
+      //   return registeredToken.value.image;
+      // } else {
+      //   return getTokenImage({
+      //     isNativeToken: props.symbol === nativeTokenSymbol.value,
+      //     symbol: props.symbol,
+      //     iconUrl: token.value && token.value.icon,
+      //   });
+      // }
     });
 
     const isRequiredCheck = computed<boolean>(() => {
@@ -268,12 +268,12 @@ export default defineComponent({
     };
 
     const toMaxAmount = async (): Promise<void> => {
-      if (isH160.value && !isNativeToken.value) {
+      if (isH160.value && !isNativeToken.value && token.value) {
         const balance = await getTokenBal({
           srcChainId: evmNetworkIdx.value,
           address: currentAccount.value,
-          tokenAddress: props.token.address,
-          tokenSymbol: props.token.symbol,
+          tokenAddress: token.value.mappedERC20Addr,
+          tokenSymbol: token.value.metadata.symbol,
         });
         transferAmt.value = balance;
       }
@@ -307,22 +307,21 @@ export default defineComponent({
         return;
       }
 
-      if (isErc20TransferRef) {
-        const { address, decimal } = props.token;
+      if (isErc20TransferRef && token.value) {
         await callErc20Transfer({
           transferAmt: transferAmtRef,
           fromAddress,
           toAddress: toAddressRef,
-          contractAddress: address,
-          decimals: decimal,
+          contractAddress: token.value.mappedERC20Addr,
+          decimals: token.value.metadata.decimals,
         });
-        // props.handleUpdateTokenBalances && props.handleUpdateTokenBalances();
       } else {
         await callTransfer(Number(transferAmtRef), fromAddress, toAddressRef);
       }
     };
 
     const setEvmGasCost = async () => {
+      if (!token.value) return;
       try {
         const isErc20Ref = isErc20Transfer.value;
         const transferAmtRef = transferAmt.value || '0';
@@ -331,15 +330,18 @@ export default defineComponent({
           ? toAddress.value
           : sampleEvmWalletAddress;
 
-        const destAddress = isErc20Ref ? (props.token.address as string) : destination;
+        const destAddress = isErc20Ref ? (token.value.mappedERC20Addr as string) : destination;
 
         const contract = isErc20Ref
-          ? new $web3.value!.eth.Contract(ABI as AbiItem[], props.token.address)
+          ? new $web3.value!.eth.Contract(ABI as AbiItem[], token.value.mappedERC20Addr)
           : undefined;
 
         const encodedData = isErc20Ref
           ? contract!.methods
-              .transfer(destination, ethers.utils.parseUnits(transferAmtRef, props.token.decimal))
+              .transfer(
+                destination,
+                ethers.utils.parseUnits(transferAmtRef, token.value.metadata.decimals)
+              )
               .encodeABI()
           : undefined;
 
@@ -380,12 +382,12 @@ export default defineComponent({
         toAddressBalance.value = await getNativeTokenBalance(address);
       }
       if (!isNativeToken.value) {
-        if (isH160.value) {
+        if (isH160.value && token.value) {
           const balance = await getTokenBal({
             srcChainId,
             address,
-            tokenAddress: props.token.address,
-            tokenSymbol: props.token.symbol,
+            tokenAddress: token.value.mappedERC20Addr,
+            tokenSymbol: token.value.metadata.symbol,
           });
           toAddressBalance.value = Number(balance);
         }
@@ -409,8 +411,14 @@ export default defineComponent({
       }
 
       if (!isNativeToken.value) {
-        if (isH160.value && props.token) {
-          fromAddressBalance.value = Number(props.token.userBalance);
+        if (isH160.value && token.value) {
+          const balance = await getTokenBal({
+            srcChainId: evmNetworkIdx.value,
+            address: currentAccount.value,
+            tokenAddress: token.value.mappedERC20Addr,
+            tokenSymbol: token.value.metadata.symbol,
+          });
+          fromAddressBalance.value = Number(balance);
         }
       }
     };
@@ -422,7 +430,7 @@ export default defineComponent({
       const selectedNetworkRef = selectedNetwork.value;
       const isErc20TransferRef = isErc20Transfer.value;
       const fromAccountBalance = isErc20TransferRef
-        ? Number(props.token ? props.token.userBalance : 0)
+        ? Number(token.value ? token.value.userBalance : 0)
         : fromAddressBalance.value;
       const isValidDestAddress =
         isValidAddressPolkadotAddress(toAddress.value) || isValidEvmAddress(toAddress.value);
@@ -458,18 +466,13 @@ export default defineComponent({
       registerCleanup
     ) => {
       if (!h160 || !provider) return;
-
       const web3 = new Web3(provider as any);
-
       const chainId = await web3.eth.getChainId();
       if (selectedNetwork.value !== chainId) selectedNetwork.value = chainId;
-
       const handleChainChanged = (chainId: string) => {
         if (selectedNetwork.value !== Number(chainId)) selectedNetwork.value = Number(chainId);
       };
-
       provider.on('chainChanged', handleChainChanged);
-
       registerCleanup(() => {
         provider.removeListener('chainChanged', handleChainChanged);
       });
@@ -480,24 +483,22 @@ export default defineComponent({
       setIsErc20Transfer();
     });
 
-    watchEffect(() => {
-      setErrorMsg();
-    });
-
     watch([isH160, ethProvider], setSelectedNetwork, { immediate: true });
 
-    watchEffect(async () => {
-      await setToAddressBalance();
-    });
-
-    watchEffect(async () => {
-      await setFromAddressBalance();
-    });
+    watchEffect(setErrorMsg);
+    watchEffect(setToAddressBalance);
+    watchEffect(setFromAddressBalance);
 
     watchEffect(async () => {
       if (isH160.value) {
         await setEvmGasCost();
       }
+    });
+
+    watchEffect(() => {
+      console.log('Local transfer');
+      console.log('token.value', token.value);
+      console.log('tokenImg', tokenImg.value);
     });
 
     return {

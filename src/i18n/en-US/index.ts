@@ -300,6 +300,7 @@ export default {
       inputAddressManually: 'Input an address manually',
       goBack: 'Go back',
       selectChain: 'Select Chain',
+      selectToken: 'Select Token',
     },
     modals: {
       max: 'Max',

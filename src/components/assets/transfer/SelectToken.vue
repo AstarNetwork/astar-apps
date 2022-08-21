@@ -1,7 +1,7 @@
 <template>
   <div class="container--select-chain">
     <div class="row--title">
-      <span>Select Token</span>
+      <span>{{ $t('assets.transferPage.selectToken') }}</span>
     </div>
     <div class="container--chains">
       <div v-for="token in tokens" :key="token.assetId" class="row--chain" @click="setToken(token)">

@@ -1,7 +1,7 @@
 <template>
   <AstarModal
     :is-modal-open="isModalSelectToken"
-    title="Select Token"
+    :title="$t('assets.transferPage.selectToken')"
     :is-closing="isClosingModal"
     :close-modal="closeModal"
   >

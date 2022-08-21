@@ -1,5 +1,6 @@
+import { SelectedToken } from 'src/c-bridge';
 import { endpointKey } from 'src/config/chainEndpoints';
-import { useNetworkInfo } from 'src/hooks';
+import { useCbridgeV2, useNetworkInfo } from 'src/hooks';
 import {
   Chain,
   checkIsRelayChain,
@@ -8,7 +9,7 @@ import {
   xcmChains,
   xcmToken,
 } from 'src/modules/xcm';
-import { generateNativeAsset } from 'src/modules/xcm/tokens';
+import { generateAssetFromEvmToken, generateNativeAsset } from 'src/modules/xcm/tokens';
 import { useStore } from 'src/store';
 import { Asset } from 'src/v2/models';
 import { computed, ref, watch, watchEffect } from 'vue';
@@ -31,6 +32,7 @@ export function useTransferRouter() {
   const store = useStore();
   const router = useRouter();
   const route = useRoute();
+  const { tokens: evmTokens } = useCbridgeV2();
   const tokenSymbol = computed<string>(() => route.query.token as string);
   const network = computed<string>(() => route.query.network as string);
   const mode = computed<TransferMode>(() => route.query.mode as TransferMode);
@@ -57,7 +59,8 @@ export function useTransferRouter() {
   const redirect = (): void => {
     const token = nativeTokenSymbol.value.toLowerCase();
     const network = currentNetworkName.value.toLowerCase();
-    const mode = isH160.value ? 'local-evm' : 'local';
+    // const mode = isH160.value ? 'local-evm' : 'local';
+    const mode = 'local';
     router.push({
       path: '/assets/transfer',
       query: { token, network, mode },
@@ -230,22 +233,37 @@ export function useTransferRouter() {
 
   const tokens = computed<Asset[]>(() => {
     let tokens: Asset[];
-    if (!xcmAssets.value || !nativeTokenSymbol.value) return [];
-
     const nativeToken = generateNativeAsset(nativeTokenSymbol.value);
-    let selectableTokens;
-    if (isLocalTransfer.value) {
-      selectableTokens = xcmAssets.value.assets;
-      tokens = selectableTokens.filter(({ isXcmCompatible }) => isXcmCompatible);
-      tokens.unshift(nativeToken);
+    if (isH160.value) {
+      if (evmTokens.value) {
+        console.log('evmTokens.value', evmTokens.value);
+        tokens = evmTokens.value.map((it) => {
+          return generateAssetFromEvmToken(it as any);
+        });
+        console.log('tokens', tokens);
+      } else {
+        tokens = [];
+      }
     } else {
-      const selectedNetwork = xcmOpponentChain.value;
-      const isSelectedRelayChain = checkIsRelayChain(selectedNetwork);
-      selectableTokens = xcmAssets.value.assets.filter((it) => it.originChain === selectedNetwork);
-      tokens = selectableTokens.filter(({ isXcmCompatible }) => isXcmCompatible);
-      !isSelectedRelayChain && tokens.push(nativeToken);
+      if (!xcmAssets.value || !nativeTokenSymbol.value) return [];
+      let selectableTokens;
+      if (isLocalTransfer.value) {
+        selectableTokens = xcmAssets.value.assets;
+        console.log('xcmAssets.value.assets', xcmAssets.value.assets);
+        tokens = selectableTokens.filter(({ isXcmCompatible }) => isXcmCompatible);
+        console.log('tokens', tokens);
+      } else {
+        const selectedNetwork = xcmOpponentChain.value;
+        const isSelectedRelayChain = checkIsRelayChain(selectedNetwork);
+        selectableTokens = xcmAssets.value.assets.filter(
+          (it) => it.originChain === selectedNetwork
+        );
+        tokens = selectableTokens.filter(({ isXcmCompatible }) => isXcmCompatible);
+        !isSelectedRelayChain && tokens.push(nativeToken);
+      }
     }
-
+    tokens.push(nativeToken);
+    tokens.sort((a, b) => a.metadata.symbol.localeCompare(b.metadata.symbol));
     return tokens;
   });
 
@@ -268,19 +286,61 @@ export function useTransferRouter() {
     token.value = generateNativeAsset(nativeTokenSymbolRef);
     const isFetchedAssets = xcmAssets.value && xcmAssets.value.assets.length !== 0;
     if (isFetchedAssets && symbol) {
+      console.log('in?');
       try {
         const isXcmAsset = symbol !== nativeTokenSymbolRef.toLowerCase();
-        if (isXcmAsset) {
-          token.value = xcmAssets.value.assets.find(
-            (it) => it.metadata.symbol.toLowerCase() === symbol
-          );
+        const xc20Token = xcmAssets.value.assets.find(
+          (it) => it.metadata.symbol.toLowerCase() === symbol
+        );
+
+        if (xc20Token) {
+          token.value = xc20Token;
+        } else {
+          // console.log('evmTokes', evmTokens.value);
+          if (!evmTokens.value) return;
+          const evmToken = evmTokens.value?.find((it) => it.symbol.toLowerCase() === symbol);
+          // console.log('evmToken', evmToken);
+          token.value = generateAssetFromEvmToken(evmToken as SelectedToken);
+          console.log('token.value', token.value);
         }
+
+        console.log('token.value', token.value);
         if (!token.value) throw Error('No token is found');
       } catch (error) {
         console.error('error', error);
+        // console.log('errrrror');
         redirect();
       }
     }
+    // if (isFetchedAssets && symbol) {
+    //   try {
+    //     const throwError = (): void => {
+    //       throw Error('No token is found');
+    //     };
+    //     const isXcmAsset = symbol !== nativeTokenSymbolRef.toLowerCase();
+    //     const xc20Token = xcmAssets.value.assets.find(
+    //       (it) => it.metadata.symbol.toLowerCase() === symbol
+    //     );
+
+    //     console.log('xcmAssets.value', xcmAssets.value);
+    //     console.log('symbol', symbol);
+    //     console.log('xc20Token', xc20Token);
+
+    //     token.value = xc20Token;
+    //     if (!isH160.value) {
+    //       if (!xc20Token) throwError();
+    //     } else {
+    //       if (!evmTokens.value) return;
+    //       const evmToken = evmTokens.value?.find((it) => it.symbol.toLowerCase() === symbol);
+    //       token.value = generateAssetFromEvmToken(evmToken as SelectedToken);
+    //     }
+
+    //     if (!token.value) throwError();
+    //   } catch (error) {
+    //     console.error('error', error);
+    //     redirect();
+    //   }
+    // }
   };
 
   const chains = computed<XcmChain[]>(() => {
@@ -289,9 +349,7 @@ export function useTransferRouter() {
     const selectableChains = xcmChains.filter((it) => {
       return it.relayChain === relayChainId;
     });
-    selectableChains.sort((a, b) => {
-      return a.name.localeCompare(b.name);
-    });
+    selectableChains.sort((a, b) => a.name.localeCompare(b.name));
     return selectableChains;
   });
 
@@ -305,12 +363,25 @@ export function useTransferRouter() {
   watchEffect(redirectForRelaychain);
   watchEffect(setDestChainToAstar);
   watch([from, to], monitorProhibitedPair, { immediate: false });
+  watch([isH160], redirect, { immediate: false });
 
   watchEffect(() => {
     // console.log('useTransferRouter');
     // console.log('from', from.value);
     // console.log('to', to.value);
+    console.log('xcmAssets.value', xcmAssets.value);
   });
+
+  // const { currentAccount } = useAccount();
+  // const handleUpdateXcmTokenAssets = (): void => {
+  //   console.log('dispatch@');
+  //   if (currentAccount.value) {
+  //     console.log('go');
+  //     store.dispatch('assets/getAssets', currentAccount.value);
+  //   }
+  // };
+
+  // watch([currentAccount], handleUpdateXcmTokenAssets, { immediate: true });
 
   return {
     tokenSymbol,

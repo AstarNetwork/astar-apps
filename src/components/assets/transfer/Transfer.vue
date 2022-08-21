@@ -13,9 +13,9 @@
         <div class="wrapper-containers">
           <div v-if="isLocalTransfer">
             <LocalTransfer
-              v-if="isTransferNativeToken"
-              :account-data="accountData"
+              v-if="isTransferNativeToken || isH160"
               :class="isHighlightRightUi && 'half-opacity'"
+              :account-data="accountData"
               :symbol="token ? token.metadata.symbol : 'ASTR'"
               :handle-finalized-callback="handleFinalizedCallback"
               :set-right-ui="setRightUi"
@@ -138,6 +138,7 @@ export default defineComponent({
       setChain,
     } = useTransferRouter();
 
+    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const isHighlightRightUi = computed<boolean>(() => rightUi.value !== 'information');
     const { nativeTokenSymbol, currentNetworkName, currentNetworkIdx } = useNetworkInfo();
     const isShibuya = computed<boolean>(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
@@ -223,9 +224,7 @@ export default defineComponent({
     };
 
     const handleUpdateXcmTokenAssets = (): void => {
-      if (currentAccount.value) {
-        store.dispatch('assets/getAssets', currentAccount.value);
-      }
+      currentAccount.value && store.dispatch('assets/getAssets', currentAccount.value);
     };
 
     watch([currentAccount], handleUpdateXcmTokenAssets, { immediate: true });
@@ -242,6 +241,7 @@ export default defineComponent({
       isDisabledXcm,
       tokens,
       selectableChains,
+      isH160,
       setRightUi,
       handleModalSelectToken,
       handleModalSelectChain,

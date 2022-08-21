@@ -8,6 +8,7 @@
   color: $gray-3;
   height: 470px;
   width: 348px;
+  overflow: auto;
   @media (min-width: $md) {
     width: 320px;
   }
