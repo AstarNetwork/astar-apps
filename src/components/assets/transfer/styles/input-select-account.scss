@@ -151,6 +151,13 @@
   margin-top: 16px;
 }
 
+.icon--expand {
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .body--dark {
   .box--account-option {
     background: $gray-6;

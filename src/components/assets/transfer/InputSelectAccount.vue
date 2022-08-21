@@ -28,14 +28,9 @@
       </div>
 
       <div v-if="!isEthWallet">
-        <astar-icon-base
-          class="icon--selector"
-          icon-name="selector"
-          viewBox="0 0 20 20"
-          aria-hidden="true"
-        >
-          <astar-icon-solid-selector />
-        </astar-icon-base>
+        <div class="icon--expand">
+          <astar-icon-expand size="20" />
+        </div>
       </div>
     </div>
     <div v-if="openOption" class="box--account-option">

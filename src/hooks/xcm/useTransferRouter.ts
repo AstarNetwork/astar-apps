@@ -269,9 +269,9 @@ export function useTransferRouter() {
         !isSelectedRelayChain && tokens.push(nativeToken);
       }
     }
-    const isShiden = currentNetworkIdx.value === endpointKey.SHIDEN;
+    const isEvmShiden = isH160.value && currentNetworkIdx.value === endpointKey.SHIDEN;
     // Memo: SDN is including in evmTokens
-    !isShiden && tokens.push(nativeToken);
+    !isEvmShiden && tokens.push(nativeToken);
     tokens.sort((a, b) => a.metadata.symbol.localeCompare(b.metadata.symbol));
     return tokens;
   });

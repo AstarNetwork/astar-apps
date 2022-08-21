@@ -55,7 +55,7 @@
           </div>
         </div>
         <div class="box__row">
-          <div class="box__row" @click="setRightUi('select-token')">
+          <div class="box__row cursor-pointer" @click="setRightUi('select-token')">
             <div class="token-logo">
               <jazzicon
                 v-if="token.tokenImage.includes('custom-token')"
@@ -65,6 +65,9 @@
               <img v-else width="24" alt="token-logo" :src="token.tokenImage" />
             </div>
             <span class="text--title">{{ token.metadata.symbol }}</span>
+            <div class="icon--expand">
+              <astar-icon-expand size="20" />
+            </div>
           </div>
           <div class="box__column--input-amount">
             <input

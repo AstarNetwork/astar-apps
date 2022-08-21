@@ -83,7 +83,7 @@
         </div>
 
         <div class="box--input-field box--hover--active">
-          <div class="box__space-between">
+          <div class="row--balance">
             <div />
             <div class="box__available">
               <span class="text--available">
@@ -97,9 +97,12 @@
             </div>
           </div>
           <div class="box__row">
-            <div class="box__row" @click="setRightUi('select-token')">
+            <div class="box__row cursor-pointer" @click="setRightUi('select-token')">
               <img width="24" alt="token-logo" class="token-logo" :src="token.tokenImage" />
               <span class="text--title">{{ token.metadata.symbol }}</span>
+              <div class="icon--expand">
+                <astar-icon-expand size="20" />
+              </div>
             </div>
             <div class="box__column--input-amount">
               <input

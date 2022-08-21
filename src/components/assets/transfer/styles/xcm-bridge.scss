@@ -34,6 +34,12 @@
   position: relative;
 }
 
+.row--balance {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .row--box-error {
   padding: 10px 20px;
   border-radius: 6px;
@@ -94,6 +100,7 @@
   display: flex;
   column-gap: 8px;
   align-items: center;
+  width: 100%;
 }
 
 .box__column--input-amount {
@@ -180,6 +187,9 @@
   font-weight: 600;
   color: $gray-5;
   justify-self: flex-end;
+  @media (min-width: $md) {
+    width: 250px;
+  }
 }
 
 .token-logo {
@@ -245,6 +255,13 @@
 .row--msg-input-address {
   display: flex;
   justify-content: space-between;
+}
+
+.icon--expand {
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .body--dark {

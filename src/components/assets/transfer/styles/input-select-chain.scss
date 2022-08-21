@@ -2,6 +2,9 @@
 
 .wrapper--select-chain {
   position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .row__chain {
@@ -47,6 +50,13 @@
   @media (min-width: $xs) {
     width: 250px;
   }
+}
+
+.icon--expand {
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .body--dark {

@@ -60,7 +60,7 @@
         </div>
         <div class="box__row">
           <div class="box__row" @click="setRightUi('select-token')">
-            <div class="token-logo">
+            <div class="token-logo token-native-adjustment">
               <jazzicon
                 v-if="token && tokenImg.includes('custom-token')"
                 :address="token.mappedERC20Addr"
@@ -69,6 +69,9 @@
               <img v-else width="24" alt="token-logo" :src="tokenImg" />
             </div>
             <span class="text--title">{{ token.metadata.symbol }}</span>
+            <div class="icon--expand cursor-pointer">
+              <astar-icon-expand size="20" />
+            </div>
           </div>
           <div class="box__column--input-amount">
             <input

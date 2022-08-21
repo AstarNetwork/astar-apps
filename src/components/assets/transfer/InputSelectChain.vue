@@ -19,6 +19,9 @@
           :readonly="true"
         />
       </div>
+      <div class="icon--expand">
+        <astar-icon-expand size="20" />
+      </div>
     </div>
   </div>
 </template>
