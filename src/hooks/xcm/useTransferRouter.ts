@@ -1,5 +1,6 @@
 import { SelectedToken } from 'src/c-bridge';
 import { endpointKey } from 'src/config/chainEndpoints';
+import { isXc20Token } from 'src/config/web3/utils';
 import { useCbridgeV2, useNetworkInfo } from 'src/hooks';
 import {
   Chain,
@@ -243,11 +244,13 @@ export function useTransferRouter() {
     const nativeToken = generateNativeAsset(nativeTokenSymbol.value);
     if (isH160.value) {
       if (evmTokens.value) {
-        console.log('evmTokens.value', evmTokens.value);
-        tokens = evmTokens.value.map((it) => {
-          return generateAssetFromEvmToken(it as any);
-        });
-        console.log('tokens', tokens);
+        tokens = evmTokens.value
+          .filter((it) => {
+            return isXc20Token(it.address);
+          })
+          .map((it) => {
+            return generateAssetFromEvmToken(it as SelectedToken);
+          });
       } else {
         tokens = [];
       }
@@ -305,10 +308,11 @@ export function useTransferRouter() {
         if (xc20Token) {
           token.value = xc20Token;
         } else {
-          // console.log('evmTokes', evmTokens.value);
+          console.log('evmTokes', evmTokens.value);
           if (!evmTokens.value) return;
           const evmToken = evmTokens.value?.find((it) => it.symbol.toLowerCase() === symbol);
-          // console.log('evmToken', evmToken);
+          if (!evmToken) return;
+          console.log('evmToken', evmToken);
           token.value = generateAssetFromEvmToken(evmToken as SelectedToken);
           console.log('token.value', token.value);
         }
@@ -317,7 +321,6 @@ export function useTransferRouter() {
         if (!token.value) throw Error('No token is found');
       } catch (error) {
         console.error('error', error);
-        console.log('errrrror');
         redirect();
       }
     }
@@ -356,7 +359,8 @@ export function useTransferRouter() {
     const relayChainId =
       currentNetworkIdx.value === endpointKey.ASTAR ? Chain.POLKADOT : Chain.KUSAMA;
     const selectableChains = xcmChains.filter((it) => {
-      return it.relayChain === relayChainId;
+      // Memo: temporary suspend acala tokens
+      return it.relayChain === relayChainId && it.name !== Chain.ACALA;
     });
     selectableChains.sort((a, b) => a.name.localeCompare(b.name));
     return selectableChains;

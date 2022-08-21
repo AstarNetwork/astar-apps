@@ -35,11 +35,7 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
-  {
-    path: '/transfer',
-    name: 'Transfer',
-    component: Transfer,
-  },
+
   {
     path: '/balance',
     name: 'Balance',

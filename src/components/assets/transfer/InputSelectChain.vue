@@ -1,8 +1,8 @@
 <template>
   <div
     class="box--input-chain"
-    :class="[!isHighlightRightUi && 'cursor-pointer box--hover--active']"
-    @click="handleDisplayTokenSelector(isSelectFrom)"
+    :class="[!isHighlightRightUi && isSelectable && 'cursor-pointer box--hover--active']"
+    @click="isSelectable && handleDisplayTokenSelector(isSelectFrom)"
   >
     <div class="box__space-between">
       <span> {{ $t(title) }}</span>
@@ -19,7 +19,7 @@
           :readonly="true"
         />
       </div>
-      <div class="icon--expand">
+      <div v-if="isSelectable" class="icon--expand">
         <astar-icon-expand size="20" />
       </div>
     </div>
@@ -44,6 +44,10 @@ export default defineComponent({
       required: true,
     },
     isSelectFrom: {
+      type: Boolean,
+      required: true,
+    },
+    isSelectable: {
       type: Boolean,
       required: true,
     },

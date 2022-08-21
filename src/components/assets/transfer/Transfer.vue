@@ -90,7 +90,7 @@ import {
 } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { MOVR } from 'src/modules/token';
-import { Chain, removeEvmName, XcmChain, xcmToken } from 'src/modules/xcm';
+import { Chain, checkIsRelayChain, removeEvmName, XcmChain, xcmToken } from 'src/modules/xcm';
 import { useStore } from 'src/store';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, ref, watch } from 'vue';
@@ -142,12 +142,14 @@ export default defineComponent({
     const isShibuya = computed<boolean>(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
 
     const isDisabledXcm = computed<boolean>(() => {
+      const isEvmNativeToken =
+        isH160.value && tokenSymbol.value === nativeTokenSymbol.value.toLowerCase();
       const isMovr = isH160.value && token.value?.metadata.symbol === MOVR.symbol;
       const acalaTokens = xcmToken[currentNetworkIdx.value]
         .filter((it) => it.originChain === Chain.ACALA)
         .map((it) => it.symbol.toLowerCase());
       const isAcalaToken = acalaTokens.includes(String(token.value?.metadata.symbol.toLowerCase()));
-      return isShibuya.value || isMovr || isAcalaToken;
+      return isShibuya.value || isMovr || isAcalaToken || isEvmNativeToken;
     });
 
     const isTransferNativeToken = computed<boolean>(() => {
@@ -155,6 +157,7 @@ export default defineComponent({
     });
 
     const setIsSelectFromChain = (result: boolean): void => {
+      console.log('result', result);
       isSelectFromChain.value = result;
     };
 
@@ -213,9 +216,14 @@ export default defineComponent({
           // if: from = Astar/Shiden
           return chains.value.filter((it) => {
             const name = removeEvmName(it.name);
+            // Memo: ASTR | SDN is not available on relaychain
+            const isUnableToWithdraw = isH160.value && !checkIsRelayChain(it.name);
+            const isFromChain = it.name.toLowerCase() === from.value;
             return (
               currentNetworkName.value.toLowerCase() !== name.toLowerCase() &&
-              to.value !== it.name.toLowerCase()
+              to.value !== it.name.toLowerCase() &&
+              !isFromChain &&
+              isUnableToWithdraw
             );
           });
         } else {

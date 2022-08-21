@@ -139,6 +139,7 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   const { accountData } = useBalance(currentAccount);
 
   const resetStates = (): void => {
+    console.log('resetStates');
     isDisabledBridge.value = true;
     amount.value = null;
     errMsg.value = '';
@@ -650,7 +651,7 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
       originChainApi.chainProperty?.chainName === selectedToken.value.originChain &&
       reset === false;
 
-    if (!isLoadOriginApi.value || hasConnectedApi) return;
+    if (!isLoadOriginApi.value || hasConnectedApi || !srcChain.value || !destChain.value) return;
 
     isLoadingApi.value = true;
     try {
@@ -675,6 +676,15 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     await initializeXcmApi();
   });
   watch([isEvmBridge, isAstar, selectedToken], setDefaultChain, { immediate: true });
+  watch(
+    [isH160],
+    () => {
+      if (isH160.value) {
+        isInputDestAddrManually.value = true;
+      }
+    },
+    { immediate: false }
+  );
 
   watchEffect(() => {
     // console.log('useXcmBridgeV2');

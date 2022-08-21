@@ -9,6 +9,7 @@
           :handle-display-token-selector="handleDisplayTokenSelector"
           :is-highlight-right-ui="isHighlightRightUi"
           :is-select-from="true"
+          :is-selectable="isH160 ? false : true"
         />
         <SelectEvmWallet v-if="isMoonbeamDeposit" :initialize-xcm-api="initializeXcmApi" />
         <div v-if="isReverseButton" class="row--reverse">
@@ -23,6 +24,7 @@
           :handle-display-token-selector="handleDisplayTokenSelector"
           :is-highlight-right-ui="isHighlightRightUi"
           :is-select-from="false"
+          :is-selectable="true"
         />
 
         <div v-if="isEvmBridge">
@@ -56,24 +58,34 @@
             </span>
           </div>
           <div v-else>
-            <div
+            <AddressInputV2
+              v-model:selAddress="inputtedAddress"
+              :to-address="inputtedAddress"
+              :is-evm="isValidEvmAddress(inputtedAddress)"
+              :is-display-balance="true"
+              :placeholder="$t('addressPlaceholder')"
+              :title="$t('addressPlaceholder', { network: destChain.name })"
+              :symbol="token.metadata.symbol"
+              :address-balance="inputtedAddressBalance"
+            />
+            <!-- <div
               class="box--input-address"
               :class="[
                 !isHighlightRightUi && 'box--hover--active',
                 isInputtingAddress && 'box--active',
               ]"
-            >
-              <input
+            > -->
+            <!-- <input
                 v-model="inputtedAddress"
                 class="input--address text--title"
                 type="text"
                 spellcheck="false"
-                placeholder="Destination Address"
+                :placeholder="$t('destinationAddress')"
                 @focus="toggleIsInputtingAddress"
                 @blur="toggleIsInputtingAddress"
-              />
-            </div>
-            <div class="row--msg-input-address">
+              /> -->
+            <!-- </div> -->
+            <div v-if="!isH160" class="row--msg-input-address">
               <div />
               <span class="text--available cursor-pointer" @click="toggleIsInputDestAddrManually">
                 {{ $t('assets.transferPage.goBack') }}
@@ -185,7 +197,7 @@ import { Asset } from 'src/v2/models';
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ModalLoading from '/src/components/common/ModalLoading.vue';
-
+import { isValidEvmAddress } from 'src/config/web3';
 export default defineComponent({
   components: {
     AddressInputV2,
@@ -337,6 +349,7 @@ export default defineComponent({
       toggleIsInputDestAddrManually,
       toggleIsInputtingAddress,
       initializeXcmApi,
+      isValidEvmAddress,
     };
   },
 });
