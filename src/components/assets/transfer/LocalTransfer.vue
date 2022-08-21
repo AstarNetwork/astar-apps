@@ -59,7 +59,7 @@
           </div>
         </div>
         <div class="box__row">
-          <div class="box__row" @click="setRightUi('select-token')">
+          <div class="box__row cursor-pointer" @click="setRightUi('select-token')">
             <div class="token-logo token-native-adjustment">
               <jazzicon
                 v-if="token && tokenImg.includes('custom-token')"
