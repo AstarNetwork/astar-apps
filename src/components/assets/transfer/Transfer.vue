@@ -93,8 +93,9 @@ import {
 } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { removeEvmName, XcmChain } from 'src/modules/xcm';
+import { useStore } from 'src/store';
 import { Asset } from 'src/v2/models';
-import { computed, defineComponent, ref } from 'vue';
+import { computed, defineComponent, ref, watch } from 'vue';
 
 export type RightUi = 'information' | 'select-chain' | 'select-token';
 
@@ -118,6 +119,7 @@ export default defineComponent({
     const isModalSelectToken = ref<boolean>(false);
     const rightUi = ref<RightUi>('information');
 
+    const store = useStore();
     const { currentAccount } = useAccount();
     const { accountData } = useBalance(currentAccount);
     const { screenSize, width } = useBreakpoints();
@@ -138,14 +140,15 @@ export default defineComponent({
 
     const isHighlightRightUi = computed<boolean>(() => rightUi.value !== 'information');
     const { nativeTokenSymbol, currentNetworkName, currentNetworkIdx } = useNetworkInfo();
-
     const isShibuya = computed<boolean>(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
-
+    const isDisabledXcm = computed<boolean>(() => {
+      return isShibuya.value;
+    });
     const isTransferNativeToken = computed<boolean>(() => {
       return tokenSymbol.value === nativeTokenSymbol.value.toLowerCase();
     });
 
-    const setIsSelectFromChain = (result: boolean) => {
+    const setIsSelectFromChain = (result: boolean): void => {
       isSelectFromChain.value = result;
     };
 
@@ -167,11 +170,9 @@ export default defineComponent({
     const handleModalSelectChain = ({ isOpen }: { isOpen: boolean }): void => {
       isModalSelectChain.value = isOpen;
     };
-
     const handleModalSelectToken = ({ isOpen }: { isOpen: boolean }): void => {
       isModalSelectToken.value = isOpen;
     };
-
     const handleFinalizedCallback = (): void => {
       router.push('/assets');
     };
@@ -217,13 +218,17 @@ export default defineComponent({
       }
     });
 
-    const handleSetIsLocalTransfer = (isLocal: boolean) => {
+    const handleSetIsLocalTransfer = (isLocal: boolean): void => {
       setIsLocalTransfer({ isLocal, originChain: token.value!.originChain });
     };
 
-    const isDisabledXcm = computed(() => {
-      return isShibuya.value;
-    });
+    const handleUpdateXcmTokenAssets = (): void => {
+      if (currentAccount.value) {
+        store.dispatch('assets/getAssets', currentAccount.value);
+      }
+    };
+
+    watch([currentAccount], handleUpdateXcmTokenAssets, { immediate: true });
 
     return {
       isLocalTransfer,

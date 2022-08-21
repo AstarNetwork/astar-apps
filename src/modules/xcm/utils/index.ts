@@ -7,6 +7,7 @@ import { getUsdBySymbol } from 'src/hooks/helper/price';
 import { ExistentialDeposit, XcmTokenInformation } from '../index';
 import { xcmToken } from '../tokens';
 import { Chain } from './../index';
+import { pathEvm } from 'src/hooks';
 
 interface Account extends Struct {
   balance: string;
@@ -137,7 +138,7 @@ export const checkIsRelayChain = (chain: string): boolean => {
 };
 
 export const castChainName = (chain: string): string => {
-  const isEvm = chain.includes('-evm');
+  const isEvm = chain.includes(pathEvm);
   if (isEvm) {
     const network = chain.split('-')[0];
     return network + ' ' + 'EVM';
@@ -146,7 +147,7 @@ export const castChainName = (chain: string): string => {
 };
 
 export const removeEvmName = (chain: string) => {
-  if (chain.includes('-evm')) {
+  if (chain.includes(pathEvm)) {
     return chain.split('-')[0];
   }
   return chain;

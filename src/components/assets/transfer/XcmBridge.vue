@@ -176,7 +176,7 @@
 import InputSelectChain from 'src/components/assets/transfer/InputSelectChain.vue';
 import AddressInputV2 from 'src/components/common/AddressInputV2.vue';
 import SelectEvmWallet from 'src/components/assets/transfer/SelectEvmWallet.vue';
-import { useAccount, useTooltip, useXcmBridgeV2, useXcmEvm } from 'src/hooks';
+import { pathEvm, useAccount, useTooltip, useXcmBridgeV2, useXcmEvm } from 'src/hooks';
 import { truncate } from 'src/hooks/helper/common';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
@@ -251,7 +251,7 @@ export default defineComponent({
 
     const isReverseButton = computed<boolean>(() => {
       if (!srcChain.value || !destChain.value) return false;
-      return !srcChain.value.name.includes('evm') && !destChain.value.name.includes('evm');
+      return !srcChain.value.name.includes(pathEvm) && !destChain.value.name.includes(pathEvm);
     });
 
     const { callAssetWithdrawToPara } = useXcmEvm(tokenData);

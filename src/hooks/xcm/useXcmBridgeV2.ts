@@ -271,7 +271,6 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   };
 
   const checkIsEvmDestAddress = (): boolean => {
-    console.log('checkIsEvmDestAddress');
     const isEvmWithdraw = isH160.value && !isDeposit.value;
     if (isEvmWithdraw && !inputtedAddress.value) {
       return true;
@@ -362,14 +361,10 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   const connectOriginChain = async (): Promise<void> => {
     let endpoint = '';
 
-    console.log('isAstarNativeTransfer.value', isAstarNativeTransfer.value);
     if (isAstarNativeTransfer.value) {
       const isFromAstar = srcChain.value.name === Astar.name || srcChain.value.name === Shiden.name;
       const chainName = isFromAstar ? destChain.value.name : srcChain.value.name;
-      console.log('isFromAstar', isFromAstar);
-      console.log('chainName', chainName);
       const defaultParachainEndpoint = xcmChainObj[chainName];
-      console.log('defaultParachainEndpoint', defaultParachainEndpoint);
       endpoint = defaultParachainEndpoint.endpoint as string;
     } else {
       endpoint = originChain.value.endpoint!;
@@ -391,13 +386,10 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     try {
       if (!endpoint) return;
       if (shouldConnectMoonbeam) {
-        console.log('shouldConnectMoonbeam');
         originChainApi = new MoonbeamApi(endpoint);
       } else if (shouldConnectAcala) {
-        console.log('shouldConnectAcala');
         originChainApi = new AcalaApi(endpoint);
       } else {
-        console.log('else');
         // if: Connect to Relaychain API
         originChainApi = new ChainApi(endpoint);
       }
