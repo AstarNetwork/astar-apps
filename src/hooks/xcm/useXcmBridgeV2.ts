@@ -155,32 +155,32 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     // console.log('setSrcChain');
     srcChain.value = chain;
     // console.log(1);
-    if (chain.name === destChain.value.name) {
-      // console.log(2);
-      if (isAstar.value) {
-        // console.log(3);
-        // destChain.value = destChain.value.name === Astar.name ? opponentChain.value : Astar;
-      } else {
-        // console.log(4);
-        // destChain.value = destChain.value.name === Shiden.name ? opponentChain.value : Shiden;
-      }
+    // if (chain.name === destChain.value.name) {
+    // console.log(2);
+    if (isAstar.value) {
+      // console.log(3);
+      // destChain.value = destChain.value.name === Astar.name ? opponentChain.value : Astar;
+    } else {
+      // console.log(4);
+      // destChain.value = destChain.value.name === Shiden.name ? opponentChain.value : Shiden;
     }
+    // }
   };
 
   const setDestChain = (chain: XcmChain): void => {
     // console.log('setDestChain');
     destChain.value = chain;
     // console.log(1);
-    if (chain.name === srcChain.value.name) {
-      // console.log(2);
-      if (isAstar.value) {
-        // console.log(3);
-        // srcChain.value = srcChain.value.name === Astar.name ? opponentChain.value : Astar;
-      } else {
-        // console.log(4);
-        // srcChain.value = srcChain.value.name === Shiden.name ? opponentChain.value : Shiden;
-      }
+    // if (chain.name === srcChain.value.name) {
+    // console.log(2);
+    if (isAstar.value) {
+      // console.log(3);
+      // srcChain.value = srcChain.value.name === Astar.name ? opponentChain.value : Astar;
+    } else {
+      // console.log(4);
+      // srcChain.value = srcChain.value.name === Shiden.name ? opponentChain.value : Shiden;
     }
+    // }
   };
 
   // Memo: to avoid without selecting Astar/SDN e.g.: Karura <-> Moonriver
@@ -600,42 +600,46 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
       return;
     }
 
-    if (isDeposit.value) {
-      const fromAddressBalFull = await originChainApi.getTokenBalances({
-        address: currentAccount.value,
-        selectedToken: selectedToken.value,
-        isNativeToken: selectedToken.value.isNativeToken,
-      });
-
-      fromAddressBalance.value = Number(
-        ethers.utils.formatUnits(fromAddressBalFull, decimals.value).toString()
-      );
-    } else {
-      const address = currentAccount.value;
-      // Memo: Withdraw
-      if (isH160.value) {
-        // Memo: EVM balance
-        const balance = await getTokenBal({
-          srcChainId: evmNetworkIdx.value,
-          address,
-          tokenAddress: selectedToken.value.mappedERC20Addr,
-          tokenSymbol: selectedToken.value.metadata.symbol,
+    try {
+      if (isDeposit.value) {
+        const fromAddressBalFull = await originChainApi.getTokenBalances({
+          address: currentAccount.value,
+          selectedToken: selectedToken.value,
+          isNativeToken: selectedToken.value.isNativeToken,
         });
-        fromAddressBalance.value = Number(balance);
+
+        fromAddressBalance.value = Number(
+          ethers.utils.formatUnits(fromAddressBalFull, decimals.value).toString()
+        );
       } else {
-        if (isAstarNativeTransfer.value) {
-          const formattedBalance = ethers.utils
-            .formatUnits(
-              accountData.value!.getUsableTransactionBalance().toString(),
-              decimals.value
-            )
-            .toString();
-          fromAddressBalance.value = Number(formattedBalance);
+        const address = currentAccount.value;
+        // Memo: Withdraw
+        if (isH160.value) {
+          // Memo: EVM balance
+          const balance = await getTokenBal({
+            srcChainId: evmNetworkIdx.value,
+            address,
+            tokenAddress: selectedToken.value.mappedERC20Addr,
+            tokenSymbol: selectedToken.value.metadata.symbol,
+          });
+          fromAddressBalance.value = Number(balance);
         } else {
-          // Memo: Native balance
-          fromAddressBalance.value = Number(selectedToken.value.userBalance);
+          if (isAstarNativeTransfer.value) {
+            const formattedBalance = ethers.utils
+              .formatUnits(
+                accountData.value!.getUsableTransactionBalance().toString(),
+                decimals.value
+              )
+              .toString();
+            fromAddressBalance.value = Number(formattedBalance);
+          } else {
+            // Memo: Native balance
+            fromAddressBalance.value = Number(selectedToken.value.userBalance);
+          }
         }
       }
+    } catch (error) {
+      console.error(error);
     }
   };
 

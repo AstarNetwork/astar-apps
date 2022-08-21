@@ -16,7 +16,6 @@
               v-if="isTransferNativeToken || isH160"
               :class="isHighlightRightUi && 'half-opacity'"
               :account-data="accountData"
-              :symbol="token ? token.metadata.symbol : 'ASTR'"
               :handle-finalized-callback="handleFinalizedCallback"
               :set-right-ui="setRightUi"
             />
@@ -24,8 +23,6 @@
               v-else
               :account-data="accountData"
               :class="isHighlightRightUi && 'half-opacity'"
-              :symbol="token ? token.metadata.symbol : 'ASTR'"
-              :token="token"
               :handle-finalized-callback="handleFinalizedCallback"
               :set-right-ui="setRightUi"
             />
@@ -92,7 +89,8 @@ import {
   useTransferRouter,
 } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
-import { removeEvmName, XcmChain } from 'src/modules/xcm';
+import { MOVR } from 'src/modules/token';
+import { Chain, removeEvmName, XcmChain, xcmToken } from 'src/modules/xcm';
 import { useStore } from 'src/store';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, ref, watch } from 'vue';
@@ -142,9 +140,16 @@ export default defineComponent({
     const isHighlightRightUi = computed<boolean>(() => rightUi.value !== 'information');
     const { nativeTokenSymbol, currentNetworkName, currentNetworkIdx } = useNetworkInfo();
     const isShibuya = computed<boolean>(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
+
     const isDisabledXcm = computed<boolean>(() => {
-      return isShibuya.value;
+      const isMovr = isH160.value && token.value?.metadata.symbol === MOVR.symbol;
+      const acalaTokens = xcmToken[currentNetworkIdx.value]
+        .filter((it) => it.originChain === Chain.ACALA)
+        .map((it) => it.symbol.toLowerCase());
+      const isAcalaToken = acalaTokens.includes(String(token.value?.metadata.symbol.toLowerCase()));
+      return isShibuya.value || isMovr || isAcalaToken;
     });
+
     const isTransferNativeToken = computed<boolean>(() => {
       return tokenSymbol.value === nativeTokenSymbol.value.toLowerCase();
     });

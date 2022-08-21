@@ -24,13 +24,13 @@
               {{
                 $t('assets.modals.balance', {
                   amount: $n(truncate(toAddressBalance)),
-                  token: symbol,
+                  token: token.symbol,
                 })
               }}
             </span>
           </div>
         </div>
-        <modal-select-account
+        <InputSelectAccount
           v-model:selAddress="toAddress"
           :to-address="toAddress"
           :is-erc20-transfer="false"
@@ -115,34 +115,25 @@
   </div>
 </template>
 <script lang="ts">
-import ModalSelectAccount from 'src/components/assets/modals/ModalSelectAccount.vue';
+import InputSelectAccount from 'src/components/assets/transfer/InputSelectAccount.vue';
 import SpeedConfigurationV2 from 'src/components/common/SpeedConfigurationV2.vue';
-import { useAccount, useWalletIcon, useXcmTokenTransfer } from 'src/hooks';
+import { useAccount, useTransferRouter, useWalletIcon, useXcmTokenTransfer } from 'src/hooks';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { truncate } from 'src/hooks/helper/common';
 import { useStore } from 'src/store';
 import { Asset } from 'src/v2/models';
-import { computed, defineComponent, PropType } from 'vue';
+import { computed, defineComponent, PropType, Ref } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
 
 export default defineComponent({
   components: {
-    ModalSelectAccount,
+    InputSelectAccount,
     SpeedConfigurationV2,
     [Jazzicon.name]: Jazzicon,
   },
   props: {
-    symbol: {
-      type: String,
-      required: true,
-    },
     accountData: {
       type: Object,
-      required: false,
-      default: null,
-    },
-    token: {
-      type: (Object as PropType<Asset>) || null,
       required: false,
       default: null,
     },
@@ -160,7 +151,7 @@ export default defineComponent({
     const { iconWallet } = useWalletIcon();
     const store = useStore();
     const { currentAccount, currentAccountName } = useAccount();
-    const token = computed(() => props.token);
+    const { token } = useTransferRouter();
 
     const nativeTokenSymbol = computed(() => {
       const chainInfo = store.getters['general/chainInfo'];
@@ -180,7 +171,7 @@ export default defineComponent({
       setSelectedTip,
       transferAsset,
       toMaxAmount,
-    } = useXcmTokenTransfer(token);
+    } = useXcmTokenTransfer(token as Ref<Asset>);
 
     // Todo: remove async
     const finalizeCallback = async (): Promise<void> => {
@@ -208,6 +199,7 @@ export default defineComponent({
       selectedTip,
       nativeTipPrice,
       isChecked,
+      token,
       setSelectedTip,
       transfer,
       toMaxAmount,

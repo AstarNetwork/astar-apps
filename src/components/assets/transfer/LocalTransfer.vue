@@ -24,13 +24,13 @@
               {{
                 $t('assets.modals.balance', {
                   amount: $n(truncate(toAddressBalance)),
-                  token: symbol,
+                  token: token.metadata.symbol,
                 })
               }}
             </span>
           </div>
         </div>
-        <modal-select-account
+        <InputSelectAccount
           v-model:selAddress="toAddress"
           :to-address="toAddress"
           :is-erc20-transfer="isErc20Transfer"
@@ -45,11 +45,15 @@
               {{
                 $t('assets.modals.balance', {
                   amount: $n(truncate(fromAddressBalance)),
-                  token: symbol,
+                  token: token.metadata.symbol,
                 })
               }}</span
             >
-            <button v-if="symbol !== nativeTokenSymbol" class="btn--max" @click="toMaxAmount">
+            <button
+              v-if="token.metadata.symbol !== nativeTokenSymbol"
+              class="btn--max"
+              @click="toMaxAmount"
+            >
               {{ $t('assets.modals.max') }}
             </button>
           </div>
@@ -64,7 +68,7 @@
               />
               <img v-else width="24" alt="token-logo" :src="tokenImg" />
             </div>
-            <span class="text--title">{{ symbol }}</span>
+            <span class="text--title">{{ token.metadata.symbol }}</span>
           </div>
           <div class="box__column--input-amount">
             <input
@@ -125,7 +129,7 @@
 import { ethers } from 'ethers';
 import { $api, $web3 } from 'src/boot/api';
 import ABI from 'src/c-bridge/abi/ERC20.json';
-import ModalSelectAccount from 'src/components/assets/modals/ModalSelectAccount.vue';
+import InputSelectAccount from 'src/components/assets/transfer/InputSelectAccount.vue';
 import SpeedConfigurationV2 from 'src/components/common/SpeedConfigurationV2.vue';
 import { SupportWallet } from 'src/config/wallets';
 import { getTokenBal, isValidEvmAddress } from 'src/config/web3';
@@ -153,15 +157,11 @@ import { AbiItem } from 'web3-utils';
 
 export default defineComponent({
   components: {
-    ModalSelectAccount,
+    InputSelectAccount,
     SpeedConfigurationV2,
     [Jazzicon.name]: Jazzicon,
   },
   props: {
-    symbol: {
-      type: String,
-      required: true,
-    },
     accountData: {
       type: Object,
       required: false,
@@ -206,28 +206,12 @@ export default defineComponent({
     });
     const { currentAccount, currentAccountName } = useAccount();
 
-    // Memo: check the selected token is either hard-coded token or cBridge token
-    // const registeredToken = computed<Erc20Token | undefined>(() => {
-    //   const tokens = getRegisteredERC20Token();
-    //   const result = tokens.find((it) => it.symbol === props.symbol);
-    //   return result;
-    // });
-
     const tokenImg = computed<string>(() => {
       if (!token.value || !token.value.tokenImage) {
         return 'custom-token';
       } else {
         return token.value.tokenImage;
       }
-      // if (registeredToken.value) {
-      //   return registeredToken.value.image;
-      // } else {
-      //   return getTokenImage({
-      //     isNativeToken: props.symbol === nativeTokenSymbol.value,
-      //     symbol: props.symbol,
-      //     iconUrl: token.value && token.value.icon,
-      //   });
-      // }
     });
 
     const isRequiredCheck = computed<boolean>(() => {
@@ -429,14 +413,11 @@ export default defineComponent({
       const transferAmtRef = Number(transferAmt.value);
       const selectedNetworkRef = selectedNetwork.value;
       const isErc20TransferRef = isErc20Transfer.value;
-      const fromAccountBalance = isErc20TransferRef
-        ? Number(token.value ? token.value.userBalance : 0)
-        : fromAddressBalance.value;
       const isValidDestAddress =
         isValidAddressPolkadotAddress(toAddress.value) || isValidEvmAddress(toAddress.value);
 
       try {
-        if (transferAmtRef > fromAccountBalance) {
+        if (transferAmtRef > fromAddressBalance.value) {
           errMsg.value = 'warning.insufficientBalance';
         } else if (isErc20TransferRef && evmNetworkIdx.value !== selectedNetworkRef) {
           errMsg.value = 'warning.selectedInvalidNetworkInWallet';
@@ -457,7 +438,9 @@ export default defineComponent({
     };
 
     const setIsNativeToken = (): void => {
-      isNativeToken.value = props.symbol === nativeTokenSymbol.value;
+      isNativeToken.value = token.value
+        ? token.value.metadata.symbol === nativeTokenSymbol.value
+        : false;
     };
 
     const setSelectedNetwork: WatchCallback<[any, EthereumProvider | undefined]> = async (
@@ -502,6 +485,7 @@ export default defineComponent({
     });
 
     return {
+      token,
       iconWallet,
       currentAccount,
       currentAccountName,
@@ -517,7 +501,6 @@ export default defineComponent({
       errMsg,
       isErc20Transfer,
       isNativeToken,
-      finalizedCallback,
       isChecked,
       isRequiredCheck,
       tokenImg,

@@ -233,7 +233,6 @@ export default defineComponent({
       isEvmBridge,
       inputtedAddress,
       existentialDeposit,
-      // chains,
       isH160,
       inputtedAddressBalance,
       fromAddressBalance,
@@ -250,7 +249,7 @@ export default defineComponent({
     } = useXcmBridgeV2(tokenData);
 
     const isReverseButton = computed<boolean>(() => {
-      if (!srcChain.value || !destChain.value) return false;
+      if (!srcChain.value || !destChain.value || isH160.value) return false;
       return !srcChain.value.name.includes(pathEvm) && !destChain.value.name.includes(pathEvm);
     });
 
@@ -294,6 +293,7 @@ export default defineComponent({
     };
 
     watchEffect(() => {
+      console.log('isDisabledBridge.value', isDisabledBridge.value);
       // console.log('inputtedAddress', inputtedAddress.value);
       // console.log('destChain', destChain.value);
     });

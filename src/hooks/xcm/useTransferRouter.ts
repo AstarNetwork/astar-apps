@@ -57,6 +57,7 @@ export function useTransferRouter() {
   });
 
   const redirect = (): void => {
+    console.log('redirect!!');
     const token = nativeTokenSymbol.value.toLowerCase();
     const network = currentNetworkName.value.toLowerCase();
     // const mode = isH160.value ? 'local-evm' : 'local';
@@ -179,8 +180,14 @@ export function useTransferRouter() {
     const isNativeAstarToken = tokenSymbol.value === nativeTokenSymbol.value.toLowerCase();
     const defaultXcmBridgeForNative =
       currentNetworkIdx.value === endpointKey.ASTAR ? Chain.ACALA : Chain.KARURA;
-    const from = isNativeAstarToken ? defaultXcmBridgeForNative : originChain.toLowerCase();
-    const to = currentNetworkName.value.toLowerCase();
+
+    const opponentNetwork = isNativeAstarToken
+      ? defaultXcmBridgeForNative
+      : originChain.toLowerCase();
+    const astarNetwork = currentNetworkName.value.toLowerCase();
+    const from = isH160.value ? astarNetwork : opponentNetwork;
+    const to = isH160.value ? opponentNetwork : astarNetwork;
+
     const query = isLocal
       ? { token: tokenSymbol.value, network, mode }
       : { token: tokenSymbol.value, network, from, to, mode };
@@ -262,7 +269,9 @@ export function useTransferRouter() {
         !isSelectedRelayChain && tokens.push(nativeToken);
       }
     }
-    tokens.push(nativeToken);
+    const isShiden = currentNetworkIdx.value === endpointKey.SHIDEN;
+    // Memo: SDN is including in evmTokens
+    !isShiden && tokens.push(nativeToken);
     tokens.sort((a, b) => a.metadata.symbol.localeCompare(b.metadata.symbol));
     return tokens;
   });
@@ -308,7 +317,7 @@ export function useTransferRouter() {
         if (!token.value) throw Error('No token is found');
       } catch (error) {
         console.error('error', error);
-        // console.log('errrrror');
+        console.log('errrrror');
         redirect();
       }
     }
@@ -363,7 +372,7 @@ export function useTransferRouter() {
   watchEffect(redirectForRelaychain);
   watchEffect(setDestChainToAstar);
   watch([from, to], monitorProhibitedPair, { immediate: false });
-  watch([isH160], redirect, { immediate: false });
+  // watch([isH160], redirect, { immediate: false });
 
   watchEffect(() => {
     // console.log('useTransferRouter');
