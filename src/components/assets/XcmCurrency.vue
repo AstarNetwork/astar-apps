@@ -31,11 +31,13 @@
             </div>
           </div>
           <div class="column--asset-buttons column--buttons--native">
-            <router-link :to="transferLink">
-              <button class="btn btn--sm">
-                {{ $t('assets.manage') }}
-              </button>
-            </router-link>
+            <div @click="scrollToTop">
+              <router-link :to="transferLink">
+                <button class="btn btn--sm">
+                  {{ $t('assets.manage') }}
+                </button>
+              </router-link>
+            </div>
             <div class="screen--xl">
               <a
                 class="box--explorer"
@@ -62,7 +64,7 @@
 <script lang="ts">
 import { endpointKey } from 'src/config/chainEndpoints';
 import { useNetworkInfo } from 'src/hooks';
-import { truncate } from 'src/hooks/helper/common';
+import { scrollTo, truncate } from 'src/hooks/helper/common';
 import { getXcmToken } from 'src/modules/xcm';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, PropType } from 'vue';
@@ -101,11 +103,16 @@ export default defineComponent({
       return `/assets/transfer?token=${symbol}&network=${network}&mode=local`;
     });
 
+    const scrollToTop = (): void => {
+      scrollTo('top-transfer');
+    };
+
     return {
       isDisplayToken,
       explorerLink,
       transferLink,
       truncate,
+      scrollToTop,
     };
   },
 });

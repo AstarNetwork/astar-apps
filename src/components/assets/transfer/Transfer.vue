@@ -1,4 +1,5 @@
 <template>
+  <!-- <div id="top"> -->
   <div>
     <BackToAsset :class="isHighlightRightUi && 'half-opacity'" />
     <MobileNavigator />
@@ -94,7 +95,6 @@ import { Chain, checkIsRelayChain, removeEvmName, XcmChain, xcmToken } from 'src
 import { useStore } from 'src/store';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, ref, watch } from 'vue';
-
 export type RightUi = 'information' | 'select-chain' | 'select-token';
 
 export default defineComponent({

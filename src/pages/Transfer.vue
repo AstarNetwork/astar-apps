@@ -1,5 +1,5 @@
 <template>
-  <Transfer />
+  <Transfer id="top-transfer" />
 </template>
 
 <script lang="ts">

@@ -63,7 +63,7 @@
                 </div>
               </div>
             </div>
-            <div class="column--buttons">
+            <div class="column--buttons" @click="scrollToTop">
               <router-link :to="transferLink">
                 <button class="btn btn--sm">
                   {{ $t('assets.manage') }}
@@ -175,7 +175,7 @@ import { u8aToString } from '@polkadot/util';
 import { ethers } from 'ethers';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { useBalance, useEvmDeposit, useNetworkInfo, usePrice } from 'src/hooks';
-import { checkIsNullOrUndefined, truncate } from 'src/hooks/helper/common';
+import { checkIsNullOrUndefined, scrollTo, truncate } from 'src/hooks/helper/common';
 import { getTokenImage } from 'src/modules/token';
 import { generateAstarNativeTokenObject } from 'src/modules/xcm/tokens';
 import { useStore } from 'src/store';
@@ -277,6 +277,12 @@ export default defineComponent({
       }
     });
 
+    const scrollToTop = (): void => {
+      scrollTo('top-transfer');
+      // const el = document.getElementById(id);
+      // el && el.scrollIntoView({ behavior: 'smooth' });
+    };
+
     return {
       bal,
       nativeTokenSymbol,
@@ -303,6 +309,7 @@ export default defineComponent({
       handleModalEvmWithdraw,
       checkIsNullOrUndefined,
       truncate,
+      scrollToTop,
     };
   },
 });

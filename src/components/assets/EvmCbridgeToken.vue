@@ -24,11 +24,13 @@
             </div>
           </div>
           <div class="column--asset-buttons column--buttons--multi">
-            <router-link :to="transferLink">
-              <button class="btn btn--sm">
-                {{ $t('assets.manage') }}
-              </button>
-            </router-link>
+            <div @click="scrollToTop">
+              <router-link :to="transferLink">
+                <button class="btn btn--sm">
+                  {{ $t('assets.manage') }}
+                </button>
+              </router-link>
+            </div>
             <!-- <button
               class="btn btn--sm"
               @click="
@@ -97,7 +99,7 @@ import { addToEvmProvider, getEvmProvider } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { getErc20Explorer, getTokenImage } from 'src/modules/token';
 import { computed, defineComponent, PropType } from 'vue';
-import { truncate } from 'src/hooks/helper/common';
+import { scrollTo, truncate } from 'src/hooks/helper/common';
 import { cbridgeAppLink } from 'src/c-bridge';
 import { SupportWallet } from 'src/config/wallets';
 import { useNetworkInfo } from 'src/hooks';
@@ -132,6 +134,10 @@ export default defineComponent({
       return `/assets/transfer?token=${symbol}&network=${network}&mode=local`;
     });
 
+    const scrollToTop = (): void => {
+      scrollTo('top-transfer');
+    };
+
     const { currentNetworkIdx, nativeTokenSymbol } = useNetworkInfo();
 
     const explorerLink = computed(() => {
@@ -152,6 +158,7 @@ export default defineComponent({
       formatTokenName,
       addToEvmProvider,
       truncate,
+      scrollToTop,
     };
   },
 });
