@@ -176,9 +176,10 @@
         <span class="color--white"> {{ $t(errMsg) }}</span>
       </div>
       <div class="wrapper__row--button">
+        <!-- Memo: isDisabledXcmButton: XCM tab will be disabled if it is true -->
         <button
           class="btn btn--confirm btn-size-adjust"
-          :disabled="isDisabledBridge"
+          :disabled="isDisabledBridge || isDisabledXcmButton"
           @click="handleBridge"
         >
           {{ $t('confirm') }}
@@ -220,6 +221,10 @@ export default defineComponent({
       required: true,
     },
     isHighlightRightUi: {
+      type: Boolean,
+      required: true,
+    },
+    isDisabledXcmButton: {
       type: Boolean,
       required: true,
     },

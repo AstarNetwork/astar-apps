@@ -690,16 +690,12 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   watchEffect(async () => {
     await initializeXcmApi();
   });
+  watchEffect(() => {
+    if (isH160.value) {
+      isInputDestAddrManually.value = true;
+    }
+  });
   watch([isEvmBridge, isAstar, selectedToken], setDefaultChain, { immediate: true });
-  watch(
-    [isH160],
-    () => {
-      if (isH160.value) {
-        isInputDestAddrManually.value = true;
-      }
-    },
-    { immediate: false }
-  );
 
   watchEffect(() => {
     // console.log('useXcmBridgeV2');

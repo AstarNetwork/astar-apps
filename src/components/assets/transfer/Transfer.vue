@@ -37,6 +37,7 @@
               :is-highlight-right-ui="isHighlightRightUi"
               :handle-finalized-callback="handleFinalizedCallback"
               :set-is-select-from-chain="setIsSelectFromChain"
+              :is-disabled-xcm-button="isDisabledXcmButton"
             />
           </div>
           <Information v-if="rightUi === 'information'" :is-local-transfer="isLocalTransfer" />

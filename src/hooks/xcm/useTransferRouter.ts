@@ -19,7 +19,7 @@ import { XcmAssets } from './../../store/assets/state';
 import { capitalize } from './../helper/common';
 
 export const pathEvm = '-evm';
-export type TransferMode = 'local' | 'local-evm' | 'xcm';
+export type TransferMode = 'local' | 'xcm';
 
 export interface NetworkFromTo {
   from: string;
@@ -58,14 +58,11 @@ export function useTransferRouter() {
   });
 
   const redirect = (): void => {
-    console.log('redirect!!');
     const token = nativeTokenSymbol.value.toLowerCase();
     const network = currentNetworkName.value.toLowerCase();
-    // const mode = isH160.value ? 'local-evm' : 'local';
-    const mode = 'local';
     router.push({
       path: '/assets/transfer',
-      query: { token, network, mode },
+      query: { token, network, mode: 'local' },
     });
   };
 
@@ -297,7 +294,6 @@ export function useTransferRouter() {
     const isFetchedAssets = xcmAssets.value && xcmAssets.value.assets.length !== 0;
     if (isFetchedAssets && symbol) {
       try {
-        // const isXcmAsset = symbol !== nativeTokenSymbolRef.toLowerCase();
         const xc20Token = xcmAssets.value.assets.find(
           (it) => it.metadata.symbol.toLowerCase() === symbol
         );
@@ -317,35 +313,6 @@ export function useTransferRouter() {
         redirect();
       }
     }
-    // if (isFetchedAssets && symbol) {
-    //   try {
-    //     const throwError = (): void => {
-    //       throw Error('No token is found');
-    //     };
-    //     const isXcmAsset = symbol !== nativeTokenSymbolRef.toLowerCase();
-    //     const xc20Token = xcmAssets.value.assets.find(
-    //       (it) => it.metadata.symbol.toLowerCase() === symbol
-    //     );
-
-    //     console.log('xcmAssets.value', xcmAssets.value);
-    //     console.log('symbol', symbol);
-    //     console.log('xc20Token', xc20Token);
-
-    //     token.value = xc20Token;
-    //     if (!isH160.value) {
-    //       if (!xc20Token) throwError();
-    //     } else {
-    //       if (!evmTokens.value) return;
-    //       const evmToken = evmTokens.value?.find((it) => it.symbol.toLowerCase() === symbol);
-    //       token.value = generateAssetFromEvmToken(evmToken as SelectedToken);
-    //     }
-
-    //     if (!token.value) throwError();
-    //   } catch (error) {
-    //     console.error('error', error);
-    //     redirect();
-    //   }
-    // }
   };
 
   const chains = computed<XcmChain[]>(() => {
@@ -373,21 +340,8 @@ export function useTransferRouter() {
 
   watchEffect(() => {
     // console.log('useTransferRouter');
-    // console.log('from', from.value);
-    // console.log('to', to.value);
     console.log('xcmAssets.value', xcmAssets.value);
   });
-
-  // const { currentAccount } = useAccount();
-  // const handleUpdateXcmTokenAssets = (): void => {
-  //   console.log('dispatch@');
-  //   if (currentAccount.value) {
-  //     console.log('go');
-  //     store.dispatch('assets/getAssets', currentAccount.value);
-  //   }
-  // };
-
-  // watch([currentAccount], handleUpdateXcmTokenAssets, { immediate: true });
 
   return {
     tokenSymbol,
