@@ -22,7 +22,9 @@
 
 .wrapper--charts {
   position: relative;
+  padding-top: 20px;
   @media (min-width: $lg) {
+    padding-top: 0;
     margin-bottom: 24px;
   }
   @media (min-width: $xxl) {

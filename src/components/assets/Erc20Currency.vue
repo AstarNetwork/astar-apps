@@ -32,13 +32,11 @@
           </div>
           <div class="column--asset-buttons column--buttons--multi">
             <div v-if="token.isXC20" />
-            <div @click="scrollTo('top-transfer')">
-              <router-link :to="transferLink">
-                <button class="btn btn--sm">
-                  {{ $t('assets.manage') }}
-                </button>
-              </router-link>
-            </div>
+            <router-link :to="transferLink">
+              <button class="btn btn--sm">
+                {{ $t('assets.manage') }}
+              </button>
+            </router-link>
             <div v-if="token.isWrappedToken && !token.isXC20">
               <a :href="token.wrapUrl" target="_blank" rel="noopener noreferrer">
                 <button class="btn btn--sm">{{ $t('assets.wrap') }}</button>
@@ -90,16 +88,16 @@
   </div>
 </template>
 <script lang="ts">
-import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
-import { addToEvmProvider, getEvmProvider } from 'src/hooks/helper/wallet';
-import { Erc20Token, getErc20Explorer, getStoredERC20Tokens, MOVR } from 'src/modules/token';
-import { useStore } from 'src/store';
-import { computed, defineComponent, PropType } from 'vue';
-import { scrollTo, truncate } from 'src/hooks/helper/common';
-import Jazzicon from 'vue3-jazzicon/src/components';
+import { endpointKey } from 'src/config/chainEndpoints';
 import { SupportWallet } from 'src/config/wallets';
 import { useNetworkInfo } from 'src/hooks';
+import { truncate } from 'src/hooks/helper/common';
+import { addToEvmProvider, getEvmProvider } from 'src/hooks/helper/wallet';
+import { Erc20Token, getErc20Explorer, getStoredERC20Tokens, MOVR } from 'src/modules/token';
 import { Chain, xcmToken } from 'src/modules/xcm';
+import { useStore } from 'src/store';
+import { computed, defineComponent, PropType } from 'vue';
+import Jazzicon from 'vue3-jazzicon/src/components';
 
 export default defineComponent({
   components: {
@@ -160,7 +158,6 @@ export default defineComponent({
       transferLink,
       truncate,
       addToEvmProvider,
-      scrollTo,
     };
   },
 });
