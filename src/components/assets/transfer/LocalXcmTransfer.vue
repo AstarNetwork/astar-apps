@@ -24,7 +24,7 @@
               {{
                 $t('assets.modals.balance', {
                   amount: $n(truncate(toAddressBalance)),
-                  token: token.symbol,
+                  token: token.metadata.symbol,
                 })
               }}
             </span>

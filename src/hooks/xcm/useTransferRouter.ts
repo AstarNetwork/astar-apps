@@ -259,9 +259,7 @@ export function useTransferRouter() {
       let selectableTokens;
       if (isLocalTransfer.value) {
         selectableTokens = xcmAssets.value.assets;
-        console.log('xcmAssets.value.assets', xcmAssets.value.assets);
         tokens = selectableTokens.filter(({ isXcmCompatible }) => isXcmCompatible);
-        console.log('tokens', tokens);
       } else {
         const selectedNetwork = xcmOpponentChain.value;
         const isSelectedRelayChain = checkIsRelayChain(selectedNetwork);
@@ -298,9 +296,8 @@ export function useTransferRouter() {
     token.value = generateNativeAsset(nativeTokenSymbolRef);
     const isFetchedAssets = xcmAssets.value && xcmAssets.value.assets.length !== 0;
     if (isFetchedAssets && symbol) {
-      console.log('in?');
       try {
-        const isXcmAsset = symbol !== nativeTokenSymbolRef.toLowerCase();
+        // const isXcmAsset = symbol !== nativeTokenSymbolRef.toLowerCase();
         const xc20Token = xcmAssets.value.assets.find(
           (it) => it.metadata.symbol.toLowerCase() === symbol
         );
@@ -308,16 +305,12 @@ export function useTransferRouter() {
         if (xc20Token) {
           token.value = xc20Token;
         } else {
-          console.log('evmTokes', evmTokens.value);
           if (!evmTokens.value) return;
           const evmToken = evmTokens.value?.find((it) => it.symbol.toLowerCase() === symbol);
           if (!evmToken) return;
-          console.log('evmToken', evmToken);
           token.value = generateAssetFromEvmToken(evmToken as SelectedToken);
-          console.log('token.value', token.value);
         }
 
-        console.log('token.value', token.value);
         if (!token.value) throw Error('No token is found');
       } catch (error) {
         console.error('error', error);

@@ -3,7 +3,7 @@ import { evmToAddress } from '@polkadot/util-crypto';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
 import { endpointKey } from 'src/config/chainEndpoints';
-import { getTokenBal, isValidEvmAddress } from 'src/config/web3';
+import { getTokenBal, isValidEvmAddress, toSS58Address } from 'src/config/web3';
 import { SubstrateAccount } from 'src/store/general/state';
 
 import {
@@ -21,6 +21,7 @@ import {
   Chain,
   checkIsDeposit,
   ExistentialDeposit,
+  fetchXcmBalance,
   monitorBalanceIncreasing,
   parachainIds,
   PREFIX_ASTAR,
@@ -251,7 +252,6 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     const fromOriginChainNativeBal = isMoonbeamWithdrawal.value
       ? await fetchMoonbeamNativeBal()
       : originChainNativeBal.value;
-    console.log('fromOriginChainNativeBal', fromOriginChainNativeBal);
 
     let originChainNativeBalance = 0;
     if (isH160.value) {
@@ -418,12 +418,12 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     // console.log('destChain.value', destChain.value);
   };
 
-  // Memo: update the `balance` displayed on the 'destination wallet address' in 'EVM' tab on the XCM bridge modal
-  // Todo: update for EVM Astar network
   const setInputtedAddressBalance = async (): Promise<void> => {
     if (!isLoadOriginApi.value) return;
     const address = inputtedAddress.value;
-    if (isH160.value && address) {
+    if (!address) return;
+    if (isH160.value) {
+      // if: H160 Withdrawal
       if (!originChainApi) {
         inputtedAddressBalance.value = 0;
         return;
@@ -438,28 +438,43 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
         .toString();
       inputtedAddressBalance.value = Number(formattedBalance);
     } else {
-      // Memo: Deposit to Astar/Shiden EVM or withdraw to Moonbeam/Moonriver
-      if (!isValidEvmAddress(address)) {
-        inputtedAddressBalance.value = 0;
-        return;
+      if (isDeposit.value) {
+        // if: SS58 Deposit
+        const isSendToH160 = isValidEvmAddress(inputtedAddress.value);
+        const destAddress = isSendToH160
+          ? toSS58Address(inputtedAddress.value)
+          : inputtedAddress.value;
+        const { userBalance } = await fetchXcmBalance({
+          token: selectedToken.value,
+          userAddress: destAddress,
+          api: $api!,
+        });
+        inputtedAddressBalance.value = Number(userBalance);
+      } else {
+        // if: SS58 Withdraw
+        // Memo: Deposit to Astar/Shiden EVM or withdraw to Moonbeam/Moonriver
+        if (!isValidEvmAddress(address)) {
+          inputtedAddressBalance.value = 0;
+          return;
+        }
+
+        const srcChainId = isMoonbeamWithdrawal.value
+          ? originChainApi!.chainProperty!.ss58Prefix!
+          : evmNetworkIdx.value;
+
+        const isWithdrawAstrToMoonbeam = isAstarNativeTransfer.value && isMoonbeamWithdrawal.value;
+        const tokenAddress = isWithdrawAstrToMoonbeam
+          ? MOONBEAM_ASTAR_TOKEN_ID[selectedToken.value.metadata.symbol as AstarToken]
+          : selectedToken.value.mappedERC20Addr;
+
+        const balance = await getTokenBal({
+          srcChainId,
+          address,
+          tokenAddress,
+          tokenSymbol: selectedToken.value.metadata.symbol,
+        });
+        inputtedAddressBalance.value = Number(balance);
       }
-
-      const srcChainId = isMoonbeamWithdrawal.value
-        ? originChainApi!.chainProperty!.ss58Prefix!
-        : evmNetworkIdx.value;
-
-      const isWithdrawAstrToMoonbeam = isAstarNativeTransfer.value && isMoonbeamWithdrawal.value;
-      const tokenAddress = isWithdrawAstrToMoonbeam
-        ? MOONBEAM_ASTAR_TOKEN_ID[selectedToken.value.metadata.symbol as AstarToken]
-        : selectedToken.value.mappedERC20Addr;
-
-      const balance = await getTokenBal({
-        srcChainId,
-        address,
-        tokenAddress,
-        tokenSymbol: selectedToken.value.metadata.symbol,
-      });
-      inputtedAddressBalance.value = Number(balance);
     }
   };
 
