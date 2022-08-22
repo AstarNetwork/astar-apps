@@ -79,7 +79,7 @@
               </div>
             </div>
             <div class="column--asset-buttons column--buttons--native-token">
-              <div class="scrollToTop">
+              <div @click="scrollTo('top-transfer')">
                 <router-link :to="transferLink">
                   <button class="btn btn--sm">
                     {{ $t('assets.manage') }}
@@ -271,10 +271,6 @@ export default defineComponent({
       }
     };
 
-    const scrollToTop = (): void => {
-      scrollTo('top-transfer');
-    };
-
     watchEffect(async () => {
       await updateStates();
     });
@@ -307,7 +303,7 @@ export default defineComponent({
       checkIsCbridgeToken,
       truncate,
       toggleIsHideSmallBalances,
-      scrollToTop,
+      scrollTo,
     };
   },
 });

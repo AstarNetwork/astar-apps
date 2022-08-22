@@ -1,6 +1,7 @@
 <template>
   <div>
-    <ModalLoading v-if="isLoadingApi" />
+    <!-- <ModalLoading v-if="isLoadingApi" /> -->
+    <ModalLoading v-if="true" />
     <div class="wrapper--xcm-bridge">
       <div class="rows">
         <InputSelectChain

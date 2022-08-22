@@ -32,7 +32,7 @@
           </div>
           <div class="column--asset-buttons column--buttons--multi">
             <div v-if="token.isXC20" />
-            <div @click="scrollToTop">
+            <div @click="scrollTo('top-transfer')">
               <router-link :to="transferLink">
                 <button class="btn btn--sm">
                   {{ $t('assets.manage') }}
@@ -151,9 +151,6 @@ export default defineComponent({
 
     const currentWallet = computed<SupportWallet>(() => store.getters['general/currentWallet']);
     const provider = getEvmProvider(currentWallet.value);
-    const scrollToTop = (): void => {
-      scrollTo('top-transfer');
-    };
 
     return {
       explorerLink,
@@ -163,7 +160,7 @@ export default defineComponent({
       transferLink,
       truncate,
       addToEvmProvider,
-      scrollToTop,
+      scrollTo,
     };
   },
 });

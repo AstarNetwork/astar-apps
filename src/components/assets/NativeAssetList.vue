@@ -63,7 +63,7 @@
                 </div>
               </div>
             </div>
-            <div class="column--buttons" @click="scrollToTop">
+            <div class="column--buttons" @click="scrollTo('top-transfer')">
               <router-link :to="transferLink">
                 <button class="btn btn--sm">
                   {{ $t('assets.manage') }}
@@ -277,12 +277,6 @@ export default defineComponent({
       }
     });
 
-    const scrollToTop = (): void => {
-      scrollTo('top-transfer');
-      // const el = document.getElementById(id);
-      // el && el.scrollIntoView({ behavior: 'smooth' });
-    };
-
     return {
       bal,
       nativeTokenSymbol,
@@ -309,7 +303,7 @@ export default defineComponent({
       handleModalEvmWithdraw,
       checkIsNullOrUndefined,
       truncate,
-      scrollToTop,
+      scrollTo,
     };
   },
 });

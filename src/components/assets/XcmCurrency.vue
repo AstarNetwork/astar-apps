@@ -31,7 +31,7 @@
             </div>
           </div>
           <div class="column--asset-buttons column--buttons--native">
-            <div @click="scrollToTop">
+            <div @click="scrollTo('top-transfer')">
               <router-link :to="transferLink">
                 <button class="btn btn--sm">
                   {{ $t('assets.manage') }}
@@ -103,16 +103,12 @@ export default defineComponent({
       return `/assets/transfer?token=${symbol}&network=${network}&mode=local`;
     });
 
-    const scrollToTop = (): void => {
-      scrollTo('top-transfer');
-    };
-
     return {
       isDisplayToken,
       explorerLink,
       transferLink,
       truncate,
-      scrollToTop,
+      scrollTo,
     };
   },
 });

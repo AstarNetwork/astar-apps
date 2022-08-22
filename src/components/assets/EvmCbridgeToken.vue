@@ -24,7 +24,7 @@
             </div>
           </div>
           <div class="column--asset-buttons column--buttons--multi">
-            <div @click="scrollToTop">
+            <div @click="scrollTo('top-transfer')">
               <router-link :to="transferLink">
                 <button class="btn btn--sm">
                   {{ $t('assets.manage') }}
@@ -134,10 +134,6 @@ export default defineComponent({
       return `/assets/transfer?token=${symbol}&network=${network}&mode=local`;
     });
 
-    const scrollToTop = (): void => {
-      scrollTo('top-transfer');
-    };
-
     const { currentNetworkIdx, nativeTokenSymbol } = useNetworkInfo();
 
     const explorerLink = computed(() => {
@@ -158,7 +154,7 @@ export default defineComponent({
       formatTokenName,
       addToEvmProvider,
       truncate,
-      scrollToTop,
+      scrollTo,
     };
   },
 });
