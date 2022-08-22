@@ -242,7 +242,7 @@ export default defineComponent({
     });
 
     const canExecuteAction = computed(() => {
-      if (data.value) {
+      if (data.value && data.value.amount) {
         const amount = plasmUtils.parseTo18Decimals(data.value.amount);
         const useableStakeAmount = props.accountData.getUsableFeeBalance();
 
