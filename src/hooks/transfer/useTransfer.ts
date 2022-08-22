@@ -1,6 +1,5 @@
 import { useI18n } from 'vue-i18n';
 import { ISubmittableResult } from '@polkadot/types/types';
-import BN from 'bn.js';
 import { $api } from 'boot/api';
 import { ethers } from 'ethers';
 import ABI from 'src/c-bridge/abi/ERC20.json';
@@ -11,8 +10,7 @@ import {
   toSS58Address,
 } from 'src/config/web3';
 import { useCustomSignature } from 'src/hooks';
-import { isValidAddressPolkadotAddress, reduceDenomToBalance } from 'src/hooks/helper/plasmUtils';
-import { getUnit } from 'src/hooks/helper/units';
+import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { getEvmGas } from 'src/modules/gas-api';
 import { useStore } from 'src/store';
 import { computed, Ref, ref } from 'vue';
@@ -50,7 +48,7 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
     setSelectedTip,
   } = useGasPrice();
 
-  const transferNative = async (transferAmt: BN, fromAddress: string, toAddress: string) => {
+  const transferNative = async (transferAmt: string, fromAddress: string, toAddress: string) => {
     try {
       const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
         const res = await handleResult(result);
@@ -123,8 +121,7 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
       }
 
       const receivingAddress = isValidEvmAddress(toAddress) ? toSS58Address(toAddress) : toAddress;
-      const unit = getUnit(selectUnit.value);
-      const toAmt = reduceDenomToBalance(transferAmt, unit, decimal.value);
+      const toAmt = ethers.utils.parseEther(String(transferAmt)).toString();
       await transferNative(toAmt, fromAddress, receivingAddress);
     }
   };
