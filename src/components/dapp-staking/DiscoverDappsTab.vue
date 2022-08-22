@@ -142,12 +142,8 @@ export default defineComponent({
   justify-content: center;
   width: 100%;
   margin-bottom: 24px;
-  padding-top: 20px;
   @media (min-width: $sm) {
     margin-bottom: 0px;
-  }
-  @media (min-width: $lg) {
-    padding-top: 0;
   }
 }
 

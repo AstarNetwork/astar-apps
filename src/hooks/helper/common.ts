@@ -26,7 +26,8 @@ export const truncate = (num: number | string, places = 3) => {
   return Math.trunc(formattedNum * Math.pow(10, places)) / Math.pow(10, places);
 };
 
-export const scrollToId = (id: string): void => {
+// Memo: scrollBehavior in createRouter is not working
+export const scrollTo = (id: string): void => {
   const el = document.getElementById(id);
   el && el.scrollIntoView({ behavior: 'auto' });
 };

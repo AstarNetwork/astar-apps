@@ -79,11 +79,13 @@
               </div>
             </div>
             <div class="column--asset-buttons column--buttons--native-token">
-              <router-link :to="transferLink">
-                <button class="btn btn--sm">
-                  {{ $t('assets.manage') }}
-                </button>
-              </router-link>
+              <div @click="scrollTo('top-transfer')">
+                <router-link :to="transferLink">
+                  <button class="btn btn--sm">
+                    {{ $t('assets.manage') }}
+                  </button>
+                </router-link>
+              </div>
               <!-- Only SDN is able to bridge via cBridge at this moment -->
               <a
                 v-if="nativeTokenSymbol === 'SDN'"
@@ -132,12 +134,13 @@ import EvmAssetOptions from 'src/components/assets/EvmAssetOptions.vue';
 import EvmCbridgeToken from 'src/components/assets/EvmCbridgeToken.vue';
 import { getBalance } from 'src/config/web3';
 import { useAccount, useBalance, useNetworkInfo, usePrice } from 'src/hooks';
-import { truncate } from 'src/hooks/helper/common';
+import { scrollTo, truncate } from 'src/hooks/helper/common';
 import { Erc20Token, getTokenImage } from 'src/modules/token';
 import { useStore } from 'src/store';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
 import ModalFaucet from './modals/ModalFaucet.vue';
+import ModalTransfer from './modals/ModalTransfer.vue';
 
 export default defineComponent({
   components: {
@@ -300,6 +303,7 @@ export default defineComponent({
       checkIsCbridgeToken,
       truncate,
       toggleIsHideSmallBalances,
+      scrollTo,
     };
   },
 });

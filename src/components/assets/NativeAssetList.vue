@@ -63,7 +63,7 @@
                 </div>
               </div>
             </div>
-            <div class="column--buttons">
+            <div class="column--buttons" @click="scrollTo('top-transfer')">
               <router-link :to="transferLink">
                 <button class="btn btn--sm">
                   {{ $t('assets.manage') }}
@@ -150,6 +150,12 @@
       </div>
     </div>
 
+    <!-- <ModalTransfer
+      :is-modal-transfer="isModalTransfer"
+      :handle-modal-transfer="handleModalTransfer"
+      :symbol="nativeTokenSymbol"
+      :account-data="accountData"
+    /> -->
     <ModalFaucet :is-modal-faucet="isModalFaucet" :handle-modal-faucet="handleModalFaucet" />
     <ModalEvmWithdraw
       :is-modal-evm-withdraw="isModalEvmWithdraw"
@@ -167,8 +173,9 @@
 <script lang="ts">
 import { u8aToString } from '@polkadot/util';
 import { ethers } from 'ethers';
+import { endpointKey } from 'src/config/chainEndpoints';
 import { useBalance, useEvmDeposit, useNetworkInfo, usePrice } from 'src/hooks';
-import { checkIsNullOrUndefined, truncate } from 'src/hooks/helper/common';
+import { checkIsNullOrUndefined, scrollTo, truncate } from 'src/hooks/helper/common';
 import { getTokenImage } from 'src/modules/token';
 import { generateAstarNativeTokenObject } from 'src/modules/xcm/tokens';
 import { useStore } from 'src/store';
@@ -296,6 +303,7 @@ export default defineComponent({
       handleModalEvmWithdraw,
       checkIsNullOrUndefined,
       truncate,
+      scrollTo,
     };
   },
 });

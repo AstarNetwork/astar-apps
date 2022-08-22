@@ -24,12 +24,24 @@
             </div>
           </div>
           <div class="column--asset-buttons column--buttons--multi">
-            <router-link :to="transferLink">
-              <button class="btn btn--sm">
-                {{ $t('assets.manage') }}
-              </button>
-            </router-link>
-
+            <div @click="scrollTo('top-transfer')">
+              <router-link :to="transferLink">
+                <button class="btn btn--sm">
+                  {{ $t('assets.manage') }}
+                </button>
+              </router-link>
+            </div>
+            <!-- <button
+              class="btn btn--sm"
+              @click="
+                handleModalTransfer({
+                  isOpen: true,
+                  currency: token.symbol === nativeTokenSymbol ? nativeTokenSymbol : token,
+                })
+              "
+            >
+              {{ $t('assets.transfer') }}
+            </button> -->
             <a :href="cbridgeAppLink" target="_blank" rel="noopener noreferrer">
               <button class="btn btn--sm">
                 {{ $t('assets.bridge') }}
@@ -87,7 +99,7 @@ import { addToEvmProvider, getEvmProvider } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { getErc20Explorer, getTokenImage } from 'src/modules/token';
 import { computed, defineComponent, PropType } from 'vue';
-import { truncate } from 'src/hooks/helper/common';
+import { scrollTo, truncate } from 'src/hooks/helper/common';
 import { cbridgeAppLink } from 'src/c-bridge';
 import { SupportWallet } from 'src/config/wallets';
 import { useNetworkInfo } from 'src/hooks';
@@ -142,6 +154,7 @@ export default defineComponent({
       formatTokenName,
       addToEvmProvider,
       truncate,
+      scrollTo,
     };
   },
 });

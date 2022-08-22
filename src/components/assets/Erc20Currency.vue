@@ -32,11 +32,13 @@
           </div>
           <div class="column--asset-buttons column--buttons--multi">
             <div v-if="token.isXC20" />
-            <router-link :to="transferLink">
-              <button class="btn btn--sm">
-                {{ $t('assets.manage') }}
-              </button>
-            </router-link>
+            <div @click="scrollTo('top-transfer')">
+              <router-link :to="transferLink">
+                <button class="btn btn--sm">
+                  {{ $t('assets.manage') }}
+                </button>
+              </router-link>
+            </div>
             <div v-if="token.isWrappedToken && !token.isXC20">
               <a :href="token.wrapUrl" target="_blank" rel="noopener noreferrer">
                 <button class="btn btn--sm">{{ $t('assets.wrap') }}</button>
@@ -93,7 +95,7 @@ import { addToEvmProvider, getEvmProvider } from 'src/hooks/helper/wallet';
 import { Erc20Token, getErc20Explorer, getStoredERC20Tokens, MOVR } from 'src/modules/token';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType } from 'vue';
-import { truncate } from 'src/hooks/helper/common';
+import { scrollTo, truncate } from 'src/hooks/helper/common';
 import Jazzicon from 'vue3-jazzicon/src/components';
 import { SupportWallet } from 'src/config/wallets';
 import { useNetworkInfo } from 'src/hooks';
@@ -158,6 +160,7 @@ export default defineComponent({
       transferLink,
       truncate,
       addToEvmProvider,
+      scrollTo,
     };
   },
 });

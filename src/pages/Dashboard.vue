@@ -1,12 +1,11 @@
 <template>
-  <dashboard id="top-dashboard" />
+  <dashboard />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useMeta } from 'quasar';
 import Dashboard from 'src/components/dashboard/Dashboard.vue';
-import { scrollToId } from 'src/hooks/helper/common';
 
 export default defineComponent({
   components: {
@@ -14,10 +13,6 @@ export default defineComponent({
   },
   setup() {
     useMeta({ title: 'Dashboard' });
-  },
-  mounted() {
-    // Memo: scrollBehavior in createRouter is not working
-    scrollToId('top-dashboard');
   },
 });
 </script>
