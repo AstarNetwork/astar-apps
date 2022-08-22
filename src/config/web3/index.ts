@@ -32,6 +32,8 @@ export enum EVM {
   ETHEREUM_MAINNET = 1,
   BSC = 56,
   POLYGON = 137,
+  MOONRIVER = 1285,
+  MOONBEAM = 1284,
 }
 
 export const chainName = {
@@ -43,6 +45,8 @@ export const chainName = {
   [EVM.ASTAR_MAINNET]: 'Astar Network Mainnet',
   [EVM.BSC]: 'Binance Smart Chain',
   [EVM.POLYGON]: 'Polygon Mainnet',
+  [EVM.MOONRIVER]: 'Moonriver Mainnet',
+  [EVM.MOONBEAM]: 'Moonbeam Mainnet',
 };
 
 export const nativeCurrency = {
@@ -76,6 +80,16 @@ export const nativeCurrency = {
     symbol: 'matic',
     decimals: 18,
   },
+  [EVM.MOONRIVER]: {
+    name: 'MOVR',
+    symbol: 'movr',
+    decimals: 18,
+  },
+  [EVM.MOONBEAM]: {
+    name: 'GLMR',
+    symbol: 'glmr',
+    decimals: 18,
+  },
 };
 
 export const rpcUrls = {
@@ -85,6 +99,8 @@ export const rpcUrls = {
   [EVM.ASTAR_MAINNET]: [chain.astar?.evmEndpoints[0]],
   [EVM.BSC]: ['https://bsc-dataseed.binance.org'],
   [EVM.POLYGON]: ['https://rpc-mainnet.maticvigil.com'],
+  [EVM.MOONRIVER]: ['https://rpc.api.moonriver.moonbeam.network'],
+  [EVM.MOONBEAM]: ['https://rpc.api.moonbeam.network'],
 };
 
 export const blockExplorerUrls = {
@@ -94,6 +110,8 @@ export const blockExplorerUrls = {
   [EVM.ASTAR_MAINNET]: [chain.astar?.blockscout],
   [EVM.BSC]: ['https://bscscan.com'],
   [EVM.POLYGON]: ['https://explorer.matic.network'],
+  [EVM.MOONRIVER]: ['https://moonriver.moonscan.io'],
+  [EVM.MOONBEAM]: ['https://moonbeam.moonscan.io/'],
 };
 
 export const CHAIN_INFORMATION = {

@@ -1,10 +1,9 @@
 <template>
-  <astar-simple-modal
-    v-if="isModalXcmBridge"
-    :show="isModalXcmBridge"
+  <AstarModal
+    :is-modal-open="isModalXcmBridge"
     :title="$t('assets.xcm')"
     :is-closing="isClosingModal"
-    @close="closeModal"
+    :close-modal="closeModal"
   >
     <ModalLoading v-if="isLoadingApi" />
 
@@ -58,6 +57,15 @@
             :is-enable-set-chain="isNativeBridge"
           />
         </div>
+
+        <div v-if="isMoonbeamDeposit" class="box--input-chain box--hover--active">
+          <div class="box__space-between">
+            <span> {{ $t('assets.modals.evmWalletAddress') }}</span>
+            <div />
+          </div>
+          <ModalSelectEvmWallet :initialize-xcm-api="initializeXcmApi" />
+        </div>
+
         <div class="box--input-chain" :class="isNativeBridge && 'box--hover--active'">
           <div class="box__space-between">
             <span> {{ $t('to') }}</span>
@@ -71,11 +79,11 @@
           />
         </div>
 
-        <div v-if="!isNativeBridge">
+        <div v-if="!isNativeBridge || isMoonbeamWithdrawal">
           <AddressInput
             v-model:selAddress="evmDestAddress"
             :to-address="evmDestAddress"
-            :is-evm="isDeposit"
+            :is-evm="isDeposit || isMoonbeamWithdrawal"
             :is-display-balance="true"
             :placeholder="evmInputPlaceholder"
             :title="evmInputTitle"
@@ -84,7 +92,7 @@
           />
           <div v-if="isH160" class="row--withdrawal-address-format">
             <a
-              href="https://docs.astar.network/xcm/faq#q-where-can-i-find-my-polkadot-kusama-addresses"
+              href="https://docs.astar.network/docs/xcm/faq/#q-where-can-i-find-other-chains-addresses"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -130,7 +138,10 @@
         </div>
       </div>
       <div class="container--warning">
-        <div v-if="token.isNativeToken" class="row--warning">
+        <div
+          v-if="token.isNativeToken && existentialDeposit && Number(existentialDeposit.amount) > 0"
+          class="row--warning"
+        >
           <div class="column--title">
             <span class="text--dot">・</span>
             <span class="text--warning">{{ $t('assets.modals.xcmWarning.minBalIsRequired') }}</span>
@@ -169,6 +180,14 @@
             </span>
           </div>
         </div>
+        <div class="row--warning">
+          <div class="column--title">
+            <span class="text--dot">・</span>
+            <span class="text--warning">
+              {{ $t('assets.modals.xcmWarning.notInputExchanges') }}
+            </span>
+          </div>
+        </div>
       </div>
       <div v-if="errMsg" class="row--box-error">
         <span class="color--white"> {{ $t(errMsg) }}</span>
@@ -179,11 +198,12 @@
         </button>
       </div>
     </div>
-  </astar-simple-modal>
+  </AstarModal>
 </template>
 <script lang="ts">
 import { fadeDuration } from '@astar-network/astar-ui';
 import ModalSelectChain from 'src/components/assets/modals/ModalSelectChain.vue';
+import ModalSelectEvmWallet from 'src/components/assets/modals/ModalSelectEvmWallet.vue';
 import AddressInput from 'src/components/common/AddressInput.vue';
 import { useAccount, useTooltip, useXcmBridge, useXcmEvm } from 'src/hooks';
 import { truncate, wait } from 'src/hooks/helper/common';
@@ -196,15 +216,18 @@ import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { Asset } from 'src/v2/models';
 import { IXcmEvmService, IXcmService, IXcmTransfer } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
-import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
+import { computed, defineComponent, PropType, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ModalLoading from '/src/components/common/ModalLoading.vue';
+import AstarModal from 'src/components/common/AstarModal.vue';
 
 export default defineComponent({
   components: {
     AddressInput,
     ModalSelectChain,
     ModalLoading,
+    ModalSelectEvmWallet,
+    AstarModal,
   },
   props: {
     isModalXcmBridge: {
@@ -228,7 +251,7 @@ export default defineComponent({
   },
   setup(props) {
     const isClosingModal = ref<boolean>(false);
-    const tokenData = computed(() => props.token);
+    const tokenData = computed<Asset>(() => props.token);
     const { t } = useI18n();
     const { isDisplayTooltip, setIsMobileDisplayTooltip } = useTooltip('icon');
 
@@ -248,12 +271,15 @@ export default defineComponent({
       isDeposit,
       isLoadingApi,
       isAstarNativeTransfer,
+      isMoonbeamWithdrawal,
+      isMoonbeamDeposit,
       inputHandler,
       bridge,
       resetStates,
       setIsNativeBridge,
       setSrcChain,
       setDestChain,
+      initializeXcmApi,
     } = useXcmBridge(tokenData);
 
     const { callAssetWithdrawToPara } = useXcmEvm(tokenData);
@@ -312,7 +338,7 @@ export default defineComponent({
     };
 
     const getV2Chain = (v1chain: XcmChain): Network | undefined => {
-      const chain = <Chain>v1chain.name;
+      const chain = <Chain>v1chain.name.toString();
       return XcmConfiguration.find((x) => x.chain === chain);
     };
 
@@ -372,6 +398,8 @@ export default defineComponent({
       isDeposit,
       isDisplayTooltip,
       isAstarNativeTransfer,
+      isMoonbeamWithdrawal,
+      isMoonbeamDeposit,
       setIsMobileDisplayTooltip,
       inputHandler,
       closeModal,
@@ -382,6 +410,7 @@ export default defineComponent({
       setSrcChain,
       setDestChain,
       handleBridgeV2,
+      initializeXcmApi,
     };
   },
 });

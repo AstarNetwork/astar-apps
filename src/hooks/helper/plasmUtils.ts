@@ -2,6 +2,7 @@ import { BigNumber, formatFixed } from '@ethersproject/bignumber';
 import { hexToU8a, isHex, isString } from '@polkadot/util';
 import { decodeAddress, encodeAddress } from '@polkadot/util-crypto';
 import BN from 'bn.js';
+import { ethers } from 'ethers';
 import { LOCAL_STORAGE } from './../../config/localStorage';
 import { nFormatter } from './units';
 
@@ -67,32 +68,13 @@ export const defaultAmountWithDecimals = (
   }
 };
 
-export const reduceDenomToBalance = (bal: number, unit: number, decimal: number) => {
-  const unit_decimal = unit + decimal;
-  const decPoint = new BN(10).pow(new BN(unit_decimal));
-  // console.log('d', decPoint.toString())
-
-  const strBal = bal.toString();
-  // console.log('b', bal.toString())
-
-  let formatted = new BN(0);
-
-  const arrDecimalBal = strBal.split('.');
-  if (arrDecimalBal.length === 2) {
-    const intBal = arrDecimalBal[0];
-    const minorityBal = arrDecimalBal[1];
-    const remainNum = Number(`${intBal}${minorityBal}`);
-    const decimalLength = minorityBal.length;
-    // console.log('intBal', intBal)
-    // console.log('minorityBal', minorityBal)
-    // console.log('decimalLength', decimalLength)
-    const divPoint = new BN(10).pow(new BN(decimalLength));
-    formatted = decPoint.mul(new BN(remainNum)).div(divPoint);
-  } else {
-    formatted = decPoint.mul(new BN(bal));
-  }
-  // console.log('f', formatted.toString())
-  return formatted;
+/**
+ * Convert the given value into the 18 decimals amount.
+ * @param amount 0.1
+ * @returns '100000000000000000' (format: BN)
+ */
+export const parseTo18Decimals = (amount: number | string): BN => {
+  return new BN(ethers.utils.parseEther(String(amount)).toString());
 };
 
 export const isValidAddressPolkadotAddress = (address: string) => {

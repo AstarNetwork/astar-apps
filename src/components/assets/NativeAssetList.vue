@@ -72,6 +72,7 @@
               </button>
               <button
                 class="btn btn--sm"
+                :disabled="isDisabledXcmButton"
                 @click="
                   handleModalXcmBridge({
                     isOpen: true,
@@ -162,31 +163,30 @@
       </div>
     </div>
 
-    <Teleport to="#app--main">
-      <ModalTransfer
-        :is-modal-transfer="isModalTransfer"
-        :handle-modal-transfer="handleModalTransfer"
-        :symbol="nativeTokenSymbol"
-        :account-data="accountData"
-      />
-      <ModalFaucet :is-modal-faucet="isModalFaucet" :handle-modal-faucet="handleModalFaucet" />
-      <ModalEvmWithdraw
-        :is-modal-evm-withdraw="isModalEvmWithdraw"
-        :handle-modal-evm-withdraw="handleModalEvmWithdraw"
-        :native-token-symbol="nativeTokenSymbol"
-      />
-      <ModalVesting
-        :is-modal-vesting="isModalVesting"
-        :handle-modal-vesting="handleModalVesting"
-        :native-token-symbol="nativeTokenSymbol"
-        :account-data="accountData"
-      />
-    </Teleport>
+    <ModalTransfer
+      :is-modal-transfer="isModalTransfer"
+      :handle-modal-transfer="handleModalTransfer"
+      :symbol="nativeTokenSymbol"
+      :account-data="accountData"
+    />
+    <ModalFaucet :is-modal-faucet="isModalFaucet" :handle-modal-faucet="handleModalFaucet" />
+    <ModalEvmWithdraw
+      :is-modal-evm-withdraw="isModalEvmWithdraw"
+      :handle-modal-evm-withdraw="handleModalEvmWithdraw"
+      :native-token-symbol="nativeTokenSymbol"
+    />
+    <ModalVesting
+      :is-modal-vesting="isModalVesting"
+      :handle-modal-vesting="handleModalVesting"
+      :native-token-symbol="nativeTokenSymbol"
+      :account-data="accountData"
+    />
   </div>
 </template>
 <script lang="ts">
 import { u8aToString } from '@polkadot/util';
 import { ethers } from 'ethers';
+import { endpointKey } from 'src/config/chainEndpoints';
 import { useBalance, useEvmDeposit, useNetworkInfo, usePrice } from 'src/hooks';
 import { checkIsNullOrUndefined, truncate } from 'src/hooks/helper/common';
 import { getTokenImage } from 'src/modules/token';
@@ -227,11 +227,12 @@ export default defineComponent({
     const mainnetFaucetAmount = 0.002 / 2;
 
     const store = useStore();
+    const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const selectedAddress = computed(() => store.getters['general/selectedAddress']);
     const { balance, accountData } = useBalance(selectedAddress);
     const { numEvmDeposit } = useEvmDeposit();
     const { nativeTokenUsd } = usePrice();
-    const { currentNetworkName, nativeTokenSymbol } = useNetworkInfo();
+    const { currentNetworkName, nativeTokenSymbol, currentNetworkIdx } = useNetworkInfo();
 
     const xcmNativeToken = computed(() => generateAstarNativeTokenObject(nativeTokenSymbol.value));
 
@@ -258,6 +259,11 @@ export default defineComponent({
     const handleModalVesting = ({ isOpen }: { isOpen: boolean }) => {
       isModalVesting.value = isOpen;
     };
+
+    const isDisabledXcmButton = computed(() => {
+      // Memo: disabled until backend turns 'XCM transfer between Astar and Acala' on again.
+      return currentNetworkIdx.value === endpointKey.ASTAR;
+    });
 
     watchEffect(async () => {
       const tokenSymbolRef = nativeTokenSymbol.value;
@@ -312,6 +318,8 @@ export default defineComponent({
       isModalEvmWithdraw,
       isModalVesting,
       xcmNativeToken,
+      isLoading,
+      isDisabledXcmButton,
       handleModalVesting,
       handleModalTransfer,
       handleModalFaucet,

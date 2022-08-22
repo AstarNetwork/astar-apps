@@ -92,7 +92,7 @@ import { useChainMetadata, useCustomSignature, useGasPrice, useGetMinStaking } f
 import { TxType } from 'src/hooks/custom-signature/message';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { signAndSend } from 'src/hooks/helper/wallet';
-import { getAmount, StakeModel } from 'src/hooks/store';
+import { StakeModel } from 'src/hooks/store';
 import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
 import { StakingData } from 'src/modules/dapp-staking';
 import { useStore } from 'src/store';
@@ -195,7 +195,7 @@ export default defineComponent({
     });
 
     const stake = async (stakeData: StakeModel): Promise<void> => {
-      const amount = getAmount(stakeData.amount, stakeData.unit);
+      const amount = plasmUtils.parseTo18Decimals(stakeData.amount);
       const unit = stakeData.unit;
       try {
         const stakeAmount = plasmUtils.balanceFormatter(amount);
@@ -250,8 +250,9 @@ export default defineComponent({
     };
 
     const unstake = async (stakeData: StakeModel): Promise<void> => {
-      const amount = getAmount(stakeData.amount, stakeData.unit);
-      const unstakeAmount = plasmUtils.balanceFormatter(amount);
+      const amount = plasmUtils.parseTo18Decimals(stakeData.amount);
+      const amountActual = plasmUtils.parseTo18Decimals(stakeData.unbondedActual);
+      const unstakeAmount = plasmUtils.balanceFormatter(amountActual);
       try {
         const transaction = canUnbondWithdraw.value
           ? $api!.tx.dappsStaking.unbondAndUnstake(getAddressEnum(props.dapp.address), amount)

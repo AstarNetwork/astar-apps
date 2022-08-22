@@ -1,14 +1,22 @@
-import { parachainIds } from 'src/config/xcmChainEndpoints';
+import { objToArray } from 'src/hooks/helper/common';
 
 export { xcmToken } from './tokens';
-export { getXcmToken, fetchXcmBalance, fetchExistentialDeposit, checkIsDeposit } from './utils';
+export {
+  getXcmToken,
+  fetchXcmBalance,
+  fetchExistentialDeposit,
+  checkIsDeposit,
+  monitorBalanceIncreasing,
+} from './utils';
+
+export const PREFIX_ASTAR = 5;
+
 export interface XcmTokenInformation {
   symbol: string;
   assetId: string;
   logo: string;
   isNativeToken: boolean;
   isXcmCompatible: boolean;
-  parachains?: string[];
   originAssetId: string;
   originChain: string;
   minBridgeAmount: string;
@@ -24,12 +32,23 @@ export interface ExistentialDeposit {
 
 // Ref: RPC calls -> system -> chain()
 export enum Chain {
-  Polkadot = 'Polkadot',
-  Astar = 'Astar',
-  Kusama = 'Kusama',
-  Shiden = 'Shiden',
-  Karura = 'Karura',
-  Acala = 'Acala',
+  POLKADOT = 'Polkadot',
+  ASTAR = 'Astar',
+  KUSAMA = 'Kusama',
+  SHIDEN = 'Shiden',
+  KARURA = 'Karura',
+  ACALA = 'Acala',
+  MOONRIVER = 'Moonriver',
+  // MOONBEAM = 'Moonbeam',
+}
+
+export enum parachainIds {
+  ASTAR = 2006,
+  SHIDEN = 2007,
+  KARURA = 2000,
+  ACALA = 2000,
+  MOONRIVER = 2023,
+  // MOONBEAM = 2004,
 }
 
 // Memo: give it 0 ide for convenience in checking para/relay chain logic
@@ -40,47 +59,76 @@ export interface XcmChain {
   relayChain: Chain;
   img: string;
   parachainId: parachainIds;
+  endpoint?: string;
 }
 
-export const xcmChains: XcmChain[] = [
-  {
-    name: Chain.Polkadot,
-    relayChain: Chain.Polkadot,
+type XcmChainObj = {
+  [key in Chain]: XcmChain;
+};
+
+export const xcmChainObj: XcmChainObj = {
+  [Chain.POLKADOT]: {
+    name: Chain.POLKADOT,
+    relayChain: Chain.POLKADOT,
     img: require('/src/assets/img/ic_polkadot.png'),
     parachainId: relaychainParaId,
+    endpoint: 'wss://polkadot.api.onfinality.io/public-ws',
   },
-  {
-    name: Chain.Astar,
-    relayChain: Chain.Polkadot,
+  [Chain.ASTAR]: {
+    name: Chain.ASTAR,
+    relayChain: Chain.POLKADOT,
     img: require('/src/assets/img/ic_astar.png'),
     parachainId: parachainIds.ASTAR,
   },
-  {
-    name: Chain.Kusama,
-    relayChain: Chain.Kusama,
+  [Chain.KUSAMA]: {
+    name: Chain.KUSAMA,
+    relayChain: Chain.KUSAMA,
     img: require('/src/assets/img/ic_kusama.png'),
     parachainId: relaychainParaId,
+    endpoint: 'wss://kusama-rpc.polkadot.io',
   },
-  {
-    name: Chain.Shiden,
-    relayChain: Chain.Kusama,
+  [Chain.SHIDEN]: {
+    name: Chain.SHIDEN,
+    relayChain: Chain.KUSAMA,
     img: require('/src/assets/img/ic_shiden.png'),
     parachainId: parachainIds.SHIDEN,
   },
-  {
-    name: Chain.Karura,
-    relayChain: Chain.Kusama,
+  [Chain.KARURA]: {
+    name: Chain.KARURA,
+    relayChain: Chain.KUSAMA,
     img: 'https://polkadot.js.org/apps/static/karura.6540c949..svg',
     parachainId: parachainIds.KARURA,
+    endpoint: 'wss://karura.api.onfinality.io/public-ws',
   },
-  {
-    name: Chain.Acala,
-    relayChain: Chain.Polkadot,
+  [Chain.ACALA]: {
+    name: Chain.ACALA,
+    relayChain: Chain.POLKADOT,
     img: 'https://polkadot.js.org/apps/static/acala.696aa448..svg',
     parachainId: parachainIds.ACALA,
+    endpoint: 'wss://acala-polkadot.api.onfinality.io/public-ws',
   },
-];
+  [Chain.MOONRIVER]: {
+    name: Chain.MOONRIVER,
+    relayChain: Chain.KUSAMA,
+    img: 'https://assets.coingecko.com/coins/images/17984/small/9285.png?1630028620',
+    parachainId: parachainIds.MOONRIVER,
+    endpoint: 'wss://wss.api.moonriver.moonbeam.network',
+  },
+  // Todo: un-comment-out after channel between Astar and Moonbeam has been opened
+  // [Chain.MOONBEAM]: {
+  //   name: Chain.MOONBEAM,
+  //   relayChain: Chain.POLKADOT,
+  //   img: 'https://polkadot.js.org/apps/static/moonbeam.3204d901..png',
+  //   parachainId: parachainIds.MOONBEAM,
+  //   endpoint: 'wss://wss.api.moonbeam.network',
+  // },
+};
 
-export const relayChains = [Chain.Polkadot, Chain.Kusama];
+const xcmChains = objToArray(xcmChainObj);
 
-export const parachains = [Chain.Karura, Chain.Acala];
+export const kusamaParachains = xcmChains.filter(
+  (it) => it.relayChain === Chain.KUSAMA && it.name !== Chain.KUSAMA
+);
+export const polkadotParachains = xcmChains.filter(
+  (it) => it.relayChain === Chain.POLKADOT && it.name !== Chain.POLKADOT
+);

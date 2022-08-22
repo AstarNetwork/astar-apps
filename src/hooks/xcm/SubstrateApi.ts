@@ -5,11 +5,16 @@ import { ISubmittableResult, ITuple } from '@polkadot/types/types';
 import { decodeAddress } from '@polkadot/util-crypto';
 import BN from 'bn.js';
 import { ExtrinsicPayload } from 'src/hooks/helper';
-import { ExistentialDeposit, fetchExistentialDeposit } from 'src/modules/xcm';
+import { ExistentialDeposit, fetchExistentialDeposit, parachainIds } from 'src/modules/xcm';
 import { idAstarNativeToken } from 'src/modules/xcm/tokens';
 import { Asset } from 'src/v2/models';
 
 const AUTO_CONNECT_MS = 10_000; // [ms]
+
+export type AstarToken = 'ASTR' | 'SDN';
+export type AstarNativeToken = {
+  [key in AstarToken]: string;
+};
 
 interface ChainProperty {
   tokenSymbols: string[];
@@ -34,7 +39,7 @@ interface X2 {
   generalKey: string;
 }
 
-class ChainApi {
+class BaseApi {
   private _provider?: WsProvider;
   private _api: ApiPromise;
   private _chainProperty: ChainProperty | undefined;
@@ -98,7 +103,19 @@ class ChainApi {
       ss58Prefix,
     };
   }
-
+  public async evmTransferToParachain({
+    toPara,
+    recipientAccountId,
+    amount,
+    selectedToken,
+  }: {
+    toPara: number;
+    recipientAccountId: string;
+    amount: string;
+    selectedToken: Asset;
+  }): Promise<string> {
+    return '';
+  }
   public async getBlockHash(blockNumber: number) {
     return await this._api?.rpc.chain.getBlockHash(blockNumber);
   }
@@ -238,16 +255,12 @@ class ChainApi {
   }
 }
 
-export class RelaychainApi extends ChainApi {
+export class ChainApi extends BaseApi {
   constructor(endpoint: string) {
     super(null, endpoint);
   }
   override async start() {
     await super.start();
-
-    // const parachains = (await this.buildStorageQuery('paras', 'parachains')) as Vec<u32>;
-    // this._parachains = parachains.map((i) => i.toNumber());
-    // check if the connected network implements xcmPallet
   }
 
   public transferToParachain({
@@ -313,33 +326,9 @@ export class RelaychainApi extends ChainApi {
       new BN(0)
     );
   }
-
-  public xcmReserveTransferAsset(
-    dest: MultiLocation,
-    beneficiary: MultiLocation,
-    assets: MultiAsset,
-    feeAssetItem: BN
-  ) {
-    return this.buildTxCall(
-      'xcmPallet',
-      'reserveTransferAssets',
-      dest,
-      beneficiary,
-      assets,
-      feeAssetItem
-    );
-  }
-
-  public xcmExecute(message: VersionedXcm, maxWeight: BN) {
-    return this.buildTxCall('xcmPallet', 'execute', message, maxWeight);
-  }
-
-  public xcmSend(dest: MultiLocation, message: VersionedXcm) {
-    return this.buildTxCall('xcmPallet', 'send', dest, message);
-  }
 }
 
-export class ParachainApi extends ChainApi {
+export class AstarApi extends BaseApi {
   constructor(api: ApiPromise) {
     super(api);
   }
@@ -389,15 +378,27 @@ export class ParachainApi extends ChainApi {
           },
         };
 
+    // Todo: un-comment-out after channel between Astar and Moonbeam has been opened
+    // const isAccountId20 = paraId === parachainIds.MOONBEAM || paraId === parachainIds.MOONRIVER;
+    const isAccountId20 = paraId === parachainIds.MOONRIVER;
+    const X1 = isAccountId20
+      ? {
+          AccountKey20: {
+            network: 'Any',
+            key: recipientAccountId,
+          },
+        }
+      : {
+          AccountId32: {
+            network: 'Any',
+            id: decodeAddress(recipientAccountId),
+          },
+        };
+
     const beneficiary = {
       V1: {
         interior: {
-          X1: {
-            AccountId32: {
-              network: 'Any',
-              id: decodeAddress(recipientAccountId),
-            },
-          },
+          X1,
         },
         parents: new BN(0),
       },

@@ -19,7 +19,6 @@ export class Asset {
     this.balance = new BN(0);
     this.userBalance = 0;
     this.userBalanceUsd = 0;
-    this.minBridgeAmount = '0';
   }
 }
 

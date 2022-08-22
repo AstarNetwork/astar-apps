@@ -212,6 +212,8 @@ export default {
         'The amount of token to be staking must be greater than {amount} {symbol}',
       allFundsWillBeTransferred:
         'All funds will be transferred because the min. staking amount is {minStakingAmount} {symbol}',
+      allFundsWillBeUnbonded:
+        'All funds will be unbonded because the min. staking amount is {minStakingAmount} {symbol}',
     },
   },
   bridge: {
@@ -315,9 +317,12 @@ export default {
         'Please be aware of the risk that anyone can create a token, including creating fake versions of existing tokens.',
       tokenContractAddress: 'Token Contract Address',
       tipDestAddressFormat: 'Where can I find my {chain} address?',
+      titleWithdraw: 'Withdraw {token}',
+      titleVesting: 'Vesting info',
       xcmWarning: {
         minBalIsRequired: 'Min. balance is required on origin chain',
         fee: 'Fee is deducted from the amount entered',
+        notInputExchanges: 'Do not input wallet address of exchanges',
         tooltip:
           'We keep {amount} {symbol} in origin chain account to avoid losing the funds (existential deposit). When depositing from origin chain, only tokens that are above the minimum balance are transferable. When withdrawing the receiver origin chain must have more than {amount} {symbol}.',
         nonzeroBalance: 'the balance of recipient account should be above zero',

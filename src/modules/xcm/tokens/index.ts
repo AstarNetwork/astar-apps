@@ -5,6 +5,10 @@ import { ASTAR_DECIMALS } from 'src/hooks/helper/plasmUtils';
 // Acala Note: There is no endpoint to get minBridgeAmount.  But the rule is that Acala doesn't allow transfers that are less value than the equivalent of $0.01USD
 // Ref: https://www.notion.so/astarnetwork/HRMP-Portal-Support-for-Acala-Karura-UI-2eaab2e1d93c4e0f90609ea7039942a9#5c5a40f95c7b4c93a201feef233cb0fa
 
+// Acala Note: minBridgeAmount should be more than ED
+// Ref: https://wiki.acala.network/get-started/acala-network/acala-account
+// Ref: https://wiki.acala.network/get-started/get-started/karura-account
+
 export const xcmToken = {
   [endpointKey.ASTAR]: [
     {
@@ -45,7 +49,7 @@ export const xcmToken = {
       logo: 'https://assets.coingecko.com/coins/images/25812/small/ezgif-1-f4612f5260.png?1653987299',
       isXcmCompatible: true,
       originChain: 'Acala',
-      minBridgeAmount: '0.0193',
+      minBridgeAmount: '0.11',
     },
   ],
   [endpointKey.SHIDEN]: [
@@ -67,7 +71,7 @@ export const xcmToken = {
       logo: 'https://assets.coingecko.com/coins/images/25812/small/ezgif-1-f4612f5260.png?1653987299',
       isXcmCompatible: true,
       originChain: 'Karura',
-      minBridgeAmount: '0.0193',
+      minBridgeAmount: '0.11',
     },
     {
       symbol: 'KAR',
@@ -77,7 +81,7 @@ export const xcmToken = {
       logo: 'https://assets.coingecko.com/coins/images/17172/small/karura.jpeg?1626782066',
       isXcmCompatible: true,
       originChain: 'Karura',
-      minBridgeAmount: '0.004948',
+      minBridgeAmount: '0.11',
     },
     {
       symbol: 'LKSM',
@@ -88,6 +92,16 @@ export const xcmToken = {
       isXcmCompatible: true,
       originChain: 'Karura',
       minBridgeAmount: '0.0024',
+    },
+    {
+      symbol: 'MOVR',
+      isNativeToken: true,
+      assetId: '18446744073709551620',
+      originAssetId: 'MOVR',
+      logo: 'https://assets.coingecko.com/coins/images/17984/small/9285.png?1630028620',
+      isXcmCompatible: true,
+      originChain: 'Moonriver',
+      minBridgeAmount: '0.007',
     },
   ],
   [endpointKey.SHIBUYA]: [],
@@ -143,7 +157,6 @@ export const SDN: XcmTokenInformation = {
   isXcmCompatible: true,
   originChain: 'Shiden',
   minBridgeAmount: '0.1',
-  parachains: ['Karura'],
 };
 
 export const ASTR: XcmTokenInformation = {
@@ -155,7 +168,6 @@ export const ASTR: XcmTokenInformation = {
   isXcmCompatible: true,
   originChain: 'Astar',
   minBridgeAmount: '0.1',
-  parachains: ['Acala'],
 };
 
 export const SBY: XcmTokenInformation = {
@@ -167,7 +179,6 @@ export const SBY: XcmTokenInformation = {
   isXcmCompatible: true,
   originChain: 'Shibuya',
   minBridgeAmount: '0.1',
-  parachains: [''],
 };
 
 export const xcmAstarNativeToken = { SDN, ASTR, SBY };
