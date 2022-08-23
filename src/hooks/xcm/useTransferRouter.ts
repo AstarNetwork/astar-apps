@@ -277,6 +277,7 @@ export function useTransferRouter() {
         if (isLocalTransfer.value) {
           selectableTokens = xcmAssets.value.assets;
           tokens = selectableTokens.filter(({ isXcmCompatible }) => isXcmCompatible);
+          tokens.push(nativeToken);
         }
       }
     } else {

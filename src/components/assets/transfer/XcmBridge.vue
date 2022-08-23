@@ -68,23 +68,6 @@
               :symbol="token.metadata.symbol"
               :address-balance="inputtedAddressBalance"
             />
-            <!-- <div
-              class="box--input-address"
-              :class="[
-                !isHighlightRightUi && 'box--hover--active',
-                isInputtingAddress && 'box--active',
-              ]"
-            > -->
-            <!-- <input
-                v-model="inputtedAddress"
-                class="input--address text--title"
-                type="text"
-                spellcheck="false"
-                :placeholder="$t('destinationAddress')"
-                @focus="toggleIsInputtingAddress"
-                @blur="toggleIsInputtingAddress"
-              /> -->
-            <!-- </div> -->
             <div v-if="!isH160" class="row--msg-input-address">
               <div />
               <span class="text--available cursor-pointer" @click="toggleIsInputDestAddrManually">
