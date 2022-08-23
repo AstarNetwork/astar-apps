@@ -4,6 +4,7 @@ export {
   getDappStakers,
   getLatestStakePoint,
   getStakeInfo,
+  checkIsLimitedProvider,
 } from './utils';
 
 export type ContractEvm = {
