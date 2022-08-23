@@ -140,7 +140,6 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   const { accountData } = useBalance(currentAccount);
 
   const resetStates = (): void => {
-    console.log('resetStates');
     isDisabledBridge.value = true;
     amount.value = null;
     errMsg.value = '';
@@ -154,34 +153,33 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   };
 
   const setSrcChain = (chain: XcmChain): void => {
-    // console.log('setSrcChain');
     srcChain.value = chain;
-    // console.log(1);
-    // if (chain.name === destChain.value.name) {
-    // console.log(2);
-    if (isAstar.value) {
-      // console.log(3);
-      // destChain.value = destChain.value.name === Astar.name ? opponentChain.value : Astar;
-    } else {
-      // console.log(4);
-      // destChain.value = destChain.value.name === Shiden.name ? opponentChain.value : Shiden;
+    // Memo: prevent an error clicking the reverse button after the UI opened from clicking the XCM tab
+    if (chain.name === destChain.value.name) {
+      // const astarChain = isAstar.value?
+      if (isAstar.value) {
+        destChain.value = destChain.value.name === Astar.name ? opponentChain.value : Astar;
+      } else {
+        destChain.value = destChain.value.name === Shiden.name ? opponentChain.value : Shiden;
+      }
     }
-    // }
   };
 
   const setDestChain = (chain: XcmChain): void => {
     // console.log('setDestChain');
     destChain.value = chain;
     // console.log(1);
+    // console.log('chain.name', chain.name);
+    // console.log('srcChain.value.name', srcChain.value.name);
     // if (chain.name === srcChain.value.name) {
     // console.log(2);
-    if (isAstar.value) {
-      // console.log(3);
-      // srcChain.value = srcChain.value.name === Astar.name ? opponentChain.value : Astar;
-    } else {
-      // console.log(4);
-      // srcChain.value = srcChain.value.name === Shiden.name ? opponentChain.value : Shiden;
-    }
+    // if (isAstar.value) {
+    // console.log(3);
+    // srcChain.value = srcChain.value.name === Astar.name ? opponentChain.value : Astar;
+    // } else {
+    // console.log(4);
+    // srcChain.value = srcChain.value.name === Shiden.name ? opponentChain.value : Shiden;
+    // }
     // }
   };
 
@@ -701,8 +699,8 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     // console.log('useXcmBridgeV2');
     // console.log('errMsg', errMsg.value);
     // console.log('inputtedAddressBalance', inputtedAddressBalance.value);
-    // console.log('destChain.value', destChain.value);
-    // console.log('srcChain', srcChain.value);
+    console.log('srcChain', srcChain.value);
+    console.log('destChain.value', destChain.value);
     // if (selectedToken.value && isAstarNativeTransfer.value) {
     // isEvmBridge.value = true;
     // }
@@ -716,6 +714,7 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     setDestChain(xcmChainObj[capitalize(to.value) as keyof typeof xcmChainObj]);
   };
   watchEffect(updateChain);
+  watch([selectedToken], resetStates);
 
   return {
     amount,

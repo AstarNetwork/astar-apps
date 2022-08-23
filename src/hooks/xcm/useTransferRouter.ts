@@ -112,13 +112,14 @@ export function useTransferRouter() {
       from.value.includes(currentNetworkNameRef) ||
       to.value.includes(currentNetworkNameRef) ||
       isAstarEvm;
+    const query = {
+      ...route.query,
+      to: currentNetworkNameRef.toLowerCase(),
+    };
     if (!isAstrOrSdn) {
       router.replace({
         path: '/assets/transfer',
-        query: {
-          ...route.query,
-          to: currentNetworkNameRef.toLowerCase(),
-        },
+        query,
       });
     }
   };
@@ -153,15 +154,39 @@ export function useTransferRouter() {
     chain: string;
     isSelectFromChain: boolean;
   }): NetworkFromTo => {
-    const isDuplicated =
-      chain.toLowerCase() === from.value.toLowerCase() ||
-      chain.toLowerCase() === to.value.toLowerCase();
-    if (isSelectFromChain) {
-      const toParam = isDuplicated ? from.value : to.value;
-      return { from: chain.toLowerCase(), to: toParam.toLowerCase() };
+    const isDuplicated = chain === from.value.toLowerCase() || chain === to.value.toLowerCase();
+    const getValues = () => {
+      if (isSelectFromChain) {
+        const toParam = isDuplicated ? from.value : to.value;
+        return { fromParam: chain, toParam: toParam.toLowerCase() };
+      } else {
+        const fromParam = isDuplicated ? to.value : from.value;
+        return { fromParam: fromParam.toLowerCase(), toParam: chain };
+      }
+    };
+    const { fromParam, toParam } = getValues();
+    return checkIsAstarChain({ from: fromParam, to: toParam, isSelectFromChain });
+  };
+
+  const checkIsAstarChain = ({
+    from,
+    to,
+    isSelectFromChain,
+  }: {
+    from: string;
+    to: string;
+    isSelectFromChain: boolean;
+  }): { from: string; to: string } => {
+    const isAstarEvm = from.includes(pathEvm) || to.includes(pathEvm);
+    const currentNetworkNameRef = currentNetworkName.value.toLowerCase();
+    const isAstrOrSdn =
+      from.includes(currentNetworkNameRef) || to.includes(currentNetworkNameRef) || isAstarEvm;
+    if (isAstrOrSdn) {
+      return { from, to };
     } else {
-      const fromParam = isDuplicated ? to.value : from.value;
-      return { from: fromParam.toLowerCase(), to: chain.toLowerCase() };
+      const f = isSelectFromChain ? from : currentNetworkNameRef;
+      const t = !isSelectFromChain ? to : currentNetworkNameRef;
+      return { from: f, to: t };
     }
   };
 
@@ -183,7 +208,7 @@ export function useTransferRouter() {
       ? defaultXcmBridgeForNative
       : originChain.toLowerCase();
     const astarNetwork = currentNetworkName.value.toLowerCase();
-    const from = isH160.value ? astarNetwork : opponentNetwork;
+    const from = isH160.value ? astarNetwork : opponentNetwork.toLowerCase();
     const to = isH160.value ? opponentNetwork : astarNetwork;
 
     const query = isLocal
@@ -218,7 +243,10 @@ export function useTransferRouter() {
     chain: string;
     isSelectFromChain: boolean;
   }): void => {
-    const { from, to } = getFromToParams({ chain, isSelectFromChain: isSelectFromChain });
+    const { from, to } = getFromToParams({
+      chain: chain.toLowerCase(),
+      isSelectFromChain: isSelectFromChain,
+    });
     const network = currentNetworkName.value.toLowerCase();
     const t =
       xcmToken[currentNetworkIdx.value]
@@ -237,10 +265,13 @@ export function useTransferRouter() {
   };
 
   const tokens = computed<Asset[]>(() => {
-    let tokens: Asset[];
+    let tokens;
+    let selectableTokens;
     const nativeToken = generateNativeAsset(nativeTokenSymbol.value);
-    if (isH160.value) {
-      if (evmTokens.value) {
+
+    if (isLocalTransfer.value) {
+      if (isH160.value) {
+        if (!evmTokens.value) return [];
         tokens = evmTokens.value
           .filter((it) => {
             return isXc20Token(it.address);
@@ -248,30 +279,26 @@ export function useTransferRouter() {
           .map((it) => {
             return generateAssetFromEvmToken(it as SelectedToken);
           });
+        const isShiden = currentNetworkIdx.value === endpointKey.SHIDEN;
+        // Memo: SDN is including in evmTokens
+        !isShiden && tokens.push(nativeToken);
       } else {
-        tokens = [];
+        if (!xcmAssets.value || !nativeTokenSymbol.value) return [];
+        if (isLocalTransfer.value) {
+          selectableTokens = xcmAssets.value.assets;
+          tokens = selectableTokens.filter(({ isXcmCompatible }) => isXcmCompatible);
+        }
       }
     } else {
-      if (!xcmAssets.value || !nativeTokenSymbol.value) return [];
-      let selectableTokens;
-      if (isLocalTransfer.value) {
-        selectableTokens = xcmAssets.value.assets;
-        tokens = selectableTokens.filter(({ isXcmCompatible }) => isXcmCompatible);
-      } else {
-        const selectedNetwork = xcmOpponentChain.value;
-        const isSelectedRelayChain = checkIsRelayChain(selectedNetwork);
-        selectableTokens = xcmAssets.value.assets.filter(
-          (it) => it.originChain === selectedNetwork
-        );
-        tokens = selectableTokens.filter(({ isXcmCompatible }) => isXcmCompatible);
-        !isSelectedRelayChain && tokens.push(nativeToken);
-      }
+      // if: XCM bridge
+      const selectedNetwork = xcmOpponentChain.value;
+      const isSelectedRelayChain = checkIsRelayChain(selectedNetwork);
+      selectableTokens = xcmAssets.value.assets.filter((it) => it.originChain === selectedNetwork);
+      tokens = selectableTokens.filter(({ isXcmCompatible }) => isXcmCompatible);
+      !isSelectedRelayChain && tokens.push(nativeToken);
     }
-    const isEvmShiden = isH160.value && currentNetworkIdx.value === endpointKey.SHIDEN;
-    // Memo: SDN is including in evmTokens
-    !isEvmShiden && tokens.push(nativeToken);
-    tokens.sort((a, b) => a.metadata.symbol.localeCompare(b.metadata.symbol));
-    return tokens;
+    tokens && tokens.sort((a, b) => a.metadata.symbol.localeCompare(b.metadata.symbol));
+    return tokens as Asset[];
   });
 
   const handleDefaultConfig = (): void => {
@@ -339,8 +366,7 @@ export function useTransferRouter() {
   // watch([isH160], redirect, { immediate: false });
 
   watchEffect(() => {
-    // console.log('useTransferRouter');
-    console.log('xcmAssets.value', xcmAssets.value);
+    // console.log('xcmAssets.value', xcmAssets.value);
   });
 
   return {

@@ -1,18 +1,17 @@
 import { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
-import { $api, $web3 } from 'boot/api';
+import { $api } from 'boot/api';
 import { ethers } from 'ethers';
-import { getBalance, isValidEvmAddress, toSS58Address } from 'src/config/web3';
+import { isValidEvmAddress, toSS58Address } from 'src/config/web3';
 import { useCustomSignature } from 'src/hooks';
 import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { useAccount } from 'src/hooks/useAccount';
-import { Asset } from 'src/v2/models';
-import { useStore } from 'src/store';
-import { computed, ref, Ref, watchEffect } from 'vue';
-import { useGasPrice } from '../useGasPrice';
-import { signAndSend } from '../helper/wallet';
-import { useI18n } from 'vue-i18n';
 import { fetchXcmBalance } from 'src/modules/xcm';
+import { useStore } from 'src/store';
+import { Asset } from 'src/v2/models';
+import { computed, ref, Ref, watchEffect, watch } from 'vue';
+import { signAndSend } from '../helper/wallet';
+import { useGasPrice } from '../useGasPrice';
 
 export function useXcmTokenTransfer(selectedToken: Ref<Asset>) {
   const transferAmt = ref<string | null>(null);
@@ -21,7 +20,6 @@ export function useXcmTokenTransfer(selectedToken: Ref<Asset>) {
   const errMsg = ref<string>('');
   const isChecked = ref<boolean>(false);
 
-  const { t } = useI18n();
   const store = useStore();
   const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
@@ -90,19 +88,6 @@ export function useXcmTokenTransfer(selectedToken: Ref<Asset>) {
         throw Error('Token is not selected');
       }
 
-      // check if recipient account has non-zero native asset. (it cannot be transferred to an account with 0 nonce)
-      // if (isValidEvmAddress(toAddress)) {
-      //   const balWei = await getBalance($web3.value!, toAddress);
-      //   if (Number(ethers.utils.formatEther(balWei)) === 0) {
-      //     throw Error(t('assets.modals.xcmWarning.nonzeroBalance'));
-      //   }
-      // } else {
-      //   const balData = ((await $api!.query.system.account(toAddress)) as any).data;
-      //   if (balData.free.toBn().eqn(0)) {
-      //     throw Error(t('assets.modals.xcmWarning.nonzeroBalance'));
-      //   }
-      // }
-
       const receivingAddress = isValidEvmAddress(toAddress) ? toSS58Address(toAddress) : toAddress;
 
       const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
@@ -155,6 +140,7 @@ export function useXcmTokenTransfer(selectedToken: Ref<Asset>) {
 
   watchEffect(setErrorMsg);
   watchEffect(setToAddressBalance);
+  watch([selectedToken], resetStates);
 
   return {
     selectedTip,

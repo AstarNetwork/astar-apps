@@ -37,7 +37,7 @@
               :is-highlight-right-ui="isHighlightRightUi"
               :handle-finalized-callback="handleFinalizedCallback"
               :set-is-select-from-chain="setIsSelectFromChain"
-              :is-disabled-xcm-button="isDisabledXcmButton"
+              :is-disabled-xcm-button="isDisabledXcm"
             />
           </div>
           <Information v-if="rightUi === 'information'" :is-local-transfer="isLocalTransfer" />
@@ -95,7 +95,7 @@ import { MOVR } from 'src/modules/token';
 import { Chain, checkIsRelayChain, removeEvmName, XcmChain, xcmToken } from 'src/modules/xcm';
 import { useStore } from 'src/store';
 import { Asset } from 'src/v2/models';
-import { computed, defineComponent, ref, watch } from 'vue';
+import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 export type RightUi = 'information' | 'select-chain' | 'select-token';
 
 export default defineComponent({
@@ -217,17 +217,16 @@ export default defineComponent({
           // if: from = Astar/Shiden
           return chains.value.filter((it) => {
             const name = removeEvmName(it.name);
-            // Memo: ASTR | SDN is not available on relaychain
-            const isUnableToWithdraw = isH160.value && !checkIsRelayChain(it.name);
+
             const isFromChain = it.name.toLowerCase() === from.value;
-            return (
+            const isValid =
               currentNetworkName.value.toLowerCase() !== name.toLowerCase() &&
               to.value !== it.name.toLowerCase() &&
-              !isFromChain &&
-              isUnableToWithdraw
-            );
+              !isFromChain;
+            return isValid;
           });
         } else {
+          console.log('from parachain');
           return chains.value.filter((it) => to.value !== it.name.toLowerCase());
         }
       }
@@ -242,6 +241,11 @@ export default defineComponent({
     };
 
     watch([currentAccount], handleUpdateXcmTokenAssets, { immediate: true });
+    watchEffect(() => {
+      console.log('chains.value', chains.value);
+      console.log('selectableChains', selectableChains.value);
+      console.log('tokens', tokens.value);
+    });
 
     return {
       isLocalTransfer,
