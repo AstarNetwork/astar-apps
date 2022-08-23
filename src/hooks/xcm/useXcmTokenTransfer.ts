@@ -1,10 +1,11 @@
+import { SUBSTRATE_SS58_FORMAT } from './../helper/plasmUtils';
 import { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 import { $api } from 'boot/api';
 import { ethers } from 'ethers';
 import { isValidEvmAddress, toSS58Address } from 'src/config/web3';
 import { useCustomSignature } from 'src/hooks';
-import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
+import { isValidAddressPolkadotAddress, ASTAR_SS58_FORMAT } from 'src/hooks/helper/plasmUtils';
 import { useAccount } from 'src/hooks/useAccount';
 import { fetchXcmBalance } from 'src/modules/xcm';
 import { useStore } from 'src/store';
@@ -59,7 +60,9 @@ export function useXcmTokenTransfer(selectedToken: Ref<Asset>) {
     const transferAmtRef = Number(transferAmt.value);
     const fromAccountBalance = selectedToken.value ? Number(selectedToken.value.userBalance) : 0;
     const isValidDestAddress =
-      isValidAddressPolkadotAddress(toAddress.value) || isValidEvmAddress(toAddress.value);
+      isValidAddressPolkadotAddress(toAddress.value, ASTAR_SS58_FORMAT) ||
+      isValidAddressPolkadotAddress(toAddress.value, SUBSTRATE_SS58_FORMAT) ||
+      isValidEvmAddress(toAddress.value);
 
     try {
       if (transferAmtRef > fromAccountBalance) {

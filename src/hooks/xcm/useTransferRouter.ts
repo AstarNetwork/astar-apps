@@ -33,6 +33,7 @@ export function useTransferRouter() {
   const store = useStore();
   const router = useRouter();
   const route = useRoute();
+  // Todo: move to GlobalState
   const { tokens: evmTokens } = useCbridgeV2();
   const tokenSymbol = computed<string>(() => route.query.token as string);
   const network = computed<string>(() => route.query.network as string);
@@ -103,47 +104,35 @@ export function useTransferRouter() {
     }
   };
 
-  // Memo: to avoid without selecting Astar/SDN e.g.: Karura <-> Moonriver
-  const setDestChainToAstar = (): void => {
-    if (!isTransferPage.value || mode.value !== 'xcm') return;
-    const isAstarEvm = from.value.includes(pathEvm) || to.value.includes(pathEvm);
-    const currentNetworkNameRef = currentNetworkName.value.toLowerCase();
-    const isAstrOrSdn =
-      from.value.includes(currentNetworkNameRef) ||
-      to.value.includes(currentNetworkNameRef) ||
-      isAstarEvm;
-    const query = {
-      ...route.query,
-      to: currentNetworkNameRef.toLowerCase(),
-    };
-    if (!isAstrOrSdn) {
-      router.replace({
-        path: '/assets/transfer',
-        query,
-      });
-    }
-  };
-
   const defaultXcmBridgeForNative = computed<string>(() => {
     return currentNetworkIdx.value === endpointKey.ASTAR
       ? Chain.ACALA.toLowerCase()
       : Chain.KARURA.toLowerCase();
   });
 
-  const monitorProhibitedPair = () => {
-    if (!isTransferPage.value || isLocalTransfer.value) return;
-    const fromChain = removeEvmName(from.value);
-    const toChain = removeEvmName(to.value);
-    const isSameNetwork = fromChain === toChain;
-    if (isSameNetwork) {
-      router.replace({
-        path: '/assets/transfer',
-        query: {
-          ...route.query,
-          from: currentNetworkName.value.toLowerCase(),
-          to: defaultXcmBridgeForNative.value,
-        },
-      });
+  const monitorProhibitedPair = (): void => {
+    if (!isTransferPage.value || isLocalTransfer.value || !from.value || !to.value) {
+      return;
+    }
+    if (isH160.value) {
+      const currentNetworkNameRef = currentNetworkName.value.toLowerCase();
+      if (from.value !== currentNetworkNameRef) {
+        redirect();
+      }
+    } else {
+      const fromChain = removeEvmName(from.value);
+      const toChain = removeEvmName(to.value);
+      const isSameNetwork = fromChain === toChain;
+      if (isSameNetwork) {
+        router.replace({
+          path: '/assets/transfer',
+          query: {
+            ...route.query,
+            from: currentNetworkName.value.toLowerCase(),
+            to: defaultXcmBridgeForNative.value,
+          },
+        });
+      }
     }
   };
 
@@ -168,6 +157,7 @@ export function useTransferRouter() {
     return checkIsAstarChain({ from: fromParam, to: toParam, isSelectFromChain });
   };
 
+  // Memo: to avoid without selecting Astar/SDN e.g.: Karura <-> Moonriver
   const checkIsAstarChain = ({
     from,
     to,
@@ -310,7 +300,6 @@ export function useTransferRouter() {
     const symbol = tokenSymbol.value;
     const nativeTokenSymbolRef = nativeTokenSymbol.value;
     isLocalTransfer.value = mode.value === 'local';
-
     const isRedirect = !network.value
       .toLowerCase()
       .includes(currentNetworkName.value.toLowerCase());
@@ -361,10 +350,7 @@ export function useTransferRouter() {
 
   watchEffect(handleDefaultConfig);
   watchEffect(redirectForRelaychain);
-  watchEffect(setDestChainToAstar);
-  watch([from, to], monitorProhibitedPair, { immediate: false });
-  // watch([isH160], redirect, { immediate: false });
-
+  watchEffect(monitorProhibitedPair);
   watchEffect(() => {
     // console.log('xcmAssets.value', xcmAssets.value);
   });

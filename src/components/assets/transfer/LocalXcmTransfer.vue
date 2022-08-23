@@ -120,12 +120,11 @@
 <script lang="ts">
 import InputSelectAccount from 'src/components/assets/transfer/InputSelectAccount.vue';
 import SpeedConfigurationV2 from 'src/components/common/SpeedConfigurationV2.vue';
-import { useAccount, useTransferRouter, useWalletIcon, useXcmTokenTransfer } from 'src/hooks';
+import { useAccount, useNetworkInfo, useWalletIcon, useXcmTokenTransfer } from 'src/hooks';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { truncate } from 'src/hooks/helper/common';
-import { useStore } from 'src/store';
 import { Asset } from 'src/v2/models';
-import { computed, defineComponent, PropType, Ref } from 'vue';
+import { computed, defineComponent, PropType } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
 
 export default defineComponent({
@@ -149,18 +148,16 @@ export default defineComponent({
       type: Function,
       required: true,
     },
+    token: {
+      type: Object as PropType<Asset>,
+      required: true,
+    },
   },
   setup(props) {
     const { iconWallet } = useWalletIcon();
-    const store = useStore();
     const { currentAccount, currentAccountName } = useAccount();
-    const { token } = useTransferRouter();
-
-    const nativeTokenSymbol = computed(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      return 1 ? chainInfo.tokenSymbol : '';
-    });
-
+    const { nativeTokenSymbol } = useNetworkInfo();
+    const t = computed<Asset>(() => props.token);
     const {
       selectedTip,
       nativeTipPrice,
@@ -174,7 +171,7 @@ export default defineComponent({
       setSelectedTip,
       transferAsset,
       toMaxAmount,
-    } = useXcmTokenTransfer(token as Ref<Asset>);
+    } = useXcmTokenTransfer(t);
 
     // Todo: remove async
     const finalizeCallback = async (): Promise<void> => {
@@ -202,7 +199,6 @@ export default defineComponent({
       selectedTip,
       nativeTipPrice,
       isChecked,
-      token,
       setSelectedTip,
       transfer,
       toMaxAmount,

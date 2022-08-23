@@ -11,7 +11,7 @@
           :is-disabled-xcm="isDisabledXcm"
           :class="isHighlightRightUi && 'half-opacity'"
         />
-        <div class="wrapper-containers">
+        <div v-if="token" class="wrapper-containers">
           <div v-if="isLocalTransfer">
             <LocalTransfer
               v-if="isTransferNativeToken || isH160"
@@ -26,6 +26,7 @@
               :class="isHighlightRightUi && 'half-opacity'"
               :handle-finalized-callback="handleFinalizedCallback"
               :set-right-ui="setRightUi"
+              :token="token"
             />
           </div>
           <div v-else>
@@ -158,7 +159,6 @@ export default defineComponent({
     });
 
     const setIsSelectFromChain = (result: boolean): void => {
-      console.log('result', result);
       isSelectFromChain.value = result;
     };
 
@@ -242,9 +242,9 @@ export default defineComponent({
 
     watch([currentAccount], handleUpdateXcmTokenAssets, { immediate: true });
     watchEffect(() => {
-      console.log('chains.value', chains.value);
-      console.log('selectableChains', selectableChains.value);
-      console.log('tokens', tokens.value);
+      // console.log('chains.value', chains.value);
+      // console.log('selectableChains', selectableChains.value);
+      // console.log('tokens', tokens.value);
     });
 
     return {

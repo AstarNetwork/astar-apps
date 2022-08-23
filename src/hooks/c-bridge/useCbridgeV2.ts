@@ -183,8 +183,6 @@ export function useCbridgeV2() {
         updateBridgeConfig({ userAddress: currentAccount.value }),
         updateRegisteredToken({ userAddress: currentAccount.value }),
       ]);
-      console.log('registeredTokens', registeredTokens);
-      console.log('cbridgeTokens', cbridgeTokens);
       tokens.value = cbridgeTokens.concat(registeredTokens as any);
       filterTokens();
     } catch (error) {
