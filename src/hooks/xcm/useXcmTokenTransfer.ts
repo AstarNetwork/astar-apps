@@ -91,17 +91,17 @@ export function useXcmTokenTransfer(selectedToken: Ref<Asset>) {
       }
 
       // check if recipient account has non-zero native asset. (it cannot be transferred to an account with 0 nonce)
-      if (isValidEvmAddress(toAddress)) {
-        const balWei = await getBalance($web3.value!, toAddress);
-        if (Number(ethers.utils.formatEther(balWei)) === 0) {
-          throw Error(t('assets.modals.xcmWarning.nonzeroBalance'));
-        }
-      } else {
-        const balData = ((await $api!.query.system.account(toAddress)) as any).data;
-        if (balData.free.toBn().eqn(0)) {
-          throw Error(t('assets.modals.xcmWarning.nonzeroBalance'));
-        }
-      }
+      // if (isValidEvmAddress(toAddress)) {
+      //   const balWei = await getBalance($web3.value!, toAddress);
+      //   if (Number(ethers.utils.formatEther(balWei)) === 0) {
+      //     throw Error(t('assets.modals.xcmWarning.nonzeroBalance'));
+      //   }
+      // } else {
+      //   const balData = ((await $api!.query.system.account(toAddress)) as any).data;
+      //   if (balData.free.toBn().eqn(0)) {
+      //     throw Error(t('assets.modals.xcmWarning.nonzeroBalance'));
+      //   }
+      // }
 
       const receivingAddress = isValidEvmAddress(toAddress) ? toSS58Address(toAddress) : toAddress;
 
