@@ -2,6 +2,8 @@ import { ApiPromise, WsProvider } from '@polkadot/api';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { wait } from 'src/hooks/helper/common';
+import { ScProvider, WellKnownChain } from '@polkadot/rpc-provider/substrate-connect';
+import jsonParachainSpec from './chain-specs/astar.raw.json';
 
 const RES_INVALID_CONNECTION = 'invalid connection';
 const RES_CONNECTED_API = 'connected';
@@ -71,6 +73,8 @@ const fallbackConnection = async ({
   }
 };
 
+type Provider = WsProvider | ScProvider;
+
 // Memo: Connect to node API via selected endpoint
 // Memo: Invoke `fallbackConnection` function whenever failed to connect via selected endpoint or timeout
 export async function connectApi(
@@ -80,34 +84,46 @@ export async function connectApi(
 ): Promise<{
   api: ApiPromise;
 }> {
-  const provider = new WsProvider(endpoint);
+  const astarSpec = JSON.stringify(jsonParachainSpec);
+
+  const relayProvider = new ScProvider(WellKnownChain.polkadot);
+  const lightProvider = new ScProvider(astarSpec, relayProvider);
+
+  let provider: Provider = lightProvider;
+
+  try {
+    await lightProvider.connect();
+  } catch (e) {
+    console.warn(`Error while connecting to the light client:\n${(e as any).message}`);
+    provider = new WsProvider(endpoint);
+    console.log(`Connecting to the following provider instead: ${endpoint}`);
+  }
+  //const provider = new WsProvider(endpoint);
   const api = new ApiPromise({ provider });
 
   store.commit('general/setCurrentNetworkStatus', 'connecting');
   api.on('error', (error: Error) => console.error(error.message));
 
   try {
-    const apiConnect = new Promise<string>((resolve) => {
-      api.isReadyOrError.then(() => {
-        resolve(RES_CONNECTED_API);
-      });
-    });
-
-    const fallbackTimeout = new Promise<string>(async (resolve) => {
-      const timeout = 8 * 1000;
-      await wait(timeout);
-      resolve(RES_TIMEOUT);
-    });
-
-    const race = Promise.race<string>([apiConnect, fallbackTimeout]);
-    race.then((res: string) => {
-      if (res === RES_TIMEOUT) {
-        fallbackConnection({ networkIdx, endpoint });
-      }
-    });
+    // const apiConnect = new Promise<string>((resolve) => {
+    //   api.isReadyOrError.then(() => {
+    //     resolve(RES_CONNECTED_API);
+    //   });
+    // });
+    // const fallbackTimeout = new Promise<string>(async (resolve) => {
+    //   const timeout = 8 * 1000;
+    //   await wait(timeout);
+    //   resolve(RES_TIMEOUT);
+    // });
+    // const race = Promise.race<string>([apiConnect, fallbackTimeout]);
+    // race.then((res: string) => {
+    //   if (res === RES_TIMEOUT) {
+    //     fallbackConnection({ networkIdx, endpoint });
+    //   }
+    // });
   } catch (e) {
     console.error(e);
-    fallbackConnection({ networkIdx, endpoint });
+    //fallbackConnection({ networkIdx, endpoint });
   }
 
   try {
@@ -116,7 +132,7 @@ export async function connectApi(
     store.commit('general/setCurrentNetworkStatus', 'connected');
   } catch (err) {
     console.error(err);
-    fallbackConnection({ networkIdx, endpoint });
+    //fallbackConnection({ networkIdx, endpoint });
   }
 
   return {
