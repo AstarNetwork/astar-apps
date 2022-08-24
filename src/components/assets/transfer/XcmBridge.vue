@@ -32,15 +32,12 @@
         />
 
         <div v-if="isEvmBridge || isMoonbeamWithdrawal">
-          <AddressInputV2
+          <SimpleInput
             v-model:selAddress="inputtedAddress"
             :to-address="inputtedAddress"
-            :is-evm="isDeposit || isMoonbeamWithdrawal"
-            :is-display-balance="true"
-            :placeholder="evmInputPlaceholder"
-            :title="evmInputTitle"
-            :symbol="token.metadata.symbol"
-            :address-balance="destAddressBalance"
+            :placeholder="$t('evmInputPlaceholder')"
+            :is-inputting-address="isInputtingAddress"
+            :toggle-is-inputting-address="toggleIsInputtingAddress"
           />
           <div v-if="isH160" class="row--withdrawal-address-format">
             <a
@@ -62,15 +59,12 @@
             </span>
           </div>
           <div v-else>
-            <AddressInputV2
+            <SimpleInput
               v-model:selAddress="inputtedAddress"
               :to-address="inputtedAddress"
-              :is-evm="isValidEvmAddress(inputtedAddress)"
-              :is-display-balance="true"
-              :placeholder="$t('addressPlaceholder')"
-              :title="$t('addressPlaceholder', { network: destChain.name })"
-              :symbol="token.metadata.symbol"
-              :address-balance="destAddressBalance"
+              :placeholder="$t('addressPlaceholder', { network: destChain.name })"
+              :is-inputting-address="isInputtingAddress"
+              :toggle-is-inputting-address="toggleIsInputtingAddress"
             />
             <div v-if="!isH160" class="row--msg-input-address">
               <div />
@@ -177,7 +171,7 @@
 </template>
 <script lang="ts">
 import InputSelectChain from 'src/components/assets/transfer/InputSelectChain.vue';
-import AddressInputV2 from 'src/components/common/AddressInputV2.vue';
+import SimpleInput from 'src/components/common/SimpleInput.vue';
 import SelectEvmWallet from 'src/components/assets/transfer/SelectEvmWallet.vue';
 import { pathEvm, useAccount, useTooltip, useXcmBridgeV2, useXcmEvm } from 'src/hooks';
 import { truncate } from 'src/hooks/helper/common';
@@ -188,7 +182,7 @@ import ModalLoading from '/src/components/common/ModalLoading.vue';
 import { isValidEvmAddress } from 'src/config/web3';
 export default defineComponent({
   components: {
-    AddressInputV2,
+    SimpleInput,
     InputSelectChain,
     ModalLoading,
     SelectEvmWallet,
@@ -301,7 +295,7 @@ export default defineComponent({
     };
 
     watchEffect(() => {
-      // console.log('isDisabledBridge.value', isDisabledBridge.value);
+      // console.log('isInputtingAddress.value', isInputtingAddress.value);
       // console.log('inputtedAddress', inputtedAddress.value);
       // console.log('destChain', destChain.value);
     });
@@ -324,18 +318,15 @@ export default defineComponent({
       isDeposit,
       isDisplayTooltip,
       isAstarNativeTransfer,
-      // tokenData,
       currentAccount,
       isInputDestAddrManually,
       isInputtingAddress,
       isReverseButton,
       isMoonbeamDeposit,
       isMoonbeamWithdrawal,
-      // inputtedDestAddress,
       setIsMobileDisplayTooltip,
       inputHandler,
       bridge,
-      // setIsNativeBridge,
       handleBridge,
       truncate,
       reverseChain,

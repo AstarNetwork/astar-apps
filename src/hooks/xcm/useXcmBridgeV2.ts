@@ -42,6 +42,7 @@ import {
 import { AcalaApi, MoonbeamApi } from './parachainApi';
 import { MOONBEAM_ASTAR_TOKEN_ID } from './parachainApi/MoonbeamApi';
 import { AstarApi, AstarToken, ChainApi } from './SubstrateApi';
+import { wait } from 'src/v2/common';
 
 const { Acala, Astar, Karura, Moonriver, Polkadot, Shiden, Kusama } = xcmChainObj;
 
@@ -67,10 +68,10 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
 
   const { t } = useI18n();
   const store = useStore();
+  const { currentAccount } = useAccount();
   const substrateAccounts = computed<SubstrateAccount[]>(
     () => store.getters['general/substrateAccounts']
   );
-  const { currentAccount } = useAccount();
 
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const isDeposit = computed<boolean>(() => checkIsDeposit(srcChain.value.name));
@@ -130,6 +131,7 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     errMsg.value = '';
     inputtedAddress.value = '';
     destAddressBalance.value = 0;
+    fromAddressBalance.value = 0;
     if (!isH160.value) {
       isInputDestAddrManually.value = false;
     }
@@ -428,9 +430,7 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
 
   const bridge = async (finalizedCallback: () => Promise<void>): Promise<void> => {
     try {
-      if (!originChainApi) {
-        throw Error('Something went wrong while bridging');
-      }
+      if (!originChainApi) throw Error('Something went wrong while bridging');
       if (!amount.value) throw Error('Invalid amount');
 
       const destinationAddress = isInputDestAddrManually.value
@@ -439,9 +439,6 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
       if (isDeposit.value) {
         let recipientAccountId = destinationAddress;
         if (isEvmBridge.value) {
-          if (!isValidEvmAddress(inputtedAddress.value)) {
-            throw Error('Invalid evm destination address');
-          }
           const ss58MappedAddr = evmToAddress(inputtedAddress.value, PREFIX_ASTAR);
           const hexPublicKey = getPubkeyFromSS58Addr(ss58MappedAddr);
           recipientAccountId = hexPublicKey;
@@ -649,11 +646,17 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     }
   };
 
+  const monitorFromChainBalance = async (): Promise<void> => {
+    if (isLoadingApi.value || !currentAccount.value) return;
+    const result = await getFromChainBalance(currentAccount.value);
+    fromAddressBalance.value = result;
+  };
+
   watchEffect(setErrMsg);
   watchEffect(setIsDisabledBridge);
   watchEffect(updateChain);
   watch([isEvmBridge, isAstar, selectedToken], setDefaultChain, { immediate: true });
-  watch([selectedToken], resetStates, { immediate: false });
+  watch([selectedToken, from], resetStates, { immediate: false });
   watch([isInputDestAddrManually], () => {
     inputtedAddress.value = '';
   });
@@ -663,17 +666,17 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     await setOriginChainNativeBal();
   });
   watchEffect(async () => {
-    if (isLoadingApi.value || !currentAccount.value) return;
-    const result = await getFromChainBalance(currentAccount.value);
-    fromAddressBalance.value = result;
+    await monitorFromChainBalance();
+  });
+  watch([to, isLoadingApi, isInputDestAddrManually, inputtedAddress, currentAccount], async () => {
+    // Memo: 'wait' for just make the 'balance UI' changing values smoothly whenever users click the reverse button
+    await wait(100);
+    await monitorDestChainBalance(inputtedAddress.value);
   });
   watchEffect(() => {
     if (isH160.value) {
       isInputDestAddrManually.value = true;
     }
-  });
-  watchEffect(async () => {
-    await monitorDestChainBalance(inputtedAddress.value);
   });
 
   watchEffect(() => {
