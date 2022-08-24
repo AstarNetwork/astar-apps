@@ -1,3 +1,4 @@
+import { useRoute } from 'vue-router';
 import { u8aToHex } from '@polkadot/util';
 import { decodeAddress } from '@polkadot/util-crypto';
 import BN from 'bn.js';
@@ -14,6 +15,7 @@ import { LOCAL_STORAGE } from './../../../config/localStorage';
 import { isValidEvmAddress } from './../../../config/web3/utils/convert';
 import { getEvmProvider } from './../../helper/wallet';
 import { EthereumProvider } from './../../types/CustomSignature';
+import { getQueryParams } from 'src/hooks/helper/common';
 
 type ChainName = 'Moonriver' | 'Moonbeam';
 
@@ -60,9 +62,12 @@ export class MoonbeamApi extends ChainApi {
       if (!providerName) {
         throw Error('EVM wallet extensions are not installed on this browser');
       }
+      const queryParams = getQueryParams();
       const provider = getEvmProvider(providerName) as any;
-      const network = EVM_ID[this._networkName];
-      setupNetwork({ network, provider });
+      if (queryParams.from === 'moonriver' || queryParams.from === 'moonbeam') {
+        const network = EVM_ID[this._networkName];
+        setupNetwork({ network, provider });
+      }
       return provider ? (provider as EthereumProvider) : null;
     } catch (error) {
       return null;

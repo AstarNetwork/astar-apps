@@ -31,3 +31,16 @@ export const scrollTo = (id: string): void => {
   const el = document.getElementById(id);
   el && el.scrollIntoView({ behavior: 'auto' });
 };
+
+// Ref: https://stackabuse.com/get-query-string-values-in-javascript/
+export const getQueryParams = (): any => {
+  const url = window.location.href;
+  const paramArr = url.slice(url.indexOf('?') + 1).split('&');
+  const params = {};
+  paramArr.map((param) => {
+    const [key, val] = param.split('=');
+    // @ts-ignore
+    params[key] = decodeURIComponent(val);
+  });
+  return params;
+};

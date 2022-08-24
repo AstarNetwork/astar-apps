@@ -4,7 +4,16 @@
       <div class="box--input-field">
         <div class="box__space-between">
           <span> {{ $t('from') }}</span>
-          <div />
+          <div>
+            <span class="text--to--balance">
+              {{
+                $t('assets.modals.balance', {
+                  amount: $n(truncate(token.userBalance)),
+                  token: token.metadata.symbol,
+                })
+              }}
+            </span>
+          </div>
         </div>
         <div class="box__row">
           <img v-if="iconWallet" width="24" :src="iconWallet" alt="wallet-icon" />
@@ -41,7 +50,7 @@
         <div class="box__space-between">
           <div />
           <div class="box__available">
-            <span class="text--available">
+            <span class="text--to--balance">
               {{
                 $t('assets.modals.balance', {
                   amount: $n(truncate(token.userBalance)),

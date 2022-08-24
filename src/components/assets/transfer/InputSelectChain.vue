@@ -6,7 +6,16 @@
   >
     <div class="box__space-between">
       <span> {{ $t(title) }}</span>
-      <div />
+      <div>
+        <span class="text--to--balance">
+          {{
+            $t('assets.modals.balance', {
+              amount: $n(truncate(balance)),
+              token: symbol,
+            })
+          }}
+        </span>
+      </div>
     </div>
     <div v-if="chain" class="wrapper--select-chain">
       <div class="row__chain">
@@ -29,6 +38,7 @@
 import { XcmChain } from 'src/modules/xcm';
 import { defineComponent, PropType } from 'vue';
 import { castChainName } from 'src/modules/xcm';
+import { truncate } from 'src/hooks/helper/common';
 export default defineComponent({
   props: {
     chain: {
@@ -55,9 +65,17 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    balance: {
+      type: String,
+      required: true,
+    },
+    symbol: {
+      type: String,
+      required: true,
+    },
   },
   setup() {
-    return { castChainName };
+    return { castChainName, truncate };
   },
 });
 </script>

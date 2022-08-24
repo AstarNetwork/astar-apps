@@ -226,7 +226,7 @@ export default defineComponent({
             return isValid;
           });
         } else {
-          console.log('from parachain');
+          // console.log('from parachain');
           return chains.value.filter((it) => to.value !== it.name.toLowerCase());
         }
       }

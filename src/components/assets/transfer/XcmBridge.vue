@@ -10,6 +10,8 @@
           :is-highlight-right-ui="isHighlightRightUi"
           :is-select-from="true"
           :is-selectable="isH160 ? false : true"
+          :balance="String(fromAddressBalance)"
+          :symbol="token.metadata.symbol"
         />
         <SelectEvmWallet v-if="isMoonbeamDeposit" :initialize-xcm-api="initializeXcmApi" />
         <div v-if="isReverseButton" class="row--reverse">
@@ -25,18 +27,20 @@
           :is-highlight-right-ui="isHighlightRightUi"
           :is-select-from="false"
           :is-selectable="true"
+          :balance="String(destAddressBalance)"
+          :symbol="token.metadata.symbol"
         />
 
-        <div v-if="isEvmBridge">
+        <div v-if="isEvmBridge || isMoonbeamWithdrawal">
           <AddressInputV2
             v-model:selAddress="inputtedAddress"
             :to-address="inputtedAddress"
-            :is-evm="isDeposit"
+            :is-evm="isDeposit || isMoonbeamWithdrawal"
             :is-display-balance="true"
             :placeholder="evmInputPlaceholder"
             :title="evmInputTitle"
             :symbol="token.metadata.symbol"
-            :address-balance="inputtedAddressBalance"
+            :address-balance="destAddressBalance"
           />
           <div v-if="isH160" class="row--withdrawal-address-format">
             <a
@@ -66,7 +70,7 @@
               :placeholder="$t('addressPlaceholder')"
               :title="$t('addressPlaceholder', { network: destChain.name })"
               :symbol="token.metadata.symbol"
-              :address-balance="inputtedAddressBalance"
+              :address-balance="destAddressBalance"
             />
             <div v-if="!isH160" class="row--msg-input-address">
               <div />
@@ -237,13 +241,14 @@ export default defineComponent({
       inputtedAddress,
       existentialDeposit,
       isH160,
-      inputtedAddressBalance,
+      destAddressBalance,
       fromAddressBalance,
       isDeposit,
       isLoadingApi,
       isAstarNativeTransfer,
       isInputDestAddrManually,
       isMoonbeamDeposit,
+      isMoonbeamWithdrawal,
       initializeXcmApi,
       inputHandler,
       bridge,
@@ -296,7 +301,7 @@ export default defineComponent({
     };
 
     watchEffect(() => {
-      console.log('isDisabledBridge.value', isDisabledBridge.value);
+      // console.log('isDisabledBridge.value', isDisabledBridge.value);
       // console.log('inputtedAddress', inputtedAddress.value);
       // console.log('destChain', destChain.value);
     });
@@ -314,7 +319,7 @@ export default defineComponent({
       evmInputPlaceholder,
       evmInputTitle,
       isH160,
-      inputtedAddressBalance,
+      destAddressBalance,
       fromAddressBalance,
       isDeposit,
       isDisplayTooltip,
@@ -325,6 +330,7 @@ export default defineComponent({
       isInputtingAddress,
       isReverseButton,
       isMoonbeamDeposit,
+      isMoonbeamWithdrawal,
       // inputtedDestAddress,
       setIsMobileDisplayTooltip,
       inputHandler,

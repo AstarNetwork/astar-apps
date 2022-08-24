@@ -1,7 +1,7 @@
 import { SelectedToken } from 'src/c-bridge';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { isXc20Token } from 'src/config/web3/utils';
-import { useCbridgeV2, useNetworkInfo } from 'src/hooks';
+import { useCbridgeV2, useNetworkInfo, useAccount } from 'src/hooks';
 import {
   Chain,
   checkIsRelayChain,
@@ -13,7 +13,7 @@ import {
 import { generateAssetFromEvmToken, generateNativeAsset } from 'src/modules/xcm/tokens';
 import { useStore } from 'src/store';
 import { Asset } from 'src/v2/models';
-import { computed, ref, watchEffect } from 'vue';
+import { computed, ref, watchEffect, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { XcmAssets } from './../../store/assets/state';
 import { capitalize } from './../helper/common';
@@ -35,6 +35,7 @@ export function useTransferRouter() {
   const route = useRoute();
   // Todo: move to GlobalState
   const { tokens: evmTokens } = useCbridgeV2();
+  const { currentAccount } = useAccount();
   const tokenSymbol = computed<string>(() => route.query.token as string);
   const network = computed<string>(() => route.query.network as string);
   const mode = computed<TransferMode>(() => route.query.mode as TransferMode);
@@ -352,6 +353,14 @@ export function useTransferRouter() {
   watchEffect(handleDefaultConfig);
   watchEffect(redirectForRelaychain);
   watchEffect(monitorProhibitedPair);
+
+  // Memo: to avoid opening the restricted bridge pair
+  watch([currentAccount, isH160], () => {
+    if (currentAccount.value && isH160.value) {
+      redirect();
+    }
+  });
+
   watchEffect(() => {
     // console.log('xcmAssets.value', xcmAssets.value);
   });

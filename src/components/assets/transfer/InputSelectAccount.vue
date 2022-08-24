@@ -21,47 +21,18 @@
           type="text"
           spellcheck="false"
           placeholder="Destination Address"
-          @focus="openOption = !isEthWallet"
-          @blur="closeOption"
           @change="changeAddress"
         />
       </div>
-
-      <div v-if="!isEthWallet">
-        <div class="icon--expand">
-          <astar-icon-expand size="20" />
-        </div>
-      </div>
-    </div>
-    <div v-if="openOption" class="box--account-option">
-      <ul class="container--accounts">
-        <div v-if="!isEthWallet">
-          <ModalSelectAccountOption
-            v-for="(account, index) in substrateAccounts"
-            :key="index"
-            v-model:selOption="selAccountIdx"
-            :address="account.address"
-            :address-name="account.name"
-            :checked="selAccountIdx === account.address"
-          />
-        </div>
-      </ul>
     </div>
   </div>
 </template>
 <script lang="ts">
 import { isValidEvmAddress } from 'src/config/web3';
-import { wait } from 'src/hooks/helper/common';
-import { getSelectedAccount } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
-import { SubstrateAccount } from 'src/store/general/state';
-import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
-import ModalSelectAccountOption from 'src/components/assets/modals/ModalSelectAccountOption.vue';
+import { computed, defineComponent, ref, watchEffect } from 'vue';
 
 export default defineComponent({
-  components: {
-    ModalSelectAccountOption,
-  },
   props: {
     toAddress: {
       type: String,
@@ -75,54 +46,13 @@ export default defineComponent({
   },
   emits: ['update:sel-address', 'sel-changed'],
   setup(props, { emit }) {
-    const openOption = ref<boolean>(false);
     const isToEvmAddress = ref<boolean>(false);
-    const selAccountIdx = ref<string>('');
-
     const store = useStore();
-    const substrateAccounts = computed(() => {
-      const accounts = store.getters['general/substrateAccounts'];
-      const selectedAccount = getSelectedAccount(accounts);
-      const filteredAccounts = accounts.filter(
-        (it: SubstrateAccount) => selectedAccount && it.source === selectedAccount.source
-      );
-      return filteredAccounts;
-    });
-
-    const account = getSelectedAccount(substrateAccounts.value);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
-    const isEthWallet = computed(() => store.getters['general/isEthWallet']);
-    const selAddress = ref(!isH160 ? (account?.address as string) : '');
-
-    const closeOption = async (): Promise<void> => {
-      // Memo: load the account data before closing
-      const delay = 400;
-      await wait(delay);
-      openOption.value = false;
-    };
 
     const changeAddress = (e: any) => {
       emit('update:sel-address', e.currentTarget.value);
     };
-
-    watch(
-      [selAccountIdx, isEthWallet],
-      () => {
-        if (!isEthWallet.value) {
-          const account = substrateAccounts.value.find(
-            (it: SubstrateAccount) => it.address === selAccountIdx.value
-          );
-          if (!account) return;
-          selAddress.value = account.address;
-        } else {
-          selAddress.value = '';
-        }
-        emit('update:sel-address', selAddress.value);
-        emit('sel-changed', selAccountIdx.value);
-        openOption.value = false;
-      },
-      { immediate: true }
-    );
 
     watchEffect(() => {
       isToEvmAddress.value = isValidEvmAddress(props.toAddress ? props.toAddress : '');
@@ -135,15 +65,8 @@ export default defineComponent({
     });
 
     return {
-      openOption,
-      closeOption,
-      selAccountIdx,
-      selAddress,
-      isH160,
       isToEvmAddress,
-      substrateAccounts,
       changeAddress,
-      isEthWallet,
     };
   },
 });

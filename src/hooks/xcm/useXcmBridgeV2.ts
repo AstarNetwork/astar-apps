@@ -1,3 +1,4 @@
+import { SystemAccount } from 'src/modules/account';
 import { ASTAR_SS58_FORMAT } from 'src/hooks/helper/plasmUtils';
 import { capitalize } from './../helper/common';
 import { evmToAddress } from '@polkadot/util-crypto';
@@ -52,23 +53,17 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   const amount = ref<string | null>(null);
   const errMsg = ref<string>('');
   const isDisabledBridge = ref<boolean>(true);
-
   const isInputDestAddrManually = ref<boolean>(false);
-  // const inputtedDestAddress = ref<string>('');
-
-  const existentialDeposit = ref<ExistentialDeposit | null>(null);
-  const { nativeTipPrice } = useGasPrice();
-  const { xcmOpponentChain, from, to, isEvmBridge, isTransferPage, reverseChain } =
-    useTransferRouter();
-
-  // Format: SS58(withdrawal) or H160(deposit)
-  // Todo: Rename
   const inputtedAddress = ref<string>('');
-  const inputtedAddressBalance = ref<number>(0);
-
+  const destAddressBalance = ref<number>(0);
   const fromAddressBalance = ref<number>(0);
   const originChainNativeBal = ref<number>(0);
   const isLoadingApi = ref<boolean>(true);
+
+  const existentialDeposit = ref<ExistentialDeposit | null>(null);
+  const { nativeTipPrice } = useGasPrice();
+  const { xcmOpponentChain, from, to, isEvmBridge, isTransferPage, reverseChain, tokenSymbol } =
+    useTransferRouter();
 
   const { t } = useI18n();
   const store = useStore();
@@ -82,9 +77,8 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   const isAstar = computed<boolean>(() => currentNetworkIdx.value === endpointKey.ASTAR);
 
   const isAstarNativeTransfer = computed<boolean>(() => {
-    const symbol = selectedToken.value ? selectedToken.value.metadata.symbol : '';
-    if (!selectedToken.value) return false;
-    return symbol === 'SDN' || symbol === 'ASTR';
+    const astarTokens = ['sdn', 'astr'];
+    return !!astarTokens.find((it) => it === tokenSymbol.value);
   });
 
   const opponentChain = computed<XcmChain>(() => {
@@ -135,8 +129,10 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     amount.value = null;
     errMsg.value = '';
     inputtedAddress.value = '';
-    isInputDestAddrManually.value = false;
-    inputtedAddressBalance.value = 0;
+    destAddressBalance.value = 0;
+    if (!isH160.value) {
+      isInputDestAddrManually.value = false;
+    }
   };
 
   const toggleIsInputDestAddrManually = (): void => {
@@ -199,6 +195,7 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     }
   };
 
+  // Todo: remove
   const checkIsEnoughEd = async (amount: number): Promise<boolean> => {
     const originChainMinBal =
       destChain.value.name === Kusama.name
@@ -266,7 +263,6 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     } else if (inputtedAddress.value && !checkInputtedAddress()) {
       errMsg.value = t('warning.inputtedInvalidDestAddress');
     }
-    // console.log('isEvmBridge.value', isEvmBridge.value);
     if (isH160.value || isEvmBridge.value) {
       // if: withdrawal from EVM or Deposit from native to EVM
 
@@ -363,21 +359,12 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     destParaId.value = isAstar.value ? parachainIds.ASTAR : parachainIds.SHIDEN;
     // Memo: H160: withdrawal mode
     srcChain.value = isH160.value ? astarChain : opponentChain.value;
-    // console.log('setDefaultChain');
     destChain.value = isH160.value ? originChain.value : astarChain;
-    // console.log('destChain.value', destChain.value);
   };
 
-  const setInputtedAddressBalance = async (): Promise<void> => {
-    if (!isLoadOriginApi.value) return;
-    const address = inputtedAddress.value;
-    if (!address) return;
+  const getDestChainBalance = async (address: string): Promise<number> => {
+    if (!isLoadOriginApi.value || !address || !originChainApi) return 0;
     if (isH160.value) {
-      // if: H160 Withdrawal
-      if (!originChainApi) {
-        inputtedAddressBalance.value = 0;
-        return;
-      }
       const balance = await originChainApi.getTokenBalances({
         selectedToken: selectedToken.value,
         address,
@@ -386,44 +373,55 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
       const formattedBalance = ethers.utils
         .formatUnits(balance.toString(), decimals.value)
         .toString();
-      inputtedAddressBalance.value = Number(formattedBalance);
+      return Number(formattedBalance);
     } else {
       if (isDeposit.value) {
         // if: SS58 Deposit
-        const isSendToH160 = isValidEvmAddress(inputtedAddress.value);
-        const destAddress = isSendToH160
-          ? toSS58Address(inputtedAddress.value)
-          : inputtedAddress.value;
-        const { userBalance } = await fetchXcmBalance({
-          token: selectedToken.value,
-          userAddress: destAddress,
-          api: $api!,
-        });
-        inputtedAddressBalance.value = Number(userBalance);
-      } else {
-        // if: SS58 Withdraw
-        // Memo: Deposit to Astar/Shiden EVM or withdraw to Moonbeam/Moonriver
-        if (!isValidEvmAddress(address)) {
-          inputtedAddressBalance.value = 0;
-          return;
+        const isSendToH160 = isValidEvmAddress(address);
+        const destAddress = isSendToH160 ? toSS58Address(address) : address;
+        if (isAstarNativeTransfer.value) {
+          const accountInfo = await $api?.query.system.account<SystemAccount>(address);
+          const bal = accountInfo!.data.free || '0';
+          const formattedBalance = ethers.utils
+            .formatUnits(bal.toString(), decimals.value)
+            .toString();
+          return Number(formattedBalance);
+        } else {
+          const { userBalance } = await fetchXcmBalance({
+            token: selectedToken.value,
+            userAddress: destAddress,
+            api: $api!,
+          });
+          return Number(userBalance);
         }
+      } else {
+        if (isMoonbeamWithdrawal.value) {
+          if (!isValidEvmAddress(inputtedAddress.value)) return 0;
+          const srcChainId = originChainApi!.chainProperty!.ss58Prefix!;
+          const isWithdrawAstrToMoonbeam =
+            isAstarNativeTransfer.value && isMoonbeamWithdrawal.value;
+          const tokenAddress = isWithdrawAstrToMoonbeam
+            ? MOONBEAM_ASTAR_TOKEN_ID[selectedToken.value.metadata.symbol as AstarToken]
+            : selectedToken.value.mappedERC20Addr;
 
-        const srcChainId = isMoonbeamWithdrawal.value
-          ? originChainApi!.chainProperty!.ss58Prefix!
-          : evmNetworkIdx.value;
+          const balance = await getTokenBal({
+            srcChainId,
+            address: inputtedAddress.value,
+            tokenAddress,
+            tokenSymbol: selectedToken.value.metadata.symbol,
+          });
+          return Number(balance);
+        } else {
+          // if: SS58 Withdraw
+          const bal = await originChainApi.getTokenBalances({
+            address,
+            selectedToken: selectedToken.value,
+            isNativeToken: selectedToken.value.isNativeToken,
+          });
 
-        const isWithdrawAstrToMoonbeam = isAstarNativeTransfer.value && isMoonbeamWithdrawal.value;
-        const tokenAddress = isWithdrawAstrToMoonbeam
-          ? MOONBEAM_ASTAR_TOKEN_ID[selectedToken.value.metadata.symbol as AstarToken]
-          : selectedToken.value.mappedERC20Addr;
-
-        const balance = await getTokenBal({
-          srcChainId,
-          address,
-          tokenAddress,
-          tokenSymbol: selectedToken.value.metadata.symbol,
-        });
-        inputtedAddressBalance.value = Number(balance);
+          const balance = Number(ethers.utils.formatUnits(bal, decimals.value).toString());
+          return balance;
+        }
       }
     }
   };
@@ -561,34 +559,30 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     }
   };
 
-  const updateFromAddressBalance = async (): Promise<void> => {
+  const getFromChainBalance = async (address: string): Promise<number> => {
     if (!selectedToken.value || !originChainApi) {
-      return;
+      return 0;
     }
 
     try {
       if (isDeposit.value) {
         const fromAddressBalFull = await originChainApi.getTokenBalances({
-          address: currentAccount.value,
+          address,
           selectedToken: selectedToken.value,
           isNativeToken: selectedToken.value.isNativeToken,
         });
 
-        fromAddressBalance.value = Number(
-          ethers.utils.formatUnits(fromAddressBalFull, decimals.value).toString()
-        );
+        return Number(ethers.utils.formatUnits(fromAddressBalFull, decimals.value).toString());
       } else {
-        const address = currentAccount.value;
-        // Memo: Withdraw
+        // if: Withdraw
         if (isH160.value) {
-          // Memo: EVM balance
           const balance = await getTokenBal({
             srcChainId: evmNetworkIdx.value,
             address,
             tokenAddress: selectedToken.value.mappedERC20Addr,
             tokenSymbol: selectedToken.value.metadata.symbol,
           });
-          fromAddressBalance.value = Number(balance);
+          return Number(balance);
         } else {
           if (isAstarNativeTransfer.value) {
             const formattedBalance = ethers.utils
@@ -597,15 +591,16 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
                 decimals.value
               )
               .toString();
-            fromAddressBalance.value = Number(formattedBalance);
+            return Number(formattedBalance);
           } else {
             // Memo: Native balance
-            fromAddressBalance.value = Number(selectedToken.value.userBalance);
+            return Number(selectedToken.value.userBalance);
           }
         }
       }
     } catch (error) {
       console.error(error);
+      return 0;
     }
   };
 
@@ -635,29 +630,54 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     await initializeXcmApi();
   };
 
+  const monitorDestChainBalance = async (inputtedAddress: string): Promise<void> => {
+    if (isLoadingApi.value) return;
+    if (isInputDestAddrManually.value || isEvmBridge.value) {
+      if (!inputtedAddress) {
+        destAddressBalance.value = 0;
+      }
+      destAddressBalance.value = await getDestChainBalance(inputtedAddress);
+    }
+    if (!isH160.value && !isInputDestAddrManually.value && currentAccount.value) {
+      const result = await getDestChainBalance(currentAccount.value);
+      destAddressBalance.value = result;
+    }
+    if (isInputDestAddrManually.value || isEvmBridge.value) {
+      destAddressBalance.value = inputtedAddress ? await getDestChainBalance(inputtedAddress) : 0;
+    } else {
+      destAddressBalance.value = await getDestChainBalance(currentAccount.value);
+    }
+  };
+
   watchEffect(setErrMsg);
   watchEffect(setIsDisabledBridge);
-  watchEffect(setInputtedAddressBalance);
   watchEffect(updateChain);
   watch([isEvmBridge, isAstar, selectedToken], setDefaultChain, { immediate: true });
-  watch([selectedToken], resetStates);
+  watch([selectedToken], resetStates, { immediate: false });
+  watch([isInputDestAddrManually], () => {
+    inputtedAddress.value = '';
+  });
 
   watchEffect(async () => {
     if (isLoadingApi.value) return;
     await setOriginChainNativeBal();
   });
   watchEffect(async () => {
-    if (isLoadingApi.value) return;
-    await updateFromAddressBalance();
+    if (isLoadingApi.value || !currentAccount.value) return;
+    const result = await getFromChainBalance(currentAccount.value);
+    fromAddressBalance.value = result;
   });
   watchEffect(() => {
     if (isH160.value) {
       isInputDestAddrManually.value = true;
     }
   });
+  watchEffect(async () => {
+    await monitorDestChainBalance(inputtedAddress.value);
+  });
 
   watchEffect(() => {
-    // console.log('useXcmBridgeV2');
+    // console.log('originChain.value ', originChain.value);
   });
 
   return {
@@ -670,7 +690,7 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     inputtedAddress,
     existentialDeposit,
     isH160,
-    inputtedAddressBalance,
+    destAddressBalance,
     fromAddressBalance,
     isDeposit,
     isLoadingApi,
