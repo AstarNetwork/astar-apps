@@ -13,7 +13,7 @@ import {
 import { generateAssetFromEvmToken, generateNativeAsset } from 'src/modules/xcm/tokens';
 import { useStore } from 'src/store';
 import { Asset } from 'src/v2/models';
-import { computed, ref, watch, watchEffect } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { XcmAssets } from './../../store/assets/state';
 import { capitalize } from './../helper/common';

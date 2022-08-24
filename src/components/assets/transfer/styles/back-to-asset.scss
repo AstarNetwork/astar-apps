@@ -13,6 +13,10 @@
   @media (min-width: $lg) {
     padding-top: 0;
   }
+  &:hover {
+    transition: all 0.3s ease 0s;
+    color: $astar-blue;
+  }
 }
 
 .icon--back {
