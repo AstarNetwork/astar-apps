@@ -37,13 +37,15 @@
       </button>
     </div>
 
-    <div v-if="showOption" class="wrapper--bottom">
+    <SidebarOption />
+
+    <!-- <div v-if="showOption" class="wrapper--bottom">
       <SocialMediaLinks />
       <div class="wrapper--option">
         <LightDarkMode />
         <LocaleChanger />
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -55,12 +57,14 @@ import { useRouter } from 'vue-router';
 import LightDarkMode from '../common/LightDarkMode.vue';
 import LocaleChanger from '../common/LocaleChanger.vue';
 import SocialMediaLinks from '../common/SocialMediaLinks.vue';
+import SidebarOption from './SidebarOption.vue';
 
 export default defineComponent({
   components: {
-    LocaleChanger,
-    SocialMediaLinks,
-    LightDarkMode,
+    // LocaleChanger,
+    // SocialMediaLinks,
+    // LightDarkMode,
+    SidebarOption,
   },
   setup() {
     const store = useStore();
