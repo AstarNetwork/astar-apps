@@ -75,7 +75,7 @@
             @click="goToLink(4)"
           >
             <astar-icon-base class="icon" icon-name="Youtube">
-              <astar-youtube />
+              <astar-icon-youtube />
             </astar-icon-base>
 
             <q-item-section class="item-name">Youtube</q-item-section>

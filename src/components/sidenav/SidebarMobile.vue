@@ -37,7 +37,9 @@
       </button>
     </div>
 
-    <SidebarOption />
+    <div v-if="showOption">
+      <SidebarOption />
+    </div>
 
     <!-- <div v-if="showOption" class="wrapper--bottom">
       <SocialMediaLinks />
