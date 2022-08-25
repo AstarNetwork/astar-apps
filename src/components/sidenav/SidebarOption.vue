@@ -108,7 +108,11 @@
           </q-item>
         </q-list>
       </q-expansion-item>
-      <q-expansion-item expand-icon="none" :header-style="`${classes.defaultHeader}`">
+      <q-expansion-item
+        expand-icon="none"
+        :header-style="`${classes.defaultHeader}`"
+        @click="goDocument()"
+      >
         <template #header>
           <astar-icon-base class="header-icon tw-ml-1 tw-mt-2">
             <astar-icon-docs />
@@ -143,6 +147,7 @@ import { useRouter } from 'vue-router';
 import LightDarkMode from '../common/LightDarkMode.vue';
 import LocaleChanger from '../common/LocaleChanger.vue';
 import { useStore } from 'src/store';
+import { socialUrl, docsUrl } from 'src/links';
 
 export default defineComponent({
   components: {
@@ -161,8 +166,32 @@ export default defineComponent({
     });
 
     const selectLinkIdx = ref(-1);
+    const goLink = (url: string) => {
+      window.open(url, '_blank');
+    };
+
     const goToLink = (linkIdx: number) => {
       selectLinkIdx.value = linkIdx;
+      switch (linkIdx) {
+        case 0:
+          goLink(socialUrl.discord);
+        case 1:
+          goLink(socialUrl.twitter);
+        case 2:
+          goLink(socialUrl.telegram);
+        case 3:
+          goLink(socialUrl.reddit);
+        case 4:
+          goLink(socialUrl.youtube);
+        case 5:
+          goLink(socialUrl.forum);
+        case 6:
+          goLink(socialUrl.github);
+      }
+    };
+
+    const goDocument = () => {
+      goLink(docsUrl.topPage);
     };
 
     const expanded = ref(false);
@@ -182,6 +211,7 @@ export default defineComponent({
       isDarkTheme,
       selectLinkIdx,
       goToLink,
+      goDocument,
     };
   },
 });
