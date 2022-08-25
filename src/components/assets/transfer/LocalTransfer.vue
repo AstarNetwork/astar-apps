@@ -157,7 +157,11 @@ import {
 import { useEthProvider } from 'src/hooks/custom-signature/useEthProvider';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { truncate } from 'src/hooks/helper/common';
-import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
+import {
+  ASTAR_SS58_FORMAT,
+  isValidAddressPolkadotAddress,
+  SUBSTRATE_SS58_FORMAT,
+} from 'src/hooks/helper/plasmUtils';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 import { getEvmGasCost, sampleEvmWalletAddress } from 'src/modules/gas-api';
 import { useStore } from 'src/store';
@@ -426,7 +430,9 @@ export default defineComponent({
       const selectedNetworkRef = selectedNetwork.value;
       const isErc20TransferRef = isErc20Transfer.value;
       const isValidDestAddress =
-        isValidAddressPolkadotAddress(toAddress.value) || isValidEvmAddress(toAddress.value);
+        isValidAddressPolkadotAddress(toAddress.value, ASTAR_SS58_FORMAT) ||
+        isValidAddressPolkadotAddress(toAddress.value, SUBSTRATE_SS58_FORMAT) ||
+        isValidEvmAddress(toAddress.value);
 
       try {
         if (transferAmtRef > fromAddressBalance.value) {
