@@ -76,9 +76,7 @@ export const formatStakingList = async ({
       })
     );
   }
-
-  data.filter((it) => it !== undefined);
-  return data as StakingData[];
+  return data.filter((it) => it !== undefined) as StakingData[];
 };
 
 export const getDappStakers = async ({ api }: { api: ApiPromise }): Promise<number> => {
