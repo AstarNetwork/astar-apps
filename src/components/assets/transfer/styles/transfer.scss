@@ -23,7 +23,7 @@
 .wrapper-containers {
   display: flex;
   flex-direction: column;
-  row-gap: 48px;
+  row-gap: 80px;
   @media (min-width: $md) {
     flex-direction: row;
     column-gap: 24px;

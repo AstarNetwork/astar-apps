@@ -8,7 +8,7 @@
   &:hover {
     .icon--check {
       transition: all 0.3s ease 0s;
-      color: $connected-green;
+      opacity: 1;
     }
     .history-description {
       transition: all 0.3s ease 0s;
@@ -17,6 +17,7 @@
     .explorer-icon {
       transition: all 0.3s ease 0s;
       stroke: $astar-blue;
+      opacity: 1;
     }
   }
 }
@@ -36,34 +37,52 @@
 .history-description {
   transition: all 0.3s ease 0s;
   font-weight: 500;
+  color: $gray-5;
+  @media (min-width: $md) {
+    color: $gray-3;
+  }
 }
 
 .container--explorer-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  stroke: $astar-blue;
+  stroke: $gray-5;
   border-radius: 30px;
   height: 24px;
   svg {
     height: 30px;
     width: 30px;
   }
+  @media (min-width: $md) {
+    stroke: $gray-4;
+  }
 }
 
 .explorer-icon {
-  stroke: $gray-4;
-  opacity: 0.5;
   transition: all 0.3s ease 0s;
+  @media (min-width: $md) {
+    opacity: 0.5;
+  }
 }
 
 .body--dark {
+  .container--explorer-icon {
+    stroke: $gray-1;
+    @media (min-width: $md) {
+      stroke: $gray-4;
+    }
+  }
   .icon--check {
-    opacity: 1;
-    color: $gray-4;
+    opacity: 0.4;
   }
   .explorer-icon {
     opacity: 1;
-    stroke: $gray-4;
+  }
+  .history-description {
+    color: $gray-1;
+    @media (min-width: $md) {
+      color: $gray-4;
+    }
   }
 }
