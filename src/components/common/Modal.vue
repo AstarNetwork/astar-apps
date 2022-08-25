@@ -1,6 +1,10 @@
 <template>
   <Teleport to="#app--main">
-    <div class="tw-fixed tw-inset-0 tw-overflow-y-auto highest-z-index" @click="closeModal()">
+    <div
+      class="tw-fixed tw-inset-0 tw-overflow-y-auto"
+      :class="!isLoading && 'highest-z-index'"
+      @click="closeModal()"
+    >
       <div class="tw-flex tw-items-center tw-justify-center tw-min-h-screen">
         <!-- Background overlay -->
         <div class="tw-fixed tw-inset-0 tw-transition-opacity" aria-hidden="true">
@@ -13,14 +17,8 @@
             dark:tw-bg-darkGray-900
             tw-rounded-lg tw-px-4
             sm:tw-px-8
-            tw-py-10
-            tw-shadow-xl
-            tw-transform
-            tw-transition-all
-            tw-mx-2
-            tw-my-2
-            tw-align-middle
-            tw-w-auto
+            tw-py-10 tw-shadow-xl tw-transform tw-transition-all tw-mx-2 tw-align-middle tw-w-auto
+            modal-wrapper
           "
         >
           <div>
@@ -46,7 +44,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs } from 'vue';
+import { useStore } from 'src/store';
+import { defineComponent, toRefs, computed } from 'vue';
 
 export default defineComponent({
   props: {
@@ -60,14 +59,24 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
+    const store = useStore();
+    const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const closeModal = () => {
       emit('update:is-open', false);
     };
 
     return {
       closeModal,
+      isLoading,
       ...toRefs(props),
     };
   },
 });
 </script>
+
+<style lang="scss" scoped>
+.modal-wrapper {
+  margin-top: 100px;
+  margin-bottom: 100px;
+}
+</style>
