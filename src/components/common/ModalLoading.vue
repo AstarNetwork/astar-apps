@@ -16,9 +16,13 @@
 import { defineComponent } from 'vue';
 export default defineComponent({});
 </script>
-<style scoped>
+<style scoped lang="scss">
+@import 'src/css/quasar.variables.scss';
 .loader {
   min-height: 100px;
   min-width: 100px;
+  @media (min-width: $lg) {
+    margin-left: 74px;
+  }
 }
 </style>
