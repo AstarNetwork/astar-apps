@@ -273,6 +273,7 @@ export function useTransferRouter() {
         // Memo: SDN is including in evmTokens
         !isShiden && tokens.push(nativeToken);
       } else {
+        // if: SS58 local transfer
         if (!xcmAssets.value || !nativeTokenSymbol.value) return [];
         if (isLocalTransfer.value) {
           selectableTokens = xcmAssets.value.assets;
@@ -288,8 +289,7 @@ export function useTransferRouter() {
       tokens = selectableTokens.filter(({ isXcmCompatible }) => isXcmCompatible);
       !isSelectedRelayChain && tokens.push(nativeToken);
     }
-    tokens && tokens.sort((a, b) => a.metadata.symbol.localeCompare(b.metadata.symbol));
-    return tokens as Asset[];
+    return tokens ? tokens.sort((a, b) => a.metadata.symbol.localeCompare(b.metadata.symbol)) : [];
   });
 
   const handleDefaultConfig = (): void => {

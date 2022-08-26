@@ -27,6 +27,7 @@ export default {
   evm: 'EVM',
   addressFormat: '{network} Wallet Address',
   addressPlaceholder: 'Destination {network} Address',
+  evmAddressPlaceholder: 'Destination EVM address',
   ticker: 'Ticker',
   isComingSoon: '{value} is coming soon',
   warning: {
@@ -36,6 +37,7 @@ export default {
     inputtedInvalidAddress: 'Inputted invalid address',
     selectedInvalidNetworkInWallet: 'Selected invalid network in your wallet',
     insufficientBridgeAmount: 'Minimum transfer amount is {amount} {token}',
+    insufficientOriginChainBalance: 'Minimum balance on {chain} network is {amount} {token}',
     insufficientExistentialDeposit:
       'Account balances in {network} network is below than the existential deposit amount',
   },
@@ -337,7 +339,7 @@ export default {
         fee: 'Fee is deducted from the amount entered',
         notInputExchanges: 'Do not input wallet address of exchanges',
         tooltip:
-          'We keep {amount} {symbol} in origin chain account to avoid losing the funds (existential deposit). When depositing from origin chain, only tokens that are above the minimum balance are transferable. When withdrawing the receiver origin chain must have more than {amount} {symbol}.',
+          'We keep {amount} {symbol} in origin chain account to avoid losing the funds. When depositing from origin chain, only tokens that are above the minimum balance are transferable.',
       },
     },
   },

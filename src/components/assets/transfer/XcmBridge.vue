@@ -34,7 +34,7 @@
           <SimpleInput
             v-model:selAddress="inputtedAddress"
             :to-address="inputtedAddress"
-            :placeholder="$t('evmInputPlaceholder')"
+            :placeholder="$t('evmAddressPlaceholder')"
             :is-inputting-address="isInputtingAddress"
             :toggle-is-inputting-address="toggleIsInputtingAddress"
           />
@@ -112,7 +112,7 @@
         </div>
       </div>
       <div class="container--warning">
-        <div v-if="token.isNativeToken" class="row--warning">
+        <div class="row--warning">
           <div class="column--title">
             <span class="text--dot">・</span>
             <span class="text--warning">{{ $t('assets.modals.xcmWarning.minBalIsRequired') }}</span>
@@ -130,12 +130,12 @@
               class="box--tooltip"
             >
               <div>
-                <span v-if="existentialDeposit"
+                <span
                   >{{
                     $t('assets.modals.xcmWarning.tooltip', {
-                      amount: truncate(Number(existentialDeposit.originChainMinBal), 8),
-                      symbol: existentialDeposit.symbol,
-                      network: existentialDeposit.chain,
+                      amount: truncate(Number(token.minBridgeAmount), 8),
+                      symbol: token.metadata.symbol,
+                      network: token.originChain,
                     })
                   }}
                 </span>
@@ -240,7 +240,7 @@ export default defineComponent({
       isDisabledBridge,
       isEvmBridge,
       inputtedAddress,
-      existentialDeposit,
+      // existentialDeposit,
       isH160,
       destAddressBalance,
       fromAddressBalance,
@@ -315,7 +315,7 @@ export default defineComponent({
       isDisabledBridge,
       isEvmBridge,
       inputtedAddress,
-      existentialDeposit,
+      // existentialDeposit,
       isLoadingApi,
       evmInputPlaceholder,
       evmInputTitle,

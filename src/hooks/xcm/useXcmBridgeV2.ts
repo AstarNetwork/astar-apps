@@ -61,13 +61,14 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   const originChainNativeBal = ref<number>(0);
   const isLoadingApi = ref<boolean>(true);
 
-  const existentialDeposit = ref<ExistentialDeposit | null>(null);
+  // const existentialDeposit = ref<ExistentialDeposit | null>(null);
   const { nativeTipPrice } = useGasPrice();
   const { xcmOpponentChain, from, to, isEvmBridge, isTransferPage, reverseChain, tokenSymbol } =
     useTransferRouter();
 
   const { t } = useI18n();
   const store = useStore();
+  const { currentNetworkIdx, evmNetworkIdx } = useNetworkInfo();
   const { currentAccount } = useAccount();
   const substrateAccounts = computed<SubstrateAccount[]>(
     () => store.getters['general/substrateAccounts']
@@ -104,8 +105,6 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   const originChain = computed<XcmChain>(() => {
     return xcmChainObj[selectedToken.value.originChain as Chain];
   });
-
-  const { currentNetworkIdx, evmNetworkIdx } = useNetworkInfo();
 
   const isLoadOriginApi = computed<boolean>(
     () => !!(selectedToken.value && selectedToken.value.originChain)
@@ -145,12 +144,8 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     srcChain.value = chain;
     // Memo: prevent an error clicking the reverse button after the UI opened from clicking the XCM tab
     if (chain.name === destChain.value.name) {
-      // const astarChain = isAstar.value?
-      if (isAstar.value) {
-        destChain.value = destChain.value.name === Astar.name ? opponentChain.value : Astar;
-      } else {
-        destChain.value = destChain.value.name === Shiden.name ? opponentChain.value : Shiden;
-      }
+      const astarChain = isAstar.value ? Astar : Shiden;
+      destChain.value = destChain.value.name === astarChain.name ? opponentChain.value : astarChain;
     }
   };
 
@@ -167,12 +162,12 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     return balance.toString();
   };
 
-  const getExistentialDeposit = async (): Promise<void> => {
-    if (!originChainApi) return;
-    await originChainApi.isReady();
-    const result = await originChainApi.getExistentialDeposit();
-    existentialDeposit.value = result;
-  };
+  // const getExistentialDeposit = async (): Promise<void> => {
+  //   if (!originChainApi) return;
+  //   await originChainApi.isReady();
+  //   const result = await originChainApi.getExistentialDeposit();
+  //   existentialDeposit.value = result;
+  // };
 
   const setOriginChainNativeBal = async (): Promise<void> => {
     if (
@@ -197,38 +192,10 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     }
   };
 
-  // Todo: remove
-  const checkIsEnoughEd = async (amount: number): Promise<boolean> => {
-    const originChainMinBal =
-      destChain.value.name === Kusama.name
-        ? existentialDeposit.value?.originChainMinBal
-        : existentialDeposit.value?.amount;
+  const checkIsEnoughMinBal = (amount: number): boolean => {
+    const originChainMinBal = selectedToken.value && selectedToken.value.minBridgeAmount;
 
-    const fetchMoonbeamNativeBal = async (): Promise<number> => {
-      const bal = (await originChainApi?.getNativeBalance(inputtedAddress.value)) || '0';
-      return Number(ethers.utils.formatEther(bal.toString()));
-    };
-
-    const fromOriginChainNativeBal = isMoonbeamWithdrawal.value
-      ? await fetchMoonbeamNativeBal()
-      : originChainNativeBal.value;
-
-    let originChainNativeBalance = 0;
-    if (isH160.value) {
-      // Memo: withdraw mode
-      const destNativeBal = await originChainApi?.getNativeBalance(inputtedAddress.value);
-      const formattedNativeBal = (destNativeBal || '0').toString();
-      const nativeTokenDecimals = originChainApi?.chainProperty?.tokenDecimals[0];
-      originChainNativeBalance = Number(
-        ethers.utils.formatUnits(formattedNativeBal, nativeTokenDecimals)
-      );
-    } else {
-      originChainNativeBalance = fromOriginChainNativeBal;
-    }
-    const isCountSendingAmount =
-      isDeposit.value && selectedToken.value && selectedToken.value.isNativeToken;
-    const sendingAmount = isCountSendingAmount ? amount : 0;
-    return originChainNativeBalance - sendingAmount > (originChainMinBal || 0);
+    return fromAddressBalance.value - amount > (originChainMinBal || 0);
   };
 
   const checkInputtedAddress = (): boolean => {
@@ -257,42 +224,25 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
 
     if (sendingAmount > fromAddressBalance.value) {
       errMsg.value = t('warning.insufficientBalance');
-    } else if (sendingAmount && minBridgeAmount > sendingAmount) {
+    }
+
+    if (sendingAmount && minBridgeAmount > sendingAmount) {
       errMsg.value = t('warning.insufficientBridgeAmount', {
         amount: minBridgeAmount,
         token: selectedTokenRef.metadata.symbol,
       });
-    } else if (inputtedAddress.value && !checkInputtedAddress()) {
+    }
+
+    if (inputtedAddress.value && !checkInputtedAddress()) {
       errMsg.value = t('warning.inputtedInvalidDestAddress');
     }
-    if (isH160.value || isEvmBridge.value) {
-      // if: withdrawal from EVM or Deposit from native to EVM
 
-      if (!inputtedAddress.value) {
-        errMsg.value = '';
-      }
-      if (sendingAmount > fromAddressBalance.value) {
-        errMsg.value = t('warning.insufficientBalance');
-      } else if (!inputtedAddress.value) {
-        return;
-      } else if (inputtedAddress.value && !checkInputtedAddress()) {
-        errMsg.value = t('warning.inputtedInvalidDestAddress');
-      } else if (!(await checkIsEnoughEd(sendingAmount))) {
-        errMsg.value = t('warning.insufficientExistentialDeposit', {
-          network: existentialDeposit.value?.chain,
-        });
-      }
-    } else {
-      // if: deposit / withdrawal from native to native
-
-      const isEnoughEd = await checkIsEnoughEd(sendingAmount);
-      if (sendingAmount > fromAddressBalance.value) {
-        errMsg.value = t('warning.insufficientBalance');
-      } else if (!isEnoughEd && existentialDeposit.value?.amount) {
-        errMsg.value = t('warning.insufficientExistentialDeposit', {
-          network: existentialDeposit.value?.chain,
-        });
-      }
+    if (isDeposit.value && !checkIsEnoughMinBal(sendingAmount)) {
+      errMsg.value = t('warning.insufficientOriginChainBalance', {
+        chain: selectedToken.value.originChain,
+        amount: selectedToken.value.minBridgeAmount,
+        token: selectedToken.value.metadata.symbol,
+      });
     }
   };
 
@@ -347,7 +297,7 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
         originChainApi = new ChainApi(endpoint);
       }
       await originChainApi.start();
-      await getExistentialDeposit();
+      // await getExistentialDeposit();
       isLoadingApi.value = false;
     } catch (err) {
       console.error(err);
@@ -691,7 +641,7 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     isDisabledBridge,
     isEvmBridge,
     inputtedAddress,
-    existentialDeposit,
+    // existentialDeposit,
     isH160,
     destAddressBalance,
     fromAddressBalance,
