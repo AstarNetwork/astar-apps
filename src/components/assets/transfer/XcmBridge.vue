@@ -30,7 +30,6 @@
           :balance="String(destAddressBalance)"
           :symbol="token.metadata.symbol"
         />
-
         <div v-if="isEvmBridge || isMoonbeamWithdrawal">
           <SimpleInput
             v-model:selAddress="inputtedAddress"
@@ -51,7 +50,7 @@
             </a>
           </div>
         </div>
-        <div v-else>
+        <div v-else class="row--input-address">
           <div v-if="!isInputDestAddrManually" class="row--msg-input-address">
             <div />
             <span class="text--available cursor-pointer" @click="toggleIsInputDestAddrManually">
