@@ -41,6 +41,7 @@ export default defineComponent({
   height: 6rem;
   padding: 1.25rem 0.625rem;
   // background: $gray-1;
+  background: rgba(247, 247, 248, 0.8);
   mix-blend-mode: normal;
   backdrop-filter: blur(200px);
   border-bottom: 1px solid $gray-3;
@@ -72,8 +73,8 @@ export default defineComponent({
 
 .body--dark {
   .header {
-    // background: $gray-6;
-    background: transparent !important;
+    background: rgba(25, 29, 31, 0.8) !important;
+    // background: transparent !important;
     border-bottom: 1px solid $gray-6;
   }
   .header-left {
