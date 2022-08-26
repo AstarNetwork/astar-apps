@@ -1,3 +1,4 @@
+import { astarNetworks } from './../../../hooks/xcm/useTransferRouter';
 import { ApiPromise } from '@polkadot/api';
 import { Struct } from '@polkadot/types';
 import { ethers } from 'ethers';
@@ -141,7 +142,10 @@ export const castChainName = (chain: string): string => {
   const isEvm = chain.includes(pathEvm);
   if (isEvm) {
     const network = chain.split('-')[0];
-    return network + ' ' + 'EVM';
+    return network + ' ' + '(EVM)';
+  }
+  if (chain && astarNetworks.includes(chain.toLowerCase())) {
+    return chain + ' ' + '(Native)';
   }
   return chain;
 };

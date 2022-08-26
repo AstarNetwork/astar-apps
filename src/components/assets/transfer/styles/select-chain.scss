@@ -23,6 +23,8 @@
   color: $gray-3;
   background-color: transparent;
   padding: 14px;
+  max-height: 420px;
+  overflow: auto;
 }
 
 .row--title {
