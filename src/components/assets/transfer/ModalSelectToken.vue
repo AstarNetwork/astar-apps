@@ -4,24 +4,24 @@
     :title="$t('assets.transferPage.selectToken')"
     :is-closing="isClosingModal"
     :close-modal="closeModal"
+    class-name="transfer-modal"
   >
-    <div class="container--select-chain-mobile">
-      <div class="container--chains">
+    <div class="container--select-item-mobile">
+      <div class="container--items">
         <div
-          v-for="token in tokens"
-          :key="token.assetId"
-          class="row--chain"
-          @click="setToken(token)"
+          v-for="t in tokens"
+          :key="t.assetId"
+          class="row--item"
+          :class="token.metadata.symbol === t.metadata.symbol && 'row--item-selected'"
+          @click="setToken(t)"
         >
-          <div class="column--chain-name">
+          <div class="column--item-name">
             <img
-              :src="token.tokenImage"
-              :alt="token.metadata.symbol"
-              :class="[
-                token.metadata.symbol === nativeTokenSymbol ? 'native-token-logo' : 'chain-logo',
-              ]"
+              :src="t.tokenImage"
+              :alt="t.metadata.symbol"
+              :class="[t.metadata.symbol === nativeTokenSymbol ? 'native-token-logo' : 'item-logo']"
             />
-            <span>{{ token.metadata.symbol }}</span>
+            <span>{{ t.metadata.symbol }}</span>
           </div>
           <div />
         </div>
@@ -35,7 +35,7 @@ import AstarModal from 'src/components/common/AstarModal.vue';
 import { useNetworkInfo } from 'src/hooks';
 import { wait } from 'src/v2/common';
 import { Asset } from 'src/v2/models';
-import { defineComponent, PropType, ref } from 'vue';
+import { defineComponent, PropType, ref, watchEffect } from 'vue';
 
 export default defineComponent({
   components: {
@@ -58,6 +58,10 @@ export default defineComponent({
       type: Object as PropType<Asset[]>,
       required: true,
     },
+    token: {
+      type: Object as PropType<Asset>,
+      required: true,
+    },
   },
   setup(props) {
     const isClosingModal = ref<boolean>(false);
@@ -69,6 +73,10 @@ export default defineComponent({
     };
 
     const { nativeTokenSymbol } = useNetworkInfo();
+
+    watchEffect(() => {
+      console.log('tokens', props.tokens);
+    });
 
     return { nativeTokenSymbol, closeModal, isClosingModal };
   },

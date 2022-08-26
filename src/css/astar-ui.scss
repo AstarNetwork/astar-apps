@@ -25,4 +25,11 @@
       color: $gray-1 !important;
     }
   }
+  .transfer-modal {
+    .modal {
+      .modal-content {
+        background-color: $gray-6 !important;
+      }
+    }
+  }
 }

@@ -4,17 +4,19 @@
     :title="$t('assets.transferPage.selectChain')"
     :is-closing="isClosingModal"
     :close-modal="closeModal"
+    class-name="transfer-modal"
   >
-    <div class="container--select-chain-mobile">
-      <div class="container--chains">
+    <div class="container--select-item-mobile">
+      <div class="container--items">
         <div
           v-for="chain in chains"
           :key="chain.name"
-          class="row--chain"
+          class="row--item"
+          :class="selectedChain === chain.name.toLowerCase() && 'row--item-selected'"
           @click="setChain(chain.name)"
         >
-          <div class="column--chain-name">
-            <img :src="chain.img" :alt="chain.name" class="chain-logo" />
+          <div class="column--item-name">
+            <img :src="chain.img" :alt="chain.name" class="item-logo" />
             <span>{{ castChainName(chain.name) }}</span>
           </div>
           <div />
@@ -44,6 +46,10 @@ export default defineComponent({
     },
     setChain: {
       type: Function,
+      required: true,
+    },
+    selectedChain: {
+      type: String,
       required: true,
     },
     chains: {

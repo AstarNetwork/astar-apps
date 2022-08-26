@@ -1,17 +1,17 @@
 <template>
-  <div class="container--select-chain">
+  <div class="container--select-item">
     <div class="row--title">
       <span>{{ $t('assets.transferPage.selectChain') }}</span>
     </div>
-    <div class="container--chains">
+    <div class="container--items">
       <div
         v-for="chain in chains"
         :key="chain.name"
-        class="row--chain"
+        class="row--item"
         @click="setChain(chain.name)"
       >
-        <div class="column--chain-name">
-          <img :src="chain.img" :alt="chain.name" class="chain-logo" />
+        <div class="column--item-name">
+          <img :src="chain.img" :alt="chain.name" class="item-logo" />
           <span>{{ castChainName(chain.name) }}</span>
         </div>
         <div />

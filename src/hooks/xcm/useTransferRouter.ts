@@ -263,13 +263,12 @@ export function useTransferRouter() {
     if (isLocalTransfer.value) {
       if (isH160.value) {
         if (!evmTokens.value) return [];
-        tokens = evmTokens.value
-          .filter((it) => {
-            return isXc20Token(it.address);
-          })
-          .map((it) => {
-            return generateAssetFromEvmToken(it as SelectedToken);
-          });
+        const selectableTokens =
+          mode.value === 'local'
+            ? evmTokens.value
+            : evmTokens.value.filter((it) => isXc20Token(it.address));
+        tokens = selectableTokens.map((it) => generateAssetFromEvmToken(it as SelectedToken));
+
         const isShiden = currentNetworkIdx.value === endpointKey.SHIDEN;
         // Memo: SDN is including in evmTokens
         !isShiden && tokens.push(nativeToken);
@@ -344,11 +343,11 @@ export function useTransferRouter() {
     return selectableChains;
   });
 
-  const selectableFromChains = computed<XcmChain[]>(() => {
-    return chains.value.filter(
-      (it) => !it.name.includes(pathEvm) && from.value !== it.name.toLowerCase()
-    );
-  });
+  // const selectableFromChains = computed<XcmChain[]>(() => {
+  //   return chains.value.filter(
+  //     (it) => !it.name.includes(pathEvm) && from.value !== it.name.toLowerCase()
+  //   );
+  // });
 
   watchEffect(handleDefaultConfig);
   watchEffect(redirectForRelaychain);
@@ -380,7 +379,7 @@ export function useTransferRouter() {
     token,
     tokens,
     chains,
-    selectableFromChains,
+    // selectableFromChains,
     redirect,
     reverseChain,
     getFromToParams,

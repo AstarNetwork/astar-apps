@@ -61,12 +61,14 @@
       :handle-modal-select-chain="handleModalSelectChain"
       :set-chain="handleSetChain"
       :chains="selectableChains"
+      :selected-chain="isSelectFromChain ? from : to"
     />
     <ModalSelectToken
       :is-modal-select-token="isModalSelectToken"
       :handle-modal-select-token="handleModalSelectToken"
       :set-token="handleSetToken"
       :tokens="tokens"
+      :token="token"
     />
   </div>
 </template>
@@ -128,7 +130,6 @@ export default defineComponent({
       from,
       to,
       token,
-      selectableFromChains,
       chains,
       tokens,
       isLocalTransfer,
@@ -167,11 +168,16 @@ export default defineComponent({
       isModalSelectToken.value && handleModalSelectToken({ isOpen: false });
     };
 
-    const handleSetChain = async (chain: string): Promise<void> => {
-      setChain({
-        chain,
-        isSelectFromChain: isSelectFromChain.value,
-      });
+    const handleSetChain = async (c: string): Promise<void> => {
+      const chain = c.toLowerCase();
+      const selectedChain = isSelectFromChain.value ? from.value : to.value;
+      const isSelectedSameChain = chain === selectedChain;
+      if (!isSelectedSameChain) {
+        setChain({
+          chain,
+          isSelectFromChain: isSelectFromChain.value,
+        });
+      }
       await setRightUi('information');
       isModalSelectChain.value && handleModalSelectChain({ isOpen: false });
     };
@@ -210,23 +216,13 @@ export default defineComponent({
 
     const selectableChains = computed<XcmChain[]>(() => {
       if (isSelectFromChain.value) {
-        return selectableFromChains.value;
+        return chains.value.filter((it) => !it.name.includes('evm'));
       } else {
         if (from.value === currentNetworkName.value.toLowerCase()) {
           // if: from = Astar/Shiden
-          return chains.value.filter((it) => {
-            const name = removeEvmName(it.name);
-
-            const isFromChain = it.name.toLowerCase() === from.value;
-            const isValid =
-              currentNetworkName.value.toLowerCase() !== name.toLowerCase() &&
-              to.value !== it.name.toLowerCase() &&
-              !isFromChain;
-            return isValid;
-          });
+          return chains.value.filter((it) => !it.name.includes('evm'));
         } else {
-          // console.log('from parachain');
-          return chains.value.filter((it) => to.value !== it.name.toLowerCase());
+          return chains.value;
         }
       }
     });
@@ -242,7 +238,8 @@ export default defineComponent({
     watch([currentAccount], handleUpdateXcmTokenAssets, { immediate: true });
     watchEffect(() => {
       // console.log('chains.value', chains.value);
-      // console.log('selectableChains', selectableChains.value);
+      // console.log('from', from.value);
+      // console.log('to', to.value);
       // console.log('tokens', tokens.value);
     });
 
@@ -259,6 +256,9 @@ export default defineComponent({
       tokens,
       selectableChains,
       isH160,
+      isSelectFromChain,
+      from,
+      to,
       setRightUi,
       handleModalSelectToken,
       handleModalSelectChain,

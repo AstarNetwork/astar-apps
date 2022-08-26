@@ -1,6 +1,6 @@
 @import 'src/css/quasar.variables.scss';
 
-.container--select-chain {
+.container--select-item {
   border: 1px solid $gray-3;
   border-radius: 6px;
   box-sizing: border-box;
@@ -17,7 +17,7 @@
   }
 }
 
-.container--select-chain-mobile {
+.container--select-item-mobile {
   border-radius: 6px;
   box-sizing: border-box;
   color: $gray-3;
@@ -34,24 +34,35 @@
   font-weight: 700;
 }
 
-.container--chains {
+.container--items {
   display: flex;
   flex-direction: column;
+  row-gap: 8px;
 }
 
-.row--chain {
+.row--item {
   display: flex;
   justify-content: space-between;
   cursor: pointer;
   border-radius: 8px;
   margin-left: -8px;
   margin-right: -8px;
+  border: 1px solid $gray-3;
+  @media (min-width: $md) {
+    border: 0px solid transparent;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
   &:hover {
     background: rgba(255, 255, 255, 0.02);
   }
 }
 
-.column--chain-name {
+.row--item-selected {
+  background-color: white;
+}
+
+.column--item-name {
   display: flex;
   column-gap: 8px;
   align-items: center;
@@ -61,7 +72,7 @@
   font-weight: 700;
 }
 
-.chain-logo {
+.item-logo {
   width: 24px;
   height: 24px;
   border-radius: 50%;
@@ -73,12 +84,21 @@
 }
 
 .body--dark {
-  .container--select-chain {
+  .container--select-item {
     color: $gray-1;
     background: $gray-6;
     border: 1px solid $gray-4;
   }
-  .column--chain-name {
+  .column--item-name {
     color: $gray-1;
+  }
+  .row--item {
+    border: 1px solid $gray-4;
+    @media (min-width: $md) {
+      border: 0px solid transparent;
+    }
+  }
+  .row--item-selected {
+    background-color: $gray-5;
   }
 }

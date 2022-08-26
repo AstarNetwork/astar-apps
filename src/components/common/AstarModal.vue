@@ -1,6 +1,6 @@
 <template>
   <Teleport to="#app--main">
-    <div :class="!isLoading && 'highest-z-index'">
+    <div :class="[!isLoading && 'highest-z-index', className]">
       <astar-simple-modal
         v-if="isModalOpen"
         :show="isModalOpen"
@@ -26,6 +26,11 @@ export default defineComponent({
     title: {
       type: String,
       required: true,
+    },
+    className: {
+      type: String,
+      required: false,
+      default: '',
     },
     isModalOpen: {
       type: Boolean,
