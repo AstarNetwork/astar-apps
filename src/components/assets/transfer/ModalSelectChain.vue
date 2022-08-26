@@ -24,14 +24,11 @@
   </AstarModal>
 </template>
 <script lang="ts">
-import { endpointKey } from 'src/config/chainEndpoints';
-import { useNetworkInfo } from 'src/hooks';
 import { fadeDuration } from '@astar-network/astar-ui';
-import { Chain, XcmChain, xcmChains } from 'src/modules/xcm';
-import { defineComponent, ref, watchEffect, PropType } from 'vue';
 import AstarModal from 'src/components/common/AstarModal.vue';
+import { castChainName, XcmChain } from 'src/modules/xcm';
 import { wait } from 'src/v2/common';
-import { castChainName } from 'src/modules/xcm';
+import { defineComponent, PropType, ref } from 'vue';
 export default defineComponent({
   components: {
     AstarModal,

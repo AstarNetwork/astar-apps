@@ -1,5 +1,4 @@
 <template>
-  <!-- <div id="top"> -->
   <div>
     <BackToAsset :class="isHighlightRightUi && 'half-opacity'" />
     <MobileNavigator />
@@ -93,7 +92,7 @@ import {
 } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { MOVR } from 'src/modules/token';
-import { Chain, checkIsRelayChain, removeEvmName, XcmChain, xcmToken } from 'src/modules/xcm';
+import { Chain, removeEvmName, XcmChain, xcmToken } from 'src/modules/xcm';
 import { useStore } from 'src/store';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
