@@ -3,7 +3,8 @@
   "id": "astar",
   "chainType": "Live",
   "bootNodes": [
-    "/ip4/95.217.87.220/tcp/50333/ws/p2p/12D3KooWBSaoqtRoWwF9kziNpJA8okuecMmmS2rw1KPtvh6nKp1D"
+    "/ip4/51.103.6.72/tcp/30333/ws/p2p/12D3KooWDkpEpAJ2PnWRZyWK4wjrc4NjCRUQiSu5rwB8H8MifDuD",
+    "/ip4/18.183.235.189/tcp/30333/ws/p2p/12D3KooWPu4C4ZkaLb8H1EPkwUg8UWVyesD9hbEQWix3ACd7nUiM"
   ],
   "protocolId": "astar",
   "properties": {
