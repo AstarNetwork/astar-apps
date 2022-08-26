@@ -44,7 +44,7 @@ export default defineComponent({
   background: rgba(247, 247, 248, 0.8);
   mix-blend-mode: normal;
   backdrop-filter: blur(200px);
-  border-bottom: 1px solid $gray-3;
+  border-bottom: 1px solid $object-light;
   @supports (-moz-appearance: none) {
     background: $backdrop-transparent-dark-firefox !important;
   }
