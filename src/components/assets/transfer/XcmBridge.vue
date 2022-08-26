@@ -151,6 +151,14 @@
             </span>
           </div>
         </div>
+        <div class="row--warning">
+          <div class="column--title">
+            <span class="text--dot">・</span>
+            <span class="text--warning">
+              {{ $t('assets.modals.xcmWarning.notInputExchanges') }}
+            </span>
+          </div>
+        </div>
       </div>
       <div v-if="errMsg && currentAccount" class="row--box-error">
         <span class="color--white"> {{ $t(errMsg) }}</span>
