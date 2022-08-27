@@ -94,7 +94,8 @@ import {
 } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { MOVR } from 'src/modules/token';
-import { Chain, removeEvmName, XcmChain, xcmToken } from 'src/modules/xcm';
+import { Chain, XcmChain, xcmToken } from 'src/modules/xcm';
+import { ASTR } from 'src/modules/xcm/tokens';
 import { useStore } from 'src/store';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
@@ -146,12 +147,13 @@ export default defineComponent({
     const isDisabledXcm = computed<boolean>(() => {
       const isEvmNativeToken =
         isH160.value && tokenSymbol.value === nativeTokenSymbol.value.toLowerCase();
-      const isMovr = isH160.value && token.value?.metadata.symbol === MOVR.symbol;
+      const isH160Movr = isH160.value && token.value?.metadata.symbol === MOVR.symbol;
+      const isAstr = token.value?.metadata.symbol === ASTR.symbol;
       const acalaTokens = xcmToken[currentNetworkIdx.value]
         .filter((it) => it.originChain === Chain.ACALA)
         .map((it) => it.symbol.toLowerCase());
       const isAcalaToken = acalaTokens.includes(String(token.value?.metadata.symbol.toLowerCase()));
-      return isShibuya.value || isMovr || isAcalaToken || isEvmNativeToken;
+      return isShibuya.value || isH160Movr || isAcalaToken || isEvmNativeToken || isAstr;
     });
 
     const isTransferNativeToken = computed<boolean>(() => {
@@ -238,9 +240,6 @@ export default defineComponent({
     watch([currentAccount], handleUpdateXcmTokenAssets, { immediate: true });
     watchEffect(() => {
       // console.log('chains.value', chains.value);
-      // console.log('from', from.value);
-      // console.log('to', to.value);
-      // console.log('tokens', tokens.value);
     });
 
     return {
