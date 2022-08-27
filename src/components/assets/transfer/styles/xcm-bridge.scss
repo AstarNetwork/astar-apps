@@ -84,6 +84,12 @@
   cursor: pointer !important;
   margin-top: -24px;
   background: $body-bg-light;
+  transition: all 0.3s ease 0s;
+  &:hover {
+    border: 1px solid $astar-blue !important;
+    color: $astar-blue;
+    transition: all 0.3s ease 0s;
+  }
 }
 
 .adjust--to-input {
