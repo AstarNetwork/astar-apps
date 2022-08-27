@@ -9,6 +9,7 @@ import { SubstrateAccount } from 'src/store/general/state';
 import { capitalize } from './../helper/common';
 
 import {
+  astarNativeTokens,
   useAccount,
   useBalance,
   useCustomSignature,
@@ -64,7 +65,6 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   const { nativeTipPrice } = useGasPrice();
   const { xcmOpponentChain, from, to, isEvmBridge, isTransferPage, reverseChain, tokenSymbol } =
     useTransferRouter();
-
   const { t } = useI18n();
   const store = useStore();
   const { currentNetworkIdx, evmNetworkIdx } = useNetworkInfo();
@@ -78,17 +78,16 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   const isAstar = computed<boolean>(() => currentNetworkIdx.value === endpointKey.ASTAR);
 
   const isAstarNativeTransfer = computed<boolean>(() => {
-    const astarTokens = ['sdn', 'astr'];
-    return !!astarTokens.find((it) => it === tokenSymbol.value);
+    return !!astarNativeTokens.find((it) => it === tokenSymbol.value);
   });
 
   const opponentChain = computed<XcmChain>(() => {
     try {
       let chain = xcmOpponentChain.value;
-      if (xcmOpponentChain.value === 'Astar-evm') {
+      if (xcmOpponentChain.value === Chain.ASTAR_EVM) {
         chain = Astar.name;
       }
-      if (xcmOpponentChain.value === 'Shiden-evm') {
+      if (xcmOpponentChain.value === Chain.SHIDEN_EVM) {
         chain = Shiden.name;
       }
       return xcmChainObj[chain as keyof typeof xcmChainObj];
@@ -208,8 +207,10 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   };
 
   const setErrMsg = async (): Promise<void> => {
-    if (isLoadingApi.value) return;
     errMsg.value = '';
+    if (isLoadingApi.value || !amount.value) {
+      return;
+    }
     const sendingAmount = Number(amount.value);
     const selectedTokenRef = selectedToken.value;
     const minBridgeAmount = Number(selectedTokenRef && selectedTokenRef.minBridgeAmount);
@@ -288,7 +289,7 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
         originChainApi = new ChainApi(endpoint);
       }
       await originChainApi.start();
-      // await getExistentialDeposit();
+      await originChainApi.isReady;
       isLoadingApi.value = false;
     } catch (err) {
       console.error(err);
@@ -298,7 +299,6 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   const setDefaultChain = (): void => {
     if (!selectedToken.value) return;
     const astarChain = isAstar.value ? Astar : Shiden;
-
     destParaId.value = isAstar.value ? parachainIds.ASTAR : parachainIds.SHIDEN;
     // Memo: H160: withdrawal mode
     srcChain.value = isH160.value ? astarChain : opponentChain.value;
@@ -546,10 +546,12 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     const hasConnectedApi =
       originChainApi &&
       selectedToken.value &&
-      originChainApi.chainProperty?.chainName === selectedToken.value.originChain &&
+      originChainApi.chainProperty?.chainName.toLowerCase() === from.value &&
       reset === false;
 
-    if (!isLoadOriginApi.value || hasConnectedApi || !srcChain.value || !destChain.value) return;
+    if (!isLoadOriginApi.value || hasConnectedApi || !srcChain.value || !destChain.value) {
+      return;
+    }
 
     isLoadingApi.value = true;
     try {
@@ -616,10 +618,6 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     if (isH160.value) {
       isInputDestAddrManually.value = true;
     }
-  });
-
-  watchEffect(() => {
-    // console.log('originChain.value ', originChain.value);
   });
 
   return {

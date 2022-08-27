@@ -21,6 +21,7 @@ import { capitalize } from './../helper/common';
 export const pathEvm = '-evm';
 export type TransferMode = 'local' | 'xcm';
 export const astarNetworks = ['astar', 'shiden', 'shibuya'];
+export const astarNativeTokens = ['sdn', 'astr', 'sby'];
 export interface NetworkFromTo {
   from: string;
   to: string;

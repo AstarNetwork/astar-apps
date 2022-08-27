@@ -115,7 +115,7 @@ export const xcmChainObj: XcmChainObj = {
     relayChain: Chain.KUSAMA,
     img: 'https://polkadot.js.org/apps/static/karura.6540c949..svg',
     parachainId: parachainIds.KARURA,
-    endpoint: 'wss://karura.api.onfinality.io/public-ws',
+    endpoint: 'wss://karura-rpc.dwellir.com',
   },
   [Chain.ACALA]: {
     name: Chain.ACALA,
