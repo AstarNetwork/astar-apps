@@ -20,6 +20,7 @@ import { AbiItem } from 'web3-utils';
 import { signAndSend } from './../helper/wallet';
 import { useGasPrice } from '../useGasPrice';
 import { useEthProvider } from '../custom-signature/useEthProvider';
+import { addTxHistories } from 'src/modules/account';
 
 export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: () => void) {
   const store = useStore();
@@ -66,6 +67,7 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
         handleCustomExtrinsic,
         dispatch: store.dispatch,
         tip: selectedTip.value.price,
+        txType: 'transfer',
       });
       isTxSuccess.value = true;
     } catch (e) {
@@ -101,6 +103,11 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
           });
           store.commit('general/setLoading', false);
           fn && fn();
+          addTxHistories({
+            hash,
+            type: 'transfer',
+            address: fromAddress,
+          });
           isTxSuccess.value = true;
         }
       ).catch((error: any) => {
@@ -182,6 +189,11 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
         });
         store.commit('general/setLoading', false);
         fn && fn();
+        addTxHistories({
+          hash: transactionHash,
+          type: 'transfer',
+          address: fromAddress,
+        });
         isTxSuccess.value = true;
       })
       .catch((error: any) => {

@@ -57,6 +57,7 @@
       </div>
     </div>
     <ModalSelectChain
+      v-if="from && to"
       :is-modal-select-chain="isModalSelectChain"
       :handle-modal-select-chain="handleModalSelectChain"
       :set-chain="handleSetChain"
@@ -64,6 +65,7 @@
       :selected-chain="isSelectFromChain ? from : to"
     />
     <ModalSelectToken
+      v-if="token && tokens"
       :is-modal-select-token="isModalSelectToken"
       :handle-modal-select-token="handleModalSelectToken"
       :set-token="handleSetToken"
@@ -217,15 +219,11 @@ export default defineComponent({
     };
 
     const selectableChains = computed<XcmChain[]>(() => {
-      if (isSelectFromChain.value) {
+      const isFromAstar = from.value === currentNetworkName.value.toLowerCase();
+      if (isSelectFromChain.value || isFromAstar) {
         return chains.value.filter((it) => !it.name.includes('evm'));
       } else {
-        if (from.value === currentNetworkName.value.toLowerCase()) {
-          // if: from = Astar/Shiden
-          return chains.value.filter((it) => !it.name.includes('evm'));
-        } else {
-          return chains.value;
-        }
+        return chains.value;
       }
     });
 

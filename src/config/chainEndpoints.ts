@@ -147,8 +147,20 @@ export const getProviderIndex = (chain: ASTAR_CHAIN) => {
       return endpointKey.ASTAR;
     case 'Shiden':
       return endpointKey.SHIDEN;
-
     default:
       return endpointKey.SHIBUYA;
+  }
+};
+
+export const getNetworkName = (chain: number): string => {
+  switch (chain) {
+    case endpointKey.ASTAR:
+      return 'astar';
+    case endpointKey.SHIDEN:
+      return 'shiden';
+    case endpointKey.SHIBUYA:
+      return 'shibuya';
+    default:
+      return 'development';
   }
 };

@@ -116,6 +116,7 @@ export function useXcmTokenTransfer(selectedToken: Ref<Asset>) {
         handleCustomExtrinsic,
         dispatch: store.dispatch,
         tip: selectedTip.value.price,
+        txType: 'transfer',
       });
     } catch (e: any) {
       console.error(e);

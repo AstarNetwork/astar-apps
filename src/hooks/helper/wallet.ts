@@ -6,6 +6,7 @@ import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { supportEvmWalletObj, SupportWallet, supportWalletObj } from 'src/config/wallets';
 import { wait } from 'src/hooks/helper/common';
 import { deepLink } from 'src/links';
+import { addTxHistories } from 'src/modules/account';
 import { showError } from 'src/modules/extrinsic';
 import { Dispatch } from 'vuex';
 import { SubstrateAccount } from './../../store/general/state';
@@ -192,6 +193,7 @@ export const signAndSend = async ({
   handleCustomExtrinsic,
   finalizeCallback,
   tip,
+  txType,
 }: {
   transaction: Transaction;
   senderAddress: string;
@@ -203,6 +205,7 @@ export const signAndSend = async ({
   handleCustomExtrinsic?: (method: Transaction) => Promise<void>;
   finalizeCallback?: () => void;
   tip?: string;
+  txType?: string;
 }): Promise<boolean> => {
   return new Promise<boolean>(async (resolve) => {
     const sendSubstrateTransaction = async (): Promise<void> => {
@@ -221,6 +224,13 @@ export const signAndSend = async ({
           (async () => {
             const res = await txResHandler(result);
             finalizeCallback && finalizeCallback();
+            if (txType) {
+              addTxHistories({
+                hash: result.status.asFinalized.toString(),
+                type: txType,
+                address: senderAddress,
+              });
+            }
             resolve(res);
           })();
         }

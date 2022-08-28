@@ -9,4 +9,5 @@ export enum LOCAL_STORAGE {
   CONFIRM_COOKIE_POLICY = 'confirmCookiePolicy',
   SELECTED_WALLET = 'selectedWallet',
   XCM_DEPOSIT_EVM_WALLET = 'xcmDepositEvmWallet',
+  TX_HISTORIES = 'txHistories',
 }
