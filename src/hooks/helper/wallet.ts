@@ -226,7 +226,7 @@ export const signAndSend = async ({
             finalizeCallback && finalizeCallback();
             if (txType) {
               addTxHistories({
-                hash: result.status.asFinalized.toString(),
+                hash: result.txHash.toString(),
                 type: txType,
                 address: senderAddress,
               });

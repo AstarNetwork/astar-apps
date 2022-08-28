@@ -1,15 +1,22 @@
-import { astarNetworks } from './../../../hooks/xcm/useTransferRouter';
 import { ApiPromise } from '@polkadot/api';
 import { Struct } from '@polkadot/types';
 import { ethers } from 'ethers';
-import { ASTAR_NETWORK_IDX, endpointKey } from 'src/config/chainEndpoints';
-import { Asset } from 'src/v2/models';
+import { ASTAR_NETWORK_IDX, endpointKey, getNetworkName } from 'src/config/chainEndpoints';
+import {
+  getAccountHistories,
+  LOCAL_STORAGE,
+  updateAccountHistories,
+} from 'src/config/localStorage';
+import { pathEvm } from 'src/hooks';
+import { getTimestamp } from 'src/hooks/helper/common';
 import { getUsdBySymbol } from 'src/hooks/helper/price';
+import { Asset } from 'src/v2/models';
 import { ExistentialDeposit, XcmTokenInformation } from '../index';
 import { xcmToken } from '../tokens';
-import { Chain } from './../index';
-import { pathEvm } from 'src/hooks';
+import { astarNetworks } from './../../../hooks/xcm/useTransferRouter';
+import { Chain, XcmTxHistory } from './../index';
 
+const { XCM_TX_HISTORIES, NETWORK_IDX } = LOCAL_STORAGE;
 interface Account extends Struct {
   balance: string;
 }
@@ -155,4 +162,68 @@ export const removeEvmName = (chain: string) => {
     return chain.split('-')[0];
   }
   return chain;
+};
+
+// Memo: get users xcm transaction histories from browser's local-storage
+export const getXcmTxHistories = ({
+  address,
+  network,
+}: {
+  address: string;
+  network: string;
+}): XcmTxHistory[] => {
+  const histories = localStorage.getItem(XCM_TX_HISTORIES);
+  const data = histories ? JSON.parse(histories) : {};
+
+  if (data.hasOwnProperty(address)) {
+    const addressData = data[address];
+    if (addressData.hasOwnProperty(network)) {
+      return addressData[network];
+    }
+  }
+  return [];
+};
+
+// Memo: store users XCM transaction histories to browser's local-storage
+export const addXcmTxHistories = ({
+  hash,
+  from,
+  to,
+  symbol,
+  amount,
+  address,
+}: {
+  hash: string;
+  from: string;
+  to: string;
+  symbol: string;
+  amount: string;
+  address: string;
+}): void => {
+  const networkIdx = localStorage.getItem(NETWORK_IDX);
+  const network = getNetworkName(Number(networkIdx));
+  if (network === 'development') return;
+
+  const txs = getAccountHistories({
+    storageKey: XCM_TX_HISTORIES,
+    address,
+    network,
+  }) as XcmTxHistory[];
+
+  const data = {
+    from,
+    to,
+    amount,
+    symbol,
+    hash,
+    timestamp: getTimestamp(),
+  };
+
+  txs.unshift(data);
+  updateAccountHistories({
+    storageKey: XCM_TX_HISTORIES,
+    address,
+    network,
+    txs,
+  });
 };

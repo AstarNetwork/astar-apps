@@ -26,7 +26,6 @@ import {
   fetchXcmBalance,
   monitorBalanceIncreasing,
   parachainIds,
-  PREFIX_ASTAR,
   XcmChain,
   xcmChainObj,
 } from 'src/modules/xcm';
@@ -43,6 +42,7 @@ import {
 import { AcalaApi, MoonbeamApi } from './parachainApi';
 import { MOONBEAM_ASTAR_TOKEN_ID } from './parachainApi/MoonbeamApi';
 import { AstarApi, AstarToken, ChainApi } from './SubstrateApi';
+import { addXcmTxHistories } from 'src/modules/xcm/utils';
 
 const { Acala, Astar, Karura, Moonriver, Polkadot, Shiden, Kusama } = xcmChainObj;
 
@@ -61,7 +61,6 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   const originChainNativeBal = ref<number>(0);
   const isLoadingApi = ref<boolean>(true);
 
-  // const existentialDeposit = ref<ExistentialDeposit | null>(null);
   const { nativeTipPrice } = useGasPrice();
   const { xcmOpponentChain, from, to, isEvmBridge, isTransferPage, reverseChain, tokenSymbol } =
     useTransferRouter();
@@ -374,13 +373,25 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
       if (!originChainApi) throw Error('Something went wrong while bridging');
       if (!amount.value) throw Error('Invalid amount');
 
+      const handleFinalizedCallback = async (hash: string) => {
+        addXcmTxHistories({
+          hash,
+          from: srcChain.value.name,
+          to: destChain.value.name,
+          symbol: selectedToken.value.metadata.symbol,
+          amount: amount.value as string,
+          address: currentAccount.value,
+        });
+        await finalizedCallback();
+      };
+
       const destinationAddress = isInputDestAddrManually.value
         ? inputtedAddress.value
         : currentAccount.value;
       if (isDeposit.value) {
         let recipientAccountId = destinationAddress;
         if (isEvmBridge.value) {
-          const ss58MappedAddr = evmToAddress(inputtedAddress.value, PREFIX_ASTAR);
+          const ss58MappedAddr = evmToAddress(inputtedAddress.value, ASTAR_SS58_FORMAT);
           const hexPublicKey = getPubkeyFromSS58Addr(ss58MappedAddr);
           recipientAccountId = hexPublicKey;
         }
@@ -400,6 +411,7 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
               originTokenData: selectedToken.value,
             });
           }
+          // handleAddXcmTxHistories(hash)
           const msg = t('toast.completedHash', { hash });
           store.dispatch('general/showAlertMsg', {
             msg,
@@ -407,8 +419,8 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
           });
           showLoading(store.dispatch, false);
           isDisabledBridge.value = true;
+          await handleFinalizedCallback(hash);
           amount.value = null;
-          await finalizedCallback();
           return;
         }
 
@@ -421,7 +433,7 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
           selectedToken: selectedToken.value,
         });
 
-        const callBack = async (): Promise<void> => {
+        const callBack = async (hash: string): Promise<void> => {
           if (!isEvmBridge.value) {
             await monitorBalanceIncreasing({
               api: $api!,
@@ -429,7 +441,7 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
               originTokenData: selectedToken.value,
             });
           }
-          await finalizedCallback();
+          await handleFinalizedCallback(hash);
         };
 
         await originChainApi
@@ -472,7 +484,7 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
             account: currentAccount.value,
             signer: injector.signer,
             tx: txCall,
-            finalizedCallback,
+            finalizedCallback: handleFinalizedCallback,
             handleResult,
             tip,
           })

@@ -12,7 +12,14 @@ export {
   removeEvmName,
 } from './utils';
 
-export const PREFIX_ASTAR = 5;
+export interface XcmTxHistory {
+  hash: string;
+  from: string;
+  to: string;
+  symbol: string;
+  amount: string;
+  timestamp: number;
+}
 
 export interface XcmTokenInformation {
   symbol: string;

@@ -19,7 +19,6 @@ import {
   monitorBalanceIncreasing,
   parachainIds,
   polkadotParachains,
-  PREFIX_ASTAR,
   XcmChain,
   xcmChainObj,
 } from 'src/modules/xcm';
@@ -27,7 +26,7 @@ import { useStore } from 'src/store';
 import { Asset } from 'src/v2/models';
 import { computed, ref, Ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { isValidAddressPolkadotAddress } from './../helper/plasmUtils';
+import { ASTAR_SS58_FORMAT, isValidAddressPolkadotAddress } from './../helper/plasmUtils';
 import { AcalaApi, MoonbeamApi } from './parachainApi';
 import { MOONBEAM_ASTAR_TOKEN_ID } from './parachainApi/MoonbeamApi';
 import { AstarApi, AstarToken, ChainApi } from './SubstrateApi';
@@ -419,7 +418,7 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
           if (!isValidEvmAddress(evmDestAddress.value)) {
             throw Error('Invalid evm destination address');
           }
-          const ss58MappedAddr = evmToAddress(evmDestAddress.value, PREFIX_ASTAR);
+          const ss58MappedAddr = evmToAddress(evmDestAddress.value, ASTAR_SS58_FORMAT);
           const hexPublicKey = getPubkeyFromSS58Addr(ss58MappedAddr);
           recipientAccountId = hexPublicKey;
         }

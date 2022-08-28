@@ -1,3 +1,4 @@
+import { addXcmTxHistories } from './../../modules/xcm/utils/index';
 import { isValidEvmAddress } from './../../config/web3/utils/convert';
 import BN from 'bn.js';
 import { ethers } from 'ethers';
@@ -17,6 +18,7 @@ import { useGasPrice } from '../useGasPrice';
 import { Chain, relaychainParaId, xcmChainObj } from './../../modules/xcm/index';
 import { Asset } from 'src/v2/models';
 import { MOVR } from 'src/modules/token';
+import { useNetworkInfo } from '../useNetworkInfo';
 
 // xcm precompiled contract address
 const PRECOMPILED_ADDR = '0x0000000000000000000000000000000000005004';
@@ -26,6 +28,7 @@ export function useXcmEvm(selectedToken: Ref<Asset>) {
   const { t } = useI18n();
   const { evmGasPrice } = useGasPrice();
   const { currentAccount } = useAccount();
+  const { currentNetworkName } = useNetworkInfo();
 
   const currentWallet = computed(() => store.getters['general/currentWallet']);
   const isMoonbeamWithdrawal = computed<boolean>(() => {
@@ -98,6 +101,14 @@ export function useXcmEvm(selectedToken: Ref<Asset>) {
             store.dispatch('general/showAlertMsg', {
               msg: t('toast.completedTxHash', { hash: transactionHash }),
               alertType: 'success',
+            });
+            addXcmTxHistories({
+              hash: transactionHash,
+              from: currentNetworkName.value,
+              to: withdrawalChain.name,
+              symbol: selectedToken.value.metadata.symbol,
+              amount: asset_amount,
+              address: currentAccount.value,
             });
             finalizedCallback();
             resolve(transactionHash);

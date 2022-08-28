@@ -36,10 +36,8 @@ export function useCustomSignature({ fn, txType }: { fn?: () => void; txType?: T
         if (status.isFinalized) {
           if (!hasExtrinsicFailedEvent(result.events, store.dispatch)) {
             fn && fn();
-            const msg = customMsg.value
-              ? customMsg.value
-              : t('toast.completedHash', { hash: status.asFinalized.toString() });
-
+            const hash = result.txHash.toString();
+            const msg = customMsg.value ? customMsg.value : t('toast.completedHash', { hash });
             store.dispatch('general/showAlertMsg', {
               msg,
               alertType: 'success',
