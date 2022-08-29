@@ -10,11 +10,13 @@ import {
 import { pathEvm } from 'src/hooks';
 import { getTimestamp } from 'src/hooks/helper/common';
 import { getUsdBySymbol } from 'src/hooks/helper/price';
+import { TxHistory } from 'src/modules/account';
 import { Asset } from 'src/v2/models';
 import { ExistentialDeposit, XcmTokenInformation } from '../index';
 import { xcmToken } from '../tokens';
 import { astarNetworks } from './../../../hooks/xcm/useTransferRouter';
-import { Chain, XcmTxHistory } from './../index';
+import { HistoryTxType } from './../../account/index';
+import { Chain } from './../index';
 
 const { XCM_TX_HISTORIES, NETWORK_IDX } = LOCAL_STORAGE;
 interface Account extends Struct {
@@ -164,26 +166,6 @@ export const removeEvmName = (chain: string) => {
   return chain;
 };
 
-// Memo: get users xcm transaction histories from browser's local-storage
-export const getXcmTxHistories = ({
-  address,
-  network,
-}: {
-  address: string;
-  network: string;
-}): XcmTxHistory[] => {
-  const histories = localStorage.getItem(XCM_TX_HISTORIES);
-  const data = histories ? JSON.parse(histories) : {};
-
-  if (data.hasOwnProperty(address)) {
-    const addressData = data[address];
-    if (addressData.hasOwnProperty(network)) {
-      return addressData[network];
-    }
-  }
-  return [];
-};
-
 // Memo: store users XCM transaction histories to browser's local-storage
 export const addXcmTxHistories = ({
   hash,
@@ -208,15 +190,21 @@ export const addXcmTxHistories = ({
     storageKey: XCM_TX_HISTORIES,
     address,
     network,
-  }) as XcmTxHistory[];
+  }) as TxHistory[];
 
-  const data = {
+  const type = HistoryTxType.Xcm;
+  const xcmData = {
     from,
     to,
     amount,
     symbol,
+  };
+
+  const data = {
+    type,
     hash,
     timestamp: getTimestamp(),
+    data: xcmData,
   };
 
   txs.unshift(data);

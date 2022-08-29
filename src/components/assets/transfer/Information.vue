@@ -23,12 +23,18 @@
         <astar-icon-history size="20" />
         <span>{{ $t('assets.transferPage.recentHistory') }}</span>
       </div>
-      <div class="box--histories">
-        <TransactionHistory />
-        <TransactionHistory />
-        <TransactionHistory />
-        <TransactionHistory />
-        <TransactionHistory />
+      <div v-if="isLoadingTxHistories" class="skeleton--history">
+        <q-skeleton animation="fade" class="skeleton--history" style="height: 386px" />
+      </div>
+      <div v-else>
+        <div v-if="txHistories.length > 0" class="box--histories">
+          <div v-for="tx in txHistories" :key="tx.timestamp">
+            <TransactionHistory :tx="tx" />
+          </div>
+        </div>
+        <div v-else>
+          <span> {{ $t('assets.transferPage.noTxRecords') }} </span>
+        </div>
       </div>
     </div>
     <div id="hot-topics" class="container--information">
@@ -57,17 +63,21 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
 import TransactionHistory from 'src/components/assets/transfer/TransactionHistory.vue';
-import { useStore } from 'src/store';
+import { useAccount, useNetworkInfo } from 'src/hooks';
 import {
   Faq,
   faqH160Transfer,
   faqH160XcmBridge,
   faqSs58Transfer,
   faqSs58XcmBridge,
+  getTxHistories,
   hotTopics,
+  RecentHistory,
 } from 'src/modules/transfer';
+import { useStore } from 'src/store';
+import { computed, defineComponent, ref, watchEffect } from 'vue';
+
 export default defineComponent({
   components: { TransactionHistory },
   props: {
@@ -78,6 +88,11 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
+    const txHistories = ref<RecentHistory[]>([]);
+    const isLoadingTxHistories = ref<boolean>(true);
+    const { currentAccount } = useAccount();
+    const { currentNetworkName } = useNetworkInfo();
+
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const faqs = computed<Faq[]>(() => {
       if (isH160.value) {
@@ -86,7 +101,28 @@ export default defineComponent({
         return props.isLocalTransfer ? faqSs58Transfer : faqSs58XcmBridge;
       }
     });
-    return { faqs, hotTopics };
+
+    const setTxHistories = async (): Promise<void> => {
+      if (!currentAccount.value || !currentNetworkName.value) return;
+      try {
+        isLoadingTxHistories.value = true;
+        txHistories.value = await getTxHistories({
+          address: currentAccount.value,
+          network: currentNetworkName.value.toLowerCase(),
+        });
+      } catch (error) {
+        console.error(error);
+      } finally {
+        isLoadingTxHistories.value = false;
+      }
+    };
+
+    watchEffect(async () => {
+      await setTxHistories();
+      console.log('txHistories', txHistories.value);
+    });
+
+    return { faqs, hotTopics, txHistories, isLoadingTxHistories };
   },
 });
 </script>

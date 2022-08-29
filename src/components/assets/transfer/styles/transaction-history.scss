@@ -22,6 +22,11 @@
   }
 }
 
+.row--tx-description {
+  display: flex;
+  column-gap: 4px;
+}
+
 .history--left {
   display: flex;
   column-gap: 8px;
@@ -64,6 +69,10 @@
   @media (min-width: $md) {
     opacity: 0.5;
   }
+}
+
+.skeleton--history {
+  width: 100%;
 }
 
 .body--dark {

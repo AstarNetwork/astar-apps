@@ -9,6 +9,7 @@ import { deepLink } from 'src/links';
 import { addTxHistories } from 'src/modules/account';
 import { showError } from 'src/modules/extrinsic';
 import { Dispatch } from 'vuex';
+import { HistoryTxType } from './../../modules/account/index';
 import { SubstrateAccount } from './../../store/general/state';
 import { EthereumProvider } from './../types/CustomSignature';
 
@@ -205,7 +206,7 @@ export const signAndSend = async ({
   handleCustomExtrinsic?: (method: Transaction) => Promise<void>;
   finalizeCallback?: () => void;
   tip?: string;
-  txType?: string;
+  txType?: HistoryTxType;
 }): Promise<boolean> => {
   return new Promise<boolean>(async (resolve) => {
     const sendSubstrateTransaction = async (): Promise<void> => {

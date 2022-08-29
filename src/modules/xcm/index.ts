@@ -12,15 +12,6 @@ export {
   removeEvmName,
 } from './utils';
 
-export interface XcmTxHistory {
-  hash: string;
-  from: string;
-  to: string;
-  symbol: string;
-  amount: string;
-  timestamp: number;
-}
-
 export interface XcmTokenInformation {
   symbol: string;
   assetId: string;
@@ -72,6 +63,7 @@ export interface XcmChain {
   img: string;
   parachainId: parachainIds;
   endpoint?: string;
+  subscan: string;
 }
 
 type XcmChainObj = {
@@ -85,18 +77,21 @@ export const xcmChainObj: XcmChainObj = {
     img: require('/src/assets/img/ic_polkadot.png'),
     parachainId: relaychainParaId,
     endpoint: 'wss://polkadot.api.onfinality.io/public-ws',
+    subscan: 'https://polkadot.subscan.io',
   },
   [Chain.ASTAR]: {
     name: Chain.ASTAR,
     relayChain: Chain.POLKADOT,
     img: require('/src/assets/img/ic_astar.png'),
     parachainId: parachainIds.ASTAR,
+    subscan: 'https://astar.subscan.io',
   },
   [Chain.ASTAR_EVM]: {
     name: Chain.ASTAR_EVM,
     relayChain: Chain.POLKADOT,
     img: require('/src/assets/img/ic_astar.png'),
     parachainId: parachainIds.ASTAR,
+    subscan: 'https://astar.subscan.io',
   },
   [Chain.KUSAMA]: {
     name: Chain.KUSAMA,
@@ -104,18 +99,21 @@ export const xcmChainObj: XcmChainObj = {
     img: require('/src/assets/img/ic_kusama.png'),
     parachainId: relaychainParaId,
     endpoint: 'wss://kusama-rpc.polkadot.io',
+    subscan: 'https://kusama.subscan.io',
   },
   [Chain.SHIDEN]: {
     name: Chain.SHIDEN,
     relayChain: Chain.KUSAMA,
     img: require('/src/assets/img/ic_shiden.png'),
     parachainId: parachainIds.SHIDEN,
+    subscan: 'https://shiden.subscan.io',
   },
   [Chain.SHIDEN_EVM]: {
     name: Chain.SHIDEN_EVM,
     relayChain: Chain.KUSAMA,
     img: require('/src/assets/img/ic_shiden.png'),
     parachainId: parachainIds.SHIDEN,
+    subscan: 'https://shiden.subscan.io',
   },
   [Chain.KARURA]: {
     name: Chain.KARURA,
@@ -123,6 +121,7 @@ export const xcmChainObj: XcmChainObj = {
     img: 'https://polkadot.js.org/apps/static/karura.6540c949..svg',
     parachainId: parachainIds.KARURA,
     endpoint: 'wss://karura-rpc.dwellir.com',
+    subscan: 'https://karura.subscan.io',
   },
   [Chain.ACALA]: {
     name: Chain.ACALA,
@@ -130,6 +129,7 @@ export const xcmChainObj: XcmChainObj = {
     img: 'https://polkadot.js.org/apps/static/acala.696aa448..svg',
     parachainId: parachainIds.ACALA,
     endpoint: 'wss://acala-polkadot.api.onfinality.io/public-ws',
+    subscan: 'https://acala.subscan.io',
   },
   [Chain.MOONRIVER]: {
     name: Chain.MOONRIVER,
@@ -137,6 +137,7 @@ export const xcmChainObj: XcmChainObj = {
     img: 'https://assets.coingecko.com/coins/images/17984/small/9285.png?1630028620',
     parachainId: parachainIds.MOONRIVER,
     endpoint: 'wss://wss.api.moonriver.moonbeam.network',
+    subscan: 'https://moonriver.subscan.io',
   },
   // Todo: un-comment-out after channel between Astar and Moonbeam has been opened
   // [Chain.MOONBEAM]: {

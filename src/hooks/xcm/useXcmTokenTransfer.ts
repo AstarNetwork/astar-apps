@@ -1,18 +1,19 @@
-import { SUBSTRATE_SS58_FORMAT } from './../helper/plasmUtils';
 import { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 import { $api } from 'boot/api';
 import { ethers } from 'ethers';
 import { isValidEvmAddress, toSS58Address } from 'src/config/web3';
 import { useCustomSignature } from 'src/hooks';
-import { isValidAddressPolkadotAddress, ASTAR_SS58_FORMAT } from 'src/hooks/helper/plasmUtils';
+import { ASTAR_SS58_FORMAT, isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { useAccount } from 'src/hooks/useAccount';
+import { HistoryTxType } from 'src/modules/account';
 import { fetchXcmBalance } from 'src/modules/xcm';
 import { useStore } from 'src/store';
 import { Asset } from 'src/v2/models';
-import { computed, ref, Ref, watchEffect, watch } from 'vue';
+import { computed, ref, Ref, watch, watchEffect } from 'vue';
 import { signAndSend } from '../helper/wallet';
 import { useGasPrice } from '../useGasPrice';
+import { SUBSTRATE_SS58_FORMAT } from './../helper/plasmUtils';
 
 export function useXcmTokenTransfer(selectedToken: Ref<Asset>) {
   const transferAmt = ref<string | null>(null);
@@ -116,7 +117,7 @@ export function useXcmTokenTransfer(selectedToken: Ref<Asset>) {
         handleCustomExtrinsic,
         dispatch: store.dispatch,
         tip: selectedTip.value.price,
-        txType: 'transfer',
+        txType: HistoryTxType.Transfer,
       });
     } catch (e: any) {
       console.error(e);

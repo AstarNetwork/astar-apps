@@ -303,6 +303,7 @@ export default {
       goBack: 'Go back',
       selectChain: 'Select Chain',
       selectToken: 'Select Token',
+      noTxRecords: "The account doesn't have any transaction records yet",
     },
     modals: {
       max: 'Max',

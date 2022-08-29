@@ -510,7 +510,7 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   };
 
   const getFromChainBalance = async (address: string): Promise<number> => {
-    if (!selectedToken.value || !originChainApi) {
+    if (!selectedToken.value || !originChainApi || !isTransferPage.value) {
       return 0;
     }
 

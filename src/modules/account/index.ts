@@ -12,7 +12,14 @@ export interface SystemAccount extends Struct {
   };
 }
 
+export enum HistoryTxType {
+  Transfer = 'Transfer',
+  Xcm = 'XCM',
+}
+
 export interface TxHistory {
   hash: string;
-  type: string;
+  type: HistoryTxType;
+  timestamp: number;
+  data: any;
 }

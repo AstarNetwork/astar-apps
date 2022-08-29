@@ -4,7 +4,8 @@ import { SystemAccount } from '../index';
 
 import { getNetworkName } from 'src/config/chainEndpoints';
 import { getAccountHistories, LOCAL_STORAGE } from 'src/config/localStorage';
-import { TxHistory } from './../index';
+import { TxHistory, HistoryTxType } from './../index';
+import { getTimestamp } from 'src/hooks/helper/common';
 
 const { TX_HISTORIES, NETWORK_IDX } = LOCAL_STORAGE;
 
@@ -32,7 +33,7 @@ export const addTxHistories = ({
   address,
 }: {
   hash: string;
-  type: string;
+  type: HistoryTxType;
   address: string;
 }): void => {
   const networkIdx = localStorage.getItem(NETWORK_IDX);
@@ -43,6 +44,8 @@ export const addTxHistories = ({
   const data = {
     hash,
     type,
+    timestamp: getTimestamp(),
+    data: null,
   };
   txs.unshift(data);
 
