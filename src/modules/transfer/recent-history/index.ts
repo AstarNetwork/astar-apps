@@ -1,3 +1,4 @@
+import { HistoryTxType } from 'src/modules/account';
 import { castChainName } from './../../xcm/utils/index';
 import { getAccountHistories, LOCAL_STORAGE } from 'src/config/localStorage';
 import { RecentHistory } from './../index';
@@ -6,7 +7,7 @@ import { xcmChainObj } from 'src/modules/xcm';
 
 export const castXcmHistory = (tx: TxHistory): RecentHistory => {
   const timestamp = String(tx.timestamp);
-  const txType = 'XCM';
+  const txType = HistoryTxType.Xcm;
   const from = tx.data.from as keyof typeof xcmChainObj;
   const amount = tx.data.amount as string;
   const symbol = tx.data.symbol as string;
@@ -37,7 +38,7 @@ export const getTxHistories = async ({
   const formattedTxs = txs.sort((a, b) => b.timestamp - a.timestamp).slice(0, numberOfHistories);
   return formattedTxs
     .map((it) => {
-      if (it.type === 'XCM') {
+      if (it.type === HistoryTxType.Xcm) {
         return castXcmHistory(it);
       }
     })

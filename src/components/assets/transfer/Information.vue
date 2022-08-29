@@ -24,7 +24,7 @@
         <span>{{ $t('assets.transferPage.recentHistory') }}</span>
       </div>
       <div v-if="isLoadingTxHistories" class="skeleton--history">
-        <q-skeleton animation="fade" class="skeleton--history" style="height: 386px" />
+        <q-skeleton animation="fade" class="skeleton--history" style="height: 355px" />
       </div>
       <div v-else>
         <div v-if="txHistories.length > 0" class="box--histories">
