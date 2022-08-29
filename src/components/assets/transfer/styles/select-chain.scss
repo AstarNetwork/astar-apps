@@ -22,7 +22,7 @@
   box-sizing: border-box;
   color: $gray-3;
   background-color: transparent;
-  padding: 14px;
+  padding: 24px;
   max-height: 420px;
   overflow: auto;
 }
@@ -49,12 +49,16 @@
   border-radius: 8px;
   margin-left: -8px;
   margin-right: -8px;
+
   background-color: white;
   border: 1px solid transparent;
   @media (min-width: $md) {
     background-color: transparent;
     padding-top: 0;
     padding-bottom: 0;
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.02);
+    }
   }
 }
 
@@ -102,6 +106,9 @@
     background-color: $gray-7;
     @media (min-width: $md) {
       background-color: $gray-6;
+      &:hover {
+        background: rgba(255, 255, 255, 0.02);
+      }
     }
   }
   .row--item-selected {
