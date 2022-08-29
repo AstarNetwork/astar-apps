@@ -39,7 +39,8 @@ export default defineComponent({
   align-items: center;
   padding: 8px 16px 8px 16px;
   background: #fff;
-  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
+  // box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
+  border: 1px solid $gray-3;
   border-radius: 16px;
   margin-left: 8px;
 }

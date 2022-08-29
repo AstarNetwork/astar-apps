@@ -125,7 +125,8 @@ export default defineComponent({
   align-items: center;
   background: #fff;
   padding: 8px 16px 8px 12px;
-  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
+  // box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
+  border: 1px solid $gray-3;
   border-radius: 16px;
   margin-left: 8px;
   color: $gray-5;
@@ -148,9 +149,9 @@ export default defineComponent({
   color: $gray-3 !important;
   width: rem(22);
   height: rem(22);
-  @media (min-width: $sm) {
-    color: #e6e9ee !important;
-  }
+  // @media (min-width: $sm) {
+  //   color: #e6e9ee !important;
+  // }
 }
 
 .icon {

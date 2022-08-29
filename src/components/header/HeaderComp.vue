@@ -40,7 +40,6 @@ export default defineComponent({
   justify-content: space-between;
   height: 6rem;
   padding: 1.25rem 0.625rem;
-  // background: $gray-1;
   background: rgba(247, 247, 248, 0.8);
   mix-blend-mode: normal;
   backdrop-filter: blur(200px);
@@ -74,8 +73,7 @@ export default defineComponent({
 .body--dark {
   .header {
     background: rgba(25, 29, 31, 0.8) !important;
-    // background: transparent !important;
-    border-bottom: 1px solid $gray-6;
+    border-bottom: 1px solid $gray-5;
   }
   .header-left {
     color: $gray-1;
@@ -88,6 +86,8 @@ export default defineComponent({
     padding: 0.5rem 1rem;
     padding-left: 20px;
     padding-right: 16px;
+    background: $gray-1;
+    border-bottom: 0px !important;
   }
 
   .header-left {
@@ -96,6 +96,12 @@ export default defineComponent({
 
   .header-right {
     padding: 0rem;
+  }
+
+  .body--dark {
+    .header {
+      background: $gray-6 !important;
+    }
   }
 }
 </style>

@@ -4,7 +4,7 @@
       <q-expansion-item
         v-model="expanded"
         :header-style="`${classes.defaultHeader} ${
-          expanded && (isDarkTheme ? classes.activeHeaderDark : classes.activeHeaderLight)
+          isDarkTheme ? classes.activeHeaderDark : classes.activeHeaderLight
         }`"
       >
         <template #header>
@@ -110,7 +110,9 @@
       </q-expansion-item>
       <q-expansion-item
         expand-icon="none"
-        :header-style="`${classes.defaultHeader}`"
+        :header-style="`${classes.defaultHeader} ${
+          isDarkTheme ? classes.activeHeaderDark : classes.activeHeaderLight
+        }`"
         @click="goDocument()"
       >
         <template #header>
@@ -123,7 +125,7 @@
       <q-expansion-item
         v-model="expanded2"
         :header-style="`${classes.defaultHeader} ${
-          expanded2 && (isDarkTheme ? classes.activeHeaderDark : classes.activeHeaderLight)
+          isDarkTheme ? classes.activeHeaderDark : classes.activeHeaderLight
         }`"
       >
         <template #header>
@@ -133,10 +135,34 @@
           <q-item-section class="exansion-title"> Settings </q-item-section>
         </template>
         <div class="wrapper--option">
-          <LightDarkMode />
-          <LocaleChanger />
+          <q-expansion-item
+            v-model="expanded3"
+            :header-style="`${classes.defaultHeader} ${
+              isDarkTheme ? classes.activeHeaderDark : classes.activeHeaderLight
+            }`"
+          >
+            <template #header>
+              <q-item-section class="exansion-title item-name"> Language </q-item-section>
+            </template>
+            <div class="wrapper--option">
+              <q-item
+                v-for="(lang, i) in langs"
+                :key="`Lang${i}`"
+                class="ic-item"
+                clickable
+                @click="selectLanguage(lang.code)"
+              >
+                <q-item-section class="item-name">{{ lang.text }}</q-item-section>
+              </q-item>
+            </div>
+          </q-expansion-item>
+          <q-item class="ic-item item--sub" clickable active-class="active-item">
+            <q-item-section class="item-name">Theme</q-item-section>
+            <LightDarkMode />
+          </q-item>
         </div>
       </q-expansion-item>
+      <div class="button--close" @click="closeMobileNavi">X Close</div>
     </q-list>
   </div>
 </template>
@@ -145,22 +171,24 @@
 import { computed, defineComponent, ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import LightDarkMode from '../common/LightDarkMode.vue';
-import LocaleChanger from '../common/LocaleChanger.vue';
 import { useStore } from 'src/store';
 import { socialUrl, docsUrl } from 'src/links';
+import { languagesSelector } from 'src/i18n';
+import { i18n } from 'src/boot/i18n';
 
 export default defineComponent({
   components: {
-    LocaleChanger,
     LightDarkMode,
   },
-  setup() {
+  emits: ['closeNavi'],
+  setup(props, { emit }) {
     const store = useStore();
     const isDarkTheme = computed<boolean>(() => store.getters['general/theme'] === 'DARK');
 
     const classes = reactive({
       defaultHeader:
         'min-height: 40px; padding: 0; padding-left: 8px; padding-right: 8px; border-radius: 6px;',
+      defaultSubHeader: '',
       activeHeaderLight: 'background: #fff;',
       activeHeaderDark: 'background: rgba(255, 255, 255, 0.05);',
     });
@@ -194,8 +222,18 @@ export default defineComponent({
       goLink(docsUrl.topPage);
     };
 
+    const selectLanguage = (code: string) => {
+      console.log('c', code);
+      i18n.global.locale = code;
+    };
+
+    const closeMobileNavi = () => {
+      emit('closeNavi');
+    };
+
     const expanded = ref(false);
     const expanded2 = ref(false);
+    const expanded3 = ref(false);
     const showOption = ref(false);
     const router = useRouter();
     const path = computed(() => router.currentRoute.value.path.split('/')[1]);
@@ -205,6 +243,7 @@ export default defineComponent({
       classes,
       expanded,
       expanded2,
+      expanded3,
       showOption,
       path,
       active,
@@ -212,7 +251,12 @@ export default defineComponent({
       selectLinkIdx,
       goToLink,
       goDocument,
+      selectLanguage,
+      closeMobileNavi,
     };
+  },
+  data() {
+    return { langs: languagesSelector };
   },
 });
 </script>
@@ -221,7 +265,8 @@ export default defineComponent({
 @import './styles/sidebar-mobile.scss';
 
 .wrapper {
-  background: rgba(247, 247, 248, 0.9);
+  background: $gray-1;
+  box-shadow: 0px 0px 24px 4px rgba(0, 0, 0, 0.08);
 }
 
 .q-expansion-item {
@@ -240,8 +285,7 @@ export default defineComponent({
 }
 
 .active-item {
-  background: #fff;
-  border-radius: 6px;
+  border: 1px solid $astar-blue;
 }
 
 .expansion-list {
@@ -250,8 +294,23 @@ export default defineComponent({
 }
 
 .ic-item {
+  background: #fff;
   margin: 16px;
   min-height: 40px;
+  border-radius: 6px;
+  &:focus {
+    border: 1px solid $astar-blue;
+  }
+
+  .icon {
+    margin-right: 8px;
+  }
+}
+
+.item--sub {
+  margin: 0px;
+  margin-left: 16px;
+  margin-right: 16px;
 }
 
 .header-icon {
@@ -269,19 +328,36 @@ export default defineComponent({
   font-size: 14px;
   line-height: 17px;
   color: $gray-5-selected;
-  margin-left: 8px;
+  // margin-left: 8px;
 }
 
 .wrapper--option {
   margin: 16px;
 }
 
+.button--close {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  display: flex;
+  margin: 16px;
+  padding-bottom: 15px;
+  justify-content: center;
+  color: $gray-5-selected;
+  cursor: pointer;
+}
+
 .body--dark {
   .wrapper {
-    background: $gray-5;
+    background: $gray-6;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
   }
 
   .active-item {
+    border: 1px solid $astar-blue;
+  }
+
+  .ic-item {
     background: rgba(255, 255, 255, 0.05);
   }
 
@@ -291,6 +367,10 @@ export default defineComponent({
 
   .header-icon {
     color: #fff;
+  }
+
+  .button--close {
+    color: $gray-1;
   }
 }
 </style>

@@ -38,7 +38,7 @@
     </div>
 
     <div v-if="showOption">
-      <SidebarOption />
+      <SidebarOption @close-navi="showOption = false" />
     </div>
   </div>
 </template>
