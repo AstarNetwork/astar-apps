@@ -49,20 +49,23 @@
   border-radius: 8px;
   margin-left: -8px;
   margin-right: -8px;
-  border: 1px solid transparent;
   background-color: white;
+  border: 1px solid transparent;
   @media (min-width: $md) {
+    background-color: transparent;
     padding-top: 0;
     padding-bottom: 0;
-  }
-  &:hover {
-    // background: rgba(255, 255, 255, 0.02);
   }
 }
 
 .row--item-selected {
+  background-color: white;
   background-color: $gray-1;
   border: 1px solid $astar-blue;
+  @media (min-width: $md) {
+    background-color: transparent;
+    border: 1px solid transparent;
+  }
 }
 
 .column--item-name {
@@ -90,14 +93,21 @@
   .container--select-item {
     color: $gray-1;
     background: $gray-6;
+    border: 1px solid $gray-4;
   }
   .column--item-name {
     color: $gray-1;
   }
   .row--item {
     background-color: $gray-7;
+    @media (min-width: $md) {
+      background-color: $gray-6;
+    }
   }
   .row--item-selected {
     background-color: $gray-6;
+    @media (min-width: $md) {
+      background-color: $gray-5;
+    }
   }
 }
