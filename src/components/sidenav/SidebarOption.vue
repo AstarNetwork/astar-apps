@@ -144,7 +144,7 @@
             <template #header>
               <q-item-section class="exansion-title item-name"> Language </q-item-section>
             </template>
-            <div class="wrapper--option">
+            <div>
               <q-item
                 v-for="(lang, i) in langs"
                 :key="`Lang${i}`"
@@ -188,7 +188,8 @@ export default defineComponent({
     const classes = reactive({
       defaultHeader:
         'min-height: 40px; padding: 0; padding-left: 8px; padding-right: 8px; border-radius: 6px;',
-      defaultSubHeader: '',
+      defaultSubHeader:
+        'min-height: 40px; width: 100%; padding: 0; padding-left: 8px; border-radius: 6px;',
       activeHeaderLight: 'background: #fff;',
       activeHeaderDark: 'background: rgba(255, 255, 255, 0.05);',
     });
@@ -289,11 +290,13 @@ export default defineComponent({
 }
 
 .expansion-list {
-  width: 334px;
-  margin-left: 24px;
+  width: 100%;
+  padding-left: 24px;
+  padding-right: 18px;
 }
 
 .ic-item {
+  width: 100%;
   background: #fff;
   margin: 16px;
   min-height: 40px;
@@ -305,12 +308,6 @@ export default defineComponent({
   .icon {
     margin-right: 8px;
   }
-}
-
-.item--sub {
-  margin: 0px;
-  margin-left: 16px;
-  margin-right: 16px;
 }
 
 .header-icon {
@@ -332,7 +329,29 @@ export default defineComponent({
 }
 
 .wrapper--option {
-  margin: 16px;
+  // margin: 16px;
+
+  .q-expansion-item {
+    padding: 0 !important;
+    margin-left: 16px;
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
+
+  .ic-item {
+    width: 98%;
+    margin: 0px;
+    margin-top: 16px;
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+
+  // .item--sub {
+  //   margin: 0px;
+  //   margin-top: 8px;
+  //   margin-left: 16px;
+  //   margin-right: 16px;
+  // }
 }
 
 .button--close {
