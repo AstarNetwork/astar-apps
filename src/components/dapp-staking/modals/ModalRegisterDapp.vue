@@ -101,7 +101,7 @@ export default defineComponent({
             let signature = null;
 
             // The condition is here temporary, until all networks have deployed
-            // new dapp registration wirkflow
+            // new dapp registration workflow.
             if (
               currentNetworkIdx.value !== endpointKey.ASTAR &&
               currentNetworkIdx.value !== endpointKey.SHIDEN
