@@ -4,9 +4,10 @@ import { BN } from '@polkadot/util';
 import { TvlModel } from 'src/v2/models';
 import { IDappStakingRepository, IMetadataRepository, IPriceRepository } from 'src/v2/repositories';
 import { Symbols } from 'src/v2/symbols';
-import { IDappStakingService } from 'src/v2/services';
+import { IDappStakingService, IBalanceFormatterService } from 'src/v2/services';
 import { Guard } from 'src/v2/common';
 import { IWalletService } from '../IWalletService';
+import { StakerInfo } from 'src/v2/models/DappsStaking';
 
 @injectable()
 export class DappStakingService implements IDappStakingService {
@@ -16,6 +17,7 @@ export class DappStakingService implements IDappStakingService {
     @inject(Symbols.DappStakingRepository) private dappStakingRepository: IDappStakingRepository,
     @inject(Symbols.PriceRepository) private priceRepository: IPriceRepository,
     @inject(Symbols.MetadataRepository) private metadataRepository: IMetadataRepository,
+    @inject(Symbols.BalanceFormatterService) private balanceFormatter: IBalanceFormatterService,
     @inject(Symbols.WalletFactory) walletFactory: () => IWalletService
   ) {
     this.wallet = walletFactory();
@@ -47,5 +49,21 @@ export class DappStakingService implements IDappStakingService {
       stakerAddress,
       `You successfully staked to ${contractAddress}`
     );
+  }
+
+  /**
+   * Gets staker info (total staked, stakers count) for a given contracts.
+   * @param contractAddresses List of contract addresses to provide info for.
+   */
+  public async getStakerInfo(contractAddresses: string[]): Promise<StakerInfo[]> {
+    Guard.ThrowIfUndefined('contractAddresses', contractAddresses);
+
+    const stakerInfos = await this.dappStakingRepository.getStakerInfo(contractAddresses);
+    const metadata = await this.metadataRepository.getChainMetadata();
+
+    return stakerInfos.map((x) => {
+      x.totalStakeFormatted = this.balanceFormatter.format(x.totalStake, metadata.decimals);
+      return x;
+    });
   }
 }

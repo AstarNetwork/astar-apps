@@ -1,12 +1,13 @@
-import { state } from '@polkadot/types/interfaces/definitions';
-import { stat } from 'fs';
 import { TvlModel } from 'src/v2/models';
+import { StakerInfo } from 'src/v2/models/DappsStaking';
 import { GetterTree } from 'vuex';
 import { StateInterface } from '../index';
 import { DappStateInterface as State, DappItem } from './state';
 
 export interface ContractsGetters {
   getAllDapps(state: State): DappItem[];
+  getDapps(state: State): (tag: string) => DappItem[];
+  getStakerInfos(state: State): StakerInfo[];
   getMinimumStakingAmount(state: State): string;
   getMaxNumberOfStakersPerContract(state: State): number;
   getUnbondingPeriod(state: State): number;
@@ -19,6 +20,8 @@ export interface ContractsGetters {
 
 const getters: GetterTree<State, StateInterface> & ContractsGetters = {
   getAllDapps: (state) => Object.values(state.dapps),
+  getDapps: (state) => (tag) => state.dapps.filter((x) => x.tags.includes(tag)),
+  getStakerInfos: (state) => Object.values(state.stakerInfos),
   getMinimumStakingAmount: (state) => state.minimumStakingAmount,
   getMaxNumberOfStakersPerContract: (state) => state.maxNumberOfStakersPerContract,
   getUnbondingPeriod: (state) => state.unbondingPeriod,

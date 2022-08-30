@@ -3,6 +3,7 @@ import { ISubmittableResult } from '@polkadot/types/types';
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import { injectable } from 'inversify';
 import { IDappStakingRepository } from 'src/v2/repositories';
+import { StakerInfo } from 'src/v2/models/DappsStaking';
 
 @injectable()
 export class DappStakingRepositoryMock implements IDappStakingRepository {
@@ -23,5 +24,9 @@ export class DappStakingRepositoryMock implements IDappStakingRepository {
     this.bondAndStakeCallMock.call(this, contractAddress, amount);
 
     return {} as SubmittableExtrinsic<'promise', ISubmittableResult>;
+  }
+
+  public async getStakerInfo(contractAddresses: string[]): Promise<StakerInfo[]> {
+    return Promise.resolve([]);
   }
 }

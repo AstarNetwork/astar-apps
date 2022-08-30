@@ -1,5 +1,6 @@
 import DiscoverDappsTab from 'components/dapp-staking/DiscoverDappsTab.vue';
 import ManageDappsTab from 'components/dapp-staking/ManageDappsTab.vue';
+import DappsHome from 'src/v2/components/dapp-staking/DappsHome.vue';
 import Assets from 'pages/Assets.vue';
 import Store from 'src/pages/DappStaking.vue';
 import Dashboard from 'src/pages/Dashboard.vue';
@@ -56,7 +57,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'discover',
-        component: DiscoverDappsTab,
+        component: DappsHome,
       },
       {
         path: 'manage',
