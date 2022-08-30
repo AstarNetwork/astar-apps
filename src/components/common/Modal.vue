@@ -1,10 +1,6 @@
 <template>
   <Teleport to="#app--main">
-    <div
-      class="tw-fixed tw-inset-0 tw-overflow-y-auto"
-      :class="!isLoading && 'highest-z-index'"
-      @click="closeModal()"
-    >
+    <div class="tw-fixed tw-inset-0 tw-overflow-y-auto" :class="!isLoading && 'highest-z-index'">
       <div class="tw-flex tw-items-center tw-justify-center tw-min-h-screen">
         <!-- Background overlay -->
         <div class="tw-fixed tw-inset-0 tw-transition-opacity" aria-hidden="true">
