@@ -304,6 +304,7 @@ export default {
       selectChain: 'Select Chain',
       selectToken: 'Select Token',
       noTxRecords: "The account doesn't have any transaction records yet",
+      mintTransferAmount: 'Min. transfer amount is {amount} {symbol}',
     },
     modals: {
       max: 'Max',

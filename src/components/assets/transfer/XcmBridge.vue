@@ -147,6 +147,19 @@
           <div class="column--title">
             <span class="text--dot">・</span>
             <span class="text--warning">
+              {{
+                $t('assets.transferPage.mintTransferAmount', {
+                  amount: truncate(Number(token.minBridgeAmount), 8),
+                  symbol: token.metadata.symbol,
+                })
+              }}
+            </span>
+          </div>
+        </div>
+        <div class="row--warning">
+          <div class="column--title">
+            <span class="text--dot">・</span>
+            <span class="text--warning">
               {{ $t('assets.modals.xcmWarning.fee') }}
             </span>
           </div>

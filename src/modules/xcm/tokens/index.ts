@@ -52,7 +52,7 @@ export const xcmToken = {
       logo: 'https://assets.coingecko.com/coins/images/25812/small/ezgif-1-f4612f5260.png?1653987299',
       isXcmCompatible: true,
       originChain: 'Acala',
-      minBridgeAmount: '0.11',
+      minBridgeAmount: '0.1',
     },
   ],
   [endpointKey.SHIDEN]: [
@@ -74,7 +74,7 @@ export const xcmToken = {
       logo: 'https://assets.coingecko.com/coins/images/25812/small/ezgif-1-f4612f5260.png?1653987299',
       isXcmCompatible: true,
       originChain: 'Karura',
-      minBridgeAmount: '0.11',
+      minBridgeAmount: '0.1',
     },
     {
       symbol: 'KAR',
@@ -84,7 +84,7 @@ export const xcmToken = {
       logo: 'https://assets.coingecko.com/coins/images/17172/small/karura.jpeg?1626782066',
       isXcmCompatible: true,
       originChain: 'Karura',
-      minBridgeAmount: '0.11',
+      minBridgeAmount: '0.1',
     },
     {
       symbol: 'LKSM',
