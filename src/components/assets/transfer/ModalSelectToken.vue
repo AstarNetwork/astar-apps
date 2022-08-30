@@ -74,10 +74,6 @@ export default defineComponent({
 
     const { nativeTokenSymbol } = useNetworkInfo();
 
-    watchEffect(() => {
-      console.log('tokens', props.tokens);
-    });
-
     return { nativeTokenSymbol, closeModal, isClosingModal };
   },
 });

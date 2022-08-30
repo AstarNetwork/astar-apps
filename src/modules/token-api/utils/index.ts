@@ -1,6 +1,6 @@
 import { ChartData } from './../../../components/dashboard/ChartData';
 import axios from 'axios';
-import { Duration, TOKEN_API_URL } from '../index';
+import { Duration, TOKEN_API_URL, TransferDetail } from '../index';
 
 /**
  * Formats number and adds weight prefix e.g. 10000 formats to 10k
@@ -153,4 +153,16 @@ export const getClaimedAmount = async ({
   const url = `${TOKEN_API_URL}/v1/${network}/dapps-staking/earned/${account}`;
   const result = await axios.get<number>(url);
   return Number(result.data.toFixed(0));
+};
+
+export const fetchTransferDetails = async ({
+  hash,
+  network,
+}: {
+  hash: string;
+  network: string;
+}): Promise<TransferDetail> => {
+  const url = `${TOKEN_API_URL}/v1/${network}/tx/transfer?hash=${hash}`;
+  const result = await axios.get<TransferDetail>(url);
+  return result.data;
 };

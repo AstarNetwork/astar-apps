@@ -117,8 +117,8 @@ export function useTransferRouter() {
       return;
     }
     if (isH160.value) {
-      const currentNetworkNameRef = currentNetworkName.value.toLowerCase();
-      if (from.value !== currentNetworkNameRef) {
+      const currentEvmNetwork = currentNetworkName.value.toLowerCase() + pathEvm;
+      if (from.value !== currentEvmNetwork) {
         redirect();
       }
     } else {
@@ -200,7 +200,7 @@ export function useTransferRouter() {
       ? defaultXcmBridgeForNative
       : originChain.toLowerCase();
     const astarNetwork = currentNetworkName.value.toLowerCase();
-    const from = isH160.value ? astarNetwork : opponentNetwork.toLowerCase();
+    const from = isH160.value ? astarNetwork + pathEvm : opponentNetwork.toLowerCase();
     const to = isH160.value ? opponentNetwork : astarNetwork;
 
     const query = isLocal
@@ -263,6 +263,7 @@ export function useTransferRouter() {
 
     if (isLocalTransfer.value) {
       if (isH160.value) {
+        // if: H160 local transfer
         if (!evmTokens.value) return [];
         const selectableTokens =
           mode.value === 'local'
@@ -282,7 +283,9 @@ export function useTransferRouter() {
           tokens.push(nativeToken);
         }
       }
-    } else {
+    }
+
+    if (!isLocalTransfer.value) {
       // if: XCM bridge
       const selectedNetwork = xcmOpponentChain.value;
       const isSelectedRelayChain = checkIsRelayChain(selectedNetwork);
@@ -344,12 +347,6 @@ export function useTransferRouter() {
     return selectableChains;
   });
 
-  // const selectableFromChains = computed<XcmChain[]>(() => {
-  //   return chains.value.filter(
-  //     (it) => !it.name.includes(pathEvm) && from.value !== it.name.toLowerCase()
-  //   );
-  // });
-
   watchEffect(handleDefaultConfig);
   watchEffect(redirectForRelaychain);
   watchEffect(monitorProhibitedPair);
@@ -380,7 +377,6 @@ export function useTransferRouter() {
     token,
     tokens,
     chains,
-    // selectableFromChains,
     redirect,
     reverseChain,
     getFromToParams,

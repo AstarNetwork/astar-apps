@@ -19,6 +19,7 @@ import { Chain, relaychainParaId, xcmChainObj } from './../../modules/xcm/index'
 import { Asset } from 'src/v2/models';
 import { MOVR } from 'src/modules/token';
 import { useNetworkInfo } from '../useNetworkInfo';
+import { pathEvm } from './useTransferRouter';
 
 // xcm precompiled contract address
 const PRECOMPILED_ADDR = '0x0000000000000000000000000000000000005004';
@@ -104,7 +105,7 @@ export function useXcmEvm(selectedToken: Ref<Asset>) {
             });
             addXcmTxHistories({
               hash: transactionHash,
-              from: currentNetworkName.value,
+              from: currentNetworkName.value + pathEvm,
               to: withdrawalChain.name,
               symbol: selectedToken.value.metadata.symbol,
               amount: asset_amount,

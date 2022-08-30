@@ -117,10 +117,7 @@ export default defineComponent({
       }
     };
 
-    watchEffect(async () => {
-      await setTxHistories();
-      console.log('txHistories', txHistories.value);
-    });
+    watchEffect(setTxHistories);
 
     return { faqs, hotTopics, txHistories, isLoadingTxHistories };
   },

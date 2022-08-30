@@ -102,7 +102,7 @@ export const fetchExistentialDeposit = async (api: ApiPromise): Promise<Existent
 };
 
 export const checkIsDeposit = (fromChain: Chain): boolean => {
-  const astarChain = [Chain.ASTAR, Chain.SHIDEN];
+  const astarChain = [Chain.ASTAR, Chain.SHIDEN, Chain.ASTAR_EVM, Chain.SHIDEN_EVM];
   return !astarChain.includes(fromChain);
 };
 
