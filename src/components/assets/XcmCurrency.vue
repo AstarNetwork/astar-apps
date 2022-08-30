@@ -33,7 +33,7 @@
           <div class="column--asset-buttons column--buttons--native">
             <router-link :to="transferLink">
               <button class="btn btn--sm">
-                {{ $t('assets.manage') }}
+                {{ $t('assets.transfer') }}
               </button>
             </router-link>
             <div class="screen--xl">

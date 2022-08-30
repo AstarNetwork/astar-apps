@@ -34,7 +34,7 @@
             <div v-if="token.isXC20" />
             <router-link :to="transferLink">
               <button class="btn btn--sm">
-                {{ $t('assets.manage') }}
+                {{ $t('assets.transfer') }}
               </button>
             </router-link>
             <div v-if="token.isWrappedToken && !token.isXC20">

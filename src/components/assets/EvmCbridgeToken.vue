@@ -26,7 +26,7 @@
           <div class="column--asset-buttons column--buttons--multi">
             <router-link :to="transferLink">
               <button class="btn btn--sm">
-                {{ $t('assets.manage') }}
+                {{ $t('assets.transfer') }}
               </button>
             </router-link>
             <a :href="cbridgeAppLink" target="_blank" rel="noopener noreferrer">

@@ -81,7 +81,7 @@
             <div class="column--asset-buttons column--buttons--native-token">
               <router-link :to="transferLink">
                 <button class="btn btn--sm">
-                  {{ $t('assets.manage') }}
+                  {{ $t('assets.transfer') }}
                 </button>
               </router-link>
               <!-- Only SDN is able to bridge via cBridge at this moment -->
