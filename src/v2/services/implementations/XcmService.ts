@@ -20,6 +20,7 @@ export class XcmService implements IXcmService {
 
     const assets = await this.xcmRepository.getAssets(currentAccount);
     let ttlNativeXcmUsdAmount = 0;
+    const isTransferPage = window.location.href.includes('transfer');
 
     const updatedAssets = await Promise.all(
       assets.map(async (asset) => {
@@ -27,7 +28,10 @@ export class XcmService implements IXcmService {
           asset.userBalance = Number(
             this.balanceFormatterService.format(asset.balance, asset.metadata.decimals)
           );
-          const price = await this.priceRepository.getUsdPrice(asset.metadata.symbol);
+          // Memo: fetch the USD price on the assets page only
+          const price = isTransferPage
+            ? 0
+            : await this.priceRepository.getUsdPrice(asset.metadata.symbol);
           const userBalanceUsd = asset.userBalance * price;
           ttlNativeXcmUsdAmount += userBalanceUsd;
           return {
