@@ -9,7 +9,6 @@ import {
 } from 'src/config/localStorage';
 import { pathEvm } from 'src/hooks';
 import { getTimestamp } from 'src/hooks/helper/common';
-import { getUsdBySymbol } from 'src/hooks/helper/price';
 import { TxHistory } from 'src/modules/account';
 import { Asset } from 'src/v2/models';
 import { ExistentialDeposit, XcmTokenInformation } from '../index';

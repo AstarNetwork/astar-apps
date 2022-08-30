@@ -32,7 +32,7 @@ export * from './wallet/useWalletIcon';
 export * from './wallet/useEvmWallet';
 export * from './xcm/useXcmBridge';
 export * from './xcm/useXcmBridgeV2';
-export * from './xcm/useXcmTokenTransfer';
+export * from './transfer/useTokenTransfer';
 export * from './xcm/useXcmEvm';
 export * from './xcm/useTransferRouter';
 export * from './ui/useTooltip';

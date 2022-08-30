@@ -142,7 +142,6 @@ import ModalFaucet from './modals/ModalFaucet.vue';
 export default defineComponent({
   components: {
     EvmCbridgeToken,
-    // ModalTransfer,
     ModalFaucet,
     Erc20Currency,
     EvmAssetOptions,
@@ -159,7 +158,6 @@ export default defineComponent({
     },
   },
   setup(props) {
-    // const isModalTransfer = ref<boolean>(false);
     const isModalFaucet = ref<boolean>(false);
     const isHideSmallBalances = ref<boolean>(false);
     const token = ref<SelectedToken | Erc20Token | string | null>(null);
@@ -219,25 +217,6 @@ export default defineComponent({
     const toggleIsHideSmallBalances = (): void => {
       isHideSmallBalances.value = !isHideSmallBalances.value;
     };
-
-    // const handleModalTransfer = ({
-    //   currency,
-    //   isOpen,
-    // }: {
-    //   isOpen: boolean;
-    //   currency: SelectedToken | Erc20Token | string;
-    // }): void => {
-    //   token.value = currency;
-    //   isModalTransfer.value = isOpen;
-    //   if (!isOpen) {
-    //     symbol.value = '';
-    //   } else if (currency === nativeTokenSymbol.value) {
-    //     symbol.value = nativeTokenSymbol.value;
-    //   } else {
-    //     const c = currency as SelectedToken | Erc20Token;
-    //     symbol.value = c.symbol;
-    //   }
-    // };
 
     const transferLink = computed<string>(() => {
       const symbol = nativeTokenSymbol.value.toLowerCase();

@@ -29,6 +29,9 @@
     outline: none;
   }
   @media (min-width: $md) {
+    width: 320px;
+  }
+  @media (min-width: $xl) {
     width: 350px;
   }
 }

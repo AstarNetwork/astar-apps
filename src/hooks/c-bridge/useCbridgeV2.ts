@@ -34,7 +34,7 @@ export function useCbridgeV2() {
   const { currentAccount } = useAccount();
   const isLoadingErc20Amount = ref<boolean>(false);
 
-  const { currentNetworkIdx } = useNetworkInfo();
+  const { currentNetworkIdx, nativeTokenSymbol } = useNetworkInfo();
 
   const evmNetworkId = computed(() => {
     return Number(providerEndpoints[currentNetworkIdx.value].evmChainId);
@@ -42,6 +42,7 @@ export function useCbridgeV2() {
 
   const filterTokens = (): void => {
     if (!tokens.value) return;
+    tokens.value = tokens.value.filter((it) => it.symbol !== nativeTokenSymbol.value);
     tokens.value.sort((a: Token, b: Token) => {
       return a.symbol.localeCompare(b.symbol);
     });

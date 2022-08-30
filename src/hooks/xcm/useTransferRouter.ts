@@ -1,7 +1,8 @@
+import { ethers } from 'ethers';
 import { SelectedToken } from 'src/c-bridge';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { isXc20Token } from 'src/config/web3/utils';
-import { useCbridgeV2, useNetworkInfo, useAccount } from 'src/hooks';
+import { useAccount, useBalance, useCbridgeV2, useNetworkInfo } from 'src/hooks';
 import {
   Chain,
   checkIsRelayChain,
@@ -13,7 +14,7 @@ import {
 import { generateAssetFromEvmToken, generateNativeAsset } from 'src/modules/xcm/tokens';
 import { useStore } from 'src/store';
 import { Asset } from 'src/v2/models';
-import { computed, ref, watchEffect, watch } from 'vue';
+import { computed, ref, watch, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { XcmAssets } from './../../store/assets/state';
 import { capitalize } from './../helper/common';
@@ -37,6 +38,7 @@ export function useTransferRouter() {
   // Todo: move to GlobalState
   const { tokens: evmTokens } = useCbridgeV2();
   const { currentAccount } = useAccount();
+  const { balance } = useBalance(currentAccount);
   const tokenSymbol = computed<string>(() => route.query.token as string);
   const network = computed<string>(() => route.query.network as string);
   const mode = computed<TransferMode>(() => route.query.mode as TransferMode);
@@ -259,7 +261,9 @@ export function useTransferRouter() {
   const tokens = computed<Asset[]>(() => {
     let tokens;
     let selectableTokens;
+    const bal = Number(ethers.utils.formatEther(balance.value.toString()));
     const nativeToken = generateNativeAsset(nativeTokenSymbol.value);
+    const nativeTokenAsset = { ...nativeToken, userBalance: bal };
 
     if (isLocalTransfer.value) {
       if (isH160.value) {
@@ -270,17 +274,14 @@ export function useTransferRouter() {
             ? evmTokens.value
             : evmTokens.value.filter((it) => isXc20Token(it.address));
         tokens = selectableTokens.map((it) => generateAssetFromEvmToken(it as SelectedToken));
-
-        const isShiden = currentNetworkIdx.value === endpointKey.SHIDEN;
-        // Memo: SDN is including in evmTokens
-        !isShiden && tokens.push(nativeToken);
+        tokens.push(nativeTokenAsset);
       } else {
         // if: SS58 local transfer
         if (!xcmAssets.value || !nativeTokenSymbol.value) return [];
         if (isLocalTransfer.value) {
           selectableTokens = xcmAssets.value.assets;
           tokens = selectableTokens.filter(({ isXcmCompatible }) => isXcmCompatible);
-          tokens.push(nativeToken);
+          tokens.push(nativeTokenAsset);
         }
       }
     }
@@ -311,7 +312,10 @@ export function useTransferRouter() {
 
     if (isRedirect) return redirect();
 
-    token.value = generateNativeAsset(nativeTokenSymbolRef);
+    const nativeBal = Number(ethers.utils.formatEther(balance.value.toString()));
+    const nativeToken = generateNativeAsset(nativeTokenSymbol.value);
+    const nativeTokenAsset = { ...nativeToken, userBalance: nativeBal };
+    token.value = nativeTokenAsset;
     const isFetchedAssets = xcmAssets.value && xcmAssets.value.assets.length !== 0;
     if (isFetchedAssets && symbol) {
       try {
@@ -356,10 +360,6 @@ export function useTransferRouter() {
     if (currentAccount.value && isH160.value) {
       redirect();
     }
-  });
-
-  watchEffect(() => {
-    // console.log('xcmAssets.value', xcmAssets.value);
   });
 
   return {

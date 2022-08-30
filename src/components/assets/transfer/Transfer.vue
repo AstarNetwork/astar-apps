@@ -13,14 +13,6 @@
         <div v-if="token" class="wrapper-containers">
           <div v-if="isLocalTransfer">
             <LocalTransfer
-              v-if="isTransferNativeToken || isH160"
-              :class="isHighlightRightUi && 'half-opacity'"
-              :account-data="accountData"
-              :handle-finalized-callback="handleFinalizedCallback"
-              :set-right-ui="setRightUi"
-            />
-            <LocalXcmTransfer
-              v-else
               :account-data="accountData"
               :class="isHighlightRightUi && 'half-opacity'"
               :handle-finalized-callback="handleFinalizedCallback"
@@ -78,7 +70,6 @@
 import BackToAsset from 'src/components/assets/transfer/BackToAsset.vue';
 import Information from 'src/components/assets/transfer/Information.vue';
 import LocalTransfer from 'src/components/assets/transfer/LocalTransfer.vue';
-import LocalXcmTransfer from 'src/components/assets/transfer/LocalXcmTransfer.vue';
 import MobileNavigator from 'src/components/assets/transfer/MobileNavigator.vue';
 import ModalSelectChain from 'src/components/assets/transfer/ModalSelectChain.vue';
 import ModalSelectToken from 'src/components/assets/transfer/ModalSelectToken.vue';
@@ -109,11 +100,10 @@ export default defineComponent({
     MobileNavigator,
     TransferModeTab,
     Information,
-    LocalTransfer,
     XcmBridge,
     SelectChain,
     ModalSelectChain,
-    LocalXcmTransfer,
+    LocalTransfer,
     SelectToken,
     ModalSelectToken,
   },
@@ -236,9 +226,6 @@ export default defineComponent({
     };
 
     watch([currentAccount], handleUpdateXcmTokenAssets, { immediate: true });
-    watchEffect(() => {
-      // console.log('chains.value', chains.value);
-    });
 
     return {
       isLocalTransfer,
