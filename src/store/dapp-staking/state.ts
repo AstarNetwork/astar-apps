@@ -1,6 +1,6 @@
 import { BN } from '@polkadot/util';
 import { TvlModel } from 'src/v2/models';
-import { StakerInfo } from 'src/v2/models/DappsStaking';
+import { DappCombinedInfo, StakerInfo } from 'src/v2/models/DappsStaking';
 
 export interface DappItem extends LooseObject {
   name: string;
@@ -29,6 +29,7 @@ export interface NewDappItem extends DappItem {
 export interface DappStateInterface {
   dapps: DappItem[];
   stakerInfos: StakerInfo[];
+  dappsCombinedInfo: DappCombinedInfo[];
   minimumStakingAmount: string;
   maxNumberOfStakersPerContract: number;
   unbondingPeriod: number;
@@ -53,6 +54,7 @@ function state(): DappStateInterface {
   return {
     dapps: [],
     stakerInfos: [],
+    dappsCombinedInfo: [],
     minimumStakingAmount: '0',
     maxNumberOfStakersPerContract: 0,
     unbondingPeriod: 0,

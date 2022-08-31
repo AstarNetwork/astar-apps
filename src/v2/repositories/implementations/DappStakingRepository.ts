@@ -2,13 +2,13 @@ import { BN } from '@polkadot/util';
 import { u32, Option, Struct, U32 } from '@polkadot/types';
 import { ISubmittableResult } from '@polkadot/types/types';
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
-import { Balance, ImportedAux } from '@polkadot/types/interfaces';
+import { AccountId, Balance, ImportedAux } from '@polkadot/types/interfaces';
 import { injectable, inject } from 'inversify';
 import { IDappStakingRepository } from 'src/v2/repositories';
 import { IApi } from 'src/v2/integration';
 import { Symbols } from 'src/v2/symbols';
 import { ApiPromise } from '@polkadot/api';
-import { StakerInfo } from 'src/v2/models/DappsStaking';
+import { SmartContract, SmartContractState, StakerInfo } from 'src/v2/models/DappsStaking';
 import { erase } from 'highcharts';
 
 // TODO type generation
@@ -24,6 +24,19 @@ interface EraInfo extends Struct {
 interface ContractStakeInfo extends Struct {
   total: BN;
   numberOfStakers: u32;
+}
+
+interface RegisteredDapp extends Struct {
+  readonly developer: AccountId;
+  readonly state: DappState;
+}
+
+interface DappState {
+  isUnregistered: boolean;
+  asUnregistered: {
+    // Memo: era of unregistration
+    words: number[];
+  };
 }
 
 @injectable()
@@ -61,13 +74,42 @@ export class DappStakingRepository implements IDappStakingRepository {
     );
 
     return eraStakes.map((x, index) => {
-      const eraStake = x.unwrap();
-      return new StakerInfo(
-        contractAddresses[index],
-        eraStake.total,
-        eraStake.numberOfStakers.toNumber()
-      );
+      if (x.isSome) {
+        const eraStake = x.unwrap();
+        return new StakerInfo(
+          contractAddresses[index],
+          eraStake.total,
+          eraStake.numberOfStakers.toNumber()
+        );
+      } else {
+        return new StakerInfo('-', new BN(0), 0);
+      }
     });
+  }
+
+  public async getRegisteredDapps(): Promise<SmartContract[]> {
+    const api = await this.api.getApi();
+    const dapps = await api.query.dappsStaking.registeredDapps.entries();
+
+    const result: SmartContract[] = [];
+    dapps.forEach(([key, value]) => {
+      const v = <Option<RegisteredDapp>>value;
+      const address = JSON.parse(key.args.map((x) => x.toString())[0]).evm; // TODO This is kinda suck. See how it can do it better.
+      let developer = '';
+      let state = SmartContractState.Unregistered;
+
+      if (v.isSome) {
+        const unwrappedValue = v.unwrap();
+        developer = unwrappedValue.developer.toString();
+        state = unwrappedValue.state.isUnregistered
+          ? SmartContractState.Unregistered
+          : SmartContractState.Registered;
+      }
+
+      result.push(new SmartContract(address, developer, state));
+    });
+
+    return result;
   }
 
   private async getCurrentEra(api: ApiPromise): Promise<u32> {

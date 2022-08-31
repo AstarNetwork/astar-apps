@@ -7,7 +7,7 @@ import { Symbols } from 'src/v2/symbols';
 import { IDappStakingService, IBalanceFormatterService } from 'src/v2/services';
 import { Guard } from 'src/v2/common';
 import { IWalletService } from '../IWalletService';
-import { StakerInfo } from 'src/v2/models/DappsStaking';
+import { DappCombinedInfo, StakerInfo } from 'src/v2/models/DappsStaking';
 
 @injectable()
 export class DappStakingService implements IDappStakingService {
@@ -64,6 +64,15 @@ export class DappStakingService implements IDappStakingService {
     return stakerInfos.map((x) => {
       x.totalStakeFormatted = this.balanceFormatter.format(x.totalStake, metadata.decimals);
       return x;
+    });
+  }
+
+  public async getCombinedInfo(): Promise<DappCombinedInfo[]> {
+    const dapps = await this.dappStakingRepository.getRegisteredDapps();
+    const stakerInfo = await this.dappStakingRepository.getStakerInfo(dapps.map((x) => x.address));
+
+    return dapps.map((x, index) => {
+      return new DappCombinedInfo(x, stakerInfo[index]);
     });
   }
 }

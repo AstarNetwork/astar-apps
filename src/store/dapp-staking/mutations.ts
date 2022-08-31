@@ -1,5 +1,5 @@
 import { TvlModel } from 'src/v2/models';
-import { StakerInfo } from 'src/v2/models/DappsStaking';
+import { DappCombinedInfo, StakerInfo } from 'src/v2/models/DappsStaking';
 import { MutationTree } from 'vuex';
 import { DappStateInterface as State, DappItem } from './state';
 
@@ -7,6 +7,8 @@ export interface ContractsMutations<S = State> {
   addDapps(state: S, payload: DappItem[]): void;
   addDapp(state: S, payload: DappItem): void;
   addStakerInfos(state: S, payload: StakerInfo[]): void;
+  addDappCombinedInfos(state: S, payload: DappCombinedInfo[]): void;
+
   setMinimumStakingAmount(state: S, payload: string): void;
   setMaxNumberOfStakersPerContract(state: S, payload: number): void;
   setClaimedRewardsAmount(state: S, payload: number): void;
@@ -23,6 +25,10 @@ const mutation: MutationTree<State> & ContractsMutations = {
 
   addStakerInfos(state: State, payload: StakerInfo[]) {
     state.stakerInfos = payload;
+  },
+
+  addDappCombinedInfos(state: State, payload: DappCombinedInfo[]) {
+    state.dappsCombinedInfo = payload;
   },
 
   setMinimumStakingAmount(state: State, payload: string) {

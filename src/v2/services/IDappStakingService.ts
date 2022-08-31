@@ -1,6 +1,6 @@
 import { BN } from '@polkadot/util';
 import { TvlModel } from 'src/v2/models';
-import { StakerInfo } from '../models/DappsStaking';
+import { DappCombinedInfo, StakerInfo } from '../models/DappsStaking';
 
 /**
  * Definition of service used to manage dapps staking.
@@ -24,4 +24,9 @@ export interface IDappStakingService {
    * @param contractAddresses List of contract addresses to provide info for.
    */
   getStakerInfo(contractAddresses: string[]): Promise<StakerInfo[]>;
+
+  /**
+   * Gets dapps info combined from different sources.
+   */
+  getCombinedInfo(): Promise<DappCombinedInfo[]>;
 }

@@ -1,7 +1,7 @@
 import { BN } from '@polkadot/util';
 import { ISubmittableResult } from '@polkadot/types/types';
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
-import { StakerInfo } from '../models/DappsStaking';
+import { SmartContract, StakerInfo } from '../models/DappsStaking';
 
 /**
  * Definition of repository to access dapps staking pallet.
@@ -25,4 +25,9 @@ export interface IDappStakingRepository {
    * @param contractAddresses List of contract addresses to provide info for.
    */
   getStakerInfo(contractAddresses: string[]): Promise<StakerInfo[]>;
+
+  /**
+   * Gets all dapps registered to a node.
+   */
+  getRegisteredDapps(): Promise<SmartContract[]>;
 }

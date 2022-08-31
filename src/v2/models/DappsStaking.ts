@@ -1,5 +1,11 @@
 import { BN } from '@polkadot/util';
+import { DappItem } from 'src/store/dapp-staking/state';
 import { Guard } from '../common';
+
+export enum SmartContractState {
+  Registered = 'Registered',
+  Unregistered = 'Unregistered',
+}
 
 export class StakerInfo {
   public totalStakeFormatted?: string;
@@ -11,4 +17,20 @@ export class StakerInfo {
 
     return new StakerInfo(contractAddress, new BN(0), 0);
   }
+}
+
+export class SmartContract {
+  constructor(
+    public address: string,
+    public developerAddress: string,
+    public state: SmartContractState
+  ) {}
+}
+
+export class DappCombinedInfo {
+  constructor(
+    public contract: SmartContract,
+    public stakerInfo: StakerInfo,
+    public dapp?: DappItem
+  ) {}
 }
