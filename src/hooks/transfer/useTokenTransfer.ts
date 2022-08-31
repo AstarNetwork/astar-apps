@@ -84,7 +84,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
       ? isValidEvmAddress(toAddress.value)
       : isValidAddressPolkadotAddress(toAddress.value, ASTAR_SS58_FORMAT) ||
           isValidAddressPolkadotAddress(toAddress.value, SUBSTRATE_SS58_FORMAT) ||
-          (isTransferNativeToken.value && isValidEvmAddress(toAddress.value));
+          isValidEvmAddress(toAddress.value);
   });
 
   const inputHandler = (event: any): void => {
