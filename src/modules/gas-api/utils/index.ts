@@ -54,7 +54,6 @@ export const getEvmGasCost = async ({
   return data;
 };
 
-// Ref: https://stakesg.slack.com/archives/C028YNW1PED/p1652346083299849?thread_ts=1652338487.358459&cid=C028YNW1PED
 export const formatTip = (fee: string): string => {
   const price = ethers.utils.formatEther(fee);
   // Memo: throw an error whenever provided price is too way expensive
@@ -120,7 +119,6 @@ export const fetchEvmGasPrice = async ({
       })
     );
 
-    //Rate: https://stakesg.slack.com/archives/C028YNW1PED/p1652343972144359?thread_ts=1652338487.358459&cid=C028YNW1PED
     const slow = fallbackGasPrice;
     const average = Math.floor(fallbackGasPrice * 9);
     const fast = Math.floor(fallbackGasPrice * 56);

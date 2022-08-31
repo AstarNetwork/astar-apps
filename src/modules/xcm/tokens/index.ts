@@ -6,7 +6,6 @@ import { BN } from 'bn.js';
 import { SelectedToken } from 'src/c-bridge';
 
 // Acala Note: There is no endpoint to get minBridgeAmount.  But the rule is that Acala doesn't allow transfers that are less value than the equivalent of $0.01USD
-// Ref: https://www.notion.so/astarnetwork/HRMP-Portal-Support-for-Acala-Karura-UI-2eaab2e1d93c4e0f90609ea7039942a9#5c5a40f95c7b4c93a201feef233cb0fa
 
 // Acala Note: minBridgeAmount should be more than ED
 // Ref: https://wiki.acala.network/get-started/acala-network/acala-account
@@ -183,22 +182,23 @@ export const generateNativeAsset = (symbol: ASTAR_NATIVE_TOKEN): Asset => {
   );
 };
 
-export const generateAssetFromEvmToken = (token: SelectedToken): Asset => {
+export const generateAssetFromEvmToken = (token: SelectedToken, xcmAssets: Asset[]): Asset => {
+  const t = xcmAssets.find((it) => it.mappedERC20Addr === token.address);
   const name = token.name;
   const tokenImage = token.icon;
   const mappedERC20Addr = token.address;
   const metadata = {
-    decimals: token.decimal,
+    decimals: t ? t.metadata.decimals : token.decimal,
     deposit: new BN(0),
     isFrozen: false,
     name,
-    symbol: token.symbol,
+    symbol: t ? t.metadata.symbol : token.symbol,
   };
-  const minBridgeAmount = '0.1';
-  const originChain = name;
+  const minBridgeAmount = t ? t.minBridgeAmount : '0.1';
+  const originChain = t ? t.originChain : '';
   const originAssetId = token.symbol;
   const isNativeToken = false;
-  const isXcmCompatible = false;
+  const isXcmCompatible = t ? t.isXcmCompatible : false;
 
   return new Asset(
     idAstarNativeToken,

@@ -145,7 +145,15 @@ export default defineComponent({
         .filter((it) => it.originChain === Chain.ACALA)
         .map((it) => it.symbol.toLowerCase());
       const isAcalaToken = acalaTokens.includes(String(token.value?.metadata.symbol.toLowerCase()));
-      return isShibuya.value || isH160Movr || isAcalaToken || isEvmNativeToken || isAstr;
+      const isXcmCompatible = token.value?.isXcmCompatible;
+      return (
+        isShibuya.value ||
+        isH160Movr ||
+        isAcalaToken ||
+        isEvmNativeToken ||
+        isAstr ||
+        !isXcmCompatible
+      );
     });
 
     const isTransferNativeToken = computed<boolean>(() => {
@@ -226,6 +234,10 @@ export default defineComponent({
     };
 
     watch([currentAccount], handleUpdateXcmTokenAssets, { immediate: true });
+
+    watchEffect(() => {
+      // console.log('token.value', token.value);
+    });
 
     return {
       isLocalTransfer,

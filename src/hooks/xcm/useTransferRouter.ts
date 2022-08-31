@@ -270,7 +270,9 @@ export function useTransferRouter() {
           mode.value === 'local'
             ? evmTokens.value
             : evmTokens.value.filter((it) => isXc20Token(it.address));
-        tokens = selectableTokens.map((it) => generateAssetFromEvmToken(it as SelectedToken));
+        tokens = selectableTokens.map((it) =>
+          generateAssetFromEvmToken(it as SelectedToken, xcmAssets.value.assets)
+        );
         tokens.push(nativeTokenAsset);
       } else {
         // if: SS58 local transfer
@@ -300,7 +302,6 @@ export function useTransferRouter() {
       return;
     }
 
-    const symbol = tokenSymbol.value;
     isLocalTransfer.value = mode.value === 'local';
     const isRedirect = !network.value
       .toLowerCase()
@@ -312,14 +313,9 @@ export function useTransferRouter() {
     const nativeToken = generateNativeAsset(nativeTokenSymbol.value);
     const nativeTokenAsset = { ...nativeToken, userBalance: nativeBal };
     token.value = nativeTokenAsset;
-    const isFetchedAssets = xcmAssets.value && xcmAssets.value.assets.length !== 0;
     token.value = tokens.value.find(
       (it) => it.metadata.symbol.toLowerCase() === tokenSymbol.value.toLowerCase()
     );
-    if (isFetchedAssets && symbol && !token.value) {
-      console.error('No token is found');
-      redirect();
-    }
   };
 
   const chains = computed<XcmChain[]>(() => {
@@ -337,12 +333,18 @@ export function useTransferRouter() {
   watchEffect(redirectForRelaychain);
   watchEffect(monitorProhibitedPair);
 
-  // Memo: to avoid opening the restricted bridge pair
-  watch([currentAccount, isH160], () => {
-    if (currentAccount.value && isH160.value) {
-      redirect();
-    }
-  });
+  watch(
+    [currentAccount, isH160],
+    () => {
+      if (tokens.value.length > 0 && tokenSymbol.value) {
+        const isFound = tokens.value.find(
+          (it) => it.metadata.symbol.toLowerCase() === tokenSymbol.value.toLowerCase()
+        );
+        !isFound && redirect();
+      }
+    },
+    { immediate: false }
+  );
 
   return {
     tokenSymbol,

@@ -71,7 +71,13 @@
                 :address="token.id"
                 :diameter="24"
               />
-              <img v-else width="24" alt="token-logo" :src="token.tokenImage" />
+              <img
+                v-else
+                width="24"
+                alt="token-logo"
+                :src="token.tokenImage"
+                :class="token.metadata.symbol === nativeTokenSymbol && 'token-native-adjustment'"
+              />
             </div>
             <span class="text--title">{{ token.metadata.symbol }}</span>
             <div class="icon--expand">

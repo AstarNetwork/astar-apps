@@ -96,7 +96,6 @@ export class XcmRepository implements IXcmRepository {
       return hexedAddress;
     } else {
       // Memo: modify the mapped address due to padding issue
-      // Ref: https://stakesg.slack.com/archives/C028H2ZSGRK/p1656924498917399?thread_ts=1656690608.831049&cid=C028H2ZSGRK
       // Memo: -> 0xffffffff
       const a = hexedAddress.slice(0, 10);
       const b = '0'.repeat(paddingDiffer);
