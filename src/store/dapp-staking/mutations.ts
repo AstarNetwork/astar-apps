@@ -4,27 +4,16 @@ import { MutationTree } from 'vuex';
 import { DappStateInterface as State, DappItem } from './state';
 
 export interface ContractsMutations<S = State> {
-  addDapps(state: S, payload: DappItem[]): void;
   addDapp(state: S, payload: DappItem): void;
-  addStakerInfos(state: S, payload: StakerInfo[]): void;
   addDappCombinedInfos(state: S, payload: DappCombinedInfo[]): void;
-
   setMinimumStakingAmount(state: S, payload: string): void;
   setMaxNumberOfStakersPerContract(state: S, payload: number): void;
   setClaimedRewardsAmount(state: S, payload: number): void;
 }
 
 const mutation: MutationTree<State> & ContractsMutations = {
-  addDapps(state: State, payload: DappItem[]) {
-    state.dapps = payload;
-  },
-
   addDapp(state: State, payload: DappItem) {
-    state.dapps.push(payload);
-  },
-
-  addStakerInfos(state: State, payload: StakerInfo[]) {
-    state.stakerInfos = payload;
+    // state.dapps.push(payload);
   },
 
   addDappCombinedInfos(state: State, payload: DappCombinedInfo[]) {
@@ -61,6 +50,10 @@ const mutation: MutationTree<State> & ContractsMutations = {
 
   setTvl(state: State, payload: TvlModel) {
     state.tvl = payload;
+  },
+
+  setCurrentEra(state: State, currentEra: number) {
+    state.currentEra = currentEra;
   },
 };
 

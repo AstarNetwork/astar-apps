@@ -30,4 +30,9 @@ export interface IDappStakingRepository {
    * Gets all dapps registered to a node.
    */
   getRegisteredDapps(): Promise<SmartContract[]>;
+
+  /**
+   * Starts subscription to a era change.
+   */
+  starEraSubscription(): Promise<void>;
 }

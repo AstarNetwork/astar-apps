@@ -33,4 +33,6 @@ export class DappStakingRepositoryMock implements IDappStakingRepository {
   public async getRegisteredDapps(): Promise<SmartContract[]> {
     return Promise.resolve([]);
   }
+
+  public async starEraSubscription(): Promise<void> {}
 }

@@ -2,7 +2,12 @@ import { ethers } from 'ethers';
 import { inject, injectable } from 'inversify';
 import { BN } from '@polkadot/util';
 import { TvlModel } from 'src/v2/models';
-import { IDappStakingRepository, IMetadataRepository, IPriceRepository } from 'src/v2/repositories';
+import {
+  IDappStakingRepository,
+  IMetadataRepository,
+  IPriceRepository,
+  ISystemRepository,
+} from 'src/v2/repositories';
 import { Symbols } from 'src/v2/symbols';
 import { IDappStakingService, IBalanceFormatterService } from 'src/v2/services';
 import { Guard } from 'src/v2/common';
@@ -17,10 +22,13 @@ export class DappStakingService implements IDappStakingService {
     @inject(Symbols.DappStakingRepository) private dappStakingRepository: IDappStakingRepository,
     @inject(Symbols.PriceRepository) private priceRepository: IPriceRepository,
     @inject(Symbols.MetadataRepository) private metadataRepository: IMetadataRepository,
+    @inject(Symbols.SystemRepository) private systemRepository: ISystemRepository,
     @inject(Symbols.BalanceFormatterService) private balanceFormatter: IBalanceFormatterService,
     @inject(Symbols.WalletFactory) walletFactory: () => IWalletService
   ) {
     this.wallet = walletFactory();
+    this.systemRepository.startBlockSubscription();
+    this.dappStakingRepository.starEraSubscription();
   }
 
   public async getTvl(): Promise<TvlModel> {
@@ -69,7 +77,7 @@ export class DappStakingService implements IDappStakingService {
 
   public async getCombinedInfo(): Promise<DappCombinedInfo[]> {
     const dapps = await this.dappStakingRepository.getRegisteredDapps();
-    const stakerInfo = await this.dappStakingRepository.getStakerInfo(dapps.map((x) => x.address));
+    const stakerInfo = await this.getStakerInfo(dapps.map((x) => x.address));
 
     return dapps.map((x, index) => {
       return new DappCombinedInfo(x, stakerInfo[index]);

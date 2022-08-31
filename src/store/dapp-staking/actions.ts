@@ -98,13 +98,6 @@ const actions: ActionTree<State, StateInterface> = {
         service.getCombinedInfo(),
       ]);
 
-      // const result = await axios.get<DappItem[]>(dappsUrl);
-      commit('addDapps', dapps.data);
-
-      // Fetch staker info.
-      const stakerInfos = await service.getStakerInfo(dapps.data.map((x) => x.address));
-      commit('addStakerInfos', stakerInfos);
-
       // Update combined info with dapp info
       combinedInfo.map((i) => {
         i.dapp = dapps.data.find(

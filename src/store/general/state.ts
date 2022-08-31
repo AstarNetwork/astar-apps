@@ -44,6 +44,7 @@ export interface GeneralStateInterface {
   headerName: string;
   currentWallet: string;
   gas: GasTip | undefined;
+  currentBlock: number;
 }
 
 function state(): GeneralStateInterface {
@@ -83,6 +84,7 @@ function state(): GeneralStateInterface {
 
     currentWallet: '',
     gas: undefined,
+    currentBlock: 0,
   };
 }
 

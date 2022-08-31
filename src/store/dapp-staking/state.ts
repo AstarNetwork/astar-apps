@@ -1,3 +1,4 @@
+import { number } from '@intlify/core-base';
 import { BN } from '@polkadot/util';
 import { TvlModel } from 'src/v2/models';
 import { DappCombinedInfo, StakerInfo } from 'src/v2/models/DappsStaking';
@@ -27,8 +28,6 @@ export interface NewDappItem extends DappItem {
 }
 
 export interface DappStateInterface {
-  dapps: DappItem[];
-  stakerInfos: StakerInfo[];
   dappsCombinedInfo: DappCombinedInfo[];
   minimumStakingAmount: string;
   maxNumberOfStakersPerContract: number;
@@ -38,6 +37,7 @@ export interface DappStateInterface {
   isPalletDisabled: boolean;
   claimedRewards: number;
   tvl: TvlModel;
+  currentEra: number;
 }
 
 export interface LooseObject {
@@ -52,8 +52,6 @@ export interface FileInfo {
 
 function state(): DappStateInterface {
   return {
-    dapps: [],
-    stakerInfos: [],
     dappsCombinedInfo: [],
     minimumStakingAmount: '0',
     maxNumberOfStakersPerContract: 0,
@@ -63,6 +61,7 @@ function state(): DappStateInterface {
     isPalletDisabled: false,
     claimedRewards: 0,
     tvl: new TvlModel(new BN(0), 0, 0),
+    currentEra: 0,
   };
 }
 

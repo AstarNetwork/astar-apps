@@ -1,13 +1,12 @@
 import { TvlModel } from 'src/v2/models';
-import { StakerInfo } from 'src/v2/models/DappsStaking';
+import { DappCombinedInfo, SmartContractState, StakerInfo } from 'src/v2/models/DappsStaking';
 import { GetterTree } from 'vuex';
 import { StateInterface } from '../index';
 import { DappStateInterface as State, DappItem } from './state';
 
 export interface ContractsGetters {
-  getAllDapps(state: State): DappItem[];
-  getDapps(state: State): (tag: string) => DappItem[];
-  getStakerInfos(state: State): StakerInfo[];
+  getAllDapps(state: State): DappCombinedInfo[];
+  getRegisteredDapps(state: State): (tag: string) => DappCombinedInfo[];
   getMinimumStakingAmount(state: State): string;
   getMaxNumberOfStakersPerContract(state: State): number;
   getUnbondingPeriod(state: State): number;
@@ -16,12 +15,17 @@ export interface ContractsGetters {
   getIsPalletDisabled(state: State): boolean;
   getClaimedRewards(state: State): number;
   getTvl(state: State): TvlModel;
+  getCurrentEra(state: State): number;
 }
 
 const getters: GetterTree<State, StateInterface> & ContractsGetters = {
-  getAllDapps: (state) => Object.values(state.dapps),
-  getDapps: (state) => (tag) => state.dapps.filter((x) => x.tags.includes(tag)),
-  getStakerInfos: (state) => Object.values(state.stakerInfos),
+  getAllDapps: (state) => Object.values(state.dappsCombinedInfo),
+  getRegisteredDapps: (state) => (tag) =>
+    tag
+      ? state.dappsCombinedInfo.filter(
+          (x) => x.dapp?.tags.includes(tag) && x.contract.state === SmartContractState.Registered
+        )
+      : state.dappsCombinedInfo,
   getMinimumStakingAmount: (state) => state.minimumStakingAmount,
   getMaxNumberOfStakersPerContract: (state) => state.maxNumberOfStakersPerContract,
   getUnbondingPeriod: (state) => state.unbondingPeriod,
@@ -30,6 +34,7 @@ const getters: GetterTree<State, StateInterface> & ContractsGetters = {
   getIsPalletDisabled: (state) => state.isPalletDisabled,
   getClaimedRewards: (state) => state.claimedRewards,
   getTvl: (state) => state.tvl,
+  getCurrentEra: (state) => state.currentEra,
 };
 
 export default getters;

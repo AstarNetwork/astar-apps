@@ -9,7 +9,7 @@ import { IApi } from 'src/v2/integration';
 import { Symbols } from 'src/v2/symbols';
 import { ApiPromise } from '@polkadot/api';
 import { SmartContract, SmartContractState, StakerInfo } from 'src/v2/models/DappsStaking';
-import { erase } from 'highcharts';
+import { EventAggregator, NewEraMessage } from 'src/v2/messaging';
 
 // TODO type generation
 interface EraInfo extends Struct {
@@ -41,7 +41,12 @@ interface DappState {
 
 @injectable()
 export class DappStakingRepository implements IDappStakingRepository {
-  constructor(@inject(Symbols.Api) private api: IApi) {}
+  private static isEraSubscribed = false;
+
+  constructor(
+    @inject(Symbols.Api) private api: IApi,
+    @inject(Symbols.EventAggregator) private eventAggregator: EventAggregator
+  ) {}
 
   public async getTvl(): Promise<BN> {
     const api = await this.api.getApi();
@@ -110,6 +115,18 @@ export class DappStakingRepository implements IDappStakingRepository {
     });
 
     return result;
+  }
+
+  public async starEraSubscription(): Promise<void> {
+    // Avoid multiple subscriptions.
+    if (!DappStakingRepository.isEraSubscribed) {
+      const api = await this.api.getApi();
+      await api.query.dappsStaking.currentEra((era: u32) => {
+        console.log(era.toString());
+        this.eventAggregator.publish(new NewEraMessage(era.toNumber()));
+      });
+      DappStakingRepository.isEraSubscribed = true;
+    }
   }
 
   private async getCurrentEra(api: ApiPromise): Promise<u32> {
