@@ -1,6 +1,5 @@
 <template>
   <div class="wrapper">
-    <!-- <astar-header -->
     <HeaderComp :title="width >= screenSize.lg ? headerName : ''">
       <template #left>
         <div class="icon"><Logo /></div>
@@ -15,7 +14,6 @@
       </template>
       <NetworkButton @show-network="modalNetwork = true" />
     </HeaderComp>
-    <!-- </astar-header> -->
 
     <!-- Modals -->
     <ModalNetwork

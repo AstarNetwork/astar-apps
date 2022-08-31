@@ -80,7 +80,7 @@ export default defineComponent({
   }
 }
 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: $lg) {
   .header {
     height: 4rem;
     padding: 0.5rem 1rem;

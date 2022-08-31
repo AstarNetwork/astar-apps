@@ -11,7 +11,7 @@
           <astar-icon-base class="header-icon tw-ml-1 tw-mt-2">
             <astar-icon-community />
           </astar-icon-base>
-          <q-item-section class="exansion-title"> Community </q-item-section>
+          <q-item-section class="exansion-title"> {{ $t('sidenavi.community') }} </q-item-section>
         </template>
 
         <q-list class="expansion-list">
@@ -26,7 +26,7 @@
               <astar-icon-discord />
             </astar-icon-base>
 
-            <q-item-section class="item-name">Discord</q-item-section>
+            <q-item-section class="item-name">{{ $t('sidenavi.discord') }}</q-item-section>
           </q-item>
           <q-item
             class="ic-item"
@@ -39,7 +39,7 @@
               <astar-icon-twitter />
             </astar-icon-base>
 
-            <q-item-section class="item-name">Twitter</q-item-section>
+            <q-item-section class="item-name">{{ $t('sidenavi.twitter') }}</q-item-section>
           </q-item>
           <q-item
             class="ic-item"
@@ -52,7 +52,7 @@
               <astar-icon-telegram />
             </astar-icon-base>
 
-            <q-item-section class="item-name">Telegram</q-item-section>
+            <q-item-section class="item-name">{{ $t('sidenavi.telegram') }}</q-item-section>
           </q-item>
           <q-item
             class="ic-item"
@@ -65,7 +65,7 @@
               <astar-icon-reddit />
             </astar-icon-base>
 
-            <q-item-section class="item-name">Reddit</q-item-section>
+            <q-item-section class="item-name">{{ $t('sidenavi.reddit') }}</q-item-section>
           </q-item>
           <q-item
             class="ic-item"
@@ -78,7 +78,7 @@
               <astar-icon-youtube />
             </astar-icon-base>
 
-            <q-item-section class="item-name">Youtube</q-item-section>
+            <q-item-section class="item-name">{{ $t('sidenavi.youtube') }}</q-item-section>
           </q-item>
           <q-item
             class="ic-item"
@@ -91,7 +91,7 @@
               <astar-icon-forum />
             </astar-icon-base>
 
-            <q-item-section class="item-name">Forum</q-item-section>
+            <q-item-section class="item-name">{{ $t('sidenavi.forum') }}</q-item-section>
           </q-item>
           <q-item
             class="ic-item"
@@ -104,7 +104,7 @@
               <astar-icon-github />
             </astar-icon-base>
 
-            <q-item-section class="item-name">Github</q-item-section>
+            <q-item-section class="item-name">{{ $t('sidenavi.github') }}</q-item-section>
           </q-item>
         </q-list>
       </q-expansion-item>
@@ -119,7 +119,7 @@
           <astar-icon-base class="header-icon tw-ml-1 tw-mt-2">
             <astar-icon-docs />
           </astar-icon-base>
-          <q-item-section class="exansion-title"> Docs </q-item-section>
+          <q-item-section class="exansion-title"> {{ $t('sidenavi.docs') }} </q-item-section>
         </template>
       </q-expansion-item>
       <q-expansion-item
@@ -132,7 +132,7 @@
           <astar-icon-base class="header-icon">
             <astar-icon-3dots />
           </astar-icon-base>
-          <q-item-section class="exansion-title"> Settings </q-item-section>
+          <q-item-section class="exansion-title"> {{ $t('sidenavi.settings') }} </q-item-section>
         </template>
         <div class="wrapper--option">
           <q-expansion-item
@@ -142,7 +142,9 @@
             }`"
           >
             <template #header>
-              <q-item-section class="exansion-title item-name"> Language </q-item-section>
+              <q-item-section class="exansion-title item-name">
+                {{ $t('sidenavi.language') }}
+              </q-item-section>
             </template>
             <div class="wrapper--sub-item">
               <q-item
@@ -160,13 +162,13 @@
           </q-expansion-item>
           <div class="wrapper--sub-item">
             <q-item class="ic-item item--sub" clickable active-class="active-item">
-              <q-item-section class="item-name">Theme</q-item-section>
+              <q-item-section class="item-name">{{ $t('sidenavi.theme') }}</q-item-section>
               <LightDarkMode />
             </q-item>
           </div>
         </div>
       </q-expansion-item>
-      <div class="button--close" @click="closeMobileNavi">X Close</div>
+      <div class="button--close" @click="closeMobileNavi">X {{ $t('sidenavi.close') }}</div>
     </q-list>
   </div>
 </template>
