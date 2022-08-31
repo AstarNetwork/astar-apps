@@ -268,6 +268,7 @@ export default defineComponent({
 .wrapper {
   background: $gray-1;
   box-shadow: 0px 0px 24px 4px rgba(0, 0, 0, 0.08);
+  padding-top: 16px;
 }
 
 .q-expansion-item {
@@ -360,7 +361,7 @@ export default defineComponent({
   line-height: 17px;
   display: flex;
   margin: 16px;
-  padding-bottom: 15px;
+  padding-bottom: 40px;
   justify-content: center;
   color: $gray-5-selected;
   cursor: pointer;

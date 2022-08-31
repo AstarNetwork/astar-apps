@@ -123,7 +123,7 @@ export default defineComponent({
   height: 32px;
   flex-direction: row;
   align-items: center;
-  background: #fff;
+  background: transparent !important;
   padding: 8px 16px 8px 12px;
   // box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
   border: 1px solid $gray-3;
@@ -162,6 +162,7 @@ export default defineComponent({
 }
 
 .m-btn--network {
+  background: transparent;
   border: 1px solid $gray-3;
   box-shadow: none;
   padding: 8px;
@@ -180,7 +181,7 @@ export default defineComponent({
 
 .body--dark {
   .btn--network {
-    background: $gray-5;
+    background: $gray-5 !important;
     color: #fff;
     border: 1px solid $gray-6;
   }

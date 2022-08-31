@@ -49,6 +49,7 @@ export default defineComponent({
 @import 'src/css/utils.scss';
 
 .btn--account {
+  background: transparent !important;
   display: flex;
   height: 32px;
   flex-direction: row;
@@ -75,6 +76,7 @@ export default defineComponent({
 }
 
 .m-btn--account {
+  background: transparent;
   border: 1px solid $gray-3;
   box-shadow: none;
   padding: 8px;
@@ -93,9 +95,6 @@ export default defineComponent({
     background: $gray-5 !important;
     color: #fff;
     border: 1px solid $gray-6 !important;
-    @media (min-width: $md) {
-      background: $gray-5 !important;
-    }
   }
   .btn--account:hover {
     background: $gray-5-selected !important;
