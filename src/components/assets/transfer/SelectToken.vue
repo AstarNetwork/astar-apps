@@ -13,9 +13,18 @@
               token.metadata.symbol === nativeTokenSymbol ? 'native-token-logo' : 'item-logo',
             ]"
           />
-          <span>{{ token.metadata.symbol }}</span>
+          <span class="text--item-name">{{ token.metadata.symbol }}</span>
         </div>
-        <div />
+        <div class="column--item-name">
+          <span class="text--token-amount">
+            {{
+              $t('amountSymbol', {
+                amount: truncate(token.userBalance),
+                symbol: token.metadata.symbol,
+              })
+            }}
+          </span>
+        </div>
       </div>
     </div>
   </div>
@@ -24,6 +33,7 @@
 import { useNetworkInfo } from 'src/hooks';
 import { Asset } from 'src/v2/models';
 import { defineComponent, PropType } from 'vue';
+import { truncate } from 'src/hooks/helper/common';
 export default defineComponent({
   props: {
     setToken: {
@@ -37,7 +47,7 @@ export default defineComponent({
   },
   setup() {
     const { nativeTokenSymbol } = useNetworkInfo();
-    return { nativeTokenSymbol };
+    return { nativeTokenSymbol, truncate };
   },
 });
 </script>

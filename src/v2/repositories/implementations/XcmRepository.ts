@@ -42,6 +42,7 @@ export class XcmRepository implements IXcmRepository {
       const tokenImage = registeredData ? (registeredData.logo as string) : 'custom-token';
       const isNativeToken = registeredData ? registeredData.isNativeToken : false;
       const isXcmCompatible = registeredData ? registeredData.isXcmCompatible : false;
+      const userBalance = 0;
 
       const asset = new Asset(
         id,
@@ -52,7 +53,8 @@ export class XcmRepository implements IXcmRepository {
         originAssetId,
         tokenImage,
         isNativeToken,
-        isXcmCompatible
+        isXcmCompatible,
+        userBalance
       );
 
       result.push(asset);

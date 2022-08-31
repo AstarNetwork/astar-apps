@@ -11,7 +11,7 @@ import { pathEvm } from 'src/hooks';
 import { getTimestamp } from 'src/hooks/helper/common';
 import { TxHistory } from 'src/modules/account';
 import { Asset } from 'src/v2/models';
-import { ExistentialDeposit, XcmTokenInformation } from '../index';
+import { astarChains, ExistentialDeposit, XcmTokenInformation } from '../index';
 import { xcmToken } from '../tokens';
 import { astarNetworks } from './../../../hooks/xcm/useTransferRouter';
 import { HistoryTxType } from './../../account/index';
@@ -93,8 +93,7 @@ export const fetchExistentialDeposit = async (api: ApiPromise): Promise<Existent
 };
 
 export const checkIsDeposit = (fromChain: Chain): boolean => {
-  const astarChain = [Chain.ASTAR, Chain.SHIDEN, Chain.ASTAR_EVM, Chain.SHIDEN_EVM];
-  return !astarChain.includes(fromChain);
+  return !astarChains.includes(fromChain);
 };
 
 export const monitorBalanceIncreasing = async ({

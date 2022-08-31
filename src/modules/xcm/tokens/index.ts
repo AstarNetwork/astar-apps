@@ -167,6 +167,7 @@ export const generateNativeAsset = (symbol: ASTAR_NATIVE_TOKEN): Asset => {
   const originAssetId = symbol;
   const isNativeToken = true;
   const isXcmCompatible = true;
+  const userBalance = 0;
 
   return new Asset(
     idAstarNativeToken,
@@ -177,12 +178,12 @@ export const generateNativeAsset = (symbol: ASTAR_NATIVE_TOKEN): Asset => {
     originAssetId,
     tokenImage,
     isNativeToken,
-    isXcmCompatible
+    isXcmCompatible,
+    userBalance
   );
 };
 
 export const generateAssetFromEvmToken = (token: SelectedToken): Asset => {
-  // console.log('token', token);
   const name = token.name;
   const tokenImage = token.icon;
   const mappedERC20Addr = token.address;
@@ -208,7 +209,8 @@ export const generateAssetFromEvmToken = (token: SelectedToken): Asset => {
     originAssetId,
     tokenImage,
     isNativeToken,
-    isXcmCompatible
+    isXcmCompatible,
+    Number(token.userBalance)
   );
 };
 

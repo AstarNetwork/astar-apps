@@ -12,7 +12,7 @@
       >
         <div class="column--item-name">
           <img :src="chain.img" :alt="chain.name" class="item-logo" />
-          <span>{{ castChainName(chain.name) }}</span>
+          <span class="text--item-name">{{ castChainName(chain.name) }}</span>
         </div>
         <div />
       </div>

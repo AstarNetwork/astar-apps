@@ -253,7 +253,6 @@ export default defineComponent({
       isDisabledBridge,
       isEvmBridge,
       inputtedAddress,
-      // existentialDeposit,
       isH160,
       destAddressBalance,
       fromAddressBalance,
@@ -314,12 +313,6 @@ export default defineComponent({
       }
     };
 
-    watchEffect(() => {
-      // console.log('isInputtingAddress.value', isInputtingAddress.value);
-      // console.log('inputtedAddress', inputtedAddress.value);
-      // console.log('destChain', destChain.value);
-    });
-
     return {
       errMsg,
       amount,
@@ -328,7 +321,6 @@ export default defineComponent({
       isDisabledBridge,
       isEvmBridge,
       inputtedAddress,
-      // existentialDeposit,
       isLoadingApi,
       evmInputPlaceholder,
       evmInputTitle,

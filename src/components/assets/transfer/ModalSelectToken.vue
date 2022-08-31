@@ -21,9 +21,18 @@
               :alt="t.metadata.symbol"
               :class="[t.metadata.symbol === nativeTokenSymbol ? 'native-token-logo' : 'item-logo']"
             />
-            <span>{{ t.metadata.symbol }}</span>
+            <span class="text--item-name">{{ t.metadata.symbol }}</span>
           </div>
-          <div />
+          <div class="column--item-name">
+            <span class="text--token-amount">
+              {{
+                $t('amountSymbol', {
+                  amount: truncate(t.userBalance),
+                  symbol: t.metadata.symbol,
+                })
+              }}
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -35,8 +44,8 @@ import AstarModal from 'src/components/common/AstarModal.vue';
 import { useNetworkInfo } from 'src/hooks';
 import { wait } from 'src/v2/common';
 import { Asset } from 'src/v2/models';
-import { defineComponent, PropType, ref, watchEffect } from 'vue';
-
+import { defineComponent, PropType, ref } from 'vue';
+import { truncate } from 'src/hooks/helper/common';
 export default defineComponent({
   components: {
     AstarModal,
@@ -74,7 +83,7 @@ export default defineComponent({
 
     const { nativeTokenSymbol } = useNetworkInfo();
 
-    return { nativeTokenSymbol, closeModal, isClosingModal };
+    return { nativeTokenSymbol, closeModal, isClosingModal, truncate };
   },
 });
 </script>

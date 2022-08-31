@@ -30,6 +30,7 @@ export default {
   evmAddressPlaceholder: 'Destination EVM address',
   ticker: 'Ticker',
   isComingSoon: '{value} is coming soon',
+  amountSymbol: '{amount} {symbol}',
   warning: {
     insufficientBalance: 'Insufficient balance',
     insufficientFee: 'Warning! Transaction might failed due to insufficient fee',

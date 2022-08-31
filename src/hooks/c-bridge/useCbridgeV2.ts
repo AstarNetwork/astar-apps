@@ -63,16 +63,14 @@ export function useCbridgeV2() {
     userBalance: string;
   }> => {
     let balUsd = 0;
-    if (isTransferPage.value) {
-      return { balUsd, userBalance: '0' };
-    }
+
     const userBalance = await getTokenBal({
       srcChainId: evmNetworkId.value,
       address: userAddress,
       tokenAddress: token.address,
       tokenSymbol: token.symbol,
     });
-    if (Number(userBalance) > 0) {
+    if (Number(userBalance) > 0 && !isTransferPage.value) {
       try {
         balUsd = await calUsdAmount({
           amount: Number(userBalance),
@@ -219,11 +217,6 @@ export function useCbridgeV2() {
   watchEffect(async () => {
     await handleCbridgeConfiguration();
   });
-
-  // watch([isH160, currentAccount], async () => {
-  //   console.log('callsed');
-  //   await handleCbridgeConfiguration();
-  // });
 
   watchEffect(async () => {
     await handleImportingCustomToken();

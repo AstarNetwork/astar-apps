@@ -45,6 +45,7 @@
 .row--item {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   cursor: pointer;
   border-radius: 8px;
   margin-left: -8px;
@@ -62,7 +63,7 @@
     padding-bottom: 0;
     &:hover {
       border: 1px solid transparent;
-      background-color: rgba(0, 0, 0, 0.02);
+      background-color: white;
     }
   }
 }
@@ -79,10 +80,7 @@
   display: flex;
   column-gap: 8px;
   align-items: center;
-  font-size: 16px;
   padding: 16px;
-  color: $gray-5;
-  font-weight: 700;
 }
 
 .item-logo {
@@ -96,6 +94,22 @@
   border-radius: 50%;
 }
 
+.text--item-name {
+  color: $gray-5;
+  font-weight: 700;
+  font-size: 16px;
+  @media (min-width: $md) {
+    font-weight: 600;
+    font-size: 16px;
+  }
+}
+
+.text--token-amount {
+  font-size: 12px;
+  font-weight: 400;
+  color: $gray-5;
+}
+
 .body--dark {
   .container--select-item {
     color: $gray-1;
@@ -104,9 +118,6 @@
     @media (min-width: $md) {
       background: $gray-6;
     }
-  }
-  .column--item-name {
-    color: $gray-1;
   }
   .row--item {
     background-color: $gray-7;
@@ -121,5 +132,11 @@
     @media (min-width: $md) {
       background-color: $gray-5;
     }
+  }
+  .text--item-name {
+    color: $gray-1;
+  }
+  .text--token-amount {
+    color: $gray-1;
   }
 }

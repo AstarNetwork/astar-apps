@@ -29,7 +29,6 @@ import { SubstrateAccount } from 'src/store/general/state';
 
 export function useTokenTransfer(selectedToken: Ref<Asset>) {
   const transferAmt = ref<string | null>(null);
-  const fromAddressBalance = ref<number>(0);
   const toAddressBalance = ref<number>(0);
   const toAddress = ref<string>('');
   const errMsg = ref<string>('');
@@ -65,6 +64,10 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
   );
 
   const isRequiredCheck = computed<boolean>(() => isH160.value || !isTransferNativeToken.value);
+
+  const fromAddressBalance = computed<number>(() =>
+    selectedToken.value ? selectedToken.value.userBalance : 0
+  );
 
   const isDisabledTransfer = computed<boolean>(() => {
     const isLessAmount =
@@ -389,21 +392,6 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     }
   };
 
-  const updateFromTokenBal = async (): Promise<void> => {
-    if (isH160.value && !isTransferNativeToken.value) {
-      fromAddressBalance.value = Number(
-        await getTokenBal({
-          srcChainId: evmNetworkIdx.value,
-          address: currentAccount.value,
-          tokenAddress: selectedToken.value.mappedERC20Addr,
-          tokenSymbol: selectedToken.value.metadata.symbol,
-        })
-      );
-    } else {
-      fromAddressBalance.value = selectedToken.value.userBalance;
-    }
-  };
-
   const setEvmGasCost = async (): Promise<void> => {
     if (!selectedGas.value || !isH160.value) return;
     try {
@@ -442,7 +430,6 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     }
   };
 
-  watchEffect(updateFromTokenBal);
   watchEffect(setErrorMsg);
   watchEffect(setToAddressBalance);
   watchEffect(setEvmGasCost);

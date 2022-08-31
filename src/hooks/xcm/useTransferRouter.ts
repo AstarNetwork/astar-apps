@@ -4,6 +4,7 @@ import { endpointKey } from 'src/config/chainEndpoints';
 import { isXc20Token } from 'src/config/web3/utils';
 import { useAccount, useBalance, useCbridgeV2, useNetworkInfo } from 'src/hooks';
 import {
+  astarChains,
   Chain,
   checkIsRelayChain,
   removeEvmName,
@@ -54,12 +55,8 @@ export function useTransferRouter() {
   const xcmAssets = computed<XcmAssets>(() => store.getters['assets/getAllAssets']);
 
   const xcmOpponentChain = computed<Chain>(() => {
-    const AstarChain = [Chain.ASTAR, Chain.SHIDEN];
-    if (AstarChain.includes(capitalize(from.value) as Chain)) {
-      return capitalize(to.value) as Chain;
-    } else {
-      return capitalize(from.value) as Chain;
-    }
+    const chain = astarChains.includes(capitalize(from.value) as Chain) ? to.value : from.value;
+    return capitalize(chain) as Chain;
   });
 
   const redirect = (): void => {
@@ -292,7 +289,7 @@ export function useTransferRouter() {
       const isSelectedRelayChain = checkIsRelayChain(selectedNetwork);
       selectableTokens = xcmAssets.value.assets.filter((it) => it.originChain === selectedNetwork);
       tokens = selectableTokens.filter(({ isXcmCompatible }) => isXcmCompatible);
-      !isSelectedRelayChain && tokens.push(nativeToken);
+      !isSelectedRelayChain && tokens.push(nativeTokenAsset);
     }
     return tokens ? tokens.sort((a, b) => a.metadata.symbol.localeCompare(b.metadata.symbol)) : [];
   });
@@ -304,7 +301,6 @@ export function useTransferRouter() {
     }
 
     const symbol = tokenSymbol.value;
-    const nativeTokenSymbolRef = nativeTokenSymbol.value;
     isLocalTransfer.value = mode.value === 'local';
     const isRedirect = !network.value
       .toLowerCase()
@@ -317,26 +313,12 @@ export function useTransferRouter() {
     const nativeTokenAsset = { ...nativeToken, userBalance: nativeBal };
     token.value = nativeTokenAsset;
     const isFetchedAssets = xcmAssets.value && xcmAssets.value.assets.length !== 0;
-    if (isFetchedAssets && symbol) {
-      try {
-        const xc20Token = xcmAssets.value.assets.find(
-          (it) => it.metadata.symbol.toLowerCase() === symbol
-        );
-
-        if (xc20Token) {
-          token.value = xc20Token;
-        } else {
-          if (!evmTokens.value) return;
-          const evmToken = evmTokens.value?.find((it) => it.symbol.toLowerCase() === symbol);
-          if (!evmToken) return;
-          token.value = generateAssetFromEvmToken(evmToken as SelectedToken);
-        }
-
-        if (!token.value) throw Error('No token is found');
-      } catch (error) {
-        console.error('error', error);
-        redirect();
-      }
+    token.value = tokens.value.find(
+      (it) => it.metadata.symbol.toLowerCase() === tokenSymbol.value.toLowerCase()
+    );
+    if (isFetchedAssets && symbol && !token.value) {
+      console.error('No token is found');
+      redirect();
     }
   };
 

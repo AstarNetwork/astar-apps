@@ -57,6 +57,7 @@ export enum parachainIds {
 // Memo: give it 0 ide for convenience in checking para/relay chain logic
 export const relaychainParaId = 0;
 
+export const astarChains = [Chain.ASTAR, Chain.SHIDEN, Chain.ASTAR_EVM, Chain.SHIDEN_EVM];
 export interface XcmChain {
   name: Chain;
   relayChain: Chain;
