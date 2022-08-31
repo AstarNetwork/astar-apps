@@ -44,7 +44,7 @@
 </template>
 
 <script lang="ts">
-import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
+import { providerEndpoints } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';

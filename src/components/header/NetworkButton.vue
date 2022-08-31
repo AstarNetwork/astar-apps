@@ -183,19 +183,19 @@ export default defineComponent({
   .btn--network {
     background: $gray-5 !important;
     color: #fff;
-    border: 1px solid $gray-6;
+    border: 1px solid $gray-6 !important;
   }
   .btn--network:hover {
-    background: $gray-5-selected;
+    background: $gray-5-selected !important;
   }
   .divider {
     border-left: 1px solid $gray-6;
   }
 
   .m-btn--network {
-    background: $gray-6;
+    background: $gray-6 !important;
     color: $gray-3;
-    border: 1px solid $gray-4;
+    border: 1px solid $gray-4 !important;
   }
   .divider {
     border-left: 1px solid $gray-4;

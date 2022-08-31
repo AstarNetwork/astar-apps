@@ -144,11 +144,13 @@
             <template #header>
               <q-item-section class="exansion-title item-name"> Language </q-item-section>
             </template>
-            <div>
+            <div class="wrapper--sub-item">
               <q-item
                 v-for="(lang, i) in langs"
                 :key="`Lang${i}`"
-                class="ic-item"
+                class="ic-item item--sub"
+                active-class="ic-item-lang-active"
+                :active="$i18n.locale == lang.code"
                 clickable
                 @click="selectLanguage(lang.code)"
               >
@@ -156,10 +158,12 @@
               </q-item>
             </div>
           </q-expansion-item>
-          <q-item class="ic-item item--sub" clickable active-class="active-item">
-            <q-item-section class="item-name">Theme</q-item-section>
-            <LightDarkMode />
-          </q-item>
+          <div class="wrapper--sub-item">
+            <q-item class="ic-item item--sub" clickable active-class="active-item">
+              <q-item-section class="item-name">Theme</q-item-section>
+              <LightDarkMode />
+            </q-item>
+          </div>
         </div>
       </q-expansion-item>
       <div class="button--close" @click="closeMobileNavi">X Close</div>
@@ -169,7 +173,6 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref, reactive } from 'vue';
-import { useRouter } from 'vue-router';
 import LightDarkMode from '../common/LightDarkMode.vue';
 import { useStore } from 'src/store';
 import { socialUrl, docsUrl } from 'src/links';
@@ -188,8 +191,6 @@ export default defineComponent({
     const classes = reactive({
       defaultHeader:
         'min-height: 40px; padding: 0; padding-left: 8px; padding-right: 8px; border-radius: 6px;',
-      defaultSubHeader:
-        'min-height: 40px; width: 100%; padding: 0; padding-left: 8px; border-radius: 6px;',
       activeHeaderLight: 'background: #fff;',
       activeHeaderDark: 'background: rgba(255, 255, 255, 0.05);',
     });
@@ -224,7 +225,6 @@ export default defineComponent({
     };
 
     const selectLanguage = (code: string) => {
-      console.log('c', code);
       i18n.global.locale = code;
     };
 
@@ -235,19 +235,12 @@ export default defineComponent({
     const expanded = ref(false);
     const expanded2 = ref(false);
     const expanded3 = ref(false);
-    const showOption = ref(false);
-    const router = useRouter();
-    const path = computed(() => router.currentRoute.value.path.split('/')[1]);
-    const active = ref(true);
 
     return {
       classes,
       expanded,
       expanded2,
       expanded3,
-      showOption,
-      path,
-      active,
       isDarkTheme,
       selectLinkIdx,
       goToLink,
@@ -263,134 +256,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import './styles/sidebar-mobile.scss';
-
-.wrapper {
-  background: $gray-1;
-  box-shadow: 0px 0px 24px 4px rgba(0, 0, 0, 0.08);
-  padding-top: 16px;
-}
-
-.q-expansion-item {
-  padding: 8px 16px;
-}
-
-.q-item__section {
-  min-width: 0px !important;
-}
-
-.exansion-title {
-  margin-left: 8px;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 19px;
-}
-
-.active-item {
-  border: 1px solid $astar-blue;
-}
-
-.expansion-list {
-  width: 100%;
-  padding-left: 24px;
-  padding-right: 18px;
-}
-
-.ic-item {
-  width: 100%;
-  background: #fff;
-  margin: 16px;
-  min-height: 40px;
-  border-radius: 6px;
-  &:focus {
-    border: 1px solid $astar-blue;
-  }
-
-  .icon {
-    margin-right: 8px;
-  }
-}
-
-.header-icon {
-  width: 20px;
-  color: $gray-5-selected;
-}
-
-.icon {
-  width: 20px;
-  color: $astar-blue;
-}
-
-.item-name {
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 17px;
-  color: $gray-5-selected;
-  // margin-left: 8px;
-}
-
-.wrapper--option {
-  // margin: 16px;
-
-  .q-expansion-item {
-    padding: 0 !important;
-    margin-left: 16px;
-    margin-top: 16px;
-    margin-bottom: 16px;
-  }
-
-  .ic-item {
-    width: 98%;
-    margin: 0px;
-    margin-top: 16px;
-    margin-left: 16px;
-    margin-right: 16px;
-  }
-
-  // .item--sub {
-  //   margin: 0px;
-  //   margin-top: 8px;
-  //   margin-left: 16px;
-  //   margin-right: 16px;
-  // }
-}
-
-.button--close {
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 17px;
-  display: flex;
-  margin: 16px;
-  padding-bottom: 40px;
-  justify-content: center;
-  color: $gray-5-selected;
-  cursor: pointer;
-}
-
-.body--dark {
-  .wrapper {
-    background: $gray-6;
-    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
-  }
-
-  .active-item {
-    border: 1px solid $astar-blue;
-  }
-
-  .ic-item {
-    background: rgba(255, 255, 255, 0.05);
-  }
-
-  .item-name {
-    color: $gray-1;
-  }
-
-  .header-icon {
-    color: #fff;
-  }
-
-  .button--close {
-    color: $gray-1;
-  }
-}
+@import './styles/sidebar-option.scss';
 </style>
