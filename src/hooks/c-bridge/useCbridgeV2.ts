@@ -168,6 +168,7 @@ export function useCbridgeV2() {
   };
 
   const handleCbridgeConfiguration = async (): Promise<void> => {
+    if (tokens.value) return;
     ttlErc20Amount.value = 0;
     const networkIdxStore = localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX);
     const isShibuya =
@@ -218,6 +219,11 @@ export function useCbridgeV2() {
   watchEffect(async () => {
     await handleCbridgeConfiguration();
   });
+
+  // watch([isH160, currentAccount], async () => {
+  //   console.log('callsed');
+  //   await handleCbridgeConfiguration();
+  // });
 
   watchEffect(async () => {
     await handleImportingCustomToken();
