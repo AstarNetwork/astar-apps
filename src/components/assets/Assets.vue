@@ -9,11 +9,7 @@
       />
       <div v-if="currentAccount">
         <div v-if="isH160">
-          <EvmAssetList
-            :tokens="tokens"
-            :handle-update-token-balances="handleUpdateTokenBalances"
-            :xcm-assets="xcmAssets.assets"
-          />
+          <EvmAssetList :tokens="tokens" />
         </div>
         <div v-else class="container--assets">
           <XcmNativeAssetList v-if="isEnableXcm" :xcm-assets="xcmAssets.assets" />
@@ -28,7 +24,7 @@ import Account from 'src/components/assets/Account.vue';
 import EvmAssetList from 'src/components/assets/EvmAssetList.vue';
 import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
 import XcmNativeAssetList from 'src/components/assets/XcmNativeAssetList.vue';
-import { endpointKey } from 'src/config/chainEndpoints';
+import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useAccount, useBalance, useCbridgeV2, useNetworkInfo } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
@@ -50,12 +46,15 @@ export default defineComponent({
     const isModalXcmTransfer = ref<boolean>(false);
     const isDisplay = ref<boolean>(false);
 
-    const { tokens, isLoadingErc20Amount, ttlErc20Amount, handleUpdateTokenBalances } =
-      useCbridgeV2();
+    // Todo: get the data from global state
+    const { tokens, isLoadingErc20Amount, ttlErc20Amount } = useCbridgeV2();
     const store = useStore();
     const { currentAccount } = useAccount();
     const { accountData } = useBalance(currentAccount);
     const { isMainnet, currentNetworkIdx } = useNetworkInfo();
+    const evmNetworkId = computed(() => {
+      return Number(providerEndpoints[currentNetworkIdx.value].evmChainId);
+    });
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
@@ -74,10 +73,24 @@ export default defineComponent({
     });
 
     const handleUpdateXcmTokenAssets = () => {
-      currentAccount.value && store.dispatch('assets/getAssets', currentAccount.value);
+      currentAccount.value &&
+        store.dispatch('assets/getAssets', { address: currentAccount.value, isFetchUsd: true });
+    };
+
+    const handleUpdateEvmAssets = (): void => {
+      if (isH160.value) {
+        currentAccount.value &&
+          store.dispatch('assets/getEvmAssets', {
+            currentAccount: currentAccount.value,
+            srcChainId: evmNetworkId.value,
+            currentNetworkIdx: currentNetworkIdx.value,
+            isFetchUsd: true,
+          });
+      }
     };
 
     watch([currentAccount], handleUpdateXcmTokenAssets, { immediate: true });
+    watch([currentAccount], handleUpdateEvmAssets, { immediate: true });
     // v2 end
 
     const isEnableXcm = computed(
@@ -127,7 +140,6 @@ export default defineComponent({
       isModalXcmBridge,
       isLoading,
       handleUpdateXcmTokenAssets,
-      handleUpdateTokenBalances,
     };
   },
 });

@@ -524,7 +524,7 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
           });
       }
 
-      store.dispatch('assets/getAssets', currentAccount.value);
+      store.dispatch('assets/getAssets', { address: currentAccount.value, isFetchUsd: true });
     } catch (error: any) {
       console.error(error.message);
       store.dispatch('general/showAlertMsg', {

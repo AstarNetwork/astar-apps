@@ -77,7 +77,7 @@ import SelectChain from 'src/components/assets/transfer/SelectChain.vue';
 import SelectToken from 'src/components/assets/transfer/SelectToken.vue';
 import TransferModeTab from 'src/components/assets/transfer/TransferModeTab.vue';
 import XcmBridge from 'src/components/assets/transfer/XcmBridge.vue';
-import { endpointKey } from 'src/config/chainEndpoints';
+import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import {
   useAccount,
   useBalance,
@@ -90,8 +90,9 @@ import { MOVR } from 'src/modules/token';
 import { Chain, XcmChain, xcmToken } from 'src/modules/xcm';
 import { ASTR } from 'src/modules/xcm/tokens';
 import { useStore } from 'src/store';
+import { EvmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
-import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
+import { computed, defineComponent, ref, watch } from 'vue';
 export type RightUi = 'information' | 'select-chain' | 'select-token';
 
 export default defineComponent({
@@ -134,7 +135,11 @@ export default defineComponent({
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const isHighlightRightUi = computed<boolean>(() => rightUi.value !== 'information');
     const { nativeTokenSymbol, currentNetworkName, currentNetworkIdx } = useNetworkInfo();
+    const evmAssets = computed<EvmAssets>(() => store.getters['assets/getEvmAllAssets']);
     const isShibuya = computed<boolean>(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
+    const evmNetworkId = computed(() => {
+      return Number(providerEndpoints[currentNetworkIdx.value].evmChainId);
+    });
 
     const isDisabledXcm = computed<boolean>(() => {
       const isEvmNativeToken =
@@ -225,19 +230,29 @@ export default defineComponent({
       }
     });
 
+    const handleUpdateEvmAssets = () => {
+      if (isH160.value && evmAssets.value.assets.length === 0) {
+        currentAccount.value &&
+          store.dispatch('assets/getEvmAssets', {
+            currentAccount: currentAccount.value,
+            srcChainId: evmNetworkId.value,
+            currentNetworkIdx: currentNetworkIdx.value,
+            isFetchUsd: false,
+          });
+      }
+    };
+
     const handleSetIsLocalTransfer = (isLocal: boolean): void => {
       setIsLocalTransfer({ isLocal, originChain: token.value!.originChain });
     };
 
     const handleUpdateXcmTokenAssets = (): void => {
-      currentAccount.value && store.dispatch('assets/getAssets', currentAccount.value);
+      currentAccount.value &&
+        store.dispatch('assets/getAssets', { address: currentAccount.value, isFetchUsd: false });
     };
 
     watch([currentAccount], handleUpdateXcmTokenAssets, { immediate: true });
-
-    watchEffect(() => {
-      // console.log('token.value', token.value);
-    });
+    watch([currentAccount], handleUpdateEvmAssets, { immediate: true });
 
     return {
       isLocalTransfer,

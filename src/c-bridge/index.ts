@@ -1,5 +1,7 @@
 // Docs: https://cbridge-docs.celer.network/developer/api-reference/gateway-gettransferconfigs
 
+import { Erc20Token } from 'src/modules/token';
+
 export { getTransferConfigs, getSelectedToken, getIcon, checkIsCbridgeToken } from './utils';
 
 export enum EvmChain {
@@ -106,3 +108,6 @@ export interface SelectedToken {
   userBalance: string;
   userBalanceUsd: string;
 }
+
+type CbridgeCurrency = SelectedToken;
+export type EvmAsset = CbridgeCurrency | Erc20Token;

@@ -1,10 +1,10 @@
-import { SystemAccount } from 'src/modules/account';
 import { VoidFn } from '@polkadot/api/types';
 import { BalanceLockTo212 } from '@polkadot/types/interfaces';
 import { PalletBalancesBalanceLock, PalletVestingVestingInfo } from '@polkadot/types/lookup';
 import BN from 'bn.js';
 import { $api, $web3 } from 'boot/api';
 import { getBalance } from 'src/config/web3';
+import { SystemAccount } from 'src/modules/account';
 import { useStore } from 'src/store';
 import { computed, onUnmounted, ref, Ref, watch } from 'vue';
 import { getVested } from './helper/vested';
@@ -138,6 +138,9 @@ function useCall(addressRef: Ref<string>) {
 export function useBalance(addressRef: Ref<string>) {
   const balance = ref(new BN(0));
   const accountData = ref<AccountData | AccountDataH160>();
+  const useableBalance = computed(() => {
+    return accountData.value?.getUsableFeeBalance().toString() || '0';
+  });
 
   const { balanceRef, accountDataRef } = useCall(addressRef);
 
@@ -160,7 +163,8 @@ export function useBalance(addressRef: Ref<string>) {
     },
     { immediate: true }
   );
-  return { balance, accountData };
+
+  return { balance, accountData, useableBalance };
 }
 
 export class AccountData {

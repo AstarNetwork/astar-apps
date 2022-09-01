@@ -1,8 +1,7 @@
 import { ethers } from 'ethers';
 import { SelectedToken } from 'src/c-bridge';
 import { endpointKey } from 'src/config/chainEndpoints';
-import { isXc20Token } from 'src/config/web3/utils';
-import { useAccount, useBalance, useCbridgeV2, useNetworkInfo } from 'src/hooks';
+import { useAccount, useBalance, useNetworkInfo } from 'src/hooks';
 import {
   astarChains,
   Chain,
@@ -17,7 +16,7 @@ import { useStore } from 'src/store';
 import { Asset } from 'src/v2/models';
 import { computed, ref, watch, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { XcmAssets } from './../../store/assets/state';
+import { EvmAssets, XcmAssets } from './../../store/assets/state';
 import { capitalize } from './../helper/common';
 
 export const pathEvm = '-evm';
@@ -37,9 +36,9 @@ export function useTransferRouter() {
   const router = useRouter();
   const route = useRoute();
   // Todo: move to GlobalState
-  const { tokens: evmTokens } = useCbridgeV2();
   const { currentAccount } = useAccount();
-  const { balance } = useBalance(currentAccount);
+  const nativeTokenBalance = ref<number>(0);
+  const { useableBalance } = useBalance(currentAccount);
   const tokenSymbol = computed<string>(() => route.query.token as string);
   const network = computed<string>(() => route.query.network as string);
   const mode = computed<TransferMode>(() => route.query.mode as TransferMode);
@@ -53,11 +52,15 @@ export function useTransferRouter() {
   const { nativeTokenSymbol, currentNetworkName, currentNetworkIdx } = useNetworkInfo();
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const xcmAssets = computed<XcmAssets>(() => store.getters['assets/getAllAssets']);
-
+  const evmAssets = computed<EvmAssets>(() => store.getters['assets/getEvmAllAssets']);
   const xcmOpponentChain = computed<Chain>(() => {
     const chain = astarChains.includes(capitalize(from.value) as Chain) ? to.value : from.value;
     return capitalize(chain) as Chain;
   });
+
+  const setNativeTokenBalance = (): void => {
+    nativeTokenBalance.value = Number(ethers.utils.formatEther(useableBalance.value));
+  };
 
   const redirect = (): void => {
     const token = nativeTokenSymbol.value.toLowerCase();
@@ -258,18 +261,16 @@ export function useTransferRouter() {
   const tokens = computed<Asset[]>(() => {
     let tokens;
     let selectableTokens;
-    const bal = Number(ethers.utils.formatEther(balance.value.toString()));
+    const bal = nativeTokenBalance.value;
     const nativeToken = generateNativeAsset(nativeTokenSymbol.value);
     const nativeTokenAsset = { ...nativeToken, userBalance: bal };
+    const evmTokens = evmAssets.value.assets;
 
     if (isLocalTransfer.value) {
       if (isH160.value) {
         // if: H160 local transfer
-        if (!evmTokens.value) return [];
-        const selectableTokens =
-          mode.value === 'local'
-            ? evmTokens.value
-            : evmTokens.value.filter((it) => isXc20Token(it.address));
+        if (!evmTokens) return [];
+        const selectableTokens = evmTokens;
         tokens = selectableTokens.map((it) =>
           generateAssetFromEvmToken(it as SelectedToken, xcmAssets.value.assets)
         );
@@ -277,11 +278,9 @@ export function useTransferRouter() {
       } else {
         // if: SS58 local transfer
         if (!xcmAssets.value || !nativeTokenSymbol.value) return [];
-        if (isLocalTransfer.value) {
-          selectableTokens = xcmAssets.value.assets;
-          tokens = selectableTokens.filter(({ isXcmCompatible }) => isXcmCompatible);
-          tokens.push(nativeTokenAsset);
-        }
+        selectableTokens = xcmAssets.value.assets;
+        tokens = selectableTokens.filter(({ isXcmCompatible }) => isXcmCompatible);
+        tokens.push(nativeTokenAsset);
       }
     }
 
@@ -289,7 +288,18 @@ export function useTransferRouter() {
       // if: XCM bridge
       const selectedNetwork = xcmOpponentChain.value;
       const isSelectedRelayChain = checkIsRelayChain(selectedNetwork);
-      selectableTokens = xcmAssets.value.assets.filter((it) => it.originChain === selectedNetwork);
+      if (isH160.value) {
+        const filteredToken = evmTokens.map((it) =>
+          generateAssetFromEvmToken(it as SelectedToken, xcmAssets.value.assets)
+        );
+        selectableTokens = filteredToken
+          .filter(({ isXcmCompatible }) => isXcmCompatible)
+          .filter((it) => it.originChain === selectedNetwork);
+      } else {
+        selectableTokens = xcmAssets.value.assets.filter(
+          (it) => it.originChain === selectedNetwork
+        );
+      }
       tokens = selectableTokens.filter(({ isXcmCompatible }) => isXcmCompatible);
       !isSelectedRelayChain && tokens.push(nativeTokenAsset);
     }
@@ -309,7 +319,7 @@ export function useTransferRouter() {
 
     if (isRedirect) return redirect();
 
-    const nativeBal = Number(ethers.utils.formatEther(balance.value.toString()));
+    const nativeBal = nativeTokenBalance.value;
     const nativeToken = generateNativeAsset(nativeTokenSymbol.value);
     const nativeTokenAsset = { ...nativeToken, userBalance: nativeBal };
     token.value = nativeTokenAsset;
@@ -345,6 +355,8 @@ export function useTransferRouter() {
     },
     { immediate: false }
   );
+
+  watchEffect(setNativeTokenBalance);
 
   return {
     tokenSymbol,

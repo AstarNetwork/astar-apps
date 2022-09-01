@@ -135,7 +135,6 @@ import { useAccount, useBalance, useNetworkInfo, usePrice } from 'src/hooks';
 import { truncate } from 'src/hooks/helper/common';
 import { Erc20Token, getTokenImage } from 'src/modules/token';
 import { useStore } from 'src/store';
-import { Asset } from 'src/v2/models';
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
 import ModalFaucet from './modals/ModalFaucet.vue';
 
@@ -151,10 +150,6 @@ export default defineComponent({
       type: Object as PropType<SelectedToken[]>,
       required: false,
       default: null,
-    },
-    xcmAssets: {
-      type: Array as PropType<Asset[]>,
-      required: true,
     },
   },
   setup(props) {

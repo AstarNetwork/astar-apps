@@ -15,12 +15,11 @@ export class XcmService implements IXcmService {
     private balanceFormatterService: IBalanceFormatterService
   ) {}
 
-  public async getAssets(currentAccount: string): Promise<XcmAssets> {
+  public async getAssets(currentAccount: string, isFetchUsd: boolean): Promise<XcmAssets> {
     Guard.ThrowIfUndefined('currentAccount', currentAccount);
 
     const assets = await this.xcmRepository.getAssets(currentAccount);
     let ttlNativeXcmUsdAmount = 0;
-    const isTransferPage = window.location.href.includes('transfer');
 
     const updatedAssets = await Promise.all(
       assets.map(async (asset) => {
@@ -29,9 +28,9 @@ export class XcmService implements IXcmService {
             this.balanceFormatterService.format(asset.balance, asset.metadata.decimals)
           );
           // Memo: fetch the USD price on the assets page only
-          const price = isTransferPage
-            ? 0
-            : await this.priceRepository.getUsdPrice(asset.metadata.symbol);
+          const price = isFetchUsd
+            ? await this.priceRepository.getUsdPrice(asset.metadata.symbol)
+            : 0;
           const userBalanceUsd = asset.userBalance * price;
           ttlNativeXcmUsdAmount += userBalanceUsd;
           return {
