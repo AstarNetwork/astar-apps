@@ -184,7 +184,6 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
 
   const checkIsEnoughMinBal = (amount: number): boolean => {
     const originChainMinBal = selectedToken.value && selectedToken.value.minBridgeAmount;
-
     return fromAddressBalance.value - amount > (originChainMinBal || 0);
   };
 
@@ -200,7 +199,6 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
         ? ASTAR_SS58_FORMAT
         : originChainApi?.chainProperty?.ss58Prefix;
       const isValidPrefixAddress = isValidAddressPolkadotAddress(inputtedAddress.value, prefix);
-
       return isSubstrateAddress || isValidPrefixAddress;
     }
   };
@@ -248,7 +246,6 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
     const isFulfilledAddress =
       !isRequiredInputAddress || (isRequiredInputAddress && inputtedAddress.value);
 
-    // check if recipient account has non-zero native asset. (it cannot be transferred to an account with 0 nonce)
     isDisabledBridge.value =
       !amount.value || Number(amount.value) === 0 || errMsg.value !== '' || !isFulfilledAddress;
   };
@@ -273,7 +270,6 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
       }
     };
 
-    // Todo: add Moonbeam
     const shouldConnectMoonbeam = shouldConnectApi([Moonriver.name]);
     const shouldConnectAcala = shouldConnectApi([Acala.name, Karura.name]);
 
@@ -339,15 +335,11 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
       } else {
         if (isMoonbeamWithdrawal.value) {
           if (!isValidEvmAddress(inputtedAddress.value)) return 0;
-          const srcChainId = originChainApi!.chainProperty!.ss58Prefix!;
-          const isWithdrawAstrToMoonbeam =
-            isAstarNativeTransfer.value && isMoonbeamWithdrawal.value;
-          const tokenAddress = isWithdrawAstrToMoonbeam
+          const tokenAddress = isAstarNativeTransfer.value
             ? MOONBEAM_ASTAR_TOKEN_ID[selectedToken.value.metadata.symbol as AstarToken]
             : selectedToken.value.mappedERC20Addr;
-
           const balance = await getTokenBal({
-            srcChainId,
+            srcChainId: originChainApi!.chainProperty!.ss58Prefix!,
             address: inputtedAddress.value,
             tokenAddress,
             tokenSymbol: selectedToken.value.metadata.symbol,
@@ -360,12 +352,41 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
             selectedToken: selectedToken.value,
             isNativeToken: selectedToken.value.isNativeToken,
           });
-
-          const balance = Number(ethers.utils.formatUnits(bal, decimals.value).toString());
-          return balance;
+          return Number(ethers.utils.formatUnits(bal, decimals.value).toString());
         }
       }
     }
+  };
+
+  const depositFromMoonbeam = async ({
+    recipientAccountId,
+    handleFinalizedCallback,
+  }: {
+    recipientAccountId: string;
+    handleFinalizedCallback: (hash: string) => Promise<void>;
+  }): Promise<void> => {
+    if (!amount.value || !originChainApi) throw Error('Something went wrong');
+    showLoading(store.dispatch, true);
+    const hash = await originChainApi.evmTransferToParachain({
+      toPara: destParaId.value,
+      recipientAccountId,
+      amount: ethers.utils.parseUnits(amount.value, decimals.value).toString(),
+      selectedToken: selectedToken.value,
+    });
+    if (!isEvmBridge.value) {
+      await monitorBalanceIncreasing({
+        api: $api!,
+        userAddress: currentAccount.value,
+        originTokenData: selectedToken.value,
+      });
+    }
+    const msg = t('toast.completedHash', { hash });
+    store.dispatch('general/showAlertMsg', {
+      msg,
+      alertType: 'success',
+    });
+    showLoading(store.dispatch, false);
+    await handleFinalizedCallback(hash);
   };
 
   const bridge = async (finalizedCallback: () => Promise<void>): Promise<void> => {
@@ -384,10 +405,10 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
         });
         await finalizedCallback();
       };
-
       const destinationAddress = isInputDestAddrManually.value
         ? inputtedAddress.value
         : currentAccount.value;
+
       if (isDeposit.value) {
         let recipientAccountId = destinationAddress;
         if (isEvmBridge.value) {
@@ -395,37 +416,12 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
           const hexPublicKey = getPubkeyFromSS58Addr(ss58MappedAddr);
           recipientAccountId = hexPublicKey;
         }
-
         if (isMoonbeamDeposit.value) {
-          showLoading(store.dispatch, true);
-          const hash = await originChainApi.evmTransferToParachain({
-            toPara: destParaId.value,
-            recipientAccountId: recipientAccountId,
-            amount: ethers.utils.parseUnits(amount.value, decimals.value).toString(),
-            selectedToken: selectedToken.value,
-          });
-          if (!isEvmBridge.value) {
-            await monitorBalanceIncreasing({
-              api: $api!,
-              userAddress: currentAccount.value,
-              originTokenData: selectedToken.value,
-            });
-          }
-          // handleAddXcmTxHistories(hash)
-          const msg = t('toast.completedHash', { hash });
-          store.dispatch('general/showAlertMsg', {
-            msg,
-            alertType: 'success',
-          });
-          showLoading(store.dispatch, false);
-          isDisabledBridge.value = true;
-          await handleFinalizedCallback(hash);
-          amount.value = null;
+          await depositFromMoonbeam({ recipientAccountId, handleFinalizedCallback });
           return;
         }
 
         const injector = await getInjector(substrateAccounts.value);
-
         const txCall = originChainApi.transferToParachain({
           toPara: destParaId.value,
           recipientAccountId: recipientAccountId,
@@ -455,16 +451,11 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
           })
           .catch((error: Error) => {
             handleTransactionError(error);
-            isDisabledBridge.value = false;
             return;
-          })
-          .finally(async () => {
-            isDisabledBridge.value = true;
-            amount.value = null;
           });
       } else {
         // if: Withdrawal
-        let recipientAccountId = isMoonbeamWithdrawal.value
+        const recipientAccountId = isMoonbeamWithdrawal.value
           ? inputtedAddress.value
           : getPubkeyFromSS58Addr(destinationAddress);
         const injector = await getInjector(substrateAccounts.value);
@@ -490,15 +481,8 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
           })
           .catch((error: Error) => {
             handleTransactionError(error);
-            isDisabledBridge.value = false;
-          })
-          .finally(async () => {
-            isDisabledBridge.value = true;
-            amount.value = null;
           });
       }
-
-      store.dispatch('assets/getAssets', currentAccount.value);
     } catch (error: any) {
       console.error(error.message);
       store.dispatch('general/showAlertMsg', {

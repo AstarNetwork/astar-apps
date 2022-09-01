@@ -74,9 +74,7 @@ export default defineComponent({
     });
 
     const handleUpdateXcmTokenAssets = () => {
-      if (currentAccount.value) {
-        store.dispatch('assets/getAssets', currentAccount.value);
-      }
+      currentAccount.value && store.dispatch('assets/getAssets', currentAccount.value);
     };
 
     watch([currentAccount], handleUpdateXcmTokenAssets, { immediate: true });
