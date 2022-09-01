@@ -299,7 +299,7 @@ export default {
       countDown: '{hrs} hrs {mins} mins {secs} secs',
       whatIsFaucet: ' What is faucet and how does it help you?',
       faucetIntro:
-        'There will be minimal costs for each transaction, and this is paid as gas using {unit} token. If you have no {unit} in your account, you cannot send any tokens. Faucet sends enough {unit} to cover the transaction cost.',
+        'There is a small fee for each transaction, and this is paid using {symbol} tokens. If you have no {symbol} in your account, you cannot send any tokens. Faucet sends enough {symbol} to cover the transaction fee.',
       availableToWithdraw: 'Available to withdraw',
       totalDistribution: 'Total Distribution',
       alreadyVested: 'Already vested',
