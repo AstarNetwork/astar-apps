@@ -1,8 +1,8 @@
 <template>
   <div>
     <BackToAsset :class="isHighlightRightUi && 'half-opacity'" />
-    <MobileNavigator />
-    <div class="wrapper--transfer">
+    <MobileNavigator v-if="currentAccount" />
+    <div v-if="currentAccount" class="wrapper--transfer">
       <div class="container--transfer">
         <TransferModeTab
           :is-local-transfer="isLocalTransfer"
@@ -255,6 +255,7 @@ export default defineComponent({
       isSelectFromChain,
       from,
       to,
+      currentAccount,
       setRightUi,
       handleModalSelectToken,
       handleModalSelectChain,
