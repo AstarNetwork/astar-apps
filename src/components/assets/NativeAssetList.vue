@@ -150,12 +150,6 @@
       </div>
     </div>
 
-    <!-- <ModalTransfer
-      :is-modal-transfer="isModalTransfer"
-      :handle-modal-transfer="handleModalTransfer"
-      :symbol="nativeTokenSymbol"
-      :account-data="accountData"
-    /> -->
     <ModalFaucet :is-modal-faucet="isModalFaucet" :handle-modal-faucet="handleModalFaucet" />
     <ModalEvmWithdraw
       :is-modal-evm-withdraw="isModalEvmWithdraw"
