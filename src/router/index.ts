@@ -8,6 +8,7 @@ import {
 import { StateInterface } from '../store';
 import routes from './routes';
 
+export { Path } from 'src/router/routes';
 export { getHeaderName, buildTransferPageLink } from 'src/router/utils';
 
 /*

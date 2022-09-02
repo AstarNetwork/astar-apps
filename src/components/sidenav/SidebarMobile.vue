@@ -58,7 +58,7 @@ import { useRouter } from 'vue-router';
 import LightDarkMode from '../common/LightDarkMode.vue';
 import LocaleChanger from '../common/LocaleChanger.vue';
 import SocialMediaLinks from '../common/SocialMediaLinks.vue';
-import { Path as RoutePath } from 'src/router/routes';
+import { Path as RoutePath } from 'src/router';
 
 export default defineComponent({
   components: {

@@ -141,7 +141,7 @@
               </div>
             </div>
             <div class="column--buttons">
-              <router-link to="/dapp-staking">
+              <router-link :to="Path.DappStaking">
                 <button class="btn btn--sm">{{ $t('manage') }}</button>
               </router-link>
             </div>
@@ -177,6 +177,7 @@ import { buildTransferPageLink } from 'src/router/routes';
 import ModalEvmWithdraw from './modals/ModalEvmWithdraw.vue';
 import ModalFaucet from './modals/ModalFaucet.vue';
 import ModalVesting from './modals/ModalVesting.vue';
+import { Path } from 'src/router';
 
 export default defineComponent({
   components: {
@@ -284,6 +285,7 @@ export default defineComponent({
       isModalVesting,
       xcmNativeToken,
       isLoading,
+      Path,
       buildTransferPageLink,
       handleModalVesting,
       handleModalFaucet,
