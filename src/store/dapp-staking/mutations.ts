@@ -16,7 +16,15 @@ const mutation: MutationTree<State> & ContractsMutations = {
   },
 
   addDapp(state: State, payload: DappItem) {
-    state.dapps.push(payload);
+    // Update existing dapp or add a new if doesn't exist.
+    let dappIndex = state.dapps.findIndex((x) => x.address === payload.address);
+    if (dappIndex !== -1) {
+      state.dapps[dappIndex] = payload;
+    } else {
+      state.dapps.push(payload);
+    }
+
+    state.dapps = [...state.dapps];
   },
 
   setMinimumStakingAmount(state: State, payload: string) {
