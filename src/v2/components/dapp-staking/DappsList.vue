@@ -1,7 +1,9 @@
 <template>
   <div>
     <h2>{{ tag }}</h2>
-    <dapp-card v-for="dapp of dapps" :key="dapp.contract.address" :dapp="dapp" />
+    <div class="list-container">
+      <dapp-card v-for="dapp of dapps" :key="dapp.contract.address" :dapp="dapp" />
+    </div>
   </div>
 </template>
 
@@ -34,3 +36,10 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.list-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+</style>

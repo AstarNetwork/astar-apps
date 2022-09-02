@@ -8,14 +8,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import { useStore } from 'src/store';
-import { useNetworkInfo } from 'src/hooks';
+import { ChainInfo } from 'src/hooks';
 import DappsList from 'src/v2/components/dapp-staking/DappsList.vue';
 import HomeHeader from 'src/v2/components/dapp-staking/HomeHeader.vue';
-import { container } from 'src/v2/common';
-import { IEventAggregator, NewEraMessage } from 'src/v2/messaging';
-import { Symbols } from 'src/v2/symbols';
 
 export default defineComponent({
   components: {
@@ -24,9 +21,10 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
-    const { currentNetworkName } = useNetworkInfo();
 
+    const chainInfo = computed<ChainInfo>(() => store.getters['general/chainInfo']);
     store.dispatch('dapps/getDapps', 'astar');
+    store.dispatch('dapps/getTvl');
   },
 });
 </script>
