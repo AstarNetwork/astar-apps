@@ -64,7 +64,7 @@
               </div>
             </div>
             <div class="column--buttons">
-              <router-link :to="transferLink">
+              <router-link :to="buildTransferPageLink(nativeTokenSymbol)">
                 <button class="btn btn--sm">
                   {{ $t('assets.transfer') }}
                 </button>
@@ -173,9 +173,9 @@ import { getTokenImage } from 'src/modules/token';
 import { generateAstarNativeTokenObject } from 'src/modules/xcm/tokens';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
+import { buildTransferPageLink } from 'src/router/routes';
 import ModalEvmWithdraw from './modals/ModalEvmWithdraw.vue';
 import ModalFaucet from './modals/ModalFaucet.vue';
-// import ModalTransfer from './modals/ModalTransfer.vue';
 import ModalVesting from './modals/ModalVesting.vue';
 
 export default defineComponent({
@@ -205,7 +205,7 @@ export default defineComponent({
     const { balance, accountData } = useBalance(selectedAddress);
     const { numEvmDeposit } = useEvmDeposit();
     const { nativeTokenUsd } = usePrice();
-    const { currentNetworkName, nativeTokenSymbol, currentNetworkIdx } = useNetworkInfo();
+    const { currentNetworkName, nativeTokenSymbol } = useNetworkInfo();
 
     const xcmNativeToken = computed(() => generateAstarNativeTokenObject(nativeTokenSymbol.value));
 
@@ -229,12 +229,6 @@ export default defineComponent({
     const handleModalVesting = ({ isOpen }: { isOpen: boolean }) => {
       isModalVesting.value = isOpen;
     };
-
-    const transferLink = computed<string>(() => {
-      const symbol = nativeTokenSymbol.value.toLowerCase();
-      const network = currentNetworkName.value.toLowerCase();
-      return `/assets/transfer?token=${symbol}&network=${network}&mode=local`;
-    });
 
     watchEffect(async () => {
       const tokenSymbolRef = nativeTokenSymbol.value;
@@ -290,7 +284,7 @@ export default defineComponent({
       isModalVesting,
       xcmNativeToken,
       isLoading,
-      transferLink,
+      buildTransferPageLink,
       handleModalVesting,
       handleModalFaucet,
       handleModalEvmWithdraw,

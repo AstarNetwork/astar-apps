@@ -32,7 +32,7 @@
           </div>
           <div class="column--asset-buttons column--buttons--multi">
             <div v-if="token.isXC20" />
-            <router-link :to="transferLink">
+            <router-link :to="buildTransferPageLink(token.symbol)">
               <button class="btn btn--sm">
                 {{ $t('assets.transfer') }}
               </button>
@@ -88,7 +88,6 @@
   </div>
 </template>
 <script lang="ts">
-import { endpointKey } from 'src/config/chainEndpoints';
 import { SupportWallet } from 'src/config/wallets';
 import { useNetworkInfo } from 'src/hooks';
 import { truncate } from 'src/hooks/helper/common';
@@ -98,6 +97,7 @@ import { Chain, xcmToken } from 'src/modules/xcm';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
+import { buildTransferPageLink } from 'src/router/routes';
 
 export default defineComponent({
   components: {
@@ -116,7 +116,7 @@ export default defineComponent({
   },
   setup({ token }) {
     const store = useStore();
-    const { currentNetworkIdx, currentNetworkName } = useNetworkInfo();
+    const { currentNetworkIdx } = useNetworkInfo();
 
     const explorerLink = computed(() => {
       const tokenAddress = token.address;
@@ -134,12 +134,6 @@ export default defineComponent({
       return isMovr || isAcalaToken;
     });
 
-    const transferLink = computed<string>(() => {
-      const symbol = token.symbol.toLowerCase();
-      const network = currentNetworkName.value.toLowerCase();
-      return `/assets/transfer?token=${symbol}&network=${network}&mode=local`;
-    });
-
     const isImportedToken = computed<boolean>(
       () =>
         !!getStoredERC20Tokens().find(
@@ -155,7 +149,7 @@ export default defineComponent({
       isImportedToken,
       provider,
       isDisabledXcmButton,
-      transferLink,
+      buildTransferPageLink,
       truncate,
       addToEvmProvider,
     };

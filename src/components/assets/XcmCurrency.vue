@@ -31,7 +31,7 @@
             </div>
           </div>
           <div class="column--asset-buttons column--buttons--native">
-            <router-link :to="transferLink">
+            <router-link :to="buildTransferPageLink(token.metadata.symbol)">
               <button class="btn btn--sm">
                 {{ $t('assets.transfer') }}
               </button>
@@ -64,6 +64,7 @@ import { endpointKey } from 'src/config/chainEndpoints';
 import { useNetworkInfo } from 'src/hooks';
 import { truncate } from 'src/hooks/helper/common';
 import { getXcmToken } from 'src/modules/xcm';
+import { buildTransferPageLink } from 'src/router/routes';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, PropType } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
@@ -78,7 +79,7 @@ export default defineComponent({
   },
   setup(props) {
     const t = computed<Asset>(() => props.token);
-    const { currentNetworkIdx, currentNetworkName } = useNetworkInfo();
+    const { currentNetworkIdx } = useNetworkInfo();
 
     const isDisplayToken = computed<boolean>(() => {
       const token = getXcmToken({
@@ -95,16 +96,10 @@ export default defineComponent({
       return currentNetworkIdx.value === endpointKey.ASTAR ? astarBalanceUrl : shidenBalanceUrl;
     });
 
-    const transferLink = computed<string>(() => {
-      const symbol = t.value.metadata.symbol.toLowerCase();
-      const network = currentNetworkName.value.toLowerCase();
-      return `/assets/transfer?token=${symbol}&network=${network}&mode=local`;
-    });
-
     return {
       isDisplayToken,
       explorerLink,
-      transferLink,
+      buildTransferPageLink,
       truncate,
     };
   },

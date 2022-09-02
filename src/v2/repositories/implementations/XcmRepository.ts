@@ -35,6 +35,7 @@ export class XcmRepository implements IXcmRepository {
       const isFrozen = value.isFrozen.valueOf();
       const metadata = new AssetMetadata(name, symbol, decimals, isFrozen, deposit);
 
+      // Todo: get the token data even thought users select `custom-network`
       const registeredData = this.registeredTokens.find((x) => x.assetId === id);
       const minBridgeAmount = registeredData ? registeredData.minBridgeAmount : '0';
       const originChain = registeredData ? registeredData.originChain : '';

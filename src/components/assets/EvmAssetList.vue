@@ -79,7 +79,7 @@
               </div>
             </div>
             <div class="column--asset-buttons column--buttons--native-token">
-              <router-link :to="transferLink">
+              <router-link :to="buildTransferPageLink(nativeTokenSymbol)">
                 <button class="btn btn--sm">
                   {{ $t('assets.transfer') }}
                 </button>
@@ -137,6 +137,7 @@ import { Erc20Token, getTokenImage } from 'src/modules/token';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
 import ModalFaucet from './modals/ModalFaucet.vue';
+import { buildTransferPageLink } from 'src/router/routes';
 
 export default defineComponent({
   components: {
@@ -213,12 +214,6 @@ export default defineComponent({
       isHideSmallBalances.value = !isHideSmallBalances.value;
     };
 
-    const transferLink = computed<string>(() => {
-      const symbol = nativeTokenSymbol.value.toLowerCase();
-      const network = currentNetworkName.value.toLowerCase();
-      return `/assets/transfer?token=${symbol}&network=${network}&mode=local`;
-    });
-
     const handleModalFaucet = ({ isOpen }: { isOpen: boolean }): void => {
       isModalFaucet.value = isOpen;
     };
@@ -266,7 +261,7 @@ export default defineComponent({
       cbridgeAppLink,
       isHideSmallBalances,
       isLoading,
-      transferLink,
+      buildTransferPageLink,
       setIsSearch,
       handleModalFaucet,
       checkIsCbridgeToken,

@@ -2,14 +2,17 @@
   <div>
     <div class="header">
       <nav class="tabs">
-        <router-link to="/dashboard" :class="['link', path === 'dashboard' && 'active-link']">
+        <router-link
+          :to="RoutePath.Dashboard"
+          :class="['link', path === 'dashboard' && 'active-link']"
+        >
           <div class="column--item column--item--dashboard">
             <span class="text--link">
               {{ $t('dashboard.dashboard') }}
             </span>
           </div>
         </router-link>
-        <router-link to="/assets" :class="['link', path === 'assets' && 'active-link']">
+        <router-link :to="RoutePath.Assets" :class="['link', path === 'assets' && 'active-link']">
           <div class="column--item">
             <span>
               {{ $t('assets.assets') }}
@@ -18,7 +21,7 @@
         </router-link>
         <router-link
           v-if="network.isStoreEnabled"
-          to="/dapp-staking"
+          :to="RoutePath.DappStaking"
           :class="['link', path === 'dapp-staking' && 'active-link']"
         >
           <div class="column--item">
@@ -48,13 +51,14 @@
 </template>
 
 <script lang="ts">
-import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
+import { providerEndpoints } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import LightDarkMode from '../common/LightDarkMode.vue';
 import LocaleChanger from '../common/LocaleChanger.vue';
 import SocialMediaLinks from '../common/SocialMediaLinks.vue';
+import { Path as RoutePath } from 'src/router/routes';
 
 export default defineComponent({
   components: {
@@ -68,7 +72,7 @@ export default defineComponent({
     const network = ref(providerEndpoints[currentNetworkIdx.value]);
     const showOption = ref(false);
     const router = useRouter();
-    const path = computed(() => router.currentRoute.value.path.split('/')[1]);
+    const path = computed(() => router.currentRoute.value.path.split('/')[2]);
 
     const getIndicatorClass = (path: string): string => {
       switch (path) {
@@ -88,6 +92,7 @@ export default defineComponent({
       network,
       getIndicatorClass,
       path,
+      RoutePath,
     };
   },
 });

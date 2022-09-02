@@ -1,3 +1,4 @@
+import { providerEndpoints } from './../../config/chainEndpoints';
 import { ethers } from 'ethers';
 import { SelectedToken } from 'src/c-bridge';
 import { endpointKey } from 'src/config/chainEndpoints';
@@ -40,7 +41,7 @@ export function useTransferRouter() {
   const nativeTokenBalance = ref<number>(0);
   const { useableBalance } = useBalance(currentAccount);
   const tokenSymbol = computed<string>(() => route.query.token as string);
-  const network = computed<string>(() => route.query.network as string);
+  const network = computed<string>(() => route.params.network as string);
   const mode = computed<TransferMode>(() => route.query.mode as TransferMode);
   const from = computed<string>(() => route.query.from as string);
   const to = computed<string>(() => route.query.to as string);
@@ -64,16 +65,16 @@ export function useTransferRouter() {
 
   const redirect = (): void => {
     const token = nativeTokenSymbol.value.toLowerCase();
-    const network = currentNetworkName.value.toLowerCase();
+    // const network = currentNetworkName.value.toLowerCase();
     router.push({
-      path: '/assets/transfer',
-      query: { token, network, mode: 'local' },
+      path: `/${network.value}/assets/transfer`,
+      query: { token, mode: 'local' },
     });
   };
 
   const reverseChain = (): void => {
     router.push({
-      path: '/assets/transfer',
+      path: `/${network.value}/assets/transfer`,
       query: {
         ...route.query,
         from: to.value.toLowerCase(),
@@ -95,11 +96,10 @@ export function useTransferRouter() {
       if (!relayChainToken) return;
       if (tokenSymbol.value !== relayChainToken) {
         router.replace({
-          path: '/assets/transfer',
+          path: `/${network.value}/assets/transfer`,
           query: {
             ...route.query,
             token: relayChainToken?.toLowerCase(),
-            network: network.value,
           },
         });
       }
@@ -129,7 +129,7 @@ export function useTransferRouter() {
       const isSameNetwork = fromChain === toChain;
       if (isSameNetwork) {
         router.replace({
-          path: '/assets/transfer',
+          path: `/${network.value}/assets/transfer`,
           query: {
             ...route.query,
             from: currentNetworkName.value.toLowerCase(),
@@ -193,7 +193,7 @@ export function useTransferRouter() {
   }): void => {
     isLocalTransfer.value = isLocal;
     const mode = isLocal ? 'local' : 'xcm';
-    const network = currentNetworkName.value.toLowerCase();
+    // const network = currentNetworkName.value.toLowerCase();
     const isNativeAstarToken = tokenSymbol.value === nativeTokenSymbol.value.toLowerCase();
     const defaultXcmBridgeForNative =
       currentNetworkIdx.value === endpointKey.ASTAR ? Chain.ACALA : Chain.KARURA;
@@ -206,26 +206,25 @@ export function useTransferRouter() {
     const to = isH160.value ? opponentNetwork : astarNetwork;
 
     const query = isLocal
-      ? { token: tokenSymbol.value, network, mode }
-      : { token: tokenSymbol.value, network, from, to, mode };
+      ? { token: tokenSymbol.value, mode }
+      : { token: tokenSymbol.value, from, to, mode };
     router.replace({
-      path: '/assets/transfer',
+      path: `/${network.value}/assets/transfer`,
       query,
     });
   };
 
   const setToken = (t: Asset): void => {
-    const network = currentNetworkName.value.toLowerCase();
     const mode = isLocalTransfer.value ? 'local' : 'xcm';
     const token = t.metadata.symbol.toLowerCase();
-    const baseQuery = { token, network, mode };
+    const baseQuery = { token, mode };
     const xcmQuery = {
       ...baseQuery,
       from: from.value,
       to: to.value,
     };
     router.replace({
-      path: '/assets/transfer',
+      path: `/${network.value}/assets/transfer`,
       query: isLocalTransfer.value ? baseQuery : xcmQuery,
     });
   };
@@ -241,7 +240,6 @@ export function useTransferRouter() {
       chain: chain.toLowerCase(),
       isSelectFromChain: isSelectFromChain,
     });
-    const network = currentNetworkName.value.toLowerCase();
     const t =
       xcmToken[currentNetworkIdx.value]
         .filter((it) => {
@@ -253,8 +251,8 @@ export function useTransferRouter() {
     const isAstarEvm = chain.includes(pathEvm);
     const token = isAstarEvm ? tokenSymbol.value : t.toLowerCase();
     router.replace({
-      path: '/assets/transfer',
-      query: { ...route.query, token, network, from, to, mode: 'xcm' },
+      path: `/${network.value}/assets/transfer`,
+      query: { ...route.query, token, from, to, mode: 'xcm' },
     });
   };
 
@@ -312,10 +310,11 @@ export function useTransferRouter() {
       return;
     }
 
+    const isCustomNetwork = network.value === providerEndpoints[endpointKey.CUSTOM].networkAlias;
     isLocalTransfer.value = mode.value === 'local';
-    const isRedirect = !network.value
-      .toLowerCase()
-      .includes(currentNetworkName.value.toLowerCase());
+    const isRedirect =
+      !isCustomNetwork &&
+      !network.value.toLowerCase().includes(currentNetworkName.value.toLowerCase());
 
     if (isRedirect) return redirect();
 

@@ -46,6 +46,7 @@ import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/me
 import { setCurrentWallet } from './v2/app.container';
 import { container } from './v2/common';
 import { Symbols } from './v2/symbols';
+import { useAppRouter } from './hooks';
 
 export default defineComponent({
   name: 'App',
@@ -56,6 +57,7 @@ export default defineComponent({
     CookiePolicy,
   },
   setup() {
+    useAppRouter();
     const store = useStore();
     const isLoading = computed(() => store.getters['general/isLoading']);
     const showAlert = computed(() => store.getters['general/showAlert']);

@@ -8,6 +8,8 @@ import {
 import { StateInterface } from '../store';
 import routes from './routes';
 
+export { getHeaderName, buildTransferPageLink } from 'src/router/utils';
+
 /*
  * If not building with SSR mode, you can
  * directly export the Router instantiation;

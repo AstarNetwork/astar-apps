@@ -103,9 +103,9 @@ export default defineComponent({
     Information,
     XcmBridge,
     SelectChain,
-    ModalSelectChain,
     LocalTransfer,
     SelectToken,
+    ModalSelectChain,
     ModalSelectToken,
   },
   setup() {
