@@ -26,7 +26,7 @@ import { useStore } from 'src/store';
 import { Asset } from 'src/v2/models';
 import { computed, ref, Ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { ASTAR_SS58_FORMAT, isValidAddressPolkadotAddress } from './../helper/plasmUtils';
+import { ASTAR_SS58_FORMAT, isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { AcalaApi, MoonbeamApi } from './parachainApi';
 import { MOONBEAM_ASTAR_TOKEN_ID } from './parachainApi/MoonbeamApi';
 import { AstarApi, AstarToken, ChainApi } from './SubstrateApi';

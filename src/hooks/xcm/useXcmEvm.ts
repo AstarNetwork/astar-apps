@@ -1,5 +1,5 @@
-import { addXcmTxHistories } from './../../modules/xcm/utils/index';
-import { isValidEvmAddress } from './../../config/web3/utils/convert';
+import { addXcmTxHistories } from 'src/modules/xcm';
+import { isValidEvmAddress } from 'src/config/web3';
 import BN from 'bn.js';
 import { ethers } from 'ethers';
 import xcmContractAbi from 'src/config/web3/abi/xcm-abi.json';
@@ -13,12 +13,10 @@ import Web3 from 'web3';
 import { TransactionConfig } from 'web3-eth';
 import { AbiItem } from 'web3-utils';
 import { getPubkeyFromSS58Addr } from '../helper/addressUtils';
-import { useAccount } from '../useAccount';
-import { useGasPrice } from '../useGasPrice';
-import { Chain, relaychainParaId, xcmChainObj } from './../../modules/xcm/index';
+import { useGasPrice, useAccount, useNetworkInfo } from 'src/hooks';
+import { Chain, relaychainParaId, xcmChainObj } from 'src/modules/xcm';
 import { Asset } from 'src/v2/models';
 import { MOVR } from 'src/modules/token';
-import { useNetworkInfo } from '../useNetworkInfo';
 import { pathEvm } from './useTransferRouter';
 
 // xcm precompiled contract address

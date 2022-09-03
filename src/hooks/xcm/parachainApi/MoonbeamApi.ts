@@ -1,4 +1,3 @@
-import { useRoute } from 'vue-router';
 import { u8aToHex } from '@polkadot/util';
 import { decodeAddress } from '@polkadot/util-crypto';
 import BN from 'bn.js';
@@ -6,16 +5,16 @@ import { ethers } from 'ethers';
 import { supportEvmWallets, SupportWallet } from 'src/config/wallets';
 import { EVM, getTokenBal, rpcUrls, setupNetwork } from 'src/config/web3';
 import moonbeamXcmAbi from 'src/config/web3/abi/moonbeam-xcm-abi.json';
+import { getQueryParams } from 'src/hooks/helper/common';
 import { Asset } from 'src/v2/models';
 import Web3 from 'web3';
 import { TransactionConfig } from 'web3-eth';
 import { AbiItem } from 'web3-utils';
 import { AstarNativeToken, ChainApi } from '../SubstrateApi';
-import { LOCAL_STORAGE } from './../../../config/localStorage';
-import { isValidEvmAddress } from './../../../config/web3/utils/convert';
-import { getEvmProvider } from './../../helper/wallet';
-import { EthereumProvider } from './../../types/CustomSignature';
-import { getQueryParams } from 'src/hooks/helper/common';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { isValidEvmAddress } from 'src/config/web3/utils/convert';
+import { getEvmProvider } from 'src/hooks/helper/wallet';
+import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 
 type ChainName = 'Moonriver' | 'Moonbeam';
 

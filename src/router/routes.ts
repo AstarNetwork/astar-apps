@@ -1,4 +1,4 @@
-import { endpointKey, getNetworkName } from './../config/chainEndpoints';
+import { endpointKey, getNetworkName } from 'src/config/chainEndpoints';
 import DiscoverDappsTab from 'components/dapp-staking/DiscoverDappsTab.vue';
 import ManageDappsTab from 'components/dapp-staking/ManageDappsTab.vue';
 import AssetsPage from 'pages/AssetsPage.vue';

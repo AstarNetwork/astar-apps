@@ -3,7 +3,7 @@ import { BN } from 'bn.js';
 import { ethers } from 'ethers';
 import Web3 from 'web3';
 import { TransactionConfig } from 'web3-eth';
-import { ApiGasNow, GasPrice, GAS_API_URL } from './../index';
+import { ApiGasNow, GasPrice, GAS_API_URL } from 'src/modules/gas-api';
 
 export const getEvmGas = async (web3: Web3, selectedGasPrice: string) => {
   const gasPriceFallback = await web3.eth.getGasPrice();

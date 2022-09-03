@@ -15,7 +15,7 @@
 <script lang="ts">
 import { Asset } from 'src/v2/models';
 import { defineComponent, PropType } from 'vue';
-import XcmCurrency from './XcmCurrency.vue';
+import XcmCurrency from 'src/components/assets/XcmCurrency.vue';
 export default defineComponent({
   components: {
     XcmCurrency,

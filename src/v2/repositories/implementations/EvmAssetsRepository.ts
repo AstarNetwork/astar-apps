@@ -9,9 +9,9 @@ import {
   EvmChain,
   getSelectedToken,
   getTransferConfigs,
-} from './../../../c-bridge/index';
-import { Erc20Token } from './../../../modules/token/index';
-import { getRegisteredERC20Token } from './../../../modules/token/utils/index';
+} from 'src/c-bridge';
+import { Erc20Token } from 'src/modules/token/index';
+import { getRegisteredERC20Token } from 'src/modules/token/utils/index';
 import { IEvmAssetsRepository } from './../IEvmAssetsRepository';
 
 @injectable()

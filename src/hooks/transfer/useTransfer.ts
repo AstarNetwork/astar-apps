@@ -8,7 +8,8 @@ import {
   sendNativeTokenTransaction,
   toSS58Address,
 } from 'src/config/web3';
-import { useCustomSignature } from 'src/hooks';
+import { useCustomSignature, useGasPrice } from 'src/hooks';
+import { useEthProvider } from 'src/hooks/custom-signature/useEthProvider';
 import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { addTxHistories, HistoryTxType } from 'src/modules/account';
 import { getEvmGas } from 'src/modules/gas-api';
@@ -18,9 +19,7 @@ import { useI18n } from 'vue-i18n';
 import Web3 from 'web3';
 import { TransactionConfig } from 'web3-eth';
 import { AbiItem } from 'web3-utils';
-import { useEthProvider } from '../custom-signature/useEthProvider';
-import { useGasPrice } from '../useGasPrice';
-import { signAndSend } from './../helper/wallet';
+import { signAndSend } from 'src/hooks/helper/wallet';
 
 export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: () => void) {
   const store = useStore();

@@ -1,10 +1,9 @@
-import { updateAccountHistories } from './../../../config/localStorage';
+import { updateAccountHistories } from 'src/config/localStorage';
 import { ApiPromise } from '@polkadot/api';
-import { SystemAccount } from '../index';
+import { SystemAccount, TxHistory, HistoryTxType } from 'src/modules/account';
 
 import { getNetworkName } from 'src/config/chainEndpoints';
 import { getAccountHistories, LOCAL_STORAGE } from 'src/config/localStorage';
-import { TxHistory, HistoryTxType } from './../index';
 import { getTimestamp } from 'src/hooks/helper/common';
 
 const { TX_HISTORIES, NETWORK_IDX } = LOCAL_STORAGE;

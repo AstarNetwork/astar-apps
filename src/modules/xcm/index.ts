@@ -1,6 +1,6 @@
 import { objToArray } from 'src/hooks/helper/common';
 
-export { xcmToken, generateAssetFromEvmToken } from './tokens';
+export { xcmToken, generateAssetFromEvmToken } from 'src/modules/xcm/tokens';
 export {
   getXcmToken,
   fetchXcmBalance,
@@ -10,7 +10,8 @@ export {
   checkIsRelayChain,
   castChainName,
   removeEvmName,
-} from './utils';
+  addXcmTxHistories,
+} from 'src/modules/xcm/utils';
 
 export interface XcmTokenInformation {
   symbol: string;

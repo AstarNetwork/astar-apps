@@ -7,7 +7,7 @@ import { getBalance } from 'src/config/web3';
 import { SystemAccount } from 'src/modules/account';
 import { useStore } from 'src/store';
 import { computed, onUnmounted, ref, Ref, watch } from 'vue';
-import { getVested } from './helper/vested';
+import { getVested } from 'src/hooks/helper/vested';
 
 function useCall(addressRef: Ref<string>) {
   const balanceRef = ref(new BN(0));

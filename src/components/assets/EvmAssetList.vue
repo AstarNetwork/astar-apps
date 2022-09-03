@@ -136,7 +136,7 @@ import { truncate } from 'src/hooks/helper/common';
 import { Erc20Token, getTokenImage } from 'src/modules/token';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
-import ModalFaucet from './modals/ModalFaucet.vue';
+import ModalFaucet from 'src/components/assets/modals/ModalFaucet.vue';
 import { buildTransferPageLink } from 'src/router/routes';
 
 export default defineComponent({

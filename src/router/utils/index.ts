@@ -1,4 +1,4 @@
-import { networkParam, Path } from './../routes';
+import { networkParam, Path } from 'src/router/routes';
 
 export const getHeaderName = (path: string): string => {
   if (path.includes('dashboard')) {

@@ -1,4 +1,4 @@
-import { Faq } from './../index';
+import { Faq } from 'src/modules/transfer';
 export const hotTopics: Faq[] = [
   {
     title: 'Find latest news here',

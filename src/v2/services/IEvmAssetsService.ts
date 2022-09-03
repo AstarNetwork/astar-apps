@@ -1,4 +1,4 @@
-import { EvmAssets } from './../../store/assets/state';
+import { EvmAssets } from 'src/store/assets/state';
 
 export interface IEvmAssetsService {
   getAssets(

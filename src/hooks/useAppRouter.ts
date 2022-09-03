@@ -7,7 +7,7 @@ import {
 import { Path } from 'src/router/routes';
 import { computed, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { LOCAL_STORAGE } from './../config/localStorage';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 
 const { NETWORK_IDX, SELECTED_ENDPOINT } = LOCAL_STORAGE;
 

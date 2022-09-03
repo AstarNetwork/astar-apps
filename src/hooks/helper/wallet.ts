@@ -9,9 +9,9 @@ import { deepLink } from 'src/links';
 import { addTxHistories } from 'src/modules/account';
 import { showError } from 'src/modules/extrinsic';
 import { Dispatch } from 'vuex';
-import { HistoryTxType } from './../../modules/account/index';
-import { SubstrateAccount } from './../../store/general/state';
-import { EthereumProvider } from './../types/CustomSignature';
+import { HistoryTxType } from 'src/modules/account/index';
+import { SubstrateAccount } from 'src/store/general/state';
+import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 
 declare global {
   interface Window {

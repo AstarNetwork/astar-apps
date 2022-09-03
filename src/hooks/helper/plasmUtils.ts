@@ -3,8 +3,8 @@ import { hexToU8a, isHex, isString } from '@polkadot/util';
 import { checkAddress, decodeAddress, encodeAddress } from '@polkadot/util-crypto';
 import BN from 'bn.js';
 import { ethers } from 'ethers';
-import { LOCAL_STORAGE } from './../../config/localStorage';
-import { nFormatter } from './units';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { nFormatter } from 'src/hooks/helper/units';
 
 export const ASTAR_SS58_FORMAT = 5;
 export const SUBSTRATE_SS58_FORMAT = 42;

@@ -6,9 +6,14 @@ export {
   getTvlValue,
   getClaimedAmount,
   fetchTransferDetails,
-} from './utils';
+} from 'src/modules/token-api/utils';
 
-export { textChart, titleFormatter, valueDecimalsFormatter, seriesFormatter } from './chart';
+export {
+  textChart,
+  titleFormatter,
+  valueDecimalsFormatter,
+  seriesFormatter,
+} from 'src/modules/token-api/chart';
 
 export type Duration = '7 days' | '30 days' | '90 days' | '1 year';
 

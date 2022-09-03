@@ -4,7 +4,7 @@ export {
   storeImportedERC20Token,
   getStoredERC20Tokens,
   getRegisteredERC20Token,
-} from './utils';
+} from 'src/modules/token/utils';
 
 // Memo: ERC20 tokens information that is not supported by cBridge
 

@@ -1,4 +1,4 @@
-import { providerEndpoints } from './../../config/chainEndpoints';
+import { providerEndpoints } from 'src/config/chainEndpoints';
 import { ethers } from 'ethers';
 import { SelectedToken } from 'src/c-bridge';
 import { endpointKey } from 'src/config/chainEndpoints';
@@ -17,8 +17,8 @@ import { useStore } from 'src/store';
 import { Asset } from 'src/v2/models';
 import { computed, ref, watch, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { EvmAssets, XcmAssets } from './../../store/assets/state';
-import { capitalize } from './../helper/common';
+import { EvmAssets, XcmAssets } from 'src/store/assets/state';
+import { capitalize } from 'src/hooks/helper/common';
 
 export const pathEvm = '-evm';
 export type TransferMode = 'local' | 'xcm';

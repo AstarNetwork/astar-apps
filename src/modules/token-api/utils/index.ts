@@ -1,4 +1,4 @@
-import { ChartData } from './../../../components/dashboard/ChartData';
+import { ChartData } from 'src/components/dashboard/ChartData';
 import axios from 'axios';
 import { Duration, TOKEN_API_URL, TransferDetail } from '../index';
 

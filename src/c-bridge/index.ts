@@ -2,7 +2,12 @@
 
 import { Erc20Token } from 'src/modules/token';
 
-export { getTransferConfigs, getSelectedToken, getIcon, checkIsCbridgeToken } from './utils';
+export {
+  getTransferConfigs,
+  getSelectedToken,
+  getIcon,
+  checkIsCbridgeToken,
+} from 'src/c-bridge/utils';
 
 export enum EvmChain {
   Ethereum = 1,

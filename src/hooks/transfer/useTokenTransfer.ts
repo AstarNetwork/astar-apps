@@ -1,11 +1,11 @@
-import { buildEvmAddress } from '../../config/web3/utils/convert';
+import { buildEvmAddress } from 'src/config/web3';
 import { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 import { $api, $web3 } from 'boot/api';
 import { ethers } from 'ethers';
 import ABI from 'src/c-bridge/abi/ERC20.json';
 import { getTokenBal, isValidEvmAddress, toSS58Address } from 'src/config/web3';
-import { useCustomSignature, useNetworkInfo } from 'src/hooks';
+import { useCustomSignature, useNetworkInfo, useGasPrice } from 'src/hooks';
 import { ASTAR_SS58_FORMAT, isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { useAccount } from 'src/hooks/useAccount';
 import { HistoryTxType } from 'src/modules/account';
@@ -19,12 +19,11 @@ import { useRoute } from 'vue-router';
 import Web3 from 'web3';
 import { TransactionConfig } from 'web3-eth';
 import { AbiItem } from 'web3-utils';
-import { useEthProvider } from '../custom-signature/useEthProvider';
-import { signAndSend } from '../helper/wallet';
-import { useGasPrice } from '../useGasPrice';
-import { addTxHistories } from '../../modules/account/utils/index';
-import { getEvmGas, getEvmGasCost } from '../../modules/gas-api/utils/index';
-import { SUBSTRATE_SS58_FORMAT } from '../helper/plasmUtils';
+import { useEthProvider } from 'src/hooks/custom-signature/useEthProvider';
+import { addTxHistories } from 'src/modules/account/utils/index';
+import { getEvmGas, getEvmGasCost } from 'src/modules/gas-api/utils/index';
+import { SUBSTRATE_SS58_FORMAT } from 'src/hooks/helper/plasmUtils';
+import { signAndSend } from 'src/hooks/helper/wallet';
 import { SubstrateAccount } from 'src/store/general/state';
 
 export function useTokenTransfer(selectedToken: Ref<Asset>) {

@@ -66,10 +66,10 @@ import { useStore } from 'src/store';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
 import { DappItem } from 'src/store/dapp-staking/state';
 import { computed, defineComponent, ref } from 'vue';
-import APR from './statistics/APR.vue';
-import DappsCount from './statistics/DappsCount.vue';
-import Era from './statistics/Era.vue';
-import TVL from './statistics/TVL.vue';
+import APR from 'src/components/dapp-staking/statistics/APR.vue';
+import DappsCount from 'src/components/dapp-staking/statistics/DappsCount.vue';
+import Era from 'src/components/dapp-staking/statistics/Era.vue';
+import TVL from 'src/components/dapp-staking/statistics/TVL.vue';
 
 export default defineComponent({
   components: {

@@ -174,9 +174,9 @@ import { generateAstarNativeTokenObject } from 'src/modules/xcm/tokens';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
 import { buildTransferPageLink } from 'src/router/routes';
-import ModalEvmWithdraw from './modals/ModalEvmWithdraw.vue';
-import ModalFaucet from './modals/ModalFaucet.vue';
-import ModalVesting from './modals/ModalVesting.vue';
+import ModalEvmWithdraw from 'src/components/assets/modals/ModalEvmWithdraw.vue';
+import ModalFaucet from 'src/components/assets/modals/ModalFaucet.vue';
+import ModalVesting from 'src/components/assets/modals/ModalVesting.vue';
 import { Path } from 'src/router';
 
 export default defineComponent({

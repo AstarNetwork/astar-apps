@@ -70,7 +70,7 @@ import ModalAccount from 'src/components/header/modals/ModalAccount.vue';
 import ModalInstallWallet from 'src/components/header/modals/ModalInstallWallet.vue';
 import ModalNetwork from 'src/components/header/modals/ModalNetwork.vue';
 import Logo from 'src/components/common/Logo.vue';
-import ModalUpdateWallet from './modals/ModalUpdateWallet.vue';
+import ModalUpdateWallet from 'src/components/header/modals/ModalUpdateWallet.vue';
 
 interface Modal {
   modalNetwork: boolean;

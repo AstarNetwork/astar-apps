@@ -3,8 +3,8 @@ import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { useStore } from 'src/store';
 import { computed, ref } from 'vue';
-import { displayCustomMessage, TxType } from './custom-signature/message';
-import { useExtrinsicCall } from './custom-signature/useExtrinsicCall';
+import { displayCustomMessage, TxType } from 'src/hooks/custom-signature/message';
+import { useExtrinsicCall } from 'src/hooks/custom-signature/useExtrinsicCall';
 import { hasExtrinsicFailedEvent } from 'src/modules/extrinsic';
 import { showLoading } from 'src/modules/extrinsic/utils';
 

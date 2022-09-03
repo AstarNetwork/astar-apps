@@ -43,10 +43,10 @@ import AlertBox from 'components/common/AlertBox.vue';
 import CookiePolicy from 'components//common/CookiePolicy.vue';
 import 'animate.css';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
-import { setCurrentWallet } from './v2/app.container';
-import { container } from './v2/common';
-import { Symbols } from './v2/symbols';
-import { useAppRouter } from './hooks';
+import { setCurrentWallet } from 'src/v2/app.container';
+import { container } from 'src/v2/common';
+import { Symbols } from 'src/v2/symbols';
+import { useAppRouter } from 'src/hooks';
 
 export default defineComponent({
   name: 'App',

@@ -1,10 +1,10 @@
-import { IEvmAssetsService } from './../../v2/services/IEvmAssetsService';
+import { IEvmAssetsService } from 'src/v2/services/IEvmAssetsService';
 import { container } from 'src/v2/common';
 import { IXcmService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { ActionTree } from 'vuex';
-import { StateInterface } from '../index';
-import { AssetsStateInterface as State } from './state';
+import { StateInterface } from 'src/store';
+import { AssetsStateInterface as State } from 'src/store/assets/state';
 
 const actions: ActionTree<State, StateInterface> = {
   async getAssets(

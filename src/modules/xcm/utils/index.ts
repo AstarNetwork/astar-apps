@@ -13,9 +13,9 @@ import { TxHistory } from 'src/modules/account';
 import { Asset } from 'src/v2/models';
 import { astarChains, ExistentialDeposit, XcmTokenInformation } from '../index';
 import { xcmToken } from '../tokens';
-import { astarNetworks } from './../../../hooks/xcm/useTransferRouter';
-import { HistoryTxType } from './../../account/index';
-import { Chain } from './../index';
+import { astarNetworks } from 'src/hooks/xcm/useTransferRouter';
+import { HistoryTxType } from 'src/modules/account/index';
+import { Chain } from 'src/modules/xcm';
 
 const { XCM_TX_HISTORIES, NETWORK_IDX } = LOCAL_STORAGE;
 interface Account extends Struct {

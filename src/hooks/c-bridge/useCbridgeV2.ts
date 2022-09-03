@@ -12,11 +12,10 @@ import { Erc20Token } from 'src/modules/token';
 import { useStore } from 'src/store';
 import { computed, onUnmounted, ref, watch, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
-import { useAccount } from '../useAccount';
-import { useNetworkInfo } from '../useNetworkInfo';
-import { LOCAL_STORAGE } from './../../config/localStorage';
-import { getRegisteredERC20Token } from './../../modules/token/utils/index';
-import { calUsdAmount } from './../helper/price';
+import { useAccount, useNetworkInfo } from 'src/hooks';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { getRegisteredERC20Token } from 'src/modules/token/utils/index';
+import { calUsdAmount } from 'src/hooks/helper/price';
 
 type CbridgeCurrency = SelectedToken;
 type Token = CbridgeCurrency | Erc20Token;

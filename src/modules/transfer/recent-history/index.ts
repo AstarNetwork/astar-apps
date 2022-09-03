@@ -1,10 +1,10 @@
-import { capitalize } from './../../../hooks/helper/common';
-import { TransferDetail } from './../../token-api/index';
+import { capitalize } from 'src/hooks/helper/common';
+import { TransferDetail } from 'src/modules/token-api/index';
 import { HistoryTxType } from 'src/modules/account';
-import { castChainName } from './../../xcm/utils/index';
+import { castChainName } from 'src/modules/xcm/utils/index';
 import { getAccountHistories, LOCAL_STORAGE } from 'src/config/localStorage';
-import { RecentHistory } from './../index';
-import { TxHistory } from './../../account';
+import { RecentHistory } from 'src/modules/transfer/index';
+import { TxHistory } from 'src/modules/account';
 import { xcmChainObj } from 'src/modules/xcm';
 import { fetchTransferDetails } from 'src/modules/token-api';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
