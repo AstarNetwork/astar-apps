@@ -20,6 +20,21 @@
           </div>
         </template>
       </div>
+      <div v-else class="tw-mb-4">
+        <div class="tw-flex tw-flex-row" style="opacity: 0">
+          <div class="tw-w-20">{{ $t('dappStaking.yourStake') }}</div>
+        </div>
+        <div>
+          <div class="tw-flex tw-flex-row">
+            <div class="tw-w-20">{{ $t('dappStaking.totalStake') }}</div>
+            <q-skeleton animation="fade" class="skeleton--md" />
+          </div>
+          <div class="tw-mt-1 tw-flex tw-flex-row">
+            <div class="tw-w-20">{{ $t('dappStaking.stakersCount') }}</div>
+            <q-skeleton animation="fade" class="skeleton--md" />
+          </div>
+        </div>
+      </div>
 
       <div v-if="!stakeInfo?.isRegistered && stakeInfo?.stakersCount > 0">
         <div>
@@ -92,7 +107,7 @@ import { useChainMetadata, useCustomSignature, useGasPrice, useGetMinStaking } f
 import { TxType } from 'src/hooks/custom-signature/message';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { signAndSend } from 'src/hooks/helper/wallet';
-import { getAmount, StakeModel } from 'src/hooks/store';
+import { StakeModel } from 'src/hooks/store';
 import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
 import { StakingData } from 'src/modules/dapp-staking';
 import { useStore } from 'src/store';
@@ -195,7 +210,7 @@ export default defineComponent({
     });
 
     const stake = async (stakeData: StakeModel): Promise<void> => {
-      const amount = getAmount(stakeData.amount, stakeData.unit);
+      const amount = plasmUtils.parseTo18Decimals(stakeData.amount);
       const unit = stakeData.unit;
       try {
         const stakeAmount = plasmUtils.balanceFormatter(amount);
@@ -250,8 +265,8 @@ export default defineComponent({
     };
 
     const unstake = async (stakeData: StakeModel): Promise<void> => {
-      const amount = getAmount(stakeData.amount, stakeData.unit);
-      const amountActual = getAmount(stakeData.unbondedActual, stakeData.unit);
+      const amount = plasmUtils.parseTo18Decimals(stakeData.amount);
+      const amountActual = plasmUtils.parseTo18Decimals(stakeData.unbondedActual);
       const unstakeAmount = plasmUtils.balanceFormatter(amountActual);
       try {
         const transaction = canUnbondWithdraw.value

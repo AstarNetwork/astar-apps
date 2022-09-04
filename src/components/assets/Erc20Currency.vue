@@ -155,7 +155,7 @@ export default defineComponent({
     const isDisabledXcmButton = computed(() => {
       // Memo: Remove after runtime upgrading in shinde
       const isMovr = token.symbol === MOVR.symbol;
-      const acalaTokens = xcmToken[endpointKey.ASTAR].filter(
+      const acalaTokens = xcmToken[currentNetworkIdx.value].filter(
         (it) => it.originChain === Chain.ACALA
       );
       // Memo: disabled until backend turns XCM transfer on again.
