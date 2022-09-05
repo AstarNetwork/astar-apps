@@ -125,7 +125,7 @@ export default defineComponent({
     });
 
     const isDisabledXcmButton = computed(() => {
-      const acalaTokens = xcmToken[endpointKey.ASTAR].filter(
+      const acalaTokens = xcmToken[currentNetworkIdx.value].filter(
         (it) => it.originChain === Chain.ACALA
       );
       // Memo: disabled until backend turns XCM transfer on again.
