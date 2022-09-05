@@ -123,9 +123,10 @@ export default defineComponent({
   height: 32px;
   flex-direction: row;
   align-items: center;
-  background: #fff;
+  background: transparent !important;
   padding: 8px 16px 8px 12px;
-  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
+  // box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
+  border: 1px solid $gray-3;
   border-radius: 16px;
   margin-left: 8px;
   color: $gray-5;
@@ -148,9 +149,9 @@ export default defineComponent({
   color: $gray-3 !important;
   width: rem(22);
   height: rem(22);
-  @media (min-width: $sm) {
-    color: #e6e9ee !important;
-  }
+  // @media (min-width: $sm) {
+  //   color: #e6e9ee !important;
+  // }
 }
 
 .icon {
@@ -161,14 +162,16 @@ export default defineComponent({
 }
 
 .m-btn--network {
-  border: 1px solid $object-light;
+  background: transparent;
+  border: 1px solid $gray-3;
   box-shadow: none;
   padding: 8px;
   .iconbase {
-    color: $object-light;
+    color: $gray-3;
   }
   .divider {
     margin: 0 8px;
+    border-left-color: $gray-3;
   }
 }
 
@@ -178,30 +181,27 @@ export default defineComponent({
 
 .body--dark {
   .btn--network {
-    background: $gray-5;
+    background: $gray-5 !important;
     color: #fff;
-    border: 1px solid $gray-6;
+    border: 1px solid $gray-6 !important;
   }
   .btn--network:hover {
-    background: $gray-5-selected;
+    background: $gray-5-selected !important;
   }
   .divider {
     border-left: 1px solid $gray-6;
   }
 
   .m-btn--network {
-    background: $gray-6;
+    background: $gray-6 !important;
     color: $gray-3;
-    border: 1px solid $gray-5;
+    border: 1px solid $gray-4 !important;
   }
   .divider {
     border-left: 1px solid $gray-4;
   }
   .iconbase {
-    color: $astar-blue-dark !important;
-    @media (min-width: $md) {
-      color: $gray-4 !important;
-    }
+    color: $gray-4 !important;
   }
 }
 </style>
