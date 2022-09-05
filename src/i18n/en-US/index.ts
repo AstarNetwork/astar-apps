@@ -306,6 +306,7 @@ export default {
       selectToken: 'Select Token',
       noTxRecords: "The account doesn't have any transaction records yet",
       mintTransferAmount: 'Min. transfer amount is {amount} {symbol}',
+      howToUsePortal: 'HOW TO USE THE PORTAL',
     },
     modals: {
       max: 'Max',

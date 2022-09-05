@@ -9,6 +9,7 @@ export const socialUrl = {
   telegram: 'https://t.me/PlasmOfficial',
   discord: 'https://discord.gg/Z3nC9U4',
   github: 'https://github.com/AstarNetwork',
+  youtube: 'https://www.youtube.com/c/AstarNetwork',
 };
 
 export const deepLinkPath = {
