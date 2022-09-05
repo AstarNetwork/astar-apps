@@ -71,22 +71,23 @@ export default defineComponent({
   .btn--connect {
     background: $gray-5 !important;
     color: #fff;
+    border: 1px solid $gray-6 !important;
   }
   .btn--connect:hover {
-    background: $gray-5-selected;
+    background: $gray-5-selected !important;
   }
 
   .m-btn--connect {
     background: $gray-6 !important;
     color: $gray-3;
-    border: 1px solid $gray-4;
+    border: 1px solid $gray-4 !important;
   }
   .m-btn--connect:hover {
     background: $gray-5-selected;
   }
 
   .iconbase {
-    color: $gray-4;
+    color: $gray-4 !important;
   }
 }
 </style>
