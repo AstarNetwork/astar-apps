@@ -28,6 +28,7 @@ export default route<StateInterface>(function (/* { store, ssrContext } */) {
     : createWebHashHistory;
 
   const Router = createRouter({
+    // Memo: scrollBehavior is not working
     scrollBehavior: () => ({ left: 0, top: 0 }),
     routes,
 
