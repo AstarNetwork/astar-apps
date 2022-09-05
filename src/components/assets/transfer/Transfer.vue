@@ -144,23 +144,14 @@ export default defineComponent({
     const isDisabledXcm = computed<boolean>(() => {
       const isEvmNativeToken =
         isH160.value && tokenSymbol.value === nativeTokenSymbol.value.toLowerCase();
-      const isH160Movr = isH160.value && token.value?.metadata.symbol === MOVR.symbol;
       const isAstr = token.value?.metadata.symbol === ASTR.symbol;
       const acalaTokens = xcmToken[currentNetworkIdx.value]
         .filter((it) => it.originChain === Chain.ACALA)
         .map((it) => it.symbol.toLowerCase());
       const isAcalaToken = acalaTokens.includes(String(token.value?.metadata.symbol.toLowerCase()));
       const isXcmCompatible = token.value?.isXcmCompatible;
-      return (
-        isShibuya.value ||
-        isH160Movr ||
-        isAcalaToken ||
-        isEvmNativeToken ||
-        isAstr ||
-        !isXcmCompatible
-      );
+      return isShibuya.value || isAcalaToken || isEvmNativeToken || isAstr || !isXcmCompatible;
     });
-
     const isTransferNativeToken = computed<boolean>(() => {
       return tokenSymbol.value === nativeTokenSymbol.value.toLowerCase();
     });
