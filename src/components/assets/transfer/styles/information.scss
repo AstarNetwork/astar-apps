@@ -33,6 +33,7 @@
 
 .icon-play {
   margin-bottom: -4px;
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .container--how-to-use {
@@ -44,18 +45,13 @@
   box-sizing: border-box;
   padding: 16px;
   color: $gray-1;
-  background: radial-gradient(
-    89.58% 264.76% at 50% 50%,
-    rgba(0, 133, 255, 0.3) 0%,
-    rgba(0, 133, 255, 0.5) 100%
-  );
-  transition: all 0.3s ease 0s;
-  transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  background: rgba(0, 133, 255, 0.4);
+  transition: all 0.4s ease 0s;
   &:hover {
-    transition: all 0.3s ease 0s;
-    background: radial-gradient(89.58% 264.76% at 50% 50%, rgba(0, 133, 255, 0.6) 0%, #0085ff 100%);
+    transition: all 0.4s ease 0s;
+    background: $astar-blue;
     .text--title-feature {
-      transition: all 0.3s ease 0s;
+      transition: all 0.4s ease 0s;
       color: $gray-1;
     }
     .icon-play {
@@ -156,18 +152,9 @@
     }
   }
   .container--how-to-use {
-    color: $gray-4;
-    background: radial-gradient(
-      89.58% 264.76% at 50% 50%,
-      rgba(0, 133, 255, 0.15) 0%,
-      rgba(0, 133, 255, 0.05) 100%
-    );
+    background: rgba(0, 133, 255, 0.2);
     &:hover {
-      background: radial-gradient(
-        89.58% 264.76% at 50% 50%,
-        rgba(0, 133, 255, 0.9) 0%,
-        rgba(0, 133, 255, 0.5) 100%
-      );
+      background: $astar-blue;
     }
   }
   .container--explorer-icon {
@@ -193,5 +180,8 @@
   }
   .text--title-feature {
     color: $gray-4;
+  }
+  .icon-play {
+    color: rgba(255, 255, 255, 0.2);
   }
 }
