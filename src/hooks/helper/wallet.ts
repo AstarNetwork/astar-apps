@@ -64,7 +64,6 @@ export const getSelectedAccount = (accounts: SubstrateAccount[]): SubstrateAccou
 
 export const getInjector = async (accounts: SubstrateAccount[]) => {
   const account = getSelectedAccount(accounts);
-  console.log('getInjector');
   const extensions = await getInjectedExtensions();
   const injector = extensions.find((it) => it.name === account?.source);
   return injector;
@@ -137,7 +136,6 @@ export const checkIsEthereumWallet = (wallet: SupportWallet): boolean => {
 export const checkIsMobileMathWallet = async (): Promise<boolean> => {
   try {
     if (isMobileDevice) {
-      console.log('checkIsMobileMathWallet');
       const [wallet] = await getInjectedExtensions();
       const isMath = wallet.hasOwnProperty('isMathWallet');
       return isMath;
