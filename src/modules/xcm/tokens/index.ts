@@ -1,3 +1,4 @@
+import { Erc20Token } from 'src/modules/token';
 import { Asset } from 'src/v2/models';
 import { XcmTokenInformation } from 'src/modules/xcm';
 import { ASTAR_NATIVE_TOKEN, endpointKey } from 'src/config/chainEndpoints';
@@ -182,11 +183,11 @@ export const generateNativeAsset = (symbol: ASTAR_NATIVE_TOKEN): Asset => {
   );
 };
 
-export const generateAssetFromEvmToken = (token: SelectedToken, xcmAssets: Asset[]): Asset => {
+export const generateAssetFromEvmToken = (token: Erc20Token, xcmAssets: Asset[]): Asset => {
   const t = xcmAssets.find((it) => it.mappedERC20Addr === token.address);
-  const name = token.name;
-  const tokenImage = token.icon;
-  const mappedERC20Addr = token.address;
+  const name = t ? t.metadata.name : token.name;
+  const tokenImage = token.image;
+  const mappedERC20Addr = t ? t.mappedERC20Addr : token.address;
   const metadata = {
     decimals: t ? t.metadata.decimals : token.decimal,
     deposit: new BN(0),
@@ -196,8 +197,8 @@ export const generateAssetFromEvmToken = (token: SelectedToken, xcmAssets: Asset
   };
   const minBridgeAmount = t ? t.minBridgeAmount : '0.1';
   const originChain = t ? t.originChain : '';
-  const originAssetId = token.symbol;
-  const isNativeToken = false;
+  const originAssetId = t ? t.originAssetId : token.symbol;
+  const isNativeToken = t ? t.isNativeToken : false;
   const isXcmCompatible = t ? t.isXcmCompatible : false;
 
   return new Asset(

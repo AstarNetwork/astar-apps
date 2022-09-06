@@ -1,5 +1,5 @@
-import { EvmAsset } from './../../c-bridge/index';
 import { Asset } from 'src/v2/models';
+import { Erc20Token } from './../../modules/token/index';
 
 export interface XcmAssets {
   assets: Asset[];
@@ -7,7 +7,7 @@ export interface XcmAssets {
 }
 
 export interface EvmAssets {
-  assets: EvmAsset[];
+  assets: Erc20Token[];
   ttlEvmUsdAmount: number;
 }
 

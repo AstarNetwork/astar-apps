@@ -1,6 +1,6 @@
 <template>
   <div v-if="isListReady" class="container--assets">
-    <div class="container">
+    <div v-if="filteredTokens.length > 0" class="container">
       <div class="row">
         <div>
           <span class="text--title">{{ $t('assets.xcmAssets') }}</span>
@@ -126,7 +126,7 @@
 <script lang="ts">
 import { ethers } from 'ethers';
 import { $web3 } from 'src/boot/api';
-import { cbridgeAppLink, checkIsCbridgeToken, SelectedToken } from 'src/c-bridge';
+import { cbridgeAppLink, checkIsCbridgeToken } from 'src/c-bridge';
 import Erc20Currency from 'src/components/assets/Erc20Currency.vue';
 import EvmAssetOptions from 'src/components/assets/EvmAssetOptions.vue';
 import EvmCbridgeToken from 'src/components/assets/EvmCbridgeToken.vue';
@@ -148,7 +148,7 @@ export default defineComponent({
   },
   props: {
     tokens: {
-      type: Object as PropType<SelectedToken[]>,
+      type: Object as PropType<Erc20Token[]>,
       required: false,
       default: null,
     },
@@ -156,7 +156,7 @@ export default defineComponent({
   setup(props) {
     const isModalFaucet = ref<boolean>(false);
     const isHideSmallBalances = ref<boolean>(false);
-    const token = ref<SelectedToken | Erc20Token | string | null>(null);
+    const token = ref<Erc20Token | string | null>(null);
     const symbol = ref<string>('');
     const bal = ref<number>(0);
     const balUsd = ref<number>(0);
@@ -180,7 +180,7 @@ export default defineComponent({
     const nativeTokenImg = computed<string>(() =>
       getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
     );
-    const isListReady = computed<boolean>(() => !!(isShibuya.value || props.tokens));
+    const isListReady = computed<boolean>(() => !!(isShibuya.value || props.tokens.length > 0));
 
     const isDisplayNativeToken = computed<boolean>(() => {
       return (
@@ -188,7 +188,7 @@ export default defineComponent({
       );
     });
 
-    const filteredTokens = computed<SelectedToken[] | null>(() => {
+    const filteredTokens = computed<Erc20Token[] | null>(() => {
       if (!search.value) return props.tokens;
       if (!props.tokens) return null;
       const tokens = isHideSmallBalances.value
@@ -199,14 +199,14 @@ export default defineComponent({
 
       const value = search.value.toLowerCase();
       const result = tokens
-        .map((token: SelectedToken) => {
+        .map((token: Erc20Token) => {
           const isFoundToken =
             value === token.address.toLowerCase() ||
             token.symbol.toLowerCase().includes(value) ||
             token.name.toLowerCase().includes(value);
           return isFoundToken ? token : undefined;
         })
-        .filter((it) => it !== undefined) as SelectedToken[];
+        .filter((it) => it !== undefined) as Erc20Token[];
       return result.length > 0 ? result : null;
     });
 

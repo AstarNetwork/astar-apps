@@ -16,6 +16,7 @@ function useCall(addressRef: Ref<string>) {
   const accountDataRef = ref<AccountData>();
   const store = useStore();
   const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
+  const isLoadingAccount = ref<boolean>(true);
 
   const isLoading = computed(() => store.getters['general/isLoading']);
   const dapps = computed(() => store.getters['dapps/getAllDapps']);
@@ -117,7 +118,9 @@ function useCall(addressRef: Ref<string>) {
   watch(
     [addressRef, isLoading, dapps],
     () => {
+      isLoadingAccount.value = true;
       updateAccountBalance();
+      isLoadingAccount.value = false;
     },
     { immediate: true }
   );
@@ -132,6 +135,7 @@ function useCall(addressRef: Ref<string>) {
   return {
     balanceRef,
     accountDataRef,
+    isLoadingAccount,
   };
 }
 
@@ -141,17 +145,23 @@ export function useBalance(addressRef: Ref<string>) {
   const useableBalance = computed(() => {
     return accountData.value?.getUsableFeeBalance().toString() || '0';
   });
+  const isLoadingBalance = ref<boolean>(true);
 
-  const { balanceRef, accountDataRef } = useCall(addressRef);
+  const { balanceRef, accountDataRef, isLoadingAccount } = useCall(addressRef);
+
+  watch([addressRef], () => {
+    isLoadingBalance.value = true;
+  });
 
   watch(
-    () => balanceRef?.value,
-    (bal) => {
-      if (bal) {
-        balance.value = bal;
+    [addressRef, balanceRef, isLoadingAccount],
+    () => {
+      if (balanceRef.value && addressRef && !isLoadingAccount.value) {
+        balance.value = balanceRef.value;
+        isLoadingBalance.value = false;
       }
     },
-    { immediate: true }
+    { immediate: false }
   );
 
   watch(
@@ -164,7 +174,7 @@ export function useBalance(addressRef: Ref<string>) {
     { immediate: true }
   );
 
-  return { balance, accountData, useableBalance };
+  return { balance, accountData, useableBalance, isLoadingBalance };
 }
 
 export class AccountData {

@@ -1,4 +1,4 @@
-import { EvmAsset } from 'src/c-bridge';
+import { Erc20Token } from 'src/modules/token';
 
 export interface IEvmAssetsRepository {
   getAssets(
@@ -6,5 +6,5 @@ export interface IEvmAssetsRepository {
     srcChainId: number,
     currentNetworkIdx: number,
     isFetchUsd: boolean
-  ): Promise<EvmAsset[]>;
+  ): Promise<Erc20Token[]>;
 }
