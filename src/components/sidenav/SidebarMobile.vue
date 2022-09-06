@@ -40,12 +40,8 @@
       </button>
     </div>
 
-    <div v-if="showOption" class="wrapper--bottom">
-      <SocialMediaLinks />
-      <div class="wrapper--option">
-        <LightDarkMode />
-        <LocaleChanger />
-      </div>
+    <div v-if="showOption">
+      <SidebarOption @close-navi="showOption = false" />
     </div>
   </div>
 </template>
@@ -55,16 +51,12 @@ import { providerEndpoints } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import LightDarkMode from '../common/LightDarkMode.vue';
-import LocaleChanger from '../common/LocaleChanger.vue';
-import SocialMediaLinks from '../common/SocialMediaLinks.vue';
-import { Path as RoutePath } from 'src/router';
+import SidebarOption from './SidebarOption.vue';
+import { Path as RoutePath } from 'src/router/routes';
 
 export default defineComponent({
   components: {
-    LocaleChanger,
-    SocialMediaLinks,
-    LightDarkMode,
+    SidebarOption,
   },
   setup() {
     const store = useStore();

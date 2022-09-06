@@ -81,11 +81,11 @@
   </div>
 </template>
 <script lang="ts">
-import { cbridgeAppLink, SelectedToken } from 'src/c-bridge';
+import { cbridgeAppLink } from 'src/c-bridge';
 import { SupportWallet } from 'src/config/wallets';
 import { truncate } from 'src/hooks/helper/common';
 import { addToEvmProvider, getEvmProvider } from 'src/hooks/helper/wallet';
-import { getErc20Explorer, getTokenImage } from 'src/modules/token';
+import { Erc20Token, getErc20Explorer, getTokenImage } from 'src/modules/token';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType } from 'vue';
 import { buildTransferPageLink } from 'src/router/routes';
@@ -94,13 +94,13 @@ import { useNetworkInfo } from 'src/hooks';
 export default defineComponent({
   props: {
     token: {
-      type: Object as PropType<SelectedToken>,
+      type: Object as PropType<Erc20Token>,
       required: true,
     },
   },
   setup({ token }) {
     const tokenImg = computed(() =>
-      getTokenImage({ isNativeToken: false, symbol: token.symbol, iconUrl: token.icon })
+      getTokenImage({ isNativeToken: false, symbol: token.symbol, iconUrl: token.image })
     );
 
     const store = useStore();

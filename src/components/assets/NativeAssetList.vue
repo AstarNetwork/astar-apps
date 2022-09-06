@@ -24,13 +24,13 @@
           <div class="row__right">
             <div class="column--balance">
               <div class="column__box">
-                <div v-if="bal !== null && nativeTokenSymbol" class="text--accent">
+                <div v-if="!isSkeleton" class="text--accent">
                   <span>{{ $n(truncate(bal)) }} {{ nativeTokenSymbol }}</span>
                 </div>
                 <div v-else class="skeleton--right">
                   <q-skeleton animation="fade" class="skeleton--md" />
                 </div>
-                <div v-if="balUsd !== null" class="text--label">
+                <div v-if="!isSkeleton" class="text--label">
                   <span>{{ $n(balUsd) }} {{ $t('usd') }}</span>
                 </div>
                 <div v-else class="skeleton--right">
@@ -52,7 +52,7 @@
           </div>
           <div class="row__right">
             <div class="column--balance">
-              <div v-if="!checkIsNullOrUndefined(nativeTokenSymbol)" class="column__box">
+              <div v-if="!isSkeleton" class="column__box">
                 <span class="text--value"
                   >{{ $n(truncate(transferableBalance)) }} {{ nativeTokenSymbol }}</span
                 >
@@ -79,7 +79,7 @@
           </div>
           <div class="row__right">
             <div class="column--balance">
-              <div v-if="!checkIsNullOrUndefined(nativeTokenSymbol)" class="column__box">
+              <div v-if="!isSkeleton" class="column__box">
                 <span class="text--value"
                   >{{ $n(truncate(numEvmDeposit)) }} {{ nativeTokenSymbol }}</span
                 >
@@ -104,7 +104,7 @@
           </div>
           <div class="row__right">
             <div class="column--balance">
-              <div v-if="!checkIsNullOrUndefined(nativeTokenSymbol)" class="column__box">
+              <div v-if="!isSkeleton" class="column__box">
                 <span class="text--value"
                   >{{ $n(truncate(vestingTtl)) }} {{ nativeTokenSymbol }}</span
                 >
@@ -129,7 +129,7 @@
           </div>
           <div class="row__right">
             <div class="column--balance">
-              <div v-if="!checkIsNullOrUndefined(nativeTokenSymbol)" class="column__box">
+              <div v-if="!isSkeleton" class="column__box">
                 <span class="text--value"
                   >{{ $n(truncate(lockInDappStaking)) }} {{ nativeTokenSymbol }}</span
                 >
@@ -203,7 +203,7 @@ export default defineComponent({
     const store = useStore();
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const selectedAddress = computed(() => store.getters['general/selectedAddress']);
-    const { balance, accountData } = useBalance(selectedAddress);
+    const { balance, accountData, isLoadingBalance } = useBalance(selectedAddress);
     const { numEvmDeposit } = useEvmDeposit();
     const { nativeTokenUsd } = usePrice();
     const { currentNetworkName, nativeTokenSymbol } = useNetworkInfo();
@@ -219,6 +219,10 @@ export default defineComponent({
         ? ethers.utils.formatEther(accountData.value.getUsableTransactionBalance().toString())
         : '0';
       return Number(balance);
+    });
+
+    const isSkeleton = computed<boolean>(() => {
+      return checkIsNullOrUndefined(nativeTokenSymbol.value) || isLoadingBalance.value;
     });
 
     const handleModalFaucet = ({ isOpen }: { isOpen: boolean }) => {
@@ -286,11 +290,11 @@ export default defineComponent({
       xcmNativeToken,
       isLoading,
       Path,
+      isSkeleton,
       buildTransferPageLink,
       handleModalVesting,
       handleModalFaucet,
       handleModalEvmWithdraw,
-      checkIsNullOrUndefined,
       truncate,
     };
   },

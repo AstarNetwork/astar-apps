@@ -1,18 +1,14 @@
+import { providerEndpoints } from 'src/config/chainEndpoints';
+import { endpointKey } from './../../../config/chainEndpoints';
 import { injectable } from 'inversify';
+import { CbridgeToken, EvmChain, getSelectedToken, getTransferConfigs } from 'src/c-bridge';
 import { getTokenBal } from 'src/config/web3';
 import { objToArray } from 'src/hooks/helper/common';
 import { calUsdAmount } from 'src/hooks/helper/price';
-import { Guard } from 'src/v2/common';
-import {
-  CbridgeToken,
-  EvmAsset,
-  EvmChain,
-  getSelectedToken,
-  getTransferConfigs,
-} from 'src/c-bridge';
 import { Erc20Token } from 'src/modules/token/index';
-import { getRegisteredERC20Token } from 'src/modules/token/utils/index';
-import { IEvmAssetsRepository } from './../IEvmAssetsRepository';
+import { castCbridgeToErc20, getRegisteredERC20Token } from 'src/modules/token/utils/index';
+import { Guard } from 'src/v2/common';
+import { IEvmAssetsRepository } from 'src/v2/repositories/IEvmAssetsRepository';
 
 @injectable()
 export class EvmAssetsRepository implements IEvmAssetsRepository {
@@ -21,7 +17,7 @@ export class EvmAssetsRepository implements IEvmAssetsRepository {
     srcChainId: number,
     currentNetworkIdx: number,
     isFetchUsd: boolean
-  ): Promise<EvmAsset[]> {
+  ): Promise<Erc20Token[]> {
     const [cbridgeTokens, registeredTokens] = await Promise.all([
       this.fetchCbridgeAssets({
         currentAccount,
@@ -31,8 +27,7 @@ export class EvmAssetsRepository implements IEvmAssetsRepository {
       }),
       this.fetchRegisteredAssets({ currentAccount, srcChainId, isFetchUsd }),
     ]);
-    // Todo: unify the data structure later
-    return cbridgeTokens.concat(registeredTokens as any);
+    return cbridgeTokens.concat(registeredTokens);
   }
   public async fetchCbridgeAssets({
     currentAccount,
@@ -44,8 +39,12 @@ export class EvmAssetsRepository implements IEvmAssetsRepository {
     srcChainId: number;
     currentNetworkIdx: number;
     isFetchUsd: boolean;
-  }): Promise<EvmAsset[]> {
+  }): Promise<Erc20Token[]> {
     Guard.ThrowIfUndefined('currentAccount', currentAccount);
+
+    if (String(srcChainId) === providerEndpoints[endpointKey.SHIBUYA].evmChainId) {
+      return [];
+    }
 
     const data = await getTransferConfigs(currentNetworkIdx);
     if (!data || !data.tokens) {
@@ -60,21 +59,26 @@ export class EvmAssetsRepository implements IEvmAssetsRepository {
         .map(async (token: CbridgeToken) => {
           const t = getSelectedToken({ srcChainId, token });
           if (!t) return undefined;
-          const isDuplicated = seen.has(t.address);
-          seen.add(t.address);
+          const formattedToken = castCbridgeToErc20({ srcChainId, token: t });
+          const isDuplicated = seen.has(formattedToken.address);
+          seen.add(formattedToken.address);
           // Memo: Remove the duplicated contract address (ex: PKEX)
           if (isDuplicated) return undefined;
 
           const { balUsd, userBalance } = await this.updateTokenBalanceHandler({
             userAddress: currentAccount,
-            token: t,
+            token: formattedToken,
             isFetchUsd,
             srcChainId,
           });
-          const tokenWithBalance = { ...t, userBalance, userBalanceUsd: String(balUsd) };
+          const tokenWithBalance = {
+            ...formattedToken,
+            userBalance,
+            userBalanceUsd: String(balUsd),
+          };
           return tokenWithBalance;
         })
-    )) as EvmAsset[];
+    )) as Erc20Token[];
 
     return tokens.filter((token) => {
       return token !== undefined;
@@ -123,7 +127,7 @@ export class EvmAssetsRepository implements IEvmAssetsRepository {
     srcChainId,
   }: {
     userAddress: string;
-    token: EvmAsset;
+    token: Erc20Token;
     isFetchUsd: Boolean;
     srcChainId: EvmChain;
   }): Promise<{

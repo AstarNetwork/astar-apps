@@ -1,6 +1,6 @@
+import { Erc20Token } from 'src/modules/token';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { ethers } from 'ethers';
-import { SelectedToken } from 'src/c-bridge';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { useAccount, useBalance, useNetworkInfo } from 'src/hooks';
 import {
@@ -257,7 +257,7 @@ export function useTransferRouter() {
   };
 
   const tokens = computed<Asset[]>(() => {
-    let tokens;
+    let tokens: Asset[] = [];
     let selectableTokens;
     const bal = nativeTokenBalance.value;
     const nativeToken = generateNativeAsset(nativeTokenSymbol.value);
@@ -269,9 +269,15 @@ export function useTransferRouter() {
         // if: H160 local transfer
         if (!evmTokens) return [];
         const selectableTokens = evmTokens;
-        tokens = selectableTokens.map((it) =>
-          generateAssetFromEvmToken(it as SelectedToken, xcmAssets.value.assets)
-        );
+        tokens = selectableTokens
+          .map((it) => {
+            if (it.symbol !== nativeTokenSymbol.value) {
+              return generateAssetFromEvmToken(it as Erc20Token, xcmAssets.value.assets);
+            } else {
+              return undefined;
+            }
+          })
+          .filter((it) => it !== undefined) as Asset[];
         tokens.push(nativeTokenAsset);
       } else {
         // if: SS58 local transfer
@@ -288,7 +294,7 @@ export function useTransferRouter() {
       const isSelectedRelayChain = checkIsRelayChain(selectedNetwork);
       if (isH160.value) {
         const filteredToken = evmTokens.map((it) =>
-          generateAssetFromEvmToken(it as SelectedToken, xcmAssets.value.assets)
+          generateAssetFromEvmToken(it as Erc20Token, xcmAssets.value.assets)
         );
         selectableTokens = filteredToken
           .filter(({ isXcmCompatible }) => isXcmCompatible)
@@ -301,7 +307,9 @@ export function useTransferRouter() {
       tokens = selectableTokens.filter(({ isXcmCompatible }) => isXcmCompatible);
       !isSelectedRelayChain && tokens.push(nativeTokenAsset);
     }
-    return tokens ? tokens.sort((a, b) => a.metadata.symbol.localeCompare(b.metadata.symbol)) : [];
+    return tokens.length > 0
+      ? tokens.sort((a: Asset, b: Asset) => a.metadata.symbol.localeCompare(b.metadata.symbol))
+      : [];
   });
 
   const handleDefaultConfig = (): void => {

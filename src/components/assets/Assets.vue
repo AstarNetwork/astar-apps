@@ -1,15 +1,15 @@
 <template>
-  <div v-if="currentAccount && isDisplay" class="wrapper--assets">
+  <div v-if="!isLoading && currentAccount" class="wrapper--assets">
     <div class="container--assets">
       <Account
-        :ttl-erc20-amount="ttlErc20Amount"
+        :ttl-erc20-amount="evmAssets.ttlEvmUsdAmount"
         :ttl-native-xcm-usd-amount="ttlNativeXcmUsdAmount"
-        :is-loading-erc20-amount="isLoadingErc20Amount"
+        :is-loading-erc20-amount="isLoading"
         :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
       />
       <div v-if="currentAccount">
         <div v-if="isH160">
-          <EvmAssetList :tokens="tokens" />
+          <EvmAssetList :tokens="evmAssets.assets" />
         </div>
         <div v-else class="container--assets">
           <XcmNativeAssetList v-if="isEnableXcm" :xcm-assets="xcmAssets.assets" />
@@ -25,13 +25,11 @@ import EvmAssetList from 'src/components/assets/EvmAssetList.vue';
 import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
 import XcmNativeAssetList from 'src/components/assets/XcmNativeAssetList.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
-import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { useAccount, useBalance, useCbridgeV2, useNetworkInfo } from 'src/hooks';
-import { wait } from 'src/hooks/helper/common';
+import { useAccount, useBalance, useNetworkInfo } from 'src/hooks';
 import { useStore } from 'src/store';
-import { XcmAssets } from 'src/store/assets/state';
+import { EvmAssets, XcmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
-import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
+import { computed, defineComponent, ref, watch } from 'vue';
 
 export default defineComponent({
   components: {
@@ -44,10 +42,7 @@ export default defineComponent({
     const token = ref<Asset | null>(null);
     const isModalXcmBridge = ref<boolean>(false);
     const isModalXcmTransfer = ref<boolean>(false);
-    const isDisplay = ref<boolean>(false);
 
-    // Todo: get the data from global state
-    const { tokens, isLoadingErc20Amount, ttlErc20Amount } = useCbridgeV2();
     const store = useStore();
     const { currentAccount } = useAccount();
     const { accountData } = useBalance(currentAccount);
@@ -63,6 +58,7 @@ export default defineComponent({
     // v2
     const xcmAssets = computed<XcmAssets>(() => store.getters['assets/getAllAssets']);
     const ttlNativeXcmUsdAmount = computed<number>(() => xcmAssets.value.ttlNativeXcmUsdAmount);
+    const evmAssets = computed<EvmAssets>(() => store.getters['assets/getEvmAllAssets']);
 
     const isLoadingXcmAssetsAmount = computed<boolean>(() => {
       if (isMainnet.value) {
@@ -97,40 +93,11 @@ export default defineComponent({
       () => !isShibuya.value && xcmAssets.value.assets && xcmAssets.value.assets.length > 0
     );
 
-    const setIsDisplay = async (): Promise<void> => {
-      const address = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
-      const isEthereumExtension = address === 'Ethereum Extension';
-      const isLoading = !isShibuya.value && !isEnableXcm.value && isEthereumExtension;
-
-      if (isLoading) {
-        isDisplay.value = false;
-        // Memo: isEthereumExtension -> loading state is controlled under useCbridgeV2.ts
-        isEthereumExtension && store.commit('general/setLoading', true);
-        return;
-      }
-
-      if (!isDisplay.value && isEthereumExtension) {
-        // Memo: Wait for update the `isH160` state
-        const secDelay = 1 * 1000;
-        await wait(secDelay);
-        isDisplay.value = true;
-      } else {
-        isDisplay.value = true;
-      }
-    };
-
-    watchEffect(() => {
-      setIsDisplay();
-    });
-
     return {
-      isLoadingErc20Amount,
+      evmAssets,
       isLoadingXcmAssetsAmount,
       currentAccount,
       isH160,
-      tokens,
-      ttlErc20Amount,
-      isDisplay,
       isEnableXcm,
       xcmAssets,
       ttlNativeXcmUsdAmount,
