@@ -33,7 +33,10 @@
 
 .icon-play {
   margin-bottom: -4px;
-  color: rgba(255, 255, 255, 0.5);
+  color: white;
+  @media (min-width: $md) {
+    color: rgba(255, 255, 255, 0.5);
+  }
 }
 
 .container--how-to-use {
@@ -45,17 +48,20 @@
   box-sizing: border-box;
   padding: 16px;
   color: $gray-1;
-  background: rgba(0, 133, 255, 0.4);
   transition: all 0.4s ease 0s;
-  &:hover {
-    transition: all 0.4s ease 0s;
-    background: $astar-blue;
-    .text--title-feature {
+  background: $astar-blue;
+  @media (min-width: $md) {
+    background: rgba(0, 133, 255, 0.4);
+    &:hover {
       transition: all 0.4s ease 0s;
-      color: $gray-1;
-    }
-    .icon-play {
-      color: white;
+      background: $astar-blue;
+      .text--title-feature {
+        transition: all 0.4s ease 0s;
+        color: $gray-1;
+      }
+      .icon-play {
+        color: white;
+      }
     }
   }
 }
@@ -152,9 +158,12 @@
     }
   }
   .container--how-to-use {
-    background: rgba(0, 133, 255, 0.2);
-    &:hover {
-      background: $astar-blue;
+    background: $astar-blue;
+    @media (min-width: $md) {
+      background: rgba(0, 133, 255, 0.2);
+      &:hover {
+        background: $astar-blue;
+      }
     }
   }
   .container--explorer-icon {
@@ -179,9 +188,13 @@
     }
   }
   .text--title-feature {
-    color: $gray-4;
+    @media (min-width: $md) {
+      color: $gray-4;
+    }
   }
   .icon-play {
-    color: rgba(255, 255, 255, 0.2);
+    @media (min-width: $md) {
+      color: rgba(255, 255, 255, 0.2);
+    }
   }
 }
