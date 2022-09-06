@@ -3,6 +3,7 @@ import { isValidEvmAddress } from 'src/config/web3';
 import BN from 'bn.js';
 import { ethers } from 'ethers';
 import xcmContractAbi from 'src/config/web3/abi/xcm-abi.json';
+import moonbeamWithdrawalAbi from 'src/config/web3/abi/xcm-moonbeam-withdrawal-abi.json';
 import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
 import { getEvmGas } from 'src/modules/gas-api';
@@ -31,8 +32,11 @@ export function useXcmEvm(selectedToken: Ref<Asset>) {
 
   const currentWallet = computed(() => store.getters['general/currentWallet']);
   const isMoonbeamWithdrawal = computed<boolean>(() => {
-    return selectedToken.value.mappedERC20Addr === MOVR.address;
+    const tokenContractAddress = selectedToken.value.mappedERC20Addr.toLowerCase();
+    return tokenContractAddress === MOVR.address.toLowerCase();
   });
+
+  const ABI = isMoonbeamWithdrawal.value ? moonbeamWithdrawalAbi : xcmContractAbi;
 
   const callAssetWithdrawToPara = async (
     asset_amount: string,
@@ -68,7 +72,7 @@ export function useXcmEvm(selectedToken: Ref<Asset>) {
       try {
         const provider = getEvmProvider(currentWallet.value);
         const web3 = new Web3(provider as any);
-        const contract = new web3.eth.Contract(xcmContractAbi as AbiItem[], PRECOMPILED_ADDR);
+        const contract = new web3.eth.Contract(ABI as AbiItem[], PRECOMPILED_ADDR);
         const [nonce, gasPrice] = await Promise.all([
           web3.eth.getTransactionCount(currentAccount.value),
           getEvmGas(web3, evmGasPrice.value.fast),

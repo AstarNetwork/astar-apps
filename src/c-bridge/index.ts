@@ -114,5 +114,6 @@ export interface SelectedToken {
   userBalanceUsd: string;
 }
 
-type CbridgeCurrency = SelectedToken;
+// Todo: remove the SelectedToken type
+export type CbridgeCurrency = SelectedToken;
 export type EvmAsset = CbridgeCurrency | Erc20Token;

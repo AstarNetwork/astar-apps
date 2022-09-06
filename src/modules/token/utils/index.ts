@@ -1,3 +1,4 @@
+import { CbridgeCurrency } from './../../../c-bridge/index';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { registeredErc20Tokens, Erc20Token, tokenImageMap } from '../index';
@@ -51,4 +52,27 @@ export const storeImportedERC20Token = (token: Erc20Token) => {
   const tokens = getStoredERC20Tokens();
   tokens.push(token);
   localStorage.setItem(LOCAL_STORAGE.EVM_TOKEN_IMPORTS, JSON.stringify(tokens));
+};
+
+export const castCbridgeToErc20 = ({
+  token,
+  srcChainId,
+}: {
+  token: CbridgeCurrency;
+  srcChainId: number;
+}): Erc20Token => {
+  return {
+    srcChainId,
+    address: token.address,
+    decimal: token.decimal,
+    symbol: token.symbol,
+    name: token.name,
+    image: token.icon,
+    isWrappedToken: false,
+    isXC20: false,
+    wrapUrl: null,
+    userBalance: token.userBalance,
+    userBalanceUsd: token.userBalanceUsd,
+    isCbridgeToken: true,
+  };
 };
