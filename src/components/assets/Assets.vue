@@ -25,11 +25,12 @@ import EvmAssetList from 'src/components/assets/EvmAssetList.vue';
 import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
 import XcmNativeAssetList from 'src/components/assets/XcmNativeAssetList.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useAccount, useBalance, useNetworkInfo } from 'src/hooks';
 import { useStore } from 'src/store';
 import { EvmAssets, XcmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
-import { computed, defineComponent, ref, watch } from 'vue';
+import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 
 export default defineComponent({
   components: {
@@ -52,7 +53,6 @@ export default defineComponent({
     });
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
-
     const isShibuya = computed(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
 
     // v2
@@ -85,8 +85,17 @@ export default defineComponent({
       }
     };
 
+    // Memo: triggered after users have imported custom ERC20 tokens
+    const handleImportingCustomToken = async (): Promise<void> => {
+      if (!isH160.value) return;
+      window.addEventListener(LOCAL_STORAGE.EVM_TOKEN_IMPORTS, () => {
+        handleUpdateEvmAssets();
+      });
+    };
+
     watch([currentAccount], handleUpdateXcmTokenAssets, { immediate: true });
     watch([currentAccount], handleUpdateEvmAssets, { immediate: true });
+    watchEffect(handleImportingCustomToken);
     // v2 end
 
     const isEnableXcm = computed(
