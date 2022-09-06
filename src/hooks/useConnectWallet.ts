@@ -205,7 +205,6 @@ export const useConnectWallet = () => {
   const setWalletModal = (wallet: SupportWallet): void => {
     requestExtensionsIfFirstAccess(wallet);
     store.commit('general/setCurrentWallet', wallet);
-    localStorage.setItem(LOCAL_STORAGE.SELECTED_WALLET, wallet);
 
     setWallet(wallet);
   };
@@ -232,8 +231,8 @@ export const useConnectWallet = () => {
   const selectLoginWallet = async (): Promise<void> => {
     const lookupWallet = castMobileSource(modalName.value);
     if (SubstrateWallets.find((it) => it === lookupWallet)) {
-      const injected = await getInjectedExtensions(true);
-      const isInstalledExtension = injected.find((it) => lookupWallet === it.name);
+      const wallets = Object.keys(window.injectedWeb3);
+      const isInstalledExtension = wallets.find((it) => lookupWallet === it);
 
       if (!isInstalledExtension) {
         modalName.value = WalletModalOption.NoExtension;
