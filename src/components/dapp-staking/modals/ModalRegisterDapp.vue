@@ -102,11 +102,8 @@ export default defineComponent({
 
             // The condition is here temporary, until all networks have deployed
             // new dapp registration workflow.
-            if (
-              currentNetworkIdx.value !== endpointKey.ASTAR &&
-              currentNetworkIdx.value !== endpointKey.SHIDEN
-            ) {
-              // Use the new workflow.s
+            if (currentNetworkIdx.value !== endpointKey.ASTAR) {
+              // Use the new dapp registration workflow.
               signature = await signPayload(senderAddress, data.address);
             }
 
