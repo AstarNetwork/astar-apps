@@ -2,6 +2,8 @@ import DiscoverDappsTab from 'components/dapp-staking/DiscoverDappsTab.vue';
 import ManageDappsTab from 'components/dapp-staking/ManageDappsTab.vue';
 import Assets from 'pages/Assets.vue';
 import Store from 'src/pages/DappStaking.vue';
+import StoreV2 from 'src/pages/DappStakingV2.vue';
+import StoreDappsTab from 'components/dapp-staking-v2/StoreDappsTab.vue';
 import Dashboard from 'src/pages/Dashboard.vue';
 import { RouteRecordRaw } from 'vue-router';
 
@@ -61,6 +63,21 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'manage',
         component: ManageDappsTab,
+      },
+    ],
+  },
+  {
+    path: '/dapp-staking-v2',
+    name: 'dApp Staking v2',
+    component: StoreV2,
+    children: [
+      {
+        path: '',
+        redirect: '/dapp-staking-v2/discover',
+      },
+      {
+        path: 'discover',
+        component: StoreDappsTab,
       },
     ],
   },
