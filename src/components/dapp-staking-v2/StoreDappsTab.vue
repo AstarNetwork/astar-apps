@@ -1,30 +1,31 @@
 <template>
   <div>
     <div class="store-container">
-      <div class="responsive">
+      <div class="wrapper--tabs responsive">
         <nav class="tabs">
-          <div class="tab active">My Rewards</div>
-          <div class="tab">Unbonding</div>
-          <div class="tab">My dApps</div>
+          <div class="tab" :class="currentTab === 0 ? 'active' : ''" @click="currentTab = 0">
+            My Rewards
+          </div>
+          <div class="tab" :class="currentTab === 1 ? 'active' : ''" @click="currentTab = 1">
+            Unbonding
+          </div>
+          <div class="tab" :class="currentTab === 2 ? 'active' : ''" @click="currentTab = 2">
+            My dApps
+          </div>
         </nav>
+
+        <div class="text--transferable">Transferable Balance : 20,432.1 ASTR</div>
       </div>
       <div class="wrapper--panel">
-        <div class="card">
-          <p>Total Stakes</p>
-          <div>500,000 ASTR</div>
-        </div>
-        <div class="card">
-          <p>Available to claim</p>
-          <div>5 Era</div>
-        </div>
-        <div class="card">
-          <p>Re-Stake after claiming</p>
-          <div>ON</div>
-        </div>
-        <div class="card">
-          <p>Total Earned (all-time)</p>
-          <div>10,000 ASTR</div>
-        </div>
+        <template v-if="currentTab === 0">
+          <MyRewards />
+        </template>
+        <template v-else-if="currentTab === 1">
+          <UnbondingList />
+        </template>
+        <template v-else>
+          <MyDapps />
+        </template>
       </div>
     </div>
 
@@ -34,8 +35,7 @@
           v-if="showRegisterDappModal"
           v-model:is-open="showRegisterDappModal"
           :show-close-button="false"
-        />
-        <ModalMaintenance :show="isPalletDisabled" /> -->
+        /> -->
       </div>
     </Teleport>
   </div>
@@ -48,11 +48,19 @@ import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
 import { DappItem } from 'src/store/dapp-staking/state';
+import MyRewards from 'src/components/dapp-staking-v2/my-staking/MyRewards.vue';
+import UnbondingList from 'src/components/dapp-staking-v2/my-staking/UnbondingList.vue';
+import MyDapps from 'src/components/dapp-staking-v2/my-staking/MyDapps.vue';
 import { computed, defineComponent, ref } from 'vue';
 
 export default defineComponent({
-  components: {},
+  components: {
+    MyRewards,
+    UnbondingList,
+    MyDapps,
+  },
   setup() {
+    // TODO: need to remove legacy
     useMeta({ title: 'Discover dApps' });
     const store = useStore();
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
@@ -75,6 +83,9 @@ export default defineComponent({
     const selectedDappInfo = ref<StakeInfo>();
     const isPalletDisabled = computed(() => store.getters['dapps/getIsPalletDisabled']);
     const isDapps = computed(() => dapps.value.length > 0);
+    //
+
+    const currentTab = ref(0);
 
     return {
       isDapps,
@@ -93,6 +104,7 @@ export default defineComponent({
       stakeInfos,
       stakingList,
       isLoading,
+      currentTab,
     };
   },
 });
@@ -103,11 +115,26 @@ export default defineComponent({
 
 .store-container {
   grid-template-columns: repeat(auto-fit, minmax(288px, max-content));
+  background: #fff;
+  border-radius: 6px;
+  padding: 18px 24px 24px 24px;
+}
+
+.wrapper--tabs {
+  display: flex;
+  justify-content: space-between;
 }
 
 .responsive {
   width: 100%;
   overflow-x: auto;
+}
+
+.text--transferable {
+  font-weight: 600;
+  font-size: 14px;
+  color: #9da3ae;
+  margin-top: 16px;
 }
 
 .tabs {
@@ -164,51 +191,61 @@ export default defineComponent({
   }
 }
 
-.wrapper--panel {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-// .tabs {
+// .wrapper--panel {
 //   display: flex;
-//   padding-left: 3px;
+//   flex-wrap: wrap;
+//   gap: 24px;
+//   margin-top: 34px;
 // }
 
-// .tab {
-//   display: flex;
-//   align-items: center;
-//   font-weight: 400;
-//   font-size: 14px;
-//   line-height: 17px;
-//   text-align: center;
-//   color: $gray-3;
-//   padding: 12px;
-// }
+// .card {
+//   width: 294px;
+//   height: 142px;
+//   background: $gray-1;
+//   border-radius: 6px;
+//   padding: 40px 24px;
 
-// .active-tab {
-//   font-weight: 700;
-//   color: $gray-5;
-// }
-
-// .tabs__indicator {
-//   position: absolute;
-//   height: 4px;
-//   top: 0;
-//   z-index: 0;
-//   background: $astar-blue;
-//   border-radius: 0px 0px 8px 8px;
-//   transition: all 0.5s ease 0s;
-//   width: 36px !important;
-// }
-
-// .column--item {
-//   min-width: 53px;
-//   font-size: 14px;
-//   transition: all 0.2s ease 0s;
-//   &:hover {
-//     font-weight: 700;
-//     color: $gray-5;
-//     transition: all 0.2s ease 0s;
+//   p {
+//     font-weight: 600;
+//     font-size: 14px;
+//     color: $gray-3;
+//   }
+//   .row--value {
+//     font-weight: 600;
+//     font-size: 20px;
+//     line-height: 18px;
+//     color: $gray-5-selected;
+//     margin-top: 23px;
 //   }
 // }
+
+.body--dark {
+  .store-container {
+    background: $gray-5-selected-dark;
+    box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.15);
+  }
+
+  .tabs {
+    .tab {
+      color: $gray-1;
+
+      &:hover {
+        color: $gray-3;
+      }
+    }
+  }
+
+  // .card {
+  //   background: $gray-6;
+  //   box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.15);
+
+  //   p {
+  //     color: #9da3ae;
+  //   }
+
+  //   .row--value {
+  //     color: $gray-1;
+  //   }
+  // }
+}
 </style>
