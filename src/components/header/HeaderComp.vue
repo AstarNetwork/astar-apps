@@ -44,9 +44,6 @@ export default defineComponent({
   mix-blend-mode: normal;
   backdrop-filter: blur(200px);
   border-bottom: 1px solid $object-light;
-  @supports (-moz-appearance: none) {
-    background: $backdrop-transparent-dark-firefox !important;
-  }
   @media (min-width: $lg) {
     padding-left: 28px;
     padding-right: 28px;
