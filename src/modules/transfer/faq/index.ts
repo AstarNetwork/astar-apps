@@ -7,7 +7,7 @@ export const faqH160Transfer: Faq[] = [
   },
   {
     title: 'How do I send ASTR to Exchanges?',
-    url: 'https://docs.astar.network/docs/user-guides/exchange-to-portal',
+    url: 'https://docs.astar.network/docs/user-guides/transfer-tokens/#sending-astrsdn-to-astar-network-from-central-exchanges',
   },
   {
     title: 'What is the easiest way to bring tokens to Astar from other chains?',
