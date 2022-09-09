@@ -65,7 +65,6 @@ export function useTransferRouter() {
 
   const redirect = (): void => {
     const token = nativeTokenSymbol.value.toLowerCase();
-    // const network = currentNetworkName.value.toLowerCase();
     router.push({
       path: `/${network.value}/assets/transfer`,
       query: { token, mode: 'local' },
@@ -353,9 +352,9 @@ export function useTransferRouter() {
   watchEffect(monitorProhibitedPair);
 
   watch(
-    [currentAccount, isH160],
+    [currentAccount, isH160, xcmAssets],
     () => {
-      if (tokens.value.length > 0 && tokenSymbol.value) {
+      if (xcmAssets.value.assets.length > 0 && tokenSymbol.value) {
         const isFound = tokens.value.find(
           (it) => it.metadata.symbol.toLowerCase() === tokenSymbol.value.toLowerCase()
         );
