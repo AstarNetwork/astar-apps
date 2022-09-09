@@ -110,7 +110,7 @@ export function useTransferRouter() {
 
   const defaultXcmBridgeForNative = computed<string>(() => {
     return currentNetworkIdx.value === endpointKey.ASTAR
-      ? Chain.MOONBEAM.toLowerCase() //Todo: change to Acala after enable the XCM transfer
+      ? Chain.MOONBEAM.toLowerCase() // Todo: change to Acala after the portal enable the XCM transfer with Acala
       : Chain.KARURA.toLowerCase();
   });
 

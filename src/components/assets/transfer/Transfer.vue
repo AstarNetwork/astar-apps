@@ -212,6 +212,7 @@ export default defineComponent({
     };
 
     const selectableChains = computed<XcmChain[]>(() => {
+      // Note: remove the filter once the portal enabled XCM transfer with Acala
       const network = chains.value.filter((it) => it.name !== Chain.ACALA);
       const fromChain = removeEvmName(from.value);
       const isFromAstar = fromChain === currentNetworkName.value.toLowerCase();
