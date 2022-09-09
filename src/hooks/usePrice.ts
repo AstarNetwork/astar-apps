@@ -1,7 +1,7 @@
 import { getUsdBySymbol } from 'src/hooks/helper/price';
 import { useStore } from 'src/store';
 import { computed, ref, watchEffect } from 'vue';
-import { useNetworkInfo } from './useNetworkInfo';
+import { useNetworkInfo } from 'src/hooks';
 
 export function usePrice() {
   const store = useStore();

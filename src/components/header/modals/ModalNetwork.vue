@@ -92,12 +92,11 @@
   </astar-modal-drawer>
 </template>
 <script lang="ts">
-import { useQuasar } from 'quasar';
 import { $endpoint } from 'src/boot/api';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { getRandomFromArray, wait } from 'src/hooks/helper/common';
-import { checkIsMobileMathWallet } from 'src/hooks/helper/wallet';
+import { buildNetworkUrl } from 'src/router/utils';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch } from 'vue';
 
@@ -117,8 +116,6 @@ export default defineComponent({
     const classRadioOn = 'class-radio-on';
     const classRadioOff = 'class-radio-off';
 
-    const $q = useQuasar();
-    const isAndroid = $q.platform.is.android;
     const store = useStore();
     const newEndpoint = ref('');
     const customEndpoint = computed(() => store.getters['general/customEndpoint']);
@@ -164,11 +161,12 @@ export default defineComponent({
         localStorage.setItem(CUSTOM_ENDPOINT, endpoint);
       }
 
-      if (isAndroid && (await checkIsMobileMathWallet())) {
-        window.open(window.location.origin);
-      } else {
-        location.reload();
-      }
+      const network = providerEndpoints[networkIdx].networkAlias;
+      const url = buildNetworkUrl(network);
+
+      // Note: Users have to refresh the page manually for MathWallet(Android)
+      window.open(url, '_self');
+      location.reload();
 
       emit('update:is-open', false);
       emit('update:select-network', networkIdx);

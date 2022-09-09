@@ -4,7 +4,8 @@ export {
   storeImportedERC20Token,
   getStoredERC20Tokens,
   getRegisteredERC20Token,
-} from './utils';
+  castCbridgeToErc20,
+} from 'src/modules/token/utils';
 
 // Memo: ERC20 tokens information that is not supported by cBridge
 
@@ -20,6 +21,7 @@ export interface Erc20Token {
   wrapUrl: string | null;
   userBalance?: string;
   userBalanceUsd?: string;
+  isCbridgeToken?: boolean;
 }
 
 export const WASTR = {

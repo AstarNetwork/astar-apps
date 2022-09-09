@@ -1,6 +1,6 @@
 import { ref, watch } from 'vue';
 import type { AbiMessage } from '@polkadot/api-contract/types';
-import { MessageType } from './types/Message';
+import { MessageType } from 'src/hooks/types/Message';
 
 export function useMessages(abi: any) {
   const messages = ref<MessageType[] | null>(null);

@@ -1,3 +1,6 @@
+import { ASTAR_SS58_FORMAT } from 'src/hooks/helper/plasmUtils';
+import { wait } from 'src/hooks/helper/common';
+import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
 import { $api } from 'boot/api';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import {
@@ -18,9 +21,6 @@ import { deepLinkPath } from 'src/links';
 import { useStore } from 'src/store';
 import { computed, ref, watch, WatchCallback, watchEffect, watchPostEffect } from 'vue';
 import { useRouter } from 'vue-router';
-import { useEvmAccount } from './custom-signature/useEvmAccount';
-import { wait } from './helper/common';
-import { ASTAR_SS58_FORMAT } from './helper/plasmUtils';
 import {
   castMobileSource,
   checkIsWalletExtension,
@@ -28,7 +28,7 @@ import {
   getInjectedExtensions,
   getSelectedAccount,
   isMobileDevice,
-} from './helper/wallet';
+} from 'src/hooks/helper/wallet';
 
 export const useConnectWallet = () => {
   const { SELECTED_ADDRESS } = LOCAL_STORAGE;

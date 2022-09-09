@@ -5,15 +5,16 @@ import { ethers } from 'ethers';
 import { supportEvmWallets, SupportWallet } from 'src/config/wallets';
 import { EVM, getTokenBal, rpcUrls, setupNetwork } from 'src/config/web3';
 import moonbeamXcmAbi from 'src/config/web3/abi/moonbeam-xcm-abi.json';
+import { getQueryParams } from 'src/hooks/helper/common';
 import { Asset } from 'src/v2/models';
 import Web3 from 'web3';
 import { TransactionConfig } from 'web3-eth';
 import { AbiItem } from 'web3-utils';
 import { AstarNativeToken, ChainApi } from '../SubstrateApi';
-import { LOCAL_STORAGE } from './../../../config/localStorage';
-import { isValidEvmAddress } from './../../../config/web3/utils/convert';
-import { getEvmProvider } from './../../helper/wallet';
-import { EthereumProvider } from './../../types/CustomSignature';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { isValidEvmAddress } from 'src/config/web3/utils/convert';
+import { getEvmProvider } from 'src/hooks/helper/wallet';
+import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 
 type ChainName = 'Moonriver' | 'Moonbeam';
 
@@ -60,9 +61,12 @@ export class MoonbeamApi extends ChainApi {
       if (!providerName) {
         throw Error('EVM wallet extensions are not installed on this browser');
       }
+      const queryParams = getQueryParams();
       const provider = getEvmProvider(providerName) as any;
-      const network = EVM_ID[this._networkName];
-      setupNetwork({ network, provider });
+      if (queryParams.from === 'moonriver' || queryParams.from === 'moonbeam') {
+        const network = EVM_ID[this._networkName];
+        setupNetwork({ network, provider });
+      }
       return provider ? (provider as EthereumProvider) : null;
     } catch (error) {
       return null;

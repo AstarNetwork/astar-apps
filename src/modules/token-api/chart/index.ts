@@ -1,4 +1,4 @@
-import { formatNumber } from './../utils';
+import { formatNumber } from 'src/modules/token-api/utils';
 
 export const textChart = {
   tvl: {

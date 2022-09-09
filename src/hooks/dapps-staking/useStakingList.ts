@@ -1,10 +1,9 @@
 import { $api } from 'src/boot/api';
 import { useStore } from 'src/store';
 import { computed, ref, watchEffect } from 'vue';
-import { useAccount } from '../useAccount';
-import { useBalance } from '../useBalance';
-import { StakingData } from './../../modules/dapp-staking/index';
-import { formatStakingList } from './../../modules/dapp-staking/utils/index';
+import { useBalance, useAccount } from 'src/hooks';
+import { StakingData } from 'src/modules/dapp-staking/index';
+import { formatStakingList } from 'src/modules/dapp-staking/utils/index';
 
 export function useStakingList() {
   const { currentAccount } = useAccount();

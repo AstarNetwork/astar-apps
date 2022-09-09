@@ -1,4 +1,3 @@
-import { useI18n } from 'vue-i18n';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { $api } from 'boot/api';
 import { ethers } from 'ethers';
@@ -9,17 +8,18 @@ import {
   sendNativeTokenTransaction,
   toSS58Address,
 } from 'src/config/web3';
-import { useCustomSignature } from 'src/hooks';
+import { useCustomSignature, useGasPrice } from 'src/hooks';
+import { useEthProvider } from 'src/hooks/custom-signature/useEthProvider';
 import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
+import { addTxHistories, HistoryTxType } from 'src/modules/account';
 import { getEvmGas } from 'src/modules/gas-api';
 import { useStore } from 'src/store';
 import { computed, Ref, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import Web3 from 'web3';
 import { TransactionConfig } from 'web3-eth';
 import { AbiItem } from 'web3-utils';
-import { signAndSend } from './../helper/wallet';
-import { useGasPrice } from '../useGasPrice';
-import { useEthProvider } from '../custom-signature/useEthProvider';
+import { signAndSend } from 'src/hooks/helper/wallet';
 
 export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: () => void) {
   const store = useStore();
@@ -66,6 +66,7 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
         handleCustomExtrinsic,
         dispatch: store.dispatch,
         tip: selectedTip.value.price,
+        txType: HistoryTxType.Transfer,
       });
       isTxSuccess.value = true;
     } catch (e) {
@@ -101,6 +102,11 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
           });
           store.commit('general/setLoading', false);
           fn && fn();
+          addTxHistories({
+            hash,
+            type: HistoryTxType.Transfer,
+            address: fromAddress,
+          });
           isTxSuccess.value = true;
         }
       ).catch((error: any) => {
@@ -182,6 +188,11 @@ export function useTransfer(selectUnit: Ref<string>, decimal: Ref<number>, fn?: 
         });
         store.commit('general/setLoading', false);
         fn && fn();
+        addTxHistories({
+          hash: transactionHash,
+          type: HistoryTxType.Transfer,
+          address: fromAddress,
+        });
         isTxSuccess.value = true;
       })
       .catch((error: any) => {
