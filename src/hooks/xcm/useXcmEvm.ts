@@ -1,3 +1,4 @@
+import { GLMR } from 'src/modules/token/index';
 import { addXcmTxHistories } from 'src/modules/xcm';
 import { isValidEvmAddress } from 'src/config/web3';
 import BN from 'bn.js';
@@ -18,7 +19,7 @@ import { useGasPrice, useAccount, useNetworkInfo } from 'src/hooks';
 import { Chain, relaychainParaId, xcmChainObj } from 'src/modules/xcm';
 import { Asset } from 'src/v2/models';
 import { MOVR } from 'src/modules/token';
-import { pathEvm } from './useTransferRouter';
+import { pathEvm } from 'src/hooks/xcm/useTransferRouter';
 
 // xcm precompiled contract address
 const PRECOMPILED_ADDR = '0x0000000000000000000000000000000000005004';
@@ -33,7 +34,8 @@ export function useXcmEvm(selectedToken: Ref<Asset>) {
   const currentWallet = computed(() => store.getters['general/currentWallet']);
   const isMoonbeamWithdrawal = computed<boolean>(() => {
     const tokenContractAddress = selectedToken.value.mappedERC20Addr.toLowerCase();
-    return tokenContractAddress === MOVR.address.toLowerCase();
+    const MoonbeamTokens = [MOVR.address.toLowerCase(), GLMR.address.toLowerCase()];
+    return MoonbeamTokens.includes(tokenContractAddress);
   });
 
   const ABI = isMoonbeamWithdrawal.value ? moonbeamWithdrawalAbi : xcmContractAbi;

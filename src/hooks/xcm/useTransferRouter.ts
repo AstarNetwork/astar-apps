@@ -110,7 +110,7 @@ export function useTransferRouter() {
 
   const defaultXcmBridgeForNative = computed<string>(() => {
     return currentNetworkIdx.value === endpointKey.ASTAR
-      ? Chain.ACALA.toLowerCase()
+      ? Chain.MOONBEAM.toLowerCase() //Todo: change to Acala after enable the XCM transfer
       : Chain.KARURA.toLowerCase();
   });
 
@@ -118,6 +118,11 @@ export function useTransferRouter() {
     if (!isTransferPage.value || isLocalTransfer.value || !from.value || !to.value) {
       return;
     }
+
+    if (!isH160.value && from.value.includes(pathEvm)) {
+      redirect();
+    }
+
     if (isH160.value) {
       const currentEvmNetwork = currentNetworkName.value.toLowerCase() + pathEvm;
       if (from.value !== currentEvmNetwork) {
@@ -193,13 +198,10 @@ export function useTransferRouter() {
   }): void => {
     isLocalTransfer.value = isLocal;
     const mode = isLocal ? 'local' : 'xcm';
-    // const network = currentNetworkName.value.toLowerCase();
     const isNativeAstarToken = tokenSymbol.value === nativeTokenSymbol.value.toLowerCase();
-    const defaultXcmBridgeForNative =
-      currentNetworkIdx.value === endpointKey.ASTAR ? Chain.ACALA : Chain.KARURA;
 
     const opponentNetwork = isNativeAstarToken
-      ? defaultXcmBridgeForNative
+      ? defaultXcmBridgeForNative.value
       : originChain.toLowerCase();
     const astarNetwork = currentNetworkName.value.toLowerCase();
     const from = isH160.value ? astarNetwork + pathEvm : opponentNetwork.toLowerCase();

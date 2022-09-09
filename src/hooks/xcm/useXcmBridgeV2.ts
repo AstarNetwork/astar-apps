@@ -6,7 +6,7 @@ import { getTokenBal, isValidEvmAddress, toSS58Address } from 'src/config/web3';
 import { ASTAR_SS58_FORMAT } from 'src/hooks/helper/plasmUtils';
 import { SystemAccount } from 'src/modules/account';
 import { SubstrateAccount } from 'src/store/general/state';
-import { capitalize } from './../helper/common';
+import { capitalize } from 'src/hooks/helper/common';
 
 import {
   astarNativeTokens,
@@ -38,13 +38,12 @@ import {
   ASTAR_DECIMALS,
   isValidAddressPolkadotAddress,
   SUBSTRATE_SS58_FORMAT,
-} from './../helper/plasmUtils';
-import { AcalaApi, MoonbeamApi } from './parachainApi';
-import { MOONBEAM_ASTAR_TOKEN_ID } from './parachainApi/MoonbeamApi';
-import { AstarApi, AstarToken, ChainApi } from './SubstrateApi';
+} from 'src/hooks/helper/plasmUtils';
+import { AcalaApi, MoonbeamApi, MOONBEAM_ASTAR_TOKEN_ID } from 'src/hooks/xcm/parachainApi';
+import { AstarApi, AstarToken, ChainApi } from 'src/hooks/xcm/SubstrateApi';
 import { addXcmTxHistories } from 'src/modules/xcm/utils';
 
-const { Acala, Astar, Karura, Moonriver, Polkadot, Shiden, Kusama } = xcmChainObj;
+const { Acala, Astar, Karura, Moonriver, Polkadot, Shiden, Kusama, Moonbeam } = xcmChainObj;
 
 export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   let originChainApi: ChainApi | null = null;
@@ -109,13 +108,13 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
 
   // Todo: refactoring
   const isMoonbeamWithdrawal = computed<boolean>(() => {
-    return destChain.value.name === Chain.MOONRIVER;
+    return [Chain.MOONRIVER, Chain.MOONBEAM].includes(destChain.value.name);
   });
 
   // Todo: refactoring
   const isMoonbeamDeposit = computed<boolean>(() => {
     if (!srcChain.value) return false;
-    return srcChain.value.name === Chain.MOONRIVER;
+    return [Chain.MOONRIVER, Chain.MOONBEAM].includes(srcChain.value.name);
   });
 
   const { handleResult, handleTransactionError } = useCustomSignature({});
@@ -270,7 +269,7 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
       }
     };
 
-    const shouldConnectMoonbeam = shouldConnectApi([Moonriver.name]);
+    const shouldConnectMoonbeam = shouldConnectApi([Moonriver.name, Moonbeam.name]);
     const shouldConnectAcala = shouldConnectApi([Acala.name, Karura.name]);
 
     try {

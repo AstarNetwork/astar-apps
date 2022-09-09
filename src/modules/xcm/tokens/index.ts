@@ -54,6 +54,16 @@ export const xcmToken = {
       originChain: 'Acala',
       minBridgeAmount: '0.1',
     },
+    {
+      symbol: 'GLMR',
+      isNativeToken: true,
+      assetId: '18446744073709551619',
+      originAssetId: 'GLMR',
+      logo: 'https://assets.coingecko.com/coins/images/22459/small/glmr.png?1641880985',
+      isXcmCompatible: true,
+      originChain: 'Moonbeam',
+      minBridgeAmount: '0.2',
+    },
   ],
   [endpointKey.SHIDEN]: [
     {
@@ -114,6 +124,7 @@ export const xcmToken = {
 
 // Memo: placeholder for assetId of ASTR/SDN/SBY
 export const idAstarNativeToken = '0000000000000000000';
+export const astarNativeTokenErcAddr = '0x0000000000000000000000000000000000000000';
 
 export const generateAstarNativeTokenObject = (symbol: ASTAR_NATIVE_TOKEN) => {
   const name = symbol === 'ASTR' ? 'Astar' : symbol === 'SDN' ? 'Shiden' : 'Shibuya';
@@ -128,7 +139,7 @@ export const generateAstarNativeTokenObject = (symbol: ASTAR_NATIVE_TOKEN) => {
     isFrozen: false,
     isSufficient: true,
     issuer: '',
-    mappedERC20Addr: '0x0000000000000000000000000000000000000000',
+    mappedERC20Addr: astarNativeTokenErcAddr,
     metadata: {
       decimals: String(ASTAR_DECIMALS),
       deposit: '0',
@@ -154,7 +165,7 @@ export const generateAstarNativeTokenObject = (symbol: ASTAR_NATIVE_TOKEN) => {
 export const generateNativeAsset = (symbol: ASTAR_NATIVE_TOKEN): Asset => {
   const name = symbol === 'ASTR' ? 'Astar' : symbol === 'SDN' ? 'Shiden' : 'Shibuya';
   const tokenImage = symbol === 'ASTR' ? ASTR.logo : symbol === 'SDN' ? SDN.logo : SBY.logo;
-  const mappedERC20Addr = '0x0000000000000000000000000000000000000000';
+  const mappedERC20Addr = astarNativeTokenErcAddr;
   const metadata = {
     decimals: ASTAR_DECIMALS,
     deposit: new BN(0),

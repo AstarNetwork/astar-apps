@@ -24,8 +24,9 @@ const PRE_COMPILED_ADDRESS = '0x0000000000000000000000000000000000000804';
 // Todo: check the token address for ASTR
 export const MOONBEAM_ASTAR_TOKEN_ID: AstarNativeToken = {
   SDN: '0xffffffff0ca324c842330521525e7de111f38972',
-  ASTR: '0xToDo',
+  ASTR: '0xffffffffa893ad19e540e172c10d78d4d479b5cf',
 };
+
 const RPC_ENDPOINT = {
   Moonriver: rpcUrls[EVM.MOONRIVER][0] as string,
   Moonbeam: rpcUrls[EVM.MOONBEAM][0] as string,

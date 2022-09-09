@@ -87,7 +87,7 @@ import {
 } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { MOVR } from 'src/modules/token';
-import { Chain, XcmChain, xcmToken } from 'src/modules/xcm';
+import { Chain, removeEvmName, XcmChain, xcmToken } from 'src/modules/xcm';
 import { ASTR } from 'src/modules/xcm/tokens';
 import { useStore } from 'src/store';
 import { EvmAssets } from 'src/store/assets/state';
@@ -144,13 +144,12 @@ export default defineComponent({
     const isDisabledXcm = computed<boolean>(() => {
       const isEvmNativeToken =
         isH160.value && tokenSymbol.value === nativeTokenSymbol.value.toLowerCase();
-      const isAstr = token.value?.metadata.symbol === ASTR.symbol;
       const acalaTokens = xcmToken[currentNetworkIdx.value]
         .filter((it) => it.originChain === Chain.ACALA)
         .map((it) => it.symbol.toLowerCase());
       const isAcalaToken = acalaTokens.includes(String(token.value?.metadata.symbol.toLowerCase()));
       const isXcmCompatible = token.value?.isXcmCompatible;
-      return isShibuya.value || isAcalaToken || isEvmNativeToken || isAstr || !isXcmCompatible;
+      return isShibuya.value || isAcalaToken || isEvmNativeToken || !isXcmCompatible;
     });
     const isTransferNativeToken = computed<boolean>(() => {
       return tokenSymbol.value === nativeTokenSymbol.value.toLowerCase();
@@ -213,11 +212,15 @@ export default defineComponent({
     };
 
     const selectableChains = computed<XcmChain[]>(() => {
-      const isFromAstar = from.value === currentNetworkName.value.toLowerCase();
+      const network = chains.value.filter((it) => it.name !== Chain.ACALA);
+      const fromChain = removeEvmName(from.value);
+      const isFromAstar = fromChain === currentNetworkName.value.toLowerCase();
       if (isSelectFromChain.value || isFromAstar) {
-        return chains.value.filter((it) => !it.name.includes('evm'));
+        return network.filter((it) =>
+          isH160.value ? !it.name.includes(currentNetworkName.value) : !it.name.includes('evm')
+        );
       } else {
-        return chains.value;
+        return network;
       }
     });
 
