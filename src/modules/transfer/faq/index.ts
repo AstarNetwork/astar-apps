@@ -7,7 +7,7 @@ export const faqH160Transfer: Faq[] = [
   },
   {
     title: 'How do I send ASTR to Exchanges?',
-    url: 'https://docs.astar.network/docs/user-guides/exchange-to-portal',
+    url: 'https://docs.astar.network/docs/user-guides/transfer-tokens/#sending-astrsdn-to-central-exchanges-from-astar-network',
   },
   {
     title: 'What is the easiest way to bring tokens to Astar from other chains?',
@@ -29,8 +29,8 @@ export const faqH160XcmBridge: Faq[] = [
     url: 'https://docs.astar.network/docs/user-guides/xc-swap',
   },
   {
-    title: 'What is ED (Existential Deposit)?',
-    url: 'https://docs.astar.network/docs/user-guides/xc-swap',
+    title: 'What is Minimum Balance?',
+    url: 'https://docs.astar.network/docs/user-guides/transfer-tokens#cross-chain-transferxcm',
   },
   {
     title: 'Any video tutorials available for new users?',
@@ -41,11 +41,11 @@ export const faqH160XcmBridge: Faq[] = [
 export const faqSs58Transfer: Faq[] = [
   {
     title: 'How can I send ASTR/SDN from Exchanges to Portal?',
-    url: 'https://docs.astar.network/docs/user-guides/exchange-to-portal',
+    url: 'https://docs.astar.network/docs/user-guides/transfer-tokens#sending-astrsdn-to-astar-network-from-central-exchanges',
   },
   {
-    title: 'What is ED (Existential Deposit)?',
-    url: 'https://docs.astar.network/docs/user-guides/xc-swap',
+    title: 'What is Minimum Balance?',
+    url: 'https://docs.astar.network/docs/user-guides/transfer-tokens#cross-chain-transferxcm',
   },
   {
     title: 'Any video tutorials available for new users? ',
@@ -67,8 +67,8 @@ export const faqSs58XcmBridge: Faq[] = [
     url: 'https://docs.astar.network/docs/user-guides/xc-swap',
   },
   {
-    title: 'What is ED (Existential Deposit)?',
-    url: 'https://support.polkadot.network/support/solutions/articles/65000168651-what-is-the-existential-deposit-',
+    title: 'What is Minimum Balance?',
+    url: 'https://docs.astar.network/docs/user-guides/transfer-tokens#cross-chain-transferxcm',
   },
   {
     title: 'Any video tutorials available for new users? ',
