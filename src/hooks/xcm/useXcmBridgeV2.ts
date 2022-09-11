@@ -3,10 +3,10 @@ import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { getTokenBal, isValidEvmAddress, toSS58Address } from 'src/config/web3';
+import { capitalize } from 'src/hooks/helper/common';
 import { ASTAR_SS58_FORMAT } from 'src/hooks/helper/plasmUtils';
 import { SystemAccount } from 'src/modules/account';
 import { SubstrateAccount } from 'src/store/general/state';
-import { capitalize } from 'src/hooks/helper/common';
 
 import {
   astarNativeTokens,
@@ -18,7 +18,14 @@ import {
   useTransferRouter,
 } from 'src/hooks';
 import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
+import {
+  ASTAR_DECIMALS,
+  isValidAddressPolkadotAddress,
+  SUBSTRATE_SS58_FORMAT,
+} from 'src/hooks/helper/plasmUtils';
 import { getInjector } from 'src/hooks/helper/wallet';
+import { MOONBEAM_ASTAR_TOKEN_ID } from 'src/hooks/xcm/parachainApi';
+import { AstarApi, AstarToken, ChainApi } from 'src/hooks/xcm/SubstrateApi';
 import { showLoading } from 'src/modules/extrinsic/utils';
 import {
   Chain,
@@ -28,20 +35,14 @@ import {
   parachainIds,
   XcmChain,
   xcmChainObj,
+  addXcmTxHistories,
 } from 'src/modules/xcm';
+// import { addXcmTxHistories } from 'src/modules/xcm/utils';
 import { useStore } from 'src/store';
 import { wait } from 'src/v2/common';
 import { Asset } from 'src/v2/models';
 import { computed, ref, Ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
-import {
-  ASTAR_DECIMALS,
-  isValidAddressPolkadotAddress,
-  SUBSTRATE_SS58_FORMAT,
-} from 'src/hooks/helper/plasmUtils';
-import { AcalaApi, MoonbeamApi, MOONBEAM_ASTAR_TOKEN_ID } from 'src/hooks/xcm/parachainApi';
-import { AstarApi, AstarToken, ChainApi } from 'src/hooks/xcm/SubstrateApi';
-import { addXcmTxHistories } from 'src/modules/xcm/utils';
 
 const { Acala, Astar, Karura, Moonriver, Polkadot, Shiden, Kusama, Moonbeam } = xcmChainObj;
 
@@ -261,30 +262,16 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   };
 
   const connectOriginChain = async (endpoint: string): Promise<void> => {
-    const shouldConnectApi = (chains: string[]): boolean => {
-      if (isAstarNativeTransfer.value) {
-        return chains.includes(srcChain.value.name) || chains.includes(destChain.value.name);
-      } else {
-        return chains.includes(originChain.value.name);
-      }
-    };
-
-    const shouldConnectMoonbeam = shouldConnectApi([Moonriver.name, Moonbeam.name]);
-    const shouldConnectAcala = shouldConnectApi([Acala.name, Karura.name]);
-
+    if (!endpoint) return;
     try {
-      if (!endpoint) return;
-      if (shouldConnectMoonbeam) {
-        originChainApi = new MoonbeamApi(endpoint);
-      } else if (shouldConnectAcala) {
-        originChainApi = new AcalaApi(endpoint);
-      } else {
-        // if: Connect to Relaychain API
-        originChainApi = new ChainApi(endpoint);
+      const apiObj = Object.values(xcmChainObj).find((it) => it.endpoint === endpoint);
+      if (!apiObj) return;
+      originChainApi = apiObj.apiInstance({ endpoint, api: $api! }) as ChainApi;
+      if (originChainApi) {
+        await originChainApi.start();
+        await originChainApi.isReady;
+        isLoadingApi.value = false;
       }
-      await originChainApi.start();
-      await originChainApi.isReady;
-      isLoadingApi.value = false;
     } catch (err) {
       console.error(err);
     }
