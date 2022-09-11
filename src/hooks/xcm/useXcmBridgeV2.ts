@@ -37,14 +37,13 @@ import {
   xcmChainObj,
   addXcmTxHistories,
 } from 'src/modules/xcm';
-// import { addXcmTxHistories } from 'src/modules/xcm/utils';
 import { useStore } from 'src/store';
 import { wait } from 'src/v2/common';
 import { Asset } from 'src/v2/models';
 import { computed, ref, Ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-const { Acala, Astar, Karura, Moonriver, Polkadot, Shiden, Kusama, Moonbeam } = xcmChainObj;
+const { Acala, Astar, Karura, Polkadot, Shiden } = xcmChainObj;
 
 export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   let originChainApi: ChainApi | null = null;
