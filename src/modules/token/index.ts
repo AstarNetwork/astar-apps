@@ -145,7 +145,31 @@ export const MOVR = {
   wrapUrl: null,
 };
 
-export const registeredErc20Tokens = [WASTR, DOT, KSM, KUSD, KAR, LKSM, ACA, LDOT, AUSD, MOVR];
+export const GLMR = {
+  srcChainId: 592,
+  address: '0xffffffff00000000000000010000000000000003',
+  decimal: 18,
+  symbol: 'GLMR',
+  name: 'Moonbeam',
+  image: 'https://assets.coingecko.com/coins/images/22459/small/glmr.png?1641880985',
+  isWrappedToken: false,
+  isXC20: true,
+  wrapUrl: null,
+};
+
+export const registeredErc20Tokens = [
+  WASTR,
+  DOT,
+  KSM,
+  KUSD,
+  KAR,
+  LKSM,
+  ACA,
+  LDOT,
+  AUSD,
+  MOVR,
+  GLMR,
+];
 
 // Memo: Define the token image source
 export const tokenImageMap = {

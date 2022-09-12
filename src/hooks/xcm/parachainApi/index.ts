@@ -1,2 +1,2 @@
 export { AcalaApi } from './AcalaApi';
-export { MoonbeamApi } from './MoonbeamApi';
+export { MoonbeamApi, MOONBEAM_ASTAR_TOKEN_ID } from './MoonbeamApi';

@@ -9,13 +9,13 @@ import {
 } from 'src/config/localStorage';
 import { pathEvm } from 'src/hooks';
 import { getTimestamp } from 'src/hooks/helper/common';
-import { TxHistory } from 'src/modules/account';
-import { Asset } from 'src/v2/models';
-import { astarChains, ExistentialDeposit, XcmTokenInformation } from '../index';
-import { xcmToken } from '../tokens';
 import { astarNetworks } from 'src/hooks/xcm/useTransferRouter';
+import { SystemAccount, TxHistory } from 'src/modules/account';
 import { HistoryTxType } from 'src/modules/account/index';
 import { Chain } from 'src/modules/xcm';
+import { Asset } from 'src/v2/models';
+import { astarChains, ExistentialDeposit, XcmTokenInformation } from 'src/modules/xcm/index';
+import { xcmToken, astarNativeTokenErcAddr } from 'src/modules/xcm//tokens';
 
 const { XCM_TX_HISTORIES, NETWORK_IDX } = LOCAL_STORAGE;
 interface Account extends Struct {
@@ -34,6 +34,10 @@ export const getXcmToken = ({
   return t;
 };
 
+export const checkIsAstarNativeToken = (mappedErc20Address: string): boolean => {
+  return mappedErc20Address.toLowerCase() === astarNativeTokenErcAddr.toLowerCase();
+};
+
 export const fetchXcmBalance = async ({
   userAddress,
   token,
@@ -45,10 +49,18 @@ export const fetchXcmBalance = async ({
 }): Promise<{ userBalance: string }> => {
   let userBalance = '0';
   try {
-    const result = await api.query.assets.account<Account>(String(token.id), userAddress);
-    const data = result.toJSON();
-    const balance = data ? String(data.balance) : '0';
-    const formattedBalance = ethers.utils.formatUnits(balance, Number(token.metadata.decimals));
+    let bal = '0';
+    const isAstarNativeToken = checkIsAstarNativeToken(token.mappedERC20Addr);
+    if (isAstarNativeToken) {
+      const accountInfo = await api.query.system.account<SystemAccount>(userAddress);
+      bal = accountInfo.data.free.sub(accountInfo.data.miscFrozen).toString();
+    } else {
+      const result = await api.query.assets.account<Account>(String(token.id), userAddress);
+      const data = result.toJSON();
+      bal = data ? String(data.balance) : '0';
+    }
+
+    const formattedBalance = ethers.utils.formatUnits(bal, Number(token.metadata.decimals));
     return { userBalance: formattedBalance };
   } catch (error) {
     console.error(error);
