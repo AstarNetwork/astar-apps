@@ -6,7 +6,7 @@ import { useAccount, useBalance, useNetworkInfo } from 'src/hooks';
 import {
   astarChains,
   Chain,
-  checkIsRelayChain,
+  checkIsSupportAstarNativeToken,
   removeEvmName,
   XcmChain,
   xcmChains,
@@ -86,8 +86,8 @@ export function useTransferRouter() {
   const redirectForRelaychain = (): void => {
     if (!isTransferPage.value || !xcmOpponentChain.value) return;
     try {
-      const isRelaychain = checkIsRelayChain(xcmOpponentChain.value);
-      if (!isRelaychain || mode.value !== 'xcm') return;
+      const isSupportAstarNativeToken = checkIsSupportAstarNativeToken(xcmOpponentChain.value);
+      if (isSupportAstarNativeToken || mode.value !== 'xcm') return;
 
       const relayChainToken = xcmToken[currentNetworkIdx.value]
         .find((it) => it.originChain === xcmOpponentChain.value)
@@ -292,7 +292,7 @@ export function useTransferRouter() {
     if (!isLocalTransfer.value) {
       // if: XCM bridge
       const selectedNetwork = xcmOpponentChain.value;
-      const isSelectedRelayChain = checkIsRelayChain(selectedNetwork);
+      const isSupportAstarNativeToken = checkIsSupportAstarNativeToken(selectedNetwork);
       if (isH160.value) {
         const filteredToken = evmTokens.map((it) =>
           generateAssetFromEvmToken(it as Erc20Token, xcmAssets.value.assets)
@@ -306,7 +306,7 @@ export function useTransferRouter() {
         );
       }
       tokens = selectableTokens.filter(({ isXcmCompatible }) => isXcmCompatible);
-      !isSelectedRelayChain && tokens.push(nativeTokenAsset);
+      isSupportAstarNativeToken && tokens.push(nativeTokenAsset);
     }
     return tokens.length > 0
       ? tokens.sort((a: Asset, b: Asset) => a.metadata.symbol.localeCompare(b.metadata.symbol))
@@ -347,23 +347,20 @@ export function useTransferRouter() {
     return selectableChains;
   });
 
+  const handleIsFoundToken = (): void => {
+    const isFetchedXcmAssets = xcmAssets.value.assets.length > 0;
+    if (isFetchedXcmAssets && tokenSymbol.value) {
+      const isFound = tokens.value.find(
+        (it) => it.metadata.symbol.toLowerCase() === tokenSymbol.value.toLowerCase()
+      );
+      !isFound && redirect();
+    }
+  };
+
   watchEffect(handleDefaultConfig);
   watchEffect(redirectForRelaychain);
   watchEffect(monitorProhibitedPair);
-
-  watch(
-    [currentAccount, isH160, xcmAssets],
-    () => {
-      if (xcmAssets.value.assets.length > 0 && tokenSymbol.value) {
-        const isFound = tokens.value.find(
-          (it) => it.metadata.symbol.toLowerCase() === tokenSymbol.value.toLowerCase()
-        );
-        !isFound && redirect();
-      }
-    },
-    { immediate: false }
-  );
-
+  watch([currentAccount, isH160, xcmAssets], handleIsFoundToken, { immediate: false });
   watchEffect(setNativeTokenBalance);
 
   return {
