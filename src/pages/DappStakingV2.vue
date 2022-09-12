@@ -36,12 +36,4 @@ export default defineComponent({
   row-gap: 24px;
   max-width: 1300px;
 }
-
-.wrapper--dapp-staking {
-  position: relative;
-  @media (min-width: $xxl) {
-    display: flex;
-    justify-content: center;
-  }
-}
 </style>
