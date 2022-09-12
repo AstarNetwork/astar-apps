@@ -13,24 +13,42 @@
           <span class="text--tooltip">{{ $t('common.speed.tipHelp') }}</span>
         </q-tooltip> -->
       </p>
-      <div class="row--value">500,000 ASTR</div>
+      <div class="row--data">
+        <div class="value">500,000 ASTR</div>
+      </div>
     </div>
     <div class="card">
       <p>Available to claim</p>
-      <div class="row--value">5 Era</div>
+      <div class="row--data">
+        <div class="value">5 Era</div>
+        <astar-button width="80" height="24">Claim</astar-button>
+      </div>
     </div>
     <div class="card">
       <p>Re-Stake after claiming</p>
-      <div class="row--value">ON</div>
+      <div class="row--data">
+        <div class="value">ON</div>
+        <astar-button width="80" height="24">Turn Off</astar-button>
+      </div>
     </div>
     <div class="card">
       <p>Total Earned (all-time)</p>
-      <div class="row--value">10,000 ASTR</div>
+      <div class="row--data">
+        <div class="value">10,000 ASTR</div>
+        <astar-irregular-button>
+          <div class="explorer-icon">
+            <astar-icon-external-link />
+          </div>
+        </astar-irregular-button>
+      </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-
+import { defineComponent } from 'vue';
+export default defineComponent({
+  setup() {},
+});
 </script>
 <style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
@@ -40,6 +58,10 @@
   flex-wrap: wrap;
   gap: 24px;
   margin-top: 34px;
+
+  @media (max-width: $sm) {
+    gap: 16px;
+  }
 }
 
 .card {
@@ -54,12 +76,41 @@
     font-size: 14px;
     color: $gray-3;
   }
-  .row--value {
+  .row--data {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 23px;
+  }
+  .value {
     font-weight: 600;
     font-size: 20px;
     line-height: 18px;
     color: $gray-5-selected;
-    margin-top: 23px;
+  }
+
+  @media (max-width: $lg) {
+    height: 104px;
+    padding: 24px 16px;
+
+    .row--data {
+      margin-top: 15px;
+    }
+  }
+
+  @media (max-width: $sm) {
+    width: 100%;
+  }
+}
+
+.explorer-icon {
+  stroke: $astar-blue;
+  svg {
+    height: 30px;
+    width: 30px;
+  }
+  &:hover {
+    stroke: white;
   }
 }
 
@@ -72,7 +123,7 @@
       color: #9da3ae;
     }
 
-    .row--value {
+    .value {
       color: $gray-1;
     }
   }

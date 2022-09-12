@@ -123,6 +123,10 @@ export default defineComponent({
 .wrapper--tabs {
   display: flex;
   justify-content: space-between;
+
+  @media (max-width: $lg) {
+    display: block;
+  }
 }
 
 .responsive {
@@ -135,11 +139,10 @@ export default defineComponent({
   font-size: 14px;
   color: #9da3ae;
   margin-top: 16px;
+  text-align: right;
 }
 
 .tabs {
-  // display: table;
-  // table-layout: auto;
   border-collapse: separate;
   display: inline-flex;
   flex-wrap: wrap;
@@ -191,34 +194,6 @@ export default defineComponent({
   }
 }
 
-// .wrapper--panel {
-//   display: flex;
-//   flex-wrap: wrap;
-//   gap: 24px;
-//   margin-top: 34px;
-// }
-
-// .card {
-//   width: 294px;
-//   height: 142px;
-//   background: $gray-1;
-//   border-radius: 6px;
-//   padding: 40px 24px;
-
-//   p {
-//     font-weight: 600;
-//     font-size: 14px;
-//     color: $gray-3;
-//   }
-//   .row--value {
-//     font-weight: 600;
-//     font-size: 20px;
-//     line-height: 18px;
-//     color: $gray-5-selected;
-//     margin-top: 23px;
-//   }
-// }
-
 .body--dark {
   .store-container {
     background: $gray-5-selected-dark;
@@ -234,18 +209,5 @@ export default defineComponent({
       }
     }
   }
-
-  // .card {
-  //   background: $gray-6;
-  //   box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.15);
-
-  //   p {
-  //     color: #9da3ae;
-  //   }
-
-  //   .row--value {
-  //     color: $gray-1;
-  //   }
-  // }
 }
 </style>
