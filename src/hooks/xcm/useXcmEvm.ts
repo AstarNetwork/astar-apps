@@ -34,8 +34,8 @@ export function useXcmEvm(selectedToken: Ref<Asset>) {
   const currentWallet = computed(() => store.getters['general/currentWallet']);
   const isMoonbeamWithdrawal = computed<boolean>(() => {
     const tokenContractAddress = selectedToken.value.mappedERC20Addr.toLowerCase();
-    const MoonbeamTokens = [MOVR.address.toLowerCase(), GLMR.address.toLowerCase()];
-    return MoonbeamTokens.includes(tokenContractAddress);
+    const moonbeamTokens = [MOVR.address.toLowerCase(), GLMR.address.toLowerCase()];
+    return moonbeamTokens.includes(tokenContractAddress);
   });
 
   const ABI = isMoonbeamWithdrawal.value ? moonbeamWithdrawalAbi : xcmContractAbi;

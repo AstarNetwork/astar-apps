@@ -261,12 +261,11 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   };
 
   const connectOriginChain = async (endpoint: string): Promise<void> => {
-    if (!endpoint) return;
     try {
       const apiObj = Object.values(xcmChainObj).find((it) => it.endpoint === endpoint);
-      if (!apiObj) return;
-      originChainApi = apiObj.apiInstance({ endpoint, api: $api! }) as ChainApi;
-      if (originChainApi) {
+      const apiInstance = apiObj && (apiObj.apiInstance({ endpoint, api: $api! }) as ChainApi);
+      if (apiInstance) {
+        originChainApi = apiInstance;
         await originChainApi.start();
         await originChainApi.isReady;
         isLoadingApi.value = false;
