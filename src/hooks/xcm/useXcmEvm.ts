@@ -1,3 +1,4 @@
+import { SupportWallet } from 'src/config/wallets';
 import { GLMR } from 'src/modules/token/index';
 import { addXcmTxHistories } from 'src/modules/xcm';
 import { isValidEvmAddress } from 'src/config/web3';
@@ -31,7 +32,7 @@ export function useXcmEvm(selectedToken: Ref<Asset>) {
   const { currentAccount } = useAccount();
   const { currentNetworkName } = useNetworkInfo();
 
-  const currentWallet = computed(() => store.getters['general/currentWallet']);
+  const currentWallet = computed<SupportWallet>(() => store.getters['general/currentWallet']);
   const isMoonbeamWithdrawal = computed<boolean>(() => {
     const tokenContractAddress = selectedToken.value.mappedERC20Addr.toLowerCase();
     const moonbeamTokens = [MOVR.address.toLowerCase(), GLMR.address.toLowerCase()];
