@@ -185,7 +185,7 @@ export const xcmChainObj: XcmChainObj = {
   [Chain.MOONBEAM]: {
     name: Chain.MOONBEAM,
     relayChain: Chain.POLKADOT,
-    img: 'https://polkadot.js.org/apps/static/moonbeam.3204d901..png',
+    img: 'https://assets.coingecko.com/coins/images/22459/small/glmr.png?1641880985',
     parachainId: parachainIds.MOONBEAM,
     endpoint: 'wss://wss.api.moonbeam.network',
     subscan: 'https://moonbeam.subscan.io',
