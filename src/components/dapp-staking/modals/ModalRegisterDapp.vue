@@ -98,15 +98,7 @@ export default defineComponent({
               return chain.toString().split(' ')[0];
             });
 
-            let signature = null;
-
-            // The condition is here temporary, until all networks have deployed
-            // new dapp registration workflow.
-            if (currentNetworkIdx.value !== endpointKey.ASTAR) {
-              // Use the new dapp registration workflow.
-              signature = await signPayload(senderAddress, data.address);
-            }
-
+            const signature = await signPayload(senderAddress, data.address);
             const result = await store.dispatch('dapps/registerDappApi', {
               dapp: data,
               api: $api,
