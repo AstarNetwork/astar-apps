@@ -1,14 +1,12 @@
+import { signAndSend } from 'src/hooks/helper/wallet';
 import { useI18n } from 'vue-i18n';
-import { useGasPrice } from './useGasPrice';
+import { useGasPrice, useCustomSignature, useAccount } from 'src/hooks';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { $api, $web3 } from 'boot/api';
 import { ethers } from 'ethers';
 import { buildEvmAddress } from 'src/config/web3';
 import { useStore } from 'src/store';
 import { computed, ref, watch } from 'vue';
-import { signAndSend } from './helper/wallet';
-import { useAccount } from './index';
-import { useCustomSignature } from './useCustomSignature';
 
 export function useEvmDeposit(fn?: () => void) {
   const evmDeposit = ref<string>('0');

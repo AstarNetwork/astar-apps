@@ -1,7 +1,7 @@
 import { RegistryTypes } from '@polkadot/types/types';
 import * as typeDefs from 'src/config/api/polkadot/registry-types';
 
-interface ChainProvider {
+export interface ChainProvider {
   networkAlias: string;
   displayName: string;
   info?: string;
@@ -109,7 +109,7 @@ export const providerEndpoints: ChainProvider[] = [
     defaultLogo: require('/src/assets/img/ic_shibuya.png'),
   },
   {
-    networkAlias: 'local-node',
+    networkAlias: 'development',
     displayName: 'Local Network',
     endpoints: [{ name: 'Local Network', endpoint: 'ws://127.0.0.1:9944' }],
     favicon: 'icons/astar.png',
@@ -147,8 +147,11 @@ export const getProviderIndex = (chain: ASTAR_CHAIN) => {
       return endpointKey.ASTAR;
     case 'Shiden':
       return endpointKey.SHIDEN;
-
     default:
       return endpointKey.SHIBUYA;
   }
+};
+
+export const getNetworkName = (chain: endpointKey): string => {
+  return providerEndpoints[chain].networkAlias;
 };

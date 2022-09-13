@@ -1,16 +1,15 @@
-import { getRandomFromArray } from './../../../hooks/helper/common';
-import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
-import Web3 from 'web3';
-import { blockExplorerUrls, CHAIN_INFORMATION } from '../index';
-import { EVM, nativeCurrency, TNetworkId } from './../index';
 import { ethers } from 'ethers';
 import ABI from 'src/c-bridge/abi/ERC20.json';
-import { AbiItem } from 'web3-utils';
+import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 import { Erc20Token } from 'src/modules/token';
-import axios from 'axios';
-export { buildEvmAddress, isValidEvmAddress, toSS58Address } from './convert';
-export { getBalance, sendNativeTokenTransaction } from './transactions';
+import Web3 from 'web3';
+import { AbiItem } from 'web3-utils';
+import { blockExplorerUrls, CHAIN_INFORMATION } from 'src/config/web3';
+import { getRandomFromArray } from 'src/hooks/helper/common';
+import { EVM, nativeCurrency, TNetworkId } from 'src/config/web3';
+export { buildEvmAddress, isValidEvmAddress, toSS58Address } from 'src/config/web3/utils/convert';
+export { getBalance, sendNativeTokenTransaction } from 'src/config/web3/utils/transactions';
 
 export const getChainData = (chainId: number) => {
   const { chainName, nativeCurrency, rpcUrls, blockExplorerUrls } = CHAIN_INFORMATION;

@@ -1,12 +1,13 @@
 import { BigNumber, formatFixed } from '@ethersproject/bignumber';
 import { hexToU8a, isHex, isString } from '@polkadot/util';
-import { decodeAddress, encodeAddress } from '@polkadot/util-crypto';
+import { checkAddress, decodeAddress, encodeAddress } from '@polkadot/util-crypto';
 import BN from 'bn.js';
 import { ethers } from 'ethers';
-import { LOCAL_STORAGE } from './../../config/localStorage';
-import { nFormatter } from './units';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { nFormatter } from 'src/hooks/helper/units';
 
 export const ASTAR_SS58_FORMAT = 5;
+export const SUBSTRATE_SS58_FORMAT = 42;
 export const ASTAR_DECIMALS = 18;
 
 /**
@@ -77,11 +78,14 @@ export const parseTo18Decimals = (amount: number | string): BN => {
   return new BN(ethers.utils.parseEther(String(amount)).toString());
 };
 
-export const isValidAddressPolkadotAddress = (address: string) => {
+export const isValidAddressPolkadotAddress = (address: string, prefix?: number): boolean => {
   try {
-    encodeAddress(isHex(address) ? hexToU8a(address) : decodeAddress(address));
-
-    return true;
+    if (prefix) {
+      return checkAddress(address, prefix)[0];
+    } else {
+      encodeAddress(isHex(address) ? hexToU8a(address) : decodeAddress(address));
+      return true;
+    }
   } catch (error) {
     return false;
   }

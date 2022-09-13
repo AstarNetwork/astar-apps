@@ -7,7 +7,7 @@ import { endpointKey } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
 import { computed, ref, watchEffect } from 'vue';
 import { useChainMetadata, useCurrentEra, useNetworkInfo, useTvl } from '.';
-import { defaultAmountWithDecimals } from './helper/plasmUtils';
+import { defaultAmountWithDecimals } from 'src/hooks/helper/plasmUtils';
 
 interface RewardDistributionConfig extends Struct {
   readonly baseTreasuryPercent: Perbill;

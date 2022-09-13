@@ -1,6 +1,6 @@
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { Option, Struct, TypeRegistry } from '@polkadot/types';
-import { DispatchError, MultiAsset, MultiLocation, VersionedXcm } from '@polkadot/types/interfaces';
+import { DispatchError } from '@polkadot/types/interfaces';
 import { ISubmittableResult, ITuple } from '@polkadot/types/types';
 import { decodeAddress } from '@polkadot/util-crypto';
 import BN from 'bn.js';
@@ -195,7 +195,7 @@ class BaseApi {
     account: string;
     signer: any;
     tx: ExtrinsicPayload;
-    finalizedCallback: () => Promise<void>;
+    finalizedCallback: (hash: string) => Promise<void>;
     handleResult: (result: ISubmittableResult) => Promise<boolean>;
     tip: string;
   }) {
@@ -209,7 +209,8 @@ class BaseApi {
           // console.log('r', result);
           handleResult &&
             handleResult(result).then(async () => {
-              await finalizedCallback();
+              const hash = result.txHash.toString();
+              await finalizedCallback(hash);
               resolve(true);
             });
           // handle transaction errors
@@ -378,9 +379,8 @@ export class AstarApi extends BaseApi {
           },
         };
 
-    // Todo: un-comment-out after channel between Astar and Moonbeam has been opened
-    // const isAccountId20 = paraId === parachainIds.MOONBEAM || paraId === parachainIds.MOONRIVER;
-    const isAccountId20 = paraId === parachainIds.MOONRIVER;
+    const Moonbeams = [parachainIds.MOONBEAM, parachainIds.MOONRIVER];
+    const isAccountId20 = Moonbeams.includes(paraId);
     const X1 = isAccountId20
       ? {
           AccountKey20: {

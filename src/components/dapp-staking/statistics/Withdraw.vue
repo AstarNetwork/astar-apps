@@ -69,7 +69,7 @@ import { hasExtrinsicFailedEvent } from 'src/modules/extrinsic';
 import { useStore } from 'src/store';
 import { computed, defineComponent, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import ChunksModal from './ChunksModal.vue';
+import ChunksModal from 'src/components/dapp-staking/statistics/ChunksModal.vue';
 
 export default defineComponent({
   components: {

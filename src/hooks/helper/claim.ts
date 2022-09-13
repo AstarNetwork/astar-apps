@@ -3,9 +3,9 @@ import { bool, Option, Struct } from '@polkadot/types';
 import { EventRecord, Balance, AccountId } from '@polkadot/types/interfaces';
 import BN from 'bn.js';
 import { ethers } from 'ethers';
-import { getAddressEnum } from './../../store/dapp-staking/calculation';
-import { ExtrinsicPayload } from './index';
-import { balanceFormatter } from './plasmUtils';
+import { getAddressEnum } from 'src/store/dapp-staking/calculation';
+import { ExtrinsicPayload } from 'src/hooks/helper';
+import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
 
 interface ContractEraStake extends Struct {
   readonly contractRewardClaimed: bool;

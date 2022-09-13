@@ -1,5 +1,7 @@
 <template>
-  <dashboard />
+  <div class="wrapper--dashboard">
+    <dashboard />
+  </div>
 </template>
 
 <script lang="ts">
@@ -16,3 +18,12 @@ export default defineComponent({
   },
 });
 </script>
+<style lang="scss" scoped>
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--dashboard {
+  @media (min-width: $lg) {
+    margin-top: 20px;
+  }
+}
+</style>

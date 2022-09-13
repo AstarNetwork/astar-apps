@@ -13,14 +13,13 @@ import {
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { opengraphMeta } from 'src/config/opengraph';
 import { createAstarWeb3Instance, TNetworkId } from 'src/config/web3';
-import { objToArray } from 'src/hooks/helper/common';
+import { objToArray, getRandomFromArray } from 'src/hooks/helper/common';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
 import { useChainInfo } from 'src/hooks/useChainInfo';
 import { useExtensions } from 'src/hooks/useExtensions';
 import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
 import { computed, ref, watchPostEffect } from 'vue';
 import Web3 from 'web3';
-import { getRandomFromArray } from './../hooks/helper/common';
 
 let $api: ApiPromise | undefined;
 const $endpoint = ref<string>('');
