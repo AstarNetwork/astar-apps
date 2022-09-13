@@ -3,7 +3,7 @@ import { Asset } from 'src/v2/models';
 import { Network } from '../config/types';
 
 export interface IXcmService extends IXcmTransfer {
-  getAssets(currentAccount: string): Promise<XcmAssets>;
+  getAssets(currentAccount: string, isFetchUsd: boolean): Promise<XcmAssets>;
 }
 
 export interface IXcmTransfer {

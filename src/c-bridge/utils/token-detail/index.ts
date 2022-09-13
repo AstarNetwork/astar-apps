@@ -1,4 +1,5 @@
-import { BridgeMethod, CbridgeToken, PeggedPairConfig, SelectedToken, Token } from 'src/c-bridge';
+import { Erc20Token } from 'src/modules/token';
+import { BridgeMethod, CbridgeCurrency, CbridgeToken, PeggedPairConfig, Token } from 'src/c-bridge';
 
 export const getSelectedToken = ({
   srcChainId,
@@ -6,7 +7,7 @@ export const getSelectedToken = ({
 }: {
   token: CbridgeToken;
   srcChainId: number;
-}): SelectedToken | undefined => {
+}): CbridgeCurrency | undefined => {
   if (!token) return;
   if (token.bridgeMethod === BridgeMethod.canonical) {
     if (!token.canonical) return;
@@ -55,6 +56,6 @@ const getPeggedTokenInfo = ({
     : selectedToken.pegged_token;
 };
 
-export const checkIsCbridgeToken = (token: any): boolean => {
-  return token.hasOwnProperty('bridgeMethod');
+export const checkIsCbridgeToken = (token: Erc20Token): boolean => {
+  return token.isCbridgeToken || false;
 };

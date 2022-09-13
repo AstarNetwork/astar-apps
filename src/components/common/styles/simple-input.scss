@@ -1,0 +1,25 @@
+@import 'src/css/quasar.variables.scss';
+
+.input--address {
+  width: 230px;
+  background-color: transparent;
+  width: 100%;
+  &:focus {
+    outline: none;
+  }
+  &::placeholder {
+    color: $gray-3 !important;
+  }
+}
+
+.body--dark {
+  .box--input-field {
+    background: $gray-6;
+    border: 1px solid $gray-4;
+  }
+  .input--address {
+    &::placeholder {
+      color: $gray-4 !important;
+    }
+  }
+}

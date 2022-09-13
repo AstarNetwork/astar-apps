@@ -11,11 +11,11 @@ import { objToArray } from 'src/hooks/helper/common';
 import { Erc20Token } from 'src/modules/token';
 import { useStore } from 'src/store';
 import { computed, onUnmounted, ref, watch, watchEffect } from 'vue';
-import { useAccount } from '../useAccount';
-import { useNetworkInfo } from '../useNetworkInfo';
-import { LOCAL_STORAGE } from './../../config/localStorage';
-import { getRegisteredERC20Token } from './../../modules/token/utils/index';
-import { calUsdAmount } from './../helper/price';
+import { useRoute } from 'vue-router';
+import { useAccount, useNetworkInfo } from 'src/hooks';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { getRegisteredERC20Token } from 'src/modules/token/utils/index';
+import { calUsdAmount } from 'src/hooks/helper/price';
 
 type CbridgeCurrency = SelectedToken;
 type Token = CbridgeCurrency | Erc20Token;
@@ -25,12 +25,15 @@ export function useCbridgeV2() {
   const ttlErc20Amount = ref<number>(0);
   const startCalculation = ref<boolean>(false);
 
+  const route = useRoute();
+  const isTransferPage = computed<boolean>(() => route.fullPath.includes('transfer'));
+
   const store = useStore();
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
   const { currentAccount } = useAccount();
   const isLoadingErc20Amount = ref<boolean>(false);
 
-  const { currentNetworkIdx } = useNetworkInfo();
+  const { currentNetworkIdx, nativeTokenSymbol } = useNetworkInfo();
 
   const evmNetworkId = computed(() => {
     return Number(providerEndpoints[currentNetworkIdx.value].evmChainId);
@@ -38,6 +41,7 @@ export function useCbridgeV2() {
 
   const filterTokens = (): void => {
     if (!tokens.value) return;
+    tokens.value = tokens.value.filter((it) => it.symbol !== nativeTokenSymbol.value);
     tokens.value.sort((a: Token, b: Token) => {
       return a.symbol.localeCompare(b.symbol);
     });
@@ -58,13 +62,14 @@ export function useCbridgeV2() {
     userBalance: string;
   }> => {
     let balUsd = 0;
+
     const userBalance = await getTokenBal({
       srcChainId: evmNetworkId.value,
       address: userAddress,
       tokenAddress: token.address,
       tokenSymbol: token.symbol,
     });
-    if (Number(userBalance) > 0) {
+    if (Number(userBalance) > 0 && !isTransferPage.value) {
       try {
         balUsd = await calUsdAmount({
           amount: Number(userBalance),
@@ -144,7 +149,12 @@ export function useCbridgeV2() {
             userAddress,
             token,
           });
-          const tokenWithBalance = { ...token, userBalance, userBalanceUsd: String(balUsd) };
+          const tokenWithBalance = {
+            ...token,
+            icon: token.image,
+            userBalance,
+            userBalanceUsd: String(balUsd),
+          };
           return tokenWithBalance;
         } else {
           return undefined;
@@ -155,6 +165,7 @@ export function useCbridgeV2() {
   };
 
   const handleCbridgeConfiguration = async (): Promise<void> => {
+    if (tokens.value) return;
     ttlErc20Amount.value = 0;
     const networkIdxStore = localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX);
     const isShibuya =
@@ -195,6 +206,7 @@ export function useCbridgeV2() {
 
   // Memo: triggered after users have imported tokens
   const handleImportingCustomToken = async (): Promise<void> => {
+    if (!isH160.value) return;
     window.addEventListener(LOCAL_STORAGE.EVM_TOKEN_IMPORTS, async () => {
       await handleCbridgeConfiguration();
       await handleUpdateTokenBalances();
@@ -213,6 +225,7 @@ export function useCbridgeV2() {
   watch(
     [tokens],
     async () => {
+      if (!isH160.value) return;
       const isInitialErc20Amount =
         tokens.value && tokens.value.length > 0 && !startCalculation.value;
       if (isInitialErc20Amount) {

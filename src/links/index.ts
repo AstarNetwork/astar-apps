@@ -7,8 +7,11 @@ export const docsUrl = {
 export const socialUrl = {
   twitter: 'https://twitter.com/AstarNetwork',
   telegram: 'https://t.me/PlasmOfficial',
-  discord: 'https://discord.gg/Z3nC9U4',
+  discord: 'https://discord.gg/5mY3Rxu85P',
   github: 'https://github.com/AstarNetwork',
+  reddit: 'https://www.reddit.com/r/AstarNetwork/',
+  forum: 'https://forum.astar.network/',
+  youtube: 'https://www.youtube.com/c/AstarNetwork',
 };
 
 export const deepLinkPath = {

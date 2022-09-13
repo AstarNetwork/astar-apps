@@ -3,8 +3,7 @@ import { DateTime } from 'luxon';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
 import { onUnmounted, ref, Ref, watch, watchEffect } from 'vue';
-import { useAccount } from './useAccount';
-import { useNetworkInfo } from './useNetworkInfo';
+import { useAccount, useNetworkInfo } from 'src/hooks';
 
 interface Timestamps {
   lastRequestAt: number;

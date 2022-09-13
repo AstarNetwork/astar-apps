@@ -49,12 +49,14 @@ export default defineComponent({
 @import 'src/css/utils.scss';
 
 .btn--account {
+  background: transparent !important;
   display: flex;
   height: 32px;
   flex-direction: row;
   align-items: center;
   padding: 8px 16px 8px 12px;
-  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
+  // box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
+  border: 1px solid $gray-3;
   border-radius: 16px;
   margin-left: 16px;
   color: #fff;
@@ -68,18 +70,19 @@ export default defineComponent({
   color: $gray-3 !important;
   width: rem(22);
   height: rem(22);
-  @media (min-width: $sm) {
-    color: #e6e9ee !important;
-  }
+  // @media (min-width: $sm) {
+  //   color: #e6e9ee !important;
+  // }
 }
 
 .m-btn--account {
-  border: 1px solid $object-light;
+  background: transparent;
+  border: 1px solid $gray-3;
   box-shadow: none;
   padding: 8px;
 
   .iconbase {
-    color: $object-light;
+    color: $gray-3;
   }
 }
 
@@ -92,9 +95,6 @@ export default defineComponent({
     background: $gray-5 !important;
     color: #fff;
     border: 1px solid $gray-6 !important;
-    @media (min-width: $md) {
-      background: $gray-5 !important;
-    }
   }
   .btn--account:hover {
     background: $gray-5-selected !important;
@@ -103,13 +103,10 @@ export default defineComponent({
   .m-btn--account {
     background: $gray-6 !important;
     color: $gray-3;
-    border: 1px solid $gray-5 !important;
+    border: 1px solid $gray-4 !important;
   }
   .iconbase {
-    color: $astar-blue-dark !important;
-    @media (min-width: $md) {
-      color: $gray-4 !important;
-    }
+    color: $gray-4 !important;
   }
 }
 </style>

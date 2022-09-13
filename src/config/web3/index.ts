@@ -13,9 +13,9 @@ export {
   toSS58Address,
   sendNativeTokenTransaction,
   fetchErc20TokenInfo,
-} from './utils';
+} from 'src/config/web3/utils';
 
-export { contractInstance, Staking } from './contracts';
+export { contractInstance, Staking } from 'src/config/web3/contracts';
 
 export type TNetworkId = endpointKey.SHIDEN | endpointKey.SHIBUYA | endpointKey.ASTAR;
 

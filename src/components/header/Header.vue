@@ -1,9 +1,6 @@
 <template>
   <div class="wrapper">
-    <astar-header
-      :title="width >= screenSize.lg ? headerName : ''"
-      :class="screenSize.lg > width && 'm-header'"
-    >
+    <HeaderComp :title="width >= screenSize.lg ? headerName : ''">
       <template #left>
         <div class="icon"><Logo /></div>
       </template>
@@ -16,7 +13,7 @@
         <AccountButton :account="currentAccount" @click="changeAccount" />
       </template>
       <NetworkButton @show-network="modalNetwork = true" />
-    </astar-header>
+    </HeaderComp>
 
     <!-- Modals -->
     <ModalNetwork
@@ -70,7 +67,8 @@ import ModalAccount from 'src/components/header/modals/ModalAccount.vue';
 import ModalInstallWallet from 'src/components/header/modals/ModalInstallWallet.vue';
 import ModalNetwork from 'src/components/header/modals/ModalNetwork.vue';
 import Logo from 'src/components/common/Logo.vue';
-import ModalUpdateWallet from './modals/ModalUpdateWallet.vue';
+import ModalUpdateWallet from 'src/components/header/modals/ModalUpdateWallet.vue';
+import HeaderComp from './HeaderComp.vue';
 
 interface Modal {
   modalNetwork: boolean;
@@ -87,6 +85,7 @@ export default defineComponent({
     ModalNetwork,
     Logo,
     ModalUpdateWallet,
+    HeaderComp,
   },
   setup() {
     const { width, screenSize } = useBreakpoints();
@@ -114,8 +113,8 @@ export default defineComponent({
     const store = useStore();
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
     const route = useRoute();
-    const path = computed(() => route.path.split('/')[1]);
-    const headerName = ref('');
+    const path = computed(() => route.path);
+    const headerName = ref<string>('');
     watch(
       path,
       () => {
@@ -153,14 +152,21 @@ export default defineComponent({
 @import 'src/css/quasar.variables.scss';
 .wrapper {
   z-index: 100;
+  @media (min-width: $lg) {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 224px;
+    padding-right: 224px;
+  }
 }
+
 .icon {
   width: 127px;
   margin-left: -15px;
 }
 
 .m-header {
-  background: #fff !important;
   height: 64px !important;
   padding-left: 20px !important;
   padding-right: 16px !important;
@@ -170,8 +176,8 @@ export default defineComponent({
 }
 
 .body--dark {
-  .m-header {
-    background: $gray-6 !important;
+  .wrapper {
+    background: $body-bg-dark !important;
   }
 }
 </style>

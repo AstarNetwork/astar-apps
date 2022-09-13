@@ -5,8 +5,11 @@ import {
   createWebHashHistory,
   createWebHistory,
 } from 'vue-router';
-import { StateInterface } from '../store';
-import routes from './routes';
+import { StateInterface } from 'src/store';
+import routes from 'src/router/routes';
+
+export { Path } from 'src/router/routes';
+export { getHeaderName, buildTransferPageLink } from 'src/router/utils';
 
 /*
  * If not building with SSR mode, you can
@@ -25,6 +28,7 @@ export default route<StateInterface>(function (/* { store, ssrContext } */) {
     : createWebHashHistory;
 
   const Router = createRouter({
+    // Memo: scrollBehavior is not working
     scrollBehavior: () => ({ left: 0, top: 0 }),
     routes,
 

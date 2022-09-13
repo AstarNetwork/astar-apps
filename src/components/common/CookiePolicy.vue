@@ -1,5 +1,5 @@
 <template>
-  <div v-if="open" class="fixed-bottom q-pa-md q-gutter-sm">
+  <div v-if="open" class="fixed-bottom q-pa-md q-gutter-sm highest-z-index">
     <q-banner rounded class="banner text-white">
       Our website uses cookies to enhance site navigation and analyze site usage. Please let us know
       you agree to all of our cookies. You can find out more on our

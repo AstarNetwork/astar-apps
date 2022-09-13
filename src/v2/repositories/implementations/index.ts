@@ -7,3 +7,4 @@ export * from './xcm/AcalaXcmRepository';
 export * from './xcm/AstarXcmRepository';
 export * from './xcm/MoonbeamXcmRepository';
 export * from './TokenApiRepository';
+export * from './EvmAssetsRepository';

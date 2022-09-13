@@ -24,13 +24,13 @@
           <div class="row__right">
             <div class="column--balance">
               <div class="column__box">
-                <div v-if="bal !== null && nativeTokenSymbol" class="text--accent">
+                <div v-if="!isSkeleton" class="text--accent">
                   <span>{{ $n(truncate(bal)) }} {{ nativeTokenSymbol }}</span>
                 </div>
                 <div v-else class="skeleton--right">
                   <q-skeleton animation="fade" class="skeleton--md" />
                 </div>
-                <div v-if="balUsd !== null" class="text--label">
+                <div v-if="!isSkeleton" class="text--label">
                   <span>{{ $n(balUsd) }} {{ $t('usd') }}</span>
                 </div>
                 <div v-else class="skeleton--right">
@@ -52,7 +52,7 @@
           </div>
           <div class="row__right">
             <div class="column--balance">
-              <div v-if="!checkIsNullOrUndefined(nativeTokenSymbol)" class="column__box">
+              <div v-if="!isSkeleton" class="column__box">
                 <span class="text--value"
                   >{{ $n(truncate(transferableBalance)) }} {{ nativeTokenSymbol }}</span
                 >
@@ -63,25 +63,12 @@
                 </div>
               </div>
             </div>
-            <div class="column--two-buttons">
-              <button
-                class="btn btn--sm"
-                @click="handleModalTransfer({ isOpen: true, currency: nativeTokenSymbol })"
-              >
-                {{ $t('assets.transfer') }}
-              </button>
-              <button
-                class="btn btn--sm"
-                :disabled="isDisabledXcmButton"
-                @click="
-                  handleModalXcmBridge({
-                    isOpen: true,
-                    currency: xcmNativeToken,
-                  })
-                "
-              >
-                {{ $t('assets.xcm') }}
-              </button>
+            <div class="column--buttons">
+              <router-link :to="buildTransferPageLink(nativeTokenSymbol)">
+                <button class="btn btn--sm">
+                  {{ $t('assets.transfer') }}
+                </button>
+              </router-link>
             </div>
           </div>
         </div>
@@ -92,7 +79,7 @@
           </div>
           <div class="row__right">
             <div class="column--balance">
-              <div v-if="!checkIsNullOrUndefined(nativeTokenSymbol)" class="column__box">
+              <div v-if="!isSkeleton" class="column__box">
                 <span class="text--value"
                   >{{ $n(truncate(numEvmDeposit)) }} {{ nativeTokenSymbol }}</span
                 >
@@ -117,7 +104,7 @@
           </div>
           <div class="row__right">
             <div class="column--balance">
-              <div v-if="!checkIsNullOrUndefined(nativeTokenSymbol)" class="column__box">
+              <div v-if="!isSkeleton" class="column__box">
                 <span class="text--value"
                   >{{ $n(truncate(vestingTtl)) }} {{ nativeTokenSymbol }}</span
                 >
@@ -142,7 +129,7 @@
           </div>
           <div class="row__right">
             <div class="column--balance">
-              <div v-if="!checkIsNullOrUndefined(nativeTokenSymbol)" class="column__box">
+              <div v-if="!isSkeleton" class="column__box">
                 <span class="text--value"
                   >{{ $n(truncate(lockInDappStaking)) }} {{ nativeTokenSymbol }}</span
                 >
@@ -154,7 +141,7 @@
               </div>
             </div>
             <div class="column--buttons">
-              <router-link to="/dapp-staking">
+              <router-link :to="Path.DappStaking">
                 <button class="btn btn--sm">{{ $t('manage') }}</button>
               </router-link>
             </div>
@@ -163,12 +150,6 @@
       </div>
     </div>
 
-    <ModalTransfer
-      :is-modal-transfer="isModalTransfer"
-      :handle-modal-transfer="handleModalTransfer"
-      :symbol="nativeTokenSymbol"
-      :account-data="accountData"
-    />
     <ModalFaucet :is-modal-faucet="isModalFaucet" :handle-modal-faucet="handleModalFaucet" />
     <ModalEvmWithdraw
       :is-modal-evm-withdraw="isModalEvmWithdraw"
@@ -186,30 +167,23 @@
 <script lang="ts">
 import { u8aToString } from '@polkadot/util';
 import { ethers } from 'ethers';
-import { endpointKey } from 'src/config/chainEndpoints';
 import { useBalance, useEvmDeposit, useNetworkInfo, usePrice } from 'src/hooks';
 import { checkIsNullOrUndefined, truncate } from 'src/hooks/helper/common';
 import { getTokenImage } from 'src/modules/token';
 import { generateAstarNativeTokenObject } from 'src/modules/xcm/tokens';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
-import ModalEvmWithdraw from './modals/ModalEvmWithdraw.vue';
-import ModalFaucet from './modals/ModalFaucet.vue';
-import ModalTransfer from './modals/ModalTransfer.vue';
-import ModalVesting from './modals/ModalVesting.vue';
+import { buildTransferPageLink } from 'src/router/routes';
+import ModalEvmWithdraw from 'src/components/assets/modals/ModalEvmWithdraw.vue';
+import ModalFaucet from 'src/components/assets/modals/ModalFaucet.vue';
+import ModalVesting from 'src/components/assets/modals/ModalVesting.vue';
+import { Path } from 'src/router';
 
 export default defineComponent({
   components: {
-    ModalTransfer,
     ModalFaucet,
     ModalEvmWithdraw,
     ModalVesting,
-  },
-  props: {
-    handleModalXcmBridge: {
-      type: Function,
-      required: true,
-    },
   },
   setup() {
     const isModalTransfer = ref<boolean>(false);
@@ -229,10 +203,10 @@ export default defineComponent({
     const store = useStore();
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const selectedAddress = computed(() => store.getters['general/selectedAddress']);
-    const { balance, accountData } = useBalance(selectedAddress);
+    const { balance, accountData, isLoadingBalance } = useBalance(selectedAddress);
     const { numEvmDeposit } = useEvmDeposit();
     const { nativeTokenUsd } = usePrice();
-    const { currentNetworkName, nativeTokenSymbol, currentNetworkIdx } = useNetworkInfo();
+    const { currentNetworkName, nativeTokenSymbol } = useNetworkInfo();
 
     const xcmNativeToken = computed(() => generateAstarNativeTokenObject(nativeTokenSymbol.value));
 
@@ -247,9 +221,10 @@ export default defineComponent({
       return Number(balance);
     });
 
-    const handleModalTransfer = ({ currency, isOpen }: { isOpen: boolean; currency: string }) => {
-      isModalTransfer.value = isOpen;
-    };
+    const isSkeleton = computed<boolean>(() => {
+      return checkIsNullOrUndefined(nativeTokenSymbol.value) || isLoadingBalance.value;
+    });
+
     const handleModalFaucet = ({ isOpen }: { isOpen: boolean }) => {
       isModalFaucet.value = isOpen;
     };
@@ -259,11 +234,6 @@ export default defineComponent({
     const handleModalVesting = ({ isOpen }: { isOpen: boolean }) => {
       isModalVesting.value = isOpen;
     };
-
-    const isDisabledXcmButton = computed(() => {
-      // Memo: disabled until backend turns 'XCM transfer between Astar and Acala' on again.
-      return currentNetworkIdx.value === endpointKey.ASTAR;
-    });
 
     watchEffect(async () => {
       const tokenSymbolRef = nativeTokenSymbol.value;
@@ -319,12 +289,12 @@ export default defineComponent({
       isModalVesting,
       xcmNativeToken,
       isLoading,
-      isDisabledXcmButton,
+      Path,
+      isSkeleton,
+      buildTransferPageLink,
       handleModalVesting,
-      handleModalTransfer,
       handleModalFaucet,
       handleModalEvmWithdraw,
-      checkIsNullOrUndefined,
       truncate,
     };
   },

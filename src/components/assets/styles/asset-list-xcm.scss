@@ -130,10 +130,10 @@
 .column--buttons--native {
   @media (min-width: $xl) {
     display: grid;
-    width: 400px;
-    grid-template-columns: 100px 100px 70px;
+    width: 340px;
+    grid-template-columns: 100px 70px;
     justify-content: end;
-    column-gap: 2px;
+    column-gap: 8px;
     margin-right: 80px;
   }
 }

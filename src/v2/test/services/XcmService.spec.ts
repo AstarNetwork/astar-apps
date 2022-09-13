@@ -15,7 +15,7 @@ describe('XcmService.ts', () => {
   it('calculated asset USD price', async () => {
     const service = container.get<IXcmService>(Symbols.XcmService);
 
-    const { assets } = await service.getAssets('123');
+    const { assets } = await service.getAssets('123', true);
 
     expect(assets).toBeTruthy();
     expect(assets[0].userBalance).toBeCloseTo(0.001, 3);

@@ -18,4 +18,6 @@ export const Symbols = {
   TypeMappings: Symbol.for('TypeMappings'),
   RegisteredTokens: Symbol.for('RegisteredTokens'),
   CurrentWallet: Symbol.for('CurrentWallet'),
+  EvmAssetsRepository: Symbol.for('EvmAssetsRepository'),
+  EvmAssetsService: Symbol.for('EvmAssetsService'),
 };

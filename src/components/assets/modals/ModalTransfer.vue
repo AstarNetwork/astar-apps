@@ -152,7 +152,7 @@ import { useI18n } from 'vue-i18n';
 import { useEthProvider } from 'src/hooks/custom-signature/useEthProvider';
 import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
-import ModalSelectAccount from './ModalSelectAccount.vue';
+import ModalSelectAccount from 'src/components/assets/modals/ModalSelectAccount.vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
 import { SupportWallet } from 'src/config/wallets';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
