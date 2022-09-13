@@ -61,7 +61,7 @@ import { getSelectedAccount } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
-import ModalSelectAccountOption from './ModalSelectAccountOption.vue';
+import ModalSelectAccountOption from 'src/components/assets/modals/ModalSelectAccountOption.vue';
 
 export default defineComponent({
   components: {

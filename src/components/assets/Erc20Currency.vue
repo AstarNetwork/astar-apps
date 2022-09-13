@@ -31,36 +31,16 @@
             </div>
           </div>
           <div class="column--asset-buttons column--buttons--multi">
-            <button
-              class="btn btn--sm"
-              @click="
-                handleModalTransfer({
-                  isOpen: true,
-                  currency: token,
-                })
-              "
-            >
-              {{ $t('assets.transfer') }}
-            </button>
+            <div v-if="token.isXC20" />
+            <router-link :to="buildTransferPageLink(token.symbol)">
+              <button class="btn btn--sm">
+                {{ $t('assets.transfer') }}
+              </button>
+            </router-link>
             <div v-if="token.isWrappedToken && !token.isXC20">
               <a :href="token.wrapUrl" target="_blank" rel="noopener noreferrer">
                 <button class="btn btn--sm">{{ $t('assets.wrap') }}</button>
               </a>
-            </div>
-
-            <div v-if="token.isXC20">
-              <button
-                :disabled="isDisabledXcmButton"
-                class="btn btn--sm"
-                @click="
-                  handleModalXcmBridge({
-                    isOpen: true,
-                    currency: token,
-                  })
-                "
-              >
-                {{ $t('assets.xcm') }}
-              </button>
             </div>
             <div v-if="isImportedToken" />
             <div class="screen--xl">
@@ -108,16 +88,16 @@
   </div>
 </template>
 <script lang="ts">
-import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
-import { addToEvmProvider, getEvmProvider } from 'src/hooks/helper/wallet';
-import { Erc20Token, getErc20Explorer, getStoredERC20Tokens, MOVR } from 'src/modules/token';
-import { useStore } from 'src/store';
-import { computed, defineComponent, PropType } from 'vue';
-import { truncate } from 'src/hooks/helper/common';
-import Jazzicon from 'vue3-jazzicon/src/components';
 import { SupportWallet } from 'src/config/wallets';
 import { useNetworkInfo } from 'src/hooks';
+import { truncate } from 'src/hooks/helper/common';
+import { addToEvmProvider, getEvmProvider } from 'src/hooks/helper/wallet';
+import { Erc20Token, getErc20Explorer, getStoredERC20Tokens, MOVR } from 'src/modules/token';
 import { Chain, xcmToken } from 'src/modules/xcm';
+import { useStore } from 'src/store';
+import { computed, defineComponent, PropType } from 'vue';
+import Jazzicon from 'vue3-jazzicon/src/components';
+import { buildTransferPageLink } from 'src/router/routes';
 
 export default defineComponent({
   components: {
@@ -127,15 +107,6 @@ export default defineComponent({
     token: {
       type: Object as PropType<Erc20Token>,
       required: true,
-    },
-    handleModalTransfer: {
-      type: Function,
-      required: true,
-    },
-    handleModalXcmBridge: {
-      type: Function,
-      required: false,
-      default: null,
     },
     isXcm: {
       type: Boolean,
@@ -178,6 +149,7 @@ export default defineComponent({
       isImportedToken,
       provider,
       isDisabledXcmButton,
+      buildTransferPageLink,
       truncate,
       addToEvmProvider,
     };

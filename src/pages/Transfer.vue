@@ -1,16 +1,16 @@
 <template>
-  <Assets />
+  <Transfer />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useMeta } from 'quasar';
-import Assets from 'src/components/assets/Assets.vue';
+import Transfer from 'src/components/assets/transfer/Transfer.vue';
 
 export default defineComponent({
-  components: { Assets },
+  components: { Transfer },
   setup() {
-    useMeta({ title: 'Assets' });
+    useMeta({ title: 'Transfer' });
   },
 });
 </script>

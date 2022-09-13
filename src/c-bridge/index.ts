@@ -1,6 +1,13 @@
 // Docs: https://cbridge-docs.celer.network/developer/api-reference/gateway-gettransferconfigs
 
-export { getTransferConfigs, getSelectedToken, getIcon, checkIsCbridgeToken } from './utils';
+import { Erc20Token } from 'src/modules/token';
+
+export {
+  getTransferConfigs,
+  getSelectedToken,
+  getIcon,
+  checkIsCbridgeToken,
+} from 'src/c-bridge/utils';
 
 export enum EvmChain {
   Ethereum = 1,
@@ -106,3 +113,7 @@ export interface SelectedToken {
   userBalance: string;
   userBalanceUsd: string;
 }
+
+// Todo: remove the SelectedToken type
+export type CbridgeCurrency = SelectedToken;
+export type EvmAsset = CbridgeCurrency | Erc20Token;

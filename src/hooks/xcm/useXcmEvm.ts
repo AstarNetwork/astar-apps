@@ -1,7 +1,11 @@
-import { isValidEvmAddress } from './../../config/web3/utils/convert';
+import { SupportWallet } from 'src/config/wallets';
+import { GLMR } from 'src/modules/token/index';
+import { addXcmTxHistories } from 'src/modules/xcm';
+import { isValidEvmAddress } from 'src/config/web3';
 import BN from 'bn.js';
 import { ethers } from 'ethers';
 import xcmContractAbi from 'src/config/web3/abi/xcm-abi.json';
+import moonbeamWithdrawalAbi from 'src/config/web3/abi/xcm-moonbeam-withdrawal-abi.json';
 import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
 import { getEvmGas } from 'src/modules/gas-api';
@@ -12,11 +16,11 @@ import Web3 from 'web3';
 import { TransactionConfig } from 'web3-eth';
 import { AbiItem } from 'web3-utils';
 import { getPubkeyFromSS58Addr } from '../helper/addressUtils';
-import { useAccount } from '../useAccount';
-import { useGasPrice } from '../useGasPrice';
-import { Chain, relaychainParaId, xcmChainObj } from './../../modules/xcm/index';
+import { useGasPrice, useAccount, useNetworkInfo } from 'src/hooks';
+import { Chain, relaychainParaId, xcmChainObj } from 'src/modules/xcm';
 import { Asset } from 'src/v2/models';
 import { MOVR } from 'src/modules/token';
+import { pathEvm } from 'src/hooks/xcm/useTransferRouter';
 
 // xcm precompiled contract address
 const PRECOMPILED_ADDR = '0x0000000000000000000000000000000000005004';
@@ -26,11 +30,16 @@ export function useXcmEvm(selectedToken: Ref<Asset>) {
   const { t } = useI18n();
   const { evmGasPrice } = useGasPrice();
   const { currentAccount } = useAccount();
+  const { currentNetworkName } = useNetworkInfo();
 
-  const currentWallet = computed(() => store.getters['general/currentWallet']);
+  const currentWallet = computed<SupportWallet>(() => store.getters['general/currentWallet']);
   const isMoonbeamWithdrawal = computed<boolean>(() => {
-    return selectedToken.value.mappedERC20Addr === MOVR.address;
+    const tokenContractAddress = selectedToken.value.mappedERC20Addr.toLowerCase();
+    const moonbeamTokens = [MOVR.address.toLowerCase(), GLMR.address.toLowerCase()];
+    return moonbeamTokens.includes(tokenContractAddress);
   });
+
+  const ABI = isMoonbeamWithdrawal.value ? moonbeamWithdrawalAbi : xcmContractAbi;
 
   const callAssetWithdrawToPara = async (
     asset_amount: string,
@@ -66,7 +75,7 @@ export function useXcmEvm(selectedToken: Ref<Asset>) {
       try {
         const provider = getEvmProvider(currentWallet.value);
         const web3 = new Web3(provider as any);
-        const contract = new web3.eth.Contract(xcmContractAbi as AbiItem[], PRECOMPILED_ADDR);
+        const contract = new web3.eth.Contract(ABI as AbiItem[], PRECOMPILED_ADDR);
         const [nonce, gasPrice] = await Promise.all([
           web3.eth.getTransactionCount(currentAccount.value),
           getEvmGas(web3, evmGasPrice.value.fast),
@@ -98,6 +107,14 @@ export function useXcmEvm(selectedToken: Ref<Asset>) {
             store.dispatch('general/showAlertMsg', {
               msg: t('toast.completedTxHash', { hash: transactionHash }),
               alertType: 'success',
+            });
+            addXcmTxHistories({
+              hash: transactionHash,
+              from: currentNetworkName.value + pathEvm,
+              to: withdrawalChain.name,
+              symbol: selectedToken.value.metadata.symbol,
+              amount: asset_amount,
+              address: currentAccount.value,
             });
             finalizedCallback();
             resolve(transactionHash);

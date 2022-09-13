@@ -26,7 +26,7 @@ export class AcalaApi extends ChainApi {
     address: string;
     isNativeToken: boolean;
   }): Promise<string> {
-    const symbol = String(selectedToken.metadata.symbol);
+    const symbol = selectedToken.metadata.symbol;
     const isAstarNativeToken = symbol === 'SDN' || symbol === 'ASTR';
     try {
       if (isAstarNativeToken) {

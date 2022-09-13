@@ -5,15 +5,16 @@ import { ethers } from 'ethers';
 import { supportEvmWallets, SupportWallet } from 'src/config/wallets';
 import { EVM, getTokenBal, rpcUrls, setupNetwork } from 'src/config/web3';
 import moonbeamXcmAbi from 'src/config/web3/abi/moonbeam-xcm-abi.json';
+import { getQueryParams } from 'src/hooks/helper/common';
 import { Asset } from 'src/v2/models';
 import Web3 from 'web3';
 import { TransactionConfig } from 'web3-eth';
 import { AbiItem } from 'web3-utils';
 import { AstarNativeToken, ChainApi } from '../SubstrateApi';
-import { LOCAL_STORAGE } from './../../../config/localStorage';
-import { isValidEvmAddress } from './../../../config/web3/utils/convert';
-import { getEvmProvider } from './../../helper/wallet';
-import { EthereumProvider } from './../../types/CustomSignature';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { isValidEvmAddress } from 'src/config/web3/utils/convert';
+import { getEvmProvider } from 'src/hooks/helper/wallet';
+import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 
 type ChainName = 'Moonriver' | 'Moonbeam';
 
@@ -23,8 +24,9 @@ const PRE_COMPILED_ADDRESS = '0x0000000000000000000000000000000000000804';
 // Todo: check the token address for ASTR
 export const MOONBEAM_ASTAR_TOKEN_ID: AstarNativeToken = {
   SDN: '0xffffffff0ca324c842330521525e7de111f38972',
-  ASTR: '0xToDo',
+  ASTR: '0xffffffffa893ad19e540e172c10d78d4d479b5cf',
 };
+
 const RPC_ENDPOINT = {
   Moonriver: rpcUrls[EVM.MOONRIVER][0] as string,
   Moonbeam: rpcUrls[EVM.MOONBEAM][0] as string,
@@ -60,9 +62,12 @@ export class MoonbeamApi extends ChainApi {
       if (!providerName) {
         throw Error('EVM wallet extensions are not installed on this browser');
       }
+      const queryParams = getQueryParams();
       const provider = getEvmProvider(providerName) as any;
-      const network = EVM_ID[this._networkName];
-      setupNetwork({ network, provider });
+      if (queryParams.from === 'moonriver' || queryParams.from === 'moonbeam') {
+        const network = EVM_ID[this._networkName];
+        setupNetwork({ network, provider });
+      }
       return provider ? (provider as EthereumProvider) : null;
     } catch (error) {
       return null;

@@ -2,29 +2,13 @@
 
 .wrapper--assets {
   position: relative;
-  margin-top: 16px;
+  padding-top: 36px;
+  @media (min-width: $lg) {
+    padding-top: 16px;
+  }
   @media (min-width: $xxl) {
     display: flex;
     justify-content: center;
-  }
-}
-
-.backdrop--transparent {
-  position: absolute;
-  border-radius: 6px;
-  width: 100%;
-  z-index: 10;
-  background: $backdrop-transparent-light;
-  backdrop-filter: blur(10px);
-  height: 232px;
-  @media (min-width: $md) {
-    height: 196px;
-  }
-  @media (min-width: $xxl) {
-    width: $container-max-width;
-  }
-  @supports (-moz-appearance: none) {
-    background: $backdrop-transparent-light-firefox;
   }
 }
 
@@ -34,14 +18,5 @@
   margin-bottom: 24px;
   @media (min-width: $xxl) {
     width: $container-max-width;
-  }
-}
-
-.body--dark {
-  .backdrop--transparent {
-    background: $backdrop-transparent-dark;
-    @supports (-moz-appearance: none) {
-      background: $backdrop-transparent-dark-firefox;
-    }
   }
 }
