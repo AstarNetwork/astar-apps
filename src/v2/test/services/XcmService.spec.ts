@@ -34,13 +34,14 @@ describe('XcmService.ts', () => {
       '111',
       'image',
       true,
-      true
+      true,
+      0
     );
 
     it('throws exception if recipient address is empty', async () => {
       const service = container.get<IXcmService>(Symbols.XcmService);
 
-      await expect(service.transfer(from, to, token, 'sender', 'recipient', 1)).rejects.toThrow(
+      await expect(service.transfer(from, to, token, 'sender', '', 1)).rejects.toThrow(
         Error
       );
     });
