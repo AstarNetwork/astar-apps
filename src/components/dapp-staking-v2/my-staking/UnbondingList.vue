@@ -18,7 +18,7 @@
               <td>
                 <div class="row--remaining-era">
                   <div class="val-era">8</div>
-                  <astar-irregular-button>Re-bond</astar-irregular-button>
+                  <astar-irregular-button width="97" height="20">Re-bond</astar-irregular-button>
                 </div>
               </td>
               <td>
@@ -31,7 +31,7 @@
               <td>
                 <div class="row--remaining-era">
                   <div class="val-era">8</div>
-                  <astar-irregular-button>Re-bond</astar-irregular-button>
+                  <astar-irregular-button width="97" height="20">Re-bond</astar-irregular-button>
                 </div>
               </td>
               <td>
@@ -44,7 +44,7 @@
               <td>
                 <div class="row--remaining-era">
                   <div class="val-era">8</div>
-                  <astar-irregular-button>Re-bond</astar-irregular-button>
+                  <astar-irregular-button width="97" height="20">Re-bond</astar-irregular-button>
                 </div>
               </td>
               <td>
@@ -56,7 +56,7 @@
       </div>
     </template>
     <template v-else>
-      <DropdownList />
+      <DropdownList is-unbonding />
     </template>
   </div>
 </template>
@@ -115,7 +115,7 @@ table {
 
   .row--remaining-era {
     display: flex;
-    gap: 25px;
+    gap: 6px;
   }
 }
 
