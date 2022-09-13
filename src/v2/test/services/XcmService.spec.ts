@@ -41,9 +41,7 @@ describe('XcmService.ts', () => {
     it('throws exception if recipient address is empty', async () => {
       const service = container.get<IXcmService>(Symbols.XcmService);
 
-      await expect(service.transfer(from, to, token, 'sender', '', 1)).rejects.toThrow(
-        Error
-      );
+      await expect(service.transfer(from, to, token, 'sender', '', 1)).rejects.toThrow(Error);
     });
 
     it('throws exception if recipient amount is negative', async () => {
