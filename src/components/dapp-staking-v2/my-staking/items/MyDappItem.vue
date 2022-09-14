@@ -9,14 +9,14 @@
       </thead>
       <tbody>
         <tr>
-          <td>10,000 ASTR</td>
-          <td>10,000 ASTR</td>
+          <td>{{ item.stakedAmount.toLocaleString() }} ASTR</td>
+          <td>{{ item.totalEarned.toLocaleString() }} ASTR</td>
         </tr>
       </tbody>
     </table>
     <div class="row--manage">
-      <astar-button width="97" height="24" :disabled="disabled">Add</astar-button>
-      <astar-button width="97" height="24" :disabled="disabled">Unbond</astar-button>
+      <astar-button width="97" height="24" :disabled="!item.isEnabled">Add</astar-button>
+      <astar-button width="97" height="24" :disabled="!item.isEnabled">Unbond</astar-button>
     </div>
   </div>
 </template>
@@ -25,9 +25,9 @@
 import { defineComponent } from 'vue';
 export default defineComponent({
   props: {
-    disabled: {
-      type: Boolean,
-      default: false,
+    item: {
+      type: Object,
+      required: true,
     },
   },
 });

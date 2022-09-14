@@ -12,36 +12,16 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Astar Degens</td>
-              <td>10,000 ASTR</td>
-              <td>2,000.12 ASTR</td>
+            <tr v-for="t in items" :key="t.id">
+              <td>{{ t.name }}</td>
+              <td>{{ t.stakedAmount.toLocaleString() }} ASTR</td>
+              <td>{{ t.totalEarned.toLocaleString() }} ASTR</td>
               <td>
                 <div class="row--manage">
-                  <astar-button width="97" height="24">Add</astar-button>
-                  <astar-button width="97" height="24">Unbond</astar-button>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>ArthSwap</td>
-              <td>10,000 ASTR</td>
-              <td>2,000.12 ASTR</td>
-              <td>
-                <div class="row--manage">
-                  <astar-button width="97" height="24">Add</astar-button>
-                  <astar-button width="97" height="24">Unbond</astar-button>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>Starlay Finance</td>
-              <td>10,000 ASTR</td>
-              <td>2,000.12 ASTR</td>
-              <td>
-                <div class="row--manage">
-                  <astar-button width="97" height="24">Add</astar-button>
-                  <astar-button width="97" height="24">Unbond</astar-button>
+                  <astar-button width="97" height="24" :disabled="!t.isEnabled">Add</astar-button>
+                  <astar-button width="97" height="24" :disabled="!t.isEnabled"
+                    >Unbond</astar-button
+                  >
                 </div>
               </td>
             </tr>
@@ -50,7 +30,7 @@
       </div>
     </template>
     <template v-else>
-      <DropdownList />
+      <DropdownList :items="items" />
     </template>
   </div>
 </template>
@@ -63,9 +43,36 @@ export default defineComponent({
   components: { DropdownList },
   setup() {
     const { width, screenSize } = useBreakpoints();
+
+    //TODO: need refactor as module
+    const items = [
+      {
+        id: 0,
+        name: 'Astar Degens',
+        stakedAmount: 10000,
+        totalEarned: 2000.12,
+        isEnabled: true,
+      },
+      {
+        id: 1,
+        name: 'ArthSwap',
+        stakedAmount: 10000,
+        totalEarned: 2000.12,
+        isEnabled: true,
+      },
+      {
+        id: 2,
+        name: 'Starlay Finance',
+        stakedAmount: 10000,
+        totalEarned: 2000.12,
+        isEnabled: false,
+      },
+    ];
+
     return {
       width,
       screenSize,
+      items,
     };
   },
 });

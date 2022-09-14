@@ -12,43 +12,19 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Astar Degens</td>
-              <td>10,000 ASTR</td>
+            <tr v-for="t in items" :key="t.id">
+              <td>{{ t.name }}</td>
+              <td>{{ t.unbondingAmount.toLocaleString() }} ASTR</td>
               <td>
                 <div class="row--remaining-era">
-                  <div class="val-era">8</div>
+                  <div class="val-era">{{ t.remainingEra }}</div>
                   <astar-irregular-button width="97" height="20">Re-bond</astar-irregular-button>
                 </div>
               </td>
               <td>
-                <astar-button width="97" height="24" disabled>Withdraw</astar-button>
-              </td>
-            </tr>
-            <tr>
-              <td>ArthSwap</td>
-              <td>10,000 ASTR</td>
-              <td>
-                <div class="row--remaining-era">
-                  <div class="val-era">8</div>
-                  <astar-irregular-button width="97" height="20">Re-bond</astar-irregular-button>
-                </div>
-              </td>
-              <td>
-                <astar-button width="97" height="24" disabled>Withdraw</astar-button>
-              </td>
-            </tr>
-            <tr>
-              <td>Starlay Finance</td>
-              <td>10,000 ASTR</td>
-              <td>
-                <div class="row--remaining-era">
-                  <div class="val-era">8</div>
-                  <astar-irregular-button width="97" height="20">Re-bond</astar-irregular-button>
-                </div>
-              </td>
-              <td>
-                <astar-button width="97" height="24">Withdraw</astar-button>
+                <astar-button width="97" height="24" :disabled="!t.isEnabled"
+                  >Withdraw</astar-button
+                >
               </td>
             </tr>
           </tbody>
@@ -56,7 +32,7 @@
       </div>
     </template>
     <template v-else>
-      <DropdownList is-unbonding />
+      <DropdownList is-unbonding :items="items" />
     </template>
   </div>
 </template>
@@ -69,9 +45,36 @@ export default defineComponent({
   components: { DropdownList },
   setup() {
     const { width, screenSize } = useBreakpoints();
+
+    //TODO: need refactor as module
+    const items = [
+      {
+        id: 0,
+        name: 'Astar Degens',
+        unbondingAmount: 10000,
+        remainingEra: 8,
+        isEnabled: true,
+      },
+      {
+        id: 1,
+        name: 'ArthSwap',
+        unbondingAmount: 10000,
+        remainingEra: 8,
+        isEnabled: true,
+      },
+      {
+        id: 2,
+        name: 'Starlay Finance',
+        unbondingAmount: 10000,
+        remainingEra: 8,
+        isEnabled: false,
+      },
+    ];
+
     return {
       width,
       screenSize,
+      items,
     };
   },
 });

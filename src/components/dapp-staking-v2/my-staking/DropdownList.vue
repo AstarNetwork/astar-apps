@@ -2,36 +2,21 @@
   <div class="wrapper">
     <q-list>
       <q-expansion-item
+        v-for="t in items"
+        :key="t.id"
         :header-style="isDarkTheme ? classes.defaultHeaderDark : classes.defaultHeader"
       >
         <template #header>
           <astar-icon-base class="header-icon tw-ml-1 tw-mt-2">
             <astar-icon-community />
           </astar-icon-base>
-          <q-item-section class="exansion-title"> Astar Degens </q-item-section>
+          <q-item-section class="exansion-title"> {{ t.name }} </q-item-section>
         </template>
         <template v-if="isUnbonding">
-          <UnbondingItem />
+          <UnbondingItem :item="t" />
         </template>
         <template v-else>
-          <MyDappItem />
-        </template>
-      </q-expansion-item>
-
-      <q-expansion-item
-        :header-style="isDarkTheme ? classes.defaultHeaderDark : classes.defaultHeader"
-      >
-        <template #header>
-          <astar-icon-base class="header-icon tw-ml-1 tw-mt-2">
-            <astar-icon-community />
-          </astar-icon-base>
-          <q-item-section class="exansion-title"> Astar Degens </q-item-section>
-        </template>
-        <template v-if="isUnbonding">
-          <UnbondingItem disabled />
-        </template>
-        <template v-else>
-          <MyDappItem disabled />
+          <MyDappItem :item="t" />
         </template>
       </q-expansion-item>
     </q-list>
@@ -39,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, reactive } from 'vue';
+import { computed, defineComponent, ref, reactive, PropType } from 'vue';
 import { useStore } from 'src/store';
 import MyDappItem from './items/MyDappItem.vue';
 import UnbondingItem from './items/UnbondingItem.vue';
@@ -50,6 +35,10 @@ export default defineComponent({
     isUnbonding: {
       type: Boolean,
       default: false,
+    },
+    items: {
+      type: Array as PropType<any[]>,
+      required: true,
     },
   },
   setup(props, { emit }) {

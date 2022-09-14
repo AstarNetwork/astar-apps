@@ -9,10 +9,10 @@
       </thead>
       <tbody>
         <tr>
-          <td>10,000 ASTR</td>
+          <td>{{ item.unbondingAmount.toLocaleString() }} ASTR</td>
           <td>
             <div class="row--remaining-era">
-              <div class="val-era">8</div>
+              <div class="val-era">{{ item.remainingEra }}</div>
               <astar-irregular-button>Re-bond</astar-irregular-button>
             </div>
           </td>
@@ -20,7 +20,7 @@
       </tbody>
     </table>
     <div class="row--manage">
-      <astar-button width="97" height="24" :disabled="disabled">Withdraw</astar-button>
+      <astar-button width="97" height="24" :disabled="!item.isEnabled">Withdraw</astar-button>
     </div>
   </div>
 </template>
@@ -29,9 +29,9 @@
 import { defineComponent } from 'vue';
 export default defineComponent({
   props: {
-    disabled: {
-      type: Boolean,
-      default: false,
+    item: {
+      type: Object,
+      required: true,
     },
   },
 });

@@ -3,36 +3,57 @@
     <div class="card">
       <p>
         Total Staked
-        <!-- <astar-icon-help />
-        <q-tooltip
-          v-model="isDisplayTooltip"
-          anchor="top middle"
-          :self="`bottom ${$q.platform.is.mobile ? 'end' : 'middle'}`"
-          class="box--tooltip"
-        >
-          <span class="text--tooltip">{{ $t('common.speed.tipHelp') }}</span>
-        </q-tooltip> -->
+        <span class="wrapper--icon-help">
+          <astar-icon-help size="16" />
+        </span>
+        <q-tooltip>
+          <span class="text--tooltip">Total Staked</span>
+        </q-tooltip>
       </p>
       <div class="row--data">
         <div class="value">500,000 ASTR</div>
       </div>
     </div>
     <div class="card">
-      <p>Available to claim</p>
+      <p>
+        Available to claim
+        <span class="wrapper--icon-help">
+          <astar-icon-help size="16" />
+        </span>
+        <q-tooltip>
+          <span class="text--tooltip">Available to claim</span>
+        </q-tooltip>
+      </p>
       <div class="row--data">
         <div class="value">5 Era</div>
         <astar-button width="80" height="24">Claim</astar-button>
       </div>
     </div>
     <div class="card">
-      <p>Re-Stake after claiming</p>
+      <p>
+        Re-Stake after claiming
+        <span class="wrapper--icon-help">
+          <astar-icon-help size="16" />
+        </span>
+        <q-tooltip>
+          <span class="text--tooltip">Re-Stake after claiming</span>
+        </q-tooltip>
+      </p>
       <div class="row--data">
         <div class="value">ON</div>
         <astar-button width="80" height="24">Turn Off</astar-button>
       </div>
     </div>
     <div class="card">
-      <p>Total Earned (all-time)</p>
+      <p>
+        Total Earned (all-time)
+        <span class="wrapper--icon-help">
+          <astar-icon-help size="16" />
+        </span>
+        <q-tooltip>
+          <span class="text--tooltip">Total Earned (all-time)</span>
+        </q-tooltip>
+      </p>
       <div class="row--data">
         <div class="value">10,000 ASTR</div>
         <astar-irregular-button>
@@ -68,6 +89,11 @@ export default defineComponent({
   }
 }
 
+.wrapper--icon-help {
+  cursor: pointer;
+  padding-top: 5px;
+}
+
 .card {
   display: flex;
   flex-direction: column;
@@ -81,6 +107,9 @@ export default defineComponent({
   padding: 40px 24px;
 
   p {
+    display: flex;
+    align-items: center;
+    gap: 5px;
     font-weight: 600;
     font-size: 14px;
     color: $gray-3;
