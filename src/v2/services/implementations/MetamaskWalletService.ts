@@ -37,9 +37,11 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
     extrinsic: SubmittableExtrinsic<'promise', ISubmittableResult>,
     senderAddress: string,
     successMessage?: string
-  ): Promise<void> {
+  ): Promise<string | null> {
     Guard.ThrowIfUndefined('extrinsic', extrinsic);
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
+
+    let result = null;
 
     try {
       const account = await this.systemRepository.getAccountInfo(senderAddress);
@@ -67,7 +69,8 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
               new ExtrinsicStatusMessage(
                 true,
                 successMessage ?? 'Transaction successfully executed',
-                `${extrinsic.method.section}.${extrinsic.method.method}`
+                `${extrinsic.method.section}.${extrinsic.method.method}`,
+                result.txHash.toHex()
               )
             );
           }
@@ -77,10 +80,13 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
           this.eventAggregator.publish(new BusyMessage(true));
         }
       });
+      result = call.hash.toHex();
     } catch (e) {
       const error = e as unknown as Error;
       this.eventAggregator.publish(new ExtrinsicStatusMessage(false, error.message));
       this.eventAggregator.publish(new BusyMessage(false));
     }
+
+    return result;
   }
 }
