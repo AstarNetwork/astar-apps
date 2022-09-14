@@ -21,7 +21,7 @@ export class AcalaXcmRepository extends XcmRepository {
 
     this.astarTokens = {
       SDN: 18,
-      ASTR: 18,
+      ASTR: 2,
     };
   }
 
