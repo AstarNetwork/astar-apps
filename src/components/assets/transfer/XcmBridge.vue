@@ -193,7 +193,7 @@
 import InputSelectChain from 'src/components/assets/transfer/InputSelectChain.vue';
 import SimpleInput from 'src/components/common/SimpleInput.vue';
 import SelectEvmWallet from 'src/components/assets/transfer/SelectEvmWallet.vue';
-import { pathEvm, useAccount, useTooltip, useXcmBridgeV2, useXcmEvm } from 'src/hooks';
+import { pathEvm, useAccount, useTooltip, useXcmBridgeV3, useXcmEvm } from 'src/hooks';
 import { truncate } from 'src/hooks/helper/common';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
@@ -267,7 +267,7 @@ export default defineComponent({
       bridge,
       reverseChain,
       toggleIsInputDestAddrManually,
-    } = useXcmBridgeV2(tokenData);
+    } = useXcmBridgeV3(tokenData);
 
     const isReverseButton = computed<boolean>(() => {
       if (!srcChain.value || !destChain.value || isH160.value) return false;

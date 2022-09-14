@@ -28,6 +28,7 @@ export class XcmService implements IXcmService {
     this.wallet = walletFactory();
   }
 
+  // Todo: return the hash
   public async transfer(
     from: Network,
     to: Network,
