@@ -9,7 +9,7 @@ import { Account } from 'src/v2/models';
 import { IMetadataRepository } from 'src/v2/repositories';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { WalletService } from './WalletService';
-import { wait } from 'src/v2/common';
+import { Guard, wait } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
 
 @injectable()
@@ -37,7 +37,11 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
     senderAddress: string,
     successMessage?: string,
     transactionTip?: number
-  ): Promise<void> {
+  ): Promise<string | null> {
+    Guard.ThrowIfUndefined('extrinsic', extrinsic);
+    Guard.ThrowIfUndefined('senderAddress', senderAddress);
+
+    let result: string | null = null;
     try {
       await this.checkExtension();
       let tip = transactionTip?.toString();
@@ -62,7 +66,8 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
                 new ExtrinsicStatusMessage(
                   true,
                   successMessage ?? 'Transaction successfully executed',
-                  `${extrinsic.method.section}.${extrinsic.method.method}`
+                  `${extrinsic.method.section}.${extrinsic.method.method}`,
+                  result.txHash.toHex()
                 )
               );
             }
@@ -73,11 +78,15 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
           }
         }
       );
+
+      result = extrinsic.hash.toHex();
     } catch (e) {
       const error = e as unknown as Error;
       this.eventAggregator.publish(new ExtrinsicStatusMessage(false, error.message));
       this.eventAggregator.publish(new BusyMessage(false));
     }
+
+    return result;
   }
 
   private async getAccounts(): Promise<Account[]> {
