@@ -55,17 +55,26 @@ export default defineComponent({
 
 .wrapper--cards {
   display: flex;
-  flex-wrap: wrap;
   gap: 24px;
+  width: 100%;
   margin-top: 34px;
 
-  @media (max-width: $sm) {
+  @media (max-width: $lg) {
     gap: 16px;
+  }
+
+  @media (max-width: $sm) {
+    flex-wrap: wrap;
   }
 }
 
 .card {
-  width: 294px;
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  flex-basis: 24%;
+  // width: 294px;
+  min-width: 120px;
   height: 142px;
   background: $gray-1;
   border-radius: 6px;
@@ -90,7 +99,8 @@ export default defineComponent({
   }
 
   @media (max-width: $lg) {
-    height: 104px;
+    min-width: 100px;
+    height: 114px;
     padding: 24px 16px;
 
     .row--data {
@@ -99,7 +109,9 @@ export default defineComponent({
   }
 
   @media (max-width: $sm) {
+    display: block;
     width: 100%;
+    flex-basis: 100%;
   }
 }
 
