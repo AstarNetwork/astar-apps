@@ -1,6 +1,7 @@
 import { BN } from '@polkadot/util';
 import { ethers } from 'ethers';
 import { inject, injectable } from 'inversify';
+import { Chain, checkIsDeposit } from 'src/modules/xcm';
 import { XcmAssets } from 'src/store/assets/state';
 import { Guard } from 'src/v2/common';
 import { ITypeFactory, Network } from 'src/v2/config/types';
@@ -36,13 +37,14 @@ export class XcmService implements IXcmService {
     senderAddress: string,
     recipientAddress: string,
     amount: number
-  ): Promise<void> {
+  ): Promise<string | null> {
     Guard.ThrowIfUndefined('recipientAddress', recipientAddress);
     Guard.ThrowIfNegative('amount', amount);
     this.GuardTransfer(amount, token);
 
     let call: ExtrinsicPayload | null = null;
-    let tip: number | undefined; // If tip stays undefined, wallet infrastrucutre will fetch it.
+    // Memo: if tip stays undefined, wallet infrastructure will fetch it.
+    const tip = checkIsDeposit(from.chain as Chain) ? 1 : undefined;
 
     const amountBn = new BN(
       ethers.utils.parseUnits(amount.toString(), token.metadata.decimals).toString()
@@ -64,23 +66,28 @@ export class XcmService implements IXcmService {
         token,
         amountBn
       );
-      tip = 1; // TODO Not sure why is tip 1.
     } else if (isParachain(from) && isParachain(to)) {
       // HRMP
       // Dinamically determine parachain repository to use.
+      console.log('get repository');
       const repository = <IXcmRepository>this.typeFactory.getInstance(from.chain);
+      console.log('get call');
       call = await repository.getTransferCall(from, to, recipientAddress, token, amountBn);
     } else {
       throw `Transfer between ${from.displayName} to ${to.displayName} is not supported. Currently supported transfers are UMP, DMP and HRMP.`;
     }
 
+    console.log('call', call);
     if (call) {
-      this.wallet.signAndSend(
+      console.log('signAndSend');
+      const hash = await this.wallet.signAndSend(
         call,
         senderAddress,
-        `You successfully transfered ${amount} ${token.metadata.symbol} to ${recipientAddress}`,
+        `You successfully transferred ${amount} ${token.metadata.symbol} to ${recipientAddress}`,
         tip
       );
+      console.log('hash', hash);
+      return hash;
     } else {
       throw 'Call for XCM transfer can not be build';
     }

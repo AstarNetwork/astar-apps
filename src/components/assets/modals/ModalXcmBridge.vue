@@ -211,7 +211,7 @@ import { truncate, wait } from 'src/hooks/helper/common';
 import { XcmChain } from 'src/modules/xcm';
 import { useStore } from 'src/store';
 import { container } from 'src/v2/common';
-import { Chain, Network } from 'src/v2/config/types';
+// import { Chain, Network } from 'src/v2/config/types';
 import { XcmConfiguration } from 'src/v2/config/xcm/XcmConfiguration';
 import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { Asset } from 'src/v2/models';

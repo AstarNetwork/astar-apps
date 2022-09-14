@@ -643,8 +643,26 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
 
   // V2 PoC start
 
+  const finalizedCallback = async (hash: string): Promise<void> => {
+    addXcmTxHistories({
+      hash,
+      from: srcChain.value.name,
+      to: destChain.value.name,
+      symbol: selectedToken.value.metadata.symbol,
+      amount: amount.value as string,
+      address: currentAccount.value,
+    });
+    if (!isEvmBridge.value && isDeposit.value) {
+      await monitorBalanceIncreasing({
+        api: $api!,
+        userAddress: currentAccount.value,
+        originTokenData: selectedToken.value,
+      });
+    }
+    router.push(Path.Assets);
+  };
+
   const handleBridgeV2 = async (): Promise<void> => {
-    console.log('handleBridgeV2');
     let xcmService: IXcmTransfer;
 
     if (isH160.value) {
@@ -660,29 +678,12 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
     const amountToTransfer = amount.value ? Number(amount.value) : 0;
     const recipient = isInputDestAddrManually.value ? inputtedAddress.value : currentAccount.value;
 
-    const callBack = async (hash: string): Promise<void> => {
-      console.log('callBack');
-      if (!isEvmBridge.value) {
-        addXcmTxHistories({
-          hash,
-          from: srcChain.value.name,
-          to: destChain.value.name,
-          symbol: selectedToken.value.metadata.symbol,
-          amount: amount.value as string,
-          address: currentAccount.value,
-        });
-        await monitorBalanceIncreasing({
-          api: $api!,
-          userAddress: currentAccount.value,
-          originTokenData: selectedToken.value,
-        });
-      }
-      console.log('called push');
-      router.push(Path.Assets);
-    };
+    console.log('from', from);
+    console.log('to', to);
+    console.log('selectedToken.value', selectedToken.value);
     if (from && to && selectedToken.value) {
       // Todo: add return the hash
-      await xcmService.transfer(
+      const hash = await xcmService.transfer(
         from,
         to,
         selectedToken.value,
@@ -690,7 +691,7 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
         recipient,
         amountToTransfer
       );
-      // await callBack(hash);
+      hash && (await finalizedCallback(hash));
     }
   };
 

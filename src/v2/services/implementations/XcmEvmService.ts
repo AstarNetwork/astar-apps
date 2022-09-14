@@ -34,11 +34,11 @@ export class XcmEvmService implements IXcmEvmService {
     senderAddress: string,
     recipientAddress: string,
     amount: number
-  ): Promise<void> {
+  ): Promise<string | null> {
     Guard.ThrowIfUndefined('recipientAddress', recipientAddress);
     Guard.ThrowIfNegative('amount', amount);
 
-    new Promise<string>(async (resolve, reject) => {
+    return new Promise<string>(async (resolve, reject) => {
       this.eventAggregator.publish(new BusyMessage(true));
 
       const asset_id = token.mappedERC20Addr;

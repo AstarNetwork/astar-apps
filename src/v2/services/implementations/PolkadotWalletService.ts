@@ -43,43 +43,44 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
 
     let result: string | null = null;
     try {
-      await this.checkExtension();
-      let tip = transactionTip?.toString();
-      if (!tip) {
-        tip = this.gasPriceProvider.getTip().price;
-        tip = tip ? ethers.utils.parseEther(tip).toString() : '1';
-      }
-
-      console.info('transaction tip', tip);
-
-      await extrinsic.signAndSend(
-        senderAddress,
-        {
-          signer: await this.getSigner(senderAddress),
-          nonce: -1,
-          tip,
-        },
-        (result) => {
-          if (result.isFinalized) {
-            if (!this.isExtrinsicFailed(result.events)) {
-              this.eventAggregator.publish(
-                new ExtrinsicStatusMessage(
-                  true,
-                  successMessage ?? 'Transaction successfully executed',
-                  `${extrinsic.method.section}.${extrinsic.method.method}`,
-                  result.txHash.toHex()
-                )
-              );
-            }
-
-            this.eventAggregator.publish(new BusyMessage(false));
-          } else {
-            this.eventAggregator.publish(new BusyMessage(true));
-          }
+      return new Promise<string>(async (resolve) => {
+        await this.checkExtension();
+        let tip = transactionTip?.toString();
+        if (!tip) {
+          tip = this.gasPriceProvider.getTip().price;
+          tip = tip ? ethers.utils.parseEther(tip).toString() : '1';
         }
-      );
 
-      result = extrinsic.hash.toHex();
+        console.info('transaction tip', tip);
+
+        await extrinsic.signAndSend(
+          senderAddress,
+          {
+            signer: await this.getSigner(senderAddress),
+            nonce: -1,
+            tip,
+          },
+          (result) => {
+            if (result.isFinalized) {
+              if (!this.isExtrinsicFailed(result.events)) {
+                this.eventAggregator.publish(
+                  new ExtrinsicStatusMessage(
+                    true,
+                    successMessage ?? 'Transaction successfully executed',
+                    `${extrinsic.method.section}.${extrinsic.method.method}`,
+                    result.txHash.toHex()
+                  )
+                );
+              }
+
+              this.eventAggregator.publish(new BusyMessage(false));
+              resolve(extrinsic.hash.toHex());
+            } else {
+              this.eventAggregator.publish(new BusyMessage(true));
+            }
+          }
+        );
+      });
     } catch (e) {
       const error = e as unknown as Error;
       this.eventAggregator.publish(new ExtrinsicStatusMessage(false, error.message));

@@ -14,5 +14,5 @@ export interface IXcmTransfer {
     senderAddress: string,
     recipientAddress: string,
     amount: number
-  ): Promise<void>;
+  ): Promise<string | null>;
 }

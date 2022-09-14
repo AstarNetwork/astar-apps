@@ -1,5 +1,3 @@
-import { Network } from '../config/types';
-import { Asset } from '../models';
 import { IXcmTransfer } from './IXcmService';
 
 /**
