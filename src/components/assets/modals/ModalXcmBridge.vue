@@ -193,7 +193,8 @@
         <span class="color--white"> {{ $t(errMsg) }}</span>
       </div>
       <div class="wrapper__row--button">
-        <button class="btn btn--confirm" :disabled="isDisabledBridge" @click="handleBridgeV2">
+        <button class="btn btn--confirm" :disabled="isDisabledBridge">
+          <!-- <button class="btn btn--confirm" :disabled="isDisabledBridge" @click="handleBridgeV2"> -->
           {{ $t('confirm') }}
         </button>
       </div>
@@ -307,56 +308,56 @@ export default defineComponent({
     };
 
     // V2 PoC start
-    const store = useStore();
-    const { currentAccount } = useAccount();
+    // const store = useStore();
+    // const { currentAccount } = useAccount();
 
-    const handleBridgeV2 = async (): Promise<void> => {
-      let xcmService: IXcmTransfer;
+    // const handleBridgeV2 = async (): Promise<void> => {
+    //   let xcmService: IXcmTransfer;
 
-      if (isH160.value) {
-        xcmService = container.get<IXcmEvmService>(Symbols.XcmEvmService);
-      } else {
-        xcmService = container.get<IXcmService>(Symbols.XcmService);
-      }
+    //   if (isH160.value) {
+    //     xcmService = container.get<IXcmEvmService>(Symbols.XcmEvmService);
+    //   } else {
+    //     xcmService = container.get<IXcmService>(Symbols.XcmService);
+    //   }
 
-      const from = getV2Chain(srcChain.value);
-      const to = getV2Chain(destChain.value);
-      const selectedToken = props.token as unknown as Asset;
-      const amountToTransfer = amount.value ? Number(amount.value) : 0;
-      const recipient = isNativeBridge.value ? currentAccount.value : evmDestAddress.value;
+    //   const from = getV2Chain(srcChain.value);
+    //   const to = getV2Chain(destChain.value);
+    //   const selectedToken = props.token as unknown as Asset;
+    //   const amountToTransfer = amount.value ? Number(amount.value) : 0;
+    //   const recipient = isNativeBridge.value ? currentAccount.value : evmDestAddress.value;
 
-      if (from && to && selectedToken) {
-        await xcmService.transfer(
-          from,
-          to,
-          selectedToken,
-          currentAccount.value,
-          recipient,
-          amountToTransfer
-        );
-      }
-    };
+    //   if (from && to && selectedToken) {
+    //     await xcmService.transfer(
+    //       from,
+    //       to,
+    //       selectedToken,
+    //       currentAccount.value,
+    //       recipient,
+    //       amountToTransfer
+    //     );
+    //   }
+    // };
 
-    const getV2Chain = (v1chain: XcmChain): Network | undefined => {
-      const chain = <Chain>v1chain.name.toString();
-      return XcmConfiguration.find((x) => x.chain === chain);
-    };
+    // const getV2Chain = (v1chain: XcmChain): Network | undefined => {
+    //   const chain = <Chain>v1chain.name.toString();
+    //   return XcmConfiguration.find((x) => x.chain === chain);
+    // };
 
-    // Handle XCM call end so we can close a modal.
-    const eventAggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
-    eventAggregator.subscribe(ExtrinsicStatusMessage.name, async (m) => {
-      const message = m as ExtrinsicStatusMessage;
+    // // Handle XCM call end so we can close a modal.
+    // const eventAggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
+    // eventAggregator.subscribe(ExtrinsicStatusMessage.name, async (m) => {
+    //   const message = m as ExtrinsicStatusMessage;
 
-      if (
-        message.method.startsWith('xcmPallet') ||
-        message.method.startsWith('polkadotXcm') ||
-        message.method.startsWith('xToken') ||
-        message.method.startsWith('evmXcm')
-      ) {
-        store.dispatch('assets/getAssets', currentAccount.value);
-        await closeModal();
-      }
-    });
+    //   if (
+    //     message.method.startsWith('xcmPallet') ||
+    //     message.method.startsWith('polkadotXcm') ||
+    //     message.method.startsWith('xToken') ||
+    //     message.method.startsWith('evmXcm')
+    //   ) {
+    //     store.dispatch('assets/getAssets', currentAccount.value);
+    //     await closeModal();
+    //   }
+    // });
     // v2 end
 
     const handleBridge = async (): Promise<void> => {
@@ -409,7 +410,7 @@ export default defineComponent({
       truncate,
       setSrcChain,
       setDestChain,
-      handleBridgeV2,
+      // handleBridgeV2,
       initializeXcmApi,
     };
   },

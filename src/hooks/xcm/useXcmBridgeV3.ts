@@ -37,7 +37,7 @@ import {
   XcmChain,
   xcmChainObj,
 } from 'src/modules/xcm';
-import { Chain as ChainV2 } from 'src/v2/config/types/Network';
+// import { Chain as ChainV2 } from 'src/v2/config/types/Network';
 import { useStore } from 'src/store';
 import { wait } from 'src/v2/common';
 import { Asset } from 'src/v2/models';
@@ -655,6 +655,8 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
 
     const from = getV2Chain(srcChain.value);
     const to = getV2Chain(destChain.value);
+    // const from = srcChain.value;
+    // const to = destChain.value;
     const amountToTransfer = amount.value ? Number(amount.value) : 0;
     const recipient = isInputDestAddrManually.value ? inputtedAddress.value : currentAccount.value;
 
