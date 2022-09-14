@@ -90,7 +90,8 @@ export class XcmEvmService implements IXcmEvmService {
               new ExtrinsicStatusMessage(
                 true,
                 `Completed at transaction hash #${transactionHash}`, //TODO implement translation service.
-                'evmXcm'
+                'evmXcm',
+                transactionHash
               )
             );
             resolve(transactionHash);
