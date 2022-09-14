@@ -1,6 +1,6 @@
 import { ApiPromise } from '@polkadot/api';
 import { objToArray } from 'src/hooks/helper/common';
-import { AcalaApi, MoonbeamApi } from 'src/hooks/xcm/parachainApi';
+import { AcalaApi, MoonbeamApi, StatemintApi } from 'src/hooks/xcm/parachainApi';
 import { AstarApi, ChainApi } from 'src/hooks/xcm/SubstrateApi';
 
 export {
@@ -13,7 +13,7 @@ export {
   castChainName,
   checkIsAstarNativeToken,
   checkIsDeposit,
-  checkIsRelayChain,
+  checkIsSupportAstarNativeToken,
   fetchExistentialDeposit,
   fetchXcmBalance,
   getXcmToken,
@@ -52,6 +52,7 @@ export enum Chain {
   ACALA = 'Acala',
   MOONRIVER = 'Moonriver',
   MOONBEAM = 'Moonbeam',
+  STATEMINE = 'Statemine',
 }
 
 export enum parachainIds {
@@ -61,6 +62,7 @@ export enum parachainIds {
   ACALA = 2000,
   MOONRIVER = 2023,
   MOONBEAM = 2004,
+  STATEMINE = 1000,
 }
 
 // Memo: give it 0 ide for convenience in checking para/relay chain logic
@@ -74,6 +76,8 @@ export interface XcmChain {
   parachainId: parachainIds;
   endpoint?: string;
   subscan: string;
+  // Note: true if ASTR/SDN is listed on the parachain
+  isAstarNativeToken: boolean;
   apiInstance: ({ endpoint, api }: { endpoint: string; api: ApiPromise }) => ChainApi | AstarApi;
 }
 
@@ -89,6 +93,7 @@ export const xcmChainObj: XcmChainObj = {
     parachainId: relaychainParaId,
     endpoint: 'wss://polkadot.api.onfinality.io/public-ws',
     subscan: 'https://polkadot.subscan.io',
+    isAstarNativeToken: false,
     apiInstance: ({ endpoint }: { endpoint: string }) => new ChainApi(endpoint),
   },
   [Chain.ASTAR]: {
@@ -97,6 +102,7 @@ export const xcmChainObj: XcmChainObj = {
     img: require('/src/assets/img/ic_astar.png'),
     parachainId: parachainIds.ASTAR,
     subscan: 'https://astar.subscan.io',
+    isAstarNativeToken: false,
     apiInstance: ({ api }: { api: ApiPromise }) => new AstarApi(api),
   },
   [Chain.ASTAR_EVM]: {
@@ -105,6 +111,7 @@ export const xcmChainObj: XcmChainObj = {
     img: require('/src/assets/img/ic_astar.png'),
     parachainId: parachainIds.ASTAR,
     subscan: 'https://astar.subscan.io',
+    isAstarNativeToken: false,
     apiInstance: ({ api }: { api: ApiPromise }) => new AstarApi(api),
   },
   [Chain.KUSAMA]: {
@@ -114,6 +121,7 @@ export const xcmChainObj: XcmChainObj = {
     parachainId: relaychainParaId,
     endpoint: 'wss://kusama-rpc.polkadot.io',
     subscan: 'https://kusama.subscan.io',
+    isAstarNativeToken: false,
     apiInstance: ({ endpoint }: { endpoint: string }) => new ChainApi(endpoint),
   },
   [Chain.SHIDEN]: {
@@ -122,6 +130,7 @@ export const xcmChainObj: XcmChainObj = {
     img: require('/src/assets/img/ic_shiden.png'),
     parachainId: parachainIds.SHIDEN,
     subscan: 'https://shiden.subscan.io',
+    isAstarNativeToken: false,
     apiInstance: ({ api }: { api: ApiPromise }) => new AstarApi(api),
   },
   [Chain.SHIDEN_EVM]: {
@@ -130,7 +139,18 @@ export const xcmChainObj: XcmChainObj = {
     img: require('/src/assets/img/ic_shiden.png'),
     parachainId: parachainIds.SHIDEN,
     subscan: 'https://shiden.subscan.io',
+    isAstarNativeToken: false,
     apiInstance: ({ api }: { api: ApiPromise }) => new AstarApi(api),
+  },
+  [Chain.STATEMINE]: {
+    name: Chain.STATEMINE,
+    relayChain: Chain.KUSAMA,
+    img: 'https://polkadot.js.org/apps/static/statemine.65437936..svg',
+    parachainId: parachainIds.STATEMINE,
+    endpoint: 'wss://statemine-rpc.polkadot.io',
+    subscan: 'https://statemine.subscan.io',
+    isAstarNativeToken: false,
+    apiInstance: ({ endpoint }: { endpoint: string }) => new StatemintApi(endpoint),
   },
   [Chain.KARURA]: {
     name: Chain.KARURA,
@@ -139,6 +159,7 @@ export const xcmChainObj: XcmChainObj = {
     parachainId: parachainIds.KARURA,
     endpoint: 'wss://karura-rpc.dwellir.com',
     subscan: 'https://karura.subscan.io',
+    isAstarNativeToken: true,
     apiInstance: ({ endpoint }: { endpoint: string }) => new AcalaApi(endpoint),
   },
   [Chain.ACALA]: {
@@ -148,6 +169,7 @@ export const xcmChainObj: XcmChainObj = {
     parachainId: parachainIds.ACALA,
     endpoint: 'wss://acala-polkadot.api.onfinality.io/public-ws',
     subscan: 'https://acala.subscan.io',
+    isAstarNativeToken: true,
     apiInstance: ({ endpoint }: { endpoint: string }) => new AcalaApi(endpoint),
   },
   [Chain.MOONRIVER]: {
@@ -157,15 +179,17 @@ export const xcmChainObj: XcmChainObj = {
     parachainId: parachainIds.MOONRIVER,
     endpoint: 'wss://wss.api.moonriver.moonbeam.network',
     subscan: 'https://moonriver.subscan.io',
+    isAstarNativeToken: true,
     apiInstance: ({ endpoint }: { endpoint: string }) => new MoonbeamApi(endpoint),
   },
   [Chain.MOONBEAM]: {
     name: Chain.MOONBEAM,
     relayChain: Chain.POLKADOT,
-    img: 'https://polkadot.js.org/apps/static/moonbeam.3204d901..png',
+    img: 'https://assets.coingecko.com/coins/images/22459/small/glmr.png?1641880985',
     parachainId: parachainIds.MOONBEAM,
     endpoint: 'wss://wss.api.moonbeam.network',
     subscan: 'https://moonbeam.subscan.io',
+    isAstarNativeToken: true,
     apiInstance: ({ endpoint }: { endpoint: string }) => new MoonbeamApi(endpoint),
   },
 };
