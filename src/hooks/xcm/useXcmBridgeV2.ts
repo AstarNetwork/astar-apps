@@ -44,6 +44,8 @@ import { computed, ref, Ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const { Acala, Astar, Karura, Polkadot, Shiden } = xcmChainObj;
+// Memo: Chain.STATEMINE -> Bug related to https://github.com/polkadot-js/apps/issues/7812
+const chainsNotSupportWithdrawal = [Chain.STATEMINE];
 
 export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   let originChainApi: ChainApi | null = null;
@@ -72,7 +74,9 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
   );
 
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
-  const isDeposit = computed<boolean>(() => checkIsDeposit(srcChain.value.name));
+  const isDeposit = computed<boolean>(() =>
+    srcChain.value ? checkIsDeposit(srcChain.value.name) : false
+  );
   const isAstar = computed<boolean>(() => currentNetworkIdx.value === endpointKey.ASTAR);
 
   const isAstarNativeTransfer = computed<boolean>(() => {
@@ -204,6 +208,12 @@ export function useXcmBridgeV2(selectedToken: Ref<Asset>) {
 
   const setErrMsg = async (): Promise<void> => {
     errMsg.value = '';
+
+    if (chainsNotSupportWithdrawal.includes(destChain.value.name)) {
+      errMsg.value = t('warning.withdrawalNotSupport', { chain: destChain.value.name });
+      return;
+    }
+
     if (isLoadingApi.value || !amount.value) {
       return;
     }

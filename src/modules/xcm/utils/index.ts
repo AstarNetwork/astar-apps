@@ -12,7 +12,7 @@ import { getTimestamp } from 'src/hooks/helper/common';
 import { astarNetworks } from 'src/hooks/xcm/useTransferRouter';
 import { SystemAccount, TxHistory } from 'src/modules/account';
 import { HistoryTxType } from 'src/modules/account/index';
-import { Chain } from 'src/modules/xcm';
+import { Chain, xcmChainObj } from 'src/modules/xcm';
 import { Asset } from 'src/v2/models';
 import { astarChains, ExistentialDeposit, XcmTokenInformation } from 'src/modules/xcm/index';
 import { xcmToken, astarNativeTokenErcAddr } from 'src/modules/xcm//tokens';
@@ -143,10 +143,10 @@ export const monitorBalanceIncreasing = async ({
   });
 };
 
-export const checkIsRelayChain = (chain: string): boolean => {
+export const checkIsSupportAstarNativeToken = (chain: Chain): boolean => {
   if (!chain) return false;
-  const c = chain.toLowerCase();
-  return c === Chain.POLKADOT.toLowerCase() || c === Chain.KUSAMA.toLowerCase();
+  const c = xcmChainObj[chain];
+  return c.isAstarNativeToken;
 };
 
 export const castChainName = (chain: string): string => {
