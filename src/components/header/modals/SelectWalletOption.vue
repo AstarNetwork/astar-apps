@@ -15,8 +15,8 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   props: {
     iconWallet: {
-      type: Object,
-      default: null,
+      type: String,
+      default: '',
     },
     walletName: {
       type: String,
