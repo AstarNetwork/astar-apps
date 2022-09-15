@@ -140,6 +140,10 @@ export default defineComponent({
   color: #9da3ae;
   margin-top: 16px;
   text-align: right;
+
+  @media (max-width: $lg) {
+    margin-top: 32px;
+  }
 }
 
 .tabs {
@@ -167,7 +171,7 @@ export default defineComponent({
     white-space: nowrap;
     cursor: pointer;
     &:hover {
-      color: $gray-5;
+      font-weight: 600;
     }
     &:after {
       transition: all 0.3s cubic-bezier(1, 0, 0, 1);
@@ -180,7 +184,6 @@ export default defineComponent({
       right: 0px;
       border-radius: 3px 3px 0px 0px;
       background: $astar-blue;
-      box-shadow: 0px 4px 10px 3px rgba($astar-blue, 0.15);
       opacity: 0;
       transform: scale(0, 1);
     }
@@ -205,7 +208,7 @@ export default defineComponent({
       color: $gray-1;
 
       &:hover {
-        color: $gray-3;
+        font-weight: 600;
       }
     }
   }

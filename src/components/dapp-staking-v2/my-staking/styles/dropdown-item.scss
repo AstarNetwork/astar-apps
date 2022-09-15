@@ -11,8 +11,8 @@
     thead {
       th {
         text-align: left;
-        background: #fff;
-        color: #9da3ae;
+        background: rgba(0, 0, 0, 0.03); 
+        color: $gray-4;
         font-weight: 600;
         font-size: 12px;
         padding: 8px;
@@ -29,6 +29,11 @@
         }
       }
     }
+  }
+
+  .row--remaining-era {
+    display: flex;
+    gap: 6px;
   }
 
   .row--manage {

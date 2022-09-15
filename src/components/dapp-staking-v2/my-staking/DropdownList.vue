@@ -46,9 +46,9 @@ export default defineComponent({
     const isDarkTheme = computed<boolean>(() => store.getters['general/theme'] === 'DARK');
     const classes = reactive({
       defaultHeader:
-        'min-height: 56px; background: #f7f7f8; font-weight: 600; font-size: 14px; padding: 0; padding-left: 8px; padding-right: 8px; border-top-left-radius: 6px; border-top-right-radius: 6px;',
+        'min-height: 56px; background: #f7f7f8; font-weight: 600; font-size: 14px; padding: 0; padding-left: 8px; padding-right: 8px; border-radius: 6px;',
       defaultHeaderDark:
-        'min-height: 56px; background: #191d1f; font-weight: 600; font-size: 14px; padding: 0; padding-left: 8px; padding-right: 8px; border-top-left-radius: 6px; border-top-right-radius: 6px;',
+        'min-height: 56px; background: #191d1f; font-weight: 600; font-size: 14px; padding: 0; padding-left: 8px; padding-right: 8px; border-radius: 6px;',
     });
     return {
       isDarkTheme,
@@ -65,6 +65,11 @@ export default defineComponent({
 
   .q-expansion-item {
     padding-bottom: 16px;
+  }
+
+  .active-header {
+    border-bottom-left-radius: 0px;
+    border-top-right-radius: 6px;
   }
 }
 .header-icon {

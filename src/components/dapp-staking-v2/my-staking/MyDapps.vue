@@ -84,7 +84,7 @@ export default defineComponent({
   background: $gray-1;
   height: 320px;
   margin-top: 34px;
-  padding: 24px 40px;
+  padding: 40px;
   border-radius: 6px;
 }
 

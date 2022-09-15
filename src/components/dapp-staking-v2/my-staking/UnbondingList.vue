@@ -17,8 +17,8 @@
               <td>{{ t.unbondingAmount.toLocaleString() }} ASTR</td>
               <td>
                 <div class="row--remaining-era">
-                  <div class="val-era">{{ t.remainingEra }}</div>
-                  <astar-irregular-button width="97" height="20">Re-bond</astar-irregular-button>
+                  <div>{{ t.remainingEra }}</div>
+                  <astar-irregular-button width="77" height="20">Re-bond</astar-irregular-button>
                 </div>
               </td>
               <td>
@@ -86,7 +86,7 @@ export default defineComponent({
   background: $gray-1;
   height: 320px;
   margin-top: 34px;
-  padding: 24px 40px;
+  padding: 40px;
   border-radius: 6px;
 }
 
