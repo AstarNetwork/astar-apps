@@ -16,15 +16,13 @@ import {
   useNetworkInfo,
   useTransferRouter,
 } from 'src/hooks';
-import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
 import {
   ASTAR_DECIMALS,
   isValidAddressPolkadotAddress,
   SUBSTRATE_SS58_FORMAT,
 } from 'src/hooks/helper/plasmUtils';
-import { getInjector } from 'src/hooks/helper/wallet';
 import { MOONBEAM_ASTAR_TOKEN_ID } from 'src/hooks/xcm/parachainApi';
-import { AstarApi, AstarToken, ChainApi } from 'src/hooks/xcm/SubstrateApi';
+import { AstarToken, ChainApi } from 'src/hooks/xcm/SubstrateApi';
 import { showLoading } from 'src/modules/extrinsic/utils';
 import {
   addXcmTxHistories,
@@ -68,17 +66,12 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
   const isLoadingApi = ref<boolean>(true);
 
   const router = useRouter();
-  const { nativeTipPrice } = useGasPrice();
   const { xcmOpponentChain, from, to, isEvmBridge, isTransferPage, reverseChain, tokenSymbol } =
     useTransferRouter();
   const { t } = useI18n();
   const store = useStore();
   const { currentNetworkIdx, evmNetworkIdx } = useNetworkInfo();
   const { currentAccount } = useAccount();
-  const substrateAccounts = computed<SubstrateAccount[]>(
-    () => store.getters['general/substrateAccounts']
-  );
-
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const isDeposit = computed<boolean>(() =>
     srcChain.value ? checkIsDeposit(srcChain.value.name) : false
@@ -389,95 +382,95 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
     await handleFinalizedCallback(hash);
   };
 
-  const handleDeposit = async ({
-    destinationAddress,
-    originChainApi,
-    handleFinalizedCallback,
-  }: {
-    destinationAddress: string;
-    originChainApi: ChainApi;
-    handleFinalizedCallback: (hash: string) => Promise<void>;
-  }): Promise<void> => {
-    console.log('handleDeposit', handleDeposit);
-    // let recipientAccountId = destinationAddress;
-    // if (isEvmBridge.value) {
-    //   const ss58MappedAddr = evmToAddress(inputtedAddress.value, ASTAR_SS58_FORMAT);
-    //   const hexPublicKey = getPubkeyFromSS58Addr(ss58MappedAddr);
-    //   recipientAccountId = hexPublicKey;
-    // }
-    // if (isMoonbeamDeposit.value) {
-    //   await depositFromMoonbeam({ recipientAccountId, handleFinalizedCallback });
-    //   return;
-    // }
-    // const injector = await getInjector(substrateAccounts.value);
-    // const txCall = originChainApi.transferToParachain({
-    //   toPara: destParaId.value,
-    //   recipientAccountId: recipientAccountId,
-    //   amount: ethers.utils.parseUnits(amount.value as string, decimals.value).toString(),
-    //   selectedToken: selectedToken.value,
-    // });
+  // const handleDeposit = async ({
+  //   destinationAddress,
+  //   originChainApi,
+  //   handleFinalizedCallback,
+  // }: {
+  //   destinationAddress: string;
+  //   originChainApi: ChainApi;
+  //   handleFinalizedCallback: (hash: string) => Promise<void>;
+  // }): Promise<void> => {
+  //   console.log('handleDeposit', handleDeposit);
+  // let recipientAccountId = destinationAddress;
+  // if (isEvmBridge.value) {
+  //   const ss58MappedAddr = evmToAddress(inputtedAddress.value, ASTAR_SS58_FORMAT);
+  //   const hexPublicKey = getPubkeyFromSS58Addr(ss58MappedAddr);
+  //   recipientAccountId = hexPublicKey;
+  // }
+  // if (isMoonbeamDeposit.value) {
+  //   await depositFromMoonbeam({ recipientAccountId, handleFinalizedCallback });
+  //   return;
+  // }
+  // const injector = await getInjector(substrateAccounts.value);
+  // const txCall = originChainApi.transferToParachain({
+  //   toPara: destParaId.value,
+  //   recipientAccountId: recipientAccountId,
+  //   amount: ethers.utils.parseUnits(amount.value as string, decimals.value).toString(),
+  //   selectedToken: selectedToken.value,
+  // });
 
-    // const callBack = async (hash: string): Promise<void> => {
-    //   if (!isEvmBridge.value) {
-    //     await monitorBalanceIncreasing({
-    //       api: $api!,
-    //       userAddress: currentAccount.value,
-    //       originTokenData: selectedToken.value,
-    //     });
-    //   }
-    //   await handleFinalizedCallback(hash);
-    // };
+  // const callBack = async (hash: string): Promise<void> => {
+  //   if (!isEvmBridge.value) {
+  //     await monitorBalanceIncreasing({
+  //       api: $api!,
+  //       userAddress: currentAccount.value,
+  //       originTokenData: selectedToken.value,
+  //     });
+  //   }
+  //   await handleFinalizedCallback(hash);
+  // };
 
-    // await originChainApi
-    //   .signAndSend({
-    //     account: currentAccount.value,
-    //     signer: injector.signer,
-    //     tx: txCall,
-    //     finalizedCallback: callBack,
-    //     handleResult,
-    //     tip: '1',
-    //   })
-    //   .catch((error: Error) => {
-    //     handleTransactionError(error);
-    //     return;
-    //   });
-  };
+  // await originChainApi
+  //   .signAndSend({
+  //     account: currentAccount.value,
+  //     signer: injector.signer,
+  //     tx: txCall,
+  //     finalizedCallback: callBack,
+  //     handleResult,
+  //     tip: '1',
+  //   })
+  //   .catch((error: Error) => {
+  //     handleTransactionError(error);
+  //     return;
+  //   });
+  // };
 
-  const handleWithdraw = async ({
-    destinationAddress,
-    handleFinalizedCallback,
-  }: {
-    destinationAddress: string;
-    handleFinalizedCallback: (hash: string) => Promise<void>;
-  }): Promise<void> => {
-    const recipientAccountId = isMoonbeamWithdrawal.value
-      ? inputtedAddress.value
-      : getPubkeyFromSS58Addr(destinationAddress);
-    const injector = await getInjector(substrateAccounts.value);
-    const parachainApi = new AstarApi($api!!);
+  // const handleWithdraw = async ({
+  //   destinationAddress,
+  //   handleFinalizedCallback,
+  // }: {
+  //   destinationAddress: string;
+  //   handleFinalizedCallback: (hash: string) => Promise<void>;
+  // }): Promise<void> => {
+  //   const recipientAccountId = isMoonbeamWithdrawal.value
+  //     ? inputtedAddress.value
+  //     : getPubkeyFromSS58Addr(destinationAddress);
+  //   const injector = await getInjector(substrateAccounts.value);
+  //   const parachainApi = new AstarApi($api!!);
 
-    const txCall = await parachainApi.transferToOriginChain({
-      assetId: selectedToken.value.id,
-      recipientAccountId,
-      amount: ethers.utils.parseUnits(amount.value as string, decimals.value).toString(),
-      isNativeToken: selectedToken.value.isNativeToken,
-      paraId: destChain.value.parachainId,
-    });
+  //   const txCall = await parachainApi.transferToOriginChain({
+  //     assetId: selectedToken.value.id,
+  //     recipientAccountId,
+  //     amount: ethers.utils.parseUnits(amount.value as string, decimals.value).toString(),
+  //     isNativeToken: selectedToken.value.isNativeToken,
+  //     paraId: destChain.value.parachainId,
+  //   });
 
-    const tip = ethers.utils.parseEther(nativeTipPrice.value.fast).toString();
-    await parachainApi
-      .signAndSend({
-        account: currentAccount.value,
-        signer: injector.signer,
-        tx: txCall,
-        finalizedCallback: handleFinalizedCallback,
-        handleResult,
-        tip,
-      })
-      .catch((error: Error) => {
-        handleTransactionError(error);
-      });
-  };
+  //   const tip = ethers.utils.parseEther(nativeTipPrice.value.fast).toString();
+  //   await parachainApi
+  //     .signAndSend({
+  //       account: currentAccount.value,
+  //       signer: injector.signer,
+  //       tx: txCall,
+  //       finalizedCallback: handleFinalizedCallback,
+  //       handleResult,
+  //       tip,
+  //     })
+  //     .catch((error: Error) => {
+  //       handleTransactionError(error);
+  //     });
+  // };
 
   const bridge = async (): Promise<void> => {
     if (!originChainApi) throw Error('Something went wrong while bridging');

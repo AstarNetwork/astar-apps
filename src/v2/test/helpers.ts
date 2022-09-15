@@ -27,7 +27,6 @@ import { container } from '../common';
 import { XcmService } from 'src/v2/services/implementations/XcmService';
 import { BalanceFormatterService } from 'src/v2/services/implementations/BalanceFormatterService';
 import { ITypeFactory, TypeFactory, TypeMapping } from '../config/types';
-import { XcmRepositoryConfiguration } from '../config/xcm/XcmRepositoryConfiguration';
 
 const TestSymbols = {
   WalletServiceMock: Symbol.for('WalletServiceMock'),

@@ -4,7 +4,7 @@ import { inject, injectable } from 'inversify';
 import { checkIsDeposit, XcmChain } from 'src/modules/xcm';
 import { XcmAssets } from 'src/store/assets/state';
 import { Guard } from 'src/v2/common';
-import { ITypeFactory, Network } from 'src/v2/config/types';
+import { ITypeFactory } from 'src/v2/config/types';
 import { ExtrinsicPayload } from 'src/v2/integration';
 import { Asset } from 'src/v2/models';
 import { IPriceRepository, IXcmRepository } from 'src/v2/repositories';
