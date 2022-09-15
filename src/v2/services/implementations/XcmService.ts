@@ -1,7 +1,7 @@
 import { BN } from '@polkadot/util';
 import { ethers } from 'ethers';
 import { inject, injectable } from 'inversify';
-import { Chain, checkIsDeposit } from 'src/modules/xcm';
+import { checkIsDeposit, XcmChain } from 'src/modules/xcm';
 import { XcmAssets } from 'src/store/assets/state';
 import { Guard } from 'src/v2/common';
 import { ITypeFactory, Network } from 'src/v2/config/types';
@@ -11,8 +11,8 @@ import { IPriceRepository, IXcmRepository } from 'src/v2/repositories';
 import { IBalanceFormatterService, IXcmService, IWalletService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 
-export const isParachain = (network: Network): boolean => !!network.parachainId;
-export const isRelayChain = (network: Network): boolean => !isParachain(network);
+export const isParachain = (network: XcmChain): boolean => !!network.parachainId;
+export const isRelayChain = (network: XcmChain): boolean => !isParachain(network);
 
 @injectable()
 export class XcmService implements IXcmService {
@@ -31,8 +31,8 @@ export class XcmService implements IXcmService {
 
   // Todo: return the hash
   public async transfer(
-    from: Network,
-    to: Network,
+    from: XcmChain,
+    to: XcmChain,
     token: Asset,
     senderAddress: string,
     recipientAddress: string,
@@ -44,7 +44,7 @@ export class XcmService implements IXcmService {
 
     let call: ExtrinsicPayload | null = null;
     // Memo: if tip stays undefined, wallet infrastructure will fetch it.
-    const tip = checkIsDeposit(from.chain as Chain) ? 1 : undefined;
+    const tip = checkIsDeposit(from.name) ? 1 : undefined;
 
     const amountBn = new BN(
       ethers.utils.parseUnits(amount.toString(), token.metadata.decimals).toString()
@@ -70,11 +70,11 @@ export class XcmService implements IXcmService {
       // HRMP
       // Dinamically determine parachain repository to use.
       console.log('get repository');
-      const repository = <IXcmRepository>this.typeFactory.getInstance(from.chain);
+      const repository = <IXcmRepository>this.typeFactory.getInstance(from.name);
       console.log('get call');
       call = await repository.getTransferCall(from, to, recipientAddress, token, amountBn);
     } else {
-      throw `Transfer between ${from.displayName} to ${to.displayName} is not supported. Currently supported transfers are UMP, DMP and HRMP.`;
+      throw `Transfer between ${from.name} to ${to.name} is not supported. Currently supported transfers are UMP, DMP and HRMP.`;
     }
 
     console.log('call', call);

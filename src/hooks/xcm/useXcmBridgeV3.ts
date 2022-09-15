@@ -1,4 +1,3 @@
-import { evmToAddress } from '@polkadot/util-crypto';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
 import { endpointKey } from 'src/config/chainEndpoints';
@@ -37,21 +36,17 @@ import {
   XcmChain,
   xcmChainObj,
 } from 'src/modules/xcm';
-// import { Chain as ChainV2 } from 'src/v2/config/types/Network';
 import { useStore } from 'src/store';
 import { wait } from 'src/v2/common';
 import { Asset } from 'src/v2/models';
 import { computed, ref, Ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 
+import { Path } from 'src/router';
 import { container } from 'src/v2/common';
-import { Network } from 'src/v2/config/types';
-import { XcmConfiguration } from 'src/v2/config/xcm/XcmConfiguration';
-import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { IXcmEvmService, IXcmService, IXcmTransfer } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { useRouter } from 'vue-router';
-import { Path } from 'src/router';
 
 const { Acala, Astar, Karura, Polkadot, Shiden } = xcmChainObj;
 // Memo: Chain.STATEMINE -> Bug related to https://github.com/polkadot-js/apps/issues/7812
@@ -671,10 +666,6 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
       xcmService = container.get<IXcmService>(Symbols.XcmService);
     }
 
-    const from = getV2Chain(srcChain.value);
-    const to = getV2Chain(destChain.value);
-    // const from = srcChain.value;
-    // const to = destChain.value;
     const amountToTransfer = amount.value ? Number(amount.value) : 0;
     const recipient = isInputDestAddrManually.value ? inputtedAddress.value : currentAccount.value;
 
@@ -684,8 +675,8 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
     if (from && to && selectedToken.value) {
       // Todo: add return the hash
       const hash = await xcmService.transfer(
-        from,
-        to,
+        srcChain.value,
+        destChain.value,
         selectedToken.value,
         currentAccount.value,
         recipient,
@@ -693,13 +684,6 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
       );
       hash && (await finalizedCallback(hash));
     }
-  };
-
-  // Todo: remove
-  const getV2Chain = (v1chain: XcmChain): Network | undefined => {
-    // const chain = <Chain>v1chain.name.toString();
-    const chain = v1chain.name as any;
-    return XcmConfiguration.find((x) => x.chain === chain);
   };
 
   // Handle XCM call end so we can close a modal.

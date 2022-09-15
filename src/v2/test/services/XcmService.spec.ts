@@ -1,10 +1,10 @@
 import { BN } from 'bn.js';
 import { container, resetContainer } from 'src/v2/common';
-import { Network } from 'src/v2/config/types';
 import { Asset, AssetMetadata } from 'src/v2/models';
 import { IXcmService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { initTestContainer } from '../helpers';
+import { XcmChain } from 'src/modules/xcm';
 
 describe('XcmService.ts', () => {
   beforeEach(() => {
@@ -23,8 +23,8 @@ describe('XcmService.ts', () => {
   });
 
   describe('transfer', () => {
-    const from = {} as Network;
-    const to = {} as Network;
+    const from = {} as XcmChain;
+    const to = {} as XcmChain;
     const token = new Asset(
       '1',
       '2',

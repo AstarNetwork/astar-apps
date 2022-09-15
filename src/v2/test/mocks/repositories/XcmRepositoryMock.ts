@@ -1,9 +1,9 @@
 import { BN } from '@polkadot/util';
 import { injectable } from 'inversify';
-import { Network } from 'src/v2/config/types';
 import { ExtrinsicPayload } from 'src/v2/integration';
 import { Asset, AssetMetadata } from 'src/v2/models';
 import { IXcmRepository } from 'src/v2/repositories';
+import { XcmChain } from 'src/modules/xcm';
 
 @injectable()
 export class XcmRepositoryMock implements IXcmRepository {
@@ -30,8 +30,8 @@ export class XcmRepositoryMock implements IXcmRepository {
   }
 
   public getTransferToParachainCall(
-    from: Network,
-    to: Network,
+    from: XcmChain,
+    to: XcmChain,
     recipientAddress: string,
     token: Asset,
     amount: BN
@@ -40,7 +40,7 @@ export class XcmRepositoryMock implements IXcmRepository {
   }
 
   public getTransferToOriginChainCall(
-    from: Network,
+    from: XcmChain,
     recipientAddress: string,
     amount: BN
   ): Promise<ExtrinsicPayload> {
@@ -48,8 +48,8 @@ export class XcmRepositoryMock implements IXcmRepository {
   }
 
   public getTransferCall(
-    from: Network,
-    to: Network,
+    from: XcmChain,
+    to: XcmChain,
     recipientAddress: string,
     token: Asset,
     amount: BN

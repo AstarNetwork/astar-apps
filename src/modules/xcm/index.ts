@@ -74,7 +74,7 @@ export interface XcmChain {
   relayChain: Chain;
   img: string;
   parachainId: parachainIds;
-  endpoint?: string;
+  endpoint: string;
   subscan: string;
   // Note: true if ASTR/SDN is listed on the parachain
   isAstarNativeToken: boolean;
@@ -101,6 +101,7 @@ export const xcmChainObj: XcmChainObj = {
     relayChain: Chain.POLKADOT,
     img: require('/src/assets/img/ic_astar.png'),
     parachainId: parachainIds.ASTAR,
+    endpoint: 'wss://astar-rpc.dwellir.com',
     subscan: 'https://astar.subscan.io',
     isAstarNativeToken: false,
     apiInstance: ({ api }: { api: ApiPromise }) => new AstarApi(api),
@@ -110,6 +111,7 @@ export const xcmChainObj: XcmChainObj = {
     relayChain: Chain.POLKADOT,
     img: require('/src/assets/img/ic_astar.png'),
     parachainId: parachainIds.ASTAR,
+    endpoint: 'wss://astar-rpc.dwellir.com',
     subscan: 'https://astar.subscan.io',
     isAstarNativeToken: false,
     apiInstance: ({ api }: { api: ApiPromise }) => new AstarApi(api),
@@ -129,6 +131,7 @@ export const xcmChainObj: XcmChainObj = {
     relayChain: Chain.KUSAMA,
     img: require('/src/assets/img/ic_shiden.png'),
     parachainId: parachainIds.SHIDEN,
+    endpoint: 'wss://shiden-rpc.dwellir.com',
     subscan: 'https://shiden.subscan.io',
     isAstarNativeToken: false,
     apiInstance: ({ api }: { api: ApiPromise }) => new AstarApi(api),
@@ -138,6 +141,7 @@ export const xcmChainObj: XcmChainObj = {
     relayChain: Chain.KUSAMA,
     img: require('/src/assets/img/ic_shiden.png'),
     parachainId: parachainIds.SHIDEN,
+    endpoint: 'wss://shiden-rpc.dwellir.com',
     subscan: 'https://shiden.subscan.io',
     isAstarNativeToken: false,
     apiInstance: ({ api }: { api: ApiPromise }) => new AstarApi(api),

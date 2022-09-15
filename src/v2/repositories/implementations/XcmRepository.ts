@@ -12,9 +12,10 @@ import { Guard } from 'src/v2/common';
 import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { XcmTokenInformation } from 'src/modules/xcm';
 import { decodeAddress, evmToAddress } from '@polkadot/util-crypto';
-import { Network, TokenId } from 'src/v2/config/types';
+import { TokenId } from 'src/v2/config/types';
 import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
 import { isValidEvmAddress } from 'src/config/web3';
+import { XcmChain } from 'src/modules/xcm';
 
 interface AssetConfig extends Struct {
   v1: {
@@ -98,14 +99,14 @@ export class XcmRepository implements IXcmRepository {
   }
 
   public async getTransferToParachainCall(
-    from: Network,
-    to: Network,
+    from: XcmChain,
+    to: XcmChain,
     recipientAddress: string,
     token: Asset,
     amount: BN
   ): Promise<ExtrinsicPayload> {
     if (!to.parachainId) {
-      throw `Parachain id for ${to.displayName} is not defined`;
+      throw `Parachain id for ${to.name} is not defined`;
     }
 
     // the target parachain connected to the current relaychain
@@ -165,7 +166,7 @@ export class XcmRepository implements IXcmRepository {
   }
 
   public async getTransferToOriginChainCall(
-    from: Network,
+    from: XcmChain,
     recipientAddress: string,
     amount: BN
   ): Promise<ExtrinsicPayload> {
@@ -222,8 +223,8 @@ export class XcmRepository implements IXcmRepository {
   }
 
   public getTransferCall(
-    from: Network,
-    to: Network,
+    from: XcmChain,
+    to: XcmChain,
     recipientAddress: string,
     token: Asset,
     amount: BN
@@ -232,7 +233,7 @@ export class XcmRepository implements IXcmRepository {
   }
 
   protected async buildTxCall(
-    network: Network,
+    network: XcmChain,
     extrinsic: string,
     method: string,
     ...args: any[]
@@ -247,7 +248,7 @@ export class XcmRepository implements IXcmRepository {
   }
 
   protected async fetchAssetConfig(
-    source: Network,
+    source: XcmChain,
     token: Asset
   ): Promise<{
     parents: number;

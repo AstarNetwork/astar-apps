@@ -15,6 +15,11 @@ import { Symbols } from 'src/v2/symbols';
 import { IXcmEvmService, IGasPriceProvider } from 'src/v2/services';
 import xcmContractAbi from 'src/config/web3/abi/xcm-abi.json';
 import { getEvmGas } from 'src/modules/gas-api';
+import { addXcmTxHistories, XcmChain } from 'src/modules/xcm';
+import { GLMR, MOVR } from 'src/modules/token';
+import moonbeamWithdrawalAbi from 'src/config/web3/abi/xcm-moonbeam-withdrawal-abi.json';
+import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
+import { isValidEvmAddress } from 'src/config/web3';
 
 // XCM precompiled contract address
 const PRECOMPILED_ADDR = '0x0000000000000000000000000000000000005004';
@@ -28,8 +33,8 @@ export class XcmEvmService implements IXcmEvmService {
   ) {}
 
   public async transfer(
-    from: Network,
-    to: Network,
+    from: XcmChain,
+    to: XcmChain,
     token: Asset,
     senderAddress: string,
     recipientAddress: string,
@@ -37,6 +42,18 @@ export class XcmEvmService implements IXcmEvmService {
   ): Promise<string | null> {
     Guard.ThrowIfUndefined('recipientAddress', recipientAddress);
     Guard.ThrowIfNegative('amount', amount);
+
+    const moonbeamTokens = [MOVR.address.toLowerCase(), GLMR.address.toLowerCase()];
+    const isMoonbeamWithdrawal = moonbeamTokens.includes(token.mappedERC20Addr.toLowerCase());
+
+    const ABI = isMoonbeamWithdrawal ? moonbeamWithdrawalAbi : xcmContractAbi;
+
+    const isValidDestAddress =
+      (!isMoonbeamWithdrawal && isValidAddressPolkadotAddress(recipientAddress)) ||
+      (isMoonbeamWithdrawal && isValidEvmAddress(recipientAddress));
+    if (!isValidDestAddress) {
+      throw Error('Invalid destination address');
+    }
 
     return new Promise<string>(async (resolve, reject) => {
       this.eventAggregator.publish(new BusyMessage(true));
@@ -56,7 +73,7 @@ export class XcmEvmService implements IXcmEvmService {
       try {
         const provider = getEvmProvider(this.currentWallet as any);
         const web3 = new Web3(provider as any);
-        const contract = new web3.eth.Contract(xcmContractAbi as AbiItem[], PRECOMPILED_ADDR);
+        const contract = new web3.eth.Contract(ABI as AbiItem[], PRECOMPILED_ADDR);
 
         const [nonce, gasPrice] = await Promise.all([
           web3.eth.getTransactionCount(senderAddress),
@@ -94,6 +111,14 @@ export class XcmEvmService implements IXcmEvmService {
                 transactionHash
               )
             );
+            // addXcmTxHistories({
+            //   hash: transactionHash,
+            //   from: currentNetworkName.value + pathEvm,
+            //   to: withdrawalChain.name,
+            //   symbol: selectedToken.value.metadata.symbol,
+            //   amount: asset_amount,
+            //   address: currentAccount.value,
+            // });
             resolve(transactionHash);
           });
       } catch (e: any) {

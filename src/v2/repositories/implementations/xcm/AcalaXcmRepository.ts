@@ -2,11 +2,11 @@ import { BN } from '@polkadot/util';
 import { decodeAddress } from '@polkadot/util-crypto';
 import { XcmTokenInformation } from 'src/modules/xcm';
 import { container } from 'src/v2/common';
-import { Network } from 'src/v2/config/types';
 import { ExtrinsicPayload, IApi, IApiFactory } from 'src/v2/integration';
 import { Asset } from 'src/v2/models';
 import { Symbols } from 'src/v2/symbols';
 import { XcmRepository } from '../XcmRepository';
+import { XcmChain } from 'src/modules/xcm';
 
 /**
  * Used to transfer assets from Acala/Karura
@@ -26,14 +26,14 @@ export class AcalaXcmRepository extends XcmRepository {
   }
 
   public async getTransferCall(
-    from: Network,
-    to: Network,
+    from: XcmChain,
+    to: XcmChain,
     recipientAddress: string,
     token: Asset,
     amount: BN
   ): Promise<ExtrinsicPayload> {
     if (!to.parachainId) {
-      throw `Parachain id for ${to.displayName} is not defined`;
+      throw `Parachain id for ${to.name} is not defined`;
     }
 
     const tokenData = this.getTokenData(token);
