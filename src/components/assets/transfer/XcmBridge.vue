@@ -181,7 +181,7 @@
         <button
           class="btn btn--confirm btn-size-adjust"
           :disabled="isDisabledBridge || isDisabledXcmButton"
-          @click="handleBridge"
+          @click="bridge"
         >
           {{ $t('confirm') }}
         </button>
@@ -193,10 +193,10 @@
 import InputSelectChain from 'src/components/assets/transfer/InputSelectChain.vue';
 import SimpleInput from 'src/components/common/SimpleInput.vue';
 import SelectEvmWallet from 'src/components/assets/transfer/SelectEvmWallet.vue';
-import { pathEvm, useAccount, useTooltip, useXcmBridgeV3, useXcmEvm } from 'src/hooks';
+import { pathEvm, useAccount, useTooltip, useXcmBridgeV3 } from 'src/hooks';
 import { truncate } from 'src/hooks/helper/common';
 import { Asset } from 'src/v2/models';
-import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
+import { computed, defineComponent, PropType, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ModalLoading from '/src/components/common/ModalLoading.vue';
 import { isValidEvmAddress } from 'src/config/web3';
@@ -208,11 +208,6 @@ export default defineComponent({
     SelectEvmWallet,
   },
   props: {
-    handleFinalizedCallback: {
-      type: Function,
-      required: false,
-      default: null,
-    },
     setRightUi: {
       type: Function,
       required: true,
@@ -274,8 +269,6 @@ export default defineComponent({
       return !srcChain.value.name.includes(pathEvm) && !destChain.value.name.includes(pathEvm);
     });
 
-    const { callAssetWithdrawToPara } = useXcmEvm(tokenData);
-
     const handleDisplayTokenSelector = (isFrom: boolean): void => {
       props.setRightUi('select-chain');
       props.setIsSelectFromChain(isFrom);
@@ -283,35 +276,11 @@ export default defineComponent({
 
     const getNetworkName = (): string => (isDeposit.value ? 'EVM' : destChain.value.name);
 
-    const evmInputPlaceholder = computed<string>(() => {
-      return t('addressPlaceholder', { network: getNetworkName() });
-    });
+    const evmInputPlaceholder = computed<string>(() =>
+      t('addressPlaceholder', { network: getNetworkName() })
+    );
 
-    const evmInputTitle = computed<string>(() => {
-      return t('addressFormat', { network: getNetworkName() });
-    });
-
-    // Todo: remove async
-    const finalizeCallback = async (): Promise<void> => {
-      props.handleFinalizedCallback();
-    };
-
-    const handleBridge = async (): Promise<void> => {
-      if (isH160.value) {
-        const txHash = await callAssetWithdrawToPara(
-          amount.value!!,
-          inputtedAddress.value,
-          finalizeCallback
-        );
-
-        if (txHash) {
-          isDisabledBridge.value = true;
-          amount.value = null;
-        }
-      } else {
-        await bridge(finalizeCallback);
-      }
-    };
+    const evmInputTitle = computed<string>(() => t('addressFormat', { network: getNetworkName() }));
 
     return {
       errMsg,
@@ -339,7 +308,6 @@ export default defineComponent({
       setIsMobileDisplayTooltip,
       inputHandler,
       bridge,
-      handleBridge,
       truncate,
       reverseChain,
       handleDisplayTokenSelector,

@@ -7,7 +7,6 @@ import { inject, injectable } from 'inversify';
 import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
 import { Guard } from 'src/v2/common';
-import { Network } from 'src/v2/config/types';
 import { XcmConfiguration } from 'src/v2/config/xcm/XcmConfiguration';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { Asset } from 'src/v2/models';
@@ -15,11 +14,12 @@ import { Symbols } from 'src/v2/symbols';
 import { IXcmEvmService, IGasPriceProvider } from 'src/v2/services';
 import xcmContractAbi from 'src/config/web3/abi/xcm-abi.json';
 import { getEvmGas } from 'src/modules/gas-api';
-import { addXcmTxHistories, XcmChain } from 'src/modules/xcm';
+import { addXcmTxHistories, relaychainParaId, XcmChain } from 'src/modules/xcm';
 import { GLMR, MOVR } from 'src/modules/token';
 import moonbeamWithdrawalAbi from 'src/config/web3/abi/xcm-moonbeam-withdrawal-abi.json';
 import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { isValidEvmAddress } from 'src/config/web3';
+import { pathEvm } from 'src/hooks';
 
 // XCM precompiled contract address
 const PRECOMPILED_ADDR = '0x0000000000000000000000000000000000005004';
@@ -66,7 +66,7 @@ export class XcmEvmService implements IXcmEvmService {
       const assetAmounts = [new BN(assetAmount)];
       const recipientAccountId = recipientEvmAccountId;
       const withdrawalChain = XcmConfiguration.find((x) => x.chain === token.originChain);
-      const isRelay = Number(withdrawalChain && !!withdrawalChain.parachainId);
+      const isRelay = Number(withdrawalChain && withdrawalChain.parachainId) === relaychainParaId;
       const parachainId = withdrawalChain?.parachainId ?? 0;
       const feeIndex = 0;
 
@@ -79,6 +79,14 @@ export class XcmEvmService implements IXcmEvmService {
           web3.eth.getTransactionCount(senderAddress),
           getEvmGas(web3, this.gasPriceProvider.getGas().price),
         ]);
+
+        // console.log('assetIds', assetIds);
+        // console.log('assetAmounts', assetAmounts.toString());
+        // console.log('recipientAccountId', recipientAccountId);
+        // console.log('isRelay', isRelay);
+        // console.log('parachainId', parachainId);
+        // console.log('feeIndex', feeIndex);
+        // console.log('isMoonbeamWithdrawal', isMoonbeamWithdrawal);
 
         const rawTx: TransactionConfig = {
           nonce,
@@ -111,14 +119,14 @@ export class XcmEvmService implements IXcmEvmService {
                 transactionHash
               )
             );
-            // addXcmTxHistories({
-            //   hash: transactionHash,
-            //   from: currentNetworkName.value + pathEvm,
-            //   to: withdrawalChain.name,
-            //   symbol: selectedToken.value.metadata.symbol,
-            //   amount: asset_amount,
-            //   address: currentAccount.value,
-            // });
+            addXcmTxHistories({
+              hash: transactionHash,
+              from: from.name + pathEvm,
+              to: to.name,
+              symbol: token.metadata.symbol,
+              amount: amount.toString(),
+              address: senderAddress,
+            });
             resolve(transactionHash);
           });
       } catch (e: any) {

@@ -441,7 +441,6 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
     //     handleTransactionError(error);
     //     return;
     //   });
-    await handleBridgeV2();
   };
 
   const handleWithdraw = async ({
@@ -480,24 +479,9 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
       });
   };
 
-  const bridge = async (finalizedCallback: () => Promise<void>): Promise<void> => {
+  const bridge = async (): Promise<void> => {
     if (!originChainApi) throw Error('Something went wrong while bridging');
     if (!amount.value) throw Error('Invalid amount');
-    const handleFinalizedCallback = async (hash: string) => {
-      // addXcmTxHistories({
-      //   hash,
-      //   from: srcChain.value.name,
-      //   to: destChain.value.name,
-      //   symbol: selectedToken.value.metadata.symbol,
-      //   amount: amount.value as string,
-      //   address: currentAccount.value,
-      // });
-      // await finalizedCallback();
-    };
-    const destinationAddress = isInputDestAddrManually.value
-      ? inputtedAddress.value
-      : currentAccount.value;
-
     try {
       await handleBridgeV2();
       // isDeposit.value
