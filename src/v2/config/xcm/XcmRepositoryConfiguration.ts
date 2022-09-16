@@ -2,6 +2,7 @@ import {
   AcalaXcmRepository,
   AstarXcmRepository,
   StatemintXcmRepository,
+  MoonbeamXcmRepository,
 } from 'src/v2/repositories/implementations';
 import { Chain } from 'src/modules/xcm';
 import { TypeMapping } from 'src/v2/config/types';
@@ -12,4 +13,6 @@ export const XcmRepositoryConfiguration: TypeMapping = {
   [Chain.ACALA]: AcalaXcmRepository,
   [Chain.KARURA]: AcalaXcmRepository,
   [Chain.STATEMINE]: StatemintXcmRepository,
+  [Chain.MOONBEAM]: MoonbeamXcmRepository,
+  [Chain.MOONRIVER]: MoonbeamXcmRepository,
 };

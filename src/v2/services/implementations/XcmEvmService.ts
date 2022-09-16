@@ -1,24 +1,21 @@
 import { BN } from '@polkadot/util';
 import { ethers } from 'ethers';
-import { AbiItem } from 'web3-utils';
-import { TransactionConfig } from 'web3-eth';
-import Web3 from 'web3';
 import { inject, injectable } from 'inversify';
+import { isValidEvmAddress } from 'src/config/web3';
+import xcmContractAbi from 'src/config/web3/abi/xcm-abi.json';
+import moonbeamWithdrawalAbi from 'src/config/web3/abi/xcm-moonbeam-withdrawal-abi.json';
 import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
+import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
+import { getEvmGas } from 'src/modules/gas-api';
+import { Chain, ethWalletChains, relaychainParaId, xcmChainObj } from 'src/modules/xcm';
 import { Guard } from 'src/v2/common';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
-import { Asset } from 'src/v2/models';
+import { IGasPriceProvider, IXcmEvmService, TransferParam } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
-import { IXcmEvmService, IGasPriceProvider } from 'src/v2/services';
-import xcmContractAbi from 'src/config/web3/abi/xcm-abi.json';
-import { getEvmGas } from 'src/modules/gas-api';
-import { addXcmTxHistories, Chain, relaychainParaId, XcmChain, xcmChainObj } from 'src/modules/xcm';
-import { GLMR, MOVR } from 'src/modules/token';
-import moonbeamWithdrawalAbi from 'src/config/web3/abi/xcm-moonbeam-withdrawal-abi.json';
-import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
-import { isValidEvmAddress } from 'src/config/web3';
-import { pathEvm } from 'src/hooks';
+import Web3 from 'web3';
+import { TransactionConfig } from 'web3-eth';
+import { AbiItem } from 'web3-utils';
 
 // XCM precompiled contract address
 const PRECOMPILED_ADDR = '0x0000000000000000000000000000000000005004';
@@ -31,19 +28,19 @@ export class XcmEvmService implements IXcmEvmService {
     @inject(Symbols.CurrentWallet) private currentWallet: string
   ) {}
 
-  public async transfer(
-    from: XcmChain,
-    to: XcmChain,
-    token: Asset,
-    senderAddress: string,
-    recipientAddress: string,
-    amount: number
-  ): Promise<string | null> {
+  public async transfer({
+    from,
+    to,
+    token,
+    senderAddress,
+    recipientAddress,
+    amount,
+    finalizedCallback,
+  }: TransferParam): Promise<void> {
     Guard.ThrowIfUndefined('recipientAddress', recipientAddress);
     Guard.ThrowIfNegative('amount', amount);
 
-    const moonbeamTokens = [MOVR.address.toLowerCase(), GLMR.address.toLowerCase()];
-    const isMoonbeamWithdrawal = moonbeamTokens.includes(token.mappedERC20Addr.toLowerCase());
+    const isMoonbeamWithdrawal = ethWalletChains.includes(to.name);
 
     const ABI = isMoonbeamWithdrawal ? moonbeamWithdrawalAbi : xcmContractAbi;
 
@@ -54,7 +51,7 @@ export class XcmEvmService implements IXcmEvmService {
       throw Error('Invalid destination address');
     }
 
-    return new Promise<string>(async (resolve, reject) => {
+    return new Promise<void>(async (resolve, reject) => {
       this.eventAggregator.publish(new BusyMessage(true));
 
       const asset_id = token.mappedERC20Addr;
@@ -64,7 +61,6 @@ export class XcmEvmService implements IXcmEvmService {
       const assetIds = [asset_id];
       const assetAmounts = [new BN(assetAmount)];
       const recipientAccountId = recipientEvmAccountId;
-      // const withdrawalChain = XcmConfiguration.find((x) => x.chain === token.originChain);
       const withdrawalChain = xcmChainObj[token.originChain as Chain];
       const isRelay = Number(withdrawalChain && withdrawalChain.parachainId) === relaychainParaId;
       const parachainId = withdrawalChain?.parachainId ?? 0;
@@ -79,14 +75,6 @@ export class XcmEvmService implements IXcmEvmService {
           web3.eth.getTransactionCount(senderAddress),
           getEvmGas(web3, this.gasPriceProvider.getGas().price),
         ]);
-
-        // console.log('assetIds', assetIds);
-        // console.log('assetAmounts', assetAmounts.toString());
-        // console.log('recipientAccountId', recipientAccountId);
-        // console.log('isRelay', isRelay);
-        // console.log('parachainId', parachainId);
-        // console.log('feeIndex', feeIndex);
-        // console.log('isMoonbeamWithdrawal', isMoonbeamWithdrawal);
 
         const rawTx: TransactionConfig = {
           nonce,
@@ -109,7 +97,7 @@ export class XcmEvmService implements IXcmEvmService {
         const estimatedGas = await web3.eth.estimateGas(rawTx);
         await web3.eth
           .sendTransaction({ ...rawTx, gas: estimatedGas })
-          .then(({ transactionHash }) => {
+          .then(async ({ transactionHash }) => {
             this.eventAggregator.publish(new BusyMessage(false));
             this.eventAggregator.publish(
               new ExtrinsicStatusMessage(
@@ -119,15 +107,8 @@ export class XcmEvmService implements IXcmEvmService {
                 transactionHash
               )
             );
-            addXcmTxHistories({
-              hash: transactionHash,
-              from: from.name + pathEvm,
-              to: to.name,
-              symbol: token.metadata.symbol,
-              amount: amount.toString(),
-              address: senderAddress,
-            });
-            resolve(transactionHash);
+            finalizedCallback && (await finalizedCallback(transactionHash));
+            resolve();
           });
       } catch (e: any) {
         console.error(e);

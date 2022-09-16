@@ -5,13 +5,24 @@ export interface IXcmService extends IXcmTransfer {
   getAssets(currentAccount: string, isFetchUsd: boolean): Promise<XcmAssets>;
 }
 
+export interface TransferParam {
+  from: XcmChain;
+  to: XcmChain;
+  token: Asset;
+  senderAddress: string;
+  recipientAddress: string;
+  amount: number;
+  finalizedCallback?: (hash: string) => Promise<void>;
+}
+
 export interface IXcmTransfer {
-  transfer(
-    from: XcmChain,
-    to: XcmChain,
-    token: Asset,
-    senderAddress: string,
-    recipientAddress: string,
-    amount: number
-  ): Promise<string | null>;
+  transfer({
+    from,
+    to,
+    token,
+    senderAddress,
+    recipientAddress,
+    amount,
+    finalizedCallback,
+  }: TransferParam): Promise<void>;
 }

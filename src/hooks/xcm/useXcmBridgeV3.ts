@@ -5,14 +5,11 @@ import { getTokenBal, isValidEvmAddress, toSS58Address } from 'src/config/web3';
 import { capitalize } from 'src/hooks/helper/common';
 import { ASTAR_SS58_FORMAT } from 'src/hooks/helper/plasmUtils';
 import { SystemAccount } from 'src/modules/account';
-import { SubstrateAccount } from 'src/store/general/state';
 
 import {
   astarNativeTokens,
   useAccount,
   useBalance,
-  useCustomSignature,
-  useGasPrice,
   useNetworkInfo,
   useTransferRouter,
 } from 'src/hooks';
@@ -27,7 +24,9 @@ import { showLoading } from 'src/modules/extrinsic/utils';
 import {
   addXcmTxHistories,
   Chain,
+  chainsNotSupportWithdrawal,
   checkIsDeposit,
+  ethWalletChains,
   fetchXcmBalance,
   monitorBalanceIncreasing,
   parachainIds,
@@ -45,10 +44,9 @@ import { container } from 'src/v2/common';
 import { IXcmEvmService, IXcmService, IXcmTransfer } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { useRouter } from 'vue-router';
+import { evmToAddress } from '@polkadot/util-crypto';
 
 const { Acala, Astar, Karura, Polkadot, Shiden } = xcmChainObj;
-// Memo: Chain.STATEMINE -> Bug related to https://github.com/polkadot-js/apps/issues/7812
-const chainsNotSupportWithdrawal = [Chain.STATEMINE];
 
 export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
   let originChainApi: ChainApi | null = null;
@@ -109,18 +107,10 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
     () => !!(selectedToken.value && selectedToken.value.originChain)
   );
 
-  // Todo: refactoring
-  const isMoonbeamWithdrawal = computed<boolean>(() => {
-    return [Chain.MOONRIVER, Chain.MOONBEAM].includes(destChain.value.name);
-  });
+  const isWithdrawalEthChain = computed<boolean>(() =>
+    ethWalletChains.includes(destChain.value.name)
+  );
 
-  // Todo: refactoring
-  const isMoonbeamDeposit = computed<boolean>(() => {
-    if (!srcChain.value) return false;
-    return [Chain.MOONRIVER, Chain.MOONBEAM].includes(srcChain.value.name);
-  });
-
-  const { handleResult, handleTransactionError } = useCustomSignature({});
   const { accountData } = useBalance(currentAccount);
 
   const resetStates = (): void => {
@@ -137,6 +127,12 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
 
   const toggleIsInputDestAddrManually = (): void => {
     isInputDestAddrManually.value = !isInputDestAddrManually.value;
+  };
+
+  const setInputDestAddrManually = (): void => {
+    if (inputtedAddress.value || isH160.value) {
+      isInputDestAddrManually.value = true;
+    }
   };
 
   const setSrcChain = (chain: XcmChain): void => {
@@ -190,7 +186,7 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
   };
 
   const checkInputtedAddress = (): boolean => {
-    if (isMoonbeamWithdrawal.value || isEvmBridge.value) {
+    if (isWithdrawalEthChain.value || isEvmBridge.value) {
       return isValidEvmAddress(inputtedAddress.value);
     } else {
       const isSubstrateAddress = isValidAddressPolkadotAddress(
@@ -326,7 +322,7 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
           return Number(userBalance);
         }
       } else {
-        if (isMoonbeamWithdrawal.value) {
+        if (isWithdrawalEthChain.value) {
           if (!isValidEvmAddress(inputtedAddress.value)) return 0;
           const tokenAddress = isAstarNativeTransfer.value
             ? MOONBEAM_ASTAR_TOKEN_ID[selectedToken.value.metadata.symbol as AstarToken]
@@ -351,135 +347,47 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
     }
   };
 
-  const depositFromMoonbeam = async ({
-    recipientAccountId,
-    handleFinalizedCallback,
-  }: {
-    recipientAccountId: string;
-    handleFinalizedCallback: (hash: string) => Promise<void>;
-  }): Promise<void> => {
-    if (!amount.value || !originChainApi) throw Error('Something went wrong');
-    showLoading(store.dispatch, true);
-    const hash = await originChainApi.evmTransferToParachain({
-      toPara: destParaId.value,
-      recipientAccountId,
-      amount: ethers.utils.parseUnits(amount.value, decimals.value).toString(),
-      selectedToken: selectedToken.value,
+  const finalizedCallback = async (hash: string): Promise<void> => {
+    addXcmTxHistories({
+      hash,
+      from: srcChain.value.name,
+      to: destChain.value.name,
+      symbol: selectedToken.value.metadata.symbol,
+      amount: amount.value as string,
+      address: currentAccount.value,
     });
-    if (!isEvmBridge.value) {
+    const isMonitorBal = isDeposit.value && !isInputDestAddrManually.value;
+    if (isMonitorBal) {
       await monitorBalanceIncreasing({
         api: $api!,
         userAddress: currentAccount.value,
         originTokenData: selectedToken.value,
       });
     }
-    const msg = t('toast.completedHash', { hash });
-    store.dispatch('general/showAlertMsg', {
-      msg,
-      alertType: 'success',
-    });
-    showLoading(store.dispatch, false);
-    await handleFinalizedCallback(hash);
+    router.push(Path.Assets);
   };
 
-  // const handleDeposit = async ({
-  //   destinationAddress,
-  //   originChainApi,
-  //   handleFinalizedCallback,
-  // }: {
-  //   destinationAddress: string;
-  //   originChainApi: ChainApi;
-  //   handleFinalizedCallback: (hash: string) => Promise<void>;
-  // }): Promise<void> => {
-  //   console.log('handleDeposit', handleDeposit);
-  // let recipientAccountId = destinationAddress;
-  // if (isEvmBridge.value) {
-  //   const ss58MappedAddr = evmToAddress(inputtedAddress.value, ASTAR_SS58_FORMAT);
-  //   const hexPublicKey = getPubkeyFromSS58Addr(ss58MappedAddr);
-  //   recipientAccountId = hexPublicKey;
-  // }
-  // if (isMoonbeamDeposit.value) {
-  //   await depositFromMoonbeam({ recipientAccountId, handleFinalizedCallback });
-  //   return;
-  // }
-  // const injector = await getInjector(substrateAccounts.value);
-  // const txCall = originChainApi.transferToParachain({
-  //   toPara: destParaId.value,
-  //   recipientAccountId: recipientAccountId,
-  //   amount: ethers.utils.parseUnits(amount.value as string, decimals.value).toString(),
-  //   selectedToken: selectedToken.value,
-  // });
-
-  // const callBack = async (hash: string): Promise<void> => {
-  //   if (!isEvmBridge.value) {
-  //     await monitorBalanceIncreasing({
-  //       api: $api!,
-  //       userAddress: currentAccount.value,
-  //       originTokenData: selectedToken.value,
-  //     });
-  //   }
-  //   await handleFinalizedCallback(hash);
-  // };
-
-  // await originChainApi
-  //   .signAndSend({
-  //     account: currentAccount.value,
-  //     signer: injector.signer,
-  //     tx: txCall,
-  //     finalizedCallback: callBack,
-  //     handleResult,
-  //     tip: '1',
-  //   })
-  //   .catch((error: Error) => {
-  //     handleTransactionError(error);
-  //     return;
-  //   });
-  // };
-
-  // const handleWithdraw = async ({
-  //   destinationAddress,
-  //   handleFinalizedCallback,
-  // }: {
-  //   destinationAddress: string;
-  //   handleFinalizedCallback: (hash: string) => Promise<void>;
-  // }): Promise<void> => {
-  //   const recipientAccountId = isMoonbeamWithdrawal.value
-  //     ? inputtedAddress.value
-  //     : getPubkeyFromSS58Addr(destinationAddress);
-  //   const injector = await getInjector(substrateAccounts.value);
-  //   const parachainApi = new AstarApi($api!!);
-
-  //   const txCall = await parachainApi.transferToOriginChain({
-  //     assetId: selectedToken.value.id,
-  //     recipientAccountId,
-  //     amount: ethers.utils.parseUnits(amount.value as string, decimals.value).toString(),
-  //     isNativeToken: selectedToken.value.isNativeToken,
-  //     paraId: destChain.value.parachainId,
-  //   });
-
-  //   const tip = ethers.utils.parseEther(nativeTipPrice.value.fast).toString();
-  //   await parachainApi
-  //     .signAndSend({
-  //       account: currentAccount.value,
-  //       signer: injector.signer,
-  //       tx: txCall,
-  //       finalizedCallback: handleFinalizedCallback,
-  //       handleResult,
-  //       tip,
-  //     })
-  //     .catch((error: Error) => {
-  //       handleTransactionError(error);
-  //     });
-  // };
-
   const bridge = async (): Promise<void> => {
-    if (!originChainApi) throw Error('Something went wrong while bridging');
-    if (!amount.value) throw Error('Invalid amount');
     try {
-      await handleBridgeV2();
-      // isDeposit.value
-      //   ? await handleDeposit({ destinationAddress, handleFinalizedCallback, originChainApi })
-      //   : await handleWithdraw({ destinationAddress, handleFinalizedCallback });
+      const xcmService: IXcmTransfer = isH160.value
+        ? container.get<IXcmEvmService>(Symbols.XcmEvmService)
+        : container.get<IXcmService>(Symbols.XcmService);
+
+      const recipientAddress = isEvmBridge.value
+        ? evmToAddress(inputtedAddress.value, ASTAR_SS58_FORMAT)
+        : isInputDestAddrManually.value
+        ? inputtedAddress.value
+        : currentAccount.value;
+
+      await xcmService.transfer({
+        from: srcChain.value,
+        to: destChain.value,
+        token: selectedToken.value,
+        senderAddress: currentAccount.value,
+        recipientAddress,
+        amount: Number(amount.value),
+        finalizedCallback,
+      });
     } catch (error: any) {
       console.error(error.message);
       store.dispatch('general/showAlertMsg', {
@@ -586,10 +494,13 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
   watchEffect(setErrMsg);
   watchEffect(setIsDisabledBridge);
   watchEffect(updateChain);
+  watchEffect(setInputDestAddrManually);
   watch([isEvmBridge, isAstar, selectedToken], setDefaultChain, { immediate: true });
   watch([selectedToken, from], resetStates, { immediate: false });
   watch([isInputDestAddrManually], () => {
-    inputtedAddress.value = '';
+    if (!isInputDestAddrManually.value) {
+      inputtedAddress.value = '';
+    }
   });
 
   watchEffect(async () => {
@@ -607,79 +518,6 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
       await monitorDestChainBalance(inputtedAddress.value);
     }
   );
-  watchEffect(() => {
-    if (isH160.value) {
-      isInputDestAddrManually.value = true;
-    }
-  });
-
-  // V2 PoC start
-
-  const finalizedCallback = async (hash: string): Promise<void> => {
-    addXcmTxHistories({
-      hash,
-      from: srcChain.value.name,
-      to: destChain.value.name,
-      symbol: selectedToken.value.metadata.symbol,
-      amount: amount.value as string,
-      address: currentAccount.value,
-    });
-    if (!isEvmBridge.value && isDeposit.value) {
-      await monitorBalanceIncreasing({
-        api: $api!,
-        userAddress: currentAccount.value,
-        originTokenData: selectedToken.value,
-      });
-    }
-    router.push(Path.Assets);
-  };
-
-  const handleBridgeV2 = async (): Promise<void> => {
-    let xcmService: IXcmTransfer;
-
-    if (isH160.value) {
-      xcmService = container.get<IXcmEvmService>(Symbols.XcmEvmService);
-    } else {
-      xcmService = container.get<IXcmService>(Symbols.XcmService);
-    }
-
-    const amountToTransfer = amount.value ? Number(amount.value) : 0;
-    const recipient = isInputDestAddrManually.value ? inputtedAddress.value : currentAccount.value;
-
-    console.log('from', from);
-    console.log('to', to);
-    console.log('selectedToken.value', selectedToken.value);
-    if (from && to && selectedToken.value) {
-      // Todo: add return the hash
-      const hash = await xcmService.transfer(
-        srcChain.value,
-        destChain.value,
-        selectedToken.value,
-        currentAccount.value,
-        recipient,
-        amountToTransfer
-      );
-      hash && (await finalizedCallback(hash));
-    }
-  };
-
-  // Handle XCM call end so we can close a modal.
-  // const eventAggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
-  // eventAggregator.subscribe(ExtrinsicStatusMessage.name, async (m) => {
-  //   const message = m as ExtrinsicStatusMessage;
-
-  //   if (
-  //     message.method.startsWith('xcmPallet') ||
-  //     message.method.startsWith('polkadotXcm') ||
-  //     message.method.startsWith('xToken') ||
-  //     message.method.startsWith('evmXcm')
-  //   ) {
-  //     console.log('Subscribe');
-  //     console.log('ExtrinsicStatusMessage.name', ExtrinsicStatusMessage.name);
-  //     store.dispatch('assets/getAssets', currentAccount.value);
-  //     // await closeModal();
-  //   }
-  // });
 
   return {
     amount,
@@ -695,12 +533,10 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
     isDeposit,
     isLoadingApi,
     isAstarNativeTransfer,
-    isMoonbeamWithdrawal,
-    isMoonbeamDeposit,
+    isWithdrawalEthChain,
     isInputDestAddrManually,
     inputHandler,
     bridge,
-    resetStates,
     initializeXcmApi,
     reverseChain,
     toggleIsInputDestAddrManually,

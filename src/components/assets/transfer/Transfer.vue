@@ -86,9 +86,7 @@ import {
   useTransferRouter,
 } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
-import { MOVR } from 'src/modules/token';
 import { Chain, removeEvmName, XcmChain, xcmToken } from 'src/modules/xcm';
-import { ASTR } from 'src/modules/xcm/tokens';
 import { useStore } from 'src/store';
 import { EvmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';

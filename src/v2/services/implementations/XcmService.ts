@@ -1,14 +1,21 @@
 import { BN } from '@polkadot/util';
 import { ethers } from 'ethers';
 import { inject, injectable } from 'inversify';
-import { checkIsDeposit, XcmChain } from 'src/modules/xcm';
+import { checkIsDeposit, ethWalletChains, XcmChain } from 'src/modules/xcm';
 import { XcmAssets } from 'src/store/assets/state';
 import { Guard } from 'src/v2/common';
 import { ITypeFactory } from 'src/v2/config/types';
 import { ExtrinsicPayload } from 'src/v2/integration';
+import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { Asset } from 'src/v2/models';
 import { IPriceRepository, IXcmRepository } from 'src/v2/repositories';
-import { IBalanceFormatterService, IXcmService, IWalletService } from 'src/v2/services';
+import { MoonbeamXcmRepository } from 'src/v2/repositories/implementations';
+import {
+  IBalanceFormatterService,
+  IWalletService,
+  IXcmService,
+  TransferParam,
+} from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 
 export const isParachain = (network: XcmChain): boolean => !!network.parachainId;
@@ -24,20 +31,22 @@ export class XcmService implements IXcmService {
     @inject(Symbols.BalanceFormatterService)
     private balanceFormatterService: IBalanceFormatterService,
     @inject(Symbols.WalletFactory) walletFactory: () => IWalletService,
-    @inject(Symbols.TypeFactory) private typeFactory: ITypeFactory
+    @inject(Symbols.TypeFactory) private typeFactory: ITypeFactory,
+    @inject(Symbols.EventAggregator) readonly eventAggregator: IEventAggregator
   ) {
     this.wallet = walletFactory();
   }
 
   // Todo: return the hash
-  public async transfer(
-    from: XcmChain,
-    to: XcmChain,
-    token: Asset,
-    senderAddress: string,
-    recipientAddress: string,
-    amount: number
-  ): Promise<string | null> {
+  public async transfer({
+    from,
+    to,
+    token,
+    senderAddress,
+    recipientAddress,
+    amount,
+    finalizedCallback,
+  }: TransferParam): Promise<void> {
     Guard.ThrowIfUndefined('recipientAddress', recipientAddress);
     Guard.ThrowIfNegative('amount', amount);
     this.GuardTransfer(amount, token);
@@ -49,6 +58,25 @@ export class XcmService implements IXcmService {
     const amountBn = new BN(
       ethers.utils.parseUnits(amount.toString(), token.metadata.decimals).toString()
     );
+
+    const isDepositFromEthWallet = ethWalletChains.includes(from.name);
+
+    if (isDepositFromEthWallet) {
+      this.eventAggregator.publish(new BusyMessage(true));
+      const repository = <MoonbeamXcmRepository>this.typeFactory.getInstance(from.name);
+      const hash = await repository.evmTransferToParachain({
+        toPara: to.parachainId,
+        recipientAccountId: recipientAddress,
+        amount: amountBn.toString(),
+        token,
+      });
+      finalizedCallback && (await finalizedCallback(hash));
+      this.eventAggregator.publish(
+        new ExtrinsicStatusMessage(true, `Completed at transaction hash ${hash}`)
+      );
+      this.eventAggregator.publish(new BusyMessage(false));
+      return;
+    }
 
     if (isParachain(from) && isRelayChain(to)) {
       // UMP
@@ -69,25 +97,22 @@ export class XcmService implements IXcmService {
     } else if (isParachain(from) && isParachain(to)) {
       // HRMP
       // Dinamically determine parachain repository to use.
-      console.log('get repository');
       const repository = <IXcmRepository>this.typeFactory.getInstance(from.name);
-      console.log('get call');
       call = await repository.getTransferCall(from, to, recipientAddress, token, amountBn);
     } else {
       throw `Transfer between ${from.name} to ${to.name} is not supported. Currently supported transfers are UMP, DMP and HRMP.`;
     }
 
-    console.log('call', call);
     if (call) {
-      console.log('signAndSend');
       const hash = await this.wallet.signAndSend(
         call,
         senderAddress,
         `You successfully transferred ${amount} ${token.metadata.symbol} to ${recipientAddress}`,
         tip
       );
-      console.log('hash', hash);
-      return hash;
+      this.eventAggregator.publish(new BusyMessage(true));
+      finalizedCallback && hash && (await finalizedCallback(hash));
+      this.eventAggregator.publish(new BusyMessage(false));
     } else {
       throw 'Call for XCM transfer can not be build';
     }

@@ -13,7 +13,7 @@
           :balance="String(fromAddressBalance)"
           :symbol="token.metadata.symbol"
         />
-        <SelectEvmWallet v-if="isMoonbeamDeposit" :initialize-xcm-api="initializeXcmApi" />
+        <SelectEvmWallet v-if="isDepositEthChain" :initialize-xcm-api="initializeXcmApi" />
         <div v-if="isReverseButton" class="row--reverse">
           <button class="icon--reverse cursor-pointer" @click="reverseChain">
             <astar-icon-sync size="20" />
@@ -30,7 +30,7 @@
           :balance="String(destAddressBalance)"
           :symbol="token.metadata.symbol"
         />
-        <div v-if="isEvmBridge || isMoonbeamWithdrawal">
+        <div v-if="isEvmBridge || isWithdrawalEthChain">
           <SimpleInput
             v-model:selAddress="inputtedAddress"
             :to-address="inputtedAddress"
@@ -200,6 +200,7 @@ import { computed, defineComponent, PropType, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ModalLoading from '/src/components/common/ModalLoading.vue';
 import { isValidEvmAddress } from 'src/config/web3';
+import { ethWalletChains } from 'src/modules/xcm';
 export default defineComponent({
   components: {
     SimpleInput,
@@ -253,10 +254,8 @@ export default defineComponent({
       fromAddressBalance,
       isDeposit,
       isLoadingApi,
-      isAstarNativeTransfer,
       isInputDestAddrManually,
-      isMoonbeamDeposit,
-      isMoonbeamWithdrawal,
+      isWithdrawalEthChain,
       initializeXcmApi,
       inputHandler,
       bridge,
@@ -282,6 +281,11 @@ export default defineComponent({
 
     const evmInputTitle = computed<string>(() => t('addressFormat', { network: getNetworkName() }));
 
+    const isDepositEthChain = computed<boolean>(() => {
+      if (!srcChain.value) return false;
+      return ethWalletChains.includes(srcChain.value.name);
+    });
+
     return {
       errMsg,
       amount,
@@ -298,13 +302,12 @@ export default defineComponent({
       fromAddressBalance,
       isDeposit,
       isDisplayTooltip,
-      isAstarNativeTransfer,
       currentAccount,
       isInputDestAddrManually,
       isInputtingAddress,
       isReverseButton,
-      isMoonbeamDeposit,
-      isMoonbeamWithdrawal,
+      isDepositEthChain,
+      isWithdrawalEthChain,
       setIsMobileDisplayTooltip,
       inputHandler,
       bridge,

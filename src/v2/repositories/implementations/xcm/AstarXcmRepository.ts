@@ -1,7 +1,7 @@
 import { BN } from '@polkadot/util';
 import { decodeAddress } from '@polkadot/util-crypto';
 import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
-import { XcmTokenInformation } from 'src/modules/xcm';
+import { ethWalletChains, XcmTokenInformation } from 'src/modules/xcm';
 import { container } from 'src/v2/common';
 import { ExtrinsicPayload, IApi, IApiFactory } from 'src/v2/integration';
 import { Asset } from 'src/v2/models';
@@ -58,15 +58,25 @@ export class AstarXcmRepository extends XcmRepository {
           },
         };
 
+    const isAccountId20 = ethWalletChains.includes(to.name);
+    const X1 = isAccountId20
+      ? {
+          AccountKey20: {
+            network: 'Any',
+            key: recipientAccountId,
+          },
+        }
+      : {
+          AccountId32: {
+            network: 'Any',
+            id: decodeAddress(recipientAccountId),
+          },
+        };
+
     const beneficiary = {
       V1: {
         interior: {
-          X1: {
-            AccountId32: {
-              network: 'Any',
-              id: decodeAddress(recipientAccountId),
-            },
-          },
+          X1,
         },
         parents: new BN(0),
       },
