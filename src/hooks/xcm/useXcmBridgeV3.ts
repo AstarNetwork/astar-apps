@@ -99,9 +99,9 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
   const decimals = computed<number>(() =>
     selectedToken.value ? Number(selectedToken.value.metadata.decimals) : 0
   );
-  const originChain = computed<XcmChain>(() => {
-    return xcmChainObj[selectedToken.value.originChain as Chain];
-  });
+  const originChain = computed<XcmChain>(
+    () => xcmChainObj[selectedToken.value.originChain as Chain]
+  );
 
   const isLoadOriginApi = computed<boolean>(
     () => !!(selectedToken.value && selectedToken.value.originChain)

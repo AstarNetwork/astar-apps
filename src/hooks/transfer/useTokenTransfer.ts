@@ -15,7 +15,7 @@ import { useStore } from 'src/store';
 import { Asset } from 'src/v2/models';
 import { computed, ref, Ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import Web3 from 'web3';
 import { TransactionConfig } from 'web3-eth';
 import { AbiItem } from 'web3-utils';
@@ -25,6 +25,7 @@ import { getEvmGas, getEvmGasCost } from 'src/modules/gas-api/utils/index';
 import { SUBSTRATE_SS58_FORMAT } from 'src/hooks/helper/plasmUtils';
 import { signAndSend } from 'src/hooks/helper/wallet';
 import { SubstrateAccount } from 'src/store/general/state';
+import { Path } from 'src/router';
 
 export function useTokenTransfer(selectedToken: Ref<Asset>) {
   const transferAmt = ref<string | null>(null);
@@ -48,6 +49,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     setSelectedTip,
   } = useGasPrice();
   const route = useRoute();
+  const router = useRouter();
 
   const { nativeTokenSymbol, evmNetworkIdx } = useNetworkInfo();
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
@@ -102,6 +104,10 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     toAddressBalance.value = 0;
   };
 
+  const finalizeCallback = (): void => {
+    router.push(Path.Assets);
+  };
+
   const toastInvalidAddress = () =>
     store.dispatch('general/showAlertMsg', {
       msg: 'assets.invalidAddress',
@@ -141,7 +147,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     toAddress: string;
     web3: Web3;
     gasPrice: string;
-    finalizeCallback: () => Promise<void>;
+    finalizeCallback: () => void;
   }): Promise<void> => {
     const destinationAddress = buildEvmAddress(toAddress);
     if (!ethers.utils.isAddress(destinationAddress)) {
@@ -201,7 +207,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     contractAddress: string;
     gasPrice: string;
     web3: Web3;
-    finalizeCallback: () => Promise<void>;
+    finalizeCallback: () => void;
   }): Promise<void> => {
     if (!isH160.value) return;
     if (!ethers.utils.isAddress(toAddress)) {
@@ -251,11 +257,9 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
   const transferAsset = async ({
     transferAmt,
     toAddress,
-    finalizeCallback,
   }: {
     transferAmt: number;
     toAddress: string;
-    finalizeCallback: () => Promise<void>;
   }): Promise<void> => {
     if (!selectedToken?.value) {
       throw Error('Token is not selected');
@@ -264,7 +268,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     const receivingAddress = isValidEvmAddress(toAddress) ? toSS58Address(toAddress) : toAddress;
     const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
       const res = await handleResult(result);
-      await finalizeCallback();
+      finalizeCallback();
       return res;
     };
 

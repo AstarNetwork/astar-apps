@@ -15,7 +15,6 @@
             <LocalTransfer
               :account-data="accountData"
               :class="isHighlightRightUi && 'half-opacity'"
-              :handle-finalized-callback="handleFinalizedCallback"
               :set-right-ui="setRightUi"
               :token="token"
             />
@@ -27,7 +26,6 @@
               :class="isHighlightRightUi && 'half-opacity'"
               :set-right-ui="setRightUi"
               :is-highlight-right-ui="isHighlightRightUi"
-              :handle-finalized-callback="handleFinalizedCallback"
               :set-is-select-from-chain="setIsSelectFromChain"
               :is-disabled-xcm-button="isDisabledXcm"
             />
@@ -118,7 +116,6 @@ export default defineComponent({
     const { screenSize, width } = useBreakpoints();
     const {
       tokenSymbol,
-      router,
       from,
       to,
       token,
@@ -182,9 +179,6 @@ export default defineComponent({
     };
     const handleModalSelectToken = ({ isOpen }: { isOpen: boolean }): void => {
       isModalSelectToken.value = isOpen;
-    };
-    const handleFinalizedCallback = (): void => {
-      router.push('/assets');
     };
 
     const setRightUi = async (ui: RightUi): Promise<void> => {
@@ -269,7 +263,6 @@ export default defineComponent({
       handleModalSelectChain,
       cancelHighlight,
       handleSetIsLocalTransfer,
-      handleFinalizedCallback,
       handleSetToken,
       handleSetChain,
       setIsSelectFromChain,
