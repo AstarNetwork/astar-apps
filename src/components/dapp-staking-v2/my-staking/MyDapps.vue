@@ -118,6 +118,10 @@ table {
     display: flex;
     gap: 8px;
   }
+
+  @media (min-width: $lg) {
+    min-width: 720px;
+  }
 }
 
 @mixin table-desktop {

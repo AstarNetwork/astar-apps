@@ -171,7 +171,7 @@ export default defineComponent({
     white-space: nowrap;
     cursor: pointer;
     &:hover {
-      font-weight: 600;
+      text-shadow: 0.6px 0 0 currentColor;
     }
     &:after {
       transition: all 0.3s cubic-bezier(1, 0, 0, 1);
@@ -206,10 +206,6 @@ export default defineComponent({
   .tabs {
     .tab {
       color: $gray-1;
-
-      &:hover {
-        font-weight: 600;
-      }
     }
   }
 }

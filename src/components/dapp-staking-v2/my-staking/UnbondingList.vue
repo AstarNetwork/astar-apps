@@ -120,6 +120,10 @@ table {
     display: flex;
     gap: 6px;
   }
+
+  @media (min-width: $lg) {
+    min-width: 720px;
+  }
 }
 
 @mixin table-desktop {

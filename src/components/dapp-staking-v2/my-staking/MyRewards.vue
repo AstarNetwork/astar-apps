@@ -103,7 +103,7 @@ export default defineComponent({
   flex: none;
   flex-basis: 24%;
   // width: 294px;
-  min-width: 120px;
+  min-width: 200px;
   height: 142px;
   background: $gray-1;
   border-radius: 6px;
@@ -131,7 +131,7 @@ export default defineComponent({
   }
 
   @media (max-width: $lg) {
-    min-width: 100px;
+    min-width: 160px;
     height: 114px;
     padding: 24px 16px;
 
