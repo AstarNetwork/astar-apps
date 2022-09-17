@@ -48,7 +48,6 @@ export function useAppRouter() {
       networkIdxStore === null ||
       networkIdxStore === undefined ||
       storedNetworkAlias !== networkParam;
-
     if (isReload) {
       localStorage.setItem(
         SELECTED_ENDPOINT,
@@ -57,7 +56,7 @@ export function useAppRouter() {
       localStorage.setItem(NETWORK_IDX, endpointIdx);
       if (network.value === networkParam) {
         window.location.reload();
-      } else {
+      } else if (network.value.toLowerCase() === 'shibuya') {
         // if: users type `shibuya` in the URL -> app goes to /shibuya-testnet/assets
         router.push('/' + networkParam + Path.Assets);
       }
