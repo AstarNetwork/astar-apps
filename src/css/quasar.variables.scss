@@ -5,6 +5,7 @@ $gray-5: #2c3335;
 $gray-5-selected: #3c4649;
 $gray-5-selected-dark: #222829;
 $gray-6: #191d1f;
+$input-label: #9DA3AE;
 
 $object-light: #e6e9ee;
 
@@ -13,6 +14,7 @@ $astar-blue-dark: #05b6fd;
 $shiden-purple: #770cff;
 $shiden-purple-dark: #a67cff;
 $warning-red: #ff5621;
+$negative: $warning-red; // Override Quasar negative color (--q-negative).
 $warning-yellow: #d8a400;
 $connected-green: #56f566;
 

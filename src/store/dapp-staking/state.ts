@@ -20,6 +20,7 @@ export interface DappItem extends LooseObject {
 export interface NewDappItem extends DappItem {
   iconFileName: string;
   iconFile: string;
+  icon: File[];
   images: File[];
   imagesContent: string[];
   videoUrlInput: string;

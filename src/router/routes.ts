@@ -3,6 +3,7 @@ import ManageDappsTab from 'components/dapp-staking/ManageDappsTab.vue';
 import Assets from 'pages/Assets.vue';
 import Store from 'src/pages/DappStaking.vue';
 import Dashboard from 'src/pages/Dashboard.vue';
+import RegisterDapp from 'src/pages/RegisterDapp.vue';
 import { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
@@ -61,6 +62,10 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'manage',
         component: ManageDappsTab,
+      },
+      {
+        path: 'register',
+        component: RegisterDapp,
       },
     ],
   },
