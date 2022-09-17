@@ -1,6 +1,7 @@
+import { XcmChain } from 'src/modules/xcm';
 import { XcmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
-import { XcmChain } from 'src/modules/xcm';
+
 export interface IXcmService extends IXcmTransfer {
   getAssets(currentAccount: string, isFetchUsd: boolean): Promise<XcmAssets>;
 }
