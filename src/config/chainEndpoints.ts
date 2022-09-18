@@ -2,7 +2,7 @@ import { RegistryTypes } from '@polkadot/types/types';
 import * as typeDefs from 'src/config/api/polkadot/registry-types';
 import { ASTAR_CHAIN } from 'src/config/chain';
 
-// Note: try to not define variables or functions in this file because `typeDefs` makes failing on unit test
+// Note: try to not define variables or functions in this file because `typeDefs` makes unit test fails
 
 export interface ChainProvider {
   networkAlias: string;
