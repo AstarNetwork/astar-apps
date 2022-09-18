@@ -32,6 +32,8 @@ export type ASTAR_NATIVE_TOKEN = 'ASTR' | 'SDN' | 'SBY';
 export type ASTAR_NETWORK_IDX = endpointKey.ASTAR | endpointKey.SHIDEN | endpointKey.SHIBUYA;
 export type ASTAR_EVM_NETWORK_IDX = 592 | 336 | 81;
 
+export const astarMainnetNativeToken: ASTAR_NATIVE_TOKEN[] = ['ASTR', 'SDN'];
+
 export enum endpointKey {
   ASTAR = 0,
   SHIDEN = 1,

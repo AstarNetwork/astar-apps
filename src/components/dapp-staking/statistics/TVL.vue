@@ -27,12 +27,13 @@ import { defineComponent, computed } from 'vue';
 import { numFormatter } from 'src/hooks/helper/price';
 import FormatBalance from 'components/common/FormatBalance.vue';
 import { useStore } from 'src/store';
+import { TvlModel } from 'src/v2/models';
 
 export default defineComponent({
   components: { FormatBalance },
   setup() {
     const store = useStore();
-    const tvl = computed(() => store.getters['dapps/getTvl']);
+    const tvl = computed<TvlModel>(() => store.getters['dapps/getTvl']);
     store.dispatch('dapps/getTvl');
 
     return {
