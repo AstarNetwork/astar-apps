@@ -203,7 +203,8 @@ const actions: ActionTree<State, StateInterface> = {
         ]);
 
         const minimumStakingAmountBalance = $api?.createType('Balance', minimumStakingAmount);
-        commit('setMinimumStakingAmount', minimumStakingAmountBalance?.toHuman());
+        // commit('setMinimumStakingAmount', minimumStakingAmountBalance?.toHuman());
+        commit('setMinimumStakingAmount', minimumStakingAmountBalance?.toString());
         commit('setMaxNumberOfStakersPerContract', maxNumberOfStakersPerContract?.toNumber());
         commit('setUnbondingPeriod', unbondingPeriod?.toNumber());
         commit('setMaxUnlockingChunks', maxUnlockingChunks?.toNumber());

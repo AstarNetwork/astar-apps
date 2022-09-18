@@ -27,20 +27,22 @@
 </template>
 
 <script lang="ts">
-import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
+import { useNetworkInfo } from 'src/hooks';
 import { useStore } from 'src/store';
 import { computed, defineComponent } from 'vue';
+import { ethers } from 'ethers';
+
 export default defineComponent({
   setup() {
+    const { nativeTokenSymbol } = useNetworkInfo();
     const store = useStore();
     const maxNumberOfStakersPerContract = computed(
       () => store.getters['dapps/getMaxNumberOfStakersPerContract']
     );
-    const minimumStakingAmount = computed(() => {
+    const minimumStakingAmount = computed<string>(() => {
       const amount = store.getters['dapps/getMinimumStakingAmount'];
-      return formatUnitAmount(amount);
+      return Number(ethers.utils.formatEther(amount)).toString() + ' ' + nativeTokenSymbol.value;
     });
-
     return {
       maxNumberOfStakersPerContract,
       minimumStakingAmount,
