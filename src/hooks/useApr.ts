@@ -7,7 +7,8 @@ import { ethers } from 'ethers';
 import { defaultAmountWithDecimals } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { computed, ref, watchEffect } from 'vue';
-import { useChainMetadata, useCurrentEra, useNetworkInfo, useTvl } from 'src/hooks';
+import { useChainMetadata, useCurrentEra, useNetworkInfo } from 'src/hooks';
+import { TvlModel } from 'src/v2/models';
 
 interface RewardDistributionConfig extends Struct {
   readonly baseTreasuryPercent: Perbill;
@@ -21,7 +22,7 @@ interface RewardDistributionConfig extends Struct {
 export const useApr = () => {
   const store = useStore();
   const { decimal } = useChainMetadata();
-  const { tvlToken } = useTvl($api);
+  const tvl = computed<TvlModel>(() => store.getters['dapps/getTvl']);
   const { blockPerEra } = useCurrentEra();
   const { currentNetworkIdx } = useNetworkInfo();
 
@@ -69,7 +70,7 @@ export const useApr = () => {
 
   watchEffect(async () => {
     const dappsRef = dapps.value;
-    const tvlTokenRef = tvlToken.value;
+    const tvlTokenRef = tvl.value;
     const decimalRef = decimal.value;
     const blocksPerEraRef = Number(blockPerEra.value);
     const apiRef = $api;
@@ -109,7 +110,9 @@ export const useApr = () => {
         const avgBlocksPerDay = avrBlockPerMins * 60 * 24;
         const dailyEraRate = avgBlocksPerDay / blocksPerEraRef;
         const annualRewards = eraRewards * dailyEraRate * 365.25;
-        const totalStaked = Number(ethers.utils.formatUnits(tvlTokenRef.toString(), decimalRef));
+        const totalStaked = Number(
+          ethers.utils.formatUnits(tvlTokenRef.tvl.toString(), decimalRef)
+        );
 
         const { baseStakerPercent, adjustablePercent, idealDappsStakingTvl } = results[3];
         const totalIssuance = Number(ethers.utils.formatUnits(results[4].toString(), decimalRef));

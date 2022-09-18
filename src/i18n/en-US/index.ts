@@ -154,6 +154,7 @@ export default {
     stakerApy: 'APY: {value}%',
     stakerApr: 'APR: {value}%',
     apr: 'APR',
+    apy: 'APY',
     ttlPendingRewards: 'Your Pending Rewards',
     autoCompound: 'Re-stake after claiming',
     autoCompoundingTooltip:

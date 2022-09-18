@@ -4,7 +4,7 @@ import { getSpecTypes } from '@polkadot/types-known';
 import { TypeRegistry } from '@polkadot/types/create';
 import { formatBalance, isNumber } from '@polkadot/util';
 import { defaults as addressDefaults } from '@polkadot/util-crypto/address/defaults';
-import { ASTAR_NATIVE_TOKEN } from 'src/config/chainEndpoints';
+import { ASTAR_NATIVE_TOKEN } from 'src/config/chain';
 import { ref } from 'vue';
 
 export interface ChainInfo extends MetadataDef {
