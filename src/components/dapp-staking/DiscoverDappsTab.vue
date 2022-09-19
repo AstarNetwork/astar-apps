@@ -60,8 +60,14 @@ import ModalRegisterDapp from 'components/dapp-staking/modals/ModalRegisterDapp.
 import { useMeta } from 'quasar';
 import Dapp from 'src/components/dapp-staking/Dapp.vue';
 import UserRewards from 'src/components/dapp-staking/UserRewards.vue';
-import { useAccount, useBalance, useCurrentEra, useStakerInfo, useStakingList } from 'src/hooks';
-import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
+import {
+  useAccount,
+  useBalance,
+  useCurrentEra,
+  useNetworkInfo,
+  useStakerInfo,
+  useStakingList,
+} from 'src/hooks';
 import { useStore } from 'src/store';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
 import { DappItem } from 'src/store/dapp-staking/state';
@@ -70,6 +76,7 @@ import APR from 'src/components/dapp-staking/statistics/APR.vue';
 import DappsCount from 'src/components/dapp-staking/statistics/DappsCount.vue';
 import Era from 'src/components/dapp-staking/statistics/Era.vue';
 import TVL from 'src/components/dapp-staking/statistics/TVL.vue';
+import { ethers } from 'ethers';
 
 export default defineComponent({
   components: {
@@ -92,13 +99,15 @@ export default defineComponent({
     const { accountData } = useBalance(currentAccount);
     const { stakeInfos } = useStakerInfo();
     const { dapps, stakingList } = useStakingList();
+    const { nativeTokenSymbol } = useNetworkInfo();
 
     const maxNumberOfStakersPerContract = computed(
       () => store.getters['dapps/getMaxNumberOfStakersPerContract']
     );
-    const minimumStakingAmount = computed(() => {
+
+    const minimumStakingAmount = computed<string>(() => {
       const amount = store.getters['dapps/getMinimumStakingAmount'];
-      return formatUnitAmount(amount);
+      return Number(ethers.utils.formatEther(amount)).toString() + ' ' + nativeTokenSymbol.value;
     });
 
     const showRegisterDappModal = ref<boolean>(false);

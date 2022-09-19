@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!isLoading && currentAccount" class="wrapper--assets">
+  <div v-if="!isLoading" class="wrapper--assets">
     <div class="container--assets">
       <Account
         :ttl-erc20-amount="evmAssets.ttlEvmUsdAmount"
@@ -7,7 +7,7 @@
         :is-loading-erc20-amount="isLoading"
         :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
       />
-      <div v-if="currentAccount">
+      <div>
         <div v-if="isH160">
           <EvmAssetList :tokens="evmAssets.assets" />
         </div>
@@ -105,7 +105,6 @@ export default defineComponent({
     return {
       evmAssets,
       isLoadingXcmAssetsAmount,
-      currentAccount,
       isH160,
       isEnableXcm,
       xcmAssets,

@@ -7,6 +7,7 @@ import { Symbols } from 'src/v2/symbols';
 import { IDappStakingService } from 'src/v2/services';
 import { Guard } from 'src/v2/common';
 import { IWalletService } from '../IWalletService';
+import { astarMainnetNativeToken, ASTAR_NATIVE_TOKEN } from 'src/config/chain';
 
 @injectable()
 export class DappStakingService implements IDappStakingService {
@@ -31,7 +32,9 @@ export class DappStakingService implements IDappStakingService {
     const tvlDefaultUnit = Number(
       ethers.utils.formatUnits(BigInt(tvl.toString()), metadata.decimals)
     );
-    const tvlUsd = tvlDefaultUnit * priceUsd;
+    const tvlUsd = astarMainnetNativeToken.includes(metadata.token as ASTAR_NATIVE_TOKEN)
+      ? tvlDefaultUnit * priceUsd
+      : 0;
 
     return new TvlModel(tvl, tvlDefaultUnit, tvlUsd);
   }

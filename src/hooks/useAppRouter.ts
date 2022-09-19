@@ -16,14 +16,13 @@ export function useAppRouter() {
   const route = useRoute();
   const network = computed<string>(() => route.params.network as string);
 
-  const castNetworkName = (networkParam: string) => {
+  const castNetworkName = (networkParam: string): string => {
     let name = networkParam.toLowerCase();
     if (name === 'shibuya') {
       name = providerEndpoints[endpointKey.SHIBUYA].networkAlias;
     }
     const selectedChain = !!providerEndpoints.find((it) => it.networkAlias === name);
-    const astarAlias = providerEndpoints[endpointKey.ASTAR].networkAlias;
-    return selectedChain ? name : astarAlias;
+    return selectedChain ? name : '';
   };
 
   // Memo: this function is invoked whenever users change the `:network` param via browser's address bar
@@ -48,7 +47,6 @@ export function useAppRouter() {
       networkIdxStore === null ||
       networkIdxStore === undefined ||
       storedNetworkAlias !== networkParam;
-
     if (isReload) {
       localStorage.setItem(
         SELECTED_ENDPOINT,
@@ -58,8 +56,9 @@ export function useAppRouter() {
       if (network.value === networkParam) {
         window.location.reload();
       } else {
-        // if: users type `shibuya` in the URL -> app goes to /shibuya-testnet/assets
-        router.push('/' + networkParam + Path.Assets);
+        const redirectNetwork =
+          network.value.toLowerCase() === 'shibuya' ? endpointKey.SHIBUYA : endpointKey.ASTAR;
+        router.push('/' + providerEndpoints[redirectNetwork].networkAlias + Path.Assets);
       }
     }
   };

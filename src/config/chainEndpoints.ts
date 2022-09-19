@@ -1,5 +1,8 @@
 import { RegistryTypes } from '@polkadot/types/types';
 import * as typeDefs from 'src/config/api/polkadot/registry-types';
+import { ASTAR_CHAIN } from 'src/config/chain';
+
+// Note: try to not define variables or functions in this file because `typeDefs` makes unit test fails
 
 export interface ChainProvider {
   networkAlias: string;
@@ -19,18 +22,6 @@ export interface ChainProvider {
   faucetEndpoint: string;
   defaultLogo?: any;
 }
-
-export enum astarChain {
-  SHIBUYA = 'Shibuya Testnet',
-  SHIDEN = 'Shiden',
-  ASTAR = 'Astar',
-  DEVELOPMENT = 'Development',
-}
-
-export type ASTAR_CHAIN = astarChain.SHIDEN | astarChain.ASTAR | astarChain.SHIBUYA;
-export type ASTAR_NATIVE_TOKEN = 'ASTR' | 'SDN' | 'SBY';
-export type ASTAR_NETWORK_IDX = endpointKey.ASTAR | endpointKey.SHIDEN | endpointKey.SHIBUYA;
-export type ASTAR_EVM_NETWORK_IDX = 592 | 336 | 81;
 
 export enum endpointKey {
   ASTAR = 0,
