@@ -1,9 +1,17 @@
+import { BN } from '@polkadot/util';
 import { XcmChain } from 'src/modules/xcm';
 import { XcmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
 
 export interface IXcmService extends IXcmTransfer {
   getAssets(currentAccount: string, isFetchUsd: boolean): Promise<XcmAssets>;
+  getTokenBalance(
+    address: string,
+    chain: XcmChain,
+    token: Asset,
+    isNativeToken: boolean
+  ): Promise<string>;
+  getNativeBalance(address: string, chain: XcmChain): Promise<BN>;
 }
 
 export interface TransferParam {

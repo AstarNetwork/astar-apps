@@ -159,6 +159,21 @@ export class XcmService implements IXcmService {
     return { assets: updatedAssets, ttlNativeXcmUsdAmount };
   }
 
+  public async getTokenBalance(
+    address: string,
+    chain: XcmChain,
+    token: Asset,
+    isNativeToken: boolean
+  ): Promise<string> {
+    const repository = <IXcmRepository>this.typeFactory.getInstance(chain.name);
+    return repository.getTokenBalance(address, chain, token, isNativeToken);
+  }
+
+  public async getNativeBalance(address: string, chain: XcmChain): Promise<BN> {
+    const repository = <IXcmRepository>this.typeFactory.getInstance(chain.name);
+    return repository.getNativeBalance(address, chain);
+  }
+
   private GuardTransfer(amount: number, token: Asset) {
     // TODO implement balance and existential deposit check.
   }

@@ -1,35 +1,30 @@
-import { u8aToHex } from '@polkadot/util';
+import { u8aToHex, BN } from '@polkadot/util';
 import { decodeAddress } from '@polkadot/util-crypto';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { supportEvmWallets, SupportWallet } from 'src/config/wallets';
-import { EVM, setupNetwork } from 'src/config/web3';
+import { EVM, getTokenBal, setupNetwork } from 'src/config/web3';
 import moonbeamXcmAbi from 'src/config/web3/abi/moonbeam-xcm-abi.json';
 import { getQueryParams } from 'src/hooks/helper/common';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
-import { AstarNativeToken } from 'src/hooks/xcm/SubstrateApi';
 import { XcmTokenInformation } from 'src/modules/xcm';
 import { container } from 'src/v2/common';
 import { IApi, IApiFactory } from 'src/v2/integration';
-import { Asset } from 'src/v2/models';
+import { Asset, XcmChain } from 'src/v2/models';
 import { XcmRepository } from 'src/v2/repositories/implementations/XcmRepository';
 import { Symbols } from 'src/v2/symbols';
 import Web3 from 'web3';
 import { TransactionConfig } from 'web3-eth';
 import { AbiItem } from 'web3-utils';
 import { capitalize } from './../../../../hooks/helper/common';
+import { isValidEvmAddress } from 'src/config/web3';
+import { ethers } from 'ethers';
 
 type ChainName = 'Moonriver' | 'Moonbeam';
 
 // Ref: https://docs.moonbeam.network/builders/build/canonical-contracts/precompiles/erc20/
 const NATIVE_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000802';
 const PRE_COMPILED_ADDRESS = '0x0000000000000000000000000000000000000804';
-// Todo: check the token address for ASTR
-export const MOONBEAM_ASTAR_TOKEN_ID: AstarNativeToken = {
-  SDN: '0xffffffff0ca324c842330521525e7de111f38972',
-  ASTR: '0xffffffffa893ad19e540e172c10d78d4d479b5cf',
-};
-
 const EVM_ID = { Moonriver: EVM.MOONRIVER, Moonbeam: EVM.MOONBEAM };
 
 export class MoonbeamXcmRepository extends XcmRepository {
@@ -44,6 +39,12 @@ export class MoonbeamXcmRepository extends XcmRepository {
     const chain = capitalize(queryParams.from);
     this._networkName = chain as ChainName;
     this._web3 = new Web3(this.getEvmProvider() as any);
+
+    // Todo: check the token address for ASTR
+    this.astarTokens = {
+      SDN: '0xffffffff0ca324c842330521525e7de111f38972',
+      ASTR: '0xffffffffa893ad19e540e172c10d78d4d479b5cf',
+    };
   }
 
   public getEvmProvider(): EthereumProvider | null {
@@ -121,9 +122,9 @@ export class MoonbeamXcmRepository extends XcmRepository {
 
     let currencyAddress = '';
     const symbol = token.metadata.symbol;
-    const isAstarNativeToken = symbol === 'SDN' || symbol === 'ASTR';
-    if (isAstarNativeToken) {
-      currencyAddress = MOONBEAM_ASTAR_TOKEN_ID[symbol];
+
+    if (this.isAstarNativeToken(token)) {
+      currencyAddress = <string>this.astarTokens[symbol];
     } else {
       currencyAddress = NATIVE_TOKEN_ADDRESS;
     }
@@ -154,5 +155,48 @@ export class MoonbeamXcmRepository extends XcmRepository {
     const txDetails = await this._web3.eth.sendTransaction({ ...rawTx, gas: estimatedGas });
 
     return txDetails.transactionHash;
+  }
+
+  public async getTokenBalance(
+    address: string,
+    chain: XcmChain,
+    token: Asset,
+    isNativeToken: boolean
+  ): Promise<string> {
+    if (!address) return '0';
+    const symbol = token.metadata.symbol;
+
+    try {
+      if (this.isAstarNativeToken(token)) {
+        // if: SDN or ASTR
+        const addr = await this.getEvmWalletAddress();
+        const tokenAddress = <string>this.astarTokens[symbol];
+        const srcChainId = EVM_ID[this._networkName];
+        const balance = await getTokenBal({
+          address: addr,
+          tokenAddress,
+          tokenSymbol: symbol,
+          srcChainId,
+        });
+        return ethers.utils.parseEther(balance).toString();
+      } else {
+        // if: MOVR or GLMR
+        return (await this.getNativeBalance(address)).toString();
+      }
+    } catch (e) {
+      console.error(e);
+      return '0';
+    }
+  }
+
+  public async getNativeBalance(address: string): Promise<BN> {
+    try {
+      const addr = isValidEvmAddress(address) ? address : await this.getEvmWalletAddress();
+      const bal = (await this._web3?.eth.getBalance(addr)) || '0';
+      return new BN(bal);
+    } catch (e) {
+      console.error(e);
+      return new BN(0);
+    }
   }
 }

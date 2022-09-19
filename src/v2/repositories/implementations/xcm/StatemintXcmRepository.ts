@@ -6,7 +6,12 @@ import { ExtrinsicPayload, IApi, IApiFactory } from 'src/v2/integration';
 import { Asset } from 'src/v2/models';
 import { Symbols } from 'src/v2/symbols';
 import { XcmRepository } from 'src/v2/repositories/implementations/XcmRepository';
-import { XcmChain } from 'src/modules/xcm';
+import { XcmChain } from 'src/v2/models/XcmModels';
+import { Struct } from '@polkadot/types';
+
+interface Account extends Struct {
+  balance: string;
+}
 
 /**
  * Used to transfer assets from Acala/Karura
@@ -83,5 +88,24 @@ export class StatemintXcmRepository extends XcmRepository {
       feeAssetItem,
       weightLimit
     );
+  }
+
+  public async getTokenBalance(
+    address: string,
+    chain: XcmChain,
+    token: Asset,
+    isNativeToken: boolean
+  ): Promise<string> {
+    try {
+      const api = await this.apiFactory.get(chain.endpoint);
+      const result = await api.query.assets.account<Account>(token.originAssetId, address);
+      const data = result.toJSON();
+      const balance = data ? String(data.balance) : '0';
+
+      return balance;
+    } catch (e) {
+      console.error(e);
+      return '0';
+    }
   }
 }

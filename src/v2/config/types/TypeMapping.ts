@@ -7,5 +7,5 @@ export type TypeMapping = {
 };
 
 export type TokenId = {
-  [key: string]: number;
+  [key: string]: number | string;
 };

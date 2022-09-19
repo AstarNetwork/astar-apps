@@ -56,4 +56,17 @@ export class XcmRepositoryMock implements IXcmRepository {
   ): Promise<ExtrinsicPayload> {
     return Promise.resolve({} as ExtrinsicPayload);
   }
+
+  public async getTokenBalance(
+    address: string,
+    chain: XcmChain,
+    token: Asset,
+    isNativeToken: boolean
+  ): Promise<string> {
+    return '0';
+  }
+
+  public async getNativeBalance(address: string, chain: XcmChain): Promise<BN> {
+    return new BN('0');
+  }
 }

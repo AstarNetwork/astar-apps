@@ -1,6 +1,6 @@
 import { u8aToString, BN } from '@polkadot/util';
 import { QueryableStorageMultiArg } from '@polkadot/api/types';
-import { PalletAssetsAssetAccount } from '@polkadot/types/lookup';
+import { FrameSystemAccountInfo, PalletAssetsAssetAccount } from '@polkadot/types/lookup';
 import { Option, Struct } from '@polkadot/types';
 import Web3 from 'web3';
 import { Asset, AssetMetadata } from 'src/v2/models';
@@ -15,7 +15,7 @@ import { decodeAddress, evmToAddress } from '@polkadot/util-crypto';
 import { TokenId } from 'src/v2/config/types';
 import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
 import { isValidEvmAddress } from 'src/config/web3';
-import { XcmChain } from 'src/modules/xcm';
+import { XcmChain } from 'src/v2/models/XcmModels';
 
 interface AssetConfig extends Struct {
   v1: {
@@ -41,8 +41,8 @@ export class XcmRepository implements IXcmRepository {
   protected astarTokens: TokenId;
 
   constructor(
-    @inject(Symbols.DefaultApi) private api: IApi,
-    @inject(Symbols.ApiFactory) private apiFactory: IApiFactory,
+    @inject(Symbols.DefaultApi) protected api: IApi,
+    @inject(Symbols.ApiFactory) protected apiFactory: IApiFactory,
     @inject(Symbols.RegisteredTokens) private registeredTokens: XcmTokenInformation[]
   ) {
     this.astarTokens = {};
@@ -230,6 +230,26 @@ export class XcmRepository implements IXcmRepository {
     amount: BN
   ): Promise<ExtrinsicPayload> {
     throw 'Not implemented.';
+  }
+
+  public async getTokenBalance(
+    address: string,
+    chain: XcmChain,
+    token: Asset,
+    isNativeToken: boolean
+  ): Promise<string> {
+    return (await this.getNativeBalance(address, chain)).toString();
+  }
+
+  public async getNativeBalance(address: string, chain: XcmChain): Promise<BN> {
+    try {
+      const api = await this.apiFactory.get(chain.endpoint);
+      const { data } = await api.query.system.account<FrameSystemAccountInfo>(address);
+      return (data.free.toBn() as BN).sub(new BN(data.miscFrozen));
+    } catch (e) {
+      console.error(e);
+      return new BN(0);
+    }
   }
 
   protected async buildTxCall(
