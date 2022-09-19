@@ -117,7 +117,6 @@ export default defineComponent({
         console.error(error);
       } finally {
         closeModal();
-        // Memo: Update tokens in useCbridgeV2.ts
         window.dispatchEvent(new CustomEvent(LOCAL_STORAGE.EVM_TOKEN_IMPORTS));
       }
     };
