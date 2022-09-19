@@ -69,6 +69,13 @@ export const useConnectWallet = () => {
     modalName.value = WalletModalOption.SelectWallet;
   };
 
+  // Memo: triggered after users (who haven't connected to wallet) have clicked 'Connect Wallet' button on dApp staking page
+  const handleOpenSelectModal = (): void => {
+    window.addEventListener(WalletModalOption.SelectWallet, () => {
+      openSelectModal();
+    });
+  };
+
   const initializeWalletAccount = () => {
     const account = localStorage.getItem(SELECTED_ADDRESS);
     if (!account) {
@@ -118,7 +125,7 @@ export const useConnectWallet = () => {
       await setupNetwork({ network: chainId, provider });
 
       // If SubWallet return empty evm accounts, it required to switch to evm network and will request accounts again.
-      // This setep will not require from version 0.4.8
+      // This setup will not require from version 0.4.8
       if (accounts?.length === 0 && currentWallet === SupportWallet.SubWalletEvm) {
         const reCheckAccounts = await requestAccounts();
 
@@ -316,6 +323,7 @@ export const useConnectWallet = () => {
   };
 
   watch([selectedWallet, currentEcdsaAccount, currentAccount, isH160], changeEvmAccount);
+  watchEffect(handleOpenSelectModal);
 
   watchEffect(async () => {
     await selectLoginWallet();

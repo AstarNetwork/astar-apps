@@ -1,13 +1,14 @@
+import { ApiPromise } from '@polkadot/api';
 import { Struct } from '@polkadot/types';
 import { Perbill } from '@polkadot/types/interfaces';
 import { aprToApy } from 'apr-tools';
 import { $api } from 'boot/api';
 import { ethers } from 'ethers';
-import { endpointKey } from 'src/config/chainEndpoints';
+import { defaultAmountWithDecimals } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { computed, ref, watchEffect } from 'vue';
-import { useChainMetadata, useCurrentEra, useNetworkInfo, useTvl } from '.';
-import { defaultAmountWithDecimals } from 'src/hooks/helper/plasmUtils';
+import { useChainMetadata, useCurrentEra, useNetworkInfo } from 'src/hooks';
+import { TvlModel } from 'src/v2/models';
 
 interface RewardDistributionConfig extends Struct {
   readonly baseTreasuryPercent: Perbill;
@@ -18,23 +19,10 @@ interface RewardDistributionConfig extends Struct {
   readonly idealDappsStakingTvl: Perbill;
 }
 
-type AstarChain = endpointKey.SHIBUYA | endpointKey.ASTAR | endpointKey.SHIDEN;
-
-// Ref: https://github.com/PlasmNetwork/Astar/blob/5b01ef3c2ca608126601c1bd04270ed08ece69c4/runtime/shiden/src/lib.rs#L435
-// Memo: 50% of block rewards goes to dappsStaking, 50% goes to block validator
-// Fixme: ideally get the value from API
-const DAPPS_REWARD_RATE = 0.5;
-
-const TS_FIRST_BLOCK = {
-  [endpointKey.ASTAR]: 1639798585, //  Ref: 2021-12-18 03:36:25 https://astar.subscan.io/block/1
-  [endpointKey.SHIDEN]: 1625570880, //  Ref: 2021-07-06 11:28:00 https://shiden.subscan.io/block/1
-  [endpointKey.SHIBUYA]: 1630937640, // Ref: 2021-09-06 14:14:00 https://shibuya.subscan.io/block/1
-};
-
 export const useApr = () => {
   const store = useStore();
   const { decimal } = useChainMetadata();
-  const { tvlToken } = useTvl($api);
+  const tvl = computed<TvlModel>(() => store.getters['dapps/getTvl']);
   const { blockPerEra } = useCurrentEra();
   const { currentNetworkIdx } = useNetworkInfo();
 
@@ -42,24 +30,47 @@ export const useApr = () => {
   const stakerApr = ref<number>(0);
   const stakerApy = ref<number>(0);
 
-  const getAveBlocksPerMins = ({
-    chainId,
+  // Memo: get the 7 days average for blocks per minutes
+  const getAveBlocksPerMins = async ({
     latestBlock,
-    timestampMillis,
+    tsNow,
+    api,
+    blockPerEra,
   }: {
-    chainId: AstarChain;
     latestBlock: number;
-    timestampMillis: number;
-  }): number => {
-    const currentTs = Math.floor(timestampMillis / 1000);
-    const minsChainRunning = (currentTs - TS_FIRST_BLOCK[chainId]) / 60;
-    const avgBlocksPerMin = latestBlock / minsChainRunning;
-    return avgBlocksPerMin;
+    tsNow: number;
+    blockPerEra: number;
+    api: ApiPromise;
+  }): Promise<number> => {
+    const block7Eras = blockPerEra * 7;
+    const block7EraAgo = latestBlock - block7Eras;
+    const hashBlock7ErasAgo = await api.rpc.chain.getBlockHash(block7EraAgo);
+    const block = await api.at(hashBlock7ErasAgo);
+    const tsBlockTimeAgo = await block.query.timestamp.now();
+    const spentSecs = (tsNow - tsBlockTimeAgo.toNumber()) / 1000;
+    const min = 60;
+    return min / (spentSecs / (latestBlock - block7EraAgo));
   };
 
-  watchEffect(() => {
+  const fetchRewardsDistributionConfig = async (
+    api: ApiPromise
+  ): Promise<{
+    baseStakerPercent: number;
+    adjustablePercent: number;
+    idealDappsStakingTvl: number;
+  }> => {
+    const result =
+      await api.query.blockReward.rewardDistributionConfigStorage<RewardDistributionConfig>();
+    const numAdjToPercentage = 0.000000001;
+    const baseStakerPercent = result.baseStakerPercent.toNumber() * numAdjToPercentage;
+    const adjustablePercent = result.adjustablePercent.toNumber() * numAdjToPercentage;
+    const idealDappsStakingTvl = result.idealDappsStakingTvl.toNumber() * numAdjToPercentage;
+    return { baseStakerPercent, adjustablePercent, idealDappsStakingTvl };
+  };
+
+  watchEffect(async () => {
     const dappsRef = dapps.value;
-    const tvlTokenRef = tvlToken.value;
+    const tvlTokenRef = tvl.value;
     const decimalRef = decimal.value;
     const blocksPerEraRef = Number(blockPerEra.value);
     const apiRef = $api;
@@ -77,36 +88,38 @@ export const useApr = () => {
     // Todo: fetch from token-api
     const getApr = async (): Promise<number> => {
       try {
-        const getDeveloperPercentage = async () => {
-          const result =
-            await apiRef.query.blockReward.rewardDistributionConfigStorage<RewardDistributionConfig>();
-          const percentage = result.dappsPercent.toNumber() * 0.000000001;
-          return percentage;
-        };
-
         const results = await Promise.all([
           apiRef.consts.blockReward.rewardAmount.toString(),
           apiRef.query.timestamp.now(),
           apiRef.rpc.chain.getHeader(),
-          getDeveloperPercentage(),
+          fetchRewardsDistributionConfig(apiRef),
+          apiRef.query.balances.totalIssuance(),
         ]);
 
         const rawBlockRewards = results[0];
         const blockRewards = Number(defaultAmountWithDecimals(rawBlockRewards, decimalRef));
         const eraRewards = blocksPerEraRef * blockRewards;
         const latestBlock = results[2].toJSON().number as number;
-        const avrBlockPerMins = getAveBlocksPerMins({
-          chainId: currentNetworkIdx.value as AstarChain,
-          timestampMillis: results[1].toNumber(),
+        const avrBlockPerMins = await getAveBlocksPerMins({
+          tsNow: results[1].toNumber(),
           latestBlock,
+          api: apiRef,
+          blockPerEra: blocksPerEraRef,
         });
 
         const avgBlocksPerDay = avrBlockPerMins * 60 * 24;
         const dailyEraRate = avgBlocksPerDay / blocksPerEraRef;
         const annualRewards = eraRewards * dailyEraRate * 365.25;
-        const totalStaked = Number(ethers.utils.formatUnits(tvlTokenRef.toString(), decimalRef));
-        const developerRewardPercentage = results[3];
-        const stakerBlockReward = (1 - developerRewardPercentage) * DAPPS_REWARD_RATE;
+        const totalStaked = Number(
+          ethers.utils.formatUnits(tvlTokenRef.tvl.toString(), decimalRef)
+        );
+
+        const { baseStakerPercent, adjustablePercent, idealDappsStakingTvl } = results[3];
+        const totalIssuance = Number(ethers.utils.formatUnits(results[4].toString(), decimalRef));
+        const tvlPercentage = totalStaked / totalIssuance;
+        const adjustableStakerPercentage =
+          Math.min(1, tvlPercentage / idealDappsStakingTvl) * adjustablePercent;
+        const stakerBlockReward = adjustableStakerPercentage + baseStakerPercent;
         const stakerApr = (annualRewards / totalStaked) * stakerBlockReward * 100;
 
         if (stakerApr === Infinity) return 0;
@@ -117,10 +130,8 @@ export const useApr = () => {
       }
     };
 
-    apiRef.isReady.then(async () => {
-      stakerApr.value = await getApr();
-      stakerApy.value = aprToApy(stakerApr.value);
-    });
+    stakerApr.value = await getApr();
+    stakerApy.value = aprToApy(stakerApr.value);
   });
   return {
     stakerApr,
