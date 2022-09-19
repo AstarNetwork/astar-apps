@@ -1,8 +1,8 @@
 import { ISubmittableResult } from '@polkadot/types/types';
 import { StateInterface } from 'src/store';
 import { Store } from 'vuex';
-import { calculateClaimedStaker } from '../helper/claim';
-import { hasExtrinsicFailedEvent } from './../../store/dapp-staking/actions';
+import { calculateClaimedStaker } from 'src/hooks/helper/claim';
+import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
 
 export enum TxType {
   dappsStaking = 'dappsStaking',

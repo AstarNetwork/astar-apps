@@ -1,11 +1,10 @@
 import { useI18n } from 'vue-i18n';
-import { useGasPrice } from './../useGasPrice';
 import { Struct, u32, Vec } from '@polkadot/types';
 import { Balance } from '@polkadot/types/interfaces';
 import { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 import { $api } from 'boot/api';
-import { useCustomSignature } from 'src/hooks';
+import { useCustomSignature, useGasPrice } from 'src/hooks';
 import { signAndSend } from 'src/hooks/helper/wallet';
 import { hasExtrinsicFailedEvent } from 'src/modules/extrinsic';
 import { useStore } from 'src/store';
@@ -29,7 +28,7 @@ interface UnbondingInfo extends Struct {
   unlockingChunks: Vec<UnlockingChunk>;
 }
 
-interface AccountLedger extends Struct {
+export interface AccountLedger extends Struct {
   locked: Balance;
   unbondingInfo: UnbondingInfo;
   rewardDestination: RewardDestination;

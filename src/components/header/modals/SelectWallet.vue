@@ -31,7 +31,7 @@
 import { supportAllWallets, supportAllWalletsObj, SupportWallet, Wallet } from 'src/config/wallets';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
 import { computed, defineComponent, PropType, ref, watch, watchEffect } from 'vue';
-import SelectWalletOption from './SelectWalletOption.vue';
+import SelectWalletOption from 'src/components/header/modals/SelectWalletOption.vue';
 
 export default defineComponent({
   components: {

@@ -1,15 +1,14 @@
-import { useGasPrice } from './useGasPrice';
+import { useGasPrice, useCurrentEra, useCustomSignature } from 'src/hooks';
 import { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 import { $api } from 'boot/api';
 import { useStore } from 'src/store';
 import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
 import { computed, ref, watchEffect } from 'vue';
-import { TxType } from './custom-signature/message';
-import { ExtrinsicPayload } from './helper';
-import { getIndividualClaimTxs, PayloadWithWeight } from './helper/claim';
-import { signAndSend } from './helper/wallet';
-import { useCurrentEra, useCustomSignature } from './index';
+import { TxType } from 'src/hooks/custom-signature/message';
+import { ExtrinsicPayload } from 'src/hooks/helper';
+import { getIndividualClaimTxs, PayloadWithWeight } from 'src/hooks/helper/claim';
+import { signAndSend } from 'src/hooks/helper/wallet';
 
 const MAX_BATCH_WEIGHT = new BN('50000000000');
 

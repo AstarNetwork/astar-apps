@@ -1,12 +1,13 @@
 import { BigNumber, formatFixed } from '@ethersproject/bignumber';
 import { hexToU8a, isHex, isString } from '@polkadot/util';
-import { decodeAddress, encodeAddress } from '@polkadot/util-crypto';
+import { checkAddress, decodeAddress, encodeAddress } from '@polkadot/util-crypto';
 import BN from 'bn.js';
 import { ethers } from 'ethers';
-import { LOCAL_STORAGE } from './../../config/localStorage';
-import { nFormatter } from './units';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { nFormatter } from 'src/hooks/helper/units';
 
 export const ASTAR_SS58_FORMAT = 5;
+export const SUBSTRATE_SS58_FORMAT = 42;
 export const ASTAR_DECIMALS = 18;
 
 /**
@@ -77,25 +78,15 @@ export const parseTo18Decimals = (amount: number | string): BN => {
   return new BN(ethers.utils.parseEther(String(amount)).toString());
 };
 
-export const isValidAddressPolkadotAddress = (address: string) => {
+export const isValidAddressPolkadotAddress = (address: string, prefix?: number): boolean => {
   try {
-    encodeAddress(isHex(address) ? hexToU8a(address) : decodeAddress(address));
-
-    return true;
+    if (prefix) {
+      return checkAddress(address, prefix)[0];
+    } else {
+      encodeAddress(isHex(address) ? hexToU8a(address) : decodeAddress(address));
+      return true;
+    }
   } catch (error) {
     return false;
   }
-};
-
-/**
- * Remove the unnecessary decimals such as '.000' that comes from `<Balance>.toHuman()`
- * @param amountWithUnit eg: '100.0000 SDN'
- * @returns '100 SDN'
- */
-export const formatUnitAmount = (amountWithUnit: string): string => {
-  const words = amountWithUnit.split(' ');
-  const value = Number(words[0]);
-  const unit = words[1] || '';
-  const formattedAmount = `${value} ${unit}`;
-  return formattedAmount;
 };

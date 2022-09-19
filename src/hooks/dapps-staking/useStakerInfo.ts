@@ -2,11 +2,10 @@ import { $api } from 'boot/api';
 import { useStore } from 'src/store';
 import { computed, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useAccount } from '../useAccount';
-import { useNetworkInfo } from '../useNetworkInfo';
-import { checkIsLimitedProvider, getStakeInfo } from './../../modules/dapp-staking/utils/index';
-import { StakeInfo } from './../../store/dapp-staking/actions';
-import { DappItem } from './../../store/dapp-staking/state';
+import { useNetworkInfo, useAccount } from 'src/hooks';
+import { checkIsLimitedProvider, getStakeInfo } from 'src/modules/dapp-staking/utils/index';
+import { StakeInfo } from 'src/store/dapp-staking/actions';
+import { DappItem } from 'src/store/dapp-staking/state';
 
 export function useStakerInfo() {
   const { currentAccount } = useAccount();

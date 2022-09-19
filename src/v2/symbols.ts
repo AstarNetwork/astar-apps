@@ -13,4 +13,6 @@ export const Symbols = {
   XcmService: Symbol.for('XcmService'),
   BalanceFormatterService: Symbol.for('BalanceFormatterService'),
   RegisteredTokens: Symbol.for('RegisteredTokens'),
+  EvmAssetsRepository: Symbol.for('EvmAssetsRepository'),
+  EvmAssetsService: Symbol.for('EvmAssetsService'),
 };

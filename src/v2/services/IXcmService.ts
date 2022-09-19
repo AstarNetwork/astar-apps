@@ -1,5 +1,5 @@
 import { XcmAssets } from 'src/store/assets/state';
 
 export interface IXcmService {
-  getAssets(currentAccount: string): Promise<XcmAssets>;
+  getAssets(currentAccount: string, isFetchUsd: boolean): Promise<XcmAssets>;
 }

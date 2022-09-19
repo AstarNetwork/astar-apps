@@ -9,4 +9,66 @@ export enum LOCAL_STORAGE {
   CONFIRM_COOKIE_POLICY = 'confirmCookiePolicy',
   SELECTED_WALLET = 'selectedWallet',
   XCM_DEPOSIT_EVM_WALLET = 'xcmDepositEvmWallet',
+  TX_HISTORIES = 'txHistories',
+  XCM_TX_HISTORIES = 'xcmTxHistories',
 }
+
+// Memo: A helper function to return the account's history data that is stored in the browser
+export const getAccountHistories = ({
+  storageKey,
+  address,
+  network,
+}: {
+  storageKey: LOCAL_STORAGE;
+  address: string;
+  network: string;
+}): any[] => {
+  const histories = localStorage.getItem(storageKey);
+
+  /*
+  Data structure:
+  {
+    [address]: {
+      [network] : {
+        [ {transactionData} ]
+      }
+    }
+  }
+  */
+  const data = histories ? JSON.parse(histories) : {};
+  if (data.hasOwnProperty(address)) {
+    const addressData = data[address];
+    if (addressData.hasOwnProperty(network)) {
+      return addressData[network];
+    }
+  }
+  return [];
+};
+
+export const updateAccountHistories = ({
+  storageKey,
+  address,
+  network,
+  txs,
+}: {
+  storageKey: LOCAL_STORAGE;
+  address: string;
+  network: string;
+  txs: any[];
+}): void => {
+  let newDataObj;
+  const numberOfStoredTxs = 5;
+  txs.slice(0, numberOfStoredTxs);
+
+  const histories = localStorage.getItem(storageKey);
+  const historiesData = histories ? JSON.parse(histories) : {};
+
+  if (historiesData.hasOwnProperty(address)) {
+    const addressData = historiesData[address];
+    newDataObj = { ...historiesData, [address]: { ...addressData, [network]: txs } };
+  } else {
+    const newData = { [network]: txs };
+    newDataObj = { ...historiesData, [address]: newData };
+  }
+  localStorage.setItem(storageKey, JSON.stringify(newDataObj));
+};

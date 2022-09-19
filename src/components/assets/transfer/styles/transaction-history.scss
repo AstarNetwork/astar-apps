@@ -1,0 +1,98 @@
+@import 'src/css/quasar.variables.scss';
+
+.box--history {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  &:hover {
+    .icon--check {
+      transition: all 0.3s ease 0s;
+      opacity: 1;
+    }
+    .history-description {
+      transition: all 0.3s ease 0s;
+      color: $astar-blue;
+    }
+    .explorer-icon {
+      transition: all 0.3s ease 0s;
+      stroke: $astar-blue;
+      opacity: 1;
+    }
+  }
+}
+
+.row--tx-description {
+  display: flex;
+  column-gap: 4px;
+}
+
+.history--left {
+  display: flex;
+  column-gap: 8px;
+  align-items: center;
+}
+
+.icon--check {
+  opacity: 0.5;
+  color: $connected-green;
+  transition: all 0.3s ease 0s;
+  margin-bottom: -8px;
+}
+
+.history-description {
+  transition: all 0.3s ease 0s;
+  font-weight: 500;
+  color: $gray-5;
+  @media (min-width: $md) {
+    color: $gray-3;
+  }
+}
+
+.container--explorer-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  stroke: $gray-5;
+  border-radius: 30px;
+  height: 24px;
+  svg {
+    height: 30px;
+    width: 30px;
+  }
+  @media (min-width: $md) {
+    stroke: $gray-4;
+  }
+}
+
+.explorer-icon {
+  transition: all 0.3s ease 0s;
+  @media (min-width: $md) {
+    opacity: 0.5;
+  }
+}
+
+.skeleton--history {
+  width: 100%;
+}
+
+.body--dark {
+  .container--explorer-icon {
+    stroke: $gray-1;
+    @media (min-width: $md) {
+      stroke: $gray-4;
+    }
+  }
+  .icon--check {
+    opacity: 0.4;
+  }
+  .explorer-icon {
+    opacity: 1;
+  }
+  .history-description {
+    color: $gray-1;
+    @media (min-width: $md) {
+      color: $gray-4;
+    }
+  }
+}

@@ -5,7 +5,7 @@ export {
   getLatestStakePoint,
   getStakeInfo,
   checkIsLimitedProvider,
-} from './utils';
+} from 'src/modules/dapp-staking/utils';
 
 export type ContractEvm = {
   Evm: string;

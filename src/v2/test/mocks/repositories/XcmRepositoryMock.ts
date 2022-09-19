@@ -17,7 +17,8 @@ export class XcmRepositoryMock implements IXcmRepository {
         '11',
         'image',
         true,
-        true
+        true,
+        0
       )
     );
 
