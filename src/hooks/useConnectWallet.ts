@@ -69,7 +69,7 @@ export const useConnectWallet = () => {
     modalName.value = WalletModalOption.SelectWallet;
   };
 
-  // Memo: triggered after users have clicked 'connect' button on dApp staking
+  // Memo: triggered after users (who haven't connected to wallet) have clicked 'Connect Wallet' button on dApp staking page
   const handleOpenSelectModal = (): void => {
     window.addEventListener(WalletModalOption.SelectWallet, () => {
       openSelectModal();
