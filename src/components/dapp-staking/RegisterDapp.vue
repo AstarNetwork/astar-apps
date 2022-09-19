@@ -32,9 +32,10 @@
           accept=".jpg .png, image/*"
           class="component"
           input-style="{ height: '120px'}"
+          @update:model-value="updateDappLogo()"
         >
-          <template v-slot:prepend>
-            <div style="width: 100px; height: 100px">+</div>
+          <template #file="{ file }">
+            <image-card :base64-image="data.iconFile" :description="file.name" class="card" />
           </template>
         </q-file>
         <q-input
@@ -47,7 +48,7 @@
         />
         <q-file
           v-model="data.images"
-          standout
+          standout="bg-blue-grey-10 text-white"
           multiple
           append
           counter
@@ -56,7 +57,7 @@
           label="Screenshots (Max. file size 1MB)"
           class="component"
           :rules="[(v) => (v && v.length >= 4) || 'At least 4 dApp images are required.']"
-          @update:model-value="updateFile()"
+          @update:model-value="updateDappImages()"
         >
           <!-- <template v-slot:prepend>
             <div class="tw-p-2 tw-my-4">aaa</div>
@@ -88,18 +89,28 @@ import { computed, defineComponent, reactive, ref, watch } from 'vue';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 import { useStore } from 'src/store';
 import { NewDappItem } from 'src/store/dapp-staking/state';
+import ImageCard from './ImageCard.vue';
+
+const ADD_IMG = '~assets/img/add.png';
 
 export default defineComponent({
+  components: {
+    ImageCard,
+  },
   setup() {
     const store = useStore();
     const theme = computed<string>(() => store.getters['general/theme']);
     const isDark = ref<boolean>(theme.value.toLowerCase() === 'dark');
     const data = reactive<NewDappItem>({ tags: [] } as unknown as NewDappItem);
 
+    // make a placeholder for add logo
+    data.icon = new File([], 'Add a logo'); // TODO translate
+    data.iconFile = ADD_IMG;
+
     const isValidAddress = (address: string): boolean => isEthereumAddress(address); // || isValidAddressPolkadotAddress(address);
     // TODO uncoment the code above when we will support ink contract.
 
-    const updateFile = (): void => {
+    const updateDappImages = (): void => {
       data.imagesContent = [];
       const index = 0;
       data.images.forEach((image) => {
@@ -110,6 +121,15 @@ export default defineComponent({
         };
         reader.onerror = (error) => console.error(error);
       });
+    };
+
+    const updateDappLogo = (): void => {
+      const reader = new FileReader();
+      reader.readAsDataURL(data.icon);
+      reader.onload = () => {
+        data.iconFile = reader.result?.toString() || '';
+      };
+      reader.onerror = (error) => console.error(error);
     };
 
     const removeFile = (index: number): void => {
@@ -125,7 +145,8 @@ export default defineComponent({
       data,
       isDark,
       isValidAddress,
-      updateFile,
+      updateDappImages,
+      updateDappLogo,
       removeFile,
     };
   },
@@ -145,5 +166,9 @@ export default defineComponent({
 
 .q-field__messages {
   font-size: 20px !important;
+}
+
+.card {
+  margin-top: 8px;
 }
 </style>
