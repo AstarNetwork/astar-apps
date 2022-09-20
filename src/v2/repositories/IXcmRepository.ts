@@ -1,7 +1,7 @@
 import BN from 'bn.js';
-import { Asset } from 'src/v2/models';
+import { Asset, Chain } from 'src/v2/models';
 import { ExtrinsicPayload } from '../integration';
-import { XcmChain } from 'src/modules/xcm';
+import { XcmChain } from 'src/v2/models/XcmModels';
 
 export interface IXcmRepository {
   getAssets(currentAccount: string): Promise<Asset[]>;
@@ -27,4 +27,13 @@ export interface IXcmRepository {
     token: Asset,
     amount: BN
   ): Promise<ExtrinsicPayload>;
+
+  getTokenBalance(
+    address: string,
+    chain: XcmChain,
+    token: Asset,
+    isNativeToken: boolean
+  ): Promise<string>;
+
+  getNativeBalance(address: string, chain: XcmChain): Promise<BN>;
 }

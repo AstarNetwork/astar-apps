@@ -6,7 +6,14 @@ import { ExtrinsicPayload, IApi, IApiFactory } from 'src/v2/integration';
 import { Asset } from 'src/v2/models';
 import { Symbols } from 'src/v2/symbols';
 import { XcmRepository } from '../XcmRepository';
-import { XcmChain } from 'src/modules/xcm';
+import { XcmChain } from 'src/v2/models/XcmModels';
+import { Struct } from '@polkadot/types';
+
+interface TokensAccounts extends Struct {
+  readonly free: BN;
+  readonly reserved: BN;
+  readonly frozen: BN;
+}
 
 /**
  * Used to transfer assets from Acala/Karura
@@ -71,6 +78,37 @@ export class AcalaXcmRepository extends XcmRepository {
       destination,
       destWeight
     );
+  }
+
+  public async getTokenBalance(
+    address: string,
+    chain: XcmChain,
+    token: Asset,
+    isNativeToken: boolean
+  ): Promise<string> {
+    const symbol = token.metadata.symbol;
+    const api = await this.apiFactory.get(chain.endpoint);
+
+    try {
+      if (this.isAstarNativeToken(token)) {
+        const bal = await api.query.tokens.accounts<TokensAccounts>(address, {
+          ForeignAsset: this.astarTokens[symbol],
+        });
+        return bal.free.toString();
+      }
+
+      if (isNativeToken) {
+        return (await this.getNativeBalance(address, chain)).toString();
+      } else {
+        const bal = await api.query.tokens.accounts<TokensAccounts>(address, {
+          Token: token.originAssetId,
+        });
+        return bal.free.toString();
+      }
+    } catch (e) {
+      console.error(e);
+      return '0';
+    }
   }
 
   private getTokenData(token: Asset) {

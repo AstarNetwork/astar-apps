@@ -153,7 +153,8 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
       return '0';
     }
 
-    const balance = await originChainApi.getNativeBalance(currentAccount.value);
+    const xcmService = container.get<IXcmService>(Symbols.XcmService);
+    const balance = await xcmService.getNativeBalance(currentAccount.value, srcChain.value);
     return balance.toString();
   };
 
@@ -292,11 +293,13 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
   const getDestChainBalance = async (address: string): Promise<number> => {
     if (!isLoadOriginApi.value || !address || !originChainApi) return 0;
     if (isH160.value) {
-      const balance = await originChainApi.getTokenBalances({
-        selectedToken: selectedToken.value,
+      const xcmService = container.get<IXcmService>(Symbols.XcmService);
+      const balance = await xcmService.getTokenBalance(
         address,
-        isNativeToken: selectedToken.value.isNativeToken,
-      });
+        destChain.value,
+        selectedToken.value,
+        selectedToken.value.isNativeToken
+      );
       const formattedBalance = ethers.utils
         .formatUnits(balance.toString(), decimals.value)
         .toString();
@@ -336,11 +339,13 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
           return Number(balance);
         } else {
           // if: SS58 Withdraw
-          const bal = await originChainApi.getTokenBalances({
+          const xcmService = container.get<IXcmService>(Symbols.XcmService);
+          const bal = await xcmService.getTokenBalance(
             address,
-            selectedToken: selectedToken.value,
-            isNativeToken: selectedToken.value.isNativeToken,
-          });
+            destChain.value,
+            selectedToken.value,
+            selectedToken.value.isNativeToken
+          );
           return Number(ethers.utils.formatUnits(bal, decimals.value).toString());
         }
       }
@@ -405,11 +410,13 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
 
     try {
       if (isDeposit.value) {
-        const fromAddressBalFull = await originChainApi.getTokenBalances({
+        const xcmService = container.get<IXcmService>(Symbols.XcmService);
+        const fromAddressBalFull = await xcmService.getTokenBalance(
           address,
-          selectedToken: selectedToken.value,
-          isNativeToken: selectedToken.value.isNativeToken,
-        });
+          srcChain.value,
+          selectedToken.value,
+          selectedToken.value.isNativeToken
+        );
 
         return Number(ethers.utils.formatUnits(fromAddressBalFull, decimals.value).toString());
       } else {
