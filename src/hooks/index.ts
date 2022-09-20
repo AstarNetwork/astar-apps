@@ -29,7 +29,6 @@ export * from './dapps-staking/useStakingList';
 export * from './dapps-staking/useSignPayload';
 export * from './wallet/useWalletIcon';
 export * from './wallet/useEvmWallet';
-export * from './xcm/useXcmBridgeV2';
 export * from './xcm/useXcmBridgeV3';
 export * from './transfer/useTokenTransfer';
 export * from './xcm/useXcmEvm';
