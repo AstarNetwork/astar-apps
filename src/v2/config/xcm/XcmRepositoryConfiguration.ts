@@ -19,3 +19,9 @@ export const XcmRepositoryConfiguration: TypeMapping = {
   [Chain.POLKADOT]: PolkadotXcmRepository,
   [Chain.KUSAMA]: PolkadotXcmRepository,
 };
+
+export type AstarToken = 'ASTR' | 'SDN';
+
+export type AstarNativeToken = {
+  [key in AstarToken]: string;
+};
