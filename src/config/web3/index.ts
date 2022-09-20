@@ -52,42 +52,42 @@ export const chainName = {
 export const nativeCurrency = {
   [EVM.ETHEREUM_MAINNET]: {
     name: 'ETH',
-    symbol: 'eth',
+    symbol: 'ETH',
     decimals: 18,
   },
   [EVM.SHIDEN_MAINNET]: {
     name: 'SDN',
-    symbol: 'sdn',
+    symbol: 'SDN',
     decimals: 18,
   },
   [EVM.SHIBUYA_TESTNET]: {
     name: 'SBY',
-    symbol: 'sby',
+    symbol: 'SBY',
     decimals: 18,
   },
   [EVM.ASTAR_MAINNET]: {
     name: 'ASTR',
-    symbol: 'astr',
+    symbol: 'ASTR',
     decimals: 18,
   },
   [EVM.BSC]: {
     name: 'BNB',
-    symbol: 'bnb',
+    symbol: 'BNB',
     decimals: 18,
   },
   [EVM.POLYGON]: {
     name: 'MATIC',
-    symbol: 'matic',
+    symbol: 'MATIC',
     decimals: 18,
   },
   [EVM.MOONRIVER]: {
     name: 'MOVR',
-    symbol: 'movr',
+    symbol: 'MOVR',
     decimals: 18,
   },
   [EVM.MOONBEAM]: {
     name: 'GLMR',
-    symbol: 'glmr',
+    symbol: 'GLMR',
     decimals: 18,
   },
 };

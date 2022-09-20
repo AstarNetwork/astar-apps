@@ -34,7 +34,6 @@ import {
   xcmChainObj,
 } from 'src/modules/xcm';
 import { useStore } from 'src/store';
-import { wait } from 'src/v2/common';
 import { Asset } from 'src/v2/models';
 import { computed, ref, Ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
