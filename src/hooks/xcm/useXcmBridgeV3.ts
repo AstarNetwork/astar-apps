@@ -1,3 +1,4 @@
+import { ApiPromise } from '@polkadot/api';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
 import { endpointKey } from 'src/config/chainEndpoints';
@@ -5,6 +6,7 @@ import { getTokenBal, isValidEvmAddress, toSS58Address } from 'src/config/web3';
 import { capitalize } from 'src/hooks/helper/common';
 import { ASTAR_SS58_FORMAT } from 'src/hooks/helper/plasmUtils';
 import { SystemAccount } from 'src/modules/account';
+import { MOONBEAM_ASTAR_TOKEN_ID } from 'src/v2/repositories/implementations/xcm/MoonbeamXcmRepository';
 
 import {
   astarNativeTokens,
@@ -18,8 +20,6 @@ import {
   isValidAddressPolkadotAddress,
   SUBSTRATE_SS58_FORMAT,
 } from 'src/hooks/helper/plasmUtils';
-import { MOONBEAM_ASTAR_TOKEN_ID } from 'src/hooks/xcm/parachainApi';
-import { AstarToken, ChainApi } from 'src/hooks/xcm/SubstrateApi';
 import { showLoading } from 'src/modules/extrinsic/utils';
 import {
   addXcmTxHistories,
@@ -39,17 +39,19 @@ import { Asset } from 'src/v2/models';
 import { computed, ref, Ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 
+import { evmToAddress } from '@polkadot/util-crypto';
 import { Path } from 'src/router';
 import { container } from 'src/v2/common';
+import { AstarToken } from 'src/v2/config/xcm/XcmRepositoryConfiguration';
+import { IApiFactory } from 'src/v2/integration';
 import { IXcmEvmService, IXcmService, IXcmTransfer } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { useRouter } from 'vue-router';
-import { evmToAddress } from '@polkadot/util-crypto';
 
 const { Acala, Astar, Karura, Polkadot, Shiden } = xcmChainObj;
 
 export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
-  let originChainApi: ChainApi | null = null;
+  const originChainApi = ref<ApiPromise | null>(null);
   const srcChain = ref<XcmChain>(Polkadot);
   const destChain = ref<XcmChain>(Astar);
   const destParaId = ref<number>(parachainIds.ASTAR);
@@ -149,7 +151,7 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
   };
 
   const getOriginChainNativeBal = async (): Promise<string> => {
-    if (!currentAccount.value || !srcChain.value || !originChainApi || isH160.value) {
+    if (!currentAccount.value || !srcChain.value || !originChainApi.value || isH160.value) {
       return '0';
     }
 
@@ -160,7 +162,7 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
 
   const setOriginChainNativeBal = async (): Promise<void> => {
     if (
-      !originChainApi ||
+      !originChainApi.value ||
       !selectedToken.value ||
       selectedToken.value.metadata === null ||
       isH160.value
@@ -173,7 +175,14 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
         isAstarNativeTransfer.value && isFromAstar
           ? accountData.value!.getUsableTransactionBalance().toString()
           : await getOriginChainNativeBal();
-      const decimal = isFromAstar ? ASTAR_DECIMALS : originChainApi.chainProperty?.tokenDecimals[0];
+
+      const chainProperties = await originChainApi.value.rpc.system.properties();
+      const tokenDecimals = chainProperties.tokenDecimals
+        .unwrapOrDefault()
+        .toArray()
+        .map((i) => i.toNumber());
+
+      const decimal = isFromAstar ? ASTAR_DECIMALS : tokenDecimals[0];
       const balance = ethers.utils.formatUnits(rawBalance, decimal).toString();
       originChainNativeBal.value = Number(balance);
     } catch (error) {
@@ -187,6 +196,7 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
   };
 
   const checkInputtedAddress = (): boolean => {
+    if (!originChainApi.value) return false;
     if (isWithdrawalEthChain.value || isEvmBridge.value) {
       return isValidEvmAddress(inputtedAddress.value);
     } else {
@@ -194,9 +204,9 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
         inputtedAddress.value,
         SUBSTRATE_SS58_FORMAT
       );
-      const prefix = isDeposit.value
-        ? ASTAR_SS58_FORMAT
-        : originChainApi?.chainProperty?.ss58Prefix;
+      const ss58Prefix =
+        originChainApi.value && Number(originChainApi.value.consts.system.ss58Prefix);
+      const prefix = isDeposit.value ? ASTAR_SS58_FORMAT : ss58Prefix;
       const isValidPrefixAddress = isValidAddressPolkadotAddress(inputtedAddress.value, prefix);
       return isSubstrateAddress || isValidPrefixAddress;
     }
@@ -268,14 +278,9 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
 
   const connectOriginChain = async (endpoint: string): Promise<void> => {
     try {
-      const apiObj = Object.values(xcmChainObj).find((it) => it.endpoint === endpoint);
-      const apiInstance = apiObj && (apiObj.apiInstance({ endpoint, api: $api! }) as ChainApi);
-      if (apiInstance) {
-        originChainApi = apiInstance;
-        await originChainApi.start();
-        await originChainApi.isReady;
-        isLoadingApi.value = false;
-      }
+      const apiFactory = container.get<IApiFactory>(Symbols.ApiFactory);
+      originChainApi.value = await apiFactory.get(endpoint);
+      isLoadingApi.value = false;
     } catch (err) {
       console.error(err);
     }
@@ -291,7 +296,7 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
   };
 
   const getDestChainBalance = async (address: string): Promise<number> => {
-    if (!isLoadOriginApi.value || !address || !originChainApi) return 0;
+    if (!isLoadOriginApi.value || !address || !originChainApi.value) return 0;
     if (isH160.value) {
       const xcmService = container.get<IXcmService>(Symbols.XcmService);
       const balance = await xcmService.getTokenBalance(
@@ -330,8 +335,9 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
           const tokenAddress = isAstarNativeTransfer.value
             ? MOONBEAM_ASTAR_TOKEN_ID[selectedToken.value.metadata.symbol as AstarToken]
             : selectedToken.value.mappedERC20Addr;
+          const srcChainId = Number(originChainApi.value.consts.system.ss58Prefix);
           const balance = await getTokenBal({
-            srcChainId: originChainApi!.chainProperty!.ss58Prefix!,
+            srcChainId,
             address: inputtedAddress.value,
             tokenAddress,
             tokenSymbol: selectedToken.value.metadata.symbol,
@@ -404,7 +410,7 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
   };
 
   const getFromChainBalance = async (address: string): Promise<number> => {
-    if (!selectedToken.value || !originChainApi || !isTransferPage.value) {
+    if (!selectedToken.value || !originChainApi.value || !isTransferPage.value) {
       return 0;
     }
 
@@ -451,11 +457,7 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
   };
 
   const initializeXcmApi = async (reset = false): Promise<void> => {
-    const hasConnectedApi =
-      originChainApi &&
-      selectedToken.value &&
-      originChainApi.chainProperty?.chainName.toLowerCase() === from.value &&
-      reset === false;
+    const hasConnectedApi = originChainApi.value && selectedToken.value && reset === false;
 
     if (!isLoadOriginApi.value || hasConnectedApi || !srcChain.value || !destChain.value) {
       return;
@@ -520,8 +522,6 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
   watch(
     [to, isLoadingApi, isInputDestAddrManually, inputtedAddress, currentAccount, selectedToken],
     async () => {
-      // Memo: 'wait' for just make the 'balance UI' changing values smoothly whenever users click the reverse button
-      await wait(100);
       await monitorDestChainBalance(inputtedAddress.value);
     }
   );

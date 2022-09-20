@@ -16,11 +16,17 @@ import { Symbols } from 'src/v2/symbols';
 import Web3 from 'web3';
 import { TransactionConfig } from 'web3-eth';
 import { AbiItem } from 'web3-utils';
-import { capitalize } from './../../../../hooks/helper/common';
+import { capitalize } from 'src/hooks/helper/common';
 import { isValidEvmAddress } from 'src/config/web3';
 import { ethers } from 'ethers';
+import { AstarNativeToken } from 'src/v2/config/xcm/XcmRepositoryConfiguration';
 
 type ChainName = 'Moonriver' | 'Moonbeam';
+
+export const MOONBEAM_ASTAR_TOKEN_ID: AstarNativeToken = {
+  SDN: '0xffffffff0ca324c842330521525e7de111f38972',
+  ASTR: '0xffffffffa893ad19e540e172c10d78d4d479b5cf',
+};
 
 // Ref: https://docs.moonbeam.network/builders/build/canonical-contracts/precompiles/erc20/
 const NATIVE_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000802';
@@ -39,12 +45,7 @@ export class MoonbeamXcmRepository extends XcmRepository {
     const chain = capitalize(queryParams.from);
     this._networkName = chain as ChainName;
     this._web3 = new Web3(this.getEvmProvider() as any);
-
-    // Todo: check the token address for ASTR
-    this.astarTokens = {
-      SDN: '0xffffffff0ca324c842330521525e7de111f38972',
-      ASTR: '0xffffffffa893ad19e540e172c10d78d4d479b5cf',
-    };
+    this.astarTokens = MOONBEAM_ASTAR_TOKEN_ID;
   }
 
   public getEvmProvider(): EthereumProvider | null {
