@@ -2,22 +2,10 @@
   <div class="wrapper--assets">
     <div class="container--assets">
       <div style="display: flex; flex-direction: column">
-        <!-- <q-input
-          v-model="data.name"
-          standout="bg-blue-grey-10 text-white"
-          stack-label
-          label="Name"
-          label-color="input-label"
-          :input-style="{ fontWeight: 'bold', color: isDark ? '#fff' : '#000' }"
-          :rules="[(v) => (v && v.length > 0) || 'dApp name is required.']"
-          class="component"
-          dark
-        /> -->
-
         <q-input
           v-model="data.name"
           label="Name"
-          standout
+          standout="text-white"
           label-color="input-label"
           input-class="input"
           :input-style="{ fontWeight: 'bold' }"
@@ -26,7 +14,7 @@
         />
         <q-file
           v-model="data.icon"
-          standout
+          standout="text-white"
           counter
           label="Project logo"
           accept=".jpg .png, image/*"
@@ -35,14 +23,19 @@
           @update:model-value="updateDappLogo()"
         >
           <template #file="{ file }">
-            <image-card :base64-image="data.iconFile" :description="file.name" class="card" />
+            <image-card :base64-image="data.iconFile" :description="file.name" class="card">
+              <add-item-card />
+            </image-card>
           </template>
         </q-file>
+
         <q-input
           v-model="data.address"
           label="Contract address"
-          standout="bg-blue-grey-10 text-white"
+          standout="text-white"
+          label-color="input-label"
           input-class="input"
+          :input-style="{ fontWeight: 'bold' }"
           :rules="[(v) => isValidAddress(v) || 'Enter a valid EVM or SS58 contract address.']"
           class="component"
         />
@@ -51,7 +44,6 @@
           standout="bg-blue-grey-10 text-white"
           multiple
           append
-          counter
           max-file-size="1000000"
           accept=".jpg .png, image/*"
           label="Screenshots (Max. file size 1MB)"
@@ -59,11 +51,15 @@
           :rules="[(v) => (v && v.length >= 4) || 'At least 4 dApp images are required.']"
           @update:model-value="updateDappImages()"
         >
-          <!-- <template v-slot:prepend>
-            <div class="tw-p-2 tw-my-4">aaa</div>
-          </template> -->
           <template #file="{ file, index }">
-            <q-card class="tw-p-2 tw-m-1">
+            <image-card
+              :base64-image="data.imagesContent[index]"
+              :description="file.name"
+              class="card"
+            >
+              <add-item-card />
+            </image-card>
+            <!-- <q-card class="tw-p-2 tw-m-1">
               <q-img
                 :src="data.imagesContent[index]"
                 :title="file.name"
@@ -75,8 +71,7 @@
                   <q-icon name="close" @click.prevent="removeFile(index)" />
                 </div>
               </q-img>
-              <!-- <div>{{ file.name }}</div> -->
-            </q-card>
+            </q-card> -->
           </template>
         </q-file>
       </div>
@@ -90,12 +85,14 @@ import { isEthereumAddress } from '@polkadot/util-crypto';
 import { useStore } from 'src/store';
 import { NewDappItem } from 'src/store/dapp-staking/state';
 import ImageCard from './ImageCard.vue';
+import AddItemCard from './AddItemCard.vue';
 
 const ADD_IMG = '~assets/img/add.png';
 
 export default defineComponent({
   components: {
     ImageCard,
+    AddItemCard,
   },
   setup() {
     const store = useStore();
@@ -104,22 +101,32 @@ export default defineComponent({
     const data = reactive<NewDappItem>({ tags: [] } as unknown as NewDappItem);
 
     // make a placeholder for add logo
-    data.icon = new File([], 'Add a logo'); // TODO translate
-    data.iconFile = ADD_IMG;
+    data.icon = new File([], 'Add a logo image'); // TODO translate
+    data.iconFile = '';
+
+    data.images = [];
+    data.images.push(new File([], 'Add an image')); // Add image placeholder
+    data.imagesContent = [];
+    data.imagesContent.push('');
 
     const isValidAddress = (address: string): boolean => isEthereumAddress(address); // || isValidAddressPolkadotAddress(address);
     // TODO uncoment the code above when we will support ink contract.
 
     const updateDappImages = (): void => {
       data.imagesContent = [];
-      const index = 0;
-      data.images.forEach((image) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(image);
-        reader.onload = () => {
-          data.imagesContent.push(reader.result?.toString() || '');
-        };
-        reader.onerror = (error) => console.error(error);
+      data.imagesContent.push('');
+
+      console.log('images', data.images.length);
+
+      data.images.forEach((image, index) => {
+        if (index > 0) {
+          const reader = new FileReader();
+          reader.readAsDataURL(image);
+          reader.onload = () => {
+            data.imagesContent.push(reader.result?.toString() || '');
+          };
+          reader.onerror = (error) => console.error(error);
+        }
       });
     };
 
@@ -136,6 +143,15 @@ export default defineComponent({
       data.images.splice(index, 1);
       data.imagesContent.splice(index, 1);
     };
+
+    // const initDappImages = () => {
+    //   data.images = [];
+    //   data.images.push(new File([], 'Add an image')); // Add image placeholder
+    //   data.imagesContent = [];
+    //   data.imagesContent.push('');
+    // };
+
+    // initDappImages();
 
     watch([theme], (val) => {
       isDark.value = val[0].toLowerCase() === 'dark';
@@ -170,5 +186,37 @@ export default defineComponent({
 
 .card {
   margin-top: 8px;
+  margin-right: 12px;
 }
+</style>
+
+<style lang="sass">
+.q-field
+  &--standout
+    &.q-field--dark
+      .q-field__control
+        background: $gray-5-selected
+        &:before
+          background: $gray-5-selected
+      &.q-field--highlighted
+        .q-field__control
+          background: $gray-5-selected-dark
+        .q-field__native
+          color: $gray-1
+      .q-field__control
+        background: $gray-5-selected-dark
+    .q-field__control
+      background: $gray-3
+      &:before
+        background: $gray-3
+    &.q-field--highlighted
+      .q-field__control
+        background: $gray-2
+      .q-field__native
+        color: $gray-6
+    .q-field__control
+      background: $gray-2
+  &--highlighted
+    .q-field__label
+      color: rgba(0, 0, 0, 0.6)
 </style>

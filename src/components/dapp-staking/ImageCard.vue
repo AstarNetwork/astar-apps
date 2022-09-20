@@ -1,6 +1,7 @@
 <template>
   <div class="card">
-    <img :src="base64Image" fit="cover" class="image" />
+    <img v-if="base64Image" :src="base64Image" class="image" />
+    <slot v-else></slot>
     <div v-if="description" class="description">
       {{ description }}
     </div>
@@ -22,6 +23,7 @@ export default defineComponent({
     },
   },
   setup(props) {
+    console.log('card ', props);
     return {
       ...toRefs(props),
     };
