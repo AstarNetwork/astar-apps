@@ -1,7 +1,6 @@
 import { SubmittableExtrinsic } from '@polkadot/api-base/types';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { IWalletService } from 'src/v2/services';
-// import { useEthProvider } from 'src/hooks/custom-signature/useEthProvider';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 import { inject, injectable } from 'inversify';
 import { IEthCallRepository, ISystemRepository } from 'src/v2/repositories';
