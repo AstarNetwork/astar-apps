@@ -55,14 +55,19 @@
               {{ $t('dappStaking.add') }}
             </Button>
           </div>
-          <Button
-            v-else
-            :small="true"
-            :disabled="isMaxStaker || isH160 || !currentAddress"
-            @click="showStakeModal"
-          >
-            {{ $t('dappStaking.stake') }}
-          </Button>
+          <div v-else>
+            <Button v-if="!currentAddress" :small="true" @click="handleConnectWallet">
+              {{ $t('wallet.connectWallet') }}
+            </Button>
+            <Button
+              v-else
+              :small="true"
+              :disabled="isMaxStaker || isH160 || !currentAddress"
+              @click="showStakeModal"
+            >
+              {{ $t('dappStaking.stake') }}
+            </Button>
+          </div>
         </div>
 
         <Button
@@ -117,6 +122,7 @@ import { useI18n } from 'vue-i18n';
 import './stake-panel.scss';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
+import { WalletModalOption } from 'src/config/wallets';
 
 export default defineComponent({
   components: {
@@ -306,6 +312,10 @@ export default defineComponent({
       showModal.value = false;
     };
 
+    const handleConnectWallet = () => {
+      window.dispatchEvent(new CustomEvent(WalletModalOption.SelectWallet));
+    };
+
     return {
       ...toRefs(props),
       showModal,
@@ -323,6 +333,7 @@ export default defineComponent({
       selectedTip,
       nativeTipPrice,
       setSelectedTip,
+      handleConnectWallet,
     };
   },
 });

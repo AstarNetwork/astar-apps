@@ -31,32 +31,11 @@
             </div>
           </div>
           <div class="column--asset-buttons column--buttons--native">
-            <button
-              class="btn btn--sm"
-              @click="
-                handleModalXcmTransfer({
-                  isOpen: true,
-                  currency: token,
-                })
-              "
-            >
-              {{ $t('assets.transfer') }}
-            </button>
-            <div>
-              <button
-                v-if="token.isXcmCompatible"
-                :disabled="isDisabledXcmButton"
-                class="btn btn--sm"
-                @click="
-                  handleModalXcmBridge({
-                    isOpen: true,
-                    currency: token,
-                  })
-                "
-              >
-                {{ $t('assets.xcm') }}
+            <router-link :to="buildTransferPageLink(token.metadata.symbol)">
+              <button class="btn btn--sm">
+                {{ $t('assets.transfer') }}
               </button>
-            </div>
+            </router-link>
             <div class="screen--xl">
               <a
                 class="box--explorer"
@@ -84,7 +63,8 @@
 import { endpointKey } from 'src/config/chainEndpoints';
 import { useNetworkInfo } from 'src/hooks';
 import { truncate } from 'src/hooks/helper/common';
-import { Chain, getXcmToken, xcmToken } from 'src/modules/xcm';
+import { getXcmToken } from 'src/modules/xcm';
+import { buildTransferPageLink } from 'src/router/routes';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, PropType } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
@@ -94,14 +74,6 @@ export default defineComponent({
   props: {
     token: {
       type: Object as PropType<Asset>,
-      required: true,
-    },
-    handleModalXcmTransfer: {
-      type: Function,
-      required: true,
-    },
-    handleModalXcmBridge: {
-      type: Function,
       required: true,
     },
   },
@@ -118,27 +90,16 @@ export default defineComponent({
       return isDisplay || false;
     });
 
-    const explorerLink = computed(() => {
+    const explorerLink = computed<string>(() => {
       const astarBalanceUrl = 'https://astar.subscan.io/assets/' + t.value.id;
       const shidenBalanceUrl = 'https://shiden.subscan.io/assets/' + t.value.id;
       return currentNetworkIdx.value === endpointKey.ASTAR ? astarBalanceUrl : shidenBalanceUrl;
     });
 
-    const isDisabledXcmButton = computed(() => {
-      const acalaTokens = xcmToken[currentNetworkIdx.value].filter(
-        (it) => it.originChain === Chain.ACALA
-      );
-      // Memo: disabled until backend turns XCM transfer on again.
-      const isAcalaToken = !!acalaTokens.find(
-        (it) => it.symbol.toLowerCase() === t.value.metadata.symbol.toLowerCase()
-      );
-      return isAcalaToken;
-    });
-
     return {
       isDisplayToken,
       explorerLink,
-      isDisabledXcmButton,
+      buildTransferPageLink,
       truncate,
     };
   },

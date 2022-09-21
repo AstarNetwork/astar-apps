@@ -1,5 +1,5 @@
 import { TvlModel } from 'src/v2/models';
-import { DappCombinedInfo, StakerInfo } from 'src/v2/models/DappsStaking';
+import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { MutationTree } from 'vuex';
 import { DappStateInterface as State, DappItem } from './state';
 
@@ -12,12 +12,20 @@ export interface ContractsMutations<S = State> {
 }
 
 const mutation: MutationTree<State> & ContractsMutations = {
-  addDapp(state: State, payload: DappItem) {
-    // state.dapps.push(payload);
-  },
-
   addDappCombinedInfos(state: State, payload: DappCombinedInfo[]) {
     state.dappsCombinedInfo = payload;
+  },
+
+  addDapp(state: State, payload: DappItem) {
+    // Update existing dapp or add a new if doesn't exist.
+    let dappIndex = state.dapps.findIndex((x) => x.address === payload.address);
+    if (dappIndex !== -1) {
+      state.dapps[dappIndex] = payload;
+    } else {
+      state.dapps.push(payload);
+    }
+
+    state.dapps = [...state.dapps];
   },
 
   setMinimumStakingAmount(state: State, payload: string) {

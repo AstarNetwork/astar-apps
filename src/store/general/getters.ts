@@ -1,4 +1,4 @@
-import { GasTip } from './../../modules/gas-api/index';
+import { GasTip } from 'src/modules/gas-api/index';
 import { GetterTree } from 'vuex';
 import { StateInterface } from '../index';
 import {

@@ -49,9 +49,10 @@ import {
   NewBlockMessage,
   NewEraMessage,
 } from 'src/v2/messaging';
-import { setCurrentWallet } from './v2/app.container';
-import { container } from './v2/common';
-import { Symbols } from './v2/symbols';
+import { setCurrentWallet } from 'src/v2/app.container';
+import { container } from 'src/v2/common';
+import { Symbols } from 'src/v2/symbols';
+import { useAppRouter } from 'src/hooks';
 
 export default defineComponent({
   name: 'App',
@@ -62,6 +63,7 @@ export default defineComponent({
     CookiePolicy,
   },
   setup() {
+    useAppRouter();
     const store = useStore();
     const isLoading = computed(() => store.getters['general/isLoading']);
     const showAlert = computed(() => store.getters['general/showAlert']);

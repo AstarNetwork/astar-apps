@@ -63,11 +63,11 @@ export default defineComponent({
 @import 'src/css/quasar.variables.scss';
 
 .icon-light {
-  @apply tw-p-2 tw-rounded-full tw-relative;
+  @apply tw-pr-2 tw-rounded-full tw-relative;
 }
 
 .icon-dark {
-  @apply tw-p-2 tw-rounded-full tw-relative;
+  @apply tw-pl-2 tw-rounded-full tw-relative;
 }
 
 .icon-outline-moon {

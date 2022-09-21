@@ -3,7 +3,7 @@ import { $api } from 'src/boot/api';
 import { getDappStakers } from 'src/modules/dapp-staking';
 import { Duration, filterTvlData, getTvlData, mergeTvlArray } from 'src/modules/token-api';
 import { computed, ref, watch } from 'vue';
-import { useNetworkInfo } from './useNetworkInfo';
+import { useNetworkInfo } from 'src/hooks';
 
 export function useTvlHistorical() {
   const mergedTvlAmount = ref<string>('');

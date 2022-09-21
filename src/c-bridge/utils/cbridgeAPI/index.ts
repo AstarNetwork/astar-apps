@@ -10,7 +10,7 @@ import {
   shidenSupportChains,
   Token,
   TransferConfigs,
-} from './../../index';
+} from 'src/c-bridge';
 
 const pushCanonicalToken = ({
   tokens,

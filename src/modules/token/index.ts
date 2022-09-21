@@ -4,7 +4,8 @@ export {
   storeImportedERC20Token,
   getStoredERC20Tokens,
   getRegisteredERC20Token,
-} from './utils';
+  castCbridgeToErc20,
+} from 'src/modules/token/utils';
 
 // Memo: ERC20 tokens information that is not supported by cBridge
 
@@ -20,6 +21,7 @@ export interface Erc20Token {
   wrapUrl: string | null;
   userBalance?: string;
   userBalanceUsd?: string;
+  isCbridgeToken?: boolean;
 }
 
 export const WASTR = {
@@ -143,7 +145,44 @@ export const MOVR = {
   wrapUrl: null,
 };
 
-export const registeredErc20Tokens = [WASTR, DOT, KSM, KUSD, KAR, LKSM, ACA, LDOT, AUSD, MOVR];
+export const GLMR = {
+  srcChainId: 592,
+  address: '0xffffffff00000000000000010000000000000003',
+  decimal: 18,
+  symbol: 'GLMR',
+  name: 'Moonbeam',
+  image: 'https://assets.coingecko.com/coins/images/22459/small/glmr.png?1641880985',
+  isWrappedToken: false,
+  isXC20: true,
+  wrapUrl: null,
+};
+
+export const USDT_SHIDEN = {
+  srcChainId: 336,
+  address: '0xffffffff000000000000000000000001000007c0',
+  decimal: 6,
+  symbol: 'USDT',
+  name: 'Tether USD',
+  image: 'https://assets.coingecko.com/coins/images/325/small/Tether-logo.png?1598003707',
+  isWrappedToken: false,
+  isXC20: true,
+  wrapUrl: null,
+};
+
+export const registeredErc20Tokens = [
+  WASTR,
+  DOT,
+  KSM,
+  KUSD,
+  KAR,
+  LKSM,
+  ACA,
+  LDOT,
+  AUSD,
+  MOVR,
+  GLMR,
+  USDT_SHIDEN,
+];
 
 // Memo: Define the token image source
 export const tokenImageMap = {
