@@ -221,6 +221,8 @@ export default {
           builderImageRequired: 'Builder image is required',
         },
       },
+      markdown: 'Markdown',
+      preview: 'Preview',
     },
     toast: {
       staked: 'You staked {amount} on {dapp}',
