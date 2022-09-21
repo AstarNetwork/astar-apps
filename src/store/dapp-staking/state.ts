@@ -28,6 +28,7 @@ export interface NewDappItem extends DappItem {
 }
 
 export interface DappStateInterface {
+  dapps: DappItem[]; // TODO for backward compatibility only, remove later.
   dappsCombinedInfo: DappCombinedInfo[];
   minimumStakingAmount: string;
   maxNumberOfStakersPerContract: number;
@@ -52,6 +53,7 @@ export interface FileInfo {
 
 function state(): DappStateInterface {
   return {
+    dapps: [],
     dappsCombinedInfo: [],
     minimumStakingAmount: '0',
     maxNumberOfStakersPerContract: 0,
