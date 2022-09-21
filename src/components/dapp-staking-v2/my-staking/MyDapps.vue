@@ -37,7 +37,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue';
 import { useBreakpoints } from 'src/hooks';
-import DropdownList from './DropdownList.vue';
+import DropdownList from './components/DropdownList.vue';
 
 export default defineComponent({
   components: { DropdownList },
@@ -177,7 +177,7 @@ table {
     thead {
       th {
         background: rgba(255, 255, 255, 0.02);
-        color: #9da3ae;
+        color: $gray-3;
       }
     }
 

@@ -26,8 +26,8 @@
 <script lang="ts">
 import { computed, defineComponent, ref, reactive, PropType } from 'vue';
 import { useStore } from 'src/store';
-import MyDappItem from './items/MyDappItem.vue';
-import UnbondingItem from './items/UnbondingItem.vue';
+import MyDappItem from '../items/MyDappItem.vue';
+import UnbondingItem from '../items/UnbondingItem.vue';
 
 export default defineComponent({
   components: { MyDappItem, UnbondingItem },

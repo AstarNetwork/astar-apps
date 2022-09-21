@@ -27,6 +27,10 @@
           <MyDapps />
         </template>
       </div>
+
+      <div class="divider"></div>
+
+      <DappList />
     </div>
 
     <Teleport to="#app--main">
@@ -51,6 +55,7 @@ import { DappItem } from 'src/store/dapp-staking/state';
 import MyRewards from 'src/components/dapp-staking-v2/my-staking/MyRewards.vue';
 import UnbondingList from 'src/components/dapp-staking-v2/my-staking/UnbondingList.vue';
 import MyDapps from 'src/components/dapp-staking-v2/my-staking/MyDapps.vue';
+import DappList from 'src/components/dapp-staking-v2/my-staking/DappList.vue';
 import { computed, defineComponent, ref } from 'vue';
 
 export default defineComponent({
@@ -58,6 +63,7 @@ export default defineComponent({
     MyRewards,
     UnbondingList,
     MyDapps,
+    DappList,
   },
   setup() {
     // TODO: need to remove legacy
@@ -137,7 +143,7 @@ export default defineComponent({
 .text--transferable {
   font-weight: 600;
   font-size: 14px;
-  color: #9da3ae;
+  color: $gray-3;
   margin-top: 16px;
   text-align: right;
 
@@ -197,6 +203,12 @@ export default defineComponent({
   }
 }
 
+.divider {
+  border-top: 1px solid $object-light;
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
 .body--dark {
   .store-container {
     background: $gray-5-selected-dark;
@@ -207,6 +219,10 @@ export default defineComponent({
     .tab {
       color: $gray-1;
     }
+  }
+
+  .divider {
+    border-color: $gray-5;
   }
 }
 </style>
