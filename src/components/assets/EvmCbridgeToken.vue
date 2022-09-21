@@ -5,7 +5,12 @@
       <div class="row row--details">
         <div class="row__left">
           <div class="column--currency">
-            <img :src="tokenImg" :alt="token.name" class="token-logo" />
+            <jazzicon
+              v-if="tokenImg.includes('custom-token')"
+              :address="token.address"
+              :diameter="24"
+            />
+            <img v-else :src="tokenImg" :alt="token.name" class="token-logo" />
             <div class="column--ticker">
               <span class="text--title">{{ token.symbol }}</span>
               <span class="text--label">{{ formatTokenName(token.name) }}</span>
@@ -90,8 +95,12 @@ import { useStore } from 'src/store';
 import { computed, defineComponent, PropType } from 'vue';
 import { buildTransferPageLink } from 'src/router/routes';
 import { useNetworkInfo } from 'src/hooks';
+import Jazzicon from 'vue3-jazzicon/src/components';
 
 export default defineComponent({
+  components: {
+    [Jazzicon.name]: Jazzicon,
+  },
   props: {
     token: {
       type: Object as PropType<Erc20Token>,
