@@ -39,6 +39,21 @@
           :rules="[(v) => isValidAddress(v) || 'Enter a valid EVM or SS58 contract address.']"
           class="component"
         />
+
+        <q-input
+          v-model="data.url"
+          label="Project URL"
+          standout="text-white"
+          label-color="input-label"
+          input-class="input"
+          :input-style="{ fontWeight: 'bold' }"
+          :rules="[
+            (v) => v !== '' || 'Enter project url.',
+            (v) => isUrlValid(v) || 'Invalid project url.',
+          ]"
+          class="component"
+        />
+
         <q-file
           v-model="data.images"
           standout="bg-blue-grey-10 text-white"
@@ -59,23 +74,22 @@
             >
               <add-item-card />
             </image-card>
-            <!-- <q-card class="tw-p-2 tw-m-1">
-              <q-img
-                :src="data.imagesContent[index]"
-                :title="file.name"
-                fit="contain"
-                width="120px"
-                height="120px"
-              >
-                <div class="text-subtitle2 absolute-bottom tw-text-right">
-                  <q-icon name="close" @click.prevent="removeFile(index)" />
-                </div>
-              </q-img>
-            </q-card> -->
           </template>
         </q-file>
+
+        <items-container title="Builders information">
+          <image-card description="Add an account" class="card">
+            <add-item-card @click="addDeveloper" />
+          </image-card>
+        </items-container>
       </div>
     </div>
+
+    <modal-add-developer
+      :is-modal-add-developer="isModalAddDeveloper"
+      :handle-modal-developer="handleModalAddDeveloper"
+      :developer="currentDeveloper"
+    />
   </div>
 </template>
 
@@ -83,9 +97,12 @@
 import { computed, defineComponent, reactive, ref, watch } from 'vue';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 import { useStore } from 'src/store';
-import { NewDappItem } from 'src/store/dapp-staking/state';
+import { Developer, NewDappItem } from 'src/store/dapp-staking/state';
 import ImageCard from './ImageCard.vue';
 import AddItemCard from './AddItemCard.vue';
+import ItemsContainer from './ItemsContainer.vue';
+import ModalAddDeveloper from './ModalAddDeveloper.vue';
+import { isUrlValid } from 'src/components/common/Validators';
 
 const ADD_IMG = '~assets/img/add.png';
 
@@ -93,12 +110,23 @@ export default defineComponent({
   components: {
     ImageCard,
     AddItemCard,
+    ItemsContainer,
+    ModalAddDeveloper,
   },
   setup() {
+    const initDeveloper = () => ({
+      name: '',
+      iconFile: '',
+      linkedInAccountUrl: '',
+      twitterAccountUrl: '',
+    });
+
     const store = useStore();
     const theme = computed<string>(() => store.getters['general/theme']);
     const isDark = ref<boolean>(theme.value.toLowerCase() === 'dark');
     const data = reactive<NewDappItem>({ tags: [] } as unknown as NewDappItem);
+    const isModalAddDeveloper = ref<boolean>(false);
+    let currentDeveloper = reactive<Developer>(initDeveloper());
 
     // make a placeholder for add logo
     data.icon = new File([], 'Add a logo image'); // TODO translate
@@ -115,8 +143,6 @@ export default defineComponent({
     const updateDappImages = (): void => {
       data.imagesContent = [];
       data.imagesContent.push('');
-
-      console.log('images', data.images.length);
 
       data.images.forEach((image, index) => {
         if (index > 0) {
@@ -144,14 +170,14 @@ export default defineComponent({
       data.imagesContent.splice(index, 1);
     };
 
-    // const initDappImages = () => {
-    //   data.images = [];
-    //   data.images.push(new File([], 'Add an image')); // Add image placeholder
-    //   data.imagesContent = [];
-    //   data.imagesContent.push('');
-    // };
+    const addDeveloper = () => {
+      currentDeveloper = initDeveloper();
+      isModalAddDeveloper.value = true;
+    };
 
-    // initDappImages();
+    const handleModalAddDeveloper = ({ isOpen }: { isOpen: boolean }) => {
+      isModalAddDeveloper.value = isOpen;
+    };
 
     watch([theme], (val) => {
       isDark.value = val[0].toLowerCase() === 'dark';
@@ -160,10 +186,15 @@ export default defineComponent({
     return {
       data,
       isDark,
+      isModalAddDeveloper,
+      currentDeveloper,
       isValidAddress,
       updateDappImages,
       updateDappLogo,
       removeFile,
+      isUrlValid,
+      addDeveloper,
+      handleModalAddDeveloper,
     };
   },
 });

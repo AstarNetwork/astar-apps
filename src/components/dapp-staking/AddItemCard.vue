@@ -1,5 +1,5 @@
 <template>
-  <div class="container card-new-item">
+  <div class="container card-new-item" @click="onClick">
     <icon-base width="24" height="24"><icon-document /></icon-base>
   </div>
 </template>
@@ -12,6 +12,16 @@ export default defineComponent({
   components: {
     IconBase,
     IconDocument,
+  },
+  emits: ['click'],
+  setup(_, { emit }) {
+    const onClick = () => {
+      emit('click');
+    };
+
+    return {
+      onClick,
+    };
   },
 });
 </script>

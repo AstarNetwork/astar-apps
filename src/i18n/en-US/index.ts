@@ -189,6 +189,18 @@ export default {
         startUnbonding: 'Start unbonding from {dapp}',
         unStakeFrom: 'Unstake from {dapp}',
       },
+      builder: {
+        title: 'Builder',
+        twitterAccount: 'Twitter account',
+        linkedInAccount: 'LinkedIn account',
+        image: "Builder's image",
+        error: {
+          name: 'Builder name is required.',
+          invalidUrl: 'Invalid url.',
+          accountRequired: 'At least one account is required.',
+          builderImageRequired: 'Builder image is required',
+        },
+      },
     },
     toast: {
       staked: 'You staked {amount} on {dapp}',

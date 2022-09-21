@@ -15,6 +15,7 @@ export interface DappItem extends LooseObject {
   authorContact: string;
   gitHubUrl: string;
   imagesUrl: string[];
+  developers: Developer[];
 }
 
 export interface NewDappItem extends DappItem {
@@ -24,6 +25,13 @@ export interface NewDappItem extends DappItem {
   images: File[];
   imagesContent: string[];
   videoUrlInput: string;
+}
+
+export interface Developer {
+  twitterAccountUrl: string;
+  linkedInAccountUrl: string;
+  iconFile: string;
+  name: string;
 }
 
 export interface DappStateInterface {
