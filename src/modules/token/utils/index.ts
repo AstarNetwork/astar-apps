@@ -1,8 +1,7 @@
-import { CbridgeCurrency } from './../../../c-bridge/index';
+import { CbridgeCurrency } from 'src/c-bridge';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { registeredErc20Tokens, Erc20Token, tokenImageMap } from '../index';
-import { getIcon } from '../../../c-bridge';
+import { registeredErc20Tokens, Erc20Token, tokenImageMap } from 'src/modules/token';
 
 export const getTokenImage = ({
   isNativeToken,
@@ -16,7 +15,7 @@ export const getTokenImage = ({
   if (isNativeToken) {
     return symbol === 'SDN' ? 'icons/sdn-token.png' : 'icons/astar.png';
   } else {
-    return getIcon({ icon: String(iconUrl), symbol });
+    return iconUrl || '';
   }
 };
 
