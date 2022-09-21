@@ -15,7 +15,7 @@ export const getTokenImage = ({
   if (isNativeToken) {
     return symbol === 'SDN' ? 'icons/sdn-token.png' : 'icons/astar.png';
   } else {
-    return iconUrl || '';
+    return iconUrl || 'custom-token';
   }
 };
 
