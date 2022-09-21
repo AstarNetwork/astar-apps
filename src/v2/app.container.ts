@@ -9,6 +9,7 @@ import {
   IPriceRepository,
   ISystemRepository,
   IXcmRepository,
+  IEvmAssetsRepository,
 } from './repositories';
 import {
   DappStakingRepository,
@@ -17,6 +18,7 @@ import {
   SystemRepository,
   TokenApiRepository,
   XcmRepository,
+  EvmAssetsRepository,
 } from './repositories/implementations';
 import {
   IBalanceFormatterService,
@@ -24,6 +26,7 @@ import {
   IGasPriceProvider,
   IWalletService,
   IXcmService,
+  IEvmAssetsService,
   WalletType,
 } from './services';
 import {
@@ -32,6 +35,7 @@ import {
   MetamaskWalletService,
   GasPriceProvider,
   XcmService,
+  EvmAssetsService,
   BalanceFormatterService,
 } from './services/implementations';
 import { Symbols } from './symbols';
@@ -74,11 +78,13 @@ export default function buildDependencyContainer(network: endpointKey): void {
   container.addTransient<ISystemRepository>(SystemRepository, Symbols.SystemRepository);
   container.addTransient<IEthCallRepository>(EthCallRepository, Symbols.EthCallRepository);
   container.addTransient<IXcmRepository>(XcmRepository, Symbols.XcmRepository);
+  container.addTransient<IEvmAssetsRepository>(EvmAssetsRepository, Symbols.EvmAssetsRepository);
 
   // Services
   container.addTransient<IDappStakingService>(DappStakingService, Symbols.DappStakingService);
   container.addSingleton<IGasPriceProvider>(GasPriceProvider, Symbols.GasPriceProvider); // Singleton because it listens and caches gas/tip prices.
   container.addTransient<IXcmService>(XcmService, Symbols.XcmService);
+  container.addTransient<IEvmAssetsService>(EvmAssetsService, Symbols.EvmAssetsService);
   container.addTransient<IBalanceFormatterService>(
     BalanceFormatterService,
     Symbols.BalanceFormatterService

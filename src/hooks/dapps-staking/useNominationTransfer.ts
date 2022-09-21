@@ -1,17 +1,19 @@
-import { useGasPrice } from './../useGasPrice';
+import {
+  useGasPrice,
+  useAccount,
+  useCustomSignature,
+  useGetMinStaking,
+  useStakingList,
+} from 'src/hooks';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { ethers } from 'ethers';
 import { getAddressEnum } from 'src/modules/dapp-staking';
 import { showError } from 'src/modules/extrinsic';
 import { useStore } from 'src/store';
 import { computed, ref, watch, watchEffect } from 'vue';
-import { useStakingList } from '../index';
-import { TxType } from '../custom-signature/message';
-import { ASTAR_DECIMALS, balanceFormatter } from '../helper/plasmUtils';
-import { signAndSend } from '../helper/wallet';
-import { useAccount } from '../useAccount';
-import { useCustomSignature } from '../useCustomSignature';
-import { useGetMinStaking } from '../useGetMinStaking';
+import { TxType } from 'src/hooks/custom-signature/message';
+import { ASTAR_DECIMALS, balanceFormatter } from 'src/hooks/helper/plasmUtils';
+import { signAndSend } from 'src/hooks/helper/wallet';
 import { $api } from 'src/boot/api';
 
 export function useNominationTransfer() {

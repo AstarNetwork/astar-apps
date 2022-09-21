@@ -1,8 +1,8 @@
-import { wait } from './helper/common';
+import { wait } from 'src/hooks/helper/common';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useStore } from 'src/store';
 import { computed, ref, watch } from 'vue';
-import { SubstrateAccount } from './../store/general/state';
+import { SubstrateAccount } from 'src/store/general/state';
 
 export const useAccount = () => {
   const store = useStore();

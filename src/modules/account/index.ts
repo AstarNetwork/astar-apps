@@ -1,7 +1,7 @@
 import { Struct } from '@polkadot/types';
 import BN from 'bn.js';
 
-export { fetchNativeBalance } from './utils';
+export { fetchNativeBalance, addTxHistories } from 'src/modules/account/utils';
 
 export interface SystemAccount extends Struct {
   data: {
@@ -10,4 +10,16 @@ export interface SystemAccount extends Struct {
     miscFrozen: BN;
     feeFrozen: BN;
   };
+}
+
+export enum HistoryTxType {
+  Transfer = 'Transfer',
+  Xcm = 'XCM',
+}
+
+export interface TxHistory {
+  hash: string;
+  type: HistoryTxType;
+  timestamp: number;
+  data: any;
 }

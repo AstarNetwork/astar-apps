@@ -1,59 +1,104 @@
+import { endpointKey, getNetworkName } from 'src/config/chainEndpoints';
 import DiscoverDappsTab from 'components/dapp-staking/DiscoverDappsTab.vue';
 import ManageDappsTab from 'components/dapp-staking/ManageDappsTab.vue';
-import Assets from 'pages/Assets.vue';
+import AssetsPage from 'pages/AssetsPage.vue';
+import Assets from 'components/assets/Assets.vue';
+import Transfer from 'pages/Transfer.vue';
 import Store from 'src/pages/DappStaking.vue';
 import Dashboard from 'src/pages/Dashboard.vue';
 import RegisterDapp from 'src/pages/RegisterDapp.vue';
 import { RouteRecordRaw } from 'vue-router';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
+
+export { getHeaderName, buildTransferPageLink } from 'src/router/utils';
+
+const networkIdxStore = localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX);
+
+export const networkParam =
+  '/' +
+  getNetworkName(networkIdxStore ? (Number(networkIdxStore) as endpointKey) : endpointKey.ASTAR);
+
+export enum Path {
+  Assets = '/assets',
+  Dashboard = '/dashboard',
+  DappStaking = '/dapp-staking',
+  Discover = '/discover',
+  Transfer = '/transfer',
+}
 
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    redirect: '/assets',
+    redirect: networkParam + Path.Assets,
+  },
+  {
+    path: Path.Assets,
+    redirect: networkParam + Path.Assets,
+  },
+  {
+    path: Path.Dashboard,
+    redirect: networkParam + Path.Dashboard,
+  },
+  {
+    path: Path.DappStaking,
+    redirect: networkParam + Path.DappStaking + Path.Discover,
+  },
+  {
+    path: Path.DappStaking + Path.Discover,
+    redirect: networkParam + Path.DappStaking + Path.Discover,
   },
   {
     path: '/store/discover-dapps',
-    redirect: '/dapp-staking/discover',
+    redirect: networkParam + Path.DappStaking + Path.Discover,
   },
   {
-    path: '/assets',
+    path: '/:network' + Path.Assets,
     name: 'Assets',
-    component: Assets,
+    component: AssetsPage,
     children: [
       {
         path: 'deeplink-metamask',
         component: Assets,
       },
+      {
+        path: '',
+        component: Assets,
+      },
+      {
+        path: 'transfer',
+        component: Transfer,
+      },
     ],
   },
+
   {
     path: '/balance',
     name: 'Balance',
-    redirect: '/assets',
+    redirect: networkParam + Path.Assets,
     children: [
       {
         path: '',
-        redirect: '/assets',
+        redirect: Path.Assets,
       },
       {
         path: 'wallet',
-        redirect: '/assets',
+        redirect: Path.Assets,
       },
     ],
   },
   {
-    path: '/dashboard',
+    path: '/:network' + Path.Dashboard,
     name: 'Dashboard',
     component: Dashboard,
   },
   {
-    path: '/dapp-staking',
+    path: '/:network' + Path.DappStaking,
     name: 'dApp Staking',
     component: Store,
     children: [
       {
         path: '',
-        redirect: '/dapp-staking/discover',
+        redirect: Path.DappStaking + networkParam + Path.Discover,
       },
       {
         path: 'discover',
@@ -74,19 +119,9 @@ const routes: RouteRecordRaw[] = [
   // but you can also remove it
   {
     path: '/:catchAll(.*)*',
+    redirect: '/',
     component: () => import('pages/Error404.vue'),
   },
 ];
-
-export const getHeaderName = (path: string) => {
-  if (path === 'dashboard') {
-    return 'Dashboard';
-  } else if (path === 'assets') {
-    return 'Assets';
-  } else if (path === 'dapp-staking') {
-    return 'dApp Staking';
-  }
-  return '';
-};
 
 export default routes;

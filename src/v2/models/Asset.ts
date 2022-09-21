@@ -1,7 +1,6 @@
 import { BN } from '@polkadot/util';
 
 export class Asset {
-  public userBalance: number;
   public userBalanceUsd: number;
   public balance: BN;
 
@@ -14,10 +13,10 @@ export class Asset {
     public originAssetId: string,
     public tokenImage: string,
     public isNativeToken: boolean,
-    public isXcmCompatible: boolean
+    public isXcmCompatible: boolean,
+    public userBalance: number
   ) {
     this.balance = new BN(0);
-    this.userBalance = 0;
     this.userBalanceUsd = 0;
   }
 }
