@@ -6,7 +6,7 @@ import Assets from 'components/assets/Assets.vue';
 import Transfer from 'pages/Transfer.vue';
 import Store from 'src/pages/DappStaking.vue';
 import StoreV2 from 'src/pages/DappStakingV2.vue';
-import StoreDappsTab from 'components/dapp-staking-v2/StoreDappsTab.vue';
+import StakingTop from 'components/dapp-staking-v2/StakingTop.vue';
 import Dashboard from 'src/pages/Dashboard.vue';
 import { RouteRecordRaw } from 'vue-router';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
@@ -122,7 +122,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'discover',
-        component: StoreDappsTab,
+        component: StakingTop,
       },
     ],
   },

@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div class="store-container">
+  <div class="wrapper-main">
+    <div class="staking-container">
       <div class="wrapper--tabs responsive">
         <nav class="tabs">
           <div class="tab" :class="currentTab === 0 ? 'active' : ''" @click="currentTab = 0">
@@ -27,19 +27,19 @@
           <MyDapps />
         </template>
       </div>
-
-      <div class="divider"></div>
-
-      <DappList category="De-Fi" />
-
-      <div class="divider"></div>
-
-      <DappList category="Infra" />
-
-      <div class="divider"></div>
-
-      <DappList category="NFT" />
     </div>
+
+    <div class="divider"></div>
+
+    <DappList category="De-Fi" />
+
+    <div class="divider"></div>
+
+    <DappList category="Infra" />
+
+    <div class="divider"></div>
+
+    <DappList category="NFT" />
 
     <Teleport to="#app--main">
       <div :class="!isLoading && 'highest-z-index'">
@@ -127,14 +127,15 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
 
-.store-container {
+.wrapper-main {
+  padding: 18px 24px 24px 24px;
+}
+
+.staking-container {
   grid-template-columns: repeat(auto-fit, minmax(288px, max-content));
   background: #fff;
   border-radius: 6px;
   padding: 18px 24px 24px 24px;
-  @media (max-width: $sm) {
-    display: grid;
-  }
 }
 
 .wrapper--tabs {
@@ -225,7 +226,7 @@ export default defineComponent({
 }
 
 .body--dark {
-  .store-container {
+  .staking-container {
     background: $gray-5-selected-dark;
     box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.15);
   }

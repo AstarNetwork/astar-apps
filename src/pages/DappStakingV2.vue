@@ -35,5 +35,8 @@ export default defineComponent({
   display: grid;
   row-gap: 24px;
   max-width: 1300px;
+  @media (max-width: $md) {
+    display: block;
+  }
 }
 </style>

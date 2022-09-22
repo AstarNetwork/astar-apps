@@ -57,6 +57,7 @@ export default defineComponent({
 
 .card {
   padding: 16px;
+  cursor: pointer;
   .wrapper--card {
     display: flex;
     align-items: center;
