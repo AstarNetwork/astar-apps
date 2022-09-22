@@ -41,8 +41,6 @@ export default defineComponent({
     items = items.concat(items.flat());
     items = items.concat(items.flat());
 
-    console.log('d', items);
-
     return {
       items,
     };
@@ -59,6 +57,7 @@ export default defineComponent({
     margin-bottom: 20px;
   }
   .txt--header {
+    margin-left: 6px;
     font-weight: 600;
     font-size: 22px;
     line-height: 27px;
