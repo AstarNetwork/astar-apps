@@ -5,8 +5,8 @@ import { Erc20Token } from 'src/modules/token';
 export {
   getTransferConfigs,
   getSelectedToken,
-  getIcon,
   checkIsCbridgeToken,
+  castCbridgeTokenData,
 } from 'src/c-bridge/utils';
 
 export enum EvmChain {
@@ -117,3 +117,29 @@ export interface SelectedToken {
 // Todo: remove the SelectedToken type
 export type CbridgeCurrency = SelectedToken;
 export type EvmAsset = CbridgeCurrency | Erc20Token;
+
+interface CelerCastTokenObj {
+  name: string;
+  symbol: string;
+  image: string;
+}
+
+type CelerCastToken = {
+  [key in string]: CelerCastTokenObj;
+};
+
+// Memo: overwrite the token's metadata to avoid overlap between XC20 tokens
+// Memo: `image: ''` will take over the token image comes from cBridge API
+export const cbridgeCastToken: CelerCastToken = {
+  USDT: {
+    name: 'Tether USD(Celer)',
+    symbol: 'ceUSDT',
+    // Memo: the background color of the icon (url provides by cBridge API) is not transparent
+    image: 'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png',
+  },
+  USDC: {
+    name: 'USD Coin(Celer)',
+    symbol: 'ceUSDC',
+    image: '',
+  },
+};
