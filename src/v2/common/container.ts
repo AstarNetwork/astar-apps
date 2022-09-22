@@ -31,6 +31,10 @@ export class Container extends InversifyContainer {
     return super.bind<T>(customId).toConstantValue(constant);
   }
 
+  public removeConstant(customId: Id): void {
+    super.unbind(customId);
+  }
+
   public addRequest<T>(
     constructor: Constructor<T>,
     customId?: Id

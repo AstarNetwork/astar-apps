@@ -42,7 +42,6 @@ export class DappStakingService implements IDappStakingService {
   public async stake(contractAddress: string, stakerAddress: string, amount: BN): Promise<void> {
     Guard.ThrowIfUndefined('contractAddress', contractAddress);
     Guard.ThrowIfUndefined('stakerAddress', stakerAddress);
-    Guard.ThrowIfNegative('amount', amount);
 
     const stakeCall = await this.dappStakingRepository.getBondAndStakeCall(contractAddress, amount);
     this.wallet.signAndSend(

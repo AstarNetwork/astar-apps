@@ -1,7 +1,4 @@
-import { ApiPromise } from '@polkadot/api';
 import { objToArray } from 'src/hooks/helper/common';
-import { AcalaApi, MoonbeamApi, StatemintApi } from 'src/hooks/xcm/parachainApi';
-import { AstarApi, ChainApi } from 'src/hooks/xcm/SubstrateApi';
 
 export {
   astarNativeTokenErcAddr,
@@ -69,16 +66,21 @@ export enum parachainIds {
 export const relaychainParaId = 0;
 
 export const astarChains = [Chain.ASTAR, Chain.SHIDEN, Chain.ASTAR_EVM, Chain.SHIDEN_EVM];
+
+export const ethWalletChains = [Chain.MOONBEAM, Chain.MOONRIVER];
+
+// Memo: Chain.STATEMINE -> Bug related to https://github.com/polkadot-js/apps/issues/7812
+export const chainsNotSupportWithdrawal = [Chain.STATEMINE];
+
 export interface XcmChain {
   name: Chain;
   relayChain: Chain;
   img: string;
   parachainId: parachainIds;
-  endpoint?: string;
+  endpoint: string;
   subscan: string;
   // Note: true if ASTR/SDN is listed on the parachain
   isAstarNativeToken: boolean;
-  apiInstance: ({ endpoint, api }: { endpoint: string; api: ApiPromise }) => ChainApi | AstarApi;
 }
 
 type XcmChainObj = {
@@ -94,25 +96,24 @@ export const xcmChainObj: XcmChainObj = {
     endpoint: 'wss://polkadot.api.onfinality.io/public-ws',
     subscan: 'https://polkadot.subscan.io',
     isAstarNativeToken: false,
-    apiInstance: ({ endpoint }: { endpoint: string }) => new ChainApi(endpoint),
   },
   [Chain.ASTAR]: {
     name: Chain.ASTAR,
     relayChain: Chain.POLKADOT,
     img: require('/src/assets/img/ic_astar.png'),
     parachainId: parachainIds.ASTAR,
+    endpoint: 'wss://astar-rpc.dwellir.com',
     subscan: 'https://astar.subscan.io',
     isAstarNativeToken: false,
-    apiInstance: ({ api }: { api: ApiPromise }) => new AstarApi(api),
   },
   [Chain.ASTAR_EVM]: {
     name: Chain.ASTAR_EVM,
     relayChain: Chain.POLKADOT,
     img: require('/src/assets/img/ic_astar.png'),
     parachainId: parachainIds.ASTAR,
+    endpoint: 'wss://astar-rpc.dwellir.com',
     subscan: 'https://astar.subscan.io',
     isAstarNativeToken: false,
-    apiInstance: ({ api }: { api: ApiPromise }) => new AstarApi(api),
   },
   [Chain.KUSAMA]: {
     name: Chain.KUSAMA,
@@ -122,25 +123,24 @@ export const xcmChainObj: XcmChainObj = {
     endpoint: 'wss://kusama-rpc.polkadot.io',
     subscan: 'https://kusama.subscan.io',
     isAstarNativeToken: false,
-    apiInstance: ({ endpoint }: { endpoint: string }) => new ChainApi(endpoint),
   },
   [Chain.SHIDEN]: {
     name: Chain.SHIDEN,
     relayChain: Chain.KUSAMA,
     img: require('/src/assets/img/ic_shiden.png'),
     parachainId: parachainIds.SHIDEN,
+    endpoint: 'wss://shiden-rpc.dwellir.com',
     subscan: 'https://shiden.subscan.io',
     isAstarNativeToken: false,
-    apiInstance: ({ api }: { api: ApiPromise }) => new AstarApi(api),
   },
   [Chain.SHIDEN_EVM]: {
     name: Chain.SHIDEN_EVM,
     relayChain: Chain.KUSAMA,
     img: require('/src/assets/img/ic_shiden.png'),
     parachainId: parachainIds.SHIDEN,
+    endpoint: 'wss://shiden-rpc.dwellir.com',
     subscan: 'https://shiden.subscan.io',
     isAstarNativeToken: false,
-    apiInstance: ({ api }: { api: ApiPromise }) => new AstarApi(api),
   },
   [Chain.STATEMINE]: {
     name: Chain.STATEMINE,
@@ -150,7 +150,6 @@ export const xcmChainObj: XcmChainObj = {
     endpoint: 'wss://statemine-rpc.polkadot.io',
     subscan: 'https://statemine.subscan.io',
     isAstarNativeToken: false,
-    apiInstance: ({ endpoint }: { endpoint: string }) => new StatemintApi(endpoint),
   },
   [Chain.KARURA]: {
     name: Chain.KARURA,
@@ -160,7 +159,6 @@ export const xcmChainObj: XcmChainObj = {
     endpoint: 'wss://karura-rpc.dwellir.com',
     subscan: 'https://karura.subscan.io',
     isAstarNativeToken: true,
-    apiInstance: ({ endpoint }: { endpoint: string }) => new AcalaApi(endpoint),
   },
   [Chain.ACALA]: {
     name: Chain.ACALA,
@@ -170,7 +168,6 @@ export const xcmChainObj: XcmChainObj = {
     endpoint: 'wss://acala-polkadot.api.onfinality.io/public-ws',
     subscan: 'https://acala.subscan.io',
     isAstarNativeToken: true,
-    apiInstance: ({ endpoint }: { endpoint: string }) => new AcalaApi(endpoint),
   },
   [Chain.MOONRIVER]: {
     name: Chain.MOONRIVER,
@@ -180,7 +177,6 @@ export const xcmChainObj: XcmChainObj = {
     endpoint: 'wss://wss.api.moonriver.moonbeam.network',
     subscan: 'https://moonriver.subscan.io',
     isAstarNativeToken: true,
-    apiInstance: ({ endpoint }: { endpoint: string }) => new MoonbeamApi(endpoint),
   },
   [Chain.MOONBEAM]: {
     name: Chain.MOONBEAM,
@@ -190,7 +186,6 @@ export const xcmChainObj: XcmChainObj = {
     endpoint: 'wss://wss.api.moonbeam.network',
     subscan: 'https://moonbeam.subscan.io',
     isAstarNativeToken: true,
-    apiInstance: ({ endpoint }: { endpoint: string }) => new MoonbeamApi(endpoint),
   },
 };
 
@@ -199,6 +194,7 @@ export const xcmChains = objToArray(xcmChainObj);
 export const kusamaParachains = xcmChains.filter(
   (it) => it.relayChain === Chain.KUSAMA && it.name !== Chain.KUSAMA
 );
+
 export const polkadotParachains = xcmChains.filter(
   (it) => it.relayChain === Chain.POLKADOT && it.name !== Chain.POLKADOT
 );

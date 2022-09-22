@@ -165,11 +165,6 @@ export default defineComponent({
       required: false,
       default: null,
     },
-    handleFinalizedCallback: {
-      type: Function,
-      required: false,
-      default: null,
-    },
     setRightUi: {
       type: Function,
       required: true,
@@ -214,16 +209,10 @@ export default defineComponent({
       );
     });
 
-    // Todo: remove async
-    const finalizeCallback = async (): Promise<void> => {
-      props.handleFinalizedCallback();
-    };
-
     const transfer = async (): Promise<void> => {
       await transferAsset({
         transferAmt: Number(transferAmt.value),
         toAddress: toAddress.value,
-        finalizeCallback,
       });
     };
 

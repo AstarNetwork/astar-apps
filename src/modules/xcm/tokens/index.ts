@@ -95,7 +95,8 @@ export const xcmToken = {
       logo: 'https://assets.coingecko.com/coins/images/17172/small/karura.jpeg?1626782066',
       isXcmCompatible: true,
       originChain: 'Karura',
-      minBridgeAmount: '0.1',
+      // ED: 0.1 KAR (Users can't withdraw 0.1KAR to 0 KAR account due to a fee)
+      minBridgeAmount: '0.11',
     },
     {
       symbol: 'LKSM',

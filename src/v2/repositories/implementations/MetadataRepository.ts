@@ -10,7 +10,7 @@ import { Symbols } from 'src/v2/symbols';
 export class MetadataRepository implements IMetadataRepository {
   private metadata!: ChainMetadata;
 
-  constructor(@inject(Symbols.Api) private api: IApi) {}
+  constructor(@inject(Symbols.DefaultApi) private api: IApi) {}
 
   public async getChainMetadata(): Promise<ChainMetadata> {
     if (!this.metadata) {

@@ -15,7 +15,7 @@ export class WalletServiceMock implements IWalletService {
     extrinsic: SubmittableExtrinsic<'promise', ISubmittableResult>,
     senderAddress: string,
     successMessage?: string
-  ): Promise<void> {
-    this.walletSignAndSendMock.call(this, extrinsic, senderAddress, successMessage);
+  ): Promise<string | null> {
+    return this.walletSignAndSendMock.call(this, extrinsic, senderAddress, successMessage);
   }
 }
