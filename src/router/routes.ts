@@ -1,5 +1,6 @@
 import { endpointKey, getNetworkName } from 'src/config/chainEndpoints';
 import DiscoverDappsTab from 'components/dapp-staking/DiscoverDappsTab.vue';
+import DappsHome from 'src/v2/components/dapp-staking/DappsHome.vue';
 import ManageDappsTab from 'components/dapp-staking/ManageDappsTab.vue';
 import AssetsPage from 'pages/AssetsPage.vue';
 import Assets from 'components/assets/Assets.vue';
@@ -101,7 +102,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'discover',
-        component: DiscoverDappsTab,
+        component: DappsHome,
       },
       {
         path: 'manage',
