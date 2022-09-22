@@ -77,10 +77,46 @@
           </template>
         </q-file>
 
-        <items-container title="Builders information">
-          <image-card description="Add an account" class="card">
-            <add-item-card @click="addDeveloper" />
-          </image-card>
+        <items-container :title="$t('dappStaking.modals.builders')" class="component">
+          <div class="builders--container">
+            <image-card
+              v-for="(developer, index) in data.developers"
+              :key="index"
+              :description="developer.name"
+              :base64-image="developer.iconFile"
+            />
+            <image-card description="Add an account" class="card">
+              <add-item-card @click="addDeveloper" />
+            </image-card>
+          </div>
+        </items-container>
+
+        <items-container :title="$t('dappStaking.modals.description')" class="component">
+          <div class="wrapper--description">
+            <div class="container-description">
+              <description-tab :is-edit="isEditDescription" :set-is-edit="setIsEdit" />
+              <div v-if="isEditDescription">
+                <q-input
+                  v-model="data.description"
+                  style="width: 1000px"
+                  maxlength="5000"
+                  type="textarea"
+                  class="description"
+                  rows="20"
+                  :rules="[
+                    (v) => (v && v.length > 0) || 'Tell the world something about your dApp.',
+                  ]"
+                />
+              </div>
+              <div v-else>
+                <q-scroll-area class="tw-h-96">
+                  <!-- eslint-disable vue/no-v-html -->
+                  <!-- data descriptionMarkdown is sanitized so no XSS can happen. -->
+                  <div v-html="data.descriptions"></div>
+                </q-scroll-area>
+              </div>
+            </div>
+          </div>
         </items-container>
       </div>
     </div>
@@ -88,6 +124,7 @@
     <modal-add-developer
       :is-modal-add-developer="isModalAddDeveloper"
       :handle-modal-developer="handleModalAddDeveloper"
+      :add-developer="handleAddDevelper"
       :developer="currentDeveloper"
     />
   </div>
@@ -102,6 +139,7 @@ import ImageCard from './ImageCard.vue';
 import AddItemCard from './AddItemCard.vue';
 import ItemsContainer from './ItemsContainer.vue';
 import ModalAddDeveloper from './ModalAddDeveloper.vue';
+import DescriptionTab from './DescriptionTab.vue';
 import { isUrlValid } from 'src/components/common/Validators';
 
 const ADD_IMG = '~assets/img/add.png';
@@ -112,9 +150,10 @@ export default defineComponent({
     AddItemCard,
     ItemsContainer,
     ModalAddDeveloper,
+    DescriptionTab,
   },
   setup() {
-    const initDeveloper = () => ({
+    const initDeveloper = (): Developer => ({
       name: '',
       iconFile: '',
       linkedInAccountUrl: '',
@@ -126,10 +165,12 @@ export default defineComponent({
     const isDark = ref<boolean>(theme.value.toLowerCase() === 'dark');
     const data = reactive<NewDappItem>({ tags: [] } as unknown as NewDappItem);
     const isModalAddDeveloper = ref<boolean>(false);
-    let currentDeveloper = reactive<Developer>(initDeveloper());
+    const isEditDescription = ref<boolean>(true);
+    const currentDeveloper = ref<Developer>(initDeveloper());
 
     // make a placeholder for add logo
     data.icon = new File([], 'Add a logo image'); // TODO translate
+    data.developers = [];
     data.iconFile = '';
 
     data.images = [];
@@ -171,12 +212,21 @@ export default defineComponent({
     };
 
     const addDeveloper = () => {
-      currentDeveloper = initDeveloper();
       isModalAddDeveloper.value = true;
     };
 
     const handleModalAddDeveloper = ({ isOpen }: { isOpen: boolean }) => {
+      currentDeveloper.value = initDeveloper();
       isModalAddDeveloper.value = isOpen;
+    };
+
+    const handleAddDevelper = (developer: Developer): void => {
+      data.developers.push(developer);
+      handleModalAddDeveloper({ isOpen: false });
+    };
+
+    const setIsEdit = (isEdit: boolean): void => {
+      isEditDescription.value = isEdit;
     };
 
     watch([theme], (val) => {
@@ -188,6 +238,7 @@ export default defineComponent({
       isDark,
       isModalAddDeveloper,
       currentDeveloper,
+      isEditDescription,
       isValidAddress,
       updateDappImages,
       updateDappLogo,
@@ -195,6 +246,8 @@ export default defineComponent({
       isUrlValid,
       addDeveloper,
       handleModalAddDeveloper,
+      handleAddDevelper,
+      setIsEdit,
     };
   },
 });
@@ -219,6 +272,26 @@ export default defineComponent({
   margin-top: 8px;
   margin-right: 12px;
 }
+
+.wrapper--description {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.container--description {
+  display: grid;
+  row-gap: 32px;
+  margin-bottom: 24px;
+  @media (min-width: $xl) {
+    justify-content: center;
+  }
+}
+
+.builders--container {
+  display: flex;
+  flex-direction: row;
+}
 </style>
 
 <style lang="sass">
@@ -242,11 +315,11 @@ export default defineComponent({
         background: $gray-3
     &.q-field--highlighted
       .q-field__control
-        background: $gray-2
+        background: $gray-1
       .q-field__native
         color: $gray-6
     .q-field__control
-      background: $gray-2
+      background: $gray-1
   &--highlighted
     .q-field__label
       color: rgba(0, 0, 0, 0.6)

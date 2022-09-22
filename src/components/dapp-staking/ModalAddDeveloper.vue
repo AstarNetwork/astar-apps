@@ -47,7 +47,7 @@
         @update:model-value="updateImage()"
       >
         <template #file>
-          <image-card :base64-image="developer.iconFile" class="card"> </image-card>
+          <image-card :base64-image="currentDeveloper.iconFile" class="card"> </image-card>
         </template>
       </q-file>
 
@@ -61,6 +61,10 @@
         :rules="[(v) => (v && v.length > 0) || `${$t('dappStaking.modals.builder.error.name')}`]"
         class="component"
       />
+
+      <button class="btn btn--confirm btn-size-adjust" @click="handleAddDeveloper">
+        {{ $t('confirm') }}
+      </button>
     </div>
   </astar-modal>
 </template>
@@ -68,7 +72,7 @@
 <script lang="ts">
 import AstarModal from 'src/components/common/AstarModal.vue';
 import { wait } from 'src/hooks/helper/common';
-import { defineComponent, ref, toRefs, PropType, reactive, computed } from 'vue';
+import { defineComponent, ref, toRefs, PropType, reactive, computed, watch } from 'vue';
 import { fadeDuration } from '@astar-network/astar-ui';
 import { Developer } from 'src/store/dapp-staking/state';
 import { isUrlValid } from 'src/components/common/Validators';
@@ -92,10 +96,16 @@ export default defineComponent({
       type: Object as PropType<Developer>,
       required: true,
     },
+    addDeveloper: {
+      type: Function,
+      required: true,
+    },
   },
   setup(props) {
+    // This value is bound to template.
+    let currentDeveloper = ref<Developer>(props.developer);
+
     const isClosingModal = ref<boolean>(false);
-    const currentDeveloper = reactive<Developer>(props.developer);
     const file = ref<File>(new File([], ''));
 
     const closeModal = async (): Promise<void> => {
@@ -106,35 +116,43 @@ export default defineComponent({
       isClosingModal.value = false;
     };
 
-    // const validateAccountUrls = (): boolean => {
-    //   console.log(props.developer.linkedInAccountUrl, props.developer.twitterAccountUrl);
-    //   return props.developer.linkedInAccountUrl !== '' || props.developer.twitterAccountUrl !== '';
-    // };
-
     const validateUrlFormat = (url: string): boolean => (url !== '' ? isUrlValid(url) : true);
 
     const updateImage = (): void => {
       const reader = new FileReader();
       reader.readAsDataURL(file.value);
       reader.onload = () => {
-        currentDeveloper.iconFile = reader.result?.toString() || '';
+        currentDeveloper.value.iconFile = reader.result?.toString() || '';
       };
       reader.onerror = (error) => console.error(error);
     };
+
+    const handleAddDeveloper = () => {
+      props.addDeveloper(currentDeveloper.value);
+    };
+
+    watch([props], () => {
+      // When dialog is shown, assign currentDeveloper.
+      if (props.isModalAddDeveloper) {
+        currentDeveloper.value = { ...props.developer };
+      }
+    });
 
     return {
       ...toRefs(props),
       isClosingModal,
       currentDeveloper,
       isValidUrl: computed(
-        () => props.developer.linkedInAccountUrl !== '' || props.developer.twitterAccountUrl !== ''
+        () =>
+          currentDeveloper.value.linkedInAccountUrl !== '' ||
+          currentDeveloper.value.twitterAccountUrl !== ''
       ),
       file,
       closeModal,
       isUrlValid,
-      // validateAccountUrls,
       validateUrlFormat,
       updateImage,
+      handleAddDeveloper,
     };
   },
 });

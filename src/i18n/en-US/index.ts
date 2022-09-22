@@ -221,6 +221,8 @@ export default {
           builderImageRequired: 'Builder image is required',
         },
       },
+      builders: 'Builders information',
+      description: 'Description',
       markdown: 'Markdown',
       preview: 'Preview',
     },

@@ -11,16 +11,15 @@
       <div
         :class="[!isEdit ? 'selected-tab text--selected' : 'unselected-tab']"
         class="box--tab"
-        @click="setIsEdit (false)"
+        @click="setIsEdit(false)"
       >
         <span class="text--title-tab"> {{ $t('dappStaking.modals.preview') }} </span>
-        <span class="text--xcm"> {{ $t('assets.transferPage.xcm') }} </span>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, toRefs } from 'vue';
 
 export default defineComponent({
   props: {
@@ -32,6 +31,11 @@ export default defineComponent({
       type: Function,
       required: true,
     },
+  },
+  setup(props) {
+    return {
+      ...toRefs(props),
+    };
   },
 });
 </script>
