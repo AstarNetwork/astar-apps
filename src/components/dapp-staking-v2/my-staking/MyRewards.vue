@@ -86,7 +86,7 @@ export default defineComponent({
     gap: 16px;
   }
 
-  @media (max-width: $sm) {
+  @media (max-width: $md) {
     flex-wrap: wrap;
     padding-right: 0;
   }
@@ -140,7 +140,7 @@ export default defineComponent({
     }
   }
 
-  @media (max-width: $sm) {
+  @media (max-width: $md) {
     display: block;
     width: 100%;
     flex-basis: 100%;

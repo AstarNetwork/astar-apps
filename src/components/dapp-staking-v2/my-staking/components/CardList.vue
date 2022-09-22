@@ -46,7 +46,13 @@ export default defineComponent({
 .wrapper--list {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 12px;
+
+  @media (max-width: $lg) {
+    width: 100%;
+    flex-wrap: nowrap;
+    overflow-x: scroll;
+  }
 }
 
 .card {

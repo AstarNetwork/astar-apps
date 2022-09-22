@@ -30,7 +30,15 @@
 
       <div class="divider"></div>
 
-      <DappList />
+      <DappList category="De-Fi" />
+
+      <div class="divider"></div>
+
+      <DappList category="Infra" />
+
+      <div class="divider"></div>
+
+      <DappList category="NFT" />
     </div>
 
     <Teleport to="#app--main">
@@ -124,13 +132,16 @@ export default defineComponent({
   background: #fff;
   border-radius: 6px;
   padding: 18px 24px 24px 24px;
+  @media (max-width: $sm) {
+    display: grid;
+  }
 }
 
 .wrapper--tabs {
   display: flex;
   justify-content: space-between;
 
-  @media (max-width: $lg) {
+  @media (max-width: $md) {
     display: block;
   }
 }
@@ -202,6 +213,10 @@ export default defineComponent({
     }
   }
 }
+
+// .wrapper--panel {
+//   width: 100%;
+// }
 
 .divider {
   border-top: 1px solid $object-light;

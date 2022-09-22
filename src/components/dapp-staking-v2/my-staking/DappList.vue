@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <div class="wrapper--header">
-      <div class="txt--header">De-fi</div>
+      <div class="txt--header">{{ category }}</div>
       <astar-irregular-button width="77" height="20">See All</astar-irregular-button>
     </div>
     <CardList :items="items" />
@@ -12,6 +12,12 @@ import { defineComponent, PropType } from 'vue';
 import CardList from './components/CardList.vue';
 export default defineComponent({
   components: { CardList },
+  props: {
+    category: {
+      type: String,
+      required: true,
+    },
+  },
   setup() {
     //TODO: need refactor as module
     let items = [
@@ -50,6 +56,7 @@ export default defineComponent({
   .wrapper--header {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 20px;
   }
   .txt--header {
     font-weight: 600;
@@ -59,6 +66,14 @@ export default defineComponent({
     align-items: center;
     letter-spacing: -0.02em;
     color: $gray-5-selected;
+  }
+}
+
+.body--dark {
+  .wrapper {
+    .txt--header {
+      color: $gray-1;
+    }
   }
 }
 </style>
