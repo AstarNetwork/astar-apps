@@ -16,6 +16,7 @@ export interface DappItem extends LooseObject {
   gitHubUrl: string;
   imagesUrl: string[];
   developers: Developer[];
+  communities: Community[];
 }
 
 export interface NewDappItem extends DappItem {
@@ -32,6 +33,21 @@ export interface Developer {
   linkedInAccountUrl: string;
   iconFile: string;
   name: string;
+}
+
+export enum CommunityType {
+  Twitter = 'Twitter',
+  Reddit = 'Reddit',
+  Facebook = 'Facebook',
+  TikTok = 'TikTok',
+  YouTube = 'YouTube',
+  Instagram = 'Instagram',
+}
+
+export interface Community {
+  type: CommunityType;
+  handle: string;
+  iconUrl: string;
 }
 
 export interface DappStateInterface {

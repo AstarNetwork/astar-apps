@@ -70,26 +70,17 @@
             <image-card
               :base64-image="data.imagesContent[index]"
               :description="file.name"
+              :can-remove-card="true"
               class="card"
+              @remove="removeFile(index)"
             >
               <add-item-card />
             </image-card>
           </template>
         </q-file>
 
-        <items-container :title="$t('dappStaking.modals.builders')" class="component">
-          <div class="builders--container">
-            <image-card
-              v-for="(developer, index) in data.developers"
-              :key="index"
-              :description="developer.name"
-              :base64-image="developer.iconFile"
-            />
-            <image-card description="Add an account" class="card">
-              <add-item-card @click="addDeveloper" />
-            </image-card>
-          </div>
-        </items-container>
+        <builders :dapp="data" @dapp-changed="handleDappChanged" />
+        <community :dapp="data" @dapp-changed="handleDappChanged" />
 
         <items-container :title="$t('dappStaking.modals.description')" class="component">
           <div class="wrapper--description">
@@ -120,13 +111,6 @@
         </items-container>
       </div>
     </div>
-
-    <modal-add-developer
-      :is-modal-add-developer="isModalAddDeveloper"
-      :handle-modal-developer="handleModalAddDeveloper"
-      :add-developer="handleAddDevelper"
-      :developer="currentDeveloper"
-    />
   </div>
 </template>
 
@@ -135,11 +119,12 @@ import { computed, defineComponent, reactive, ref, watch } from 'vue';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 import { useStore } from 'src/store';
 import { Developer, NewDappItem } from 'src/store/dapp-staking/state';
-import ImageCard from './ImageCard.vue';
-import AddItemCard from './AddItemCard.vue';
-import ItemsContainer from './ItemsContainer.vue';
-import ModalAddDeveloper from './ModalAddDeveloper.vue';
-import DescriptionTab from './DescriptionTab.vue';
+import ImageCard from 'src/components/dapp-staking/register/ImageCard.vue';
+import AddItemCard from 'src/components/dapp-staking/register/AddItemCard.vue';
+import ItemsContainer from 'src/components/dapp-staking/register/ItemsContainer.vue';
+import DescriptionTab from 'src/components/dapp-staking/DescriptionTab.vue';
+import Builders from 'src/components/dapp-staking/register/Builders.vue';
+import Community from 'src/components/dapp-staking/register/Community.vue';
 import { isUrlValid } from 'src/components/common/Validators';
 
 const ADD_IMG = '~assets/img/add.png';
@@ -149,8 +134,9 @@ export default defineComponent({
     ImageCard,
     AddItemCard,
     ItemsContainer,
-    ModalAddDeveloper,
     DescriptionTab,
+    Builders,
+    Community,
   },
   setup() {
     const initDeveloper = (): Developer => ({
@@ -211,22 +197,12 @@ export default defineComponent({
       data.imagesContent.splice(index, 1);
     };
 
-    const addDeveloper = () => {
-      isModalAddDeveloper.value = true;
-    };
-
-    const handleModalAddDeveloper = ({ isOpen }: { isOpen: boolean }) => {
-      currentDeveloper.value = initDeveloper();
-      isModalAddDeveloper.value = isOpen;
-    };
-
-    const handleAddDevelper = (developer: Developer): void => {
-      data.developers.push(developer);
-      handleModalAddDeveloper({ isOpen: false });
-    };
-
     const setIsEdit = (isEdit: boolean): void => {
       isEditDescription.value = isEdit;
+    };
+
+    const handleDappChanged = (newData: NewDappItem): void => {
+      data.ref = newData;
     };
 
     watch([theme], (val) => {
@@ -244,10 +220,8 @@ export default defineComponent({
       updateDappLogo,
       removeFile,
       isUrlValid,
-      addDeveloper,
-      handleModalAddDeveloper,
-      handleAddDevelper,
       setIsEdit,
+      handleDappChanged,
     };
   },
 });
@@ -262,10 +236,6 @@ export default defineComponent({
 
 .component {
   margin-bottom: 20px;
-}
-
-.q-field__messages {
-  font-size: 20px !important;
 }
 
 .card {
@@ -286,11 +256,6 @@ export default defineComponent({
   @media (min-width: $xl) {
     justify-content: center;
   }
-}
-
-.builders--container {
-  display: flex;
-  flex-direction: row;
 }
 </style>
 

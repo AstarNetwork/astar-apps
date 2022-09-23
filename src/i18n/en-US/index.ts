@@ -222,6 +222,7 @@ export default {
         },
       },
       builders: 'Builders information',
+      community: 'Community',
       description: 'Description',
       markdown: 'Markdown',
       preview: 'Preview',
