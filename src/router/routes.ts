@@ -1,15 +1,15 @@
-import { endpointKey, getNetworkName } from 'src/config/chainEndpoints';
-import DiscoverDappsTab from 'components/dapp-staking/DiscoverDappsTab.vue';
-import ManageDappsTab from 'components/dapp-staking/ManageDappsTab.vue';
-import AssetsPage from 'pages/AssetsPage.vue';
 import Assets from 'components/assets/Assets.vue';
+import DiscoverDappsTab from 'components/dapp-staking/DiscoverDappsTab.vue';
+import AssetsPage from 'pages/AssetsPage.vue';
 import Transfer from 'pages/Transfer.vue';
+import { endpointKey, getNetworkName } from 'src/config/chainEndpoints';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 import Store from 'src/pages/DappStaking.vue';
 import Dashboard from 'src/pages/Dashboard.vue';
+import StakeManage from 'src/pages/StakeManage.vue';
 import { RouteRecordRaw } from 'vue-router';
-import { LOCAL_STORAGE } from 'src/config/localStorage';
 
-export { getHeaderName, buildTransferPageLink } from 'src/router/utils';
+export { buildTransferPageLink, getHeaderName } from 'src/router/utils';
 
 const networkIdxStore = localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX);
 
@@ -22,6 +22,7 @@ export enum Path {
   Dashboard = '/dashboard',
   DappStaking = '/dapp-staking',
   Discover = '/discover',
+  Stake = '/stake',
   Transfer = '/transfer',
 }
 
@@ -103,9 +104,14 @@ const routes: RouteRecordRaw[] = [
         path: 'discover',
         component: DiscoverDappsTab,
       },
+      // Memo: Remove this component if there is no usage
+      // {
+      //   path: 'manage',
+      //   component: ManageDappsTab,
+      // },
       {
-        path: 'manage',
-        component: ManageDappsTab,
+        path: 'stake',
+        component: StakeManage,
       },
     ],
   },

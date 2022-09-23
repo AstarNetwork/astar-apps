@@ -1,0 +1,160 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--stake {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.box--input-field {
+  display: grid;
+  row-gap: 12px;
+  padding: 9px 15px;
+  border-radius: 6px;
+  width: 320px;
+  height: 88px;
+  background: transparent;
+
+  border: 1px solid $gray-3;
+  @media (min-width: $xs) {
+    width: 344px;
+  }
+  @media (min-width: $md) {
+    width: 400px;
+  }
+  @media (min-width: $xl) {
+    width: 420px;
+  }
+}
+
+.rows {
+  display: grid;
+  row-gap: 16px;
+  margin-bottom: 8px;
+}
+
+.btn-margin-adjuster {
+  margin-top: 24px;
+}
+
+.box--margin-adjuster {
+  margin-top: 8px;
+}
+
+.row--box-error {
+  padding: 10px 20px;
+  border-radius: 6px;
+  width: 344px;
+  margin-bottom: 24px;
+  border: 1px solid $warning-red;
+  background: $box-red;
+  text-align: left;
+  @media (min-width: $md) {
+    width: 400px;
+  }
+  @media (min-width: $xl) {
+    width: 420px;
+  }
+}
+
+.box__row {
+  display: flex;
+  column-gap: 8px;
+  align-items: center;
+}
+
+.box__space-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+.box__available {
+  display: flex;
+  column-gap: 10px;
+  align-items: center;
+}
+
+.wrapper__row--button {
+  display: flex;
+  justify-content: center;
+}
+
+.btn--max {
+  border: 1px solid $astar-blue;
+  box-sizing: border-box;
+  filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.05));
+  border-radius: 32px;
+  padding: 1px 12px;
+  color: $astar-blue;
+  font-weight: 500;
+  font-size: 11px;
+  transition: all 0.3s ease 0s;
+  &:hover {
+    transition: all 0.3s ease 0s;
+    background-color: $astar-blue;
+    color: white;
+  }
+}
+
+.input--amount {
+  width: 180px;
+  font-size: 22px;
+  outline: none;
+  background: transparent;
+  text-align: right;
+  font-weight: 600;
+  color: $gray-5;
+  justify-self: flex-end;
+  @media (min-width: $md) {
+    width: 250px;
+  }
+}
+
+.token-logo {
+  width: 24px;
+  height: 24px;
+  img {
+    border-radius: 50%;
+  }
+}
+
+.separator {
+  border-top: 1px solid $gray-4;
+  opacity: 0.5;
+  margin: 6px 0;
+}
+
+.btn-size-adjust {
+  @media (min-width: $xs) {
+    width: 344px;
+  }
+  @media (min-width: $md) {
+    width: 400px;
+  }
+  @media (min-width: $xl) {
+    width: 420px;
+  }
+}
+
+.icon--expand {
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.body--dark {
+  .box--input-field {
+    background: $gray-6;
+    border: 1px solid $gray-4;
+  }
+  input {
+    color: white;
+  }
+  .row--box-error {
+    background: $box-red-dark;
+  }
+  .text--to--balance {
+    color: $gray-4;
+  }
+}
