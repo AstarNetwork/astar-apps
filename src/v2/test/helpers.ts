@@ -4,6 +4,7 @@ import {
   IDappStakingRepository,
   IMetadataRepository,
   IPriceRepository,
+  ISystemRepository,
   IXcmRepository,
 } from 'src/v2/repositories';
 import { DappStakingRepositoryMock } from 'src/v2/test/mocks/repositories/DappStakingRepositoryMock';
@@ -27,6 +28,7 @@ import { container } from '../common';
 import { XcmService } from 'src/v2/services/implementations/XcmService';
 import { BalanceFormatterService } from 'src/v2/services/implementations/BalanceFormatterService';
 import { ITypeFactory, TypeFactory, TypeMapping } from '../config/types';
+import { SystemRepositoryMock } from './mocks/repositories/SystemRepositoryMock';
 
 const TestSymbols = {
   WalletServiceMock: Symbol.for('WalletServiceMock'),
@@ -45,6 +47,7 @@ const initTestContainer = () => {
   container.addSingleton<IPriceRepository>(PriceRepositoryMock, Symbols.PriceRepository);
   container.addSingleton<IMetadataRepository>(MetadataRepositoryMock, Symbols.MetadataRepository);
   container.addSingleton<IXcmRepository>(XcmRepositoryMock, Symbols.XcmRepository);
+  container.addSingleton<ISystemRepository>(SystemRepositoryMock, Symbols.SystemRepository);
 
   container.addSingleton<IBalanceFormatterService>(BalanceFormatterService);
   container.addSingleton<IDappStakingService>(DappStakingService);
