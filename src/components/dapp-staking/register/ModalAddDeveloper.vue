@@ -15,7 +15,7 @@
           input-class="input"
           :input-style="{ fontWeight: 'bold' }"
           :rules="[
-            (v) => validateUrlFormat(v) || `${$t('dappStaking.modals.builder.error.invalidUrl')}`,
+            (v: string) => validateUrlFormat(v) || `${$t('dappStaking.modals.builder.error.invalidUrl')}`,
           ]"
           :error="!isValidUrl"
           :error-message="$t('dappStaking.modals.builder.error.accountRequired')"
@@ -30,7 +30,7 @@
           input-class="input"
           :input-style="{ fontWeight: 'bold' }"
           :rules="[
-            (v) => validateUrlFormat(v) || `${$t('dappStaking.modals.builder.error.invalidUrl')}`,
+            (v: string) => validateUrlFormat(v) || `${$t('dappStaking.modals.builder.error.invalidUrl')}`,
           ]"
           :error="!isValidUrl"
           :error-message="$t('dappStaking.modals.builder.error.accountRequired')"
@@ -61,7 +61,7 @@
           label-color="input-label"
           input-class="input"
           :input-style="{ fontWeight: 'bold' }"
-          :rules="[(v) => (v && v.length > 0) || `${$t('dappStaking.modals.builder.error.name')}`]"
+          :rules="[(v: string) => (v && v.length > 0) || `${$t('dappStaking.modals.builder.error.name')}`]"
           class="component"
         />
 
@@ -141,7 +141,7 @@ export default defineComponent({
       reader.onerror = (error) => console.error(error);
     };
 
-    const handleConfirm = () => {
+    const handleConfirm = (): void => {
       developerForm?.value?.validate().then(async (success: boolean) => {
         if (success) {
           if (isNewDeveloper.value) {

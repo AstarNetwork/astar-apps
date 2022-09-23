@@ -47,7 +47,12 @@ export enum CommunityType {
 export interface Community {
   type: CommunityType;
   handle: string;
+}
+
+export interface CommunityDefinition extends Community {
   iconUrl: string;
+  label: string;
+  validateHandle?: (v: string) => boolean | string;
 }
 
 export interface DappStateInterface {

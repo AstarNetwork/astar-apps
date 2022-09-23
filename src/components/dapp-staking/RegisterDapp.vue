@@ -9,7 +9,7 @@
           label-color="input-label"
           input-class="input"
           :input-style="{ fontWeight: 'bold' }"
-          :rules="[(v) => (v && v.length > 0) || 'dApp name is required.']"
+          :rules="[(v: string) => (v && v.length > 0) || 'dApp name is required.']"
           class="component"
         />
         <q-file
@@ -36,7 +36,7 @@
           label-color="input-label"
           input-class="input"
           :input-style="{ fontWeight: 'bold' }"
-          :rules="[(v) => isValidAddress(v) || 'Enter a valid EVM or SS58 contract address.']"
+          :rules="[(v: string) => isValidAddress(v) || 'Enter a valid EVM or SS58 contract address.']"
           class="component"
         />
 
@@ -48,8 +48,8 @@
           input-class="input"
           :input-style="{ fontWeight: 'bold' }"
           :rules="[
-            (v) => v !== '' || 'Enter project url.',
-            (v) => isUrlValid(v) || 'Invalid project url.',
+            (v: string) => v !== '' || 'Enter project url.',
+            (v: string) => isUrlValid(v) || 'Invalid project url.',
           ]"
           class="component"
         />
@@ -63,7 +63,7 @@
           accept=".jpg .png, image/*"
           label="Screenshots (Max. file size 1MB)"
           class="component"
-          :rules="[(v) => (v && v.length >= 4) || 'At least 4 dApp images are required.']"
+          :rules="[(v: File[]) => (v && v.length >= 4) || 'At least 4 dApp images are required.']"
           @update:model-value="updateDappImages()"
         >
           <template #file="{ file, index }">
@@ -95,7 +95,7 @@
                   class="description"
                   rows="20"
                   :rules="[
-                    (v) => (v && v.length > 0) || 'Tell the world something about your dApp.',
+                    (v: string) => (v && v.length > 0) || 'Tell the world something about your dApp.',
                   ]"
                 />
               </div>
@@ -157,6 +157,7 @@ export default defineComponent({
     // make a placeholder for add logo
     data.icon = new File([], 'Add a logo image'); // TODO translate
     data.developers = [];
+    data.communities = [];
     data.iconFile = '';
 
     data.images = [];
