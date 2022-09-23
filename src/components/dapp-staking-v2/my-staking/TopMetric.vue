@@ -136,7 +136,7 @@ export default defineComponent({
   flex-basis: 23.5%;
   min-width: 200px;
   height: 126px;
-  padding: 40px 24px;
+  padding: 40px 22px;
   background: linear-gradient(180deg, rgba(25, 29, 31, 0) 4.17%, rgba(255, 255, 255, 0.3) 79.69%);
   box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.2);
   border-radius: 6px;
