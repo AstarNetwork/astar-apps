@@ -1,5 +1,4 @@
 import Assets from 'components/assets/Assets.vue';
-import DiscoverDappsTab from 'components/dapp-staking/DiscoverDappsTab.vue';
 import AssetsPage from 'pages/AssetsPage.vue';
 import Transfer from 'pages/Transfer.vue';
 import { endpointKey, getNetworkName } from 'src/config/chainEndpoints';
@@ -7,6 +6,7 @@ import { LOCAL_STORAGE } from 'src/config/localStorage';
 import Store from 'src/pages/DappStaking.vue';
 import Dashboard from 'src/pages/Dashboard.vue';
 import StakeManage from 'src/pages/StakeManage.vue';
+import DappsHome from 'src/v2/components/dapp-staking/DappsHome.vue';
 import { RouteRecordRaw } from 'vue-router';
 
 export { buildTransferPageLink, getHeaderName } from 'src/router/utils';
@@ -102,7 +102,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'discover',
-        component: DiscoverDappsTab,
+        component: DappsHome,
       },
       // Memo: Remove this component if there is no usage
       // {

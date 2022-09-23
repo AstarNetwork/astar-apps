@@ -5,4 +5,9 @@ import { AccountInfoModel } from 'src/v2/models';
  */
 export interface ISystemRepository {
   getAccountInfo(address: string): Promise<AccountInfoModel>;
+
+  /**
+   * Starts subscription to a block change.
+   */
+  startBlockSubscription(): Promise<void>;
 }

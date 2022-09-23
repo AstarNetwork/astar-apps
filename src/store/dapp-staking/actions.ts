@@ -37,16 +37,6 @@ const showError = (dispatch: Dispatch, message: string): void => {
 
 export const getAddressEnum = (address: string) => ({ Evm: address });
 
-const getCollectionKey = async (): Promise<string> => {
-  if (!collectionKey) {
-    await $api?.isReady;
-    const chain = (await $api?.rpc.system.chain()) || 'development-dapps';
-    collectionKey = `${chain.toString().toLowerCase()}-dapps`.replace(' ', '-');
-  }
-
-  return collectionKey;
-};
-
 export const hasExtrinsicFailedEvent = (
   events: EventRecord[],
   dispatch: Dispatch,
@@ -99,9 +89,23 @@ const actions: ActionTree<State, StateInterface> = {
     commit('general/setLoading', true, { root: true });
 
     try {
+      // Fetch dapps
       const dappsUrl = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/dapps-staking/dapps`;
-      const result = await axios.get<DappItem>(dappsUrl);
-      commit('addDapps', result.data);
+      const service = container.get<IDappStakingService>(Symbols.DappStakingService);
+
+      const [dapps, combinedInfo] = await Promise.all([
+        axios.get<DappItem[]>(dappsUrl),
+        service.getCombinedInfo(),
+      ]);
+
+      // Update combined info with dapp info
+      combinedInfo.map((i) => {
+        i.dapp = dapps.data.find(
+          (x) => x.address.toLowerCase() === i.contract.address.toLowerCase()
+        );
+      });
+
+      commit('addDappCombinedInfos', combinedInfo);
     } catch (e) {
       const error = e as unknown as Error;
       showError(dispatch, error.message);
