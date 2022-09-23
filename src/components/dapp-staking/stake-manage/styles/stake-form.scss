@@ -61,6 +61,7 @@
   display: flex;
   column-gap: 8px;
   align-items: center;
+  position: relative;
 }
 
 .box__space-between {
@@ -77,6 +78,17 @@
 .wrapper__row--button {
   display: flex;
   justify-content: center;
+}
+
+.row--dapp-name {
+  display: flex;
+  align-items: center;
+  column-gap: 16px;
+}
+
+.text--dapp-name {
+  font-weight: 600;
+  font-size: 22px;
 }
 
 .btn--max {
@@ -97,7 +109,7 @@
 }
 
 .input--amount {
-  width: 180px;
+  width: 220px;
   font-size: 22px;
   outline: none;
   background: transparent;
@@ -106,7 +118,10 @@
   color: $gray-5;
   justify-self: flex-end;
   @media (min-width: $md) {
-    width: 250px;
+    width: 278px;
+  }
+  @media (min-width: $xl) {
+    width: 300px;
   }
 }
 
@@ -124,6 +139,22 @@
   margin: 6px 0;
 }
 
+.column--funds {
+  margin-bottom: 4px;
+  @media (min-width: $md) {
+    margin-bottom: 0px;
+  }
+}
+
+.text--funds {
+  font-weight: 600;
+  font-size: 13px;
+  color: $gray-5;
+  @media (min-width: $md) {
+    font-size: 16px;
+  }
+}
+
 .btn-size-adjust {
   @media (min-width: $xs) {
     width: 344px;
@@ -137,10 +168,12 @@
 }
 
 .icon--expand {
-  border-radius: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  justify-self: flex-end;
+  position: absolute;
+  right: 0;
 }
 
 .body--dark {
@@ -156,5 +189,8 @@
   }
   .text--to--balance {
     color: $gray-4;
+  }
+  .text--funds {
+    color: $gray-1;
   }
 }

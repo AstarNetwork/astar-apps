@@ -7,8 +7,6 @@ import { checkIsDappRegistered, GeneralStakerInfo } from 'src/hooks/helper/claim
 import { wait } from 'src/hooks/helper/common';
 import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
 import { EraStakingPoints, StakeInfo } from 'src/store/dapp-staking/actions';
-import { DappItem } from 'src/store/dapp-staking/state';
-import { StakingData } from 'src/modules/dapp-staking';
 
 interface StakeData {
   address: string;
@@ -30,53 +28,6 @@ export const checkIsLimitedProvider = (): boolean => {
     }
   });
   return result;
-};
-
-export const formatStakingList = async ({
-  api,
-  address,
-  dapps,
-}: {
-  api: ApiPromise;
-  address: string;
-  dapps: DappItem[];
-}): Promise<StakingData[]> => {
-  let data = [];
-
-  const getData = async (dapp: DappItem): Promise<StakeData | undefined> => {
-    try {
-      const stakerInfo = await api.query.dappsStaking.generalStakerInfo<GeneralStakerInfo>(
-        address,
-        {
-          Evm: dapp.address,
-        }
-      );
-      if (!stakerInfo) return undefined;
-
-      const bnBalance = stakerInfo.stakes.length && stakerInfo.stakes.slice(-1)[0].staked;
-      const bal = stakerInfo.stakes.length && bnBalance.toString();
-
-      if (Number(bal) > 0) {
-        return { address: dapp.address, balance: String(bal), name: dapp.name };
-      }
-    } catch (error) {
-      return undefined;
-    }
-  };
-
-  if (checkIsLimitedProvider()) {
-    for await (let dapp of dapps) {
-      const dappData = await getData(dapp);
-      data.push(dappData);
-    }
-  } else {
-    data = await Promise.all(
-      dapps.map(async (dapp: DappItem) => {
-        return await getData(dapp);
-      })
-    );
-  }
-  return data.filter((it) => it !== undefined) as StakingData[];
 };
 
 export const getDappStakers = async ({ api }: { api: ApiPromise }): Promise<number> => {

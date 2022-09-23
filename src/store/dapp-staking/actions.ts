@@ -85,7 +85,10 @@ export const hasExtrinsicFailedEvent = (
 };
 
 const actions: ActionTree<State, StateInterface> = {
-  async getDapps({ commit, dispatch }, network: string) {
+  async getDapps(
+    { commit, dispatch },
+    { network, currentAccount }: { network: string; currentAccount: string }
+  ) {
     commit('general/setLoading', true, { root: true });
 
     try {
@@ -95,7 +98,7 @@ const actions: ActionTree<State, StateInterface> = {
 
       const [dapps, combinedInfo] = await Promise.all([
         axios.get<DappItem[]>(dappsUrl),
-        service.getCombinedInfo(),
+        service.getCombinedInfo(currentAccount),
       ]);
 
       // Update combined info with dapp info

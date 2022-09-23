@@ -24,7 +24,7 @@ export interface IDappStakingRepository {
    * Gets staker info (total staked, stakers count) for a given contracts.
    * @param contractAddresses List of contract addresses to provide info for.
    */
-  getStakerInfo(contractAddresses: string[]): Promise<StakerInfo[]>;
+  getStakerInfo(contractAddresses: string[], walletAddress: string): Promise<StakerInfo[]>;
 
   /**
    * Gets all dapps registered to a node.
@@ -35,4 +35,5 @@ export interface IDappStakingRepository {
    * Starts subscription to a era change.
    */
   starEraSubscription(): Promise<void>;
+  fetchAccountStakingAmount(contractAddress: string, walletAddress: string): Promise<string>;
 }

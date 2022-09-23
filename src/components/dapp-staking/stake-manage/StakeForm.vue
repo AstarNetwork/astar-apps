@@ -1,19 +1,25 @@
 <template>
   <div class="wrapper--stake">
     <div class="rows">
-      <div>
-        <span> Stake on Astar Farm </span>
+      <div class="row--dapp-name">
+        <img width="32" alt="dapp-logo" :src="dapp.dapp.iconUrl" />
+        <span class="text--dapp-name"> {{ dapp.dapp.name }} </span>
       </div>
       <div class="box--input-field">
         <div class="box__space-between">
-          <span> Where would you like to bring you funds from?</span>
+          <span> {{ $t('dappStaking.stakePage.whereFundsFrom') }}</span>
         </div>
-        <div class="box__row">
+        <div class="box__row cursor-pointer" @click="setRightUi('select-funds-from')">
           <div class="token-logo">
-            <img width="24" alt="token-logo" :src="nativeTokenImg" />
+            <img width="24" alt="token-logo" :src="formattedTransferFrom.item.iconUrl" />
           </div>
-          <div>
-            <span class="text--title">Transferable Balance</span>
+          <div class="column--funds">
+            <span v-if="formattedTransferFrom" class="text--funds">{{
+              formattedTransferFrom.text
+            }}</span>
+          </div>
+          <div class="icon--expand">
+            <astar-icon-expand size="20" />
           </div>
         </div>
       </div>
@@ -25,29 +31,26 @@
             <span class="text--to--balance">
               {{
                 $t('assets.modals.balance', {
-                  amount: $n(truncate(0)),
+                  amount: $n(truncate(maxAmount)),
                   token: nativeTokenSymbol,
                 })
               }}</span
             >
-            <button v-if="!isTransferNativeToken" class="btn--max" @click="toMaxAmount">
+            <button class="btn--max" @click="toMaxAmount">
               {{ $t('assets.modals.max') }}
             </button>
           </div>
         </div>
         <div class="box__row">
-          <div class="box__row cursor-pointer" @click="setRightUi('select-token')">
+          <div class="box__row">
             <div class="token-logo">
               <img width="24" alt="token-logo" :src="nativeTokenImg" />
             </div>
             <span class="text--title">{{ nativeTokenSymbol }}</span>
-            <div class="icon--expand">
-              <astar-icon-expand size="20" />
-            </div>
           </div>
           <div class="box__column--input-amount">
             <input
-              :value="transferAmt"
+              :value="amount"
               inputmode="decimal"
               type="number"
               min="0"
@@ -78,7 +81,7 @@
       <div class="wrapper__row--button" :class="!errMsg && 'btn-margin-adjuster'">
         <button
           class="btn btn--confirm btn-size-adjust"
-          :disabled="isDisabledTransfer"
+          :disabled="errMsg || !Number(amount)"
           @click="transfer"
         >
           {{ $t('confirm') }}
@@ -88,20 +91,41 @@
   </div>
 </template>
 <script lang="ts">
+import { ethers } from 'ethers';
 import SpeedConfigurationV2 from 'src/components/common/SpeedConfigurationV2.vue';
 import { useAccount, useGasPrice, useNetworkInfo, useWalletIcon } from 'src/hooks';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { truncate } from 'src/hooks/helper/common';
 import { getTokenImage } from 'src/modules/token';
 import { useStore } from 'src/store';
-import { computed, defineComponent } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
 
 export default defineComponent({
   components: {
     SpeedConfigurationV2,
   },
-
-  setup() {
+  props: {
+    dapp: {
+      type: Object,
+      required: true,
+    },
+    isEnableNominationTransfer: {
+      type: Boolean,
+      required: true,
+    },
+    formattedTransferFrom: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+    setRightUi: {
+      type: Function,
+      required: true,
+    },
+  },
+  setup(props) {
+    const amount = ref<string | null>(null);
+    const errMsg = ref<string>();
     const { iconWallet } = useWalletIcon();
     const { currentAccount, currentAccountName } = useAccount();
     const { nativeTokenSymbol } = useNetworkInfo();
@@ -112,6 +136,25 @@ export default defineComponent({
 
     const store = useStore();
 
+    const nominationTransferMaxAmount = computed(() => {
+      if (!props.formattedTransferFrom.item) return 0;
+      return props.formattedTransferFrom
+        ? Number(ethers.utils.formatEther(props.formattedTransferFrom.item.balance.toString()))
+        : 0;
+    });
+
+    const maxAmount = computed(() => {
+      if (props.isEnableNominationTransfer) {
+        return String(nominationTransferMaxAmount.value);
+      }
+
+      return '0';
+    });
+
+    const toMaxAmount = (): void => {
+      amount.value = maxAmount.value;
+    };
+
     return {
       iconWallet,
       currentAccount,
@@ -119,8 +162,12 @@ export default defineComponent({
       nativeTokenSymbol,
       selectedTip,
       nativeTipPrice,
-      setSelectedTip,
       nativeTokenImg,
+      amount,
+      errMsg,
+      maxAmount,
+      setSelectedTip,
+      toMaxAmount,
       getShortenAddress,
       truncate,
     };
