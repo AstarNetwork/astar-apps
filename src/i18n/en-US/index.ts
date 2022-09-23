@@ -178,6 +178,8 @@ export default {
     stakePage: {
       backToDappList: 'Back to dApps list',
       whereFundsFrom: 'Where would you like to bring you funds from?',
+      nominationWarning:
+        'After moving your funds, you will have 10 days of cooldown period in the dApp before you can make transfers/unstake',
     },
     modals: {
       alreadyClaimed: 'Already claimed:',

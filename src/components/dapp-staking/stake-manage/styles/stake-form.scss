@@ -176,6 +176,25 @@
   right: 0;
 }
 
+.row--warning {
+  background: rgba(240, 185, 11, 0.2);
+  border-radius: 6px;
+  padding: 8px 16px;
+  width: 320px;
+  border: 1px solid $border-yellow;
+  font-weight: 500;
+  font-size: 14px;
+  @media (min-width: $xs) {
+    width: 344px;
+  }
+  @media (min-width: $md) {
+    width: 400px;
+  }
+  @media (min-width: $xl) {
+    width: 420px;
+  }
+}
+
 .body--dark {
   .box--input-field {
     background: $gray-6;
