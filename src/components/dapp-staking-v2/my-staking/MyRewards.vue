@@ -102,7 +102,6 @@ export default defineComponent({
   flex-direction: column;
   flex: none;
   flex-basis: 24%;
-  // width: 294px;
   min-width: 200px;
   height: 142px;
   background: $gray-1;

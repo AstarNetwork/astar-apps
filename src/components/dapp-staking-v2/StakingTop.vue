@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper-main">
-    <!-- <TopMetric /> -->
+    <TopMetric />
 
     <MyStaking />
 
@@ -31,14 +31,14 @@
 <script lang="ts">
 import { useMeta } from 'quasar';
 import { useStore } from 'src/store';
-// import TopMetric from 'src/components/dapp-staking-v2/my-staking/TopMetric.vue';
+import TopMetric from 'src/components/dapp-staking-v2/my-staking/TopMetric.vue';
 import MyStaking from 'src/components/dapp-staking-v2/my-staking/MyStaking.vue';
 import DappList from 'src/components/dapp-staking-v2/my-staking/DappList.vue';
 import { computed, defineComponent, ref } from 'vue';
 
 export default defineComponent({
   components: {
-    // TopMetric,
+    TopMetric,
     MyStaking,
     DappList,
   },
@@ -58,7 +58,7 @@ export default defineComponent({
 @import 'src/css/quasar.variables.scss';
 
 .wrapper-main {
-  padding: 18px 24px 24px 24px;
+  padding: 0px 24px 24px 24px;
 }
 
 .divider {
