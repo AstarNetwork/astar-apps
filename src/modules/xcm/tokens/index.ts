@@ -1,10 +1,11 @@
 import { Erc20Token } from 'src/modules/token';
 import { Asset } from 'src/v2/models';
 import { XcmTokenInformation } from 'src/modules/xcm';
-import { ASTAR_NATIVE_TOKEN, endpointKey } from 'src/config/chainEndpoints';
+import { endpointKey } from 'src/config/chainEndpoints';
 import { ASTAR_DECIMALS } from 'src/hooks/helper/plasmUtils';
 import { BN } from 'bn.js';
 import { SelectedToken } from 'src/c-bridge';
+import { ASTAR_NATIVE_TOKEN } from 'src/config/chain';
 
 // Acala Note: There is no endpoint to get minBridgeAmount.  But the rule is that Acala doesn't allow transfers that are less value than the equivalent of $0.01USD
 
@@ -94,7 +95,8 @@ export const xcmToken = {
       logo: 'https://assets.coingecko.com/coins/images/17172/small/karura.jpeg?1626782066',
       isXcmCompatible: true,
       originChain: 'Karura',
-      minBridgeAmount: '0.1',
+      // ED: 0.1 KAR (Users can't withdraw 0.1KAR to 0 KAR account due to a fee)
+      minBridgeAmount: '0.11',
     },
     {
       symbol: 'LKSM',
@@ -115,6 +117,16 @@ export const xcmToken = {
       isXcmCompatible: true,
       originChain: 'Moonriver',
       minBridgeAmount: '0.007',
+    },
+    {
+      symbol: 'USDT',
+      isNativeToken: true,
+      assetId: '4294969280',
+      originAssetId: '1984',
+      logo: 'https://assets.coingecko.com/coins/images/325/small/Tether-logo.png?1598003707',
+      isXcmCompatible: true,
+      originChain: 'Statemine',
+      minBridgeAmount: '0.1',
     },
   ],
   [endpointKey.SHIBUYA]: [],

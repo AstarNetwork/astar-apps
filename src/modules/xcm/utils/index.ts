@@ -1,7 +1,7 @@
 import { ApiPromise } from '@polkadot/api';
 import { Struct } from '@polkadot/types';
 import { ethers } from 'ethers';
-import { ASTAR_NETWORK_IDX, endpointKey, getNetworkName } from 'src/config/chainEndpoints';
+import { endpointKey, getNetworkName } from 'src/config/chainEndpoints';
 import {
   getAccountHistories,
   LOCAL_STORAGE,
@@ -12,10 +12,11 @@ import { getTimestamp } from 'src/hooks/helper/common';
 import { astarNetworks } from 'src/hooks/xcm/useTransferRouter';
 import { SystemAccount, TxHistory } from 'src/modules/account';
 import { HistoryTxType } from 'src/modules/account/index';
-import { Chain } from 'src/modules/xcm';
+import { Chain, xcmChainObj } from 'src/modules/xcm';
 import { Asset } from 'src/v2/models';
 import { astarChains, ExistentialDeposit, XcmTokenInformation } from 'src/modules/xcm/index';
 import { xcmToken, astarNativeTokenErcAddr } from 'src/modules/xcm//tokens';
+import { ASTAR_NETWORK_IDX } from 'src/config/chain';
 
 const { XCM_TX_HISTORIES, NETWORK_IDX } = LOCAL_STORAGE;
 interface Account extends Struct {
@@ -143,10 +144,10 @@ export const monitorBalanceIncreasing = async ({
   });
 };
 
-export const checkIsRelayChain = (chain: string): boolean => {
+export const checkIsSupportAstarNativeToken = (chain: Chain): boolean => {
   if (!chain) return false;
-  const c = chain.toLowerCase();
-  return c === Chain.POLKADOT.toLowerCase() || c === Chain.KUSAMA.toLowerCase();
+  const c = xcmChainObj[chain];
+  return c.isAstarNativeToken;
 };
 
 export const castChainName = (chain: string): string => {

@@ -41,6 +41,7 @@ export default {
     insufficientOriginChainBalance: 'Minimum balance on {chain} network is {amount} {token}',
     insufficientExistentialDeposit:
       'Account balances in {network} network is below than the existential deposit amount',
+    withdrawalNotSupport: "The portal doesn't support withdrawing to {chain} at this moment",
   },
   toast: {
     transactionFailed: 'Transaction failed with error: {message}',
@@ -153,6 +154,7 @@ export default {
     stakerApy: 'APY: {value}%',
     stakerApr: 'APR: {value}%',
     apr: 'APR',
+    apy: 'APY',
     ttlPendingRewards: 'Your Pending Rewards',
     autoCompound: 'Re-stake after claiming',
     autoCompoundingTooltip:

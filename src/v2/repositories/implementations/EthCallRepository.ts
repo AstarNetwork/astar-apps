@@ -11,7 +11,7 @@ import { Symbols } from 'src/v2/symbols';
 
 @injectable()
 export class EthCallRepository implements IEthCallRepository {
-  constructor(@inject(Symbols.Api) private api: IApi) {}
+  constructor(@inject(Symbols.DefaultApi) private api: IApi) {}
 
   public async getCall(
     extrinsic: SubmittableExtrinsic<'promise', ISubmittableResult>,

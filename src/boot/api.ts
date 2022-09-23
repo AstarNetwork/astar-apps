@@ -4,12 +4,8 @@ import { keyring } from '@polkadot/ui-keyring';
 import { useMeta } from 'quasar';
 import { boot } from 'quasar/wrappers';
 import { connectApi } from 'src/config/api/polkadot/connectApi';
-import {
-  ASTAR_CHAIN,
-  endpointKey,
-  getProviderIndex,
-  providerEndpoints,
-} from 'src/config/chainEndpoints';
+import { endpointKey, getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
+import { ASTAR_CHAIN } from 'src/config/chain';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { opengraphMeta } from 'src/config/opengraph';
 import { createAstarWeb3Instance, TNetworkId } from 'src/config/web3';

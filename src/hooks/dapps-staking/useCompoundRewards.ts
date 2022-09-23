@@ -28,7 +28,7 @@ interface UnbondingInfo extends Struct {
   unlockingChunks: Vec<UnlockingChunk>;
 }
 
-interface AccountLedger extends Struct {
+export interface AccountLedger extends Struct {
   locked: Balance;
   unbondingInfo: UnbondingInfo;
   rewardDestination: RewardDestination;

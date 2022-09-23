@@ -28,10 +28,9 @@ export const buildNetworkUrl = (network: string) => {
   const href = window.location.href;
   const hrefArray = href.split('/');
   const networkIndex = hrefArray.findIndex((it) => it === '#') + 1;
-  // E.g.: assets, dashboard, dApp-staking
-  const pageIndex = networkIndex + 1;
+
   return hrefArray
-    .slice(0, pageIndex + 1)
+    .slice(0, hrefArray.length)
     .map((it: string, index: number) => (index === networkIndex ? network : it))
     .join('/');
 };

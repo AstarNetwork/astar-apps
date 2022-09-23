@@ -1,5 +1,12 @@
 import { Erc20Token } from 'src/modules/token';
-import { BridgeMethod, CbridgeCurrency, CbridgeToken, PeggedPairConfig, Token } from 'src/c-bridge';
+import {
+  BridgeMethod,
+  cbridgeCastToken,
+  CbridgeCurrency,
+  CbridgeToken,
+  PeggedPairConfig,
+  Token,
+} from 'src/c-bridge';
 
 export const getSelectedToken = ({
   srcChainId,
@@ -58,4 +65,19 @@ const getPeggedTokenInfo = ({
 
 export const checkIsCbridgeToken = (token: Erc20Token): boolean => {
   return token.isCbridgeToken || false;
+};
+
+export const castCbridgeTokenData = (token: Erc20Token): Erc20Token => {
+  const symbolKey = token.symbol.toUpperCase();
+  if (cbridgeCastToken.hasOwnProperty(symbolKey)) {
+    const data = cbridgeCastToken[symbolKey as keyof typeof cbridgeCastToken];
+    return {
+      ...token,
+      name: data.name,
+      symbol: data.symbol,
+      image: data.image ? data.image : token.image,
+    };
+  } else {
+    return token;
+  }
 };

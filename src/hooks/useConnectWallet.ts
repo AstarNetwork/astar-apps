@@ -69,6 +69,13 @@ export const useConnectWallet = () => {
     modalName.value = WalletModalOption.SelectWallet;
   };
 
+  // Memo: triggered after users (who haven't connected to wallet) have clicked 'Connect Wallet' button on dApp staking page
+  const handleOpenSelectModal = (): void => {
+    window.addEventListener(WalletModalOption.SelectWallet, () => {
+      openSelectModal();
+    });
+  };
+
   const initializeWalletAccount = () => {
     const account = localStorage.getItem(SELECTED_ADDRESS);
     if (!account) {
@@ -118,7 +125,7 @@ export const useConnectWallet = () => {
       await setupNetwork({ network: chainId, provider });
 
       // If SubWallet return empty evm accounts, it required to switch to evm network and will request accounts again.
-      // This setep will not require from version 0.4.8
+      // This setup will not require from version 0.4.8
       if (accounts?.length === 0 && currentWallet === SupportWallet.SubWalletEvm) {
         const reCheckAccounts = await requestAccounts();
 
@@ -205,7 +212,6 @@ export const useConnectWallet = () => {
   const setWalletModal = (wallet: SupportWallet): void => {
     requestExtensionsIfFirstAccess(wallet);
     store.commit('general/setCurrentWallet', wallet);
-    localStorage.setItem(LOCAL_STORAGE.SELECTED_WALLET, wallet);
 
     setWallet(wallet);
   };
@@ -232,8 +238,8 @@ export const useConnectWallet = () => {
   const selectLoginWallet = async (): Promise<void> => {
     const lookupWallet = castMobileSource(modalName.value);
     if (SubstrateWallets.find((it) => it === lookupWallet)) {
-      const injected = await getInjectedExtensions(true);
-      const isInstalledExtension = injected.find((it) => lookupWallet === it.name);
+      const wallets = Object.keys(window.injectedWeb3);
+      const isInstalledExtension = wallets.find((it) => lookupWallet === it);
 
       if (!isInstalledExtension) {
         modalName.value = WalletModalOption.NoExtension;
@@ -316,6 +322,7 @@ export const useConnectWallet = () => {
   };
 
   watch([selectedWallet, currentEcdsaAccount, currentAccount, isH160], changeEvmAccount);
+  watchEffect(handleOpenSelectModal);
 
   watchEffect(async () => {
     await selectLoginWallet();

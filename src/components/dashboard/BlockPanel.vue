@@ -75,7 +75,7 @@
         </div>
       </div>
 
-      <div v-if="progress" class="box--era-information">
+      <div class="box--era-information">
         <div class="column--label">
           <span class="text--md">{{ $t('dashboard.block.era') }}</span>
         </div>

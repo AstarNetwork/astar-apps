@@ -20,7 +20,7 @@ interface EraInfo extends Struct {
 
 @injectable()
 export class DappStakingRepository implements IDappStakingRepository {
-  constructor(@inject(Symbols.Api) private api: IApi) {}
+  constructor(@inject(Symbols.DefaultApi) private api: IApi) {}
 
   public async getTvl(): Promise<BN> {
     const api = await this.api.getApi();
