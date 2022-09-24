@@ -1,5 +1,5 @@
 import BN from 'bn.js';
-import { Asset, Chain } from 'src/v2/models';
+import { Asset } from 'src/v2/models';
 import { ExtrinsicPayload } from '../integration';
 import { XcmChain } from 'src/v2/models/XcmModels';
 

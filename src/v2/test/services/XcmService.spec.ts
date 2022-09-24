@@ -4,7 +4,7 @@ import { Asset, AssetMetadata } from 'src/v2/models';
 import { IXcmService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { initTestContainer } from '../helpers';
-import { XcmChain } from 'src/modules/xcm';
+import { XcmChain } from 'src/v2/models';
 
 describe('XcmService.ts', () => {
   beforeEach(() => {

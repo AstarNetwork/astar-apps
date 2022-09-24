@@ -4,17 +4,15 @@ import { ethers } from 'ethers';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { useAccount, useBalance, useNetworkInfo } from 'src/hooks';
 import {
-  astarChains,
-  Chain,
   checkIsSupportAstarNativeToken,
   removeEvmName,
-  XcmChain,
   xcmChains,
   xcmToken,
 } from 'src/modules/xcm';
+import { Chain, XcmChain } from 'src/v2/models/XcmModels';
 import { generateAssetFromEvmToken, generateNativeAsset } from 'src/modules/xcm/tokens';
 import { useStore } from 'src/store';
-import { Asset } from 'src/v2/models';
+import { Asset, astarChains } from 'src/v2/models';
 import { computed, ref, watch, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { EvmAssets, XcmAssets } from 'src/store/assets/state';
@@ -120,6 +118,20 @@ export function useTransferRouter() {
 
     if (!isH160.value && from.value.includes(pathEvm)) {
       redirect();
+    }
+
+    const isAstarNativeTokenToAstarEvm =
+      !isLocalTransfer.value &&
+      to.value.includes(pathEvm) &&
+      tokenSymbol.value.toLowerCase() === nativeTokenSymbol.value.toLowerCase();
+    if (isAstarNativeTokenToAstarEvm) {
+      router.replace({
+        path: `/${network.value}/assets/transfer`,
+        query: {
+          ...route.query,
+          token: tokens.value[0].metadata.symbol.toLowerCase(),
+        },
+      });
     }
 
     if (isH160.value) {
@@ -292,6 +304,7 @@ export function useTransferRouter() {
     if (!isLocalTransfer.value) {
       // if: XCM bridge
       const selectedNetwork = xcmOpponentChain.value;
+      const isAstarEvm = from.value.includes(pathEvm) || to.value.includes(pathEvm);
       const isSupportAstarNativeToken = checkIsSupportAstarNativeToken(selectedNetwork);
       if (isH160.value) {
         const filteredToken = evmTokens.map((it) =>
@@ -306,7 +319,7 @@ export function useTransferRouter() {
         );
       }
       tokens = selectableTokens.filter(({ isXcmCompatible }) => isXcmCompatible);
-      isSupportAstarNativeToken && tokens.push(nativeTokenAsset);
+      !isAstarEvm && isSupportAstarNativeToken && tokens.push(nativeTokenAsset);
     }
     return tokens.length > 0
       ? tokens.sort((a: Asset, b: Asset) => a.metadata.symbol.localeCompare(b.metadata.symbol))

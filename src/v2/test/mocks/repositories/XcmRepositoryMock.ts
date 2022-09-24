@@ -3,7 +3,7 @@ import { injectable } from 'inversify';
 import { ExtrinsicPayload } from 'src/v2/integration';
 import { Asset, AssetMetadata } from 'src/v2/models';
 import { IXcmRepository } from 'src/v2/repositories';
-import { XcmChain } from 'src/modules/xcm';
+import { XcmChain } from 'src/v2/models';
 
 @injectable()
 export class XcmRepositoryMock implements IXcmRepository {

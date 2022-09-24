@@ -35,7 +35,7 @@
   </div>
 </template>
 <script lang="ts">
-import { XcmChain } from 'src/modules/xcm';
+import { XcmChain } from 'src/v2/models';
 import { defineComponent, PropType } from 'vue';
 import { castChainName } from 'src/modules/xcm';
 import { truncate } from 'src/hooks/helper/common';

@@ -195,12 +195,11 @@ import SimpleInput from 'src/components/common/SimpleInput.vue';
 import SelectEvmWallet from 'src/components/assets/transfer/SelectEvmWallet.vue';
 import { pathEvm, useAccount, useTooltip, useXcmBridgeV3 } from 'src/hooks';
 import { truncate } from 'src/hooks/helper/common';
-import { Asset } from 'src/v2/models';
+import { Asset, ethWalletChains } from 'src/v2/models';
 import { computed, defineComponent, PropType, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ModalLoading from '/src/components/common/ModalLoading.vue';
 import { isValidEvmAddress } from 'src/config/web3';
-import { ethWalletChains } from 'src/modules/xcm';
 export default defineComponent({
   components: {
     SimpleInput,

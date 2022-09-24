@@ -6,7 +6,14 @@ import { Guard } from 'src/v2/common';
 import { ITypeFactory } from 'src/v2/config/types';
 import { ExtrinsicPayload } from 'src/v2/integration';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
-import { Asset, Chain, XcmChain } from 'src/v2/models';
+import {
+  Asset,
+  checkIsDeposit,
+  ethWalletChains,
+  isParachain,
+  isRelayChain,
+  XcmChain,
+} from 'src/v2/models';
 import { IPriceRepository, IXcmRepository } from 'src/v2/repositories';
 import { MoonbeamXcmRepository } from 'src/v2/repositories/implementations';
 import {
@@ -16,19 +23,6 @@ import {
   TransferParam,
 } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
-
-export const isParachain = (network: XcmChain): boolean => !!network.parachainId;
-export const isRelayChain = (network: XcmChain): boolean => !isParachain(network);
-
-export const astarChains = [Chain.ASTAR, Chain.SHIDEN, Chain.ASTAR_EVM, Chain.SHIDEN_EVM];
-export const ethWalletChains = [Chain.MOONBEAM, Chain.MOONRIVER];
-
-// Memo: Chain.STATEMINE -> Bug related to https://github.com/polkadot-js/apps/issues/7812
-export const chainsNotSupportWithdrawal = [Chain.STATEMINE];
-
-export const checkIsDeposit = (fromChain: Chain): boolean => {
-  return !astarChains.includes(fromChain);
-};
 
 @injectable()
 export class XcmService implements IXcmService {
