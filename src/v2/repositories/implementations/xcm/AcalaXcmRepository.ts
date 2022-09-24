@@ -7,7 +7,6 @@ import { Asset } from 'src/v2/models';
 import { Symbols } from 'src/v2/symbols';
 import { XcmRepository } from '../XcmRepository';
 import { XcmChain } from 'src/v2/models/XcmModels';
-// import { XcmChain } from 'src/modules/xcm';
 import { Struct } from '@polkadot/types';
 
 interface TokensAccounts extends Struct {

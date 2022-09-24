@@ -11,8 +11,6 @@ import { XcmTokenInformation } from 'src/modules/xcm';
 import { container } from 'src/v2/common';
 import { IApi, IApiFactory } from 'src/v2/integration';
 import { Asset, XcmChain } from 'src/v2/models';
-// import { Asset } from 'src/v2/models';
-// import { XcmChain } from 'src/modules/xcm';
 import { XcmRepository } from 'src/v2/repositories/implementations/XcmRepository';
 import { Symbols } from 'src/v2/symbols';
 import Web3 from 'web3';
