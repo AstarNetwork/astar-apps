@@ -14,6 +14,7 @@ export const XcmRepositoryConfiguration: TypeMapping = {
   [Chain.ACALA]: AcalaXcmRepository,
   [Chain.KARURA]: AcalaXcmRepository,
   [Chain.STATEMINE]: StatemintXcmRepository,
+  [Chain.STATEMINT]: StatemintXcmRepository,
   [Chain.MOONBEAM]: MoonbeamXcmRepository,
   [Chain.MOONRIVER]: MoonbeamXcmRepository,
   [Chain.POLKADOT]: PolkadotXcmRepository,

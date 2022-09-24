@@ -169,6 +169,18 @@ export const USDT_SHIDEN = {
   wrapUrl: null,
 };
 
+export const USDT_ASTAR = {
+  srcChainId: 592,
+  address: '0xffffffff000000000000000000000001000007c0',
+  decimal: 6,
+  symbol: 'USDT',
+  name: 'Tether USD',
+  image: 'https://assets.coingecko.com/coins/images/325/small/Tether-logo.png?1598003707',
+  isWrappedToken: false,
+  isXC20: true,
+  wrapUrl: null,
+};
+
 export const registeredErc20Tokens = [
   WASTR,
   DOT,
@@ -182,6 +194,7 @@ export const registeredErc20Tokens = [
   MOVR,
   GLMR,
   USDT_SHIDEN,
+  USDT_ASTAR,
 ];
 
 // Memo: Define the token image source

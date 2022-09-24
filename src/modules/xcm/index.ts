@@ -50,6 +50,7 @@ export enum Chain {
   MOONRIVER = 'Moonriver',
   MOONBEAM = 'Moonbeam',
   STATEMINE = 'Statemine',
+  STATEMINT = 'Statemint',
 }
 
 export enum parachainIds {
@@ -60,6 +61,7 @@ export enum parachainIds {
   MOONRIVER = 2023,
   MOONBEAM = 2004,
   STATEMINE = 1000,
+  STATEMINT = 1000,
 }
 
 // Memo: give it 0 ide for convenience in checking para/relay chain logic
@@ -186,6 +188,15 @@ export const xcmChainObj: XcmChainObj = {
     endpoint: 'wss://wss.api.moonbeam.network',
     subscan: 'https://moonbeam.subscan.io',
     isAstarNativeToken: true,
+  },
+  [Chain.STATEMINT]: {
+    name: Chain.STATEMINT,
+    relayChain: Chain.POLKADOT,
+    img: 'https://polkadot.js.org/apps/static/statemine.65437936..svg',
+    parachainId: parachainIds.STATEMINT,
+    endpoint: 'wss://statemint-rpc.dwellir.com',
+    subscan: 'https://statemint.subscan.io',
+    isAstarNativeToken: false,
   },
 };
 

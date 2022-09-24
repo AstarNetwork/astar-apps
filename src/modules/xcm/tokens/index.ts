@@ -4,7 +4,6 @@ import { XcmTokenInformation } from 'src/modules/xcm';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { ASTAR_DECIMALS } from 'src/hooks/helper/plasmUtils';
 import { BN } from 'bn.js';
-import { SelectedToken } from 'src/c-bridge';
 import { ASTAR_NATIVE_TOKEN } from 'src/config/chain';
 
 // Acala Note: There is no endpoint to get minBridgeAmount.  But the rule is that Acala doesn't allow transfers that are less value than the equivalent of $0.01USD
@@ -64,6 +63,16 @@ export const xcmToken = {
       isXcmCompatible: true,
       originChain: 'Moonbeam',
       minBridgeAmount: '0.2',
+    },
+    {
+      symbol: 'USDT',
+      isNativeToken: true,
+      assetId: '4294969280',
+      originAssetId: '1984',
+      logo: 'https://assets.coingecko.com/coins/images/325/small/Tether-logo.png?1598003707',
+      isXcmCompatible: true,
+      originChain: 'Statemint',
+      minBridgeAmount: '0.21',
     },
   ],
   [endpointKey.SHIDEN]: [

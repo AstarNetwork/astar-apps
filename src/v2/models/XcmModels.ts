@@ -10,6 +10,7 @@ export enum Chain {
   MOONRIVER = 'Moonriver',
   MOONBEAM = 'Moonbeam',
   STATEMINE = 'Statemine',
+  STATEMINT = 'Statemint',
 }
 
 export enum parachainIds {
@@ -20,6 +21,7 @@ export enum parachainIds {
   MOONRIVER = 2023,
   MOONBEAM = 2004,
   STATEMINE = 1000,
+  STATEMINT = 1000,
 }
 
 export interface XcmChain {
