@@ -120,6 +120,20 @@ export function useTransferRouter() {
       redirect();
     }
 
+    const isAstarNativeTokenToAstarEvm =
+      !isLocalTransfer.value &&
+      to.value.includes(pathEvm) &&
+      tokenSymbol.value.toLowerCase() === nativeTokenSymbol.value.toLowerCase();
+    if (isAstarNativeTokenToAstarEvm) {
+      router.replace({
+        path: `/${network.value}/assets/transfer`,
+        query: {
+          ...route.query,
+          token: tokens.value[0].metadata.symbol.toLowerCase(),
+        },
+      });
+    }
+
     if (isH160.value) {
       const currentEvmNetwork = currentNetworkName.value.toLowerCase() + pathEvm;
       if (from.value !== currentEvmNetwork) {
@@ -290,6 +304,7 @@ export function useTransferRouter() {
     if (!isLocalTransfer.value) {
       // if: XCM bridge
       const selectedNetwork = xcmOpponentChain.value;
+      const isAstarEvm = from.value.includes(pathEvm) || to.value.includes(pathEvm);
       const isSupportAstarNativeToken = checkIsSupportAstarNativeToken(selectedNetwork);
       if (isH160.value) {
         const filteredToken = evmTokens.map((it) =>
@@ -304,7 +319,7 @@ export function useTransferRouter() {
         );
       }
       tokens = selectableTokens.filter(({ isXcmCompatible }) => isXcmCompatible);
-      isSupportAstarNativeToken && tokens.push(nativeTokenAsset);
+      !isAstarEvm && isSupportAstarNativeToken && tokens.push(nativeTokenAsset);
     }
     return tokens.length > 0
       ? tokens.sort((a: Asset, b: Asset) => a.metadata.symbol.localeCompare(b.metadata.symbol))
