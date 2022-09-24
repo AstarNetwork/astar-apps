@@ -92,13 +92,11 @@ import { SupportWallet } from 'src/config/wallets';
 import { useNetworkInfo } from 'src/hooks';
 import { truncate } from 'src/hooks/helper/common';
 import { addToEvmProvider, getEvmProvider } from 'src/hooks/helper/wallet';
-import { Erc20Token, getErc20Explorer, getStoredERC20Tokens, MOVR } from 'src/modules/token';
-import { xcmToken } from 'src/modules/xcm';
-import { Chain } from 'src/v2/models/XcmModels';
+import { Erc20Token, getErc20Explorer, getStoredERC20Tokens } from 'src/modules/token';
+import { buildTransferPageLink } from 'src/router/routes';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
-import { buildTransferPageLink } from 'src/router/routes';
 
 export default defineComponent({
   components: {
@@ -124,17 +122,6 @@ export default defineComponent({
       return getErc20Explorer({ currentNetworkIdx: currentNetworkIdx.value, tokenAddress });
     });
 
-    const isDisabledXcmButton = computed(() => {
-      // Memo: Remove after runtime upgrading in shinde
-      const isMovr = token.symbol === MOVR.symbol;
-      const acalaTokens = xcmToken[currentNetworkIdx.value].filter(
-        (it) => it.originChain === Chain.ACALA
-      );
-      // Memo: disabled until backend turns XCM transfer on again.
-      const isAcalaToken = !!acalaTokens.find((it) => it.symbol === token.symbol);
-      return isMovr || isAcalaToken;
-    });
-
     const isImportedToken = computed<boolean>(
       () =>
         !!getStoredERC20Tokens().find(
@@ -149,7 +136,6 @@ export default defineComponent({
       explorerLink,
       isImportedToken,
       provider,
-      isDisabledXcmButton,
       buildTransferPageLink,
       truncate,
       addToEvmProvider,
