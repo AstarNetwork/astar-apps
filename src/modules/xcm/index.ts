@@ -41,13 +41,6 @@ export interface ExistentialDeposit {
 // Memo: give it 0 ide for convenience in checking para/relay chain logic
 export const relaychainParaId = 0;
 
-export const astarChains = [Chain.ASTAR, Chain.SHIDEN, Chain.ASTAR_EVM, Chain.SHIDEN_EVM];
-
-export const ethWalletChains = [Chain.MOONBEAM, Chain.MOONRIVER];
-
-// Memo: Chain.STATEMINE -> Bug related to https://github.com/polkadot-js/apps/issues/7812
-export const chainsNotSupportWithdrawal = [Chain.STATEMINE];
-
 type XcmChainObj = {
   [key in Chain]: XcmChain;
 };

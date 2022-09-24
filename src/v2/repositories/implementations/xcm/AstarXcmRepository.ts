@@ -1,13 +1,12 @@
 import { BN } from '@polkadot/util';
 import { decodeAddress } from '@polkadot/util-crypto';
 import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
-import { ethWalletChains, XcmTokenInformation } from 'src/modules/xcm';
+import { XcmTokenInformation } from 'src/modules/xcm';
 import { container } from 'src/v2/common';
 import { ExtrinsicPayload, IApi, IApiFactory } from 'src/v2/integration';
-import { Asset } from 'src/v2/models';
+import { Asset, ethWalletChains, XcmChain } from 'src/v2/models';
 import { Symbols } from 'src/v2/symbols';
 import { XcmRepository } from '../XcmRepository';
-import { XcmChain } from 'src/v2/models';
 
 /**
  * Used to transfer assets from Astar/Shiden.

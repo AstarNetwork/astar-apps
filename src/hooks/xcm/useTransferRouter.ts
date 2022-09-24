@@ -4,7 +4,6 @@ import { ethers } from 'ethers';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { useAccount, useBalance, useNetworkInfo } from 'src/hooks';
 import {
-  astarChains,
   checkIsSupportAstarNativeToken,
   removeEvmName,
   xcmChains,
@@ -13,7 +12,7 @@ import {
 import { Chain, XcmChain } from 'src/v2/models/XcmModels';
 import { generateAssetFromEvmToken, generateNativeAsset } from 'src/modules/xcm/tokens';
 import { useStore } from 'src/store';
-import { Asset } from 'src/v2/models';
+import { Asset, astarChains } from 'src/v2/models';
 import { computed, ref, watch, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { EvmAssets, XcmAssets } from 'src/store/assets/state';

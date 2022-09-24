@@ -3,11 +3,6 @@ import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { getTokenBal, isValidEvmAddress, toSS58Address } from 'src/config/web3';
-import { capitalize } from 'src/hooks/helper/common';
-import { ASTAR_SS58_FORMAT } from 'src/hooks/helper/plasmUtils';
-import { SystemAccount } from 'src/modules/account';
-import { MOONBEAM_ASTAR_TOKEN_ID } from 'src/v2/repositories/implementations/xcm/MoonbeamXcmRepository';
-
 import {
   astarNativeTokens,
   useAccount,
@@ -15,24 +10,26 @@ import {
   useNetworkInfo,
   useTransferRouter,
 } from 'src/hooks';
+import { capitalize } from 'src/hooks/helper/common';
 import {
   ASTAR_DECIMALS,
+  ASTAR_SS58_FORMAT,
   isValidAddressPolkadotAddress,
   SUBSTRATE_SS58_FORMAT,
 } from 'src/hooks/helper/plasmUtils';
+import { SystemAccount } from 'src/modules/account';
 import { showLoading } from 'src/modules/extrinsic/utils';
 import {
   addXcmTxHistories,
-  chainsNotSupportWithdrawal,
   checkIsDeposit,
-  ethWalletChains,
   fetchXcmBalance,
   monitorBalanceIncreasing,
   xcmChainObj,
 } from 'src/modules/xcm';
-import { Chain, parachainIds, XcmChain } from 'src/v2/models/XcmModels';
 import { useStore } from 'src/store';
-import { Asset } from 'src/v2/models';
+import { Asset, ethWalletChains } from 'src/v2/models';
+import { Chain, chainsNotSupportWithdrawal, parachainIds, XcmChain } from 'src/v2/models/XcmModels';
+import { MOONBEAM_ASTAR_TOKEN_ID } from 'src/v2/repositories/implementations/xcm/MoonbeamXcmRepository';
 import { computed, ref, Ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 

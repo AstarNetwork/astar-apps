@@ -35,3 +35,15 @@ export interface XcmChain {
   // Note: true if ASTR/SDN is listed on the parachain
   isAstarNativeToken: boolean;
 }
+
+export const isParachain = (network: XcmChain): boolean => !!network.parachainId;
+export const isRelayChain = (network: XcmChain): boolean => !isParachain(network);
+
+// Memo: Chain.STATEMINE -> Bug related to https://github.com/polkadot-js/apps/issues/7812
+export const chainsNotSupportWithdrawal = [Chain.STATEMINE, Chain.STATEMINT];
+export const astarChains = [Chain.ASTAR, Chain.SHIDEN, Chain.ASTAR_EVM, Chain.SHIDEN_EVM];
+export const ethWalletChains = [Chain.MOONBEAM, Chain.MOONRIVER];
+
+export const checkIsDeposit = (fromChain: Chain): boolean => {
+  return !astarChains.includes(fromChain);
+};
