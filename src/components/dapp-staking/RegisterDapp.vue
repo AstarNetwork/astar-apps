@@ -54,61 +54,10 @@
           class="component"
         />
 
-        <q-file
-          v-model="data.images"
-          standout="bg-blue-grey-10 text-white"
-          multiple
-          append
-          max-file-size="1000000"
-          accept=".jpg .png, image/*"
-          label="Screenshots (Max. file size 1MB)"
-          class="component"
-          :rules="[(v: File[]) => (v && v.length >= 4) || 'At least 4 dApp images are required.']"
-          @update:model-value="updateDappImages()"
-        >
-          <template #file="{ file, index }">
-            <image-card
-              :base64-image="data.imagesContent[index]"
-              :description="file.name"
-              :can-remove-card="true"
-              class="card"
-              @remove="removeFile(index)"
-            >
-              <add-item-card />
-            </image-card>
-          </template>
-        </q-file>
-
-        <builders :dapp="data" @dapp-changed="handleDappChanged" />
-        <community :dapp="data" @dapp-changed="handleDappChanged" />
-
-        <items-container :title="$t('dappStaking.modals.description')" class="component">
-          <div class="wrapper--description">
-            <div class="container-description">
-              <description-tab :is-edit="isEditDescription" :set-is-edit="setIsEdit" />
-              <div v-if="isEditDescription">
-                <q-input
-                  v-model="data.description"
-                  style="width: 1000px"
-                  maxlength="5000"
-                  type="textarea"
-                  class="description"
-                  rows="20"
-                  :rules="[
-                    (v: string) => (v && v.length > 0) || 'Tell the world something about your dApp.',
-                  ]"
-                />
-              </div>
-              <div v-else>
-                <q-scroll-area class="tw-h-96">
-                  <!-- eslint-disable vue/no-v-html -->
-                  <!-- data descriptionMarkdown is sanitized so no XSS can happen. -->
-                  <div v-html="data.descriptions"></div>
-                </q-scroll-area>
-              </div>
-            </div>
-          </div>
-        </items-container>
+        <dapp-images :dapp="data" class="component" @dapp-changed="handleDappChanged" />
+        <builders :dapp="data" class="component" />
+        <description :dapp="data" class="component" />
+        <community :dapp="data" class="component" />
       </div>
     </div>
   </div>
@@ -121,11 +70,12 @@ import { useStore } from 'src/store';
 import { Developer, NewDappItem } from 'src/store/dapp-staking/state';
 import ImageCard from 'src/components/dapp-staking/register/ImageCard.vue';
 import AddItemCard from 'src/components/dapp-staking/register/AddItemCard.vue';
-import ItemsContainer from 'src/components/dapp-staking/register/ItemsContainer.vue';
-import DescriptionTab from 'src/components/dapp-staking/DescriptionTab.vue';
 import Builders from 'src/components/dapp-staking/register/Builders.vue';
 import Community from 'src/components/dapp-staking/register/Community.vue';
+import DappImages from 'src/components/dapp-staking/register/DappImages.vue';
+import Description from 'src/components/dapp-staking/register/Description.vue';
 import { isUrlValid } from 'src/components/common/Validators';
+import { sanitizeData } from 'src/hooks/helper/markdown';
 
 const ADD_IMG = '~assets/img/add.png';
 
@@ -133,10 +83,10 @@ export default defineComponent({
   components: {
     ImageCard,
     AddItemCard,
-    ItemsContainer,
-    DescriptionTab,
     Builders,
     Community,
+    DappImages,
+    Description,
   },
   setup() {
     const initDeveloper = (): Developer => ({
@@ -151,7 +101,6 @@ export default defineComponent({
     const isDark = ref<boolean>(theme.value.toLowerCase() === 'dark');
     const data = reactive<NewDappItem>({ tags: [] } as unknown as NewDappItem);
     const isModalAddDeveloper = ref<boolean>(false);
-    const isEditDescription = ref<boolean>(true);
     const currentDeveloper = ref<Developer>(initDeveloper());
 
     // make a placeholder for add logo
@@ -168,22 +117,6 @@ export default defineComponent({
     const isValidAddress = (address: string): boolean => isEthereumAddress(address); // || isValidAddressPolkadotAddress(address);
     // TODO uncoment the code above when we will support ink contract.
 
-    const updateDappImages = (): void => {
-      data.imagesContent = [];
-      data.imagesContent.push('');
-
-      data.images.forEach((image, index) => {
-        if (index > 0) {
-          const reader = new FileReader();
-          reader.readAsDataURL(image);
-          reader.onload = () => {
-            data.imagesContent.push(reader.result?.toString() || '');
-          };
-          reader.onerror = (error) => console.error(error);
-        }
-      });
-    };
-
     const updateDappLogo = (): void => {
       const reader = new FileReader();
       reader.readAsDataURL(data.icon);
@@ -193,16 +126,11 @@ export default defineComponent({
       reader.onerror = (error) => console.error(error);
     };
 
-    const removeFile = (index: number): void => {
-      data.images.splice(index, 1);
-      data.imagesContent.splice(index, 1);
-    };
-
-    const setIsEdit = (isEdit: boolean): void => {
-      isEditDescription.value = isEdit;
-    };
-
     const handleDappChanged = (newData: NewDappItem): void => {
+      if (newData.description) {
+        newData.descriptionMarkdown = sanitizeData(newData.description);
+      }
+
       data.ref = newData;
     };
 
@@ -215,13 +143,9 @@ export default defineComponent({
       isDark,
       isModalAddDeveloper,
       currentDeveloper,
-      isEditDescription,
       isValidAddress,
-      updateDappImages,
       updateDappLogo,
-      removeFile,
       isUrlValid,
-      setIsEdit,
       handleDappChanged,
     };
   },

@@ -21,4 +21,25 @@
     margin: 1rem 0;
     padding: 0.45rem 0;
   }
+
+  ol, ul {
+    margin: auto;
+    padding: auto;
+  }
+
+  ol {
+    list-style: auto;
+  }
+
+  ul {
+    list-style: disc;
+  }
+
+  code {
+    font-family: Consolas,"courier new";
+    color: crimson;
+    background-color: #f1f1f1;
+    padding: 2px;
+    font-size: 105%;
+  }
 }

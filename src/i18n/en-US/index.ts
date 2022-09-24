@@ -235,6 +235,10 @@ export default {
       description: 'Description',
       markdown: 'Markdown',
       preview: 'Preview',
+      addAccount: 'Add an account',
+      images: 'Images',
+      imagesRequired: 'At least 4 images are required.',
+      descriptionReqired: 'Tell the world something about your dApp.',
     },
     toast: {
       staked: 'You staked {amount} on {dapp}',

@@ -12,7 +12,7 @@
         >
           <avatar :url="developer.iconFile" class="avatar" />
         </image-card>
-        <image-card description="Add an account" class="card">
+        <image-card :description="$t('dappStaking.modals.addAccount')" class="card">
           <add-item-card @click="addDeveloper" />
         </image-card>
       </div>
