@@ -28,7 +28,7 @@ import {
 } from 'src/modules/xcm';
 import { useStore } from 'src/store';
 import { Asset, ethWalletChains } from 'src/v2/models';
-import { Chain, chainsNotSupportWithdrawal, parachainIds, XcmChain } from 'src/v2/models/XcmModels';
+import { Chain, chainsNotSupportWithdrawal, XcmChain } from 'src/v2/models/XcmModels';
 import { MOONBEAM_ASTAR_TOKEN_ID } from 'src/v2/repositories/implementations/xcm/MoonbeamXcmRepository';
 import { computed, ref, Ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
