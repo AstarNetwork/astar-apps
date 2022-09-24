@@ -5,7 +5,7 @@ import {
   MoonbeamXcmRepository,
   PolkadotXcmRepository,
 } from 'src/v2/repositories/implementations';
-import { Chain } from 'src/modules/xcm';
+import { Chain } from 'src/v2/models/XcmModels';
 import { TypeMapping } from 'src/v2/config/types';
 
 export const XcmRepositoryConfiguration: TypeMapping = {

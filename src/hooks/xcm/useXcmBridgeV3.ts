@@ -23,16 +23,14 @@ import {
 import { showLoading } from 'src/modules/extrinsic/utils';
 import {
   addXcmTxHistories,
-  Chain,
   chainsNotSupportWithdrawal,
   checkIsDeposit,
   ethWalletChains,
   fetchXcmBalance,
   monitorBalanceIncreasing,
-  parachainIds,
-  XcmChain,
   xcmChainObj,
 } from 'src/modules/xcm';
+import { Chain, parachainIds, XcmChain } from 'src/v2/models/XcmModels';
 import { useStore } from 'src/store';
 import { Asset } from 'src/v2/models';
 import { computed, ref, Ref, watch, watchEffect } from 'vue';

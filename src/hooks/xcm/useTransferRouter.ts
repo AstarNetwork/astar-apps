@@ -5,13 +5,12 @@ import { endpointKey } from 'src/config/chainEndpoints';
 import { useAccount, useBalance, useNetworkInfo } from 'src/hooks';
 import {
   astarChains,
-  Chain,
   checkIsSupportAstarNativeToken,
   removeEvmName,
-  XcmChain,
   xcmChains,
   xcmToken,
 } from 'src/modules/xcm';
+import { Chain, XcmChain } from 'src/v2/models/XcmModels';
 import { generateAssetFromEvmToken, generateNativeAsset } from 'src/modules/xcm/tokens';
 import { useStore } from 'src/store';
 import { Asset } from 'src/v2/models';

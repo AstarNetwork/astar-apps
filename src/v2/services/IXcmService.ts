@@ -1,5 +1,5 @@
 import { BN } from '@polkadot/util';
-import { XcmChain } from 'src/modules/xcm';
+import { XcmChain } from 'src/v2/models';
 import { XcmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
 

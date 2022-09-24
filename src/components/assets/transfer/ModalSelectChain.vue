@@ -28,7 +28,8 @@
 <script lang="ts">
 import { fadeDuration } from '@astar-network/astar-ui';
 import AstarModal from 'src/components/common/AstarModal.vue';
-import { castChainName, XcmChain } from 'src/modules/xcm';
+import { castChainName } from 'src/modules/xcm';
+import { XcmChain } from 'src/v2/models';
 import { wait } from 'src/v2/common';
 import { defineComponent, PropType, ref } from 'vue';
 export default defineComponent({

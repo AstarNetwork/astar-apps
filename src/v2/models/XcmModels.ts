@@ -1,3 +1,4 @@
+// Ref: RPC calls -> system -> chain()
 export enum Chain {
   POLKADOT = 'Polkadot',
   ASTAR = 'Astar',

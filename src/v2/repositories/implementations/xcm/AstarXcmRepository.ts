@@ -7,7 +7,7 @@ import { ExtrinsicPayload, IApi, IApiFactory } from 'src/v2/integration';
 import { Asset } from 'src/v2/models';
 import { Symbols } from 'src/v2/symbols';
 import { XcmRepository } from '../XcmRepository';
-import { XcmChain } from 'src/modules/xcm';
+import { XcmChain } from 'src/v2/models';
 
 /**
  * Used to transfer assets from Astar/Shiden.

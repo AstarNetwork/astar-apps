@@ -16,6 +16,7 @@ import { TokenId } from 'src/v2/config/types';
 import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
 import { isValidEvmAddress } from 'src/config/web3';
 import { XcmChain } from 'src/v2/models/XcmModels';
+// import { XcmChain } from 'src/modules/xcm';
 
 interface AssetConfig extends Struct {
   v1: {

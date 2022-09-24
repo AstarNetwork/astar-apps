@@ -1,4 +1,5 @@
 import { objToArray } from 'src/hooks/helper/common';
+import { Chain, parachainIds, XcmChain } from 'src/v2/models';
 
 export {
   astarNativeTokenErcAddr,
@@ -37,33 +38,6 @@ export interface ExistentialDeposit {
   originChainMinBal: number;
 }
 
-// Ref: RPC calls -> system -> chain()
-export enum Chain {
-  POLKADOT = 'Polkadot',
-  ASTAR = 'Astar',
-  ASTAR_EVM = 'Astar-evm',
-  KUSAMA = 'Kusama',
-  SHIDEN = 'Shiden',
-  SHIDEN_EVM = 'Shiden-evm',
-  KARURA = 'Karura',
-  ACALA = 'Acala',
-  MOONRIVER = 'Moonriver',
-  MOONBEAM = 'Moonbeam',
-  STATEMINE = 'Statemine',
-  STATEMINT = 'Statemint',
-}
-
-export enum parachainIds {
-  ASTAR = 2006,
-  SHIDEN = 2007,
-  KARURA = 2000,
-  ACALA = 2000,
-  MOONRIVER = 2023,
-  MOONBEAM = 2004,
-  STATEMINE = 1000,
-  STATEMINT = 1000,
-}
-
 // Memo: give it 0 ide for convenience in checking para/relay chain logic
 export const relaychainParaId = 0;
 
@@ -73,17 +47,6 @@ export const ethWalletChains = [Chain.MOONBEAM, Chain.MOONRIVER];
 
 // Memo: Chain.STATEMINE -> Bug related to https://github.com/polkadot-js/apps/issues/7812
 export const chainsNotSupportWithdrawal = [Chain.STATEMINE];
-
-export interface XcmChain {
-  name: Chain;
-  relayChain: Chain;
-  img: string;
-  parachainId: parachainIds;
-  endpoint: string;
-  subscan: string;
-  // Note: true if ASTR/SDN is listed on the parachain
-  isAstarNativeToken: boolean;
-}
 
 type XcmChainObj = {
   [key in Chain]: XcmChain;
