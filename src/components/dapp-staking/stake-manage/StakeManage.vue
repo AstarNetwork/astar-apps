@@ -8,7 +8,7 @@
     <MobileNavigator v-if="currentAccount" />
     <div v-if="currentAccount" class="wrapper--stake-manage">
       <div class="container--stake-manage">
-        <div class="wrapper-containers">
+        <div v-if="formattedTransferFrom.item" class="wrapper-containers">
           <div>
             <StakeForm
               :dapp="dapp"
@@ -28,6 +28,7 @@
       </div>
     </div>
     <ModalSelectFunds
+      v-if="formattedTransferFrom.item"
       :is-modal-select-funds="isModalSelectFunds"
       :handle-modal-select-funds="handleModalSelectFunds"
       :staking-list="stakingList"
@@ -118,9 +119,13 @@ export default defineComponent({
     const dapp = computed(() => {
       if (dapps.value.length > 0 && dappAddress.value) {
         // Todo: fix the type annotation
-        return dapps.value.find(
-          (it: any) => it.dapp.address.toLowerCase() === dappAddress.value.toLowerCase()
-        );
+        return dapps.value.find((it: any) => {
+          try {
+            return it.dapp.address.toLowerCase() === dappAddress.value.toLowerCase();
+          } catch (error) {
+            return null;
+          }
+        });
       }
       return null;
     });
