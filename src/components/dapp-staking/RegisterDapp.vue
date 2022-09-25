@@ -58,6 +58,16 @@
         <builders :dapp="data" class="component" />
         <description :dapp="data" class="component" />
         <community :dapp="data" class="component" />
+        <platforms :dapp="data" class="component" />
+        <contract-types :dapp="data" class="component" />
+        <main-category :dapp="data" class="component" />
+        <tags
+          :dapp="data"
+          :category="(currentCategory.value as Category)"
+          :category-name="currentCategory.label"
+          class="component"
+        />
+        <license :dapp="data" class="component" />
       </div>
     </div>
   </div>
@@ -67,15 +77,23 @@
 import { computed, defineComponent, reactive, ref, watch } from 'vue';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 import { useStore } from 'src/store';
-import { Developer, NewDappItem } from 'src/store/dapp-staking/state';
+import { Category, Developer, NewDappItem } from 'src/store/dapp-staking/state';
 import ImageCard from 'src/components/dapp-staking/register/ImageCard.vue';
 import AddItemCard from 'src/components/dapp-staking/register/AddItemCard.vue';
 import Builders from 'src/components/dapp-staking/register/Builders.vue';
 import Community from 'src/components/dapp-staking/register/Community.vue';
 import DappImages from 'src/components/dapp-staking/register/DappImages.vue';
 import Description from 'src/components/dapp-staking/register/Description.vue';
+import Platforms from 'src/components/dapp-staking/register/Platforms.vue';
+import ContractTypes from 'src/components/dapp-staking/register/ContractTypes.vue';
+import Tags from 'src/components/dapp-staking/register/Tags.vue';
+import MainCategory from 'src/components/dapp-staking/register/MainCategory.vue';
+import License from 'src/components/dapp-staking/register/License.vue';
+import { possibleLicenses } from 'src/components/dapp-staking/register/License.vue';
+import { possibleCategories } from './register/MainCategory.vue';
 import { isUrlValid } from 'src/components/common/Validators';
 import { sanitizeData } from 'src/hooks/helper/markdown';
+import { LabelValuePair } from 'src/components/dapp-staking/register/ItemsToggle.vue';
 
 const ADD_IMG = '~assets/img/add.png';
 
@@ -87,6 +105,11 @@ export default defineComponent({
     Community,
     DappImages,
     Description,
+    Platforms,
+    ContractTypes,
+    Tags,
+    MainCategory,
+    License,
   },
   setup() {
     const initDeveloper = (): Developer => ({
@@ -102,11 +125,16 @@ export default defineComponent({
     const data = reactive<NewDappItem>({ tags: [] } as unknown as NewDappItem);
     const isModalAddDeveloper = ref<boolean>(false);
     const currentDeveloper = ref<Developer>(initDeveloper());
+    const currentCategory = ref<LabelValuePair>(possibleCategories[0]);
 
     // make a placeholder for add logo
     data.icon = new File([], 'Add a logo image'); // TODO translate
     data.developers = [];
     data.communities = [];
+    data.platforms = [];
+    data.tags = [];
+    data.mainCategory = currentCategory.value.value as Category;
+    data.license = possibleLicenses[0].value;
     data.iconFile = '';
 
     data.images = [];
@@ -131,7 +159,16 @@ export default defineComponent({
         newData.descriptionMarkdown = sanitizeData(newData.description);
       }
 
+      // If category changed reset tags.
+      if (newData.mainCategory !== currentCategory.value.value) {
+        data.tags = [];
+      }
+
+      currentCategory.value =
+        possibleCategories.find((x: LabelValuePair) => x.value === data.mainCategory) ??
+        possibleCategories[0];
       data.ref = newData;
+      console.log(newData.ref);
     };
 
     watch([theme], (val) => {
@@ -143,6 +180,8 @@ export default defineComponent({
       isDark,
       isModalAddDeveloper,
       currentDeveloper,
+      possibleCategories,
+      currentCategory,
       isValidAddress,
       updateDappLogo,
       isUrlValid,

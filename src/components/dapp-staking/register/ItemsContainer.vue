@@ -35,7 +35,7 @@ export default defineComponent({
 }
 
 .items-container:hover {
-  background-color: $gray-3;
+  // background-color: $gray-3;
 }
 
 .container.div {

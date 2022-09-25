@@ -1,6 +1,8 @@
 import { BN } from '@polkadot/util';
 import { TvlModel } from 'src/v2/models';
 
+export type Category = 'defi' | 'gamefi' | 'infra' | 'nft' | 'others';
+
 export interface DappItem extends LooseObject {
   name: string;
   iconUrl: string;
@@ -17,6 +19,9 @@ export interface DappItem extends LooseObject {
   imagesUrl: string[];
   developers: Developer[];
   communities: Community[];
+  platforms: string[];
+  contractType: string;
+  mainCategory: Category;
 }
 
 export interface NewDappItem extends DappItem {

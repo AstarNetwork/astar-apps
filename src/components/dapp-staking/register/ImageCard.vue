@@ -5,7 +5,7 @@
       <div v-else class="slot image" @click="emitClick">
         <slot></slot>
       </div>
-      <q-icon v-if="canRemoveCard" name="close" class="close" @click="emitRemove" />
+      <q-icon v-if="canRemoveCard" name="close" class="close" @click.prevent="emitRemove" />
     </div>
 
     <div v-if="description" class="description">

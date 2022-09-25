@@ -238,7 +238,11 @@ export default {
       addAccount: 'Add an account',
       images: 'Images',
       imagesRequired: 'At least 4 images are required.',
-      descriptionReqired: 'Tell the world something about your dApp.',
+      descriptionRequired: 'Tell the world something about your dApp.',
+      platformsTitle: 'Is your project available on',
+      contractTypeTitle: 'Is your project on',
+      tagsTitle: 'Tags for {category}',
+      categoryTitle: 'Choose main category',
     },
     toast: {
       staked: 'You staked {amount} on {dapp}',
