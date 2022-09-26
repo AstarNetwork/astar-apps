@@ -8,6 +8,8 @@
 
     <DappList category="De-Fi" />
 
+    <AdsArea />
+
     <div class="divider"></div>
 
     <DappList category="Infra" />
@@ -35,12 +37,14 @@ import TopMetric from 'src/components/dapp-staking-v2/my-staking/TopMetric.vue';
 import MyStaking from 'src/components/dapp-staking-v2/my-staking/MyStaking.vue';
 import DappList from 'src/components/dapp-staking-v2/my-staking/DappList.vue';
 import { computed, defineComponent, ref } from 'vue';
+import AdsArea from './my-staking/AdsArea.vue';
 
 export default defineComponent({
   components: {
     TopMetric,
     MyStaking,
     DappList,
+    AdsArea,
   },
   setup() {
     useMeta({ title: 'Discover dApps' });

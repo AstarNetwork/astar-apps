@@ -1,10 +1,6 @@
 <template>
   <div class="wrapper--list">
-    <div
-      v-for="(t, index) in items"
-      :key="index"
-      :class="`card ${t.isStaking ? 'stake-card' : ''}`"
-    >
+    <div v-for="(t, index) in items" :key="index" class="card" @mouseover="hoverIndex = index">
       <div class="wrapper--card">
         <div class="wrapper--img">
           <q-img :src="t.img" class="img--dapp" fit="contain" />
@@ -24,19 +20,32 @@
           </div>
         </div>
       </div>
-      <astar-button v-show="t.isStaking" width="274" height="24">Stake now</astar-button>
+      <astar-button v-show="index === hoverIndex || width < screenSize.lg" width="274" height="24"
+        >Stake now</astar-button
+      >
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, PropType, ref } from 'vue';
+import { useBreakpoints } from 'src/hooks';
 export default defineComponent({
   props: {
     items: {
       type: Array as PropType<any[]>,
       required: true,
     },
+  },
+  setup() {
+    const { width, screenSize } = useBreakpoints();
+    const hoverIndex = ref(-1);
+
+    return {
+      hoverIndex,
+      width,
+      screenSize,
+    };
   },
 });
 </script>
@@ -57,6 +66,8 @@ export default defineComponent({
 
 .card {
   padding: 16px;
+  width: 300px;
+  height: 170px;
   cursor: pointer;
   .wrapper--card {
     display: flex;
@@ -128,13 +139,18 @@ export default defineComponent({
       }
     }
   }
+  &:hover {
+    background: rgba(255, 255, 255, 0.5);
+    box-shadow: 0px 0px 24px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+  }
 }
 
-.stake-card {
-  background: rgba(255, 255, 255, 0.5);
-  box-shadow: 0px 0px 24px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 6px;
-}
+// .stake-card {
+//   background: rgba(255, 255, 255, 0.5);
+//   box-shadow: 0px 0px 24px 10px rgba(0, 0, 0, 0.1);
+//   border-radius: 6px;
+// }
 
 .body--dark {
   .card {
@@ -157,10 +173,14 @@ export default defineComponent({
         color: $gray-3;
       }
     }
+    &:hover {
+      background: rgba(247, 247, 248, 0.03);
+      box-shadow: 0px 0px 24px 5px rgba(0, 0, 0, 0.15);
+    }
   }
-  .stake-card {
-    background: rgba(247, 247, 248, 0.03);
-    box-shadow: 0px 0px 24px 5px rgba(0, 0, 0, 0.15);
-  }
+  // .stake-card {
+  //   background: rgba(247, 247, 248, 0.03);
+  //   box-shadow: 0px 0px 24px 5px rgba(0, 0, 0, 0.15);
+  // }
 }
 </style>
