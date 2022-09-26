@@ -166,7 +166,7 @@ export const xcmChainObj: XcmChainObj = {
   [Chain.INTERLAY]: {
     name: Chain.INTERLAY,
     relayChain: Chain.POLKADOT,
-    img: 'https://polkadot.js.org/apps/static/interlay.a2c6f88e..svg',
+    img: 'https://assets.coingecko.com/coins/images/26180/small/Interlay-Coinbase-2.png?1656382486',
     parachainId: parachainIds.INTERLAY,
     endpoint: 'wss://api.interlay.io/parachain',
     subscan: 'https://interlay.subscan.io',
