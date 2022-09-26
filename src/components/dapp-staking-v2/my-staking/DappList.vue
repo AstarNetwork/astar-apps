@@ -8,7 +8,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { defineComponent } from 'vue';
 import CardList from './components/CardList.vue';
 export default defineComponent({
   components: { CardList },

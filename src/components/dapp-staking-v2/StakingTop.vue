@@ -58,7 +58,7 @@ export default defineComponent({
 @import 'src/css/quasar.variables.scss';
 
 .wrapper-main {
-  padding: 0px 24px 24px 24px;
+  padding: 0px 0px 24px 0px;
 }
 
 .divider {
