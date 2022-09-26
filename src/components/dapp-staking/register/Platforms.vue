@@ -1,6 +1,10 @@
 <template>
   <items-container :title="$t('dappStaking.modals.platformsTitle')" class="component">
-    <items-toggle :available-items="possiblePlatforms" :item-toggled="handleItemToggled" />
+    <items-toggle
+      :available-items="possiblePlatforms"
+      :item-toggled="handleItemToggled"
+      class="container--toggle"
+    />
   </items-container>
 </template>
 
@@ -42,4 +46,6 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+@use 'src/components/dapp-staking/styles/register.scss';
+</style>

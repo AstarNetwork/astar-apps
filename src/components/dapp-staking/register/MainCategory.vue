@@ -1,13 +1,16 @@
 <template>
   <items-container :title="$t('dappStaking.modals.categoryTitle')" class="component">
-    <q-radio
-      v-for="(category, index) in possibleCategories"
-      :key="index"
-      v-model="data.mainCategory"
-      :val="category.value"
-      :label="category.label"
-      class="radio"
-    />
+    <div class="container--radio">
+      <q-radio
+        v-for="(category, index) in possibleCategories"
+        :key="index"
+        v-model="data.mainCategory"
+        :val="category.value"
+        :label="category.label"
+        dense
+        class="radio"
+      />
+    </div>
   </items-container>
 </template>
 
@@ -51,8 +54,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@use 'src/components/dapp-staking/styles/register.scss';
+
 .radio {
-  margin-right: 20px;
-  margin-top: 6px;
+  margin-right: 16px;
 }
 </style>

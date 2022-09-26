@@ -1,13 +1,16 @@
 <template>
   <items-container :title="$t('dappStaking.modals.license')" class="component">
-    <q-radio
-      v-for="(license, index) in possibleLicenses"
-      :key="index"
-      v-model="data.license"
-      :val="license.value"
-      :label="license.label"
-      class="radio"
-    />
+    <div class="container--radio">
+      <q-radio
+        v-for="(license, index) in possibleLicenses"
+        :key="index"
+        v-model="data.license"
+        :val="license.value"
+        :label="license.label"
+        dense
+        class="radio"
+      />
+    </div>
   </items-container>
 </template>
 
@@ -49,6 +52,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@use 'src/components/dapp-staking/styles/register.scss';
+
 .radio {
   margin-right: 20px;
   margin-top: 6px;

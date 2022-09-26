@@ -5,7 +5,7 @@
     :is-closing="isClosingModal"
     :close-modal="closeModal"
   >
-    <div>
+    <div class="developers-wrapper">
       <q-form ref="developerForm">
         <q-input
           v-model="currentDeveloper.twitterAccountUrl"
@@ -201,5 +201,9 @@ export default defineComponent({
   text-align: center;
   width: 80px;
   height: 80px;
+}
+
+.developers-wrapper {
+  margin-top: 20px;
 }
 </style>

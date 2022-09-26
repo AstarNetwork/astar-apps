@@ -1,75 +1,71 @@
 <template>
-  <div class="wrapper--assets">
-    <div class="container--assets">
-      <div style="display: flex; flex-direction: column">
-        <q-input
-          v-model="data.name"
-          label="Name"
-          standout="text-white"
-          label-color="input-label"
-          input-class="input"
-          :input-style="{ fontWeight: 'bold' }"
-          :rules="[(v: string) => (v && v.length > 0) || 'dApp name is required.']"
-          class="component"
-        />
-        <q-file
-          v-model="data.icon"
-          standout="text-white"
-          counter
-          label="Project logo"
-          accept=".jpg .png, image/*"
-          class="component"
-          input-style="{ height: '120px'}"
-          @update:model-value="updateDappLogo()"
-        >
-          <template #file="{ file }">
-            <image-card :base64-image="data.iconFile" :description="file.name" class="card">
-              <add-item-card />
-            </image-card>
-          </template>
-        </q-file>
+  <div style="display: flex; flex-direction: column">
+    <q-input
+      v-model="data.name"
+      label="Name"
+      standout="text-white"
+      label-color="input-label"
+      input-class="input"
+      :input-style="{ fontWeight: 'bold' }"
+      :rules="[(v: string) => (v && v.length > 0) || 'dApp name is required.']"
+      class="component"
+    />
+    <q-file
+      v-model="data.icon"
+      standout="text-white"
+      counter
+      label="Project logo"
+      accept=".jpg .png, image/*"
+      class="component"
+      input-style="{ height: '120px'}"
+      @update:model-value="updateDappLogo()"
+    >
+      <template #file="{ file }">
+        <image-card :base64-image="data.iconFile" :description="file.name" class="card">
+          <add-item-card />
+        </image-card>
+      </template>
+    </q-file>
 
-        <q-input
-          v-model="data.address"
-          label="Contract address"
-          standout="text-white"
-          label-color="input-label"
-          input-class="input"
-          :input-style="{ fontWeight: 'bold' }"
-          :rules="[(v: string) => isValidAddress(v) || 'Enter a valid EVM or SS58 contract address.']"
-          class="component"
-        />
+    <q-input
+      v-model="data.address"
+      label="Contract address"
+      standout="text-white"
+      label-color="input-label"
+      input-class="input"
+      :input-style="{ fontWeight: 'bold' }"
+      :rules="[(v: string) => isValidAddress(v) || 'Enter a valid EVM or SS58 contract address.']"
+      class="component"
+    />
 
-        <q-input
-          v-model="data.url"
-          label="Project URL"
-          standout="text-white"
-          label-color="input-label"
-          input-class="input"
-          :input-style="{ fontWeight: 'bold' }"
-          :rules="[
+    <q-input
+      v-model="data.url"
+      label="Project URL"
+      standout="text-white"
+      label-color="input-label"
+      input-class="input"
+      :input-style="{ fontWeight: 'bold' }"
+      :rules="[
             (v: string) => v !== '' || 'Enter project url.',
             (v: string) => isUrlValid(v) || 'Invalid project url.',
           ]"
-          class="component"
-        />
+      class="component"
+    />
 
-        <dapp-images :dapp="data" class="component" @dapp-changed="handleDappChanged" />
-        <builders :dapp="data" class="component" />
-        <description :dapp="data" class="component" />
-        <community :dapp="data" class="component" />
-        <platforms :dapp="data" class="component" />
-        <contract-types :dapp="data" class="component" />
-        <main-category :dapp="data" class="component" />
-        <tags
-          :dapp="data"
-          :category="(currentCategory.value as Category)"
-          :category-name="currentCategory.label"
-          class="component"
-        />
-        <license :dapp="data" class="component" />
-      </div>
-    </div>
+    <dapp-images :dapp="data" class="component" @dapp-changed="handleDappChanged" />
+    <builders :dapp="data" class="component" />
+    <description :dapp="data" class="component" />
+    <community :dapp="data" class="component" />
+    <platforms :dapp="data" class="component" />
+    <contract-types :dapp="data" class="component" />
+    <main-category :dapp="data" class="component" />
+    <tags
+      :dapp="data"
+      :category="(currentCategory.value as Category)"
+      :category-name="currentCategory.label"
+      class="component"
+    />
+    <license :dapp="data" class="component" />
   </div>
 </template>
 
@@ -155,14 +151,12 @@ export default defineComponent({
     };
 
     const handleDappChanged = (newData: NewDappItem): void => {
-      if (newData.description) {
-        newData.descriptionMarkdown = sanitizeData(newData.description);
-      }
+      newData.descriptionMarkdown = newData.description ? sanitizeData(newData.description) : '';
 
-      // If category changed reset tags.
-      if (newData.mainCategory !== currentCategory.value.value) {
-        data.tags = [];
-      }
+      // // If category changed reset tags.
+      // if (newData.mainCategory !== currentCategory.value.value) {
+      //   data.tags = [];
+      // }
 
       currentCategory.value =
         possibleCategories.find((x: LabelValuePair) => x.value === data.mainCategory) ??
@@ -206,31 +200,17 @@ export default defineComponent({
   margin-top: 8px;
   margin-right: 12px;
 }
-
-.wrapper--description {
-  position: relative;
-  display: flex;
-  justify-content: center;
-}
-
-.container--description {
-  display: grid;
-  row-gap: 32px;
-  margin-bottom: 24px;
-  @media (min-width: $xl) {
-    justify-content: center;
-  }
-}
 </style>
 
+<!-- Override quasar colors -->
 <style lang="sass">
 .q-field
   &--standout
     &.q-field--dark
       .q-field__control
-        background: $gray-5-selected
+        background: $gray-5-selected-dark
         &:before
-          background: $gray-5-selected
+          background: $gray-5-selected-dark
       &.q-field--highlighted
         .q-field__control
           background: $gray-5-selected-dark
@@ -239,9 +219,9 @@ export default defineComponent({
       .q-field__control
         background: $gray-5-selected-dark
     .q-field__control
-      background: $gray-3
+      background: $gray-1
       &:before
-        background: $gray-3
+        background: $gray-1
     &.q-field--highlighted
       .q-field__control
         background: $gray-1
@@ -252,4 +232,15 @@ export default defineComponent({
   &--highlighted
     .q-field__label
       color: rgba(0, 0, 0, 0.6)
+  &__label
+    color: $gray-4
+  &--highlighted
+    .q-field__label
+      color: $gray-4
+  &--dark
+    &__label
+      color: $gray-3
+    &--highlighted
+      .q-field__label
+        color: $gray-3
 </style>

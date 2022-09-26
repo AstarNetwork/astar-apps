@@ -36,5 +36,12 @@ export default defineComponent({
   width: 120px;
   height: 82px;
   border-radius: 6px;
+  background-color: $gray-1;
+}
+
+.body--dark {
+  .card-new-item {
+    background-color: $gray-4;
+  }
 }
 </style>

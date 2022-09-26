@@ -1,14 +1,15 @@
 <template>
   <div class="card">
-    <div>
+    <div class="card--image">
       <q-img v-if="base64Image" :src="base64Image" class="image" @click="emitClick" />
       <div v-else class="slot image" @click="emitClick">
         <slot></slot>
       </div>
+      <div class="overlay">&nbsp;</div>
       <q-icon v-if="canRemoveCard" name="close" class="close" @click.prevent="emitRemove" />
     </div>
 
-    <div v-if="description" class="description">
+    <div v-if="description" class="description register-container--label">
       {{ description }}
     </div>
   </div>
@@ -51,7 +52,9 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@use 'src/components/dapp-staking/styles/register.scss';
+
 .card {
   width: 120px;
   position: relative;
@@ -62,25 +65,47 @@ export default defineComponent({
   cursor: pointer;
 }
 
+.card--image {
+  // background-color: black;
+  position: relative;
+  border-radius: 6px;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  border-radius: 6px;
+  opacity: 0;
+}
+
 .close {
   opacity: 0;
+  color: $gray-1;
   transition: 0.5s ease;
-  border: 1px solid white;
+  border: 1px solid $gray-1;
   border-radius: 50%;
   position: absolute;
   top: 12%;
   left: 90%;
   transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
-  /* text-align: center; */
 }
 
 .card:hover .close {
   opacity: 1;
 }
 
-.card:hover .image {
-  opacity: 0.5;
+// .card:hover .image {
+//   opacity: 0.8;
+//   transition: 0.5s ease;
+// }
+
+.card:hover .overlay {
+  opacity: 0.2;
   transition: 0.5s ease;
 }
 

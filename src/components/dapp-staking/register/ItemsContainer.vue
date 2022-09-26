@@ -1,6 +1,6 @@
 <template>
   <div class="container items-container">
-    <div v-if="title" class="title">{{ title }}</div>
+    <div v-if="title" class="register-container--label">{{ title }}</div>
     <slot></slot>
   </div>
 </template>
@@ -25,6 +25,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @use 'src/components/assets/styles/assets.scss';
+@use 'src/components/dapp-staking/styles/register.scss';
 
 .container {
   padding-left: 12px;
@@ -40,9 +41,5 @@ export default defineComponent({
 
 .container.div {
   cursor: pointer;
-}
-
-.title {
-  font-size: 12px;
 }
 </style>

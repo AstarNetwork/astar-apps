@@ -1,0 +1,21 @@
+@import 'src/css/quasar.variables.scss';
+
+.register-container--label {
+  font-size: 12px;
+  color: $gray-4;
+}
+
+.body--dark {
+  .register-container--label {
+    color: $gray-3;
+  }
+}
+
+.container--toggle {
+  margin-bottom: 4px;
+} 
+
+.container--radio {
+  margin-top: 12px;
+  margin-bottom: 12px;
+}

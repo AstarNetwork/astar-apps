@@ -1,28 +1,28 @@
 <template>
   <items-container :title="$t('dappStaking.modals.description')" class="component">
     <div class="wrapper--description">
-      <div class="container-description">
+      <div class="wrapper--tab">
         <description-tab :is-edit="isEditDescription" :set-is-edit="setIsEdit" />
-        <div v-if="isEditDescription">
-          <q-input
-            v-model="data.description"
-            style="width: 1000px"
-            maxlength="5000"
-            type="textarea"
-            class="description"
-            rows="20"
-            :rules="[
+      </div>
+      <div v-if="isEditDescription">
+        <q-input
+          v-model="data.description"
+          maxlength="5000"
+          type="textarea"
+          class="description"
+          rows="20"
+          borderless
+          :rules="[
                     (v: string) => (v && v.length > 0) || $t('dappStaking.modals.descriptionRequired'),
                   ]"
-          />
-        </div>
-        <div v-else>
-          <q-scroll-area class="tw-h-96">
-            <!-- eslint-disable vue/no-v-html -->
-            <!-- data descriptionMarkdown is sanitized so no XSS can happen. -->
-            <div class="markdown" v-html="data.descriptionMarkdown"></div>
-          </q-scroll-area>
-        </div>
+        />
+      </div>
+      <div v-else>
+        <q-scroll-area class="preview">
+          <!-- eslint-disable vue/no-v-html -->
+          <!-- data descriptionMarkdown is sanitized so no XSS can happen. -->
+          <div class="markdown" v-html="data.descriptionMarkdown"></div>
+        </q-scroll-area>
       </div>
     </div>
   </items-container>
@@ -64,4 +64,18 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @use 'src/css/markdown.scss';
+
+.wrapper--description {
+  margin-top: 20px;
+}
+
+.preview {
+  margin-top: 18px;
+  height: 389px;
+}
+
+.wrapper--tab {
+  display: flex;
+  justify-content: center;
+}
 </style>

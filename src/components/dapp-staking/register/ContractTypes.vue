@@ -5,6 +5,7 @@
       :allow-multiselect="false"
       :selected-items="[possibleContractTypes[0].value]"
       :item-toggled="handleItemToggled"
+      class="container--toggle"
     />
   </items-container>
 </template>
@@ -49,4 +50,6 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+@use 'src/components/dapp-staking/styles/register.scss';
+</style>

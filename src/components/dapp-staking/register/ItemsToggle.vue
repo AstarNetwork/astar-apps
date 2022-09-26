@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from 'vue';
+import { defineComponent, PropType, ref, watch } from 'vue';
 
 export interface LabelValuePair {
   label: string;
@@ -75,7 +75,7 @@ export default defineComponent({
   padding: 4px 8px;
   border-radius: 6px;
   cursor: pointer;
-  background-color: $gray-3;
+  background-color: #e6e9ee;
 }
 
 .items--container {
