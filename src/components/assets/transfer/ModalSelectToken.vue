@@ -25,7 +25,7 @@
           </div>
           <div class="column--item-name">
             <span class="text--token-amount">
-              <TokenBalance :balance="userBalance" :symbol="t.metadata.symbol" />
+              <TokenBalance :balance="t.userBalance" :symbol="t.metadata.symbol" />
             </span>
           </div>
         </div>
