@@ -2,7 +2,7 @@
   <span>
     {{
       $t(text ? text : 'amountToken', {
-        amount: isFullDecimals ? Number(balance) : $n(truncate(balance)),
+        amount: isTruncate ? $n(truncate(balance)) : Number(balance),
         token: symbol,
       })
     }}
@@ -11,6 +11,7 @@
 <script lang="ts">
 import { truncate } from 'src/hooks/helper/common';
 import { defineComponent } from 'vue';
+
 export default defineComponent({
   props: {
     balance: {
@@ -28,8 +29,8 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const isFullDecimals = props.symbol.toUpperCase().includes('BTC');
-    return { truncate, isFullDecimals };
+    const isTruncate = !props.symbol.toUpperCase().includes('BTC');
+    return { truncate, isTruncate };
   },
 });
 </script>
