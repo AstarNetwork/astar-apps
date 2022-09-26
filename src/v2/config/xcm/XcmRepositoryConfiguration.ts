@@ -21,6 +21,7 @@ export const XcmRepositoryConfiguration: TypeMapping = {
   [Chain.POLKADOT]: PolkadotXcmRepository,
   [Chain.KUSAMA]: PolkadotXcmRepository,
   [Chain.KINTSUGI]: InterlayXcmRepository,
+  [Chain.INTERLAY]: InterlayXcmRepository,
 };
 
 export type AstarToken = 'ASTR' | 'SDN';
