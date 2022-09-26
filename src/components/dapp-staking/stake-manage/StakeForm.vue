@@ -71,12 +71,6 @@
         :set-selected-gas="setSelectedTip"
       />
 
-      <div v-if="formattedTransferFrom.isNominationTransfer" class="row--warning">
-        <span>
-          {{ $t('dappStaking.stakePage.nominationWarning') }}
-        </span>
-      </div>
-
       <div
         v-if="errMsg && currentAccount"
         class="row--box-error"

@@ -23,7 +23,7 @@
 <script lang="ts">
 import { date } from 'quasar';
 import { truncate } from 'src/hooks/helper/common';
-import { RecentHistory } from 'src/modules/transfer';
+import { RecentHistory } from 'src/modules/information';
 import { defineComponent, PropType } from 'vue';
 
 export default defineComponent({

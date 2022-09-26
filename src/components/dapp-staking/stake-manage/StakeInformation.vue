@@ -18,7 +18,7 @@
       </div>
       <div class="box--contents">
         <a
-          v-for="faq in faqs"
+          v-for="faq in faqDappStaking"
           :key="faq.title"
           :href="faq.url"
           target="_blank"
@@ -75,48 +75,39 @@
   </div>
 </template>
 <script lang="ts">
-import { useAccount, useNetworkInfo } from 'src/hooks';
+// import { useAccount, useNetworkInfo } from 'src/hooks';
 import { socialUrl } from 'src/links';
-import {
-  Faq,
-  faqSs58Transfer,
-  getTxHistories,
-  hotTopics,
-  RecentHistory,
-} from 'src/modules/transfer';
-import { computed, defineComponent, ref, watchEffect } from 'vue';
+import { hotTopics, RecentHistory } from 'src/modules/information';
+import { Faq, faqDappStaking } from 'src/modules/information';
+import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
   // components: { TransactionHistory },
   setup(props) {
     const txHistories = ref<RecentHistory[]>([]);
     const isLoadingTxHistories = ref<boolean>(true);
-    const { currentAccount } = useAccount();
-    const { currentNetworkName } = useNetworkInfo();
+    // const { currentAccount } = useAccount();
+    // const { currentNetworkName } = useNetworkInfo();
 
-    const faqs = computed<Faq[]>(() => {
-      // Todo: update
-      return faqSs58Transfer;
-    });
+    // Todo: update
+    // const setTxHistories = async (): Promise<void> => {
+    //   if (!currentAccount.value || !currentNetworkName.value) return;
+    //   try {
+    //     isLoadingTxHistories.value = true;
+    //     txHistories.value = await getTxHistories({
+    //       address: currentAccount.value,
+    //       network: currentNetworkName.value.toLowerCase(),
+    //     });
+    //   } catch (error) {
+    //     console.error(error);
+    //   } finally {
+    //     isLoadingTxHistories.value = false;
+    //   }
+    // };
 
-    const setTxHistories = async (): Promise<void> => {
-      if (!currentAccount.value || !currentNetworkName.value) return;
-      try {
-        isLoadingTxHistories.value = true;
-        txHistories.value = await getTxHistories({
-          address: currentAccount.value,
-          network: currentNetworkName.value.toLowerCase(),
-        });
-      } catch (error) {
-        console.error(error);
-      } finally {
-        isLoadingTxHistories.value = false;
-      }
-    };
+    // watchEffect(setTxHistories);
 
-    watchEffect(setTxHistories);
-
-    return { faqs, hotTopics, txHistories, isLoadingTxHistories, socialUrl };
+    return { faqDappStaking, hotTopics, txHistories, isLoadingTxHistories, socialUrl };
   },
 });
 </script>

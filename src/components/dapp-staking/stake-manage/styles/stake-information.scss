@@ -6,7 +6,11 @@
   row-gap: 16px;
   width: 348px;
   @media (min-width: $md) {
+    margin-top: 50px;
     width: 320px;
+  }
+  @media (min-width: $lg) {
+    width: 420px;
   }
   @media (min-width: $xl) {
     width: 420px;
