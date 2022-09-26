@@ -25,12 +25,7 @@
           </div>
           <div class="column--item-name">
             <span class="text--token-amount">
-              {{
-                $t('amountSymbol', {
-                  amount: truncate(t.userBalance),
-                  symbol: t.metadata.symbol,
-                })
-              }}
+              <TokenBalance :balance="userBalance" :symbol="t.metadata.symbol" />
             </span>
           </div>
         </div>
@@ -46,9 +41,12 @@ import { wait } from 'src/v2/common';
 import { Asset } from 'src/v2/models';
 import { defineComponent, PropType, ref } from 'vue';
 import { truncate } from 'src/hooks/helper/common';
+import TokenBalance from 'src/components/common/TokenBalance.vue';
+
 export default defineComponent({
   components: {
     AstarModal,
+    TokenBalance,
   },
   props: {
     isModalSelectToken: {

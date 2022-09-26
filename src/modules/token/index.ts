@@ -181,6 +181,56 @@ export const USDT_ASTAR = {
   wrapUrl: null,
 };
 
+export const KBTC = {
+  srcChainId: 336,
+  address: '0xffffffff00000000000000010000000000000005',
+  decimal: 8,
+  symbol: 'KBTC',
+  name: 'kintsugiBTC',
+  image: 'https://assets.coingecko.com/coins/images/25816/small/jKEvMy-9_400x400.jpeg?1653990781',
+  isWrappedToken: false,
+  isXC20: true,
+  wrapUrl: null,
+};
+
+export const KINT = {
+  srcChainId: 336,
+  address: '0xffffffff00000000000000010000000000000006',
+  decimal: 12,
+  symbol: 'KINT',
+  name: 'KINT',
+  image:
+    'https://assets.coingecko.com/coins/images/22045/small/Kintsugi_logo-150x150.jpeg?1640675060',
+  isWrappedToken: false,
+  isXC20: true,
+  wrapUrl: null,
+};
+
+export const IBTC = {
+  srcChainId: 592,
+  address: '0xffffffff00000000000000010000000000000004',
+  decimal: 8,
+  symbol: 'IBTC',
+  name: 'interBTC',
+  image:
+    'https://assets.coingecko.com/coins/images/26217/small/interBTC_for_Exchanges.png?1656578114',
+  isWrappedToken: false,
+  isXC20: true,
+  wrapUrl: null,
+};
+
+export const INTR = {
+  srcChainId: 592,
+  address: '0xffffffff00000000000000010000000000000005',
+  decimal: 10,
+  symbol: 'INTR',
+  name: 'INTR',
+  image: 'https://assets.coingecko.com/coins/images/26180/small/Interlay-Coinbase-2.png?1656382486',
+  isWrappedToken: false,
+  isXC20: true,
+  wrapUrl: null,
+};
+
 export const registeredErc20Tokens = [
   WASTR,
   DOT,
@@ -195,6 +245,10 @@ export const registeredErc20Tokens = [
   GLMR,
   USDT_SHIDEN,
   USDT_ASTAR,
+  KBTC,
+  KINT,
+  IBTC,
+  INTR,
 ];
 
 // Memo: Define the token image source

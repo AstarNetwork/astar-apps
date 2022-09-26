@@ -23,7 +23,9 @@
           <div class="column column--balance">
             <div class="column__box">
               <div class="text--accent">
-                <span> {{ $n(truncate(token.userBalance)) }} {{ token.metadata.symbol }} </span>
+                <span>
+                  <TokenBalance :balance="token.userBalance" :symbol="token.metadata.symbol" />
+                </span>
               </div>
               <div class="text--label">
                 <span>{{ $n(Number(token.userBalanceUsd)) }} {{ $t('usd') }}</span>
@@ -62,15 +64,14 @@
 <script lang="ts">
 import { endpointKey } from 'src/config/chainEndpoints';
 import { useNetworkInfo } from 'src/hooks';
-import { truncate } from 'src/hooks/helper/common';
 import { getXcmToken } from 'src/modules/xcm';
 import { buildTransferPageLink } from 'src/router/routes';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, PropType } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
-
+import TokenBalance from 'src/components/common/TokenBalance.vue';
 export default defineComponent({
-  components: { [Jazzicon.name]: Jazzicon },
+  components: { [Jazzicon.name]: Jazzicon, TokenBalance },
   props: {
     token: {
       type: Object as PropType<Asset>,
@@ -100,7 +101,6 @@ export default defineComponent({
       isDisplayToken,
       explorerLink,
       buildTransferPageLink,
-      truncate,
     };
   },
 });

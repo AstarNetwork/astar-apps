@@ -216,12 +216,14 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
     if (isLoadingApi.value || !amount.value) {
       return;
     }
+
     const sendingAmount = Number(amount.value);
     const selectedTokenRef = selectedToken.value;
     const minBridgeAmount = Number(selectedTokenRef && selectedTokenRef.minBridgeAmount);
 
     if (sendingAmount > fromAddressBalance.value) {
       errMsg.value = t('warning.insufficientBalance');
+      return;
     }
 
     if (sendingAmount && minBridgeAmount > sendingAmount) {
@@ -229,10 +231,12 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
         amount: minBridgeAmount,
         token: selectedTokenRef.metadata.symbol,
       });
+      return;
     }
 
     if (inputtedAddress.value && !checkInputtedAddress()) {
       errMsg.value = t('warning.inputtedInvalidDestAddress');
+      return;
     }
 
     if (isDeposit.value && !checkIsEnoughMinBal(sendingAmount)) {
@@ -241,6 +245,7 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
         amount: selectedToken.value.minBridgeAmount,
         token: selectedToken.value.metadata.symbol,
       });
+      return;
     }
   };
 

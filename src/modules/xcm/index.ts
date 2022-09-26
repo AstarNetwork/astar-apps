@@ -154,6 +154,24 @@ export const xcmChainObj: XcmChainObj = {
     subscan: 'https://statemint.subscan.io',
     isAstarNativeToken: false,
   },
+  [Chain.KINTSUGI]: {
+    name: Chain.KINTSUGI,
+    relayChain: Chain.KUSAMA,
+    img: 'https://polkadot.js.org/apps/static/kintsugi.fba9d4ea..png',
+    parachainId: parachainIds.KINTSUGI,
+    endpoint: 'wss://kintsugi-rpc.dwellir.com',
+    subscan: 'https://kintsugi.subscan.io',
+    isAstarNativeToken: false,
+  },
+  [Chain.INTERLAY]: {
+    name: Chain.INTERLAY,
+    relayChain: Chain.POLKADOT,
+    img: 'https://polkadot.js.org/apps/static/interlay.a2c6f88e..svg',
+    parachainId: parachainIds.INTERLAY,
+    endpoint: 'wss://api.interlay.io/parachain',
+    subscan: 'https://interlay.subscan.io',
+    isAstarNativeToken: false,
+  },
 };
 
 export const xcmChains = objToArray(xcmChainObj);
