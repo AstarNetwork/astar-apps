@@ -1,3 +1,5 @@
+import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
+
 export {
   getTokenImage,
   getErc20Explorer,
@@ -5,6 +7,7 @@ export {
   getStoredERC20Tokens,
   getRegisteredERC20Token,
   castCbridgeToErc20,
+  getRegisteredErc20Tokens,
 } from 'src/modules/token/utils';
 
 // Memo: ERC20 tokens information that is not supported by cBridge
@@ -24,8 +27,8 @@ export interface Erc20Token {
   isCbridgeToken?: boolean;
 }
 
-export const WASTR = {
-  srcChainId: 592,
+export const WASTR: Erc20Token = {
+  srcChainId: Number(providerEndpoints[endpointKey.ASTAR].evmChainId),
   address: '0xAeaaf0e2c81Af264101B9129C00F4440cCF0F720',
   decimal: 18,
   symbol: 'WASTR',
@@ -36,166 +39,7 @@ export const WASTR = {
   wrapUrl: 'https://app.arthswap.org/#/swap',
 };
 
-export const DOT = {
-  srcChainId: 592,
-  address: '0xffffffffffffffffffffffffffffffffffffffff',
-  decimal: 10,
-  symbol: 'DOT',
-  name: 'Polkadot',
-  image: require('/src/assets/img/ic_dot.png'),
-  isWrappedToken: false,
-  isXC20: true,
-  wrapUrl: null,
-};
-
-export const KSM = {
-  srcChainId: 336,
-  address: '0xffffffffffffffffffffffffffffffffffffffff',
-  decimal: 12,
-  symbol: 'KSM',
-  name: 'Kusama',
-  image: require('/src/assets/img/ic_kusama.png'),
-  isWrappedToken: false,
-  isXC20: true,
-  wrapUrl: null,
-};
-
-export const KAR = {
-  srcChainId: 336,
-  address: '0xffffffff00000000000000010000000000000002',
-  decimal: 12,
-  symbol: 'KAR',
-  name: 'Karura',
-  image: 'https://assets.coingecko.com/coins/images/17172/small/karura.jpeg?1626782066',
-  isWrappedToken: false,
-  isXC20: true,
-  wrapUrl: null,
-};
-
-export const KUSD = {
-  srcChainId: 336,
-  address: '0xffffffff00000000000000010000000000000000',
-  decimal: 12,
-  symbol: 'aUSD',
-  name: 'Acala Dollar',
-  image: 'https://assets.coingecko.com/coins/images/25812/small/ezgif-1-f4612f5260.png?1653987299',
-  isWrappedToken: false,
-  isXC20: true,
-  wrapUrl: null,
-};
-
-export const LKSM = {
-  srcChainId: 336,
-  address: '0xffffffff00000000000000010000000000000003',
-  decimal: 12,
-  symbol: 'LKSM',
-  name: 'Liquid KSM',
-  image: 'https://resources.acala.network/tokens/LKSM.png',
-  isWrappedToken: false,
-  isXC20: true,
-  wrapUrl: null,
-};
-
-export const ACA = {
-  srcChainId: 592,
-  address: '0xffffffff00000000000000010000000000000000',
-  decimal: 12,
-  symbol: 'ACA',
-  name: 'Acala',
-  image: 'https://assets.coingecko.com/coins/images/20634/small/upOKBONH_400x400.jpg?1647420536',
-  isWrappedToken: false,
-  isXC20: true,
-  wrapUrl: null,
-};
-
-export const LDOT = {
-  srcChainId: 592,
-  address: '0xffffffff00000000000000010000000000000002',
-  decimal: 10,
-  symbol: 'LDOT',
-  name: 'Liquid DOT',
-  image:
-    'https://assets.coingecko.com/coins/images/25847/small/iShot2022-06-02_13.14.07-removebg-preview.png?1654146888',
-  isWrappedToken: false,
-  isXC20: true,
-  wrapUrl: null,
-};
-
-export const AUSD = {
-  srcChainId: 592,
-  address: '0xffffffff00000000000000010000000000000001',
-  decimal: 12,
-  symbol: 'AUSD',
-  name: 'Acala Dollar',
-  image: 'https://assets.coingecko.com/coins/images/25812/small/ezgif-1-f4612f5260.png?1653987299',
-  isWrappedToken: false,
-  isXC20: true,
-  wrapUrl: null,
-};
-
-export const MOVR = {
-  srcChainId: 336,
-  address: '0xffffffff00000000000000010000000000000004',
-  decimal: 18,
-  symbol: 'MOVR',
-  name: 'Moonriver',
-  image: 'https://assets.coingecko.com/coins/images/17984/small/9285.png?1630028620',
-  isWrappedToken: false,
-  isXC20: true,
-  wrapUrl: null,
-};
-
-export const GLMR = {
-  srcChainId: 592,
-  address: '0xffffffff00000000000000010000000000000003',
-  decimal: 18,
-  symbol: 'GLMR',
-  name: 'Moonbeam',
-  image: 'https://assets.coingecko.com/coins/images/22459/small/glmr.png?1641880985',
-  isWrappedToken: false,
-  isXC20: true,
-  wrapUrl: null,
-};
-
-export const USDT_SHIDEN = {
-  srcChainId: 336,
-  address: '0xffffffff000000000000000000000001000007c0',
-  decimal: 6,
-  symbol: 'USDT',
-  name: 'Tether USD',
-  image: 'https://assets.coingecko.com/coins/images/325/small/Tether-logo.png?1598003707',
-  isWrappedToken: false,
-  isXC20: true,
-  wrapUrl: null,
-};
-
-export const USDT_ASTAR = {
-  srcChainId: 592,
-  address: '0xffffffff000000000000000000000001000007c0',
-  decimal: 6,
-  symbol: 'USDT',
-  name: 'Tether USD',
-  image: 'https://assets.coingecko.com/coins/images/325/small/Tether-logo.png?1598003707',
-  isWrappedToken: false,
-  isXC20: true,
-  wrapUrl: null,
-};
-
-export const registeredErc20Tokens = [
-  WASTR,
-  DOT,
-  KSM,
-  KUSD,
-  KAR,
-  LKSM,
-  ACA,
-  LDOT,
-  AUSD,
-  MOVR,
-  GLMR,
-  USDT_SHIDEN,
-  USDT_ASTAR,
-];
+export const registeredErc20Tokens: Erc20Token[] = [WASTR];
 
 // Memo: Define the token image source
 export const tokenImageMap = {
