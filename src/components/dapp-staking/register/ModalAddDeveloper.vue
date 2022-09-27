@@ -10,7 +10,7 @@
         <q-input
           v-model="currentDeveloper.twitterAccountUrl"
           :label="$t('dappStaking.modals.builder.twitterAccount')"
-          standout="text-white"
+          outlined
           label-color="input-label"
           input-class="input"
           :input-style="{ fontWeight: 'bold' }"
@@ -25,7 +25,7 @@
         <q-input
           v-model="currentDeveloper.linkedInAccountUrl"
           :label="$t('dappStaking.modals.builder.linkedInAccount')"
-          standout="text-white"
+          outlined=""
           label-color="input-label"
           input-class="input"
           :input-style="{ fontWeight: 'bold' }"
@@ -39,7 +39,7 @@
 
         <q-file
           v-model="file"
-          standout="bg-blue-grey-10 text-white"
+          outlined=""
           max-file-size="1000000"
           accept=".jpg .png, image/*"
           :label="$t('dappStaking.modals.builder.image')"
@@ -57,7 +57,7 @@
         <q-input
           v-model="currentDeveloper.name"
           label="Name"
-          standout="text-white"
+          outlined=""
           label-color="input-label"
           input-class="input"
           :input-style="{ fontWeight: 'bold' }"

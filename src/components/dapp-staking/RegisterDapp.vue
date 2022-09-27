@@ -4,7 +4,7 @@
       <q-input
         v-model="data.name"
         :label="$t('dappStaking.modals.name')"
-        standout="text-white"
+        outlined
         label-color="input-label"
         input-class="input"
         :input-style="{ fontWeight: 'bold' }"
@@ -13,8 +13,7 @@
       />
       <q-file
         v-model="data.icon"
-        standout="text-white"
-        counter
+        outlined
         :label="$t('dappStaking.modals.projectLogo')"
         accept=".jpg .png, image/*"
         class="component"
@@ -32,7 +31,7 @@
       <q-input
         v-model="data.address"
         :label="$t('dappStaking.modals.contractAddress')"
-        standout="text-white"
+        outlined
         label-color="input-label"
         input-class="input"
         :input-style="{ fontWeight: 'bold' }"
@@ -43,7 +42,7 @@
       <q-input
         v-model="data.url"
         :label="$t('dappStaking.modals.projectUrl')"
-        standout="text-white"
+        outlined
         label-color="input-label"
         input-class="input"
         :input-style="{ fontWeight: 'bold' }"
@@ -240,8 +239,35 @@ export default defineComponent({
 }
 </style>
 
+<style lang="scss">
+.q-field--outlined:hover .q-field__control:before {
+  border-color: $gray-2;
+}
+
+.q-field--outlined .q-field__control:before {
+  border-color: $gray-2;
+}
+
+.q-field--outlined .q-field__control {
+  border-radius: 6px;
+}
+
+.q-field__control {
+  color: $gray-3;
+  border-color: $gray-2;
+}
+
+.q-field--outlined:hover.q-field--dark .q-field__control:before {
+  border-color: $gray-5;
+}
+
+.q-field--outlined.q-field--dark .q-field__control:before {
+  border-color: $gray-5;
+}
+</style>
+
 <!-- Override quasar colors -->
-<style lang="sass">
+<!-- <style lang="sass">
 .q-field
   &--standout
     &.q-field--dark
@@ -281,4 +307,4 @@ export default defineComponent({
     &--highlighted
       .q-field__label
         color: $gray-3
-</style>
+</style> -->

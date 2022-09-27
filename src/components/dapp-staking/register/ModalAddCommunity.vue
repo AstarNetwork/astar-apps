@@ -12,7 +12,7 @@
           :key="index"
           v-model="community.handle"
           :label="community.label"
-          standout="text-white"
+          outlined
           label-color="input-label"
           input-class="input"
           :input-style="{ fontWeight: 'bold' }"

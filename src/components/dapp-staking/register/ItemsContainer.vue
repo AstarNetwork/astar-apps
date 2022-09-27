@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="container items-container">
+    <div class="items-container">
       <div v-if="title" class="register-container--label">{{ title }}</div>
       <slot></slot>
     </div>
@@ -34,16 +34,17 @@ export default defineComponent({
 @use 'src/components/assets/styles/assets.scss';
 @use 'src/components/dapp-staking/styles/register.scss';
 
-.container {
-  padding-left: 12px;
-}
-
 .items-container {
+  border: 1px solid $gray-2;
   transition: background-color 0.5s;
+  border-radius: 6px;
+  padding: 8px 12px;
 }
 
-.items-container:hover {
-  // background-color: $gray-3;
+.body--dark {
+  .items-container {
+    border: 1px solid $gray-5;
+  }
 }
 
 .container.div {

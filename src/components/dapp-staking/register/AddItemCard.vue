@@ -1,5 +1,5 @@
 <template>
-  <div class="container card-new-item" @click="onClick">
+  <div class="card-new-item" @click="onClick">
     <icon-base width="24" height="24"><icon-document /></icon-base>
   </div>
 </template>
@@ -41,7 +41,7 @@ export default defineComponent({
 
 .body--dark {
   .card-new-item {
-    background-color: $gray-4;
+    background-color: $gray-5;
   }
 }
 </style>

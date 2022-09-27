@@ -2,7 +2,7 @@
   <div>
     <q-file
       v-model="data.images"
-      standout="bg-blue-grey-10 text-white"
+      outlined
       multiple
       append
       max-file-size="1000000"
