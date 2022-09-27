@@ -20,9 +20,10 @@
           </div>
         </div>
       </div>
-      <astar-button v-show="index === hoverIndex || width < screenSize.lg" width="274" height="24"
+      <astar-button v-if="index === hoverIndex || width < screenSize.lg" width="274" height="24"
         >Stake now</astar-button
       >
+      <div v-else style="width: 274px; height: 24px"></div>
     </div>
   </div>
 </template>
@@ -54,20 +55,23 @@ export default defineComponent({
 
 .wrapper--list {
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 12px;
 
   @media (max-width: $lg) {
     width: 100%;
     flex-wrap: nowrap;
-    overflow-x: scroll;
+    overflow-x: auto;
+    justify-content: left;
   }
 }
 
 .card {
   padding: 16px;
-  width: 300px;
-  height: 170px;
+  // width: 300px;
+  // height: 170px;
+  flex-basis: 30%;
   cursor: pointer;
   .wrapper--card {
     display: flex;

@@ -36,10 +36,10 @@
   gap: 24px;
   width: 100%;
   max-width: 1295px;
-  @media (max-width: $lg) {
+  @media (max-width: $md) {
     width: 100%;
     flex-wrap: nowrap;
-    overflow-x: scroll;
+    overflow-x: auto;
     overflow-y: hidden;
     gap: 16px;
   }
@@ -97,7 +97,7 @@
     }
   }
 
-  @media (max-width: $lg) {
+  @media (max-width: $md) {
     min-width: 160px;
     flex-basis: 32%;
     height: 130px;

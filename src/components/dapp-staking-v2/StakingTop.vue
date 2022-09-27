@@ -63,6 +63,11 @@ export default defineComponent({
 
 .wrapper-main {
   padding: 0px 0px 24px 0px;
+  margin: 0 auto;
+
+  @media (max-width: $lg) {
+    max-width: $lg;
+  }
 }
 
 .divider {

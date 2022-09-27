@@ -41,14 +41,18 @@ export default defineComponent({
 
 .wrapper--cards {
   display: flex;
-  flex-wrap: wrap;
   gap: 24px;
+  justify-content: center;
   margin-top: 48px;
   margin-bottom: 48px;
+
+  @media (max-width: $sm) {
+    display: block;
+  }
 }
 
 .card {
-  flex-basis: 28%;
+  flex-basis: 30%;
   cursor: pointer;
   .wrapper--img {
     background: rgb(110, 110, 110);
@@ -68,6 +72,10 @@ export default defineComponent({
     line-height: 18px;
     color: $gray-5-selected;
     margin-top: 10px;
+  }
+
+  @media (max-width: $sm) {
+    margin-bottom: 40px;
   }
 }
 

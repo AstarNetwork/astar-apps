@@ -15,6 +15,9 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @use 'src/components/assets/styles/assets.scss';
+.wrapper--dapp-staking {
+  margin: 0 auto;
+}
 .container--dapp-staking {
   display: grid;
   row-gap: 24px;
