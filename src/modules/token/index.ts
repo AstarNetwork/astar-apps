@@ -1,4 +1,4 @@
-import { EvmChain } from 'src/c-bridge';
+import { providerEndpoints, endpointKey } from 'src/config/chainEndpoints';
 
 export {
   getTokenImage,
@@ -28,7 +28,7 @@ export interface Erc20Token {
 }
 
 export const WASTR: Erc20Token = {
-  srcChainId: EvmChain.Astar,
+  srcChainId: Number(providerEndpoints[endpointKey.ASTAR].evmChainId),
   address: '0xAeaaf0e2c81Af264101B9129C00F4440cCF0F720',
   decimal: 18,
   symbol: 'WASTR',
