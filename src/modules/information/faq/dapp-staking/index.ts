@@ -3,7 +3,7 @@ import { Faq } from 'src/modules/information';
 export const faqDappStaking: Faq[] = [
   {
     title: 'What is dApps Staking?',
-    url: 'https://docs.astar.network/docs/dapp-staking/#dapp-stakers-nominators-increase-in-token-value--high-aprs',
+    url: 'https://docs.astar.network/docs/dapp-staking',
   },
   {
     title: 'How can my project get listed?',

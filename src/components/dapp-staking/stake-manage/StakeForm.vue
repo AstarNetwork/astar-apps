@@ -34,8 +34,8 @@
                   amount: $n(truncate(maxAmount)),
                   token: nativeTokenSymbol,
                 })
-              }}</span
-            >
+              }}
+            </span>
             <button class="btn--max" @click="toMaxAmount">
               {{ $t('assets.modals.max') }}
             </button>
@@ -79,13 +79,11 @@
         <span class="color--white"> {{ $t(errMsg) }}</span>
       </div>
       <div class="wrapper__row--button" :class="!errMsg && 'btn-margin-adjuster'">
-        <button
-          class="btn btn--confirm btn-size-adjust"
-          :disabled="errMsg || !Number(amount)"
-          @click="transfer"
-        >
-          {{ $t('confirm') }}
-        </button>
+        <astar-button class="btn-size--confirm" :disabled="errMsg || !Number(amount)">
+          <span class="text--btn-confirm">
+            {{ $t('confirm') }}
+          </span>
+        </astar-button>
       </div>
     </div>
   </div>
@@ -136,6 +134,11 @@ export default defineComponent({
 
     const store = useStore();
 
+    const inputHandler = (event: any): void => {
+      amount.value = event.target.value;
+      errMsg.value = '';
+    };
+
     const nominationTransferMaxAmount = computed(() => {
       if (!props.formattedTransferFrom.item) return 0;
       return props.formattedTransferFrom
@@ -170,6 +173,7 @@ export default defineComponent({
       toMaxAmount,
       getShortenAddress,
       truncate,
+      inputHandler,
     };
   },
 });

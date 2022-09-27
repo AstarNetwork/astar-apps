@@ -155,10 +155,9 @@
   }
 }
 
-.btn-size-adjust {
-  @media (min-width: $xs) {
-    width: 344px;
-  }
+.btn-size--confirm {
+  width: 340px;
+  height: 52px;
   @media (min-width: $md) {
     width: 400px;
   }
@@ -174,6 +173,11 @@
   justify-self: flex-end;
   position: absolute;
   right: 0;
+}
+
+.text--btn-confirm {
+  font-size: 20px;
+  font-weight: 600;
 }
 
 .body--dark {
