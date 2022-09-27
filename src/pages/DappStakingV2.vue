@@ -22,6 +22,7 @@ export default defineComponent({
   display: grid;
   row-gap: 24px;
   max-width: 1300px;
+  margin: 0 auto;
   @media (max-width: $md) {
     display: block;
   }
