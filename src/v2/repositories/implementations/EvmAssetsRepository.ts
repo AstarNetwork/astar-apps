@@ -9,6 +9,7 @@ import { Erc20Token } from 'src/modules/token/index';
 import { castCbridgeToErc20, getRegisteredERC20Token } from 'src/modules/token/utils/index';
 import { Guard } from 'src/v2/common';
 import { IEvmAssetsRepository } from 'src/v2/repositories/IEvmAssetsRepository';
+import { castCbridgeTokenData } from 'src/c-bridge';
 
 @injectable()
 export class EvmAssetsRepository implements IEvmAssetsRepository {
@@ -76,7 +77,7 @@ export class EvmAssetsRepository implements IEvmAssetsRepository {
             userBalance,
             userBalanceUsd: String(balUsd),
           };
-          return tokenWithBalance;
+          return castCbridgeTokenData(tokenWithBalance);
         })
     )) as Erc20Token[];
 

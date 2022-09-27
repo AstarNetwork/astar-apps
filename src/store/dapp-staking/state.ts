@@ -1,5 +1,7 @@
+import { number } from '@intlify/core-base';
 import { BN } from '@polkadot/util';
 import { TvlModel } from 'src/v2/models';
+import { DappCombinedInfo, StakerInfo } from 'src/v2/models/DappsStaking';
 
 export type Category = 'defi' | 'gamefi' | 'infra' | 'nft' | 'others';
 
@@ -61,7 +63,8 @@ export interface CommunityDefinition extends Community {
 }
 
 export interface DappStateInterface {
-  dapps: DappItem[];
+  dapps: DappItem[]; // TODO for backward compatibility only, remove later.
+  dappsCombinedInfo: DappCombinedInfo[];
   minimumStakingAmount: string;
   maxNumberOfStakersPerContract: number;
   unbondingPeriod: number;
@@ -70,6 +73,7 @@ export interface DappStateInterface {
   isPalletDisabled: boolean;
   claimedRewards: number;
   tvl: TvlModel;
+  currentEra: number;
 }
 
 export interface LooseObject {
@@ -85,6 +89,7 @@ export interface FileInfo {
 function state(): DappStateInterface {
   return {
     dapps: [],
+    dappsCombinedInfo: [],
     minimumStakingAmount: '0',
     maxNumberOfStakersPerContract: 0,
     unbondingPeriod: 0,
@@ -93,6 +98,7 @@ function state(): DappStateInterface {
     isPalletDisabled: false,
     claimedRewards: 0,
     tvl: new TvlModel(new BN(0), 0, 0),
+    currentEra: 0,
   };
 }
 
