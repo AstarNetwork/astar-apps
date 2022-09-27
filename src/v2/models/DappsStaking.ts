@@ -10,12 +10,17 @@ export enum SmartContractState {
 export class StakerInfo {
   public totalStakeFormatted?: string;
 
-  constructor(public contractAddress: string, public totalStake: BN, public stakersCount: number) {}
+  constructor(
+    public contractAddress: string,
+    public totalStake: BN,
+    public stakersCount: number,
+    public accountStakingAmount: string
+  ) {}
 
   static createDefault(contractAddress: string): StakerInfo {
     Guard.ThrowIfUndefined('contractAddress', contractAddress);
 
-    return new StakerInfo(contractAddress, new BN(0), 0);
+    return new StakerInfo(contractAddress, new BN(0), 0, '0');
   }
 }
 

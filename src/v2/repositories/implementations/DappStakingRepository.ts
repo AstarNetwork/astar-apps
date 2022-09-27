@@ -10,6 +10,8 @@ import { Symbols } from 'src/v2/symbols';
 import { ApiPromise } from '@polkadot/api';
 import { SmartContract, SmartContractState, StakerInfo } from 'src/v2/models/DappsStaking';
 import { EventAggregator, NewEraMessage } from 'src/v2/messaging';
+import { GeneralStakerInfo } from 'src/hooks/helper/claim';
+import { ethers } from 'ethers';
 
 // TODO type generation
 interface EraInfo extends Struct {
@@ -56,6 +58,21 @@ export class DappStakingRepository implements IDappStakingRepository {
     return result.unwrap().locked.toBn();
   }
 
+  public async fetchAccountStakingAmount(
+    contractAddress: string,
+    walletAddress: string
+  ): Promise<string> {
+    const api = await this.api.getApi();
+    const stakerInfo = await api.query.dappsStaking.generalStakerInfo<GeneralStakerInfo>(
+      walletAddress,
+      {
+        Evm: contractAddress,
+      }
+    );
+    const balance = stakerInfo.stakes.length && stakerInfo.stakes.slice(-1)[0].staked.toString();
+    return String(balance);
+  }
+
   public async getBondAndStakeCall(
     contractAddress: string,
     amount: BN
@@ -65,7 +82,10 @@ export class DappStakingRepository implements IDappStakingRepository {
     return api.tx.dappsStaking.bondAndStake(this.getAddressEnum(contractAddress), amount);
   }
 
-  public async getStakerInfo(contractAddresses: string[]): Promise<StakerInfo[]> {
+  public async getStakerInfo(
+    contractAddresses: string[],
+    walletAddress: string
+  ): Promise<StakerInfo[]> {
     const api = await this.api.getApi();
     const currentEra = await this.getCurrentEra(api);
 
@@ -78,16 +98,34 @@ export class DappStakingRepository implements IDappStakingRepository {
       })
     );
 
+    const stakingAmounts = await Promise.all(
+      contractAddresses.map(async (address) => {
+        return {
+          contractAddress: address,
+          accountStakingAmount: walletAddress
+            ? await this.fetchAccountStakingAmount(address, walletAddress)
+            : '0',
+        };
+      })
+    );
+
     return eraStakes.map((x, index) => {
       if (x.isSome) {
         const eraStake = x.unwrap();
+        const accountStakingData = stakingAmounts.find(
+          (it) => it.contractAddress === contractAddresses[index]
+        );
+        const accountStakingAmount = accountStakingData
+          ? ethers.utils.formatEther(accountStakingData.accountStakingAmount)
+          : '0';
         return new StakerInfo(
           contractAddresses[index],
           eraStake.total,
-          eraStake.numberOfStakers.toNumber()
+          eraStake.numberOfStakers.toNumber(),
+          accountStakingAmount
         );
       } else {
-        return new StakerInfo('-', new BN(0), 0);
+        return new StakerInfo('-', new BN(0), 0, '0');
       }
     });
   }

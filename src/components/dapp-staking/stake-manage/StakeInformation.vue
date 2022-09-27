@@ -18,7 +18,7 @@
       </div>
       <div class="box--contents">
         <a
-          v-for="faq in faqs"
+          v-for="faq in faqDappStaking"
           :key="faq.title"
           :href="faq.url"
           target="_blank"
@@ -29,7 +29,8 @@
         </a>
       </div>
     </div>
-    <div id="history" class="container--information">
+    <!-- Todo: add history -->
+    <!-- <div id="history" class="container--information">
       <div class="row--title">
         <astar-icon-history size="20" />
         <span>{{ $t('assets.transferPage.recentHistory') }}</span>
@@ -47,7 +48,7 @@
           <span> {{ $t('assets.transferPage.noTxRecords') }} </span>
         </div>
       </div>
-    </div>
+    </div> -->
     <div id="hot-topics" class="container--information">
       <div class="row--title">
         <astar-icon-group size="20" />
@@ -74,68 +75,43 @@
   </div>
 </template>
 <script lang="ts">
-import TransactionHistory from 'src/components/assets/transfer/TransactionHistory.vue';
-import { useAccount, useNetworkInfo } from 'src/hooks';
-import {
-  Faq,
-  faqH160Transfer,
-  faqH160XcmBridge,
-  faqSs58Transfer,
-  faqSs58XcmBridge,
-  getTxHistories,
-  hotTopics,
-  RecentHistory,
-} from 'src/modules/information';
-import { useStore } from 'src/store';
-import { computed, defineComponent, ref, watchEffect } from 'vue';
+// import { useAccount, useNetworkInfo } from 'src/hooks';
 import { socialUrl } from 'src/links';
+import { hotTopics, RecentHistory } from 'src/modules/information';
+import { Faq, faqDappStaking } from 'src/modules/information';
+import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
-  components: { TransactionHistory },
-  props: {
-    isLocalTransfer: {
-      type: Boolean,
-      required: true,
-    },
-  },
+  // components: { TransactionHistory },
   setup(props) {
-    const store = useStore();
     const txHistories = ref<RecentHistory[]>([]);
     const isLoadingTxHistories = ref<boolean>(true);
-    const { currentAccount } = useAccount();
-    const { currentNetworkName } = useNetworkInfo();
+    // const { currentAccount } = useAccount();
+    // const { currentNetworkName } = useNetworkInfo();
 
-    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
-    const faqs = computed<Faq[]>(() => {
-      if (isH160.value) {
-        return props.isLocalTransfer ? faqH160Transfer : faqH160XcmBridge;
-      } else {
-        return props.isLocalTransfer ? faqSs58Transfer : faqSs58XcmBridge;
-      }
-    });
+    // Todo: update
+    // const setTxHistories = async (): Promise<void> => {
+    //   if (!currentAccount.value || !currentNetworkName.value) return;
+    //   try {
+    //     isLoadingTxHistories.value = true;
+    //     txHistories.value = await getTxHistories({
+    //       address: currentAccount.value,
+    //       network: currentNetworkName.value.toLowerCase(),
+    //     });
+    //   } catch (error) {
+    //     console.error(error);
+    //   } finally {
+    //     isLoadingTxHistories.value = false;
+    //   }
+    // };
 
-    const setTxHistories = async (): Promise<void> => {
-      if (!currentAccount.value || !currentNetworkName.value) return;
-      try {
-        isLoadingTxHistories.value = true;
-        txHistories.value = await getTxHistories({
-          address: currentAccount.value,
-          network: currentNetworkName.value.toLowerCase(),
-        });
-      } catch (error) {
-        console.error(error);
-      } finally {
-        isLoadingTxHistories.value = false;
-      }
-    };
+    // watchEffect(setTxHistories);
 
-    watchEffect(setTxHistories);
-
-    return { faqs, hotTopics, txHistories, isLoadingTxHistories, socialUrl };
+    return { faqDappStaking, hotTopics, txHistories, isLoadingTxHistories, socialUrl };
   },
 });
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/assets/transfer/styles/information.scss';
+@use 'src/components/dapp-staking/stake-manage/styles/stake-information.scss';
 </style>

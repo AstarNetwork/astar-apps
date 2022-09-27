@@ -4,6 +4,8 @@ import {
   useCustomSignature,
   useGetMinStaking,
   useStakingList,
+  useNetworkInfo,
+  useChainMetadata,
 } from 'src/hooks';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { ethers } from 'ethers';
@@ -20,6 +22,7 @@ export function useNominationTransfer() {
   const { currentAccount } = useAccount();
   const { minStaking } = useGetMinStaking();
   const { stakingList } = useStakingList();
+  useChainMetadata();
   const store = useStore();
   const addressTransferFrom = ref<string>(currentAccount.value);
   const isEnableNominationTransfer = ref<boolean>(false);
@@ -45,10 +48,7 @@ export function useNominationTransfer() {
     addressTransferFrom.value = address;
   };
 
-  const nativeTokenSymbol = computed(() => {
-    const chainInfo = store.getters['general/chainInfo'];
-    return chainInfo ? chainInfo.tokenSymbol : '';
-  });
+  const { nativeTokenSymbol } = useNetworkInfo();
 
   const formattedTransferFrom = computed(() => {
     const defaultData = { text: '', item: null, isNominationTransfer: false };

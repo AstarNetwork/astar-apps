@@ -8,11 +8,11 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
+import { useAccount, useNetworkInfo } from 'src/hooks';
 import { useStore } from 'src/store';
-import { ChainInfo } from 'src/hooks';
 import DappsList from 'src/v2/components/dapp-staking/DappsList.vue';
 import HomeHeader from 'src/v2/components/dapp-staking/HomeHeader.vue';
+import { defineComponent, watchEffect } from 'vue';
 
 export default defineComponent({
   components: {
@@ -22,8 +22,15 @@ export default defineComponent({
   setup() {
     const store = useStore();
 
-    const chainInfo = computed<ChainInfo>(() => store.getters['general/chainInfo']);
-    store.dispatch('dapps/getDapps', 'astar');
+    const { currentNetworkName } = useNetworkInfo();
+    const { currentAccount } = useAccount();
+    watchEffect(() => {
+      if (!currentNetworkName.value) return;
+      store.dispatch('dapps/getDapps', {
+        network: currentNetworkName.value.toLowerCase(),
+        currentAccount: currentAccount.value ? currentAccount.value : '',
+      });
+    });
     store.dispatch('dapps/getTvl');
   },
 });

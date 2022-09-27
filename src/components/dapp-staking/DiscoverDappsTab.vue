@@ -1,55 +1,57 @@
 <template>
-  <div>
-    <div class="warning-wrapper">
-      <div class="warning-text-container">
-        {{
-          $t('dappStaking.warning', {
-            amount: minimumStakingAmount,
-            stakers: maxNumberOfStakersPerContract.toLocaleString('en-US'),
-          })
-        }}
+  <div class="wrapper--dapp-staking">
+    <div class="container--dapp-staking">
+      <div class="warning-wrapper">
+        <div class="warning-text-container">
+          {{
+            $t('dappStaking.warning', {
+              amount: minimumStakingAmount,
+              stakers: maxNumberOfStakersPerContract.toLocaleString('en-US'),
+            })
+          }}
+        </div>
+        <Button :small="true" class="register-button" @click="showRegisterDappModal = true">
+          + {{ $t('dappStaking.registerDapp') }}
+        </Button>
       </div>
-      <Button :small="true" class="register-button" @click="showRegisterDappModal = true">
-        + {{ $t('dappStaking.registerDapp') }}
-      </Button>
-    </div>
-    <div v-if="isDapps" class="kpi-wrapper">
-      <TVL />
-      <DappsCount />
-      <Era :progress="progress" :blocks-until-next-era="blocksUntilNextEra" :era="era" />
-      <APR />
-    </div>
-
-    <UserRewards v-if="isDapps" />
-
-    <div class="store-container tw-grid tw-gap-x-12 xl:tw-gap-x-18 tw-justify-center">
-      <div v-if="!isDapps" class="tw-text-xl tx-font-semibold tw-mt-4 dark:tw-text-darkGray-100">
-        {{ $t('dappStaking.noDappsRegistered') }}
+      <div v-if="isDapps" class="kpi-wrapper">
+        <TVL />
+        <DappsCount />
+        <Era :progress="progress" :blocks-until-next-era="blocksUntilNextEra" :era="era" />
+        <APR />
       </div>
-      <template v-if="stakeInfos">
-        <Dapp
-          v-for="(dapp, index) in dapps"
-          :key="index"
-          :dapp="dapp"
-          :staker-max-number="maxNumberOfStakersPerContract"
-          :account-data="accountData"
-          :dapps="dapps"
-          :staking-list="stakingList"
-          :stake-infos="stakeInfos"
-        />
-      </template>
-    </div>
 
-    <Teleport to="#app--main">
-      <div :class="!isLoading && 'highest-z-index'">
-        <ModalRegisterDapp
-          v-if="showRegisterDappModal"
-          v-model:is-open="showRegisterDappModal"
-          :show-close-button="false"
-        />
-        <ModalMaintenance :show="isPalletDisabled" />
+      <UserRewards v-if="isDapps" />
+
+      <div class="store-container tw-grid tw-gap-x-12 xl:tw-gap-x-18 tw-justify-center">
+        <div v-if="!isDapps" class="tw-text-xl tx-font-semibold tw-mt-4 dark:tw-text-darkGray-100">
+          {{ $t('dappStaking.noDappsRegistered') }}
+        </div>
+        <template v-if="stakeInfos">
+          <Dapp
+            v-for="(dapp, index) in dapps"
+            :key="index"
+            :dapp="dapp"
+            :staker-max-number="maxNumberOfStakersPerContract"
+            :account-data="accountData"
+            :dapps="dapps"
+            :staking-list="stakingList"
+            :stake-infos="stakeInfos"
+          />
+        </template>
       </div>
-    </Teleport>
+
+      <Teleport to="#app--main">
+        <div :class="!isLoading && 'highest-z-index'">
+          <ModalRegisterDapp
+            v-if="showRegisterDappModal"
+            v-model:is-open="showRegisterDappModal"
+            :show-close-button="false"
+          />
+          <ModalMaintenance :show="isPalletDisabled" />
+        </div>
+      </Teleport>
+    </div>
   </div>
 </template>
 
@@ -188,6 +190,20 @@ export default defineComponent({
   @media (min-width: $xl) {
     justify-content: center;
     column-gap: 48px;
+  }
+}
+
+.container--dapp-staking {
+  display: grid;
+  row-gap: 24px;
+  max-width: 1300px;
+}
+
+.wrapper--dapp-staking {
+  position: relative;
+  @media (min-width: $xxl) {
+    display: flex;
+    justify-content: center;
   }
 }
 </style>
