@@ -1,5 +1,9 @@
 <template>
-  <items-container :title="$t('dappStaking.modals.platformsTitle')" class="component">
+  <items-container
+    :title="$t('dappStaking.modals.platformsTitle')"
+    :validation-error="validationError"
+    class="component"
+  >
     <items-toggle
       :available-items="possiblePlatforms"
       :item-toggled="handleItemToggled"
@@ -23,6 +27,10 @@ export default defineComponent({
     dapp: {
       type: Object as PropType<NewDappItem>,
       required: true,
+    },
+    validationError: {
+      type: String,
+      default: '',
     },
   },
   setup(props) {

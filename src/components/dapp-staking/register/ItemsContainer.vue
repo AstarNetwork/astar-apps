@@ -1,7 +1,10 @@
 <template>
-  <div class="container items-container">
-    <div v-if="title" class="register-container--label">{{ title }}</div>
-    <slot></slot>
+  <div>
+    <div class="container items-container">
+      <div v-if="title" class="register-container--label">{{ title }}</div>
+      <slot></slot>
+    </div>
+    <div class="error">{{ validationError }}</div>
   </div>
 </template>
 
@@ -11,6 +14,10 @@ import { defineComponent, toRefs } from 'vue';
 export default defineComponent({
   props: {
     title: {
+      type: String,
+      default: '',
+    },
+    validationError: {
       type: String,
       default: '',
     },
@@ -41,5 +48,12 @@ export default defineComponent({
 
 .container.div {
   cursor: pointer;
+}
+
+.error {
+  padding-left: 12px;
+  padding-top: 8px;
+  font-size: 12px;
+  color: var(--q-negative);
 }
 </style>

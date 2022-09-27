@@ -5,7 +5,7 @@
       <div v-else class="slot image" @click="emitClick">
         <slot></slot>
       </div>
-      <div class="overlay">&nbsp;</div>
+      <!-- <div class="overlay">&nbsp;</div> -->
       <q-icon v-if="canRemoveCard" name="close" class="close" @click.prevent="emitRemove" />
     </div>
 
@@ -66,7 +66,6 @@ export default defineComponent({
 }
 
 .card--image {
-  // background-color: black;
   position: relative;
   border-radius: 6px;
 }

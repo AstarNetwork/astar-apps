@@ -1,6 +1,10 @@
 <template>
   <div>
-    <items-container :title="$t('dappStaking.modals.builders')" class="component">
+    <items-container
+      :title="$t('dappStaking.modals.builders')"
+      :validation-error="validationError"
+      class="component"
+    >
       <div class="builders--container">
         <image-card
           v-for="(developer, index) in data.developers"
@@ -49,6 +53,10 @@ export default defineComponent({
     dapp: {
       type: Object as PropType<NewDappItem>,
       required: true,
+    },
+    validationError: {
+      type: String,
+      default: '',
     },
   },
   emits: ['dappChanged'],

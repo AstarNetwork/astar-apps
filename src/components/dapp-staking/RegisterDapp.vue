@@ -1,72 +1,78 @@
 <template>
-  <div style="display: flex; flex-direction: column">
-    <q-input
-      v-model="data.name"
-      label="Name"
-      standout="text-white"
-      label-color="input-label"
-      input-class="input"
-      :input-style="{ fontWeight: 'bold' }"
-      :rules="[(v: string) => (v && v.length > 0) || 'dApp name is required.']"
-      class="component"
-    />
-    <q-file
-      v-model="data.icon"
-      standout="text-white"
-      counter
-      label="Project logo"
-      accept=".jpg .png, image/*"
-      class="component"
-      input-style="{ height: '120px'}"
-      @update:model-value="updateDappLogo()"
-    >
-      <template #file="{ file }">
-        <image-card :base64-image="data.iconFile" :description="file.name" class="card">
-          <add-item-card />
-        </image-card>
-      </template>
-    </q-file>
+  <q-form ref="dappForm">
+    <div style="display: flex; flex-direction: column">
+      <q-input
+        v-model="data.name"
+        :label="$t('dappStaking.modals.name')"
+        standout="text-white"
+        label-color="input-label"
+        input-class="input"
+        :input-style="{ fontWeight: 'bold' }"
+        :rules="[(v: string) => (v && v.length > 0) || `${$t('dappStaking.modals.dappNameRequired')}`]"
+        class="component"
+      />
+      <q-file
+        v-model="data.icon"
+        standout="text-white"
+        counter
+        :label="$t('dappStaking.modals.projectLogo')"
+        accept=".jpg .png, image/*"
+        class="component"
+        input-style="{ height: '120px'}"
+        :rules="[(v: File) => v.size > 0 || `${$t('dappStaking.modals.dappImageRequired')}`]"
+        @update:model-value="updateDappLogo()"
+      >
+        <template #file="{ file }">
+          <image-card :base64-image="data.iconFile" :description="file.name" class="card">
+            <add-item-card />
+          </image-card>
+        </template>
+      </q-file>
 
-    <q-input
-      v-model="data.address"
-      label="Contract address"
-      standout="text-white"
-      label-color="input-label"
-      input-class="input"
-      :input-style="{ fontWeight: 'bold' }"
-      :rules="[(v: string) => isValidAddress(v) || 'Enter a valid EVM or SS58 contract address.']"
-      class="component"
-    />
+      <q-input
+        v-model="data.address"
+        :label="$t('dappStaking.modals.contractAddress')"
+        standout="text-white"
+        label-color="input-label"
+        input-class="input"
+        :input-style="{ fontWeight: 'bold' }"
+        :rules="[(v: string) => isValidAddress(v) || `${$t('dappStaking.modals.invalidAddress')}`]"
+        class="component"
+      />
 
-    <q-input
-      v-model="data.url"
-      label="Project URL"
-      standout="text-white"
-      label-color="input-label"
-      input-class="input"
-      :input-style="{ fontWeight: 'bold' }"
-      :rules="[
-            (v: string) => v !== '' || 'Enter project url.',
-            (v: string) => isUrlValid(v) || 'Invalid project url.',
+      <q-input
+        v-model="data.url"
+        :label="$t('dappStaking.modals.projectUrl')"
+        standout="text-white"
+        label-color="input-label"
+        input-class="input"
+        :input-style="{ fontWeight: 'bold' }"
+        :rules="[
+            (v: string) => v !== '' || `${$t('dappStaking.modals.projectUrlRequired')}`,
+            (v: string) => isUrlValid(v) || `${$t('dappStaking.modals.builder.error.invalidUrl')}`,
           ]"
-      class="component"
-    />
+        class="component"
+      />
 
-    <dapp-images :dapp="data" class="component" @dapp-changed="handleDappChanged" />
-    <builders :dapp="data" class="component" />
-    <description :dapp="data" class="component" />
-    <community :dapp="data" class="component" />
-    <platforms :dapp="data" class="component" />
-    <contract-types :dapp="data" class="component" />
-    <main-category :dapp="data" class="component" />
-    <tags
-      :dapp="data"
-      :category="(currentCategory.value as Category)"
-      :category-name="currentCategory.label"
-      class="component"
-    />
-    <license :dapp="data" class="component" />
-  </div>
+      <dapp-images :dapp="data" class="component" @dapp-changed="handleDappChanged" />
+      <builders :dapp="data" :validation-error="errors.builders" class="component" />
+      <description :dapp="data" class="component" />
+      <community :dapp="data" :validation-error="errors.community" class="component" />
+      <platforms :dapp="data" :validation-error="errors.platform" class="component" />
+      <contract-types :dapp="data" class="component" />
+      <main-category :dapp="data" class="component" />
+      <tags
+        :dapp="data"
+        :category="(currentCategory.value as Category)"
+        :category-name="currentCategory.label"
+        class="component"
+      />
+      <license :dapp="data" class="component" />
+      <button class="btn btn--confirm btn-size-adjust submit" @click="handleSubmit">
+        {{ $t('dappStaking.modals.submit') }}
+      </button>
+    </div>
+  </q-form>
 </template>
 
 <script lang="ts">
@@ -122,6 +128,12 @@ export default defineComponent({
     const isModalAddDeveloper = ref<boolean>(false);
     const currentDeveloper = ref<Developer>(initDeveloper());
     const currentCategory = ref<LabelValuePair>(possibleCategories[0]);
+    const dappForm = ref();
+    const errors = ref({
+      builders: '',
+      community: '',
+      platform: '',
+    });
 
     // make a placeholder for add logo
     data.icon = new File([], 'Add a logo image'); // TODO translate
@@ -153,16 +165,34 @@ export default defineComponent({
     const handleDappChanged = (newData: NewDappItem): void => {
       newData.descriptionMarkdown = newData.description ? sanitizeData(newData.description) : '';
 
-      // // If category changed reset tags.
-      // if (newData.mainCategory !== currentCategory.value.value) {
-      //   data.tags = [];
-      // }
-
       currentCategory.value =
         possibleCategories.find((x: LabelValuePair) => x.value === data.mainCategory) ??
         possibleCategories[0];
       data.ref = newData;
       console.log(newData.ref);
+    };
+
+    const validateCustomComponents = (): boolean => {
+      errors.value.builders = data.developers.length > 0 ? '' : 'Builders missing';
+      errors.value.community = data.communities.length > 0 ? '' : 'Communitit missing';
+      errors.value.platform = data.platforms.length > 0 ? '' : 'Platform missing';
+      console.log(errors.value);
+
+      for (const [key, value] of Object.entries(errors.value)) {
+        if (value) {
+          return false;
+        }
+      }
+
+      return true;
+    };
+
+    const handleSubmit = (): void => {
+      dappForm?.value?.validate().then(async (success: boolean) => {
+        if (success && validateCustomComponents()) {
+          alert('Submitted');
+        }
+      });
     };
 
     watch([theme], (val) => {
@@ -176,10 +206,13 @@ export default defineComponent({
       currentDeveloper,
       possibleCategories,
       currentCategory,
+      dappForm,
+      errors,
       isValidAddress,
       updateDappLogo,
       isUrlValid,
       handleDappChanged,
+      handleSubmit,
     };
   },
 });
@@ -199,6 +232,11 @@ export default defineComponent({
 .card {
   margin-top: 8px;
   margin-right: 12px;
+}
+
+.submit {
+  align-self: center;
+  margin-top: 20px;
 }
 </style>
 
