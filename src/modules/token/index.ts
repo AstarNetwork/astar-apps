@@ -1,7 +1,4 @@
 import { EvmChain } from 'src/c-bridge';
-import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
-import { xcmToken } from 'src/modules/xcm';
-import { Asset } from 'src/v2/models';
 
 export {
   getTokenImage,
@@ -10,6 +7,7 @@ export {
   getStoredERC20Tokens,
   getRegisteredERC20Token,
   castCbridgeToErc20,
+  getRegisteredErc20Tokens,
 } from 'src/modules/token/utils';
 
 // Memo: ERC20 tokens information that is not supported by cBridge
@@ -41,39 +39,7 @@ export const WASTR: Erc20Token = {
   wrapUrl: 'https://app.arthswap.org/#/swap',
 };
 
-const registeredErc20Tokens: Erc20Token[] = [WASTR];
-
-export const getRegisteredErc20Tokens = ({
-  network,
-  assets,
-}: {
-  network: endpointKey;
-  assets: Asset[];
-}): Erc20Token[] => {
-  const xcmTokens = xcmToken[network];
-  const xc20Tokens = xcmTokens.map((it) => {
-    try {
-      const asset = assets.find((that) => that.id === it.assetId) as Asset;
-      return {
-        srcChainId: Number(providerEndpoints[network].evmChainId),
-        address: asset.mappedERC20Addr,
-        decimal: asset.metadata.decimals,
-        symbol: asset.metadata.symbol,
-        name: asset.metadata.name,
-        image: it.logo,
-        isWrappedToken: false,
-        isXC20: true,
-        wrapUrl: null,
-      };
-    } catch (error) {
-      return undefined;
-    }
-  });
-
-  return (xc20Tokens.filter((it) => it !== undefined) as Erc20Token[]).concat(
-    registeredErc20Tokens
-  );
-};
+export const registeredErc20Tokens: Erc20Token[] = [WASTR];
 
 // Memo: Define the token image source
 export const tokenImageMap = {

@@ -1,7 +1,8 @@
 import { CbridgeCurrency } from 'src/c-bridge';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { Erc20Token, getRegisteredErc20Tokens, tokenImageMap } from 'src/modules/token';
+import { Erc20Token, registeredErc20Tokens, tokenImageMap } from 'src/modules/token';
+import { xcmToken } from 'src/modules/xcm';
 import { Asset } from 'src/v2/models';
 
 export const getTokenImage = ({
@@ -81,4 +82,36 @@ export const castCbridgeToErc20 = ({
     userBalanceUsd: token.userBalanceUsd,
     isCbridgeToken: true,
   };
+};
+
+export const getRegisteredErc20Tokens = ({
+  network,
+  assets,
+}: {
+  network: endpointKey;
+  assets: Asset[];
+}): Erc20Token[] => {
+  const xc20Tokens = xcmToken[network].map((it) => {
+    try {
+      const asset = assets.find((that) => that.id === it.assetId) as Asset;
+      return {
+        srcChainId: Number(providerEndpoints[network].evmChainId),
+        address: asset.mappedERC20Addr,
+        decimal: asset.metadata.decimals,
+        symbol: asset.metadata.symbol,
+        name: asset.metadata.name,
+        image: it.logo,
+        isWrappedToken: false,
+        isXC20: true,
+        wrapUrl: null,
+      };
+    } catch (error) {
+      console.error(error);
+      return undefined;
+    }
+  });
+
+  return (xc20Tokens.filter((it) => it !== undefined) as Erc20Token[]).concat(
+    registeredErc20Tokens
+  );
 };
