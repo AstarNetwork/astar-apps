@@ -3,7 +3,7 @@
     <div class="container--chart-panels">
       <div class="container--value-panel">
         <div class="container--panel">
-          <circulating-panel :symbol="nativeTokenSymbol" />
+          <circulating-panel :symbol="nativeTokenSymbol" :network="currentNetworkName" />
         </div>
         <div class="container--panel">
           <value-panel title="Holders" :value="holders" />

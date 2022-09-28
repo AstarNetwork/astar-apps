@@ -45,13 +45,17 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    network: {
+      type: String,
+      required: true,
+    },
   },
   setup(props) {
     const totalSupply = ref<number>(0);
     const currentCirculating = ref<number>(0);
 
-    const loadStats = async (symbol: string): Promise<void> => {
-      const url = `${TOKEN_API_URL}/v1/${symbol}/token/stats`;
+    const loadStats = async (network: string): Promise<void> => {
+      const url = `${TOKEN_API_URL}/v1/${network}/token/stats`;
       const result = await axios.get<StatsData>(url);
 
       if (result.data) {
@@ -62,8 +66,8 @@ export default defineComponent({
 
     watchEffect(async () => {
       try {
-        if (props.symbol) {
-          await loadStats(props.symbol.toLowerCase());
+        if (props.network) {
+          await loadStats(props.network.toLowerCase());
         }
       } catch (error) {
         console.error(error);
