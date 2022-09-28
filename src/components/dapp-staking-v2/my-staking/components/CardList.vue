@@ -63,7 +63,11 @@ export default defineComponent({
     width: 100%;
     flex-wrap: nowrap;
     overflow-x: auto;
+    overflow-y: hidden;
     justify-content: left;
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 }
 
