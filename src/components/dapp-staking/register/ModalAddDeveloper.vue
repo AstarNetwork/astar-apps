@@ -14,11 +14,11 @@
           label-color="input-label"
           input-class="input"
           :input-style="{ fontWeight: 'bold' }"
+          lazy-rules="ondemand"
           :rules="[
             (v: string) => validateUrlFormat(v) || `${$t('dappStaking.modals.builder.error.invalidUrl')}`,
+            (v: string) => validateAtLeastOneUrl(v) || `${$t('dappStaking.modals.builder.error.accountRequired')}`
           ]"
-          :error="!isValidUrl"
-          :error-message="$t('dappStaking.modals.builder.error.accountRequired')"
           class="component"
         />
 
@@ -29,11 +29,11 @@
           label-color="input-label"
           input-class="input"
           :input-style="{ fontWeight: 'bold' }"
+          lazy-rules="ondemand"
           :rules="[
             (v: string) => validateUrlFormat(v) || `${$t('dappStaking.modals.builder.error.invalidUrl')}`,
+            (v: string) => validateAtLeastOneUrl(v) || `${$t('dappStaking.modals.builder.error.accountRequired')}`
           ]"
-          :error="!isValidUrl"
-          :error-message="$t('dappStaking.modals.builder.error.accountRequired')"
           class="component"
         />
 
@@ -44,6 +44,7 @@
           accept=".jpg .png, image/*"
           :label="$t('dappStaking.modals.builder.image')"
           class="component"
+          lazy-rules="ondemand"
           :rules="[(v: File) => v.size > 0 || `${$t('dappStaking.modals.builder.error.builderImageRequired')}`]"
           @update:model-value="updateImage()"
         >
@@ -61,13 +62,16 @@
           label-color="input-label"
           input-class="input"
           :input-style="{ fontWeight: 'bold' }"
+          lazy-rules="ondemand"
           :rules="[(v: string) => (v && v.length > 0) || `${$t('dappStaking.modals.builder.error.name')}`]"
           class="component"
         />
 
-        <button class="btn btn--confirm btn-size-adjust" @click="handleConfirm">
-          {{ $t('confirm') }}
-        </button>
+        <div class="button--container">
+          <Button :width="328" :height="52" @click="handleConfirm">
+            {{ $t('confirm') }}
+          </Button>
+        </div>
       </q-form>
     </div>
   </astar-modal>
@@ -77,17 +81,19 @@
 import AstarModal from 'src/components/common/AstarModal.vue';
 import { wait } from 'src/hooks/helper/common';
 import { defineComponent, ref, toRefs, PropType, computed, watch } from 'vue';
-import { fadeDuration } from '@astar-network/astar-ui';
+import { fadeDuration, Button } from '@astar-network/astar-ui';
 import { Developer } from 'src/store/dapp-staking/state';
 import { isUrlValid } from 'src/components/common/Validators';
 import ImageCard from 'src/components/dapp-staking/register/ImageCard.vue';
 import Avatar from 'src/components/common/Avatar.vue';
+import { Data } from '@polkadot/types';
 
 export default defineComponent({
   components: {
     AstarModal,
     ImageCard,
     Avatar,
+    Button,
   },
   props: {
     isModalAddDeveloper: {
@@ -131,6 +137,11 @@ export default defineComponent({
     };
 
     const validateUrlFormat = (url: string): boolean => (url !== '' ? isUrlValid(url) : true);
+
+    const validateAtLeastOneUrl = (url: string): boolean =>
+      url !== '' ||
+      currentDeveloper.value.linkedInAccountUrl !== '' ||
+      currentDeveloper.value.twitterAccountUrl !== '';
 
     const updateImage = (): void => {
       const reader = new FileReader();
@@ -179,6 +190,7 @@ export default defineComponent({
       closeModal,
       isUrlValid,
       validateUrlFormat,
+      validateAtLeastOneUrl,
       updateImage,
       handleConfirm,
     };

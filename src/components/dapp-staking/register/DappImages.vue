@@ -9,6 +9,7 @@
       accept=".jpg .png, image/*"
       :label="$t('dappStaking.modals.images')"
       class="component"
+      lazy-rules="ondemand"
       :rules="[(v: File[]) => (v && v.length >= 5) || $t('dappStaking.modals.imagesRequired')]"
       @update:model-value="updateDappImages()"
     >

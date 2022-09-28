@@ -16,13 +16,18 @@
           label-color="input-label"
           input-class="input"
           :input-style="{ fontWeight: 'bold' }"
-          :rules="[(v: string) => community.validateHandle && community.validateHandle(v)]"
+          lazy-rules="ondemand"
+          :rules="[
+            (v: string) => community.validateHandle && community.validateHandle(v) || 'dd',
+            (v: string) => validateAtLeastOneLink(v) || `${$t('dappStaking.modals.community.communityRequired')}`]"
           class="component"
         />
 
-        <button class="btn btn--confirm btn-size-adjust" @click="handleConfirm">
-          {{ $t('confirm') }}
-        </button>
+        <div class="button--container">
+          <Button :width="328" :height="52" @click="handleConfirm">
+            {{ $t('confirm') }}
+          </Button>
+        </div>
       </q-form>
     </div>
   </astar-modal>
@@ -30,7 +35,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, ref } from 'vue';
-import { fadeDuration } from '@astar-network/astar-ui';
+import { fadeDuration, Button } from '@astar-network/astar-ui';
 import { Community, CommunityDefinition } from 'src/store/dapp-staking/state';
 import AstarModal from 'src/components/common/AstarModal.vue';
 import { wait } from 'src/hooks/helper/common';
@@ -38,6 +43,7 @@ import { wait } from 'src/hooks/helper/common';
 export default defineComponent({
   components: {
     AstarModal,
+    Button,
   },
   props: {
     isModalAddCommunity: {
@@ -69,6 +75,9 @@ export default defineComponent({
       isClosingModal.value = false;
     };
 
+    const validateAtLeastOneLink = (url: string): boolean =>
+      props.availableCommunities.filter((x) => x.handle != '')?.length > 0;
+
     const handleConfirm = (): void => {
       communityForm?.value?.validate().then(async (success: boolean) => {
         if (success) {
@@ -91,6 +100,7 @@ export default defineComponent({
       communityForm,
       closeModal,
       handleConfirm,
+      validateAtLeastOneLink,
     };
   },
 });

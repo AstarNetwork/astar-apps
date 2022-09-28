@@ -1,12 +1,16 @@
 <template>
   <items-container :title="$t('dappStaking.modals.contractTypeTitle')" class="component">
-    <items-toggle
-      :available-items="possibleContractTypes"
-      :allow-multiselect="false"
-      :selected-items="[possibleContractTypes[0].value]"
-      :item-toggled="handleItemToggled"
-      class="container--toggle"
-    />
+    <div class="container--radio">
+      <q-radio
+        v-for="(category, index) in possibleContractTypes"
+        :key="index"
+        v-model="data.contractType"
+        :val="category.value"
+        :label="category.label"
+        dense
+        class="radio"
+      />
+    </div>
   </items-container>
 </template>
 
@@ -14,12 +18,10 @@
 import { NewDappItem } from 'src/store/dapp-staking/state';
 import { defineComponent, PropType, reactive } from 'vue';
 import ItemsContainer from 'src/components/dapp-staking/register/ItemsContainer.vue';
-import ItemsToggle from 'src/components/dapp-staking/register/ItemsToggle.vue';
 
 export default defineComponent({
   components: {
     ItemsContainer,
-    ItemsToggle,
   },
   props: {
     dapp: {
@@ -30,21 +32,16 @@ export default defineComponent({
   setup(props) {
     const data = reactive<NewDappItem>(props.dapp);
     const possibleContractTypes = [
-      { label: 'EVM', value: 'evm' },
+      { label: 'WASM+EVM', value: 'wasm+evm' },
       { label: 'WASM', value: 'wasm' },
+      { label: 'EVM', value: 'evm' },
     ];
 
     data.contractType = possibleContractTypes[0].value;
 
-    const handleItemToggled = (selectedItems: string[]): void => {
-      if (selectedItems.length > 0) {
-        data.contractType = selectedItems[0];
-      }
-    };
-
     return {
+      data,
       possibleContractTypes,
-      handleItemToggled,
     };
   },
 });

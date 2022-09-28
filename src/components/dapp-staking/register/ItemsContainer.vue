@@ -37,6 +37,7 @@ export default defineComponent({
 .items-container {
   border: 1px solid $gray-2;
   transition: background-color 0.5s;
+  transition: border-color 0.5s;
   border-radius: 6px;
   padding: 8px 12px;
 }
@@ -45,6 +46,14 @@ export default defineComponent({
   .items-container {
     border: 1px solid $gray-5;
   }
+
+  .items-container:hover {
+    border-color: $gray-4;
+  }
+}
+
+.items-container:hover {
+  border-color: $gray-3;
 }
 
 .container.div {

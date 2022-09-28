@@ -21,9 +21,9 @@ import ItemsContainer from 'src/components/dapp-staking/register/ItemsContainer.
 
 export const possibleCategories = [
   { label: 'DeFi', value: 'defi' },
-  { label: 'GameFi', value: 'gamefi' },
-  { label: 'Infra', value: 'infra' },
   { label: 'NFT', value: 'nft' },
+  { label: 'Tooling', value: 'tooling' },
+  { label: 'Utility', value: 'utility' },
   { label: 'Others', value: 'others' },
 ];
 
@@ -55,8 +55,4 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @use 'src/components/dapp-staking/styles/register.scss';
-
-.radio {
-  margin-right: 16px;
-}
 </style>

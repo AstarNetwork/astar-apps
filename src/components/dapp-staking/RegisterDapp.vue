@@ -8,6 +8,7 @@
         label-color="input-label"
         input-class="input"
         :input-style="{ fontWeight: 'bold' }"
+        lazy-rules="ondemand"
         :rules="[(v: string) => (v && v.length > 0) || `${$t('dappStaking.modals.dappNameRequired')}`]"
         class="component"
       />
@@ -18,6 +19,7 @@
         accept=".jpg .png, image/*"
         class="component"
         input-style="{ height: '120px'}"
+        lazy-rules="ondemand"
         :rules="[(v: File) => v.size > 0 || `${$t('dappStaking.modals.dappImageRequired')}`]"
         @update:model-value="updateDappLogo()"
       >
@@ -32,10 +34,10 @@
         v-model="data.address"
         :label="$t('dappStaking.modals.contractAddress')"
         outlined
+        readonly
         label-color="input-label"
         input-class="input"
         :input-style="{ fontWeight: 'bold' }"
-        :rules="[(v: string) => isValidAddress(v) || `${$t('dappStaking.modals.invalidAddress')}`]"
         class="component"
       />
 
@@ -46,6 +48,7 @@
         label-color="input-label"
         input-class="input"
         :input-style="{ fontWeight: 'bold' }"
+        lazy-rules="ondemand"
         :rules="[
             (v: string) => v !== '' || `${$t('dappStaking.modals.projectUrlRequired')}`,
             (v: string) => isUrlValid(v) || `${$t('dappStaking.modals.builder.error.invalidUrl')}`,
@@ -60,23 +63,27 @@
       <platforms :dapp="data" :validation-error="errors.platform" class="component" />
       <contract-types :dapp="data" class="component" />
       <main-category :dapp="data" class="component" />
-      <tags
+      <!-- <tags
         :dapp="data"
         :category="(currentCategory.value as Category)"
         :category-name="currentCategory.label"
         class="component"
-      />
+      /> -->
       <license :dapp="data" class="component" />
-      <button class="btn btn--confirm btn-size-adjust submit" @click="handleSubmit">
-        {{ $t('dappStaking.modals.submit') }}
-      </button>
+      <div class="button--container">
+        <Button :width="328" :height="52" @click="handleSubmit">
+          {{ $t('dappStaking.modals.submit') }}
+        </Button>
+      </div>
     </div>
   </q-form>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, reactive, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { isEthereumAddress } from '@polkadot/util-crypto';
+import { Button } from '@astar-network/astar-ui';
 import { useStore } from 'src/store';
 import { Category, Developer, NewDappItem } from 'src/store/dapp-staking/state';
 import ImageCard from 'src/components/dapp-staking/register/ImageCard.vue';
@@ -87,7 +94,6 @@ import DappImages from 'src/components/dapp-staking/register/DappImages.vue';
 import Description from 'src/components/dapp-staking/register/Description.vue';
 import Platforms from 'src/components/dapp-staking/register/Platforms.vue';
 import ContractTypes from 'src/components/dapp-staking/register/ContractTypes.vue';
-import Tags from 'src/components/dapp-staking/register/Tags.vue';
 import MainCategory from 'src/components/dapp-staking/register/MainCategory.vue';
 import License from 'src/components/dapp-staking/register/License.vue';
 import { possibleLicenses } from 'src/components/dapp-staking/register/License.vue';
@@ -95,8 +101,6 @@ import { possibleCategories } from './register/MainCategory.vue';
 import { isUrlValid } from 'src/components/common/Validators';
 import { sanitizeData } from 'src/hooks/helper/markdown';
 import { LabelValuePair } from 'src/components/dapp-staking/register/ItemsToggle.vue';
-
-const ADD_IMG = '~assets/img/add.png';
 
 export default defineComponent({
   components: {
@@ -108,9 +112,9 @@ export default defineComponent({
     Description,
     Platforms,
     ContractTypes,
-    Tags,
     MainCategory,
     License,
+    Button,
   },
   setup() {
     const initDeveloper = (): Developer => ({
@@ -120,6 +124,7 @@ export default defineComponent({
       twitterAccountUrl: '',
     });
 
+    const { t } = useI18n();
     const store = useStore();
     const theme = computed<string>(() => store.getters['general/theme']);
     const isDark = ref<boolean>(theme.value.toLowerCase() === 'dark');
@@ -143,6 +148,7 @@ export default defineComponent({
     data.mainCategory = currentCategory.value.value as Category;
     data.license = possibleLicenses[0].value;
     data.iconFile = '';
+    data.address = '0x00000....';
 
     data.images = [];
     data.images.push(new File([], 'Add an image')); // Add image placeholder
@@ -172,8 +178,10 @@ export default defineComponent({
     };
 
     const validateCustomComponents = (): boolean => {
-      errors.value.builders = data.developers.length > 0 ? '' : 'Builders missing';
-      errors.value.community = data.communities.length > 0 ? '' : 'Communitit missing';
+      errors.value.builders =
+        data.developers.length > 1 ? '' : t('dappStaking.modals.builder.error.developersRequired');
+      errors.value.community =
+        data.communities.length > 0 ? '' : t('dappStaking.modals.community.communityRequired');
       errors.value.platform = data.platforms.length > 0 ? '' : 'Platform missing';
       console.log(errors.value);
 
@@ -219,6 +227,8 @@ export default defineComponent({
 
 <style scoped lang="scss">
 @use 'src/components/assets/styles/assets.scss';
+@use 'src/components/dapp-staking/styles/register.scss';
+
 .input {
   font-weight: 'bold';
   color: '#fff';
@@ -241,7 +251,7 @@ export default defineComponent({
 
 <style lang="scss">
 .q-field--outlined:hover .q-field__control:before {
-  border-color: $gray-2;
+  border-color: $gray-3;
 }
 
 .q-field--outlined .q-field__control:before {
@@ -252,17 +262,56 @@ export default defineComponent({
   border-radius: 6px;
 }
 
+// editing
+.q-field--outlined .q-field__control:after {
+  border-width: 1px;
+}
+
+// error
+.q-field--outlined.q-field--highlighted .q-field__control:after {
+  border-width: 1px;
+}
+
 .q-field__control {
   color: $gray-3;
   border-color: $gray-2;
 }
 
 .q-field--outlined:hover.q-field--dark .q-field__control:before {
-  border-color: $gray-5;
+  border-color: $gray-4;
 }
 
 .q-field--outlined.q-field--dark .q-field__control:before {
   border-color: $gray-5;
+}
+
+//readonly
+.q-field--outlined.q-field--readonly .q-field__control:before {
+  border-style: solid;
+  border-color: $gray-1;
+  background-color: $gray-1;
+}
+
+.q-field--outlined.q-field--dark.q-field--readonly .q-field__control:before {
+  border-color: $gray-5;
+}
+
+.q-field--outlined:hover.q-field--readonly .q-field__control:before {
+  border-color: $gray-1;
+}
+
+.q-field--outlined.q-field--dark.q-field--readonly .q-field__control:before {
+  border-style: solid;
+  background-color: $gray-5;
+}
+
+.q-field--outlined:hover.q-field--dark.q-field--readonly .q-field__control:before {
+  border-color: $gray-5;
+}
+
+//label
+.q-field--float .q-field__label {
+  font-size: 18px;
 }
 </style>
 

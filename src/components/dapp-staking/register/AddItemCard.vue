@@ -1,17 +1,17 @@
 <template>
   <div class="card-new-item" @click="onClick">
-    <icon-base width="24" height="24"><icon-document /></icon-base>
+    <icon-base class="icon--plus"><icon-plus /></icon-base>
   </div>
 </template>
 
 <script lang="ts">
-import { IconDocument, IconBase } from '@astar-network/astar-ui';
+import { IconPlus, IconBase } from '@astar-network/astar-ui';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
   components: {
     IconBase,
-    IconDocument,
+    IconPlus,
   },
   emits: ['click'],
   setup(_, { emit }) {
@@ -42,6 +42,21 @@ export default defineComponent({
 .body--dark {
   .card-new-item {
     background-color: $gray-5;
+  }
+}
+
+.icon--plus {
+  stroke: $gray-5-selected;
+  border: 1px solid $gray-5-selected;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+.body--dark {
+  .icon--plus {
+    stroke: $gray-1;
+    border-color: $gray-1;
   }
 }
 </style>

@@ -116,7 +116,7 @@ export default defineComponent({
   white-space: nowrap;
   text-overflow: ellipsis;
   margin-top: 8px;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .image {

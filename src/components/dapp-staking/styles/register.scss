@@ -1,14 +1,8 @@
 @import 'src/css/quasar.variables.scss';
 
 .register-container--label {
-  font-size: 12px;
+  font-size: 14px;
   color: $gray-4;
-}
-
-.body--dark {
-  .register-container--label {
-    color: $gray-3;
-  }
 }
 
 .container--toggle {
@@ -18,4 +12,13 @@
 .container--radio {
   margin-top: 12px;
   margin-bottom: 12px;
+}
+
+.radio {
+  margin-right: 16px;
+}
+
+.button--container {
+  display: flex;
+  justify-content: center;
 }
