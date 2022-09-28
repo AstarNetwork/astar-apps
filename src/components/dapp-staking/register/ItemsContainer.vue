@@ -46,14 +46,10 @@ export default defineComponent({
   .items-container {
     border: 1px solid $gray-5;
   }
-
-  .items-container:hover {
-    border-color: $gray-4;
-  }
 }
 
 .items-container:hover {
-  border-color: $gray-3;
+  border-color: $astar-blue;
 }
 
 .container.div {

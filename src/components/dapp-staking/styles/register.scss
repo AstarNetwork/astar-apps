@@ -22,3 +22,12 @@
   display: flex;
   justify-content: center;
 }
+
+.container--register {
+  max-width: $register-form-max-width;
+  justify-self: center;
+
+  @media (min-width: $md) {
+    width: $container-max-width;  
+  }
+}
