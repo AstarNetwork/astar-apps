@@ -33,6 +33,10 @@ const NATIVE_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000802';
 const PRE_COMPILED_ADDRESS = '0x0000000000000000000000000000000000000804';
 const EVM_ID = { Moonriver: EVM.MOONRIVER, Moonbeam: EVM.MOONBEAM };
 
+/**
+ * Used to transfer assets from Moonbeam/Moonriver
+ */
+
 export class MoonbeamXcmRepository extends XcmRepository {
   private _networkName: ChainName;
   private _web3: Web3 | null;
