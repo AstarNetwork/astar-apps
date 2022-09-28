@@ -66,7 +66,7 @@ export const xcmToken = {
     },
     {
       symbol: 'USDT',
-      isNativeToken: true,
+      isNativeToken: false,
       assetId: '4294969280',
       originAssetId: '1984',
       logo: 'https://assets.coingecko.com/coins/images/325/small/Tether-logo.png?1598003707',
@@ -149,7 +149,7 @@ export const xcmToken = {
     },
     {
       symbol: 'USDT',
-      isNativeToken: true,
+      isNativeToken: false,
       assetId: '4294969280',
       originAssetId: '1984',
       logo: 'https://assets.coingecko.com/coins/images/325/small/Tether-logo.png?1598003707',
