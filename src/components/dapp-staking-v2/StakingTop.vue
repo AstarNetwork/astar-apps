@@ -2,6 +2,8 @@
   <div class="wrapper-main">
     <TopMetric />
 
+    <div class="divider"></div>
+
     <MyStaking />
 
     <div class="divider"></div>

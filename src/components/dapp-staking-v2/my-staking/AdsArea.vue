@@ -41,18 +41,26 @@ export default defineComponent({
 
 .wrapper--cards {
   display: flex;
-  gap: 24px;
+  gap: 16px;
   justify-content: center;
   margin-top: 48px;
   margin-bottom: 48px;
 
-  @media (max-width: $sm) {
-    display: block;
+  @media (max-width: $lg) {
+    // display: block;
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    justify-content: left;
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 }
 
 .card {
   flex-basis: 30%;
+  min-width: 300px;
   cursor: pointer;
   .wrapper--img {
     background: rgb(110, 110, 110);

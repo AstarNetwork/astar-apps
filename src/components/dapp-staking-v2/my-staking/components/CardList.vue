@@ -73,8 +73,6 @@ export default defineComponent({
 
 .card {
   padding: 16px;
-  // width: 300px;
-  // height: 170px;
   flex-basis: 30%;
   cursor: pointer;
   .wrapper--card {
