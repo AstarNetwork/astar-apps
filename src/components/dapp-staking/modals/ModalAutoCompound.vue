@@ -99,8 +99,14 @@ export default defineComponent({
   components: {
     Modal,
   },
+  props: {
+    changeDestination: {
+      type: Function,
+      required: true,
+    },
+  },
   emits: ['update:is-open'],
-  setup(_, { emit }) {
+  setup(props, { emit }) {
     const store = useStore();
     const isDarkTheme = computed<boolean>(() => store.getters['general/theme'] === 'DARK');
     const compoundMethod = ref<string>('auto'); // auto, claim, self
@@ -121,17 +127,20 @@ export default defineComponent({
       if (compoundMethod.value === 'auto') {
         console.log('auto');
         emit('update:is-open', false);
+        props.changeDestination();
         return;
       }
 
       if (compoundMethod.value === 'claim') {
         console.log('auto');
         emit('update:is-open', false);
+        props.changeDestination();
         return;
       }
 
       if (compoundMethod.value === 'self') {
         emit('update:is-open', false);
+        props.changeDestination();
         return;
       }
     };

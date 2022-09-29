@@ -16,7 +16,11 @@
       }}</Button>
     </div>
     <div class="tw-p-4">
-      <ModalAutoCompound v-if="showAutoCompoundModal" v-model:is-open="showAutoCompoundModal" />
+      <ModalAutoCompound
+        v-if="showAutoCompoundModal"
+        v-model:is-open="showAutoCompoundModal"
+        :change-destination="changeDestination"
+      />
     </div>
   </div>
 </template>
