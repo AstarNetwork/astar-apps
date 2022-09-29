@@ -3,7 +3,11 @@
     <template #content>
       <div>
         <div class="rows">
-          <div class="box--input-field box--active">
+          <div
+            class="box--input-field"
+            :class="{ 'box--active': compoundMethod === 'auto' }"
+            @click="setCompoundAuto"
+          >
             <div class="box__space-between">
               <span class="text--title">
                 {{ $t('dappStaking.autoCompounding') }}
@@ -36,7 +40,11 @@
               <span>{{ $t('dappStaking.autoCompoundingFee') }}</span>
             </div>
           </div>
-          <div class="box--input-field box--active">
+          <div
+            class="box--input-field"
+            :class="{ 'box--active': compoundMethod === 'claim' }"
+            @click="setCompoundClaim"
+          >
             <div>
               <span class="text--title">
                 {{ $t('dappStaking.claimAndRestake') }}
@@ -44,7 +52,11 @@
             </div>
             <span>{{ $t('dappStaking.claimYourselfAuto') }}</span>
           </div>
-          <div class="box--input-field box--active">
+          <div
+            class="box--input-field"
+            :class="{ 'box--active': compoundMethod === 'self' }"
+            @click="setCompoundSelf"
+          >
             <div>
               <span class="text--title">
                 {{ $t('dappStaking.manageMyself') }}
@@ -53,7 +65,7 @@
             <span>{{ $t('dappStaking.claimYourselfManual') }}</span>
           </div>
           <div class="tw-text-center">
-            <button class="btn btn--confirm btn-size-adjust" @click="close()">
+            <button class="btn btn--confirm btn-size-adjust" @click="close">
               {{ $t('confirm') }}
             </button>
           </div>
@@ -64,7 +76,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, ref } from 'vue';
 import Modal from 'components/common/Modal.vue';
 import { useStore } from 'src/store';
 
@@ -76,12 +88,29 @@ export default defineComponent({
   setup(_, { emit }) {
     const store = useStore();
     const isDarkTheme = computed<boolean>(() => store.getters['general/theme'] === 'DARK');
+    const compoundMethod = ref<string>('auto'); // auto, claim, self
+
+    const setCompoundAuto = () => {
+      compoundMethod.value = 'auto';
+    };
+
+    const setCompoundClaim = () => {
+      compoundMethod.value = 'claim';
+    };
+
+    const setCompoundSelf = () => {
+      compoundMethod.value = 'self';
+    };
 
     const close = () => {
       emit('update:is-open', false);
     };
 
     return {
+      compoundMethod,
+      setCompoundAuto,
+      setCompoundClaim,
+      setCompoundSelf,
       isDarkTheme,
       close,
     };
