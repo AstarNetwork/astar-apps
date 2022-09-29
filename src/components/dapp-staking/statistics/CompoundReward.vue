@@ -10,17 +10,21 @@
       <span class="text--title">
         {{ $t('dappStaking.claimAndRestake') }}
       </span>
-      <Button :small="true" :primary="true" class="button" @click="changeDestination">{{
+      <Button :small="true" :primary="true" class="button" @click="showAutoCompound">{{
         $t('dappStaking.change')
       }}</Button>
+    </div>
+    <div class="tw-p-4">
+      <ModalAutoCompound :show="showAutoCompoundModal" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { farQuestionCircle } from '@quasar/extras/fontawesome-v5';
 import { useCompoundRewards, RewardDestination } from 'src/hooks/dapps-staking/useCompoundRewards';
+import ModalAutoCompound from 'components/dapp-staking/modals/ModalAutoCompound.vue';
 import Button from 'components/common/Button.vue';
 import IconTooltip from 'components/common/IconTooltip.vue';
 
@@ -28,9 +32,15 @@ export default defineComponent({
   components: {
     Button,
     IconTooltip,
+    ModalAutoCompound,
   },
   setup() {
     const { isSupported, isCompounding, setRewardDestination } = useCompoundRewards();
+    const showAutoCompoundModal = ref<boolean>(false);
+
+    const showAutoCompound = (): void => {
+      showAutoCompoundModal.value = true;
+    };
 
     const changeDestination = async () => {
       const newDestination = isCompounding.value
@@ -40,6 +50,8 @@ export default defineComponent({
     };
 
     return {
+      showAutoCompound,
+      showAutoCompoundModal,
       isSupported,
       isCompounding,
       changeDestination,
