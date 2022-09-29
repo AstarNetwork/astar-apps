@@ -43,6 +43,25 @@
   }
 }
 
+.box--inner {
+  display: grid;
+  row-gap: 12px;
+  padding: 9px 15px;
+  border-radius: 6px;
+
+  transition: all 0.3s ease 0s;
+}
+
+.box--yellow {
+  background: rgba(240, 185, 11, 0.2);
+  border: 1px solid #F0B90B !important;
+}
+
+.box--pink {
+  background: rgba(255, 86, 33, 0.2);
+  border: 1px solid #FF5621;
+}
+
 .body--dark {
   .box--input-field {
     background: $gray-6;

@@ -157,13 +157,17 @@ export default {
     apy: 'APY',
     ttlPendingRewards: 'Your Pending Rewards',
     compound: 'Compound',
+    schedule: 'Schedule',
+    depositNoRefund: 'Deposit - Non Refundable',
+    compoundSchedule: '0am UTC on Mondays (every week)',
     autoCompounding: 'Auto Compounding',
     claimAndRestake: 'Claim & Re-stake',
     change: 'Change',
+    manageMyself: 'I’d rather manage it by myself',
     automateClaimAndStake:
       'Automate claim and stake. You will no longer need to claim by yourself! Deposit of future transactions will be corrected and we will let you know once the deposit runout.',
     autoCompoundingFee:
-      '{fee} will be taken when you sign and this will allow us to make claims appx {times} times for you.(It is beta vesion so the schedule is limited.)',
+      '0.2 ASTAR will be taken when you sign and this will allow us to make claims appx {times} times for you.(It is beta vesion so the schedule is limited.)',
     autoCompoundingTooltip:
       'By turning on the Auto compound, your rewards will re-stake after claiming.',
     claimYourselfAuto:
