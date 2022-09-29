@@ -65,7 +65,7 @@
             <span>{{ $t('dappStaking.claimYourselfManual') }}</span>
           </div>
           <div class="tw-text-center">
-            <button class="btn btn--confirm btn-size-adjust" @click="close">
+            <button class="btn btn--confirm btn-size-adjust" @click="confirm">
               {{ $t('confirm') }}
             </button>
           </div>
@@ -102,8 +102,23 @@ export default defineComponent({
       compoundMethod.value = 'self';
     };
 
-    const close = () => {
-      emit('update:is-open', false);
+    const confirm = () => {
+      if (compoundMethod.value === 'auto') {
+        console.log('auto');
+        emit('update:is-open', false);
+        return;
+      }
+
+      if (compoundMethod.value === 'claim') {
+        console.log('auto');
+        emit('update:is-open', false);
+        return;
+      }
+
+      if (compoundMethod.value === 'self') {
+        emit('update:is-open', false);
+        return;
+      }
     };
 
     return {
@@ -112,7 +127,7 @@ export default defineComponent({
       setCompoundClaim,
       setCompoundSelf,
       isDarkTheme,
-      close,
+      confirm,
     };
   },
 });
