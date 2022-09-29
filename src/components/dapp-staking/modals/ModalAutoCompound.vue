@@ -24,7 +24,7 @@
                 />
                 <img v-else width="100" height="23" src="~assets/img/powered-by-oak-colored.png" />
               </div>
-              <div>
+              <div class="text--gray">
                 <span>{{ $t('dappStaking.automateClaimAndStake') }}</span>
               </div>
               <div class="box--inner box--yellow">
@@ -59,7 +59,7 @@
                   {{ $t('dappStaking.claimAndRestake') }}
                 </span>
               </div>
-              <span>{{ $t('dappStaking.claimYourselfAuto') }}</span>
+              <span class="text--gray">{{ $t('dappStaking.claimYourselfAuto') }}</span>
             </div>
           </div>
           <div
@@ -76,7 +76,7 @@
                   {{ $t('dappStaking.manageMyself') }}
                 </span>
               </div>
-              <span>{{ $t('dappStaking.claimYourselfManual') }}</span>
+              <span class="text--gray">{{ $t('dappStaking.claimYourselfManual') }}</span>
             </div>
           </div>
           <div class="tw-text-center">
