@@ -4,24 +4,36 @@
       <div>
         <div class="rows">
           <div class="box--input-field box--active">
-            <div class="box__space-between">
+            <div>
+              <div class="box__space-between">
+                <span class="text--title">
+                  {{ $t('dappStaking.claimAndRestake') }}
+                </span>
+                <img
+                  v-if="isDarkTheme"
+                  width="100"
+                  height="23"
+                  src="~assets/img/powered-by-oak-white.png"
+                />
+                <img v-else width="100" height="23" src="~assets/img/powered-by-oak-colored.png" />
+              </div>
               <span>{{ $t('dappStaking.automateClaimAndStake') }}</span>
             </div>
           </div>
           <div class="box--input-field box--active">
-            <div class="box__space-between">
+            <div>
               <span>{{ $t('dappStaking.claimYourselfAuto') }}</span>
             </div>
           </div>
           <div class="box--input-field box--active">
-            <div class="box__space-between">
+            <div>
               <span>{{ $t('dappStaking.claimYourselfManual') }}</span>
             </div>
           </div>
           <div class="tw-text-center">
-            <Button @click="close()">
-              {{ $t('close') }}
-            </Button>
+            <button class="btn btn--confirm btn-size-adjust" @click="close()">
+              {{ $t('confirm') }}
+            </button>
           </div>
         </div>
       </div>
@@ -29,28 +41,26 @@
   </Modal>
 </template>
 
-<script>
-import { defineComponent } from 'vue';
+<script lang="ts">
+import { defineComponent, computed } from 'vue';
 import Modal from 'components/common/Modal.vue';
-import Button from 'components/common/Button.vue';
+import { useStore } from 'src/store';
 
 export default defineComponent({
   components: {
     Modal,
-    Button,
   },
-  props: {
-    show: {
-      type: Boolean,
-      default: false,
-    },
-  },
+  emits: ['update:is-open'],
   setup(_, { emit }) {
+    const store = useStore();
+    const isDarkTheme = computed<boolean>(() => store.getters['general/theme'] === 'DARK');
+
     const close = () => {
       emit('update:is-open', false);
     };
 
     return {
+      isDarkTheme,
       close,
     };
   },

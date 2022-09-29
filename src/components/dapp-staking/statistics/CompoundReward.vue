@@ -1,6 +1,7 @@
 <template>
   <div v-if="isSupported" class="widget-container">
     <div class="title">
+      <span class="pillBox">New</span>
       {{ $t('dappStaking.compound') }}
       <IconTooltip>
         {{ $t('dappStaking.autoCompoundingTooltip') }}
