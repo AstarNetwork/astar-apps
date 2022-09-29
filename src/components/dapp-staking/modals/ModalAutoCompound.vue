@@ -109,7 +109,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const store = useStore();
     const isDarkTheme = computed<boolean>(() => store.getters['general/theme'] === 'DARK');
-    const compoundMethod = ref<string>('auto'); // auto, claim, self
+    const compoundMethod = ref<string>('claim'); // auto, claim, self
 
     const setCompoundAuto = () => {
       compoundMethod.value = 'auto';

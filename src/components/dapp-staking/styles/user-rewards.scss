@@ -56,7 +56,7 @@
 
 .user-rewards-container {
   flex-grow: 1;
-  margin-bottom: 32px;
+  margin-bottom: 20px;
   @media (min-width: 656px) {
     max-width: 622px;
   }
@@ -122,4 +122,20 @@
   .container--claimed {
     border: 1px solid #f1f4f6;
   }
+}
+
+.wrapper--auto-claim-depsit {
+  padding: 8px 10px 8px 20px;
+  background: rgba(255, 86, 33, 0.2);
+  border: 1px solid #FF5621;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+.btn-top-up {
+  padding: 4px 15px;
+  background: #FF5621;
+  border-radius: 15px;
+  margin-left: 10px;
 }

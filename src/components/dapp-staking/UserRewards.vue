@@ -1,29 +1,38 @@
 <template>
-  <div v-if="isEnable" class="wrapper--user-rewards-container">
-    <div class="container user-rewards-container dark:tw-bg-darkGray-800">
-      <div class="row">
-        <div>
-          <span class="title container--title--color">{{ $t('dappStaking.yourRewards') }}</span>
-        </div>
-        <div v-if="currentAccount" class="container--claimed">
-          <span class="text--lg"> {{ textClaimedRewards }} </span>
+  <div>
+    <div v-if="isEnable" class="wrapper--user-rewards-container">
+      <div class="container user-rewards-container dark:tw-bg-darkGray-800">
+        <div class="row">
+          <div>
+            <span class="title container--title--color">{{ $t('dappStaking.yourRewards') }}</span>
+          </div>
+          <div v-if="currentAccount" class="container--claimed">
+            <span class="text--lg"> {{ textClaimedRewards }} </span>
 
-          <div v-if="isLoadingClaimed">
-            <q-skeleton class="skeleton--rewards" />
-          </div>
-          <div v-else class="column--rewards-meter">
-            <vue-odometer class="text--title" format=",ddd" animation="smooth" :value="claimed" />
-            <span class="text--title text--symbol">{{ nativeTokenSymbol }}</span>
+            <div v-if="isLoadingClaimed">
+              <q-skeleton class="skeleton--rewards" />
+            </div>
+            <div v-else class="column--rewards-meter">
+              <vue-odometer class="text--title" format=",ddd" animation="smooth" :value="claimed" />
+              <span class="text--title text--symbol">{{ nativeTokenSymbol }}</span>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="user-rewards-panel">
-        <ClaimAll />
-        <CompoundReward />
-        <Withdraw :show-unbonded-funds="true" />
-        <Withdraw :show-unbonded-funds="false" :show-unbonding-chunks="true" />
+        <div class="user-rewards-panel">
+          <ClaimAll />
+          <CompoundReward />
+          <Withdraw :show-unbonded-funds="true" />
+          <Withdraw :show-unbonded-funds="false" :show-unbonding-chunks="true" />
+        </div>
       </div>
     </div>
+    <div class="wrapper--auto-claim-depsit">
+      <span>{{ $t('dappStaking.autoClaimDepositEmpty') }}</span>
+      <button class="btn btn-top-up" @click="showTopup">
+        {{ $t('dappStaking.topUp') }}
+      </button>
+    </div>
+    <ModalTopup :show="showTopupModal" />
   </div>
 </template>
 
@@ -31,6 +40,7 @@
 import ClaimAll from 'src/components/dapp-staking/ClaimAll.vue';
 import CompoundReward from 'src/components/dapp-staking/statistics/CompoundReward.vue';
 import Withdraw from 'src/components/dapp-staking/statistics/Withdraw.vue';
+import ModalTopup from 'components/dapp-staking/modals/ModalTopup.vue';
 import { useAccount, useBreakpoints, useNetworkInfo } from 'src/hooks';
 import { useCompoundRewards } from 'src/hooks/dapps-staking/useCompoundRewards';
 import { getClaimedAmount } from 'src/modules/token-api';
@@ -39,8 +49,10 @@ import { computed, defineComponent, ref, watchEffect, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VueOdometer from 'v-odometer/src';
 import { wait } from 'src/hooks/helper/common';
+
 export default defineComponent({
   components: {
+    ModalTopup,
     CompoundReward,
     ClaimAll,
     Withdraw,
@@ -54,6 +66,7 @@ export default defineComponent({
     const { currentAccount } = useAccount();
     const pastClaimed = ref<number>(0);
     const isLoadingClaimed = ref<boolean>(false);
+    const showTopupModal = ref<boolean>(false);
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
     const claimed = computed<number>(() => {
@@ -97,6 +110,10 @@ export default defineComponent({
       }
     };
 
+    const showTopup = (): void => {
+      showTopupModal.value = true;
+    };
+
     watchEffect(async () => {
       await setClaimedAmount();
     });
@@ -119,6 +136,8 @@ export default defineComponent({
       currentAccount,
       claimed,
       nativeTokenSymbol,
+      showTopup,
+      showTopupModal,
       isLoadingClaimed,
     };
   },

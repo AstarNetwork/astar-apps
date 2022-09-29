@@ -163,6 +163,10 @@ export default {
     autoCompounding: 'Auto Compounding',
     claimAndRestake: 'Claim & Re-stake',
     change: 'Change',
+    topUp: 'Top Up Now',
+    upfrontFee:
+      'This upfront fee is used for Auto-compounding supported by Oak chain. This fee includes XCM fee as well as Turing automation fee.',
+    autoClaimDepositEmpty: 'Your deposit for auto claimimg has run-out. ',
     manageMyself: 'I’d rather manage it by myself',
     automateClaimAndStake:
       'Automate claim and stake. You will no longer need to claim by yourself! Deposit of future transactions will be corrected and we will let you know once the deposit runout.',
