@@ -18,15 +18,20 @@
   }
 }
 
-.box__space-between {
+.box--space-between {
   display: flex;
   justify-content: space-between;
 }
 
-.box--input-field {
+.box--content {
   display: grid;
   row-gap: 12px;
-  padding: 9px 15px;
+}
+
+.box--radio {
+  display: flex;
+  flex-direction: row;
+  padding: 20px 20px 20px 0;
   border-radius: 6px;
   width: 320px;
   background: transparent;
@@ -86,5 +91,18 @@
   }
   .text--to--balance {
     color: $gray-4;
+  }
+}
+
+.radio--input {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  padding: 0 20px;
+
+  input {
+    background-color: transparent;
+    color: $astar-blue;
   }
 }

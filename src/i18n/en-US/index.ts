@@ -167,7 +167,7 @@ export default {
     automateClaimAndStake:
       'Automate claim and stake. You will no longer need to claim by yourself! Deposit of future transactions will be corrected and we will let you know once the deposit runout.',
     autoCompoundingFee:
-      '0.2 ASTAR will be taken when you sign and this will allow us to make claims appx {times} times for you.(It is beta vesion so the schedule is limited.)',
+      '0.2 ASTAR will be taken when you sign and this will allow us to make claims appx 10 times for you.(It is beta vesion so the schedule is limited.)',
     autoCompoundingTooltip:
       'By turning on the Auto compound, your rewards will re-stake after claiming.',
     claimYourselfAuto:

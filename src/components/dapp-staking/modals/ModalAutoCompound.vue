@@ -4,65 +4,80 @@
       <div>
         <div class="rows">
           <div
-            class="box--input-field"
+            class="box--radio"
             :class="{ 'box--active': compoundMethod === 'auto' }"
             @click="setCompoundAuto"
           >
-            <div class="box__space-between">
-              <span class="text--title">
-                {{ $t('dappStaking.autoCompounding') }}
-              </span>
-              <img
-                v-if="isDarkTheme"
-                width="100"
-                height="23"
-                src="~assets/img/powered-by-oak-white.png"
-              />
-              <img v-else width="100" height="23" src="~assets/img/powered-by-oak-colored.png" />
+            <div class="radio--input">
+              <input v-model="compoundMethod" type="radio" value="auto" />
             </div>
-            <div>
-              <span>{{ $t('dappStaking.automateClaimAndStake') }}</span>
-            </div>
-            <div class="box--inner box--yellow">
-              <div>
+            <div class="box--content">
+              <div class="box--space-between">
                 <span class="text--title">
-                  {{ $t('dappStaking.schedule') }}
+                  {{ $t('dappStaking.autoCompounding') }}
                 </span>
+                <img
+                  v-if="isDarkTheme"
+                  width="100"
+                  height="23"
+                  src="~assets/img/powered-by-oak-white.png"
+                />
+                <img v-else width="100" height="23" src="~assets/img/powered-by-oak-colored.png" />
               </div>
-              <span>{{ $t('dappStaking.compoundSchedule') }}</span>
-            </div>
-            <div class="box--inner box--pink">
               <div>
-                <span class="text--title">
-                  {{ $t('dappStaking.depositNoRefund') }}
-                </span>
+                <span>{{ $t('dappStaking.automateClaimAndStake') }}</span>
               </div>
-              <span>{{ $t('dappStaking.autoCompoundingFee') }}</span>
+              <div class="box--inner box--yellow">
+                <div>
+                  <span class="text--title">
+                    {{ $t('dappStaking.schedule') }}
+                  </span>
+                </div>
+                <span>{{ $t('dappStaking.compoundSchedule') }}</span>
+              </div>
+              <div class="box--inner box--pink">
+                <div>
+                  <span class="text--title">
+                    {{ $t('dappStaking.depositNoRefund') }}
+                  </span>
+                </div>
+                <span>{{ $t('dappStaking.autoCompoundingFee') }}</span>
+              </div>
             </div>
           </div>
           <div
-            class="box--input-field"
+            class="box--radio"
             :class="{ 'box--active': compoundMethod === 'claim' }"
             @click="setCompoundClaim"
           >
-            <div>
-              <span class="text--title">
-                {{ $t('dappStaking.claimAndRestake') }}
-              </span>
+            <div class="radio--input">
+              <input v-model="compoundMethod" type="radio" value="claim" />
             </div>
-            <span>{{ $t('dappStaking.claimYourselfAuto') }}</span>
+            <div class="box--content">
+              <div>
+                <span class="text--title">
+                  {{ $t('dappStaking.claimAndRestake') }}
+                </span>
+              </div>
+              <span>{{ $t('dappStaking.claimYourselfAuto') }}</span>
+            </div>
           </div>
           <div
-            class="box--input-field"
+            class="box--radio"
             :class="{ 'box--active': compoundMethod === 'self' }"
             @click="setCompoundSelf"
           >
-            <div>
-              <span class="text--title">
-                {{ $t('dappStaking.manageMyself') }}
-              </span>
+            <div class="radio--input">
+              <input v-model="compoundMethod" type="radio" value="self" />
             </div>
-            <span>{{ $t('dappStaking.claimYourselfManual') }}</span>
+            <div class="box--content">
+              <div>
+                <span class="text--title">
+                  {{ $t('dappStaking.manageMyself') }}
+                </span>
+              </div>
+              <span>{{ $t('dappStaking.claimYourselfManual') }}</span>
+            </div>
           </div>
           <div class="tw-text-center">
             <button class="btn btn--confirm btn-size-adjust" @click="confirm">
