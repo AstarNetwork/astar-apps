@@ -98,13 +98,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 50px;
-  padding: 0 20px;
 
   input {
     background-color: transparent;
     color: $astar-blue;
   }
+}
+
+.radio-btn {
+  width: 18px !important;
+  margin-left: 10px;
 }
 
 .text--gray {

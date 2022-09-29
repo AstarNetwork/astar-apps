@@ -9,7 +9,7 @@
             @click="setCompoundAuto"
           >
             <div class="radio--input">
-              <input v-model="compoundMethod" type="radio" value="auto" />
+              <astar-radio-btn class="radio-btn" :checked="compoundMethod === 'auto'" />
             </div>
             <div class="box--content">
               <div class="box--space-between">
@@ -51,7 +51,7 @@
             @click="setCompoundClaim"
           >
             <div class="radio--input">
-              <input v-model="compoundMethod" type="radio" value="claim" />
+              <astar-radio-btn class="radio-btn" :checked="compoundMethod === 'claim'" />
             </div>
             <div class="box--content">
               <div>
@@ -68,7 +68,7 @@
             @click="setCompoundSelf"
           >
             <div class="radio--input">
-              <input v-model="compoundMethod" type="radio" value="self" />
+              <astar-radio-btn class="radio-btn" :checked="compoundMethod === 'self'" />
             </div>
             <div class="box--content">
               <div>
