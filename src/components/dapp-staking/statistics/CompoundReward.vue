@@ -1,7 +1,7 @@
 <template>
   <div v-if="isSupported" class="widget-container">
     <div class="title">
-      {{ $t('dappStaking.autoCompound') }}
+      {{ $t('dappStaking.compound') }}
       <IconTooltip>
         {{ $t('dappStaking.autoCompoundingTooltip') }}
       </IconTooltip>
