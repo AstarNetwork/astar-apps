@@ -156,7 +156,9 @@ export default {
     apr: 'APR',
     apy: 'APY',
     ttlPendingRewards: 'Your Pending Rewards',
-    autoCompound: 'Re-stake after claiming',
+    autoCompound: 'Compound',
+    claimAndRestake: 'Claim & Re-stake',
+    change: 'Change',
     autoCompoundingTooltip:
       'By turning on the Auto compound, your rewards will re-stake after claiming.',
     view: 'View',

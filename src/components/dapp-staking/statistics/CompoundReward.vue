@@ -8,10 +8,10 @@
     </div>
     <div class="widget-content">
       <span class="text--title">
-        {{ isCompounding ? $t('dappStaking.on') : $t('dappStaking.off') }}
+        {{ $t('dappStaking.claimAndRestake') }}
       </span>
       <Button :small="true" :primary="true" class="button" @click="changeDestination">{{
-        isCompounding ? $t('dappStaking.turnOff') : $t('dappStaking.turnOn')
+        $t('dappStaking.change')
       }}</Button>
     </div>
   </div>
