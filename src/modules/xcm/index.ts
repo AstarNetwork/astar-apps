@@ -123,7 +123,7 @@ export const xcmChainObj: XcmChainObj = {
     relayChain: Chain.POLKADOT,
     img: 'https://polkadot.js.org/apps/static/acala.696aa448..svg',
     parachainId: parachainIds.ACALA,
-    endpoint: 'wss://acala-polkadot.api.onfinality.io/public-ws',
+    endpoint: 'wss://acala-rpc.dwellir.com',
     subscan: 'https://acala.subscan.io',
     isAstarNativeToken: true,
   },
