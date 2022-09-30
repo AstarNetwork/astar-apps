@@ -25,5 +25,8 @@ export default defineComponent({});
     display: flex;
     justify-content: center;
   }
+  @media (min-width: $lg) {
+    margin-top: 50px;
+  }
 }
 </style>
