@@ -84,7 +84,7 @@ import {
   useTransferRouter,
 } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
-import { removeEvmName, xcmToken } from 'src/modules/xcm';
+import { removeEvmName } from 'src/modules/xcm';
 import { Chain, XcmChain } from 'src/v2/models/XcmModels';
 import { useStore } from 'src/store';
 import { EvmAssets } from 'src/store/assets/state';
@@ -140,13 +140,10 @@ export default defineComponent({
     const isDisabledXcm = computed<boolean>(() => {
       const isEvmNativeToken =
         isH160.value && tokenSymbol.value === nativeTokenSymbol.value.toLowerCase();
-      const acalaTokens = xcmToken[currentNetworkIdx.value]
-        .filter((it) => it.originChain === Chain.ACALA)
-        .map((it) => it.symbol.toLowerCase());
-      const isAcalaToken = acalaTokens.includes(String(token.value?.metadata.symbol.toLowerCase()));
       const isXcmCompatible = token.value?.isXcmCompatible;
-      return isShibuya.value || isAcalaToken || isEvmNativeToken || !isXcmCompatible;
+      return isShibuya.value || isEvmNativeToken || !isXcmCompatible;
     });
+
     const isTransferNativeToken = computed<boolean>(() => {
       return tokenSymbol.value === nativeTokenSymbol.value.toLowerCase();
     });
