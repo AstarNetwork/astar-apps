@@ -107,7 +107,7 @@ export function useTransferRouter() {
 
   const defaultXcmBridgeForNative = computed<string>(() => {
     return currentNetworkIdx.value === endpointKey.ASTAR
-      ? Chain.MOONBEAM.toLowerCase() // Todo: change to Acala after the portal enable the XCM transfer with Acala
+      ? Chain.ACALA.toLowerCase()
       : Chain.KARURA.toLowerCase();
   });
 
@@ -353,8 +353,7 @@ export function useTransferRouter() {
     const relayChainId =
       currentNetworkIdx.value === endpointKey.ASTAR ? Chain.POLKADOT : Chain.KUSAMA;
     const selectableChains = xcmChains.filter((it) => {
-      // Memo: temporary suspend acala tokens
-      return it.relayChain === relayChainId && it.name !== Chain.ACALA;
+      return it.relayChain === relayChainId;
     });
     selectableChains.sort((a, b) => a.name.localeCompare(b.name));
     return selectableChains;
