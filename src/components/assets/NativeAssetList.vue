@@ -25,7 +25,7 @@
             <div class="column--balance">
               <div class="column__box">
                 <div v-if="!isSkeleton" class="text--accent">
-                  <span>{{ $n(truncate(bal)) }} {{ nativeTokenSymbol }}</span>
+                  <TokenBalance :balance="bal" :symbol="nativeTokenSymbol" />
                 </div>
                 <div v-else class="skeleton--right">
                   <q-skeleton animation="fade" class="skeleton--md" />
@@ -53,9 +53,9 @@
           <div class="row__right">
             <div class="column--balance">
               <div v-if="!isSkeleton" class="column__box">
-                <span class="text--value"
-                  >{{ $n(truncate(transferableBalance)) }} {{ nativeTokenSymbol }}</span
-                >
+                <span class="text--value">
+                  <TokenBalance :balance="transferableBalance" :symbol="nativeTokenSymbol" />
+                </span>
               </div>
               <div v-else class="column__box">
                 <div class="skeleton--right">
@@ -80,9 +80,9 @@
           <div class="row__right">
             <div class="column--balance">
               <div v-if="!isSkeleton" class="column__box">
-                <span class="text--value"
-                  >{{ $n(truncate(numEvmDeposit)) }} {{ nativeTokenSymbol }}</span
-                >
+                <span class="text--value">
+                  <TokenBalance :balance="numEvmDeposit" :symbol="nativeTokenSymbol" />
+                </span>
               </div>
               <div v-else class="column__box">
                 <div class="skeleton--right">
@@ -105,9 +105,9 @@
           <div class="row__right">
             <div class="column--balance">
               <div v-if="!isSkeleton" class="column__box">
-                <span class="text--value"
-                  >{{ $n(truncate(vestingTtl)) }} {{ nativeTokenSymbol }}</span
-                >
+                <span class="text--value">
+                  <TokenBalance :balance="vestingTtl" :symbol="nativeTokenSymbol" />
+                </span>
               </div>
               <div v-else class="column__box">
                 <div class="skeleton--right">
@@ -130,9 +130,9 @@
           <div class="row__right">
             <div class="column--balance">
               <div v-if="!isSkeleton" class="column__box">
-                <span class="text--value"
-                  >{{ $n(truncate(lockInDappStaking)) }} {{ nativeTokenSymbol }}</span
-                >
+                <span class="text--value">
+                  <TokenBalance :balance="lockInDappStaking" :symbol="nativeTokenSymbol" />
+                </span>
               </div>
               <div v-else class="column__box">
                 <div class="skeleton--right">
@@ -168,7 +168,7 @@
 import { u8aToString } from '@polkadot/util';
 import { ethers } from 'ethers';
 import { useBalance, useEvmDeposit, useNetworkInfo, usePrice } from 'src/hooks';
-import { checkIsNullOrUndefined, truncate } from 'src/hooks/helper/common';
+import { checkIsNullOrUndefined } from 'src/hooks/helper/common';
 import { getTokenImage } from 'src/modules/token';
 import { generateAstarNativeTokenObject } from 'src/modules/xcm/tokens';
 import { useStore } from 'src/store';
@@ -178,12 +178,14 @@ import ModalEvmWithdraw from 'src/components/assets/modals/ModalEvmWithdraw.vue'
 import ModalFaucet from 'src/components/assets/modals/ModalFaucet.vue';
 import ModalVesting from 'src/components/assets/modals/ModalVesting.vue';
 import { Path } from 'src/router';
+import TokenBalance from 'src/components/common/TokenBalance.vue';
 
 export default defineComponent({
   components: {
     ModalFaucet,
     ModalEvmWithdraw,
     ModalVesting,
+    TokenBalance,
   },
   setup() {
     const isModalTransfer = ref<boolean>(false);
@@ -295,7 +297,6 @@ export default defineComponent({
       handleModalVesting,
       handleModalFaucet,
       handleModalEvmWithdraw,
-      truncate,
     };
   },
 });

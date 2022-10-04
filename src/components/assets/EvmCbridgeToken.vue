@@ -21,7 +21,7 @@
           <div class="column column--balance">
             <div class="column__box">
               <div class="text--accent">
-                <span>{{ $n(truncate(token.userBalance)) }} {{ token.symbol }}</span>
+                <TokenBalance :balance="token.userBalance" :symbol="token.symbol" />
               </div>
               <div class="text--label">
                 <span>{{ $n(Number(token.userBalanceUsd)) }} {{ $t('usd') }}</span>
@@ -88,7 +88,6 @@
 <script lang="ts">
 import { cbridgeAppLink } from 'src/c-bridge';
 import { SupportWallet } from 'src/config/wallets';
-import { truncate } from 'src/hooks/helper/common';
 import { addToEvmProvider, getEvmProvider } from 'src/hooks/helper/wallet';
 import { Erc20Token, getErc20Explorer, getTokenImage } from 'src/modules/token';
 import { useStore } from 'src/store';
@@ -96,10 +95,12 @@ import { computed, defineComponent, PropType } from 'vue';
 import { buildTransferPageLink } from 'src/router/routes';
 import { useNetworkInfo } from 'src/hooks';
 import Jazzicon from 'vue3-jazzicon/src/components';
+import TokenBalance from 'src/components/common/TokenBalance.vue';
 
 export default defineComponent({
   components: {
     [Jazzicon.name]: Jazzicon,
+    TokenBalance,
   },
   props: {
     token: {
@@ -142,7 +143,6 @@ export default defineComponent({
       buildTransferPageLink,
       formatTokenName,
       addToEvmProvider,
-      truncate,
     };
   },
 });

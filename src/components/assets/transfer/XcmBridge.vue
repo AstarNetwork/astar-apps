@@ -79,12 +79,11 @@
             <div />
             <div class="box__available">
               <span class="text--available">
-                {{
-                  $t('assets.modals.balance', {
-                    amount: $n(truncate(fromAddressBalance)),
-                    token: token.metadata.symbol,
-                  })
-                }}
+                <TokenBalance
+                  text="assets.modals.balance"
+                  :balance="fromAddressBalance"
+                  :symbol="token.metadata.symbol"
+                />
               </span>
             </div>
           </div>
@@ -200,12 +199,15 @@ import { computed, defineComponent, PropType, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ModalLoading from '/src/components/common/ModalLoading.vue';
 import { isValidEvmAddress } from 'src/config/web3';
+import TokenBalance from 'src/components/common/TokenBalance.vue';
+
 export default defineComponent({
   components: {
     SimpleInput,
     InputSelectChain,
     ModalLoading,
     SelectEvmWallet,
+    TokenBalance,
   },
   props: {
     setRightUi: {

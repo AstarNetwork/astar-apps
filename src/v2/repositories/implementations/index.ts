@@ -4,6 +4,7 @@ export * from './SystemRepository';
 export * from './EthCallRepository';
 export * from './XcmRepository';
 export * from './xcm/AcalaXcmRepository';
+export * from './xcm/InterlayXcmRepository';
 export * from './xcm/AstarXcmRepository';
 export * from './xcm/StatemintXcmRepository';
 export * from './xcm/MoonbeamXcmRepository';
