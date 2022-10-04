@@ -13,7 +13,7 @@ interface Account extends Struct {
   balance: string;
 }
 /**
- * Used to transfer assets from Acala/Karura
+ * Used to transfer assets from Statemint/Statemine
  */
 export class StatemintXcmRepository extends XcmRepository {
   constructor() {

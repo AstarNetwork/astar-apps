@@ -80,31 +80,6 @@ export function useTransferRouter() {
     });
   };
 
-  // Memo: configure the token data since astar native token is not supported on the Relaychain
-  const redirectForRelaychain = (): void => {
-    if (!isTransferPage.value || !xcmOpponentChain.value) return;
-    try {
-      const isSupportAstarNativeToken = checkIsSupportAstarNativeToken(xcmOpponentChain.value);
-      if (isSupportAstarNativeToken || mode.value !== 'xcm') return;
-
-      const relayChainToken = xcmToken[currentNetworkIdx.value]
-        .find((it) => it.originChain === xcmOpponentChain.value)
-        ?.symbol.toLowerCase();
-      if (!relayChainToken) return;
-      if (tokenSymbol.value !== relayChainToken) {
-        router.replace({
-          path: `/${network.value}/assets/transfer`,
-          query: {
-            ...route.query,
-            token: relayChainToken?.toLowerCase(),
-          },
-        });
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const defaultXcmBridgeForNative = computed<string>(() => {
     return currentNetworkIdx.value === endpointKey.ASTAR
       ? Chain.MOONBEAM.toLowerCase() // Todo: change to Acala after the portal enable the XCM transfer with Acala
@@ -371,7 +346,6 @@ export function useTransferRouter() {
   };
 
   watchEffect(handleDefaultConfig);
-  watchEffect(redirectForRelaychain);
   watchEffect(monitorProhibitedPair);
   watch([currentAccount, isH160, xcmAssets], handleIsFoundToken, { immediate: false });
   watchEffect(setNativeTokenBalance);

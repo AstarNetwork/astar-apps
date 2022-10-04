@@ -12,6 +12,8 @@ export enum Chain {
   MOONBEAM = 'Moonbeam',
   STATEMINE = 'Statemine',
   STATEMINT = 'Statemint',
+  KINTSUGI = 'Kintsugi',
+  INTERLAY = 'Interlay',
 }
 
 export enum parachainIds {
@@ -23,6 +25,8 @@ export enum parachainIds {
   MOONBEAM = 2004,
   STATEMINE = 1000,
   STATEMINT = 1000,
+  KINTSUGI = 2092,
+  INTERLAY = 2032,
 }
 
 export interface XcmChain {
