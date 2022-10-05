@@ -295,7 +295,7 @@ export default defineComponent({
   border-color: $gray-5;
 }
 
-//readonly
+// readonly
 .q-field--outlined.q-field--readonly .q-field__control:before {
   border-style: solid;
   border-color: $gray-1;
@@ -319,51 +319,14 @@ export default defineComponent({
   border-color: $gray-5;
 }
 
-//label
+// label
 .q-field--float .q-field__label {
   font-size: 18px;
 }
+
+// hide validation error icon
+.q-field__append.q-field__marginal.row.no-wrap.items-center.q-anchor--skip {
+  display: none;
+}
 </style>
 
-<!-- Override quasar colors -->
-<!-- <style lang="sass">
-.q-field
-  &--standout
-    &.q-field--dark
-      .q-field__control
-        background: $gray-5-selected-dark
-        &:before
-          background: $gray-5-selected-dark
-      &.q-field--highlighted
-        .q-field__control
-          background: $gray-5-selected-dark
-        .q-field__native
-          color: $gray-1
-      .q-field__control
-        background: $gray-5-selected-dark
-    .q-field__control
-      background: $gray-1
-      &:before
-        background: $gray-1
-    &.q-field--highlighted
-      .q-field__control
-        background: $gray-1
-      .q-field__native
-        color: $gray-6
-    .q-field__control
-      background: $gray-1
-  &--highlighted
-    .q-field__label
-      color: rgba(0, 0, 0, 0.6)
-  &__label
-    color: $gray-4
-  &--highlighted
-    .q-field__label
-      color: $gray-4
-  &--dark
-    &__label
-      color: $gray-3
-    &--highlighted
-      .q-field__label
-        color: $gray-3
-</style> -->
