@@ -82,11 +82,10 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive, ref, watch } from 'vue';
+import { defineComponent, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 import { Button } from '@astar-network/astar-ui';
-import { useStore } from 'src/store';
 import { Category, Developer, NewDappItem } from 'src/store/dapp-staking/state';
 import ImageCard from 'src/components/dapp-staking/register/ImageCard.vue';
 import AddItemCard from 'src/components/dapp-staking/register/AddItemCard.vue';
@@ -127,9 +126,6 @@ export default defineComponent({
     });
 
     const { t } = useI18n();
-    const store = useStore();
-    const theme = computed<string>(() => store.getters['general/theme']);
-    const isDark = ref<boolean>(theme.value.toLowerCase() === 'dark');
     const data = reactive<NewDappItem>({ tags: [] } as unknown as NewDappItem);
     const isModalAddDeveloper = ref<boolean>(false);
     const currentDeveloper = ref<Developer>(initDeveloper());
@@ -204,13 +200,8 @@ export default defineComponent({
       });
     };
 
-    watch([theme], (val) => {
-      isDark.value = val[0].toLowerCase() === 'dark';
-    });
-
     return {
       data,
-      isDark,
       isModalAddDeveloper,
       currentDeveloper,
       possibleCategories,
