@@ -3,7 +3,7 @@
     <div v-for="(t, index) in items" :key="index" class="card" @mouseover="hoverIndex = index">
       <div class="wrapper--card">
         <div class="wrapper--img">
-          <q-img :src="t.img" class="img--dapp" fit="contain" />
+          <q-img :src="t.img" class="img--dapp" fit="contain" no-spinner />
         </div>
         <div class="panel--right">
           <div class="txt--title">{{ t.title }}</div>

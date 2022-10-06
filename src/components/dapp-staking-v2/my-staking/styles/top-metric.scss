@@ -94,6 +94,9 @@
         display: block;
       }
     }
+    .loading {
+      width: 150px;
+    }
 
     @media (max-width: $lg) {
       margin-top: 16px;

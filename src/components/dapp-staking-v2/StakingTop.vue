@@ -38,10 +38,8 @@ import { useStore } from 'src/store';
 import TopMetric from 'src/components/dapp-staking-v2/my-staking/TopMetric.vue';
 import MyStaking from 'src/components/dapp-staking-v2/my-staking/MyStaking.vue';
 import DappList from 'src/components/dapp-staking-v2/my-staking/DappList.vue';
-import { computed, defineComponent, onMounted } from 'vue';
+import { computed, defineComponent } from 'vue';
 import AdsArea from './my-staking/AdsArea.vue';
-import AOS from 'aos';
-import 'aos/dist/aos.css';
 
 export default defineComponent({
   components: {
@@ -59,10 +57,6 @@ export default defineComponent({
       isLoading,
     };
   },
-});
-
-onMounted(() => {
-  AOS.init();
 });
 </script>
 
