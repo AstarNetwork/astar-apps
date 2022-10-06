@@ -138,7 +138,7 @@ export default defineComponent({
     });
 
     // make a placeholder for add logo
-    data.icon = new File([], 'Add a logo image'); // TODO translate
+    data.icon = new File([], t('dappStaking.modals.addLogo'));
     data.developers = [];
     data.communities = [];
     data.platforms = [];
@@ -149,7 +149,7 @@ export default defineComponent({
     data.address = '0x00000....';
 
     data.images = [];
-    data.images.push(new File([], 'Add an image')); // Add image placeholder
+    data.images.push(new File([], t('dappStaking.modals.addImage'))); // Add image placeholder
     data.imagesContent = [];
     data.imagesContent.push('');
 
@@ -180,7 +180,8 @@ export default defineComponent({
         data.developers.length > 1 ? '' : t('dappStaking.modals.builder.error.developersRequired');
       errors.value.community =
         data.communities.length > 0 ? '' : t('dappStaking.modals.community.communityRequired');
-      errors.value.platform = data.platforms.length > 0 ? '' : 'Platform missing';
+      errors.value.platform =
+        data.platforms.length > 0 ? '' : t('dappStaking.modals.platformRequired');
       console.log(errors.value);
 
       for (const [key, value] of Object.entries(errors.value)) {
@@ -320,4 +321,3 @@ export default defineComponent({
   display: none;
 }
 </style>
-

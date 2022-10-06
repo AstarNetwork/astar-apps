@@ -242,6 +242,8 @@ export default {
       markdown: 'Markdown',
       preview: 'Preview',
       addAccount: 'Add an account',
+      addLogo: 'Add a logo image',
+      addImage: 'Add an image',
       images: 'Images',
       imagesRequired: 'At least 4 images are required.',
       descriptionRequired: 'Tell the world something about your dApp.',
@@ -257,6 +259,7 @@ export default {
       projectUrl: 'Project URL',
       dappImageRequired: 'Project logo is required.',
       projectLogo: 'Project logo',
+      platformIsrequired: 'At least one platform is required.',
     },
     toast: {
       staked: 'You staked {amount} on {dapp}',
