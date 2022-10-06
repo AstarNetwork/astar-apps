@@ -65,10 +65,16 @@ export class DappStakingService implements IDappStakingService {
    * Gets staker info (total staked, stakers count) for a given contracts.
    * @param contractAddresses List of contract addresses to provide info for.
    */
-  public async getStakerInfo(contractAddresses: string[]): Promise<StakerInfo[]> {
+  public async getStakerInfo(
+    contractAddresses: string[],
+    walletAddress: string
+  ): Promise<StakerInfo[]> {
     Guard.ThrowIfUndefined('contractAddresses', contractAddresses);
 
-    const stakerInfos = await this.dappStakingRepository.getStakerInfo(contractAddresses);
+    const stakerInfos = await this.dappStakingRepository.getStakerInfo(
+      contractAddresses,
+      walletAddress
+    );
     const metadata = await this.metadataRepository.getChainMetadata();
 
     return stakerInfos.map((x) => {
@@ -77,9 +83,12 @@ export class DappStakingService implements IDappStakingService {
     });
   }
 
-  public async getCombinedInfo(): Promise<DappCombinedInfo[]> {
+  public async getCombinedInfo(currentAccount: string): Promise<DappCombinedInfo[]> {
     const dapps = await this.dappStakingRepository.getRegisteredDapps();
-    const stakerInfo = await this.getStakerInfo(dapps.map((x) => x.address));
+    const stakerInfo = await this.getStakerInfo(
+      dapps.map((x) => x.address),
+      currentAccount
+    );
 
     return dapps.map((x, index) => {
       return new DappCombinedInfo(x, stakerInfo[index]);

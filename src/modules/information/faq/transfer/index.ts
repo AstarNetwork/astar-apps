@@ -1,4 +1,4 @@
-import { Faq } from '../index';
+import { Faq } from 'src/modules/information';
 
 export const faqH160Transfer: Faq[] = [
   {

@@ -1,9 +1,5 @@
 <template>
-  <div class="wrapper--dapp-staking">
-    <div class="container--dapp-staking">
-      <router-view />
-    </div>
-  </div>
+  <router-view />
 </template>
 
 <script lang="ts">

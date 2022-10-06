@@ -15,12 +15,20 @@
     <div>
       <div>{{ dapp.dapp?.name }}</div>
     </div>
+
+    <!-- Todo: fix the styling later-->
+    <div>
+      <router-link :to="buildStakePageLink(dapp.dapp.address)">
+        <button class="btn btn--sm">Stake Now</button>
+      </router-link>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType, toRefs } from 'vue';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
+import { networkParam, Path } from 'src/router/routes';
 
 export default defineComponent({
   props: {
@@ -30,8 +38,13 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const buildStakePageLink = (address: string): string => {
+      const base = networkParam + Path.DappStaking + Path.Stake;
+      return `${base}?dapp=${address.toLowerCase()}`;
+    };
     return {
       ...toRefs(props),
+      buildStakePageLink,
     };
   },
 });
