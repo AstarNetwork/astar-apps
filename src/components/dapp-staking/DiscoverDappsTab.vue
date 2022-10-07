@@ -227,6 +227,7 @@ export default defineComponent({
 .row--tab {
   display: flex;
   width: 100%;
+  margin-top: 24px;
   margin-bottom: 50px;
   gap: 32px;
   justify-content: center;
