@@ -13,9 +13,9 @@ export {
   toSS58Address,
   sendNativeTokenTransaction,
   fetchErc20TokenInfo,
-} from './utils';
+} from 'src/config/web3/utils';
 
-export { contractInstance, Staking } from './contracts';
+export { contractInstance, Staking } from 'src/config/web3/contracts';
 
 export type TNetworkId = endpointKey.SHIDEN | endpointKey.SHIBUYA | endpointKey.ASTAR;
 
@@ -32,6 +32,8 @@ export enum EVM {
   ETHEREUM_MAINNET = 1,
   BSC = 56,
   POLYGON = 137,
+  MOONRIVER = 1285,
+  MOONBEAM = 1284,
 }
 
 export const chainName = {
@@ -43,37 +45,49 @@ export const chainName = {
   [EVM.ASTAR_MAINNET]: 'Astar Network Mainnet',
   [EVM.BSC]: 'Binance Smart Chain',
   [EVM.POLYGON]: 'Polygon Mainnet',
+  [EVM.MOONRIVER]: 'Moonriver Mainnet',
+  [EVM.MOONBEAM]: 'Moonbeam Mainnet',
 };
 
 export const nativeCurrency = {
   [EVM.ETHEREUM_MAINNET]: {
     name: 'ETH',
-    symbol: 'eth',
+    symbol: 'ETH',
     decimals: 18,
   },
   [EVM.SHIDEN_MAINNET]: {
     name: 'SDN',
-    symbol: 'sdn',
+    symbol: 'SDN',
     decimals: 18,
   },
   [EVM.SHIBUYA_TESTNET]: {
     name: 'SBY',
-    symbol: 'sby',
+    symbol: 'SBY',
     decimals: 18,
   },
   [EVM.ASTAR_MAINNET]: {
     name: 'ASTR',
-    symbol: 'astr',
+    symbol: 'ASTR',
     decimals: 18,
   },
   [EVM.BSC]: {
     name: 'BNB',
-    symbol: 'bnb',
+    symbol: 'BNB',
     decimals: 18,
   },
   [EVM.POLYGON]: {
     name: 'MATIC',
-    symbol: 'matic',
+    symbol: 'MATIC',
+    decimals: 18,
+  },
+  [EVM.MOONRIVER]: {
+    name: 'MOVR',
+    symbol: 'MOVR',
+    decimals: 18,
+  },
+  [EVM.MOONBEAM]: {
+    name: 'GLMR',
+    symbol: 'GLMR',
     decimals: 18,
   },
 };
@@ -85,6 +99,8 @@ export const rpcUrls = {
   [EVM.ASTAR_MAINNET]: [chain.astar?.evmEndpoints[0]],
   [EVM.BSC]: ['https://bsc-dataseed.binance.org'],
   [EVM.POLYGON]: ['https://rpc-mainnet.maticvigil.com'],
+  [EVM.MOONRIVER]: ['https://rpc.api.moonriver.moonbeam.network'],
+  [EVM.MOONBEAM]: ['https://rpc.api.moonbeam.network'],
 };
 
 export const blockExplorerUrls = {
@@ -94,6 +110,8 @@ export const blockExplorerUrls = {
   [EVM.ASTAR_MAINNET]: [chain.astar?.blockscout],
   [EVM.BSC]: ['https://bscscan.com'],
   [EVM.POLYGON]: ['https://explorer.matic.network'],
+  [EVM.MOONRIVER]: ['https://moonriver.moonscan.io'],
+  [EVM.MOONBEAM]: ['https://moonbeam.moonscan.io/'],
 };
 
 export const CHAIN_INFORMATION = {

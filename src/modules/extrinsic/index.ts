@@ -1,1 +1,1 @@
-export { hasExtrinsicFailedEvent, showError } from './utils';
+export { hasExtrinsicFailedEvent, showError } from 'src/modules/extrinsic/utils';

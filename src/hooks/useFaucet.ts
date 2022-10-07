@@ -1,10 +1,9 @@
 import axios from 'axios';
+import { DateTime } from 'luxon';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
-import { computed, ref, watch, onUnmounted, watchEffect, Ref } from 'vue';
-import { getProviderIndex } from './../config/chainEndpoints';
-import { useAccount } from './useAccount';
-import { DateTime } from 'luxon';
+import { onUnmounted, ref, Ref, watch, watchEffect } from 'vue';
+import { useAccount, useNetworkInfo } from 'src/hooks';
 
 interface Timestamps {
   lastRequestAt: number;
@@ -40,10 +39,7 @@ export function useFaucet(isModalFaucet?: Ref<boolean>) {
 
   const { currentAccount } = useAccount();
   const store = useStore();
-  const chainInfo = computed(() => {
-    const chainInfo = store.getters['general/chainInfo'];
-    return chainInfo ? chainInfo : undefined;
-  });
+  const { currentNetworkIdx } = useNetworkInfo();
 
   const getFaucetInfo = async ({
     account,
@@ -85,8 +81,7 @@ export function useFaucet(isModalFaucet?: Ref<boolean>) {
 
     try {
       store.commit('general/setLoading', true);
-      const currentNetworkIdx = getProviderIndex(chainInfo.value.chain);
-      const endpoint = providerEndpoints[currentNetworkIdx].faucetEndpoint;
+      const endpoint = providerEndpoints[currentNetworkIdx.value].faucetEndpoint;
       if (!endpoint) {
         throw Error('Cannot find the request endpoint');
       }
@@ -141,13 +136,12 @@ export function useFaucet(isModalFaucet?: Ref<boolean>) {
   });
 
   watch(
-    [hash, currentAccount, chainInfo, isModalFaucet],
+    [hash, currentAccount, currentNetworkIdx, isModalFaucet],
     async () => {
       const currentAccountRef = currentAccount.value;
       const isModalFaucetRef = isModalFaucet && isModalFaucet.value;
-      if (!currentAccountRef || !chainInfo.value || !isModalFaucetRef) return;
-      const currentNetworkIdx = getProviderIndex(chainInfo.value.chain);
-      const endpoint = providerEndpoints[currentNetworkIdx].faucetEndpoint;
+      if (!currentAccountRef || !isModalFaucetRef) return;
+      const endpoint = providerEndpoints[currentNetworkIdx.value].faucetEndpoint;
 
       const data = await getFaucetInfo({ account: currentAccountRef, endpoint });
       if (!data) return;

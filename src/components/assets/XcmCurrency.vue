@@ -23,7 +23,9 @@
           <div class="column column--balance">
             <div class="column__box">
               <div class="text--accent">
-                <span> {{ $n(truncate(token.userBalance)) }} {{ token.metadata.symbol }} </span>
+                <span>
+                  <TokenBalance :balance="token.userBalance" :symbol="token.metadata.symbol" />
+                </span>
               </div>
               <div class="text--label">
                 <span>{{ $n(Number(token.userBalanceUsd)) }} {{ $t('usd') }}</span>
@@ -31,31 +33,11 @@
             </div>
           </div>
           <div class="column--asset-buttons column--buttons--native">
-            <button
-              class="btn btn--sm"
-              @click="
-                handleModalXcmTransfer({
-                  isOpen: true,
-                  currency: token,
-                })
-              "
-            >
-              {{ $t('assets.transfer') }}
-            </button>
-            <div>
-              <button
-                v-if="token.isXcmCompatible"
-                class="btn btn--sm"
-                @click="
-                  handleModalXcmBridge({
-                    isOpen: true,
-                    currency: token,
-                  })
-                "
-              >
-                {{ $t('assets.xcm') }}
+            <router-link :to="buildTransferPageLink(token.metadata.symbol)">
+              <button class="btn btn--sm">
+                {{ $t('assets.transfer') }}
               </button>
-            </div>
+            </router-link>
             <div class="screen--xl">
               <a
                 class="box--explorer"
@@ -80,39 +62,25 @@
   </div>
 </template>
 <script lang="ts">
-import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
-import { truncate } from 'src/hooks/helper/common';
-import { ChainAsset } from 'src/hooks/xcm/useXcmAssets';
+import { endpointKey } from 'src/config/chainEndpoints';
+import { useNetworkInfo } from 'src/hooks';
 import { getXcmToken } from 'src/modules/xcm';
-import { useStore } from 'src/store';
+import { buildTransferPageLink } from 'src/router/routes';
+import { Asset } from 'src/v2/models';
 import { computed, defineComponent, PropType } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
-
+import TokenBalance from 'src/components/common/TokenBalance.vue';
 export default defineComponent({
-  components: { [Jazzicon.name]: Jazzicon },
+  components: { [Jazzicon.name]: Jazzicon, TokenBalance },
   props: {
     token: {
-      type: Object as PropType<ChainAsset>,
-      required: true,
-    },
-    handleModalXcmTransfer: {
-      type: Function,
-      required: true,
-    },
-    handleModalXcmBridge: {
-      type: Function,
+      type: Object as PropType<Asset>,
       required: true,
     },
   },
   setup(props) {
-    const t = computed(() => props.token);
-    const store = useStore();
-
-    const currentNetworkIdx = computed(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      const chain = chainInfo ? chainInfo.chain : '';
-      return getProviderIndex(chain);
-    });
+    const t = computed<Asset>(() => props.token);
+    const { currentNetworkIdx } = useNetworkInfo();
 
     const isDisplayToken = computed<boolean>(() => {
       const token = getXcmToken({
@@ -123,19 +91,16 @@ export default defineComponent({
       return isDisplay || false;
     });
 
-    const explorerLink = computed(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      const chain = chainInfo ? chainInfo.chain : '';
-      const currentNetworkIdx = getProviderIndex(chain);
+    const explorerLink = computed<string>(() => {
       const astarBalanceUrl = 'https://astar.subscan.io/assets/' + t.value.id;
       const shidenBalanceUrl = 'https://shiden.subscan.io/assets/' + t.value.id;
-      return currentNetworkIdx === endpointKey.ASTAR ? astarBalanceUrl : shidenBalanceUrl;
+      return currentNetworkIdx.value === endpointKey.ASTAR ? astarBalanceUrl : shidenBalanceUrl;
     });
 
     return {
       isDisplayToken,
       explorerLink,
-      truncate,
+      buildTransferPageLink,
     };
   },
 });

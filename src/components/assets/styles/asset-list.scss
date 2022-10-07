@@ -213,12 +213,6 @@
   }
 }
 
-.column--two-buttons {
-  @media (min-width: $md) {
-    grid-template-columns: auto auto;
-  }
-}
-
 .column__icons {
   display: flex;
   column-gap: 16px;

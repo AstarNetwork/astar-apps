@@ -70,12 +70,14 @@
     </template>
 
     <Teleport to="#app--main">
-      <ModalRegisterDapp
-        v-if="showRegisterDappModal"
-        v-model:is-open="showRegisterDappModal"
-        :show-close-button="false"
-      />
-      <ModalMaintenance :show="isPalletDisabled" />
+      <div :class="!isLoading && 'highest-z-index'">
+        <ModalRegisterDapp
+          v-if="showRegisterDappModal"
+          v-model:is-open="showRegisterDappModal"
+          :show-close-button="false"
+        />
+        <ModalMaintenance :show="isPalletDisabled" />
+      </div>
     </Teleport>
   </div>
 </template>
@@ -87,8 +89,14 @@ import ModalRegisterDapp from 'components/dapp-staking/modals/ModalRegisterDapp.
 import { useMeta } from 'quasar';
 import Dapp from 'src/components/dapp-staking/Dapp.vue';
 import UserRewards from 'src/components/dapp-staking/UserRewards.vue';
-import { useAccount, useBalance, useCurrentEra, useStakerInfo, useStakingList } from 'src/hooks';
-import { formatUnitAmount } from 'src/hooks/helper/plasmUtils';
+import {
+  useAccount,
+  useBalance,
+  useCurrentEra,
+  useNetworkInfo,
+  useStakerInfo,
+  useStakingList,
+} from 'src/hooks';
 import { useStore } from 'src/store';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
 import { DappItem } from 'src/store/dapp-staking/state';
@@ -97,6 +105,7 @@ import APR from './statistics/APR.vue';
 import DappsCount from './statistics/DappsCount.vue';
 import Era from './statistics/Era.vue';
 import TVL from './statistics/TVL.vue';
+import { ethers } from 'ethers';
 import AlgemPanel from './AlgemPanel.vue';
 
 export default defineComponent({
@@ -115,18 +124,21 @@ export default defineComponent({
   setup() {
     useMeta({ title: 'Discover dApps' });
     const store = useStore();
+    const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const { progress, blocksUntilNextEra, era } = useCurrentEra();
     const { currentAccount } = useAccount();
     const { accountData } = useBalance(currentAccount);
     const { stakeInfos } = useStakerInfo();
     const { dapps, stakingList } = useStakingList();
+    const { nativeTokenSymbol } = useNetworkInfo();
 
     const maxNumberOfStakersPerContract = computed(
       () => store.getters['dapps/getMaxNumberOfStakersPerContract']
     );
-    const minimumStakingAmount = computed(() => {
+
+    const minimumStakingAmount = computed<string>(() => {
       const amount = store.getters['dapps/getMinimumStakingAmount'];
-      return formatUnitAmount(amount);
+      return Number(ethers.utils.formatEther(amount)).toString() + ' ' + nativeTokenSymbol.value;
     });
 
     const showRegisterDappModal = ref<boolean>(false);
@@ -153,6 +165,7 @@ export default defineComponent({
       isPalletDisabled,
       stakeInfos,
       stakingList,
+      isLoading,
     };
   },
 });
@@ -171,8 +184,12 @@ export default defineComponent({
   justify-content: center;
   width: 100%;
   margin-bottom: 24px;
+  padding-top: 20px;
   @media (min-width: $sm) {
     margin-bottom: 0px;
+  }
+  @media (min-width: $lg) {
+    padding-top: 0;
   }
 }
 

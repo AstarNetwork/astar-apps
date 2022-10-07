@@ -20,6 +20,21 @@
           </div>
         </template>
       </div>
+      <div v-else class="tw-mb-4">
+        <div class="tw-flex tw-flex-row" style="opacity: 0">
+          <div class="tw-w-20">{{ $t('dappStaking.yourStake') }}</div>
+        </div>
+        <div>
+          <div class="tw-flex tw-flex-row">
+            <div class="tw-w-20">{{ $t('dappStaking.totalStake') }}</div>
+            <q-skeleton animation="fade" class="skeleton--md" />
+          </div>
+          <div class="tw-mt-1 tw-flex tw-flex-row">
+            <div class="tw-w-20">{{ $t('dappStaking.stakersCount') }}</div>
+            <q-skeleton animation="fade" class="skeleton--md" />
+          </div>
+        </div>
+      </div>
 
       <div v-if="!stakeInfo?.isRegistered && stakeInfo?.stakersCount > 0">
         <div>
@@ -40,14 +55,19 @@
               {{ $t('dappStaking.add') }}
             </Button>
           </div>
-          <Button
-            v-else
-            :small="true"
-            :disabled="isMaxStaker || isH160 || !currentAddress"
-            @click="showStakeModal"
-          >
-            {{ $t('dappStaking.stake') }}
-          </Button>
+          <div v-else>
+            <Button v-if="!currentAddress" :small="true" @click="handleConnectWallet">
+              {{ $t('wallet.connectWallet') }}
+            </Button>
+            <Button
+              v-else
+              :small="true"
+              :disabled="isMaxStaker || isH160 || !currentAddress"
+              @click="showStakeModal"
+            >
+              {{ $t('dappStaking.stake') }}
+            </Button>
+          </div>
         </div>
 
         <Button
@@ -92,7 +112,7 @@ import { useChainMetadata, useCustomSignature, useGasPrice, useGetMinStaking } f
 import { TxType } from 'src/hooks/custom-signature/message';
 import * as plasmUtils from 'src/hooks/helper/plasmUtils';
 import { signAndSend } from 'src/hooks/helper/wallet';
-import { getAmount, StakeModel } from 'src/hooks/store';
+import { StakeModel } from 'src/hooks/store';
 import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
 import { StakingData } from 'src/modules/dapp-staking';
 import { useStore } from 'src/store';
@@ -102,6 +122,7 @@ import { useI18n } from 'vue-i18n';
 import './stake-panel.scss';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
+import { WalletModalOption } from 'src/config/wallets';
 
 export default defineComponent({
   components: {
@@ -195,7 +216,7 @@ export default defineComponent({
     });
 
     const stake = async (stakeData: StakeModel): Promise<void> => {
-      const amount = getAmount(stakeData.amount, stakeData.unit);
+      const amount = plasmUtils.parseTo18Decimals(stakeData.amount);
       const unit = stakeData.unit;
       try {
         const stakeAmount = plasmUtils.balanceFormatter(amount);
@@ -250,8 +271,9 @@ export default defineComponent({
     };
 
     const unstake = async (stakeData: StakeModel): Promise<void> => {
-      const amount = getAmount(stakeData.amount, stakeData.unit);
-      const unstakeAmount = plasmUtils.balanceFormatter(amount);
+      const amount = plasmUtils.parseTo18Decimals(stakeData.amount);
+      const amountActual = plasmUtils.parseTo18Decimals(stakeData.unbondedActual);
+      const unstakeAmount = plasmUtils.balanceFormatter(amountActual);
       try {
         const transaction = canUnbondWithdraw.value
           ? $api!.tx.dappsStaking.unbondAndUnstake(getAddressEnum(props.dapp.address), amount)
@@ -290,6 +312,10 @@ export default defineComponent({
       showModal.value = false;
     };
 
+    const handleConnectWallet = () => {
+      window.dispatchEvent(new CustomEvent(WalletModalOption.SelectWallet));
+    };
+
     return {
       ...toRefs(props),
       showModal,
@@ -307,6 +333,7 @@ export default defineComponent({
       selectedTip,
       nativeTipPrice,
       setSelectedTip,
+      handleConnectWallet,
     };
   },
 });

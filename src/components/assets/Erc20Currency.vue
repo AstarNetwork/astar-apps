@@ -23,7 +23,7 @@
           <div class="column column--balance">
             <div class="column__box">
               <div class="text--accent">
-                <span>{{ $n(truncate(token.userBalance)) }} {{ token.symbol }}</span>
+                <TokenBalance :balance="token.userBalance" :symbol="token.symbol" />
               </div>
               <div class="text--label">
                 <span>{{ $n(Number(token.userBalanceUsd)) }} {{ $t('usd') }}</span>
@@ -31,35 +31,16 @@
             </div>
           </div>
           <div class="column--asset-buttons column--buttons--multi">
-            <button
-              class="btn btn--sm"
-              @click="
-                handleModalTransfer({
-                  isOpen: true,
-                  currency: token,
-                })
-              "
-            >
-              {{ $t('assets.transfer') }}
-            </button>
+            <div v-if="token.isXC20" />
+            <router-link :to="buildTransferPageLink(token.symbol)">
+              <button class="btn btn--sm">
+                {{ $t('assets.transfer') }}
+              </button>
+            </router-link>
             <div v-if="token.isWrappedToken && !token.isXC20">
               <a :href="token.wrapUrl" target="_blank" rel="noopener noreferrer">
                 <button class="btn btn--sm">{{ $t('assets.wrap') }}</button>
               </a>
-            </div>
-
-            <div v-if="token.isXC20">
-              <button
-                class="btn btn--sm"
-                @click="
-                  handleModalXcmBridge({
-                    isOpen: true,
-                    currency: token,
-                  })
-                "
-              >
-                {{ $t('assets.xcm') }}
-              </button>
             </div>
             <div v-if="isImportedToken" />
             <div class="screen--xl">
@@ -107,32 +88,24 @@
   </div>
 </template>
 <script lang="ts">
-import { getProviderIndex } from 'src/config/chainEndpoints';
-import { addToEvmProvider } from 'src/hooks/helper/wallet';
+import { SupportWallet } from 'src/config/wallets';
+import { useNetworkInfo } from 'src/hooks';
+import { addToEvmProvider, getEvmProvider } from 'src/hooks/helper/wallet';
 import { Erc20Token, getErc20Explorer, getStoredERC20Tokens } from 'src/modules/token';
+import { buildTransferPageLink } from 'src/router/routes';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType } from 'vue';
-import { truncate } from 'src/hooks/helper/common';
 import Jazzicon from 'vue3-jazzicon/src/components';
-import { SupportWallet } from 'src/config/wallets';
-
+import TokenBalance from 'src/components/common/TokenBalance.vue';
 export default defineComponent({
   components: {
     [Jazzicon.name]: Jazzicon,
+    TokenBalance,
   },
   props: {
     token: {
       type: Object as PropType<Erc20Token>,
       required: true,
-    },
-    handleModalTransfer: {
-      type: Function,
-      required: true,
-    },
-    handleModalXcmBridge: {
-      type: Function,
-      required: false,
-      default: null,
     },
     isXcm: {
       type: Boolean,
@@ -142,13 +115,11 @@ export default defineComponent({
   },
   setup({ token }) {
     const store = useStore();
+    const { currentNetworkIdx } = useNetworkInfo();
 
     const explorerLink = computed(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      const chain = chainInfo ? chainInfo.chain : '';
-      const currentNetworkIdx = getProviderIndex(chain);
       const tokenAddress = token.address;
-      return getErc20Explorer({ currentNetworkIdx, tokenAddress });
+      return getErc20Explorer({ currentNetworkIdx: currentNetworkIdx.value, tokenAddress });
     });
 
     const isImportedToken = computed<boolean>(
@@ -158,44 +129,15 @@ export default defineComponent({
         )
     );
 
-    const currentWallet = computed(() => store.getters['general/currentWallet']);
-
-    let provider;
-
-    if (
-      typeof window.ethereum !== 'undefined' &&
-      window.ethereum &&
-      currentWallet.value === SupportWallet.MetaMask
-    ) {
-      provider = window.ethereum;
-    }
-
-    if (
-      typeof window.talismanEth !== 'undefined' &&
-      window.talismanEth &&
-      currentWallet.value === SupportWallet.TalismanEvm
-    ) {
-      provider = window.talismanEth;
-    }
-
-    if (
-      typeof window.SubWallet !== 'undefined' &&
-      window.SubWallet &&
-      currentWallet.value === SupportWallet.SubWalletEvm
-    ) {
-      provider = window.SubWallet;
-    }
-
-    if (!provider) {
-      throw new Error("Can't find provider");
-    }
+    const currentWallet = computed<SupportWallet>(() => store.getters['general/currentWallet']);
+    const provider = getEvmProvider(currentWallet.value);
 
     return {
-      addToEvmProvider,
       explorerLink,
-      truncate,
       isImportedToken,
       provider,
+      buildTransferPageLink,
+      addToEvmProvider,
     };
   },
 });

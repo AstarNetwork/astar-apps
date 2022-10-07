@@ -14,12 +14,11 @@
 @use 'src/css/markdown.scss';
 
 body {
-  background: $body-bg-light;
   overflow: hidden;
 }
 
 main {
-  background: $gray-1;
+  background: $body-bg-light;
 }
 
 .screen--md {
@@ -58,10 +57,13 @@ main {
   width: auto !important;
 }
 
+.highest-z-index {
+  z-index: 999 !important;
+}
+
 .body--dark {
-  background: $body-bg-dark;
   main {
-    background: $gray-6;
+    background: $body-bg-dark;
   }
 
   .border--separator {

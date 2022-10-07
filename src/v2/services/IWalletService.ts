@@ -6,9 +6,17 @@ export enum WalletType {
 }
 
 export interface IWalletService {
+  /**
+   * Signs and sends transaction. Returns transaction hash.
+   * @param extrinsic Extrisnic to sign and send
+   * @param senderAddress Signer address
+   * @param successMessage Message to show in case of sucessfull transaction
+   * @param transactionTip Transation tip.
+   */
   signAndSend(
     extrinsic: SubmittableExtrinsic<'promise'>,
     senderAddress: string,
-    successMessage?: string
-  ): Promise<void>;
+    successMessage?: string,
+    transactionTip?: number
+  ): Promise<string | null>;
 }

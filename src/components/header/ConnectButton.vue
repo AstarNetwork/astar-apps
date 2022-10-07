@@ -38,8 +38,9 @@ export default defineComponent({
   flex-direction: row;
   align-items: center;
   padding: 8px 16px 8px 16px;
-  background: #fff;
-  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
+  background: transparent;
+  // box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
+  border: 1px solid $gray-3;
   border-radius: 16px;
   margin-left: 8px;
 }
@@ -51,8 +52,7 @@ export default defineComponent({
   padding-left: 10px;
   width: 32px;
   height: 32px;
-  background: #fff;
-  border: 1px solid $object-light;
+  border: 1px solid $gray-3;
   border-radius: 16px;
   margin-left: 16px;
 }
@@ -69,19 +69,25 @@ export default defineComponent({
 
 .body--dark {
   .btn--connect {
-    background: $gray-5;
+    background: $gray-5 !important;
     color: #fff;
+    border: 1px solid $gray-6 !important;
   }
   .btn--connect:hover {
-    background: $gray-5-selected;
+    background: $gray-5-selected !important;
   }
 
   .m-btn--connect {
-    background: $gray-6;
-    border: 1px solid $gray-5;
+    background: $gray-6 !important;
+    color: $gray-3;
+    border: 1px solid $gray-4 !important;
   }
   .m-btn--connect:hover {
     background: $gray-5-selected;
+  }
+
+  .iconbase {
+    color: $gray-4 !important;
   }
 }
 </style>

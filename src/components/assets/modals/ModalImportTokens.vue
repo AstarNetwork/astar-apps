@@ -1,10 +1,9 @@
 <template>
-  <astar-simple-modal
-    v-if="isModalImportTokens"
-    :show="isModalImportTokens"
+  <AstarModal
+    :is-modal-open="isModalImportTokens"
     :title="$t('assets.importTokens')"
     :is-closing="isClosingModal"
-    @close="closeModal"
+    :close-modal="closeModal"
   >
     <div class="wrapper--modal wrapper--import-tokens">
       <div class="wrapper__row--information">
@@ -42,21 +41,24 @@
         </button>
       </div>
     </div>
-  </astar-simple-modal>
+  </AstarModal>
 </template>
 <script lang="ts">
 import { fadeDuration } from '@astar-network/astar-ui';
 import { $web3 } from 'src/boot/api';
 import { SelectedToken } from 'src/c-bridge';
-import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { fetchErc20TokenInfo } from 'src/config/web3';
+import { useNetworkInfo } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { Erc20Token, storeImportedERC20Token } from 'src/modules/token';
-import { useStore } from 'src/store';
 import { computed, defineComponent, PropType, ref, watch } from 'vue';
+import AstarModal from 'src/components/common/AstarModal.vue';
 
 export default defineComponent({
+  components: {
+    AstarModal,
+  },
   props: {
     isModalImportTokens: {
       type: Boolean,
@@ -83,13 +85,7 @@ export default defineComponent({
       search.value = '';
     };
 
-    const store = useStore();
-    const evmNetworkIdx = computed<number>(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      const chain = chainInfo ? chainInfo.chain : '';
-      const networkIdx = getProviderIndex(chain);
-      return Number(providerEndpoints[networkIdx].evmChainId);
-    });
+    const { evmNetworkIdx } = useNetworkInfo();
 
     const isDisabled = computed<boolean>(() => {
       const isToken = !token.value;
@@ -121,7 +117,6 @@ export default defineComponent({
         console.error(error);
       } finally {
         closeModal();
-        // Memo: Update tokens in useCbridgeV2.ts
         window.dispatchEvent(new CustomEvent(LOCAL_STORAGE.EVM_TOKEN_IMPORTS));
       }
     };

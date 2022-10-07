@@ -1,13 +1,13 @@
-import { SystemAccount } from 'src/modules/account';
 import { VoidFn } from '@polkadot/api/types';
 import { BalanceLockTo212 } from '@polkadot/types/interfaces';
 import { PalletBalancesBalanceLock, PalletVestingVestingInfo } from '@polkadot/types/lookup';
 import BN from 'bn.js';
 import { $api, $web3 } from 'boot/api';
 import { getBalance } from 'src/config/web3';
+import { SystemAccount } from 'src/modules/account';
 import { useStore } from 'src/store';
 import { computed, onUnmounted, ref, Ref, watch } from 'vue';
-import { getVested } from './helper/vested';
+import { getVested } from 'src/hooks/helper/vested';
 
 function useCall(addressRef: Ref<string>) {
   const balanceRef = ref(new BN(0));
@@ -16,6 +16,7 @@ function useCall(addressRef: Ref<string>) {
   const accountDataRef = ref<AccountData>();
   const store = useStore();
   const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
+  const isLoadingAccount = ref<boolean>(true);
 
   const isLoading = computed(() => store.getters['general/isLoading']);
   const dapps = computed(() => store.getters['dapps/getAllDapps']);
@@ -117,7 +118,9 @@ function useCall(addressRef: Ref<string>) {
   watch(
     [addressRef, isLoading, dapps],
     () => {
+      isLoadingAccount.value = true;
       updateAccountBalance();
+      isLoadingAccount.value = false;
     },
     { immediate: true }
   );
@@ -132,23 +135,33 @@ function useCall(addressRef: Ref<string>) {
   return {
     balanceRef,
     accountDataRef,
+    isLoadingAccount,
   };
 }
 
 export function useBalance(addressRef: Ref<string>) {
   const balance = ref(new BN(0));
   const accountData = ref<AccountData | AccountDataH160>();
+  const useableBalance = computed(() => {
+    return accountData.value?.getUsableFeeBalance().toString() || '0';
+  });
+  const isLoadingBalance = ref<boolean>(true);
 
-  const { balanceRef, accountDataRef } = useCall(addressRef);
+  const { balanceRef, accountDataRef, isLoadingAccount } = useCall(addressRef);
+
+  watch([addressRef], () => {
+    isLoadingBalance.value = true;
+  });
 
   watch(
-    () => balanceRef?.value,
-    (bal) => {
-      if (bal) {
-        balance.value = bal;
+    [addressRef, balanceRef, isLoadingAccount],
+    () => {
+      if (balanceRef.value && addressRef && !isLoadingAccount.value) {
+        balance.value = balanceRef.value;
+        isLoadingBalance.value = false;
       }
     },
-    { immediate: true }
+    { immediate: false }
   );
 
   watch(
@@ -160,7 +173,8 @@ export function useBalance(addressRef: Ref<string>) {
     },
     { immediate: true }
   );
-  return { balance, accountData };
+
+  return { balance, accountData, useableBalance, isLoadingBalance };
 }
 
 export class AccountData {

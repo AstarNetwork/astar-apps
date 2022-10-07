@@ -1,26 +1,26 @@
-import { getEvmProvider } from 'src/hooks/helper/wallet';
-import { getProviderIndex } from 'src/config/chainEndpoints';
+import { ASTAR_SS58_FORMAT } from 'src/hooks/helper/plasmUtils';
+import { wait } from 'src/hooks/helper/common';
+import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
+import { $api } from 'boot/api';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import {
   SubstrateWallets,
   supportEvmWalletObj,
   SupportWallet,
+  supportWalletObj,
   WalletModalOption,
 } from 'src/config/wallets';
 import { getChainId, setupNetwork } from 'src/config/web3';
 import { checkSumEvmAddress } from 'src/config/web3/utils/convert';
-import { useAccount } from 'src/hooks';
+import { useAccount, useNetworkInfo } from 'src/hooks';
 import * as utils from 'src/hooks/custom-signature/utils';
-import { deepLinkPath } from 'src/links';
-import { useStore } from 'src/store';
-import { computed, ref, watch, watchEffect, watchPostEffect, WatchCallback } from 'vue';
-import { useRouter } from 'vue-router';
-import { useEvmAccount } from './custom-signature/useEvmAccount';
+import { getEvmProvider } from 'src/hooks/helper/wallet';
 import { useExtensions } from 'src/hooks/useExtensions';
 import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
-import { wait } from './helper/common';
-import { ASTAR_SS58_FORMAT } from './helper/plasmUtils';
-import { $api } from 'boot/api';
+import { deepLinkPath } from 'src/links';
+import { useStore } from 'src/store';
+import { computed, ref, watch, WatchCallback, watchEffect, watchPostEffect } from 'vue';
+import { useRouter } from 'vue-router';
 import {
   castMobileSource,
   checkIsWalletExtension,
@@ -28,7 +28,7 @@ import {
   getInjectedExtensions,
   getSelectedAccount,
   isMobileDevice,
-} from './helper/wallet';
+} from 'src/hooks/helper/wallet';
 
 export const useConnectWallet = () => {
   const { SELECTED_ADDRESS } = LOCAL_STORAGE;
@@ -49,11 +49,7 @@ export const useConnectWallet = () => {
   const isEthWallet = computed(() => store.getters['general/isEthWallet']);
   const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
   const isConnectedNetwork = computed(() => store.getters['general/networkStatus'] === 'connected');
-  const currentNetworkIdx = computed(() => {
-    const chainInfo = store.getters['general/chainInfo'];
-    const chain = chainInfo ? chainInfo.chain : '';
-    return getProviderIndex(chain);
-  });
+  const { currentNetworkIdx } = useNetworkInfo();
 
   const selectedWalletSource = computed(() => {
     try {
@@ -71,6 +67,13 @@ export const useConnectWallet = () => {
 
   const openSelectModal = () => {
     modalName.value = WalletModalOption.SelectWallet;
+  };
+
+  // Memo: triggered after users (who haven't connected to wallet) have clicked 'Connect Wallet' button on dApp staking page
+  const handleOpenSelectModal = (): void => {
+    window.addEventListener(WalletModalOption.SelectWallet, () => {
+      openSelectModal();
+    });
   };
 
   const initializeWalletAccount = () => {
@@ -122,7 +125,7 @@ export const useConnectWallet = () => {
       await setupNetwork({ network: chainId, provider });
 
       // If SubWallet return empty evm accounts, it required to switch to evm network and will request accounts again.
-      // This setep will not require from version 0.4.8
+      // This setup will not require from version 0.4.8
       if (accounts?.length === 0 && currentWallet === SupportWallet.SubWalletEvm) {
         const reCheckAccounts = await requestAccounts();
 
@@ -138,39 +141,28 @@ export const useConnectWallet = () => {
 
   const setEvmWallet = async (wallet: SupportWallet): Promise<void> => {
     selectedWallet.value = wallet;
-
     let isEvmWalletAvailable = false;
 
-    if (wallet === SupportWallet.TalismanEvm) {
-      isEvmWalletAvailable = window.talismanEth !== undefined;
+    const evmWallet = supportEvmWalletObj[wallet as keyof typeof supportEvmWalletObj];
+    if (wallet === evmWallet.source) {
+      const provider = window[evmWallet.ethExtension as any];
+      isEvmWalletAvailable = provider !== undefined;
+
+      if (!isEvmWalletAvailable) {
+        modalName.value = WalletModalOption.OutdatedWallet;
+      }
     }
 
-    if (wallet === SupportWallet.SubWalletEvm) {
-      isEvmWalletAvailable = window.SubWallet !== undefined;
-    }
-
-    if (wallet === SupportWallet.MetaMask) {
-      isEvmWalletAvailable = window.ethereum !== undefined;
+    if (!isEvmWalletAvailable && modalName.value !== WalletModalOption.OutdatedWallet) {
+      modalName.value = WalletModalOption.NoExtension;
     }
 
     if (!isEvmWalletAvailable) {
-      if (wallet === SupportWallet.TalismanEvm) {
-        modalName.value = WalletModalOption.OutdatedWallet;
-        return;
-      }
-
-      if (wallet === SupportWallet.SubWalletEvm) {
-        modalName.value = WalletModalOption.OutdatedWallet;
-        return;
-      }
-
-      modalName.value = WalletModalOption.NoExtension;
-      return;
+      throw new Error(`Cannot detect ${wallet} EVM extension`);
     }
+
     const ss58 = currentEcdsaAccount.value.ss58 ?? '';
-
     let result = await loadEvmWallet({ ss58, currentWallet: wallet });
-
     if (result) {
       modalName.value = '';
       return;
@@ -208,16 +200,18 @@ export const useConnectWallet = () => {
       watchPostEffect(async () => {
         store.commit('general/setMetaExtensions', metaExtensions.value);
         store.commit('general/setExtensionCount', extensionCount.value);
-        setWallet(wallet);
+        const isSubstrateWallet = supportWalletObj.hasOwnProperty(wallet);
+        // Memo: displays accounts menu for users who use the portal first time
+        if (isSubstrateWallet) {
+          setWallet(wallet);
+        }
       });
     }
   };
 
-  // Todo: Delete after the balance page is removed
   const setWalletModal = (wallet: SupportWallet): void => {
     requestExtensionsIfFirstAccess(wallet);
     store.commit('general/setCurrentWallet', wallet);
-    localStorage.setItem(LOCAL_STORAGE.SELECTED_WALLET, wallet);
 
     setWallet(wallet);
   };
@@ -244,8 +238,8 @@ export const useConnectWallet = () => {
   const selectLoginWallet = async (): Promise<void> => {
     const lookupWallet = castMobileSource(modalName.value);
     if (SubstrateWallets.find((it) => it === lookupWallet)) {
-      const injected = await getInjectedExtensions(true);
-      const isInstalledExtension = injected.find((it) => lookupWallet === it.name);
+      const wallets = Object.keys(window.injectedWeb3);
+      const isInstalledExtension = wallets.find((it) => lookupWallet === it);
 
       if (!isInstalledExtension) {
         modalName.value = WalletModalOption.NoExtension;
@@ -328,6 +322,7 @@ export const useConnectWallet = () => {
   };
 
   watch([selectedWallet, currentEcdsaAccount, currentAccount, isH160], changeEvmAccount);
+  watchEffect(handleOpenSelectModal);
 
   watchEffect(async () => {
     await selectLoginWallet();

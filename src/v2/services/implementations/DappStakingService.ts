@@ -7,6 +7,7 @@ import { Symbols } from 'src/v2/symbols';
 import { IDappStakingService } from 'src/v2/services';
 import { Guard } from 'src/v2/common';
 import { IWalletService } from '../IWalletService';
+import { astarMainnetNativeToken, ASTAR_NATIVE_TOKEN } from 'src/config/chain';
 
 @injectable()
 export class DappStakingService implements IDappStakingService {
@@ -14,7 +15,7 @@ export class DappStakingService implements IDappStakingService {
 
   constructor(
     @inject(Symbols.DappStakingRepository) private dappStakingRepository: IDappStakingRepository,
-    @inject(Symbols.CoinGecko) private priceRepository: IPriceRepository,
+    @inject(Symbols.PriceRepository) private priceRepository: IPriceRepository,
     @inject(Symbols.MetadataRepository) private metadataRepository: IMetadataRepository,
     @inject(Symbols.WalletFactory) walletFactory: () => IWalletService
   ) {
@@ -25,13 +26,15 @@ export class DappStakingService implements IDappStakingService {
     const metadata = await this.metadataRepository.getChainMetadata();
     const [tvl, priceUsd] = await Promise.all([
       this.dappStakingRepository.getTvl(),
-      this.priceRepository.getUsdPrice(metadata.chain.toLowerCase()),
+      this.priceRepository.getUsdPrice(metadata.token),
     ]);
 
     const tvlDefaultUnit = Number(
       ethers.utils.formatUnits(BigInt(tvl.toString()), metadata.decimals)
     );
-    const tvlUsd = tvlDefaultUnit * priceUsd;
+    const tvlUsd = astarMainnetNativeToken.includes(metadata.token as ASTAR_NATIVE_TOKEN)
+      ? tvlDefaultUnit * priceUsd
+      : 0;
 
     return new TvlModel(tvl, tvlDefaultUnit, tvlUsd);
   }
@@ -39,7 +42,6 @@ export class DappStakingService implements IDappStakingService {
   public async stake(contractAddress: string, stakerAddress: string, amount: BN): Promise<void> {
     Guard.ThrowIfUndefined('contractAddress', contractAddress);
     Guard.ThrowIfUndefined('stakerAddress', stakerAddress);
-    Guard.ThrowIfNegative('amount', amount);
 
     const stakeCall = await this.dappStakingRepository.getBondAndStakeCall(contractAddress, amount);
     this.wallet.signAndSend(

@@ -1,5 +1,5 @@
 <template>
-  <Modal title="Register a new dApp" @click="closeModal">
+  <Modal title="Register a new dApp" @click="close">
     <template #content>
       <q-form ref="registerForm">
         <q-stepper ref="stepper" v-model="step" :header-nav="false" animated>
@@ -60,8 +60,9 @@ import { $api } from 'boot/api';
 import { NewDappItem } from 'src/store/dapp-staking/state';
 import { RegisterParameters } from 'src/store/dapp-staking/actions';
 import { sanitizeData } from 'src/hooks/helper/markdown';
-import { useGasPrice, useCustomSignature } from 'src/hooks';
+import { useGasPrice, useCustomSignature, useSignPayload, useNetworkInfo } from 'src/hooks';
 import { useExtrinsicCall } from 'src/hooks/custom-signature/useExtrinsicCall';
+import { endpointKey } from 'src/config/chainEndpoints';
 
 export default defineComponent({
   components: {
@@ -83,6 +84,8 @@ export default defineComponent({
     const { selectedTip } = useGasPrice();
     const { isCustomSig } = useCustomSignature({});
     const { getCallFunc } = useExtrinsicCall({ onResult: () => {}, onTransactionError: () => {} });
+    const { signPayload } = useSignPayload();
+    const { currentNetworkIdx } = useNetworkInfo();
 
     const registerDapp = async (step: number): Promise<void> => {
       registerForm?.value?.validate().then(async (success: boolean) => {
@@ -94,6 +97,8 @@ export default defineComponent({
               const chain = chainInfo ? chainInfo.chain : '';
               return chain.toString().split(' ')[0];
             });
+
+            const signature = await signPayload(senderAddress, data.address);
             const result = await store.dispatch('dapps/registerDappApi', {
               dapp: data,
               api: $api,
@@ -103,6 +108,7 @@ export default defineComponent({
               network: currentNetwork.value,
               isCustomSignature: isCustomSig.value,
               getCallFunc,
+              signature,
             } as RegisterParameters);
 
             if (result) {

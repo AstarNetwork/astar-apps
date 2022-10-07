@@ -27,6 +27,14 @@ export class Container extends InversifyContainer {
     return super.bind<T>(id).to(constructor).inSingletonScope();
   }
 
+  public addConstant<T>(customId: Id, constant: T): interfaces.BindingWhenOnSyntax<T> {
+    return super.bind<T>(customId).toConstantValue(constant);
+  }
+
+  public removeConstant(customId: Id): void {
+    super.unbind(customId);
+  }
+
   public addRequest<T>(
     constructor: Constructor<T>,
     customId?: Id

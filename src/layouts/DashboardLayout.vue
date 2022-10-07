@@ -9,14 +9,15 @@
         <sidebar-mobile />
       </template>
       <main
+        id="assets-top"
         class="
           tw-flex-1 tw-relative tw-z-0
-          lg:tw-overflow-y-auto
+          lg:tw-py-12 lg:tw-overflow-y-auto
           tw-overflow-x-hidden
           focus:tw-outline-none
         "
       >
-        <div class="tw-px-4 lg:tw-px-10 tw-py-5 lg:tw-py-0">
+        <div class="wrapper--components">
           <slot />
         </div>
       </main>
@@ -54,3 +55,13 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss" scoped>
+.wrapper--components {
+  padding: 0 16px;
+  @media (min-width: $lg) {
+    padding: 0 40px;
+    padding-top: 56px;
+  }
+}
+</style>

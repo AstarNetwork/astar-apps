@@ -1,17 +1,19 @@
 <template>
-  <astar-simple-modal
+  <AstarModal
     v-if="!isLoading"
-    :show="isModalFaucet"
-    title="Faucet"
+    :is-modal-open="isModalFaucet"
+    :title="$t('assets.faucet')"
     :is-closing="isClosingModal"
-    @close="closeModal"
+    :close-modal="closeModal"
   >
     <div class="wrapper--modal wrapper--faucet">
       <div class="wrapper__row--title">
         <span class="text--accent">{{ $t('assets.modals.whatIsFaucet') }}</span>
       </div>
       <div class="wrapper__row--information">
-        <span class="text--md">{{ $t('assets.modals.faucetIntro') }}</span>
+        <span class="text--md">{{
+          $t('assets.modals.faucetIntro', { symbol: nativeTokenSymbol })
+        }}</span>
       </div>
       <div class="box--faucet-amount">
         <div class="box__column-amount">
@@ -50,20 +52,22 @@
         </button>
       </div>
     </div>
-  </astar-simple-modal>
+  </AstarModal>
 </template>
 <script lang="ts">
-import { useFaucet } from 'src/hooks';
+import { useFaucet, useNetworkInfo } from 'src/hooks';
 import { defineComponent, computed, ref } from 'vue';
 import { fadeDuration } from '@astar-network/astar-ui';
 import { wait } from 'src/hooks/helper/common';
 import vueRecaptcha from 'vue3-recaptcha2';
 import { RECAPCHA_SITE_KEY } from 'src/config/recapcha';
 import { useStore } from 'src/store';
+import AstarModal from 'src/components/common/AstarModal.vue';
 
 export default defineComponent({
   components: {
     vueRecaptcha,
+    AstarModal,
   },
   props: {
     isModalFaucet: {
@@ -81,6 +85,7 @@ export default defineComponent({
 
     const store = useStore();
     const isDarkTheme = computed<boolean>(() => store.getters['general/theme'] === 'DARK');
+    const { nativeTokenSymbol } = useNetworkInfo();
 
     const isModalFaucet = computed<boolean>(() => props.isModalFaucet);
     const { requestFaucet, isLoading, unit, isAbleToFaucet, countDown, faucetAmount } =
@@ -127,6 +132,7 @@ export default defineComponent({
       RECAPCHA_SITE_KEY,
       recaptchaResponse,
       isDarkTheme,
+      nativeTokenSymbol,
       closeModal,
       handleRequest,
       recaptchaVerified,

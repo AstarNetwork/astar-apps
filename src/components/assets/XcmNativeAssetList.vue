@@ -6,36 +6,23 @@
       </div>
 
       <div v-for="t in xcmAssets" :key="t.id">
-        <XcmCurrency
-          :token="t"
-          :handle-modal-xcm-transfer="handleModalXcmTransfer"
-          :handle-modal-xcm-bridge="handleModalXcmBridge"
-        />
+        <XcmCurrency :token="t" />
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { ChainAsset } from 'src/hooks';
+import { Asset } from 'src/v2/models';
 import { defineComponent, PropType } from 'vue';
-import XcmCurrency from './XcmCurrency.vue';
+import XcmCurrency from 'src/components/assets/XcmCurrency.vue';
 export default defineComponent({
   components: {
     XcmCurrency,
   },
   props: {
     xcmAssets: {
-      type: Array as PropType<ChainAsset[]>,
-      required: true,
-    },
-
-    handleModalXcmBridge: {
-      type: Function,
-      required: true,
-    },
-    handleModalXcmTransfer: {
-      type: Function,
+      type: Array as PropType<Asset[]>,
       required: true,
     },
   },

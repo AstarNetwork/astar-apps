@@ -4,34 +4,42 @@ import { ISubmittableResult } from '@polkadot/types/types';
 import { ethers } from 'ethers';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { supportEvmWalletObj, SupportWallet, supportWalletObj } from 'src/config/wallets';
-import { wait } from 'src/hooks/helper/common';
 import { deepLink } from 'src/links';
+import { addTxHistories } from 'src/modules/account';
 import { showError } from 'src/modules/extrinsic';
 import { Dispatch } from 'vuex';
-import { SubstrateAccount } from './../../store/general/state';
-import { EthereumProvider } from './../types/CustomSignature';
+import { HistoryTxType } from 'src/modules/account/index';
+import { SubstrateAccount } from 'src/store/general/state';
+import { EthereumProvider } from 'src/hooks/types/CustomSignature';
+
+declare global {
+  interface Window {
+    [key: string]: EthereumProvider;
+  }
+}
 
 export const getInjectedExtensions = async (forceRequest = false): Promise<any[]> => {
   const selectedAddress = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
   if (selectedAddress != null || forceRequest) {
-    // console.log('web3Enable');
-    // Memo: Firefox takes some time to load the wallet extensions at the boot time.
     let extensions = await web3Enable('AstarNetwork/astar-apps');
-    // Memo: obtain the extension name
-    // console.log('extensions', extensions);
 
-    const injectedWeb3 = window.injectedWeb3;
-    const numWalletExtensions = injectedWeb3 ? Object.values(window.injectedWeb3).length : 0;
-    const maxRetry = 20;
-    let numRetry = 0;
-    while (extensions.length !== numWalletExtensions) {
-      wait(400);
-      extensions = await web3Enable('AstarNetwork/astar-apps');
-      numRetry++;
-      if (numRetry > maxRetry) {
-        break;
-      }
-    }
+    // const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+    // Memo: Firefox takes some time to load the wallet extensions at the boot time.
+    // Below code is for reference
+    // if (isFirefox) {
+    //   const injectedWeb3 = window.injectedWeb3;
+    //   const numWalletExtensions = injectedWeb3 ? Object.values(window.injectedWeb3).length : 0;
+    //   const maxRetry = 20;
+    //   let numRetry = 0;
+    //   while (extensions.length !== numWalletExtensions) {
+    //     wait(400);
+    //     extensions = await web3Enable('AstarNetwork/astar-apps');
+    //     numRetry++;
+    //     if (numRetry > maxRetry) {
+    //       break;
+    //     }
+    //   }
+    // }
 
     return extensions;
   }
@@ -41,11 +49,14 @@ export const getInjectedExtensions = async (forceRequest = false): Promise<any[]
 export const getSelectedAccount = (accounts: SubstrateAccount[]): SubstrateAccount | undefined => {
   try {
     const selectedAddress = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
+    const selectedWallet = localStorage.getItem(LOCAL_STORAGE.SELECTED_WALLET);
     if (selectedAddress === 'Ethereum Extension') {
       return undefined;
     }
 
-    const account = accounts.find((it) => it.address === selectedAddress);
+    const account = accounts.find(
+      (it) => it.address === selectedAddress && it.source === selectedWallet
+    );
     return account;
   } catch (error: any) {
     console.error(error.message);
@@ -112,12 +123,12 @@ export const getDeepLinkUrl = (wallet: SupportWallet): string | false => {
 };
 
 export const checkIsWalletExtension = async (): Promise<boolean> => {
-  const isSubstrateDappBrowser = await getInjectedExtensions();
+  const isSubstrateDappBrowser = !!window.injectedWeb3;
   const isEvmWalletExtension =
     typeof window.ethereum !== 'undefined' ||
     typeof window.SubWallet !== 'undefined' ||
     typeof window.talismanEth !== 'undefined';
-  return Boolean(isSubstrateDappBrowser.length || isEvmWalletExtension);
+  return Boolean(isSubstrateDappBrowser || isEvmWalletExtension);
 };
 
 export const checkIsEthereumWallet = (wallet: SupportWallet): boolean => {
@@ -186,6 +197,7 @@ export const signAndSend = async ({
   handleCustomExtrinsic,
   finalizeCallback,
   tip,
+  txType,
 }: {
   transaction: Transaction;
   senderAddress: string;
@@ -197,6 +209,7 @@ export const signAndSend = async ({
   handleCustomExtrinsic?: (method: Transaction) => Promise<void>;
   finalizeCallback?: () => void;
   tip?: string;
+  txType?: HistoryTxType;
 }): Promise<boolean> => {
   return new Promise<boolean>(async (resolve) => {
     const sendSubstrateTransaction = async (): Promise<void> => {
@@ -215,6 +228,13 @@ export const signAndSend = async ({
           (async () => {
             const res = await txResHandler(result);
             finalizeCallback && finalizeCallback();
+            if (txType) {
+              addTxHistories({
+                hash: result.txHash.toString(),
+                type: txType,
+                address: senderAddress,
+              });
+            }
             resolve(res);
           })();
         }
@@ -241,18 +261,12 @@ export const checkIsNativeWallet = (selectedWallet: SupportWallet): boolean => {
   return supportWalletObj.hasOwnProperty(selectedWallet);
 };
 
-export const getEvmProvider = (wallet: SupportWallet) => {
-  if (wallet === SupportWallet.MetaMask) {
-    return window.ethereum;
-  }
+export const getEvmProvider = (walletName: SupportWallet): EthereumProvider | null => {
+  const wallet = supportEvmWalletObj[walletName as keyof typeof supportEvmWalletObj];
+  const provider = wallet ? (window[wallet.ethExtension] as EthereumProvider) : undefined;
 
-  if (wallet === SupportWallet.TalismanEvm) {
-    return window.talismanEth;
-  }
+  const isExtension =
+    wallet && walletName === wallet.source && typeof provider !== undefined && provider;
 
-  if (wallet === SupportWallet.SubWalletEvm) {
-    return window.SubWallet;
-  }
-
-  return null;
+  return isExtension ? provider : null;
 };

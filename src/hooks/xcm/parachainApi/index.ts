@@ -1,1 +1,0 @@
-export { AcalaApi } from './AcalaApi';

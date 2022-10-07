@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[![Publish Application](https://github.com/AstarNetwork/astar-apps/actions/workflows/publish-gh-pages.yml/badge.svg)](https://github.com/AstarNetwork/astar-apps/actions/workflows/publish-gh-pages.yml)
+[![Publish Application](https://github.com/AstarNetwork/astar-apps/actions/workflows/firebase-hosting-merge.yml/badge.svg)](https://github.com/AstarNetwork/astar-apps/actions/workflows/firebase-hosting-merge.yml)
 [![License](https://img.shields.io/github/license/AstarNetwork/astar-apps?color=green)](https://github.com/AstarNetwork/astar-apps/master/LICENSE)
  <br />
 [![Twitter URL](https://img.shields.io/twitter/follow/AstarNetwork?style=social)](https://twitter.com/AstarNetwork)

@@ -1,4 +1,4 @@
-export { fetchEvmGasPrice, getEvmGas, getEvmGasCost } from './utils';
+export { fetchEvmGasPrice, getEvmGas, getEvmGasCost } from 'src/modules/gas-api/utils';
 
 export const GAS_API_URL = 'https://gas.astar.network/api';
 

@@ -79,19 +79,21 @@
   </div>
 </template>
 <script lang="ts">
+import { FrameSystemAccountInfo } from '@polkadot/types/lookup';
+import copy from 'copy-to-clipboard';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
-import { endpointKey, getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
+import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { isValidEvmAddress } from 'src/config/web3';
 import {
   useAccount,
   useBalance,
   useBreakpoints,
   useConnectWallet,
+  useNetworkInfo,
   usePrice,
   useWalletIcon,
 } from 'src/hooks';
-import { checkIsNullOrUndefined } from 'src/hooks/helper/common';
 import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
 import {
   getEvmMappedSs58Address,
@@ -100,8 +102,6 @@ import {
 } from 'src/hooks/helper/addressUtils';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
-import copy from 'copy-to-clipboard';
-import { FrameSystemAccountInfo } from '@polkadot/types/lookup';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
@@ -114,14 +114,6 @@ export default defineComponent({
       type: Number,
       required: true,
     },
-    isLoadingErc20Amount: {
-      type: Boolean,
-      required: true,
-    },
-    isLoadingXcmAssetsAmount: {
-      type: Boolean,
-      required: true,
-    },
   },
   setup(props) {
     const balUsd = ref<number | null>(null);
@@ -130,7 +122,7 @@ export default defineComponent({
     const { toggleEvmWalletSchema } = useConnectWallet();
     const { currentAccount, currentAccountName } = useAccount();
     const { width, screenSize } = useBreakpoints();
-    const { balance } = useBalance(currentAccount);
+    const { balance, isLoadingBalance } = useBalance(currentAccount);
     const { nativeTokenUsd } = usePrice();
     const { requestSignature } = useEvmAccount();
     const { iconWallet } = useWalletIcon();
@@ -141,11 +133,8 @@ export default defineComponent({
 
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const isEthWallet = computed(() => store.getters['general/isEthWallet']);
-    const currentNetworkIdx = computed(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      const chain = chainInfo ? chainInfo.chain : '';
-      return getProviderIndex(chain);
-    });
+
+    const { currentNetworkIdx } = useNetworkInfo();
     const blockscout = computed(
       () =>
         `${providerEndpoints[currentNetworkIdx.value].blockscout}/address/${currentAccount.value}`
@@ -163,17 +152,8 @@ export default defineComponent({
     };
 
     const isSkeleton = computed<boolean>(() => {
-      const isH160 = store.getters['general/isH160Formatted'];
-      const isLoadingState = store.getters['general/isLoading'];
-
       if (!nativeTokenUsd.value) return false;
-      if (isH160) {
-        if (props.isLoadingErc20Amount) return true;
-        return checkIsNullOrUndefined(balUsd.value) || isLoadingState;
-      } else {
-        if (props.isLoadingXcmAssetsAmount) return true;
-        return checkIsNullOrUndefined(balUsd.value);
-      }
+      return isLoadingBalance.value;
     });
 
     watch(

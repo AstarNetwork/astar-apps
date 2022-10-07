@@ -1,7 +1,6 @@
 import { SubmittableExtrinsic } from '@polkadot/api-base/types';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { IWalletService } from 'src/v2/services';
-import { useEthProvider } from 'src/hooks/custom-signature/useEthProvider';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 import { inject, injectable } from 'inversify';
 import { IEthCallRepository, ISystemRepository } from 'src/v2/repositories';
@@ -10,6 +9,7 @@ import { WalletService } from 'src/v2/services/implementations';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import Web3 from 'web3';
 import { Symbols } from 'src/v2/symbols';
+import { getEvmProvider } from 'src/hooks/helper/wallet';
 
 @injectable()
 export class MetamaskWalletService extends WalletService implements IWalletService {
@@ -18,13 +18,15 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
   constructor(
     @inject(Symbols.SystemRepository) private systemRepository: ISystemRepository,
     @inject(Symbols.EthCallRepository) private ethCallRepository: IEthCallRepository,
-    @inject(Symbols.EventAggregator) eventAggregator: IEventAggregator
+    @inject(Symbols.EventAggregator) eventAggregator: IEventAggregator,
+    @inject(Symbols.CurrentWallet) private currentWallet: string
   ) {
     super(eventAggregator);
-    const { ethProvider } = useEthProvider();
 
-    if (ethProvider.value) {
-      this.provider = ethProvider.value;
+    const ethProvider = getEvmProvider(currentWallet as any);
+
+    if (ethProvider) {
+      this.provider = ethProvider;
     } else {
       Guard.ThrowIfUndefined('provider', this.provider);
     }
@@ -34,9 +36,11 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
     extrinsic: SubmittableExtrinsic<'promise', ISubmittableResult>,
     senderAddress: string,
     successMessage?: string
-  ): Promise<void> {
+  ): Promise<string | null> {
     Guard.ThrowIfUndefined('extrinsic', extrinsic);
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
+
+    let result = null;
 
     try {
       const account = await this.systemRepository.getAccountInfo(senderAddress);
@@ -63,7 +67,9 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
             this.eventAggregator.publish(
               new ExtrinsicStatusMessage(
                 true,
-                successMessage ?? 'Transaction successfully executed'
+                successMessage ?? 'Transaction successfully executed',
+                `${extrinsic.method.section}.${extrinsic.method.method}`,
+                result.txHash.toHex()
               )
             );
           }
@@ -73,10 +79,13 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
           this.eventAggregator.publish(new BusyMessage(true));
         }
       });
+      result = call.hash.toHex();
     } catch (e) {
       const error = e as unknown as Error;
       this.eventAggregator.publish(new ExtrinsicStatusMessage(false, error.message));
       this.eventAggregator.publish(new BusyMessage(false));
     }
+
+    return result;
   }
 }

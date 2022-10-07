@@ -1,13 +1,11 @@
-import { useGasPrice } from './useGasPrice';
+import { useGasPrice, ExtendedVestingInfo, useBalance, useCustomSignature } from 'src/hooks';
 import { ApiPromise } from '@polkadot/api';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { $api } from 'boot/api';
 import { ethers } from 'ethers';
 import { useStore } from 'src/store';
 import { computed } from 'vue';
-import { signAndSend } from './helper/wallet';
-import { ExtendedVestingInfo, useBalance } from './useBalance';
-import { useCustomSignature } from './useCustomSignature';
+import { signAndSend } from 'src/hooks/helper/wallet';
 
 export function useVesting(closeModal: () => void) {
   const store = useStore();

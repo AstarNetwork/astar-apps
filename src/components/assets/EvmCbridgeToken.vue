@@ -5,7 +5,12 @@
       <div class="row row--details">
         <div class="row__left">
           <div class="column--currency">
-            <img :src="tokenImg" :alt="token.name" class="token-logo" />
+            <jazzicon
+              v-if="tokenImg.includes('custom-token')"
+              :address="token.address"
+              :diameter="24"
+            />
+            <img v-else :src="tokenImg" :alt="token.name" class="token-logo" />
             <div class="column--ticker">
               <span class="text--title">{{ token.symbol }}</span>
               <span class="text--label">{{ formatTokenName(token.name) }}</span>
@@ -16,7 +21,7 @@
           <div class="column column--balance">
             <div class="column__box">
               <div class="text--accent">
-                <span>{{ $n(truncate(token.userBalance)) }} {{ token.symbol }}</span>
+                <TokenBalance :balance="token.userBalance" :symbol="token.symbol" />
               </div>
               <div class="text--label">
                 <span>{{ $n(Number(token.userBalanceUsd)) }} {{ $t('usd') }}</span>
@@ -24,17 +29,11 @@
             </div>
           </div>
           <div class="column--asset-buttons column--buttons--multi">
-            <button
-              class="btn btn--sm"
-              @click="
-                handleModalTransfer({
-                  isOpen: true,
-                  currency: token.symbol === nativeTokenSymbol ? nativeTokenSymbol : token,
-                })
-              "
-            >
-              {{ $t('assets.transfer') }}
-            </button>
+            <router-link :to="buildTransferPageLink(token.symbol)">
+              <button class="btn btn--sm">
+                {{ $t('assets.transfer') }}
+              </button>
+            </router-link>
             <a :href="cbridgeAppLink" target="_blank" rel="noopener noreferrer">
               <button class="btn btn--sm">
                 {{ $t('assets.bridge') }}
@@ -87,38 +86,34 @@
   </div>
 </template>
 <script lang="ts">
-import { SelectedToken } from 'src/c-bridge';
-import { getProviderIndex } from 'src/config/chainEndpoints';
-import { getChainId } from 'src/config/web3';
-import { addToEvmProvider } from 'src/hooks/helper/wallet';
-import { useStore } from 'src/store';
-import { getErc20Explorer, getTokenImage } from 'src/modules/token';
-import { computed, defineComponent, PropType } from 'vue';
-import { truncate } from 'src/hooks/helper/common';
 import { cbridgeAppLink } from 'src/c-bridge';
 import { SupportWallet } from 'src/config/wallets';
+import { addToEvmProvider, getEvmProvider } from 'src/hooks/helper/wallet';
+import { Erc20Token, getErc20Explorer, getTokenImage } from 'src/modules/token';
+import { useStore } from 'src/store';
+import { computed, defineComponent, PropType } from 'vue';
+import { buildTransferPageLink } from 'src/router/routes';
+import { useNetworkInfo } from 'src/hooks';
+import Jazzicon from 'vue3-jazzicon/src/components';
+import TokenBalance from 'src/components/common/TokenBalance.vue';
 
 export default defineComponent({
+  components: {
+    [Jazzicon.name]: Jazzicon,
+    TokenBalance,
+  },
   props: {
     token: {
-      type: Object as PropType<SelectedToken>,
-      required: true,
-    },
-    handleModalTransfer: {
-      type: Function,
+      type: Object as PropType<Erc20Token>,
       required: true,
     },
   },
   setup({ token }) {
     const tokenImg = computed(() =>
-      getTokenImage({ isNativeToken: false, symbol: token.symbol, iconUrl: token.icon })
+      getTokenImage({ isNativeToken: false, symbol: token.symbol, iconUrl: token.image })
     );
 
     const store = useStore();
-    const nativeTokenSymbol = computed(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      return chainInfo ? chainInfo.tokenSymbol : '';
-    });
 
     const formatTokenName = (name: string) => {
       switch (name) {
@@ -129,55 +124,25 @@ export default defineComponent({
       }
     };
 
+    const { currentNetworkIdx, nativeTokenSymbol } = useNetworkInfo();
+
     const explorerLink = computed(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      const chain = chainInfo ? chainInfo.chain : '';
-      const currentNetworkIdx = getProviderIndex(chain);
       const tokenAddress = token.address;
-      return getErc20Explorer({ currentNetworkIdx, tokenAddress });
+      return getErc20Explorer({ currentNetworkIdx: currentNetworkIdx.value, tokenAddress });
     });
 
-    const currentWallet = computed(() => store.getters['general/currentWallet']);
-
-    let provider;
-
-    if (
-      typeof window.ethereum !== 'undefined' &&
-      window.ethereum &&
-      currentWallet.value === SupportWallet.MetaMask
-    ) {
-      provider = window.ethereum;
-    }
-
-    if (
-      typeof window.talismanEth !== 'undefined' &&
-      window.talismanEth &&
-      currentWallet.value === SupportWallet.TalismanEvm
-    ) {
-      provider = window.talismanEth;
-    }
-
-    if (
-      typeof window.SubWallet !== 'undefined' &&
-      window.SubWallet &&
-      currentWallet.value === SupportWallet.SubWalletEvm
-    ) {
-      provider = window.SubWallet;
-    }
-
-    if (!provider) {
-      throw new Error("Can't find provider");
-    }
+    const currentWallet = computed<SupportWallet>(() => store.getters['general/currentWallet']);
+    const provider = getEvmProvider(currentWallet.value);
 
     return {
-      formatTokenName,
-      addToEvmProvider,
       tokenImg,
       nativeTokenSymbol,
       explorerLink,
       cbridgeAppLink,
-      truncate,
       provider,
+      buildTransferPageLink,
+      formatTokenName,
+      addToEvmProvider,
     };
   },
 });

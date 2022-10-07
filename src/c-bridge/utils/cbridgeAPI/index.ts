@@ -10,7 +10,7 @@ import {
   shidenSupportChains,
   Token,
   TransferConfigs,
-} from './../../index';
+} from 'src/c-bridge';
 
 const pushCanonicalToken = ({
   tokens,
@@ -219,10 +219,4 @@ export const getTransferConfigs = async (portalNetworkIdx: endpointKey) => {
   } catch (error: any) {
     console.error(error.message);
   }
-};
-
-export const getIcon = ({ symbol, icon }: { symbol: string; icon: string }): string => {
-  // Memo: the background color of the icon (url provides by cBridge API) is white color
-  const logoUsdt = 'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png';
-  return symbol === 'USDT' ? logoUsdt : icon;
 };

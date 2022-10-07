@@ -3,7 +3,7 @@
     <div class="container--chart-panels">
       <div class="container--value-panel">
         <div class="container--panel">
-          <circulating-panel :symbol="chainInfo.tokenSymbol" />
+          <circulating-panel :symbol="nativeTokenSymbol" :network="currentNetworkName" />
         </div>
         <div class="container--panel">
           <value-panel title="Holders" :value="holders" />
@@ -41,7 +41,7 @@
           :handle-filter-changed="handleEcosystemTvlFilterChanged"
           :is-multiple-line="true"
         />
-        <token-price-chart :network="chainInfo.chain" />
+        <token-price-chart :network="currentNetworkName" />
       </div>
     </div>
   </div>
@@ -54,12 +54,10 @@ import ValuePanel from 'src/components/dashboard/ValuePanel.vue';
 import TokenPriceChart from 'src/components/dashboard/TokenPriceChart.vue';
 // import TotalTransactionsChart from 'src/components/dashboard/TotalTransactionsChart.vue';
 import TvlChart from 'src/components/dashboard/TvlChart.vue';
-import { useTvlHistorical } from 'src/hooks';
+import { useNetworkInfo, useTvlHistorical } from 'src/hooks';
 import { textChart, TOKEN_API_URL } from 'src/modules/token-api';
-import { useStore } from 'src/store';
-import { computed, defineComponent, ref, watchEffect } from 'vue';
+import { defineComponent, ref, watchEffect } from 'vue';
 import axios from 'axios';
-
 export default defineComponent({
   components: {
     TokenPriceChart,
@@ -70,9 +68,7 @@ export default defineComponent({
     // TotalTransactionsChart,
   },
   setup() {
-    const store = useStore();
     const holders = ref<string>('');
-
     const {
       filteredDappStakingTvl,
       filteredEcosystemTvl,
@@ -86,21 +82,7 @@ export default defineComponent({
       lenStakers,
     } = useTvlHistorical();
 
-    const chainInfo = computed(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      return chainInfo ? chainInfo : {};
-    });
-
-    const network = computed(() => {
-      const network = chainInfo.value ? chainInfo.value.chain : '';
-      return network === 'Shibuya Testnet' ? 'shibuya' : network;
-    });
-
-    const isMainnet = computed(() => {
-      const chainInfo = store.getters['general/chainInfo'];
-      return chainInfo ? chainInfo.chain !== 'Shibuya Testnet' : false;
-    });
-
+    const { isMainnet, currentNetworkName, nativeTokenSymbol } = useNetworkInfo();
     const loadStats = async (network: string) => {
       if (!network) return;
       const statsUrl = `${TOKEN_API_URL}/v1/${network}/token/holders`;
@@ -109,20 +91,19 @@ export default defineComponent({
         holders.value = `${result.data.toLocaleString('en-US')}`;
       }
     };
-
     watchEffect(async () => {
       try {
-        if (chainInfo.value && network.value) {
-          await loadStats(network.value.toLowerCase());
+        if (currentNetworkName.value) {
+          await loadStats(currentNetworkName.value.toLowerCase());
         }
       } catch (error) {
         console.error(error);
       }
     });
-
     return {
       textChart,
-      chainInfo,
+      nativeTokenSymbol,
+      currentNetworkName,
       holders,
       isMainnet,
       filteredDappStakingTvl,

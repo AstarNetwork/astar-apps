@@ -1,10 +1,9 @@
 <template>
-  <astar-simple-modal
-    v-if="isModalVesting"
+  <AstarModal
+    :is-modal-open="isModalVesting"
+    :title="$t('assets.modals.titleVesting')"
     :is-closing="isClosingModal"
-    :show="isModalVesting"
-    title="Vesting info"
-    @close="closeModal"
+    :close-modal="closeModal"
   >
     <div class="wrapper--modal wrapper--vesting">
       <div class="container--vestings">
@@ -36,10 +35,10 @@
       </div>
       <div class="box--unlock-amount">
         <div class="box__column-amount">
-          <span class="text--accent">{{ $t('assets.modals.availableToUnlocked') }}</span>
+          <span class="text--accent">{{ $t('assets.modals.availableToUnlock') }}</span>
           <span class="text--xl"
-            >{{ $n(truncate(info.claimableAmount)) }} {{ nativeTokenSymbol }}</span
-          >
+            >{{ $n(truncate(info.claimableAmount)) }} {{ nativeTokenSymbol }}
+          </span>
         </div>
       </div>
       <SpeedConfiguration
@@ -57,7 +56,7 @@
         </button>
       </div>
     </div>
-  </astar-simple-modal>
+  </AstarModal>
 </template>
 <script lang="ts">
 import { AccountData, useVesting } from 'src/hooks';
@@ -66,9 +65,10 @@ import { fadeDuration } from '@astar-network/astar-ui';
 import { wait } from 'src/hooks/helper/common';
 import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 import { truncate } from 'src/hooks/helper/common';
+import AstarModal from 'src/components/common/AstarModal.vue';
 
 export default defineComponent({
-  components: { SpeedConfiguration },
+  components: { SpeedConfiguration, AstarModal },
   props: {
     nativeTokenSymbol: {
       type: String,

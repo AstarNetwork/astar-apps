@@ -1,10 +1,11 @@
 import { $web3 } from 'boot/api';
 import { useStore } from 'src/store';
 import { ref, watchEffect, computed, watch } from 'vue';
-import { GasPrice, fetchEvmGasPrice, SelectedGas, Speed } from '../modules/gas-api';
+import { GasPrice, fetchEvmGasPrice, SelectedGas, Speed } from 'src/modules/gas-api';
 import { GasPriceChangedMessage, TipPriceChangedMessage, IEventAggregator } from 'src/v2/messaging';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
+import { useNetworkInfo } from 'src/hooks';
 
 const initialGasPrice = {
   slow: '0',
@@ -24,11 +25,9 @@ export const useGasPrice = (isFetch = false) => {
 
   const store = useStore();
   const gas = computed(() => store.getters['general/getGas']);
+  const { currentNetworkName, isMainnet } = useNetworkInfo();
   const network = computed<string>(() => {
-    const chainInfo = store.getters['general/chainInfo'];
-    const network = chainInfo ? chainInfo.chain : '';
-    const isTestnet = network === 'Development' || network === 'Shibuya Testnet';
-    return isTestnet ? 'shibuya' : network.toLowerCase();
+    return isMainnet ? currentNetworkName.value.toLowerCase() : 'shibuya';
   });
 
   const setSelectedGas = (speed: Speed): void => {

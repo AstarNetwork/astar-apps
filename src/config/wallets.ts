@@ -11,6 +11,7 @@ export enum SupportWallet {
   Clover = 'clover',
   Math = 'mathwallet',
   Nova = 'nova',
+  NovaEvm = 'novaEvm',
   TalismanEvm = 'talismanEth',
   TalismanNative = 'talisman',
   SubWalletNative = 'subwallet-js',
@@ -56,6 +57,8 @@ export interface Wallet {
   guideUrl: string;
   isSupportBrowserExtension: boolean;
   isSupportMobileApp: boolean;
+  // Memo: access to the wallet extension like `window['ethereum']`
+  ethExtension?: string;
 }
 
 export const supportWalletObj = {
@@ -133,6 +136,7 @@ export const supportEvmWalletObj = {
     guideUrl: 'https://metamask.io/',
     isSupportBrowserExtension: true,
     isSupportMobileApp: true,
+    ethExtension: 'ethereum',
   },
   [SupportWallet.TalismanEvm]: {
     img: require('/src/assets/img/logo-talisman.svg'),
@@ -142,6 +146,7 @@ export const supportEvmWalletObj = {
     guideUrl: 'https://app.talisman.xyz/',
     isSupportBrowserExtension: true,
     isSupportMobileApp: false,
+    ethExtension: 'talismanEth',
   },
   [SupportWallet.SubWalletEvm]: {
     img: require('/src/assets/img/logo-subwallet.svg'),
@@ -151,6 +156,7 @@ export const supportEvmWalletObj = {
     guideUrl: 'https://docs.subwallet.app/user-guide/how-to-install-subwallet/',
     isSupportBrowserExtension: true,
     isSupportMobileApp: false,
+    ethExtension: 'SubWallet',
   },
   [SupportWallet.Wallet3]: {
     img: require('/src/assets/img/logo-wallet3.svg'),
@@ -160,6 +166,17 @@ export const supportEvmWalletObj = {
     guideUrl: 'https://docs.wallet3.io',
     isSupportBrowserExtension: false,
     isSupportMobileApp: true,
+    ethExtension: 'ethereum',
+  },
+  [SupportWallet.NovaEvm]: {
+    img: require('/src/assets/img/logo-nova.png'),
+    name: 'Nova Wallet (EVM)',
+    source: SupportWallet.NovaEvm,
+    walletUrl: 'https://novawallet.io/',
+    guideUrl: 'https://novawallet.io/',
+    isSupportBrowserExtension: false,
+    isSupportMobileApp: true,
+    ethExtension: 'ethereum',
   },
 };
 
