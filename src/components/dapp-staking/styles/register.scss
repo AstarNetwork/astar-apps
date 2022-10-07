@@ -1,0 +1,33 @@
+@import 'src/css/quasar.variables.scss';
+
+.register-container--label {
+  font-size: 14px;
+  color: $gray-4;
+}
+
+.container--toggle {
+  margin-bottom: 4px;
+} 
+
+.container--radio {
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+.radio {
+  margin-right: 16px;
+}
+
+.button--container {
+  display: flex;
+  justify-content: center;
+}
+
+.container--register {
+  max-width: $register-form-max-width;
+  justify-self: center;
+
+  @media (min-width: $md) {
+    width: $container-max-width;  
+  }
+}

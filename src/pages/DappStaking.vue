@@ -1,5 +1,9 @@
 <template>
-  <router-view />
+  <div class="wrapper--assets">
+    <div class="container--assets">
+      <router-view />
+    </div>
+  </div>
 </template>
 
 <script lang="ts">

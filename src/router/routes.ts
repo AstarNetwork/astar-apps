@@ -7,6 +7,7 @@ import Store from 'src/pages/DappStaking.vue';
 import StoreV2 from 'src/pages/DappStakingV2.vue';
 import StakingTop from 'components/dapp-staking-v2/StakingTop.vue';
 import Dashboard from 'src/pages/Dashboard.vue';
+import RegisterDapp from 'src/pages/RegisterDapp.vue';
 import StakeManage from 'src/pages/StakeManage.vue';
 import DappsHome from 'src/v2/components/dapp-staking/DappsHome.vue';
 import { RouteRecordRaw } from 'vue-router';
@@ -114,6 +115,10 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'stake',
         component: StakeManage,
+      },
+      {
+        path: 'register',
+        component: RegisterDapp,
       },
     ],
   },
