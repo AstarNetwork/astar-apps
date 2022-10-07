@@ -5,6 +5,7 @@ import { endpointKey, getNetworkName } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import Store from 'src/pages/DappStaking.vue';
 import Dashboard from 'src/pages/Dashboard.vue';
+import RegisterDapp from 'src/pages/RegisterDapp.vue';
 import StakeManage from 'src/pages/StakeManage.vue';
 import DappsHome from 'src/v2/components/dapp-staking/DappsHome.vue';
 import { RouteRecordRaw } from 'vue-router';
@@ -112,6 +113,10 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'stake',
         component: StakeManage,
+      },
+      {
+        path: 'register',
+        component: RegisterDapp,
       },
     ],
   },

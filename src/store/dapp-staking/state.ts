@@ -3,6 +3,8 @@ import { BN } from '@polkadot/util';
 import { TvlModel } from 'src/v2/models';
 import { DappCombinedInfo, StakerInfo } from 'src/v2/models/DappsStaking';
 
+export type Category = 'defi' | 'gamefi' | 'infra' | 'nft' | 'others';
+
 export interface DappItem extends LooseObject {
   name: string;
   iconUrl: string;
@@ -17,14 +19,47 @@ export interface DappItem extends LooseObject {
   authorContact: string;
   gitHubUrl: string;
   imagesUrl: string[];
+  developers: Developer[];
+  communities: Community[];
+  platforms: string[];
+  contractType: string;
+  mainCategory: Category;
 }
 
 export interface NewDappItem extends DappItem {
   iconFileName: string;
   iconFile: string;
+  icon: File;
   images: File[];
   imagesContent: string[];
   videoUrlInput: string;
+}
+
+export interface Developer {
+  twitterAccountUrl: string;
+  linkedInAccountUrl: string;
+  iconFile: string;
+  name: string;
+}
+
+export enum CommunityType {
+  Twitter = 'Twitter',
+  Reddit = 'Reddit',
+  Facebook = 'Facebook',
+  TikTok = 'TikTok',
+  YouTube = 'YouTube',
+  Instagram = 'Instagram',
+}
+
+export interface Community {
+  type: CommunityType;
+  handle: string;
+}
+
+export interface CommunityDefinition extends Community {
+  iconUrl: string;
+  label: string;
+  validateHandle?: (v: string) => boolean | string;
 }
 
 export interface DappStateInterface {
