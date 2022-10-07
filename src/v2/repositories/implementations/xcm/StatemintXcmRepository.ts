@@ -12,9 +12,8 @@ import { Struct } from '@polkadot/types';
 interface Account extends Struct {
   balance: string;
 }
-
 /**
- * Used to transfer assets from Acala/Karura
+ * Used to transfer assets from Statemint/Statemine
  */
 export class StatemintXcmRepository extends XcmRepository {
   constructor() {
@@ -36,21 +35,29 @@ export class StatemintXcmRepository extends XcmRepository {
     }
 
     const destination = {
-      V0: {
-        X2: [{ Parent: null }, { Parachain: to.parachainId }],
+      V1: {
+        interior: {
+          X1: {
+            Parachain: to.parachainId,
+          },
+        },
+        parents: 1,
       },
     };
 
     const beneficiary = {
-      V0: {
-        X1: {
-          AccountId32: {
-            id: decodeAddress(recipientAddress),
-            network: {
-              Any: null,
+      V1: {
+        interior: {
+          X1: {
+            AccountId32: {
+              id: decodeAddress(recipientAddress),
+              network: {
+                Any: null,
+              },
             },
           },
         },
+        parents: 0,
       },
     };
 
@@ -60,12 +67,17 @@ export class StatemintXcmRepository extends XcmRepository {
     const instance = 50;
 
     const assets = {
-      V0: [
+      V1: [
         {
-          ConcreteFungible: {
-            amount: new BN(amount),
-            id: {
-              X2: [{ PalletInstance: instance }, { GeneralIndex: token.originAssetId }],
+          fun: {
+            Fungible: new BN(amount),
+          },
+          id: {
+            Concrete: {
+              interior: {
+                X2: [{ PalletInstance: instance }, { GeneralIndex: token.originAssetId }],
+              },
+              parents: 0,
             },
           },
         },

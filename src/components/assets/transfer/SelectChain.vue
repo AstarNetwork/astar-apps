@@ -20,7 +20,8 @@
   </div>
 </template>
 <script lang="ts">
-import { castChainName, XcmChain } from 'src/modules/xcm';
+import { castChainName } from 'src/modules/xcm';
+import { XcmChain } from 'src/v2/models';
 import { defineComponent, PropType } from 'vue';
 export default defineComponent({
   props: {

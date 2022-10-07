@@ -8,12 +8,7 @@
       <span> {{ $t(title) }}</span>
       <div>
         <span class="text--to--balance">
-          {{
-            $t('assets.modals.balance', {
-              amount: $n(truncate(balance)),
-              token: symbol,
-            })
-          }}
+          <TokenBalance text="assets.modals.balance" :balance="balance" :symbol="symbol" />
         </span>
       </div>
     </div>
@@ -35,11 +30,13 @@
   </div>
 </template>
 <script lang="ts">
-import { XcmChain } from 'src/modules/xcm';
+import { XcmChain } from 'src/v2/models';
 import { defineComponent, PropType } from 'vue';
 import { castChainName } from 'src/modules/xcm';
-import { truncate } from 'src/hooks/helper/common';
+import TokenBalance from 'src/components/common/TokenBalance.vue';
+
 export default defineComponent({
+  components: { TokenBalance },
   props: {
     chain: {
       type: Object as PropType<XcmChain>,
@@ -75,7 +72,7 @@ export default defineComponent({
     },
   },
   setup() {
-    return { castChainName, truncate };
+    return { castChainName };
   },
 });
 </script>

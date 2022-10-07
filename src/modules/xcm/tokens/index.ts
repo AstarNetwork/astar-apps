@@ -1,10 +1,9 @@
 import { Erc20Token } from 'src/modules/token';
-import { Asset } from 'src/v2/models';
+import { Asset, Chain } from 'src/v2/models';
 import { XcmTokenInformation } from 'src/modules/xcm';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { ASTAR_DECIMALS } from 'src/hooks/helper/plasmUtils';
 import { BN } from 'bn.js';
-import { SelectedToken } from 'src/c-bridge';
 import { ASTAR_NATIVE_TOKEN } from 'src/config/chain';
 
 // Acala Note: There is no endpoint to get minBridgeAmount.  But the rule is that Acala doesn't allow transfers that are less value than the equivalent of $0.01USD
@@ -22,7 +21,7 @@ export const xcmToken = {
       originAssetId: '',
       logo: require('/src/assets/img/ic_dot.png'),
       isXcmCompatible: true,
-      originChain: 'Polkadot',
+      originChain: Chain.POLKADOT,
       minBridgeAmount: '1.1',
     },
     {
@@ -32,7 +31,7 @@ export const xcmToken = {
       originAssetId: 'ACA',
       logo: 'https://assets.coingecko.com/coins/images/20634/small/upOKBONH_400x400.jpg?1647420536',
       isXcmCompatible: true,
-      originChain: 'Acala',
+      originChain: Chain.ACALA,
       minBridgeAmount: '0.4',
     },
     {
@@ -42,7 +41,7 @@ export const xcmToken = {
       originAssetId: 'LDOT',
       logo: 'https://assets.coingecko.com/coins/images/25847/small/iShot2022-06-02_13.14.07-removebg-preview.png?1654146888',
       isXcmCompatible: true,
-      originChain: 'Acala',
+      originChain: Chain.ACALA,
       minBridgeAmount: '0.13',
     },
     {
@@ -52,7 +51,7 @@ export const xcmToken = {
       originAssetId: 'AUSD',
       logo: 'https://assets.coingecko.com/coins/images/25812/small/ezgif-1-f4612f5260.png?1653987299',
       isXcmCompatible: true,
-      originChain: 'Acala',
+      originChain: Chain.ACALA,
       minBridgeAmount: '0.1',
     },
     {
@@ -62,8 +61,38 @@ export const xcmToken = {
       originAssetId: 'GLMR',
       logo: 'https://assets.coingecko.com/coins/images/22459/small/glmr.png?1641880985',
       isXcmCompatible: true,
-      originChain: 'Moonbeam',
+      originChain: Chain.MOONBEAM,
       minBridgeAmount: '0.2',
+    },
+    {
+      symbol: 'USDT',
+      isNativeToken: false,
+      assetId: '4294969280',
+      originAssetId: '1984',
+      logo: 'https://assets.coingecko.com/coins/images/325/small/Tether-logo.png?1598003707',
+      isXcmCompatible: true,
+      originChain: Chain.STATEMINT,
+      minBridgeAmount: '0.21',
+    },
+    {
+      symbol: 'IBTC',
+      isNativeToken: false,
+      assetId: '18446744073709551620',
+      originAssetId: 'IBTC',
+      logo: 'https://assets.coingecko.com/coins/images/26217/small/interBTC_for_Exchanges.png?1656578114',
+      isXcmCompatible: true,
+      originChain: Chain.INTERLAY,
+      minBridgeAmount: '0.00000237',
+    },
+    {
+      symbol: 'INTR',
+      isNativeToken: true,
+      assetId: '18446744073709551621',
+      originAssetId: 'INTR',
+      logo: 'https://assets.coingecko.com/coins/images/26180/small/Interlay-Coinbase-2.png?1656382486',
+      isXcmCompatible: true,
+      originChain: Chain.INTERLAY,
+      minBridgeAmount: '0.959',
     },
   ],
   [endpointKey.SHIDEN]: [
@@ -74,7 +103,7 @@ export const xcmToken = {
       originAssetId: '',
       logo: require('/src/assets/img/ic_kusama.png'),
       isXcmCompatible: true,
-      originChain: 'Kusama',
+      originChain: Chain.KUSAMA,
       minBridgeAmount: '0.1',
     },
     {
@@ -84,7 +113,7 @@ export const xcmToken = {
       originAssetId: 'KUSD',
       logo: 'https://assets.coingecko.com/coins/images/25812/small/ezgif-1-f4612f5260.png?1653987299',
       isXcmCompatible: true,
-      originChain: 'Karura',
+      originChain: Chain.KARURA,
       minBridgeAmount: '0.1',
     },
     {
@@ -94,7 +123,7 @@ export const xcmToken = {
       originAssetId: 'KAR',
       logo: 'https://assets.coingecko.com/coins/images/17172/small/karura.jpeg?1626782066',
       isXcmCompatible: true,
-      originChain: 'Karura',
+      originChain: Chain.KARURA,
       // ED: 0.1 KAR (Users can't withdraw 0.1KAR to 0 KAR account due to a fee)
       minBridgeAmount: '0.11',
     },
@@ -105,7 +134,7 @@ export const xcmToken = {
       originAssetId: 'LKSM',
       logo: 'https://resources.acala.network/tokens/LKSM.png',
       isXcmCompatible: true,
-      originChain: 'Karura',
+      originChain: Chain.KARURA,
       minBridgeAmount: '0.0024',
     },
     {
@@ -115,18 +144,38 @@ export const xcmToken = {
       originAssetId: 'MOVR',
       logo: 'https://assets.coingecko.com/coins/images/17984/small/9285.png?1630028620',
       isXcmCompatible: true,
-      originChain: 'Moonriver',
+      originChain: Chain.MOONRIVER,
       minBridgeAmount: '0.007',
     },
     {
       symbol: 'USDT',
-      isNativeToken: true,
+      isNativeToken: false,
       assetId: '4294969280',
       originAssetId: '1984',
       logo: 'https://assets.coingecko.com/coins/images/325/small/Tether-logo.png?1598003707',
       isXcmCompatible: true,
-      originChain: 'Statemine',
+      originChain: Chain.STATEMINE,
       minBridgeAmount: '0.1',
+    },
+    {
+      symbol: 'KBTC',
+      isNativeToken: false,
+      assetId: '18446744073709551621',
+      originAssetId: 'KBTC',
+      logo: 'https://assets.coingecko.com/coins/images/25816/small/jKEvMy-9_400x400.jpeg?1653990781',
+      isXcmCompatible: true,
+      originChain: Chain.KINTSUGI,
+      minBridgeAmount: '0.00000237',
+    },
+    {
+      symbol: 'KINT',
+      isNativeToken: true,
+      assetId: '18446744073709551622',
+      originAssetId: 'KINT',
+      logo: 'https://assets.coingecko.com/coins/images/22045/small/Kintsugi_logo-150x150.jpeg?1640675060',
+      isXcmCompatible: true,
+      originChain: Chain.KINTSUGI,
+      minBridgeAmount: '0.345',
     },
   ],
   [endpointKey.SHIBUYA]: [],
@@ -245,7 +294,7 @@ export const SDN: XcmTokenInformation = {
   originAssetId: 'SDN',
   logo: require('src/assets/img/sdn-token.png'),
   isXcmCompatible: true,
-  originChain: 'Shiden',
+  originChain: Chain.SHIDEN,
   minBridgeAmount: '0.1',
 };
 
@@ -256,7 +305,7 @@ export const ASTR: XcmTokenInformation = {
   originAssetId: 'ASTR',
   logo: require('src/assets/img/astr-token.png'),
   isXcmCompatible: true,
-  originChain: 'Astar',
+  originChain: Chain.ASTAR,
   minBridgeAmount: '0.1',
 };
 

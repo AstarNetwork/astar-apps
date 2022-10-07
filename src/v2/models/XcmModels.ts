@@ -1,3 +1,4 @@
+// Ref: RPC calls -> system -> chain()
 export enum Chain {
   POLKADOT = 'Polkadot',
   ASTAR = 'Astar',
@@ -10,6 +11,9 @@ export enum Chain {
   MOONRIVER = 'Moonriver',
   MOONBEAM = 'Moonbeam',
   STATEMINE = 'Statemine',
+  STATEMINT = 'Statemint',
+  KINTSUGI = 'Kintsugi',
+  INTERLAY = 'Interlay',
 }
 
 export enum parachainIds {
@@ -20,6 +24,9 @@ export enum parachainIds {
   MOONRIVER = 2023,
   MOONBEAM = 2004,
   STATEMINE = 1000,
+  STATEMINT = 1000,
+  KINTSUGI = 2092,
+  INTERLAY = 2032,
 }
 
 export interface XcmChain {
@@ -32,3 +39,15 @@ export interface XcmChain {
   // Note: true if ASTR/SDN is listed on the parachain
   isAstarNativeToken: boolean;
 }
+
+export const isParachain = (network: XcmChain): boolean => !!network.parachainId;
+export const isRelayChain = (network: XcmChain): boolean => !isParachain(network);
+
+// Memo: Chain.STATEMINE -> Bug related to https://github.com/polkadot-js/apps/issues/7812
+export const chainsNotSupportWithdrawal = [Chain.STATEMINE, Chain.STATEMINT];
+export const astarChains = [Chain.ASTAR, Chain.SHIDEN, Chain.ASTAR_EVM, Chain.SHIDEN_EVM];
+export const ethWalletChains = [Chain.MOONBEAM, Chain.MOONRIVER];
+
+export const checkIsDeposit = (fromChain: Chain): boolean => {
+  return !astarChains.includes(fromChain);
+};
