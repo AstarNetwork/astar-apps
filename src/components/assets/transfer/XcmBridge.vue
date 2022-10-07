@@ -13,7 +13,7 @@
           :balance="String(fromAddressBalance)"
           :symbol="token.metadata.symbol"
         />
-        <SelectEvmWallet v-if="isMoonbeamDeposit" :initialize-xcm-api="initializeXcmApi" />
+        <SelectEvmWallet v-if="isDepositEthChain" :initialize-xcm-api="initializeXcmApi" />
         <div v-if="isReverseButton" class="row--reverse">
           <button class="icon--reverse cursor-pointer" @click="reverseChain">
             <astar-icon-sync size="20" />
@@ -30,7 +30,7 @@
           :balance="String(destAddressBalance)"
           :symbol="token.metadata.symbol"
         />
-        <div v-if="isEvmBridge || isMoonbeamWithdrawal">
+        <div v-if="isEvmBridge || isWithdrawalEthChain">
           <SimpleInput
             v-model:selAddress="inputtedAddress"
             :to-address="inputtedAddress"
@@ -79,12 +79,11 @@
             <div />
             <div class="box__available">
               <span class="text--available">
-                {{
-                  $t('assets.modals.balance', {
-                    amount: $n(truncate(fromAddressBalance)),
-                    token: token.metadata.symbol,
-                  })
-                }}
+                <TokenBalance
+                  text="assets.modals.balance"
+                  :balance="fromAddressBalance"
+                  :symbol="token.metadata.symbol"
+                />
               </span>
             </div>
           </div>
@@ -181,7 +180,7 @@
         <button
           class="btn btn--confirm btn-size-adjust"
           :disabled="isDisabledBridge || isDisabledXcmButton"
-          @click="handleBridge"
+          @click="bridge"
         >
           {{ $t('confirm') }}
         </button>
@@ -193,26 +192,24 @@
 import InputSelectChain from 'src/components/assets/transfer/InputSelectChain.vue';
 import SimpleInput from 'src/components/common/SimpleInput.vue';
 import SelectEvmWallet from 'src/components/assets/transfer/SelectEvmWallet.vue';
-import { pathEvm, useAccount, useTooltip, useXcmBridgeV2, useXcmEvm } from 'src/hooks';
+import { pathEvm, useAccount, useTooltip, useXcmBridgeV3 } from 'src/hooks';
 import { truncate } from 'src/hooks/helper/common';
-import { Asset } from 'src/v2/models';
-import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
+import { Asset, ethWalletChains } from 'src/v2/models';
+import { computed, defineComponent, PropType, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ModalLoading from '/src/components/common/ModalLoading.vue';
 import { isValidEvmAddress } from 'src/config/web3';
+import TokenBalance from 'src/components/common/TokenBalance.vue';
+
 export default defineComponent({
   components: {
     SimpleInput,
     InputSelectChain,
     ModalLoading,
     SelectEvmWallet,
+    TokenBalance,
   },
   props: {
-    handleFinalizedCallback: {
-      type: Function,
-      required: false,
-      default: null,
-    },
     setRightUi: {
       type: Function,
       required: true,
@@ -258,23 +255,19 @@ export default defineComponent({
       fromAddressBalance,
       isDeposit,
       isLoadingApi,
-      isAstarNativeTransfer,
       isInputDestAddrManually,
-      isMoonbeamDeposit,
-      isMoonbeamWithdrawal,
+      isWithdrawalEthChain,
       initializeXcmApi,
       inputHandler,
       bridge,
       reverseChain,
       toggleIsInputDestAddrManually,
-    } = useXcmBridgeV2(tokenData);
+    } = useXcmBridgeV3(tokenData);
 
     const isReverseButton = computed<boolean>(() => {
       if (!srcChain.value || !destChain.value || isH160.value) return false;
       return !srcChain.value.name.includes(pathEvm) && !destChain.value.name.includes(pathEvm);
     });
-
-    const { callAssetWithdrawToPara } = useXcmEvm(tokenData);
 
     const handleDisplayTokenSelector = (isFrom: boolean): void => {
       props.setRightUi('select-chain');
@@ -283,35 +276,16 @@ export default defineComponent({
 
     const getNetworkName = (): string => (isDeposit.value ? 'EVM' : destChain.value.name);
 
-    const evmInputPlaceholder = computed<string>(() => {
-      return t('addressPlaceholder', { network: getNetworkName() });
+    const evmInputPlaceholder = computed<string>(() =>
+      t('addressPlaceholder', { network: getNetworkName() })
+    );
+
+    const evmInputTitle = computed<string>(() => t('addressFormat', { network: getNetworkName() }));
+
+    const isDepositEthChain = computed<boolean>(() => {
+      if (!srcChain.value) return false;
+      return ethWalletChains.includes(srcChain.value.name);
     });
-
-    const evmInputTitle = computed<string>(() => {
-      return t('addressFormat', { network: getNetworkName() });
-    });
-
-    // Todo: remove async
-    const finalizeCallback = async (): Promise<void> => {
-      props.handleFinalizedCallback();
-    };
-
-    const handleBridge = async (): Promise<void> => {
-      if (isH160.value) {
-        const txHash = await callAssetWithdrawToPara(
-          amount.value!!,
-          inputtedAddress.value,
-          finalizeCallback
-        );
-
-        if (txHash) {
-          isDisabledBridge.value = true;
-          amount.value = null;
-        }
-      } else {
-        await bridge(finalizeCallback);
-      }
-    };
 
     return {
       errMsg,
@@ -329,17 +303,15 @@ export default defineComponent({
       fromAddressBalance,
       isDeposit,
       isDisplayTooltip,
-      isAstarNativeTransfer,
       currentAccount,
       isInputDestAddrManually,
       isInputtingAddress,
       isReverseButton,
-      isMoonbeamDeposit,
-      isMoonbeamWithdrawal,
+      isDepositEthChain,
+      isWithdrawalEthChain,
       setIsMobileDisplayTooltip,
       inputHandler,
       bridge,
-      handleBridge,
       truncate,
       reverseChain,
       handleDisplayTokenSelector,

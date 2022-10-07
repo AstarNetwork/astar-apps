@@ -68,6 +68,7 @@ export default defineComponent({
     const isLoading = computed(() => store.getters['general/isLoading']);
     const showAlert = computed(() => store.getters['general/showAlert']);
     const isEthWallet = computed<boolean>(() => store.getters['general/isEthWallet']);
+    const currentWallet = computed<string>(() => store.getters['general/currentWallet']);
 
     // Handle busy and extrisnsic call status messages.
     const eventAggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
@@ -99,8 +100,8 @@ export default defineComponent({
     });
 
     // Handle wallet change so we can inject proper wallet
-    watch([isEthWallet], () => {
-      setCurrentWallet(isEthWallet.value);
+    watch([isEthWallet, currentWallet], () => {
+      setCurrentWallet(isEthWallet.value, currentWallet.value);
     });
 
     return {

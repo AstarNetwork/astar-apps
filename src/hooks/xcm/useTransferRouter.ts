@@ -4,17 +4,15 @@ import { ethers } from 'ethers';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { useAccount, useBalance, useNetworkInfo } from 'src/hooks';
 import {
-  astarChains,
-  Chain,
   checkIsSupportAstarNativeToken,
   removeEvmName,
-  XcmChain,
   xcmChains,
   xcmToken,
 } from 'src/modules/xcm';
+import { Chain, XcmChain } from 'src/v2/models/XcmModels';
 import { generateAssetFromEvmToken, generateNativeAsset } from 'src/modules/xcm/tokens';
 import { useStore } from 'src/store';
-import { Asset } from 'src/v2/models';
+import { Asset, astarChains } from 'src/v2/models';
 import { computed, ref, watch, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { EvmAssets, XcmAssets } from 'src/store/assets/state';
@@ -82,34 +80,9 @@ export function useTransferRouter() {
     });
   };
 
-  // Memo: configure the token data since astar native token is not supported on the Relaychain
-  const redirectForRelaychain = (): void => {
-    if (!isTransferPage.value || !xcmOpponentChain.value) return;
-    try {
-      const isSupportAstarNativeToken = checkIsSupportAstarNativeToken(xcmOpponentChain.value);
-      if (isSupportAstarNativeToken || mode.value !== 'xcm') return;
-
-      const relayChainToken = xcmToken[currentNetworkIdx.value]
-        .find((it) => it.originChain === xcmOpponentChain.value)
-        ?.symbol.toLowerCase();
-      if (!relayChainToken) return;
-      if (tokenSymbol.value !== relayChainToken) {
-        router.replace({
-          path: `/${network.value}/assets/transfer`,
-          query: {
-            ...route.query,
-            token: relayChainToken?.toLowerCase(),
-          },
-        });
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const defaultXcmBridgeForNative = computed<string>(() => {
     return currentNetworkIdx.value === endpointKey.ASTAR
-      ? Chain.MOONBEAM.toLowerCase() // Todo: change to Acala after the portal enable the XCM transfer with Acala
+      ? Chain.ACALA.toLowerCase()
       : Chain.KARURA.toLowerCase();
   });
 
@@ -120,6 +93,20 @@ export function useTransferRouter() {
 
     if (!isH160.value && from.value.includes(pathEvm)) {
       redirect();
+    }
+
+    const isAstarNativeTokenToAstarEvm =
+      !isLocalTransfer.value &&
+      to.value.includes(pathEvm) &&
+      tokenSymbol.value.toLowerCase() === nativeTokenSymbol.value.toLowerCase();
+    if (isAstarNativeTokenToAstarEvm) {
+      router.replace({
+        path: `/${network.value}/assets/transfer`,
+        query: {
+          ...route.query,
+          token: tokens.value[0].metadata.symbol.toLowerCase(),
+        },
+      });
     }
 
     if (isH160.value) {
@@ -292,6 +279,7 @@ export function useTransferRouter() {
     if (!isLocalTransfer.value) {
       // if: XCM bridge
       const selectedNetwork = xcmOpponentChain.value;
+      const isAstarEvm = from.value.includes(pathEvm) || to.value.includes(pathEvm);
       const isSupportAstarNativeToken = checkIsSupportAstarNativeToken(selectedNetwork);
       if (isH160.value) {
         const filteredToken = evmTokens.map((it) =>
@@ -306,7 +294,7 @@ export function useTransferRouter() {
         );
       }
       tokens = selectableTokens.filter(({ isXcmCompatible }) => isXcmCompatible);
-      isSupportAstarNativeToken && tokens.push(nativeTokenAsset);
+      !isAstarEvm && isSupportAstarNativeToken && tokens.push(nativeTokenAsset);
     }
     return tokens.length > 0
       ? tokens.sort((a: Asset, b: Asset) => a.metadata.symbol.localeCompare(b.metadata.symbol))
@@ -340,8 +328,7 @@ export function useTransferRouter() {
     const relayChainId =
       currentNetworkIdx.value === endpointKey.ASTAR ? Chain.POLKADOT : Chain.KUSAMA;
     const selectableChains = xcmChains.filter((it) => {
-      // Memo: temporary suspend acala tokens
-      return it.relayChain === relayChainId && it.name !== Chain.ACALA;
+      return it.relayChain === relayChainId;
     });
     selectableChains.sort((a, b) => a.name.localeCompare(b.name));
     return selectableChains;
@@ -358,7 +345,6 @@ export function useTransferRouter() {
   };
 
   watchEffect(handleDefaultConfig);
-  watchEffect(redirectForRelaychain);
   watchEffect(monitorProhibitedPair);
   watch([currentAccount, isH160, xcmAssets], handleIsFoundToken, { immediate: false });
   watchEffect(setNativeTokenBalance);

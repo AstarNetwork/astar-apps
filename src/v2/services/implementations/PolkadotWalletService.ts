@@ -9,7 +9,7 @@ import { Account } from 'src/v2/models';
 import { IMetadataRepository } from 'src/v2/repositories';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { WalletService } from './WalletService';
-import { wait } from 'src/v2/common';
+import { Guard, wait } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
 
 @injectable()
@@ -24,45 +24,70 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
     super(eventAggregator);
   }
 
+  /**
+   * Signs given transaction.
+   * @param extrinsic Transaction to sign.
+   * @param senderAddress Sender address.
+   * @param successMessage Mesage to be displayed to user in case of successful tansaction.
+   * If not defined, default message will be shown.
+   * @param tip Transaction tip, If not provided it will be fetched from gas price provider,
+   */
   public async signAndSend(
     extrinsic: SubmittableExtrinsic<'promise', ISubmittableResult>,
     senderAddress: string,
-    successMessage?: string
-  ): Promise<void> {
+    successMessage?: string,
+    transactionTip?: number
+  ): Promise<string | null> {
+    Guard.ThrowIfUndefined('extrinsic', extrinsic);
+    Guard.ThrowIfUndefined('senderAddress', senderAddress);
+
+    let result: string | null = null;
     try {
-      await this.checkExtension();
-      const tip = this.gasPriceProvider.getTip().price;
-      console.info('transaction tip', tip);
-
-      await extrinsic.signAndSend(
-        senderAddress,
-        {
-          signer: await this.getSigner(senderAddress),
-          nonce: -1,
-          tip: tip ? ethers.utils.parseEther(String(tip)).toString() : '1',
-        },
-        (result) => {
-          if (result.isFinalized) {
-            if (!this.isExtrinsicFailed(result.events)) {
-              this.eventAggregator.publish(
-                new ExtrinsicStatusMessage(
-                  true,
-                  successMessage ?? 'Transaction successfully executed'
-                )
-              );
-            }
-
-            this.eventAggregator.publish(new BusyMessage(false));
-          } else {
-            this.eventAggregator.publish(new BusyMessage(true));
-          }
+      return new Promise<string>(async (resolve) => {
+        await this.checkExtension();
+        let tip = transactionTip?.toString();
+        if (!tip) {
+          tip = this.gasPriceProvider.getTip().price;
+          tip = tip ? ethers.utils.parseEther(tip).toString() : '1';
         }
-      );
+
+        console.info('transaction tip', tip);
+
+        await extrinsic.signAndSend(
+          senderAddress,
+          {
+            signer: await this.getSigner(senderAddress),
+            nonce: -1,
+            tip,
+          },
+          (result) => {
+            if (result.isFinalized) {
+              if (!this.isExtrinsicFailed(result.events)) {
+                this.eventAggregator.publish(
+                  new ExtrinsicStatusMessage(
+                    true,
+                    successMessage ?? 'Transaction successfully executed',
+                    `${extrinsic.method.section}.${extrinsic.method.method}`,
+                    result.txHash.toHex()
+                  )
+                );
+              }
+
+              this.eventAggregator.publish(new BusyMessage(false));
+              resolve(extrinsic.hash.toHex());
+            } else {
+              this.eventAggregator.publish(new BusyMessage(true));
+            }
+          }
+        );
+      });
     } catch (e) {
       const error = e as unknown as Error;
       this.eventAggregator.publish(new ExtrinsicStatusMessage(false, error.message));
       this.eventAggregator.publish(new BusyMessage(false));
     }
+
+    return result;
   }
 
   private async getAccounts(): Promise<Account[]> {

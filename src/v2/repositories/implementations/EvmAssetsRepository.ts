@@ -1,15 +1,22 @@
-import { providerEndpoints } from 'src/config/chainEndpoints';
-import { endpointKey } from './../../../config/chainEndpoints';
 import { injectable } from 'inversify';
-import { CbridgeToken, EvmChain, getSelectedToken, getTransferConfigs } from 'src/c-bridge';
+import {
+  castCbridgeTokenData,
+  CbridgeToken,
+  EvmChain,
+  getSelectedToken,
+  getTransferConfigs,
+} from 'src/c-bridge';
+import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { getTokenBal } from 'src/config/web3';
 import { objToArray } from 'src/hooks/helper/common';
 import { calUsdAmount } from 'src/hooks/helper/price';
 import { Erc20Token } from 'src/modules/token/index';
 import { castCbridgeToErc20, getRegisteredERC20Token } from 'src/modules/token/utils/index';
-import { Guard } from 'src/v2/common';
+import { container, Guard } from 'src/v2/common';
+import { Asset } from 'src/v2/models';
 import { IEvmAssetsRepository } from 'src/v2/repositories/IEvmAssetsRepository';
-import { castCbridgeTokenData } from 'src/c-bridge';
+import { IXcmService } from 'src/v2/services';
+import { Symbols } from 'src/v2/symbols';
 
 @injectable()
 export class EvmAssetsRepository implements IEvmAssetsRepository {
@@ -19,6 +26,8 @@ export class EvmAssetsRepository implements IEvmAssetsRepository {
     currentNetworkIdx: number,
     isFetchUsd: boolean
   ): Promise<Erc20Token[]> {
+    const xcmServiceContainer = container.get<IXcmService>(Symbols.XcmService);
+    const xcmAsset = await xcmServiceContainer.getAssets(currentAccount, false);
     const [cbridgeTokens, registeredTokens] = await Promise.all([
       this.fetchCbridgeAssets({
         currentAccount,
@@ -26,7 +35,13 @@ export class EvmAssetsRepository implements IEvmAssetsRepository {
         srcChainId,
         isFetchUsd,
       }),
-      this.fetchRegisteredAssets({ currentAccount, srcChainId, isFetchUsd }),
+      this.fetchRegisteredAssets({
+        currentAccount,
+        srcChainId,
+        isFetchUsd,
+        network: currentNetworkIdx,
+        assets: xcmAsset.assets,
+      }),
     ]);
     return cbridgeTokens.concat(registeredTokens);
   }
@@ -90,13 +105,17 @@ export class EvmAssetsRepository implements IEvmAssetsRepository {
     currentAccount,
     srcChainId,
     isFetchUsd,
+    network,
+    assets,
   }: {
     currentAccount: string;
     srcChainId: number;
     isFetchUsd: boolean;
+    network: endpointKey;
+    assets: Asset[];
   }): Promise<Erc20Token[]> {
     Guard.ThrowIfUndefined('currentAccount', currentAccount);
-    const tokens = getRegisteredERC20Token();
+    const tokens = getRegisteredERC20Token({ network, assets });
     const registeredTokens = await Promise.all(
       tokens.map(async (token: Erc20Token) => {
         if (token.srcChainId === srcChainId) {

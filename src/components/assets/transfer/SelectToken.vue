@@ -18,9 +18,9 @@
         <div class="column--item-name">
           <span class="text--token-amount">
             {{
-              $t('amountSymbol', {
+              $t('amountToken', {
                 amount: truncate(token.userBalance),
-                symbol: token.metadata.symbol,
+                token: token.metadata.symbol,
               })
             }}
           </span>

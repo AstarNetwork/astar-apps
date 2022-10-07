@@ -46,7 +46,7 @@ export class DappStakingRepository implements IDappStakingRepository {
   private static isEraSubscribed = false;
 
   constructor(
-    @inject(Symbols.Api) private api: IApi,
+    @inject(Symbols.DefaultApi) private api: IApi,
     @inject(Symbols.EventAggregator) private eventAggregator: EventAggregator
   ) {}
 

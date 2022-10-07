@@ -14,7 +14,7 @@ export class SystemRepository implements ISystemRepository {
   private static isBlockSubscribed = false;
 
   constructor(
-    @inject(Symbols.Api) private api: IApi,
+    @inject(Symbols.DefaultApi) private api: IApi,
     @inject(Symbols.EventAggregator) private eventAggregator: EventAggregator
   ) {}
 

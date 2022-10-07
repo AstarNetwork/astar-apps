@@ -1,6 +1,7 @@
 import { ApiPromise } from '@polkadot/api';
 import { Struct } from '@polkadot/types';
 import { ethers } from 'ethers';
+import { ASTAR_NETWORK_IDX } from 'src/config/chain';
 import { endpointKey, getNetworkName } from 'src/config/chainEndpoints';
 import {
   getAccountHistories,
@@ -12,11 +13,10 @@ import { getTimestamp } from 'src/hooks/helper/common';
 import { astarNetworks } from 'src/hooks/xcm/useTransferRouter';
 import { SystemAccount, TxHistory } from 'src/modules/account';
 import { HistoryTxType } from 'src/modules/account/index';
-import { Chain, xcmChainObj } from 'src/modules/xcm';
-import { Asset } from 'src/v2/models';
-import { astarChains, ExistentialDeposit, XcmTokenInformation } from 'src/modules/xcm/index';
-import { xcmToken, astarNativeTokenErcAddr } from 'src/modules/xcm//tokens';
-import { ASTAR_NETWORK_IDX } from 'src/config/chain';
+import { xcmChainObj } from 'src/modules/xcm';
+import { astarNativeTokenErcAddr, xcmToken } from 'src/modules/xcm//tokens';
+import { ExistentialDeposit, XcmTokenInformation } from 'src/modules/xcm/index';
+import { Asset, astarChains, Chain } from 'src/v2/models';
 
 const { XCM_TX_HISTORIES, NETWORK_IDX } = LOCAL_STORAGE;
 interface Account extends Struct {

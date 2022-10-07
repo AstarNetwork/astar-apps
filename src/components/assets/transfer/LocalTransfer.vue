@@ -6,12 +6,11 @@
           <span> {{ $t('from') }}</span>
           <div>
             <span class="text--to--balance">
-              {{
-                $t('assets.modals.balance', {
-                  amount: $n(truncate(fromAddressBalance)),
-                  token: token.metadata.symbol,
-                })
-              }}
+              <TokenBalance
+                text="assets.modals.balance"
+                :balance="fromAddressBalance"
+                :symbol="token.metadata.symbol"
+              />
             </span>
           </div>
         </div>
@@ -30,12 +29,11 @@
           <span> {{ $t('to') }}</span>
           <div>
             <span class="text--to--balance">
-              {{
-                $t('assets.modals.balance', {
-                  amount: $n(truncate(toAddressBalance)),
-                  token: token.metadata.symbol,
-                })
-              }}
+              <TokenBalance
+                text="assets.modals.balance"
+                :balance="toAddressBalance"
+                :symbol="token.metadata.symbol"
+              />
             </span>
           </div>
         </div>
@@ -51,13 +49,12 @@
           <div />
           <div class="box__available">
             <span class="text--to--balance">
-              {{
-                $t('assets.modals.balance', {
-                  amount: $n(truncate(fromAddressBalance)),
-                  token: token.metadata.symbol,
-                })
-              }}</span
-            >
+              <TokenBalance
+                text="assets.modals.balance"
+                :balance="fromAddressBalance"
+                :symbol="token.metadata.symbol"
+              />
+            </span>
             <button v-if="!isTransferNativeToken" class="btn--max" @click="toMaxAmount">
               {{ $t('assets.modals.max') }}
             </button>
@@ -147,26 +144,22 @@ import SpeedConfigurationV2 from 'src/components/common/SpeedConfigurationV2.vue
 import { SupportWallet } from 'src/config/wallets';
 import { useAccount, useNetworkInfo, useWalletIcon, useTokenTransfer } from 'src/hooks';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
-import { truncate } from 'src/hooks/helper/common';
 import { useStore } from 'src/store';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, PropType } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
+import TokenBalance from 'src/components/common/TokenBalance.vue';
 
 export default defineComponent({
   components: {
     InputSelectAccount,
     SpeedConfigurationV2,
     [Jazzicon.name]: Jazzicon,
+    TokenBalance,
   },
   props: {
     accountData: {
       type: Object,
-      required: false,
-      default: null,
-    },
-    handleFinalizedCallback: {
-      type: Function,
       required: false,
       default: null,
     },
@@ -214,16 +207,10 @@ export default defineComponent({
       );
     });
 
-    // Todo: remove async
-    const finalizeCallback = async (): Promise<void> => {
-      props.handleFinalizedCallback();
-    };
-
     const transfer = async (): Promise<void> => {
       await transferAsset({
         transferAmt: Number(transferAmt.value),
         toAddress: toAddress.value,
-        finalizeCallback,
       });
     };
 
@@ -253,7 +240,6 @@ export default defineComponent({
       toMaxAmount,
       getShortenAddress,
       inputHandler,
-      truncate,
     };
   },
 });

@@ -19,7 +19,6 @@
             <LocalTransfer
               :account-data="accountData"
               :class="isHighlightRightUi && 'half-opacity'"
-              :handle-finalized-callback="handleFinalizedCallback"
               :set-right-ui="setRightUi"
               :token="token"
             />
@@ -31,7 +30,6 @@
               :class="isHighlightRightUi && 'half-opacity'"
               :set-right-ui="setRightUi"
               :is-highlight-right-ui="isHighlightRightUi"
-              :handle-finalized-callback="handleFinalizedCallback"
               :set-is-select-from-chain="setIsSelectFromChain"
               :is-disabled-xcm-button="isDisabledXcm"
             />
@@ -90,7 +88,8 @@ import {
   useTransferRouter,
 } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
-import { Chain, removeEvmName, XcmChain, xcmToken } from 'src/modules/xcm';
+import { removeEvmName } from 'src/modules/xcm';
+import { Chain, XcmChain } from 'src/v2/models/XcmModels';
 import { useStore } from 'src/store';
 import { EvmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
@@ -124,7 +123,6 @@ export default defineComponent({
     const { screenSize, width } = useBreakpoints();
     const {
       tokenSymbol,
-      router,
       from,
       to,
       token,
@@ -148,13 +146,10 @@ export default defineComponent({
     const isDisabledXcm = computed<boolean>(() => {
       const isEvmNativeToken =
         isH160.value && tokenSymbol.value === nativeTokenSymbol.value.toLowerCase();
-      const acalaTokens = xcmToken[currentNetworkIdx.value]
-        .filter((it) => it.originChain === Chain.ACALA)
-        .map((it) => it.symbol.toLowerCase());
-      const isAcalaToken = acalaTokens.includes(String(token.value?.metadata.symbol.toLowerCase()));
       const isXcmCompatible = token.value?.isXcmCompatible;
-      return isShibuya.value || isAcalaToken || isEvmNativeToken || !isXcmCompatible;
+      return isShibuya.value || isEvmNativeToken || !isXcmCompatible;
     });
+
     const isTransferNativeToken = computed<boolean>(() => {
       return tokenSymbol.value === nativeTokenSymbol.value.toLowerCase();
     });
@@ -188,9 +183,6 @@ export default defineComponent({
     };
     const handleModalSelectToken = ({ isOpen }: { isOpen: boolean }): void => {
       isModalSelectToken.value = isOpen;
-    };
-    const handleFinalizedCallback = (): void => {
-      router.push('/assets');
     };
 
     const setRightUi = async (ui: RightUi): Promise<void> => {
@@ -276,7 +268,6 @@ export default defineComponent({
       handleModalSelectChain,
       cancelHighlight,
       handleSetIsLocalTransfer,
-      handleFinalizedCallback,
       handleSetToken,
       handleSetChain,
       setIsSelectFromChain,

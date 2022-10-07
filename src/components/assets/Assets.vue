@@ -55,7 +55,6 @@ export default defineComponent({
     const isH160 = computed(() => store.getters['general/isH160Formatted']);
     const isShibuya = computed(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
 
-    // v2
     const xcmAssets = computed<XcmAssets>(() => store.getters['assets/getAllAssets']);
     const ttlNativeXcmUsdAmount = computed<number>(() => xcmAssets.value.ttlNativeXcmUsdAmount);
     const evmAssets = computed<EvmAssets>(() => store.getters['assets/getEvmAllAssets']);
@@ -96,11 +95,19 @@ export default defineComponent({
     watch([currentAccount], handleUpdateXcmTokenAssets, { immediate: true });
     watch([currentAccount], handleUpdateEvmAssets, { immediate: true });
     watchEffect(handleImportingCustomToken);
-    // v2 end
 
     const isEnableXcm = computed(
       () => !isShibuya.value && xcmAssets.value.assets && xcmAssets.value.assets.length > 0
     );
+
+    const handleEvmAssetLoader = (): void => {
+      if (isMainnet.value && isH160.value) {
+        const isAssets = evmAssets.value.assets.length > 0;
+        store.commit('general/setLoading', !isAssets);
+      }
+    };
+
+    watch([evmAssets, xcmAssets, isH160, isMainnet], handleEvmAssetLoader, { immediate: true });
 
     return {
       evmAssets,

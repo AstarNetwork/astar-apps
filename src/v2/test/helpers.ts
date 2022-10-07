@@ -28,6 +28,7 @@ import { container } from '../common';
 import { XcmService } from 'src/v2/services/implementations/XcmService';
 import { BalanceFormatterService } from 'src/v2/services/implementations/BalanceFormatterService';
 import { SystemRepositoryMock } from './mocks/repositories/SystemRepositoryMock';
+import { ITypeFactory, TypeFactory, TypeMapping } from '../config/types';
 
 const TestSymbols = {
   WalletServiceMock: Symbol.for('WalletServiceMock'),
@@ -35,6 +36,9 @@ const TestSymbols = {
 
 const initTestContainer = () => {
   container.addSingleton<IEventAggregator>(EventAggregator);
+  container.addConstant<TypeMapping>(Symbols.TypeMappings, {});
+  container.addSingleton<ITypeFactory>(TypeFactory, Symbols.TypeFactory);
+
   container.addSingleton<IGasPriceProvider>(GasPriceProvider);
   container.addSingleton<IDappStakingRepository>(
     DappStakingRepositoryMock,

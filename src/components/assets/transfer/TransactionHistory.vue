@@ -8,7 +8,9 @@
         <p>{{ time }}</p>
         <div class="row--tx-description">
           <p>[{{ tx.txType }}]</p>
-          <p>{{ $n(truncate(tx.amount)) }} {{ tx.symbol }}</p>
+          <p>
+            <TokenBalance :balance="tx.amount" :symbol="tx.symbol" />
+          </p>
         </div>
         <p>{{ tx.note }}</p>
       </div>
@@ -25,8 +27,10 @@ import { date } from 'quasar';
 import { truncate } from 'src/hooks/helper/common';
 import { RecentHistory } from 'src/modules/information';
 import { defineComponent, PropType } from 'vue';
+import TokenBalance from 'src/components/common/TokenBalance.vue';
 
 export default defineComponent({
+  components: { TokenBalance },
   props: {
     tx: {
       type: Object as PropType<RecentHistory>,

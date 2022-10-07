@@ -107,23 +107,26 @@
   </astar-modal-drawer>
 </template>
 <script lang="ts">
+import { ApiPromise } from '@polkadot/api';
 import copy from 'copy-to-clipboard';
 import { ethers } from 'ethers';
+import { $api } from 'src/boot/api';
 import SelectWallet from 'src/components/header/modals/SelectWallet.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SupportWallet } from 'src/config/wallets';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
-import { wait } from 'src/hooks/helper/common';
-import { castMobileSource, checkIsEthereumWallet } from 'src/hooks/helper/wallet';
+import { truncate, wait } from 'src/hooks/helper/common';
+import {
+  castMobileSource,
+  checkIsEthereumWallet,
+  checkIsNativeWallet,
+} from 'src/hooks/helper/wallet';
+import { fetchNativeBalance } from 'src/modules/account';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
 import { computed, defineComponent, PropType, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { checkIsNativeWallet } from 'src/hooks/helper/wallet';
-import { truncate } from 'src/hooks/helper/common';
-import { fetchNativeBalance } from 'src/modules/account';
-import { ApiPromise } from '@polkadot/api';
-import { $api } from 'src/boot/api';
 
 export default defineComponent({
   components: {
@@ -203,7 +206,7 @@ export default defineComponent({
       () => !substrateAccounts.value.length && props.selectedWallet === SupportWallet.Math
     );
 
-    const selectAccount = async (substrateAccount: string) => {
+    const selectAccount = async (substrateAccount: string): Promise<void> => {
       await props.disconnectAccount();
       if (checkIsEthereumWallet(props.selectedWallet)) {
         props.connectEthereumWallet(props.selectedWallet);
@@ -211,10 +214,15 @@ export default defineComponent({
       isClosing.value = true;
       const animationDuration = 500;
       await wait(animationDuration);
-      substrateAccount && store.commit('general/setCurrentAddress', substrateAccount);
+      if (substrateAccount) {
+        store.commit('general/setCurrentAddress', substrateAccount);
+        const wallet = substrateAccounts.value.find((it) => it.address === substrateAccount);
+        wallet && localStorage.setItem(LOCAL_STORAGE.SELECTED_WALLET, wallet.source);
+      }
       isSelected.value = true;
       isClosing.value = false;
       emit('update:is-open', false);
+      window.dispatchEvent(new CustomEvent(LOCAL_STORAGE.SELECTED_WALLET));
     };
 
     const selAccount = ref<string>('');

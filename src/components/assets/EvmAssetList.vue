@@ -71,7 +71,7 @@
             <div class="column column--balance">
               <div class="column__box">
                 <div class="text--accent">
-                  <span>{{ $n(truncate(bal)) }} {{ nativeTokenSymbol }}</span>
+                  <TokenBalance :balance="bal" :symbol="nativeTokenSymbol" />
                 </div>
                 <div class="text--label">
                   <span>{{ $n(balUsd) }} {{ $t('usd') }}</span>
@@ -132,12 +132,12 @@ import EvmAssetOptions from 'src/components/assets/EvmAssetOptions.vue';
 import EvmCbridgeToken from 'src/components/assets/EvmCbridgeToken.vue';
 import { getBalance } from 'src/config/web3';
 import { useAccount, useBalance, useNetworkInfo, usePrice } from 'src/hooks';
-import { truncate } from 'src/hooks/helper/common';
 import { Erc20Token, getTokenImage } from 'src/modules/token';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
 import ModalFaucet from 'src/components/assets/modals/ModalFaucet.vue';
 import { buildTransferPageLink } from 'src/router/routes';
+import TokenBalance from 'src/components/common/TokenBalance.vue';
 
 export default defineComponent({
   components: {
@@ -145,6 +145,7 @@ export default defineComponent({
     ModalFaucet,
     Erc20Currency,
     EvmAssetOptions,
+    TokenBalance,
   },
   props: {
     tokens: {
@@ -265,7 +266,6 @@ export default defineComponent({
       setIsSearch,
       handleModalFaucet,
       checkIsCbridgeToken,
-      truncate,
       toggleIsHideSmallBalances,
     };
   },
