@@ -69,11 +69,15 @@ export default defineComponent({
       display: none;
     }
   }
+  @media (min-width: $xxl) {
+    justify-content: start;
+  }
 }
 
 .card {
   padding: 16px;
   flex-basis: 30%;
+  max-width: 306px;
   cursor: pointer;
   .wrapper--card {
     display: flex;
@@ -145,18 +149,18 @@ export default defineComponent({
       }
     }
   }
-  &:hover {
+  @mixin hover {
     background: rgba(255, 255, 255, 0.5);
     box-shadow: 0px 0px 24px 10px rgba(0, 0, 0, 0.1);
     border-radius: 6px;
   }
+  &:hover {
+    @include hover;
+  }
+  @media (max-width: $lg) {
+    @include hover;
+  }
 }
-
-// .stake-card {
-//   background: rgba(255, 255, 255, 0.5);
-//   box-shadow: 0px 0px 24px 10px rgba(0, 0, 0, 0.1);
-//   border-radius: 6px;
-// }
 
 .body--dark {
   .card {
@@ -179,14 +183,16 @@ export default defineComponent({
         color: $gray-3;
       }
     }
-    &:hover {
+    @mixin hover {
       background: rgba(247, 247, 248, 0.03);
       box-shadow: 0px 0px 24px 5px rgba(0, 0, 0, 0.15);
     }
+    &:hover {
+      @include hover;
+    }
+    @media (max-width: $lg) {
+      @include hover;
+    }
   }
-  // .stake-card {
-  //   background: rgba(247, 247, 248, 0.03);
-  //   box-shadow: 0px 0px 24px 5px rgba(0, 0, 0, 0.15);
-  // }
 }
 </style>
