@@ -1,7 +1,7 @@
 <template>
   <div v-if="dapp" class="wrapper--builders">
     <div class="row--builders-title">
-      <span class="text--xl"> {{ $t('dappStaking.dappPage.builders') }}</span>
+      <span class="text--xl text--color"> {{ $t('dappStaking.dappPage.builders') }}</span>
     </div>
     <div class="box--builders">
       <div class="card--builders">

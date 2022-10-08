@@ -6,7 +6,7 @@
       </div>
       <div class="column--details">
         <div class="row--dapp-title">
-          <span class="text--xl">{{ dapp.dapp.name }}</span>
+          <span class="text--xl text--color">{{ dapp.dapp.name }}</span>
         </div>
         <div v-if="dapp.dapp.tags" class="row--tags">
           <div v-for="tag in dapp.dapp.tags" :key="tag" class="tag">

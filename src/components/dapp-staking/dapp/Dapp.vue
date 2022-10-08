@@ -4,6 +4,7 @@
     <DappStatistics :dapp="dapp" />
     <DappImages :dapp="dapp" />
     <Builders :dapp="dapp" />
+    <ProjectOverview :dapp="dapp" />
   </div>
 </template>
 <script lang="ts">
@@ -16,11 +17,10 @@ import DappAvatar from 'src/components/dapp-staking/dapp/DappAvatar.vue';
 import DappStatistics from 'src/components/dapp-staking/dapp/DappStatistics.vue';
 import DappImages from 'src/components/dapp-staking/dapp/DappImages.vue';
 import Builders from 'src/components/dapp-staking/dapp/Builders.vue';
-
-export type StakeRightUi = 'information' | 'select-funds-from';
+import ProjectOverview from 'src/components/dapp-staking/dapp/ProjectOverview.vue';
 
 export default defineComponent({
-  components: { DappAvatar, DappStatistics, DappImages, Builders },
+  components: { DappAvatar, DappStatistics, DappImages, Builders, ProjectOverview },
   setup() {
     const { currentNetworkName } = useNetworkInfo();
     const route = useRoute();

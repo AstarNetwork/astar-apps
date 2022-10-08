@@ -184,6 +184,7 @@ export default {
       totalStaked: 'Total Staked',
       totalStaker: 'Total Staker',
       builders: 'Builders',
+      projectOverview: 'Project Overview',
     },
     modals: {
       alreadyClaimed: 'Already claimed:',
