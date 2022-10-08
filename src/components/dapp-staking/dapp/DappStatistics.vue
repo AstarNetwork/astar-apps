@@ -46,9 +46,8 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
+  setup() {
     const { nativeTokenSymbol } = useNetworkInfo();
-
     return { nativeTokenSymbol };
   },
 });

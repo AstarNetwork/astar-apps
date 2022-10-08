@@ -183,6 +183,7 @@ export default {
     dappPage: {
       totalStaked: 'Total Staked',
       totalStaker: 'Total Staker',
+      builders: 'Builders',
     },
     modals: {
       alreadyClaimed: 'Already claimed:',

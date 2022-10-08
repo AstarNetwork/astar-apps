@@ -1,6 +1,9 @@
 @import 'src/css/quasar.variables.scss';
 
 .wrapper--dapp-images {
+  border-bottom: 1px solid $gray-5;
+  padding-bottom: 24px;
+  margin-bottom: 24px;
 }
 
 .box--carousel {

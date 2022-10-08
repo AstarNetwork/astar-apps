@@ -1,6 +1,14 @@
 <template>
-  <div v-if="images.length > 0" class="wrapper--dapp-images">
-    <q-carousel v-model="slide" animated arrows navigation infinite class="box--carousel">
+  <div class="wrapper--dapp-images">
+    <q-carousel
+      v-if="images.length > 0"
+      v-model="slide"
+      animated
+      arrows
+      navigation
+      infinite
+      class="box--carousel"
+    >
       <q-carousel-slide
         v-for="(image, index) in images"
         :key="index"
