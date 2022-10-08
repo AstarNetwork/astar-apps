@@ -180,6 +180,10 @@ export default {
       backToDappList: 'Back to dApps list',
       whereFundsFrom: 'Where would you like to bring you funds from?',
     },
+    dappPage: {
+      totalStaked: 'Total Staked',
+      totalStaker: 'Total Staker',
+    },
     modals: {
       alreadyClaimed: 'Already claimed:',
       contractRewards: 'Contract rewards:',

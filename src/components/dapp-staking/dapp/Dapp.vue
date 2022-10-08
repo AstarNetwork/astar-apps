@@ -1,6 +1,8 @@
 <template>
   <div v-if="dapp">
     <DappAvatar :dapp="dapp" />
+    <DappStatistics :dapp="dapp" />
+    <DappImages :dapp="dapp" />
   </div>
 </template>
 <script lang="ts">
@@ -10,11 +12,13 @@ import { useStore } from 'src/store';
 import { computed, defineComponent, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
 import DappAvatar from 'src/components/dapp-staking/dapp/DappAvatar.vue';
+import DappStatistics from 'src/components/dapp-staking/dapp/DappStatistics.vue';
+import DappImages from 'src/components/dapp-staking/dapp/DappImages.vue';
 
 export type StakeRightUi = 'information' | 'select-funds-from';
 
 export default defineComponent({
-  components: { DappAvatar },
+  components: { DappAvatar, DappStatistics, DappImages },
   setup() {
     const { currentNetworkName } = useNetworkInfo();
     const route = useRoute();
@@ -50,6 +54,7 @@ export default defineComponent({
     watchEffect(dispatchGetDapps);
 
     watchEffect(() => {
+      if (!dapp.value) return;
       console.log('dapp', dapp.value);
     });
 

@@ -1,0 +1,47 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--dapp-statistics {
+  padding-top: 24px;
+  margin-bottom: 24px;
+}
+
+.column--statistics {
+  background: $gray-1;
+  width: 100%;
+  padding: 8px 16px;
+  border-radius: 6px;
+}
+
+.row--statistics {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 0px;
+}
+
+.separator--statistics {
+  border-bottom: 1px solid $gray-6;
+}
+
+.text--statistics-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: $gray-7;
+}
+
+.text--statistics-value {
+  font-weight: 600;
+  font-size: 16px;
+  color: $gray-7;
+}
+
+.body--dark {
+  .column--statistics {
+    background: $gray-7;
+  }
+  .text--statistics-title {
+    color: $gray-3;
+  }
+  .text--statistics-value {
+    color: $gray-1;
+  }
+}
