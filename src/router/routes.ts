@@ -7,6 +7,7 @@ import Store from 'src/pages/DappStaking.vue';
 import Dashboard from 'src/pages/Dashboard.vue';
 import RegisterDapp from 'src/pages/RegisterDapp.vue';
 import StakeManage from 'src/pages/StakeManage.vue';
+import DappPage from 'src/pages/DappPage.vue';
 import DappsHome from 'src/v2/components/dapp-staking/DappsHome.vue';
 import { RouteRecordRaw } from 'vue-router';
 
@@ -24,6 +25,7 @@ export enum Path {
   DappStaking = '/dapp-staking',
   Discover = '/discover',
   Stake = '/stake',
+  Dapp = '/dapp',
   Transfer = '/transfer',
 }
 
@@ -113,6 +115,10 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'stake',
         component: StakeManage,
+      },
+      {
+        path: 'dapp',
+        component: DappPage,
       },
       {
         path: 'register',
