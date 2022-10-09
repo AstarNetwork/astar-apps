@@ -1,7 +1,7 @@
 @import 'src/css/quasar.variables.scss';
 
 .wrapper--project-overview {
-  border-bottom: 1px solid $gray-5;
+  border-bottom: 1px solid $gray-2;
   padding-bottom: 24px;
   margin-bottom: 24px;
 }
@@ -11,4 +11,7 @@
 }
 
 .body--dark {
+  .wrapper--project-overview {
+    border-bottom: 1px solid $gray-5;
+  }
 }

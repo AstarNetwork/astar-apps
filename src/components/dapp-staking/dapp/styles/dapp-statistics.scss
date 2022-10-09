@@ -19,7 +19,7 @@
 }
 
 .separator--statistics {
-  border-bottom: 1px solid $gray-6;
+  border-bottom: 1px solid $gray-2;
 }
 
 .text--statistics-title {
@@ -35,6 +35,10 @@
 }
 
 .body--dark {
+  .separator--statistics {
+    border-bottom: 1px solid $gray-6;
+  }
+
   .column--statistics {
     background: $gray-7;
   }

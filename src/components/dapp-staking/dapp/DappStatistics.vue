@@ -16,7 +16,7 @@
           </span>
         </div>
       </div>
-      <div class="separator--statistics"></div>
+      <div class="separator--statistics" />
       <div class="row--statistics">
         <div>
           <span class="text--statistics-title">

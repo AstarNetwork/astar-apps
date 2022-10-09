@@ -5,6 +5,7 @@
     <DappImages :dapp="dapp" />
     <Builders :dapp="dapp" />
     <ProjectOverview :dapp="dapp" />
+    <ProjectDetails :dapp="dapp" />
   </div>
 </template>
 <script lang="ts">
@@ -18,9 +19,10 @@ import DappStatistics from 'src/components/dapp-staking/dapp/DappStatistics.vue'
 import DappImages from 'src/components/dapp-staking/dapp/DappImages.vue';
 import Builders from 'src/components/dapp-staking/dapp/Builders.vue';
 import ProjectOverview from 'src/components/dapp-staking/dapp/ProjectOverview.vue';
+import ProjectDetails from 'src/components/dapp-staking/dapp/ProjectDetails.vue';
 
 export default defineComponent({
-  components: { DappAvatar, DappStatistics, DappImages, Builders, ProjectOverview },
+  components: { DappAvatar, DappStatistics, DappImages, Builders, ProjectOverview, ProjectDetails },
   setup() {
     const { currentNetworkName } = useNetworkInfo();
     const route = useRoute();
