@@ -1,21 +1,23 @@
 <template>
   <div>
-    <div class="txt--header">My Staking</div>
+    <div class="txt--header">{{ $t('dappStaking.myStaking') }}</div>
     <div class="staking-container">
       <div class="wrapper--tabs responsive">
         <nav class="tabs">
           <div class="tab" :class="currentTab === 0 ? 'active' : ''" @click="currentTab = 0">
-            My Rewards
+            {{ $t('dappStaking.myRewards') }}
           </div>
           <div class="tab" :class="currentTab === 1 ? 'active' : ''" @click="currentTab = 1">
-            Unbonding
+            {{ $t('dappStaking.unbonding') }}
           </div>
           <div class="tab" :class="currentTab === 2 ? 'active' : ''" @click="currentTab = 2">
-            My dApps
+            {{ $t('dappStaking.myDapps') }}
           </div>
         </nav>
 
-        <div class="text--transferable">Transferable Balance : 20,432.1 ASTR</div>
+        <div class="text--transferable">
+          {{ $t('dappStaking.transferableBalance') }} : 20,432.1 ASTR
+        </div>
       </div>
       <div class="wrapper--panel">
         <template v-if="currentTab === 0">

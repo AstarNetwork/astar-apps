@@ -5,23 +5,25 @@
         <table id="my-table">
           <thead>
             <tr>
-              <th>dApps</th>
-              <th>Staked Amount</th>
-              <th>Total Earned</th>
-              <th>Manage</th>
+              <th>{{ $t('myDapps.dapps') }}</th>
+              <th>{{ $t('myDapps.stakedAmount') }}</th>
+              <th>{{ $t('myDapps.totalEarned') }}</th>
+              <th>{{ $t('myDapps.manage') }}</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="t in items" :key="t.id">
               <td>{{ t.name }}</td>
-              <td>{{ t.stakedAmount.toLocaleString() }} ASTR</td>
-              <td>{{ t.totalEarned.toLocaleString() }} ASTR</td>
+              <td><TokenBalance :balance="t.stakedAmount" symbol="ASTR" /></td>
+              <td><TokenBalance :balance="t.totalEarned" symbol="ASTR" /></td>
               <td>
                 <div class="row--manage">
-                  <astar-button width="97" height="24" :disabled="!t.isEnabled">Add</astar-button>
-                  <astar-button width="97" height="24" :disabled="!t.isEnabled"
-                    >Unbond</astar-button
-                  >
+                  <astar-button width="97" height="24" :disabled="!t.isEnabled">{{
+                    $t('myDapps.add')
+                  }}</astar-button>
+                  <astar-button width="97" height="24" :disabled="!t.isEnabled">{{
+                    $t('myDapps.unbond')
+                  }}</astar-button>
                 </div>
               </td>
             </tr>
@@ -38,9 +40,10 @@
 import { defineComponent } from 'vue';
 import { useBreakpoints } from 'src/hooks';
 import DropdownList from './components/DropdownList.vue';
+import TokenBalance from 'src/components/common/TokenBalance.vue';
 
 export default defineComponent({
-  components: { DropdownList },
+  components: { DropdownList, TokenBalance },
   setup() {
     const { width, screenSize } = useBreakpoints();
 

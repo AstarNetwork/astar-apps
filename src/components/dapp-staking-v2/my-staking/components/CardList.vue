@@ -40,7 +40,7 @@ export default defineComponent({
   },
   setup() {
     const { width, screenSize } = useBreakpoints();
-    const hoverIndex = ref(-1);
+    const hoverIndex = ref<number>(-1);
 
     return {
       hoverIndex,

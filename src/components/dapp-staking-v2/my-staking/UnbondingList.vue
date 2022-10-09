@@ -5,10 +5,10 @@
         <table id="my-table">
           <thead>
             <tr>
-              <th>dApps</th>
-              <th>Unbonding amount</th>
-              <th>Remaining Era</th>
-              <th>Withdraw</th>
+              <th>{{ $t('myDapps.dapps') }}</th>
+              <th>{{ $t('myDapps.unbondingAmount') }}</th>
+              <th>{{ $t('myDapps.remainingEra') }}</th>
+              <th>{{ $t('myDapps.withdraw') }}</th>
             </tr>
           </thead>
           <tbody>
@@ -18,13 +18,15 @@
               <td>
                 <div class="row--remaining-era">
                   <div>{{ t.remainingEra }}</div>
-                  <astar-irregular-button width="77" height="20">Re-bond</astar-irregular-button>
+                  <astar-irregular-button width="77" height="20">{{
+                    $t('myDapps.rebond')
+                  }}</astar-irregular-button>
                 </div>
               </td>
               <td>
-                <astar-button width="97" height="24" :disabled="!t.isEnabled"
-                  >Withdraw</astar-button
-                >
+                <astar-button width="97" height="24" :disabled="!t.isEnabled">{{
+                  $t('myDapps.withdraw')
+                }}</astar-button>
               </td>
             </tr>
           </tbody>

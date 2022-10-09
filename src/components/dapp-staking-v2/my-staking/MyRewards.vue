@@ -2,67 +2,69 @@
   <div class="wrapper--cards">
     <div class="card">
       <p>
-        Total Staked
+        {{ $t('myReward.totalStaked') }}
         <span class="wrapper--icon-help">
           <astar-icon-help size="16" />
         </span>
         <q-tooltip>
-          <span class="text--tooltip">Total Staked</span>
+          <span class="text--tooltip">{{ $t('myReward.totalStaked') }}</span>
         </q-tooltip>
       </p>
       <div class="row--data">
         <div v-if="isLoading" class="loading">
-          <q-skeleton type="rect" />
+          <q-skeleton type="rect" animation="fade" />
         </div>
-        <div v-else class="value">{{ item.totalStaked.toLocaleString() }} ASTR</div>
+        <div v-else class="value">
+          <TokenBalance :balance="item.totalStaked" symbol="ASTR" />
+        </div>
       </div>
     </div>
     <div class="card">
       <p>
-        Available to claim
+        {{ $t('myReward.availableToClaim') }}
         <span class="wrapper--icon-help">
           <astar-icon-help size="16" />
         </span>
         <q-tooltip>
-          <span class="text--tooltip">Available to claim</span>
+          <span class="text--tooltip">{{ $t('myReward.availableToClaim') }}</span>
         </q-tooltip>
       </p>
       <div class="row--data">
         <div v-if="isLoading" class="loading">
-          <q-skeleton type="rect" />
+          <q-skeleton type="rect" animation="fade" />
         </div>
-        <div v-else class="value">{{ item.availableEra }} Era</div>
-        <astar-button width="80" height="24">Claim</astar-button>
+        <div v-else class="value">{{ item.availableEra }} {{ $t('myReward.era') }}</div>
+        <astar-button width="80" height="24">{{ $t('myReward.claim') }}</astar-button>
       </div>
     </div>
     <div class="card">
       <p>
-        Re-Stake after claiming
+        {{ $t('myReward.restake') }}
         <span class="wrapper--icon-help">
           <astar-icon-help size="16" />
         </span>
         <q-tooltip>
-          <span class="text--tooltip">Re-Stake after claiming</span>
+          <span class="text--tooltip">{{ $t('myReward.restake') }}</span>
         </q-tooltip>
       </p>
       <div class="row--data">
         <div class="value">ON</div>
-        <astar-button width="80" height="24">Turn Off</astar-button>
+        <astar-button width="80" height="24">{{ $t('myReward.turnOff') }}</astar-button>
       </div>
     </div>
     <div class="card">
       <p>
-        Total Earned (all-time)
+        {{ $t('myReward.totalEarned') }}
         <span class="wrapper--icon-help">
           <astar-icon-help size="16" />
         </span>
         <q-tooltip>
-          <span class="text--tooltip">Total Earned (all-time)</span>
+          <span class="text--tooltip">{{ $t('myReward.totalEarned') }}</span>
         </q-tooltip>
       </p>
       <div class="row--data">
         <div v-if="isLoading" class="loading">
-          <q-skeleton type="rect" />
+          <q-skeleton type="rect" animation="fade" />
         </div>
         <div v-else class="value">{{ item.totalEarned.toLocaleString() }} ASTR</div>
         <astar-irregular-button>
@@ -76,7 +78,12 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
+import TokenBalance from 'src/components/common/TokenBalance.vue';
+
 export default defineComponent({
+  components: {
+    TokenBalance,
+  },
   setup() {
     const item = {
       totalStaked: 500000,

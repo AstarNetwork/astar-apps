@@ -6,25 +6,27 @@
     }'); margin-top: 40px;`"
   >
     <div class="wrapper--title">
-      <div class="txt--title animate__animated animate__zoomInRight">Build2Earn</div>
+      <div class="txt--title animate__animated animate__zoomInRight">
+        {{ $t('topMetric.build2earn') }}
+      </div>
       <div class="txt--subtitle animate__animated animate__fadeIn animate__delay-1s">
-        An innovative way of Staking
+        {{ $t('topMetric.wayOfStaking') }}
       </div>
     </div>
     <div class="wrapper--cards">
       <div class="card">
         <p>
-          TVL in dApps
+          {{ $t('topMetric.tvlInDapps') }}
           <span class="wrapper--icon-help">
             <astar-icon-help size="16" />
           </span>
           <q-tooltip>
-            <span class="text--tooltip">TVL in dApps</span>
+            <span class="text--tooltip">{{ $t('topMetric.tvlInDapps') }}</span>
           </q-tooltip>
         </p>
         <div class="row--data">
           <div v-if="isLoading" class="loading">
-            <q-skeleton type="rect" />
+            <q-skeleton type="rect" animation="fade" />
           </div>
           <div v-else class="value">
             {{ item.tvl.toLocaleString() }} ASTR (${{ item.tvlUSD.toLocaleString() }})
@@ -33,17 +35,17 @@
       </div>
       <div class="card">
         <p>
-          Current Era
+          {{ $t('topMetric.currentEra') }}
           <span class="wrapper--icon-help">
             <astar-icon-help size="16" />
           </span>
           <q-tooltip>
-            <span class="text--tooltip">Current Era</span>
+            <span class="text--tooltip">{{ $t('topMetric.currentEra') }}</span>
           </q-tooltip>
         </p>
         <div class="row--data">
           <div v-if="isLoading" class="loading">
-            <q-skeleton type="rect" />
+            <q-skeleton type="rect" animation="fade" />
           </div>
           <div v-else class="value">
             <div>{{ item.currentEra }}</div>
@@ -53,34 +55,34 @@
       </div>
       <div class="card">
         <p>
-          Current Stakers APR
+          {{ $t('topMetric.currentStakersApr') }}
           <span class="wrapper--icon-help">
             <astar-icon-help size="16" />
           </span>
           <q-tooltip>
-            <span class="text--tooltip">Current Stakers APR</span>
+            <span class="text--tooltip">{{ $t('topMetric.currentStakersApr') }}</span>
           </q-tooltip>
         </p>
         <div class="row--data">
           <div v-if="isLoading" class="loading">
-            <q-skeleton type="rect" />
+            <q-skeleton type="rect" animation="fade" />
           </div>
           <div v-else class="value">{{ item.currentAPR.toFixed(2) }}%</div>
         </div>
       </div>
       <div class="card">
         <p>
-          Total dApps
+          {{ $t('topMetric.totalDapps') }}
           <span class="wrapper--icon-help">
             <astar-icon-help size="16" />
           </span>
           <q-tooltip>
-            <span class="text--tooltip">Total dApps</span>
+            <span class="text--tooltip">{{ $t('topMetric.totalDapps') }}</span>
           </q-tooltip>
         </p>
         <div class="row--data">
           <div v-if="isLoading" class="loading">
-            <q-skeleton type="rect" />
+            <q-skeleton type="rect" animation="fade" />
           </div>
           <div v-else class="value">{{ item.totalDapps.toLocaleString() }}</div>
         </div>

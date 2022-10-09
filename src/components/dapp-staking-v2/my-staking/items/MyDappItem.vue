@@ -3,8 +3,8 @@
     <table>
       <thead>
         <tr>
-          <th>Staked Amount</th>
-          <th>Total Earned</th>
+          <th>{{ $t('myDapps.stakedAmount') }}</th>
+          <th>{{ $t('myDapps.totalEarned') }}</th>
         </tr>
       </thead>
       <tbody>
@@ -15,8 +15,12 @@
       </tbody>
     </table>
     <div class="row--manage">
-      <astar-button width="97" height="24" :disabled="!item.isEnabled">Add</astar-button>
-      <astar-button width="97" height="24" :disabled="!item.isEnabled">Unbond</astar-button>
+      <astar-button width="97" height="24" :disabled="!item.isEnabled">{{
+        $t('myDapps.add')
+      }}</astar-button>
+      <astar-button width="97" height="24" :disabled="!item.isEnabled">{{
+        $t('myDapps.unbond')
+      }}</astar-button>
     </div>
   </div>
 </template>
