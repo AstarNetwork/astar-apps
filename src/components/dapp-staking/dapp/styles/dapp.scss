@@ -1,1 +1,10 @@
 @import 'src/css/quasar.variables.scss';
+
+.row--project-overview {
+  display: flex;
+  flex-direction: column;
+  @media (min-width: $sm) {
+    flex-direction: row;
+    column-gap: 16px;
+  }
+}

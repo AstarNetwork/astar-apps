@@ -1,5 +1,5 @@
 <template>
-  <div v-if="dapp" class="wrapper--builders">
+  <div class="wrapper--builders">
     <div class="row--builders-title">
       <span class="text--xl text--color"> {{ $t('dappStaking.dappPage.builders') }}</span>
     </div>
@@ -13,12 +13,30 @@
           </div>
         </div>
         <div class="row--icons">
-          <astar-icon-base class="icon" viewBox="0 0 448 512" icon-name="Twitter">
-            <astar-icon-twitter />
-          </astar-icon-base>
-          <astar-icon-base class="icon" viewBox="0 0 448 512" icon-name="Twitter">
-            <astar-icon-github />
-          </astar-icon-base>
+          <button class="box--share btn--primary">
+            <div class="icon--social">
+              <a href="" target="_blank" rel="noopener noreferrer">
+                <astar-icon-base viewBox="0 0 512 512" icon-name="Twitter">
+                  <astar-icon-twitter />
+                </astar-icon-base>
+              </a>
+            </div>
+            <q-tooltip>
+              <span class="text--tooltip">{{ $t('common.twitter') }}</span>
+            </q-tooltip>
+          </button>
+          <button class="box--share btn--primary">
+            <div class="icon--social">
+              <a href="" target="_blank" rel="noopener noreferrer">
+                <astar-icon-base viewBox="0 0 512 512" icon-name="Telegram">
+                  <astar-icon-github />
+                </astar-icon-base>
+              </a>
+            </div>
+            <q-tooltip>
+              <span class="text--tooltip">{{ $t('common.github') }}</span>
+            </q-tooltip>
+          </button>
         </div>
       </div>
     </div>

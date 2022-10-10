@@ -1,5 +1,5 @@
 <template>
-  <div v-if="dapp" class="wrapper--dapp-statistics">
+  <div class="wrapper--dapp-statistics">
     <div class="column--statistics">
       <div class="row--statistics">
         <div>

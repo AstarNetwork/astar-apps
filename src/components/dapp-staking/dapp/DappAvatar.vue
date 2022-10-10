@@ -1,5 +1,5 @@
 <template>
-  <div v-if="dapp" class="wrapper--dapp-avatar">
+  <div class="wrapper--dapp-avatar">
     <div class="column--avatar">
       <div>
         <img class="image--dapp-icon" :src="dapp.dapp.iconUrl" :alt="dapp.dapp.name" />
@@ -14,11 +14,13 @@
           </div>
         </div>
         <div class="row--stake">
-          <astar-button class="btn-size--stake">
-            <span class="text--btn-stake">
-              {{ $t('dappStaking.stake') }}
-            </span>
-          </astar-button>
+          <router-link :to="buildStakePageLink(dapp.dapp.address)">
+            <astar-button class="btn-size--stake">
+              <span class="text--btn-stake">
+                {{ $t('dappStaking.stake') }}
+              </span>
+            </astar-button>
+          </router-link>
         </div>
       </div>
     </div>
@@ -32,14 +34,23 @@
   </div>
 </template>
 <script lang="ts">
+import { networkParam, Path } from 'src/router/routes';
 import { defineComponent } from 'vue';
-
 export default defineComponent({
   props: {
     dapp: {
       type: Object,
       required: true,
     },
+  },
+  setup(props) {
+    const buildStakePageLink = (address: string): string => {
+      const base = networkParam + Path.DappStaking + Path.Stake;
+      return `${base}?dapp=${address.toLowerCase()}`;
+    };
+    return {
+      buildStakePageLink,
+    };
   },
 });
 </script>

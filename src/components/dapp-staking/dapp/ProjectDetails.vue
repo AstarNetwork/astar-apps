@@ -1,5 +1,5 @@
 <template>
-  <div v-if="dapp" class="wrapper--project-details">
+  <div class="wrapper--project-details">
     <div class="box--details">
       <div class="row--item">
         <div class="row--item-title">
@@ -11,9 +11,6 @@
           </span>
         </div>
         <div class="row--websites">
-          <span class="text--website">
-            {{ $t('dappStaking.dappPage.goToApp') }}
-          </span>
           <a class="text--website" :href="dapp.dapp.url" target="_blank" rel="noopener noreferrer">
             {{ $t('dappStaking.dappPage.goToWebsite') }}
           </a>
@@ -29,28 +26,12 @@
         </div>
         <div>
           <div class="tag">
+            <!-- Todo: get the value from db -->
             <span class="text--tag">
               {{ $t('evm') }}
               <!-- {{ $t('wasm') }} -->
             </span>
           </div>
-        </div>
-      </div>
-      <div class="separator--details" />
-      <div class="row--item">
-        <div class="row--item-title">
-          <div class="icon">
-            <astar-icon-wallet />
-          </div>
-          <span>{{ $t('dappStaking.dappPage.wallets') }}</span>
-        </div>
-        <div class="row--tags">
-          <div class="tag">
-            <span class="text--tag">MetaMask</span>
-          </div>
-          <!-- <div class="tag">
-            <span class="text--tag">Polkadot.js</span>
-          </div> -->
         </div>
       </div>
       <div class="separator--details" />

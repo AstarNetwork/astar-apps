@@ -6,12 +6,102 @@
   margin-bottom: 24px;
 }
 
-.box--carousel {
-  height: 200px;
+.main-scroll-div {
+  width: 1200px;
+  width: 90%;
+  display: flex;
+  align-items: center;
 }
 
-.dapp-image {
-  border-radius: 6px;
+.cover {
+  position: relative;
+  width: 90%;
+  width: 50%;
+}
+
+.row--images {
+  display: flex;
+  align-items: center;
+  column-gap: 0px;
+  @media (min-width: $lg) {
+    column-gap: 24px;
+  }
+}
+
+.scroll-images {
+  width: 280px;
+  height: auto;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  overflow: auto;
+  position: relative;
+  scroll-behavior: smooth;
+  @media (min-width: 400px) {
+    width: 320px;
+  }
+  @media (min-width: 500px) {
+    width: 400px;
+  }
+  @media (min-width: 600px) {
+    width: 450px;
+  }
+  @media (min-width: $sm) {
+    width: 500px;
+  }
+  @media (min-width: 700px) {
+    width: 600px;
+  }
+  @media (min-width: $md) {
+    width: 700px;
+  }
+  @media (min-width: 900px) {
+    width: 800px;
+  }
+  @media (min-width: $lg) {
+    width: 650px;
+  }
+  @media (min-width: 1100px) {
+    width: 700px;
+  }
+  @media (min-width: 1200px) {
+    width: 800px;
+  }
+  @media (min-width: $xl) {
+    width: 900px;
+  }
+  @media (min-width: $xxl) {
+    width: 1000px;
+  }
+}
+
+.child {
+  min-width: 240px;
+  height: 160px;
+  margin: 1px 10px;
+  overflow: hidden;
+  border-radius: 12px;
+  @media (min-width: $sm) {
+    min-width: 260px;
+    height: 170px;
+  }
+  @media (min-width: $md) {
+    min-width: 420px;
+    height: 260px;
+  }
+}
+
+.scroll-images::-webkit-scrollbar {
+  // -webkit-appearance: none;
+}
+
+.child-img {
+  width: 100%;
+  height: 100%;
+}
+
+.button-arrow {
+  color: $astar-blue;
 }
 
 .body--dark {

@@ -10,9 +10,6 @@
   margin-bottom: 24px;
 }
 
-.box--builders {
-}
-
 .card--builders {
   background: $gray-1;
   width: 170px;
@@ -59,6 +56,37 @@
   display: flex;
   column-gap: 20px;
   align-items: center;
+  margin-top: -10px;
+}
+
+.box--share {
+  display: flex;
+  align-items: center;
+  color: $astar-blue;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+}
+
+.btn--primary {
+  transition: all 0.3s ease 0s;
+  border-radius: 16px;
+  .icon--social {
+    padding: 6px;
+    padding-left: 7px;
+    svg {
+      height: 20px;
+      width: 20px;
+    }
+  }
+  &:hover {
+    color: white;
+    stroke: white;
+    background-color: $astar-blue;
+    svg {
+      stroke: white;
+    }
+  }
 }
 
 .body--dark {

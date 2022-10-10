@@ -21,6 +21,9 @@
       <router-link :to="buildStakePageLink(dapp.dapp.address)">
         <button class="btn btn--sm">Stake Now</button>
       </router-link>
+      <router-link :to="buildDappPageLink(dapp.dapp.address)">
+        <button class="btn btn--sm">Details</button>
+      </router-link>
     </div>
   </div>
 </template>
@@ -42,9 +45,15 @@ export default defineComponent({
       const base = networkParam + Path.DappStaking + Path.Stake;
       return `${base}?dapp=${address.toLowerCase()}`;
     };
+
+    const buildDappPageLink = (address: string): string => {
+      const base = networkParam + Path.DappStaking + Path.Dapp;
+      return `${base}?dapp=${address.toLowerCase()}`;
+    };
     return {
       ...toRefs(props),
       buildStakePageLink,
+      buildDappPageLink,
     };
   },
 });

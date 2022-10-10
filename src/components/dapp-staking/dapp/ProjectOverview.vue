@@ -1,5 +1,5 @@
 <template>
-  <div v-if="dapp" class="wrapper--project-overview">
+  <div class="wrapper--project-overview">
     <div class="row--overview-title">
       <span class="text--xl text--color"> {{ $t('dappStaking.dappPage.projectOverview') }}</span>
     </div>

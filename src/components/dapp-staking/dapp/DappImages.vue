@@ -1,25 +1,28 @@
 <template>
   <div class="wrapper--dapp-images">
-    <q-carousel
-      v-if="images.length > 0"
-      v-model="slide"
-      animated
-      arrows
-      navigation
-      infinite
-      class="box--carousel"
-    >
-      <q-carousel-slide
-        v-for="(image, index) in images"
-        :key="index"
-        class="dapp-image"
-        :name="index"
-        :img-src="image"
-      />
-    </q-carousel>
+    <div class="row--images">
+      <button class="button-arrow" @click="scrollLeft">
+        <astar-icon-arrow-left class="button-arrow" :size="arrowSize" />
+      </button>
+      <div class="main-scroll-div">
+        <div class="cover">
+          <div class="scroll-images">
+            <div v-for="(image, index) in images" :key="index" class="child">
+              <img :src="image" alt="index" class="child-img" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <button class="button-arrow" @click="scrollRight">
+          <astar-icon-arrow-right :size="arrowSize" />
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 <script lang="ts">
+import { useBreakpoints } from 'src/hooks';
 import { computed, defineComponent, ref } from 'vue';
 export default defineComponent({
   props: {
@@ -29,6 +32,7 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const { width, screenSize } = useBreakpoints();
     const slide = ref<number>(0);
     const images = computed<string[]>(() => {
       if (props.dapp && props.dapp.dapp.imagesUrl.length > 0) {
@@ -37,7 +41,24 @@ export default defineComponent({
         return [];
       }
     });
-    return { slide, images };
+
+    const scrollLeft = (): void => {
+      const isSm = width.value > screenSize.sm;
+      const move = isSm ? -350 : -250;
+      const left = document.querySelector('.scroll-images');
+      left && left.scrollBy(move, 0);
+    };
+
+    const scrollRight = (): void => {
+      const isSm = width.value > screenSize.sm;
+      const move = isSm ? 350 : 250;
+      const right = document.querySelector('.scroll-images');
+      right && right.scrollBy(move, 0);
+    };
+
+    const arrowSize = computed<number>(() => (width.value > screenSize.sm ? 40 : 30));
+
+    return { slide, images, scrollLeft, scrollRight, arrowSize };
   },
 });
 </script>

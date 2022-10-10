@@ -4,6 +4,13 @@
   border-bottom: 1px solid $gray-2;
   padding-bottom: 24px;
   margin-bottom: 24px;
+  min-width: 300px;
+  @media (min-width: $sm) {
+    min-width: 360px;
+  }
+  @media (min-width: $lg) {
+    min-width: 380px;
+  }
 }
 
 .box--details {
@@ -45,8 +52,6 @@
 }
 
 .row--websites {
-  display: flex;
-  column-gap: 48px;
   margin-left: 32px;
 }
 
@@ -113,6 +118,7 @@
   }
   .icon--social {
     padding: 6px;
+    padding-left: 7px;
     svg {
       height: 20px;
       width: 20px;
