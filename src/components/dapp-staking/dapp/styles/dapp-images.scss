@@ -100,6 +100,7 @@
 .child-img {
   width: 100%;
   height: 100%;
+  cursor: pointer;
 }
 
 .button-arrow {
@@ -108,6 +109,11 @@
   @media (min-width: $md) {
     display: block;
   }
+}
+
+.dapp-image {
+  width: 1px;
+  height: 1px;
 }
 
 .body--dark {

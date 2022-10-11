@@ -8,7 +8,7 @@
         <div class="cover">
           <div class="scroll-images">
             <div v-for="(image, index) in images" :key="index" class="child">
-              <img :src="image" alt="index" class="child-img" />
+              <img :src="image" alt="index" class="child-img" @click="handleOpenPicture(index)" />
             </div>
           </div>
         </div>
@@ -19,11 +19,45 @@
         </button>
       </div>
     </div>
+
+    <!-- Memo: fullscreen image preview -->
+    <div>
+      <q-carousel
+        v-if="fullscreen"
+        v-model="slide"
+        v-model:fullscreen="fullscreen"
+        swipeable
+        animated
+        arrows
+        infinite
+      >
+        <q-carousel-slide
+          v-for="(image, index) in images"
+          :key="index"
+          :name="index"
+          :img-src="image"
+        />
+
+        <template #control>
+          <q-carousel-control position="bottom-right" :offset="[18, 18]">
+            <q-btn
+              push
+              round
+              dense
+              color="white"
+              text-color="primary"
+              :icon="fullscreen ? 'fullscreen_exit' : 'fullscreen'"
+              @click="fullscreen = false"
+            />
+          </q-carousel-control>
+        </template>
+      </q-carousel>
+    </div>
   </div>
 </template>
 <script lang="ts">
 import { useBreakpoints } from 'src/hooks';
-import { computed, defineComponent, ref } from 'vue';
+import { computed, defineComponent, ref, watchEffect } from 'vue';
 export default defineComponent({
   props: {
     dapp: {
@@ -57,8 +91,18 @@ export default defineComponent({
     };
 
     const arrowSize = computed<number>(() => (width.value > screenSize.sm ? 40 : 30));
+    const fullscreen = ref<boolean>(false);
 
-    return { slide, images, scrollLeft, scrollRight, arrowSize };
+    const handleOpenPicture = (index: number) => {
+      fullscreen.value = true;
+      slide.value = index;
+    };
+
+    watchEffect(() => {
+      console.log('slide', slide.value);
+    });
+
+    return { slide, images, scrollLeft, scrollRight, arrowSize, fullscreen, handleOpenPicture };
   },
 });
 </script>
