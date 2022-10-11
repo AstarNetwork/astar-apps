@@ -57,7 +57,7 @@
 </template>
 <script lang="ts">
 import { useBreakpoints } from 'src/hooks';
-import { computed, defineComponent, ref, watchEffect } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
 export default defineComponent({
   props: {
     dapp: {
@@ -97,10 +97,6 @@ export default defineComponent({
       fullscreen.value = true;
       slide.value = index;
     };
-
-    watchEffect(() => {
-      console.log('slide', slide.value);
-    });
 
     return { slide, images, scrollLeft, scrollRight, arrowSize, fullscreen, handleOpenPicture };
   },
