@@ -8,9 +8,11 @@ import { SmartContract, StakerInfo } from 'src/v2/models/DappsStaking';
 @injectable()
 export class DappStakingRepositoryMock implements IDappStakingRepository {
   public readonly bondAndStakeCallMock = jest.fn();
+  public readonly nominationTransferMock = jest.fn();
 
   constructor() {
     this.bondAndStakeCallMock.mockReset();
+    this.nominationTransferMock.mockReset();
   }
 
   getTvl(): Promise<BN> {
@@ -22,6 +24,20 @@ export class DappStakingRepositoryMock implements IDappStakingRepository {
     amount: BN
   ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> {
     this.bondAndStakeCallMock.call(this, contractAddress, amount);
+
+    return {} as SubmittableExtrinsic<'promise', ISubmittableResult>;
+  }
+
+  public async getNominationTransferCall({
+    amount,
+    fromContractId,
+    targetContractId,
+  }: {
+    amount: BN;
+    fromContractId: string;
+    targetContractId: string;
+  }): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> {
+    this.nominationTransferMock.call(this, fromContractId, amount, targetContractId);
 
     return {} as SubmittableExtrinsic<'promise', ISubmittableResult>;
   }

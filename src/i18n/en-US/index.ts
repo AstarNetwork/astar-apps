@@ -31,6 +31,7 @@ export default {
   ticker: 'Ticker',
   isComingSoon: '{value} is coming soon',
   amountToken: '{amount} {token}',
+  select: 'Select',
   warning: {
     insufficientBalance: 'Insufficient balance',
     insufficientFee: 'Warning! Transaction might failed due to insufficient fee',

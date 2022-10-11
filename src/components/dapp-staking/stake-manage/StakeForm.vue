@@ -64,22 +64,21 @@
       </div>
 
       <div class="separator" />
-      <!-- Todo: update logic -->
       <SpeedConfigurationV2
         :gas-cost="nativeTipPrice"
         :selected-gas="selectedTip"
         :set-selected-gas="setSelectedTip"
       />
 
-      <div
-        v-if="errMsg && currentAccount"
-        class="row--box-error"
-        :class="isRequiredCheck && 'box--margin-adjuster'"
-      >
+      <div v-if="errMsg && currentAccount" class="row--box-error">
         <span class="color--white"> {{ $t(errMsg) }}</span>
       </div>
       <div class="wrapper__row--button" :class="!errMsg && 'btn-margin-adjuster'">
-        <astar-button class="btn-size--confirm" :disabled="errMsg || !Number(amount)">
+        <astar-button
+          class="btn-size--confirm"
+          :disabled="errMsg || !Number(amount)"
+          @click="handleStake({ amount, targetContractId: dapp.dapp.address })"
+        >
           <span class="text--btn-confirm">
             {{ $t('confirm') }}
           </span>
@@ -91,12 +90,18 @@
 <script lang="ts">
 import { ethers } from 'ethers';
 import SpeedConfigurationV2 from 'src/components/common/SpeedConfigurationV2.vue';
-import { useAccount, useGasPrice, useNetworkInfo, useWalletIcon } from 'src/hooks';
+import {
+  useAccount,
+  useGasPrice,
+  useGetMinStaking,
+  useNetworkInfo,
+  useWalletIcon,
+} from 'src/hooks';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { truncate } from 'src/hooks/helper/common';
 import { getTokenImage } from 'src/modules/token';
-import { useStore } from 'src/store';
-import { computed, defineComponent, ref } from 'vue';
+import { computed, defineComponent, ref, watchEffect } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   components: {
@@ -105,10 +110,6 @@ export default defineComponent({
   props: {
     dapp: {
       type: Object,
-      required: true,
-    },
-    isEnableNominationTransfer: {
-      type: Boolean,
       required: true,
     },
     formattedTransferFrom: {
@@ -120,43 +121,83 @@ export default defineComponent({
       type: Function,
       required: true,
     },
+    handleStake: {
+      type: Function,
+      required: true,
+    },
   },
   setup(props) {
     const amount = ref<string | null>(null);
-    const errMsg = ref<string>();
     const { iconWallet } = useWalletIcon();
+    const { t } = useI18n();
     const { currentAccount, currentAccountName } = useAccount();
     const { nativeTokenSymbol } = useNetworkInfo();
+    const { minStaking } = useGetMinStaking();
     const nativeTokenImg = computed<string>(() =>
       getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
     );
     const { selectedTip, nativeTipPrice, setSelectedTip } = useGasPrice();
 
-    const store = useStore();
-
     const inputHandler = (event: any): void => {
       amount.value = event.target.value;
-      errMsg.value = '';
     };
 
-    const nominationTransferMaxAmount = computed(() => {
-      if (!props.formattedTransferFrom.item) return 0;
-      return props.formattedTransferFrom
-        ? Number(ethers.utils.formatEther(props.formattedTransferFrom.item.balance.toString()))
-        : 0;
-    });
-
-    const maxAmount = computed(() => {
-      if (props.isEnableNominationTransfer) {
-        return String(nominationTransferMaxAmount.value);
-      }
-
-      return '0';
+    const maxAmount = computed<string>(() => {
+      if (!props.formattedTransferFrom.item) return '0';
+      return String(
+        props.formattedTransferFrom
+          ? ethers.utils.formatEther(props.formattedTransferFrom.item.balance.toString())
+          : '0'
+      );
     });
 
     const toMaxAmount = (): void => {
       amount.value = maxAmount.value;
     };
+
+    const formattedMinStaking = computed<number>(() => {
+      return Number(ethers.utils.formatEther(minStaking.value).toString());
+    });
+
+    const errMsg = computed<string>(() => {
+      const stakedAmount = props.dapp.stakerInfo.accountStakingAmount
+        ? Number(props.dapp.stakerInfo.accountStakingAmount)
+        : 0;
+      const inputAmount = Number(amount.value);
+      const stakingAmount = inputAmount + stakedAmount;
+      const isNotEnoughMinAmount = formattedMinStaking.value > stakingAmount;
+
+      if (!inputAmount) {
+        return '';
+      }
+
+      if (isNotEnoughMinAmount) {
+        return t('dappStaking.error.notEnoughMinAmount', {
+          amount: formattedMinStaking.value,
+          symbol: nativeTokenSymbol.value,
+        });
+      }
+
+      const formattedTransferFromRef = props.formattedTransferFrom;
+      const isNominationTransfer = formattedTransferFromRef.isNominationTransfer;
+
+      if (isNominationTransfer && formattedTransferFromRef.item) {
+        const balTransferFrom = Number(
+          ethers.utils.formatEther(formattedTransferFromRef.item.balance.toString())
+        );
+        const targetBalAfterTransfer = balTransferFrom - inputAmount;
+
+        if (inputAmount >= balTransferFrom) {
+          return '';
+        } else if (formattedMinStaking.value > targetBalAfterTransfer) {
+          return t('dappStaking.error.allFundsWillBeTransferred', {
+            minStakingAmount: formattedMinStaking.value,
+            symbol: nativeTokenSymbol.value,
+          });
+        }
+      }
+      return '';
+    });
 
     return {
       iconWallet,

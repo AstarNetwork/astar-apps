@@ -1,5 +1,5 @@
 <template>
-  <AstarModal
+  <modal-wrapper
     :is-modal-open="isModalSelectToken"
     :title="$t('assets.transferPage.selectToken')"
     :is-closing="isClosingModal"
@@ -31,11 +31,11 @@
         </div>
       </div>
     </div>
-  </AstarModal>
+  </modal-wrapper>
 </template>
 <script lang="ts">
 import { fadeDuration } from '@astar-network/astar-ui';
-import AstarModal from 'src/components/common/AstarModal.vue';
+import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 import { useNetworkInfo } from 'src/hooks';
 import { wait } from 'src/v2/common';
 import { Asset } from 'src/v2/models';
@@ -45,7 +45,7 @@ import TokenBalance from 'src/components/common/TokenBalance.vue';
 
 export default defineComponent({
   components: {
-    AstarModal,
+    ModalWrapper,
     TokenBalance,
   },
   props: {

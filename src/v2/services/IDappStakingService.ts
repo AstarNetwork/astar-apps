@@ -20,6 +20,25 @@ export interface IDappStakingService {
   stake(contractAddress: string, stakerAddress: string, amount: BN): Promise<void>;
 
   /**
+   * Nomination transfer
+   * @param fromContractId Contract address transfer from.
+   * @param targetContractId Contract address transfer to.
+   * @param address Staked address.
+   * @param amount Amount to stake.
+   */
+  nominationTransfer({
+    amount,
+    fromContractId,
+    targetContractId,
+    address,
+  }: {
+    amount: BN;
+    fromContractId: string;
+    targetContractId: string;
+    address: string;
+  }): Promise<void>;
+
+  /**
    * Gets staker info (total staked, stakers count) for a given contracts.
    * @param contractAddresses List of contract addresses to provide info for.
    */

@@ -1,19 +1,19 @@
+import { BN } from '@polkadot/util';
 import { ethers } from 'ethers';
 import { inject, injectable } from 'inversify';
-import { BN } from '@polkadot/util';
+import { astarMainnetNativeToken, ASTAR_NATIVE_TOKEN } from 'src/config/chain';
+import { Guard } from 'src/v2/common';
 import { TvlModel } from 'src/v2/models';
+import { DappCombinedInfo, StakerInfo } from 'src/v2/models/DappsStaking';
 import {
   IDappStakingRepository,
   IMetadataRepository,
   IPriceRepository,
   ISystemRepository,
 } from 'src/v2/repositories';
+import { IBalanceFormatterService, IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
-import { IDappStakingService, IBalanceFormatterService } from 'src/v2/services';
-import { Guard } from 'src/v2/common';
 import { IWalletService } from '../IWalletService';
-import { DappCombinedInfo, StakerInfo } from 'src/v2/models/DappsStaking';
-import { astarMainnetNativeToken, ASTAR_NATIVE_TOKEN } from 'src/config/chain';
 
 @injectable()
 export class DappStakingService implements IDappStakingService {
@@ -49,12 +49,39 @@ export class DappStakingService implements IDappStakingService {
     return new TvlModel(tvl, tvlDefaultUnit, tvlUsd);
   }
 
+  public async nominationTransfer({
+    amount,
+    fromContractId,
+    targetContractId,
+    address,
+  }: {
+    amount: BN;
+    fromContractId: string;
+    targetContractId: string;
+    address: string;
+  }): Promise<void> {
+    Guard.ThrowIfUndefined('fromContractId', fromContractId);
+    Guard.ThrowIfUndefined('targetContractId', targetContractId);
+    Guard.ThrowIfUndefined('stakerAddress', address);
+
+    const stakeCall = await this.dappStakingRepository.getNominationTransferCall({
+      amount,
+      fromContractId,
+      targetContractId,
+    });
+    await this.wallet.signAndSend(
+      stakeCall,
+      address,
+      `You successfully staked to ${targetContractId} from ${fromContractId}`
+    );
+  }
+
   public async stake(contractAddress: string, stakerAddress: string, amount: BN): Promise<void> {
     Guard.ThrowIfUndefined('contractAddress', contractAddress);
     Guard.ThrowIfUndefined('stakerAddress', stakerAddress);
 
     const stakeCall = await this.dappStakingRepository.getBondAndStakeCall(contractAddress, amount);
-    this.wallet.signAndSend(
+    await this.wallet.signAndSend(
       stakeCall,
       stakerAddress,
       `You successfully staked to ${contractAddress}`

@@ -1,5 +1,5 @@
 <template>
-  <astar-modal
+  <modal-wrapper
     :is-modal-open="isModalAddCommunity"
     :title="$t('dappStaking.modals.community.title')"
     :is-closing="isClosingModal"
@@ -30,19 +30,19 @@
         </div>
       </q-form>
     </div>
-  </astar-modal>
+  </modal-wrapper>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType, ref } from 'vue';
 import { fadeDuration, Button } from '@astar-network/astar-ui';
 import { Community, CommunityDefinition } from 'src/store/dapp-staking/state';
-import AstarModal from 'src/components/common/AstarModal.vue';
+import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 import { wait } from 'src/hooks/helper/common';
 
 export default defineComponent({
   components: {
-    AstarModal,
+    ModalWrapper,
     Button,
   },
   props: {
