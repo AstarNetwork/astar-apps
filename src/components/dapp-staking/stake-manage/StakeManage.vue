@@ -1,24 +1,24 @@
 <template>
   <div v-if="dapp">
-    <BackToPage
+    <back-to-page
       :class="isHighlightRightUi && 'half-opacity'"
       :text="$t('dappStaking.stakePage.backToDappList')"
       :link="Path.DappStaking"
     />
-    <MobileNavigator v-if="currentAccount" />
+    <mobile-navigator v-if="currentAccount" />
     <div v-if="currentAccount" class="wrapper--stake-manage">
       <div class="container--stake-manage">
         <div v-if="formattedTransferFrom.item" class="wrapper-containers">
           <div :class="isHighlightRightUi && 'half-opacity'">
-            <StakeForm
+            <stake-form
               :dapp="dapp"
               :set-right-ui="setRightUi"
               :formatted-transfer-from="formattedTransferFrom"
               :handle-stake="handleStake"
             />
           </div>
-          <StakeInformation v-if="rightUi === 'information'" />
-          <SelectFunds
+          <stake-information v-if="rightUi === 'information'" />
+          <select-funds
             v-if="rightUi === 'select-funds-from'"
             v-click-away="cancelHighlight"
             :set-address-transfer-from="handleSetAddressTransferFrom"
@@ -28,7 +28,7 @@
         </div>
       </div>
     </div>
-    <ModalSelectFunds
+    <modal-select-funds
       v-if="formattedTransferFrom.item"
       :is-modal-select-funds="isModalSelectFunds"
       :handle-modal-select-funds="handleModalSelectFunds"
