@@ -240,6 +240,8 @@ export default defineComponent({
   @media (min-width: $xxl) {
     display: flex;
     justify-content: center;
+  }
+}
 .row--tab {
   display: flex;
   width: 100%;
