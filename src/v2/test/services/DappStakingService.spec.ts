@@ -70,7 +70,9 @@ describe('DappStakingService.ts', () => {
     const repo = <DappStakingRepositoryMock>(
       container.get<IDappStakingRepository>(Symbols.DappStakingRepository)
     );
-    
-    await expect(sut.getRegisteredContract('')).rejects.toThrow('Invalid argument developerAddress');
+
+    await expect(sut.getRegisteredContract('')).rejects.toThrow(
+      'Invalid argument developerAddress'
+    );
   });
 });
