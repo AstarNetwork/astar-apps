@@ -84,6 +84,8 @@ export class DappStakingService implements IDappStakingService {
   }
 
   public async getCombinedInfo(currentAccount: string): Promise<DappCombinedInfo[]> {
+    Guard.ThrowIfUndefined('currentAccount', currentAccount);
+
     const dapps = await this.dappStakingRepository.getRegisteredDapps();
     const stakerInfo = await this.getStakerInfo(
       dapps.map((x) => x.address),
@@ -93,5 +95,11 @@ export class DappStakingService implements IDappStakingService {
     return dapps.map((x, index) => {
       return new DappCombinedInfo(x, stakerInfo[index]);
     });
+  }
+
+  public async getRegisteredContract(developerAddress: string): Promise<string | undefined> {
+    Guard.ThrowIfUndefined('developerAddress', developerAddress);
+
+    return await this.dappStakingRepository.getRegisteredContract(developerAddress);
   }
 }

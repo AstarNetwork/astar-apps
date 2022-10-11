@@ -22,8 +22,6 @@ import axios, { AxiosError } from 'axios';
 import { TOKEN_API_URL } from 'src/modules/token-api';
 import type { Transaction } from 'src/hooks/helper/wallet';
 
-let collectionKey: string;
-
 const showError = (dispatch: Dispatch, message: string): void => {
   dispatch(
     'general/showAlertMsg',
@@ -144,19 +142,19 @@ const actions: ActionTree<State, StateInterface> = {
 
         const payload = {
           name: parameters.dapp.name,
-          description: parameters.dapp.description,
-          url: parameters.dapp.url,
+          iconFile: getFileInfo(parameters.dapp.iconFileName, parameters.dapp.iconFile),
           address: parameters.dapp.address,
+          url: parameters.dapp.url,
+          images: getImagesInfo(parameters.dapp),
+          developers: parameters.dapp.developers,
+          description: parameters.dapp.description,
+          communities: parameters.dapp.communities,
+          platforms: parameters.dapp.platforms,
+          contractType: parameters.dapp.contractType,
+          mainCategory: parameters.dapp.mainCategory,
           license: parameters.dapp.license,
-          videoUrl: parameters.dapp.videoUrl,
-          tags: parameters.dapp.tags,
-          forumUrl: parameters.dapp.forumUrl,
-          authorContact: parameters.dapp.authorContact,
-          gitHubUrl: parameters.dapp.gitHubUrl,
           senderAddress: parameters.senderAddress,
           signature: parameters.signature,
-          iconFile: getFileInfo(parameters.dapp.iconFileName, parameters.dapp.iconFile),
-          images: getImagesInfo(parameters.dapp),
         };
 
         commit('general/setLoading', true, { root: true });
@@ -256,7 +254,9 @@ const getFileInfo = (fileName: string, dataUrl: string): FileInfo => {
 };
 
 const getImagesInfo = (dapp: NewDappItem): FileInfo[] => {
-  return dapp.images.map((image, index) => getFileInfo(image.name, dapp.imagesContent[index]));
+  return dapp.images
+    .slice(1) // Ignore first image since it is just an add image placeholder.
+    .map((image, index) => getFileInfo(image.name, dapp.imagesContent[index + 1]));
 };
 
 export interface RegisterParameters {

@@ -259,7 +259,7 @@ export default {
       projectUrl: 'Project URL',
       dappImageRequired: 'Project logo is required.',
       projectLogo: 'Project logo',
-      platformIsrequired: 'At least one platform is required.',
+      platformRequired: 'At least one platform is required.',
     },
     toast: {
       staked: 'You staked {amount} on {dapp}',

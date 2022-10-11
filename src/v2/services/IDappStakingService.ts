@@ -29,4 +29,7 @@ export interface IDappStakingService {
    * Gets dapps info combined from different sources.
    */
   getCombinedInfo(currentAccount: string): Promise<DappCombinedInfo[]>;
+
+  /** Gets contract address registered by the given developer address */
+  getRegisteredContract(developerAddress: string): Promise<string | undefined>;
 }
