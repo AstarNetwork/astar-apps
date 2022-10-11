@@ -1,0 +1,41 @@
+<template>
+  <div class="panel--item">
+    <table>
+      <thead>
+        <tr>
+          <th>Unbonding Amount</th>
+          <th>Remaining Era</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{ item.unbondingAmount.toLocaleString() }} ASTR</td>
+          <td>
+            <div class="row--remaining-era">
+              <div class="val-era">{{ item.remainingEra }}</div>
+              <astar-irregular-button width="77" height="20">Re-bond</astar-irregular-button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="row--manage">
+      <astar-button width="97" height="24" :disabled="!item.isEnabled">Withdraw</astar-button>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent } from 'vue';
+export default defineComponent({
+  props: {
+    item: {
+      type: Object,
+      required: true,
+    },
+  },
+});
+</script>
+<style lang="scss" scoped>
+@import '../styles/dropdown-item.scss';
+</style>
