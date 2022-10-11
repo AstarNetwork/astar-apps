@@ -212,6 +212,29 @@ export default {
     stakePage: {
       backToDappList: 'Back to dApps list',
       whereFundsFrom: 'Where would you like to bring you funds from?',
+      dappStakingNative: 'dApp Staking (Native)',
+      liquidStakingEVM: 'Liquid Staking (EVM)',
+    },
+    algem: {
+      liquidStakingTitle:
+        'Liquid Staking is the most flexible way to earn on Astar Network and Polkadot',
+      runBy: 'Run by',
+      subtitle0: 'Unlock The Full Power Of Your ASTR',
+      desc0:
+        "Unlock Astar's dApp staking mechanism and double-dip your earnings when you farm across Astar's DeFi ecosystem while simultaneously dApp staking!",
+      subtitle1: 'Get One nASTR For Every ASTR You Stake',
+      desc1:
+        'Stake your ASTR tokens on any Astar Network project and receive liquid nASTR tokens at the same ratio (1:1).',
+      subtitle2: 'Yield Farm With Your nASTR On Astar Network For Big Earnings',
+      desc2:
+        'Use nASTR across the Astar DeFi ecosystem, as you would with your ASTR, and maximize your profits.',
+      warnTitle: 'Please make sure you understand the following',
+      warnRow0:
+        'Algem uses Astar’s dApp Staking mechanism, however Algem is a third party and Astar is not responsible for Algem’s services.',
+      warnRow1:
+        'Learn about the risk of providing liquidity on a DEX, impermanent loss (IL) and the possibility of a depeg.',
+      textFinal: 'Enjoy The Magic of Liquid Staking And Seize The Extra Earnings!',
+      launchAlgemApp: 'Launch Algem App',
     },
     modals: {
       alreadyClaimed: 'Already claimed:',
