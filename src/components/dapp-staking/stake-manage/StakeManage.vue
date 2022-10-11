@@ -14,7 +14,7 @@
               :dapp="dapp"
               :set-right-ui="setRightUi"
               :formatted-transfer-from="formattedTransferFrom"
-              :is-enable-nomination-transfer="isEnableNominationTransfer"
+              :handle-stake="handleStake"
             />
           </div>
           <StakeInformation v-if="rightUi === 'information'" />
@@ -23,6 +23,7 @@
             v-click-away="cancelHighlight"
             :set-address-transfer-from="handleSetAddressTransferFrom"
             :staking-list="stakingList"
+            :dapp-address="dappAddress"
           />
         </div>
       </div>
@@ -44,7 +45,7 @@ import StakeForm from 'src/components/dapp-staking/stake-manage/StakeForm.vue';
 import SelectFunds from 'src/components/dapp-staking/stake-manage/SelectFunds.vue';
 import StakeInformation from 'src/components/dapp-staking/stake-manage/StakeInformation.vue';
 import ModalSelectFunds from 'src/components/dapp-staking/stake-manage/ModalSelectFunds.vue';
-import { useBreakpoints, useNetworkInfo, useNominationTransfer, useStakingList } from 'src/hooks';
+import { useBreakpoints, useNetworkInfo, useStake, useStakingList } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { Path } from 'src/router';
 import { useStore } from 'src/store';
@@ -69,20 +70,8 @@ export default defineComponent({
     const { screenSize, width } = useBreakpoints();
     const { currentNetworkName } = useNetworkInfo();
     const route = useRoute();
-    const {
-      setAddressTransferFrom,
-      formattedTransferFrom,
-      addressTransferFrom,
-      currentAccount,
-      formattedMinStaking,
-      nativeTokenSymbol,
-      isEnableNominationTransfer,
-      nominationTransfer,
-      isDisabledNominationTransfer,
-      selectedTip: selectedTipNominationTransfer,
-      nativeTipPrice: nativeTipPriceNominationTransfer,
-      setSelectedTip: setSelectedTipNominationTransfer,
-    } = useNominationTransfer();
+    const { setAddressTransferFrom, formattedTransferFrom, currentAccount, handleStake } =
+      useStake();
 
     const store = useStore();
     const { dapps, stakingList } = useStakingList();
@@ -152,13 +141,14 @@ export default defineComponent({
       Path,
       dapp,
       formattedTransferFrom,
-      isEnableNominationTransfer,
       stakingList,
       isModalSelectFunds,
+      dappAddress,
       handleSetAddressTransferFrom,
       setRightUi,
       cancelHighlight,
       handleModalSelectFunds,
+      handleStake,
     };
   },
 });

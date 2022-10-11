@@ -5,7 +5,7 @@
     </div>
     <div class="container--items">
       <div
-        v-for="list in stakingList"
+        v-for="list in formattedStakingList"
         :key="list.address"
         class="row--item"
         @click="setAddressTransferFrom(list.address)"
@@ -14,12 +14,12 @@
           <img :src="list.iconUrl" :alt="list.name" class="item-logo" />
           <span class="text--item-name">{{ list.name }}</span>
           <div class="column--amount">
-            <span>{{
-              $t('amountSymbol', {
-                amount: $n(truncate(ethers.utils.formatEther(list.balance))),
-                symbol: nativeTokenSymbol,
-              })
-            }}</span>
+            <span>
+              <TokenBalance
+                :balance="ethers.utils.formatEther(list.balance)"
+                :symbol="nativeTokenSymbol"
+              />
+            </span>
           </div>
         </div>
         <div />
@@ -29,11 +29,16 @@
 </template>
 <script lang="ts">
 import { StakingData } from 'src/modules/dapp-staking';
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, PropType, computed } from 'vue';
 import { ethers } from 'ethers';
 import { truncate } from 'src/hooks/helper/common';
 import { useNetworkInfo } from 'src/hooks';
+import TokenBalance from 'src/components/common/TokenBalance.vue';
+
 export default defineComponent({
+  components: {
+    TokenBalance,
+  },
   props: {
     setAddressTransferFrom: {
       type: Function,
@@ -43,10 +48,24 @@ export default defineComponent({
       type: Object as PropType<StakingData[]>,
       required: true,
     },
+    dappAddress: {
+      type: String,
+      required: true,
+    },
   },
-  setup() {
+  setup(props) {
     const { nativeTokenSymbol } = useNetworkInfo();
-    return { ethers, truncate, nativeTokenSymbol };
+    const formattedStakingList = computed<StakingData[]>(() => {
+      if (!props.stakingList) return [];
+      return props.stakingList
+        .map((it: StakingData) => {
+          const isDisplayingDapp = it.address.toLowerCase() === props.dappAddress.toLowerCase();
+          return isDisplayingDapp ? undefined : it;
+        })
+        .filter((it) => it !== undefined) as StakingData[];
+    });
+
+    return { ethers, truncate, nativeTokenSymbol, formattedStakingList };
   },
 });
 </script>

@@ -84,17 +84,15 @@
         <ModalMaintenance :show="isPalletDisabled" />
       </div>
 
-      <Teleport to="#app--main">
-        <div :class="!isLoading && 'highest-z-index'">
-          <ModalRegisterDapp
-            v-if="showRegisterDappModal"
-            v-model:is-open="showRegisterDappModal"
-            :show-close-button="false"
-          />
-          <ModalMaintenance :show="isPalletDisabled" />
-        </div>
-      </Teleport>
-    </div>
+      <div :class="!isLoading && 'highest-z-index'">
+        <ModalRegisterDapp
+          v-if="showRegisterDappModal"
+          v-model:is-open="showRegisterDappModal"
+          :show-close-button="false"
+        />
+        <ModalMaintenance :show="isPalletDisabled" />
+      </div>
+    </Teleport>
   </div>
 </template>
 

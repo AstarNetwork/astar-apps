@@ -82,6 +82,23 @@ export class DappStakingRepository implements IDappStakingRepository {
     return api.tx.dappsStaking.bondAndStake(this.getAddressEnum(contractAddress), amount);
   }
 
+  public async getNominationTransferCall({
+    amount,
+    fromContractId,
+    targetContractId,
+  }: {
+    amount: BN;
+    fromContractId: string;
+    targetContractId: string;
+  }): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> {
+    const api = await this.api.getApi();
+    return api.tx.dappsStaking.nominationTransfer(
+      this.getAddressEnum(fromContractId),
+      amount,
+      this.getAddressEnum(targetContractId)
+    );
+  }
+
   public async getStakerInfo(
     contractAddresses: string[],
     walletAddress: string
