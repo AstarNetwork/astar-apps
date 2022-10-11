@@ -14,8 +14,8 @@
           <tbody>
             <tr v-for="t in items" :key="t.id">
               <td>{{ t.name }}</td>
-              <td><TokenBalance :balance="t.stakedAmount" symbol="ASTR" /></td>
-              <td><TokenBalance :balance="t.totalEarned" symbol="ASTR" /></td>
+              <td><token-balance :balance="t.stakedAmount" :symbol="nativeTokenSymbol" /></td>
+              <td><token-balance :balance="t.totalEarned" :symbol="nativeTokenSymbol" /></td>
               <td>
                 <div class="row--manage">
                   <astar-button width="97" height="24" :disabled="!t.isEnabled">{{
@@ -38,7 +38,7 @@
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useBreakpoints } from 'src/hooks';
+import { useBreakpoints, useNetworkInfo } from 'src/hooks';
 import DropdownList from './components/DropdownList.vue';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 
@@ -46,6 +46,7 @@ export default defineComponent({
   components: { DropdownList, TokenBalance },
   setup() {
     const { width, screenSize } = useBreakpoints();
+    const { nativeTokenSymbol } = useNetworkInfo();
 
     //TODO: need refactor as module
     const items = [
@@ -76,6 +77,7 @@ export default defineComponent({
       width,
       screenSize,
       items,
+      nativeTokenSymbol,
     };
   },
 });
