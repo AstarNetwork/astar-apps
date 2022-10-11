@@ -37,6 +37,7 @@
   overflow: auto;
   position: relative;
   scroll-behavior: smooth;
+  margin-left: 24px;
   @media (min-width: 400px) {
     width: 320px;
   }
@@ -53,6 +54,7 @@
     width: 600px;
   }
   @media (min-width: $md) {
+    margin-left: 0px;
     width: 700px;
   }
   @media (min-width: 900px) {
@@ -92,7 +94,7 @@
 }
 
 .scroll-images::-webkit-scrollbar {
-  // -webkit-appearance: none;
+  -webkit-appearance: none;
 }
 
 .child-img {
@@ -102,6 +104,10 @@
 
 .button-arrow {
   color: $astar-blue;
+  display: none;
+  @media (min-width: $md) {
+    display: block;
+  }
 }
 
 .body--dark {
