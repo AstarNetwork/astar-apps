@@ -1,7 +1,7 @@
 <template>
   <AstarModal
     :is-modal-open="isModalSelectFunds"
-    :title="$t('assets.transferPage.selectChain')"
+    :title="$t('select')"
     :is-closing="isClosingModal"
     :close-modal="closeModal"
     class-name="transfer-modal"

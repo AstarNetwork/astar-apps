@@ -1,7 +1,7 @@
 <template>
   <div class="container--select-item">
     <div class="row--title">
-      <span>{{ $t('assets.transferPage.selectChain') }}</span>
+      <span>{{ $t('select') }}</span>
     </div>
     <div class="container--items">
       <div

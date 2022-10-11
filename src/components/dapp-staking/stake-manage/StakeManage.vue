@@ -9,7 +9,7 @@
     <div v-if="currentAccount" class="wrapper--stake-manage">
       <div class="container--stake-manage">
         <div v-if="formattedTransferFrom.item" class="wrapper-containers">
-          <div>
+          <div :class="isHighlightRightUi && 'half-opacity'">
             <StakeForm
               :dapp="dapp"
               :set-right-ui="setRightUi"
