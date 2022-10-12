@@ -8,10 +8,12 @@ import { SmartContract, StakerInfo } from 'src/v2/models/DappsStaking';
 @injectable()
 export class DappStakingRepositoryMock implements IDappStakingRepository {
   public readonly bondAndStakeCallMock = jest.fn();
+  public readonly getRegisteredContractCallMock = jest.fn();
   public readonly nominationTransferMock = jest.fn();
 
   constructor() {
     this.bondAndStakeCallMock.mockReset();
+    this.getRegisteredContractCallMock.mockReset();
     this.nominationTransferMock.mockReset();
   }
 
@@ -57,4 +59,9 @@ export class DappStakingRepositoryMock implements IDappStakingRepository {
   }
 
   public async starEraSubscription(): Promise<void> {}
+
+  public async getRegisteredContract(developerAddress: string): Promise<string | undefined> {
+    this.getRegisteredContractCallMock.call(this, developerAddress);
+    return '0x1';
+  }
 }

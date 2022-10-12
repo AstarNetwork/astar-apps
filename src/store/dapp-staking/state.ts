@@ -1,4 +1,3 @@
-import { number } from '@intlify/core-base';
 import { BN } from '@polkadot/util';
 import { TvlModel } from 'src/v2/models';
 import { DappCombinedInfo, StakerInfo } from 'src/v2/models/DappsStaking';

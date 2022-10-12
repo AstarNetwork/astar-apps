@@ -48,5 +48,9 @@ export interface IDappStakingRepository {
    * Starts subscription to a era change.
    */
   starEraSubscription(): Promise<void>;
+
   fetchAccountStakingAmount(contractAddress: string, walletAddress: string): Promise<string>;
+
+  /** Gets contract address registered by the given developer address */
+  getRegisteredContract(developerAddress: string): Promise<string | undefined>;
 }
