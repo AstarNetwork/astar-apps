@@ -1,5 +1,5 @@
 <template>
-  <AstarModal
+  <modal-wrapper
     :is-modal-open="isModalImportTokens"
     :title="$t('assets.importTokens')"
     :is-closing="isClosingModal"
@@ -41,7 +41,7 @@
         </button>
       </div>
     </div>
-  </AstarModal>
+  </modal-wrapper>
 </template>
 <script lang="ts">
 import { fadeDuration } from '@astar-network/astar-ui';
@@ -53,11 +53,11 @@ import { useNetworkInfo } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { Erc20Token, storeImportedERC20Token } from 'src/modules/token';
 import { computed, defineComponent, PropType, ref, watch } from 'vue';
-import AstarModal from 'src/components/common/AstarModal.vue';
+import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 
 export default defineComponent({
   components: {
-    AstarModal,
+    ModalWrapper,
   },
   props: {
     isModalImportTokens: {

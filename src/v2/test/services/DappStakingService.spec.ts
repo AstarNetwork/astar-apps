@@ -75,4 +75,27 @@ describe('DappStakingService.ts', () => {
       'Invalid argument developerAddress'
     );
   });
+
+  it('nomination transfer from contract A to B', async () => {
+    const sut = container.get<IDappStakingService>(Symbols.DappStakingService);
+    const wallet = <WalletServiceMock>container.get<IWalletService>(TestSymbols.WalletServiceMock);
+    const repo = <DappStakingRepositoryMock>(
+      container.get<IDappStakingRepository>(Symbols.DappStakingRepository)
+    );
+    const amount = new BN('1');
+    const contractAddress = '123';
+    const fromContractId = '0x123456789';
+    const stakerAddress = '456';
+
+    await sut.nominationTransfer({
+      amount,
+      address: stakerAddress,
+      targetContractId: contractAddress,
+      fromContractId,
+    });
+
+    expect(repo.nominationTransferMock).toBeCalledTimes(1);
+    expect(wallet.walletSignAndSendMock).toBeCalledTimes(1);
+    expect(wallet.walletSignAndSendMock).toBeCalledWith({}, stakerAddress, expect.any(String));
+  });
 });

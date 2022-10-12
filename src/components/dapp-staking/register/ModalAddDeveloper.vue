@@ -1,5 +1,5 @@
 <template>
-  <astar-modal
+  <modal-wrapper
     :is-modal-open="isModalAddDeveloper"
     :title="$t('dappStaking.modals.builder.title')"
     :is-closing="isClosingModal"
@@ -74,11 +74,11 @@
         </div>
       </q-form>
     </div>
-  </astar-modal>
+  </modal-wrapper>
 </template>
 
 <script lang="ts">
-import AstarModal from 'src/components/common/AstarModal.vue';
+import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 import { wait } from 'src/hooks/helper/common';
 import { defineComponent, ref, toRefs, PropType, computed, watch } from 'vue';
 import { fadeDuration, Button } from '@astar-network/astar-ui';
@@ -90,7 +90,7 @@ import { Data } from '@polkadot/types';
 
 export default defineComponent({
   components: {
-    AstarModal,
+    ModalWrapper,
     ImageCard,
     Avatar,
     Button,

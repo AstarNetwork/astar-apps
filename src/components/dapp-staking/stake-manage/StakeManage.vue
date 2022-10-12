@@ -1,33 +1,34 @@
 <template>
   <div v-if="dapp">
-    <BackToPage
+    <back-to-page
       :class="isHighlightRightUi && 'half-opacity'"
       :text="$t('dappStaking.stakePage.backToDappList')"
       :link="Path.DappStaking"
     />
-    <MobileNavigator v-if="currentAccount" />
+    <mobile-navigator v-if="currentAccount" />
     <div v-if="currentAccount" class="wrapper--stake-manage">
       <div class="container--stake-manage">
         <div v-if="formattedTransferFrom.item" class="wrapper-containers">
-          <div>
-            <StakeForm
+          <div :class="isHighlightRightUi && 'half-opacity'">
+            <stake-form
               :dapp="dapp"
               :set-right-ui="setRightUi"
               :formatted-transfer-from="formattedTransferFrom"
-              :is-enable-nomination-transfer="isEnableNominationTransfer"
+              :handle-stake="handleStake"
             />
           </div>
-          <StakeInformation v-if="rightUi === 'information'" />
-          <SelectFunds
+          <stake-information v-if="rightUi === 'information'" />
+          <select-funds
             v-if="rightUi === 'select-funds-from'"
             v-click-away="cancelHighlight"
             :set-address-transfer-from="handleSetAddressTransferFrom"
             :staking-list="stakingList"
+            :dapp-address="dappAddress"
           />
         </div>
       </div>
     </div>
-    <ModalSelectFunds
+    <modal-select-funds
       v-if="formattedTransferFrom.item"
       :is-modal-select-funds="isModalSelectFunds"
       :handle-modal-select-funds="handleModalSelectFunds"
@@ -44,7 +45,7 @@ import StakeForm from 'src/components/dapp-staking/stake-manage/StakeForm.vue';
 import SelectFunds from 'src/components/dapp-staking/stake-manage/SelectFunds.vue';
 import StakeInformation from 'src/components/dapp-staking/stake-manage/StakeInformation.vue';
 import ModalSelectFunds from 'src/components/dapp-staking/stake-manage/ModalSelectFunds.vue';
-import { useBreakpoints, useNetworkInfo, useNominationTransfer, useStakingList } from 'src/hooks';
+import { useBreakpoints, useNetworkInfo, useStake, useStakingList } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { Path } from 'src/router';
 import { useStore } from 'src/store';
@@ -69,20 +70,8 @@ export default defineComponent({
     const { screenSize, width } = useBreakpoints();
     const { currentNetworkName } = useNetworkInfo();
     const route = useRoute();
-    const {
-      setAddressTransferFrom,
-      formattedTransferFrom,
-      addressTransferFrom,
-      currentAccount,
-      formattedMinStaking,
-      nativeTokenSymbol,
-      isEnableNominationTransfer,
-      nominationTransfer,
-      isDisabledNominationTransfer,
-      selectedTip: selectedTipNominationTransfer,
-      nativeTipPrice: nativeTipPriceNominationTransfer,
-      setSelectedTip: setSelectedTipNominationTransfer,
-    } = useNominationTransfer();
+    const { setAddressTransferFrom, formattedTransferFrom, currentAccount, handleStake } =
+      useStake();
 
     const store = useStore();
     const { dapps, stakingList } = useStakingList();
@@ -152,13 +141,14 @@ export default defineComponent({
       Path,
       dapp,
       formattedTransferFrom,
-      isEnableNominationTransfer,
       stakingList,
       isModalSelectFunds,
+      dappAddress,
       handleSetAddressTransferFrom,
       setRightUi,
       cancelHighlight,
       handleModalSelectFunds,
+      handleStake,
     };
   },
 });

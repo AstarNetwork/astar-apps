@@ -31,6 +31,7 @@ export default {
   ticker: 'Ticker',
   isComingSoon: '{value} is coming soon',
   amountToken: '{amount} {token}',
+  select: 'Select',
   warning: {
     insufficientBalance: 'Insufficient balance',
     insufficientFee: 'Warning! Transaction might failed due to insufficient fee',
@@ -120,7 +121,41 @@ export default {
       "You'll need to update {value} to continue. Once you have it updated to the latest version, go ahead and refresh this page",
     updateExtension: 'Update {value} extension',
   },
+  topMetric: {
+    build2earn: 'Build2Earn',
+    wayOfStaking: 'An innovative way of Staking',
+    tvlInDapps: 'TVL in dApps',
+    currentEra: 'Current Era',
+    currentStakersApr: 'Current Stakers APR',
+    totalDapps: 'Total dApps',
+  },
+  myDapps: {
+    dapps: 'dApps',
+    stakedAmount: 'Staked Amount',
+    unbondingAmount: 'Unbonding amount',
+    remainingEra: 'Remaining Era',
+    withdraw: 'Withdraw',
+    rebond: 'Re-bond',
+    totalEarned: 'Total Earned',
+    manage: 'Manage',
+    add: 'Add',
+    unbond: 'Unbond',
+  },
+  myReward: {
+    totalStaked: 'Total Staked',
+    availableToClaim: 'Available to claim',
+    era: 'Era',
+    claim: 'Claim',
+    restake: 'Re-Stake after claiming',
+    turnOff: 'Turn Off',
+    totalEarned: 'Total Earned (all-time)',
+  },
   dappStaking: {
+    myStaking: 'My Staking',
+    myRewards: 'My Rewards',
+    unbonding: 'Unbonding',
+    myDapps: 'My dApps',
+    transferableBalance: 'Transferable Balance',
     dappsStore: 'dApps Store',
     dappStaking: 'dApp Staking',
     registerDapp: 'Register dApp',
@@ -178,6 +213,29 @@ export default {
     stakePage: {
       backToDappList: 'Back to dApps list',
       whereFundsFrom: 'Where would you like to bring you funds from?',
+      dappStakingNative: 'dApp Staking (Native)',
+      liquidStakingEVM: 'Liquid Staking (EVM)',
+    },
+    algem: {
+      liquidStakingTitle:
+        'Liquid Staking is the most flexible way to earn on Astar Network and Polkadot',
+      runBy: 'Run by',
+      subtitle0: 'Unlock The Full Power Of Your ASTR',
+      desc0:
+        "Unlock Astar's dApp staking mechanism and double-dip your earnings when you farm across Astar's DeFi ecosystem while simultaneously dApp staking!",
+      subtitle1: 'Get One nASTR For Every ASTR You Stake',
+      desc1:
+        'Stake your ASTR tokens on any Astar Network project and receive liquid nASTR tokens at the same ratio (1:1).',
+      subtitle2: 'Yield Farm With Your nASTR On Astar Network For Big Earnings',
+      desc2:
+        'Use nASTR across the Astar DeFi ecosystem, as you would with your ASTR, and maximize your profits.',
+      warnTitle: 'Please make sure you understand the following',
+      warnRow0:
+        'Algem uses Astar’s dApp Staking mechanism, however Algem is a third party and Astar is not responsible for Algem’s services.',
+      warnRow1:
+        'Learn about the risk of providing liquidity on a DEX, impermanent loss (IL) and the possibility of a depeg.',
+      textFinal: 'Enjoy The Magic of Liquid Staking And Seize The Extra Earnings!',
+      launchAlgemApp: 'Launch Algem App',
     },
     modals: {
       alreadyClaimed: 'Already claimed:',

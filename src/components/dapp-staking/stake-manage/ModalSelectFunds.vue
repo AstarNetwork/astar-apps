@@ -1,7 +1,7 @@
 <template>
-  <AstarModal
+  <modal-wrapper
     :is-modal-open="isModalSelectFunds"
-    :title="$t('assets.transferPage.selectChain')"
+    :title="$t('select')"
     :is-closing="isClosingModal"
     :close-modal="closeModal"
     class-name="transfer-modal"
@@ -19,32 +19,34 @@
             <img :src="list.iconUrl" :alt="list.name" class="item-logo" />
             <span class="text--item-name">{{ list.name }}</span>
             <div class="column--amount">
-              <span>{{
-                $t('amountSymbol', {
-                  amount: $n(truncate(ethers.utils.formatEther(list.balance))),
-                  symbol: nativeTokenSymbol,
-                })
-              }}</span>
+              <span>
+                <token-balance
+                  :balance="ethers.utils.formatEther(list.balance)"
+                  :symbol="nativeTokenSymbol"
+                />
+              </span>
             </div>
           </div>
           <div />
         </div>
       </div>
     </div>
-  </AstarModal>
+  </modal-wrapper>
 </template>
 <script lang="ts">
 import { fadeDuration } from '@astar-network/astar-ui';
-import AstarModal from 'src/components/common/AstarModal.vue';
+import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 import { StakingData } from 'src/modules/dapp-staking';
 import { wait } from 'src/v2/common';
 import { defineComponent, PropType, ref } from 'vue';
 import { ethers } from 'ethers';
 import { truncate } from 'src/hooks/helper/common';
 import { useNetworkInfo } from 'src/hooks';
+import TokenBalance from 'src/components/common/TokenBalance.vue';
 export default defineComponent({
   components: {
-    AstarModal,
+    ModalWrapper,
+    TokenBalance,
   },
   props: {
     isModalSelectFunds: {
