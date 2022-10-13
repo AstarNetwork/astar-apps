@@ -74,42 +74,42 @@ export default defineComponent({
       {
         type: CommunityType.Twitter,
         handle: '',
-        iconUrl: 'https://cdn-icons-png.flaticon.com/512/4494/4494477.png',
+        iconUrl: require('src/assets/img/twitter.png'),
         label: t('dappStaking.modals.community.twitterAccount'),
         validateHandle: (x) => validateUrl(x),
       },
       {
         type: CommunityType.Reddit,
         handle: '',
-        iconUrl: 'https://cdn-icons-png.flaticon.com/512/3670/3670226.png',
+        iconUrl: require('src/assets/img/reddit.png'),
         label: t('dappStaking.modals.community.redditAccount'),
         validateHandle: (x) => validateUrl(x),
       },
       {
         type: CommunityType.Facebook,
         handle: '',
-        iconUrl: 'https://cdn-icons-png.flaticon.com/512/4494/4494475.png',
+        iconUrl: require('src/assets/img/facebook.png'),
         label: t('dappStaking.modals.community.facebookAccount'),
         validateHandle: (x) => validateUrl(x),
       },
       {
         type: CommunityType.TikTok,
         handle: '',
-        iconUrl: 'https://cdn-icons-png.flaticon.com/512/4782/4782345.png',
+        iconUrl: require('src/assets/img/tiktok.png'),
         label: t('dappStaking.modals.community.tiktokAccount'),
         validateHandle: (x) => validateUrl(x),
       },
       {
         type: CommunityType.YouTube,
         handle: '',
-        iconUrl: 'https://cdn-icons-png.flaticon.com/512/4494/4494485.png',
+        iconUrl: require('src/assets/img/youtube.png'),
         label: t('dappStaking.modals.community.youtubeAccount'),
         validateHandle: (x) => validateUrl(x),
       },
       {
         type: CommunityType.Instagram,
         handle: '',
-        iconUrl: 'https://cdn-icons-png.flaticon.com/512/4494/4494488.png',
+        iconUrl: require('src/assets/img/instagram.png'),
         label: t('dappStaking.modals.community.instagramAccount'),
         validateHandle: (x) => validateUrl(x),
       },
@@ -177,6 +177,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .community--container {
   display: flex;
+  flex-wrap: wrap;
   flex-direction: row;
 }
 .avatar {
