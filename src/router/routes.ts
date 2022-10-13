@@ -107,11 +107,6 @@ const routes: RouteRecordRaw[] = [
         path: 'discover',
         component: DappsHome,
       },
-      // Memo: Remove this component if there is no usage
-      // {
-      //   path: 'manage',
-      //   component: ManageDappsTab,
-      // },
       {
         path: 'stake',
         component: StakeManage,

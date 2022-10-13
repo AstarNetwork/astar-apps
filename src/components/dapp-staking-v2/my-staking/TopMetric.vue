@@ -25,11 +25,11 @@
           </q-tooltip>
         </p>
         <div class="row--data">
-          <div v-if="isLoading" class="loading">
+          <div v-if="!tvl" class="loading">
             <q-skeleton type="rect" animation="fade" />
           </div>
           <div v-else class="value">
-            {{ item.tvl.toLocaleString() }} ASTR (${{ item.tvlUSD.toLocaleString() }})
+            {{ formatNumber(tvl.tvlDefaultUnit, 2) }} ASTR (${{ formatNumber(tvl.tvlUsd, 1) }})
           </div>
         </div>
       </div>
@@ -93,9 +93,22 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue';
 import { useNetworkInfo } from 'src/hooks';
+import { useStore } from 'src/store';
+import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
+import { TvlModel } from 'src/v2/models';
 import { endpointKey } from 'src/config/chainEndpoints';
+import { formatNumber } from 'src/modules/token-api';
+
 export default defineComponent({
   setup() {
+    const store = useStore();
+    const dappsCount = computed<DappCombinedInfo[]>(
+      () => store.getters['dapps/getRegisteredDapps']().length
+    );
+    const currentBlock = computed<number>(() => store.getters['general/getCurrentBlock']);
+    const currentEra = computed<number>(() => store.getters['dapps/getCurrentEra']);
+    const tvl = computed<TvlModel>(() => store.getters['dapps/getTvl']);
+
     const hero_img = {
       astar_hero: require('/src/assets/img/astar_hero.png'),
       shiden_hero: require('/src/assets/img/shiden_hero.png'),
@@ -112,7 +125,17 @@ export default defineComponent({
     };
     const isLoading = ref(true);
 
-    return { hero_img, item, isLoading, isShiden };
+    return {
+      hero_img,
+      item,
+      isLoading,
+      isShiden,
+      dappsCount,
+      currentBlock,
+      currentEra,
+      tvl,
+      formatNumber,
+    };
   },
 });
 </script>

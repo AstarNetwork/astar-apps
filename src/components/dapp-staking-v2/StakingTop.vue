@@ -19,26 +19,17 @@
     <div class="divider"></div>
 
     <DappList category="NFT" />
-
-    <Teleport to="#app--main">
-      <div :class="!isLoading && 'highest-z-index'">
-        <!-- <ModalRegisterDapp
-          v-if="showRegisterDappModal"
-          v-model:is-open="showRegisterDappModal"
-          :show-close-button="false"
-        /> -->
-      </div>
-    </Teleport>
   </div>
 </template>
 
 <script lang="ts">
 import { useMeta } from 'quasar';
+import { useAccount, useNetworkInfo } from 'src/hooks';
 import { useStore } from 'src/store';
 import TopMetric from 'src/components/dapp-staking-v2/my-staking/TopMetric.vue';
 import MyStaking from 'src/components/dapp-staking-v2/my-staking/MyStaking.vue';
 import DappList from 'src/components/dapp-staking-v2/my-staking/DappList.vue';
-import { computed, defineComponent } from 'vue';
+import { computed, defineComponent, watchEffect } from 'vue';
 import AdsArea from './my-staking/AdsArea.vue';
 
 export default defineComponent({
@@ -52,6 +43,17 @@ export default defineComponent({
     useMeta({ title: 'Discover dApps' });
     const store = useStore();
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
+
+    const { currentNetworkName } = useNetworkInfo();
+    const { currentAccount } = useAccount();
+    watchEffect(() => {
+      if (!currentNetworkName.value) return;
+      store.dispatch('dapps/getDapps', {
+        network: currentNetworkName.value.toLowerCase(),
+        currentAccount: currentAccount.value ? currentAccount.value : '',
+      });
+    });
+    store.dispatch('dapps/getTvl');
 
     return {
       isLoading,
