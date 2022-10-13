@@ -194,7 +194,7 @@ export default defineComponent({
 
     const validateCustomComponents = (): boolean => {
       errors.value.builders =
-        data.developers.length > 1 ? '' : t('dappStaking.modals.builder.error.developersRequired');
+        data.developers.length > 1 ? '' : t('dappStaking.modals.builder.error.buildersRequired');
       errors.value.community =
         data.communities.length > 0 ? '' : t('dappStaking.modals.community.communityRequired');
       errors.value.platform =
@@ -228,9 +228,14 @@ export default defineComponent({
             data.name = registeredDapp.name;
             data.url = registeredDapp.url;
             data.iconFile = getImageUrl(registeredDapp.iconFile);
-            data.icon = new File([new Uint8Array(1)], getImageName(registeredDapp.iconFile.name));
+            data.iconFileName = getImageName(registeredDapp.iconFile.name);
+            data.icon = new File([new Uint8Array(1)], data.iconFileName); // Let quasar file component that icon is set so it doesn't raise validation error.
             registeredDapp.images.forEach((x) => {
-              data.images.push(new File([], getImageName(x.name)));
+              data.images.push(
+                new File([Buffer.from(x.base64content, 'base64')], getImageName(x.name), {
+                  type: x.contentType,
+                })
+              );
               data.imagesContent.push(getImageUrl(x));
             });
             data.developers = registeredDapp.developers.map((x) => ({

@@ -23,7 +23,7 @@
   }
 
   ol, ul {
-    margin: auto;
+    margin-left: 16px;
     padding: auto;
   }
 
@@ -41,5 +41,9 @@
     background-color: #f1f1f1;
     padding: 2px;
     font-size: 105%;
+  }
+
+  a {
+    text-decoration: underline;
   }
 }
