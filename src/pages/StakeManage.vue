@@ -1,5 +1,5 @@
 <template>
-  <stake-manage />
+  <stake-manage class="stake-top" />
 </template>
 
 <script lang="ts">
@@ -14,3 +14,10 @@ export default defineComponent({
   },
 });
 </script>
+<style lang="scss" scoped>
+.stake-top {
+  @media (min-width: $lg) {
+    margin-top: 50px;
+  }
+}
+</style>

@@ -111,8 +111,6 @@ export class DappStakingService implements IDappStakingService {
   }
 
   public async getCombinedInfo(currentAccount: string): Promise<DappCombinedInfo[]> {
-    Guard.ThrowIfUndefined('currentAccount', currentAccount);
-
     const dapps = await this.dappStakingRepository.getRegisteredDapps();
     const stakerInfo = await this.getStakerInfo(
       dapps.map((x) => x.address),
