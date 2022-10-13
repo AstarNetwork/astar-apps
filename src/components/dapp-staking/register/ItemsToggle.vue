@@ -60,6 +60,10 @@ export default defineComponent({
       return selectedItems.value.findIndex((x) => x === value) > -1;
     };
 
+    watch([props], () => {
+      selectedItems.value = props.selectedItems;
+    });
+
     return {
       togglePlatform,
       isChecked,

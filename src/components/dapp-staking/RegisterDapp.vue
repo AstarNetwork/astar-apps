@@ -87,7 +87,7 @@ import { useI18n } from 'vue-i18n';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 import { $api } from 'boot/api';
 import { Button } from '@astar-network/astar-ui';
-import { Category, Developer, NewDappItem } from 'src/store/dapp-staking/state';
+import { Category, Developer, FileInfo, NewDappItem } from 'src/store/dapp-staking/state';
 import ImageCard from 'src/components/dapp-staking/register/ImageCard.vue';
 import AddItemCard from 'src/components/dapp-staking/register/AddItemCard.vue';
 import Builders from 'src/components/dapp-staking/register/Builders.vue';
@@ -107,9 +107,10 @@ import { container } from 'src/v2/common';
 import { IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { useStore } from 'src/store';
-import { useCustomSignature, useGasPrice, useSignPayload } from 'src/hooks';
+import { useCustomSignature, useGasPrice, useNetworkInfo, useSignPayload } from 'src/hooks';
 import { useExtrinsicCall } from 'src/hooks/custom-signature/useExtrinsicCall';
 import { RegisterParameters } from 'src/store/dapp-staking/actions';
+import { getFileInfo } from 'prettier';
 
 export default defineComponent({
   components: {
@@ -138,6 +139,7 @@ export default defineComponent({
     const { selectedTip } = useGasPrice();
     const { isCustomSig } = useCustomSignature({});
     const { getCallFunc } = useExtrinsicCall({ onResult: () => {}, onTransactionError: () => {} });
+    const { currentNetworkName } = useNetworkInfo();
     const store = useStore();
     const currentAddress = computed(() => store.getters['general/selectedAddress']);
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
@@ -187,7 +189,7 @@ export default defineComponent({
         possibleCategories.find((x: LabelValuePair) => x.value === data.mainCategory) ??
         possibleCategories[0];
       data.ref = newData;
-      console.log(newData.ref);
+      console.log('dApp changed: ', newData.ref);
     };
 
     const validateCustomComponents = (): boolean => {
@@ -207,10 +209,49 @@ export default defineComponent({
       return true;
     };
 
-    const getCurrentDeveloperContractAddress = async (): Promise<void> => {
-      const service = container.get<IDappStakingService>(Symbols.DappStakingService);
-      const developerContract = await service.getRegisteredContract(currentAddress.value);
-      data.address = developerContract ?? '';
+    const getImageUrl = (fileInfo: FileInfo): string =>
+      `data:${fileInfo.contentType};base64,${fileInfo.base64content}`;
+
+    const getImageName = (apiImageName: string): string =>
+      apiImageName.replace(`${data.address}_`, '');
+
+    const getDapp = async (): Promise<void> => {
+      try {
+        store.commit('general/setLoading', true);
+        const service = container.get<IDappStakingService>(Symbols.DappStakingService);
+        const developerContract =
+          currentAddress.value && (await service.getRegisteredContract(currentAddress.value));
+        data.address = developerContract ?? '';
+        if (data.address) {
+          const registeredDapp = await service.getDapp(data.address, currentNetworkName.value);
+          if (registeredDapp) {
+            data.name = registeredDapp.name;
+            data.url = registeredDapp.url;
+            data.iconFile = getImageUrl(registeredDapp.iconFile);
+            data.icon = new File([new Uint8Array(1)], getImageName(registeredDapp.iconFile.name));
+            registeredDapp.images.forEach((x) => {
+              data.images.push(new File([], getImageName(x.name)));
+              data.imagesContent.push(getImageUrl(x));
+            });
+            data.developers = registeredDapp.developers.map((x) => ({
+              name: x.name,
+              twitterAccountUrl: x.twitterAccountUrl,
+              linkedInAccountUrl: x.linkedInAccountUrl,
+              iconFile: x.iconFile?.split('&#x2F;').join('/'),
+            }));
+            data.description = registeredDapp.description;
+            data.communities = registeredDapp.communities;
+            data.platforms = registeredDapp.platforms;
+            data.contractType = registeredDapp.contractType;
+            data.mainCategory = registeredDapp.mainCategory;
+            data.license = registeredDapp.license;
+          }
+        }
+      } catch (e) {
+        console.error((e as Error).message);
+      } finally {
+        store.commit('general/setLoading', false);
+      }
     };
 
     const handleSubmit = (): void => {
@@ -243,7 +284,7 @@ export default defineComponent({
       [currentAddress],
       () => {
         if (currentAddress) {
-          getCurrentDeveloperContractAddress();
+          getDapp();
         }
       },
       { immediate: true }

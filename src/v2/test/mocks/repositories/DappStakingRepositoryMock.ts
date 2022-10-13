@@ -4,6 +4,7 @@ import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import { injectable } from 'inversify';
 import { IDappStakingRepository } from 'src/v2/repositories';
 import { SmartContract, StakerInfo } from 'src/v2/models/DappsStaking';
+import { EditDappItem } from 'src/store/dapp-staking/state';
 
 @injectable()
 export class DappStakingRepositoryMock implements IDappStakingRepository {
@@ -63,5 +64,12 @@ export class DappStakingRepositoryMock implements IDappStakingRepository {
   public async getRegisteredContract(developerAddress: string): Promise<string | undefined> {
     this.getRegisteredContractCallMock.call(this, developerAddress);
     return '0x1';
+  }
+
+  public async getDapp(
+    contractAddress: string,
+    network: string
+  ): Promise<EditDappItem | undefined> {
+    throw new Error('Not imlemented yet');
   }
 }

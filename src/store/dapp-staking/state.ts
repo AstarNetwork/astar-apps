@@ -34,6 +34,11 @@ export interface NewDappItem extends DappItem {
   videoUrlInput: string;
 }
 
+export interface EditDappItem extends DappItem {
+  iconFile: FileInfo;
+  images: FileInfo[];
+}
+
 export interface Developer {
   twitterAccountUrl: string;
   linkedInAccountUrl: string;

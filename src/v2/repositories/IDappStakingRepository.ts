@@ -2,6 +2,7 @@ import { BN } from '@polkadot/util';
 import { ISubmittableResult } from '@polkadot/types/types';
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import { SmartContract, StakerInfo } from '../models/DappsStaking';
+import { EditDappItem } from 'src/store/dapp-staking/state';
 
 /**
  * Definition of repository to access dapps staking pallet.
@@ -53,4 +54,11 @@ export interface IDappStakingRepository {
 
   /** Gets contract address registered by the given developer address */
   getRegisteredContract(developerAddress: string): Promise<string | undefined>;
+
+  /**
+   * Gets dapp data from Firebase.
+   * @param contractAddress Dapp contract address.
+   * @param network Name of the network where dapp has been deployed.
+   */
+  getDapp(contractAddress: string, network: string): Promise<EditDappItem | undefined>;
 }
