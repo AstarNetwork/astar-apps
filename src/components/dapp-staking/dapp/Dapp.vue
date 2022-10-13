@@ -66,11 +66,6 @@ export default defineComponent({
 
     watchEffect(dispatchGetDapps);
 
-    watchEffect(() => {
-      if (!dapp.value) return;
-      console.log('dapp', dapp.value);
-    });
-
     return {
       Path,
       dapp,

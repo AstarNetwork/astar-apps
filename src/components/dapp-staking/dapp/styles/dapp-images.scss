@@ -26,6 +26,9 @@
   @media (min-width: $lg) {
     column-gap: 24px;
   }
+  @media (min-width: $xl) {
+    column-gap: 42px;
+  }
 }
 
 .scroll-images {
@@ -74,6 +77,7 @@
   }
   @media (min-width: $xxl) {
     width: 1000px;
+    margin-right: 6px;
   }
 }
 
@@ -106,7 +110,7 @@
 .button-arrow {
   color: $astar-blue;
   display: none;
-  @media (min-width: $md) {
+  @media (min-width: $lg) {
     display: block;
   }
 }

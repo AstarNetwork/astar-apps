@@ -2,7 +2,7 @@
   <div class="wrapper--dapp-images">
     <div class="row--images">
       <button class="button-arrow" @click="scrollLeft">
-        <astar-icon-arrow-left class="button-arrow" :size="arrowSize" />
+        <astar-icon-arrow-left-long class="button-arrow" :size="arrowSize" />
       </button>
       <div class="main-scroll-div">
         <div class="cover">
@@ -15,7 +15,7 @@
       </div>
       <div>
         <button class="button-arrow" @click="scrollRight">
-          <astar-icon-arrow-right :size="arrowSize" />
+          <astar-icon-arrow-right-long :size="arrowSize" />
         </button>
       </div>
     </div>
@@ -23,9 +23,9 @@
     <!-- Memo: fullscreen image preview -->
     <div>
       <q-carousel
-        v-if="fullscreen"
+        v-if="isFullScreen"
         v-model="slide"
-        v-model:fullscreen="fullscreen"
+        v-model:fullscreen="isFullScreen"
         swipeable
         animated
         arrows
@@ -46,8 +46,8 @@
               dense
               color="white"
               text-color="primary"
-              :icon="fullscreen ? 'fullscreen_exit' : 'fullscreen'"
-              @click="fullscreen = false"
+              :icon="isFullScreen ? 'fullscreen_exit' : 'fullscreen'"
+              @click="isFullScreen = false"
             />
           </q-carousel-control>
         </template>
@@ -57,7 +57,7 @@
 </template>
 <script lang="ts">
 import { useBreakpoints } from 'src/hooks';
-import { computed, defineComponent, ref } from 'vue';
+import { computed, defineComponent, ref, watchEffect } from 'vue';
 export default defineComponent({
   props: {
     dapp: {
@@ -68,6 +68,9 @@ export default defineComponent({
   setup(props) {
     const { width, screenSize } = useBreakpoints();
     const slide = ref<number>(0);
+    const isFullScreen = ref<boolean>(false);
+
+    const arrowSize = computed<number>(() => (width.value > screenSize.sm ? 40 : 30));
     const images = computed<string[]>(() => {
       if (props.dapp && props.dapp.dapp.imagesUrl.length > 0) {
         return props.dapp.dapp.imagesUrl;
@@ -90,15 +93,41 @@ export default defineComponent({
       right && right.scrollBy(move, 0);
     };
 
-    const arrowSize = computed<number>(() => (width.value > screenSize.sm ? 40 : 30));
-    const fullscreen = ref<boolean>(false);
-
-    const handleOpenPicture = (index: number) => {
-      fullscreen.value = true;
+    const handleOpenPicture = (index: number): void => {
+      isFullScreen.value = true;
       slide.value = index;
     };
 
-    return { slide, images, scrollLeft, scrollRight, arrowSize, fullscreen, handleOpenPicture };
+    const handleImageFullScreen = (): void => {
+      const escKey = 27;
+      const leftKey = 37;
+      const rightKey = 39;
+      if (isFullScreen.value) {
+        document.addEventListener('keyup', function (evt) {
+          // @ts-ignore
+          const keyCode = evt.keyCode;
+          if (keyCode === escKey) {
+            isFullScreen.value = false;
+          } else if (keyCode === rightKey && slide.value !== images.value.length - 1) {
+            slide.value = slide.value + 1;
+          } else if (keyCode === leftKey && slide.value !== 0) {
+            slide.value = slide.value - 1;
+          }
+        });
+      }
+    };
+
+    watchEffect(handleImageFullScreen);
+
+    return {
+      slide,
+      images,
+      scrollLeft,
+      scrollRight,
+      arrowSize,
+      isFullScreen,
+      handleOpenPicture,
+    };
   },
 });
 </script>
