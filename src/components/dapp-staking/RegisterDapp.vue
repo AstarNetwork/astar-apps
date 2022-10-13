@@ -82,9 +82,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from 'vue';
+import { computed, defineComponent, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { isEthereumAddress } from '@polkadot/util-crypto';
+import { $api } from 'boot/api';
 import { Button } from '@astar-network/astar-ui';
 import { Category, Developer, NewDappItem } from 'src/store/dapp-staking/state';
 import ImageCard from 'src/components/dapp-staking/register/ImageCard.vue';
@@ -102,6 +103,13 @@ import { possibleCategories } from './register/MainCategory.vue';
 import { isUrlValid } from 'src/components/common/Validators';
 import { sanitizeData } from 'src/hooks/helper/markdown';
 import { LabelValuePair } from 'src/components/dapp-staking/register/ItemsToggle.vue';
+import { container } from 'src/v2/common';
+import { IDappStakingService } from 'src/v2/services';
+import { Symbols } from 'src/v2/symbols';
+import { useStore } from 'src/store';
+import { useCustomSignature, useGasPrice, useSignPayload } from 'src/hooks';
+import { useExtrinsicCall } from 'src/hooks/custom-signature/useExtrinsicCall';
+import { RegisterParameters } from 'src/store/dapp-staking/actions';
 
 export default defineComponent({
   components: {
@@ -126,6 +134,13 @@ export default defineComponent({
     });
 
     const { t } = useI18n();
+    const { signPayload } = useSignPayload();
+    const { selectedTip } = useGasPrice();
+    const { isCustomSig } = useCustomSignature({});
+    const { getCallFunc } = useExtrinsicCall({ onResult: () => {}, onTransactionError: () => {} });
+    const store = useStore();
+    const currentAddress = computed(() => store.getters['general/selectedAddress']);
+    const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
     const data = reactive<NewDappItem>({ tags: [] } as unknown as NewDappItem);
     const isModalAddDeveloper = ref<boolean>(false);
     const currentDeveloper = ref<Developer>(initDeveloper());
@@ -146,7 +161,6 @@ export default defineComponent({
     data.mainCategory = currentCategory.value.value as Category;
     data.license = possibleLicenses[0].value;
     data.iconFile = '';
-    data.address = '0x00000....';
 
     data.images = [];
     data.images.push(new File([], t('dappStaking.modals.addImage'))); // Add image placeholder
@@ -161,6 +175,7 @@ export default defineComponent({
       reader.readAsDataURL(data.icon);
       reader.onload = () => {
         data.iconFile = reader.result?.toString() || '';
+        data.iconFileName = data.icon.name;
       };
       reader.onerror = (error) => console.error(error);
     };
@@ -182,7 +197,6 @@ export default defineComponent({
         data.communities.length > 0 ? '' : t('dappStaking.modals.community.communityRequired');
       errors.value.platform =
         data.platforms.length > 0 ? '' : t('dappStaking.modals.platformRequired');
-      console.log(errors.value);
 
       for (const [key, value] of Object.entries(errors.value)) {
         if (value) {
@@ -193,13 +207,47 @@ export default defineComponent({
       return true;
     };
 
+    const getCurrentDeveloperContractAddress = async (): Promise<void> => {
+      const service = container.get<IDappStakingService>(Symbols.DappStakingService);
+      const developerContract = await service.getRegisteredContract(currentAddress.value);
+      data.address = developerContract ?? '';
+    };
+
     const handleSubmit = (): void => {
       dappForm?.value?.validate().then(async (success: boolean) => {
         if (success && validateCustomComponents()) {
-          alert('Submitted');
+          const senderAddress = store.getters['general/selectedAddress'];
+          const currentNetwork = computed(() => {
+            const chainInfo = store.getters['general/chainInfo'];
+            const chain = chainInfo ? chainInfo.chain : '';
+            return chain.toString().split(' ')[0];
+          });
+
+          const signature = await signPayload(senderAddress, data.address);
+          const result = await store.dispatch('dapps/registerDappApi', {
+            dapp: data,
+            api: $api,
+            senderAddress,
+            substrateAccounts: substrateAccounts.value,
+            tip: selectedTip.value.price,
+            network: currentNetwork.value,
+            isCustomSignature: isCustomSig.value,
+            getCallFunc,
+            signature,
+          } as RegisterParameters);
         }
       });
     };
+
+    watch(
+      [currentAddress],
+      () => {
+        if (currentAddress) {
+          getCurrentDeveloperContractAddress();
+        }
+      },
+      { immediate: true }
+    );
 
     return {
       data,

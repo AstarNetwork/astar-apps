@@ -21,6 +21,19 @@ export interface IDappStakingRepository {
   ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>>;
 
   /**
+   * Gets nomination transfer call
+   */
+  getNominationTransferCall({
+    amount,
+    fromContractId,
+    targetContractId,
+  }: {
+    amount: BN;
+    fromContractId: string;
+    targetContractId: string;
+  }): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>>;
+
+  /**
    * Gets staker info (total staked, stakers count) for a given contracts.
    * @param contractAddresses List of contract addresses to provide info for.
    */
@@ -35,5 +48,9 @@ export interface IDappStakingRepository {
    * Starts subscription to a era change.
    */
   starEraSubscription(): Promise<void>;
+
   fetchAccountStakingAmount(contractAddress: string, walletAddress: string): Promise<string>;
+
+  /** Gets contract address registered by the given developer address */
+  getRegisteredContract(developerAddress: string): Promise<string | undefined>;
 }

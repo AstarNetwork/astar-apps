@@ -4,6 +4,8 @@ import Transfer from 'pages/Transfer.vue';
 import { endpointKey, getNetworkName } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import Store from 'src/pages/DappStaking.vue';
+import StoreV2 from 'src/pages/DappStakingV2.vue';
+import StakingTop from 'components/dapp-staking-v2/StakingTop.vue';
 import Dashboard from 'src/pages/Dashboard.vue';
 import RegisterDapp from 'src/pages/RegisterDapp.vue';
 import StakeManage from 'src/pages/StakeManage.vue';
@@ -123,6 +125,21 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'register',
         component: RegisterDapp,
+      },
+    ],
+  },
+  {
+    path: '/dapp-staking-v2',
+    name: 'dApp Staking v2',
+    component: StoreV2,
+    children: [
+      {
+        path: '',
+        redirect: '/dapp-staking-v2/discover',
+      },
+      {
+        path: 'discover',
+        component: StakingTop,
       },
     ],
   },

@@ -1,8 +1,8 @@
 import { BN } from '@polkadot/util';
-import { u32, Option, Struct, U32 } from '@polkadot/types';
-import { ISubmittableResult } from '@polkadot/types/types';
+import { u32, Option, Struct } from '@polkadot/types';
+import { Codec, ISubmittableResult } from '@polkadot/types/types';
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
-import { AccountId, Balance, ImportedAux } from '@polkadot/types/interfaces';
+import { AccountId, Balance } from '@polkadot/types/interfaces';
 import { injectable, inject } from 'inversify';
 import { IDappStakingRepository } from 'src/v2/repositories';
 import { IApi } from 'src/v2/integration';
@@ -39,6 +39,13 @@ interface DappState {
     // Memo: era of unregistration
     words: number[];
   };
+}
+
+interface SmartContractAddress extends Struct {
+  isEvm: boolean;
+  asEvm?: Codec;
+  isWasm: boolean;
+  asWasm?: Codec;
 }
 
 @injectable()
@@ -80,6 +87,23 @@ export class DappStakingRepository implements IDappStakingRepository {
     const api = await this.api.getApi();
 
     return api.tx.dappsStaking.bondAndStake(this.getAddressEnum(contractAddress), amount);
+  }
+
+  public async getNominationTransferCall({
+    amount,
+    fromContractId,
+    targetContractId,
+  }: {
+    amount: BN;
+    fromContractId: string;
+    targetContractId: string;
+  }): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> {
+    const api = await this.api.getApi();
+    return api.tx.dappsStaking.nominationTransfer(
+      this.getAddressEnum(fromContractId),
+      amount,
+      this.getAddressEnum(targetContractId)
+    );
   }
 
   public async getStakerInfo(
@@ -155,12 +179,22 @@ export class DappStakingRepository implements IDappStakingRepository {
     return result;
   }
 
+  public async getRegisteredContract(developerAddress: string): Promise<string | undefined> {
+    const api = await this.api.getApi();
+    const account = api.registry.createType('AccountId32', developerAddress.toString());
+    const contractAddress = await api.query.dappsStaking.registeredDevelopers<
+      Option<SmartContractAddress>
+    >(account);
+
+    return contractAddress.isNone ? undefined : this.getContractAddress(contractAddress.unwrap());
+  }
+
   public async starEraSubscription(): Promise<void> {
     // Avoid multiple subscriptions.
     if (!DappStakingRepository.isEraSubscribed) {
       const api = await this.api.getApi();
       await api.query.dappsStaking.currentEra((era: u32) => {
-        console.log(era.toString());
+        console.log('New era: ', era.toString());
         this.eventAggregator.publish(new NewEraMessage(era.toNumber()));
       });
       DappStakingRepository.isEraSubscribed = true;
@@ -173,5 +207,15 @@ export class DappStakingRepository implements IDappStakingRepository {
 
   private getAddressEnum(address: string) {
     return { Evm: address };
+  }
+
+  private getContractAddress(address: SmartContractAddress): string | undefined {
+    if (address.isEvm) {
+      return address?.asEvm?.toString();
+    } else if (address.isWasm) {
+      return address?.asWasm?.toString();
+    } else {
+      return undefined;
+    }
   }
 }

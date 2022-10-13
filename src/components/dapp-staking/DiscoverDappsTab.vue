@@ -14,15 +14,43 @@
           + {{ $t('dappStaking.registerDapp') }}
         </Button>
       </div>
-      <div v-if="isDapps" class="kpi-wrapper">
-        <TVL />
-        <DappsCount />
-        <Era :progress="progress" :blocks-until-next-era="blocksUntilNextEra" :era="era" />
-        <APR />
+      <Button :small="true" class="register-button" @click="showRegisterDappModal = true">
+        + {{ $t('dappStaking.registerDapp') }}
+      </Button>
+    </div>
+    <div v-if="isDapps" class="kpi-wrapper">
+      <TVL />
+      <DappsCount />
+      <Era :progress="progress" :blocks-until-next-era="blocksUntilNextEra" :era="era" />
+      <APR />
+    </div>
+
+    <UserRewards v-if="isDapps" />
+
+    <div class="row--tab">
+      <div
+        class="tab"
+        :class="[isNativeStaking ? 'selected-staking-option' : 'unselected-staking-option']"
+        @click="isNativeStaking = true"
+      >
+        <span class="text--title">
+          {{ $t('dappStaking.dappStakingNative') }}
+        </span>
+        <div v-if="isNativeStaking" class="tab--border"></div>
       </div>
+      <div
+        class="tab"
+        :class="[!isNativeStaking ? 'selected-staking-option' : 'unselected-staking-option']"
+        @click="isNativeStaking = false"
+      >
+        <span class="text--title">
+          {{ $t('dappStaking.liquidStakingEVM') }}
+        </span>
+        <div v-if="!isNativeStaking" class="tab--border"></div>
+      </div>
+    </div>
 
-      <UserRewards v-if="isDapps" />
-
+    <template v-if="isNativeStaking">
       <div class="store-container tw-grid tw-gap-x-12 xl:tw-gap-x-18 tw-justify-center">
         <div v-if="!isDapps" class="tw-text-xl tx-font-semibold tw-mt-4 dark:tw-text-darkGray-100">
           {{ $t('dappStaking.noDappsRegistered') }}
@@ -40,18 +68,22 @@
           />
         </template>
       </div>
+    </template>
 
-      <Teleport to="#app--main">
-        <div :class="!isLoading && 'highest-z-index'">
-          <ModalRegisterDapp
-            v-if="showRegisterDappModal"
-            v-model:is-open="showRegisterDappModal"
-            :show-close-button="false"
-          />
-          <ModalMaintenance :show="isPalletDisabled" />
-        </div>
-      </Teleport>
-    </div>
+    <template v-else>
+      <AlgemPanel />
+    </template>
+
+    <Teleport to="#app--main">
+      <div :class="!isLoading && 'highest-z-index'">
+        <ModalRegisterDapp
+          v-if="showRegisterDappModal"
+          v-model:is-open="showRegisterDappModal"
+          :show-close-button="false"
+        />
+        <ModalMaintenance :show="isPalletDisabled" />
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -74,11 +106,12 @@ import { useStore } from 'src/store';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
 import { DappItem } from 'src/store/dapp-staking/state';
 import { computed, defineComponent, ref } from 'vue';
-import APR from 'src/components/dapp-staking/statistics/APR.vue';
-import DappsCount from 'src/components/dapp-staking/statistics/DappsCount.vue';
-import Era from 'src/components/dapp-staking/statistics/Era.vue';
-import TVL from 'src/components/dapp-staking/statistics/TVL.vue';
+import APR from './statistics/APR.vue';
+import DappsCount from './statistics/DappsCount.vue';
+import Era from './statistics/Era.vue';
+import TVL from './statistics/TVL.vue';
 import { ethers } from 'ethers';
+import AlgemPanel from './AlgemPanel.vue';
 
 export default defineComponent({
   components: {
@@ -91,6 +124,7 @@ export default defineComponent({
     UserRewards,
     APR,
     ModalMaintenance,
+    AlgemPanel,
   },
   setup() {
     useMeta({ title: 'Discover dApps' });
@@ -117,9 +151,11 @@ export default defineComponent({
     const selectedDappInfo = ref<StakeInfo>();
     const isPalletDisabled = computed(() => store.getters['dapps/getIsPalletDisabled']);
     const isDapps = computed(() => dapps.value.length > 0);
+    const isNativeStaking = ref<boolean>(true);
 
     return {
       isDapps,
+      isNativeStaking,
       dapps,
       selectedDapp,
       selectedDappInfo,
@@ -204,6 +240,51 @@ export default defineComponent({
   @media (min-width: $xxl) {
     display: flex;
     justify-content: center;
+  }
+}
+.row--tab {
+  display: flex;
+  width: 100%;
+  margin-top: 24px;
+  margin-bottom: 50px;
+  gap: 32px;
+  justify-content: center;
+
+  .text--title {
+    font-weight: 500;
+  }
+}
+
+.tab {
+  width: 208px;
+  text-align: center;
+  @media (max-width: $md) {
+    width: 150px;
+  }
+}
+.tab--border {
+  width: 100%;
+  height: 3px;
+  margin-top: 8px;
+  background: $astar-blue-dark;
+  border-radius: 10px;
+  transition: all 0.3s ease 0s;
+}
+
+.selected-staking-option {
+  .text--title {
+    font-weight: 700;
+  }
+}
+
+.unselected-staking-option {
+  cursor: pointer;
+  border-bottom: 0px solid transparent;
+  transition: all 0.3s ease 0s;
+  &:hover {
+    .text--title {
+      font-weight: 700;
+    }
   }
 }
 </style>

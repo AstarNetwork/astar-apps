@@ -23,7 +23,7 @@ export default defineComponent({
 
 .wrapper--dashboard {
   @media (min-width: $lg) {
-    margin-top: 20px;
+    margin-top: 70px;
   }
 }
 </style>
