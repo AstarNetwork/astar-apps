@@ -95,11 +95,14 @@ import Community from 'src/components/dapp-staking/register/Community.vue';
 import DappImages from 'src/components/dapp-staking/register/DappImages.vue';
 import Description from 'src/components/dapp-staking/register/Description.vue';
 import Platforms from 'src/components/dapp-staking/register/Platforms.vue';
-import ContractTypes from 'src/components/dapp-staking/register/ContractTypes.vue';
-import MainCategory from 'src/components/dapp-staking/register/MainCategory.vue';
+import ContractTypes, {
+  possibleContractTypes,
+} from 'src/components/dapp-staking/register/ContractTypes.vue';
+import MainCategory, {
+  possibleCategories,
+} from 'src/components/dapp-staking/register/MainCategory.vue';
 import License from 'src/components/dapp-staking/register/License.vue';
 import { possibleLicenses } from 'src/components/dapp-staking/register/License.vue';
-import { possibleCategories } from './register/MainCategory.vue';
 import { isUrlValid } from 'src/components/common/Validators';
 import { sanitizeData } from 'src/hooks/helper/markdown';
 import { LabelValuePair } from 'src/components/dapp-staking/register/ItemsToggle.vue';
@@ -110,7 +113,6 @@ import { useStore } from 'src/store';
 import { useCustomSignature, useGasPrice, useNetworkInfo, useSignPayload } from 'src/hooks';
 import { useExtrinsicCall } from 'src/hooks/custom-signature/useExtrinsicCall';
 import { RegisterParameters } from 'src/store/dapp-staking/actions';
-import { getFileInfo } from 'prettier';
 
 export default defineComponent({
   components: {
@@ -210,10 +212,12 @@ export default defineComponent({
     };
 
     const getImageUrl = (fileInfo: FileInfo): string =>
-      `data:${fileInfo.contentType};base64,${fileInfo.base64content}`;
+      fileInfo
+        ? `data:${fileInfo.contentType};base64,${fileInfo.base64content}`
+        : '/images/noimage.png';
 
     const getImageName = (apiImageName: string): string =>
-      apiImageName.replace(`${data.address}_`, '');
+      apiImageName ? apiImageName.replace(`${data.address}_`, '') : '';
 
     const getDapp = async (): Promise<void> => {
       try {
@@ -228,27 +232,30 @@ export default defineComponent({
             data.name = registeredDapp.name;
             data.url = registeredDapp.url;
             data.iconFile = getImageUrl(registeredDapp.iconFile);
-            data.iconFileName = getImageName(registeredDapp.iconFile.name);
+            data.iconFileName = getImageName(registeredDapp.iconFile?.name);
             data.icon = new File([new Uint8Array(1)], data.iconFileName); // Let quasar file component that icon is set so it doesn't raise validation error.
             registeredDapp.images.forEach((x) => {
               data.images.push(
-                new File([Buffer.from(x.base64content, 'base64')], getImageName(x.name), {
+                new File([Buffer.from(x.base64content, 'base64')], getImageName(x?.name), {
                   type: x.contentType,
                 })
               );
               data.imagesContent.push(getImageUrl(x));
             });
-            data.developers = registeredDapp.developers.map((x) => ({
-              name: x.name,
-              twitterAccountUrl: x.twitterAccountUrl,
-              linkedInAccountUrl: x.linkedInAccountUrl,
-              iconFile: x.iconFile?.split('&#x2F;').join('/'),
-            }));
+            data.developers = registeredDapp.developers
+              ? registeredDapp.developers.map((x) => ({
+                  name: x.name,
+                  twitterAccountUrl: x.twitterAccountUrl,
+                  linkedInAccountUrl: x.linkedInAccountUrl,
+                  iconFile: x.iconFile?.split('&#x2F;').join('/'),
+                }))
+              : [];
             data.description = registeredDapp.description;
-            data.communities = registeredDapp.communities;
-            data.platforms = registeredDapp.platforms;
-            data.contractType = registeredDapp.contractType;
-            data.mainCategory = registeredDapp.mainCategory;
+            data.communities = registeredDapp.communities ?? [];
+            data.platforms = registeredDapp.platforms ?? [];
+            data.contractType = registeredDapp.contractType ?? possibleContractTypes[0].value;
+            data.mainCategory =
+              registeredDapp.mainCategory ?? (currentCategory.value.value as Category);
             data.license = registeredDapp.license;
           }
         }
