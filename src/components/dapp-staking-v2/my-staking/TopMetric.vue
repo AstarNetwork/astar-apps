@@ -53,7 +53,7 @@
           </div>
         </div>
       </div>
-      <div class="card">
+      <!-- <div class="card">
         <p>
           {{ $t('topMetric.currentStakersApr') }}
           <span class="wrapper--icon-help">
@@ -68,6 +68,23 @@
             <q-skeleton type="rect" animation="fade" />
           </div>
           <div v-else class="value">{{ item.currentAPR.toFixed(2) }}%</div>
+        </div>
+      </div> -->
+      <div class="card">
+        <p>
+          {{ $t('topMetric.currentBlock') }}
+          <span class="wrapper--icon-help">
+            <astar-icon-help size="16" />
+          </span>
+          <q-tooltip>
+            <span class="text--tooltip">{{ $t('topMetric.currentBlock') }}</span>
+          </q-tooltip>
+        </p>
+        <div class="row--data">
+          <div v-if="!currentBlock" class="loading">
+            <q-skeleton type="rect" animation="fade" />
+          </div>
+          <div v-else class="value">{{ currentBlock }}</div>
         </div>
       </div>
       <div class="card">

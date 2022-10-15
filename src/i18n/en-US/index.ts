@@ -127,6 +127,7 @@ export default {
     tvlInDapps: 'TVL in dApps',
     currentEra: 'Current Era',
     currentStakersApr: 'Current Stakers APR',
+    currentBlock: 'Current Block',
     totalDapps: 'Total dApps',
   },
   myDapps: {
