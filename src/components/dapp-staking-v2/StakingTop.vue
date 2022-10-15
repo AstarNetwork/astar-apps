@@ -8,17 +8,17 @@
 
     <div class="divider"></div>
 
-    <DappList category="De-Fi" />
+    <DappList category="DeFi" />
 
     <AdsArea />
 
     <div class="divider"></div>
 
-    <DappList category="Infra" />
+    <DappList category="NFT" />
 
     <div class="divider"></div>
 
-    <DappList category="NFT" />
+    <DappList category="Games" />
   </div>
 </template>
 

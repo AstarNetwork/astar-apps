@@ -4,12 +4,14 @@
       <div class="txt--header">{{ category }}</div>
       <!-- <astar-irregular-button width="77" height="20">See All</astar-irregular-button> -->
     </div>
-    <CardList :items="items" />
+    <CardList :category="category" :dapps="dapps" />
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
 import CardList from './components/CardList.vue';
+import { useStore } from 'src/store';
+import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 export default defineComponent({
   components: { CardList },
   props: {
@@ -18,7 +20,12 @@ export default defineComponent({
       required: true,
     },
   },
-  setup() {
+  setup(props) {
+    const store = useStore();
+    const dapps = computed<DappCombinedInfo[]>(() =>
+      store.getters['dapps/getRegisteredDapps'](props.category)
+    );
+
     //TODO: need refactor as module
     let items = [
       {
@@ -47,6 +54,7 @@ export default defineComponent({
 
     return {
       items,
+      dapps,
     };
   },
 });

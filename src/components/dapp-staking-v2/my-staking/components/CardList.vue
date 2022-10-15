@@ -1,26 +1,35 @@
 <template>
   <div class="wrapper--list">
-    <div v-for="(t, index) in items" :key="index" class="card" @mouseover="hoverIndex = index">
+    <div
+      v-for="(t, index) in dapps"
+      :key="t.contract.address"
+      class="card"
+      @mouseover="hoverIndex = index"
+    >
       <div class="wrapper--card">
         <div class="wrapper--img">
-          <q-img :src="t.img" class="img--dapp" fit="contain" no-spinner />
+          <q-img :src="t.dapp?.iconUrl" class="img--dapp" fit="contain" no-spinner />
         </div>
         <div class="panel--right">
-          <div class="txt--title">{{ t.title }}</div>
-          <div class="badge--tag">{{ t.category }}</div>
+          <div class="txt--title">{{ t.dapp?.name }}</div>
+          <div class="badge--tag">{{ category }}</div>
           <div class="divider"></div>
           <div class="row--metric">
             <div class="row--numStakers">
               <astar-icon-base class="icon--community" stroke="currentColor" width="20" height="18">
                 <astar-icon-community />
               </astar-icon-base>
-              {{ t.numStakers.toLocaleString() }}
+              {{ t.stakerInfo.stakersCount.toLocaleString() }}
             </div>
-            <div>{{ t.amtStake.toLocaleString() }} ASTR</div>
+            <div>{{ Number(t.stakerInfo.totalStakeFormatted).toLocaleString() }} ASTR</div>
           </div>
         </div>
       </div>
-      <astar-button v-if="index === hoverIndex || width < screenSize.lg" width="274" height="24"
+      <astar-button
+        v-if="index === hoverIndex || width < screenSize.lg"
+        width="274"
+        height="24"
+        @click="goStakePageLink(t.dapp?.address)"
         >Stake now</astar-button
       >
       <div v-else style="width: 274px; height: 24px"></div>
@@ -31,21 +40,37 @@
 <script lang="ts">
 import { defineComponent, PropType, ref } from 'vue';
 import { useBreakpoints } from 'src/hooks';
+import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
+import { networkParam, Path } from 'src/router/routes';
+import { useRouter } from 'vue-router';
+
 export default defineComponent({
   props: {
-    items: {
-      type: Array as PropType<any[]>,
+    category: {
+      type: String,
+      required: true,
+    },
+    dapps: {
+      type: Array as PropType<DappCombinedInfo[]>,
       required: true,
     },
   },
   setup() {
+    const router = useRouter();
     const { width, screenSize } = useBreakpoints();
     const hoverIndex = ref<number>(-1);
+
+    const goStakePageLink = (address: string | undefined): void => {
+      const base = networkParam + Path.DappStaking + Path.Stake;
+      const url = `${base}?dapp=${address?.toLowerCase()}`;
+      router.push(url);
+    };
 
     return {
       hoverIndex,
       width,
       screenSize,
+      goStakePageLink,
     };
   },
 });
@@ -107,7 +132,7 @@ export default defineComponent({
     }
 
     .badge--tag {
-      width: 48px;
+      width: 54px;
       height: 18px;
       padding: 2px 8px;
       background: $object-light;

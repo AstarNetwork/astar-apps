@@ -44,12 +44,12 @@
           </q-tooltip>
         </p>
         <div class="row--data">
-          <div v-if="isLoading" class="loading">
+          <div v-if="!currentEra" class="loading">
             <q-skeleton type="rect" animation="fade" />
           </div>
           <div v-else class="value">
-            <div>{{ item.currentEra }}</div>
-            <div class="detail-value">(ETA {{ item.currentEraETA }})</div>
+            <div>{{ currentEra.toString() }}</div>
+            <!-- <div class="detail-value">(ETA {{ item.currentEraETA }})</div> -->
           </div>
         </div>
       </div>
@@ -81,10 +81,10 @@
           </q-tooltip>
         </p>
         <div class="row--data">
-          <div v-if="isLoading" class="loading">
+          <div v-if="!dappsCount" class="loading">
             <q-skeleton type="rect" animation="fade" />
           </div>
-          <div v-else class="value">{{ item.totalDapps.toLocaleString() }}</div>
+          <div v-else class="value">{{ dappsCount.toLocaleString() }}</div>
         </div>
       </div>
     </div>
