@@ -307,7 +307,7 @@ export default {
       descriptionRequired: 'Tell the world something about your dApp.',
       platformsTitle: 'Is your project available on',
       contractTypeTitle: 'Is your project on',
-      tagsTitle: 'Tags for {category}',
+      tagsTitle: 'Tags',
       categoryTitle: 'Choose main category',
       submit: 'Submit',
       dappNameRequired: 'dApp name is required',

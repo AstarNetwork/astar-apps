@@ -1,10 +1,7 @@
 <template>
-  <items-container
-    :title="$t('dappStaking.modals.tagsTitle', { category: categoryName })"
-    class="component"
-  >
+  <items-container :title="$t('dappStaking.modals.tagsTitle')" class="component">
     <items-toggle
-      :available-items="getTags(category)"
+      :available-items="possibleTags"
       :selected-items="data.tags"
       :item-toggled="handleItemToggled"
       class="container--toggle"
@@ -13,10 +10,10 @@
 </template>
 
 <script lang="ts">
-import { Category, NewDappItem } from 'src/store/dapp-staking/state';
+import { NewDappItem } from 'src/store/dapp-staking/state';
 import { defineComponent, PropType, reactive, watch } from 'vue';
 import ItemsContainer from 'src/components/dapp-staking/register/ItemsContainer.vue';
-import ItemsToggle, { LabelValuePair } from 'src/components/dapp-staking/register/ItemsToggle.vue';
+import ItemsToggle from 'src/components/dapp-staking/register/ItemsToggle.vue';
 
 export default defineComponent({
   components: {
@@ -28,37 +25,21 @@ export default defineComponent({
       type: Object as PropType<NewDappItem>,
       required: true,
     },
-    category: {
-      type: String as PropType<Category>,
-      required: true,
-    },
-    categoryName: {
-      type: String,
-      required: true,
-    },
   },
   setup(props) {
     const data = reactive<NewDappItem>(props.dapp);
-    const possibleTags = {
-      defi: [
-        { label: 'Stable', value: 'stable' },
-        { label: 'DEX', value: 'dex' },
-        { label: 'LaunchPad', value: 'launchpad' },
-      ],
-      gamefi: [
-        { label: 'Tag1', value: 'tag1' },
-        { label: 'Tag2', value: 'tag2' },
-      ],
-      infra: [],
-      nft: [],
-      others: [],
-    };
-
-    const getTags = (category: Category): LabelValuePair[] => {
-      const tags = possibleTags[category];
-
-      return tags ? tags : [];
-    };
+    const possibleTags = [
+      { label: 'AMM', value: 'amm' },
+      { label: 'dApp', value: 'dapp' },
+      { label: 'DeFi', value: 'defi' },
+      { label: 'Lending', value: 'lending' },
+      { label: 'Multi-chain', value: 'multi-chain' },
+      { label: 'Stablecoin', value: 'stablecoin' },
+      { label: 'Utility', value: 'utility' },
+      { label: 'Yield Farming', value: 'yield-farming' },
+      { label: 'Play-to-Earn', value: 'play-to-earn' },
+      { label: 'Art', value: 'art' },
+    ];
 
     const handleItemToggled = (selectedItems: string[]): void => {
       data.tags = selectedItems;
@@ -68,7 +49,6 @@ export default defineComponent({
       data,
       possibleTags,
       handleItemToggled,
-      getTags,
     };
   },
 });

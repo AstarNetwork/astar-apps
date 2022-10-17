@@ -75,6 +75,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .toggle {
   margin-right: 10px;
+  margin-bottom: 10px;
   padding-top: 5px;
   padding: 4px 8px;
   border-radius: 6px;
@@ -85,6 +86,7 @@ export default defineComponent({
 .items--container {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   margin-top: 10px;
 }
 

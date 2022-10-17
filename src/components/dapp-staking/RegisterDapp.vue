@@ -64,12 +64,7 @@
         <platforms :dapp="data" :validation-error="errors.platform" class="custom-component" />
         <contract-types :dapp="data" class="custom-component" />
         <main-category :dapp="data" class="custom-component" />
-        <!-- <tags
-        :dapp="data"
-        :category="(currentCategory.value as Category)"
-        :category-name="currentCategory.label"
-        class="component"
-      /> -->
+        <tags :dapp="data" class="component" />
         <license :dapp="data" class="component" />
         <div class="button--container">
           <Button :width="328" :height="52" @click="handleSubmit">
@@ -102,6 +97,7 @@ import MainCategory, {
   possibleCategories,
 } from 'src/components/dapp-staking/register/MainCategory.vue';
 import License from 'src/components/dapp-staking/register/License.vue';
+import Tags from 'src/components/dapp-staking/register/Tags.vue';
 import { possibleLicenses } from 'src/components/dapp-staking/register/License.vue';
 import { isUrlValid } from 'src/components/common/Validators';
 import { sanitizeData } from 'src/hooks/helper/markdown';
@@ -127,6 +123,7 @@ export default defineComponent({
     MainCategory,
     License,
     Button,
+    Tags,
   },
   setup() {
     const initDeveloper = (): Developer => ({
@@ -253,10 +250,11 @@ export default defineComponent({
             data.description = registeredDapp.description;
             data.communities = registeredDapp.communities ?? [];
             data.platforms = registeredDapp.platforms ?? [];
-            data.contractType = registeredDapp.contractType ?? possibleContractTypes[0].value;
+            data.contractType = registeredDapp.contractType ?? possibleContractTypes[2].value; // default to evm
             data.mainCategory =
               registeredDapp.mainCategory ?? (currentCategory.value.value as Category);
             data.license = registeredDapp.license;
+            data.tags = registeredDapp.tags;
           }
         }
       } catch (e) {
