@@ -2,7 +2,9 @@
 
 .wrapper--dapp-statistics {
   padding-top: 24px;
-  margin-bottom: 24px;
+  padding-bottom: 24px;
+  margin-bottom: 36px;
+  border-bottom: 1px solid $gray-2;
 }
 
 .column--statistics {
@@ -67,5 +69,8 @@
   }
   .text--statistics-value {
     color: $gray-1;
+  }
+  .wrapper--dapp-statistics {
+    border-bottom: 1px solid $gray-5;
   }
 }
