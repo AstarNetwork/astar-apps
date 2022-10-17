@@ -22,6 +22,7 @@ import DappImages from 'src/components/dapp-staking/dapp/DappImages.vue';
 import Builders from 'src/components/dapp-staking/dapp/Builders.vue';
 import ProjectOverview from 'src/components/dapp-staking/dapp/ProjectOverview.vue';
 import ProjectDetails from 'src/components/dapp-staking/dapp/ProjectDetails.vue';
+import { useClaimAll } from 'src/hooks';
 
 export default defineComponent({
   components: {
@@ -35,7 +36,8 @@ export default defineComponent({
   setup() {
     const { currentNetworkName } = useNetworkInfo();
     const route = useRoute();
-
+    // Demo: Remove it later
+    useClaimAll();
     const store = useStore();
     const { dapps, stakingList } = useStakingList();
     const dappAddress = computed<string>(() => route.query.dapp as string);
