@@ -386,6 +386,10 @@ export default defineComponent({
   border-color: $gray-5;
 }
 
+.q-field--outlined .q-field__control {
+  background-color: $body-bg-dark;
+}
+
 // readonly
 .q-field--outlined.q-field--readonly .q-field__control:before {
   border-style: solid;

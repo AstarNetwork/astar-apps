@@ -218,13 +218,3 @@ export default defineComponent({
   margin-top: 20px;
 }
 </style>
-
-<style lang="scss">
-.body--dark {
-  .modal {
-    .modal-content {
-      background-color: $gray-6 !important;
-    }
-  }
-}
-</style>
