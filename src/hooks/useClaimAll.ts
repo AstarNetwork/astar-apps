@@ -1,4 +1,4 @@
-import { useGasPrice, useCurrentEra, useCustomSignature } from 'src/hooks';
+import { useGasPrice, useCurrentEra, useCustomSignature, useNetworkInfo } from 'src/hooks';
 import { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 import { $api } from 'boot/api';
@@ -22,6 +22,7 @@ export function useClaimAll() {
   const dapps = computed(() => store.getters['dapps/getAllDapps']);
   const isSendingTx = computed(() => store.getters['general/isLoading']);
   const { nativeTipPrice } = useGasPrice();
+  const { currentNetworkName } = useNetworkInfo();
 
   const { era } = useCurrentEra();
   const { handleResult, handleCustomExtrinsic, isCustomSig } = useCustomSignature({
@@ -41,19 +42,25 @@ export function useClaimAll() {
       }
 
       const txs: PayloadWithWeight[] = await Promise.all(
-        dapps.value.map(async ({ address }: { address: string }) => {
-          const transactions = await getIndividualClaimTxs({
-            dappAddress: address,
-            api,
-            senderAddress: senderAddressRef,
-            currentEra: era.value,
-          });
-          return transactions.length ? transactions : null;
+        dapps.value.map(async (it: any) => {
+          if (it.contract.state === 'Registered') {
+            const transactions = await getIndividualClaimTxs({
+              dappAddress: it.dapp.address,
+              api,
+              senderAddress: senderAddressRef,
+              currentEra: era.value,
+            });
+            return transactions.length ? transactions : null;
+          } else {
+            return null;
+          }
         })
       );
       const filteredTxs = txs.filter((it) => it !== null);
       batchTxs = filteredTxs.flat();
       canClaim.value = batchTxs.length > 0;
+
+      console.log('Amount of Eras to claim: batchTxs.length', batchTxs.length);
     } catch (error: any) {
       console.error(error.message);
     } finally {
@@ -111,6 +118,18 @@ export function useClaimAll() {
       console.error(error.message);
     }
   };
+
+  const dispatchGetDapps = (): void => {
+    const isDispatch = currentNetworkName.value && dapps.value.length === 0 && senderAddress.value;
+    if (isDispatch) {
+      store.dispatch('dapps/getDapps', {
+        network: currentNetworkName.value.toLowerCase(),
+        currentAccount: senderAddress.value,
+      });
+    }
+  };
+
+  watchEffect(dispatchGetDapps);
 
   return {
     claimAll,
