@@ -19,7 +19,7 @@
     <!-- Todo: fix the styling later-->
     <div>
       <router-link :to="buildStakePageLink(dapp.dapp.address)">
-        <button class="btn btn--sm">Stake Now</button>
+        <button class="btn btn--sm" :disabled="isH160">Stake Now</button>
       </router-link>
       <router-link :to="buildDappPageLink(dapp.dapp.address)">
         <button class="btn btn--sm">Details</button>
@@ -29,9 +29,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, toRefs } from 'vue';
+import { defineComponent, PropType, toRefs, computed } from 'vue';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { networkParam, Path } from 'src/router/routes';
+import { useStore } from 'src/store';
 
 export default defineComponent({
   props: {
@@ -41,6 +42,8 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const store = useStore();
+    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const buildStakePageLink = (address: string): string => {
       const base = networkParam + Path.DappStaking + Path.Stake;
       return `${base}?dapp=${address.toLowerCase()}`;
@@ -54,6 +57,7 @@ export default defineComponent({
       ...toRefs(props),
       buildStakePageLink,
       buildDappPageLink,
+      isH160,
     };
   },
 });
