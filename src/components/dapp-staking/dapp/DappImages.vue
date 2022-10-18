@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper--dapp-images">
+  <div v-if="images.length > 0" class="wrapper--dapp-images">
     <div class="row--images">
       <button class="button-arrow" @click="scrollLeft">
         <astar-icon-arrow-left-long class="button-arrow" :size="arrowSize" />
@@ -72,9 +72,10 @@ export default defineComponent({
 
     const arrowSize = computed<number>(() => (width.value > screenSize.sm ? 40 : 30));
     const images = computed<string[]>(() => {
-      if (props.dapp && props.dapp.dapp.imagesUrl.length > 0) {
-        return props.dapp.dapp.imagesUrl;
-      } else {
+      try {
+        const isImages = props.dapp && props.dapp.dapp.imagesUrl.length > 0;
+        return isImages ? props.dapp.dapp.imagesUrl : [];
+      } catch (error) {
         return [];
       }
     });

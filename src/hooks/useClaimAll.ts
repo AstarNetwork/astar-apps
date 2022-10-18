@@ -9,6 +9,7 @@ import { TxType } from 'src/hooks/custom-signature/message';
 import { ExtrinsicPayload } from 'src/hooks/helper';
 import { getIndividualClaimTxs, PayloadWithWeight } from 'src/hooks/helper/claim';
 import { signAndSend } from 'src/hooks/helper/wallet';
+import { SmartContractState } from 'src/v2/models/DappsStaking';
 
 const MAX_BATCH_WEIGHT = new BN('50000000000');
 
@@ -43,7 +44,7 @@ export function useClaimAll() {
 
       const txs: PayloadWithWeight[] = await Promise.all(
         dapps.value.map(async (it: any) => {
-          if (it.contract.state === 'Registered') {
+          if (it.contract.state === SmartContractState.Registered) {
             const transactions = await getIndividualClaimTxs({
               dappAddress: it.dapp.address,
               api,
