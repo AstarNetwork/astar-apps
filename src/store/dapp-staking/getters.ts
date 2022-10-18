@@ -24,7 +24,9 @@ const getters: GetterTree<State, StateInterface> & ContractsGetters = {
     tag
       ? state.dappsCombinedInfo.filter((x) => {
           try {
-            return x.dapp?.tags.includes(tag) && x.contract.state === SmartContractState.Registered;
+            return (
+              x.dapp?.tags?.includes(tag) && x.contract.state === SmartContractState.Registered
+            );
           } catch (error) {
             return state.dappsCombinedInfo;
           }

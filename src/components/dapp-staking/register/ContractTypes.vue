@@ -19,6 +19,12 @@ import { NewDappItem } from 'src/store/dapp-staking/state';
 import { defineComponent, PropType, reactive } from 'vue';
 import ItemsContainer from 'src/components/dapp-staking/register/ItemsContainer.vue';
 
+export const possibleContractTypes = [
+  { label: 'WASM+EVM', value: 'wasm+evm' },
+  { label: 'WASM', value: 'wasm' },
+  { label: 'EVM', value: 'evm' },
+];
+
 export default defineComponent({
   components: {
     ItemsContainer,
@@ -31,12 +37,6 @@ export default defineComponent({
   },
   setup(props) {
     const data = reactive<NewDappItem>(props.dapp);
-    const possibleContractTypes = [
-      { label: 'WASM+EVM', value: 'wasm+evm' },
-      { label: 'WASM', value: 'wasm' },
-      { label: 'EVM', value: 'evm' },
-    ];
-
     data.contractType = possibleContractTypes[0].value;
 
     return {

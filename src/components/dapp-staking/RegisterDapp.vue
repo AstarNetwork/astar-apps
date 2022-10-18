@@ -64,12 +64,7 @@
         <platforms :dapp="data" :validation-error="errors.platform" class="custom-component" />
         <contract-types :dapp="data" class="custom-component" />
         <main-category :dapp="data" class="custom-component" />
-        <!-- <tags
-        :dapp="data"
-        :category="(currentCategory.value as Category)"
-        :category-name="currentCategory.label"
-        class="component"
-      /> -->
+        <tags :dapp="data" class="component" />
         <license :dapp="data" class="component" />
         <div class="button--container">
           <Button :width="328" :height="52" @click="handleSubmit">
@@ -87,7 +82,7 @@ import { useI18n } from 'vue-i18n';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 import { $api } from 'boot/api';
 import { Button } from '@astar-network/astar-ui';
-import { Category, Developer, NewDappItem } from 'src/store/dapp-staking/state';
+import { Category, Developer, FileInfo, NewDappItem } from 'src/store/dapp-staking/state';
 import ImageCard from 'src/components/dapp-staking/register/ImageCard.vue';
 import AddItemCard from 'src/components/dapp-staking/register/AddItemCard.vue';
 import Builders from 'src/components/dapp-staking/register/Builders.vue';
@@ -95,11 +90,15 @@ import Community from 'src/components/dapp-staking/register/Community.vue';
 import DappImages from 'src/components/dapp-staking/register/DappImages.vue';
 import Description from 'src/components/dapp-staking/register/Description.vue';
 import Platforms from 'src/components/dapp-staking/register/Platforms.vue';
-import ContractTypes from 'src/components/dapp-staking/register/ContractTypes.vue';
-import MainCategory from 'src/components/dapp-staking/register/MainCategory.vue';
+import ContractTypes, {
+  possibleContractTypes,
+} from 'src/components/dapp-staking/register/ContractTypes.vue';
+import MainCategory, {
+  possibleCategories,
+} from 'src/components/dapp-staking/register/MainCategory.vue';
 import License from 'src/components/dapp-staking/register/License.vue';
+import Tags from 'src/components/dapp-staking/register/Tags.vue';
 import { possibleLicenses } from 'src/components/dapp-staking/register/License.vue';
-import { possibleCategories } from './register/MainCategory.vue';
 import { isUrlValid } from 'src/components/common/Validators';
 import { sanitizeData } from 'src/hooks/helper/markdown';
 import { LabelValuePair } from 'src/components/dapp-staking/register/ItemsToggle.vue';
@@ -107,7 +106,7 @@ import { container } from 'src/v2/common';
 import { IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { useStore } from 'src/store';
-import { useCustomSignature, useGasPrice, useSignPayload } from 'src/hooks';
+import { useCustomSignature, useGasPrice, useNetworkInfo, useSignPayload } from 'src/hooks';
 import { useExtrinsicCall } from 'src/hooks/custom-signature/useExtrinsicCall';
 import { RegisterParameters } from 'src/store/dapp-staking/actions';
 
@@ -124,6 +123,7 @@ export default defineComponent({
     MainCategory,
     License,
     Button,
+    Tags,
   },
   setup() {
     const initDeveloper = (): Developer => ({
@@ -138,6 +138,7 @@ export default defineComponent({
     const { selectedTip } = useGasPrice();
     const { isCustomSig } = useCustomSignature({});
     const { getCallFunc } = useExtrinsicCall({ onResult: () => {}, onTransactionError: () => {} });
+    const { currentNetworkName } = useNetworkInfo();
     const store = useStore();
     const currentAddress = computed(() => store.getters['general/selectedAddress']);
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
@@ -187,12 +188,11 @@ export default defineComponent({
         possibleCategories.find((x: LabelValuePair) => x.value === data.mainCategory) ??
         possibleCategories[0];
       data.ref = newData;
-      console.log(newData.ref);
     };
 
     const validateCustomComponents = (): boolean => {
       errors.value.builders =
-        data.developers.length > 1 ? '' : t('dappStaking.modals.builder.error.developersRequired');
+        data.developers.length > 1 ? '' : t('dappStaking.modals.builder.error.buildersRequired');
       errors.value.community =
         data.communities.length > 0 ? '' : t('dappStaking.modals.community.communityRequired');
       errors.value.platform =
@@ -207,10 +207,61 @@ export default defineComponent({
       return true;
     };
 
-    const getCurrentDeveloperContractAddress = async (): Promise<void> => {
-      const service = container.get<IDappStakingService>(Symbols.DappStakingService);
-      const developerContract = await service.getRegisteredContract(currentAddress.value);
-      data.address = developerContract ?? '';
+    const getImageUrl = (fileInfo: FileInfo): string =>
+      fileInfo
+        ? `data:${fileInfo.contentType};base64,${fileInfo.base64content}`
+        : '/images/noimage.png';
+
+    const getImageName = (apiImageName: string): string =>
+      apiImageName ? apiImageName.replace(`${data.address}_`, '') : '';
+
+    const getDapp = async (): Promise<void> => {
+      try {
+        store.commit('general/setLoading', true);
+        const service = container.get<IDappStakingService>(Symbols.DappStakingService);
+        const developerContract =
+          currentAddress.value && (await service.getRegisteredContract(currentAddress.value));
+        data.address = developerContract ?? '';
+        if (data.address) {
+          const registeredDapp = await service.getDapp(data.address, currentNetworkName.value);
+          if (registeredDapp) {
+            data.name = registeredDapp.name;
+            data.url = registeredDapp.url;
+            data.iconFile = getImageUrl(registeredDapp.iconFile);
+            data.iconFileName = getImageName(registeredDapp.iconFile?.name);
+            // Let quasar file component info that icon is set so it doesn't raise validation error.
+            data.icon = new File([new Uint8Array(1)], data.iconFileName);
+            registeredDapp.images.forEach((x) => {
+              data.images.push(
+                new File([Buffer.from(x.base64content, 'base64')], getImageName(x?.name), {
+                  type: x.contentType,
+                })
+              );
+              data.imagesContent.push(getImageUrl(x));
+            });
+            data.developers = registeredDapp.developers
+              ? registeredDapp.developers.map((x) => ({
+                  name: x.name,
+                  twitterAccountUrl: x.twitterAccountUrl,
+                  linkedInAccountUrl: x.linkedInAccountUrl,
+                  iconFile: x.iconFile?.split('&#x2F;').join('/'),
+                }))
+              : [];
+            data.description = registeredDapp.description;
+            data.communities = registeredDapp.communities ?? [];
+            data.platforms = registeredDapp.platforms ?? [];
+            data.contractType = registeredDapp.contractType ?? possibleContractTypes[2].value; // default to evm
+            data.mainCategory =
+              registeredDapp.mainCategory ?? (currentCategory.value.value as Category);
+            data.license = registeredDapp.license;
+            data.tags = registeredDapp.tags;
+          }
+        }
+      } catch (e) {
+        console.error((e as Error).message);
+      } finally {
+        store.commit('general/setLoading', false);
+      }
     };
 
     const handleSubmit = (): void => {
@@ -243,7 +294,7 @@ export default defineComponent({
       [currentAddress],
       () => {
         if (currentAddress) {
-          getCurrentDeveloperContractAddress();
+          getDapp();
         }
       },
       { immediate: true }
@@ -333,6 +384,10 @@ export default defineComponent({
 
 .q-field--outlined.q-field--dark .q-field__control:before {
   border-color: $gray-5;
+}
+
+.q-field--outlined.q-field--dark .q-field__control {
+  background-color: $body-bg-dark;
 }
 
 // readonly

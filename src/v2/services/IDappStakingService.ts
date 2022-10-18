@@ -1,4 +1,5 @@
 import { BN } from '@polkadot/util';
+import { EditDappItem } from 'src/store/dapp-staking/state';
 import { TvlModel } from 'src/v2/models';
 import { DappCombinedInfo, StakerInfo } from '../models/DappsStaking';
 
@@ -51,4 +52,11 @@ export interface IDappStakingService {
 
   /** Gets contract address registered by the given developer address */
   getRegisteredContract(developerAddress: string): Promise<string | undefined>;
+
+  /**
+   * Gets dapp data from Firebase.
+   * @param contractAddress Dapp contract address.
+   * @param network Name of the network where dapp has been deployed.
+   */
+  getDapp(contractAddress: string, network: string): Promise<EditDappItem | undefined>;
 }

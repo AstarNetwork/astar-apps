@@ -144,6 +144,7 @@ export default defineComponent({
 
 .builders--container {
   display: flex;
+  flex-wrap: wrap;
   flex-direction: row;
 }
 
