@@ -1,3 +1,4 @@
+import { useI18n } from 'vue-i18n';
 import { useGasPrice, useCurrentEra, useCustomSignature, useNetworkInfo } from 'src/hooks';
 import { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
@@ -21,9 +22,11 @@ export function useClaimAll() {
   const senderAddress = computed(() => store.getters['general/selectedAddress']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const dapps = computed(() => store.getters['dapps/getAllDapps']);
+  const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const isSendingTx = computed(() => store.getters['general/isLoading']);
   const { nativeTipPrice } = useGasPrice();
   const { currentNetworkName } = useNetworkInfo();
+  const { t } = useI18n();
 
   const { era } = useCurrentEra();
   const { handleResult, handleCustomExtrinsic, isCustomSig } = useCustomSignature({
@@ -44,7 +47,7 @@ export function useClaimAll() {
 
       const txs: PayloadWithWeight[] = await Promise.all(
         dapps.value.map(async (it: any) => {
-          if (it.contract.state === SmartContractState.Registered) {
+          if (it.contract.state === SmartContractState.Registered && !isH160.value) {
             const transactions = await getIndividualClaimTxs({
               dappAddress: it.dapp.address,
               api,
@@ -126,6 +129,12 @@ export function useClaimAll() {
       store.dispatch('dapps/getDapps', {
         network: currentNetworkName.value.toLowerCase(),
         currentAccount: senderAddress.value,
+      });
+    }
+    if (isH160.value) {
+      store.dispatch('general/showAlertMsg', {
+        msg: t('dappStaking.error.onlySupportsSubstrate'),
+        alertType: 'error',
       });
     }
   };

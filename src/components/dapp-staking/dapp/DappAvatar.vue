@@ -15,7 +15,7 @@
         </div>
         <div class="row--stake">
           <router-link :to="buildStakePageLink(dapp.dapp.address)">
-            <astar-button class="btn-size--stake">
+            <astar-button class="btn-size--stake" :disabled="isDisabledStakeButton">
               <span class="text--btn-stake">
                 {{ $t('dappStaking.stake') }}
               </span>
@@ -34,8 +34,10 @@
   </div>
 </template>
 <script lang="ts">
+import { useAccount } from 'src/hooks';
 import { networkParam, Path } from 'src/router/routes';
-import { defineComponent } from 'vue';
+import { useStore } from 'src/store';
+import { defineComponent, computed } from 'vue';
 export default defineComponent({
   props: {
     dapp: {
@@ -44,12 +46,19 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const store = useStore();
+    const { currentAccount } = useAccount();
+    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const buildStakePageLink = (address: string): string => {
       const base = networkParam + Path.DappStaking + Path.Stake;
       return `${base}?dapp=${address.toLowerCase()}`;
     };
+
+    const isDisabledStakeButton = computed<boolean>(() => isH160.value || !currentAccount.value);
+
     return {
       buildStakePageLink,
+      isDisabledStakeButton,
     };
   },
 });

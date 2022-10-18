@@ -23,6 +23,7 @@ import Builders from 'src/components/dapp-staking/dapp/Builders.vue';
 import ProjectOverview from 'src/components/dapp-staking/dapp/ProjectOverview.vue';
 import ProjectDetails from 'src/components/dapp-staking/dapp/ProjectDetails.vue';
 import { useClaimAll } from 'src/hooks';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   components: {
@@ -38,9 +39,11 @@ export default defineComponent({
     const route = useRoute();
     // Demo: Remove it later
     useClaimAll();
+    const { t } = useI18n();
     const store = useStore();
     const { dapps, stakingList } = useStakingList();
     const dappAddress = computed<string>(() => route.query.dapp as string);
+    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
 
     const dispatchGetDapps = (): void => {
       const isDispatch = currentNetworkName.value && dapps.value.length === 0;
@@ -48,6 +51,12 @@ export default defineComponent({
         store.dispatch('dapps/getDapps', {
           network: currentNetworkName.value.toLowerCase(),
           currentAccount: '',
+        });
+      }
+      if (isH160.value) {
+        store.dispatch('general/showAlertMsg', {
+          msg: t('dappStaking.error.onlySupportsSubstrate'),
+          alertType: 'error',
         });
       }
     };
