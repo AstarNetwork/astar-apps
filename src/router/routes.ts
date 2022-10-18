@@ -29,6 +29,7 @@ export enum Path {
   Stake = '/stake',
   Dapp = '/dapp',
   Transfer = '/transfer',
+  Register = '/register',
 }
 
 const routes: RouteRecordRaw[] = [

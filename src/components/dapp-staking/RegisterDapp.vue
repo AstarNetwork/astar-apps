@@ -109,6 +109,7 @@ import { useStore } from 'src/store';
 import { useCustomSignature, useGasPrice, useNetworkInfo, useSignPayload } from 'src/hooks';
 import { useExtrinsicCall } from 'src/hooks/custom-signature/useExtrinsicCall';
 import { RegisterParameters } from 'src/store/dapp-staking/actions';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   components: {
@@ -152,6 +153,7 @@ export default defineComponent({
       community: '',
       platform: '',
     });
+    const router = useRouter();
 
     // make a placeholder for add logo
     data.icon = new File([], t('dappStaking.modals.addLogo'));
@@ -258,6 +260,7 @@ export default defineComponent({
           }
         }
       } catch (e) {
+        // TODO pop error message.
         console.error((e as Error).message);
       } finally {
         store.commit('general/setLoading', false);
@@ -286,6 +289,8 @@ export default defineComponent({
             getCallFunc,
             signature,
           } as RegisterParameters);
+
+          router.back();
         }
       });
     };

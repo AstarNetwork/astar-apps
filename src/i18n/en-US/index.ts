@@ -156,6 +156,8 @@ export default {
     myRewards: 'My Rewards',
     unbonding: 'Unbonding',
     myDapps: 'My dApps',
+    dappRegistered: 'Congrats!! your contract is approved. Please submit the details',
+    registerNow: 'Register now',
     transferableBalance: 'Transferable Balance',
     dappsStore: 'dApps Store',
     dappStaking: 'dApp Staking',

@@ -2,6 +2,8 @@
   <div class="wrapper-main">
     <TopMetric />
 
+    <Register />
+
     <div class="divider"></div>
 
     <MyStaking />
@@ -38,6 +40,7 @@ import { useStore } from 'src/store';
 import TopMetric from 'src/components/dapp-staking-v2/my-staking/TopMetric.vue';
 import MyStaking from 'src/components/dapp-staking-v2/my-staking/MyStaking.vue';
 import DappList from 'src/components/dapp-staking-v2/my-staking/DappList.vue';
+import Register from 'src/components/dapp-staking-v2/my-staking/Register.vue';
 import { computed, defineComponent } from 'vue';
 import AdsArea from './my-staking/AdsArea.vue';
 
@@ -47,6 +50,7 @@ export default defineComponent({
     MyStaking,
     DappList,
     AdsArea,
+    Register,
   },
   setup() {
     useMeta({ title: 'Discover dApps' });
