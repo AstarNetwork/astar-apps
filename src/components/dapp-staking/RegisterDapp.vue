@@ -386,7 +386,7 @@ export default defineComponent({
   border-color: $gray-5;
 }
 
-.q-field--outlined .q-field__control {
+.q-field--outlined.q-field--dark .q-field__control {
   background-color: $body-bg-dark;
 }
 
