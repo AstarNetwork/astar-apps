@@ -18,9 +18,13 @@
               <td><token-balance :balance="t.totalEarned" :symbol="nativeTokenSymbol" /></td>
               <td>
                 <div class="row--manage">
-                  <astar-button width="97" height="24" :disabled="!t.isEnabled">{{
-                    $t('myDapps.add')
-                  }}</astar-button>
+                  <astar-button
+                    width="97"
+                    height="24"
+                    :disabled="!t.isEnabled"
+                    @click="showModalAdd = true"
+                    >{{ $t('myDapps.add') }}</astar-button
+                  >
                   <astar-button
                     width="97"
                     height="24"
@@ -41,6 +45,7 @@
 
     <Teleport to="#app--main">
       <div :class="'highest-z-index'">
+        <ModalAddStake v-model:is-open="showModalAdd" :show="showModalAdd" />
         <ModalUnbondDapp v-model:is-open="showModalUnbond" :show="showModalUnbond" />
       </div>
     </Teleport>
@@ -51,10 +56,11 @@ import { defineComponent, ref } from 'vue';
 import { useBreakpoints, useNetworkInfo } from 'src/hooks';
 import DropdownList from './components/DropdownList.vue';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
+import ModalAddStake from './components/modals/ModalAddStake.vue';
 import ModalUnbondDapp from './components/modals/ModalUnbondDapp.vue';
 
 export default defineComponent({
-  components: { DropdownList, TokenBalance, ModalUnbondDapp },
+  components: { DropdownList, TokenBalance, ModalAddStake, ModalUnbondDapp },
   setup() {
     const { width, screenSize } = useBreakpoints();
     const { nativeTokenSymbol } = useNetworkInfo();
@@ -83,6 +89,8 @@ export default defineComponent({
         isEnabled: false,
       },
     ];
+
+    const showModalAdd = ref(false);
     const showModalUnbond = ref(false);
 
     return {
@@ -90,6 +98,7 @@ export default defineComponent({
       screenSize,
       items,
       nativeTokenSymbol,
+      showModalAdd,
       showModalUnbond,
     };
   },
