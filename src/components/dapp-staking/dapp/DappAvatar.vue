@@ -25,7 +25,7 @@
       </div>
     </div>
     <div class="column--edit">
-      <astar-button class="btn-size--stake">
+      <astar-button class="btn-size--stake" :disabled="isDisabledEditButton">
         <span class="text--btn-stake">
           {{ $t('dappStaking.edit') }}
         </span>
@@ -55,10 +55,14 @@ export default defineComponent({
     };
 
     const isDisabledStakeButton = computed<boolean>(() => isH160.value || !currentAccount.value);
+    const isDisabledEditButton = computed<boolean>(
+      () => currentAccount.value !== props.dapp.contract.developerAddress
+    );
 
     return {
       buildStakePageLink,
       isDisabledStakeButton,
+      isDisabledEditButton,
     };
   },
 });
