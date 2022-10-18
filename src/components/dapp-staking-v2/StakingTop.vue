@@ -19,10 +19,6 @@
     <div class="divider"></div>
 
     <DappList category="Games" />
-
-    <Teleport to="#app--main">
-      <ModalWithdrawVue :show="true" />
-    </Teleport>
   </div>
 </template>
 
@@ -35,7 +31,6 @@ import MyStaking from 'src/components/dapp-staking-v2/my-staking/MyStaking.vue';
 import DappList from 'src/components/dapp-staking-v2/my-staking/DappList.vue';
 import { computed, defineComponent, watchEffect } from 'vue';
 import AdsArea from './my-staking/AdsArea.vue';
-import ModalWithdrawVue from './my-staking/components/modals/ModalWithdraw.vue';
 
 export default defineComponent({
   components: {
@@ -43,7 +38,6 @@ export default defineComponent({
     MyStaking,
     DappList,
     AdsArea,
-    ModalWithdrawVue,
   },
   setup() {
     useMeta({ title: 'Discover dApps' });

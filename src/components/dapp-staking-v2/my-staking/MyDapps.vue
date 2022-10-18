@@ -21,9 +21,13 @@
                   <astar-button width="97" height="24" :disabled="!t.isEnabled">{{
                     $t('myDapps.add')
                   }}</astar-button>
-                  <astar-button width="97" height="24" :disabled="!t.isEnabled">{{
-                    $t('myDapps.unbond')
-                  }}</astar-button>
+                  <astar-button
+                    width="97"
+                    height="24"
+                    :disabled="!t.isEnabled"
+                    @click="showModalUnbond = true"
+                    >{{ $t('myDapps.unbond') }}</astar-button
+                  >
                 </div>
               </td>
             </tr>
@@ -34,16 +38,23 @@
     <template v-else>
       <DropdownList :items="items" />
     </template>
+
+    <Teleport to="#app--main">
+      <div :class="'highest-z-index'">
+        <ModalUnbondDapp v-model:is-open="showModalUnbond" :show="showModalUnbond" />
+      </div>
+    </Teleport>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { useBreakpoints, useNetworkInfo } from 'src/hooks';
 import DropdownList from './components/DropdownList.vue';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
+import ModalUnbondDapp from './components/modals/ModalUnbondDapp.vue';
 
 export default defineComponent({
-  components: { DropdownList, TokenBalance },
+  components: { DropdownList, TokenBalance, ModalUnbondDapp },
   setup() {
     const { width, screenSize } = useBreakpoints();
     const { nativeTokenSymbol } = useNetworkInfo();
@@ -72,12 +83,14 @@ export default defineComponent({
         isEnabled: false,
       },
     ];
+    const showModalUnbond = ref(false);
 
     return {
       width,
       screenSize,
       items,
       nativeTokenSymbol,
+      showModalUnbond,
     };
   },
 });

@@ -15,7 +15,7 @@
           <q-skeleton type="rect" animation="fade" />
         </div>
         <div v-else class="value">
-          <TokenBalance :balance="item.totalStaked" symbol="ASTR" />
+          <TokenBalance :balance="item.totalStaked.toString()" symbol="ASTR" />
         </div>
       </div>
     </div>

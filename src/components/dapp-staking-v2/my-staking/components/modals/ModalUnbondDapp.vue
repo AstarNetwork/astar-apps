@@ -1,13 +1,13 @@
 <template>
-  <astar-default-modal :width="544" :height="381" :show="show" title="Withdraw" @close="close">
-    <div class="text--guide">Your funds are available to withdraw.</div>
-    <div class="box container">
-      <div>
-        <span class="text--title">Ready to withdraw</span>
-      </div>
-      <div class="text--amount">10,000 ASTR</div>
-    </div>
-    <astar-button width="464" height="52">Confirm</astar-button>
+  <astar-default-modal
+    :width="544"
+    :height="393"
+    :show="show"
+    title="Unbond from Astar Degens"
+    @close="close"
+  >
+    <div class="box container">Unbond</div>
+    <astar-button width="464" height="37">Start unbonding</astar-button>
   </astar-default-modal>
 </template>
 
@@ -40,8 +40,8 @@ export default defineComponent({
 }
 .container {
   font-family: 'Inter';
-  margin-top: 32px;
-  margin-bottom: 32px;
+  margin-top: 20px;
+  margin-bottom: 16px;
   color: $gray-1;
   text-align: center;
   padding: 16px;

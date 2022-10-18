@@ -1,13 +1,15 @@
 <template>
-  <astar-default-modal :width="544" :height="381" :show="show" title="Withdraw" @close="close">
-    <div class="text--guide">Your funds are available to withdraw.</div>
+  <astar-default-modal :width="544" :height="402" :show="show" title="Re-bond" @close="close">
+    <div class="text--guide">
+      Once re-bond your funds goes back to staking. You will need 10era to unstake again.
+    </div>
     <div class="box container">
       <div>
-        <span class="text--title">Ready to withdraw</span>
+        <span class="text--title">The amount you wish to rebond</span>
       </div>
       <div class="text--amount">10,000 ASTR</div>
     </div>
-    <astar-button width="464" height="52">Confirm</astar-button>
+    <astar-button width="320" height="42">Confirm</astar-button>
   </astar-default-modal>
 </template>
 
@@ -40,8 +42,8 @@ export default defineComponent({
 }
 .container {
   font-family: 'Inter';
-  margin-top: 32px;
-  margin-bottom: 32px;
+  margin-top: 20px;
+  margin-bottom: 16px;
   color: $gray-1;
   text-align: center;
   padding: 16px;
