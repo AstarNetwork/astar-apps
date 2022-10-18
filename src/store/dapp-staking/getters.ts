@@ -22,9 +22,15 @@ const getters: GetterTree<State, StateInterface> & ContractsGetters = {
   getAllDapps: (state) => Object.values(state.dappsCombinedInfo),
   getRegisteredDapps: (state) => (tag) =>
     tag
-      ? state.dappsCombinedInfo.filter(
-          (x) => x.dapp?.tags?.includes(tag) && x.contract.state === SmartContractState.Registered
-        )
+      ? state.dappsCombinedInfo.filter((x) => {
+          try {
+            return (
+              x.dapp?.tags?.includes(tag) && x.contract.state === SmartContractState.Registered
+            );
+          } catch (error) {
+            return state.dappsCombinedInfo;
+          }
+        })
       : state.dappsCombinedInfo,
   getMinimumStakingAmount: (state) => state.minimumStakingAmount,
   getMaxNumberOfStakersPerContract: (state) => state.maxNumberOfStakersPerContract,

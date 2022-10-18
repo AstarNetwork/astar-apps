@@ -1,3 +1,4 @@
+import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { BN } from '@polkadot/util';
 import { u32, Option, Struct } from '@polkadot/types';
 import { Codec, ISubmittableResult } from '@polkadot/types/types';
@@ -73,15 +74,20 @@ export class DappStakingRepository implements IDappStakingRepository {
     contractAddress: string,
     walletAddress: string
   ): Promise<string> {
-    const api = await this.api.getApi();
-    const stakerInfo = await api.query.dappsStaking.generalStakerInfo<GeneralStakerInfo>(
-      walletAddress,
-      {
-        Evm: contractAddress,
-      }
-    );
-    const balance = stakerInfo.stakes.length && stakerInfo.stakes.slice(-1)[0].staked.toString();
-    return String(balance);
+    try {
+      if (isValidAddressPolkadotAddress(walletAddress)) return '0';
+      const api = await this.api.getApi();
+      const stakerInfo = await api.query.dappsStaking.generalStakerInfo<GeneralStakerInfo>(
+        walletAddress,
+        {
+          Evm: contractAddress,
+        }
+      );
+      const balance = stakerInfo.stakes.length && stakerInfo.stakes.slice(-1)[0].staked.toString();
+      return String(balance);
+    } catch (error) {
+      return '0';
+    }
   }
 
   public async getBondAndStakeCall(

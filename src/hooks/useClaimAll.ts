@@ -1,4 +1,5 @@
-import { useGasPrice, useCurrentEra, useCustomSignature } from 'src/hooks';
+import { useI18n } from 'vue-i18n';
+import { useGasPrice, useCurrentEra, useCustomSignature, useNetworkInfo } from 'src/hooks';
 import { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 import { $api } from 'boot/api';
@@ -9,6 +10,7 @@ import { TxType } from 'src/hooks/custom-signature/message';
 import { ExtrinsicPayload } from 'src/hooks/helper';
 import { getIndividualClaimTxs, PayloadWithWeight } from 'src/hooks/helper/claim';
 import { signAndSend } from 'src/hooks/helper/wallet';
+import { SmartContractState } from 'src/v2/models/DappsStaking';
 
 const MAX_BATCH_WEIGHT = new BN('50000000000');
 
@@ -20,8 +22,11 @@ export function useClaimAll() {
   const senderAddress = computed(() => store.getters['general/selectedAddress']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const dapps = computed(() => store.getters['dapps/getAllDapps']);
+  const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const isSendingTx = computed(() => store.getters['general/isLoading']);
   const { nativeTipPrice } = useGasPrice();
+  const { currentNetworkName } = useNetworkInfo();
+  const { t } = useI18n();
 
   const { era } = useCurrentEra();
   const { handleResult, handleCustomExtrinsic, isCustomSig } = useCustomSignature({
@@ -41,19 +46,25 @@ export function useClaimAll() {
       }
 
       const txs: PayloadWithWeight[] = await Promise.all(
-        dapps.value.map(async ({ address }: { address: string }) => {
-          const transactions = await getIndividualClaimTxs({
-            dappAddress: address,
-            api,
-            senderAddress: senderAddressRef,
-            currentEra: era.value,
-          });
-          return transactions.length ? transactions : null;
+        dapps.value.map(async (it: any) => {
+          if (it.contract.state === SmartContractState.Registered && !isH160.value) {
+            const transactions = await getIndividualClaimTxs({
+              dappAddress: it.dapp.address,
+              api,
+              senderAddress: senderAddressRef,
+              currentEra: era.value,
+            });
+            return transactions.length ? transactions : null;
+          } else {
+            return null;
+          }
         })
       );
       const filteredTxs = txs.filter((it) => it !== null);
       batchTxs = filteredTxs.flat();
       canClaim.value = batchTxs.length > 0;
+
+      console.log('Amount of Eras to claim: batchTxs.length', batchTxs.length);
     } catch (error: any) {
       console.error(error.message);
     } finally {
@@ -111,6 +122,24 @@ export function useClaimAll() {
       console.error(error.message);
     }
   };
+
+  const dispatchGetDapps = (): void => {
+    const isDispatch = currentNetworkName.value && dapps.value.length === 0 && senderAddress.value;
+    if (isDispatch) {
+      store.dispatch('dapps/getDapps', {
+        network: currentNetworkName.value.toLowerCase(),
+        currentAccount: senderAddress.value,
+      });
+    }
+    if (isH160.value) {
+      store.dispatch('general/showAlertMsg', {
+        msg: t('dappStaking.error.onlySupportsSubstrate'),
+        alertType: 'error',
+      });
+    }
+  };
+
+  watchEffect(dispatchGetDapps);
 
   return {
     claimAll,

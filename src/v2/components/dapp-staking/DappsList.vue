@@ -8,10 +8,11 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, toRefs } from 'vue';
+import { computed, defineComponent, toRefs, watchEffect } from 'vue';
 import { useStore } from 'src/store';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import DappCard from 'src/v2/components/dapp-staking/DappCard.vue';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   components: {
@@ -25,9 +26,20 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
+    const { t } = useI18n();
+    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const dapps = computed<DappCombinedInfo[]>(() =>
       store.getters['dapps/getRegisteredDapps'](props.tag)
     );
+
+    watchEffect(() => {
+      if (isH160.value) {
+        store.dispatch('general/showAlertMsg', {
+          msg: t('dappStaking.error.onlySupportsSubstrate'),
+          alertType: 'error',
+        });
+      }
+    });
 
     return {
       ...toRefs(props),
