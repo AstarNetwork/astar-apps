@@ -23,7 +23,7 @@ const getters: GetterTree<State, StateInterface> & ContractsGetters = {
   getRegisteredDapps: (state) => (tag) =>
     tag
       ? state.dappsCombinedInfo.filter(
-          (x) => x.dapp?.tags.includes(tag) && x.contract.state === SmartContractState.Registered
+          (x) => x.dapp?.tags?.includes(tag) && x.contract.state === SmartContractState.Registered
         )
       : state.dappsCombinedInfo,
   getMinimumStakingAmount: (state) => state.minimumStakingAmount,
