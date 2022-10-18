@@ -169,9 +169,9 @@ export default defineComponent({
         currentDeveloper.value = { ...props.developer };
         isNewDeveloper.value = !props.developer.name;
 
-        // if (isNewDeveloper.value) {
-        file.value = initFile();
-        //}
+        if (isNewDeveloper.value) {
+          file.value = initFile();
+        }
       }
     });
 

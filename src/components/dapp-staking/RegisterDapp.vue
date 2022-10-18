@@ -188,7 +188,6 @@ export default defineComponent({
         possibleCategories.find((x: LabelValuePair) => x.value === data.mainCategory) ??
         possibleCategories[0];
       data.ref = newData;
-      console.log('dApp changed: ', newData.ref);
     };
 
     const validateCustomComponents = (): boolean => {
@@ -230,7 +229,8 @@ export default defineComponent({
             data.url = registeredDapp.url;
             data.iconFile = getImageUrl(registeredDapp.iconFile);
             data.iconFileName = getImageName(registeredDapp.iconFile?.name);
-            data.icon = new File([new Uint8Array(1)], data.iconFileName); // Let quasar file component that icon is set so it doesn't raise validation error.
+            // Let quasar file component info that icon is set so it doesn't raise validation error.
+            data.icon = new File([new Uint8Array(1)], data.iconFileName);
             registeredDapp.images.forEach((x) => {
               data.images.push(
                 new File([Buffer.from(x.base64content, 'base64')], getImageName(x?.name), {
