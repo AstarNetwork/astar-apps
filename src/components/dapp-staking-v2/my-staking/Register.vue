@@ -1,6 +1,6 @@
 <template>
-  <router-link :to="networkParam + Path.DappStaking + Path.Register">
-    <div v-if="canRegister" class="register--container">
+  <router-link v-if="canRegister" :to="networkParam + Path.DappStaking + Path.Register">
+    <div class="register--container">
       <div class="congrats">&#127881; {{ `${$t('dappStaking.dappRegistered')}` }}</div>
       <div>{{ `${$t('dappStaking.registerNow')}` }}</div>
     </div>
@@ -14,26 +14,25 @@ import { IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { computed, defineComponent, ref, watch } from 'vue';
 import { networkParam, Path } from 'src/router/routes';
+import { useNetworkInfo } from 'src/hooks';
 
 export default defineComponent({
   setup() {
     const store = useStore();
+    const { currentNetworkName } = useNetworkInfo();
 
     const canRegister = ref<boolean>(false);
     const currentAddress = computed(() => store.getters['general/selectedAddress']);
 
     const getDapp = async (): Promise<void> => {
       const service = container.get<IDappStakingService>(Symbols.DappStakingService);
-      const developerContract =
-        currentAddress.value && (await service.getRegisteredContract(currentAddress.value));
+      const developerContract = currentAddress.value
+        ? await service.getRegisteredContract(currentAddress.value)
+        : null;
 
-      try {
-        const dapp =
-          developerContract &&
-          (await service.getDapp(developerContract, networkParam.replace('/', '')));
-      } catch (e) {
-        canRegister.value = true;
-        console.error(e);
+      if (developerContract) {
+        const dapp = await service.getDapp(developerContract, currentNetworkName.value);
+        canRegister.value = dapp === undefined;
       }
     };
 
