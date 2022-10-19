@@ -89,7 +89,7 @@ import { Chain, XcmChain } from 'src/v2/models/XcmModels';
 import { useStore } from 'src/store';
 import { EvmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
-import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
+import { computed, defineComponent, ref, watch } from 'vue';
 export type RightUi = 'information' | 'select-chain' | 'select-token';
 
 export default defineComponent({
@@ -238,11 +238,6 @@ export default defineComponent({
 
     watch([currentAccount], handleUpdateXcmTokenAssets, { immediate: true });
     watch([currentAccount], handleUpdateEvmAssets, { immediate: true });
-
-    watchEffect(() => {
-      // console.log('isLocalTransfer', isLocalTransfer.value);
-      // console.log('token', token.value);
-    });
 
     return {
       isLocalTransfer,

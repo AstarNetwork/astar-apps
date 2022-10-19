@@ -10,7 +10,7 @@
 </template>
 <script lang="ts">
 import { truncate } from 'src/hooks/helper/common';
-import { defineComponent, PropType } from 'vue';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   props: {
