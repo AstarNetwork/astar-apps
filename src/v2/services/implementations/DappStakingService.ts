@@ -2,6 +2,7 @@ import { BN } from '@polkadot/util';
 import { ethers } from 'ethers';
 import { inject, injectable } from 'inversify';
 import { astarMainnetNativeToken, ASTAR_NATIVE_TOKEN } from 'src/config/chain';
+import { EditDappItem } from 'src/store/dapp-staking/state';
 import { Guard } from 'src/v2/common';
 import { TvlModel } from 'src/v2/models';
 import { DappCombinedInfo, StakerInfo } from 'src/v2/models/DappsStaking';
@@ -111,8 +112,6 @@ export class DappStakingService implements IDappStakingService {
   }
 
   public async getCombinedInfo(currentAccount: string): Promise<DappCombinedInfo[]> {
-    Guard.ThrowIfUndefined('currentAccount', currentAccount);
-
     const dapps = await this.dappStakingRepository.getRegisteredDapps();
     const stakerInfo = await this.getStakerInfo(
       dapps.map((x) => x.address),
@@ -128,5 +127,15 @@ export class DappStakingService implements IDappStakingService {
     Guard.ThrowIfUndefined('developerAddress', developerAddress);
 
     return await this.dappStakingRepository.getRegisteredContract(developerAddress);
+  }
+
+  public async getDapp(
+    contractAddress: string,
+    network: string
+  ): Promise<EditDappItem | undefined> {
+    Guard.ThrowIfUndefined('contractAddress', contractAddress);
+    Guard.ThrowIfUndefined('network', network);
+
+    return await this.dappStakingRepository.getDapp(contractAddress, network);
   }
 }

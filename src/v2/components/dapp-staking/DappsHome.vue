@@ -25,7 +25,7 @@ export default defineComponent({
     const { currentNetworkName } = useNetworkInfo();
     const { currentAccount } = useAccount();
     watchEffect(() => {
-      if (!currentNetworkName.value) return;
+      if (!currentNetworkName.value || !currentAccount.value) return;
       store.dispatch('dapps/getDapps', {
         network: currentNetworkName.value.toLowerCase(),
         currentAccount: currentAccount.value ? currentAccount.value : '',

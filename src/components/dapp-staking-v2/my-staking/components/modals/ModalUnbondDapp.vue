@@ -7,7 +7,7 @@
     @close="close"
   >
     <div class="box container">Unbond</div>
-    <astar-button width="464" height="37">Start unbonding</astar-button>
+    <astar-button :width="464" :height="37">Start unbonding</astar-button>
   </astar-default-modal>
 </template>
 

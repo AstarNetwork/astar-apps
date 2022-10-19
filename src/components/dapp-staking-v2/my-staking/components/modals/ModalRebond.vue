@@ -9,7 +9,7 @@
       </div>
       <div class="text--amount">10,000 ASTR</div>
     </div>
-    <astar-button width="320" height="42">Confirm</astar-button>
+    <astar-button :width="464" :height="52">Confirm</astar-button>
   </astar-default-modal>
 </template>
 

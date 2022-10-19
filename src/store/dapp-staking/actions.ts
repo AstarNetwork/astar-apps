@@ -153,6 +153,7 @@ const actions: ActionTree<State, StateInterface> = {
           contractType: parameters.dapp.contractType,
           mainCategory: parameters.dapp.mainCategory,
           license: parameters.dapp.license,
+          tags: parameters.dapp.tags,
           senderAddress: parameters.senderAddress,
           signature: parameters.signature,
         };

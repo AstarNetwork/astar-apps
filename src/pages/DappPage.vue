@@ -1,21 +1,21 @@
 <template>
-  <stake-manage class="stake-top" />
+  <dapp class="dapp-top" />
 </template>
 
 <script lang="ts">
 import { useMeta } from 'quasar';
 import { defineComponent } from 'vue';
-import StakeManage from 'src/components/dapp-staking/stake-manage/StakeManage.vue';
+import Dapp from 'src/components/dapp-staking/dapp/Dapp.vue';
 
 export default defineComponent({
-  components: { StakeManage },
+  components: { Dapp },
   setup() {
-    useMeta({ title: 'Stake' });
+    useMeta({ title: 'Dapp Staking' });
   },
 });
 </script>
 <style lang="scss" scoped>
-.stake-top {
+.dapp-top {
   @media (min-width: $lg) {
     margin-top: 50px;
   }

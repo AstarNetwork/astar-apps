@@ -7,6 +7,7 @@
     <items-toggle
       :available-items="possiblePlatforms"
       :item-toggled="handleItemToggled"
+      :selected-items="data.platforms"
       class="container--toggle"
     />
   </items-container>
@@ -47,6 +48,7 @@ export default defineComponent({
     };
 
     return {
+      data,
       possiblePlatforms,
       handleItemToggled,
     };

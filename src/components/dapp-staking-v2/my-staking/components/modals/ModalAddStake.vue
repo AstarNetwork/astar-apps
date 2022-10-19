@@ -7,7 +7,7 @@
     @close="close"
   >
     <div class="box container">Add</div>
-    <astar-button width="464" height="37">Stake</astar-button>
+    <astar-button :width="464" :height="37">Stake</astar-button>
   </astar-default-modal>
 </template>
 

@@ -13,14 +13,14 @@
           <td>
             <div class="row--remaining-era">
               <div class="val-era">{{ item.remainingEra }}</div>
-              <astar-irregular-button width="77" height="20">Re-bond</astar-irregular-button>
+              <astar-irregular-button :width="77" :height="20">Re-bond</astar-irregular-button>
             </div>
           </td>
         </tr>
       </tbody>
     </table>
     <div class="row--manage">
-      <astar-button width="97" height="24" :disabled="!item.isEnabled">Withdraw</astar-button>
+      <astar-button :width="97" :height="24" :disabled="!item.isEnabled">Withdraw</astar-button>
     </div>
   </div>
 </template>

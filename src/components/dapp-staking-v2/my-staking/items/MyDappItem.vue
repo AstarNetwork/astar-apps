@@ -15,10 +15,10 @@
       </tbody>
     </table>
     <div class="row--manage">
-      <astar-button width="97" height="24" :disabled="!item.isEnabled">{{
+      <astar-button :width="97" :height="24" :disabled="!item.isEnabled">{{
         $t('myDapps.add')
       }}</astar-button>
-      <astar-button width="97" height="24" :disabled="!item.isEnabled">{{
+      <astar-button :width="97" :height="24" :disabled="!item.isEnabled">{{
         $t('myDapps.unbond')
       }}</astar-button>
     </div>

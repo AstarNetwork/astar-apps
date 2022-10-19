@@ -18,15 +18,18 @@
               <td>
                 <div class="row--remaining-era">
                   <div>{{ t.remainingEra }}</div>
-                  <astar-irregular-button width="77" height="20" @click="showModalRebond = true">{{
-                    $t('myDapps.rebond')
-                  }}</astar-irregular-button>
+                  <astar-irregular-button
+                    :width="77"
+                    :height="20"
+                    @click="showModalRebond = true"
+                    >{{ $t('myDapps.rebond') }}</astar-irregular-button
+                  >
                 </div>
               </td>
               <td>
                 <astar-button
-                  width="97"
-                  height="24"
+                  :width="97"
+                  :height="24"
                   :disabled="!t.isEnabled"
                   @click="showModalWithdraw = true"
                   >{{ $t('myDapps.withdraw') }}</astar-button
@@ -50,8 +53,8 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, reactive } from 'vue';
-import { useBreakpoints } from 'src/hooks';
+import { defineComponent, ref, watchEffect } from 'vue';
+import { useBreakpoints, useStakerInfo } from 'src/hooks';
 import DropdownList from './components/DropdownList.vue';
 import ModalWithdraw from 'src/components/dapp-staking-v2/my-staking/components/modals/ModalWithdraw.vue';
 import ModalRebond from 'src/components/dapp-staking-v2/my-staking/components/modals/ModalRebond.vue';
@@ -60,6 +63,11 @@ export default defineComponent({
   components: { DropdownList, ModalWithdraw, ModalRebond },
   setup(_, { emit }) {
     const { width, screenSize } = useBreakpoints();
+    const { stakeInfos } = useStakerInfo();
+
+    watchEffect(() => {
+      console.log('sss', stakeInfos.value);
+    });
 
     //TODO: need refactor as module
     const items = [

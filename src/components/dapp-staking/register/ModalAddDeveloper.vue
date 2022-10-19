@@ -86,7 +86,6 @@ import { Developer } from 'src/store/dapp-staking/state';
 import { isUrlValid } from 'src/components/common/Validators';
 import ImageCard from 'src/components/dapp-staking/register/ImageCard.vue';
 import Avatar from 'src/components/common/Avatar.vue';
-import { Data } from '@polkadot/types';
 
 export default defineComponent({
   components: {
@@ -118,7 +117,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const initFile = (): File => new File([], '');
+    const initFile = (): File => new File(props.developer.iconFile ? [new Uint8Array(1)] : [], '');
 
     // This value is bound to template.
     let currentDeveloper = ref<Developer>(props.developer);
@@ -217,15 +216,5 @@ export default defineComponent({
 
 .developers-wrapper {
   margin-top: 20px;
-}
-</style>
-
-<style lang="scss">
-.body--dark {
-  .modal {
-    .modal-content {
-      background-color: $gray-6 !important;
-    }
-  }
 }
 </style>
