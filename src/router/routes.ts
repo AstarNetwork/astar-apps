@@ -130,7 +130,7 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   {
-    path: '/dapp-staking-v2',
+    path: '/:network/dapp-staking-v2',
     name: 'dApp Staking v2',
     component: StoreV2,
     children: [

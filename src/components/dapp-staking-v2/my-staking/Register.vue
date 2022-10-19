@@ -23,18 +23,16 @@ export default defineComponent({
     const currentAddress = computed(() => store.getters['general/selectedAddress']);
 
     const getDapp = async (): Promise<void> => {
+      const service = container.get<IDappStakingService>(Symbols.DappStakingService);
+      const developerContract =
+        currentAddress.value && (await service.getRegisteredContract(currentAddress.value));
+
       try {
-        const service = container.get<IDappStakingService>(Symbols.DappStakingService);
-        const developerContract =
-          currentAddress.value && (await service.getRegisteredContract(currentAddress.value));
         const dapp =
           developerContract &&
           (await service.getDapp(developerContract, networkParam.replace('/', '')));
-        // TOOD check if dapp is reg
-
-        canRegister.value = dapp != undefined;
       } catch (e) {
-        canRegister.value = false;
+        canRegister.value = true;
         console.error(e);
       }
     };
