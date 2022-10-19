@@ -124,7 +124,7 @@ export function useTvlHistorical() {
   });
 
   watch(
-    [currentNetworkName, $api],
+    [currentNetworkName],
     async () => {
       const api = $api;
       try {

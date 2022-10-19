@@ -10,12 +10,12 @@
 </template>
 <script lang="ts">
 import { truncate } from 'src/hooks/helper/common';
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
 
 export default defineComponent({
   props: {
     balance: {
-      type: String || Number,
+      type: String,
       required: true,
     },
     symbol: {

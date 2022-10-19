@@ -109,12 +109,13 @@ export class StatemintXcmRepository extends XcmRepository {
     isNativeToken: boolean
   ): Promise<string> {
     try {
-      const api = await this.apiFactory.get(chain.endpoint);
-      const result = await api.query.assets.account<Account>(token.originAssetId, address);
-      const data = result.toJSON();
-      const balance = data ? String(data.balance) : '0';
+      return '0';
+      // const api = await this.apiFactory.get(chain.endpoint);
+      // const result = await api.query.assets.account<Account>(token.originAssetId, address);
+      // const data = result.toJSON();
+      // const balance = data ? String(data.balance) : '0';
 
-      return balance;
+      // return balance;
     } catch (e) {
       console.error(e);
       return '0';

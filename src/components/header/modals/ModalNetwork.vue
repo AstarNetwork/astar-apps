@@ -256,7 +256,7 @@ export default defineComponent({
     };
 
     watch(
-      [$endpoint, selNetwork],
+      [selNetwork],
       () => {
         setupInitialEndpointOption(props.networkIdx);
       },
