@@ -6,6 +6,9 @@ import { useNetworkInfo, useAccount } from 'src/hooks';
 import { checkIsLimitedProvider, getStakeInfo } from 'src/modules/dapp-staking/utils/index';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
 import { DappItem } from 'src/store/dapp-staking/state';
+import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
+
+export type MyStakeInfo = StakeInfo | DappItem;
 
 export function useStakerInfo() {
   const { currentAccount } = useAccount();
@@ -16,6 +19,7 @@ export function useStakerInfo() {
 
   store.dispatch('dapps/getStakingInfo');
   const stakeInfos = ref<StakeInfo[]>();
+  const myStakeInfos = ref<MyStakeInfo[]>();
   const isLoading = computed(() => store.getters['general/isLoading']);
   const dapps = computed(() => store.getters['dapps/getAllDapps']);
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
@@ -30,20 +34,26 @@ export function useStakerInfo() {
 
   const setStakeInfo = async () => {
     let data: StakeInfo[] = [];
+    let myData: MyStakeInfo[] = [];
     if (checkIsLimitedProvider()) {
       for await (let it of dapps.value) {
-        const info = (await getData(it.address)) as StakeInfo;
+        const info = (await getData(it.dapp?.address)) as StakeInfo;
         data.push(info);
       }
     } else {
       data = await Promise.all<StakeInfo>(
-        dapps.value.map(async (it: DappItem) => {
-          return await getData(it.address);
+        dapps.value.map(async (it: DappCombinedInfo) => {
+          const stakeData = await getData(it.dapp?.address!);
+          if (stakeData?.hasStake) {
+            myData.push({ ...stakeData, ...it.dapp });
+          }
+          return stakeData;
         })
       );
     }
 
     stakeInfos.value = data;
+    myStakeInfos.value = myData;
   };
 
   watchEffect(() => {
@@ -74,5 +84,6 @@ export function useStakerInfo() {
 
   return {
     stakeInfos,
+    myStakeInfos,
   };
 }

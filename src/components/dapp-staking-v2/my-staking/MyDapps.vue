@@ -12,23 +12,25 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="t in items" :key="t.id">
+            <tr v-for="t in myStakeInfos" :key="t.address">
               <td>{{ t.name }}</td>
-              <td><token-balance :balance="t.stakedAmount" :symbol="nativeTokenSymbol" /></td>
-              <td><token-balance :balance="t.totalEarned" :symbol="nativeTokenSymbol" /></td>
+              <td>
+                {{ t.yourStake.formatted }}
+              </td>
+              <td><token-balance :balance="t.claimedRewards" :symbol="nativeTokenSymbol" /></td>
               <td>
                 <div class="row--manage">
                   <astar-button
                     width="97"
                     height="24"
-                    :disabled="!t.isEnabled"
+                    :disabled="false"
                     @click="showModalAdd = true"
                     >{{ $t('myDapps.add') }}</astar-button
                   >
                   <astar-button
                     width="97"
                     height="24"
-                    :disabled="!t.isEnabled"
+                    :disabled="false"
                     @click="showModalUnbond = true"
                     >{{ $t('myDapps.unbond') }}</astar-button
                   >
@@ -53,7 +55,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { useBreakpoints, useNetworkInfo } from 'src/hooks';
+import { useBreakpoints, useNetworkInfo, useStakerInfo } from 'src/hooks';
 import DropdownList from './components/DropdownList.vue';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import ModalAddStake from './components/modals/ModalAddStake.vue';
@@ -64,6 +66,7 @@ export default defineComponent({
   setup() {
     const { width, screenSize } = useBreakpoints();
     const { nativeTokenSymbol } = useNetworkInfo();
+    const { myStakeInfos } = useStakerInfo();
 
     //TODO: need refactor as module
     const items = [
@@ -100,6 +103,7 @@ export default defineComponent({
       nativeTokenSymbol,
       showModalAdd,
       showModalUnbond,
+      myStakeInfos,
     };
   },
 });

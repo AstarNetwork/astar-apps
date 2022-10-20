@@ -278,13 +278,13 @@ export interface WithdrawParameters {
   substrateAccounts: SubstrateAccount[];
 }
 
+export interface MyStakeInfo {
+  formatted: string;
+  denomAmount: BN;
+}
+
 export interface StakeInfo {
-  yourStake:
-    | undefined
-    | {
-        formatted: string;
-        denomAmount: BN;
-      };
+  yourStake: undefined | MyStakeInfo;
   totalStake: string;
   claimedRewards: string;
   hasStake: boolean;

@@ -12,12 +12,12 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="t in items" :key="t.id">
+            <tr v-for="t in myStakeInfos" :key="t.address">
               <td>{{ t.name }}</td>
-              <td>{{ t.unbondingAmount.toLocaleString() }} ASTR</td>
+              <td>{{ t.yourStake.formatted }}</td>
               <td>
                 <div class="row--remaining-era">
-                  <div>{{ t.remainingEra }}</div>
+                  <!-- <div>{{ t.remainingEra }}</div> -->
                   <astar-irregular-button
                     :width="77"
                     :height="20"
@@ -30,7 +30,7 @@
                 <astar-button
                   :width="97"
                   :height="24"
-                  :disabled="!t.isEnabled"
+                  :disabled="true"
                   @click="showModalWithdraw = true"
                   >{{ $t('myDapps.withdraw') }}</astar-button
                 >
@@ -63,10 +63,10 @@ export default defineComponent({
   components: { DropdownList, ModalWithdraw, ModalRebond },
   setup(_, { emit }) {
     const { width, screenSize } = useBreakpoints();
-    const { stakeInfos } = useStakerInfo();
+    const { myStakeInfos } = useStakerInfo();
 
     watchEffect(() => {
-      console.log('sss', stakeInfos.value);
+      console.log('sss', myStakeInfos.value);
     });
 
     //TODO: need refactor as module
@@ -101,6 +101,7 @@ export default defineComponent({
       width,
       screenSize,
       items,
+      myStakeInfos,
       showModalWithdraw,
       showModalRebond,
     };
