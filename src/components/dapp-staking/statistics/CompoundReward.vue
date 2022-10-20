@@ -11,11 +11,12 @@
       <span class="text--title">
         {{ $t('dappStaking.claimAndRestake') }}
       </span>
+      <span class="text--title">&nbsp;</span>
       <Button :small="true" :primary="true" class="button" @click="showAutoCompound">{{
         $t('dappStaking.change')
       }}</Button>
     </div>
-    <div class="tw-p-4">
+    <div>
       <ModalAutoCompound
         v-if="showAutoCompoundModal"
         v-model:is-open="showAutoCompoundModal"
