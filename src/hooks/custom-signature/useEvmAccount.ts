@@ -1,6 +1,6 @@
 import { ref, watch, WatchCallback } from 'vue';
-import { EthereumProvider } from '../types/CustomSignature';
-import { useEthProvider } from './useEthProvider';
+import { EthereumProvider } from 'src/hooks/types/CustomSignature';
+import { useEthProvider } from 'src/hooks/custom-signature/useEthProvider';
 
 export function useEvmAccount() {
   const { ethProvider } = useEthProvider();

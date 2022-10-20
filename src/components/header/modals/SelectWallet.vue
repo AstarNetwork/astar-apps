@@ -3,7 +3,7 @@
     <div class="row--input">
       <div class="box__row--wallet" @click="openOption = !openOption">
         <div class="wrapper--row--wallet">
-          <img width="24" :src="selWallet.img" />
+          <img v-if="selWallet.img" width="24" :src="selWallet.img" />
           <div class="txt--wallet-name">{{ selWallet.name }}</div>
         </div>
         <div class="txt--change">
@@ -31,7 +31,7 @@
 import { supportAllWallets, supportAllWalletsObj, SupportWallet, Wallet } from 'src/config/wallets';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
 import { computed, defineComponent, PropType, ref, watch, watchEffect } from 'vue';
-import SelectWalletOption from './SelectWalletOption.vue';
+import SelectWalletOption from 'src/components/header/modals/SelectWalletOption.vue';
 
 export default defineComponent({
   components: {
@@ -75,12 +75,16 @@ export default defineComponent({
     watch(
       [selWalletIdx],
       () => {
-        const wallet = wallets.value.find((it: Wallet) => it.name === selWalletIdx.value);
-        if (!wallet) return;
-        selWalletIcon.value = wallet.img;
-        props.setWalletModal(wallet.source);
-        emit('sel-changed', selWalletIdx.value);
-        openOption.value = false;
+        try {
+          const wallet = wallets.value.find((it: Wallet) => it.name === selWalletIdx.value);
+          if (!wallet) return;
+          selWalletIcon.value = wallet.img;
+          props.setWalletModal(wallet.source);
+          emit('sel-changed', selWalletIdx.value);
+          openOption.value = false;
+        } catch (error) {
+          console.error(error);
+        }
       },
       { immediate: true }
     );

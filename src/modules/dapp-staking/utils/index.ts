@@ -6,9 +6,9 @@ import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { checkIsDappRegistered, GeneralStakerInfo } from 'src/hooks/helper/claim';
 import { wait } from 'src/hooks/helper/common';
 import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
-import { EraStakingPoints, StakeInfo } from './../../../store/dapp-staking/actions';
-import { DappItem } from './../../../store/dapp-staking/state';
-import { StakingData } from './../index';
+import { EraStakingPoints, StakeInfo } from 'src/store/dapp-staking/actions';
+import { DappItem } from 'src/store/dapp-staking/state';
+import { StakingData } from 'src/modules/dapp-staking';
 
 interface StakeData {
   address: string;
@@ -76,9 +76,7 @@ export const formatStakingList = async ({
       })
     );
   }
-
-  data.filter((it) => it !== undefined);
-  return data as StakingData[];
+  return data.filter((it) => it !== undefined) as StakingData[];
 };
 
 export const getDappStakers = async ({ api }: { api: ApiPromise }): Promise<number> => {

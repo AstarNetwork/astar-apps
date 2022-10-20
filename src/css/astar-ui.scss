@@ -3,14 +3,11 @@
 // Memo: Overwriting the astar-ui component
 
 .header {
+  background: white !important;
   .header-right {
     padding: 0 !important;
     @media (min-width: $lg) {
       padding-right: 12px !important;
-    }
-    .btn--account {
-      background: white !important;
-      color: $gray-5 !important;
     }
   }
   .header-left {
@@ -20,9 +17,16 @@
 
 .body--dark {
   .header {
-    background: $gray-6 !important;
+    background: $body-bg-dark !important;
     .header-left {
       color: $gray-1 !important;
+    }
+  }
+  .transfer-modal {
+    .modal {
+      .modal-content {
+        background-color: $gray-6 !important;
+      }
     }
   }
 }

@@ -11,7 +11,9 @@
         <span class="text--accent">{{ $t('assets.modals.whatIsFaucet') }}</span>
       </div>
       <div class="wrapper__row--information">
-        <span class="text--md">{{ $t('assets.modals.faucetIntro') }}</span>
+        <span class="text--md">{{
+          $t('assets.modals.faucetIntro', { symbol: nativeTokenSymbol })
+        }}</span>
       </div>
       <div class="box--faucet-amount">
         <div class="box__column-amount">
@@ -53,7 +55,7 @@
   </AstarModal>
 </template>
 <script lang="ts">
-import { useFaucet } from 'src/hooks';
+import { useFaucet, useNetworkInfo } from 'src/hooks';
 import { defineComponent, computed, ref } from 'vue';
 import { fadeDuration } from '@astar-network/astar-ui';
 import { wait } from 'src/hooks/helper/common';
@@ -83,6 +85,7 @@ export default defineComponent({
 
     const store = useStore();
     const isDarkTheme = computed<boolean>(() => store.getters['general/theme'] === 'DARK');
+    const { nativeTokenSymbol } = useNetworkInfo();
 
     const isModalFaucet = computed<boolean>(() => props.isModalFaucet);
     const { requestFaucet, isLoading, unit, isAbleToFaucet, countDown, faucetAmount } =
@@ -129,6 +132,7 @@ export default defineComponent({
       RECAPCHA_SITE_KEY,
       recaptchaResponse,
       isDarkTheme,
+      nativeTokenSymbol,
       closeModal,
       handleRequest,
       recaptchaVerified,

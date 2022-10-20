@@ -6,7 +6,7 @@
     <nav class="menu">
       <div>
         <router-link
-          to="/assets"
+          :to="RoutePath.Assets"
           :class="['link', $route.path.split('/')[1] === 'assets' ? 'activeLink' : '']"
         >
           <astar-icon-base
@@ -23,7 +23,7 @@
       </div>
       <div>
         <router-link
-          to="/dashboard"
+          :to="RoutePath.Dashboard"
           :class="['link', $route.path.split('/')[1] === 'dashboard' ? 'activeLink' : '']"
         >
           <astar-icon-base
@@ -41,7 +41,7 @@
       <div>
         <router-link
           v-if="network.isStoreEnabled"
-          to="/dapp-staking"
+          :to="RoutePath.DappStaking"
           :class="['link', $route.path.split('/')[1] === 'dapp-staking' ? 'activeLink' : '']"
         >
           <astar-icon-base
@@ -80,6 +80,7 @@ import SocialMediaLinks from '../common/SocialMediaLinks.vue';
 import LightDarkMode from '../common/LightDarkMode.vue';
 import Logo from '../common/Logo.vue';
 import { useRouter } from 'vue-router';
+import { Path as RoutePath } from 'src/router/routes';
 
 export default defineComponent({
   components: {
@@ -98,7 +99,7 @@ export default defineComponent({
     const isShiden = computed(() => currentNetworkIdx.value === endpointKey.SHIDEN);
 
     const router = useRouter();
-    const path = computed(() => router.currentRoute.value.path.split('/')[1]);
+    const path = computed(() => router.currentRoute.value.path.split('/')[2]);
 
     const getIndicatorClass = (path: string): string => {
       switch (path) {
@@ -120,6 +121,7 @@ export default defineComponent({
       getIndicatorClass,
       router,
       path,
+      RoutePath,
     };
   },
 });

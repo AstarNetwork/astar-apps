@@ -23,7 +23,7 @@
           <div class="column column--balance">
             <div class="column__box">
               <div class="text--accent">
-                <span>{{ $n(truncate(token.userBalance)) }} {{ token.symbol }}</span>
+                <TokenBalance :balance="token.userBalance" :symbol="token.symbol" />
               </div>
               <div class="text--label">
                 <span>{{ $n(Number(token.userBalanceUsd)) }} {{ $t('usd') }}</span>
@@ -31,36 +31,16 @@
             </div>
           </div>
           <div class="column--asset-buttons column--buttons--multi">
-            <button
-              class="btn btn--sm"
-              @click="
-                handleModalTransfer({
-                  isOpen: true,
-                  currency: token,
-                })
-              "
-            >
-              {{ $t('assets.transfer') }}
-            </button>
+            <div v-if="token.isXC20" />
+            <router-link :to="buildTransferPageLink(token.symbol)">
+              <button class="btn btn--sm">
+                {{ $t('assets.transfer') }}
+              </button>
+            </router-link>
             <div v-if="token.isWrappedToken && !token.isXC20">
               <a :href="token.wrapUrl" target="_blank" rel="noopener noreferrer">
                 <button class="btn btn--sm">{{ $t('assets.wrap') }}</button>
               </a>
-            </div>
-
-            <div v-if="token.isXC20">
-              <button
-                :disabled="isDisabledXcmButton"
-                class="btn btn--sm"
-                @click="
-                  handleModalXcmBridge({
-                    isOpen: true,
-                    currency: token,
-                  })
-                "
-              >
-                {{ $t('assets.xcm') }}
-              </button>
             </div>
             <div v-if="isImportedToken" />
             <div class="screen--xl">
@@ -108,34 +88,24 @@
   </div>
 </template>
 <script lang="ts">
-import { endpointKey, getProviderIndex } from 'src/config/chainEndpoints';
-import { addToEvmProvider, getEvmProvider } from 'src/hooks/helper/wallet';
-import { Erc20Token, getErc20Explorer, getStoredERC20Tokens, MOVR } from 'src/modules/token';
-import { useStore } from 'src/store';
-import { computed, defineComponent, PropType } from 'vue';
-import { truncate } from 'src/hooks/helper/common';
-import Jazzicon from 'vue3-jazzicon/src/components';
 import { SupportWallet } from 'src/config/wallets';
 import { useNetworkInfo } from 'src/hooks';
-import { Chain, xcmToken } from 'src/modules/xcm';
-
+import { addToEvmProvider, getEvmProvider } from 'src/hooks/helper/wallet';
+import { Erc20Token, getErc20Explorer, getStoredERC20Tokens } from 'src/modules/token';
+import { buildTransferPageLink } from 'src/router/routes';
+import { useStore } from 'src/store';
+import { computed, defineComponent, PropType } from 'vue';
+import Jazzicon from 'vue3-jazzicon/src/components';
+import TokenBalance from 'src/components/common/TokenBalance.vue';
 export default defineComponent({
   components: {
     [Jazzicon.name]: Jazzicon,
+    TokenBalance,
   },
   props: {
     token: {
       type: Object as PropType<Erc20Token>,
       required: true,
-    },
-    handleModalTransfer: {
-      type: Function,
-      required: true,
-    },
-    handleModalXcmBridge: {
-      type: Function,
-      required: false,
-      default: null,
     },
     isXcm: {
       type: Boolean,
@@ -152,17 +122,6 @@ export default defineComponent({
       return getErc20Explorer({ currentNetworkIdx: currentNetworkIdx.value, tokenAddress });
     });
 
-    const isDisabledXcmButton = computed(() => {
-      // Memo: Remove after runtime upgrading in shinde
-      const isMovr = token.symbol === MOVR.symbol;
-      const acalaTokens = xcmToken[currentNetworkIdx.value].filter(
-        (it) => it.originChain === Chain.ACALA
-      );
-      // Memo: disabled until backend turns XCM transfer on again.
-      const isAcalaToken = !!acalaTokens.find((it) => it.symbol === token.symbol);
-      return isMovr || isAcalaToken;
-    });
-
     const isImportedToken = computed<boolean>(
       () =>
         !!getStoredERC20Tokens().find(
@@ -177,8 +136,7 @@ export default defineComponent({
       explorerLink,
       isImportedToken,
       provider,
-      isDisabledXcmButton,
-      truncate,
+      buildTransferPageLink,
       addToEvmProvider,
     };
   },

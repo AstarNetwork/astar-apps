@@ -4,4 +4,6 @@ export * from './PolkadotWalletService';
 export * from './MetamaskWalletService';
 export * from './GasPriceProvider';
 export * from './XcmService';
+export * from './XcmEvmService';
 export * from './BalanceFormatterService';
+export * from './EvmAssetsService';

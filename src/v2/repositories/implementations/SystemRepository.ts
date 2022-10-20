@@ -9,7 +9,7 @@ import { Symbols } from 'src/v2/symbols';
 
 @injectable()
 export class SystemRepository implements ISystemRepository {
-  constructor(@inject(Symbols.Api) private api: IApi) {}
+  constructor(@inject(Symbols.DefaultApi) private api: IApi) {}
 
   public async getAccountInfo(address: string): Promise<AccountInfoModel> {
     Guard.ThrowIfUndefined('address', address);

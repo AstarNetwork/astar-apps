@@ -43,9 +43,10 @@ import AlertBox from 'components/common/AlertBox.vue';
 import CookiePolicy from 'components//common/CookiePolicy.vue';
 import 'animate.css';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
-import { setCurrentWallet } from './v2/app.container';
-import { container } from './v2/common';
-import { Symbols } from './v2/symbols';
+import { setCurrentWallet } from 'src/v2/app.container';
+import { container } from 'src/v2/common';
+import { Symbols } from 'src/v2/symbols';
+import { useAppRouter } from 'src/hooks';
 
 export default defineComponent({
   name: 'App',
@@ -56,10 +57,12 @@ export default defineComponent({
     CookiePolicy,
   },
   setup() {
+    useAppRouter();
     const store = useStore();
     const isLoading = computed(() => store.getters['general/isLoading']);
     const showAlert = computed(() => store.getters['general/showAlert']);
     const isEthWallet = computed<boolean>(() => store.getters['general/isEthWallet']);
+    const currentWallet = computed<string>(() => store.getters['general/currentWallet']);
 
     // Handle busy and extrisnsic call status messages.
     const eventAggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
@@ -81,8 +84,8 @@ export default defineComponent({
     });
 
     // Handle wallet change so we can inject proper wallet
-    watch([isEthWallet], () => {
-      setCurrentWallet(isEthWallet.value);
+    watch([isEthWallet, currentWallet], () => {
+      setCurrentWallet(isEthWallet.value, currentWallet.value);
     });
 
     return {

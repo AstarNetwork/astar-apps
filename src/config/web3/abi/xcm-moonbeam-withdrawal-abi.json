@@ -1,0 +1,46 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "address[]",
+        "name": "asset_id",
+        "type": "address[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "asset_amount",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "address",
+        "name": "recipient_account_id",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "is_relay",
+        "type": "bool"
+      },
+      {
+        "internalType": "uint256",
+        "name": "parachain_id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "fee_index",
+        "type": "uint256"
+      }
+    ],
+    "name": "assets_withdraw",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
