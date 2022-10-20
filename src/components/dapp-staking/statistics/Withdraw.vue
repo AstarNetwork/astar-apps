@@ -57,7 +57,7 @@ import { VoidFn } from '@polkadot/api/types';
 import { u32 } from '@polkadot/types';
 import { Balance, EraIndex } from '@polkadot/types/interfaces';
 import { Codec, ISubmittableResult } from '@polkadot/types/types';
-import BN from 'bn.js';
+import { BN } from '@polkadot/util';
 import { $api } from 'boot/api';
 import FormatBalance from 'components/common/FormatBalance.vue';
 import IconTooltip from 'components/common/IconTooltip.vue';

@@ -1,4 +1,4 @@
-import { BN } from 'bn.js';
+import { BN } from '@polkadot/util';
 import { container, resetContainer } from 'src/v2/common';
 import { Asset, AssetMetadata } from 'src/v2/models';
 import { IXcmService } from 'src/v2/services';
