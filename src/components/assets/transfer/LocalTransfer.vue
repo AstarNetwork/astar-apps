@@ -8,7 +8,7 @@
             <span class="text--to--balance">
               <TokenBalance
                 text="assets.modals.balance"
-                :balance="fromAddressBalance"
+                :balance="String(fromAddressBalance)"
                 :symbol="token.metadata.symbol"
               />
             </span>
@@ -31,7 +31,7 @@
             <span class="text--to--balance">
               <TokenBalance
                 text="assets.modals.balance"
-                :balance="toAddressBalance"
+                :balance="String(toAddressBalance)"
                 :symbol="token.metadata.symbol"
               />
             </span>
@@ -51,7 +51,7 @@
             <span class="text--to--balance">
               <TokenBalance
                 text="assets.modals.balance"
-                :balance="fromAddressBalance"
+                :balance="String(fromAddressBalance)"
                 :symbol="token.metadata.symbol"
               />
             </span>

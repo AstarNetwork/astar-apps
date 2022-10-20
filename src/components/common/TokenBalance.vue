@@ -15,7 +15,7 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   props: {
     balance: {
-      type: String || Number,
+      type: String,
       required: true,
     },
     symbol: {
