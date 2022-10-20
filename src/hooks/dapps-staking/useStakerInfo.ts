@@ -57,9 +57,12 @@ export function useStakerInfo() {
   };
 
   watchEffect(() => {
-    if (currentNetworkName.value) {
-      store.dispatch('dapps/getDapps', currentNetworkName.value);
-    }
+    // if (currentNetworkName.value) {
+    //   store.dispatch('dapps/getDapps', {
+    //     network: currentNetworkName.value,
+    //     currentAccount: currentAccount.value,
+    //   });
+    // }
   });
 
   watchEffect(async () => {

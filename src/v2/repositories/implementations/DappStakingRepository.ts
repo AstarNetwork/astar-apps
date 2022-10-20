@@ -75,7 +75,7 @@ export class DappStakingRepository implements IDappStakingRepository {
     walletAddress: string
   ): Promise<string> {
     try {
-      if (isValidAddressPolkadotAddress(walletAddress)) return '0';
+      if (!isValidAddressPolkadotAddress(walletAddress)) return '0';
       const api = await this.api.getApi();
       const stakerInfo = await api.query.dappsStaking.generalStakerInfo<GeneralStakerInfo>(
         walletAddress,
