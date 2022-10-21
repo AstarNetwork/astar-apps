@@ -5,7 +5,8 @@
         <table id="my-table">
           <thead>
             <tr>
-              <th>{{ $t('myDapps.dapps') }}</th>
+              <!-- <th>{{ $t('myDapps.dapps') }}</th> -->
+              <th>{{ $t('myDapps.index') }}</th>
               <th>{{ $t('myDapps.unbondingAmount') }}</th>
               <th>{{ $t('myDapps.remainingEra') }}</th>
               <th>{{ $t('myDapps.withdraw') }}</th>
@@ -30,8 +31,8 @@
                 <astar-button
                   :width="97"
                   :height="24"
-                  :disabled="t.erasBeforeUnlock !== 0"
-                  @click="showModalWithdraw = true"
+                  :disabled="t.erasBeforeUnlock === 0"
+                  @click="showWithdrawDialog(t.amount.toString())"
                   >{{ $t('myDapps.withdraw') }}</astar-button
                 >
               </td>
@@ -41,12 +42,17 @@
       </div>
     </template>
     <template v-else>
-      <DropdownList is-unbonding :items="items" />
+      <DropdownList is-unbonding :items="unlockingChunks" />
     </template>
 
     <Teleport to="#app--main">
       <div :class="'highest-z-index'">
-        <ModalWithdraw v-model:is-open="showModalWithdraw" :show="showModalWithdraw" />
+        <ModalWithdraw
+          v-model:is-open="showModalWithdraw"
+          :show="showModalWithdraw"
+          :withdraw-amount="totalAmountWithdraw"
+          @confirm="withdraw"
+        />
         <ModalRebond v-model:is-open="showModalRebond" :show="showModalRebond" />
       </div>
     </Teleport>
@@ -66,7 +72,7 @@ export default defineComponent({
   setup(_, { emit }) {
     const { width, screenSize } = useBreakpoints();
     const { myStakeInfos } = useStakerInfo();
-    const { unlockingChunks } = useUnbonding();
+    const { unlockingChunks, withdraw } = useUnbonding();
 
     watchEffect(() => {
       // console.log('sss', myStakeInfos.value);
@@ -99,6 +105,13 @@ export default defineComponent({
 
     const showModalWithdraw = ref(false);
     const showModalRebond = ref(false);
+    // MEMO: since not possible to withdraw each chunk currently, use total amount of withdraw
+    const totalAmountWithdraw = ref('');
+
+    const showWithdrawDialog = (amountWithdraw: string) => {
+      totalAmountWithdraw.value = amountWithdraw;
+      showModalWithdraw.value = true;
+    };
 
     return {
       width,
@@ -108,6 +121,9 @@ export default defineComponent({
       unlockingChunks,
       showModalWithdraw,
       showModalRebond,
+      totalAmountWithdraw,
+      showWithdrawDialog,
+      withdraw,
     };
   },
 });

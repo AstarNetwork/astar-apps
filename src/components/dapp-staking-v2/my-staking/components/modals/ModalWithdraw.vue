@@ -5,29 +5,41 @@
       <div>
         <span class="text--title">Ready to withdraw</span>
       </div>
-      <div class="text--amount">10,000 ASTR</div>
+      <div class="text--amount"><format-balance :balance="withdrawAmount" /></div>
     </div>
-    <astar-button :width="464" :height="52">Confirm</astar-button>
+    <astar-button :width="464" :height="52" @click="confirm">Confirm</astar-button>
   </astar-default-modal>
 </template>
 
 <script>
 import { defineComponent } from 'vue';
+import FormatBalance from 'components/common/FormatBalance.vue';
 
 export default defineComponent({
+  components: { FormatBalance },
   props: {
     show: {
       type: Boolean,
       default: false,
     },
+    withdrawAmount: {
+      type: String,
+      default: null,
+    },
   },
+  emits: ['update:is-open', 'confirm'],
   setup(props, { emit }) {
     const close = () => {
       emit('update:is-open', false);
     };
 
+    const confirm = () => {
+      emit('confirm');
+    };
+
     return {
       close,
+      confirm,
     };
   },
 });

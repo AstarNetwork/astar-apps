@@ -2,8 +2,8 @@
   <div class="wrapper">
     <q-list>
       <q-expansion-item
-        v-for="t in items"
-        :key="t.id"
+        v-for="(t, index) in items"
+        :key="index"
         :header-style="isDarkTheme ? classes.defaultHeaderDark : classes.defaultHeader"
       >
         <template #header>
@@ -38,7 +38,7 @@ export default defineComponent({
     },
     items: {
       type: Array as PropType<any[]>,
-      required: true,
+      default: null,
     },
   },
   setup(props, { emit }) {

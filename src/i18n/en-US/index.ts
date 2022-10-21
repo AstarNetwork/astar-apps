@@ -132,6 +132,7 @@ export default {
     totalDapps: 'Total dApps',
   },
   myDapps: {
+    index: 'Index',
     dapps: 'dApps',
     stakedAmount: 'Staked Amount',
     unbondingAmount: 'Unbonding amount',
