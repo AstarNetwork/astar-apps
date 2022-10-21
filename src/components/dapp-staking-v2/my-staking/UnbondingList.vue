@@ -12,12 +12,12 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="t in myStakeInfos" :key="t.address">
-              <td>{{ t.name }}</td>
-              <td>{{ t.yourStake.formatted }}</td>
+            <tr v-for="(t, index) in unlockingChunks" :key="index">
+              <td>{{ index }}</td>
+              <td><format-balance :balance="t.amount.toString()" /></td>
               <td>
                 <div class="row--remaining-era">
-                  <!-- <div>{{ t.remainingEra }}</div> -->
+                  <div>{{ t.unlockEra.toHuman() }}</div>
                   <astar-irregular-button
                     :width="77"
                     :height="20"
@@ -30,7 +30,7 @@
                 <astar-button
                   :width="97"
                   :height="24"
-                  :disabled="true"
+                  :disabled="t.erasBeforeUnlock !== 0"
                   @click="showModalWithdraw = true"
                   >{{ $t('myDapps.withdraw') }}</astar-button
                 >
@@ -55,18 +55,21 @@
 <script lang="ts">
 import { defineComponent, ref, watchEffect } from 'vue';
 import { useBreakpoints, useStakerInfo } from 'src/hooks';
+import { useUnbonding } from 'src/hooks/dapps-staking/useUnbonding';
 import DropdownList from './components/DropdownList.vue';
+import FormatBalance from 'components/common/FormatBalance.vue';
 import ModalWithdraw from 'src/components/dapp-staking-v2/my-staking/components/modals/ModalWithdraw.vue';
 import ModalRebond from 'src/components/dapp-staking-v2/my-staking/components/modals/ModalRebond.vue';
 
 export default defineComponent({
-  components: { DropdownList, ModalWithdraw, ModalRebond },
+  components: { DropdownList, ModalWithdraw, ModalRebond, FormatBalance },
   setup(_, { emit }) {
     const { width, screenSize } = useBreakpoints();
     const { myStakeInfos } = useStakerInfo();
+    const { unlockingChunks } = useUnbonding();
 
     watchEffect(() => {
-      console.log('sss', myStakeInfos.value);
+      // console.log('sss', myStakeInfos.value);
     });
 
     //TODO: need refactor as module
@@ -102,6 +105,7 @@ export default defineComponent({
       screenSize,
       items,
       myStakeInfos,
+      unlockingChunks,
       showModalWithdraw,
       showModalRebond,
     };
