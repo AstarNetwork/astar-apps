@@ -5,6 +5,7 @@
       :key="t.contract.address"
       class="card"
       @mouseover="hoverIndex = index"
+      @click="goDappPageLink(t.dapp?.address)"
     >
       <div class="wrapper--card">
         <div class="wrapper--img">
@@ -21,17 +22,25 @@
               </astar-icon-base>
               {{ t.stakerInfo.stakersCount.toLocaleString() }}
             </div>
-            <div>{{ Number(t.stakerInfo.totalStakeFormatted).toLocaleString() }} ASTR</div>
+            <div>
+              <token-balance
+                :balance="t.stakerInfo.totalStakeFormatted.toString()"
+                :symbol="nativeTokenSymbol"
+                :decimals="0"
+              />
+            </div>
           </div>
         </div>
       </div>
       <astar-button
         v-if="index === hoverIndex || width < screenSize.lg"
+        class="button--stake"
         width="274"
         height="24"
         @click="goStakePageLink(t.dapp?.address)"
-        >Stake now</astar-button
       >
+        {{ $t('dappStaking.stakeNow') }}
+      </astar-button>
       <div v-else style="width: 274px; height: 24px"></div>
     </div>
   </div>
@@ -39,12 +48,14 @@
 
 <script lang="ts">
 import { defineComponent, PropType, ref } from 'vue';
-import { useBreakpoints } from 'src/hooks';
+import { useBreakpoints, useNetworkInfo } from 'src/hooks';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { networkParam, Path } from 'src/router/routes';
 import { useRouter } from 'vue-router';
+import TokenBalance from 'src/components/common/TokenBalance.vue';
 
 export default defineComponent({
+  components: { TokenBalance },
   props: {
     category: {
       type: String,
@@ -59,9 +70,16 @@ export default defineComponent({
     const router = useRouter();
     const { width, screenSize } = useBreakpoints();
     const hoverIndex = ref<number>(-1);
+    const { nativeTokenSymbol } = useNetworkInfo();
 
     const goStakePageLink = (address: string | undefined): void => {
       const base = networkParam + Path.DappStaking + Path.Stake;
+      const url = `${base}?dapp=${address?.toLowerCase()}`;
+      router.push(url);
+    };
+
+    const goDappPageLink = (address: string | undefined): void => {
+      const base = networkParam + Path.DappStaking + Path.Dapp;
       const url = `${base}?dapp=${address?.toLowerCase()}`;
       router.push(url);
     };
@@ -71,6 +89,8 @@ export default defineComponent({
       width,
       screenSize,
       goStakePageLink,
+      goDappPageLink,
+      nativeTokenSymbol,
     };
   },
 });
@@ -119,6 +139,10 @@ export default defineComponent({
       max-height: 80px;
       border-radius: 16px;
     }
+  }
+
+  .button--stake {
+    z-index: 10;
   }
 
   .panel--right {
