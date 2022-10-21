@@ -15,9 +15,11 @@
             <tr v-for="t in myStakeInfos" :key="t.address">
               <td>{{ t.name }}</td>
               <td>
-                {{ t.yourStake.formatted }}
+                <token-balance
+                  :balance="ethers.utils.formatEther(t.yourStake.denomAmount.toString())"
+                  :symbol="nativeTokenSymbol"
+                />
               </td>
-              <!-- <td><token-balance :balance="t.claimedRewards" :symbol="nativeTokenSymbol" /></td> -->
               <td>
                 <div class="row--manage">
                   <astar-button
@@ -54,14 +56,16 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, watchEffect } from 'vue';
 import { useBreakpoints, useNetworkInfo, useStakerInfo } from 'src/hooks';
 import DropdownList from './components/DropdownList.vue';
 import ModalAddStake from './components/modals/ModalAddStake.vue';
 import ModalUnbondDapp from './components/modals/ModalUnbondDapp.vue';
+import TokenBalance from 'src/components/common/TokenBalance.vue';
+import { ethers } from 'ethers';
 
 export default defineComponent({
-  components: { DropdownList, ModalAddStake, ModalUnbondDapp },
+  components: { DropdownList, ModalAddStake, ModalUnbondDapp, TokenBalance },
   setup() {
     const { width, screenSize } = useBreakpoints();
     const { nativeTokenSymbol } = useNetworkInfo();
@@ -95,6 +99,10 @@ export default defineComponent({
     const showModalAdd = ref(false);
     const showModalUnbond = ref(false);
 
+    watchEffect(() => {
+      console.log('myStakeInfos', myStakeInfos.value);
+    });
+
     return {
       width,
       screenSize,
@@ -103,6 +111,7 @@ export default defineComponent({
       showModalAdd,
       showModalUnbond,
       myStakeInfos,
+      ethers,
     };
   },
 });
