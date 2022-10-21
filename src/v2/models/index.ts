@@ -4,3 +4,4 @@ export * from './AccountInfoModel';
 export * from './Account';
 export * from './Asset';
 export * from './XcmModels';
+export * from './DappsStaking';

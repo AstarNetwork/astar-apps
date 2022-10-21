@@ -8,6 +8,7 @@ import { IDappStakingService } from 'src/v2/services';
 import { Guard } from 'src/v2/common';
 import { IWalletService } from '../IWalletService';
 import { astarMainnetNativeToken, ASTAR_NATIVE_TOKEN } from 'src/config/chain';
+import { AccountLedger } from 'src/v2/models/DappsStaking';
 
 @injectable()
 export class DappStakingService implements IDappStakingService {
@@ -49,5 +50,11 @@ export class DappStakingService implements IDappStakingService {
       stakerAddress,
       `You successfully staked to ${contractAddress}`
     );
+  }
+
+  public async getLedger(accountAddress: string): Promise<AccountLedger> {
+    Guard.ThrowIfUndefined('accountAddress', accountAddress);
+
+    return await this.dappStakingRepository.getLedger(accountAddress);
   }
 }
