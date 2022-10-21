@@ -27,13 +27,9 @@
                     @click="showModalAdd = true"
                     >{{ $t('myDapps.add') }}</astar-button
                   >
-                  <astar-button
-                    width="97"
-                    height="24"
-                    :disabled="false"
-                    @click="showModalUnbond = true"
-                    >{{ $t('myDapps.unbond') }}</astar-button
-                  >
+                  <astar-button width="97" height="24" :disabled="false" @click="showUnbound(t)">{{
+                    $t('myDapps.unbond')
+                  }}</astar-button>
                 </div>
               </td>
             </tr>
@@ -48,14 +44,18 @@
     <Teleport to="#app--main">
       <div :class="'highest-z-index'">
         <ModalAddStake v-model:is-open="showModalAdd" :show="showModalAdd" />
-        <ModalUnbondDapp v-model:is-open="showModalUnbond" :show="showModalUnbond" />
+        <ModalUnbondDapp
+          v-model:is-open="showModalUnbond"
+          :show="showModalUnbond"
+          :dapp="selectedDapp"
+        />
       </div>
     </Teleport>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { useBreakpoints, useNetworkInfo, useStakerInfo } from 'src/hooks';
+import { MyStakeInfo, useBreakpoints, useNetworkInfo, useStakerInfo } from 'src/hooks';
 import DropdownList from './components/DropdownList.vue';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import ModalAddStake from './components/modals/ModalAddStake.vue';
@@ -67,6 +67,9 @@ export default defineComponent({
     const { width, screenSize } = useBreakpoints();
     const { nativeTokenSymbol } = useNetworkInfo();
     const { myStakeInfos } = useStakerInfo();
+    const selectedDapp = ref<MyStakeInfo>();
+
+    console.log('infos', myStakeInfos);
 
     //TODO: need refactor as module
     const items = [
@@ -96,6 +99,12 @@ export default defineComponent({
     const showModalAdd = ref(false);
     const showModalUnbond = ref(false);
 
+    const showUnbound = (dapp: MyStakeInfo): void => {
+      console.log(dapp);
+      selectedDapp.value = dapp;
+      showModalUnbond.value = true;
+    };
+
     return {
       width,
       screenSize,
@@ -104,6 +113,8 @@ export default defineComponent({
       showModalAdd,
       showModalUnbond,
       myStakeInfos,
+      selectedDapp,
+      showUnbound,
     };
   },
 });

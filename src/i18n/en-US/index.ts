@@ -274,6 +274,7 @@ export default {
       license: 'License',
       staked: 'Staked',
       startUnbonding: 'Start unbonding',
+      unbondFrom: 'Unbond from {name}',
       chunks: 'Chunks',
       unbondingPeriod: 'Unbonding period: {period} era',
       maxUnlockingChunks: 'Maximum unlocking chunks: {chunks}',
