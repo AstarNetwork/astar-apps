@@ -18,6 +18,7 @@
                 <token-balance
                   :balance="ethers.utils.formatEther(t.yourStake.denomAmount.toString())"
                   :symbol="nativeTokenSymbol"
+                  :decimals="0"
                 />
               </td>
               <td>
