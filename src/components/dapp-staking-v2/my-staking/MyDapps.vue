@@ -57,7 +57,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, watchEffect } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { useBreakpoints, useNetworkInfo, useStakerInfo } from 'src/hooks';
 import DropdownList from './components/DropdownList.vue';
 import ModalAddStake from './components/modals/ModalAddStake.vue';
@@ -99,10 +99,6 @@ export default defineComponent({
 
     const showModalAdd = ref(false);
     const showModalUnbond = ref(false);
-
-    watchEffect(() => {
-      console.log('myStakeInfos', myStakeInfos.value);
-    });
 
     return {
       width,
