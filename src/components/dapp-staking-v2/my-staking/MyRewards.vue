@@ -13,7 +13,7 @@
       <div class="row--data">
         <div class="value">
           <q-skeleton v-if="isLoadingTotalStaked" animation="fade" class="skeleton--md" />
-          <TokenBalance v-else :balance="totalStaked" :symbol="nativeTokenSymbol" :decimals="0" />
+          <token-balance v-else :balance="totalStaked" :symbol="nativeTokenSymbol" :decimals="0" />
         </div>
       </div>
     </div>
@@ -32,7 +32,7 @@
           <q-skeleton type="rect" animation="fade" />
         </div>
         <div v-else class="value">{{ amountOfEras }} {{ $t('myReward.era') }}</div>
-        <astar-button width="80" height="24" :disabled="!canClaim" @click="claimAll">{{
+        <astar-button :width="80" :height="24" :disabled="!canClaim" @click="claimAll">{{
           $t('myReward.claim')
         }}</astar-button>
       </div>
@@ -49,7 +49,7 @@
       </p>
       <div class="row--data">
         <div class="value">{{ isCompounding ? $t('dappStaking.on') : $t('dappStaking.off') }}</div>
-        <astar-button width="80" height="24" @click="changeDestinationForRestaking">{{
+        <astar-button :width="80" :height="24" @click="changeDestinationForRestaking">{{
           isCompounding ? $t('dappStaking.turnOff') : $t('dappStaking.turnOn')
         }}</astar-button>
       </div>
@@ -69,7 +69,7 @@
           <q-skeleton type="rect" animation="fade" />
         </div>
         <div v-else class="value">
-          <TokenBalance :balance="claimed.toString()" :symbol="nativeTokenSymbol" />
+          <token-balance :balance="claimed.toString()" :symbol="nativeTokenSymbol" />
         </div>
         <astar-irregular-button>
           <div class="explorer-icon">

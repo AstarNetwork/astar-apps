@@ -25,7 +25,7 @@
       </div>
     </div>
     <div class="column--edit">
-      <astar-button class="btn-size--stake" :disabled="isDisabledEditButton">
+      <astar-button class="btn-size--stake" :disabled="isDisabledEditButton" @click="goEditLink">
         <span class="text--btn-stake">
           {{ $t('dappStaking.edit') }}
         </span>
@@ -38,6 +38,7 @@ import { useAccount } from 'src/hooks';
 import { networkParam, Path } from 'src/router/routes';
 import { useStore } from 'src/store';
 import { defineComponent, computed } from 'vue';
+import { useRouter } from 'vue-router';
 export default defineComponent({
   props: {
     dapp: {
@@ -47,11 +48,17 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
+    const router = useRouter();
     const { currentAccount } = useAccount();
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const buildStakePageLink = (address: string): string => {
       const base = networkParam + Path.DappStaking + Path.Stake;
       return `${base}?dapp=${address.toLowerCase()}`;
+    };
+
+    const goEditLink = (): void => {
+      const url = networkParam + Path.DappStaking + Path.Register;
+      router.push(url);
     };
 
     const isDisabledStakeButton = computed<boolean>(() => isH160.value || !currentAccount.value);
@@ -63,6 +70,7 @@ export default defineComponent({
       buildStakePageLink,
       isDisabledStakeButton,
       isDisabledEditButton,
+      goEditLink,
     };
   },
 });
