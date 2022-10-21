@@ -96,7 +96,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/:network' + Path.DappStaking,
-    name: 'dApp Staking',
+    name: 'dApps Staking',
     component: Store,
     children: [
       {

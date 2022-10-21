@@ -59,7 +59,7 @@ export default {
     lightMode: 'Light mode',
     darkMode: 'Dark mode',
     dApps: 'dApps',
-    dappStaking: 'dApp Staking',
+    dappStaking: 'dApps Staking',
     staking: 'Staking',
     contract: 'Contract',
     plasmLockdrop: 'Plasm Lockdrop',
@@ -159,7 +159,7 @@ export default {
     myDapps: 'My dApps',
     transferableBalance: 'Transferable Balance',
     dappsStore: 'dApps Store',
-    dappStaking: 'dApp Staking',
+    dappStaking: 'dApps Staking',
     registerDapp: 'Register dApp',
     noDappsRegistered: 'No dApps registered. Be the first to register one.',
     totalStake: 'Total stake:',
@@ -216,7 +216,7 @@ export default {
     stakePage: {
       backToDappList: 'Back to dApps list',
       whereFundsFrom: 'Where would you like to bring you funds from?',
-      dappStakingNative: 'dApp Staking (Native)',
+      dappStakingNative: 'dApps Staking (Native)',
       liquidStakingEVM: 'Liquid Staking (EVM)',
     },
     algem: {
@@ -225,7 +225,7 @@ export default {
       runBy: 'Run by',
       subtitle0: 'Unlock The Full Power Of Your ASTR',
       desc0:
-        "Unlock Astar's dApp staking mechanism and double-dip your earnings when you farm across Astar's DeFi ecosystem while simultaneously dApp staking!",
+        "Unlock Astar's dApps staking mechanism and double-dip your earnings when you farm across Astar's DeFi ecosystem while simultaneously dApps staking!",
       subtitle1: 'Get One nASTR For Every ASTR You Stake',
       desc1:
         'Stake your ASTR tokens on any Astar Network project and receive liquid nASTR tokens at the same ratio (1:1).',
@@ -234,7 +234,7 @@ export default {
         'Use nASTR across the Astar DeFi ecosystem, as you would with your ASTR, and maximize your profits.',
       warnTitle: 'Please make sure you understand the following',
       warnRow0:
-        'Algem uses Astar’s dApp Staking mechanism, however Algem is a third party and Astar is not responsible for Algem’s services.',
+        'Algem uses Astar’s dApps Staking mechanism, however Algem is a third party and Astar is not responsible for Algem’s services.',
       warnRow1:
         'Learn about the risk of providing liquidity on a DEX, impermanent loss (IL) and the possibility of a depeg.',
       textFinal: 'Enjoy The Magic of Liquid Staking And Seize The Extra Earnings!',
@@ -353,7 +353,7 @@ export default {
       orDrag: 'or drag and drop',
     },
     error: {
-      onlySupportsSubstrate: 'dApp staking only supports Substrate wallets',
+      onlySupportsSubstrate: 'dApps staking only supports Substrate wallets',
       notEnoughMinAmount:
         'The amount of token to be staking must be greater than {amount} {symbol}',
       allFundsWillBeTransferred:
@@ -516,8 +516,8 @@ export default {
         tooltip: 'TVL',
       },
       dappStaking: {
-        title: 'Total Value Locked in dApp Staking',
-        tooltip: 'TVL in dApp Staking',
+        title: 'Total Value Locked in dApps Staking',
+        tooltip: 'TVL in dApps Staking',
       },
       ecosystem: {
         title: 'Total Value Locked in EVM Ecosystem',
