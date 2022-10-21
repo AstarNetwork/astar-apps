@@ -11,11 +11,9 @@
         </q-tooltip>
       </p>
       <div class="row--data">
-        <div v-if="isLoading" class="loading">
-          <q-skeleton type="rect" animation="fade" />
-        </div>
-        <div v-else class="value">
-          <TokenBalance :balance="item.totalStaked.toString()" symbol="ASTR" />
+        <div class="value">
+          <q-skeleton v-if="isLoadingTotalStaked" animation="fade" class="skeleton--md" />
+          <TokenBalance v-else :balance="totalStaked" :symbol="nativeTokenSymbol" :decimals="0" />
         </div>
       </div>
     </div>
@@ -70,7 +68,9 @@
         <div v-if="isLoadingClaimed" class="loading">
           <q-skeleton type="rect" animation="fade" />
         </div>
-        <div v-else class="value"><TokenBalance :balance="claimed.toString()" symbol="ASTR" /></div>
+        <div v-else class="value">
+          <TokenBalance :balance="claimed.toString()" :symbol="nativeTokenSymbol" />
+        </div>
         <astar-irregular-button>
           <div class="explorer-icon">
             <astar-icon-external-link />
@@ -81,24 +81,22 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
-import { useClaimAll } from 'src/hooks';
-import { useCompoundRewards, RewardDestination } from 'src/hooks/dapps-staking/useCompoundRewards';
+import { useClaimAll, useNetworkInfo, useStakerInfo } from 'src/hooks';
 import { useClaimedReward } from 'src/hooks/dapps-staking/useClaimedReward';
+import { RewardDestination, useCompoundRewards } from 'src/hooks/dapps-staking/useCompoundRewards';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   components: {
     TokenBalance,
   },
   setup() {
-    const item = {
-      totalStaked: 500000,
-      totalEarned: 10000,
-    };
+    const { nativeTokenSymbol } = useNetworkInfo();
     const { claimAll, canClaim, amountOfEras, isLoading } = useClaimAll();
+    const { totalStaked, isLoadingTotalStaked } = useStakerInfo();
 
-    const { isSupported, isCompounding, setRewardDestination } = useCompoundRewards();
+    const { isCompounding, setRewardDestination } = useCompoundRewards();
     const changeDestinationForRestaking = async () => {
       const newDestination = isCompounding.value
         ? RewardDestination.FreeBalance
@@ -109,7 +107,6 @@ export default defineComponent({
     const { claimed, isLoadingClaimed } = useClaimedReward();
 
     return {
-      item,
       isLoading,
       amountOfEras,
       canClaim,
@@ -118,6 +115,9 @@ export default defineComponent({
       changeDestinationForRestaking,
       isLoadingClaimed,
       claimed,
+      totalStaked,
+      nativeTokenSymbol,
+      isLoadingTotalStaked,
     };
   },
 });
