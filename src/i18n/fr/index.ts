@@ -22,7 +22,7 @@ export default {
     lightMode: 'Mode de jour',
     darkMode: 'Mode de nuit',
     dApps: 'dApps',
-    dappStaking: 'dApp Staking',
+    dappStaking: 'dApps Staking',
     contract: 'Contrat',
     plasmLockdrop: 'Plasm Lockdrop',
     closeSidebar: 'Fermer la barre latérale',
@@ -45,7 +45,7 @@ export default {
   },
   dappStaking: {
     dappsStore: 'dApps Store',
-    dappStaking: 'dApp Staking',
+    dappStaking: 'dApps Staking',
     registerDapp: 'Enregistrez votre dApp',
     noDappsRegistered: 'Aucune dApp enregistrée. Soyez le premier à enregistrer une dApp.',
     totalStake: 'Total stake:',

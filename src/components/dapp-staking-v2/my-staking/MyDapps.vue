@@ -7,8 +7,7 @@
             <tr>
               <th>{{ $t('myDapps.dapps') }}</th>
               <th>{{ $t('myDapps.stakedAmount') }}</th>
-              <th>{{ $t('myDapps.totalEarned') }}</th>
-              <th>{{ $t('myDapps.manage') }}</th>
+              <th class="title--manage">{{ $t('myDapps.manage') }}</th>
             </tr>
           </thead>
           <tbody>
@@ -17,7 +16,6 @@
               <td>
                 {{ t.yourStake.formatted }}
               </td>
-              <td><token-balance :balance="t.claimedRewards" :symbol="nativeTokenSymbol" /></td>
               <td>
                 <div class="row--manage">
                   <astar-button
@@ -57,12 +55,11 @@
 import { defineComponent, ref } from 'vue';
 import { useBreakpoints, useNetworkInfo, useStakerInfo } from 'src/hooks';
 import DropdownList from './components/DropdownList.vue';
-import TokenBalance from 'src/components/common/TokenBalance.vue';
 import ModalAddStake from './components/modals/ModalAddStake.vue';
 import ModalUnbondDapp from './components/modals/ModalUnbondDapp.vue';
 
 export default defineComponent({
-  components: { DropdownList, TokenBalance, ModalAddStake, ModalUnbondDapp },
+  components: { DropdownList, ModalAddStake, ModalUnbondDapp },
   setup() {
     const { width, screenSize } = useBreakpoints();
     const { nativeTokenSymbol } = useNetworkInfo();
