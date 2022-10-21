@@ -25,7 +25,8 @@
       </div>
     </div>
     <div class="column--edit">
-      <astar-button class="btn-size--stake" :disabled="isDisabledEditButton">
+      <!-- <astar-button class="btn-size--stake" :disabled="isDisabledEditButton"> -->
+      <astar-button class="btn-size--stake">
         <span class="text--btn-stake">
           {{ $t('dappStaking.edit') }}
         </span>
