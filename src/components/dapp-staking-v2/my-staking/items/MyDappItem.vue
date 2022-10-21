@@ -4,11 +4,13 @@
       <thead>
         <tr>
           <th>{{ $t('myDapps.stakedAmount') }}</th>
+          <th>{{ $t('myDapps.totalEarned') }}</th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td>{{ item.stakedAmount.toLocaleString() }} ASTR</td>
+          <td>{{ item.totalEarned.toLocaleString() }} ASTR</td>
         </tr>
       </tbody>
     </table>

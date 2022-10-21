@@ -34,14 +34,9 @@ table {
     }
   }
 
-  .title--manage {
-    text-align: center;
-  }
-
   .row--manage {
     display: flex;
     gap: 8px;
-    justify-content: center;
   }
 
   @media (min-width: $lg) {
