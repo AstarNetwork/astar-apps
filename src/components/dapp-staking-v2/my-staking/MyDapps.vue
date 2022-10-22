@@ -24,7 +24,7 @@
                     width="97"
                     height="24"
                     :disabled="false"
-                    @click="showModalAdd = true"
+                    @click="navigateToStake(t.dappAddress)"
                     >{{ $t('myDapps.add') }}</astar-button
                   >
                   <astar-button width="97" height="24" :disabled="false" @click="showUnbound(t)">{{
@@ -43,7 +43,6 @@
 
     <Teleport to="#app--main">
       <div :class="'highest-z-index'">
-        <ModalAddStake v-model:is-open="showModalAdd" :show="showModalAdd" />
         <ModalUnbondDapp
           v-model:is-open="showModalUnbond"
           :show="showModalUnbond"
@@ -58,16 +57,18 @@ import { defineComponent, ref } from 'vue';
 import { MyStakeInfo, useBreakpoints, useNetworkInfo, useStakerInfo } from 'src/hooks';
 import DropdownList from './components/DropdownList.vue';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
-import ModalAddStake from './components/modals/ModalAddStake.vue';
 import ModalUnbondDapp from './components/modals/ModalUnbondDapp.vue';
+import { networkParam, Path } from 'src/router/routes';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
-  components: { DropdownList, TokenBalance, ModalAddStake, ModalUnbondDapp },
+  components: { DropdownList, TokenBalance, ModalUnbondDapp },
   setup() {
     const { width, screenSize } = useBreakpoints();
     const { nativeTokenSymbol } = useNetworkInfo();
     const { myStakeInfos } = useStakerInfo();
     const selectedDapp = ref<MyStakeInfo>();
+    const router = useRouter();
 
     console.log('infos', myStakeInfos);
 
@@ -96,7 +97,6 @@ export default defineComponent({
       },
     ];
 
-    const showModalAdd = ref(false);
     const showModalUnbond = ref(false);
 
     const showUnbound = (dapp: MyStakeInfo): void => {
@@ -105,16 +105,22 @@ export default defineComponent({
       showModalUnbond.value = true;
     };
 
+    const navigateToStake = (address: string | undefined): void => {
+      const base = networkParam + Path.DappStaking + Path.Stake;
+      const url = `${base}?dapp=${address?.toLowerCase()}`;
+      router.push(url);
+    };
+
     return {
       width,
       screenSize,
       items,
       nativeTokenSymbol,
-      showModalAdd,
       showModalUnbond,
       myStakeInfos,
       selectedDapp,
       showUnbound,
+      navigateToStake,
     };
   },
 });
