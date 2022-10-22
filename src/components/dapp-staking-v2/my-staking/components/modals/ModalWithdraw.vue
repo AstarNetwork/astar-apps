@@ -1,7 +1,7 @@
 <template>
   <astar-default-modal :width="544" :height="381" :show="show" title="Withdraw" @close="close">
     <div class="text--guide">Your funds are available to withdraw.</div>
-    <div class="box container">
+    <div class="box--container">
       <div>
         <span class="text--title">Ready to withdraw</span>
       </div>
@@ -50,13 +50,15 @@ export default defineComponent({
   font-weight: 500;
   font-size: 14px;
 }
-.container {
+.box--container {
   font-family: 'Inter';
   margin-top: 32px;
   margin-bottom: 32px;
   color: $gray-1;
   text-align: center;
   padding: 16px;
+  background: $gray-1;
+  border-radius: 6px;
 
   .text--title {
     font-weight: 600;
@@ -66,6 +68,16 @@ export default defineComponent({
     font-weight: 600;
     font-size: 22px;
     margin-top: 16px;
+    color: $gray-5-selected;
+  }
+}
+
+.body--dark {
+  .box--container {
+    background: $gray-7;
+    .text--amount {
+      color: $gray-1;
+    }
   }
 }
 </style>

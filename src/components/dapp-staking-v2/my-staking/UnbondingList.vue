@@ -22,7 +22,7 @@
                   <astar-irregular-button
                     :width="77"
                     :height="20"
-                    @click="showModalRebond = true"
+                    @click="showRebondDialog(t.amount.toString())"
                     >{{ $t('myDapps.rebond') }}</astar-irregular-button
                   >
                 </div>
@@ -50,10 +50,15 @@
         <ModalWithdraw
           v-model:is-open="showModalWithdraw"
           :show="showModalWithdraw"
-          :withdraw-amount="totalAmountWithdraw"
+          :withdraw-amount="totalAmount"
           @confirm="withdraw"
         />
-        <ModalRebond v-model:is-open="showModalRebond" :show="showModalRebond" />
+        <ModalRebond
+          v-model:is-open="showModalRebond"
+          :show="showModalRebond"
+          :rebond-amount="totalAmount"
+          @confirm="rebond"
+        />
       </div>
     </Teleport>
   </div>
@@ -73,10 +78,9 @@ export default defineComponent({
     const { width, screenSize } = useBreakpoints();
     const { myStakeInfos } = useStakerInfo();
     const { unlockingChunks, withdraw } = useUnbonding();
-
-    watchEffect(() => {
-      // console.log('sss', myStakeInfos.value);
-    });
+    const rebond = () => {
+      console.log('rebond');
+    };
 
     //TODO: need refactor as module
     const items = [
@@ -106,11 +110,16 @@ export default defineComponent({
     const showModalWithdraw = ref(false);
     const showModalRebond = ref(false);
     // MEMO: since not possible to withdraw each chunk currently, use total amount of withdraw
-    const totalAmountWithdraw = ref('');
+    const totalAmount = ref('');
 
     const showWithdrawDialog = (amountWithdraw: string) => {
-      totalAmountWithdraw.value = amountWithdraw;
+      totalAmount.value = amountWithdraw;
       showModalWithdraw.value = true;
+    };
+
+    const showRebondDialog = (amountWithdraw: string) => {
+      totalAmount.value = amountWithdraw;
+      showModalRebond.value = true;
     };
 
     return {
@@ -121,9 +130,11 @@ export default defineComponent({
       unlockingChunks,
       showModalWithdraw,
       showModalRebond,
-      totalAmountWithdraw,
+      totalAmount,
       showWithdrawDialog,
+      showRebondDialog,
       withdraw,
+      rebond,
     };
   },
 });

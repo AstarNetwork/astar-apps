@@ -3,33 +3,45 @@
     <div class="text--guide">
       Once re-bond your funds goes back to staking. You will need 10era to unstake again.
     </div>
-    <div class="box container">
+    <div class="box--container">
       <div>
         <span class="text--title">The amount you wish to rebond</span>
       </div>
-      <div class="text--amount">10,000 ASTR</div>
+      <div class="text--amount"><format-balance :balance="rebondAmount" /></div>
     </div>
-    <astar-button :width="464" :height="52">Confirm</astar-button>
+    <astar-button :width="464" :height="52" @click="confirm">Confirm</astar-button>
   </astar-default-modal>
 </template>
 
 <script>
 import { defineComponent } from 'vue';
+import FormatBalance from 'components/common/FormatBalance.vue';
 
 export default defineComponent({
+  components: { FormatBalance },
   props: {
     show: {
       type: Boolean,
       default: false,
     },
+    rebondAmount: {
+      type: String,
+      default: null,
+    },
   },
+  emits: ['update:is-open', 'confirm'],
   setup(props, { emit }) {
     const close = () => {
       emit('update:is-open', false);
     };
 
+    const confirm = () => {
+      emit('confirm');
+    };
+
     return {
       close,
+      confirm,
     };
   },
 });
@@ -40,13 +52,15 @@ export default defineComponent({
   font-weight: 500;
   font-size: 14px;
 }
-.container {
+.box--container {
   font-family: 'Inter';
   margin-top: 20px;
   margin-bottom: 16px;
   color: $gray-1;
   text-align: center;
   padding: 16px;
+  background: $gray-1;
+  border-radius: 6px;
 
   .text--title {
     font-weight: 600;
@@ -56,6 +70,16 @@ export default defineComponent({
     font-weight: 600;
     font-size: 22px;
     margin-top: 16px;
+    color: $gray-5-selected;
+  }
+}
+
+.body--dark {
+  .box--container {
+    background: $gray-7;
+    .text--amount {
+      color: $gray-1;
+    }
   }
 }
 </style>
