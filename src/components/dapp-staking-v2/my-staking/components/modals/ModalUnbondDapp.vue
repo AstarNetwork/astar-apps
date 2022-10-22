@@ -1,7 +1,6 @@
 <template>
   <astar-default-modal
-    :width="544"
-    :height="393"
+    :width="480"
     :show="show"
     :title="$t('dappStaking.modals.unbondFrom', { name: dapp?.name })"
     @close="close"
@@ -45,18 +44,35 @@
       </div>
     </div>
 
-    <astar-button :width="464" :height="37" :disabled="!amount">Start unbonding</astar-button>
+    <div class="warning">
+      <li>{{ $t('dappStaking.unbondingEra', { unbondingPeriod }) }}</li>
+    </div>
+
+    <SpeedConfigurationV2
+      class="speed"
+      :gas-cost="nativeTipPrice"
+      :selected-gas="selectedTip"
+      :set-selected-gas="setSelectedTip"
+    />
+
+    <astar-button width="400" :height="44" :disabled="!amount" @click="unbound()"
+      >Start unbonding</astar-button
+    >
   </astar-default-modal>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, PropType, ref } from 'vue';
-import { MyStakeInfo, useNetworkInfo } from 'src/hooks';
+import { MyStakeInfo, useNetworkInfo, useUnbound, useGasPrice } from 'src/hooks';
 import { getTokenImage } from 'src/modules/token';
 import { truncate } from 'src/hooks/helper/common';
 import { ethers } from 'ethers';
+import SpeedConfigurationV2 from 'src/components/common/SpeedConfigurationV2.vue';
 
 export default defineComponent({
+  components: {
+    SpeedConfigurationV2,
+  },
   props: {
     show: {
       type: Boolean,
@@ -68,7 +84,9 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
+    const { unbondingPeriod, handleUnbound } = useUnbound();
     const { nativeTokenSymbol } = useNetworkInfo();
+    const { selectedTip, nativeTipPrice, setSelectedTip } = useGasPrice();
     const nativeTokenImg = computed<string>(() =>
       getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
     );
@@ -93,15 +111,25 @@ export default defineComponent({
       amount.value = event.target.value;
     };
 
+    const unbound = async (): Promise<void> => {
+      close();
+      await handleUnbound(props.dapp?.dappAddress, amount.value);
+    };
+
     return {
       nativeTokenSymbol,
       nativeTokenImg,
       maxAmount,
       amount,
+      selectedTip,
+      nativeTipPrice,
+      unbondingPeriod,
+      setSelectedTip,
       close,
       toMaxAmount,
       truncate,
       inputHandler,
+      unbound,
     };
   },
 });
@@ -111,8 +139,11 @@ export default defineComponent({
 @use 'src/components/dapp-staking/stake-manage/styles/stake-form.scss';
 
 .box--input-field {
-  width: 464px;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
+}
+
+.box__row {
+  justify-content: space-between;
 }
 
 .text--guide {
@@ -136,5 +167,19 @@ export default defineComponent({
     font-size: 22px;
     margin-top: 16px;
   }
+}
+
+.speed {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.warning {
+  background: rgba(240, 185, 11, 0.2);
+  border: 1px solid #f0b90b;
+  border-radius: 6px;
+  padding: 8px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 </style>

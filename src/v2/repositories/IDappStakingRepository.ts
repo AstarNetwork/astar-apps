@@ -14,9 +14,17 @@ export interface IDappStakingRepository {
   getTvl(): Promise<BN>;
 
   /**
-   * Gets bondAndStake call
+   * Gets bondAndStake call extrisnic.
    */
   getBondAndStakeCall(
+    contractAddress: string,
+    amount: BN
+  ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>>;
+
+  /**
+   * Gets unbondAndUnstale call extrinsic.
+   */
+  getUnbondAndUnstakeCall(
     contractAddress: string,
     amount: BN
   ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>>;

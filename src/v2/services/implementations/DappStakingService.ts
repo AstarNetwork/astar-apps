@@ -89,6 +89,25 @@ export class DappStakingService implements IDappStakingService {
     );
   }
 
+  public async unbondAndUnstake(
+    contractAddress: string,
+    stakerAddress: string,
+    amount: BN
+  ): Promise<void> {
+    Guard.ThrowIfUndefined('contractAddress', contractAddress);
+    Guard.ThrowIfUndefined('stakerAddress', stakerAddress);
+
+    const unboundCall = await this.dappStakingRepository.getUnbondAndUnstakeCall(
+      contractAddress,
+      amount
+    );
+    await this.wallet.signAndSend(
+      unboundCall,
+      stakerAddress,
+      `You successfully started unbonding process for ${contractAddress}`
+    );
+  }
+
   /**
    * Gets staker info (total staked, stakers count) for a given contracts.
    * @param contractAddresses List of contract addresses to provide info for.
