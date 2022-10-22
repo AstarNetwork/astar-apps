@@ -42,13 +42,23 @@ export default defineComponent({
 .wrapper--cards {
   display: flex;
   gap: 16px;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   margin-top: 48px;
   margin-bottom: 48px;
+  width: 100%;
+  @media (min-width: $sm) {
+    flex-direction: row;
+    justify-content: space-evenly !important;
+  }
+  @media (min-width: $md) {
+    width: 100vw;
+  }
+  @media (min-width: $lg) {
+    width: 100%;
+  }
 
   @media (max-width: $lg) {
-    // display: block;
-    width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
     justify-content: left;
@@ -59,9 +69,26 @@ export default defineComponent({
 }
 
 .card {
-  flex-basis: 30%;
-  min-width: 300px;
   cursor: pointer;
+  @media (min-width: 400px) {
+    width: 350px;
+  }
+  @media (min-width: 500px) {
+    width: 380px;
+  }
+  @media (min-width: $md) {
+    width: 200px;
+    margin-left: -28px;
+  }
+  @media (min-width: 850px) {
+    width: 220px;
+  }
+  @media (min-width: $lg) {
+    margin-left: 0px;
+  }
+  @media (min-width: $xl) {
+    width: 234px;
+  }
   .wrapper--img {
     background: rgb(110, 110, 110);
     height: 200px;
