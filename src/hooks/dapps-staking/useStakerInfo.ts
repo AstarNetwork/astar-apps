@@ -1,12 +1,14 @@
+import { BN } from 'bn.js';
 import { $api } from 'boot/api';
-import { useStore } from 'src/store';
-import { computed, ref, watchEffect } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useNetworkInfo, useAccount } from 'src/hooks';
+import { ethers } from 'ethers';
+import { useAccount, useNetworkInfo } from 'src/hooks';
 import { checkIsLimitedProvider, getStakeInfo } from 'src/modules/dapp-staking/utils/index';
+import { useStore } from 'src/store';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
 import { DappItem } from 'src/store/dapp-staking/state';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
+import { computed, ref, watch, watchEffect } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 export type MyStakeInfo = StakeInfo | DappItem;
 
@@ -18,6 +20,8 @@ export function useStakerInfo() {
   const { currentNetworkName } = useNetworkInfo();
 
   store.dispatch('dapps/getStakingInfo');
+  const isLoadingTotalStaked = ref<boolean>(true);
+  const totalStaked = ref<string>('0');
   const stakeInfos = ref<StakeInfo[]>();
   const myStakeInfos = ref<MyStakeInfo[]>();
   const isLoading = computed(() => store.getters['general/isLoading']);
@@ -56,13 +60,25 @@ export function useStakerInfo() {
     myStakeInfos.value = myData;
   };
 
+  const setTotalStaked = (): void => {
+    isLoadingTotalStaked.value = true;
+    if (myStakeInfos.value && !isLoading.value) {
+      let ttl = new BN('0');
+      myStakeInfos.value.forEach((it) => {
+        ttl = ttl.add(it.yourStake.denomAmount);
+      });
+      totalStaked.value = ethers.utils.formatEther(ttl.toString());
+      isLoadingTotalStaked.value = false;
+    }
+  };
+
   watchEffect(() => {
-    // if (currentNetworkName.value) {
-    //   store.dispatch('dapps/getDapps', {
-    //     network: currentNetworkName.value,
-    //     currentAccount: currentAccount.value,
-    //   });
-    // }
+    if (currentNetworkName.value) {
+      store.dispatch('dapps/getDapps', {
+        network: currentNetworkName.value.toLowerCase(),
+        currentAccount: currentAccount.value,
+      });
+    }
   });
 
   watchEffect(async () => {
@@ -85,8 +101,12 @@ export function useStakerInfo() {
     }
   });
 
+  watch([currentAccount, myStakeInfos], setTotalStaked);
+
   return {
     stakeInfos,
     myStakeInfos,
+    totalStaked,
+    isLoadingTotalStaked,
   };
 }

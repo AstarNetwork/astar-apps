@@ -206,6 +206,7 @@ export default {
     on: 'ON',
     off: 'OFF',
     yourRewards: 'Your Rewards',
+    stakeNow: 'Stake Now',
     claimedRewards: {
       short: 'Claimed rewards: ',
       long: 'Total rewards you have claimed: ',

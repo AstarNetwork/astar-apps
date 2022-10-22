@@ -50,7 +50,7 @@ export function useCurrentEra() {
   }, 30000);
 
   watch(
-    [$api, interval],
+    [interval],
     () => {
       const apiRef = $api;
       if (!apiRef) return;
