@@ -45,7 +45,7 @@
       </div>
     </template>
     <template v-else>
-      <DropdownList :items="items" />
+      <DropdownList :items="myStakeInfos" />
     </template>
 
     <Teleport to="#app--main">
@@ -73,37 +73,36 @@ export default defineComponent({
     const { myStakeInfos } = useStakerInfo();
 
     //TODO: need refactor as module
-    const items = [
-      {
-        id: 0,
-        name: 'Astar Degens',
-        stakedAmount: 10000,
-        totalEarned: 2000.12,
-        isEnabled: true,
-      },
-      {
-        id: 1,
-        name: 'ArthSwap',
-        stakedAmount: 10000,
-        totalEarned: 2000.12,
-        isEnabled: true,
-      },
-      {
-        id: 2,
-        name: 'Starlay Finance',
-        stakedAmount: 10000,
-        totalEarned: 2000.12,
-        isEnabled: false,
-      },
-    ];
+    // const items = [
+    //   {
+    //     id: 0,
+    //     name: 'Astar Degens',
+    //     stakedAmount: 10000,
+    //     totalEarned: 2000.12,
+    //     isEnabled: true,
+    //   },
+    //   {
+    //     id: 1,
+    //     name: 'ArthSwap',
+    //     stakedAmount: 10000,
+    //     totalEarned: 2000.12,
+    //     isEnabled: true,
+    //   },
+    //   {
+    //     id: 2,
+    //     name: 'Starlay Finance',
+    //     stakedAmount: 10000,
+    //     totalEarned: 2000.12,
+    //     isEnabled: false,
+    //   },
+    // ];
 
-    const showModalAdd = ref(false);
-    const showModalUnbond = ref(false);
+    const showModalAdd = ref<boolean>(false);
+    const showModalUnbond = ref<boolean>(false);
 
     return {
       width,
       screenSize,
-      items,
       nativeTokenSymbol,
       showModalAdd,
       showModalUnbond,
