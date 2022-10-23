@@ -7,6 +7,7 @@ import { DappStateInterface as State, DappItem } from './state';
 export interface ContractsGetters {
   getAllDapps(state: State): DappCombinedInfo[];
   getRegisteredDapps(state: State): (tag: string) => DappCombinedInfo[];
+  getStakerDapps(state: State): DappCombinedInfo[];
   getMinimumStakingAmount(state: State): string;
   getMaxNumberOfStakersPerContract(state: State): number;
   getUnbondingPeriod(state: State): number;
@@ -32,6 +33,8 @@ const getters: GetterTree<State, StateInterface> & ContractsGetters = {
           }
         })
       : state.dappsCombinedInfo,
+  getStakerDapps: (state) =>
+    state.dappsCombinedInfo.filter((x) => !x.stakerInfo.accountStakingAmount.startsWith('0')),
   getMinimumStakingAmount: (state) => state.minimumStakingAmount,
   getMaxNumberOfStakersPerContract: (state) => state.maxNumberOfStakersPerContract,
   getUnbondingPeriod: (state) => state.unbondingPeriod,

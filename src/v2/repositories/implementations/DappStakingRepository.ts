@@ -75,7 +75,7 @@ export class DappStakingRepository implements IDappStakingRepository {
     walletAddress: string
   ): Promise<string> {
     try {
-      if (isValidAddressPolkadotAddress(walletAddress)) return '0';
+      if (!isValidAddressPolkadotAddress(walletAddress)) return '0';
       const api = await this.api.getApi();
       const stakerInfo = await api.query.dappsStaking.generalStakerInfo<GeneralStakerInfo>(
         walletAddress,
@@ -97,6 +97,15 @@ export class DappStakingRepository implements IDappStakingRepository {
     const api = await this.api.getApi();
 
     return api.tx.dappsStaking.bondAndStake(this.getAddressEnum(contractAddress), amount);
+  }
+
+  public async getUnbondAndUnstakeCall(
+    contractAddress: string,
+    amount: BN
+  ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> {
+    const api = await this.api.getApi();
+
+    return api.tx.dappsStaking.unbondAndUnstake(this.getAddressEnum(contractAddress), amount);
   }
 
   public async getNominationTransferCall({
