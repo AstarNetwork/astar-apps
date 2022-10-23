@@ -7,17 +7,20 @@
             <tr>
               <th>{{ $t('myDapps.dapps') }}</th>
               <th>{{ $t('myDapps.stakedAmount') }}</th>
-              <th>{{ $t('myDapps.totalEarned') }}</th>
-              <th>{{ $t('myDapps.manage') }}</th>
+              <!-- <th>{{ $t('myDapps.totalEarned') }}</th> -->
+              <th class="title--manage">{{ $t('myDapps.manage') }}</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="t in myStakeInfos" :key="t.address">
               <td>{{ t.name }}</td>
               <td>
-                {{ t.yourStake.formatted }}
+                <token-balance
+                  :balance="ethers.utils.formatEther(t.yourStake.denomAmount.toString())"
+                  :symbol="nativeTokenSymbol"
+                  :decimals="0"
+                />
               </td>
-              <td><token-balance :balance="t.claimedRewards" :symbol="nativeTokenSymbol" /></td>
               <td>
                 <div class="row--manage">
                   <astar-button
@@ -38,7 +41,7 @@
       </div>
     </template>
     <template v-else>
-      <DropdownList :items="items" />
+      <DropdownList :items="myStakeInfos" />
     </template>
 
     <Teleport to="#app--main">
@@ -60,9 +63,10 @@ import TokenBalance from 'src/components/common/TokenBalance.vue';
 import ModalUnbondDapp from './components/modals/ModalUnbondDapp.vue';
 import { networkParam, Path } from 'src/router/routes';
 import { useRouter } from 'vue-router';
+import { ethers } from 'ethers';
 
 export default defineComponent({
-  components: { DropdownList, TokenBalance, ModalUnbondDapp },
+  components: { DropdownList, ModalUnbondDapp, TokenBalance },
   setup() {
     const { width, screenSize } = useBreakpoints();
     const { nativeTokenSymbol } = useNetworkInfo();
@@ -73,31 +77,31 @@ export default defineComponent({
     console.log('infos', myStakeInfos);
 
     //TODO: need refactor as module
-    const items = [
-      {
-        id: 0,
-        name: 'Astar Degens',
-        stakedAmount: 10000,
-        totalEarned: 2000.12,
-        isEnabled: true,
-      },
-      {
-        id: 1,
-        name: 'ArthSwap',
-        stakedAmount: 10000,
-        totalEarned: 2000.12,
-        isEnabled: true,
-      },
-      {
-        id: 2,
-        name: 'Starlay Finance',
-        stakedAmount: 10000,
-        totalEarned: 2000.12,
-        isEnabled: false,
-      },
-    ];
+    // const items = [
+    //   {
+    //     id: 0,
+    //     name: 'Astar Degens',
+    //     stakedAmount: 10000,
+    //     totalEarned: 2000.12,
+    //     isEnabled: true,
+    //   },
+    //   {
+    //     id: 1,
+    //     name: 'ArthSwap',
+    //     stakedAmount: 10000,
+    //     totalEarned: 2000.12,
+    //     isEnabled: true,
+    //   },
+    //   {
+    //     id: 2,
+    //     name: 'Starlay Finance',
+    //     stakedAmount: 10000,
+    //     totalEarned: 2000.12,
+    //     isEnabled: false,
+    //   },
+    // ];
 
-    const showModalUnbond = ref(false);
+    const showModalUnbond = ref<boolean>(false);
 
     const showUnbound = (dapp: MyStakeInfo): void => {
       console.log(dapp);
@@ -114,13 +118,13 @@ export default defineComponent({
     return {
       width,
       screenSize,
-      items,
       nativeTokenSymbol,
       showModalUnbond,
       myStakeInfos,
       selectedDapp,
       showUnbound,
       navigateToStake,
+      ethers,
     };
   },
 });
