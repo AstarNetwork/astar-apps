@@ -28,8 +28,9 @@
           <div v-if="!tvl" class="loading">
             <q-skeleton type="rect" animation="fade" />
           </div>
-          <div v-else class="value">
-            {{ formatNumber(tvl.tvlDefaultUnit, 2) }} ASTR (${{ formatNumber(tvl.tvlUsd, 1) }})
+          <div v-else class="column--tvl">
+            <div>{{ formatNumber(tvl.tvlDefaultUnit, 2) }} {{ nativeTokenSymbol }}</div>
+            <div>(${{ formatNumber(tvl.tvlUsd, 1) }})</div>
           </div>
         </div>
       </div>
@@ -130,7 +131,7 @@ export default defineComponent({
       astar_hero: require('/src/assets/img/astar_hero.png'),
       shiden_hero: require('/src/assets/img/shiden_hero.png'),
     };
-    const { currentNetworkIdx } = useNetworkInfo();
+    const { currentNetworkIdx, nativeTokenSymbol } = useNetworkInfo();
     const isShiden = computed(() => currentNetworkIdx.value === endpointKey.SHIDEN);
     const item = {
       tvl: 2.933,
@@ -152,6 +153,7 @@ export default defineComponent({
       currentEra,
       tvl,
       formatNumber,
+      nativeTokenSymbol,
     };
   },
 });

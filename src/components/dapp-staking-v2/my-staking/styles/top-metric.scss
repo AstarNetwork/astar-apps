@@ -2,14 +2,27 @@
 
 .panel {
   margin-bottom: 25px;
-  border-radius: 0px 0px 6px 6px;
   padding-top: 55px;
   padding-bottom: 24px;
-  padding-left: 28px;
-  padding-right: 28px;
+  padding-left: 16px;
+  padding-right: 24px;
+  max-width: 1567px;
+  margin-left: -16px;
+  margin-right: -16px;
+  max-width: 1290px;
+
+  @media (min-width: $sm) {
+    padding-left: 28px;
+  }
+  @media (min-width: $lg) {
+    padding-left: 28px;
+    padding-right: 28px;
+    margin-left: 0px;
+    margin-right: 0px;
+  }
 
   @media (max-width: $lg) {
-    padding-right: 0px;
+    border-radius: 0px 0px 6px 6px;
   }
 }
 .wrapper--title {
@@ -36,15 +49,22 @@
   gap: 24px;
   width: 100%;
   max-width: 1295px;
-  @media (max-width: $md) {
-    width: 100%;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    overflow-y: hidden;
-    gap: 16px;
-    &::-webkit-scrollbar {
-      display: none;
-    }
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  gap: 16px;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  @media (min-width: $md) {
+    width: 100vw;
+    padding-right: 50px;
+    justify-content: space-evenly;
+  }
+  @media (min-width: $lg) {
+    width: auto;
+    padding-right: 0px;
+    justify-content: space-between;
   }
 }
 
@@ -57,13 +77,37 @@
   display: flex;
   flex-direction: column;
   flex: none;
-  flex-basis: 23.5%;
-  min-width: 200px;
+  min-width: 150px;
   height: 126px;
   padding: 36px 20px;
   background: linear-gradient(180deg, rgba(25, 29, 31, 0) 4.17%, rgba(255, 255, 255, 0.3) 79.69%);
   box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.2);
   border-radius: 6px;
+
+  @media (min-width: $sm) {
+    width: 174px;
+  }
+  @media (min-width: $md) {
+    width: 160px;
+  }
+  @media (min-width: $lg) {
+    width: 160px;
+  }
+  @media (min-width: 1100px) {
+    width: 180px;
+  }
+  @media (min-width: 1200px) {
+    width: 200px;
+  }
+  @media (min-width: 1370px) {
+    width: 210px;
+  }
+  @media (min-width: $xl) {
+    width: 220px;
+  }
+  @media (min-width: $xxl) {
+    width: 260px;
+  }
 
   p {
     display: flex;
@@ -94,6 +138,18 @@
         display: block;
       }
     }
+    .column--tvl {
+      font-weight: 600;
+      font-size: 20px;
+      line-height: 18px;
+      color: $gray-1;
+
+      .detail-value {
+        font-size: 12px;
+        font-weight: 500;
+        margin-left: 5px;
+      }
+    }
     .loading {
       width: 150px;
     }
@@ -104,9 +160,6 @@
   }
 
   @media (max-width: $md) {
-    min-width: 160px;
-    flex-basis: 32%;
     height: 130px;
-    padding: 40px 16px 16px 16px;
   }
 }

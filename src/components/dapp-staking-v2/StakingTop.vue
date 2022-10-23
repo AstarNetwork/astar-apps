@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper-main">
-    <!-- <TopMetric /> -->
+    <TopMetric />
 
     <div class="divider"></div>
 
@@ -34,7 +34,7 @@ import AdsArea from './my-staking/AdsArea.vue';
 
 export default defineComponent({
   components: {
-    // TopMetric,
+    TopMetric,
     // MyStaking,
     DappList,
     AdsArea,
