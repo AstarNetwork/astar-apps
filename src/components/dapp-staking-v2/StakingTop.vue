@@ -69,7 +69,11 @@ export default defineComponent({
   padding: 0px 0px 24px 0px;
   margin: 0 auto;
 
-  @media (max-width: $lg) {
+  @media (min-width: $md) {
+    max-width: $md;
+  }
+
+  @media (min-width: $lg) {
     max-width: $lg;
   }
 }
