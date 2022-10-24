@@ -53,7 +53,7 @@
           </div>
         </div>
       </div>
-      <!-- <div class="card">
+      <div class="card">
         <p>
           {{ $t('topMetric.currentStakersApr') }}
           <span class="wrapper--icon-help">
@@ -64,13 +64,13 @@
           </q-tooltip>
         </p>
         <div class="row--data">
-          <div v-if="isLoading" class="loading">
+          <div v-if="!aprPercent" class="loading">
             <q-skeleton type="rect" animation="fade" />
           </div>
-          <div v-else class="value">{{ item.currentAPR.toFixed(2) }}%</div>
+          <div v-else class="value">{{ aprPercent }}%</div>
         </div>
-      </div> -->
-      <div class="card">
+      </div>
+      <!-- <div class="card">
         <p>
           {{ $t('topMetric.currentBlock') }}
           <span class="wrapper--icon-help">
@@ -86,7 +86,7 @@
           </div>
           <div v-else class="value">{{ currentBlock }}</div>
         </div>
-      </div>
+      </div> -->
       <div class="card">
         <p>
           {{ $t('topMetric.totalDapps') }}
@@ -109,7 +109,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue';
-import { useNetworkInfo } from 'src/hooks';
+import { useNetworkInfo, useApr } from 'src/hooks';
 import { useStore } from 'src/store';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { TvlModel } from 'src/v2/models';
@@ -119,12 +119,14 @@ import { formatNumber } from 'src/modules/token-api';
 export default defineComponent({
   setup() {
     const store = useStore();
+    const { stakerApr } = useApr();
     const dappsCount = computed<DappCombinedInfo[]>(
       () => store.getters['dapps/getRegisteredDapps']().length
     );
     const currentBlock = computed<number>(() => store.getters['general/getCurrentBlock']);
     const currentEra = computed<number>(() => store.getters['dapps/getCurrentEra']);
     const tvl = computed<TvlModel>(() => store.getters['dapps/getTvl']);
+    const aprPercent = computed(() => Number(stakerApr.value).toFixed(1));
 
     const hero_img = {
       astar_hero: require('/src/assets/img/astar_hero.png'),
@@ -150,6 +152,7 @@ export default defineComponent({
       dappsCount,
       currentBlock,
       currentEra,
+      aprPercent,
       tvl,
       formatNumber,
     };
