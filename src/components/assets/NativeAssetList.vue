@@ -25,7 +25,7 @@
             <div class="column--balance">
               <div class="column__box">
                 <div v-if="!isSkeleton" class="text--accent">
-                  <TokenBalance :balance="bal" :symbol="nativeTokenSymbol" />
+                  <TokenBalance :balance="String(bal)" :symbol="nativeTokenSymbol" />
                 </div>
                 <div v-else class="skeleton--right">
                   <q-skeleton animation="fade" class="skeleton--md" />
@@ -81,7 +81,7 @@
             <div class="column--balance">
               <div v-if="!isSkeleton" class="column__box">
                 <span class="text--value">
-                  <TokenBalance :balance="numEvmDeposit" :symbol="nativeTokenSymbol" />
+                  <TokenBalance :balance="String(numEvmDeposit)" :symbol="nativeTokenSymbol" />
                 </span>
               </div>
               <div v-else class="column__box">
@@ -106,7 +106,7 @@
             <div class="column--balance">
               <div v-if="!isSkeleton" class="column__box">
                 <span class="text--value">
-                  <TokenBalance :balance="vestingTtl" :symbol="nativeTokenSymbol" />
+                  <TokenBalance :balance="String(vestingTtl)" :symbol="nativeTokenSymbol" />
                 </span>
               </div>
               <div v-else class="column__box">
@@ -131,7 +131,7 @@
             <div class="column--balance">
               <div v-if="!isSkeleton" class="column__box">
                 <span class="text--value">
-                  <TokenBalance :balance="lockInDappStaking" :symbol="nativeTokenSymbol" />
+                  <TokenBalance :balance="String(lockInDappStaking)" :symbol="nativeTokenSymbol" />
                 </span>
               </div>
               <div v-else class="column__box">
@@ -216,11 +216,10 @@ export default defineComponent({
       getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
     );
 
-    const transferableBalance = computed(() => {
-      const balance = accountData.value
+    const transferableBalance = computed<string>(() => {
+      return accountData.value
         ? ethers.utils.formatEther(accountData.value.getUsableTransactionBalance().toString())
         : '0';
-      return Number(balance);
     });
 
     const isSkeleton = computed<boolean>(() => {

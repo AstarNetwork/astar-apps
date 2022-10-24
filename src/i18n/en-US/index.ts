@@ -182,7 +182,7 @@ export default {
     chunks: 'Unbonding chunks',
     chunksTooltip:
       'Unbonding takes {era} eras (1 era is about 24 hours). {chunks} chunks are in the process of being unbonded.',
-    unbondingEra: '*Unbonding takes {unbondingPeriod} era.',
+    unbondingEra: 'Unbonding takes {unbondingPeriod} era before you can withdraw.',
     amount: 'Amount',
     era: 'Era',
     unbondedFunds: 'Unbonded funds',
@@ -207,6 +207,7 @@ export default {
     on: 'ON',
     off: 'OFF',
     yourRewards: 'Your Rewards',
+    stakeNow: 'Stake Now',
     claimedRewards: {
       short: 'Claimed rewards: ',
       long: 'Total rewards you have claimed: ',
@@ -275,6 +276,7 @@ export default {
       license: 'License',
       staked: 'Staked',
       startUnbonding: 'Start unbonding',
+      unbondFrom: 'Unbond from {name}',
       chunks: 'Chunks',
       unbondingPeriod: 'Unbonding period: {period} era',
       maxUnlockingChunks: 'Maximum unlocking chunks: {chunks}',

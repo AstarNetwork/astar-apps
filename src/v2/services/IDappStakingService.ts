@@ -21,6 +21,14 @@ export interface IDappStakingService {
   stake(contractAddress: string, stakerAddress: string, amount: BN): Promise<void>;
 
   /**
+   * Starts unbonding process.
+   * @param contractAddress Contract address.
+   * @param stakerAddress Staked address.
+   * @param amount Amount to stake.
+   */
+  unbondAndUnstake(contractAddress: string, stakerAddress: string, amount: BN): Promise<void>;
+
+  /**
    * Nomination transfer
    * @param fromContractId Contract address transfer from.
    * @param targetContractId Contract address transfer to.

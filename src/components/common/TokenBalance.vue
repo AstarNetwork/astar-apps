@@ -2,7 +2,7 @@
   <span>
     {{
       $t(text ? text : 'amountToken', {
-        amount: isTruncate ? $n(truncate(balance)) : Number(balance),
+        amount: isTruncate ? $n(truncate(balance, decimals)) : Number(balance),
         token: symbol,
       })
     }}
@@ -15,7 +15,7 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   props: {
     balance: {
-      type: String || Number,
+      type: String,
       required: true,
     },
     symbol: {
@@ -26,6 +26,11 @@ export default defineComponent({
       type: String,
       required: false,
       default: '',
+    },
+    decimals: {
+      type: Number,
+      required: false,
+      default: 3,
     },
   },
   setup(props) {

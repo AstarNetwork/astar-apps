@@ -2,7 +2,7 @@
   <div class="wrapper">
     <q-list>
       <q-expansion-item
-        v-for="(t, index) in items"
+        v-for="(item, index) in items"
         :key="index"
         :header-style="isDarkTheme ? classes.defaultHeaderDark : classes.defaultHeader"
       >
@@ -10,13 +10,13 @@
           <astar-icon-base class="header-icon tw-ml-1 tw-mt-2">
             <astar-icon-community />
           </astar-icon-base>
-          <q-item-section class="exansion-title"> {{ t.name }} </q-item-section>
+          <q-item-section class="exansion-title"> {{ item.name }} </q-item-section>
         </template>
         <template v-if="isUnbonding">
-          <UnbondingItem :item="t" />
+          <UnbondingItem :item="item" />
         </template>
         <template v-else>
-          <MyDappItem :item="t" />
+          <MyDappItem :item="item" />
         </template>
       </q-expansion-item>
     </q-list>
