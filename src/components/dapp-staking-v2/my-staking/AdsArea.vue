@@ -70,9 +70,7 @@ export default defineComponent({
 
 .card {
   cursor: pointer;
-  @media (min-width: 400px) {
-    width: 350px;
-  }
+  width: 344px;
   @media (min-width: 500px) {
     width: 380px;
   }
