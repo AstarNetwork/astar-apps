@@ -21,6 +21,7 @@ import { Symbols } from 'src/v2/symbols';
 import axios, { AxiosError } from 'axios';
 import { TOKEN_API_URL } from 'src/modules/token-api';
 import type { Transaction } from 'src/hooks/helper/wallet';
+import { getDappAddressEnum } from 'src/modules/dapp-staking/utils';
 
 const showError = (dispatch: Dispatch, message: string): void => {
   dispatch(
@@ -32,8 +33,6 @@ const showError = (dispatch: Dispatch, message: string): void => {
     { root: true }
   );
 };
-
-export const getAddressEnum = (address: string) => ({ Evm: address });
 
 export const hasExtrinsicFailedEvent = (
   events: EventRecord[],
@@ -122,7 +121,7 @@ const actions: ActionTree<State, StateInterface> = {
           // If no signature received, it means we are using the
           // old dapp registration logic (to be removed after all networks are updated.)
           const transaction = parameters.api.tx.dappsStaking.register(
-            getAddressEnum(parameters.dapp.address)
+            getDappAddressEnum(parameters.dapp.address)
           );
 
           const signedTransaction = await sign({

@@ -104,7 +104,6 @@ export default defineComponent({
     const showModalUnbond = ref<boolean>(false);
 
     const showUnbound = (dapp: MyStakeInfo): void => {
-      console.log(dapp);
       selectedDapp.value = dapp;
       showModalUnbond.value = true;
     };

@@ -116,11 +116,10 @@ import { StakeModel } from 'src/hooks/store';
 import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
 import { StakingData } from 'src/modules/dapp-staking';
 import { useStore } from 'src/store';
-import { getAddressEnum } from 'src/store/dapp-staking/actions';
 import { computed, defineComponent, PropType, ref, toRefs, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import './stake-panel.scss';
-import { container } from 'src/v2/common';
+import { container, getDappAddressEnum } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
 import { WalletModalOption } from 'src/config/wallets';
 
@@ -221,7 +220,7 @@ export default defineComponent({
       try {
         const stakeAmount = plasmUtils.balanceFormatter(amount);
         const transaction = $api!.tx.dappsStaking.bondAndStake(
-          getAddressEnum(props.dapp.address),
+          getDappAddressEnum(props.dapp.address),
           amount
         );
         if (props.stakeInfo) {
@@ -276,9 +275,9 @@ export default defineComponent({
       const unstakeAmount = plasmUtils.balanceFormatter(amountActual);
       try {
         const transaction = canUnbondWithdraw.value
-          ? $api!.tx.dappsStaking.unbondAndUnstake(getAddressEnum(props.dapp.address), amount)
+          ? $api!.tx.dappsStaking.unbondAndUnstake(getDappAddressEnum(props.dapp.address), amount)
           : $api!.tx.dappsStaking.unbondUnstakeAndWithdraw(
-              getAddressEnum(props.dapp.address),
+              getDappAddressEnum(props.dapp.address),
               amount
             );
 
