@@ -119,9 +119,10 @@ import { useStore } from 'src/store';
 import { computed, defineComponent, PropType, ref, toRefs, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import './stake-panel.scss';
-import { container, getDappAddressEnum } from 'src/v2/common';
+import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
 import { WalletModalOption } from 'src/config/wallets';
+import { getDappAddressEnum } from 'src/modules/dapp-staking/';
 
 export default defineComponent({
   components: {
