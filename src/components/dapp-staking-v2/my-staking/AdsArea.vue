@@ -29,7 +29,6 @@ export default defineComponent({
         subtitle: 'Learn our unique solution',
       },
     ];
-
     return {
       items,
     };
@@ -38,59 +37,44 @@ export default defineComponent({
 </script>
 <style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
-
 .wrapper--cards {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto auto auto;
   gap: 16px;
-  flex-direction: column;
-  align-items: center;
+  justify-content: center;
   margin-top: 48px;
   margin-bottom: 48px;
-  width: 100%;
-  @media (min-width: $sm) {
-    flex-direction: row;
-    justify-content: space-evenly !important;
-  }
   @media (min-width: $md) {
-    width: 100vw;
+    justify-content: center;
+    gap: 24px;
   }
-  @media (min-width: $lg) {
-    width: 100%;
-  }
-
-  @media (max-width: $lg) {
-    overflow-x: auto;
-    overflow-y: hidden;
-    justify-content: left;
-    &::-webkit-scrollbar {
-      display: none;
-    }
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  justify-content: left;
+  &::-webkit-scrollbar {
+    display: none;
   }
 }
-
 .card {
+  flex-basis: 30%;
   cursor: pointer;
-  width: 344px;
-  @media (min-width: 500px) {
-    width: 380px;
-  }
+
+  margin-bottom: 48px;
   @media (min-width: $md) {
-    width: 200px;
-    margin-left: -28px;
-  }
-  @media (min-width: 850px) {
-    width: 220px;
-  }
-  @media (min-width: $lg) {
-    margin-left: 0px;
-  }
-  @media (min-width: $xl) {
-    width: 234px;
+    flex-basis: 0;
   }
   .wrapper--img {
     background: rgb(110, 110, 110);
     height: 200px;
     border-radius: 6px;
+    width: 300px;
+    @media (min-width: $md) {
+      width: 100%;
+    }
+    @media (min-width: $xl) {
+      width: 310px;
+    }
   }
   .txt--subtitle {
     font-weight: 600;
@@ -106,12 +90,10 @@ export default defineComponent({
     color: $gray-5-selected;
     margin-top: 10px;
   }
-
   @media (max-width: $sm) {
     margin-bottom: 40px;
   }
 }
-
 .body--dark {
   .card {
     .txt--title {
