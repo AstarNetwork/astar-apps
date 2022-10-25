@@ -6,7 +6,11 @@
   width: 100%;
   max-width: 1295px;
   margin-top: 34px;
-  padding-right: 25px;
+  justify-content: space-between;
+
+  @media (min-width: $lg) {
+    gap: 16px;
+  }
 
   @media (max-width: $lg) {
     gap: 16px;
@@ -26,13 +30,20 @@
 .card {
   display: flex;
   flex-direction: column;
-  flex: none;
+  // flex: none;
   flex-basis: 24%;
   min-width: 200px;
   height: 142px;
   background: $gray-1;
   border-radius: 6px;
   padding: 40px 24px;
+  justify-content: center;
+
+  @media (min-width: $lg) {
+    padding-right: 10px;
+    padding-left: 10px;
+    min-width: auto;
+  }
 
   p {
     display: flex;

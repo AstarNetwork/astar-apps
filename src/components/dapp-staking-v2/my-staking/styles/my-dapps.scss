@@ -6,6 +6,9 @@
   margin-top: 34px;
   padding: 40px;
   border-radius: 6px;
+  @media (min-width: $lg) {
+    padding: 40px 0px;
+  }
 }
 
 table {
@@ -37,10 +40,6 @@ table {
   .row--manage {
     display: flex;
     gap: 8px;
-  }
-
-  @media (min-width: $lg) {
-    min-width: 720px;
   }
 }
 

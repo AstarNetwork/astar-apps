@@ -4,7 +4,7 @@
 
     <div class="divider"></div>
 
-    <!-- <MyStaking /> -->
+    <MyStaking />
 
     <div class="divider"></div>
 
@@ -35,7 +35,7 @@ import AdsArea from './my-staking/AdsArea.vue';
 export default defineComponent({
   components: {
     TopMetric,
-    // MyStaking,
+    MyStaking,
     DappList,
     AdsArea,
   },
@@ -74,7 +74,16 @@ export default defineComponent({
   }
 
   @media (min-width: $lg) {
-    max-width: $lg;
+    max-width: 720px;
+  }
+  @media (min-width: 1100px) {
+    max-width: 800px;
+  }
+  @media (min-width: 1150px) {
+    max-width: 850px;
+  }
+  @media (min-width: $lg) {
+    /* max-width: 1240px; */
   }
   @media (min-width: $xl) {
     max-width: 100%;
