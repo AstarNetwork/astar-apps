@@ -8,6 +8,7 @@ import {
 } from 'src/v2/repositories/implementations';
 import { Chain } from 'src/v2/models/XcmModels';
 import { TypeMapping } from 'src/v2/config/types';
+import { CrustShadowXcmRepository } from 'src/v2/repositories/implementations/xcm/CrustShadowXcmRepository';
 
 export const XcmRepositoryConfiguration: TypeMapping = {
   [Chain.ASTAR]: AstarXcmRepository,
@@ -22,6 +23,7 @@ export const XcmRepositoryConfiguration: TypeMapping = {
   [Chain.KUSAMA]: PolkadotXcmRepository,
   [Chain.KINTSUGI]: InterlayXcmRepository,
   [Chain.INTERLAY]: InterlayXcmRepository,
+  [Chain.CRUST_SHADOW]: CrustShadowXcmRepository,
 };
 
 export type AstarToken = 'ASTR' | 'SDN';

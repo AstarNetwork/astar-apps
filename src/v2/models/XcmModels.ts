@@ -14,6 +14,7 @@ export enum Chain {
   STATEMINT = 'Statemint',
   KINTSUGI = 'Kintsugi',
   INTERLAY = 'Interlay',
+  CRUST_SHADOW = 'Crust-Shadow',
 }
 
 export enum parachainIds {
@@ -27,6 +28,7 @@ export enum parachainIds {
   STATEMINT = 1000,
   KINTSUGI = 2092,
   INTERLAY = 2032,
+  CRUST_SHADOW = 2012,
 }
 
 export interface XcmChain {

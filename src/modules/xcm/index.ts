@@ -172,6 +172,15 @@ export const xcmChainObj: XcmChainObj = {
     subscan: 'https://interlay.subscan.io',
     isAstarNativeToken: false,
   },
+  [Chain.CRUST_SHADOW]: {
+    name: Chain.CRUST_SHADOW,
+    relayChain: Chain.KUSAMA,
+    img: require('/src/assets/img/shadow.svg'),
+    parachainId: parachainIds.CRUST_SHADOW,
+    endpoint: 'wss://rpc2-shadow.crust.network',
+    subscan: 'https://crust.subscan.io',
+    isAstarNativeToken: false,
+  },
 };
 
 export const xcmChains = objToArray(xcmChainObj);
