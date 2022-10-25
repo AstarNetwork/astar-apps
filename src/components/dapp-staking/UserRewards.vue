@@ -26,12 +26,12 @@
         </div>
       </div>
     </div>
-    <div class="wrapper--auto-claim-depsit">
+    <!-- <div class="wrapper--auto-claim-depsit">
       <span>{{ $t('dappStaking.autoClaimDepositEmpty') }}</span>
       <button class="btn btn-top-up" @click="showTopup">
         {{ $t('dappStaking.topUp') }}
       </button>
-    </div>
+    </div> -->
     <ModalTopup :show="showTopupModal" />
   </div>
 </template>
