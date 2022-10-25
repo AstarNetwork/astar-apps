@@ -172,6 +172,15 @@ export const xcmChainObj: XcmChainObj = {
     subscan: 'https://interlay.subscan.io',
     isAstarNativeToken: false,
   },
+  [Chain.CRAB]: {
+    name: Chain.CRAB,
+    relayChain: Chain.KUSAMA,
+    img: 'https://polkadot.js.org/apps/static/crab.ebc98461..svg',
+    parachainId: parachainIds.CRAB,
+    endpoint: 'wss://crab-parachain-rpc.darwinia.network/',
+    subscan: 'https://crab-parachain.subscan.io/',
+    isAstarNativeToken: false,
+  },
 };
 
 export const xcmChains = objToArray(xcmChainObj);
