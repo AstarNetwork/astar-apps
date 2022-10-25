@@ -76,6 +76,9 @@ export default defineComponent({
   @media (min-width: $lg) {
     max-width: $lg;
   }
+  @media (min-width: $xl) {
+    max-width: 100%;
+  }
 }
 
 .divider {
