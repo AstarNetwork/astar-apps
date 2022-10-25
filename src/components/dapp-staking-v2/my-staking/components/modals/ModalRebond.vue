@@ -1,15 +1,15 @@
 <template>
   <astar-default-modal :width="544" :height="402" :show="show" title="Re-bond" @close="close">
     <div class="text--guide">
-      Once re-bond your funds goes back to staking. You will need 10era to unstake again.
+      {{ $t('myDapps.rebondGuide') }}
     </div>
     <div class="box--container">
       <div>
-        <span class="text--title">The amount you wish to rebond</span>
+        <span class="text--title">{{ $t('myDapps.rebondTitle') }}</span>
       </div>
       <div class="text--amount"><format-balance :balance="rebondAmount" /></div>
     </div>
-    <astar-button :width="464" :height="52" @click="confirm">Confirm</astar-button>
+    <astar-button :width="464" :height="52" @click="confirm">{{ $t('confirm') }}</astar-button>
   </astar-default-modal>
 </template>
 

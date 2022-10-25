@@ -13,10 +13,10 @@
           <q-item-section class="exansion-title"> {{ item.name }} </q-item-section>
         </template>
         <template v-if="isUnbonding">
-          <UnbondingItem :item="item" />
+          <unbonding-item :item="item" />
         </template>
         <template v-else>
-          <MyDappItem :item="item" />
+          <my-dapp-item :item="item" />
         </template>
       </q-expansion-item>
     </q-list>

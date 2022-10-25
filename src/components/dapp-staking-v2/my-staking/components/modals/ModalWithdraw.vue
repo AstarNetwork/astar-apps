@@ -1,13 +1,13 @@
 <template>
   <astar-default-modal :width="544" :height="381" :show="show" title="Withdraw" @close="close">
-    <div class="text--guide">Your funds are available to withdraw.</div>
+    <div class="text--guide">{{ $t('myDapps.withdrawGuide') }}</div>
     <div class="box--container">
       <div>
-        <span class="text--title">Ready to withdraw</span>
+        <span class="text--title">{{ $t('myDapps.withdrawTitle') }}</span>
       </div>
       <div class="text--amount"><format-balance :balance="withdrawAmount" /></div>
     </div>
-    <astar-button :width="464" :height="52" @click="confirm">Confirm</astar-button>
+    <astar-button :width="464" :height="52" @click="confirm">{{ $t('confirm') }}</astar-button>
   </astar-default-modal>
 </template>
 

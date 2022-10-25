@@ -3,8 +3,8 @@
     <table>
       <thead>
         <tr>
-          <th>Unbonding Amount</th>
-          <th>Remaining Era</th>
+          <th>{{ $t('myDapps.unbondingAmount') }}</th>
+          <th>{{ $t('myDapps.remainingEra') }}</th>
         </tr>
       </thead>
       <tbody>
@@ -13,12 +13,12 @@
           <td>
             <div class="row--remaining-era">
               <div class="val-era">{{ item.unlockEra.toHuman() }}</div>
-              <astar-irregular-button
+              <!-- <astar-irregular-button
                 :width="77"
                 :height="20"
                 @click="showRebondDialog(item.amount.toString())"
                 >Re-bond</astar-irregular-button
-              >
+              > -->
             </div>
           </td>
         </tr>
@@ -30,24 +30,24 @@
         :height="24"
         :disabled="item.erasBeforeUnlock !== 0"
         @click="showWithdrawDialog(item.amount.toString())"
-        >Withdraw</astar-button
+        >{{ $t('myDapps.withdraw') }}</astar-button
       >
     </div>
 
     <Teleport to="#app--main">
       <div :class="'highest-z-index'">
-        <ModalWithdraw
+        <modal-withdraw
           v-model:is-open="showModalWithdraw"
           :show="showModalWithdraw"
           :withdraw-amount="totalAmount"
           @confirm="withdraw"
         />
-        <ModalRebond
+        <!-- <ModalRebond
           v-model:is-open="showModalRebond"
           :show="showModalRebond"
           :rebond-amount="totalAmount"
           @confirm="rebond"
-        />
+        /> -->
       </div>
     </Teleport>
   </div>
@@ -59,10 +59,10 @@ import { defineComponent, PropType, ref } from 'vue';
 import { useUnbonding } from 'src/hooks/dapps-staking/useUnbonding';
 import FormatBalance from 'components/common/FormatBalance.vue';
 import ModalWithdraw from 'src/components/dapp-staking-v2/my-staking/components/modals/ModalWithdraw.vue';
-import ModalRebond from 'src/components/dapp-staking-v2/my-staking/components/modals/ModalRebond.vue';
+// import ModalRebond from 'src/components/dapp-staking-v2/my-staking/components/modals/ModalRebond.vue';
 
 export default defineComponent({
-  components: { ModalWithdraw, ModalRebond, FormatBalance },
+  components: { ModalWithdraw, FormatBalance },
   props: {
     item: {
       type: Object as PropType<ChunkInfo>,
@@ -76,9 +76,6 @@ export default defineComponent({
     const totalAmount = ref('');
 
     const { withdraw } = useUnbonding();
-    const rebond = () => {
-      console.log('rebond');
-    };
 
     const showWithdrawDialog = (amountWithdraw: string) => {
       totalAmount.value = amountWithdraw;
@@ -97,7 +94,6 @@ export default defineComponent({
       showWithdrawDialog,
       showRebondDialog,
       withdraw,
-      rebond,
     };
   },
 });

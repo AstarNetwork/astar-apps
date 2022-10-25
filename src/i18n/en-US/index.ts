@@ -135,7 +135,7 @@ export default {
     index: 'Index',
     dapps: 'dApps',
     stakedAmount: 'Staked Amount',
-    unbondingAmount: 'Unbonding amount',
+    unbondingAmount: 'Unbonding Amount',
     remainingEra: 'Remaining Era',
     withdraw: 'Withdraw',
     rebond: 'Re-bond',
@@ -143,6 +143,11 @@ export default {
     manage: 'Manage',
     add: 'Add',
     unbond: 'Unbond',
+    rebondGuide:
+      'Once re-bond your funds goes back to staking. You will need 10era to unstake again.',
+    rebondTitle: 'The amount you wish to rebond',
+    withdrawGuide: 'Your funds are available to withdraw.',
+    withdrawTitle: 'Ready to withdraw',
   },
   myReward: {
     totalStaked: 'Total Staked',
