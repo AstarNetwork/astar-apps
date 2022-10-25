@@ -14,7 +14,7 @@ export enum Chain {
   STATEMINT = 'Statemint',
   KINTSUGI = 'Kintsugi',
   INTERLAY = 'Interlay',
-  CRAB = 'Crab'
+  CRAB = 'Crab',
 }
 
 export enum parachainIds {
@@ -28,7 +28,7 @@ export enum parachainIds {
   STATEMINT = 1000,
   KINTSUGI = 2092,
   INTERLAY = 2032,
-  CRAB = 2105
+  CRAB = 2105,
 }
 
 export interface XcmChain {
