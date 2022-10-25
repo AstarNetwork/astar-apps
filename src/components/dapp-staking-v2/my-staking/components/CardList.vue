@@ -105,6 +105,7 @@ export default defineComponent({
   gap: 12px;
 
   @media (max-width: $lg) {
+    display: flex;
     width: 100%;
     flex-wrap: nowrap;
     overflow-x: auto;
@@ -114,7 +115,13 @@ export default defineComponent({
       display: none;
     }
   }
+  @media (min-width: $xl) {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    flex-wrap: nowrap;
+  }
   @media (min-width: $xxl) {
+    grid-template-columns: repeat(4, 1fr);
     justify-content: start;
   }
 }
