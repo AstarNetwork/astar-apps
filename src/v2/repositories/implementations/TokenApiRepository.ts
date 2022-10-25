@@ -4,7 +4,7 @@ import { IPriceRepository } from '../IPriceRepository';
 
 @injectable()
 export class TokenApiRepository implements IPriceRepository {
-  public static BaseUrl = 'http://localhost:5001/astar-token-api/us-central1/app/api';
+  public static BaseUrl = 'https://api.astar.network/api';
 
   public async getUsdPrice(symbol: string): Promise<number> {
     const url = `${TokenApiRepository.BaseUrl}/v1/token/price/${symbol}`;
