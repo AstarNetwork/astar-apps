@@ -185,7 +185,7 @@ export const xcmToken = {
       logo: 'https://polkadot.js.org/apps/static/crab.ebc98461..svg',
       isXcmCompatible: true,
       originChain: Chain.CRAB,
-      minBridgeAmount: '',
+      minBridgeAmount: '5',
     },
   ],
   [endpointKey.SHIBUYA]: [],
