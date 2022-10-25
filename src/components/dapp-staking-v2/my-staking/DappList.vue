@@ -23,7 +23,7 @@ export default defineComponent({
   setup(props) {
     const store = useStore();
     const dapps = computed<DappCombinedInfo[]>(() =>
-      store.getters['dapps/getRegisteredDapps'](props.category)
+      store.getters['dapps/getRegisteredDapps'](props.category.toLowerCase())
     );
 
     //TODO: need refactor as module

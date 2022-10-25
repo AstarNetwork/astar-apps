@@ -10,7 +10,7 @@ export const getHeaderName = (path: string): string => {
   } else if (path.includes('stake')) {
     return 'Stake';
   } else if (path.includes('dapp-staking')) {
-    return 'Our dApps';
+    return 'dApp Staking';
   }
   return '';
 };

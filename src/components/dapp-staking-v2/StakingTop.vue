@@ -18,7 +18,15 @@
 
     <div class="divider"></div>
 
-    <DappList category="Games" />
+    <DappList category="Tooling" />
+
+    <div class="divider"></div>
+
+    <DappList category="Utility" />
+
+    <div class="divider"></div>
+
+    <DappList category="Others" />
   </div>
 </template>
 
