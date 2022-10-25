@@ -24,6 +24,7 @@ export const XcmRepositoryConfiguration: TypeMapping = {
   [Chain.KINTSUGI]: InterlayXcmRepository,
   [Chain.INTERLAY]: InterlayXcmRepository,
   [Chain.CRAB]: DarwiniaXcmRepository,
+  [Chain.DARWINIA]: DarwiniaXcmRepository,
 };
 
 export type AstarToken = 'ASTR' | 'SDN';

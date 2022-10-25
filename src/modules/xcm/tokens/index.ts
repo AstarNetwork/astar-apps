@@ -94,6 +94,16 @@ export const xcmToken = {
       originChain: Chain.INTERLAY,
       minBridgeAmount: '0.959',
     },
+    {
+      symbol: 'RING',
+      isNativeToken: true,
+      assetId: '18446744073709551625',
+      originAssetId: 'RING',
+      logo: 'https://polkadot.js.org/apps/static/darwinia.70c5ca41..svg',
+      isXcmCompatible: true,
+      originChain: Chain.DARWINIA,
+      minBridgeAmount: '5',
+    },
   ],
   [endpointKey.SHIDEN]: [
     {

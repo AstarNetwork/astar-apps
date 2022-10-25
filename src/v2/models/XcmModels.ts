@@ -15,6 +15,7 @@ export enum Chain {
   KINTSUGI = 'Kintsugi',
   INTERLAY = 'Interlay',
   CRAB = 'Crab',
+  DARWINIA = 'Darwinia',
 }
 
 export enum parachainIds {
@@ -29,6 +30,7 @@ export enum parachainIds {
   KINTSUGI = 2092,
   INTERLAY = 2032,
   CRAB = 2105,
+  DARWINIA = 2046,
 }
 
 export interface XcmChain {
