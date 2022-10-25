@@ -115,12 +115,12 @@ export default defineComponent({
       display: none;
     }
   }
-  @media (min-width: $xl) {
+  @media (min-width: $lg) {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     flex-wrap: nowrap;
   }
-  @media (min-width: $xxl) {
+  @media (min-width: $xl) {
     grid-template-columns: repeat(4, 1fr);
     justify-content: start;
   }
