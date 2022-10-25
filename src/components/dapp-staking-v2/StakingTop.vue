@@ -78,20 +78,11 @@ export default defineComponent({
   margin: 0 auto;
 
   @media (min-width: $md) {
-    max-width: $md;
+    max-width: 720px;
   }
 
   @media (min-width: $lg) {
-    max-width: 720px;
-  }
-  @media (min-width: 1100px) {
-    max-width: 800px;
-  }
-  @media (min-width: 1150px) {
-    max-width: 850px;
-  }
-  @media (min-width: $lg) {
-    /* max-width: 1240px; */
+    max-width: 100%;
   }
   @media (min-width: $xl) {
     max-width: 100%;

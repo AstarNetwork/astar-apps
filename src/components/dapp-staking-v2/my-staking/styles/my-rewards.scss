@@ -30,7 +30,6 @@
 .card {
   display: flex;
   flex-direction: column;
-  // flex: none;
   flex-basis: 24%;
   min-width: 200px;
   height: 142px;
@@ -70,8 +69,12 @@
     color: $gray-5-selected;
   }
 
-  @media (max-width: $lg) {
+  @media (min-width: $xl) {
     min-width: 160px;
+  }
+
+  @media (max-width: $lg) {
+    min-width: 150px;
     height: 114px;
     padding: 24px 16px;
 

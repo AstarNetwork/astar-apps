@@ -14,11 +14,13 @@
   @media (min-width: $sm) {
     padding-left: 28px;
   }
+  @media (min-width: $md) {
+    margin-left: 0px;
+    margin-right: 0px;
+  }
   @media (min-width: $lg) {
     padding-left: 28px;
     padding-right: 28px;
-    margin-left: 0px;
-    margin-right: 0px;
   }
 
   @media (max-width: $lg) {
