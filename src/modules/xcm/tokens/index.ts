@@ -180,7 +180,7 @@ export const xcmToken = {
     {
       symbol: 'CRAB',
       isNativeToken: true,
-      assetId: '',
+      assetId: '18446744073709551625',
       originAssetId: 'CRAB',
       logo: 'https://polkadot.js.org/apps/static/crab.ebc98461..svg',
       isXcmCompatible: true,
