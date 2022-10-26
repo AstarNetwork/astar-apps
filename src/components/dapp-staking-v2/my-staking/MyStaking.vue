@@ -21,7 +21,7 @@
             <q-skeleton type="rect" animation="fade" class="loading" />
           </span>
           <span v-else>
-            <TokenBalance :balance="transferableBalance.toString()" symbol="ASTR" />
+            <token-balance :balance="transferableBalance.toString()" :symbol="nativeTokenSymbol" />
           </span>
         </div>
       </div>
@@ -43,7 +43,7 @@
 import { defineComponent, ref, computed } from 'vue';
 import { ethers } from 'ethers';
 import { useStore } from 'src/store';
-import { useBalance } from 'src/hooks';
+import { useBalance, useNetworkInfo } from 'src/hooks';
 import MyRewards from 'src/components/dapp-staking-v2/my-staking/MyRewards.vue';
 import UnbondingList from 'src/components/dapp-staking-v2/my-staking/UnbondingList.vue';
 import MyDapps from 'src/components/dapp-staking-v2/my-staking/MyDapps.vue';
@@ -59,6 +59,7 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const currentTab = ref(0);
+    const { nativeTokenSymbol } = useNetworkInfo();
 
     const selectedAddress = computed(() => store.getters['general/selectedAddress']);
     const { accountData, isLoadingBalance } = useBalance(selectedAddress);
@@ -74,6 +75,7 @@ export default defineComponent({
       currentTab,
       isLoadingBalance,
       transferableBalance,
+      nativeTokenSymbol,
     };
   },
 });
