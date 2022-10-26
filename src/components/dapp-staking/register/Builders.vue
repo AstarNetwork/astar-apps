@@ -26,13 +26,18 @@
       </div>
     </items-container>
 
-    <modal-add-developer
-      :is-modal-add-developer="isModalAddDeveloper"
-      :handle-modal-developer="handleModalAddDeveloper"
-      :add-developer="handleAddDevelper"
-      :update-developer="handleUpdateDeveloper"
-      :developer="currentDeveloper"
-    />
+    <teleport to="#app--main">
+      <div :class="'highest-z-index'">
+        <modal-add-developer
+          v-model:is-open="isModalAddDeveloper"
+          :show="isModalAddDeveloper"
+          :handle-modal-developer="handleModalAddDeveloper"
+          :add-developer="handleAddDevelper"
+          :update-developer="handleUpdateDeveloper"
+          :developer="currentDeveloper"
+        />
+      </div>
+    </teleport>
   </div>
 </template>
 
