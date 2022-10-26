@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div class="card" @click="linkLaunchApp">
     <div class="txt--subtitle">dApps Staking is available on EVM</div>
     <div class="algem-logo">
       <img src="~assets/img/algem/algem_logo.png" width="90" height="40" />
@@ -9,7 +9,15 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 export default defineComponent({
-  setup() {},
+  setup() {
+    const linkLaunchApp = () => {
+      window.open('https://app.algem.io/liquid-staking', '_blank');
+    };
+
+    return {
+      linkLaunchApp,
+    };
+  },
 });
 </script>
 <style lang="scss" scoped>
@@ -42,8 +50,5 @@ export default defineComponent({
   @media (max-width: $sm) {
     margin-bottom: 20px;
   }
-}
-
-.body--dark {
 }
 </style>

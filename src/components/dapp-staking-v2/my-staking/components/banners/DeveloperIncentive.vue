@@ -18,7 +18,6 @@ export default defineComponent({
   flex-direction: column;
   justify-content: center;
   flex-basis: 50%;
-  cursor: pointer;
   background: #d9d9d9;
   height: 127px;
   border-radius: 5px;
