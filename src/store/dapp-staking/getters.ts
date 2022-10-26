@@ -7,6 +7,8 @@ import { DappStateInterface as State, DappItem } from './state';
 export interface ContractsGetters {
   getAllDapps(state: State): DappCombinedInfo[];
   getRegisteredDapps(state: State): (tag: string) => DappCombinedInfo[];
+  getStakerDapps(state: State): DappCombinedInfo[];
+  getRegisteredDapps(state: State): (mainCategory: string) => DappCombinedInfo[];
   getMinimumStakingAmount(state: State): string;
   getMaxNumberOfStakersPerContract(state: State): number;
   getUnbondingPeriod(state: State): number;
@@ -20,18 +22,22 @@ export interface ContractsGetters {
 
 const getters: GetterTree<State, StateInterface> & ContractsGetters = {
   getAllDapps: (state) => Object.values(state.dappsCombinedInfo),
-  getRegisteredDapps: (state) => (tag) =>
-    tag
+  getRegisteredDapps: (state) => (mainCategory) =>
+    mainCategory
       ? state.dappsCombinedInfo.filter((x) => {
           try {
             return (
-              x.dapp?.tags?.includes(tag) && x.contract.state === SmartContractState.Registered
+              (x.dapp?.mainCategory === mainCategory ||
+                (x.dapp?.mainCategory === undefined && mainCategory === 'others')) &&
+              x.contract.state === SmartContractState.Registered
             );
           } catch (error) {
             return state.dappsCombinedInfo;
           }
         })
       : state.dappsCombinedInfo,
+  getStakerDapps: (state) =>
+    state.dappsCombinedInfo.filter((x) => !x.stakerInfo.accountStakingAmount.startsWith('0')),
   getMinimumStakingAmount: (state) => state.minimumStakingAmount,
   getMaxNumberOfStakersPerContract: (state) => state.maxNumberOfStakersPerContract,
   getUnbondingPeriod: (state) => state.unbondingPeriod,

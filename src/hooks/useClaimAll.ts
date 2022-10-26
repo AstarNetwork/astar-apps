@@ -16,6 +16,7 @@ const MAX_BATCH_WEIGHT = new BN('50000000000');
 
 export function useClaimAll() {
   let batchTxs: PayloadWithWeight[] = [];
+  const amountOfEras = ref<number>(0);
   const canClaim = ref<boolean>(false);
   const isLoading = ref<boolean>(true);
   const store = useStore();
@@ -64,6 +65,7 @@ export function useClaimAll() {
       batchTxs = filteredTxs.flat();
       canClaim.value = batchTxs.length > 0;
 
+      amountOfEras.value = batchTxs.length;
       console.log('Amount of Eras to claim: batchTxs.length', batchTxs.length);
     } catch (error: any) {
       console.error(error.message);
@@ -145,5 +147,6 @@ export function useClaimAll() {
     claimAll,
     canClaim,
     isLoading,
+    amountOfEras,
   };
 }

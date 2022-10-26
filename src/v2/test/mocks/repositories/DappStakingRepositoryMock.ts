@@ -31,6 +31,13 @@ export class DappStakingRepositoryMock implements IDappStakingRepository {
     return {} as SubmittableExtrinsic<'promise', ISubmittableResult>;
   }
 
+  public async getUnbondAndUnstakeCall(
+    contractAddress: string,
+    amount: BN
+  ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> {
+    return {} as SubmittableExtrinsic<'promise', ISubmittableResult>;
+  }
+
   public async getNominationTransferCall({
     amount,
     fromContractId,

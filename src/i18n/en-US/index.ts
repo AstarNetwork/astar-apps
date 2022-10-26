@@ -128,12 +128,14 @@ export default {
     tvlInDapps: 'TVL in dApps',
     currentEra: 'Current Era',
     currentStakersApr: 'Current Stakers APR',
+    currentBlock: 'Current Block',
     totalDapps: 'Total dApps',
   },
   myDapps: {
+    index: 'Index',
     dapps: 'dApps',
     stakedAmount: 'Staked Amount',
-    unbondingAmount: 'Unbonding amount',
+    unbondingAmount: 'Unbonding Amount',
     remainingEra: 'Remaining Era',
     withdraw: 'Withdraw',
     rebond: 'Re-bond',
@@ -141,6 +143,11 @@ export default {
     manage: 'Manage',
     add: 'Add',
     unbond: 'Unbond',
+    rebondGuide:
+      'Once re-bond your funds goes back to staking. You will need 10era to unstake again.',
+    rebondTitle: 'The amount you wish to rebond',
+    withdrawGuide: 'Your funds are available to withdraw.',
+    withdrawTitle: 'Ready to withdraw',
   },
   myReward: {
     totalStaked: 'Total Staked',
@@ -180,7 +187,7 @@ export default {
     chunks: 'Unbonding chunks',
     chunksTooltip:
       'Unbonding takes {era} eras (1 era is about 24 hours). {chunks} chunks are in the process of being unbonded.',
-    unbondingEra: '*Unbonding takes {unbondingPeriod} era.',
+    unbondingEra: 'Unbonding takes {unbondingPeriod} era before you can withdraw.',
     amount: 'Amount',
     era: 'Era',
     unbondedFunds: 'Unbonded funds',
@@ -205,6 +212,7 @@ export default {
     on: 'ON',
     off: 'OFF',
     yourRewards: 'Your Rewards',
+    stakeNow: 'Stake Now',
     claimedRewards: {
       short: 'Claimed rewards: ',
       long: 'Total rewards you have claimed: ',
@@ -273,6 +281,7 @@ export default {
       license: 'License',
       staked: 'Staked',
       startUnbonding: 'Start unbonding',
+      unbondFrom: 'Unbond from {name}',
       chunks: 'Chunks',
       unbondingPeriod: 'Unbonding period: {period} era',
       maxUnlockingChunks: 'Maximum unlocking chunks: {chunks}',

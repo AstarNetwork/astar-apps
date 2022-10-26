@@ -1,28 +1,46 @@
 <template>
   <div class="wrapper--list">
-    <div v-for="(t, index) in items" :key="index" class="card" @mouseover="hoverIndex = index">
+    <div
+      v-for="(t, index) in dapps"
+      :key="t.contract.address"
+      class="card"
+      @mouseover="hoverIndex = index"
+      @click="goDappPageLink(t.dapp?.address)"
+    >
       <div class="wrapper--card">
         <div class="wrapper--img">
-          <q-img :src="t.img" class="img--dapp" fit="contain" no-spinner />
+          <q-img :src="t.dapp?.iconUrl" class="img--dapp" fit="contain" no-spinner />
         </div>
         <div class="panel--right">
-          <div class="txt--title">{{ t.title }}</div>
-          <div class="badge--tag">{{ t.category }}</div>
+          <div class="txt--title">{{ t.dapp?.name }}</div>
+          <div class="badge--tag">{{ category }}</div>
           <div class="divider"></div>
           <div class="row--metric">
             <div class="row--numStakers">
               <astar-icon-base class="icon--community" stroke="currentColor" width="20" height="18">
                 <astar-icon-community />
               </astar-icon-base>
-              {{ t.numStakers.toLocaleString() }}
+              {{ t.stakerInfo.stakersCount.toLocaleString() }}
             </div>
-            <div>{{ t.amtStake.toLocaleString() }} ASTR</div>
+            <div>
+              <token-balance
+                :balance="t.stakerInfo.totalStakeFormatted.toString()"
+                :symbol="nativeTokenSymbol"
+                :decimals="0"
+              />
+            </div>
           </div>
         </div>
       </div>
-      <astar-button v-if="index === hoverIndex || width < screenSize.lg" width="274" height="24"
-        >Stake now</astar-button
+      <astar-button
+        v-if="index === hoverIndex || width < widthCardLineUp"
+        class="button--stake"
+        width="274"
+        height="24"
+        @click="goStakePageLink(t.dapp?.address)"
       >
+        {{ $t('dappStaking.stakeNow') }}
+      </astar-button>
       <div v-else style="width: 274px; height: 24px"></div>
     </div>
   </div>
@@ -30,22 +48,51 @@
 
 <script lang="ts">
 import { defineComponent, PropType, ref } from 'vue';
-import { useBreakpoints } from 'src/hooks';
+import { useBreakpoints, useNetworkInfo } from 'src/hooks';
+import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
+import { networkParam, Path } from 'src/router/routes';
+import { useRouter } from 'vue-router';
+import TokenBalance from 'src/components/common/TokenBalance.vue';
+
 export default defineComponent({
+  components: { TokenBalance },
   props: {
-    items: {
-      type: Array as PropType<any[]>,
+    category: {
+      type: String,
+      required: true,
+    },
+    dapps: {
+      type: Array as PropType<DappCombinedInfo[]>,
       required: true,
     },
   },
   setup() {
+    const widthCardLineUp = 900;
+    const router = useRouter();
     const { width, screenSize } = useBreakpoints();
     const hoverIndex = ref<number>(-1);
+    const { nativeTokenSymbol } = useNetworkInfo();
+
+    const goStakePageLink = (address: string | undefined): void => {
+      const base = networkParam + Path.DappStaking + Path.Stake;
+      const url = `${base}?dapp=${address?.toLowerCase()}`;
+      router.push(url);
+    };
+
+    const goDappPageLink = (address: string | undefined): void => {
+      const base = networkParam + Path.DappStaking + Path.Dapp;
+      const url = `${base}?dapp=${address?.toLowerCase()}`;
+      router.push(url);
+    };
 
     return {
       hoverIndex,
       width,
       screenSize,
+      goStakePageLink,
+      goDappPageLink,
+      nativeTokenSymbol,
+      widthCardLineUp,
     };
   },
 });
@@ -59,7 +106,8 @@ export default defineComponent({
   flex-wrap: wrap;
   gap: 12px;
 
-  @media (max-width: $lg) {
+  @media (max-width: $widthCardLineUp) {
+    display: flex;
     width: 100%;
     flex-wrap: nowrap;
     overflow-x: auto;
@@ -69,7 +117,13 @@ export default defineComponent({
       display: none;
     }
   }
-  @media (min-width: $xxl) {
+  @media (min-width: $xl) {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    flex-wrap: nowrap;
+  }
+  @media (min-width: 1564px) {
+    grid-template-columns: repeat(4, 1fr);
     justify-content: start;
   }
 }
@@ -96,6 +150,10 @@ export default defineComponent({
     }
   }
 
+  .button--stake {
+    z-index: 10;
+  }
+
   .panel--right {
     margin-left: 16px;
     .txt--title {
@@ -107,7 +165,7 @@ export default defineComponent({
     }
 
     .badge--tag {
-      width: 48px;
+      width: 54px;
       height: 18px;
       padding: 2px 8px;
       background: $object-light;
@@ -157,8 +215,9 @@ export default defineComponent({
   &:hover {
     @include hover;
   }
-  @media (max-width: $lg) {
+  @media (max-width: $widthCardLineUp) {
     @include hover;
+    box-shadow: 0px 0px 12px 0px rgba(164, 162, 162, 0.1);
   }
 }
 
@@ -190,7 +249,7 @@ export default defineComponent({
     &:hover {
       @include hover;
     }
-    @media (max-width: $lg) {
+    @media (max-width: $widthCardLineUp) {
       @include hover;
     }
   }

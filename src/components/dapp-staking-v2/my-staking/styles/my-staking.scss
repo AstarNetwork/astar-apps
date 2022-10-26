@@ -45,6 +45,11 @@
   }
 }
 
+.loading {
+  display: inline-block;
+  width: 100px;
+}
+
 .tabs {
   border-collapse: separate;
   display: inline-flex;

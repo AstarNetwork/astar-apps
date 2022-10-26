@@ -6,6 +6,7 @@
   margin-top: 34px;
   padding: 40px;
   border-radius: 6px;
+  overflow: auto;
 }
 
 table {
@@ -34,13 +35,14 @@ table {
     }
   }
 
+  .title--manage {
+    text-align: center;
+  }
+
   .row--manage {
     display: flex;
     gap: 8px;
-  }
-
-  @media (min-width: $lg) {
-    min-width: 720px;
+    justify-content: center;
   }
 }
 
