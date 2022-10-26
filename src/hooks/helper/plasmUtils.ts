@@ -1,7 +1,7 @@
 import { BigNumber, formatFixed } from '@ethersproject/bignumber';
 import { hexToU8a, isHex, isString } from '@polkadot/util';
 import { checkAddress, decodeAddress, encodeAddress } from '@polkadot/util-crypto';
-import BN from 'bn.js';
+import { BN } from '@polkadot/util';
 import { ethers } from 'ethers';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { nFormatter } from 'src/hooks/helper/units';

@@ -1,6 +1,6 @@
 import { useGasPrice, useCurrentEra, useCustomSignature } from 'src/hooks';
 import { ISubmittableResult } from '@polkadot/types/types';
-import BN from 'bn.js';
+import { BN } from '@polkadot/util';
 import { $api } from 'boot/api';
 import { useStore } from 'src/store';
 import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
