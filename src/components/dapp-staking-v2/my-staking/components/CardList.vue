@@ -33,7 +33,7 @@
         </div>
       </div>
       <astar-button
-        v-if="index === hoverIndex || width < screenSize.lg"
+        v-if="index === hoverIndex || width < widthCardLineUp"
         class="button--stake"
         width="274"
         height="24"
@@ -67,6 +67,7 @@ export default defineComponent({
     },
   },
   setup() {
+    const widthCardLineUp = 900;
     const router = useRouter();
     const { width, screenSize } = useBreakpoints();
     const hoverIndex = ref<number>(-1);
@@ -91,6 +92,7 @@ export default defineComponent({
       goStakePageLink,
       goDappPageLink,
       nativeTokenSymbol,
+      widthCardLineUp,
     };
   },
 });
@@ -104,7 +106,7 @@ export default defineComponent({
   flex-wrap: wrap;
   gap: 12px;
 
-  @media (max-width: $lg) {
+  @media (max-width: $widthCardLineUp) {
     display: flex;
     width: 100%;
     flex-wrap: nowrap;
@@ -115,12 +117,12 @@ export default defineComponent({
       display: none;
     }
   }
-  @media (min-width: $lg) {
+  @media (min-width: $xl) {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     flex-wrap: nowrap;
   }
-  @media (min-width: $xl) {
+  @media (min-width: 1564px) {
     grid-template-columns: repeat(4, 1fr);
     justify-content: start;
   }
@@ -213,7 +215,7 @@ export default defineComponent({
   &:hover {
     @include hover;
   }
-  @media (max-width: $lg) {
+  @media (max-width: $widthCardLineUp) {
     @include hover;
   }
 }
@@ -246,7 +248,7 @@ export default defineComponent({
     &:hover {
       @include hover;
     }
-    @media (max-width: $lg) {
+    @media (max-width: $widthCardLineUp) {
       @include hover;
     }
   }
