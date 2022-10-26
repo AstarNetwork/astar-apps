@@ -5,10 +5,10 @@ import {
   MoonbeamXcmRepository,
   PolkadotXcmRepository,
   InterlayXcmRepository,
+  CrustShadowXcmRepository,
 } from 'src/v2/repositories/implementations';
 import { Chain } from 'src/v2/models/XcmModels';
 import { TypeMapping } from 'src/v2/config/types';
-import { CrustShadowXcmRepository } from 'src/v2/repositories/implementations/xcm/CrustShadowXcmRepository';
 
 export const XcmRepositoryConfiguration: TypeMapping = {
   [Chain.ASTAR]: AstarXcmRepository,

@@ -14,7 +14,7 @@ export enum Chain {
   STATEMINT = 'Statemint',
   KINTSUGI = 'Kintsugi',
   INTERLAY = 'Interlay',
-  CRUST_SHADOW = 'Crust-Shadow',
+  CRUST_SHADOW = 'Crust-shadow',
 }
 
 export enum parachainIds {

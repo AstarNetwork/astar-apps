@@ -9,7 +9,7 @@ import { XcmRepository } from '../XcmRepository';
 import { XcmChain } from 'src/v2/models/XcmModels';
 import { Struct } from '@polkadot/types';
 
-export interface TokensAccounts extends Struct {
+interface TokensAccounts extends Struct {
   readonly free: BN;
   readonly reserved: BN;
   readonly frozen: BN;

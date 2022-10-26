@@ -179,7 +179,7 @@ export const xcmChainObj: XcmChainObj = {
     parachainId: parachainIds.CRUST_SHADOW,
     endpoint: 'wss://rpc2-shadow.crust.network',
     subscan: 'https://crust.subscan.io',
-    isAstarNativeToken: false,
+    isAstarNativeToken: true,
   },
 };
 

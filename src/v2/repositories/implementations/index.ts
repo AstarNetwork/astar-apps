@@ -11,3 +11,4 @@ export * from './xcm/MoonbeamXcmRepository';
 export * from './xcm/PolkadotXcmRepository';
 export * from './TokenApiRepository';
 export * from './EvmAssetsRepository';
+export * from './xcm/CrustShadowXcmRepository';
