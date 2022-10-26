@@ -3,7 +3,8 @@ import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { wait } from 'src/hooks/helper/common';
 import { ScProvider, WellKnownChain } from '@polkadot/rpc-provider/substrate-connect';
-import jsonParachainSpec from './chain-specs/astar.raw.json';
+import jsonParachainSpecAstar from './chain-specs/astar.json';
+import jsonParachainSpecShiden from './chain-specs/shiden.json';
 
 const RES_INVALID_CONNECTION = 'invalid connection';
 const RES_CONNECTED_API = 'connected';
@@ -84,7 +85,8 @@ export async function connectApi(
 ): Promise<{
   api: ApiPromise;
 }> {
-  const astarSpec = JSON.stringify(jsonParachainSpec);
+  const astarSpec = JSON.stringify(jsonParachainSpecAstar);
+  const shidenSpec = JSON.stringify(jsonParachainSpecShiden);
 
   const relayProvider = new ScProvider(WellKnownChain.polkadot);
   const lightProvider = new ScProvider(astarSpec, relayProvider);
