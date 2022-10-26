@@ -42,17 +42,18 @@
                 </td>
               </tr>
             </template>
+            <!-- Todo: update the skelton animation later -->
             <template v-else>
-              <tr v-for="n in 2" :key="n">
+              <tr v-for="n in 3" :key="n">
                 <td class="text-left">
                   <q-skeleton animation="blink" type="text" width="85px" />
                 </td>
                 <td class="text-left">
                   <q-skeleton animation="blink" type="text" width="85px" />
                 </td>
-                <td class="text-left">
-                  <q-skeleton animation="blink" type="text" width="85px" />
-                </td>
+                <!-- <td class="text-left"> -->
+                <!-- <q-skeleton animation="blink" type="text" width="85px" /> -->
+                <!-- </td> -->
               </tr>
             </template>
           </tbody>
