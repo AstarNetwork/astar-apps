@@ -1,13 +1,29 @@
 <template>
-  <div class="card">
+  <div
+    class="card"
+    :style="`background-image: url('${isDarkTheme ? bg_img.dark_bg : bg_img.light_bg}')`"
+  >
     <div class="txt--subtitle">Developer Incentive</div>
     <div class="txt--value">287,712 <span class="txt--flag">ASTR/era</span></div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
+import { useStore } from 'src/store';
 export default defineComponent({
-  setup() {},
+  setup() {
+    const store = useStore();
+    const bg_img = {
+      light_bg: require('/src/assets/img/banner/banner-01-light.png'),
+      dark_bg: require('/src/assets/img/banner/banner-01-dark.png'),
+    };
+    const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
+
+    return {
+      isDarkTheme,
+      bg_img,
+    };
+  },
 });
 </script>
 <style lang="scss" scoped>
@@ -15,6 +31,7 @@ export default defineComponent({
 
 .card {
   display: flex;
+  background-size: cover;
   flex-direction: column;
   justify-content: center;
   flex-basis: 50%;

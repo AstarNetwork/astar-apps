@@ -1,16 +1,28 @@
 <template>
   <div class="wrapper--cards">
     <div v-for="(t, index) in items" :key="index" class="card" @click="goToLink(t.link)">
-      <div class="wrapper--img"></div>
+      <div
+        class="wrapper--img"
+        :style="`background-image: url('${isShiden ? bg_img.shiden_hero : bg_img.astar_hero}')`"
+      ></div>
       <div class="txt--subtitle">{{ t.subtitle }}</div>
       <div class="txt--title">{{ t.title }}</div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
+import { useNetworkInfo } from 'src/hooks';
+import { endpointKey } from 'src/config/chainEndpoints';
 export default defineComponent({
   setup() {
+    const bg_img = {
+      astar_hero: require('/src/assets/img/banner/banner-02-astar.png'),
+      shiden_hero: require('/src/assets/img/banner/banner-02-shiden.png'),
+    };
+    const { currentNetworkIdx } = useNetworkInfo();
+    const isShiden = computed(() => currentNetworkIdx.value === endpointKey.SHIDEN);
+
     const items = [
       {
         img: 'https://firebasestorage.googleapis.com/v0/b/astarnetwork-a4924.appspot.com/o/astar-dapps%2F0x1de7c3A07918fb4BE9159703e73D6e0b0736CaBC_rIb1fUz3_400x400%20(1).jpeg?alt=media&token=3832d94b-81bd-4e12-9d8b-96d83896ed3a',
@@ -38,6 +50,8 @@ export default defineComponent({
 
     return {
       items,
+      bg_img,
+      isShiden,
       goToLink,
     };
   },
@@ -71,6 +85,7 @@ export default defineComponent({
   cursor: pointer;
   .wrapper--img {
     background: rgb(110, 110, 110);
+    background-size: cover;
     height: 200px;
     border-radius: 6px;
   }
