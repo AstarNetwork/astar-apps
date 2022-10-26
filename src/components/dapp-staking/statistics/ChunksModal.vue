@@ -19,7 +19,7 @@
           <format-balance :balance="chunk.amount" />
         </div>
         <div class="tw-col-span-6 tw-text-right">
-          {{ chunk.unlockEra.toHuman() }}
+          {{ chunk.unlockEra }}
           ({{ $t('dappStaking.modals.erasToGo', { era: chunk.erasBeforeUnlock }) }})
         </div>
       </div>
@@ -31,10 +31,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs } from 'vue';
+import { defineComponent, PropType, toRefs } from 'vue';
 import Modal from 'components/common/Modal.vue';
 import Button from 'components/common/Button.vue';
 import FormatBalance from 'components/common/FormatBalance.vue';
+import { ChunkInfo } from 'src/v2/models';
 
 export default defineComponent({
   components: {
@@ -44,7 +45,7 @@ export default defineComponent({
   },
   props: {
     unlockingChunks: {
-      type: Object,
+      type: Object as PropType<ChunkInfo[]>,
       required: true,
     },
     maxUnlockingChunks: {

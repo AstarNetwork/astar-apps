@@ -4,7 +4,7 @@
 <script lang="ts">
 import { defineComponent, toRefs, PropType } from 'vue';
 import { useChainMetadata } from 'src/hooks';
-import BN from 'bn.js';
+import { BN } from '@polkadot/util';
 
 import Balance from 'components/common/Balance.vue';
 

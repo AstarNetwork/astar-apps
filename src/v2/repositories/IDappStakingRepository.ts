@@ -1,6 +1,7 @@
 import { BN } from '@polkadot/util';
-import { ISubmittableResult } from '@polkadot/types/types';
+import { Codec, ISubmittableResult } from '@polkadot/types/types';
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
+import { AccountLedger } from '../models/DappsStaking';
 
 /**
  * Definition of repository to access dapps staking pallet.
@@ -18,4 +19,10 @@ export interface IDappStakingRepository {
     contractAddress: string,
     amount: BN
   ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>>;
+
+  /**
+   * Gets dapps staking ledger for a given account.
+   * @param accountAddress User account.
+   */
+  getLedger(accountAddress: string): Promise<AccountLedger>;
 }
