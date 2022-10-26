@@ -1,12 +1,13 @@
 import { BN } from '@polkadot/util';
 import { u32, Option, Struct } from '@polkadot/types';
-import { ISubmittableResult } from '@polkadot/types/types';
+import { Codec, ISubmittableResult } from '@polkadot/types/types';
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
-import { Balance } from '@polkadot/types/interfaces';
+import { Balance, EraIndex } from '@polkadot/types/interfaces';
 import { injectable, inject } from 'inversify';
 import { IDappStakingRepository } from 'src/v2/repositories';
 import { IApi } from 'src/v2/integration';
 import { Symbols } from 'src/v2/symbols';
+import { AccountLedger } from 'src/v2/models/DappsStaking';
 
 // TODO type generation
 interface EraInfo extends Struct {
@@ -16,6 +17,21 @@ interface EraInfo extends Struct {
   };
   staked: Balance;
   locked: Balance;
+}
+
+interface PalletDappsStakingAccountLedger extends Codec {
+  locked: Balance;
+  unbondingInfo: UnbondingInfo;
+}
+
+interface UnbondingInfo {
+  unlockingChunks: ChunkInfo[];
+}
+
+interface ChunkInfo extends Codec {
+  amount: Balance;
+  unlockEra: EraIndex;
+  erasBeforeUnlock: number;
 }
 
 @injectable()
@@ -37,6 +53,26 @@ export class DappStakingRepository implements IDappStakingRepository {
     const api = await this.api.getApi();
 
     return api.tx.dappsStaking.bondAndStake(this.getAddressEnum(contractAddress), amount);
+  }
+
+  public async getLedger(accountAddress: string): Promise<AccountLedger> {
+    const api = await this.api.getApi();
+    const ledger = await api.query.dappsStaking.ledger<PalletDappsStakingAccountLedger>(
+      accountAddress
+    );
+
+    return {
+      locked: ledger.locked.toBn(),
+      unbondingInfo: {
+        unlockingChunks: ledger.unbondingInfo.unlockingChunks.map((x) => {
+          return {
+            amount: x.amount.toBn(),
+            unlockEra: x.unlockEra.toBn(),
+            erasBeforeUnlock: x.erasBeforeUnlock,
+          };
+        }),
+      },
+    };
   }
 
   private getAddressEnum(address: string) {

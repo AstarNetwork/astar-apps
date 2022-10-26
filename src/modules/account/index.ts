@@ -1,5 +1,5 @@
 import { Struct } from '@polkadot/types';
-import BN from 'bn.js';
+import { BN } from '@polkadot/util';
 
 export { fetchNativeBalance, addTxHistories } from 'src/modules/account/utils';
 

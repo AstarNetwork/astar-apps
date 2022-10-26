@@ -1,7 +1,7 @@
 import { ApiPromise } from '@polkadot/api';
 import { Option } from '@polkadot/types';
 import { EraIndex } from '@polkadot/types/interfaces';
-import BN from 'bn.js';
+import { BN } from '@polkadot/util';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { checkIsDappRegistered, GeneralStakerInfo } from 'src/hooks/helper/claim';
 import { wait } from 'src/hooks/helper/common';

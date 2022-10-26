@@ -83,7 +83,7 @@
   </div>
 </template>
 <script lang="ts">
-import BN from 'bn.js';
+import { BN } from '@polkadot/util';
 import { defaultUnitIndex, getUnitNames } from 'src/hooks/helper/units';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';

@@ -1,4 +1,4 @@
-import BN from 'bn.js';
+import { BN } from '@polkadot/util';
 import { Asset } from 'src/v2/models';
 import { ExtrinsicPayload } from '../integration';
 import { XcmChain } from 'src/v2/models/XcmModels';

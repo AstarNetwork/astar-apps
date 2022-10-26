@@ -1,6 +1,6 @@
 import { bool, Option, Struct, u32 } from '@polkadot/types';
 import { Balance } from '@polkadot/types/interfaces';
-import BN from 'bn.js';
+import { BN } from '@polkadot/util';
 import { $api } from 'boot/api';
 import { ClaimInfo, EraRewardAndStake } from './actions';
 

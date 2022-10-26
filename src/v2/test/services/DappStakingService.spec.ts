@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { describe, it, expect, beforeEach } from '@jest/globals';
 import { IDappStakingService, IWalletService } from 'src/v2/services';
 import { initTestContainer, TestSymbols } from '../helpers';
-import BN from 'bn.js';
+import { BN } from '@polkadot/util';
 import { container, resetContainer } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
 import { WalletServiceMock } from '../mocks/services/WalletServiceMock';
