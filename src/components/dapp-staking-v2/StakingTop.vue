@@ -81,7 +81,7 @@ export default defineComponent({
     max-width: 720px;
   }
 
-  @media (min-width: $lg) {
+  @media (min-width: $widthCardLineUp) {
     max-width: 100%;
   }
 }
