@@ -67,6 +67,10 @@
           class="component"
         />
 
+        <div class="validation-warning">
+          <li>{{ $t('dappStaking.modals.builder.error.buildersRequired') }}</li>
+        </div>
+
         <Button :width="464" :height="52" @click="handleConfirm">
           {{ $t('confirm') }}
         </Button>
@@ -195,9 +199,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @use 'src/components/assets/styles/assets.scss';
+@use 'src/components/dapp-staking/styles/register.scss';
 
 .component {
-  margin-bottom: 20px;
+  margin-bottom: 4px;
 }
 
 .card {

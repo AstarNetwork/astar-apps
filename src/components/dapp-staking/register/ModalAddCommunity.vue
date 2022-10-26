@@ -23,6 +23,10 @@
           class="component"
         />
 
+        <div class="validation-warning">
+          <li>{{ $t('dappStaking.modals.community.communityRequired') }}</li>
+        </div>
+
         <Button :width="464" :height="52" @click="handleConfirm">
           {{ $t('confirm') }}
         </Button>
@@ -102,12 +106,14 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@use 'src/components/dapp-staking/styles/register.scss';
+
 .component {
-  margin-bottom: 20px;
+  margin-bottom: 4px;
 }
 
 .community-wrapper {
-  margin-top: 20px;
+  margin-top: 10px;
 }
 </style>
