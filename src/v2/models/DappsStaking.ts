@@ -39,3 +39,16 @@ export class DappCombinedInfo {
     public dapp?: DappItem
   ) {}
 }
+
+export interface ChunkInfo {
+  amount: BN;
+  unlockEra: BN;
+  erasBeforeUnlock: number;
+}
+
+export interface AccountLedger {
+  locked: BN;
+  unbondingInfo: {
+    unlockingChunks: ChunkInfo[];
+  };
+}

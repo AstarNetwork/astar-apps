@@ -8,7 +8,7 @@ import {
   EventRecord,
 } from '@polkadot/types/interfaces';
 import { ITuple } from '@polkadot/types/types';
-import BN from 'bn.js';
+import { BN } from '@polkadot/util';
 import { $api } from 'boot/api';
 import { ActionTree, Dispatch } from 'vuex';
 import { StateInterface } from '../index';

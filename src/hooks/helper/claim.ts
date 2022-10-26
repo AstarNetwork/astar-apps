@@ -1,7 +1,7 @@
 import { ApiPromise } from '@polkadot/api';
 import { bool, Option, Struct } from '@polkadot/types';
 import { EventRecord, Balance, AccountId } from '@polkadot/types/interfaces';
-import BN from 'bn.js';
+import { BN } from '@polkadot/util';
 import { ethers } from 'ethers';
 import { ExtrinsicPayload } from 'src/hooks/helper';
 import { balanceFormatter } from 'src/hooks/helper/plasmUtils';

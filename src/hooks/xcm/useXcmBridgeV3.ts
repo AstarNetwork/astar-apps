@@ -205,10 +205,11 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
     }
   };
 
-  const setErrMsg = async (): Promise<void> => {
+  const setErrMsg = (): void => {
     errMsg.value = '';
 
-    if (chainsNotSupportWithdrawal.includes(destChain.value.name)) {
+    const isChainNotSupportWithdrawal = chainsNotSupportWithdrawal.includes(destChain.value.name);
+    if (isChainNotSupportWithdrawal) {
       errMsg.value = t('warning.withdrawalNotSupport', { chain: destChain.value.name });
       return;
     }
@@ -362,6 +363,11 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
 
   const bridge = async (): Promise<void> => {
     try {
+      const isChainNotSupportWithdrawal = chainsNotSupportWithdrawal.includes(destChain.value.name);
+      if (isChainNotSupportWithdrawal) {
+        throw Error(t('warning.withdrawalNotSupport', { chain: destChain.value.name }));
+      }
+
       const xcmService: IXcmTransfer = isH160.value
         ? container.get<IXcmEvmService>(Symbols.XcmEvmService)
         : container.get<IXcmService>(Symbols.XcmService);
@@ -482,7 +488,12 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
     fromAddressBalance.value = result;
   };
 
-  watchEffect(setErrMsg);
+  // Memo: Somehow WatchEffect doesn't work for displaying `withdrawalNotSupport` error message on UI
+  // (it works if insert -> console.log(errMsg.value))
+  watch(
+    [destChain, isLoadOriginApi, amount, selectedToken, fromAddressBalance, inputtedAddress],
+    setErrMsg
+  );
   watchEffect(setIsDisabledBridge);
   watchEffect(updateChain);
   watchEffect(setInputDestAddrManually);

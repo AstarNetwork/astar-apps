@@ -1,7 +1,7 @@
 import { useI18n } from 'vue-i18n';
 import { useGasPrice, useCurrentEra, useCustomSignature, useNetworkInfo } from 'src/hooks';
 import { ISubmittableResult } from '@polkadot/types/types';
-import BN from 'bn.js';
+import { BN } from '@polkadot/util';
 import { $api } from 'boot/api';
 import { useStore } from 'src/store';
 import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';

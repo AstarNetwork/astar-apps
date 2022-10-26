@@ -3,6 +3,7 @@ import { ISubmittableResult } from '@polkadot/types/types';
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import { SmartContract, StakerInfo } from '../models/DappsStaking';
 import { EditDappItem } from 'src/store/dapp-staking/state';
+import { AccountLedger } from '../models/DappsStaking';
 
 /**
  * Definition of repository to access dapps staking pallet.
@@ -69,4 +70,10 @@ export interface IDappStakingRepository {
    * @param network Name of the network where dapp has been deployed.
    */
   getDapp(contractAddress: string, network: string): Promise<EditDappItem | undefined>;
+
+  /**
+   * Gets dapps staking ledger for a given account.
+   * @param accountAddress User account.
+   */
+  getLedger(accountAddress: string): Promise<AccountLedger>;
 }

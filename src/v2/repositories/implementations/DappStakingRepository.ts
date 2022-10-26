@@ -3,7 +3,7 @@ import { BN } from '@polkadot/util';
 import { u32, Option, Struct } from '@polkadot/types';
 import { Codec, ISubmittableResult } from '@polkadot/types/types';
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
-import { AccountId, Balance } from '@polkadot/types/interfaces';
+import { AccountId, Balance, EraIndex } from '@polkadot/types/interfaces';
 import { injectable, inject } from 'inversify';
 import { IDappStakingRepository } from 'src/v2/repositories';
 import { IApi } from 'src/v2/integration';
@@ -18,6 +18,7 @@ import { TOKEN_API_URL } from 'src/modules/token-api';
 import axios from 'axios';
 import { getDappAddressEnum } from 'src/modules/dapp-staking/utils';
 import { Guard } from 'src/v2/common';
+import { AccountLedger } from 'src/v2/models/DappsStaking';
 
 // TODO type generation
 interface EraInfo extends Struct {
@@ -52,6 +53,21 @@ interface SmartContractAddress extends Struct {
   asEvm?: Codec;
   isWasm: boolean;
   asWasm?: Codec;
+}
+
+interface PalletDappsStakingAccountLedger extends Codec {
+  locked: Balance;
+  unbondingInfo: UnbondingInfo;
+}
+
+interface UnbondingInfo {
+  unlockingChunks: ChunkInfo[];
+}
+
+interface ChunkInfo extends Codec {
+  amount: Balance;
+  unlockEra: EraIndex;
+  erasBeforeUnlock: number;
 }
 
 @injectable()
@@ -231,6 +247,26 @@ export class DappStakingRepository implements IDappStakingRepository {
     return response.data;
   }
 
+  public async getLedger(accountAddress: string): Promise<AccountLedger> {
+    const api = await this.api.getApi();
+    const ledger = await api.query.dappsStaking.ledger<PalletDappsStakingAccountLedger>(
+      accountAddress
+    );
+
+    return {
+      locked: ledger.locked.toBn(),
+      unbondingInfo: {
+        unlockingChunks: ledger.unbondingInfo.unlockingChunks.map((x) => {
+          return {
+            amount: x.amount.toBn(),
+            unlockEra: x.unlockEra.toBn(),
+            erasBeforeUnlock: x.erasBeforeUnlock,
+          };
+        }),
+      },
+    };
+  }
+
   private async getCurrentEra(api: ApiPromise): Promise<u32> {
     return await api.query.dappsStaking.currentEra<u32>();
   }
@@ -243,5 +279,9 @@ export class DappStakingRepository implements IDappStakingRepository {
     } else {
       return undefined;
     }
+  }
+
+  private getAddressEnum(address: string) {
+    return { Evm: address };
   }
 }

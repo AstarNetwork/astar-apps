@@ -5,6 +5,7 @@ import { injectable } from 'inversify';
 import { IDappStakingRepository } from 'src/v2/repositories';
 import { SmartContract, StakerInfo } from 'src/v2/models/DappsStaking';
 import { EditDappItem } from 'src/store/dapp-staking/state';
+import { AccountLedger } from 'src/v2/models/DappsStaking';
 
 @injectable()
 export class DappStakingRepositoryMock implements IDappStakingRepository {
@@ -78,5 +79,9 @@ export class DappStakingRepositoryMock implements IDappStakingRepository {
     network: string
   ): Promise<EditDappItem | undefined> {
     throw new Error('Not imlemented yet');
+  }
+
+  public async getLedger(accountAddress: string): Promise<AccountLedger> {
+    return {} as AccountLedger;
   }
 }

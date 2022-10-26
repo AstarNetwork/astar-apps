@@ -15,6 +15,7 @@ import {
 import { IBalanceFormatterService, IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { IWalletService } from '../IWalletService';
+import { AccountLedger } from 'src/v2/models/DappsStaking';
 
 @injectable()
 export class DappStakingService implements IDappStakingService {
@@ -156,5 +157,11 @@ export class DappStakingService implements IDappStakingService {
     Guard.ThrowIfUndefined('network', network);
 
     return await this.dappStakingRepository.getDapp(contractAddress, network);
+  }
+
+  public async getLedger(accountAddress: string): Promise<AccountLedger> {
+    Guard.ThrowIfUndefined('accountAddress', accountAddress);
+
+    return await this.dappStakingRepository.getLedger(accountAddress);
   }
 }
