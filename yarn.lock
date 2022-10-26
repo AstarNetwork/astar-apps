@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@astar-network/astar-ui@^0.0.58":
+"@astar-network/astar-ui@0.0.58":
   version "0.0.58"
   resolved "https://registry.yarnpkg.com/@astar-network/astar-ui/-/astar-ui-0.0.58.tgz#6c3ad8d64c0d2135da59d3074d8e37cb4582db88"
   integrity sha512-YhlOvN+OFfWd+n5353uX0p4gQfK4Cs89rnNkFRpcosX3LfKtn5oLENiQkH5+FdVbPXEjHUquX0rHw9usyG9lNg==

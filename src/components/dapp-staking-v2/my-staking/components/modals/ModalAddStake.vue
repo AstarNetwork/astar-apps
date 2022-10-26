@@ -6,8 +6,8 @@
     title="Stake on Astar Degens"
     @close="close"
   >
-    <div class="box container">Add</div>
-    <astar-button :width="464" :height="37">Stake</astar-button>
+    <div class="box container">{{ $t('add') }}</div>
+    <astar-button :width="464" :height="37">{{ $t('dappStaking.stake') }}</astar-button>
   </astar-default-modal>
 </template>
 

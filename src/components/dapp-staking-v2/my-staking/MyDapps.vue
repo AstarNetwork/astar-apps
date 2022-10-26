@@ -12,36 +12,56 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="t in myStakeInfos" :key="t.address">
-              <td>{{ t.name }}</td>
-              <td>
-                <token-balance
-                  :balance="ethers.utils.formatEther(t.yourStake.denomAmount.toString())"
-                  :symbol="nativeTokenSymbol"
-                  :decimals="0"
-                />
-              </td>
-              <td>
-                <div class="row--manage">
-                  <astar-button
-                    width="97"
-                    height="24"
-                    :disabled="false"
-                    @click="navigateToStake(t.dappAddress)"
-                    >{{ $t('myDapps.add') }}</astar-button
-                  >
-                  <astar-button width="97" height="24" :disabled="false" @click="showUnbound(t)">{{
-                    $t('myDapps.unbond')
-                  }}</astar-button>
-                </div>
-              </td>
-            </tr>
+            <template v-if="myStakeInfos && myStakeInfos.length > 0">
+              <tr v-for="t in myStakeInfos" :key="t.address">
+                <td>{{ t.name }}</td>
+                <td>
+                  <token-balance
+                    :balance="ethers.utils.formatEther(t.yourStake.denomAmount.toString())"
+                    :symbol="nativeTokenSymbol"
+                    :decimals="0"
+                  />
+                </td>
+                <td>
+                  <div class="row--manage">
+                    <astar-button
+                      width="97"
+                      height="24"
+                      :disabled="false"
+                      @click="navigateToStake(t.dappAddress)"
+                      >{{ $t('myDapps.add') }}</astar-button
+                    >
+                    <astar-button
+                      width="97"
+                      height="24"
+                      :disabled="false"
+                      @click="showUnbound(t)"
+                      >{{ $t('myDapps.unbond') }}</astar-button
+                    >
+                  </div>
+                </td>
+              </tr>
+            </template>
+            <!-- Todo: update the skelton animation later -->
+            <template v-else>
+              <tr v-for="n in 3" :key="n">
+                <td class="text-left">
+                  <q-skeleton animation="blink" type="text" width="85px" />
+                </td>
+                <td class="text-left">
+                  <q-skeleton animation="blink" type="text" width="85px" />
+                </td>
+                <!-- <td class="text-left"> -->
+                <!-- <q-skeleton animation="blink" type="text" width="85px" /> -->
+                <!-- </td> -->
+              </tr>
+            </template>
           </tbody>
         </table>
       </div>
     </template>
     <template v-else>
-      <DropdownList :items="myStakeInfos" />
+      <dropdown-list :items="myStakeInfos" />
     </template>
 
     <Teleport to="#app--main">
@@ -74,36 +94,10 @@ export default defineComponent({
     const selectedDapp = ref<MyStakeInfo>();
     const router = useRouter();
 
-    console.log('infos', myStakeInfos);
-
-    //TODO: need refactor as module
-    // const items = [
-    //   {
-    //     id: 0,
-    //     name: 'Astar Degens',
-    //     stakedAmount: 10000,
-    //     totalEarned: 2000.12,
-    //     isEnabled: true,
-    //   },
-    //   {
-    //     id: 1,
-    //     name: 'ArthSwap',
-    //     stakedAmount: 10000,
-    //     totalEarned: 2000.12,
-    //     isEnabled: true,
-    //   },
-    //   {
-    //     id: 2,
-    //     name: 'Starlay Finance',
-    //     stakedAmount: 10000,
-    //     totalEarned: 2000.12,
-    //     isEnabled: false,
-    //   },
-    // ];
-
     const showModalUnbond = ref<boolean>(false);
 
     const showUnbound = (dapp: MyStakeInfo): void => {
+      console.log(dapp);
       selectedDapp.value = dapp;
       showModalUnbond.value = true;
     };

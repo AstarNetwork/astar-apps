@@ -6,6 +6,7 @@
   margin-top: 34px;
   padding: 40px;
   border-radius: 6px;
+  overflow: auto;
 }
 
 table {
@@ -42,10 +43,6 @@ table {
     display: flex;
     gap: 8px;
     justify-content: center;
-  }
-
-  @media (min-width: $lg) {
-    min-width: 720px;
   }
 }
 

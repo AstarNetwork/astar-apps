@@ -107,6 +107,15 @@ export class DappStakingRepository implements IDappStakingRepository {
     return api.tx.dappsStaking.unbondAndUnstake(getDappAddressEnum(contractAddress), amount);
   }
 
+  public async getUnbondAndUnstakeCall(
+    contractAddress: string,
+    amount: BN
+  ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> {
+    const api = await this.api.getApi();
+
+    return api.tx.dappsStaking.unbondAndUnstake(this.getAddressEnum(contractAddress), amount);
+  }
+
   public async getNominationTransferCall({
     amount,
     fromContractId,
