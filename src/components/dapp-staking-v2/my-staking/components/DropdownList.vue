@@ -2,8 +2,8 @@
   <div class="wrapper">
     <q-list>
       <q-expansion-item
-        v-for="(item, index) in items"
-        :key="index"
+        v-for="item in items"
+        :key="item.address"
         :header-style="isDarkTheme ? classes.defaultHeaderDark : classes.defaultHeader"
       >
         <template #header>

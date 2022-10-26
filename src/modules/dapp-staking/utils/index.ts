@@ -7,6 +7,8 @@ import { checkIsDappRegistered, GeneralStakerInfo } from 'src/hooks/helper/claim
 import { wait } from 'src/hooks/helper/common';
 import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
 import { EraStakingPoints, StakeInfo } from 'src/store/dapp-staking/actions';
+import { isEthereumAddress } from '@polkadot/util-crypto';
+import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 
 interface StakeData {
   address: string;
@@ -43,15 +45,24 @@ export const getDappStakers = async ({ api }: { api: ApiPromise }): Promise<numb
   }
 };
 
-// TODO refactor, detect address type, etc.....
-export const getAddressEnum = (address: string) => ({ Evm: address });
+export const getDappAddressEnum = (address: string) => {
+  if (isEthereumAddress(address)) {
+    return { Evm: address };
+  } else if (isValidAddressPolkadotAddress(address)) {
+    return { Wasm: address };
+  } else {
+    throw new Error(
+      `Invalid contract address ${address}. The address should be in EVM or WASM format.`
+    );
+  }
+};
 
 export const getLatestStakePoint = async (
   api: ApiPromise,
   contract: string
 ): Promise<EraStakingPoints | undefined> => {
   const currentEra = await (await api.query.dappsStaking.currentEra<EraIndex>()).toNumber();
-  const contractAddress = getAddressEnum(contract);
+  const contractAddress = getDappAddressEnum(contract);
   // iterate from currentEra backwards until you find record for ContractEraStake
   for (let era = currentEra; era > 0; era -= 1) {
     // Memo: wait for avoiding provider limitation
@@ -97,9 +108,10 @@ export const handleGetStakeInfo = async ({
 
   try {
     const [stakerInfo, { isRegistered }] = await Promise.all([
-      api.query.dappsStaking.generalStakerInfo<GeneralStakerInfo>(currentAccount, {
-        Evm: dappAddress,
-      }),
+      api.query.dappsStaking.generalStakerInfo<GeneralStakerInfo>(
+        currentAccount,
+        getDappAddressEnum(dappAddress)
+      ),
       checkIsDappRegistered({ dappAddress, api }),
     ]);
 

@@ -1,5 +1,6 @@
 <template>
   <div class="container--register">
+    <back-to-page :text="$t('dappStaking.stakePage.backToDappList')" :link="Path.DappStaking" />
     <q-form ref="dappForm">
       <div style="display: flex; flex-direction: column">
         <q-input
@@ -109,6 +110,8 @@ import { useStore } from 'src/store';
 import { useCustomSignature, useGasPrice, useNetworkInfo, useSignPayload } from 'src/hooks';
 import { useExtrinsicCall } from 'src/hooks/custom-signature/useExtrinsicCall';
 import { RegisterParameters } from 'src/store/dapp-staking/actions';
+import { Path } from 'src/router';
+import BackToPage from 'src/components/common/BackToPage.vue';
 
 export default defineComponent({
   components: {
@@ -124,6 +127,7 @@ export default defineComponent({
     License,
     Button,
     Tags,
+    BackToPage,
   },
   setup() {
     const initDeveloper = (): Developer => ({
@@ -308,6 +312,7 @@ export default defineComponent({
       currentCategory,
       dappForm,
       errors,
+      Path,
       isValidAddress,
       updateDappLogo,
       isUrlValid,
