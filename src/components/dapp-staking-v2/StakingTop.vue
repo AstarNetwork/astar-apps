@@ -2,6 +2,8 @@
   <div class="wrapper-main">
     <TopMetric />
 
+    <BannerArea />
+
     <div class="divider"></div>
 
     <MyStaking />
@@ -39,6 +41,7 @@ import MyStaking from 'src/components/dapp-staking-v2/my-staking/MyStaking.vue';
 import DappList from 'src/components/dapp-staking-v2/my-staking/DappList.vue';
 import { computed, defineComponent, watchEffect } from 'vue';
 import AdsArea from './my-staking/AdsArea.vue';
+import BannerArea from './my-staking/BannerArea.vue';
 
 export default defineComponent({
   components: {
@@ -46,6 +49,7 @@ export default defineComponent({
     MyStaking,
     DappList,
     AdsArea,
+    BannerArea,
   },
   setup() {
     useMeta({ title: 'Discover dApps' });
