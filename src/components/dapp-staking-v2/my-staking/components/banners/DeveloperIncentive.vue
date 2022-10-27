@@ -88,7 +88,6 @@ export default defineComponent({
     font-size: 16px;
     line-height: 26px;
     color: $gray-3;
-    margin-bottom: 4px;
   }
 
   .row--values {
@@ -101,7 +100,6 @@ export default defineComponent({
     font-style: normal;
     font-weight: 800;
     font-size: 32px;
-    line-height: 25px;
     background: linear-gradient(
       100.62deg,
       #e6007a -13.87%,
