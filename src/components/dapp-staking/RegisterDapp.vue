@@ -225,6 +225,7 @@ export default defineComponent({
         if (data.address) {
           const registeredDapp = await service.getDapp(data.address, currentNetworkName.value);
           if (registeredDapp) {
+            data.address = registeredDapp.address;
             data.name = registeredDapp.name;
             data.url = registeredDapp.url;
             data.iconFile = getImageUrl(registeredDapp.iconFile);
