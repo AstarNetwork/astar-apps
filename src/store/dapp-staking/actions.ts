@@ -148,7 +148,6 @@ const actions: ActionTree<State, StateInterface> = {
           developers: parameters.dapp.developers,
           description: parameters.dapp.description,
           communities: parameters.dapp.communities,
-          platforms: parameters.dapp.platforms,
           contractType: parameters.dapp.contractType,
           mainCategory: parameters.dapp.mainCategory,
           license: parameters.dapp.license,
