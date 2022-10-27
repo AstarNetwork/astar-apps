@@ -220,6 +220,8 @@ export default {
     projectUnregistered: 'This project has been unregistered.',
     fundsWillBeUnstaked: 'Your funds will be unstaked automatically after claiming your rewards.',
     edit: 'Edit',
+    developerIncentive: 'Developer Incentive',
+    tokenEra: '{token}/era',
     stakePage: {
       backToDappList: 'Back to dApps list',
       whereFundsFrom: 'Where would you like to bring you funds from?',

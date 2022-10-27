@@ -1,27 +1,65 @@
 <template>
-  <div
-    class="card"
-    :style="`background-image: url('${isDarkTheme ? bg_img.dark_bg : bg_img.light_bg}')`"
-  >
-    <div class="txt--subtitle">Developer Incentive</div>
-    <div class="txt--value">287,712 <span class="txt--flag">ASTR/era</span></div>
+  <div class="card">
+    <div class="txt--subtitle">
+      <span>
+        {{ $t('dappStaking.developerIncentive') }}
+      </span>
+    </div>
+    <div class="row--values">
+      <span class="txt--value">
+        {{ $n(truncate(rewardsDeveloper, 0)) }}
+      </span>
+      <span class="txt--value txt--flag">{{
+        $t('dappStaking.tokenEra', { token: nativeTokenSymbol })
+      }}</span>
+    </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
-import { useStore } from 'src/store';
+import { Struct } from '@polkadot/types';
+import { Perbill } from '@polkadot/types/interfaces';
+import { ethers } from 'ethers';
+import { $api } from 'src/boot/api';
+import { useNetworkInfo } from 'src/hooks';
+import { truncate } from 'src/hooks/helper/common';
+import { defineComponent, ref, watchEffect } from 'vue';
+
+interface RewardDistributionConfig extends Struct {
+  readonly baseTreasuryPercent: Perbill;
+  readonly baseStakerPercent: Perbill;
+  readonly dappsPercent: Perbill;
+  readonly collatorsPercent: Perbill;
+  readonly adjustablePercent: Perbill;
+  readonly idealDappsStakingTvl: Perbill;
+}
+
 export default defineComponent({
   setup() {
-    const store = useStore();
-    const bg_img = {
-      light_bg: require('/src/assets/img/banner/banner-01-light.png'),
-      dark_bg: require('/src/assets/img/banner/banner-01-dark.png'),
-    };
-    const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
+    const rewardsDeveloper = ref<number>(0);
+    const { nativeTokenSymbol } = useNetworkInfo();
 
+    const calcDeveloperRewards = async (): Promise<void> => {
+      try {
+        const api = $api!;
+        const [rewardsAllocation, rewardsAmount, blockPerEra] = await Promise.all([
+          api.query.blockReward.rewardDistributionConfigStorage<RewardDistributionConfig>(),
+          api.consts.blockReward.rewardAmount.toString(),
+          Number(api.consts.dappsStaking.blockPerEra.toString()),
+        ]);
+        const rewardsAmountPerEra = Number(ethers.utils.formatEther(rewardsAmount)) * blockPerEra;
+        const numAdjToPercentage = 0.000000001;
+        const dappsPercent = rewardsAllocation.dappsPercent.toNumber() * numAdjToPercentage;
+        rewardsDeveloper.value = rewardsAmountPerEra * dappsPercent;
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    watchEffect(calcDeveloperRewards);
     return {
-      isDarkTheme,
-      bg_img,
+      rewardsDeveloper,
+      nativeTokenSymbol,
+      truncate,
     };
   },
 });
@@ -39,13 +77,26 @@ export default defineComponent({
   height: 127px;
   border-radius: 5px;
   padding: 35px;
+  background-image: url('src/assets/img/banner/banner-01-light.png');
+  margin-bottom: 20px;
+  @media (min-width: $sm) {
+    margin-bottom: 0;
+  }
+
   .txt--subtitle {
-    font-family: 'Objektiv Mk1';
     font-weight: 800;
     font-size: 16px;
     line-height: 26px;
     color: $gray-3;
+    margin-bottom: 4px;
   }
+
+  .row--values {
+    display: flex;
+    column-gap: 10px;
+    align-items: center;
+  }
+
   .txt--value {
     font-style: normal;
     font-weight: 800;
@@ -63,23 +114,16 @@ export default defineComponent({
     -webkit-text-fill-color: transparent;
     background-clip: text;
     text-fill-color: transparent;
-
-    .txt--flag {
-      font-size: 17.1591px;
-      line-height: 21px;
-    }
   }
-
-  @media (max-width: $sm) {
-    margin-bottom: 20px;
+  .txt--flag {
+    font-size: 18px;
+    line-height: 22px;
   }
 }
 
 .body--dark {
   .card {
-    .txt--subtitle {
-      color: $gray-1;
-    }
+    background-image: url('src/assets/img/banner/banner-01-dark.png');
   }
 }
 </style>
