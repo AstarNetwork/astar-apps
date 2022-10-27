@@ -71,7 +71,7 @@
         <div v-else class="value">
           <token-balance :balance="claimed.toString()" :symbol="nativeTokenSymbol" />
         </div>
-        <astar-irregular-button>
+        <astar-irregular-button @click="goToSubscan">
           <div class="explorer-icon">
             <astar-icon-external-link />
           </div>
@@ -82,10 +82,11 @@
 </template>
 <script lang="ts">
 import TokenBalance from 'src/components/common/TokenBalance.vue';
-import { useClaimAll, useNetworkInfo, useStakerInfo } from 'src/hooks';
+import { useAccount, useClaimAll, useNetworkInfo, useStakerInfo } from 'src/hooks';
 import { useClaimedReward } from 'src/hooks/dapps-staking/useClaimedReward';
 import { RewardDestination, useCompoundRewards } from 'src/hooks/dapps-staking/useCompoundRewards';
-import { defineComponent } from 'vue';
+import { endpointKey } from 'src/config/chainEndpoints';
+import { defineComponent, computed } from 'vue';
 
 export default defineComponent({
   components: {
@@ -105,6 +106,17 @@ export default defineComponent({
     };
 
     const { claimed, isLoadingClaimed } = useClaimedReward();
+    const { currentAccount } = useAccount();
+    const { currentNetworkIdx } = useNetworkInfo();
+    const isShiden = computed(() => currentNetworkIdx.value === endpointKey.SHIDEN);
+    const goToSubscan = () => {
+      let rootName = 'astar';
+      if (isShiden.value) {
+        rootName = 'shiden';
+      }
+      const link = `https://${rootName}.subscan.io/account/${currentAccount.value}?tab=reward`;
+      window.open(link, '_blank');
+    };
 
     return {
       isLoading,
@@ -118,6 +130,7 @@ export default defineComponent({
       totalStaked,
       nativeTokenSymbol,
       isLoadingTotalStaked,
+      goToSubscan,
     };
   },
 });
