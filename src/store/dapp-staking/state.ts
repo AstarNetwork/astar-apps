@@ -20,7 +20,6 @@ export interface DappItem extends LooseObject {
   imagesUrl: string[];
   developers: Developer[];
   communities: Community[];
-  platforms: string[];
   contractType: string;
   mainCategory: Category;
 }
