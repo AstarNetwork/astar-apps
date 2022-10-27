@@ -1,12 +1,12 @@
 <template>
-  <div
-    class="card"
-    :style="`background-image: url(${require('/src/assets/img/banner/banner-algem.png')})`"
-    @click="linkLaunchApp"
-  >
-    <div class="txt--subtitle">dApps Staking is available on EVM</div>
+  <div class="card" @click="linkLaunchApp">
+    <div>
+      <span class="txt--subtitle">
+        {{ $t('dappStaking.dappStakingEvm') }}
+      </span>
+    </div>
     <div class="algem-logo">
-      <img src="~assets/img/algem/algem_logo.png" width="90" height="40" />
+      <div class="img--algem" />
     </div>
   </div>
 </template>
@@ -27,6 +27,12 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
 
+.img--algem {
+  background-image: url('src/assets/img/algem/algem_high.svg');
+  width: 110px;
+  height: 40px;
+}
+
 .card {
   flex-basis: 50%;
   display: flex;
@@ -37,7 +43,13 @@ export default defineComponent({
   background-size: cover;
   height: 127px;
   border-radius: 5px;
-  padding: 24px 30px;
+  padding: 24px 46px;
+  background-image: url('src/assets/img/banner/banner-algem.png');
+  column-gap: 12px;
+  margin-bottom: 20px;
+  @media (min-width: $sm) {
+    margin-bottom: 0;
+  }
   .txt--subtitle {
     font-style: normal;
     font-weight: 600;
@@ -47,13 +59,10 @@ export default defineComponent({
     align-items: center;
     color: #fff;
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.5);
-    @media (max-width: $sm) {
-      max-width: 125px;
+    max-width: 125px;
+    @media (min-width: $sm) {
+      max-width: 100%;
     }
-  }
-
-  @media (max-width: $sm) {
-    margin-bottom: 20px;
   }
 }
 </style>

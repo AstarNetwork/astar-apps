@@ -222,6 +222,7 @@ export default {
     edit: 'Edit',
     developerIncentive: 'Developer Incentive',
     tokenEra: '{token}/era',
+    dappStakingEvm: 'dApps Staking is available on EVM',
     stakePage: {
       backToDappList: 'Back to dApps list',
       whereFundsFrom: 'Where would you like to bring you funds from?',
