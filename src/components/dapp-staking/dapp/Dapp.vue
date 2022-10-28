@@ -37,8 +37,6 @@ export default defineComponent({
   setup() {
     const { currentNetworkName } = useNetworkInfo();
     const route = useRoute();
-    // Demo: Remove it later
-    useClaimAll();
     const { t } = useI18n();
     const store = useStore();
     const { dapps, stakingList } = useStakingList();
