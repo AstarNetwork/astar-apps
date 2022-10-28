@@ -3,12 +3,6 @@
     <div class="card">
       <p>
         {{ $t('myReward.totalStaked') }}
-        <span class="wrapper--icon-help">
-          <astar-icon-help size="16" />
-        </span>
-        <q-tooltip>
-          <span class="text--tooltip">{{ $t('myReward.totalStaked') }}</span>
-        </q-tooltip>
       </p>
       <div class="row--data">
         <div class="value">
@@ -24,7 +18,7 @@
           <astar-icon-help size="16" />
         </span>
         <q-tooltip>
-          <span class="text--tooltip">{{ $t('myReward.availableToClaim') }}</span>
+          <span class="text--tooltip">{{ $t('myReward.availableToClaimTip') }}</span>
         </q-tooltip>
       </p>
       <div class="row--data">
@@ -44,7 +38,7 @@
           <astar-icon-help size="16" />
         </span>
         <q-tooltip>
-          <span class="text--tooltip">{{ $t('myReward.restake') }}</span>
+          <span class="text--tooltip">{{ $t('myReward.restakeTip') }}</span>
         </q-tooltip>
       </p>
       <div class="row--data">
@@ -57,12 +51,6 @@
     <div class="card">
       <p>
         {{ $t('myReward.totalEarned') }}
-        <span class="wrapper--icon-help">
-          <astar-icon-help size="16" />
-        </span>
-        <q-tooltip>
-          <span class="text--tooltip">{{ $t('myReward.totalEarned') }}</span>
-        </q-tooltip>
       </p>
       <div class="row--data">
         <div v-if="isLoadingClaimed" class="loading">
