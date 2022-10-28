@@ -135,19 +135,10 @@ export default defineComponent({
     };
     const { currentNetworkIdx, nativeTokenSymbol } = useNetworkInfo();
     const isShiden = computed(() => currentNetworkIdx.value === endpointKey.SHIDEN);
-    const item = {
-      tvl: 2.933,
-      tvlUSD: 139.5,
-      currentEra: 120,
-      currentEraETA: '06:20 10-Jun',
-      currentAPR: 10.23,
-      totalDapps: 120,
-    };
     const isLoading = ref(true);
 
     return {
       hero_img,
-      item,
       isLoading,
       isShiden,
       dappsCount,

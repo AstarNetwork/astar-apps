@@ -9,7 +9,7 @@ import { signAndSend } from 'src/hooks/helper/wallet';
 import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
 import { hasExtrinsicFailedEvent } from 'src/modules/extrinsic';
 import { useStore } from 'src/store';
-import { computed, defineComponent, onUnmounted, ref, watch } from 'vue';
+import { computed, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 interface PalletDappsStakingAccountLedger extends Codec {
@@ -35,7 +35,6 @@ export function useUnbonding() {
     },
   });
   const { selectedTip } = useGasPrice();
-  const dapps = computed(() => store.getters['dapps/getAllDapps']);
   const selectedAccountAddress = computed(() => store.getters['general/selectedAddress']);
   const unlockingChunksCount = computed(() => store.getters['dapps/getUnlockingChunks']);
   const maxUnlockingChunks = computed(() => store.getters['dapps/getMaxUnlockingChunks']);
@@ -100,7 +99,6 @@ export function useUnbonding() {
     const ledger = await $api?.query.dappsStaking.ledger<PalletDappsStakingAccountLedger>(
       selectedAccountAddress.value
     );
-    console.log('led', ledger);
 
     if (ledger?.unbondingInfo.unlockingChunks) {
       unlockingChunks.value = ledger.unbondingInfo.unlockingChunks;
