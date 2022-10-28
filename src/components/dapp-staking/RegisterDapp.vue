@@ -222,15 +222,16 @@ export default defineComponent({
         const developerContract =
           currentAddress.value && (await service.getRegisteredContract(currentAddress.value));
         data.address = developerContract ?? '';
-        if (data.address) {
+        if (data.address && currentNetworkName.value) {
           const registeredDapp = await service.getDapp(data.address, currentNetworkName.value);
+          if (registeredDapp && !registeredDapp.tags) {
+            registeredDapp.tags = [];
+          }
+
           if (registeredDapp) {
             data.address = registeredDapp.address;
             data.name = registeredDapp.name;
             data.url = registeredDapp.url;
-            if (!data.tags) {
-              data.tags = [];
-            }
             data.iconFile = getImageUrl(registeredDapp.iconFile);
             data.iconFileName = getImageName(registeredDapp.iconFile?.name);
             // Let quasar file component info that icon is set so it doesn't raise validation error.

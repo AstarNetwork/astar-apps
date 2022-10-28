@@ -3,8 +3,8 @@
     <div
       v-for="(item, index) in availableItems"
       :key="index"
-      :class="['toggle', isChecked(item.value) ? 'toggle-checked' : '']"
-      @click="togglePlatform(item.value)"
+      :class="['toggle', isChecked(item?.value) ? 'toggle-checked' : '']"
+      @click="togglePlatform(item?.value)"
     >
       {{ item.label }}
     </div>
@@ -43,7 +43,7 @@ export default defineComponent({
 
     const togglePlatform = (value: string): void => {
       if (props.allowMultiselect) {
-        const index = selectedItems.value?.findIndex((x) => x === value);
+        const index = selectedItems?.value?.findIndex((x) => x === value);
         if (index > -1) {
           selectedItems.value.splice(index, 1);
         } else {
@@ -59,7 +59,7 @@ export default defineComponent({
     };
 
     const isChecked = (value: string): boolean => {
-      return selectedItems.value.findIndex((x) => x === value) > -1;
+      return selectedItems?.value?.findIndex((x) => x === value) > -1 ?? false;
     };
 
     watch([props], () => {
