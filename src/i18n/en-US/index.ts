@@ -68,6 +68,7 @@ export default {
     telegram: 'Telegram',
     discord: 'Discord',
     github: 'GitHub',
+    linkedIn: 'LinkedIn',
     docs: 'Documentation',
     speed: {
       speed: 'Transaction speed',
@@ -253,7 +254,7 @@ export default {
     dappPage: {
       totalStaked: 'Total Staked',
       totalStaker: 'Total Staker',
-      builders: 'Builders',
+      teams: 'Teams',
       projectOverview: 'Project Overview',
       projectSite: 'Project Site',
       goToApp: 'Go to App',
