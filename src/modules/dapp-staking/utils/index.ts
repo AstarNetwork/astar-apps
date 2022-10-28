@@ -61,6 +61,10 @@ export const getLatestStakePoint = async (
   api: ApiPromise,
   contract: string
 ): Promise<EraStakingPoints | undefined> => {
+  if (!contract) {
+    return undefined;
+  }
+
   const currentEra = await (await api.query.dappsStaking.currentEra<EraIndex>()).toNumber();
   const contractAddress = getDappAddressEnum(contract);
   // iterate from currentEra backwards until you find record for ContractEraStake

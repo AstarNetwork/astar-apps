@@ -222,9 +222,14 @@ export default defineComponent({
         const developerContract =
           currentAddress.value && (await service.getRegisteredContract(currentAddress.value));
         data.address = developerContract ?? '';
-        if (data.address) {
+        if (data.address && currentNetworkName.value) {
           const registeredDapp = await service.getDapp(data.address, currentNetworkName.value);
+          if (registeredDapp && !registeredDapp.tags) {
+            registeredDapp.tags = [];
+          }
+
           if (registeredDapp) {
+            data.address = registeredDapp.address;
             data.name = registeredDapp.name;
             data.url = registeredDapp.url;
             data.iconFile = getImageUrl(registeredDapp.iconFile);
@@ -285,7 +290,10 @@ export default defineComponent({
             getCallFunc,
             signature,
           } as RegisterParameters);
-          router.back();
+
+          if (result) {
+            router.push(Path.DappStaking);
+          }
         }
       });
     };
