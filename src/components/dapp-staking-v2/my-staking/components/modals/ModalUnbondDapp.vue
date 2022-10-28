@@ -55,7 +55,12 @@
       <li>{{ $t('dappStaking.unbondingEra', { unbondingPeriod }) }}</li>
     </div>
 
-    <astar-button width="420" :height="44" :disabled="!amount" @click="unbound()"
+    <astar-button
+      width="420"
+      class="unbond-button"
+      :height="44"
+      :disabled="!amount"
+      @click="unbound()"
       >Start unbonding</astar-button
     >
   </astar-default-modal>
@@ -182,5 +187,10 @@ export default defineComponent({
   margin-top: 20px;
   margin-bottom: 40px;
   width: 100%;
+}
+
+.unbond-button {
+  font-size: 22px;
+  font-weight: 600;
 }
 </style>
