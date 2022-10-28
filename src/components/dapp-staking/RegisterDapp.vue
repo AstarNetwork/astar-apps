@@ -286,7 +286,10 @@ export default defineComponent({
             getCallFunc,
             signature,
           } as RegisterParameters);
-          router.back();
+
+          if (result) {
+            router.push(Path.DappStaking);
+          }
         }
       });
     };
