@@ -1,9 +1,7 @@
 <template>
   <div
     class="panel"
-    :style="`background-image: url('${
-      isShiden ? hero_img.shiden_hero : hero_img.astar_hero
-    }'); margin-top: 40px;`"
+    :style="`background-image: url('${isShiden ? hero_img.shiden_hero : hero_img.astar_hero}');`"
   >
     <div class="wrapper--title">
       <div class="txt--title animate__animated animate__zoomInRight">

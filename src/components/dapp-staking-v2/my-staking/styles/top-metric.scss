@@ -23,7 +23,7 @@
     padding-right: 28px;
   }
 
-  @media (max-width: $lg) {
+  @media (min-width: $md) {
     border-radius: 0px 0px 6px 6px;
   }
 }
