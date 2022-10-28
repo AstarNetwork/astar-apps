@@ -228,6 +228,9 @@ export default defineComponent({
             data.address = registeredDapp.address;
             data.name = registeredDapp.name;
             data.url = registeredDapp.url;
+            if (!data.tags) {
+              data.tags = [];
+            }
             data.iconFile = getImageUrl(registeredDapp.iconFile);
             data.iconFileName = getImageName(registeredDapp.iconFile?.name);
             // Let quasar file component info that icon is set so it doesn't raise validation error.
