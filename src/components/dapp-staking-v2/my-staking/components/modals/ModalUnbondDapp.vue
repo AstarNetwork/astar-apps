@@ -1,6 +1,6 @@
 <template>
   <astar-default-modal
-    :width="480"
+    :width="500"
     :show="show"
     :title="$t('dappStaking.modals.unbondFrom', { name: dapp?.name })"
     @close="close"
@@ -44,10 +44,6 @@
       </div>
     </div>
 
-    <div class="warning">
-      <li>{{ $t('dappStaking.unbondingEra', { unbondingPeriod }) }}</li>
-    </div>
-
     <SpeedConfigurationV2
       class="speed"
       :gas-cost="nativeTipPrice"
@@ -55,7 +51,16 @@
       :set-selected-gas="setSelectedTip"
     />
 
-    <astar-button width="400" :height="44" :disabled="!amount" @click="unbound()"
+    <div class="warning">
+      <li>{{ $t('dappStaking.unbondingEra', { unbondingPeriod }) }}</li>
+    </div>
+
+    <astar-button
+      width="420"
+      class="unbond-button"
+      :height="44"
+      :disabled="!amount"
+      @click="unbound()"
       >Start unbonding</astar-button
     >
   </astar-default-modal>
@@ -180,6 +185,12 @@ export default defineComponent({
   border-radius: 6px;
   padding: 8px;
   margin-top: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
+  width: 100%;
+}
+
+.unbond-button {
+  font-size: 22px;
+  font-weight: 600;
 }
 </style>

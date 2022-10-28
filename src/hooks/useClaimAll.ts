@@ -50,7 +50,7 @@ export function useClaimAll() {
         dapps.value.map(async (it: any) => {
           if (it.contract.state === SmartContractState.Registered && !isH160.value) {
             const transactions = await getIndividualClaimTxs({
-              dappAddress: it.dapp.address,
+              dappAddress: it?.dapp?.address,
               api,
               senderAddress: senderAddressRef,
               currentEra: era.value,
