@@ -5,13 +5,17 @@
       <div class="wrapper--tabs responsive">
         <nav class="tabs">
           <div class="tab" :class="currentTab === 0 ? 'active' : ''" @click="currentTab = 0">
-            {{ $t('dappStaking.myRewards') }}
+            <span class="text--tab">
+              {{ $t('dappStaking.myRewards') }}
+            </span>
           </div>
           <div class="tab" :class="currentTab === 1 ? 'active' : ''" @click="currentTab = 1">
-            {{ $t('dappStaking.unbonding') }}
+            <span class="text--tab"> {{ $t('dappStaking.unbonding') }} </span>
           </div>
           <div class="tab" :class="currentTab === 2 ? 'active' : ''" @click="currentTab = 2">
-            {{ $t('dappStaking.myDapps') }}
+            <span class="text--tab">
+              {{ $t('dappStaking.myDapps') }}
+            </span>
           </div>
         </nav>
 
