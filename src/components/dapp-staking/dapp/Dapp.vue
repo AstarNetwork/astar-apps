@@ -22,7 +22,6 @@ import DappImages from 'src/components/dapp-staking/dapp/DappImages.vue';
 import Builders from 'src/components/dapp-staking/dapp/Builders.vue';
 import ProjectOverview from 'src/components/dapp-staking/dapp/ProjectOverview.vue';
 import ProjectDetails from 'src/components/dapp-staking/dapp/ProjectDetails.vue';
-import { useClaimAll } from 'src/hooks';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
