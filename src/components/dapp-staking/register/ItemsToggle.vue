@@ -43,7 +43,7 @@ export default defineComponent({
 
     const togglePlatform = (value: string): void => {
       if (props.allowMultiselect) {
-        const index = selectedItems.value.findIndex((x) => x === value);
+        const index = selectedItems.value?.findIndex((x) => x === value);
         if (index > -1) {
           selectedItems.value.splice(index, 1);
         } else {
