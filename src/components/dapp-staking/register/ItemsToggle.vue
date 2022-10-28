@@ -47,7 +47,9 @@ export default defineComponent({
         if (index > -1) {
           selectedItems.value.splice(index, 1);
         } else {
-          selectedItems.value.push(value);
+          if (value) {
+            selectedItems.value.push(value);
+          }
         }
       } else {
         selectedItems.value = [value];
