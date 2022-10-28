@@ -18,6 +18,8 @@ export enum SupportWallet {
   SubWalletEvm = 'SubWallet',
   Metadot = 'metadot',
   Wallet3 = 'wallet3',
+  HanaNative = 'hana',
+  HanaEvm = 'hanaEvm',
 }
 
 export const WalletModalOption = {
@@ -47,6 +49,7 @@ export const SubstrateWallets = [
   SupportWallet.SubWalletNative,
   SupportWallet.Metadot,
   SupportWallet.Wallet3,
+  SupportWallet.HanaNative,
 ];
 
 export interface Wallet {
@@ -125,6 +128,15 @@ export const supportWalletObj = {
     isSupportBrowserExtension: true,
     isSupportMobileApp: false,
   },
+  [SupportWallet.HanaNative]: {
+    img: require('/src/assets/img/logo-hana.png'),
+    name: 'Hana Wallet (Native)',
+    source: SupportWallet.HanaNative,
+    walletUrl: 'https://hanawallet.io/',
+    guideUrl: 'https://hanawallet.io/',
+    isSupportBrowserExtension: true,
+    isSupportMobileApp: false,
+  },
 };
 
 export const supportEvmWalletObj = {
@@ -176,6 +188,16 @@ export const supportEvmWalletObj = {
     guideUrl: 'https://novawallet.io/',
     isSupportBrowserExtension: false,
     isSupportMobileApp: true,
+    ethExtension: 'ethereum',
+  },
+  [SupportWallet.HanaEvm]: {
+    img: require('/src/assets/img/logo-hana.png'),
+    name: 'Hana Wallet (EVM)',
+    source: SupportWallet.HanaEvm,
+    walletUrl: 'https://hanawallet.io/',
+    guideUrl: 'https://hanawallet.io/',
+    isSupportBrowserExtension: true,
+    isSupportMobileApp: false,
     ethExtension: 'ethereum',
   },
 };
