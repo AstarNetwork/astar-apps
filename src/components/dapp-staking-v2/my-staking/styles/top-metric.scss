@@ -120,6 +120,10 @@
       line-height: 18px;
       color: $gray-1;
 
+      .txt--tvl {
+        white-space: nowrap;
+      }
+
       .detail-value {
         font-size: 12px;
         font-weight: 500;

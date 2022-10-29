@@ -17,7 +17,7 @@
         <span class="wrapper--icon-help">
           <astar-icon-help size="16" />
         </span>
-        <q-tooltip>
+        <q-tooltip max-width="200px">
           <span class="text--tooltip">{{ $t('myReward.availableToClaimTip') }}</span>
         </q-tooltip>
       </p>
@@ -37,7 +37,7 @@
         <span class="wrapper--icon-help">
           <astar-icon-help size="16" />
         </span>
-        <q-tooltip>
+        <q-tooltip max-width="200px">
           <span class="text--tooltip">{{ $t('myReward.restakeTip') }}</span>
         </q-tooltip>
       </p>
