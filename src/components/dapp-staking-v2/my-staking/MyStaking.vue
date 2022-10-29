@@ -5,7 +5,9 @@
       <div class="wrapper--tabs responsive">
         <nav class="tabs">
           <div class="tab" :class="currentTab === 0 ? 'active' : ''" @click="currentTab = 0">
-            {{ $t('dappStaking.myRewards') }}
+            <span class="text--tab">
+              {{ $t('dappStaking.myRewards') }}
+            </span>
           </div>
           <div
             v-if="unlockingChunks"
