@@ -7,18 +7,10 @@
   max-width: 1295px;
   margin-top: 34px;
   justify-content: space-between;
-
-  @media (min-width: $lg) {
-    gap: 16px;
-  }
-
-  @media (max-width: $lg) {
-    gap: 16px;
-  }
-
-  @media (max-width: $md) {
-    flex-wrap: wrap;
-    padding-right: 0;
+  gap: 16px;
+  flex-wrap: wrap;
+  @media (min-width: $md) {
+    flex-wrap: nowrap;
   }
 }
 
@@ -31,31 +23,44 @@
   flex-direction: column;
   flex-basis: 24%;
   min-width: 200px;
-  height: 142px;
   background: $gray-1;
   border-radius: 6px;
-  padding: 40px 24px;
-  justify-content: center;
-
+  min-width: 150px;
+  padding: 24px 16px;
+  flex-basis: 100%;
+  width: 100%;
   @media (min-width: $lg) {
+    padding: 32px 24px;
     padding-right: 10px;
     padding-left: 10px;
     min-width: auto;
   }
 
-  p {
+  @media (min-width: $xl) {
+    min-width: 160px;
+  }
+
+  .row--title {
     display: flex;
     align-items: center;
     gap: 5px;
     font-weight: 600;
     font-size: 14px;
     color: $gray-3;
+    height: 30px;
+    @media (min-width: $lg) {
+      margin-bottom: 16px;
+    }
   }
   .row--data {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 23px;
+    height: 30px;
+    margin-top: 15px;
+    @media (min-width: $lg) {
+      margin-top: 0px;
+    }
 
     .loading {
       width: 80px;
@@ -66,26 +71,6 @@
     font-size: 20px;
     line-height: 18px;
     color: $gray-5-selected;
-  }
-
-  @media (min-width: $xl) {
-    min-width: 160px;
-  }
-
-  @media (max-width: $lg) {
-    min-width: 150px;
-    height: 114px;
-    padding: 24px 16px;
-
-    .row--data {
-      margin-top: 15px;
-    }
-  }
-
-  @media (max-width: $md) {
-    display: block;
-    width: 100%;
-    flex-basis: 100%;
   }
 }
 
@@ -106,6 +91,10 @@
     box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.15);
 
     p {
+      color: $gray-3;
+    }
+
+    .row--title {
       color: $gray-3;
     }
 
