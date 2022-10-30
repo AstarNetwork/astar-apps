@@ -16,7 +16,7 @@
         {{ $t('myReward.availableToClaim') }}
         <span class="wrapper--icon-help">
           <astar-icon-help size="16" />
-          <q-tooltip max-width="200px">
+          <q-tooltip max-width="200px" class="box--tooltip">
             <span class="text--tooltip">{{ $t('myReward.availableToClaimTip') }}</span>
           </q-tooltip>
         </span>
@@ -36,7 +36,7 @@
         {{ $t('myReward.restake') }}
         <span class="wrapper--icon-help">
           <astar-icon-help size="16" />
-          <q-tooltip max-width="200px">
+          <q-tooltip max-width="200px" class="box--tooltip">
             <span class="text--tooltip">{{ $t('myReward.restakeTip') }}</span>
           </q-tooltip>
         </span>
