@@ -16,10 +16,10 @@
         {{ $t('myReward.availableToClaim') }}
         <span class="wrapper--icon-help">
           <astar-icon-help size="16" />
+          <q-tooltip max-width="200px">
+            <span class="text--tooltip">{{ $t('myReward.availableToClaimTip') }}</span>
+          </q-tooltip>
         </span>
-        <q-tooltip max-width="200px">
-          <span class="text--tooltip">{{ $t('myReward.availableToClaimTip') }}</span>
-        </q-tooltip>
       </p>
       <div class="row--data">
         <div v-if="isLoading" class="loading">
@@ -36,10 +36,10 @@
         {{ $t('myReward.restake') }}
         <span class="wrapper--icon-help">
           <astar-icon-help size="16" />
+          <q-tooltip max-width="200px">
+            <span class="text--tooltip">{{ $t('myReward.restakeTip') }}</span>
+          </q-tooltip>
         </span>
-        <q-tooltip max-width="200px">
-          <span class="text--tooltip">{{ $t('myReward.restakeTip') }}</span>
-        </q-tooltip>
       </p>
       <div class="row--data">
         <div class="value">{{ isCompounding ? $t('dappStaking.on') : $t('dappStaking.off') }}</div>
