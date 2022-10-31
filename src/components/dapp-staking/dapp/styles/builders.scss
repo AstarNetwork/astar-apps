@@ -12,12 +12,15 @@
 
 .card--builders {
   background: $gray-1;
-  width: 170px;
+  width: 162px;
   height: 118px;
   padding: 16px;
   border-radius: 6px;
   display: flex;
   flex-direction: column;
+  @media (min-width: $sm) {
+    width: 170px;
+  }
 }
 
 .image--builder-icon {
@@ -54,7 +57,7 @@
 
 .row--icons {
   display: flex;
-  column-gap: 20px;
+  column-gap: 8px;
   align-items: center;
   margin-top: -10px;
 }
@@ -80,12 +83,28 @@
     }
   }
   &:hover {
-    color: white;
-    stroke: white;
-    background-color: $astar-blue;
-    svg {
+    .btn--effect {
+      color: white;
       stroke: white;
+      svg {
+        stroke: white;
+      }
     }
+    background-color: $astar-blue;
+  }
+}
+
+.box--builders {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  @media (min-width: 390px) {
+    column-gap: 24px;
+    justify-content: flex-start;
+  }
+  @media (min-width: $sm) {
+    column-gap: 24px;
   }
 }
 

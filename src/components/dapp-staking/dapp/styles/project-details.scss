@@ -70,6 +70,10 @@
   color: $astar-blue;
 }
 
+.row--tags {
+  display: flex;
+}
+
 .tag {
   background-color: $gray-2;
   border-radius: 6px;
