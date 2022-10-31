@@ -158,6 +158,10 @@ export default {
     restake: 'Re-Stake after claiming',
     turnOff: 'Turn Off',
     totalEarned: 'Total Earned (all-time)',
+    availableToClaimTip:
+      'Number of eras that is shown here is per dApp. The maximum number of eras you can claim at once is 50. You may need to claim multiple times if you leave it too long.',
+    restakeTip:
+      'By turning on, your rewards will be automatically re-staked when you make a claim.',
   },
   dappStaking: {
     myStaking: 'My Staking',

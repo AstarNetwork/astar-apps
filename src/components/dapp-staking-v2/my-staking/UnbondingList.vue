@@ -64,8 +64,8 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
-import { useBreakpoints, useStakerInfo } from 'src/hooks';
+import { defineComponent, ref, computed, PropType } from 'vue';
+import { useBreakpoints } from 'src/hooks';
 import { ChunkInfo, useUnbonding } from 'src/hooks/dapps-staking/useUnbonding';
 import DropdownList from './components/DropdownList.vue';
 import FormatBalance from 'components/common/FormatBalance.vue';
@@ -74,10 +74,15 @@ import ModalWithdraw from 'src/components/dapp-staking-v2/my-staking/components/
 
 export default defineComponent({
   components: { DropdownList, ModalWithdraw, FormatBalance },
-  setup() {
+  props: {
+    unlockingChunks: {
+      type: Object as PropType<ChunkInfo[] | undefined>,
+      required: true,
+    },
+  },
+  setup(props) {
     const { width, screenSize } = useBreakpoints();
-    const { myStakeInfos } = useStakerInfo();
-    const { unlockingChunks, withdraw } = useUnbonding();
+    const { withdraw } = useUnbonding();
 
     const showModalWithdraw = ref(false);
     const showModalRebond = ref(false);
@@ -95,7 +100,7 @@ export default defineComponent({
     };
 
     const unlockItems = computed(() => {
-      return unlockingChunks.value?.map((item: ChunkInfo, index) => {
+      return props.unlockingChunks?.map((item: ChunkInfo, index) => {
         return {
           ...item,
           name: `Chunk ${index + 1}`,
@@ -106,7 +111,6 @@ export default defineComponent({
     return {
       width,
       screenSize,
-      myStakeInfos,
       unlockItems,
       showModalWithdraw,
       showModalRebond,

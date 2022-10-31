@@ -9,13 +9,21 @@
               {{ $t('dappStaking.myRewards') }}
             </span>
           </div>
-          <div class="tab" :class="currentTab === 1 ? 'active' : ''" @click="currentTab = 1">
-            <span class="text--tab"> {{ $t('dappStaking.unbonding') }} </span>
+          <div
+            v-if="unlockingChunks"
+            class="tab"
+            :class="currentTab === 1 ? 'active' : ''"
+            @click="currentTab = 1"
+          >
+            {{ $t('dappStaking.unbonding') }}
           </div>
-          <div class="tab" :class="currentTab === 2 ? 'active' : ''" @click="currentTab = 2">
-            <span class="text--tab">
-              {{ $t('dappStaking.myDapps') }}
-            </span>
+          <div
+            v-if="myStakeInfos && myStakeInfos.length > 0"
+            class="tab"
+            :class="currentTab === 2 ? 'active' : ''"
+            @click="currentTab = 2"
+          >
+            {{ $t('dappStaking.myDapps') }}
           </div>
         </nav>
 
@@ -34,10 +42,10 @@
           <MyRewards />
         </template>
         <template v-else-if="currentTab === 1">
-          <UnbondingList />
+          <UnbondingList :unlocking-chunks="unlockingChunks" />
         </template>
         <template v-else>
-          <MyDapps />
+          <MyDapps :my-stake-infos="myStakeInfos" />
         </template>
       </div>
     </div>
@@ -47,7 +55,8 @@
 import { defineComponent, ref, computed } from 'vue';
 import { ethers } from 'ethers';
 import { useStore } from 'src/store';
-import { useBalance, useNetworkInfo } from 'src/hooks';
+import { useBalance, useNetworkInfo, useStakerInfo } from 'src/hooks';
+import { useUnbonding } from 'src/hooks/dapps-staking/useUnbonding';
 import MyRewards from 'src/components/dapp-staking-v2/my-staking/MyRewards.vue';
 import UnbondingList from 'src/components/dapp-staking-v2/my-staking/UnbondingList.vue';
 import MyDapps from 'src/components/dapp-staking-v2/my-staking/MyDapps.vue';
@@ -75,11 +84,16 @@ export default defineComponent({
       return Number(balance);
     });
 
+    const { unlockingChunks } = useUnbonding();
+    const { myStakeInfos } = useStakerInfo();
+
     return {
       currentTab,
       isLoadingBalance,
       transferableBalance,
       nativeTokenSymbol,
+      unlockingChunks,
+      myStakeInfos,
     };
   },
 });

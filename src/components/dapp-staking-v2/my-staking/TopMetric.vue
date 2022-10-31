@@ -15,19 +15,21 @@
       <div class="card">
         <p>
           {{ $t('topMetric.tvlInDapps') }}
-          <span class="wrapper--icon-help">
+          <!-- <span class="wrapper--icon-help">
             <astar-icon-help size="16" />
           </span>
           <q-tooltip>
             <span class="text--tooltip">{{ $t('topMetric.tvlInDapps') }}</span>
-          </q-tooltip>
+          </q-tooltip> -->
         </p>
         <div class="row--data">
           <div v-if="!tvl" class="loading">
             <q-skeleton type="rect" animation="fade" />
           </div>
           <div v-else class="column--tvl">
-            <div>{{ formatNumber(tvl.tvlDefaultUnit, 2) }} {{ nativeTokenSymbol }}</div>
+            <div class="txt--tvl">
+              {{ formatNumber(tvl.tvlDefaultUnit, 2) }} {{ nativeTokenSymbol }}
+            </div>
             <div>(${{ formatNumber(tvl.tvlUsd, 1) }})</div>
           </div>
         </div>
@@ -35,12 +37,12 @@
       <div class="card">
         <p>
           {{ $t('topMetric.currentEra') }}
-          <span class="wrapper--icon-help">
+          <!-- <span class="wrapper--icon-help">
             <astar-icon-help size="16" />
           </span>
           <q-tooltip>
             <span class="text--tooltip">{{ $t('topMetric.currentEra') }}</span>
-          </q-tooltip>
+          </q-tooltip> -->
         </p>
         <div class="row--data">
           <div v-if="!currentEra" class="loading">
@@ -55,12 +57,12 @@
       <div class="card">
         <p>
           {{ $t('topMetric.currentStakersApr') }}
-          <span class="wrapper--icon-help">
+          <!-- <span class="wrapper--icon-help">
             <astar-icon-help size="16" />
           </span>
           <q-tooltip>
             <span class="text--tooltip">{{ $t('topMetric.currentStakersApr') }}</span>
-          </q-tooltip>
+          </q-tooltip> -->
         </p>
         <div class="row--data">
           <div v-if="!aprPercent" class="loading">
@@ -89,12 +91,12 @@
       <div class="card">
         <p>
           {{ $t('topMetric.totalDapps') }}
-          <span class="wrapper--icon-help">
+          <!-- <span class="wrapper--icon-help">
             <astar-icon-help size="16" />
           </span>
           <q-tooltip>
             <span class="text--tooltip">{{ $t('topMetric.totalDapps') }}</span>
-          </q-tooltip>
+          </q-tooltip> -->
         </p>
         <div class="row--data">
           <div v-if="!dappsCount" class="loading">
@@ -133,19 +135,10 @@ export default defineComponent({
     };
     const { currentNetworkIdx, nativeTokenSymbol } = useNetworkInfo();
     const isShiden = computed(() => currentNetworkIdx.value === endpointKey.SHIDEN);
-    const item = {
-      tvl: 2.933,
-      tvlUSD: 139.5,
-      currentEra: 120,
-      currentEraETA: '06:20 10-Jun',
-      currentAPR: 10.23,
-      totalDapps: 120,
-    };
     const isLoading = ref(true);
 
     return {
       hero_img,
-      item,
       isLoading,
       isShiden,
       dappsCount,

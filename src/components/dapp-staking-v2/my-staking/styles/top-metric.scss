@@ -114,10 +114,15 @@
       }
     }
     .column--tvl {
+      display: flex;
       font-weight: 600;
-      font-size: 20px;
+      font-size: 19px;
       line-height: 18px;
       color: $gray-1;
+
+      .txt--tvl {
+        white-space: nowrap;
+      }
 
       .detail-value {
         font-size: 12px;

@@ -1,15 +1,9 @@
 <template>
   <div class="wrapper--cards">
     <div class="card">
-      <p>
+      <div class="row--title">
         {{ $t('myReward.totalStaked') }}
-        <span class="wrapper--icon-help">
-          <astar-icon-help size="16" />
-        </span>
-        <q-tooltip>
-          <span class="text--tooltip">{{ $t('myReward.totalStaked') }}</span>
-        </q-tooltip>
-      </p>
+      </div>
       <div class="row--data">
         <div class="value">
           <q-skeleton v-if="isLoadingTotalStaked" animation="fade" class="skeleton--md" />
@@ -18,15 +12,15 @@
       </div>
     </div>
     <div class="card">
-      <p>
+      <div class="row--title">
         {{ $t('myReward.availableToClaim') }}
         <span class="wrapper--icon-help">
           <astar-icon-help size="16" />
+          <q-tooltip max-width="200px" class="box--tooltip">
+            <span class="text--tooltip">{{ $t('myReward.availableToClaimTip') }}</span>
+          </q-tooltip>
         </span>
-        <q-tooltip>
-          <span class="text--tooltip">{{ $t('myReward.availableToClaim') }}</span>
-        </q-tooltip>
-      </p>
+      </div>
       <div class="row--data">
         <div v-if="isLoading" class="loading">
           <q-skeleton type="rect" animation="fade" />
@@ -38,15 +32,15 @@
       </div>
     </div>
     <div class="card">
-      <p>
+      <div class="row--title">
         {{ $t('myReward.restake') }}
         <span class="wrapper--icon-help">
           <astar-icon-help size="16" />
+          <q-tooltip max-width="200px" class="box--tooltip">
+            <span class="text--tooltip">{{ $t('myReward.restakeTip') }}</span>
+          </q-tooltip>
         </span>
-        <q-tooltip>
-          <span class="text--tooltip">{{ $t('myReward.restake') }}</span>
-        </q-tooltip>
-      </p>
+      </div>
       <div class="row--data">
         <div class="value">{{ isCompounding ? $t('dappStaking.on') : $t('dappStaking.off') }}</div>
         <astar-button :width="80" :height="24" @click="changeDestinationForRestaking">{{
@@ -55,20 +49,11 @@
       </div>
     </div>
     <div class="card">
-      <p>
+      <div class="row--title">
         {{ $t('myReward.totalEarned') }}
-        <span class="wrapper--icon-help">
-          <astar-icon-help size="16" />
-        </span>
-        <q-tooltip>
-          <span class="text--tooltip">{{ $t('myReward.totalEarned') }}</span>
-        </q-tooltip>
-      </p>
+      </div>
       <div class="row--data">
-        <div v-if="isLoadingClaimed" class="loading">
-          <q-skeleton type="rect" animation="fade" />
-        </div>
-        <div v-else class="value">
+        <div class="value">
           <token-balance :balance="claimed.toString()" :symbol="nativeTokenSymbol" />
         </div>
         <astar-irregular-button @click="goToSubscan">
