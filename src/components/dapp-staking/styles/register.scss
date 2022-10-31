@@ -24,9 +24,9 @@
 }
 
 .container--register {
-  margin-top: 60px;
   max-width: $register-form-max-width;
   justify-self: center;
+  margin-top: 60px;
 
   @media (min-width: $md) {
     width: $container-max-width;  

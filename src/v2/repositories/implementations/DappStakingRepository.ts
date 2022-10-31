@@ -242,9 +242,13 @@ export class DappStakingRepository implements IDappStakingRepository {
     Guard.ThrowIfUndefined('network', network);
 
     const url = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/dapps-staking/dapps/${contractAddress}`;
-    const response = await axios.get<EditDappItem>(url);
 
-    return response.data;
+    try {
+      const response = await axios.get<EditDappItem>(url);
+      return response.data;
+    } catch {
+      return undefined;
+    }
   }
 
   public async getLedger(accountAddress: string): Promise<AccountLedger> {
