@@ -31,3 +31,11 @@
     width: $container-max-width;  
   }
 }
+
+.validation-warning {
+  background: rgba(240, 185, 11, 0.2);
+  border: 1px solid #f0b90b;
+  border-radius: 6px;
+  padding: 8px;
+  margin-bottom: 40px;
+}

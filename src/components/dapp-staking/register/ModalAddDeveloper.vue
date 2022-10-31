@@ -1,9 +1,9 @@
 <template>
-  <modal-wrapper
-    :is-modal-open="isModalAddDeveloper"
+  <astar-default-modal
+    :show="show"
     :title="$t('dappStaking.modals.builder.title')"
-    :is-closing="isClosingModal"
-    :close-modal="closeModal"
+    :width="544"
+    @close="closeModal"
   >
     <div class="developers-wrapper">
       <q-form ref="developerForm">
@@ -67,18 +67,19 @@
           class="component"
         />
 
-        <div class="button--container">
-          <Button :width="328" :height="52" @click="handleConfirm">
-            {{ $t('confirm') }}
-          </Button>
+        <div class="validation-warning">
+          <li>{{ $t('dappStaking.modals.builder.error.buildersRequired') }}</li>
         </div>
+
+        <Button :width="464" :height="52" @click="handleConfirm">
+          {{ $t('confirm') }}
+        </Button>
       </q-form>
     </div>
-  </modal-wrapper>
+  </astar-default-modal>
 </template>
 
 <script lang="ts">
-import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 import { wait } from 'src/hooks/helper/common';
 import { defineComponent, ref, toRefs, PropType, computed, watch } from 'vue';
 import { fadeDuration, Button } from '@astar-network/astar-ui';
@@ -89,13 +90,12 @@ import Avatar from 'src/components/common/Avatar.vue';
 
 export default defineComponent({
   components: {
-    ModalWrapper,
     ImageCard,
     Avatar,
     Button,
   },
   props: {
-    isModalAddDeveloper: {
+    show: {
       type: Boolean,
       required: true,
     },
@@ -165,7 +165,7 @@ export default defineComponent({
 
     watch([props], () => {
       // When dialog is shown, assign currentDeveloper.
-      if (props.isModalAddDeveloper) {
+      if (props.show) {
         currentDeveloper.value = { ...props.developer };
         isNewDeveloper.value = !props.developer.name;
 
@@ -199,9 +199,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @use 'src/components/assets/styles/assets.scss';
+@use 'src/components/dapp-staking/styles/register.scss';
 
 .component {
-  margin-bottom: 20px;
+  margin-bottom: 4px;
 }
 
 .card {

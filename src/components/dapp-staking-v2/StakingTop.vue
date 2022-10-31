@@ -4,45 +4,47 @@
 
     <Register />
 
+    <BannerArea />
+
     <div class="divider"></div>
 
     <MyStaking />
 
     <div class="divider"></div>
 
-    <DappList category="De-Fi" />
+    <DappList category="DeFi" />
 
     <AdsArea />
 
     <div class="divider"></div>
 
-    <DappList category="Infra" />
+    <DappList category="NFT" />
 
     <div class="divider"></div>
 
-    <DappList category="NFT" />
+    <DappList category="Tooling" />
 
-    <Teleport to="#app--main">
-      <div :class="!isLoading && 'highest-z-index'">
-        <!-- <ModalRegisterDapp
-          v-if="showRegisterDappModal"
-          v-model:is-open="showRegisterDappModal"
-          :show-close-button="false"
-        /> -->
-      </div>
-    </Teleport>
+    <div class="divider"></div>
+
+    <DappList category="Utility" />
+
+    <div class="divider"></div>
+
+    <DappList category="Others" />
   </div>
 </template>
 
 <script lang="ts">
 import { useMeta } from 'quasar';
+import { useAccount, useNetworkInfo } from 'src/hooks';
 import { useStore } from 'src/store';
 import TopMetric from 'src/components/dapp-staking-v2/my-staking/TopMetric.vue';
 import MyStaking from 'src/components/dapp-staking-v2/my-staking/MyStaking.vue';
 import DappList from 'src/components/dapp-staking-v2/my-staking/DappList.vue';
 import Register from 'src/components/dapp-staking-v2/my-staking/Register.vue';
-import { computed, defineComponent } from 'vue';
+import { computed, defineComponent, watchEffect } from 'vue';
 import AdsArea from './my-staking/AdsArea.vue';
+import BannerArea from './my-staking/BannerArea.vue';
 
 export default defineComponent({
   components: {
@@ -51,11 +53,23 @@ export default defineComponent({
     DappList,
     AdsArea,
     Register,
+    BannerArea,
   },
   setup() {
     useMeta({ title: 'Discover dApps' });
     const store = useStore();
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
+
+    const { currentNetworkName } = useNetworkInfo();
+    const { currentAccount } = useAccount();
+    watchEffect(() => {
+      if (!currentNetworkName.value) return;
+      store.dispatch('dapps/getDapps', {
+        network: currentNetworkName.value.toLowerCase(),
+        currentAccount: currentAccount.value ? currentAccount.value : '',
+      });
+    });
+    store.dispatch('dapps/getTvl');
 
     return {
       isLoading,
@@ -71,8 +85,15 @@ export default defineComponent({
   padding: 0px 0px 24px 0px;
   margin: 0 auto;
 
-  @media (max-width: $lg) {
-    max-width: $lg;
+  @media (min-width: $md) {
+    max-width: 720px;
+  }
+
+  @media (min-width: $widthCardLineUp) {
+    max-width: 100%;
+  }
+  @media (min-width: $lg) {
+    margin-top: 48px;
   }
 }
 

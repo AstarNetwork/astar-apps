@@ -1,5 +1,6 @@
 <template>
   <div class="container--register">
+    <back-to-page :text="$t('dappStaking.stakePage.backToDappList')" :link="Path.DappStaking" />
     <q-form ref="dappForm">
       <div style="display: flex; flex-direction: column">
         <q-input
@@ -61,7 +62,6 @@
         <builders :dapp="data" :validation-error="errors.builders" />
         <description :dapp="data" class="custom-component" />
         <community :dapp="data" :validation-error="errors.community" class="custom-component" />
-        <platforms :dapp="data" :validation-error="errors.platform" class="custom-component" />
         <contract-types :dapp="data" class="custom-component" />
         <main-category :dapp="data" class="custom-component" />
         <tags :dapp="data" class="component" />
@@ -89,7 +89,6 @@ import Builders from 'src/components/dapp-staking/register/Builders.vue';
 import Community from 'src/components/dapp-staking/register/Community.vue';
 import DappImages from 'src/components/dapp-staking/register/DappImages.vue';
 import Description from 'src/components/dapp-staking/register/Description.vue';
-import Platforms from 'src/components/dapp-staking/register/Platforms.vue';
 import ContractTypes, {
   possibleContractTypes,
 } from 'src/components/dapp-staking/register/ContractTypes.vue';
@@ -109,6 +108,8 @@ import { useStore } from 'src/store';
 import { useCustomSignature, useGasPrice, useNetworkInfo, useSignPayload } from 'src/hooks';
 import { useExtrinsicCall } from 'src/hooks/custom-signature/useExtrinsicCall';
 import { RegisterParameters } from 'src/store/dapp-staking/actions';
+import { Path } from 'src/router';
+import BackToPage from 'src/components/common/BackToPage.vue';
 import { useRouter } from 'vue-router';
 
 export default defineComponent({
@@ -119,12 +120,12 @@ export default defineComponent({
     Community,
     DappImages,
     Description,
-    Platforms,
     ContractTypes,
     MainCategory,
     License,
     Button,
     Tags,
+    BackToPage,
   },
   setup() {
     const initDeveloper = (): Developer => ({
@@ -159,7 +160,6 @@ export default defineComponent({
     data.icon = new File([], t('dappStaking.modals.addLogo'));
     data.developers = [];
     data.communities = [];
-    data.platforms = [];
     data.tags = [];
     data.mainCategory = currentCategory.value.value as Category;
     data.license = possibleLicenses[0].value;
@@ -197,8 +197,6 @@ export default defineComponent({
         data.developers.length > 1 ? '' : t('dappStaking.modals.builder.error.buildersRequired');
       errors.value.community =
         data.communities.length > 0 ? '' : t('dappStaking.modals.community.communityRequired');
-      errors.value.platform =
-        data.platforms.length > 0 ? '' : t('dappStaking.modals.platformRequired');
 
       for (const [key, value] of Object.entries(errors.value)) {
         if (value) {
@@ -227,6 +225,7 @@ export default defineComponent({
         if (data.address) {
           const registeredDapp = await service.getDapp(data.address, currentNetworkName.value);
           if (registeredDapp) {
+            data.address = registeredDapp.address;
             data.name = registeredDapp.name;
             data.url = registeredDapp.url;
             data.iconFile = getImageUrl(registeredDapp.iconFile);
@@ -251,7 +250,6 @@ export default defineComponent({
               : [];
             data.description = registeredDapp.description;
             data.communities = registeredDapp.communities ?? [];
-            data.platforms = registeredDapp.platforms ?? [];
             data.contractType = registeredDapp.contractType ?? possibleContractTypes[2].value; // default to evm
             data.mainCategory =
               registeredDapp.mainCategory ?? (currentCategory.value.value as Category);
@@ -290,7 +288,9 @@ export default defineComponent({
             signature,
           } as RegisterParameters);
 
-          router.back();
+          if (result) {
+            router.push(Path.DappStaking);
+          }
         }
       });
     };
@@ -313,6 +313,7 @@ export default defineComponent({
       currentCategory,
       dappForm,
       errors,
+      Path,
       isValidAddress,
       updateDappLogo,
       isUrlValid,

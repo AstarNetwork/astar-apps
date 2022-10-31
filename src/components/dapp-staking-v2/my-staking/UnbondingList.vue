@@ -5,28 +5,36 @@
         <table id="my-table">
           <thead>
             <tr>
-              <th>{{ $t('myDapps.dapps') }}</th>
+              <!-- <th>{{ $t('myDapps.dapps') }}</th> -->
+              <th>{{ $t('myDapps.index') }}</th>
               <th>{{ $t('myDapps.unbondingAmount') }}</th>
               <th>{{ $t('myDapps.remainingEra') }}</th>
               <th>{{ $t('myDapps.withdraw') }}</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="t in items" :key="t.id">
+            <tr v-for="(t, index) in unlockItems" :key="index">
               <td>{{ t.name }}</td>
-              <td>{{ t.unbondingAmount.toLocaleString() }} ASTR</td>
+              <td><format-balance :balance="t.amount.toString()" /></td>
               <td>
                 <div class="row--remaining-era">
-                  <div>{{ t.remainingEra }}</div>
-                  <astar-irregular-button width="77" height="20">{{
-                    $t('myDapps.rebond')
-                  }}</astar-irregular-button>
+                  <div>{{ t.unlockEra.toHuman() }}</div>
+                  <!-- <astar-irregular-button
+                    :width="77"
+                    :height="20"
+                    @click="showRebondDialog(t.amount.toString())"
+                    >{{ $t('myDapps.rebond') }}</astar-irregular-button
+                  > -->
                 </div>
               </td>
               <td>
-                <astar-button width="97" height="24" :disabled="!t.isEnabled">{{
-                  $t('myDapps.withdraw')
-                }}</astar-button>
+                <astar-button
+                  :width="97"
+                  :height="24"
+                  :disabled="t.erasBeforeUnlock !== 0"
+                  @click="showWithdrawDialog(t.amount.toString())"
+                  >{{ $t('myDapps.withdraw') }}</astar-button
+                >
               </td>
             </tr>
           </tbody>
@@ -34,49 +42,78 @@
       </div>
     </template>
     <template v-else>
-      <DropdownList is-unbonding :items="items" />
+      <dropdown-list is-unbonding :items="unlockItems" />
     </template>
+
+    <Teleport to="#app--main">
+      <div :class="'highest-z-index'">
+        <modal-withdraw
+          v-model:is-open="showModalWithdraw"
+          :show="showModalWithdraw"
+          :withdraw-amount="totalAmount"
+          @confirm="withdraw"
+        />
+        <!-- <modal-rebond
+          v-model:is-open="showModalRebond"
+          :show="showModalRebond"
+          :rebond-amount="totalAmount"
+          @confirm="rebond"
+        /> -->
+      </div>
+    </Teleport>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { useBreakpoints } from 'src/hooks';
+import { defineComponent, ref, computed } from 'vue';
+import { useBreakpoints, useStakerInfo } from 'src/hooks';
+import { ChunkInfo, useUnbonding } from 'src/hooks/dapps-staking/useUnbonding';
 import DropdownList from './components/DropdownList.vue';
+import FormatBalance from 'components/common/FormatBalance.vue';
+import ModalWithdraw from 'src/components/dapp-staking-v2/my-staking/components/modals/ModalWithdraw.vue';
+// import ModalRebond from 'src/components/dapp-staking-v2/my-staking/components/modals/ModalRebond.vue';
 
 export default defineComponent({
-  components: { DropdownList },
+  components: { DropdownList, ModalWithdraw, FormatBalance },
   setup() {
     const { width, screenSize } = useBreakpoints();
+    const { myStakeInfos } = useStakerInfo();
+    const { unlockingChunks, withdraw } = useUnbonding();
 
-    //TODO: need refactor as module
-    const items = [
-      {
-        id: 0,
-        name: 'Astar Degens',
-        unbondingAmount: 10000,
-        remainingEra: 8,
-        isEnabled: true,
-      },
-      {
-        id: 1,
-        name: 'ArthSwap',
-        unbondingAmount: 10000,
-        remainingEra: 8,
-        isEnabled: true,
-      },
-      {
-        id: 2,
-        name: 'Starlay Finance',
-        unbondingAmount: 10000,
-        remainingEra: 8,
-        isEnabled: false,
-      },
-    ];
+    const showModalWithdraw = ref(false);
+    const showModalRebond = ref(false);
+    // MEMO: since not possible to withdraw each chunk currently, use total amount of withdraw
+    const totalAmount = ref('');
+
+    const showWithdrawDialog = (amountWithdraw: string) => {
+      totalAmount.value = amountWithdraw;
+      showModalWithdraw.value = true;
+    };
+
+    const showRebondDialog = (amountWithdraw: string) => {
+      totalAmount.value = amountWithdraw;
+      showModalRebond.value = true;
+    };
+
+    const unlockItems = computed(() => {
+      return unlockingChunks.value?.map((item: ChunkInfo, index) => {
+        return {
+          ...item,
+          name: `Chunk ${index + 1}`,
+        };
+      });
+    });
 
     return {
       width,
       screenSize,
-      items,
+      myStakeInfos,
+      unlockItems,
+      showModalWithdraw,
+      showModalRebond,
+      totalAmount,
+      showWithdrawDialog,
+      showRebondDialog,
+      withdraw,
     };
   },
 });

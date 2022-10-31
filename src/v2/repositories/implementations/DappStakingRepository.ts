@@ -3,7 +3,7 @@ import { BN } from '@polkadot/util';
 import { u32, Option, Struct } from '@polkadot/types';
 import { Codec, ISubmittableResult } from '@polkadot/types/types';
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
-import { AccountId, Balance } from '@polkadot/types/interfaces';
+import { AccountId, Balance, EraIndex } from '@polkadot/types/interfaces';
 import { injectable, inject } from 'inversify';
 import { IDappStakingRepository } from 'src/v2/repositories';
 import { IApi } from 'src/v2/integration';
@@ -14,9 +14,11 @@ import { EventAggregator, NewEraMessage } from 'src/v2/messaging';
 import { GeneralStakerInfo } from 'src/hooks/helper/claim';
 import { ethers } from 'ethers';
 import { EditDappItem } from 'src/store/dapp-staking/state';
-import { Guard } from 'src/v2/common';
 import { TOKEN_API_URL } from 'src/modules/token-api';
 import axios from 'axios';
+import { getDappAddressEnum } from 'src/modules/dapp-staking/utils';
+import { Guard } from 'src/v2/common';
+import { AccountLedger } from 'src/v2/models/DappsStaking';
 
 // TODO type generation
 interface EraInfo extends Struct {
@@ -53,6 +55,21 @@ interface SmartContractAddress extends Struct {
   asWasm?: Codec;
 }
 
+interface PalletDappsStakingAccountLedger extends Codec {
+  locked: Balance;
+  unbondingInfo: UnbondingInfo;
+}
+
+interface UnbondingInfo {
+  unlockingChunks: ChunkInfo[];
+}
+
+interface ChunkInfo extends Codec {
+  amount: Balance;
+  unlockEra: EraIndex;
+  erasBeforeUnlock: number;
+}
+
 @injectable()
 export class DappStakingRepository implements IDappStakingRepository {
   private static isEraSubscribed = false;
@@ -75,13 +92,11 @@ export class DappStakingRepository implements IDappStakingRepository {
     walletAddress: string
   ): Promise<string> {
     try {
-      if (isValidAddressPolkadotAddress(walletAddress)) return '0';
+      if (!isValidAddressPolkadotAddress(walletAddress)) return '0';
       const api = await this.api.getApi();
       const stakerInfo = await api.query.dappsStaking.generalStakerInfo<GeneralStakerInfo>(
         walletAddress,
-        {
-          Evm: contractAddress,
-        }
+        getDappAddressEnum(contractAddress)
       );
       const balance = stakerInfo.stakes.length && stakerInfo.stakes.slice(-1)[0].staked.toString();
       return String(balance);
@@ -96,7 +111,16 @@ export class DappStakingRepository implements IDappStakingRepository {
   ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> {
     const api = await this.api.getApi();
 
-    return api.tx.dappsStaking.bondAndStake(this.getAddressEnum(contractAddress), amount);
+    return api.tx.dappsStaking.bondAndStake(getDappAddressEnum(contractAddress), amount);
+  }
+
+  public async getUnbondAndUnstakeCall(
+    contractAddress: string,
+    amount: BN
+  ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> {
+    const api = await this.api.getApi();
+
+    return api.tx.dappsStaking.unbondAndUnstake(getDappAddressEnum(contractAddress), amount);
   }
 
   public async getNominationTransferCall({
@@ -110,9 +134,9 @@ export class DappStakingRepository implements IDappStakingRepository {
   }): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> {
     const api = await this.api.getApi();
     return api.tx.dappsStaking.nominationTransfer(
-      this.getAddressEnum(fromContractId),
+      getDappAddressEnum(fromContractId),
       amount,
-      this.getAddressEnum(targetContractId)
+      getDappAddressEnum(targetContractId)
     );
   }
 
@@ -125,10 +149,7 @@ export class DappStakingRepository implements IDappStakingRepository {
 
     const eraStakes = await api.queryMulti<Option<ContractStakeInfo>[]>(
       contractAddresses.map((address) => {
-        return [
-          api.query.dappsStaking.contractEraStake,
-          [this.getAddressEnum(address), currentEra],
-        ];
+        return [api.query.dappsStaking.contractEraStake, [getDappAddressEnum(address), currentEra]];
       })
     );
 
@@ -171,7 +192,7 @@ export class DappStakingRepository implements IDappStakingRepository {
     const result: SmartContract[] = [];
     dapps.forEach(([key, value]) => {
       const v = <Option<RegisteredDapp>>value;
-      const address = JSON.parse(key.args.map((x) => x.toString())[0]).evm; // TODO This is kinda suck. See how it can do it better.
+      const address = this.getContractAddress(key.args[0] as unknown as SmartContractAddress);
       let developer = '';
       let state = SmartContractState.Unregistered;
 
@@ -183,7 +204,9 @@ export class DappStakingRepository implements IDappStakingRepository {
           : SmartContractState.Registered;
       }
 
-      result.push(new SmartContract(address, developer, state));
+      if (address) {
+        result.push(new SmartContract(address, developer, state));
+      }
     });
 
     return result;
@@ -228,12 +251,28 @@ export class DappStakingRepository implements IDappStakingRepository {
     }
   }
 
-  private async getCurrentEra(api: ApiPromise): Promise<u32> {
-    return await api.query.dappsStaking.currentEra<u32>();
+  public async getLedger(accountAddress: string): Promise<AccountLedger> {
+    const api = await this.api.getApi();
+    const ledger = await api.query.dappsStaking.ledger<PalletDappsStakingAccountLedger>(
+      accountAddress
+    );
+
+    return {
+      locked: ledger.locked.toBn(),
+      unbondingInfo: {
+        unlockingChunks: ledger.unbondingInfo.unlockingChunks.map((x) => {
+          return {
+            amount: x.amount.toBn(),
+            unlockEra: x.unlockEra.toBn(),
+            erasBeforeUnlock: x.erasBeforeUnlock,
+          };
+        }),
+      },
+    };
   }
 
-  private getAddressEnum(address: string) {
-    return { Evm: address };
+  private async getCurrentEra(api: ApiPromise): Promise<u32> {
+    return await api.query.dappsStaking.currentEra<u32>();
   }
 
   private getContractAddress(address: SmartContractAddress): string | undefined {
@@ -244,5 +283,9 @@ export class DappStakingRepository implements IDappStakingRepository {
     } else {
       return undefined;
     }
+  }
+
+  private getAddressEnum(address: string) {
+    return { Evm: address };
   }
 }

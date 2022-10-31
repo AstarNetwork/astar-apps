@@ -228,13 +228,14 @@ export function useTransferRouter() {
       chain: chain.toLowerCase(),
       isSelectFromChain: isSelectFromChain,
     });
+    const tokens = xcmToken[currentNetworkIdx.value].filter((it) => {
+      const originChain = it.originChain.toLowerCase();
+      return originChain === to || originChain === from;
+    });
+    const originChainNativeToken = tokens.find((it) => it.isNativeToken);
     const t =
-      xcmToken[currentNetworkIdx.value]
-        .filter((it) => {
-          const originChain = it.originChain.toLowerCase();
-          return originChain === to || originChain === from;
-        })
-        .find((it) => it.isNativeToken)?.symbol || nativeTokenSymbol.value;
+      (originChainNativeToken ? originChainNativeToken.symbol : tokens[0].symbol) ||
+      nativeTokenSymbol.value;
 
     const isAstarEvm = chain.includes(pathEvm);
     const token = isAstarEvm ? tokenSymbol.value : t.toLowerCase();

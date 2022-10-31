@@ -8,9 +8,7 @@
         <p>{{ time }}</p>
         <div class="row--tx-description">
           <p>[{{ tx.txType }}]</p>
-          <p>
-            <TokenBalance :balance="tx.amount" :symbol="tx.symbol" />
-          </p>
+          <p><TokenBalance :balance="tx.amount ? tx.amount : '0'" :symbol="tx.symbol" /></p>
         </div>
         <p>{{ tx.note }}</p>
       </div>

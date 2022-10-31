@@ -71,7 +71,7 @@
             <div class="column column--balance">
               <div class="column__box">
                 <div class="text--accent">
-                  <TokenBalance :balance="bal" :symbol="nativeTokenSymbol" />
+                  <TokenBalance :balance="String(bal)" :symbol="nativeTokenSymbol" />
                 </div>
                 <div class="text--label">
                   <span>{{ $n(balUsd) }} {{ $t('usd') }}</span>

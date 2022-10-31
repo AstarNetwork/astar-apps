@@ -2,21 +2,21 @@
   <div class="wrapper">
     <q-list>
       <q-expansion-item
-        v-for="t in items"
-        :key="t.id"
+        v-for="item in items"
+        :key="item.address"
         :header-style="isDarkTheme ? classes.defaultHeaderDark : classes.defaultHeader"
       >
         <template #header>
           <astar-icon-base class="header-icon tw-ml-1 tw-mt-2">
             <astar-icon-community />
           </astar-icon-base>
-          <q-item-section class="exansion-title"> {{ t.name }} </q-item-section>
+          <q-item-section class="exansion-title"> {{ item.name }} </q-item-section>
         </template>
         <template v-if="isUnbonding">
-          <UnbondingItem :item="t" />
+          <unbonding-item :item="item" />
         </template>
         <template v-else>
-          <MyDappItem :item="t" />
+          <my-dapp-item :item="item" />
         </template>
       </q-expansion-item>
     </q-list>
@@ -38,7 +38,7 @@ export default defineComponent({
     },
     items: {
       type: Array as PropType<any[]>,
-      required: true,
+      default: null,
     },
   },
   setup(props, { emit }) {

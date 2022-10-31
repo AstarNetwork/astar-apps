@@ -22,12 +22,17 @@
       </div>
     </items-container>
 
-    <modal-add-community
-      :is-modal-add-community="isModalAddCommunity"
-      :handle-modal-community="handleModalAddCommunity"
-      :available-communities="availableCommunities"
-      :update-communities="updateCommunities"
-    />
+    <teleport to="#app--main">
+      <div :class="'highest-z-index'">
+        <modal-add-community
+          v-model:is-open="isModalAddCommunity"
+          :show="isModalAddCommunity"
+          :handle-modal-community="handleModalAddCommunity"
+          :available-communities="availableCommunities"
+          :update-communities="updateCommunities"
+        />
+      </div>
+    </teleport>
   </div>
 </template>
 

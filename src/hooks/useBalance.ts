@@ -1,7 +1,7 @@
 import { VoidFn } from '@polkadot/api/types';
 import { BalanceLockTo212 } from '@polkadot/types/interfaces';
 import { PalletBalancesBalanceLock, PalletVestingVestingInfo } from '@polkadot/types/lookup';
-import BN from 'bn.js';
+import { BN } from '@polkadot/util';
 import { $api, $web3 } from 'boot/api';
 import { getBalance } from 'src/config/web3';
 import { SystemAccount } from 'src/modules/account';

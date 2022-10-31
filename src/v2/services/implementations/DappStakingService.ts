@@ -15,6 +15,7 @@ import {
 import { IBalanceFormatterService, IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { IWalletService } from '../IWalletService';
+import { AccountLedger } from 'src/v2/models/DappsStaking';
 
 @injectable()
 export class DappStakingService implements IDappStakingService {
@@ -89,6 +90,25 @@ export class DappStakingService implements IDappStakingService {
     );
   }
 
+  public async unbondAndUnstake(
+    contractAddress: string,
+    stakerAddress: string,
+    amount: BN
+  ): Promise<void> {
+    Guard.ThrowIfUndefined('contractAddress', contractAddress);
+    Guard.ThrowIfUndefined('stakerAddress', stakerAddress);
+
+    const unboundCall = await this.dappStakingRepository.getUnbondAndUnstakeCall(
+      contractAddress,
+      amount
+    );
+    await this.wallet.signAndSend(
+      unboundCall,
+      stakerAddress,
+      `You successfully started unbonding process for ${contractAddress}`
+    );
+  }
+
   /**
    * Gets staker info (total staked, stakers count) for a given contracts.
    * @param contractAddresses List of contract addresses to provide info for.
@@ -137,5 +157,11 @@ export class DappStakingService implements IDappStakingService {
     Guard.ThrowIfUndefined('network', network);
 
     return await this.dappStakingRepository.getDapp(contractAddress, network);
+  }
+
+  public async getLedger(accountAddress: string): Promise<AccountLedger> {
+    Guard.ThrowIfUndefined('accountAddress', accountAddress);
+
+    return await this.dappStakingRepository.getLedger(accountAddress);
   }
 }

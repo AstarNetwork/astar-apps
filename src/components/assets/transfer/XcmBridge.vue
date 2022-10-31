@@ -81,7 +81,7 @@
               <span class="text--available">
                 <TokenBalance
                   text="assets.modals.balance"
-                  :balance="fromAddressBalance"
+                  :balance="String(fromAddressBalance)"
                   :symbol="token.metadata.symbol"
                 />
               </span>

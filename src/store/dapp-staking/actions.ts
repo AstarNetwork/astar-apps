@@ -8,7 +8,7 @@ import {
   EventRecord,
 } from '@polkadot/types/interfaces';
 import { ITuple } from '@polkadot/types/types';
-import BN from 'bn.js';
+import { BN } from '@polkadot/util';
 import { $api } from 'boot/api';
 import { ActionTree, Dispatch } from 'vuex';
 import { StateInterface } from '../index';
@@ -21,6 +21,7 @@ import { Symbols } from 'src/v2/symbols';
 import axios, { AxiosError } from 'axios';
 import { TOKEN_API_URL } from 'src/modules/token-api';
 import type { Transaction } from 'src/hooks/helper/wallet';
+import { getDappAddressEnum } from 'src/modules/dapp-staking/utils';
 
 const showError = (dispatch: Dispatch, message: string): void => {
   dispatch(
@@ -32,8 +33,6 @@ const showError = (dispatch: Dispatch, message: string): void => {
     { root: true }
   );
 };
-
-export const getAddressEnum = (address: string) => ({ Evm: address });
 
 export const hasExtrinsicFailedEvent = (
   events: EventRecord[],
@@ -122,7 +121,7 @@ const actions: ActionTree<State, StateInterface> = {
           // If no signature received, it means we are using the
           // old dapp registration logic (to be removed after all networks are updated.)
           const transaction = parameters.api.tx.dappsStaking.register(
-            getAddressEnum(parameters.dapp.address)
+            getDappAddressEnum(parameters.dapp.address)
           );
 
           const signedTransaction = await sign({
@@ -149,7 +148,6 @@ const actions: ActionTree<State, StateInterface> = {
           developers: parameters.dapp.developers,
           description: parameters.dapp.description,
           communities: parameters.dapp.communities,
-          platforms: parameters.dapp.platforms,
           contractType: parameters.dapp.contractType,
           mainCategory: parameters.dapp.mainCategory,
           license: parameters.dapp.license,
@@ -278,13 +276,13 @@ export interface WithdrawParameters {
   substrateAccounts: SubstrateAccount[];
 }
 
+export interface MyStakeInfo {
+  formatted: string;
+  denomAmount: BN;
+}
+
 export interface StakeInfo {
-  yourStake:
-    | undefined
-    | {
-        formatted: string;
-        denomAmount: BN;
-      };
+  yourStake: undefined | MyStakeInfo;
   totalStake: string;
   claimedRewards: string;
   hasStake: boolean;

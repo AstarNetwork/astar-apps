@@ -1,7 +1,7 @@
 import { useI18n } from 'vue-i18n';
 import { useGasPrice, useCurrentEra, useCustomSignature, useNetworkInfo } from 'src/hooks';
 import { ISubmittableResult } from '@polkadot/types/types';
-import BN from 'bn.js';
+import { BN } from '@polkadot/util';
 import { $api } from 'boot/api';
 import { useStore } from 'src/store';
 import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
@@ -16,6 +16,7 @@ const MAX_BATCH_WEIGHT = new BN('50000000000');
 
 export function useClaimAll() {
   let batchTxs: PayloadWithWeight[] = [];
+  const amountOfEras = ref<number>(0);
   const canClaim = ref<boolean>(false);
   const isLoading = ref<boolean>(true);
   const store = useStore();
@@ -49,7 +50,7 @@ export function useClaimAll() {
         dapps.value.map(async (it: any) => {
           if (it.contract.state === SmartContractState.Registered && !isH160.value) {
             const transactions = await getIndividualClaimTxs({
-              dappAddress: it.dapp.address,
+              dappAddress: it?.dapp?.address,
               api,
               senderAddress: senderAddressRef,
               currentEra: era.value,
@@ -64,6 +65,7 @@ export function useClaimAll() {
       batchTxs = filteredTxs.flat();
       canClaim.value = batchTxs.length > 0;
 
+      amountOfEras.value = batchTxs.length;
       console.log('Amount of Eras to claim: batchTxs.length', batchTxs.length);
     } catch (error: any) {
       console.error(error.message);
@@ -145,5 +147,6 @@ export function useClaimAll() {
     claimAll,
     canClaim,
     isLoading,
+    amountOfEras,
   };
 }

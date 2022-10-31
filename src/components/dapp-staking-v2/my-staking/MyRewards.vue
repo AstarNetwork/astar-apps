@@ -11,11 +11,9 @@
         </q-tooltip>
       </p>
       <div class="row--data">
-        <div v-if="isLoading" class="loading">
-          <q-skeleton type="rect" animation="fade" />
-        </div>
-        <div v-else class="value">
-          <TokenBalance :balance="item.totalStaked" symbol="ASTR" />
+        <div class="value">
+          <q-skeleton v-if="isLoadingTotalStaked" animation="fade" class="skeleton--md" />
+          <token-balance v-else :balance="totalStaked" :symbol="nativeTokenSymbol" :decimals="0" />
         </div>
       </div>
     </div>
@@ -33,8 +31,10 @@
         <div v-if="isLoading" class="loading">
           <q-skeleton type="rect" animation="fade" />
         </div>
-        <div v-else class="value">{{ item.availableEra }} {{ $t('myReward.era') }}</div>
-        <astar-button width="80" height="24">{{ $t('myReward.claim') }}</astar-button>
+        <div v-else class="value">{{ amountOfEras }} {{ $t('myReward.era') }}</div>
+        <astar-button :width="80" :height="24" :disabled="!canClaim" @click="claimAll">{{
+          $t('myReward.claim')
+        }}</astar-button>
       </div>
     </div>
     <div class="card">
@@ -48,8 +48,10 @@
         </q-tooltip>
       </p>
       <div class="row--data">
-        <div class="value">ON</div>
-        <astar-button width="80" height="24">{{ $t('myReward.turnOff') }}</astar-button>
+        <div class="value">{{ isCompounding ? $t('dappStaking.on') : $t('dappStaking.off') }}</div>
+        <astar-button :width="80" :height="24" @click="changeDestinationForRestaking">{{
+          isCompounding ? $t('dappStaking.turnOff') : $t('dappStaking.turnOn')
+        }}</astar-button>
       </div>
     </div>
     <div class="card">
@@ -63,11 +65,13 @@
         </q-tooltip>
       </p>
       <div class="row--data">
-        <div v-if="isLoading" class="loading">
+        <div v-if="isLoadingClaimed" class="loading">
           <q-skeleton type="rect" animation="fade" />
         </div>
-        <div v-else class="value">{{ item.totalEarned.toLocaleString() }} ASTR</div>
-        <astar-irregular-button>
+        <div v-else class="value">
+          <token-balance :balance="claimed.toString()" :symbol="nativeTokenSymbol" />
+        </div>
+        <astar-irregular-button @click="goToSubscan">
           <div class="explorer-icon">
             <astar-icon-external-link />
           </div>
@@ -77,24 +81,56 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
+import { useAccount, useClaimAll, useNetworkInfo, useStakerInfo } from 'src/hooks';
+import { useClaimedReward } from 'src/hooks/dapps-staking/useClaimedReward';
+import { RewardDestination, useCompoundRewards } from 'src/hooks/dapps-staking/useCompoundRewards';
+import { endpointKey } from 'src/config/chainEndpoints';
+import { defineComponent, computed } from 'vue';
 
 export default defineComponent({
   components: {
     TokenBalance,
   },
   setup() {
-    const item = {
-      totalStaked: 500000,
-      availableEra: 5,
-      totalEarned: 10000,
+    const { nativeTokenSymbol } = useNetworkInfo();
+    const { claimAll, canClaim, amountOfEras, isLoading } = useClaimAll();
+    const { totalStaked, isLoadingTotalStaked } = useStakerInfo();
+
+    const { isCompounding, setRewardDestination } = useCompoundRewards();
+    const changeDestinationForRestaking = async () => {
+      const newDestination = isCompounding.value
+        ? RewardDestination.FreeBalance
+        : RewardDestination.StakeBalance;
+      await setRewardDestination(newDestination);
     };
-    const isLoading = ref(true);
+
+    const { claimed, isLoadingClaimed } = useClaimedReward();
+    const { currentAccount } = useAccount();
+    const { currentNetworkIdx } = useNetworkInfo();
+    const isShiden = computed(() => currentNetworkIdx.value === endpointKey.SHIDEN);
+    const goToSubscan = () => {
+      let rootName = 'astar';
+      if (isShiden.value) {
+        rootName = 'shiden';
+      }
+      const link = `https://${rootName}.subscan.io/account/${currentAccount.value}?tab=reward`;
+      window.open(link, '_blank');
+    };
 
     return {
-      item,
       isLoading,
+      amountOfEras,
+      canClaim,
+      claimAll,
+      isCompounding,
+      changeDestinationForRestaking,
+      isLoadingClaimed,
+      claimed,
+      totalStaked,
+      nativeTokenSymbol,
+      isLoadingTotalStaked,
+      goToSubscan,
     };
   },
 });

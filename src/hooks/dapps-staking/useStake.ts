@@ -1,4 +1,4 @@
-import BN from 'bn.js';
+import { BN } from '@polkadot/util';
 import { ethers } from 'ethers';
 import { useAccount, useChainMetadata, useStakingList } from 'src/hooks';
 import { ASTAR_DECIMALS, balanceFormatter } from 'src/hooks/helper/plasmUtils';

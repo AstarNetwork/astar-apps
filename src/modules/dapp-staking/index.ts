@@ -1,5 +1,5 @@
 export {
-  getAddressEnum,
+  getDappAddressEnum,
   getDappStakers,
   getLatestStakePoint,
   getStakeInfo,

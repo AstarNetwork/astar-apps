@@ -24,12 +24,10 @@
           </div>
           <span> {{ $t('dappStaking.dappPage.virtualMachine') }}</span>
         </div>
-        <div>
-          <div class="tag">
-            <!-- Todo: get the value from db -->
+        <div class="row--tags">
+          <div v-for="(tag, index) in virtualMachineTags" :key="index" class="tag">
             <span class="text--tag">
-              {{ $t('evm') }}
-              <!-- {{ $t('wasm') }} -->
+              {{ tag }}
             </span>
           </div>
         </div>
@@ -91,8 +89,8 @@
           </div>
         </div>
       </div>
-      <div class="separator--details" />
-      <div class="row--item">
+      <div v-if="communities" class="separator--details" />
+      <div v-if="communities" class="row--item">
         <div class="row--item-title">
           <div class="icon">
             <astar-icon-group />
@@ -102,7 +100,22 @@
           </span>
         </div>
         <div class="row--social-icons">
-          <button class="box--share btn--primary">
+          <div v-for="(it, index) in communities" :key="index">
+            <button v-if="it.type === 'Twitter'" class="box--share btn--primary">
+              <div class="icon--social">
+                <a :href="it.handle" target="_blank" rel="noopener noreferrer">
+                  <astar-icon-base viewBox="0 0 512 512" icon-name="Twitter">
+                    <astar-icon-twitter />
+                  </astar-icon-base>
+                </a>
+              </div>
+              <q-tooltip>
+                <span class="text--tooltip">{{ $t('common.twitter') }}</span>
+              </q-tooltip>
+            </button>
+          </div>
+          <!-- Memo: Reference -->
+          <!-- <button class="box--share btn--primary">
             <div class="icon--social">
               <a :href="dapp.dapp.formUrl" target="_blank" rel="noopener noreferrer">
                 <astar-icon-base viewBox="0 0 512 512" icon-name="Twitter">
@@ -145,7 +158,7 @@
             <q-tooltip>
               <span class="text--tooltip">{{ $t('common.github') }}</span>
             </q-tooltip>
-          </button>
+          </button> -->
         </div>
       </div>
     </div>
@@ -161,6 +174,11 @@ import { useStore } from 'src/store';
 import { computed, defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 
+interface Community {
+  type: string;
+  handle: string;
+}
+
 export default defineComponent({
   props: {
     dapp: {
@@ -168,11 +186,11 @@ export default defineComponent({
       required: true,
     },
   },
-  setup() {
+  setup(props) {
     const { currentNetworkIdx } = useNetworkInfo();
     const store = useStore();
     const { t } = useI18n();
-    const blockscout = computed(
+    const blockscout = computed<string>(
       () => `${providerEndpoints[currentNetworkIdx.value].blockscout}/address/`
     );
     const copyAddress = (address: string): void => {
@@ -183,7 +201,34 @@ export default defineComponent({
       });
     };
 
-    return { sanitizeData, getShortenAddress, copyAddress, blockscout };
+    const communities = computed<Community[] | null>(() => {
+      if (props.dapp.dapp && props.dapp.dapp.hasOwnProperty('communities')) {
+        return props.dapp.dapp.communities as Community[];
+      } else {
+        return null;
+      }
+    });
+
+    const virtualMachineTags = computed<string[]>(() => {
+      if (props.dapp.dapp && props.dapp.dapp.hasOwnProperty('contractType')) {
+        if (props.dapp.dapp.contractType === 'wasm+evm') {
+          return ['EVM', 'WASM'];
+        } else {
+          return [props.dapp.dapp.communities];
+        }
+      } else {
+        return ['EVM'];
+      }
+    });
+
+    return {
+      sanitizeData,
+      getShortenAddress,
+      copyAddress,
+      blockscout,
+      communities,
+      virtualMachineTags,
+    };
   },
 });
 </script>

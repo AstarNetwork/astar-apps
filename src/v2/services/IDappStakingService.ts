@@ -2,6 +2,7 @@ import { BN } from '@polkadot/util';
 import { EditDappItem } from 'src/store/dapp-staking/state';
 import { TvlModel } from 'src/v2/models';
 import { DappCombinedInfo, StakerInfo } from '../models/DappsStaking';
+import { AccountLedger } from '../models/DappsStaking';
 
 /**
  * Definition of service used to manage dapps staking.
@@ -19,6 +20,14 @@ export interface IDappStakingService {
    * @param amount Amount to stake.
    */
   stake(contractAddress: string, stakerAddress: string, amount: BN): Promise<void>;
+
+  /**
+   * Starts unbonding process.
+   * @param contractAddress Contract address.
+   * @param stakerAddress Staked address.
+   * @param amount Amount to stake.
+   */
+  unbondAndUnstake(contractAddress: string, stakerAddress: string, amount: BN): Promise<void>;
 
   /**
    * Nomination transfer
@@ -59,4 +68,10 @@ export interface IDappStakingService {
    * @param network Name of the network where dapp has been deployed.
    */
   getDapp(contractAddress: string, network: string): Promise<EditDappItem | undefined>;
+
+  /**
+   * Gets dapps staking ledger for a given account.
+   * @param accountAddress User account.
+   */
+  getLedger(accountAddress: string): Promise<AccountLedger>;
 }

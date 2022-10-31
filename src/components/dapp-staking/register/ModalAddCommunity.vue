@@ -1,9 +1,9 @@
 <template>
-  <modal-wrapper
-    :is-modal-open="isModalAddCommunity"
+  <astar-default-modal
+    :show="show"
+    :width="544"
     :title="$t('dappStaking.modals.community.title')"
-    :is-closing="isClosingModal"
-    :close-modal="closeModal"
+    @close="closeModal"
   >
     <div class="community-wrapper">
       <q-form ref="communityForm">
@@ -23,30 +23,30 @@
           class="component"
         />
 
-        <div class="button--container">
-          <Button :width="328" :height="52" @click="handleConfirm">
-            {{ $t('confirm') }}
-          </Button>
+        <div class="validation-warning">
+          <li>{{ $t('dappStaking.modals.community.communityRequired') }}</li>
         </div>
+
+        <Button :width="464" :height="52" @click="handleConfirm">
+          {{ $t('confirm') }}
+        </Button>
       </q-form>
     </div>
-  </modal-wrapper>
+  </astar-default-modal>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType, ref } from 'vue';
 import { fadeDuration, Button } from '@astar-network/astar-ui';
 import { Community, CommunityDefinition } from 'src/store/dapp-staking/state';
-import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 import { wait } from 'src/hooks/helper/common';
 
 export default defineComponent({
   components: {
-    ModalWrapper,
     Button,
   },
   props: {
-    isModalAddCommunity: {
+    show: {
       type: Boolean,
       required: true,
     },
@@ -106,12 +106,14 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@use 'src/components/dapp-staking/styles/register.scss';
+
 .component {
-  margin-bottom: 20px;
+  margin-bottom: 4px;
 }
 
 .community-wrapper {
-  margin-top: 20px;
+  margin-top: 10px;
 }
 </style>

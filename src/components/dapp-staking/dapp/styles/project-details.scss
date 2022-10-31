@@ -1,7 +1,6 @@
 @import 'src/css/quasar.variables.scss';
 
 .wrapper--project-details {
-  border-bottom: 1px solid $gray-2;
   padding-bottom: 24px;
   margin-bottom: 24px;
   min-width: 300px;
@@ -71,6 +70,10 @@
   color: $astar-blue;
 }
 
+.row--tags {
+  display: flex;
+}
+
 .tag {
   background-color: $gray-2;
   border-radius: 6px;
@@ -138,9 +141,6 @@
 }
 
 .body--dark {
-  .wrapper--project-details {
-    border-bottom: 1px solid $gray-5;
-  }
   .box--details {
     background: $gray-7;
   }
