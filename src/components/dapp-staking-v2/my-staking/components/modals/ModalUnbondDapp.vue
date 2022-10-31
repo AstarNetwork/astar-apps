@@ -117,8 +117,8 @@ export default defineComponent({
     };
 
     const unbound = async (): Promise<void> => {
-      close();
       await handleUnbound(props.dapp?.dappAddress, amount.value);
+      close();
     };
 
     return {

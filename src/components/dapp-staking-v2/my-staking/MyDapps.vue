@@ -65,7 +65,7 @@
     </template>
 
     <Teleport to="#app--main">
-      <div :class="'highest-z-index'">
+      <div>
         <ModalUnbondDapp
           v-model:is-open="showModalUnbond"
           :show="showModalUnbond"

@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div v-if="dapps && dapps.length > 0" class="wrapper">
     <div class="wrapper--header">
       <div class="txt--header">{{ category }}</div>
       <!-- <astar-irregular-button width="77" height="20">See All</astar-irregular-button> -->

@@ -68,7 +68,6 @@ export default {
     telegram: 'Telegram',
     discord: 'Discord',
     github: 'GitHub',
-    linkedIn: 'LinkedIn',
     docs: 'Documentation',
     speed: {
       speed: 'Transaction speed',
@@ -254,7 +253,7 @@ export default {
     dappPage: {
       totalStaked: 'Total Staked',
       totalStaker: 'Total Staker',
-      team: 'Team',
+      builders: 'Builders',
       projectOverview: 'Project Overview',
       projectSite: 'Project Site',
       goToApp: 'Go to App',
@@ -305,6 +304,7 @@ export default {
         twitterAccount: 'Twitter account',
         linkedInAccount: 'LinkedIn account',
         image: "Builder's image",
+        imageRecomendation: 'A square image of minimum 500px is recommended.',
         error: {
           name: 'Builder name is required.',
           invalidUrl: 'Invalid url.',
