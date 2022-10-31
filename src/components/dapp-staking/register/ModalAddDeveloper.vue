@@ -69,6 +69,7 @@
 
         <div class="validation-warning">
           <li>{{ $t('dappStaking.modals.builder.error.buildersRequired') }}</li>
+          <li>{{ $t('dappStaking.modals.builder.imageRecomendation') }}</li>
         </div>
 
         <Button :width="464" :height="52" @click="handleConfirm">

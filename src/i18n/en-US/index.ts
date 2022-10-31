@@ -309,6 +309,7 @@ export default {
         twitterAccount: 'Twitter account',
         linkedInAccount: 'LinkedIn account',
         image: "Builder's image",
+        imageRecomendation: 'A square image of minimum 500px is recommended.',
         error: {
           name: 'Builder name is required.',
           invalidUrl: 'Invalid url.',
