@@ -88,6 +88,9 @@ export default defineComponent({
   @media (min-width: $widthCardLineUp) {
     max-width: 100%;
   }
+  @media (min-width: $lg) {
+    margin-top: 48px;
+  }
 }
 
 .divider {
