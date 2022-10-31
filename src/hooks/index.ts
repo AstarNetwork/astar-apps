@@ -35,4 +35,5 @@ export * from './xcm/useXcmBridgeV3';
 export * from './transfer/useTokenTransfer';
 export * from './xcm/useTransferRouter';
 export * from './ui/useTooltip';
+export * from './ui/usePageReady';
 export * from './dapps-staking/useCompoundRewards';
