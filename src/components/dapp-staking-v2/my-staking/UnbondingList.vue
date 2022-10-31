@@ -74,15 +74,9 @@ import ModalWithdraw from 'src/components/dapp-staking-v2/my-staking/components/
 
 export default defineComponent({
   components: { DropdownList, ModalWithdraw, FormatBalance },
-  props: {
-    unlockingChunks: {
-      type: Object as PropType<ChunkInfo[] | undefined>,
-      required: true,
-    },
-  },
   setup(props) {
     const { width, screenSize } = useBreakpoints();
-    const { withdraw } = useUnbonding();
+    const { unlockingChunks, withdraw } = useUnbonding();
 
     const showModalWithdraw = ref(false);
     const showModalRebond = ref(false);
@@ -100,13 +94,15 @@ export default defineComponent({
     };
 
     const unlockItems = computed(() => {
-      return props.unlockingChunks?.map((item: ChunkInfo, index) => {
+      return unlockingChunks.value?.map((item: ChunkInfo, index) => {
         return {
           ...item,
           name: `Chunk ${index + 1}`,
         };
       });
     });
+
+    console.log('uu', unlockItems.value);
 
     return {
       width,

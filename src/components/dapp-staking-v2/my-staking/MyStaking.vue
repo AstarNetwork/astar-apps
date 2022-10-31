@@ -9,12 +9,7 @@
               {{ $t('dappStaking.myRewards') }}
             </span>
           </div>
-          <div
-            v-if="unlockingChunks"
-            class="tab"
-            :class="currentTab === 1 ? 'active' : ''"
-            @click="currentTab = 1"
-          >
+          <div class="tab" :class="currentTab === 1 ? 'active' : ''" @click="currentTab = 1">
             {{ $t('dappStaking.unbonding') }}
           </div>
           <div
@@ -42,7 +37,7 @@
           <MyRewards />
         </template>
         <template v-else-if="currentTab === 1">
-          <UnbondingList :unlocking-chunks="unlockingChunks" />
+          <UnbondingList />
         </template>
         <template v-else>
           <MyDapps :my-stake-infos="myStakeInfos" />
@@ -84,7 +79,6 @@ export default defineComponent({
       return Number(balance);
     });
 
-    const { unlockingChunks } = useUnbonding();
     const { myStakeInfos } = useStakerInfo();
 
     return {
@@ -92,7 +86,6 @@ export default defineComponent({
       isLoadingBalance,
       transferableBalance,
       nativeTokenSymbol,
-      unlockingChunks,
       myStakeInfos,
     };
   },

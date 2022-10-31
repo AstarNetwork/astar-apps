@@ -36,6 +36,7 @@ export default defineComponent({
     };
 
     const confirm = () => {
+      close();
       emit('confirm');
     };
 
