@@ -65,6 +65,7 @@ export default defineComponent({
   cursor: pointer;
   margin-top: 50px;
   color: $gray-1;
+  font-size: 16px;
 }
 
 .register--container:hover {
