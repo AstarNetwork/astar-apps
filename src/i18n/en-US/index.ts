@@ -254,7 +254,7 @@ export default {
     dappPage: {
       totalStaked: 'Total Staked',
       totalStaker: 'Total Staker',
-      teams: 'Teams',
+      team: 'Team',
       projectOverview: 'Project Overview',
       projectSite: 'Project Site',
       goToApp: 'Go to App',

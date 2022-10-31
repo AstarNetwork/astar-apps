@@ -1,16 +1,14 @@
 <template>
   <div v-if="teams" class="wrapper--builders">
     <div class="row--builders-title">
-      <span class="text--xl text--color"> {{ $t('dappStaking.dappPage.teams') }}</span>
+      <span class="text--xl text--color"> {{ $t('dappStaking.dappPage.team') }}</span>
     </div>
     <div class="box--builders">
       <div v-for="(team, index) in teams" :key="index" class="card--builders">
         <div class="row--details">
-          <img class="image--builder-icon" :src="dapp.dapp.iconUrl" :alt="dapp.dapp.name" />
-          <!-- <img class="image--builder-icon" :src="dapp.dapp.iconUrl" :alt="dapp.dapp.name" /> -->
+          <img class="image--builder-icon" :src="team.iconFile" :alt="dapp.dapp.name" />
           <div>
             <div class="text--name">{{ team.name }}</div>
-            <!-- <div class="text--position">Lead dev</div> -->
           </div>
         </div>
         <div class="row--icons">
@@ -62,9 +60,19 @@ export default defineComponent({
   },
   setup(props) {
     const teams = computed<Developer[] | null>(() => {
-      if (props.dapp.dapp && props.dapp.dapp.hasOwnProperty('developers')) {
-        return props.dapp.dapp.developers as Developer[];
-      } else {
+      try {
+        if (props.dapp.dapp && props.dapp.dapp.hasOwnProperty('developers')) {
+          const developers = props.dapp.dapp.developers as Developer[];
+          return developers.map((it) => {
+            return {
+              ...it,
+              iconFile: it.iconFile.split('&#x2F;').join('/'),
+            };
+          });
+        } else {
+          return null;
+        }
+      } catch (error) {
         return null;
       }
     });
