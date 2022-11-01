@@ -14,12 +14,7 @@
               {{ $t('dappStaking.unbonding') }}
             </span>
           </div>
-          <div
-            v-if="myStakeInfos && myStakeInfos.length > 0"
-            class="tab"
-            :class="currentTab === 2 ? 'active' : ''"
-            @click="currentTab = 2"
-          >
+          <div class="tab" :class="currentTab === 2 ? 'active' : ''" @click="currentTab = 2">
             <span class="text--tab">
               {{ $t('dappStaking.myDapps') }}
             </span>
@@ -44,7 +39,7 @@
           <UnbondingList />
         </template>
         <template v-else>
-          <MyDapps :my-stake-infos="myStakeInfos" />
+          <MyDapps />
         </template>
       </div>
     </div>
@@ -54,7 +49,7 @@
 import { defineComponent, ref, computed } from 'vue';
 import { ethers } from 'ethers';
 import { useStore } from 'src/store';
-import { useBalance, useNetworkInfo, useStakerInfo } from 'src/hooks';
+import { useBalance, useNetworkInfo } from 'src/hooks';
 import MyRewards from 'src/components/dapp-staking-v2/my-staking/MyRewards.vue';
 import UnbondingList from 'src/components/dapp-staking-v2/my-staking/UnbondingList.vue';
 import MyDapps from 'src/components/dapp-staking-v2/my-staking/MyDapps.vue';
@@ -82,14 +77,11 @@ export default defineComponent({
       return Number(balance);
     });
 
-    const { myStakeInfos } = useStakerInfo();
-
     return {
       currentTab,
       isLoadingBalance,
       transferableBalance,
       nativeTokenSymbol,
-      myStakeInfos,
     };
   },
 });

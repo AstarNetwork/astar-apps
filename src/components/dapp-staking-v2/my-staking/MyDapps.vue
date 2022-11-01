@@ -51,9 +51,6 @@
                 <td class="text-left">
                   <q-skeleton animation="blink" type="text" width="85px" />
                 </td>
-                <!-- <td class="text-left"> -->
-                <!-- <q-skeleton animation="blink" type="text" width="85px" /> -->
-                <!-- </td> -->
               </tr>
             </template>
           </tbody>
@@ -76,8 +73,8 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, PropType } from 'vue';
-import { MyStakeInfo, useBreakpoints, useNetworkInfo } from 'src/hooks';
+import { defineComponent, ref } from 'vue';
+import { MyStakeInfo, useBreakpoints, useNetworkInfo, useStakerInfo } from 'src/hooks';
 import DropdownList from './components/DropdownList.vue';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import ModalUnbondDapp from './components/modals/ModalUnbondDapp.vue';
@@ -87,12 +84,6 @@ import { ethers } from 'ethers';
 
 export default defineComponent({
   components: { DropdownList, ModalUnbondDapp, TokenBalance },
-  props: {
-    myStakeInfos: {
-      type: Object as PropType<MyStakeInfo[] | undefined>,
-      required: true,
-    },
-  },
   setup() {
     const { width, screenSize } = useBreakpoints();
     const { nativeTokenSymbol } = useNetworkInfo();
@@ -113,12 +104,15 @@ export default defineComponent({
       router.push(url);
     };
 
+    const { myStakeInfos } = useStakerInfo();
+
     return {
       width,
       screenSize,
       nativeTokenSymbol,
       showModalUnbond,
       selectedDapp,
+      myStakeInfos,
       showUnbound,
       navigateToStake,
       ethers,

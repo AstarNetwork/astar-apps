@@ -39,22 +39,23 @@ export function useStakerInfo() {
   const setStakeInfo = async () => {
     let data: StakeInfo[] = [];
     let myData: MyStakeInfo[] = [];
-    if (checkIsLimitedProvider()) {
-      for await (let it of dapps.value) {
-        const info = (await getData(it.dapp?.address)) as StakeInfo;
-        data.push(info);
-      }
-    } else {
-      data = await Promise.all<StakeInfo>(
-        dapps.value.map(async (it: DappCombinedInfo) => {
-          const stakeData = await getData(it.dapp?.address!);
-          if (stakeData?.hasStake) {
-            myData.push({ ...stakeData, ...it.dapp });
-          }
-          return stakeData;
-        })
-      );
-    }
+    // MEMO: Not sure why we need this check for limited provider
+    // if (checkIsLimitedProvider()) {
+    //   for await (let it of dapps.value) {
+    //     const info = (await getData(it.dapp?.address)) as StakeInfo;
+    //     data.push(info);
+    //   }
+    // } else {
+    data = await Promise.all<StakeInfo>(
+      dapps.value.map(async (it: DappCombinedInfo) => {
+        const stakeData = await getData(it.dapp?.address!);
+        if (stakeData?.hasStake) {
+          myData.push({ ...stakeData, ...it.dapp });
+        }
+        return stakeData;
+      })
+    );
+    // }
 
     stakeInfos.value = data;
     myStakeInfos.value = myData;
