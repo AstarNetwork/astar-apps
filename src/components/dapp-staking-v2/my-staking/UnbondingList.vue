@@ -13,7 +13,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(t, index) in unlockingChunks" :key="index">
+            <tr v-for="(t, index) in unlockItems" :key="index">
               <td>Chunk {{ index + 1 }}</td>
               <td><format-balance :balance="t.amount.toString()" /></td>
               <td>
@@ -75,9 +75,15 @@ import ModalWithdraw from 'src/components/dapp-staking-v2/my-staking/components/
 
 export default defineComponent({
   components: { DropdownList, ModalWithdraw, FormatBalance },
+  props: {
+    unlockingChunks: {
+      type: Object as PropType<ChunkInfo[] | undefined>,
+      required: true,
+    },
+  },
   setup(props) {
     const { width, screenSize } = useBreakpoints();
-    const { unlockingChunks, withdraw } = useUnbonding();
+    const { withdraw } = useUnbonding();
 
     const showModalWithdraw = ref(false);
     const showModalRebond = ref(false);
@@ -95,7 +101,7 @@ export default defineComponent({
     };
 
     const unlockItems = computed(() => {
-      return unlockingChunks.value?.map((item: ChunkInfo, index) => {
+      return props.unlockingChunks?.map((item: ChunkInfo, index) => {
         return {
           ...item,
           name: `Chunk ${index + 1}`,
@@ -106,7 +112,7 @@ export default defineComponent({
     return {
       width,
       screenSize,
-      unlockingChunks,
+      // unlockingChunks,
       unlockItems,
       showModalWithdraw,
       showModalRebond,
