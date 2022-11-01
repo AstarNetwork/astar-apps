@@ -12,7 +12,7 @@
           <td><format-balance :balance="item.amount.toString()" /></td>
           <td>
             <div class="row--remaining-era">
-              <div class="val-era">{{ item.unlockEra.toHuman() }}</div>
+              <div class="val-era">{{ item.unlockEra }}</div>
               <!-- <astar-irregular-button
                 :width="77"
                 :height="20"
@@ -54,9 +54,9 @@
 </template>
 
 <script lang="ts">
-import { ChunkInfo } from 'src/hooks/dapps-staking/useUnbonding';
 import { defineComponent, PropType, ref } from 'vue';
 import { useUnbonding } from 'src/hooks/dapps-staking/useUnbonding';
+import { ChunkInfo } from 'src/v2/models';
 import FormatBalance from 'components/common/FormatBalance.vue';
 import ModalWithdraw from 'src/components/dapp-staking-v2/my-staking/components/modals/ModalWithdraw.vue';
 // import ModalRebond from 'src/components/dapp-staking-v2/my-staking/components/modals/ModalRebond.vue';

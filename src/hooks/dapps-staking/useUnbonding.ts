@@ -1,7 +1,6 @@
 import { VoidFn } from '@polkadot/api/types';
 import { u32 } from '@polkadot/types';
-import { Balance, EraIndex } from '@polkadot/types/interfaces';
-import { Codec, ISubmittableResult } from '@polkadot/types/types';
+import { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 import { $api } from 'boot/api';
 import { useCustomSignature, useGasPrice } from 'src/hooks';
@@ -10,21 +9,11 @@ import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
 import { hasExtrinsicFailedEvent } from 'src/modules/extrinsic';
 import { useStore } from 'src/store';
 import { computed, onUnmounted, ref, watch } from 'vue';
+import { container } from 'src/v2/common';
+import { IDappStakingService } from 'src/v2/services';
+import { Symbols } from 'src/v2/symbols';
+import { ChunkInfo } from 'src/v2/models';
 import { useI18n } from 'vue-i18n';
-
-interface PalletDappsStakingAccountLedger extends Codec {
-  unbondingInfo: UnbondingInfo;
-}
-
-interface UnbondingInfo {
-  unlockingChunks: ChunkInfo[];
-}
-
-export interface ChunkInfo extends Codec {
-  amount: Balance;
-  unlockEra: EraIndex;
-  erasBeforeUnlock: number;
-}
 
 export function useUnbonding() {
   const store = useStore();
@@ -96,21 +85,20 @@ export function useUnbonding() {
       return;
     }
 
-    const ledger = await $api?.query.dappsStaking.ledger<PalletDappsStakingAccountLedger>(
-      selectedAccountAddress.value
-    );
+    const service = container.get<IDappStakingService>(Symbols.DappStakingService);
+    const ledger = await service.getLedger(selectedAccountAddress.value);
 
-    if (ledger?.unbondingInfo.unlockingChunks) {
+    if (ledger.unbondingInfo.unlockingChunks) {
       unlockingChunks.value = ledger.unbondingInfo.unlockingChunks;
       store.commit('dapps/setUnlockingChunks', unlockingChunks.value?.length);
       canWithdraw.value = false;
       totalToWithdraw.value = new BN(0);
-      for (const chunk of unlockingChunks.value) {
-        const erasBeforeUnlock = era.sub(chunk.unlockEra.toBn()).toNumber();
+      for (const chunk of ledger.unbondingInfo.unlockingChunks) {
+        const erasBeforeUnlock = era.sub(chunk.unlockEra).toNumber();
         chunk.erasBeforeUnlock = Math.abs(erasBeforeUnlock > 0 ? 0 : erasBeforeUnlock);
 
         if (erasBeforeUnlock >= 0) {
-          totalToWithdraw.value = totalToWithdraw.value.add(chunk.amount.toBn());
+          totalToWithdraw.value = totalToWithdraw.value.add(chunk.amount);
         }
 
         if (!canWithdraw.value) {
