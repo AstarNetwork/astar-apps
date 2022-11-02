@@ -262,6 +262,7 @@ export default defineComponent({
           }
         }
       } catch (e) {
+        // TODO pop error message.
         console.error((e as Error).message);
       } finally {
         store.commit('general/setLoading', false);
