@@ -10,12 +10,14 @@
             </span>
           </div>
           <div
-            v-if="unlockingChunks"
+            v-if="unlockingChunks && unlockingChunks.length > 0"
             class="tab"
             :class="currentTab === 1 ? 'active' : ''"
             @click="currentTab = 1"
           >
-            {{ $t('dappStaking.unbonding') }}
+            <span class="text--tab">
+              {{ $t('dappStaking.unbonding') }}
+            </span>
           </div>
           <div
             v-if="myStakeInfos && myStakeInfos.length > 0"
@@ -23,7 +25,9 @@
             :class="currentTab === 2 ? 'active' : ''"
             @click="currentTab = 2"
           >
-            {{ $t('dappStaking.myDapps') }}
+            <span class="text--tab">
+              {{ $t('dappStaking.myDapps') }}
+            </span>
           </div>
         </nav>
 
@@ -73,6 +77,8 @@ export default defineComponent({
     const store = useStore();
     const currentTab = ref(0);
     const { nativeTokenSymbol } = useNetworkInfo();
+    const { unlockingChunks } = useUnbonding();
+    const { myStakeInfos } = useStakerInfo();
 
     const selectedAddress = computed(() => store.getters['general/selectedAddress']);
     const { accountData, isLoadingBalance } = useBalance(selectedAddress);
@@ -83,9 +89,6 @@ export default defineComponent({
         : '0';
       return Number(balance);
     });
-
-    const { unlockingChunks } = useUnbonding();
-    const { myStakeInfos } = useStakerInfo();
 
     return {
       currentTab,

@@ -51,9 +51,6 @@
                 <td class="text-left">
                   <q-skeleton animation="blink" type="text" width="85px" />
                 </td>
-                <!-- <td class="text-left"> -->
-                <!-- <q-skeleton animation="blink" type="text" width="85px" /> -->
-                <!-- </td> -->
               </tr>
             </template>
           </tbody>
@@ -77,7 +74,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref, PropType } from 'vue';
-import { MyStakeInfo, useBreakpoints, useNetworkInfo } from 'src/hooks';
+import { MyStakeInfo, useBreakpoints, useNetworkInfo, useStakerInfo } from 'src/hooks';
 import DropdownList from './components/DropdownList.vue';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import ModalUnbondDapp from './components/modals/ModalUnbondDapp.vue';

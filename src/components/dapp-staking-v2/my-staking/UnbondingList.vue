@@ -14,11 +14,11 @@
           </thead>
           <tbody>
             <tr v-for="(t, index) in unlockItems" :key="index">
-              <td>{{ t.name }}</td>
+              <td>Chunk {{ index + 1 }}</td>
               <td><format-balance :balance="t.amount.toString()" /></td>
               <td>
                 <div class="row--remaining-era">
-                  <div>{{ t.unlockEra.toHuman() }}</div>
+                  <div>{{ t.unlockEra }}</div>
                   <!-- <astar-irregular-button
                     :width="77"
                     :height="20"
@@ -66,7 +66,8 @@
 <script lang="ts">
 import { defineComponent, ref, computed, PropType } from 'vue';
 import { useBreakpoints } from 'src/hooks';
-import { ChunkInfo, useUnbonding } from 'src/hooks/dapps-staking/useUnbonding';
+import { useUnbonding } from 'src/hooks/dapps-staking/useUnbonding';
+import { ChunkInfo } from 'src/v2/models';
 import DropdownList from './components/DropdownList.vue';
 import FormatBalance from 'components/common/FormatBalance.vue';
 import ModalWithdraw from 'src/components/dapp-staking-v2/my-staking/components/modals/ModalWithdraw.vue';
