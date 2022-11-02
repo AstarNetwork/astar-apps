@@ -5,6 +5,7 @@
       :key="t.contract.address"
       class="card"
       @mouseover="hoverIndex = index"
+      @mouseleave="hoverIndex = -1"
       @click="goDappPageLink(t.dapp?.address)"
     >
       <div class="wrapper--card">
