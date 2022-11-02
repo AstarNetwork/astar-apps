@@ -6,29 +6,47 @@ import { ExtrinsicPayload, IApi, IApiFactory } from 'src/v2/integration';
 import { Asset } from 'src/v2/models';
 import { Symbols } from 'src/v2/symbols';
 import { XcmRepository } from '../XcmRepository';
-import { XcmChain } from 'src/v2/models/XcmModels';
-import { Struct } from '@polkadot/types';
+import { ethWalletChains, XcmChain } from 'src/v2/models/XcmModels';
+import { Option, Struct } from '@polkadot/types';
+import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
 
 interface TokensAccounts extends Struct {
   readonly free: BN;
   readonly reserved: BN;
   readonly frozen: BN;
+  readonly balance: BN;
+}
+
+interface AssetConfig extends Struct {
+  v1: {
+    parents: number;
+    interior: Interior;
+  };
+}
+
+interface Interior {
+  x2: X2[];
+}
+
+interface X2 {
+  parachain: number;
+  generalKey: string;
 }
 
 /**
  * Used to transfer assets from Crust Shadow
  */
 export class CrustShadowXcmRepository extends XcmRepository {
+  private astarNativeTokenId;
+
   constructor() {
     const defaultApi = container.get<IApi>(Symbols.DefaultApi);
     const apiFactory = container.get<IApiFactory>(Symbols.ApiFactory);
     const registeredTokens = container.get<XcmTokenInformation[]>(Symbols.RegisteredTokens);
-
     super(defaultApi, apiFactory, registeredTokens);
-
+    this.astarNativeTokenId = '0000000000000000000';
     this.astarTokens = {
-      SDN: 18,
-      ASTR: 2,
+      SDN: '16797826370226091782818345603793389938',
     };
   }
 
@@ -43,41 +61,119 @@ export class CrustShadowXcmRepository extends XcmRepository {
       throw `Parachain id for ${to.name} is not defined`;
     }
 
-    const tokenData = this.getTokenData(token);
+    const symbol = token.metadata.symbol;
+    const recipientAccountId = getPubkeyFromSS58Addr(recipientAddress);
 
-    const destination = {
-      V1: {
-        parents: '1',
-        interior: {
-          X2: [
-            {
-              Parachain: to.parachainId,
-            },
-            {
-              AccountId32: {
-                network: {
-                  Any: null,
-                },
-                id: decodeAddress(recipientAddress),
+    const isWithdrawAssets = token.id !== this.astarNativeTokenId;
+    const functionName = isWithdrawAssets ? 'reserveTransferAssets' : 'transfer';
+    const extrinsicName = isWithdrawAssets ? 'polkadotXcm' : 'xTokens';
+    const isSendToParachain = to.parachainId > 0;
+    const destination = isSendToParachain
+      ? {
+          V1: {
+            interior: {
+              X1: {
+                Parachain: new BN(to.parachainId),
               },
             },
-          ],
-        },
+            parents: new BN(1),
+          },
+        }
+      : {
+          V1: {
+            interior: 'Here',
+            parents: new BN(1),
+          },
+        };
+
+    const X1 = {
+      AccountId32: {
+        network: 'Any',
+        id: decodeAddress(recipientAccountId),
       },
     };
 
-    //Memo: each XCM instruction is weighted to be 1_000_000_000 units of weight and for this op to execute
-    //weight value of 5 * 10^9 is generally good
-    const destWeight = new BN(10).pow(new BN(9)).muln(5);
-    return await this.buildTxCall(
-      from,
-      'xTokens',
-      'transfer',
-      tokenData,
-      amount,
-      destination,
-      destWeight
-    );
+    const X2 = isWithdrawAssets
+      ? null
+      : [
+          {
+            Parachain: new BN(to.parachainId),
+          },
+          {
+            AccountId32: {
+              network: 'Any',
+              id: decodeAddress(recipientAccountId),
+            },
+          },
+        ];
+
+    const beneficiary = isWithdrawAssets
+      ? {
+          V1: {
+            interior: {
+              X1,
+            },
+            parents: new BN(0),
+          },
+        }
+      : {
+          V1: {
+            interior: {
+              X2,
+            },
+            parents: new BN(1),
+          },
+        };
+
+    const isRegisteredAsset = !isSendToParachain || !isWithdrawAssets;
+
+    const asset = isRegisteredAsset
+      ? {
+          Concrete: await this.fetchAssetConfig(from, token),
+        }
+      : {
+          Concrete: {
+            interior: 'Here',
+            parents: new BN(isSendToParachain ? 0 : 1),
+          },
+        };
+
+    const assets = {
+      V1: [
+        {
+          fun: {
+            Fungible: new BN(amount),
+          },
+          id: asset,
+        },
+      ],
+    };
+
+    if (isWithdrawAssets) {
+      return await this.buildTxCall(
+        from,
+        extrinsicName,
+        functionName,
+        destination,
+        beneficiary,
+        assets,
+        new BN(0)
+      );
+    } else {
+      const currencyId = {
+        OtherReserve: this.astarTokens[symbol],
+      };
+      const destWeight = new BN(10).pow(new BN(9)).muln(5);
+      return await this.buildTxCall(
+        from,
+        extrinsicName,
+        functionName,
+        currencyId,
+        amount,
+        beneficiary,
+        destWeight
+      );
+    }
   }
 
   public async getTokenBalance(
@@ -91,10 +187,11 @@ export class CrustShadowXcmRepository extends XcmRepository {
 
     try {
       if (this.isAstarNativeToken(token)) {
-        const bal = await api.query.tokens.accounts<TokensAccounts>(address, {
-          ForeignAsset: this.astarTokens[symbol],
-        });
-        return bal.free.toString();
+        const bal = await api.query.assets.account<Option<TokensAccounts>>(
+          this.astarTokens[symbol],
+          address
+        );
+        return bal.unwrap().balance.toString();
       }
 
       if (isNativeToken) {
@@ -120,4 +217,23 @@ export class CrustShadowXcmRepository extends XcmRepository {
           Token: token.originAssetId,
         };
   }
+
+  // protected async fetchAssetConfig(
+  //   source: XcmChain,
+  //   token: Asset
+  // ): Promise<{
+  //   parents: number;
+  //   interior: Interior;
+  // }> {
+  //   const symbol = token.metadata.symbol;
+
+  //   const api = await this.apiFactory.get(source.endpoint);
+  //   const config = await api.query.assetManager.assetIdType<Option<AssetConfig>>(
+  //     this.astarTokens[symbol]
+  //   );
+
+  //   // return config.unwrap().v1;
+  //   const formattedAssetConfig = JSON.parse(config.toString());
+  //   return formattedAssetConfig.v1;
+  // }
 }

@@ -185,7 +185,7 @@ export const xcmToken = {
       logo: require('/src/assets/img/shadow.svg'),
       isXcmCompatible: true,
       originChain: Chain.CRUST_SHADOW,
-      minBridgeAmount: '118.547',
+      minBridgeAmount: '0.5',
     },
   ],
   [endpointKey.SHIBUYA]: [],
