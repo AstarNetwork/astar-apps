@@ -112,7 +112,6 @@ export default defineComponent({
     return {
       width,
       screenSize,
-      // unlockingChunks,
       unlockItems,
       showModalWithdraw,
       showModalRebond,

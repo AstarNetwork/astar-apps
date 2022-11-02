@@ -110,15 +110,12 @@ export default defineComponent({
       router.push(url);
     };
 
-    // const { myStakeInfos } = useStakerInfo();
-
     return {
       width,
       screenSize,
       nativeTokenSymbol,
       showModalUnbond,
       selectedDapp,
-      // myStakeInfos,
       showUnbound,
       navigateToStake,
       ethers,
