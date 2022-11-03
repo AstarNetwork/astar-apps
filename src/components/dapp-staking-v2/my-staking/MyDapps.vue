@@ -62,7 +62,7 @@
     </template>
 
     <Teleport to="#app--main">
-      <div>
+      <div :class="'highest-z-index'">
         <ModalUnbondDapp
           v-model:is-open="showModalUnbond"
           :show="showModalUnbond"
@@ -74,7 +74,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref, PropType } from 'vue';
-import { MyStakeInfo, useBreakpoints, useNetworkInfo, useStakerInfo } from 'src/hooks';
+import { MyStakeInfo, useBreakpoints, useNetworkInfo } from 'src/hooks';
 import DropdownList from './components/DropdownList.vue';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import ModalUnbondDapp from './components/modals/ModalUnbondDapp.vue';
@@ -99,7 +99,6 @@ export default defineComponent({
     const showModalUnbond = ref<boolean>(false);
 
     const showUnbound = (dapp: MyStakeInfo): void => {
-      console.log(dapp);
       selectedDapp.value = dapp;
       showModalUnbond.value = true;
     };

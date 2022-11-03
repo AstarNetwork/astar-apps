@@ -1,13 +1,15 @@
 <template>
   <astar-default-modal :width="544" :height="381" :show="show" title="Withdraw" @close="close">
-    <div class="text--guide">{{ $t('myDapps.withdrawGuide') }}</div>
-    <div class="box--container">
-      <div>
-        <span class="text--title">{{ $t('myDapps.withdrawTitle') }}</span>
+    <div class="wrapper">
+      <div class="text--guide">{{ $t('myDapps.withdrawGuide') }}</div>
+      <div class="box--container">
+        <div>
+          <span class="text--title">{{ $t('myDapps.withdrawTitle') }}</span>
+        </div>
+        <div class="text--amount"><format-balance :balance="withdrawAmount" /></div>
       </div>
-      <div class="text--amount"><format-balance :balance="withdrawAmount" /></div>
+      <astar-button :width="464" :height="52" @click="confirm">{{ $t('confirm') }}</astar-button>
     </div>
-    <astar-button :width="464" :height="52" @click="confirm">{{ $t('confirm') }}</astar-button>
   </astar-default-modal>
 </template>
 
@@ -47,6 +49,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 .text--guide {
   font-weight: 500;
   font-size: 14px;

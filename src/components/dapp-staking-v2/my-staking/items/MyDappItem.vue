@@ -21,32 +21,72 @@
       </tbody>
     </table>
     <div class="row--manage">
-      <astar-button :width="97" :height="24" :disabled="!item.isEnabled">{{
-        $t('myDapps.add')
-      }}</astar-button>
-      <astar-button :width="97" :height="24" :disabled="!item.isEnabled">{{
+      <astar-button
+        :width="97"
+        :height="24"
+        :disabled="false"
+        @click="navigateToStake(item.dappAddress)"
+        >{{ $t('myDapps.add') }}</astar-button
+      >
+      <astar-button :width="97" :height="24" :disabled="false" @click="showUnbound(item)">{{
         $t('myDapps.unbond')
       }}</astar-button>
     </div>
+    <Teleport to="#app--main">
+      <div :class="'highest-z-index'">
+        <ModalUnbondDapp
+          v-model:is-open="showModalUnbond"
+          :show="showModalUnbond"
+          :dapp="selectedDapp"
+        />
+      </div>
+    </Teleport>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref, PropType } from 'vue';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
-import { useNetworkInfo } from 'src/hooks';
+import ModalUnbondDapp from '../components/modals/ModalUnbondDapp.vue';
+import { MyStakeInfo, useNetworkInfo } from 'src/hooks';
+import { networkParam, Path } from 'src/router/routes';
 import { ethers } from 'ethers';
+import { useRouter } from 'vue-router';
+
 export default defineComponent({
-  components: { TokenBalance },
+  components: { TokenBalance, ModalUnbondDapp },
   props: {
     item: {
-      type: Object,
+      type: Object as PropType<MyStakeInfo>,
       required: true,
     },
   },
   setup() {
     const { nativeTokenSymbol } = useNetworkInfo();
-    return { nativeTokenSymbol, ethers };
+    const selectedDapp = ref<MyStakeInfo>();
+    const router = useRouter();
+
+    const showModalUnbond = ref<boolean>(false);
+
+    const showUnbound = (dapp: MyStakeInfo): void => {
+      selectedDapp.value = dapp;
+      showModalUnbond.value = true;
+    };
+
+    const navigateToStake = (address: string | undefined): void => {
+      const base = networkParam + Path.DappStaking + Path.Stake;
+      const url = `${base}?dapp=${address?.toLowerCase()}`;
+      router.push(url);
+    };
+
+    return {
+      nativeTokenSymbol,
+      showModalUnbond,
+      selectedDapp,
+      showUnbound,
+      navigateToStake,
+      ethers,
+    };
   },
 });
 </script>

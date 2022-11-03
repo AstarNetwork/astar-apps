@@ -5,64 +5,66 @@
     :title="$t('dappStaking.modals.unbondFrom', { name: dapp?.name })"
     @close="close"
   >
-    <div class="box--input-field box--hover--active">
-      <div class="box__space-between">
-        <div />
-        <div class="box__available">
-          <span class="text--to--balance">
-            {{
-              $t('assets.modals.balance', {
-                amount: $n(truncate(maxAmount)),
-                token: nativeTokenSymbol,
-              })
-            }}
-          </span>
-          <button class="btn--max" @click="toMaxAmount">
-            {{ $t('assets.modals.max') }}
-          </button>
-        </div>
-      </div>
-      <div class="box__row">
-        <div class="box__row">
-          <div class="token-logo">
-            <img width="24" alt="token-logo" :src="nativeTokenImg" />
+    <div class="wrapper">
+      <div class="box--input-field box--hover--active">
+        <div class="box__space-between">
+          <div />
+          <div class="box__available">
+            <span class="text--to--balance">
+              {{
+                $t('assets.modals.balance', {
+                  amount: $n(truncate(maxAmount)),
+                  token: nativeTokenSymbol,
+                })
+              }}
+            </span>
+            <button class="btn--max" @click="toMaxAmount">
+              {{ $t('assets.modals.max') }}
+            </button>
           </div>
-          <span class="text--title">{{ nativeTokenSymbol }}</span>
         </div>
-        <div class="box__column--input-amount">
-          <input
-            :value="amount"
-            inputmode="decimal"
-            type="number"
-            min="0"
-            pattern="^[0-9]*(\.)?[0-9]*$"
-            placeholder="0.0"
-            class="input--amount input--no-spin"
-            @input="inputHandler"
-          />
+        <div class="box__row">
+          <div class="box__row">
+            <div class="token-logo">
+              <img width="24" alt="token-logo" :src="nativeTokenImg" />
+            </div>
+            <span class="text--title">{{ nativeTokenSymbol }}</span>
+          </div>
+          <div class="box__column--input-amount">
+            <input
+              :value="amount"
+              inputmode="decimal"
+              type="number"
+              min="0"
+              pattern="^[0-9]*(\.)?[0-9]*$"
+              placeholder="0.0"
+              class="input--amount input--no-spin"
+              @input="inputHandler"
+            />
+          </div>
         </div>
       </div>
+
+      <SpeedConfigurationV2
+        class="speed"
+        :gas-cost="nativeTipPrice"
+        :selected-gas="selectedTip"
+        :set-selected-gas="setSelectedTip"
+      />
+
+      <div class="warning">
+        <li>{{ $t('dappStaking.unbondingEra', { unbondingPeriod }) }}</li>
+      </div>
+
+      <astar-button
+        width="420"
+        class="unbond-button"
+        :height="44"
+        :disabled="!amount"
+        @click="unbound()"
+        >Start unbonding</astar-button
+      >
     </div>
-
-    <SpeedConfigurationV2
-      class="speed"
-      :gas-cost="nativeTipPrice"
-      :selected-gas="selectedTip"
-      :set-selected-gas="setSelectedTip"
-    />
-
-    <div class="warning">
-      <li>{{ $t('dappStaking.unbondingEra', { unbondingPeriod }) }}</li>
-    </div>
-
-    <astar-button
-      width="420"
-      class="unbond-button"
-      :height="44"
-      :disabled="!amount"
-      @click="unbound()"
-      >Start unbonding</astar-button
-    >
   </astar-default-modal>
 </template>
 
@@ -143,6 +145,12 @@ export default defineComponent({
 <style lang="scss" scoped>
 @use 'src/components/dapp-staking/stake-manage/styles/stake-form.scss';
 
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .box--input-field {
   margin-bottom: 20px;
 }
@@ -187,6 +195,10 @@ export default defineComponent({
   margin-top: 20px;
   margin-bottom: 40px;
   width: 100%;
+
+  @media (max-width: $lg) {
+    max-width: 400px;
+  }
 }
 
 .unbond-button {
