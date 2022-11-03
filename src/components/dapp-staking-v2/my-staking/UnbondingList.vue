@@ -46,7 +46,7 @@
     </template>
 
     <Teleport to="#app--main">
-      <div :class="'highest-z-index'">
+      <div>
         <modal-withdraw
           v-model:is-open="showModalWithdraw"
           :show="showModalWithdraw"
