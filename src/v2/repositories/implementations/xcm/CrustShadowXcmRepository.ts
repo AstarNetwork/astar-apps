@@ -17,11 +17,6 @@ interface TokensAccounts extends Struct {
   readonly balance: BN;
 }
 
-interface X2 {
-  parachain: number;
-  generalKey: string;
-}
-
 /**
  * Used to transfer assets from Crust Shadow
  */
