@@ -6,7 +6,7 @@ import { ExtrinsicPayload, IApi, IApiFactory } from 'src/v2/integration';
 import { Asset } from 'src/v2/models';
 import { Symbols } from 'src/v2/symbols';
 import { XcmRepository } from '../XcmRepository';
-import { ethWalletChains, XcmChain } from 'src/v2/models/XcmModels';
+import { XcmChain } from 'src/v2/models/XcmModels';
 import { Option, Struct } from '@polkadot/types';
 import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
 
@@ -15,17 +15,6 @@ interface TokensAccounts extends Struct {
   readonly reserved: BN;
   readonly frozen: BN;
   readonly balance: BN;
-}
-
-interface AssetConfig extends Struct {
-  v1: {
-    parents: number;
-    interior: Interior;
-  };
-}
-
-interface Interior {
-  x2: X2[];
 }
 
 interface X2 {
@@ -206,15 +195,5 @@ export class CrustShadowXcmRepository extends XcmRepository {
       console.error(e);
       return '0';
     }
-  }
-
-  private getTokenData(token: Asset) {
-    return this.isAstarNativeToken(token)
-      ? {
-          ForeignAsset: this.astarTokens[token.metadata.symbol],
-        }
-      : {
-          Token: token.originAssetId,
-        };
   }
 }
