@@ -217,23 +217,4 @@ export class CrustShadowXcmRepository extends XcmRepository {
           Token: token.originAssetId,
         };
   }
-
-  // protected async fetchAssetConfig(
-  //   source: XcmChain,
-  //   token: Asset
-  // ): Promise<{
-  //   parents: number;
-  //   interior: Interior;
-  // }> {
-  //   const symbol = token.metadata.symbol;
-
-  //   const api = await this.apiFactory.get(source.endpoint);
-  //   const config = await api.query.assetManager.assetIdType<Option<AssetConfig>>(
-  //     this.astarTokens[symbol]
-  //   );
-
-  //   // return config.unwrap().v1;
-  //   const formattedAssetConfig = JSON.parse(config.toString());
-  //   return formattedAssetConfig.v1;
-  // }
 }
