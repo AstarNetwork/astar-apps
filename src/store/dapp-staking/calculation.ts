@@ -2,9 +2,8 @@ import { bool, Option, Struct, u32 } from '@polkadot/types';
 import { Balance } from '@polkadot/types/interfaces';
 import { BN } from '@polkadot/util';
 import { $api } from 'boot/api';
+import { getDappAddressEnum } from 'src/modules/dapp-staking/utils';
 import { ClaimInfo, EraRewardAndStake } from './actions';
-
-export const getAddressEnum = (address: string) => ({ Evm: address });
 
 /**
  * Gets claimable eras from first staked era to next staked era or current era.
@@ -67,7 +66,7 @@ export const getIndividualClaimReward = async (
 
   const stakerInfo = await $api?.query.dappsStaking.generalStakerInfo<StakerInfo>(
     senderAddress,
-    getAddressEnum(contractAddress)
+    getDappAddressEnum(contractAddress)
   );
 
   // Developer percentage string has format like 80.00%, get whole part as number.
@@ -93,7 +92,7 @@ export const getIndividualClaimReward = async (
       for (const claimableEra of claimableEras) {
         const eraStake = (
           await $api?.query.dappsStaking.contractEraStake<Option<EraStakingPointsIndividualClaim>>(
-            getAddressEnum(contractAddress),
+            getDappAddressEnum(contractAddress),
             claimableEras[0].era
           )
         )?.unwrapOrDefault();

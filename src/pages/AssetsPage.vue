@@ -27,3 +27,10 @@ export default defineComponent({
   // },
 });
 </script>
+<style lang="scss" scoped>
+#assets-top {
+  @media (min-width: $lg) {
+    margin-top: 50px;
+  }
+}
+</style>

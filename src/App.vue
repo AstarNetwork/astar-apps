@@ -42,7 +42,13 @@ import ModalLoading from 'components/common/ModalLoading.vue';
 import AlertBox from 'components/common/AlertBox.vue';
 import CookiePolicy from 'components//common/CookiePolicy.vue';
 import 'animate.css';
-import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
+import {
+  BusyMessage,
+  ExtrinsicStatusMessage,
+  IEventAggregator,
+  NewBlockMessage,
+  NewEraMessage,
+} from 'src/v2/messaging';
 import { setCurrentWallet } from 'src/v2/app.container';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
@@ -81,6 +87,16 @@ export default defineComponent({
     eventAggregator.subscribe(BusyMessage.name, (m) => {
       const message = m as BusyMessage;
       store.commit('general/setLoading', message.isBusy, { root: true });
+    });
+
+    eventAggregator.subscribe(NewBlockMessage.name, (m) => {
+      const message = m as NewBlockMessage;
+      store.commit('general/setCurrentBlock', message.blockNumber, { root: true });
+    });
+
+    eventAggregator.subscribe(NewEraMessage.name, (m) => {
+      const message = m as NewEraMessage;
+      store.commit('dapps/setCurrentEra', message.era, { root: true });
     });
 
     // Handle wallet change so we can inject proper wallet
