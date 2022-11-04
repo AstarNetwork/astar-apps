@@ -213,7 +213,7 @@ export default {
     unclaimedRewards: 'Unclaimed Rewards',
     unclaimedRewardsTooltip: 'Currently we are working on displaying the number of unclaimed eras.',
     palletDisabled:
-      'Dapps staking is in maintenance mode. All actions are temporary disabled, but you can still browse dapps.',
+      'Dapp staking is in maintenance mode. All actions are temporary disabled, but you can still browse dapps.',
     turnOn: 'Turn on',
     turnOff: 'Turn off',
     on: 'ON',
@@ -229,7 +229,7 @@ export default {
     edit: 'Edit',
     developerIncentive: 'Developer Incentive',
     tokenEra: '{token}/era',
-    dappStakingEvm: 'dApps Staking is available on EVM',
+    dappStakingEvm: 'dApp Staking is available on EVM',
     stakePage: {
       backToDappList: 'Back to dApps list',
       whereFundsFrom: 'Where would you like to bring you funds from?',
