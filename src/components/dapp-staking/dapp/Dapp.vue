@@ -9,11 +9,19 @@
       <ProjectOverview :dapp="dapp" />
       <ProjectDetails :dapp="dapp" />
     </div>
+    <div class="bottom--links">
+      <router-link :to="buildStakePageLink(dapp.dapp.address)">
+        <div class="text--stake-switch">
+          {{ $t('dappStaking.dappPage.stakeOrSwitchTo') }} {{ dapp.dapp.name }}
+        </div>
+      </router-link>
+      <back-to-page :text="$t('dappStaking.dappPage.goBackToTopPage')" :link="Path.DappStaking" />
+    </div>
   </div>
 </template>
 <script lang="ts">
 import { useNetworkInfo, useStakingList } from 'src/hooks';
-import { Path } from 'src/router';
+import { networkParam, Path } from 'src/router/routes';
 import { useStore } from 'src/store';
 import { computed, defineComponent, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
@@ -44,6 +52,11 @@ export default defineComponent({
     const { dapps, stakingList } = useStakingList();
     const dappAddress = computed<string>(() => route.query.dapp as string);
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
+
+    const buildStakePageLink = (address: string): string => {
+      const base = networkParam + Path.DappStaking + Path.Stake;
+      return `${base}?dapp=${address.toLowerCase()}`;
+    };
 
     const dispatchGetDapps = (): void => {
       const isDispatch = currentNetworkName.value && dapps.value.length === 0;
@@ -81,6 +94,7 @@ export default defineComponent({
       Path,
       dapp,
       stakingList,
+      buildStakePageLink,
     };
   },
 });

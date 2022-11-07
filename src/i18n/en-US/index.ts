@@ -259,6 +259,8 @@ export default {
     },
     dappPage: {
       back: 'Back',
+      goBackToTopPage: 'Go back to the top page',
+      stakeOrSwitchTo: 'Stake or switch to',
       totalStaked: 'Total Staked',
       totalStaker: 'Total Staker',
       team: 'Team',
