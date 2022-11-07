@@ -82,6 +82,7 @@ export default defineComponent({
 @import 'src/css/quasar.variables.scss';
 
 .wrapper-main {
+  width: 100%;
   padding: 0px 0px 24px 0px;
   margin: 0 auto;
 
