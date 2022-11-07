@@ -4,10 +4,12 @@ import {
   useCustomSignature,
   useGetMinStaking,
   useStakingList,
+  useNetworkInfo,
+  useChainMetadata,
 } from 'src/hooks';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { ethers } from 'ethers';
-import { getAddressEnum } from 'src/modules/dapp-staking';
+import { getDappAddressEnum } from 'src/modules/dapp-staking';
 import { showError } from 'src/modules/extrinsic';
 import { useStore } from 'src/store';
 import { computed, ref, watch, watchEffect } from 'vue';
@@ -20,6 +22,7 @@ export function useNominationTransfer() {
   const { currentAccount } = useAccount();
   const { minStaking } = useGetMinStaking();
   const { stakingList } = useStakingList();
+  useChainMetadata();
   const store = useStore();
   const addressTransferFrom = ref<string>(currentAccount.value);
   const isEnableNominationTransfer = ref<boolean>(false);
@@ -45,10 +48,7 @@ export function useNominationTransfer() {
     addressTransferFrom.value = address;
   };
 
-  const nativeTokenSymbol = computed(() => {
-    const chainInfo = store.getters['general/chainInfo'];
-    return chainInfo ? chainInfo.tokenSymbol : '';
-  });
+  const { nativeTokenSymbol } = useNetworkInfo();
 
   const formattedTransferFrom = computed(() => {
     const defaultData = { text: '', item: null, isNominationTransfer: false };
@@ -109,9 +109,9 @@ export function useNominationTransfer() {
 
       const value = ethers.utils.parseEther(String(amount)).toString();
       const transaction = apiRef.tx.dappsStaking.nominationTransfer(
-        getAddressEnum(formattedTransferFrom.value.item.address),
+        getDappAddressEnum(formattedTransferFrom.value.item.address),
         value,
-        getAddressEnum(targetContractId)
+        getDappAddressEnum(targetContractId)
       );
 
       const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {

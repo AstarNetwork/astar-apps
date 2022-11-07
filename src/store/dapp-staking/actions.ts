@@ -8,7 +8,7 @@ import {
   EventRecord,
 } from '@polkadot/types/interfaces';
 import { ITuple } from '@polkadot/types/types';
-import BN from 'bn.js';
+import { BN } from '@polkadot/util';
 import { $api } from 'boot/api';
 import { ActionTree, Dispatch } from 'vuex';
 import { StateInterface } from '../index';
@@ -21,8 +21,7 @@ import { Symbols } from 'src/v2/symbols';
 import axios, { AxiosError } from 'axios';
 import { TOKEN_API_URL } from 'src/modules/token-api';
 import type { Transaction } from 'src/hooks/helper/wallet';
-
-let collectionKey: string;
+import { getDappAddressEnum } from 'src/modules/dapp-staking/utils';
 
 const showError = (dispatch: Dispatch, message: string): void => {
   dispatch(
@@ -33,18 +32,6 @@ const showError = (dispatch: Dispatch, message: string): void => {
     },
     { root: true }
   );
-};
-
-export const getAddressEnum = (address: string) => ({ Evm: address });
-
-const getCollectionKey = async (): Promise<string> => {
-  if (!collectionKey) {
-    await $api?.isReady;
-    const chain = (await $api?.rpc.system.chain()) || 'development-dapps';
-    collectionKey = `${chain.toString().toLowerCase()}-dapps`.replace(' ', '-');
-  }
-
-  return collectionKey;
 };
 
 export const hasExtrinsicFailedEvent = (
@@ -95,13 +82,30 @@ export const hasExtrinsicFailedEvent = (
 };
 
 const actions: ActionTree<State, StateInterface> = {
-  async getDapps({ commit, dispatch }, network: string) {
+  async getDapps(
+    { commit, dispatch },
+    { network, currentAccount }: { network: string; currentAccount: string }
+  ) {
     commit('general/setLoading', true, { root: true });
 
     try {
+      // Fetch dapps
       const dappsUrl = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/dapps-staking/dapps`;
-      const result = await axios.get<DappItem>(dappsUrl);
-      commit('addDapps', result.data);
+      const service = container.get<IDappStakingService>(Symbols.DappStakingService);
+
+      const [dapps, combinedInfo] = await Promise.all([
+        axios.get<DappItem[]>(dappsUrl),
+        service.getCombinedInfo(currentAccount),
+      ]);
+
+      // Update combined info with dapp info
+      combinedInfo.map((i) => {
+        i.dapp = dapps.data.find(
+          (x) => x.address.toLowerCase() === i.contract.address.toLowerCase()
+        );
+      });
+
+      commit('addDappCombinedInfos', combinedInfo);
     } catch (e) {
       const error = e as unknown as Error;
       showError(dispatch, error.message);
@@ -117,7 +121,7 @@ const actions: ActionTree<State, StateInterface> = {
           // If no signature received, it means we are using the
           // old dapp registration logic (to be removed after all networks are updated.)
           const transaction = parameters.api.tx.dappsStaking.register(
-            getAddressEnum(parameters.dapp.address)
+            getDappAddressEnum(parameters.dapp.address)
           );
 
           const signedTransaction = await sign({
@@ -137,19 +141,19 @@ const actions: ActionTree<State, StateInterface> = {
 
         const payload = {
           name: parameters.dapp.name,
-          description: parameters.dapp.description,
-          url: parameters.dapp.url,
+          iconFile: getFileInfo(parameters.dapp.iconFileName, parameters.dapp.iconFile),
           address: parameters.dapp.address,
+          url: parameters.dapp.url,
+          images: getImagesInfo(parameters.dapp),
+          developers: parameters.dapp.developers,
+          description: parameters.dapp.description,
+          communities: parameters.dapp.communities,
+          contractType: parameters.dapp.contractType,
+          mainCategory: parameters.dapp.mainCategory,
           license: parameters.dapp.license,
-          videoUrl: parameters.dapp.videoUrl,
           tags: parameters.dapp.tags,
-          forumUrl: parameters.dapp.forumUrl,
-          authorContact: parameters.dapp.authorContact,
-          gitHubUrl: parameters.dapp.gitHubUrl,
           senderAddress: parameters.senderAddress,
           signature: parameters.signature,
-          iconFile: getFileInfo(parameters.dapp.iconFileName, parameters.dapp.iconFile),
-          images: getImagesInfo(parameters.dapp),
         };
 
         commit('general/setLoading', true, { root: true });
@@ -249,7 +253,9 @@ const getFileInfo = (fileName: string, dataUrl: string): FileInfo => {
 };
 
 const getImagesInfo = (dapp: NewDappItem): FileInfo[] => {
-  return dapp.images.map((image, index) => getFileInfo(image.name, dapp.imagesContent[index]));
+  return dapp.images
+    .slice(1) // Ignore first image since it is just an add image placeholder.
+    .map((image, index) => getFileInfo(image.name, dapp.imagesContent[index + 1]));
 };
 
 export interface RegisterParameters {
@@ -270,13 +276,13 @@ export interface WithdrawParameters {
   substrateAccounts: SubstrateAccount[];
 }
 
+export interface MyStakeInfo {
+  formatted: string;
+  denomAmount: BN;
+}
+
 export interface StakeInfo {
-  yourStake:
-    | undefined
-    | {
-        formatted: string;
-        denomAmount: BN;
-      };
+  yourStake: undefined | MyStakeInfo;
   totalStake: string;
   claimedRewards: string;
   hasStake: boolean;

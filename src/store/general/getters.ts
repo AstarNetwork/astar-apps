@@ -30,6 +30,7 @@ export interface GeneralGetters {
   headerName(state: State): string;
   currentWallet(state: State): string;
   getGas(state: State): GasTip | undefined;
+  getCurrentBlock(state: State): number;
 }
 
 const getters: GetterTree<State, StateInterface> & GeneralGetters = {
@@ -53,6 +54,7 @@ const getters: GetterTree<State, StateInterface> & GeneralGetters = {
   headerName: (state: State) => state.headerName,
   currentWallet: (state: State) => state.currentWallet,
   getGas: (state: State) => state.gas,
+  getCurrentBlock: (state: State) => state.currentBlock,
 };
 
 export default getters;

@@ -85,7 +85,7 @@ import {
   getTxHistories,
   hotTopics,
   RecentHistory,
-} from 'src/modules/transfer';
+} from 'src/modules/information';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
 import { socialUrl } from 'src/links';

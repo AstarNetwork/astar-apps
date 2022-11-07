@@ -3,7 +3,7 @@ import { Asset, Chain } from 'src/v2/models';
 import { XcmTokenInformation } from 'src/modules/xcm';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { ASTAR_DECIMALS } from 'src/hooks/helper/plasmUtils';
-import { BN } from 'bn.js';
+import { BN } from '@polkadot/util';
 import { ASTAR_NATIVE_TOKEN } from 'src/config/chain';
 
 // Acala Note: There is no endpoint to get minBridgeAmount.  But the rule is that Acala doesn't allow transfers that are less value than the equivalent of $0.01USD

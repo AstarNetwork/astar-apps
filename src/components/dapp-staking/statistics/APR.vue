@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import BN from 'bn.js';
+import { BN } from '@polkadot/util';
 import { $api } from 'src/boot/api';
 import { AccountLedger, RewardDestination, useAccount, useApr } from 'src/hooks';
 import { computed, defineComponent, ref, watch } from 'vue';

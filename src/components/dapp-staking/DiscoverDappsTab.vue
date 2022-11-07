@@ -1,13 +1,18 @@
 <template>
-  <div>
-    <div class="warning-wrapper">
-      <div class="warning-text-container">
-        {{
-          $t('dappStaking.warning', {
-            amount: minimumStakingAmount,
-            stakers: maxNumberOfStakersPerContract.toLocaleString('en-US'),
-          })
-        }}
+  <div class="wrapper--dapp-staking">
+    <div class="container--dapp-staking">
+      <div class="warning-wrapper">
+        <div class="warning-text-container">
+          {{
+            $t('dappStaking.warning', {
+              amount: minimumStakingAmount,
+              stakers: maxNumberOfStakersPerContract.toLocaleString('en-US'),
+            })
+          }}
+        </div>
+        <Button :small="true" class="register-button" @click="showRegisterDappModal = true">
+          + {{ $t('dappStaking.registerDapp') }}
+        </Button>
       </div>
       <Button :small="true" class="register-button" @click="showRegisterDappModal = true">
         + {{ $t('dappStaking.registerDapp') }}
@@ -224,6 +229,19 @@ export default defineComponent({
   }
 }
 
+.container--dapp-staking {
+  display: grid;
+  row-gap: 24px;
+  max-width: 1300px;
+}
+
+.wrapper--dapp-staking {
+  position: relative;
+  @media (min-width: $xxl) {
+    display: flex;
+    justify-content: center;
+  }
+}
 .row--tab {
   display: flex;
   width: 100%;

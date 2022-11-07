@@ -232,10 +232,10 @@ export default defineComponent({
       isEthWallet,
       balUsd,
       isLockdropAccount,
+      isSkeleton,
       getShortenAddress,
       copyAddress,
       toggleEvmWalletSchema,
-      isSkeleton,
     };
   },
 });

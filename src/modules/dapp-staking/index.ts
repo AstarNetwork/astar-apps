@@ -1,6 +1,5 @@
 export {
-  formatStakingList,
-  getAddressEnum,
+  getDappAddressEnum,
   getDappStakers,
   getLatestStakePoint,
   getStakeInfo,
@@ -15,4 +14,5 @@ export interface StakingData {
   address: string;
   name: string;
   balance: string;
+  iconUrl: string;
 }

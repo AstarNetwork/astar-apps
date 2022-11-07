@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { BN } from 'bn.js';
+import { BN } from '@polkadot/util';
 import { ethers } from 'ethers';
 import Web3 from 'web3';
 import { TransactionConfig } from 'web3-eth';

@@ -103,7 +103,7 @@
 </template>
 
 <script lang="ts">
-import BN from 'bn.js';
+import { BN } from '@polkadot/util';
 import FormatBalance from 'components/common/FormatBalance.vue';
 import ModalSelectAccount from 'components/common/ModalSelectAccount.vue';
 import Modal from 'components/common/Modal.vue';
