@@ -258,6 +258,7 @@ export default {
       launchAlgemApp: 'Launch Algem App',
     },
     dappPage: {
+      back: 'Back',
       totalStaked: 'Total Staked',
       totalStaker: 'Total Staker',
       team: 'Team',
