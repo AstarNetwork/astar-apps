@@ -8,41 +8,48 @@
       @mouseleave="hoverIndex = -1"
       @click="goDappPageLink(t.dapp?.address)"
     >
-      <div class="wrapper--card">
-        <div class="wrapper--img">
-          <q-img :src="t.dapp?.iconUrl" class="img--dapp" fit="contain" no-spinner />
-        </div>
-        <div class="panel--right">
-          <div class="txt--title">{{ t.dapp?.name }}</div>
-          <div class="badge--tag">{{ category }}</div>
-          <div class="divider"></div>
-          <div class="row--metric">
-            <div class="row--numStakers">
-              <astar-icon-base class="icon--community" stroke="currentColor" width="20" height="18">
-                <astar-icon-community />
-              </astar-icon-base>
-              {{ t.stakerInfo.stakersCount.toLocaleString() }}
-            </div>
-            <div>
-              <token-balance
-                :balance="t.stakerInfo.totalStakeFormatted.toString()"
-                :symbol="nativeTokenSymbol"
-                :decimals="0"
-              />
+      <q-intersection transition="slide-up" once>
+        <div class="wrapper--card">
+          <div class="wrapper--img">
+            <q-img :src="t.dapp?.iconUrl" class="img--dapp" fit="contain" no-spinner />
+          </div>
+          <div class="panel--right">
+            <div class="txt--title">{{ t.dapp?.name }}</div>
+            <div class="badge--tag">{{ category }}</div>
+            <div class="divider"></div>
+            <div class="row--metric">
+              <div class="row--numStakers">
+                <astar-icon-base
+                  class="icon--community"
+                  stroke="currentColor"
+                  width="20"
+                  height="18"
+                >
+                  <astar-icon-community />
+                </astar-icon-base>
+                {{ t.stakerInfo.stakersCount.toLocaleString() }}
+              </div>
+              <div>
+                <token-balance
+                  :balance="t.stakerInfo.totalStakeFormatted.toString()"
+                  :symbol="nativeTokenSymbol"
+                  :decimals="0"
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <astar-button
-        v-if="index === hoverIndex || width < widthCardLineUp"
-        class="button--stake"
-        width="274"
-        height="24"
-        @click="goStakePageLink(t.dapp?.address)"
-      >
-        {{ $t('dappStaking.stakeNow') }}
-      </astar-button>
-      <div v-else style="width: 274px; height: 24px"></div>
+        <astar-button
+          v-if="index === hoverIndex || width < widthCardLineUp"
+          class="button--stake"
+          width="274"
+          height="24"
+          @click="goStakePageLink(t.dapp?.address)"
+        >
+          {{ $t('dappStaking.stakeNow') }}
+        </astar-button>
+        <div v-else style="width: 274px; height: 24px"></div>
+      </q-intersection>
     </div>
   </div>
 </template>
