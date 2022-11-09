@@ -308,6 +308,7 @@ export default {
       },
       builder: {
         title: 'Builder',
+        githubAccount: 'Github account',
         twitterAccount: 'Twitter account',
         linkedInAccount: 'LinkedIn account',
         image: "Builder's image",
@@ -324,6 +325,7 @@ export default {
       communityLabel: 'Community',
       community: {
         title: 'Communities',
+        discordAccount: 'Discord account',
         twitterAccount: 'Twitter account',
         redditAccount: 'Reddit account',
         facebookAccount: 'Facebook account',

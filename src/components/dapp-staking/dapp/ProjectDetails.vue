@@ -114,51 +114,6 @@
               </q-tooltip>
             </button>
           </div>
-          <!-- Memo: Reference -->
-          <!-- <button class="box--share btn--primary">
-            <div class="icon--social">
-              <a :href="dapp.dapp.formUrl" target="_blank" rel="noopener noreferrer">
-                <astar-icon-base viewBox="0 0 512 512" icon-name="Twitter">
-                  <astar-icon-twitter />
-                </astar-icon-base>
-              </a>
-            </div>
-            <q-tooltip>
-              <span class="text--tooltip">{{ $t('common.twitter') }}</span>
-            </q-tooltip>
-          </button>
-          <button class="box--share btn--primary">
-            <div class="icon--social">
-              <astar-icon-base viewBox="0 0 512 512" icon-name="Discord">
-                <astar-icon-discord />
-              </astar-icon-base>
-            </div>
-            <q-tooltip>
-              <span class="text--tooltip">{{ $t('common.discord') }}</span>
-            </q-tooltip>
-          </button>
-          <button class="box--share btn--primary">
-            <div class="icon--social">
-              <astar-icon-base viewBox="0 0 512 512" icon-name="Telegram">
-                <astar-icon-telegram />
-              </astar-icon-base>
-            </div>
-            <q-tooltip>
-              <span class="text--tooltip">{{ $t('common.telegram') }}</span>
-            </q-tooltip>
-          </button>
-          <button class="box--share btn--primary">
-            <div class="icon--social">
-              <a :href="dapp.dapp.gitHubUrl" target="_blank" rel="noopener noreferrer">
-                <astar-icon-base viewBox="0 0 512 512" icon-name="Telegram">
-                  <astar-icon-github />
-                </astar-icon-base>
-              </a>
-            </div>
-            <q-tooltip>
-              <span class="text--tooltip">{{ $t('common.github') }}</span>
-            </q-tooltip>
-          </button> -->
         </div>
       </div>
     </div>
@@ -214,7 +169,7 @@ export default defineComponent({
         if (props.dapp.dapp.contractType === 'wasm+evm') {
           return ['EVM', 'WASM'];
         } else {
-          return [props.dapp.dapp.communities];
+          return [props.dapp.dapp.contractType];
         }
       } else {
         return ['EVM'];
