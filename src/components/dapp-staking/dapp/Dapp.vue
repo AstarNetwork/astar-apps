@@ -1,13 +1,13 @@
 <template>
   <div v-if="dapp">
     <back-to-page :text="$t('dappStaking.stakePage.backToDappList')" :link="Path.DappStaking" />
-    <DappAvatar :dapp="dapp" />
-    <DappStatistics :dapp="dapp" />
-    <DappImages :dapp="dapp" />
-    <Builders :dapp="dapp" />
+    <dapp-avatar :dapp="dapp" />
+    <dapp-statistics :dapp="dapp" />
+    <dapp-images :dapp="dapp" />
+    <builders :dapp="dapp" />
     <div class="row--project-overview">
-      <ProjectOverview :dapp="dapp" />
-      <ProjectDetails :dapp="dapp" />
+      <project-overview :dapp="dapp" />
+      <project-details :dapp="dapp" />
     </div>
     <div class="bottom--links">
       <router-link :to="buildStakePageLink(dapp.dapp.address)">
@@ -20,8 +20,9 @@
   </div>
 </template>
 <script lang="ts">
-import { useNetworkInfo, useStakingList } from 'src/hooks';
-import { networkParam, Path } from 'src/router/routes';
+import { useNetworkInfo, useStakingList, useDappRedirect } from 'src/hooks';
+import { Path } from 'src/router';
+import { networkParam } from 'src/router/routes';
 import { useStore } from 'src/store';
 import { computed, defineComponent, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
@@ -47,6 +48,7 @@ export default defineComponent({
   setup() {
     const { currentNetworkName } = useNetworkInfo();
     const route = useRoute();
+    useDappRedirect();
     const { t } = useI18n();
     const store = useStore();
     const { dapps, stakingList } = useStakingList();
@@ -87,7 +89,6 @@ export default defineComponent({
       }
       return null;
     });
-
     watchEffect(dispatchGetDapps);
 
     return {
