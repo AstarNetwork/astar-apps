@@ -7,12 +7,14 @@ import { container } from 'src/v2/common';
 import { IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { computed, ref, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 
 export function useStake() {
   const router = useRouter();
+  const route = useRoute();
   const { currentAccount } = useAccount();
   const { stakingList } = useStakingList();
+  const isStakePage = computed<boolean>(() => route.fullPath.includes('stake'));
   useChainMetadata();
   const addressTransferFrom = ref<string>(currentAccount.value);
 
@@ -59,7 +61,7 @@ export function useStake() {
     } else {
       await dappStakingService.stake(targetContractId, currentAccount.value, stakeAmount);
     }
-    router.push(Path.DappStaking);
+    isStakePage.value && router.push(Path.DappStaking);
   };
 
   watch(

@@ -76,7 +76,8 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
               this.eventAggregator.publish(new BusyMessage(false));
               resolve(extrinsic.hash.toHex());
             } else {
-              this.eventAggregator.publish(new BusyMessage(true));
+              const isLoad = !result.isCompleted || !result.isInBlock;
+              isLoad && this.eventAggregator.publish(new BusyMessage(true));
             }
           }
         );
