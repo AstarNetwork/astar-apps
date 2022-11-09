@@ -45,12 +45,18 @@ import StakeForm from 'src/components/dapp-staking/stake-manage/StakeForm.vue';
 import SelectFunds from 'src/components/dapp-staking/stake-manage/SelectFunds.vue';
 import StakeInformation from 'src/components/dapp-staking/stake-manage/StakeInformation.vue';
 import ModalSelectFunds from 'src/components/dapp-staking/stake-manage/ModalSelectFunds.vue';
-import { useBreakpoints, useNetworkInfo, useStake, useStakingList } from 'src/hooks';
+import {
+  useBreakpoints,
+  useNetworkInfo,
+  useStake,
+  useStakingList,
+  useDappRedirect,
+} from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { Path } from 'src/router';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 
 export type StakeRightUi = 'information' | 'select-funds-from';
 
@@ -70,7 +76,7 @@ export default defineComponent({
     const { screenSize, width } = useBreakpoints();
     const { currentNetworkName } = useNetworkInfo();
     const route = useRoute();
-    const router = useRouter();
+    useDappRedirect();
     const { setAddressTransferFrom, formattedTransferFrom, currentAccount, handleStake } =
       useStake();
 
@@ -133,19 +139,6 @@ export default defineComponent({
       isModalSelectFunds.value && handleModalSelectFunds({ isOpen: false });
     };
 
-    const handleRedirect = (): void => {
-      if (dappAddress.value && dapps.value.length > 0) {
-        const dapp = dapps.value.find(
-          (it: any) => it.contract.address.toLowerCase() === dappAddress.value.toLowerCase()
-        );
-        !dapp &&
-          router.push({
-            path: Path.DappStaking,
-          });
-      }
-    };
-
-    watchEffect(handleRedirect);
     watchEffect(dispatchGetDapps);
 
     return {
