@@ -227,7 +227,6 @@ export class DappStakingRepository implements IDappStakingRepository {
     if (!DappStakingRepository.isEraSubscribed) {
       const api = await this.api.getApi();
       await api.query.dappsStaking.currentEra((era: u32) => {
-        console.log('New era: ', era.toString());
         this.eventAggregator.publish(new NewEraMessage(era.toNumber()));
       });
       DappStakingRepository.isEraSubscribed = true;

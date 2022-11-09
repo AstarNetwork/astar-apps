@@ -66,7 +66,6 @@ export function useClaimAll() {
       canClaim.value = batchTxs.length > 0;
 
       amountOfEras.value = batchTxs.length;
-      console.log('Amount of Eras to claim: batchTxs.length', batchTxs.length);
     } catch (error: any) {
       console.error(error.message);
     } finally {
