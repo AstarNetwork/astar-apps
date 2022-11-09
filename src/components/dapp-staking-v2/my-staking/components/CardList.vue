@@ -27,7 +27,7 @@
                 >
                   <astar-icon-community />
                 </astar-icon-base>
-                {{ t.stakerInfo.stakersCount.toLocaleString() }}
+                {{ t.stakerInfo.stakersCount.toString() }}
               </div>
               <div>
                 <token-balance

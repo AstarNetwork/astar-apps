@@ -1,6 +1,6 @@
 <template>
   <div v-if="dapp">
-    <back-to-page :text="$t('dappStaking.dappPage.back')" :link="Path.DappStaking" />
+    <back-to-page :text="$t('dappStaking.stakePage.backToDappList')" :link="Path.DappStaking" />
     <DappAvatar :dapp="dapp" />
     <DappStatistics :dapp="dapp" />
     <DappImages :dapp="dapp" />
@@ -15,7 +15,7 @@
           {{ $t('dappStaking.dappPage.stakeOrSwitchTo') }} {{ dapp.dapp.name }}
         </div>
       </router-link>
-      <back-to-page :text="$t('dappStaking.dappPage.goBackToTopPage')" :link="Path.DappStaking" />
+      <back-to-page :text="$t('dappStaking.stakePage.backToDappList')" :link="Path.DappStaking" />
     </div>
   </div>
 </template>
