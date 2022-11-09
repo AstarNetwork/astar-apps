@@ -50,7 +50,7 @@ import { wait } from 'src/hooks/helper/common';
 import { Path } from 'src/router';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 export type StakeRightUi = 'information' | 'select-funds-from';
 
@@ -70,6 +70,7 @@ export default defineComponent({
     const { screenSize, width } = useBreakpoints();
     const { currentNetworkName } = useNetworkInfo();
     const route = useRoute();
+    const router = useRouter();
     const { setAddressTransferFrom, formattedTransferFrom, currentAccount, handleStake } =
       useStake();
 
@@ -119,8 +120,6 @@ export default defineComponent({
       return null;
     });
 
-    watchEffect(dispatchGetDapps);
-
     const cancelHighlight = async (e: any): Promise<void> => {
       const openClass = 'container--select-funds';
       if (isHighlightRightUi.value && e.target.className !== openClass) {
@@ -133,6 +132,21 @@ export default defineComponent({
       await setRightUi('information');
       isModalSelectFunds.value && handleModalSelectFunds({ isOpen: false });
     };
+
+    const handleRedirect = (): void => {
+      if (dappAddress.value && dapps.value.length > 0) {
+        const dapp = dapps.value.find(
+          (it: any) => it.contract.address.toLowerCase() === dappAddress.value.toLowerCase()
+        );
+        !dapp &&
+          router.push({
+            path: Path.DappStaking,
+          });
+      }
+    };
+
+    watchEffect(handleRedirect);
+    watchEffect(dispatchGetDapps);
 
     return {
       isHighlightRightUi,

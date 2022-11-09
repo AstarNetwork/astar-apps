@@ -15,7 +15,7 @@ import { useNetworkInfo, useStakingList } from 'src/hooks';
 import { Path } from 'src/router';
 import { useStore } from 'src/store';
 import { computed, defineComponent, watchEffect } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import DappAvatar from 'src/components/dapp-staking/dapp/DappAvatar.vue';
 import DappStatistics from 'src/components/dapp-staking/dapp/DappStatistics.vue';
 import DappImages from 'src/components/dapp-staking/dapp/DappImages.vue';
@@ -36,6 +36,7 @@ export default defineComponent({
   setup() {
     const { currentNetworkName } = useNetworkInfo();
     const route = useRoute();
+    const router = useRouter();
     const { t } = useI18n();
     const store = useStore();
     const { dapps, stakingList } = useStakingList();
@@ -72,6 +73,19 @@ export default defineComponent({
       return null;
     });
 
+    const handleRedirect = (): void => {
+      if (dappAddress.value && dapps.value.length > 0) {
+        const dapp = dapps.value.find(
+          (it: any) => it.contract.address.toLowerCase() === dappAddress.value.toLowerCase()
+        );
+        !dapp &&
+          router.push({
+            path: Path.DappStaking,
+          });
+      }
+    };
+
+    watchEffect(handleRedirect);
     watchEffect(dispatchGetDapps);
 
     return {
