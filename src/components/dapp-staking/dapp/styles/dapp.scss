@@ -15,6 +15,11 @@
   align-items: center;
   text-align: center;
   margin-top: 33px;
+  margin-bottom: 43px;
+
+  @media (min-width: $lg) {
+    margin-bottom: 0px;
+  }
 
   .text--stake-switch {
     font-size: 16px;
