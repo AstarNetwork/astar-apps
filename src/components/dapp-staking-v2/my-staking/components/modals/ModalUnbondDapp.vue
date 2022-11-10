@@ -1,9 +1,9 @@
 <template>
-  <astar-default-modal
-    :width="500"
-    :show="show"
+  <modal-wrapper-v-2
+    :is-modal-open="show"
     :title="$t('dappStaking.modals.unbondFrom', { name: dapp?.name })"
-    @close="close"
+    :is-closing="isClosingModal"
+    :close-modal="closeModal"
   >
     <div class="wrapper">
       <div class="box--input-field box--hover--active">
@@ -45,7 +45,7 @@
         </div>
       </div>
 
-      <SpeedConfigurationV2
+      <speed-configuration-v-2
         class="speed"
         :gas-cost="nativeTipPrice"
         :selected-gas="selectedTip"
@@ -56,16 +56,11 @@
         <li>{{ $t('dappStaking.unbondingEra', { unbondingPeriod }) }}</li>
       </div>
 
-      <astar-button
-        width="420"
-        class="unbond-button"
-        :height="44"
-        :disabled="!amount"
-        @click="unbound()"
-        >Start unbonding</astar-button
-      >
+      <astar-button class="unbond-button" :disabled="!amount" @click="unbound()"
+        >{{ $t('dappStaking.modals.startUnbonding') }}
+      </astar-button>
     </div>
-  </astar-default-modal>
+  </modal-wrapper-v-2>
 </template>
 
 <script lang="ts">
@@ -75,10 +70,14 @@ import { getTokenImage } from 'src/modules/token';
 import { truncate } from 'src/hooks/helper/common';
 import { ethers } from 'ethers';
 import SpeedConfigurationV2 from 'src/components/common/SpeedConfigurationV2.vue';
+import ModalWrapperV2 from 'src/components/common/ModalWrapperV2.vue';
+import { fadeDuration } from '@astar-network/astar-ui';
+import { wait } from 'src/hooks/helper/common';
 
 export default defineComponent({
   components: {
     SpeedConfigurationV2,
+    ModalWrapperV2,
   },
   props: {
     show: {
@@ -106,10 +105,6 @@ export default defineComponent({
     });
     const amount = ref<string | null>(null);
 
-    const close = () => {
-      emit('update:is-open', false);
-    };
-
     const toMaxAmount = (): void => {
       amount.value = truncate(maxAmount.value).toString();
     };
@@ -118,9 +113,17 @@ export default defineComponent({
       amount.value = event.target.value;
     };
 
+    const isClosingModal = ref<boolean>(false);
+    const closeModal = async (): Promise<void> => {
+      isClosingModal.value = true;
+      await wait(fadeDuration);
+      emit('update:is-open', false);
+      isClosingModal.value = false;
+    };
+
     const unbound = async (): Promise<void> => {
       await handleUnbound(props.dapp?.dappAddress, amount.value);
-      close();
+      await closeModal();
     };
 
     return {
@@ -137,6 +140,8 @@ export default defineComponent({
       truncate,
       inputHandler,
       unbound,
+      closeModal,
+      isClosingModal,
     };
   },
 });
@@ -149,6 +154,10 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-bottom: 36px;
+  @media (min-width: $md) {
+    padding-bottom: 0px;
+  }
 }
 
 .box--input-field {
@@ -194,15 +203,19 @@ export default defineComponent({
   padding: 8px;
   margin-top: 20px;
   margin-bottom: 40px;
-  width: 100%;
-
-  @media (max-width: $lg) {
-    max-width: 400px;
+  width: 344px;
+  @media (min-width: $md) {
+    width: 400px;
   }
 }
 
 .unbond-button {
+  width: 340px;
   font-size: 22px;
   font-weight: 600;
+  height: 44px;
+  @media (min-width: $md) {
+    width: 400px;
+  }
 }
 </style>

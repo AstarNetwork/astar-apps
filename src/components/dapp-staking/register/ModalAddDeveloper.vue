@@ -1,12 +1,12 @@
 <template>
-  <astar-default-modal
-    :show="show"
+  <modal-wrapper-v-2
+    :is-modal-open="show"
     :title="$t('dappStaking.modals.builder.title')"
-    :width="544"
-    @close="closeModal"
+    :is-closing="isClosingModal"
+    :close-modal="closeModal"
   >
     <div class="developers-wrapper">
-      <q-form ref="developerForm">
+      <q-form ref="developerForm" class="form--developer">
         <q-input
           v-model="currentDeveloper.twitterAccountUrl"
           :label="$t('dappStaking.modals.builder.twitterAccount')"
@@ -72,12 +72,12 @@
           <li>{{ $t('dappStaking.modals.builder.imageRecomendation') }}</li>
         </div>
 
-        <Button :width="464" :height="52" @click="handleConfirm">
-          {{ $t('confirm') }}
-        </Button>
+        <astar-button class="confirm-button" @click="handleConfirm">{{
+          $t('confirm')
+        }}</astar-button>
       </q-form>
     </div>
-  </astar-default-modal>
+  </modal-wrapper-v-2>
 </template>
 
 <script lang="ts">
@@ -88,12 +88,14 @@ import { Developer } from 'src/store/dapp-staking/state';
 import { isUrlValid } from 'src/components/common/Validators';
 import ImageCard from 'src/components/dapp-staking/register/ImageCard.vue';
 import Avatar from 'src/components/common/Avatar.vue';
+import ModalWrapperV2 from 'src/components/common/ModalWrapperV2.vue';
 
 export default defineComponent({
   components: {
     ImageCard,
     Avatar,
-    Button,
+    // Button,
+    ModalWrapperV2,
   },
   props: {
     show: {
@@ -130,7 +132,6 @@ export default defineComponent({
 
     const closeModal = async (): Promise<void> => {
       isClosingModal.value = true;
-
       await wait(fadeDuration);
       props.handleModalDeveloper({ isOpen: false });
       isClosingModal.value = false;
@@ -218,5 +219,23 @@ export default defineComponent({
 
 .developers-wrapper {
   margin-top: 20px;
+}
+
+.form--developer {
+  display: flex;
+  flex-direction: column;
+  padding: 0 32px;
+  padding-bottom: 36px;
+  @media (min-width: $sm) {
+    padding: 0;
+  }
+}
+
+.confirm-button {
+  width: 100%;
+  font-size: 22px;
+  font-weight: 600;
+  height: 44px;
+  align-self: center;
 }
 </style>
