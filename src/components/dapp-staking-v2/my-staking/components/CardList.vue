@@ -8,7 +8,7 @@
       @mouseleave="hoverIndex = -1"
       @click="goDappPageLink(t.dapp?.address)"
     >
-      <q-intersection transition="slide-up" once>
+      <q-intersection transition="fade" transition-duration="1000" once>
         <div class="wrapper--card">
           <div class="wrapper--img">
             <q-img :src="t.dapp?.iconUrl" class="img--dapp" fit="contain" no-spinner />
