@@ -45,7 +45,13 @@ import StakeForm from 'src/components/dapp-staking/stake-manage/StakeForm.vue';
 import SelectFunds from 'src/components/dapp-staking/stake-manage/SelectFunds.vue';
 import StakeInformation from 'src/components/dapp-staking/stake-manage/StakeInformation.vue';
 import ModalSelectFunds from 'src/components/dapp-staking/stake-manage/ModalSelectFunds.vue';
-import { useBreakpoints, useNetworkInfo, useStake, useStakingList } from 'src/hooks';
+import {
+  useBreakpoints,
+  useNetworkInfo,
+  useStake,
+  useStakingList,
+  useDappRedirect,
+} from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { Path } from 'src/router';
 import { useStore } from 'src/store';
@@ -70,6 +76,7 @@ export default defineComponent({
     const { screenSize, width } = useBreakpoints();
     const { currentNetworkName } = useNetworkInfo();
     const route = useRoute();
+    useDappRedirect();
     const { setAddressTransferFrom, formattedTransferFrom, currentAccount, handleStake } =
       useStake();
 
@@ -119,8 +126,6 @@ export default defineComponent({
       return null;
     });
 
-    watchEffect(dispatchGetDapps);
-
     const cancelHighlight = async (e: any): Promise<void> => {
       const openClass = 'container--select-funds';
       if (isHighlightRightUi.value && e.target.className !== openClass) {
@@ -133,6 +138,8 @@ export default defineComponent({
       await setRightUi('information');
       isModalSelectFunds.value && handleModalSelectFunds({ isOpen: false });
     };
+
+    watchEffect(dispatchGetDapps);
 
     return {
       isHighlightRightUi,

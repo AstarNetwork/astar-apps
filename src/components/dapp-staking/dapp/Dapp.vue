@@ -1,17 +1,17 @@
 <template>
   <div v-if="dapp">
-    <DappAvatar :dapp="dapp" />
-    <DappStatistics :dapp="dapp" />
-    <DappImages :dapp="dapp" />
-    <Builders :dapp="dapp" />
+    <dapp-avatar :dapp="dapp" />
+    <dapp-statistics :dapp="dapp" />
+    <dapp-images :dapp="dapp" />
+    <builders :dapp="dapp" />
     <div class="row--project-overview">
-      <ProjectOverview :dapp="dapp" />
-      <ProjectDetails :dapp="dapp" />
+      <project-overview :dapp="dapp" />
+      <project-details :dapp="dapp" />
     </div>
   </div>
 </template>
 <script lang="ts">
-import { useNetworkInfo, useStakingList } from 'src/hooks';
+import { useNetworkInfo, useStakingList, useDappRedirect } from 'src/hooks';
 import { Path } from 'src/router';
 import { useStore } from 'src/store';
 import { computed, defineComponent, watchEffect } from 'vue';
@@ -36,6 +36,7 @@ export default defineComponent({
   setup() {
     const { currentNetworkName } = useNetworkInfo();
     const route = useRoute();
+    useDappRedirect();
     const { t } = useI18n();
     const store = useStore();
     const { dapps, stakingList } = useStakingList();
@@ -71,7 +72,6 @@ export default defineComponent({
       }
       return null;
     });
-
     watchEffect(dispatchGetDapps);
 
     return {
