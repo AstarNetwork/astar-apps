@@ -11,9 +11,9 @@
     </div>
     <div class="bottom--links">
       <router-link :to="buildStakePageLink(dapp.dapp.address)">
-        <div class="text--stake-switch">
+        <astar-irregular-button width="220" height="28" class="btn--stake-switch">
           {{ $t('dappStaking.dappPage.stakeOrSwitchTo') }} {{ dapp.dapp.name }}
-        </div>
+        </astar-irregular-button>
       </router-link>
       <back-to-page :text="$t('dappStaking.stakePage.backToDappList')" :link="Path.DappStaking" />
     </div>
@@ -60,6 +60,10 @@ export default defineComponent({
       return `${base}?dapp=${address.toLowerCase()}`;
     };
 
+    const goLink = (url: string) => {
+      window.open(url, '_blank');
+    };
+
     const dispatchGetDapps = (): void => {
       const isDispatch = currentNetworkName.value && dapps.value.length === 0;
       if (isDispatch) {
@@ -95,6 +99,7 @@ export default defineComponent({
       Path,
       dapp,
       stakingList,
+      goLink,
       buildStakePageLink,
     };
   },

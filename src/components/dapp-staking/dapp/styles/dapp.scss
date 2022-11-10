@@ -14,6 +14,7 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
+  gap: 33px;
   margin-top: 33px;
   margin-bottom: 43px;
 
@@ -21,10 +22,12 @@
     margin-bottom: 0px;
   }
 
-  .text--stake-switch {
+  .btn--stake-switch {
     font-size: 16px;
     font-weight: 600;
-    color: $astar-blue;
-    margin-bottom: 33px;
+  }
+
+  a {
+    height: 28px;
   }
 }
