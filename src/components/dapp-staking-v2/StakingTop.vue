@@ -14,7 +14,7 @@
 
     <DappList category="DeFi" />
 
-    <q-intersection transition="fade" once>
+    <q-intersection transition="fade" transition-duration="1000" once>
       <AdsArea />
     </q-intersection>
 
