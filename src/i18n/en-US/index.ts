@@ -69,6 +69,10 @@ export default {
     discord: 'Discord',
     github: 'GitHub',
     linkedIn: 'LinkedIn',
+    reddit: 'Reddit',
+    facebook: 'Facebook',
+    instagram: 'Instagram',
+    youtube: 'Youtube',
     docs: 'Documentation',
     speed: {
       speed: 'Transaction speed',

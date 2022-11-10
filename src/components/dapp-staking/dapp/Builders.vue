@@ -12,6 +12,18 @@
           </div>
         </div>
         <div class="row--icons">
+          <button v-if="team.githubAccountUrl" class="box--share btn--primary">
+            <div class="icon--social btn--effect">
+              <a :href="team.githubAccountUrl" target="_blank" rel="noopener noreferrer">
+                <astar-icon-base viewBox="0 0 512 512" icon-name="Github">
+                  <astar-icon-github />
+                </astar-icon-base>
+              </a>
+            </div>
+            <q-tooltip>
+              <span class="text--tooltip">{{ $t('common.github') }}</span>
+            </q-tooltip>
+          </button>
           <button v-if="team.twitterAccountUrl" class="box--share btn--primary">
             <div class="icon--social btn--effect">
               <a :href="team.twitterAccountUrl" target="_blank" rel="noopener noreferrer">
@@ -46,8 +58,9 @@ import { defineComponent, computed } from 'vue';
 
 interface Developer {
   iconFile: string;
-  linkedInAccountUrl: string;
   name: string;
+  githubAccountUrl: string;
+  linkedInAccountUrl: string;
   twitterAccountUrl: string;
 }
 
