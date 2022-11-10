@@ -3,9 +3,9 @@ import { bool, Option, Struct } from '@polkadot/types';
 import { EventRecord, Balance, AccountId } from '@polkadot/types/interfaces';
 import { BN } from '@polkadot/util';
 import { ethers } from 'ethers';
-import { getAddressEnum } from 'src/store/dapp-staking/calculation';
 import { ExtrinsicPayload } from 'src/hooks/helper';
 import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
+import { getDappAddressEnum } from 'src/modules/dapp-staking';
 
 interface ContractEraStake extends Struct {
   readonly contractRewardClaimed: bool;
@@ -50,8 +50,12 @@ export const checkIsDappOwner = async ({
   api: ApiPromise;
 }): Promise<boolean> => {
   try {
+    if (!dappAddress) {
+      return false;
+    }
+
     const result = await api.query.dappsStaking.registeredDapps<Option<RegisteredDapps>>(
-      getAddressEnum(dappAddress)
+      getDappAddressEnum(dappAddress)
     );
     const data = result.unwrapOrDefault();
     const owner = data?.developer.toString();
@@ -71,7 +75,7 @@ export const checkIsDappRegistered = async ({
 }): Promise<{ isRegistered: boolean; eraUnregistered: number }> => {
   try {
     const result = await api.query.dappsStaking.registeredDapps<Option<RegisteredDapps>>(
-      getAddressEnum(dappAddress)
+      getDappAddressEnum(dappAddress)
     );
     const data = result.unwrapOrDefault();
     const isRegistered = !data.state.isUnregistered;
@@ -104,10 +108,18 @@ export const getNumberOfUnclaimedEra = async ({
 }): Promise<{ numberOfUnclaimedEra: number; isRequiredWithdraw: boolean }> => {
   let numberOfUnclaimedEra = 0;
   let isRequiredWithdraw = false;
+
+  if (!dappAddress) {
+    return {
+      numberOfUnclaimedEra: 0,
+      isRequiredWithdraw: false,
+    };
+  }
+
   try {
     const data = await api.query.dappsStaking.generalStakerInfo<GeneralStakerInfo>(
       senderAddress,
-      getAddressEnum(dappAddress)
+      getDappAddressEnum(dappAddress)
     );
 
     if (data && !data.isEmpty) {
@@ -156,7 +168,7 @@ const getContractEraStake = async ({
   era: number;
 }): Promise<Option<ContractEraStake>> => {
   return await api.query.dappsStaking.contractEraStake<Option<ContractEraStake>>(
-    getAddressEnum(dappAddress),
+    getDappAddressEnum(dappAddress),
     era
   );
 };
@@ -229,7 +241,7 @@ const getTxsForClaimDapp = async ({
 
   // Transaction weight should be alwas the same for the certain transaction, TODO check with Dino
   const info = await api.tx.dappsStaking
-    .claimDapp(getAddressEnum(dappAddress), 1)
+    .claimDapp(getDappAddressEnum(dappAddress), 1)
     .paymentInfo(senderAddress);
 
   for (let era = lastEraClaimedForDapp + 1; era < currentEra; era++) {
@@ -240,11 +252,11 @@ const getTxsForClaimDapp = async ({
     if (!e) break;
 
     if (era === e) {
-      const tx = api.tx.dappsStaking.claimDapp(getAddressEnum(dappAddress), era);
+      const tx = api.tx.dappsStaking.claimDapp(getDappAddressEnum(dappAddress), era);
       transactions.push({ payload: tx, weight: info.weight });
     } else {
       // Memo: e -> skip to the era that have been staked after unstaked
-      const tx = api.tx.dappsStaking.claimDapp(getAddressEnum(dappAddress), e);
+      const tx = api.tx.dappsStaking.claimDapp(getDappAddressEnum(dappAddress), e);
       transactions.push({ payload: tx, weight: info.weight });
       era = e;
     }
@@ -266,7 +278,7 @@ const getTxsForClaimStaker = async ({
 }): Promise<PayloadWithWeight[]> => {
   const transactions: PayloadWithWeight[] = [];
   const [claimInfo, { isRegistered }] = await Promise.all([
-    api.tx.dappsStaking.claimStaker(getAddressEnum(dappAddress)).paymentInfo(senderAddress),
+    api.tx.dappsStaking.claimStaker(getDappAddressEnum(dappAddress)).paymentInfo(senderAddress),
     checkIsDappRegistered({
       dappAddress,
       api,
@@ -274,14 +286,14 @@ const getTxsForClaimStaker = async ({
   ]);
 
   for (let i = 0; i < numberOfUnclaimedEra; i++) {
-    const tx = api.tx.dappsStaking.claimStaker(getAddressEnum(dappAddress));
+    const tx = api.tx.dappsStaking.claimStaker(getDappAddressEnum(dappAddress));
     transactions.push({ payload: tx, weight: claimInfo.weight });
   }
 
   if (!isRegistered) {
-    const tx = api.tx.dappsStaking.withdrawFromUnregistered(getAddressEnum(dappAddress));
+    const tx = api.tx.dappsStaking.withdrawFromUnregistered(getDappAddressEnum(dappAddress));
     const withdrawalInfo = await api.tx.dappsStaking
-      .withdrawFromUnregistered(getAddressEnum(dappAddress))
+      .withdrawFromUnregistered(getDappAddressEnum(dappAddress))
       .paymentInfo(senderAddress);
     transactions.push({ payload: tx, weight: withdrawalInfo.weight });
   }
@@ -378,6 +390,10 @@ export const getIndividualClaimTxs = async ({
   try {
     let txsForClaimStaker: PayloadWithWeight[] = [];
     let txsForClaimDapp: PayloadWithWeight[] = [];
+
+    if (!dappAddress) {
+      return [];
+    }
 
     const [{ numberOfUnclaimedEra, isRequiredWithdraw }, isDappOwner] = await Promise.all([
       getNumberOfUnclaimedEra({
