@@ -169,6 +169,8 @@ export default {
     unbonding: 'Unbonding',
     myDapps: 'My dApps',
     dappRegistered: 'Congrats!! your contract is approved. Please submit the details',
+    welcomeBanner:
+      'Congraturations 🎉 Please fill in the dApp information as much as possible to give users a good information. Your card will be apear in dApps Staking Portal shortly after you submit the form.',
     registerNow: 'Register now',
     transferableBalance: 'Transferable Balance',
     dappsStore: 'dApps Store',

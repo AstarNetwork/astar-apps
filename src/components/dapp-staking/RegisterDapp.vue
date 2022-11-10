@@ -1,6 +1,7 @@
 <template>
   <div class="container--register">
     <back-to-page :text="$t('dappStaking.stakePage.backToDappList')" :link="Path.DappStaking" />
+    <welcome-banner v-if="isNewDapp" class="welcome" />
     <q-form ref="dappForm">
       <div style="display: flex; flex-direction: column">
         <q-input
@@ -89,6 +90,7 @@ import Builders from 'src/components/dapp-staking/register/Builders.vue';
 import Community from 'src/components/dapp-staking/register/Community.vue';
 import DappImages from 'src/components/dapp-staking/register/DappImages.vue';
 import Description from 'src/components/dapp-staking/register/Description.vue';
+import WelcomeBanner from 'src/components/dapp-staking/register/WelcomeBanner.vue';
 import ContractTypes, {
   possibleContractTypes,
 } from 'src/components/dapp-staking/register/ContractTypes.vue';
@@ -126,6 +128,7 @@ export default defineComponent({
     Button,
     Tags,
     BackToPage,
+    WelcomeBanner,
   },
   setup() {
     const initDeveloper = (): Developer => ({
@@ -155,6 +158,7 @@ export default defineComponent({
       platform: '',
     });
     const router = useRouter();
+    const isNewDapp = ref<boolean>(false);
 
     // make a placeholder for add logo
     data.icon = new File([], t('dappStaking.modals.addLogo'));
@@ -224,6 +228,7 @@ export default defineComponent({
         data.address = developerContract ?? '';
         if (data.address && currentNetworkName.value) {
           const registeredDapp = await service.getDapp(data.address, currentNetworkName.value);
+          isNewDapp.value = !registeredDapp;
           if (registeredDapp && !registeredDapp.tags) {
             registeredDapp.tags = [];
           }
@@ -318,6 +323,7 @@ export default defineComponent({
       dappForm,
       errors,
       Path,
+      isNewDapp,
       isValidAddress,
       updateDappLogo,
       isUrlValid,
@@ -432,5 +438,13 @@ export default defineComponent({
 // hide validation error icon
 .q-field__append.q-field__marginal.row.no-wrap.items-center.q-anchor--skip {
   display: none;
+}
+
+.button--container {
+  margin-bottom: 20px;
+}
+
+.welcome {
+  margin-bottom: 30px;
 }
 </style>
