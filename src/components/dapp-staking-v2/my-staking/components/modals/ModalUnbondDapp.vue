@@ -1,5 +1,5 @@
 <template>
-  <modal-wrapper-v-2
+  <modal-wrapper
     :is-modal-open="show"
     :title="$t('dappStaking.modals.unbondFrom', { name: dapp?.name })"
     :is-closing="isClosingModal"
@@ -60,7 +60,7 @@
         >{{ $t('dappStaking.modals.startUnbonding') }}
       </astar-button>
     </div>
-  </modal-wrapper-v-2>
+  </modal-wrapper>
 </template>
 
 <script lang="ts">
@@ -70,14 +70,14 @@ import { getTokenImage } from 'src/modules/token';
 import { truncate } from 'src/hooks/helper/common';
 import { ethers } from 'ethers';
 import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
-import ModalWrapperV2 from 'src/components/common/ModalWrapperV2.vue';
+import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 import { fadeDuration } from '@astar-network/astar-ui';
 import { wait } from 'src/hooks/helper/common';
 
 export default defineComponent({
   components: {
     SpeedConfiguration,
-    ModalWrapperV2,
+    ModalWrapper,
   },
   props: {
     show: {

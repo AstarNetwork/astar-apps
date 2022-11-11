@@ -1,5 +1,5 @@
 <template>
-  <modal-wrapper-v-2
+  <modal-wrapper
     v-if="!isLoading"
     :is-modal-open="isModalFaucet"
     :title="$t('assets.faucet')"
@@ -52,7 +52,7 @@
         </button>
       </div>
     </div>
-  </modal-wrapper-v-2>
+  </modal-wrapper>
 </template>
 <script lang="ts">
 import { useFaucet, useNetworkInfo } from 'src/hooks';
@@ -62,12 +62,12 @@ import { wait } from 'src/hooks/helper/common';
 import vueRecaptcha from 'vue3-recaptcha2';
 import { RECAPCHA_SITE_KEY } from 'src/config/recapcha';
 import { useStore } from 'src/store';
-import ModalWrapperV2 from 'src/components/common/ModalWrapperV2.vue';
+import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 
 export default defineComponent({
   components: {
     vueRecaptcha,
-    ModalWrapperV2,
+    ModalWrapper,
   },
   props: {
     isModalFaucet: {

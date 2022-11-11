@@ -1,5 +1,5 @@
 <template>
-  <modal-wrapper-v2
+  <modal-wrapper
     :is-modal-open="isModalEvmWithdraw"
     :title="$t('assets.modals.titleWithdraw', { token: nativeTokenSymbol })"
     :is-closing="isClosingModal"
@@ -27,7 +27,7 @@
         </astar-button>
       </div>
     </div>
-  </modal-wrapper-v2>
+  </modal-wrapper>
 </template>
 <script lang="ts">
 import { useEvmDeposit } from 'src/hooks';
@@ -35,11 +35,11 @@ import { defineComponent, ref } from 'vue';
 import { fadeDuration } from '@astar-network/astar-ui';
 import { wait } from 'src/hooks/helper/common';
 import { truncate } from 'src/hooks/helper/common';
-import ModalWrapperV2 from 'src/components/common/ModalWrapperV2.vue';
+import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 
 export default defineComponent({
-  components: { SpeedConfiguration, ModalWrapperV2 },
+  components: { SpeedConfiguration, ModalWrapper },
   props: {
     nativeTokenSymbol: {
       type: String,

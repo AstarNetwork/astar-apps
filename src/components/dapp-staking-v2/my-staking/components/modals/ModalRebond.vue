@@ -1,5 +1,5 @@
 <template>
-  <modal-wrapper-v-2
+  <modal-wrapper
     :is-modal-open="show"
     :title="$t('dappStaking.myDapps.rebond')"
     :is-closing="isClosingModal"
@@ -15,18 +15,18 @@
       <div class="text--amount"><format-balance :balance="rebondAmount" /></div>
     </div>
     <astar-button class="confirm-button" @click="confirm">{{ $t('confirm') }}</astar-button>
-  </modal-wrapper-v-2>
+  </modal-wrapper>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import FormatBalance from 'components/common/FormatBalance.vue';
-import ModalWrapperV2 from 'src/components/common/ModalWrapperV2.vue';
+import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 import { fadeDuration } from '@astar-network/astar-ui';
 import { wait } from 'src/hooks/helper/common';
 
 export default defineComponent({
-  components: { FormatBalance, ModalWrapperV2 },
+  components: { FormatBalance, ModalWrapper },
   props: {
     show: {
       type: Boolean,

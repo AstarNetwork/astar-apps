@@ -1,5 +1,5 @@
 <template>
-  <modal-wrapper-v-2
+  <modal-wrapper
     :is-modal-open="show"
     :title="$t('dappStaking.modals.builder.title')"
     :is-closing="isClosingModal"
@@ -77,7 +77,7 @@
         }}</astar-button>
       </q-form>
     </div>
-  </modal-wrapper-v-2>
+  </modal-wrapper>
 </template>
 
 <script lang="ts">
@@ -88,14 +88,14 @@ import { Developer } from 'src/store/dapp-staking/state';
 import { isUrlValid } from 'src/components/common/Validators';
 import ImageCard from 'src/components/dapp-staking/register/ImageCard.vue';
 import Avatar from 'src/components/common/Avatar.vue';
-import ModalWrapperV2 from 'src/components/common/ModalWrapperV2.vue';
+import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 
 export default defineComponent({
   components: {
     ImageCard,
     Avatar,
     // Button,
-    ModalWrapperV2,
+    ModalWrapper,
   },
   props: {
     show: {

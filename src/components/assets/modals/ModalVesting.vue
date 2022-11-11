@@ -1,5 +1,5 @@
 <template>
-  <modal-wrapper-v2
+  <modal-wrapper
     :is-modal-open="isModalVesting"
     :title="$t('assets.modals.titleVesting')"
     :is-closing="isClosingModal"
@@ -56,7 +56,7 @@
         </button>
       </div>
     </div>
-  </modal-wrapper-v2>
+  </modal-wrapper>
 </template>
 <script lang="ts">
 import { AccountData, useVesting } from 'src/hooks';
@@ -64,11 +64,11 @@ import { defineComponent, PropType, ref } from 'vue';
 import { fadeDuration } from '@astar-network/astar-ui';
 import { wait } from 'src/hooks/helper/common';
 import { truncate } from 'src/hooks/helper/common';
-import ModalWrapperV2 from 'src/components/common/ModalWrapperV2.vue';
+import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 
 export default defineComponent({
-  components: { SpeedConfiguration, ModalWrapperV2 },
+  components: { SpeedConfiguration, ModalWrapper },
   props: {
     nativeTokenSymbol: {
       type: String,
