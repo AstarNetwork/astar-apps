@@ -137,10 +137,10 @@
                 <span class="text--tooltip">{{ $t('common.reddit') }}</span>
               </q-tooltip>
             </button>
-            <!-- <button v-if="it.type === CommunityType.Facebook" class="box--share btn--primary">
+            <button class="box--share btn--primary">
               <div class="icon--social">
                 <a :href="it.handle" target="_blank" rel="noopener noreferrer">
-                  <astar-icon-base viewBox="0 0 512 512" :icon-name="CommunityType.Facebook">
+                  <astar-icon-base viewBox="0 0 18 18" :icon-name="CommunityType.Facebook">
                     <astar-icon-facebook />
                   </astar-icon-base>
                 </a>
@@ -148,7 +148,7 @@
               <q-tooltip>
                 <span class="text--tooltip">{{ $t('common.facebook') }}</span>
               </q-tooltip>
-            </button> -->
+            </button>
             <button v-if="it.type === CommunityType.YouTube" class="box--share btn--primary">
               <div class="icon--social">
                 <a :href="it.handle" target="_blank" rel="noopener noreferrer">
@@ -161,10 +161,10 @@
                 <span class="text--tooltip">{{ $t('common.youtube') }}</span>
               </q-tooltip>
             </button>
-            <!-- <button v-if="it.type === CommunityType.Instagram" class="box--share btn--primary">
+            <button v-if="it.type === CommunityType.Instagram" class="box--share btn--primary">
               <div class="icon--social">
                 <a :href="it.handle" target="_blank" rel="noopener noreferrer">
-                  <astar-icon-base viewBox="0 0 512 512" :icon-name="CommunityType.Instagram">
+                  <astar-icon-base viewBox="0 0 18 18" :icon-name="CommunityType.Instagram">
                     <astar-icon-instagram />
                   </astar-icon-base>
                 </a>
@@ -172,7 +172,7 @@
               <q-tooltip>
                 <span class="text--tooltip">{{ $t('common.instagram') }}</span>
               </q-tooltip>
-            </button> -->
+            </button>
           </div>
         </div>
       </div>
