@@ -27,8 +27,8 @@
           <li>{{ $t('dappStaking.modals.community.communityRequired') }}</li>
         </div>
 
-        <astar-button class="confirm-button" @click="handleConfirm"
-          >{{ $t('confirm') }}
+        <astar-button class="confirm-button" @click="handleConfirm">
+          {{ $t('confirm') }}
         </astar-button>
       </q-form>
     </div>

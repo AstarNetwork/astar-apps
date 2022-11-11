@@ -72,9 +72,9 @@
           <li>{{ $t('dappStaking.modals.builder.imageRecomendation') }}</li>
         </div>
 
-        <astar-button class="confirm-button" @click="handleConfirm">{{
-          $t('confirm')
-        }}</astar-button>
+        <astar-button class="confirm-button" @click="handleConfirm">
+          {{ $t('confirm') }}
+        </astar-button>
       </q-form>
     </div>
   </modal-wrapper>
