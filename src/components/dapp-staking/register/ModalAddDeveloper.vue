@@ -72,7 +72,7 @@
           <li>{{ $t('dappStaking.modals.builder.imageRecomendation') }}</li>
         </div>
 
-        <astar-button class="confirm-button" @click="handleConfirm">
+        <astar-button class="button--confirm" @click="handleConfirm">
           {{ $t('confirm') }}
         </astar-button>
       </q-form>
@@ -230,7 +230,7 @@ export default defineComponent({
   }
 }
 
-.confirm-button {
+.button--confirm {
   width: 100%;
   font-size: 22px;
   font-weight: 600;

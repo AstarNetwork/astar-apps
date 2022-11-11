@@ -19,7 +19,7 @@
           <format-balance :balance="withdrawAmount" />
         </div>
       </div>
-      <astar-button class="confirm-button" @click="confirm">{{ $t('confirm') }}</astar-button>
+      <astar-button class="button--confirm" @click="confirm">{{ $t('confirm') }}</astar-button>
     </div>
   </modal-wrapper>
 </template>
@@ -115,7 +115,7 @@ export default defineComponent({
   }
 }
 
-.confirm-button {
+.button--confirm {
   width: 340px;
   font-size: 22px;
   font-weight: 600;

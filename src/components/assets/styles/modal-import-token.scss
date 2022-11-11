@@ -60,6 +60,13 @@
   margin-bottom: -8px;
 }
 
+.button--confirm {
+  width: 344px;
+  font-size: 22px;
+  font-weight: 600;
+  height: 44px;
+}
+
 .body--dark {
   .box--import-tokens {
     background: $gray-7;

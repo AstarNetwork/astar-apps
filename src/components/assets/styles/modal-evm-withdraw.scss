@@ -28,12 +28,11 @@
   row-gap: 16px;
 }
 
-.confirm-button {
+.button--confirm {
   width: 344px;
   font-size: 22px;
   font-weight: 600;
   height: 44px;
-  align-self: center;
   @media (min-width: $md) {
     width: 400px;
   }

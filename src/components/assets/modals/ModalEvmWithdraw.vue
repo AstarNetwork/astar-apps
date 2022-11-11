@@ -20,7 +20,7 @@
       <div class="wrapper__row--button">
         <astar-button
           :disabled="0 >= numEvmDeposit"
-          class="confirm-button"
+          class="button--confirm"
           @click="sendTransaction"
         >
           {{ $t('confirm') }}

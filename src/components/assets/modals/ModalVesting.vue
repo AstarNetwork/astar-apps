@@ -47,13 +47,13 @@
         :set-selected-gas="setSelectedTip"
       />
       <div class="wrapper__row--button">
-        <button
-          class="btn btn--confirm"
+        <astar-button
           :disabled="0 >= info.claimableAmount"
+          class="button-unlock"
           @click="sendTransaction"
         >
           {{ $t('assets.modals.unlock') }}
-        </button>
+        </astar-button>
       </div>
     </div>
   </modal-wrapper>

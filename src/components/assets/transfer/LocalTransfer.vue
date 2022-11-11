@@ -127,13 +127,13 @@
         <span class="color--white"> {{ $t(errMsg) }}</span>
       </div>
       <div class="wrapper__row--button" :class="!errMsg && 'btn-margin-adjuster'">
-        <button
-          class="btn btn--confirm btn-size-adjust"
+        <astar-button
+          class="button--confirm btn-size-adjust"
           :disabled="isDisabledTransfer"
           @click="transfer"
         >
           {{ $t('confirm') }}
-        </button>
+        </astar-button>
       </div>
     </div>
   </div>

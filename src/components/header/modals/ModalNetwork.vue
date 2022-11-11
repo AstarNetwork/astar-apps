@@ -80,13 +80,13 @@
         </fieldset>
       </div>
       <div class="wrapper__row--button">
-        <button
-          class="btn btn--connect"
+        <astar-button
+          class="btn--connect"
           :disabled="isDisabled"
           @click="selectNetwork(selNetwork, newEndpoint)"
         >
           {{ $t('connect') }}
-        </button>
+        </astar-button>
       </div>
     </div>
   </astar-modal-drawer>

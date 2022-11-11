@@ -24,6 +24,9 @@
   text-align: center;
   background: transparent;
   border: 1px solid $gray-3;
+  @media (min-width: $md) {
+    width: 420px;
+  }
 }
 
 .box__row {
@@ -43,11 +46,24 @@
   width: 344px;
   text-align: center;
   background: $gray-1;
+  @media (min-width: $md) {
+    width: 420px;
+  }
 }
 
 .box__column-amount {
   display: grid;
   row-gap: 16px;
+}
+
+.button-unlock {
+  width: 344px;
+  font-size: 22px;
+  font-weight: 600;
+  height: 44px;
+  @media (min-width: $md) {
+    width: 420px;
+  }
 }
 
 .body--dark {

@@ -40,6 +40,13 @@
   row-gap: 16px;
 }
 
+.button--confirm {
+  width: 344px;
+  font-size: 22px;
+  font-weight: 600;
+  height: 44px;
+}
+
 .body--dark {
   .box--faucet-amount {
     background: $gray-7;
