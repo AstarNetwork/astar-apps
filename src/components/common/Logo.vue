@@ -5,7 +5,13 @@
   <div v-else-if="currentNetworkChain === astarChain.SHIBUYA">
     <img src="~assets/img/shibuya_logo.png" width="152" height="55" />
   </div>
-  <img v-else src="~assets/img/astar_logo.png" width="200" height="78" />
+  <img
+    v-else-if="currentNetworkChain === astarChain.ASTAR"
+    src="~assets/img/astar_logo.png"
+    width="200"
+    height="78"
+  />
+  <div v-else></div>
 </template>
 <script lang="ts">
 import { endpointKey } from 'src/config/chainEndpoints';
