@@ -63,9 +63,9 @@ import { AccountData, useVesting } from 'src/hooks';
 import { defineComponent, PropType, ref } from 'vue';
 import { fadeDuration } from '@astar-network/astar-ui';
 import { wait } from 'src/hooks/helper/common';
+import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 import { truncate } from 'src/hooks/helper/common';
 import ModalWrapper from 'src/components/common/ModalWrapper.vue';
-import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 
 export default defineComponent({
   components: { SpeedConfiguration, ModalWrapper },

@@ -83,7 +83,7 @@
 <script lang="ts">
 import { wait } from 'src/hooks/helper/common';
 import { defineComponent, ref, toRefs, PropType, computed, watch } from 'vue';
-import { fadeDuration, Button } from '@astar-network/astar-ui';
+import { fadeDuration } from '@astar-network/astar-ui';
 import { Developer } from 'src/store/dapp-staking/state';
 import { isUrlValid } from 'src/components/common/Validators';
 import ImageCard from 'src/components/dapp-staking/register/ImageCard.vue';
@@ -94,7 +94,6 @@ export default defineComponent({
   components: {
     ImageCard,
     Avatar,
-    // Button,
     ModalWrapper,
   },
   props: {

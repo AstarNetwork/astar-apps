@@ -37,14 +37,13 @@
 
 <script lang="ts">
 import { defineComponent, PropType, ref } from 'vue';
-import { fadeDuration, Button } from '@astar-network/astar-ui';
+import { fadeDuration } from '@astar-network/astar-ui';
 import { Community, CommunityDefinition } from 'src/store/dapp-staking/state';
 import { wait } from 'src/hooks/helper/common';
 import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 
 export default defineComponent({
   components: {
-    // Button,
     ModalWrapper,
   },
   props: {
