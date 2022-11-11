@@ -45,7 +45,7 @@
         </div>
       </div>
 
-      <speed-configuration-v-2
+      <speed-configuration
         class="speed"
         :gas-cost="nativeTipPrice"
         :selected-gas="selectedTip"
@@ -69,14 +69,14 @@ import { MyStakeInfo, useNetworkInfo, useUnbound, useGasPrice } from 'src/hooks'
 import { getTokenImage } from 'src/modules/token';
 import { truncate } from 'src/hooks/helper/common';
 import { ethers } from 'ethers';
-import SpeedConfigurationV2 from 'src/components/common/SpeedConfigurationV2.vue';
+import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 import ModalWrapperV2 from 'src/components/common/ModalWrapperV2.vue';
 import { fadeDuration } from '@astar-network/astar-ui';
 import { wait } from 'src/hooks/helper/common';
 
 export default defineComponent({
   components: {
-    SpeedConfigurationV2,
+    SpeedConfiguration,
     ModalWrapperV2,
   },
   props: {

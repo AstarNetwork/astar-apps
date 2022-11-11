@@ -98,7 +98,7 @@
 
       <div class="separator" />
 
-      <SpeedConfigurationV2
+      <speed-configuration
         v-if="isEnableSpeedConfiguration"
         :gas-cost="isH160 ? evmGasCost : nativeTipPrice"
         :selected-gas="isH160 ? selectedGas : selectedTip"
@@ -140,7 +140,7 @@
 </template>
 <script lang="ts">
 import InputSelectAccount from 'src/components/assets/transfer/InputSelectAccount.vue';
-import SpeedConfigurationV2 from 'src/components/common/SpeedConfigurationV2.vue';
+import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 import { SupportWallet } from 'src/config/wallets';
 import { useAccount, useNetworkInfo, useWalletIcon, useTokenTransfer } from 'src/hooks';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
@@ -153,7 +153,7 @@ import TokenBalance from 'src/components/common/TokenBalance.vue';
 export default defineComponent({
   components: {
     InputSelectAccount,
-    SpeedConfigurationV2,
+    SpeedConfiguration,
     [Jazzicon.name]: Jazzicon,
     TokenBalance,
   },

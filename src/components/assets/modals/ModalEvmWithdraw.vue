@@ -12,7 +12,7 @@
           <span class="text--xl">{{ $n(truncate(numEvmDeposit)) }} {{ nativeTokenSymbol }}</span>
         </div>
       </div>
-      <speed-configuration-v-2
+      <speed-configuration
         :gas-cost="nativeTipPrice"
         :selected-gas="selectedTip"
         :set-selected-gas="setSelectedTip"
@@ -36,10 +36,10 @@ import { fadeDuration } from '@astar-network/astar-ui';
 import { wait } from 'src/hooks/helper/common';
 import { truncate } from 'src/hooks/helper/common';
 import ModalWrapperV2 from 'src/components/common/ModalWrapperV2.vue';
-import SpeedConfigurationV2 from 'src/components/common/SpeedConfigurationV2.vue';
+import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 
 export default defineComponent({
-  components: { SpeedConfigurationV2, ModalWrapperV2 },
+  components: { SpeedConfiguration, ModalWrapperV2 },
   props: {
     nativeTokenSymbol: {
       type: String,
