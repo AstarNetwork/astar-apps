@@ -17,7 +17,10 @@
   border-radius: 6px;
   width: 344px;
   text-align: center;
-  background: $container-bg-white;
+  background: $gray-1;
+  @media (min-width: $md) {
+    width: 100%;
+  }
 }
 
 .box__column-amount {
@@ -25,8 +28,19 @@
   row-gap: 16px;
 }
 
+.confirm-button {
+  width: 344px;
+  font-size: 22px;
+  font-weight: 600;
+  height: 44px;
+  align-self: center;
+  @media (min-width: $md) {
+    width: 400px;
+  }
+}
+
 .body--dark {
   .box--withdraw-amount {
-    background: $gray-6;
+    background: $gray-7;
   }
 }

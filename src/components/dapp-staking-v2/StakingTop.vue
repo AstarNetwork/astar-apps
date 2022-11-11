@@ -1,42 +1,34 @@
 <template>
-  <div class="wrapper-main">
-    <TopMetric />
+  <div v-if="isReady" class="wrapper-main">
+    <top-metric />
+    <register />
+    <banner-area />
 
-    <Register />
+    <div class="divider" />
+    <my-staking />
 
-    <BannerArea />
+    <div class="divider" />
+    <dapp-list category="DeFi" />
+    <ads-area />
 
-    <div class="divider"></div>
+    <div class="divider" />
+    <dapp-list category="NFT" />
 
-    <MyStaking />
+    <div class="divider" />
+    <dapp-list category="Tooling" />
 
-    <div class="divider"></div>
+    <div class="divider" />
+    <dapp-list category="Utility" />
 
-    <DappList category="DeFi" />
-
-    <AdsArea />
-
-    <div class="divider"></div>
-
-    <DappList category="NFT" />
-
-    <div class="divider"></div>
-
-    <DappList category="Tooling" />
-
-    <div class="divider"></div>
-
-    <DappList category="Utility" />
-
-    <div class="divider"></div>
-
-    <DappList category="Others" />
+    <div class="divider" />
+    <dapp-list category="Others" />
   </div>
+  <div v-else />
 </template>
 
 <script lang="ts">
 import { useMeta } from 'quasar';
-import { useAccount, useNetworkInfo } from 'src/hooks';
+import { useAccount, useNetworkInfo, usePageReady } from 'src/hooks';
 import { useStore } from 'src/store';
 import TopMetric from 'src/components/dapp-staking-v2/my-staking/TopMetric.vue';
 import MyStaking from 'src/components/dapp-staking-v2/my-staking/MyStaking.vue';
@@ -59,9 +51,11 @@ export default defineComponent({
     useMeta({ title: 'Discover dApps' });
     const store = useStore();
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
+    const { isReady } = usePageReady();
 
     const { currentNetworkName } = useNetworkInfo();
     const { currentAccount } = useAccount();
+
     watchEffect(() => {
       if (!currentNetworkName.value) return;
       store.dispatch('dapps/getDapps', {
@@ -69,10 +63,14 @@ export default defineComponent({
         currentAccount: currentAccount.value ? currentAccount.value : '',
       });
     });
-    store.dispatch('dapps/getTvl');
+
+    watchEffect(() => {
+      store.dispatch('dapps/getTvl');
+    });
 
     return {
       isLoading,
+      isReady,
     };
   },
 });

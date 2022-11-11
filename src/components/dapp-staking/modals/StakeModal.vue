@@ -75,7 +75,7 @@
         <span>{{ minUnbondingInfo }}</span>
       </div>
       <div class="container--speed-configuration">
-        <SpeedConfiguration
+        <speed-configuration-v-2
           :is-responsible="true"
           :selected-gas="selectedGas"
           :gas-cost="gasCost"
@@ -122,7 +122,7 @@ import { StakingData } from 'src/modules/dapp-staking';
 import { ethers } from 'ethers';
 import { useI18n } from 'vue-i18n';
 import { GasPrice, SelectedGas } from 'src/modules/gas-api';
-import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
+import SpeedConfigurationV2 from 'src/components/common/SpeedConfigurationV2.vue';
 
 export enum Role {
   FromAddress = 'FromAddress',
@@ -138,7 +138,7 @@ export default defineComponent({
     Avatar,
     FormatBalance,
     ModalNominationTransfer,
-    SpeedConfiguration,
+    SpeedConfigurationV2,
   },
   props: {
     dapp: {

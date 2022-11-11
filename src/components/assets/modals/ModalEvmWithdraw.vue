@@ -1,5 +1,5 @@
 <template>
-  <modal-wrapper
+  <modal-wrapper-v2
     :is-modal-open="isModalEvmWithdraw"
     :title="$t('assets.modals.titleWithdraw', { token: nativeTokenSymbol })"
     :is-closing="isClosingModal"
@@ -12,30 +12,34 @@
           <span class="text--xl">{{ $n(truncate(numEvmDeposit)) }} {{ nativeTokenSymbol }}</span>
         </div>
       </div>
-      <SpeedConfiguration
+      <speed-configuration-v-2
         :gas-cost="nativeTipPrice"
         :selected-gas="selectedTip"
         :set-selected-gas="setSelectedTip"
       />
       <div class="wrapper__row--button">
-        <button :disabled="0 >= numEvmDeposit" class="btn btn--confirm" @click="sendTransaction">
+        <astar-button
+          :disabled="0 >= numEvmDeposit"
+          class="confirm-button"
+          @click="sendTransaction"
+        >
           {{ $t('confirm') }}
-        </button>
+        </astar-button>
       </div>
     </div>
-  </modal-wrapper>
+  </modal-wrapper-v2>
 </template>
 <script lang="ts">
 import { useEvmDeposit } from 'src/hooks';
 import { defineComponent, ref } from 'vue';
 import { fadeDuration } from '@astar-network/astar-ui';
 import { wait } from 'src/hooks/helper/common';
-import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 import { truncate } from 'src/hooks/helper/common';
-import ModalWrapper from 'src/components/common/ModalWrapper.vue';
+import ModalWrapperV2 from 'src/components/common/ModalWrapperV2.vue';
+import SpeedConfigurationV2 from 'src/components/common/SpeedConfigurationV2.vue';
 
 export default defineComponent({
-  components: { SpeedConfiguration, ModalWrapper },
+  components: { SpeedConfigurationV2, ModalWrapperV2 },
   props: {
     nativeTokenSymbol: {
       type: String,

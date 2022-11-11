@@ -42,7 +42,7 @@
   border-radius: 6px;
   width: 344px;
   text-align: center;
-  background: $container-bg-white;
+  background: $gray-1;
 }
 
 .box__column-amount {
@@ -52,6 +52,6 @@
 
 .body--dark {
   .box--unlock-amount {
-    background: $gray-6;
+    background: $gray-7;
   }
 }

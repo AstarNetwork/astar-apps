@@ -1,5 +1,5 @@
 <template>
-  <modal-wrapper
+  <modal-wrapper-v2
     :is-modal-open="isModalSelectFunds"
     :title="$t('select')"
     :is-closing="isClosingModal"
@@ -31,11 +31,11 @@
         </div>
       </div>
     </div>
-  </modal-wrapper>
+  </modal-wrapper-v2>
 </template>
 <script lang="ts">
 import { fadeDuration } from '@astar-network/astar-ui';
-import ModalWrapper from 'src/components/common/ModalWrapper.vue';
+import ModalWrapperV2 from 'src/components/common/ModalWrapperV2.vue';
 import { StakingData } from 'src/modules/dapp-staking';
 import { wait } from 'src/v2/common';
 import { defineComponent, PropType, ref } from 'vue';
@@ -45,7 +45,7 @@ import { useNetworkInfo } from 'src/hooks';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 export default defineComponent({
   components: {
-    ModalWrapper,
+    ModalWrapperV2,
     TokenBalance,
   },
   props: {
