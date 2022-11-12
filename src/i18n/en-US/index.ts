@@ -72,7 +72,7 @@ export default {
     reddit: 'Reddit',
     facebook: 'Facebook',
     instagram: 'Instagram',
-    youtube: 'Youtube',
+    youtube: 'YouTube',
     docs: 'Documentation',
     speed: {
       speed: 'Transaction speed',
@@ -312,7 +312,7 @@ export default {
       },
       builder: {
         title: 'Builder',
-        githubAccount: 'Github account',
+        githubAccount: 'GitHub account',
         twitterAccount: 'Twitter account',
         linkedInAccount: 'LinkedIn account',
         image: "Builder's image",
