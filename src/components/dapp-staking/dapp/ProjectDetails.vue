@@ -137,7 +137,7 @@
                 <span class="text--tooltip">{{ $t('common.reddit') }}</span>
               </q-tooltip>
             </button>
-            <button class="box--share btn--primary">
+            <button v-if="it.type === CommunityType.Facebook" class="box--share btn--primary">
               <div class="icon--social">
                 <a :href="it.handle" target="_blank" rel="noopener noreferrer">
                   <astar-icon-base viewBox="0 0 18 18" :icon-name="CommunityType.Facebook">
