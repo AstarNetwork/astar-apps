@@ -140,7 +140,7 @@
             <button v-if="it.type === CommunityType.Facebook" class="box--share btn--primary">
               <div class="icon--social">
                 <a :href="it.handle" target="_blank" rel="noopener noreferrer">
-                  <astar-icon-base viewBox="0 0 18 18" :icon-name="CommunityType.Facebook">
+                  <astar-icon-base viewBox="0 0 19 19" :icon-name="CommunityType.Facebook">
                     <astar-icon-facebook />
                   </astar-icon-base>
                 </a>
@@ -152,7 +152,7 @@
             <button v-if="it.type === CommunityType.YouTube" class="box--share btn--primary">
               <div class="icon--social">
                 <a :href="it.handle" target="_blank" rel="noopener noreferrer">
-                  <astar-icon-base viewBox="0 0 20 18" :icon-name="CommunityType.YouTube">
+                  <astar-icon-base viewBox="0 0 20 17" :icon-name="CommunityType.YouTube">
                     <astar-icon-youtube />
                   </astar-icon-base>
                 </a>
