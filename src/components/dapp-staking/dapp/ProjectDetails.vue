@@ -152,7 +152,7 @@
             <button v-if="it.type === CommunityType.YouTube" class="box--share btn--primary">
               <div class="icon--social">
                 <a :href="it.handle" target="_blank" rel="noopener noreferrer">
-                  <astar-icon-base :icon-name="CommunityType.YouTube">
+                  <astar-icon-base viewBox="0 0 20 18" :icon-name="CommunityType.YouTube">
                     <astar-icon-youtube />
                   </astar-icon-base>
                 </a>
