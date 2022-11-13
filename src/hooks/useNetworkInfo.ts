@@ -1,6 +1,7 @@
 import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import {
   astarChain,
+  ASTAR_CHAIN,
   ASTAR_EVM_NETWORK_IDX,
   ASTAR_NATIVE_TOKEN,
   ASTAR_NETWORK_IDX,
@@ -16,6 +17,12 @@ export function useNetworkInfo() {
     const network = chainInfo ? chainInfo.chain : '';
     const isTestnet = network === astarChain.DEVELOPMENT || network === astarChain.SHIBUYA;
     return !isTestnet;
+  });
+
+  const currentNetworkChain = computed<ASTAR_CHAIN>(() => {
+    const chainInfo = store.getters['general/chainInfo'];
+    const chain = chainInfo ? chainInfo.chain : '';
+    return chain;
   });
 
   const currentNetworkIdx = computed<ASTAR_NETWORK_IDX>(() => {
@@ -41,6 +48,7 @@ export function useNetworkInfo() {
 
   return {
     isMainnet,
+    currentNetworkChain,
     currentNetworkIdx,
     evmNetworkIdx,
     currentNetworkName,
