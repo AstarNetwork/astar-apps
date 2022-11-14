@@ -1,4 +1,3 @@
-import { useI18n } from 'vue-i18n';
 import { Struct, u32, Vec } from '@polkadot/types';
 import { Balance } from '@polkadot/types/interfaces';
 import { ISubmittableResult } from '@polkadot/types/types';
@@ -8,7 +7,8 @@ import { useCustomSignature, useGasPrice } from 'src/hooks';
 import { signAndSend } from 'src/hooks/helper/wallet';
 import { hasExtrinsicFailedEvent } from 'src/modules/extrinsic';
 import { useStore } from 'src/store';
-import { computed, ref, watchEffect } from 'vue';
+import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { checkIsDappOwner, getNumberOfUnclaimedEra } from '../helper/claim';
 import { useCurrentEra } from '../useCurrentEra';
 
@@ -163,9 +163,14 @@ export function useCompoundRewards() {
     );
   };
 
-  watchEffect(async () => {
-    await Promise.all([checkIsClaimable(), getCompoundingType()]);
-  });
+  watch(
+    [currentAddress],
+    async () => {
+      if (!currentAddress.value) return;
+      await Promise.all([checkIsClaimable(), getCompoundingType()]);
+    },
+    { immediate: false }
+  );
 
   return {
     isSupported,
