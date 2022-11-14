@@ -25,7 +25,9 @@
         <div v-if="isLoading" class="loading">
           <q-skeleton type="rect" animation="fade" />
         </div>
-        <div v-else class="value">{{ amountOfEras }} {{ $t('myReward.era') }}</div>
+        <div v-else class="value">
+          {{ amountOfEras }} {{ $t('myReward.era') }}{{ amountOfEras > 1 ? 's' : '' }}
+        </div>
         <astar-button :width="80" :height="24" :disabled="!canClaim" @click="claimAll">{{
           $t('myReward.claim')
         }}</astar-button>

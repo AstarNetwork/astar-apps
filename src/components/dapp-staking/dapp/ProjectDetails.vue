@@ -11,9 +11,14 @@
           </span>
         </div>
         <div class="row--websites">
-          <a class="text--website" :href="dapp.dapp.url" target="_blank" rel="noopener noreferrer">
+          <astar-irregular-button
+            width="140"
+            height="25"
+            class="button--website"
+            @click="goLink(dapp.dapp.url)"
+          >
             {{ $t('dappStaking.dappPage.goToWebsite') }}
-          </a>
+          </astar-irregular-button>
         </div>
       </div>
       <div class="separator--details" />
@@ -101,10 +106,22 @@
         </div>
         <div class="row--social-icons">
           <div v-for="(it, index) in communities" :key="index">
-            <button v-if="it.type === 'Twitter'" class="box--share btn--primary">
+            <button v-if="it.type === CommunityType.Discord" class="box--share btn--primary">
               <div class="icon--social">
                 <a :href="it.handle" target="_blank" rel="noopener noreferrer">
-                  <astar-icon-base viewBox="0 0 512 512" icon-name="Twitter">
+                  <astar-icon-base viewBox="0 0 512 512" :icon-name="CommunityType.Discord">
+                    <astar-icon-discord />
+                  </astar-icon-base>
+                </a>
+              </div>
+              <q-tooltip>
+                <span class="text--tooltip">{{ $t('common.discord') }}</span>
+              </q-tooltip>
+            </button>
+            <button v-if="it.type === CommunityType.Twitter" class="box--share btn--primary">
+              <div class="icon--social">
+                <a :href="it.handle" target="_blank" rel="noopener noreferrer">
+                  <astar-icon-base viewBox="0 0 512 512" :icon-name="CommunityType.Twitter">
                     <astar-icon-twitter />
                   </astar-icon-base>
                 </a>
@@ -113,52 +130,55 @@
                 <span class="text--tooltip">{{ $t('common.twitter') }}</span>
               </q-tooltip>
             </button>
+            <button v-if="it.type === CommunityType.Reddit" class="box--share btn--primary">
+              <div class="icon--social">
+                <a :href="it.handle" target="_blank" rel="noopener noreferrer">
+                  <astar-icon-base :icon-name="CommunityType.Reddit">
+                    <astar-icon-reddit />
+                  </astar-icon-base>
+                </a>
+              </div>
+              <q-tooltip>
+                <span class="text--tooltip">{{ $t('common.reddit') }}</span>
+              </q-tooltip>
+            </button>
+            <button v-if="it.type === CommunityType.Facebook" class="box--share btn--primary">
+              <div class="icon--social">
+                <a :href="it.handle" target="_blank" rel="noopener noreferrer">
+                  <astar-icon-base viewBox="0 0 19 19" :icon-name="CommunityType.Facebook">
+                    <astar-icon-facebook />
+                  </astar-icon-base>
+                </a>
+              </div>
+              <q-tooltip>
+                <span class="text--tooltip">{{ $t('common.facebook') }}</span>
+              </q-tooltip>
+            </button>
+            <button v-if="it.type === CommunityType.YouTube" class="box--share btn--primary">
+              <div class="icon--social">
+                <a :href="it.handle" target="_blank" rel="noopener noreferrer">
+                  <astar-icon-base viewBox="0 0 20 17" :icon-name="CommunityType.YouTube">
+                    <astar-icon-youtube />
+                  </astar-icon-base>
+                </a>
+              </div>
+              <q-tooltip>
+                <span class="text--tooltip">{{ $t('common.youtube') }}</span>
+              </q-tooltip>
+            </button>
+            <button v-if="it.type === CommunityType.Instagram" class="box--share btn--primary">
+              <div class="icon--social">
+                <a :href="it.handle" target="_blank" rel="noopener noreferrer">
+                  <astar-icon-base viewBox="0 0 18 18" :icon-name="CommunityType.Instagram">
+                    <astar-icon-instagram />
+                  </astar-icon-base>
+                </a>
+              </div>
+              <q-tooltip>
+                <span class="text--tooltip">{{ $t('common.instagram') }}</span>
+              </q-tooltip>
+            </button>
           </div>
-          <!-- Memo: Reference -->
-          <!-- <button class="box--share btn--primary">
-            <div class="icon--social">
-              <a :href="dapp.dapp.formUrl" target="_blank" rel="noopener noreferrer">
-                <astar-icon-base viewBox="0 0 512 512" icon-name="Twitter">
-                  <astar-icon-twitter />
-                </astar-icon-base>
-              </a>
-            </div>
-            <q-tooltip>
-              <span class="text--tooltip">{{ $t('common.twitter') }}</span>
-            </q-tooltip>
-          </button>
-          <button class="box--share btn--primary">
-            <div class="icon--social">
-              <astar-icon-base viewBox="0 0 512 512" icon-name="Discord">
-                <astar-icon-discord />
-              </astar-icon-base>
-            </div>
-            <q-tooltip>
-              <span class="text--tooltip">{{ $t('common.discord') }}</span>
-            </q-tooltip>
-          </button>
-          <button class="box--share btn--primary">
-            <div class="icon--social">
-              <astar-icon-base viewBox="0 0 512 512" icon-name="Telegram">
-                <astar-icon-telegram />
-              </astar-icon-base>
-            </div>
-            <q-tooltip>
-              <span class="text--tooltip">{{ $t('common.telegram') }}</span>
-            </q-tooltip>
-          </button>
-          <button class="box--share btn--primary">
-            <div class="icon--social">
-              <a :href="dapp.dapp.gitHubUrl" target="_blank" rel="noopener noreferrer">
-                <astar-icon-base viewBox="0 0 512 512" icon-name="Telegram">
-                  <astar-icon-github />
-                </astar-icon-base>
-              </a>
-            </div>
-            <q-tooltip>
-              <span class="text--tooltip">{{ $t('common.github') }}</span>
-            </q-tooltip>
-          </button> -->
         </div>
       </div>
     </div>
@@ -171,6 +191,7 @@ import { useNetworkInfo } from 'src/hooks';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { sanitizeData } from 'src/hooks/helper/markdown';
 import { useStore } from 'src/store';
+import { CommunityType } from 'src/store/dapp-staking/state';
 import { computed, defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -214,20 +235,26 @@ export default defineComponent({
         if (props.dapp.dapp.contractType === 'wasm+evm') {
           return ['EVM', 'WASM'];
         } else {
-          return [props.dapp.dapp.communities];
+          return [props.dapp.dapp.contractType];
         }
       } else {
         return ['EVM'];
       }
     });
 
+    const goLink = (url: string) => {
+      window.open(url, '_blank');
+    };
+
     return {
       sanitizeData,
       getShortenAddress,
       copyAddress,
+      goLink,
       blockscout,
       communities,
       virtualMachineTags,
+      CommunityType,
     };
   },
 });

@@ -5,7 +5,7 @@
     </div>
     <div class="box--overview">
       <!-- eslint-disable vue/no-v-html -->
-      <div class="text--color" v-html="sanitizeData(dapp.dapp.description)" />
+      <div class="markdown" v-html="sanitizeData(dapp.dapp.description)" />
     </div>
   </div>
 </template>
@@ -19,7 +19,7 @@ export default defineComponent({
       required: true,
     },
   },
-  setup() {
+  setup(props) {
     return { sanitizeData };
   },
 });
@@ -27,4 +27,5 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @use 'src/components/dapp-staking/dapp/styles/project-overview.scss';
+@use 'src/css/markdown.scss';
 </style>
