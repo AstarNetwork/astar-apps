@@ -265,6 +265,8 @@ export default defineComponent({
             data.license = registeredDapp.license;
             data.tags = registeredDapp.tags;
           }
+        } else {
+          router.push(Path.DappStaking);
         }
       } catch (e) {
         // TODO pop error message.
