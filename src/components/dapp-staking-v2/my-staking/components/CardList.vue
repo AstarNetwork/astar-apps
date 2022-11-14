@@ -36,8 +36,8 @@
       <astar-button
         v-if="index === hoverIndex || width < widthCardLineUp"
         class="button--stake"
-        width="274"
-        height="24"
+        :width="274"
+        :height="24"
         @click="goStakePageLink(t.dapp?.address)"
       >
         {{ $t('dappStaking.stakeNow') }}
