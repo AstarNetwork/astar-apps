@@ -149,6 +149,9 @@ export default {
     rebondTitle: 'The amount you wish to rebond',
     withdrawGuide: 'Your funds are available to withdraw.',
     withdrawTitle: 'Ready to withdraw',
+    unregisteredAlert:
+      'This project has been unregistered. Claim action is required and your funds will be returned.',
+    claimAndUnbond: 'Claim and Unbond',
   },
   myReward: {
     totalStaked: 'Total Staked',

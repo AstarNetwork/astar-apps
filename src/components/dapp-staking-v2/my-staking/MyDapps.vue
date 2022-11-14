@@ -41,6 +41,16 @@
                   </div>
                 </td>
               </tr>
+              <tr>
+                <td colspan="3">
+                  <div class="badge--unregistered">
+                    {{ $t('myDapps.unregisteredAlert') }}
+                    <button class="btn--claim-unbond" @click="showUnbound(t)">
+                      {{ $t('myDapps.claimAndUnbond') }}
+                    </button>
+                  </div>
+                </td>
+              </tr>
             </template>
             <!-- Todo: update the skelton animation later -->
             <template v-else>
