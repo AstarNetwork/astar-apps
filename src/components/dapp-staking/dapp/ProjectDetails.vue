@@ -11,9 +11,14 @@
           </span>
         </div>
         <div class="row--websites">
-          <a class="text--website" :href="dapp.dapp.url" target="_blank" rel="noopener noreferrer">
+          <astar-irregular-button
+            width="140"
+            height="25"
+            class="button--website"
+            @click="goLink(dapp.dapp.url)"
+          >
             {{ $t('dappStaking.dappPage.goToWebsite') }}
-          </a>
+          </astar-irregular-button>
         </div>
       </div>
       <div class="separator--details" />
@@ -237,10 +242,15 @@ export default defineComponent({
       }
     });
 
+    const goLink = (url: string) => {
+      window.open(url, '_blank');
+    };
+
     return {
       sanitizeData,
       getShortenAddress,
       copyAddress,
+      goLink,
       blockscout,
       communities,
       virtualMachineTags,
