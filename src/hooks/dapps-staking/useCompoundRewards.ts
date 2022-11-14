@@ -49,6 +49,7 @@ export function useCompoundRewards() {
   const isStaker = ref<boolean>(false);
   const isUnclaimedEra = ref<boolean>(false);
   const isDappOwner = ref<boolean>(false);
+  const toggleCounter = ref<number>(0);
   const rewardDestination = ref<RewardDestination>(RewardDestination.FreeBalance);
 
   const getCompoundingType = async () => {
@@ -125,6 +126,7 @@ export function useCompoundRewards() {
         dispatch: store.dispatch,
         tip: selectedTip.value.price,
       });
+      toggleCounter.value++;
     } catch (e: any) {
       console.error(e);
       store.dispatch('general/showAlertMsg', {
@@ -164,7 +166,7 @@ export function useCompoundRewards() {
   };
 
   watch(
-    [currentAddress],
+    [currentAddress, toggleCounter],
     async () => {
       if (!currentAddress.value) return;
       await Promise.all([checkIsClaimable(), getCompoundingType()]);
