@@ -42,8 +42,8 @@
         <astar-button
           v-if="index === hoverIndex || width < widthCardLineUp"
           class="button--stake"
-          width="274"
-          height="24"
+          :width="274"
+          :height="24"
           @click="goStakePageLink(t.dapp?.address)"
         >
           {{ $t('dappStaking.stakeNow') }}
@@ -79,15 +79,18 @@ export default defineComponent({
     const router = useRouter();
     const { width, screenSize } = useBreakpoints();
     const hoverIndex = ref<number>(-1);
+    const isToStakePage = ref<boolean>(false);
     const { nativeTokenSymbol } = useNetworkInfo();
 
     const goStakePageLink = (address: string | undefined): void => {
+      isToStakePage.value = true;
       const base = networkParam + Path.DappStaking + Path.Stake;
       const url = `${base}?dapp=${address?.toLowerCase()}`;
       router.push(url);
     };
 
     const goDappPageLink = (address: string | undefined): void => {
+      if (isToStakePage.value) return;
       const base = networkParam + Path.DappStaking + Path.Dapp;
       const url = `${base}?dapp=${address?.toLowerCase()}`;
       router.push(url);

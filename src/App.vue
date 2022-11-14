@@ -40,7 +40,7 @@ import DashboardLayout from 'layouts/DashboardLayout.vue';
 import { useStore } from 'src/store';
 import ModalLoading from 'components/common/ModalLoading.vue';
 import AlertBox from 'components/common/AlertBox.vue';
-import CookiePolicy from 'components//common/CookiePolicy.vue';
+import CookiePolicy from 'components/common/CookiePolicy.vue';
 import 'animate.css';
 import {
   BusyMessage,
