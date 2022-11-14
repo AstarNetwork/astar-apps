@@ -131,6 +131,7 @@ export default defineComponent({
     const initDeveloper = (): Developer => ({
       name: '',
       iconFile: '',
+      githubAccountUrl: '',
       linkedInAccountUrl: '',
       twitterAccountUrl: '',
     });
@@ -247,6 +248,7 @@ export default defineComponent({
             data.developers = registeredDapp.developers
               ? registeredDapp.developers.map((x) => ({
                   name: x.name,
+                  githubAccountUrl: x.githubAccountUrl,
                   twitterAccountUrl: x.twitterAccountUrl,
                   linkedInAccountUrl: x.linkedInAccountUrl,
                   iconFile: x.iconFile?.split('&#x2F;').join('/'),
