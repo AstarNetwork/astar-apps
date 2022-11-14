@@ -39,6 +39,7 @@ export interface EditDappItem extends DappItem {
 }
 
 export interface Developer {
+  githubAccountUrl: string;
   twitterAccountUrl: string;
   linkedInAccountUrl: string;
   iconFile: string;
@@ -52,6 +53,7 @@ export enum CommunityType {
   TikTok = 'TikTok',
   YouTube = 'YouTube',
   Instagram = 'Instagram',
+  Discord = 'Discord',
 }
 
 export interface Community {

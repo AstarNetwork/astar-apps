@@ -8,6 +8,21 @@
     <div class="developers-wrapper">
       <q-form ref="developerForm">
         <q-input
+          v-model="currentDeveloper.githubAccountUrl"
+          :label="$t('dappStaking.modals.builder.githubAccount')"
+          outlined
+          label-color="input-label"
+          input-class="input"
+          :input-style="{ fontWeight: 'bold' }"
+          lazy-rules="ondemand"
+          :rules="[
+            (v: string) => validateUrlFormat(v) || `${$t('dappStaking.modals.builder.error.invalidUrl')}`,
+            // (v: string) => validateAtLeastOneUrl(v) || `${$t('dappStaking.modals.builder.error.accountRequired')}`
+          ]"
+          class="component"
+        />
+
+        <q-input
           v-model="currentDeveloper.twitterAccountUrl"
           :label="$t('dappStaking.modals.builder.twitterAccount')"
           outlined
@@ -17,7 +32,7 @@
           lazy-rules="ondemand"
           :rules="[
             (v: string) => validateUrlFormat(v) || `${$t('dappStaking.modals.builder.error.invalidUrl')}`,
-            (v: string) => validateAtLeastOneUrl(v) || `${$t('dappStaking.modals.builder.error.accountRequired')}`
+            // (v: string) => validateAtLeastOneUrl(v) || `${$t('dappStaking.modals.builder.error.accountRequired')}`
           ]"
           class="component"
         />
@@ -32,7 +47,7 @@
           lazy-rules="ondemand"
           :rules="[
             (v: string) => validateUrlFormat(v) || `${$t('dappStaking.modals.builder.error.invalidUrl')}`,
-            (v: string) => validateAtLeastOneUrl(v) || `${$t('dappStaking.modals.builder.error.accountRequired')}`
+            // (v: string) => validateAtLeastOneUrl(v) || `${$t('dappStaking.modals.builder.error.accountRequired')}`
           ]"
           class="component"
         />
@@ -138,10 +153,10 @@ export default defineComponent({
 
     const validateUrlFormat = (url: string): boolean => (url !== '' ? isUrlValid(url) : true);
 
-    const validateAtLeastOneUrl = (url: string): boolean =>
-      url !== '' ||
-      currentDeveloper.value.linkedInAccountUrl !== '' ||
-      currentDeveloper.value.twitterAccountUrl !== '';
+    // const validateAtLeastOneUrl = (url: string): boolean =>
+    //   url !== '' ||
+    //   currentDeveloper.value.linkedInAccountUrl !== '' ||
+    //   currentDeveloper.value.twitterAccountUrl !== '';
 
     const updateImage = (): void => {
       const reader = new FileReader();
@@ -180,17 +195,12 @@ export default defineComponent({
       ...toRefs(props),
       isClosingModal,
       currentDeveloper,
-      isValidUrl: computed(
-        () =>
-          currentDeveloper.value.linkedInAccountUrl !== '' ||
-          currentDeveloper.value.twitterAccountUrl !== ''
-      ),
       file,
       developerForm,
       closeModal,
       isUrlValid,
       validateUrlFormat,
-      validateAtLeastOneUrl,
+      // validateAtLeastOneUrl,
       updateImage,
       handleConfirm,
     };

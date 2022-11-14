@@ -69,6 +69,10 @@ export default {
     discord: 'Discord',
     github: 'GitHub',
     linkedIn: 'LinkedIn',
+    reddit: 'Reddit',
+    facebook: 'Facebook',
+    instagram: 'Instagram',
+    youtube: 'YouTube',
     docs: 'Documentation',
     speed: {
       speed: 'Transaction speed',
@@ -311,6 +315,7 @@ export default {
       },
       builder: {
         title: 'Builder',
+        githubAccount: 'GitHub account',
         twitterAccount: 'Twitter account',
         linkedInAccount: 'LinkedIn account',
         image: "Builder's image",
@@ -327,6 +332,7 @@ export default {
       communityLabel: 'Community',
       community: {
         title: 'Communities',
+        discordAccount: 'Discord account',
         twitterAccount: 'Twitter account',
         redditAccount: 'Reddit account',
         facebookAccount: 'Facebook account',
