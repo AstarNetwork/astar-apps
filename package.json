@@ -21,7 +21,7 @@
     "heroku-deploy": "git push heroku main"
   },
   "dependencies": {
-    "@astar-network/astar-ui": "^0.0.61",
+    "@astar-network/astar-ui": "0.0.59",
     "@ethersproject/bignumber": "^5.5.0",
     "@polkadot/api": "^9.5.2",
     "@polkadot/api-contract": "^9.5.2",
