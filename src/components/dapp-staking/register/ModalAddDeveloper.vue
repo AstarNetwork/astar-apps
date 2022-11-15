@@ -1,12 +1,12 @@
 <template>
-  <astar-default-modal
-    :show="show"
+  <modal-wrapper
+    :is-modal-open="show"
     :title="$t('dappStaking.modals.builder.title')"
-    :width="544"
-    @close="closeModal"
+    :is-closing="isClosingModal"
+    :close-modal="closeModal"
   >
     <div class="developers-wrapper">
-      <q-form ref="developerForm">
+      <q-form ref="developerForm" class="form--developer">
         <q-input
           v-model="currentDeveloper.githubAccountUrl"
           :label="$t('dappStaking.modals.builder.githubAccount')"
@@ -87,28 +87,29 @@
           <li>{{ $t('dappStaking.modals.builder.imageRecomendation') }}</li>
         </div>
 
-        <Button :width="464" :height="52" @click="handleConfirm">
+        <astar-button class="button--confirm" @click="handleConfirm">
           {{ $t('confirm') }}
-        </Button>
+        </astar-button>
       </q-form>
     </div>
-  </astar-default-modal>
+  </modal-wrapper>
 </template>
 
 <script lang="ts">
 import { wait } from 'src/hooks/helper/common';
 import { defineComponent, ref, toRefs, PropType, computed, watch } from 'vue';
-import { fadeDuration, Button } from '@astar-network/astar-ui';
+import { fadeDuration } from '@astar-network/astar-ui';
 import { Developer } from 'src/store/dapp-staking/state';
 import { isUrlValid } from 'src/components/common/Validators';
 import ImageCard from 'src/components/dapp-staking/register/ImageCard.vue';
 import Avatar from 'src/components/common/Avatar.vue';
+import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 
 export default defineComponent({
   components: {
     ImageCard,
     Avatar,
-    Button,
+    ModalWrapper,
   },
   props: {
     show: {
@@ -145,7 +146,6 @@ export default defineComponent({
 
     const closeModal = async (): Promise<void> => {
       isClosingModal.value = true;
-
       await wait(fadeDuration);
       props.handleModalDeveloper({ isOpen: false });
       isClosingModal.value = false;
@@ -228,5 +228,23 @@ export default defineComponent({
 
 .developers-wrapper {
   margin-top: 20px;
+}
+
+.form--developer {
+  display: flex;
+  flex-direction: column;
+  padding: 0 32px;
+  padding-bottom: 36px;
+  @media (min-width: $sm) {
+    padding: 0;
+  }
+}
+
+.button--confirm {
+  width: 100%;
+  font-size: 22px;
+  font-weight: 600;
+  height: 44px;
+  align-self: center;
 }
 </style>

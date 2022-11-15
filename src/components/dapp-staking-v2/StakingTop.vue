@@ -1,50 +1,43 @@
 <template>
-  <div class="wrapper-main">
-    <TopMetric />
+  <div v-if="isReady" class="wrapper-main">
+    <top-metric />
+    <register />
+    <banner-area />
 
-    <Register />
+    <div class="divider" />
+    <my-staking />
 
-    <BannerArea />
-
-    <div class="divider"></div>
-
-    <MyStaking />
-
-    <div class="divider"></div>
-
-    <DappList category="DeFi" />
+    <div class="divider" />
+    <dapp-list category="DeFi" />
 
     <q-intersection transition="fade" transition-duration="1000" once>
-      <AdsArea />
+      <ads-area />
     </q-intersection>
 
-    <div class="divider"></div>
+    <div class="divider" />
+    <dapp-list category="NFT" />
 
-    <DappList category="NFT" />
+    <div class="divider" />
+    <dapp-list category="Tooling" />
 
-    <div class="divider"></div>
+    <div class="divider" />
+    <dapp-list category="Utility" />
 
-    <DappList category="Tooling" />
-
-    <div class="divider"></div>
-
-    <DappList category="Utility" />
-
-    <div class="divider"></div>
-
-    <DappList category="Others" />
+    <div class="divider" />
+    <dapp-list category="Others" />
   </div>
+  <div v-else />
 </template>
 
 <script lang="ts">
 import { useMeta } from 'quasar';
-import { useAccount, useNetworkInfo } from 'src/hooks';
+import { useAccount, useNetworkInfo, usePageReady } from 'src/hooks';
 import { useStore } from 'src/store';
 import TopMetric from 'src/components/dapp-staking-v2/my-staking/TopMetric.vue';
 import MyStaking from 'src/components/dapp-staking-v2/my-staking/MyStaking.vue';
 import DappList from 'src/components/dapp-staking-v2/my-staking/DappList.vue';
 import Register from 'src/components/dapp-staking-v2/my-staking/Register.vue';
-import { defineComponent, watchEffect } from 'vue';
+import { defineComponent, watchEffect, computed } from 'vue';
 import AdsArea from './my-staking/AdsArea.vue';
 import BannerArea from './my-staking/BannerArea.vue';
 
@@ -60,9 +53,12 @@ export default defineComponent({
   setup() {
     useMeta({ title: 'Discover dApps' });
     const store = useStore();
+    const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
+    const { isReady } = usePageReady();
 
     const { currentNetworkName } = useNetworkInfo();
     const { currentAccount } = useAccount();
+
     watchEffect(() => {
       if (!currentNetworkName.value) return;
       store.dispatch('dapps/getDapps', {
@@ -70,7 +66,15 @@ export default defineComponent({
         currentAccount: currentAccount.value ? currentAccount.value : '',
       });
     });
-    store.dispatch('dapps/getTvl');
+
+    watchEffect(() => {
+      store.dispatch('dapps/getTvl');
+    });
+
+    return {
+      isLoading,
+      isReady,
+    };
   },
 });
 </script>

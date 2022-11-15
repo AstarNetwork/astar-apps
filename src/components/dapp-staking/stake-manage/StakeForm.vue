@@ -64,7 +64,7 @@
       </div>
 
       <div class="separator" />
-      <SpeedConfigurationV2
+      <speed-configuration
         :gas-cost="nativeTipPrice"
         :selected-gas="selectedTip"
         :set-selected-gas="setSelectedTip"
@@ -89,7 +89,7 @@
 </template>
 <script lang="ts">
 import { ethers } from 'ethers';
-import SpeedConfigurationV2 from 'src/components/common/SpeedConfigurationV2.vue';
+import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 import {
   useAccount,
   useGasPrice,
@@ -105,7 +105,7 @@ import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   components: {
-    SpeedConfigurationV2,
+    SpeedConfiguration,
   },
   props: {
     dapp: {
