@@ -4,7 +4,7 @@
       <thead>
         <tr>
           <th>{{ $t('myDapps.stakedAmount') }}</th>
-          <th>{{ $t('myDapps.totalEarned') }}</th>
+          <!-- <th>{{ $t('myDapps.totalEarned') }}</th> -->
         </tr>
       </thead>
       <tbody>
@@ -32,6 +32,15 @@
         $t('myDapps.unbond')
       }}</astar-button>
     </div>
+    <div v-if="!item.isRegistered && item.stakersCount > 0" class="badge--unregistered">
+      <q-icon name="warning" size="20px" class="q-mx-lg" />
+      <div>
+        <div>{{ $t('myDapps.unregisteredAlert') }}</div>
+        <button class="btn--claim-unbond" :disabled="!canClaim" @click="claimAll">
+          {{ $t('myDapps.claimAndUnbond') }}
+        </button>
+      </div>
+    </div>
     <Teleport to="#app--main">
       <div :class="'highest-z-index'">
         <ModalUnbondDapp
@@ -48,7 +57,7 @@
 import { defineComponent, ref, PropType } from 'vue';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import ModalUnbondDapp from '../components/modals/ModalUnbondDapp.vue';
-import { MyStakeInfo, useNetworkInfo } from 'src/hooks';
+import { MyStakeInfo, useNetworkInfo, useClaimAll } from 'src/hooks';
 import { networkParam, Path } from 'src/router/routes';
 import { ethers } from 'ethers';
 import { useRouter } from 'vue-router';
@@ -63,6 +72,7 @@ export default defineComponent({
   },
   setup() {
     const { nativeTokenSymbol } = useNetworkInfo();
+    const { claimAll, canClaim } = useClaimAll();
     const selectedDapp = ref<MyStakeInfo>();
     const router = useRouter();
 
@@ -86,6 +96,8 @@ export default defineComponent({
       showUnbound,
       navigateToStake,
       ethers,
+      claimAll,
+      canClaim,
     };
   },
 });

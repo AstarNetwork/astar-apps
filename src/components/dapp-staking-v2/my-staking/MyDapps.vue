@@ -13,44 +13,49 @@
           </thead>
           <tbody>
             <template v-if="myStakeInfos && myStakeInfos.length > 0">
-              <tr v-for="t in myStakeInfos" :key="t.address">
-                <td>{{ t.name }}</td>
-                <td>
-                  <token-balance
-                    :balance="ethers.utils.formatEther(t.yourStake.denomAmount.toString())"
-                    :symbol="nativeTokenSymbol"
-                    :decimals="0"
-                  />
-                </td>
-                <td>
-                  <div class="row--manage">
-                    <astar-button
-                      width="97"
-                      height="24"
-                      :disabled="false"
-                      @click="navigateToStake(t.dappAddress)"
-                      >{{ $t('myDapps.add') }}</astar-button
-                    >
-                    <astar-button
-                      width="97"
-                      height="24"
-                      :disabled="false"
-                      @click="showUnbound(t)"
-                      >{{ $t('myDapps.unbond') }}</astar-button
-                    >
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td colspan="3">
-                  <div class="badge--unregistered">
-                    {{ $t('myDapps.unregisteredAlert') }}
-                    <button class="btn--claim-unbond" @click="showUnbound(t)">
-                      {{ $t('myDapps.claimAndUnbond') }}
-                    </button>
-                  </div>
-                </td>
-              </tr>
+              <!-- eslint-disable-next-line vue/no-v-for-template-key -->
+              <template v-for="t in myStakeInfos" :key="t.address">
+                <tr>
+                  <td>{{ t.name }}</td>
+                  <td>
+                    <token-balance
+                      :balance="ethers.utils.formatEther(t.yourStake.denomAmount.toString())"
+                      :symbol="nativeTokenSymbol"
+                      :decimals="0"
+                    />
+                  </td>
+                  <td>
+                    <div class="row--manage">
+                      <astar-button
+                        width="97"
+                        height="24"
+                        :disabled="false"
+                        @click="navigateToStake(t.dappAddress)"
+                        >{{ $t('myDapps.add') }}</astar-button
+                      >
+                      <astar-button
+                        width="97"
+                        height="24"
+                        :disabled="false"
+                        @click="showUnbound(t)"
+                        >{{ $t('myDapps.unbond') }}</astar-button
+                      >
+                    </div>
+                  </td>
+                </tr>
+                <!-- <tr v-if="!t.isRegistered && t.stakersCount > 0"> -->
+                <tr>
+                  <td colspan="3">
+                    <div class="badge--unregistered">
+                      <q-icon name="warning" size="20px" class="q-mr-sm" />
+                      {{ $t('myDapps.unregisteredAlert') }}
+                      <button class="btn--claim-unbond" :disabled="!canClaim" @click="claimAll">
+                        {{ $t('myDapps.claimAndUnbond') }}
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </template>
             </template>
             <!-- Todo: update the skelton animation later -->
             <template v-else>
@@ -84,7 +89,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref, PropType } from 'vue';
-import { MyStakeInfo, useBreakpoints, useNetworkInfo } from 'src/hooks';
+import { MyStakeInfo, useBreakpoints, useNetworkInfo, useClaimAll } from 'src/hooks';
 import DropdownList from './components/DropdownList.vue';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import ModalUnbondDapp from './components/modals/ModalUnbondDapp.vue';
@@ -103,6 +108,7 @@ export default defineComponent({
   setup() {
     const { width, screenSize } = useBreakpoints();
     const { nativeTokenSymbol } = useNetworkInfo();
+    const { claimAll, canClaim } = useClaimAll();
     const selectedDapp = ref<MyStakeInfo>();
     const router = useRouter();
 
@@ -128,6 +134,8 @@ export default defineComponent({
       showUnbound,
       navigateToStake,
       ethers,
+      canClaim,
+      claimAll,
     };
   },
 });
