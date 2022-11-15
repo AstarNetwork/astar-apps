@@ -177,13 +177,13 @@
       </div>
       <div class="wrapper__row--button">
         <!-- Memo: isDisabledXcmButton: XCM tab will be disabled if it is true -->
-        <button
-          class="btn btn--confirm btn-size-adjust"
+        <astar-button
+          class="button--confirm btn-size-adjust"
           :disabled="isDisabledBridge || isDisabledXcmButton"
           @click="bridge"
         >
           {{ $t('confirm') }}
-        </button>
+        </astar-button>
       </div>
     </div>
   </div>

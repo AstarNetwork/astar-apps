@@ -274,6 +274,12 @@
   align-items: center;
 }
 
+.button--confirm {
+  font-size: 22px;
+  font-weight: 600;
+  height: 44px;
+}
+
 .body--dark {
   .box--input-field {
     background: $gray-6;

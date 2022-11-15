@@ -1,5 +1,10 @@
 <template>
-  <astar-default-modal :width="544" :height="402" :show="show" title="Re-bond" @close="close">
+  <modal-wrapper
+    :is-modal-open="show"
+    :title="$t('dappStaking.myDapps.rebond')"
+    :is-closing="isClosingModal"
+    :close-modal="closeModal"
+  >
     <div class="text--guide">
       {{ $t('myDapps.rebondGuide') }}
     </div>
@@ -9,16 +14,19 @@
       </div>
       <div class="text--amount"><format-balance :balance="rebondAmount" /></div>
     </div>
-    <astar-button :width="464" :height="52" @click="confirm">{{ $t('confirm') }}</astar-button>
-  </astar-default-modal>
+    <astar-button class="button--confirm" @click="confirm">{{ $t('confirm') }}</astar-button>
+  </modal-wrapper>
 </template>
 
-<script>
-import { defineComponent } from 'vue';
+<script lang="ts">
+import { defineComponent, ref } from 'vue';
 import FormatBalance from 'components/common/FormatBalance.vue';
+import ModalWrapper from 'src/components/common/ModalWrapper.vue';
+import { fadeDuration } from '@astar-network/astar-ui';
+import { wait } from 'src/hooks/helper/common';
 
 export default defineComponent({
-  components: { FormatBalance },
+  components: { FormatBalance, ModalWrapper },
   props: {
     show: {
       type: Boolean,
@@ -31,18 +39,23 @@ export default defineComponent({
   },
   emits: ['update:is-open', 'confirm'],
   setup(props, { emit }) {
-    const close = () => {
+    const isClosingModal = ref<boolean>(false);
+    const closeModal = async (): Promise<void> => {
+      isClosingModal.value = true;
+      await wait(fadeDuration);
       emit('update:is-open', false);
+      isClosingModal.value = false;
     };
 
     const confirm = () => {
-      close();
+      closeModal();
       emit('confirm');
     };
 
     return {
-      close,
       confirm,
+      isClosingModal,
+      closeModal,
     };
   },
 });
@@ -53,6 +66,7 @@ export default defineComponent({
   font-weight: 500;
   font-size: 14px;
 }
+
 .box--container {
   font-family: 'Inter';
   margin-top: 20px;
@@ -67,11 +81,22 @@ export default defineComponent({
     font-weight: 600;
     font-size: 14px;
   }
+
   .text--amount {
     font-weight: 600;
     font-size: 22px;
     margin-top: 16px;
     color: $gray-5-selected;
+  }
+}
+
+.button--confirm {
+  width: 340px;
+  font-size: 22px;
+  font-weight: 600;
+  height: 44px;
+  @media (min-width: $md) {
+    width: 400px;
   }
 }
 
