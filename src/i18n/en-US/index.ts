@@ -170,7 +170,7 @@ export default {
     myDapps: 'My dApps',
     dappRegistered: 'Congrats!! your contract is approved. Please submit the details',
     welcomeBanner:
-      'Congraturations 🎉 Please fill in the dApp information as much as possible to give users a good information. Your card will be apear in dApps Staking Portal shortly after you submit the form.',
+      'Congratulations 🎉 Please fill in your dApp information to give users better overview of your application. Updated data will appear on the dApp page shortly.',
     registerNow: 'Register now',
     transferableBalance: 'Transferable Balance',
     dappsStore: 'dApps Store',
