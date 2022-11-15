@@ -36,9 +36,9 @@
         <span class="color--white"> {{ $t(errMsg) }}</span>
       </div>
       <div class="wrapper__row--button">
-        <button class="btn btn--confirm" :disabled="isDisabled" @click="handleRequest">
+        <astar-button class="button--confirm" :disabled="isDisabled" @click="handleRequest">
           {{ $t('confirm') }}
-        </button>
+        </astar-button>
       </div>
     </div>
   </modal-wrapper>

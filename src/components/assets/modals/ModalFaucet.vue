@@ -47,9 +47,9 @@
       >
       </vue-recaptcha>
       <div v-if="isAbleToFaucet" class="wrapper__row--button">
-        <button class="btn btn--confirm" :disabled="!recaptchaResponse" @click="handleRequest">
+        <astar-button :disabled="!recaptchaResponse" class="button--confirm" @click="handleRequest">
           {{ $t('confirm') }}
-        </button>
+        </astar-button>
       </div>
     </div>
   </modal-wrapper>

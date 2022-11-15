@@ -1,15 +1,16 @@
 <template>
   <Teleport to="#app--main">
     <div :class="[!isLoading && 'highest-z-index', className]">
-      <astar-simple-modal
+      <astar-default-modal
         v-if="isModalOpen"
         :show="isModalOpen"
         :title="title"
         :is-closing="isClosing"
+        :width="500"
         @close="closeModal"
       >
         <slot />
-      </astar-simple-modal>
+      </astar-default-modal>
     </div>
   </Teleport>
 </template>
@@ -18,9 +19,7 @@
 import { useStore } from 'src/store';
 import { defineComponent, computed } from 'vue';
 
-// Memo: wrapper for astar-simple-ui
-// Ref: https://github.com/AstarNetwork/astar-apps/pull/477#discussion_r933781042
-
+// Memo: wrapper for astar-default-modal
 export default defineComponent({
   props: {
     title: {

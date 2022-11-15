@@ -1,40 +1,34 @@
 <template>
-  <div class="wrapper-main">
-    <TopMetric />
-
-    <Register />
-
-    <BannerArea />
+  <div v-if="isReady" class="wrapper-main">
+    <top-metric />
+    <register />
+    <banner-area />
 
     <div v-if="isStakeAble">
       <div class="divider" />
       <my-staking />
     </div>
 
-    <div class="divider"></div>
-
-    <DappList category="DeFi" />
+    <div class="divider" />
+    <dapp-list category="DeFi" />
 
     <q-intersection transition="fade" transition-duration="1000" once>
-      <AdsArea />
+      <ads-area />
     </q-intersection>
 
-    <div class="divider"></div>
+    <div class="divider" />
+    <dapp-list category="NFT" />
 
-    <DappList category="NFT" />
+    <div class="divider" />
+    <dapp-list category="Tooling" />
 
-    <div class="divider"></div>
+    <div class="divider" />
+    <dapp-list category="Utility" />
 
-    <DappList category="Tooling" />
-
-    <div class="divider"></div>
-
-    <DappList category="Utility" />
-
-    <div class="divider"></div>
-
-    <DappList category="Others" />
+    <div class="divider" />
+    <dapp-list category="Others" />
   </div>
+  <div v-else />
 </template>
 
 <script lang="ts">
@@ -43,7 +37,7 @@ import DappList from 'src/components/dapp-staking-v2/my-staking/DappList.vue';
 import MyStaking from 'src/components/dapp-staking-v2/my-staking/MyStaking.vue';
 import Register from 'src/components/dapp-staking-v2/my-staking/Register.vue';
 import TopMetric from 'src/components/dapp-staking-v2/my-staking/TopMetric.vue';
-import { useAccount, useNetworkInfo } from 'src/hooks';
+import { useAccount, useNetworkInfo, usePageReady } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { useStore } from 'src/store';
 import { computed, defineComponent, watch } from 'vue';
@@ -63,6 +57,8 @@ export default defineComponent({
   setup() {
     useMeta({ title: 'Discover dApps' });
     const store = useStore();
+    const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
+    const { isReady } = usePageReady();
 
     const { currentNetworkName } = useNetworkInfo();
     const { currentAccount } = useAccount();
@@ -142,7 +138,7 @@ export default defineComponent({
       { immediate: true }
     );
 
-    return { isStakeAble };
+    return { isStakeAble, isReady };
   },
 });
 </script>
