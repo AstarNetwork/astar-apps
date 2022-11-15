@@ -85,7 +85,6 @@ export default defineComponent({
     const isToStakePage = ref<boolean>(false);
     const { nativeTokenSymbol } = useNetworkInfo();
     const { currentAccount } = useAccount();
-
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const isStakeAble = computed<boolean>(() => !!currentAccount.value && !isH160.value);
 

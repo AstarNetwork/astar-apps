@@ -8,7 +8,7 @@
 
     <div v-if="isStakeAble">
       <div class="divider" />
-      <MyStaking />
+      <my-staking />
     </div>
 
     <div class="divider"></div>
@@ -90,8 +90,10 @@ export default defineComponent({
 
     // Memo: invoke this function whenever the users haven't connect to wallets
     const getDappsForBrowser = async (): Promise<void> => {
-      // Memo (4 secs): quick hack for waiting for updating `currentAccount` state from the initial state
+      // Memo (4 secs): quick hack for waiting for updating `currentAccount` state from the initial state.
+      // Fixme: this isn't an elegant solution.
       await wait(4000);
+
       const isBrowsingOnly = !!(
         dapps.value.length === 0 &&
         !currentAccount.value &&
