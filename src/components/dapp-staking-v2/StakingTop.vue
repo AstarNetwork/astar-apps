@@ -6,9 +6,10 @@
 
     <BannerArea />
 
-    <div class="divider"></div>
-
-    <MyStaking />
+    <div v-if="isStakeAble">
+      <div class="divider" />
+      <MyStaking />
+    </div>
 
     <div class="divider"></div>
 
@@ -38,13 +39,15 @@
 
 <script lang="ts">
 import { useMeta } from 'quasar';
-import { useAccount, useNetworkInfo } from 'src/hooks';
-import { useStore } from 'src/store';
-import TopMetric from 'src/components/dapp-staking-v2/my-staking/TopMetric.vue';
-import MyStaking from 'src/components/dapp-staking-v2/my-staking/MyStaking.vue';
 import DappList from 'src/components/dapp-staking-v2/my-staking/DappList.vue';
+import MyStaking from 'src/components/dapp-staking-v2/my-staking/MyStaking.vue';
 import Register from 'src/components/dapp-staking-v2/my-staking/Register.vue';
-import { defineComponent, watchEffect } from 'vue';
+import TopMetric from 'src/components/dapp-staking-v2/my-staking/TopMetric.vue';
+import { useAccount, useNetworkInfo } from 'src/hooks';
+import { wait } from 'src/hooks/helper/common';
+import { useStore } from 'src/store';
+import { computed, defineComponent, watch, watchEffect } from 'vue';
+import { useI18n } from 'vue-i18n';
 import AdsArea from './my-staking/AdsArea.vue';
 import BannerArea from './my-staking/BannerArea.vue';
 
@@ -63,14 +66,68 @@ export default defineComponent({
 
     const { currentNetworkName } = useNetworkInfo();
     const { currentAccount } = useAccount();
-    watchEffect(() => {
-      if (!currentNetworkName.value) return;
-      store.dispatch('dapps/getDapps', {
-        network: currentNetworkName.value.toLowerCase(),
-        currentAccount: currentAccount.value ? currentAccount.value : '',
-      });
+    const { t } = useI18n();
+    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
+    const isStakeAble = computed<boolean>(() => !!currentAccount.value && !isH160.value);
+    const dapps = computed(() => store.getters['dapps/getAllDapps']);
+
+    watch([isH160], () => {
+      if (isH160.value) {
+        store.dispatch('general/showAlertMsg', {
+          msg: t('dappStaking.error.onlySupportsSubstrate'),
+          alertType: 'error',
+        });
+      }
     });
-    store.dispatch('dapps/getTvl');
+
+    watch(
+      [currentNetworkName],
+      () => {
+        store.dispatch('dapps/getTvl');
+      },
+      { immediate: false }
+    );
+
+    // Memo: invoke this function whenever the users haven't connect to wallets
+    const getDappsForBrowser = async (): Promise<void> => {
+      // Memo (4 secs): quick hack for waiting for updating `currentAccount` state from the initial state
+      await wait(4000);
+      const isBrowsingOnly = !!(
+        dapps.value.length === 0 &&
+        !currentAccount.value &&
+        currentNetworkName.value
+      );
+
+      if (isBrowsingOnly) {
+        store.dispatch('dapps/getDapps', {
+          network: currentNetworkName.value.toLowerCase(),
+          currentAccount: '',
+        });
+      }
+    };
+
+    const getDapps = async (): Promise<void> => {
+      const isConnectedWallet = currentNetworkName.value && currentAccount.value;
+      if (isConnectedWallet) {
+        const address = isH160.value || !currentAccount.value ? '' : currentAccount.value;
+        store.dispatch('dapps/getDapps', {
+          network: currentNetworkName.value.toLowerCase(),
+          currentAccount: address,
+        });
+      } else {
+        getDappsForBrowser();
+      }
+    };
+
+    watch(
+      [currentAccount, currentNetworkName],
+      async () => {
+        await getDapps();
+      },
+      { immediate: false }
+    );
+
+    return { isStakeAble };
   },
 });
 </script>

@@ -1,16 +1,15 @@
-import { useI18n } from 'vue-i18n';
-import { useGasPrice, useCurrentEra, useCustomSignature, useNetworkInfo } from 'src/hooks';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { BN } from '@polkadot/util';
 import { $api } from 'boot/api';
-import { useStore } from 'src/store';
-import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
-import { computed, ref, watchEffect } from 'vue';
+import { useCurrentEra, useCustomSignature, useGasPrice } from 'src/hooks';
 import { TxType } from 'src/hooks/custom-signature/message';
 import { ExtrinsicPayload } from 'src/hooks/helper';
 import { getIndividualClaimTxs, PayloadWithWeight } from 'src/hooks/helper/claim';
 import { signAndSend } from 'src/hooks/helper/wallet';
+import { useStore } from 'src/store';
+import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
 import { SmartContractState } from 'src/v2/models/DappsStaking';
+import { computed, ref, watchEffect } from 'vue';
 
 const MAX_BATCH_WEIGHT = new BN('50000000000');
 
@@ -26,8 +25,6 @@ export function useClaimAll() {
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const isSendingTx = computed(() => store.getters['general/isLoading']);
   const { nativeTipPrice } = useGasPrice();
-  const { currentNetworkName } = useNetworkInfo();
-  const { t } = useI18n();
 
   const { era } = useCurrentEra();
   const { handleResult, handleCustomExtrinsic, isCustomSig } = useCustomSignature({
@@ -123,24 +120,6 @@ export function useClaimAll() {
       console.error(error.message);
     }
   };
-
-  const dispatchGetDapps = (): void => {
-    const isDispatch = currentNetworkName.value && dapps.value.length === 0 && senderAddress.value;
-    if (isDispatch) {
-      store.dispatch('dapps/getDapps', {
-        network: currentNetworkName.value.toLowerCase(),
-        currentAccount: senderAddress.value,
-      });
-    }
-    if (isH160.value) {
-      store.dispatch('general/showAlertMsg', {
-        msg: t('dappStaking.error.onlySupportsSubstrate'),
-        alertType: 'error',
-      });
-    }
-  };
-
-  watchEffect(dispatchGetDapps);
 
   return {
     claimAll,

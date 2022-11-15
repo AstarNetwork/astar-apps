@@ -100,8 +100,9 @@ import {
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { truncate } from 'src/hooks/helper/common';
 import { getTokenImage } from 'src/modules/token';
-import { computed, defineComponent, ref, watchEffect } from 'vue';
+import { defineComponent, computed, watch, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useStore } from 'src/store';
 
 export default defineComponent({
   components: {
@@ -133,6 +134,8 @@ export default defineComponent({
     const { currentAccount, currentAccountName } = useAccount();
     const { nativeTokenSymbol } = useNetworkInfo();
     const { minStaking } = useGetMinStaking();
+    const store = useStore();
+    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const nativeTokenImg = computed<string>(() =>
       getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
     );
@@ -197,6 +200,15 @@ export default defineComponent({
         }
       }
       return '';
+    });
+
+    watch([isH160], () => {
+      if (isH160.value) {
+        store.dispatch('general/showAlertMsg', {
+          msg: t('dappStaking.error.onlySupportsSubstrate'),
+          alertType: 'error',
+        });
+      }
     });
 
     return {

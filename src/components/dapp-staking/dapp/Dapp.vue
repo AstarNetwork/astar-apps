@@ -11,7 +11,12 @@
     </div>
     <div class="bottom--links">
       <router-link :to="buildStakePageLink(dapp.dapp.address)">
-        <astar-irregular-button width="220" height="28" class="btn--stake-switch">
+        <astar-irregular-button
+          :disabled="!isStakeAble"
+          width="220"
+          height="28"
+          class="btn--stake-switch"
+        >
           {{ $t('dappStaking.dappPage.stakeOrSwitchTo') }} {{ dapp.dapp.name }}
         </astar-irregular-button>
       </router-link>
@@ -20,7 +25,7 @@
   </div>
 </template>
 <script lang="ts">
-import { useNetworkInfo, useStakingList, useDappRedirect } from 'src/hooks';
+import { useNetworkInfo, useStakingList, useDappRedirect, useAccount } from 'src/hooks';
 import { Path } from 'src/router';
 import { networkParam } from 'src/router/routes';
 import { useStore } from 'src/store';
@@ -47,6 +52,7 @@ export default defineComponent({
   },
   setup() {
     const { currentNetworkName } = useNetworkInfo();
+    const { currentAccount } = useAccount();
     const route = useRoute();
     useDappRedirect();
     const { t } = useI18n();
@@ -54,6 +60,7 @@ export default defineComponent({
     const { dapps, stakingList } = useStakingList();
     const dappAddress = computed<string>(() => route.query.dapp as string);
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
+    const isStakeAble = computed<boolean>(() => !!currentAccount.value && !isH160.value);
 
     const buildStakePageLink = (address: string): string => {
       const base = networkParam + Path.DappStaking + Path.Stake;
@@ -99,6 +106,7 @@ export default defineComponent({
       Path,
       dapp,
       stakingList,
+      isStakeAble,
       goLink,
       buildStakePageLink,
     };
