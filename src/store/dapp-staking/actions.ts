@@ -86,7 +86,7 @@ const actions: ActionTree<State, StateInterface> = {
     { commit, dispatch },
     { network, currentAccount }: { network: string; currentAccount: string }
   ) {
-    commit('general/setLoading', true, { root: true });
+    // commit('general/setLoading', true, { root: true });
 
     try {
       // Fetch dapps
@@ -110,7 +110,7 @@ const actions: ActionTree<State, StateInterface> = {
       const error = e as unknown as Error;
       showError(dispatch, error.message);
     } finally {
-      commit('general/setLoading', false, { root: true });
+      // commit('general/setLoading', false, { root: true });
     }
   },
 

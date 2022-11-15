@@ -77,6 +77,13 @@ export default defineComponent({
     const isModalAddCommunity = ref<boolean>(false);
     const availableCommunities = ref<CommunityDefinition[]>([
       {
+        type: CommunityType.Discord,
+        handle: '',
+        iconUrl: require('src/assets/img/twitter.png'),
+        label: t('dappStaking.modals.community.discordAccount'),
+        validateHandle: (x) => validateUrl(x),
+      },
+      {
         type: CommunityType.Twitter,
         handle: '',
         iconUrl: require('src/assets/img/twitter.png'),
@@ -95,13 +102,6 @@ export default defineComponent({
         handle: '',
         iconUrl: require('src/assets/img/facebook.png'),
         label: t('dappStaking.modals.community.facebookAccount'),
-        validateHandle: (x) => validateUrl(x),
-      },
-      {
-        type: CommunityType.TikTok,
-        handle: '',
-        iconUrl: require('src/assets/img/tiktok.png'),
-        label: t('dappStaking.modals.community.tiktokAccount'),
         validateHandle: (x) => validateUrl(x),
       },
       {
