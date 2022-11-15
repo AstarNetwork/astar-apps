@@ -14,7 +14,9 @@
 
     <DappList category="DeFi" />
 
-    <AdsArea />
+    <q-intersection transition="fade" transition-duration="1000" once>
+      <AdsArea />
+    </q-intersection>
 
     <div class="divider"></div>
 
@@ -42,7 +44,7 @@ import TopMetric from 'src/components/dapp-staking-v2/my-staking/TopMetric.vue';
 import MyStaking from 'src/components/dapp-staking-v2/my-staking/MyStaking.vue';
 import DappList from 'src/components/dapp-staking-v2/my-staking/DappList.vue';
 import Register from 'src/components/dapp-staking-v2/my-staking/Register.vue';
-import { computed, defineComponent, watchEffect } from 'vue';
+import { defineComponent, watchEffect } from 'vue';
 import AdsArea from './my-staking/AdsArea.vue';
 import BannerArea from './my-staking/BannerArea.vue';
 
@@ -58,7 +60,6 @@ export default defineComponent({
   setup() {
     useMeta({ title: 'Discover dApps' });
     const store = useStore();
-    const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
 
     const { currentNetworkName } = useNetworkInfo();
     const { currentAccount } = useAccount();
@@ -70,10 +71,6 @@ export default defineComponent({
       });
     });
     store.dispatch('dapps/getTvl');
-
-    return {
-      isLoading,
-    };
   },
 });
 </script>
@@ -82,6 +79,7 @@ export default defineComponent({
 @import 'src/css/quasar.variables.scss';
 
 .wrapper-main {
+  width: 100%;
   padding: 0px 0px 24px 0px;
   margin: 0 auto;
 

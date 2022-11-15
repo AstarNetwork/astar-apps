@@ -1,5 +1,6 @@
 <template>
   <div v-if="dapp">
+    <back-to-page :text="$t('dappStaking.stakePage.backToDappList')" :link="Path.DappStaking" />
     <dapp-avatar :dapp="dapp" />
     <dapp-statistics :dapp="dapp" />
     <dapp-images :dapp="dapp" />
@@ -8,11 +9,20 @@
       <project-overview :dapp="dapp" />
       <project-details :dapp="dapp" />
     </div>
+    <div class="bottom--links">
+      <router-link :to="buildStakePageLink(dapp.dapp.address)">
+        <astar-irregular-button width="220" height="28" class="btn--stake-switch">
+          {{ $t('dappStaking.dappPage.stakeOrSwitchTo') }} {{ dapp.dapp.name }}
+        </astar-irregular-button>
+      </router-link>
+      <back-to-page :text="$t('dappStaking.stakePage.backToDappList')" :link="Path.DappStaking" />
+    </div>
   </div>
 </template>
 <script lang="ts">
 import { useNetworkInfo, useStakingList, useDappRedirect } from 'src/hooks';
 import { Path } from 'src/router';
+import { networkParam } from 'src/router/routes';
 import { useStore } from 'src/store';
 import { computed, defineComponent, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
@@ -22,6 +32,7 @@ import DappImages from 'src/components/dapp-staking/dapp/DappImages.vue';
 import Builders from 'src/components/dapp-staking/dapp/Builders.vue';
 import ProjectOverview from 'src/components/dapp-staking/dapp/ProjectOverview.vue';
 import ProjectDetails from 'src/components/dapp-staking/dapp/ProjectDetails.vue';
+import BackToPage from 'src/components/common/BackToPage.vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
@@ -32,6 +43,7 @@ export default defineComponent({
     Builders,
     ProjectOverview,
     ProjectDetails,
+    BackToPage,
   },
   setup() {
     const { currentNetworkName } = useNetworkInfo();
@@ -42,6 +54,15 @@ export default defineComponent({
     const { dapps, stakingList } = useStakingList();
     const dappAddress = computed<string>(() => route.query.dapp as string);
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
+
+    const buildStakePageLink = (address: string): string => {
+      const base = networkParam + Path.DappStaking + Path.Stake;
+      return `${base}?dapp=${address.toLowerCase()}`;
+    };
+
+    const goLink = (url: string) => {
+      window.open(url, '_blank');
+    };
 
     const dispatchGetDapps = (): void => {
       const isDispatch = currentNetworkName.value && dapps.value.length === 0;
@@ -78,6 +99,8 @@ export default defineComponent({
       Path,
       dapp,
       stakingList,
+      goLink,
+      buildStakePageLink,
     };
   },
 });
