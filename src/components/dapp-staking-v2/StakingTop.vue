@@ -46,7 +46,7 @@ import TopMetric from 'src/components/dapp-staking-v2/my-staking/TopMetric.vue';
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { useStore } from 'src/store';
-import { computed, defineComponent, watch, watchEffect } from 'vue';
+import { computed, defineComponent, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import AdsArea from './my-staking/AdsArea.vue';
 import BannerArea from './my-staking/BannerArea.vue';
@@ -70,23 +70,6 @@ export default defineComponent({
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const isStakeAble = computed<boolean>(() => !!currentAccount.value && !isH160.value);
     const dapps = computed(() => store.getters['dapps/getAllDapps']);
-
-    watch([isH160], () => {
-      if (isH160.value) {
-        store.dispatch('general/showAlertMsg', {
-          msg: t('dappStaking.error.onlySupportsSubstrate'),
-          alertType: 'error',
-        });
-      }
-    });
-
-    watch(
-      [currentNetworkName],
-      () => {
-        store.dispatch('dapps/getTvl');
-      },
-      { immediate: false }
-    );
 
     // Memo: invoke this function whenever the users haven't connect to wallets
     const getDappsForBrowser = async (): Promise<void> => {
@@ -121,12 +104,42 @@ export default defineComponent({
       }
     };
 
+    const handlePageLoading = (): void => {
+      const isLoad = dapps.value.length === 0;
+      store.commit('general/setLoading', isLoad);
+    };
+
+    watch([isH160], () => {
+      if (isH160.value) {
+        store.dispatch('general/showAlertMsg', {
+          msg: t('dappStaking.error.onlySupportsSubstrate'),
+          alertType: 'error',
+        });
+      }
+    });
+
+    watch(
+      [currentNetworkName],
+      () => {
+        store.dispatch('dapps/getTvl');
+      },
+      { immediate: false }
+    );
+
     watch(
       [currentAccount, currentNetworkName],
       async () => {
         await getDapps();
       },
       { immediate: false }
+    );
+
+    watch(
+      [dapps],
+      () => {
+        handlePageLoading();
+      },
+      { immediate: true }
     );
 
     return { isStakeAble };
