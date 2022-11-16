@@ -69,6 +69,10 @@ export default {
     discord: 'Discord',
     github: 'GitHub',
     linkedIn: 'LinkedIn',
+    reddit: 'Reddit',
+    facebook: 'Facebook',
+    instagram: 'Instagram',
+    youtube: 'YouTube',
     docs: 'Documentation',
     speed: {
       speed: 'Transaction speed',
@@ -196,7 +200,7 @@ export default {
     chunks: 'Unbonding chunks',
     chunksTooltip:
       'Unbonding takes {era} eras (1 era is about 24 hours). {chunks} chunks are in the process of being unbonded.',
-    unbondingEra: 'Unbonding takes {unbondingPeriod} era before you can withdraw.',
+    unbondingEra: 'Unbonding takes {unbondingPeriod} eras before you can withdraw',
     amount: 'Amount',
     era: 'Era',
     unbondedFunds: 'Unbonded funds',
@@ -215,7 +219,7 @@ export default {
     unclaimedRewards: 'Unclaimed Rewards',
     unclaimedRewardsTooltip: 'Currently we are working on displaying the number of unclaimed eras.',
     palletDisabled:
-      'Dapps staking is in maintenance mode. All actions are temporary disabled, but you can still browse dapps.',
+      'Dapp staking is in maintenance mode. All actions are temporary disabled, but you can still browse dapps.',
     turnOn: 'Turn on',
     turnOff: 'Turn off',
     on: 'ON',
@@ -231,7 +235,7 @@ export default {
     edit: 'Edit',
     developerIncentive: 'Developer Incentive',
     tokenEra: '{token}/era',
-    dappStakingEvm: 'dApps Staking is available on EVM',
+    dappStakingEvm: 'dApp Staking is available on EVM',
     stakePage: {
       backToDappList: 'Back to dApps list',
       whereFundsFrom: 'Where would you like to bring you funds from?',
@@ -260,6 +264,9 @@ export default {
       launchAlgemApp: 'Launch Algem App',
     },
     dappPage: {
+      back: 'Back',
+      goBackToTopPage: 'Go back to the top page',
+      stakeOrSwitchTo: 'Stake or switch to',
       totalStaked: 'Total Staked',
       totalStaker: 'Total Staker',
       team: 'Team',
@@ -310,6 +317,7 @@ export default {
       },
       builder: {
         title: 'Builder',
+        githubAccount: 'GitHub account',
         twitterAccount: 'Twitter account',
         linkedInAccount: 'LinkedIn account',
         image: "Builder's image",
@@ -319,13 +327,14 @@ export default {
           invalidUrl: 'Invalid url.',
           accountRequired: 'At least one account is required.',
           builderImageRequired: 'Builder image is required',
-          buildersRequired: 'At least two builders are required',
+          buildersRequired: 'At least two builders are required.',
         },
       },
       builders: 'Builders information',
       communityLabel: 'Community',
       community: {
         title: 'Communities',
+        discordAccount: 'Discord account',
         twitterAccount: 'Twitter account',
         redditAccount: 'Reddit account',
         facebookAccount: 'Facebook account',
@@ -356,6 +365,7 @@ export default {
       dappImageRequired: 'Project logo is required.',
       projectLogo: 'Project logo',
       platformRequired: 'At least one platform is required.',
+      startUnbounding: 'Start unbonding',
     },
     toast: {
       staked: 'You staked {amount} on {dapp}',

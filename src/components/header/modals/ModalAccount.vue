@@ -95,13 +95,13 @@
         </fieldset>
       </div>
       <div class="wrapper__row--button">
-        <button
+        <astar-button
           :disabled="substrateAccounts.length > 0 && !selAccount"
-          class="btn btn--connect"
+          class="btn--connect"
           @click="selectAccount(selAccount)"
         >
           {{ $t('connect') }}
-        </button>
+        </astar-button>
       </div>
     </div>
   </astar-modal-drawer>

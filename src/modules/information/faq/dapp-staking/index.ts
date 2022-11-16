@@ -2,7 +2,7 @@ import { Faq } from 'src/modules/information';
 
 export const faqDappStaking: Faq[] = [
   {
-    title: 'What is dApps Staking?',
+    title: 'What is dApp Staking?',
     url: 'https://docs.astar.network/docs/dapp-staking',
   },
   {

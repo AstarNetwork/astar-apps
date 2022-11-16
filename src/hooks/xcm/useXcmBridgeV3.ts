@@ -398,7 +398,12 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
   };
 
   const getFromChainBalance = async (address: string): Promise<number> => {
-    if (!selectedToken.value || !originChainApi.value || !isTransferPage.value) {
+    if (
+      !selectedToken.value ||
+      !originChainApi.value ||
+      !isTransferPage.value ||
+      selectedToken.value.metadata.symbol.toLowerCase() !== tokenSymbol.value
+    ) {
       return 0;
     }
 
