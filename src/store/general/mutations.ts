@@ -22,6 +22,7 @@ export interface GeneralMutations<S = State> {
   setHeaderName(state: S, name: string): void;
   setCurrentWallet(state: S, wallet: string): void;
   setGas(state: S, gas: GasTip): void;
+  setCurrentBlock(state: S, blockNumber: number): void;
 }
 
 const mutation: MutationTree<State> & GeneralMutations = {
@@ -92,6 +93,9 @@ const mutation: MutationTree<State> & GeneralMutations = {
   },
   setGas(state, gas: GasTip) {
     state.gas = gas;
+  },
+  setCurrentBlock(state, blockNumber) {
+    state.currentBlock = blockNumber;
   },
 };
 

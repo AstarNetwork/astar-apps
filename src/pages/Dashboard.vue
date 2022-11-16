@@ -1,6 +1,7 @@
 <template>
   <div class="wrapper--dashboard">
-    <dashboard />
+    <dashboard v-if="isReady" />
+    <div v-else />
   </div>
 </template>
 
@@ -8,6 +9,7 @@
 import { defineComponent } from 'vue';
 import { useMeta } from 'quasar';
 import Dashboard from 'src/components/dashboard/Dashboard.vue';
+import { usePageReady } from 'src/hooks';
 
 export default defineComponent({
   components: {
@@ -15,6 +17,8 @@ export default defineComponent({
   },
   setup() {
     useMeta({ title: 'Dashboard' });
+    const { isReady } = usePageReady();
+    return { isReady };
   },
 });
 </script>
@@ -23,7 +27,7 @@ export default defineComponent({
 
 .wrapper--dashboard {
   @media (min-width: $lg) {
-    margin-top: 20px;
+    margin-top: 70px;
   }
 }
 </style>

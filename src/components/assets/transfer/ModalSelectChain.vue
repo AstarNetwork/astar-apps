@@ -1,5 +1,5 @@
 <template>
-  <AstarModal
+  <modal-wrapper
     :is-modal-open="isModalSelectChain"
     :title="$t('assets.transferPage.selectChain')"
     :is-closing="isClosingModal"
@@ -23,18 +23,18 @@
         </div>
       </div>
     </div>
-  </AstarModal>
+  </modal-wrapper>
 </template>
 <script lang="ts">
 import { fadeDuration } from '@astar-network/astar-ui';
-import AstarModal from 'src/components/common/AstarModal.vue';
+import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 import { castChainName } from 'src/modules/xcm';
 import { XcmChain } from 'src/v2/models';
 import { wait } from 'src/v2/common';
 import { defineComponent, PropType, ref } from 'vue';
 export default defineComponent({
   components: {
-    AstarModal,
+    ModalWrapper,
   },
   props: {
     isModalSelectChain: {

@@ -1,5 +1,5 @@
 <template>
-  <AstarModal
+  <modal-wrapper
     :is-modal-open="isModalVesting"
     :title="$t('assets.modals.titleVesting')"
     :is-closing="isClosingModal"
@@ -41,22 +41,22 @@
           </span>
         </div>
       </div>
-      <SpeedConfiguration
+      <speed-configuration
         :gas-cost="nativeTipPrice"
         :selected-gas="selectedTip"
         :set-selected-gas="setSelectedTip"
       />
       <div class="wrapper__row--button">
-        <button
-          class="btn btn--confirm"
+        <astar-button
           :disabled="0 >= info.claimableAmount"
+          class="button-unlock"
           @click="sendTransaction"
         >
           {{ $t('assets.modals.unlock') }}
-        </button>
+        </astar-button>
       </div>
     </div>
-  </AstarModal>
+  </modal-wrapper>
 </template>
 <script lang="ts">
 import { AccountData, useVesting } from 'src/hooks';
@@ -65,10 +65,10 @@ import { fadeDuration } from '@astar-network/astar-ui';
 import { wait } from 'src/hooks/helper/common';
 import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 import { truncate } from 'src/hooks/helper/common';
-import AstarModal from 'src/components/common/AstarModal.vue';
+import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 
 export default defineComponent({
-  components: { SpeedConfiguration, AstarModal },
+  components: { SpeedConfiguration, ModalWrapper },
   props: {
     nativeTokenSymbol: {
       type: String,

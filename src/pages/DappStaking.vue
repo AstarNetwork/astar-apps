@@ -8,22 +8,23 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-export default defineComponent({});
+export default defineComponent({
+  setup() {},
+});
 </script>
 
 <style lang="scss" scoped>
 @use 'src/components/assets/styles/assets.scss';
+.wrapper--dapp-staking {
+  margin: 0 auto;
+}
 .container--dapp-staking {
   display: grid;
   row-gap: 24px;
   max-width: 1300px;
-}
-
-.wrapper--dapp-staking {
-  position: relative;
-  @media (min-width: $xxl) {
-    display: flex;
-    justify-content: center;
+  margin: 0 auto;
+  @media (max-width: $md) {
+    display: block;
   }
 }
 </style>

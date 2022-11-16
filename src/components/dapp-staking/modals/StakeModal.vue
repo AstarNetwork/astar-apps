@@ -75,7 +75,7 @@
         <span>{{ minUnbondingInfo }}</span>
       </div>
       <div class="container--speed-configuration">
-        <SpeedConfiguration
+        <speed-configuration
           :is-responsible="true"
           :selected-gas="selectedGas"
           :gas-cost="gasCost"
