@@ -6,24 +6,15 @@
 
     <div class="divider" />
     <my-staking />
-
-    <div class="divider" />
     <dapp-list category="DeFi" />
 
     <q-intersection transition="fade" transition-duration="1000" once>
       <ads-area />
     </q-intersection>
 
-    <div class="divider" />
     <dapp-list category="NFT" />
-
-    <div class="divider" />
     <dapp-list category="Tooling" />
-
-    <div class="divider" />
     <dapp-list category="Utility" />
-
-    <div class="divider" />
     <dapp-list category="Others" />
   </div>
   <div v-else />
