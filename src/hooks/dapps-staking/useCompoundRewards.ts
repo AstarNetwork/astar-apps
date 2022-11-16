@@ -1,3 +1,4 @@
+import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { Struct, u32, Vec } from '@polkadot/types';
 import { Balance } from '@polkadot/types/interfaces';
 import { ISubmittableResult } from '@polkadot/types/types';
@@ -40,7 +41,7 @@ export function useCompoundRewards() {
   const { isCustomSig, handleCustomExtrinsic } = useCustomSignature({});
   const currentAddress = computed(() => store.getters['general/selectedAddress']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
-  const dapps = computed(() => store.getters['dapps/getAllDapps']);
+  const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
   const { selectedTip } = useGasPrice();
   const { era } = useCurrentEra();
 
@@ -139,15 +140,15 @@ export function useCompoundRewards() {
   const checkIsClaimable = async () => {
     if (!dapps.value || !currentAddress.value || !era.value) return;
     await Promise.all(
-      dapps.value.map(async ({ address }: { address: string }) => {
+      dapps.value.map(async (it) => {
         const [resIsDappOwner, { numberOfUnclaimedEra, isRequiredWithdraw }] = await Promise.all([
           checkIsDappOwner({
-            dappAddress: address,
+            dappAddress: it.contract.address,
             api: $api!,
             senderAddress: currentAddress.value,
           }),
           getNumberOfUnclaimedEra({
-            dappAddress: address,
+            dappAddress: it.contract.address,
             api: $api!,
             senderAddress: currentAddress.value,
             currentEra: era.value,
