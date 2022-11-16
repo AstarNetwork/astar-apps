@@ -87,6 +87,7 @@ export const providerEndpoints: ChainProvider[] = [
     endpoints: [
       { name: 'Shibuya', endpoint: 'wss://rpc.shibuya.astar.network' },
       { name: 'Dwellir', endpoint: 'wss://shibuya-rpc.dwellir.com' },
+      { name: 'Light Client', endpoint: 'light://substrate-connect/tokyo/shibuya' },
     ],
     favicon: 'https://polkadot.js.org/apps/static/shiden.a066789e.png',
     isSupportContract: true,
