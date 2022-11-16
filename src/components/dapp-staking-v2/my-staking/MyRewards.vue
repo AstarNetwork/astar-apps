@@ -45,9 +45,9 @@
       </div>
       <div class="row--data">
         <div class="value">{{ isCompounding ? $t('dappStaking.on') : $t('dappStaking.off') }}</div>
-        <astar-button :width="80" :height="24" @click="changeDestinationForRestaking">{{
-          isCompounding ? $t('dappStaking.turnOff') : $t('dappStaking.turnOn')
-        }}</astar-button>
+        <astar-button :width="80" :height="24" @click="changeDestinationForRestaking">
+          {{ isCompounding ? $t('dappStaking.turnOff') : $t('dappStaking.turnOn') }}
+        </astar-button>
       </div>
     </div>
     <div class="card">
@@ -71,7 +71,7 @@
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { useAccount, useClaimAll, useNetworkInfo, useStakerInfo } from 'src/hooks';
 import { useClaimedReward } from 'src/hooks/dapps-staking/useClaimedReward';
-import { RewardDestination, useCompoundRewards } from 'src/hooks/dapps-staking/useCompoundRewards';
+import { RewardDestination } from 'src/hooks/dapps-staking/useCompoundRewards';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { defineComponent, computed } from 'vue';
 
@@ -84,7 +84,6 @@ export default defineComponent({
     const { claimAll, canClaim, amountOfEras, isLoading } = useClaimAll();
     const { totalStaked, isLoadingTotalStaked } = useStakerInfo();
 
-    const { isCompounding, setRewardDestination } = useCompoundRewards();
     const changeDestinationForRestaking = async () => {
       const newDestination = isCompounding.value
         ? RewardDestination.FreeBalance
@@ -92,7 +91,7 @@ export default defineComponent({
       await setRewardDestination(newDestination);
     };
 
-    const { claimed, isLoadingClaimed } = useClaimedReward();
+    const { claimed, isLoadingClaimed, isCompounding, setRewardDestination } = useClaimedReward();
     const { currentAccount } = useAccount();
     const { currentNetworkIdx } = useNetworkInfo();
     const isShiden = computed(() => currentNetworkIdx.value === endpointKey.SHIDEN);

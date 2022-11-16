@@ -7,7 +7,8 @@ import { wait } from 'src/hooks/helper/common';
 
 export function useClaimedReward() {
   const store = useStore();
-  const { isStaker, isDappOwner, isUnclaimedEra } = useCompoundRewards();
+  const { isStaker, isDappOwner, isUnclaimedEra, isCompounding, setRewardDestination } =
+    useCompoundRewards();
   const { currentAccount } = useAccount();
   const pastClaimed = ref<number>(0);
   const isLoadingClaimed = ref<boolean>(false);
@@ -64,5 +65,7 @@ export function useClaimedReward() {
     isEnable,
     claimed,
     isLoadingClaimed,
+    isCompounding,
+    setRewardDestination,
   };
 }

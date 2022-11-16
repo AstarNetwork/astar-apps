@@ -1,12 +1,12 @@
 <template>
-  <astar-default-modal
-    :show="show"
-    :width="544"
+  <modal-wrapper
+    :is-modal-open="show"
     :title="$t('dappStaking.modals.community.title')"
-    @close="closeModal"
+    :is-closing="isClosingModal"
+    :close-modal="closeModal"
   >
     <div class="community-wrapper">
-      <q-form ref="communityForm">
+      <q-form ref="communityForm" class="form--communities">
         <q-input
           v-for="(community, index) in availableCommunities"
           :key="index"
@@ -27,23 +27,24 @@
           <li>{{ $t('dappStaking.modals.community.communityRequired') }}</li>
         </div>
 
-        <Button :width="464" :height="52" @click="handleConfirm">
+        <astar-button class="button--confirm" @click="handleConfirm">
           {{ $t('confirm') }}
-        </Button>
+        </astar-button>
       </q-form>
     </div>
-  </astar-default-modal>
+  </modal-wrapper>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType, ref } from 'vue';
-import { fadeDuration, Button } from '@astar-network/astar-ui';
+import { fadeDuration } from '@astar-network/astar-ui';
 import { Community, CommunityDefinition } from 'src/store/dapp-staking/state';
 import { wait } from 'src/hooks/helper/common';
+import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 
 export default defineComponent({
   components: {
-    Button,
+    ModalWrapper,
   },
   props: {
     show: {
@@ -115,5 +116,23 @@ export default defineComponent({
 
 .community-wrapper {
   margin-top: 10px;
+}
+
+.form--communities {
+  display: flex;
+  flex-direction: column;
+  padding: 0 32px;
+  padding-bottom: 36px;
+  @media (min-width: $sm) {
+    padding: 0;
+  }
+}
+
+.button--confirm {
+  width: 100%;
+  font-size: 22px;
+  font-weight: 600;
+  height: 44px;
+  align-self: center;
 }
 </style>

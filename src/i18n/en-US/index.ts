@@ -201,7 +201,7 @@ export default {
     chunks: 'Unbonding chunks',
     chunksTooltip:
       'Unbonding takes {era} eras (1 era is about 24 hours). {chunks} chunks are in the process of being unbonded.',
-    unbondingEra: 'Unbonding takes {unbondingPeriod} era before you can withdraw.',
+    unbondingEra: 'Unbonding takes {unbondingPeriod} eras before you can withdraw',
     amount: 'Amount',
     era: 'Era',
     unbondedFunds: 'Unbonded funds',
@@ -328,7 +328,7 @@ export default {
           invalidUrl: 'Invalid url.',
           accountRequired: 'At least one account is required.',
           builderImageRequired: 'Builder image is required',
-          buildersRequired: 'At least two builders are required',
+          buildersRequired: 'At least two builders are required.',
         },
       },
       builders: 'Builders information',
@@ -366,6 +366,7 @@ export default {
       dappImageRequired: 'Project logo is required.',
       projectLogo: 'Project logo',
       platformRequired: 'At least one platform is required.',
+      startUnbounding: 'Start unbonding',
     },
     toast: {
       staked: 'You staked {amount} on {dapp}',

@@ -76,15 +76,11 @@
       <dropdown-list :items="myStakeInfos" />
     </template>
 
-    <Teleport to="#app--main">
-      <div>
-        <ModalUnbondDapp
-          v-model:is-open="showModalUnbond"
-          :show="showModalUnbond"
-          :dapp="selectedDapp"
-        />
-      </div>
-    </Teleport>
+    <modal-unbond-dapp
+      v-model:is-open="showModalUnbond"
+      :show="showModalUnbond"
+      :dapp="selectedDapp"
+    />
   </div>
 </template>
 <script lang="ts">
