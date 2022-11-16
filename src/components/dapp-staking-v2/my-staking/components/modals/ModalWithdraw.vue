@@ -1,24 +1,38 @@
 <template>
-  <astar-default-modal :width="544" :height="381" :show="show" title="Withdraw" @close="close">
+  <modal-wrapper
+    :is-modal-open="show"
+    :title="$t('dappStaking.withdraw')"
+    :is-closing="isClosingModal"
+    :close-modal="closeModal"
+  >
     <div class="wrapper">
-      <div class="text--guide">{{ $t('myDapps.withdrawGuide') }}</div>
+      <div class="row--guide">
+        <span class="text--guide">
+          {{ $t('myDapps.withdrawGuide') }}
+        </span>
+      </div>
       <div class="box--container">
         <div>
           <span class="text--title">{{ $t('myDapps.withdrawTitle') }}</span>
         </div>
-        <div class="text--amount"><format-balance :balance="withdrawAmount" /></div>
+        <div class="text--amount">
+          <format-balance :balance="withdrawAmount" />
+        </div>
       </div>
-      <astar-button :width="464" :height="52" @click="confirm">{{ $t('confirm') }}</astar-button>
+      <astar-button class="button--confirm" @click="confirm">{{ $t('confirm') }}</astar-button>
     </div>
-  </astar-default-modal>
+  </modal-wrapper>
 </template>
 
-<script>
-import { defineComponent } from 'vue';
+<script lang="ts">
+import { defineComponent, ref } from 'vue';
 import FormatBalance from 'components/common/FormatBalance.vue';
+import ModalWrapper from 'src/components/common/ModalWrapper.vue';
+import { fadeDuration } from '@astar-network/astar-ui';
+import { wait } from 'src/hooks/helper/common';
 
 export default defineComponent({
-  components: { FormatBalance },
+  components: { FormatBalance, ModalWrapper },
   props: {
     show: {
       type: Boolean,
@@ -31,18 +45,23 @@ export default defineComponent({
   },
   emits: ['update:is-open', 'confirm'],
   setup(props, { emit }) {
-    const close = () => {
+    const isClosingModal = ref<boolean>(false);
+    const closeModal = async (): Promise<void> => {
+      isClosingModal.value = true;
+      await wait(fadeDuration);
       emit('update:is-open', false);
+      isClosingModal.value = false;
     };
 
     const confirm = () => {
-      close();
+      closeModal();
       emit('confirm');
     };
 
     return {
-      close,
       confirm,
+      isClosingModal,
+      closeModal,
     };
   },
 });
@@ -53,11 +72,23 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-bottom: 36px;
+  @media (min-width: $md) {
+    padding-bottom: 0px;
+  }
 }
+
 .text--guide {
   font-weight: 500;
   font-size: 14px;
 }
+
+.row--guide {
+  @media (min-width: $md) {
+    align-self: flex-start;
+  }
+}
+
 .box--container {
   font-family: 'Inter';
   margin-top: 32px;
@@ -67,6 +98,10 @@ export default defineComponent({
   padding: 16px;
   background: $gray-1;
   border-radius: 6px;
+  width: 340px;
+  @media (min-width: $md) {
+    width: 400px;
+  }
 
   .text--title {
     font-weight: 600;
@@ -77,6 +112,16 @@ export default defineComponent({
     font-size: 22px;
     margin-top: 16px;
     color: $gray-5-selected;
+  }
+}
+
+.button--confirm {
+  width: 340px;
+  font-size: 22px;
+  font-weight: 600;
+  height: 44px;
+  @media (min-width: $md) {
+    width: 400px;
   }
 }
 

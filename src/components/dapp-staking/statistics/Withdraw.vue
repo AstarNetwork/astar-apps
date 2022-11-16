@@ -3,13 +3,13 @@
     <div v-if="showUnbondedFunds" class="widget-container full-height">
       <div class="title">
         {{ $t('dappStaking.unbondedFunds') }}
-        <IconTooltip>
+        <icon-tooltip>
           {{ $t('dappStaking.unbondedFundsTooltip') }}
-        </IconTooltip>
+        </icon-tooltip>
       </div>
       <div class="widget-content">
         <span class="text--title balance">
-          <FormatBalance :balance="totalToWithdraw" />
+          <format-balance :balance="totalToWithdraw" />
         </span>
         <Button v-if="canWithdraw" :small="true" :primary="true" class="button" @click="withdraw()">
           {{ $t('dappStaking.withdraw') }}
@@ -19,20 +19,20 @@
     <div v-if="showUnbondingChunks" class="widget-container full-height">
       <div class="title">
         {{ $t('dappStaking.chunks') }}
-        <IconTooltip>
+        <icon-tooltip>
           {{
             $t('dappStaking.chunksTooltip', {
               era: unbondingPeriod,
               chunks: unlockingChunksCount,
             })
           }}
-        </IconTooltip>
+        </icon-tooltip>
       </div>
       <div class="widget-content">
         <span class="text--title balance">
           {{ unlockingChunks?.length }}
         </span>
-        <Button
+        <button
           v-if="unlockingChunks?.length > 0"
           :small="true"
           :primary="true"
@@ -40,10 +40,10 @@
           @click="showModal = true"
         >
           {{ $t('dappStaking.view') }}
-        </Button>
+        </button>
       </div>
     </div>
-    <ChunksModal
+    <chunks-modal
       v-if="showModal"
       v-model:isOpen="showModal"
       :unlocking-chunks="unlockingChunks"
@@ -55,25 +55,24 @@
 <script lang="ts">
 import { VoidFn } from '@polkadot/api/types';
 import { u32 } from '@polkadot/types';
-import { Balance, EraIndex } from '@polkadot/types/interfaces';
-import { Codec, ISubmittableResult } from '@polkadot/types/types';
+import { ISubmittableResult } from '@polkadot/types/types';
 import { BN } from '@polkadot/util';
 import { $api } from 'boot/api';
 import FormatBalance from 'components/common/FormatBalance.vue';
 import IconTooltip from 'components/common/IconTooltip.vue';
 import Button from 'src/components/common/Button.vue';
+import ChunksModal from 'src/components/dapp-staking/statistics/ChunksModal.vue';
 import { useCustomSignature, useGasPrice } from 'src/hooks';
 import { signAndSend } from 'src/hooks/helper/wallet';
 import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
 import { hasExtrinsicFailedEvent } from 'src/modules/extrinsic';
 import { useStore } from 'src/store';
-import { computed, defineComponent, onUnmounted, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import ChunksModal from 'src/components/dapp-staking/statistics/ChunksModal.vue';
 import { container } from 'src/v2/common';
+import { ChunkInfo } from 'src/v2/models';
 import { IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
-import { ChunkInfo } from 'src/v2/models';
+import { computed, defineComponent, onUnmounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   components: {
