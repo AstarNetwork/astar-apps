@@ -27,24 +27,23 @@
                   <td>
                     <div class="row--manage">
                       <astar-button
-                        width="97"
-                        height="24"
-                        :disabled="false"
+                        :width="97"
+                        :height="24"
+                        :disabled="isUnregistered(t)"
                         @click="navigateToStake(t.dappAddress)"
                         >{{ $t('myDapps.add') }}</astar-button
                       >
                       <astar-button
-                        width="97"
-                        height="24"
-                        :disabled="false"
+                        :width="97"
+                        :height="24"
+                        :disabled="isUnregistered(t)"
                         @click="showUnbound(t)"
                         >{{ $t('myDapps.unbond') }}</astar-button
                       >
                     </div>
                   </td>
                 </tr>
-                <!-- <tr v-if="!t.isRegistered && t.stakersCount > 0"> -->
-                <tr>
+                <tr v-if="isUnregistered(t)">
                   <td colspan="3">
                     <div class="badge--unregistered">
                       <q-icon name="warning" size="20px" class="q-mr-sm" />
@@ -109,6 +108,9 @@ export default defineComponent({
     const router = useRouter();
 
     const showModalUnbond = ref<boolean>(false);
+    const isUnregistered = (info: MyStakeInfo): boolean => {
+      return !info.isRegistered && info.stakersCount > 0;
+    };
 
     const showUnbound = (dapp: MyStakeInfo): void => {
       selectedDapp.value = dapp;
@@ -132,6 +134,7 @@ export default defineComponent({
       ethers,
       canClaim,
       claimAll,
+      isUnregistered,
     };
   },
 });

@@ -24,15 +24,19 @@
       <astar-button
         :width="97"
         :height="24"
-        :disabled="false"
+        :disabled="isUnregistered(item)"
         @click="navigateToStake(item.dappAddress)"
         >{{ $t('myDapps.add') }}</astar-button
       >
-      <astar-button :width="97" :height="24" :disabled="false" @click="showUnbound(item)">{{
-        $t('myDapps.unbond')
-      }}</astar-button>
+      <astar-button
+        :width="97"
+        :height="24"
+        :disabled="isUnregistered(item)"
+        @click="showUnbound(item)"
+        >{{ $t('myDapps.unbond') }}</astar-button
+      >
     </div>
-    <div v-if="!item.isRegistered && item.stakersCount > 0" class="badge--unregistered">
+    <div v-if="isUnregistered(item)" class="badge--unregistered">
       <q-icon name="warning" size="20px" class="q-mx-lg" />
       <div>
         <div>{{ $t('myDapps.unregisteredAlert') }}</div>
@@ -77,6 +81,8 @@ export default defineComponent({
     const router = useRouter();
 
     const showModalUnbond = ref<boolean>(false);
+    const isUnregistered = (info: MyStakeInfo): boolean =>
+      !info.isRegistered && info.stakersCount > 0;
 
     const showUnbound = (dapp: MyStakeInfo): void => {
       selectedDapp.value = dapp;
@@ -98,6 +104,7 @@ export default defineComponent({
       ethers,
       claimAll,
       canClaim,
+      isUnregistered,
     };
   },
 });
