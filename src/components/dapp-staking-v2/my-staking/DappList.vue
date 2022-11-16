@@ -1,5 +1,6 @@
 <template>
   <div v-if="dapps && dapps.length > 0" class="wrapper">
+    <div class="divider" />
     <div class="wrapper--header">
       <div class="txt--header">{{ category }}</div>
       <!-- <astar-irregular-button width="77" height="20">See All</astar-irregular-button> -->
@@ -22,9 +23,10 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
-    const dapps = computed<DappCombinedInfo[]>(() =>
-      store.getters['dapps/getRegisteredDapps'](props.category.toLowerCase())
-    );
+    const dapps = computed<DappCombinedInfo[]>(() => {
+      const dappsArray = store.getters['dapps/getRegisteredDapps'](props.category.toLowerCase());
+      return dappsArray.filter((it: DappCombinedInfo) => it.dapp);
+    });
 
     return {
       dapps,
@@ -53,11 +55,20 @@ export default defineComponent({
   }
 }
 
+.divider {
+  border-top: 1px solid $object-light;
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
 .body--dark {
   .wrapper {
     .txt--header {
       color: $gray-1;
     }
+  }
+  .divider {
+    border-color: $gray-5;
   }
 }
 </style>

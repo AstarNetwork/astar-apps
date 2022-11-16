@@ -8,7 +8,7 @@ import { getIndividualClaimTxs, PayloadWithWeight } from 'src/hooks/helper/claim
 import { signAndSend } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
-import { SmartContractState } from 'src/v2/models/DappsStaking';
+import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { computed, ref, watchEffect } from 'vue';
 
 const MAX_BATCH_WEIGHT = new BN('50000000000');
@@ -21,7 +21,7 @@ export function useClaimAll() {
   const store = useStore();
   const senderAddress = computed(() => store.getters['general/selectedAddress']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
-  const dapps = computed(() => store.getters['dapps/getAllDapps']);
+  const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const isSendingTx = computed(() => store.getters['general/isLoading']);
   const { nativeTipPrice } = useGasPrice();
@@ -43,9 +43,9 @@ export function useClaimAll() {
         return;
       }
 
-      const txs: PayloadWithWeight[] = await Promise.all(
-        dapps.value.map(async (it: any) => {
-          if (it.contract.state === SmartContractState.Registered && !isH160.value) {
+      const txs = await Promise.all(
+        dapps.value.map(async (it) => {
+          if (it.dapp && !isH160.value) {
             const transactions = await getIndividualClaimTxs({
               dappAddress: it?.dapp?.address,
               api,
@@ -59,7 +59,7 @@ export function useClaimAll() {
         })
       );
       const filteredTxs = txs.filter((it) => it !== null);
-      batchTxs = filteredTxs.flat();
+      batchTxs = filteredTxs.flat() as PayloadWithWeight[];
       canClaim.value = batchTxs.length > 0;
 
       amountOfEras.value = batchTxs.length;

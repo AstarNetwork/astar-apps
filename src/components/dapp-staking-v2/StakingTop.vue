@@ -16,16 +16,9 @@
       <ads-area />
     </q-intersection>
 
-    <div class="divider" />
     <dapp-list category="NFT" />
-
-    <div class="divider" />
     <dapp-list category="Tooling" />
-
-    <div class="divider" />
     <dapp-list category="Utility" />
-
-    <div class="divider" />
     <dapp-list category="Others" />
   </div>
   <div v-else />

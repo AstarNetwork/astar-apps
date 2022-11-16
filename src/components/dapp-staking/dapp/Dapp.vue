@@ -29,7 +29,7 @@ import { useNetworkInfo, useStakingList, useDappRedirect, useAccount } from 'src
 import { Path } from 'src/router';
 import { networkParam } from 'src/router/routes';
 import { useStore } from 'src/store';
-import { computed, defineComponent, watchEffect } from 'vue';
+import { computed, defineComponent, watchEffect, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import DappAvatar from 'src/components/dapp-staking/dapp/DappAvatar.vue';
 import DappStatistics from 'src/components/dapp-staking/dapp/DappStatistics.vue';
@@ -39,6 +39,7 @@ import ProjectOverview from 'src/components/dapp-staking/dapp/ProjectOverview.vu
 import ProjectDetails from 'src/components/dapp-staking/dapp/ProjectDetails.vue';
 import BackToPage from 'src/components/common/BackToPage.vue';
 import { useI18n } from 'vue-i18n';
+import { DappCombinedInfo } from 'src/v2/models';
 
 export default defineComponent({
   components: {
@@ -79,19 +80,13 @@ export default defineComponent({
           currentAccount: '',
         });
       }
-      if (isH160.value) {
-        store.dispatch('general/showAlertMsg', {
-          msg: t('dappStaking.error.onlySupportsSubstrate'),
-          alertType: 'error',
-        });
-      }
     };
 
     const dapp = computed(() => {
       if (dapps.value.length > 0 && dappAddress.value) {
-        // Todo: fix the type annotation
-        return dapps.value.find((it: any) => {
+        return dapps.value.find((it: DappCombinedInfo) => {
           try {
+            if (!it.dapp) return null;
             return it.dapp.address.toLowerCase() === dappAddress.value.toLowerCase();
           } catch (error) {
             return null;
@@ -101,6 +96,15 @@ export default defineComponent({
       return null;
     });
     watchEffect(dispatchGetDapps);
+
+    watch([isH160], () => {
+      if (isH160.value) {
+        store.dispatch('general/showAlertMsg', {
+          msg: t('dappStaking.error.onlySupportsSubstrate'),
+          alertType: 'error',
+        });
+      }
+    });
 
     return {
       Path,
