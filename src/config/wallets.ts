@@ -38,6 +38,8 @@ export const WalletModalOption = {
   SubWalletEvm: SupportWallet.SubWalletEvm,
   Metadot: SupportWallet.Metadot,
   Wallet3: SupportWallet.Wallet3,
+  HanaNative: SupportWallet.HanaNative,
+  HanaEvm: SupportWallet.HanaEvm,
 };
 
 export const SubstrateWallets = [
@@ -198,7 +200,7 @@ export const supportEvmWalletObj = {
     guideUrl: 'https://hanawallet.io/',
     isSupportBrowserExtension: true,
     isSupportMobileApp: false,
-    ethExtension: 'ethereum',
+    ethExtension: 'hanaWalletEth',
   },
 };
 
