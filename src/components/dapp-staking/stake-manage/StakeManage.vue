@@ -57,6 +57,7 @@ import { Path } from 'src/router';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
+import { DappCombinedInfo } from 'src/v2/models';
 
 export type StakeRightUi = 'information' | 'select-funds-from';
 
@@ -114,9 +115,9 @@ export default defineComponent({
 
     const dapp = computed(() => {
       if (dapps.value.length > 0 && dappAddress.value) {
-        // Todo: fix the type annotation
-        return dapps.value.find((it: any) => {
+        return dapps.value.find((it: DappCombinedInfo) => {
           try {
+            if (!it.dapp) return null;
             return it.dapp.address.toLowerCase() === dappAddress.value.toLowerCase();
           } catch (error) {
             return null;
