@@ -6,8 +6,6 @@
 .box--data {
   background: linear-gradient(97.71deg, #0070eb 21.48%, #0297fb 70.31%, #0ae2ff 101.76%);
   border-radius: 6px;
-  height: 384px;
-
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -15,17 +13,49 @@
   gap: 16px;
 }
 
-.row--data-filter {
+.row--title {
+  margin-bottom: 24px;
+}
+
+.text--name {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.text--value {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.text--title {
+  margin-left: 6px;
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 27px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  letter-spacing: -0.02em;
+  color: $gray-5-selected;
+}
+
+.row--data-filter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
+  margin-bottom: 24px;
+  @media (min-width: $md) {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 32px;
+  }
 }
 
 .column--sort {
   display: flex;
   align-items: center;
   column-gap: 8px;
+  align-self: flex-end;
 }
 
 .dropbox--sort {
@@ -46,13 +76,115 @@
   align-items: center;
   padding: 8px 16px;
   gap: 8px;
-
-  width: 544.5px;
   height: 40px;
-
   background: rgba(255, 255, 255, 0.1);
   border-radius: 6px;
+  width: 100%;
+  margin-bottom: 16px;
+  @media (min-width: $md) {
+    margin-bottom: 0px;
+    width: 49%;
+  }
+  @media (min-width: $xl) {
+    margin-bottom: 0px;
+    width: 45%;
+  }
+}
+
+.img--logo {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+.table--dapps {
+  width: 100%;
+  height: 348px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  @media (min-width: $md) {
+    flex-wrap: wrap;
+    height: 280px;
+  }
+}
+
+.dapp {
+  @media (min-width: $md) {
+    width: 48%;
+  }
+}
+
+.row--dapp {
+  display: grid;
+  align-items: center;
+  grid-template-columns: auto auto;
+  @media (min-width: $md) {
+  }
+  @media (min-width: $xl) {
+  }
+}
+
+.column--dapps-right {
+  @media (min-width: $md) {
+    padding-left: 16px;
+  }
+  @media (min-width: $xl) {
+    padding-left: 48px;
+  }
+}
+
+.column--dapps-left {
+  @media (min-width: $md) {
+    padding-right: 16px;
+  }
+  @media (min-width: $xl) {
+    padding-right: 48px;
+  }
+}
+
+.column--dapp-name {
+  display: flex;
+  align-items: center;
+  column-gap: 16px;
+}
+
+.column--balance {
+  width: 100%;
+  text-align: right;
+}
+
+.row--page {
+  display: flex;
+  column-gap: 12px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.icon--arrow {
+  margin-top: -1px;
+  height: 24px;
+  width: 24px;
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease-in;
+  border-radius: 50%;
+  &:hover {
+    transition: all 0.2s ease-in;
+    background: rgba(255, 255, 255, 0.2);
+  }
+}
+
+.divider {
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .body--dark {
+  .text--title {
+    color: $gray-1;
+  }
 }

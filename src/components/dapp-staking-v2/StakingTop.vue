@@ -3,10 +3,11 @@
     <top-metric />
     <register />
     <banner-area />
-    <on-chain-data />
 
     <div class="divider" />
     <my-staking />
+    <div class="divider" />
+    <on-chain-data />
     <dapp-list category="DeFi" />
 
     <q-intersection transition="fade" transition-duration="1000" once>

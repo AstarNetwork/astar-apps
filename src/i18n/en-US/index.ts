@@ -33,6 +33,9 @@ export default {
   isComingSoon: '{value} is coming soon',
   amountToken: '{amount} {token}',
   select: 'Select',
+  sortBy: 'Sort by',
+  alphabetical: 'Alphabetical',
+  amount: 'Amount',
   warning: {
     insufficientBalance: 'Insufficient balance',
     insufficientFee: 'Warning! Transaction might failed due to insufficient fee',
@@ -234,6 +237,8 @@ export default {
     developerIncentive: 'Developer Incentive',
     tokenEra: '{token}/era',
     dappStakingEvm: 'dApp Staking is available on EVM',
+    onChainData: 'On Chain Data',
+    stakingTvl: 'Staking TVL',
     stakePage: {
       backToDappList: 'Back to dApps list',
       whereFundsFrom: 'Where would you like to bring you funds from?',
