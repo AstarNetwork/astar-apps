@@ -122,7 +122,7 @@ export async function connectApi(
       provider = new ScProvider(parachainSpec, relayProvider);
 
       // TODO see how to handle errors and discconnections.
-      provider.on('error', (error: Error) => console.log('handle error.', error));
+      provider.on('error', (error: Error) => fallbackConnection({ networkIdx, endpoint }));
       provider.on('disconnected', (error: Error) => console.log('handle diconnect'));
       provider.connect();
     } else {
