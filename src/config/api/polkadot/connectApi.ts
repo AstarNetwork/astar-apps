@@ -12,6 +12,30 @@ const RES_TIMEOUT = 'timeout';
 
 type Provider = WsProvider | ScProvider;
 
+const getParachainSpec = (networkIdx: endpointKey): string => {
+  switch (networkIdx) {
+    case endpointKey.ASTAR:
+      return JSON.stringify(jsonParachainSpecAstar);
+    case endpointKey.SHIDEN:
+      return JSON.stringify(jsonParachainSpecShiden);
+    default:
+      throw new Error(`networkIdx ${networkIdx} is not supported.`);
+  }
+};
+
+const getWellKnownChain = (networkIdx: endpointKey): WellKnownChain => {
+  switch (networkIdx) {
+    case endpointKey.ASTAR:
+      return WellKnownChain.polkadot;
+    case endpointKey.SHIDEN:
+      return WellKnownChain.ksmcc3;
+    default:
+      throw new Error(`networkIdx ${networkIdx} is not supported.`);
+  }
+};
+
+const isLightClient = (endpoint: string): boolean => endpoint.startsWith('light://');
+
 // Memo: Reach to a healthy node whenever the selected endpoint has failed to connect to API
 const fallbackConnection = async ({
   networkIdx,
@@ -27,7 +51,7 @@ const fallbackConnection = async ({
   }
 
   const filteredEndpoints = providerEndpoints[networkIdx].endpoints.filter((it) => {
-    return it.endpoint !== endpoint;
+    return it.endpoint !== endpoint && !isLightClient(it.endpoint);
   });
   if (1 >= filteredEndpoints.length) {
     return window.location.reload();
@@ -85,24 +109,22 @@ export async function connectApi(
 ): Promise<{
   api: ApiPromise;
 }> {
-  // const provider = new WsProvider(endpoint);
-  // const api = new ApiPromise({ provider });
   let provider: Provider;
   let api: ApiPromise = new ApiPromise();
 
   store.commit('general/setCurrentNetworkStatus', 'connecting');
+  store.commit('general/setLoading', true);
 
   try {
-    if (endpoint.startsWith('light')) {
-      const astarSpec = JSON.stringify(jsonParachainSpecAstar);
-      // const shidenSpec = JSON.stringify(jsonParachainSpecShiden);
+    if (isLightClient(endpoint)) {
+      const parachainSpec = getParachainSpec(networkIdx);
+      const relayProvider = new ScProvider(getWellKnownChain(networkIdx));
+      provider = new ScProvider(parachainSpec, relayProvider);
 
-      const relayProvider = new ScProvider(WellKnownChain.polkadot);
-      provider = new ScProvider(astarSpec, relayProvider);
-      provider.on('error', (error: Error) => console.log('oh shit.....'));
-      provider.on('disconnected', (error: Error) => console.log('oh shit disconnected.....'));
-
-      await provider.connect();
+      // TODO see how to handle errors and discconnections.
+      provider.on('error', (error: Error) => console.log('handle error.', error));
+      provider.on('disconnected', (error: Error) => console.log('handle diconnect'));
+      provider.connect();
     } else {
       provider = new WsProvider(endpoint);
     }
@@ -117,7 +139,7 @@ export async function connectApi(
     });
 
     const fallbackTimeout = new Promise<string>(async (resolve) => {
-      const timeout = endpoint.startsWith('light') ? 100 * 1000 : 8 * 1000;
+      const timeout = isLightClient(endpoint) ? 50 * 1000 : 8 * 1000;
       await wait(timeout);
       resolve(RES_TIMEOUT);
     });
@@ -140,6 +162,8 @@ export async function connectApi(
   } catch (err) {
     console.error(err);
     fallbackConnection({ networkIdx, endpoint });
+  } finally {
+    store.commit('general/setLoading', false);
   }
 
   return {
