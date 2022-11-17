@@ -3,6 +3,7 @@
     <top-metric />
     <register />
     <banner-area />
+    <on-chain-data />
 
     <div class="divider" />
     <my-staking />
@@ -29,8 +30,9 @@ import MyStaking from 'src/components/dapp-staking-v2/my-staking/MyStaking.vue';
 import DappList from 'src/components/dapp-staking-v2/my-staking/DappList.vue';
 import Register from 'src/components/dapp-staking-v2/my-staking/Register.vue';
 import { defineComponent, watchEffect, computed } from 'vue';
-import AdsArea from './my-staking/AdsArea.vue';
-import BannerArea from './my-staking/BannerArea.vue';
+import AdsArea from 'src/components/dapp-staking-v2/my-staking/AdsArea.vue';
+import BannerArea from 'src/components/dapp-staking-v2/my-staking/BannerArea.vue';
+import OnChainData from 'src/components/dapp-staking-v2/my-staking/OnChainData.vue';
 
 export default defineComponent({
   components: {
@@ -40,6 +42,7 @@ export default defineComponent({
     AdsArea,
     Register,
     BannerArea,
+    OnChainData,
   },
   setup() {
     useMeta({ title: 'Discover dApps' });
