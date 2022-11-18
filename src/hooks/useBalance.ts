@@ -1,3 +1,4 @@
+import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { VoidFn } from '@polkadot/api/types';
 import { BalanceLockTo212 } from '@polkadot/types/interfaces';
 import { PalletBalancesBalanceLock, PalletVestingVestingInfo } from '@polkadot/types/lookup';
@@ -18,8 +19,8 @@ function useCall(addressRef: Ref<string>) {
   const isH160Formatted = computed(() => store.getters['general/isH160Formatted']);
   const isLoadingAccount = ref<boolean>(true);
 
-  const isLoading = computed(() => store.getters['general/isLoading']);
-  const dapps = computed(() => store.getters['dapps/getAllDapps']);
+  const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
+  const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
 
   const unsub: Ref<VoidFn | undefined> = ref();
 
