@@ -180,6 +180,8 @@ export default {
     unbonding: 'Unbonding',
     myDapps: 'My dApps',
     dappRegistered: 'Congrats!! your contract is approved. Please submit the details',
+    welcomeBanner:
+      'Congratulations 🎉 Please fill in your dApp information to give users better overview of your application. Updated data will appear on the dApp page shortly.',
     registerNow: 'Register now',
     transferableBalance: 'Transferable Balance',
     dappsStore: 'dApps Store',
