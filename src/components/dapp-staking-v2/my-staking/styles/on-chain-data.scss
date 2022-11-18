@@ -96,19 +96,13 @@
   background: rgba(255, 255, 255, 0.1);
   border-radius: 6px;
   width: 100%;
-  // width: 200px;
   margin-bottom: 16px;
   font-size: 14px;
   font-weight: 600;
   color: $gray-1;
   @media (min-width: $md) {
     margin-bottom: 0px;
-    // width: 49%;
     width: 200px;
-  }
-  @media (min-width: $xl) {
-    margin-bottom: 0px;
-    // width: 45%;
   }
 }
 
