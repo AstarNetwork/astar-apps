@@ -213,13 +213,16 @@ export class DappStakingRepository implements IDappStakingRepository {
   }
 
   public async getRegisteredContract(developerAddress: string): Promise<string | undefined> {
-    const api = await this.api.getApi();
-    const account = api.registry.createType('AccountId32', developerAddress.toString());
-    const contractAddress = await api.query.dappsStaking.registeredDevelopers<
-      Option<SmartContractAddress>
-    >(account);
-
-    return contractAddress.isNone ? undefined : this.getContractAddress(contractAddress.unwrap());
+    try {
+      const api = await this.api.getApi();
+      const account = api.registry.createType('AccountId32', developerAddress.toString());
+      const contractAddress = await api.query.dappsStaking.registeredDevelopers<
+        Option<SmartContractAddress>
+      >(account);
+      return contractAddress.isNone ? undefined : this.getContractAddress(contractAddress.unwrap());
+    } catch (error) {
+      return undefined;
+    }
   }
 
   public async starEraSubscription(): Promise<void> {

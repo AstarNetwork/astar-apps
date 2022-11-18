@@ -143,6 +143,7 @@ export default defineComponent({
     const { getCallFunc } = useExtrinsicCall({ onResult: () => {}, onTransactionError: () => {} });
     const { currentNetworkName } = useNetworkInfo();
     const store = useStore();
+    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const currentAddress = computed(() => store.getters['general/selectedAddress']);
     const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
     const data = reactive<NewDappItem>({ tags: [] } as unknown as NewDappItem);
@@ -221,7 +222,9 @@ export default defineComponent({
         store.commit('general/setLoading', true);
         const service = container.get<IDappStakingService>(Symbols.DappStakingService);
         const developerContract =
-          currentAddress.value && (await service.getRegisteredContract(currentAddress.value));
+          currentAddress.value &&
+          !isH160.value &&
+          (await service.getRegisteredContract(currentAddress.value));
         data.address = developerContract ?? '';
         if (data.address && currentNetworkName.value) {
           const registeredDapp = await service.getDapp(data.address, currentNetworkName.value);

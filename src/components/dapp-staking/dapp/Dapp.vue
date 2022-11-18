@@ -11,12 +11,7 @@
     </div>
     <div class="bottom--links">
       <router-link :to="buildStakePageLink(dapp.dapp.address)">
-        <astar-irregular-button
-          :disabled="!isStakeAble"
-          width="220"
-          height="28"
-          class="btn--stake-switch"
-        >
+        <astar-irregular-button width="220" height="28" class="btn--stake-switch">
           {{ $t('dappStaking.dappPage.stakeOrSwitchTo') }} {{ dapp.dapp.name }}
         </astar-irregular-button>
       </router-link>
@@ -25,21 +20,21 @@
   </div>
 </template>
 <script lang="ts">
-import { useNetworkInfo, useStakingList, useDappRedirect, useAccount } from 'src/hooks';
+import BackToPage from 'src/components/common/BackToPage.vue';
+import Builders from 'src/components/dapp-staking/dapp/Builders.vue';
+import DappAvatar from 'src/components/dapp-staking/dapp/DappAvatar.vue';
+import DappImages from 'src/components/dapp-staking/dapp/DappImages.vue';
+import DappStatistics from 'src/components/dapp-staking/dapp/DappStatistics.vue';
+import ProjectDetails from 'src/components/dapp-staking/dapp/ProjectDetails.vue';
+import ProjectOverview from 'src/components/dapp-staking/dapp/ProjectOverview.vue';
+import { useDappRedirect, useNetworkInfo, useStakingList } from 'src/hooks';
 import { Path } from 'src/router';
 import { networkParam } from 'src/router/routes';
 import { useStore } from 'src/store';
-import { computed, defineComponent, watchEffect, watch } from 'vue';
-import { useRoute } from 'vue-router';
-import DappAvatar from 'src/components/dapp-staking/dapp/DappAvatar.vue';
-import DappStatistics from 'src/components/dapp-staking/dapp/DappStatistics.vue';
-import DappImages from 'src/components/dapp-staking/dapp/DappImages.vue';
-import Builders from 'src/components/dapp-staking/dapp/Builders.vue';
-import ProjectOverview from 'src/components/dapp-staking/dapp/ProjectOverview.vue';
-import ProjectDetails from 'src/components/dapp-staking/dapp/ProjectDetails.vue';
-import BackToPage from 'src/components/common/BackToPage.vue';
-import { useI18n } from 'vue-i18n';
 import { DappCombinedInfo } from 'src/v2/models';
+import { computed, defineComponent, watch, watchEffect } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
 
 export default defineComponent({
   components: {
@@ -53,7 +48,6 @@ export default defineComponent({
   },
   setup() {
     const { currentNetworkName } = useNetworkInfo();
-    const { currentAccount } = useAccount();
     const route = useRoute();
     useDappRedirect();
     const { t } = useI18n();
@@ -61,7 +55,6 @@ export default defineComponent({
     const { dapps, stakingList } = useStakingList();
     const dappAddress = computed<string>(() => route.query.dapp as string);
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
-    const isStakeAble = computed<boolean>(() => !!currentAccount.value && !isH160.value);
 
     const buildStakePageLink = (address: string): string => {
       const base = networkParam + Path.DappStaking + Path.Stake;
@@ -110,7 +103,6 @@ export default defineComponent({
       Path,
       dapp,
       stakingList,
-      isStakeAble,
       goLink,
       buildStakePageLink,
     };

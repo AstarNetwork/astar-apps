@@ -4,10 +4,8 @@
     <register />
     <banner-area />
 
-    <div v-if="isStakeAble">
-      <div class="divider" />
-      <my-staking />
-    </div>
+    <div class="divider" />
+    <my-staking />
 
     <div class="divider" />
     <dapp-list category="DeFi" />
@@ -33,7 +31,7 @@ import TopMetric from 'src/components/dapp-staking-v2/my-staking/TopMetric.vue';
 import { useAccount, useNetworkInfo, usePageReady } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { useStore } from 'src/store';
-import { computed, defineComponent, watch } from 'vue';
+import { computed, defineComponent, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import AdsArea from './my-staking/AdsArea.vue';
 import BannerArea from './my-staking/BannerArea.vue';
@@ -50,14 +48,12 @@ export default defineComponent({
   setup() {
     useMeta({ title: 'Discover dApps' });
     const store = useStore();
-    const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const { isReady } = usePageReady();
 
     const { currentNetworkName } = useNetworkInfo();
     const { currentAccount } = useAccount();
     const { t } = useI18n();
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
-    const isStakeAble = computed<boolean>(() => !!currentAccount.value && !isH160.value);
     const dapps = computed(() => store.getters['dapps/getAllDapps']);
 
     // Memo: invoke this function whenever the users haven't connect to wallets
@@ -108,22 +104,6 @@ export default defineComponent({
     });
 
     watch(
-      [currentNetworkName],
-      () => {
-        store.dispatch('dapps/getTvl');
-      },
-      { immediate: false }
-    );
-
-    watch(
-      [currentAccount, currentNetworkName],
-      async () => {
-        await getDapps();
-      },
-      { immediate: false }
-    );
-
-    watch(
       [dapps],
       () => {
         handlePageLoading();
@@ -131,7 +111,15 @@ export default defineComponent({
       { immediate: true }
     );
 
-    return { isStakeAble, isReady };
+    watchEffect(() => {
+      store.dispatch('dapps/getTvl');
+    });
+
+    watchEffect(async () => {
+      await getDapps();
+    });
+
+    return { isReady };
   },
 });
 </script>

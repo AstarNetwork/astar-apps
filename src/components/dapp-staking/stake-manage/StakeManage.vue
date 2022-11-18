@@ -55,9 +55,11 @@ import {
 import { wait } from 'src/hooks/helper/common';
 import { Path } from 'src/router';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, watchEffect } from 'vue';
+import { computed, defineComponent, ref, watchEffect, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { DappCombinedInfo } from 'src/v2/models';
+import { WalletModalOption } from 'src/config/wallets';
+import { useI18n } from 'vue-i18n';
 
 export type StakeRightUi = 'information' | 'select-funds-from';
 
@@ -74,6 +76,7 @@ export default defineComponent({
     const isModalSelectFunds = ref<boolean>(false);
     const rightUi = ref<StakeRightUi>('information');
 
+    const { t } = useI18n();
     const { screenSize, width } = useBreakpoints();
     const { currentNetworkName } = useNetworkInfo();
     const route = useRoute();
@@ -85,6 +88,7 @@ export default defineComponent({
     const { dapps, stakingList } = useStakingList();
     const isHighlightRightUi = computed<boolean>(() => rightUi.value !== 'information');
     const dappAddress = computed<string>(() => route.query.dapp as string);
+    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
 
     const handleModalSelectFunds = ({ isOpen }: { isOpen: boolean }): void => {
       isModalSelectFunds.value = isOpen;
@@ -141,6 +145,31 @@ export default defineComponent({
     };
 
     watchEffect(dispatchGetDapps);
+
+    watch(
+      [currentAccount, dapp],
+      () => {
+        if (!dapp.value) return;
+        if (!currentAccount.value) {
+          window.dispatchEvent(new CustomEvent(WalletModalOption.SelectWallet));
+        }
+      },
+      { immediate: true }
+    );
+
+    watch(
+      [isH160],
+      () => {
+        if (isH160.value) {
+          store.dispatch('general/showAlertMsg', {
+            msg: t('dappStaking.error.onlySupportsSubstrate'),
+            alertType: 'error',
+          });
+          window.dispatchEvent(new CustomEvent(WalletModalOption.SelectWallet));
+        }
+      },
+      { immediate: true }
+    );
 
     return {
       isHighlightRightUi,
