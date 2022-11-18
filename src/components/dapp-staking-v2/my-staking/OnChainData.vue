@@ -5,12 +5,6 @@
     </div>
     <div class="box--data" :class="isShiden && 'box--data-shiden'">
       <div class="row--data-filter">
-        <!-- <div class="dropbox--filter">
-          <span class="text--name">{{ $t('dappStaking.stakingTvl') }}</span>
-          <div class="icon--expand">
-            <astar-icon-expand size="24" />
-          </div>
-        </div> -->
         <q-btn-dropdown no-caps class="dropbox--filter" :label="$t(filterBy)" unelevated>
           <q-list>
             <q-item
