@@ -3,18 +3,48 @@
     <div class="row--title">
       <span class="text--title">{{ $t('dappStaking.onChainData') }}</span>
     </div>
-    <div class="box--data">
+    <div class="box--data" :class="isShiden && 'box--data-shiden'">
       <div class="row--data-filter">
-        <div class="dropbox--filter">
+        <!-- <div class="dropbox--filter">
           <span class="text--name">{{ $t('dappStaking.stakingTvl') }}</span>
-        </div>
+          <div class="icon--expand">
+            <astar-icon-expand size="24" />
+          </div>
+        </div> -->
+        <q-btn-dropdown no-caps class="dropbox--filter" :label="$t(filterBy)" unelevated>
+          <q-list>
+            <q-item
+              v-for="(item, index) in filters"
+              :key="index"
+              v-close-popup
+              clickable
+              @click="filterBy = item"
+            >
+              <q-item-section>
+                <q-item-label>{{ $t(item) }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
         <div class="column--sort">
           <div>
-            <span class="text--value">{{ $t('sortBy') }}</span>
+            <span class="text--value">{{ $t('sort.sortBy') }}</span>
           </div>
-          <div class="dropbox--sort">
-            <span class="text--value">{{ $t(sortBy) }}</span>
-          </div>
+          <q-btn-dropdown no-caps class="dropbox--sort" :label="$t(sortBy)" unelevated>
+            <q-list>
+              <q-item
+                v-for="(item, index) in sorts"
+                :key="index"
+                v-close-popup
+                clickable
+                @click="sortBy = item"
+              >
+                <q-item-section>
+                  <q-item-label>{{ $t(item) }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
         </div>
       </div>
 
@@ -25,31 +55,37 @@
           class="dapp"
           :class="getDappStyle(index)"
         >
-          <div class="row--dapp">
-            <div class="column--dapp-name">
-              <img class="img--logo" :src="dapp.iconUrl" :alt="dapp.name" />
-              <div>
-                <span class="text--name"> {{ dapp.name }} </span>
+          <div class="animate__animated animation" :class="isDisplay ? inAnimation : outAnimation">
+            <div class="row--dapp">
+              <div class="column--dapp-name">
+                <img class="img--logo" :src="dapp.iconUrl" :alt="dapp.name" />
+                <div class="column--name">
+                  <span class="text--name"> {{ dapp.name }} </span>
+                </div>
+              </div>
+              <div class="column--balance">
+                <span class="text--value">
+                  <TokenBalance :balance="dapp.balance" :symbol="nativeTokenSymbol" :decimals="0" />
+                </span>
               </div>
             </div>
-            <div class="column--balance">
-              <span class="text--value">
-                <TokenBalance :balance="dapp.balance" :symbol="nativeTokenSymbol" :decimals="0" />
-              </span>
+            <div :class="getBorderStyle(index)" />
+          </div>
+          <div class="row--page">
+            <button :disabled="page === 1" class="icon--arrow" @click="changePage(false)">
+              <astar-icon-arrow-left />
+            </button>
+            <div class="colum--current-page">
+              <span class="text--value"> {{ page }} / {{ pageTtl }} </span>
             </div>
+            <button
+              class="icon--arrow"
+              :disabled="page === Number(pageTtl)"
+              @click="changePage(true)"
+            >
+              <astar-icon-arrow-right />
+            </button>
           </div>
-          <div :class="getBorderStyle(index)" />
-        </div>
-        <div class="row--page">
-          <button :disabled="page === 1" class="icon--arrow" @click="page--">
-            <astar-icon-arrow-left />
-          </button>
-          <div>
-            <span class="text--value"> {{ page }} / {{ pageTtl }} </span>
-          </div>
-          <button class="icon--arrow" :disabled="page === Number(pageTtl)" @click="page++">
-            <astar-icon-arrow-right />
-          </button>
         </div>
       </div>
     </div>
@@ -67,8 +103,10 @@ enum Filter {
   tvl = 'Staking TVL',
 }
 enum SortBy {
-  alphabetical = 'alphabetical',
-  amount = 'amount',
+  alphabeticalAtoZ = 'sort.alphabeticalAtoZ',
+  alphabeticalZtoA = 'sort.alphabeticalZtoA',
+  amountHighToLow = 'sort.amountHightToLow',
+  amountLowToHigh = 'sort.amountLowToHigh',
 }
 
 interface Data {
@@ -80,23 +118,42 @@ interface Data {
 const numItemsTablet = 8;
 const numItemsMobile = 5;
 
+const sorts = [
+  SortBy.alphabeticalAtoZ,
+  SortBy.alphabeticalZtoA,
+  SortBy.amountHighToLow,
+  SortBy.amountLowToHigh,
+];
+
+const filters = [Filter.tvl];
+
 export default defineComponent({
   components: {
     TokenBalance,
   },
   setup() {
-    const { nativeTokenSymbol } = useNetworkInfo();
+    const { nativeTokenSymbol, currentNetworkName } = useNetworkInfo();
     const store = useStore();
     const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
     const { screenSize, width } = useBreakpoints();
+    const page = ref<number>(1);
+    const dataArray = ref<Data[]>([]);
+    const filterBy = ref<Filter>(Filter.tvl);
+    const pageTtl = ref<number>(0);
+    const isDisplay = ref<boolean>(true);
+    const goToNext = ref<boolean>(true);
+    const sortBy = ref<SortBy>(SortBy.amountHighToLow);
+
     const numItems = computed<number>(() =>
       width.value > screenSize.md ? numItemsTablet : numItemsMobile
     );
-    const page = ref<number>(1);
-    const dataArray = ref<Data[]>([]);
-    const filterData = ref<Filter>(Filter.tvl);
-    const pageTtl = ref<number>(0);
-    const sortBy = ref<SortBy>(SortBy.amount);
+    const inAnimation = computed<string>(() =>
+      goToNext.value ? 'animate__fadeInRight' : 'animate__fadeInLeft'
+    );
+    const outAnimation = computed<string>(() =>
+      goToNext.value ? 'animate__fadeOutLeft' : 'animate__fadeOutRight'
+    );
+    const isShiden = computed<boolean>(() => currentNetworkName.value === 'Shiden');
 
     const getDappStyle = (index: number): string => {
       if (screenSize.md > width.value) {
@@ -128,7 +185,7 @@ export default defineComponent({
 
     const getBalance = (item: DappCombinedInfo): string => {
       try {
-        if (filterData.value === Filter.tvl) {
+        if (filterBy.value === Filter.tvl) {
           return item.stakerInfo.totalStakeFormatted ? item.stakerInfo.totalStakeFormatted : '0';
         }
         return '0';
@@ -154,10 +211,14 @@ export default defineComponent({
         })
         .filter((it) => it !== undefined) as Data[];
 
-      if (sortBy.value === SortBy.alphabetical) {
+      if (sortBy.value === SortBy.alphabeticalAtoZ) {
         data.sort((a: Data, b: Data) => a.name.localeCompare(b.name));
-      } else if (sortBy.value === SortBy.amount) {
+      } else if (sortBy.value === SortBy.alphabeticalZtoA) {
+        data.sort((a: Data, b: Data) => b.name.localeCompare(a.name));
+      } else if (sortBy.value === SortBy.amountHighToLow) {
         data.sort((a: Data, b: Data) => Number(b.balance) - Number(a.balance));
+      } else if (sortBy.value === SortBy.amountLowToHigh) {
+        data.sort((a: Data, b: Data) => Number(a.balance) - Number(b.balance));
       }
 
       pageTtl.value = Number((data.length / numItems.value).toFixed(0));
@@ -166,10 +227,19 @@ export default defineComponent({
 
     // Memo: avoid a blank table when the window size changes from 'sm' to 'lg'
     const handlePageUpdate = (): void => {
-      if (dataArray.value.length === 0) return;
+      if (dapps.value.length === 0) return;
       if (page.value > pageTtl.value) {
         page.value = pageTtl.value;
       }
+    };
+
+    const changePage = (isNext: boolean) => {
+      isDisplay.value = false;
+      goToNext.value = isNext;
+      setTimeout(() => {
+        isNext ? page.value++ : page.value--;
+        isDisplay.value = true;
+      }, 700);
     };
 
     watchEffect(setDataArray);
@@ -180,9 +250,18 @@ export default defineComponent({
       dataArray,
       page,
       pageTtl,
+      sortBy,
+      isDisplay,
+      inAnimation,
+      outAnimation,
+      sorts,
+      filters,
+      filterBy,
+      currentNetworkName,
+      isShiden,
+      changePage,
       getDappStyle,
       getBorderStyle,
-      sortBy,
     };
   },
 });

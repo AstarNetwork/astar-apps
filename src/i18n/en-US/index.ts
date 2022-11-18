@@ -33,9 +33,13 @@ export default {
   isComingSoon: '{value} is coming soon',
   amountToken: '{amount} {token}',
   select: 'Select',
-  sortBy: 'Sort by',
-  alphabetical: 'Alphabetical',
-  amount: 'Amount',
+  sort: {
+    sortBy: 'Sort by',
+    amountHightToLow: 'Amount: High to Low',
+    amountLowToHigh: 'Amount: Low to High',
+    alphabeticalAtoZ: 'Alphabetical: A to Z',
+    alphabeticalZtoA: 'Alphabetical: Z to A',
+  },
   warning: {
     insufficientBalance: 'Insufficient balance',
     insufficientFee: 'Warning! Transaction might failed due to insufficient fee',

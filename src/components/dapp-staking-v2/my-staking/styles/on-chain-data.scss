@@ -13,6 +13,16 @@
   gap: 16px;
 }
 
+.box--data-shiden {
+  background: linear-gradient(
+    129.32deg,
+    #170d29 -4.43%,
+    #481e94 31.93%,
+    #6d2cae 74.44%,
+    #0a010d 133.31%
+  ) !important;
+}
+
 .row--title {
   margin-bottom: 24px;
 }
@@ -20,11 +30,13 @@
 .text--name {
   font-size: 16px;
   font-weight: 600;
+  color: $gray-1;
 }
 
 .text--value {
   font-size: 14px;
   font-weight: 600;
+  color: $gray-1;
 }
 
 .text--title {
@@ -60,34 +72,46 @@
 
 .dropbox--sort {
   display: flex;
+  justify-content: space-between !important;
+  cursor: pointer;
   flex-direction: row;
   align-items: center;
   padding: 8px 16px;
   gap: 8px;
-  width: 150px;
+  width: 200px;
   height: 40px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: $gray-1;
 }
 
 .dropbox--filter {
   display: flex;
+  cursor: pointer;
   flex-direction: row;
   align-items: center;
+  justify-content: space-between;
   padding: 8px 16px;
   gap: 8px;
   height: 40px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 6px;
   width: 100%;
+  // width: 200px;
   margin-bottom: 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: $gray-1;
   @media (min-width: $md) {
     margin-bottom: 0px;
-    width: 49%;
+    // width: 49%;
+    width: 200px;
   }
   @media (min-width: $xl) {
     margin-bottom: 0px;
-    width: 45%;
+    // width: 45%;
   }
 }
 
@@ -119,10 +143,6 @@
   display: grid;
   align-items: center;
   grid-template-columns: auto auto;
-  @media (min-width: $md) {
-  }
-  @media (min-width: $xl) {
-  }
 }
 
 .column--dapps-right {
@@ -146,7 +166,17 @@
 .column--dapp-name {
   display: flex;
   align-items: center;
-  column-gap: 16px;
+  column-gap: 12px;
+  @media (min-width: $md) {
+    column-gap: 16px;
+  }
+}
+
+.column--name {
+  padding-right: 4px;
+  @media (min-width: $md) {
+    padding-right: 0px;
+  }
 }
 
 .column--balance {
@@ -156,10 +186,15 @@
 
 .row--page {
   display: flex;
-  column-gap: 12px;
   position: absolute;
   bottom: 0;
   right: 0;
+}
+
+.colum--current-page {
+  width: 54px;
+  display: flex;
+  justify-content: center;
 }
 
 .icon--arrow {
@@ -171,10 +206,15 @@
   cursor: pointer;
   transition: all 0.2s ease-in;
   border-radius: 50%;
+  color: $gray-1;
   &:hover {
     transition: all 0.2s ease-in;
     background: rgba(255, 255, 255, 0.2);
   }
+}
+
+.icon--expand {
+  margin-top: 6px;
 }
 
 .divider {
