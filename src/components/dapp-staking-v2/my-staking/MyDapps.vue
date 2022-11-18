@@ -85,9 +85,9 @@
 <script lang="ts">
 import { defineComponent, ref, PropType } from 'vue';
 import { MyStakeInfo, useBreakpoints, useNetworkInfo, useClaimAll } from 'src/hooks';
-import DropdownList from './components/DropdownList.vue';
+import DropdownList from 'src/components/DropdownList.vue';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
-import ModalUnbondDapp from './components/modals/ModalUnbondDapp.vue';
+import ModalUnbondDapp from 'src/components/modals/ModalUnbondDapp.vue';
 import { networkParam, Path } from 'src/router/routes';
 import { useRouter } from 'vue-router';
 import { ethers } from 'ethers';
