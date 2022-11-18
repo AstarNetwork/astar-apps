@@ -55,7 +55,7 @@
           class="dapp"
           :class="getDappStyle(index)"
         >
-          <div class="animate__animated animation" :class="isDisplay ? inAnimation : outAnimation">
+          <div class="animate__animated" :class="isDisplay ? inAnimation : outAnimation">
             <div class="row--dapp">
               <div class="column--dapp-name">
                 <img class="img--logo" :src="dapp.iconUrl" :alt="dapp.name" />
