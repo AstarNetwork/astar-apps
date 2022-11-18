@@ -127,6 +127,7 @@
   display: flex;
   flex-direction: column;
   position: relative;
+  align-content: space-between;
   @media (min-width: $md) {
     flex-wrap: wrap;
     height: 280px;
@@ -137,12 +138,16 @@
   @media (min-width: $md) {
     width: 48%;
   }
+  @media (min-width: $xl) {
+    width: 50%;
+  }
 }
 
 .row--dapp {
   display: grid;
   align-items: center;
   grid-template-columns: auto auto;
+  padding: 0 8px;
 }
 
 .column--dapps-right {
