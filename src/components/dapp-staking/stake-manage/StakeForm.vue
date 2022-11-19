@@ -100,7 +100,7 @@ import {
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { truncate } from 'src/hooks/helper/common';
 import { getTokenImage } from 'src/modules/token';
-import { computed, defineComponent, ref, watchEffect } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
