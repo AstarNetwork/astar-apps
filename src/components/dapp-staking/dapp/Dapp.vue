@@ -27,12 +27,12 @@ import DappImages from 'src/components/dapp-staking/dapp/DappImages.vue';
 import DappStatistics from 'src/components/dapp-staking/dapp/DappStatistics.vue';
 import ProjectDetails from 'src/components/dapp-staking/dapp/ProjectDetails.vue';
 import ProjectOverview from 'src/components/dapp-staking/dapp/ProjectOverview.vue';
-import { useDappRedirect, useNetworkInfo, useStakingList } from 'src/hooks';
+import { useDappRedirect, useDispatchGetDapps, useStakingList } from 'src/hooks';
 import { Path } from 'src/router';
 import { networkParam } from 'src/router/routes';
 import { useStore } from 'src/store';
 import { DappCombinedInfo } from 'src/v2/models';
-import { computed, defineComponent, watch, watchEffect } from 'vue';
+import { computed, defineComponent, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 
@@ -47,11 +47,12 @@ export default defineComponent({
     BackToPage,
   },
   setup() {
-    const { currentNetworkName } = useNetworkInfo();
     const route = useRoute();
     useDappRedirect();
+    useDispatchGetDapps();
     const { t } = useI18n();
     const store = useStore();
+
     const { dapps, stakingList } = useStakingList();
     const dappAddress = computed<string>(() => route.query.dapp as string);
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
@@ -63,16 +64,6 @@ export default defineComponent({
 
     const goLink = (url: string) => {
       window.open(url, '_blank');
-    };
-
-    const dispatchGetDapps = (): void => {
-      const isDispatch = currentNetworkName.value && dapps.value.length === 0;
-      if (isDispatch) {
-        store.dispatch('dapps/getDapps', {
-          network: currentNetworkName.value.toLowerCase(),
-          currentAccount: '',
-        });
-      }
     };
 
     const dapp = computed(() => {
@@ -88,7 +79,6 @@ export default defineComponent({
       }
       return null;
     });
-    watchEffect(dispatchGetDapps);
 
     watch([isH160], () => {
       if (isH160.value) {

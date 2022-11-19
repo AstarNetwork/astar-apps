@@ -27,8 +27,7 @@ import DappList from 'src/components/dapp-staking-v2/my-staking/DappList.vue';
 import MyStaking from 'src/components/dapp-staking-v2/my-staking/MyStaking.vue';
 import Register from 'src/components/dapp-staking-v2/my-staking/Register.vue';
 import TopMetric from 'src/components/dapp-staking-v2/my-staking/TopMetric.vue';
-import { useAccount, useNetworkInfo, usePageReady } from 'src/hooks';
-import { wait } from 'src/hooks/helper/common';
+import { useDispatchGetDapps, usePageReady } from 'src/hooks';
 import { useStore } from 'src/store';
 import { computed, defineComponent, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -48,45 +47,11 @@ export default defineComponent({
     useMeta({ title: 'Discover dApps' });
     const store = useStore();
     const { isReady } = usePageReady();
+    useDispatchGetDapps();
 
-    const { currentNetworkName } = useNetworkInfo();
-    const { currentAccount } = useAccount();
     const { t } = useI18n();
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const dapps = computed(() => store.getters['dapps/getAllDapps']);
-
-    // Memo: invoke this function whenever the users haven't connect to wallets
-    const getDappsForBrowser = async (): Promise<void> => {
-      // Memo (4 secs): quick hack for waiting for updating `currentAccount` state from the initial state.
-      // Fixme: this isn't an elegant solution.
-      await wait(4000);
-
-      const isBrowsingOnly = !!(
-        dapps.value.length === 0 &&
-        !currentAccount.value &&
-        currentNetworkName.value
-      );
-
-      if (isBrowsingOnly) {
-        store.dispatch('dapps/getDapps', {
-          network: currentNetworkName.value.toLowerCase(),
-          currentAccount: '',
-        });
-      }
-    };
-
-    const getDapps = async (): Promise<void> => {
-      const isConnectedWallet = currentNetworkName.value && currentAccount.value;
-      if (isConnectedWallet) {
-        const address = isH160.value || !currentAccount.value ? '' : currentAccount.value;
-        store.dispatch('dapps/getDapps', {
-          network: currentNetworkName.value.toLowerCase(),
-          currentAccount: address,
-        });
-      } else {
-        getDappsForBrowser();
-      }
-    };
 
     const handlePageLoading = (): void => {
       const isLoad = dapps.value.length === 0;
@@ -112,10 +77,6 @@ export default defineComponent({
 
     watchEffect(() => {
       store.dispatch('dapps/getTvl');
-    });
-
-    watchEffect(async () => {
-      await getDapps();
     });
 
     return { isReady };
