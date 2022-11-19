@@ -112,8 +112,8 @@ export default {
   wallet: {
     connectWallet: 'Connect Wallet',
     select: 'Please select a wallet to connect to this portal',
-    nativeAccount: 'Native Account',
-    evmAccount: 'EVM Account',
+    nativeAccount: 'Native Accounts',
+    evmAccount: 'EVM Accounts',
     math: {
       supportsNetwork: 'Math Wallet supports Shiden network only',
       switchNetwork:
@@ -243,7 +243,7 @@ export default {
     developerIncentive: 'Developer Incentive',
     tokenEra: '{token}/era',
     dappStakingEvm: 'dApp Staking is available on EVM',
-    onChainData: 'On Chain Data',
+    onChainData: 'On-Chain Data',
     stakingTvl: 'Staking TVL',
     stakePage: {
       backToDappList: 'Back to dApps list',

@@ -55,12 +55,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from 'vue';
-import { useBreakpoints, useNetworkInfo } from 'src/hooks';
+import { defineComponent, PropType, ref, computed } from 'vue';
+import { useAccount, useBreakpoints, useNetworkInfo } from 'src/hooks';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { networkParam, Path } from 'src/router/routes';
 import { useRouter } from 'vue-router';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
+import { useStore } from 'src/store';
 
 export default defineComponent({
   components: { TokenBalance },
@@ -76,11 +77,14 @@ export default defineComponent({
   },
   setup() {
     const widthCardLineUp = 900;
+    const store = useStore();
     const router = useRouter();
     const { width, screenSize } = useBreakpoints();
     const hoverIndex = ref<number>(-1);
     const isToStakePage = ref<boolean>(false);
     const { nativeTokenSymbol } = useNetworkInfo();
+    const { currentAccount } = useAccount();
+    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
 
     const goStakePageLink = (address: string | undefined): void => {
       isToStakePage.value = true;
@@ -144,6 +148,7 @@ export default defineComponent({
   flex-basis: 30%;
   max-width: 306px;
   cursor: pointer;
+  transition: all 0.2s ease 0s;
   .wrapper--card {
     display: flex;
     align-items: center;
@@ -224,6 +229,7 @@ export default defineComponent({
     border-radius: 6px;
   }
   &:hover {
+    transition: all 0.2s ease 0s;
     @include hover;
   }
   @media (max-width: $widthCardLineUp) {
