@@ -6,7 +6,8 @@
 
     <div class="divider" />
     <my-staking />
-
+    <div class="divider" />
+    <on-chain-data />
     <dapp-list category="DeFi" />
 
     <q-intersection transition="fade" transition-duration="1000" once>
@@ -26,6 +27,7 @@ import { useMeta } from 'quasar';
 import DappList from 'src/components/dapp-staking-v2/my-staking/DappList.vue';
 import MyStaking from 'src/components/dapp-staking-v2/my-staking/MyStaking.vue';
 import Register from 'src/components/dapp-staking-v2/my-staking/Register.vue';
+import OnChainData from 'src/components/dapp-staking-v2/my-staking/OnChainData.vue';
 import TopMetric from 'src/components/dapp-staking-v2/my-staking/TopMetric.vue';
 import { useDispatchGetDapps, usePageReady } from 'src/hooks';
 import { useStore } from 'src/store';
@@ -42,6 +44,7 @@ export default defineComponent({
     AdsArea,
     Register,
     BannerArea,
+    OnChainData,
   },
   setup() {
     useMeta({ title: 'Discover dApps' });
