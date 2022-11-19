@@ -33,6 +33,13 @@ export default {
   isComingSoon: "{value} sera bientôt disponible",
   amountToken: '{amount} {token}',
   select: "Sélectionner",
+  sort: {
+    sortBy: 'Trier par',
+    amountHightToLow: 'Montant : De élevé à faible',
+    amountLowToHigh: 'Montant : De faible à élevé',
+    alphabeticalAtoZ: 'Alphabétique : A à Z',
+    alphabeticalZtoA: 'Alphabétique : Z à A',
+  },  
   warning: {
     insufficientBalance: "Solde insuffisant",
     insufficientFee: "Attention ! La transaction pourrait échouer en raison de frais insuffisants",
@@ -225,6 +232,8 @@ export default {
     developerIncentive: "Incitatif pour les développeurs",
     tokenEra: "{token}/ère",
     dappStakingEvm: "dApp Staking est disponible sur EVM",
+    onChainData: 'Données sur la chaîne',
+    stakingTvl: 'Staking TVL',
     stakePage: {
       backToDappList: "Retour à la liste des dApps",
       whereFundsFrom: "D'où souhaitez-vous vous rapporter des fonds ?",
