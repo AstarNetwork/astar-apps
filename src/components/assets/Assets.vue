@@ -26,7 +26,7 @@ import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
 import XcmNativeAssetList from 'src/components/assets/XcmNativeAssetList.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { useAccount, useBalance, useNetworkInfo } from 'src/hooks';
+import { useAccount, useBalance, useDispatchGetDapps, useNetworkInfo } from 'src/hooks';
 import { useStore } from 'src/store';
 import { EvmAssets, XcmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
@@ -48,6 +48,9 @@ export default defineComponent({
     const { currentAccount } = useAccount();
     const { accountData } = useBalance(currentAccount);
     const { isMainnet, currentNetworkIdx } = useNetworkInfo();
+    // Memo: load the dApps data in advance, so that users can access to dApp staging page smoothly
+    useDispatchGetDapps();
+
     const evmNetworkId = computed(() => {
       return Number(providerEndpoints[currentNetworkIdx.value].evmChainId);
     });

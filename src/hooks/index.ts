@@ -30,6 +30,7 @@ export * from './dapps-staking/useStakerInfo';
 export * from './dapps-staking/useStakingList';
 export * from './dapps-staking/useSignPayload';
 export * from './dapps-staking/useDappRedirect';
+export * from './dapps-staking/useDispatchGetDapps';
 export * from './wallet/useWalletIcon';
 export * from './wallet/useEvmWallet';
 export * from './xcm/useXcmBridgeV3';

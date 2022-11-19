@@ -33,6 +33,13 @@ export default {
   isComingSoon: '{value} is coming soon',
   amountToken: '{amount} {token}',
   select: 'Select',
+  sort: {
+    sortBy: 'Sort by',
+    amountHightToLow: 'Amount: High to Low',
+    amountLowToHigh: 'Amount: Low to High',
+    alphabeticalAtoZ: 'Alphabetical: A to Z',
+    alphabeticalZtoA: 'Alphabetical: Z to A',
+  },
   warning: {
     insufficientBalance: 'Insufficient balance',
     insufficientFee: 'Warning! Transaction might failed due to insufficient fee',
@@ -105,8 +112,8 @@ export default {
   wallet: {
     connectWallet: 'Connect Wallet',
     select: 'Please select a wallet to connect to this portal',
-    nativeAccount: 'Native Account',
-    evmAccount: 'EVM Account',
+    nativeAccount: 'Native Accounts',
+    evmAccount: 'EVM Accounts',
     math: {
       supportsNetwork: 'Math Wallet supports Shiden network only',
       switchNetwork:
@@ -236,6 +243,8 @@ export default {
     developerIncentive: 'Developer Incentive',
     tokenEra: '{token}/era',
     dappStakingEvm: 'dApp Staking is available on EVM',
+    onChainData: 'On-Chain Data',
+    stakingTvl: 'Staking TVL',
     stakePage: {
       backToDappList: 'Back to dApps list',
       whereFundsFrom: 'Where would you like to bring you funds from?',
