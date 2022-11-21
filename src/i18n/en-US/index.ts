@@ -337,6 +337,7 @@ export default {
           accountRequired: 'At least one account is required.',
           builderImageRequired: 'Builder image is required',
           buildersRequired: 'At least two builders are required.',
+          builderUrlRequired: 'At least one account URL is required.',
         },
       },
       builders: 'Builders information',
