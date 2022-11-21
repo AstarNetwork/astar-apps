@@ -1,8 +1,8 @@
 import { BN } from 'bn.js';
 import { $api } from 'boot/api';
 import { ethers } from 'ethers';
-import { useAccount, useNetworkInfo } from 'src/hooks';
-import { checkIsLimitedProvider, getStakeInfo } from 'src/modules/dapp-staking/utils/index';
+import { useAccount } from 'src/hooks';
+import { getStakeInfo } from 'src/modules/dapp-staking/utils/index';
 import { useStore } from 'src/store';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
 import { DappItem } from 'src/store/dapp-staking/state';
@@ -16,8 +16,6 @@ export function useStakerInfo() {
   const { currentAccount } = useAccount();
   const { t } = useI18n();
   const store = useStore();
-
-  const { currentNetworkName } = useNetworkInfo();
 
   store.dispatch('dapps/getStakingInfo');
   const isLoadingTotalStaked = ref<boolean>(true);
@@ -39,13 +37,7 @@ export function useStakerInfo() {
   const setStakeInfo = async () => {
     let data: StakeInfo[] = [];
     let myData: MyStakeInfo[] = [];
-    // MEMO: Not sure why we need this check for limited provider
-    // if (checkIsLimitedProvider()) {
-    //   for await (let it of dapps.value) {
-    //     const info = (await getData(it.dapp?.address)) as StakeInfo;
-    //     data.push(info);
-    //   }
-    // } else {
+
     data = await Promise.all<StakeInfo>(
       dapps.value.map(async (it: DappCombinedInfo) => {
         const stakeData = await getData(it.dapp?.address!);
@@ -55,7 +47,6 @@ export function useStakerInfo() {
         return stakeData;
       })
     );
-    // }
 
     stakeInfos.value = data;
     myStakeInfos.value = myData;
@@ -72,15 +63,6 @@ export function useStakerInfo() {
       isLoadingTotalStaked.value = false;
     }
   };
-
-  watchEffect(() => {
-    if (currentNetworkName.value) {
-      store.dispatch('dapps/getDapps', {
-        network: currentNetworkName.value.toLowerCase(),
-        currentAccount: currentAccount.value,
-      });
-    }
-  });
 
   watchEffect(async () => {
     if (isLoading.value || !dapps.value) {

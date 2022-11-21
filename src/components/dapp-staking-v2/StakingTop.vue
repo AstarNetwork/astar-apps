@@ -6,6 +6,8 @@
 
     <div class="divider" />
     <my-staking />
+    <div class="divider" />
+    <on-chain-data />
     <dapp-list category="DeFi" />
 
     <q-intersection transition="fade" transition-duration="1000" once>
@@ -22,13 +24,15 @@
 
 <script lang="ts">
 import { useMeta } from 'quasar';
-import { useAccount, useNetworkInfo, usePageReady } from 'src/hooks';
-import { useStore } from 'src/store';
-import TopMetric from 'src/components/dapp-staking-v2/my-staking/TopMetric.vue';
-import MyStaking from 'src/components/dapp-staking-v2/my-staking/MyStaking.vue';
 import DappList from 'src/components/dapp-staking-v2/my-staking/DappList.vue';
+import MyStaking from 'src/components/dapp-staking-v2/my-staking/MyStaking.vue';
 import Register from 'src/components/dapp-staking-v2/my-staking/Register.vue';
-import { defineComponent, watchEffect, computed } from 'vue';
+import OnChainData from 'src/components/dapp-staking-v2/my-staking/OnChainData.vue';
+import TopMetric from 'src/components/dapp-staking-v2/my-staking/TopMetric.vue';
+import { useDispatchGetDapps, usePageReady } from 'src/hooks';
+import { useStore } from 'src/store';
+import { computed, defineComponent, watch, watchEffect } from 'vue';
+import { useI18n } from 'vue-i18n';
 import AdsArea from './my-staking/AdsArea.vue';
 import BannerArea from './my-staking/BannerArea.vue';
 
@@ -40,32 +44,45 @@ export default defineComponent({
     AdsArea,
     Register,
     BannerArea,
+    OnChainData,
   },
   setup() {
     useMeta({ title: 'Discover dApps' });
     const store = useStore();
-    const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const { isReady } = usePageReady();
+    useDispatchGetDapps();
 
-    const { currentNetworkName } = useNetworkInfo();
-    const { currentAccount } = useAccount();
+    const { t } = useI18n();
+    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
+    const dapps = computed(() => store.getters['dapps/getAllDapps']);
 
-    watchEffect(() => {
-      if (!currentNetworkName.value) return;
-      store.dispatch('dapps/getDapps', {
-        network: currentNetworkName.value.toLowerCase(),
-        currentAccount: currentAccount.value ? currentAccount.value : '',
-      });
+    const handlePageLoading = (): void => {
+      const isLoad = dapps.value.length === 0;
+      store.commit('general/setLoading', isLoad);
+    };
+
+    watch([isH160], () => {
+      if (isH160.value) {
+        store.dispatch('general/showAlertMsg', {
+          msg: t('dappStaking.error.onlySupportsSubstrate'),
+          alertType: 'error',
+        });
+      }
     });
+
+    watch(
+      [dapps],
+      () => {
+        handlePageLoading();
+      },
+      { immediate: true }
+    );
 
     watchEffect(() => {
       store.dispatch('dapps/getTvl');
     });
 
-    return {
-      isLoading,
-      isReady,
-    };
+    return { isReady };
   },
 });
 </script>

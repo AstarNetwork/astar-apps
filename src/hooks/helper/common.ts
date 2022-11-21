@@ -48,3 +48,8 @@ export const getQueryParams = (): any => {
 export const getTimestamp = (): number => {
   return Math.floor(Date.now() / 1000);
 };
+
+export const paginate = (array: any[], pageSize: number, pageNumber: number): any[] => {
+  // Memo: human-readable page numbers usually start with 1, so we reduce 1 in the first argument
+  return array.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+};

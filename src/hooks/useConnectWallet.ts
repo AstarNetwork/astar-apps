@@ -163,10 +163,11 @@ export const useConnectWallet = () => {
 
     const ss58 = currentEcdsaAccount.value.ss58 ?? '';
     let result = await loadEvmWallet({ ss58, currentWallet: wallet });
-    if (result) {
-      modalName.value = '';
-      return;
-    }
+    // Todo: remove this code later
+    // if (result) {
+    //   modalName.value = '';
+    //   return;
+    // }
   };
 
   const toggleEvmWalletSchema = async () => {
