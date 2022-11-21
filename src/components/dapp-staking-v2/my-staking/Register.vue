@@ -23,12 +23,14 @@ export default defineComponent({
 
     const canRegister = ref<boolean>(false);
     const currentAddress = computed(() => store.getters['general/selectedAddress']);
+    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
 
     const getDapp = async (): Promise<void> => {
       const service = container.get<IDappStakingService>(Symbols.DappStakingService);
-      const developerContract = currentAddress.value
-        ? await service.getRegisteredContract(currentAddress.value)
-        : null;
+      const developerContract =
+        currentAddress.value && !isH160.value
+          ? await service.getRegisteredContract(currentAddress.value)
+          : null;
 
       if (developerContract) {
         const dapp = await service.getDapp(developerContract, currentNetworkName.value);
