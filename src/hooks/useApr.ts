@@ -8,7 +8,7 @@ import { defaultAmountWithDecimals } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { computed, ref, watchEffect } from 'vue';
 import { useChainMetadata, useCurrentEra, useNetworkInfo } from 'src/hooks';
-import { TvlModel } from 'src/v2/models';
+import { DappCombinedInfo, TvlModel } from 'src/v2/models';
 
 interface RewardDistributionConfig extends Struct {
   readonly baseTreasuryPercent: Perbill;
@@ -26,7 +26,7 @@ export const useApr = () => {
   const { blockPerEra } = useCurrentEra();
   const { currentNetworkIdx } = useNetworkInfo();
 
-  const dapps = computed(() => store.getters['dapps/getAllDapps']);
+  const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
   const stakerApr = ref<number>(0);
   const stakerApy = ref<number>(0);
 

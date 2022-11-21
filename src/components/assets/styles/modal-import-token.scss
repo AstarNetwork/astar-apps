@@ -23,7 +23,7 @@
   width: 344px;
   height: 90px;
   text-align: left;
-  background: $container-bg-white;
+  background: $gray-1;
   margin-bottom: 16px;
 }
 
@@ -41,7 +41,7 @@
   padding: 0 4px;
   font-weight: 500;
   font-size: 16px;
-  background-color: $container-bg-white;
+  background: $gray-1;
   transition: all 0.5s ease 0s;
   &:focus {
     transition: all 0.5s ease 0s;
@@ -60,12 +60,19 @@
   margin-bottom: -8px;
 }
 
+.button--confirm {
+  width: 344px;
+  font-size: 22px;
+  font-weight: 600;
+  height: 44px;
+}
+
 .body--dark {
   .box--import-tokens {
-    background: $gray-6;
+    background: $gray-7;
   }
   .input--search {
-    background-color: $gray-6;
+    background-color: $gray-7;
   }
   .row--box-error {
     background: $box-red-dark;

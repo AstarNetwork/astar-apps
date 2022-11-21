@@ -1,18 +1,20 @@
 <template>
   <astar-modal-drawer :show="isModalConnectWallet" title="Select a Wallet" @close="setCloseModal">
     <div class="wrapper--modal--wallet">
-      <div class="title--account-type">{{ $t('wallet.evmAccount') }}</div>
-      <div
-        v-for="(wallet, index) in evmWallets"
-        :key="index"
-        class="box__row--wallet box--hover--active"
-        :wallet="wallet"
-        @click="connectEthereumWallet(wallet.source)"
-      >
-        <div class="box--img">
-          <img :src="wallet.img" />
+      <div v-if="!isDappStakingPage">
+        <div class="title--account-type">{{ $t('wallet.evmAccount') }}</div>
+        <div
+          v-for="(wallet, index) in evmWallets"
+          :key="index"
+          class="box__row--wallet box--hover--active"
+          :wallet="wallet"
+          @click="connectEthereumWallet(wallet.source)"
+        >
+          <div class="box--img">
+            <img :src="wallet.img" />
+          </div>
+          <div>{{ wallet.name }}</div>
         </div>
-        <div>{{ wallet.name }}</div>
       </div>
       <div class="title--account-type tw-mt-4">{{ $t('wallet.nativeAccount') }}</div>
       <div
@@ -34,7 +36,7 @@
 import { supportEvmWallets, supportWallets, Wallet } from 'src/config/wallets';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
 import { computed, defineComponent } from 'vue';
-
+import { useRoute } from 'vue-router';
 export default defineComponent({
   props: {
     isModalConnectWallet: {
@@ -55,6 +57,8 @@ export default defineComponent({
     },
   },
   setup() {
+    const route = useRoute();
+    const isDappStakingPage = computed<boolean>(() => route.fullPath.includes('dapp-staking'));
     const nativeWallets = computed(() => {
       return supportWallets
         .map((it) => {
@@ -84,6 +88,7 @@ export default defineComponent({
     return {
       nativeWallets,
       evmWallets,
+      isDappStakingPage,
     };
   },
 });

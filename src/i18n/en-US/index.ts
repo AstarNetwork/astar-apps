@@ -33,6 +33,13 @@ export default {
   isComingSoon: '{value} is coming soon',
   amountToken: '{amount} {token}',
   select: 'Select',
+  sort: {
+    sortBy: 'Sort by',
+    amountHightToLow: 'Amount: High to Low',
+    amountLowToHigh: 'Amount: Low to High',
+    alphabeticalAtoZ: 'Alphabetical: A to Z',
+    alphabeticalZtoA: 'Alphabetical: Z to A',
+  },
   warning: {
     insufficientBalance: 'Insufficient balance',
     insufficientFee: 'Warning! Transaction might failed due to insufficient fee',
@@ -105,8 +112,8 @@ export default {
   wallet: {
     connectWallet: 'Connect Wallet',
     select: 'Please select a wallet to connect to this portal',
-    nativeAccount: 'Native Account',
-    evmAccount: 'EVM Account',
+    nativeAccount: 'Native Accounts',
+    evmAccount: 'EVM Accounts',
     math: {
       supportsNetwork: 'Math Wallet supports Shiden network only',
       switchNetwork:
@@ -173,6 +180,8 @@ export default {
     unbonding: 'Unbonding',
     myDapps: 'My dApps',
     dappRegistered: 'Congrats!! your contract is approved. Please submit the details',
+    welcomeBanner:
+      'Congratulations 🎉 Please fill in your dApp information to give users better overview of your application. Updated data will appear on the dApp page shortly.',
     registerNow: 'Register now',
     transferableBalance: 'Transferable Balance',
     dappsStore: 'dApps Store',
@@ -198,7 +207,7 @@ export default {
     chunks: 'Unbonding chunks',
     chunksTooltip:
       'Unbonding takes {era} eras (1 era is about 24 hours). {chunks} chunks are in the process of being unbonded.',
-    unbondingEra: 'Unbonding takes {unbondingPeriod} era before you can withdraw.',
+    unbondingEra: 'Unbonding takes {unbondingPeriod} eras before you can withdraw',
     amount: 'Amount',
     era: 'Era',
     unbondedFunds: 'Unbonded funds',
@@ -234,6 +243,8 @@ export default {
     developerIncentive: 'Developer Incentive',
     tokenEra: '{token}/era',
     dappStakingEvm: 'dApp Staking is available on EVM',
+    onChainData: 'On-Chain Data',
+    stakingTvl: 'Staking TVL',
     stakePage: {
       backToDappList: 'Back to dApps list',
       whereFundsFrom: 'Where would you like to bring you funds from?',
@@ -325,7 +336,7 @@ export default {
           invalidUrl: 'Invalid url.',
           accountRequired: 'At least one account is required.',
           builderImageRequired: 'Builder image is required',
-          buildersRequired: 'At least two builders are required',
+          buildersRequired: 'At least two builders are required.',
         },
       },
       builders: 'Builders information',
@@ -363,6 +374,7 @@ export default {
       dappImageRequired: 'Project logo is required.',
       projectLogo: 'Project logo',
       platformRequired: 'At least one platform is required.',
+      startUnbounding: 'Start unbonding',
     },
     toast: {
       staked: 'You staked {amount} on {dapp}',
