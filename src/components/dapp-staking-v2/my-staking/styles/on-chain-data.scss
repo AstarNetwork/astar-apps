@@ -1,7 +1,14 @@
 @import 'src/css/quasar.variables.scss';
 
 .box--data {
-  background: linear-gradient(97.71deg, #0070eb 21.48%, #0297fb 70.31%, #0ae2ff 101.76%);
+  background: linear-gradient(
+    96.44deg,
+    #e6007a -3.41%,
+    #703ac2 20.23%,
+    #0070eb 45.42%,
+    #0297fb 74.62%,
+    #0ae2ff 95.22%
+  );
   border-radius: 6px;
   display: flex;
   flex-direction: column;
