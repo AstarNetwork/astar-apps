@@ -177,7 +177,9 @@ const actions: ActionTree<State, StateInterface> = {
         console.error(error);
         showError(dispatch, error.response?.data);
         alert(
-          `An unexpected error occured during dApp registration. Please screenshot this message and send to the Astar team. ${error.response?.data}`
+          `An unexpected error occured during dApp registration. Please screenshot this message and send to the Astar team. ${JSON.stringify(
+            error.response?.data
+          )}`
         );
         return false;
       } finally {
