@@ -177,8 +177,17 @@ export const xcmChainObj: XcmChainObj = {
     relayChain: Chain.KUSAMA,
     img: 'https://polkadot.js.org/apps/static/khala.5f451f8f..svg',
     parachainId: parachainIds.KHALA,
-    endpoint: 'wss://khala-rpc.dwellir.com',
+    endpoint: 'wss://khala-api.phala.network/ws',
     subscan: 'https://khala.subscan.io',
+    isAstarNativeToken: true,
+  },
+  [Chain.PHALA]: {
+    name: Chain.PHALA,
+    relayChain: Chain.POLKADOT,
+    img: 'https://polkadot.js.org/apps/static/phala.5df20fd5..svg',
+    parachainId: parachainIds.PHALA,
+    endpoint: 'wss://api.phala.network/ws',
+    subscan: 'https://phala.subscan.io',
     isAstarNativeToken: true,
   },
 };
