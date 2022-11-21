@@ -288,6 +288,7 @@ export default {
       license: 'License',
       community: 'Community',
       wallets: 'Wallets',
+      stats: 'Stats',
     },
     modals: {
       alreadyClaimed: 'Already claimed:',

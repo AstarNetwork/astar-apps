@@ -187,19 +187,23 @@ export default defineComponent({
       emit('filterChanged', filter);
     };
 
-    watch([props], () => {
-      if (props.isMultipleLine) {
-        chartOptions.value.series[0].data = props.mergedData;
-      } else {
-        chartOptions.value.series[0].data = props.data;
-      }
+    watch(
+      [props],
+      () => {
+        if (props.isMultipleLine) {
+          chartOptions.value.series[0].data = props.mergedData;
+        } else {
+          chartOptions.value.series[0].data = props.data;
+        }
 
-      if (props.data && props.data.length > 0) {
-        hasData.value = true;
-      } else {
-        hasData.value = false;
-      }
-    });
+        if (props.data && props.data.length > 0) {
+          hasData.value = true;
+        } else {
+          hasData.value = false;
+        }
+      },
+      { immediate: true }
+    );
 
     return {
       chartOptions,

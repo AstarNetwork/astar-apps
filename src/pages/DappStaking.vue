@@ -15,7 +15,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @use 'src/components/assets/styles/assets.scss';
-.wrapper--dapp-staking {
+/* .wrapper--dapp-staking {
   margin: 0 auto;
 }
 .container--dapp-staking {
@@ -26,5 +26,5 @@ export default defineComponent({
   @media (max-width: $md) {
     display: block;
   }
-}
+} */
 </style>

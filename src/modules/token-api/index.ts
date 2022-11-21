@@ -6,6 +6,9 @@ export {
   getTvlValue,
   getClaimedAmount,
   fetchTransferDetails,
+  fetchDappsStats,
+  castDurationToDaysNumber,
+  filterStatsData,
 } from 'src/modules/token-api/utils';
 
 export {
@@ -27,3 +30,12 @@ export interface TransferDetail {
   isSuccess: boolean;
   timestamp: number;
 }
+
+export interface StatsDetail {
+  era: string;
+  timestamp: string;
+  numberOfCalls: string;
+  uniqueActiveUsers: string;
+}
+
+export type StatsType = 'uniqueActiveUsers' | 'numberOfCalls';

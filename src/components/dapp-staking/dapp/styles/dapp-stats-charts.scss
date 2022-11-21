@@ -1,0 +1,34 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--dapp-stats-charts {
+  border-bottom: 1px solid $gray-2;
+  padding-bottom: 24px;
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.row--stats-title {
+  margin-bottom: 24px;
+}
+
+.container--charts {
+  display: flex;
+  flex-direction: column;
+  row-gap: 24px;
+  width: 100%;
+  row-gap: 24px;
+  column-gap: 32px;
+  @media (min-width: $xxl) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 1152px;
+    row-gap: 32px;
+    margin-bottom: 16px;
+  }
+}
+
+.body--dark {
+  .wrapper--dapp-stats-charts {
+    border-bottom: 1px solid $gray-5;
+  }
+}

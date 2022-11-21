@@ -1,5 +1,5 @@
 <template>
-  <div v-if="dapp">
+  <div v-if="dapp" class="container--dapp-staking">
     <back-to-page :text="$t('dappStaking.stakePage.backToDappList')" :link="Path.DappStaking" />
     <dapp-avatar :dapp="dapp" />
     <dapp-statistics :dapp="dapp" />
@@ -9,6 +9,7 @@
       <project-overview :dapp="dapp" />
       <project-details :dapp="dapp" />
     </div>
+    <dapp-stats-charts :dapp="dapp" />
     <div class="bottom--links">
       <router-link :to="buildStakePageLink(dapp.dapp.address)">
         <astar-irregular-button width="220" height="28" class="btn--stake-switch">
@@ -27,6 +28,7 @@ import DappImages from 'src/components/dapp-staking/dapp/DappImages.vue';
 import DappStatistics from 'src/components/dapp-staking/dapp/DappStatistics.vue';
 import ProjectDetails from 'src/components/dapp-staking/dapp/ProjectDetails.vue';
 import ProjectOverview from 'src/components/dapp-staking/dapp/ProjectOverview.vue';
+import DappStatsCharts from 'src/components/dapp-staking/dapp/DappStatsCharts.vue';
 import { useDappRedirect, useDispatchGetDapps, useStakingList } from 'src/hooks';
 import { Path } from 'src/router';
 import { networkParam } from 'src/router/routes';
@@ -45,6 +47,7 @@ export default defineComponent({
     ProjectOverview,
     ProjectDetails,
     BackToPage,
+    DappStatsCharts,
   },
   setup() {
     const route = useRoute();

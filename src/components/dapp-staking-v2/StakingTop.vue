@@ -1,23 +1,25 @@
 <template>
-  <div v-if="isReady" class="wrapper-main">
-    <top-metric />
-    <register />
-    <banner-area />
+  <div v-if="isReady" class="extra-wrapper">
+    <div class="container--main">
+      <top-metric />
+      <register />
+      <banner-area />
 
-    <div class="divider" />
-    <my-staking />
-    <div class="divider" />
-    <on-chain-data />
-    <dapp-list category="DeFi" />
+      <div class="divider" />
+      <my-staking />
+      <div class="divider" />
+      <on-chain-data />
+      <dapp-list category="DeFi" />
 
-    <q-intersection transition="fade" transition-duration="1000" once>
-      <ads-area />
-    </q-intersection>
+      <q-intersection transition="fade" transition-duration="1000" once>
+        <ads-area />
+      </q-intersection>
 
-    <dapp-list category="NFT" />
-    <dapp-list category="Tooling" />
-    <dapp-list category="Utility" />
-    <dapp-list category="Others" />
+      <dapp-list category="NFT" />
+      <dapp-list category="Tooling" />
+      <dapp-list category="Utility" />
+      <dapp-list category="Others" />
+    </div>
   </div>
   <div v-else />
 </template>
@@ -90,7 +92,12 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
 
-.wrapper-main {
+.extra-wrapper {
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+.container--main {
   width: 100%;
   padding: 0px 0px 24px 0px;
   margin: 0 auto;
