@@ -203,11 +203,9 @@ export const filterStatsData = ({
   currentFilter: Duration;
   property: StatsType;
 }): number[][] => {
-  console.log('property', property);
   const filteredResult = data.filter(
     (it) => Number(it.numberOfCalls) !== 0 && Number(it[property]) !== 0
   );
-  console.log('filteredResult', filteredResult);
   const oneDayMilli = 3600000 * 24;
   return filteredResult
     .map((it) => [Number(it.timestamp) * 1000, Number(it[property])])
