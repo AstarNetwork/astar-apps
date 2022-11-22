@@ -42,9 +42,20 @@ export interface ExistentialDeposit {
 // Memo: give it 0 ide for convenience in checking para/relay chain logic
 export const relaychainParaId = 0;
 
-type XcmChainObj = {
-  [key in Chain]: XcmChain;
-};
+export interface XcmChain {
+  name: string;
+  relayChain: string;
+  img: string;
+  parachainId: number;
+  endpoint: string;
+  subscan: string;
+  // Note: true if ASTR/SDN is listed on the parachain
+  isAstarNativeToken: boolean;
+}
+
+interface XcmChainObj {
+  [key: string]: XcmChain;
+}
 
 export const xcmChainObj = async (): Promise<XcmChainObj> => {
   const url = 'https://token-resources-chi.vercel.app/api/networks';
@@ -53,6 +64,8 @@ export const xcmChainObj = async (): Promise<XcmChainObj> => {
 
   return result.data;
 };
+
+xcmChainObj();
 
 console.log('xcmChainObj', xcmChainObj);
 
