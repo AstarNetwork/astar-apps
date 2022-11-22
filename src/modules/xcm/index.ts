@@ -1,5 +1,6 @@
 import { objToArray } from 'src/hooks/helper/common';
 import { Chain, parachainIds, XcmChain } from 'src/v2/models';
+import axios from 'axios';
 
 export {
   astarNativeTokenErcAddr,
@@ -45,7 +46,17 @@ type XcmChainObj = {
   [key in Chain]: XcmChain;
 };
 
-export const xcmChainObj: XcmChainObj = {
+export const xcmChainObj = async (): Promise<XcmChainObj> => {
+  const url = 'https://token-resources-chi.vercel.app/api/networks';
+  const result = await axios.get<XcmChainObj>(url);
+  console.log('result.data', result.data);
+
+  return result.data;
+};
+
+console.log('xcmChainObj', xcmChainObj);
+
+export const xcmChainObjOld: XcmChainObj = {
   [Chain.POLKADOT]: {
     name: Chain.POLKADOT,
     relayChain: Chain.POLKADOT,
@@ -184,6 +195,8 @@ export const xcmChainObj: XcmChainObj = {
 };
 
 export const xcmChains = objToArray(xcmChainObj);
+
+console.log('xcmChains', xcmChains);
 
 export const kusamaParachains = xcmChains.filter(
   (it) => it.relayChain === Chain.KUSAMA && it.name !== Chain.KUSAMA
