@@ -11,6 +11,34 @@ const RES_INVALID_CONNECTION = 'invalid connection';
 const RES_CONNECTED_API = 'connected';
 const RES_TIMEOUT = 'timeout';
 
+type Provider = WsProvider | ScProvider;
+
+const getParachainSpec = (networkIdx: endpointKey): string => {
+  switch (networkIdx) {
+    case endpointKey.ASTAR:
+      return JSON.stringify(jsonParachainSpecAstar);
+    case endpointKey.SHIDEN:
+      return JSON.stringify(jsonParachainSpecShiden);
+    case endpointKey.SHIBUYA:
+      return JSON.stringify(jsonParachainSpecShibuya);
+    default:
+      throw new Error(`networkIdx ${networkIdx} is not supported.`);
+  }
+};
+
+const getWellKnownChain = (networkIdx: endpointKey): WellKnownChain => {
+  switch (networkIdx) {
+    case endpointKey.ASTAR:
+      return WellKnownChain.polkadot;
+    case endpointKey.SHIDEN:
+      return WellKnownChain.ksmcc3;
+    default:
+      throw new Error(`networkIdx ${networkIdx} is not supported.`);
+  }
+};
+
+const isLightClient = (endpoint: string): boolean => endpoint.startsWith('light://');
+
 // Memo: Reach to a healthy node whenever the selected endpoint has failed to connect to API
 const fallbackConnection = async ({
   networkIdx,
@@ -26,7 +54,7 @@ const fallbackConnection = async ({
   }
 
   const filteredEndpoints = providerEndpoints[networkIdx].endpoints.filter((it) => {
-    return it.endpoint !== endpoint;
+    return it.endpoint !== endpoint && !isLightClient(it.endpoint);
   });
   if (1 >= filteredEndpoints.length) {
     return window.location.reload();
@@ -86,45 +114,47 @@ export async function connectApi(
 ): Promise<{
   api: ApiPromise;
 }> {
-  const astarSpec = JSON.stringify(jsonParachainSpecAstar);
-  const shidenSpec = JSON.stringify(jsonParachainSpecShiden);
-  const shibuyaSpec = JSON.stringify(jsonParachainSpecShibuya);
-
-  const relayProvider = new ScProvider(WellKnownChain.polkadot);
-  const lightProvider = new ScProvider(astarSpec, relayProvider);
-
-  let provider: Provider = lightProvider;
-
-  try {
-    await lightProvider.connect();
-  } catch (e) {
-    console.warn(`Error while connecting to the light client:\n${(e as any).message}`);
-    provider = new WsProvider(endpoint);
-    console.log(`Connecting to the following provider instead: ${endpoint}`);
-  }
-  //const provider = new WsProvider(endpoint);
-  const api = new ApiPromise({ provider });
+  let provider: Provider;
+  let api: ApiPromise = new ApiPromise();
 
   store.commit('general/setCurrentNetworkStatus', 'connecting');
-  api.on('error', (error: Error) => console.error(error.message));
+  store.commit('general/setLoading', true);
 
   try {
-    // const apiConnect = new Promise<string>((resolve) => {
-    //   api.isReadyOrError.then(() => {
-    //     resolve(RES_CONNECTED_API);
-    //   });
-    // });
-    // const fallbackTimeout = new Promise<string>(async (resolve) => {
-    //   const timeout = 8 * 1000;
-    //   await wait(timeout);
-    //   resolve(RES_TIMEOUT);
-    // });
-    // const race = Promise.race<string>([apiConnect, fallbackTimeout]);
-    // race.then((res: string) => {
-    //   if (res === RES_TIMEOUT) {
-    //     fallbackConnection({ networkIdx, endpoint });
-    //   }
-    // });
+    if (isLightClient(endpoint)) {
+      const parachainSpec = getParachainSpec(networkIdx);
+      const relayProvider = new ScProvider(getWellKnownChain(networkIdx));
+      provider = new ScProvider(parachainSpec, relayProvider);
+
+      // TODO see how to handle errors and discconnections.
+      provider.on('error', (error: Error) => fallbackConnection({ networkIdx, endpoint }));
+      provider.on('disconnected', (error: Error) => console.log('handle diconnect'));
+      provider.connect();
+    } else {
+      provider = new WsProvider(endpoint);
+    }
+
+    api = new ApiPromise({ provider });
+    api.on('error', (error: Error) => console.error(error.message));
+
+    const apiConnect = new Promise<string>((resolve) => {
+      api.isReadyOrError.then(() => {
+        resolve(RES_CONNECTED_API);
+      });
+    });
+
+    const fallbackTimeout = new Promise<string>(async (resolve) => {
+      const timeout = isLightClient(endpoint) ? 50 * 1000 : 8 * 1000;
+      await wait(timeout);
+      resolve(RES_TIMEOUT);
+    });
+
+    const race = Promise.race<string>([apiConnect, fallbackTimeout]);
+    race.then((res: string) => {
+      if (res === RES_TIMEOUT) {
+        fallbackConnection({ networkIdx, endpoint });
+      }
+    });
   } catch (e) {
     console.error(e);
     //fallbackConnection({ networkIdx, endpoint });
@@ -136,7 +166,9 @@ export async function connectApi(
     store.commit('general/setCurrentNetworkStatus', 'connected');
   } catch (err) {
     console.error(err);
-    //fallbackConnection({ networkIdx, endpoint });
+    fallbackConnection({ networkIdx, endpoint });
+  } finally {
+    store.commit('general/setLoading', false);
   }
 
   return {
