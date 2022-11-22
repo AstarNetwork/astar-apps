@@ -160,6 +160,9 @@ export default {
     rebondTitle: 'The amount you wish to rebond',
     withdrawGuide: 'Your funds are available to withdraw.',
     withdrawTitle: 'Ready to withdraw',
+    unregisteredAlert:
+      'This project has been unregistered. Claim action is required and your funds will be returned.',
+    claimAndUnbond: 'Claim and Unbond',
   },
   myReward: {
     totalStaked: 'Total Staked',
@@ -337,6 +340,7 @@ export default {
           accountRequired: 'At least one account is required.',
           builderImageRequired: 'Builder image is required',
           buildersRequired: 'At least two builders are required.',
+          builderUrlRequired: 'At least one account URL is required.',
         },
       },
       builders: 'Builders information',

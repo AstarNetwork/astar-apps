@@ -84,6 +84,7 @@
 
         <div class="validation-warning">
           <li>{{ $t('dappStaking.modals.builder.error.buildersRequired') }}</li>
+          <li>{{ $t('dappStaking.modals.builder.error.builderUrlRequired') }}</li>
           <li>{{ $t('dappStaking.modals.builder.imageRecomendation') }}</li>
         </div>
 
@@ -185,9 +186,7 @@ export default defineComponent({
         currentDeveloper.value = { ...props.developer };
         isNewDeveloper.value = !props.developer.name;
 
-        if (isNewDeveloper.value) {
-          file.value = initFile();
-        }
+        file.value = initFile();
       }
     });
 

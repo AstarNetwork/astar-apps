@@ -21,7 +21,7 @@ This project is made with Vue 3 + TypeScript + Quasar.
 
 ## Usage
 
-Ensure that you have [Yarn](https://yarnpkg.com/getting-started/install) and Node.js 16.x.
+Ensure that you have [Yarn](https://yarnpkg.com/getting-started/install) and Node.js 18.x.
 
 ```bash
 # install the dependencies

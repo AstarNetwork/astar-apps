@@ -305,7 +305,8 @@ export default defineComponent({
           } as RegisterParameters);
 
           if (result) {
-            router.push(Path.DappStaking);
+            await router.push(Path.DappStaking);
+            router.go(0);
           }
         }
       });
