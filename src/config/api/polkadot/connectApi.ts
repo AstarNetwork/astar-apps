@@ -103,8 +103,6 @@ const fallbackConnection = async ({
   }
 };
 
-type Provider = WsProvider | ScProvider;
-
 // Memo: Connect to node API via selected endpoint
 // Memo: Invoke `fallbackConnection` function whenever failed to connect via selected endpoint or timeout
 export async function connectApi(
