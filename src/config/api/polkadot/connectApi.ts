@@ -5,6 +5,7 @@ import { wait } from 'src/hooks/helper/common';
 import { ScProvider, WellKnownChain } from '@polkadot/rpc-provider/substrate-connect';
 import jsonParachainSpecAstar from './chain-specs/astar.json';
 import jsonParachainSpecShiden from './chain-specs/shiden.json';
+import jsonParachainSpecShibuya from './chain-specs/shibuya.json';
 
 const RES_INVALID_CONNECTION = 'invalid connection';
 const RES_CONNECTED_API = 'connected';
@@ -18,6 +19,8 @@ const getParachainSpec = (networkIdx: endpointKey): string => {
       return JSON.stringify(jsonParachainSpecAstar);
     case endpointKey.SHIDEN:
       return JSON.stringify(jsonParachainSpecShiden);
+    case endpointKey.SHIBUYA:
+      return JSON.stringify(jsonParachainSpecShibuya);
     default:
       throw new Error(`networkIdx ${networkIdx} is not supported.`);
   }
