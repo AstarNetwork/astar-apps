@@ -157,7 +157,7 @@ export async function connectApi(
     });
   } catch (e) {
     console.error(e);
-    //fallbackConnection({ networkIdx, endpoint });
+    fallbackConnection({ networkIdx, endpoint });
   }
 
   try {
