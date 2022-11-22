@@ -25,6 +25,8 @@ jobs:
         with:
           node-version: 18
       - run: yarn && yarn build
+      - run: git config --global user.name "${{ github.actor }}"
+      - run: git config --global user.email "github-action-${{ github.actor }}@users.noreply.github.com"
       - name: 'change version'
         uses: reedyuk/npm-version@1.1.1
         with:
