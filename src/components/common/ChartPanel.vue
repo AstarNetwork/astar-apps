@@ -77,6 +77,11 @@ export default defineComponent({
       type: Boolean,
       required: true,
     },
+    isPrice: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   emits: ['filterChanged'],
   setup(props, { emit }) {
@@ -124,7 +129,7 @@ export default defineComponent({
             style: {
               color: getTextColor(),
             },
-            formatter: (data: any) => titleFormatter(t(props.title), data),
+            formatter: (data: any) => titleFormatter(props.isPrice, data),
           },
         },
         legend: {
@@ -215,5 +220,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/dashboard/styles/chart-panel.scss';
+@use 'src/components/common/styles/chart-panel.scss';
 </style>

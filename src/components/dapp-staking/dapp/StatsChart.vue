@@ -2,17 +2,16 @@
   <div v-if="data.length > 0">
     <chart-panel
       :data="data"
-      title="dashboard.chart.tvl.title"
-      tooltip="dashboard.chart.tvl.tooltip"
+      :title="`chart.${statsType}.title`"
+      :tooltip="`chart.${statsType}.tooltip`"
       :default-value="latestValue"
-      class="wrapper--chart"
       :is-multiple-line="false"
       @filter-changed="handleFilterChanged"
     />
   </div>
 </template>
 <script lang="ts">
-import ChartPanel from 'src/components/dashboard/ChartPanel.vue';
+import ChartPanel from 'src/components/common/ChartPanel.vue';
 import { Duration, filterStatsData, StatsDetail, StatsType } from 'src/modules/token-api';
 import { defineComponent, PropType, ref, watchEffect } from 'vue';
 
