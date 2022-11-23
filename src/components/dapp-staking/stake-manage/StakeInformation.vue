@@ -30,7 +30,7 @@
       </div>
     </div>
     <!-- Todo: add history -->
-    <!-- <div id="history" class="container--information">
+    <div id="history" class="container--information">
       <div class="row--title">
         <astar-icon-history size="20" />
         <span>{{ $t('assets.transferPage.recentHistory') }}</span>
@@ -48,7 +48,7 @@
           <span> {{ $t('assets.transferPage.noTxRecords') }} </span>
         </div>
       </div>
-    </div> -->
+    </div>
     <div id="hot-topics" class="container--information">
       <div class="row--title">
         <astar-icon-group size="20" />
@@ -75,37 +75,47 @@
   </div>
 </template>
 <script lang="ts">
-// import { useAccount, useNetworkInfo } from 'src/hooks';
+import TransactionHistory from 'src/components/assets/transfer/TransactionHistory.vue';
+import { useAccount, useNetworkInfo } from 'src/hooks';
 import { socialUrl } from 'src/links';
-import { hotTopics, RecentHistory } from 'src/modules/information';
-import { Faq, faqDappStaking } from 'src/modules/information';
-import { defineComponent, ref } from 'vue';
+import {
+  faqDappStaking,
+  getStakeTxHistories,
+  hotTopics,
+  RecentStakeHistory,
+} from 'src/modules/information';
+import { defineComponent, ref, watchEffect } from 'vue';
 
 export default defineComponent({
-  // components: { TransactionHistory },
+  components: { TransactionHistory },
   setup(props) {
-    const txHistories = ref<RecentHistory[]>([]);
+    const txHistories = ref<RecentStakeHistory[]>([]);
     const isLoadingTxHistories = ref<boolean>(true);
-    // const { currentAccount } = useAccount();
-    // const { currentNetworkName } = useNetworkInfo();
+    const { currentAccount } = useAccount();
+    const { currentNetworkName, nativeTokenSymbol } = useNetworkInfo();
 
     // Todo: update
-    // const setTxHistories = async (): Promise<void> => {
-    //   if (!currentAccount.value || !currentNetworkName.value) return;
-    //   try {
-    //     isLoadingTxHistories.value = true;
-    //     txHistories.value = await getTxHistories({
-    //       address: currentAccount.value,
-    //       network: currentNetworkName.value.toLowerCase(),
-    //     });
-    //   } catch (error) {
-    //     console.error(error);
-    //   } finally {
-    //     isLoadingTxHistories.value = false;
-    //   }
-    // };
+    const setTxHistories = async (): Promise<void> => {
+      if (!currentAccount.value || !currentNetworkName.value) return;
+      try {
+        isLoadingTxHistories.value = true;
+        txHistories.value = await getStakeTxHistories({
+          address: currentAccount.value,
+          network: currentNetworkName.value.toLowerCase(),
+          symbol: nativeTokenSymbol.value,
+        });
+      } catch (error) {
+        console.error(error);
+      } finally {
+        isLoadingTxHistories.value = false;
+      }
+    };
 
-    // watchEffect(setTxHistories);
+    watchEffect(setTxHistories);
+
+    watchEffect(() => {
+      console.log('txHistories', txHistories.value);
+    });
 
     return { faqDappStaking, hotTopics, txHistories, isLoadingTxHistories, socialUrl };
   },
