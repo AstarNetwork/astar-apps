@@ -35,6 +35,7 @@
           :add-developer="handleAddDevelper"
           :update-developer="handleUpdateDeveloper"
           :developer="currentDeveloper"
+          :check-if-developer-exists="checkIfDeveloperExists"
         />
       </div>
     </teleport>
@@ -107,7 +108,7 @@ export default defineComponent({
 
     const handleUpdateDeveloper = (developer: Developer): void => {
       const developerIndex = data.developers.findIndex(
-        (x) => x.name === currentDeveloper.value.name
+        (x) => x.name.toLowerCase() === currentDeveloper.value.name.toLowerCase()
       );
       if (developerIndex > -1) {
         data.developers[developerIndex] = developer;
@@ -116,6 +117,16 @@ export default defineComponent({
       }
 
       isModalAddDeveloper.value = false;
+    };
+
+    const checkIfDeveloperExists = (developerName: string): boolean => {
+      return (
+        data.developers.findIndex(
+          (x: Developer) =>
+            x.name.toLowerCase() === developerName.toLowerCase() &&
+            x.name.toLowerCase() !== currentDeveloper.value.name.toLowerCase()
+        ) >= 0
+      );
     };
 
     watch(
@@ -136,6 +147,7 @@ export default defineComponent({
       handleAddDevelper,
       handleUpdateDeveloper,
       handleModalAddDeveloper,
+      checkIfDeveloperExists,
     };
   },
 });
