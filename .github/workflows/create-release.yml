@@ -1,0 +1,20 @@
+name: Create Release
+'on':
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version'
+        required: true
+        default: '0.0.1'
+      release_notes:
+        description: 'Release notes'
+        required: true
+        default: 'Astar Portal'
+
+jobs:
+  build:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo '${{ github.event.inputs.version }}'
+      - run: echo '${{ github.event.inputs.release_notes }}'
