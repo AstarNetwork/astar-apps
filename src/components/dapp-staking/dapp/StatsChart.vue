@@ -29,7 +29,7 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
+  setup(props, { emit }) {
     const data = ref<number[][] | null>(null);
     const latestValue = ref<number>(0);
     const currentFilter = ref<Duration>('90 days');
@@ -44,7 +44,12 @@ export default defineComponent({
         currentFilter: currentFilter.value,
         property: props.statsType,
       });
-      latestValue.value = data.value[data.value.length - 1][1];
+      if (data.value.length > 0) {
+        latestValue.value = data.value[data.value.length - 1][1];
+        emit('setIsDisplayCharts', true);
+      } else {
+        emit('setIsDisplayCharts', false);
+      }
     });
 
     return { handleFilterChanged, data, latestValue };
