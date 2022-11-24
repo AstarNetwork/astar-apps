@@ -15,7 +15,7 @@ export interface Faq {
   url: string;
 }
 
-export type RecentHistoryTxType = 'XCM' | 'Transfer' | 'Stake';
+export type RecentHistoryTxType = 'XCM' | 'Transfer' | 'BondAndStake' | 'NominationTransfer';
 
 export interface RecentHistory {
   timestamp: string;

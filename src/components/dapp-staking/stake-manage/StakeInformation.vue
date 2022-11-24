@@ -29,7 +29,6 @@
         </a>
       </div>
     </div>
-    <!-- Todo: add history -->
     <div id="history" class="container--information">
       <div class="row--title">
         <astar-icon-history size="20" />
@@ -41,7 +40,7 @@
       <div v-else>
         <div v-if="txHistories.length > 0" class="box--histories">
           <div v-for="tx in txHistories" :key="tx.timestamp">
-            <TransactionHistory :tx="tx" />
+            <transaction-history :tx="tx" />
           </div>
         </div>
         <div v-else>
@@ -75,7 +74,7 @@
   </div>
 </template>
 <script lang="ts">
-import TransactionHistory from 'src/components/assets/transfer/TransactionHistory.vue';
+import TransactionHistory from 'src/components/common/TransactionHistory.vue';
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import { socialUrl } from 'src/links';
 import {
@@ -84,7 +83,9 @@ import {
   hotTopics,
   RecentStakeHistory,
 } from 'src/modules/information';
-import { defineComponent, ref, watchEffect } from 'vue';
+import { useStore } from 'src/store';
+import { DappCombinedInfo } from 'src/v2/models';
+import { defineComponent, ref, watchEffect, computed } from 'vue';
 
 export default defineComponent({
   components: { TransactionHistory },
@@ -93,8 +94,9 @@ export default defineComponent({
     const isLoadingTxHistories = ref<boolean>(true);
     const { currentAccount } = useAccount();
     const { currentNetworkName, nativeTokenSymbol } = useNetworkInfo();
+    const store = useStore();
+    const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
 
-    // Todo: update
     const setTxHistories = async (): Promise<void> => {
       if (!currentAccount.value || !currentNetworkName.value) return;
       try {
@@ -103,6 +105,7 @@ export default defineComponent({
           address: currentAccount.value,
           network: currentNetworkName.value.toLowerCase(),
           symbol: nativeTokenSymbol.value,
+          dapps: dapps.value,
         });
       } catch (error) {
         console.error(error);
@@ -112,10 +115,6 @@ export default defineComponent({
     };
 
     watchEffect(setTxHistories);
-
-    watchEffect(() => {
-      console.log('txHistories', txHistories.value);
-    });
 
     return { faqDappStaking, hotTopics, txHistories, isLoadingTxHistories, socialUrl };
   },

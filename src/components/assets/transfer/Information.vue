@@ -40,7 +40,7 @@
       <div v-else>
         <div v-if="txHistories.length > 0" class="box--histories">
           <div v-for="tx in txHistories" :key="tx.timestamp">
-            <TransactionHistory :tx="tx" />
+            <transaction-history :tx="tx" />
           </div>
         </div>
         <div v-else>
@@ -74,7 +74,7 @@
   </div>
 </template>
 <script lang="ts">
-import TransactionHistory from 'src/components/assets/transfer/TransactionHistory.vue';
+import TransactionHistory from 'src/components/common/TransactionHistory.vue';
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import {
   Faq,

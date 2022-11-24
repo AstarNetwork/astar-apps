@@ -8,7 +8,7 @@
         <p>{{ time }}</p>
         <div class="row--tx-description">
           <p>[{{ tx.txType }}]</p>
-          <p><TokenBalance :balance="tx.amount ? tx.amount : '0'" :symbol="tx.symbol" /></p>
+          <p><token-balance :balance="tx.amount ? tx.amount : '0'" :symbol="tx.symbol" /></p>
         </div>
         <p>{{ tx.note }}</p>
       </div>
@@ -43,5 +43,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/assets/transfer/styles/transaction-history.scss';
+@use 'src/components/common/styles/transaction-history.scss';
 </style>
