@@ -29,10 +29,13 @@ export const getStakeTxHistories = async ({
   const numberOfHistories = 5;
   return result.data
     .filter((it) => it.transaction === 'BondAndStake' || it.transaction === 'NominationTransfer')
+    .sort((a, b) => Number(b.timestamp) - Number(a.timestamp))
+    .slice(0, numberOfHistories)
     .map((it) => {
       const dapp = dapps.find(
         (that) => that.contract.address.toLowerCase() === it.contractAddress.toLowerCase()
       );
+      const note = dapp && dapp.dapp ? dapp.dapp.name : '';
       // Todo: update the explorerURL
       return {
         amount: ethers.utils.formatEther(it.amount),
@@ -40,10 +43,8 @@ export const getStakeTxHistories = async ({
           'https://astar.subscan.io/extrinsic/0x357efef5118710249970a1937ac24639f4daef75c85fe861e031eb2080739f8b',
         timestamp: String(Number(it.timestamp) / 1000),
         symbol,
-        note: dapp?.dapp?.name || '',
+        note,
         txType: it.transaction as RecentHistoryTxType,
       };
-    })
-    .sort((a, b) => Number(b.timestamp) - Number(a.timestamp))
-    .slice(0, numberOfHistories);
+    });
 };
