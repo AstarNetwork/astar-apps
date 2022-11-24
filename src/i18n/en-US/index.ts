@@ -582,7 +582,7 @@ export default {
       tooltip: 'Unique Active Users',
     },
     numberOfCalls: {
-      title: 'Number Of Calls',
+      title: 'Number Of Transactions',
       tooltip: "Number of transactions users called to dApp's smart contract address",
     },
   },
