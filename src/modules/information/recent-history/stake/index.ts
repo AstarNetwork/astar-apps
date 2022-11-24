@@ -13,6 +13,19 @@ interface UserStakeHistory {
   transactionSuccess?: boolean;
 }
 
+export const castStakeTxType = (txType: RecentHistoryTxType): string => {
+  switch (txType) {
+    case 'BondAndStake':
+      return 'Stake';
+    case 'NominationTransfer':
+      return 'Nomination Transfer';
+    case 'UnbondAndUnstake':
+      return 'Unstake';
+    default:
+      return txType;
+  }
+};
+
 export const getStakeTxHistories = async ({
   address,
   network,
@@ -28,7 +41,12 @@ export const getStakeTxHistories = async ({
   const result = await axios.get<UserStakeHistory[]>(url);
   const numberOfHistories = 5;
   return result.data
-    .filter((it) => it.transaction === 'BondAndStake' || it.transaction === 'NominationTransfer')
+    .filter(
+      (it) =>
+        it.transaction === 'BondAndStake' ||
+        it.transaction === 'NominationTransfer' ||
+        it.transaction === 'UnbondAndUnstake'
+    )
     .sort((a, b) => Number(b.timestamp) - Number(a.timestamp))
     .slice(0, numberOfHistories)
     .map((it) => {

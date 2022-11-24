@@ -8,14 +8,23 @@ export {
 
 export { hotTopics } from 'src/modules/information/hot-topics';
 
-export { getTxHistories, getStakeTxHistories } from 'src/modules/information/recent-history';
+export {
+  getTxHistories,
+  getStakeTxHistories,
+  castStakeTxType,
+} from 'src/modules/information/recent-history';
 
 export interface Faq {
   title: string;
   url: string;
 }
 
-export type RecentHistoryTxType = 'XCM' | 'Transfer' | 'BondAndStake' | 'NominationTransfer';
+export type RecentHistoryTxType =
+  | 'XCM'
+  | 'Transfer'
+  | 'BondAndStake'
+  | 'NominationTransfer'
+  | 'UnbondAndUnstake';
 
 export interface RecentHistory {
   timestamp: string;

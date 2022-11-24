@@ -78,6 +78,7 @@ import TransactionHistory from 'src/components/common/TransactionHistory.vue';
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import { socialUrl } from 'src/links';
 import {
+  castStakeTxType,
   faqDappStaking,
   getStakeTxHistories,
   hotTopics,
@@ -85,11 +86,11 @@ import {
 } from 'src/modules/information';
 import { useStore } from 'src/store';
 import { DappCombinedInfo } from 'src/v2/models';
-import { defineComponent, ref, watchEffect, computed } from 'vue';
+import { computed, defineComponent, ref, watchEffect } from 'vue';
 
 export default defineComponent({
   components: { TransactionHistory },
-  setup(props) {
+  setup() {
     const txHistories = ref<RecentStakeHistory[]>([]);
     const isLoadingTxHistories = ref<boolean>(true);
     const { currentAccount } = useAccount();
@@ -101,12 +102,20 @@ export default defineComponent({
       if (!currentAccount.value || !currentNetworkName.value) return;
       try {
         isLoadingTxHistories.value = true;
-        txHistories.value = await getStakeTxHistories({
+        const data = await getStakeTxHistories({
           address: currentAccount.value,
           network: currentNetworkName.value.toLowerCase(),
           symbol: nativeTokenSymbol.value,
           dapps: dapps.value,
         });
+        if (data) {
+          txHistories.value = data.map((it) => {
+            return {
+              ...it,
+              txType: castStakeTxType(it.txType),
+            };
+          });
+        }
       } catch (error) {
         console.error(error);
       } finally {
