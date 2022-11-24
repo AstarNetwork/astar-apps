@@ -336,6 +336,7 @@ export default {
         imageRecomendation: 'A square image of minimum 500px is recommended.',
         error: {
           name: 'Builder name is required.',
+          nameExists: 'Given name is already used by another developer',
           invalidUrl: 'Invalid url.',
           accountRequired: 'At least one account is required.',
           builderImageRequired: 'Builder image is required',
