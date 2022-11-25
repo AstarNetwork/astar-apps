@@ -3,13 +3,13 @@
     <div v-if="showUnbondedFunds" class="widget-container full-height">
       <div class="title">
         {{ $t('dappStaking.unbondedFunds') }}
-        <IconTooltip>
+        <icon-tooltip>
           {{ $t('dappStaking.unbondedFundsTooltip') }}
-        </IconTooltip>
+        </icon-tooltip>
       </div>
       <div class="widget-content">
         <span class="text--title balance">
-          <FormatBalance :balance="totalToWithdraw" />
+          <format-balance :balance="totalToWithdraw" />
         </span>
         <Button v-if="canWithdraw" :small="true" :primary="true" class="button" @click="withdraw()">
           {{ $t('dappStaking.withdraw') }}
@@ -19,20 +19,20 @@
     <div v-if="showUnbondingChunks" class="widget-container full-height">
       <div class="title">
         {{ $t('dappStaking.chunks') }}
-        <IconTooltip>
+        <icon-tooltip>
           {{
             $t('dappStaking.chunksTooltip', {
               era: unbondingPeriod,
               chunks: unlockingChunksCount,
             })
           }}
-        </IconTooltip>
+        </icon-tooltip>
       </div>
       <div class="widget-content">
         <span class="text--title balance">
           {{ unlockingChunks?.length }}
         </span>
-        <Button
+        <button
           v-if="unlockingChunks?.length > 0"
           :small="true"
           :primary="true"
@@ -40,10 +40,10 @@
           @click="showModal = true"
         >
           {{ $t('dappStaking.view') }}
-        </Button>
+        </button>
       </div>
     </div>
-    <ChunksModal
+    <chunks-modal
       v-if="showModal"
       v-model:isOpen="showModal"
       :unlocking-chunks="unlockingChunks"
@@ -55,21 +55,24 @@
 <script lang="ts">
 import { VoidFn } from '@polkadot/api/types';
 import { u32 } from '@polkadot/types';
-import { Balance, EraIndex } from '@polkadot/types/interfaces';
-import { Codec, ISubmittableResult } from '@polkadot/types/types';
-import BN from 'bn.js';
+import { ISubmittableResult } from '@polkadot/types/types';
+import { BN } from '@polkadot/util';
 import { $api } from 'boot/api';
 import FormatBalance from 'components/common/FormatBalance.vue';
 import IconTooltip from 'components/common/IconTooltip.vue';
 import Button from 'src/components/common/Button.vue';
+import ChunksModal from 'src/components/dapp-staking/statistics/ChunksModal.vue';
 import { useCustomSignature, useGasPrice } from 'src/hooks';
 import { signAndSend } from 'src/hooks/helper/wallet';
 import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
 import { hasExtrinsicFailedEvent } from 'src/modules/extrinsic';
 import { useStore } from 'src/store';
+import { container } from 'src/v2/common';
+import { ChunkInfo } from 'src/v2/models';
+import { IDappStakingService } from 'src/v2/services';
+import { Symbols } from 'src/v2/symbols';
 import { computed, defineComponent, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import ChunksModal from 'src/components/dapp-staking/statistics/ChunksModal.vue';
 
 export default defineComponent({
   components: {
@@ -101,7 +104,7 @@ export default defineComponent({
     const unlockingChunksCount = computed(() => store.getters['dapps/getUnlockingChunks']);
     const maxUnlockingChunks = computed(() => store.getters['dapps/getMaxUnlockingChunks']);
     const unbondingPeriod = computed(() => store.getters['dapps/getUnbondingPeriod']);
-    const unlockingChunks = ref<ChunkInfo[]>();
+    const unlockingChunks = ref<ChunkInfo[]>([]);
     const canWithdraw = ref<boolean>(false);
     const totalToWithdraw = ref<BN>(new BN(0));
     const showModal = ref<boolean>(false);
@@ -159,21 +162,20 @@ export default defineComponent({
         return;
       }
 
-      const ledger = await $api?.query.dappsStaking.ledger<PalletDappsStakingAccountLedger>(
-        selectedAccountAddress.value
-      );
+      const service = container.get<IDappStakingService>(Symbols.DappStakingService);
+      const ledger = await service.getLedger(selectedAccountAddress.value);
 
-      if (ledger?.unbondingInfo.unlockingChunks) {
+      if (ledger.unbondingInfo.unlockingChunks) {
         unlockingChunks.value = ledger.unbondingInfo.unlockingChunks;
         store.commit('dapps/setUnlockingChunks', unlockingChunks.value?.length);
         canWithdraw.value = false;
         totalToWithdraw.value = new BN(0);
-        for (const chunk of unlockingChunks.value) {
-          const erasBeforeUnlock = era.sub(chunk.unlockEra.toBn()).toNumber();
+        for (const chunk of ledger.unbondingInfo.unlockingChunks) {
+          const erasBeforeUnlock = era.sub(chunk.unlockEra).toNumber();
           chunk.erasBeforeUnlock = Math.abs(erasBeforeUnlock > 0 ? 0 : erasBeforeUnlock);
 
           if (erasBeforeUnlock >= 0) {
-            totalToWithdraw.value = totalToWithdraw.value.add(chunk.amount.toBn());
+            totalToWithdraw.value = totalToWithdraw.value.add(chunk.amount);
           }
 
           if (!canWithdraw.value) {
@@ -214,20 +216,6 @@ export default defineComponent({
     };
   },
 });
-
-interface PalletDappsStakingAccountLedger extends Codec {
-  unbondingInfo: UnbondingInfo;
-}
-
-interface UnbondingInfo {
-  unlockingChunks: ChunkInfo[];
-}
-
-export interface ChunkInfo extends Codec {
-  amount: Balance;
-  unlockEra: EraIndex;
-  erasBeforeUnlock: number;
-}
 </script>
 
 <style lang="scss" scoped>

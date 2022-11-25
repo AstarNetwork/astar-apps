@@ -6,9 +6,17 @@
   padding: 9px 15px;
   border-radius: 6px;
   width: 320px;
-  background: $container-bg-white;
+  background: transparent;
+  border: 1px solid $gray-3;
+  border-radius: 6px;
   @media (min-width: $xs) {
     width: 344px;
+  }
+  @media (min-width: $md) {
+    width: 400px;
+  }
+  @media (min-width: $xl) {
+    width: 420px;
   }
 }
 
@@ -39,19 +47,20 @@
   justify-content: center;
   cursor: pointer;
   border: 2px solid transparent;
-  padding: 6px 7px;
+  padding: 6px 0px;
+  width: 100%;
   border-radius: 6px;
   transition: all 0.3s ease 0s;
   text-align: center;
   &:hover {
-    border: 2px solid $astar-blue-dark;
+    border: 2px solid $astar-blue;
     transition: all 0.3s ease 0s;
   }
 }
 
 .selected-gas-option {
   transition: all 0.3s ease 0s;
-  border: 2px solid $astar-blue-dark !important;
+  border: 2px solid $astar-blue !important;
 }
 
 .text--gas-price {
@@ -66,5 +75,6 @@
   }
   .container--speed-configuration {
     background: $gray-6;
+    border: 1px solid $gray-4;
   }
 }

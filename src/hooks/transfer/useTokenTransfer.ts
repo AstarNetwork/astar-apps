@@ -1,6 +1,6 @@
 import { buildEvmAddress } from 'src/config/web3';
 import { ISubmittableResult } from '@polkadot/types/types';
-import BN from 'bn.js';
+import { BN } from '@polkadot/util';
 import { $api, $web3 } from 'boot/api';
 import { ethers } from 'ethers';
 import ABI from 'src/c-bridge/abi/ERC20.json';

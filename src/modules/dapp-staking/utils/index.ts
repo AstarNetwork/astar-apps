@@ -1,14 +1,14 @@
 import { ApiPromise } from '@polkadot/api';
 import { Option } from '@polkadot/types';
 import { EraIndex } from '@polkadot/types/interfaces';
-import BN from 'bn.js';
+import { BN } from '@polkadot/util';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { checkIsDappRegistered, GeneralStakerInfo } from 'src/hooks/helper/claim';
 import { wait } from 'src/hooks/helper/common';
 import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
 import { EraStakingPoints, StakeInfo } from 'src/store/dapp-staking/actions';
-import { DappItem } from 'src/store/dapp-staking/state';
-import { StakingData } from 'src/modules/dapp-staking';
+import { isEthereumAddress } from '@polkadot/util-crypto';
+import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 
 interface StakeData {
   address: string;
@@ -32,53 +32,6 @@ export const checkIsLimitedProvider = (): boolean => {
   return result;
 };
 
-export const formatStakingList = async ({
-  api,
-  address,
-  dapps,
-}: {
-  api: ApiPromise;
-  address: string;
-  dapps: DappItem[];
-}): Promise<StakingData[]> => {
-  let data = [];
-
-  const getData = async (dapp: DappItem): Promise<StakeData | undefined> => {
-    try {
-      const stakerInfo = await api.query.dappsStaking.generalStakerInfo<GeneralStakerInfo>(
-        address,
-        {
-          Evm: dapp.address,
-        }
-      );
-      if (!stakerInfo) return undefined;
-
-      const bnBalance = stakerInfo.stakes.length && stakerInfo.stakes.slice(-1)[0].staked;
-      const bal = stakerInfo.stakes.length && bnBalance.toString();
-
-      if (Number(bal) > 0) {
-        return { address: dapp.address, balance: String(bal), name: dapp.name };
-      }
-    } catch (error) {
-      return undefined;
-    }
-  };
-
-  if (checkIsLimitedProvider()) {
-    for await (let dapp of dapps) {
-      const dappData = await getData(dapp);
-      data.push(dappData);
-    }
-  } else {
-    data = await Promise.all(
-      dapps.map(async (dapp: DappItem) => {
-        return await getData(dapp);
-      })
-    );
-  }
-  return data.filter((it) => it !== undefined) as StakingData[];
-};
-
 export const getDappStakers = async ({ api }: { api: ApiPromise }): Promise<number> => {
   try {
     // Memo: It takes a while to return the promise (10 ~ 15 secs).
@@ -92,15 +45,28 @@ export const getDappStakers = async ({ api }: { api: ApiPromise }): Promise<numb
   }
 };
 
-// TODO refactor, detect address type, etc.....
-export const getAddressEnum = (address: string) => ({ Evm: address });
+export const getDappAddressEnum = (address: string) => {
+  if (isEthereumAddress(address)) {
+    return { Evm: address };
+  } else if (isValidAddressPolkadotAddress(address)) {
+    return { Wasm: address };
+  } else {
+    throw new Error(
+      `Invalid contract address ${address}. The address should be in EVM or WASM format.`
+    );
+  }
+};
 
 export const getLatestStakePoint = async (
   api: ApiPromise,
   contract: string
 ): Promise<EraStakingPoints | undefined> => {
+  if (!contract) {
+    return undefined;
+  }
+
   const currentEra = await (await api.query.dappsStaking.currentEra<EraIndex>()).toNumber();
-  const contractAddress = getAddressEnum(contract);
+  const contractAddress = getDappAddressEnum(contract);
   // iterate from currentEra backwards until you find record for ContractEraStake
   for (let era = currentEra; era > 0; era -= 1) {
     // Memo: wait for avoiding provider limitation
@@ -146,9 +112,10 @@ export const handleGetStakeInfo = async ({
 
   try {
     const [stakerInfo, { isRegistered }] = await Promise.all([
-      api.query.dappsStaking.generalStakerInfo<GeneralStakerInfo>(currentAccount, {
-        Evm: dappAddress,
-      }),
+      api.query.dappsStaking.generalStakerInfo<GeneralStakerInfo>(
+        currentAccount,
+        getDappAddressEnum(dappAddress)
+      ),
       checkIsDappRegistered({ dappAddress, api }),
     ]);
 

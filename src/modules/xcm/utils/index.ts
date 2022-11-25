@@ -118,6 +118,7 @@ export const monitorBalanceIncreasing = async ({
   api: ApiPromise;
   userAddress: string;
 }): Promise<boolean> => {
+  let count = 0;
   return new Promise<boolean>(async (resolve) => {
     try {
       const monitorBal = async (timer?: NodeJS.Timer) => {
@@ -126,8 +127,16 @@ export const monitorBalanceIncreasing = async ({
           token: originTokenData,
           api,
         });
-        const bal = Number(balance.userBalance);
-        if (bal > originTokenData.userBalance) {
+        const newBal = Number(balance.userBalance);
+        const originBal = originTokenData.userBalance;
+
+        // Memo: some tokens are difficult to monitor the balance increasing because the app updates `originBal` faster than running this function
+        // in other words, the value of `newBal` will be the same as `originBal`
+        // Ref: https://gyazo.com/8c4ec928e59670d7da2930b803cebbaf
+
+        // isExit: returns `true` (exit from this function) within 9 secs
+        const isExit = count === 2;
+        if (newBal > originBal || isExit) {
           timer && clearInterval(timer);
           resolve(true);
         }
@@ -135,6 +144,7 @@ export const monitorBalanceIncreasing = async ({
       const intervalMilliSec = 3000;
       const updateIntervalHandler = setInterval(async () => {
         await monitorBal(updateIntervalHandler);
+        count++;
       }, intervalMilliSec);
       await monitorBal();
     } catch (error) {

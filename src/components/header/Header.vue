@@ -174,10 +174,4 @@ export default defineComponent({
     padding-left: 8px !important;
   }
 }
-
-.body--dark {
-  .wrapper {
-    background: $body-bg-dark !important;
-  }
-}
 </style>

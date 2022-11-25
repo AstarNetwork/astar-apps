@@ -1,25 +1,28 @@
-import { useGasPrice, useCurrentEra, useCustomSignature } from 'src/hooks';
 import { ISubmittableResult } from '@polkadot/types/types';
-import BN from 'bn.js';
+import { BN } from '@polkadot/util';
 import { $api } from 'boot/api';
-import { useStore } from 'src/store';
-import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
-import { computed, ref, watchEffect } from 'vue';
+import { useCurrentEra, useCustomSignature, useGasPrice } from 'src/hooks';
 import { TxType } from 'src/hooks/custom-signature/message';
 import { ExtrinsicPayload } from 'src/hooks/helper';
 import { getIndividualClaimTxs, PayloadWithWeight } from 'src/hooks/helper/claim';
 import { signAndSend } from 'src/hooks/helper/wallet';
+import { useStore } from 'src/store';
+import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
+import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
+import { computed, ref, watchEffect } from 'vue';
 
 const MAX_BATCH_WEIGHT = new BN('50000000000');
 
 export function useClaimAll() {
   let batchTxs: PayloadWithWeight[] = [];
+  const amountOfEras = ref<number>(0);
   const canClaim = ref<boolean>(false);
   const isLoading = ref<boolean>(true);
   const store = useStore();
   const senderAddress = computed(() => store.getters['general/selectedAddress']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
-  const dapps = computed(() => store.getters['dapps/getAllDapps']);
+  const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
+  const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const isSendingTx = computed(() => store.getters['general/isLoading']);
   const { nativeTipPrice } = useGasPrice();
 
@@ -40,20 +43,26 @@ export function useClaimAll() {
         return;
       }
 
-      const txs: PayloadWithWeight[] = await Promise.all(
-        dapps.value.map(async ({ address }: { address: string }) => {
-          const transactions = await getIndividualClaimTxs({
-            dappAddress: address,
-            api,
-            senderAddress: senderAddressRef,
-            currentEra: era.value,
-          });
-          return transactions.length ? transactions : null;
+      const txs = await Promise.all(
+        dapps.value.map(async (it) => {
+          if (it.dapp && !isH160.value) {
+            const transactions = await getIndividualClaimTxs({
+              dappAddress: it?.dapp?.address,
+              api,
+              senderAddress: senderAddressRef,
+              currentEra: era.value,
+            });
+            return transactions.length ? transactions : null;
+          } else {
+            return null;
+          }
         })
       );
       const filteredTxs = txs.filter((it) => it !== null);
-      batchTxs = filteredTxs.flat();
+      batchTxs = filteredTxs.flat() as PayloadWithWeight[];
       canClaim.value = batchTxs.length > 0;
+
+      amountOfEras.value = batchTxs.length;
     } catch (error: any) {
       console.error(error.message);
     } finally {
@@ -116,5 +125,6 @@ export function useClaimAll() {
     claimAll,
     canClaim,
     isLoading,
+    amountOfEras,
   };
 }

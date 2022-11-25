@@ -3,7 +3,7 @@ import { Asset, Chain } from 'src/v2/models';
 import { XcmTokenInformation } from 'src/modules/xcm';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { ASTAR_DECIMALS } from 'src/hooks/helper/plasmUtils';
-import { BN } from 'bn.js';
+import { BN } from '@polkadot/util';
 import { ASTAR_NATIVE_TOKEN } from 'src/config/chain';
 
 // Acala Note: There is no endpoint to get minBridgeAmount.  But the rule is that Acala doesn't allow transfers that are less value than the equivalent of $0.01USD
@@ -186,6 +186,16 @@ export const xcmToken = {
       isXcmCompatible: true,
       originChain: Chain.CRUST_SHADOW,
       minBridgeAmount: '0.5',
+    },
+    {
+      symbol: 'PHA',
+      isNativeToken: true,
+      assetId: '18446744073709551623',
+      originAssetId: 'PHA',
+      logo: 'https://assets.coingecko.com/coins/images/12451/small/phala.png?1600061318',
+      isXcmCompatible: true,
+      originChain: Chain.KHALA,
+      minBridgeAmount: '0.2',
     },
   ],
   [endpointKey.SHIBUYA]: [],

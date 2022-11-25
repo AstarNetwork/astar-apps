@@ -2,6 +2,7 @@ import { computed } from 'vue';
 import { $api } from 'src/boot/api';
 import { getInjector } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
+import { getDappAddressEnum } from 'src/modules/dapp-staking/utils';
 
 export function useSignPayload() {
   const store = useStore();
@@ -13,7 +14,7 @@ export function useSignPayload() {
     contractAddress: string
   ): Promise<string> => {
     const payload = $api?.tx.dappsStaking
-      .register(developerAddress, { Evm: contractAddress })
+      .register(developerAddress, getDappAddressEnum(contractAddress))
       .toHex();
     const injector = await getInjector(substrateAccounts.value);
 

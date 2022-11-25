@@ -25,6 +25,7 @@
 
 <script lang="ts">
 import { useStore } from 'src/store';
+import { DappCombinedInfo } from 'src/v2/models';
 import { computed, defineComponent } from 'vue';
 import Vue3autocounter from 'vue3-autocounter';
 
@@ -34,7 +35,7 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
-    const dapps = computed(() => store.getters['dapps/getAllDapps']);
+    const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
     const dappsCount = dapps.value.length;
 
     return {

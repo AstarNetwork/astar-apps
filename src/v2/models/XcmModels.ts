@@ -15,6 +15,7 @@ export enum Chain {
   KINTSUGI = 'Kintsugi',
   INTERLAY = 'Interlay',
   CRUST_SHADOW = 'Crust-shadow',
+  KHALA = 'Khala',
 }
 
 export enum parachainIds {
@@ -29,6 +30,7 @@ export enum parachainIds {
   KINTSUGI = 2092,
   INTERLAY = 2032,
   CRUST_SHADOW = 2012,
+  KHALA = 2004,
 }
 
 export interface XcmChain {

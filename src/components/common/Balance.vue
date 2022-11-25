@@ -3,7 +3,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, watch, ref, PropType } from 'vue';
-import BN from 'bn.js';
+import { BN } from '@polkadot/util';
 import { formatBalance } from '@polkadot/util';
 import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
 export default defineComponent({

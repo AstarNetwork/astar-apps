@@ -1,14 +1,15 @@
-import { useI18n } from 'vue-i18n';
+import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { Struct, u32, Vec } from '@polkadot/types';
 import { Balance } from '@polkadot/types/interfaces';
 import { ISubmittableResult } from '@polkadot/types/types';
-import BN from 'bn.js';
+import { BN } from '@polkadot/util';
 import { $api } from 'boot/api';
 import { useCustomSignature, useGasPrice } from 'src/hooks';
 import { signAndSend } from 'src/hooks/helper/wallet';
 import { hasExtrinsicFailedEvent } from 'src/modules/extrinsic';
 import { useStore } from 'src/store';
-import { computed, ref, watchEffect } from 'vue';
+import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { checkIsDappOwner, getNumberOfUnclaimedEra } from '../helper/claim';
 import { useCurrentEra } from '../useCurrentEra';
 
@@ -40,7 +41,7 @@ export function useCompoundRewards() {
   const { isCustomSig, handleCustomExtrinsic } = useCustomSignature({});
   const currentAddress = computed(() => store.getters['general/selectedAddress']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
-  const dapps = computed(() => store.getters['dapps/getAllDapps']);
+  const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
   const { selectedTip } = useGasPrice();
   const { era } = useCurrentEra();
 
@@ -49,6 +50,7 @@ export function useCompoundRewards() {
   const isStaker = ref<boolean>(false);
   const isUnclaimedEra = ref<boolean>(false);
   const isDappOwner = ref<boolean>(false);
+  const toggleCounter = ref<number>(0);
   const rewardDestination = ref<RewardDestination>(RewardDestination.FreeBalance);
 
   const getCompoundingType = async () => {
@@ -125,6 +127,7 @@ export function useCompoundRewards() {
         dispatch: store.dispatch,
         tip: selectedTip.value.price,
       });
+      toggleCounter.value++;
     } catch (e: any) {
       console.error(e);
       store.dispatch('general/showAlertMsg', {
@@ -137,15 +140,15 @@ export function useCompoundRewards() {
   const checkIsClaimable = async () => {
     if (!dapps.value || !currentAddress.value || !era.value) return;
     await Promise.all(
-      dapps.value.map(async ({ address }: { address: string }) => {
+      dapps.value.map(async (it) => {
         const [resIsDappOwner, { numberOfUnclaimedEra, isRequiredWithdraw }] = await Promise.all([
           checkIsDappOwner({
-            dappAddress: address,
+            dappAddress: it.contract.address,
             api: $api!,
             senderAddress: currentAddress.value,
           }),
           getNumberOfUnclaimedEra({
-            dappAddress: address,
+            dappAddress: it.contract.address,
             api: $api!,
             senderAddress: currentAddress.value,
             currentEra: era.value,
@@ -163,9 +166,14 @@ export function useCompoundRewards() {
     );
   };
 
-  watchEffect(async () => {
-    await Promise.all([checkIsClaimable(), getCompoundingType()]);
-  });
+  watch(
+    [currentAddress, toggleCounter],
+    async () => {
+      if (!currentAddress.value) return;
+      await Promise.all([checkIsClaimable(), getCompoundingType()]);
+    },
+    { immediate: false }
+  );
 
   return {
     isSupported,

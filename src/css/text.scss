@@ -81,6 +81,10 @@ span {
   color: $warning-red;
 }
 
+.text--color {
+  color: $gray-5-selected;
+}
+
 .input--no-spin::-webkit-inner-spin-button,
 .input--no-spin::-webkit-outer-spin-button {
   -webkit-appearance: none;
@@ -106,6 +110,7 @@ input::placeholder {
   .text--xlg,
   .text--lg,
   .text--md,
+  .text--color,
   .text--xl {
     color: $gray-1;
   }

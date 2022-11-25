@@ -181,6 +181,15 @@ export const xcmChainObj: XcmChainObj = {
     subscan: 'https://crust.subscan.io',
     isAstarNativeToken: true,
   },
+  [Chain.KHALA]: {
+    name: Chain.KHALA,
+    relayChain: Chain.KUSAMA,
+    img: 'https://polkadot.js.org/apps/static/khala.5f451f8f..svg',
+    parachainId: parachainIds.KHALA,
+    endpoint: 'wss://khala-rpc.dwellir.com',
+    subscan: 'https://khala.subscan.io',
+    isAstarNativeToken: true,
+  },
 };
 
 export const xcmChains = objToArray(xcmChainObj);

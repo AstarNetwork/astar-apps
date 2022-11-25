@@ -1,6 +1,10 @@
 <template>
   <div>
-    <BackToAsset :class="isHighlightRightUi && 'half-opacity'" />
+    <BackToPage
+      :class="isHighlightRightUi && 'half-opacity'"
+      :text="$t('assets.transferPage.backToAssets')"
+      :link="Path.Assets"
+    />
     <MobileNavigator v-if="currentAccount" />
     <div v-if="currentAccount" class="wrapper--transfer">
       <div class="container--transfer">
@@ -65,7 +69,6 @@
   </div>
 </template>
 <script lang="ts">
-import BackToAsset from 'src/components/assets/transfer/BackToAsset.vue';
 import Information from 'src/components/assets/transfer/Information.vue';
 import LocalTransfer from 'src/components/assets/transfer/LocalTransfer.vue';
 import MobileNavigator from 'src/components/assets/transfer/MobileNavigator.vue';
@@ -75,6 +78,7 @@ import SelectChain from 'src/components/assets/transfer/SelectChain.vue';
 import SelectToken from 'src/components/assets/transfer/SelectToken.vue';
 import TransferModeTab from 'src/components/assets/transfer/TransferModeTab.vue';
 import XcmBridge from 'src/components/assets/transfer/XcmBridge.vue';
+import BackToPage from 'src/components/common/BackToPage.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import {
   useAccount,
@@ -90,11 +94,13 @@ import { useStore } from 'src/store';
 import { EvmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, ref, watch } from 'vue';
+import { Path } from 'src/router';
+
 export type RightUi = 'information' | 'select-chain' | 'select-token';
 
 export default defineComponent({
   components: {
-    BackToAsset,
+    BackToPage,
     MobileNavigator,
     TransferModeTab,
     Information,
@@ -202,16 +208,14 @@ export default defineComponent({
     };
 
     const selectableChains = computed<XcmChain[]>(() => {
-      // Note: remove the filter once the portal enabled XCM transfer with Acala
-      const network = chains.value.filter((it) => it.name !== Chain.ACALA);
       const fromChain = removeEvmName(from.value);
       const isFromAstar = fromChain === currentNetworkName.value.toLowerCase();
       if (isSelectFromChain.value || isFromAstar) {
-        return network.filter((it) =>
+        return chains.value.filter((it) =>
           isH160.value ? !it.name.includes(currentNetworkName.value) : !it.name.includes('evm')
         );
       } else {
-        return network;
+        return chains.value;
       }
     });
 
@@ -256,6 +260,7 @@ export default defineComponent({
       from,
       to,
       currentAccount,
+      Path,
       setRightUi,
       handleModalSelectToken,
       handleModalSelectChain,
