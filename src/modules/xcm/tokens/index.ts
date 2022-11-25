@@ -178,6 +178,16 @@ export const xcmToken = {
       minBridgeAmount: '0.345',
     },
     {
+      symbol: 'CSM',
+      isNativeToken: true,
+      assetId: '18446744073709551624',
+      originAssetId: 'CSM',
+      logo: require('/src/assets/img/shadow.svg'),
+      isXcmCompatible: true,
+      originChain: Chain.CRUST_SHADOW,
+      minBridgeAmount: '0.5',
+    },
+    {
       symbol: 'PHA',
       isNativeToken: true,
       assetId: '18446744073709551623',
