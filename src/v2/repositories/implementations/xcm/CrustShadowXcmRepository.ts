@@ -17,6 +17,22 @@ interface TokensAccounts extends Struct {
   readonly balance: BN;
 }
 
+interface AssetConfig extends Struct {
+  v1: {
+    parents: number;
+    interior: Interior;
+  };
+}
+
+interface Interior {
+  x2: X2[];
+}
+
+interface X2 {
+  parachain: number;
+  generalKey: string;
+}
+
 /**
  * Used to transfer assets from Crust Shadow
  */
@@ -158,6 +174,24 @@ export class CrustShadowXcmRepository extends XcmRepository {
         destWeight
       );
     }
+  }
+
+  protected async fetchAssetConfig(
+    source: XcmChain,
+    token: Asset
+  ): Promise<{
+    parents: number;
+    interior: Interior;
+  }> {
+    const symbol = token.metadata.symbol;
+    const api = await this.apiFactory.get(source.endpoint);
+    const config = await api.query.assetManager.assetIdType<Option<AssetConfig>>(
+      this.astarTokens[symbol]
+    );
+
+    // return config.unwrap().v1;
+    const formattedAssetConfig = JSON.parse(config.toString());
+    return formattedAssetConfig.xcm;
   }
 
   public async getTokenBalance(
