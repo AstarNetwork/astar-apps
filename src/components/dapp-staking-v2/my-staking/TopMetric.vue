@@ -15,12 +15,6 @@
       <div class="card">
         <p>
           {{ $t('topMetric.tvlInDapps') }}
-          <!-- <span class="wrapper--icon-help">
-            <astar-icon-help size="16" />
-          </span>
-          <q-tooltip>
-            <span class="text--tooltip">{{ $t('topMetric.tvlInDapps') }}</span>
-          </q-tooltip> -->
         </p>
         <div class="row--data">
           <div v-if="!tvl" class="loading">
@@ -37,12 +31,6 @@
       <div class="card">
         <p>
           {{ $t('topMetric.currentEra') }}
-          <!-- <span class="wrapper--icon-help">
-            <astar-icon-help size="16" />
-          </span>
-          <q-tooltip>
-            <span class="text--tooltip">{{ $t('topMetric.currentEra') }}</span>
-          </q-tooltip> -->
         </p>
         <div class="row--data">
           <div v-if="!currentEra" class="loading">
@@ -57,12 +45,6 @@
       <div class="card">
         <p>
           {{ $t('topMetric.currentStakersApr') }}
-          <!-- <span class="wrapper--icon-help">
-            <astar-icon-help size="16" />
-          </span>
-          <q-tooltip>
-            <span class="text--tooltip">{{ $t('topMetric.currentStakersApr') }}</span>
-          </q-tooltip> -->
         </p>
         <div class="row--data">
           <div v-if="!aprPercent" class="loading">
@@ -91,12 +73,6 @@
       <div class="card">
         <p>
           {{ $t('topMetric.totalDapps') }}
-          <!-- <span class="wrapper--icon-help">
-            <astar-icon-help size="16" />
-          </span>
-          <q-tooltip>
-            <span class="text--tooltip">{{ $t('topMetric.totalDapps') }}</span>
-          </q-tooltip> -->
         </p>
         <div class="row--data">
           <div v-if="!dappsCount" class="loading">
