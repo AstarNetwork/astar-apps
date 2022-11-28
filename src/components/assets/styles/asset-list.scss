@@ -59,10 +59,10 @@
   row-gap: 16px;
   @media (min-width: $md) {
     display: grid;
-    grid-template-columns: 290px 190px;
+    grid-template-columns: 290px 140px;
   }
   @media (min-width: $lg) {
-    grid-template-columns: 280px 220px;
+    grid-template-columns: 280px 150px;
   }
   @media (min-width: $xl) {
     grid-template-columns: 300px 290px;
@@ -75,16 +75,16 @@
 .row__right--evm {
   @media (min-width: $md) {
     display: grid;
-    grid-template-columns: 260px 190px;
+    grid-template-columns: 260px 120px;
   }
   @media (min-width: $lg) {
-    grid-template-columns: 200px 190px;
+    grid-template-columns: 200px 160px;
   }
   @media (min-width: $xl) {
-    grid-template-columns: 280px auto;
+    grid-template-columns: 220px auto;
   }
   @media (min-width: $xxl) {
-    grid-template-columns: 360px auto;
+    grid-template-columns: 340px auto;
   }
 }
 
