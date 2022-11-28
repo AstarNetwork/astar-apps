@@ -78,11 +78,14 @@
           input-class="input"
           :input-style="{ fontWeight: 'bold' }"
           lazy-rules="ondemand"
-          :rules="[(v: string) => (v && v.length > 0) || `${$t('dappStaking.modals.builder.error.name')}`]"
+          :rules="[
+              (v: string) => (v && v.length > 0) || `${$t('dappStaking.modals.builder.error.name')}`,
+              (v: string) => !checkIfDeveloperExists(v) || `${$t('dappStaking.modals.builder.error.nameExists')}`
+          ]"
           class="component"
         />
 
-        <div class="validation-warning">
+        <div class="validation-warning margin">
           <li>{{ $t('dappStaking.modals.builder.error.buildersRequired') }}</li>
           <li>{{ $t('dappStaking.modals.builder.error.builderUrlRequired') }}</li>
           <li>{{ $t('dappStaking.modals.builder.imageRecomendation') }}</li>
@@ -130,6 +133,10 @@ export default defineComponent({
       required: true,
     },
     updateDeveloper: {
+      type: Function,
+      required: true,
+    },
+    checkIfDeveloperExists: {
       type: Function,
       required: true,
     },
@@ -245,5 +252,9 @@ export default defineComponent({
   font-weight: 600;
   height: 44px;
   align-self: center;
+}
+
+.margin {
+  margin-top: 20px;
 }
 </style>
