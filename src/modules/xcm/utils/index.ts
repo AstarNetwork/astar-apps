@@ -170,14 +170,6 @@ export const castChainName = (chain: string): string => {
     return chain + ' ' + '(Native)';
   }
   if (chain.includes('-')) {
-    // const name = chain.replace('-', ' ');
-    // const test = chain.split('-');
-    // const test2 = test.map((it) => capitalize(it));
-    // const test3 = test2.join(' ');
-    // console.log('test', test);
-    // console.log('test2', test2);
-    // console.log('test3', test3);
-    // return name;
     return chain
       .split('-')
       .map((it) => capitalize(it))
