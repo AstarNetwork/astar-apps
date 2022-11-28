@@ -9,7 +9,7 @@ import {
   updateAccountHistories,
 } from 'src/config/localStorage';
 import { pathEvm } from 'src/hooks';
-import { getTimestamp } from 'src/hooks/helper/common';
+import { getTimestamp, capitalize } from 'src/hooks/helper/common';
 import { astarNetworks } from 'src/hooks/xcm/useTransferRouter';
 import { SystemAccount, TxHistory } from 'src/modules/account';
 import { HistoryTxType } from 'src/modules/account/index';
@@ -168,6 +168,20 @@ export const castChainName = (chain: string): string => {
   }
   if (chain && astarNetworks.includes(chain.toLowerCase())) {
     return chain + ' ' + '(Native)';
+  }
+  if (chain.includes('-')) {
+    // const name = chain.replace('-', ' ');
+    // const test = chain.split('-');
+    // const test2 = test.map((it) => capitalize(it));
+    // const test3 = test2.join(' ');
+    // console.log('test', test);
+    // console.log('test2', test2);
+    // console.log('test3', test3);
+    // return name;
+    return chain
+      .split('-')
+      .map((it) => capitalize(it))
+      .join(' ');
   }
   return chain;
 };
