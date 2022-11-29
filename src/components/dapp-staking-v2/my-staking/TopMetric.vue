@@ -43,11 +43,22 @@
             <q-skeleton type="rect" animation="fade" />
           </div>
           <div v-else class="value">
-            <div class="column--era-info">
-              <span>{{ currentEra.toString() }}</span>
-              <span v-if="etaNextEra" class="text--eta-next-era">
-                {{ $t('topMetric.eraInfo', { eta: etaNextEra }) }}
-              </span>
+            <div class="row--era-info">
+              <div class="column--era-info">
+                <span>{{ currentEra.toString() }}</span>
+                <span v-if="etaNextEra" class="text--eta-next-era">
+                  {{ $t('topMetric.eraInfo', { eta: etaNextEra }) }}
+                </span>
+              </div>
+              <div v-if="etaNextEra && !isLoading" class="box-pie-chart">
+                <pie-chart
+                  :percentage="progress"
+                  bold="3px"
+                  width="44px"
+                  color="#0085ff"
+                  font-size="11px"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -107,8 +118,9 @@ import { TvlModel } from 'src/v2/models';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { computed, defineComponent, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
-
+import PieChart from 'src/components/common/PieChart.vue';
 export default defineComponent({
+  components: { PieChart },
   setup() {
     const store = useStore();
     const { stakerApr, stakerApy } = useApr();
@@ -121,6 +133,7 @@ export default defineComponent({
     const tvl = computed<TvlModel>(() => store.getters['dapps/getTvl']);
     const router = useRouter();
     const path = computed(() => router.currentRoute.value.path.split('/')[1]);
+    const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const { progress, etaNextEra } = useAvgBlockTime(path.value);
 
     const hero_img = {
@@ -129,7 +142,6 @@ export default defineComponent({
     };
     const { currentNetworkIdx, nativeTokenSymbol } = useNetworkInfo();
     const isShiden = computed<boolean>(() => currentNetworkIdx.value === endpointKey.SHIDEN);
-    const isLoading = ref<boolean>(true);
 
     const isApr = ref<boolean>(true);
     const percentage = computed(() =>
@@ -158,7 +170,6 @@ export default defineComponent({
 
     return {
       hero_img,
-      isLoading,
       isShiden,
       dappsCount,
       currentBlock,
@@ -170,6 +181,7 @@ export default defineComponent({
       etaNextEra,
       isApr,
       percentage,
+      isLoading,
     };
   },
 });

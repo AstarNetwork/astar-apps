@@ -93,9 +93,6 @@
     color: $gray-1;
   }
   .row--data {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     margin-top: 18px;
     .value {
       display: flex;
@@ -149,13 +146,14 @@
   }
 
   .text--eta-next-era {
-    font-size: 12px;
+    font-size: 11px;
     padding-top: 2px;
     @media (min-width: $md) {
       display: none;
     }
     @media (min-width: $xl) {
       display: block;
+      white-space: nowrap;
     }
   }
 
@@ -184,5 +182,22 @@
     padding-bottom: 6px;
     border-bottom: 2px solid white;
     transition: all 0.3s ease 0s;
+  }
+
+  .row--era-info {
+    @media (min-width: $lg) {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+  }
+
+  .box-pie-chart {
+    display: none;
+    @media (min-width: $lg) {
+      display: block;
+      margin-top: -32px;
+      margin-left: 8px;
+    }
   }
 }
