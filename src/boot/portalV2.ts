@@ -2,10 +2,12 @@ import { computed } from 'vue';
 import { boot } from 'quasar/wrappers';
 import buildDependencyContainer from 'src/v2/app.container';
 import { endpointKey } from 'src/config/chainEndpoints';
+import { getXcmChainObj } from 'src/modules/xcm';
 
-export default boot(({ store }) => {
+export default boot(async ({ store }) => {
   const networkIdx = computed(() => store.getters['general/networkIdx']);
   const network = <endpointKey>networkIdx.value;
 
+  await getXcmChainObj();
   buildDependencyContainer(network);
 });

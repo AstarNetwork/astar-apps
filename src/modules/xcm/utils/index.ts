@@ -16,7 +16,7 @@ import { HistoryTxType } from 'src/modules/account/index';
 import { xcmChainObj } from 'src/modules/xcm';
 import { astarNativeTokenErcAddr, xcmToken } from 'src/modules/xcm//tokens';
 import { ExistentialDeposit, XcmTokenInformation } from 'src/modules/xcm/index';
-import { Asset, astarChains, Chain } from 'src/v2/models';
+import { Asset, astarChains } from 'src/v2/models';
 
 const { XCM_TX_HISTORIES, NETWORK_IDX } = LOCAL_STORAGE;
 interface Account extends Struct {
@@ -105,7 +105,7 @@ export const fetchExistentialDeposit = async (api: ApiPromise): Promise<Existent
   return data;
 };
 
-export const checkIsDeposit = (fromChain: Chain): boolean => {
+export const checkIsDeposit = (fromChain: string): boolean => {
   return !astarChains.includes(fromChain);
 };
 
@@ -154,7 +154,7 @@ export const monitorBalanceIncreasing = async ({
   });
 };
 
-export const checkIsSupportAstarNativeToken = (chain: Chain): boolean => {
+export const checkIsSupportAstarNativeToken = (chain: string): boolean => {
   if (!chain) return false;
   const c = xcmChainObj[chain];
   return c.isAstarNativeToken;

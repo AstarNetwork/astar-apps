@@ -11,7 +11,7 @@
         @click="setChain(chain.name)"
       >
         <div class="column--item-name">
-          <img :src="chain.img" :alt="chain.name" class="item-logo" />
+          <img :src="chain.icon" :alt="chain.name" class="item-logo" />
           <span class="text--item-name">{{ castChainName(chain.name) }}</span>
         </div>
         <div />

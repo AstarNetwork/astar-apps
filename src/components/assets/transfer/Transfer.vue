@@ -89,7 +89,7 @@ import {
 } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { removeEvmName } from 'src/modules/xcm';
-import { Chain, XcmChain } from 'src/v2/models/XcmModels';
+import { XcmChain } from 'src/v2/models/XcmModels';
 import { useStore } from 'src/store';
 import { EvmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
@@ -208,7 +208,7 @@ export default defineComponent({
     };
 
     const selectableChains = computed<XcmChain[]>(() => {
-      const fromChain = removeEvmName(from.value);
+      const fromChain = from.value; // removeEvmName(from.value);
       const isFromAstar = fromChain === currentNetworkName.value.toLowerCase();
       if (isSelectFromChain.value || isFromAstar) {
         return chains.value.filter((it) =>
@@ -218,6 +218,8 @@ export default defineComponent({
         return chains.value;
       }
     });
+
+    console.log('selectableChains', selectableChains);
 
     const handleUpdateEvmAssets = () => {
       if (isH160.value && evmAssets.value.assets.length === 0) {

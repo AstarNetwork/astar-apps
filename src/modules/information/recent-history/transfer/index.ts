@@ -15,7 +15,7 @@ export const castXcmHistory = (tx: TxHistory): RecentHistory => {
   const from = tx.data.from as keyof typeof xcmChainObj;
   const amount = tx.data.amount as string;
   const symbol = tx.data.symbol as string;
-  const note = `${castChainName(from)} to ${castChainName(tx.data.to)}`;
+  const note = `${castChainName(from.toString())} to ${castChainName(tx.data.to)}`;
   const subscan = xcmChainObj[from].subscan;
   const explorerUrl = `${subscan}/extrinsic/${tx.hash}`;
   return { timestamp, txType, amount, symbol, note, explorerUrl };
