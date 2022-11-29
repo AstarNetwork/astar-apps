@@ -140,9 +140,11 @@ export default {
     tvlInDapps: 'TVL in dApps',
     currentEra: 'Current Era',
     eraInfo: '(ETA: {eta})',
-    currentStakersApr: 'Current Stakers APR',
+    stakersRewards: 'Stakers Rewards',
     currentBlock: 'Current Block',
     totalDapps: 'Total dApps',
+    apr: 'APR',
+    apy: 'APY',
   },
   myDapps: {
     index: 'Index',

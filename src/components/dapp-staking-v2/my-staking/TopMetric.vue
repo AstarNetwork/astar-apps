@@ -54,47 +54,30 @@
       </div>
       <div class="card">
         <p>
-          {{ $t('topMetric.currentStakersApr') }}
-          <!-- <span class="wrapper--icon-help">
-            <astar-icon-help size="16" />
-          </span>
-          <q-tooltip>
-            <span class="text--tooltip">{{ $t('topMetric.currentStakersApr') }}</span>
-          </q-tooltip> -->
+          {{ $t('topMetric.stakersRewards') }}
         </p>
         <div class="row--data">
-          <div v-if="!aprPercent" class="loading">
+          <div v-if="!percentage" class="loading">
             <q-skeleton type="rect" animation="fade" />
           </div>
-          <div v-else class="value">{{ aprPercent }}%</div>
+          <div v-else class="value">
+            <div class="column--apr-apy">
+              <div :class="isApr ? 'button--active' : 'button--not-active'" @click="isApr = true">
+                <span> {{ $t('topMetric.apr') }}</span>
+              </div>
+              <div :class="!isApr ? 'button--active' : 'button--not-active'" @click="isApr = false">
+                <span> {{ $t('topMetric.apy') }}</span>
+              </div>
+            </div>
+            <div>
+              <span>{{ percentage }}%</span>
+            </div>
+          </div>
         </div>
       </div>
-      <!-- <div class="card">
-        <p>
-          {{ $t('topMetric.currentBlock') }}
-          <span class="wrapper--icon-help">
-            <astar-icon-help size="16" />
-          </span>
-          <q-tooltip>
-            <span class="text--tooltip">{{ $t('topMetric.currentBlock') }}</span>
-          </q-tooltip>
-        </p>
-        <div class="row--data">
-          <div v-if="!currentBlock" class="loading">
-            <q-skeleton type="rect" animation="fade" />
-          </div>
-          <div v-else class="value">{{ currentBlock }}</div>
-        </div>
-      </div> -->
       <div class="card">
         <p>
           {{ $t('topMetric.totalDapps') }}
-          <!-- <span class="wrapper--icon-help">
-            <astar-icon-help size="16" />
-          </span>
-          <q-tooltip>
-            <span class="text--tooltip">{{ $t('topMetric.totalDapps') }}</span>
-          </q-tooltip> -->
         </p>
         <div class="row--data">
           <div v-if="!dappsCount" class="loading">
@@ -107,26 +90,35 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
-import { useNetworkInfo, useApr, useAvgBlockTime } from 'src/hooks';
-import { useStore } from 'src/store';
-import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
-import { TvlModel } from 'src/v2/models';
+import { BN } from '@polkadot/util';
+import { $api } from 'src/boot/api';
 import { endpointKey } from 'src/config/chainEndpoints';
+import {
+  AccountLedger,
+  RewardDestination,
+  useAccount,
+  useApr,
+  useAvgBlockTime,
+  useNetworkInfo,
+} from 'src/hooks';
 import { formatNumber } from 'src/modules/token-api';
+import { useStore } from 'src/store';
+import { TvlModel } from 'src/v2/models';
+import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
+import { computed, defineComponent, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 export default defineComponent({
   setup() {
     const store = useStore();
-    const { stakerApr } = useApr();
+    const { stakerApr, stakerApy } = useApr();
+    const { currentAccount } = useAccount();
     const dappsCount = computed<DappCombinedInfo[]>(
       () => store.getters['dapps/getRegisteredDapps']().length
     );
     const currentBlock = computed<number>(() => store.getters['general/getCurrentBlock']);
     const currentEra = computed<number>(() => store.getters['dapps/getCurrentEra']);
     const tvl = computed<TvlModel>(() => store.getters['dapps/getTvl']);
-    const aprPercent = computed(() => Number(stakerApr.value).toFixed(1));
     const router = useRouter();
     const path = computed(() => router.currentRoute.value.path.split('/')[1]);
     const { progress, etaNextEra } = useAvgBlockTime(path.value);
@@ -139,6 +131,31 @@ export default defineComponent({
     const isShiden = computed<boolean>(() => currentNetworkIdx.value === endpointKey.SHIDEN);
     const isLoading = ref<boolean>(true);
 
+    const isApr = ref<boolean>(true);
+    const percentage = computed(() =>
+      Number((isApr.value ? stakerApr.value : stakerApy.value).toFixed(1))
+    );
+
+    const checkIsCompoundingAccount = async (): Promise<void> => {
+      try {
+        const ledger = await $api?.query.dappsStaking.ledger<AccountLedger>(currentAccount.value);
+        const isStaker = ledger && !ledger.locked.eq(new BN(0));
+        const isCompounding = ledger?.toJSON().rewardDestination === RewardDestination.StakeBalance;
+        isApr.value = isStaker ? !isCompounding : true;
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    watch(
+      [currentAccount],
+      async () => {
+        if (!currentAccount.value) return;
+        await checkIsCompoundingAccount();
+      },
+      { immediate: false }
+    );
+
     return {
       hero_img,
       isLoading,
@@ -146,12 +163,13 @@ export default defineComponent({
       dappsCount,
       currentBlock,
       currentEra,
-      aprPercent,
       tvl,
       formatNumber,
       nativeTokenSymbol,
       progress,
       etaNextEra,
+      isApr,
+      percentage,
     };
   },
 });
