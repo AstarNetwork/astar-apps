@@ -15,12 +15,6 @@
       <div class="card">
         <p>
           {{ $t('topMetric.tvlInDapps') }}
-          <!-- <span class="wrapper--icon-help">
-            <astar-icon-help size="16" />
-          </span>
-          <q-tooltip>
-            <span class="text--tooltip">{{ $t('topMetric.tvlInDapps') }}</span>
-          </q-tooltip> -->
         </p>
         <div class="row--data">
           <div v-if="!tvl" class="loading">
@@ -31,6 +25,29 @@
               {{ formatNumber(tvl.tvlDefaultUnit, 2) }} {{ nativeTokenSymbol }}
             </div>
             <div>(${{ formatNumber(tvl.tvlUsd, 1) }})</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <p>
+          {{ $t('topMetric.stakersRewards') }}
+        </p>
+        <div class="row--data">
+          <div v-if="!percentage" class="loading">
+            <q-skeleton type="rect" animation="fade" />
+          </div>
+          <div v-else class="value">
+            <div class="column--apr-apy">
+              <div :class="isApr ? 'button--active' : 'button--not-active'" @click="isApr = true">
+                <span> {{ $t('topMetric.apr') }}</span>
+              </div>
+              <div :class="!isApr ? 'button--active' : 'button--not-active'" @click="isApr = false">
+                <span> {{ $t('topMetric.apy') }}</span>
+              </div>
+            </div>
+            <div>
+              <span>{{ percentage }}%</span>
+            </div>
           </div>
         </div>
       </div>
@@ -59,29 +76,6 @@
                   font-size="11px"
                 />
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <p>
-          {{ $t('topMetric.stakersRewards') }}
-        </p>
-        <div class="row--data">
-          <div v-if="!percentage" class="loading">
-            <q-skeleton type="rect" animation="fade" />
-          </div>
-          <div v-else class="value">
-            <div class="column--apr-apy">
-              <div :class="isApr ? 'button--active' : 'button--not-active'" @click="isApr = true">
-                <span> {{ $t('topMetric.apr') }}</span>
-              </div>
-              <div :class="!isApr ? 'button--active' : 'button--not-active'" @click="isApr = false">
-                <span> {{ $t('topMetric.apy') }}</span>
-              </div>
-            </div>
-            <div>
-              <span>{{ percentage }}%</span>
             </div>
           </div>
         </div>
