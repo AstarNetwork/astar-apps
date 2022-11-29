@@ -142,4 +142,20 @@
   @media (max-width: $md) {
     height: 130px;
   }
+
+  .column--era-info {
+    display: flex;
+    column-gap: 4px;
+  }
+
+  .text--eta-next-era {
+    font-size: 12px;
+    padding-top: 2px;
+    @media (min-width: $md) {
+      display: none;
+    }
+    @media (min-width: $xl) {
+      display: block;
+    }
+  }
 }

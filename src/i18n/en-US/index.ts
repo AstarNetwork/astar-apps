@@ -139,6 +139,7 @@ export default {
     wayOfStaking: 'An innovative way of Staking',
     tvlInDapps: 'TVL in dApps',
     currentEra: 'Current Era',
+    eraInfo: '(ETA: {eta})',
     currentStakersApr: 'Current Stakers APR',
     currentBlock: 'Current Block',
     totalDapps: 'Total dApps',

@@ -37,20 +37,18 @@
       <div class="card">
         <p>
           {{ $t('topMetric.currentEra') }}
-          <!-- <span class="wrapper--icon-help">
-            <astar-icon-help size="16" />
-          </span>
-          <q-tooltip>
-            <span class="text--tooltip">{{ $t('topMetric.currentEra') }}</span>
-          </q-tooltip> -->
         </p>
         <div class="row--data">
           <div v-if="!currentEra" class="loading">
             <q-skeleton type="rect" animation="fade" />
           </div>
           <div v-else class="value">
-            <div>{{ currentEra.toString() }}</div>
-            <!-- <div class="detail-value">(ETA {{ item.currentEraETA }})</div> -->
+            <div class="column--era-info">
+              <span>{{ currentEra.toString() }}</span>
+              <span v-if="etaNextEra" class="text--eta-next-era">
+                {{ $t('topMetric.eraInfo', { eta: etaNextEra }) }}
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -110,12 +108,13 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue';
-import { useNetworkInfo, useApr } from 'src/hooks';
+import { useNetworkInfo, useApr, useAvgBlockTime } from 'src/hooks';
 import { useStore } from 'src/store';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { TvlModel } from 'src/v2/models';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { formatNumber } from 'src/modules/token-api';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   setup() {
@@ -128,14 +127,17 @@ export default defineComponent({
     const currentEra = computed<number>(() => store.getters['dapps/getCurrentEra']);
     const tvl = computed<TvlModel>(() => store.getters['dapps/getTvl']);
     const aprPercent = computed(() => Number(stakerApr.value).toFixed(1));
+    const router = useRouter();
+    const path = computed(() => router.currentRoute.value.path.split('/')[1]);
+    const { progress, etaNextEra } = useAvgBlockTime(path.value);
 
     const hero_img = {
       astar_hero: require('/src/assets/img/astar_hero.png'),
       shiden_hero: require('/src/assets/img/shiden_hero.png'),
     };
     const { currentNetworkIdx, nativeTokenSymbol } = useNetworkInfo();
-    const isShiden = computed(() => currentNetworkIdx.value === endpointKey.SHIDEN);
-    const isLoading = ref(true);
+    const isShiden = computed<boolean>(() => currentNetworkIdx.value === endpointKey.SHIDEN);
+    const isLoading = ref<boolean>(true);
 
     return {
       hero_img,
@@ -148,6 +150,8 @@ export default defineComponent({
       tvl,
       formatNumber,
       nativeTokenSymbol,
+      progress,
+      etaNextEra,
     };
   },
 });
