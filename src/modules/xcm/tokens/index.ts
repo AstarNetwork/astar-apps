@@ -94,6 +94,16 @@ export const xcmToken = {
       originChain: Chain.INTERLAY,
       minBridgeAmount: '0.959',
     },
+    {
+      symbol: 'PHA',
+      isNativeToken: true,
+      assetId: '18446744073709551622',
+      originAssetId: 'PHA',
+      logo: 'https://assets.coingecko.com/coins/images/12451/small/phala.png?1600061318',
+      isXcmCompatible: true,
+      originChain: Chain.PHALA,
+      minBridgeAmount: '0.2',
+    },
   ],
   [endpointKey.SHIDEN]: [
     {
