@@ -26,6 +26,7 @@ export class PhalaXcmRepository extends XcmRepository {
     super(defaultApi, apiFactory, registeredTokens);
 
     this.astarTokens = {
+      ASTR: 6,
       SDN: 12,
     };
   }
@@ -106,15 +107,22 @@ export class PhalaXcmRepository extends XcmRepository {
 
   private getConcreteId(from: XcmChain, token: Asset) {
     const symbol = token.metadata.symbol;
-    const assetConcreteId = {
+    const assetConcreteId: { [chain in Chain]?: { [asset in string]: unknown } } = {
       [Chain.KHALA]: {
         PHA: { parents: 0, interior: 'Here' },
         SDN: { parents: 1, interior: { X1: { Parachain: parachainIds.SHIDEN } } },
       },
+      [Chain.PHALA]: {
+        PHA: { parents: 0, interior: 'Here' },
+        ASTR: { parents: 1, interior: { X1: { Parachain: parachainIds.ASTAR } } },
+      },
     };
-    if (from.name === Chain.KHALA && (symbol === 'PHA' || symbol === 'SDN')) {
-      return assetConcreteId[from.name][symbol];
+    const concreteId = assetConcreteId[from.name]?.[symbol];
+
+    if (concreteId) {
+      return concreteId;
     }
+
     throw `Token ${symbol} is not defined`;
   }
 }

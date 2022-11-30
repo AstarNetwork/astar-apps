@@ -1,5 +1,5 @@
 <template>
-  <Transfer v-if="isReady" />
+  <transfer v-if="isReady" />
   <div v-else />
 </template>
 
