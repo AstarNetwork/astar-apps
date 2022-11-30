@@ -11,7 +11,7 @@
     </div>
     <div class="bottom--links">
       <router-link :to="buildStakePageLink(dapp.dapp.address)">
-        <astar-irregular-button height="28" class="btn--stake-switch">
+        <astar-irregular-button width="220" height="28" class="btn--stake-switch">
           {{ $t('dappStaking.dappPage.stakeOrSwitchTo') }} {{ dapp.dapp.name }}
         </astar-irregular-button>
       </router-link>
@@ -101,5 +101,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/dapp-staking/dapp/styles/dapp.scss';
+@use './styles/dapp.scss';
 </style>

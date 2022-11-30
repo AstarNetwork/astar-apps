@@ -24,15 +24,15 @@
 
 <script lang="ts">
 import { useMeta } from 'quasar';
-import DappList from 'src/components/dapp-staking-v2/my-staking/DappList.vue';
-import MyStaking from 'src/components/dapp-staking-v2/my-staking/MyStaking.vue';
-import Register from 'src/components/dapp-staking-v2/my-staking/Register.vue';
-import OnChainData from 'src/components/dapp-staking-v2/my-staking/OnChainData.vue';
-import TopMetric from 'src/components/dapp-staking-v2/my-staking/TopMetric.vue';
 import { useDispatchGetDapps, usePageReady } from 'src/hooks';
 import { useStore } from 'src/store';
 import { computed, defineComponent, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
+import DappList from './my-staking/DappList.vue';
+import MyStaking from './my-staking/MyStaking.vue';
+import Register from './my-staking/Register.vue';
+import OnChainData from './my-staking/OnChainData.vue';
+import TopMetric from './my-staking/TopMetric.vue';
 import AdsArea from './my-staking/AdsArea.vue';
 import BannerArea from './my-staking/BannerArea.vue';
 

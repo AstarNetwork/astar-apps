@@ -47,7 +47,7 @@
     </div>
     <Teleport to="#app--main">
       <div :class="'highest-z-index'">
-        <ModalUnbondDapp
+        <modal-unbond-dapp
           v-model:is-open="showModalUnbond"
           :show="showModalUnbond"
           :dapp="selectedDapp"

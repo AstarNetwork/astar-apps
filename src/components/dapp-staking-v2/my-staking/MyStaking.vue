@@ -43,13 +43,13 @@
       </div>
       <div class="wrapper--panel">
         <template v-if="currentTab === 0">
-          <MyRewards />
+          <my-rewards />
         </template>
         <template v-else-if="currentTab === 1">
-          <UnbondingList :unlocking-chunks="unlockingChunks" />
+          <unbonding-list :unlocking-chunks="unlockingChunks" />
         </template>
         <template v-else>
-          <MyDapps :my-stake-infos="myStakeInfos" />
+          <my-dapps :my-stake-infos="myStakeInfos" />
         </template>
       </div>
     </div>
@@ -61,9 +61,9 @@ import { ethers } from 'ethers';
 import { useStore } from 'src/store';
 import { useBalance, useNetworkInfo, useStakerInfo } from 'src/hooks';
 import { useUnbonding } from 'src/hooks/dapps-staking/useUnbonding';
-import MyRewards from 'src/components/dapp-staking-v2/my-staking/MyRewards.vue';
-import UnbondingList from 'src/components/dapp-staking-v2/my-staking/UnbondingList.vue';
-import MyDapps from 'src/components/dapp-staking-v2/my-staking/MyDapps.vue';
+import MyRewards from './MyRewards.vue';
+import UnbondingList from './UnbondingList.vue';
+import MyDapps from './MyDapps.vue';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 
 export default defineComponent({
