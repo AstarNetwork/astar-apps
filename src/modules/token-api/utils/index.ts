@@ -189,7 +189,11 @@ export const fetchDappsStats = async ({
   dapp: string;
   network: string;
 }): Promise<StatsDetail[]> => {
-  const url = `${TOKEN_API_URL}/v1/${network}/dapps-staking/stats/dapp/${dapp}`;
+  // Memo: get the 1 year data rather than filtering by period (filter it after the app fetch the 1 year data)
+  // Merit:
+  // 1. less fetching to the API
+  // 2. better UX (faster response on the chart panel whenever users click the period button)
+  const url = `${TOKEN_API_URL}/v1/${network}/dapps-staking/stats/dapp/${dapp}/1%20years`;
   const result = await axios.get<StatsDetail[]>(url);
   return result.data;
 };
