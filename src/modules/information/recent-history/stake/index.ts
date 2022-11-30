@@ -59,11 +59,11 @@ export const getStakeTxHistories = async ({
       const explorerUrl = subScan + '/extrinsic/' + it.transactionHash;
       return {
         amount: ethers.utils.formatEther(it.amount),
-        explorerUrl,
         timestamp: String(Number(it.timestamp) / 1000),
+        txType: it.transaction as RecentHistoryTxType,
+        explorerUrl,
         symbol,
         note,
-        txType: it.transaction as RecentHistoryTxType,
       };
     });
 };
