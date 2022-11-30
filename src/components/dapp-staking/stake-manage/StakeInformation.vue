@@ -75,6 +75,7 @@
 </template>
 <script lang="ts">
 import TransactionHistory from 'src/components/common/TransactionHistory.vue';
+import { providerEndpoints } from 'src/config/chainEndpoints';
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import { socialUrl } from 'src/links';
 import {
@@ -94,9 +95,10 @@ export default defineComponent({
     const txHistories = ref<RecentStakeHistory[]>([]);
     const isLoadingTxHistories = ref<boolean>(true);
     const { currentAccount } = useAccount();
-    const { currentNetworkName, nativeTokenSymbol } = useNetworkInfo();
+    const { currentNetworkName, nativeTokenSymbol, currentNetworkIdx } = useNetworkInfo();
     const store = useStore();
     const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
+    const subScan = computed<string>(() => `${providerEndpoints[currentNetworkIdx.value].subscan}`);
 
     const setTxHistories = async (): Promise<void> => {
       if (!currentAccount.value || !currentNetworkName.value) return;
@@ -107,6 +109,7 @@ export default defineComponent({
           network: currentNetworkName.value.toLowerCase(),
           symbol: nativeTokenSymbol.value,
           dapps: dapps.value,
+          subScan: subScan.value,
         });
         if (data) {
           txHistories.value = data.map((it) => {

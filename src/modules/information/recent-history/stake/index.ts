@@ -31,13 +31,15 @@ export const getStakeTxHistories = async ({
   network,
   symbol,
   dapps,
+  subScan,
 }: {
   address: string;
   network: string;
   symbol: string;
   dapps: DappCombinedInfo[];
+  subScan: string;
 }): Promise<RecentHistory[]> => {
-  const url = `${TOKEN_API_URL}/v1/${network}/dapps-staking/stats/user/${address}`;
+  const url = `${TOKEN_API_URL}/v1/${network}/dapps-staking/stats/user/${address}/1%20years`;
   const result = await axios.get<UserStakeHistory[]>(url);
   const numberOfHistories = 5;
   return result.data
@@ -54,11 +56,10 @@ export const getStakeTxHistories = async ({
         (that) => that.contract.address.toLowerCase() === it.contractAddress.toLowerCase()
       );
       const note = dapp && dapp.dapp ? dapp.dapp.name : '';
-      // Todo: update the explorerURL
+      const explorerUrl = subScan + '/extrinsic/' + it.transactionHash;
       return {
         amount: ethers.utils.formatEther(it.amount),
-        explorerUrl:
-          'https://astar.subscan.io/extrinsic/0x357efef5118710249970a1937ac24639f4daef75c85fe861e031eb2080739f8b',
+        explorerUrl,
         timestamp: String(Number(it.timestamp) / 1000),
         symbol,
         note,
