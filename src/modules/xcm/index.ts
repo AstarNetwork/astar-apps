@@ -49,6 +49,12 @@ interface XcmChainObj {
 let xcmChainObj: XcmChainObj = {};
 export { xcmChainObj };
 
+let xcmChains: any[];
+export { xcmChains };
+
+export let kusamaParachains: any[];
+export let polkadotParachains: any[];
+
 export const getXcmChainObj = async (): Promise<XcmChainObj> => {
   const url =
     'https://cors-anywhere.herokuapp.com/https://token-resources-chi.vercel.app/api/networks';
@@ -56,7 +62,15 @@ export const getXcmChainObj = async (): Promise<XcmChainObj> => {
   console.log('result.data', result.data);
 
   xcmChainObj = result.data;
-  return result.data;
+  xcmChains = objToArray(xcmChainObj);
+  console.log('xcmChains', xcmChains);
+
+  kusamaParachains = xcmChains.filter((it) => it.relayChain === 'kusama' && it.name !== 'kusama');
+  polkadotParachains = xcmChains.filter(
+    (it) => it.relayChain === 'polkadot' && it.name !== 'polkadot'
+  );
+
+  return xcmChainObj;
 };
 
 // console.log('xcmChain', xcmChain);
@@ -198,15 +212,3 @@ export const getXcmChainObj = async (): Promise<XcmChainObj> => {
 //     isAstarNativeToken: true,
 //   },
 // };
-
-export const xcmChains = objToArray(xcmChainObj);
-
-console.log('xcmChains', xcmChains);
-
-export const kusamaParachains = xcmChains.filter(
-  (it) => it.relayChain === 'kusama' && it.name !== 'kusama'
-);
-
-export const polkadotParachains = xcmChains.filter(
-  (it) => it.relayChain === 'polkadot' && it.name !== 'polkadot'
-);
