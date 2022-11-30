@@ -139,9 +139,12 @@ export default {
     wayOfStaking: 'An innovative way of Staking',
     tvlInDapps: 'TVL in dApps',
     currentEra: 'Current Era',
-    currentStakersApr: 'Current Stakers APR',
+    eraInfo: '(ETA: {eta})',
+    stakersRewards: 'Stakers Rewards',
     currentBlock: 'Current Block',
     totalDapps: 'Total dApps',
+    apr: 'APR',
+    apy: 'APY',
   },
   myDapps: {
     index: 'Index',
@@ -336,6 +339,7 @@ export default {
         imageRecomendation: 'A square image of minimum 500px is recommended.',
         error: {
           name: 'Builder name is required.',
+          nameExists: 'Given name is already used by another developer',
           invalidUrl: 'Invalid url.',
           accountRequired: 'At least one account is required.',
           builderImageRequired: 'Builder image is required',

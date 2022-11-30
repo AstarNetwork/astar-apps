@@ -14,7 +14,9 @@ export enum Chain {
   STATEMINT = 'Statemint',
   KINTSUGI = 'Kintsugi',
   INTERLAY = 'Interlay',
+  CRUST_SHADOW = 'Crust-shadow',
   KHALA = 'Khala',
+  PHALA = 'Phala',
 }
 
 export enum parachainIds {
@@ -28,7 +30,9 @@ export enum parachainIds {
   STATEMINT = 1000,
   KINTSUGI = 2092,
   INTERLAY = 2032,
+  CRUST_SHADOW = 2012,
   KHALA = 2004,
+  PHALA = 2035,
 }
 
 export interface XcmChain {
