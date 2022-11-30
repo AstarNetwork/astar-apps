@@ -231,7 +231,11 @@ export default defineComponent({
       isDisplay.value = false;
       goToNext.value = isNext;
       setTimeout(() => {
-        isNext ? page.value++ : page.value--;
+        if (isNext) {
+          page.value < pageTtl.value ? page.value++ : pageTtl.value;
+        } else {
+          page.value > 1 ? page.value-- : 1;
+        }
         isDisplay.value = true;
       }, 700);
     };

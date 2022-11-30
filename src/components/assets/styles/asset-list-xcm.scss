@@ -26,10 +26,10 @@
   row-gap: 16px;
   @media (min-width: $md) {
     display: grid;
-    grid-template-columns: 290px 190px;
+    grid-template-columns: 190px 190px;
   }
   @media (min-width: $lg) {
-    grid-template-columns: 280px 220px;
+    grid-template-columns: 140px 220px;
   }
   @media (min-width: $xl) {
     grid-template-columns: 300px 290px;
