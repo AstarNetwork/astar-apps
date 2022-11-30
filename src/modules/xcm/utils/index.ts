@@ -156,7 +156,7 @@ export const monitorBalanceIncreasing = async ({
 
 export const checkIsSupportAstarNativeToken = (chain: string): boolean => {
   if (!chain) return false;
-  const c = xcmChainObj[chain];
+  const c = xcmChainObj[chain.toLowerCase()];
   return c.isAstarNativeToken;
 };
 
