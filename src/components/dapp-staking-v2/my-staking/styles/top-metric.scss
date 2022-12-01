@@ -74,14 +74,16 @@
   display: flex;
   flex-direction: column;
   flex: none;
-  height: 126px;
-  padding: 36px 20px;
+  height: 146px;
+  padding: 16px 20px;
   background: linear-gradient(180deg, rgba(25, 29, 31, 0) 4.17%, rgba(255, 255, 255, 0.3) 79.69%);
   box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.2);
   border-radius: 6px;
 
-  @media (min-width: $md) {
+  @media (min-width: $lg) {
     flex-basis: 23%;
+    padding: 36px 20px;
+    height: 126px;
   }
 
   p {
@@ -126,19 +128,23 @@
         font-weight: 500;
         margin-left: 5px;
       }
+      @media (max-width: $sm) {
+        display: block;
+      }
     }
     .loading {
       width: 150px;
     }
 
     @media (max-width: $lg) {
-      margin-top: 16px;
+      margin-top: 36px;
+      min-width: 160px;
     }
   }
 
-  @media (max-width: $md) {
-    height: 130px;
-  }
+  // @media (max-width: $md) {
+  //   height: 130px;
+  // }
 
   .column--era-info {
     display: flex;
@@ -158,11 +164,16 @@
   }
 
   .column--apr-apy {
-    display: none;
+    // display: none;
+    display: flex;
+    margin-bottom: 12px;
+    column-gap: 22px;
+    font-size: 14px;
     @media (min-width: $lg) {
       display: flex;
       column-gap: 8px;
       margin-right: 16px;
+      font-size: 20px;
     }
     @media (min-width: $xl) {
       column-gap: 12px;
