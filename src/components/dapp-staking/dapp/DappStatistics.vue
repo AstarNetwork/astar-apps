@@ -54,5 +54,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/dapp-staking/dapp/styles/dapp-statistics.scss';
+@use './styles/dapp-statistics.scss';
 </style>

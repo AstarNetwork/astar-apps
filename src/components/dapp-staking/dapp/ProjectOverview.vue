@@ -26,6 +26,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/dapp-staking/dapp/styles/project-overview.scss';
+@use './styles/project-overview.scss';
 @use 'src/css/markdown.scss';
 </style>

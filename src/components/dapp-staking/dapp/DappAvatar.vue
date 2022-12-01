@@ -72,5 +72,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/dapp-staking/dapp/styles/dapp-avatar.scss';
+@use './styles/dapp-avatar.scss';
 </style>

@@ -265,5 +265,5 @@ export default defineComponent({
 });
 </script>
 <style lang="scss" scoped>
-@import 'src/components/dapp-staking-v2/my-staking/styles/on-chain-data.scss';
+@import 'src/components/dapp-staking/my-staking/styles/on-chain-data.scss';
 </style>

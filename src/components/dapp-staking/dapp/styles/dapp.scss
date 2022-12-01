@@ -3,8 +3,6 @@
 .row--project-overview {
   display: flex;
   flex-direction: column;
-  border-bottom: 1px solid $gray-2;
-  margin-bottom: 24px;
   @media (min-width: $sm) {
     flex-direction: row;
     column-gap: 16px;
@@ -25,23 +23,11 @@
   }
 
   .btn--stake-switch {
-    padding: 0px 16px;
     font-size: 16px;
     font-weight: 600;
   }
 
   a {
     height: 28px;
-  }
-}
-
-.container--dapp-staking {
-  max-width: 1300px;
-  margin: 0 auto;
-}
-
-.body--dark {
-  .row--project-overview {
-    border-bottom: 1px solid $gray-5;
   }
 }

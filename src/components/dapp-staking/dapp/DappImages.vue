@@ -134,5 +134,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/dapp-staking/dapp/styles/dapp-images.scss';
+@use './styles/dapp-images.scss';
 </style>

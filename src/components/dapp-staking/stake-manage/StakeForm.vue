@@ -221,5 +221,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/dapp-staking/stake-manage/styles/stake-form.scss';
+@use './styles/stake-form.scss';
 </style>

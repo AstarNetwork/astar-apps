@@ -86,5 +86,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/dapp-staking/stake-manage/styles/select-funds.scss';
+@use './styles/select-funds.scss';
 </style>
