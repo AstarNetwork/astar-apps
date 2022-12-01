@@ -51,5 +51,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/dashboard/styles/chart-panel.scss';
+@use 'src/components/dashboard/styles/dashboard.scss';
 </style>
