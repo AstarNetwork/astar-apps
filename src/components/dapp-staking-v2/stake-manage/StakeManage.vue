@@ -44,7 +44,8 @@ import BackToPage from 'src/components/common/BackToPage.vue';
 import ModalSelectFunds from './ModalSelectFunds.vue';
 import SelectFunds from './SelectFunds.vue';
 import StakeForm from './StakeForm.vue';
-import StakeInformation from './StakeInformation.vue';
+// import StakeInformation from './StakeInformation.vue';
+import StakeInformation from 'src/components/dapp-staking/stake-manage/StakeInformation.vue';
 import { WalletModalOption } from 'src/config/wallets';
 import {
   useBreakpoints,
