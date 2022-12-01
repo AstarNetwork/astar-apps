@@ -7,7 +7,7 @@ import { RecentHistory, RecentHistoryTxType } from './../../index';
 interface UserStakeHistory {
   timestamp: string;
   contractAddress: string;
-  transaction: string;
+  transaction: RecentHistoryTxType;
   amount: string;
   transactionHash?: string;
   transactionSuccess?: boolean;
