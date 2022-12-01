@@ -137,9 +137,13 @@ export default defineComponent({
       [currentAccount, dapp],
       () => {
         if (!dapp.value) return;
-        if (!currentAccount.value) {
-          window.dispatchEvent(new CustomEvent(WalletModalOption.SelectWallet));
-        }
+        // Memo: avoid opening the drawer when users change the account
+        const delay = 2000;
+        setTimeout(() => {
+          if (!currentAccount.value) {
+            window.dispatchEvent(new CustomEvent(WalletModalOption.SelectWallet));
+          }
+        }, delay);
       },
       { immediate: true }
     );
