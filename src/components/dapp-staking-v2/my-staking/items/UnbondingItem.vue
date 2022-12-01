@@ -69,7 +69,7 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(_, { emit }) {
+  setup() {
     const showModalWithdraw = ref(false);
     const showModalRebond = ref(false);
     // MEMO: since not possible to withdraw each chunk currently, use total amount of withdraw

@@ -5,14 +5,14 @@
       <div class="txt--header">{{ category }}</div>
       <!-- <astar-irregular-button width="77" height="20">See All</astar-irregular-button> -->
     </div>
-    <CardList :category="category" :dapps="dapps" />
+    <card-list :category="category" :dapps="dapps" />
   </div>
 </template>
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import CardList from './components/CardList.vue';
 import { useStore } from 'src/store';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
+import CardList from './components/CardList.vue';
 export default defineComponent({
   components: { CardList },
   props: {

@@ -68,9 +68,9 @@
         <tags :dapp="data" class="component" />
         <license :dapp="data" class="component" />
         <div class="button--container">
-          <astar-button class="button--submit" @click="handleSubmit">
+          <Button :width="328" :height="52" @click="handleSubmit">
             {{ $t('dappStaking.modals.submit') }}
-          </astar-button>
+          </Button>
         </div>
       </div>
     </q-form>
@@ -82,26 +82,23 @@ import { computed, defineComponent, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 import { $api } from 'boot/api';
+import { Button } from '@astar-network/astar-ui';
 import { Category, Developer, FileInfo, NewDappItem } from 'src/store/dapp-staking/state';
-import ImageCard from 'src/components/dapp-staking/register/ImageCard.vue';
-import AddItemCard from 'src/components/dapp-staking/register/AddItemCard.vue';
-import Builders from 'src/components/dapp-staking/register/Builders.vue';
-import Community from 'src/components/dapp-staking/register/Community.vue';
-import DappImages from 'src/components/dapp-staking/register/DappImages.vue';
-import Description from 'src/components/dapp-staking/register/Description.vue';
-import WelcomeBanner from 'src/components/dapp-staking/register/WelcomeBanner.vue';
-import ContractTypes, {
-  possibleContractTypes,
-} from 'src/components/dapp-staking/register/ContractTypes.vue';
-import MainCategory, {
-  possibleCategories,
-} from 'src/components/dapp-staking/register/MainCategory.vue';
-import License from 'src/components/dapp-staking/register/License.vue';
-import Tags from 'src/components/dapp-staking/register/Tags.vue';
-import { possibleLicenses } from 'src/components/dapp-staking/register/License.vue';
+import ImageCard from './components/ImageCard.vue';
+import AddItemCard from './components/AddItemCard.vue';
+import Builders from './components/Builders.vue';
+import Community from './components/Community.vue';
+import DappImages from './components/DappImages.vue';
+import Description from './components/Description.vue';
+import WelcomeBanner from './components/WelcomeBanner.vue';
+import ContractTypes, { possibleContractTypes } from './components/ContractTypes.vue';
+import MainCategory, { possibleCategories } from './components/MainCategory.vue';
+import License from './components/License.vue';
+import Tags from './components/Tags.vue';
+import { possibleLicenses } from './components/License.vue';
 import { isUrlValid } from 'src/components/common/Validators';
 import { sanitizeData } from 'src/hooks/helper/markdown';
-import { LabelValuePair } from 'src/components/dapp-staking/register/ItemsToggle.vue';
+import { LabelValuePair } from './components/ItemsToggle.vue';
 import { container } from 'src/v2/common';
 import { IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
@@ -124,6 +121,7 @@ export default defineComponent({
     ContractTypes,
     MainCategory,
     License,
+    Button,
     Tags,
     BackToPage,
     WelcomeBanner,
@@ -342,7 +340,7 @@ export default defineComponent({
 
 <style scoped lang="scss">
 @use 'src/components/assets/styles/assets.scss';
-@use 'src/components/dapp-staking/styles/register.scss';
+@use './styles/register.scss';
 
 .input {
   font-weight: 'bold';
