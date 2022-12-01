@@ -74,7 +74,7 @@
   display: flex;
   flex-direction: column;
   flex: none;
-  height: 146px;
+  height: 140px;
   padding: 16px 20px;
   background: linear-gradient(180deg, rgba(25, 29, 31, 0) 4.17%, rgba(255, 255, 255, 0.3) 79.69%);
   box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.2);
@@ -137,14 +137,19 @@
     }
 
     @media (max-width: $lg) {
-      margin-top: 36px;
       min-width: 160px;
     }
-  }
 
-  // @media (max-width: $md) {
-  //   height: 130px;
-  // }
+    @media (max-width: $sm) {
+      min-width: 0px;
+      .column--tvl {
+        display: block;
+        line-height: 24px;
+        margin-top: 10px;
+        min-width: 160px;
+      }
+    }
+  }
 
   .column--era-info {
     display: flex;
