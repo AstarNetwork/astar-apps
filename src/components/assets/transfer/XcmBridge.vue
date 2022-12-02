@@ -275,10 +275,12 @@ export default defineComponent({
     };
 
     const getNetworkName = (): string => (isDeposit.value ? 'EVM' : destChain.value.name);
+    console.log('getNetworkName', getNetworkName);
 
     const evmInputPlaceholder = computed<string>(() =>
       t('addressPlaceholder', { network: getNetworkName() })
     );
+    console.log('evmInputPlaceholder', evmInputPlaceholder);
 
     const evmInputTitle = computed<string>(() => t('addressFormat', { network: getNetworkName() }));
 

@@ -53,8 +53,8 @@ export function useTransferRouter() {
   const xcmAssets = computed<XcmAssets>(() => store.getters['assets/getAllAssets']);
   const evmAssets = computed<EvmAssets>(() => store.getters['assets/getEvmAllAssets']);
   const xcmOpponentChain = computed<string>(() => {
-    const chain = astarChains.includes(capitalize(from.value)) ? to.value : from.value;
-    return capitalize(chain);
+    const chain = astarChains.includes(from.value.toLowerCase()) ? to.value : from.value;
+    return chain;
   });
 
   const setNativeTokenBalance = (): void => {
@@ -280,6 +280,11 @@ export function useTransferRouter() {
       const selectedNetwork = xcmOpponentChain.value;
       const isAstarEvm = from.value.includes(pathEvm) || to.value.includes(pathEvm);
       const isSupportAstarNativeToken = checkIsSupportAstarNativeToken(selectedNetwork);
+      console.log('selectedNetwork', selectedNetwork);
+      console.log('isAstarEvm', isAstarEvm);
+      console.log('isSupportAstarNativeToken', isSupportAstarNativeToken);
+      console.log('xcmAssets.value.assets', xcmAssets.value.assets);
+
       if (isH160.value) {
         const filteredToken = evmTokens.map((it) =>
           generateAssetFromEvmToken(it as Erc20Token, xcmAssets.value.assets)
@@ -299,6 +304,7 @@ export function useTransferRouter() {
       ? tokens.sort((a: Asset, b: Asset) => a.metadata.symbol.localeCompare(b.metadata.symbol))
       : [];
   });
+  console.log('tokens', tokens);
 
   const handleDefaultConfig = (): void => {
     // Memo: avoid triggering this function whenever users go back to assets page

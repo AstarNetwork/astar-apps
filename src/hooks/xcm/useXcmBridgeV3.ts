@@ -139,6 +139,7 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
 
   const setDestChain = (chain: XcmChain): void => {
     destChain.value = chain;
+    console.log('set destChain.value', destChain.value);
   };
 
   const getOriginChainNativeBal = async (): Promise<string> => {
@@ -467,8 +468,12 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
     if (!isTransferPage.value || !from.value || !to.value) {
       return;
     }
-    setSrcChain(xcmChainObj[capitalize(from.value) as keyof typeof xcmChainObj]);
-    setDestChain(xcmChainObj[capitalize(to.value) as keyof typeof xcmChainObj]);
+    console.log('from.value', xcmChainObj[from.value.toLowerCase()]);
+    console.log('to.value', xcmChainObj[to.value.toLowerCase()]);
+
+    setSrcChain(xcmChainObj[from.value.toLowerCase() as keyof typeof xcmChainObj]);
+    setDestChain(xcmChainObj[to.value.toLowerCase() as keyof typeof xcmChainObj]);
+    console.log('did setDestChain run?', destChain);
     await initializeXcmApi();
   };
 
@@ -520,6 +525,9 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
       await monitorDestChainBalance(inputtedAddress.value);
     }
   );
+
+  console.log('srcChain', srcChain);
+  console.log('destChain', destChain);
 
   return {
     amount,
