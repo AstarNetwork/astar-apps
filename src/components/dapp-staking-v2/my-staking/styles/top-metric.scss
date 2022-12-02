@@ -3,7 +3,7 @@
 .panel {
   margin-bottom: 25px;
   padding-top: 55px;
-  padding-bottom: 24px;
+  padding-bottom: 6px;
   padding-left: 16px;
   padding-right: 24px;
   max-width: 1567px;
@@ -12,6 +12,7 @@
   max-width: 1290px;
 
   @media (min-width: $sm) {
+    padding-bottom: 24px;
     padding-left: 28px;
   }
   @media (min-width: $md) {
@@ -74,8 +75,8 @@
   display: flex;
   flex-direction: column;
   flex: none;
-  height: 140px;
-  padding: 16px 20px;
+  height: 150px;
+  padding: 36px 20px;
   background: linear-gradient(180deg, rgba(25, 29, 31, 0) 4.17%, rgba(255, 255, 255, 0.3) 79.69%);
   box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.2);
   border-radius: 6px;
