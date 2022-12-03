@@ -141,6 +141,7 @@
     }
 
     @media (max-width: $sm) {
+      width: 120px;
       min-width: 0px;
       .column--tvl {
         display: block;
@@ -153,6 +154,11 @@
   .column--era-info {
     display: flex;
     column-gap: 4px;
+
+    @media (max-width: $sm) {
+      display: block;
+      line-height: 18px;
+    }
   }
 
   .text--eta-next-era {
