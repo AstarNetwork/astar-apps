@@ -58,7 +58,6 @@ export function useFaucet(isModalFaucet?: Ref<boolean>) {
         isLoading.value = true;
         const url = `${endpoint}/drip/?destination=${account}`;
         const { data } = await axios.get(url);
-        console.log('data', data);
         return data;
       } catch (error: any) {
         throw Error(error.message || 'Something went wrong');

@@ -56,9 +56,11 @@
       </vue-recaptcha>
 
       <div v-if="faucetAmount > Number(faucetHotWalletBalance)" class="row--box-error">
-        <span class="color--white">
-          {{ $t('assets.modals.faucetDriedOut') }}
-        </span>
+        <a :href="socialUrl.discord" target="_blank" rel="noopener noreferrer">
+          <span class="color--white">
+            {{ $t('assets.modals.faucetDriedOut') }}
+          </span>
+        </a>
       </div>
       <div v-if="isAbleToFaucet" class="wrapper__row--button">
         <astar-button :disabled="!recaptchaResponse" class="button--confirm" @click="handleRequest">
@@ -78,6 +80,7 @@ import { RECAPCHA_SITE_KEY } from 'src/config/recapcha';
 import { useStore } from 'src/store';
 import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 import { truncate } from 'src/hooks/helper/common';
+import { socialUrl } from 'src/links';
 
 export default defineComponent({
   components: {
@@ -156,6 +159,7 @@ export default defineComponent({
       isDarkTheme,
       nativeTokenSymbol,
       faucetHotWalletBalance,
+      socialUrl,
       truncate,
       closeModal,
       handleRequest,
