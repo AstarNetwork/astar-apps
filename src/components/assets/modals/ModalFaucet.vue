@@ -43,19 +43,21 @@
           }}</span
         >
       </div>
-      <vue-recaptcha
-        v-show="isAbleToFaucet"
-        ref="vueRecaptcha"
-        :sitekey="RECAPCHA_SITE_KEY"
-        size="normal"
-        :theme="isDarkTheme ? 'dark' : 'light'"
-        @verify="recaptchaVerified"
-        @expire="recaptchaExpired"
-        @fail="recaptchaFailed"
-      >
-      </vue-recaptcha>
+      <div class="row--recaptcha">
+        <vue-recaptcha
+          v-show="isAbleToFaucet"
+          ref="vueRecaptcha"
+          :sitekey="RECAPCHA_SITE_KEY"
+          size="normal"
+          :theme="isDarkTheme ? 'dark' : 'light'"
+          @verify="recaptchaVerified"
+          @expire="recaptchaExpired"
+          @fail="recaptchaFailed"
+        >
+        </vue-recaptcha>
+      </div>
 
-      <div v-if="faucetAmount > Number(faucetHotWalletBalance)" class="row--box-error">
+      <div v-if="faucetAmount > Number(0)" class="row--box-error">
         <a :href="socialUrl.discord" target="_blank" rel="noopener noreferrer">
           <span class="color--white">
             {{ $t('assets.modals.faucetDriedOut') }}

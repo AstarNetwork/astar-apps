@@ -6,10 +6,6 @@
   margin-top: 24px;
 }
 
-.wrapper--faucet {
-  text-align: center;
-}
-
 .wrapper__row--title {
   margin-bottom: 18px;
 }
@@ -17,6 +13,12 @@
 .wrapper__row--information {
   padding: 0 24px;
   margin-bottom: 24px;
+  @media (min-width: $sm) {
+    width: 412px;
+    padding: 0;
+    text-align: left;
+    white-space: break-spaces;
+  }
 }
 
 .box--faucet-amount {
@@ -26,7 +28,10 @@
   width: 344px;
   text-align: center;
   background: $gray-1;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
+  @media (min-width: $sm) {
+    width: 412px;
+  }
 }
 
 .box__column-amount {
@@ -44,6 +49,9 @@
   font-size: 22px;
   font-weight: 600;
   height: 44px;
+  @media (min-width: $sm) {
+    width: 412px;
+  }
 }
 
 .row--faucet-balance {
@@ -51,6 +59,9 @@
   justify-content: flex-end;
   margin-bottom: 8px;
   width: 344px;
+  @media (min-width: $sm) {
+    width: 412px;
+  }
 }
 
 .row--box-error {
@@ -62,8 +73,16 @@
   background: $box-red;
   text-align: left;
   margin-top: 32px;
+  @media (min-width: $sm) {
+    width: 412px;
+  }
 }
 
+.row--recaptcha {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
 .body--dark {
   .box--faucet-amount {
     background: $gray-7;
