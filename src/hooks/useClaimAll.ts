@@ -4,7 +4,7 @@ import { $api } from 'boot/api';
 import { useCurrentEra, useCustomSignature, useGasPrice, RewardDestination } from 'src/hooks';
 import { TxType } from 'src/hooks/custom-signature/message';
 import { ExtrinsicPayload } from 'src/hooks/helper';
-import { getIndividualClaimTxs, PayloadWithWeight } from 'src/hooks/helper/claim';
+import { getIndividualClaimTxs, PayloadWithWeight, checkIsDappOwner } from 'src/hooks/helper/claim';
 import { signAndSend } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
@@ -23,6 +23,7 @@ export function useClaimAll() {
   const canClaim = ref<boolean>(false);
   const canClaimWithoutError = ref<boolean>(false);
   const isLoading = ref<boolean>(true);
+  const isDappOwner = ref<boolean>(false);
   const store = useStore();
   const senderAddress = computed(() => store.getters['general/selectedAddress']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
@@ -48,6 +49,7 @@ export function useClaimAll() {
         return;
       }
 
+      isDappOwner.value = false;
       const txs = await Promise.all(
         dapps.value.map(async (it) => {
           if (it.dapp && !isH160.value) {
@@ -57,6 +59,15 @@ export function useClaimAll() {
               senderAddress: senderAddressRef,
               currentEra: era.value,
             });
+
+            isDappOwner.value =
+              isDappOwner.value ||
+              (await checkIsDappOwner({
+                dappAddress: it?.dapp?.address,
+                api,
+                senderAddress: senderAddressRef,
+              }));
+
             return transactions.length ? transactions : null;
           } else {
             return null;
@@ -98,14 +109,18 @@ export function useClaimAll() {
     }
 
     // Temporary disable restaking reward to avoid possible claim errors.
-    const dappStakingRepository = container.get<IDappStakingRepository>(
-      Symbols.DappStakingRepository
-    );
-    const ledger = await dappStakingRepository.getLedger(senderAddress.value);
+    if (!isDappOwner.value) {
+      const dappStakingRepository = container.get<IDappStakingRepository>(
+        Symbols.DappStakingRepository
+      );
+      const ledger = await dappStakingRepository.getLedger(senderAddress.value);
 
-    if (ledger.rewardDestination === RewardDestination.StakeBalance) {
-      txsToExecute.unshift(api.tx.dappsStaking.setRewardDestination(RewardDestination.FreeBalance));
-      txsToExecute.push(api.tx.dappsStaking.setRewardDestination(RewardDestination.StakeBalance));
+      if (ledger.rewardDestination === RewardDestination.StakeBalance) {
+        txsToExecute.unshift(
+          api.tx.dappsStaking.setRewardDestination(RewardDestination.FreeBalance)
+        );
+        txsToExecute.push(api.tx.dappsStaking.setRewardDestination(RewardDestination.StakeBalance));
+      }
     }
 
     console.info(
