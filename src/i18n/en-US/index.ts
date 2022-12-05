@@ -361,8 +361,10 @@ export default {
       faucetNextRequest: 'Time left until the next request',
       countDown: '{hrs} hrs {mins} mins {secs} secs',
       whatIsFaucet: ' What is faucet and how does it help you?',
+      faucetBalance: 'Faucet Balance: {amount} {symbol}',
       faucetIntro:
         'There is a small fee for each transaction, and this is paid using {symbol} tokens. If you have no {symbol} in your account, you cannot send any tokens. Faucet sends enough {symbol} to cover the transaction fee.',
+      faucetDriedOut: 'Faucet id dried out. Please report to one of our team members',
       availableToWithdraw: 'Available to withdraw',
       totalDistribution: 'Total Distribution',
       alreadyVested: 'Already vested',

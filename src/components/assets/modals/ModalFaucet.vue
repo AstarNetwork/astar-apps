@@ -15,6 +15,14 @@
           $t('assets.modals.faucetIntro', { symbol: nativeTokenSymbol })
         }}</span>
       </div>
+      <div class="row--faucet-balance">
+        <span class="text--md">{{
+          $t('assets.modals.faucetBalance', {
+            amount: $n(truncate(faucetHotWalletBalance)),
+            symbol: nativeTokenSymbol,
+          })
+        }}</span>
+      </div>
       <div class="box--faucet-amount">
         <div class="box__column-amount">
           <span class="text--accent">{{ $t('assets.modals.youWillReceive') }}</span>
@@ -46,6 +54,12 @@
         @fail="recaptchaFailed"
       >
       </vue-recaptcha>
+
+      <div v-if="faucetAmount > Number(faucetHotWalletBalance)" class="row--box-error">
+        <span class="color--white">
+          {{ $t('assets.modals.faucetDriedOut') }}
+        </span>
+      </div>
       <div v-if="isAbleToFaucet" class="wrapper__row--button">
         <astar-button :disabled="!recaptchaResponse" class="button--confirm" @click="handleRequest">
           {{ $t('confirm') }}
@@ -63,6 +77,7 @@ import vueRecaptcha from 'vue3-recaptcha2';
 import { RECAPCHA_SITE_KEY } from 'src/config/recapcha';
 import { useStore } from 'src/store';
 import ModalWrapper from 'src/components/common/ModalWrapper.vue';
+import { truncate } from 'src/hooks/helper/common';
 
 export default defineComponent({
   components: {
@@ -88,8 +103,15 @@ export default defineComponent({
     const { nativeTokenSymbol } = useNetworkInfo();
 
     const isModalFaucet = computed<boolean>(() => props.isModalFaucet);
-    const { requestFaucet, isLoading, unit, isAbleToFaucet, countDown, faucetAmount } =
-      useFaucet(isModalFaucet);
+    const {
+      requestFaucet,
+      isLoading,
+      unit,
+      isAbleToFaucet,
+      countDown,
+      faucetAmount,
+      faucetHotWalletBalance,
+    } = useFaucet(isModalFaucet);
 
     const closeModal = async (): Promise<void> => {
       isClosingModal.value = true;
@@ -133,6 +155,8 @@ export default defineComponent({
       recaptchaResponse,
       isDarkTheme,
       nativeTokenSymbol,
+      faucetHotWalletBalance,
+      truncate,
       closeModal,
       handleRequest,
       recaptchaVerified,

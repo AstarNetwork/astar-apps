@@ -47,8 +47,29 @@
   height: 44px;
 }
 
+.row--faucet-balance {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+  width: 344px;
+}
+
+.row--box-error {
+  padding: 10px 20px;
+  border-radius: 6px;
+  width: 344px;
+  margin-bottom: 6px;
+  border: 1px solid $warning-red;
+  background: $box-red;
+  text-align: left;
+  margin-top: 32px;
+}
+
 .body--dark {
   .box--faucet-amount {
     background: $gray-7;
+  }
+  .row--box-error {
+    background: $box-red-dark;
   }
 }
