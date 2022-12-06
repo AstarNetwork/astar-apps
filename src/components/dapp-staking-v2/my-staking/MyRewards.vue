@@ -28,9 +28,13 @@
         <div v-else class="value">
           {{ amountOfEras }} {{ $t('myReward.era') }}{{ amountOfEras > 1 ? 's' : '' }}
         </div>
-        <astar-button :width="80" :height="24" :disabled="!canClaim" @click="claimAll">{{
-          $t('myReward.claim')
-        }}</astar-button>
+        <astar-button
+          :width="80"
+          :height="24"
+          :disabled="!canClaim || !canClaimWithoutError"
+          @click="claimAll"
+          >{{ $t('myReward.claim') }}</astar-button
+        >
       </div>
     </div>
     <div class="card">
@@ -81,7 +85,7 @@ export default defineComponent({
   },
   setup() {
     const { nativeTokenSymbol } = useNetworkInfo();
-    const { claimAll, canClaim, amountOfEras, isLoading } = useClaimAll();
+    const { claimAll, canClaim, amountOfEras, isLoading, canClaimWithoutError } = useClaimAll();
     const { totalStaked, isLoadingTotalStaked } = useStakerInfo();
 
     const changeDestinationForRestaking = async () => {
@@ -108,6 +112,7 @@ export default defineComponent({
       isLoading,
       amountOfEras,
       canClaim,
+      canClaimWithoutError,
       claimAll,
       isCompounding,
       changeDestinationForRestaking,

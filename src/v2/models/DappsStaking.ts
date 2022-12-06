@@ -55,3 +55,7 @@ export interface AccountLedger {
     unlockingChunks: ChunkInfo[];
   };
 }
+
+export interface DappStakingConstants {
+  maxEraStakeValues: number;
+}
