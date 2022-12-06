@@ -38,6 +38,8 @@ const getWellKnownChain = (networkIdx: endpointKey): WellKnownChain => {
 };
 
 const isLightClient = (endpoint: string): boolean => endpoint.startsWith('light://');
+const isSubstrateConnectInstalled = (): boolean =>
+  !!document.getElementById('substrateConnectExtensionAvailable');
 
 // Memo: Reach to a healthy node whenever the selected endpoint has failed to connect to API
 const fallbackConnection = async ({
@@ -119,7 +121,7 @@ export async function connectApi(
   store.commit('general/setLoading', true);
 
   try {
-    if (isLightClient(endpoint)) {
+    if (isLightClient(endpoint) && isSubstrateConnectInstalled()) {
       const parachainSpec = getParachainSpec(networkIdx);
       const relayProvider = new ScProvider(getWellKnownChain(networkIdx));
       provider = new ScProvider(parachainSpec, relayProvider);
