@@ -189,9 +189,6 @@ export const supportEvmWallets = objToArray(supportEvmWalletObj) as Wallet[];
 export const supportWallets = objToArray(supportWalletObj) as Wallet[];
 export const supportAllWallets = objToArray(supportAllWalletsObj) as Wallet[];
 
-// Todo: get the faucet address from faucet-bot-api
-export const faucetHotwallet = 'WiXeZpx9gX9T3TRcbYanyDCk64zqaCoo1EQvssnTiywWgQB';
-
 // Memo: defined by hard-coding to avoid sending too many requests to faucet API server
 // Ref: https://github.com/AstarNetwork/astar-faucet-bot/blob/main/src/clients/astar.ts#L225
 export const faucetBalRequirement = 0.01 / 2;

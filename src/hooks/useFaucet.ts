@@ -6,7 +6,6 @@ import { useStore } from 'src/store';
 import { onUnmounted, ref, Ref, watch, watchEffect } from 'vue';
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import { fetchNativeBalance } from 'src/modules/account';
-import { faucetHotwallet } from 'src/config/wallets';
 import { ethers } from 'ethers';
 
 interface Timestamps {
@@ -19,6 +18,7 @@ export interface FaucetInfo {
   faucet: {
     amount: number;
     unit: string;
+    faucetAddress: string;
   };
 }
 
@@ -148,11 +148,12 @@ export function useFaucet(isModalFaucet?: Ref<boolean>) {
       if (!currentAccountRef || !isModalFaucetRef) return;
       const endpoint = providerEndpoints[currentNetworkIdx.value].faucetEndpoint;
 
-      const [data, hotWalletBal] = await Promise.all([
-        getFaucetInfo({ account: currentAccountRef, endpoint }),
-        fetchNativeBalance({ address: faucetHotwallet, api: $api! }),
-      ]);
+      const data = await getFaucetInfo({ account: currentAccountRef, endpoint });
       if (!data) return;
+      const hotWalletBal = await fetchNativeBalance({
+        address: data.faucet.faucetAddress,
+        api: $api!,
+      });
 
       faucetAmount.value = data.faucet.amount;
       unit.value = data.faucet.unit;
