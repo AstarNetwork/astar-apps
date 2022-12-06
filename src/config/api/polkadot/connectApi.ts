@@ -121,7 +121,7 @@ export async function connectApi(
   store.commit('general/setLoading', true);
 
   try {
-    if (isLightClient(endpoint) && isSubstrateConnectInstalled()) {
+    if (isLightClient(endpoint)) {
       const parachainSpec = getParachainSpec(networkIdx);
       const relayProvider = new ScProvider(getWellKnownChain(networkIdx));
       provider = new ScProvider(parachainSpec, relayProvider);
