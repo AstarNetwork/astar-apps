@@ -307,8 +307,6 @@ export class DappStakingRepository implements IDappStakingRepository {
     const api = await this.api.getApi();
     const stakerInfos = await api.query.dappsStaking.generalStakerInfo.entries(stakerAddress);
     stakerInfos.forEach(([key, stakerInfo]) => {
-      console.log('key arguments:', key.args[1].toHuman());
-      console.log('         info:', stakerInfo.toHuman() as unknown as GeneralStakerInfo);
       const contractAddress = key.args[1].toString();
       const info = stakerInfo.toHuman() as unknown as GeneralStakerInfo;
       result.set(contractAddress, info);

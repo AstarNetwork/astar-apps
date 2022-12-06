@@ -211,7 +211,7 @@ export default {
     onChainData: 'On-Chain Data',
     stakingTvl: 'Staking TVL',
     cantClaimWihtoutError:
-      'Looks like you are not able to claim at the moment because of too many unclaimed eras. Please turn off auto Re-Stake feature to be able to claim. After you claim rewards you can turn on re-stake again. UI team is working to fix this issue.',
+      'Looks like you are not able to claim with automatic re-stake because you hav not claimed in a while. Please turn off the Auto Re-Stake feature to be able to claim. After you claim rewards you can turn on re-stake again. UI team is working to fix this issue.',
     stakePage: {
       backToDappList: 'Back to dApps list',
       whereFundsFrom: 'Where would you like to bring you funds from?',
