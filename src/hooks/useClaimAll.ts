@@ -1,16 +1,19 @@
-import { useI18n } from 'vue-i18n';
-import { useGasPrice, useCurrentEra, useCustomSignature, useNetworkInfo } from 'src/hooks';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { BN } from '@polkadot/util';
 import { $api } from 'boot/api';
-import { useStore } from 'src/store';
-import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
-import { computed, ref, watchEffect } from 'vue';
+import { useCurrentEra, useCustomSignature, useGasPrice, RewardDestination } from 'src/hooks';
 import { TxType } from 'src/hooks/custom-signature/message';
 import { ExtrinsicPayload } from 'src/hooks/helper';
 import { getIndividualClaimTxs, PayloadWithWeight } from 'src/hooks/helper/claim';
 import { signAndSend } from 'src/hooks/helper/wallet';
+import { useStore } from 'src/store';
+import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
+import { container } from 'src/v2/common';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
+import { IDappStakingRepository } from 'src/v2/repositories';
+import { IDappStakingService } from 'src/v2/services';
+import { Symbols } from 'src/v2/symbols';
+import { computed, ref, watchEffect } from 'vue';
 
 const MAX_BATCH_WEIGHT = new BN('50000000000');
 
@@ -18,6 +21,7 @@ export function useClaimAll() {
   let batchTxs: PayloadWithWeight[] = [];
   const amountOfEras = ref<number>(0);
   const canClaim = ref<boolean>(false);
+  const canClaimWithoutError = ref<boolean>(false);
   const isLoading = ref<boolean>(true);
   const store = useStore();
   const senderAddress = computed(() => store.getters['general/selectedAddress']);
@@ -26,8 +30,6 @@ export function useClaimAll() {
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const isSendingTx = computed(() => store.getters['general/isLoading']);
   const { nativeTipPrice } = useGasPrice();
-  const { currentNetworkName } = useNetworkInfo();
-  const { t } = useI18n();
 
   const { era } = useCurrentEra();
   const { handleResult, handleCustomExtrinsic, isCustomSig } = useCustomSignature({
@@ -64,7 +66,6 @@ export function useClaimAll() {
       const filteredTxs = txs.filter((it) => it !== null);
       batchTxs = filteredTxs.flat() as PayloadWithWeight[];
       canClaim.value = batchTxs.length > 0;
-
       amountOfEras.value = batchTxs.length;
     } catch (error: any) {
       console.error(error.message);
@@ -96,6 +97,17 @@ export function useClaimAll() {
       totalWeight = totalWeight.add(tx.weight);
     }
 
+    // Temporary disable restaking reward to avoid possible claim errors.
+    const dappStakingRepository = container.get<IDappStakingRepository>(
+      Symbols.DappStakingRepository
+    );
+    const ledger = await dappStakingRepository.getLedger(senderAddress.value);
+
+    if (ledger.rewardDestination === RewardDestination.StakeBalance) {
+      txsToExecute.unshift(api.tx.dappsStaking.setRewardDestination(RewardDestination.FreeBalance));
+      txsToExecute.push(api.tx.dappsStaking.setRewardDestination(RewardDestination.StakeBalance));
+    }
+
     console.info(
       `Batch weight: ${totalWeight.toString()}, transactions no. ${txsToExecute.length}`
     );
@@ -124,27 +136,10 @@ export function useClaimAll() {
     }
   };
 
-  const dispatchGetDapps = (): void => {
-    const isDispatch = currentNetworkName.value && dapps.value.length === 0 && senderAddress.value;
-    if (isDispatch) {
-      store.dispatch('dapps/getDapps', {
-        network: currentNetworkName.value.toLowerCase(),
-        currentAccount: senderAddress.value,
-      });
-    }
-    if (isH160.value) {
-      store.dispatch('general/showAlertMsg', {
-        msg: t('dappStaking.error.onlySupportsSubstrate'),
-        alertType: 'error',
-      });
-    }
-  };
-
-  watchEffect(dispatchGetDapps);
-
   return {
     claimAll,
     canClaim,
+    canClaimWithoutError,
     isLoading,
     amountOfEras,
   };

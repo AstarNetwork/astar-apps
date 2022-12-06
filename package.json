@@ -1,6 +1,6 @@
 {
   "name": "astar-portal",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "Your one-stop platform for the Astar ecosystem - Wallet / Staking / Bridging",
   "productName": "Astar Portal - Astar & Shiden Network",
   "author": "Astar Network",
@@ -121,7 +121,7 @@
     "last 5 Opera versions"
   ],
   "engines": {
-    "node": "16.x",
+    "node": "18.x",
     "yarn": ">=1.22.0"
   },
   "browser": {

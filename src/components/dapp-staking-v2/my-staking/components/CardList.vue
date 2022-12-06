@@ -144,6 +144,7 @@ export default defineComponent({
   flex-basis: 30%;
   max-width: 306px;
   cursor: pointer;
+  transition: all 0.2s ease 0s;
   .wrapper--card {
     display: flex;
     align-items: center;
@@ -224,6 +225,7 @@ export default defineComponent({
     border-radius: 6px;
   }
   &:hover {
+    transition: all 0.2s ease 0s;
     @include hover;
   }
   @media (max-width: $widthCardLineUp) {

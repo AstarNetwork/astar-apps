@@ -7,7 +7,7 @@
 
 .container--toggle {
   margin-bottom: 4px;
-} 
+}
 
 .container--radio {
   margin-top: 12px;
@@ -29,7 +29,7 @@
   margin-top: 60px;
 
   @media (min-width: $md) {
-    width: $container-max-width;  
+    width: $container-max-width;
   }
 }
 
@@ -39,4 +39,11 @@
   border-radius: 6px;
   padding: 8px;
   margin-bottom: 40px;
+}
+
+.button--submit {
+  font-size: 22px;
+  font-weight: 600;
+  height: 52px;
+  width: 328px;
 }

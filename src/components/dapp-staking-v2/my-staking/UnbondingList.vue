@@ -18,7 +18,7 @@
               <td><format-balance :balance="t.amount.toString()" /></td>
               <td>
                 <div class="row--remaining-era">
-                  <div>{{ t.unlockEra }}</div>
+                  <div>{{ t.erasBeforeUnlock }}</div>
                   <!-- <astar-irregular-button
                     :width="77"
                     :height="20"

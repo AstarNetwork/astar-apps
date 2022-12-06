@@ -219,9 +219,7 @@
 }
 
 .btn-size-adjust {
-  @media (min-width: $xs) {
-    width: 344px;
-  }
+  width: 344px;
   @media (min-width: $md) {
     width: 400px;
   }

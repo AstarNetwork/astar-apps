@@ -12,7 +12,7 @@
           <td><format-balance :balance="item.amount.toString()" /></td>
           <td>
             <div class="row--remaining-era">
-              <div class="val-era">{{ item.unlockEra }}</div>
+              <div class="val-era">{{ item.erasBeforeUnlock }}</div>
               <!-- <astar-irregular-button
                 :width="77"
                 :height="20"
@@ -69,7 +69,7 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(_, { emit }) {
+  setup() {
     const showModalWithdraw = ref(false);
     const showModalRebond = ref(false);
     // MEMO: since not possible to withdraw each chunk currently, use total amount of withdraw

@@ -23,9 +23,6 @@ export default {
     docs: 'ドキュメント',
   },
   dappStaking: {
-    dappsStore: 'dApps Store',
-    registerDapp: 'dAppを登録',
-    noDappsRegistered: 'No dApps registered. Be the first to register one.',
     totalStake: 'Total stake:',
     availableToStake: 'Available to stake',
     yourStake: 'Your stake: ',
@@ -33,18 +30,8 @@ export default {
     unstake: 'Unstake',
     stake: 'Stake',
     claim: '報酬',
-    warning: 'Minimum Staking Amount is {amount} and Up to {stakers} Stakers Per Contract',
-    tvl: 'TVL IN DAPPS',
-    dappsCount: 'DAPPS COUNT',
-    requirement: 'REQUIREMENT',
     modals: {
-      alreadyClaimed: 'Already claimed:',
-      contractRewards: 'Contract rewards:',
-      yourRewards: 'Your rewards',
       contractAddress: 'Contract address {address}',
-      logo: 'ロゴ',
-      register: '登録',
-      address: 'アドレス',
     },
   },
 };

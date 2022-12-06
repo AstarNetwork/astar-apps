@@ -8,12 +8,13 @@
     class="wrapper--chart"
     :is-multiple-line="isMultipleLine"
     :second-value="secondValue"
+    :is-price="true"
     @filter-changed="handleFilterChanged"
   />
 </template>
 
 <script lang="ts">
-import ChartPanel from 'src/components/dashboard/ChartPanel.vue';
+import ChartPanel from 'src/components/common/ChartPanel.vue';
 import { defineComponent, PropType } from 'vue';
 
 export default defineComponent({

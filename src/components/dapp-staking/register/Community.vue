@@ -79,7 +79,7 @@ export default defineComponent({
       {
         type: CommunityType.Discord,
         handle: '',
-        iconUrl: require('src/assets/img/twitter.png'),
+        iconUrl: require('src/assets/img/discord.png'),
         label: t('dappStaking.modals.community.discordAccount'),
         validateHandle: (x) => validateUrl(x),
       },
