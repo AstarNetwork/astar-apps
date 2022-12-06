@@ -19,11 +19,8 @@
   @media (min-width: $xs) {
     width: 344px;
   }
-  @media (min-width: $md) {
-    width: 400px;
-  }
-  @media (min-width: $xl) {
-    width: 420px;
+  @media (min-width: $sm) {
+    width: 412px;
   }
 }
 
@@ -49,11 +46,8 @@
   border: 1px solid $warning-red;
   background: $box-red;
   text-align: left;
-  @media (min-width: $md) {
-    width: 400px;
-  }
-  @media (min-width: $xl) {
-    width: 420px;
+  @media (min-width: $sm) {
+    width: 412px;
   }
 }
 
@@ -158,11 +152,8 @@
 .btn-size--confirm {
   width: 340px;
   height: 52px;
-  @media (min-width: $md) {
-    width: 400px;
-  }
-  @media (min-width: $xl) {
-    width: 420px;
+  @media (min-width: $sm) {
+    width: 412px;
   }
 }
 
