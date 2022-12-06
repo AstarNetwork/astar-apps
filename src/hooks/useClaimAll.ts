@@ -23,7 +23,6 @@ export function useClaimAll() {
   const canClaim = ref<boolean>(false);
   const canClaimWithoutError = ref<boolean>(false);
   const isLoading = ref<boolean>(true);
-  const isDappOwner = ref<boolean>(false);
   const store = useStore();
   const senderAddress = computed(() => store.getters['general/selectedAddress']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
@@ -49,7 +48,6 @@ export function useClaimAll() {
         return;
       }
 
-      isDappOwner.value = false;
       const txs = await Promise.all(
         dapps.value.map(async (it) => {
           if (it.dapp && !isH160.value) {
@@ -59,14 +57,6 @@ export function useClaimAll() {
               senderAddress: senderAddressRef,
               currentEra: era.value,
             });
-
-            isDappOwner.value =
-              isDappOwner.value ||
-              (await checkIsDappOwner({
-                dappAddress: it?.dapp?.address,
-                api,
-                senderAddress: senderAddressRef,
-              }));
 
             return transactions.length ? transactions : null;
           } else {
@@ -108,20 +98,19 @@ export function useClaimAll() {
       totalWeight = totalWeight.add(tx.weight);
     }
 
+    // The fix causes problems and confusion for stakers because rewards are not restaked,
+    // second thing is that developers are unable to stake.
+    // Need to change approach
     // Temporary disable restaking reward to avoid possible claim errors.
-    if (!isDappOwner.value) {
-      const dappStakingRepository = container.get<IDappStakingRepository>(
-        Symbols.DappStakingRepository
-      );
-      const ledger = await dappStakingRepository.getLedger(senderAddress.value);
+    // const dappStakingRepository = container.get<IDappStakingRepository>(
+    //   Symbols.DappStakingRepository
+    // );
+    // const ledger = await dappStakingRepository.getLedger(senderAddress.value);
 
-      if (ledger.rewardDestination === RewardDestination.StakeBalance) {
-        txsToExecute.unshift(
-          api.tx.dappsStaking.setRewardDestination(RewardDestination.FreeBalance)
-        );
-        txsToExecute.push(api.tx.dappsStaking.setRewardDestination(RewardDestination.StakeBalance));
-      }
-    }
+    // if (ledger.rewardDestination === RewardDestination.StakeBalance) {
+    //   txsToExecute.unshift(api.tx.dappsStaking.setRewardDestination(RewardDestination.FreeBalance));
+    //   txsToExecute.push(api.tx.dappsStaking.setRewardDestination(RewardDestination.StakeBalance));
+    // }
 
     console.info(
       `Batch weight: ${totalWeight.toString()}, transactions no. ${txsToExecute.length}`
