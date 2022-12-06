@@ -114,3 +114,9 @@
   color: $warning-red;
   padding: 8px 16px;
 }
+
+.body--dark {
+  .claim-warning {
+    color: $gray-1;
+  }
+}
