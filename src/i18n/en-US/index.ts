@@ -229,6 +229,8 @@ export default {
       contractAddress: 'Contract Address',
       license: 'License',
       community: 'Community',
+      wallets: 'Wallets',
+      stats: 'Stats',
     },
     modals: {
       contractAddress: 'Contract address {address}',
@@ -359,8 +361,10 @@ export default {
       faucetNextRequest: 'Time left until the next request',
       countDown: '{hrs} hrs {mins} mins {secs} secs',
       whatIsFaucet: ' What is faucet and how does it help you?',
+      faucetBalance: 'Faucet Balance: {amount} {symbol}',
       faucetIntro:
         'There is a small fee for each transaction, and this is paid using {symbol} tokens. If you have no {symbol} in your account, you cannot send any tokens. Faucet sends enough {symbol} to cover the transaction fee.',
+      faucetDriedOut: 'Faucet id dried out. Please report to one of our team members in Discord',
       availableToWithdraw: 'Available to withdraw',
       totalDistribution: 'Total Distribution',
       alreadyVested: 'Already vested',
@@ -409,27 +413,35 @@ export default {
       progress: '{value}%',
       eta: 'ETA {value}',
     },
-    chart: {
-      tvl: {
-        title: 'Total Value Locked',
-        tooltip: 'TVL',
-      },
-      dappStaking: {
-        title: 'Total Value Locked in dApp Staking',
-        tooltip: 'TVL in dApp Staking',
-      },
-      ecosystem: {
-        title: 'Total Value Locked in EVM Ecosystem',
-        tooltip: 'TVL in EVM Ecosystem',
-      },
-      ttlTransactions: {
-        title: 'Total Transactions',
-        tooltip: 'Total Transactions',
-      },
-      tokenPrice: {
-        title: 'Token Price',
-        tooltip: 'Token Price',
-      },
+  },
+  chart: {
+    tvl: {
+      title: 'Total Value Locked',
+      tooltip: 'TVL',
+    },
+    dappStaking: {
+      title: 'Total Value Locked in dApp Staking',
+      tooltip: 'TVL in dApp Staking',
+    },
+    ecosystem: {
+      title: 'Total Value Locked in EVM Ecosystem',
+      tooltip: 'TVL in EVM Ecosystem',
+    },
+    ttlTransactions: {
+      title: 'Total Transactions',
+      tooltip: 'Total Transactions',
+    },
+    tokenPrice: {
+      title: 'Token Price',
+      tooltip: 'Token Price',
+    },
+    uniqueActiveUsers: {
+      title: 'Unique Active Users',
+      tooltip: 'Unique Active Users',
+    },
+    numberOfCalls: {
+      title: 'Number Of Transactions',
+      tooltip: "Number of transactions users called to dApp's smart contract address",
     },
   },
 };

@@ -13,7 +13,7 @@
 <script lang="ts">
 import { defineComponent, ref, watch } from 'vue';
 import axios from 'axios';
-import ChartPanel from 'src/components/dashboard/ChartPanel.vue';
+import ChartPanel from 'src/components/common/ChartPanel.vue';
 import { ChartData } from 'src/components/dashboard/ChartData';
 import { TOKEN_API_URL, formatNumber, textChart } from 'src/modules/token-api';
 import { DEFAULT_FILTER } from 'src/components/dashboard/ChartFilter.vue';

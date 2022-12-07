@@ -1,14 +1,18 @@
 import { ISubmittableResult } from '@polkadot/types/types';
 import { BN } from '@polkadot/util';
 import { $api } from 'boot/api';
-import { useCurrentEra, useCustomSignature, useGasPrice } from 'src/hooks';
+import { useCurrentEra, useCustomSignature, useGasPrice, RewardDestination } from 'src/hooks';
 import { TxType } from 'src/hooks/custom-signature/message';
 import { ExtrinsicPayload } from 'src/hooks/helper';
-import { getIndividualClaimTxs, PayloadWithWeight } from 'src/hooks/helper/claim';
+import { getIndividualClaimTxs, PayloadWithWeight, checkIsDappOwner } from 'src/hooks/helper/claim';
 import { signAndSend } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
+import { container } from 'src/v2/common';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
+import { IDappStakingRepository } from 'src/v2/repositories';
+import { IDappStakingService } from 'src/v2/services';
+import { Symbols } from 'src/v2/symbols';
 import { computed, ref, watchEffect } from 'vue';
 
 const MAX_BATCH_WEIGHT = new BN('50000000000');
@@ -17,6 +21,7 @@ export function useClaimAll() {
   let batchTxs: PayloadWithWeight[] = [];
   const amountOfEras = ref<number>(0);
   const canClaim = ref<boolean>(false);
+  const canClaimWithoutError = ref<boolean>(false);
   const isLoading = ref<boolean>(true);
   const store = useStore();
   const senderAddress = computed(() => store.getters['general/selectedAddress']);
@@ -52,6 +57,7 @@ export function useClaimAll() {
               senderAddress: senderAddressRef,
               currentEra: era.value,
             });
+
             return transactions.length ? transactions : null;
           } else {
             return null;
@@ -61,7 +67,6 @@ export function useClaimAll() {
       const filteredTxs = txs.filter((it) => it !== null);
       batchTxs = filteredTxs.flat() as PayloadWithWeight[];
       canClaim.value = batchTxs.length > 0;
-
       amountOfEras.value = batchTxs.length;
     } catch (error: any) {
       console.error(error.message);
@@ -92,6 +97,20 @@ export function useClaimAll() {
       txsToExecute.push(tx.payload as ExtrinsicPayload);
       totalWeight = totalWeight.add(tx.weight);
     }
+
+    // The fix causes problems and confusion for stakers because rewards are not restaked,
+    // second thing is that developers are unable to stake.
+    // Need to change approach
+    // Temporary disable restaking reward to avoid possible claim errors.
+    // const dappStakingRepository = container.get<IDappStakingRepository>(
+    //   Symbols.DappStakingRepository
+    // );
+    // const ledger = await dappStakingRepository.getLedger(senderAddress.value);
+
+    // if (ledger.rewardDestination === RewardDestination.StakeBalance) {
+    //   txsToExecute.unshift(api.tx.dappsStaking.setRewardDestination(RewardDestination.FreeBalance));
+    //   txsToExecute.push(api.tx.dappsStaking.setRewardDestination(RewardDestination.StakeBalance));
+    // }
 
     console.info(
       `Batch weight: ${totalWeight.toString()}, transactions no. ${txsToExecute.length}`
@@ -124,6 +143,7 @@ export function useClaimAll() {
   return {
     claimAll,
     canClaim,
+    canClaimWithoutError,
     isLoading,
     amountOfEras,
   };

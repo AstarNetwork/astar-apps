@@ -7,6 +7,7 @@
     class="wrapper--chart"
     :range-filter="currentFilter"
     :is-multiple-line="false"
+    :is-price="true"
     @filter-changed="handleFilterChanged"
   />
 </template>
@@ -14,7 +15,7 @@
 <script lang="ts">
 import axios from 'axios';
 import { ChartData } from 'src/components/dashboard/ChartData';
-import ChartPanel from 'src/components/dashboard/ChartPanel.vue';
+import ChartPanel from 'src/components/common/ChartPanel.vue';
 import { defineComponent, ref, watch } from 'vue';
 import { TOKEN_API_URL, textChart } from 'src/modules/token-api';
 
