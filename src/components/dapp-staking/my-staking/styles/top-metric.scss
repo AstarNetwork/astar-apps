@@ -6,13 +6,13 @@
   padding-bottom: 24px;
   padding-left: 8px;
   padding-right: 8px;
-  max-width: 1567px;
   margin-left: -16px;
   margin-right: -16px;
   max-width: 1290px;
 
   @media (min-width: $sm) {
     padding-left: 28px;
+    padding-right: 28px;
   }
   @media (min-width: $md) {
     margin-left: 0px;
@@ -116,7 +116,6 @@
       display: block;
       font-weight: 600;
       font-size: 19px;
-      
       color: $gray-1;
 
       .txt--tvl {
@@ -154,6 +153,7 @@
     @media (min-width: $sm) {
       display: flex;
       line-height: 0px;
+      margin-top: 10px;
     }
   }
 
