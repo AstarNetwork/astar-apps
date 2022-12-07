@@ -81,7 +81,7 @@
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { useAccount, useClaimAll, useNetworkInfo, useStakerInfo, useAutoCompound } from 'src/hooks';
 import { useClaimedReward } from 'src/hooks/dapps-staking/useClaimedReward';
-import ModalAutoCompound from 'src/components/dapp-staking-v2/my-staking/components/modals/ModalAutoCompound.vue';
+import ModalAutoCompound from 'src/components/dapp-staking/my-staking/components/modals/ModalAutoCompound.vue';
 import { RewardDestination } from 'src/hooks/dapps-staking/useCompoundRewards';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { defineComponent, computed, ref } from 'vue';
