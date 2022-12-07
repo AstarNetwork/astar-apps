@@ -4,7 +4,7 @@
       <astar-icon-vert />
     </div>
     <div v-if="isOptionsOpen" class="box--options">
-      <button class="row--option" @click="handleImportTokens">
+      <button v-if="isImportModal" class="row--option" @click="handleImportTokens">
         <div>
           <span class="icon--plus"> + </span>
         </div>
@@ -27,6 +27,7 @@
     </div>
 
     <ModalImportTokens
+      v-if="isImportModal"
       :is-modal-import-tokens="isModalImportTokens"
       :handle-modal-import-tokens="handleModalImportTokens"
       :tokens="tokens"
@@ -38,12 +39,17 @@ import { defineComponent, ref, PropType, computed } from 'vue';
 import ModalImportTokens from 'src/components/assets/modals/ModalImportTokens.vue';
 import { SelectedToken } from 'src/c-bridge';
 import { useStore } from 'src/store';
+import { Asset } from 'src/v2/models';
 
 export default defineComponent({
   components: {
     ModalImportTokens,
   },
   props: {
+    isImportModal: {
+      type: Boolean,
+      required: true,
+    },
     isHideSmallBalances: {
       type: Boolean,
       required: true,
@@ -53,7 +59,7 @@ export default defineComponent({
       required: true,
     },
     tokens: {
-      type: Object as PropType<SelectedToken[]>,
+      type: Object as PropType<SelectedToken[] | Asset[]>,
       required: false,
       default: null,
     },
@@ -96,5 +102,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/assets/styles/evm-asset-options.scss';
+@use 'src/components/assets/styles/asset-options.scss';
 </style>

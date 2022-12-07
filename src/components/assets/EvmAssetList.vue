@@ -1,6 +1,6 @@
 <template>
   <div v-if="isListReady" class="container--assets">
-    <div v-if="filteredTokens.length > 0" class="container">
+    <div v-if="filteredTokens && filteredTokens.length > 0" class="container">
       <div class="row">
         <div>
           <span class="text--title">{{ $t('assets.xcmAssets') }}</span>
@@ -43,10 +43,11 @@
               </table>
             </div>
           </div>
-          <evm-asset-options
+          <asset-options
             :toggle-is-hide-small-balances="toggleIsHideSmallBalances"
             :is-hide-small-balances="isHideSmallBalances"
             :tokens="tokens"
+            :is-import-modal="true"
           />
         </div>
       </div>
@@ -128,7 +129,7 @@ import { ethers } from 'ethers';
 import { $web3 } from 'src/boot/api';
 import { cbridgeAppLink, checkIsCbridgeToken } from 'src/c-bridge';
 import Erc20Currency from 'src/components/assets/Erc20Currency.vue';
-import EvmAssetOptions from 'src/components/assets/EvmAssetOptions.vue';
+import AssetOptions from 'src/components/assets/AssetOptions.vue';
 import EvmCbridgeToken from 'src/components/assets/EvmCbridgeToken.vue';
 import { getBalance } from 'src/config/web3';
 import { useAccount, useBalance, useNetworkInfo, usePrice } from 'src/hooks';
@@ -145,7 +146,7 @@ export default defineComponent({
     EvmCbridgeToken,
     ModalFaucet,
     Erc20Currency,
-    EvmAssetOptions,
+    AssetOptions,
     TokenBalance,
   },
   props: {

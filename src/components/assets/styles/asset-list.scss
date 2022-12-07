@@ -358,6 +358,12 @@
   }
 }
 
+.row--menu {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .body--dark {
   .text--value {
     color: $gray-1;
