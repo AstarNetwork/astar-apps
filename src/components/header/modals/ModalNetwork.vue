@@ -141,7 +141,8 @@ export default defineComponent({
           return selEndpointShiden.value;
         case endpointKey.SHIBUYA:
           return selEndpointShibuya.value;
-
+        case endpointKey.ROCSTAR:
+          return selEndpointRocstar.value;
         default:
           return selEndpointAstar.value;
       }
@@ -176,6 +177,7 @@ export default defineComponent({
     const selEndpointAstar = ref<string>('');
     const selEndpointShiden = ref<string>('');
     const selEndpointShibuya = ref<string>('');
+    const selEndpointRocstar = ref<string>('');
 
     const isDisabled = computed(() => {
       return selNetwork.value === endpointKey.CUSTOM && !newEndpoint.value;
@@ -190,11 +192,17 @@ export default defineComponent({
       index: number;
       endpoint: string;
     }): boolean => {
-      return index === endpointKey.ASTAR
-        ? selEndpointAstar.value === endpoint
-        : index === endpointKey.SHIDEN
-        ? selEndpointShiden.value === endpoint
-        : selEndpointShibuya.value === endpoint;
+      if (index === endpointKey.ASTAR) {
+        return selEndpointAstar.value === endpoint;
+      } else if (index === endpointKey.SHIDEN) {
+        return selEndpointShiden.value === endpoint;
+      } else if (index === endpointKey.SHIBUYA) {
+        return selEndpointShibuya.value === endpoint;
+      } else if (index === endpointKey.ROCSTAR) {
+        return selEndpointRocstar.value === endpoint;
+      } else {
+        return false;
+      }
     };
 
     const setSelEndpoint = ({
@@ -211,6 +219,8 @@ export default defineComponent({
         selEndpointShiden.value = endpointObj.endpoint;
       } else if (networkIdx === endpointKey.SHIBUYA) {
         selEndpointShibuya.value = endpointObj.endpoint;
+      } else if (networkIdx === endpointKey.ROCSTAR) {
+        selEndpointRocstar.value = endpointObj.endpoint;
       }
     };
 
@@ -230,6 +240,11 @@ export default defineComponent({
           providerEndpoints[endpointKey.SHIBUYA].endpoints
         ).endpoint;
       }
+      if (networkIdx === endpointKey.ROCSTAR) {
+        selEndpointRocstar.value = getRandomFromArray(
+          providerEndpoints[endpointKey.ROCSTAR].endpoints
+        ).endpoint;
+      }
     };
 
     const setupInitialEndpointOption = (networkIdx: number) => {
@@ -237,6 +252,7 @@ export default defineComponent({
         selEndpointAstar.value = $endpoint.value;
         randomizedEndpoint(endpointKey.SHIDEN);
         randomizedEndpoint(endpointKey.SHIBUYA);
+        randomizedEndpoint(endpointKey.ROCSTAR);
         return;
       }
 
@@ -244,6 +260,7 @@ export default defineComponent({
         selEndpointShiden.value = $endpoint.value;
         randomizedEndpoint(endpointKey.ASTAR);
         randomizedEndpoint(endpointKey.SHIBUYA);
+        randomizedEndpoint(endpointKey.ROCSTAR);
         return;
       }
 
@@ -251,6 +268,15 @@ export default defineComponent({
         selEndpointShibuya.value = $endpoint.value;
         randomizedEndpoint(endpointKey.ASTAR);
         randomizedEndpoint(endpointKey.SHIDEN);
+        randomizedEndpoint(endpointKey.ROCSTAR);
+        return;
+      }
+
+      if (networkIdx === endpointKey.ROCSTAR) {
+        selEndpointRocstar.value = $endpoint.value;
+        randomizedEndpoint(endpointKey.ASTAR);
+        randomizedEndpoint(endpointKey.SHIDEN);
+        randomizedEndpoint(endpointKey.SHIBUYA);
         return;
       }
     };

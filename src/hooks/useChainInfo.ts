@@ -48,7 +48,10 @@ export function useChainInfo(api: ApiPromise) {
   const chainInfo = ref<ChainInfo>();
   api.isReady.then(async () => {
     const specName: string = api.runtimeVersion.specName.toString();
-    const systemChain: string = ((await api.rpc.system.chain()) || '<unknown>').toString();
+    let systemChain: string = ((await api.rpc.system.chain()) || '<unknown>').toString();
+    if (systemChain === 'Rocstar Testnet') {
+      systemChain = 'Rocstar';
+    }
     const systemName: string = (await api.rpc.system.name()).toString();
     chainInfo.value = createInfo(api, systemChain, systemName, specName);
   });
