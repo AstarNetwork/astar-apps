@@ -19,7 +19,7 @@
           <span class="text--title">{{ $t('assets.assets') }}</span>
         </div>
 
-        <div class="row--search-option">
+        <!-- <div class="row--search-option">
           <div :class="isSearch && 'search--active'">
             <div class="box--search">
               <table class="table--search">
@@ -49,7 +49,16 @@
             :tokens="tokens"
             :is-import-modal="true"
           />
-        </div>
+        </div> -->
+        <AssetSearchOption
+          :toggle-is-hide-small-balances="toggleIsHideSmallBalances"
+          :is-hide-small-balances="isHideSmallBalances"
+          :tokens="tokens"
+          :is-import-modal="true"
+          :is-search="isSearch"
+          :set-search="setSearch"
+          :set-is-search="setIsSearch"
+        />
       </div>
 
       <div class="border--separator" />
@@ -140,14 +149,16 @@ import ModalFaucet from 'src/components/assets/modals/ModalFaucet.vue';
 import { buildTransferPageLink } from 'src/router/routes';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { faucetBalRequirement } from 'src/config/wallets';
+import AssetSearchOption from 'src/components/assets/AssetSearchOption.vue';
 
 export default defineComponent({
   components: {
     EvmCbridgeToken,
     ModalFaucet,
     Erc20Currency,
-    AssetOptions,
+    // AssetOptions,
     TokenBalance,
+    AssetSearchOption,
   },
   props: {
     tokens: {
@@ -190,7 +201,6 @@ export default defineComponent({
     });
 
     const filteredTokens = computed<Erc20Token[] | null>(() => {
-      if (!search.value) return props.tokens;
       if (!props.tokens) return null;
       const tokens = isHideSmallBalances.value
         ? props.tokens.filter((it) => Number(it.userBalance) > 0)
@@ -221,6 +231,10 @@ export default defineComponent({
 
     const setIsSearch = (isTyping: boolean): void => {
       isSearch.value = isTyping;
+    };
+
+    const setSearch = (event: any): void => {
+      search.value = event.target.value;
     };
 
     const updateStates = async (): Promise<void> => {
@@ -266,6 +280,7 @@ export default defineComponent({
       handleModalFaucet,
       checkIsCbridgeToken,
       toggleIsHideSmallBalances,
+      setSearch,
     };
   },
 });

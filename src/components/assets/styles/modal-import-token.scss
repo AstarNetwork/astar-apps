@@ -25,6 +25,9 @@
   text-align: left;
   background: $gray-1;
   margin-bottom: 16px;
+  @media (min-width: $sm) {
+    width: 412px;
+  }
 }
 
 .box__title {
@@ -58,6 +61,9 @@
   background: $box-red;
   text-align: left;
   margin-bottom: -8px;
+  @media (min-width: $sm) {
+    width: 412px;
+  }
 }
 
 .button--confirm {
@@ -65,6 +71,9 @@
   font-size: 22px;
   font-weight: 600;
   height: 44px;
+  @media (min-width: $sm) {
+    width: 412px;
+  }
 }
 
 .body--dark {

@@ -5,38 +5,15 @@
         <div class="row">
           <span class="text--title">{{ $t('assets.xcmAssets') }}</span>
         </div>
-
-        <div class="row--search-option">
-          <div :class="isSearch && 'search--active'">
-            <div class="box--search">
-              <table class="table--search">
-                <tr class="tr--search">
-                  <td>
-                    <input
-                      v-model="search"
-                      type="text"
-                      placeholder="Search"
-                      class="input--search"
-                      @focus="setIsSearch(true)"
-                      @blur="setIsSearch(false)"
-                    />
-                  </td>
-                  <td>
-                    <div class="icon--search">
-                      <astar-icon-search />
-                    </div>
-                  </td>
-                </tr>
-              </table>
-            </div>
-          </div>
-          <asset-options
-            :toggle-is-hide-small-balances="toggleIsHideSmallBalances"
-            :is-hide-small-balances="isHideSmallBalances"
-            :tokens="xcmAssets"
-            :is-import-modal="false"
-          />
-        </div>
+        <AssetSearchOption
+          :toggle-is-hide-small-balances="toggleIsHideSmallBalances"
+          :is-hide-small-balances="isHideSmallBalances"
+          :tokens="xcmAssets"
+          :is-import-modal="false"
+          :is-search="isSearch"
+          :set-search="setSearch"
+          :set-is-search="setIsSearch"
+        />
       </div>
 
       <div v-for="t in filteredTokens" :key="t.id">
@@ -50,11 +27,11 @@
 import { Asset } from 'src/v2/models';
 import { defineComponent, PropType, ref, computed, watchEffect } from 'vue';
 import XcmCurrency from 'src/components/assets/XcmCurrency.vue';
-import AssetOptions from 'src/components/assets/AssetOptions.vue';
+import AssetSearchOption from 'src/components/assets/AssetSearchOption.vue';
 export default defineComponent({
   components: {
     XcmCurrency,
-    AssetOptions,
+    AssetSearchOption,
   },
   props: {
     xcmAssets: {
@@ -96,6 +73,10 @@ export default defineComponent({
       isSearch.value = isTyping;
     };
 
+    const setSearch = (event: any): void => {
+      search.value = event.target.value;
+    };
+
     watchEffect(() => {
       console.log('filteredTokens', filteredTokens.value);
       console.log('isHideSmallBalances.value', isHideSmallBalances.value);
@@ -108,6 +89,7 @@ export default defineComponent({
       isHideSmallBalances,
       toggleIsHideSmallBalances,
       setIsSearch,
+      setSearch,
     };
   },
 });
