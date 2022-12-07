@@ -136,8 +136,10 @@ export default defineComponent({
 
     watch(
       [currentAccount, dapp],
-      () => {
+      async () => {
         if (!dapp.value) return;
+        // Memo: to avoid opening accounts drawer after changed account
+        await wait(2000);
         if (!currentAccount.value) {
           window.dispatchEvent(new CustomEvent(WalletModalOption.SelectWallet));
         }
