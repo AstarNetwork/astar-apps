@@ -121,11 +121,14 @@
 
 .table--dapps {
   width: 100%;
-  height: 348px;
+  height: 368px;
   display: flex;
   flex-direction: column;
   position: relative;
   align-content: space-between;
+  @media (min-width: $sm) {
+    height: 348px;
+  }
   @media (min-width: $md) {
     flex-wrap: wrap;
     height: 280px;
