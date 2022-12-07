@@ -172,7 +172,7 @@ export function useCompoundRewards() {
       if (!currentAddress.value) return;
       await Promise.all([checkIsClaimable(), getCompoundingType()]);
     },
-    { immediate: false }
+    { immediate: true }
   );
 
   return {

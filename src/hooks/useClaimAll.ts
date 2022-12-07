@@ -4,7 +4,7 @@ import { $api } from 'boot/api';
 import { useCurrentEra, useCustomSignature, useGasPrice, RewardDestination } from 'src/hooks';
 import { TxType } from 'src/hooks/custom-signature/message';
 import { ExtrinsicPayload } from 'src/hooks/helper';
-import { getIndividualClaimTxs, PayloadWithWeight } from 'src/hooks/helper/claim';
+import { getIndividualClaimTxs, PayloadWithWeight, checkIsDappOwner } from 'src/hooks/helper/claim';
 import { signAndSend } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
@@ -57,6 +57,7 @@ export function useClaimAll() {
               senderAddress: senderAddressRef,
               currentEra: era.value,
             });
+
             return transactions.length ? transactions : null;
           } else {
             return null;
@@ -97,16 +98,19 @@ export function useClaimAll() {
       totalWeight = totalWeight.add(tx.weight);
     }
 
+    // The fix causes problems and confusion for stakers because rewards are not restaked,
+    // second thing is that developers are unable to stake.
+    // Need to change approach
     // Temporary disable restaking reward to avoid possible claim errors.
-    const dappStakingRepository = container.get<IDappStakingRepository>(
-      Symbols.DappStakingRepository
-    );
-    const ledger = await dappStakingRepository.getLedger(senderAddress.value);
+    // const dappStakingRepository = container.get<IDappStakingRepository>(
+    //   Symbols.DappStakingRepository
+    // );
+    // const ledger = await dappStakingRepository.getLedger(senderAddress.value);
 
-    if (ledger.rewardDestination === RewardDestination.StakeBalance) {
-      txsToExecute.unshift(api.tx.dappsStaking.setRewardDestination(RewardDestination.FreeBalance));
-      txsToExecute.push(api.tx.dappsStaking.setRewardDestination(RewardDestination.StakeBalance));
-    }
+    // if (ledger.rewardDestination === RewardDestination.StakeBalance) {
+    //   txsToExecute.unshift(api.tx.dappsStaking.setRewardDestination(RewardDestination.FreeBalance));
+    //   txsToExecute.push(api.tx.dappsStaking.setRewardDestination(RewardDestination.StakeBalance));
+    // }
 
     console.info(
       `Batch weight: ${totalWeight.toString()}, transactions no. ${txsToExecute.length}`

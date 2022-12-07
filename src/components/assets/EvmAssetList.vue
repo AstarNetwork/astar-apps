@@ -9,7 +9,7 @@
       </div>
 
       <div v-for="t in filteredTokens" :key="t.symbol">
-        <Erc20Currency v-if="!checkIsCbridgeToken(t) && t.isXC20" :token="t" :is-xcm="true" />
+        <erc-20-currency v-if="!checkIsCbridgeToken(t) && t.isXC20" :token="t" :is-xcm="true" />
       </div>
     </div>
 
@@ -43,7 +43,7 @@
               </table>
             </div>
           </div>
-          <EvmAssetOptions
+          <evm-asset-options
             :toggle-is-hide-small-balances="toggleIsHideSmallBalances"
             :is-hide-small-balances="isHideSmallBalances"
             :tokens="tokens"
@@ -71,7 +71,7 @@
             <div class="column column--balance">
               <div class="column__box">
                 <div class="text--accent">
-                  <TokenBalance :balance="String(bal)" :symbol="nativeTokenSymbol" />
+                  <token-balance :balance="String(bal)" :symbol="nativeTokenSymbol" />
                 </div>
                 <div class="text--label">
                   <span>{{ $n(balUsd) }} {{ $t('usd') }}</span>
@@ -110,17 +110,17 @@
 
       <div v-for="t in filteredTokens" :key="t.symbol">
         <div v-if="checkIsCbridgeToken(t)">
-          <EvmCbridgeToken v-if="t.symbol !== nativeTokenSymbol" :token="t" />
+          <evm-cbridge-token v-if="t.symbol !== nativeTokenSymbol" :token="t" />
         </div>
         <div v-else>
-          <Erc20Currency v-if="!t.isXC20" :token="t" />
+          <erc-20-currency v-if="!t.isXC20" :token="t" />
         </div>
       </div>
       <div v-if="!filteredTokens && !isDisplayNativeToken" class="box--no-result">
         <span class="text--xl">{{ $t('assets.noResults') }}</span>
       </div>
     </div>
-    <ModalFaucet :is-modal-faucet="isModalFaucet" :handle-modal-faucet="handleModalFaucet" />
+    <modal-faucet :is-modal-faucet="isModalFaucet" :handle-modal-faucet="handleModalFaucet" />
   </div>
 </template>
 <script lang="ts">
@@ -138,6 +138,7 @@ import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
 import ModalFaucet from 'src/components/assets/modals/ModalFaucet.vue';
 import { buildTransferPageLink } from 'src/router/routes';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
+import { faucetBalRequirement } from 'src/config/wallets';
 
 export default defineComponent({
   components: {
@@ -165,8 +166,6 @@ export default defineComponent({
     const isFaucet = ref<boolean>(false);
     const isSearch = ref<boolean>(false);
     const search = ref<string>('');
-    // Memo: defined by hard-coding to avoid sending too many requests to faucet API server
-    const mainnetFaucetAmount = 0.002;
 
     const { currentAccount } = useAccount();
     const { nativeTokenUsd } = usePrice();
@@ -229,7 +228,7 @@ export default defineComponent({
         const balWei = await getBalance($web3.value!, currentAccount.value);
         bal.value = Number(ethers.utils.formatEther(balWei));
         isShibuya.value = nativeTokenSymbol.value === 'SBY';
-        isFaucet.value = isShibuya.value || mainnetFaucetAmount > bal.value;
+        isFaucet.value = isShibuya.value || faucetBalRequirement > bal.value;
         if (nativeTokenUsd.value) {
           balUsd.value = nativeTokenUsd.value * bal.value;
         }
@@ -247,7 +246,6 @@ export default defineComponent({
       nativeTokenSymbol,
       balUsd,
       currentNetworkName,
-      mainnetFaucetAmount,
       isFaucet,
       symbol,
       token,
