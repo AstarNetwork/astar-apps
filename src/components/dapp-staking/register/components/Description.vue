@@ -30,9 +30,9 @@
 
 <script lang="ts">
 import { NewDappItem } from 'src/store/dapp-staking/state';
-import { defineComponent, PropType, reactive, ref, watch } from 'vue';
-import DescriptionTab from 'src/components/dapp-staking/register/DescriptionTab.vue';
-import ItemsContainer from 'src/components/dapp-staking/register/ItemsContainer.vue';
+import { defineComponent, PropType, reactive, ref } from 'vue';
+import DescriptionTab from './DescriptionTab.vue';
+import ItemsContainer from './ItemsContainer.vue';
 
 export default defineComponent({
   components: {

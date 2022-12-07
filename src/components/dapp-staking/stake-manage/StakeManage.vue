@@ -41,10 +41,11 @@
 <script lang="ts">
 import MobileNavigator from 'src/components/assets/transfer/MobileNavigator.vue';
 import BackToPage from 'src/components/common/BackToPage.vue';
-import ModalSelectFunds from 'src/components/dapp-staking/stake-manage/ModalSelectFunds.vue';
-import SelectFunds from 'src/components/dapp-staking/stake-manage/SelectFunds.vue';
-import StakeForm from 'src/components/dapp-staking/stake-manage/StakeForm.vue';
-import StakeInformation from 'src/components/dapp-staking/stake-manage/StakeInformation.vue';
+import ModalSelectFunds from './ModalSelectFunds.vue';
+import SelectFunds from './SelectFunds.vue';
+import StakeForm from './StakeForm.vue';
+import StakeInformation from './StakeInformation.vue';
+// import StakeInformation from 'src/components/dapp-staking/stake-manage/StakeInformation.vue';
 import { WalletModalOption } from 'src/config/wallets';
 import {
   useBreakpoints,
@@ -135,15 +136,13 @@ export default defineComponent({
 
     watch(
       [currentAccount, dapp],
-      () => {
+      async () => {
         if (!dapp.value) return;
-        // Memo: avoid opening the drawer when users change the account
-        const delay = 2000;
-        setTimeout(() => {
-          if (!currentAccount.value) {
-            window.dispatchEvent(new CustomEvent(WalletModalOption.SelectWallet));
-          }
-        }, delay);
+        // Memo: to avoid opening accounts drawer after changed account
+        await wait(2000);
+        if (!currentAccount.value) {
+          window.dispatchEvent(new CustomEvent(WalletModalOption.SelectWallet));
+        }
       },
       { immediate: true }
     );
@@ -183,5 +182,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/dapp-staking/stake-manage/styles/stake-manage.scss';
+@use './styles/stake-manage.scss';
 </style>

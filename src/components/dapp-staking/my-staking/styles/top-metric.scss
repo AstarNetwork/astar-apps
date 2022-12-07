@@ -4,15 +4,15 @@
   margin-bottom: 25px;
   padding-top: 55px;
   padding-bottom: 24px;
-  padding-left: 16px;
-  padding-right: 24px;
-  max-width: 1567px;
+  padding-left: 8px;
+  padding-right: 8px;
   margin-left: -16px;
   margin-right: -16px;
   max-width: 1290px;
 
   @media (min-width: $sm) {
     padding-left: 28px;
+    padding-right: 28px;
   }
   @media (min-width: $md) {
     margin-left: 0px;
@@ -74,14 +74,16 @@
   display: flex;
   flex-direction: column;
   flex: none;
-  height: 126px;
+  height: 150px;
   padding: 36px 20px;
   background: linear-gradient(180deg, rgba(25, 29, 31, 0) 4.17%, rgba(255, 255, 255, 0.3) 79.69%);
   box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.2);
   border-radius: 6px;
 
-  @media (min-width: $md) {
+  @media (min-width: $lg) {
     flex-basis: 23%;
+    padding: 36px 20px;
+    height: 126px;
   }
 
   p {
@@ -95,7 +97,7 @@
   .row--data {
     margin-top: 18px;
     .value {
-      display: flex;
+      display: block;
       font-weight: 600;
       font-size: 20px;
       line-height: 18px;
@@ -106,15 +108,14 @@
         font-weight: 500;
         margin-left: 5px;
       }
-      @media (max-width: $lg) {
-        display: block;
+      @media (min-width: $lg) {
+        display: flex;
       }
     }
     .column--tvl {
-      display: flex;
+      display: block;
       font-weight: 600;
       font-size: 19px;
-      line-height: 18px;
       color: $gray-1;
 
       .txt--tvl {
@@ -126,23 +127,34 @@
         font-weight: 500;
         margin-left: 5px;
       }
+      line-height: 24px;
+      min-width: 160px;
+      @media (min-width: $sm) {
+        display: flex;
+        line-height: 18px;
+      }
     }
     .loading {
       width: 150px;
     }
 
-    @media (max-width: $lg) {
-      margin-top: 16px;
+    min-width: 160px;
+
+    @media (min-width: $lg) {
+      min-width: 0px;
     }
   }
 
-  @media (max-width: $md) {
-    height: 130px;
-  }
-
   .column--era-info {
-    display: flex;
+    display: block;
     column-gap: 4px;
+    line-height: 18px;
+
+    @media (min-width: $sm) {
+      display: flex;
+      line-height: 0px;
+      margin-top: 10px;
+    }
   }
 
   .text--eta-next-era {
@@ -158,11 +170,15 @@
   }
 
   .column--apr-apy {
-    display: none;
+    display: flex;
+    margin-bottom: 12px;
+    column-gap: 22px;
+    font-size: 14px;
     @media (min-width: $lg) {
       display: flex;
       column-gap: 8px;
       margin-right: 16px;
+      font-size: 20px;
     }
     @media (min-width: $xl) {
       column-gap: 12px;
