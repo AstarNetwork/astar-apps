@@ -9,7 +9,12 @@ import { IDappStakingRepository } from 'src/v2/repositories';
 import { IApi } from 'src/v2/integration';
 import { Symbols } from 'src/v2/symbols';
 import { ApiPromise } from '@polkadot/api';
-import { SmartContract, SmartContractState, StakerInfo } from 'src/v2/models/DappsStaking';
+import {
+  RewardDestination,
+  SmartContract,
+  SmartContractState,
+  StakerInfo,
+} from 'src/v2/models/DappsStaking';
 import { EventAggregator, NewEraMessage } from 'src/v2/messaging';
 import { GeneralStakerInfo } from 'src/hooks/helper/claim';
 import { ethers } from 'ethers';
@@ -57,6 +62,7 @@ interface SmartContractAddress extends Struct {
 
 interface PalletDappsStakingAccountLedger extends Codec {
   locked: Balance;
+  rewardDestination: Codec;
   unbondingInfo: UnbondingInfo;
 }
 
@@ -261,6 +267,7 @@ export class DappStakingRepository implements IDappStakingRepository {
 
     return {
       locked: ledger.locked.toBn(),
+      rewardDestination: <RewardDestination>ledger.rewardDestination.toString(),
       unbondingInfo: {
         unlockingChunks: ledger.unbondingInfo.unlockingChunks.map((x) => {
           return {

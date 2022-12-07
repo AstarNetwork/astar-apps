@@ -6,7 +6,6 @@
 }
 
 .wrapper--withdraw {
-  padding-top: 56px;
   text-align: center;
   row-gap: 40px;
 }
@@ -18,8 +17,8 @@
   width: 344px;
   text-align: center;
   background: $gray-1;
-  @media (min-width: $md) {
-    width: 100%;
+  @media (min-width: $sm) {
+    width: 412px;
   }
 }
 
@@ -33,8 +32,8 @@
   font-size: 22px;
   font-weight: 600;
   height: 44px;
-  @media (min-width: $md) {
-    width: 400px;
+  @media (min-width: $sm) {
+    width: 412px;
   }
 }
 
