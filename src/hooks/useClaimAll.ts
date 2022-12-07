@@ -21,7 +21,7 @@ export function useClaimAll() {
   let batchTxs: PayloadWithWeight[] = [];
   const amountOfEras = ref<number>(0);
   const canClaim = ref<boolean>(false);
-  const canClaimWithoutError = ref<boolean>(false);
+  const canClaimWithoutError = ref<boolean>(true);
   const isLoading = ref<boolean>(true);
   const store = useStore();
   const senderAddress = computed(() => store.getters['general/selectedAddress']);
