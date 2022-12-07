@@ -97,7 +97,7 @@
   .row--data {
     margin-top: 18px;
     .value {
-      display: flex;
+      display: block;
       font-weight: 600;
       font-size: 20px;
       line-height: 18px;
@@ -108,15 +108,15 @@
         font-weight: 500;
         margin-left: 5px;
       }
-      @media (max-width: $lg) {
-        display: block;
+      @media (min-width: $lg) {
+        display: flex;
       }
     }
     .column--tvl {
-      display: flex;
+      display: block;
       font-weight: 600;
       font-size: 19px;
-      line-height: 18px;
+      
       color: $gray-1;
 
       .txt--tvl {
@@ -128,36 +128,32 @@
         font-weight: 500;
         margin-left: 5px;
       }
-      @media (max-width: $sm) {
-        display: block;
+      line-height: 24px;
+      min-width: 160px;
+      @media (min-width: $sm) {
+        display: flex;
+        line-height: 18px;
       }
     }
     .loading {
       width: 150px;
     }
 
-    @media (max-width: $lg) {
-      min-width: 160px;
-    }
+    min-width: 160px;
 
-    @media (max-width: $sm) {
-      width: 120px;
+    @media (min-width: $lg) {
       min-width: 0px;
-      .column--tvl {
-        display: block;
-        line-height: 24px;
-        min-width: 160px;
-      }
     }
   }
 
   .column--era-info {
-    display: flex;
+    display: block;
     column-gap: 4px;
+    line-height: 18px;
 
-    @media (max-width: $sm) {
-      display: block;
-      line-height: 18px;
+    @media (min-width: $sm) {
+      display: flex;
+      line-height: 0px;
     }
   }
 
