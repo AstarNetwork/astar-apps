@@ -99,11 +99,6 @@ export default defineComponent({
   opacity: 1;
 }
 
-// .card:hover .image {
-//   opacity: 0.8;
-//   transition: 0.5s ease;
-// }
-
 .card:hover .overlay {
   opacity: 0.2;
   transition: 0.5s ease;
