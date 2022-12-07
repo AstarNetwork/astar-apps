@@ -209,6 +209,7 @@ export const xcmToken = {
     },
   ],
   [endpointKey.SHIBUYA]: [],
+  [endpointKey.ROCSTAR]: [],
   [endpointKey.LOCAL]: [],
   [endpointKey.CUSTOM]: [],
 };

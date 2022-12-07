@@ -170,6 +170,28 @@ export default {
   myReward: {
     totalStaked: 'Total Staked',
     availableToClaim: 'Available to claim',
+    compound: 'Compound',
+    schedule: 'Schedule',
+    depositNoRefund: 'Deposit - Non Refundable',
+    compoundSchedule: '0am UTC on Mondays (every week)',
+    autoCompounding: 'Auto Compounding',
+    claimAndRestake: 'Claim & Re-stake',
+    change: 'Change',
+    topUp: 'Top Up Now',
+    upfrontFee:
+      'This upfront fee is used for Auto-compounding supported by Oak chain. This fee includes XCM fee as well as Turing automation fee.',
+    autoClaimDepositEmpty: 'Your deposit for auto claimimg has run-out. ',
+    manageMyself: 'I’d rather manage it by myself',
+    automateClaimAndStake:
+      'Automate claim and stake. You will no longer need to claim by yourself! Deposit of future transactions will be corrected and we will let you know once the deposit runout.',
+    autoCompoundingFee:
+      '0.2 ASTAR will be taken when you sign and this will allow us to make claims appx 10 times for you.(It is beta vesion so the schedule is limited.)',
+    autoCompoundingTooltip:
+      'By turning on the Auto compound, your rewards will re-stake after claiming.',
+    claimYourselfAuto:
+      'You are still required to claim by yourself but the rewards will automatically re-stake.',
+    claimYourselfManual:
+      'You are required to claim by yourself and the rewards will be added to transferable balance.',
     era: 'Era',
     claim: 'Claim',
     restake: 'Re-Stake after claiming',
@@ -197,6 +219,7 @@ export default {
     unstake: 'Unstake',
     stake: 'Stake',
     claim: 'Claim',
+    change: 'Change',
     withdraw: 'Withdraw',
     unbondingEra: 'Unbonding takes {unbondingPeriod} eras before you can withdraw',
     turnOn: 'Turn on',

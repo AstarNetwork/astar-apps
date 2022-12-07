@@ -1,5 +1,6 @@
 export * from './useSidebar';
 export * from './useAccount';
+export * from './useAutoCompound';
 export * from './useBalance';
 export * from './useContracts';
 export * from './useMessages';

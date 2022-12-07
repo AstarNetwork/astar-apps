@@ -1421,6 +1421,13 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz#b520529ec21d8e5945a1851dfd1c32e94e39ff45"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
+"@imstar15/types@^0.0.12":
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/@imstar15/types/-/types-0.0.12.tgz#cc0adde733beb8d5c123f39d3b6cd4428acd390a"
+  integrity sha512-Y07Xr9Y11i+e3/pvf+WGaMxkM9OeUmU5xOQRhO5LwYs2MAmdN2M+yhGzaeudHt3DMV3Oj/BVY1rJ0z9lbCvnHg==
+  dependencies:
+    "@open-web3/orml-type-definitions" "^2.0.1"
+
 "@intlify/core-base@9.1.9":
   version "9.1.9"
   resolved "https://registry.yarnpkg.com/@intlify/core-base/-/core-base-9.1.9.tgz#e4e8c951010728e4af3a0d13d74cf3f9e7add7f6"
@@ -1952,6 +1959,13 @@
   integrity sha512-s1zLBjWhdEI2zwaoSgyOFoKSl109CUcVBCc7biPJ3aAf6LGLU6szDvi31JPU7bxfla2lqfhjbbg/5DdFNxOwHw==
   dependencies:
     "@octokit/openapi-types" "^11.2.0"
+
+"@open-web3/orml-type-definitions@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@open-web3/orml-type-definitions/-/orml-type-definitions-2.0.1.tgz#b3db4fb5777dc05c55fa5184c34f4ec91030f012"
+  integrity sha512-wqeSBOKk8UU9CBqYhK2yQh9YqwaS7vai71WuOGFNJnzRT+6WnzY0leaLTionuzfE3M4Y/jTrc8BTL6+PVFCr6Q==
+  dependencies:
+    lodash.merge "^4.6.2"
 
 "@polka/url@^1.0.0-next.20":
   version "1.0.0-next.21"

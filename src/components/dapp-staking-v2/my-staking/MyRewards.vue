@@ -35,7 +35,8 @@
     </div>
     <div class="card">
       <div class="row--title">
-        {{ $t('myReward.restake') }}
+        <span class="pill-box">New</span>
+        {{ $t('myReward.compound') }}
         <span class="wrapper--icon-help">
           <astar-icon-help size="16" />
           <q-tooltip max-width="200px" class="box--tooltip">
@@ -45,8 +46,8 @@
       </div>
       <div class="row--data">
         <div class="value">{{ isCompounding ? $t('dappStaking.on') : $t('dappStaking.off') }}</div>
-        <astar-button :width="80" :height="24" @click="changeDestinationForRestaking">
-          {{ isCompounding ? $t('dappStaking.turnOff') : $t('dappStaking.turnOn') }}
+        <astar-button :width="80" :height="24" @click="showAutoCompound">
+          {{ $t('dappStaking.change') }}
         </astar-button>
       </div>
     </div>
@@ -65,30 +66,60 @@
         </astar-irregular-button>
       </div>
     </div>
+    <Teleport to="#app--main">
+      <div :class="'highest-z-index'">
+        <modal-auto-compound
+          v-model:is-open="showAutoCompoundModal"
+          :show="showAutoCompoundModal"
+          @confirm="handleModalConfirm"
+        />
+      </div>
+    </Teleport>
   </div>
 </template>
 <script lang="ts">
 import TokenBalance from 'src/components/common/TokenBalance.vue';
-import { useAccount, useClaimAll, useNetworkInfo, useStakerInfo } from 'src/hooks';
+import { useAccount, useClaimAll, useNetworkInfo, useStakerInfo, useAutoCompound } from 'src/hooks';
 import { useClaimedReward } from 'src/hooks/dapps-staking/useClaimedReward';
+import ModalAutoCompound from 'src/components/dapp-staking-v2/my-staking/components/modals/ModalAutoCompound.vue';
 import { RewardDestination } from 'src/hooks/dapps-staking/useCompoundRewards';
 import { endpointKey } from 'src/config/chainEndpoints';
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, ref } from 'vue';
 
 export default defineComponent({
   components: {
     TokenBalance,
+    ModalAutoCompound,
   },
   setup() {
     const { nativeTokenSymbol } = useNetworkInfo();
     const { claimAll, canClaim, amountOfEras, isLoading } = useClaimAll();
     const { totalStaked, isLoadingTotalStaked } = useStakerInfo();
+    const { compoundAll } = useAutoCompound();
+    const showAutoCompoundModal = ref<boolean>(false);
+    const showAutoCompound = (): void => {
+      showAutoCompoundModal.value = true;
+    };
 
     const changeDestinationForRestaking = async () => {
       const newDestination = isCompounding.value
         ? RewardDestination.FreeBalance
         : RewardDestination.StakeBalance;
       await setRewardDestination(newDestination);
+    };
+
+    const handleModalConfirm = async (event: string) => {
+      if (event === 'auto') {
+        await compoundAll();
+      }
+
+      if (event === 'stake') {
+        await setRewardDestination(RewardDestination.StakeBalance);
+      }
+
+      if (event === 'free') {
+        await setRewardDestination(RewardDestination.FreeBalance);
+      }
     };
 
     const { claimed, isLoadingClaimed, isCompounding, setRewardDestination } = useClaimedReward();
@@ -110,6 +141,7 @@ export default defineComponent({
       canClaim,
       claimAll,
       isCompounding,
+      handleModalConfirm,
       changeDestinationForRestaking,
       isLoadingClaimed,
       claimed,
@@ -117,6 +149,8 @@ export default defineComponent({
       nativeTokenSymbol,
       isLoadingTotalStaked,
       goToSubscan,
+      showAutoCompound,
+      showAutoCompoundModal,
     };
   },
 });

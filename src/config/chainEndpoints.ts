@@ -29,6 +29,7 @@ export enum endpointKey {
   SHIBUYA = 2,
   LOCAL = 3,
   CUSTOM = 4,
+  ROCSTAR = 5,
 }
 
 export const providerEndpoints: ChainProvider[] = [
@@ -98,6 +99,24 @@ export const providerEndpoints: ChainProvider[] = [
     evmEndpoints: ['https://evm.shibuya.astar.network'],
     faucetEndpoint: 'https://us-central1-facuet-bot.cloudfunctions.net/app/shibuya',
     defaultLogo: require('/src/assets/img/ic_shibuya.png'),
+  },
+  {
+    networkAlias: 'rocstar-testnet',
+    displayName: 'Rocstar Network',
+    info: 'The rococo test network of the layer 2 scaling blockchain',
+    endpoints: [{ name: 'Rocstar', endpoint: 'wss://rocstar.astar.network' }],
+    favicon: 'https://polkadot.js.org/apps/static/astar.b48435e0.png',
+    isSupportContract: true,
+    prefix: 0xff51,
+    typeDef: typeDefs.plasmCollatorDefinitions,
+    key: endpointKey.ROCSTAR,
+    isStoreEnabled: true,
+    subscan: 'https://rocstar.subscan.io',
+    blockscout: 'https://blockscout.com/rocstar',
+    evmChainId: '81',
+    evmEndpoints: ['https://evm.rocstar.astar.network'],
+    faucetEndpoint: 'https://us-central1-facuet-bot.cloudfunctions.net/app/rocstar',
+    defaultLogo: require('/src/assets/img/ic_astar.png'),
   },
   {
     networkAlias: 'development',
