@@ -70,8 +70,8 @@ import { useUnbonding } from 'src/hooks/dapps-staking/useUnbonding';
 import { ChunkInfo } from 'src/v2/models';
 import DropdownList from './components/DropdownList.vue';
 import FormatBalance from 'components/common/FormatBalance.vue';
-import ModalWithdraw from 'src/components/dapp-staking-v2/my-staking/components/modals/ModalWithdraw.vue';
-// import ModalRebond from 'src/components/dapp-staking-v2/my-staking/components/modals/ModalRebond.vue';
+import ModalWithdraw from './components/modals/ModalWithdraw.vue';
+// import ModalRebond from './components/modals/ModalRebond.vue';
 
 export default defineComponent({
   components: { DropdownList, ModalWithdraw, FormatBalance },
