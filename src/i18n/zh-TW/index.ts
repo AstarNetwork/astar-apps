@@ -23,9 +23,6 @@ export default {
     docs: 'Documentation',
   },
   dappStaking: {
-    dappsStore: 'dApps Store',
-    registerDapp: '註冊dApp',
-    noDappsRegistered: 'No dApps registered. Be the first to register one.',
     availableToStake: 'Available to stake',
     totalStake: '總質押:',
     yourStake: '您的質押: ',
@@ -33,18 +30,8 @@ export default {
     unstake: '解除質押',
     stake: '質押',
     claim: '認領',
-    warning: 'Minimum Staking Amount is {amount} and Up to {stakers} Stakers Per Contract',
-    tvl: 'TVL IN DAPPS',
-    dappsCount: 'DAPPS COUNT',
-    requirement: 'REQUIREMENT',
     modals: {
-      alreadyClaimed: '已認領:',
-      contractRewards: '合約報酬:',
-      yourRewards: '您的報酬',
       contractAddress: '合約地址 {address}',
-      logo: 'Logo',
-      register: '註冊',
-      address: '地址',
     },
   },
 };

@@ -1,6 +1,6 @@
 import { ChartData } from 'src/components/dashboard/ChartData';
 import axios from 'axios';
-import { Duration, TOKEN_API_URL, TransferDetail } from '../index';
+import { Duration, TOKEN_API_URL, TransferDetail, StatsDetail, StatsType } from '../index';
 
 /**
  * Formats number and adds weight prefix e.g. 10000 formats to 10k
@@ -143,6 +143,21 @@ export const filterTvlData = ({ data, duration }: { data: number[][]; duration: 
   }
 };
 
+export const castDurationToDaysNumber = (duration: Duration): number => {
+  switch (duration) {
+    case '7 days':
+      return 7;
+    case '30 days':
+      return 30;
+    case '90 days':
+      return 90;
+    case '1 year':
+      return 365;
+    default:
+      return 365;
+  }
+};
+
 export const getClaimedAmount = async ({
   network,
   account,
@@ -165,4 +180,42 @@ export const fetchTransferDetails = async ({
   const url = `${TOKEN_API_URL}/v1/${network}/tx/transfer?hash=${hash}`;
   const result = await axios.get<TransferDetail>(url);
   return result.data;
+};
+
+export const fetchDappsStats = async ({
+  dapp,
+  network,
+}: {
+  dapp: string;
+  network: string;
+}): Promise<StatsDetail[]> => {
+  // Memo: get the 1 year data rather than filtering by period (filter it after the app fetch the 1 year data)
+  // Merit:
+  // 1. less fetching to the API
+  // 2. better UX (faster response on the chart panel whenever users click the period button)
+  const url = `${TOKEN_API_URL}/v1/${network}/dapps-staking/stats/dapp/${dapp}/1%20years`;
+  const result = await axios.get<StatsDetail[]>(url);
+  return result.data;
+};
+
+export const filterStatsData = ({
+  data,
+  currentFilter,
+  property,
+}: {
+  data: StatsDetail[];
+  currentFilter: Duration;
+  property: StatsType;
+}): number[][] => {
+  const filteredResult = data.filter(
+    (it) => Number(it.numberOfCalls) !== 0 && Number(it[property]) !== 0
+  );
+  const oneDayMilli = 3600000 * 24;
+  return filteredResult
+    .map((it) => [Number(it.timestamp) * 1000, Number(it[property])])
+    .filter((it) => {
+      const latestTs = Number(filteredResult[filteredResult.length - 1].timestamp) * 1000;
+      const cutoff = latestTs - oneDayMilli * castDurationToDaysNumber(currentFilter);
+      return it[0] > cutoff;
+    });
 };

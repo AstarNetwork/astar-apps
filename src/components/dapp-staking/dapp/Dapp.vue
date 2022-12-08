@@ -1,5 +1,5 @@
 <template>
-  <div v-if="dapp">
+  <div v-if="dapp" class="container--dapp-staking">
     <back-to-page :text="$t('dappStaking.stakePage.backToDappList')" :link="Path.DappStaking" />
     <dapp-avatar :dapp="dapp" />
     <dapp-statistics :dapp="dapp" />
@@ -9,6 +9,8 @@
       <project-overview :dapp="dapp" />
       <project-details :dapp="dapp" />
     </div>
+    <!-- Todo: uncomment when API is ready to get data -->
+    <!-- <dapp-stats-charts :dapp="dapp" /> -->
     <div class="bottom--links">
       <router-link :to="buildStakePageLink(dapp.dapp.address)">
         <astar-irregular-button height="28" class="btn--stake-switch">
@@ -25,6 +27,7 @@ import Builders from 'src/components/dapp-staking/dapp/Builders.vue';
 import DappAvatar from 'src/components/dapp-staking/dapp/DappAvatar.vue';
 import DappImages from 'src/components/dapp-staking/dapp/DappImages.vue';
 import DappStatistics from 'src/components/dapp-staking/dapp/DappStatistics.vue';
+import DappStatsCharts from 'src/components/dapp-staking/dapp/DappStatsCharts.vue';
 import ProjectDetails from 'src/components/dapp-staking/dapp/ProjectDetails.vue';
 import ProjectOverview from 'src/components/dapp-staking/dapp/ProjectOverview.vue';
 import { useDappRedirect, useDispatchGetDapps, useStakingList } from 'src/hooks';
@@ -45,6 +48,7 @@ export default defineComponent({
     ProjectOverview,
     ProjectDetails,
     BackToPage,
+    // DappStatsCharts,
   },
   setup() {
     const route = useRoute();

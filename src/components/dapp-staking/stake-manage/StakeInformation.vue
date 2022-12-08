@@ -29,8 +29,7 @@
         </a>
       </div>
     </div>
-    <!-- Todo: add history -->
-    <!-- <div id="history" class="container--information">
+    <div id="history" class="container--information">
       <div class="row--title">
         <astar-icon-history size="20" />
         <span>{{ $t('assets.transferPage.recentHistory') }}</span>
@@ -41,14 +40,14 @@
       <div v-else>
         <div v-if="txHistories.length > 0" class="box--histories">
           <div v-for="tx in txHistories" :key="tx.timestamp">
-            <TransactionHistory :tx="tx" />
+            <transaction-history :tx="tx" />
           </div>
         </div>
         <div v-else>
           <span> {{ $t('assets.transferPage.noTxRecords') }} </span>
         </div>
       </div>
-    </div> -->
+    </div>
     <div id="hot-topics" class="container--information">
       <div class="row--title">
         <astar-icon-group size="20" />
@@ -75,37 +74,59 @@
   </div>
 </template>
 <script lang="ts">
-// import { useAccount, useNetworkInfo } from 'src/hooks';
+import TransactionHistory from 'src/components/common/TransactionHistory.vue';
+import { providerEndpoints } from 'src/config/chainEndpoints';
+import { useAccount, useNetworkInfo } from 'src/hooks';
 import { socialUrl } from 'src/links';
-import { hotTopics, RecentHistory } from 'src/modules/information';
-import { Faq, faqDappStaking } from 'src/modules/information';
-import { defineComponent, ref } from 'vue';
+import {
+  castStakeTxType,
+  faqDappStaking,
+  getStakeTxHistories,
+  hotTopics,
+  RecentStakeHistory,
+} from 'src/modules/information';
+import { useStore } from 'src/store';
+import { DappCombinedInfo } from 'src/v2/models';
+import { computed, defineComponent, ref, watchEffect } from 'vue';
 
 export default defineComponent({
-  // components: { TransactionHistory },
-  setup(props) {
-    const txHistories = ref<RecentHistory[]>([]);
+  components: { TransactionHistory },
+  setup() {
+    const txHistories = ref<RecentStakeHistory[]>([]);
     const isLoadingTxHistories = ref<boolean>(true);
-    // const { currentAccount } = useAccount();
-    // const { currentNetworkName } = useNetworkInfo();
+    const { currentAccount } = useAccount();
+    const { currentNetworkName, nativeTokenSymbol, currentNetworkIdx } = useNetworkInfo();
+    const store = useStore();
+    const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
+    const subScan = computed<string>(() => `${providerEndpoints[currentNetworkIdx.value].subscan}`);
 
-    // Todo: update
-    // const setTxHistories = async (): Promise<void> => {
-    //   if (!currentAccount.value || !currentNetworkName.value) return;
-    //   try {
-    //     isLoadingTxHistories.value = true;
-    //     txHistories.value = await getTxHistories({
-    //       address: currentAccount.value,
-    //       network: currentNetworkName.value.toLowerCase(),
-    //     });
-    //   } catch (error) {
-    //     console.error(error);
-    //   } finally {
-    //     isLoadingTxHistories.value = false;
-    //   }
-    // };
+    const setTxHistories = async (): Promise<void> => {
+      if (!currentAccount.value || !currentNetworkName.value) return;
+      try {
+        isLoadingTxHistories.value = true;
+        const data = await getStakeTxHistories({
+          address: currentAccount.value,
+          network: currentNetworkName.value.toLowerCase(),
+          symbol: nativeTokenSymbol.value,
+          dapps: dapps.value,
+          subScan: subScan.value,
+        });
+        if (data) {
+          txHistories.value = data.map((it) => {
+            return {
+              ...it,
+              txType: castStakeTxType(it.txType),
+            };
+          });
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        isLoadingTxHistories.value = false;
+      }
+    };
 
-    // watchEffect(setTxHistories);
+    watchEffect(setTxHistories);
 
     return { faqDappStaking, hotTopics, txHistories, isLoadingTxHistories, socialUrl };
   },

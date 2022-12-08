@@ -12,10 +12,11 @@ export enum Chain {
   MOONBEAM = 'Moonbeam',
   STATEMINE = 'Statemine',
   STATEMINT = 'Statemint',
-  KINTSUGI = 'Kintsugi',
+  // KINTSUGI = 'Kintsugi',
   INTERLAY = 'Interlay',
   CRUST_SHADOW = 'Crust-shadow',
   KHALA = 'Khala',
+  PHALA = 'Phala',
 }
 
 export enum parachainIds {
@@ -27,10 +28,11 @@ export enum parachainIds {
   MOONBEAM = 2004,
   STATEMINE = 1000,
   STATEMINT = 1000,
-  KINTSUGI = 2092,
+  // KINTSUGI = 2092,
   INTERLAY = 2032,
   CRUST_SHADOW = 2012,
   KHALA = 2004,
+  PHALA = 2035,
 }
 
 export interface XcmChain {

@@ -1,0 +1,49 @@
+@import 'src/css/quasar.variables.scss';
+
+.register-container--label {
+  font-size: 14px;
+  color: $gray-4;
+}
+
+.container--toggle {
+  margin-bottom: 4px;
+}
+
+.container--radio {
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+.radio {
+  margin-right: 16px;
+}
+
+.button--container {
+  display: flex;
+  justify-content: center;
+}
+
+.container--register {
+  max-width: $register-form-max-width;
+  justify-self: center;
+  margin-top: 60px;
+
+  @media (min-width: $md) {
+    width: $container-max-width;
+  }
+}
+
+.validation-warning {
+  background: rgba(240, 185, 11, 0.2);
+  border: 1px solid #f0b90b;
+  border-radius: 6px;
+  padding: 8px;
+  margin-bottom: 40px;
+}
+
+.button--submit {
+  font-size: 22px;
+  font-weight: 600;
+  height: 52px;
+  width: 328px;
+}

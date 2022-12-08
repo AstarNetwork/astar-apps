@@ -22,10 +22,11 @@ export const XcmRepositoryConfiguration: TypeMapping = {
   [Chain.MOONRIVER]: MoonbeamXcmRepository,
   [Chain.POLKADOT]: PolkadotXcmRepository,
   [Chain.KUSAMA]: PolkadotXcmRepository,
-  [Chain.KINTSUGI]: InterlayXcmRepository,
+  // [Chain.KINTSUGI]: InterlayXcmRepository,
   [Chain.INTERLAY]: InterlayXcmRepository,
   [Chain.CRUST_SHADOW]: CrustShadowXcmRepository,
   [Chain.KHALA]: PhalaXcmRepository,
+  [Chain.PHALA]: PhalaXcmRepository,
 };
 
 export type AstarToken = 'ASTR' | 'SDN';
