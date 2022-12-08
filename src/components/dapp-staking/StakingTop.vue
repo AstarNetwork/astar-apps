@@ -26,7 +26,7 @@
 
 <script lang="ts">
 import { useMeta } from 'quasar';
-import { useDispatchGetDapps, usePageReady } from 'src/hooks';
+import { useDispatchGetDapps, useNetworkInfo, usePageReady } from 'src/hooks';
 import { useStore } from 'src/store';
 import { computed, defineComponent, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -37,6 +37,7 @@ import OnChainData from './my-staking/OnChainData.vue';
 import TopMetric from './my-staking/TopMetric.vue';
 import AdsArea from './my-staking/AdsArea.vue';
 import BannerArea from './my-staking/BannerArea.vue';
+import { astarChain } from 'src/config/chain';
 
 export default defineComponent({
   components: {
@@ -53,14 +54,22 @@ export default defineComponent({
     const store = useStore();
     const { isReady } = usePageReady();
     useDispatchGetDapps();
+    const { currentNetworkChain } = useNetworkInfo();
 
     const { t } = useI18n();
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const dapps = computed(() => store.getters['dapps/getAllDapps']);
 
-    const handlePageLoading = (): void => {
-      const isLoad = dapps.value.length === 0;
-      store.commit('general/setLoading', isLoad);
+    const handlePageLoading = (network: astarChain): void => {
+      const isNetworkDappsDeployed =
+        network === astarChain.ASTAR ||
+        network === astarChain.SHIBUYA ||
+        network === astarChain.SHIDEN;
+
+      if (network && isNetworkDappsDeployed) {
+        const isLoad = dapps.value.length === 0;
+        store.commit('general/setLoading', isLoad);
+      }
     };
 
     watch([isH160], () => {
@@ -73,9 +82,9 @@ export default defineComponent({
     });
 
     watch(
-      [dapps],
+      [dapps, currentNetworkChain],
       () => {
-        handlePageLoading();
+        handlePageLoading(currentNetworkChain.value);
       },
       { immediate: true }
     );
