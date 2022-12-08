@@ -1,9 +1,11 @@
 import { BN } from '@polkadot/util';
 import { ISubmittableResult } from '@polkadot/types/types';
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
-import { SmartContract, StakerInfo } from '../models/DappsStaking';
+import { DappStakingConstants, SmartContract, StakerInfo } from '../models/DappsStaking';
 import { EditDappItem } from 'src/store/dapp-staking/state';
 import { AccountLedger } from '../models/DappsStaking';
+import { u32 } from '@polkadot/types';
+import { GeneralStakerInfo } from 'src/hooks/helper/claim';
 
 /**
  * Definition of repository to access dapps staking pallet.
@@ -76,4 +78,16 @@ export interface IDappStakingRepository {
    * @param accountAddress User account.
    */
   getLedger(accountAddress: string): Promise<AccountLedger>;
+
+  getCurrentEra(): Promise<u32>;
+
+  /**
+   * Gets dapp staking constants.
+   */
+  getConstants(): Promise<DappStakingConstants>;
+
+  getGeneralStakerInfo(
+    stakerAddress: string,
+    contractAddress: string
+  ): Promise<Map<string, GeneralStakerInfo>>;
 }

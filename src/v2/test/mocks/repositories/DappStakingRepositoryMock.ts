@@ -3,20 +3,24 @@ import { ISubmittableResult } from '@polkadot/types/types';
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import { injectable } from 'inversify';
 import { IDappStakingRepository } from 'src/v2/repositories';
-import { SmartContract, StakerInfo } from 'src/v2/models/DappsStaking';
+import { DappStakingConstants, SmartContract, StakerInfo } from 'src/v2/models/DappsStaking';
 import { EditDappItem } from 'src/store/dapp-staking/state';
 import { AccountLedger } from 'src/v2/models/DappsStaking';
+import { u32 } from '@polkadot/types';
+import { GeneralStakerInfo } from 'src/hooks/helper/claim';
 
 @injectable()
 export class DappStakingRepositoryMock implements IDappStakingRepository {
   public readonly bondAndStakeCallMock = jest.fn();
   public readonly getRegisteredContractCallMock = jest.fn();
   public readonly nominationTransferMock = jest.fn();
+  public readonly currentEraMock = jest.fn();
 
   constructor() {
     this.bondAndStakeCallMock.mockReset();
     this.getRegisteredContractCallMock.mockReset();
     this.nominationTransferMock.mockReset();
+    this.currentEraMock.mockReset();
   }
 
   getTvl(): Promise<BN> {
@@ -83,5 +87,22 @@ export class DappStakingRepositoryMock implements IDappStakingRepository {
 
   public async getLedger(accountAddress: string): Promise<AccountLedger> {
     return {} as AccountLedger;
+  }
+
+  public async getCurrentEra(): Promise<u32> {
+    return this.currentEraMock();
+  }
+
+  public async getConstants(): Promise<DappStakingConstants> {
+    return {
+      maxEraStakeValues: 5,
+    };
+  }
+
+  public async getGeneralStakerInfo(
+    stakerAddress: string,
+    contractAddress: string
+  ): Promise<Map<string, GeneralStakerInfo>> {
+    return new Map();
   }
 }

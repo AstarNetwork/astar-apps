@@ -103,3 +103,20 @@
     }
   }
 }
+
+.claim-warning {
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
+  margin-top: 20px;
+  border: 1px solid $warning-red;
+  background-color: rgba(255, 86, 33, 0.3);
+  color: $warning-red;
+  padding: 8px 16px;
+}
+
+.body--dark {
+  .claim-warning {
+    color: $gray-1;
+  }
+}
