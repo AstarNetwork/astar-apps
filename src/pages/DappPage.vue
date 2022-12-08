@@ -5,7 +5,7 @@
 
 <script lang="ts">
 import { useMeta } from 'quasar';
-import Dapp from 'src/components/dapp-staking-v2/dapp/Dapp.vue';
+import Dapp from 'src/components/dapp-staking/dapp/Dapp.vue';
 import { usePageReady } from 'src/hooks';
 import { defineComponent } from 'vue';
 

@@ -68,9 +68,9 @@
         <tags :dapp="data" class="component" />
         <license :dapp="data" class="component" />
         <div class="button--container">
-          <Button :width="328" :height="52" @click="handleSubmit">
+          <astar-button class="button--submit" @click="handleSubmit">
             {{ $t('dappStaking.modals.submit') }}
-          </Button>
+          </astar-button>
         </div>
       </div>
     </q-form>
@@ -82,7 +82,6 @@ import { computed, defineComponent, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 import { $api } from 'boot/api';
-import { Button } from '@astar-network/astar-ui';
 import { Category, Developer, FileInfo, NewDappItem } from 'src/store/dapp-staking/state';
 import ImageCard from './components/ImageCard.vue';
 import AddItemCard from './components/AddItemCard.vue';
@@ -121,7 +120,6 @@ export default defineComponent({
     ContractTypes,
     MainCategory,
     License,
-    Button,
     Tags,
     BackToPage,
     WelcomeBanner,
