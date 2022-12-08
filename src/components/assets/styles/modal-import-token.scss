@@ -6,14 +6,11 @@
   margin-top: 24px;
 }
 
-.wrapper--import-tokens {
-  padding-top: 56px;
-  text-align: center;
-}
-
 .wrapper__row--information {
-  padding: 0 16px;
-  margin-bottom: 24px;
+  // margin-bottom: 24px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
 }
 
 .box--import-tokens {
@@ -74,6 +71,16 @@
   @media (min-width: $sm) {
     width: 412px;
   }
+}
+
+.row--link {
+  margin-top: 4px;
+  align-self: flex-end;
+}
+
+.text--link {
+  color: $astar-blue;
+  text-decoration: underline;
 }
 
 .body--dark {

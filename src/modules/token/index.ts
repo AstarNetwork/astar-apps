@@ -8,6 +8,8 @@ export {
   getRegisteredERC20Token,
   castCbridgeToErc20,
   getRegisteredErc20Tokens,
+  getStoredXvmTokens,
+  storeImportedXvmToken,
 } from 'src/modules/token/utils';
 
 // Memo: ERC20 tokens information that is not supported by cBridge
@@ -25,6 +27,16 @@ export interface Erc20Token {
   userBalance?: string;
   userBalanceUsd?: string;
   isCbridgeToken?: boolean;
+}
+
+export interface XvmToken {
+  srcChainId: number;
+  erc20Contract: string;
+  xvmPsp22Contract: string;
+  xvmErc20Contract: string;
+  decimal: number;
+  symbol: string;
+  name: string;
 }
 
 export const WASTR: Erc20Token = {

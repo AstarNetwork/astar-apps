@@ -10,7 +10,7 @@
         </div>
         <span class="text--option">{{ $t('assets.importTokens') }}</span>
       </button>
-      <button class="row--option" @click="handleHideSmallBalances">
+      <button v-if="!isOnlyImportTokens" class="row--option" @click="handleHideSmallBalances">
         <template v-if="isHideSmallBalances">
           <div class="icon-hide">
             <astar-icon-unhide />
@@ -26,37 +26,52 @@
       </button>
     </div>
 
-    <ModalImportTokens
-      v-if="isImportModal"
-      :is-modal-import-tokens="isModalImportTokens"
-      :handle-modal-import-tokens="handleModalImportTokens"
-      :tokens="tokens"
-    />
+    <div v-if="isImportModal">
+      <modal-import-evm-tokens
+        v-if="isH160"
+        :is-modal-import-tokens="isModalImportTokens"
+        :handle-modal-import-tokens="handleModalImportTokens"
+        :tokens="tokens"
+      />
+      <modal-import-xvm-tokens
+        v-else
+        :is-modal-import-tokens="isModalImportTokens"
+        :handle-modal-import-tokens="handleModalImportTokens"
+      />
+    </div>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent, ref, PropType, computed } from 'vue';
-import ModalImportTokens from 'src/components/assets/modals/ModalImportTokens.vue';
+import ModalImportEvmTokens from 'src/components/assets/modals/ModalImportEvmTokens.vue';
+import ModalImportXvmTokens from 'src/components/assets/modals/ModalImportXvmTokens.vue';
 import { SelectedToken } from 'src/c-bridge';
 import { useStore } from 'src/store';
 import { Asset } from 'src/v2/models';
 
 export default defineComponent({
   components: {
-    ModalImportTokens,
+    ModalImportEvmTokens,
+    ModalImportXvmTokens,
   },
   props: {
     isImportModal: {
       type: Boolean,
       required: true,
     },
-    isHideSmallBalances: {
+    isOnlyImportTokens: {
       type: Boolean,
       required: true,
     },
+    isHideSmallBalances: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
     toggleIsHideSmallBalances: {
       type: Function,
-      required: true,
+      required: false,
+      default: null,
     },
     tokens: {
       type: Object as PropType<SelectedToken[] | Asset[]>,
@@ -87,11 +102,13 @@ export default defineComponent({
     };
     const store = useStore();
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
+    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
 
     return {
       isModalImportTokens,
       isOptionsOpen,
       isLoading,
+      isH160,
       closeOption,
       handleHideSmallBalances,
       handleImportTokens,

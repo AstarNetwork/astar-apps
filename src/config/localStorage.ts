@@ -6,6 +6,7 @@ export enum LOCAL_STORAGE {
   SELECTED_ADDRESS = 'selectedAddress',
   EVM_ADDRESS_MAPPING = 'evmAddressMapping',
   EVM_TOKEN_IMPORTS = 'evmTokenImports',
+  XVM_TOKEN_IMPORTS = 'xvmTokenImports',
   CONFIRM_COOKIE_POLICY = 'confirmCookiePolicy',
   SELECTED_WALLET = 'selectedWallet',
   XCM_DEPOSIT_EVM_WALLET = 'xcmDepositEvmWallet',

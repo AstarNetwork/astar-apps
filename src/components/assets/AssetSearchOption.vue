@@ -28,6 +28,7 @@
       :toggle-is-hide-small-balances="toggleIsHideSmallBalances"
       :is-hide-small-balances="isHideSmallBalances"
       :tokens="tokens"
+      :is-only-import-tokens="false"
     />
   </div>
 </template>
@@ -65,8 +66,9 @@ export default defineComponent({
       required: true,
     },
     tokens: {
-      type: Array as PropType<any>,
-      required: true,
+      type: Array as PropType<any[]>,
+      required: false,
+      default: null,
     },
   },
 });

@@ -87,12 +87,18 @@ export default defineComponent({
       }
     };
 
-    // Memo: triggered after users have imported custom ERC20 tokens
+    // Memo: triggered after users have imported custom ERC20/XVM tokens
     const handleImportingCustomToken = async (): Promise<void> => {
-      if (!isH160.value) return;
-      window.addEventListener(LOCAL_STORAGE.EVM_TOKEN_IMPORTS, () => {
-        handleUpdateEvmAssets();
-      });
+      if (isH160.value) {
+        window.addEventListener(LOCAL_STORAGE.EVM_TOKEN_IMPORTS, () => {
+          handleUpdateEvmAssets();
+        });
+      } else {
+        window.addEventListener(LOCAL_STORAGE.XVM_TOKEN_IMPORTS, () => {
+          // Todo
+          // handleUpdateEvmAssets();
+        });
+      }
     };
 
     watch([currentAccount], handleUpdateXcmTokenAssets, { immediate: true });
