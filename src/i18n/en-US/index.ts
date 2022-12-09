@@ -306,6 +306,7 @@ export default {
   assets: {
     assets: 'Assets',
     xcmAssets: 'XCM Assets',
+    xvmAssets: 'XVM ERC20 Assets',
     nativeAccount: 'Native Account',
     evmAccount: 'EVM Account',
     switchToNative: 'Switch to Lockdrop',

@@ -140,7 +140,7 @@ export class EvmAssetsRepository implements IEvmAssetsRepository {
     return registeredTokens.filter((it) => it !== undefined) as Erc20Token[];
   }
 
-  private async updateTokenBalanceHandler({
+  public async updateTokenBalanceHandler({
     userAddress,
     token,
     isFetchUsd,

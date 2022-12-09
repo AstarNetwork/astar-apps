@@ -29,7 +29,7 @@ export interface Erc20Token {
   isCbridgeToken?: boolean;
 }
 
-export interface XvmToken {
+export interface XvmAsset {
   srcChainId: number;
   erc20Contract: string;
   xvmPsp22Contract: string;
@@ -37,6 +37,8 @@ export interface XvmToken {
   decimal: number;
   symbol: string;
   name: string;
+  userBalance?: string;
+  userBalanceUsd?: string;
 }
 
 export const WASTR: Erc20Token = {

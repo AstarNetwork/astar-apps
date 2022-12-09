@@ -1,4 +1,4 @@
-import { XvmToken } from './../index';
+import { XvmAsset } from './../index';
 import { CbridgeCurrency } from 'src/c-bridge';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
@@ -62,12 +62,12 @@ export const storeImportedERC20Token = (token: Erc20Token) => {
   localStorage.setItem(LOCAL_STORAGE.EVM_TOKEN_IMPORTS, JSON.stringify(tokens));
 };
 
-export const getStoredXvmTokens = (): XvmToken[] => {
+export const getStoredXvmTokens = (): XvmAsset[] => {
   const data = localStorage.getItem(LOCAL_STORAGE.XVM_TOKEN_IMPORTS);
   return data ? JSON.parse(data) : [];
 };
 
-export const storeImportedXvmToken = (token: XvmToken) => {
+export const storeImportedXvmToken = (token: XvmAsset) => {
   const tokens = getStoredXvmTokens();
   tokens.push(token);
   localStorage.setItem(LOCAL_STORAGE.XVM_TOKEN_IMPORTS, JSON.stringify(tokens));

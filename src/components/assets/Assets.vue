@@ -12,7 +12,11 @@
           <EvmAssetList :tokens="evmAssets.assets" />
         </div>
         <div v-else class="container--assets">
-          <XcmNativeAssetList v-if="isEnableXcm" :xcm-assets="xcmAssets.assets" />
+          <xcm-native-asset-list v-if="isEnableXcm" :xcm-assets="xcmAssets.assets" />
+          <xvm-native-asset-list
+            v-if="xvmAssets.xvmAssets.length > 0"
+            :xvm-assets="xvmAssets.xvmAssets"
+          />
           <NativeAssetList />
         </div>
       </div>
@@ -24,11 +28,12 @@ import Account from 'src/components/assets/Account.vue';
 import EvmAssetList from 'src/components/assets/EvmAssetList.vue';
 import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
 import XcmNativeAssetList from 'src/components/assets/XcmNativeAssetList.vue';
+import XvmNativeAssetList from 'src/components/assets/XvmNativeAssetList.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useAccount, useBalance, useDispatchGetDapps, useNetworkInfo } from 'src/hooks';
 import { useStore } from 'src/store';
-import { EvmAssets, XcmAssets } from 'src/store/assets/state';
+import { EvmAssets, XcmAssets, XvmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 
@@ -38,6 +43,7 @@ export default defineComponent({
     NativeAssetList,
     EvmAssetList,
     XcmNativeAssetList,
+    XvmNativeAssetList,
   },
   setup() {
     const token = ref<Asset | null>(null);
@@ -47,7 +53,7 @@ export default defineComponent({
     const store = useStore();
     const { currentAccount } = useAccount();
     const { accountData } = useBalance(currentAccount);
-    const { isMainnet, currentNetworkIdx } = useNetworkInfo();
+    const { isMainnet, currentNetworkIdx, evmNetworkIdx } = useNetworkInfo();
     // Memo: load the dApps data in advance, so that users can access to dApp staging page smoothly
     useDispatchGetDapps();
 
@@ -59,6 +65,7 @@ export default defineComponent({
     const isShibuya = computed(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
 
     const xcmAssets = computed<XcmAssets>(() => store.getters['assets/getAllAssets']);
+    const xvmAssets = computed<XvmAssets>(() => store.getters['assets/getAllXvmAssets']);
     const ttlNativeXcmUsdAmount = computed<number>(() => xcmAssets.value.ttlNativeXcmUsdAmount);
     const evmAssets = computed<EvmAssets>(() => store.getters['assets/getEvmAllAssets']);
 
@@ -70,9 +77,15 @@ export default defineComponent({
       }
     });
 
-    const handleUpdateXcmTokenAssets = () => {
-      currentAccount.value &&
+    const handleUpdateNativeTokenAssets = () => {
+      if (currentAccount.value && evmNetworkIdx.value) {
         store.dispatch('assets/getAssets', { address: currentAccount.value, isFetchUsd: true });
+        store.dispatch('assets/getXvmAssets', {
+          currentAccount: currentAccount.value,
+          isFetchUsd: isMainnet.value,
+          srcChainId: evmNetworkIdx.value,
+        });
+      }
     };
 
     const handleUpdateEvmAssets = (): void => {
@@ -82,7 +95,7 @@ export default defineComponent({
             currentAccount: currentAccount.value,
             srcChainId: evmNetworkId.value,
             currentNetworkIdx: currentNetworkIdx.value,
-            isFetchUsd: true,
+            isFetchUsd: isMainnet.value,
           });
       }
     };
@@ -95,13 +108,15 @@ export default defineComponent({
         });
       } else {
         window.addEventListener(LOCAL_STORAGE.XVM_TOKEN_IMPORTS, () => {
-          // Todo
-          // handleUpdateEvmAssets();
+          store.dispatch('assets/getXvmAssets', {
+            address: currentAccount.value,
+            isFetchUsd: isMainnet.value,
+          });
         });
       }
     };
 
-    watch([currentAccount], handleUpdateXcmTokenAssets, { immediate: true });
+    watch([currentAccount, evmNetworkIdx], handleUpdateNativeTokenAssets, { immediate: true });
     watch([currentAccount], handleUpdateEvmAssets, { immediate: true });
     watchEffect(handleImportingCustomToken);
 
@@ -118,19 +133,23 @@ export default defineComponent({
 
     watch([evmAssets, xcmAssets, isH160, isMainnet], handleEvmAssetLoader, { immediate: true });
 
+    watchEffect(() => {
+      console.log('xvmAssets', xvmAssets.value);
+    });
+
     return {
       evmAssets,
       isLoadingXcmAssetsAmount,
       isH160,
       isEnableXcm,
       xcmAssets,
+      xvmAssets,
       ttlNativeXcmUsdAmount,
       isModalXcmTransfer,
       token,
       accountData,
       isModalXcmBridge,
       isLoading,
-      handleUpdateXcmTokenAssets,
     };
   },
 });
