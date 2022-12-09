@@ -25,33 +25,14 @@ export class XvmService implements IXvmService {
     srcChainId,
   }: XvmGetAssetsParam): Promise<XvmAssets> {
     Guard.ThrowIfUndefined('currentAccount', currentAccount);
-
     const assets = await this.xvmRepository.getAssets({ currentAccount, isFetchUsd, srcChainId });
     let ttlXvmUsdAmount = 0;
+    assets.forEach((it) => {
+      ttlXvmUsdAmount += Number(it.userBalanceUsd);
+    });
 
-    // const updatedAssets = await Promise.all(
-    //   assets.map(async (asset) => {
-    //     if (asset.balance.gt(new BN(0))) {
-    //       asset.userBalance = Number(
-    //         this.balanceFormatterService.format(asset.balance, asset.metadata.decimals)
-    //       );
-    //       // Memo: fetch the USD price on the assets page only
-    //       const price = isFetchUsd
-    //         ? await this.priceRepository.getUsdPrice(asset.metadata.symbol)
-    //         : 0;
-    //       const userBalanceUsd = asset.userBalance * price;
-    //       ttlNativeXcmUsdAmount += userBalanceUsd;
-    //       return {
-    //         ...asset,
-    //         userBalanceUsd,
-    //       };
-    //     } else {
-    //       return asset;
-    //     }
-    //   })
-    // );
+    assets.sort((a1, a2) => Number(a2.userBalanceUsd) - Number(a1.userBalanceUsd));
 
-    // updatedAssets.sort((a1, a2) => a2.userBalanceUsd - a1.userBalanceUsd);
     return { xvmAssets: assets, ttlXvmUsdAmount };
   }
   public async transfer({
