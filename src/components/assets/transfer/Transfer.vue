@@ -1,14 +1,14 @@
 <template>
   <div>
-    <BackToPage
+    <back-to-page
       :class="isHighlightRightUi && 'half-opacity'"
       :text="$t('assets.transferPage.backToAssets')"
       :link="Path.Assets"
     />
-    <MobileNavigator v-if="currentAccount" />
+    <mobile-navigator v-if="currentAccount" />
     <div v-if="currentAccount" class="wrapper--transfer">
       <div class="container--transfer">
-        <TransferModeTab
+        <transfer-mode-tab
           :is-local-transfer="isLocalTransfer"
           :set-is-local-transfer="handleSetIsLocalTransfer"
           :is-disabled-xcm="isDisabledXcm"
@@ -16,15 +16,14 @@
         />
         <div v-if="token" class="wrapper-containers">
           <div v-if="isLocalTransfer">
-            <LocalTransfer
-              :account-data="accountData"
+            <local-transfer
               :class="isHighlightRightUi && 'half-opacity'"
               :set-right-ui="setRightUi"
               :token="token"
             />
           </div>
           <div v-else>
-            <XcmBridge
+            <xcm-bridge
               v-if="tokens"
               :token="token"
               :class="isHighlightRightUi && 'half-opacity'"
@@ -34,14 +33,14 @@
               :is-disabled-xcm-button="isDisabledXcm"
             />
           </div>
-          <Information v-if="rightUi === 'information'" :is-local-transfer="isLocalTransfer" />
-          <SelectChain
+          <information v-if="rightUi === 'information'" :is-local-transfer="isLocalTransfer" />
+          <select-chain
             v-if="rightUi === 'select-chain'"
             v-click-away="cancelHighlight"
             :set-chain="handleSetChain"
             :chains="selectableChains"
           />
-          <SelectToken
+          <select-token
             v-if="rightUi === 'select-token'"
             v-click-away="cancelHighlight"
             :set-token="handleSetToken"
@@ -50,7 +49,7 @@
         </div>
       </div>
     </div>
-    <ModalSelectChain
+    <modal-select-chain
       v-if="from && to"
       :is-modal-select-chain="isModalSelectChain"
       :handle-modal-select-chain="handleModalSelectChain"
@@ -58,7 +57,7 @@
       :chains="selectableChains"
       :selected-chain="isSelectFromChain ? from : to"
     />
-    <ModalSelectToken
+    <modal-select-token
       v-if="token && tokens"
       :is-modal-select-token="isModalSelectToken"
       :handle-modal-select-token="handleModalSelectToken"
@@ -80,21 +79,15 @@ import TransferModeTab from 'src/components/assets/transfer/TransferModeTab.vue'
 import XcmBridge from 'src/components/assets/transfer/XcmBridge.vue';
 import BackToPage from 'src/components/common/BackToPage.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
-import {
-  useAccount,
-  useBalance,
-  useBreakpoints,
-  useNetworkInfo,
-  useTransferRouter,
-} from 'src/hooks';
+import { useAccount, useBreakpoints, useNetworkInfo, useTransferRouter } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { removeEvmName } from 'src/modules/xcm';
-import { Chain, XcmChain } from 'src/v2/models/XcmModels';
+import { Path } from 'src/router';
 import { useStore } from 'src/store';
 import { EvmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
+import { XcmChain } from 'src/v2/models/XcmModels';
 import { computed, defineComponent, ref, watch } from 'vue';
-import { Path } from 'src/router';
 
 export type RightUi = 'information' | 'select-chain' | 'select-token';
 
@@ -119,7 +112,6 @@ export default defineComponent({
 
     const store = useStore();
     const { currentAccount } = useAccount();
-    const { accountData } = useBalance(currentAccount);
     const { screenSize, width } = useBreakpoints();
     const {
       tokenSymbol,
@@ -245,7 +237,6 @@ export default defineComponent({
 
     return {
       isLocalTransfer,
-      accountData,
       token,
       isHighlightRightUi,
       rightUi,

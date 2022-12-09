@@ -9,7 +9,7 @@
               <TokenBalance
                 text="assets.modals.balance"
                 :balance="String(fromAddressBalance)"
-                :symbol="token.metadata.symbol"
+                :symbol="token.symbol"
               />
             </span>
           </div>
@@ -32,7 +32,7 @@
               <TokenBalance
                 text="assets.modals.balance"
                 :balance="String(toAddressBalance)"
-                :symbol="token.metadata.symbol"
+                :symbol="token.symbol"
               />
             </span>
           </div>
@@ -52,10 +52,10 @@
               <TokenBalance
                 text="assets.modals.balance"
                 :balance="String(fromAddressBalance)"
-                :symbol="token.metadata.symbol"
+                :symbol="token.symbol"
               />
             </span>
-            <button v-if="!isTransferNativeToken" class="btn--max" @click="toMaxAmount">
+            <button class="btn--max" @click="toMaxAmount">
               {{ $t('assets.modals.max') }}
             </button>
           </div>
@@ -63,20 +63,9 @@
         <div class="box__row">
           <div class="box__row cursor-pointer" @click="setRightUi('select-token')">
             <div class="token-logo">
-              <jazzicon
-                v-if="token.tokenImage.includes('custom-token')"
-                :address="token.id"
-                :diameter="24"
-              />
-              <img
-                v-else
-                width="24"
-                alt="token-logo"
-                :src="token.tokenImage"
-                :class="token.metadata.symbol === nativeTokenSymbol && 'token-native-adjustment'"
-              />
+              <jazzicon :address="token.erc20Contract" :diameter="24" />
             </div>
-            <span class="text--title">{{ token.metadata.symbol }}</span>
+            <span class="text--title">{{ token.symbol }}</span>
             <div class="icon--expand">
               <astar-icon-expand size="20" />
             </div>
@@ -100,9 +89,9 @@
 
       <speed-configuration
         v-if="isEnableSpeedConfiguration"
-        :gas-cost="isH160 ? evmGasCost : nativeTipPrice"
-        :selected-gas="isH160 ? selectedGas : selectedTip"
-        :set-selected-gas="isH160 ? setSelectedGas : setSelectedTip"
+        :gas-cost="nativeTipPrice"
+        :selected-gas="selectedTip"
+        :set-selected-gas="setSelectedTip"
       />
 
       <div
@@ -141,14 +130,12 @@
 <script lang="ts">
 import InputSelectAccount from 'src/components/assets/transfer/InputSelectAccount.vue';
 import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
-import { SupportWallet } from 'src/config/wallets';
-import { useAccount, useNetworkInfo, useWalletIcon, useTokenTransfer } from 'src/hooks';
+import TokenBalance from 'src/components/common/TokenBalance.vue';
+import { useAccount, useNetworkInfo, useWalletIcon, useXvmTokenTransfer } from 'src/hooks';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
-import { useStore } from 'src/store';
-import { Asset } from 'src/v2/models';
+import { XvmAsset } from 'src/modules/token';
 import { computed, defineComponent, PropType } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
-import TokenBalance from 'src/components/common/TokenBalance.vue';
 
 export default defineComponent({
   components: {
@@ -163,7 +150,7 @@ export default defineComponent({
       required: true,
     },
     token: {
-      type: Object as PropType<Asset>,
+      type: Object as PropType<XvmAsset>,
       required: true,
     },
   },
@@ -171,7 +158,7 @@ export default defineComponent({
     const { iconWallet } = useWalletIcon();
     const { currentAccount, currentAccountName } = useAccount();
     const { nativeTokenSymbol } = useNetworkInfo();
-    const t = computed<Asset>(() => props.token);
+    const t = computed<XvmAsset>(() => props.token);
     const {
       selectedTip,
       nativeTipPrice,
@@ -184,23 +171,12 @@ export default defineComponent({
       isChecked,
       isH160,
       isRequiredCheck,
-      selectedGas,
-      evmGasCost,
-      isTransferNativeToken,
-      setSelectedGas,
+      isEnableSpeedConfiguration,
       inputHandler,
       setSelectedTip,
       transferAsset,
       toMaxAmount,
-    } = useTokenTransfer(t);
-
-    const store = useStore();
-    const isEnableSpeedConfiguration = computed<boolean>(() => {
-      const currentWallet = store.getters['general/currentWallet'];
-      return (
-        currentWallet !== SupportWallet.TalismanEvm && currentWallet !== SupportWallet.SubWalletEvm
-      );
-    });
+    } = useXvmTokenTransfer(t);
 
     const transfer = async (): Promise<void> => {
       await transferAsset({
@@ -222,14 +198,10 @@ export default defineComponent({
       fromAddressBalance,
       isChecked,
       isEnableSpeedConfiguration,
-      evmGasCost,
       nativeTipPrice,
-      selectedGas,
       selectedTip,
       isH160,
       isRequiredCheck,
-      isTransferNativeToken,
-      setSelectedGas,
       setSelectedTip,
       transfer,
       toMaxAmount,

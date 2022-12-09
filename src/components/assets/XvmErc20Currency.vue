@@ -28,12 +28,12 @@
             </div>
           </div>
           <div class="column--asset-buttons column--buttons--native">
-            <router-link :to="buildTransferPageLink(token.symbol)">
+            <router-link :to="buildXvmTransferPageLink(token.symbol)">
               <button class="btn btn--sm">
                 {{ $t('assets.transfer') }}
               </button>
             </router-link>
-            <!-- <div class="screen--xl">
+            <div class="screen--xl">
               <a
                 class="box--explorer"
                 :href="explorerLink"
@@ -47,25 +47,24 @@
                 </button>
               </a>
               <q-tooltip>
-                <span class="text--tooltip">{{ $t('subscan') }}</span>
+                <span class="text--tooltip">{{ $t('blockscout') }}</span>
               </q-tooltip>
-            </div> -->
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
+
 <script lang="ts">
-import { endpointKey } from 'src/config/chainEndpoints';
+import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { useNetworkInfo } from 'src/hooks';
-import { getXcmToken } from 'src/modules/xcm';
-import { buildTransferPageLink } from 'src/router/routes';
-import { Asset } from 'src/v2/models';
+import { getErc20Explorer, XvmAsset } from 'src/modules/token';
+import { buildXvmTransferPageLink } from 'src/router/routes';
 import { computed, defineComponent, PropType } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
-import TokenBalance from 'src/components/common/TokenBalance.vue';
-import { XvmAsset } from 'src/modules/token';
+
 export default defineComponent({
   components: { [Jazzicon.name]: Jazzicon, TokenBalance },
   props: {
@@ -75,18 +74,16 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const t = computed<any>(() => props.token);
     const { currentNetworkIdx } = useNetworkInfo();
 
-    // const explorerLink = computed<string>(() => {
-    //   const astarBalanceUrl = 'https://astar.subscan.io/assets/' + t.value.id;
-    //   const shidenBalanceUrl = 'https://shiden.subscan.io/assets/' + t.value.id;
-    //   return currentNetworkIdx.value === endpointKey.ASTAR ? astarBalanceUrl : shidenBalanceUrl;
-    // });
+    const explorerLink = computed<string>(() => {
+      const tokenAddress = props.token.erc20Contract;
+      return getErc20Explorer({ currentNetworkIdx: currentNetworkIdx.value, tokenAddress });
+    });
 
     return {
-      // explorerLink,
-      buildTransferPageLink,
+      explorerLink,
+      buildXvmTransferPageLink,
     };
   },
 });
