@@ -38,10 +38,10 @@
 </template>
 <script lang="ts">
 import Information from 'src/components/assets/transfer/Information.vue';
-import XvmTokenTransfer from 'src/components/assets/transfer/XvmTokenTransfer.vue';
 import MobileNavigator from 'src/components/assets/transfer/MobileNavigator.vue';
 import ModalSelectXvmToken from 'src/components/assets/transfer/ModalSelectXvmToken.vue';
 import SelectXvmToken from 'src/components/assets/transfer/SelectXvmToken.vue';
+import XvmTokenTransfer from 'src/components/assets/transfer/XvmTokenTransfer.vue';
 import BackToPage from 'src/components/common/BackToPage.vue';
 import {
   useAccount,
@@ -54,7 +54,7 @@ import { wait } from 'src/hooks/helper/common';
 import { XvmAsset } from 'src/modules/token';
 import { Path } from 'src/router';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
+import { computed, defineComponent, ref, watch } from 'vue';
 
 export type RightUi = 'information' | 'select-token';
 
@@ -119,11 +119,6 @@ export default defineComponent({
     };
 
     watch([currentAccount, evmNetworkIdx], handleUpdateXvmTokenAssets, { immediate: true });
-
-    watchEffect(() => {
-      console.log('token', token.value);
-      console.log('tokens', tokens.value);
-    });
 
     return {
       accountData,

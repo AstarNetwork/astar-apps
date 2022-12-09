@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import ABI from 'src/c-bridge/abi/ERC20.json';
+import ABI from 'src/config/abi/ERC20.json';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 import { Erc20Token } from 'src/modules/token';

@@ -133,10 +133,6 @@ export default defineComponent({
 
     watch([evmAssets, xcmAssets, isH160, isMainnet], handleEvmAssetLoader, { immediate: true });
 
-    watchEffect(() => {
-      console.log('xvmAssets', xvmAssets.value);
-    });
-
     return {
       evmAssets,
       isLoadingXcmAssetsAmount,

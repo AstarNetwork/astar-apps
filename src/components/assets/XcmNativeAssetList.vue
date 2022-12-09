@@ -24,10 +24,10 @@
 </template>
 
 <script lang="ts">
-import { Asset } from 'src/v2/models';
-import { defineComponent, PropType, ref, computed, watchEffect } from 'vue';
-import XcmCurrency from 'src/components/assets/XcmCurrency.vue';
 import AssetSearchOption from 'src/components/assets/AssetSearchOption.vue';
+import XcmCurrency from 'src/components/assets/XcmCurrency.vue';
+import { Asset } from 'src/v2/models';
+import { computed, defineComponent, PropType, ref } from 'vue';
 export default defineComponent({
   components: {
     XcmCurrency,
@@ -76,11 +76,6 @@ export default defineComponent({
     const setSearch = (event: any): void => {
       search.value = event.target.value;
     };
-
-    watchEffect(() => {
-      console.log('filteredTokens', filteredTokens.value);
-      console.log('isHideSmallBalances.value', isHideSmallBalances.value);
-    });
 
     return {
       filteredTokens,

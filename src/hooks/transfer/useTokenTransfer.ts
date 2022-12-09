@@ -3,7 +3,7 @@ import { ISubmittableResult } from '@polkadot/types/types';
 import { BN } from '@polkadot/util';
 import { $api, $web3 } from 'boot/api';
 import { ethers } from 'ethers';
-import ABI from 'src/c-bridge/abi/ERC20.json';
+import ABI from 'src/config/abi/ERC20.json';
 import { getTokenBal, isValidEvmAddress, toSS58Address } from 'src/config/web3';
 import { useCustomSignature, useNetworkInfo, useGasPrice } from 'src/hooks';
 import { ASTAR_SS58_FORMAT, isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
