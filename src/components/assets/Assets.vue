@@ -80,11 +80,12 @@ export default defineComponent({
     const handleUpdateNativeTokenAssets = () => {
       if (currentAccount.value && evmNetworkIdx.value) {
         store.dispatch('assets/getAssets', { address: currentAccount.value, isFetchUsd: true });
-        store.dispatch('assets/getXvmAssets', {
-          currentAccount: currentAccount.value,
-          isFetchUsd: isMainnet.value,
-          srcChainId: evmNetworkIdx.value,
-        });
+        !isH160.value &&
+          store.dispatch('assets/getXvmAssets', {
+            currentAccount: currentAccount.value,
+            isFetchUsd: isMainnet.value,
+            srcChainId: evmNetworkIdx.value,
+          });
       }
     };
 
