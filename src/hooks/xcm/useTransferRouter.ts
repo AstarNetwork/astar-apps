@@ -280,10 +280,7 @@ export function useTransferRouter() {
       const selectedNetwork = xcmOpponentChain.value;
       const isAstarEvm = from.value.includes(pathEvm) || to.value.includes(pathEvm);
       const isSupportAstarNativeToken = checkIsSupportAstarNativeToken(selectedNetwork);
-      console.log('selectedNetwork', selectedNetwork);
-      console.log('isAstarEvm', isAstarEvm);
-      console.log('isSupportAstarNativeToken', isSupportAstarNativeToken);
-      console.log('xcmAssets.value.assets', xcmAssets.value.assets);
+      console.log('isAstarEvm', isAstarEvm); // Will need to address EVM chains
 
       if (isH160.value) {
         const filteredToken = evmTokens.map((it) =>
