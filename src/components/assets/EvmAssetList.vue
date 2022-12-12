@@ -192,7 +192,7 @@ export default defineComponent({
     const nativeTokenImg = computed<string>(() =>
       getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
     );
-    const isListReady = computed<boolean>(() => !!(isShibuya.value || props.tokens.length > 0));
+    const isListReady = computed<boolean>(() => !!(props.tokens.length > 0));
 
     const isDisplayNativeToken = computed<boolean>(() => {
       return (
