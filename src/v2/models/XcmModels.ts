@@ -49,8 +49,10 @@ export interface XcmChain {
 export const isParachain = (network: XcmChain): boolean => !!network.parachainId;
 export const isRelayChain = (network: XcmChain): boolean => !isParachain(network);
 
+// Todo: check withdrawing to StateMine
 // Memo: Chain.STATEMINE -> Bug related to https://github.com/polkadot-js/apps/issues/7812
-export const chainsNotSupportWithdrawal = [Chain.STATEMINE, Chain.STATEMINT];
+// export const chainsNotSupportWithdrawal = [Chain.STATEMINE, Chain.STATEMINT];
+export const chainsNotSupportWithdrawal = [Chain.STATEMINE];
 export const astarChains = [Chain.ASTAR, Chain.SHIDEN, Chain.ASTAR_EVM, Chain.SHIDEN_EVM];
 export const ethWalletChains = [Chain.MOONBEAM, Chain.MOONRIVER];
 
