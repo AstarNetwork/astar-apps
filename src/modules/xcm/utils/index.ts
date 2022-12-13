@@ -31,7 +31,7 @@ export const getXcmToken = ({
   currentNetworkIdx: endpointKey;
 }): XcmTokenInformation | undefined => {
   const networkIdx = currentNetworkIdx as ASTAR_NETWORK_IDX;
-  const t = xcmToken[networkIdx].find((it: XcmTokenInformation) => it.assetId === id);
+  const t = xcmToken[networkIdx].find((it: XcmTokenInformation) => it.astarAssetId === id);
   return t;
 };
 

@@ -10,7 +10,7 @@
       <div class="container--items">
         <div
           v-for="t in tokens"
-          :key="t.assetId"
+          :key="t.astarAssetId"
           class="row--item"
           :class="token.metadata.symbol === t.metadata.symbol && 'row--item-selected'"
           @click="setToken(t)"

@@ -22,8 +22,8 @@ export {
 
 export interface XcmTokenInformation {
   symbol: string;
-  assetId: string;
-  logo: string;
+  astarAssetId: string;
+  icon: string;
   isNativeToken: boolean;
   isXcmCompatible: boolean;
   originAssetId: string;
