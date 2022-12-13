@@ -272,6 +272,19 @@
   height: 44px;
 }
 
+.text--link {
+  text-decoration: underline;
+}
+
+.checkbox--xvm {
+  margin-top: 14px;
+}
+
+.row--user-guide {
+  display: flex;
+  column-gap: 4px;
+}
+
 .body--dark {
   .box--input-field {
     background: $gray-6;

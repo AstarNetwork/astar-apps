@@ -26,6 +26,7 @@ import { SUBSTRATE_SS58_FORMAT } from 'src/hooks/helper/plasmUtils';
 import { signAndSend } from 'src/hooks/helper/wallet';
 import { SubstrateAccount } from 'src/store/general/state';
 import { Path } from 'src/router';
+import { getStoredXvmTokens } from 'src/modules/token';
 
 export function useTokenTransfer(selectedToken: Ref<Asset>) {
   const transferAmt = ref<string | null>(null);
@@ -33,6 +34,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
   const toAddress = ref<string>('');
   const errMsg = ref<string>('');
   const isChecked = ref<boolean>(false);
+  const isCheckedXvm = ref<boolean>(false);
 
   const store = useStore();
   const { ethProvider } = useEthProvider();
@@ -66,6 +68,22 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
 
   const isRequiredCheck = computed<boolean>(() => isH160.value || !isTransferNativeToken.value);
 
+  const isRequiredCheckXvm = computed<boolean>(() => {
+    let result = false;
+    if (isH160.value) {
+      const xvmTokens = getStoredXvmTokens();
+      xvmTokens.forEach((it) => {
+        if (
+          it.srcChainId === evmNetworkIdx.value &&
+          it.erc20Contract.toLowerCase() === selectedToken.value.mappedERC20Addr.toLocaleLowerCase()
+        ) {
+          result = true;
+        }
+      });
+    }
+    return result;
+  });
+
   const fromAddressBalance = computed<number>(() =>
     selectedToken.value ? selectedToken.value.userBalance : 0
   );
@@ -78,12 +96,14 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
       errMsg.value !== '' ||
       isLessAmount ||
       noAddress ||
-      (isRequiredCheck.value && !isChecked.value)
+      (isRequiredCheck.value && !isChecked.value) ||
+      (isRequiredCheckXvm.value && !isCheckedXvm.value)
     );
   });
 
   const isValidDestAddress = computed<boolean>(() => {
-    const isOnlyAcceptEvmAddress = isH160.value && !isTransferNativeToken.value;
+    const isOnlyAcceptEvmAddress =
+      isH160.value && !isTransferNativeToken.value && !isRequiredCheckXvm.value;
     return isOnlyAcceptEvmAddress
       ? isValidEvmAddress(toAddress.value)
       : isValidAddressPolkadotAddress(toAddress.value, ASTAR_SS58_FORMAT) ||
@@ -101,6 +121,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     toAddress.value = '';
     errMsg.value = '';
     isChecked.value = false;
+    isCheckedXvm.value = false;
     toAddressBalance.value = 0;
   };
 
@@ -210,7 +231,8 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     finalizeCallback: () => void;
   }): Promise<void> => {
     if (!isH160.value) return;
-    if (!ethers.utils.isAddress(toAddress)) {
+    const destAddress = isRequiredCheckXvm.value ? buildEvmAddress(toAddress) : toAddress;
+    if (!ethers.utils.isAddress(destAddress)) {
       toastInvalidAddress();
       return;
     }
@@ -222,7 +244,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
       from: fromAddress,
       to: contractAddress,
       value: '0x0',
-      data: contract.methods.transfer(toAddress, transferAmt).encodeABI(),
+      data: contract.methods.transfer(destAddress, transferAmt).encodeABI(),
     };
 
     const estimatedGas = await web3.eth.estimateGas(rawTx);
@@ -302,7 +324,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
 
     const callSs58Transfer = async (): Promise<void> => {
       if (isTransferNativeToken.value) {
-        const transaction = $api!.tx.balances.transfer(receivingAddress, amount);
+        const transaction = $api!.tx.balances.transferKeepAlive(receivingAddress, amount);
         await signAndSend({
           transaction,
           senderAddress: currentAccount.value,
@@ -378,9 +400,10 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     if (isTransferNativeToken.value) {
       toAddressBalance.value = await getNativeTokenBalance(destAddress);
     } else if (isH160.value) {
+      const address = isRequiredCheckXvm.value ? buildEvmAddress(toAddress.value) : toAddress.value;
       const balance = await getTokenBal({
         srcChainId,
-        address: toAddress.value,
+        address,
         tokenAddress: selectedToken.value.mappedERC20Addr,
         tokenSymbol: selectedToken.value.metadata.symbol,
       });
@@ -453,6 +476,8 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     selectedGas,
     evmGasCost,
     isRequiredCheck,
+    isRequiredCheckXvm,
+    isCheckedXvm,
     setSelectedGas,
     setSelectedTip,
     inputHandler,

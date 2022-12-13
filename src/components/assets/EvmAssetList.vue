@@ -1,6 +1,6 @@
 <template>
   <div v-if="isListReady" class="container--assets">
-    <div v-if="filteredTokens.length > 0" class="container">
+    <div v-if="isXcmAssets" class="container">
       <div class="row">
         <div>
           <span class="text--title">{{ $t('assets.xcmAssets') }}</span>
@@ -106,18 +106,18 @@
 import { ethers } from 'ethers';
 import { $web3 } from 'src/boot/api';
 import { cbridgeAppLink, checkIsCbridgeToken } from 'src/c-bridge';
+import AssetSearchOption from 'src/components/assets/AssetSearchOption.vue';
 import Erc20Currency from 'src/components/assets/Erc20Currency.vue';
 import EvmCbridgeToken from 'src/components/assets/EvmCbridgeToken.vue';
+import ModalFaucet from 'src/components/assets/modals/ModalFaucet.vue';
+import TokenBalance from 'src/components/common/TokenBalance.vue';
+import { faucetBalRequirement } from 'src/config/wallets';
 import { getBalance } from 'src/config/web3';
 import { useAccount, useBalance, useNetworkInfo, usePrice } from 'src/hooks';
 import { Erc20Token, getTokenImage } from 'src/modules/token';
+import { buildTransferPageLink } from 'src/router/routes';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
-import ModalFaucet from 'src/components/assets/modals/ModalFaucet.vue';
-import { buildTransferPageLink } from 'src/router/routes';
-import TokenBalance from 'src/components/common/TokenBalance.vue';
-import { faucetBalRequirement } from 'src/config/wallets';
-import AssetSearchOption from 'src/components/assets/AssetSearchOption.vue';
 
 export default defineComponent({
   components: {
@@ -219,6 +219,17 @@ export default defineComponent({
       }
     };
 
+    const isXcmAssets = computed<boolean>(() => {
+      let result = false;
+      if (props.tokens.length === 0) return result;
+      props.tokens.forEach((it) => {
+        if (it.isXC20) {
+          result = true;
+        }
+      });
+      return result;
+    });
+
     watchEffect(async () => {
       await updateStates();
     });
@@ -242,6 +253,7 @@ export default defineComponent({
       cbridgeAppLink,
       isHideSmallBalances,
       isLoading,
+      isXcmAssets,
       buildTransferPageLink,
       setIsSearch,
       handleModalFaucet,

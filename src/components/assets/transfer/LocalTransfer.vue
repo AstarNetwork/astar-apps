@@ -65,7 +65,7 @@
             <div class="token-logo">
               <jazzicon
                 v-if="token.tokenImage.includes('custom-token')"
-                :address="token.id"
+                :address="token.mappedERC20Addr"
                 :diameter="24"
               />
               <img
@@ -113,9 +113,34 @@
         <div class="input--checkbox" :class="isChecked && 'input--checkbox--checked'">
           <input id="do-not-send-to-cex" v-model="isChecked" type="checkbox" />
           <label for="do-not-send-to-cex">
-            <span :class="isChecked ? 'color--gray1' : 'color--not-checked'">{{
-              $t('assets.modals.notSendToExchanges')
-            }}</span>
+            <span :class="isChecked ? 'color--gray1' : 'color--not-checked'">
+              {{ $t('assets.modals.notSendToExchanges') }}
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <div
+        v-if="isRequiredCheckXvm"
+        class="box--warning checkbox--xvm"
+        :class="isCheckedXvm && 'box--warning--checked'"
+      >
+        <div class="input--checkbox" :class="isCheckedXvm && 'input--checkbox--checked'">
+          <input id="i-have-read-user-guide" v-model="isCheckedXvm" type="checkbox" />
+          <label for="i-have-read-user-guide">
+            <div class="row--user-guide">
+              <span :class="isCheckedXvm ? 'color--gray1' : 'color--not-checked'">
+                {{ $t('assets.modals.readGuide') }}
+              </span>
+              <!-- Todo: update the link -->
+              <a href="/" target="_blank" rel="noopener noreferrer">
+                <span
+                  class="text--link"
+                  :class="isCheckedXvm ? 'color--gray1' : 'color--not-checked'"
+                  >{{ $t('assets.modals.userGuide') }}</span
+                >
+              </a>
+            </div>
           </label>
         </div>
       </div>
@@ -187,6 +212,8 @@ export default defineComponent({
       selectedGas,
       evmGasCost,
       isTransferNativeToken,
+      isRequiredCheckXvm,
+      isCheckedXvm,
       setSelectedGas,
       inputHandler,
       setSelectedTip,
@@ -229,6 +256,8 @@ export default defineComponent({
       isH160,
       isRequiredCheck,
       isTransferNativeToken,
+      isRequiredCheckXvm,
+      isCheckedXvm,
       setSelectedGas,
       setSelectedTip,
       transfer,
