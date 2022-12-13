@@ -6,7 +6,6 @@ import ABI_WASM_ERC20 from 'src/config/abi/WASM-ERC20.json';
 import ABI_WASM_PSP22 from 'src/config/abi/WASM-PSP22.json';
 import { buildEvmAddress, getTokenBal, isValidEvmAddress } from 'src/config/web3';
 import { useCustomSignature, useGasPrice, useNetworkInfo } from 'src/hooks';
-import { useEthProvider } from 'src/hooks/custom-signature/useEthProvider';
 import {
   ASTAR_SS58_FORMAT,
   isValidAddressPolkadotAddress,
@@ -111,6 +110,12 @@ export function useXvmTokenTransfer(selectedToken: Ref<XvmAsset>) {
     }
   };
 
+  const setXvmContract = (): void => {
+    if (!toAddress.value) return;
+    const isSendToH160 = isValidEvmAddress(toAddress.value);
+    xvmContract.value = isSendToH160 ? 'wasm-erc20' : 'wasm-psp22';
+  };
+
   const setToAddressBalance = async (): Promise<void> => {
     if (!isValidDestAddress.value) {
       toAddressBalance.value = 0;
@@ -130,7 +135,6 @@ export function useXvmTokenTransfer(selectedToken: Ref<XvmAsset>) {
       });
 
       toAddressBalance.value = Number(userBalance);
-      xvmContract.value = isSendToH160 ? 'wasm-erc20' : 'wasm-psp22';
     } catch (error) {
       console.error(error);
       toAddressBalance.value = 0;
@@ -172,7 +176,8 @@ export function useXvmTokenTransfer(selectedToken: Ref<XvmAsset>) {
         : contract.tx.transfer(
             { gasLimit: WASM_GAS_LIMIT, storageDepositLimit: null },
             toAddress,
-            amount
+            amount,
+            null
           );
 
       await signAndSend({
@@ -202,6 +207,7 @@ export function useXvmTokenTransfer(selectedToken: Ref<XvmAsset>) {
   watchEffect(setErrorMsg);
   watchEffect(setToAddressBalance);
   watch([tokenSymbol], resetStates);
+  watch([toAddress], setXvmContract);
 
   return {
     selectedTip,
