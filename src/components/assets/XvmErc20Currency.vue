@@ -27,7 +27,7 @@
               </div>
             </div>
           </div>
-          <div class="column--asset-buttons column--buttons--native">
+          <div class="column--asset-buttons column--three-buttons">
             <router-link :to="buildXvmTransferPageLink(token.symbol)">
               <button class="btn btn--sm">
                 {{ $t('assets.transfer') }}
@@ -50,6 +50,19 @@
                 <span class="text--tooltip">{{ $t('blockscout') }}</span>
               </q-tooltip>
             </div>
+            <div class="screen--xl">
+              <button
+                class="btn btn--sm adjuster--width btn--delete"
+                @click="handleDeleteStoredToken(token.erc20Contract)"
+              >
+                <div class="adjuster--width icon--delete">
+                  <astar-icon-delete :size="22" />
+                </div>
+              </button>
+              <q-tooltip>
+                <span class="text--tooltip">{{ $t('remove') }}</span>
+              </q-tooltip>
+            </div>
           </div>
         </div>
       </div>
@@ -59,8 +72,9 @@
 
 <script lang="ts">
 import TokenBalance from 'src/components/common/TokenBalance.vue';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useNetworkInfo } from 'src/hooks';
-import { getErc20Explorer, XvmAsset } from 'src/modules/token';
+import { deleteImportedXvmToken, getErc20Explorer, XvmAsset } from 'src/modules/token';
 import { buildXvmTransferPageLink } from 'src/router/routes';
 import { computed, defineComponent, PropType } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
@@ -74,16 +88,23 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { currentNetworkIdx } = useNetworkInfo();
+    const { currentNetworkIdx, evmNetworkIdx } = useNetworkInfo();
 
     const explorerLink = computed<string>(() => {
       const tokenAddress = props.token.erc20Contract;
       return getErc20Explorer({ currentNetworkIdx: currentNetworkIdx.value, tokenAddress });
     });
 
+    const handleDeleteStoredToken = (tokenAddress: string): void => {
+      deleteImportedXvmToken({ srcChainId: evmNetworkIdx.value, tokenAddress });
+      window.dispatchEvent(new CustomEvent(LOCAL_STORAGE.XVM_TOKEN_IMPORTS));
+    };
+
     return {
       explorerLink,
       buildXvmTransferPageLink,
+      deleteImportedXvmToken,
+      handleDeleteStoredToken,
     };
   },
 });

@@ -10,6 +10,8 @@ export {
   getRegisteredErc20Tokens,
   getStoredXvmTokens,
   storeImportedXvmToken,
+  deleteImportedXvmToken,
+  deleteImportedErc20Token,
 } from 'src/modules/token/utils';
 
 // Memo: ERC20 tokens information that is not supported by cBridge

@@ -73,6 +73,44 @@ export const storeImportedXvmToken = (token: XvmAsset) => {
   localStorage.setItem(LOCAL_STORAGE.XVM_TOKEN_IMPORTS, JSON.stringify(tokens));
 };
 
+export const deleteImportedXvmToken = ({
+  tokenAddress,
+  srcChainId,
+}: {
+  tokenAddress: string;
+  srcChainId: number;
+}): void => {
+  const tokens = getStoredXvmTokens();
+  const filteredTokens = tokens.filter((it) => {
+    const isDeleteToken =
+      srcChainId === it.srcChainId && tokenAddress.toLowerCase() === it.erc20Contract.toLowerCase();
+
+    if (!isDeleteToken) {
+      return it;
+    }
+  });
+  localStorage.setItem(LOCAL_STORAGE.XVM_TOKEN_IMPORTS, JSON.stringify(filteredTokens));
+};
+
+export const deleteImportedErc20Token = ({
+  tokenAddress,
+  srcChainId,
+}: {
+  tokenAddress: string;
+  srcChainId: number;
+}): void => {
+  const tokens = getStoredERC20Tokens();
+  const filteredTokens = tokens.filter((it) => {
+    const isDeleteToken =
+      srcChainId === it.srcChainId && tokenAddress.toLowerCase() === it.address.toLowerCase();
+
+    if (!isDeleteToken) {
+      return it;
+    }
+  });
+  localStorage.setItem(LOCAL_STORAGE.EVM_TOKEN_IMPORTS, JSON.stringify(filteredTokens));
+};
+
 export const castCbridgeToErc20 = ({
   token,
   srcChainId,

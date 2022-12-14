@@ -10,6 +10,7 @@ export default {
   add: 'Add',
   estimated: 'Estimated',
   forget: 'Forget',
+  remove: 'Remove',
   close: 'Close',
   manage: 'Manage',
   subscan: 'Subscan',
