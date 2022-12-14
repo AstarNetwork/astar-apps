@@ -82,7 +82,11 @@
         <span class="color--white"> {{ $t(errMsg) }}</span>
       </div>
       <div class="wrapper__row--button">
-        <astar-button class="button--confirm" :disabled="isDisabled" @click="handleRequest">
+        <astar-button
+          class="button--confirm"
+          :disabled="isDisabled || !token"
+          @click="handleRequest"
+        >
           {{ $t('confirm') }}
         </astar-button>
       </div>
@@ -137,17 +141,18 @@ export default defineComponent({
 
     const isDisabled = computed<boolean>(() => {
       const tokens = getStoredXvmTokens();
-      const isToken = !token.value;
       let isDuplicated = false;
-
       tokens &&
         tokens.forEach((it) => {
-          if (it.erc20Contract.toLowerCase() === searchErc20.value.toLowerCase()) {
+          const isFound =
+            it.erc20Contract.toLowerCase() === searchErc20.value.toLowerCase() &&
+            it.srcChainId === evmNetworkIdx.value;
+          if (isFound) {
             isDuplicated = true;
             errMsg.value = 'assets.tokenHasBeenAdded';
           }
         });
-      return isToken || isDuplicated;
+      return isDuplicated;
     });
 
     const closeModal = async (): Promise<void> => {
@@ -211,7 +216,6 @@ export default defineComponent({
             address: searchErc20.value,
             srcChainId: evmNetworkIdx.value,
           });
-
           isLoading.value = false;
           if (!tokenInfo) {
             throw Error('warning.inputtedInvalidAddress');

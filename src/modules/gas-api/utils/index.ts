@@ -4,6 +4,7 @@ import { ethers } from 'ethers';
 import Web3 from 'web3';
 import { TransactionConfig } from 'web3-eth';
 import { ApiGasNow, GasPrice, GAS_API_URL } from 'src/modules/gas-api';
+import { astarChain } from 'src/config/chain';
 
 export const getEvmGas = async (web3: Web3, selectedGasPrice: string) => {
   const gasPriceFallback = await web3.eth.getGasPrice();
@@ -111,7 +112,9 @@ export const fetchEvmGasPrice = async ({
       };
     }
   } catch (error) {
-    console.error(error);
+    if (network.toLowerCase() !== astarChain.DEVELOPMENT.toLowerCase()) {
+      console.error(error);
+    }
     const fallbackGasPrice = Number(
       await web3.eth.getGasPrice().catch(() => {
         const oneGwei = '1000000000';

@@ -72,6 +72,8 @@ export const getChainId = (currentNetworkIdx: endpointKey): number => {
     return EVM.SHIDEN_MAINNET;
   } else if (currentNetworkIdx === endpointKey.ASTAR) {
     return EVM.ASTAR_MAINNET;
+  } else if (currentNetworkIdx === endpointKey.LOCAL) {
+    return EVM.ASTAR_LOCAL_NODE;
   }
   return EVM.SHIBUYA_TESTNET;
 };

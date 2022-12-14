@@ -1,4 +1,3 @@
-import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import {
   astarChain,
   ASTAR_CHAIN,
@@ -6,6 +5,7 @@ import {
   ASTAR_NATIVE_TOKEN,
   ASTAR_NETWORK_IDX,
 } from 'src/config/chain';
+import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
 import { computed } from 'vue';
 

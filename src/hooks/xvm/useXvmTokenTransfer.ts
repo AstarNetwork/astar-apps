@@ -22,6 +22,10 @@ import { useRoute, useRouter } from 'vue-router';
 
 type ContractType = 'wasm-erc20' | 'wasm-psp22';
 const WASM_GAS_LIMIT = 500000000000;
+// const WASM_GAS_LIMIT = 5000000;
+// const WASM_GAS_LIMIT = 5000000000000000;
+
+// Memo: sending xvm tokens from other than Talisman will fail (local node)
 
 export function useXvmTokenTransfer(selectedToken: Ref<XvmAsset>) {
   const transferAmt = ref<string | null>(null);

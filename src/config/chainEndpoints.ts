@@ -110,8 +110,8 @@ export const providerEndpoints: ChainProvider[] = [
     isStoreEnabled: true,
     subscan: '',
     blockscout: '',
-    evmChainId: '',
-    evmEndpoints: [''],
+    evmChainId: '4369',
+    evmEndpoints: ['http://127.0.0.1:9933'],
     faucetEndpoint: '',
   },
   {
@@ -138,6 +138,8 @@ export const getProviderIndex = (chain: ASTAR_CHAIN) => {
       return endpointKey.ASTAR;
     case 'Shiden':
       return endpointKey.SHIDEN;
+    case 'Development':
+      return endpointKey.LOCAL;
     default:
       return endpointKey.SHIBUYA;
   }

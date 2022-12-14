@@ -154,12 +154,12 @@ export default defineComponent({
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
 
-    const { currentNetworkName, nativeTokenSymbol } = useNetworkInfo();
+    const { currentNetworkName, nativeTokenSymbol, isMainnet } = useNetworkInfo();
 
     const nativeTokenImg = computed<string>(() =>
       getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
     );
-    const isListReady = computed<boolean>(() => !!(isShibuya.value || props.tokens.length > 0));
+    const isListReady = computed<boolean>(() => !!(!isMainnet.value || props.tokens.length > 0));
 
     const isDisplayNativeToken = computed<boolean>(() => {
       return (

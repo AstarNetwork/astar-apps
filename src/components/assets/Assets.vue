@@ -110,8 +110,9 @@ export default defineComponent({
       } else {
         window.addEventListener(LOCAL_STORAGE.XVM_TOKEN_IMPORTS, () => {
           store.dispatch('assets/getXvmAssets', {
-            address: currentAccount.value,
+            currentAccount: currentAccount.value,
             isFetchUsd: isMainnet.value,
+            srcChainId: evmNetworkIdx.value,
           });
         });
       }
