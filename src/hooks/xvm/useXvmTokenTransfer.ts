@@ -190,7 +190,7 @@ export function useXvmTokenTransfer(selectedToken: Ref<XvmAsset>) {
         ? contract.tx.transfer({ gasLimit }, toAddress, amount)
         : contract.tx.transfer({ gasLimit, storageDepositLimit: null }, toAddress, amount, []);
 
-      // Memo: sending xvm tokens requires having native tokens on sender address's mapped H160 address (?)
+      // Memo:  SS58 account has to have native token on the mapped H160 address due to gas payment
       await signAndSend({
         transaction,
         senderAddress: currentAccount.value,
