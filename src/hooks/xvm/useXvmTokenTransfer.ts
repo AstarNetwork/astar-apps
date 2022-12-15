@@ -22,6 +22,16 @@ import { useRoute, useRouter } from 'vue-router';
 
 type ContractType = 'wasm-erc20' | 'wasm-psp22';
 const WASM_GAS_LIMIT = 500000000000;
+// const WASM_GAS_LIMIT = 5000000000000;
+// const WASM_GAS_LIMIT = 300000;
+// const WASM_GAS_LIMIT = 500000;
+// const WASM_GAS_LIMIT = 50000;
+// const WASM_GAS_LIMIT = '500000000000';
+// const WASM_GAS_LIMIT = 5242880;
+// const WASM_GAS_LIMIT = '3194304';
+// const WASM_GAS_LIMIT = 3670016;
+
+const PROOF_SIZE = 3194304;
 
 export function useXvmTokenTransfer(selectedToken: Ref<XvmAsset>) {
   const transferAmt = ref<string | null>(null);
@@ -171,14 +181,14 @@ export function useXvmTokenTransfer(selectedToken: Ref<XvmAsset>) {
 
       const contract = new ContractPromise($api!, contractJson, contractAddress);
 
+      const gasLimit = contract.registry.createType('WeightV2', {
+        proofSize: PROOF_SIZE,
+        refTime: WASM_GAS_LIMIT,
+      });
+
       const transaction = isWasmErc20
-        ? contract.tx.transfer({ gasLimit: WASM_GAS_LIMIT }, toAddress, amount)
-        : contract.tx.transfer(
-            { gasLimit: WASM_GAS_LIMIT, storageDepositLimit: null },
-            toAddress,
-            amount,
-            null
-          );
+        ? contract.tx.transfer({ gasLimit }, toAddress, amount)
+        : contract.tx.transfer({ gasLimit, storageDepositLimit: null }, toAddress, amount, []);
 
       // Memo: sending xvm tokens requires having native tokens on sender address's mapped H160 address (?)
       await signAndSend({
