@@ -12,6 +12,9 @@
   @media (min-width: $md) {
     flex-wrap: nowrap;
   }
+  @media (min-width: $xxl) {
+    gap: 24px;
+  }
 }
 
 .wrapper--icon-help {
