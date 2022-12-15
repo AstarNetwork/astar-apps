@@ -1,5 +1,6 @@
 import { ContractPromise } from '@polkadot/api-contract';
 import { ISubmittableResult } from '@polkadot/types/types';
+import type { WeightV2 } from '@polkadot/types/interfaces';
 import { $api } from 'boot/api';
 import { ethers } from 'ethers';
 import ABI_WASM_ERC20 from 'src/config/abi/WASM-ERC20.json';
@@ -181,10 +182,20 @@ export function useXvmTokenTransfer(selectedToken: Ref<XvmAsset>) {
 
       const contract = new ContractPromise($api!, contractJson, contractAddress);
 
-      const gasLimit = contract.registry.createType('WeightV2', {
+      const initialGasLimit = contract.registry.createType('WeightV2', {
         proofSize: PROOF_SIZE,
         refTime: WASM_GAS_LIMIT,
       });
+
+      const { gasRequired } = await contract.query.transfer(
+        currentAccount.value,
+        { gasLimit: initialGasLimit, storageDepositLimit: null },
+        toAddress,
+        amount,
+        []
+      );
+
+      const gasLimit = $api!.registry.createType('WeightV2', gasRequired) as WeightV2;
 
       const transaction = isWasmErc20
         ? contract.tx.transfer({ gasLimit }, toAddress, amount)
