@@ -46,6 +46,10 @@ export function useNetworkInfo() {
     return chainInfo ? chainInfo.tokenSymbol : '';
   });
 
+  const isSupportXvmTransfer = computed<boolean>(() => {
+    return !isMainnet.value;
+  });
+
   return {
     isMainnet,
     currentNetworkChain,
@@ -53,5 +57,6 @@ export function useNetworkInfo() {
     evmNetworkIdx,
     currentNetworkName,
     nativeTokenSymbol,
+    isSupportXvmTransfer,
   };
 }

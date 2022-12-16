@@ -7,6 +7,7 @@ import { IXvmRepository } from 'src/v2/repositories';
 import { IWalletService } from 'src/v2/services';
 import { IXvmService, XvmTransferParam, XvmGetAssetsParam } from 'src/v2/services/IXvmService';
 import { Symbols } from 'src/v2/symbols';
+import { addXvmTxHistories } from 'src/modules/xvm-transfer';
 
 @injectable()
 export class XvmService implements IXvmService {
@@ -45,13 +46,20 @@ export class XvmService implements IXvmService {
 
     try {
       const transaction = await this.xvmRepository.getTransferCallData(param);
-      await this.wallet.signAndSend(
+      const hash = await this.wallet.signAndSend(
         transaction,
         param.senderAddress,
         `You've successfully transferred ${param.amount} ${
           param.token.symbol
         } to ${getShortenAddress(param.recipientAddress)}`
       );
+      addXvmTxHistories({
+        hash: String(hash),
+        to: param.recipientAddress,
+        symbol: param.token.symbol,
+        amount: param.amount,
+        address: param.senderAddress,
+      });
     } catch (error) {
       console.error(error);
     } finally {

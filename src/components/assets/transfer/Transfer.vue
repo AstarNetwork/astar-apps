@@ -33,7 +33,10 @@
               :is-disabled-xcm-button="isDisabledXcm"
             />
           </div>
-          <information v-if="rightUi === 'information'" :is-local-transfer="isLocalTransfer" />
+          <information
+            v-if="rightUi === 'information'"
+            :transfer-type="isLocalTransfer ? HistoryTxType.Transfer : HistoryTxType.Xcm"
+          />
           <select-chain
             v-if="rightUi === 'select-chain'"
             v-click-away="cancelHighlight"
@@ -88,6 +91,7 @@ import { EvmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
 import { XcmChain } from 'src/v2/models/XcmModels';
 import { computed, defineComponent, ref, watch } from 'vue';
+import { HistoryTxType } from 'src/modules/account';
 
 export type RightUi = 'information' | 'select-chain' | 'select-token';
 
@@ -252,6 +256,7 @@ export default defineComponent({
       to,
       currentAccount,
       Path,
+      HistoryTxType,
       setRightUi,
       handleModalSelectToken,
       handleModalSelectChain,

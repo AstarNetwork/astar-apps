@@ -52,7 +52,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
   const route = useRoute();
   const router = useRouter();
 
-  const { nativeTokenSymbol, evmNetworkIdx } = useNetworkInfo();
+  const { nativeTokenSymbol, evmNetworkIdx, isSupportXvmTransfer } = useNetworkInfo();
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const tokenSymbol = computed<string>(() => route.query.token as string);
   const isEthWallet = computed<boolean>(() => store.getters['general/isEthWallet']);
@@ -71,6 +71,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     let result = false;
     const isCheckAddressFormat =
       isH160.value &&
+      isSupportXvmTransfer.value &&
       selectedToken.value.metadata.symbol.toLowerCase() !== nativeTokenSymbol.value.toLowerCase();
     if (isCheckAddressFormat) {
       result = isValidAddressPolkadotAddress(toAddress.value);

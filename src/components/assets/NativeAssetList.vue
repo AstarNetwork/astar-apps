@@ -6,7 +6,11 @@
           <span class="text--title">{{ $t('assets.assets') }}</span>
         </div>
 
-        <asset-options v-if="!isMainnet" :is-import-modal="true" :is-only-import-tokens="true" />
+        <asset-options
+          v-if="isSupportXvmTransfer"
+          :is-import-modal="true"
+          :is-only-import-tokens="true"
+        />
       </div>
       <div class="border--separator" />
 
@@ -211,7 +215,7 @@ export default defineComponent({
     const { balance, accountData, isLoadingBalance } = useBalance(selectedAddress);
     const { numEvmDeposit } = useEvmDeposit();
     const { nativeTokenUsd } = usePrice();
-    const { currentNetworkName, nativeTokenSymbol, isMainnet } = useNetworkInfo();
+    const { currentNetworkName, nativeTokenSymbol, isSupportXvmTransfer } = useNetworkInfo();
 
     const xcmNativeToken = computed(() => generateAstarNativeTokenObject(nativeTokenSymbol.value));
 
@@ -294,7 +298,7 @@ export default defineComponent({
       isLoading,
       Path,
       isSkeleton,
-      isMainnet,
+      isSupportXvmTransfer,
       buildTransferPageLink,
       handleModalVesting,
       handleModalFaucet,

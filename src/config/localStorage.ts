@@ -12,6 +12,7 @@ export enum LOCAL_STORAGE {
   XCM_DEPOSIT_EVM_WALLET = 'xcmDepositEvmWallet',
   TX_HISTORIES = 'txHistories',
   XCM_TX_HISTORIES = 'xcmTxHistories',
+  XVM_TX_HISTORIES = 'xvmTxHistories',
 }
 
 // Memo: A helper function to return the account's history data that is stored in the browser
@@ -25,7 +26,6 @@ export const getAccountHistories = ({
   network: string;
 }): any[] => {
   const histories = localStorage.getItem(storageKey);
-
   /*
   Data structure:
   {

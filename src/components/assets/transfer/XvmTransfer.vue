@@ -14,8 +14,7 @@
             :set-right-ui="setRightUi"
             :token="token"
           />
-          <!-- Todo: update inforamtions for XVM -->
-          <information v-if="rightUi === 'information'" :is-local-transfer="true" />
+          <information v-if="rightUi === 'information'" :transfer-type="HistoryTxType.Xvm" />
           <select-xvm-token
             v-if="rightUi === 'select-token'"
             v-click-away="cancelHighlight"
@@ -51,6 +50,7 @@ import {
   useXvmTransferRouter,
 } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
+import { HistoryTxType } from 'src/modules/account';
 import { XvmAsset } from 'src/modules/token';
 import { Path } from 'src/router';
 import { useStore } from 'src/store';
@@ -130,6 +130,7 @@ export default defineComponent({
       isH160,
       currentAccount,
       Path,
+      HistoryTxType,
       setRightUi,
       handleModalSelectToken,
       cancelHighlight,
