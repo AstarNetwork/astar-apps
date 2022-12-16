@@ -44,6 +44,7 @@
   overflow-x: auto;
   overflow-y: hidden;
   column-gap: 16px;
+  column-count: 4;
   &::-webkit-scrollbar {
     display: none;
   }
@@ -52,6 +53,7 @@
   }
   @media (min-width: $xxl) {
     column-gap: 24px;
+    overflow-x: hidden;
   }
 }
 
@@ -71,7 +73,7 @@
   border-radius: 6px;
 
   @media (min-width: $lg) {
-    flex-basis: 23%;
+    flex-basis: 23.5%;
     padding: 36px 24px;
     height: 126px;
   }
