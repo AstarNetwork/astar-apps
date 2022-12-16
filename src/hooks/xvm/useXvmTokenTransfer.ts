@@ -130,16 +130,14 @@ export function useXvmTokenTransfer(selectedToken: Ref<XvmAsset>) {
 
   const transferAsset = async (): Promise<void> => {
     try {
-      const isWasmErc20 = xvmContract.value === 'wasm-erc20';
       const xvmService = container.get<IXvmService>(Symbols.XvmService);
 
-      // Memo:  SS58 account has to have native token on the mapped H160 address due to gas payment
       await xvmService.transfer({
         amount: String(transferAmt.value),
         token: selectedToken.value,
         recipientAddress: toAddress.value,
         senderAddress: currentAccount.value,
-        isWasmErc20,
+        isWasmErc20: xvmContract.value === 'wasm-erc20',
         finalizedCallback,
       });
     } catch (e: any) {

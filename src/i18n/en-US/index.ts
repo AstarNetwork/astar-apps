@@ -363,7 +363,7 @@ export default {
       available: 'Available: {amount} {token}',
       notSendToExchanges: 'I’m NOT sending tokens to Exchanges',
       readGuide: 'I have read the',
-      userGuide: 'XVM Transfer User Guide',
+      userGuide: 'Transfer User Guide via XVM',
       youWillReceive: 'You will receive',
       faucetNextRequest: 'Time left until the next request',
       countDown: '{hrs} hrs {mins} mins {secs} secs',

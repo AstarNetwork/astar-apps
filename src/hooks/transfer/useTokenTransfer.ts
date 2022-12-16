@@ -70,16 +70,11 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
 
   const isRequiredCheckXvm = computed<boolean>(() => {
     let result = false;
-    if (isH160.value) {
-      const xvmTokens = getStoredXvmTokens();
-      xvmTokens.forEach((it) => {
-        if (
-          it.srcChainId === evmNetworkIdx.value &&
-          it.erc20Contract.toLowerCase() === selectedToken.value.mappedERC20Addr.toLocaleLowerCase()
-        ) {
-          result = true;
-        }
-      });
+    const isCheckAddressFormat =
+      isH160.value &&
+      selectedToken.value.metadata.symbol.toLowerCase() !== nativeTokenSymbol.value.toLowerCase();
+    if (isCheckAddressFormat) {
+      result = isValidAddressPolkadotAddress(toAddress.value);
     }
     return result;
   });
