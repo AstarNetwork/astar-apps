@@ -26,7 +26,6 @@ import { SUBSTRATE_SS58_FORMAT } from 'src/hooks/helper/plasmUtils';
 import { signAndSend } from 'src/hooks/helper/wallet';
 import { SubstrateAccount } from 'src/store/general/state';
 import { Path } from 'src/router';
-import { getStoredXvmTokens } from 'src/modules/token';
 
 export function useTokenTransfer(selectedToken: Ref<Asset>) {
   const transferAmt = ref<string | null>(null);
