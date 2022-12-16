@@ -1,17 +1,10 @@
 <template>
   <div>
     <div class="container">
-      <div class="row--menu">
-        <div class="row">
-          <span class="text--title">{{ $t('assets.assets') }}</span>
-        </div>
-
-        <asset-options
-          v-if="isSupportXvmTransfer"
-          :is-import-modal="true"
-          :is-only-import-tokens="true"
-        />
+      <div class="row">
+        <span class="text--title">{{ $t('assets.assets') }}</span>
       </div>
+
       <div class="border--separator" />
 
       <div v-if="nativeTokenSymbol" class="rows">
@@ -187,7 +180,6 @@ import ModalVesting from 'src/components/assets/modals/ModalVesting.vue';
 import { Path } from 'src/router';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { faucetBalRequirement } from 'src/config/wallets';
-import AssetOptions from 'src/components/assets/AssetOptions.vue';
 
 export default defineComponent({
   components: {
@@ -195,7 +187,6 @@ export default defineComponent({
     ModalEvmWithdraw,
     ModalVesting,
     TokenBalance,
-    AssetOptions,
   },
   setup() {
     const isModalTransfer = ref<boolean>(false);

@@ -339,6 +339,7 @@ export default {
     invalidAddress: 'The address is not valid',
     importTokens: 'Import tokens',
     importXvmTokens: 'Import ERC20 tokens via XVM',
+    importErc20Tokens: 'Import ERC20 tokens',
     hideSmallBalances: 'Hide small balances',
     unhideSmallBalances: 'Unhide small balances',
     tokenHasBeenAdded: 'The token has been added already',

@@ -15,8 +15,20 @@
         />
       </div>
 
-      <div v-for="t in filteredTokens" :key="t.erc20Contract">
-        <xvm-erc-20-currency :token="t" />
+      <div v-if="xvmAssets.length > 0">
+        <div v-for="t in filteredTokens" :key="t.erc20Contract">
+          <xvm-erc-20-currency :token="t" />
+        </div>
+      </div>
+      <div v-else>
+        <button class="button--import-token" @click="handleModalImportTokens({ isOpen: true })">
+          <span class="icon--add"> + </span>
+          <span class="text--option">{{ $t('assets.importErc20Tokens') }}</span>
+        </button>
+        <modal-import-xvm-tokens
+          :is-modal-import-tokens="isModalImportTokens"
+          :handle-modal-import-tokens="handleModalImportTokens"
+        />
       </div>
     </div>
   </div>
@@ -27,10 +39,12 @@ import { defineComponent, PropType, ref, computed } from 'vue';
 import XvmErc20Currency from 'src/components/assets/XvmErc20Currency.vue';
 import AssetSearchOption from 'src/components/assets/AssetSearchOption.vue';
 import { XvmAsset } from 'src/modules/token';
+import ModalImportXvmTokens from 'src/components/assets/modals/ModalImportXvmTokens.vue';
 export default defineComponent({
   components: {
     XvmErc20Currency,
     AssetSearchOption,
+    ModalImportXvmTokens,
   },
   props: {
     xvmAssets: {
@@ -42,6 +56,11 @@ export default defineComponent({
     const isSearch = ref<boolean>(false);
     const search = ref<string>('');
     const isHideSmallBalances = ref<boolean>(false);
+    const isModalImportTokens = ref<boolean>(false);
+
+    const handleModalImportTokens = ({ isOpen }: { isOpen: boolean }) => {
+      isModalImportTokens.value = isOpen;
+    };
 
     const filteredTokens = computed<XvmAsset[] | null>(() => {
       if (!props.xvmAssets) return null;
@@ -80,9 +99,11 @@ export default defineComponent({
       search,
       isSearch,
       isHideSmallBalances,
+      isModalImportTokens,
       toggleIsHideSmallBalances,
       setIsSearch,
       setSearch,
+      handleModalImportTokens,
     };
   },
 });

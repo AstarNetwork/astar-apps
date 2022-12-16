@@ -242,6 +242,26 @@
   padding-bottom: 3px;
 }
 
+.button--import-token {
+  margin-bottom: 12px;
+  display: flex;
+  column-gap: 8px;
+  align-items: center;
+  padding: 0px 12px;
+  cursor: pointer;
+  border-radius: 6px;
+  &:hover {
+    transition: all 0.3s ease 0s;
+    background-color: white;
+  }
+}
+
+.icon--add {
+  color: $astar-blue-dark;
+  font-size: 24px;
+  font-weight: bold;
+}
+
 .text--value {
   font-weight: 400;
   font-size: 14px;
@@ -312,11 +332,13 @@
   .text--value {
     color: $gray-1;
   }
-
   .container--explorer-icon {
     stroke: $astar-blue-dark;
     &:hover {
       stroke: white;
     }
+  }
+  .button--import-token:hover {
+    background-color: $gray-5;
   }
 }

@@ -13,10 +13,7 @@
         </div>
         <div v-else class="container--assets">
           <xcm-native-asset-list v-if="isEnableXcm" :xcm-assets="xcmAssets.assets" />
-          <xvm-native-asset-list
-            v-if="xvmAssets.xvmAssets.length > 0"
-            :xvm-assets="xvmAssets.xvmAssets"
-          />
+          <xvm-native-asset-list v-if="isSupportXvmTransfer" :xvm-assets="xvmAssets.xvmAssets" />
           <NativeAssetList />
         </div>
       </div>
@@ -53,7 +50,7 @@ export default defineComponent({
     const store = useStore();
     const { currentAccount } = useAccount();
     const { accountData } = useBalance(currentAccount);
-    const { isMainnet, currentNetworkIdx, evmNetworkIdx } = useNetworkInfo();
+    const { isMainnet, currentNetworkIdx, evmNetworkIdx, isSupportXvmTransfer } = useNetworkInfo();
     // Memo: load the dApps data in advance, so that users can access to dApp staging page smoothly
     useDispatchGetDapps();
 
@@ -148,6 +145,7 @@ export default defineComponent({
       accountData,
       isModalXcmBridge,
       isLoading,
+      isSupportXvmTransfer,
     };
   },
 });
