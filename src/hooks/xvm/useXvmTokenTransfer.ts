@@ -22,17 +22,9 @@ import { computed, ref, Ref, watch, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 type ContractType = 'wasm-erc20' | 'wasm-psp22';
-const WASM_GAS_LIMIT = 500000000000;
-// const WASM_GAS_LIMIT = 5000000000000;
-// const WASM_GAS_LIMIT = 300000;
-// const WASM_GAS_LIMIT = 500000;
-// const WASM_GAS_LIMIT = 50000;
-// const WASM_GAS_LIMIT = '500000000000';
-// const WASM_GAS_LIMIT = 5242880;
-// const WASM_GAS_LIMIT = '3194304';
-// const WASM_GAS_LIMIT = 3670016;
-
-const PROOF_SIZE = 3194304;
+const WASM_GAS_LIMIT = 50000000000;
+// const WASM_GAS_LIMIT = 7000000000;
+const PROOF_SIZE = 131072;
 
 export function useXvmTokenTransfer(selectedToken: Ref<XvmAsset>) {
   const transferAmt = ref<string | null>(null);
@@ -187,16 +179,23 @@ export function useXvmTokenTransfer(selectedToken: Ref<XvmAsset>) {
         refTime: WASM_GAS_LIMIT,
       });
 
-      const { gasRequired } = await contract.query.transfer(
-        currentAccount.value,
-        { gasLimit: initialGasLimit, storageDepositLimit: null },
-        toAddress,
-        amount,
-        []
-      );
+      const { gasRequired } = isWasmErc20
+        ? await contract.query.transfer(
+            currentAccount.value,
+            { gasLimit: initialGasLimit },
+            toAddress,
+            amount
+          )
+        : await contract.query.transfer(
+            currentAccount.value,
+            { gasLimit: initialGasLimit, storageDepositLimit: null },
+            toAddress,
+            amount,
+            []
+          );
 
       const gasLimit = $api!.registry.createType('WeightV2', gasRequired) as WeightV2;
-
+      console.log('gasLimit', gasLimit.toJSON());
       const transaction = isWasmErc20
         ? contract.tx.transfer({ gasLimit }, toAddress, amount)
         : contract.tx.transfer({ gasLimit, storageDepositLimit: null }, toAddress, amount, []);
