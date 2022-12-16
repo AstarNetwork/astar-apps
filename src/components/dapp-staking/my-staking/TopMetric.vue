@@ -92,6 +92,7 @@
         </div>
       </div>
     </div>
+    <SnowPack />
   </div>
 </template>
 <script lang="ts">
@@ -113,8 +114,9 @@ import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { computed, defineComponent, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import PieChart from 'src/components/common/PieChart.vue';
+import SnowPack from 'src/components/common/SnowPack.vue';
 export default defineComponent({
-  components: { PieChart },
+  components: { PieChart, SnowPack },
   setup() {
     const store = useStore();
     const { stakerApr, stakerApy } = useApr();
