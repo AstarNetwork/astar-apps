@@ -1,3 +1,4 @@
+import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { inject, injectable } from 'inversify';
 import { XvmAssets } from 'src/store/assets/state';
 import { Guard } from 'src/v2/common';
@@ -35,11 +36,26 @@ export class XvmService implements IXvmService {
 
     return { xvmAssets: assets, ttlXvmUsdAmount };
   }
-  public async transfer({
-    token,
-    senderAddress,
-    recipientAddress,
-    amount,
-    finalizedCallback,
-  }: XvmTransferParam): Promise<void> {}
+
+  public async transfer(param: XvmTransferParam): Promise<void> {
+    Guard.ThrowIfUndefined('token', param.token);
+    Guard.ThrowIfUndefined('recipientAddress', param.recipientAddress);
+    Guard.ThrowIfUndefined('senderAddress', param.senderAddress);
+    Guard.ThrowIfUndefined('amount', param.amount);
+
+    try {
+      const transaction = await this.xvmRepository.getTransferCallData(param);
+      await this.wallet.signAndSend(
+        transaction,
+        param.senderAddress,
+        `You've successfully transferred ${param.amount} ${
+          param.token.symbol
+        } to ${getShortenAddress(param.recipientAddress)}`
+      );
+    } catch (error) {
+      console.error(error);
+    } finally {
+      param.finalizedCallback();
+    }
+  }
 }

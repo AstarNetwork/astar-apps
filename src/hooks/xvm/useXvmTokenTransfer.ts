@@ -1,30 +1,21 @@
-import { ContractPromise } from '@polkadot/api-contract';
-import { ISubmittableResult } from '@polkadot/types/types';
-import type { WeightV2 } from '@polkadot/types/interfaces';
-import { $api } from 'boot/api';
-import { ethers } from 'ethers';
-import ABI_WASM_ERC20 from 'src/config/abi/WASM-ERC20.json';
-import ABI_WASM_PSP22 from 'src/config/abi/WASM-PSP22.json';
 import { buildEvmAddress, getTokenBal, isValidEvmAddress } from 'src/config/web3';
-import { useCustomSignature, useGasPrice, useNetworkInfo } from 'src/hooks';
+import { useGasPrice, useNetworkInfo } from 'src/hooks';
 import {
   ASTAR_SS58_FORMAT,
   isValidAddressPolkadotAddress,
   SUBSTRATE_SS58_FORMAT,
 } from 'src/hooks/helper/plasmUtils';
-import { signAndSend } from 'src/hooks/helper/wallet';
 import { useAccount } from 'src/hooks/useAccount';
 import { XvmAsset } from 'src/modules/token';
 import { Path } from 'src/router';
 import { useStore } from 'src/store';
-import { SubstrateAccount } from 'src/store/general/state';
+import { container } from 'src/v2/common';
+import { IXvmService } from 'src/v2/services/IXvmService';
+import { Symbols } from 'src/v2/symbols';
 import { computed, ref, Ref, watch, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 type ContractType = 'wasm-erc20' | 'wasm-psp22';
-const WASM_GAS_LIMIT = 50000000000;
-// const WASM_GAS_LIMIT = 7000000000;
-const PROOF_SIZE = 131072;
 
 export function useXvmTokenTransfer(selectedToken: Ref<XvmAsset>) {
   const transferAmt = ref<string | null>(null);
@@ -36,7 +27,6 @@ export function useXvmTokenTransfer(selectedToken: Ref<XvmAsset>) {
 
   const store = useStore();
   const { currentAccount } = useAccount();
-  const { handleResult, handleCustomExtrinsic } = useCustomSignature({});
   const { selectedTip, nativeTipPrice, setSelectedTip, isEnableSpeedConfiguration } = useGasPrice();
   const route = useRoute();
   const router = useRouter();
@@ -44,14 +34,8 @@ export function useXvmTokenTransfer(selectedToken: Ref<XvmAsset>) {
   const { evmNetworkIdx } = useNetworkInfo();
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const tokenSymbol = computed<string>(() => route.query.token as string);
-  const isEthWallet = computed<boolean>(() => store.getters['general/isEthWallet']);
   const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
-  const substrateAccounts = computed<SubstrateAccount[]>(
-    () => store.getters['general/substrateAccounts']
-  );
-
   const isRequiredCheck = computed<boolean>(() => true);
-
   const fromAddressBalance = computed<number>(() =>
     selectedToken.value ? Number(selectedToken.value.userBalance) : 0
   );
@@ -89,7 +73,7 @@ export function useXvmTokenTransfer(selectedToken: Ref<XvmAsset>) {
     toAddressBalance.value = 0;
   };
 
-  const finalizeCallback = (): void => {
+  const finalizedCallback = (): void => {
     router.push(Path.Assets);
   };
 
@@ -144,77 +128,20 @@ export function useXvmTokenTransfer(selectedToken: Ref<XvmAsset>) {
     }
   };
 
-  const transferAsset = async ({
-    transferAmt,
-    toAddress,
-  }: {
-    transferAmt: number;
-    toAddress: string;
-  }): Promise<void> => {
-    if (!selectedToken?.value) {
-      throw Error('Token is not selected');
-    }
-
-    const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
-      const res = await handleResult(result);
-      finalizeCallback();
-      return res;
-    };
-
-    const decimals = Number(selectedToken.value.decimal);
-    const amount = ethers.utils.parseUnits(String(transferAmt), decimals).toString();
-
-    const callTransfer = async (): Promise<void> => {
+  const transferAsset = async (): Promise<void> => {
+    try {
       const isWasmErc20 = xvmContract.value === 'wasm-erc20';
-      const contractJson = isWasmErc20 ? ABI_WASM_ERC20 : ABI_WASM_PSP22;
-
-      const contractAddress = isWasmErc20
-        ? selectedToken.value.xvmErc20Contract
-        : selectedToken.value.xvmPsp22Contract;
-
-      const contract = new ContractPromise($api!, contractJson, contractAddress);
-
-      const initialGasLimit = contract.registry.createType('WeightV2', {
-        proofSize: PROOF_SIZE,
-        refTime: WASM_GAS_LIMIT,
-      });
-
-      const { gasRequired } = isWasmErc20
-        ? await contract.query.transfer(
-            currentAccount.value,
-            { gasLimit: initialGasLimit },
-            toAddress,
-            amount
-          )
-        : await contract.query.transfer(
-            currentAccount.value,
-            { gasLimit: initialGasLimit, storageDepositLimit: null },
-            toAddress,
-            amount,
-            []
-          );
-
-      const gasLimit = $api!.registry.createType('WeightV2', gasRequired) as WeightV2;
-      console.log('gasLimit', gasLimit.toJSON());
-      const transaction = isWasmErc20
-        ? contract.tx.transfer({ gasLimit }, toAddress, amount)
-        : contract.tx.transfer({ gasLimit, storageDepositLimit: null }, toAddress, amount, []);
+      const xvmService = container.get<IXvmService>(Symbols.XvmService);
 
       // Memo:  SS58 account has to have native token on the mapped H160 address due to gas payment
-      await signAndSend({
-        transaction,
+      await xvmService.transfer({
+        amount: String(transferAmt.value),
+        token: selectedToken.value,
+        recipientAddress: toAddress.value,
         senderAddress: currentAccount.value,
-        substrateAccounts: substrateAccounts.value,
-        isCustomSignature: isEthWallet.value,
-        txResHandler,
-        handleCustomExtrinsic,
-        dispatch: store.dispatch,
-        tip: selectedTip.value.price,
+        isWasmErc20,
+        finalizedCallback,
       });
-    };
-
-    try {
-      await callTransfer();
     } catch (e: any) {
       console.error(e);
       store.dispatch('general/showAlertMsg', {

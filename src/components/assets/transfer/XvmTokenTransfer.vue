@@ -119,7 +119,7 @@
         <astar-button
           class="button--confirm btn-size-adjust"
           :disabled="isDisabledTransfer"
-          @click="transfer"
+          @click="transferAsset"
         >
           {{ $t('confirm') }}
         </astar-button>
@@ -178,13 +178,6 @@ export default defineComponent({
       toMaxAmount,
     } = useXvmTokenTransfer(t);
 
-    const transfer = async (): Promise<void> => {
-      await transferAsset({
-        transferAmt: Number(transferAmt.value),
-        toAddress: toAddress.value,
-      });
-    };
-
     return {
       iconWallet,
       currentAccount,
@@ -203,7 +196,7 @@ export default defineComponent({
       isH160,
       isRequiredCheck,
       setSelectedTip,
-      transfer,
+      transferAsset,
       toMaxAmount,
       getShortenAddress,
       inputHandler,

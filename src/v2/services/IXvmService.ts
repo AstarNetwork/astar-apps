@@ -1,3 +1,4 @@
+import { XvmAsset } from 'src/modules/token';
 import { XvmAssets } from 'src/store/assets/state';
 
 export interface XvmGetAssetsParam {
@@ -11,19 +12,21 @@ export interface IXvmService extends IXvmTransfer {
 }
 
 export interface XvmTransferParam {
-  token: any;
+  token: XvmAsset;
   senderAddress: string;
   recipientAddress: string;
   amount: string;
-  finalizedCallback?: (hash: string) => Promise<void>;
+  isWasmErc20: boolean;
+  finalizedCallback: () => void;
 }
 
 export interface IXvmTransfer {
   transfer({
     token,
     senderAddress,
+    finalizedCallback,
     recipientAddress,
     amount,
-    finalizedCallback,
+    isWasmErc20,
   }: XvmTransferParam): Promise<void>;
 }
