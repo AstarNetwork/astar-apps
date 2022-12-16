@@ -5,11 +5,21 @@
         <div>
           <span class="text--title">{{ $t('assets.xcmAssets') }}</span>
         </div>
-        <div />
+        <asset-search-option
+          :toggle-is-hide-small-balances="toggleIsHideSmallBalancesXcm"
+          :is-hide-small-balances="isHideSmallBalancesXcm"
+          :is-import-modal="false"
+          :is-search="isSearchXcm"
+          :set-search="setSearchXcm"
+          :set-is-search="setIsSearchXcm"
+        />
       </div>
 
-      <div v-for="t in filteredTokens" :key="t.symbol">
-        <erc-20-currency v-if="!checkIsCbridgeToken(t) && t.isXC20" :token="t" :is-xcm="true" />
+      <div v-for="t in filteredXcmTokens" :key="t.symbol">
+        <erc-20-currency :token="t" :is-xcm="true" />
+      </div>
+      <div v-if="filteredXcmTokens.length === 0" class="box--no-result">
+        <span class="text--xl">{{ $t('assets.noResults') }}</span>
       </div>
     </div>
 
@@ -92,10 +102,10 @@
           <evm-cbridge-token v-if="t.symbol !== nativeTokenSymbol" :token="t" />
         </div>
         <div v-else>
-          <erc-20-currency v-if="!t.isXC20" :token="t" />
+          <erc-20-currency :token="t" />
         </div>
       </div>
-      <div v-if="!filteredTokens && !isDisplayNativeToken" class="box--no-result">
+      <div v-if="filteredTokens.length === 0" class="box--no-result">
         <span class="text--xl">{{ $t('assets.noResults') }}</span>
       </div>
     </div>
@@ -137,6 +147,7 @@ export default defineComponent({
   setup(props) {
     const isModalFaucet = ref<boolean>(false);
     const isHideSmallBalances = ref<boolean>(false);
+    const isHideSmallBalancesXcm = ref<boolean>(false);
     const token = ref<Erc20Token | string | null>(null);
     const symbol = ref<string>('');
     const bal = ref<number>(0);
@@ -145,6 +156,9 @@ export default defineComponent({
     const isFaucet = ref<boolean>(false);
     const isSearch = ref<boolean>(false);
     const search = ref<string>('');
+
+    const isSearchXcm = ref<boolean>(false);
+    const searchXcm = ref<string>('');
 
     const { currentAccount } = useAccount();
     const { nativeTokenUsd } = usePrice();
@@ -167,11 +181,38 @@ export default defineComponent({
       );
     });
 
+    const filteredXcmTokens = computed<Erc20Token[] | []>(() => {
+      if (!props.tokens) return [];
+      const xcmTokens = props.tokens.filter((it) => {
+        if (it.isXC20 && !checkIsCbridgeToken(it)) return it;
+      });
+      const tokens = isHideSmallBalancesXcm.value
+        ? xcmTokens.filter((it) => Number(it.userBalance) > 0)
+        : xcmTokens;
+
+      if (!searchXcm.value) return tokens;
+
+      const value = searchXcm.value.toLowerCase();
+      const result = tokens
+        .map((token: Erc20Token) => {
+          const isFoundToken =
+            value === token.address.toLowerCase() ||
+            token.symbol.toLowerCase().includes(value) ||
+            token.name.toLowerCase().includes(value);
+          return isFoundToken ? token : undefined;
+        })
+        .filter((it) => it !== undefined) as Erc20Token[];
+      return result.length > 0 ? result : [];
+    });
+
     const filteredTokens = computed<Erc20Token[] | []>(() => {
       if (!props.tokens) return [];
+      const erc20Tokens = props.tokens.filter((it) => {
+        if (!it.isXC20 || checkIsCbridgeToken(it)) return it;
+      });
       const tokens = isHideSmallBalances.value
-        ? props.tokens.filter((it) => Number(it.userBalance) > 0)
-        : props.tokens;
+        ? erc20Tokens.filter((it) => Number(it.userBalance) > 0)
+        : erc20Tokens;
 
       if (!search.value) return tokens;
 
@@ -192,6 +233,10 @@ export default defineComponent({
       isHideSmallBalances.value = !isHideSmallBalances.value;
     };
 
+    const toggleIsHideSmallBalancesXcm = (): void => {
+      isHideSmallBalancesXcm.value = !isHideSmallBalancesXcm.value;
+    };
+
     const handleModalFaucet = ({ isOpen }: { isOpen: boolean }): void => {
       isModalFaucet.value = isOpen;
     };
@@ -200,8 +245,16 @@ export default defineComponent({
       isSearch.value = isTyping;
     };
 
+    const setIsSearchXcm = (isTyping: boolean): void => {
+      isSearchXcm.value = isTyping;
+    };
+
     const setSearch = (event: any): void => {
       search.value = event.target.value;
+    };
+
+    const setSearchXcm = (event: any): void => {
+      searchXcm.value = event.target.value;
     };
 
     const updateStates = async (): Promise<void> => {
@@ -246,12 +299,15 @@ export default defineComponent({
       isListReady,
       isModalFaucet,
       isSearch,
+      isSearchXcm,
       search,
+      filteredXcmTokens,
       filteredTokens,
       isDisplayNativeToken,
       accountData,
       cbridgeAppLink,
       isHideSmallBalances,
+      isHideSmallBalancesXcm,
       isLoading,
       isXcmAssets,
       buildTransferPageLink,
@@ -260,6 +316,9 @@ export default defineComponent({
       checkIsCbridgeToken,
       toggleIsHideSmallBalances,
       setSearch,
+      setSearchXcm,
+      setIsSearchXcm,
+      toggleIsHideSmallBalancesXcm,
     };
   },
 });

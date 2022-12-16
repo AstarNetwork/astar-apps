@@ -5,7 +5,7 @@
         <div class="row">
           <span class="text--title">{{ $t('assets.xcmAssets') }}</span>
         </div>
-        <AssetSearchOption
+        <asset-search-option
           :toggle-is-hide-small-balances="toggleIsHideSmallBalances"
           :is-hide-small-balances="isHideSmallBalances"
           :tokens="xcmAssets"
@@ -17,7 +17,10 @@
       </div>
 
       <div v-for="t in filteredTokens" :key="t.id">
-        <XcmCurrency :token="t" />
+        <xcm-currency :token="t" />
+      </div>
+      <div v-if="filteredTokens.length === 0" class="box--no-result">
+        <span class="text--xl">{{ $t('assets.noResults') }}</span>
       </div>
     </div>
   </div>
@@ -44,8 +47,8 @@ export default defineComponent({
     const search = ref<string>('');
     const isHideSmallBalances = ref<boolean>(false);
 
-    const filteredTokens = computed<Asset[] | null>(() => {
-      if (!props.xcmAssets) return null;
+    const filteredTokens = computed<Asset[]>(() => {
+      if (!props.xcmAssets) return [];
       const tokens = isHideSmallBalances.value
         ? props.xcmAssets.filter((it) => Number(it.userBalance) > 0)
         : props.xcmAssets;
@@ -61,8 +64,7 @@ export default defineComponent({
           return isFoundToken ? token : undefined;
         })
         .filter((it) => it !== undefined) as Asset[];
-      const res = result.length > 0 ? result : null;
-      return res;
+      return result.length > 0 ? result : [];
     });
 
     const toggleIsHideSmallBalances = (): void => {

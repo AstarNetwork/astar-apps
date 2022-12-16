@@ -12,9 +12,9 @@
           <EvmAssetList :tokens="evmAssets.assets" />
         </div>
         <div v-else class="container--assets">
-          <xcm-native-asset-list v-if="isEnableXcm" :xcm-assets="xcmAssets.assets" />
           <xvm-native-asset-list v-if="isSupportXvmTransfer" :xvm-assets="xvmAssets.xvmAssets" />
-          <NativeAssetList />
+          <xcm-native-asset-list v-if="isEnableXcm" :xcm-assets="xcmAssets.assets" />
+          <native-asset-list />
         </div>
       </div>
     </div>
