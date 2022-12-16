@@ -12,7 +12,7 @@
     "tokenDecimals": 18,
     "tokenSymbol": "SBY"
   },
-  "relay_chain": "tokyo",
+  "relay_chain": "rococo_tokyo_relay",
   "para_id": 1000,
   "codeSubstitutes": {},
   "badBlocks": [

@@ -6,6 +6,7 @@ import { ScProvider, WellKnownChain } from '@polkadot/rpc-provider/substrate-con
 import jsonParachainSpecAstar from './chain-specs/astar.json';
 import jsonParachainSpecShiden from './chain-specs/shiden.json';
 import jsonParachainSpecShibuya from './chain-specs/shibuya.json';
+import jsonParachainSpecTokyo from './chain-specs/tokyo.json';
 
 const RES_INVALID_CONNECTION = 'invalid connection';
 const RES_CONNECTED_API = 'connected';
@@ -26,12 +27,14 @@ const getParachainSpec = (networkIdx: endpointKey): string => {
   }
 };
 
-const getWellKnownChain = (networkIdx: endpointKey): WellKnownChain => {
+const getWellKnownChain = (networkIdx: endpointKey): WellKnownChain | string => {
   switch (networkIdx) {
     case endpointKey.ASTAR:
       return WellKnownChain.polkadot;
     case endpointKey.SHIDEN:
       return WellKnownChain.ksmcc3;
+    case endpointKey.SHIBUYA:
+      return JSON.stringify(jsonParachainSpecTokyo);
     default:
       throw new Error(`networkIdx ${networkIdx} is not supported.`);
   }
