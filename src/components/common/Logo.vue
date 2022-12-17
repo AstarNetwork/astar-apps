@@ -7,7 +7,7 @@
   </div>
   <img
     v-else-if="currentNetworkChain === astarChain.ASTAR"
-    src="~assets/img/astar_logo.png"
+    src="~assets/img/astar_logo_winter.png"
     width="200"
     height="78"
   />

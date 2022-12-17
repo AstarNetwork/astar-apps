@@ -162,6 +162,7 @@ export default defineComponent({
   position: absolute;
   top: 20px;
   width: 90%;
+  max-width: 1200px;
   height: 360px;
   overflow: hidden;
   filter: drop-shadow(0 0 10px white);
