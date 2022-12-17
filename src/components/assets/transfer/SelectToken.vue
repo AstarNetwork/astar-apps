@@ -4,12 +4,7 @@
       <span>{{ $t('assets.transferPage.selectToken') }}</span>
     </div>
     <div class="container--items">
-      <div
-        v-for="token in tokens"
-        :key="token.astarAssetId"
-        class="row--item"
-        @click="setToken(token)"
-      >
+      <div v-for="token in tokens" :key="token.id" class="row--item" @click="setToken(token)">
         <div class="column--item-name">
           <img
             :src="token.tokenImage"

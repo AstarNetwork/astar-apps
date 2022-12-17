@@ -28,6 +28,7 @@ export interface XcmTokenInformation {
   isXcmCompatible: boolean;
   originAssetId: string;
   originChain: string;
+  targetChain: string[];
   minBridgeAmount: string;
 }
 
@@ -56,8 +57,7 @@ export let kusamaParachains: any[];
 export let polkadotParachains: any[];
 
 export const getXcmChainObj = async (): Promise<XcmChainObj> => {
-  const url =
-    'https://cors-anywhere.herokuapp.com/https://token-resources-chi.vercel.app/api/networks';
+  const url = 'https://token-resources-chi.vercel.app/api/networks';
   const result = await axios.get<XcmChainObj>(url);
   console.log('result.data', result.data);
 

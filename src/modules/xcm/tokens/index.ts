@@ -25,15 +25,20 @@ let xcmToken: XcmTokenObjArr = {};
 export { xcmToken };
 
 export const getXcmTokens = async (): Promise<XcmTokenObjArr> => {
-  const url =
-    'https://cors-anywhere.herokuapp.com/https://token-resources-chi.vercel.app/api/tokens';
+  const url = 'https://token-resources-chi.vercel.app/api/tokens';
   const result = await axios.get<XcmTokenObj>(url);
   console.log('result.data', result.data);
 
   xcmToken[endpointKey.ASTAR] = [];
+  xcmToken[endpointKey.SHIDEN] = [];
   for (const [key, value] of Object.entries(result.data)) {
     if (value.astarAssetId) {
-      xcmToken[endpointKey.ASTAR].push(value);
+      if (value.targetChain && value.targetChain.includes('astar')) {
+        xcmToken[endpointKey.ASTAR].push(value);
+      }
+      if (value.targetChain && value.targetChain.includes('shiden')) {
+        xcmToken[endpointKey.SHIDEN].push(value);
+      }
     }
   }
 
@@ -336,6 +341,7 @@ export const SDN: XcmTokenInformation = {
   icon: require('src/assets/img/sdn-token.png'),
   isXcmCompatible: true,
   originChain: 'shiden',
+  targetChain: ['karura'],
   minBridgeAmount: '0.1',
 };
 
@@ -347,6 +353,7 @@ export const ASTR: XcmTokenInformation = {
   icon: require('src/assets/img/astr-token.png'),
   isXcmCompatible: true,
   originChain: 'astar',
+  targetChain: ['acala'],
   minBridgeAmount: '0.1',
 };
 
@@ -358,5 +365,6 @@ export const SBY: XcmTokenInformation = {
   icon: require('src/assets/img/astr-token.png'),
   isXcmCompatible: true,
   originChain: 'shibuya',
+  targetChain: ['mandala'],
   minBridgeAmount: '0.1',
 };
