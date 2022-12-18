@@ -84,4 +84,8 @@ export class DappStakingRepositoryMock implements IDappStakingRepository {
   public async getLedger(accountAddress: string): Promise<AccountLedger> {
     return {} as AccountLedger;
   }
+
+  public async getApr(network: string): Promise<{ apr: number; apy: number }> {
+    return { apr: 0, apy: 0 };
+  }
 }

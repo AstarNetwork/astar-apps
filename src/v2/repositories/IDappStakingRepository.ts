@@ -76,4 +76,10 @@ export interface IDappStakingRepository {
    * @param accountAddress User account.
    */
   getLedger(accountAddress: string): Promise<AccountLedger>;
+
+  /**
+   * Gets dapp staking APR and APY values for a given network.
+   * @param network Network to fetch values for.
+   */
+  getApr(network: string): Promise<{ apr: number; apy: number }>;
 }
