@@ -127,5 +127,8 @@
   "browser": {
     "crypto": false,
     "stream": false
+  },
+  "volta": {
+    "node": "18.12.1"
   }
 }

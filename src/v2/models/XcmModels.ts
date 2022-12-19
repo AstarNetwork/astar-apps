@@ -17,6 +17,7 @@ export enum Chain {
   CRUST_SHADOW = 'Crust-shadow',
   KHALA = 'Khala',
   PHALA = 'Phala',
+  CLV = 'Clv',
 }
 
 export enum parachainIds {
@@ -33,6 +34,7 @@ export enum parachainIds {
   CRUST_SHADOW = 2012,
   KHALA = 2004,
   PHALA = 2035,
+  CLV = 2002,
 }
 
 export interface XcmChain {

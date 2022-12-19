@@ -1,0 +1,244 @@
+import { BN } from '@polkadot/util';
+import { decodeAddress } from '@polkadot/util-crypto';
+import { XcmTokenInformation } from 'src/modules/xcm';
+import { container } from 'src/v2/common';
+import { ExtrinsicPayload, IApi, IApiFactory } from 'src/v2/integration';
+import { Asset } from 'src/v2/models';
+import { Symbols } from 'src/v2/symbols';
+import { XcmRepository } from '../XcmRepository';
+import { XcmChain } from 'src/v2/models/XcmModels';
+import { Option, Struct } from '@polkadot/types';
+import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
+
+interface TokensAccounts extends Struct {
+  readonly free: BN;
+  readonly reserved: BN;
+  readonly frozen: BN;
+  readonly balance: BN;
+}
+
+interface AssetLocation extends Struct {
+  para: {
+    parents: number;
+    interior: Interior;
+  };
+}
+
+interface LocationX1 {
+  x1: ParaChainInfo;
+}
+interface LocationX2 {
+  x2: [GeneralKey, GeneralKey];
+}
+
+interface ParaChainInfo {
+  parachain: number;
+}
+interface GeneralKey {
+  parachain: number;
+  generalKey: string;
+}
+
+type Interior = LocationX2;
+
+/**
+ * Used to transfer assets from Crust Shadow
+ */
+export class ClvXcmRepository extends XcmRepository {
+  private astarNativeTokenId;
+
+  constructor() {
+    const defaultApi = container.get<IApi>(Symbols.DefaultApi);
+    const apiFactory = container.get<IApiFactory>(Symbols.ApiFactory);
+    const registeredTokens = container.get<XcmTokenInformation[]>(Symbols.RegisteredTokens);
+    super(defaultApi, apiFactory, registeredTokens);
+    this.astarNativeTokenId = '0000000000000000000';
+    this.astarTokens = {
+      ASTR: '12', // ASTR asset id on CLV network
+    };
+  }
+
+  public async getTransferCall(
+    from: XcmChain,
+    to: XcmChain,
+    recipientAddress: string,
+    token: Asset,
+    amount: BN
+  ): Promise<ExtrinsicPayload> {
+    if (!to.parachainId) {
+      throw `Parachain id for ${to.name} is not defined`;
+    }
+
+    const symbol = token.metadata.symbol;
+    const recipientAccountId = getPubkeyFromSS58Addr(recipientAddress);
+
+    const isWithdrawAssets = token.id !== this.astarNativeTokenId;
+    const functionName = isWithdrawAssets ? 'reserveTransferAssets' : 'transfer';
+    const extrinsicName = isWithdrawAssets ? 'polkadotXcm' : 'xTokens';
+    const isSendToParachain = to.parachainId > 0;
+    const destination = isSendToParachain
+      ? {
+          V1: {
+            interior: {
+              X1: {
+                Parachain: new BN(to.parachainId),
+              },
+            },
+            parents: new BN(1),
+          },
+        }
+      : {
+          V1: {
+            interior: 'Here',
+            parents: new BN(1),
+          },
+        };
+
+    const X1 = {
+      AccountId32: {
+        network: 'Any',
+        id: decodeAddress(recipientAccountId),
+      },
+    };
+
+    const X2 = isWithdrawAssets
+      ? null
+      : [
+          {
+            Parachain: new BN(to.parachainId),
+          },
+          {
+            AccountId32: {
+              network: 'Any',
+              id: decodeAddress(recipientAccountId),
+            },
+          },
+        ];
+
+    const beneficiary = isWithdrawAssets
+      ? {
+          V1: {
+            interior: {
+              X1,
+            },
+            parents: new BN(0),
+          },
+        }
+      : {
+          V1: {
+            interior: {
+              X2,
+            },
+            parents: new BN(1),
+          },
+        };
+
+    const isRegisteredAsset = !isSendToParachain || !isWithdrawAssets;
+
+    const asset = isRegisteredAsset
+      ? {
+          Concrete: await this.fetchAssetConfig(from, token),
+        }
+      : {
+          Concrete: {
+            interior: 'Here',
+            parents: new BN(isSendToParachain ? 0 : 1),
+          },
+        };
+
+    const assets = {
+      V1: [
+        {
+          fun: {
+            Fungible: new BN(amount),
+          },
+          id: asset,
+        },
+      ],
+    };
+
+    if (isWithdrawAssets) {
+      return await this.buildTxCall(
+        from,
+        extrinsicName,
+        functionName,
+        destination,
+        beneficiary,
+        assets,
+        new BN(0)
+      );
+    } else {
+      const currencyId = {
+        OtherReserve: this.astarTokens[symbol],
+      };
+      const destWeight = new BN(10).pow(new BN(9)).muln(5);
+      return await this.buildTxCall(
+        from,
+        extrinsicName,
+        functionName,
+        currencyId,
+        amount,
+        beneficiary,
+        destWeight
+      );
+    }
+  }
+
+  protected async fetchAssetConfig(
+    source: XcmChain,
+    token: Asset
+  ): Promise<{
+    parents: number;
+    interior: Interior;
+  }> {
+    const symbol = token.metadata.symbol;
+    const api = await this.apiFactory.get(source.endpoint);
+    const config = await api.query.assetConfig.assetLocation<Option<AssetLocation>>(
+      this.astarTokens[symbol]
+    );
+
+    // return config.unwrap().v1;
+    const formattedAssetConfig = JSON.parse(config.toString());
+    return {
+      parents: 0,
+      interior: {
+        x2: [
+          { parachain: 0, generalKey: '' },
+          { parachain: 0, generalKey: '0' },
+        ],
+      },
+    };
+  }
+
+  public async getTokenBalance(
+    address: string,
+    chain: XcmChain,
+    token: Asset,
+    isNativeToken: boolean
+  ): Promise<string> {
+    const symbol = token.metadata.symbol;
+    const api = await this.apiFactory.get(chain.endpoint);
+
+    try {
+      if (this.isAstarNativeToken(token)) {
+        const bal = await api.query.assets.account<Option<TokensAccounts>>(
+          this.astarTokens[symbol],
+          address
+        );
+        return bal.unwrap().balance.toString();
+      }
+
+      if (isNativeToken) {
+        return (await this.getNativeBalance(address, chain)).toString();
+      } else {
+        const bal = await api.query.tokens.accounts<TokensAccounts>(address, {
+          Token: token.originAssetId,
+        });
+        return bal.free.toString();
+      }
+    } catch (e) {
+      console.error(e);
+      return '0';
+    }
+  }
+}

@@ -199,6 +199,15 @@ export const xcmChainObj: XcmChainObj = {
     subscan: 'https://phala.subscan.io',
     isAstarNativeToken: true,
   },
+  [Chain.CLV]: {
+    name: Chain.CLV,
+    relayChain: Chain.POLKADOT,
+    img: 'https://raw.githubusercontent.com/clover-network/clv-network-token-lists/main/assets/clover.svg',
+    parachainId: parachainIds.CLV,
+    endpoint: 'wss://rpc-para.clover.finance',
+    subscan: 'https://clv.subscan.io',
+    isAstarNativeToken: true,
+  },
 };
 
 export const xcmChains = objToArray(xcmChainObj);

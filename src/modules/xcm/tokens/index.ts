@@ -104,6 +104,16 @@ export const xcmToken = {
       originChain: Chain.PHALA,
       minBridgeAmount: '0.2',
     },
+    {
+      symbol: 'CLV',
+      isNativeToken: true,
+      assetId: '18446744073709551625',
+      originAssetId: 'CLV',
+      logo: 'https://raw.githubusercontent.com/clover-network/clv-network-token-lists/main/assets/clover.png',
+      isXcmCompatible: true,
+      originChain: Chain.CLV,
+      minBridgeAmount: '1',
+    },
   ],
   [endpointKey.SHIDEN]: [
     {
