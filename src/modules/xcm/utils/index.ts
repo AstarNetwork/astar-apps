@@ -172,13 +172,6 @@ export const castChainName = (chain: string): string => {
   return chain;
 };
 
-export const removeEvmName = (chain: string) => {
-  if (chain.includes(pathEvm)) {
-    return chain.split('-')[0];
-  }
-  return chain;
-};
-
 // Memo: store users XCM transaction histories to browser's local-storage
 export const addXcmTxHistories = ({
   hash,

@@ -17,7 +17,6 @@ export {
   fetchXcmBalance,
   getXcmToken,
   monitorBalanceIncreasing,
-  removeEvmName,
 } from 'src/modules/xcm/utils';
 
 export interface XcmTokenInformation {
@@ -59,7 +58,6 @@ export let polkadotParachains: any[];
 export const getXcmChainObj = async (): Promise<XcmChainObj> => {
   const url = 'https://token-resources-chi.vercel.app/api/networks';
   const result = await axios.get<XcmChainObj>(url);
-  console.log('result.data', result.data);
 
   xcmChainObj = result.data;
   xcmChains = objToArray(xcmChainObj);

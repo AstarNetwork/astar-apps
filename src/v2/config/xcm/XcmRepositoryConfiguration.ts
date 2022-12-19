@@ -5,6 +5,7 @@ import {
   MoonbeamXcmRepository,
   PolkadotXcmRepository,
   InterlayXcmRepository,
+  // CrustShadowXcmRepository,
   PhalaXcmRepository,
 } from 'src/v2/repositories/implementations';
 import { TypeMapping } from 'src/v2/config/types';
@@ -22,7 +23,9 @@ export const XcmRepositoryConfiguration: TypeMapping = {
   ['kusama']: PolkadotXcmRepository,
   ['kintsugi']: InterlayXcmRepository,
   ['interlay']: InterlayXcmRepository,
+  // ['crust shadow']: CrustShadowXcmRepository,
   ['khala']: PhalaXcmRepository,
+  ['phala']: PhalaXcmRepository,
 };
 
 export type AstarToken = 'ASTR' | 'SDN';

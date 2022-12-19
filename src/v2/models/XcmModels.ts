@@ -1,36 +1,4 @@
 // Ref: RPC calls -> system -> chain()
-export enum ChainOld {
-  POLKADOT = 'Polkadot',
-  ASTAR = 'Astar',
-  ASTAR_EVM = 'Astar-evm',
-  KUSAMA = 'Kusama',
-  SHIDEN = 'Shiden',
-  SHIDEN_EVM = 'Shiden-evm',
-  KARURA = 'Karura',
-  ACALA = 'Acala',
-  MOONRIVER = 'Moonriver',
-  MOONBEAM = 'Moonbeam',
-  STATEMINE = 'Statemine',
-  STATEMINT = 'Statemint',
-  KINTSUGI = 'Kintsugi',
-  INTERLAY = 'Interlay',
-  KHALA = 'Khala',
-}
-
-export enum parachainIdsOld {
-  ASTAR = 2006,
-  SHIDEN = 2007,
-  KARURA = 2000,
-  ACALA = 2000,
-  MOONRIVER = 2023,
-  MOONBEAM = 2004,
-  STATEMINE = 1000,
-  STATEMINT = 1000,
-  KINTSUGI = 2092,
-  INTERLAY = 2032,
-  KHALA = 2004,
-}
-
 export interface XcmChain {
   name: string;
   relayChain: string;

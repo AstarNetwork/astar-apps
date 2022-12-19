@@ -3,12 +3,7 @@ import { providerEndpoints } from 'src/config/chainEndpoints';
 import { ethers } from 'ethers';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { useAccount, useBalance, useNetworkInfo } from 'src/hooks';
-import {
-  checkIsSupportAstarNativeToken,
-  removeEvmName,
-  xcmChains,
-  xcmToken,
-} from 'src/modules/xcm';
+import { checkIsSupportAstarNativeToken, xcmChains, xcmToken } from 'src/modules/xcm';
 import { XcmChain } from 'src/v2/models/XcmModels';
 import { generateAssetFromEvmToken, generateNativeAsset } from 'src/modules/xcm/tokens';
 import { useStore } from 'src/store';
@@ -113,8 +108,8 @@ export function useTransferRouter() {
         redirect();
       }
     } else {
-      const fromChain = removeEvmName(from.value);
-      const toChain = removeEvmName(to.value);
+      const fromChain = from.value;
+      const toChain = to.value;
       const isSameNetwork = fromChain === toChain;
       if (isSameNetwork) {
         router.replace({
@@ -301,7 +296,6 @@ export function useTransferRouter() {
       ? tokens.sort((a: Asset, b: Asset) => a.metadata.symbol.localeCompare(b.metadata.symbol))
       : [];
   });
-  console.log('tokens', tokens);
 
   const handleDefaultConfig = (): void => {
     // Memo: avoid triggering this function whenever users go back to assets page

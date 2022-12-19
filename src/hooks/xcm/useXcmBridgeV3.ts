@@ -42,8 +42,6 @@ import { IXcmEvmService, IXcmService, IXcmTransfer } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { useRouter } from 'vue-router';
 
-// const { acala, astar, karura, polkadot, shiden } = xcmChainObj;
-
 export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
   const originChainApi = ref<ApiPromise | null>(null);
   const srcChain = ref<XcmChain>(xcmChainObj.polkadot);

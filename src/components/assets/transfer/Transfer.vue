@@ -88,7 +88,6 @@ import {
   useTransferRouter,
 } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
-import { removeEvmName } from 'src/modules/xcm';
 import { XcmChain } from 'src/v2/models/XcmModels';
 import { useStore } from 'src/store';
 import { EvmAssets } from 'src/store/assets/state';
@@ -208,7 +207,7 @@ export default defineComponent({
     };
 
     const selectableChains = computed<XcmChain[]>(() => {
-      const fromChain = from.value; // removeEvmName(from.value);
+      const fromChain = from.value;
       const isFromAstar = fromChain === currentNetworkName.value.toLowerCase();
       if (isSelectFromChain.value || isFromAstar) {
         return chains.value.filter((it) =>
