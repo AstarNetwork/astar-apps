@@ -1,11 +1,11 @@
 {
   "source": {
-    "hash": "0x78fe05f00c96d6dd107a39c33926775f1c1fba0821965e6bbd050a7a1f4ada89",
+    "hash": "0xa9e6ebb55abd0ae07e2b5709cda19ffb909d3dea47f028362bee5c9ac4b5a7a9",
     "language": "ink! 3.4.0",
     "compiler": "rustc 1.65.0-nightly"
   },
   "contract": {
-    "name": "xvm-sdk-psp22-controller",
+    "name": "xvm-sdk-psp22-option-controller",
     "version": "0.1.0",
     "authors": [
       "Astar Network"
@@ -15,15 +15,7 @@
     "spec": {
       "constructors": [
         {
-          "args": [
-            {
-              "label": "evm_address",
-              "type": {
-                "displayName": [],
-                "type": 1
-              }
-            }
-          ],
+          "args": [],
           "docs": [],
           "label": "new",
           "payable": false,
@@ -41,7 +33,7 @@
                 "displayName": [
                   "AccountId"
                 ],
-                "type": 2
+                "type": 0
               }
             },
             {
@@ -50,6 +42,13 @@
                 "displayName": [
                   "Balance"
                 ],
+                "type": 3
+              }
+            },
+            {
+              "label": "erc20_address",
+              "type": {
+                "displayName": [],
                 "type": 4
               }
             }
@@ -74,7 +73,7 @@
                 "displayName": [
                   "AccountId"
                 ],
-                "type": 2
+                "type": 0
               }
             },
             {
@@ -83,14 +82,14 @@
                 "displayName": [
                   "Balance"
                 ],
-                "type": 4
+                "type": 3
               }
             },
             {
               "label": "erc20_address",
               "type": {
                 "displayName": [],
-                "type": 1
+                "type": 4
               }
             },
             {
@@ -123,7 +122,7 @@
                 "displayName": [
                   "AccountId"
                 ],
-                "type": 2
+                "type": 0
               }
             },
             {
@@ -132,7 +131,7 @@
                 "displayName": [
                   "AccountId"
                 ],
-                "type": 2
+                "type": 0
               }
             },
             {
@@ -141,6 +140,13 @@
                 "displayName": [
                   "Balance"
                 ],
+                "type": 3
+              }
+            },
+            {
+              "label": "erc20_address",
+              "type": {
+                "displayName": [],
                 "type": 4
               }
             },
@@ -174,7 +180,7 @@
                 "displayName": [
                   "AccountId"
                 ],
-                "type": 2
+                "type": 0
               }
             }
           ],
@@ -196,24 +202,7 @@
     },
     "storage": {
       "struct": {
-        "fields": [
-          {
-            "layout": {
-              "array": {
-                "cellsPerElem": 1,
-                "layout": {
-                  "cell": {
-                    "key": "0x1400000000000000000000000000000000000000000000000000000000000000",
-                    "ty": 0
-                  }
-                },
-                "len": 20,
-                "offset": "0x0000000000000000000000000000000000000000000000000000000000000000"
-              }
-            },
-            "name": "evm_address"
-          }
-        ]
+        "fields": []
       }
     },
     "types": [
@@ -221,29 +210,10 @@
         "id": 0,
         "type": {
           "def": {
-            "primitive": "u8"
-          }
-        }
-      },
-      {
-        "id": 1,
-        "type": {
-          "def": {
-            "array": {
-              "len": 20,
-              "type": 0
-            }
-          }
-        }
-      },
-      {
-        "id": 2,
-        "type": {
-          "def": {
             "composite": {
               "fields": [
                 {
-                  "type": 3,
+                  "type": 1,
                   "typeName": "[u8; 32]"
                 }
               ]
@@ -257,13 +227,29 @@
         }
       },
       {
-        "id": 3,
+        "id": 1,
         "type": {
           "def": {
             "array": {
               "len": 32,
-              "type": 0
+              "type": 2
             }
+          }
+        }
+      },
+      {
+        "id": 2,
+        "type": {
+          "def": {
+            "primitive": "u8"
+          }
+        }
+      },
+      {
+        "id": 3,
+        "type": {
+          "def": {
+            "primitive": "u128"
           }
         }
       },
@@ -271,7 +257,10 @@
         "id": 4,
         "type": {
           "def": {
-            "primitive": "u128"
+            "array": {
+              "len": 20,
+              "type": 2
+            }
           }
         }
       },
@@ -345,7 +334,7 @@
             }
           },
           "path": [
-            "xvm_sdk_psp22_controller",
+            "xvm_sdk_psp22_option_controller",
             "psp22",
             "PSP22Error"
           ]
@@ -364,7 +353,7 @@
         "type": {
           "def": {
             "sequence": {
-              "type": 0
+              "type": 2
             }
           }
         }

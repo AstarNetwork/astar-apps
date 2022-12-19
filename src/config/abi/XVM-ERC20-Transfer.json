@@ -1,34 +1,32 @@
 {
   "source": {
-    "hash": "0xa4449846b9adb9d951fb8deaae1d8ed071c84a0ba77c1c31bc9747c328795878",
+    "hash": "0x19536c7f49cdb9b540d72586b884ef919a2475c7949458b4693bf87b52fd5e01",
     "language": "ink! 3.4.0",
     "compiler": "rustc 1.65.0-nightly"
   },
   "contract": {
-    "name": "xvm-sdk-erc20",
+    "name": "xvm-sdk-erc20-option",
     "version": "0.1.0",
-    "authors": ["Astar Network"]
+    "authors": [
+      "Astar Network"
+    ]
   },
   "V3": {
     "spec": {
       "constructors": [
         {
-          "args": [
-            {
-              "label": "evm_address",
-              "type": {
-                "displayName": [],
-                "type": 1
-              }
-            }
+          "args": [],
+          "docs": [
+            "Create new ERC20 abstraction."
           ],
-          "docs": ["Create new ERC20 abstraction from given contract address."],
           "label": "new",
           "payable": false,
           "selector": "0x9bae9d5e"
         }
       ],
-      "docs": [" The EVM ERC20 delegation contract."],
+      "docs": [
+        " The EVM ERC20 delegation contract."
+      ],
       "events": [],
       "messages": [
         {
@@ -37,23 +35,36 @@
               "label": "to",
               "type": {
                 "displayName": [],
-                "type": 1
+                "type": 0
               }
             },
             {
               "label": "value",
               "type": {
-                "displayName": ["u128"],
+                "displayName": [
+                  "u128"
+                ],
                 "type": 2
+              }
+            },
+            {
+              "label": "erc20_address",
+              "type": {
+                "displayName": [],
+                "type": 0
               }
             }
           ],
-          "docs": [" Send `approve` call to ERC20 contract."],
+          "docs": [
+            " Send `approve` call to ERC20 contract."
+          ],
           "label": "approve",
           "mutates": true,
           "payable": false,
           "returnType": {
-            "displayName": ["bool"],
+            "displayName": [
+              "bool"
+            ],
             "type": 3
           },
           "selector": "0x681266a0"
@@ -64,13 +75,15 @@
               "label": "to",
               "type": {
                 "displayName": [],
-                "type": 1
+                "type": 0
               }
             },
             {
               "label": "value",
               "type": {
-                "displayName": ["u128"],
+                "displayName": [
+                  "u128"
+                ],
                 "type": 2
               }
             },
@@ -78,16 +91,20 @@
               "label": "erc20_address",
               "type": {
                 "displayName": [],
-                "type": 1
+                "type": 0
               }
             }
           ],
-          "docs": [" Send `transfer` call to ERC20 contract."],
+          "docs": [
+            " Send `transfer` call to ERC20 contract."
+          ],
           "label": "transfer",
           "mutates": true,
           "payable": false,
           "returnType": {
-            "displayName": ["bool"],
+            "displayName": [
+              "bool"
+            ],
             "type": 3
           },
           "selector": "0x84a15da1"
@@ -98,30 +115,43 @@
               "label": "from",
               "type": {
                 "displayName": [],
-                "type": 1
+                "type": 0
               }
             },
             {
               "label": "to",
               "type": {
                 "displayName": [],
-                "type": 1
+                "type": 0
               }
             },
             {
               "label": "value",
               "type": {
-                "displayName": ["u128"],
+                "displayName": [
+                  "u128"
+                ],
                 "type": 2
+              }
+            },
+            {
+              "label": "erc20_address",
+              "type": {
+                "displayName": [],
+                "type": 0
               }
             }
           ],
-          "docs": [" Send `transfer_from` call to ERC20 contract."],
+          "docs": [
+            " Send `transfer_from` call to ERC20 contract."
+          ],
           "label": "transfer_from",
           "mutates": true,
           "payable": false,
           "returnType": {
-            "displayName": ["bool"],
+            "displayName": [
+              "bool"
+            ],
             "type": 3
           },
           "selector": "0x0b396f18"
@@ -130,24 +160,7 @@
     },
     "storage": {
       "struct": {
-        "fields": [
-          {
-            "layout": {
-              "array": {
-                "cellsPerElem": 1,
-                "layout": {
-                  "cell": {
-                    "key": "0x1400000000000000000000000000000000000000000000000000000000000000",
-                    "ty": 0
-                  }
-                },
-                "len": 20,
-                "offset": "0x0000000000000000000000000000000000000000000000000000000000000000"
-              }
-            },
-            "name": "evm_address"
-          }
-        ]
+        "fields": []
       }
     },
     "types": [
@@ -155,7 +168,10 @@
         "id": 0,
         "type": {
           "def": {
-            "primitive": "u8"
+            "array": {
+              "len": 20,
+              "type": 1
+            }
           }
         }
       },
@@ -163,10 +179,7 @@
         "id": 1,
         "type": {
           "def": {
-            "array": {
-              "len": 20,
-              "type": 0
-            }
+            "primitive": "u8"
           }
         }
       },

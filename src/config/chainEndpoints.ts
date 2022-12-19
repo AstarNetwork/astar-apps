@@ -104,8 +104,8 @@ export const providerEndpoints: ChainProvider[] = [
     faucetEndpoint: 'https://us-central1-facuet-bot.cloudfunctions.net/app/shibuya',
     defaultLogo: require('/src/assets/img/ic_shibuya.png'),
     xvmTransferContract: {
-      xvmErc20: 'XRcCTMUEk6TL8vVaYGQsjBgTF6gAhZPa9p8MXi4sSQGF9oc',
-      xvmPsp22: 'XDvBoeykGZ2itgD6EJZ1gPTE1bscYPBZ1J8knBgkz59Qf5v',
+      xvmErc20: 'XxBWCWH8M23yjMqxsEALDeBprUqQT3JYMkbgWyTdna9MED4',
+      xvmPsp22: 'VxNReRxvGbVuEojpbLVWrbx4cbKo85TCNK4nGw3NkkgXgxe',
     },
   },
   {
