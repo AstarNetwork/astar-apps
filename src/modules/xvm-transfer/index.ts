@@ -1,1 +1,1 @@
-export { addXvmTxHistories } from 'src/modules/xvm-transfer/utils';
+export { addXvmTxHistories, getXvmTransferContractAddress } from 'src/modules/xvm-transfer/utils';

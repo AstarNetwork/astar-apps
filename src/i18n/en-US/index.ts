@@ -363,8 +363,6 @@ export default {
       balance: 'Balance: {amount} {token}',
       available: 'Available: {amount} {token}',
       notSendToExchanges: 'I’m NOT sending tokens to Exchanges',
-      readGuide: 'I have read the',
-      userGuide: 'Transfer via XVM User Guide',
       youWillReceive: 'You will receive',
       faucetNextRequest: 'Time left until the next request',
       countDown: '{hrs} hrs {mins} mins {secs} secs',

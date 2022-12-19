@@ -18,7 +18,7 @@
       <div v-for="t in filteredXcmTokens" :key="t.symbol">
         <erc-20-currency :token="t" :is-xcm="true" />
       </div>
-      <div v-if="filteredXcmTokens.length === 0" class="box--no-result">
+      <div v-if="searchXcm.length > 0 && filteredXcmTokens.length === 0" class="box--no-result">
         <span class="text--xl">{{ $t('assets.noResults') }}</span>
       </div>
     </div>
@@ -105,7 +105,7 @@
           <erc-20-currency :token="t" />
         </div>
       </div>
-      <div v-if="filteredTokens.length === 0" class="box--no-result">
+      <div v-if="search.length > 0 && filteredTokens.length === 0" class="box--no-result">
         <span class="text--xl">{{ $t('assets.noResults') }}</span>
       </div>
     </div>
@@ -301,6 +301,7 @@ export default defineComponent({
       isSearch,
       isSearchXcm,
       search,
+      searchXcm,
       filteredXcmTokens,
       filteredTokens,
       isDisplayNativeToken,

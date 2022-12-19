@@ -19,7 +19,7 @@
       <div v-for="t in filteredTokens" :key="t.id">
         <xcm-currency :token="t" />
       </div>
-      <div v-if="filteredTokens.length === 0" class="box--no-result">
+      <div v-if="search.length > 0 && filteredTokens.length === 0" class="box--no-result">
         <span class="text--xl">{{ $t('assets.noResults') }}</span>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { getNetworkName } from 'src/config/chainEndpoints';
+import { getNetworkName, providerEndpoints } from 'src/config/chainEndpoints';
 import {
   getAccountHistories,
   LOCAL_STORAGE,
@@ -55,4 +55,14 @@ export const addXvmTxHistories = ({
     network,
     txs,
   });
+};
+
+export const getXvmTransferContractAddress = (isXvmErc20: boolean): string | undefined => {
+  const networkIdx = localStorage.getItem(NETWORK_IDX);
+  const contractObj = providerEndpoints[Number(networkIdx)].xvmTransferContract;
+  if (contractObj) {
+    return isXvmErc20 ? contractObj.xvmErc20 : contractObj.xvmPsp22;
+  } else {
+    return undefined;
+  }
 };

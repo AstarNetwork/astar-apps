@@ -121,30 +121,6 @@
       </div>
 
       <div
-        v-if="isRequiredCheckXvm"
-        class="box--warning checkbox--xvm"
-        :class="isCheckedXvm && 'box--warning--checked'"
-      >
-        <div class="input--checkbox" :class="isCheckedXvm && 'input--checkbox--checked'">
-          <input id="i-have-read-user-guide" v-model="isCheckedXvm" type="checkbox" />
-          <label for="i-have-read-user-guide">
-            <div class="row--user-guide">
-              <span :class="isCheckedXvm ? 'color--gray1' : 'color--not-checked'">
-                {{ $t('assets.modals.readGuide') }}
-              </span>
-              <!-- Todo: update the link -->
-              <a href="/" target="_blank" rel="noopener noreferrer">
-                <span
-                  class="text--link"
-                  :class="isCheckedXvm ? 'color--gray1' : 'color--not-checked'"
-                  >{{ $t('assets.modals.userGuide') }}</span
-                >
-              </a>
-            </div>
-          </label>
-        </div>
-      </div>
-      <div
         v-if="errMsg && currentAccount"
         class="row--box-error"
         :class="isRequiredCheck && 'box--margin-adjuster'"
@@ -212,8 +188,6 @@ export default defineComponent({
       selectedGas,
       evmGasCost,
       isTransferNativeToken,
-      isRequiredCheckXvm,
-      isCheckedXvm,
       setSelectedGas,
       inputHandler,
       setSelectedTip,
@@ -256,8 +230,6 @@ export default defineComponent({
       isH160,
       isRequiredCheck,
       isTransferNativeToken,
-      isRequiredCheckXvm,
-      isCheckedXvm,
       setSelectedGas,
       setSelectedTip,
       transfer,

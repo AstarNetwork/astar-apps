@@ -13,12 +13,6 @@
         <span class="text--md">
           {{ $t('assets.modals.riskOfImportTokens') }}
         </span>
-        <!-- Todo: add an tutorial url -->
-        <a href="/" target="_blank" rel="noopener noreferrer" class="row--link">
-          <span class="text--link">
-            {{ $t('assets.modals.howToImportXvmTokens') }}
-          </span>
-        </a>
       </div>
 
       <div class="box--import-tokens box--hover--active">
@@ -32,38 +26,6 @@
             v-model="searchErc20"
             type="text"
             placeholder="e.g. 0xd9aF35a156FD891de9DcB45f07858eA51ea3A3aC"
-            class="input--search"
-          />
-        </div>
-      </div>
-
-      <div class="box--import-tokens box--hover--active">
-        <div class="box__title">
-          <span class="text--md">
-            {{ $t('assets.modals.xvmPsp22ContractAddress') }}
-          </span>
-        </div>
-        <div>
-          <input
-            v-model="searchXvmPsp22"
-            type="text"
-            placeholder="e.g. XtxdwVaHyscfTRXcKiB2ehincWYHAxHkX8LYULeawYUdXb7"
-            class="input--search"
-          />
-        </div>
-      </div>
-
-      <div class="box--import-tokens box--hover--active">
-        <div class="box__title">
-          <span class="text--md">
-            {{ $t('assets.modals.evmErc20ContractAddress') }}
-          </span>
-        </div>
-        <div>
-          <input
-            v-model="searchXvmErc20"
-            type="text"
-            placeholder="e.g. XUwFfNTERkvJZH2H31VcCjaTfR2xegNxabtXzv3cPYPcys1"
             class="input--search"
           />
         </div>
@@ -102,7 +64,6 @@ import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { fetchErc20TokenInfo } from 'src/config/web3';
 import { useNetworkInfo } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
-import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 import { Erc20Token, getStoredXvmTokens, storeImportedXvmToken } from 'src/modules/token';
 import { defineComponent, ref, watch, computed } from 'vue';
 
@@ -125,15 +86,11 @@ export default defineComponent({
     const isClosingModal = ref<boolean>(false);
     const isLoading = ref<boolean>(false);
     const token = ref<Erc20Token | null>(null);
-    const searchXvmPsp22 = ref<string>('');
-    const searchXvmErc20 = ref<string>('');
     const searchErc20 = ref<string>('');
     const errMsg = ref<string>('');
 
     const resetStates = (): void => {
       token.value = null;
-      searchXvmPsp22.value = '';
-      searchXvmErc20.value = '';
       searchErc20.value = '';
     };
 
@@ -164,15 +121,13 @@ export default defineComponent({
     };
 
     const handleRequest = async (): Promise<void> => {
-      if (!token.value || !searchErc20.value || !searchXvmPsp22.value || !searchXvmErc20.value) {
+      if (!token.value || !searchErc20.value) {
         return;
       }
       try {
         const t = {
           srcChainId: Number(evmNetworkIdx.value),
           erc20Contract: searchErc20.value,
-          xvmPsp22Contract: searchXvmPsp22.value,
-          xvmErc20Contract: searchXvmErc20.value,
           decimal: Number(token.value.decimal),
           symbol: token.value.symbol,
           name: token.value.name,
@@ -194,9 +149,6 @@ export default defineComponent({
           ? web3.utils.isAddress(searchErc20.value)
           : false;
 
-        const isValidXvmErc20Address = isValidAddressPolkadotAddress(searchXvmErc20.value);
-        const isValidXvmPsp22Address = isValidAddressPolkadotAddress(searchXvmPsp22.value);
-
         const checkAddress = (address: string, isValid: boolean): void => {
           if (address && !isValid) {
             token.value = null;
@@ -205,11 +157,9 @@ export default defineComponent({
         };
 
         checkAddress(searchErc20.value, isValidErc20Address);
-        checkAddress(searchXvmErc20.value, isValidXvmErc20Address);
-        checkAddress(searchXvmPsp22.value, isValidXvmPsp22Address);
 
         errMsg.value = '';
-        if (searchErc20.value && searchXvmPsp22.value && searchXvmErc20.value) {
+        if (searchErc20.value) {
           isLoading.value = true;
           const tokenInfo = await fetchErc20TokenInfo({
             web3,
@@ -232,7 +182,7 @@ export default defineComponent({
     };
 
     watch(
-      [searchXvmPsp22, searchXvmErc20, searchErc20],
+      [searchErc20],
       async () => {
         await handleSearchResult();
       },
@@ -240,8 +190,6 @@ export default defineComponent({
     );
 
     return {
-      searchXvmPsp22,
-      searchXvmErc20,
       token,
       isClosingModal,
       searchErc20,

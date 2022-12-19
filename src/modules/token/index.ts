@@ -34,8 +34,6 @@ export interface Erc20Token {
 export interface XvmAsset {
   srcChainId: number;
   erc20Contract: string;
-  xvmPsp22Contract: string;
-  xvmErc20Contract: string;
   decimal: number;
   symbol: string;
   name: string;

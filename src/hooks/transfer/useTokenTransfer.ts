@@ -33,7 +33,6 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
   const toAddress = ref<string>('');
   const errMsg = ref<string>('');
   const isChecked = ref<boolean>(false);
-  const isCheckedXvm = ref<boolean>(false);
 
   const store = useStore();
   const { ethProvider } = useEthProvider();
@@ -67,18 +66,6 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
 
   const isRequiredCheck = computed<boolean>(() => isH160.value || !isTransferNativeToken.value);
 
-  const isRequiredCheckXvm = computed<boolean>(() => {
-    let result = false;
-    const isCheckAddressFormat =
-      isH160.value &&
-      isSupportXvmTransfer.value &&
-      selectedToken.value.metadata.symbol.toLowerCase() !== nativeTokenSymbol.value.toLowerCase();
-    if (isCheckAddressFormat) {
-      result = isValidAddressPolkadotAddress(toAddress.value);
-    }
-    return result;
-  });
-
   const fromAddressBalance = computed<number>(() =>
     selectedToken.value ? selectedToken.value.userBalance : 0
   );
@@ -91,14 +78,13 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
       errMsg.value !== '' ||
       isLessAmount ||
       noAddress ||
-      (isRequiredCheck.value && !isChecked.value) ||
-      (isRequiredCheckXvm.value && !isCheckedXvm.value)
+      (isRequiredCheck.value && !isChecked.value)
     );
   });
 
   const isValidDestAddress = computed<boolean>(() => {
     const isOnlyAcceptEvmAddress =
-      isH160.value && !isTransferNativeToken.value && !isRequiredCheckXvm.value;
+      isH160.value && !isTransferNativeToken.value && !isSupportXvmTransfer.value;
     return isOnlyAcceptEvmAddress
       ? isValidEvmAddress(toAddress.value)
       : isValidAddressPolkadotAddress(toAddress.value, ASTAR_SS58_FORMAT) ||
@@ -116,7 +102,6 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     toAddress.value = '';
     errMsg.value = '';
     isChecked.value = false;
-    isCheckedXvm.value = false;
     toAddressBalance.value = 0;
   };
 
@@ -226,7 +211,9 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     finalizeCallback: () => void;
   }): Promise<void> => {
     if (!isH160.value) return;
-    const destAddress = isRequiredCheckXvm.value ? buildEvmAddress(toAddress) : toAddress;
+    const destAddress = isValidAddressPolkadotAddress(toAddress)
+      ? buildEvmAddress(toAddress)
+      : toAddress;
     if (!ethers.utils.isAddress(destAddress)) {
       toastInvalidAddress();
       return;
@@ -395,7 +382,9 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     if (isTransferNativeToken.value) {
       toAddressBalance.value = await getNativeTokenBalance(destAddress);
     } else if (isH160.value) {
-      const address = isRequiredCheckXvm.value ? buildEvmAddress(toAddress.value) : toAddress.value;
+      const address = isValidAddressPolkadotAddress(toAddress.value)
+        ? buildEvmAddress(toAddress.value)
+        : toAddress.value;
       const balance = await getTokenBal({
         srcChainId,
         address,
@@ -471,8 +460,6 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     selectedGas,
     evmGasCost,
     isRequiredCheck,
-    isRequiredCheckXvm,
-    isCheckedXvm,
     setSelectedGas,
     setSelectedTip,
     inputHandler,

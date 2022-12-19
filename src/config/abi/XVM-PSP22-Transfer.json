@@ -1,0 +1,374 @@
+{
+  "source": {
+    "hash": "0x78fe05f00c96d6dd107a39c33926775f1c1fba0821965e6bbd050a7a1f4ada89",
+    "language": "ink! 3.4.0",
+    "compiler": "rustc 1.65.0-nightly"
+  },
+  "contract": {
+    "name": "xvm-sdk-psp22-controller",
+    "version": "0.1.0",
+    "authors": [
+      "Astar Network"
+    ]
+  },
+  "V3": {
+    "spec": {
+      "constructors": [
+        {
+          "args": [
+            {
+              "label": "evm_address",
+              "type": {
+                "displayName": [],
+                "type": 1
+              }
+            }
+          ],
+          "docs": [],
+          "label": "new",
+          "payable": false,
+          "selector": "0x9bae9d5e"
+        }
+      ],
+      "docs": [],
+      "events": [],
+      "messages": [
+        {
+          "args": [
+            {
+              "label": "spender",
+              "type": {
+                "displayName": [
+                  "AccountId"
+                ],
+                "type": 2
+              }
+            },
+            {
+              "label": "value",
+              "type": {
+                "displayName": [
+                  "Balance"
+                ],
+                "type": 4
+              }
+            }
+          ],
+          "docs": [],
+          "label": "approve",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Result"
+            ],
+            "type": 5
+          },
+          "selector": "0xb20f1bbd"
+        },
+        {
+          "args": [
+            {
+              "label": "to",
+              "type": {
+                "displayName": [
+                  "AccountId"
+                ],
+                "type": 2
+              }
+            },
+            {
+              "label": "value",
+              "type": {
+                "displayName": [
+                  "Balance"
+                ],
+                "type": 4
+              }
+            },
+            {
+              "label": "erc20_address",
+              "type": {
+                "displayName": [],
+                "type": 1
+              }
+            },
+            {
+              "label": "_data",
+              "type": {
+                "displayName": [
+                  "Vec"
+                ],
+                "type": 9
+              }
+            }
+          ],
+          "docs": [],
+          "label": "transfer",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Result"
+            ],
+            "type": 5
+          },
+          "selector": "0xdb20f9f5"
+        },
+        {
+          "args": [
+            {
+              "label": "from",
+              "type": {
+                "displayName": [
+                  "AccountId"
+                ],
+                "type": 2
+              }
+            },
+            {
+              "label": "to",
+              "type": {
+                "displayName": [
+                  "AccountId"
+                ],
+                "type": 2
+              }
+            },
+            {
+              "label": "value",
+              "type": {
+                "displayName": [
+                  "Balance"
+                ],
+                "type": 4
+              }
+            },
+            {
+              "label": "_data",
+              "type": {
+                "displayName": [
+                  "Vec"
+                ],
+                "type": 9
+              }
+            }
+          ],
+          "docs": [],
+          "label": "transfer_from",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Result"
+            ],
+            "type": 5
+          },
+          "selector": "0x54b3c76e"
+        },
+        {
+          "args": [
+            {
+              "label": "from",
+              "type": {
+                "displayName": [
+                  "AccountId"
+                ],
+                "type": 2
+              }
+            }
+          ],
+          "docs": [
+            " Helper function to get H160 address of the 32 bytes accountId"
+          ],
+          "label": "to_h160_address",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "String"
+            ],
+            "type": 8
+          },
+          "selector": "0xee60594a"
+        }
+      ]
+    },
+    "storage": {
+      "struct": {
+        "fields": [
+          {
+            "layout": {
+              "array": {
+                "cellsPerElem": 1,
+                "layout": {
+                  "cell": {
+                    "key": "0x1400000000000000000000000000000000000000000000000000000000000000",
+                    "ty": 0
+                  }
+                },
+                "len": 20,
+                "offset": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              }
+            },
+            "name": "evm_address"
+          }
+        ]
+      }
+    },
+    "types": [
+      {
+        "id": 0,
+        "type": {
+          "def": {
+            "primitive": "u8"
+          }
+        }
+      },
+      {
+        "id": 1,
+        "type": {
+          "def": {
+            "array": {
+              "len": 20,
+              "type": 0
+            }
+          }
+        }
+      },
+      {
+        "id": 2,
+        "type": {
+          "def": {
+            "composite": {
+              "fields": [
+                {
+                  "type": 3,
+                  "typeName": "[u8; 32]"
+                }
+              ]
+            }
+          },
+          "path": [
+            "ink_env",
+            "types",
+            "AccountId"
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "type": {
+          "def": {
+            "array": {
+              "len": 32,
+              "type": 0
+            }
+          }
+        }
+      },
+      {
+        "id": 4,
+        "type": {
+          "def": {
+            "primitive": "u128"
+          }
+        }
+      },
+      {
+        "id": 5,
+        "type": {
+          "def": {
+            "variant": {
+              "variants": [
+                {
+                  "fields": [
+                    {
+                      "type": 6
+                    }
+                  ],
+                  "index": 0,
+                  "name": "Ok"
+                },
+                {
+                  "fields": [
+                    {
+                      "type": 7
+                    }
+                  ],
+                  "index": 1,
+                  "name": "Err"
+                }
+              ]
+            }
+          },
+          "params": [
+            {
+              "name": "T",
+              "type": 6
+            },
+            {
+              "name": "E",
+              "type": 7
+            }
+          ],
+          "path": [
+            "Result"
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "type": {
+          "def": {
+            "tuple": []
+          }
+        }
+      },
+      {
+        "id": 7,
+        "type": {
+          "def": {
+            "variant": {
+              "variants": [
+                {
+                  "fields": [
+                    {
+                      "type": 8,
+                      "typeName": "String"
+                    }
+                  ],
+                  "index": 0,
+                  "name": "Custom"
+                }
+              ]
+            }
+          },
+          "path": [
+            "xvm_sdk_psp22_controller",
+            "psp22",
+            "PSP22Error"
+          ]
+        }
+      },
+      {
+        "id": 8,
+        "type": {
+          "def": {
+            "primitive": "str"
+          }
+        }
+      },
+      {
+        "id": 9,
+        "type": {
+          "def": {
+            "sequence": {
+              "type": 0
+            }
+          }
+        }
+      }
+    ]
+  }
+}
