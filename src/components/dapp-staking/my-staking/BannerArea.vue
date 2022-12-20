@@ -27,5 +27,8 @@ export default defineComponent({
     display: block;
     width: 100%;
   }
+  @media (min-width: $xxl) {
+    gap: 24px;
+  }
 }
 </style>
