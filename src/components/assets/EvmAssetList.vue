@@ -275,7 +275,7 @@ export default defineComponent({
     const isXcmAssets = computed<boolean>(() => {
       let result = false;
       if (props.tokens.length === 0) return result;
-      props.tokens.forEach((it) => {
+      props.tokens.some((it) => {
         if (it.isXC20) {
           result = true;
         }
