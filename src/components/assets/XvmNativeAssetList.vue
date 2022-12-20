@@ -18,7 +18,7 @@
         </div>
 
         <div v-if="xvmAssets.length > 0">
-          <div v-for="t in filteredTokens" :key="t.erc20Contract">
+          <div v-for="t in filteredTokens" :key="t.address">
             <xvm-erc-20-currency :token="t" />
           </div>
         </div>
@@ -41,7 +41,7 @@
 import { defineComponent, PropType, ref, computed } from 'vue';
 import XvmErc20Currency from 'src/components/assets/XvmErc20Currency.vue';
 import AssetSearchOption from 'src/components/assets/AssetSearchOption.vue';
-import { XvmAsset } from 'src/modules/token';
+import { Erc20Token } from 'src/modules/token';
 import ModalImportXvmTokens from 'src/components/assets/modals/ModalImportXvmTokens.vue';
 export default defineComponent({
   components: {
@@ -51,7 +51,7 @@ export default defineComponent({
   },
   props: {
     xvmAssets: {
-      type: Array as PropType<XvmAsset[]>,
+      type: Array as PropType<Erc20Token[]>,
       required: true,
     },
   },
@@ -67,7 +67,7 @@ export default defineComponent({
       isModalImportTokens.value = isOpen;
     };
 
-    const filteredTokens = computed<XvmAsset[] | null>(() => {
+    const filteredTokens = computed<Erc20Token[] | null>(() => {
       if (!props.xvmAssets) return null;
       const tokens = isHideSmallBalances.value
         ? props.xvmAssets.filter((it) => Number(it.userBalance) > 0)
@@ -82,7 +82,7 @@ export default defineComponent({
             token.name.toLowerCase().includes(value) || token.symbol.toLowerCase().includes(value);
           return isFoundToken ? token : undefined;
         })
-        .filter((it) => it !== undefined) as XvmAsset[];
+        .filter((it) => it !== undefined) as Erc20Token[];
       const res = result.length > 0 ? result : null;
       return res;
     });

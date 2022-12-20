@@ -63,7 +63,7 @@
         <div class="box__row">
           <div class="box__row cursor-pointer" @click="setRightUi('select-token')">
             <div class="token-logo">
-              <jazzicon :address="token.erc20Contract" :diameter="24" />
+              <jazzicon :address="token.address" :diameter="24" />
             </div>
             <span class="text--title">{{ token.symbol }}</span>
             <div class="icon--expand">
@@ -133,7 +133,7 @@ import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { useAccount, useNetworkInfo, useWalletIcon, useXvmTokenTransfer } from 'src/hooks';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
-import { XvmAsset } from 'src/modules/token';
+import { Erc20Token } from 'src/modules/token';
 import { computed, defineComponent, PropType } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
 
@@ -150,7 +150,7 @@ export default defineComponent({
       required: true,
     },
     token: {
-      type: Object as PropType<XvmAsset>,
+      type: Object as PropType<Erc20Token>,
       required: true,
     },
   },
@@ -158,7 +158,7 @@ export default defineComponent({
     const { iconWallet } = useWalletIcon();
     const { currentAccount, currentAccountName } = useAccount();
     const { nativeTokenSymbol } = useNetworkInfo();
-    const t = computed<XvmAsset>(() => props.token);
+    const t = computed<Erc20Token>(() => props.token);
     const {
       selectedTip,
       nativeTipPrice,

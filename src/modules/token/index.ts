@@ -22,23 +22,13 @@ export interface Erc20Token {
   decimal: number;
   symbol: string;
   name: string;
-  image: string;
-  isWrappedToken: boolean;
-  isXC20: boolean;
-  wrapUrl: string | null;
+  image?: string;
+  isWrappedToken?: boolean;
+  isXC20?: boolean;
+  wrapUrl?: string | null;
   userBalance?: string;
   userBalanceUsd?: string;
   isCbridgeToken?: boolean;
-}
-
-export interface XvmAsset {
-  srcChainId: number;
-  erc20Contract: string;
-  decimal: number;
-  symbol: string;
-  name: string;
-  userBalance?: string;
-  userBalanceUsd?: string;
 }
 
 export const WASTR: Erc20Token = {

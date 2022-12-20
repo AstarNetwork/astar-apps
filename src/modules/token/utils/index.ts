@@ -1,4 +1,3 @@
-import { XvmAsset } from './../index';
 import { CbridgeCurrency } from 'src/c-bridge';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
@@ -62,12 +61,12 @@ export const storeImportedERC20Token = (token: Erc20Token) => {
   localStorage.setItem(LOCAL_STORAGE.EVM_TOKEN_IMPORTS, JSON.stringify(tokens));
 };
 
-export const getStoredXvmTokens = (): XvmAsset[] => {
+export const getStoredXvmTokens = (): Erc20Token[] => {
   const data = localStorage.getItem(LOCAL_STORAGE.XVM_TOKEN_IMPORTS);
   return data ? JSON.parse(data) : [];
 };
 
-export const storeImportedXvmToken = (token: XvmAsset) => {
+export const storeImportedXvmToken = (token: Erc20Token) => {
   const tokens = getStoredXvmTokens();
   tokens.push(token);
   localStorage.setItem(LOCAL_STORAGE.XVM_TOKEN_IMPORTS, JSON.stringify(tokens));
@@ -83,7 +82,7 @@ export const deleteImportedXvmToken = ({
   const tokens = getStoredXvmTokens();
   const filteredTokens = tokens.filter((it) => {
     const isDeleteToken =
-      srcChainId === it.srcChainId && tokenAddress.toLowerCase() === it.erc20Contract.toLowerCase();
+      srcChainId === it.srcChainId && tokenAddress.toLowerCase() === it.address.toLowerCase();
 
     if (!isDeleteToken) {
       return it;

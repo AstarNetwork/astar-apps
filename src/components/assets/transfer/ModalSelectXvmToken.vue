@@ -10,14 +10,14 @@
       <div class="container--items">
         <div
           v-for="t in tokens"
-          :key="t.erc20Contract"
+          :key="t.address"
           class="row--item"
           :class="token.symbol === t.symbol && 'row--item-selected'"
           @click="setToken(t)"
         >
           <div class="column--item-name">
             <div class="item-logo">
-              <jazzicon :address="token.erc20Contract" :diameter="24" />
+              <jazzicon :address="token.address" :diameter="24" />
             </div>
             <span class="text--item-name">{{ t.symbol }}</span>
           </div>
@@ -36,7 +36,7 @@ import { fadeDuration } from '@astar-network/astar-ui';
 import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { truncate } from 'src/hooks/helper/common';
-import { XvmAsset } from 'src/modules/token';
+import { Erc20Token } from 'src/modules/token';
 import { wait } from 'src/v2/common';
 import { defineComponent, PropType, ref } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
@@ -61,11 +61,11 @@ export default defineComponent({
       required: true,
     },
     tokens: {
-      type: Object as PropType<XvmAsset[]>,
+      type: Object as PropType<Erc20Token[]>,
       required: true,
     },
     token: {
-      type: Object as PropType<XvmAsset>,
+      type: Object as PropType<Erc20Token>,
       required: true,
     },
   },

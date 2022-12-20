@@ -51,7 +51,7 @@ import {
 } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { HistoryTxType } from 'src/modules/account';
-import { XvmAsset } from 'src/modules/token';
+import { Erc20Token } from 'src/modules/token';
 import { Path } from 'src/router';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch } from 'vue';
@@ -85,7 +85,7 @@ export default defineComponent({
       isModalSelectToken.value = isOpen;
     };
 
-    const handleSetToken = async (t: XvmAsset): Promise<void> => {
+    const handleSetToken = async (t: Erc20Token): Promise<void> => {
       setToken(t);
       await setRightUi('information');
       handleModalSelectToken({ isOpen: false });

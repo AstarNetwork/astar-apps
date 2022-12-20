@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { useAccount, useBalance } from 'src/hooks';
-import { XvmAsset } from 'src/modules/token';
+import { Erc20Token } from 'src/modules/token';
 import { useStore } from 'src/store';
 import { computed, ref, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -13,7 +13,7 @@ export function useXvmTransferRouter() {
   const { currentAccount } = useAccount();
   const nativeTokenBalance = ref<number>(0);
   const { useableBalance } = useBalance(currentAccount);
-  const tokens = computed<XvmAsset[]>(() => {
+  const tokens = computed<Erc20Token[]>(() => {
     const assets = store.getters['assets/getAllXvmAssets'];
     return assets.xvmAssets;
   });
@@ -22,7 +22,7 @@ export function useXvmTransferRouter() {
   const network = computed<string>(() => route.params.network as string);
   const isXvmTransferPage = computed<boolean>(() => route.fullPath.includes('xvm-transfer'));
 
-  const token = computed<XvmAsset | null>(() => {
+  const token = computed<Erc20Token | null>(() => {
     try {
       return (
         tokens.value.find((it) => it.symbol.toLowerCase() === tokenSymbol.value.toLowerCase()) ||
@@ -45,7 +45,7 @@ export function useXvmTransferRouter() {
     });
   };
 
-  const setToken = (t: XvmAsset): void => {
+  const setToken = (t: Erc20Token): void => {
     const token = t.symbol.toLowerCase();
     router.replace({
       path: `/${network.value}/assets/xvm-transfer`,

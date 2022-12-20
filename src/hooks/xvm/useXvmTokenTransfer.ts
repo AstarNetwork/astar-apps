@@ -6,7 +6,7 @@ import {
   SUBSTRATE_SS58_FORMAT,
 } from 'src/hooks/helper/plasmUtils';
 import { useAccount } from 'src/hooks/useAccount';
-import { XvmAsset } from 'src/modules/token';
+import { Erc20Token } from 'src/modules/token';
 import { Path } from 'src/router';
 import { useStore } from 'src/store';
 import { container } from 'src/v2/common';
@@ -17,7 +17,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 type ContractType = 'wasm-erc20' | 'wasm-psp22';
 
-export function useXvmTokenTransfer(selectedToken: Ref<XvmAsset>) {
+export function useXvmTokenTransfer(selectedToken: Ref<Erc20Token>) {
   const transferAmt = ref<string | null>(null);
   const toAddressBalance = ref<number>(0);
   const toAddress = ref<string>('');
@@ -117,7 +117,7 @@ export function useXvmTokenTransfer(selectedToken: Ref<XvmAsset>) {
       const userBalance = await getTokenBal({
         srcChainId,
         address: destAddress,
-        tokenAddress: selectedToken.value.erc20Contract,
+        tokenAddress: selectedToken.value.address,
         tokenSymbol: selectedToken.value.symbol,
       });
 

@@ -1,12 +1,12 @@
 import { Asset } from 'src/v2/models';
-import { Erc20Token, XvmAsset } from './../../modules/token';
+import { Erc20Token } from './../../modules/token';
 
 export interface XcmAssets {
   assets: Asset[];
   ttlNativeXcmUsdAmount: number;
 }
 export interface XvmAssets {
-  xvmAssets: XvmAsset[];
+  xvmAssets: Erc20Token[];
   ttlXvmUsdAmount: number;
 }
 

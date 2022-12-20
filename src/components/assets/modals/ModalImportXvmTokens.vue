@@ -102,7 +102,7 @@ export default defineComponent({
       tokens &&
         tokens.forEach((it) => {
           const isFound =
-            it.erc20Contract.toLowerCase() === searchErc20.value.toLowerCase() &&
+            it.address.toLowerCase() === searchErc20.value.toLowerCase() &&
             it.srcChainId === evmNetworkIdx.value;
           if (isFound) {
             isDuplicated = true;
@@ -127,7 +127,7 @@ export default defineComponent({
       try {
         const t = {
           srcChainId: Number(evmNetworkIdx.value),
-          erc20Contract: searchErc20.value,
+          address: searchErc20.value,
           decimal: Number(token.value.decimal),
           symbol: token.value.symbol,
           name: token.value.name,

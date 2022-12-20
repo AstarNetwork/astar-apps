@@ -288,7 +288,7 @@ export const generateNativeAsset = (symbol: ASTAR_NATIVE_TOKEN): Asset => {
 export const generateAssetFromEvmToken = (token: Erc20Token, xcmAssets: Asset[]): Asset => {
   const t = xcmAssets.find((it) => it.mappedERC20Addr === token.address);
   const name = t ? t.metadata.name : token.name;
-  const tokenImage = token.image;
+  const tokenImage = token.image || '';
   const mappedERC20Addr = t ? t.mappedERC20Addr : token.address;
   const metadata = {
     decimals: t ? t.metadata.decimals : token.decimal,

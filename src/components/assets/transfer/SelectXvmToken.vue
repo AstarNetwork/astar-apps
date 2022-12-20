@@ -4,15 +4,10 @@
       <span>{{ $t('assets.transferPage.selectToken') }}</span>
     </div>
     <div class="container--items">
-      <div
-        v-for="token in tokens"
-        :key="token.erc20Contract"
-        class="row--item"
-        @click="setToken(token)"
-      >
+      <div v-for="token in tokens" :key="token.address" class="row--item" @click="setToken(token)">
         <div class="column--item-name">
           <div class="item-logo">
-            <jazzicon :address="token.erc20Contract" :diameter="24" />
+            <jazzicon :address="token.address" :diameter="24" />
           </div>
           <span class="text--item-name">{{ token.symbol }}</span>
         </div>
@@ -32,7 +27,7 @@
 </template>
 <script lang="ts">
 import { truncate } from 'src/hooks/helper/common';
-import { XvmAsset } from 'src/modules/token';
+import { Erc20Token } from 'src/modules/token';
 import { defineComponent, PropType } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
 
@@ -44,7 +39,7 @@ export default defineComponent({
       required: true,
     },
     tokens: {
-      type: Object as PropType<XvmAsset[]>,
+      type: Object as PropType<Erc20Token[]>,
       required: true,
     },
   },

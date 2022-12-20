@@ -1,4 +1,4 @@
-import { XvmAsset } from 'src/modules/token';
+import { Erc20Token } from 'src/modules/token';
 import { XvmAssets } from 'src/store/assets/state';
 
 export interface XvmGetAssetsParam {
@@ -12,7 +12,7 @@ export interface IXvmService extends IXvmTransfer {
 }
 
 export interface XvmTransferParam {
-  token: XvmAsset;
+  token: Erc20Token;
   senderAddress: string;
   recipientAddress: string;
   amount: string;

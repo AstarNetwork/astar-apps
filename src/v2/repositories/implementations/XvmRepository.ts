@@ -40,7 +40,7 @@ export class XvmRepository implements IXvmRepository {
       assets.map(async (item) => {
         const token: Erc20Token = {
           srcChainId: item.srcChainId,
-          address: item.erc20Contract,
+          address: item.address,
           decimal: item.decimal,
           symbol: item.symbol,
           name: item.name,
@@ -98,26 +98,26 @@ export class XvmRepository implements IXvmRepository {
           { gasLimit: initialGasLimit },
           recipientAddress,
           sendingAmount,
-          token.erc20Contract
+          token.address
         )
       : await contract.query.transfer(
           senderAddress,
           { gasLimit: initialGasLimit, storageDepositLimit: null },
           recipientAddress,
           sendingAmount,
-          token.erc20Contract,
+          token.address,
           []
         );
 
     const gasLimit = api.registry.createType('WeightV2', gasRequired) as WeightV2;
 
     const transaction = isWasmErc20
-      ? contract.tx.transfer({ gasLimit }, recipientAddress, sendingAmount, token.erc20Contract)
+      ? contract.tx.transfer({ gasLimit }, recipientAddress, sendingAmount, token.address)
       : contract.tx.transfer(
           { gasLimit, storageDepositLimit: null },
           recipientAddress,
           sendingAmount,
-          token.erc20Contract,
+          token.address,
           []
         );
 
