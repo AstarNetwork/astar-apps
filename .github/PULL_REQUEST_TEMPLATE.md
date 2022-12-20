@@ -11,7 +11,7 @@
 - [ ] documentation changes
 - [ ] tested on mobile devices
 
-**Notes for release notes:**
+**Release notes:**
 
 - (ex: feat: updated dApp staking to V2)
 - (ex: fix: modified styling bugs on the Assets page)
