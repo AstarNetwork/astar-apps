@@ -11,7 +11,7 @@ import { getEvmGas } from 'src/modules/gas-api';
 import { relaychainParaId, xcmChainObj } from 'src/modules/xcm';
 import { Guard } from 'src/v2/common';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
-import { Chain, ethWalletChains } from 'src/v2/models';
+import { ethWalletChains } from 'src/v2/models';
 import { IGasPriceProvider, IXcmEvmService, TransferParam } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import Web3 from 'web3';
@@ -62,7 +62,7 @@ export class XcmEvmService implements IXcmEvmService {
       const assetIds = [asset_id];
       const assetAmounts = [new BN(assetAmount)];
       const recipientAccountId = recipientEvmAccountId;
-      const withdrawalChain = xcmChainObj[token.originChain as Chain];
+      const withdrawalChain = xcmChainObj[token.originChain];
       const isRelay = Number(withdrawalChain && withdrawalChain.parachainId) === relaychainParaId;
       const parachainId = withdrawalChain?.parachainId ?? 0;
       const feeIndex = 0;

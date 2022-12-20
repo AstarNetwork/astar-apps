@@ -8,25 +8,24 @@ import {
   CrustShadowXcmRepository,
   PhalaXcmRepository,
 } from 'src/v2/repositories/implementations';
-import { Chain } from 'src/v2/models/XcmModels';
 import { TypeMapping } from 'src/v2/config/types';
 
 export const XcmRepositoryConfiguration: TypeMapping = {
-  [Chain.ASTAR]: AstarXcmRepository,
-  [Chain.SHIDEN]: AstarXcmRepository,
-  [Chain.ACALA]: AcalaXcmRepository,
-  [Chain.KARURA]: AcalaXcmRepository,
-  [Chain.STATEMINE]: StatemintXcmRepository,
-  [Chain.STATEMINT]: StatemintXcmRepository,
-  [Chain.MOONBEAM]: MoonbeamXcmRepository,
-  [Chain.MOONRIVER]: MoonbeamXcmRepository,
-  [Chain.POLKADOT]: PolkadotXcmRepository,
-  [Chain.KUSAMA]: PolkadotXcmRepository,
-  // [Chain.KINTSUGI]: InterlayXcmRepository,
-  [Chain.INTERLAY]: InterlayXcmRepository,
-  [Chain.CRUST_SHADOW]: CrustShadowXcmRepository,
-  [Chain.KHALA]: PhalaXcmRepository,
-  [Chain.PHALA]: PhalaXcmRepository,
+  ['astar']: AstarXcmRepository,
+  ['shiden']: AstarXcmRepository,
+  ['acala']: AcalaXcmRepository,
+  ['karura']: AcalaXcmRepository,
+  ['statemine']: StatemintXcmRepository,
+  ['statemint']: StatemintXcmRepository,
+  ['moonbeam']: MoonbeamXcmRepository,
+  ['moonriver']: MoonbeamXcmRepository,
+  ['polkadot']: PolkadotXcmRepository,
+  ['kusama']: PolkadotXcmRepository,
+  ['kintsugi']: InterlayXcmRepository,
+  ['interlay']: InterlayXcmRepository,
+  ['crust shadow']: CrustShadowXcmRepository,
+  ['khala']: PhalaXcmRepository,
+  ['phala']: PhalaXcmRepository,
 };
 
 export type AstarToken = 'ASTR' | 'SDN';

@@ -14,7 +14,7 @@
     </div>
     <div v-if="chain" class="wrapper--select-chain">
       <div class="row__chain">
-        <img :src="chain.img" alt="chain-logo" class="logo" />
+        <img :src="chain.icon" alt="chain-logo" class="logo" />
         <input
           :value="castChainName(chain.name)"
           class="input--chain text--title"

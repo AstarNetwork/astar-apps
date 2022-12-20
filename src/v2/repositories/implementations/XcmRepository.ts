@@ -65,11 +65,11 @@ export class XcmRepository implements IXcmRepository {
       const metadata = new AssetMetadata(name, symbol, decimals, isFrozen, deposit);
 
       // Todo: get the token data even thought users select `custom-network`
-      const registeredData = this.registeredTokens.find((x) => x.assetId === id);
+      const registeredData = this.registeredTokens.find((x) => x.astarAssetId === id);
       const minBridgeAmount = registeredData ? registeredData.minBridgeAmount : '0';
       const originChain = registeredData ? registeredData.originChain : '';
       const originAssetId = registeredData ? registeredData.originAssetId : '';
-      const tokenImage = registeredData ? (registeredData.logo as string) : 'custom-token';
+      const tokenImage = registeredData ? (registeredData.icon as string) : 'custom-token';
       const isNativeToken = registeredData ? registeredData.isNativeToken : false;
       const isXcmCompatible = registeredData ? registeredData.isXcmCompatible : false;
       const userBalance = 0;
@@ -316,8 +316,8 @@ export class XcmRepository implements IXcmRepository {
     }
   }
 
-  private getMappedXC20Asset(assetId: string): string {
-    const hexedAddress = `0xffffffff${Web3.utils.toHex(assetId).slice(2)}`;
+  private getMappedXC20Asset(astarAssetId: string): string {
+    const hexedAddress = `0xffffffff${Web3.utils.toHex(astarAssetId).slice(2)}`;
     const requirementLength = 42;
     const mappedLength = hexedAddress.length;
     const paddingDiffer = requirementLength - mappedLength;

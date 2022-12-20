@@ -28,7 +28,7 @@ import {
 } from 'src/modules/xcm';
 import { useStore } from 'src/store';
 import { Asset, ethWalletChains } from 'src/v2/models';
-import { Chain, chainsNotSupportWithdrawal, XcmChain } from 'src/v2/models/XcmModels';
+import { chainsNotSupportWithdrawal, XcmChain } from 'src/v2/models/XcmModels';
 import { MOONBEAM_ASTAR_TOKEN_ID } from 'src/v2/repositories/implementations/xcm/MoonbeamXcmRepository';
 import { computed, ref, Ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -42,12 +42,10 @@ import { IXcmEvmService, IXcmService, IXcmTransfer } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { useRouter } from 'vue-router';
 
-const { Acala, Astar, Karura, Polkadot, Shiden } = xcmChainObj;
-
 export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
   const originChainApi = ref<ApiPromise | null>(null);
-  const srcChain = ref<XcmChain>(Polkadot);
-  const destChain = ref<XcmChain>(Astar);
+  const srcChain = ref<XcmChain>(xcmChainObj.polkadot);
+  const destChain = ref<XcmChain>(xcmChainObj.astar);
   const amount = ref<string | null>(null);
   const errMsg = ref<string>('');
   const isDisabledBridge = ref<boolean>(true);
@@ -78,25 +76,23 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
   const opponentChain = computed<XcmChain>(() => {
     try {
       let chain = xcmOpponentChain.value;
-      if (xcmOpponentChain.value === Chain.ASTAR_EVM) {
-        chain = Astar.name;
+      if (xcmOpponentChain.value === 'astar') {
+        chain = xcmChainObj.astar.name;
       }
-      if (xcmOpponentChain.value === Chain.SHIDEN_EVM) {
-        chain = Shiden.name;
+      if (xcmOpponentChain.value === 'shiden') {
+        chain = xcmChainObj.shiden.name;
       }
       return xcmChainObj[chain as keyof typeof xcmChainObj];
     } catch (error) {
       console.error(error);
-      return isAstar.value ? Acala : Karura;
+      return isAstar.value ? xcmChainObj.acala : xcmChainObj.karura;
     }
   });
 
   const decimals = computed<number>(() =>
     selectedToken.value ? Number(selectedToken.value.metadata.decimals) : 0
   );
-  const originChain = computed<XcmChain>(
-    () => xcmChainObj[selectedToken.value.originChain as Chain]
-  );
+  const originChain = computed<XcmChain>(() => xcmChainObj[selectedToken.value.originChain]);
 
   const isLoadOriginApi = computed<boolean>(
     () => !!(selectedToken.value && selectedToken.value.originChain)
@@ -132,9 +128,12 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
 
   const setSrcChain = (chain: XcmChain): void => {
     srcChain.value = chain;
+    if (!destChain.value) {
+      destChain.value = xcmChainObj.astar;
+    }
     // Memo: prevent an error clicking the reverse button after the UI opened from clicking the XCM tab
     if (chain.name === destChain.value.name) {
-      const astarChain = isAstar.value ? Astar : Shiden;
+      const astarChain = isAstar.value ? xcmChainObj.astar : xcmChainObj.shiden;
       destChain.value = destChain.value.name === astarChain.name ? opponentChain.value : astarChain;
     }
   };
@@ -163,7 +162,8 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
       return;
     }
     try {
-      const isFromAstar = from.value === Astar.name || from.value === Shiden.name;
+      const isFromAstar =
+        from.value === xcmChainObj.astar.name || from.value === xcmChainObj.shiden.name;
       const rawBalance =
         isAstarNativeTransfer.value && isFromAstar
           ? accountData.value!.getUsableTransactionBalance().toString()
@@ -266,7 +266,9 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
 
   const getEndpoint = (): string => {
     if (isAstarNativeTransfer.value) {
-      const isFromAstar = srcChain.value.name === Astar.name || srcChain.value.name === Shiden.name;
+      const isFromAstar =
+        srcChain.value.name === xcmChainObj.astar.name ||
+        srcChain.value.name === xcmChainObj.shiden.name;
       const chainName = isFromAstar ? destChain.value.name : srcChain.value.name;
       const defaultParachainEndpoint = xcmChainObj[chainName];
       return defaultParachainEndpoint.endpoint as string;
@@ -469,8 +471,9 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
     if (!isTransferPage.value || !from.value || !to.value) {
       return;
     }
-    setSrcChain(xcmChainObj[capitalize(from.value) as keyof typeof xcmChainObj]);
-    setDestChain(xcmChainObj[capitalize(to.value) as keyof typeof xcmChainObj]);
+
+    setSrcChain(xcmChainObj[from.value.toLowerCase() as keyof typeof xcmChainObj]);
+    setDestChain(xcmChainObj[to.value.toLowerCase() as keyof typeof xcmChainObj]);
     await initializeXcmApi();
   };
 

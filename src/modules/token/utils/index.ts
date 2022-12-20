@@ -93,14 +93,14 @@ export const getRegisteredErc20Tokens = ({
 }): Erc20Token[] => {
   const xc20Tokens = xcmToken[network].map((it) => {
     try {
-      const asset = assets.find((that) => that.id === it.assetId) as Asset;
+      const asset = assets.find((that) => that.id === it.astarAssetId) as Asset;
       return {
         srcChainId: Number(providerEndpoints[network].evmChainId),
         address: asset.mappedERC20Addr,
         decimal: asset.metadata.decimals,
         symbol: asset.metadata.symbol,
         name: asset.metadata.name,
-        image: it.logo,
+        image: it.icon,
         isWrappedToken: false,
         isXC20: true,
         wrapUrl: null,

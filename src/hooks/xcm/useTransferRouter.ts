@@ -3,13 +3,8 @@ import { providerEndpoints } from 'src/config/chainEndpoints';
 import { ethers } from 'ethers';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { useAccount, useBalance, useNetworkInfo } from 'src/hooks';
-import {
-  checkIsSupportAstarNativeToken,
-  removeEvmName,
-  xcmChains,
-  xcmToken,
-} from 'src/modules/xcm';
-import { Chain, XcmChain } from 'src/v2/models/XcmModels';
+import { checkIsSupportAstarNativeToken, xcmChains, xcmToken } from 'src/modules/xcm';
+import { XcmChain } from 'src/v2/models/XcmModels';
 import { generateAssetFromEvmToken, generateNativeAsset } from 'src/modules/xcm/tokens';
 import { useStore } from 'src/store';
 import { Asset, astarChains } from 'src/v2/models';
@@ -52,9 +47,9 @@ export function useTransferRouter() {
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const xcmAssets = computed<XcmAssets>(() => store.getters['assets/getAllAssets']);
   const evmAssets = computed<EvmAssets>(() => store.getters['assets/getEvmAllAssets']);
-  const xcmOpponentChain = computed<Chain>(() => {
-    const chain = astarChains.includes(capitalize(from.value) as Chain) ? to.value : from.value;
-    return capitalize(chain) as Chain;
+  const xcmOpponentChain = computed<string>(() => {
+    const chain = astarChains.includes(from.value.toLowerCase()) ? to.value : from.value;
+    return chain;
   });
 
   const setNativeTokenBalance = (): void => {
@@ -81,9 +76,7 @@ export function useTransferRouter() {
   };
 
   const defaultXcmBridgeForNative = computed<string>(() => {
-    return currentNetworkIdx.value === endpointKey.ASTAR
-      ? Chain.ACALA.toLowerCase()
-      : Chain.KARURA.toLowerCase();
+    return currentNetworkIdx.value === endpointKey.ASTAR ? 'acala' : 'karura';
   });
 
   const monitorProhibitedPair = (): void => {
@@ -115,8 +108,8 @@ export function useTransferRouter() {
         redirect();
       }
     } else {
-      const fromChain = removeEvmName(from.value);
-      const toChain = removeEvmName(to.value);
+      const fromChain = from.value;
+      const toChain = to.value;
       const isSameNetwork = fromChain === toChain;
       if (isSameNetwork) {
         router.replace({
@@ -282,6 +275,8 @@ export function useTransferRouter() {
       const selectedNetwork = xcmOpponentChain.value;
       const isAstarEvm = from.value.includes(pathEvm) || to.value.includes(pathEvm);
       const isSupportAstarNativeToken = checkIsSupportAstarNativeToken(selectedNetwork);
+      console.log('isAstarEvm', isAstarEvm); // Will need to address EVM chains
+
       if (isH160.value) {
         const filteredToken = evmTokens.map((it) =>
           generateAssetFromEvmToken(it as Erc20Token, xcmAssets.value.assets)
@@ -326,8 +321,7 @@ export function useTransferRouter() {
   };
 
   const chains = computed<XcmChain[]>(() => {
-    const relayChainId =
-      currentNetworkIdx.value === endpointKey.ASTAR ? Chain.POLKADOT : Chain.KUSAMA;
+    const relayChainId = currentNetworkIdx.value === endpointKey.ASTAR ? 'polkadot' : 'kusama';
     const selectableChains = xcmChains.filter((it) => {
       return it.relayChain === relayChainId;
     });

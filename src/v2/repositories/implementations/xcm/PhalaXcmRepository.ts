@@ -6,7 +6,7 @@ import { ExtrinsicPayload, IApi, IApiFactory } from 'src/v2/integration';
 import { Asset } from 'src/v2/models';
 import { Symbols } from 'src/v2/symbols';
 import { XcmRepository } from '../XcmRepository';
-import { Chain, ethWalletChains, parachainIds, XcmChain } from 'src/v2/models/XcmModels';
+import { ethWalletChains, XcmChain } from 'src/v2/models/XcmModels';
 import { Struct } from '@polkadot/types';
 import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
 
@@ -107,14 +107,14 @@ export class PhalaXcmRepository extends XcmRepository {
 
   private getConcreteId(from: XcmChain, token: Asset) {
     const symbol = token.metadata.symbol;
-    const assetConcreteId: { [chain in Chain]?: { [asset in string]: unknown } } = {
-      [Chain.KHALA]: {
+    const assetConcreteId: { [chain in string]?: { [asset in string]: unknown } } = {
+      ['khala']: {
         PHA: { parents: 0, interior: 'Here' },
-        SDN: { parents: 1, interior: { X1: { Parachain: parachainIds.SHIDEN } } },
+        SDN: { parents: 1, interior: { X1: { Parachain: from.parachainId } } },
       },
-      [Chain.PHALA]: {
+      ['phala']: {
         PHA: { parents: 0, interior: 'Here' },
-        ASTR: { parents: 1, interior: { X1: { Parachain: parachainIds.ASTAR } } },
+        ASTR: { parents: 1, interior: { X1: { Parachain: from.parachainId } } },
       },
     };
     const concreteId = assetConcreteId[from.name]?.[symbol];
