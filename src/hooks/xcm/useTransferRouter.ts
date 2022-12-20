@@ -13,7 +13,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { EvmAssets, XcmAssets } from 'src/store/assets/state';
 import { capitalize } from 'src/hooks/helper/common';
 
-export const pathEvm = '-evm';
+export const pathEvm = ''; // '-evm';
 export type TransferMode = 'local' | 'xcm';
 export const astarNetworks = ['astar', 'shiden', 'shibuya'];
 export const astarNativeTokens = ['sdn', 'astr', 'sby'];

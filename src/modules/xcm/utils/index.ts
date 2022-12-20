@@ -161,7 +161,7 @@ export const checkIsSupportAstarNativeToken = (chain: string): boolean => {
 };
 
 export const castChainName = (chain: string): string => {
-  const isEvm = chain.includes(pathEvm);
+  const isEvm = xcmChainObj[chain.toLowerCase()].isEVMChain;
   if (isEvm) {
     const network = chain.split('-')[0];
     return network + ' ' + '(EVM)';

@@ -61,7 +61,6 @@ export const getXcmChainObj = async (): Promise<XcmChainObj> => {
 
   xcmChainObj = result.data;
   xcmChains = objToArray(xcmChainObj);
-  console.log('xcmChains', xcmChains);
 
   kusamaParachains = xcmChains.filter((it) => it.relayChain === 'kusama' && it.name !== 'kusama');
   polkadotParachains = xcmChains.filter(
