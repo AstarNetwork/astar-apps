@@ -23,7 +23,7 @@
           </div>
           <div class="column--item-name">
             <span class="text--token-amount">
-              <TokenBalance :balance="String(t.userBalance)" :symbol="t.symbol" />
+              <token-balance :balance="String(t.userBalance)" :symbol="t.symbol" />
             </span>
           </div>
         </div>
