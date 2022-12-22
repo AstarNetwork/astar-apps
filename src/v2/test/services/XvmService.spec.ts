@@ -22,6 +22,7 @@ describe('XvmService.ts', () => {
     };
 
     const senderAddress = 'axodJWpkSi9E5k7SgewYCCnTMZw3y6n79nuLevTCGFt7ADw';
+    const recipientAddress = '0xde53286f1d6c299fb712a3b48239e714ca117b69';
     const finalizedCallback = () => {};
 
     it('calculated asset USD price', async () => {
@@ -53,7 +54,7 @@ describe('XvmService.ts', () => {
       await expect(
         service.transfer({
           token,
-          recipientAddress: senderAddress,
+          recipientAddress,
           senderAddress,
           amount: '-10',
           finalizedCallback,
@@ -65,7 +66,7 @@ describe('XvmService.ts', () => {
       await expect(
         service.transfer({
           token,
-          recipientAddress: senderAddress,
+          recipientAddress,
           senderAddress,
           amount: '10000',
           finalizedCallback,
