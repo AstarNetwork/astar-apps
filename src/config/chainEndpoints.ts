@@ -2,14 +2,11 @@ import { RegistryTypes } from '@polkadot/types/types';
 import * as typeDefs from 'src/config/api/polkadot/registry-types';
 import { ASTAR_CHAIN } from 'src/config/chain';
 
-// Note: try to not define variables or functions in this file because `typeDefs` makes unit test fails
-
 export interface ChainProvider {
   networkAlias: string;
   displayName: string;
   info?: string;
   endpoints: { name: string; endpoint: string }[];
-  favicon: string;
   isSupportContract: boolean;
   prefix?: number; // Used in extrinsic transactions, also to determine if a network supports extensic transactions.
   typeDef: RegistryTypes;
@@ -20,7 +17,7 @@ export interface ChainProvider {
   evmChainId: string;
   evmEndpoints: string[];
   faucetEndpoint: string;
-  defaultLogo?: any;
+  defaultLogo: string;
   // Memo: XVM transfer contracts address
   xvmErcTransferContract?: string;
 }
@@ -44,9 +41,8 @@ export const providerEndpoints: ChainProvider[] = [
       { name: 'Pinknode', endpoint: 'wss://public-rpc.pinknode.io/astar' },
       { name: 'OnFinality', endpoint: 'wss://astar.api.onfinality.io/public-ws' },
     ],
-    favicon: 'https://polkadot.js.org/apps/static/astar.b48435e0.png',
     isSupportContract: true,
-    prefix: 0x250,
+    // prefix: 0x250,
     typeDef: typeDefs.plasmCollatorDefinitions,
     key: endpointKey.ASTAR,
     isStoreEnabled: true,
@@ -55,7 +51,8 @@ export const providerEndpoints: ChainProvider[] = [
     evmChainId: '592',
     evmEndpoints: ['https://evm.astar.network', 'https://astar.api.onfinality.io/public'],
     faucetEndpoint: 'https://us-central1-facuet-bot.cloudfunctions.net/app/astar',
-    defaultLogo: require('/src/assets/img/ic_astar.png'),
+    defaultLogo:
+      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/ic_astar.png?raw=true',
   },
   {
     networkAlias: 'shiden',
@@ -67,7 +64,6 @@ export const providerEndpoints: ChainProvider[] = [
       { name: 'Pinknode', endpoint: 'wss://rpc.pinknode.io/shiden/explorer' },
       { name: 'OnFinality', endpoint: 'wss://shiden.api.onfinality.io/public-ws' },
     ],
-    favicon: 'icons/shiden.png',
     isSupportContract: true,
     prefix: 0x150,
     typeDef: typeDefs.plasmCollatorDefinitions,
@@ -78,7 +74,8 @@ export const providerEndpoints: ChainProvider[] = [
     evmChainId: '336',
     evmEndpoints: ['https://evm.shiden.astar.network', 'https://shiden.api.onfinality.io/public'],
     faucetEndpoint: 'https://us-central1-facuet-bot.cloudfunctions.net/app/shiden',
-    defaultLogo: require('/src/assets/img/ic_shiden.png'),
+    defaultLogo:
+      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/ic_shiden.png?raw=true',
   },
   {
     networkAlias: 'shibuya-testnet',
@@ -88,7 +85,6 @@ export const providerEndpoints: ChainProvider[] = [
       { name: 'Shibuya', endpoint: 'wss://rpc.shibuya.astar.network' },
       { name: 'Dwellir', endpoint: 'wss://shibuya-rpc.dwellir.com' },
     ],
-    favicon: 'https://polkadot.js.org/apps/static/shiden.a066789e.png',
     isSupportContract: true,
     prefix: 0xff51,
     typeDef: typeDefs.plasmCollatorDefinitions,
@@ -99,14 +95,14 @@ export const providerEndpoints: ChainProvider[] = [
     evmChainId: '81',
     evmEndpoints: ['https://evm.shibuya.astar.network'],
     faucetEndpoint: 'https://us-central1-facuet-bot.cloudfunctions.net/app/shibuya',
-    defaultLogo: require('/src/assets/img/ic_shibuya.png'),
+    defaultLogo:
+      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/ic_shibuya.png?raw=true',
     xvmErcTransferContract: 'XxBWCWH8M23yjMqxsEALDeBprUqQT3JYMkbgWyTdna9MED4',
   },
   {
     networkAlias: 'development',
     displayName: 'Local Network',
     endpoints: [{ name: 'Local Network', endpoint: 'ws://127.0.0.1:9944' }],
-    favicon: 'icons/astar.png',
     isSupportContract: true,
     typeDef: typeDefs.plasmCollatorDefinitions,
     key: endpointKey.LOCAL,
@@ -116,6 +112,8 @@ export const providerEndpoints: ChainProvider[] = [
     evmChainId: '4369',
     evmEndpoints: ['http://127.0.0.1:9933'],
     faucetEndpoint: '',
+    defaultLogo:
+      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/ic_shibuya.png?raw=true',
     // Memo: paste the contract addresses after deployed the contracts on the local network
     // xvmErcTransferContract: '',
   },
@@ -123,7 +121,6 @@ export const providerEndpoints: ChainProvider[] = [
     networkAlias: 'custom-node',
     displayName: 'Custom Network',
     endpoints: [{ name: '', endpoint: '' }],
-    favicon: 'icons/astar.png',
     isSupportContract: true,
     typeDef: typeDefs.plasmCollatorDefinitions,
     key: endpointKey.CUSTOM,
@@ -133,6 +130,8 @@ export const providerEndpoints: ChainProvider[] = [
     evmChainId: '',
     evmEndpoints: [''],
     faucetEndpoint: '',
+    defaultLogo:
+      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/ic_shibuya.png?raw=true',
   },
 ];
 

@@ -1,4 +1,4 @@
-import { getXvmTransferContractAddress } from './../../../modules/xvm-transfer/utils/index';
+import { getXvmTransferContractAddress } from 'src/modules/xvm-transfer';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { ethers } from 'ethers';

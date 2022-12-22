@@ -106,11 +106,13 @@ export default defineComponent({
         });
       } else {
         window.addEventListener(LOCAL_STORAGE.XVM_TOKEN_IMPORTS, () => {
-          store.dispatch('assets/getXvmAssets', {
-            currentAccount: currentAccount.value,
-            isFetchUsd: isMainnet.value,
-            srcChainId: evmNetworkIdx.value,
-          });
+          if (currentAccount.value) {
+            store.dispatch('assets/getXvmAssets', {
+              currentAccount: currentAccount.value,
+              isFetchUsd: isMainnet.value,
+              srcChainId: evmNetworkIdx.value,
+            });
+          }
         });
       }
     };

@@ -43,6 +43,8 @@ export class XvmService implements IXvmService {
     Guard.ThrowIfUndefined('recipientAddress', param.recipientAddress);
     Guard.ThrowIfUndefined('senderAddress', param.senderAddress);
     Guard.ThrowIfUndefined('amount', param.amount);
+    Guard.ThrowIfNegative('amount', Number(param.amount));
+    Guard.ThrowIfNegative('amount', Number(param.token.userBalance) - Number(param.amount));
 
     try {
       const transaction = await this.xvmRepository.getTransferCallData(param);
