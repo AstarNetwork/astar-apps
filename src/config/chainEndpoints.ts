@@ -42,7 +42,7 @@ export const providerEndpoints: ChainProvider[] = [
       { name: 'OnFinality', endpoint: 'wss://astar.api.onfinality.io/public-ws' },
     ],
     isSupportContract: true,
-    // prefix: 0x250,
+    prefix: 0x250,
     typeDef: typeDefs.plasmCollatorDefinitions,
     key: endpointKey.ASTAR,
     isStoreEnabled: true,
