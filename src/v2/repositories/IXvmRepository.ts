@@ -10,6 +10,5 @@ export interface IXvmRepository {
     finalizedCallback,
     recipientAddress,
     amount,
-    isWasmErc20,
   }: XvmTransferParam): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>>;
 }

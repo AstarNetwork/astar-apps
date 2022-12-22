@@ -16,7 +16,6 @@ export interface XvmTransferParam {
   senderAddress: string;
   recipientAddress: string;
   amount: string;
-  isWasmErc20: boolean;
   finalizedCallback: () => void;
 }
 
@@ -27,6 +26,5 @@ export interface IXvmTransfer {
     finalizedCallback,
     recipientAddress,
     amount,
-    isWasmErc20,
   }: XvmTransferParam): Promise<void>;
 }

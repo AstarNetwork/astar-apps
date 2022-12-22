@@ -131,13 +131,11 @@ export function useXvmTokenTransfer(selectedToken: Ref<Erc20Token>) {
   const transferAsset = async (): Promise<void> => {
     try {
       const xvmService = container.get<IXvmService>(Symbols.XvmService);
-
       await xvmService.transfer({
         amount: String(transferAmt.value),
         token: selectedToken.value,
-        recipientAddress: toAddress.value,
+        recipientAddress: buildEvmAddress(toAddress.value),
         senderAddress: currentAccount.value,
-        isWasmErc20: xvmContract.value === 'wasm-erc20',
         finalizedCallback,
       });
     } catch (e: any) {

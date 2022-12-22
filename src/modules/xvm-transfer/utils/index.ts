@@ -57,12 +57,7 @@ export const addXvmTxHistories = ({
   });
 };
 
-export const getXvmTransferContractAddress = (isXvmErc20: boolean): string | undefined => {
+export const getXvmTransferContractAddress = (): string | undefined => {
   const networkIdx = localStorage.getItem(NETWORK_IDX);
-  const contractObj = providerEndpoints[Number(networkIdx)].xvmTransferContract;
-  if (contractObj) {
-    return isXvmErc20 ? contractObj.xvmErc20 : contractObj.xvmPsp22;
-  } else {
-    return undefined;
-  }
+  return providerEndpoints[Number(networkIdx)].xvmErcTransferContract || undefined;
 };

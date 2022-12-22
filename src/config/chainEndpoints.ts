@@ -22,10 +22,7 @@ export interface ChainProvider {
   faucetEndpoint: string;
   defaultLogo?: any;
   // Memo: XVM transfer contracts address
-  xvmTransferContract?: {
-    xvmErc20: string;
-    xvmPsp22: string;
-  };
+  xvmErcTransferContract?: string;
 }
 
 export enum endpointKey {
@@ -103,10 +100,7 @@ export const providerEndpoints: ChainProvider[] = [
     evmEndpoints: ['https://evm.shibuya.astar.network'],
     faucetEndpoint: 'https://us-central1-facuet-bot.cloudfunctions.net/app/shibuya',
     defaultLogo: require('/src/assets/img/ic_shibuya.png'),
-    xvmTransferContract: {
-      xvmErc20: 'XxBWCWH8M23yjMqxsEALDeBprUqQT3JYMkbgWyTdna9MED4',
-      xvmPsp22: 'VxNReRxvGbVuEojpbLVWrbx4cbKo85TCNK4nGw3NkkgXgxe',
-    },
+    xvmErcTransferContract: 'XxBWCWH8M23yjMqxsEALDeBprUqQT3JYMkbgWyTdna9MED4',
   },
   {
     networkAlias: 'development',
@@ -123,10 +117,7 @@ export const providerEndpoints: ChainProvider[] = [
     evmEndpoints: ['http://127.0.0.1:9933'],
     faucetEndpoint: '',
     // Memo: paste the contract addresses after deployed the contracts on the local network
-    // xvmTransferContract: {
-    //   xvmErc20: '',
-    //   xvmPsp22: '',
-    // },
+    // xvmErcTransferContract: '',
   },
   {
     networkAlias: 'custom-node',

@@ -9,8 +9,7 @@ import { IXvmRepository } from 'src/v2/repositories';
 import { IEvmAssetsRepository } from 'src/v2/repositories/IEvmAssetsRepository';
 import { Symbols } from 'src/v2/symbols';
 import { XvmGetAssetsParam, XvmTransferParam } from './../../services/IXvmService';
-import ABI_XVM_ERC20_TRANSFER from 'src/config/abi/XVM-ERC20-Transfer.json';
-import ABI_XVM_PSP22_TRANSFER from 'src/config/abi/XVM-PSP22-Transfer.json';
+import ABI_XVM_ERC20 from 'src/config/abi/XVM-ERC20.json';
 import { ContractPromise } from '@polkadot/api-contract';
 import { IApi } from 'src/v2/integration';
 import type { WeightV2 } from '@polkadot/types/interfaces';
@@ -72,54 +71,37 @@ export class XvmRepository implements IXvmRepository {
     recipientAddress,
     senderAddress,
     amount,
-    isWasmErc20,
     finalizedCallback,
   }: XvmTransferParam): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> {
     const api = await this.api.getApi();
-
     const decimals = Number(token.decimal);
     const sendingAmount = ethers.utils.parseUnits(amount, decimals).toString();
-    const contractJson = isWasmErc20 ? ABI_XVM_ERC20_TRANSFER : ABI_XVM_PSP22_TRANSFER;
-    const contractAddress = getXvmTransferContractAddress(isWasmErc20);
+    const contractAddress = getXvmTransferContractAddress();
     if (contractAddress === undefined) {
       new Error("Transfer contract addresses haven't defined");
     }
 
-    const contract = new ContractPromise(api, contractJson, String(contractAddress));
-
+    const contract = new ContractPromise(api, ABI_XVM_ERC20, String(contractAddress));
     const initialGasLimit = contract.registry.createType('WeightV2', {
       proofSize: PROOF_SIZE,
       refTime: WASM_GAS_LIMIT,
     });
 
-    const { gasRequired } = isWasmErc20
-      ? await contract.query.transfer(
-          senderAddress,
-          { gasLimit: initialGasLimit },
-          recipientAddress,
-          sendingAmount,
-          token.address
-        )
-      : await contract.query.transfer(
-          senderAddress,
-          { gasLimit: initialGasLimit, storageDepositLimit: null },
-          recipientAddress,
-          sendingAmount,
-          token.address,
-          []
-        );
+    const { gasRequired } = await contract.query.transfer(
+      senderAddress,
+      { gasLimit: initialGasLimit },
+      recipientAddress,
+      sendingAmount,
+      token.address
+    );
 
     const gasLimit = api.registry.createType('WeightV2', gasRequired) as WeightV2;
-
-    const transaction = isWasmErc20
-      ? contract.tx.transfer({ gasLimit }, recipientAddress, sendingAmount, token.address)
-      : contract.tx.transfer(
-          { gasLimit, storageDepositLimit: null },
-          recipientAddress,
-          sendingAmount,
-          token.address,
-          []
-        );
+    const transaction = contract.tx.transfer(
+      { gasLimit },
+      recipientAddress,
+      sendingAmount,
+      token.address
+    );
 
     return transaction;
   }
