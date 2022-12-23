@@ -5,20 +5,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }
 
-#splash::before {
-  content: "";
-  background-color: white;
-  background-image: url(images/splash.png);
-  background-repeat: no-repeat;
-  background-position: 0% 0%;
+.background {
+  display: none;
   position: absolute;
-  top: 20%;
   left: 25%;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
+  top: 20%;
+  width: 50%;
+  height: auto;
+  filter: blur(14px);
+  -webkit-filter: blur(14px);
   -webkit-animation: backgroundAnimation 5s infinite;
   -moz-animation: backgroundAnimation 5s infinite;
   -o-animation: backgroundAnimation 5s infinite;
@@ -32,6 +30,7 @@
   font-weight: 900;
   font-size: 40px;
   line-height: 48px;
+  padding: 20px;
   display: flex;
   align-items: center;
   text-align: center;
