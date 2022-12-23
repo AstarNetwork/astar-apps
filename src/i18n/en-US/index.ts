@@ -42,7 +42,7 @@ export default {
     alphabeticalZtoA: 'Alphabetical: Z to A',
   },
   warning: {
-    insufficientBalance: 'Insufficient balance',
+    insufficientBalance: 'Insufficient {token} balance',
     insufficientFee: 'Warning! Transaction might failed due to insufficient fee',
     inputtedInvalidDestAddress: 'Inputted invalid destination address',
     inputtedInvalidAddress: 'Inputted invalid address',

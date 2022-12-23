@@ -1,17 +1,25 @@
-import { buildEvmAddress } from 'src/config/web3';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { BN } from '@polkadot/util';
 import { $api, $web3 } from 'boot/api';
 import { ethers } from 'ethers';
 import ABI from 'src/config/abi/ERC20.json';
-import { getTokenBal, isValidEvmAddress, toSS58Address } from 'src/config/web3';
-import { useCustomSignature, useNetworkInfo, useGasPrice } from 'src/hooks';
-import { ASTAR_SS58_FORMAT, isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
-import { useAccount } from 'src/hooks/useAccount';
+import { buildEvmAddress, getTokenBal, isValidEvmAddress, toSS58Address } from 'src/config/web3';
+import { useAccount, useBalance, useCustomSignature, useGasPrice, useNetworkInfo } from 'src/hooks';
+import { useEthProvider } from 'src/hooks/custom-signature/useEthProvider';
+import {
+  ASTAR_SS58_FORMAT,
+  isValidAddressPolkadotAddress,
+  SUBSTRATE_SS58_FORMAT,
+} from 'src/hooks/helper/plasmUtils';
+import { signAndSend } from 'src/hooks/helper/wallet';
 import { HistoryTxType } from 'src/modules/account';
+import { addTxHistories } from 'src/modules/account/utils/index';
 import { sampleEvmWalletAddress } from 'src/modules/gas-api';
+import { getEvmGas, getEvmGasCost } from 'src/modules/gas-api/utils/index';
 import { fetchXcmBalance } from 'src/modules/xcm';
+import { Path } from 'src/router';
 import { useStore } from 'src/store';
+import { SubstrateAccount } from 'src/store/general/state';
 import { Asset } from 'src/v2/models';
 import { computed, ref, Ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -19,13 +27,6 @@ import { useRoute, useRouter } from 'vue-router';
 import Web3 from 'web3';
 import { TransactionConfig } from 'web3-eth';
 import { AbiItem } from 'web3-utils';
-import { useEthProvider } from 'src/hooks/custom-signature/useEthProvider';
-import { addTxHistories } from 'src/modules/account/utils/index';
-import { getEvmGas, getEvmGasCost } from 'src/modules/gas-api/utils/index';
-import { SUBSTRATE_SS58_FORMAT } from 'src/hooks/helper/plasmUtils';
-import { signAndSend } from 'src/hooks/helper/wallet';
-import { SubstrateAccount } from 'src/store/general/state';
-import { Path } from 'src/router';
 
 export function useTokenTransfer(selectedToken: Ref<Asset>) {
   const transferAmt = ref<string | null>(null);
@@ -38,6 +39,14 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
   const { ethProvider } = useEthProvider();
   const { t } = useI18n();
   const { currentAccount } = useAccount();
+  const { accountData } = useBalance(currentAccount);
+
+  const transferableBalance = computed<number>(() => {
+    const balance = accountData.value
+      ? ethers.utils.formatEther(accountData.value.getUsableTransactionBalance().toString())
+      : '0';
+    return Number(balance);
+  });
   const { handleResult, handleCustomExtrinsic } = useCustomSignature({});
   const {
     evmGasPrice,
@@ -124,9 +133,15 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     const transferAmtRef = Number(transferAmt.value);
     try {
       if (transferAmtRef > fromAddressBalance.value) {
-        errMsg.value = 'warning.insufficientBalance';
+        errMsg.value = t('warning.insufficientBalance', {
+          token: selectedToken.value.metadata.symbol,
+        });
       } else if (toAddress.value && !isValidDestAddress.value) {
         errMsg.value = 'warning.inputtedInvalidDestAddress';
+      } else if (!transferableBalance.value) {
+        errMsg.value = t('warning.insufficientBalance', {
+          token: nativeTokenSymbol.value,
+        });
       } else {
         errMsg.value = '';
       }

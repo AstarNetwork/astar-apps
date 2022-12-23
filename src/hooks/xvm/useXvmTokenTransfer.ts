@@ -1,5 +1,6 @@
+import { ethers } from 'ethers';
 import { buildEvmAddress, getTokenBal, isValidEvmAddress } from 'src/config/web3';
-import { useGasPrice, useNetworkInfo } from 'src/hooks';
+import { useBalance, useGasPrice, useNetworkInfo } from 'src/hooks';
 import {
   ASTAR_SS58_FORMAT,
   isValidAddressPolkadotAddress,
@@ -13,6 +14,7 @@ import { container } from 'src/v2/common';
 import { IXvmService } from 'src/v2/services/IXvmService';
 import { Symbols } from 'src/v2/symbols';
 import { computed, ref, Ref, watch, watchEffect } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 
 type ContractType = 'wasm-erc20' | 'wasm-psp22';
@@ -25,13 +27,14 @@ export function useXvmTokenTransfer(selectedToken: Ref<Erc20Token>) {
   const isChecked = ref<boolean>(false);
   const xvmContract = ref<ContractType>('wasm-erc20');
 
+  const { t } = useI18n();
   const store = useStore();
   const { currentAccount } = useAccount();
   const { selectedTip, nativeTipPrice, setSelectedTip, isEnableSpeedConfiguration } = useGasPrice();
   const route = useRoute();
   const router = useRouter();
-
-  const { evmNetworkIdx } = useNetworkInfo();
+  const { accountData } = useBalance(currentAccount);
+  const { evmNetworkIdx, nativeTokenSymbol } = useNetworkInfo();
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const tokenSymbol = computed<string>(() => route.query.token as string);
   const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
@@ -39,6 +42,13 @@ export function useXvmTokenTransfer(selectedToken: Ref<Erc20Token>) {
   const fromAddressBalance = computed<number>(() =>
     selectedToken.value ? Number(selectedToken.value.userBalance) : 0
   );
+
+  const transferableBalance = computed<number>(() => {
+    const balance = accountData.value
+      ? ethers.utils.formatEther(accountData.value.getUsableTransactionBalance().toString())
+      : '0';
+    return Number(balance);
+  });
 
   const isDisabledTransfer = computed<boolean>(() => {
     const isLessAmount =
@@ -86,9 +96,15 @@ export function useXvmTokenTransfer(selectedToken: Ref<Erc20Token>) {
     const transferAmtRef = Number(transferAmt.value);
     try {
       if (transferAmtRef > fromAddressBalance.value) {
-        errMsg.value = 'warning.insufficientBalance';
+        errMsg.value = t('warning.insufficientBalance', {
+          token: selectedToken.value.symbol,
+        });
       } else if (toAddress.value && !isValidDestAddress.value) {
         errMsg.value = 'warning.inputtedInvalidDestAddress';
+      } else if (!transferableBalance.value) {
+        errMsg.value = t('warning.insufficientBalance', {
+          token: nativeTokenSymbol.value,
+        });
       } else {
         errMsg.value = '';
       }
