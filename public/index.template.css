@@ -1,0 +1,65 @@
+#splash {
+  position: relative; 
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#splash::before {
+  content: "";
+  background-color: white;
+  background-image: url(images/splash.png);
+  background-repeat: no-repeat;
+  background-position: 0% 0%;
+  position: absolute;
+  top: 20%;
+  left: 25%;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  -webkit-animation: backgroundAnimation 5s infinite;
+  -moz-animation: backgroundAnimation 5s infinite;
+  -o-animation: backgroundAnimation 5s infinite;
+  animation: backgroundAnimation 5s infinite;
+}
+
+#splash-text {
+  position: relative;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 900;
+  font-size: 40px;
+  line-height: 48px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  letter-spacing: 0.06em;
+  background: linear-gradient(90.06deg, #E6007A -11.94%, #8131B7 11.43%, #703AC2 15.42%, #0070EB 60.81%, #0297FB 90.34%, #0AE2FF 109.1%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0px 4px 6px rgba(0, 0, 0, 0.25);
+}
+
+@keyframes backgroundAnimation {
+  0%   { opacity:1; filter: blur(14px);-webkit-filter: blur(14px); }
+  50%  { opacity:1; filter: blur(0px);-webkit-filter: blur(0px); }
+  100% { opacity:1; filter: blur(14px);-webkit-filter: blur(14px); }
+}
+@-o-keyframes backgroundAnimation{
+  0%   { opacity:1; filter: blur(14px);-webkit-filter: blur(14px); }
+  50%  { opacity:1; filter: blur(0px);-webkit-filter: blur(0px); }
+  100% { opacity:1; filter: blur(14px);-webkit-filter: blur(14px); }
+}
+@-moz-keyframes backgroundAnimation{
+  0%   { opacity:1; filter: blur(14px);-webkit-filter: blur(14px); }
+  50%  { opacity:1; filter: blur(0px);-webkit-filter: blur(0px); }
+  100% { opacity:1; filter: blur(14px);-webkit-filter: blur(14px); }
+}
+@-webkit-keyframes backgroundAnimation{
+  0%   { opacity:1; filter: blur(14px);-webkit-filter: blur(14px); }
+  50%  { opacity:1; filter: blur(0px);-webkit-filter: blur(0px); }
+  100% { opacity:1; filter: blur(14px);-webkit-filter: blur(14px); }
+}
