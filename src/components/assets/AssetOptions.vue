@@ -1,7 +1,9 @@
 <template>
   <div v-click-away="closeOption" class="wrapper--asset-options">
-    <div class="icon-vert" @click="isOptionsOpen = true">
-      <astar-icon-vert />
+    <div class="column--icon-dot" @click="isOptionsOpen = true">
+      <astar-icon-base class="icon--dot" stroke="currentColor" icon-name="option">
+        <astar-icon-3dots />
+      </astar-icon-base>
     </div>
     <div v-if="isOptionsOpen" class="box--options">
       <button v-if="isImportModal" class="row--option" @click="handleImportTokens">

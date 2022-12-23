@@ -59,12 +59,16 @@
   align-items: center;
 }
 
-.icon-vert {
+.icon--dot {
+  width: 24px;
+  height: 24px;
+  color: $astar-blue;
+}
+
+.column--icon-dot {
   display: flex;
   justify-content: center;
   align-items: center;
-  color: $astar-blue;
-  font-weight: 600;
   transition: all 0.3s ease 0s;
   cursor: pointer;
   border-radius: 100%;
@@ -72,7 +76,9 @@
   &:hover {
     transition: all 0.3s ease 0s;
     background-color: $astar-blue;
-    color: white !important;
+    .icon--dot {
+      color: white;
+    }
   }
 }
 
