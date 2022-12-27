@@ -150,7 +150,7 @@ export function useXvmTokenTransfer(selectedToken: Ref<Erc20Token>) {
       await xvmService.transfer({
         amount: String(transferAmt.value),
         token: selectedToken.value,
-        recipientAddress: buildEvmAddress(toAddress.value),
+        recipientAddress: toAddress.value,
         senderAddress: currentAccount.value,
         finalizedCallback,
       });

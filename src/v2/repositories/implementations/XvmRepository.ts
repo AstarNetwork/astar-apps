@@ -3,20 +3,18 @@ import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { ethers } from 'ethers';
 import { inject, injectable } from 'inversify';
-import { buildEvmAddress } from 'src/config/web3';
+import { buildEvmAddress, isValidEvmAddress } from 'src/config/web3';
 import { Erc20Token, getStoredXvmTokens } from 'src/modules/token';
 import { IXvmRepository } from 'src/v2/repositories';
 import { IEvmAssetsRepository } from 'src/v2/repositories/IEvmAssetsRepository';
 import { Symbols } from 'src/v2/symbols';
 import { XvmGetAssetsParam, XvmTransferParam } from './../../services/IXvmService';
-import ABI_XVM_ERC20 from 'src/config/abi/XVM-ERC20.json';
+import ABI_XVM_ERC20 from 'src/config/abi/XVM_ERC20_TRANSFER.json';
 import { ContractPromise } from '@polkadot/api-contract';
 import { IApi } from 'src/v2/integration';
 import type { WeightV2 } from '@polkadot/types/interfaces';
 
-export const ASTAR_ADDRESS_PREFIX = 5;
 const WASM_GAS_LIMIT = 50000000000;
-// const WASM_GAS_LIMIT = 7000000000;
 const PROOF_SIZE = 131072;
 
 @injectable()
@@ -81,6 +79,10 @@ export class XvmRepository implements IXvmRepository {
       new Error("Transfer contract addresses haven't defined");
     }
 
+    const destAddress = isValidEvmAddress(recipientAddress)
+      ? { EVM: recipientAddress }
+      : { WASM: recipientAddress };
+
     const contract = new ContractPromise(api, ABI_XVM_ERC20, String(contractAddress));
     const initialGasLimit = contract.registry.createType('WeightV2', {
       proofSize: PROOF_SIZE,
@@ -90,7 +92,7 @@ export class XvmRepository implements IXvmRepository {
     const { gasRequired } = await contract.query.transfer(
       senderAddress,
       { gasLimit: initialGasLimit },
-      recipientAddress,
+      destAddress,
       sendingAmount,
       token.address
     );
@@ -98,7 +100,7 @@ export class XvmRepository implements IXvmRepository {
     const gasLimit = api.registry.createType('WeightV2', gasRequired) as WeightV2;
     const transaction = contract.tx.transfer(
       { gasLimit },
-      recipientAddress,
+      destAddress,
       sendingAmount,
       token.address
     );
