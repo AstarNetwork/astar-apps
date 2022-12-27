@@ -118,7 +118,7 @@ export async function connectApi(
   api: ApiPromise;
 }> {
   let provider: Provider;
-  let api: ApiPromise = new ApiPromise();
+  let api: ApiPromise = new ApiPromise({ provider: new WsProvider('ws://', false) });
 
   store.commit('general/setCurrentNetworkStatus', 'connecting');
   store.commit('general/setLoading', true);
