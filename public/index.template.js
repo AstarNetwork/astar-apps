@@ -11,8 +11,17 @@ const TEXT_CHANGE_INTERVAL_MS = 5000;
 
 function initSplashText() {
   let currentIndex = 0;
-  document.getElementById('splash-text').innerHTML = SPLASH_MESSAGES[currentIndex];
-  document.getElementById('bg-image').style.display = 'block';
+  const textContainer = document.getElementById('splash-text')
+  if (textContainer) {
+    textContainer.innerHTML = SPLASH_MESSAGES[currentIndex];
+  }
+  
+  if (!isLightClientConenction()) {
+    document.getElementById('splash').remove();
+    return;
+  } else {
+    document.getElementById('overlay').remove();
+  }
 
   const intervalId = setInterval(() => {
     currentIndex = ++currentIndex % SPLASH_MESSAGES.length;
@@ -26,4 +35,14 @@ function initSplashText() {
     }
     
   }, TEXT_CHANGE_INTERVAL_MS);
+}
+
+function isLightClientConenction() {
+  const endpoint = localStorage.getItem('selectedEndpoint');
+
+  if (endpoint) {
+    return endpoint.toString().includes('light://');
+  }
+
+  return false;
 }
