@@ -280,6 +280,18 @@ export class DappStakingRepository implements IDappStakingRepository {
     };
   }
 
+  public async getApr(network: string): Promise<{ apr: number; apy: number }> {
+    Guard.ThrowIfUndefined('network', network);
+
+    const baseUrl = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/dapps-staking`;
+    const [apr, apy] = await Promise.all([
+      (await axios.get<number>(`${baseUrl}/apr`)).data,
+      (await axios.get<number>(`${baseUrl}/apy`)).data,
+    ]);
+
+    return { apr, apy };
+  }
+
   private async getCurrentEra(api: ApiPromise): Promise<u32> {
     return await api.query.dappsStaking.currentEra<u32>();
   }
