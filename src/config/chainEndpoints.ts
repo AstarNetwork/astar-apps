@@ -97,7 +97,7 @@ export const providerEndpoints: ChainProvider[] = [
     faucetEndpoint: 'https://us-central1-facuet-bot.cloudfunctions.net/app/shibuya',
     defaultLogo:
       'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/ic_shibuya.png?raw=true',
-    xvmErcTransferContract: 'W9ZG8hx5W7Z15vxSJ97sR2jTgESsrYbvStCFWZXsKkzaww8',
+    xvmErcTransferContract: 'ZdNJsZUK96jGxr8iRfT8xHXUi5iQ7XwL9qbyJkADPdH7C1U',
   },
   {
     networkAlias: 'development',
