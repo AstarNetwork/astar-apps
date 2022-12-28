@@ -1,9 +1,9 @@
 <template>
-  <div :class="['noti', show && 'show']" @click="close">
+  <div :class="['noti', show && 'show']">
     <div class="noti-content">
       <div class="row--close">
         <div class="column--title">Success</div>
-        <div class="column--close">
+        <div class="column--close" @click="close">
           <IconClose />
         </div>
       </div>
@@ -27,10 +27,8 @@ export default defineComponent({
   },
   emits: ['close'],
   setup(props, { emit }) {
-    const close = (e: any) => {
-      if (e.target.className === 'column--close') {
-        emit('close');
-      }
+    const close = () => {
+      emit('close');
     };
 
     return {

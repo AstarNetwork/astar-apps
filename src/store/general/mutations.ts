@@ -3,11 +3,18 @@ import type { ChainInfo } from 'src/hooks/useChainInfo';
 import type { Extensions } from 'src/hooks/useMetaExtensions';
 import { GasTip } from 'src/modules/gas-api';
 import { MutationTree } from 'vuex';
-import { ConnectionType, GeneralStateInterface as State, SubstrateAccount } from './state';
+import {
+  AlertBox,
+  ConnectionType,
+  GeneralStateInterface as State,
+  SubstrateAccount,
+} from './state';
 
 export interface GeneralMutations<S = State> {
   setInitialized(state: S): void;
   setLoading(state: S, isLoading: boolean): void;
+  pushAlertMsg(state: S, alert: AlertBox): void;
+  removeAlertMsg(state: S, index: number): void;
   setShowAlertMsg(state: S, showAlert: boolean): void;
   setAlertMsg(state: S, msg: string): void;
   setAlertType(state: S, type: string): void;
@@ -31,6 +38,12 @@ const mutation: MutationTree<State> & GeneralMutations = {
   },
   setLoading(state, isLoading) {
     state.isLoading = isLoading;
+  },
+  pushAlertMsg(state, alert) {
+    state.alertBoxStack.push(alert);
+  },
+  removeAlertMsg(state, index) {
+    state.alertBoxStack = state.alertBoxStack.filter((el, idx) => idx !== index);
   },
   setShowAlertMsg(state, msg) {
     state.alertBox.showAlertMsg = msg;

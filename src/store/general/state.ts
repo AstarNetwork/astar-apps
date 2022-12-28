@@ -28,6 +28,7 @@ export type Theme = 'LIGHT' | 'DARK';
 export interface GeneralStateInterface {
   initialized: boolean;
   isLoading: boolean;
+  alertBoxStack: AlertBox[];
   alertBox: AlertBox;
   chainInfo: any;
   metaExtensions: Extensions;
@@ -51,6 +52,7 @@ function state(): GeneralStateInterface {
   return {
     initialized: false,
     isLoading: false,
+    alertBoxStack: [],
     alertBox: {
       showAlertMsg: false,
       alertMsg: '',
