@@ -23,7 +23,7 @@
           <div class="column column--balance">
             <div class="column__box">
               <div class="text--accent">
-                <TokenBalance :balance="token.userBalance" :symbol="token.symbol" />
+                <token-balance :balance="token.userBalance" :symbol="token.symbol" />
               </div>
               <div class="text--label">
                 <span>{{ $n(Number(token.userBalanceUsd)) }} {{ $t('usd') }}</span>

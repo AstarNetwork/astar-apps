@@ -1,7 +1,7 @@
 <template>
   <div v-if="!isLoading" class="wrapper--assets">
     <div class="container--assets">
-      <Account
+      <account
         :ttl-erc20-amount="evmAssets.ttlEvmUsdAmount"
         :ttl-native-xcm-usd-amount="ttlNativeXcmUsdAmount"
         :is-loading-erc20-amount="isLoading"
@@ -9,11 +9,11 @@
       />
       <div>
         <div v-if="isH160">
-          <EvmAssetList :tokens="evmAssets.assets" />
+          <evm-asset-list :tokens="evmAssets.assets" />
         </div>
         <div v-else class="container--assets">
-          <XcmNativeAssetList v-if="isEnableXcm" :xcm-assets="xcmAssets.assets" />
-          <NativeAssetList />
+          <xcm-native-asset-list v-if="isEnableXcm" :xcm-assets="xcmAssets.assets" />
+          <native-asset-list />
         </div>
       </div>
     </div>

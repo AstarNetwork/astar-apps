@@ -26,7 +26,7 @@
       </button>
     </div>
 
-    <ModalImportTokens
+    <modal-import-tokens
       :is-modal-import-tokens="isModalImportTokens"
       :handle-modal-import-tokens="handleModalImportTokens"
       :tokens="tokens"
