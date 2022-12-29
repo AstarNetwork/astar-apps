@@ -19,6 +19,7 @@ export type AlertBox = {
   showAlertMsg: boolean;
   alertMsg: string;
   alertType: AlertType;
+  txHash?: string;
 };
 
 export type EcdsaAccount = {

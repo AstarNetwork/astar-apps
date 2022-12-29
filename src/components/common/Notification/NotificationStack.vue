@@ -6,7 +6,9 @@
         <NotificationBar :alert-type="t.alertType" :show="true" @close="() => closeNoti(index)">
           <div>
             <div class="message">{{ t.alertMsg }}</div>
-            <astar-button class="btn--check">Check your transactions</astar-button>
+            <astar-button class="btn--check" @click="goToSubscan(t.txHash)"
+              >Check your transactions</astar-button
+            >
           </div>
         </NotificationBar>
       </div>
@@ -15,6 +17,8 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue';
+import { useNetworkInfo } from 'src/hooks';
+import { endpointKey } from 'src/config/chainEndpoints';
 import { AlertType } from 'src/store/general/state';
 import { useStore } from 'src/store';
 import NotificationBar from './NotificationBar.vue';
@@ -31,6 +35,7 @@ export default defineComponent({
       {
         msg: 'Test1',
         alertType: AlertType.Success,
+        txHash: '0x06a146789e92cc724ba044e1f1c6c8d2aefb4e1f18da46166898d4d83a7deebf',
       },
       { root: true }
     );
@@ -65,7 +70,20 @@ export default defineComponent({
       );
     };
 
-    return { alertStack, AlertType, closeNoti };
+    const { currentNetworkIdx } = useNetworkInfo();
+    const isShiden = computed(() => currentNetworkIdx.value === endpointKey.SHIDEN);
+    const goToSubscan = (txHash: string) => {
+      if (!txHash) return;
+
+      let rootName = 'astar';
+      if (isShiden.value) {
+        rootName = 'shiden';
+      }
+      const link = `https://${rootName}.subscan.io/extrinsic/${txHash}`;
+      window.open(link, '_blank');
+    };
+
+    return { alertStack, AlertType, closeNoti, goToSubscan };
   },
 });
 </script>

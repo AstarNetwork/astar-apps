@@ -22,7 +22,7 @@
 
 <script lang="ts">
 import { AlertType } from 'src/store/general/state';
-import { defineComponent, toRefs, PropType } from 'vue';
+import { defineComponent, toRefs, PropType, computed } from 'vue';
 import IconClose from './IconClose.vue';
 
 export default defineComponent({
@@ -44,7 +44,9 @@ export default defineComponent({
       emit('close');
     };
 
-    const alertTypeTitle = props.alertType.charAt(0).toUpperCase() + props.alertType.slice(1);
+    const alertTypeTitle = computed(
+      () => props.alertType.charAt(0).toUpperCase() + props.alertType.slice(1)
+    );
 
     return {
       ...toRefs(props),

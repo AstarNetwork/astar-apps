@@ -5,7 +5,7 @@ import { AlertBox, GeneralStateInterface as State } from './state';
 const toastTimeout = 5000;
 
 const actions: ActionTree<State, StateInterface> = {
-  showAlertMsg({ commit }, { msg, alertType }) {
+  showAlertMsg({ commit }, { msg, alertType, txHash }) {
     // commit('setShowAlertMsg', true);
     // commit('setAlertMsg', msg);
     // commit('setAlertType', alertType);
@@ -14,6 +14,7 @@ const actions: ActionTree<State, StateInterface> = {
       showAlertMsg: true,
       alertMsg: msg,
       alertType,
+      txHash,
     };
     commit('pushAlertMsg', alert);
 
