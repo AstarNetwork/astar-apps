@@ -109,19 +109,46 @@ export default defineComponent({
 .column--title {
   display: flex;
   justify-content: center;
+  font-family: 'Inter';
   font-style: normal;
-  font-weight: 590;
-  font-size: rem(22);
-  color: $gray-5;
-  margin-left: 15px;
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 27px;
+  letter-spacing: -0.02em;
+  color: $gray-5-selected;
+  margin: 10px;
 }
 
 .column--close {
+  width: 40px;
+  height: 40px;
+  border: 1px solid $gray-3;
+  border-radius: 30px;
+  color: $gray-3;
+  font-size: 30px;
+  font-weight: 10;
   cursor: pointer;
-  padding-top: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    color: $astar-blue;
+    border-color: $astar-blue;
+  }
 }
 
-.close:hover {
-  color: #d8e2f1;
+.body--dark {
+  .column-title {
+    color: $gray-1;
+  }
+  .column--close {
+    color: $gray-4;
+    border-color: $gray-4;
+    &:hover {
+      color: $astar-blue;
+      border-color: $astar-blue;
+    }
+  }
 }
 </style>

@@ -21,7 +21,7 @@ import NotificationBar from './NotificationBar.vue';
 
 export default defineComponent({
   components: { NotificationBar },
-  setup(props) {
+  setup() {
     const store = useStore();
     const alertStack = computed(() => store.getters['general/alertStack']);
 
@@ -89,6 +89,7 @@ export default defineComponent({
 
 .btn--check {
   width: 90%;
+  height: 25px;
   margin: 10px;
 }
 </style>
