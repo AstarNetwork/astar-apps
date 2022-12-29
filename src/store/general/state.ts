@@ -9,10 +9,16 @@ export type SubstrateAccount = {
   balance?: string;
 };
 
+export enum AlertType {
+  Success = 'success',
+  Warning = 'warning',
+  Error = 'error',
+}
+
 export type AlertBox = {
   showAlertMsg: boolean;
   alertMsg: string;
-  alertType: string;
+  alertType: AlertType;
 };
 
 export type EcdsaAccount = {
@@ -56,7 +62,7 @@ function state(): GeneralStateInterface {
     alertBox: {
       showAlertMsg: false,
       alertMsg: '',
-      alertType: 'success',
+      alertType: AlertType.Success,
     },
     chainInfo: undefined,
     metaExtensions: {

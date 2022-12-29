@@ -5,6 +5,7 @@ import { GasTip } from 'src/modules/gas-api';
 import { MutationTree } from 'vuex';
 import {
   AlertBox,
+  AlertType,
   ConnectionType,
   GeneralStateInterface as State,
   SubstrateAccount,
@@ -17,7 +18,7 @@ export interface GeneralMutations<S = State> {
   removeAlertMsg(state: S, index: number): void;
   setShowAlertMsg(state: S, showAlert: boolean): void;
   setAlertMsg(state: S, msg: string): void;
-  setAlertType(state: S, type: string): void;
+  setAlertType(state: S, type: AlertType): void;
   setChainInfo(state: S, type: ChainInfo): void;
   setMetaExtensions(state: S, type: Extensions): void;
   setExtensionCount(state: S, type: number): void;

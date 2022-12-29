@@ -1,8 +1,16 @@
 <template>
-  <div :class="['noti', show && 'show']">
+  <div
+    :class="[
+      'noti',
+      alertType,
+      'animate__animated',
+      show && 'show',
+      show ? 'animate__fadeInRight' : 'animate__fadeOutRight',
+    ]"
+  >
     <div class="noti-content">
       <div class="row--close">
-        <div class="column--title">Success</div>
+        <div class="column--title">{{ alertTypeTitle }}</div>
         <div class="column--close" @click="close">
           <IconClose />
         </div>
@@ -13,16 +21,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs } from 'vue';
+import { AlertType } from 'src/store/general/state';
+import { defineComponent, toRefs, PropType } from 'vue';
 import IconClose from './IconClose.vue';
 
 export default defineComponent({
-  name: 'NotificationSuccess',
+  name: 'NotificationBar',
   components: { IconClose },
   props: {
     show: {
       type: Boolean,
       default: false,
+    },
+    alertType: {
+      type: String as PropType<AlertType>,
+      required: true,
     },
   },
   emits: ['close'],
@@ -31,8 +44,11 @@ export default defineComponent({
       emit('close');
     };
 
+    const alertTypeTitle = props.alertType.charAt(0).toUpperCase() + props.alertType.slice(1);
+
     return {
       ...toRefs(props),
+      alertTypeTitle,
       close,
     };
   },
@@ -43,9 +59,38 @@ export default defineComponent({
 @import 'src/css/quasar.variables.scss';
 .noti {
   display: none;
+  background: #fff;
   border: 1px solid $astar-blue;
+  border-radius: 6px;
   color: $gray-5-selected;
   width: 300px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    background: $astar-blue;
+    height: 100%;
+    width: 8px;
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+  }
+}
+
+.warning {
+  border-color: $warning-yellow;
+
+  &::before {
+    background: $warning-yellow;
+  }
+}
+
+.error {
+  border-color: $warning-red;
+
+  &::before {
+    background: $warning-red;
+  }
 }
 
 .noti.show {
@@ -68,6 +113,7 @@ export default defineComponent({
   font-weight: 590;
   font-size: rem(22);
   color: $gray-5;
+  margin-left: 15px;
 }
 
 .column--close {

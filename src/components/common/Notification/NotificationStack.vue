@@ -3,51 +3,56 @@
     <div>Notification Stack</div>
     <div class="stack--wrapper">
       <div v-for="(t, index) in alertStack" :key="index">
-        <NotificationSuccess :show="true" @close="() => closeNoti(index)"
-          ><div>{{ t.alertMsg }}</div></NotificationSuccess
-        >
+        <NotificationBar :alert-type="t.alertType" :show="true" @close="() => closeNoti(index)">
+          <div>
+            <div class="message">{{ t.alertMsg }}</div>
+            <astar-button class="btn--check">Check your transactions</astar-button>
+          </div>
+        </NotificationBar>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue';
+import { AlertType } from 'src/store/general/state';
 import { useStore } from 'src/store';
-import NotificationSuccess from './NotificationSuccess.vue';
+import NotificationBar from './NotificationBar.vue';
 
 export default defineComponent({
-  components: { NotificationSuccess },
+  components: { NotificationBar },
   setup(props) {
     const store = useStore();
     const alertStack = computed(() => store.getters['general/alertStack']);
 
-    // const showArr = ref<string[]>();
-    // showArr.value = ['Test1', 'Test2', 'Test3'];
     //Test
     store.dispatch(
       'general/showAlertMsg',
       {
         msg: 'Test1',
-        alertType: 'success',
+        alertType: AlertType.Success,
       },
       { root: true }
     );
     store.dispatch(
       'general/showAlertMsg',
       {
-        msg: 'Test2',
-        alertType: 'success',
+        msg: 'Test2 - Warning',
+        alertType: AlertType.Warning,
       },
       { root: true }
     );
-    store.dispatch(
-      'general/showAlertMsg',
-      {
-        msg: 'Test3',
-        alertType: 'success',
-      },
-      { root: true }
-    );
+
+    setTimeout(() => {
+      store.dispatch(
+        'general/showAlertMsg',
+        {
+          msg: 'Test3 - Error',
+          alertType: AlertType.Error,
+        },
+        { root: true }
+      );
+    }, 2000);
     ////
 
     const closeNoti = (index: number) => {
@@ -60,7 +65,7 @@ export default defineComponent({
       );
     };
 
-    return { alertStack, closeNoti };
+    return { alertStack, AlertType, closeNoti };
   },
 });
 </script>
@@ -80,5 +85,10 @@ export default defineComponent({
   @media (min-width: $lg) {
     top: 96px;
   }
+}
+
+.btn--check {
+  width: 90%;
+  margin: 10px;
 }
 </style>
