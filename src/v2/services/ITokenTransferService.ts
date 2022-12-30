@@ -1,10 +1,21 @@
 export interface ITokenTransferService {
-  transferNativeToken(param: NativeTokenTransferParam): Promise<void>;
+  transferNativeAsset(param: AssetTransferParam): Promise<void>;
+  transferEvmAsset(param: EvmTransferParam): Promise<void>;
 }
 
-export interface NativeTokenTransferParam {
+export interface AssetTransferParam {
+  assetId: string;
   senderAddress: string;
   receivingAddress: string;
   amount: string;
-  finalizedCallback?: () => void;
+  finalizedCallback: (hash: string) => void;
+}
+
+export interface EvmTransferParam {
+  senderAddress: string;
+  toAddress: string;
+  amount: string;
+  contractAddress: string;
+  decimals: number;
+  finalizedCallback: (hash: string) => void;
 }
