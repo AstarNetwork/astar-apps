@@ -44,6 +44,7 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
     let result: string | null = null;
     try {
       return new Promise<string>(async (resolve) => {
+        this.detectExtensionsAction();
         await this.checkExtension();
         let tip = transactionTip?.toString();
         if (!tip) {
@@ -53,6 +54,7 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
 
         console.info('transaction tip', tip);
 
+        // this.eventAggregator.publish(new BusyMessage(true));
         await extrinsic.signAndSend(
           senderAddress,
           {
@@ -61,22 +63,25 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
             tip,
           },
           (result) => {
-            if (result.isFinalized) {
-              if (!this.isExtrinsicFailed(result.events)) {
-                this.eventAggregator.publish(
-                  new ExtrinsicStatusMessage(
-                    true,
-                    successMessage ?? 'Transaction successfully executed',
-                    `${extrinsic.method.section}.${extrinsic.method.method}`,
-                    result.txHash.toHex()
-                  )
-                );
-              }
+            try {
+              if (result.isFinalized) {
+                if (!this.isExtrinsicFailed(result.events)) {
+                  this.eventAggregator.publish(
+                    new ExtrinsicStatusMessage(
+                      true,
+                      successMessage ?? 'Transaction successfully executed',
+                      `${extrinsic.method.section}.${extrinsic.method.method}`,
+                      result.txHash.toHex()
+                    )
+                  );
+                }
 
+                this.eventAggregator.publish(new BusyMessage(false));
+                resolve(extrinsic.hash.toHex());
+              }
+            } catch (error) {
+              console.log('error');
               this.eventAggregator.publish(new BusyMessage(false));
-              resolve(extrinsic.hash.toHex());
-            } else {
-              !result.isCompleted && this.eventAggregator.publish(new BusyMessage(true));
             }
           }
         );
@@ -134,5 +139,26 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
 
       this.extensions.push(...extensions);
     }
+  }
+
+  // Memo: detect the extension wallet's handling status
+  // Ref: https://github.com/polkadot-js/extension/issues/674
+  // Ref: https://github.com/polkadot-js/extension/blob/297b2af14c68574b24bb8fdeda2208c473eccf43/packages/extension/src/page.ts#L10-L22
+  private detectExtensionsAction(): void {
+    window.addEventListener('message', ({ data, source }): void => {
+      if (source !== window || data.origin !== 'content') return;
+      if (data.id) {
+        if (data.response && data.response.hasOwnProperty('signature')) {
+          this.eventAggregator.publish(new BusyMessage(true));
+        }
+        // Memo: detect if the transaction was canceled by users on the wallet extension
+        if (data.error === 'Cancelled') {
+          this.eventAggregator.publish(new BusyMessage(false));
+          throw Error(data.error);
+        }
+      } else {
+        console.error('Missing id for response.');
+      }
+    });
   }
 }
