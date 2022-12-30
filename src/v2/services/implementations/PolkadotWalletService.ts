@@ -150,18 +150,21 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
   // Ref: https://github.com/polkadot-js/extension/blob/297b2af14c68574b24bb8fdeda2208c473eccf43/packages/extension/src/page.ts#L10-L22
   private detectExtensionsAction(): void {
     window.addEventListener('message', ({ data, source }): void => {
-      if (source !== window || !data.origin || !data.id) {
+      if (source !== window || !data.origin) {
         return;
       }
 
-      if (data.response && data.response.hasOwnProperty('signature')) {
-        this.eventAggregator.publish(new BusyMessage(true));
+      if (data.id) {
+        if (data.response && data.response.hasOwnProperty('signature')) {
+          this.eventAggregator.publish(new BusyMessage(true));
+          return;
+        }
+        // Memo: detect if the transaction was canceled by users
+        if (data.error === 'Cancelled') {
+          this.eventAggregator.publish(new BusyMessage(false));
+          throw Error(data.error);
+        }
       }
-      // Memo: detect if the transaction was canceled by users
-      // if (data.error === 'Cancelled') {
-      //   this.eventAggregator.publish(new BusyMessage(false));
-      //   throw Error(data.error);
-      // }
     });
   }
 }
