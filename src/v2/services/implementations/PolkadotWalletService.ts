@@ -144,7 +144,7 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
     }
   }
 
-  // Memo: detect the extension wallet's handling status
+  // Memo: detects status in the wallet extension
   // Fixme: doesn't work on MathWallet Mobile
   // Ref: https://github.com/polkadot-js/extension/issues/674
   // Ref: https://github.com/polkadot-js/extension/blob/297b2af14c68574b24bb8fdeda2208c473eccf43/packages/extension/src/page.ts#L10-L22
