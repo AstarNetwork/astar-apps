@@ -8,15 +8,3 @@ export interface NativeTokenTransferParam {
   amount: string;
   finalizedCallback?: () => void;
 }
-
-// export interface IXcmTransfer {
-//   transfer({
-//     from,
-//     to,
-//     token,
-//     senderAddress,
-//     recipientAddress,
-//     amount,
-//     finalizedCallback,
-//   }: TransferParam): Promise<void>;
-// }

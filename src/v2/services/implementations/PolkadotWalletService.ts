@@ -54,7 +54,7 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
 
         console.info('transaction tip', tip);
 
-        // this.eventAggregator.publish(new BusyMessage(true));
+        this.eventAggregator.publish(new BusyMessage(true));
         await extrinsic.signAndSend(
           senderAddress,
           {
@@ -148,10 +148,10 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
     window.addEventListener('message', ({ data, source }): void => {
       if (source !== window || data.origin !== 'content') return;
       if (data.id) {
-        if (data.response && data.response.hasOwnProperty('signature')) {
-          this.eventAggregator.publish(new BusyMessage(true));
-        }
-        // Memo: detect if the transaction was canceled by users on the wallet extension
+        // if (data.response && data.response.hasOwnProperty('signature')) {
+        //   this.eventAggregator.publish(new BusyMessage(true));
+        // }
+        // Memo: detect if the transaction was canceled by users
         if (data.error === 'Cancelled') {
           this.eventAggregator.publish(new BusyMessage(false));
           throw Error(data.error);
