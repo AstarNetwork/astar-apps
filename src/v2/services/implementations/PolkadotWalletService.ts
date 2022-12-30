@@ -160,8 +160,6 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
           this.eventAggregator.publish(new BusyMessage(false));
           throw Error(data.error);
         }
-      } else {
-        console.error('Missing id for response.');
       }
     });
   }
