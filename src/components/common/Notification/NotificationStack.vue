@@ -3,20 +3,19 @@
     <div>Notification Stack</div>
     <div class="stack--wrapper">
       <div v-for="(t, index) in alertStack" :key="index">
-        <NotificationBar :alert-type="t.alertType" :show="true" @close="() => closeNoti(index)">
-          <div>
-            <div class="message">{{ t.alertMsg }}</div>
-            <astar-button class="btn--check" @click="goToSubscan(t.txHash)"
-              >Check your transactions</astar-button
-            >
-          </div>
-        </NotificationBar>
+        <NotificationBar
+          :alert-type="t.alertType"
+          :alert-msg="t.alertMsg"
+          :tx-hash="t.txHash"
+          :show="true"
+          @close="() => closeNoti(index)"
+        />
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
+import { defineComponent, computed } from 'vue';
 import { useNetworkInfo } from 'src/hooks';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { AlertType } from 'src/store/general/state';
@@ -103,11 +102,5 @@ export default defineComponent({
   @media (min-width: $lg) {
     top: 96px;
   }
-}
-
-.btn--check {
-  width: 90%;
-  height: 25px;
-  margin: 10px;
 }
 </style>
