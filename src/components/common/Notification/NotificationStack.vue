@@ -3,7 +3,7 @@
     <div>Notification Stack</div>
     <div class="stack--wrapper">
       <div v-for="(t, index) in alertStack" :key="index">
-        <NotificationBar
+        <notification-bar
           :alert-type="t.alertType"
           :alert-msg="t.alertMsg"
           :tx-hash="t.txHash"
