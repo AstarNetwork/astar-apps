@@ -19,7 +19,7 @@
             <div class="column__box">
               <div class="text--accent">
                 <span>
-                  <TokenBalance :balance="String(token.userBalance)" :symbol="token.symbol" />
+                  <token-balance :balance="String(token.userBalance)" :symbol="token.symbol" />
                 </span>
               </div>
               <div class="text--label">

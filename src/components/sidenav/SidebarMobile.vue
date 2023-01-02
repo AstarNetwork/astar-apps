@@ -41,7 +41,7 @@
     </div>
 
     <div v-if="showOption">
-      <SidebarOption @close-navi="showOption = false" />
+      <sidebar-option @close-navi="showOption = false" />
     </div>
   </div>
 </template>

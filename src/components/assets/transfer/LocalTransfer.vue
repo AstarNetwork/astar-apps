@@ -6,7 +6,7 @@
           <span> {{ $t('from') }}</span>
           <div>
             <span class="text--to--balance">
-              <TokenBalance
+              <token-balance
                 text="assets.modals.balance"
                 :balance="String(fromAddressBalance)"
                 :symbol="token.metadata.symbol"
@@ -29,7 +29,7 @@
           <span> {{ $t('to') }}</span>
           <div>
             <span class="text--to--balance">
-              <TokenBalance
+              <token-balance
                 text="assets.modals.balance"
                 :balance="String(toAddressBalance)"
                 :symbol="token.metadata.symbol"
@@ -37,7 +37,7 @@
             </span>
           </div>
         </div>
-        <InputSelectAccount
+        <input-select-account
           v-model:selAddress="toAddress"
           :to-address="toAddress"
           :is-erc20-transfer="false"
@@ -49,7 +49,7 @@
           <div />
           <div class="box__available">
             <span class="text--to--balance">
-              <TokenBalance
+              <token-balance
                 text="assets.modals.balance"
                 :balance="String(fromAddressBalance)"
                 :symbol="token.metadata.symbol"

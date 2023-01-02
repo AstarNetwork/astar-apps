@@ -14,7 +14,7 @@
       </div>
       <div v-if="openOption" v-click-away="closeOption" class="box--wallet-option">
         <ul class="container--wallet">
-          <SelectWalletOption
+          <select-wallet-option
             v-for="(wallet, index) in wallets"
             :key="index"
             v-model:selOption="selWalletIdx"
