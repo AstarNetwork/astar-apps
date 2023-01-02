@@ -20,7 +20,7 @@
           {{ alertTypeTitle }}
         </div>
         <div class="column--close" @click="close">
-          <IconClose />
+          <icon-close />
         </div>
       </div>
       <div>
