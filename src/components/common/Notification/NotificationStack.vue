@@ -94,7 +94,7 @@ export default defineComponent({
   position: fixed;
   z-index: 10;
   top: 104px;
-  right: 70px;
+  right: 80px;
   width: 255px;
   height: 100%;
   text-align: center;

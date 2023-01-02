@@ -2,12 +2,11 @@
 # yarn lockfile v1
 
 
-"@astar-network/astar-ui@^0.0.60":
-  version "0.0.60"
-  resolved "https://registry.yarnpkg.com/@astar-network/astar-ui/-/astar-ui-0.0.60.tgz#e7448a06c4f8ba0e69f1fc4d0720e247939eef33"
-  integrity sha512-fF0pCbQ/Vfx7IRmtqJBmpbIyW63UqLi+0DNzX0TpxB54tHMbFI+njP8qMp4gD3je+eq7RSP8avB/plr6b/n8ww==
+"@astar-network/astar-ui@^0.0.70":
+  version "0.0.71"
+  resolved "https://registry.yarnpkg.com/@astar-network/astar-ui/-/astar-ui-0.0.71.tgz#4c81610febeb12ba63b50296f7278781a2fad96f"
+  integrity sha512-JM8QmwlC+5ZWWwKHWfQJsyZ1us1DrikHHk3PBd7Re8s5rNAyZNdvXiMrp6Xao4U8/wNsCZr45iJhix865sSGAw==
   dependencies:
-    prismjs "^1.25.0"
     vue "^3.2.23"
 
 "@babel/code-frame@7.12.11":
@@ -11888,11 +11887,6 @@ prismjs@^1.24.1:
   version "1.25.0"
   resolved "https://registry.yarnpkg.com/prismjs/-/prismjs-1.25.0.tgz#6f822df1bdad965734b310b315a23315cf999756"
   integrity sha512-WCjJHl1KEWbnkQom1+SzftbtXMKQoezOCYs5rECqMN+jP+apI7ftoflyqigqzopSO3hMhTEb0mFClA8lkolgEg==
-
-prismjs@^1.25.0:
-  version "1.29.0"
-  resolved "https://registry.yarnpkg.com/prismjs/-/prismjs-1.29.0.tgz#f113555a8fa9b57c35e637bba27509dcf802dd12"
-  integrity sha512-Kx/1w86q/epKcmte75LNrEoT+lX8pBpavuAbvJWRXar7Hz8jrtF+e3vY751p0R8H9HdArwaCTNDDzHg/ScJK1Q==
 
 proc-log@^1.0.0:
   version "1.0.0"

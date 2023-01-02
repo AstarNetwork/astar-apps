@@ -15,7 +15,7 @@
             <astar-icon-circle-check size="20" />
           </span>
           <span v-else class="icon--check">
-            <astar-icon-circle-check size="20" />
+            <astar-icon-warning size="20" />
           </span>
           {{ alertTypeTitle }}
         </div>
@@ -126,6 +126,7 @@ export default defineComponent({
   }
   .icon--check {
     color: $astar-blue;
+    margin-left: 8px;
     margin-right: 8px;
   }
 }
@@ -205,8 +206,8 @@ export default defineComponent({
   line-height: 15px;
   color: $gray-5-selected;
   text-align: left;
-  padding-left: 16px;
-  padding-right: 16px;
+  padding-left: 12px;
+  padding-right: 12px;
   margin-top: 8px;
 }
 .btn--check {
