@@ -1,14 +1,14 @@
 <template>
   <div>
-    <BackToPage
+    <back-to-page
       :class="isHighlightRightUi && 'half-opacity'"
       :text="$t('assets.transferPage.backToAssets')"
       :link="Path.Assets"
     />
-    <MobileNavigator v-if="currentAccount" />
+    <mobile-navigator v-if="currentAccount" />
     <div v-if="currentAccount" class="wrapper--transfer">
       <div class="container--transfer">
-        <TransferModeTab
+        <transfer-mode-tab
           :is-local-transfer="isLocalTransfer"
           :set-is-local-transfer="handleSetIsLocalTransfer"
           :is-disabled-xcm="isDisabledXcm"
@@ -16,7 +16,7 @@
         />
         <div v-if="token" class="wrapper-containers">
           <div v-if="isLocalTransfer">
-            <LocalTransfer
+            <local-transfer
               :account-data="accountData"
               :class="isHighlightRightUi && 'half-opacity'"
               :set-right-ui="setRightUi"
@@ -24,7 +24,7 @@
             />
           </div>
           <div v-else>
-            <XcmBridge
+            <xcm-bridge
               v-if="tokens"
               :token="token"
               :class="isHighlightRightUi && 'half-opacity'"
@@ -34,14 +34,14 @@
               :is-disabled-xcm-button="isDisabledXcm"
             />
           </div>
-          <Information v-if="rightUi === 'information'" :is-local-transfer="isLocalTransfer" />
-          <SelectChain
+          <information v-if="rightUi === 'information'" :is-local-transfer="isLocalTransfer" />
+          <select-chain
             v-if="rightUi === 'select-chain'"
             v-click-away="cancelHighlight"
             :set-chain="handleSetChain"
             :chains="selectableChains"
           />
-          <SelectToken
+          <select-token
             v-if="rightUi === 'select-token'"
             v-click-away="cancelHighlight"
             :set-token="handleSetToken"
@@ -50,7 +50,7 @@
         </div>
       </div>
     </div>
-    <ModalSelectChain
+    <modal-select-chain
       v-if="from && to"
       :is-modal-select-chain="isModalSelectChain"
       :handle-modal-select-chain="handleModalSelectChain"
@@ -58,7 +58,7 @@
       :chains="selectableChains"
       :selected-chain="isSelectFromChain ? from : to"
     />
-    <ModalSelectToken
+    <modal-select-token
       v-if="token && tokens"
       :is-modal-select-token="isModalSelectToken"
       :handle-modal-select-token="handleModalSelectToken"

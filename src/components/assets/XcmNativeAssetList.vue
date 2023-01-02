@@ -6,7 +6,7 @@
       </div>
 
       <div v-for="t in xcmAssets" :key="t.id">
-        <XcmCurrency :token="t" />
+        <xcm-currency :token="t" />
       </div>
     </div>
   </div>

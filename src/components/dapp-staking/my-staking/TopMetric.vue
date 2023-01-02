@@ -92,7 +92,7 @@
         </div>
       </div>
     </div>
-    <SnowPack />
+    <snow-pack />
   </div>
 </template>
 <script lang="ts">

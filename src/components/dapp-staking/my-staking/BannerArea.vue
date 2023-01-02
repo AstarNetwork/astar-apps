@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper--cards">
-    <DeveloperIncentive />
-    <Algem />
+    <developer-incentive />
+    <algem />
   </div>
 </template>
 <script lang="ts">
