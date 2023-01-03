@@ -52,6 +52,7 @@
                           :key="i"
                         >
                           <div
+                            v-if="checkIsDisplayEndpoint(provider, endpointObj.endpoint)"
                             class="column--network-option"
                             @click="setSelEndpoint({ endpointObj, networkIdx: index })"
                           >
@@ -93,7 +94,8 @@
 </template>
 <script lang="ts">
 import { $endpoint } from 'src/boot/api';
-import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
+import { checkIsLightClient } from 'src/config/api/polkadot/connectApi';
+import { ChainProvider, endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { getRandomFromArray, wait } from 'src/hooks/helper/common';
 import { buildNetworkUrl } from 'src/router/utils';
@@ -255,6 +257,20 @@ export default defineComponent({
       }
     };
 
+    // Memo: Displays Light client option if:
+    // A: users select Shibuya
+    // B: the portal is opened on 'localhost' or 'staging URL'
+    const checkIsDisplayEndpoint = (chain: ChainProvider, endpoint: string): boolean => {
+      const origin = window.location.origin;
+      const stagingDomain = '.web.app';
+      const isDevMode = origin.includes(stagingDomain || 'localhost:');
+      if (isDevMode || chain.key === endpointKey.SHIBUYA) {
+        return true;
+      } else {
+        return !checkIsLightClient(endpoint);
+      }
+    };
+
     watch(
       [$endpoint, selNetwork],
       () => {
@@ -289,6 +305,7 @@ export default defineComponent({
       setSelEndpoint,
       checkIsCheckedEndpoint,
       windowHeight,
+      checkIsDisplayEndpoint,
     };
   },
 });
