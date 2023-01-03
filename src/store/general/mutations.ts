@@ -16,7 +16,6 @@ export interface GeneralMutations<S = State> {
   setLoading(state: S, isLoading: boolean): void;
   pushAlertMsg(state: S, alert: AlertBox): void;
   removeAlertMsg(state: S, index: number): void;
-  setShowAlertMsg(state: S, showAlert: boolean): void;
   setAlertMsg(state: S, msg: string): void;
   setAlertType(state: S, type: AlertType): void;
   setChainInfo(state: S, type: ChainInfo): void;
@@ -45,9 +44,6 @@ const mutation: MutationTree<State> & GeneralMutations = {
   },
   removeAlertMsg(state, index) {
     state.alertBoxStack = state.alertBoxStack.filter((el, idx) => idx !== index);
-  },
-  setShowAlertMsg(state, msg) {
-    state.alertBox.showAlertMsg = msg;
   },
   setAlertMsg(state, msg) {
     state.alertBox.alertMsg = msg;

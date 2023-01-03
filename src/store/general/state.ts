@@ -16,7 +16,6 @@ export enum AlertType {
 }
 
 export type AlertBox = {
-  showAlertMsg: boolean;
   alertMsg: string;
   alertType: AlertType;
   txHash?: string;
@@ -61,7 +60,6 @@ function state(): GeneralStateInterface {
     isLoading: false,
     alertBoxStack: [],
     alertBox: {
-      showAlertMsg: false,
       alertMsg: '',
       alertType: AlertType.Success,
     },

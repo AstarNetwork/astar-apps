@@ -28,7 +28,7 @@ export default defineComponent({
     const store = useStore();
     const alertStack = computed(() => store.getters['general/alertStack']);
 
-    //Test
+    //TODO: Remove this, only for testing :
     store.dispatch(
       'general/showAlertMsg',
       {
