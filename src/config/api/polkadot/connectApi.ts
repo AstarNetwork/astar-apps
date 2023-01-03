@@ -14,6 +14,8 @@ const RES_TIMEOUT = 'timeout';
 
 type Provider = WsProvider | ScProvider;
 
+export const checkIsLightClient = (endpoint: string): boolean => endpoint.startsWith('light://');
+
 const getParachainSpec = (networkIdx: endpointKey): string => {
   switch (networkIdx) {
     case endpointKey.ASTAR:
@@ -40,7 +42,6 @@ const getWellKnownChain = (networkIdx: endpointKey): WellKnownChain | string => 
   }
 };
 
-const isLightClient = (endpoint: string): boolean => endpoint.startsWith('light://');
 const isSubstrateConnectInstalled = (): boolean =>
   !!document.getElementById('substrateConnectExtensionAvailable');
 
@@ -59,7 +60,7 @@ const fallbackConnection = async ({
   }
 
   const filteredEndpoints = providerEndpoints[networkIdx].endpoints.filter((it) => {
-    return it.endpoint !== endpoint && !isLightClient(it.endpoint);
+    return it.endpoint !== endpoint && !checkIsLightClient(it.endpoint);
   });
   if (1 >= filteredEndpoints.length) {
     return window.location.reload();
@@ -124,7 +125,7 @@ export async function connectApi(
   store.commit('general/setLoading', true);
 
   try {
-    if (isLightClient(endpoint) && isSubstrateConnectInstalled()) {
+    if (checkIsLightClient(endpoint) && isSubstrateConnectInstalled()) {
       const parachainSpec = getParachainSpec(networkIdx);
       const relayProvider = new ScProvider(getWellKnownChain(networkIdx));
       provider = new ScProvider(parachainSpec, relayProvider);
@@ -147,7 +148,7 @@ export async function connectApi(
     });
 
     const fallbackTimeout = new Promise<string>(async (resolve) => {
-      const timeout = isLightClient(endpoint) ? 50 * 1000 : 8 * 1000;
+      const timeout = checkIsLightClient(endpoint) ? 50 * 1000 : 8 * 1000;
       await wait(timeout);
       resolve(RES_TIMEOUT);
     });
