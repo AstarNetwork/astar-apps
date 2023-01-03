@@ -263,8 +263,9 @@ export default defineComponent({
     const checkIsDisplayEndpoint = (chain: ChainProvider, endpoint: string): boolean => {
       const origin = window.location.origin;
       const stagingDomain = '.web.app';
-      const isDevMode = origin.includes(stagingDomain || 'localhost:');
-      if (isDevMode || chain.key === endpointKey.SHIBUYA) {
+      const devPaths = [stagingDomain, 'localhost:'];
+      const isForDeveloper = devPaths.some((it) => origin.includes(it));
+      if (isForDeveloper || chain.key === endpointKey.SHIBUYA) {
         return true;
       } else {
         return !checkIsLightClient(endpoint);
