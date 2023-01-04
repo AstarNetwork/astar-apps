@@ -8,7 +8,7 @@
       show ? 'animate__fadeInRight' : 'animate__fadeOutRight',
     ]"
   >
-    <div class="noti-content">
+    <div class="noti-content" @mouseover="showCloseBtn = true">
       <div class="row--close">
         <div class="column--title">
           <span v-if="isSuccessType" class="icon--check">
@@ -19,7 +19,7 @@
           </span>
           {{ alertTypeTitle }}
         </div>
-        <div class="column--close" @click="close">
+        <div v-if="showCloseBtn" class="column--close" @click="close">
           <icon-close />
         </div>
       </div>
@@ -37,7 +37,7 @@
 import { AlertType } from 'src/store/general/state';
 import { useNetworkInfo } from 'src/hooks';
 import { endpointKey } from 'src/config/chainEndpoints';
-import { defineComponent, toRefs, PropType, computed } from 'vue';
+import { defineComponent, toRefs, PropType, computed, ref } from 'vue';
 import IconClose from './IconClose.vue';
 
 export default defineComponent({
@@ -76,6 +76,7 @@ export default defineComponent({
         return 'Error';
       }
     });
+    const showCloseBtn = ref(false);
 
     const isSuccessType = computed(() => props.alertType === AlertType.Success);
 
@@ -96,6 +97,7 @@ export default defineComponent({
       ...toRefs(props),
       alertTypeTitle,
       isSuccessType,
+      showCloseBtn,
       goToSubscan,
       close,
     };
@@ -110,9 +112,10 @@ export default defineComponent({
   border: 1px solid $astar-blue;
   border-radius: 6px;
   color: $gray-5-selected;
-  width: 323px;
-  background: rgb(240, 247, 255);
+  width: 100%;
+  background: #e5f2ff;
   mix-blend-mode: normal;
+  box-shadow: 4px 4px 4px 0px rgb(0 0 0 / 12%);
 
   &::before {
     content: '';
@@ -136,7 +139,7 @@ export default defineComponent({
 }
 
 .warning {
-  background: #fcf3d4;
+  background: #fdf8e6;
   border-color: $warning-yellow;
 
   &::before {
@@ -148,7 +151,7 @@ export default defineComponent({
 }
 
 .error {
-  background: #feede7;
+  background: #ffeee8;
   border-color: $warning-red;
 
   &::before {
@@ -202,7 +205,7 @@ export default defineComponent({
 
 .message {
   font-weight: 500;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 15px;
   color: $gray-5-selected;
   text-align: left;
@@ -214,11 +217,21 @@ export default defineComponent({
   width: 90%;
   height: 33px;
   margin-top: 10px;
+  background: transparent;
+  border: 1px solid $astar-blue;
+  color: $astar-blue;
 }
 
 .body--dark {
   .noti {
-    background: #182735;
+    background: #001a33;
+    box-shadow: 4px 4px 4px 0px rgb(0 0 0 / 25%);
+  }
+  .warning {
+    background: #302502;
+  }
+  .error {
+    background: #331106;
   }
   .column--title {
     color: $gray-1;
@@ -226,10 +239,6 @@ export default defineComponent({
   .column--close {
     color: $gray-4;
     border-color: $gray-4;
-    &:hover {
-      color: $astar-blue;
-      border-color: $astar-blue;
-    }
   }
   .message {
     color: $gray-1;

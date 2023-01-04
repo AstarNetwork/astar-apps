@@ -94,13 +94,17 @@ export default defineComponent({
   position: fixed;
   z-index: 10;
   top: 104px;
-  right: 80px;
-  width: 255px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: 340px;
   height: 100%;
   text-align: center;
   gap: 10px;
-  @media (min-width: $lg) {
+  @media (min-width: $md) {
     top: 96px;
+    left: auto;
+    right: 40px;
   }
 }
 </style>
