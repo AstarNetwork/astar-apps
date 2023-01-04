@@ -76,7 +76,7 @@ export default defineComponent({
   background: #d9d9d9;
   height: 127px;
   border-radius: 5px;
-  padding: 35px;
+  padding: 24px;
   background-image: url('src/assets/img/banner/banner-01-light.png');
   margin-bottom: 20px;
   @media (min-width: $sm) {

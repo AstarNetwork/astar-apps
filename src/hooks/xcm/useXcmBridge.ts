@@ -223,7 +223,9 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
     const minBridgeAmount = Number(selectedTokenRef && selectedTokenRef.minBridgeAmount);
 
     if (sendingAmount > fromAddressBalance.value) {
-      errMsg.value = t('warning.insufficientBalance');
+      errMsg.value = t('warning.insufficientBalance', {
+        token: selectedTokenRef.metadata.symbol,
+      });
       return;
     }
 

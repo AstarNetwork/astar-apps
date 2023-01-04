@@ -1,16 +1,18 @@
 <template>
   <div v-click-away="closeOption" class="wrapper--asset-options">
-    <div class="icon-vert" @click="isOptionsOpen = true">
-      <astar-icon-vert />
+    <div class="column--icon-dot" @click="isOptionsOpen = true">
+      <astar-icon-base class="icon--dot" stroke="currentColor" icon-name="option">
+        <astar-icon-3dots />
+      </astar-icon-base>
     </div>
     <div v-if="isOptionsOpen" class="box--options">
-      <button class="row--option" @click="handleImportTokens">
+      <button v-if="isImportModal" class="row--option" @click="handleImportTokens">
         <div>
           <span class="icon--plus"> + </span>
         </div>
         <span class="text--option">{{ $t('assets.importTokens') }}</span>
       </button>
-      <button class="row--option" @click="handleHideSmallBalances">
+      <button v-if="!isOnlyImportTokens" class="row--option" @click="handleHideSmallBalances">
         <template v-if="isHideSmallBalances">
           <div class="icon-hide">
             <astar-icon-unhide />
@@ -26,34 +28,55 @@
       </button>
     </div>
 
-    <ModalImportTokens
-      :is-modal-import-tokens="isModalImportTokens"
-      :handle-modal-import-tokens="handleModalImportTokens"
-      :tokens="tokens"
-    />
+    <div v-if="isImportModal">
+      <modal-import-evm-tokens
+        v-if="isH160"
+        :is-modal-import-tokens="isModalImportTokens"
+        :handle-modal-import-tokens="handleModalImportTokens"
+        :tokens="tokens"
+      />
+      <modal-import-xvm-tokens
+        v-else
+        :is-modal-import-tokens="isModalImportTokens"
+        :handle-modal-import-tokens="handleModalImportTokens"
+      />
+    </div>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent, ref, PropType, computed } from 'vue';
-import ModalImportTokens from 'src/components/assets/modals/ModalImportTokens.vue';
+import ModalImportEvmTokens from 'src/components/assets/modals/ModalImportEvmTokens.vue';
+import ModalImportXvmTokens from 'src/components/assets/modals/ModalImportXvmTokens.vue';
 import { SelectedToken } from 'src/c-bridge';
 import { useStore } from 'src/store';
+import { Asset } from 'src/v2/models';
 
 export default defineComponent({
   components: {
-    ModalImportTokens,
+    ModalImportEvmTokens,
+    ModalImportXvmTokens,
   },
   props: {
-    isHideSmallBalances: {
+    isImportModal: {
       type: Boolean,
       required: true,
     },
-    toggleIsHideSmallBalances: {
-      type: Function,
+    isOnlyImportTokens: {
+      type: Boolean,
       required: true,
     },
+    isHideSmallBalances: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    toggleIsHideSmallBalances: {
+      type: Function,
+      required: false,
+      default: null,
+    },
     tokens: {
-      type: Object as PropType<SelectedToken[]>,
+      type: Object as PropType<SelectedToken[] | Asset[]>,
       required: false,
       default: null,
     },
@@ -81,11 +104,13 @@ export default defineComponent({
     };
     const store = useStore();
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
+    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
 
     return {
       isModalImportTokens,
       isOptionsOpen,
       isLoading,
+      isH160,
       closeOption,
       handleHideSmallBalances,
       handleImportTokens,
@@ -96,5 +121,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/assets/styles/evm-asset-options.scss';
+@use 'src/components/assets/styles/asset-options.scss';
 </style>

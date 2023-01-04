@@ -123,6 +123,14 @@ module.exports = {
   rules: {
     'prefer-promise-reject-errors': 'off',
     'vue/no-v-model-argument': 'off',
+    'vue/component-name-in-template-casing': [
+      'error',
+      'kebab-case',
+      {
+        registeredComponentsOnly: true,
+        ignores: [],
+      },
+    ],
 
     // TypeScript
     quotes: ['warn', 'single', { avoidEscape: true }],

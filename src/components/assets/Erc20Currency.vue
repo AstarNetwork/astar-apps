@@ -23,7 +23,7 @@
           <div class="column column--balance">
             <div class="column__box">
               <div class="text--accent">
-                <TokenBalance :balance="token.userBalance" :symbol="token.symbol" />
+                <token-balance :balance="token.userBalance" :symbol="token.symbol" />
               </div>
               <div class="text--label">
                 <span>{{ $n(Number(token.userBalanceUsd)) }} {{ $t('usd') }}</span>
@@ -42,7 +42,6 @@
                 <button class="btn btn--sm">{{ $t('assets.wrap') }}</button>
               </a>
             </div>
-            <div v-if="isImportedToken" />
             <div class="screen--xl">
               <a
                 class="box--explorer"
@@ -81,6 +80,19 @@
                 </q-tooltip>
               </button>
             </div>
+            <div v-if="isImportedToken" class="screen--xl">
+              <button
+                class="btn btn--sm btn--delete adjuster--width"
+                @click="handleDeleteStoredToken(token.address)"
+              >
+                <div class="adjuster--width icon--delete">
+                  <astar-icon-delete size="22" />
+                </div>
+              </button>
+              <q-tooltip>
+                <span class="text--tooltip">{{ $t('remove') }}</span>
+              </q-tooltip>
+            </div>
           </div>
         </div>
       </div>
@@ -88,15 +100,21 @@
   </div>
 </template>
 <script lang="ts">
+import TokenBalance from 'src/components/common/TokenBalance.vue';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SupportWallet } from 'src/config/wallets';
 import { useNetworkInfo } from 'src/hooks';
 import { addToEvmProvider, getEvmProvider } from 'src/hooks/helper/wallet';
-import { Erc20Token, getErc20Explorer, getStoredERC20Tokens } from 'src/modules/token';
+import {
+  deleteImportedErc20Token,
+  Erc20Token,
+  getErc20Explorer,
+  getStoredERC20Tokens,
+} from 'src/modules/token';
 import { buildTransferPageLink } from 'src/router/routes';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';
-import TokenBalance from 'src/components/common/TokenBalance.vue';
 export default defineComponent({
   components: {
     [Jazzicon.name]: Jazzicon,
@@ -115,7 +133,7 @@ export default defineComponent({
   },
   setup({ token }) {
     const store = useStore();
-    const { currentNetworkIdx } = useNetworkInfo();
+    const { currentNetworkIdx, evmNetworkIdx } = useNetworkInfo();
 
     const explorerLink = computed(() => {
       const tokenAddress = token.address;
@@ -125,12 +143,19 @@ export default defineComponent({
     const isImportedToken = computed<boolean>(
       () =>
         !!getStoredERC20Tokens().find(
-          (it) => it.address.toLowerCase() === token.address.toLowerCase()
+          (it) =>
+            it.address.toLowerCase() === token.address.toLowerCase() &&
+            evmNetworkIdx.value === it.srcChainId
         )
     );
 
     const currentWallet = computed<SupportWallet>(() => store.getters['general/currentWallet']);
     const provider = getEvmProvider(currentWallet.value);
+
+    const handleDeleteStoredToken = (tokenAddress: string): void => {
+      deleteImportedErc20Token({ srcChainId: evmNetworkIdx.value, tokenAddress });
+      window.dispatchEvent(new CustomEvent(LOCAL_STORAGE.EVM_TOKEN_IMPORTS));
+    };
 
     return {
       explorerLink,
@@ -138,6 +163,7 @@ export default defineComponent({
       provider,
       buildTransferPageLink,
       addToEvmProvider,
+      handleDeleteStoredToken,
     };
   },
 });

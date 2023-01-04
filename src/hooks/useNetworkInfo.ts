@@ -1,4 +1,3 @@
-import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import {
   astarChain,
   ASTAR_CHAIN,
@@ -6,6 +5,7 @@ import {
   ASTAR_NATIVE_TOKEN,
   ASTAR_NETWORK_IDX,
 } from 'src/config/chain';
+import { getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
 import { computed } from 'vue';
 
@@ -46,6 +46,10 @@ export function useNetworkInfo() {
     return chainInfo ? chainInfo.tokenSymbol : '';
   });
 
+  const isSupportXvmTransfer = computed<boolean>(() => {
+    return !isMainnet.value;
+  });
+
   return {
     isMainnet,
     currentNetworkChain,
@@ -53,5 +57,6 @@ export function useNetworkInfo() {
     evmNetworkIdx,
     currentNetworkName,
     nativeTokenSymbol,
+    isSupportXvmTransfer,
   };
 }

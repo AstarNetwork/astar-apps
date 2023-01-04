@@ -24,9 +24,9 @@ const fallbackConnection = async ({
   const filteredEndpoints = providerEndpoints[networkIdx].endpoints.filter((it) => {
     return it.endpoint !== endpoint;
   });
-  if (1 >= filteredEndpoints.length) {
-    return window.location.reload();
-  }
+  // if (1 >= filteredEndpoints.length) {
+  //   return window.location.reload();
+  // }
 
   for await (let it of filteredEndpoints) {
     try {
@@ -84,8 +84,8 @@ export async function connectApi(
   const api = new ApiPromise({ provider });
 
   store.commit('general/setCurrentNetworkStatus', 'connecting');
-  api.on('error', (error: Error) => console.error(error.message));
 
+  api.on('error', (error: Error) => console.error(error.message));
   try {
     const apiConnect = new Promise<string>((resolve) => {
       api.isReadyOrError.then(() => {

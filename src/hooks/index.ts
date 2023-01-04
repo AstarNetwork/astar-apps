@@ -36,6 +36,8 @@ export * from './wallet/useEvmWallet';
 export * from './xcm/useXcmBridge';
 export * from './transfer/useTokenTransfer';
 export * from './xcm/useTransferRouter';
+export * from './xvm/useXvmTransferRouter';
+export * from './xvm/useXvmTokenTransfer';
 export * from './ui/useTooltip';
 export * from './ui/usePageReady';
 export * from './dapps-staking/useCompoundRewards';

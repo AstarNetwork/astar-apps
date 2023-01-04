@@ -19,7 +19,15 @@ import { useExtensions } from 'src/hooks/useExtensions';
 import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
 import { deepLinkPath } from 'src/links';
 import { useStore } from 'src/store';
-import { computed, ref, watch, WatchCallback, watchEffect, watchPostEffect } from 'vue';
+import {
+  computed,
+  ref,
+  watch,
+  WatchCallback,
+  watchEffect,
+  watchPostEffect,
+  onUnmounted,
+} from 'vue';
 import { useRouter } from 'vue-router';
 import {
   castMobileSource,
@@ -61,19 +69,18 @@ export const useConnectWallet = () => {
     }
   });
 
-  const setCloseModal = () => {
+  const setCloseModal = (): void => {
     modalName.value = '';
   };
 
-  const openSelectModal = () => {
+  const openSelectModal = (): void => {
     modalName.value = WalletModalOption.SelectWallet;
+    return;
   };
 
   // Memo: triggered after users (who haven't connected to wallet) have clicked 'Connect Wallet' button on dApp staking page
   const handleOpenSelectModal = (): void => {
-    window.addEventListener(WalletModalOption.SelectWallet, () => {
-      openSelectModal();
-    });
+    window.addEventListener(WalletModalOption.SelectWallet, openSelectModal);
   };
 
   const initializeWalletAccount = () => {
@@ -340,6 +347,10 @@ export const useConnectWallet = () => {
     },
     { immediate: true }
   );
+
+  onUnmounted(() => {
+    window.removeEventListener(WalletModalOption.SelectWallet, openSelectModal);
+  });
 
   return {
     WalletModalOption,

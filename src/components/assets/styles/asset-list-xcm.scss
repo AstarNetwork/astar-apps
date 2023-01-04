@@ -138,6 +138,17 @@
   }
 }
 
+.column--three-buttons {
+  @media (min-width: $xl) {
+    display: grid;
+    width: 340px;
+    grid-template-columns: 100px 70px 70px;
+    justify-content: end;
+    column-gap: 8px;
+    margin-right: 80px;
+  }
+}
+
 .container--explorer-icon {
   display: flex;
   align-items: center;
@@ -155,6 +166,14 @@
     stroke: white;
     background-color: $astar-blue;
   }
+}
+
+.btn--delete {
+  margin-top: 4px;
+}
+
+.icon--delete {
+  margin-top: 1px;
 }
 
 .adjuster--width {
