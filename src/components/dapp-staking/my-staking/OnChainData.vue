@@ -202,7 +202,6 @@ export default defineComponent({
 
           if (it.dapp && it.stakerInfo) {
             const balance = getBalance(it);
-
             return {
               iconUrl: it.dapp.iconUrl,
               name: it.dapp.name,
