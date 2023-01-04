@@ -59,7 +59,11 @@
               </div>
               <div class="column--balance">
                 <span class="text--value">
-                  <TokenBalance :balance="dapp.balance" :symbol="nativeTokenSymbol" :decimals="0" />
+                  <token-balance
+                    :balance="dapp.balance"
+                    :symbol="nativeTokenSymbol"
+                    :decimals="0"
+                  />
                 </span>
               </div>
             </div>

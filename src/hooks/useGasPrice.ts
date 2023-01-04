@@ -1,3 +1,4 @@
+import { SupportWallet } from 'src/config/wallets';
 import { $web3 } from 'boot/api';
 import { useStore } from 'src/store';
 import { ref, watchEffect, computed, watch } from 'vue';
@@ -80,6 +81,13 @@ export const useGasPrice = (isFetch = false) => {
     }
   };
 
+  const isEnableSpeedConfiguration = computed<boolean>(() => {
+    const currentWallet = store.getters['general/currentWallet'];
+    return (
+      currentWallet !== SupportWallet.TalismanEvm && currentWallet !== SupportWallet.SubWalletEvm
+    );
+  });
+
   watch(
     [network, $web3],
     async () => {
@@ -108,5 +116,6 @@ export const useGasPrice = (isFetch = false) => {
     selectedTip,
     nativeTipPrice,
     setSelectedTip,
+    isEnableSpeedConfiguration,
   };
 };

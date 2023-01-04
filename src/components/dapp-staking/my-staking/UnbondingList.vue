@@ -19,12 +19,6 @@
               <td>
                 <div class="row--remaining-era">
                   <div>{{ t.erasBeforeUnlock }}</div>
-                  <!-- <astar-irregular-button
-                    :width="77"
-                    :height="20"
-                    @click="showRebondDialog(t.amount.toString())"
-                    >{{ $t('myDapps.rebond') }}</astar-irregular-button
-                  > -->
                 </div>
               </td>
               <td>

@@ -1,9 +1,9 @@
 <template>
   <div>
-    <ModalLoading v-if="isLoadingApi" />
+    <modal-loading v-if="isLoadingApi" />
     <div class="wrapper--xcm-bridge">
       <div class="rows">
-        <InputSelectChain
+        <input-select-chain
           :chain="srcChain"
           title="from"
           :handle-display-token-selector="handleDisplayTokenSelector"
@@ -13,13 +13,13 @@
           :balance="String(fromAddressBalance)"
           :symbol="token.metadata.symbol"
         />
-        <SelectEvmWallet v-if="isDepositEthChain" :initialize-xcm-api="initializeXcmApi" />
+        <select-evm-wallet v-if="isDepositEthChain" :initialize-xcm-api="initializeXcmApi" />
         <div v-if="isReverseButton" class="row--reverse">
           <button class="icon--reverse cursor-pointer" @click="reverseChain">
             <astar-icon-sync size="20" />
           </button>
         </div>
-        <InputSelectChain
+        <input-select-chain
           :class="isReverseButton && 'adjust--to-input'"
           :chain="destChain"
           title="to"
@@ -31,7 +31,7 @@
           :symbol="token.metadata.symbol"
         />
         <div v-if="isEvmBridge || isWithdrawalEthChain">
-          <SimpleInput
+          <simple-input
             v-model:selAddress="inputtedAddress"
             :to-address="inputtedAddress"
             :placeholder="$t('evmAddressPlaceholder')"
@@ -58,7 +58,7 @@
             </span>
           </div>
           <div v-else>
-            <SimpleInput
+            <simple-input
               v-model:selAddress="inputtedAddress"
               :to-address="inputtedAddress"
               :placeholder="$t('addressPlaceholder', { network: destChain.name })"
@@ -79,7 +79,7 @@
             <div />
             <div class="box__available">
               <span class="text--available">
-                <TokenBalance
+                <token-balance
                   text="assets.modals.balance"
                   :balance="String(fromAddressBalance)"
                   :symbol="token.metadata.symbol"

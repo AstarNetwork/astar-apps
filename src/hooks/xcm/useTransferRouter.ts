@@ -34,7 +34,6 @@ export function useTransferRouter() {
   const store = useStore();
   const router = useRouter();
   const route = useRoute();
-  // Todo: move to GlobalState
   const { currentAccount } = useAccount();
   const nativeTokenBalance = ref<number>(0);
   const { useableBalance } = useBalance(currentAccount);
