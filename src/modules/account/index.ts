@@ -15,6 +15,7 @@ export interface SystemAccount extends Struct {
 export enum HistoryTxType {
   Transfer = 'Transfer',
   Xcm = 'XCM',
+  Xvm = 'XVM Transfer',
 }
 
 export interface TxHistory {

@@ -65,7 +65,7 @@
             <div class="token-logo">
               <jazzicon
                 v-if="token.tokenImage.includes('custom-token')"
-                :address="token.id"
+                :address="token.mappedERC20Addr"
                 :diameter="24"
               />
               <img
@@ -113,12 +113,13 @@
         <div class="input--checkbox" :class="isChecked && 'input--checkbox--checked'">
           <input id="do-not-send-to-cex" v-model="isChecked" type="checkbox" />
           <label for="do-not-send-to-cex">
-            <span :class="isChecked ? 'color--gray1' : 'color--not-checked'">{{
-              $t('assets.modals.notSendToExchanges')
-            }}</span>
+            <span :class="isChecked ? 'color--gray1' : 'color--not-checked'">
+              {{ $t('assets.modals.notSendToExchanges') }}
+            </span>
           </label>
         </div>
       </div>
+
       <div
         v-if="errMsg && currentAccount"
         class="row--box-error"
@@ -158,11 +159,6 @@ export default defineComponent({
     TokenBalance,
   },
   props: {
-    accountData: {
-      type: Object,
-      required: false,
-      default: null,
-    },
     setRightUi: {
       type: Function,
       required: true,

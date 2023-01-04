@@ -1,5 +1,5 @@
-import { capitalize } from 'src/hooks/helper/common';
-import { TransferDetail } from 'src/modules/token-api';
+import { getXvmTransferContractAddress } from 'src/modules/xvm-transfer';
+import { TransferDetail, XvmAssetsTransferHistory } from 'src/modules/token-api';
 import { HistoryTxType } from 'src/modules/account';
 import { castChainName } from 'src/modules/xcm/utils';
 import { getAccountHistories, LOCAL_STORAGE } from 'src/config/localStorage';
@@ -8,6 +8,13 @@ import { TxHistory } from 'src/modules/account';
 import { xcmChainObj } from 'src/modules/xcm';
 import { fetchTransferDetails } from 'src/modules/token-api';
 import { getShortenAddress } from 'src/hooks/helper/addressUtils';
+import { providerEndpoints } from 'src/config/chainEndpoints';
+import { fetchXvmAssetsTransferHistories } from 'src/modules/token-api/utils';
+import { getTokenDetails } from 'src/config/web3';
+import { ethers } from 'ethers';
+
+const { NETWORK_IDX, XVM_TX_HISTORIES, XCM_TX_HISTORIES, TX_HISTORIES } = LOCAL_STORAGE;
+const NumberOfHistories = 5;
 
 export const castXcmHistory = (tx: TxHistory): RecentHistory => {
   const timestamp = String(tx.timestamp);
@@ -24,20 +31,49 @@ export const castXcmHistory = (tx: TxHistory): RecentHistory => {
 export const castTransferHistory = ({
   tx,
   hash,
-  network,
 }: {
   tx: TransferDetail;
   hash: string;
-  network: string;
 }): RecentHistory => {
   const { amount, symbol, to } = tx;
   const timestamp = String(tx.timestamp);
   const txType = HistoryTxType.Transfer;
-  const chain = capitalize(network) as keyof typeof xcmChainObj;
   const note = `To ${getShortenAddress(to)}`;
-  const subscan = xcmChainObj[chain].subscan;
+  const networkIdx = localStorage.getItem(NETWORK_IDX);
+  const subscan = providerEndpoints[Number(networkIdx)].subscan;
   const explorerUrl = `${subscan}/extrinsic/${hash}`;
   return { timestamp, txType, amount, symbol, note, explorerUrl };
+};
+
+const castXvmHistory = async (tx: XvmAssetsTransferHistory): Promise<RecentHistory> => {
+  const txType = HistoryTxType.Xvm;
+  const note = `To ${getShortenAddress(tx.destination)}`;
+  const networkIdx = localStorage.getItem(NETWORK_IDX);
+  const subscan = providerEndpoints[Number(networkIdx)].subscan;
+  const explorerUrl = `${subscan}/extrinsic/${tx.extrinsicHash}`;
+  const { symbol, decimals } = await getTokenDetails({
+    tokenAddress: tx.erc20Address,
+    srcChainId: Number(providerEndpoints[Number(networkIdx)].evmChainId),
+  });
+  const amount = ethers.utils.formatUnits(tx.amount, decimals);
+  return { timestamp: String(tx.timestamp), txType, amount, symbol, note, explorerUrl };
+};
+
+export const getXvmAssetsTransferHistories = async ({
+  address,
+  network,
+}: {
+  address: string;
+  network: string;
+}): Promise<RecentHistory[]> => {
+  const contractAddress = getXvmTransferContractAddress() as string;
+  const txs = await fetchXvmAssetsTransferHistories({
+    senderAddress: address,
+    contractAddress,
+    network,
+  });
+  const sortedTxs = txs.sort((a, b) => b.timestamp - a.timestamp).slice(0, NumberOfHistories);
+  return await Promise.all(sortedTxs.map(async (it) => await castXvmHistory(it)));
 };
 
 export const getTxHistories = async ({
@@ -48,19 +84,19 @@ export const getTxHistories = async ({
   network: string;
 }): Promise<RecentHistory[]> => {
   const txs: TxHistory[] = [];
-  const pushToTxs = (storageKey: LOCAL_STORAGE) => {
+  const histories = [XVM_TX_HISTORIES, XCM_TX_HISTORIES, TX_HISTORIES];
+
+  histories.forEach((storageKey) => {
     const transactions = getAccountHistories({
       storageKey,
       address,
       network,
     });
     transactions.forEach((it) => txs.push(it));
-  };
+  });
 
-  pushToTxs(LOCAL_STORAGE.XCM_TX_HISTORIES);
-  pushToTxs(LOCAL_STORAGE.TX_HISTORIES);
-  const numberOfHistories = 5;
-  const formattedTxs = txs.sort((a, b) => b.timestamp - a.timestamp).slice(0, numberOfHistories);
+  const formattedTxs = txs.sort((a, b) => b.timestamp - a.timestamp).slice(0, NumberOfHistories);
+
   const parsedTxs = await Promise.all(
     formattedTxs.map(async (it) => {
       const { hash } = it;
@@ -69,7 +105,7 @@ export const getTxHistories = async ({
           return castXcmHistory(it);
         } else if (it.type === HistoryTxType.Transfer) {
           const tx = await fetchTransferDetails({ hash, network });
-          return castTransferHistory({ tx, hash, network });
+          return castTransferHistory({ tx, hash });
         }
       } catch (error) {
         console.error(error);

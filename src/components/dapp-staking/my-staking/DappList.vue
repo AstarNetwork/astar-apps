@@ -3,7 +3,6 @@
     <div class="divider" />
     <div class="wrapper--header">
       <div class="txt--header">{{ category }}</div>
-      <!-- <astar-irregular-button width="77" height="20">See All</astar-irregular-button> -->
     </div>
     <card-list :category="category" :dapps="dapps" />
   </div>

@@ -58,7 +58,10 @@ export class EvmAssetsRepository implements IEvmAssetsRepository {
   }): Promise<Erc20Token[]> {
     Guard.ThrowIfUndefined('currentAccount', currentAccount);
 
-    if (String(srcChainId) === providerEndpoints[endpointKey.SHIBUYA].evmChainId) {
+    if (
+      String(srcChainId) === providerEndpoints[endpointKey.SHIBUYA].evmChainId ||
+      String(srcChainId) === providerEndpoints[endpointKey.LOCAL].evmChainId
+    ) {
       return [];
     }
 
@@ -140,7 +143,7 @@ export class EvmAssetsRepository implements IEvmAssetsRepository {
     return registeredTokens.filter((it) => it !== undefined) as Erc20Token[];
   }
 
-  private async updateTokenBalanceHandler({
+  public async updateTokenBalanceHandler({
     userAddress,
     token,
     isFetchUsd,

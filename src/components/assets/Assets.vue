@@ -12,6 +12,7 @@
           <evm-asset-list :tokens="evmAssets.assets" />
         </div>
         <div v-else class="container--assets">
+          <xvm-native-asset-list v-if="isSupportXvmTransfer" :xvm-assets="xvmAssets.xvmAssets" />
           <xcm-native-asset-list v-if="isEnableXcm" :xcm-assets="xcmAssets.assets" />
           <native-asset-list />
         </div>
@@ -24,13 +25,14 @@ import Account from 'src/components/assets/Account.vue';
 import EvmAssetList from 'src/components/assets/EvmAssetList.vue';
 import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
 import XcmNativeAssetList from 'src/components/assets/XcmNativeAssetList.vue';
+import XvmNativeAssetList from 'src/components/assets/XvmNativeAssetList.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useAccount, useBalance, useDispatchGetDapps, useNetworkInfo } from 'src/hooks';
 import { useStore } from 'src/store';
-import { EvmAssets, XcmAssets } from 'src/store/assets/state';
+import { EvmAssets, XcmAssets, XvmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
-import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
+import { computed, defineComponent, ref, watch, watchEffect, onUnmounted } from 'vue';
 
 export default defineComponent({
   components: {
@@ -38,6 +40,7 @@ export default defineComponent({
     NativeAssetList,
     EvmAssetList,
     XcmNativeAssetList,
+    XvmNativeAssetList,
   },
   setup() {
     const token = ref<Asset | null>(null);
@@ -47,7 +50,7 @@ export default defineComponent({
     const store = useStore();
     const { currentAccount } = useAccount();
     const { accountData } = useBalance(currentAccount);
-    const { isMainnet, currentNetworkIdx } = useNetworkInfo();
+    const { isMainnet, currentNetworkIdx, evmNetworkIdx, isSupportXvmTransfer } = useNetworkInfo();
     // Memo: load the dApps data in advance, so that users can access to dApp staging page smoothly
     useDispatchGetDapps();
 
@@ -59,6 +62,7 @@ export default defineComponent({
     const isShibuya = computed(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
 
     const xcmAssets = computed<XcmAssets>(() => store.getters['assets/getAllAssets']);
+    const xvmAssets = computed<XvmAssets>(() => store.getters['assets/getAllXvmAssets']);
     const ttlNativeXcmUsdAmount = computed<number>(() => xcmAssets.value.ttlNativeXcmUsdAmount);
     const evmAssets = computed<EvmAssets>(() => store.getters['assets/getEvmAllAssets']);
 
@@ -70,33 +74,58 @@ export default defineComponent({
       }
     });
 
-    const handleUpdateXcmTokenAssets = () => {
-      currentAccount.value &&
+    const handleUpdateNativeTokenAssets = () => {
+      if (currentAccount.value && evmNetworkIdx.value) {
         store.dispatch('assets/getAssets', { address: currentAccount.value, isFetchUsd: true });
-    };
-
-    const handleUpdateEvmAssets = (): void => {
-      if (isH160.value) {
-        currentAccount.value &&
-          store.dispatch('assets/getEvmAssets', {
+        !isH160.value &&
+          store.dispatch('assets/getXvmAssets', {
             currentAccount: currentAccount.value,
-            srcChainId: evmNetworkId.value,
-            currentNetworkIdx: currentNetworkIdx.value,
-            isFetchUsd: true,
+            isFetchUsd: isMainnet.value,
+            srcChainId: evmNetworkIdx.value,
           });
       }
     };
 
-    // Memo: triggered after users have imported custom ERC20 tokens
-    const handleImportingCustomToken = async (): Promise<void> => {
-      if (!isH160.value) return;
-      window.addEventListener(LOCAL_STORAGE.EVM_TOKEN_IMPORTS, () => {
-        handleUpdateEvmAssets();
-      });
+    const handleUpdateEvmAssets = (): void => {
+      currentAccount.value &&
+        store.dispatch('assets/getEvmAssets', {
+          currentAccount: currentAccount.value,
+          srcChainId: evmNetworkId.value,
+          currentNetworkIdx: currentNetworkIdx.value,
+          isFetchUsd: isMainnet.value,
+        });
+      return;
     };
 
-    watch([currentAccount], handleUpdateXcmTokenAssets, { immediate: true });
-    watch([currentAccount], handleUpdateEvmAssets, { immediate: true });
+    const handleUpdateXvmAssets = (): void => {
+      currentAccount.value &&
+        store.dispatch('assets/getXvmAssets', {
+          currentAccount: currentAccount.value,
+          isFetchUsd: isMainnet.value,
+          srcChainId: evmNetworkIdx.value,
+        });
+      return;
+    };
+
+    const getAssetEventAndHandler = (): {
+      event: LOCAL_STORAGE;
+      handler: () => void;
+    } => {
+      const event = isH160.value
+        ? LOCAL_STORAGE.EVM_TOKEN_IMPORTS
+        : LOCAL_STORAGE.XVM_TOKEN_IMPORTS;
+      const handler = isH160.value ? handleUpdateEvmAssets : handleUpdateXvmAssets;
+      return { event, handler };
+    };
+
+    // Memo: triggered after users have imported custom ERC20/XVM tokens
+    const handleImportingCustomToken = (): void => {
+      const { handler, event } = getAssetEventAndHandler();
+      window.addEventListener(event, handler);
+    };
+
+    watch([currentAccount, evmNetworkIdx], handleUpdateNativeTokenAssets, { immediate: true });
+    watch([currentAccount], handleUpdateEvmAssets, { immediate: isH160.value });
     watchEffect(handleImportingCustomToken);
 
     const isEnableXcm = computed(
@@ -112,19 +141,25 @@ export default defineComponent({
 
     watch([evmAssets, xcmAssets, isH160, isMainnet], handleEvmAssetLoader, { immediate: true });
 
+    onUnmounted(() => {
+      const { handler, event } = getAssetEventAndHandler();
+      window.removeEventListener(event, handler);
+    });
+
     return {
       evmAssets,
       isLoadingXcmAssetsAmount,
       isH160,
       isEnableXcm,
       xcmAssets,
+      xvmAssets,
       ttlNativeXcmUsdAmount,
       isModalXcmTransfer,
       token,
       accountData,
       isModalXcmBridge,
       isLoading,
-      handleUpdateXcmTokenAssets,
+      isSupportXvmTransfer,
     };
   },
 });

@@ -1,6 +1,13 @@
 import { ChartData } from 'src/components/dashboard/ChartData';
 import axios from 'axios';
-import { Duration, TOKEN_API_URL, TransferDetail, StatsDetail, StatsType } from '../index';
+import {
+  Duration,
+  TOKEN_API_URL,
+  TransferDetail,
+  StatsDetail,
+  StatsType,
+  XvmAssetsTransferHistory,
+} from 'src/modules/token-api';
 
 /**
  * Formats number and adds weight prefix e.g. 10000 formats to 10k
@@ -179,6 +186,20 @@ export const fetchTransferDetails = async ({
 }): Promise<TransferDetail> => {
   const url = `${TOKEN_API_URL}/v1/${network}/tx/transfer?hash=${hash}`;
   const result = await axios.get<TransferDetail>(url);
+  return result.data;
+};
+
+export const fetchXvmAssetsTransferHistories = async ({
+  senderAddress,
+  contractAddress,
+  network,
+}: {
+  senderAddress: string;
+  contractAddress: string;
+  network: string;
+}): Promise<XvmAssetsTransferHistory[]> => {
+  const url = `${TOKEN_API_URL}/v1/${network}/tx/xvm-transfer?senderAddress=${senderAddress}&contractAddress=${contractAddress}`;
+  const result = await axios.get<XvmAssetsTransferHistory[]>(url);
   return result.data;
 };
 
