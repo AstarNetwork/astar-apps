@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper--cards">
-    <DeveloperIncentive />
-    <Algem />
+    <developer-incentive />
+    <algem />
   </div>
 </template>
 <script lang="ts">
@@ -26,6 +26,9 @@ export default defineComponent({
   @media (max-width: $sm) {
     display: block;
     width: 100%;
+  }
+  @media (min-width: $xxl) {
+    gap: 24px;
   }
 }
 </style>

@@ -12,6 +12,9 @@
   @media (min-width: $md) {
     flex-wrap: nowrap;
   }
+  @media (min-width: $xxl) {
+    gap: 24px;
+  }
 }
 
 .wrapper--icon-help {
@@ -31,8 +34,6 @@
   width: 100%;
   @media (min-width: $lg) {
     padding: 32px 24px;
-    padding-right: 10px;
-    padding-left: 10px;
     min-width: auto;
   }
 
@@ -101,5 +102,22 @@
     .value {
       color: $gray-1;
     }
+  }
+}
+
+.claim-warning {
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
+  margin-top: 20px;
+  border: 1px solid $warning-red;
+  background-color: rgba(255, 86, 33, 0.3);
+  color: $warning-red;
+  padding: 8px 16px;
+}
+
+.body--dark {
+  .claim-warning {
+    color: $gray-1;
   }
 }

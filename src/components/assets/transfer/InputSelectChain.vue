@@ -8,7 +8,7 @@
       <span> {{ $t(title) }}</span>
       <div>
         <span class="text--to--balance">
-          <TokenBalance text="assets.modals.balance" :balance="balance" :symbol="symbol" />
+          <token-balance text="assets.modals.balance" :balance="balance" :symbol="symbol" />
         </span>
       </div>
     </div>

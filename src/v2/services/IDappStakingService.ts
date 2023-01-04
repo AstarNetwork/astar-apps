@@ -74,4 +74,10 @@ export interface IDappStakingService {
    * @param accountAddress User account.
    */
   getLedger(accountAddress: string): Promise<AccountLedger>;
+
+  /**
+   * Gets the value indicating whether use will be able to execute claim all batch without errors.
+   * @param accountAddress User account address
+   */
+  canClaimRewardWithoutErrors(accountAddress: string): Promise<boolean>;
 }

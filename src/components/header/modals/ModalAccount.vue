@@ -11,7 +11,7 @@
           <div class="border--separator--account" />
         </div>
         <div>
-          <SelectWallet :set-wallet-modal="setWalletModal" :selected-wallet="selectedWallet" />
+          <select-wallet :set-wallet-modal="setWalletModal" :selected-wallet="selectedWallet" />
         </div>
         <div v-if="isNativeWallet" class="row--balance-option">
           <div class="column--balance-option">

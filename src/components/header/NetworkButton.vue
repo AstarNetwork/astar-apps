@@ -1,10 +1,10 @@
 <template>
   <div>
-    <ConnectButton v-if="isNotSelectedEndpoint" @click="showNetworkModal">
+    <connect-button v-if="isNotSelectedEndpoint" @click="showNetworkModal">
       <astar-icon-network />
-    </ConnectButton>
+    </connect-button>
     <template v-else>
-      <MetaUpdateButton
+      <meta-update-button
         v-if="isNeedUpdate(isLatestChain, extensionCount)"
         @updated-meta="isLatestChain = true"
       />
