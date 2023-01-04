@@ -32,7 +32,6 @@ export class XvmRepository implements IXvmRepository {
     const xvmAssets = getStoredXvmTokens();
     const assets = xvmAssets.filter((it) => it.srcChainId === srcChainId);
     const userAddress = buildEvmAddress(currentAccount);
-
     const result = await Promise.all(
       assets.map(async (item) => {
         const token: Erc20Token = {

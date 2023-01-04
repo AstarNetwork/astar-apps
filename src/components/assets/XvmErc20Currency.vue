@@ -56,7 +56,7 @@
                 @click="handleDeleteStoredToken(token.address)"
               >
                 <div class="adjuster--width icon--delete">
-                  <astar-icon-delete :size="22" />
+                  <astar-icon-delete size="22" />
                 </div>
               </button>
               <q-tooltip>

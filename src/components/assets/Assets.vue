@@ -32,7 +32,7 @@ import { useAccount, useBalance, useDispatchGetDapps, useNetworkInfo } from 'src
 import { useStore } from 'src/store';
 import { EvmAssets, XcmAssets, XvmAssets } from 'src/store/assets/state';
 import { Asset } from 'src/v2/models';
-import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
+import { computed, defineComponent, ref, watch, watchEffect, onUnmounted } from 'vue';
 
 export default defineComponent({
   components: {
@@ -87,38 +87,45 @@ export default defineComponent({
     };
 
     const handleUpdateEvmAssets = (): void => {
-      if (isH160.value) {
-        currentAccount.value &&
-          store.dispatch('assets/getEvmAssets', {
-            currentAccount: currentAccount.value,
-            srcChainId: evmNetworkId.value,
-            currentNetworkIdx: currentNetworkIdx.value,
-            isFetchUsd: isMainnet.value,
-          });
-      }
+      currentAccount.value &&
+        store.dispatch('assets/getEvmAssets', {
+          currentAccount: currentAccount.value,
+          srcChainId: evmNetworkId.value,
+          currentNetworkIdx: currentNetworkIdx.value,
+          isFetchUsd: isMainnet.value,
+        });
+      return;
+    };
+
+    const handleUpdateXvmAssets = (): void => {
+      currentAccount.value &&
+        store.dispatch('assets/getXvmAssets', {
+          currentAccount: currentAccount.value,
+          isFetchUsd: isMainnet.value,
+          srcChainId: evmNetworkIdx.value,
+        });
+      return;
+    };
+
+    const getAssetEventAndHandler = (): {
+      event: LOCAL_STORAGE;
+      handler: () => void;
+    } => {
+      const event = isH160.value
+        ? LOCAL_STORAGE.EVM_TOKEN_IMPORTS
+        : LOCAL_STORAGE.XVM_TOKEN_IMPORTS;
+      const handler = isH160.value ? handleUpdateEvmAssets : handleUpdateXvmAssets;
+      return { event, handler };
     };
 
     // Memo: triggered after users have imported custom ERC20/XVM tokens
-    const handleImportingCustomToken = async (): Promise<void> => {
-      if (isH160.value) {
-        window.addEventListener(LOCAL_STORAGE.EVM_TOKEN_IMPORTS, () => {
-          handleUpdateEvmAssets();
-        });
-      } else {
-        window.addEventListener(LOCAL_STORAGE.XVM_TOKEN_IMPORTS, () => {
-          if (currentAccount.value) {
-            store.dispatch('assets/getXvmAssets', {
-              currentAccount: currentAccount.value,
-              isFetchUsd: isMainnet.value,
-              srcChainId: evmNetworkIdx.value,
-            });
-          }
-        });
-      }
+    const handleImportingCustomToken = (): void => {
+      const { handler, event } = getAssetEventAndHandler();
+      window.addEventListener(event, handler);
     };
 
     watch([currentAccount, evmNetworkIdx], handleUpdateNativeTokenAssets, { immediate: true });
-    watch([currentAccount], handleUpdateEvmAssets, { immediate: true });
+    watch([currentAccount], handleUpdateEvmAssets, { immediate: isH160.value });
     watchEffect(handleImportingCustomToken);
 
     const isEnableXcm = computed(
@@ -133,6 +140,11 @@ export default defineComponent({
     };
 
     watch([evmAssets, xcmAssets, isH160, isMainnet], handleEvmAssetLoader, { immediate: true });
+
+    onUnmounted(() => {
+      const { handler, event } = getAssetEventAndHandler();
+      window.removeEventListener(event, handler);
+    });
 
     return {
       evmAssets,
