@@ -63,12 +63,13 @@ export const updateAccountHistories = ({
 
   const histories = localStorage.getItem(storageKey);
   const historiesData = histories ? JSON.parse(histories) : {};
+  const networkName = network === 'shibuya-testnet' ? 'shibuya' : network;
 
   if (historiesData.hasOwnProperty(address)) {
     const addressData = historiesData[address];
-    newDataObj = { ...historiesData, [address]: { ...addressData, [network]: txs } };
+    newDataObj = { ...historiesData, [address]: { ...addressData, [networkName]: txs } };
   } else {
-    const newData = { [network]: txs };
+    const newData = { [networkName]: txs };
     newDataObj = { ...historiesData, [address]: newData };
   }
   localStorage.setItem(storageKey, JSON.stringify(newDataObj));

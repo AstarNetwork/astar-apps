@@ -109,6 +109,25 @@ export const buildWeb3Instance = (chainId: EVM) => {
   return new Web3(new Web3.providers.HttpProvider(network.rpcUrls[0]));
 };
 
+export const getTokenDetails = async ({
+  tokenAddress,
+  srcChainId,
+}: {
+  tokenAddress: string;
+  srcChainId: number;
+}): Promise<{ decimals: string; symbol: string }> => {
+  const web3 = buildWeb3Instance(srcChainId);
+  if (!web3) {
+    throw Error(`Cannot create web3 instance with network id ${srcChainId}`);
+  }
+  const contract = new web3.eth.Contract(ABI as AbiItem[], tokenAddress);
+  const [decimals, symbol] = await Promise.all([
+    contract.methods.decimals().call(),
+    contract.methods.symbol().call(),
+  ]);
+  return { decimals, symbol };
+};
+
 export const getTokenBal = async ({
   address,
   tokenAddress,

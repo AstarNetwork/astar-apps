@@ -13,6 +13,7 @@ export {
   toSS58Address,
   sendNativeTokenTransaction,
   fetchErc20TokenInfo,
+  getTokenDetails,
 } from 'src/config/web3/utils';
 
 export { contractInstance, Staking } from 'src/config/web3/contracts';

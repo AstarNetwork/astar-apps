@@ -89,6 +89,7 @@ import {
   hotTopics,
   RecentHistory,
 } from 'src/modules/information';
+import { getXvmAssetsTransferHistories } from 'src/modules/information/recent-history';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
 
@@ -122,9 +123,18 @@ export default defineComponent({
       if (!currentAccount.value || !currentNetworkName.value) return;
       try {
         isLoadingTxHistories.value = true;
-        txHistories.value = await getTxHistories({
-          address: currentAccount.value,
-        });
+        const network = currentNetworkName.value.toLowerCase();
+        if (props.transferType === HistoryTxType.Xvm) {
+          txHistories.value = await getXvmAssetsTransferHistories({
+            address: currentAccount.value,
+            network,
+          });
+        } else {
+          txHistories.value = await getTxHistories({
+            address: currentAccount.value,
+            network,
+          });
+        }
       } catch (error) {
         console.error(error);
       } finally {
