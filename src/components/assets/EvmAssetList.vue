@@ -257,15 +257,15 @@ export default defineComponent({
       searchXcm.value = event.target.value;
     };
 
-    const updateStates = async (): Promise<void> => {
+    const updateStates = async (nativeTokenUsd: number): Promise<void> => {
       if (isLoading.value || !nativeTokenSymbol.value || !isH160.value || !$web3.value) return;
       try {
         const balWei = await getBalance($web3.value!, currentAccount.value);
         bal.value = Number(ethers.utils.formatEther(balWei));
         isShibuya.value = nativeTokenSymbol.value === 'SBY';
         isFaucet.value = isShibuya.value || faucetBalRequirement > bal.value;
-        if (nativeTokenUsd.value) {
-          balUsd.value = nativeTokenUsd.value * bal.value;
+        if (nativeTokenUsd) {
+          balUsd.value = nativeTokenUsd * bal.value;
         }
       } catch (error: any) {
         console.error(error.message);
@@ -284,7 +284,7 @@ export default defineComponent({
     });
 
     watchEffect(async () => {
-      await updateStates();
+      await updateStates(nativeTokenUsd.value);
     });
 
     return {
