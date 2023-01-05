@@ -164,4 +164,33 @@ export class DappStakingService implements IDappStakingService {
 
     return await this.dappStakingRepository.getLedger(accountAddress);
   }
+
+  public async canClaimRewardWithoutErrors(accountAddress: string): Promise<boolean> {
+    Guard.ThrowIfUndefined('accountAddress', accountAddress);
+
+    const ledger = await this.dappStakingRepository.getLedger(accountAddress);
+
+    if (ledger.rewardDestination === 'StakeBalance') {
+      const currentEra = await this.dappStakingRepository.getCurrentEra();
+      const constants = await this.dappStakingRepository.getConstants();
+      const stakerInfo = await this.dappStakingRepository.getGeneralStakerInfo(
+        accountAddress,
+        accountAddress
+      );
+
+      for (const [_, info] of stakerInfo) {
+        const stakes = info.stakes;
+        if (stakes.length === constants.maxEraStakeValues) {
+          if (
+            stakes[1].era - stakes[0].era > 1 &&
+            stakes[constants.maxEraStakeValues - 1].era < currentEra.toNumber()
+          ) {
+            return false;
+          }
+        }
+      }
+    }
+
+    return true;
+  }
 }
