@@ -17,6 +17,7 @@
     padding-right: 24px;
   }
 }
+
 .wrapper--title {
   margin-left: 16px;
   margin-bottom: 32px;
@@ -25,11 +26,13 @@
   font-weight: 800;
   color: $gray-1;
   text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+
   .txt--title {
     font-size: 40px;
     line-height: 53px;
     letter-spacing: 0.1em;
   }
+
   .txt--subtitle {
     font-size: 24px;
     line-height: 27px;
@@ -38,6 +41,7 @@
 
 .wrapper--cards {
   display: flex;
+  position: relative;
   width: 100%;
   max-width: 1295px;
   flex-wrap: nowrap;
@@ -45,9 +49,11 @@
   overflow-y: hidden;
   column-gap: 16px;
   column-count: 4;
+
   &::-webkit-scrollbar {
     display: none;
   }
+
   @media (min-width: $md) {
     justify-content: space-between;
   }
@@ -86,8 +92,10 @@
     font-size: 14px;
     color: $gray-1;
   }
+
   .row--data {
     margin-top: 18px;
+
     .value {
       display: block;
       font-weight: 600;
@@ -100,10 +108,12 @@
         font-weight: 500;
         margin-left: 5px;
       }
+
       @media (min-width: $lg) {
         display: flex;
       }
     }
+
     .column--tvl {
       display: block;
       font-weight: 600;
@@ -119,6 +129,7 @@
         font-weight: 500;
         margin-left: 5px;
       }
+
       line-height: 24px;
       min-width: 160px;
       @media (min-width: $sm) {
@@ -126,6 +137,7 @@
         line-height: 18px;
       }
     }
+
     .loading {
       width: 150px;
     }
