@@ -32,7 +32,7 @@ export default defineComponent({
     store.dispatch(
       'general/showAlertMsg',
       {
-        msg: 'Test1',
+        msg: 'Completed at block hash : #0x06a146789e92cc724ba044e1f1c6c8d2aefb4e1f18da46166898d4d83a7deebf',
         alertType: AlertType.Success,
         txHash: '0x06a146789e92cc724ba044e1f1c6c8d2aefb4e1f18da46166898d4d83a7deebf',
       },

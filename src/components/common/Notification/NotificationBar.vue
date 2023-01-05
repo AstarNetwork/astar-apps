@@ -196,22 +196,19 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   align-items: center;
-
-  &:hover {
-    color: $astar-blue;
-    border-color: $astar-blue;
-  }
 }
 
 .message {
+  width: 310px;
   font-weight: 500;
   font-size: 14px;
-  line-height: 15px;
+  line-height: 20px;
   color: $gray-5-selected;
   text-align: left;
   padding-left: 12px;
   padding-right: 12px;
   margin-top: 8px;
+  word-break: break-all;
 }
 .btn--check {
   width: 90%;
