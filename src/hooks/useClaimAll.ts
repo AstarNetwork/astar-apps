@@ -10,7 +10,7 @@ import { useStore } from 'src/store';
 import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
 import { container } from 'src/v2/common';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
-import { IDappStakingRepository } from 'src/v2/repositories';
+import { IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { computed, ref, watchEffect } from 'vue';
 
@@ -66,6 +66,11 @@ export function useClaimAll() {
       batchTxs = filteredTxs.flat() as PayloadWithWeight[];
       canClaim.value = batchTxs.length > 0;
       amountOfEras.value = batchTxs.length;
+
+      const dappStakingService = container.get<IDappStakingService>(Symbols.DappStakingService);
+      canClaimWithoutError.value = await dappStakingService.canClaimRewardWithoutErrors(
+        senderAddress.value
+      );
     } catch (error: any) {
       console.error(error.message);
     } finally {
@@ -94,17 +99,6 @@ export function useClaimAll() {
 
       txsToExecute.push(tx.payload as ExtrinsicPayload);
       totalWeight = totalWeight.add(tx.weight);
-    }
-
-    // Temporary disable restaking reward to avoid possible claim errors.
-    const dappStakingRepository = container.get<IDappStakingRepository>(
-      Symbols.DappStakingRepository
-    );
-    const ledger = await dappStakingRepository.getLedger(senderAddress.value);
-
-    if (ledger.rewardDestination === RewardDestination.StakeBalance) {
-      txsToExecute.unshift(api.tx.dappsStaking.setRewardDestination(RewardDestination.FreeBalance));
-      txsToExecute.push(api.tx.dappsStaking.setRewardDestination(RewardDestination.StakeBalance));
     }
 
     console.info(

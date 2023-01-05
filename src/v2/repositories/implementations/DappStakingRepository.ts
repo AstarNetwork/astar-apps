@@ -8,12 +8,13 @@ import { injectable, inject } from 'inversify';
 import { IDappStakingRepository } from 'src/v2/repositories';
 import { IApi } from 'src/v2/integration';
 import { Symbols } from 'src/v2/symbols';
-import { ApiPromise } from '@polkadot/api';
+
 import {
   RewardDestination,
   SmartContract,
   SmartContractState,
   StakerInfo,
+  DappStakingConstants,
 } from 'src/v2/models/DappsStaking';
 import { EventAggregator, NewEraMessage } from 'src/v2/messaging';
 import { GeneralStakerInfo } from 'src/hooks/helper/claim';
@@ -87,7 +88,7 @@ export class DappStakingRepository implements IDappStakingRepository {
 
   public async getTvl(): Promise<BN> {
     const api = await this.api.getApi();
-    const era = await this.getCurrentEra(api);
+    const era = await this.getCurrentEra();
     const result = await api.query.dappsStaking.generalEraInfo<Option<EraInfo>>(era);
 
     return result.unwrap().locked.toBn();
@@ -151,7 +152,7 @@ export class DappStakingRepository implements IDappStakingRepository {
     walletAddress: string
   ): Promise<StakerInfo[]> {
     const api = await this.api.getApi();
-    const currentEra = await this.getCurrentEra(api);
+    const currentEra = await this.getCurrentEra();
 
     const eraStakes = await api.queryMulti<Option<ContractStakeInfo>[]>(
       contractAddresses.map((address) => {
@@ -280,6 +281,34 @@ export class DappStakingRepository implements IDappStakingRepository {
     };
   }
 
+  public async getConstants(): Promise<DappStakingConstants> {
+    const api = await this.api.getApi();
+    const maxEraStakeValues = Number(api.consts.dappsStaking.maxEraStakeValues.toString());
+
+    return {
+      maxEraStakeValues,
+    };
+  }
+
+  public async getGeneralStakerInfo(
+    stakerAddress: string,
+    contractAddress: string
+  ): Promise<Map<string, GeneralStakerInfo>> {
+    Guard.ThrowIfUndefined('contractAddress', contractAddress);
+    Guard.ThrowIfUndefined('stakerAddress', stakerAddress);
+
+    const result = new Map<string, GeneralStakerInfo>();
+    const api = await this.api.getApi();
+    const stakerInfos = await api.query.dappsStaking.generalStakerInfo.entries(stakerAddress);
+    stakerInfos.forEach(([key, stakerInfo]) => {
+      const contractAddress = key.args[1].toString();
+      const info = stakerInfo.toHuman() as unknown as GeneralStakerInfo;
+      result.set(contractAddress, info);
+    });
+
+    return result;
+  }
+
   public async getApr(network: string): Promise<{ apr: number; apy: number }> {
     Guard.ThrowIfUndefined('network', network);
 
@@ -292,7 +321,9 @@ export class DappStakingRepository implements IDappStakingRepository {
     return { apr, apy };
   }
 
-  private async getCurrentEra(api: ApiPromise): Promise<u32> {
+  public async getCurrentEra(): Promise<u32> {
+    const api = await this.api.getApi();
+
     return await api.query.dappsStaking.currentEra<u32>();
   }
 
