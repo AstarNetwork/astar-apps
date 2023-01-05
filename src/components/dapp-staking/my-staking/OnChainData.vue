@@ -93,7 +93,7 @@
 import { useBreakpoints, useNetworkInfo } from 'src/hooks';
 import { defineComponent, computed, watchEffect, ref } from 'vue';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
-import { DappCombinedInfo } from 'src/v2/models';
+import { DappCombinedInfo, SmartContractState } from 'src/v2/models';
 import { useStore } from 'src/store';
 import { paginate } from 'src/hooks/helper/common';
 
@@ -196,6 +196,10 @@ export default defineComponent({
       if (!dapps.value) return;
       const data = dapps.value
         .map((it) => {
+          if (it.contract.state === SmartContractState.Unregistered) {
+            return undefined;
+          }
+
           if (it.dapp && it.stakerInfo) {
             const balance = getBalance(it);
             return {
