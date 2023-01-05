@@ -2,11 +2,12 @@ import { ApiPromise, WsProvider } from '@polkadot/api';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { wait } from 'src/hooks/helper/common';
-import { ScProvider, WellKnownChain } from '@polkadot/rpc-provider/substrate-connect';
+import { ScProvider } from '@polkadot/rpc-provider/substrate-connect';
 import jsonParachainSpecAstar from './chain-specs/astar.json';
 import jsonParachainSpecShiden from './chain-specs/shiden.json';
 import jsonParachainSpecShibuya from './chain-specs/shibuya.json';
 import jsonParachainSpecTokyo from './chain-specs/tokyo.json';
+import { WellKnownChain } from '@substrate/connect';
 
 const RES_INVALID_CONNECTION = 'invalid connection';
 const RES_CONNECTED_API = 'connected';
