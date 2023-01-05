@@ -63,8 +63,10 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
             tip,
           },
           (result) => {
+            console.log('result', result);
             try {
-              if (result.isFinalized) {
+              // if (result.isFinalized) {
+              if (result.isCompleted) {
                 if (!this.isExtrinsicFailed(result.events)) {
                   this.eventAggregator.publish(
                     new ExtrinsicStatusMessage(
