@@ -8,7 +8,7 @@
             <div class="token-logo">
               <jazzicon
                 v-if="token.tokenImage.includes('custom-token')"
-                :address="token.id"
+                :address="token.mappedERC20Addr"
                 :diameter="24"
               />
               <img v-else :src="token.tokenImage" alt="logo" />
@@ -24,7 +24,7 @@
             <div class="column__box">
               <div class="text--accent">
                 <span>
-                  <TokenBalance
+                  <token-balance
                     :balance="String(token.userBalance)"
                     :symbol="token.metadata.symbol"
                   />

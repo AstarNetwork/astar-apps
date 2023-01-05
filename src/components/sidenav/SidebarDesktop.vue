@@ -1,7 +1,7 @@
 <template>
   <div class="sidebar">
     <div class="icon">
-      <Logo />
+      <logo />
     </div>
     <nav class="menu">
       <div>
@@ -61,10 +61,10 @@
     </nav>
 
     <div class="wrapper--bottom">
-      <SocialMediaLinks />
+      <social-media-links />
       <div class="wrapper--option">
-        <LightDarkMode />
-        <LocaleChanger />
+        <light-dark-mode />
+        <locale-changer />
       </div>
     </div>
   </div>

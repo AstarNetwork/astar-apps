@@ -31,6 +31,14 @@ export interface TransferDetail {
   timestamp: number;
 }
 
+export interface XvmAssetsTransferHistory {
+  timestamp: number;
+  extrinsicHash: string;
+  destination: string;
+  amount: string;
+  erc20Address: string;
+}
+
 export interface StatsDetail {
   era: string;
   timestamp: string;

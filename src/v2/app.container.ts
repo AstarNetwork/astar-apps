@@ -10,6 +10,7 @@ import {
   ISystemRepository,
   IXcmRepository,
   IEvmAssetsRepository,
+  IXvmRepository,
   ITokenTransferRepository,
 } from './repositories';
 import {
@@ -32,6 +33,7 @@ import {
   IEvmAssetsService,
   ITokenTransferService,
   WalletType,
+  IXvmService,
 } from './services';
 import {
   DappStakingService,
@@ -51,6 +53,8 @@ import { ITypeFactory, TypeFactory, TypeMapping } from './config/types';
 import { XcmRepositoryConfiguration } from './config/xcm/XcmRepositoryConfiguration';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { xcmToken, XcmTokenInformation } from 'src/modules/xcm';
+import { XvmRepository } from 'src/v2/repositories/implementations/XvmRepository';
+import { XvmService } from 'src/v2/services/implementations/XvmService';
 
 let currentWalletType = WalletType.Polkadot;
 let currentWalletName = '';
@@ -93,6 +97,7 @@ export default function buildDependencyContainer(network: endpointKey): void {
   container.addTransient<ISystemRepository>(SystemRepository, Symbols.SystemRepository);
   container.addTransient<IEthCallRepository>(EthCallRepository, Symbols.EthCallRepository);
   container.addTransient<IXcmRepository>(XcmRepository, Symbols.XcmRepository);
+  container.addTransient<IXvmRepository>(XvmRepository, Symbols.XvmRepository);
   container.addTransient<IEvmAssetsRepository>(EvmAssetsRepository, Symbols.EvmAssetsRepository);
   container.addTransient<ITokenTransferRepository>(
     TokenTransferRepository,
@@ -105,6 +110,7 @@ export default function buildDependencyContainer(network: endpointKey): void {
   container.addTransient<IDappStakingService>(DappStakingService, Symbols.DappStakingService);
   container.addSingleton<IGasPriceProvider>(GasPriceProvider, Symbols.GasPriceProvider); // Singleton because it listens and caches gas/tip prices.
   container.addTransient<IXcmService>(XcmService, Symbols.XcmService);
+  container.addTransient<IXvmService>(XvmService, Symbols.XvmService);
   container.addTransient<IXcmEvmService>(XcmEvmService, Symbols.XcmEvmService);
   container.addTransient<IEvmAssetsService>(EvmAssetsService, Symbols.EvmAssetsService);
   container.addTransient<IBalanceFormatterService>(

@@ -15,6 +15,14 @@
           $t('assets.modals.faucetIntro', { symbol: nativeTokenSymbol })
         }}</span>
       </div>
+      <div class="row--faucet-balance">
+        <span class="text--md">{{
+          $t('assets.modals.faucetBalance', {
+            amount: $n(truncate(faucetHotWalletBalance)),
+            symbol: nativeTokenSymbol,
+          })
+        }}</span>
+      </div>
       <div class="box--faucet-amount">
         <div class="box__column-amount">
           <span class="text--accent">{{ $t('assets.modals.youWillReceive') }}</span>
@@ -35,17 +43,27 @@
           }}</span
         >
       </div>
-      <vue-recaptcha
-        v-show="isAbleToFaucet"
-        ref="vueRecaptcha"
-        :sitekey="RECAPCHA_SITE_KEY"
-        size="normal"
-        :theme="isDarkTheme ? 'dark' : 'light'"
-        @verify="recaptchaVerified"
-        @expire="recaptchaExpired"
-        @fail="recaptchaFailed"
-      >
-      </vue-recaptcha>
+      <div class="row--recaptcha">
+        <vue-recaptcha
+          v-show="isAbleToFaucet"
+          ref="vueRecaptcha"
+          :sitekey="RECAPCHA_SITE_KEY"
+          size="normal"
+          :theme="isDarkTheme ? 'dark' : 'light'"
+          @verify="recaptchaVerified"
+          @expire="recaptchaExpired"
+          @fail="recaptchaFailed"
+        >
+        </vue-recaptcha>
+      </div>
+
+      <div v-if="faucetAmount > Number(faucetHotWalletBalance)" class="row--box-error">
+        <a :href="socialUrl.discord" target="_blank" rel="noopener noreferrer">
+          <span class="color--white">
+            {{ $t('assets.modals.faucetDriedOut') }}
+          </span>
+        </a>
+      </div>
       <div v-if="isAbleToFaucet" class="wrapper__row--button">
         <astar-button :disabled="!recaptchaResponse" class="button--confirm" @click="handleRequest">
           {{ $t('confirm') }}
@@ -63,6 +81,8 @@ import vueRecaptcha from 'vue3-recaptcha2';
 import { RECAPCHA_SITE_KEY } from 'src/config/recapcha';
 import { useStore } from 'src/store';
 import ModalWrapper from 'src/components/common/ModalWrapper.vue';
+import { truncate } from 'src/hooks/helper/common';
+import { socialUrl } from 'src/links';
 
 export default defineComponent({
   components: {
@@ -88,8 +108,15 @@ export default defineComponent({
     const { nativeTokenSymbol } = useNetworkInfo();
 
     const isModalFaucet = computed<boolean>(() => props.isModalFaucet);
-    const { requestFaucet, isLoading, unit, isAbleToFaucet, countDown, faucetAmount } =
-      useFaucet(isModalFaucet);
+    const {
+      requestFaucet,
+      isLoading,
+      unit,
+      isAbleToFaucet,
+      countDown,
+      faucetAmount,
+      faucetHotWalletBalance,
+    } = useFaucet(isModalFaucet);
 
     const closeModal = async (): Promise<void> => {
       isClosingModal.value = true;
@@ -133,6 +160,9 @@ export default defineComponent({
       recaptchaResponse,
       isDarkTheme,
       nativeTokenSymbol,
+      faucetHotWalletBalance,
+      socialUrl,
+      truncate,
       closeModal,
       handleRequest,
       recaptchaVerified,

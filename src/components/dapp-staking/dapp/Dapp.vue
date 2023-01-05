@@ -9,10 +9,11 @@
       <project-overview :dapp="dapp" />
       <project-details :dapp="dapp" />
     </div>
-    <dapp-stats-charts :dapp="dapp" />
+    <!-- Todo: uncomment when API is ready to get data -->
+    <!-- <dapp-stats-charts :dapp="dapp" /> -->
     <div class="bottom--links">
       <router-link :to="buildStakePageLink(dapp.dapp.address)">
-        <astar-irregular-button height="28" class="btn--stake-switch">
+        <astar-irregular-button :height="28" class="btn--stake-switch">
           {{ $t('dappStaking.dappPage.stakeOrSwitchTo') }} {{ dapp.dapp.name }}
         </astar-irregular-button>
       </router-link>
@@ -47,7 +48,7 @@ export default defineComponent({
     ProjectOverview,
     ProjectDetails,
     BackToPage,
-    DappStatsCharts,
+    // DappStatsCharts,
   },
   setup() {
     const route = useRoute();

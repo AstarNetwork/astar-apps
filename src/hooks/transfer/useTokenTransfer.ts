@@ -1,6 +1,6 @@
 import { $api, $web3 } from 'boot/api';
 import { ethers } from 'ethers';
-import ABI from 'src/c-bridge/abi/ERC20.json';
+import ABI from 'src/config/abi/ERC20.json';
 import { getTokenBal, isValidEvmAddress, toSS58Address } from 'src/config/web3';
 import { useGasPrice, useNetworkInfo } from 'src/hooks';
 import {

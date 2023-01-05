@@ -62,9 +62,9 @@ const fallbackConnection = async ({
   const filteredEndpoints = providerEndpoints[networkIdx].endpoints.filter((it) => {
     return it.endpoint !== endpoint && !checkIsLightClient(it.endpoint);
   });
-  if (1 >= filteredEndpoints.length) {
-    return window.location.reload();
-  }
+  // if (1 >= filteredEndpoints.length) {
+  //   return window.location.reload();
+  // }
 
   for await (let it of filteredEndpoints) {
     try {
@@ -124,6 +124,7 @@ export async function connectApi(
   store.commit('general/setCurrentNetworkStatus', 'connecting');
   store.commit('general/setLoading', true);
 
+  api.on('error', (error: Error) => console.error(error.message));
   try {
     if (checkIsLightClient(endpoint)) {
       const parachainSpec = getParachainSpec(networkIdx);

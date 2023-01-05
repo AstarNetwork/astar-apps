@@ -25,7 +25,7 @@
             <div class="column--balance">
               <div class="column__box">
                 <div v-if="!isSkeleton" class="text--accent">
-                  <TokenBalance :balance="String(bal)" :symbol="nativeTokenSymbol" />
+                  <token-balance :balance="String(bal)" :symbol="nativeTokenSymbol" />
                 </div>
                 <div v-else class="skeleton--right">
                   <q-skeleton animation="fade" class="skeleton--md" />
@@ -54,7 +54,7 @@
             <div class="column--balance">
               <div v-if="!isSkeleton" class="column__box">
                 <span class="text--value">
-                  <TokenBalance :balance="transferableBalance" :symbol="nativeTokenSymbol" />
+                  <token-balance :balance="transferableBalance" :symbol="nativeTokenSymbol" />
                 </span>
               </div>
               <div v-else class="column__box">
@@ -81,7 +81,7 @@
             <div class="column--balance">
               <div v-if="!isSkeleton" class="column__box">
                 <span class="text--value">
-                  <TokenBalance :balance="String(numEvmDeposit)" :symbol="nativeTokenSymbol" />
+                  <token-balance :balance="String(numEvmDeposit)" :symbol="nativeTokenSymbol" />
                 </span>
               </div>
               <div v-else class="column__box">
@@ -106,7 +106,7 @@
             <div class="column--balance">
               <div v-if="!isSkeleton" class="column__box">
                 <span class="text--value">
-                  <TokenBalance :balance="String(vestingTtl)" :symbol="nativeTokenSymbol" />
+                  <token-balance :balance="String(vestingTtl)" :symbol="nativeTokenSymbol" />
                 </span>
               </div>
               <div v-else class="column__box">
@@ -131,7 +131,7 @@
             <div class="column--balance">
               <div v-if="!isSkeleton" class="column__box">
                 <span class="text--value">
-                  <TokenBalance :balance="String(lockInDappStaking)" :symbol="nativeTokenSymbol" />
+                  <token-balance :balance="String(lockInDappStaking)" :symbol="nativeTokenSymbol" />
                 </span>
               </div>
               <div v-else class="column__box">
@@ -150,13 +150,13 @@
       </div>
     </div>
 
-    <ModalFaucet :is-modal-faucet="isModalFaucet" :handle-modal-faucet="handleModalFaucet" />
-    <ModalEvmWithdraw
+    <modal-faucet :is-modal-faucet="isModalFaucet" :handle-modal-faucet="handleModalFaucet" />
+    <modal-evm-withdraw
       :is-modal-evm-withdraw="isModalEvmWithdraw"
       :handle-modal-evm-withdraw="handleModalEvmWithdraw"
       :native-token-symbol="nativeTokenSymbol"
     />
-    <ModalVesting
+    <modal-vesting
       :is-modal-vesting="isModalVesting"
       :handle-modal-vesting="handleModalVesting"
       :native-token-symbol="nativeTokenSymbol"
@@ -179,6 +179,7 @@ import ModalFaucet from 'src/components/assets/modals/ModalFaucet.vue';
 import ModalVesting from 'src/components/assets/modals/ModalVesting.vue';
 import { Path } from 'src/router';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
+import { faucetBalRequirement } from 'src/config/wallets';
 
 export default defineComponent({
   components: {
@@ -198,9 +199,6 @@ export default defineComponent({
     const lockInDappStaking = ref<number>(0);
     const isShibuya = ref<boolean>(false);
     const isFaucet = ref<boolean>(false);
-    // Memo: defined by hard-coding to avoid sending too many requests to faucet API server
-    // Ref: https://github.com/AstarNetwork/astar-faucet-bot/blob/main/src/clients/astar.ts#L207
-    const mainnetFaucetAmount = 0.002 / 2;
 
     const store = useStore();
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
@@ -208,7 +206,7 @@ export default defineComponent({
     const { balance, accountData, isLoadingBalance } = useBalance(selectedAddress);
     const { numEvmDeposit } = useEvmDeposit();
     const { nativeTokenUsd } = usePrice();
-    const { currentNetworkName, nativeTokenSymbol } = useNetworkInfo();
+    const { currentNetworkName, nativeTokenSymbol, isSupportXvmTransfer } = useNetworkInfo();
 
     const xcmNativeToken = computed(() => generateAstarNativeTokenObject(nativeTokenSymbol.value));
 
@@ -242,7 +240,7 @@ export default defineComponent({
       try {
         isShibuya.value = tokenSymbolRef === 'SBY';
         bal.value = Number(ethers.utils.formatEther(balance.value.toString()));
-        isFaucet.value = isShibuya.value || mainnetFaucetAmount > bal.value;
+        isFaucet.value = isShibuya.value || faucetBalRequirement > bal.value;
         if (nativeTokenUsd.value) {
           balUsd.value = nativeTokenUsd.value * bal.value;
         } else {
@@ -277,7 +275,6 @@ export default defineComponent({
       currentNetworkName,
       numEvmDeposit,
       isShibuya,
-      mainnetFaucetAmount,
       vestingTtl,
       lockInDappStaking,
       isFaucet,
@@ -292,6 +289,7 @@ export default defineComponent({
       isLoading,
       Path,
       isSkeleton,
+      isSupportXvmTransfer,
       buildTransferPageLink,
       handleModalVesting,
       handleModalFaucet,

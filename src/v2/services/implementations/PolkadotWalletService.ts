@@ -45,7 +45,7 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
     let result: string | null = null;
     try {
       return new Promise<string>(async (resolve) => {
-        !isMobileDevice && this.detectExtensionsAction();
+        !isMobileDevice && this.detectExtensionsAction(true);
         await this.checkExtension();
         let tip = transactionTip?.toString();
         if (!tip) {
@@ -77,6 +77,7 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
                 }
 
                 this.eventAggregator.publish(new BusyMessage(false));
+                !isMobileDevice && this.detectExtensionsAction(false);
                 resolve(extrinsic.hash.toHex());
               } else {
                 if (isMobileDevice && !result.isCompleted) {
@@ -148,12 +149,12 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
   // Fixme: doesn't work on MathWallet Mobile
   // Ref: https://github.com/polkadot-js/extension/issues/674
   // Ref: https://github.com/polkadot-js/extension/blob/297b2af14c68574b24bb8fdeda2208c473eccf43/packages/extension/src/page.ts#L10-L22
-  private detectExtensionsAction(): void {
-    window.addEventListener('message', ({ data, source }): void => {
+  private detectExtensionsAction(isMonitorExtension: boolean): void {
+    const handleDetectSign = (listener: any): void => {
+      const { source, data } = listener;
       if (source !== window || !data.origin) {
         return;
       }
-
       if (data.id) {
         if (data.response && data.response.hasOwnProperty('signature')) {
           this.eventAggregator.publish(new BusyMessage(true));
@@ -165,6 +166,33 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
           throw Error(data.error);
         }
       }
-    });
+    };
+
+    isMonitorExtension
+      ? window.addEventListener('message', handleDetectSign)
+      : window.removeEventListener('message', handleDetectSign);
+
+    // if (isMonitorExtension) {
+    //   window.addEventListener('message', handleDetectSign);
+    // } else {
+    //   window.removeEventListener('message', handleDetectSign);
+    // }
+    // window.addEventListener('message', ({ data, source }): void => {
+    //   if (source !== window || !data.origin) {
+    //     return;
+    //   }
+
+    //   if (data.id) {
+    //     if (data.response && data.response.hasOwnProperty('signature')) {
+    //       this.eventAggregator.publish(new BusyMessage(true));
+    //       return;
+    //     }
+    //     // Memo: detect if the transaction was canceled by users
+    //     if (data.error === 'Cancelled') {
+    //       this.eventAggregator.publish(new BusyMessage(false));
+    //       throw Error(data.error);
+    //     }
+    //   }
+    // });
   }
 }

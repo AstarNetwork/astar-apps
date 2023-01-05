@@ -10,6 +10,7 @@ export default {
   add: 'Add',
   estimated: 'Estimated',
   forget: 'Forget',
+  remove: 'Remove',
   close: 'Close',
   manage: 'Manage',
   subscan: 'Subscan',
@@ -41,7 +42,7 @@ export default {
     alphabeticalZtoA: 'Alphabetical: Z to A',
   },
   warning: {
-    insufficientBalance: 'Insufficient balance',
+    insufficientBalance: 'Insufficient {token} balance',
     insufficientFee: 'Warning! Transaction might failed due to insufficient fee',
     inputtedInvalidDestAddress: 'Inputted invalid destination address',
     inputtedInvalidAddress: 'Inputted invalid address',
@@ -210,6 +211,8 @@ export default {
     dappStakingEvm: 'dApp Staking is available on EVM',
     onChainData: 'On-Chain Data',
     stakingTvl: 'Staking TVL',
+    cantClaimWihtoutError:
+      'You cannot claim with automatic re-stake because it is been a while since you claimed your rewards. Please turn off the Auto Re-Stake feature to be able to claim. After you claimed rewards you can turn on re-stake again. The UI team is working to fix this issue.',
     stakePage: {
       backToDappList: 'Back to dApps list',
       whereFundsFrom: 'Where would you like to bring you funds from?',
@@ -306,6 +309,7 @@ export default {
   assets: {
     assets: 'Assets',
     xcmAssets: 'XCM Assets',
+    xvmAssets: 'XVM ERC20 Assets',
     nativeAccount: 'Native Account',
     evmAccount: 'EVM Account',
     switchToNative: 'Switch to Lockdrop',
@@ -334,6 +338,8 @@ export default {
     connectNetwork: 'Connect to {network} RPC',
     invalidAddress: 'The address is not valid',
     importTokens: 'Import tokens',
+    importXvmTokens: 'Import ERC20 tokens via XVM',
+    importErc20Tokens: 'Import ERC20 tokens',
     hideSmallBalances: 'Hide small balances',
     unhideSmallBalances: 'Unhide small balances',
     tokenHasBeenAdded: 'The token has been added already',
@@ -361,8 +367,10 @@ export default {
       faucetNextRequest: 'Time left until the next request',
       countDown: '{hrs} hrs {mins} mins {secs} secs',
       whatIsFaucet: ' What is faucet and how does it help you?',
+      faucetBalance: 'Faucet Balance: {amount} {symbol}',
       faucetIntro:
         'There is a small fee for each transaction, and this is paid using {symbol} tokens. If you have no {symbol} in your account, you cannot send any tokens. Faucet sends enough {symbol} to cover the transaction fee.',
+      faucetDriedOut: 'Faucet id dried out. Please report to one of our team members in Discord',
       availableToWithdraw: 'Available to withdraw',
       totalDistribution: 'Total Distribution',
       alreadyVested: 'Already vested',
@@ -376,9 +384,13 @@ export default {
       depositToNative: 'Deposit to Native',
       depositToEvm: 'Deposit to EVM',
       evmWalletAddress: 'EVM Wallet Address',
+      howToImportXvmTokens: 'Find out how to import ERC20 tokens via XVM',
       riskOfImportTokens:
         'Please be aware of the risk that anyone can create a token, including creating fake versions of existing tokens.',
       tokenContractAddress: 'Token Contract Address',
+      erc20ContractAddress: 'ERC20 Token Contract Address',
+      xvmPsp22ContractAddress: 'XVM PSP22 Contract Address',
+      evmErc20ContractAddress: 'XVM ERC20 Contract Address',
       tipDestAddressFormat: 'Where can I find my {chain} address?',
       titleWithdraw: 'Withdraw {token}',
       titleVesting: 'Vesting info',

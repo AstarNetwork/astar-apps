@@ -9,7 +9,7 @@
         </div>
         <div>
           <span class="text--statistics-value">
-            <TokenBalance
+            <token-balance
               :balance="dapp.stakerInfo.totalStakeFormatted"
               :symbol="nativeTokenSymbol"
             />

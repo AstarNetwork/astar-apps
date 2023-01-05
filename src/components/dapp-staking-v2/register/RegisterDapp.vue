@@ -68,9 +68,9 @@
         <tags :dapp="data" class="component" />
         <license :dapp="data" class="component" />
         <div class="button--container">
-          <Button :width="328" :height="52" @click="handleSubmit">
+          <button :width="328" :height="52" @click="handleSubmit">
             {{ $t('dappStaking.modals.submit') }}
-          </Button>
+          </button>
         </div>
       </div>
     </q-form>
@@ -121,7 +121,6 @@ export default defineComponent({
     ContractTypes,
     MainCategory,
     License,
-    Button,
     Tags,
     BackToPage,
     WelcomeBanner,

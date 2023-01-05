@@ -1,11 +1,15 @@
 @import 'src/css/quasar.variables.scss';
 
 .wrapper--modal {
-  padding: 46px 4px;
+  padding: 0px 4px;
   padding-bottom: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  @media (min-width: $sm) {
+    align-items: flex-start;
+    padding-bottom: 8px;
+  }
 }
 
 .body--dark {

@@ -11,7 +11,7 @@ import { TransactionConfig } from 'web3-eth';
 import Web3 from 'web3';
 import { getEvmGas } from 'src/modules/gas-api';
 import { AbiItem } from 'web3-utils';
-import ERC20_ABI from 'src/c-bridge/abi/ERC20.json';
+import ERC20_ABI from 'src/config/abi/ERC20.json';
 import { IGasPriceProvider } from 'src/v2/services';
 import { ethers } from 'ethers';
 @injectable()

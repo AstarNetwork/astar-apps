@@ -100,7 +100,7 @@ import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { getRandomFromArray, wait } from 'src/hooks/helper/common';
 import { buildNetworkUrl } from 'src/router/utils';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, watch } from 'vue';
+import { computed, defineComponent, ref, watch, onUnmounted } from 'vue';
 
 export default defineComponent({
   props: {
@@ -287,6 +287,10 @@ export default defineComponent({
 
     window.addEventListener('resize', onHeightChange);
     onHeightChange();
+
+    onUnmounted(() => {
+      window.removeEventListener('resize', onHeightChange);
+    });
 
     return {
       closeModal,

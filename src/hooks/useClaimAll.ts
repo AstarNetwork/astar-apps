@@ -11,7 +11,6 @@ import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
 import { container } from 'src/v2/common';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { IDappStakingRepository } from 'src/v2/repositories';
-import { IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { computed, ref, watchEffect } from 'vue';
 
@@ -21,7 +20,7 @@ export function useClaimAll() {
   let batchTxs: PayloadWithWeight[] = [];
   const amountOfEras = ref<number>(0);
   const canClaim = ref<boolean>(false);
-  const canClaimWithoutError = ref<boolean>(false);
+  const canClaimWithoutError = ref<boolean>(true);
   const isLoading = ref<boolean>(true);
   const store = useStore();
   const senderAddress = computed(() => store.getters['general/selectedAddress']);
