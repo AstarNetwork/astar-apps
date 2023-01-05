@@ -20,6 +20,7 @@ import { useNetworkInfo } from 'src/hooks';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { AlertType } from 'src/store/general/state';
 import { useStore } from 'src/store';
+import { useI18n } from 'vue-i18n';
 import NotificationBar from './NotificationBar.vue';
 
 export default defineComponent({
@@ -28,11 +29,17 @@ export default defineComponent({
     const store = useStore();
     const alertStack = computed(() => store.getters['general/alertStack']);
 
+    const { t } = useI18n();
     //TODO: Remove this, only for testing :
     store.dispatch(
       'general/showAlertMsg',
       {
-        msg: 'Completed at block hash : #0x06a146789e92cc724ba044e1f1c6c8d2aefb4e1f18da46166898d4d83a7deebf',
+        msg: t('toast.completedMessage', {
+          hash: '0x06a146789e92cc724ba044e1f1c6c8d2aefb4e1f18da46166898d4d83a7deebf',
+          symbol: 'ASTR',
+          transferAmt: 0.1,
+          toAddress: 'YhJZ1TsoX41sJKNajMTuHYJ5cUF5KyEV6zSjf2K5KeGvzL3',
+        }),
         alertType: AlertType.Success,
         txHash: '0x06a146789e92cc724ba044e1f1c6c8d2aefb4e1f18da46166898d4d83a7deebf',
       },
@@ -98,7 +105,6 @@ export default defineComponent({
   right: 0;
   margin: auto;
   width: 340px;
-  height: 100%;
   text-align: center;
   gap: 10px;
   @media (min-width: $md) {
