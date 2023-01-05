@@ -1,0 +1,8 @@
+{
+  "canisters": {
+    "website": {
+      "type": "assets",
+      "source": ["dist/spa"]
+    }
+  }
+}

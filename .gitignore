@@ -35,3 +35,6 @@ yarn-error.log*
 
 # Firebase cache
 .firebase/
+
+# ICP dfx
+.dfx/
