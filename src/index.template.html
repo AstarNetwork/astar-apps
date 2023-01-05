@@ -68,6 +68,8 @@
       integrity="sha384-jLKHWM3JRmfMU0A5x5AkjWkw/EYfGUAGagvnfryNV3F9VqM98XiIH7VBGVoxVSc7"
       crossorigin="anonymous"
     />
+    <link rel="stylesheet" href="index.template.css" />
+    <script src="index.template.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/odometer.js"></script>
     <meta name="msapplication-TileColor" content="#ffffff" />
     <meta name="theme-color" content="#ffffff" />
@@ -94,7 +96,7 @@
     </script>
     <!-- End Twitter universal website tag code -->
   </head>
-  <body>
+  <body onLoad="initSplashText()">
     <!-- Google Tag Manager (noscript) -->
     <noscript>
       <iframe
@@ -106,6 +108,12 @@
     </noscript>
     <!-- End Google Tag Manager (noscript) -->
 
+    <!-- Splash screen -->
+    <div id="splash">
+      <!-- <img id="bg-image" class="background" src="images/splash.png" /> -->
+      <div id="overlay">&nbsp;</div>
+      <div id="splash-text"></div>
+    </div>
     <!-- DO NOT touch the following DIV -->
     <div id="q-app"></div>
   </body>

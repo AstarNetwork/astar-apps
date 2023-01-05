@@ -5,3 +5,4 @@ export * from './ISystemRepository';
 export * from './IEthCallRepository';
 export * from './IXcmRepository';
 export * from './IEvmAssetsRepository';
+export * from './ITokenTransferRepository';

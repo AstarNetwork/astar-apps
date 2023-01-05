@@ -104,6 +104,13 @@ export default defineComponent({
       setCurrentWallet(isEthWallet.value, currentWallet.value);
     });
 
+    const removeSplashScreen = () => {
+      var elem = document.getElementById('splash');
+      elem?.remove();
+    };
+
+    removeSplashScreen();
+
     return {
       isLoading,
       showAlert,
