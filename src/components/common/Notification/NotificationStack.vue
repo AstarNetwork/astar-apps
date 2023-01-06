@@ -20,7 +20,6 @@ import { useNetworkInfo } from 'src/hooks';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { AlertType } from 'src/store/general/state';
 import { useStore } from 'src/store';
-import { useI18n } from 'vue-i18n';
 import NotificationBar from './NotificationBar.vue';
 
 export default defineComponent({
@@ -28,43 +27,6 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const alertStack = computed(() => store.getters['general/alertStack']);
-
-    const { t } = useI18n();
-    //TODO: Remove this, only for testing :
-    store.dispatch(
-      'general/showAlertMsg',
-      {
-        msg: t('toast.completedMessage', {
-          hash: '0x06a146789e92cc724ba044e1f1c6c8d2aefb4e1f18da46166898d4d83a7deebf',
-          symbol: 'ASTR',
-          transferAmt: 0.1,
-          toAddress: 'YhJZ1TsoX41sJKNajMTuHYJ5cUF5KyEV6zSjf2K5KeGvzL3',
-        }),
-        alertType: AlertType.Success,
-        txHash: '0x06a146789e92cc724ba044e1f1c6c8d2aefb4e1f18da46166898d4d83a7deebf',
-      },
-      { root: true }
-    );
-    store.dispatch(
-      'general/showAlertMsg',
-      {
-        msg: 'Test2 - Warning',
-        alertType: AlertType.Warning,
-      },
-      { root: true }
-    );
-
-    setTimeout(() => {
-      store.dispatch(
-        'general/showAlertMsg',
-        {
-          msg: 'Test3 - Error',
-          alertType: AlertType.Error,
-        },
-        { root: true }
-      );
-    }, 2000);
-    ////
 
     const closeNoti = (index: number) => {
       store.dispatch(
