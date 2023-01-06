@@ -20,7 +20,7 @@
           {{ alertTypeTitle }}
         </div>
         <div v-if="showCloseBtn" class="column--close" @click="close">
-          <icon-close />
+          <astar-icon-close />
         </div>
       </div>
       <div>
@@ -38,11 +38,9 @@ import { AlertType } from 'src/store/general/state';
 import { useNetworkInfo } from 'src/hooks';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { defineComponent, toRefs, PropType, computed, ref } from 'vue';
-import IconClose from './IconClose.vue';
 
 export default defineComponent({
   name: 'NotificationBar',
-  components: { IconClose },
   props: {
     show: {
       type: Boolean,
@@ -79,7 +77,6 @@ export default defineComponent({
     const showCloseBtn = ref(false);
 
     const isSuccessType = computed(() => props.alertType === AlertType.Success);
-
     const { currentNetworkIdx } = useNetworkInfo();
     const isShiden = computed(() => currentNetworkIdx.value === endpointKey.SHIDEN);
     const goToSubscan = () => {
