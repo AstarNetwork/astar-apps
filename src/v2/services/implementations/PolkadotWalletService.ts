@@ -63,9 +63,8 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
             tip,
           },
           (result) => {
-            console.log('result', result);
             try {
-              // if (result.isFinalized) {
+              !isMobileDevice && this.detectExtensionsAction(false);
               if (result.isCompleted) {
                 if (!this.isExtrinsicFailed(result.events)) {
                   this.eventAggregator.publish(
@@ -79,7 +78,6 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
                 }
 
                 this.eventAggregator.publish(new BusyMessage(false));
-                !isMobileDevice && this.detectExtensionsAction(false);
                 resolve(extrinsic.hash.toHex());
               } else {
                 if (isMobileDevice && !result.isCompleted) {
