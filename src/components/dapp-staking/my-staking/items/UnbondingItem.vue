@@ -13,12 +13,6 @@
           <td>
             <div class="row--remaining-era">
               <div class="val-era">{{ item.erasBeforeUnlock }}</div>
-              <!-- <astar-irregular-button
-                :width="77"
-                :height="20"
-                @click="showRebondDialog(item.amount.toString())"
-                >Re-bond</astar-irregular-button
-              > -->
             </div>
           </td>
         </tr>

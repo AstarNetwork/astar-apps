@@ -6,11 +6,13 @@ export enum LOCAL_STORAGE {
   SELECTED_ADDRESS = 'selectedAddress',
   EVM_ADDRESS_MAPPING = 'evmAddressMapping',
   EVM_TOKEN_IMPORTS = 'evmTokenImports',
+  XVM_TOKEN_IMPORTS = 'xvmTokenImports',
   CONFIRM_COOKIE_POLICY = 'confirmCookiePolicy',
   SELECTED_WALLET = 'selectedWallet',
   XCM_DEPOSIT_EVM_WALLET = 'xcmDepositEvmWallet',
   TX_HISTORIES = 'txHistories',
   XCM_TX_HISTORIES = 'xcmTxHistories',
+  XVM_TX_HISTORIES = 'xvmTxHistories',
 }
 
 // Memo: A helper function to return the account's history data that is stored in the browser
@@ -24,7 +26,6 @@ export const getAccountHistories = ({
   network: string;
 }): any[] => {
   const histories = localStorage.getItem(storageKey);
-
   /*
   Data structure:
   {
@@ -62,12 +63,13 @@ export const updateAccountHistories = ({
 
   const histories = localStorage.getItem(storageKey);
   const historiesData = histories ? JSON.parse(histories) : {};
+  const networkName = network === 'shibuya-testnet' ? 'shibuya' : network;
 
   if (historiesData.hasOwnProperty(address)) {
     const addressData = historiesData[address];
-    newDataObj = { ...historiesData, [address]: { ...addressData, [network]: txs } };
+    newDataObj = { ...historiesData, [address]: { ...addressData, [networkName]: txs } };
   } else {
-    const newData = { [network]: txs };
+    const newData = { [networkName]: txs };
     newDataObj = { ...historiesData, [address]: newData };
   }
   localStorage.setItem(storageKey, JSON.stringify(newDataObj));

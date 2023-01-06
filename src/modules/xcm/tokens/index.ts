@@ -72,7 +72,7 @@ export const xcmToken = {
       logo: 'https://assets.coingecko.com/coins/images/325/small/Tether-logo.png?1598003707',
       isXcmCompatible: true,
       originChain: Chain.STATEMINT,
-      minBridgeAmount: '0.21',
+      minBridgeAmount: '1',
     },
     {
       symbol: 'IBTC',
@@ -288,7 +288,7 @@ export const generateNativeAsset = (symbol: ASTAR_NATIVE_TOKEN): Asset => {
 export const generateAssetFromEvmToken = (token: Erc20Token, xcmAssets: Asset[]): Asset => {
   const t = xcmAssets.find((it) => it.mappedERC20Addr === token.address);
   const name = t ? t.metadata.name : token.name;
-  const tokenImage = token.image;
+  const tokenImage = token.image || '';
   const mappedERC20Addr = t ? t.mappedERC20Addr : token.address;
   const metadata = {
     decimals: t ? t.metadata.decimals : token.decimal,

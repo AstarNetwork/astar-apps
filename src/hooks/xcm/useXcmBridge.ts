@@ -44,7 +44,7 @@ import { useRouter } from 'vue-router';
 
 const { Acala, Astar, Karura, Polkadot, Shiden } = xcmChainObj;
 
-export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
+export function useXcmBridge(selectedToken: Ref<Asset>) {
   const originChainApi = ref<ApiPromise | null>(null);
   const srcChain = ref<XcmChain>(Polkadot);
   const destChain = ref<XcmChain>(Astar);
@@ -223,7 +223,9 @@ export function useXcmBridgeV3(selectedToken: Ref<Asset>) {
     const minBridgeAmount = Number(selectedTokenRef && selectedTokenRef.minBridgeAmount);
 
     if (sendingAmount > fromAddressBalance.value) {
-      errMsg.value = t('warning.insufficientBalance');
+      errMsg.value = t('warning.insufficientBalance', {
+        token: selectedTokenRef.metadata.symbol,
+      });
       return;
     }
 

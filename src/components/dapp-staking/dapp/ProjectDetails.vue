@@ -12,8 +12,8 @@
         </div>
         <div class="row--websites">
           <astar-irregular-button
-            width="140"
-            height="25"
+            :width="140"
+            :height="25"
             class="button--website"
             @click="goLink(dapp.dapp.url)"
           >

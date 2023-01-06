@@ -57,7 +57,7 @@
 </template>
 <script lang="ts">
 import { useBreakpoints } from 'src/hooks';
-import { computed, defineComponent, ref, watchEffect } from 'vue';
+import { computed, defineComponent, ref, watchEffect, onUnmounted } from 'vue';
 export default defineComponent({
   props: {
     dapp: {
@@ -99,34 +99,38 @@ export default defineComponent({
       slide.value = index;
     };
 
-    const handleImageFullScreen = (): void => {
+    const handleKeyUp = ({ keyCode }: { keyCode: number }): void => {
       const escKey = 27;
       const leftKey = 37;
       const rightKey = 39;
+      if (keyCode === escKey) {
+        isFullScreen.value = false;
+      } else if (keyCode === rightKey && slide.value !== images.value.length - 1) {
+        slide.value = slide.value + 1;
+      } else if (keyCode === leftKey && slide.value !== 0) {
+        slide.value = slide.value - 1;
+      }
+      return;
+    };
+
+    const handleImageFullScreen = (): void => {
       if (isFullScreen.value) {
-        document.addEventListener('keyup', function (evt) {
-          // @ts-ignore
-          const keyCode = evt.keyCode;
-          if (keyCode === escKey) {
-            isFullScreen.value = false;
-          } else if (keyCode === rightKey && slide.value !== images.value.length - 1) {
-            slide.value = slide.value + 1;
-          } else if (keyCode === leftKey && slide.value !== 0) {
-            slide.value = slide.value - 1;
-          }
-        });
+        document.addEventListener('keyup', handleKeyUp);
       }
     };
 
     watchEffect(handleImageFullScreen);
+    onUnmounted(() => {
+      document.removeEventListener('keyup', handleKeyUp);
+    });
 
     return {
       slide,
       images,
-      scrollLeft,
-      scrollRight,
       arrowSize,
       isFullScreen,
+      scrollLeft,
+      scrollRight,
       handleOpenPicture,
     };
   },
