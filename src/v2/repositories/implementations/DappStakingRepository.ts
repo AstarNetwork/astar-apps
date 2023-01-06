@@ -1,4 +1,4 @@
-import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
+import { isValidAddressPolkadotAddress } from '@astar-network/astar-sdk-core';
 import { BN } from '@polkadot/util';
 import { u32, Option, Struct } from '@polkadot/types';
 import { Codec, ISubmittableResult } from '@polkadot/types/types';

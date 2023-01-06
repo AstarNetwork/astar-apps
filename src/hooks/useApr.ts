@@ -5,8 +5,6 @@ import { aprToApy } from 'apr-tools';
 import { $api } from 'boot/api';
 import { ethers } from 'ethers';
 import { defaultAmountWithDecimals } from '@astar-network/astar-sdk-core';
-// import { defaultAmountWithDecimals } from '@astar-network/astar-api';
-// import { defaultAmountWithDecimals } from 'src/hooks/helper/plasmUtils';
 import { useStore } from 'src/store';
 import { computed, ref, watchEffect } from 'vue';
 import { useChainMetadata, useCurrentEra, useNetworkInfo } from 'src/hooks';

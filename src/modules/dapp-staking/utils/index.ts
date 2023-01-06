@@ -8,7 +8,7 @@ import { wait } from 'src/hooks/helper/common';
 import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
 import { EraStakingPoints, StakeInfo } from 'src/store/dapp-staking/actions';
 import { isEthereumAddress } from '@polkadot/util-crypto';
-import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
+import { isValidAddressPolkadotAddress } from '@astar-network/astar-sdk-core';
 
 interface StakeData {
   address: string;

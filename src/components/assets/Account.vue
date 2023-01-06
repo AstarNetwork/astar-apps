@@ -85,6 +85,7 @@ import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { isValidEvmAddress } from 'src/config/web3';
+import { helloWorld } from '@astar-network/astar-sdk-core';
 import {
   useAccount,
   useBalance,
@@ -175,6 +176,8 @@ export default defineComponent({
     );
 
     watchEffect(async () => {
+      const test = helloWorld();
+      console.log('test', test);
       try {
         if (!isH160.value || !isValidEvmAddress(currentAccount.value)) return;
         isCheckingSignature.value = true;
