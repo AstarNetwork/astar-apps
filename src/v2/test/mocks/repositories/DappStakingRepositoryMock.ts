@@ -8,7 +8,7 @@ import { EditDappItem } from 'src/store/dapp-staking/state';
 import { AccountLedger } from 'src/v2/models/DappsStaking';
 import { u32 } from '@polkadot/types';
 import { GeneralStakerInfo } from 'src/hooks/helper/claim';
-
+import { PayloadWithWeight } from 'src/v2/repositories/implementations';
 @injectable()
 export class DappStakingRepositoryMock implements IDappStakingRepository {
   public readonly bondAndStakeCallMock = jest.fn();
@@ -104,5 +104,11 @@ export class DappStakingRepositoryMock implements IDappStakingRepository {
     contractAddress: string
   ): Promise<Map<string, GeneralStakerInfo>> {
     return new Map();
+  }
+
+  public async getTxsToExecuteForClaim(
+    batchTxs: PayloadWithWeight[]
+  ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> {
+    return {} as SubmittableExtrinsic<'promise', ISubmittableResult>;
   }
 }

@@ -6,7 +6,7 @@ import { EditDappItem } from 'src/store/dapp-staking/state';
 import { AccountLedger } from '../models/DappsStaking';
 import { u32 } from '@polkadot/types';
 import { GeneralStakerInfo } from 'src/hooks/helper/claim';
-
+import { PayloadWithWeight } from './implementations/DappStakingRepository';
 /**
  * Definition of repository to access dapps staking pallet.
  */
@@ -90,4 +90,8 @@ export interface IDappStakingRepository {
     stakerAddress: string,
     contractAddress: string
   ): Promise<Map<string, GeneralStakerInfo>>;
+
+  getTxsToExecuteForClaim(
+    batchTxs: PayloadWithWeight[]
+  ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>>;
 }

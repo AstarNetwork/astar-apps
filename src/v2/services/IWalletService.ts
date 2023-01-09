@@ -1,4 +1,7 @@
 import { SubmittableExtrinsic } from '@polkadot/api/types';
+import { ISubmittableResult } from '@polkadot/types/types';
+import { SubstrateAccount } from 'src/store/general/state';
+import { HistoryTxType } from 'src/modules/account';
 
 export enum WalletType {
   Metamask = 'Metamask',
@@ -19,4 +22,27 @@ export interface IWalletService {
     successMessage?: string,
     transactionTip?: number
   ): Promise<string | null>;
+
+  signAndSendWithCustomSignature({
+    transaction,
+    senderAddress,
+    substrateAccounts,
+    isCustomSignature,
+    txResHandler,
+    handleCustomExtrinsic,
+    tip,
+    txType,
+  }: {
+    transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
+    senderAddress: string;
+    substrateAccounts: SubstrateAccount[];
+    isCustomSignature: boolean;
+    txResHandler: (result: ISubmittableResult) => Promise<boolean>;
+    // from: useCustomSignature.ts
+    handleCustomExtrinsic?: (
+      method: SubmittableExtrinsic<'promise', ISubmittableResult>
+    ) => Promise<void>;
+    tip?: string;
+    txType?: HistoryTxType;
+  }): Promise<boolean>;
 }

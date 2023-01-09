@@ -81,62 +81,20 @@ export function useClaimAll() {
   });
 
   const claimAll = async (): Promise<void> => {
-    const api = $api;
-    const batchTxsRef = batchTxs;
-
-    if (!api) {
-      throw Error('Failed to connect to API');
-    }
-    if (0 >= batchTxsRef.length) {
-      throw Error('No dApps can be claimed');
-    }
-
-    const txsToExecute: ExtrinsicPayload[] = [];
-    let totalWeight: BN = new BN(0);
-    for (let i = 0; i < batchTxsRef.length; i++) {
-      const tx = batchTxsRef[i];
-      if (totalWeight.add(tx.weight).gt(MAX_BATCH_WEIGHT)) {
-        break;
-      }
-
-      txsToExecute.push(tx.payload as ExtrinsicPayload);
-      totalWeight = totalWeight.add(tx.weight);
-    }
-
-    // The fix causes problems and confusion for stakers because rewards are not restaked,
-    // second thing is that developers are unable to stake.
-    // Need to change approach
-    // Temporary disable restaking reward to avoid possible claim errors.
-    // const dappStakingRepository = container.get<IDappStakingRepository>(
-    //   Symbols.DappStakingRepository
-    // );
-    // const ledger = await dappStakingRepository.getLedger(senderAddress.value);
-
-    // if (ledger.rewardDestination === RewardDestination.StakeBalance) {
-    //   txsToExecute.unshift(api.tx.dappsStaking.setRewardDestination(RewardDestination.FreeBalance));
-    //   txsToExecute.push(api.tx.dappsStaking.setRewardDestination(RewardDestination.StakeBalance));
-    // }
-
-    console.info(
-      `Batch weight: ${totalWeight.toString()}, transactions no. ${txsToExecute.length}`
-    );
-    const transaction = api.tx.utility.batch(txsToExecute);
-
     try {
       const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
         const res = await handleResult(result);
         hasExtrinsicFailedEvent(result.events, store.dispatch);
         return res;
       };
-
-      await signAndSend({
-        transaction,
+      const dappStakingService = container.get<IDappStakingService>(Symbols.DappStakingService);
+      await dappStakingService.claimAll({
+        batchTxs,
         senderAddress: senderAddress.value,
         substrateAccounts: substrateAccounts.value,
         isCustomSignature: isCustomSig.value,
         txResHandler,
         handleCustomExtrinsic,
-        dispatch: store.dispatch,
         tip: nativeTipPrice.value.fast, //note: this is a quick hack to speed of the tx. We should add the custom speed modal later
         //tip: selectedTip.value.price,
       });

@@ -8,7 +8,6 @@ import { injectable, inject } from 'inversify';
 import { IDappStakingRepository } from 'src/v2/repositories';
 import { IApi } from 'src/v2/integration';
 import { Symbols } from 'src/v2/symbols';
-import { ApiPromise } from '@polkadot/api';
 import {
   DappStakingConstants,
   RewardDestination,
@@ -25,6 +24,8 @@ import axios from 'axios';
 import { getDappAddressEnum } from 'src/modules/dapp-staking/utils';
 import { Guard } from 'src/v2/common';
 import { AccountLedger } from 'src/v2/models/DappsStaking';
+
+type ExtrinsicPayload = SubmittableExtrinsic<'promise'>;
 
 // TODO type generation
 interface EraInfo extends Struct {
@@ -75,6 +76,11 @@ interface ChunkInfo extends Codec {
   amount: Balance;
   unlockEra: EraIndex;
   erasBeforeUnlock: number;
+}
+
+export interface PayloadWithWeight {
+  payload: ExtrinsicPayload;
+  weight: BN;
 }
 
 @injectable()
@@ -325,7 +331,31 @@ export class DappStakingRepository implements IDappStakingRepository {
     }
   }
 
-  private getAddressEnum(address: string) {
-    return { Evm: address };
+  public async getTxsToExecuteForClaim(
+    batchTxs: PayloadWithWeight[]
+  ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> {
+    if (0 >= batchTxs.length) {
+      throw Error('No dApps can be claimed');
+    }
+
+    const api = await this.api.getApi();
+    const MAX_BATCH_WEIGHT = new BN('50000000000');
+    const txsToExecute: ExtrinsicPayload[] = [];
+    let totalWeight: BN = new BN(0);
+    for (let i = 0; i < batchTxs.length; i++) {
+      const tx = batchTxs[i];
+      if (totalWeight.add(tx.weight).gt(MAX_BATCH_WEIGHT)) {
+        break;
+      }
+
+      txsToExecute.push(tx.payload as ExtrinsicPayload);
+      totalWeight = totalWeight.add(tx.weight);
+    }
+
+    console.info(
+      `Batch weight: ${totalWeight.toString()}, transactions no. ${txsToExecute.length}`
+    );
+    const transaction = api.tx.utility.batch(txsToExecute);
+    return transaction;
   }
 }
