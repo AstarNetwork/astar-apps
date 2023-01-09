@@ -159,7 +159,7 @@ export const xcmChainObj: XcmChainObj = {
     relayChain: Chain.KUSAMA,
     img: 'https://polkadot.js.org/apps/static/kintsugi.fba9d4ea..png',
     parachainId: parachainIds.KINTSUGI,
-    endpoint: 'wss://kintsugi-rpc.dwellir.com',
+    endpoint: 'wss://api-kusama.interlay.io/parachain',
     subscan: 'https://kintsugi.subscan.io',
     isAstarNativeToken: false,
   },

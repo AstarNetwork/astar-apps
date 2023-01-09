@@ -11,7 +11,7 @@
           <div class="border--separator--account" />
         </div>
         <div>
-          <SelectWallet :set-wallet-modal="setWalletModal" :selected-wallet="selectedWallet" />
+          <select-wallet :set-wallet-modal="setWalletModal" :selected-wallet="selectedWallet" />
         </div>
         <div v-if="isNativeWallet" class="row--balance-option">
           <div class="column--balance-option">
@@ -125,7 +125,7 @@ import {
 import { fetchNativeBalance } from 'src/modules/account';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
-import { computed, defineComponent, PropType, ref, watch } from 'vue';
+import { computed, defineComponent, PropType, ref, watch, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
@@ -294,6 +294,10 @@ export default defineComponent({
       },
       { immediate: true }
     );
+
+    onUnmounted(() => {
+      window.removeEventListener('resize', onHeightChange);
+    });
 
     return {
       selAccount,

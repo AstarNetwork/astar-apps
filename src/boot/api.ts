@@ -58,7 +58,7 @@ export default boot(async ({ store }) => {
   }
 
   // set metadata header
-  const favicon = providerEndpoints[Number(networkIdx.value)].favicon;
+  const favicon = providerEndpoints[Number(networkIdx.value)].defaultLogo;
   useMeta({
     title: '',
     titleTemplate: (title) => `${title} | Astar Portal - Astar & Shiden Network`,

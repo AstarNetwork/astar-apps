@@ -5,3 +5,4 @@ export {
   faqSs58Transfer,
   faqSs58XcmBridge,
 } from 'src/modules/information/faq/transfer';
+export { faqSs58XvmTransfer } from 'src/modules/information/faq/xvm-transfer';

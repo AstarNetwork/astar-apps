@@ -46,9 +46,16 @@ export interface ChunkInfo {
   erasBeforeUnlock: number;
 }
 
+export type RewardDestination = 'StakeBalance' | 'FreeBalance';
+
 export interface AccountLedger {
   locked: BN;
+  rewardDestination: RewardDestination;
   unbondingInfo: {
     unlockingChunks: ChunkInfo[];
   };
+}
+
+export interface DappStakingConstants {
+  maxEraStakeValues: number;
 }

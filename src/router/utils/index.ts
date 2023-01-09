@@ -3,6 +3,8 @@ import { networkParam, Path } from 'src/router/routes';
 export const getHeaderName = (path: string): string => {
   if (path.includes('dashboard')) {
     return 'Dashboard';
+  } else if (path.includes('xvm-transfer')) {
+    return 'Transfer XVM Assets';
   } else if (path.includes('transfer')) {
     return 'Transfer Assets';
   } else if (path.includes('assets')) {
@@ -18,6 +20,11 @@ export const getHeaderName = (path: string): string => {
 export const buildTransferPageLink = (symbol: string): string => {
   const base = networkParam + Path.Assets + Path.Transfer;
   return `${base}?token=${symbol.toLowerCase()}&mode=local`;
+};
+
+export const buildXvmTransferPageLink = (symbol: string): string => {
+  const base = networkParam + Path.Assets + Path.XvmTransfer;
+  return `${base}?token=${symbol.toLowerCase()}`;
 };
 
 /**

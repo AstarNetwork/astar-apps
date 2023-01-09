@@ -48,7 +48,7 @@
             </div>
             <span class="text--title">{{ nativeTokenSymbol }}</span>
           </div>
-          <div class="box__column--input-amount">
+          <div>
             <input
               :value="amount"
               inputmode="decimal"

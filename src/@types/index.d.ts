@@ -5,3 +5,4 @@ interface Window {
   injectedWeb3?: any;
 }
 declare module '@astar-network/astar-ui';
+declare module '@astar-network/astar-sdk-core';

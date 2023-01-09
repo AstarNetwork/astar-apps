@@ -3,13 +3,19 @@ import { BN } from '@polkadot/util';
 import { u32, Option, Struct } from '@polkadot/types';
 import { Codec, ISubmittableResult } from '@polkadot/types/types';
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
-import { AccountId, Balance, EraIndex } from '@polkadot/types/interfaces';
+import { AccountId, Balance, EraIndex, UnknownTransaction } from '@polkadot/types/interfaces';
 import { injectable, inject } from 'inversify';
 import { IDappStakingRepository } from 'src/v2/repositories';
 import { IApi } from 'src/v2/integration';
 import { Symbols } from 'src/v2/symbols';
 import { ApiPromise } from '@polkadot/api';
-import { SmartContract, SmartContractState, StakerInfo } from 'src/v2/models/DappsStaking';
+import {
+  DappStakingConstants,
+  RewardDestination,
+  SmartContract,
+  SmartContractState,
+  StakerInfo,
+} from 'src/v2/models/DappsStaking';
 import { EventAggregator, NewEraMessage } from 'src/v2/messaging';
 import { GeneralStakerInfo } from 'src/hooks/helper/claim';
 import { ethers } from 'ethers';
@@ -57,6 +63,7 @@ interface SmartContractAddress extends Struct {
 
 interface PalletDappsStakingAccountLedger extends Codec {
   locked: Balance;
+  rewardDestination: Codec;
   unbondingInfo: UnbondingInfo;
 }
 
@@ -81,7 +88,7 @@ export class DappStakingRepository implements IDappStakingRepository {
 
   public async getTvl(): Promise<BN> {
     const api = await this.api.getApi();
-    const era = await this.getCurrentEra(api);
+    const era = await this.getCurrentEra();
     const result = await api.query.dappsStaking.generalEraInfo<Option<EraInfo>>(era);
 
     return result.unwrap().locked.toBn();
@@ -145,7 +152,7 @@ export class DappStakingRepository implements IDappStakingRepository {
     walletAddress: string
   ): Promise<StakerInfo[]> {
     const api = await this.api.getApi();
-    const currentEra = await this.getCurrentEra(api);
+    const currentEra = await this.getCurrentEra();
 
     const eraStakes = await api.queryMulti<Option<ContractStakeInfo>[]>(
       contractAddresses.map((address) => {
@@ -261,6 +268,7 @@ export class DappStakingRepository implements IDappStakingRepository {
 
     return {
       locked: ledger.locked.toBn(),
+      rewardDestination: <RewardDestination>ledger.rewardDestination.toString(),
       unbondingInfo: {
         unlockingChunks: ledger.unbondingInfo.unlockingChunks.map((x) => {
           return {
@@ -273,8 +281,38 @@ export class DappStakingRepository implements IDappStakingRepository {
     };
   }
 
-  private async getCurrentEra(api: ApiPromise): Promise<u32> {
+  public async getCurrentEra(): Promise<u32> {
+    const api = await this.api.getApi();
+
     return await api.query.dappsStaking.currentEra<u32>();
+  }
+
+  public async getConstants(): Promise<DappStakingConstants> {
+    const api = await this.api.getApi();
+    const maxEraStakeValues = Number(api.consts.dappsStaking.maxEraStakeValues.toString());
+
+    return {
+      maxEraStakeValues,
+    };
+  }
+
+  public async getGeneralStakerInfo(
+    stakerAddress: string,
+    contractAddress: string
+  ): Promise<Map<string, GeneralStakerInfo>> {
+    Guard.ThrowIfUndefined('contractAddress', contractAddress);
+    Guard.ThrowIfUndefined('stakerAddress', stakerAddress);
+
+    const result = new Map<string, GeneralStakerInfo>();
+    const api = await this.api.getApi();
+    const stakerInfos = await api.query.dappsStaking.generalStakerInfo.entries(stakerAddress);
+    stakerInfos.forEach(([key, stakerInfo]) => {
+      const contractAddress = key.args[1].toString();
+      const info = stakerInfo.toHuman() as unknown as GeneralStakerInfo;
+      result.set(contractAddress, info);
+    });
+
+    return result;
   }
 
   private getContractAddress(address: SmartContractAddress): string | undefined {

@@ -84,10 +84,10 @@ export const supportWalletObj = {
     img: require('/src/assets/img/logo-subwallet.svg'),
     name: 'SubWallet (Native)',
     source: SupportWallet.SubWalletNative,
-    walletUrl: 'https://subwallet.app/',
-    guideUrl: 'https://docs.subwallet.app/user-guide/how-to-install-subwallet',
+    walletUrl: 'https://subwallet.app/download.html',
+    guideUrl: 'https://docs.subwallet.app/user-guide/install-subwallet',
     isSupportBrowserExtension: true,
-    isSupportMobileApp: false,
+    isSupportMobileApp: true,
   },
   [SupportWallet.Clover]: {
     img: require('/src/assets/img/logo-clover.png'),
@@ -152,10 +152,10 @@ export const supportEvmWalletObj = {
     img: require('/src/assets/img/logo-subwallet.svg'),
     name: 'SubWallet (EVM)',
     source: SupportWallet.SubWalletEvm,
-    walletUrl: 'https://subwallet.app/',
-    guideUrl: 'https://docs.subwallet.app/user-guide/how-to-install-subwallet/',
+    walletUrl: 'https://subwallet.app/download.html',
+    guideUrl: 'https://docs.subwallet.app/user-guide/install-subwallet',
     isSupportBrowserExtension: true,
-    isSupportMobileApp: false,
+    isSupportMobileApp: true,
     ethExtension: 'SubWallet',
   },
   [SupportWallet.Wallet3]: {
@@ -188,3 +188,7 @@ export const supportAllWalletsObj = {
 export const supportEvmWallets = objToArray(supportEvmWalletObj) as Wallet[];
 export const supportWallets = objToArray(supportWalletObj) as Wallet[];
 export const supportAllWallets = objToArray(supportAllWalletsObj) as Wallet[];
+
+// Memo: defined by hard-coding to avoid sending too many requests to faucet API server
+// Ref: https://github.com/AstarNetwork/astar-faucet-bot/blob/main/src/clients/astar.ts#L225
+export const faucetBalRequirement = 0.01 / 2;
