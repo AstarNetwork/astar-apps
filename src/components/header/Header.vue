@@ -96,7 +96,6 @@ export default defineComponent({
     });
 
     const {
-      WalletModalOption,
       modalConnectWallet,
       modalName,
       currentAccount,
