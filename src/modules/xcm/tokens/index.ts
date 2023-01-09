@@ -104,6 +104,26 @@ export const xcmToken = {
       originChain: Chain.PHALA,
       minBridgeAmount: '0.2',
     },
+    {
+      symbol: 'BNC',
+      isNativeToken: true,
+      assetId: '18446744073709551623',
+      originAssetId: 'BNC',
+      logo: 'https://bifrost-kusama.subscan.io/static/img/bifrost.42f1933c.svg',
+      isXcmCompatible: true,
+      originChain: Chain.BIFROST_POLKADOT,
+      minBridgeAmount: '0.1',
+    },
+    {
+      symbol: 'vDOT',
+      isNativeToken: false,
+      assetId: '18446744073709551624',
+      originAssetId: '0',
+      logo: 'https://bifrost.subscan.io/static/img/vDOT.75c0b67b.svg',
+      isXcmCompatible: true,
+      originChain: Chain.BIFROST_POLKADOT,
+      minBridgeAmount: '0.1',
+    },
   ],
   [endpointKey.SHIDEN]: [
     {
