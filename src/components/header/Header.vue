@@ -22,7 +22,7 @@
       :network-idx="currentNetworkIdx"
     />
     <modal-connect-wallet
-      :is-modal-connect-wallet="modalName === WalletModalOption.SelectWallet"
+      :is-modal-connect-wallet="modalName === WalletModalOption.SelectWallet && !currentAccount"
       :set-wallet-modal="setWalletModal"
       :set-close-modal="setCloseModal"
       :connect-ethereum-wallet="connectEthereumWallet"
@@ -69,6 +69,7 @@ import ModalNetwork from 'src/components/header/modals/ModalNetwork.vue';
 import Logo from 'src/components/common/Logo.vue';
 import ModalUpdateWallet from 'src/components/header/modals/ModalUpdateWallet.vue';
 import HeaderComp from './HeaderComp.vue';
+import { WalletModalOption } from 'src/config/wallets';
 
 interface Modal {
   modalNetwork: boolean;
@@ -95,7 +96,6 @@ export default defineComponent({
     });
 
     const {
-      WalletModalOption,
       modalConnectWallet,
       modalName,
       currentAccount,
