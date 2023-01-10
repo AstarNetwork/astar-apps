@@ -69,6 +69,7 @@ export default defineComponent({
   max-height: calc(100vh - 110px);
   text-align: center;
   overflow-y: auto;
+  overflow-x: hidden;
   gap: 10px;
   @media (min-width: $md) {
     top: 96px;
