@@ -84,7 +84,6 @@ export class BifrostXcmRepository extends XcmRepository {
     const api = await this.apiFactory.get(chain.endpoint);
     try {
       if (token.originAssetId == 'BNC') {
-        console.log(isNativeToken);
         return (await this.getNativeBalance(address, chain)).toString();
       } else if (token.originAssetId == '0') {
         const bal = await api.query.tokens.accounts<TokensAccounts>(address, {
