@@ -61,6 +61,10 @@ export default {
     unableCalculateMsgPayload: 'Unable to calculate the message payload',
     amountMustNotBeZero: 'The amount of token to be transmitted must not be zero',
     copyAddressSuccessfully: 'Copy address success!',
+    checkYourTransactions: 'Check your transactions',
+    success: 'Success',
+    note: 'Note',
+    error: 'Error',
   },
   common: {
     updateMetadata: 'Update Metadata',

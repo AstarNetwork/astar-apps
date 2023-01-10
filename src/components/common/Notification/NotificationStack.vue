@@ -1,6 +1,5 @@
 <template>
   <div>
-    <div>Notification Stack</div>
     <div class="stack--wrapper">
       <div v-for="(t, index) in alertStack" :key="index">
         <notification-bar
@@ -61,13 +60,15 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   position: fixed;
-  z-index: 10;
+  z-index: 120;
   top: 104px;
   left: 0;
   right: 0;
   margin: auto;
   width: 340px;
+  max-height: calc(100vh - 110px);
   text-align: center;
+  overflow-y: auto;
   gap: 10px;
   @media (min-width: $md) {
     top: 96px;

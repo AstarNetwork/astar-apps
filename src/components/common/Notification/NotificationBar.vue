@@ -25,9 +25,9 @@
       </div>
       <div>
         <div class="message">{{ alertMsg }}</div>
-        <astar-button v-if="isSuccessType" class="btn--check" @click="goToSubscan"
-          >Check your transactions</astar-button
-        >
+        <astar-button v-if="isSuccessType && txHash" class="btn--check" @click="goToSubscan">{{
+          $t('toast.checkYourTransactions')
+        }}</astar-button>
       </div>
     </div>
   </div>
@@ -37,6 +37,7 @@
 import { AlertType } from 'src/store/general/state';
 import { useNetworkInfo } from 'src/hooks';
 import { endpointKey } from 'src/config/chainEndpoints';
+import { useI18n } from 'vue-i18n';
 import { defineComponent, toRefs, PropType, computed, ref } from 'vue';
 
 export default defineComponent({
@@ -65,13 +66,15 @@ export default defineComponent({
       emit('close');
     };
 
+    const { t } = useI18n();
+
     const alertTypeTitle = computed(() => {
       if (props.alertType === AlertType.Success) {
-        return 'Success';
+        return t('toast.success');
       } else if (props.alertType === AlertType.Warning) {
-        return 'Note';
+        return t('toast.note');
       } else {
-        return 'Error';
+        return t('toast.error');
       }
     });
     const showCloseBtn = ref(false);
