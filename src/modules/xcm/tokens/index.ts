@@ -118,7 +118,7 @@ export const xcmToken = {
       symbol: 'vDOT',
       isNativeToken: false,
       assetId: '18446744073709551624',
-      originAssetId: '0',
+      originAssetId: 'vDOT',
       logo: 'https://bifrost.subscan.io/static/img/vDOT.75c0b67b.svg',
       isXcmCompatible: true,
       originChain: Chain.BIFROST_POLKADOT,

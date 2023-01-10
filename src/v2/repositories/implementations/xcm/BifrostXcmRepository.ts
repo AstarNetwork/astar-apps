@@ -9,6 +9,10 @@ import { TokensAccounts } from 'src/v2/repositories/implementations/xcm/AcalaXcm
 import { Symbols } from 'src/v2/symbols';
 import { XcmRepository } from '../XcmRepository';
 
+const BNC = { Native: 'BNC' };
+const vDOT = { VToken2: 0 };
+const ASTR = { Token2: 3 };
+
 /**
  * Used to transfer assets from Bifrost
  */
@@ -35,11 +39,11 @@ export class BifrostXcmRepository extends XcmRepository {
     }
     let tokenData;
     if (token.originAssetId == 'BNC') {
-      tokenData = { Native: 'BNC' };
-    } else if (token.originAssetId == '0') {
-      tokenData = { VToken2: 0 };
+      tokenData = BNC;
+    } else if (token.originAssetId == 'vDOT') {
+      tokenData = vDOT;
     } else if (token.originAssetId == 'ASTR') {
-      tokenData = { Token2: 3 };
+      tokenData = ASTR;
     }
     const destination = {
       V1: {
@@ -85,15 +89,11 @@ export class BifrostXcmRepository extends XcmRepository {
     try {
       if (token.originAssetId == 'BNC') {
         return (await this.getNativeBalance(address, chain)).toString();
-      } else if (token.originAssetId == '0') {
-        const bal = await api.query.tokens.accounts<TokensAccounts>(address, {
-          VToken2: token.originAssetId,
-        });
+      } else if (token.originAssetId == 'vDOT') {
+        const bal = await api.query.tokens.accounts<TokensAccounts>(address, vDOT);
         return bal.free.toString();
       } else {
-        const bal = await api.query.tokens.accounts<TokensAccounts>(address, {
-          Token2: 3,
-        });
+        const bal = await api.query.tokens.accounts<TokensAccounts>(address, ASTR);
         return bal.free.toString();
       }
     } catch (e) {
