@@ -65,6 +65,7 @@ export default {
     success: 'Success',
     note: 'Note',
     error: 'Error',
+    copied: 'Copied',
   },
   common: {
     updateMetadata: 'Update Metadata',

@@ -11,7 +11,7 @@
     <div class="noti-content" @mouseover="showCloseBtn = true">
       <div class="row--close">
         <div class="column--title">
-          <span v-if="isSuccessType" class="icon--check">
+          <span v-if="isSuccessType || isCopiedType" class="icon--check">
             <astar-icon-circle-check size="20" />
           </span>
           <span v-else class="icon--check">
@@ -23,7 +23,7 @@
           <astar-icon-close />
         </div>
       </div>
-      <div>
+      <div v-if="!isCopiedType">
         <div class="message">{{ alertMsg }}</div>
         <astar-button v-if="isSuccessType && txHash" class="btn--check" @click="goToSubscan">{{
           $t('toast.checkYourTransactions')
@@ -73,13 +73,16 @@ export default defineComponent({
         return t('toast.success');
       } else if (props.alertType === AlertType.Warning) {
         return t('toast.note');
-      } else {
+      } else if (props.alertType === AlertType.Error) {
         return t('toast.error');
+      } else {
+        return t('toast.copied');
       }
     });
     const showCloseBtn = ref(false);
 
     const isSuccessType = computed(() => props.alertType === AlertType.Success);
+    const isCopiedType = computed(() => props.alertType === AlertType.Copied);
     const { currentNetworkIdx } = useNetworkInfo();
     const isShiden = computed(() => currentNetworkIdx.value === endpointKey.SHIDEN);
     const goToSubscan = () => {
@@ -97,6 +100,7 @@ export default defineComponent({
       ...toRefs(props),
       alertTypeTitle,
       isSuccessType,
+      isCopiedType,
       showCloseBtn,
       goToSubscan,
       close,

@@ -13,6 +13,7 @@ export enum AlertType {
   Success = 'success',
   Warning = 'warning',
   Error = 'error',
+  Copied = 'copied',
 }
 
 export type AlertBox = {
