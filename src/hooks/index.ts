@@ -33,7 +33,7 @@ export * from './dapps-staking/useDappRedirect';
 export * from './dapps-staking/useDispatchGetDapps';
 export * from './wallet/useWalletIcon';
 export * from './wallet/useEvmWallet';
-export * from './xcm/useXcmBridgeV3';
+export * from './xcm/useXcmBridge';
 export * from './transfer/useTokenTransfer';
 export * from './xcm/useTransferRouter';
 export * from './xvm/useXvmTransferRouter';
