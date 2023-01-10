@@ -28,6 +28,7 @@ export enum endpointKey {
   SHIBUYA = 2,
   LOCAL = 3,
   CUSTOM = 4,
+  ROCSTAR = 5,
 }
 
 export const providerEndpoints: ChainProvider[] = [
@@ -133,6 +134,25 @@ export const providerEndpoints: ChainProvider[] = [
     defaultLogo:
       'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/ic_shibuya.png?raw=true',
   },
+  {
+    networkAlias: 'rocstar',
+    displayName: 'Rocstar',
+    info: 'The test network of Rococo',
+    endpoints: [{ name: 'Rocstar', endpoint: 'wss://rocstar.astar.network' }],
+    isSupportContract: true,
+    prefix: 0xff51,
+    typeDef: typeDefs.plasmCollatorDefinitions,
+    key: endpointKey.ROCSTAR,
+    isStoreEnabled: true,
+    subscan: '',
+    blockscout: '',
+    evmChainId: '692',
+    evmEndpoints: ['https://evm.rocstar.astar.network'],
+    faucetEndpoint: '',
+    defaultLogo:
+      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/ic_shibuya.png?raw=true',
+    xvmErcTransferContract: 'ZdNJsZUK96jGxr8iRfT8xHXUi5iQ7XwL9qbyJkADPdH7C1U',
+  },
 ];
 
 // Memo: return the provider index for Local and Custom node
@@ -144,6 +164,8 @@ export const getProviderIndex = (chain: ASTAR_CHAIN) => {
       return endpointKey.SHIDEN;
     case 'Development':
       return endpointKey.LOCAL;
+    case 'Rocstar Testnet':
+      return endpointKey.ROCSTAR;
     default:
       return endpointKey.SHIBUYA;
   }

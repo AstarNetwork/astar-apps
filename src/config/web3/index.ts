@@ -25,6 +25,7 @@ const chain = {
   shibuya: providerEndpoints.find((it) => it.key === endpointKey.SHIBUYA),
   astar: providerEndpoints.find((it) => it.key === endpointKey.ASTAR),
   localNode: providerEndpoints.find((it) => it.key === endpointKey.LOCAL),
+  rocstar: providerEndpoints.find((it) => it.key === endpointKey.ROCSTAR),
 };
 
 export enum EVM {
@@ -32,6 +33,7 @@ export enum EVM {
   SHIBUYA_TESTNET = Number(chain.shibuya!.evmChainId),
   ASTAR_MAINNET = Number(chain.astar!.evmChainId),
   ASTAR_LOCAL_NODE = Number(chain.localNode!.evmChainId),
+  ROCSTAR_TESTNET = Number(chain.rocstar!.evmChainId),
   ETHEREUM_MAINNET = 1,
   BSC = 56,
   POLYGON = 137,
@@ -47,6 +49,7 @@ export const chainName = {
   [EVM.SHIBUYA_TESTNET]: 'Shibuya Testnet',
   [EVM.ASTAR_MAINNET]: 'Astar Network Mainnet',
   [EVM.ASTAR_LOCAL_NODE]: 'Astar Local Node',
+  [EVM.ROCSTAR_TESTNET]: 'Rocstar',
   [EVM.BSC]: 'Binance Smart Chain',
   [EVM.POLYGON]: 'Polygon Mainnet',
   [EVM.MOONRIVER]: 'Moonriver Mainnet',
@@ -67,6 +70,11 @@ export const nativeCurrency = {
   [EVM.SHIBUYA_TESTNET]: {
     name: 'SBY',
     symbol: 'SBY',
+    decimals: 18,
+  },
+  [EVM.ROCSTAR_TESTNET]: {
+    name: 'RSTR',
+    symbol: 'RSTR',
     decimals: 18,
   },
   [EVM.ASTAR_MAINNET]: {
@@ -105,6 +113,7 @@ export const rpcUrls = {
   [EVM.ETHEREUM_MAINNET]: ['https://mainnet-nethermind.blockscout.com/'],
   [EVM.SHIDEN_MAINNET]: [chain.shiden?.evmEndpoints[0]],
   [EVM.SHIBUYA_TESTNET]: [chain.shibuya?.evmEndpoints[0]],
+  [EVM.ROCSTAR_TESTNET]: [chain.rocstar?.evmEndpoints[0]],
   [EVM.ASTAR_MAINNET]: [chain.astar?.evmEndpoints[0]],
   [EVM.ASTAR_LOCAL_NODE]: [chain.localNode?.evmEndpoints[0]],
   [EVM.BSC]: ['https://bsc-dataseed.binance.org'],
@@ -117,6 +126,7 @@ export const blockExplorerUrls = {
   [EVM.ETHEREUM_MAINNET]: ['https://etherscan.io'],
   [EVM.SHIDEN_MAINNET]: [chain.shiden?.blockscout],
   [EVM.SHIBUYA_TESTNET]: [chain.shibuya?.blockscout],
+  [EVM.ROCSTAR_TESTNET]: [chain.rocstar?.blockscout],
   [EVM.ASTAR_MAINNET]: [chain.astar?.blockscout],
   [EVM.BSC]: ['https://bscscan.com'],
   [EVM.POLYGON]: ['https://explorer.matic.network'],
