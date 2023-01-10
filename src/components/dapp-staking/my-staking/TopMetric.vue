@@ -11,6 +11,7 @@
         {{ $t('topMetric.wayOfStaking') }}
       </div>
     </div>
+    <snow-pack />
     <div class="wrapper--cards">
       <div class="card">
         <p>
@@ -92,7 +93,6 @@
         </div>
       </div>
     </div>
-    <snow-pack />
   </div>
 </template>
 <script lang="ts">
