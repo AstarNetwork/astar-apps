@@ -35,9 +35,9 @@ export class BifrostXcmRepository extends XcmRepository {
     }
     let tokenData;
     if (token.originAssetId == 'BNC') {
-      tokenData = { Native: token.originAssetId };
+      tokenData = { Native: 'BNC' };
     } else if (token.originAssetId == '0') {
-      tokenData = { VToken2: token.originAssetId };
+      tokenData = { VToken2: 0 };
     } else if (token.originAssetId == 'ASTR') {
       tokenData = { Token2: 3 };
     }
@@ -61,8 +61,9 @@ export class BifrostXcmRepository extends XcmRepository {
         },
       },
     };
-
-    const destWeight = new BN(10).pow(new BN(9)).muln(5);
+    const destWeight = {
+      limited: new BN(10).pow(new BN(9)).muln(5),
+    };
     return await this.buildTxCall(
       from,
       'xTokens',
