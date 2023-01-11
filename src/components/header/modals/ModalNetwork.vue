@@ -84,10 +84,20 @@
         <astar-button
           class="btn--connect"
           :disabled="isDisabled"
-          @click="selectNetwork(selNetwork, newEndpoint)"
+          @click="selectNetwork(selNetwork)"
         >
           {{ $t('connect') }}
         </astar-button>
+      </div>
+      <div v-if="isSelectLightClient" class="box--light-client-warning">
+        <span class="text--accent">
+          {{ $t('drawer.lightClientWarning') }}
+        </span>
+        <div v-if="selNetwork === endpointKey.SHIBUYA">
+          <span class="text--accent">
+            {{ $t('drawer.shibuyaTakes20mins') }}
+          </span>
+        </div>
       </div>
     </div>
   </astar-modal-drawer>
@@ -100,7 +110,7 @@ import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { getRandomFromArray, wait } from 'src/hooks/helper/common';
 import { buildNetworkUrl } from 'src/router/utils';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, watch, onUnmounted } from 'vue';
+import { computed, defineComponent, ref, watch, onUnmounted, watchEffect } from 'vue';
 
 export default defineComponent({
   props: {
@@ -179,11 +189,23 @@ export default defineComponent({
     const selEndpointShiden = ref<string>('');
     const selEndpointShibuya = ref<string>('');
 
-    const isDisabled = computed(() => {
+    const isDisabled = computed<boolean>(() => {
       return selNetwork.value === endpointKey.CUSTOM && !newEndpoint.value;
     });
 
-    const isCustomNetwork = computed(() => selNetwork.value === endpointKey.CUSTOM);
+    const isCustomNetwork = computed<boolean>(() => selNetwork.value === endpointKey.CUSTOM);
+    const isSelectLightClient = computed<boolean>(() => {
+      switch (selNetwork.value) {
+        case endpointKey.ASTAR:
+          return checkIsLightClient(selEndpointAstar.value);
+        case endpointKey.SHIDEN:
+          return checkIsLightClient(selEndpointShiden.value);
+        case endpointKey.SHIBUYA:
+          return checkIsLightClient(selEndpointShibuya.value);
+        default:
+          return false;
+      }
+    });
 
     const checkIsCheckedEndpoint = ({
       index,
@@ -296,9 +318,7 @@ export default defineComponent({
     });
 
     return {
-      closeModal,
       newEndpoint,
-      selectNetwork,
       selNetwork,
       classRadioOn,
       classRadioOff,
@@ -310,9 +330,12 @@ export default defineComponent({
       selEndpointAstar,
       selEndpointShiden,
       selEndpointShibuya,
+      windowHeight,
+      isSelectLightClient,
+      closeModal,
       setSelEndpoint,
       checkIsCheckedEndpoint,
-      windowHeight,
+      selectNetwork,
       checkIsDisplayEndpoint,
     };
   },

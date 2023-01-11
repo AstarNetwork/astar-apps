@@ -107,6 +107,7 @@
 .wrapper__row--button {
   display: flex;
   justify-content: center;
+  margin-bottom: 16px;
 }
 
 .btn--connect {
@@ -169,6 +170,12 @@
 
   .box-input--endpoint {
     border: 0px solid transparent;
+  }
+
+  .box--light-client-warning {
+    display: flex;
+    flex-direction: column;
+    row-gap: 8px;
   }
 
   .input--endpoint[type='radio'] {
