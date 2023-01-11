@@ -72,7 +72,7 @@ export const xcmToken = {
       logo: 'https://assets.coingecko.com/coins/images/325/small/Tether-logo.png?1598003707',
       isXcmCompatible: true,
       originChain: Chain.STATEMINT,
-      minBridgeAmount: '0.21',
+      minBridgeAmount: '1',
     },
     {
       symbol: 'IBTC',
