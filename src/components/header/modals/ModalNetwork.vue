@@ -281,20 +281,18 @@ export default defineComponent({
 
     // Memo: Displays Light client option if:
     // A: the portal is opened on 'localhost' or 'staging URL'
+    // B: Shibuya
     const checkIsDisplayEndpoint = (chain: ChainProvider, endpoint: string): boolean => {
       const origin = window.location.origin;
       const stagingDomain = '.web.app';
       const devPaths = [stagingDomain, 'localhost:'];
       const isForDeveloper = devPaths.some((it) => origin.includes(it));
-      return isForDeveloper ? true : !checkIsLightClient(endpoint);
-
       // Memo: enables selecting light client endpoint for Shibuya on the production page
-      // Memo: commented out since it takes around 20mins to connect to Shibuya and Tokyo
-      // if (isForDeveloper || chain.key === endpointKey.SHIBUYA) {
-      //   return true;
-      // } else {
-      //   return !checkIsLightClient(endpoint);
-      // }
+      if (isForDeveloper || chain.key === endpointKey.SHIBUYA) {
+        return true;
+      } else {
+        return !checkIsLightClient(endpoint);
+      }
     };
 
     watch(

@@ -150,7 +150,8 @@ export async function connectApi(
     });
 
     const fallbackTimeout = new Promise<string>(async (resolve) => {
-      const timeout = checkIsLightClient(endpoint) ? 50 * 1000 : 8 * 1000;
+      // Memo: 3600 -> 60mins
+      const timeout = checkIsLightClient(endpoint) ? 3600 * 1000 : 8 * 1000;
       await wait(timeout);
       resolve(RES_TIMEOUT);
     });

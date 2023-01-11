@@ -1,14 +1,25 @@
 #splash {
-  position: relative; 
+  position: relative;
   height: 100vh;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: linear-gradient(136deg, #e6007a, #703ac2, #0070eb, #0297fb, #0ae2ff, #0297fb, #0070eb, #703ac2, #e6007a);
+  background: linear-gradient(
+    136deg,
+    #e6007a,
+    #703ac2,
+    #0070eb,
+    #0297fb,
+    #0ae2ff,
+    #0297fb,
+    #0070eb,
+    #703ac2,
+    #e6007a
+  );
   background-size: 500% 100%;
-	animation: gradient 10s ease infinite;
+  animation: gradient 10s ease infinite;
 }
 
 #overlay {
@@ -18,6 +29,12 @@
   height: 100vh;
   width: 100%;
   background-color: white;
+}
+
+#box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 #splash-text {
@@ -33,17 +50,28 @@
   text-align: center;
   letter-spacing: 0.06em;
   color: white;
-  text-shadow: 0px 4px 6px rgba(0, 0, 0, 0.25);
+  text-shadow: 2px rgba(0, 0, 0, 0.25);
+}
+
+#button--reset {
+  background-color: grey;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bolder;
+  cursor: pointer;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px,
+    rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
 }
 
 @keyframes gradient {
-	0% {
-		background-position: 0% 50%;
-	}
-	50% {
-		background-position: 100% 0%;
-	}
-	100% {
-		background-position: 0% 50%;
-	}
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 0%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
