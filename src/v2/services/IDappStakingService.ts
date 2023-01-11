@@ -1,3 +1,5 @@
+import { SubmittableExtrinsic } from '@polkadot/api/types';
+import { ISubmittableResult } from '@polkadot/types/types';
 import { BN } from '@polkadot/util';
 import { EditDappItem } from 'src/store/dapp-staking/state';
 import { TvlModel } from 'src/v2/models';
@@ -14,7 +16,7 @@ export interface IDappStakingService {
   getTvl(): Promise<TvlModel>;
 
   /**
-   * Stakes given ammount to contract.
+   * Stakes given amount to contract.
    * @param contractAddress Contract address.
    * @param stakerAddress Staked address.
    * @param amount Amount to stake.
@@ -80,4 +82,17 @@ export interface IDappStakingService {
    * @param accountAddress User account address
    */
   canClaimRewardWithoutErrors(accountAddress: string): Promise<boolean>;
+
+  /**
+   * claim dApp staking rewards
+   */
+  claim({
+    senderAddress,
+    transaction,
+    finalizedCallback,
+  }: {
+    senderAddress: string;
+    transaction: SubmittableExtrinsic<'promise'>;
+    finalizedCallback: (result: ISubmittableResult) => void;
+  }): Promise<void>;
 }

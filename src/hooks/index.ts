@@ -25,7 +25,6 @@ export * from './useAppRouter';
 export * from './chain/useAvgBlockTime';
 export * from './dapps-staking/useStake';
 export * from './dapps-staking/useUnbond';
-export * from './dapps-staking/useNominationTransfer';
 export * from './dapps-staking/useStakerInfo';
 export * from './dapps-staking/useStakingList';
 export * from './dapps-staking/useSignPayload';
