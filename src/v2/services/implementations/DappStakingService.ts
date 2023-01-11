@@ -208,7 +208,6 @@ export class DappStakingService implements IDappStakingService {
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
     Guard.ThrowIfUndefined('transaction', transaction);
 
-    console.log('sign');
     await this.wallet.signAndSend(
       transaction,
       senderAddress,
