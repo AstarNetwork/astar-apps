@@ -5,7 +5,7 @@ import { astarMainnetNativeToken, ASTAR_NATIVE_TOKEN } from 'src/config/chain';
 import { EditDappItem } from 'src/store/dapp-staking/state';
 import { Guard } from 'src/v2/common';
 import { TvlModel } from 'src/v2/models';
-import { DappCombinedInfo, StakerInfo, RewardDestination } from 'src/v2/models/DappsStaking';
+import { DappCombinedInfo, StakerInfo } from 'src/v2/models/DappsStaking';
 import {
   IDappStakingRepository,
   IMetadataRepository,
@@ -15,11 +15,10 @@ import {
 import { IBalanceFormatterService, IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { IWalletService } from '../IWalletService';
+import { AccountLedger } from 'src/v2/models/DappsStaking';
+import { PayloadWithWeight } from 'src/hooks/helper/claim';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
-import { AccountLedger } from 'src/v2/models/DappsStaking';
-import { SubstrateAccount } from 'src/store/general/state';
-import { PayloadWithWeight } from 'src/hooks/helper/claim';
 
 @injectable()
 export class DappStakingService implements IDappStakingService {
@@ -198,38 +197,24 @@ export class DappStakingService implements IDappStakingService {
     return true;
   }
 
+  public async getTxsToExecuteForClaim(
+    batchTxs: PayloadWithWeight[]
+  ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> {
+    const extrinsic = await this.dappStakingRepository.getTxsToExecuteForClaim(batchTxs);
+    return extrinsic;
+  }
+
   public async claimAll({
     batchTxs,
     senderAddress,
-    substrateAccounts,
-    isCustomSignature = false,
-    txResHandler,
-    handleCustomExtrinsic,
-    tip,
   }: {
     batchTxs: PayloadWithWeight[];
     senderAddress: string;
-    substrateAccounts: SubstrateAccount[];
-    isCustomSignature: boolean;
-    txResHandler: (result: ISubmittableResult) => Promise<boolean>;
-    // from: useCustomSignature.ts
-    handleCustomExtrinsic?: (
-      method: SubmittableExtrinsic<'promise', ISubmittableResult>
-    ) => Promise<void>;
-    tip?: string;
   }): Promise<void> {
     try {
-      const transaction = await this.dappStakingRepository.getTxsToExecuteForClaim(batchTxs);
+      const extrinsic = await this.getTxsToExecuteForClaim(batchTxs);
 
-      await this.wallet.signAndSendWithCustomSignature({
-        transaction,
-        senderAddress,
-        substrateAccounts,
-        isCustomSignature,
-        txResHandler,
-        handleCustomExtrinsic,
-        tip, //note: this is a quick hack to speed of the tx. We should add the custom speed modal later
-      });
+      await this.wallet.signAndSend(extrinsic, senderAddress);
     } catch (error: any) {
       console.error(error.message);
     }

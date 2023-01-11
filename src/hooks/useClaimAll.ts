@@ -1,21 +1,14 @@
-import { bool } from '@polkadot/types';
-import { ISubmittableResult } from '@polkadot/types/types';
-import { BN } from '@polkadot/util';
 import { $api } from 'boot/api';
-import { useCurrentEra, useCustomSignature, useGasPrice } from 'src/hooks';
+import { useCurrentEra, useCustomSignature } from 'src/hooks';
 import { TxType } from 'src/hooks/custom-signature/message';
-import { ExtrinsicPayload } from 'src/hooks/helper';
 import { getIndividualClaimTxs, PayloadWithWeight } from 'src/hooks/helper/claim';
-import { signAndSend } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
-import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
 import { container } from 'src/v2/common';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
-import { IDappStakingService } from 'src/v2/services';
+import { IDappStakingService, IExtrinsicCallService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { computed, ref, watchEffect } from 'vue';
-
-const MAX_BATCH_WEIGHT = new BN('50000000000');
+import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
 
 export function useClaimAll() {
   let batchTxs: PayloadWithWeight[] = [];
@@ -29,10 +22,12 @@ export function useClaimAll() {
   const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const isSendingTx = computed(() => store.getters['general/isLoading']);
-  const { nativeTipPrice } = useGasPrice();
+  const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
+  const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
+  const { requestSignature } = useEvmAccount();
 
   const { era } = useCurrentEra();
-  const { handleResult, handleCustomExtrinsic, isCustomSig } = useCustomSignature({
+  const { isCustomSig } = useCustomSignature({
     txType: TxType.dappsStaking,
   });
 
@@ -82,22 +77,26 @@ export function useClaimAll() {
 
   const claimAll = async (): Promise<void> => {
     try {
-      const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
-        const res = await handleResult(result);
-        hasExtrinsicFailedEvent(result.events, store.dispatch);
-        return res;
-      };
       const dappStakingService = container.get<IDappStakingService>(Symbols.DappStakingService);
-      await dappStakingService.claimAll({
-        batchTxs,
-        senderAddress: senderAddress.value,
-        substrateAccounts: substrateAccounts.value,
-        isCustomSignature: isCustomSig.value,
-        txResHandler,
-        handleCustomExtrinsic,
-        tip: nativeTipPrice.value.fast, //note: this is a quick hack to speed of the tx. We should add the custom speed modal later
-        //tip: selectedTip.value.price,
-      });
+      if (isCustomSig.value) {
+        const extrinsic = await dappStakingService.getTxsToExecuteForClaim(batchTxs);
+        const extrinsicCallService = container.get<IExtrinsicCallService>(
+          Symbols.ExtrinsicCallService
+        );
+
+        await extrinsicCallService.callCustomExtrinsic(
+          extrinsic,
+          currentEcdsaAccount.value,
+          currentNetworkIdx.value,
+          requestSignature
+        );
+      } else {
+        await dappStakingService.claimAll({
+          batchTxs,
+          senderAddress: senderAddress.value,
+          substrateAccounts: substrateAccounts.value,
+        });
+      }
     } catch (error: any) {
       console.error(error.message);
     }

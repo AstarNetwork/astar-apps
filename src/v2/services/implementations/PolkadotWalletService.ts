@@ -11,9 +11,6 @@ import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/me
 import { WalletService } from './WalletService';
 import { Guard, wait } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
-import { SubstrateAccount } from 'src/store/general/state';
-import { addTxHistories, HistoryTxType } from 'src/modules/account';
-import { getInjector } from 'src/hooks/helper/wallet';
 @injectable()
 export class PolkadotWalletService extends WalletService implements IWalletService {
   private readonly extensions: InjectedExtension[] = [];
@@ -90,96 +87,6 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
     }
 
     return result;
-  }
-
-  // from src/hooks/helper/wallet.ts
-  // @TODO: Need to refactor
-  public async signAndSendWithCustomSignature({
-    transaction,
-    senderAddress,
-    substrateAccounts,
-    isCustomSignature = false,
-    txResHandler,
-    handleCustomExtrinsic,
-    tip,
-    txType,
-  }: {
-    transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
-    senderAddress: string;
-    substrateAccounts: SubstrateAccount[];
-    isCustomSignature: boolean;
-    txResHandler: (result: ISubmittableResult) => Promise<boolean>;
-    // from: useCustomSignature.ts
-    handleCustomExtrinsic?: (
-      method: SubmittableExtrinsic<'promise', ISubmittableResult>
-    ) => Promise<void>;
-    tip?: string;
-    txType?: HistoryTxType;
-  }): Promise<boolean> {
-    Guard.ThrowIfUndefined('transaction', transaction);
-    Guard.ThrowIfUndefined('senderAddress', senderAddress);
-    Guard.ThrowIfUndefined('substrateAccounts', substrateAccounts);
-
-    return new Promise<boolean>(async (resolve) => {
-      const sendSubstrateTransaction = async (): Promise<void> => {
-        const injector = await getInjector(substrateAccounts);
-        if (!injector) {
-          throw Error('Invalid injector');
-        }
-        await transaction.signAndSend(
-          senderAddress,
-          {
-            signer: injector.signer,
-            nonce: -1,
-            tip: tip ? ethers.utils.parseEther(String(tip)).toString() : '1',
-          },
-          (result) => {
-            if (result.isFinalized) {
-              if (!this.isExtrinsicFailed(result.events)) {
-                (async () => {
-                  const res = await txResHandler(result);
-                  this.eventAggregator.publish(
-                    new ExtrinsicStatusMessage(
-                      true,
-                      'Transaction successfully executed',
-                      `${transaction.method.section}.${transaction.method.method}`,
-                      result.txHash.toHex()
-                    )
-                  );
-
-                  if (txType) {
-                    addTxHistories({
-                      hash: result.txHash.toString(),
-                      type: txType,
-                      address: senderAddress,
-                    });
-                  }
-                  this.eventAggregator.publish(new BusyMessage(false));
-                  resolve(res);
-                })();
-              } else {
-                !result.isCompleted && this.eventAggregator.publish(new BusyMessage(true));
-              }
-            }
-          }
-        );
-      };
-
-      try {
-        if (isCustomSignature && handleCustomExtrinsic) {
-          await handleCustomExtrinsic(transaction);
-          this.eventAggregator.publish(new BusyMessage(false));
-          resolve(true);
-        } else {
-          await sendSubstrateTransaction();
-        }
-      } catch (error: any) {
-        console.error(error.message);
-        this.eventAggregator.publish(new ExtrinsicStatusMessage(false, error.message));
-        this.eventAggregator.publish(new BusyMessage(false));
-        resolve(false);
-      }
-    });
   }
 
   private async getAccounts(): Promise<Account[]> {

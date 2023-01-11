@@ -22,4 +22,6 @@ export const Symbols = {
   CurrentWallet: Symbol.for('CurrentWallet'),
   EvmAssetsRepository: Symbol.for('EvmAssetsRepository'),
   EvmAssetsService: Symbol.for('EvmAssetsService'),
+  ExtrinsicCallService: Symbol.for('ExtrinsicCallService'),
+  ExtrinsicCallRepository: Symbol.for('ExtrinsicCallRepository'),
 };

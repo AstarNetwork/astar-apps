@@ -20,29 +20,4 @@ export class WalletServiceMock implements IWalletService {
   ): Promise<string | null> {
     return this.walletSignAndSendMock.call(this, extrinsic, senderAddress, successMessage);
   }
-
-  public async signAndSendWithCustomSignature({
-    transaction,
-    senderAddress,
-    substrateAccounts,
-    isCustomSignature = false,
-    txResHandler,
-    handleCustomExtrinsic,
-    tip,
-    txType,
-  }: {
-    transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
-    senderAddress: string;
-    substrateAccounts: SubstrateAccount[];
-    isCustomSignature: boolean;
-    txResHandler: (result: ISubmittableResult) => Promise<boolean>;
-    // from: useCustomSignature.ts
-    handleCustomExtrinsic?: (
-      method: SubmittableExtrinsic<'promise', ISubmittableResult>
-    ) => Promise<void>;
-    tip?: string;
-    txType?: HistoryTxType;
-  }): Promise<boolean> {
-    return this.walletSignAndSendMock.call(this, transaction, senderAddress, '');
-  }
 }

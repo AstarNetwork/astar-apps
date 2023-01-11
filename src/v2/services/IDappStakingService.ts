@@ -3,10 +3,10 @@ import { EditDappItem } from 'src/store/dapp-staking/state';
 import { TvlModel } from 'src/v2/models';
 import { DappCombinedInfo, StakerInfo } from '../models/DappsStaking';
 import { AccountLedger } from '../models/DappsStaking';
-import { SubmittableExtrinsic } from '@polkadot/api/types';
-import { ISubmittableResult } from '@polkadot/types/types';
 import { SubstrateAccount } from 'src/store/general/state';
 import { PayloadWithWeight } from 'src/hooks/helper/claim';
+import { SubmittableExtrinsic } from '@polkadot/api/types';
+import { ISubmittableResult } from '@polkadot/types/types';
 
 /**
  * Definition of service used to manage dapps staking.
@@ -85,24 +85,19 @@ export interface IDappStakingService {
    */
   canClaimRewardWithoutErrors(accountAddress: string): Promise<boolean>;
 
+  getTxsToExecuteForClaim(
+    batchTxs: PayloadWithWeight[]
+  ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>>;
+
   claimAll({
     batchTxs,
     senderAddress,
     substrateAccounts,
-    isCustomSignature = false,
-    txResHandler,
-    handleCustomExtrinsic,
     tip,
   }: {
     batchTxs: PayloadWithWeight[];
     senderAddress: string;
     substrateAccounts: SubstrateAccount[];
-    isCustomSignature: boolean;
-    txResHandler: (result: ISubmittableResult) => Promise<boolean>;
-    // from: useCustomSignature.ts
-    handleCustomExtrinsic?: (
-      method: SubmittableExtrinsic<'promise', ISubmittableResult>
-    ) => Promise<void>;
     tip?: string;
   }): Promise<void>;
 }
