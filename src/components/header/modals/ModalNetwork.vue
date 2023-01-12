@@ -134,6 +134,7 @@ import {
 import { ChainProvider, endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { getRandomFromArray, wait } from 'src/hooks/helper/common';
+import { stagingMainBranch } from 'src/links';
 import { buildNetworkUrl } from 'src/router/utils';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, onUnmounted } from 'vue';
@@ -316,7 +317,6 @@ export default defineComponent({
     const checkIsDisplayEndpoint = (chain: ChainProvider, endpoint: string): boolean => {
       const origin = window.location.origin;
       const stagingDomain = '.web.app';
-      const stagingMainBranch = 'https://staging.portal.astar.network';
       const devPaths = [stagingDomain, stagingMainBranch, 'localhost:'];
       const isForDeveloper = devPaths.some((it) => origin.includes(it));
       // Memo: enables selecting light client endpoint for Shibuya on the production page
