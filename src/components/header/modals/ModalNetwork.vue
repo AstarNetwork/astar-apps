@@ -80,6 +80,24 @@
           </ul>
         </fieldset>
       </div>
+      <div v-if="isSelectLightClient" class="box--light-client-warning">
+        <span class="text--accent">
+          {{ $t('drawer.lightClientWarning') }}
+        </span>
+        <ul class="ul--warnings">
+          <li>
+            <span>It might take a longer time to load data from chains</span>
+          </li>
+          <li>
+            <span>It might take a longer time or fail in sending transactions</span>
+          </li>
+          <li v-if="selNetwork === endpointKey.SHIBUYA">
+            <span>
+              {{ $t('drawer.shibuyaTakes20mins') }}
+            </span>
+          </li>
+        </ul>
+      </div>
       <div class="wrapper__row--button">
         <astar-button
           class="btn--connect"
@@ -88,16 +106,6 @@
         >
           {{ $t('connect') }}
         </astar-button>
-      </div>
-      <div v-if="isSelectLightClient" class="box--light-client-warning">
-        <span class="text--accent">
-          {{ $t('drawer.lightClientWarning') }}
-        </span>
-        <div v-if="selNetwork === endpointKey.SHIBUYA">
-          <span class="text--accent">
-            {{ $t('drawer.shibuyaTakes20mins') }}
-          </span>
-        </div>
       </div>
     </div>
   </astar-modal-drawer>

@@ -15,9 +15,7 @@
   "relay_chain": "rococo_tokyo_relay",
   "para_id": 1000,
   "codeSubstitutes": {},
-  "badBlocks": [
-    "0xc5c531c16010027fcfd11bdfd237fc295763b2ed75459ac7c4087c58f6bd1d50"
-  ],
+  "badBlocks": ["0xc5c531c16010027fcfd11bdfd237fc295763b2ed75459ac7c4087c58f6bd1d50"],
   "genesis": {
     "raw": {
       "top": {
