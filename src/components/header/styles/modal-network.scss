@@ -173,10 +173,18 @@
   }
 
   .box--light-client-warning {
-    display: flex;
-    flex-direction: column;
-    row-gap: 8px;
-    margin-top: 24px;
+    display: none;
+    @media (min-width: $sm) {
+      display: flex;
+      flex-direction: column;
+      row-gap: 8px;
+      margin-top: 24px;
+    }
+  }
+
+  .ul--warnings {
+    list-style: disc;
+    text-align: left;
   }
 
   .input--endpoint[type='radio'] {
@@ -188,9 +196,4 @@
       background-color: white;
     }
   }
-}
-
-.ul--warnings {
-  list-style: disc;
-  text-align: left;
 }
