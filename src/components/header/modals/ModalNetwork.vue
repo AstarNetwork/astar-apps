@@ -84,7 +84,7 @@
         <span class="text--accent">
           {{ $t('drawer.lightClientWarning') }}
         </span>
-        <ul class="ul--warnings">
+        <ul v-if="isLightClientExtension" class="ul--warnings">
           <li>
             <span>It might take a longer time to load data from chains</span>
           </li>
@@ -97,6 +97,21 @@
             </span>
           </li>
         </ul>
+        <div v-else>
+          <ul class="ul--warnings">
+            <li>
+              <span> {{ $t('installWallet.installWallet', { value: 'Substrate_connect' }) }}</span>
+              <a
+                class="text--download"
+                href="https://substrate.io/developers/substrate-connect/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                {{ $t('installWallet.installExtension') }}
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
       <div class="wrapper__row--button">
         <astar-button
@@ -112,13 +127,16 @@
 </template>
 <script lang="ts">
 import { $endpoint } from 'src/boot/api';
-import { checkIsLightClient } from 'src/config/api/polkadot/connectApi';
+import {
+  checkIsLightClient,
+  checkIsSubstrateConnectInstalled,
+} from 'src/config/api/polkadot/connectApi';
 import { ChainProvider, endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { getRandomFromArray, wait } from 'src/hooks/helper/common';
 import { buildNetworkUrl } from 'src/router/utils';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, watch, onUnmounted, watchEffect } from 'vue';
+import { computed, defineComponent, ref, watch, onUnmounted } from 'vue';
 
 export default defineComponent({
   props: {
@@ -139,6 +157,7 @@ export default defineComponent({
     const store = useStore();
     const newEndpoint = ref('');
     const customEndpoint = computed(() => store.getters['general/customEndpoint']);
+    const isLightClientExtension = computed<boolean>(() => checkIsSubstrateConnectInstalled());
     newEndpoint.value = customEndpoint.value;
 
     const isClosing = ref<boolean>(false);
@@ -198,7 +217,11 @@ export default defineComponent({
     const selEndpointShibuya = ref<string>('');
 
     const isDisabled = computed<boolean>(() => {
-      return selNetwork.value === endpointKey.CUSTOM && !newEndpoint.value;
+      if (isSelectLightClient.value) {
+        return !isLightClientExtension.value;
+      } else {
+        return selNetwork.value === endpointKey.CUSTOM && !newEndpoint.value;
+      }
     });
 
     const isCustomNetwork = computed<boolean>(() => selNetwork.value === endpointKey.CUSTOM);
@@ -338,6 +361,7 @@ export default defineComponent({
       selEndpointShibuya,
       windowHeight,
       isSelectLightClient,
+      isLightClientExtension,
       closeModal,
       setSelEndpoint,
       checkIsCheckedEndpoint,

@@ -188,6 +188,12 @@
     padding-left: 24px;
   }
 
+  .text--download {
+    display: block;
+    text-decoration: underline;
+    color: $astar-blue-dark;
+  }
+
   .input--endpoint[type='radio'] {
     width: rem(16);
     height: rem(16);

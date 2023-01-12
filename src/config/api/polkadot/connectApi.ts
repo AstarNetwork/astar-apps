@@ -16,6 +16,8 @@ const RES_TIMEOUT = 'timeout';
 type Provider = WsProvider | ScProvider;
 
 export const checkIsLightClient = (endpoint: string): boolean => endpoint.startsWith('light://');
+export const checkIsSubstrateConnectInstalled = (): boolean =>
+  !!document.getElementById('substrateConnectExtensionAvailable');
 
 const getParachainSpec = (networkIdx: endpointKey): string => {
   switch (networkIdx) {
@@ -42,9 +44,6 @@ const getWellKnownChain = (networkIdx: endpointKey): WellKnownChain | string => 
       throw new Error(`networkIdx ${networkIdx} is not supported.`);
   }
 };
-
-const isSubstrateConnectInstalled = (): boolean =>
-  !!document.getElementById('substrateConnectExtensionAvailable');
 
 // Memo: Reach to a healthy node whenever the selected endpoint has failed to connect to API
 const fallbackConnection = async ({
