@@ -17,7 +17,7 @@
 import { defineComponent, computed } from 'vue';
 import { useNetworkInfo } from 'src/hooks';
 import { endpointKey } from 'src/config/chainEndpoints';
-import { AlertType } from 'src/store/general/state';
+import { AlertBox, AlertType } from 'src/store/general/state';
 import { useStore } from 'src/store';
 import NotificationBar from './NotificationBar.vue';
 
@@ -25,8 +25,6 @@ export default defineComponent({
   components: { NotificationBar },
   setup() {
     const store = useStore();
-    const alertStack = computed(() => store.getters['general/alertStack']);
-
     const closeNoti = (index: number) => {
       store.dispatch(
         'general/removeAlertMsg',
@@ -37,8 +35,10 @@ export default defineComponent({
       );
     };
 
+    const alertStack = computed<AlertBox[]>(() => store.getters['general/alertStack']);
     const { currentNetworkIdx } = useNetworkInfo();
-    const isShiden = computed(() => currentNetworkIdx.value === endpointKey.SHIDEN);
+    const isShiden = computed<boolean>(() => currentNetworkIdx.value === endpointKey.SHIDEN);
+
     const goToSubscan = (txHash: string) => {
       if (!txHash) return;
 

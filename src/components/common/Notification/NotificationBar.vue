@@ -67,8 +67,7 @@ export default defineComponent({
     };
 
     const { t } = useI18n();
-
-    const alertTypeTitle = computed(() => {
+    const alertTypeTitle = computed<string>(() => {
       if (props.alertType === AlertType.Success) {
         return t('toast.success');
       } else if (props.alertType === AlertType.Warning) {
@@ -79,12 +78,13 @@ export default defineComponent({
         return t('toast.copied');
       }
     });
-    const showCloseBtn = ref(false);
 
-    const isSuccessType = computed(() => props.alertType === AlertType.Success);
-    const isCopiedType = computed(() => props.alertType === AlertType.Copied);
+    const showCloseBtn = ref<boolean>(false);
+    const isSuccessType = computed<boolean>(() => props.alertType === AlertType.Success);
+    const isCopiedType = computed<boolean>(() => props.alertType === AlertType.Copied);
     const { currentNetworkIdx } = useNetworkInfo();
-    const isShiden = computed(() => currentNetworkIdx.value === endpointKey.SHIDEN);
+    const isShiden = computed<boolean>(() => currentNetworkIdx.value === endpointKey.SHIDEN);
+
     const goToSubscan = () => {
       if (!props.txHash) return;
 
