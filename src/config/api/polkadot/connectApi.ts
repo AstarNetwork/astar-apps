@@ -1,8 +1,8 @@
-import { ApiPromise, WsProvider } from '@polkadot/api';
+import { ApiPromise, WsProvider, ScProvider } from '@polkadot/api';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { wait } from 'src/hooks/helper/common';
-import { ScProvider } from '@polkadot/rpc-provider/substrate-connect';
+import * as Sc from '@substrate/connect';
 import jsonParachainSpecAstar from './chain-specs/astar.json';
 import jsonParachainSpecShiden from './chain-specs/shiden.json';
 import jsonParachainSpecShibuya from './chain-specs/shibuya.json';
@@ -129,12 +129,12 @@ export async function connectApi(
   try {
     if (checkIsLightClient(endpoint)) {
       const parachainSpec = getParachainSpec(networkIdx);
-      const relayProvider = new ScProvider(getWellKnownChain(networkIdx));
-      provider = new ScProvider(parachainSpec, relayProvider);
+      const relayProvider = new ScProvider(Sc, getWellKnownChain(networkIdx));
+      provider = new ScProvider(Sc, parachainSpec, relayProvider);
 
-      // TODO see how to handle errors and discconnections.
+      // TODO see how to handle errors and disconnections.
       provider.on('error', (error: Error) => fallbackConnection({ networkIdx, endpoint }));
-      provider.on('disconnected', (error: Error) => console.log('handle diconnect'));
+      provider.on('disconnected', (error: Error) => console.error('handle disconnect'));
       provider.connect();
     } else {
       provider = new WsProvider(endpoint);

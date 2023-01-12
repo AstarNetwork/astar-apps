@@ -35,11 +35,12 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
   public async signAndSend(
     extrinsic: SubmittableExtrinsic<'promise', ISubmittableResult>,
     senderAddress: string,
-    successMessage?: string
+    successMessage?: string,
+    transactionTip?: number,
+    finalizedCallback?: (result?: ISubmittableResult) => void
   ): Promise<string | null> {
     Guard.ThrowIfUndefined('extrinsic', extrinsic);
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
-    let result = null;
 
     try {
       return new Promise<string>(async (resolve) => {
@@ -61,23 +62,32 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
           account.nonce
         );
 
-        await call.send((result) => {
-          if (result.isCompleted) {
-            if (!this.isExtrinsicFailed(result.events)) {
-              this.eventAggregator.publish(
-                new ExtrinsicStatusMessage(
-                  true,
-                  successMessage ?? 'Transaction successfully executed',
-                  `${extrinsic.method.section}.${extrinsic.method.method}`,
-                  result.txHash.toHex()
-                )
-              );
-            }
+        const unsub = await call.send((result) => {
+          try {
+            if (result.isCompleted) {
+              if (!this.isExtrinsicFailed(result.events)) {
+                this.eventAggregator.publish(
+                  new ExtrinsicStatusMessage(
+                    true,
+                    successMessage ?? 'Transaction successfully executed',
+                    `${extrinsic.method.section}.${extrinsic.method.method}`,
+                    result.txHash.toHex()
+                  )
+                );
+              }
 
+              this.eventAggregator.publish(new BusyMessage(false));
+              if (finalizedCallback) {
+                finalizedCallback(result);
+              }
+              resolve(result.txHash.toHex());
+              unsub();
+            } else {
+              this.eventAggregator.publish(new BusyMessage(true));
+            }
+          } catch (error) {
             this.eventAggregator.publish(new BusyMessage(false));
-            resolve(result.txHash.toHex());
-          } else {
-            this.eventAggregator.publish(new BusyMessage(true));
+            unsub();
           }
         });
       });

@@ -37,7 +37,8 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
     extrinsic: SubmittableExtrinsic<'promise', ISubmittableResult>,
     senderAddress: string,
     successMessage?: string,
-    transactionTip?: number
+    transactionTip?: number,
+    finalizedCallback?: (result?: ISubmittableResult) => void
   ): Promise<string | null> {
     Guard.ThrowIfUndefined('extrinsic', extrinsic);
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
@@ -55,7 +56,7 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
 
         console.info('transaction tip', tip);
 
-        await extrinsic.signAndSend(
+        const unsub = await extrinsic.signAndSend(
           senderAddress,
           {
             signer: await this.getSigner(senderAddress),
@@ -78,7 +79,11 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
                 }
 
                 this.eventAggregator.publish(new BusyMessage(false));
+                if (finalizedCallback) {
+                  finalizedCallback(result);
+                }
                 resolve(extrinsic.hash.toHex());
+                unsub();
               } else {
                 if (isMobileDevice && !result.isCompleted) {
                   this.eventAggregator.publish(new BusyMessage(true));
@@ -86,6 +91,7 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
               }
             } catch (error) {
               this.eventAggregator.publish(new BusyMessage(false));
+              unsub();
             }
           }
         );
