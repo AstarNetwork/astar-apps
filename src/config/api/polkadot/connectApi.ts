@@ -135,7 +135,7 @@ export async function connectApi(
       // TODO see how to handle errors and disconnections.
       provider.on('error', (error: Error) => fallbackConnection({ networkIdx, endpoint }));
       provider.on('disconnected', (error: Error) => console.error('handle disconnect'));
-      provider.connect();
+      await provider.connect();
     } else {
       provider = new WsProvider(endpoint);
     }
