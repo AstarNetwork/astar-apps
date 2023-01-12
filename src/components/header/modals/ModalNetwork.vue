@@ -316,7 +316,8 @@ export default defineComponent({
     const checkIsDisplayEndpoint = (chain: ChainProvider, endpoint: string): boolean => {
       const origin = window.location.origin;
       const stagingDomain = '.web.app';
-      const devPaths = [stagingDomain, 'localhost:'];
+      const stagingMainBranch = 'https://staging.portal.astar.network';
+      const devPaths = [stagingDomain, stagingMainBranch, 'localhost:'];
       const isForDeveloper = devPaths.some((it) => origin.includes(it));
       // Memo: enables selecting light client endpoint for Shibuya on the production page
       if (isForDeveloper || chain.key === endpointKey.SHIBUYA) {
