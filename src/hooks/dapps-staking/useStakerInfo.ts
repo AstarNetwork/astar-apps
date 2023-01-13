@@ -62,7 +62,7 @@ export function useStakerInfo() {
   };
 
   watchEffect(async () => {
-    if (isLoading.value || !dapps.value) {
+    if (isLoading.value || !dapps.value || !currentAccount.value) {
       return;
     }
     try {
