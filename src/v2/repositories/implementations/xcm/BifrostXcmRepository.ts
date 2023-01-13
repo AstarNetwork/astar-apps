@@ -11,7 +11,9 @@ import { XcmRepository } from '../XcmRepository';
 
 const BNC = { Native: 'BNC' };
 const vDOT = { VToken2: 0 };
+const vKSM = { VToken: 'KSM' };
 const ASTR = { Token2: 3 };
+const SDN = { Token2: 3 };
 
 /**
  * Used to transfer assets from Bifrost
@@ -42,8 +44,14 @@ export class BifrostXcmRepository extends XcmRepository {
       tokenData = BNC;
     } else if (token.originAssetId == 'vDOT') {
       tokenData = vDOT;
+    } else if (token.originAssetId == 'vKSM') {
+      tokenData = vKSM;
     } else if (token.originAssetId == 'ASTR') {
       tokenData = ASTR;
+    } else if (token.originAssetId == 'SDN') {
+      tokenData = SDN;
+    } else {
+      throw `Token name for ${token.originAssetId} is not defined`;
     }
     const destination = {
       V1: {
@@ -92,9 +100,17 @@ export class BifrostXcmRepository extends XcmRepository {
       } else if (token.originAssetId == 'vDOT') {
         const bal = await api.query.tokens.accounts<TokensAccounts>(address, vDOT);
         return bal.free.toString();
-      } else {
+      } else if (token.originAssetId == 'vKSM') {
+        const bal = await api.query.tokens.accounts<TokensAccounts>(address, vKSM);
+        return bal.free.toString();
+      } else if (token.originAssetId == 'STAR') {
         const bal = await api.query.tokens.accounts<TokensAccounts>(address, ASTR);
         return bal.free.toString();
+      } else if (token.originAssetId == 'SDN') {
+        const bal = await api.query.tokens.accounts<TokensAccounts>(address, SDN);
+        return bal.free.toString();
+      } else {
+        return '0';
       }
     } catch (e) {
       console.error(e);
