@@ -61,7 +61,6 @@ import { useNetworkInfo, useTooltip } from 'src/hooks';
 import { GasPrice, SelectedGas } from '@astar-network/astar-sdk-core';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType } from 'vue';
-import { QTooltip } from 'quasar';
 
 export default defineComponent({
   props: {

@@ -130,7 +130,6 @@ import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
 import { computed, defineComponent, PropType, ref, watch, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { QToggle, QTooltip } from 'quasar';
 
 export default defineComponent({
   components: {

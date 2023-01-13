@@ -32,7 +32,6 @@
 import axios from 'axios';
 import { formatNumber, TOKEN_API_URL } from '@astar-network/astar-sdk-core';
 import { defineComponent, ref, watchEffect } from 'vue';
-import { QSkeleton } from 'quasar';
 
 interface StatsData {
   generatedAt: number;

@@ -194,7 +194,6 @@ import { useStore } from 'src/store';
 import { CommunityType } from 'src/store/dapp-staking/state';
 import { computed, defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { QTooltip } from 'quasar';
 
 interface Community {
   type: string;

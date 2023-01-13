@@ -180,8 +180,6 @@ import ModalVesting from 'src/components/assets/modals/ModalVesting.vue';
 import { Path } from 'src/router';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { faucetBalRequirement } from 'src/config/wallets';
-import { QSkeleton } from 'quasar';
-import { RouterLink } from 'vue-router';
 
 export default defineComponent({
   components: {

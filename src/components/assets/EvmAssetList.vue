@@ -114,7 +114,6 @@
 </template>
 <script lang="ts">
 import { ethers } from 'ethers';
-import { QSkeleton } from 'quasar';
 import { $web3 } from 'src/boot/api';
 import { cbridgeAppLink, checkIsCbridgeToken } from 'src/c-bridge';
 import AssetSearchOption from 'src/components/assets/AssetSearchOption.vue';
@@ -128,7 +127,6 @@ import { Erc20Token, getTokenImage } from 'src/modules/token';
 import { buildTransferPageLink } from 'src/router/routes';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
-import { RouterLink } from 'vue-router';
 
 export default defineComponent({
   components: {

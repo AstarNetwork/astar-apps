@@ -113,8 +113,7 @@ import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { computed, defineComponent, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import PieChart from 'src/components/common/PieChart.vue';
-import { progress } from '@polkadot/api-derive/session';
-import { QSkeleton } from 'quasar';
+
 export default defineComponent({
   components: { PieChart },
   setup() {

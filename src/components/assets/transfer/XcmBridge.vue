@@ -200,8 +200,6 @@ import { useI18n } from 'vue-i18n';
 import ModalLoading from '/src/components/common/ModalLoading.vue';
 import { isValidEvmAddress } from '@astar-network/astar-sdk-core';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
-import { bridge } from '@polkadot/wasm-crypto';
-import { QTooltip } from 'quasar';
 
 export default defineComponent({
   components: {

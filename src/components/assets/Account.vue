@@ -83,7 +83,6 @@ import { isValidEvmAddress, getShortenAddress } from '@astar-network/astar-sdk-c
 import { FrameSystemAccountInfo } from '@polkadot/types/lookup';
 import copy from 'copy-to-clipboard';
 import { ethers } from 'ethers';
-import { QTooltip, QSkeleton } from 'quasar';
 import { $api } from 'src/boot/api';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import {
