@@ -17,7 +17,8 @@ import axios from 'axios';
 import { ChartData } from 'src/components/dashboard/ChartData';
 import ChartPanel from 'src/components/common/ChartPanel.vue';
 import { defineComponent, ref, watch } from 'vue';
-import { TOKEN_API_URL, textChart } from 'src/modules/token-api';
+import { textChart } from 'src/modules/token-api';
+import { TOKEN_API_URL } from '@astar-network/astar-sdk-core';
 
 export default defineComponent({
   components: {

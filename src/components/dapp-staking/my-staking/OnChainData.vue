@@ -95,7 +95,8 @@ import { defineComponent, computed, watchEffect, ref } from 'vue';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { DappCombinedInfo, SmartContractState } from 'src/v2/models';
 import { useStore } from 'src/store';
-import { paginate } from 'src/hooks/helper/common';
+import { paginate } from '@astar-network/astar-sdk-core';
+import { QBtnDropdown, QList, QItem, QItemSection, QItemLabel } from 'quasar';
 
 enum Filter {
   tvl = 'Staking TVL',

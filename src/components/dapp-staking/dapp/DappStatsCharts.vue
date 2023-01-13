@@ -20,7 +20,7 @@
 <script lang="ts">
 import StatsChart from 'src/components/dapp-staking/dapp/StatsChart.vue';
 import { useNetworkInfo } from 'src/hooks';
-import { fetchDappsStats, StatsDetail } from 'src/modules/token-api';
+import { fetchDappsStats, StatsDetail } from '@astar-network/astar-sdk-core';
 import { DappCombinedInfo } from 'src/v2/models';
 import { defineComponent, PropType, ref, watchEffect } from 'vue';
 

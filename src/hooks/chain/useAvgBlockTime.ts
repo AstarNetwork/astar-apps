@@ -3,7 +3,7 @@ import { $api } from 'boot/api';
 import { DateTime } from 'luxon';
 import { computed, ref, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
-import { wait } from '../helper/common';
+import { wait } from '@astar-network/astar-sdk-core';
 import { useCurrentEra } from '../useCurrentEra';
 
 export const useAvgBlockTime = (path: string) => {
@@ -19,10 +19,10 @@ export const useAvgBlockTime = (path: string) => {
   const isLoading = ref<boolean>(true);
 
   const router = useRouter();
-  const currentPath = computed(() => router.currentRoute.value.path.split('/')[1]);
-  const isUnsubscribe = computed(() => currentPath.value !== path);
+  const currentPath = computed<string>(() => router.currentRoute.value.path.split('/')[1]);
+  const isUnsubscribe = computed<boolean>(() => currentPath.value !== path);
 
-  const updateBlock = () => {
+  const updateBlock = (): void => {
     $api?.derive.chain.subscribeNewHeads((header) => {
       try {
         const blockHeight = Number(header.number);

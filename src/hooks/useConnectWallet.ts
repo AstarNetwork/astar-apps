@@ -1,4 +1,4 @@
-import { wait, ASTAR_SS58_FORMAT } from '@astar-network/astar-sdk-core';
+import { wait, ASTAR_SS58_FORMAT, checkSumEvmAddress } from '@astar-network/astar-sdk-core';
 import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
 import { $api } from 'boot/api';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
@@ -10,7 +10,6 @@ import {
   WalletModalOption,
 } from 'src/config/wallets';
 import { getChainId, setupNetwork } from 'src/config/web3';
-import { checkSumEvmAddress } from 'src/config/web3/utils/convert';
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import * as utils from 'src/hooks/custom-signature/utils';
 import { getEvmProvider } from 'src/hooks/helper/wallet';

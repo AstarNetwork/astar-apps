@@ -1,6 +1,4 @@
 export {
-  getDappAddressEnum,
-  getDappStakers,
   getLatestStakePoint,
   getStakeInfo,
   checkIsLimitedProvider,

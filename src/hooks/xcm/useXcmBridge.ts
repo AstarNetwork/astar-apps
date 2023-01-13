@@ -2,7 +2,7 @@ import { ApiPromise } from '@polkadot/api';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
 import { endpointKey } from 'src/config/chainEndpoints';
-import { getTokenBal, isValidEvmAddress, toSS58Address } from 'src/config/web3';
+import { getTokenBal } from 'src/config/web3';
 import {
   astarNativeTokens,
   useAccount,
@@ -10,13 +10,13 @@ import {
   useNetworkInfo,
   useTransferRouter,
 } from 'src/hooks';
-import { capitalize } from '@astar-network/astar-sdk-core';
+import { capitalize, isValidEvmAddress, toSS58Address } from '@astar-network/astar-sdk-core';
 import {
   ASTAR_DECIMALS,
   ASTAR_SS58_FORMAT,
   isValidAddressPolkadotAddress,
   SUBSTRATE_SS58_FORMAT,
-} from 'src/hooks/helper/plasmUtils';
+} from '@astar-network/astar-sdk-core';
 import { SystemAccount } from 'src/modules/account';
 import { showLoading } from 'src/modules/extrinsic/utils';
 import {

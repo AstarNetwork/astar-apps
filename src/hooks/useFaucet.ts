@@ -5,8 +5,8 @@ import { providerEndpoints } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
 import { onUnmounted, ref, Ref, watch, watchEffect } from 'vue';
 import { useAccount, useNetworkInfo } from 'src/hooks';
-import { fetchNativeBalance } from 'src/modules/account';
 import { ethers } from 'ethers';
+import { fetchNativeBalance } from '@astar-network/astar-sdk-core';
 
 interface Timestamps {
   lastRequestAt: number;

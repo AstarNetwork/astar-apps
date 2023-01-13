@@ -1,15 +1,11 @@
+import { checkSumEvmAddress } from '@astar-network/astar-sdk-core';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { checkSumEvmAddress } from 'src/config/web3/utils/convert';
 import { getSs58FromEvmPublicKey } from '../custom-signature/utils';
 
 interface EvmMappedAddress {
   evm: string;
   ss58: string;
 }
-
-// export function getShortenAddress(address: string, place = 6): string {
-//   return address ? `${address.slice(0, place)}${'.'.repeat(place)}${address.slice(-place)}` : '';
-// }
 
 const storedEvmAddressMapping = (): EvmMappedAddress[] | [] => {
   const data = localStorage.getItem(LOCAL_STORAGE.EVM_ADDRESS_MAPPING);
@@ -43,9 +39,3 @@ export const setAddressMapping = async ({
     JSON.stringify(updatedAddressMap.slice(0, 25))
   );
 };
-
-// export const getPubkeyFromSS58Addr = (ss58MappedAddr: string) => {
-//   const publicKey = decodeAddress(ss58MappedAddr);
-//   const hexPublicKey = u8aToHex(publicKey);
-//   return hexPublicKey;
-// };

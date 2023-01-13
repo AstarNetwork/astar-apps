@@ -1,13 +1,13 @@
 import { BN } from '@polkadot/util';
 import { ethers } from 'ethers';
 import { inject, injectable } from 'inversify';
-import { isValidEvmAddress } from 'src/config/web3';
 import xcmContractAbi from 'src/config/web3/abi/xcm-abi.json';
 import moonbeamWithdrawalAbi from 'src/config/web3/abi/xcm-moonbeam-withdrawal-abi.json';
 import {
   isValidAddressPolkadotAddress,
   getEvmGas,
   getPubkeyFromSS58Addr,
+  isValidEvmAddress,
 } from '@astar-network/astar-sdk-core';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
 import { relaychainParaId, xcmChainObj } from 'src/modules/xcm';

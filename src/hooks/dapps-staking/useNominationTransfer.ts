@@ -9,14 +9,14 @@ import {
 } from 'src/hooks';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { ethers } from 'ethers';
-import { getDappAddressEnum } from 'src/modules/dapp-staking';
 import { showError } from 'src/modules/extrinsic';
 import { useStore } from 'src/store';
 import { computed, ref, watch, watchEffect } from 'vue';
 import { TxType } from 'src/hooks/custom-signature/message';
-import { ASTAR_DECIMALS, balanceFormatter } from 'src/hooks/helper/plasmUtils';
+import { ASTAR_DECIMALS, getDappAddressEnum } from '@astar-network/astar-sdk-core';
 import { signAndSend } from 'src/hooks/helper/wallet';
 import { $api } from 'src/boot/api';
+import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
 
 export function useNominationTransfer() {
   const { currentAccount } = useAccount();

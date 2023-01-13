@@ -107,7 +107,7 @@ import {
   useAvgBlockTime,
   useNetworkInfo,
 } from 'src/hooks';
-import { formatNumber } from 'src/modules/token-api';
+import { formatNumber } from '@astar-network/astar-sdk-core';
 import { useStore } from 'src/store';
 import { TvlModel } from 'src/v2/models';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
@@ -115,6 +115,10 @@ import { computed, defineComponent, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import PieChart from 'src/components/common/PieChart.vue';
 import SnowPack from 'src/components/common/SnowPack.vue';
+import { progress } from '@polkadot/api-derive/session';
+import { QSkeleton } from 'quasar';
+// import { progress } from '@polkadot/api-derive/session';
+// import { QSkeleton } from 'quasar';
 export default defineComponent({
   components: { PieChart, SnowPack },
   setup() {

@@ -1,11 +1,10 @@
-import { bool } from '@polkadot/types';
+import { getIndividualClaimTxs, PayloadWithWeight } from '@astar-network/astar-sdk-core';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { BN } from '@polkadot/util';
 import { $api } from 'boot/api';
 import { useCurrentEra, useCustomSignature, useGasPrice } from 'src/hooks';
 import { TxType } from 'src/hooks/custom-signature/message';
 import { ExtrinsicPayload } from 'src/hooks/helper';
-import { getIndividualClaimTxs, PayloadWithWeight } from 'src/hooks/helper/claim';
 import { signAndSend } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';

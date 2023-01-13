@@ -1,7 +1,8 @@
+import { ASTAR_DECIMALS } from '@astar-network/astar-sdk-core';
 import { BN } from '@polkadot/util';
 import { ethers } from 'ethers';
 import { useAccount, useChainMetadata, useStakingList } from 'src/hooks';
-import { ASTAR_DECIMALS, balanceFormatter } from 'src/hooks/helper/plasmUtils';
+import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
 import { Path } from 'src/router';
 import { container } from 'src/v2/common';
 import { IDappStakingService } from 'src/v2/services';

@@ -3,19 +3,23 @@ import { BN } from '@polkadot/util';
 import { $api, $web3 } from 'boot/api';
 import { ethers } from 'ethers';
 import ABI from 'src/config/abi/ERC20.json';
-import { buildEvmAddress, getTokenBal, isValidEvmAddress, toSS58Address } from 'src/config/web3';
+import { getTokenBal } from 'src/config/web3';
 import { useAccount, useBalance, useCustomSignature, useGasPrice, useNetworkInfo } from 'src/hooks';
 import { useEthProvider } from 'src/hooks/custom-signature/useEthProvider';
 import {
   ASTAR_SS58_FORMAT,
+  getEvmGas,
+  getEvmGasCost,
   isValidAddressPolkadotAddress,
+  sampleEvmWalletAddress,
   SUBSTRATE_SS58_FORMAT,
-} from 'src/hooks/helper/plasmUtils';
+  isValidEvmAddress,
+  buildEvmAddress,
+  toSS58Address,
+} from '@astar-network/astar-sdk-core';
 import { signAndSend } from 'src/hooks/helper/wallet';
 import { HistoryTxType } from 'src/modules/account';
 import { addTxHistories } from 'src/modules/account/utils/index';
-import { sampleEvmWalletAddress } from 'src/modules/gas-api';
-import { getEvmGas, getEvmGasCost } from 'src/modules/gas-api/utils/index';
 import { fetchXcmBalance } from 'src/modules/xcm';
 import { Path } from 'src/router';
 import { useStore } from 'src/store';

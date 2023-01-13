@@ -114,6 +114,7 @@
 </template>
 <script lang="ts">
 import { ethers } from 'ethers';
+import { QSkeleton } from 'quasar';
 import { $web3 } from 'src/boot/api';
 import { cbridgeAppLink, checkIsCbridgeToken } from 'src/c-bridge';
 import AssetSearchOption from 'src/components/assets/AssetSearchOption.vue';
@@ -122,12 +123,12 @@ import EvmCbridgeToken from 'src/components/assets/EvmCbridgeToken.vue';
 import ModalFaucet from 'src/components/assets/modals/ModalFaucet.vue';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { faucetBalRequirement } from 'src/config/wallets';
-import { getBalance } from 'src/config/web3';
 import { useAccount, useBalance, useNetworkInfo, usePrice } from 'src/hooks';
 import { Erc20Token, getTokenImage } from 'src/modules/token';
 import { buildTransferPageLink } from 'src/router/routes';
 import { useStore } from 'src/store';
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
+import { RouterLink } from 'vue-router';
 
 export default defineComponent({
   components: {
@@ -260,7 +261,7 @@ export default defineComponent({
     const updateStates = async (nativeTokenUsd: number): Promise<void> => {
       if (isLoading.value || !nativeTokenSymbol.value || !isH160.value || !$web3.value) return;
       try {
-        const balWei = await getBalance($web3.value!, currentAccount.value);
+        const balWei = await $web3.value!.eth.getBalance(currentAccount.value);
         bal.value = Number(ethers.utils.formatEther(balWei));
         isShibuya.value = nativeTokenSymbol.value === 'SBY';
         isFaucet.value = isShibuya.value || faucetBalRequirement > bal.value;

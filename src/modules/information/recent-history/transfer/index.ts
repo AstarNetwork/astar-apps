@@ -35,7 +35,7 @@ export const castTransferHistory = ({
   tx,
   hash,
 }: {
-  tx: typeof TransferDetail;
+  tx: TransferDetail;
   hash: string;
 }): RecentHistory => {
   const { amount, symbol, to } = tx;
@@ -48,7 +48,7 @@ export const castTransferHistory = ({
   return { timestamp, txType, amount, symbol, note, explorerUrl };
 };
 
-const castXvmHistory = async (tx: typeof XvmAssetsTransferHistory): Promise<RecentHistory> => {
+const castXvmHistory = async (tx: XvmAssetsTransferHistory): Promise<RecentHistory> => {
   const txType = HistoryTxType.Xvm;
   const note = `To ${getShortenAddress(tx.destination)}`;
   const networkIdx = localStorage.getItem(NETWORK_IDX);

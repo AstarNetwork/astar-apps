@@ -188,12 +188,13 @@
 import copy from 'copy-to-clipboard';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { useNetworkInfo } from 'src/hooks';
-import { getShortenAddress } from 'src/hooks/helper/addressUtils';
+import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import { sanitizeData } from 'src/hooks/helper/markdown';
 import { useStore } from 'src/store';
 import { CommunityType } from 'src/store/dapp-staking/state';
 import { computed, defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { QTooltip } from 'quasar';
 
 interface Community {
   type: string;

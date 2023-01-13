@@ -144,7 +144,7 @@ import InputSelectAccount from 'src/components/assets/transfer/InputSelectAccoun
 import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 import { SupportWallet } from 'src/config/wallets';
 import { useAccount, useNetworkInfo, useWalletIcon, useTokenTransfer } from 'src/hooks';
-import { getShortenAddress } from 'src/hooks/helper/addressUtils';
+import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import { useStore } from 'src/store';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, PropType } from 'vue';

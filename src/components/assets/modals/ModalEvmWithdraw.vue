@@ -34,7 +34,7 @@ import { useEvmDeposit } from 'src/hooks';
 import { defineComponent, ref } from 'vue';
 import { fadeDuration } from '@astar-network/astar-ui';
 import { wait } from '@astar-network/astar-sdk-core';
-import { truncate } from 'src/hooks/helper/common';
+import { truncate } from '@astar-network/astar-sdk-core';
 import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 

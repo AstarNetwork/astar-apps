@@ -5,7 +5,7 @@ import { DappStakingConstants, SmartContract, StakerInfo } from '../models/Dapps
 import { EditDappItem } from 'src/store/dapp-staking/state';
 import { AccountLedger } from '../models/DappsStaking';
 import { u32 } from '@polkadot/types';
-import { GeneralStakerInfo } from 'src/hooks/helper/claim';
+import { GeneralStakerInfo } from '@astar-network/astar-sdk-core';
 
 /**
  * Definition of repository to access dapps staking pallet.

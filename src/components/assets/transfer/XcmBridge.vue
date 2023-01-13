@@ -193,13 +193,15 @@ import InputSelectChain from 'src/components/assets/transfer/InputSelectChain.vu
 import SimpleInput from 'src/components/common/SimpleInput.vue';
 import SelectEvmWallet from 'src/components/assets/transfer/SelectEvmWallet.vue';
 import { pathEvm, useAccount, useTooltip, useXcmBridge } from 'src/hooks';
-import { truncate } from 'src/hooks/helper/common';
+import { truncate } from '@astar-network/astar-sdk-core';
 import { Asset, ethWalletChains } from 'src/v2/models';
 import { computed, defineComponent, PropType, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ModalLoading from '/src/components/common/ModalLoading.vue';
-import { isValidEvmAddress } from 'src/config/web3';
+import { isValidEvmAddress } from '@astar-network/astar-sdk-core';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
+import { bridge } from '@polkadot/wasm-crypto';
+import { QTooltip } from 'quasar';
 
 export default defineComponent({
   components: {

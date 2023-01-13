@@ -64,7 +64,7 @@ import { defineComponent, PropType, ref } from 'vue';
 import { fadeDuration } from '@astar-network/astar-ui';
 import { wait } from '@astar-network/astar-sdk-core';
 import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
-import { truncate } from 'src/hooks/helper/common';
+import { truncate } from '@astar-network/astar-sdk-core';
 import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 
 export default defineComponent({

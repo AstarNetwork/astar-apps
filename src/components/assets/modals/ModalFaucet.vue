@@ -81,7 +81,7 @@ import vueRecaptcha from 'vue3-recaptcha2';
 import { RECAPCHA_SITE_KEY } from 'src/config/recapcha';
 import { useStore } from 'src/store';
 import ModalWrapper from 'src/components/common/ModalWrapper.vue';
-import { truncate } from 'src/hooks/helper/common';
+import { truncate } from '@astar-network/astar-sdk-core';
 import { socialUrl } from 'src/links';
 
 export default defineComponent({

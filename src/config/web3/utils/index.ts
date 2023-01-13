@@ -8,8 +8,6 @@ import { AbiItem } from 'web3-utils';
 import { blockExplorerUrls, CHAIN_INFORMATION } from 'src/config/web3';
 import { getRandomFromArray } from '@astar-network/astar-sdk-core';
 import { EVM, nativeCurrency, TNetworkId } from 'src/config/web3';
-export { buildEvmAddress, isValidEvmAddress, toSS58Address } from 'src/config/web3/utils/convert';
-export { getBalance } from 'src/config/web3/utils/transactions';
 
 export const getChainData = (chainId: number) => {
   const { chainName, nativeCurrency, rpcUrls, blockExplorerUrls } = CHAIN_INFORMATION;

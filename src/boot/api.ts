@@ -9,7 +9,7 @@ import { ASTAR_CHAIN } from 'src/config/chain';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { opengraphMeta } from 'src/config/opengraph';
 import { createAstarWeb3Instance, TNetworkId } from 'src/config/web3';
-import { objToArray, getRandomFromArray } from 'src/hooks/helper/common';
+import { objToArray, getRandomFromArray } from '@astar-network/astar-sdk-core';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
 import { useChainInfo } from 'src/hooks/useChainInfo';
 import { useExtensions } from 'src/hooks/useExtensions';

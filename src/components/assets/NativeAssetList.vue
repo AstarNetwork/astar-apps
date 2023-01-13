@@ -168,7 +168,7 @@
 import { u8aToString } from '@polkadot/util';
 import { ethers } from 'ethers';
 import { useBalance, useEvmDeposit, useNetworkInfo, usePrice } from 'src/hooks';
-import { checkIsNullOrUndefined } from 'src/hooks/helper/common';
+import { checkIsNullOrUndefined } from '@astar-network/astar-sdk-core';
 import { getTokenImage } from 'src/modules/token';
 import { generateAstarNativeTokenObject } from 'src/modules/xcm/tokens';
 import { useStore } from 'src/store';
@@ -180,6 +180,8 @@ import ModalVesting from 'src/components/assets/modals/ModalVesting.vue';
 import { Path } from 'src/router';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { faucetBalRequirement } from 'src/config/wallets';
+import { QSkeleton } from 'quasar';
+import { RouterLink } from 'vue-router';
 
 export default defineComponent({
   components: {

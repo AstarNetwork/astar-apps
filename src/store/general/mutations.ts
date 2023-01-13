@@ -21,7 +21,7 @@ export interface GeneralMutations<S = State> {
   setCurrentCustomEndpoint(state: S, endpoint: string): void;
   setHeaderName(state: S, name: string): void;
   setCurrentWallet(state: S, wallet: string): void;
-  setGas(state: S, gas: typeof GasTip): void;
+  setGas(state: S, gas: GasTip): void;
   setCurrentBlock(state: S, blockNumber: number): void;
 }
 
