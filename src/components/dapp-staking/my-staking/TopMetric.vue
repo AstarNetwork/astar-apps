@@ -11,7 +11,6 @@
         {{ $t('topMetric.wayOfStaking') }}
       </div>
     </div>
-    <snow-pack />
     <div class="wrapper--cards">
       <div class="card">
         <p>
@@ -114,13 +113,10 @@ import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { computed, defineComponent, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import PieChart from 'src/components/common/PieChart.vue';
-import SnowPack from 'src/components/common/SnowPack.vue';
 import { progress } from '@polkadot/api-derive/session';
 import { QSkeleton } from 'quasar';
-// import { progress } from '@polkadot/api-derive/session';
-// import { QSkeleton } from 'quasar';
 export default defineComponent({
-  components: { PieChart, SnowPack },
+  components: { PieChart },
   setup() {
     const store = useStore();
     const { stakerApr, stakerApy } = useApr();

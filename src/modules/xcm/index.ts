@@ -199,6 +199,15 @@ export const xcmChainObj: XcmChainObj = {
     subscan: 'https://phala.subscan.io',
     isAstarNativeToken: true,
   },
+  [Chain.BIFROST_POLKADOT]: {
+    name: Chain.BIFROST_POLKADOT,
+    relayChain: Chain.POLKADOT,
+    img: 'https://polkadot.js.org/apps/static/bifrost.76510acf..svg',
+    parachainId: parachainIds.BIFROST_POLKADOT,
+    endpoint: 'wss://hk.p.bifrost-rpc.liebi.com/ws',
+    subscan: 'https://bifrost.subscan.io/',
+    isAstarNativeToken: true,
+  },
 };
 
 export const xcmChains = objToArray(xcmChainObj);
