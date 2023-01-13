@@ -143,7 +143,7 @@ export const xcmToken = {
       isXcmCompatible: true,
       originChain: Chain.EQUILIBRIUM,
       minBridgeAmount: '0.1',
-    }
+    },
   ],
   [endpointKey.SHIDEN]: [
     {
@@ -266,7 +266,7 @@ export const xcmToken = {
       isXcmCompatible: true,
       originChain: Chain.GENSHIRO,
       minBridgeAmount: '0.1',
-    }
+    },
   ],
   [endpointKey.SHIBUYA]: [],
   [endpointKey.LOCAL]: [],

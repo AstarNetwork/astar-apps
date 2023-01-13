@@ -38,7 +38,7 @@ export enum parachainIds {
   PHALA = 2035,
   BIFROST_POLKADOT = 2030,
   EQUILIBRIUM = 2011,
-  GENSHIRO = 2024
+  GENSHIRO = 2024,
 }
 
 export interface XcmChain {

@@ -225,7 +225,7 @@ export const xcmChainObj: XcmChainObj = {
     endpoint: 'wss://node.genshiro.io/',
     subscan: 'https://genshiro.subscan.io/',
     isAstarNativeToken: true,
-  }
+  },
 };
 
 export const xcmChains = objToArray(xcmChainObj);
