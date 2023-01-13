@@ -208,6 +208,24 @@ export const xcmChainObj: XcmChainObj = {
     subscan: 'https://bifrost.subscan.io/',
     isAstarNativeToken: true,
   },
+  [Chain.EQUILIBRIUM]: {
+    name: Chain.EQUILIBRIUM,
+    relayChain: Chain.POLKADOT,
+    img: 'https://polkadot.js.org/apps/static/equilibrium.76a4e2db..svg',
+    parachainId: parachainIds.EQUILIBRIUM,
+    endpoint: 'wss://node.pol.equilibrium.io/',
+    subscan: 'https://equilibrium.subscan.io/',
+    isAstarNativeToken: true,
+  },
+  [Chain.GENSHIRO]: {
+    name: Chain.GENSHIRO,
+    relayChain: Chain.KUSAMA,
+    img: 'https://polkadot.js.org/apps/static/genshiro.ebdc5358..svg',
+    parachainId: parachainIds.GENSHIRO,
+    endpoint: 'wss://node.genshiro.io/',
+    subscan: 'https://genshiro.subscan.io/',
+    isAstarNativeToken: true,
+  }
 };
 
 export const xcmChains = objToArray(xcmChainObj);

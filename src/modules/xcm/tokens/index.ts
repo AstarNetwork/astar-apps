@@ -124,6 +124,26 @@ export const xcmToken = {
       originChain: Chain.BIFROST_POLKADOT,
       minBridgeAmount: '0.1',
     },
+    {
+      symbol: 'EQ',
+      isNativeToken: false,
+      assetId: '18446744073709551628',
+      originAssetId: 'EQ',
+      logo: require('/src/assets/img/EQ.png'),
+      isXcmCompatible: true,
+      originChain: Chain.EQUILIBRIUM,
+      minBridgeAmount: '15',
+    },
+    {
+      symbol: 'EQD',
+      isNativeToken: false,
+      assetId: '18446744073709551629',
+      originAssetId: 'EQD',
+      logo: require('/src/assets/img/EQD.png'),
+      isXcmCompatible: true,
+      originChain: Chain.EQUILIBRIUM,
+      minBridgeAmount: '0.1',
+    }
   ],
   [endpointKey.SHIDEN]: [
     {
@@ -227,6 +247,26 @@ export const xcmToken = {
       originChain: Chain.KHALA,
       minBridgeAmount: '0.2',
     },
+    {
+      symbol: 'GENS',
+      isNativeToken: false,
+      assetId: '18446744073709551630',
+      originAssetId: 'GENS',
+      logo: require('/src/assets/img/GENS.png'),
+      isXcmCompatible: true,
+      originChain: Chain.GENSHIRO,
+      minBridgeAmount: '150',
+    },
+    {
+      symbol: 'EQD',
+      isNativeToken: false,
+      assetId: '18446744073709551631',
+      originAssetId: 'EQD',
+      logo: require('/src/assets/img/EQD.png'),
+      isXcmCompatible: true,
+      originChain: Chain.GENSHIRO,
+      minBridgeAmount: '0.1',
+    }
   ],
   [endpointKey.SHIBUYA]: [],
   [endpointKey.LOCAL]: [],

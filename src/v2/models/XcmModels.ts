@@ -18,6 +18,8 @@ export enum Chain {
   KHALA = 'Khala',
   PHALA = 'Phala',
   BIFROST_POLKADOT = 'Bifrost-polkadot',
+  EQUILIBRIUM = 'Equilibrium',
+  GENSHIRO = 'Genshiro',
 }
 
 export enum parachainIds {
@@ -35,6 +37,8 @@ export enum parachainIds {
   KHALA = 2004,
   PHALA = 2035,
   BIFROST_POLKADOT = 2030,
+  EQUILIBRIUM = 2011,
+  GENSHIRO = 2024
 }
 
 export interface XcmChain {
