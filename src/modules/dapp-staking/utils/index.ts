@@ -3,18 +3,15 @@ import { Option } from '@polkadot/types';
 import { EraIndex } from '@polkadot/types/interfaces';
 import { BN } from '@polkadot/util';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { checkIsDappRegistered, GeneralStakerInfo } from 'src/hooks/helper/claim';
-import { wait } from 'src/hooks/helper/common';
+
+import {
+  getDappAddressEnum,
+  wait,
+  checkIsDappRegistered,
+  GeneralStakerInfo,
+} from '@astar-network/astar-sdk-core';
 import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
 import { EraStakingPoints, StakeInfo } from 'src/store/dapp-staking/actions';
-import { isEthereumAddress } from '@polkadot/util-crypto';
-import { isValidAddressPolkadotAddress } from '@astar-network/astar-sdk-core';
-
-interface StakeData {
-  address: string;
-  balance: string;
-  name: string;
-}
 
 export const checkIsLimitedProvider = (): boolean => {
   const limitedProvider = ['onfinality'];
@@ -30,31 +27,6 @@ export const checkIsLimitedProvider = (): boolean => {
     }
   });
   return result;
-};
-
-export const getDappStakers = async ({ api }: { api: ApiPromise }): Promise<number> => {
-  try {
-    // Memo: It takes a while to return the promise (10 ~ 15 secs).
-    // Memo: We can cache this result and query via Token-API in the future.
-    const result = await api.query.dappsStaking.ledger.entries();
-    const numStakers = result.length;
-    return numStakers;
-  } catch (error) {
-    console.error(error);
-    return 0;
-  }
-};
-
-export const getDappAddressEnum = (address: string) => {
-  if (isEthereumAddress(address)) {
-    return { Evm: address };
-  } else if (isValidAddressPolkadotAddress(address)) {
-    return { Wasm: address };
-  } else {
-    throw new Error(
-      `Invalid contract address ${address}. The address should be in EVM or WASM format.`
-    );
-  }
 };
 
 export const getLatestStakePoint = async (

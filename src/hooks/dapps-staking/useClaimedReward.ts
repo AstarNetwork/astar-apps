@@ -1,9 +1,8 @@
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import { useCompoundRewards } from 'src/hooks/dapps-staking/useCompoundRewards';
-import { getClaimedAmount } from 'src/modules/token-api';
 import { useStore } from 'src/store';
 import { computed, ref, watchEffect, watch } from 'vue';
-import { wait } from 'src/hooks/helper/common';
+import { wait, getClaimedAmount } from '@astar-network/astar-sdk-core';
 
 export function useClaimedReward() {
   const store = useStore();

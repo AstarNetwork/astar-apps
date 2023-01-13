@@ -1,4 +1,4 @@
-import { SelectedGas } from 'src/modules/gas-api';
+import { SelectedGas } from '@astar-network/astar-sdk-core';
 
 /**
  * Definition of service used to manage transaction gas price.

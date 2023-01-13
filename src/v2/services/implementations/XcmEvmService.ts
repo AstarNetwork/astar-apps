@@ -4,10 +4,12 @@ import { inject, injectable } from 'inversify';
 import { isValidEvmAddress } from 'src/config/web3';
 import xcmContractAbi from 'src/config/web3/abi/xcm-abi.json';
 import moonbeamWithdrawalAbi from 'src/config/web3/abi/xcm-moonbeam-withdrawal-abi.json';
-import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
-import { isValidAddressPolkadotAddress } from '@astar-network/astar-sdk-core';
+import {
+  isValidAddressPolkadotAddress,
+  getEvmGas,
+  getPubkeyFromSS58Addr,
+} from '@astar-network/astar-sdk-core';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
-import { getEvmGas } from 'src/modules/gas-api';
 import { relaychainParaId, xcmChainObj } from 'src/modules/xcm';
 import { Guard } from 'src/v2/common';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';

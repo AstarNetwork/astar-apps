@@ -72,7 +72,7 @@ import { ethers } from 'ethers';
 import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 import { fadeDuration } from '@astar-network/astar-ui';
-import { wait } from 'src/hooks/helper/common';
+import { wait } from '@astar-network/astar-sdk-core';
 
 export default defineComponent({
   components: {

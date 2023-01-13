@@ -1,4 +1,4 @@
-import { SelectedGas } from 'src/modules/gas-api';
+import { SelectedGas } from '@astar-network/astar-sdk-core';
 
 export class GasPriceChangedMessage {
   constructor(public price: SelectedGas) {}

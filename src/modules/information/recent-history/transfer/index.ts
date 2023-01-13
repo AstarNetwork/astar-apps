@@ -1,15 +1,18 @@
 import { getXvmTransferContractAddress } from 'src/modules/xvm-transfer';
-import { TransferDetail, XvmAssetsTransferHistory } from 'src/modules/token-api';
 import { HistoryTxType } from 'src/modules/account';
 import { castChainName } from 'src/modules/xcm/utils';
 import { getAccountHistories, LOCAL_STORAGE } from 'src/config/localStorage';
 import { RecentHistory } from 'src/modules/information';
 import { TxHistory } from 'src/modules/account';
 import { xcmChainObj } from 'src/modules/xcm';
-import { fetchTransferDetails } from 'src/modules/token-api';
-import { getShortenAddress } from 'src/hooks/helper/addressUtils';
 import { providerEndpoints } from 'src/config/chainEndpoints';
-import { fetchXvmAssetsTransferHistories } from 'src/modules/token-api/utils';
+import {
+  fetchXvmAssetsTransferHistories,
+  fetchTransferDetails,
+  TransferDetail,
+  XvmAssetsTransferHistory,
+  getShortenAddress,
+} from '@astar-network/astar-sdk-core';
 import { getTokenDetails } from 'src/config/web3';
 import { ethers } from 'ethers';
 
@@ -32,7 +35,7 @@ export const castTransferHistory = ({
   tx,
   hash,
 }: {
-  tx: TransferDetail;
+  tx: typeof TransferDetail;
   hash: string;
 }): RecentHistory => {
   const { amount, symbol, to } = tx;
@@ -45,7 +48,7 @@ export const castTransferHistory = ({
   return { timestamp, txType, amount, symbol, note, explorerUrl };
 };
 
-const castXvmHistory = async (tx: XvmAssetsTransferHistory): Promise<RecentHistory> => {
+const castXvmHistory = async (tx: typeof XvmAssetsTransferHistory): Promise<RecentHistory> => {
   const txType = HistoryTxType.Xvm;
   const note = `To ${getShortenAddress(tx.destination)}`;
   const networkIdx = localStorage.getItem(NETWORK_IDX);

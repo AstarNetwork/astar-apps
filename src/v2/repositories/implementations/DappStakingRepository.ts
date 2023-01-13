@@ -1,30 +1,31 @@
-import { isValidAddressPolkadotAddress } from '@astar-network/astar-sdk-core';
-import { BN } from '@polkadot/util';
-import { u32, Option, Struct } from '@polkadot/types';
-import { Codec, ISubmittableResult } from '@polkadot/types/types';
-import type { SubmittableExtrinsic } from '@polkadot/api/types';
-import { AccountId, Balance, EraIndex, UnknownTransaction } from '@polkadot/types/interfaces';
-import { injectable, inject } from 'inversify';
-import { IDappStakingRepository } from 'src/v2/repositories';
-import { IApi } from 'src/v2/integration';
-import { Symbols } from 'src/v2/symbols';
-import { ApiPromise } from '@polkadot/api';
 import {
+  getDappAddressEnum,
+  isValidAddressPolkadotAddress,
+  TOKEN_API_URL,
+  GeneralStakerInfo,
+} from '@astar-network/astar-sdk-core';
+import type { SubmittableExtrinsic } from '@polkadot/api/types';
+import { Option, Struct, u32 } from '@polkadot/types';
+import { AccountId, Balance, EraIndex } from '@polkadot/types/interfaces';
+import { Codec, ISubmittableResult } from '@polkadot/types/types';
+import { BN } from '@polkadot/util';
+import axios from 'axios';
+import { ethers } from 'ethers';
+import { inject, injectable } from 'inversify';
+import { EditDappItem } from 'src/store/dapp-staking/state';
+import { Guard } from 'src/v2/common';
+import { IApi } from 'src/v2/integration';
+import { EventAggregator, NewEraMessage } from 'src/v2/messaging';
+import {
+  AccountLedger,
   DappStakingConstants,
   RewardDestination,
   SmartContract,
   SmartContractState,
   StakerInfo,
 } from 'src/v2/models/DappsStaking';
-import { EventAggregator, NewEraMessage } from 'src/v2/messaging';
-import { GeneralStakerInfo } from 'src/hooks/helper/claim';
-import { ethers } from 'ethers';
-import { EditDappItem } from 'src/store/dapp-staking/state';
-import { TOKEN_API_URL } from 'src/modules/token-api';
-import axios from 'axios';
-import { getDappAddressEnum } from 'src/modules/dapp-staking/utils';
-import { Guard } from 'src/v2/common';
-import { AccountLedger } from 'src/v2/models/DappsStaking';
+import { IDappStakingRepository } from 'src/v2/repositories';
+import { Symbols } from 'src/v2/symbols';
 
 // TODO type generation
 interface EraInfo extends Struct {

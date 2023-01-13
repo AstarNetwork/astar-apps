@@ -76,7 +76,7 @@
 import { useFaucet, useNetworkInfo } from 'src/hooks';
 import { defineComponent, computed, ref } from 'vue';
 import { fadeDuration } from '@astar-network/astar-ui';
-import { wait } from 'src/hooks/helper/common';
+import { wait } from '@astar-network/astar-sdk-core';
 import vueRecaptcha from 'vue3-recaptcha2';
 import { RECAPCHA_SITE_KEY } from 'src/config/recapcha';
 import { useStore } from 'src/store';

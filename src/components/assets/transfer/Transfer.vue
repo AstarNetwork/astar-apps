@@ -83,7 +83,7 @@ import XcmBridge from 'src/components/assets/transfer/XcmBridge.vue';
 import BackToPage from 'src/components/common/BackToPage.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { useAccount, useBreakpoints, useNetworkInfo, useTransferRouter } from 'src/hooks';
-import { wait } from 'src/hooks/helper/common';
+import { wait } from '@astar-network/astar-sdk-core';
 import { removeEvmName } from 'src/modules/xcm';
 import { Path } from 'src/router';
 import { useStore } from 'src/store';

@@ -10,7 +10,7 @@ import {
   useNetworkInfo,
   useTransferRouter,
 } from 'src/hooks';
-import { capitalize } from 'src/hooks/helper/common';
+import { capitalize } from '@astar-network/astar-sdk-core';
 import {
   ASTAR_DECIMALS,
   ASTAR_SS58_FORMAT,

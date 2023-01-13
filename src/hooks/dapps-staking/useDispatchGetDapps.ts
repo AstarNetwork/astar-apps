@@ -1,5 +1,5 @@
 import { useAccount, useNetworkInfo } from 'src/hooks';
-import { wait } from 'src/hooks/helper/common';
+import { wait } from '@astar-network/astar-sdk-core';
 import { useStore } from 'src/store';
 import { computed, watchEffect } from 'vue';
 

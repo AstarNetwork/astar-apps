@@ -1,17 +1,15 @@
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { checkSumEvmAddress } from 'src/config/web3/utils/convert';
 import { getSs58FromEvmPublicKey } from '../custom-signature/utils';
-import { decodeAddress } from '@polkadot/util-crypto';
-import { u8aToHex } from '@polkadot/util';
 
 interface EvmMappedAddress {
   evm: string;
   ss58: string;
 }
 
-export function getShortenAddress(address: string, place = 6): string {
-  return address ? `${address.slice(0, place)}${'.'.repeat(place)}${address.slice(-place)}` : '';
-}
+// export function getShortenAddress(address: string, place = 6): string {
+//   return address ? `${address.slice(0, place)}${'.'.repeat(place)}${address.slice(-place)}` : '';
+// }
 
 const storedEvmAddressMapping = (): EvmMappedAddress[] | [] => {
   const data = localStorage.getItem(LOCAL_STORAGE.EVM_ADDRESS_MAPPING);
@@ -46,8 +44,8 @@ export const setAddressMapping = async ({
   );
 };
 
-export const getPubkeyFromSS58Addr = (ss58MappedAddr: string) => {
-  const publicKey = decodeAddress(ss58MappedAddr);
-  const hexPublicKey = u8aToHex(publicKey);
-  return hexPublicKey;
-};
+// export const getPubkeyFromSS58Addr = (ss58MappedAddr: string) => {
+//   const publicKey = decodeAddress(ss58MappedAddr);
+//   const hexPublicKey = u8aToHex(publicKey);
+//   return hexPublicKey;
+// };

@@ -1,7 +1,7 @@
 import { Dark } from 'quasar';
 import type { ChainInfo } from 'src/hooks/useChainInfo';
 import type { Extensions } from 'src/hooks/useMetaExtensions';
-import { GasTip } from 'src/modules/gas-api';
+import { GasTip } from '@astar-network/astar-sdk-core';
 import { MutationTree } from 'vuex';
 import { ConnectionType, GeneralStateInterface as State, SubstrateAccount } from './state';
 
@@ -21,7 +21,7 @@ export interface GeneralMutations<S = State> {
   setCurrentCustomEndpoint(state: S, endpoint: string): void;
   setHeaderName(state: S, name: string): void;
   setCurrentWallet(state: S, wallet: string): void;
-  setGas(state: S, gas: GasTip): void;
+  setGas(state: S, gas: typeof GasTip): void;
   setCurrentBlock(state: S, blockNumber: number): void;
 }
 

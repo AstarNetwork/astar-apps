@@ -100,7 +100,7 @@
 </template>
 
 <script lang="ts">
-import { wait } from 'src/hooks/helper/common';
+import { wait } from '@astar-network/astar-sdk-core';
 import { defineComponent, ref, toRefs, PropType, computed, watch } from 'vue';
 import { fadeDuration } from '@astar-network/astar-ui';
 import { Developer } from 'src/store/dapp-staking/state';

@@ -9,7 +9,7 @@ import {
   updateAccountHistories,
 } from 'src/config/localStorage';
 import { pathEvm } from 'src/hooks';
-import { getTimestamp, capitalize } from 'src/hooks/helper/common';
+import { getTimestamp, capitalize } from '@astar-network/astar-sdk-core';
 import { astarNetworks } from 'src/hooks/xcm/useTransferRouter';
 import { SystemAccount, TxHistory } from 'src/modules/account';
 import { HistoryTxType } from 'src/modules/account/index';

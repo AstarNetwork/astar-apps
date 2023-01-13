@@ -1,5 +1,4 @@
-import { ASTAR_SS58_FORMAT } from 'src/hooks/helper/plasmUtils';
-import { wait } from 'src/hooks/helper/common';
+import { wait, ASTAR_SS58_FORMAT } from '@astar-network/astar-sdk-core';
 import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
 import { $api } from 'boot/api';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
