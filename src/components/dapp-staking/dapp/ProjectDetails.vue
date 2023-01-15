@@ -218,7 +218,7 @@ export default defineComponent({
       copy(address);
       store.dispatch('general/showAlertMsg', {
         msg: t('toast.copyAddressSuccessfully'),
-        alertType: 'success',
+        alertType: 'copied',
       });
     };
 
