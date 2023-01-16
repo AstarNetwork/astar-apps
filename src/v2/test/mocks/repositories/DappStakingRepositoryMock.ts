@@ -8,7 +8,7 @@ import { EditDappItem } from 'src/store/dapp-staking/state';
 import { AccountLedger } from 'src/v2/models/DappsStaking';
 import { u32 } from '@polkadot/types';
 import { GeneralStakerInfo } from 'src/hooks/helper/claim';
-
+import { StakeInfo } from 'src/store/dapp-staking/actions';
 @injectable()
 export class DappStakingRepositoryMock implements IDappStakingRepository {
   public readonly bondAndStakeCallMock = jest.fn();
@@ -104,5 +104,12 @@ export class DappStakingRepositoryMock implements IDappStakingRepository {
     contractAddress: string
   ): Promise<Map<string, GeneralStakerInfo>> {
     return new Map();
+  }
+
+  public async getStakeInfo(
+    dappAddress: string,
+    currentAccount: string
+  ): Promise<StakeInfo | undefined> {
+    return {} as StakeInfo;
   }
 }

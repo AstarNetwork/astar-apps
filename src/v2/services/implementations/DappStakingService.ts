@@ -18,6 +18,7 @@ import { IWalletService } from '../IWalletService';
 import { AccountLedger } from 'src/v2/models/DappsStaking';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
+import { StakeInfo } from 'src/store/dapp-staking/actions';
 
 @injectable()
 export class DappStakingService implements IDappStakingService {
@@ -215,5 +216,14 @@ export class DappStakingService implements IDappStakingService {
       undefined,
       finalizedCallback
     );
+  }
+
+  public async getStakeInfo(
+    dappAddress: string,
+    currentAccount: string
+  ): Promise<StakeInfo | undefined> {
+    Guard.ThrowIfUndefined('currentAccount', currentAccount);
+
+    return await this.dappStakingRepository.getStakeInfo(dappAddress, currentAccount);
   }
 }

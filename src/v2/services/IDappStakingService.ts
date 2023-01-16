@@ -5,6 +5,7 @@ import { EditDappItem } from 'src/store/dapp-staking/state';
 import { TvlModel } from 'src/v2/models';
 import { DappCombinedInfo, StakerInfo } from '../models/DappsStaking';
 import { AccountLedger } from '../models/DappsStaking';
+import { StakeInfo } from 'src/store/dapp-staking/actions';
 
 /**
  * Definition of service used to manage dapps staking.
@@ -95,4 +96,6 @@ export interface IDappStakingService {
     transaction: SubmittableExtrinsic<'promise'>;
     finalizedCallback: (result: ISubmittableResult) => void;
   }): Promise<void>;
+
+  getStakeInfo(dappAddress: string, currentAccount: string): Promise<StakeInfo | undefined>;
 }
