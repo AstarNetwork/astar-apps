@@ -112,7 +112,7 @@ export function useClaimAll() {
 
     try {
       const dappStakingService = container.get<IDappStakingService>(Symbols.DappStakingService);
-      await dappStakingService.claim({
+      await dappStakingService.sendTx({
         senderAddress: senderAddress.value,
         transaction,
         finalizedCallback,

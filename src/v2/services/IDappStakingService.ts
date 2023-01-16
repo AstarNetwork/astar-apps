@@ -87,7 +87,7 @@ export interface IDappStakingService {
   /**
    * claim dApp staking rewards
    */
-  claim({
+  sendTx({
     senderAddress,
     transaction,
     finalizedCallback,
