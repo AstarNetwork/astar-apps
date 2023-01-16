@@ -197,7 +197,7 @@ export class DappStakingService implements IDappStakingService {
     return true;
   }
 
-  public async claim({
+  public async sendTx({
     senderAddress,
     transaction,
     finalizedCallback,
