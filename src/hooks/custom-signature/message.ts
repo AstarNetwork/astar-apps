@@ -6,8 +6,10 @@ import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
 
 export enum TxType {
   dappsStaking = 'dappsStaking',
+  withdrawUnbonded = 'withdrawUnbonded',
 }
 
+// @TODO: we need to clean up this later in a way that can be solved without send over the store
 export const displayCustomMessage = ({
   txType,
   store,
@@ -23,6 +25,13 @@ export const displayCustomMessage = ({
 }): void => {
   if (txType === TxType.dappsStaking) {
     dispatchClaimMessage({
+      result,
+      store,
+      senderAddress,
+      t,
+    });
+  } else if (txType === TxType.withdrawUnbonded) {
+    dispatchUnbondedMessage({
       result,
       store,
       senderAddress,
@@ -63,6 +72,32 @@ const dispatchClaimMessage = ({
         'general/showAlertMsg',
         {
           msg,
+          alertType: 'success',
+        },
+        { root: true }
+      );
+    }
+  }
+};
+
+const dispatchUnbondedMessage = ({
+  store,
+  result,
+  senderAddress,
+  t,
+}: {
+  store: Store<StateInterface>;
+  result: ISubmittableResult;
+  senderAddress: string;
+  t: (...arg: any) => void;
+}): void => {
+  if (result.isCompleted) {
+    if (!hasExtrinsicFailedEvent(result.events, store.dispatch)) {
+      store.commit('dapps/setUnlockingChunks', -1);
+      store.dispatch(
+        'general/showAlertMsg',
+        {
+          msg: t('dappStaking.toast.successfullyWithdrew'),
           alertType: 'success',
         },
         { root: true }
