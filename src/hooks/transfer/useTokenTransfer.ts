@@ -156,6 +156,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     toAddress,
     web3,
     gasPrice,
+    symbol,
     finalizeCallback,
   }: {
     transferAmt: number;
@@ -163,6 +164,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     toAddress: string;
     web3: Web3;
     gasPrice: string;
+    symbol: string;
     finalizeCallback: () => void;
   }): Promise<void> => {
     const destinationAddress = buildEvmAddress(toAddress);
@@ -187,8 +189,14 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
       })
       .then(({ transactionHash }) => {
         store.dispatch('general/showAlertMsg', {
-          msg: t('toast.completedTxHash', { hash: transactionHash }),
+          msg: t('toast.completedMessage', {
+            hash: transactionHash,
+            symbol,
+            transferAmt,
+            toAddress,
+          }),
           alertType: 'success',
+          txHash: transactionHash,
         });
         store.commit('general/setLoading', false);
         addTxHistories({
@@ -215,6 +223,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     contractAddress,
     gasPrice,
     web3,
+    symbol,
     finalizeCallback,
   }: {
     transferAmt: string;
@@ -223,6 +232,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     contractAddress: string;
     gasPrice: string;
     web3: Web3;
+    symbol: string;
     finalizeCallback: () => void;
   }): Promise<void> => {
     if (!isH160.value) return;
@@ -252,8 +262,14 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
       })
       .then(({ transactionHash }) => {
         store.dispatch('general/showAlertMsg', {
-          msg: t('toast.completedTxHash', { hash: transactionHash }),
+          msg: t('toast.completedMessage', {
+            hash: transactionHash,
+            symbol,
+            transferAmt,
+            toAddress,
+          }),
           alertType: 'success',
+          txHash: transactionHash,
         });
         store.commit('general/setLoading', false);
         addTxHistories({
@@ -276,9 +292,11 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
   const transferAsset = async ({
     transferAmt,
     toAddress,
+    symbol,
   }: {
     transferAmt: number;
     toAddress: string;
+    symbol: string;
   }): Promise<void> => {
     if (!selectedToken?.value) {
       throw Error('Token is not selected');
@@ -304,6 +322,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
           transferAmt,
           gasPrice,
           web3,
+          symbol,
           finalizeCallback,
         });
       } else {
@@ -314,6 +333,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
           contractAddress: selectedToken.value.mappedERC20Addr,
           gasPrice,
           web3,
+          symbol,
           finalizeCallback,
         });
       }

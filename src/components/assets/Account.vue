@@ -147,7 +147,7 @@ export default defineComponent({
       copy(currentAccount.value);
       store.dispatch('general/showAlertMsg', {
         msg: t('toast.copyAddressSuccessfully'),
-        alertType: 'success',
+        alertType: 'copied',
       });
     };
 

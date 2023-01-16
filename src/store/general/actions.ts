@@ -1,19 +1,19 @@
 import { ActionTree } from 'vuex';
 import { StateInterface } from '../index';
-import { GeneralStateInterface as State } from './state';
-
-const toastTimeout = 5000;
+import { AlertBox, GeneralStateInterface as State } from './state';
 
 const actions: ActionTree<State, StateInterface> = {
-  showAlertMsg({ commit }, { msg, alertType }) {
-    commit('setShowAlertMsg', true);
-    commit('setAlertMsg', msg);
-    commit('setAlertType', alertType);
-    setTimeout(() => {
-      commit('setShowAlertMsg', false);
-    }, toastTimeout);
+  showAlertMsg({ commit }, { msg, alertType, txHash }) {
+    const alert: AlertBox = {
+      alertMsg: msg,
+      alertType,
+      txHash,
+    };
+    commit('pushAlertMsg', alert);
   },
-
+  removeAlertMsg({ commit }, { index }) {
+    commit('removeAlertMsg', index);
+  },
   setLoading({ commit }, { result }: { result: boolean }) {
     commit('setLoading', result);
   },

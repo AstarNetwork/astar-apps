@@ -3,14 +3,21 @@ import type { ChainInfo } from 'src/hooks/useChainInfo';
 import type { Extensions } from 'src/hooks/useMetaExtensions';
 import { GasTip } from 'src/modules/gas-api';
 import { MutationTree } from 'vuex';
-import { ConnectionType, GeneralStateInterface as State, SubstrateAccount } from './state';
+import {
+  AlertBox,
+  AlertType,
+  ConnectionType,
+  GeneralStateInterface as State,
+  SubstrateAccount,
+} from './state';
 
 export interface GeneralMutations<S = State> {
   setInitialized(state: S): void;
   setLoading(state: S, isLoading: boolean): void;
-  setShowAlertMsg(state: S, showAlert: boolean): void;
+  pushAlertMsg(state: S, alert: AlertBox): void;
+  removeAlertMsg(state: S, index: number): void;
   setAlertMsg(state: S, msg: string): void;
-  setAlertType(state: S, type: string): void;
+  setAlertType(state: S, type: AlertType): void;
   setChainInfo(state: S, type: ChainInfo): void;
   setMetaExtensions(state: S, type: Extensions): void;
   setExtensionCount(state: S, type: number): void;
@@ -32,8 +39,11 @@ const mutation: MutationTree<State> & GeneralMutations = {
   setLoading(state, isLoading) {
     state.isLoading = isLoading;
   },
-  setShowAlertMsg(state, msg) {
-    state.alertBox.showAlertMsg = msg;
+  pushAlertMsg(state, alert) {
+    state.alertBoxStack.push(alert);
+  },
+  removeAlertMsg(state, index) {
+    state.alertBoxStack = state.alertBoxStack.filter((el, idx) => idx !== index);
   },
   setAlertMsg(state, msg) {
     state.alertBox.alertMsg = msg;
