@@ -87,13 +87,13 @@ export function useClaimAll() {
     let totalWeight: BN = new BN('0');
     for (let i = 0; i < batchTxsRef.length; i++) {
       const tx = batchTxsRef[i];
-      console.log('tx.weight', tx.weight.toString());
-      if (totalWeight.add(tx.weight).gt(MAX_BATCH_WEIGHT)) {
+      const weight = tx.isWeightV2 ? tx.asWeightV2().refTime.toBn() : tx.asWeightV1();
+      if (totalWeight.add(weight).gt(MAX_BATCH_WEIGHT)) {
         break;
       }
 
       txsToExecute.push(tx.payload as ExtrinsicPayload);
-      totalWeight = totalWeight.add(tx.weight);
+      totalWeight = totalWeight.add(weight);
     }
 
     console.info(
