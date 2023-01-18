@@ -66,23 +66,15 @@ export default defineComponent({
         }
       }
 
+      let nFireColors = ['#D2691E', '#FF8C00', '#DAA520'];
+      for (let j = 0; j < 4; j++) {
+        nFireColors = nFireColors.concat(...nFireColors);
+      }
+
       function createFirework() {
         xPoint = Math.random() * (w - 200) + 100;
         yPoint = Math.random() * (h - 200) + 100;
-        const nFireColors = [
-          '#D2691E',
-          '#FF8C00',
-          '#DAA520',
-          '#D2691E',
-          '#FF8C00',
-          '#DAA520',
-          '#D2691E',
-          '#FF8C00',
-          '#DAA520',
-          '#D2691E',
-          '#FF8C00',
-          '#DAA520',
-        ];
+
         for (let i = 0; i < nFireColors.length; i++) {
           const particle = new Particle();
           particle.color = nFireColors[i];
