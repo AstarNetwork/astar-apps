@@ -1,5 +1,7 @@
 <template>
-  <canvas id="canvas" ref="target"></canvas>
+  <div class="wrapper">
+    <canvas id="canvas" ref="target"></canvas>
+  </div>
 </template>
 <script lang="ts">
 // @ts-nocheck
@@ -56,8 +58,8 @@ export default defineComponent({
 
       function paint() {
         ctx.globalCompositeOperation = 'source-over';
-        ctx.fillStyle = 'rgba(0,0,0,0.2)';
-        ctx.fillRect(0, 0, w, h);
+        // ctx.fillStyle = 'rgba(0,0,0,0.2)';
+        ctx.clearRect(0, 0, w, h);
         ctx.globalCompositeOperation = 'lighter';
         for (let i = 0; i < particles.length; i++) {
           particles[i].draw(ctx);
@@ -67,7 +69,20 @@ export default defineComponent({
       function createFirework() {
         xPoint = Math.random() * (w - 200) + 100;
         yPoint = Math.random() * (h - 200) + 100;
-        const nFireColors = ['#D2691E', '#FF8C00', '#DAA520', '#D2691E', '#FF8C00', '#DAA520'];
+        const nFireColors = [
+          '#D2691E',
+          '#FF8C00',
+          '#DAA520',
+          '#D2691E',
+          '#FF8C00',
+          '#DAA520',
+          '#D2691E',
+          '#FF8C00',
+          '#DAA520',
+          '#D2691E',
+          '#FF8C00',
+          '#DAA520',
+        ];
         for (let i = 0; i < nFireColors.length; i++) {
           const particle = new Particle();
           particle.color = nFireColors[i];
@@ -133,10 +148,13 @@ export default defineComponent({
 });
 </script>
 <style lang="scss" scoped>
+.wrapper {
+  position: absolute;
+  top: 300px;
+}
 #canvas {
-  width: 300px;
-  height: 200px;
-  background: #000;
+  width: 220px;
+  height: 180px;
   z-index: 9999;
 }
 </style>
