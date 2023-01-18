@@ -126,9 +126,11 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
   const transferAsset = async ({
     transferAmt,
     toAddress,
+    symbol,
   }: {
     transferAmt: number;
     toAddress: string;
+    symbol: string;
   }): Promise<void> => {
     if (!selectedToken?.value) {
       throw Error('Token is not selected');

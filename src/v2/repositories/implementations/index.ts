@@ -14,3 +14,4 @@ export * from './TokenApiRepository';
 export * from './EvmAssetsRepository';
 export * from './xcm/CrustShadowXcmRepository';
 export * from './TokenTransferRepository';
+export * from './xcm/BifrostXcmRepository';

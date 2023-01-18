@@ -1,6 +1,6 @@
 {
   "name": "astar-portal",
-  "version": "0.0.8",
+  "version": "0.0.12",
   "description": "Your one-stop platform for the Astar ecosystem - Wallet / Staking / Bridging",
   "productName": "Astar Portal - Astar & Shiden Network",
   "author": "Astar Network",
@@ -21,7 +21,8 @@
     "heroku-deploy": "git push heroku main"
   },
   "dependencies": {
-    "@astar-network/astar-ui": "^0.0.60",
+    "@astar-network/astar-sdk-core": "^0.1.8",
+    "@astar-network/astar-ui": "^0.0.71",
     "@ethersproject/bignumber": "^5.5.0",
     "@polkadot/api": "^9.11.1",
     "@polkadot/api-contract": "^9.11.1",
