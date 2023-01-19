@@ -67,8 +67,6 @@
         <locale-changer />
       </div>
     </div>
-
-    <lunar-pack />
   </div>
 </template>
 
@@ -83,7 +81,6 @@ import LightDarkMode from '../common/LightDarkMode.vue';
 import Logo from '../common/Logo.vue';
 import { useRouter } from 'vue-router';
 import { Path as RoutePath } from 'src/router/routes';
-import LunarPack from 'src/components/common/themes/LunarPack.vue';
 
 export default defineComponent({
   components: {
@@ -91,7 +88,6 @@ export default defineComponent({
     LightDarkMode,
     LocaleChanger,
     Logo,
-    LunarPack,
   },
   setup() {
     const { isOpen } = useSidebar();
