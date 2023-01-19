@@ -1,6 +1,7 @@
 <template>
   <div id="app--main" class="tw-h-screen tw-flex tw-overflow-hidden">
     <template v-if="width >= screenSize.lg">
+      <divider-new-year />
       <sidebar-desktop />
     </template>
     <div class="tw-flex tw-flex-col tw-w-0 tw-flex-1 tw-overflow-y-auto lg:tw-overflow-hidden">
@@ -23,9 +24,9 @@
         </div>
       </main>
     </div>
-    <template v-if="width >= screenSize.lg">
-      <divider-new-year />
-    </template>
+    <!-- <template v-if="width >= screenSize.lg">
+      
+    </template> -->
   </div>
 </template>
 

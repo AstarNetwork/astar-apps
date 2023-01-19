@@ -5,9 +5,10 @@
 
 .icon {
   text-align: center;
-  width: 190px;
+  width: 200px;
   height: 78px;
   margin-left: 8px;
+  z-index: 1000;
 }
 
 .iconbase {
@@ -23,7 +24,6 @@
   background: $border-separator-light;
   display: flex;
   flex-direction: column;
-  z-index: 100;
 }
 
 .menu {
