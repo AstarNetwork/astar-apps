@@ -165,13 +165,4 @@ export default defineComponent({
   width: 127px;
   margin-left: -15px;
 }
-
-.m-header {
-  height: 64px !important;
-  padding-left: 20px !important;
-  padding-right: 16px !important;
-  @media (min-width: 500px) {
-    padding-left: 8px !important;
-  }
-}
 </style>
