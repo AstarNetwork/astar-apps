@@ -315,16 +315,18 @@ export default defineComponent({
     // A: the portal is opened on 'localhost' or 'staging URL'
     // B: Shibuya
     const checkIsDisplayEndpoint = (chain: ChainProvider, endpoint: string): boolean => {
-      const origin = window.location.origin;
-      const stagingDomain = '.web.app';
-      const devPaths = [stagingDomain, stagingMainBranch, 'localhost:'];
-      const isForDeveloper = devPaths.some((it) => origin.includes(it));
-      // Memo: enables selecting light client endpoint for Shibuya on the production page
-      if (isForDeveloper || chain.key === endpointKey.SHIBUYA) {
-        return true;
-      } else {
-        return !checkIsLightClient(endpoint);
-      }
+      // As asked by @gluneau Light client is enabled for all networks.
+      return true;
+      // const origin = window.location.origin;
+      // const stagingDomain = '.web.app';
+      // const devPaths = [stagingDomain, stagingMainBranch, 'localhost:'];
+      // const isForDeveloper = devPaths.some((it) => origin.includes(it));
+      // // Memo: enables selecting light client endpoint for Shibuya on the production page
+      // if (isForDeveloper || chain.key === endpointKey.SHIBUYA) {
+      //   return true;
+      // } else {
+      //   return !checkIsLightClient(endpoint);
+      // }
     };
 
     watch(
