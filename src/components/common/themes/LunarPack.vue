@@ -26,7 +26,7 @@ export default defineComponent({
         w = 300,
         h = 200,
         particles = [],
-        probability = 0.04,
+        probability = 0.01,
         xPoint,
         yPoint;
 
@@ -58,7 +58,7 @@ export default defineComponent({
 
       function paint() {
         ctx.globalCompositeOperation = 'source-over';
-        // ctx.fillStyle = 'rgba(0,0,0,0.2)';
+        ctx.fillStyle = 'rgba(0,0,0,0.2)';
         ctx.clearRect(0, 0, w, h);
         ctx.globalCompositeOperation = 'lighter';
         for (let i = 0; i < particles.length; i++) {
@@ -67,18 +67,19 @@ export default defineComponent({
       }
 
       let nFireColors = ['#D2691E', '#FF8C00', '#DAA520'];
-      for (let j = 0; j < 4; j++) {
+      for (let j = 0; j < 5; j++) {
         nFireColors = nFireColors.concat(...nFireColors);
       }
+      nFireColors = nFireColors.concat(...nFireColors);
 
       function createFirework() {
-        xPoint = Math.random() * (w - 200) + 100;
-        yPoint = Math.random() * (h - 200) + 100;
+        xPoint = Math.random() * (w - 60) + 30;
+        yPoint = Math.random() * (h - 60) + 30;
 
         for (let i = 0; i < nFireColors.length; i++) {
           const particle = new Particle();
           particle.color = nFireColors[i];
-          const vy = Math.sqrt(25 - particle.vx * particle.vx);
+          const vy = Math.sqrt(20 - particle.vx * particle.vx);
           if (Math.abs(particle.vy) > vy) {
             particle.vy = particle.vy > 0 ? vy : -vy;
           }
@@ -146,7 +147,7 @@ export default defineComponent({
 }
 #canvas {
   width: 220px;
-  height: 180px;
+  height: 220px;
   z-index: 9999;
 }
 </style>

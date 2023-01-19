@@ -15,7 +15,7 @@ export default defineComponent({
   top: 63px;
   left: 0px;
   width: 100%;
-  z-index: 9999;
+  z-index: 99;
 }
 .vector {
   width: 100%;
