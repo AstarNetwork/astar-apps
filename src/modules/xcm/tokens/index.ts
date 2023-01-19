@@ -72,7 +72,7 @@ export const xcmToken = {
       logo: 'https://assets.coingecko.com/coins/images/325/small/Tether-logo.png?1598003707',
       isXcmCompatible: true,
       originChain: Chain.STATEMINT,
-      minBridgeAmount: '0.21',
+      minBridgeAmount: '1',
     },
     {
       symbol: 'IBTC',
@@ -103,6 +103,26 @@ export const xcmToken = {
       isXcmCompatible: true,
       originChain: Chain.PHALA,
       minBridgeAmount: '0.2',
+    },
+    {
+      symbol: 'BNC',
+      isNativeToken: true,
+      assetId: '18446744073709551623',
+      originAssetId: 'BNC',
+      logo: 'https://bifrost-kusama.subscan.io/static/img/bifrost.42f1933c.svg',
+      isXcmCompatible: true,
+      originChain: Chain.BIFROST_POLKADOT,
+      minBridgeAmount: '0.1',
+    },
+    {
+      symbol: 'vDOT',
+      isNativeToken: false,
+      assetId: '18446744073709551624',
+      originAssetId: 'vDOT',
+      logo: 'https://bifrost.subscan.io/static/img/vDOT.75c0b67b.svg',
+      isXcmCompatible: true,
+      originChain: Chain.BIFROST_POLKADOT,
+      minBridgeAmount: '0.1',
     },
   ],
   [endpointKey.SHIDEN]: [
@@ -167,26 +187,26 @@ export const xcmToken = {
       originChain: Chain.STATEMINE,
       minBridgeAmount: '0.1',
     },
-    // {
-    //   symbol: 'KBTC',
-    //   isNativeToken: false,
-    //   assetId: '18446744073709551621',
-    //   originAssetId: 'KBTC',
-    //   logo: 'https://assets.coingecko.com/coins/images/25816/small/jKEvMy-9_400x400.jpeg?1653990781',
-    //   isXcmCompatible: true,
-    //   originChain: Chain.KINTSUGI,
-    //   minBridgeAmount: '0.00000237',
-    // },
-    // {
-    //   symbol: 'KINT',
-    //   isNativeToken: true,
-    //   assetId: '18446744073709551622',
-    //   originAssetId: 'KINT',
-    //   logo: 'https://assets.coingecko.com/coins/images/22045/small/Kintsugi_logo-150x150.jpeg?1640675060',
-    //   isXcmCompatible: true,
-    //   originChain: Chain.KINTSUGI,
-    //   minBridgeAmount: '0.345',
-    // },
+    {
+      symbol: 'KBTC',
+      isNativeToken: false,
+      assetId: '18446744073709551621',
+      originAssetId: 'KBTC',
+      logo: 'https://assets.coingecko.com/coins/images/25816/small/jKEvMy-9_400x400.jpeg?1653990781',
+      isXcmCompatible: true,
+      originChain: Chain.KINTSUGI,
+      minBridgeAmount: '0.00000237',
+    },
+    {
+      symbol: 'KINT',
+      isNativeToken: true,
+      assetId: '18446744073709551622',
+      originAssetId: 'KINT',
+      logo: 'https://assets.coingecko.com/coins/images/22045/small/Kintsugi_logo-150x150.jpeg?1640675060',
+      isXcmCompatible: true,
+      originChain: Chain.KINTSUGI,
+      minBridgeAmount: '0.345',
+    },
     {
       symbol: 'CSM',
       isNativeToken: true,
@@ -289,7 +309,7 @@ export const generateNativeAsset = (symbol: ASTAR_NATIVE_TOKEN): Asset => {
 export const generateAssetFromEvmToken = (token: Erc20Token, xcmAssets: Asset[]): Asset => {
   const t = xcmAssets.find((it) => it.mappedERC20Addr === token.address);
   const name = t ? t.metadata.name : token.name;
-  const tokenImage = token.image;
+  const tokenImage = token.image || '';
   const mappedERC20Addr = t ? t.mappedERC20Addr : token.address;
   const metadata = {
     decimals: t ? t.metadata.decimals : token.decimal,

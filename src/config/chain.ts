@@ -12,15 +12,17 @@ export type ASTAR_CHAIN =
   | astarChain.SHIDEN
   | astarChain.ASTAR
   | astarChain.SHIBUYA
-  | astarChain.ROCSTAR;
+  | astarChain.ROCSTAR
+  | astarChain.DEVELOPMENT;
 
 export type ASTAR_NETWORK_IDX =
   | endpointKey.ASTAR
   | endpointKey.SHIDEN
   | endpointKey.SHIBUYA
-  | endpointKey.ROCSTAR;
+  | endpointKey.ROCSTAR
+  | endpointKey.LOCAL;
 
-export type ASTAR_EVM_NETWORK_IDX = 592 | 336 | 81;
+export type ASTAR_EVM_NETWORK_IDX = 592 | 336 | 81 | 4369;
 
-export type ASTAR_NATIVE_TOKEN = 'ASTR' | 'SDN' | 'SBY' | 'RSTR';
+export type ASTAR_NATIVE_TOKEN = 'ASTR' | 'SDN' | 'SBY' | 'RSTR' | 'LOC';
 export const astarMainnetNativeToken: ASTAR_NATIVE_TOKEN[] = ['ASTR', 'SDN'];

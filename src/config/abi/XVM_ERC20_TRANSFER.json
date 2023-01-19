@@ -1,0 +1,180 @@
+{
+  "source": {
+    "hash": "0x228dd9d4ceb9d14d1910857125bcf9401ac6fe5c286dd4c2d2636d78bc3234cd",
+    "language": "ink! 3.4.0",
+    "compiler": "rustc 1.65.0-nightly"
+  },
+  "contract": {
+    "name": "xvm-transfer",
+    "version": "0.1.0",
+    "authors": [
+      "Astar Network"
+    ]
+  },
+  "V3": {
+    "spec": {
+      "constructors": [
+        {
+          "args": [],
+          "docs": [],
+          "label": "new",
+          "payable": false,
+          "selector": "0x9bae9d5e"
+        }
+      ],
+      "docs": [],
+      "events": [],
+      "messages": [
+        {
+          "args": [
+            {
+              "label": "to",
+              "type": {
+                "displayName": [
+                  "To"
+                ],
+                "type": 0
+              }
+            },
+            {
+              "label": "value",
+              "type": {
+                "displayName": [
+                  "u128"
+                ],
+                "type": 5
+              }
+            },
+            {
+              "label": "erc20_address",
+              "type": {
+                "displayName": [],
+                "type": 1
+              }
+            }
+          ],
+          "docs": [],
+          "label": "transfer",
+          "mutates": true,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "bool"
+            ],
+            "type": 6
+          },
+          "selector": "0x84a15da1"
+        }
+      ]
+    },
+    "storage": {
+      "struct": {
+        "fields": []
+      }
+    },
+    "types": [
+      {
+        "id": 0,
+        "type": {
+          "def": {
+            "variant": {
+              "variants": [
+                {
+                  "fields": [
+                    {
+                      "type": 1,
+                      "typeName": "[u8; 20]"
+                    }
+                  ],
+                  "index": 0,
+                  "name": "EVM"
+                },
+                {
+                  "fields": [
+                    {
+                      "type": 3,
+                      "typeName": "AccountId"
+                    }
+                  ],
+                  "index": 1,
+                  "name": "WASM"
+                }
+              ]
+            }
+          },
+          "path": [
+            "xvm_transfer",
+            "xvm_transfer",
+            "To"
+          ]
+        }
+      },
+      {
+        "id": 1,
+        "type": {
+          "def": {
+            "array": {
+              "len": 20,
+              "type": 2
+            }
+          }
+        }
+      },
+      {
+        "id": 2,
+        "type": {
+          "def": {
+            "primitive": "u8"
+          }
+        }
+      },
+      {
+        "id": 3,
+        "type": {
+          "def": {
+            "composite": {
+              "fields": [
+                {
+                  "type": 4,
+                  "typeName": "[u8; 32]"
+                }
+              ]
+            }
+          },
+          "path": [
+            "ink_env",
+            "types",
+            "AccountId"
+          ]
+        }
+      },
+      {
+        "id": 4,
+        "type": {
+          "def": {
+            "array": {
+              "len": 32,
+              "type": 2
+            }
+          }
+        }
+      },
+      {
+        "id": 5,
+        "type": {
+          "def": {
+            "primitive": "u128"
+          }
+        }
+      },
+      {
+        "id": 6,
+        "type": {
+          "def": {
+            "primitive": "bool"
+          }
+        }
+      }
+    ]
+  }
+}

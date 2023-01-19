@@ -8,6 +8,10 @@ export {
   getRegisteredERC20Token,
   castCbridgeToErc20,
   getRegisteredErc20Tokens,
+  getStoredXvmTokens,
+  storeImportedXvmToken,
+  deleteImportedXvmToken,
+  deleteImportedErc20Token,
 } from 'src/modules/token/utils';
 
 // Memo: ERC20 tokens information that is not supported by cBridge
@@ -18,10 +22,10 @@ export interface Erc20Token {
   decimal: number;
   symbol: string;
   name: string;
-  image: string;
-  isWrappedToken: boolean;
-  isXC20: boolean;
-  wrapUrl: string | null;
+  image?: string;
+  isWrappedToken?: boolean;
+  isXC20?: boolean;
+  wrapUrl?: string | null;
   userBalance?: string;
   userBalanceUsd?: string;
   isCbridgeToken?: boolean;

@@ -52,7 +52,7 @@ import { fetchErc20TokenInfo } from 'src/config/web3';
 import { useNetworkInfo } from 'src/hooks';
 import { wait } from 'src/hooks/helper/common';
 import { Erc20Token, storeImportedERC20Token } from 'src/modules/token';
-import { computed, defineComponent, PropType, ref, watch } from 'vue';
+import { computed, defineComponent, ref, watch } from 'vue';
 import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 
 export default defineComponent({
@@ -69,7 +69,7 @@ export default defineComponent({
       required: true,
     },
     tokens: {
-      type: Object as PropType<SelectedToken[]>,
+      type: Array,
       required: false,
       default: null,
     },
@@ -93,7 +93,8 @@ export default defineComponent({
 
       props.tokens &&
         props.tokens.forEach((it) => {
-          if (it.address.toLowerCase() === search.value.toLowerCase()) {
+          const token = it as SelectedToken;
+          if (token.address.toLowerCase() === search.value.toLowerCase()) {
             isDuplicated = true;
             errMsg.value = 'assets.tokenHasBeenAdded';
           }

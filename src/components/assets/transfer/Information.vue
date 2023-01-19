@@ -76,25 +76,28 @@
 <script lang="ts">
 import TransactionHistory from 'src/components/common/TransactionHistory.vue';
 import { useAccount, useNetworkInfo } from 'src/hooks';
+import { socialUrl } from 'src/links';
+import { HistoryTxType } from 'src/modules/account';
 import {
   Faq,
   faqH160Transfer,
   faqH160XcmBridge,
   faqSs58Transfer,
   faqSs58XcmBridge,
+  faqSs58XvmTransfer,
   getTxHistories,
   hotTopics,
   RecentHistory,
 } from 'src/modules/information';
+import { getXvmAssetsTransferHistories } from 'src/modules/information/recent-history';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, watchEffect } from 'vue';
-import { socialUrl } from 'src/links';
+import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
 
 export default defineComponent({
   components: { TransactionHistory },
   props: {
-    isLocalTransfer: {
-      type: Boolean,
+    transferType: {
+      type: String as PropType<HistoryTxType>,
       required: true,
     },
   },
@@ -107,21 +110,31 @@ export default defineComponent({
 
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const faqs = computed<Faq[]>(() => {
-      if (isH160.value) {
-        return props.isLocalTransfer ? faqH160Transfer : faqH160XcmBridge;
-      } else {
-        return props.isLocalTransfer ? faqSs58Transfer : faqSs58XcmBridge;
+      if (props.transferType === HistoryTxType.Transfer) {
+        return isH160.value ? faqH160Transfer : faqSs58Transfer;
       }
+      if (props.transferType === HistoryTxType.Xcm) {
+        return isH160.value ? faqH160XcmBridge : faqSs58XcmBridge;
+      }
+      return faqSs58XvmTransfer;
     });
 
     const setTxHistories = async (): Promise<void> => {
       if (!currentAccount.value || !currentNetworkName.value) return;
       try {
         isLoadingTxHistories.value = true;
-        txHistories.value = await getTxHistories({
-          address: currentAccount.value,
-          network: currentNetworkName.value.toLowerCase(),
-        });
+        const network = currentNetworkName.value.toLowerCase();
+        if (props.transferType === HistoryTxType.Xvm) {
+          txHistories.value = await getXvmAssetsTransferHistories({
+            address: currentAccount.value,
+            network,
+          });
+        } else {
+          txHistories.value = await getTxHistories({
+            address: currentAccount.value,
+            network,
+          });
+        }
       } catch (error) {
         console.error(error);
       } finally {
