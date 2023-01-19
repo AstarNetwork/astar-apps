@@ -149,7 +149,8 @@ export const providerEndpoints: ChainProvider[] = [
     evmChainId: '81',
     evmEndpoints: ['https://evm.rocstar.astar.network'],
     faucetEndpoint: 'https://us-central1-facuet-bot.cloudfunctions.net/app/rocstar',
-    defaultLogo: require('/src/assets/img/ic_astar.png'),
+    defaultLogo:
+      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/ic_shibuya.png?raw=true',
   },
 ];
 
