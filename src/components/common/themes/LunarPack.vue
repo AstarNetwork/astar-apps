@@ -73,13 +73,14 @@ export default defineComponent({
       nFireColors = nFireColors.concat(...nFireColors);
 
       function createFirework() {
-        xPoint = Math.random() * (w - 60) + 30;
-        yPoint = Math.random() * (h - 60) + 30;
-
-        for (let i = 0; i < nFireColors.length; i++) {
+        xPoint = Math.random() * (w - 200) + 100;
+        yPoint = Math.random() * (h - 200) + 100;
+        const nFire = Math.random() * 50 + 100;
+        const nFireColor = nFireColors[Math.floor(Math.random() * 3)];
+        for (let i = 0; i < nFire; i++) {
           const particle = new Particle();
-          particle.color = nFireColors[i];
-          const vy = Math.sqrt(20 - particle.vx * particle.vx);
+          particle.color = nFireColor;
+          const vy = Math.sqrt(25 - particle.vx * particle.vx);
           if (Math.abs(particle.vy) > vy) {
             particle.vy = particle.vy > 0 ? vy : -vy;
           }
@@ -147,7 +148,7 @@ export default defineComponent({
 }
 #canvas {
   width: 220px;
-  height: 220px;
+  height: 240px;
   z-index: 9999;
 }
 </style>
