@@ -135,16 +135,24 @@ export function useAutoCompound() {
     }
 
     const txsToExecute: ExtrinsicPayload[] = [];
+    let totalWeight: BN = new BN(0);
     for (let i = 0; i < batchTxsRef.length; i++) {
       const tx = batchTxsRef[i];
+      const weight = tx.isWeightV2 ? tx.asWeightV2().refTime.toBn() : tx.asWeightV1();
+      if (totalWeight.add(weight).gt(MAX_BATCH_WEIGHT)) {
+        break;
+      }
 
       txsToExecute.push(tx.payload as ExtrinsicPayload);
+      totalWeight = totalWeight.add(weight);
     }
 
     txsToExecute.unshift(api.tx.dappsStaking.setRewardDestination(RewardDestination.FreeBalance));
     txsToExecute.push(api.tx.dappsStaking.setRewardDestination(RewardDestination.StakeBalance));
 
-    console.info(`Transactions no. ${txsToExecute.length}`);
+    console.info(
+      `Batch weight: ${totalWeight.toString()}, transactions no. ${txsToExecute.length}`
+    );
     const proxyExtrinsic = api.tx.utility.batch(txsToExecute);
 
     const injector = await getInjector(substrateAccounts.value);
