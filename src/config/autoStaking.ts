@@ -22,9 +22,9 @@ export const autoStakingConfig: AutoStakingConfig[] = [
   },
   // SHIBUYA
   {
-    selfParaId: 0,
-    oakParaId: 0,
-    oakEndpoint: '',
+    selfParaId: 2006,
+    oakParaId: 2114,
+    oakEndpoint: 'wss://rpc.turing-staging.oak.tech',
     oakSS58Prefix: 42,
   },
   // DEV
