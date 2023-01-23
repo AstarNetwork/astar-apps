@@ -28,10 +28,18 @@ export default boot(async ({ store }) => {
   const customEndpoint = localStorage.getItem(CUSTOM_ENDPOINT);
   const selectedEndpointData = localStorage.getItem(SELECTED_ENDPOINT);
   if (!selectedEndpointData) {
-    localStorage.setItem(
-      LOCAL_STORAGE.SELECTED_ENDPOINT,
-      JSON.stringify({ '0': providerEndpoints[0].endpoints[0].endpoint })
-    );
+    if (networkIdxStore !== null) {
+      const networkIdx = Number(networkIdxStore);
+      localStorage.setItem(
+        LOCAL_STORAGE.SELECTED_ENDPOINT,
+        JSON.stringify({ [networkIdx]: providerEndpoints[networkIdx].endpoints[0].endpoint })
+      );
+    } else {
+      localStorage.setItem(
+        LOCAL_STORAGE.SELECTED_ENDPOINT,
+        JSON.stringify({ '0': providerEndpoints[0].endpoints[0].endpoint })
+      );
+    }
   }
   const selectedAddress = localStorage.getItem(SELECTED_ADDRESS);
   const selectedEndpoint = selectedEndpointData ? JSON.parse(selectedEndpointData) : {};
@@ -42,12 +50,10 @@ export default boot(async ({ store }) => {
     store.commit('general/setCurrentCustomEndpoint', customEndpoint);
   }
   const networkIdx = computed(() => store.getters['general/networkIdx']);
-  const randomEndpoint = getRandomFromArray(providerEndpoints[networkIdx.value].endpoints).endpoint;
+  const defaultEndpoint = providerEndpoints[networkIdx.value].endpoints[0].endpoint;
   let endpoint = selectedEndpoint.hasOwnProperty(networkIdx.value)
     ? selectedEndpoint[networkIdx.value]
-      ? selectedEndpoint[networkIdx.value]
-      : randomEndpoint
-    : randomEndpoint;
+    : defaultEndpoint;
   if (networkIdx.value === endpointKey.CUSTOM) {
     const customEndpoint = computed(() => store.getters['general/customEndpoint']);
     endpoint = customEndpoint.value;

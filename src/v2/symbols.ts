@@ -22,4 +22,7 @@ export const Symbols = {
   CurrentWallet: Symbol.for('CurrentWallet'),
   EvmAssetsRepository: Symbol.for('EvmAssetsRepository'),
   EvmAssetsService: Symbol.for('EvmAssetsService'),
+  PolkadotWalletService: Symbol.for('PolkadotWalletService'),
+  TokenTransferRepository: Symbol.for('TokenTransferRepository'),
+  TokenTransferService: Symbol.for('TokenTransferService'),
 };

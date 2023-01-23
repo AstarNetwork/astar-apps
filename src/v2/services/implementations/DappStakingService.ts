@@ -5,7 +5,7 @@ import { astarMainnetNativeToken, ASTAR_NATIVE_TOKEN } from 'src/config/chain';
 import { EditDappItem } from 'src/store/dapp-staking/state';
 import { Guard } from 'src/v2/common';
 import { TvlModel } from 'src/v2/models';
-import { DappCombinedInfo, StakerInfo, RewardDestination } from 'src/v2/models/DappsStaking';
+import { DappCombinedInfo, StakerInfo } from 'src/v2/models/DappsStaking';
 import {
   IDappStakingRepository,
   IMetadataRepository,
