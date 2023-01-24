@@ -84,15 +84,6 @@ export default defineComponent({
       return null;
     });
 
-    watch([isH160], () => {
-      if (isH160.value) {
-        store.dispatch('general/showAlertMsg', {
-          msg: t('dappStaking.error.onlySupportsSubstrate'),
-          alertType: 'error',
-        });
-      }
-    });
-
     return {
       Path,
       dapp,
