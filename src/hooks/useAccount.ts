@@ -4,6 +4,8 @@ import { useStore } from 'src/store';
 import { computed, ref, watch } from 'vue';
 import { SubstrateAccount } from 'src/store/general/state';
 
+export const EthereumExtension = 'Ethereum Extension';
+
 export const useAccount = () => {
   const store = useStore();
 
@@ -38,8 +40,8 @@ export const useAccount = () => {
     [isH160Formatted, currentEcdsaAccount],
     () => {
       if (currentEcdsaAccount.value.h160 || currentEcdsaAccount.value.ss58) {
-        currentAccountName.value = 'Ethereum Extension';
-        localStorage.setItem(SELECTED_ADDRESS, 'Ethereum Extension');
+        currentAccountName.value = EthereumExtension;
+        localStorage.setItem(SELECTED_ADDRESS, EthereumExtension);
         store.commit('general/setIsEthWallet', true);
 
         const { ss58, h160 } = currentEcdsaAccount.value;

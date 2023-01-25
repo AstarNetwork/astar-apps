@@ -1,3 +1,4 @@
+import { EthereumExtension } from 'src/hooks';
 import { ASTAR_SS58_FORMAT } from 'src/hooks/helper/plasmUtils';
 import { wait } from 'src/hooks/helper/common';
 import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
@@ -286,7 +287,7 @@ export const useConnectWallet = () => {
     const delay = 3000;
     await wait(delay);
 
-    if (address === 'Ethereum Extension') {
+    if (address === EthereumExtension) {
       if (!wallet) {
         return;
       }

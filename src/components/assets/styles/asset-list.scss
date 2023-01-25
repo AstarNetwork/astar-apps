@@ -55,20 +55,21 @@
 .row__right {
   display: flex;
   flex-direction: column;
+  align-items: center;
   text-align: center;
   row-gap: 16px;
   @media (min-width: $md) {
     display: grid;
-    grid-template-columns: 290px 140px;
+    grid-template-columns: 290px 140px auto;
   }
   @media (min-width: $lg) {
-    grid-template-columns: 280px 150px;
+    grid-template-columns: 280px 150px auto;
   }
   @media (min-width: $xl) {
-    grid-template-columns: 300px 290px;
+    grid-template-columns: 300px 290px auto;
   }
   @media (min-width: $xxl) {
-    grid-template-columns: 400px 290px;
+    grid-template-columns: 400px 290px auto;
   }
 }
 
@@ -327,6 +328,85 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.row--transferable {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  @media (min-width: $md) {
+    margin-right: -106px;
+  }
+  @media (min-width: $xl) {
+    margin: auto;
+    margin-right: -96px;
+  }
+}
+
+.row--icon--expand-phone {
+  display: flex;
+  justify-content: center;
+  @media (min-width: $md) {
+    display: none;
+  }
+}
+
+.row--icon--expand {
+  display: none;
+  @media (min-width: $md) {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.icon--expand {
+  color: $astar-blue;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+
+  transition: all 0.4s ease 0s;
+  border-radius: 100%;
+  &:hover {
+    color: white;
+    background-color: $astar-blue-dark;
+  }
+}
+
+.icon--close {
+  transform: rotate(180deg);
+}
+
+.column--transferable-bal {
+  display: flex;
+  column-gap: 4px;
+}
+
+.expand-container {
+  overflow: hidden;
+}
+
+.border--margin {
+  margin: 16px 0;
+}
+
+#asset-expand {
+  overflow: hidden;
+  margin-top: -100%;
+  transition: all 0.3s;
+}
+
+#asset-expand-close {
+  overflow: hidden;
+  margin-top: -100%;
+  transition: all 1s;
+}
+
+#asset-expand.asset-expanded {
+  margin-top: 0;
+}
+#asset-expand-close.asset-expanded {
+  margin-top: 0;
 }
 
 .body--dark {
