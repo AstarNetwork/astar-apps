@@ -40,6 +40,7 @@ export const providerEndpoints: ChainProvider[] = [
       { name: 'Dwellir', endpoint: 'wss://astar-rpc.dwellir.com' },
       { name: 'Pinknode', endpoint: 'wss://public-rpc.pinknode.io/astar' },
       { name: 'OnFinality', endpoint: 'wss://astar.api.onfinality.io/public-ws' },
+      { name: 'Light Client (experimental)', endpoint: 'light://substrate-connect/polkadot/astar' },
     ],
     isSupportContract: true,
     prefix: 0x250,
@@ -63,6 +64,7 @@ export const providerEndpoints: ChainProvider[] = [
       { name: 'Dwellir', endpoint: 'wss://shiden-rpc.dwellir.com' },
       { name: 'Pinknode', endpoint: 'wss://rpc.pinknode.io/shiden/explorer' },
       { name: 'OnFinality', endpoint: 'wss://shiden.api.onfinality.io/public-ws' },
+      { name: 'Light Client (experimental)', endpoint: 'light://substrate-connect/kusama/shiden' },
     ],
     isSupportContract: true,
     prefix: 0x150,
@@ -84,6 +86,7 @@ export const providerEndpoints: ChainProvider[] = [
     endpoints: [
       { name: 'Shibuya', endpoint: 'wss://rpc.shibuya.astar.network' },
       { name: 'Dwellir', endpoint: 'wss://shibuya-rpc.dwellir.com' },
+      { name: 'Light Client (experimental)', endpoint: 'light://substrate-connect/tokyo/shibuya' },
     ],
     isSupportContract: true,
     prefix: 0xff51,

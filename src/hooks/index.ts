@@ -8,6 +8,7 @@ export * from './useChainMetadata';
 export * from './useGetMinStaking';
 export * from './useEvmDeposit';
 export * from './useApr';
+export * from './useAprFromApi';
 export * from './useCurrentEra';
 export * from './useFaucet';
 export * from './useChainInfo';

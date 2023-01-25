@@ -1,0 +1,71 @@
+#splash {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: linear-gradient(
+    136deg,
+    #e6007a,
+    #703ac2,
+    #0070eb,
+    #0297fb,
+    #0ae2ff,
+    #0297fb,
+    #0070eb,
+    #703ac2,
+    #e6007a
+  );
+  background-size: 500% 100%;
+  animation: gradient 10s ease infinite;
+}
+
+#overlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  background-color: white;
+}
+
+#box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#splash-text {
+  position: relative;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 900;
+  font-size: 40px;
+  line-height: 48px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  letter-spacing: 0.06em;
+  color: white;
+  text-shadow: 2px rgba(0, 0, 0, 0.25);
+}
+
+#button--reset {
+  color: white;
+  font-size: 16px;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 0%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}

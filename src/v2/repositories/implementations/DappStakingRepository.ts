@@ -10,11 +10,11 @@ import { IDappStakingRepository } from 'src/v2/repositories';
 import { IApi } from 'src/v2/integration';
 import { Symbols } from 'src/v2/symbols';
 import {
-  DappStakingConstants,
   RewardDestination,
   SmartContract,
   SmartContractState,
   StakerInfo,
+  DappStakingConstants,
 } from 'src/v2/models/DappsStaking';
 import { EventAggregator, NewEraMessage } from 'src/v2/messaging';
 import { GeneralStakerInfo, checkIsDappRegistered } from 'src/hooks/helper/claim';
@@ -284,12 +284,6 @@ export class DappStakingRepository implements IDappStakingRepository {
     };
   }
 
-  public async getCurrentEra(): Promise<u32> {
-    const api = await this.api.getApi();
-
-    return await api.query.dappsStaking.currentEra<u32>();
-  }
-
   public async getConstants(): Promise<DappStakingConstants> {
     const api = await this.api.getApi();
     const maxEraStakeValues = Number(api.consts.dappsStaking.maxEraStakeValues.toString());
@@ -316,6 +310,24 @@ export class DappStakingRepository implements IDappStakingRepository {
     });
 
     return result;
+  }
+
+  public async getApr(network: string): Promise<{ apr: number; apy: number }> {
+    Guard.ThrowIfUndefined('network', network);
+
+    const baseUrl = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/dapps-staking`;
+    const [apr, apy] = await Promise.all([
+      (await axios.get<number>(`${baseUrl}/apr`)).data,
+      (await axios.get<number>(`${baseUrl}/apy`)).data,
+    ]);
+
+    return { apr, apy };
+  }
+
+  public async getCurrentEra(): Promise<u32> {
+    const api = await this.api.getApi();
+
+    return await api.query.dappsStaking.currentEra<u32>();
   }
 
   private getContractAddress(address: SmartContractAddress): string | undefined {
