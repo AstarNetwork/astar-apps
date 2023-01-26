@@ -3,6 +3,7 @@
     <div class="container--main">
       <top-metric />
       <register />
+      <dynamic-ads-area />
       <banner-area />
 
       <div class="divider" />
@@ -36,6 +37,7 @@ import Register from './my-staking/Register.vue';
 import OnChainData from './my-staking/OnChainData.vue';
 import TopMetric from './my-staking/TopMetric.vue';
 import AdsArea from './my-staking/AdsArea.vue';
+import DynamicAdsArea from './my-staking/DynamicAdsArea.vue';
 import BannerArea from './my-staking/BannerArea.vue';
 
 export default defineComponent({
@@ -45,6 +47,7 @@ export default defineComponent({
     DappList,
     AdsArea,
     Register,
+    DynamicAdsArea,
     BannerArea,
     OnChainData,
   },
