@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div class="wrapper--news">
     <div class="title--news">News</div>
-    <div class="wrapper--news">
+    <div class="list--news">
       <div v-for="(t, index) in items" :key="index" class="row--news" @click="goToLink(t.link)">
-        <div class="txt--tag">{{ t.tag }}</div>
+        <div class="txt--tag">●{{ t.tag }}●</div>
         <div class="txt--title">{{ t.title }}</div>
       </div>
     </div>
@@ -102,6 +102,11 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
 
+.wrapper--news {
+  background: #d9d9d9;
+  border-radius: 6px;
+  padding: 24px 32px;
+}
 .title--news {
   font-weight: 700;
   font-size: 26px;
@@ -120,11 +125,13 @@ export default defineComponent({
   text-fill-color: transparent;
 }
 
-.wrapper--news {
+.list--news {
   .row--news {
     display: flex;
     font-weight: 600;
     font-size: 14px;
+    margin-top: 12px;
+    margin-top: 12px;
     .txt--tag {
       background: linear-gradient(
         100.62deg,
@@ -140,15 +147,13 @@ export default defineComponent({
       text-fill-color: transparent;
     }
     .txt--title {
+      margin-left: 5px;
     }
   }
 }
 
 .row--page {
   display: flex;
-  position: absolute;
-  bottom: 0;
-  right: 0;
 }
 .colum--current-page {
   width: 54px;

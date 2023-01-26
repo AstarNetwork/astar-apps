@@ -79,6 +79,7 @@ export default defineComponent({
   .card {
     width: 191px;
     height: 210px;
+    cursor: pointer;
     .img--dapp {
       display: flex;
       justify-content: flex-end;
@@ -90,6 +91,8 @@ export default defineComponent({
       padding-right: 16px;
       padding-bottom: 16px;
       margin-top: 6px;
+      backdrop-filter: blur(50px);
+      border-radius: 6px;
     }
     .txt--category {
       font-weight: 600;
