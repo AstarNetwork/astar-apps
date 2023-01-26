@@ -13,7 +13,7 @@
     <!-- <dapp-stats-charts :dapp="dapp" /> -->
     <div class="bottom--links">
       <router-link :to="buildStakePageLink(dapp.dapp.address)">
-        <astar-irregular-button :height="28" class="btn--stake-switch">
+        <astar-irregular-button :disabled="isH160" :height="28" class="btn--stake-switch">
           {{ $t('dappStaking.dappPage.stakeOrSwitchTo') }} {{ dapp.dapp.name }}
         </astar-irregular-button>
       </router-link>
@@ -84,21 +84,13 @@ export default defineComponent({
       return null;
     });
 
-    watch([isH160], () => {
-      if (isH160.value) {
-        store.dispatch('general/showAlertMsg', {
-          msg: t('dappStaking.error.onlySupportsSubstrate'),
-          alertType: 'error',
-        });
-      }
-    });
-
     return {
       Path,
       dapp,
       stakingList,
       goLink,
       buildStakePageLink,
+      isH160,
     };
   },
 });

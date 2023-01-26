@@ -14,13 +14,22 @@
           </div>
         </div>
         <div class="row--stake">
-          <router-link :to="buildStakePageLink(dapp.dapp.address)">
+          <!--
+            For some unknown reason disabling router/button doesn't work here (button is still clickable),
+            so I made this small trick with two buttons.
+          -->
+          <router-link v-if="!isH160" :to="buildStakePageLink(dapp.dapp.address)">
             <astar-button class="btn-size--stake">
               <span class="text--btn-stake">
                 {{ $t('dappStaking.stake') }}
               </span>
             </astar-button>
           </router-link>
+          <astar-button v-if="isH160" :disabled="true" class="btn-size--stake">
+            <span class="text--btn-stake">
+              {{ $t('dappStaking.stake') }}
+            </span>
+          </astar-button>
         </div>
       </div>
     </div>
@@ -38,6 +47,8 @@ import { useAccount } from 'src/hooks';
 import { networkParam, Path } from 'src/router/routes';
 import { defineComponent, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { useStore } from 'src/store';
+
 export default defineComponent({
   props: {
     dapp: {
@@ -48,6 +59,9 @@ export default defineComponent({
   setup(props) {
     const router = useRouter();
     const { currentAccount } = useAccount();
+    const store = useStore();
+    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
+
     const buildStakePageLink = (address: string): string => {
       const base = networkParam + Path.DappStaking + Path.Stake;
       return `${base}?dapp=${address.toLowerCase()}`;
@@ -66,6 +80,7 @@ export default defineComponent({
       buildStakePageLink,
       isDisabledEditButton,
       goEditLink,
+      isH160,
     };
   },
 });
