@@ -27,6 +27,7 @@ export default {
   native: 'Native',
   evm: 'EVM',
   wasm: 'WASM',
+  new: 'NEW',
   addressFormat: '{network} Wallet Address',
   addressPlaceholder: 'Destination {network} Address',
   evmAddressPlaceholder: 'Destination EVM address',
@@ -356,6 +357,7 @@ export default {
     hideSmallBalances: 'Hide small balances',
     unhideSmallBalances: 'Unhide small balances',
     tokenHasBeenAdded: 'The token has been added already',
+    assetsAreNowFolded: 'All utilities for {token} token are now folded - open up here!',
     transferPage: {
       backToAssets: 'Back to Assets',
       crossChainTransfer: 'Cross-chain Transfer',

@@ -344,6 +344,7 @@
 }
 
 .row--icon--expand-phone {
+  position: relative;
   display: flex;
   justify-content: center;
   @media (min-width: $md) {
@@ -357,6 +358,10 @@
     display: flex;
     justify-content: center;
   }
+}
+
+.column--expand {
+  position: relative;
 }
 
 .icon--expand {
@@ -373,7 +378,7 @@
   }
 }
 
-.icon--close {
+.icon--collapse {
   transform: rotate(180deg);
 }
 
@@ -384,6 +389,10 @@
 
 .expand-container {
   overflow: hidden;
+}
+
+.balloon-native-token {
+  width: 242px;
 }
 
 .border--margin {
@@ -398,13 +407,14 @@
 
 #asset-expand-close {
   overflow: hidden;
-  margin-top: -100%;
+  margin-top: -200%;
   transition: all 1s;
 }
 
 #asset-expand.asset-expanded {
   margin-top: 0;
 }
+
 #asset-expand-close.asset-expanded {
   margin-top: 0;
 }

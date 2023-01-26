@@ -49,18 +49,29 @@
             </div>
             <div v-else />
             <div class="row--icon--expand">
-              <button
-                class="icon--expand"
-                :class="isExpand && 'icon--close'"
-                @click="expandAsset(isExpand)"
-              >
-                <astar-icon-expand size="32" />
-              </button>
-              <q-tooltip>
-                <span class="text--tooltip">
-                  {{ $t(isExpand ? 'assets.collapse' : 'assets.expand') }}
-                </span>
-              </q-tooltip>
+              <div class="column--expand">
+                <button
+                  class="icon--expand"
+                  :class="isExpand && 'icon--collapse'"
+                  @click="expandAsset(isExpand)"
+                >
+                  <astar-icon-expand size="32" />
+                  <q-tooltip>
+                    <span class="text--tooltip">
+                      {{ $t(isExpand ? 'assets.collapse' : 'assets.expand') }}
+                    </span>
+                  </q-tooltip>
+                </button>
+
+                <balloon
+                  class="balloon-native-token"
+                  direction="right"
+                  :is-balloon="isBalloonNativeToken"
+                  :is-balloon-closing="isBalloonNativeTokenClosing"
+                  :title="$t('new')"
+                  :text="$t('assets.assetsAreNowFolded', { token: nativeTokenSymbol })"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -176,7 +187,7 @@
         <div class="row--icon--expand-phone">
           <button
             class="icon--expand"
-            :class="isExpand && 'icon--close'"
+            :class="isExpand && 'icon--collapse'"
             @click="expandAsset(isExpand)"
           >
             <astar-icon-expand size="32" />
@@ -186,6 +197,13 @@
               {{ $t(isExpand ? 'assets.collapse' : 'assets.expand') }}
             </span>
           </q-tooltip>
+          <balloon
+            direction="top"
+            :is-balloon="isBalloonNativeToken"
+            :is-balloon-closing="isBalloonNativeTokenClosing"
+            :title="$t('new')"
+            :text="$t('assets.assetsAreNowFolded', { token: nativeTokenSymbol })"
+          />
         </div>
       </div>
     </div>
@@ -207,8 +225,8 @@
 <script lang="ts">
 import { u8aToString } from '@polkadot/util';
 import { ethers } from 'ethers';
-import { useBalance, useEvmDeposit, useNetworkInfo, usePrice } from 'src/hooks';
-import { checkIsNullOrUndefined } from 'src/hooks/helper/common';
+import { useBalance, useBalloons, useEvmDeposit, useNetworkInfo, usePrice } from 'src/hooks';
+import { checkIsNullOrUndefined, wait } from 'src/hooks/helper/common';
 import { getTokenImage } from 'src/modules/token';
 import { generateAstarNativeTokenObject } from 'src/modules/xcm/tokens';
 import { useStore } from 'src/store';
@@ -220,6 +238,7 @@ import ModalVesting from 'src/components/assets/modals/ModalVesting.vue';
 import { Path } from 'src/router';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { faucetBalRequirement } from 'src/config/wallets';
+import Balloon from 'src/components/common/Balloon.vue';
 
 export default defineComponent({
   components: {
@@ -227,6 +246,7 @@ export default defineComponent({
     ModalEvmWithdraw,
     ModalVesting,
     TokenBalance,
+    Balloon,
   },
   setup() {
     const isModalTransfer = ref<boolean>(false);
@@ -240,6 +260,8 @@ export default defineComponent({
     const isShibuya = ref<boolean>(false);
     const isFaucet = ref<boolean>(false);
     const isExpand = ref<boolean>(false);
+    const { isBalloonNativeToken, isBalloonNativeTokenClosing, handleCloseNativeTokenBalloon } =
+      useBalloons();
 
     const store = useStore();
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
@@ -310,7 +332,10 @@ export default defineComponent({
     });
 
     // Ref: https://stackoverflow.com/questions/48143381/css-expand-contract-animation-to-show-hide-content
-    const expandAsset = (isOpen: boolean) => {
+    const expandAsset = async (isOpen: boolean): Promise<void> => {
+      if (isBalloonNativeToken.value) {
+        await handleCloseNativeTokenBalloon();
+      }
       isExpand.value = !isOpen;
       const el = document.getElementById(isOpen ? 'asset-expand' : 'asset-expand-close');
       el && el.classList.toggle('asset-expanded');
@@ -340,11 +365,14 @@ export default defineComponent({
       isSkeleton,
       isSupportXvmTransfer,
       isExpand,
+      isBalloonNativeToken,
+      isBalloonNativeTokenClosing,
       buildTransferPageLink,
       handleModalVesting,
       handleModalFaucet,
       handleModalEvmWithdraw,
       expandAsset,
+      handleCloseNativeTokenBalloon,
     };
   },
 });
