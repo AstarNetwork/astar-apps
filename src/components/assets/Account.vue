@@ -57,9 +57,6 @@
           </div>
         </div>
       </div>
-
-      <!-- <div class="border--separator" /> -->
-
       <div class="row screen--phone">
         <span>{{ $t('assets.totalBalance') }}</span>
         <q-skeleton v-if="isSkeleton" animation="fade" class="skeleton--md" />

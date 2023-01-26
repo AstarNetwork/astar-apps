@@ -59,14 +59,11 @@
   display: flex;
   flex-direction: column;
   @media (min-width: $md) {
-    width: 200px;
+    width: 150px;
     white-space: nowrap;
   }
   @media (min-width: $xl) {
     text-align: right;
-  }
-  @media (min-width: $xxl) {
-    width: 250px;
   }
 }
 
@@ -133,7 +130,7 @@
     width: 340px;
     grid-template-columns: 100px 70px;
     justify-content: end;
-    column-gap: 8px;
+    column-gap: 48px;
     margin-right: 80px;
   }
 }

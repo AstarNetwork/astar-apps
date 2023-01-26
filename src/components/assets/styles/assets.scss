@@ -17,7 +17,8 @@
   row-gap: 32px;
   margin-bottom: 24px;
   @media (min-width: $xxl) {
-    width: $container-max-width;
+    width: 100%;
+    max-width: $container-max-width;
   }
 }
 

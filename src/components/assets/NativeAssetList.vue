@@ -192,11 +192,6 @@
           >
             <astar-icon-expand size="32" />
           </button>
-          <q-tooltip>
-            <span class="text--tooltip">
-              {{ $t(isExpand ? 'assets.collapse' : 'assets.expand') }}
-            </span>
-          </q-tooltip>
           <balloon
             direction="top"
             :is-balloon="isBalloonNativeToken"

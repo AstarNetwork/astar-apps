@@ -21,7 +21,6 @@ export const useBalloons = () => {
     const delay = 2 * 1000;
     await wait(delay);
     isBalloonNativeToken.value = localStorage.getItem(BALLOON_NATIVE_TOKEN) !== 'false';
-    // isBalloonNativeToken.value = true;
   };
 
   watchEffect(initIsBalloonNativeToken);
