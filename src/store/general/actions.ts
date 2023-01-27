@@ -10,6 +10,10 @@ const actions: ActionTree<State, StateInterface> = {
       txHash,
     };
     commit('pushAlertMsg', alert);
+
+    setTimeout(() => {
+      commit('removeAlertMsg', 0);
+    }, 4000);
   },
   removeAlertMsg({ commit }, { index }) {
     commit('removeAlertMsg', index);
