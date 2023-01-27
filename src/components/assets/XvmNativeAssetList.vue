@@ -4,7 +4,9 @@
       <div :class="isFeature ? 'container-inner--feature' : 'container'">
         <div class="row--menu">
           <div class="row">
-            <span class="text--title">{{ $t('assets.xvmAssets') }}</span>
+            <span class="text--title">
+              {{ $t(width > screenSize.sm ? 'assets.xvmAssets' : 'assets.xvmAssetsShort') }}
+            </span>
           </div>
           <asset-search-option
             v-if="!isFeature"
@@ -43,6 +45,7 @@ import XvmErc20Currency from 'src/components/assets/XvmErc20Currency.vue';
 import AssetSearchOption from 'src/components/assets/AssetSearchOption.vue';
 import { Erc20Token } from 'src/modules/token';
 import ModalImportXvmTokens from 'src/components/assets/modals/ModalImportXvmTokens.vue';
+import { useBreakpoints } from 'src/hooks';
 export default defineComponent({
   components: {
     XvmErc20Currency,
@@ -60,6 +63,7 @@ export default defineComponent({
     const search = ref<string>('');
     const isHideSmallBalances = ref<boolean>(false);
     const isModalImportTokens = ref<boolean>(false);
+    const { width, screenSize } = useBreakpoints();
 
     const isFeature = computed<boolean>(() => props.xvmAssets.length === 0);
 
@@ -106,6 +110,8 @@ export default defineComponent({
       isHideSmallBalances,
       isModalImportTokens,
       isFeature,
+      width,
+      screenSize,
       toggleIsHideSmallBalances,
       setIsSearch,
       setSearch,
