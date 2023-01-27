@@ -8,16 +8,30 @@
 
 <script lang="ts">
 import { useMeta } from 'quasar';
-import { useAccount } from 'src/hooks';
-import { defineComponent } from 'vue';
-
+import { useAccount, useNetworkInfo } from 'src/hooks';
+import { useStore } from 'src/store';
+import { XcmAssets } from 'src/store/assets/state';
+import { computed, defineComponent, watch } from 'vue';
 // <div v-else /> Memo: To avoid not rendering anything when users go to other pages
 // Leaving comments on the `template` caused an unknown bug
 
 export default defineComponent({
   setup() {
     useMeta({ title: 'Assets' });
+    const store = useStore();
+    const { isMainnet } = useNetworkInfo();
     const { currentAccount } = useAccount();
+    const xcmAssets = computed<XcmAssets>(() => store.getters['assets/getAllAssets']);
+
+    const handleLoadingAssets = (): void => {
+      if (!isMainnet.value) return;
+      if (xcmAssets.value.assets.length === 0) {
+        store.commit('general/setLoading', true);
+      } else {
+        store.commit('general/setLoading', false);
+      }
+    };
+    watch([xcmAssets], handleLoadingAssets, { immediate: true });
     return { currentAccount };
   },
   // mounted() {

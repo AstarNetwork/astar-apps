@@ -48,8 +48,11 @@
 
 .column__icons {
   display: flex;
-  column-gap: 16px;
   justify-content: flex-end;
+  column-gap: 16px;
+  @media (min-width: $xl) {
+    column-gap: 80px;
+  }
 }
 
 .text--switch-account {
