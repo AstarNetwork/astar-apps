@@ -8,6 +8,7 @@
 
 <script lang="ts">
 import { useMeta } from 'quasar';
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import { useStore } from 'src/store';
 import { XcmAssets } from 'src/store/assets/state';
@@ -23,8 +24,12 @@ export default defineComponent({
     const { currentAccount } = useAccount();
     const xcmAssets = computed<XcmAssets>(() => store.getters['assets/getAllAssets']);
 
-    const handleLoadingAssets = (): void => {
-      if (!isMainnet.value || !currentAccount.value) return;
+    const handleLoadingAssets = async (): Promise<void> => {
+      const account = localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS);
+      if (!isMainnet.value || !account) {
+        store.commit('general/setLoading', false);
+        return;
+      }
       if (xcmAssets.value.assets.length === 0) {
         store.commit('general/setLoading', true);
       } else {
