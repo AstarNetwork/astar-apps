@@ -24,7 +24,7 @@ export default defineComponent({
     const xcmAssets = computed<XcmAssets>(() => store.getters['assets/getAllAssets']);
 
     const handleLoadingAssets = (): void => {
-      if (!isMainnet.value) return;
+      if (!isMainnet.value || !currentAccount.value) return;
       if (xcmAssets.value.assets.length === 0) {
         store.commit('general/setLoading', true);
       } else {
