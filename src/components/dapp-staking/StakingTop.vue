@@ -63,14 +63,18 @@ export default defineComponent({
       store.commit('general/setLoading', isLoad);
     };
 
-    watch([isH160], () => {
-      if (isH160.value) {
-        store.dispatch('general/showAlertMsg', {
-          msg: t('dappStaking.error.onlySupportsSubstrate'),
-          alertType: 'error',
-        });
-      }
-    });
+    watch(
+      [isH160],
+      () => {
+        if (isH160.value) {
+          store.dispatch('general/showAlertMsg', {
+            msg: t('dappStaking.error.onlySupportsSubstrate'),
+            alertType: 'error',
+          });
+        }
+      },
+      { immediate: true }
+    );
 
     watch(
       [dapps],

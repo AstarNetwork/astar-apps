@@ -208,6 +208,15 @@ export const xcmChainObj: XcmChainObj = {
     subscan: 'https://bifrost.subscan.io/',
     isAstarNativeToken: true,
   },
+  [Chain.BIFROST_KUSAMA]: {
+    name: Chain.BIFROST_KUSAMA,
+    relayChain: Chain.KUSAMA,
+    img: 'https://polkadot.js.org/apps/static/bifrost.76510acf..svg',
+    parachainId: parachainIds.BIFROST_KUSAMA,
+    endpoint: 'wss://bifrost-rpc.liebi.com/ws',
+    subscan: 'https://bifrost-kusama.subscan.io/',
+    isAstarNativeToken: true,
+  },
 };
 
 export const xcmChains = objToArray(xcmChainObj);

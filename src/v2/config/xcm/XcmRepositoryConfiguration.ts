@@ -29,6 +29,7 @@ export const XcmRepositoryConfiguration: TypeMapping = {
   [Chain.KHALA]: PhalaXcmRepository,
   [Chain.PHALA]: PhalaXcmRepository,
   [Chain.BIFROST_POLKADOT]: BifrostXcmRepository,
+  [Chain.BIFROST_KUSAMA]: BifrostXcmRepository,
 };
 
 export type AstarToken = 'ASTR' | 'SDN';

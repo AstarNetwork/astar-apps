@@ -72,15 +72,6 @@ export function useStakerInfo() {
     }
   });
 
-  watchEffect(() => {
-    if (isH160.value) {
-      store.dispatch('general/showAlertMsg', {
-        msg: t('dappStaking.error.onlySupportsSubstrate'),
-        alertType: 'error',
-      });
-    }
-  });
-
   watch([currentAccount, myStakeInfos], setTotalStaked);
 
   return {
