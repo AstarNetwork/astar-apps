@@ -2,17 +2,17 @@
   <div class="wrapper--news">
     <div class="title--news">News</div>
     <div class="list--news">
-      <div v-for="(t, index) in items" :key="index" class="row--news" @click="goToLink(t.link)">
+      <div v-for="(t, index) in dataArray" :key="index" class="row--news" @click="goToLink(t.link)">
         <div class="txt--tag">●{{ t.tag }}●</div>
         <div class="txt--title">{{ t.title }}</div>
       </div>
     </div>
     <div class="row--page">
-      <button :disabled="page === 1" class="icon--arrow" @click="changePage(false)">
+      <button v-show="page > 1" class="icon--arrow" @click="changePage(false)">
         <astar-icon-arrow-left />
       </button>
       <div class="colum--current-page">
-        <span class="text--value"> {{ page }} / {{ pageTtl }} </span>
+        <span class="text--value"> {{ page }}/{{ pageTtl }} </span>
       </div>
       <button class="icon--arrow" :disabled="page === Number(pageTtl)" @click="changePage(true)">
         <astar-icon-arrow-right />
@@ -25,6 +25,14 @@ import { defineComponent, computed, ref, watchEffect } from 'vue';
 import { useBreakpoints } from 'src/hooks';
 import { useStore } from 'src/store';
 import { paginate } from 'src/hooks/helper/common';
+
+interface Data {
+  img: string;
+  tag: string;
+  title: string;
+  link: string;
+}
+
 export default defineComponent({
   setup() {
     const store = useStore();
@@ -32,9 +40,10 @@ export default defineComponent({
     const { screenSize, width } = useBreakpoints();
     const page = ref<number>(1);
     const pageTtl = ref<number>(0);
-    const dataArray = ref([]);
+    const dataArray = ref<Data[]>([]);
     const isDisplay = ref<boolean>(true);
     const goToNext = ref<boolean>(true);
+    const NUM_ITEMS = 3;
 
     const bg_img = {
       astar_hero: require('/src/assets/img/banner/banner-02-astar.png'),
@@ -62,6 +71,13 @@ export default defineComponent({
       },
     ];
 
+    const setDataArray = (): void => {
+      if (!dataArray.value) return;
+
+      pageTtl.value = Number((items.length / NUM_ITEMS).toFixed(0));
+      dataArray.value = paginate(items, NUM_ITEMS, page.value);
+    };
+
     const goToLink = (link: string) => {
       window.open(link, '_blank');
     };
@@ -86,10 +102,11 @@ export default defineComponent({
       }, 700);
     };
 
+    watchEffect(setDataArray);
     watchEffect(handlePageUpdate);
 
     return {
-      items,
+      dataArray,
       bg_img,
       goToLink,
       page,
@@ -103,6 +120,7 @@ export default defineComponent({
 @import 'src/css/quasar.variables.scss';
 
 .wrapper--news {
+  width: 100%;
   background: #d9d9d9;
   border-radius: 6px;
   padding: 24px 32px;
@@ -154,6 +172,9 @@ export default defineComponent({
 
 .row--page {
   display: flex;
+  position: relative;
+  bottom: 10px;
+  right: 10px;
 }
 .colum--current-page {
   width: 54px;

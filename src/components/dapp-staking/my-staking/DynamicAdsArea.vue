@@ -1,11 +1,19 @@
 <template>
   <div class="wrapper">
-    <div class="news-area">
+    <div class="wrapper-item news-area">
       <news-area />
     </div>
-    <div class="wrapper--banners">
+    <div class="wrapper-item wrapper--banners">
       <div v-for="(t, index) in items" :key="index" class="card" @click="goToLink(t.link)">
-        <div class="img--dapp" :style="`background-image: url('')`"></div>
+        <div class="wrapper--img">
+          <q-img
+            :ref="`imageRef_${index}`"
+            :src="t.img"
+            class="img--dapp"
+            fit="contain"
+            no-spinner
+          />
+        </div>
         <div class="card-info">
           <div class="txt--category">{{ t.category }}</div>
           <div class="txt--title">{{ t.title }}</div>
@@ -16,8 +24,9 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, onMounted, ref } from 'vue';
 import NewsArea from './components/NewsArea.vue';
+import { FastAverageColor } from 'fast-average-color';
 
 export default defineComponent({
   components: {
@@ -48,12 +57,33 @@ export default defineComponent({
       },
     ];
 
+    const colorPicker = (dom: any) => {
+      console.log('dom', dom);
+      const fac = new FastAverageColor();
+      fac
+        .getColorAsync(dom)
+        .then((color) => {
+          // container.style.backgroundColor = color.rgba;
+          // container.style.color = color.isDark ? '#fff' : '#000';
+          console.log('cc', color);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    };
+
+    const imageRef_0 = ref(null);
+    onMounted(() => {
+      colorPicker(imageRef_0.value);
+    });
+
     const goToLink = (link: string) => {
       window.open(link, '_blank');
     };
 
     return {
       items,
+      imageRef_0,
       goToLink,
     };
   },
@@ -66,18 +96,27 @@ export default defineComponent({
   display: block;
   margin-top: 48px;
   margin-bottom: 48px;
-  @media (min-width: $sm) {
+  height: 211px;
+  @media (min-width: $md) {
     display: flex;
     gap: 16px;
   }
+}
+.wrapper-item {
+  flex: 1 1 0px;
 }
 
 .wrapper--banners {
   display: flex;
   gap: 16px;
 
+  .img--dapp {
+    width: 72px;
+    height: 72px;
+    border-radius: 999;
+  }
   .card {
-    width: 191px;
+    // width: 191px;
     height: 210px;
     cursor: pointer;
     .img--dapp {
