@@ -14,18 +14,11 @@
           </div>
         </div>
         <div class="row--stake">
-          <!--
-            For some unknown reason disabling router/button doesn't work here (button is still clickable),
-            so I made this small trick with two buttons.
-          -->
-          <router-link v-if="!isH160" :to="buildStakePageLink(dapp.dapp.address)">
-            <astar-button class="btn-size--stake">
-              <span class="text--btn-stake">
-                {{ $t('dappStaking.stake') }}
-              </span>
-            </astar-button>
-          </router-link>
-          <astar-button v-if="isH160" :disabled="true" class="btn-size--stake">
+          <astar-button
+            :disabled="isH160"
+            class="btn-size--stake"
+            @click="goStakeLink(dapp.dapp.address)"
+          >
             <span class="text--btn-stake">
               {{ $t('dappStaking.stake') }}
             </span>
@@ -62,13 +55,14 @@ export default defineComponent({
     const store = useStore();
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
 
-    const buildStakePageLink = (address: string): string => {
-      const base = networkParam + Path.DappStaking + Path.Stake;
-      return `${base}?dapp=${address.toLowerCase()}`;
-    };
-
     const goEditLink = (): void => {
       const url = networkParam + Path.DappStaking + Path.Register;
+      router.push(url);
+    };
+
+    const goStakeLink = (address: string): void => {
+      const base = networkParam + Path.DappStaking + Path.Stake;
+      const url = `${base}?dapp=${address.toLowerCase()}`;
       router.push(url);
     };
 
@@ -77,10 +71,10 @@ export default defineComponent({
     );
 
     return {
-      buildStakePageLink,
       isDisabledEditButton,
       goEditLink,
       isH160,
+      goStakeLink,
     };
   },
 });
