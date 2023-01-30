@@ -13,7 +13,7 @@ const actions: ActionTree<State, StateInterface> = {
 
     setTimeout(() => {
       commit('removeAlertMsg', 0);
-    }, 4000);
+    }, 8000);
   },
   removeAlertMsg({ commit }, { index }) {
     commit('removeAlertMsg', index);
