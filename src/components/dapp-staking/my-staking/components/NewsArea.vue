@@ -2,9 +2,11 @@
   <div class="wrapper--news">
     <div class="title--news">News</div>
     <div class="list--news">
-      <div v-for="(t, index) in dataArray" :key="index" class="row--news" @click="goToLink(t.link)">
+      <div v-for="(t, index) in dataArray" :key="index" class="row--news">
         <div class="txt--tag">●{{ t.tag }}●</div>
-        <div class="txt--title">{{ t.title }}</div>
+        <div class="txt--title" :class="t.link ? 'txt--underline' : ''" @click="goToLink(t.link)">
+          {{ t.title }}
+        </div>
       </div>
     </div>
     <div class="row--page">
@@ -55,18 +57,36 @@ export default defineComponent({
         img: 'https://firebasestorage.googleapis.com/v0/b/astarnetwork-a4924.appspot.com/o/astar-dapps%2F0x1de7c3A07918fb4BE9159703e73D6e0b0736CaBC_rIb1fUz3_400x400%20(1).jpeg?alt=media&token=3832d94b-81bd-4e12-9d8b-96d83896ed3a',
         tag: 'Campaign',
         title: 'NFT drop from astar.network',
-        link: 'https://docs.astar.network/docs/dapp-staking/',
+        link: '',
       },
       {
         img: 'https://firebasestorage.googleapis.com/v0/b/astarnetwork-a4924.appspot.com/o/astar-dapps%2F0x1de7c3A07918fb4BE9159703e73D6e0b0736CaBC_rIb1fUz3_400x400%20(1).jpeg?alt=media&token=3832d94b-81bd-4e12-9d8b-96d83896ed3a',
-        tag: 'Campaign',
+        tag: 'New release',
         title: 'NFT drop from astar.network',
         link: 'https://www.youtube.com/watch?v=8KrUhu2rweA',
       },
       {
         img: 'https://firebasestorage.googleapis.com/v0/b/astarnetwork-a4924.appspot.com/o/astar-dapps%2F0x1de7c3A07918fb4BE9159703e73D6e0b0736CaBC_rIb1fUz3_400x400%20(1).jpeg?alt=media&token=3832d94b-81bd-4e12-9d8b-96d83896ed3a',
-        tag: 'Campaign',
+        tag: 'Latest News',
         title: 'NFT drop from astar.network',
+        link: 'https://www.youtube.com/watch?v=9jkM_uYrqUw',
+      },
+      {
+        img: 'https://firebasestorage.googleapis.com/v0/b/astarnetwork-a4924.appspot.com/o/astar-dapps%2F0x1de7c3A07918fb4BE9159703e73D6e0b0736CaBC_rIb1fUz3_400x400%20(1).jpeg?alt=media&token=3832d94b-81bd-4e12-9d8b-96d83896ed3a',
+        tag: 'Campaign',
+        title: 'NFT drop from astar.network 2',
+        link: '',
+      },
+      {
+        img: 'https://firebasestorage.googleapis.com/v0/b/astarnetwork-a4924.appspot.com/o/astar-dapps%2F0x1de7c3A07918fb4BE9159703e73D6e0b0736CaBC_rIb1fUz3_400x400%20(1).jpeg?alt=media&token=3832d94b-81bd-4e12-9d8b-96d83896ed3a',
+        tag: 'New release',
+        title: 'NFT drop from astar.network 2',
+        link: 'https://www.youtube.com/watch?v=8KrUhu2rweA',
+      },
+      {
+        img: 'https://firebasestorage.googleapis.com/v0/b/astarnetwork-a4924.appspot.com/o/astar-dapps%2F0x1de7c3A07918fb4BE9159703e73D6e0b0736CaBC_rIb1fUz3_400x400%20(1).jpeg?alt=media&token=3832d94b-81bd-4e12-9d8b-96d83896ed3a',
+        tag: 'Latest News',
+        title: 'NFT drop from astar.network 2',
         link: 'https://www.youtube.com/watch?v=9jkM_uYrqUw',
       },
     ];
@@ -79,7 +99,9 @@ export default defineComponent({
     };
 
     const goToLink = (link: string) => {
-      window.open(link, '_blank');
+      if (link) {
+        window.open(link, '_blank');
+      }
     };
 
     const handlePageUpdate = (): void => {
@@ -121,6 +143,7 @@ export default defineComponent({
 
 .wrapper--news {
   width: 100%;
+  height: 100%;
   background: #d9d9d9;
   border-radius: 6px;
   padding: 24px 32px;
@@ -144,6 +167,7 @@ export default defineComponent({
 }
 
 .list--news {
+  padding-top: 12px;
   .row--news {
     display: flex;
     font-weight: 600;
@@ -167,6 +191,10 @@ export default defineComponent({
     .txt--title {
       margin-left: 5px;
     }
+    .txt--underline {
+      text-decoration: underline;
+      cursor: pointer;
+    }
   }
 }
 
@@ -174,10 +202,11 @@ export default defineComponent({
   display: flex;
   position: relative;
   bottom: 10px;
-  right: 10px;
+  float: right;
+  color: #fff;
 }
 .colum--current-page {
-  width: 54px;
+  width: 34px;
   display: flex;
   justify-content: center;
 }
@@ -191,7 +220,7 @@ export default defineComponent({
   cursor: pointer;
   transition: all 0.2s ease-in;
   border-radius: 50%;
-  color: $gray-1;
+  color: #fff;
   &:hover {
     transition: all 0.2s ease-in;
     background: rgba(255, 255, 255, 0.2);

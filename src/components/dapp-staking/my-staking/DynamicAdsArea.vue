@@ -26,7 +26,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue';
 import NewsArea from './components/NewsArea.vue';
-import { FastAverageColor } from 'fast-average-color';
+// import { FastAverageColor } from 'fast-average-color';
 
 export default defineComponent({
   components: {
@@ -57,25 +57,25 @@ export default defineComponent({
       },
     ];
 
-    const colorPicker = (dom: any) => {
-      console.log('dom', dom);
-      const fac = new FastAverageColor();
-      fac
-        .getColorAsync(dom)
-        .then((color) => {
-          // container.style.backgroundColor = color.rgba;
-          // container.style.color = color.isDark ? '#fff' : '#000';
-          console.log('cc', color);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    };
+    // const colorPicker = (dom: any) => {
+    //   console.log('dom', dom);
+    //   const fac = new FastAverageColor();
+    //   fac
+    //     .getColorAsync(dom)
+    //     .then((color) => {
+    //       // container.style.backgroundColor = color.rgba;
+    //       // container.style.color = color.isDark ? '#fff' : '#000';
+    //       console.log('cc', color);
+    //     })
+    //     .catch((e) => {
+    //       console.log(e);
+    //     });
+    // };
 
-    const imageRef_0 = ref(null);
-    onMounted(() => {
-      colorPicker(imageRef_0.value);
-    });
+    // const imageRef_0 = ref(null);
+    // onMounted(() => {
+    //   colorPicker(imageRef_0.value);
+    // });
 
     const goToLink = (link: string) => {
       window.open(link, '_blank');
@@ -83,7 +83,7 @@ export default defineComponent({
 
     return {
       items,
-      imageRef_0,
+      // imageRef_0,
       goToLink,
     };
   },
@@ -96,51 +96,61 @@ export default defineComponent({
   display: block;
   margin-top: 48px;
   margin-bottom: 48px;
-  height: 211px;
-  @media (min-width: $md) {
+  @media (min-width: $xl) {
     display: flex;
     gap: 16px;
   }
 }
 .wrapper-item {
   flex: 1 1 0px;
+  height: 211px;
 }
 
 .wrapper--banners {
   display: flex;
   gap: 16px;
-
-  .img--dapp {
-    width: 72px;
-    height: 72px;
-    border-radius: 999;
+  margin-top: 20px;
+  @media (min-width: $xl) {
+    margin-top: 0px;
   }
   .card {
-    // width: 191px;
-    height: 210px;
+    flex-basis: 33%;
+    height: 100%;
     cursor: pointer;
-    .img--dapp {
+    background: rgba(196, 196, 196, 0.1);
+    backdrop-filter: blur(50px);
+    border-radius: 6px;
+    .wrapper--img {
       display: flex;
       justify-content: flex-end;
+      border-radius: 999px;
+      width: 72px;
+      height: 72px;
       margin-top: 16px;
       margin-right: 16px;
+      margin-left: auto;
+      .img--dapp {
+        max-width: 72px;
+        max-height: 72px;
+        border-radius: 999px;
+      }
     }
     .card-info {
       padding-left: 16px;
       padding-right: 16px;
       padding-bottom: 16px;
       margin-top: 6px;
-      backdrop-filter: blur(50px);
-      border-radius: 6px;
     }
     .txt--category {
       font-weight: 600;
       font-size: 14px;
+      line-height: 18px;
       color: $astar-blue;
     }
     .txt--title {
       font-weight: 600;
       font-size: 20px;
+      line-height: 24px;
       color: #fff;
       margin-top: 4px;
       margin-bottom: 4px;
@@ -148,6 +158,7 @@ export default defineComponent({
     .txt--subtitle {
       font-weight: 500;
       font-size: 14px;
+      line-height: 18px;
       color: $gray-2;
     }
   }
