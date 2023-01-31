@@ -110,6 +110,17 @@ export default defineComponent({
   display: flex;
   gap: 16px;
   margin-top: 20px;
+  @media (max-width: $md) {
+    display: flex;
+    width: 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    justify-content: left;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
   @media (min-width: $xl) {
     margin-top: 0px;
   }
@@ -120,6 +131,9 @@ export default defineComponent({
     background: rgba(196, 196, 196, 0.1);
     backdrop-filter: blur(50px);
     border-radius: 6px;
+    @media (max-width: $md) {
+      min-width: 191px;
+    }
     .wrapper--img {
       display: flex;
       justify-content: flex-end;
