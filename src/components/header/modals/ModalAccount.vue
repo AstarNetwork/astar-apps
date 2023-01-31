@@ -57,7 +57,7 @@
                     <div class="address">{{ getShortenAddress(account.address) }}</div>
                     <div class="icons">
                       <button class="box--share btn--primary" @click="copyAddress(account.address)">
-                        <div class="icon--primary" @click="copyAddress">
+                        <div class="icon--primary">
                           <astar-icon-copy />
                         </div>
                         <q-tooltip>
@@ -246,7 +246,7 @@ export default defineComponent({
       copy(address);
       store.dispatch('general/showAlertMsg', {
         msg: t('toast.copyAddressSuccessfully'),
-        alertType: 'success',
+        alertType: 'copied',
       });
     };
 

@@ -45,6 +45,7 @@ export function useUnbonding() {
               store.dispatch('general/showAlertMsg', {
                 msg: t('dappStaking.toast.successfullyWithdrew'),
                 alertType: 'success',
+                txHash: result.txHash,
               });
             }
             store.commit('general/setLoading', false);

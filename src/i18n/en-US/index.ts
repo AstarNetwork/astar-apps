@@ -57,9 +57,15 @@ export default {
     transactionFailed: 'Transaction failed with error: {message}',
     completedHash: 'Completed at block hash #{hash}',
     completedTxHash: 'Completed at transaction hash #{hash}',
+    completedMessage: 'You have sent {transferAmt} {symbol} to {toAddress}',
     unableCalculateMsgPayload: 'Unable to calculate the message payload',
     amountMustNotBeZero: 'The amount of token to be transmitted must not be zero',
     copyAddressSuccessfully: 'Copy address success!',
+    checkYourTransactions: 'Check your transactions',
+    success: 'Success',
+    note: 'Note',
+    error: 'Error',
+    copied: 'Copied',
   },
   common: {
     updateMetadata: 'Update Metadata',
@@ -109,6 +115,8 @@ export default {
   drawer: {
     endpoint: 'Endpoint',
     viaEndpoint: 'via {value}',
+    lightClientWarning: 'Connecting via Light client is in beta. Use at your own risk.',
+    shibuyaTakes20mins: 'It might take more than 20 mins to connect to Shibuya via Light client',
   },
   wallet: {
     connectWallet: 'Connect Wallet',

@@ -1,8 +1,7 @@
-import { bool } from '@polkadot/types';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { BN } from '@polkadot/util';
 import { $api } from 'boot/api';
-import { useCurrentEra, useCustomSignature, useGasPrice } from 'src/hooks';
+import { useCurrentEra, useCustomSignature, useGasPrice, RewardDestination } from 'src/hooks';
 import { TxType } from 'src/hooks/custom-signature/message';
 import { ExtrinsicPayload } from 'src/hooks/helper';
 import { getIndividualClaimTxs, PayloadWithWeight } from 'src/hooks/helper/claim';
@@ -57,7 +56,6 @@ export function useClaimAll() {
               senderAddress: senderAddressRef,
               currentEra: era.value,
             });
-
             return transactions.length ? transactions : null;
           } else {
             return null;
@@ -95,27 +93,14 @@ export function useClaimAll() {
     let totalWeight: BN = new BN(0);
     for (let i = 0; i < batchTxsRef.length; i++) {
       const tx = batchTxsRef[i];
-      if (totalWeight.add(tx.weight).gt(MAX_BATCH_WEIGHT)) {
+      const weight = tx.isWeightV2 ? tx.asWeightV2().refTime.toBn() : tx.asWeightV1();
+      if (totalWeight.add(weight).gt(MAX_BATCH_WEIGHT)) {
         break;
       }
 
       txsToExecute.push(tx.payload as ExtrinsicPayload);
-      totalWeight = totalWeight.add(tx.weight);
+      totalWeight = totalWeight.add(weight);
     }
-
-    // The fix causes problems and confusion for stakers because rewards are not restaked,
-    // second thing is that developers are unable to stake.
-    // Need to change approach
-    // Temporary disable restaking reward to avoid possible claim errors.
-    // const dappStakingRepository = container.get<IDappStakingRepository>(
-    //   Symbols.DappStakingRepository
-    // );
-    // const ledger = await dappStakingRepository.getLedger(senderAddress.value);
-
-    // if (ledger.rewardDestination === RewardDestination.StakeBalance) {
-    //   txsToExecute.unshift(api.tx.dappsStaking.setRewardDestination(RewardDestination.FreeBalance));
-    //   txsToExecute.push(api.tx.dappsStaking.setRewardDestination(RewardDestination.StakeBalance));
-    // }
 
     console.info(
       `Batch weight: ${totalWeight.toString()}, transactions no. ${txsToExecute.length}`

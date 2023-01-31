@@ -41,6 +41,7 @@ export function useCustomSignature({ fn, txType }: { fn?: () => void; txType?: T
             store.dispatch('general/showAlertMsg', {
               msg,
               alertType: 'success',
+              txHash: hash,
             });
             showLoading(store.dispatch, false);
 

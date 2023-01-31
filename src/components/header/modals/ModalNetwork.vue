@@ -52,6 +52,7 @@
                           :key="i"
                         >
                           <div
+                            v-if="checkIsDisplayEndpoint(provider, endpointObj.endpoint)"
                             class="column--network-option"
                             @click="setSelEndpoint({ endpointObj, networkIdx: index })"
                           >
@@ -79,11 +80,44 @@
           </ul>
         </fieldset>
       </div>
+      <div v-if="isSelectLightClient" class="box--light-client-warning">
+        <span class="text--accent">
+          {{ $t('drawer.lightClientWarning') }}
+        </span>
+        <ul v-if="isLightClientExtension" class="ul--warnings">
+          <li>
+            <span>It might take a longer time to load data from chains</span>
+          </li>
+          <li>
+            <span>It might take a longer time or fail in sending transactions</span>
+          </li>
+          <li v-if="selNetwork === endpointKey.SHIBUYA">
+            <span>
+              {{ $t('drawer.shibuyaTakes20mins') }}
+            </span>
+          </li>
+        </ul>
+        <div v-else>
+          <ul class="ul--warnings">
+            <li>
+              <span> {{ $t('installWallet.installWallet', { value: 'Substrate_connect' }) }}</span>
+              <a
+                class="text--download"
+                href="https://substrate.io/developers/substrate-connect/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                {{ $t('installWallet.installExtension') }}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
       <div class="wrapper__row--button">
         <astar-button
           class="btn--connect"
           :disabled="isDisabled"
-          @click="selectNetwork(selNetwork, newEndpoint)"
+          @click="selectNetwork(selNetwork)"
         >
           {{ $t('connect') }}
         </astar-button>
@@ -93,9 +127,14 @@
 </template>
 <script lang="ts">
 import { $endpoint } from 'src/boot/api';
-import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
+import {
+  checkIsLightClient,
+  checkIsSubstrateConnectInstalled,
+} from 'src/config/api/polkadot/connectApi';
+import { ChainProvider, endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { getRandomFromArray, wait } from 'src/hooks/helper/common';
+import { stagingMainBranch } from 'src/links';
 import { buildNetworkUrl } from 'src/router/utils';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, onUnmounted } from 'vue';
@@ -119,6 +158,7 @@ export default defineComponent({
     const store = useStore();
     const newEndpoint = ref('');
     const customEndpoint = computed(() => store.getters['general/customEndpoint']);
+    const isLightClientExtension = computed<boolean>(() => checkIsSubstrateConnectInstalled());
     newEndpoint.value = customEndpoint.value;
 
     const isClosing = ref<boolean>(false);
@@ -177,11 +217,27 @@ export default defineComponent({
     const selEndpointShiden = ref<string>('');
     const selEndpointShibuya = ref<string>('');
 
-    const isDisabled = computed(() => {
-      return selNetwork.value === endpointKey.CUSTOM && !newEndpoint.value;
+    const isDisabled = computed<boolean>(() => {
+      if (isSelectLightClient.value) {
+        return !isLightClientExtension.value;
+      } else {
+        return selNetwork.value === endpointKey.CUSTOM && !newEndpoint.value;
+      }
     });
 
-    const isCustomNetwork = computed(() => selNetwork.value === endpointKey.CUSTOM);
+    const isCustomNetwork = computed<boolean>(() => selNetwork.value === endpointKey.CUSTOM);
+    const isSelectLightClient = computed<boolean>(() => {
+      switch (selNetwork.value) {
+        case endpointKey.ASTAR:
+          return checkIsLightClient(selEndpointAstar.value);
+        case endpointKey.SHIDEN:
+          return checkIsLightClient(selEndpointShiden.value);
+        case endpointKey.SHIBUYA:
+          return checkIsLightClient(selEndpointShibuya.value);
+        default:
+          return false;
+      }
+    });
 
     const checkIsCheckedEndpoint = ({
       index,
@@ -255,6 +311,24 @@ export default defineComponent({
       }
     };
 
+    // Memo: Displays Light client option if:
+    // A: the portal is opened on 'localhost' or 'staging URL'
+    // B: Shibuya
+    const checkIsDisplayEndpoint = (chain: ChainProvider, endpoint: string): boolean => {
+      // As asked by @gluneau Light client is enabled for all networks.
+      return true;
+      // const origin = window.location.origin;
+      // const stagingDomain = '.web.app';
+      // const devPaths = [stagingDomain, stagingMainBranch, 'localhost:'];
+      // const isForDeveloper = devPaths.some((it) => origin.includes(it));
+      // // Memo: enables selecting light client endpoint for Shibuya on the production page
+      // if (isForDeveloper || chain.key === endpointKey.SHIBUYA) {
+      //   return true;
+      // } else {
+      //   return !checkIsLightClient(endpoint);
+      // }
+    };
+
     watch(
       [$endpoint, selNetwork],
       () => {
@@ -276,9 +350,7 @@ export default defineComponent({
     });
 
     return {
-      closeModal,
       newEndpoint,
-      selectNetwork,
       selNetwork,
       classRadioOn,
       classRadioOff,
@@ -290,9 +362,14 @@ export default defineComponent({
       selEndpointAstar,
       selEndpointShiden,
       selEndpointShibuya,
+      windowHeight,
+      isSelectLightClient,
+      isLightClientExtension,
+      closeModal,
       setSelEndpoint,
       checkIsCheckedEndpoint,
-      windowHeight,
+      selectNetwork,
+      checkIsDisplayEndpoint,
     };
   },
 });
