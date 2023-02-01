@@ -24,7 +24,6 @@
 </template>
 <script lang="ts">
 import { defineComponent, computed, ref, watchEffect } from 'vue';
-import { useBreakpoints } from 'src/hooks';
 import { useStore } from 'src/store';
 import { paginate } from 'src/hooks/helper/common';
 
@@ -39,7 +38,6 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const dapps = computed(() => store.getters['dapps/getAllDapps']);
-    const { screenSize, width } = useBreakpoints();
     const page = ref<number>(1);
     const pageTtl = ref<number>(0);
     const dataArray = ref<Data[]>([]);
@@ -172,8 +170,8 @@ export default defineComponent({
     display: flex;
     font-weight: 600;
     font-size: 14px;
-    margin-top: 12px;
-    margin-top: 12px;
+    margin-top: 15px;
+    margin-bottom: 15px;
     .txt--tag {
       background: linear-gradient(
         100.62deg,
@@ -201,7 +199,7 @@ export default defineComponent({
 .row--page {
   display: flex;
   position: relative;
-  bottom: 10px;
+  bottom: 30px;
   float: right;
   color: #fff;
 }
