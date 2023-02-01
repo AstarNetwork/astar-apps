@@ -7,6 +7,8 @@ export {
   getClaimedAmount,
   fetchTransferDetails,
   fetchDappsStats,
+  fetchDappTransactions,
+  fetchDappUAW,
   castDurationToDaysNumber,
   filterStatsData,
 } from 'src/modules/token-api/utils';
@@ -31,11 +33,18 @@ export interface TransferDetail {
   timestamp: number;
 }
 
+export interface XvmAssetsTransferHistory {
+  timestamp: number;
+  extrinsicHash: string;
+  destination: string;
+  amount: string;
+  erc20Address: string;
+}
+
 export interface StatsDetail {
-  era: string;
-  timestamp: string;
-  numberOfCalls: string;
-  uniqueActiveUsers: string;
+  timestamp: number;
+  date: string;
+  value: number;
 }
 
 export type StatsType = 'uniqueActiveUsers' | 'numberOfCalls';

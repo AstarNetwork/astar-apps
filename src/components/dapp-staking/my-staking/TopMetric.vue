@@ -62,10 +62,10 @@
           <div v-else class="value">
             <div class="row--era-info">
               <div class="column--era-info">
-                <span>{{ currentEra.toString() }}</span>
-                <span v-if="etaNextEra" class="text--eta-next-era">
+                <div>{{ currentEra.toString() }}</div>
+                <div v-if="etaNextEra" class="text--eta-next-era">
                   {{ $t('topMetric.eraInfo', { eta: etaNextEra }) }}
-                </span>
+                </div>
               </div>
               <div v-if="etaNextEra && !isLoading" class="box-pie-chart">
                 <pie-chart
@@ -102,7 +102,7 @@ import {
   AccountLedger,
   RewardDestination,
   useAccount,
-  useApr,
+  useAprFromApi,
   useAvgBlockTime,
   useNetworkInfo,
 } from 'src/hooks';
@@ -117,7 +117,7 @@ export default defineComponent({
   components: { PieChart },
   setup() {
     const store = useStore();
-    const { stakerApr, stakerApy } = useApr();
+    const { stakerApr, stakerApy } = useAprFromApi();
     const { currentAccount } = useAccount();
     const dappsCount = computed<DappCombinedInfo[]>(
       () => store.getters['dapps/getRegisteredDapps']().length

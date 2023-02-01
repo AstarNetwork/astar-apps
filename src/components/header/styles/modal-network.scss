@@ -6,7 +6,7 @@
   flex-direction: column;
   justify-content: center;
   padding-top: 24px;
-  padding-bottom: 20px;
+  padding-bottom: 100px;
 }
 
 .list--network {
@@ -107,6 +107,7 @@
 .wrapper__row--button {
   display: flex;
   justify-content: center;
+  margin-bottom: 16px;
 }
 
 .btn--connect {
@@ -169,6 +170,28 @@
 
   .box-input--endpoint {
     border: 0px solid transparent;
+  }
+
+  .box--light-client-warning {
+    display: none;
+    @media (min-width: $sm) {
+      display: flex;
+      flex-direction: column;
+      row-gap: 8px;
+      margin-top: 24px;
+    }
+  }
+
+  .ul--warnings {
+    list-style: disc;
+    text-align: left;
+    padding-left: 24px;
+  }
+
+  .text--download {
+    display: block;
+    text-decoration: underline;
+    color: $astar-blue-dark;
   }
 
   .input--endpoint[type='radio'] {

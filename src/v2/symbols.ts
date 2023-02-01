@@ -11,7 +11,9 @@ export const Symbols = {
   SystemRepository: Symbol.for('SystemRepository'),
   EthCallRepository: Symbol.for('EthCallRepository'),
   XcmRepository: Symbol.for('XcmRepository'),
+  XvmRepository: Symbol.for('XvmRepository'),
   XcmService: Symbol.for('XcmService'),
+  XvmService: Symbol.for('XvmService'),
   XcmEvmService: Symbol.for('XcmEvmService'),
   BalanceFormatterService: Symbol.for('BalanceFormatterService'),
   TypeFactory: Symbol.for('TypeFactory'),
@@ -20,4 +22,7 @@ export const Symbols = {
   CurrentWallet: Symbol.for('CurrentWallet'),
   EvmAssetsRepository: Symbol.for('EvmAssetsRepository'),
   EvmAssetsService: Symbol.for('EvmAssetsService'),
+  PolkadotWalletService: Symbol.for('PolkadotWalletService'),
+  TokenTransferRepository: Symbol.for('TokenTransferRepository'),
+  TokenTransferService: Symbol.for('TokenTransferService'),
 };

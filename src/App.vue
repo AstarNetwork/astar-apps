@@ -26,6 +26,7 @@
         :alert-type="showAlert.alertType"
       />
     </transition>
+    <notification-stack />
 
     <cookie-policy />
   </div>
@@ -41,6 +42,7 @@ import { useStore } from 'src/store';
 import ModalLoading from 'components/common/ModalLoading.vue';
 import AlertBox from 'components/common/AlertBox.vue';
 import CookiePolicy from 'components/common/CookiePolicy.vue';
+import NotificationStack from './components/common/Notification/NotificationStack.vue';
 import 'animate.css';
 import {
   BusyMessage,
@@ -61,6 +63,7 @@ export default defineComponent({
     ModalLoading,
     AlertBox,
     CookiePolicy,
+    NotificationStack,
   },
   setup() {
     useAppRouter();
@@ -103,6 +106,13 @@ export default defineComponent({
     watch([isEthWallet, currentWallet], () => {
       setCurrentWallet(isEthWallet.value, currentWallet.value);
     });
+
+    const removeSplashScreen = () => {
+      var elem = document.getElementById('splash');
+      elem?.remove();
+    };
+
+    removeSplashScreen();
 
     return {
       isLoading,

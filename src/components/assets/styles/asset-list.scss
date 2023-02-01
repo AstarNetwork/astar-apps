@@ -242,6 +242,27 @@
   padding-bottom: 3px;
 }
 
+.button--import-token {
+  margin-bottom: 12px;
+  display: flex;
+  column-gap: 8px;
+  align-items: center;
+  padding: 0px 12px;
+  padding-bottom: 2px;
+  cursor: pointer;
+  border-radius: 6px;
+  &:hover {
+    transition: all 0.3s ease 0s;
+    background-color: white;
+  }
+}
+
+.icon--add {
+  color: $astar-blue-dark;
+  font-size: 24px;
+  font-weight: bold;
+}
+
 .text--value {
   font-weight: 400;
   font-size: 14px;
@@ -266,70 +287,6 @@
   height: 24px;
   img {
     border-radius: 50%;
-  }
-}
-
-.row--search-option {
-  display: flex;
-  column-gap: 4px;
-  align-items: center;
-  @media (min-width: $xl) {
-    margin-right: 32px;
-    column-gap: 12px;
-  }
-}
-
-.box--search {
-  position: relative;
-  border-radius: 6px;
-  background-color: $gray-1;
-  width: 150px;
-  height: 26px;
-  border: 1px solid transparent;
-  padding: 0 6px;
-  border-radius: 6px;
-}
-
-.table--search {
-  width: 100%;
-  height: 100%;
-  vertical-align: middle;
-}
-
-.tr--search {
-  display: flex;
-  align-items: center;
-}
-
-.input--search {
-  border: none;
-  height: 100%;
-  width: 100%;
-  padding: 0 4px;
-  font-weight: 500;
-  font-size: 14px;
-  background-color: $gray-1;
-  transition: all 0.5s ease 0s;
-  &:focus {
-    transition: all 0.5s ease 0s;
-    outline: none;
-  }
-}
-
-.icon--search {
-  stroke: $gray-3;
-  font-size: 20px;
-  transition: all 0.4s ease 0s;
-}
-
-.search--active {
-  .box--search {
-    transition: all 0.5s ease 0s;
-    border: 1px solid $astar-blue;
-  }
-  .icon--search {
-    transition: all 0.4s ease 0s;
-    stroke: $astar-blue;
   }
 }
 
@@ -358,19 +315,23 @@
   }
 }
 
+.btn--delete {
+  margin-top: 4px;
+}
+
+.icon--delete {
+  margin-top: 1px;
+}
+
+.row--menu {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .body--dark {
   .text--value {
     color: $gray-1;
-  }
-  .box--search {
-    background-color: $gray-5-selected;
-  }
-  .input--search {
-    background-color: $gray-5-selected;
-  }
-  .icon--search {
-    stroke: $gray-5;
-    color: transparent;
   }
   .container--explorer-icon {
     stroke: $astar-blue-dark;
@@ -378,12 +339,7 @@
       stroke: white;
     }
   }
-  .search--active {
-    .box--search {
-      border: 1px solid $astar-blue-dark;
-    }
-    .icon--search {
-      stroke: $astar-blue-dark;
-    }
+  .button--import-token:hover {
+    background-color: $gray-5;
   }
 }

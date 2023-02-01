@@ -21,3 +21,5 @@ export const deepLinkPath = {
 export const deepLink = {
   metamask: `https://metamask.app.link/dapp/${window.location.host}/${deepLinkPath.metamask}`,
 };
+
+export const stagingMainBranch = 'https://staging.portal.astar.network';

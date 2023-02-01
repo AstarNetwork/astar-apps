@@ -15,7 +15,7 @@
           <span class="text--item-name">{{ list.name }}</span>
           <div class="column--amount">
             <span>
-              <TokenBalance
+              <token-balance
                 :balance="ethers.utils.formatEther(list.balance)"
                 :symbol="nativeTokenSymbol"
               />

@@ -1,69 +1,91 @@
 <template>
-  <div class="wrapper--cards">
-    <div class="card">
-      <div class="row--title">
-        {{ $t('myReward.totalStaked') }}
-      </div>
-      <div class="row--data">
-        <div class="value">
-          <q-skeleton v-if="isLoadingTotalStaked" animation="fade" class="skeleton--md" />
-          <token-balance v-else :balance="totalStaked" :symbol="nativeTokenSymbol" :decimals="0" />
+  <div>
+    <div class="wrapper--cards">
+      <div class="card">
+        <div class="row--title">
+          {{ $t('myReward.totalStaked') }}
         </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="row--title">
-        {{ $t('myReward.availableToClaim') }}
-        <span class="wrapper--icon-help">
-          <astar-icon-help size="16" />
-          <q-tooltip max-width="200px" class="box--tooltip">
-            <span class="text--tooltip">{{ $t('myReward.availableToClaimTip') }}</span>
-          </q-tooltip>
-        </span>
-      </div>
-      <div class="row--data">
-        <div v-if="isLoading" class="loading">
-          <q-skeleton type="rect" animation="fade" />
-        </div>
-        <div v-else class="value">
-          {{ amountOfEras }} {{ $t('myReward.era') }}{{ amountOfEras > 1 ? 's' : '' }}
-        </div>
-        <astar-button :width="80" :height="24" :disabled="!canClaim" @click="claimAll">{{
-          $t('myReward.claim')
-        }}</astar-button>
-      </div>
-    </div>
-    <div class="card">
-      <div class="row--title">
-        {{ $t('myReward.restake') }}
-        <span class="wrapper--icon-help">
-          <astar-icon-help size="16" />
-          <q-tooltip max-width="200px" class="box--tooltip">
-            <span class="text--tooltip">{{ $t('myReward.restakeTip') }}</span>
-          </q-tooltip>
-        </span>
-      </div>
-      <div class="row--data">
-        <div class="value">{{ isCompounding ? $t('dappStaking.on') : $t('dappStaking.off') }}</div>
-        <astar-button :width="80" :height="24" @click="changeDestinationForRestaking">
-          {{ isCompounding ? $t('dappStaking.turnOff') : $t('dappStaking.turnOn') }}
-        </astar-button>
-      </div>
-    </div>
-    <div class="card">
-      <div class="row--title">
-        {{ $t('myReward.totalEarned') }}
-      </div>
-      <div class="row--data">
-        <div class="value">
-          <token-balance :balance="claimed.toString()" :symbol="nativeTokenSymbol" />
-        </div>
-        <astar-irregular-button @click="goToSubscan">
-          <div class="explorer-icon">
-            <astar-icon-external-link />
+        <div class="row--data">
+          <div class="value">
+            <q-skeleton v-if="isLoadingTotalStaked" animation="fade" class="skeleton--md" />
+            <token-balance
+              v-else
+              :balance="totalStaked"
+              :symbol="nativeTokenSymbol"
+              :decimals="0"
+            />
           </div>
-        </astar-irregular-button>
+        </div>
       </div>
+      <div class="card">
+        <div class="row--title">
+          {{ $t('myReward.availableToClaim') }}
+          <span class="wrapper--icon-help">
+            <astar-icon-help size="16" />
+            <q-tooltip max-width="200px" class="box--tooltip">
+              <span class="text--tooltip">{{ $t('myReward.availableToClaimTip') }}</span>
+            </q-tooltip>
+          </span>
+        </div>
+        <div class="row--data">
+          <div v-if="isLoading" class="loading">
+            <q-skeleton type="rect" animation="fade" />
+          </div>
+          <div v-else class="value">
+            {{ amountOfEras }} {{ $t('myReward.era') }}{{ amountOfEras > 1 ? 's' : '' }}
+          </div>
+          <astar-button
+            :width="80"
+            :height="24"
+            :disabled="!canClaim || !canClaimWithoutError"
+            @click="claimAll"
+            >{{ $t('myReward.claim') }}</astar-button
+          >
+        </div>
+      </div>
+      <div class="card">
+        <div class="row--title">
+          {{ $t('myReward.restake') }}
+          <span class="wrapper--icon-help">
+            <astar-icon-help size="16" />
+            <q-tooltip max-width="200px" class="box--tooltip">
+              <span class="text--tooltip">{{ $t('myReward.restakeTip') }}</span>
+            </q-tooltip>
+          </span>
+        </div>
+        <div class="row--data">
+          <div class="value">
+            {{ isCompounding ? $t('dappStaking.on') : $t('dappStaking.off') }}
+          </div>
+          <astar-button
+            :disabled="isH160"
+            :width="80"
+            :height="24"
+            @click="changeDestinationForRestaking"
+          >
+            {{ isCompounding ? $t('dappStaking.turnOff') : $t('dappStaking.turnOn') }}
+          </astar-button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="row--title">
+          {{ $t('myReward.totalEarned') }}
+        </div>
+        <div class="row--data">
+          <div class="value">
+            <token-balance :balance="claimed.toString()" :symbol="nativeTokenSymbol" />
+          </div>
+          <astar-irregular-button @click="goToSubscan">
+            <div class="explorer-icon">
+              <astar-icon-external-link />
+            </div>
+          </astar-irregular-button>
+        </div>
+      </div>
+    </div>
+    <div v-if="!canClaimWithoutError" class="claim-warning">
+      <q-icon name="warning" size="20px" class="q-mr-sm" />
+      <div>{{ $t('dappStaking.cantClaimWihtoutError') }}</div>
     </div>
   </div>
 </template>
@@ -74,6 +96,7 @@ import { useClaimedReward } from 'src/hooks/dapps-staking/useClaimedReward';
 import { RewardDestination } from 'src/hooks/dapps-staking/useCompoundRewards';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { defineComponent, computed } from 'vue';
+import { useStore } from 'src/store';
 
 export default defineComponent({
   components: {
@@ -81,7 +104,7 @@ export default defineComponent({
   },
   setup() {
     const { nativeTokenSymbol } = useNetworkInfo();
-    const { claimAll, canClaim, amountOfEras, isLoading } = useClaimAll();
+    const { claimAll, canClaim, amountOfEras, isLoading, canClaimWithoutError } = useClaimAll();
     const { totalStaked, isLoadingTotalStaked } = useStakerInfo();
 
     const changeDestinationForRestaking = async () => {
@@ -95,6 +118,8 @@ export default defineComponent({
     const { currentAccount } = useAccount();
     const { currentNetworkIdx } = useNetworkInfo();
     const isShiden = computed(() => currentNetworkIdx.value === endpointKey.SHIDEN);
+    const store = useStore();
+    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const goToSubscan = () => {
       let rootName = 'astar';
       if (isShiden.value) {
@@ -108,6 +133,7 @@ export default defineComponent({
       isLoading,
       amountOfEras,
       canClaim,
+      canClaimWithoutError,
       claimAll,
       isCompounding,
       changeDestinationForRestaking,
@@ -117,6 +143,7 @@ export default defineComponent({
       nativeTokenSymbol,
       isLoadingTotalStaked,
       goToSubscan,
+      isH160,
     };
   },
 });

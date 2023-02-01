@@ -4,9 +4,16 @@
       <span>{{ $t('assets.transferPage.selectToken') }}</span>
     </div>
     <div class="container--items">
-      <div v-for="token in tokens" :key="token.assetId" class="row--item" @click="setToken(token)">
+      <div v-for="token in tokens" :key="token.id" class="row--item" @click="setToken(token)">
         <div class="column--item-name">
+          <jazzicon
+            v-if="token.tokenImage === 'custom-token'"
+            :address="token.mappedERC20Addr"
+            :diameter="24"
+            class="item-logo"
+          />
           <img
+            v-else
             :src="token.tokenImage"
             :alt="token.metadata.symbol"
             :class="[
@@ -19,7 +26,7 @@
           <span class="text--token-amount">
             {{
               $t('amountToken', {
-                amount: truncate(token.userBalance),
+                amount: $n(truncate(token.userBalance)),
                 token: token.metadata.symbol,
               })
             }}
@@ -31,10 +38,14 @@
 </template>
 <script lang="ts">
 import { useNetworkInfo } from 'src/hooks';
+import { truncate } from 'src/hooks/helper/common';
 import { Asset } from 'src/v2/models';
 import { defineComponent, PropType } from 'vue';
-import { truncate } from 'src/hooks/helper/common';
+import Jazzicon from 'vue3-jazzicon/src/components';
 export default defineComponent({
+  components: {
+    [Jazzicon.name]: Jazzicon,
+  },
   props: {
     setToken: {
       type: Function,

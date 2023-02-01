@@ -4,6 +4,7 @@ export {
   faqH160XcmBridge,
   faqSs58Transfer,
   faqSs58XcmBridge,
+  faqSs58XvmTransfer,
 } from 'src/modules/information/faq';
 
 export { hotTopics } from 'src/modules/information/hot-topics';
@@ -21,6 +22,7 @@ export interface Faq {
 
 export type RecentHistoryTxType =
   | 'XCM'
+  | 'XVM Transfer'
   | 'Transfer'
   | 'BondAndStake'
   | 'NominationTransfer'
