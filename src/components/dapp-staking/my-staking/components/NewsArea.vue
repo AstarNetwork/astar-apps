@@ -1,9 +1,15 @@
 <template>
-  <div class="wrapper--news">
+  <div
+    class="wrapper--news"
+    :style="`background-image: url('${isDarkTheme ? bg_img.bg_news_dark : bg_img.bg_news_light}')`"
+  >
     <div class="title--news">News</div>
     <div class="list--news">
       <div v-for="(t, index) in dataArray" :key="index" class="row--news">
-        <div class="txt--tag">●{{ t.tag }}●</div>
+        <div v-if="t.tag === 'Notice'" class="box--notice">{{ t.tag }}</div>
+        <div v-else class="box--tag">
+          <div class="txt--tag">{{ t.tag }}</div>
+        </div>
         <div class="txt--title" :class="t.link ? 'txt--underline' : ''" @click="goToLink(t.link)">
           {{ t.title }}
         </div>
@@ -38,6 +44,8 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const dapps = computed(() => store.getters['dapps/getAllDapps']);
+    const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
+
     const page = ref<number>(1);
     const pageTtl = ref<number>(0);
     const dataArray = ref<Data[]>([]);
@@ -46,26 +54,26 @@ export default defineComponent({
     const NUM_ITEMS = 3;
 
     const bg_img = {
-      astar_hero: require('/src/assets/img/banner/banner-02-astar.png'),
-      shiden_hero: require('/src/assets/img/banner/banner-02-shiden.png'),
+      bg_news_light: require('src/assets/img/bg_dapp_news_light.jpg'),
+      bg_news_dark: require('/src/assets/img/bg_dapp_news_dark.jpg'),
     };
 
     const items = [
       {
         img: 'https://firebasestorage.googleapis.com/v0/b/astarnetwork-a4924.appspot.com/o/astar-dapps%2F0x1de7c3A07918fb4BE9159703e73D6e0b0736CaBC_rIb1fUz3_400x400%20(1).jpeg?alt=media&token=3832d94b-81bd-4e12-9d8b-96d83896ed3a',
-        tag: 'Campaign',
+        tag: 'Notice',
         title: 'NFT drop from astar.network',
         link: '',
       },
       {
         img: 'https://firebasestorage.googleapis.com/v0/b/astarnetwork-a4924.appspot.com/o/astar-dapps%2F0x1de7c3A07918fb4BE9159703e73D6e0b0736CaBC_rIb1fUz3_400x400%20(1).jpeg?alt=media&token=3832d94b-81bd-4e12-9d8b-96d83896ed3a',
-        tag: 'New release',
+        tag: 'Campaign',
         title: 'NFT drop from astar.network',
         link: 'https://www.youtube.com/watch?v=8KrUhu2rweA',
       },
       {
         img: 'https://firebasestorage.googleapis.com/v0/b/astarnetwork-a4924.appspot.com/o/astar-dapps%2F0x1de7c3A07918fb4BE9159703e73D6e0b0736CaBC_rIb1fUz3_400x400%20(1).jpeg?alt=media&token=3832d94b-81bd-4e12-9d8b-96d83896ed3a',
-        tag: 'Latest News',
+        tag: 'Application',
         title: 'NFT drop from astar.network',
         link: 'https://www.youtube.com/watch?v=9jkM_uYrqUw',
       },
@@ -77,13 +85,13 @@ export default defineComponent({
       },
       {
         img: 'https://firebasestorage.googleapis.com/v0/b/astarnetwork-a4924.appspot.com/o/astar-dapps%2F0x1de7c3A07918fb4BE9159703e73D6e0b0736CaBC_rIb1fUz3_400x400%20(1).jpeg?alt=media&token=3832d94b-81bd-4e12-9d8b-96d83896ed3a',
-        tag: 'New release',
+        tag: 'Application',
         title: 'NFT drop from astar.network 2',
         link: 'https://www.youtube.com/watch?v=8KrUhu2rweA',
       },
       {
         img: 'https://firebasestorage.googleapis.com/v0/b/astarnetwork-a4924.appspot.com/o/astar-dapps%2F0x1de7c3A07918fb4BE9159703e73D6e0b0736CaBC_rIb1fUz3_400x400%20(1).jpeg?alt=media&token=3832d94b-81bd-4e12-9d8b-96d83896ed3a',
-        tag: 'Latest News',
+        tag: 'Campaign',
         title: 'NFT drop from astar.network 2',
         link: 'https://www.youtube.com/watch?v=9jkM_uYrqUw',
       },
@@ -127,6 +135,7 @@ export default defineComponent({
 
     return {
       dataArray,
+      isDarkTheme,
       bg_img,
       goToLink,
       page,
@@ -172,7 +181,32 @@ export default defineComponent({
     font-size: 14px;
     margin-top: 15px;
     margin-bottom: 15px;
+    .box--tag {
+      position: relative;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      padding: 1px;
+      width: 84px;
+      height: 26px;
+      border-radius: 6px;
+      background-image: linear-gradient(#d9d9d9, #d9d9d9),
+        linear-gradient(
+          100.62deg,
+          #e6007a -13.87%,
+          #703ac2 10.44%,
+          #0070eb 47.07%,
+          #0297fb 89.31%,
+          #0ae2ff 151.16%
+        );
+      background-origin: border-box;
+      background-clip: content-box, border-box;
+    }
     .txt--tag {
+      width: 100%;
+      white-space: nowrap;
+      text-align: center;
       background: linear-gradient(
         100.62deg,
         #e6007a -13.87%,
@@ -185,6 +219,18 @@ export default defineComponent({
       -webkit-text-fill-color: transparent;
       background-clip: text;
       text-fill-color: transparent;
+    }
+    .box--notice {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      padding: 4px 8px;
+      width: 84px;
+      height: 26px;
+      border-radius: 6px;
+      background: $border-yellow;
+      color: #fff;
     }
     .txt--title {
       margin-left: 5px;
@@ -199,9 +245,9 @@ export default defineComponent({
 .row--page {
   display: flex;
   position: relative;
-  bottom: 30px;
+  bottom: 40px;
   float: right;
-  color: #fff;
+  color: $gray-5-selected;
 }
 .colum--current-page {
   width: 34px;
@@ -218,7 +264,7 @@ export default defineComponent({
   cursor: pointer;
   transition: all 0.2s ease-in;
   border-radius: 50%;
-  color: #fff;
+  color: $gray-5-selected;
   &:hover {
     transition: all 0.2s ease-in;
     background: rgba(255, 255, 255, 0.2);
@@ -227,5 +273,29 @@ export default defineComponent({
 
 .icon--expand {
   margin-top: 6px;
+}
+
+.body--dark {
+  .list--news {
+    .row--news {
+      .box--tag {
+        background-image: linear-gradient($gray-6, $gray-6),
+          linear-gradient(
+            100.62deg,
+            #e6007a -13.87%,
+            #703ac2 10.44%,
+            #0070eb 47.07%,
+            #0297fb 89.31%,
+            #0ae2ff 151.16%
+          );
+      }
+    }
+  }
+  .row--page {
+    color: #fff;
+  }
+  .icon--arrow {
+    color: #fff;
+  }
 }
 </style>
