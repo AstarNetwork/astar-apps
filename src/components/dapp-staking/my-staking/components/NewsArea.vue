@@ -5,13 +5,15 @@
   >
     <div class="title--news">News</div>
     <div class="list--news">
-      <div v-for="(t, index) in dataArray" :key="index" class="row--news">
-        <div v-if="t.tag === 'Notice'" class="box--notice">{{ t.tag }}</div>
-        <div v-else class="box--tag">
-          <div class="txt--tag">{{ t.tag }}</div>
-        </div>
-        <div class="txt--title" :class="t.link ? 'txt--underline' : ''" @click="goToLink(t.link)">
-          {{ t.title }}
+      <div class="animate__animated" :class="isDisplay ? inAnimation : outAnimation">
+        <div v-for="(t, index) in dataArray" :key="index" class="row--news">
+          <div v-if="t.tag === 'Notice'" class="box--notice">{{ t.tag }}</div>
+          <div v-else class="box--tag">
+            <div class="txt--tag">{{ t.tag }}</div>
+          </div>
+          <div class="txt--title" :class="t.link ? 'txt--underline' : ''" @click="goToLink(t.link)">
+            {{ t.title }}
+          </div>
         </div>
       </div>
     </div>
@@ -52,6 +54,13 @@ export default defineComponent({
     const isDisplay = ref<boolean>(true);
     const goToNext = ref<boolean>(true);
     const NUM_ITEMS = 3;
+
+    const inAnimation = computed<string>(() =>
+      goToNext.value ? 'animate__fadeInRight' : 'animate__fadeInLeft'
+    );
+    const outAnimation = computed<string>(() =>
+      goToNext.value ? 'animate__fadeOutLeft' : 'animate__fadeOutRight'
+    );
 
     const bg_img = {
       bg_news_light: require('src/assets/img/bg_dapp_news_light.jpg'),
@@ -137,7 +146,10 @@ export default defineComponent({
       dataArray,
       isDarkTheme,
       bg_img,
+      inAnimation,
+      outAnimation,
       goToLink,
+      isDisplay,
       page,
       pageTtl,
       changePage,
