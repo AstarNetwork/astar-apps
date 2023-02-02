@@ -6,13 +6,7 @@
     <div class="wrapper-item wrapper--banners">
       <div v-for="(t, index) in items" :key="index" class="card" @click="goToLink(t.link)">
         <div class="wrapper--img">
-          <q-img
-            :ref="`imageRef_${index}`"
-            :src="t.img"
-            class="img--dapp"
-            fit="contain"
-            no-spinner
-          />
+          <q-img :src="t.img" class="img--dapp" fit="contain" no-spinner />
         </div>
         <div class="card-info">
           <div class="txt--category">{{ t.category }}</div>
@@ -26,7 +20,6 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue';
 import NewsArea from './components/NewsArea.vue';
-// import { FastAverageColor } from 'fast-average-color';
 
 export default defineComponent({
   components: {
@@ -57,33 +50,12 @@ export default defineComponent({
       },
     ];
 
-    // const colorPicker = (dom: any) => {
-    //   console.log('dom', dom);
-    //   const fac = new FastAverageColor();
-    //   fac
-    //     .getColorAsync(dom)
-    //     .then((color) => {
-    //       // container.style.backgroundColor = color.rgba;
-    //       // container.style.color = color.isDark ? '#fff' : '#000';
-    //       console.log('cc', color);
-    //     })
-    //     .catch((e) => {
-    //       console.log(e);
-    //     });
-    // };
-
-    // const imageRef_0 = ref(null);
-    // onMounted(() => {
-    //   colorPicker(imageRef_0.value);
-    // });
-
     const goToLink = (link: string) => {
       window.open(link, '_blank');
     };
 
     return {
       items,
-      // imageRef_0,
       goToLink,
     };
   },

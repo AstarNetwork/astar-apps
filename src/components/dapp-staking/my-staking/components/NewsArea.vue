@@ -177,7 +177,9 @@ export default defineComponent({
   padding-top: 12px;
   .row--news {
     display: flex;
+    align-items: center;
     font-weight: 600;
+    gap: 10px;
     font-size: 14px;
     margin-top: 15px;
     margin-bottom: 15px;
