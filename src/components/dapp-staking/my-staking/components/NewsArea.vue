@@ -164,6 +164,7 @@ export default defineComponent({
   width: 100%;
   height: 100%;
   background: #d9d9d9;
+  background-repeat: no-repeat;
   border-radius: 6px;
   padding: 24px 32px;
 }
