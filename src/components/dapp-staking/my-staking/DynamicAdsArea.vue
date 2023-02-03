@@ -18,37 +18,16 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue';
+import { defineComponent } from 'vue';
 import NewsArea from './components/NewsArea.vue';
+import featuredData from 'src/data/featured_dapp.json';
 
 export default defineComponent({
   components: {
     NewsArea,
   },
   setup() {
-    const items = [
-      {
-        img: 'https://firebasestorage.googleapis.com/v0/b/astarnetwork-a4924.appspot.com/o/astar-dapps%2F0x1de7c3A07918fb4BE9159703e73D6e0b0736CaBC_rIb1fUz3_400x400%20(1).jpeg?alt=media&token=3832d94b-81bd-4e12-9d8b-96d83896ed3a',
-        category: 'Featured dApp',
-        title: 'Astar Farm',
-        subtitle: 'The multi-cahin lending platform',
-        link: 'https://docs.astar.network/docs/dapp-staking/',
-      },
-      {
-        img: 'https://firebasestorage.googleapis.com/v0/b/astarnetwork-a4924.appspot.com/o/astar-dapps%2F0x1de7c3A07918fb4BE9159703e73D6e0b0736CaBC_rIb1fUz3_400x400%20(1).jpeg?alt=media&token=3832d94b-81bd-4e12-9d8b-96d83896ed3a',
-        category: 'EVM Staking',
-        title: 'Algem',
-        subtitle: 'dApp Staking is available on EVM',
-        link: 'https://www.youtube.com/watch?v=8KrUhu2rweA',
-      },
-      {
-        img: 'https://firebasestorage.googleapis.com/v0/b/astarnetwork-a4924.appspot.com/o/astar-dapps%2F0x1de7c3A07918fb4BE9159703e73D6e0b0736CaBC_rIb1fUz3_400x400%20(1).jpeg?alt=media&token=3832d94b-81bd-4e12-9d8b-96d83896ed3a',
-        category: 'Featured dApp',
-        title: 'Astar Farm',
-        subtitle: 'The multi-cahin lending platform',
-        link: 'https://docs.astar.network/docs/dapp-staking/',
-      },
-    ];
+    const items = featuredData;
 
     const goToLink = (link: string) => {
       window.open(link, '_blank');
