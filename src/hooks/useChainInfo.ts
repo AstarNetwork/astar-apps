@@ -5,6 +5,7 @@ import { TypeRegistry } from '@polkadot/types/create';
 import { formatBalance, isNumber } from '@polkadot/util';
 import { defaults as addressDefaults } from '@polkadot/util-crypto/address/defaults';
 import { ASTAR_NATIVE_TOKEN } from 'src/config/chain';
+import { useChainMetadata } from 'src/hooks/useChainMetadata';
 import { ref } from 'vue';
 
 export interface ChainInfo extends MetadataDef {
@@ -45,6 +46,7 @@ function createInfo(
 }
 
 export function useChainInfo(api: ApiPromise) {
+  useChainMetadata();
   const chainInfo = ref<ChainInfo>();
   api.isReady.then(async () => {
     const specName: string = api.runtimeVersion.specName.toString();
