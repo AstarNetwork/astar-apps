@@ -100,4 +100,6 @@ export interface IDappStakingRepository {
     stakerAddress: string,
     contractAddress: string
   ): Promise<Map<string, GeneralStakerInfo>>;
+
+  getNextEraEta(network: string): Promise<number>;
 }

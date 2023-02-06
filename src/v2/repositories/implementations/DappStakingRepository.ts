@@ -80,6 +80,7 @@ interface ChunkInfo extends Codec {
 @injectable()
 export class DappStakingRepository implements IDappStakingRepository {
   private static isEraSubscribed = false;
+  private currentEra?: number;
 
   constructor(
     @inject(Symbols.DefaultApi) private api: IApi,
@@ -235,11 +236,17 @@ export class DappStakingRepository implements IDappStakingRepository {
   public async starEraSubscription(): Promise<void> {
     // Avoid multiple subscriptions.
     if (!DappStakingRepository.isEraSubscribed) {
+      DappStakingRepository.isEraSubscribed = true;
       const api = await this.api.getApi();
       await api.query.dappsStaking.currentEra((era: u32) => {
-        this.eventAggregator.publish(new NewEraMessage(era.toNumber()));
+        // For some reason subscription is triggered for every produced block,
+        // so that's why logic below.
+        const newEra = era.toNumber();
+        if (!this.currentEra || this.currentEra !== newEra) {
+          this.eventAggregator.publish(new NewEraMessage(era.toNumber()));
+          this.currentEra = newEra;
+        }
       });
-      DappStakingRepository.isEraSubscribed = true;
     }
   }
 
@@ -325,6 +332,15 @@ export class DappStakingRepository implements IDappStakingRepository {
     const api = await this.api.getApi();
 
     return await api.query.dappsStaking.currentEra<u32>();
+  }
+
+  public async getNextEraEta(network: string): Promise<number> {
+    Guard.ThrowIfUndefined('network', network);
+
+    const baseUrl = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/dapps-staking/stats/nexteraeta`;
+    const result = await axios.get<number>(baseUrl);
+
+    return result.data;
   }
 
   private getContractAddress(address: SmartContractAddress): string | undefined {
