@@ -103,7 +103,6 @@ import {
   RewardDestination,
   useAccount,
   useAprFromApi,
-  useAvgBlockTime,
   useAvgBlockTimeApi,
   useCurrentEra,
   useNetworkInfo,
@@ -131,8 +130,7 @@ export default defineComponent({
     const path = computed(() => router.currentRoute.value.path.split('/')[1]);
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
     const { progress } = useCurrentEra();
-    const { etaNextEra } = useAvgBlockTime(path.value);
-    // const { etaNextEra } = useAvgBlockTimeApi(path.value);
+    const { etaNextEra } = useAvgBlockTimeApi(path.value);
 
     const hero_img = {
       astar_hero: require('/src/assets/img/astar_hero.png'),
