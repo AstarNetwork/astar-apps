@@ -8,7 +8,7 @@
 }
 
 .row {
-  padding: 16px 8px;
+  padding: 16px 14px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -44,6 +44,17 @@
   }
 }
 
+.row--details-native {
+  display: flex;
+  justify-content: space-between;
+  @media (min-width: $md) {
+    align-items: center;
+  }
+  @media (min-width: $lg) {
+    padding-right: 32px;
+  }
+}
+
 .row__left--native {
   max-width: 140px;
 
@@ -60,16 +71,31 @@
   row-gap: 16px;
   @media (min-width: $md) {
     display: grid;
-    grid-template-columns: 290px 140px auto;
+    grid-template-columns: 290px 102px auto;
   }
   @media (min-width: $lg) {
-    grid-template-columns: 280px 150px auto;
+    grid-template-columns: 280px 112px auto;
   }
   @media (min-width: $xl) {
-    grid-template-columns: 300px 290px auto;
+    grid-template-columns: 300px 252px auto;
   }
   @media (min-width: $xxl) {
-    grid-template-columns: 400px 290px auto;
+    grid-template-columns: 400px 252px auto;
+  }
+}
+
+.row__right-collapse {
+  @media (min-width: $md) {
+    grid-template-columns: 290px 140px;
+  }
+  @media (min-width: $lg) {
+    grid-template-columns: 280px 150px;
+  }
+  @media (min-width: $xl) {
+    grid-template-columns: 300px 284px;
+  }
+  @media (min-width: $xxl) {
+    grid-template-columns: 400px 284px;
   }
 }
 
@@ -93,10 +119,18 @@
   display: flex;
   flex-direction: column;
   @media (min-width: $md) {
-    width: 150px;
+    min-width: 180px;
     white-space: nowrap;
+    text-align: right;
   }
-  @media (min-width: $xl) {
+}
+
+.column__box-native {
+  display: flex;
+  flex-direction: column;
+  @media (min-width: $md) {
+    min-width: 240px;
+    white-space: nowrap;
     text-align: right;
   }
 }
@@ -124,11 +158,12 @@
 
 .column--ticker {
   grid-template-columns: 54px auto;
-  column-gap: 12px;
+  column-gap: 4px;
   align-items: center;
   display: grid;
   width: 100px;
   @media (min-width: $sm) {
+    column-gap: 12px;
     width: auto;
     grid-template-columns: 60px auto;
   }
@@ -136,10 +171,11 @@
 
 .column--ticker--native {
   grid-template-columns: 54px auto;
-  column-gap: 12px;
+  column-gap: 4px;
   align-items: center;
   display: grid;
   @media (min-width: $sm) {
+    column-gap: 12px;
     grid-template-columns: 50px auto;
   }
   @media (min-width: $lg) {
@@ -167,7 +203,7 @@
   }
   @media (min-width: $xl) {
     justify-self: center;
-    padding-right: 12px;
+    // padding-right: 12px;
   }
 }
 
@@ -328,19 +364,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding-right: 12px;
 }
 
 .row--transferable {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  @media (min-width: $md) {
-    margin-right: -106px;
-  }
-  @media (min-width: $xl) {
-    margin: auto;
-    margin-right: -96px;
-  }
 }
 
 .row--icon--expand-phone {
@@ -385,6 +414,7 @@
 .column--transferable-bal {
   display: flex;
   column-gap: 4px;
+  justify-content: flex-end;
 }
 
 .expand-container {

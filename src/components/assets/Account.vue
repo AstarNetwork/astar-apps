@@ -32,28 +32,29 @@
           <div class="column__address">
             <span>{{ getShortenAddress(currentAccount) }}</span>
           </div>
-          <div class="screen--sm column__address">
-            <span class="text--accent">{{ $n(totalBal) }} USD</span>
-          </div>
-
-          <div class="column__icons">
-            <div>
-              <button type="button" class="icon--primary" @click="copyAddress">
-                <astar-icon-copy />
-              </button>
-              <q-tooltip>
-                <span class="text--tooltip">{{ $t('copy') }}</span>
-              </q-tooltip>
+          <div class="row__column--right">
+            <div class="screen--sm" :class="isH160 ? 'column--usd' : 'column--usd-native'">
+              <span class="text--accent">{{ $n(totalBal) }} USD</span>
             </div>
-            <a :href="isH160 ? blockscout : subScan" target="_blank" rel="noopener noreferrer">
-              <button class="icon--primary">
-                <astar-icon-external-link />
-              </button>
+            <div class="column__icons">
+              <div>
+                <button type="button" class="icon--primary" @click="copyAddress">
+                  <astar-icon-copy />
+                </button>
+                <q-tooltip>
+                  <span class="text--tooltip">{{ $t('copy') }}</span>
+                </q-tooltip>
+              </div>
+              <a :href="isH160 ? blockscout : subScan" target="_blank" rel="noopener noreferrer">
+                <button class="icon--primary">
+                  <astar-icon-external-link />
+                </button>
 
-              <q-tooltip>
-                <span class="text--tooltip">{{ $t(isH160 ? 'blockscout' : 'subscan') }}</span>
-              </q-tooltip>
-            </a>
+                <q-tooltip>
+                  <span class="text--tooltip">{{ $t(isH160 ? 'blockscout' : 'subscan') }}</span>
+                </q-tooltip>
+              </a>
+            </div>
           </div>
         </div>
       </div>

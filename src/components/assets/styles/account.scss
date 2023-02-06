@@ -6,14 +6,14 @@
 }
 
 .row {
-  padding: 16px 8px;
+  padding: 16px 14px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .row--details {
-  padding: 16px 8px;
+  padding: 16px 14px;
   display: flex;
   flex-direction: column;
   row-gap: 12px;
@@ -23,6 +23,50 @@
     grid-template-columns: auto 1fr;
     align-items: center;
   }
+  @media (min-width: $lg) {
+    padding-right: 32px;
+  }
+}
+
+.column--usd {
+  @media (min-width: $sm) {
+    margin-right: 24px;
+  }
+  @media (min-width: $md) {
+    margin-right: 72px;
+  }
+  @media (min-width: $lg) {
+    margin-right: 64px;
+  }
+  @media (min-width: $xl) {
+    margin-right: 298px;
+  }
+  @media (min-width: $xxl) {
+    margin-right: 398px;
+  }
+}
+
+.column--usd-native {
+  @media (min-width: $sm) {
+    margin-right: 24px;
+  }
+  @media (min-width: $md) {
+    margin-right: 70px;
+  }
+  @media (min-width: $lg) {
+    margin-right: 76px;
+  }
+  @media (min-width: $xl) {
+    margin-right: 200px;
+  }
+  @media (min-width: $xxl) {
+    margin-right: 300px;
+  }
+}
+
+.row__column--right {
+  display: flex;
+  align-items: center;
 }
 
 .column-account-name {
@@ -49,7 +93,7 @@
 .column__icons {
   display: flex;
   justify-content: flex-end;
-  column-gap: 16px;
+  column-gap: 24px;
   @media (min-width: $xl) {
     column-gap: 80px;
   }

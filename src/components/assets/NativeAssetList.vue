@@ -3,7 +3,7 @@
     <div class="border--separator border--margin" />
     <div>
       <div v-if="nativeTokenSymbol" class="rows">
-        <div class="row row--details">
+        <div class="row row--details-native">
           <div class="row__left--native">
             <div class="column--currency">
               <img width="24" :src="nativeTokenImg" :alt="nativeTokenSymbol" />
@@ -18,7 +18,7 @@
           </div>
           <div class="row__right">
             <div class="column--balance">
-              <div class="column__box">
+              <div class="column__box-native">
                 <div v-if="!isSkeleton" class="text--accent">
                   <token-balance :balance="String(bal)" :symbol="nativeTokenSymbol" />
                 </div>
@@ -30,10 +30,10 @@
                     <span>{{ $t('assets.transferableBalance') }}</span>
                   </div>
                   <div class="column--transferable-bal">
+                    <span class="screen--sm">{{ $t('assets.transferable') }}</span>
                     <span>
                       <token-balance :balance="transferableBalance" :symbol="nativeTokenSymbol" />
                     </span>
-                    <span class="screen--sm">{{ $t('assets.transferable') }}</span>
                   </div>
                 </div>
                 <div v-else class="skeleton--right">
@@ -78,18 +78,18 @@
 
         <div class="expand-container">
           <div :id="isExpand ? 'asset-expand' : 'asset-expand-close'">
-            <div class="row--bg--extend row--details bg--accent">
+            <div class="row--bg--extend row--details-native bg--accent">
               <div class="row__left">
                 <span class="text--md">{{ $t('assets.transferableBalance') }}</span>
               </div>
-              <div class="row__right">
+              <div class="row__right row__right-collapse">
                 <div class="column--balance">
-                  <div v-if="!isSkeleton" class="column__box">
+                  <div v-if="!isSkeleton" class="column__box-native">
                     <span class="text--value">
                       <token-balance :balance="transferableBalance" :symbol="nativeTokenSymbol" />
                     </span>
                   </div>
-                  <div v-else class="column__box">
+                  <div v-else class="column__box-native">
                     <div class="skeleton--right">
                       <q-skeleton animation="fade" class="skeleton--md" />
                     </div>
@@ -105,18 +105,18 @@
               </div>
             </div>
 
-            <div class="row--bg--extend row--details bg--accent">
+            <div class="row--bg--extend row--details-native bg--accent">
               <div class="row__left">
                 <span class="text--md">{{ $t('assets.yourEvmDeposit') }}</span>
               </div>
-              <div class="row__right">
+              <div class="row__right row__right-collapse">
                 <div class="column--balance">
-                  <div v-if="!isSkeleton" class="column__box">
+                  <div v-if="!isSkeleton" class="column__box-native">
                     <span class="text--value">
                       <token-balance :balance="String(numEvmDeposit)" :symbol="nativeTokenSymbol" />
                     </span>
                   </div>
-                  <div v-else class="column__box">
+                  <div v-else class="column__box-native">
                     <div class="skeleton--right">
                       <q-skeleton animation="fade" class="skeleton--md" />
                     </div>
@@ -130,18 +130,18 @@
               </div>
             </div>
 
-            <div class="row--bg--extend row--details bg--accent">
+            <div class="row--bg--extend row--details-native bg--accent">
               <div class="row__left">
                 <span class="text--md">{{ $t('assets.yourVestingInfo') }}</span>
               </div>
-              <div class="row__right">
+              <div class="row__right row__right-collapse">
                 <div class="column--balance">
-                  <div v-if="!isSkeleton" class="column__box">
+                  <div v-if="!isSkeleton" class="column__box-native">
                     <span class="text--value">
                       <token-balance :balance="String(vestingTtl)" :symbol="nativeTokenSymbol" />
                     </span>
                   </div>
-                  <div v-else class="column__box">
+                  <div v-else class="column__box-native">
                     <div class="skeleton--right">
                       <q-skeleton animation="fade" class="skeleton--md" />
                     </div>
@@ -155,13 +155,13 @@
               </div>
             </div>
 
-            <div class="row--bg--extend row--details bg--accent">
+            <div class="row--bg--extend row--details-native bg--accent">
               <div class="row__left">
                 <span class="text--md">{{ $t('assets.yourStaking') }}</span>
               </div>
-              <div class="row__right">
+              <div class="row__right row__right-collapse">
                 <div class="column--balance">
-                  <div v-if="!isSkeleton" class="column__box">
+                  <div v-if="!isSkeleton" class="column__box-native">
                     <span class="text--value">
                       <token-balance
                         :balance="String(lockInDappStaking)"
@@ -169,7 +169,7 @@
                       />
                     </span>
                   </div>
-                  <div v-else class="column__box">
+                  <div v-else class="column__box-native">
                     <div class="skeleton--right">
                       <q-skeleton animation="fade" class="skeleton--md" />
                     </div>
