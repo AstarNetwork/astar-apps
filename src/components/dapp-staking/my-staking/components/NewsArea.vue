@@ -127,7 +127,7 @@ export default defineComponent({
 .wrapper--news {
   width: 100%;
   height: 100%;
-  background: #d9d9d9;
+  background: #d9d9d9 no-repeat center;
   background-repeat: no-repeat;
   background-size: cover;
   border-radius: 6px;
@@ -152,7 +152,7 @@ export default defineComponent({
 }
 
 .list--news {
-  padding-top: 12px;
+  padding-top: 4px;
   .row--news {
     display: flex;
     align-items: center;
@@ -168,7 +168,7 @@ export default defineComponent({
       justify-content: center;
       align-items: center;
       padding: 1px;
-      width: 84px;
+      width: 90px;
       height: 26px;
       border-radius: 6px;
       background-image: linear-gradient(#d9d9d9, #d9d9d9),
