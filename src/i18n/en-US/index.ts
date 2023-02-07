@@ -117,6 +117,8 @@ export default {
     viaEndpoint: 'via {value}',
     lightClientWarning: 'Connecting via Light client is in beta. Use at your own risk.',
     shibuyaTakes20mins: 'It might take more than 20 mins to connect to Shibuya via Light client',
+    takeLongerTimeToConnect: 'It might take a longer time to load data from chains',
+    takeLongerTimeToSend: 'It might take a longer time or fail in sending transactions',
   },
   wallet: {
     connectWallet: 'Connect Wallet',
