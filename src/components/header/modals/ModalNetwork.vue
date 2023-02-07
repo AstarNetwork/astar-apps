@@ -271,21 +271,22 @@ export default defineComponent({
       }
     };
 
-    const randomizedEndpoint = (networkIdx: number) => {
+    const getRandomizedEndpoint = (endpointKey: endpointKey): string => {
+      const endpointsWithoutLightClient = providerEndpoints[endpointKey].endpoints.filter(
+        (it) => !checkIsLightClient(it.endpoint)
+      );
+      return getRandomFromArray(endpointsWithoutLightClient).endpoint;
+    };
+
+    const randomizedEndpoint = (networkIdx: number): void => {
       if (networkIdx === endpointKey.ASTAR) {
-        selEndpointAstar.value = getRandomFromArray(
-          providerEndpoints[endpointKey.ASTAR].endpoints
-        ).endpoint;
+        selEndpointAstar.value = getRandomizedEndpoint(endpointKey.ASTAR);
       }
       if (networkIdx === endpointKey.SHIDEN) {
-        selEndpointShiden.value = getRandomFromArray(
-          providerEndpoints[endpointKey.SHIDEN].endpoints
-        ).endpoint;
+        selEndpointShiden.value = getRandomizedEndpoint(endpointKey.SHIDEN);
       }
       if (networkIdx === endpointKey.SHIBUYA) {
-        selEndpointShibuya.value = getRandomFromArray(
-          providerEndpoints[endpointKey.SHIBUYA].endpoints
-        ).endpoint;
+        selEndpointShibuya.value = getRandomizedEndpoint(endpointKey.SHIBUYA);
       }
     };
 
