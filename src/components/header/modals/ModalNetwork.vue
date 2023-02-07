@@ -86,10 +86,12 @@
         </span>
         <ul v-if="isLightClientExtension" class="ul--warnings">
           <li>
-            <span>It might take a longer time to load data from chains</span>
+            <span>
+              {{ $t('drawer.takeLongerTimeToConnect') }}
+            </span>
           </li>
           <li>
-            <span>It might take a longer time or fail in sending transactions</span>
+            <span> {{ $t('drawer.takeLongerTimeToSend') }}</span>
           </li>
           <li v-if="selNetwork === endpointKey.SHIBUYA">
             <span>
@@ -134,7 +136,6 @@ import {
 import { ChainProvider, endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { getRandomFromArray, wait } from 'src/hooks/helper/common';
-import { stagingMainBranch } from 'src/links';
 import { buildNetworkUrl } from 'src/router/utils';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, onUnmounted } from 'vue';
@@ -377,4 +378,27 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @use 'src/components/header/styles/modal-network.scss';
+
+/* Memo: somehow these classes won't work in light theme if the classes defined on modal-network.scss  */
+.box--light-client-warning {
+  display: none;
+  @media (min-width: $sm) {
+    display: flex;
+    flex-direction: column;
+    row-gap: 8px;
+    margin-top: 24px;
+  }
+}
+
+.ul--warnings {
+  list-style: disc;
+  text-align: left;
+  padding-left: 24px;
+}
+
+.text--download {
+  display: block;
+  text-decoration: underline;
+  color: $astar-blue-dark;
+}
 </style>
