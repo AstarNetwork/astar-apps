@@ -16,12 +16,7 @@
         @click="goToLink(t.link)"
       >
         <div class="wrapper--img">
-          <q-img
-            :src="index === 0 ? require('/src/assets/img/ic_astar_farm.png') : t.img"
-            class="img--dapp"
-            fit="contain"
-            no-spinner
-          />
+          <q-img :src="sourceImg(t.img, index)" class="img--dapp" fit="contain" no-spinner />
         </div>
         <div class="card-info">
           <div class="txt--category">{{ t.category }}</div>
@@ -86,12 +81,23 @@ export default defineComponent({
       }
     };
 
+    const sourceImg = (img: string, index: number) => {
+      if (index === 0) {
+        return require('/src/assets/img/ic_astar_farm.png');
+      } else if (index === 1) {
+        return require('/src/assets/img/ic_algem_staking.png');
+      } else {
+        return img;
+      }
+    };
+
     watchEffect(calcDeveloperRewards);
 
     return {
       nativeTokenSymbol,
       rewardsDeveloper,
       truncate,
+      sourceImg,
       items,
       goToLink,
     };
@@ -99,107 +105,5 @@ export default defineComponent({
 });
 </script>
 <style lang="scss" scoped>
-@import 'src/css/quasar.variables.scss';
-
-.wrapper {
-  display: block;
-  margin-top: 48px;
-  margin-bottom: 48px;
-  @media (min-width: $xl) {
-    display: flex;
-    gap: 16px;
-  }
-}
-.wrapper-item {
-  flex: 1 1 0px;
-  height: 211px;
-}
-
-.wrapper--banners {
-  display: flex;
-  gap: 16px;
-  margin-top: 20px;
-  @media (max-width: $md) {
-    display: flex;
-    width: 100%;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    overflow-y: hidden;
-    justify-content: left;
-    &::-webkit-scrollbar {
-      display: none;
-    }
-  }
-  @media (min-width: $xl) {
-    margin-top: 0px;
-  }
-  .card {
-    flex-basis: 33%;
-    height: 100%;
-    cursor: pointer;
-    background: rgba(196, 196, 196, 0.1);
-    backdrop-filter: blur(50px);
-    border-radius: 6px;
-    @media (max-width: $md) {
-      min-width: 191px;
-    }
-    .wrapper--img {
-      display: flex;
-      justify-content: flex-end;
-      border-radius: 999px;
-      width: 72px;
-      height: 72px;
-      margin-top: 16px;
-      margin-right: 16px;
-      margin-left: auto;
-      .img--dapp {
-        max-width: 72px;
-        max-height: 72px;
-        border-radius: 999px;
-      }
-    }
-    .card-info {
-      padding-left: 16px;
-      padding-right: 16px;
-      padding-bottom: 16px;
-      margin-top: 6px;
-    }
-    .txt--category {
-      font-weight: 600;
-      font-size: 14px;
-      line-height: 18px;
-      white-space: nowrap;
-      color: #fff;
-    }
-    .txt--title {
-      font-weight: 600;
-      font-size: 20px;
-      line-height: 24px;
-      color: #fff;
-      margin-top: 4px;
-      margin-bottom: 4px;
-    }
-    .txt--subtitle {
-      font-weight: 500;
-      font-size: 14px;
-      line-height: 18px;
-      color: $gray-2;
-    }
-  }
-
-  .card:first-child {
-    background: linear-gradient(
-      122.29deg,
-      #e6007a -5.83%,
-      #703ac2 17.63%,
-      #0070eb 42.62%,
-      #0297fb 63.99%,
-      #0ae2ff 92.05%
-    );
-  }
-
-  @media (min-width: $xxl) {
-    gap: 24px;
-  }
-}
+@import './styles/dynamic-ads-area.scss';
 </style>

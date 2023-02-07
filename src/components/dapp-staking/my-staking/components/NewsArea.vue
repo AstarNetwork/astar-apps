@@ -35,6 +35,7 @@ import { defineComponent, computed, ref, watchEffect } from 'vue';
 import { useStore } from 'src/store';
 import { paginate } from 'src/hooks/helper/common';
 import newsData from 'src/data/news.json';
+import { DappCombinedInfo } from 'src/v2/models';
 
 interface Data {
   img: string;
@@ -46,8 +47,8 @@ interface Data {
 export default defineComponent({
   setup() {
     const store = useStore();
-    const dapps = computed(() => store.getters['dapps/getAllDapps']);
-    const isDarkTheme = computed(() => store.getters['general/theme'] === 'DARK');
+    const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
+    const isDarkTheme = computed<boolean>(() => store.getters['general/theme'] === 'DARK');
 
     const page = ref<number>(1);
     const pageTtl = ref<number>(0);
@@ -138,12 +139,12 @@ export default defineComponent({
   font-size: 26px;
   line-height: 31px;
   background: linear-gradient(
-    100.62deg,
-    #e6007a -13.87%,
-    #703ac2 10.44%,
-    #0070eb 47.07%,
-    #0297fb 89.31%,
-    #0ae2ff 151.16%
+    122deg,
+    #e6007a -1%,
+    #703ac2 5%,
+    #0070eb 10%,
+    #0297fb 15%,
+    #0ae2ff 40%
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -175,12 +176,12 @@ export default defineComponent({
       line-height: 18px;
       border-radius: 6px;
       background: linear-gradient(
-        100.05deg,
-        #e6007a -9.26%,
-        #703ac2 16.32%,
-        #0070eb 43.58%,
-        #0297fb 75.19%,
-        #0ae2ff 97.47%
+        122deg,
+        #e6007a -10%,
+        #703ac2 20%,
+        #0070eb 50%,
+        #0297fb 70%,
+        #0ae2ff 95%
       );
     }
     .box--notice {
