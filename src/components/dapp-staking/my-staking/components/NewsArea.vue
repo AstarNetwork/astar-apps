@@ -9,7 +9,7 @@
         <div v-for="(t, index) in dataArray" :key="index" class="row--news">
           <div v-if="t.tag === 'Notice'" class="box--notice">{{ t.tag }}</div>
           <div v-else class="box--tag">
-            <div class="txt--tag">{{ t.tag }}</div>
+            {{ t.tag }}
           </div>
           <div class="txt--title" :class="t.link ? 'txt--underline' : ''" @click="goToLink(t.link)">
             {{ t.title }}
@@ -156,7 +156,7 @@ export default defineComponent({
   .row--news {
     display: flex;
     align-items: center;
-    font-weight: 600;
+    font-weight: 500;
     gap: 10px;
     font-size: 14px;
     margin-top: 15px;
@@ -164,41 +164,24 @@ export default defineComponent({
     .box--tag {
       position: relative;
       display: flex;
-      flex-direction: row;
       justify-content: center;
       align-items: center;
       padding: 1px;
-      width: 90px;
+      width: 84px;
       height: 26px;
+      color: #fff;
+      font-weight: 600;
+      font-size: 12px;
+      line-height: 18px;
       border-radius: 6px;
-      background-image: linear-gradient(#d9d9d9, #d9d9d9),
-        linear-gradient(
-          100.62deg,
-          #e6007a -13.87%,
-          #703ac2 10.44%,
-          #0070eb 47.07%,
-          #0297fb 89.31%,
-          #0ae2ff 151.16%
-        );
-      background-origin: border-box;
-      background-clip: content-box, border-box;
-    }
-    .txt--tag {
-      width: 100%;
-      white-space: nowrap;
-      text-align: center;
       background: linear-gradient(
-        100.62deg,
-        #e6007a -13.87%,
-        #703ac2 10.44%,
-        #0070eb 47.07%,
-        #0297fb 89.31%,
-        #0ae2ff 151.16%
+        100.05deg,
+        #e6007a -9.26%,
+        #703ac2 16.32%,
+        #0070eb 43.58%,
+        #0297fb 75.19%,
+        #0ae2ff 97.47%
       );
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-fill-color: transparent;
     }
     .box--notice {
       display: flex;
@@ -256,21 +239,6 @@ export default defineComponent({
 }
 
 .body--dark {
-  .list--news {
-    .row--news {
-      .box--tag {
-        background-image: linear-gradient($gray-6, $gray-6),
-          linear-gradient(
-            100.62deg,
-            #e6007a -13.87%,
-            #703ac2 10.44%,
-            #0070eb 47.07%,
-            #0297fb 89.31%,
-            #0ae2ff 151.16%
-          );
-      }
-    }
-  }
   .row--page {
     color: #fff;
   }

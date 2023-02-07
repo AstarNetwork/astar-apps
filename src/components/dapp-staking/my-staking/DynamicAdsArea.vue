@@ -4,9 +4,24 @@
       <news-area />
     </div>
     <div class="wrapper-item wrapper--banners">
-      <div v-for="(t, index) in items" :key="index" class="card" @click="goToLink(t.link)">
+      <div
+        v-for="(t, index) in items"
+        :key="index"
+        class="card"
+        :style="
+          t.gradient
+            ? `background: linear-gradient(180deg, ${t.gradient[0]} 0%, ${t.gradient[1]} 100%)`
+            : ''
+        "
+        @click="goToLink(t.link)"
+      >
         <div class="wrapper--img">
-          <q-img :src="t.img" class="img--dapp" fit="contain" no-spinner />
+          <q-img
+            :src="index === 0 ? require('/src/assets/img/ic_astar_farm.png') : t.img"
+            class="img--dapp"
+            fit="contain"
+            no-spinner
+          />
         </div>
         <div class="card-info">
           <div class="txt--category">{{ t.category }}</div>
@@ -153,7 +168,8 @@ export default defineComponent({
       font-weight: 600;
       font-size: 14px;
       line-height: 18px;
-      color: $astar-blue;
+      white-space: nowrap;
+      color: #fff;
     }
     .txt--title {
       font-weight: 600;
@@ -169,6 +185,17 @@ export default defineComponent({
       line-height: 18px;
       color: $gray-2;
     }
+  }
+
+  .card:first-child {
+    background: linear-gradient(
+      122.29deg,
+      #e6007a -5.83%,
+      #703ac2 17.63%,
+      #0070eb 42.62%,
+      #0297fb 63.99%,
+      #0ae2ff 92.05%
+    );
   }
 
   @media (min-width: $xxl) {
