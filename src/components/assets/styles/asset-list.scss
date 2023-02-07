@@ -128,10 +128,10 @@
 .column__box-native {
   display: flex;
   flex-direction: column;
+  text-align: right;
   @media (min-width: $md) {
     min-width: 240px;
     white-space: nowrap;
-    text-align: right;
   }
 }
 

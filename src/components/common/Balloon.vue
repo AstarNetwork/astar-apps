@@ -12,7 +12,7 @@
         </div>
         <span class="text--ballon-title">{{ title }}</span>
       </div>
-      <button class="icon--close" @click="handleCloseNativeTokenBalloon">
+      <button class="icon--close" @click="handleCloseBalloon">
         <astar-icon-circle-close size="20" />
       </button>
     </div>
@@ -46,6 +46,10 @@ export default defineComponent({
     },
     direction: {
       type: String,
+      required: true,
+    },
+    handleCloseBalloon: {
+      type: Function,
       required: true,
     },
   },

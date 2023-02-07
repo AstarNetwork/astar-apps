@@ -68,6 +68,7 @@
                   direction="right"
                   :is-balloon="isBalloonNativeToken"
                   :is-balloon-closing="isBalloonNativeTokenClosing"
+                  :handle-close-balloon="handleCloseNativeTokenBalloon"
                   :title="$t('new')"
                   :text="$t('assets.assetsAreNowFolded', { token: nativeTokenSymbol })"
                 />
@@ -196,6 +197,7 @@
             direction="top"
             :is-balloon="isBalloonNativeToken"
             :is-balloon-closing="isBalloonNativeTokenClosing"
+            :handle-close-balloon="handleCloseNativeTokenBalloon"
             :title="$t('new')"
             :text="$t('assets.assetsAreNowFolded', { token: nativeTokenSymbol })"
           />
@@ -221,7 +223,7 @@
 import { u8aToString } from '@polkadot/util';
 import { ethers } from 'ethers';
 import { useBalance, useBalloons, useEvmDeposit, useNetworkInfo, usePrice } from 'src/hooks';
-import { checkIsNullOrUndefined, wait } from 'src/hooks/helper/common';
+import { checkIsNullOrUndefined } from 'src/hooks/helper/common';
 import { getTokenImage } from 'src/modules/token';
 import { generateAstarNativeTokenObject } from 'src/modules/xcm/tokens';
 import { useStore } from 'src/store';
