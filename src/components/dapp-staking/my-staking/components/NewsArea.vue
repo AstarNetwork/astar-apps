@@ -127,12 +127,15 @@ export default defineComponent({
 
 .wrapper--news {
   width: 100%;
-  height: 100%;
   background: #d9d9d9 no-repeat center;
   background-repeat: no-repeat;
   background-size: cover;
   border-radius: 6px;
   padding: 24px 32px;
+
+  @media (min-width: $md) {
+    height: 100%;
+  }
 }
 .title--news {
   font-weight: 700;
@@ -169,11 +172,13 @@ export default defineComponent({
       align-items: center;
       padding: 1px;
       width: 84px;
+      min-width: 84px;
       height: 26px;
       color: #fff;
       font-weight: 600;
       font-size: 12px;
       line-height: 18px;
+      white-space: nowrap;
       border-radius: 6px;
       background: linear-gradient(
         122deg,
@@ -191,6 +196,7 @@ export default defineComponent({
       align-items: center;
       padding: 4px 8px;
       width: 84px;
+      min-width: 84px;
       height: 26px;
       border-radius: 6px;
       background: $border-yellow;
@@ -198,6 +204,9 @@ export default defineComponent({
     }
     .txt--title {
       margin-left: 5px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
     }
     .txt--underline {
       text-decoration: underline;
@@ -209,9 +218,13 @@ export default defineComponent({
 .row--page {
   display: flex;
   position: relative;
-  bottom: 40px;
+  bottom: 15px;
   float: right;
   color: $gray-5-selected;
+
+  @media (min-width: $md) {
+    bottom: 40px;
+  }
 }
 .colum--current-page {
   width: 34px;
