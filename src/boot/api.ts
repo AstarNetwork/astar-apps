@@ -1,3 +1,4 @@
+import { capitalize } from './../hooks/helper/common';
 import { SubstrateAccount } from 'src/store/general/state';
 import { ApiPromise } from '@polkadot/api';
 import { keyring } from '@polkadot/ui-keyring';
@@ -9,7 +10,7 @@ import { ASTAR_CHAIN } from 'src/config/chain';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { opengraphMeta } from 'src/config/opengraph';
 import { createAstarWeb3Instance, TNetworkId } from 'src/config/web3';
-import { objToArray, getRandomFromArray } from 'src/hooks/helper/common';
+import { objToArray } from 'src/hooks/helper/common';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
 import { useChainInfo } from 'src/hooks/useChainInfo';
 import { useExtensions } from 'src/hooks/useExtensions';
@@ -65,9 +66,11 @@ export default boot(async ({ store }) => {
 
   // set metadata header
   const favicon = providerEndpoints[Number(networkIdx.value)].defaultLogo;
+  const displayName = providerEndpoints[Number(networkIdx.value)].displayName;
+  const networkName = capitalize(providerEndpoints[Number(networkIdx.value)].networkAlias);
   useMeta({
     title: '',
-    titleTemplate: (title) => `${title} | Astar Portal - Astar & Shiden Network`,
+    titleTemplate: (title) => `${title} | ${networkName} Portal - ${displayName}`,
     htmlAttr: { lang: 'en' },
     link: {
       material: {
@@ -75,7 +78,7 @@ export default boot(async ({ store }) => {
         href: favicon,
       },
     },
-    meta: opengraphMeta,
+    meta: opengraphMeta(displayName, networkName),
   });
   let { api } = await connectApi(endpoint, networkIdx.value, store);
   $api = api;
