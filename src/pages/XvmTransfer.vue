@@ -8,11 +8,20 @@ import { defineComponent } from 'vue';
 import { useMeta } from 'quasar';
 import XvmTransfer from 'src/components/assets/transfer/XvmTransfer.vue';
 import { usePageReady } from 'src/hooks';
+import { meta } from 'src/config/metadata';
 
 export default defineComponent({
   components: { XvmTransfer },
   setup() {
-    useMeta({ title: 'XVM Transfer' });
+    useMeta({
+      title: meta.title.assets.xvmTransfer,
+      meta: {
+        description: {
+          name: 'description',
+          content: meta.description.assets,
+        },
+      },
+    });
     const { isReady } = usePageReady();
     return { isReady };
   },

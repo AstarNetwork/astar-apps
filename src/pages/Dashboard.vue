@@ -10,13 +10,22 @@ import { defineComponent } from 'vue';
 import { useMeta } from 'quasar';
 import Dashboard from 'src/components/dashboard/Dashboard.vue';
 import { usePageReady } from 'src/hooks';
+import { meta } from 'src/config/metadata';
 
 export default defineComponent({
   components: {
     Dashboard,
   },
   setup() {
-    useMeta({ title: 'Dashboard' });
+    useMeta({
+      title: meta.title.dashboard,
+      meta: {
+        description: {
+          name: 'description',
+          content: meta.description.dashboard,
+        },
+      },
+    });
     const { isReady } = usePageReady();
     return { isReady };
   },

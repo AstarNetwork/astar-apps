@@ -6,10 +6,19 @@
 import { useMeta } from 'quasar';
 import { defineComponent } from 'vue';
 import StakeManage from 'src/components/dapp-staking/stake-manage/StakeManage.vue';
+import { meta } from 'src/config/metadata';
 export default defineComponent({
   components: { StakeManage },
   setup() {
-    useMeta({ title: 'Stake' });
+    useMeta({
+      title: meta.title.dappsStaking.stake,
+      meta: {
+        description: {
+          name: 'description',
+          content: meta.description.dappsStaking,
+        },
+      },
+    });
   },
 });
 </script>

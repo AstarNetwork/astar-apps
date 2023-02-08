@@ -8,6 +8,7 @@
 
 <script lang="ts">
 import { useMeta } from 'quasar';
+import { meta } from 'src/config/metadata';
 import { useAccount } from 'src/hooks';
 import { defineComponent } from 'vue';
 
@@ -16,7 +17,15 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   setup() {
-    useMeta({ title: 'Assets' });
+    useMeta({
+      title: meta.title.assets.assets,
+      meta: {
+        description: {
+          name: 'description',
+          content: meta.description.assets,
+        },
+      },
+    });
     const { currentAccount } = useAccount();
     return { currentAccount };
   },
