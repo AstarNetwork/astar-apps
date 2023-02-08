@@ -14,10 +14,10 @@
     bn.js "^5.2.1"
     ethers "^5.6.9"
 
-"@astar-network/astar-ui@^0.0.71":
-  version "0.0.71"
-  resolved "https://registry.yarnpkg.com/@astar-network/astar-ui/-/astar-ui-0.0.71.tgz#4c81610febeb12ba63b50296f7278781a2fad96f"
-  integrity sha512-JM8QmwlC+5ZWWwKHWfQJsyZ1us1DrikHHk3PBd7Re8s5rNAyZNdvXiMrp6Xao4U8/wNsCZr45iJhix865sSGAw==
+"@astar-network/astar-ui@^0.0.73":
+  version "0.0.73"
+  resolved "https://registry.yarnpkg.com/@astar-network/astar-ui/-/astar-ui-0.0.73.tgz#34e6b53d6969177ce63f810018e09069c186a63d"
+  integrity sha512-rdWnZNSHExPmS3z/6uEhMOlbM3vMtr8kP8EI2yplV90SBPyekkxCE2vkshLoBzc80V7rc/+x+3mtJHWMcr027A==
   dependencies:
     vue "^3.2.23"
 
