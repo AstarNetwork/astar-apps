@@ -1,3 +1,6 @@
+import { providerEndpoints } from 'src/config/chainEndpoints';
+import { capitalize } from './../hooks/helper/common';
+import { LOCAL_STORAGE } from './localStorage';
 import { Path } from 'src/router';
 
 interface MetaData {
@@ -33,6 +36,11 @@ export const opengraphMeta = (displayName: string, networkName: string) => {
   };
 };
 
+const networkIdx = localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX);
+const currency = localStorage.getItem(LOCAL_STORAGE.DEFAULT_CURRENCY);
+
+const networkName = capitalize(providerEndpoints[Number(networkIdx)].networkAlias);
+
 export const meta = {
   title: {
     assets: {
@@ -49,12 +57,9 @@ export const meta = {
     },
   },
   description: {
-    assets:
-      'Astar Portal is the hub of multi-chain, one-stop platform for managing assets and dApp Staking - build2earn protocol. Asset page provides seem less cross-chain transfers using Polkadot unique technology XCM as well as newly invented Cross Virtual Machine technology XVM.',
-    dappsStaking:
-      'Astar dApp Staking is a unique protocol that designed to support builders by providing basic income. Build2Earn program sustains the early stage of builders as well as rewarding the successful projects',
-    dashboard:
-      'Astar Portal is the hub of multi-chain, one-stop platform for managing assets and dApp Staking - build2earn protocol. Dashboard page provides statics of ASTR, blocks of the Astar Network and TVL.',
+    assets: `${networkName} Portal is the hub of multi-chain, one-stop platform for managing assets and dApp Staking - build2earn protocol. Asset page provides seem less cross-chain transfers using Polkadot unique technology XCM as well as newly invented Cross Virtual Machine technology XVM.`,
+    dappsStaking: `${networkName} dApp Staking is a unique protocol that designed to support builders by providing basic income. Build2Earn program sustains the early stage of builders as well as rewarding the successful projects`,
+    dashboard: `${networkName} Portal is the hub of multi-chain, one-stop platform for managing assets and dApp Staking - build2earn protocol. Dashboard page provides statics of ${currency}, blocks of the ${networkName} Network and TVL.`,
   },
 };
 
