@@ -131,9 +131,10 @@ export default defineComponent({
   background-repeat: no-repeat;
   background-size: cover;
   border-radius: 6px;
-  padding: 24px 32px;
+  padding: 24px 16px;
 
   @media (min-width: $md) {
+    padding: 24px 32px;
     height: 100%;
   }
 }
