@@ -53,9 +53,8 @@ export const providerEndpoints: ChainProvider[] = [
     evmChainId: '592',
     evmEndpoints: ['https://evm.astar.network', 'https://astar.api.onfinality.io/public'],
     faucetEndpoint: 'https://us-central1-facuet-bot.cloudfunctions.net/app/astar',
-    // Todo: update the path to src/assets/img/chain/
     defaultLogo:
-      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/ic_astar.png?raw=true',
+      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/astar.png?raw=true',
   },
   {
     networkAlias: 'shiden',
@@ -79,7 +78,7 @@ export const providerEndpoints: ChainProvider[] = [
     evmEndpoints: ['https://evm.shiden.astar.network', 'https://shiden.api.onfinality.io/public'],
     faucetEndpoint: 'https://us-central1-facuet-bot.cloudfunctions.net/app/shiden',
     defaultLogo:
-      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/ic_shiden.png?raw=true',
+      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shiden.png?raw=true',
   },
   {
     networkAlias: 'shibuya-testnet',
@@ -101,7 +100,7 @@ export const providerEndpoints: ChainProvider[] = [
     evmEndpoints: ['https://evm.shibuya.astar.network'],
     faucetEndpoint: 'https://us-central1-facuet-bot.cloudfunctions.net/app/shibuya',
     defaultLogo:
-      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/ic_shibuya.png?raw=true',
+      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shibuya.png?raw=true',
     xvmErcTransferContract: 'ZdNJsZUK96jGxr8iRfT8xHXUi5iQ7XwL9qbyJkADPdH7C1U',
   },
   {
@@ -118,7 +117,7 @@ export const providerEndpoints: ChainProvider[] = [
     evmEndpoints: ['http://127.0.0.1:9933'],
     faucetEndpoint: '',
     defaultLogo:
-      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/ic_shibuya.png?raw=true',
+      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shibuya.png?raw=true',
     // Memo: paste the contract addresses after deployed the contracts on the local network
     // xvmErcTransferContract: '',
   },
@@ -136,7 +135,7 @@ export const providerEndpoints: ChainProvider[] = [
     evmEndpoints: [''],
     faucetEndpoint: '',
     defaultLogo:
-      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/ic_shibuya.png?raw=true',
+      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shibuya.png?raw=true',
   },
 ];
 
