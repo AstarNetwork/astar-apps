@@ -17,6 +17,7 @@ export interface ChainProvider {
   evmChainId: string;
   evmEndpoints: string[];
   faucetEndpoint: string;
+  // Memo: using `require` occurs error in `yarn test`
   defaultLogo: string;
   // Memo: XVM transfer contracts address
   xvmErcTransferContract?: string;
@@ -52,6 +53,7 @@ export const providerEndpoints: ChainProvider[] = [
     evmChainId: '592',
     evmEndpoints: ['https://evm.astar.network', 'https://astar.api.onfinality.io/public'],
     faucetEndpoint: 'https://us-central1-facuet-bot.cloudfunctions.net/app/astar',
+    // Todo: update the path to src/assets/img/chain/
     defaultLogo:
       'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/ic_astar.png?raw=true',
   },
