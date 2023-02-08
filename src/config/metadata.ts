@@ -1,3 +1,15 @@
+import { Path } from 'src/router';
+
+interface MetaData {
+  title: string;
+  meta: {
+    description: {
+      name: string;
+      content: string;
+    };
+  };
+}
+
 export const opengraphMeta = (displayName: string, networkName: string) => {
   return {
     ogTitle: {
@@ -44,4 +56,74 @@ export const meta = {
     dashboard:
       'Astar Portal is the hub of multi-chain, one-stop platform for managing assets and dApp Staking - build2earn protocol. Dashboard page provides statics of ASTR, blocks of the Astar Network and TVL.',
   },
+};
+
+const buildMeta = ({ title, content }: { title: string; content: string }) => {
+  return {
+    title,
+    meta: {
+      description: {
+        name: 'description',
+        content,
+      },
+    },
+  };
+};
+
+export const generateMeta = (path: Path): MetaData => {
+  switch (path) {
+    case Path.Assets:
+      return buildMeta({
+        title: meta.title.assets.assets,
+        content: meta.description.assets,
+      });
+
+    case Path.Transfer:
+      return buildMeta({
+        title: meta.title.assets.transfer,
+        content: meta.description.assets,
+      });
+
+    case Path.XvmTransfer:
+      return buildMeta({
+        title: meta.title.assets.xvmTransfer,
+        content: meta.description.assets,
+      });
+
+    case Path.Discover:
+      return buildMeta({
+        title: meta.title.dappsStaking.discoverDapps,
+        content: meta.description.dappsStaking,
+      });
+
+    case Path.Dapp:
+      return buildMeta({
+        title: meta.title.dappsStaking.dappStaking,
+        content: meta.description.dappsStaking,
+      });
+
+    case Path.Dashboard:
+      return buildMeta({
+        title: meta.title.dashboard,
+        content: meta.description.dashboard,
+      });
+
+    case Path.Register:
+      return buildMeta({
+        title: meta.title.dappsStaking.registerDapp,
+        content: meta.description.dappsStaking,
+      });
+
+    case Path.Stake:
+      return buildMeta({
+        title: meta.title.dappsStaking.stake,
+        content: meta.description.dappsStaking,
+      });
+
+    default:
+      return buildMeta({
+        title: meta.title.assets.assets,
+        content: meta.description.assets,
+      });
+  }
 };

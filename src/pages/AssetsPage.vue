@@ -8,8 +8,9 @@
 
 <script lang="ts">
 import { useMeta } from 'quasar';
-import { meta } from 'src/config/metadata';
+import { generateMeta } from 'src/config/metadata';
 import { useAccount } from 'src/hooks';
+import { Path } from 'src/router';
 import { defineComponent } from 'vue';
 
 // <div v-else /> Memo: To avoid not rendering anything when users go to other pages
@@ -17,15 +18,7 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   setup() {
-    useMeta({
-      title: meta.title.assets.assets,
-      meta: {
-        description: {
-          name: 'description',
-          content: meta.description.assets,
-        },
-      },
-    });
+    useMeta(generateMeta(Path.Assets));
     const { currentAccount } = useAccount();
     return { currentAccount };
   },

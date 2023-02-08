@@ -6,22 +6,15 @@
 <script lang="ts">
 import { useMeta } from 'quasar';
 import Dapp from 'src/components/dapp-staking/dapp/Dapp.vue';
-import { meta } from 'src/config/metadata';
+import { generateMeta } from 'src/config/metadata';
 import { usePageReady } from 'src/hooks';
+import { Path } from 'src/router';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
   components: { Dapp },
   setup() {
-    useMeta({
-      title: meta.title.dappsStaking.dappStaking,
-      meta: {
-        description: {
-          name: 'description',
-          content: meta.description.dappsStaking,
-        },
-      },
-    });
+    useMeta(generateMeta(Path.Dapp));
     const { isReady } = usePageReady();
     return { isReady };
   },

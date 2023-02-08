@@ -6,20 +6,13 @@
 import { defineComponent } from 'vue';
 import { useMeta } from 'quasar';
 import RegisterDapp from 'src/components/dapp-staking/register/RegisterDapp.vue';
-import { meta } from 'src/config/metadata';
+import { generateMeta } from 'src/config/metadata';
+import { Path } from 'src/router';
 
 export default defineComponent({
   components: { RegisterDapp },
   setup() {
-    useMeta({
-      title: meta.title.dappsStaking.registerDapp,
-      meta: {
-        description: {
-          name: 'description',
-          content: meta.description.dappsStaking,
-        },
-      },
-    });
+    useMeta(generateMeta(Path.Register));
   },
 });
 </script>

@@ -8,20 +8,13 @@ import { defineComponent } from 'vue';
 import { useMeta } from 'quasar';
 import Transfer from 'src/components/assets/transfer/Transfer.vue';
 import { usePageReady } from 'src/hooks';
-import { meta } from 'src/config/metadata';
+import { generateMeta, meta } from 'src/config/metadata';
+import { Path } from 'src/router';
 
 export default defineComponent({
   components: { Transfer },
   setup() {
-    useMeta({
-      title: meta.title.dappsStaking.stake,
-      meta: {
-        description: {
-          name: 'description',
-          content: meta.description.assets,
-        },
-      },
-    });
+    useMeta(generateMeta(Path.Transfer));
     const { isReady } = usePageReady();
     return { isReady };
   },

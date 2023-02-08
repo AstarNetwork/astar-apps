@@ -37,7 +37,8 @@ import OnChainData from './my-staking/OnChainData.vue';
 import TopMetric from './my-staking/TopMetric.vue';
 import AdsArea from './my-staking/AdsArea.vue';
 import BannerArea from './my-staking/BannerArea.vue';
-import { meta } from 'src/config/metadata';
+import { generateMeta } from 'src/config/metadata';
+import { Path } from 'src/router';
 
 export default defineComponent({
   components: {
@@ -50,16 +51,7 @@ export default defineComponent({
     OnChainData,
   },
   setup() {
-    useMeta({
-      title: meta.title.dappsStaking.discoverDapps,
-      meta: {
-        description: {
-          name: 'description',
-          content: meta.description.dappsStaking,
-        },
-      },
-    });
-
+    useMeta(generateMeta(Path.Discover));
     const store = useStore();
     const { isReady } = usePageReady();
     useDispatchGetDapps();
