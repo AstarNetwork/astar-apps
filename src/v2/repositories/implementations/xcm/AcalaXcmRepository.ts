@@ -66,9 +66,11 @@ export class AcalaXcmRepository extends XcmRepository {
       },
     };
 
-    //Memo: each XCM instruction is weighted to be 1_000_000_000 units of weight and for this op to execute
-    //weight value of 5 * 10^9 is generally good
-    const destWeight = new BN(10).pow(new BN(9)).muln(5);
+    // Memo: each XCM instruction is weighted to be 1_000_000_000 units of weight and for this op to execute
+    // weight value of 5 * 10^9 is generally good
+    // const destWeight = new BN(10).pow(new BN(9)).muln(5);
+    const destWeight = { Unlimited: '' };
+
     return await this.buildTxCall(
       from,
       'xTokens',
