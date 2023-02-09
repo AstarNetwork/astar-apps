@@ -13,12 +13,15 @@ import { useAccount, useNetworkInfo } from 'src/hooks';
 import { useStore } from 'src/store';
 import { XcmAssets } from 'src/store/assets/state';
 import { computed, defineComponent, watch } from 'vue';
+import { generateMeta } from 'src/config/metadata';
+import { Path } from 'src/router';
+
 // <div v-else /> Memo: To avoid not rendering anything when users go to other pages
 // Leaving comments on the `template` caused an unknown bug
 
 export default defineComponent({
   setup() {
-    useMeta({ title: 'Assets' });
+    useMeta(generateMeta(Path.Assets));
     const store = useStore();
     const { isMainnet } = useNetworkInfo();
     const { currentAccount } = useAccount();

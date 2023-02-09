@@ -42,7 +42,7 @@
     <Teleport to="#app--main">
       <div>
         <modal-withdraw
-          v-model:is-open="showModalWithdraw"
+          :set-is-open="setShowModalWithdraw"
           :show="showModalWithdraw"
           :withdraw-amount="totalAmount"
           @confirm="withdraw"
@@ -79,6 +79,10 @@ export default defineComponent({
     const { withdraw } = useUnbonding();
 
     const showModalWithdraw = ref(false);
+    const setShowModalWithdraw = (isOpen: boolean): void => {
+      showModalWithdraw.value = isOpen;
+    };
+
     const showModalRebond = ref(false);
     // MEMO: since not possible to withdraw each chunk currently, use total amount of withdraw
     const totalAmount = ref('');
@@ -112,6 +116,7 @@ export default defineComponent({
       showWithdrawDialog,
       showRebondDialog,
       withdraw,
+      setShowModalWithdraw,
     };
   },
 });

@@ -1,6 +1,6 @@
 import { ApiPromise } from '@polkadot/api';
-import { bool, Option, Struct, u64 } from '@polkadot/types';
-import { EventRecord, Balance, AccountId } from '@polkadot/types/interfaces';
+import { bool, Option, Struct } from '@polkadot/types';
+import { EventRecord, Balance, AccountId, WeightV2 } from '@polkadot/types/interfaces';
 import { BN } from '@polkadot/util';
 import { ethers } from 'ethers';
 import { ExtrinsicPayload } from 'src/hooks/helper';
@@ -43,17 +43,12 @@ export class PayloadWithWeight {
   }
 
   public asWeightV1(): BN {
-    return this.weight as BN;
+    return new BN(this.weight.toString());
   }
 
   public asWeightV2(): WeightV2 {
     return this.weight as WeightV2;
   }
-}
-
-export interface WeightV2 {
-  refTime: u64;
-  proofSize: u64;
 }
 
 export const checkIsDappOwner = async ({
@@ -266,14 +261,18 @@ const getTxsForClaimDapp = async ({
     // Memo: No more new staking after the dApp has been unstaked
     // When: User claims after dApp has been unstaked
     if (!e) break;
+    const weight = api.registry.createType('WeightV2', {
+      proofSize: info.weight.proofSize,
+      refTime: info.weight.refTime,
+    });
 
     if (era === e) {
       const tx = api.tx.dappsStaking.claimDapp(getDappAddressEnum(dappAddress), era);
-      transactions.push(new PayloadWithWeight(tx, info.weight));
+      transactions.push(new PayloadWithWeight(tx, weight));
     } else {
       // Memo: e -> skip to the era that have been staked after unstaked
       const tx = api.tx.dappsStaking.claimDapp(getDappAddressEnum(dappAddress), e);
-      transactions.push(new PayloadWithWeight(tx, info.weight));
+      transactions.push(new PayloadWithWeight(tx, weight));
       era = e;
     }
   }
@@ -303,7 +302,11 @@ const getTxsForClaimStaker = async ({
 
   for (let i = 0; i < numberOfUnclaimedEra; i++) {
     const tx = api.tx.dappsStaking.claimStaker(getDappAddressEnum(dappAddress));
-    transactions.push(new PayloadWithWeight(tx, claimInfo.weight));
+    const weight = api.registry.createType('WeightV2', {
+      proofSize: claimInfo.weight.proofSize,
+      refTime: claimInfo.weight.refTime,
+    });
+    transactions.push(new PayloadWithWeight(tx, weight));
   }
 
   if (!isRegistered) {
@@ -311,7 +314,12 @@ const getTxsForClaimStaker = async ({
     const withdrawalInfo = await api.tx.dappsStaking
       .withdrawFromUnregistered(getDappAddressEnum(dappAddress))
       .paymentInfo(senderAddress);
-    transactions.push(new PayloadWithWeight(tx, withdrawalInfo.weight));
+
+    const weight = api.registry.createType('WeightV2', {
+      proofSize: withdrawalInfo.weight.proofSize,
+      refTime: withdrawalInfo.weight.refTime,
+    });
+    transactions.push(new PayloadWithWeight(tx, weight));
   }
 
   return transactions;

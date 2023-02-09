@@ -37,6 +37,8 @@ import OnChainData from './my-staking/OnChainData.vue';
 import TopMetric from './my-staking/TopMetric.vue';
 import AdsArea from './my-staking/AdsArea.vue';
 import BannerArea from './my-staking/BannerArea.vue';
+import { generateMeta } from 'src/config/metadata';
+import { Path } from 'src/router';
 
 export default defineComponent({
   components: {
@@ -49,7 +51,7 @@ export default defineComponent({
     OnChainData,
   },
   setup() {
-    useMeta({ title: 'Discover dApps' });
+    useMeta(generateMeta(Path.Discover));
     const store = useStore();
     const { isReady } = usePageReady();
     useDispatchGetDapps();
@@ -63,14 +65,18 @@ export default defineComponent({
       store.commit('general/setLoading', isLoad);
     };
 
-    watch([isH160], () => {
-      if (isH160.value) {
-        store.dispatch('general/showAlertMsg', {
-          msg: t('dappStaking.error.onlySupportsSubstrate'),
-          alertType: 'error',
-        });
-      }
-    });
+    watch(
+      [isH160],
+      () => {
+        if (isH160.value) {
+          store.dispatch('general/showAlertMsg', {
+            msg: t('dappStaking.error.onlySupportsSubstrate'),
+            alertType: 'error',
+          });
+        }
+      },
+      { immediate: true }
+    );
 
     watch(
       [dapps],
