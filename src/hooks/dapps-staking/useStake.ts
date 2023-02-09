@@ -1,6 +1,6 @@
 import { BN } from '@polkadot/util';
 import { ethers } from 'ethers';
-import { useAccount, useChainMetadata, useStakingList } from 'src/hooks';
+import { useAccount, useStakingList } from 'src/hooks';
 import { ASTAR_DECIMALS, balanceFormatter } from 'src/hooks/helper/plasmUtils';
 import { Path } from 'src/router';
 import { container } from 'src/v2/common';
@@ -15,7 +15,6 @@ export function useStake() {
   const { currentAccount } = useAccount();
   const { stakingList } = useStakingList();
   const isStakePage = computed<boolean>(() => route.fullPath.includes('stake'));
-  useChainMetadata();
   const addressTransferFrom = ref<string>(currentAccount.value);
 
   const setAddressTransferFrom = (address: string) => {

@@ -88,6 +88,10 @@ export default defineComponent({
       type: Object as PropType<MyStakeInfo | undefined>,
       required: true,
     },
+    setIsOpen: {
+      type: Function,
+      required: true,
+    },
   },
   setup(props, { emit }) {
     const { unbondingPeriod, handleUnbound } = useUnbound();
@@ -117,13 +121,13 @@ export default defineComponent({
     const closeModal = async (): Promise<void> => {
       isClosingModal.value = true;
       await wait(fadeDuration);
-      emit('update:is-open', false);
+      props.setIsOpen(false);
       isClosingModal.value = false;
     };
 
     const unbound = async (): Promise<void> => {
-      await handleUnbound(props.dapp?.dappAddress, amount.value);
       await closeModal();
+      await handleUnbound(props.dapp?.dappAddress, amount.value);
     };
 
     return {
