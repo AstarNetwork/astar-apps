@@ -85,7 +85,7 @@ export default defineComponent({
     const { currentNetworkIdx } = useNetworkInfo();
     const isShiden = computed<boolean>(() => currentNetworkIdx.value === endpointKey.SHIDEN);
     const isShibuya = computed<boolean>(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
-    
+
     const goToSubscan = () => {
       if (!props.txHash) return;
 
