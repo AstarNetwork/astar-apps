@@ -1,14 +1,17 @@
 <template>
-  <img :src="url" class="tw-rounded-full image-shadow" />
+  <div class="tw-rounded-full image-shadow">
+    <astar-icon-social :icon="iconName" />
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs } from 'vue';
+import { defineComponent, toRefs, PropType } from 'vue';
+import { SocialIcon } from '@astar-network/astar-ui';
 
 export default defineComponent({
   props: {
-    url: {
-      type: String,
+    iconName: {
+      type: Object as PropType<SocialIcon>,
       required: true,
     },
   },
