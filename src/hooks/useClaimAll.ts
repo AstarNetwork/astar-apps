@@ -2,17 +2,16 @@ import { getIndividualClaimTxs, PayloadWithWeight } from '@astar-network/astar-s
 import { ISubmittableResult } from '@polkadot/types/types';
 import { BN } from '@polkadot/util';
 import { $api } from 'boot/api';
-import { useCurrentEra, useCustomSignature, useGasPrice } from 'src/hooks';
-import { TxType } from 'src/hooks/custom-signature/message';
+import { useCurrentEra } from 'src/hooks';
+import { displayCustomMessage, TxType } from 'src/hooks/custom-signature/message';
 import { ExtrinsicPayload } from 'src/hooks/helper';
-import { signAndSend } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
-import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
 import { container } from 'src/v2/common';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { computed, ref, watchEffect } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 const MAX_BATCH_WEIGHT = new BN('50000000000');
 
@@ -24,16 +23,11 @@ export function useClaimAll() {
   const isLoading = ref<boolean>(true);
   const store = useStore();
   const senderAddress = computed(() => store.getters['general/selectedAddress']);
-  const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const isSendingTx = computed(() => store.getters['general/isLoading']);
-  const { nativeTipPrice } = useGasPrice();
-
+  const { t } = useI18n();
   const { era } = useCurrentEra();
-  const { handleResult, handleCustomExtrinsic, isCustomSig } = useCustomSignature({
-    txType: TxType.dappsStaking,
-  });
 
   watchEffect(async () => {
     try {
@@ -56,7 +50,6 @@ export function useClaimAll() {
               senderAddress: senderAddressRef,
               currentEra: era.value,
             });
-
             return transactions.length ? transactions : null;
           } else {
             return null;
@@ -91,53 +84,38 @@ export function useClaimAll() {
     }
 
     const txsToExecute: ExtrinsicPayload[] = [];
-    let totalWeight: BN = new BN(0);
+    let totalWeight: BN = new BN('0');
     for (let i = 0; i < batchTxsRef.length; i++) {
       const tx = batchTxsRef[i];
-      if (totalWeight.add(tx.weight).gt(MAX_BATCH_WEIGHT)) {
+      const weight = tx.isWeightV2 ? tx.asWeightV2().refTime.toBn() : tx.asWeightV1();
+      if (totalWeight.add(weight).gt(MAX_BATCH_WEIGHT)) {
         break;
       }
 
       txsToExecute.push(tx.payload as ExtrinsicPayload);
-      totalWeight = totalWeight.add(tx.weight);
+      totalWeight = totalWeight.add(weight);
     }
-
-    // The fix causes problems and confusion for stakers because rewards are not restaked,
-    // second thing is that developers are unable to stake.
-    // Need to change approach
-    // Temporary disable restaking reward to avoid possible claim errors.
-    // const dappStakingRepository = container.get<IDappStakingRepository>(
-    //   Symbols.DappStakingRepository
-    // );
-    // const ledger = await dappStakingRepository.getLedger(senderAddress.value);
-
-    // if (ledger.rewardDestination === RewardDestination.StakeBalance) {
-    //   txsToExecute.unshift(api.tx.dappsStaking.setRewardDestination(RewardDestination.FreeBalance));
-    //   txsToExecute.push(api.tx.dappsStaking.setRewardDestination(RewardDestination.StakeBalance));
-    // }
 
     console.info(
       `Batch weight: ${totalWeight.toString()}, transactions no. ${txsToExecute.length}`
     );
     const transaction = api.tx.utility.batch(txsToExecute);
+    const finalizedCallback = (result: ISubmittableResult): void => {
+      displayCustomMessage({
+        txType: TxType.dappsStaking,
+        result,
+        senderAddress: senderAddress.value,
+        store,
+        t,
+      });
+    };
 
     try {
-      const txResHandler = async (result: ISubmittableResult): Promise<boolean> => {
-        const res = await handleResult(result);
-        hasExtrinsicFailedEvent(result.events, store.dispatch);
-        return res;
-      };
-
-      await signAndSend({
-        transaction,
+      const dappStakingService = container.get<IDappStakingService>(Symbols.DappStakingService);
+      await dappStakingService.sendTx({
         senderAddress: senderAddress.value,
-        substrateAccounts: substrateAccounts.value,
-        isCustomSignature: isCustomSig.value,
-        txResHandler,
-        handleCustomExtrinsic,
-        dispatch: store.dispatch,
-        tip: nativeTipPrice.value.fast, //note: this is a quick hack to speed of the tx. We should add the custom speed modal later
-        //tip: selectedTip.value.price,
+        transaction,
+        finalizedCallback,
       });
     } catch (error: any) {
       console.error(error.message);

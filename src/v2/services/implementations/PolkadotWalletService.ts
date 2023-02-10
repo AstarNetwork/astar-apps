@@ -1,3 +1,4 @@
+import { isMobileDevice } from './../../../hooks/helper/wallet';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult, Signer } from '@polkadot/types/types';
 import { InjectedExtension } from '@polkadot/extension-inject/types';
@@ -36,7 +37,8 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
     extrinsic: SubmittableExtrinsic<'promise', ISubmittableResult>,
     senderAddress: string,
     successMessage?: string,
-    transactionTip?: number
+    transactionTip?: number,
+    finalizedCallback?: (result?: ISubmittableResult) => void
   ): Promise<string | null> {
     Guard.ThrowIfUndefined('extrinsic', extrinsic);
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
@@ -44,6 +46,7 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
     let result: string | null = null;
     try {
       return new Promise<string>(async (resolve) => {
+        !isMobileDevice && this.detectExtensionsAction(true);
         await this.checkExtension();
         let tip = transactionTip?.toString();
         if (!tip) {
@@ -53,7 +56,7 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
 
         console.info('transaction tip', tip);
 
-        await extrinsic.signAndSend(
+        const unsub = await extrinsic.signAndSend(
           senderAddress,
           {
             signer: await this.getSigner(senderAddress),
@@ -61,22 +64,34 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
             tip,
           },
           (result) => {
-            if (result.isFinalized) {
-              if (!this.isExtrinsicFailed(result.events)) {
-                this.eventAggregator.publish(
-                  new ExtrinsicStatusMessage(
-                    true,
-                    successMessage ?? 'Transaction successfully executed',
-                    `${extrinsic.method.section}.${extrinsic.method.method}`,
-                    result.txHash.toHex()
-                  )
-                );
-              }
+            try {
+              !isMobileDevice && this.detectExtensionsAction(false);
+              if (result.isCompleted) {
+                if (!this.isExtrinsicFailed(result.events)) {
+                  this.eventAggregator.publish(
+                    new ExtrinsicStatusMessage(
+                      true,
+                      successMessage ?? 'Transaction successfully executed',
+                      `${extrinsic.method.section}.${extrinsic.method.method}`,
+                      result.txHash.toHex()
+                    )
+                  );
+                }
 
+                this.eventAggregator.publish(new BusyMessage(false));
+                if (finalizedCallback) {
+                  finalizedCallback(result);
+                }
+                resolve(extrinsic.hash.toHex());
+                unsub();
+              } else {
+                if (isMobileDevice && !result.isCompleted) {
+                  this.eventAggregator.publish(new BusyMessage(true));
+                }
+              }
+            } catch (error) {
               this.eventAggregator.publish(new BusyMessage(false));
-              resolve(extrinsic.hash.toHex());
-            } else {
-              !result.isCompleted && this.eventAggregator.publish(new BusyMessage(true));
+              unsub();
             }
           }
         );
@@ -134,5 +149,33 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
 
       this.extensions.push(...extensions);
     }
+  }
+
+  // Memo: detects status in the wallet extension
+  // Fixme: doesn't work on MathWallet Mobile
+  // Ref: https://github.com/polkadot-js/extension/issues/674
+  // Ref: https://github.com/polkadot-js/extension/blob/297b2af14c68574b24bb8fdeda2208c473eccf43/packages/extension/src/page.ts#L10-L22
+  private detectExtensionsAction(isMonitorExtension: boolean): void {
+    const handleDetectSign = (listener: any): void => {
+      const { source, data } = listener;
+      if (source !== window || !data.origin) {
+        return;
+      }
+      if (data.id) {
+        if (data.response && data.response.hasOwnProperty('signature')) {
+          this.eventAggregator.publish(new BusyMessage(true));
+          return;
+        }
+        // Memo: detect if the transaction was canceled by users
+        if (data.error === 'Cancelled') {
+          this.eventAggregator.publish(new BusyMessage(false));
+          throw Error(data.error);
+        }
+      }
+    };
+
+    isMonitorExtension
+      ? window.addEventListener('message', handleDetectSign)
+      : window.removeEventListener('message', handleDetectSign);
   }
 }

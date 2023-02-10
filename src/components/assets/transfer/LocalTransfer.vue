@@ -207,6 +207,7 @@ export default defineComponent({
       await transferAsset({
         transferAmt: Number(transferAmt.value),
         toAddress: toAddress.value,
+        symbol: props.token.metadata.symbol,
       });
     };
 

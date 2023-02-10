@@ -3,10 +3,8 @@ import { u32 } from '@polkadot/types';
 import { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 import { $api } from 'boot/api';
-import { useCustomSignature, useGasPrice } from 'src/hooks';
-import { signAndSend } from 'src/hooks/helper/wallet';
+import { displayCustomMessage, TxType } from 'src/hooks/custom-signature/message';
 import { useUnbondWithdraw } from 'src/hooks/useUnbondWithdraw';
-import { hasExtrinsicFailedEvent } from 'src/modules/extrinsic';
 import { useStore } from 'src/store';
 import { computed, onUnmounted, ref, watch } from 'vue';
 import { container } from 'src/v2/common';
@@ -18,12 +16,6 @@ import { useI18n } from 'vue-i18n';
 export function useUnbonding() {
   const store = useStore();
   const { t } = useI18n();
-  const { isCustomSig, handleCustomExtrinsic } = useCustomSignature({
-    fn: () => {
-      store.commit('dapps/setUnlockingChunks', -1);
-    },
-  });
-  const { selectedTip } = useGasPrice();
   const selectedAccountAddress = computed(() => store.getters['general/selectedAddress']);
   const unlockingChunksCount = computed(() => store.getters['dapps/getUnlockingChunks']);
   const maxUnlockingChunks = computed(() => store.getters['dapps/getMaxUnlockingChunks']);
@@ -32,39 +24,30 @@ export function useUnbonding() {
   const canWithdraw = ref<boolean>(false);
   const totalToWithdraw = ref<BN>(new BN(0));
   const { canUnbondWithdraw } = useUnbondWithdraw($api);
-  const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
 
   const withdraw = async (): Promise<void> => {
     try {
       const transaction = $api!.tx.dappsStaking.withdrawUnbonded();
-      const txResHandler = (result: ISubmittableResult): Promise<boolean> => {
-        return new Promise<boolean>(async (resolve) => {
-          if (result.status.isFinalized) {
-            if (!hasExtrinsicFailedEvent(result.events, store.dispatch)) {
-              store.commit('dapps/setUnlockingChunks', -1);
-              store.dispatch('general/showAlertMsg', {
-                msg: t('dappStaking.toast.successfullyWithdrew'),
-                alertType: 'success',
-              });
-            }
-            store.commit('general/setLoading', false);
-            resolve(true);
-          } else {
-            store.commit('general/setLoading', true);
-          }
+      const finalizedCallback = (result: ISubmittableResult): void => {
+        displayCustomMessage({
+          txType: TxType.withdrawUnbonded,
+          result,
+          senderAddress: selectedAccountAddress.value,
+          store,
+          t,
         });
       };
 
-      await signAndSend({
-        transaction,
-        senderAddress: selectedAccountAddress.value,
-        substrateAccounts: substrateAccounts.value,
-        isCustomSignature: isCustomSig.value,
-        txResHandler,
-        handleCustomExtrinsic,
-        dispatch: store.dispatch,
-        tip: selectedTip.value.price,
-      });
+      try {
+        const dappStakingService = container.get<IDappStakingService>(Symbols.DappStakingService);
+        await dappStakingService.sendTx({
+          senderAddress: selectedAccountAddress.value,
+          transaction,
+          finalizedCallback,
+        });
+      } catch (error: any) {
+        console.error(error.message);
+      }
     } catch (error) {
       console.error(error);
     }

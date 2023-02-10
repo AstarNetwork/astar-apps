@@ -8,7 +8,7 @@ import { EditDappItem } from 'src/store/dapp-staking/state';
 import { AccountLedger } from 'src/v2/models/DappsStaking';
 import { u32 } from '@polkadot/types';
 import { GeneralStakerInfo } from '@astar-network/astar-sdk-core';
-
+import { StakeInfo } from 'src/store/dapp-staking/actions';
 @injectable()
 export class DappStakingRepositoryMock implements IDappStakingRepository {
   public readonly bondAndStakeCallMock = jest.fn();
@@ -21,6 +21,18 @@ export class DappStakingRepositoryMock implements IDappStakingRepository {
     this.getRegisteredContractCallMock.mockReset();
     this.nominationTransferMock.mockReset();
     this.currentEraMock.mockReset();
+  }
+  getCurrentEra(): Promise<u32> {
+    throw new Error('Method not implemented.');
+  }
+  getConstants(): Promise<DappStakingConstants> {
+    throw new Error('Method not implemented.');
+  }
+  getGeneralStakerInfo(
+    stakerAddress: string,
+    contractAddress: string
+  ): Promise<Map<string, GeneralStakerInfo>> {
+    throw new Error('Method not implemented.');
   }
 
   getTvl(): Promise<BN> {
@@ -89,20 +101,14 @@ export class DappStakingRepositoryMock implements IDappStakingRepository {
     return {} as AccountLedger;
   }
 
-  public async getCurrentEra(): Promise<u32> {
-    return this.currentEraMock();
+  public async getApr(network: string): Promise<{ apr: number; apy: number }> {
+    return { apr: 0, apy: 0 };
   }
 
-  public async getConstants(): Promise<DappStakingConstants> {
-    return {
-      maxEraStakeValues: 5,
-    };
-  }
-
-  public async getGeneralStakerInfo(
-    stakerAddress: string,
-    contractAddress: string
-  ): Promise<Map<string, GeneralStakerInfo>> {
-    return new Map();
+  public async getStakeInfo(
+    dappAddress: string,
+    currentAccount: string
+  ): Promise<StakeInfo | undefined> {
+    return {} as StakeInfo;
   }
 }

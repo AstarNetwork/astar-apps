@@ -1,4 +1,5 @@
 import { SubmittableExtrinsic } from '@polkadot/api/types';
+import { ISubmittableResult } from '@polkadot/types/types';
 
 export enum WalletType {
   Metamask = 'Metamask',
@@ -17,6 +18,7 @@ export interface IWalletService {
     extrinsic: SubmittableExtrinsic<'promise'>,
     senderAddress: string,
     successMessage?: string,
-    transactionTip?: number
+    transactionTip?: number,
+    finalizedCallback?: (result?: ISubmittableResult) => void
   ): Promise<string | null>;
 }

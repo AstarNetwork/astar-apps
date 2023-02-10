@@ -39,7 +39,7 @@ export default defineComponent({
   display: flex;
   justify-content: space-between;
   height: 6rem;
-  padding: 1.25rem 0.625rem;
+  padding: 40px 40px 25px 40px;
   background: rgba(247, 247, 248, 0.8);
   mix-blend-mode: normal;
   backdrop-filter: blur(200px);
@@ -80,7 +80,7 @@ export default defineComponent({
 @media screen and (max-width: $lg) {
   .header {
     height: 4rem;
-    padding: 0.5rem 1rem;
+    padding-top: 36px;
     padding-left: 20px;
     padding-right: 16px;
     background: $gray-1;

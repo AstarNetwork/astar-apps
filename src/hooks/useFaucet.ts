@@ -101,6 +101,7 @@ export function useFaucet(isModalFaucet?: Ref<boolean>) {
       store.dispatch('general/showAlertMsg', {
         msg,
         alertType: 'success',
+        txHash: data.hash,
       });
       hash.value = data.hash;
     } catch (e: any) {

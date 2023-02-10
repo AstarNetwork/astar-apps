@@ -1,11 +1,16 @@
 import { BN } from '@polkadot/util';
 import { ISubmittableResult } from '@polkadot/types/types';
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
-import { DappStakingConstants, SmartContract, StakerInfo } from '../models/DappsStaking';
+import {
+  SmartContract,
+  StakerInfo,
+  DappStakingConstants,
+  AccountLedger,
+} from '../models/DappsStaking';
 import { EditDappItem } from 'src/store/dapp-staking/state';
-import { AccountLedger } from '../models/DappsStaking';
 import { u32 } from '@polkadot/types';
 import { GeneralStakerInfo } from '@astar-network/astar-sdk-core';
+import { StakeInfo } from 'src/store/dapp-staking/actions';
 
 /**
  * Definition of repository to access dapps staking pallet.
@@ -79,6 +84,12 @@ export interface IDappStakingRepository {
    */
   getLedger(accountAddress: string): Promise<AccountLedger>;
 
+  /**
+   * Gets dapp staking APR and APY values for a given network.
+   * @param network Network to fetch values for.
+   */
+  getApr(network: string): Promise<{ apr: number; apy: number }>;
+
   getCurrentEra(): Promise<u32>;
 
   /**
@@ -90,4 +101,6 @@ export interface IDappStakingRepository {
     stakerAddress: string,
     contractAddress: string
   ): Promise<Map<string, GeneralStakerInfo>>;
+
+  getStakeInfo(dappAddress: string, currentAccount: string): Promise<StakeInfo | undefined>;
 }

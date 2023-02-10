@@ -9,10 +9,17 @@ export type SubstrateAccount = {
   balance?: string;
 };
 
+export enum AlertType {
+  Success = 'success',
+  Warning = 'warning',
+  Error = 'error',
+  Copied = 'copied',
+}
+
 export type AlertBox = {
-  showAlertMsg: boolean;
   alertMsg: string;
-  alertType: string;
+  alertType: AlertType;
+  txHash?: string;
 };
 
 export type EcdsaAccount = {
@@ -28,6 +35,7 @@ export type Theme = 'LIGHT' | 'DARK';
 export interface GeneralStateInterface {
   initialized: boolean;
   isLoading: boolean;
+  alertBoxStack: AlertBox[];
   alertBox: AlertBox;
   chainInfo: any;
   metaExtensions: Extensions;
@@ -51,10 +59,10 @@ function state(): GeneralStateInterface {
   return {
     initialized: false,
     isLoading: false,
+    alertBoxStack: [],
     alertBox: {
-      showAlertMsg: false,
       alertMsg: '',
-      alertType: 'success',
+      alertType: AlertType.Success,
     },
     chainInfo: undefined,
     metaExtensions: {

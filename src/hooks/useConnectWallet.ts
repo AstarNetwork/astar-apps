@@ -1,4 +1,5 @@
 import { wait, ASTAR_SS58_FORMAT, checkSumEvmAddress } from '@astar-network/astar-sdk-core';
+import { ETHEREUM_EXTENSION } from 'src/hooks';
 import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
 import { $api } from 'boot/api';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
@@ -31,7 +32,6 @@ import {
   castMobileSource,
   checkIsWalletExtension,
   getDeepLinkUrl,
-  getInjectedExtensions,
   getSelectedAccount,
   isMobileDevice,
 } from 'src/hooks/helper/wallet';
@@ -284,7 +284,7 @@ export const useConnectWallet = () => {
     const delay = 3000;
     await wait(delay);
 
-    if (address === 'Ethereum Extension') {
+    if (address === ETHEREUM_EXTENSION) {
       if (!wallet) {
         return;
       }

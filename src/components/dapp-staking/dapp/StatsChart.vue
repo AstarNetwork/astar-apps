@@ -1,5 +1,5 @@
 <template>
-  <div v-if="data.length > 0">
+  <div v-if="data && data.length > 0">
     <chart-panel
       :data="data"
       :title="`chart.${statsType}.title`"

@@ -6,11 +6,12 @@
 import { useMeta } from 'quasar';
 import { defineComponent } from 'vue';
 import StakeManage from 'src/components/dapp-staking/stake-manage/StakeManage.vue';
-
+import { generateMeta } from 'src/config/metadata';
+import { Path } from 'src/router';
 export default defineComponent({
   components: { StakeManage },
   setup() {
-    useMeta({ title: 'Stake' });
+    useMeta(generateMeta(Path.Stake));
   },
 });
 </script>

@@ -98,7 +98,7 @@ import { useStore } from 'src/store';
 import { paginate } from '@astar-network/astar-sdk-core';
 
 enum Filter {
-  tvl = 'Staking TVL',
+  tvl = 'dappStaking.stakingTvl',
 }
 enum SortBy {
   alphabeticalAtoZ = 'sort.alphabeticalAtoZ',
