@@ -14,7 +14,7 @@
 
     <div class="container">
       <div
-        v-if="isLockdropAccount || (!isH160 && currentAccountName === EthereumExtension)"
+        v-if="isLockdropAccount || (!isH160 && currentAccountName === ETHEREUM_EXTENSION)"
         class="row"
       >
         <span class="text--title">{{ $t('assets.lockdropAccount') }}</span>
@@ -92,7 +92,7 @@ import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
-import { EthereumExtension } from 'src/hooks';
+import { ETHEREUM_EXTENSION } from 'src/hooks';
 
 export default defineComponent({
   components: {
@@ -228,7 +228,7 @@ export default defineComponent({
       isLockdropAccount,
       isSkeleton,
       totalBal,
-      EthereumExtension,
+      ETHEREUM_EXTENSION,
       getShortenAddress,
       copyAddress,
       toggleEvmWalletSchema,
