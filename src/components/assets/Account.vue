@@ -135,8 +135,8 @@ export default defineComponent({
       () => `${providerEndpoints[currentNetworkIdx.value].subscan}/account/${currentAccount.value}`
     );
 
-    const totalBal = computed<number>(() =>
-      balUsd.value ? balUsd.value + props.ttlErc20Amount + props.ttlNativeXcmUsdAmount : 0
+    const totalBal = computed<number>(
+      () => Number(balUsd.value) + props.ttlErc20Amount + props.ttlNativeXcmUsdAmount
     );
 
     const copyAddress = () => {
