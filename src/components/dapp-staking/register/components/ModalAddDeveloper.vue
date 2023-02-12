@@ -100,10 +100,9 @@
 </template>
 
 <script lang="ts">
-import { wait } from '@astar-network/astar-sdk-core';
-import { defineComponent, ref, toRefs, PropType, computed, watch } from 'vue';
+import { wait, Developer } from '@astar-network/astar-sdk-core';
+import { defineComponent, ref, toRefs, PropType, watch } from 'vue';
 import { fadeDuration } from '@astar-network/astar-ui';
-import { Developer } from 'src/store/dapp-staking/state';
 import { isUrlValid } from 'src/components/common/Validators';
 import ImageCard from './ImageCard.vue';
 import Avatar from 'src/components/common/Avatar.vue';

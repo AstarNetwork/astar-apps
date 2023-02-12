@@ -1,7 +1,7 @@
 <template>
   <chart-panel
     :data="data"
-    :title="textChart.tokenPrice.title"
+    :title="textChart.tokenPrice.title || ''"
     :tooltip="textChart.tokenPrice.tooltip"
     :default-value="currentPrice"
     class="wrapper--chart"

@@ -38,8 +38,8 @@
 <script lang="ts">
 import { defineComponent, PropType, ref } from 'vue';
 import { fadeDuration } from '@astar-network/astar-ui';
-import { Community, CommunityDefinition } from 'src/store/dapp-staking/state';
-import { wait } from '@astar-network/astar-sdk-core';
+import { CommunityDefinition } from 'src/store/dapp-staking/state';
+import { wait, Community } from '@astar-network/astar-sdk-core';
 import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 
 export default defineComponent({

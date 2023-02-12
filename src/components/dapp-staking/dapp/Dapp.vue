@@ -34,8 +34,7 @@ import { Path } from 'src/router';
 import { networkParam } from 'src/router/routes';
 import { useStore } from 'src/store';
 import { DappCombinedInfo } from 'src/v2/models';
-import { computed, defineComponent, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { computed, defineComponent } from 'vue';
 import { useRoute } from 'vue-router';
 
 export default defineComponent({
@@ -53,7 +52,6 @@ export default defineComponent({
     const route = useRoute();
     useDappRedirect();
     useDispatchGetDapps();
-    const { t } = useI18n();
     const store = useStore();
 
     const { dapps, stakingList } = useStakingList();
@@ -70,6 +68,7 @@ export default defineComponent({
     };
 
     const dapp = computed(() => {
+      console.log('dapps', dapps.value);
       if (dapps.value.length > 0 && dappAddress.value) {
         return dapps.value.find((it: DappCombinedInfo) => {
           try {

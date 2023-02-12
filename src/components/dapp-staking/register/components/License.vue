@@ -15,9 +15,10 @@
 </template>
 
 <script lang="ts">
-import { Category, NewDappItem } from 'src/store/dapp-staking/state';
+import { NewDappItem } from 'src/store/dapp-staking/state';
 import { defineComponent, PropType, reactive } from 'vue';
 import ItemsContainer from './ItemsContainer.vue';
+import { Category } from '@astar-network/astar-sdk-core';
 
 export const possibleLicenses = [
   { label: 'GPL-3.0', value: 'GPL-3.0' },

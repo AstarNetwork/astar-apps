@@ -51,7 +51,7 @@ export default defineComponent({
       required: true,
     },
     defaultValue: {
-      type: Number,
+      type: String,
       required: true,
     },
     secondValue: {

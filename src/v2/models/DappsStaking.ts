@@ -1,5 +1,5 @@
 import { BN } from '@polkadot/util';
-import { DappItem } from 'src/store/dapp-staking/state';
+import { DappItem } from '@astar-network/astar-sdk-core';
 import { Guard } from '../common';
 
 export enum SmartContractState {

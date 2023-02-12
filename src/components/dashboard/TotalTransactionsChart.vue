@@ -1,7 +1,7 @@
 <template>
   <chart-panel
     :data="data"
-    :title="textChart.ttlTransactions.title"
+    :title="textChart.ttlTransactions.title || ''"
     :tooltip="textChart.ttlTransactions.tooltip"
     :default-value="totalTransactionsNumber"
     :is-multiple-line="false"

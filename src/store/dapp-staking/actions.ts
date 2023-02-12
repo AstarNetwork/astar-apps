@@ -14,13 +14,13 @@ import { ActionTree, Dispatch } from 'vuex';
 import { StateInterface } from '../index';
 import { sign } from './../../hooks/helper/wallet';
 import { SubstrateAccount } from './../general/state';
-import { DappStateInterface as State, NewDappItem, FileInfo, DappItem } from './state';
+import { DappStateInterface as State, NewDappItem, FileInfo } from './state';
 import { IDappStakingService } from 'src/v2/services';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
 import axios, { AxiosError } from 'axios';
 import type { Transaction } from 'src/hooks/helper/wallet';
-import { getDappAddressEnum, TOKEN_API_URL } from '@astar-network/astar-sdk-core';
+import { getDappAddressEnum, TOKEN_API_URL, DappItem } from '@astar-network/astar-sdk-core';
 
 const showError = (dispatch: Dispatch, message: string): void => {
   dispatch(

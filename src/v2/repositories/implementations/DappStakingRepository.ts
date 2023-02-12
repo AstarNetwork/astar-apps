@@ -17,11 +17,14 @@ import {
   DappStakingConstants,
 } from 'src/v2/models/DappsStaking';
 import { EventAggregator, NewEraMessage } from 'src/v2/messaging';
-import { GeneralStakerInfo, checkIsDappRegistered } from 'src/hooks/helper/claim';
+import {
+  GeneralStakerInfo,
+  checkIsDappRegistered,
+  TOKEN_API_URL,
+} from '@astar-network/astar-sdk-core';
 import { ethers } from 'ethers';
 import { EditDappItem } from 'src/store/dapp-staking/state';
 import { StakeInfo, EraStakingPoints } from 'src/store/dapp-staking/actions';
-import { TOKEN_API_URL } from 'src/modules/token-api';
 import axios from 'axios';
 import { Guard } from 'src/v2/common';
 import { AccountLedger } from 'src/v2/models/DappsStaking';

@@ -97,7 +97,7 @@ export function useCompoundRewards() {
                 {
                   msg: t('dappStaking.toast.successfullySetRewardDest'),
                   alertType: 'success',
-                  txHash: result.txHash,
+                  txHash: result.txHash.toString(),
                 },
                 { root: true }
               );
