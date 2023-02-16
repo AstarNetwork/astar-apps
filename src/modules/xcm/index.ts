@@ -220,7 +220,7 @@ export const xcmChainObj: XcmChainObj = {
   [Chain.EQUILIBRIUM]: {
     name: Chain.EQUILIBRIUM,
     relayChain: Chain.POLKADOT,
-    img: 'https://polkadot.js.org/apps/static/equilibrium.76a4e2db..svg',
+    img: 'https://contentv2.equilibrium.io/uploads/eq_f2099c1422.svg',
     parachainId: parachainIds.EQUILIBRIUM,
     endpoint: 'wss://node.pol.equilibrium.io/',
     subscan: 'https://equilibrium.subscan.io/',
