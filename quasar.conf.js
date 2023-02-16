@@ -156,7 +156,8 @@ module.exports = configure(function (ctx) {
       manifest: {
         name: 'Astar Portal - Astar & Shiden Network',
         short_name: 'Astar Portal',
-        description: 'Your one-stop platform for the Astar ecosystem - Wallet / Staking / Bridging',
+        description:
+          'Astar Portal is the hub of a multi-chain, one-stop platform for managing assets and dApp Staking - build2earn protocol.',
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',

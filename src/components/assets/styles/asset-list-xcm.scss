@@ -5,6 +5,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  @media (min-width: $lg) {
+    padding-right: 26px;
+  }
 }
 
 .rows {
@@ -59,14 +62,9 @@
   display: flex;
   flex-direction: column;
   @media (min-width: $md) {
-    width: 200px;
+    min-width: 240px;
     white-space: nowrap;
-  }
-  @media (min-width: $xl) {
     text-align: right;
-  }
-  @media (min-width: $xxl) {
-    width: 250px;
   }
 }
 
@@ -93,11 +91,12 @@
 
 .column--ticker {
   grid-template-columns: 54px auto;
-  column-gap: 12px;
+  column-gap: 4px;
   align-items: center;
   display: grid;
   width: 100px;
   @media (min-width: $sm) {
+    column-gap: 12px;
     width: auto;
     grid-template-columns: 60px auto;
   }
@@ -133,8 +132,7 @@
     width: 340px;
     grid-template-columns: 100px 70px;
     justify-content: end;
-    column-gap: 8px;
-    margin-right: 80px;
+    column-gap: 48px;
   }
 }
 

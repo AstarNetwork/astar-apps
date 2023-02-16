@@ -10,6 +10,7 @@ import {
 import { EditDappItem } from 'src/store/dapp-staking/state';
 import { u32 } from '@polkadot/types';
 import { GeneralStakerInfo } from 'src/hooks/helper/claim';
+import { StakeInfo } from 'src/store/dapp-staking/actions';
 
 /**
  * Definition of repository to access dapps staking pallet.
@@ -100,4 +101,6 @@ export interface IDappStakingRepository {
     stakerAddress: string,
     contractAddress: string
   ): Promise<Map<string, GeneralStakerInfo>>;
+
+  getStakeInfo(dappAddress: string, currentAccount: string): Promise<StakeInfo | undefined>;
 }

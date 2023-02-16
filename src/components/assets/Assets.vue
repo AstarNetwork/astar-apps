@@ -1,6 +1,11 @@
 <template>
   <div v-if="!isLoading" class="wrapper--assets">
     <div class="container--assets">
+      <div>
+        <span class="text--xl">
+          {{ $t(isH160 ? 'assets.astarEvmAccount' : 'assets.astarNativeAccount') }}
+        </span>
+      </div>
       <account
         :ttl-erc20-amount="evmAssets.ttlEvmUsdAmount"
         :ttl-native-xcm-usd-amount="ttlNativeXcmUsdAmount"
@@ -8,13 +13,16 @@
         :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
       />
       <div>
+        <div class="separator" />
+        <span class="text--xl">{{ $t('assets.assets') }}</span>
+      </div>
+      <div>
         <div v-if="isH160">
           <evm-asset-list :tokens="evmAssets.assets" />
         </div>
         <div v-else class="container--assets">
           <xvm-native-asset-list v-if="isSupportXvmTransfer" :xvm-assets="xvmAssets.xvmAssets" />
           <xcm-native-asset-list v-if="isEnableXcm" :xcm-assets="xcmAssets.assets" />
-          <native-asset-list />
         </div>
       </div>
     </div>
@@ -23,11 +31,11 @@
 <script lang="ts">
 import Account from 'src/components/assets/Account.vue';
 import EvmAssetList from 'src/components/assets/EvmAssetList.vue';
-import NativeAssetList from 'src/components/assets/NativeAssetList.vue';
 import XcmNativeAssetList from 'src/components/assets/XcmNativeAssetList.vue';
 import XvmNativeAssetList from 'src/components/assets/XvmNativeAssetList.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
+import { isValidEvmAddress } from 'src/config/web3';
 import { useAccount, useBalance, useDispatchGetDapps, useNetworkInfo } from 'src/hooks';
 import { useStore } from 'src/store';
 import { EvmAssets, XcmAssets, XvmAssets } from 'src/store/assets/state';
@@ -37,7 +45,6 @@ import { computed, defineComponent, ref, watch, watchEffect, onUnmounted } from 
 export default defineComponent({
   components: {
     Account,
-    NativeAssetList,
     EvmAssetList,
     XcmNativeAssetList,
     XvmNativeAssetList,
@@ -88,6 +95,7 @@ export default defineComponent({
 
     const handleUpdateEvmAssets = (): void => {
       currentAccount.value &&
+        isValidEvmAddress(currentAccount.value) &&
         store.dispatch('assets/getEvmAssets', {
           currentAccount: currentAccount.value,
           srcChainId: evmNetworkId.value,

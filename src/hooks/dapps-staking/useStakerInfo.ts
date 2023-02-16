@@ -1,14 +1,15 @@
 import { BN } from 'bn.js';
-import { $api } from 'boot/api';
 import { ethers } from 'ethers';
 import { useAccount } from 'src/hooks';
-import { getStakeInfo } from 'src/modules/dapp-staking/utils/index';
 import { useStore } from 'src/store';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
 import { DappItem } from 'src/store/dapp-staking/state';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { computed, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { container } from 'src/v2/common';
+import { Symbols } from 'src/v2/symbols';
+import { IDappStakingService } from 'src/v2/services';
 
 export type MyStakeInfo = StakeInfo | DappItem;
 
@@ -26,21 +27,17 @@ export function useStakerInfo() {
   const dapps = computed(() => store.getters['dapps/getAllDapps']);
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
 
-  const getData = async (address: string) => {
-    return await getStakeInfo({
-      api: $api!,
-      dappAddress: address,
-      currentAccount: currentAccount.value,
-    });
-  };
-
   const setStakeInfo = async () => {
     let data: StakeInfo[] = [];
     let myData: MyStakeInfo[] = [];
 
+    const dappStakingService = container.get<IDappStakingService>(Symbols.DappStakingService);
     data = await Promise.all<StakeInfo>(
       dapps.value.map(async (it: DappCombinedInfo) => {
-        const stakeData = await getData(it.dapp?.address!);
+        const stakeData = await dappStakingService.getStakeInfo(
+          it.dapp?.address!,
+          currentAccount.value
+        );
         if (stakeData?.hasStake) {
           myData.push({ ...stakeData, ...it.dapp });
         }
@@ -65,7 +62,7 @@ export function useStakerInfo() {
   };
 
   watchEffect(async () => {
-    if (isLoading.value || !dapps.value) {
+    if (isLoading.value || !dapps.value || !currentAccount.value) {
       return;
     }
     try {

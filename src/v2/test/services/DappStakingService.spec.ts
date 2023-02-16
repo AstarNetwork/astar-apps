@@ -98,4 +98,10 @@ describe('DappStakingService.ts', () => {
     expect(wallet.walletSignAndSendMock).toBeCalledTimes(1);
     expect(wallet.walletSignAndSendMock).toBeCalledWith({}, stakerAddress, expect.any(String));
   });
+
+  it('getStakeInfo - throws exception if invalid argument', async () => {
+    const sut = container.get<IDappStakingService>(Symbols.DappStakingService);
+
+    await expect(sut.getStakeInfo('', '')).rejects.toThrow('Invalid argument currentAccount');
+  });
 });

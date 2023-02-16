@@ -10,12 +10,6 @@ import { EraStakingPoints, StakeInfo } from 'src/store/dapp-staking/actions';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
 
-interface StakeData {
-  address: string;
-  balance: string;
-  name: string;
-}
-
 export const checkIsLimitedProvider = (): boolean => {
   const limitedProvider = ['onfinality'];
   const selectedEndpoint = JSON.parse(

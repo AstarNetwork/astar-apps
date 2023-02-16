@@ -1,6 +1,7 @@
 import { BN } from '@polkadot/util';
 import { TvlModel } from 'src/v2/models';
-import { DappCombinedInfo, StakerInfo } from 'src/v2/models/DappsStaking';
+import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
+import { SocialIcon } from '@astar-network/astar-ui';
 
 export type Category = 'defi' | 'gamefi' | 'infra' | 'nft' | 'others';
 
@@ -62,7 +63,7 @@ export interface Community {
 }
 
 export interface CommunityDefinition extends Community {
-  iconUrl: string;
+  iconName: SocialIcon;
   label: string;
   validateHandle?: (v: string) => boolean | string;
 }

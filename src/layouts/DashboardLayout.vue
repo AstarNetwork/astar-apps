@@ -1,13 +1,11 @@
 <template>
   <div id="app--main" class="tw-h-screen tw-flex tw-overflow-hidden">
     <template v-if="width >= screenSize.lg">
-      <divider-new-year />
       <sidebar-desktop />
     </template>
     <div class="tw-flex tw-flex-col tw-w-0 tw-flex-1 tw-overflow-y-auto lg:tw-overflow-hidden">
       <portal-header />
       <template v-if="screenSize.lg > width">
-        <divider-new-year-mobile />
         <sidebar-mobile />
       </template>
       <main
@@ -24,9 +22,6 @@
         </div>
       </main>
     </div>
-    <!-- <template v-if="width >= screenSize.lg">
-      
-    </template> -->
   </div>
 </template>
 
@@ -36,16 +31,12 @@ import { useBreakpoints, useGasPrice } from 'src/hooks';
 import PortalHeader from 'src/components/header/Header.vue';
 import SidebarDesktop from 'components/sidenav/SidebarDesktop.vue';
 import SidebarMobile from 'components/sidenav/SidebarMobile.vue';
-import DividerNewYear from 'components/common/themes/DividerNewYear.vue';
-import DividerNewYearMobile from 'components/common/themes/DividerNewYearMobile.vue';
 
 export default defineComponent({
   components: {
     PortalHeader,
     SidebarMobile,
     SidebarDesktop,
-    DividerNewYear,
-    DividerNewYearMobile,
   },
   setup() {
     const { width, screenSize } = useBreakpoints();
