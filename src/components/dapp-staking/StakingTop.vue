@@ -99,7 +99,7 @@ export default defineComponent({
 @import 'src/css/quasar.variables.scss';
 
 .extra-wrapper {
-  max-width: 1300px;
+  max-width: $container-max-width;
   margin: 0 auto;
 }
 

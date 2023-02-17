@@ -3,7 +3,9 @@
     <div v-if="isXcmAssets" class="container">
       <div class="row">
         <div>
-          <span class="text--title">{{ $t('assets.xcmAssets') }}</span>
+          <span class="text--title">
+            {{ $t(width > screenSize.sm ? 'assets.xcmAssets' : 'assets.xcmAssetsShort') }}</span
+          >
         </div>
         <asset-search-option
           :toggle-is-hide-small-balances="toggleIsHideSmallBalancesXcm"
@@ -123,7 +125,7 @@ import ModalFaucet from 'src/components/assets/modals/ModalFaucet.vue';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { faucetBalRequirement } from 'src/config/wallets';
 import { getBalance } from 'src/config/web3';
-import { useAccount, useBalance, useNetworkInfo, usePrice } from 'src/hooks';
+import { useAccount, useBalance, useBreakpoints, useNetworkInfo, usePrice } from 'src/hooks';
 import { Erc20Token, getTokenImage } from 'src/modules/token';
 import { buildTransferPageLink } from 'src/router/routes';
 import { useStore } from 'src/store';
@@ -160,6 +162,7 @@ export default defineComponent({
     const isSearchXcm = ref<boolean>(false);
     const searchXcm = ref<string>('');
 
+    const { width, screenSize } = useBreakpoints();
     const { currentAccount } = useAccount();
     const { nativeTokenUsd } = usePrice();
     const { accountData } = useBalance(currentAccount);
@@ -311,6 +314,8 @@ export default defineComponent({
       isHideSmallBalancesXcm,
       isLoading,
       isXcmAssets,
+      width,
+      screenSize,
       buildTransferPageLink,
       setIsSearch,
       handleModalFaucet,

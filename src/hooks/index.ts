@@ -40,4 +40,5 @@ export * from './xvm/useXvmTransferRouter';
 export * from './xvm/useXvmTokenTransfer';
 export * from './ui/useTooltip';
 export * from './ui/usePageReady';
+export * from './ui/useBalloons';
 export * from './dapps-staking/useCompoundRewards';

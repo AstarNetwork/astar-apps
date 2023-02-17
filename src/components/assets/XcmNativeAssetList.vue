@@ -3,7 +3,9 @@
     <div class="container">
       <div class="row--menu">
         <div class="row">
-          <span class="text--title">{{ $t('assets.xcmAssets') }}</span>
+          <span class="text--title">
+            {{ $t(width > screenSize.sm ? 'assets.xcmAssets' : 'assets.xcmAssetsShort') }}
+          </span>
         </div>
         <asset-search-option
           :toggle-is-hide-small-balances="toggleIsHideSmallBalances"
@@ -29,6 +31,7 @@
 <script lang="ts">
 import AssetSearchOption from 'src/components/assets/AssetSearchOption.vue';
 import XcmCurrency from 'src/components/assets/XcmCurrency.vue';
+import { useBreakpoints } from 'src/hooks';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, PropType, ref } from 'vue';
 export default defineComponent({
@@ -46,6 +49,7 @@ export default defineComponent({
     const isSearch = ref<boolean>(false);
     const search = ref<string>('');
     const isHideSmallBalances = ref<boolean>(false);
+    const { width, screenSize } = useBreakpoints();
 
     const filteredTokens = computed<Asset[]>(() => {
       if (!props.xcmAssets) return [];
@@ -84,6 +88,8 @@ export default defineComponent({
       search,
       isSearch,
       isHideSmallBalances,
+      width,
+      screenSize,
       toggleIsHideSmallBalances,
       setIsSearch,
       setSearch,
