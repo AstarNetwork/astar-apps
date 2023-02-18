@@ -26,16 +26,13 @@
   display: flex;
   gap: 16px;
   margin-top: 20px;
-  @media (max-width: $md) {
-    display: flex;
-    width: 100%;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    overflow-y: hidden;
-    justify-content: left;
-    &::-webkit-scrollbar {
-      display: none;
-    }
+  width: 100%;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  justify-content: left;
+  &::-webkit-scrollbar {
+    display: none;
   }
   @media (min-width: $xl) {
     margin-top: 0px;
