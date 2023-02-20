@@ -9,6 +9,7 @@ export enum LOCAL_STORAGE {
   XVM_TOKEN_IMPORTS = 'xvmTokenImports',
   CONFIRM_COOKIE_POLICY = 'confirmCookiePolicy',
   SELECTED_WALLET = 'selectedWallet',
+  SELECTED_LANGUAGE = 'selectedLanguage',
   XCM_DEPOSIT_EVM_WALLET = 'xcmDepositEvmWallet',
   TX_HISTORIES = 'txHistories',
   XCM_TX_HISTORIES = 'xcmTxHistories',
