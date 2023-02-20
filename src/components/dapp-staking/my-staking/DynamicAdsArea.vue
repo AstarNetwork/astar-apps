@@ -3,7 +3,7 @@
     <div class="wrapper-item news-area">
       <news-area />
     </div>
-    <div class="wrapper-item wrapper--banners">
+    <div class="wrapper-item wrapper--banners" :class="isShiden && 'wrapper--shiden'">
       <div
         v-for="(t, index) in items"
         :key="index"
@@ -32,12 +32,13 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, watchEffect } from 'vue';
+import { defineComponent, ref, watchEffect, computed } from 'vue';
 import { Struct } from '@polkadot/types';
 import { Perbill } from '@polkadot/types/interfaces';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
 import { truncate } from 'src/hooks/helper/common';
+import { endpointKey } from 'src/config/chainEndpoints';
 import { useNetworkInfo } from 'src/hooks';
 import NewsArea from './components/NewsArea.vue';
 import featuredData from 'src/data/featured_dapp.json';
@@ -58,7 +59,8 @@ export default defineComponent({
   setup() {
     const items = featuredData;
     const rewardsDeveloper = ref<number>(0);
-    const { nativeTokenSymbol } = useNetworkInfo();
+    const { nativeTokenSymbol, currentNetworkIdx } = useNetworkInfo();
+    const isShiden = computed(() => currentNetworkIdx.value === endpointKey.SHIDEN);
 
     const goToLink = (link: string) => {
       window.open(link, '_blank');
@@ -83,7 +85,11 @@ export default defineComponent({
 
     const sourceImg = (img: string, index: number) => {
       if (index === 0) {
-        return require('/src/assets/img/ic_astar_farm.png');
+        if (isShiden.value) {
+          return require('/src/assets/img/ic_sdn_farm.png');
+        } else {
+          return require('/src/assets/img/ic_astar_farm.png');
+        }
       } else if (index === 1) {
         return require('/src/assets/img/ic_algem_staking.png');
       } else {
@@ -99,6 +105,7 @@ export default defineComponent({
       truncate,
       sourceImg,
       items,
+      isShiden,
       goToLink,
     };
   },

@@ -104,3 +104,15 @@
     gap: 24px;
   }
 }
+
+.wrapper--shiden {
+  .card:first-child {
+    background: linear-gradient(
+      129.32deg, 
+      #170d29 -4.43%, 
+      #481e94 31.93%, 
+      #6d2cae 74.44%, 
+      #0a010d 133.31%
+    );
+  }
+}
