@@ -102,5 +102,7 @@ export interface IDappStakingRepository {
     contractAddress: string
   ): Promise<Map<string, GeneralStakerInfo>>;
 
+  getNextEraEta(network: string): Promise<number>;
+
   getStakeInfo(dappAddress: string, currentAccount: string): Promise<StakeInfo | undefined>;
 }

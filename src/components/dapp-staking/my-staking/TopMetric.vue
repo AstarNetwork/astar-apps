@@ -103,7 +103,8 @@ import {
   RewardDestination,
   useAccount,
   useAprFromApi,
-  useAvgBlockTime,
+  useAvgBlockTimeApi,
+  useCurrentEra,
   useNetworkInfo,
 } from 'src/hooks';
 import { formatNumber } from 'src/modules/token-api';
@@ -128,7 +129,8 @@ export default defineComponent({
     const router = useRouter();
     const path = computed(() => router.currentRoute.value.path.split('/')[1]);
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
-    const { progress, etaNextEra } = useAvgBlockTime(path.value);
+    const { progress } = useCurrentEra();
+    const { etaNextEra } = useAvgBlockTimeApi(path.value);
 
     const hero_img = {
       astar_hero: require('/src/assets/img/astar_hero.png'),

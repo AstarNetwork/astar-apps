@@ -24,6 +24,7 @@ export * from './useGasPrice';
 export * from './useNetworkInfo';
 export * from './useAppRouter';
 export * from './chain/useAvgBlockTime';
+export * from './chain/useAvgBlockTimeApi';
 export * from './dapps-staking/useStake';
 export * from './dapps-staking/useUnbond';
 export * from './dapps-staking/useStakerInfo';
