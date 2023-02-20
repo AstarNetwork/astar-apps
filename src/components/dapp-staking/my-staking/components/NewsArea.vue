@@ -1,6 +1,7 @@
 <template>
   <div
     class="wrapper--news"
+    :class="isShiden && 'wrapper--shiden'"
     :style="`background-image: url('${isDarkTheme ? bg_img.bg_news_dark : bg_img.bg_news_light}')`"
   >
     <div class="title--news">News</div>
@@ -34,6 +35,8 @@
 import { defineComponent, computed, ref, watchEffect } from 'vue';
 import { useStore } from 'src/store';
 import { paginate } from 'src/hooks/helper/common';
+import { endpointKey } from 'src/config/chainEndpoints';
+import { useNetworkInfo } from 'src/hooks';
 import newsData from 'src/data/news.json';
 import { DappCombinedInfo } from 'src/v2/models';
 
@@ -49,6 +52,8 @@ export default defineComponent({
     const store = useStore();
     const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
     const isDarkTheme = computed<boolean>(() => store.getters['general/theme'] === 'DARK');
+    const { currentNetworkIdx } = useNetworkInfo();
+    const isShiden = computed(() => currentNetworkIdx.value === endpointKey.SHIDEN);
 
     const page = ref<number>(1);
     const pageTtl = ref<number>(0);
@@ -118,6 +123,7 @@ export default defineComponent({
       page,
       pageTtl,
       changePage,
+      isShiden,
     };
   },
 });
@@ -260,6 +266,31 @@ export default defineComponent({
   }
   .icon--arrow {
     color: #fff;
+  }
+}
+
+.wrapper--shiden {
+  .title--news {
+    background: linear-gradient(
+      129.32deg,
+      #170d29 -4.43%,
+      #481e94 31.93%,
+      #6d2cae 74.44%,
+      #0a010d 133.31%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+  }
+  .box--tag {
+    background: linear-gradient(
+      129.32deg,
+      #170d29 -4.43%,
+      #481e94 31.93%,
+      #6d2cae 74.44%,
+      #0a010d 133.31%
+    ) !important;
   }
 }
 </style>
