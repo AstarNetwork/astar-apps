@@ -157,6 +157,7 @@ export default defineComponent({
 }
 
 .list--news {
+  height: 100%;
   padding-top: 4px;
   .row--news {
     display: flex;
@@ -224,7 +225,7 @@ export default defineComponent({
   color: $gray-5-selected;
 
   @media (min-width: $md) {
-    bottom: 40px;
+    bottom: 50px;
   }
 }
 .colum--current-page {
