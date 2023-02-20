@@ -271,13 +271,7 @@ export default defineComponent({
 
 .wrapper--shiden {
   .title--news {
-    background: linear-gradient(
-      129.32deg,
-      #170d29 -4.43%,
-      #481e94 31.93%,
-      #6d2cae 74.44%,
-      #0a010d 133.31%
-    );
+    background: linear-gradient(129.32deg, #170d29 -4.43%, #481e94 5%, #6d2cae 80%, #0a010d 10%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
