@@ -39,7 +39,6 @@ export const providerEndpoints: ChainProvider[] = [
     endpoints: [
       { name: 'Astar', endpoint: 'wss://wss.astar.network' },
       { name: 'Dwellir', endpoint: 'wss://astar-rpc.dwellir.com' },
-      { name: 'Pinknode', endpoint: 'wss://public-rpc.pinknode.io/astar' },
       { name: 'OnFinality', endpoint: 'wss://astar.api.onfinality.io/public-ws' },
       { name: 'Light Client (experimental)', endpoint: 'light://substrate-connect/polkadot/astar' },
     ],
@@ -63,7 +62,6 @@ export const providerEndpoints: ChainProvider[] = [
     endpoints: [
       { name: 'Shiden', endpoint: 'wss://rpc.shiden.astar.network' },
       { name: 'Dwellir', endpoint: 'wss://shiden-rpc.dwellir.com' },
-      { name: 'Pinknode', endpoint: 'wss://rpc.pinknode.io/shiden/explorer' },
       { name: 'OnFinality', endpoint: 'wss://shiden.api.onfinality.io/public-ws' },
       { name: 'Light Client (experimental)', endpoint: 'light://substrate-connect/kusama/shiden' },
     ],
