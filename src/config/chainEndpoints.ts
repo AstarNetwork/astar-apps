@@ -106,10 +106,7 @@ export const providerEndpoints: ChainProvider[] = [
     subscan: 'https://shibuya.subscan.io',
     blockscout: 'https://blockscout.com/shibuya',
     evmChainId: '81',
-    evmEndpoints: [
-      'https://evm.shibuya.astar.network',
-      'https://shibuya.public.blastapi.io',
-    ],
+    evmEndpoints: ['https://evm.shibuya.astar.network', 'https://shibuya.public.blastapi.io'],
     faucetEndpoint: 'https://us-central1-facuet-bot.cloudfunctions.net/app/shibuya',
     defaultLogo:
       'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shibuya.png?raw=true',
