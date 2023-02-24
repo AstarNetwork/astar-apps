@@ -54,7 +54,7 @@ export const providerEndpoints: ChainProvider[] = [
     evmEndpoints: [
       'https://evm.astar.network',
       'https://astar.public.blastapi.io',
-      'https://astar.api.onfinality.io/public'
+      'https://astar.api.onfinality.io/public',
     ],
     faucetEndpoint: 'https://us-central1-facuet-bot.cloudfunctions.net/app/astar',
     defaultLogo:
@@ -82,7 +82,7 @@ export const providerEndpoints: ChainProvider[] = [
     evmEndpoints: [
       'https://evm.shiden.astar.network',
       'https://shiden.public.blastapi.io',
-      'https://shiden.api.onfinality.io/public'
+      'https://shiden.api.onfinality.io/public',
     ],
     faucetEndpoint: 'https://us-central1-facuet-bot.cloudfunctions.net/app/shiden',
     defaultLogo:
