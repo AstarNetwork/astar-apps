@@ -4,7 +4,7 @@ import {
   LOCAL_STORAGE,
   updateAccountHistories,
 } from 'src/config/localStorage';
-import { getTimestamp } from 'src/hooks/helper/common';
+import { getTimestamp } from '@astar-network/astar-sdk-core';
 import { TxHistory } from 'src/modules/account';
 import { HistoryTxType } from 'src/modules/account/index';
 

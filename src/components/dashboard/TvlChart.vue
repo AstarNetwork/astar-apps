@@ -2,7 +2,7 @@
   <chart-panel
     :data="tvlData"
     :merged-data="mergedTvlData"
-    :title="title"
+    :title="title || ''"
     :tooltip="tooltip"
     :default-value="tvlValue"
     class="wrapper--chart"

@@ -49,7 +49,8 @@ import AddItemCard from './AddItemCard.vue';
 import ItemsContainer from './ItemsContainer.vue';
 import ModalAddDeveloper from './ModalAddDeveloper.vue';
 import Avatar from 'src/components/common/Avatar.vue';
-import { Developer, NewDappItem } from 'src/store/dapp-staking/state';
+import { NewDappItem } from 'src/store/dapp-staking/state';
+import { Developer } from '@astar-network/astar-sdk-core';
 
 export default defineComponent({
   components: {

@@ -1,5 +1,5 @@
+import { SelectedGas } from '@astar-network/astar-sdk-core';
 import { inject, injectable } from 'inversify';
-import { SelectedGas } from 'src/modules/gas-api';
 import { GasPriceChangedMessage, TipPriceChangedMessage, IEventAggregator } from 'src/v2/messaging';
 import { IGasPriceProvider } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';

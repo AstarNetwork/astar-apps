@@ -54,7 +54,7 @@ import {
   useStake,
   useStakingList,
 } from 'src/hooks';
-import { wait } from 'src/hooks/helper/common';
+import { wait } from '@astar-network/astar-sdk-core';
 import { Path } from 'src/router';
 import { useStore } from 'src/store';
 import { DappCombinedInfo } from 'src/v2/models';

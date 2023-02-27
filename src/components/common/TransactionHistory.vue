@@ -22,7 +22,7 @@
 </template>
 <script lang="ts">
 import { date } from 'quasar';
-import { truncate } from 'src/hooks/helper/common';
+import { truncate } from '@astar-network/astar-sdk-core';
 import { RecentHistory } from 'src/modules/information';
 import { defineComponent, PropType } from 'vue';
 import TokenBalance from 'src/components/common/TokenBalance.vue';

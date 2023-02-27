@@ -12,7 +12,7 @@
 </template>
 <script lang="ts">
 import ChartPanel from 'src/components/common/ChartPanel.vue';
-import { Duration, filterStatsData, StatsDetail, StatsType } from 'src/modules/token-api';
+import { Duration, filterStatsData, StatsDetail, StatsType } from '@astar-network/astar-sdk-core';
 import { defineComponent, PropType, ref, watchEffect } from 'vue';
 
 export default defineComponent({

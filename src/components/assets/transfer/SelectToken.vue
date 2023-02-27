@@ -38,7 +38,7 @@
 </template>
 <script lang="ts">
 import { useNetworkInfo } from 'src/hooks';
-import { truncate } from 'src/hooks/helper/common';
+import { truncate } from '@astar-network/astar-sdk-core';
 import { Asset } from 'src/v2/models';
 import { defineComponent, PropType } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';

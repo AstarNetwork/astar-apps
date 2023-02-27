@@ -16,7 +16,7 @@ import { Asset, astarChains } from 'src/v2/models';
 import { computed, ref, watch, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { EvmAssets, XcmAssets } from 'src/store/assets/state';
-import { capitalize } from 'src/hooks/helper/common';
+import { capitalize } from '@astar-network/astar-sdk-core';
 
 export const pathEvm = '-evm';
 export type TransferMode = 'local' | 'xcm';

@@ -135,7 +135,7 @@ import {
 } from 'src/config/api/polkadot/connectApi';
 import { ChainProvider, endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { getRandomFromArray, wait } from 'src/hooks/helper/common';
+import { getRandomFromArray, wait } from '@astar-network/astar-sdk-core';
 import { buildNetworkUrl } from 'src/router/utils';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, onUnmounted } from 'vue';

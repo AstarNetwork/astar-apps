@@ -1,4 +1,4 @@
-import { capitalize } from './../hooks/helper/common';
+import { capitalize, objToArray } from '@astar-network/astar-sdk-core';
 import { SubstrateAccount } from 'src/store/general/state';
 import { ApiPromise } from '@polkadot/api';
 import { keyring } from '@polkadot/ui-keyring';
@@ -10,7 +10,6 @@ import { ASTAR_CHAIN } from 'src/config/chain';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { opengraphMeta } from 'src/config/metadata';
 import { createAstarWeb3Instance, TNetworkId } from 'src/config/web3';
-import { objToArray } from 'src/hooks/helper/common';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
 import { useChainInfo } from 'src/hooks/useChainInfo';
 import { useExtensions } from 'src/hooks/useExtensions';

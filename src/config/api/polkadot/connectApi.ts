@@ -1,7 +1,7 @@
 import { ApiPromise, WsProvider, ScProvider } from '@polkadot/api';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { wait } from 'src/hooks/helper/common';
+import { wait } from '@astar-network/astar-sdk-core';
 import * as Sc from '@substrate/connect';
 import jsonParachainSpecAstar from './chain-specs/astar.json';
 import jsonParachainSpecShiden from './chain-specs/shiden.json';

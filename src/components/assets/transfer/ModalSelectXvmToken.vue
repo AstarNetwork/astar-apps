@@ -35,7 +35,7 @@
 import { fadeDuration } from '@astar-network/astar-ui';
 import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
-import { truncate } from 'src/hooks/helper/common';
+import { truncate } from '@astar-network/astar-sdk-core';
 import { Erc20Token } from 'src/modules/token';
 import { wait } from 'src/v2/common';
 import { defineComponent, PropType, ref } from 'vue';

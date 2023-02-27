@@ -35,7 +35,7 @@ import XcmNativeAssetList from 'src/components/assets/XcmNativeAssetList.vue';
 import XvmNativeAssetList from 'src/components/assets/XvmNativeAssetList.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { isValidEvmAddress } from 'src/config/web3';
+import { isValidEvmAddress } from '@astar-network/astar-sdk-core';
 import { useAccount, useBalance, useDispatchGetDapps, useNetworkInfo } from 'src/hooks';
 import { useStore } from 'src/store';
 import { EvmAssets, XcmAssets, XvmAssets } from 'src/store/assets/state';

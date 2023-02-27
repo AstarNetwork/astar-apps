@@ -21,7 +21,7 @@ import { Perbill } from '@polkadot/types/interfaces';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
 import { useNetworkInfo } from 'src/hooks';
-import { truncate } from 'src/hooks/helper/common';
+import { truncate } from '@astar-network/astar-sdk-core';
 import { defineComponent, ref, watchEffect } from 'vue';
 
 interface RewardDistributionConfig extends Struct {

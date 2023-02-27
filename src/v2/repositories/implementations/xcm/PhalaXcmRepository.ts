@@ -8,7 +8,7 @@ import { Symbols } from 'src/v2/symbols';
 import { XcmRepository } from '../XcmRepository';
 import { Chain, ethWalletChains, parachainIds, XcmChain } from 'src/v2/models/XcmModels';
 import { Struct } from '@polkadot/types';
-import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
+import { getPubkeyFromSS58Addr } from '@astar-network/astar-sdk-core';
 
 export interface AssetsAccount extends Struct {
   readonly balance: BN;

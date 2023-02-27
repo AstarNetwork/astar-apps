@@ -1,4 +1,4 @@
-import { objToArray } from 'src/hooks/helper/common';
+import { objToArray } from '@astar-network/astar-sdk-core';
 import { Chain, parachainIds, XcmChain } from 'src/v2/models';
 
 export {

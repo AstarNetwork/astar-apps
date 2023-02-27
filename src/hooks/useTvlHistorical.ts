@@ -1,9 +1,14 @@
 import { ApiPromise } from '@polkadot/api';
 import { $api } from 'src/boot/api';
-import { getDappStakers } from 'src/modules/dapp-staking';
-import { Duration, filterTvlData, getTvlData, mergeTvlArray } from 'src/modules/token-api';
 import { computed, ref, watch } from 'vue';
 import { useNetworkInfo } from 'src/hooks';
+import {
+  getDappStakers,
+  getTvlData,
+  filterTvlData,
+  mergeTvlArray,
+  Duration,
+} from '@astar-network/astar-sdk-core';
 
 export function useTvlHistorical() {
   const mergedTvlAmount = ref<string>('');
