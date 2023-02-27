@@ -34,7 +34,6 @@
 <script lang="ts">
 import { defineComponent, computed, ref, watchEffect } from 'vue';
 import { useStore } from 'src/store';
-// import { paginate } from 'src/hooks/helper/common';
 import { paginate } from '@astar-network/astar-sdk-core';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { useNetworkInfo } from 'src/hooks';
