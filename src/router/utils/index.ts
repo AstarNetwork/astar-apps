@@ -36,9 +36,7 @@ export const buildXvmTransferPageLink = (symbol: string): string => {
 export const buildNetworkUrl = (network: string) => {
   const href = window.location.href;
   const hrefArray = href.split('/');
-  const networkIndex = hrefArray.findIndex(
-    (it) => it.includes('astar') || it.includes('shiden') || it.includes('shibuya')
-  );
+  const networkIndex = 3;
 
   const url = hrefArray
     .slice(0, hrefArray.length)
