@@ -36,10 +36,14 @@ export const buildXvmTransferPageLink = (symbol: string): string => {
 export const buildNetworkUrl = (network: string) => {
   const href = window.location.href;
   const hrefArray = href.split('/');
-  const networkIndex = hrefArray.findIndex((it) => it === '#') + 1;
+  const networkIndex = hrefArray.findIndex(
+    (it) => it.includes('astar') || it.includes('shiden') || it.includes('shibuya')
+  );
 
-  return hrefArray
+  const url = hrefArray
     .slice(0, hrefArray.length)
     .map((it: string, index: number) => (index === networkIndex ? network : it))
     .join('/');
+
+  return url;
 };
