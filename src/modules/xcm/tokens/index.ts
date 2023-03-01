@@ -132,7 +132,7 @@ export const xcmToken = {
       logo: require('/src/assets/img/EQ.png'),
       isXcmCompatible: true,
       originChain: Chain.EQUILIBRIUM,
-      minBridgeAmount: '25',
+      minBridgeAmount: '250',
     },
     {
       symbol: 'EQD',
