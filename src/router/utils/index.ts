@@ -29,7 +29,7 @@ export const buildXvmTransferPageLink = (symbol: string): string => {
 
 /**
  * A helper function to replace the network params to the selected network
- * EX: `http://localhost:8080/#/shiden/assets` -> `http://localhost:8080/#/astar/assets`
+ * EX: `http://localhost:8080/shiden/assets` -> `http://localhost:8080/astar/assets`
  * @param network networkAlias in providerEndpoints
  * @returns URL
  */
