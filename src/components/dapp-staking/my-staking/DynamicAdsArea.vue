@@ -37,7 +37,7 @@ import { Struct } from '@polkadot/types';
 import { Perbill } from '@polkadot/types/interfaces';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
-import { truncate } from 'src/hooks/helper/common';
+import { truncate } from '@astar-network/astar-sdk-core';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { useNetworkInfo } from 'src/hooks';
 import NewsArea from './components/NewsArea.vue';
