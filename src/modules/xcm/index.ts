@@ -130,7 +130,7 @@ export const xcmChainObj: XcmChainObj = {
   [Chain.MOONRIVER]: {
     name: Chain.MOONRIVER,
     relayChain: Chain.KUSAMA,
-    img: require('/src/assets/img/token/glmr.png'),
+    img: require('/src/assets/img/token/movr.png'),
     parachainId: parachainIds.MOONRIVER,
     endpoint: 'wss://wss.api.moonriver.moonbeam.network',
     subscan: 'https://moonriver.subscan.io',
@@ -139,7 +139,7 @@ export const xcmChainObj: XcmChainObj = {
   [Chain.MOONBEAM]: {
     name: Chain.MOONBEAM,
     relayChain: Chain.POLKADOT,
-    img: require('/src/assets/img/token/movr.png'),
+    img: require('/src/assets/img/token/glmr.png'),
     parachainId: parachainIds.MOONBEAM,
     endpoint: 'wss://wss.api.moonbeam.network',
     subscan: 'https://moonbeam.subscan.io',
