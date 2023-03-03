@@ -9,6 +9,8 @@ import { Asset, parachainIds, XcmChain } from 'src/v2/models';
 import { Symbols } from 'src/v2/symbols';
 import { XcmRepository } from '../XcmRepository';
 
+const EQUILIBRIUM_DECIMALS = 9;
+
 interface FrameSystemAccountInfo extends Struct {
   readonly nonce: u32;
   readonly consumers: u32;
@@ -53,14 +55,23 @@ export class EquilibriumXcmRepository extends XcmRepository {
     return Buffer.from(id.toString(16), 'hex').toString('utf8');
   }
 
-  private signedBalanceStringify(b?: EqPrimitivesSignedBalance): string {
+  private signedBalanceStringify(
+    b?: EqPrimitivesSignedBalance,
+    decimals: number = EQUILIBRIUM_DECIMALS
+  ): string {
     if (!b) {
       return '0';
     }
 
+    const decimalsMul =
+      decimals > EQUILIBRIUM_DECIMALS
+        ? new BN(10).pow(new BN(decimals - EQUILIBRIUM_DECIMALS))
+        : new BN(1);
+
     const sign = b.isNegative ? '-' : '';
-    const val = sign ? b.asNegative.toString(10) : b.asPositive.toString(10);
-    return `${sign}${val}`;
+    const val = sign ? b.asNegative : b.asPositive;
+
+    return `${sign}${val.mul(decimalsMul).toString(10)}`;
   }
 
   public async getTransferCall(
@@ -111,6 +122,28 @@ export class EquilibriumXcmRepository extends XcmRepository {
     );
   }
 
+  public async getNativeBalance(address: string, chain: XcmChain): Promise<BN> {
+    const api = await this.apiFactory.get(chain.endpoint);
+
+    const accountInfo = (await api.query.system.account(
+      address
+    )) as unknown as FrameSystemAccountInfo;
+
+    if (!accountInfo.data.isV0) return new BN(0);
+
+    const total = this.signedBalanceStringify(
+      accountInfo.data.asV0.balance.find(
+        ([assetId]) => assetId.toNumber() === this.assetToId('eq')
+      )?.[1]
+    );
+
+    const locked = accountInfo.data.asV0.lock.toString(10);
+
+    const balance = new BN(total).sub(new BN(locked));
+
+    return balance;
+  }
+
   public async getTokenBalance(
     address: string,
     chain: XcmChain,
@@ -118,11 +151,12 @@ export class EquilibriumXcmRepository extends XcmRepository {
     isNativeToken: boolean
   ): Promise<string> {
     const symbol = token.metadata.symbol;
-    const api = await this.apiFactory.get(chain.endpoint);
 
-    if (isNativeToken && chain.parachainId !== parachainIds.EQUILIBRIUM) {
-      return this.getNativeBalance(address, chain).then((v) => v.toString(10));
+    if (symbol.toLowerCase() === 'eq' && chain.parachainId === parachainIds.EQUILIBRIUM) {
+      return (await this.getNativeBalance(address, chain)).toString(10);
     }
+
+    const api = await this.apiFactory.get(chain.endpoint);
 
     const accountInfo = (await api.query.system.account(
       address
@@ -132,7 +166,8 @@ export class EquilibriumXcmRepository extends XcmRepository {
 
     return accountInfo.data.isV0
       ? this.signedBalanceStringify(
-          accountInfo.data.asV0.balance.find(([assetId]) => assetId.toNumber() === id)?.[1]
+          accountInfo.data.asV0.balance.find(([assetId]) => assetId.toNumber() === id)?.[1],
+          token.metadata.decimals
         )
       : '0';
   }
