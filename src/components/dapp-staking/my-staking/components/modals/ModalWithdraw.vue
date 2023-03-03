@@ -29,7 +29,7 @@ import { defineComponent, ref } from 'vue';
 import FormatBalance from 'components/common/FormatBalance.vue';
 import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 import { fadeDuration } from '@astar-network/astar-ui';
-import { wait } from 'src/hooks/helper/common';
+import { wait } from '@astar-network/astar-sdk-core';
 
 export default defineComponent({
   components: { FormatBalance, ModalWrapper },

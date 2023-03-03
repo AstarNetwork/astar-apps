@@ -1,11 +1,13 @@
 import { ethers } from 'ethers';
-import { buildEvmAddress, getTokenBal, isValidEvmAddress } from 'src/config/web3';
+import { getTokenBal } from 'src/config/web3';
 import { useBalance, useGasPrice, useNetworkInfo } from 'src/hooks';
 import {
   ASTAR_SS58_FORMAT,
+  buildEvmAddress,
   isValidAddressPolkadotAddress,
+  isValidEvmAddress,
   SUBSTRATE_SS58_FORMAT,
-} from 'src/hooks/helper/plasmUtils';
+} from '@astar-network/astar-sdk-core';
 import { useAccount } from 'src/hooks/useAccount';
 import { Erc20Token } from 'src/modules/token';
 import { Path } from 'src/router';

@@ -1,4 +1,4 @@
-import { isValidAddressPolkadotAddress, balanceFormatter } from 'src/hooks/helper/plasmUtils';
+import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
 import { BN } from '@polkadot/util';
 import { u32, Option, Struct } from '@polkadot/types';
 import { Codec, ISubmittableResult } from '@polkadot/types/types';
@@ -17,16 +17,22 @@ import {
   DappStakingConstants,
 } from 'src/v2/models/DappsStaking';
 import { EventAggregator, NewEraMessage } from 'src/v2/messaging';
-import { GeneralStakerInfo, checkIsDappRegistered } from 'src/hooks/helper/claim';
+import {
+  GeneralStakerInfo,
+  checkIsDappRegistered,
+  TOKEN_API_URL,
+} from '@astar-network/astar-sdk-core';
 import { ethers } from 'ethers';
 import { EditDappItem } from 'src/store/dapp-staking/state';
 import { StakeInfo, EraStakingPoints } from 'src/store/dapp-staking/actions';
-import { TOKEN_API_URL } from 'src/modules/token-api';
 import axios from 'axios';
-import { getDappAddressEnum } from 'src/modules/dapp-staking/utils';
 import { Guard } from 'src/v2/common';
 import { AccountLedger } from 'src/v2/models/DappsStaking';
-import { wait } from 'src/hooks/helper/common';
+import {
+  wait,
+  getDappAddressEnum,
+  isValidAddressPolkadotAddress,
+} from '@astar-network/astar-sdk-core';
 import { checkIsLimitedProvider } from 'src/modules/dapp-staking/utils';
 
 // TODO type generation
@@ -83,6 +89,7 @@ interface ChunkInfo extends Codec {
 @injectable()
 export class DappStakingRepository implements IDappStakingRepository {
   private static isEraSubscribed = false;
+  private currentEra?: number;
 
   constructor(
     @inject(Symbols.DefaultApi) private api: IApi,
@@ -238,11 +245,17 @@ export class DappStakingRepository implements IDappStakingRepository {
   public async starEraSubscription(): Promise<void> {
     // Avoid multiple subscriptions.
     if (!DappStakingRepository.isEraSubscribed) {
+      DappStakingRepository.isEraSubscribed = true;
       const api = await this.api.getApi();
       await api.query.dappsStaking.currentEra((era: u32) => {
-        this.eventAggregator.publish(new NewEraMessage(era.toNumber()));
+        // For some reason subscription is triggered for every produced block,
+        // so that's why logic below.
+        const newEra = era.toNumber();
+        if (!this.currentEra || this.currentEra !== newEra) {
+          this.eventAggregator.publish(new NewEraMessage(era.toNumber()));
+          this.currentEra = newEra;
+        }
       });
-      DappStakingRepository.isEraSubscribed = true;
     }
   }
 
@@ -328,6 +341,15 @@ export class DappStakingRepository implements IDappStakingRepository {
     const api = await this.api.getApi();
 
     return await api.query.dappsStaking.currentEra<u32>();
+  }
+
+  public async getNextEraEta(network: string): Promise<number> {
+    Guard.ThrowIfUndefined('network', network);
+
+    const baseUrl = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/dapps-staking/stats/nexteraeta`;
+    const result = await axios.get<number>(baseUrl);
+
+    return result.data;
   }
 
   private getContractAddress(address: SmartContractAddress): string | undefined {

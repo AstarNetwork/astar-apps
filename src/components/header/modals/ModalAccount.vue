@@ -115,14 +115,17 @@ import SelectWallet from 'src/components/header/modals/SelectWallet.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SupportWallet } from 'src/config/wallets';
-import { getShortenAddress } from 'src/hooks/helper/addressUtils';
-import { truncate, wait } from 'src/hooks/helper/common';
+import {
+  getShortenAddress,
+  truncate,
+  wait,
+  fetchNativeBalance,
+} from '@astar-network/astar-sdk-core';
 import {
   castMobileSource,
   checkIsEthereumWallet,
   checkIsNativeWallet,
 } from 'src/hooks/helper/wallet';
-import { fetchNativeBalance } from 'src/modules/account';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
 import { computed, defineComponent, PropType, ref, watch, onUnmounted } from 'vue';

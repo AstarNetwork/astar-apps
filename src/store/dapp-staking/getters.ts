@@ -2,7 +2,7 @@ import { TvlModel } from 'src/v2/models';
 import { DappCombinedInfo, SmartContractState, StakerInfo } from 'src/v2/models/DappsStaking';
 import { GetterTree } from 'vuex';
 import { StateInterface } from '../index';
-import { DappStateInterface as State, DappItem } from './state';
+import { DappStateInterface as State } from './state';
 
 export interface ContractsGetters {
   getAllDapps(state: State): DappCombinedInfo[];

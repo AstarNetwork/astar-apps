@@ -38,12 +38,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, reactive, ref, watch } from 'vue';
-import {
-  Community,
-  CommunityDefinition,
-  CommunityType,
-  NewDappItem,
-} from 'src/store/dapp-staking/state';
+import { CommunityDefinition, NewDappItem } from 'src/store/dapp-staking/state';
 import ItemsContainer from './ItemsContainer.vue';
 import ImageCard from './ImageCard.vue';
 import AddItemCard from './AddItemCard.vue';
@@ -52,6 +47,7 @@ import ModalAddCommunity from './ModalAddCommunity.vue';
 import { useI18n } from 'vue-i18n';
 import { isUrlValid } from 'src/components/common/Validators';
 import { SocialIcon } from '@astar-network/astar-ui';
+import { Community, CommunityType } from '@astar-network/astar-sdk-core';
 
 export default defineComponent({
   components: {

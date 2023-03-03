@@ -9,12 +9,14 @@ import { injectable, inject } from 'inversify';
 import { ExtrinsicPayload, IApi, IApiFactory } from 'src/v2/integration';
 import { Symbols } from 'src/v2/symbols';
 import { Guard } from 'src/v2/common';
-import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
+import {
+  getPubkeyFromSS58Addr,
+  isValidAddressPolkadotAddress,
+  isValidEvmAddress,
+} from '@astar-network/astar-sdk-core';
 import { XcmTokenInformation } from 'src/modules/xcm';
 import { decodeAddress, evmToAddress } from '@polkadot/util-crypto';
 import { TokenId } from 'src/v2/config/types';
-import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
-import { isValidEvmAddress } from 'src/config/web3';
 import { XcmChain } from 'src/v2/models/XcmModels';
 
 interface AssetConfig extends Struct {

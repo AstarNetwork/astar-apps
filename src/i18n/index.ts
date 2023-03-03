@@ -3,6 +3,9 @@ import zh from './zh';
 import zhTW from './zh-TW';
 import ja from './ja';
 import fr from './fr';
+import pt from './pt';
+import kr from './kr';
+import it from './it';
 
 export const languagesSelector = [
   {
@@ -13,24 +16,40 @@ export const languagesSelector = [
     text: '日本語',
     code: 'ja',
   },
-  {
-    text: '简体中文',
-    code: 'zh',
-  },
-  {
-    text: '繁體中文',
-    code: 'zh-TW',
-  },
+  // Todo: need to update the translation files
+  // {
+  //   text: '简体中文',
+  //   code: 'zh',
+  // },
+  // {
+  //   text: '繁體中文',
+  //   code: 'zh-TW',
+  // },
   {
     text: 'Français',
     code: 'fr',
+  },
+  {
+    text: 'Português',
+    code: 'pt',
+  },
+  {
+    text: '한국어',
+    code: 'kr',
+  },
+  {
+    text: 'Italiano',
+    code: 'it',
   },
 ];
 
 export default {
   'en-US': enUS,
-  ja: ja,
-  zh: zh,
+  ja,
+  zh,
   'zh-TW': zhTW,
-  fr: fr,
+  fr,
+  pt,
+  kr,
+  it,
 };

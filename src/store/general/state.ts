@@ -1,4 +1,4 @@
-import { GasTip } from 'src/modules/gas-api/index';
+import { GasTip } from '@astar-network/astar-sdk-core';
 import type { Extensions } from 'src/hooks/useMetaExtensions';
 import { endpointKey } from 'src/config/chainEndpoints';
 

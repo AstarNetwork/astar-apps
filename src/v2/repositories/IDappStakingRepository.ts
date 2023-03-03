@@ -9,7 +9,7 @@ import {
 } from '../models/DappsStaking';
 import { EditDappItem } from 'src/store/dapp-staking/state';
 import { u32 } from '@polkadot/types';
-import { GeneralStakerInfo } from 'src/hooks/helper/claim';
+import { GeneralStakerInfo } from '@astar-network/astar-sdk-core';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
 
 /**
@@ -101,6 +101,8 @@ export interface IDappStakingRepository {
     stakerAddress: string,
     contractAddress: string
   ): Promise<Map<string, GeneralStakerInfo>>;
+
+  getNextEraEta(network: string): Promise<number>;
 
   getStakeInfo(dappAddress: string, currentAccount: string): Promise<StakeInfo | undefined>;
 }

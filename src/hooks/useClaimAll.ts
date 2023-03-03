@@ -1,10 +1,13 @@
+import {
+  getIndividualClaimTxs,
+  PayloadWithWeight,
+  ExtrinsicPayload,
+} from '@astar-network/astar-sdk-core';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { BN } from '@polkadot/util';
 import { $api } from 'boot/api';
 import { useCurrentEra } from 'src/hooks';
 import { displayCustomMessage, TxType } from 'src/hooks/custom-signature/message';
-import { ExtrinsicPayload } from 'src/hooks/helper';
-import { getIndividualClaimTxs, PayloadWithWeight } from 'src/hooks/helper/claim';
 import { useStore } from 'src/store';
 import { container } from 'src/v2/common';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';

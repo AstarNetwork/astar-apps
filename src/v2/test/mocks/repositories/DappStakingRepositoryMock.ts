@@ -7,7 +7,7 @@ import { DappStakingConstants, SmartContract, StakerInfo } from 'src/v2/models/D
 import { EditDappItem } from 'src/store/dapp-staking/state';
 import { AccountLedger } from 'src/v2/models/DappsStaking';
 import { u32 } from '@polkadot/types';
-import { GeneralStakerInfo } from 'src/hooks/helper/claim';
+import { GeneralStakerInfo } from '@astar-network/astar-sdk-core';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
 @injectable()
 export class DappStakingRepositoryMock implements IDappStakingRepository {
@@ -94,7 +94,7 @@ export class DappStakingRepositoryMock implements IDappStakingRepository {
     contractAddress: string,
     network: string
   ): Promise<EditDappItem | undefined> {
-    throw new Error('Not imlemented yet');
+    throw new Error('Not implemented yet');
   }
 
   public async getLedger(accountAddress: string): Promise<AccountLedger> {
@@ -103,6 +103,10 @@ export class DappStakingRepositoryMock implements IDappStakingRepository {
 
   public async getApr(network: string): Promise<{ apr: number; apy: number }> {
     return { apr: 0, apy: 0 };
+  }
+
+  public async getNextEraEta(network: string): Promise<number> {
+    return 0;
   }
 
   public async getStakeInfo(
