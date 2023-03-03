@@ -93,13 +93,17 @@ export class EquilibriumXcmRepository extends XcmRepository {
     const isTransferNative = symbol.toLowerCase() === 'astr';
     const assetId = this.assetToId(symbol);
     const pub = decodeAddress(recipientAddress);
+    const decimalsMul =
+      token.metadata.decimals > EQUILIBRIUM_DECIMALS
+        ? new BN(10).pow(new BN(token.metadata.decimals - EQUILIBRIUM_DECIMALS))
+        : new BN(1);
 
     return await this.buildTxCall(
       from,
       'eqBalances',
       isTransferNative ? 'xcmTransferNative' : 'xcmTransfer',
       assetId,
-      amount,
+      amount.div(decimalsMul),
       isTransferNative
         ? { Id32: pub }
         : {
