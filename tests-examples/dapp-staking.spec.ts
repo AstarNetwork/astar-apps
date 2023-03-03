@@ -13,13 +13,13 @@ test.describe('init screen', () => {
   test('should private policy is opened unless accept the policy', async ({ page }) => {
     await checkPolicyInLocalStorage(page);
     
-    const privatePolicy = page.getByRole('alert').getByText('privacy policy page.');
+    const privatePolicy = page.getByRole('link', { name: 'privacy policy page.' });
     await expect(privatePolicy).toBeVisible();
   });
   test('should hide the private policy after accept the policy', async ({ page }) => {
     await checkPolicyInLocalStorage(page);
     
-    const privatePolicy = page.getByRole('alert').getByText('privacy policy page.');
+    const privatePolicy = page.getByRole('link', { name: 'privacy policy page.' });
     await expect(privatePolicy).toBeVisible();
     await page.click('button:has-text("Accept")');
     await expect(privatePolicy).not.toBeVisible();
