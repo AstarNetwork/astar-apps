@@ -14,13 +14,15 @@
           </div>
         </div>
         <div class="row--stake">
-          <router-link :to="buildStakePageLink(dapp.dapp.address)">
-            <astar-button class="btn-size--stake" :disabled="isDisabledStakeButton">
-              <span class="text--btn-stake">
-                {{ $t('dappStaking.stake') }}
-              </span>
-            </astar-button>
-          </router-link>
+          <astar-button
+            :disabled="isH160"
+            class="btn-size--stake"
+            @click="goStakeLink(dapp.dapp.address)"
+          >
+            <span class="text--btn-stake">
+              {{ $t('dappStaking.stake') }}
+            </span>
+          </astar-button>
         </div>
       </div>
     </div>
@@ -36,9 +38,10 @@
 <script lang="ts">
 import { useAccount } from 'src/hooks';
 import { networkParam, Path } from 'src/router/routes';
-import { useStore } from 'src/store';
 import { defineComponent, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { useStore } from 'src/store';
+
 export default defineComponent({
   props: {
     dapp: {
@@ -47,30 +50,31 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const store = useStore();
     const router = useRouter();
     const { currentAccount } = useAccount();
+    const store = useStore();
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
-    const buildStakePageLink = (address: string): string => {
-      const base = networkParam + Path.DappStaking + Path.Stake;
-      return `${base}?dapp=${address.toLowerCase()}`;
-    };
 
     const goEditLink = (): void => {
       const url = networkParam + Path.DappStaking + Path.Register;
       router.push(url);
     };
 
-    const isDisabledStakeButton = computed<boolean>(() => isH160.value || !currentAccount.value);
+    const goStakeLink = (address: string): void => {
+      const base = networkParam + Path.DappStaking + Path.Stake;
+      const url = `${base}?dapp=${address.toLowerCase()}`;
+      router.push(url);
+    };
+
     const isDisabledEditButton = computed<boolean>(
       () => currentAccount.value !== props.dapp.contract.developerAddress
     );
 
     return {
-      buildStakePageLink,
-      isDisabledStakeButton,
       isDisabledEditButton,
       goEditLink,
+      isH160,
+      goStakeLink,
     };
   },
 });

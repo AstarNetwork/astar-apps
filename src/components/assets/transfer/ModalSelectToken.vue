@@ -10,13 +10,20 @@
       <div class="container--items">
         <div
           v-for="t in tokens"
-          :key="t.assetId"
+          :key="t.id"
           class="row--item"
           :class="token.metadata.symbol === t.metadata.symbol && 'row--item-selected'"
           @click="setToken(t)"
         >
           <div class="column--item-name">
+            <jazzicon
+              v-if="t.tokenImage === 'custom-token'"
+              :address="t.mappedERC20Addr"
+              :diameter="24"
+              class="item-logo"
+            />
             <img
+              v-else
               :src="t.tokenImage"
               :alt="t.metadata.symbol"
               :class="[t.metadata.symbol === nativeTokenSymbol ? 'native-token-logo' : 'item-logo']"
@@ -25,7 +32,7 @@
           </div>
           <div class="column--item-name">
             <span class="text--token-amount">
-              <TokenBalance :balance="String(t.userBalance)" :symbol="t.metadata.symbol" />
+              <token-balance :balance="String(t.userBalance)" :symbol="t.metadata.symbol" />
             </span>
           </div>
         </div>
@@ -40,13 +47,15 @@ import { useNetworkInfo } from 'src/hooks';
 import { wait } from 'src/v2/common';
 import { Asset } from 'src/v2/models';
 import { defineComponent, PropType, ref } from 'vue';
-import { truncate } from 'src/hooks/helper/common';
+import { truncate } from '@astar-network/astar-sdk-core';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
+import Jazzicon from 'vue3-jazzicon/src/components';
 
 export default defineComponent({
   components: {
     ModalWrapper,
     TokenBalance,
+    [Jazzicon.name]: Jazzicon,
   },
   props: {
     isModalSelectToken: {

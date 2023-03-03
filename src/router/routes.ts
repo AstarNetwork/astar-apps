@@ -1,17 +1,18 @@
 import Assets from 'components/assets/Assets.vue';
 import AssetsPage from 'pages/AssetsPage.vue';
 import Transfer from 'pages/Transfer.vue';
+import XvmTransfer from 'pages/XvmTransfer.vue';
 import { endpointKey, getNetworkName } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import Store from 'src/pages/DappStaking.vue';
-import StakingTop from 'components/dapp-staking-v2/StakingTop.vue';
+import StakingTop from 'components/dapp-staking/StakingTop.vue';
 import Dashboard from 'src/pages/Dashboard.vue';
 import RegisterDapp from 'src/pages/RegisterDapp.vue';
 import StakeManage from 'src/pages/StakeManage.vue';
 import DappPage from 'src/pages/DappPage.vue';
 import { RouteRecordRaw } from 'vue-router';
 
-export { buildTransferPageLink, getHeaderName } from 'src/router/utils';
+export { buildTransferPageLink, getHeaderName, buildXvmTransferPageLink } from 'src/router/utils';
 
 const networkIdxStore = localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX);
 
@@ -27,6 +28,7 @@ export enum Path {
   Stake = '/stake',
   Dapp = '/dapp',
   Transfer = '/transfer',
+  XvmTransfer = '/xvm-transfer',
   Register = '/register',
 }
 
@@ -71,6 +73,10 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'transfer',
         component: Transfer,
+      },
+      {
+        path: 'xvm-transfer',
+        component: XvmTransfer,
       },
     ],
   },

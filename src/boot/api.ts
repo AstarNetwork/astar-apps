@@ -1,3 +1,4 @@
+import { capitalize, objToArray } from '@astar-network/astar-sdk-core';
 import { SubstrateAccount } from 'src/store/general/state';
 import { ApiPromise } from '@polkadot/api';
 import { keyring } from '@polkadot/ui-keyring';
@@ -7,9 +8,8 @@ import { connectApi } from 'src/config/api/polkadot/connectApi';
 import { endpointKey, getProviderIndex, providerEndpoints } from 'src/config/chainEndpoints';
 import { ASTAR_CHAIN } from 'src/config/chain';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { opengraphMeta } from 'src/config/opengraph';
+import { opengraphMeta } from 'src/config/metadata';
 import { createAstarWeb3Instance, TNetworkId } from 'src/config/web3';
-import { objToArray, getRandomFromArray } from 'src/hooks/helper/common';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
 import { useChainInfo } from 'src/hooks/useChainInfo';
 import { useExtensions } from 'src/hooks/useExtensions';
@@ -28,10 +28,18 @@ export default boot(async ({ store }) => {
   const customEndpoint = localStorage.getItem(CUSTOM_ENDPOINT);
   const selectedEndpointData = localStorage.getItem(SELECTED_ENDPOINT);
   if (!selectedEndpointData) {
-    localStorage.setItem(
-      LOCAL_STORAGE.SELECTED_ENDPOINT,
-      JSON.stringify({ '0': providerEndpoints[0].endpoints[0].endpoint })
-    );
+    if (networkIdxStore !== null) {
+      const networkIdx = Number(networkIdxStore);
+      localStorage.setItem(
+        LOCAL_STORAGE.SELECTED_ENDPOINT,
+        JSON.stringify({ [networkIdx]: providerEndpoints[networkIdx].endpoints[0].endpoint })
+      );
+    } else {
+      localStorage.setItem(
+        LOCAL_STORAGE.SELECTED_ENDPOINT,
+        JSON.stringify({ '0': providerEndpoints[0].endpoints[0].endpoint })
+      );
+    }
   }
   const selectedAddress = localStorage.getItem(SELECTED_ADDRESS);
   const selectedEndpoint = selectedEndpointData ? JSON.parse(selectedEndpointData) : {};
@@ -42,12 +50,10 @@ export default boot(async ({ store }) => {
     store.commit('general/setCurrentCustomEndpoint', customEndpoint);
   }
   const networkIdx = computed(() => store.getters['general/networkIdx']);
-  const randomEndpoint = getRandomFromArray(providerEndpoints[networkIdx.value].endpoints).endpoint;
+  const defaultEndpoint = providerEndpoints[networkIdx.value].endpoints[0].endpoint;
   let endpoint = selectedEndpoint.hasOwnProperty(networkIdx.value)
     ? selectedEndpoint[networkIdx.value]
-      ? selectedEndpoint[networkIdx.value]
-      : randomEndpoint
-    : randomEndpoint;
+    : defaultEndpoint;
   if (networkIdx.value === endpointKey.CUSTOM) {
     const customEndpoint = computed(() => store.getters['general/customEndpoint']);
     endpoint = customEndpoint.value;
@@ -58,10 +64,12 @@ export default boot(async ({ store }) => {
   }
 
   // set metadata header
-  const favicon = providerEndpoints[Number(networkIdx.value)].favicon;
+  const favicon = providerEndpoints[Number(networkIdx.value)].defaultLogo;
+  const displayName = providerEndpoints[Number(networkIdx.value)].displayName;
+  const networkName = capitalize(providerEndpoints[Number(networkIdx.value)].networkAlias);
   useMeta({
     title: '',
-    titleTemplate: (title) => `${title} | Astar Portal - Astar & Shiden Network`,
+    titleTemplate: (title) => `${title} | ${networkName} Portal - ${displayName}`,
     htmlAttr: { lang: 'en' },
     link: {
       material: {
@@ -69,7 +77,7 @@ export default boot(async ({ store }) => {
         href: favicon,
       },
     },
-    meta: opengraphMeta,
+    meta: opengraphMeta(displayName, networkName),
   });
   let { api } = await connectApi(endpoint, networkIdx.value, store);
   $api = api;

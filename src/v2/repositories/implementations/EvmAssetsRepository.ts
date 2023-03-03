@@ -8,8 +8,7 @@ import {
 } from 'src/c-bridge';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { getTokenBal } from 'src/config/web3';
-import { objToArray } from 'src/hooks/helper/common';
-import { calUsdAmount } from 'src/hooks/helper/price';
+import { objToArray, calUsdAmount } from '@astar-network/astar-sdk-core';
 import { Erc20Token } from 'src/modules/token/index';
 import { castCbridgeToErc20, getRegisteredERC20Token } from 'src/modules/token/utils/index';
 import { container, Guard } from 'src/v2/common';
@@ -58,7 +57,10 @@ export class EvmAssetsRepository implements IEvmAssetsRepository {
   }): Promise<Erc20Token[]> {
     Guard.ThrowIfUndefined('currentAccount', currentAccount);
 
-    if (String(srcChainId) === providerEndpoints[endpointKey.SHIBUYA].evmChainId) {
+    if (
+      String(srcChainId) === providerEndpoints[endpointKey.SHIBUYA].evmChainId ||
+      String(srcChainId) === providerEndpoints[endpointKey.LOCAL].evmChainId
+    ) {
       return [];
     }
 
@@ -140,7 +142,7 @@ export class EvmAssetsRepository implements IEvmAssetsRepository {
     return registeredTokens.filter((it) => it !== undefined) as Erc20Token[];
   }
 
-  private async updateTokenBalanceHandler({
+  public async updateTokenBalanceHandler({
     userAddress,
     token,
     isFetchUsd,

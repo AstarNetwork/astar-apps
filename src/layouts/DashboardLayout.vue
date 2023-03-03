@@ -4,7 +4,7 @@
       <sidebar-desktop />
     </template>
     <div class="tw-flex tw-flex-col tw-w-0 tw-flex-1 tw-overflow-y-auto lg:tw-overflow-hidden">
-      <Header />
+      <portal-header />
       <template v-if="screenSize.lg > width">
         <sidebar-mobile />
       </template>
@@ -28,13 +28,13 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useBreakpoints, useGasPrice } from 'src/hooks';
-import Header from 'src/components/header/Header.vue';
+import PortalHeader from 'src/components/header/Header.vue';
 import SidebarDesktop from 'components/sidenav/SidebarDesktop.vue';
 import SidebarMobile from 'components/sidenav/SidebarMobile.vue';
 
 export default defineComponent({
   components: {
-    Header,
+    PortalHeader,
     SidebarMobile,
     SidebarDesktop,
   },

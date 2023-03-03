@@ -23,12 +23,24 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { languagesSelector } from 'src/i18n';
-import { defineComponent } from 'vue';
+import { defineComponent, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   data() {
+    const { locale } = useI18n();
+
+    watch(
+      [locale],
+      () => {
+        localStorage.setItem(LOCAL_STORAGE.SELECTED_LANGUAGE, locale.value);
+      },
+      { immediate: false }
+    );
+
     return { langs: languagesSelector };
   },
 });

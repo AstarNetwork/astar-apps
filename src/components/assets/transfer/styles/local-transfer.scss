@@ -19,11 +19,8 @@
   @media (min-width: $xs) {
     width: 344px;
   }
-  @media (min-width: $md) {
-    width: 400px;
-  }
-  @media (min-width: $xl) {
-    width: 420px;
+  @media (min-width: $sm) {
+    width: 412px;
   }
 }
 
@@ -49,11 +46,8 @@
   border: 1px solid $warning-red;
   background: $box-red;
   text-align: left;
-  @media (min-width: $md) {
-    width: 400px;
-  }
-  @media (min-width: $xl) {
-    width: 420px;
+  @media (min-width: $sm) {
+    width: 412px;
   }
 }
 
@@ -73,11 +67,8 @@
   background: $transparent-red;
   border: 1px solid $warning-red;
   margin-bottom: -16px;
-  @media (min-width: $md) {
-    width: 400px;
-  }
-  @media (min-width: $xl) {
-    width: 420px;
+  @media (min-width: $sm) {
+    width: 412px;
   }
 }
 
@@ -259,14 +250,12 @@
 }
 
 .btn-size-adjust {
+  width: 100%;
   @media (min-width: $xs) {
     width: 344px;
   }
-  @media (min-width: $md) {
-    width: 400px;
-  }
-  @media (min-width: $xl) {
-    width: 420px;
+  @media (min-width: $sm) {
+    width: 412px;
   }
 }
 

@@ -9,12 +9,14 @@ import { injectable, inject } from 'inversify';
 import { ExtrinsicPayload, IApi, IApiFactory } from 'src/v2/integration';
 import { Symbols } from 'src/v2/symbols';
 import { Guard } from 'src/v2/common';
-import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
+import {
+  getPubkeyFromSS58Addr,
+  isValidAddressPolkadotAddress,
+  isValidEvmAddress,
+} from '@astar-network/astar-sdk-core';
 import { XcmTokenInformation } from 'src/modules/xcm';
 import { decodeAddress, evmToAddress } from '@polkadot/util-crypto';
 import { TokenId } from 'src/v2/config/types';
-import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
-import { isValidEvmAddress } from 'src/config/web3';
 import { XcmChain } from 'src/v2/models/XcmModels';
 
 interface AssetConfig extends Struct {
@@ -55,44 +57,46 @@ export class XcmRepository implements IXcmRepository {
     const metadata = await api.query.assets.metadata.entries();
 
     let result: Asset[] = [];
-    metadata.forEach(([key, value]) => {
-      const id = key.args.map((x) => x.toString())[0];
-      const deposit = value.deposit.toBn();
-      const name = u8aToString(value.name);
-      const symbol = u8aToString(value.symbol);
-      const decimals = value.decimals.toNumber();
-      const isFrozen = value.isFrozen.valueOf();
-      const metadata = new AssetMetadata(name, symbol, decimals, isFrozen, deposit);
+    if (metadata.length > 0) {
+      metadata.forEach(([key, value]) => {
+        const id = key.args.map((x) => x.toString())[0];
+        const deposit = value.deposit.toBn();
+        const name = u8aToString(value.name);
+        const symbol = u8aToString(value.symbol);
+        const decimals = value.decimals.toNumber();
+        const isFrozen = value.isFrozen.valueOf();
+        const metadata = new AssetMetadata(name, symbol, decimals, isFrozen, deposit);
 
-      // Todo: get the token data even thought users select `custom-network`
-      const registeredData = this.registeredTokens.find((x) => x.assetId === id);
-      const minBridgeAmount = registeredData ? registeredData.minBridgeAmount : '0';
-      const originChain = registeredData ? registeredData.originChain : '';
-      const originAssetId = registeredData ? registeredData.originAssetId : '';
-      const tokenImage = registeredData ? (registeredData.logo as string) : 'custom-token';
-      const isNativeToken = registeredData ? registeredData.isNativeToken : false;
-      const isXcmCompatible = registeredData ? registeredData.isXcmCompatible : false;
-      const userBalance = 0;
+        // Todo: get the token data even thought users select `custom-network`
+        const registeredData = this.registeredTokens.find((x) => x.assetId === id);
+        const minBridgeAmount = registeredData ? registeredData.minBridgeAmount : '0';
+        const originChain = registeredData ? registeredData.originChain : '';
+        const originAssetId = registeredData ? registeredData.originAssetId : '';
+        const tokenImage = registeredData ? (registeredData.logo as string) : 'custom-token';
+        const isNativeToken = registeredData ? registeredData.isNativeToken : false;
+        const isXcmCompatible = registeredData ? registeredData.isXcmCompatible : false;
+        const userBalance = 0;
 
-      const asset = new Asset(
-        id,
-        this.getMappedXC20Asset(id),
-        metadata,
-        minBridgeAmount,
-        originChain,
-        originAssetId,
-        tokenImage,
-        isNativeToken,
-        isXcmCompatible,
-        userBalance
-      );
+        const asset = new Asset(
+          id,
+          this.getMappedXC20Asset(id),
+          metadata,
+          minBridgeAmount,
+          originChain,
+          originAssetId,
+          tokenImage,
+          isNativeToken,
+          isXcmCompatible,
+          userBalance
+        );
 
-      result.push(asset);
-    });
+        result.push(asset);
+      });
 
-    if (isValidAddressPolkadotAddress(currentAccount)) {
-      // fetch balances for Substrate accounts only.
-      result = await this.getBalances(currentAccount, result);
+      if (isValidAddressPolkadotAddress(currentAccount)) {
+        // fetch balances for Substrate accounts only.
+        result = await this.getBalances(currentAccount, result);
+      }
     }
 
     return result;

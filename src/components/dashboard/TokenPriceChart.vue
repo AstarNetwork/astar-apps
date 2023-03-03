@@ -1,12 +1,13 @@
 <template>
   <chart-panel
     :data="data"
-    :title="textChart.tokenPrice.title"
+    :title="textChart.tokenPrice.title || ''"
     :tooltip="textChart.tokenPrice.tooltip"
     :default-value="currentPrice"
     class="wrapper--chart"
     :range-filter="currentFilter"
     :is-multiple-line="false"
+    :is-price="true"
     @filter-changed="handleFilterChanged"
   />
 </template>
@@ -14,9 +15,10 @@
 <script lang="ts">
 import axios from 'axios';
 import { ChartData } from 'src/components/dashboard/ChartData';
-import ChartPanel from 'src/components/dashboard/ChartPanel.vue';
+import ChartPanel from 'src/components/common/ChartPanel.vue';
 import { defineComponent, ref, watch } from 'vue';
-import { TOKEN_API_URL, textChart } from 'src/modules/token-api';
+import { textChart } from 'src/modules/token-api';
+import { TOKEN_API_URL } from '@astar-network/astar-sdk-core';
 
 export default defineComponent({
   components: {

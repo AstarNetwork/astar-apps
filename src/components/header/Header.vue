@@ -1,34 +1,34 @@
 <template>
   <div class="wrapper">
-    <HeaderComp :title="width >= screenSize.lg ? headerName : ''">
+    <header-comp :title="width >= screenSize.lg ? headerName : ''">
       <template #left>
-        <div class="icon"><Logo /></div>
+        <div class="icon"><logo /></div>
       </template>
       <template v-if="!currentAccount">
-        <ConnectButton @click="openSelectModal">
+        <connect-button @click="openSelectModal">
           <astar-icon-wallet />
-        </ConnectButton>
+        </connect-button>
       </template>
       <template v-else>
-        <AccountButton :account="currentAccount" @click="changeAccount" />
+        <account-button :account="currentAccount" @click="changeAccount" />
       </template>
-      <NetworkButton @show-network="modalNetwork = true" />
-    </HeaderComp>
+      <network-button @show-network="modalNetwork = true" />
+    </header-comp>
 
     <!-- Modals -->
-    <ModalNetwork
+    <modal-network
       v-model:isOpen="modalNetwork"
       v-model:selectNetwork="currentNetworkIdx"
       :network-idx="currentNetworkIdx"
     />
-    <ModalConnectWallet
-      :is-modal-connect-wallet="modalName === WalletModalOption.SelectWallet"
+    <modal-connect-wallet
+      :is-modal-connect-wallet="modalName === WalletModalOption.SelectWallet && !currentAccount"
       :set-wallet-modal="setWalletModal"
       :set-close-modal="setCloseModal"
       :connect-ethereum-wallet="connectEthereumWallet"
     />
 
-    <ModalAccount
+    <modal-account
       v-if="modalAccountSelect"
       v-model:isOpen="modalAccountSelect"
       :set-wallet-modal="setWalletModal"
@@ -38,13 +38,13 @@
       :current-account="currentAccount"
     />
 
-    <ModalInstallWallet
+    <modal-install-wallet
       v-if="modalName === WalletModalOption.NoExtension"
       :set-close-modal="setCloseModal"
       :selected-wallet="selectedWallet"
     />
 
-    <ModalUpdateWallet
+    <modal-update-wallet
       v-if="modalName === WalletModalOption.OutdatedWallet"
       :set-close-modal="setCloseModal"
       :selected-wallet="selectedWallet"
@@ -69,6 +69,7 @@ import ModalNetwork from 'src/components/header/modals/ModalNetwork.vue';
 import Logo from 'src/components/common/Logo.vue';
 import ModalUpdateWallet from 'src/components/header/modals/ModalUpdateWallet.vue';
 import HeaderComp from './HeaderComp.vue';
+import { WalletModalOption } from 'src/config/wallets';
 
 interface Modal {
   modalNetwork: boolean;
@@ -95,7 +96,6 @@ export default defineComponent({
     });
 
     const {
-      WalletModalOption,
       modalConnectWallet,
       modalName,
       currentAccount,
@@ -164,14 +164,5 @@ export default defineComponent({
 .icon {
   width: 127px;
   margin-left: -15px;
-}
-
-.m-header {
-  height: 64px !important;
-  padding-left: 20px !important;
-  padding-right: 16px !important;
-  @media (min-width: 500px) {
-    padding-left: 8px !important;
-  }
 }
 </style>

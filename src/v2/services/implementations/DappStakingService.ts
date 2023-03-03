@@ -16,6 +16,9 @@ import { IBalanceFormatterService, IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { IWalletService } from '../IWalletService';
 import { AccountLedger } from 'src/v2/models/DappsStaking';
+import { SubmittableExtrinsic } from '@polkadot/api/types';
+import { ISubmittableResult } from '@polkadot/types/types';
+import { StakeInfo } from 'src/store/dapp-staking/actions';
 
 @injectable()
 export class DappStakingService implements IDappStakingService {
@@ -163,5 +166,64 @@ export class DappStakingService implements IDappStakingService {
     Guard.ThrowIfUndefined('accountAddress', accountAddress);
 
     return await this.dappStakingRepository.getLedger(accountAddress);
+  }
+
+  public async canClaimRewardWithoutErrors(accountAddress: string): Promise<boolean> {
+    Guard.ThrowIfUndefined('accountAddress', accountAddress);
+
+    const ledger = await this.dappStakingRepository.getLedger(accountAddress);
+
+    if (ledger.rewardDestination === 'StakeBalance') {
+      const currentEra = await this.dappStakingRepository.getCurrentEra();
+      const constants = await this.dappStakingRepository.getConstants();
+      const stakerInfo = await this.dappStakingRepository.getGeneralStakerInfo(
+        accountAddress,
+        accountAddress
+      );
+
+      for (const [_, info] of stakerInfo) {
+        const stakes = info.stakes;
+        if (stakes.length === constants.maxEraStakeValues) {
+          if (
+            stakes[1].era - stakes[0].era > 1 &&
+            stakes[constants.maxEraStakeValues - 1].era < currentEra.toNumber()
+          ) {
+            return false;
+          }
+        }
+      }
+    }
+
+    return true;
+  }
+
+  public async sendTx({
+    senderAddress,
+    transaction,
+    finalizedCallback,
+  }: {
+    senderAddress: string;
+    transaction: SubmittableExtrinsic<'promise'>;
+    finalizedCallback: (result?: ISubmittableResult) => void;
+  }): Promise<void> {
+    Guard.ThrowIfUndefined('senderAddress', senderAddress);
+    Guard.ThrowIfUndefined('transaction', transaction);
+
+    await this.wallet.signAndSend(
+      transaction,
+      senderAddress,
+      undefined,
+      undefined,
+      finalizedCallback
+    );
+  }
+
+  public async getStakeInfo(
+    dappAddress: string,
+    currentAccount: string
+  ): Promise<StakeInfo | undefined> {
+    Guard.ThrowIfUndefined('currentAccount', currentAccount);
+
+    return await this.dappStakingRepository.getStakeInfo(dappAddress, currentAccount);
   }
 }

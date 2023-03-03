@@ -1,9 +1,9 @@
 <template>
   <div>
-    <ModalLoading v-if="isLoadingApi" />
+    <modal-loading v-if="isLoadingApi" />
     <div class="wrapper--xcm-bridge">
       <div class="rows">
-        <InputSelectChain
+        <input-select-chain
           :chain="srcChain"
           title="from"
           :handle-display-token-selector="handleDisplayTokenSelector"
@@ -13,13 +13,13 @@
           :balance="String(fromAddressBalance)"
           :symbol="token.metadata.symbol"
         />
-        <SelectEvmWallet v-if="isDepositEthChain" :initialize-xcm-api="initializeXcmApi" />
+        <select-evm-wallet v-if="isDepositEthChain" :initialize-xcm-api="initializeXcmApi" />
         <div v-if="isReverseButton" class="row--reverse">
           <button class="icon--reverse cursor-pointer" @click="reverseChain">
             <astar-icon-sync size="20" />
           </button>
         </div>
-        <InputSelectChain
+        <input-select-chain
           :class="isReverseButton && 'adjust--to-input'"
           :chain="destChain"
           title="to"
@@ -31,7 +31,7 @@
           :symbol="token.metadata.symbol"
         />
         <div v-if="isEvmBridge || isWithdrawalEthChain">
-          <SimpleInput
+          <simple-input
             v-model:selAddress="inputtedAddress"
             :to-address="inputtedAddress"
             :placeholder="$t('evmAddressPlaceholder')"
@@ -58,7 +58,7 @@
             </span>
           </div>
           <div v-else>
-            <SimpleInput
+            <simple-input
               v-model:selAddress="inputtedAddress"
               :to-address="inputtedAddress"
               :placeholder="$t('addressPlaceholder', { network: destChain.name })"
@@ -79,7 +79,7 @@
             <div />
             <div class="box__available">
               <span class="text--available">
-                <TokenBalance
+                <token-balance
                   text="assets.modals.balance"
                   :balance="String(fromAddressBalance)"
                   :symbol="token.metadata.symbol"
@@ -192,13 +192,13 @@
 import InputSelectChain from 'src/components/assets/transfer/InputSelectChain.vue';
 import SimpleInput from 'src/components/common/SimpleInput.vue';
 import SelectEvmWallet from 'src/components/assets/transfer/SelectEvmWallet.vue';
-import { pathEvm, useAccount, useTooltip, useXcmBridgeV3 } from 'src/hooks';
-import { truncate } from 'src/hooks/helper/common';
+import { pathEvm, useAccount, useTooltip, useXcmBridge } from 'src/hooks';
+import { truncate } from '@astar-network/astar-sdk-core';
 import { Asset, ethWalletChains } from 'src/v2/models';
 import { computed, defineComponent, PropType, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ModalLoading from '/src/components/common/ModalLoading.vue';
-import { isValidEvmAddress } from 'src/config/web3';
+import { isValidEvmAddress } from '@astar-network/astar-sdk-core';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 
 export default defineComponent({
@@ -262,7 +262,7 @@ export default defineComponent({
       bridge,
       reverseChain,
       toggleIsInputDestAddrManually,
-    } = useXcmBridgeV3(tokenData);
+    } = useXcmBridge(tokenData);
 
     const isReverseButton = computed<boolean>(() => {
       if (!srcChain.value || !destChain.value || isH160.value) return false;

@@ -21,6 +21,19 @@ main {
   background: $body-bg-light;
 }
 
+.screen--phone {
+  @media (min-width: $sm) {
+    display: none !important;
+  }
+}
+
+.screen--sm {
+  display: none;
+  @media (min-width: $sm) {
+    display: block;
+  }
+}
+
 .screen--md {
   display: none;
   @media (min-width: $md) {

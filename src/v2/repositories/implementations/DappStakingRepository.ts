@@ -1,24 +1,39 @@
-import { isValidAddressPolkadotAddress } from 'src/hooks/helper/plasmUtils';
+import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
 import { BN } from '@polkadot/util';
 import { u32, Option, Struct } from '@polkadot/types';
 import { Codec, ISubmittableResult } from '@polkadot/types/types';
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import { AccountId, Balance, EraIndex } from '@polkadot/types/interfaces';
+import { ApiPromise } from '@polkadot/api';
 import { injectable, inject } from 'inversify';
 import { IDappStakingRepository } from 'src/v2/repositories';
 import { IApi } from 'src/v2/integration';
 import { Symbols } from 'src/v2/symbols';
-import { ApiPromise } from '@polkadot/api';
-import { SmartContract, SmartContractState, StakerInfo } from 'src/v2/models/DappsStaking';
+import {
+  RewardDestination,
+  SmartContract,
+  SmartContractState,
+  StakerInfo,
+  DappStakingConstants,
+} from 'src/v2/models/DappsStaking';
 import { EventAggregator, NewEraMessage } from 'src/v2/messaging';
-import { GeneralStakerInfo } from 'src/hooks/helper/claim';
+import {
+  GeneralStakerInfo,
+  checkIsDappRegistered,
+  TOKEN_API_URL,
+} from '@astar-network/astar-sdk-core';
 import { ethers } from 'ethers';
 import { EditDappItem } from 'src/store/dapp-staking/state';
-import { TOKEN_API_URL } from 'src/modules/token-api';
+import { StakeInfo, EraStakingPoints } from 'src/store/dapp-staking/actions';
 import axios from 'axios';
-import { getDappAddressEnum } from 'src/modules/dapp-staking/utils';
 import { Guard } from 'src/v2/common';
 import { AccountLedger } from 'src/v2/models/DappsStaking';
+import {
+  wait,
+  getDappAddressEnum,
+  isValidAddressPolkadotAddress,
+} from '@astar-network/astar-sdk-core';
+import { checkIsLimitedProvider } from 'src/modules/dapp-staking/utils';
 
 // TODO type generation
 interface EraInfo extends Struct {
@@ -57,6 +72,7 @@ interface SmartContractAddress extends Struct {
 
 interface PalletDappsStakingAccountLedger extends Codec {
   locked: Balance;
+  rewardDestination: Codec;
   unbondingInfo: UnbondingInfo;
 }
 
@@ -73,6 +89,7 @@ interface ChunkInfo extends Codec {
 @injectable()
 export class DappStakingRepository implements IDappStakingRepository {
   private static isEraSubscribed = false;
+  private currentEra?: number;
 
   constructor(
     @inject(Symbols.DefaultApi) private api: IApi,
@@ -81,7 +98,7 @@ export class DappStakingRepository implements IDappStakingRepository {
 
   public async getTvl(): Promise<BN> {
     const api = await this.api.getApi();
-    const era = await this.getCurrentEra(api);
+    const era = await this.getCurrentEra();
     const result = await api.query.dappsStaking.generalEraInfo<Option<EraInfo>>(era);
 
     return result.unwrap().locked.toBn();
@@ -145,7 +162,7 @@ export class DappStakingRepository implements IDappStakingRepository {
     walletAddress: string
   ): Promise<StakerInfo[]> {
     const api = await this.api.getApi();
-    const currentEra = await this.getCurrentEra(api);
+    const currentEra = await this.getCurrentEra();
 
     const eraStakes = await api.queryMulti<Option<ContractStakeInfo>[]>(
       contractAddresses.map((address) => {
@@ -213,23 +230,32 @@ export class DappStakingRepository implements IDappStakingRepository {
   }
 
   public async getRegisteredContract(developerAddress: string): Promise<string | undefined> {
-    const api = await this.api.getApi();
-    const account = api.registry.createType('AccountId32', developerAddress.toString());
-    const contractAddress = await api.query.dappsStaking.registeredDevelopers<
-      Option<SmartContractAddress>
-    >(account);
-
-    return contractAddress.isNone ? undefined : this.getContractAddress(contractAddress.unwrap());
+    try {
+      const api = await this.api.getApi();
+      const account = api.registry.createType('AccountId32', developerAddress.toString());
+      const contractAddress = await api.query.dappsStaking.registeredDevelopers<
+        Option<SmartContractAddress>
+      >(account);
+      return contractAddress.isNone ? undefined : this.getContractAddress(contractAddress.unwrap());
+    } catch (error) {
+      return undefined;
+    }
   }
 
   public async starEraSubscription(): Promise<void> {
     // Avoid multiple subscriptions.
     if (!DappStakingRepository.isEraSubscribed) {
+      DappStakingRepository.isEraSubscribed = true;
       const api = await this.api.getApi();
       await api.query.dappsStaking.currentEra((era: u32) => {
-        this.eventAggregator.publish(new NewEraMessage(era.toNumber()));
+        // For some reason subscription is triggered for every produced block,
+        // so that's why logic below.
+        const newEra = era.toNumber();
+        if (!this.currentEra || this.currentEra !== newEra) {
+          this.eventAggregator.publish(new NewEraMessage(era.toNumber()));
+          this.currentEra = newEra;
+        }
       });
-      DappStakingRepository.isEraSubscribed = true;
     }
   }
 
@@ -258,6 +284,7 @@ export class DappStakingRepository implements IDappStakingRepository {
 
     return {
       locked: ledger.locked.toBn(),
+      rewardDestination: <RewardDestination>ledger.rewardDestination.toString(),
       unbondingInfo: {
         unlockingChunks: ledger.unbondingInfo.unlockingChunks.map((x) => {
           return {
@@ -270,8 +297,59 @@ export class DappStakingRepository implements IDappStakingRepository {
     };
   }
 
-  private async getCurrentEra(api: ApiPromise): Promise<u32> {
+  public async getConstants(): Promise<DappStakingConstants> {
+    const api = await this.api.getApi();
+    const maxEraStakeValues = Number(api.consts.dappsStaking.maxEraStakeValues.toString());
+
+    return {
+      maxEraStakeValues,
+    };
+  }
+
+  public async getGeneralStakerInfo(
+    stakerAddress: string,
+    contractAddress: string
+  ): Promise<Map<string, GeneralStakerInfo>> {
+    Guard.ThrowIfUndefined('contractAddress', contractAddress);
+    Guard.ThrowIfUndefined('stakerAddress', stakerAddress);
+
+    const result = new Map<string, GeneralStakerInfo>();
+    const api = await this.api.getApi();
+    const stakerInfos = await api.query.dappsStaking.generalStakerInfo.entries(stakerAddress);
+    stakerInfos.forEach(([key, stakerInfo]) => {
+      const contractAddress = key.args[1].toString();
+      const info = stakerInfo.toHuman() as unknown as GeneralStakerInfo;
+      result.set(contractAddress, info);
+    });
+
+    return result;
+  }
+
+  public async getApr(network: string): Promise<{ apr: number; apy: number }> {
+    Guard.ThrowIfUndefined('network', network);
+
+    const baseUrl = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/dapps-staking`;
+    const [apr, apy] = await Promise.all([
+      (await axios.get<number>(`${baseUrl}/apr`)).data,
+      (await axios.get<number>(`${baseUrl}/apy`)).data,
+    ]);
+
+    return { apr, apy };
+  }
+
+  public async getCurrentEra(): Promise<u32> {
+    const api = await this.api.getApi();
+
     return await api.query.dappsStaking.currentEra<u32>();
+  }
+
+  public async getNextEraEta(network: string): Promise<number> {
+    Guard.ThrowIfUndefined('network', network);
+
+    const baseUrl = `${TOKEN_API_URL}/v1/${network.toLowerCase()}/dapps-staking/stats/nexteraeta`;
+    const result = await axios.get<number>(baseUrl);
+
+    return result.data;
   }
 
   private getContractAddress(address: SmartContractAddress): string | undefined {
@@ -284,7 +362,109 @@ export class DappStakingRepository implements IDappStakingRepository {
     }
   }
 
-  private getAddressEnum(address: string) {
-    return { Evm: address };
+  public async getStakeInfo(
+    dappAddress: string,
+    currentAccount: string
+  ): Promise<StakeInfo | undefined> {
+    const api = await this.api.getApi();
+    const stakeInfo = new Promise<StakeInfo | undefined>(async (resolve) => {
+      const data = await this.handleGetStakeInfo({ api, dappAddress, currentAccount });
+      resolve(data);
+    });
+    const fallbackTimeout = new Promise<string>(async (resolve) => {
+      const timeout = 4 * 1000;
+      await wait(timeout);
+      resolve('timeout');
+    });
+
+    const race = Promise.race<StakeInfo | undefined | string>([stakeInfo, fallbackTimeout]);
+    const result = race.then((res) => {
+      if (res === 'timeout') {
+        return undefined;
+      } else {
+        return res as StakeInfo;
+      }
+    });
+    return result;
+  }
+
+  private async handleGetStakeInfo({
+    api,
+    dappAddress,
+    currentAccount,
+  }: {
+    api: ApiPromise;
+    dappAddress: string;
+    currentAccount: string;
+  }): Promise<StakeInfo | undefined> {
+    const initialYourStake = {
+      formatted: '',
+      denomAmount: new BN('0'),
+    };
+
+    const stakeInfo = await this.getLatestStakePoint(api, dappAddress);
+    if (!stakeInfo) return undefined;
+
+    const data = {
+      totalStake: balanceFormatter(stakeInfo.total.toString()),
+      yourStake: initialYourStake,
+      claimedRewards: '0',
+      hasStake: false,
+      stakersCount: Number(stakeInfo.numberOfStakers.toString()),
+      dappAddress,
+      isRegistered: true,
+    };
+
+    try {
+      const [stakerInfo, { isRegistered }] = await Promise.all([
+        api.query.dappsStaking.generalStakerInfo<GeneralStakerInfo>(
+          currentAccount,
+          getDappAddressEnum(dappAddress)
+        ),
+        checkIsDappRegistered({ dappAddress, api }),
+      ]);
+
+      const balance = stakerInfo.stakes.length && stakerInfo.stakes.slice(-1)[0].staked.toString();
+      const yourStake = balance
+        ? {
+            formatted: balanceFormatter(balance),
+            denomAmount: new BN(balance.toString()),
+          }
+        : initialYourStake;
+
+      return {
+        ...data,
+        hasStake: Number(balance.toString()) > 0,
+        yourStake,
+        isRegistered,
+      };
+    } catch (error) {
+      return data;
+    }
+  }
+
+  private async getLatestStakePoint(
+    api: ApiPromise,
+    contract: string
+  ): Promise<EraStakingPoints | undefined> {
+    if (!contract) {
+      return undefined;
+    }
+    const currentEra = await (await api.query.dappsStaking.currentEra<EraIndex>()).toNumber();
+    const contractAddress = getDappAddressEnum(contract);
+    // iterate from currentEra backwards until you find record for ContractEraStake
+    for (let era = currentEra; era > 0; era -= 1) {
+      // Memo: wait for avoiding provider limitation
+      checkIsLimitedProvider() && (await wait(200));
+      const stakeInfoPromise = await api.query.dappsStaking.contractEraStake<
+        Option<EraStakingPoints>
+      >(contractAddress, era);
+      const stakeInfo = stakeInfoPromise.unwrapOr(undefined);
+      if (stakeInfo) {
+        return stakeInfo;
+      }
+    }
+
+    return undefined;
   }
 }

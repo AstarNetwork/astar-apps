@@ -1,15 +1,13 @@
 import { ethers } from 'ethers';
-import ABI from 'src/c-bridge/abi/ERC20.json';
+import ABI from 'src/config/abi/ERC20.json';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 import { Erc20Token } from 'src/modules/token';
 import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
 import { blockExplorerUrls, CHAIN_INFORMATION } from 'src/config/web3';
-import { getRandomFromArray } from 'src/hooks/helper/common';
+import { getRandomFromArray } from '@astar-network/astar-sdk-core';
 import { EVM, nativeCurrency, TNetworkId } from 'src/config/web3';
-export { buildEvmAddress, isValidEvmAddress, toSS58Address } from 'src/config/web3/utils/convert';
-export { getBalance, sendNativeTokenTransaction } from 'src/config/web3/utils/transactions';
 
 export const getChainData = (chainId: number) => {
   const { chainName, nativeCurrency, rpcUrls, blockExplorerUrls } = CHAIN_INFORMATION;
@@ -72,6 +70,8 @@ export const getChainId = (currentNetworkIdx: endpointKey): number => {
     return EVM.SHIDEN_MAINNET;
   } else if (currentNetworkIdx === endpointKey.ASTAR) {
     return EVM.ASTAR_MAINNET;
+  } else if (currentNetworkIdx === endpointKey.LOCAL) {
+    return EVM.ASTAR_LOCAL_NODE;
   }
   return EVM.SHIBUYA_TESTNET;
 };
@@ -105,6 +105,25 @@ export const buildWeb3Instance = (chainId: EVM) => {
   const network = getChainData(chainId);
   if (!network.rpcUrls[0]) return;
   return new Web3(new Web3.providers.HttpProvider(network.rpcUrls[0]));
+};
+
+export const getTokenDetails = async ({
+  tokenAddress,
+  srcChainId,
+}: {
+  tokenAddress: string;
+  srcChainId: number;
+}): Promise<{ decimals: string; symbol: string }> => {
+  const web3 = buildWeb3Instance(srcChainId);
+  if (!web3) {
+    throw Error(`Cannot create web3 instance with network id ${srcChainId}`);
+  }
+  const contract = new web3.eth.Contract(ABI as AbiItem[], tokenAddress);
+  const [decimals, symbol] = await Promise.all([
+    contract.methods.decimals().call(),
+    contract.methods.symbol().call(),
+  ]);
+  return { decimals, symbol };
 };
 
 export const getTokenBal = async ({

@@ -30,7 +30,7 @@
 
 <script lang="ts">
 import axios from 'axios';
-import { formatNumber, TOKEN_API_URL } from 'src/modules/token-api';
+import { formatNumber, TOKEN_API_URL } from '@astar-network/astar-sdk-core';
 import { defineComponent, ref, watchEffect } from 'vue';
 
 interface StatsData {
@@ -80,5 +80,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/dashboard/styles/chart-panel.scss';
+@use 'src/components/dashboard/styles/dashboard.scss';
 </style>

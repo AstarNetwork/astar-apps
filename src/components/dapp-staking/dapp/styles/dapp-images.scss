@@ -58,35 +58,11 @@
   }
   @media (min-width: $md) {
     margin-left: 0px;
-    width: 700px;
-  }
-  @media (min-width: 900px) {
-    width: 800px;
+    // Memo: display photos in horizontal scroll image bar
+    width: 195%;
   }
   @media (min-width: $lg) {
-    width: 650px;
-  }
-  @media (min-width: 1100px) {
-    width: 700px;
-  }
-  @media (min-width: 1200px) {
-    width: 800px;
-  }
-  @media (min-width: $xl) {
-    width: 900px;
-  }
-  @media (min-width: 1372px) {
-    width: 950px;
-  }
-  @media (min-width: $xxl) {
-    width: 1050px;
-    margin-right: 6px;
-  }
-  @media (min-width: 1500px) {
-    width: 1100px;
-  }
-  @media (min-width: 1600px) {
-    width: 1170px;
+    width: 200%;
   }
 }
 
@@ -119,7 +95,7 @@
 .button-arrow {
   color: $astar-blue;
   display: none;
-  @media (min-width: $lg) {
+  @media (min-width: $md) {
     display: block;
   }
 }

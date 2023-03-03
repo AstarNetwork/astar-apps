@@ -1,30 +1,30 @@
-import { formatNumber } from 'src/modules/token-api/utils';
+import { formatNumber } from '@astar-network/astar-sdk-core';
 
 export const textChart = {
   tvl: {
-    title: 'dashboard.chart.tvl.title',
-    tooltip: 'dashboard.chart.tvl.tooltip',
+    title: 'chart.tvl.title',
+    tooltip: 'chart.tvl.tooltip',
   },
   dappStaking: {
-    title: 'dashboard.chart.dappStaking.title',
-    tooltip: 'dashboard.chart.dappStaking.tooltip',
+    title: 'chart.dappStaking.title',
+    tooltip: 'chart.dappStaking.tooltip',
   },
   ecosystem: {
-    title: 'dashboard.chart.ecosystem.title',
-    tooltip: 'dashboard.chart.ecosystem.tooltip',
+    title: 'chart.ecosystem.title',
+    tooltip: 'chart.ecosystem.tooltip',
   },
   ttlTransactions: {
-    title: 'dashboard.chart.ttlTransactions.title',
-    tooltip: 'dashboard.chart.ttlTransactions.tooltip',
+    title: 'chart.ttlTransactions.title',
+    tooltip: 'chart.ttlTransactions.tooltip',
   },
   tokenPrice: {
-    title: 'dashboard.chart.tokenPrice.title',
-    tooltip: 'dashboard.chart.tokenPrice.tooltip',
+    title: 'chart.tokenPrice.title',
+    tooltip: 'chart.tokenPrice.tooltip',
   },
 };
 
-export const titleFormatter = (title: string, data: any) => {
-  const prefix = title === textChart.ttlTransactions.title ? '' : '$';
+export const titleFormatter = (isPrice: boolean, data: any) => {
+  const prefix = isPrice ? '$' : '';
   if (data.value > 999) {
     return prefix + formatNumber(data.value, 1);
   }

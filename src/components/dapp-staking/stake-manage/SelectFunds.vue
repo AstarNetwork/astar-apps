@@ -15,7 +15,7 @@
           <span class="text--item-name">{{ list.name }}</span>
           <div class="column--amount">
             <span>
-              <TokenBalance
+              <token-balance
                 :balance="ethers.utils.formatEther(list.balance)"
                 :symbol="nativeTokenSymbol"
               />
@@ -31,7 +31,7 @@
 import { StakingData } from 'src/modules/dapp-staking';
 import { defineComponent, PropType, computed } from 'vue';
 import { ethers } from 'ethers';
-import { truncate } from 'src/hooks/helper/common';
+import { truncate } from '@astar-network/astar-sdk-core';
 import { useNetworkInfo } from 'src/hooks';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 

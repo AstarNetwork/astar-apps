@@ -1,3 +1,4 @@
+import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { ethers } from 'ethers';
 import { useAccount, useBalance, useNetworkInfo } from 'src/hooks';
 import { StakingData } from 'src/modules/dapp-staking/index';
@@ -11,7 +12,7 @@ export function useStakingList() {
   const { nativeTokenSymbol } = useNetworkInfo();
   const store = useStore();
   const isLoading = computed(() => store.getters['general/isLoading']);
-  const dapps = computed(() => store.getters['dapps/getAllDapps']);
+  const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
   const isH160 = computed(() => store.getters['general/isH160Formatted']);
   const nativeTokenImg = computed<string>(() =>
     getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
@@ -32,9 +33,9 @@ export function useStakingList() {
     const currentAccountRef = currentAccount.value;
     if (!accountDataRef || !currentAccountRef || isH160.value) return;
     try {
-      const data = dappsRef.map((it: any) => {
+      const data = dappsRef.map((it) => {
         const accountStakingAmount = it.stakerInfo.accountStakingAmount;
-        if (Number(accountStakingAmount)) {
+        if (it.dapp && Number(accountStakingAmount)) {
           return {
             address: it.dapp.address,
             balance: ethers.utils.parseEther(accountStakingAmount).toString(),
@@ -53,7 +54,7 @@ export function useStakingList() {
         iconUrl: nativeTokenImg.value,
       });
 
-      stakingList.value = data.filter((it: any) => it !== undefined);
+      stakingList.value = data.filter((it) => it !== undefined) as StakingData[];
     } catch (error) {
       console.error(error);
     }

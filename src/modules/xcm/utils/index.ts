@@ -9,7 +9,7 @@ import {
   updateAccountHistories,
 } from 'src/config/localStorage';
 import { pathEvm } from 'src/hooks';
-import { getTimestamp } from 'src/hooks/helper/common';
+import { getTimestamp, capitalize } from '@astar-network/astar-sdk-core';
 import { astarNetworks } from 'src/hooks/xcm/useTransferRouter';
 import { SystemAccount, TxHistory } from 'src/modules/account';
 import { HistoryTxType } from 'src/modules/account/index';
@@ -134,8 +134,8 @@ export const monitorBalanceIncreasing = async ({
         // in other words, the value of `newBal` will be the same as `originBal`
         // Ref: https://gyazo.com/8c4ec928e59670d7da2930b803cebbaf
 
-        // isExit: returns `true` (exit from this function) within 9 secs
-        const isExit = count === 2;
+        // isExit: returns `true` (exit from this function) within 18 secs
+        const isExit = count === 6;
         if (newBal > originBal || isExit) {
           timer && clearInterval(timer);
           resolve(true);
@@ -168,6 +168,12 @@ export const castChainName = (chain: string): string => {
   }
   if (chain && astarNetworks.includes(chain.toLowerCase())) {
     return chain + ' ' + '(Native)';
+  }
+  if (chain.includes('-')) {
+    return chain
+      .split('-')
+      .map((it) => capitalize(it))
+      .join(' ');
   }
   return chain;
 };

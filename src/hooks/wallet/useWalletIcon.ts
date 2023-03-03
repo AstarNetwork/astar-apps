@@ -1,7 +1,7 @@
 import { useAccount } from 'src/hooks';
 import { supportEvmWalletObj, SupportWallet, supportWalletObj } from 'src/config/wallets';
 import { useStore } from 'src/store';
-import { computed, ref, watch, watchEffect } from 'vue';
+import { computed, ref, watch, watchEffect, onUnmounted } from 'vue';
 import { getSelectedAccount } from '../helper/wallet';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 
@@ -27,12 +27,11 @@ export function useWalletIcon() {
     } catch (error) {
       console.error(error);
     }
+    return;
   };
 
-  const handleSetIconWallet = async (): Promise<void> => {
-    window.addEventListener(LOCAL_STORAGE.SELECTED_WALLET, () => {
-      setIconWallet();
-    });
+  const handleSetIconWallet = (): void => {
+    window.addEventListener(LOCAL_STORAGE.SELECTED_WALLET, setIconWallet);
   };
 
   watchEffect(handleSetIconWallet);
@@ -44,6 +43,10 @@ export function useWalletIcon() {
     },
     { immediate: true }
   );
+
+  onUnmounted(() => {
+    window.removeEventListener(LOCAL_STORAGE.SELECTED_WALLET, setIconWallet);
+  });
 
   return {
     iconWallet,

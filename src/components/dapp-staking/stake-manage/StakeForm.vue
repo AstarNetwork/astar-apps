@@ -48,7 +48,7 @@
             </div>
             <span class="text--title">{{ nativeTokenSymbol }}</span>
           </div>
-          <div class="box__column--input-amount">
+          <div>
             <input
               :value="amount"
               inputmode="decimal"
@@ -88,6 +88,7 @@
   </div>
 </template>
 <script lang="ts">
+import { getShortenAddress, truncate } from '@astar-network/astar-sdk-core';
 import { ethers } from 'ethers';
 import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 import {
@@ -97,10 +98,8 @@ import {
   useNetworkInfo,
   useWalletIcon,
 } from 'src/hooks';
-import { getShortenAddress } from 'src/hooks/helper/addressUtils';
-import { truncate } from 'src/hooks/helper/common';
 import { getTokenImage } from 'src/modules/token';
-import { computed, defineComponent, ref, watchEffect } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({

@@ -6,9 +6,10 @@ import { hasExtrinsicFailedEvent } from 'src/store/dapp-staking/actions';
 
 export enum TxType {
   dappsStaking = 'dappsStaking',
-  requiredClaim = 'requiredClaim',
+  withdrawUnbonded = 'withdrawUnbonded',
 }
 
+// @TODO: we need to clean up this later in a way that can be solved without send over the store
 export const displayCustomMessage = ({
   txType,
   store,
@@ -29,10 +30,11 @@ export const displayCustomMessage = ({
       senderAddress,
       t,
     });
-  } else if (txType === TxType.requiredClaim) {
-    dispatchRequiredClaimMessage({
+  } else if (txType === TxType.withdrawUnbonded) {
+    dispatchUnbondedMessage({
       result,
       store,
+      senderAddress,
       t,
     });
   }
@@ -49,7 +51,7 @@ const dispatchClaimMessage = ({
   senderAddress: string;
   t: (...arg: any) => void;
 }): void => {
-  if (result.status.isFinalized) {
+  if (result.isCompleted) {
     if (!hasExtrinsicFailedEvent(result.events, store.dispatch)) {
       const totalClaimedStaker = calculateClaimedStaker({
         events: result.events,
@@ -78,35 +80,28 @@ const dispatchClaimMessage = ({
   }
 };
 
-const dispatchRequiredClaimMessage = ({
+const dispatchUnbondedMessage = ({
   store,
   result,
+  senderAddress,
   t,
 }: {
   store: Store<StateInterface>;
   result: ISubmittableResult;
+  senderAddress: string;
   t: (...arg: any) => void;
 }): void => {
-  if (result.status.isFinalized) {
-    let errorMessage = '';
-    const res = hasExtrinsicFailedEvent(
-      result.events,
-      store.dispatch,
-      (message: string) => (errorMessage = message)
-    );
-    if (res) {
-      if (errorMessage.includes('TooManyEraStakeValues')) {
-        const msg = t('dappStaking.toast.requiredClaimFirst');
-
-        store.dispatch(
-          'general/showAlertMsg',
-          {
-            msg,
-            alertType: 'error',
-          },
-          { root: true }
-        );
-      }
+  if (result.isCompleted) {
+    if (!hasExtrinsicFailedEvent(result.events, store.dispatch)) {
+      store.commit('dapps/setUnlockingChunks', -1);
+      store.dispatch(
+        'general/showAlertMsg',
+        {
+          msg: t('dappStaking.toast.successfullyWithdrew'),
+          alertType: 'success',
+        },
+        { root: true }
+      );
     }
   }
 };

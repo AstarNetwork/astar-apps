@@ -1,6 +1,6 @@
 <template>
   <div v-if="currentNetworkChain === astarChain.SHIDEN">
-    <img src="~assets/img/shiden_logo.png" widht="152" height="44" />
+    <img src="~assets/img/shiden_logo.png" width="152" height="44" />
   </div>
   <div v-else-if="currentNetworkChain === astarChain.SHIBUYA">
     <img src="~assets/img/shibuya_logo.png" width="152" height="55" />

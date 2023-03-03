@@ -5,6 +5,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  @media (min-width: $lg) {
+    padding-right: 26px;
+  }
 }
 
 .rows {
@@ -26,10 +29,10 @@
   row-gap: 16px;
   @media (min-width: $md) {
     display: grid;
-    grid-template-columns: 290px 190px;
+    grid-template-columns: 190px 190px;
   }
   @media (min-width: $lg) {
-    grid-template-columns: 280px 220px;
+    grid-template-columns: 140px 220px;
   }
   @media (min-width: $xl) {
     grid-template-columns: 300px 290px;
@@ -59,14 +62,9 @@
   display: flex;
   flex-direction: column;
   @media (min-width: $md) {
-    width: 200px;
+    min-width: 240px;
     white-space: nowrap;
-  }
-  @media (min-width: $xl) {
     text-align: right;
-  }
-  @media (min-width: $xxl) {
-    width: 250px;
   }
 }
 
@@ -93,11 +91,12 @@
 
 .column--ticker {
   grid-template-columns: 54px auto;
-  column-gap: 12px;
+  column-gap: 4px;
   align-items: center;
   display: grid;
   width: 100px;
   @media (min-width: $sm) {
+    column-gap: 12px;
     width: auto;
     grid-template-columns: 60px auto;
   }
@@ -133,6 +132,16 @@
     width: 340px;
     grid-template-columns: 100px 70px;
     justify-content: end;
+    column-gap: 48px;
+  }
+}
+
+.column--three-buttons {
+  @media (min-width: $xl) {
+    display: grid;
+    width: 340px;
+    grid-template-columns: 100px 70px 70px;
+    justify-content: end;
     column-gap: 8px;
     margin-right: 80px;
   }
@@ -155,6 +164,14 @@
     stroke: white;
     background-color: $astar-blue;
   }
+}
+
+.btn--delete {
+  margin-top: 4px;
+}
+
+.icon--delete {
+  margin-top: 1px;
 }
 
 .adjuster--width {

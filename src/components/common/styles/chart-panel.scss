@@ -1,0 +1,77 @@
+@import 'src/css/quasar.variables.scss';
+
+.container--chart {
+  box-shadow: $container-border-shadow-light;
+  background: $container-bg-white;
+  border-radius: 6px;
+  padding: 8px 16px;
+  @media (min-width: $md) {
+    padding: 8px 24px;
+  }
+  @media (min-width: $xxl) {
+    width: 560px;
+  }
+}
+
+.row {
+  padding: 16px 8px 0px 8px;
+}
+
+.container--title--color {
+  color: #b1b7c1;
+}
+
+.chart--value {
+  padding: 8px 8px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.skeleton--staker {
+  width: 138px;
+  height: 39px;
+  @media (min-width: $sm) {
+    width: 200px;
+  }
+}
+
+.skeleton--chart {
+  height: 367px;
+  border-radius: 6px;
+  @media (min-width: $xxl) {
+    height: 433px;
+    width: 560px;
+  }
+}
+
+.chart {
+  padding-bottom: 8px 24px 24px;
+}
+
+.highcharts {
+  min-height: 200px;
+  @media (min-width: $xl) {
+    font-size: 250px;
+  }
+}
+
+.text--value {
+  font-size: 26px;
+  font-weight: 500;
+}
+
+.text--second-value {
+  font-size: 20px;
+  font-weight: 500;
+  @media (min-width: $sm) {
+    font-size: 26px;
+  }
+}
+
+.body--dark {
+  .container--chart {
+    box-shadow: $container-border-shadow-dark;
+    background-color: $gray-5-selected-dark;
+  }
+}

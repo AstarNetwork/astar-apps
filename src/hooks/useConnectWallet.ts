@@ -1,5 +1,5 @@
-import { ASTAR_SS58_FORMAT } from 'src/hooks/helper/plasmUtils';
-import { wait } from 'src/hooks/helper/common';
+import { wait, ASTAR_SS58_FORMAT, checkSumEvmAddress } from '@astar-network/astar-sdk-core';
+import { ETHEREUM_EXTENSION } from 'src/hooks';
 import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
 import { $api } from 'boot/api';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
@@ -11,7 +11,6 @@ import {
   WalletModalOption,
 } from 'src/config/wallets';
 import { getChainId, setupNetwork } from 'src/config/web3';
-import { checkSumEvmAddress } from 'src/config/web3/utils/convert';
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import * as utils from 'src/hooks/custom-signature/utils';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
@@ -19,13 +18,20 @@ import { useExtensions } from 'src/hooks/useExtensions';
 import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
 import { deepLinkPath } from 'src/links';
 import { useStore } from 'src/store';
-import { computed, ref, watch, WatchCallback, watchEffect, watchPostEffect } from 'vue';
+import {
+  computed,
+  ref,
+  watch,
+  WatchCallback,
+  watchEffect,
+  watchPostEffect,
+  onUnmounted,
+} from 'vue';
 import { useRouter } from 'vue-router';
 import {
   castMobileSource,
   checkIsWalletExtension,
   getDeepLinkUrl,
-  getInjectedExtensions,
   getSelectedAccount,
   isMobileDevice,
 } from 'src/hooks/helper/wallet';
@@ -61,19 +67,18 @@ export const useConnectWallet = () => {
     }
   });
 
-  const setCloseModal = () => {
+  const setCloseModal = (): void => {
     modalName.value = '';
   };
 
-  const openSelectModal = () => {
+  const openSelectModal = (): void => {
     modalName.value = WalletModalOption.SelectWallet;
+    return;
   };
 
   // Memo: triggered after users (who haven't connected to wallet) have clicked 'Connect Wallet' button on dApp staking page
   const handleOpenSelectModal = (): void => {
-    window.addEventListener(WalletModalOption.SelectWallet, () => {
-      openSelectModal();
-    });
+    window.addEventListener(WalletModalOption.SelectWallet, openSelectModal);
   };
 
   const initializeWalletAccount = () => {
@@ -163,10 +168,11 @@ export const useConnectWallet = () => {
 
     const ss58 = currentEcdsaAccount.value.ss58 ?? '';
     let result = await loadEvmWallet({ ss58, currentWallet: wallet });
-    if (result) {
-      modalName.value = '';
-      return;
-    }
+    // Todo: remove this code later
+    // if (result) {
+    //   modalName.value = '';
+    //   return;
+    // }
   };
 
   const toggleEvmWalletSchema = async () => {
@@ -278,7 +284,7 @@ export const useConnectWallet = () => {
     const delay = 3000;
     await wait(delay);
 
-    if (address === 'Ethereum Extension') {
+    if (address === ETHEREUM_EXTENSION) {
       if (!wallet) {
         return;
       }
@@ -339,6 +345,10 @@ export const useConnectWallet = () => {
     },
     { immediate: true }
   );
+
+  onUnmounted(() => {
+    window.removeEventListener(WalletModalOption.SelectWallet, openSelectModal);
+  });
 
   return {
     WalletModalOption,

@@ -7,12 +7,8 @@ export {
   getTokenBal,
   buildWeb3Instance,
   getTokenExplorer,
-  buildEvmAddress,
-  getBalance,
-  isValidEvmAddress,
-  toSS58Address,
-  sendNativeTokenTransaction,
   fetchErc20TokenInfo,
+  getTokenDetails,
 } from 'src/config/web3/utils';
 
 export { contractInstance, Staking } from 'src/config/web3/contracts';
@@ -23,12 +19,14 @@ const chain = {
   shiden: providerEndpoints.find((it) => it.key === endpointKey.SHIDEN),
   shibuya: providerEndpoints.find((it) => it.key === endpointKey.SHIBUYA),
   astar: providerEndpoints.find((it) => it.key === endpointKey.ASTAR),
+  localNode: providerEndpoints.find((it) => it.key === endpointKey.LOCAL),
 };
 
 export enum EVM {
   SHIDEN_MAINNET = Number(chain.shiden!.evmChainId),
   SHIBUYA_TESTNET = Number(chain.shibuya!.evmChainId),
   ASTAR_MAINNET = Number(chain.astar!.evmChainId),
+  ASTAR_LOCAL_NODE = Number(chain.localNode!.evmChainId),
   ETHEREUM_MAINNET = 1,
   BSC = 56,
   POLYGON = 137,
@@ -43,6 +41,7 @@ export const chainName = {
   [EVM.ASTAR_MAINNET]: 'Astar Network Mainnet',
   [EVM.SHIBUYA_TESTNET]: 'Shibuya Testnet',
   [EVM.ASTAR_MAINNET]: 'Astar Network Mainnet',
+  [EVM.ASTAR_LOCAL_NODE]: 'Astar Local Node',
   [EVM.BSC]: 'Binance Smart Chain',
   [EVM.POLYGON]: 'Polygon Mainnet',
   [EVM.MOONRIVER]: 'Moonriver Mainnet',
@@ -68,6 +67,11 @@ export const nativeCurrency = {
   [EVM.ASTAR_MAINNET]: {
     name: 'ASTR',
     symbol: 'ASTR',
+    decimals: 18,
+  },
+  [EVM.ASTAR_LOCAL_NODE]: {
+    name: 'LOC',
+    symbol: 'LOC',
     decimals: 18,
   },
   [EVM.BSC]: {
@@ -97,6 +101,7 @@ export const rpcUrls = {
   [EVM.SHIDEN_MAINNET]: [chain.shiden?.evmEndpoints[0]],
   [EVM.SHIBUYA_TESTNET]: [chain.shibuya?.evmEndpoints[0]],
   [EVM.ASTAR_MAINNET]: [chain.astar?.evmEndpoints[0]],
+  [EVM.ASTAR_LOCAL_NODE]: [chain.localNode?.evmEndpoints[0]],
   [EVM.BSC]: ['https://bsc-dataseed.binance.org'],
   [EVM.POLYGON]: ['https://rpc-mainnet.maticvigil.com'],
   [EVM.MOONRIVER]: ['https://rpc.api.moonriver.moonbeam.network'],

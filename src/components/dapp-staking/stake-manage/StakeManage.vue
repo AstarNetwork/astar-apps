@@ -41,21 +41,25 @@
 <script lang="ts">
 import MobileNavigator from 'src/components/assets/transfer/MobileNavigator.vue';
 import BackToPage from 'src/components/common/BackToPage.vue';
-import StakeForm from 'src/components/dapp-staking/stake-manage/StakeForm.vue';
-import SelectFunds from 'src/components/dapp-staking/stake-manage/SelectFunds.vue';
-import StakeInformation from 'src/components/dapp-staking/stake-manage/StakeInformation.vue';
-import ModalSelectFunds from 'src/components/dapp-staking/stake-manage/ModalSelectFunds.vue';
+import ModalSelectFunds from './ModalSelectFunds.vue';
+import SelectFunds from './SelectFunds.vue';
+import StakeForm from './StakeForm.vue';
+import StakeInformation from './StakeInformation.vue';
+// import StakeInformation from 'src/components/dapp-staking/stake-manage/StakeInformation.vue';
+import { WalletModalOption } from 'src/config/wallets';
 import {
   useBreakpoints,
-  useNetworkInfo,
+  useDappRedirect,
+  useDispatchGetDapps,
   useStake,
   useStakingList,
-  useDappRedirect,
 } from 'src/hooks';
-import { wait } from 'src/hooks/helper/common';
+import { wait } from '@astar-network/astar-sdk-core';
 import { Path } from 'src/router';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, watchEffect } from 'vue';
+import { DappCombinedInfo } from 'src/v2/models';
+import { computed, defineComponent, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 
 export type StakeRightUi = 'information' | 'select-funds-from';
@@ -73,10 +77,11 @@ export default defineComponent({
     const isModalSelectFunds = ref<boolean>(false);
     const rightUi = ref<StakeRightUi>('information');
 
+    const { t } = useI18n();
     const { screenSize, width } = useBreakpoints();
-    const { currentNetworkName } = useNetworkInfo();
     const route = useRoute();
     useDappRedirect();
+    useDispatchGetDapps();
     const { setAddressTransferFrom, formattedTransferFrom, currentAccount, handleStake } =
       useStake();
 
@@ -84,6 +89,7 @@ export default defineComponent({
     const { dapps, stakingList } = useStakingList();
     const isHighlightRightUi = computed<boolean>(() => rightUi.value !== 'information');
     const dappAddress = computed<string>(() => route.query.dapp as string);
+    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
 
     const handleModalSelectFunds = ({ isOpen }: { isOpen: boolean }): void => {
       isModalSelectFunds.value = isOpen;
@@ -101,22 +107,11 @@ export default defineComponent({
       }
     };
 
-    const dispatchGetDapps = (): void => {
-      const isDispatch =
-        currentNetworkName.value && dapps.value.length === 0 && currentAccount.value;
-      if (isDispatch) {
-        store.dispatch('dapps/getDapps', {
-          network: currentNetworkName.value.toLowerCase(),
-          currentAccount: currentAccount.value,
-        });
-      }
-    };
-
     const dapp = computed(() => {
       if (dapps.value.length > 0 && dappAddress.value) {
-        // Todo: fix the type annotation
-        return dapps.value.find((it: any) => {
+        return dapps.value.find((it: DappCombinedInfo) => {
           try {
+            if (!it.dapp) return null;
             return it.dapp.address.toLowerCase() === dappAddress.value.toLowerCase();
           } catch (error) {
             return null;
@@ -139,7 +134,28 @@ export default defineComponent({
       isModalSelectFunds.value && handleModalSelectFunds({ isOpen: false });
     };
 
-    watchEffect(dispatchGetDapps);
+    watch(
+      [currentAccount, dapp],
+      async () => {
+        if (!dapp.value) return;
+        // Memo: to avoid opening accounts drawer after changed account
+        await wait(2000);
+        if (!currentAccount.value) {
+          window.dispatchEvent(new CustomEvent(WalletModalOption.SelectWallet));
+        }
+      },
+      { immediate: true }
+    );
+
+    watch(
+      [isH160],
+      () => {
+        if (isH160.value) {
+          window.dispatchEvent(new CustomEvent(WalletModalOption.SelectWallet));
+        }
+      },
+      { immediate: true }
+    );
 
     return {
       isHighlightRightUi,
@@ -162,5 +178,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/dapp-staking/stake-manage/styles/stake-manage.scss';
+@use './styles/stake-manage.scss';
 </style>

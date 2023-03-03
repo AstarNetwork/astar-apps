@@ -6,7 +6,7 @@
           <span> {{ $t('from') }}</span>
           <div>
             <span class="text--to--balance">
-              <TokenBalance
+              <token-balance
                 text="assets.modals.balance"
                 :balance="String(fromAddressBalance)"
                 :symbol="token.metadata.symbol"
@@ -29,7 +29,7 @@
           <span> {{ $t('to') }}</span>
           <div>
             <span class="text--to--balance">
-              <TokenBalance
+              <token-balance
                 text="assets.modals.balance"
                 :balance="String(toAddressBalance)"
                 :symbol="token.metadata.symbol"
@@ -37,7 +37,7 @@
             </span>
           </div>
         </div>
-        <InputSelectAccount
+        <input-select-account
           v-model:selAddress="toAddress"
           :to-address="toAddress"
           :is-erc20-transfer="false"
@@ -49,7 +49,7 @@
           <div />
           <div class="box__available">
             <span class="text--to--balance">
-              <TokenBalance
+              <token-balance
                 text="assets.modals.balance"
                 :balance="String(fromAddressBalance)"
                 :symbol="token.metadata.symbol"
@@ -65,7 +65,7 @@
             <div class="token-logo">
               <jazzicon
                 v-if="token.tokenImage.includes('custom-token')"
-                :address="token.id"
+                :address="token.mappedERC20Addr"
                 :diameter="24"
               />
               <img
@@ -113,12 +113,13 @@
         <div class="input--checkbox" :class="isChecked && 'input--checkbox--checked'">
           <input id="do-not-send-to-cex" v-model="isChecked" type="checkbox" />
           <label for="do-not-send-to-cex">
-            <span :class="isChecked ? 'color--gray1' : 'color--not-checked'">{{
-              $t('assets.modals.notSendToExchanges')
-            }}</span>
+            <span :class="isChecked ? 'color--gray1' : 'color--not-checked'">
+              {{ $t('assets.modals.notSendToExchanges') }}
+            </span>
           </label>
         </div>
       </div>
+
       <div
         v-if="errMsg && currentAccount"
         class="row--box-error"
@@ -143,7 +144,7 @@ import InputSelectAccount from 'src/components/assets/transfer/InputSelectAccoun
 import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 import { SupportWallet } from 'src/config/wallets';
 import { useAccount, useNetworkInfo, useWalletIcon, useTokenTransfer } from 'src/hooks';
-import { getShortenAddress } from 'src/hooks/helper/addressUtils';
+import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import { useStore } from 'src/store';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, PropType } from 'vue';
@@ -158,11 +159,6 @@ export default defineComponent({
     TokenBalance,
   },
   props: {
-    accountData: {
-      type: Object,
-      required: false,
-      default: null,
-    },
     setRightUi: {
       type: Function,
       required: true,
@@ -211,6 +207,7 @@ export default defineComponent({
       await transferAsset({
         transferAmt: Number(transferAmt.value),
         toAddress: toAddress.value,
+        symbol: props.token.metadata.symbol,
       });
     };
 

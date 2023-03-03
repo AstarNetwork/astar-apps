@@ -55,9 +55,10 @@ import TokenPriceChart from 'src/components/dashboard/TokenPriceChart.vue';
 // import TotalTransactionsChart from 'src/components/dashboard/TotalTransactionsChart.vue';
 import TvlChart from 'src/components/dashboard/TvlChart.vue';
 import { useNetworkInfo, useTvlHistorical } from 'src/hooks';
-import { textChart, TOKEN_API_URL } from 'src/modules/token-api';
+import { textChart } from 'src/modules/token-api';
 import { defineComponent, ref, watchEffect } from 'vue';
 import axios from 'axios';
+import { TOKEN_API_URL } from '@astar-network/astar-sdk-core';
 export default defineComponent({
   components: {
     TokenPriceChart,
@@ -122,5 +123,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/dashboard/styles/chart-panel.scss';
+@use 'src/components/dashboard/styles/dashboard.scss';
 </style>

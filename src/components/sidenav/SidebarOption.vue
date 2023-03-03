@@ -163,7 +163,7 @@
           <div class="wrapper--sub-item">
             <q-item class="ic-item item--sub" clickable active-class="active-item">
               <q-item-section class="item-name">{{ $t('sidenavi.theme') }}</q-item-section>
-              <LightDarkMode />
+              <light-dark-mode />
             </q-item>
           </div>
         </div>
