@@ -1,12 +1,11 @@
-//@ts-ignore
-import { test as base, chromium, type BrowserContext } from '@playwright/test';
+import { test as base, chromium, BrowserContext } from '@playwright/test';
 import path from 'path';
 
 export const test = base.extend<{
   context: BrowserContext;
   extensionId: string;
 }>({
-  context: async ({ }, use) => {
+  context: async ({}, use) => {
     const pathToExtension = path.join(__dirname, 'hello-world');
     const context = await chromium.launchPersistentContext('', {
       headless: false,
@@ -28,8 +27,7 @@ export const test = base.extend<{
 
     // for manifest v3:
     let [background] = context.serviceWorkers();
-    if (!background)
-      background = await context.waitForEvent('serviceworker');
+    if (!background) background = await context.waitForEvent('serviceworker');
 
     const extensionId = background.url().split('/')[2];
     await use(extensionId);
