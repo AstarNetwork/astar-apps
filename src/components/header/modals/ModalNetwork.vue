@@ -205,9 +205,7 @@ export default defineComponent({
       const network = providerEndpoints[networkIdx].networkAlias;
       const url = buildNetworkUrl(network);
 
-      // Note: Users have to refresh the page manually for MathWallet(Android)
       window.open(url, '_self');
-      location.reload();
 
       emit('update:is-open', false);
       emit('update:select-network', networkIdx);
