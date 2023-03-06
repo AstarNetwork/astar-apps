@@ -1,5 +1,8 @@
 name: E2E testing with playwright
-'on': pull_request
+on:
+  workflow_run:
+    workflows: ["Create Firebase Hosting Preview on PR"]
+    types: [completed]
 jobs:
   test:
     timeout-minutes: 60
