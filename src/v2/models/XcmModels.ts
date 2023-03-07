@@ -20,7 +20,6 @@ export enum Chain {
   BIFROST_POLKADOT = 'Bifrost-polkadot',
   BIFROST_KUSAMA = 'Bifrost',
   EQUILIBRIUM = 'Equilibrium',
-  GENSHIRO = 'Genshiro',
 }
 
 export enum parachainIds {

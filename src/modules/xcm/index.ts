@@ -220,19 +220,10 @@ export const xcmChainObj: XcmChainObj = {
   [Chain.EQUILIBRIUM]: {
     name: Chain.EQUILIBRIUM,
     relayChain: Chain.POLKADOT,
-    img: 'https://contentv2.equilibrium.io/uploads/eq_f2099c1422.svg',
+    img: require('/src/assets/img/EQ.png'),
     parachainId: parachainIds.EQUILIBRIUM,
     endpoint: 'wss://node.pol.equilibrium.io/',
     subscan: 'https://equilibrium.subscan.io/',
-    isAstarNativeToken: true,
-  },
-  [Chain.GENSHIRO]: {
-    name: Chain.GENSHIRO,
-    relayChain: Chain.KUSAMA,
-    img: 'https://polkadot.js.org/apps/static/genshiro.ebdc5358..svg',
-    parachainId: parachainIds.GENSHIRO,
-    endpoint: 'wss://node.genshiro.io/',
-    subscan: 'https://genshiro.subscan.io/',
     isAstarNativeToken: true,
   },
 };
