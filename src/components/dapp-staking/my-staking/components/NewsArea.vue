@@ -32,12 +32,14 @@
   </div>
 </template>
 <script lang="ts">
+import { useQuery } from '@vue/apollo-composable';
+import gql from 'graphql-tag';
 import { defineComponent, computed, ref, watchEffect } from 'vue';
 import { useStore } from 'src/store';
 import { paginate } from '@astar-network/astar-sdk-core';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { useNetworkInfo } from 'src/hooks';
-import newsData from 'src/data/news.json';
+// import newsData from './dataNewsJson';
 import { DappCombinedInfo } from 'src/v2/models';
 
 interface Data {
@@ -48,7 +50,7 @@ interface Data {
 }
 
 export default defineComponent({
-  setup() {
+  async setup() {
     const store = useStore();
     const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
     const isDarkTheme = computed<boolean>(() => store.getters['general/theme'] === 'DARK');
@@ -74,7 +76,25 @@ export default defineComponent({
       bg_news_dark: require('/src/assets/img/bg_dapp_news_dark.jpg'),
     };
 
-    const items = newsData;
+    let items: any[] = [];
+
+    try {
+      const { result, loading, error } = await useQuery(gql`
+        query PostsBySpaceId {
+          posts(where: { space: { id_eq: "6917" }, AND: { tagsOriginal_contains: "WASM" } }) {
+            img: image
+            tag: tagsOriginal
+            title
+            link
+          }
+        }
+      `);
+
+      items = result.value.posts;
+      console.log('items', items, loading, error);
+    } catch (error) {
+      console.log('catch', error);
+    }
 
     const setDataArray = (): void => {
       if (!dataArray.value) return;
