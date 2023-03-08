@@ -34,7 +34,7 @@
 <script lang="ts">
 import { useQuery } from '@vue/apollo-composable';
 import gql from 'graphql-tag';
-import { defineComponent, computed, ref, watchEffect } from 'vue';
+import { defineComponent, computed, ref, watchEffect, watch } from 'vue';
 import { useStore } from 'src/store';
 import { paginate } from '@astar-network/astar-sdk-core';
 import { endpointKey } from 'src/config/chainEndpoints';
@@ -76,41 +76,23 @@ export default defineComponent({
       bg_news_dark: require('/src/assets/img/bg_dapp_news_dark.jpg'),
     };
 
-    let items: any[] = [];
-    const loadFeed = async (): Promise<void> => {
-      try {
-        const { result, loading, error } = await useQuery(gql`
-          query PostsBySpaceId {
-            posts(where: { space: { id_eq: "6917" }, AND: { tagsOriginal_contains: "WASM" } }) {
-              img: image
-              tag: tagsOriginal
-              title
-              link
-            }
-          }
-        `);
-
-        if (result.value) {
-          // Currently only one tag can be displayed on UI, so let's pick the first one
-          // link property is missing from SubSocial data.
-          items = result.value.posts.map((x: Data) => {
-            return { tag: x.tag.split(',')[0], title: x.title, link: x.link };
-          });
-          setDataArray();
+    const items = ref<Data[]>([]);
+    const { result, loading, error } = useQuery(gql`
+      query PostsBySpaceId {
+        posts(where: { space: { id_eq: "6917" }, AND: { tagsOriginal_contains: "WASM" } }) {
+          img: image
+          tag: tagsOriginal
+          title
+          link
         }
-      } catch (error) {
-        console.log('catch', error);
       }
-    };
-
-    loadFeed();
+    `);
 
     const setDataArray = (): void => {
       if (!dataArray.value) return;
 
-      pageTtl.value = Number((items.length / NUM_ITEMS).toFixed(0));
-      dataArray.value = paginate(items, NUM_ITEMS, page.value);
-      console.log(dataArray.value);
+      pageTtl.value = Number((items.value.length / NUM_ITEMS).toFixed(0));
+      dataArray.value = paginate(items.value, NUM_ITEMS, page.value);
     };
 
     const goToLink = (link: string) => {
@@ -140,6 +122,24 @@ export default defineComponent({
         setDataArray();
       }, 700);
     };
+
+    watch(
+      [result, error],
+      async () => {
+        if (result.value) {
+          // Currently only one tag can be displayed on UI, so let's pick the first one
+          // link property is missing from SubSocial data.
+          items.value = result.value.posts.map((x: Data) => {
+            return { tag: x.tag.split(',')[0], title: x.title, link: x.link };
+          });
+          setDataArray();
+          handlePageUpdate();
+        }
+
+        // TODO handle error
+      },
+      { immediate: true }
+    );
 
     return {
       dataArray,
