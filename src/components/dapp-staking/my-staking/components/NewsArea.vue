@@ -50,7 +50,7 @@ interface Data {
 }
 
 export default defineComponent({
-  async setup() {
+  setup() {
     const store = useStore();
     const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
     const isDarkTheme = computed<boolean>(() => store.getters['general/theme'] === 'DARK');
@@ -77,30 +77,40 @@ export default defineComponent({
     };
 
     let items: any[] = [];
-
-    try {
-      const { result, loading, error } = await useQuery(gql`
-        query PostsBySpaceId {
-          posts(where: { space: { id_eq: "6917" }, AND: { tagsOriginal_contains: "WASM" } }) {
-            img: image
-            tag: tagsOriginal
-            title
-            link
+    const loadFeed = async (): Promise<void> => {
+      try {
+        const { result, loading, error } = await useQuery(gql`
+          query PostsBySpaceId {
+            posts(where: { space: { id_eq: "6917" }, AND: { tagsOriginal_contains: "WASM" } }) {
+              img: image
+              tag: tagsOriginal
+              title
+              link
+            }
           }
-        }
-      `);
+        `);
 
-      items = result.value.posts;
-      console.log('items', items, loading, error);
-    } catch (error) {
-      console.log('catch', error);
-    }
+        if (result.value) {
+          // Currently only one tag can be displayed on UI, so let's pick the first one
+          // link property is missing from SubSocial data.
+          items = result.value.posts.map((x: Data) => {
+            return { tag: x.tag.split(',')[0], title: x.title, link: x.link };
+          });
+          setDataArray();
+        }
+      } catch (error) {
+        console.log('catch', error);
+      }
+    };
+
+    loadFeed();
 
     const setDataArray = (): void => {
       if (!dataArray.value) return;
 
       pageTtl.value = Number((items.length / NUM_ITEMS).toFixed(0));
       dataArray.value = paginate(items, NUM_ITEMS, page.value);
+      console.log(dataArray.value);
     };
 
     const goToLink = (link: string) => {
@@ -126,11 +136,10 @@ export default defineComponent({
           page.value > 1 ? page.value-- : 1;
         }
         isDisplay.value = true;
+        handlePageUpdate();
+        setDataArray();
       }, 700);
     };
-
-    watchEffect(setDataArray);
-    watchEffect(handlePageUpdate);
 
     return {
       dataArray,
@@ -199,7 +208,7 @@ export default defineComponent({
       justify-content: center;
       align-items: center;
       padding: 1px;
-      width: 84px;
+      width: 104px;
       min-width: 84px;
       height: 26px;
       color: #fff;
