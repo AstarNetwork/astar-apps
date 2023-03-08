@@ -1,5 +1,5 @@
 <template>
-  <div v-if="currentAccount">
+  <div v-if="currentAccount && isReady">
     <!-- Fixme: scroll to top when the app was routed from other page -->
     <router-view id="assets-top" />
   </div>
@@ -9,7 +9,7 @@
 <script lang="ts">
 import { useMeta } from 'quasar';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { useAccount, useNetworkInfo } from 'src/hooks';
+import { useAccount, useNetworkInfo, usePageReady } from 'src/hooks';
 import { useStore } from 'src/store';
 import { XcmAssets } from 'src/store/assets/state';
 import { computed, defineComponent, watch } from 'vue';
@@ -23,6 +23,7 @@ export default defineComponent({
   setup() {
     useMeta(generateMeta(Path.Assets));
     const store = useStore();
+    const { isReady } = usePageReady();
     const { isMainnet } = useNetworkInfo();
     const { currentAccount } = useAccount();
     const xcmAssets = computed<XcmAssets>(() => store.getters['assets/getAllAssets']);
@@ -40,7 +41,7 @@ export default defineComponent({
       }
     };
     watch([xcmAssets], handleLoadingAssets, { immediate: true });
-    return { currentAccount };
+    return { currentAccount, isReady };
   },
   // mounted() {
   // Memo: scrollBehavior in createRouter is not working
