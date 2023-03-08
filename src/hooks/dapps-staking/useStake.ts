@@ -8,7 +8,10 @@ import { container } from 'src/v2/common';
 import { IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { computed, ref, watch } from 'vue';
+import { useNetworkInfo } from 'src/hooks';
+import { useStore } from 'src/store';
 import { useRouter, useRoute } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 
 export function useStake() {
   const router = useRouter();
@@ -17,6 +20,9 @@ export function useStake() {
   const { stakingList } = useStakingList();
   const isStakePage = computed<boolean>(() => route.fullPath.includes('stake'));
   const addressTransferFrom = ref<string>(currentAccount.value);
+  const { t } = useI18n();
+  const store = useStore();
+  const { nativeTokenSymbol } = useNetworkInfo();
 
   const setAddressTransferFrom = (address: string) => {
     addressTransferFrom.value = address;
@@ -50,6 +56,17 @@ export function useStake() {
   }) => {
     const stakeAmount = new BN(ethers.utils.parseEther(amount).toString());
     const dappStakingService = container.get<IDappStakingService>(Symbols.DappStakingService);
+    const balance = new BN(formattedTransferFrom.value.item?.balance || '0');
+    if (balance.lt(stakeAmount)) {
+      store.dispatch('general/showAlertMsg', {
+        msg: t('dappStaking.error.invalidBalance', {
+          symbol: nativeTokenSymbol.value,
+        }),
+        alertType: 'error',
+      });
+      return;
+    }
+
     if (formattedTransferFrom.value.isNominationTransfer) {
       if (!formattedTransferFrom.value.item) return;
       await dappStakingService.nominationTransfer({

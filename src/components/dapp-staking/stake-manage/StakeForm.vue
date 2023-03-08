@@ -73,6 +73,9 @@
       <div v-if="errMsg && currentAccount" class="row--box-error">
         <span class="color--white"> {{ $t(errMsg) }}</span>
       </div>
+      <div v-if="warningMsg && currentAccount" class="row--box-warning">
+        <span class="color--white"> {{ $t(warningMsg) }}</span>
+      </div>
       <div class="wrapper__row--button" :class="!errMsg && 'btn-margin-adjuster'">
         <astar-button
           class="btn-size--confirm"
@@ -101,6 +104,7 @@ import {
 import { getTokenImage } from 'src/modules/token';
 import { computed, defineComponent, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { BN } from '@polkadot/util';
 
 export default defineComponent({
   components: {
@@ -136,9 +140,11 @@ export default defineComponent({
       getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
     );
     const { selectedTip, nativeTipPrice, setSelectedTip } = useGasPrice();
+    const warningMsg = ref<string>('');
 
     const inputHandler = (event: any): void => {
       amount.value = event.target.value;
+      warningMsg.value = '';
     };
 
     const maxAmount = computed<string>(() => {
@@ -151,7 +157,13 @@ export default defineComponent({
     });
 
     const toMaxAmount = (): void => {
-      amount.value = maxAmount.value;
+      const maximumAmount = new BN(ethers.utils.parseEther(maxAmount.value).toString());
+      // MEMO: it leave 10ASTR in the account so it will keep the balance for longer period.
+      const leaveAmount = new BN(ethers.utils.parseEther('10').toString());
+      amount.value = ethers.utils.formatEther(maximumAmount.sub(leaveAmount).toString());
+      warningMsg.value = t('dappStaking.error.warningLeaveMinAmount', {
+        symbol: nativeTokenSymbol.value,
+      });
     };
 
     const formattedMinStaking = computed<number>(() => {
@@ -209,6 +221,7 @@ export default defineComponent({
       amount,
       errMsg,
       maxAmount,
+      warningMsg,
       setSelectedTip,
       toMaxAmount,
       getShortenAddress,

@@ -76,8 +76,6 @@ export default defineComponent({
   setup() {
     const isModalSelectFunds = ref<boolean>(false);
     const rightUi = ref<StakeRightUi>('information');
-
-    const { t } = useI18n();
     const { screenSize, width } = useBreakpoints();
     const route = useRoute();
     useDappRedirect();

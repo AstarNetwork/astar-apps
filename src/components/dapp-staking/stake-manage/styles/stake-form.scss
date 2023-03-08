@@ -42,9 +42,19 @@
   padding: 10px 20px;
   border-radius: 6px;
   width: 344px;
-  margin-bottom: 24px;
   border: 1px solid $warning-red;
   background: $box-red;
+  text-align: left;
+  @media (min-width: $sm) {
+    width: 412px;
+  }
+}
+.row--box-warning {
+  padding: 10px 20px;
+  border-radius: 6px;
+  width: 344px;
+  border: 1px solid $warning-yellow;
+  background: $warning-yellow;
   text-align: left;
   @media (min-width: $sm) {
     width: 412px;
