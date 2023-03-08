@@ -39,7 +39,6 @@ import { useStore } from 'src/store';
 import { paginate } from '@astar-network/astar-sdk-core';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { useNetworkInfo } from 'src/hooks';
-// import newsData from './dataNewsJson';
 import { DappCombinedInfo } from 'src/v2/models';
 
 interface Data {
@@ -79,11 +78,11 @@ export default defineComponent({
     const items = ref<Data[]>([]);
     const { result, loading, error } = useQuery(gql`
       query PostsBySpaceId {
-        posts(where: { space: { id_eq: "6917" }, AND: { tagsOriginal_contains: "WASM" } }) {
+        posts(where: { space: { id_eq: "11132" } }) {
           img: image
           tag: tagsOriginal
           title
-          link
+          link: canonical
         }
       }
     `);
@@ -130,7 +129,12 @@ export default defineComponent({
           // Currently only one tag can be displayed on UI, so let's pick the first one
           // link property is missing from SubSocial data.
           items.value = result.value.posts.map((x: Data) => {
-            return { tag: x.tag.split(',')[0], title: x.title, link: x.link };
+            return {
+              tag: x.tag.split(',')[0],
+              title: x.title,
+              link: x.link,
+              img: 'https://ipfs.subsocial.network/ipfs/' + x.img,
+            };
           });
           setDataArray();
           handlePageUpdate();
