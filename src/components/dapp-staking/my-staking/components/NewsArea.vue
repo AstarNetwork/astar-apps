@@ -202,6 +202,7 @@ export default defineComponent({
     font-size: 14px;
     margin-top: 15px;
     margin-bottom: 15px;
+    max-width: 560px;
     .box--tag {
       position: relative;
       display: flex;
@@ -255,12 +256,12 @@ export default defineComponent({
 .row--page {
   display: flex;
   position: relative;
-  bottom: 15px;
+  bottom: 10px;
   float: right;
   color: $gray-5-selected;
 
   @media (min-width: $md) {
-    bottom: 50px;
+    bottom: 35px;
   }
 }
 .colum--current-page {
