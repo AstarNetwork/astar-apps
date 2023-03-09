@@ -324,7 +324,7 @@ export const generateNativeAsset = (symbol: ASTAR_NATIVE_TOKEN): Asset => {
     name,
     symbol,
   };
-  const minBridgeAmount = '0.1';
+  const minBridgeAmount = symbol === 'ASTR' ? '5' : '1';
   const originChain = name;
   const originAssetId = symbol;
   const isNativeToken = true;
