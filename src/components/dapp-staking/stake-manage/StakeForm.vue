@@ -70,21 +70,14 @@
         :set-selected-gas="setSelectedTip"
       />
 
-      <div v-if="errMsg && currentAccount" class="row--box-error">
-        <div class="column--title">
-          <span class="text--dot">・</span>
-          <span class="color--white"> {{ $t(errMsg) }}</span>
-        </div>
-      </div>
       <div class="row--box-warning">
         <div class="column--title">
           <span class="text--dot">・</span>
           <span class="color--white"> {{ $t(warningMsg) }}</span>
         </div>
-        <!-- <div v-if="errMsg && currentAccount" class="column--title">
-          <span class="text--dot">・</span>
-          <span class="color--white"> {{ $t(errMsg) }}</span>
-        </div> -->
+      </div>
+      <div v-if="errMsg && currentAccount" class="row--box-error">
+        <span class="color--white"> {{ $t(errMsg) }}</span>
       </div>
       <div class="wrapper__row--button" :class="!errMsg && 'btn-margin-adjuster'">
         <astar-button

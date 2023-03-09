@@ -34,7 +34,7 @@ export function useClaimAll() {
   const { t } = useI18n();
   const { era } = useCurrentEra();
   const selectedAddress = computed(() => store.getters['general/selectedAddress']);
-  const { accountData, isLoadingBalance } = useBalance(selectedAddress);
+  const { accountData } = useBalance(selectedAddress);
   const { nativeTokenSymbol } = useNetworkInfo();
 
   const transferableBalance = computed(() => {
@@ -117,7 +117,6 @@ export function useClaimAll() {
     const transaction = api.tx.utility.batch(txsToExecute);
     const info = await api.tx.utility.batch(txsToExecute).paymentInfo(senderAddress.value);
     const partialFee = info.partialFee.toBn();
-    console.log('partialFee', partialFee.toString());
     const balance = new BN(
       ethers.utils.parseEther(transferableBalance.value.toString()).toString()
     );
