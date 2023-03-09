@@ -39,12 +39,14 @@
 }
 
 .row--box-error {
-  padding: 10px 20px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 6px;
+  padding: 8px 16px;
   border-radius: 6px;
   width: 344px;
   border: 1px solid $warning-red;
   background: $box-red;
-  text-align: left;
   @media (min-width: $sm) {
     width: 412px;
   }
@@ -53,7 +55,7 @@
   display: flex;
   flex-direction: column;
   row-gap: 6px;
-  margin-bottom: 24px;
+  margin-bottom: 5px;
   border: 1px solid $border-yellow;
   padding: 8px 16px;
   width: 344px;
@@ -63,10 +65,14 @@
     width: 412px;
   }
 }
+.text--dot {
+  font-size: 24px;
+  font-weight: 700;
+}
 .column--title {
   display: flex;
   align-items: center;
-  column-gap: 16px;
+  column-gap: 10px;
 }
 
 .box__row {
