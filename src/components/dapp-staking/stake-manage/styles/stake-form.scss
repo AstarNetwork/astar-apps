@@ -50,15 +50,23 @@
   }
 }
 .row--box-warning {
-  padding: 10px 20px;
-  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 6px;
+  margin-bottom: 24px;
+  border: 1px solid $border-yellow;
+  padding: 8px 16px;
   width: 344px;
-  border: 1px solid $warning-yellow;
-  background: $warning-yellow;
-  text-align: left;
+  border-radius: 6px;
+  background: $transparent-yellow;
   @media (min-width: $sm) {
     width: 412px;
   }
+}
+.column--title {
+  display: flex;
+  align-items: center;
+  column-gap: 16px;
 }
 
 .box__row {
