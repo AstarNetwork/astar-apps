@@ -6,14 +6,16 @@ import {
 import { ISubmittableResult } from '@polkadot/types/types';
 import { BN } from '@polkadot/util';
 import { $api } from 'boot/api';
-import { useCurrentEra } from 'src/hooks';
+import { useCurrentEra, useBalance } from 'src/hooks';
 import { displayCustomMessage, TxType } from 'src/hooks/custom-signature/message';
 import { useStore } from 'src/store';
 import { container } from 'src/v2/common';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
+import { ethers } from 'ethers';
 import { computed, ref, watchEffect } from 'vue';
+import { useNetworkInfo } from 'src/hooks';
 import { useI18n } from 'vue-i18n';
 
 const MAX_BATCH_WEIGHT = new BN('50000000000');
@@ -31,6 +33,16 @@ export function useClaimAll() {
   const isSendingTx = computed(() => store.getters['general/isLoading']);
   const { t } = useI18n();
   const { era } = useCurrentEra();
+  const selectedAddress = computed(() => store.getters['general/selectedAddress']);
+  const { accountData, isLoadingBalance } = useBalance(selectedAddress);
+  const { nativeTokenSymbol } = useNetworkInfo();
+
+  const transferableBalance = computed(() => {
+    const balance = accountData.value
+      ? ethers.utils.formatEther(accountData.value.getUsableTransactionBalance().toString())
+      : '0';
+    return Number(balance);
+  });
 
   watchEffect(async () => {
     try {
@@ -103,6 +115,23 @@ export function useClaimAll() {
       `Batch weight: ${totalWeight.toString()}, transactions no. ${txsToExecute.length}`
     );
     const transaction = api.tx.utility.batch(txsToExecute);
+    const info = await api.tx.utility.batch(txsToExecute).paymentInfo(senderAddress.value);
+    const partialFee = info.partialFee.toBn();
+    console.log('partialFee', partialFee.toString());
+    const balance = new BN(
+      ethers.utils.parseEther(transferableBalance.value.toString()).toString()
+    );
+
+    if (balance.sub(partialFee.muln(1.5)).isNeg()) {
+      store.dispatch('general/showAlertMsg', {
+        msg: t('dappStaking.error.invalidBalance', {
+          symbol: nativeTokenSymbol.value,
+        }),
+        alertType: 'error',
+      });
+      return;
+    }
+
     const finalizedCallback = (result: ISubmittableResult): void => {
       displayCustomMessage({
         txType: TxType.dappsStaking,

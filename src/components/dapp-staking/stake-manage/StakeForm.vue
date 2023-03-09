@@ -111,7 +111,6 @@ import {
 import { getTokenImage } from 'src/modules/token';
 import { computed, defineComponent, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { BN } from '@polkadot/util';
 
 export default defineComponent({
   components: {
