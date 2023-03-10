@@ -75,10 +75,12 @@ export default defineComponent({
       bg_news_dark: require('/src/assets/img/bg_dapp_news_dark.jpg'),
     };
 
+    // The subsocial space where the dApp staking news updates come from: https://polkaverse.com/11132
+    const AstarNetworkdAppStakingUpdateSpace = 11132;
     const items = ref<Data[]>([]);
     const { result, loading, error } = useQuery(gql`
       query PostsBySpaceId {
-        posts(where: { space: { id_eq: "11132" } }, orderBy: id_DESC) {
+        posts(where: { space: { id_eq: "${AstarNetworkdAppStakingUpdateSpace}" } }, orderBy: id_DESC) {
           img: image
           tag: tagsOriginal
           title
