@@ -24,7 +24,8 @@
         <tvl-chart
           :title="textChart.dappStaking.title"
           :tooltip="textChart.dappStaking.tooltip"
-          :tvl-value="dappStakingTvlAmount"
+          :tvl-value="dappStakingTvlTokensDisplay"
+          :tvl-value-add-on="dappStakingTvlAmountDisplay"
           :tvl-data="filteredDappStakingTvl.dappStaking"
           :merged-tvl-data="filteredDappStakingTvl.merged"
           :handle-filter-changed="handleDappStakingTvlFilterChanged"
@@ -56,7 +57,7 @@ import TokenPriceChart from 'src/components/dashboard/TokenPriceChart.vue';
 import TvlChart from 'src/components/dashboard/TvlChart.vue';
 import { useNetworkInfo, useTvlHistorical } from 'src/hooks';
 import { textChart } from 'src/modules/token-api';
-import { defineComponent, ref, watchEffect } from 'vue';
+import { defineComponent, ref, watchEffect, computed } from 'vue';
 import axios from 'axios';
 import { TOKEN_API_URL } from '@astar-network/astar-sdk-core';
 export default defineComponent({
@@ -74,6 +75,7 @@ export default defineComponent({
       filteredDappStakingTvl,
       filteredEcosystemTvl,
       dappStakingTvlAmount,
+      dappStakingTvlTokens,
       ecosystemTvlAmount,
       handleDappStakingTvlFilterChanged,
       handleEcosystemTvlFilterChanged,
@@ -83,6 +85,10 @@ export default defineComponent({
       lenStakers,
     } = useTvlHistorical();
 
+    const dappStakingTvlTokensDisplay = computed(
+      () => `${dappStakingTvlTokens.value} ${nativeTokenSymbol.value}`
+    );
+    const dappStakingTvlAmountDisplay = computed(() => `(${dappStakingTvlAmount.value})`);
     const { isMainnet, currentNetworkName, nativeTokenSymbol } = useNetworkInfo();
     const loadStats = async (network: string) => {
       if (!network) return;
@@ -109,7 +115,8 @@ export default defineComponent({
       isMainnet,
       filteredDappStakingTvl,
       filteredEcosystemTvl,
-      dappStakingTvlAmount,
+      dappStakingTvlAmountDisplay,
+      dappStakingTvlTokensDisplay,
       ecosystemTvlAmount,
       handleDappStakingTvlFilterChanged,
       handleEcosystemTvlFilterChanged,

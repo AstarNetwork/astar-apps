@@ -8,11 +8,16 @@ import {
   filterTvlData,
   mergeTvlArray,
   Duration,
+  formatNumber,
 } from '@astar-network/astar-sdk-core';
+import { container } from 'src/v2/common';
+import { IDappStakingService } from 'src/v2/services';
+import { Symbols } from 'src/v2/symbols';
 
 export function useTvlHistorical() {
   const mergedTvlAmount = ref<string>('');
   const dappStakingTvlAmount = ref<string>('');
+  const dappStakingTvlTokens = ref<string>('');
   const ecosystemTvlAmount = ref<string>('');
 
   const mergedTvl = ref<number[][] | null>(null);
@@ -50,6 +55,14 @@ export function useTvlHistorical() {
     mergedTvlAmount.value = mergedTvlValue;
     dappStakingTvlAmount.value = dappStakingTvlValue;
     ecosystemTvlAmount.value = ecosystemTvlValue;
+  };
+
+  const getTvl = async (): Promise<void> => {
+    const tvlService = container.get<IDappStakingService>(Symbols.DappStakingService);
+    const tvl = await tvlService.getTvl();
+    const tvlDefaultUnit = formatNumber(tvl.tvlDefaultUnit, 2);
+
+    dappStakingTvlTokens.value = tvlDefaultUnit;
   };
 
   const handleMergedTvlFilterChanged = (filter: Duration) => {
@@ -137,6 +150,7 @@ export function useTvlHistorical() {
         await Promise.all([
           loadData(currentNetworkName.value.toLowerCase()),
           fetchDappStakers(api),
+          getTvl(),
         ]);
       } catch (error) {
         console.error(error);
@@ -155,6 +169,7 @@ export function useTvlHistorical() {
     ecosystemTvl,
     dappStakingTvl,
     lenStakers,
+    dappStakingTvlTokens,
     handleMergedTvlFilterChanged,
     handleDappStakingTvlFilterChanged,
     handleEcosystemTvlFilterChanged,
