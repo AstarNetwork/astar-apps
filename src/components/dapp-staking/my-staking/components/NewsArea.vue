@@ -32,12 +32,13 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, computed, ref, watchEffect } from 'vue';
+import { useQuery } from '@vue/apollo-composable';
+import gql from 'graphql-tag';
+import { defineComponent, computed, ref, watchEffect, watch } from 'vue';
 import { useStore } from 'src/store';
 import { paginate } from '@astar-network/astar-sdk-core';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { useNetworkInfo } from 'src/hooks';
-import newsData from 'src/data/news.json';
 import { DappCombinedInfo } from 'src/v2/models';
 
 interface Data {
@@ -74,13 +75,25 @@ export default defineComponent({
       bg_news_dark: require('/src/assets/img/bg_dapp_news_dark.jpg'),
     };
 
-    const items = newsData;
+    // The subsocial space where the dApp staking news updates come from: https://polkaverse.com/11132
+    const AstarNetworkdAppStakingUpdateSpace = 11132;
+    const items = ref<Data[]>([]);
+    const { result, loading, error } = useQuery(gql`
+      query PostsBySpaceId {
+        posts(where: { space: { id_eq: "${AstarNetworkdAppStakingUpdateSpace}" } }, orderBy: id_DESC) {
+          img: image
+          tag: tagsOriginal
+          title
+          link: canonical
+        }
+      }
+    `);
 
     const setDataArray = (): void => {
       if (!dataArray.value) return;
 
-      pageTtl.value = Number((items.length / NUM_ITEMS).toFixed(0));
-      dataArray.value = paginate(items, NUM_ITEMS, page.value);
+      pageTtl.value = Number((items.value.length / NUM_ITEMS).toFixed(0));
+      dataArray.value = paginate(items.value, NUM_ITEMS, page.value);
     };
 
     const goToLink = (link: string) => {
@@ -106,11 +119,33 @@ export default defineComponent({
           page.value > 1 ? page.value-- : 1;
         }
         isDisplay.value = true;
+        handlePageUpdate();
+        setDataArray();
       }, 700);
     };
 
-    watchEffect(setDataArray);
-    watchEffect(handlePageUpdate);
+    watch(
+      [result, error],
+      async () => {
+        if (result.value) {
+          // Currently only one tag can be displayed on UI, so let's pick the first one
+          // link property is missing from SubSocial data.
+          items.value = result.value.posts.map((x: Data) => {
+            return {
+              tag: x.tag.split(',')[0],
+              title: x.title,
+              link: x.link,
+              img: 'https://ipfs.subsocial.network/ipfs/' + x.img,
+            };
+          });
+          setDataArray();
+          handlePageUpdate();
+        }
+
+        // TODO handle error
+      },
+      { immediate: true }
+    );
 
     return {
       dataArray,
@@ -173,13 +208,14 @@ export default defineComponent({
     font-size: 14px;
     margin-top: 15px;
     margin-bottom: 15px;
+    max-width: 560px;
     .box--tag {
       position: relative;
       display: flex;
       justify-content: center;
       align-items: center;
       padding: 1px;
-      width: 84px;
+      width: 104px;
       min-width: 84px;
       height: 26px;
       color: #fff;
@@ -226,12 +262,12 @@ export default defineComponent({
 .row--page {
   display: flex;
   position: relative;
-  bottom: 15px;
+  bottom: 10px;
   float: right;
   color: $gray-5-selected;
 
   @media (min-width: $md) {
-    bottom: 50px;
+    bottom: 35px;
   }
 }
 .colum--current-page {
