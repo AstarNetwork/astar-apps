@@ -70,6 +70,12 @@
         :set-selected-gas="setSelectedTip"
       />
 
+      <div class="row--box-warning">
+        <div class="column--title">
+          <span class="text--dot">・</span>
+          <span class="color--white"> {{ $t(warningMsg) }}</span>
+        </div>
+      </div>
       <div v-if="errMsg && currentAccount" class="row--box-error">
         <span class="color--white"> {{ $t(errMsg) }}</span>
       </div>
@@ -136,6 +142,9 @@ export default defineComponent({
       getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
     );
     const { selectedTip, nativeTipPrice, setSelectedTip } = useGasPrice();
+    const warningMsg = t('dappStaking.error.warningLeaveMinAmount', {
+      symbol: nativeTokenSymbol.value,
+    });
 
     const inputHandler = (event: any): void => {
       amount.value = event.target.value;
@@ -151,7 +160,12 @@ export default defineComponent({
     });
 
     const toMaxAmount = (): void => {
-      amount.value = maxAmount.value;
+      const maximumAmount = ethers.utils.parseEther(maxAmount.value);
+      // MEMO: it leave 10ASTR in the account so it will keep the balance for longer period.
+      const leaveAmount = ethers.utils.parseEther('10');
+      amount.value = truncate(
+        ethers.utils.formatEther(maximumAmount.sub(leaveAmount).toString())
+      ).toString();
     };
 
     const formattedMinStaking = computed<number>(() => {
@@ -166,11 +180,15 @@ export default defineComponent({
       const stakingAmount = inputAmount + stakedAmount;
       const isNotEnoughMinAmount = formattedMinStaking.value > stakingAmount;
 
+      const formatInputAmount = ethers.utils.parseEther(inputAmount.toString());
+      const maximumAmount = ethers.utils.parseEther(maxAmount.value);
+      const leaveAmount = ethers.utils.parseEther('10');
+
       if (!inputAmount) {
         return '';
       }
 
-      if (isNotEnoughMinAmount) {
+      if (isNotEnoughMinAmount || maximumAmount.sub(formatInputAmount).lte(leaveAmount)) {
         return t('dappStaking.error.notEnoughMinAmount', {
           amount: formattedMinStaking.value,
           symbol: nativeTokenSymbol.value,
@@ -209,6 +227,7 @@ export default defineComponent({
       amount,
       errMsg,
       maxAmount,
+      warningMsg,
       setSelectedTip,
       toMaxAmount,
       getShortenAddress,
