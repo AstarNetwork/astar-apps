@@ -310,7 +310,7 @@ export default {
       successfullySetRewardDest: 'You successfully set reward destination',
     },
     error: {
-      onlySupportsSubstrate: 'dApp staking only supports Substrate wallets',
+      onlySupportsSubstrate: 'dApp staking only supports Substrate wallet',
       notEnoughMinAmount:
         'The amount of token to be staking must be greater than {amount} {symbol}',
       allFundsWillBeTransferred:
