@@ -80,7 +80,7 @@ export default defineComponent({
     const items = ref<Data[]>([]);
     const { result, loading, error } = useQuery(gql`
       query PostsBySpaceId {
-        posts(where: { space: { id_eq: "${AstarNetworkdAppStakingUpdateSpace}" } }, orderBy: id_DESC) {
+        posts(where: { space: { id_eq: "${AstarNetworkdAppStakingUpdateSpace}" }, AND: { hidden_not_eq: true } }, orderBy: id_DESC) {
           img: image
           tag: tagsOriginal
           title
