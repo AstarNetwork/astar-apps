@@ -10,13 +10,14 @@
         </connect-button>
       </template>
       <template v-else>
-        <account-button :account="currentAccount" @click="changeAccount" />
+        <account-button :account="currentAccount" @click="clickAccountBtn" />
       </template>
-      <network-button @show-network="modalNetwork = true" />
+      <network-button @show-network="clickNetworkBtn" />
     </header-comp>
 
     <!-- Modals -->
     <modal-network
+      v-if="modalNetwork"
       v-model:isOpen="modalNetwork"
       v-model:selectNetwork="currentNetworkIdx"
       :network-idx="currentNetworkIdx"
@@ -110,6 +111,16 @@ export default defineComponent({
       disconnectAccount,
     } = useConnectWallet();
 
+    const clickAccountBtn = () => {
+      changeAccount();
+      stateModal.modalNetwork = false;
+    };
+
+    const clickNetworkBtn = () => {
+      stateModal.modalNetwork = true;
+      modalAccountSelect.value = false;
+    };
+
     const store = useStore();
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
     const route = useRoute();
@@ -138,6 +149,8 @@ export default defineComponent({
       modalAccountSelect,
       width,
       screenSize,
+      clickAccountBtn,
+      clickNetworkBtn,
       setCloseModal,
       setWalletModal,
       openSelectModal,
