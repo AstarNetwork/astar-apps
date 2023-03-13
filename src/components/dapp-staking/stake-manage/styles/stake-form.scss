@@ -61,6 +61,7 @@
   width: 344px;
   border-radius: 6px;
   background: $transparent-yellow;
+  color: $warning-yellow;
   @media (min-width: $sm) {
     width: 412px;
   }
@@ -202,6 +203,9 @@
   }
   input {
     color: white;
+  }
+  .row--box-warning {
+    color: $gray-1;
   }
   .row--box-error {
     background: $box-red-dark;

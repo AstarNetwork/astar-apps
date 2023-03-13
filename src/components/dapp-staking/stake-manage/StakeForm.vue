@@ -73,7 +73,7 @@
       <div class="row--box-warning">
         <div class="column--title">
           <span class="text--dot">・</span>
-          <span class="color--white"> {{ $t(warningMsg) }}</span>
+          <span> {{ $t(warningMsg) }}</span>
         </div>
       </div>
       <div v-if="errMsg && currentAccount" class="row--box-error">
