@@ -9,7 +9,7 @@ import { ITokenTransferRepository } from './../ITokenTransferRepository';
 import { BN } from '@polkadot/util';
 import { TransactionConfig } from 'web3-eth';
 import Web3 from 'web3';
-import { getEvmGas } from 'src/modules/gas-api';
+import { getEvmGas } from '@astar-network/astar-sdk-core';
 import { AbiItem } from 'web3-utils';
 import ERC20_ABI from 'src/config/abi/ERC20.json';
 import { IGasPriceProvider } from 'src/v2/services';

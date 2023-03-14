@@ -7,7 +7,7 @@ import { DappStakingConstants, SmartContract, StakerInfo } from 'src/v2/models/D
 import { EditDappItem } from 'src/store/dapp-staking/state';
 import { AccountLedger } from 'src/v2/models/DappsStaking';
 import { u32 } from '@polkadot/types';
-import { GeneralStakerInfo } from 'src/hooks/helper/claim';
+import { GeneralStakerInfo } from '@astar-network/astar-sdk-core';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
 @injectable()
 export class DappStakingRepositoryMock implements IDappStakingRepository {

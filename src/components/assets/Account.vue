@@ -68,12 +68,12 @@
   </div>
 </template>
 <script lang="ts">
+import { isValidEvmAddress, getShortenAddress } from '@astar-network/astar-sdk-core';
 import { FrameSystemAccountInfo } from '@polkadot/types/lookup';
 import copy from 'copy-to-clipboard';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
-import { isValidEvmAddress } from 'src/config/web3';
 import {
   useAccount,
   useBalance,
@@ -83,11 +83,7 @@ import {
   useWalletIcon,
 } from 'src/hooks';
 import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
-import {
-  getEvmMappedSs58Address,
-  getShortenAddress,
-  setAddressMapping,
-} from 'src/hooks/helper/addressUtils';
+import { getEvmMappedSs58Address, setAddressMapping } from 'src/hooks/helper/addressUtils';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';

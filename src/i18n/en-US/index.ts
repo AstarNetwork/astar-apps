@@ -315,6 +315,10 @@ export default {
         'The amount of token to be staking must be greater than {amount} {symbol}',
       allFundsWillBeTransferred:
         'All funds will be transferred because the min. staking amount is {minStakingAmount} {symbol}',
+      invalidBalance:
+        'Invalid balance to make a claim. Please add {symbol} tokens in to the account',
+      warningLeaveMinAmount:
+        'Account must hold greater than 10{symbol} in transferrable when you stake.',
     },
   },
   assets: {

@@ -1,5 +1,5 @@
 import { providerEndpoints } from 'src/config/chainEndpoints';
-import { capitalize } from './../hooks/helper/common';
+import { capitalize } from '@astar-network/astar-sdk-core';
 import { LOCAL_STORAGE } from './localStorage';
 import { Path } from 'src/router';
 

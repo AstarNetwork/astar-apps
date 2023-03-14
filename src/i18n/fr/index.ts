@@ -110,7 +110,7 @@ export default {
     close: 'Fermer',
   },
   drawer: {
-    endpoint: 'Endpoint',
+    endpoint: "Point d'accès",
     viaEndpoint: 'via {value}',
   },
   wallet: {
@@ -123,7 +123,7 @@ export default {
       switchNetwork:
         "Basculez vers le réseau 'Shiden' dans l'extension Math Wallet et rafraîchissez la page",
     },
-    showBalance: 'Afficher le solde de {token}',
+    showBalance: 'Afficher le solde des {token}',
   },
   installWallet: {
     getWallet: "Vous n'avez pas encore de {value}?",
@@ -140,13 +140,13 @@ export default {
   },
   topMetric: {
     build2earn: 'Build2Earn',
-    wayOfStaking: 'Une façon innovante pour la mise en jeu',
-    tvlInDapps: 'TVL dans les dApps',
+    wayOfStaking: 'Une manière innovante de faire travailler ses tokens',
+    tvlInDapps: 'TVL sur les dApps',
     currentEra: 'Ère actuelle',
     eraInfo: '(ETA: {eta})',
-    stakersRewards: 'Récompenses des participants',
+    stakersRewards: 'Récompenses pour les participants',
     currentBlock: 'Bloc actuel',
-    totalDapps: 'Dapps totales',
+    totalDapps: 'dApps totales',
     apr: 'APR',
     apy: 'APY',
   },
@@ -173,12 +173,12 @@ export default {
   },
   myReward: {
     totalStaked: 'Total mis en jeu',
-    availableToClaim: 'Disponible pour réclamer',
+    availableToClaim: 'En attente de réclamation',
     era: 'Ère',
     claim: 'Réclamer',
     restake: 'Re-mettre en jeu ses récompenses',
     turnOff: 'Désactiver',
-    totalEarned: 'Total gagné (tout le temps)',
+    totalEarned: 'Total gagné (toutes ères confondues)',
     availableToClaimTip:
       "Le nombre d'ères affiché ici est par dApp. Le nombre maximum d'ères que vous pouvez réclamer à la fois est de 50. Il se peut que vous deviez réclamer plusieurs fois si vous le laissez trop longtemps.",
     restakeTip:
@@ -353,7 +353,7 @@ export default {
       xcm: '(XCM)',
       faq: 'FAQ',
       recentHistory: 'Historique récent',
-      hotTopic: 'Sujet chaud',
+      hotTopic: 'Sujets d’actualité',
       inputAddressManually: 'Entrer une adresse manuellement',
       goBack: 'Revenir en arrière',
       selectChain: 'Sélectionner une chaîne',

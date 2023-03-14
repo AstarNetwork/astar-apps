@@ -3,10 +3,9 @@ import { ethers } from 'ethers';
 import { useAccount } from 'src/hooks';
 import { useStore } from 'src/store';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
-import { DappItem } from 'src/store/dapp-staking/state';
+import { DappItem } from '@astar-network/astar-sdk-core';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { computed, ref, watch, watchEffect } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
 import { IDappStakingService } from 'src/v2/services';
@@ -15,7 +14,6 @@ export type MyStakeInfo = StakeInfo | DappItem;
 
 export function useStakerInfo() {
   const { currentAccount } = useAccount();
-  const { t } = useI18n();
   const store = useStore();
 
   store.dispatch('dapps/getStakingInfo');

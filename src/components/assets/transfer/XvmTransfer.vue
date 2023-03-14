@@ -49,7 +49,7 @@ import {
   useNetworkInfo,
   useXvmTransferRouter,
 } from 'src/hooks';
-import { wait } from 'src/hooks/helper/common';
+import { wait } from '@astar-network/astar-sdk-core';
 import { HistoryTxType } from 'src/modules/account';
 import { Erc20Token } from 'src/modules/token';
 import { Path } from 'src/router';

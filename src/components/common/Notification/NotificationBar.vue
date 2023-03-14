@@ -215,7 +215,7 @@ export default defineComponent({
   padding-left: 12px;
   padding-right: 12px;
   margin-top: 8px;
-  word-break: break-all;
+  word-break: keep-all;
 }
 .btn--check {
   width: 90%;

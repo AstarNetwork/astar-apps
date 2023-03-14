@@ -54,12 +54,11 @@ import {
   useStake,
   useStakingList,
 } from 'src/hooks';
-import { wait } from 'src/hooks/helper/common';
+import { wait } from '@astar-network/astar-sdk-core';
 import { Path } from 'src/router';
 import { useStore } from 'src/store';
 import { DappCombinedInfo } from 'src/v2/models';
 import { computed, defineComponent, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 
 export type StakeRightUi = 'information' | 'select-funds-from';
@@ -76,8 +75,6 @@ export default defineComponent({
   setup() {
     const isModalSelectFunds = ref<boolean>(false);
     const rightUi = ref<StakeRightUi>('information');
-
-    const { t } = useI18n();
     const { screenSize, width } = useBreakpoints();
     const route = useRoute();
     useDappRedirect();

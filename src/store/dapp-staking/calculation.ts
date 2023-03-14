@@ -2,7 +2,7 @@ import { bool, Option, Struct, u32 } from '@polkadot/types';
 import { Balance } from '@polkadot/types/interfaces';
 import { BN } from '@polkadot/util';
 import { $api } from 'boot/api';
-import { getDappAddressEnum } from 'src/modules/dapp-staking/utils';
+import { getDappAddressEnum } from '@astar-network/astar-sdk-core';
 import { ClaimInfo, EraRewardAndStake } from './actions';
 
 /**

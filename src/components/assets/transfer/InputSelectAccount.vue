@@ -28,7 +28,7 @@
   </div>
 </template>
 <script lang="ts">
-import { isValidEvmAddress } from 'src/config/web3';
+import { isValidEvmAddress } from '@astar-network/astar-sdk-core';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watchEffect } from 'vue';
 

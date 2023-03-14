@@ -135,7 +135,7 @@ import {
 } from 'src/config/api/polkadot/connectApi';
 import { ChainProvider, endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { getRandomFromArray, wait } from 'src/hooks/helper/common';
+import { getRandomFromArray, wait } from '@astar-network/astar-sdk-core';
 import { buildNetworkUrl } from 'src/router/utils';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref, watch, onUnmounted } from 'vue';
@@ -205,9 +205,7 @@ export default defineComponent({
       const network = providerEndpoints[networkIdx].networkAlias;
       const url = buildNetworkUrl(network);
 
-      // Note: Users have to refresh the page manually for MathWallet(Android)
       window.open(url, '_self');
-      location.reload();
 
       emit('update:is-open', false);
       emit('update:select-network', networkIdx);

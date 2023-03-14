@@ -56,7 +56,7 @@ import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { supportEvmWallets, SupportWallet } from 'src/config/wallets';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
 import { computed, defineComponent, ref, watchEffect, WatchCallback, watch } from 'vue';
-import { getShortenAddress } from 'src/hooks/helper/addressUtils';
+import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 
 interface EvmAccount {

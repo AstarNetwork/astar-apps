@@ -9,7 +9,7 @@ import {
 } from '../models/DappsStaking';
 import { EditDappItem } from 'src/store/dapp-staking/state';
 import { u32 } from '@polkadot/types';
-import { GeneralStakerInfo } from 'src/hooks/helper/claim';
+import { GeneralStakerInfo } from '@astar-network/astar-sdk-core';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
 
 /**

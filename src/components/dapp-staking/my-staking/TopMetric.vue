@@ -107,13 +107,14 @@ import {
   useCurrentEra,
   useNetworkInfo,
 } from 'src/hooks';
-import { formatNumber } from 'src/modules/token-api';
+import { formatNumber } from '@astar-network/astar-sdk-core';
 import { useStore } from 'src/store';
 import { TvlModel } from 'src/v2/models';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { computed, defineComponent, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import PieChart from 'src/components/common/PieChart.vue';
+
 export default defineComponent({
   components: { PieChart },
   setup() {

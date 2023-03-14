@@ -223,11 +223,11 @@
 import { u8aToString } from '@polkadot/util';
 import { ethers } from 'ethers';
 import { useBalance, useBalloons, useEvmDeposit, useNetworkInfo, usePrice } from 'src/hooks';
-import { checkIsNullOrUndefined } from 'src/hooks/helper/common';
+import { checkIsNullOrUndefined } from '@astar-network/astar-sdk-core';
 import { getTokenImage } from 'src/modules/token';
 import { generateAstarNativeTokenObject } from 'src/modules/xcm/tokens';
 import { useStore } from 'src/store';
-import { computed, defineComponent, ref, watchEffect } from 'vue';
+import { computed, defineComponent, ref, watchEffect, watch } from 'vue';
 import { buildTransferPageLink } from 'src/router/routes';
 import ModalEvmWithdraw from 'src/components/assets/modals/ModalEvmWithdraw.vue';
 import ModalFaucet from 'src/components/assets/modals/ModalFaucet.vue';
@@ -294,7 +294,7 @@ export default defineComponent({
       isModalVesting.value = isOpen;
     };
 
-    watchEffect(async () => {
+    const setBalanceData = (): void => {
       const tokenSymbolRef = nativeTokenSymbol.value;
       if (!balance.value || !tokenSymbolRef) return;
       try {
@@ -309,7 +309,9 @@ export default defineComponent({
       } catch (error: any) {
         console.error(error.message);
       }
-    });
+    };
+
+    watch([nativeTokenSymbol, balance], setBalanceData, { immediate: false });
 
     watchEffect(() => {
       const accountDataRef = accountData.value;

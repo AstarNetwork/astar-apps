@@ -1,4 +1,4 @@
-import { isValidAddressPolkadotAddress, balanceFormatter } from 'src/hooks/helper/plasmUtils';
+import { balanceFormatter } from 'src/hooks/helper/plasmUtils';
 import { BN } from '@polkadot/util';
 import { u32, Option, Struct } from '@polkadot/types';
 import { Codec, ISubmittableResult } from '@polkadot/types/types';
@@ -17,16 +17,22 @@ import {
   DappStakingConstants,
 } from 'src/v2/models/DappsStaking';
 import { EventAggregator, NewEraMessage } from 'src/v2/messaging';
-import { GeneralStakerInfo, checkIsDappRegistered } from 'src/hooks/helper/claim';
+import {
+  GeneralStakerInfo,
+  checkIsDappRegistered,
+  TOKEN_API_URL,
+} from '@astar-network/astar-sdk-core';
 import { ethers } from 'ethers';
 import { EditDappItem } from 'src/store/dapp-staking/state';
 import { StakeInfo, EraStakingPoints } from 'src/store/dapp-staking/actions';
-import { TOKEN_API_URL } from 'src/modules/token-api';
 import axios from 'axios';
-import { getDappAddressEnum } from 'src/modules/dapp-staking/utils';
 import { Guard } from 'src/v2/common';
 import { AccountLedger } from 'src/v2/models/DappsStaking';
-import { wait } from 'src/hooks/helper/common';
+import {
+  wait,
+  getDappAddressEnum,
+  isValidAddressPolkadotAddress,
+} from '@astar-network/astar-sdk-core';
 import { checkIsLimitedProvider } from 'src/modules/dapp-staking/utils';
 
 // TODO type generation
