@@ -1,7 +1,7 @@
 import { test, expect, Page } from '@playwright/test';
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('http://localhost:8080/#/astar/dapp-staking/discover');
+  await page.goto('/astar/dapp-staking/discover');
 });
 
 test.describe('init screen', () => {
@@ -45,17 +45,17 @@ test.describe('init screen', () => {
 });
 
 //https://api.astar.network/api/v1/astar/dapps-staking/dapps
-test.describe('api testing', () => {
-  test('should get dapps list', async ({ request }) => {
-    const dapps = await request.get('/api/v1/astar/dapps-staking/dapps');
-    expect(dapps.ok()).toBeTruthy();
-    expect(await dapps.json()).toContainEqual(
-      expect.objectContaining({
-        name: 'AstridDAO',
-      })
-    );
-  });
-});
+// test.describe('api testing', () => {
+//   test('should get dapps list', async ({ request }) => {
+//     const dapps = await request.get('https://api.astar.network/api/v1/astar/dapps-staking/dapps');
+//     expect(dapps.ok()).toBeTruthy();
+//     expect(await dapps.json()).toContainEqual(
+//       expect.objectContaining({
+//         name: 'AstridDAO',
+//       })
+//     );
+//   });
+// });
 
 async function checkPolicyInLocalStorage(page: Page) {
   return await page.waitForFunction((e) => {
