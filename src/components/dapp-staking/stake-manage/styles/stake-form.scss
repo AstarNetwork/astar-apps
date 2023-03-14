@@ -58,9 +58,12 @@
   row-gap: 6px;
   border: 1px solid $border-yellow;
   padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
   width: 344px;
   border-radius: 6px;
   background: $transparent-yellow;
+  color: $warning-yellow;
   @media (min-width: $sm) {
     width: 412px;
   }
@@ -202,6 +205,9 @@
   }
   input {
     color: white;
+  }
+  .row--box-warning {
+    color: $gray-1;
   }
   .row--box-error {
     background: $box-red-dark;
