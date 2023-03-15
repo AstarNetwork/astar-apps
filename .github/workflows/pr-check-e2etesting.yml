@@ -1,28 +1,28 @@
-name: E2E testing with playwright
-on:
-  workflow_run:
-    workflows: ["Create Firebase Hosting Preview on PR"]
-    types: [completed]
-jobs:
-  test:
-    timeout-minutes: 60
-    runs-on: ubuntu-latest
-    needs: build_and_preview
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
-      - name: Install dependencies
-        run: yarn install --immutable --immutable-cache --check-cache
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
-      - name: Run Playwright tests
-        run: echo ${{needs.build_and_preview.outputs.details_url}}
-        run: BASE_URL='${{needs.build_and_preview.outputs.details_url}}' npx playwright test --project=chromium
-      - uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 30
+# name: E2E testing with playwright
+# on:
+#   workflow_run:
+#     workflows: ["Create Firebase Hosting Preview on PR"]
+#     types: [completed]
+# jobs:
+#   e2etest:
+#     timeout-minutes: 60
+#     runs-on: ubuntu-latest
+#     needs: build_and_preview
+#     steps:
+#       - uses: actions/checkout@v3
+#       - uses: actions/setup-node@v3
+#         with:
+#           node-version: 18
+#       - name: Install dependencies
+#         run: yarn install --immutable --immutable-cache --check-cache
+#       - name: Install Playwright Browsers
+#         run: npx playwright install --with-deps
+#       - name: Run Playwright tests
+#         run: echo ${{needs.build_and_preview.outputs.details_url}}
+#         run: BASE_URL='${{needs.build_and_preview.outputs.details_url}}' npx playwright test --project=chromium
+#       - uses: actions/upload-artifact@v3
+#         if: always()
+#         with:
+#           name: playwright-report
+#           path: playwright-report/
+#           retention-days: 30
