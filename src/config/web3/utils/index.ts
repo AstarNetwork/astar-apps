@@ -35,7 +35,7 @@ export const setupNetwork = async ({
       // @ts-ignore
       if (chainId !== provider.chainId) {
         // Memo:
-        // 1. try to switch the network
+        // 1. Try to switch the network
         // 2. Add the network into the wallet if there hasn't registered the network on the wallet yet
         try {
           await provider.request({
