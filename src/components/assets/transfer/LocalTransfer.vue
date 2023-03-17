@@ -114,11 +114,14 @@
           <input id="do-not-send-to-cex" v-model="isChecked" type="checkbox" />
           <label for="do-not-send-to-cex">
             <div class="column--warning">
-              <div class="row--warning-title">
+              <div v-if="isValidEvmAddress(toAddress)" class="row--warning-title">
                 <div class="icon--warning">
                   <astar-icon-warning size="20" />
                 </div>
-                <span class="text--title-evm-warning">
+                <span
+                  class="text--title-evm-warning"
+                  :class="isChecked ? 'color--gray1' : 'color--not-checked'"
+                >
                   {{ $t('warning.warning') }}
                 </span>
               </div>
