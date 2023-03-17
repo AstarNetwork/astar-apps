@@ -113,9 +113,26 @@
         <div class="input--checkbox" :class="isChecked && 'input--checkbox--checked'">
           <input id="do-not-send-to-cex" v-model="isChecked" type="checkbox" />
           <label for="do-not-send-to-cex">
-            <span :class="isChecked ? 'color--gray1' : 'color--not-checked'">
-              {{ $t('assets.modals.notSendToExchanges') }}
-            </span>
+            <div class="column--warning">
+              <div class="row--warning-title">
+                <div class="icon--warning">
+                  <astar-icon-warning size="20" />
+                </div>
+                <span class="text--title-evm-warning">
+                  {{ $t('warning.warning') }}
+                </span>
+              </div>
+              <span
+                v-if="isValidEvmAddress(toAddress)"
+                :class="isChecked ? 'color--gray1' : 'color--not-checked'"
+                class="text--evm-warning"
+              >
+                {{ $t('assets.modals.notSendToEvmExchanges') }}
+              </span>
+              <span v-else :class="isChecked ? 'color--gray1' : 'color--not-checked'">
+                {{ $t('assets.modals.notSendToExchanges') }}
+              </span>
+            </div>
           </label>
         </div>
       </div>
@@ -144,7 +161,7 @@ import InputSelectAccount from 'src/components/assets/transfer/InputSelectAccoun
 import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 import { SupportWallet } from 'src/config/wallets';
 import { useAccount, useNetworkInfo, useWalletIcon, useTokenTransfer } from 'src/hooks';
-import { getShortenAddress } from '@astar-network/astar-sdk-core';
+import { getShortenAddress, isValidEvmAddress } from '@astar-network/astar-sdk-core';
 import { useStore } from 'src/store';
 import { Asset } from 'src/v2/models';
 import { computed, defineComponent, PropType } from 'vue';
@@ -231,6 +248,7 @@ export default defineComponent({
       isH160,
       isRequiredCheck,
       isTransferNativeToken,
+      isValidEvmAddress,
       setSelectedGas,
       setSelectedTip,
       transfer,

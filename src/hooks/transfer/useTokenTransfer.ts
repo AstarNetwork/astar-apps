@@ -77,7 +77,12 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     () => tokenSymbol.value === nativeTokenSymbol.value.toLowerCase()
   );
 
-  const isRequiredCheck = computed<boolean>(() => isH160.value || !isTransferNativeToken.value);
+  const isRequiredCheck = computed<boolean>(
+    () =>
+      isH160.value ||
+      !isTransferNativeToken.value ||
+      (!isH160.value && isTransferNativeToken.value && isValidEvmAddress(toAddress.value))
+  );
 
   const fromAddressBalance = computed<number>(() =>
     selectedToken.value ? selectedToken.value.userBalance : 0
