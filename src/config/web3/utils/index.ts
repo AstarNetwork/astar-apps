@@ -25,7 +25,7 @@ export const setupNetwork = async ({
   provider,
 }: {
   network: number;
-  provider: EthereumProvider & { chainId: string };
+  provider: EthereumProvider;
 }): Promise<boolean> => {
   if (provider) {
     const chainId = `0x${network.toString(16)}`;
