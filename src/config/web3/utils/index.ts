@@ -32,30 +32,31 @@ export const setupNetwork = async ({
     const { chainName, nativeCurrency, rpcUrls, blockExplorerUrls } = getChainData(network);
 
     try {
-      if (network === 1) {
-        await provider.request({
-          method: 'wallet_switchEthereumChain',
-          params: [
-            {
-              chainId,
-            },
-          ],
-        });
-        return true;
+      if (chainId !== provider.chainId) {
+        // Memo:
+        // 1. Try to switch the network
+        // 2. Add the network into the wallet if there hasn't registered the network on the wallet yet
+        try {
+          await provider.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId }],
+          });
+        } catch (error) {
+          await provider.request({
+            method: 'wallet_addEthereumChain',
+            params: [
+              {
+                chainId,
+                chainName,
+                nativeCurrency,
+                rpcUrls,
+                blockExplorerUrls,
+              },
+            ],
+          });
+        }
       }
 
-      await provider.request({
-        method: 'wallet_addEthereumChain',
-        params: [
-          {
-            chainId,
-            chainName,
-            nativeCurrency,
-            rpcUrls,
-            blockExplorerUrls,
-          },
-        ],
-      });
       return true;
     } catch (error) {
       console.error('Failed to setup the network in EVM extension:', error);
