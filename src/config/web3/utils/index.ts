@@ -25,14 +25,13 @@ export const setupNetwork = async ({
   provider,
 }: {
   network: number;
-  provider: EthereumProvider;
+  provider: EthereumProvider & { chainId: string };
 }): Promise<boolean> => {
   if (provider) {
     const chainId = `0x${network.toString(16)}`;
     const { chainName, nativeCurrency, rpcUrls, blockExplorerUrls } = getChainData(network);
 
     try {
-      // @ts-ignore
       if (chainId !== provider.chainId) {
         // Memo:
         // 1. Try to switch the network
