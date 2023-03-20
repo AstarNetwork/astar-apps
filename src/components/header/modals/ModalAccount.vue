@@ -114,7 +114,7 @@ import { $api } from 'src/boot/api';
 import SelectWallet from 'src/components/header/modals/SelectWallet.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { SupportWallet, supportWalletObj } from 'src/config/wallets';
+import { SupportWallet } from 'src/config/wallets';
 import {
   getShortenAddress,
   truncate,
