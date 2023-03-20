@@ -16,13 +16,15 @@ import { useExtensions } from 'src/hooks/useExtensions';
 import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
 import { computed, ref, watchPostEffect } from 'vue';
 import Web3 from 'web3';
+import { supportWalletObj } from 'src/config/wallets';
 
 let $api: ApiPromise | undefined;
 const $endpoint = ref<string>('');
 const $web3 = ref<Web3>();
 
 export default boot(async ({ store }) => {
-  const { NETWORK_IDX, CUSTOM_ENDPOINT, SELECTED_ENDPOINT, SELECTED_ADDRESS } = LOCAL_STORAGE;
+  const { NETWORK_IDX, CUSTOM_ENDPOINT, SELECTED_ENDPOINT, SELECTED_ADDRESS, SELECTED_WALLET } =
+    LOCAL_STORAGE;
 
   const networkIdxStore = localStorage.getItem(NETWORK_IDX);
   const customEndpoint = localStorage.getItem(CUSTOM_ENDPOINT);
@@ -125,13 +127,17 @@ export default boot(async ({ store }) => {
   });
 
   // execute extension process automatically if selectedAddress is linked or mobile device
-  if (selectedAddress !== null || isMobileDevice) {
-    const { extensions } = useExtensions(api, store);
-    const { metaExtensions, extensionCount } = useMetaExtensions(api, extensions)!!;
-    watchPostEffect(async () => {
-      store.commit('general/setMetaExtensions', metaExtensions.value);
-      store.commit('general/setExtensionCount', extensionCount.value);
-    });
+  const wallet = String(localStorage.getItem(SELECTED_WALLET));
+  const isSubstrateWallet = supportWalletObj.hasOwnProperty(wallet);
+  if (isSubstrateWallet) {
+    if (selectedAddress !== null || isMobileDevice) {
+      const { extensions } = useExtensions(api, store);
+      const { metaExtensions, extensionCount } = useMetaExtensions(api, extensions)!!;
+      watchPostEffect(async () => {
+        store.commit('general/setMetaExtensions', metaExtensions.value);
+        store.commit('general/setExtensionCount', extensionCount.value);
+      });
+    }
   }
 });
 
