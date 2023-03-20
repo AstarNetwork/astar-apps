@@ -27,7 +27,7 @@ export const astarSupportChains = [
 
 export const shidenSupportChains = [EvmChain.Astar, EvmChain.Shiden];
 
-export const cBridgeBaseEndpoint = 'https://cbridge-prod2.celer.network/v1';
+export const cBridgeBaseEndpoint = 'https://cbridge-prod2.celer.app/v1';
 
 export const cBridgeEndpoint = {
   Configs: cBridgeBaseEndpoint + '/getTransferConfigsForAll',

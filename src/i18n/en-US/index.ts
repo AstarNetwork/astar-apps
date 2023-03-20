@@ -43,6 +43,7 @@ export default {
     alphabeticalZtoA: 'Alphabetical: Z to A',
   },
   warning: {
+    warning: 'Warning',
     insufficientBalance: 'Insufficient {token} balance',
     insufficientFee: 'Warning! Transaction might failed due to insufficient fee',
     inputtedInvalidDestAddress: 'Inputted invalid destination address',
@@ -386,6 +387,8 @@ export default {
       balance: 'Balance: {amount} {token}',
       available: 'Available: {amount} {token}',
       notSendToExchanges: 'I’m NOT sending tokens to Exchanges',
+      notSendToEvmExchanges:
+        "I’m NOT sending tokens to Exchange's EVM deposit addresses. I understand that if I do so, the funds will likely be lost.",
       youWillReceive: 'You will receive',
       faucetNextRequest: 'Time left until the next request',
       countDown: '{hrs} hrs {mins} mins {secs} secs',

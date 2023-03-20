@@ -272,6 +272,31 @@
   height: 44px;
 }
 
+.column--warning {
+  display: flex;
+  flex-direction: column;
+  row-gap: 2px;
+}
+
+.row--warning-title {
+  display: flex;
+  column-gap: 8px;
+}
+
+.text--title-evm-warning {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.text--evm-warning {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.icon--warning {
+  color: $warning-red;
+}
+
 .body--dark {
   .box--input-field {
     background: $gray-6;
