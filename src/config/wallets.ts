@@ -21,7 +21,8 @@ export enum SupportWallet {
   Wallet3 = 'wallet3',
   HanaNative = 'hana',
   HanaEvm = 'hanaEvm',
-  OneKey = 'OneKey',
+  OneKeyEvm = 'OneKeyEvm',
+  OneKeyNative = 'OneKey',
 }
 
 export const WalletModalOption = {
@@ -43,7 +44,8 @@ export const WalletModalOption = {
   Wallet3: SupportWallet.Wallet3,
   HanaNative: SupportWallet.HanaNative,
   HanaEvm: SupportWallet.HanaEvm,
-  OneKey: SupportWallet.OneKey,
+  OneKey: SupportWallet.OneKeyNative,
+  OneKeyEvm: SupportWallet.OneKeyEvm,
 };
 
 export const SubstrateWallets = [
@@ -57,6 +59,7 @@ export const SubstrateWallets = [
   SupportWallet.Metadot,
   SupportWallet.Wallet3,
   SupportWallet.HanaNative,
+  SupportWallet.OneKeyNative,
 ];
 
 export interface Wallet {
@@ -153,6 +156,15 @@ export const supportWalletObj = {
     isSupportBrowserExtension: true,
     isSupportMobileApp: false,
   },
+  [SupportWallet.OneKeyNative]: {
+    img: require('/src/assets/img/onekey.png'),
+    name: 'OneKey',
+    source: SupportWallet.OneKeyNative,
+    walletUrl: 'https://onekey.so/download',
+    guideUrl: 'https://help.onekey.so/',
+    isSupportBrowserExtension: true,
+    isSupportMobileApp: true,
+  },
 };
 
 export const supportEvmWalletObj = {
@@ -166,10 +178,10 @@ export const supportEvmWalletObj = {
     isSupportMobileApp: true,
     ethExtension: 'ethereum',
   },
-  [SupportWallet.OneKey]: {
+  [SupportWallet.OneKeyEvm]: {
     img: require('/src/assets/img/onekey.png'),
-    name: 'OneKey',
-    source: SupportWallet.OneKey,
+    name: 'OneKey (EVM)',
+    source: SupportWallet.OneKeyEvm,
     walletUrl: 'https://onekey.so/download',
     guideUrl: 'https://help.onekey.so/',
     isSupportBrowserExtension: true,
