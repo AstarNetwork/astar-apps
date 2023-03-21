@@ -123,9 +123,7 @@ export function useClaimAll() {
 
     if (balance.sub(partialFee.muln(1.5)).isNeg()) {
       store.dispatch('general/showAlertMsg', {
-        msg: t('dappStaking.error.invalidBalance', {
-          symbol: nativeTokenSymbol.value,
-        }),
+        msg: t('dappStaking.error.invalidBalance'),
         alertType: 'error',
       });
       return;
