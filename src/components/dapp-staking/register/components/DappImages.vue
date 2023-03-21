@@ -6,7 +6,7 @@
       multiple
       append
       max-file-size="1000000"
-      accept=".jpg .png, image/*"
+      accept="image/jpeg, .png"
       :label="$t('dappStaking.modals.images')"
       class="component"
       lazy-rules="ondemand"

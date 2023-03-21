@@ -19,7 +19,7 @@
           v-model="data.icon"
           outlined
           :label="$t('dappStaking.modals.projectLogo')"
-          accept=".jpg .png, image/*"
+          accept="image/jpeg, .png"
           class="component"
           input-style="{ height: '120px'}"
           lazy-rules="ondemand"
@@ -266,7 +266,7 @@ export default defineComponent({
             data.tags = registeredDapp.tags;
           }
         } else {
-          router.push(Path.DappStaking);
+          // router.push(Path.DappStaking);
         }
       } catch (e) {
         // TODO pop error message.
@@ -300,8 +300,8 @@ export default defineComponent({
           } as RegisterParameters);
 
           if (result) {
-            await router.push(Path.DappStaking);
-            router.go(0);
+            // await router.push(Path.DappStaking);
+            // router.go(0);
           }
         }
       });

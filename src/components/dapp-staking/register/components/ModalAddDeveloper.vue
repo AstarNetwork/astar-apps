@@ -56,7 +56,7 @@
           v-model="file"
           outlined
           max-file-size="1000000"
-          accept=".jpg .png, image/*"
+          accept="image/jpeg, .png"
           :label="$t('dappStaking.modals.builder.image')"
           class="component"
           lazy-rules="ondemand"
