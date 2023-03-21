@@ -56,16 +56,19 @@
           v-model="file"
           outlined
           max-file-size="1000000"
-          accept=".jpg .png, image/*"
-          :label="$t('dappStaking.modals.builder.image')"
+          accept="image/jpeg, .png"
+          :label="$t('dappStaking.modals.builder.image', { size: '1MB' })"
           class="component"
           lazy-rules="ondemand"
           :rules="[(v: File) => v.size > 0 || `${$t('dappStaking.modals.builder.error.builderImageRequired')}`]"
           @update:model-value="updateImage()"
         >
           <template #file>
-            <image-card v-show="currentDeveloper.iconFile" class="card">
-              <avatar :url="currentDeveloper.iconFile" class="avatar" />
+            <image-card
+              v-show="currentDeveloper.iconFile"
+              class="card"
+              :base64-image="currentDeveloper.iconFile"
+            >
             </image-card>
           </template>
         </q-file>
@@ -105,13 +108,11 @@ import { defineComponent, ref, toRefs, PropType, watch } from 'vue';
 import { fadeDuration } from '@astar-network/astar-ui';
 import { isUrlValid } from 'src/components/common/Validators';
 import ImageCard from './ImageCard.vue';
-import Avatar from 'src/components/common/Avatar.vue';
 import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 
 export default defineComponent({
   components: {
     ImageCard,
-    Avatar,
     ModalWrapper,
   },
   props: {
