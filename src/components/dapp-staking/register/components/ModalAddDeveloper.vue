@@ -57,7 +57,7 @@
           outlined
           max-file-size="1000000"
           accept="image/jpeg, .png"
-          :label="$t('dappStaking.modals.builder.image')"
+          :label="$t('dappStaking.modals.builder.image', { size: '1MB' })"
           class="component"
           lazy-rules="ondemand"
           :rules="[(v: File) => v.size > 0 || `${$t('dappStaking.modals.builder.error.builderImageRequired')}`]"

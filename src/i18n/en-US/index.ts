@@ -257,7 +257,7 @@ export default {
         githubAccount: 'GitHub account',
         twitterAccount: 'Twitter account',
         linkedInAccount: 'LinkedIn account',
-        image: "Builder's image",
+        image: "Builder's image (maximum upload file size: {size})",
         imageRecomendation: 'A square image of minimum 500px is recommended.',
         error: {
           name: 'Builder name is required.',
@@ -288,7 +288,7 @@ export default {
       addAccount: 'Add an account',
       addLogo: 'Add a logo image',
       addImage: 'Add an image',
-      images: 'Images',
+      images: 'Images (maximum upload file size: {size})',
       imagesRequired: 'At least 4 images are required.',
       descriptionRequired: 'Tell the world something about your dApp.',
       contractTypeTitle: 'Is your project on',
