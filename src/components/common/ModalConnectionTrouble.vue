@@ -12,9 +12,9 @@
       <div class="wrapper--tips">
         <div class="container--tips">
           <div class="row--tips-title">
-            <span class="text--tips-title">{{
-              $t('assets.modals.connectionTroubles.tryOtherEndpoints')
-            }}</span>
+            <span class="text--tips-title"
+              >{{ $t('assets.modals.connectionTroubles.tryOtherEndpoints') }}
+            </span>
           </div>
           <div>
             <span class="text--md">
@@ -25,17 +25,17 @@
 
         <div class="container--tips">
           <div class="row--tips-title">
-            <span class="text--tips-title">{{
-              $t('assets.modals.connectionTroubles.clearLocalStorage')
-            }}</span>
+            <span class="text--tips-title">
+              {{ $t('assets.modals.connectionTroubles.clearLocalStorage') }}
+            </span>
             <astar-button :width="120">
-              <span class="text--accent">{{ $t('clear') }}</span></astar-button
-            >
+              <span class="text--button">{{ $t('clear') }}</span>
+            </astar-button>
           </div>
           <div class="row--tips">
             <span class="text--md">
-              {{ $t('assets.modals.connectionTroubles.clearLocalStorageTip') }}</span
-            >
+              {{ $t('assets.modals.connectionTroubles.clearLocalStorageTip') }}
+            </span>
           </div>
         </div>
 
@@ -52,8 +52,8 @@
           </div>
           <div class="row--tips">
             <span class="text--md">
-              {{ $t('assets.modals.connectionTroubles.metaUpdateTip') }}</span
-            >
+              {{ $t('assets.modals.connectionTroubles.metaUpdateTip') }}
+            </span>
           </div>
         </div>
 
@@ -75,16 +75,18 @@
 
         <div class="container--tips">
           <div class="row--tips-title">
-            <span class="text--tips-title">{{
-              $t(
-                width > screenSize.sm
-                  ? 'assets.modals.connectionTroubles.askCommunityDiscord'
-                  : 'assets.modals.connectionTroubles.askCommunity'
-              )
-            }}</span>
+            <span class="text--tips-title"
+              >{{
+                $t(
+                  width > screenSize.sm
+                    ? 'assets.modals.connectionTroubles.askCommunityDiscord'
+                    : 'assets.modals.connectionTroubles.askCommunity'
+                )
+              }}
+            </span>
             <astar-button :width="120">
-              <span class="text--accent">{{ $t('join') }}</span></astar-button
-            >
+              <span class="text--button">{{ $t('join') }}</span>
+            </astar-button>
           </div>
           <div class="row--tips">
             <span class="text--md">
