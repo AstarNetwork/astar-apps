@@ -113,6 +113,7 @@ export default {
     language: 'Language',
     theme: 'Theme',
     close: 'Close',
+    connectionTrouble: 'Connection Trouble?',
   },
   drawer: {
     endpoint: 'Endpoint',
@@ -417,6 +418,7 @@ export default {
       tipDestAddressFormat: 'Where can I find my {chain} address?',
       titleWithdraw: 'Withdraw {token}',
       titleVesting: 'Vesting info',
+      connectionTroubles: 'Connection Troubles',
       xcmWarning: {
         minBalIsRequired: 'Min. balance is required on origin chain',
         fee: 'Fee is deducted from the amount entered',
