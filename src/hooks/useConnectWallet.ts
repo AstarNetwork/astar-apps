@@ -200,15 +200,15 @@ export const useConnectWallet = () => {
   };
 
   const requestExtensionsIfFirstAccess = (wallet: SupportWallet): void => {
-    if (localStorage.getItem(SELECTED_ADDRESS) === null) {
+    // Memo: displays accounts menu for users who use the portal first time
+    const isSubstrateWallet = supportWalletObj.hasOwnProperty(wallet);
+    if (localStorage.getItem(SELECTED_ADDRESS) === null && isSubstrateWallet) {
       const { extensions } = useExtensions($api!!, store);
       const { metaExtensions, extensionCount } = useMetaExtensions($api!!, extensions)!!;
       watchPostEffect(async () => {
-        store.commit('general/setMetaExtensions', metaExtensions.value);
-        store.commit('general/setExtensionCount', extensionCount.value);
-        const isSubstrateWallet = supportWalletObj.hasOwnProperty(wallet);
-        // Memo: displays accounts menu for users who use the portal first time
         if (isSubstrateWallet) {
+          store.commit('general/setMetaExtensions', metaExtensions.value);
+          store.commit('general/setExtensionCount', extensionCount.value);
           setWallet(wallet);
         }
       });
