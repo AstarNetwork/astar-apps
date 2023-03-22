@@ -362,7 +362,7 @@ export default {
       balance: 'Balance: {amount} {token}',
       available: 'Available: {amount} {token}',
       notSendToExchanges: '取引所には送金しません。',
-      notSendToEvmExchanges:'取引所のEVMデポジットへの送金ではありません。そうであれば資金は失われるリスクがあることは理解しています。',
+      notSendToEvmExchanges: '取引所のEVMデポジットへの送金ではありません。そうであれば資金は失われるリスクがあることは理解しています。',
       youWillReceive: 'You will receive',
       faucetNextRequest: 'Time left until the next request',
       countDown: '{hrs} hrs {mins} mins {secs} secs',
