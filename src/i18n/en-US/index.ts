@@ -24,6 +24,8 @@ export default {
   wallet3: 'Wallet 3',
   alert: 'Alert',
   max: 'Max',
+  clear: 'Clear',
+  join: 'Join',
   native: 'Native',
   evm: 'EVM',
   wasm: 'WASM',
@@ -418,7 +420,24 @@ export default {
       tipDestAddressFormat: 'Where can I find my {chain} address?',
       titleWithdraw: 'Withdraw {token}',
       titleVesting: 'Vesting info',
-      connectionTroubles: 'Connection Troubles',
+      connectionTroubles: {
+        connectionTroubles: 'Connection Troubles',
+        tipsDescription:
+          'There are many reasons why you are unable to connect. Try below if it did not get sorted ask member of the community.',
+        tryOtherEndpoints: 'Try other endpoints',
+        changeFromHeader: 'Change the endpoint from network button on the header',
+        clearLocalStorage: 'Clear the Local Storage',
+        clearLocalStorageTip: 'This means your cache of the Portal on this browser will be cleared',
+        metaUpdate: 'Metadata Update on Polkadot.js app',
+        metaUpdateTip:
+          'You can check if your wallet extension is up to date. If update button is shown, please update it.',
+        goToDocs: 'Go to Troubleshoot on Docs',
+        goToDocsTip: 'Any other issues please also go through the docs.',
+        askCommunity: 'Ask our community',
+        askCommunityDiscord: 'Ask our Discord community',
+        askCommunityTip: 'Someone is always there for you.',
+      },
+
       xcmWarning: {
         minBalIsRequired: 'Min. balance is required on origin chain',
         fee: 'Fee is deducted from the amount entered',

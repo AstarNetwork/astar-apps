@@ -1,11 +1,99 @@
 <template>
   <modal-wrapper
     :is-modal-open="show"
-    :title="$t('assets.modals.connectionTroubles')"
+    :title="$t('assets.modals.connectionTroubles.connectionTroubles')"
     :is-closing="isClosingModal"
     :close-modal="closeModal"
   >
-    <div class="wrapper">Modal</div>
+    <div class="wrapper--modal-connection-trouble">
+      <div class="row--description">
+        <span class="text--md">{{ $t('assets.modals.connectionTroubles.tipsDescription') }}</span>
+      </div>
+      <div class="wrapper--tips">
+        <div class="container--tips">
+          <div class="row--tips-title">
+            <span class="text--tips-title">{{
+              $t('assets.modals.connectionTroubles.tryOtherEndpoints')
+            }}</span>
+          </div>
+          <div>
+            <span class="text--md">
+              {{ $t('assets.modals.connectionTroubles.changeFromHeader') }}</span
+            >
+          </div>
+        </div>
+
+        <div class="container--tips">
+          <div class="row--tips-title">
+            <span class="text--tips-title">{{
+              $t('assets.modals.connectionTroubles.clearLocalStorage')
+            }}</span>
+            <astar-button :width="120">
+              <span class="text--accent">{{ $t('clear') }}</span></astar-button
+            >
+          </div>
+          <div class="row--tips">
+            <span class="text--md">
+              {{ $t('assets.modals.connectionTroubles.clearLocalStorageTip') }}</span
+            >
+          </div>
+        </div>
+
+        <div class="container--tips">
+          <div class="row--tips-title">
+            <a
+              :href="polkadotJsLink"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="link--tips-title"
+            >
+              {{ $t('assets.modals.connectionTroubles.metaUpdate') }}
+            </a>
+          </div>
+          <div class="row--tips">
+            <span class="text--md">
+              {{ $t('assets.modals.connectionTroubles.metaUpdateTip') }}</span
+            >
+          </div>
+        </div>
+
+        <div class="container--tips">
+          <div class="row--tips-title">
+            <a
+              :href="docsUrl.troubleShooting"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="link--tips-title"
+            >
+              {{ $t('assets.modals.connectionTroubles.goToDocs') }}
+            </a>
+          </div>
+          <div class="row--tips">
+            <span class="text--md"> {{ $t('assets.modals.connectionTroubles.goToDocsTip') }}</span>
+          </div>
+        </div>
+
+        <div class="container--tips">
+          <div class="row--tips-title">
+            <span class="text--tips-title">{{
+              $t(
+                width > screenSize.sm
+                  ? 'assets.modals.connectionTroubles.askCommunityDiscord'
+                  : 'assets.modals.connectionTroubles.askCommunity'
+              )
+            }}</span>
+            <astar-button :width="120">
+              <span class="text--accent">{{ $t('join') }}</span></astar-button
+            >
+          </div>
+          <div class="row--tips">
+            <span class="text--md">
+              {{ $t('assets.modals.connectionTroubles.askCommunityTip') }}</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
   </modal-wrapper>
 </template>
 
@@ -13,7 +101,10 @@
 import { truncate, wait } from '@astar-network/astar-sdk-core';
 import { fadeDuration } from '@astar-network/astar-ui';
 import ModalWrapper from 'src/components/common/ModalWrapper.vue';
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, computed } from 'vue';
+import { docsUrl, polkadotJsUrl } from 'src/links';
+import { useBreakpoints, useNetworkInfo } from 'src/hooks';
+import { endpointKey } from 'src/config/chainEndpoints';
 
 export default defineComponent({
   components: { ModalWrapper },
@@ -36,7 +127,23 @@ export default defineComponent({
       isClosingModal.value = false;
     };
 
+    const { currentNetworkIdx } = useNetworkInfo();
+    const { width, screenSize } = useBreakpoints();
+
+    const polkadotJsLink = computed<string>(() => {
+      const { astar, shiden, shibuya } = polkadotJsUrl.settings;
+      return currentNetworkIdx.value === endpointKey.ASTAR
+        ? astar
+        : currentNetworkIdx.value === endpointKey.SHIDEN
+        ? shiden
+        : shibuya;
+    });
+
     return {
+      docsUrl,
+      polkadotJsLink,
+      width,
+      screenSize,
       close,
       truncate,
       closeModal,
@@ -47,13 +154,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-bottom: 36px;
-  @media (min-width: $md) {
-    padding-bottom: 0px;
-  }
-}
+@use 'src/components/common/styles/modal-connection-trouble.scss';
 </style>
