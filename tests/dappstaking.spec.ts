@@ -9,6 +9,12 @@ test.describe('init screen', () => {
     const walletWrapper = page.getByText('Select a Wallet');
     await expect(walletWrapper).toBeVisible();
   });
+  test('should wallet is closed', async ({ page }) => {
+    const walletWrapper = page.getByText('Select a Wallet');
+    const closeButton = page.getByText('×');
+    await closeButton.click();
+    await expect(walletWrapper).toBeHidden();
+  });
   test('should private policy is opened unless accept the policy', async ({ page }) => {
     await checkPolicyInLocalStorage(page);
 
@@ -34,14 +40,37 @@ test.describe('init screen', () => {
     await expect(page.getByRole('button', { name: 'Astar Network' })).toBeVisible();
   });
 
-  //TODO: need to check again
-  test('should display install extension popup when click polkadot.js button', async ({ page }) => {
+  test('should display install extension popup when click Talisman button', async ({ page }) => {
     await checkInjectedWeb3(page);
-    const button = page.locator('div').filter({ hasText: 'Polkadot.js' }).first();
+    const button = page.locator('div').filter({ hasText: 'Talisman (Native)' }).first();
     await expect(button).toBeVisible();
-    // await button.click();
-    // await expect(page.getByText('Haven’t got a Polkadot.js yet?')).toBeVisible();
+    await button.click();
   });
+});
+
+test.describe('on dapp staking screen', () => {
+  test('should redirect to docs page when click the first banner', async ({ page }) => {
+    const closeButton = page.getByText('×');
+    await closeButton.click();
+    const bannerCard = page.locator('.wrapper--banners .card:first-child');
+    await expect(bannerCard).toBeVisible();
+    // wait for loading complete
+    // await bannerCard.click({ timeout: 13000 });
+  });
+
+  test('should redirect to dapp page when click the dapp card', async ({ page }) => {
+    // await page.click('.wrapper--list .card:first-child');
+    // const re = /^https?:\/\/[^\/]+(\/[^?]+)/;
+    // await page.waitForURL(re);
+  });
+
+  // test('should display staking button when over the dapp card', async ({ page }) => {
+  //   const dappCard = page.locator('.wrapper--list .card').first();
+  //   await expect(dappCard).toBeVisible();
+  //   await dappCard.hover();
+  //   const stakeButton = page.getByRole('button', { name: 'Stake Now' });
+  //   await expect(stakeButton).toBeVisible();
+  // });
 });
 
 //https://api.astar.network/api/v1/astar/dapps-staking/dapps
