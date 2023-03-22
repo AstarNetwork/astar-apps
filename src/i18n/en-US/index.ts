@@ -43,6 +43,7 @@ export default {
     alphabeticalZtoA: 'Alphabetical: Z to A',
   },
   warning: {
+    warning: 'Warning',
     insufficientBalance: 'Insufficient {token} balance',
     insufficientFee: 'Warning! Transaction might failed due to insufficient fee',
     inputtedInvalidDestAddress: 'Inputted invalid destination address',
@@ -256,7 +257,7 @@ export default {
         githubAccount: 'GitHub account',
         twitterAccount: 'Twitter account',
         linkedInAccount: 'LinkedIn account',
-        image: "Builder's image",
+        image: "Builder's image (maximum upload file size: {size})",
         imageRecomendation: 'A square image of minimum 500px is recommended.',
         error: {
           name: 'Builder name is required.',
@@ -287,7 +288,7 @@ export default {
       addAccount: 'Add an account',
       addLogo: 'Add a logo image',
       addImage: 'Add an image',
-      images: 'Images',
+      images: 'Images (maximum upload file size: {size})',
       imagesRequired: 'At least 4 images are required.',
       descriptionRequired: 'Tell the world something about your dApp.',
       contractTypeTitle: 'Is your project on',
@@ -315,8 +316,7 @@ export default {
         'The amount of token to be staking must be greater than {amount} {symbol}',
       allFundsWillBeTransferred:
         'All funds will be transferred because the min. staking amount is {minStakingAmount} {symbol}',
-      invalidBalance:
-        'Invalid balance to make a claim. Please add {symbol} tokens in to the account',
+      invalidBalance: 'Insufficient transferrable balance to complete the transaction',
       warningLeaveMinAmount:
         'Account must hold greater than 10{symbol} in transferrable when you stake.',
     },
@@ -386,6 +386,8 @@ export default {
       balance: 'Balance: {amount} {token}',
       available: 'Available: {amount} {token}',
       notSendToExchanges: 'I’m NOT sending tokens to Exchanges',
+      notSendToEvmExchanges:
+        "I’m NOT sending tokens to Exchange's EVM deposit addresses. I understand that if I do so, the funds will likely be lost.",
       youWillReceive: 'You will receive',
       faucetNextRequest: 'Time left until the next request',
       countDown: '{hrs} hrs {mins} mins {secs} secs',

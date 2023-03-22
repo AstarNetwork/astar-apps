@@ -19,7 +19,7 @@
           v-model="data.icon"
           outlined
           :label="$t('dappStaking.modals.projectLogo')"
-          accept=".jpg .png, image/*"
+          accept="image/jpeg, .png"
           class="component"
           input-style="{ height: '120px'}"
           lazy-rules="ondemand"

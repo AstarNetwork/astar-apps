@@ -59,9 +59,7 @@ export function useStake() {
     const balance = new BN(formattedTransferFrom.value.item?.balance || '0');
     if (balance.lt(stakeAmount)) {
       store.dispatch('general/showAlertMsg', {
-        msg: t('dappStaking.error.invalidBalance', {
-          symbol: nativeTokenSymbol.value,
-        }),
+        msg: t('dappStaking.error.invalidBalance'),
         alertType: 'error',
       });
       return;
