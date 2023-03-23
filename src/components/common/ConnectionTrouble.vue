@@ -41,7 +41,7 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid $gray-4;
+  border: 1px solid $gray-3;
   border-radius: 100px;
   padding: 8px;
   cursor: pointer;
@@ -58,7 +58,7 @@ export default defineComponent({
 .text--connection-trouble {
   font-weight: 400;
   font-size: 14px;
-  color: $gray-4;
+  color: $gray-3;
   transition: all 0.3s ease 0s;
 }
 </style>
