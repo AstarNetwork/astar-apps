@@ -7,7 +7,9 @@
   >
     <div class="wrapper--modal-connection-trouble">
       <div class="row--description">
-        <span class="text--md">{{ $t('assets.modals.connectionTroubles.tipsDescription') }}</span>
+        <span class="text--md">
+          {{ $t('assets.modals.connectionTroubles.tipsDescription') }}
+        </span>
       </div>
       <div class="wrapper--tips">
         <div class="container--tips">
@@ -18,8 +20,8 @@
           </div>
           <div>
             <span class="text--md">
-              {{ $t('assets.modals.connectionTroubles.changeFromHeader') }}</span
-            >
+              {{ $t('assets.modals.connectionTroubles.changeFromHeader') }}
+            </span>
           </div>
         </div>
 
@@ -28,7 +30,7 @@
             <span class="text--tips-title">
               {{ $t('assets.modals.connectionTroubles.clearLocalStorage') }}
             </span>
-            <astar-button :width="120">
+            <astar-button :width="120" @click="clearLocalStorage">
               <span class="text--button">{{ $t('clear') }}</span>
             </astar-button>
           </div>
@@ -69,7 +71,9 @@
             </a>
           </div>
           <div class="row--tips">
-            <span class="text--md"> {{ $t('assets.modals.connectionTroubles.goToDocsTip') }}</span>
+            <span class="text--md">
+              {{ $t('assets.modals.connectionTroubles.goToDocsTip') }}
+            </span>
           </div>
         </div>
 
@@ -90,8 +94,8 @@
           </div>
           <div class="row--tips">
             <span class="text--md">
-              {{ $t('assets.modals.connectionTroubles.askCommunityTip') }}</span
-            >
+              {{ $t('assets.modals.connectionTroubles.askCommunityTip') }}
+            </span>
           </div>
         </div>
       </div>
@@ -141,6 +145,11 @@ export default defineComponent({
         : shibuya;
     });
 
+    const clearLocalStorage = (): void => {
+      localStorage.clear();
+      window.location.reload();
+    };
+
     return {
       docsUrl,
       polkadotJsLink,
@@ -150,6 +159,7 @@ export default defineComponent({
       truncate,
       closeModal,
       isClosingModal,
+      clearLocalStorage,
     };
   },
 });
