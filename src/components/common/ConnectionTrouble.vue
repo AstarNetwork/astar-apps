@@ -41,21 +41,24 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid $astar-blue;
+  border: 1px solid $gray-4;
   border-radius: 100px;
   padding: 8px;
   cursor: pointer;
   width: 100%;
   transition: all 0.3s ease 0s;
   &:hover {
-    transition: all 0.3s ease 0s;
-    box-shadow: 0px 0px 3px #0099ff;
+    border: 1px solid $astar-blue;
+    .text--connection-trouble {
+      color: $astar-blue;
+    }
   }
 }
 
 .text--connection-trouble {
   font-weight: 400;
   font-size: 14px;
-  color: $astar-blue;
+  color: $gray-4;
+  transition: all 0.3s ease 0s;
 }
 </style>
