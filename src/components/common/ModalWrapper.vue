@@ -6,8 +6,8 @@
         :show="isModalOpen"
         :title="title"
         :is-closing="isClosing"
-        :width="500"
-        @close="closeModal"
+        :width="width"
+        @close="closeModal()"
       >
         <slot />
       </astar-default-modal>
@@ -42,6 +42,11 @@ export default defineComponent({
     closeModal: {
       type: Function,
       required: true,
+    },
+    width: {
+      type: Number,
+      required: false,
+      default: 500,
     },
   },
   setup() {

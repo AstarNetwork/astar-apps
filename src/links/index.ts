@@ -2,6 +2,7 @@ export const docsUrl = {
   topPage: 'https://docs.astar.network',
   evmDeposit:
     'https://docs.astar.network/tutorial/how-to-send-astr-sdn-from-metamask-to-polkadot.js',
+  troubleShooting: 'https://docs.astar.network/docs/user-guides/troubleshooting',
 };
 
 export const socialUrl = {
@@ -23,3 +24,11 @@ export const deepLink = {
 };
 
 export const stagingMainBranch = 'https://staging.portal.astar.network';
+
+export const polkadotJsUrl = {
+  settings: {
+    astar: 'https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc.astar.network#/settings',
+    shiden: 'https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc.shiden.astar.network#/settings',
+    shibuya: 'https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc.shibuya.astar.network#/settings',
+  },
+};
