@@ -49,28 +49,35 @@ test.describe('init screen', () => {
 });
 
 test.describe('on dapp staking screen', () => {
-  test('should redirect to docs page when click the first banner', async ({ page }) => {
+  test('should clickable the banner after loading is complete', async ({ page }) => {
     const closeButton = page.getByText('×');
     await closeButton.click();
     const bannerCard = page.locator('.wrapper--banners .card:first-child');
     await expect(bannerCard).toBeVisible();
-    // wait for loading complete
-    // await bannerCard.click({ timeout: 13000 });
+    await page.waitForSelector('.loader', { state: 'hidden' });
+    await bannerCard.click();
   });
 
   test('should redirect to dapp page when click the dapp card', async ({ page }) => {
-    // await page.click('.wrapper--list .card:first-child');
-    // const re = /^https?:\/\/[^\/]+(\/[^?]+)/;
-    // await page.waitForURL(re);
+    const closeButton = page.getByText('×');
+    await closeButton.click();
+    await page.waitForSelector('.loader', { state: 'hidden' });
+    const dappCard = page.locator('.wrapper--list .card:first-child').first();
+    await expect(dappCard).toBeVisible();
+    await dappCard.click();
+    await page.waitForURL('**/astar/dapp-staking/dapp?dapp=*');
   });
 
-  // test('should display staking button when over the dapp card', async ({ page }) => {
-  //   const dappCard = page.locator('.wrapper--list .card').first();
-  //   await expect(dappCard).toBeVisible();
-  //   await dappCard.hover();
-  //   const stakeButton = page.getByRole('button', { name: 'Stake Now' });
-  //   await expect(stakeButton).toBeVisible();
-  // });
+  test('should display staking button when over the dapp card', async ({ page }) => {
+    const closeButton = page.getByText('×');
+    await closeButton.click();
+    await page.waitForSelector('.loader', { state: 'hidden' });
+    const dappCard = page.locator('.wrapper--list .card:first-child').first();
+    await expect(dappCard).toBeVisible();
+    await dappCard.hover();
+    const stakeButton = page.getByRole('button', { name: 'Stake Now' });
+    await expect(stakeButton).toBeVisible();
+  });
 });
 
 //https://api.astar.network/api/v1/astar/dapps-staking/dapps
