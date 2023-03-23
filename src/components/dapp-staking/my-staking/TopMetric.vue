@@ -134,7 +134,7 @@ export default defineComponent({
     const { etaNextEra } = useAvgBlockTimeApi(path.value);
 
     const hero_img = {
-      astar_hero: require('/src/assets/img/astar_hero.png'),
+      astar_hero: require('/src/assets/img/astar_hero.svg'),
       shiden_hero: require('/src/assets/img/shiden_hero.png'),
     };
     const { currentNetworkIdx, nativeTokenSymbol } = useNetworkInfo();
