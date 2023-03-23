@@ -111,6 +111,8 @@ import { defineComponent, ref, computed } from 'vue';
 import { docsUrl, polkadotJsUrl } from 'src/links';
 import { useBreakpoints, useNetworkInfo } from 'src/hooks';
 import { endpointKey } from 'src/config/chainEndpoints';
+import { useStore } from 'src/store';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   components: { ModalWrapper },
@@ -133,6 +135,8 @@ export default defineComponent({
       isClosingModal.value = false;
     };
 
+    const store = useStore();
+    const { t } = useI18n();
     const { currentNetworkIdx } = useNetworkInfo();
     const { width, screenSize } = useBreakpoints();
 
@@ -145,8 +149,14 @@ export default defineComponent({
         : shibuya;
     });
 
-    const clearLocalStorage = (): void => {
+    const clearLocalStorage = async (): Promise<void> => {
       localStorage.clear();
+      store.dispatch('general/showAlertMsg', {
+        msg: t('toast.clearedLocalStorage'),
+        alertType: 'success',
+      });
+      await closeModal();
+      await wait(5000);
       window.location.reload();
     };
 

@@ -46,7 +46,10 @@ export default defineComponent({
   padding: 8px;
   cursor: pointer;
   width: 100%;
-  @media (min-width: $lg) {
+  transition: all 0.3s ease 0s;
+  &:hover {
+    transition: all 0.3s ease 0s;
+    box-shadow: 0px 0px 3px #0099ff;
   }
 }
 

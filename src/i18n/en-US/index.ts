@@ -65,6 +65,7 @@ export default {
     unableCalculateMsgPayload: 'Unable to calculate the message payload',
     amountMustNotBeZero: 'The amount of token to be transmitted must not be zero',
     copyAddressSuccessfully: 'Copy address success!',
+    clearedLocalStorage: 'Cleared your local storage! The portal will be reloaded in a few seconds',
     checkYourTransactions: 'Check your transactions',
     success: 'Success',
     note: 'Note',
