@@ -88,9 +88,11 @@
                 )
               }}
             </span>
-            <astar-button :width="120">
-              <span class="text--button">{{ $t('join') }}</span>
-            </astar-button>
+            <a :href="socialUrl.discord" target="_blank" rel="noopener noreferrer">
+              <astar-button :width="120">
+                <span class="text--button">{{ $t('join') }}</span>
+              </astar-button>
+            </a>
           </div>
           <div class="row--tips">
             <span class="text--md">
@@ -108,7 +110,7 @@ import { truncate, wait } from '@astar-network/astar-sdk-core';
 import { fadeDuration } from '@astar-network/astar-ui';
 import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 import { defineComponent, ref, computed } from 'vue';
-import { docsUrl, polkadotJsUrl } from 'src/links';
+import { docsUrl, polkadotJsUrl, socialUrl } from 'src/links';
 import { useBreakpoints, useNetworkInfo } from 'src/hooks';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { useStore } from 'src/store';
@@ -165,6 +167,7 @@ export default defineComponent({
       polkadotJsLink,
       width,
       screenSize,
+      socialUrl,
       close,
       truncate,
       closeModal,
