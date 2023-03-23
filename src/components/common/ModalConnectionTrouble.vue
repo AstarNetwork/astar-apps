@@ -79,8 +79,8 @@
 
         <div class="container--tips">
           <div class="row--tips-title">
-            <span class="text--tips-title"
-              >{{
+            <span class="text--tips-title">
+              {{
                 $t(
                   width > screenSize.sm
                     ? 'assets.modals.connectionTroubles.askCommunityDiscord'
