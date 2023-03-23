@@ -431,7 +431,7 @@ export default {
         clearLocalStorageTip: 'This means your cache of the Portal on this browser will be cleared',
         metaUpdate: 'Metadata Update on Polkadot.js app',
         metaUpdateTip:
-          'You can check if your wallet extension is up to date. If update button is shown, please update it.',
+          'To ensure your wallet extension is up to date, check the Metadata tab and update if prompted.',
         goToDocs: 'Go to Troubleshoot on Docs',
         goToDocsTip: 'Any other issues please also go through the docs.',
         askCommunity: 'Ask our community',
