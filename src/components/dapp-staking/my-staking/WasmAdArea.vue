@@ -35,15 +35,9 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import 'src/css/quasar.variables.scss';
 .wrapper--card {
-  //Desktop; height 280px (max), gets proportionally smaller (resizing to fit) - please have 6px radius.
-  //Mobile (no sidebar) ; height 200px (min), keep it centre and cut the side.
   width: 100%;
   height: 200px;
   border-radius: 6px;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  margin-bottom: 24px;
   @media (min-width: $md) {
     height: 280px;
     margin-bottom: 0px;
@@ -56,5 +50,8 @@ export default defineComponent({
 .wrapper--img {
   width: 100%;
   height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 </style>
