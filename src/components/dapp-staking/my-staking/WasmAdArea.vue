@@ -1,6 +1,10 @@
 <template>
   <div class="wrapper--card">
-    <div class="wrapper--img" :style="`background-image: url('${bg_img.wasm_hero}')`"></div>
+    <div
+      class="wrapper--img"
+      :style="`background-image: url('${bg_img.wasm_hero}')`"
+      @click="goToLink()"
+    ></div>
   </div>
 </template>
 <script lang="ts">
@@ -12,8 +16,14 @@ export default defineComponent({
       wasm_hero: require('/src/assets/img/wasm_banner.svg'),
     };
 
+    const goToLink = () => {
+      // @TODO: update link
+      window.open('https://docs.astar.network/docs/dapp-staking/', '_blank');
+    };
+
     return {
       bg_img,
+      goToLink,
     };
   },
 });
@@ -39,5 +49,6 @@ export default defineComponent({
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  cursor: pointer;
 }
 </style>
