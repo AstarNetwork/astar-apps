@@ -4,30 +4,16 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
-import { useNetworkInfo } from 'src/hooks';
-import { endpointKey } from 'src/config/chainEndpoints';
-import adsData from 'src/data/ads.json';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   setup() {
     const bg_img = {
       wasm_hero: require('/src/assets/img/wasm_banner.svg'),
     };
-    const { currentNetworkIdx } = useNetworkInfo();
-    const isShiden = computed(() => currentNetworkIdx.value === endpointKey.SHIDEN);
-
-    const items = adsData;
-
-    const goToLink = (link: string) => {
-      window.open(link, '_blank');
-    };
 
     return {
-      items,
       bg_img,
-      isShiden,
-      goToLink,
     };
   },
 });
