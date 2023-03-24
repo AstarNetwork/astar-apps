@@ -152,7 +152,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
         });
       } else if (toAddress.value && !isValidDestAddress.value) {
         errMsg.value = 'warning.inputtedInvalidDestAddress';
-      } else if (!transferableBalance.value) {
+      } else if (!transferableBalance.value && !isH160.value) {
         errMsg.value = t('warning.insufficientBalance', {
           token: nativeTokenSymbol.value,
         });
