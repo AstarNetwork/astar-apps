@@ -18,7 +18,7 @@ export default defineComponent({
 
     const goToLink = () => {
       // @TODO: update link
-      window.open('https://docs.astar.network/docs/dapp-staking/', '_blank');
+      window.open('https://www.crowdcast.io/c/wasm-launch-day', '_blank');
     };
 
     return {
