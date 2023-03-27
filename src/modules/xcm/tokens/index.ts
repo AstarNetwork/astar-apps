@@ -125,16 +125,6 @@ export const xcmToken = {
       minBridgeAmount: '0.1',
     },
     {
-      symbol: 'EQ',
-      isNativeToken: false,
-      assetId: '18446744073709551628',
-      originAssetId: 'EQ',
-      logo: require('/src/assets/img/EQ.png'),
-      isXcmCompatible: true,
-      originChain: Chain.EQUILIBRIUM,
-      minBridgeAmount: '250',
-    },
-    {
       symbol: 'EQD',
       isNativeToken: false,
       assetId: '18446744073709551629',
