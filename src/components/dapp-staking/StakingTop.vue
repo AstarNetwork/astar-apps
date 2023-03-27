@@ -3,6 +3,7 @@
     <div class="container--main">
       <top-metric />
       <register />
+      <wasm-ad-area />
       <dynamic-ads-area />
 
       <div class="divider" />
@@ -37,6 +38,7 @@ import OnChainData from './my-staking/OnChainData.vue';
 import TopMetric from './my-staking/TopMetric.vue';
 import AdsArea from './my-staking/AdsArea.vue';
 import DynamicAdsArea from './my-staking/DynamicAdsArea.vue';
+import WasmAdArea from './my-staking/WasmAdArea.vue';
 import { generateMeta } from 'src/config/metadata';
 import { Path } from 'src/router';
 
@@ -49,6 +51,7 @@ export default defineComponent({
     Register,
     DynamicAdsArea,
     OnChainData,
+    WasmAdArea,
   },
   setup() {
     useMeta(generateMeta(Path.Discover));
