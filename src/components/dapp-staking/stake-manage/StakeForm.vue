@@ -73,16 +73,19 @@
       <div class="row--box-warning">
         <div class="column--title">
           <span class="text--dot">・</span>
-          <span> {{ $t(warningMsg) }}</span>
+          <span> {{ $t(warningMinAmtMsg) }}</span>
         </div>
       </div>
       <div v-if="errMsg && currentAccount" class="row--box-error">
         <span class="color--white"> {{ $t(errMsg) }}</span>
       </div>
+      <div v-if="warningMsg && currentAccount" class="row--box-error">
+        <span class="color--white"> {{ $t(warningMsg) }}</span>
+      </div>
       <div class="wrapper__row--button" :class="!errMsg && 'btn-margin-adjuster'">
         <astar-button
           class="btn-size--confirm"
-          :disabled="errMsg || !Number(amount)"
+          :disabled="!!errMsg || !Number(amount)"
           @click="handleStake({ amount, targetContractId: dapp.dapp.address })"
         >
           <span class="text--btn-confirm">
@@ -142,13 +145,19 @@ export default defineComponent({
       getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
     );
     const { selectedTip, nativeTipPrice, setSelectedTip } = useGasPrice();
-    const warningMsg = t('dappStaking.error.warningLeaveMinAmount', {
+    const warningMinAmtMsg = t('dappStaking.error.warningLeaveMinAmount', {
       symbol: nativeTokenSymbol.value,
     });
 
     const inputHandler = (event: any): void => {
       amount.value = event.target.value;
     };
+
+    // MEMO: it leave 10ASTR in the account so it will keep the balance for longer period.
+    const leaveAmount = computed<ethers.BigNumber>(() => {
+      const isNominationTransfer = props.formattedTransferFrom.isNominationTransfer;
+      return ethers.utils.parseEther(isNominationTransfer ? '0' : '10');
+    });
 
     const maxAmount = computed<string>(() => {
       if (!props.formattedTransferFrom.item) return '0';
@@ -161,10 +170,8 @@ export default defineComponent({
 
     const toMaxAmount = (): void => {
       const maximumAmount = ethers.utils.parseEther(maxAmount.value);
-      // MEMO: it leave 10ASTR in the account so it will keep the balance for longer period.
-      const leaveAmount = ethers.utils.parseEther('10');
       amount.value = truncate(
-        ethers.utils.formatEther(maximumAmount.sub(leaveAmount).toString())
+        ethers.utils.formatEther(maximumAmount.sub(leaveAmount.value).toString())
       ).toString();
     };
 
@@ -182,29 +189,34 @@ export default defineComponent({
 
       const formatInputAmount = ethers.utils.parseEther(inputAmount.toString());
       const maximumAmount = ethers.utils.parseEther(maxAmount.value);
-      const leaveAmount = ethers.utils.parseEther('10');
 
       if (!inputAmount) {
         return '';
       }
 
-      if (isNotEnoughMinAmount || maximumAmount.sub(formatInputAmount).lte(leaveAmount)) {
+      if (isNotEnoughMinAmount || maximumAmount.sub(formatInputAmount).lte(leaveAmount.value)) {
         return t('dappStaking.error.notEnoughMinAmount', {
           amount: formattedMinStaking.value,
           symbol: nativeTokenSymbol.value,
         });
       }
 
+      return '';
+    });
+
+    const warningMsg = computed<string>(() => {
+      const inputAmount = Number(amount.value);
       const formattedTransferFromRef = props.formattedTransferFrom;
       const isNominationTransfer = formattedTransferFromRef.isNominationTransfer;
-
       if (isNominationTransfer && formattedTransferFromRef.item) {
         const balTransferFrom = Number(
           ethers.utils.formatEther(formattedTransferFromRef.item.balance.toString())
         );
+
         const targetBalAfterTransfer = balTransferFrom - inputAmount;
 
-        if (inputAmount >= balTransferFrom) {
+        // Memo: 0.1: no need to display the warning message if the balance is less than 0.1ASTR
+        if (inputAmount >= balTransferFrom || 0.1 > targetBalAfterTransfer) {
           return '';
         } else if (formattedMinStaking.value > targetBalAfterTransfer) {
           return t('dappStaking.error.allFundsWillBeTransferred', {
@@ -227,6 +239,7 @@ export default defineComponent({
       amount,
       errMsg,
       maxAmount,
+      warningMinAmtMsg,
       warningMsg,
       setSelectedTip,
       toMaxAmount,
