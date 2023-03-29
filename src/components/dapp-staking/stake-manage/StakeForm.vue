@@ -197,9 +197,6 @@ export default defineComponent({
       const isNotEnoughMinAmount = formattedMinStaking.value > stakingAmount;
       const isNominationTransfer = props.formattedTransferFrom.isNominationTransfer;
 
-      const formatInputAmount = ethers.utils.parseEther(inputAmount.toString());
-      const maximumAmount = ethers.utils.parseEther(maxAmount.value);
-
       if (!inputAmount) {
         return '';
       }
@@ -217,7 +214,7 @@ export default defineComponent({
         });
       }
 
-      if (isNotEnoughMinAmount || maximumAmount.sub(formatInputAmount).lte(leaveAmount.value)) {
+      if (isNotEnoughMinAmount) {
         return t('dappStaking.error.notEnoughMinAmount', {
           amount: formattedMinStaking.value,
           symbol: nativeTokenSymbol.value,
