@@ -322,7 +322,7 @@ export default {
         'All funds will be transferred because the min. staking amount is {minStakingAmount} {symbol}',
       invalidBalance: 'Insufficient transferrable balance to complete the transaction',
       warningLeaveMinAmount:
-        'Account must hold greater than 10{symbol} in transferrable when you stake.',
+        'Account must hold greater than {amount}{symbol} in transferrable when you stake.',
     },
   },
   assets: {
