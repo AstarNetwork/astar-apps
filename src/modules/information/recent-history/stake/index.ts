@@ -1,6 +1,6 @@
+import { TOKEN_API_URL } from '@astar-network/astar-sdk-core';
 import axios from 'axios';
 import { ethers } from 'ethers';
-import { TOKEN_API_URL } from 'src/modules/token-api';
 import { DappCombinedInfo } from 'src/v2/models';
 import { RecentHistory, RecentHistoryTxType } from './../../index';
 

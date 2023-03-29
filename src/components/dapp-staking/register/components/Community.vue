@@ -14,7 +14,7 @@
           @remove="removeCommunity(index)"
           @click="editCommunity()"
         >
-          <avatar :url="getCommunityIconUrl(community.type)" class="avatar" />
+          <avatar :icon-name="getCommunityIconName(community.type) as SocialIcon" class="avatar" />
         </image-card>
         <image-card description="Add an account" class="card">
           <add-item-card @click="addCommunity" />
@@ -38,12 +38,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, reactive, ref, watch } from 'vue';
-import {
-  Community,
-  CommunityDefinition,
-  CommunityType,
-  NewDappItem,
-} from 'src/store/dapp-staking/state';
+import { CommunityDefinition, NewDappItem } from 'src/store/dapp-staking/state';
 import ItemsContainer from './ItemsContainer.vue';
 import ImageCard from './ImageCard.vue';
 import AddItemCard from './AddItemCard.vue';
@@ -51,6 +46,8 @@ import Avatar from 'src/components/common/Avatar.vue';
 import ModalAddCommunity from './ModalAddCommunity.vue';
 import { useI18n } from 'vue-i18n';
 import { isUrlValid } from 'src/components/common/Validators';
+import { SocialIcon } from '@astar-network/astar-ui';
+import { Community, CommunityType } from '@astar-network/astar-sdk-core';
 
 export default defineComponent({
   components: {
@@ -79,42 +76,42 @@ export default defineComponent({
       {
         type: CommunityType.Discord,
         handle: '',
-        iconUrl: require('src/assets/img/discord.png'),
+        iconName: SocialIcon.Discord,
         label: t('dappStaking.modals.community.discordAccount'),
         validateHandle: (x) => validateUrl(x),
       },
       {
         type: CommunityType.Twitter,
         handle: '',
-        iconUrl: require('src/assets/img/twitter.png'),
+        iconName: SocialIcon.Twitter,
         label: t('dappStaking.modals.community.twitterAccount'),
         validateHandle: (x) => validateUrl(x),
       },
       {
         type: CommunityType.Reddit,
         handle: '',
-        iconUrl: require('src/assets/img/reddit.png'),
+        iconName: SocialIcon.Reddit,
         label: t('dappStaking.modals.community.redditAccount'),
         validateHandle: (x) => validateUrl(x),
       },
       {
         type: CommunityType.Facebook,
         handle: '',
-        iconUrl: require('src/assets/img/facebook.png'),
+        iconName: SocialIcon.Facebook,
         label: t('dappStaking.modals.community.facebookAccount'),
         validateHandle: (x) => validateUrl(x),
       },
       {
         type: CommunityType.YouTube,
         handle: '',
-        iconUrl: require('src/assets/img/youtube.png'),
+        iconName: SocialIcon.Youtube,
         label: t('dappStaking.modals.community.youtubeAccount'),
         validateHandle: (x) => validateUrl(x),
       },
       {
         type: CommunityType.Instagram,
         handle: '',
-        iconUrl: require('src/assets/img/instagram.png'),
+        iconName: SocialIcon.Instagram,
         label: t('dappStaking.modals.community.instagramAccount'),
         validateHandle: (x) => validateUrl(x),
       },
@@ -130,10 +127,10 @@ export default defineComponent({
       isModalAddCommunity.value = isOpen;
     };
 
-    const getCommunityIconUrl = (communityType: CommunityType): string => {
+    const getCommunityIconName = (communityType: CommunityType): string => {
       const url = availableCommunities.value.find((x) => x.type === communityType);
 
-      return url ? url.iconUrl : 'TODO dummy icon';
+      return url ? url.iconName : 'TODO dummy icon';
     };
 
     const addCommunity = () => {
@@ -168,12 +165,13 @@ export default defineComponent({
       isModalAddCommunity,
       availableCommunities,
       updateCommunities,
-      getCommunityIconUrl,
+      getCommunityIconName,
       removeCommunity,
       editCommunity,
       addCommunity,
       handleModalAddCommunity,
       validateUrl,
+      SocialIcon,
     };
   },
 });

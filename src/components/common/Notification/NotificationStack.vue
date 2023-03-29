@@ -71,6 +71,7 @@ export default defineComponent({
   overflow-y: auto;
   overflow-x: hidden;
   gap: 10px;
+  padding-top: 16px;
   @media (min-width: $md) {
     top: 96px;
     left: auto;

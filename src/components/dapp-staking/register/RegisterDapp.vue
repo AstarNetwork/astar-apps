@@ -19,7 +19,7 @@
           v-model="data.icon"
           outlined
           :label="$t('dappStaking.modals.projectLogo')"
-          accept=".jpg .png, image/*"
+          accept="image/jpeg, .png"
           class="component"
           input-style="{ height: '120px'}"
           lazy-rules="ondemand"
@@ -82,7 +82,8 @@ import { computed, defineComponent, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 import { $api } from 'boot/api';
-import { Category, Developer, FileInfo, NewDappItem } from 'src/store/dapp-staking/state';
+import { FileInfo, NewDappItem } from 'src/store/dapp-staking/state';
+import { Category, Developer } from '@astar-network/astar-sdk-core';
 import ImageCard from './components/ImageCard.vue';
 import AddItemCard from './components/AddItemCard.vue';
 import Builders from './components/Builders.vue';

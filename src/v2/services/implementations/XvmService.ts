@@ -1,4 +1,4 @@
-import { getShortenAddress } from 'src/hooks/helper/addressUtils';
+import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import { inject, injectable } from 'inversify';
 import { XvmAssets } from 'src/store/assets/state';
 import { Guard } from 'src/v2/common';

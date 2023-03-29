@@ -115,18 +115,23 @@ import SelectWallet from 'src/components/header/modals/SelectWallet.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SupportWallet } from 'src/config/wallets';
-import { getShortenAddress } from 'src/hooks/helper/addressUtils';
-import { truncate, wait } from 'src/hooks/helper/common';
+import {
+  getShortenAddress,
+  truncate,
+  wait,
+  fetchNativeBalance,
+} from '@astar-network/astar-sdk-core';
 import {
   castMobileSource,
   checkIsEthereumWallet,
   checkIsNativeWallet,
 } from 'src/hooks/helper/wallet';
-import { fetchNativeBalance } from 'src/modules/account';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
 import { computed, defineComponent, PropType, ref, watch, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useExtensions } from 'src/hooks/useExtensions';
+import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
 
 export default defineComponent({
   components: {
@@ -294,6 +299,19 @@ export default defineComponent({
       },
       { immediate: true }
     );
+
+    const requestExtensionsIfFirstAccess = (): void => {
+      if (!isNativeWallet.value) return;
+      // Memo: displays wallet's authorization popup
+      const { extensions } = useExtensions($api!!, store);
+      const { metaExtensions, extensionCount } = useMetaExtensions($api!!, extensions)!!;
+      store.commit('general/setMetaExtensions', metaExtensions.value);
+      store.commit('general/setExtensionCount', extensionCount.value);
+    };
+
+    watch([isNativeWallet, props.selectedWallet], requestExtensionsIfFirstAccess, {
+      immediate: false,
+    });
 
     onUnmounted(() => {
       window.removeEventListener('resize', onHeightChange);

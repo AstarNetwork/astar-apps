@@ -84,6 +84,7 @@ export default defineComponent({
     const isCopiedType = computed<boolean>(() => props.alertType === AlertType.Copied);
     const { currentNetworkIdx } = useNetworkInfo();
     const isShiden = computed<boolean>(() => currentNetworkIdx.value === endpointKey.SHIDEN);
+    const isShibuya = computed<boolean>(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
 
     const goToSubscan = () => {
       if (!props.txHash) return;
@@ -91,6 +92,8 @@ export default defineComponent({
       let rootName = 'astar';
       if (isShiden.value) {
         rootName = 'shiden';
+      } else if (isShibuya.value) {
+        rootName = 'shibuya';
       }
       const link = `https://${rootName}.subscan.io/extrinsic/${props.txHash}`;
       window.open(link, '_blank');
@@ -212,7 +215,7 @@ export default defineComponent({
   padding-left: 12px;
   padding-right: 12px;
   margin-top: 8px;
-  word-break: break-all;
+  word-break: keep-all;
 }
 .btn--check {
   width: 90%;

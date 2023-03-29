@@ -26,7 +26,7 @@
   </div>
 </template>
 <script lang="ts">
-import { truncate } from 'src/hooks/helper/common';
+import { truncate } from '@astar-network/astar-sdk-core';
 import { Erc20Token } from 'src/modules/token';
 import { defineComponent, PropType } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';

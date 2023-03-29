@@ -1,4 +1,4 @@
-import { formatNumber } from 'src/modules/token-api/utils';
+import { formatNumber } from '@astar-network/astar-sdk-core';
 
 export const textChart = {
   tvl: {

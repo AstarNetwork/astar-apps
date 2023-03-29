@@ -1,6 +1,6 @@
 import { BN } from '@polkadot/util';
 import { decodeAddress } from '@polkadot/util-crypto';
-import { getPubkeyFromSS58Addr } from 'src/hooks/helper/addressUtils';
+import { getPubkeyFromSS58Addr } from '@astar-network/astar-sdk-core';
 import { XcmTokenInformation } from 'src/modules/xcm';
 import { container } from 'src/v2/common';
 import { ExtrinsicPayload, IApi, IApiFactory } from 'src/v2/integration';

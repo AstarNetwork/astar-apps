@@ -70,13 +70,22 @@
         :set-selected-gas="setSelectedTip"
       />
 
+      <div class="row--box-warning">
+        <div class="column--title">
+          <span class="text--dot">・</span>
+          <span> {{ $t(warningMinAmtMsg) }}</span>
+        </div>
+      </div>
       <div v-if="errMsg && currentAccount" class="row--box-error">
         <span class="color--white"> {{ $t(errMsg) }}</span>
+      </div>
+      <div v-if="warningMsg && currentAccount" class="row--box-error">
+        <span class="color--white"> {{ $t(warningMsg) }}</span>
       </div>
       <div class="wrapper__row--button" :class="!errMsg && 'btn-margin-adjuster'">
         <astar-button
           class="btn-size--confirm"
-          :disabled="errMsg || !Number(amount)"
+          :disabled="!!errMsg || !Number(amount)"
           @click="handleStake({ amount, targetContractId: dapp.dapp.address })"
         >
           <span class="text--btn-confirm">
@@ -88,6 +97,7 @@
   </div>
 </template>
 <script lang="ts">
+import { getShortenAddress, truncate } from '@astar-network/astar-sdk-core';
 import { ethers } from 'ethers';
 import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 import {
@@ -97,8 +107,6 @@ import {
   useNetworkInfo,
   useWalletIcon,
 } from 'src/hooks';
-import { getShortenAddress } from 'src/hooks/helper/addressUtils';
-import { truncate } from 'src/hooks/helper/common';
 import { getTokenImage } from 'src/modules/token';
 import { computed, defineComponent, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -138,9 +146,24 @@ export default defineComponent({
     );
     const { selectedTip, nativeTipPrice, setSelectedTip } = useGasPrice();
 
+    // MEMO: it leave 10ASTR in the account so it will keep the balance for longer period.
+    const leaveAmountNum = computed<number>(() => {
+      return nativeTokenSymbol.value === 'ASTR' ? 10 : 1;
+    });
+
+    const warningMinAmtMsg = t('dappStaking.error.warningLeaveMinAmount', {
+      symbol: nativeTokenSymbol.value,
+      amount: leaveAmountNum.value,
+    });
+
     const inputHandler = (event: any): void => {
       amount.value = event.target.value;
     };
+
+    const leaveAmount = computed<ethers.BigNumber>(() => {
+      const isNominationTransfer = props.formattedTransferFrom.isNominationTransfer;
+      return ethers.utils.parseEther(isNominationTransfer ? '0' : String(leaveAmountNum.value));
+    });
 
     const maxAmount = computed<string>(() => {
       if (!props.formattedTransferFrom.item) return '0';
@@ -152,7 +175,13 @@ export default defineComponent({
     });
 
     const toMaxAmount = (): void => {
-      amount.value = maxAmount.value;
+      const maximumAmount = ethers.utils.parseEther(maxAmount.value);
+      const rawMaximumAmount = truncate(ethers.utils.formatEther(maximumAmount));
+      const amt = truncate(
+        ethers.utils.formatEther(maximumAmount.sub(leaveAmount.value).toString())
+      );
+
+      amount.value = String(amt > 0 ? amt : rawMaximumAmount);
     };
 
     const formattedMinStaking = computed<number>(() => {
@@ -166,9 +195,23 @@ export default defineComponent({
       const inputAmount = Number(amount.value);
       const stakingAmount = inputAmount + stakedAmount;
       const isNotEnoughMinAmount = formattedMinStaking.value > stakingAmount;
+      const isNominationTransfer = props.formattedTransferFrom.isNominationTransfer;
 
       if (!inputAmount) {
         return '';
+      }
+
+      if (inputAmount > Number(maxAmount.value)) {
+        return t('warning.insufficientBalance', {
+          token: nativeTokenSymbol.value,
+        });
+      }
+
+      if (!isNominationTransfer && leaveAmountNum.value > Number(maxAmount.value) - inputAmount) {
+        return t('dappStaking.error.warningLeaveMinAmount', {
+          symbol: nativeTokenSymbol.value,
+          amount: leaveAmountNum.value,
+        });
       }
 
       if (isNotEnoughMinAmount) {
@@ -178,16 +221,22 @@ export default defineComponent({
         });
       }
 
+      return '';
+    });
+
+    const warningMsg = computed<string>(() => {
+      const inputAmount = Number(amount.value);
       const formattedTransferFromRef = props.formattedTransferFrom;
       const isNominationTransfer = formattedTransferFromRef.isNominationTransfer;
-
       if (isNominationTransfer && formattedTransferFromRef.item) {
         const balTransferFrom = Number(
           ethers.utils.formatEther(formattedTransferFromRef.item.balance.toString())
         );
+
         const targetBalAfterTransfer = balTransferFrom - inputAmount;
 
-        if (inputAmount >= balTransferFrom) {
+        // Memo: 0.1: no need to display the warning message if the balance is less than 0.1ASTR
+        if (inputAmount >= balTransferFrom || 0.1 > targetBalAfterTransfer) {
           return '';
         } else if (formattedMinStaking.value > targetBalAfterTransfer) {
           return t('dappStaking.error.allFundsWillBeTransferred', {
@@ -210,6 +259,8 @@ export default defineComponent({
       amount,
       errMsg,
       maxAmount,
+      warningMinAmtMsg,
+      warningMsg,
       setSelectedTip,
       toMaxAmount,
       getShortenAddress,

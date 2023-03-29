@@ -10,7 +10,7 @@ import { hasExtrinsicFailedEvent } from 'src/modules/extrinsic';
 import { useStore } from 'src/store';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { checkIsDappOwner, getNumberOfUnclaimedEra } from '../helper/claim';
+import { checkIsDappOwner, getNumberOfUnclaimedEra } from '@astar-network/astar-sdk-core';
 import { useCurrentEra } from '../useCurrentEra';
 
 type EraIndex = u32;
@@ -97,6 +97,7 @@ export function useCompoundRewards() {
                 {
                   msg: t('dappStaking.toast.successfullySetRewardDest'),
                   alertType: 'success',
+                  txHash: result.txHash.toString(),
                 },
                 { root: true }
               );

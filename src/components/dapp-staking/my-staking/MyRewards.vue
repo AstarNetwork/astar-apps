@@ -58,8 +58,20 @@
           <div class="value">
             {{ isCompounding ? $t('dappStaking.on') : $t('dappStaking.off') }}
           </div>
-          <astar-button :width="80" :height="24" @click="showAutoCompound">
+          <astar-button
+            :disabled="isH160"
+            :width="80"
+            :height="24"
+            @click="showAutoCompound"
+          >
             {{ $t('dappStaking.change') }}
+          <astar-button
+            :disabled="isH160"
+            :width="80"
+            :height="24"
+            @click="changeDestinationForRestaking"
+          >
+            {{ isCompounding ? $t('dappStaking.turnOff') : $t('dappStaking.turnOn') }}
           </astar-button>
         </div>
       </div>
@@ -98,6 +110,7 @@ import ModalAutoCompound from 'src/components/dapp-staking/my-staking/components
 import { RewardDestination } from 'src/hooks/dapps-staking/useCompoundRewards';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { defineComponent, computed, ref } from 'vue';
+import { useStore } from 'src/store';
 
 export default defineComponent({
   components: {
@@ -139,6 +152,8 @@ export default defineComponent({
     const { currentAccount } = useAccount();
     const { currentNetworkIdx } = useNetworkInfo();
     const isShiden = computed(() => currentNetworkIdx.value === endpointKey.SHIDEN);
+    const store = useStore();
+    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const goToSubscan = () => {
       let rootName = 'astar';
       if (isShiden.value) {
@@ -165,6 +180,7 @@ export default defineComponent({
       goToSubscan,
       showAutoCompound,
       showAutoCompoundModal,
+      isH160,
     };
   },
 });

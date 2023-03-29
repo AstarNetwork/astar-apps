@@ -3,19 +3,23 @@ import { BN } from '@polkadot/util';
 import { $api, $web3 } from 'boot/api';
 import { ethers } from 'ethers';
 import ABI from 'src/config/abi/ERC20.json';
-import { buildEvmAddress, getTokenBal, isValidEvmAddress, toSS58Address } from 'src/config/web3';
+import { getTokenBal } from 'src/config/web3';
 import { useAccount, useBalance, useCustomSignature, useGasPrice, useNetworkInfo } from 'src/hooks';
 import { useEthProvider } from 'src/hooks/custom-signature/useEthProvider';
 import {
   ASTAR_SS58_FORMAT,
+  getEvmGas,
+  getEvmGasCost,
   isValidAddressPolkadotAddress,
+  sampleEvmWalletAddress,
   SUBSTRATE_SS58_FORMAT,
-} from 'src/hooks/helper/plasmUtils';
+  isValidEvmAddress,
+  buildEvmAddress,
+  toSS58Address,
+} from '@astar-network/astar-sdk-core';
 import { signAndSend } from 'src/hooks/helper/wallet';
 import { HistoryTxType } from 'src/modules/account';
 import { addTxHistories } from 'src/modules/account/utils/index';
-import { sampleEvmWalletAddress } from 'src/modules/gas-api';
-import { getEvmGas, getEvmGasCost } from 'src/modules/gas-api/utils/index';
 import { fetchXcmBalance } from 'src/modules/xcm';
 import { Path } from 'src/router';
 import { useStore } from 'src/store';
@@ -73,7 +77,17 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
     () => tokenSymbol.value === nativeTokenSymbol.value.toLowerCase()
   );
 
-  const isRequiredCheck = computed<boolean>(() => isH160.value || !isTransferNativeToken.value);
+  const isRequiredCheck = computed<boolean>(() => {
+    const isSs58 = !isH160.value;
+
+    const isNativeTokenEvmToSs58 =
+      isH160.value && isTransferNativeToken.value && isValidAddressPolkadotAddress(toAddress.value);
+
+    const isNativeTokenSs58ToEvm =
+      isSs58 && isTransferNativeToken.value && isValidEvmAddress(toAddress.value);
+
+    return !isTransferNativeToken.value || isNativeTokenEvmToSs58 || isNativeTokenSs58ToEvm;
+  });
 
   const fromAddressBalance = computed<number>(() =>
     selectedToken.value ? selectedToken.value.userBalance : 0
@@ -138,7 +152,7 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
         });
       } else if (toAddress.value && !isValidDestAddress.value) {
         errMsg.value = 'warning.inputtedInvalidDestAddress';
-      } else if (!transferableBalance.value) {
+      } else if (!transferableBalance.value && !isH160.value) {
         errMsg.value = t('warning.insufficientBalance', {
           token: nativeTokenSymbol.value,
         });

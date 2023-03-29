@@ -63,7 +63,7 @@ import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { fetchErc20TokenInfo } from 'src/config/web3';
 import { useNetworkInfo } from 'src/hooks';
-import { wait } from 'src/hooks/helper/common';
+import { wait } from '@astar-network/astar-sdk-core';
 import { Erc20Token, getStoredXvmTokens, storeImportedXvmToken } from 'src/modules/token';
 import { defineComponent, ref, watch, computed } from 'vue';
 

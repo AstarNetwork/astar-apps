@@ -48,7 +48,8 @@
     <Teleport to="#app--main">
       <div :class="'highest-z-index'">
         <modal-unbond-dapp
-          v-model:is-open="showModalUnbond"
+          v-if="selectedDapp"
+          :set-is-open="setShowModalUnbond"
           :show="showModalUnbond"
           :dapp="selectedDapp"
         />
@@ -81,6 +82,10 @@ export default defineComponent({
     const router = useRouter();
 
     const showModalUnbond = ref<boolean>(false);
+    const setShowModalUnbond = (isOpen: boolean): void => {
+      showModalUnbond.value = isOpen;
+    };
+
     const isUnregistered = (info: MyStakeInfo): boolean =>
       !info.isRegistered && info.stakersCount > 0;
 
@@ -105,6 +110,7 @@ export default defineComponent({
       claimAll,
       canClaim,
       isUnregistered,
+      setShowModalUnbond,
     };
   },
 });
