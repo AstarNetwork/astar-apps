@@ -17,6 +17,7 @@ export interface ChainProvider {
   evmChainId: string;
   evmEndpoints: string[];
   faucetEndpoint: string;
+  // Memo: using `require` occurs error in `yarn test`
   defaultLogo: string;
   // Memo: XVM transfer contracts address
   xvmErcTransferContract?: string;
@@ -36,10 +37,12 @@ export const providerEndpoints: ChainProvider[] = [
     displayName: 'Astar Network',
     info: 'Smart contract platform for decentralized applications (dapps) on the Polkadot network',
     endpoints: [
-      { name: 'Astar', endpoint: 'wss://wss.astar.network' },
+      { name: 'Astar', endpoint: 'wss://rpc.astar.network' },
       { name: 'Dwellir', endpoint: 'wss://astar-rpc.dwellir.com' },
-      { name: 'Pinknode', endpoint: 'wss://public-rpc.pinknode.io/astar' },
+      { name: 'Blast', endpoint: 'wss://astar.public.blastapi.io' },
       { name: 'OnFinality', endpoint: 'wss://astar.api.onfinality.io/public-ws' },
+      { name: 'RadiumBlock', endpoint: 'wss://astar.public.curie.radiumblock.co/ws' },
+      { name: 'Light Client (experimental)', endpoint: 'light://substrate-connect/polkadot/astar' },
     ],
     isSupportContract: true,
     prefix: 0x250,
@@ -49,10 +52,14 @@ export const providerEndpoints: ChainProvider[] = [
     subscan: 'https://astar.subscan.io',
     blockscout: 'https://blockscout.com/astar',
     evmChainId: '592',
-    evmEndpoints: ['https://evm.astar.network', 'https://astar.api.onfinality.io/public'],
+    evmEndpoints: [
+      'https://evm.astar.network',
+      'https://astar.public.blastapi.io',
+      'https://astar.api.onfinality.io/public',
+    ],
     faucetEndpoint: 'https://us-central1-facuet-bot.cloudfunctions.net/app/astar',
     defaultLogo:
-      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/ic_astar.png?raw=true',
+      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/astar.png?raw=true',
   },
   {
     networkAlias: 'shiden',
@@ -61,8 +68,9 @@ export const providerEndpoints: ChainProvider[] = [
     endpoints: [
       { name: 'Shiden', endpoint: 'wss://rpc.shiden.astar.network' },
       { name: 'Dwellir', endpoint: 'wss://shiden-rpc.dwellir.com' },
-      { name: 'Pinknode', endpoint: 'wss://rpc.pinknode.io/shiden/explorer' },
+      { name: 'Blast', endpoint: 'wss://shiden.public.blastapi.io' },
       { name: 'OnFinality', endpoint: 'wss://shiden.api.onfinality.io/public-ws' },
+      { name: 'Light Client (experimental)', endpoint: 'light://substrate-connect/kusama/shiden' },
     ],
     isSupportContract: true,
     prefix: 0x150,
@@ -72,10 +80,14 @@ export const providerEndpoints: ChainProvider[] = [
     subscan: 'https://shiden.subscan.io',
     blockscout: 'https://blockscout.com/shiden',
     evmChainId: '336',
-    evmEndpoints: ['https://evm.shiden.astar.network', 'https://shiden.api.onfinality.io/public'],
+    evmEndpoints: [
+      'https://evm.shiden.astar.network',
+      'https://shiden.public.blastapi.io',
+      'https://shiden.api.onfinality.io/public',
+    ],
     faucetEndpoint: 'https://us-central1-facuet-bot.cloudfunctions.net/app/shiden',
     defaultLogo:
-      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/ic_shiden.png?raw=true',
+      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shiden.png?raw=true',
   },
   {
     networkAlias: 'shibuya-testnet',
@@ -84,6 +96,8 @@ export const providerEndpoints: ChainProvider[] = [
     endpoints: [
       { name: 'Shibuya', endpoint: 'wss://rpc.shibuya.astar.network' },
       { name: 'Dwellir', endpoint: 'wss://shibuya-rpc.dwellir.com' },
+      { name: 'Blast', endpoint: 'wss://shibuya.public.blastapi.io/' },
+      { name: 'Light Client (experimental)', endpoint: 'light://substrate-connect/tokyo/shibuya' },
     ],
     isSupportContract: true,
     prefix: 0xff51,
@@ -93,10 +107,10 @@ export const providerEndpoints: ChainProvider[] = [
     subscan: 'https://shibuya.subscan.io',
     blockscout: 'https://blockscout.com/shibuya',
     evmChainId: '81',
-    evmEndpoints: ['https://evm.shibuya.astar.network'],
+    evmEndpoints: ['https://evm.shibuya.astar.network', 'https://shibuya.public.blastapi.io'],
     faucetEndpoint: 'https://us-central1-facuet-bot.cloudfunctions.net/app/shibuya',
     defaultLogo:
-      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/ic_shibuya.png?raw=true',
+      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shibuya.png?raw=true',
     xvmErcTransferContract: 'ZdNJsZUK96jGxr8iRfT8xHXUi5iQ7XwL9qbyJkADPdH7C1U',
   },
   {
@@ -113,7 +127,7 @@ export const providerEndpoints: ChainProvider[] = [
     evmEndpoints: ['http://127.0.0.1:9933'],
     faucetEndpoint: '',
     defaultLogo:
-      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/ic_shibuya.png?raw=true',
+      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shibuya.png?raw=true',
     // Memo: paste the contract addresses after deployed the contracts on the local network
     // xvmErcTransferContract: '',
   },
@@ -131,7 +145,7 @@ export const providerEndpoints: ChainProvider[] = [
     evmEndpoints: [''],
     faucetEndpoint: '',
     defaultLogo:
-      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/ic_shibuya.png?raw=true',
+      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shibuya.png?raw=true',
   },
 ];
 

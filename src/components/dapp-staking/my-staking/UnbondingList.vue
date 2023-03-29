@@ -42,7 +42,7 @@
     <Teleport to="#app--main">
       <div>
         <modal-withdraw
-          v-model:is-open="showModalWithdraw"
+          :set-is-open="setShowModalWithdraw"
           :show="showModalWithdraw"
           :withdraw-amount="totalAmount"
           @confirm="withdraw"
@@ -65,7 +65,6 @@ import { ChunkInfo } from 'src/v2/models';
 import DropdownList from './components/DropdownList.vue';
 import FormatBalance from 'components/common/FormatBalance.vue';
 import ModalWithdraw from './components/modals/ModalWithdraw.vue';
-// import ModalRebond from './components/modals/ModalRebond.vue';
 
 export default defineComponent({
   components: { DropdownList, ModalWithdraw, FormatBalance },
@@ -80,6 +79,10 @@ export default defineComponent({
     const { withdraw } = useUnbonding();
 
     const showModalWithdraw = ref(false);
+    const setShowModalWithdraw = (isOpen: boolean): void => {
+      showModalWithdraw.value = isOpen;
+    };
+
     const showModalRebond = ref(false);
     // MEMO: since not possible to withdraw each chunk currently, use total amount of withdraw
     const totalAmount = ref('');
@@ -113,6 +116,7 @@ export default defineComponent({
       showWithdrawDialog,
       showRebondDialog,
       withdraw,
+      setShowModalWithdraw,
     };
   },
 });

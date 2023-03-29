@@ -1,4 +1,4 @@
-import { GasTip } from 'src/modules/gas-api/index';
+import { GasTip } from '@astar-network/astar-sdk-core';
 import { GetterTree } from 'vuex';
 import { StateInterface } from '../index';
 import {
@@ -14,6 +14,7 @@ import type { Extensions } from 'src/hooks/useMetaExtensions';
 export interface GeneralGetters {
   initialized(state: State): boolean;
   isLoading(state: State): boolean;
+  alertStack(state: State): AlertBox[];
   showAlert(state: State): AlertBox;
   chainInfo(state: State): ChainInfo;
   metaExtensions(state: State): Extensions;
@@ -36,6 +37,7 @@ export interface GeneralGetters {
 const getters: GetterTree<State, StateInterface> & GeneralGetters = {
   initialized: (state) => state.initialized,
   isLoading: (state) => state.isLoading,
+  alertStack: (state) => state.alertBoxStack,
   showAlert: (state) => state.alertBox,
   chainInfo: (state) => state.chainInfo,
   metaExtensions: (state) => state.metaExtensions,

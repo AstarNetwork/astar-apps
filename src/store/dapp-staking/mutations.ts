@@ -1,7 +1,8 @@
 import { TvlModel } from 'src/v2/models';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { MutationTree } from 'vuex';
-import { DappStateInterface as State, DappItem } from './state';
+import { DappStateInterface as State } from './state';
+import { DappItem } from '@astar-network/astar-sdk-core';
 
 export interface ContractsMutations<S = State> {
   addDapp(state: S, payload: DappItem): void;

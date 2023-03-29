@@ -6,10 +6,8 @@ import { Erc20Token } from 'src/modules/token';
 import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
 import { blockExplorerUrls, CHAIN_INFORMATION } from 'src/config/web3';
-import { getRandomFromArray } from 'src/hooks/helper/common';
+import { getRandomFromArray } from '@astar-network/astar-sdk-core';
 import { EVM, nativeCurrency, TNetworkId } from 'src/config/web3';
-export { buildEvmAddress, isValidEvmAddress, toSS58Address } from 'src/config/web3/utils/convert';
-export { getBalance, sendNativeTokenTransaction } from 'src/config/web3/utils/transactions';
 
 export const getChainData = (chainId: number) => {
   const { chainName, nativeCurrency, rpcUrls, blockExplorerUrls } = CHAIN_INFORMATION;
@@ -34,30 +32,31 @@ export const setupNetwork = async ({
     const { chainName, nativeCurrency, rpcUrls, blockExplorerUrls } = getChainData(network);
 
     try {
-      if (network === 1) {
-        await provider.request({
-          method: 'wallet_switchEthereumChain',
-          params: [
-            {
-              chainId,
-            },
-          ],
-        });
-        return true;
+      if (chainId !== provider.chainId) {
+        // Memo:
+        // 1. Try to switch the network
+        // 2. Add the network into the wallet if there hasn't registered the network on the wallet yet
+        try {
+          await provider.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId }],
+          });
+        } catch (error) {
+          await provider.request({
+            method: 'wallet_addEthereumChain',
+            params: [
+              {
+                chainId,
+                chainName,
+                nativeCurrency,
+                rpcUrls,
+                blockExplorerUrls,
+              },
+            ],
+          });
+        }
       }
 
-      await provider.request({
-        method: 'wallet_addEthereumChain',
-        params: [
-          {
-            chainId,
-            chainName,
-            nativeCurrency,
-            rpcUrls,
-            blockExplorerUrls,
-          },
-        ],
-      });
       return true;
     } catch (error) {
       console.error('Failed to setup the network in EVM extension:', error);

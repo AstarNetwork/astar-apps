@@ -7,7 +7,7 @@ import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { getInjectedExtensions, isMobileDevice } from 'src/hooks/helper/wallet';
 import { keyring } from '@polkadot/ui-keyring';
 import { isTestChain } from '@polkadot/util';
-import { wait } from 'src/hooks/helper/common';
+import { wait } from '@astar-network/astar-sdk-core';
 
 interface InjectedAccountExt {
   address: string;

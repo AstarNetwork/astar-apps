@@ -1,12 +1,12 @@
 @import 'src/css/quasar.variables.scss';
 @import 'src/css/utils.scss';
-@import 'src/css/quasar.variables.scss';
-@import 'src/css/utils.scss';
 
 .icon {
   text-align: center;
   width: 170px;
+  height: 78px;
   margin-left: 8px;
+  z-index: 1000;
 }
 
 .iconbase {
@@ -18,11 +18,10 @@
 .sidebar {
   width: 224px;
   height: 100%;
-  padding-top: 18px;
+  padding-top: 24px;
   background: $border-separator-light;
   display: flex;
   flex-direction: column;
-  z-index: 100;
 }
 
 .menu {

@@ -12,28 +12,22 @@ const actions: ActionTree<State, StateInterface> = {
     { commit },
     { address, isFetchUsd }: { address: string; isFetchUsd: boolean }
   ): Promise<void> {
-    commit('general/setLoading', true, { root: true });
     try {
       const xcmService = container.get<IXcmService>(Symbols.XcmService);
       const assets = await xcmService.getAssets(address, isFetchUsd);
       commit('setAssets', assets);
     } catch (error) {
       console.error(error);
-    } finally {
-      commit('general/setLoading', false, { root: true });
     }
   },
 
   async getXvmAssets({ commit }, param: XvmGetAssetsParam): Promise<void> {
-    commit('general/setLoading', true, { root: true });
     try {
       const xvmService = container.get<IXvmService>(Symbols.XvmService);
       const assets = await xvmService.getAssets(param);
       commit('setXvmAssets', assets);
     } catch (error) {
       console.error(error);
-    } finally {
-      commit('general/setLoading', false, { root: true });
     }
   },
 
@@ -51,7 +45,6 @@ const actions: ActionTree<State, StateInterface> = {
       isFetchUsd: boolean;
     }
   ): Promise<void> {
-    commit('general/setLoading', true, { root: true });
     try {
       const evmAssetsService = container.get<IEvmAssetsService>(Symbols.EvmAssetsService);
       const assets = await evmAssetsService.getAssets(
@@ -63,8 +56,6 @@ const actions: ActionTree<State, StateInterface> = {
       commit('setEvmAssets', assets);
     } catch (error) {
       console.error(error);
-    } finally {
-      commit('general/setLoading', false, { root: true });
     }
   },
 };

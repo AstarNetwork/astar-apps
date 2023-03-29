@@ -132,7 +132,7 @@ import InputSelectAccount from 'src/components/assets/transfer/InputSelectAccoun
 import SpeedConfiguration from 'src/components/common/SpeedConfiguration.vue';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { useAccount, useNetworkInfo, useWalletIcon, useXvmTokenTransfer } from 'src/hooks';
-import { getShortenAddress } from 'src/hooks/helper/addressUtils';
+import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import { Erc20Token } from 'src/modules/token';
 import { computed, defineComponent, PropType } from 'vue';
 import Jazzicon from 'vue3-jazzicon/src/components';

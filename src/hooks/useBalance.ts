@@ -1,14 +1,14 @@
+import { ETHEREUM_EXTENSION } from 'src/hooks';
 import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { VoidFn } from '@polkadot/api/types';
 import { BalanceLockTo212 } from '@polkadot/types/interfaces';
 import { PalletBalancesBalanceLock, PalletVestingVestingInfo } from '@polkadot/types/lookup';
 import { BN } from '@polkadot/util';
 import { $api, $web3 } from 'boot/api';
-import { getBalance } from 'src/config/web3';
 import { SystemAccount } from 'src/modules/account';
 import { useStore } from 'src/store';
 import { computed, onUnmounted, ref, Ref, watch } from 'vue';
-import { getVested } from 'src/hooks/helper/vested';
+import { getVested } from '@astar-network/astar-sdk-core';
 
 function useCall(addressRef: Ref<string>) {
   const balanceRef = ref(new BN(0));
@@ -30,7 +30,7 @@ function useCall(addressRef: Ref<string>) {
       if (!web3Ref || !web3Ref.utils.isAddress(address)) {
         return;
       }
-      const rawBal = await getBalance(web3Ref, address);
+      const rawBal = await web3Ref.eth.getBalance(address);
       accountDataRef.value = new AccountDataH160(
         new BN(rawBal),
         new BN(0),
@@ -103,7 +103,7 @@ function useCall(addressRef: Ref<string>) {
 
   const updateAccountBalance = () => {
     const address = addressRef.value;
-    if (address !== 'Ethereum Extension') {
+    if (address !== ETHEREUM_EXTENSION) {
       if (isH160Formatted.value) {
         updateAccountH160(address);
       } else {

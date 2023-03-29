@@ -5,7 +5,7 @@ import { astarMainnetNativeToken, ASTAR_NATIVE_TOKEN } from 'src/config/chain';
 import { EditDappItem } from 'src/store/dapp-staking/state';
 import { Guard } from 'src/v2/common';
 import { TvlModel } from 'src/v2/models';
-import { DappCombinedInfo, StakerInfo, RewardDestination } from 'src/v2/models/DappsStaking';
+import { DappCombinedInfo, StakerInfo } from 'src/v2/models/DappsStaking';
 import {
   IDappStakingRepository,
   IMetadataRepository,
@@ -16,6 +16,9 @@ import { IBalanceFormatterService, IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { IWalletService } from '../IWalletService';
 import { AccountLedger } from 'src/v2/models/DappsStaking';
+import { SubmittableExtrinsic } from '@polkadot/api/types';
+import { ISubmittableResult } from '@polkadot/types/types';
+import { StakeInfo } from 'src/store/dapp-staking/actions';
 
 @injectable()
 export class DappStakingService implements IDappStakingService {
@@ -192,5 +195,35 @@ export class DappStakingService implements IDappStakingService {
     }
 
     return true;
+  }
+
+  public async sendTx({
+    senderAddress,
+    transaction,
+    finalizedCallback,
+  }: {
+    senderAddress: string;
+    transaction: SubmittableExtrinsic<'promise'>;
+    finalizedCallback: (result?: ISubmittableResult) => void;
+  }): Promise<void> {
+    Guard.ThrowIfUndefined('senderAddress', senderAddress);
+    Guard.ThrowIfUndefined('transaction', transaction);
+
+    await this.wallet.signAndSend(
+      transaction,
+      senderAddress,
+      undefined,
+      undefined,
+      finalizedCallback
+    );
+  }
+
+  public async getStakeInfo(
+    dappAddress: string,
+    currentAccount: string
+  ): Promise<StakeInfo | undefined> {
+    Guard.ThrowIfUndefined('currentAccount', currentAccount);
+
+    return await this.dappStakingRepository.getStakeInfo(dappAddress, currentAccount);
   }
 }

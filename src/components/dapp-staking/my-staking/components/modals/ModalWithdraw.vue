@@ -29,7 +29,7 @@ import { defineComponent, ref } from 'vue';
 import FormatBalance from 'components/common/FormatBalance.vue';
 import ModalWrapper from 'src/components/common/ModalWrapper.vue';
 import { fadeDuration } from '@astar-network/astar-ui';
-import { wait } from 'src/hooks/helper/common';
+import { wait } from '@astar-network/astar-sdk-core';
 
 export default defineComponent({
   components: { FormatBalance, ModalWrapper },
@@ -42,6 +42,10 @@ export default defineComponent({
       type: String,
       default: null,
     },
+    setIsOpen: {
+      type: Function,
+      required: true,
+    },
   },
   emits: ['update:is-open', 'confirm'],
   setup(props, { emit }) {
@@ -49,7 +53,7 @@ export default defineComponent({
     const closeModal = async (): Promise<void> => {
       isClosingModal.value = true;
       await wait(fadeDuration);
-      emit('update:is-open', false);
+      props.setIsOpen(false);
       isClosingModal.value = false;
     };
 

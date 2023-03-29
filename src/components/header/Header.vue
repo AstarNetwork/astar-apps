@@ -10,19 +10,20 @@
         </connect-button>
       </template>
       <template v-else>
-        <account-button :account="currentAccount" @click="changeAccount" />
+        <account-button :account="currentAccount" @click="clickAccountBtn" />
       </template>
-      <network-button @show-network="modalNetwork = true" />
+      <network-button @show-network="clickNetworkBtn" />
     </header-comp>
 
     <!-- Modals -->
     <modal-network
+      v-if="modalNetwork"
       v-model:isOpen="modalNetwork"
       v-model:selectNetwork="currentNetworkIdx"
       :network-idx="currentNetworkIdx"
     />
     <modal-connect-wallet
-      :is-modal-connect-wallet="modalName === WalletModalOption.SelectWallet"
+      :is-modal-connect-wallet="modalName === WalletModalOption.SelectWallet && !currentAccount"
       :set-wallet-modal="setWalletModal"
       :set-close-modal="setCloseModal"
       :connect-ethereum-wallet="connectEthereumWallet"
@@ -69,6 +70,7 @@ import ModalNetwork from 'src/components/header/modals/ModalNetwork.vue';
 import Logo from 'src/components/common/Logo.vue';
 import ModalUpdateWallet from 'src/components/header/modals/ModalUpdateWallet.vue';
 import HeaderComp from './HeaderComp.vue';
+import { WalletModalOption } from 'src/config/wallets';
 
 interface Modal {
   modalNetwork: boolean;
@@ -95,7 +97,6 @@ export default defineComponent({
     });
 
     const {
-      WalletModalOption,
       modalConnectWallet,
       modalName,
       currentAccount,
@@ -109,6 +110,16 @@ export default defineComponent({
       connectEthereumWallet,
       disconnectAccount,
     } = useConnectWallet();
+
+    const clickAccountBtn = () => {
+      changeAccount();
+      stateModal.modalNetwork = false;
+    };
+
+    const clickNetworkBtn = () => {
+      stateModal.modalNetwork = true;
+      modalAccountSelect.value = false;
+    };
 
     const store = useStore();
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
@@ -138,6 +149,8 @@ export default defineComponent({
       modalAccountSelect,
       width,
       screenSize,
+      clickAccountBtn,
+      clickNetworkBtn,
       setCloseModal,
       setWalletModal,
       openSelectModal,
@@ -164,14 +177,5 @@ export default defineComponent({
 .icon {
   width: 127px;
   margin-left: -15px;
-}
-
-.m-header {
-  height: 64px !important;
-  padding-left: 20px !important;
-  padding-right: 16px !important;
-  @media (min-width: 500px) {
-    padding-left: 8px !important;
-  }
 }
 </style>

@@ -2,7 +2,7 @@ import { SupportWallet } from 'src/config/wallets';
 import { $web3 } from 'boot/api';
 import { useStore } from 'src/store';
 import { ref, watchEffect, computed, watch } from 'vue';
-import { GasPrice, fetchEvmGasPrice, SelectedGas, Speed } from 'src/modules/gas-api';
+import { GasPrice, fetchEvmGasPrice, SelectedGas, Speed } from '@astar-network/astar-sdk-core';
 import { GasPriceChangedMessage, TipPriceChangedMessage, IEventAggregator } from 'src/v2/messaging';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';

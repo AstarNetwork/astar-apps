@@ -2,12 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { hexToU8a, isHex, u8aToHex } from '@polkadot/util';
-import { checkSumEvmAddress } from 'src/config/web3/utils/convert';
+import { checkSumEvmAddress } from '@astar-network/astar-sdk-core';
 import { blake2AsU8a, encodeAddress, isEthereumAddress } from '@polkadot/util-crypto';
 import * as ethUtils from 'ethereumjs-util';
 // import * as ethUtils from './ethereumjs-util';
 import { publicKeyConvert } from 'secp256k1';
-import { ASTAR_SS58_FORMAT } from 'src/hooks/helper/plasmUtils';
+import { ASTAR_SS58_FORMAT } from '@astar-network/astar-sdk-core';
 
 /**
  * Converts ECDSA public key into a valid ss58 address for Substrate.

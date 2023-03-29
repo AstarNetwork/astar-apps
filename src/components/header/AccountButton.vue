@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import { useBreakpoints, useWalletIcon } from 'src/hooks';
-import { getShortenAddress } from 'src/hooks/helper/addressUtils';
+import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import { computed, defineComponent, toRefs } from 'vue';
 
 export default defineComponent({

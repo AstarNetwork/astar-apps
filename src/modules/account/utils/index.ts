@@ -1,29 +1,10 @@
 import { updateAccountHistories } from 'src/config/localStorage';
-import { ApiPromise } from '@polkadot/api';
-import { SystemAccount, TxHistory, HistoryTxType } from 'src/modules/account';
-
+import { HistoryTxType, TxHistory } from 'src/modules/account';
+import { getTimestamp } from '@astar-network/astar-sdk-core';
 import { getNetworkName } from 'src/config/chainEndpoints';
 import { getAccountHistories, LOCAL_STORAGE } from 'src/config/localStorage';
-import { getTimestamp } from 'src/hooks/helper/common';
 
 const { TX_HISTORIES, NETWORK_IDX } = LOCAL_STORAGE;
-
-export const fetchNativeBalance = async ({
-  api,
-  address,
-}: {
-  api: ApiPromise;
-  address: string;
-}) => {
-  try {
-    const accountInfo = await api.query.system.account<SystemAccount>(address);
-    const balance = accountInfo.data.free;
-    return balance.toString();
-  } catch (error) {
-    console.error(error);
-    return '0';
-  }
-};
 
 // Memo: store users transaction histories to browser's local-storage
 export const addTxHistories = ({

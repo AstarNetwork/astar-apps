@@ -40,7 +40,7 @@ import { StakingData } from 'src/modules/dapp-staking';
 import { wait } from 'src/v2/common';
 import { defineComponent, PropType, ref } from 'vue';
 import { ethers } from 'ethers';
-import { truncate } from 'src/hooks/helper/common';
+import { truncate } from '@astar-network/astar-sdk-core';
 import { useNetworkInfo } from 'src/hooks';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 export default defineComponent({

@@ -31,7 +31,7 @@ module.exports = configure(function (ctx) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli/boot-files
-    boot: ['i18n', 'api', 'uiLib', 'portalV2'],
+    boot: ['i18n', 'api', 'uiLib', 'portalV2', 'apollo'],
 
     // https://v2.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: ['app.scss', 'base.scss'],
@@ -52,7 +52,7 @@ module.exports = configure(function (ctx) {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
-      vueRouterMode: 'hash', // available values: 'hash', 'history'
+      vueRouterMode: 'history', // available values: 'hash', 'history'
 
       // transpile: false,
 
@@ -156,7 +156,8 @@ module.exports = configure(function (ctx) {
       manifest: {
         name: 'Astar Portal - Astar & Shiden Network',
         short_name: 'Astar Portal',
-        description: 'Your one-stop platform for the Astar ecosystem - Wallet / Staking / Bridging',
+        description:
+          'Astar Portal is the hub of a multi-chain, one-stop platform for managing assets and dApp Staking - build2earn protocol.',
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',

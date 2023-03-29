@@ -50,7 +50,7 @@ import { SelectedToken } from 'src/c-bridge';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { fetchErc20TokenInfo } from 'src/config/web3';
 import { useNetworkInfo } from 'src/hooks';
-import { wait } from 'src/hooks/helper/common';
+import { wait } from '@astar-network/astar-sdk-core';
 import { Erc20Token, storeImportedERC20Token } from 'src/modules/token';
 import { computed, defineComponent, ref, watch } from 'vue';
 import ModalWrapper from 'src/components/common/ModalWrapper.vue';

@@ -12,7 +12,7 @@ export default defineComponent({
   components: { Balance },
   props: {
     balance: {
-      type: Object as PropType<BN> | Object as PropType<string> | undefined,
+      type: Object as PropType<BN> | PropType<string> | undefined,
       required: true,
     },
   },

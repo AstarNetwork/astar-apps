@@ -1,28 +1,8 @@
+import { Community, DappItem } from '@astar-network/astar-sdk-core';
+import { SocialIcon } from '@astar-network/astar-ui';
 import { BN } from '@polkadot/util';
 import { TvlModel } from 'src/v2/models';
-import { DappCombinedInfo, StakerInfo } from 'src/v2/models/DappsStaking';
-
-export type Category = 'defi' | 'gamefi' | 'infra' | 'nft' | 'others';
-
-export interface DappItem extends LooseObject {
-  name: string;
-  iconUrl: string;
-  description: string;
-  descriptionMarkdown: string;
-  url: string;
-  address: string;
-  license: string;
-  videoUrl: string;
-  tags: string[];
-  forumUrl: string;
-  authorContact: string;
-  gitHubUrl: string;
-  imagesUrl: string[];
-  developers: Developer[];
-  communities: Community[];
-  contractType: string;
-  mainCategory: Category;
-}
+import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 
 export interface NewDappItem extends DappItem {
   iconFileName: string;
@@ -38,31 +18,8 @@ export interface EditDappItem extends DappItem {
   images: FileInfo[];
 }
 
-export interface Developer {
-  githubAccountUrl: string;
-  twitterAccountUrl: string;
-  linkedInAccountUrl: string;
-  iconFile: string;
-  name: string;
-}
-
-export enum CommunityType {
-  Twitter = 'Twitter',
-  Reddit = 'Reddit',
-  Facebook = 'Facebook',
-  TikTok = 'TikTok',
-  YouTube = 'YouTube',
-  Instagram = 'Instagram',
-  Discord = 'Discord',
-}
-
-export interface Community {
-  type: CommunityType;
-  handle: string;
-}
-
 export interface CommunityDefinition extends Community {
-  iconUrl: string;
+  iconName: SocialIcon;
   label: string;
   validateHandle?: (v: string) => boolean | string;
 }
@@ -79,10 +36,6 @@ export interface DappStateInterface {
   claimedRewards: number;
   tvl: TvlModel;
   currentEra: number;
-}
-
-export interface LooseObject {
-  [key: string]: any;
 }
 
 export interface FileInfo {

@@ -1,5 +1,5 @@
-import { ASTAR_SS58_FORMAT } from 'src/hooks/helper/plasmUtils';
-import { wait } from 'src/hooks/helper/common';
+import { wait, ASTAR_SS58_FORMAT, checkSumEvmAddress } from '@astar-network/astar-sdk-core';
+import { ETHEREUM_EXTENSION } from 'src/hooks';
 import { useEvmAccount } from 'src/hooks/custom-signature/useEvmAccount';
 import { $api } from 'boot/api';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
@@ -11,7 +11,6 @@ import {
   WalletModalOption,
 } from 'src/config/wallets';
 import { getChainId, setupNetwork } from 'src/config/web3';
-import { checkSumEvmAddress } from 'src/config/web3/utils/convert';
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import * as utils from 'src/hooks/custom-signature/utils';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
@@ -33,7 +32,6 @@ import {
   castMobileSource,
   checkIsWalletExtension,
   getDeepLinkUrl,
-  getInjectedExtensions,
   getSelectedAccount,
   isMobileDevice,
 } from 'src/hooks/helper/wallet';
@@ -202,15 +200,15 @@ export const useConnectWallet = () => {
   };
 
   const requestExtensionsIfFirstAccess = (wallet: SupportWallet): void => {
-    if (localStorage.getItem(SELECTED_ADDRESS) === null) {
+    // Memo: displays accounts menu for users who use the portal first time
+    const isSubstrateWallet = supportWalletObj.hasOwnProperty(wallet);
+    if (localStorage.getItem(SELECTED_ADDRESS) === null && isSubstrateWallet) {
       const { extensions } = useExtensions($api!!, store);
       const { metaExtensions, extensionCount } = useMetaExtensions($api!!, extensions)!!;
       watchPostEffect(async () => {
-        store.commit('general/setMetaExtensions', metaExtensions.value);
-        store.commit('general/setExtensionCount', extensionCount.value);
-        const isSubstrateWallet = supportWalletObj.hasOwnProperty(wallet);
-        // Memo: displays accounts menu for users who use the portal first time
         if (isSubstrateWallet) {
+          store.commit('general/setMetaExtensions', metaExtensions.value);
+          store.commit('general/setExtensionCount', extensionCount.value);
           setWallet(wallet);
         }
       });
@@ -286,7 +284,7 @@ export const useConnectWallet = () => {
     const delay = 3000;
     await wait(delay);
 
-    if (address === 'Ethereum Extension') {
+    if (address === ETHEREUM_EXTENSION) {
       if (!wallet) {
         return;
       }

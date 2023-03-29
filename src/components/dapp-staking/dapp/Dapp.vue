@@ -1,5 +1,5 @@
 <template>
-  <div v-if="dapp" class="container--dapp-staking">
+  <div v-if="dapp && dapp.dapp" class="container--dapp-staking">
     <back-to-page :text="$t('dappStaking.stakePage.backToDappList')" :link="Path.DappStaking" />
     <dapp-avatar :dapp="dapp" />
     <dapp-statistics :dapp="dapp" />
@@ -9,11 +9,10 @@
       <project-overview :dapp="dapp" />
       <project-details :dapp="dapp" />
     </div>
-    <!-- Todo: uncomment when API is ready to get data -->
-    <!-- <dapp-stats-charts :dapp="dapp" /> -->
+    <dapp-stats-charts :dapp="dapp" />
     <div class="bottom--links">
       <router-link :to="buildStakePageLink(dapp.dapp.address)">
-        <astar-irregular-button :height="28" class="btn--stake-switch">
+        <astar-irregular-button :disabled="isH160" :height="28" class="btn--stake-switch">
           {{ $t('dappStaking.dappPage.stakeOrSwitchTo') }} {{ dapp.dapp.name }}
         </astar-irregular-button>
       </router-link>
@@ -35,8 +34,7 @@ import { Path } from 'src/router';
 import { networkParam } from 'src/router/routes';
 import { useStore } from 'src/store';
 import { DappCombinedInfo } from 'src/v2/models';
-import { computed, defineComponent, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { computed, defineComponent } from 'vue';
 import { useRoute } from 'vue-router';
 
 export default defineComponent({
@@ -48,13 +46,12 @@ export default defineComponent({
     ProjectOverview,
     ProjectDetails,
     BackToPage,
-    // DappStatsCharts,
+    DappStatsCharts,
   },
   setup() {
     const route = useRoute();
     useDappRedirect();
     useDispatchGetDapps();
-    const { t } = useI18n();
     const store = useStore();
 
     const { dapps, stakingList } = useStakingList();
@@ -71,6 +68,7 @@ export default defineComponent({
     };
 
     const dapp = computed(() => {
+      console.log('dapps', dapps.value);
       if (dapps.value.length > 0 && dappAddress.value) {
         return dapps.value.find((it: DappCombinedInfo) => {
           try {
@@ -84,21 +82,13 @@ export default defineComponent({
       return null;
     });
 
-    watch([isH160], () => {
-      if (isH160.value) {
-        store.dispatch('general/showAlertMsg', {
-          msg: t('dappStaking.error.onlySupportsSubstrate'),
-          alertType: 'error',
-        });
-      }
-    });
-
     return {
       Path,
       dapp,
       stakingList,
       goLink,
       buildStakePageLink,
+      isH160,
     };
   },
 });
