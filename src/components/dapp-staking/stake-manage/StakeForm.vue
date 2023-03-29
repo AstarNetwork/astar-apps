@@ -197,6 +197,12 @@ export default defineComponent({
         return '';
       }
 
+      if (inputAmount > Number(maxAmount.value)) {
+        return t('warning.insufficientBalance', {
+          token: nativeTokenSymbol.value,
+        });
+      }
+
       if (isNotEnoughMinAmount || maximumAmount.sub(formatInputAmount).lte(leaveAmount.value)) {
         return t('dappStaking.error.notEnoughMinAmount', {
           amount: formattedMinStaking.value,
