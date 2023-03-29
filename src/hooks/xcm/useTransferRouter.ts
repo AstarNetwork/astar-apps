@@ -354,7 +354,7 @@ export function useTransferRouter() {
     return isDisabledXcmChain && isProductionPage;
   });
 
-  // Memo: route to assets page if users open the XCM transfer page by inputting URL directly
+  // Memo: redirect to the assets page if users access to the XCM transfer page by inputting URL directly
   const handleDisableXcmTransfer = (): void => {
     if (isDisableXcmEnvironment.value && mode.value === 'xcm') {
       router.push(Path.Assets);
