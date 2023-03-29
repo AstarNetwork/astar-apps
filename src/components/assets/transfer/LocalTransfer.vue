@@ -114,7 +114,7 @@
           <input id="do-not-send-to-cex" v-model="isChecked" type="checkbox" />
           <label for="do-not-send-to-cex">
             <div class="column--warning">
-              <div v-if="isValidEvmAddress(toAddress)" class="row--warning-title">
+              <div v-if="isNativeToEvm" class="row--warning-title">
                 <div class="icon--warning">
                   <astar-icon-warning size="20" />
                 </div>
@@ -126,7 +126,7 @@
                 </span>
               </div>
               <span
-                v-if="isValidEvmAddress(toAddress)"
+                v-if="isNativeToEvm"
                 :class="isChecked ? 'color--gray1' : 'color--not-checked'"
                 class="text--evm-warning"
               >
@@ -215,6 +215,10 @@ export default defineComponent({
       toMaxAmount,
     } = useTokenTransfer(t);
 
+    const isNativeToEvm = computed<boolean>(
+      () => !isH160.value && isValidEvmAddress(toAddress.value)
+    );
+
     const store = useStore();
     const isEnableSpeedConfiguration = computed<boolean>(() => {
       const currentWallet = store.getters['general/currentWallet'];
@@ -251,6 +255,7 @@ export default defineComponent({
       isH160,
       isRequiredCheck,
       isTransferNativeToken,
+      isNativeToEvm,
       isValidEvmAddress,
       setSelectedGas,
       setSelectedTip,

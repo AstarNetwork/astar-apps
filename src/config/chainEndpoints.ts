@@ -41,6 +41,7 @@ export const providerEndpoints: ChainProvider[] = [
       { name: 'Dwellir', endpoint: 'wss://astar-rpc.dwellir.com' },
       { name: 'Blast', endpoint: 'wss://astar.public.blastapi.io' },
       { name: 'OnFinality', endpoint: 'wss://astar.api.onfinality.io/public-ws' },
+      { name: 'RadiumBlock', endpoint: 'wss://astar.public.curie.radiumblock.co/ws' },
       { name: 'Light Client (experimental)', endpoint: 'light://substrate-connect/polkadot/astar' },
     ],
     isSupportContract: true,

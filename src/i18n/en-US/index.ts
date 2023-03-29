@@ -24,6 +24,8 @@ export default {
   wallet3: 'Wallet 3',
   alert: 'Alert',
   max: 'Max',
+  clear: 'Clear',
+  join: 'Join',
   native: 'Native',
   evm: 'EVM',
   wasm: 'WASM',
@@ -63,6 +65,7 @@ export default {
     unableCalculateMsgPayload: 'Unable to calculate the message payload',
     amountMustNotBeZero: 'The amount of token to be transmitted must not be zero',
     copyAddressSuccessfully: 'Copy address success!',
+    clearedLocalStorage: 'Cleared your local storage! The portal will be reloaded in a few seconds',
     checkYourTransactions: 'Check your transactions',
     success: 'Success',
     note: 'Note',
@@ -113,6 +116,7 @@ export default {
     language: 'Language',
     theme: 'Theme',
     close: 'Close',
+    connectionTrouble: 'Connection Trouble?',
   },
   drawer: {
     endpoint: 'Endpoint',
@@ -417,6 +421,24 @@ export default {
       tipDestAddressFormat: 'Where can I find my {chain} address?',
       titleWithdraw: 'Withdraw {token}',
       titleVesting: 'Vesting info',
+      connectionTroubles: {
+        connectionTroubles: 'Connection Troubles',
+        tipsDescription:
+          'There are many reasons why you are unable to connect. Try below if it did not get sorted ask member of the community.',
+        tryOtherEndpoints: 'Try other endpoints',
+        changeFromHeader: 'Change the endpoint from network button on the header',
+        clearLocalStorage: 'Clear the Local Storage',
+        clearLocalStorageTip: 'This means your cache of the Portal on this browser will be cleared',
+        metaUpdate: 'Metadata Update on Polkadot.js app',
+        metaUpdateTip:
+          'To ensure your wallet extension is up to date, check the Metadata tab and update if prompted.',
+        goToDocs: 'Go to Troubleshoot on Docs',
+        goToDocsTip: 'Any other issues please also go through the docs.',
+        askCommunity: 'Ask our community',
+        askCommunityDiscord: 'Ask our Discord community',
+        askCommunityTip: 'Someone is always there for you.',
+      },
+
       xcmWarning: {
         minBalIsRequired: 'Min. balance is required on origin chain',
         fee: 'Fee is deducted from the amount entered',
