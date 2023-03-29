@@ -170,9 +170,12 @@ export default defineComponent({
 
     const toMaxAmount = (): void => {
       const maximumAmount = ethers.utils.parseEther(maxAmount.value);
-      amount.value = truncate(
+      const rawMaximumAmount = truncate(ethers.utils.formatEther(maximumAmount));
+      const amt = truncate(
         ethers.utils.formatEther(maximumAmount.sub(leaveAmount.value).toString())
-      ).toString();
+      );
+
+      amount.value = String(amt > 0 ? amt : rawMaximumAmount);
     };
 
     const formattedMinStaking = computed<number>(() => {
