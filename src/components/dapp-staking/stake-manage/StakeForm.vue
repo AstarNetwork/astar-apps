@@ -145,18 +145,24 @@ export default defineComponent({
       getTokenImage({ isNativeToken: true, symbol: nativeTokenSymbol.value })
     );
     const { selectedTip, nativeTipPrice, setSelectedTip } = useGasPrice();
+
+    // MEMO: it leave 10ASTR in the account so it will keep the balance for longer period.
+    const leaveAmountNum = computed<number>(() => {
+      return nativeTokenSymbol.value === 'ASTR' ? 10 : 1;
+    });
+
     const warningMinAmtMsg = t('dappStaking.error.warningLeaveMinAmount', {
       symbol: nativeTokenSymbol.value,
+      amount: leaveAmountNum.value,
     });
 
     const inputHandler = (event: any): void => {
       amount.value = event.target.value;
     };
 
-    // MEMO: it leave 10ASTR in the account so it will keep the balance for longer period.
     const leaveAmount = computed<ethers.BigNumber>(() => {
       const isNominationTransfer = props.formattedTransferFrom.isNominationTransfer;
-      return ethers.utils.parseEther(isNominationTransfer ? '0' : '10');
+      return ethers.utils.parseEther(isNominationTransfer ? '0' : String(leaveAmountNum.value));
     });
 
     const maxAmount = computed<string>(() => {
@@ -189,6 +195,7 @@ export default defineComponent({
       const inputAmount = Number(amount.value);
       const stakingAmount = inputAmount + stakedAmount;
       const isNotEnoughMinAmount = formattedMinStaking.value > stakingAmount;
+      const isNominationTransfer = props.formattedTransferFrom.isNominationTransfer;
 
       const formatInputAmount = ethers.utils.parseEther(inputAmount.toString());
       const maximumAmount = ethers.utils.parseEther(maxAmount.value);
@@ -200,6 +207,13 @@ export default defineComponent({
       if (inputAmount > Number(maxAmount.value)) {
         return t('warning.insufficientBalance', {
           token: nativeTokenSymbol.value,
+        });
+      }
+
+      if (!isNominationTransfer && leaveAmountNum.value > Number(maxAmount.value) - inputAmount) {
+        return t('dappStaking.error.warningLeaveMinAmount', {
+          symbol: nativeTokenSymbol.value,
+          amount: leaveAmountNum.value,
         });
       }
 
