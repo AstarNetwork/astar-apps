@@ -15,3 +15,4 @@ export * from './EvmAssetsRepository';
 export * from './xcm/CrustShadowXcmRepository';
 export * from './TokenTransferRepository';
 export * from './xcm/BifrostXcmRepository';
+export * from './xcm/EquilibriumXcmRepository';

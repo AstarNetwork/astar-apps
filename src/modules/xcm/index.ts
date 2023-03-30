@@ -217,6 +217,15 @@ export const xcmChainObj: XcmChainObj = {
     subscan: 'https://bifrost-kusama.subscan.io/',
     isAstarNativeToken: true,
   },
+  [Chain.EQUILIBRIUM]: {
+    name: Chain.EQUILIBRIUM,
+    relayChain: Chain.POLKADOT,
+    img: require('/src/assets/img/EQ.png'),
+    parachainId: parachainIds.EQUILIBRIUM,
+    endpoint: 'wss://node.pol.equilibrium.io/',
+    subscan: 'https://equilibrium.subscan.io/',
+    isAstarNativeToken: true,
+  },
 };
 
 export const xcmChains = objToArray(xcmChainObj);
