@@ -25,6 +25,7 @@ export type TransferMode = 'local' | 'xcm';
 export const astarNetworks = ['astar', 'shiden', 'shibuya'];
 export const astarNativeTokens = ['sdn', 'astr', 'sby'];
 const disabledXcmChain = endpointKey.SHIDEN;
+const disabledXcmParachains: string[] = [Chain.PHALA, Chain.KHALA];
 
 export interface NetworkFromTo {
   from: string;
@@ -348,15 +349,32 @@ export function useTransferRouter() {
     }
   };
 
+  const checkIsDisabledToken = (originChain: string): boolean => {
+    if (!originChain) return false;
+    return !!disabledXcmParachains.find((it) => it === originChain);
+  };
+
   const isDisableXcmEnvironment = computed<boolean>(() => {
     const isProductionPage = window.location.origin === productionOrigin;
     const isDisabledXcmChain = disabledXcmChain === currentNetworkIdx.value;
-    return isDisabledXcmChain && isProductionPage;
+    // return isDisabledXcmChain && isProductionPage;
+
+    const originChain = token.value ? token.value.originChain : '';
+    return checkIsDisabledToken(originChain);
   });
+
+  const checkIsDisabledXcmChain = (from: string, to: string): boolean => {
+    if (!from || !to) return false;
+    const chains = disabledXcmParachains.map((it) => it.toLowerCase());
+    const isDisabled = chains.find((it) => it === from.toLowerCase() || it === to.toLowerCase());
+    // return !!isDisabled ||isDisableXcmEnvironment.value;
+
+    return !!isDisabled;
+  };
 
   // Memo: redirect to the assets page if users access to the XCM transfer page by inputting URL directly
   const handleDisableXcmTransfer = (): void => {
-    if (isDisableXcmEnvironment.value && mode.value === 'xcm') {
+    if (checkIsDisabledXcmChain(from.value, to.value) && mode.value === 'xcm') {
       router.push(Path.Assets);
     }
   };
