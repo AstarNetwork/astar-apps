@@ -23,8 +23,7 @@ export const deepLink = {
   metamask: `https://metamask.app.link/dapp/${window.location.host}/${deepLinkPath.metamask}`,
 };
 
-export const stagingOrigin = 'https://staging.portal.astar.network';
-export const productionOrigin = 'https://portal.astar.network';
+export const stagingMainBranch = 'https://staging.portal.astar.network';
 
 export const polkadotJsUrl = {
   settings: {

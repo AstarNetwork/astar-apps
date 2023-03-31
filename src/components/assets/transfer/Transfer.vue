@@ -125,7 +125,6 @@ export default defineComponent({
       chains,
       tokens,
       isLocalTransfer,
-      isDisableXcmEnvironment,
       setIsLocalTransfer,
       setToken,
       setChain,
@@ -144,9 +143,7 @@ export default defineComponent({
       const isEvmNativeToken =
         isH160.value && tokenSymbol.value === nativeTokenSymbol.value.toLowerCase();
       const isXcmCompatible = token.value?.isXcmCompatible;
-      return (
-        isShibuya.value || isEvmNativeToken || !isXcmCompatible || isDisableXcmEnvironment.value
-      );
+      return isShibuya.value || isEvmNativeToken || !isXcmCompatible;
     });
 
     const isTransferNativeToken = computed<boolean>(() => {
