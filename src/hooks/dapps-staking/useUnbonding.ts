@@ -92,7 +92,7 @@ export function useUnbonding() {
   };
 
   watch(
-    () => unlockingChunksCount.value,
+    () => [unlockingChunksCount.value, selectedAccountAddress.value],
     async (chunks) => {
       // console.log('chunks count changed');
       const era = await $api?.query.dappsStaking.currentEra<u32>();
