@@ -17,11 +17,15 @@ import { computed, ref, watch, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { EvmAssets, XcmAssets } from 'src/store/assets/state';
 import { capitalize } from '@astar-network/astar-sdk-core';
+import { Path } from 'src/router';
+import { productionOrigin } from 'src/links';
 
 export const pathEvm = '-evm';
 export type TransferMode = 'local' | 'xcm';
 export const astarNetworks = ['astar', 'shiden', 'shibuya'];
 export const astarNativeTokens = ['sdn', 'astr', 'sby'];
+const disabledXcmChain = endpointKey.SHIDEN;
+
 export interface NetworkFromTo {
   from: string;
   to: string;
@@ -344,10 +348,24 @@ export function useTransferRouter() {
     }
   };
 
+  const isDisableXcmEnvironment = computed<boolean>(() => {
+    const isProductionPage = window.location.origin === productionOrigin;
+    const isDisabledXcmChain = disabledXcmChain === currentNetworkIdx.value;
+    return isDisabledXcmChain && isProductionPage;
+  });
+
+  // Memo: redirect to the assets page if users access to the XCM transfer page by inputting URL directly
+  const handleDisableXcmTransfer = (): void => {
+    if (isDisableXcmEnvironment.value && mode.value === 'xcm') {
+      router.push(Path.Assets);
+    }
+  };
+
   watchEffect(handleDefaultConfig);
   watchEffect(monitorProhibitedPair);
   watch([currentAccount, isH160, xcmAssets], handleIsFoundToken, { immediate: false });
   watchEffect(setNativeTokenBalance);
+  watchEffect(handleDisableXcmTransfer);
 
   return {
     tokenSymbol,
@@ -364,6 +382,7 @@ export function useTransferRouter() {
     token,
     tokens,
     chains,
+    isDisableXcmEnvironment,
     redirect,
     reverseChain,
     getFromToParams,
