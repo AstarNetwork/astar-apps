@@ -31,7 +31,6 @@ export function useDispatchGetDapps() {
   };
 
   const getDapps = async (): Promise<void> => {
-    if (dapps.value.length > 0) return;
     const isConnectedWallet = currentNetworkName.value && currentAccount.value;
     if (isConnectedWallet) {
       const address = isH160.value || !currentAccount.value ? '' : currentAccount.value;
