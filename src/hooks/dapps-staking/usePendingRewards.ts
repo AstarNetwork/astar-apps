@@ -1,14 +1,10 @@
-import { truncate } from '@astar-network/astar-sdk-core';
 import { ApiPromise } from '@polkadot/api';
 import { Struct } from '@polkadot/types';
 import { Perbill } from '@polkadot/types/interfaces';
 import { $api } from 'boot/api';
 import { ethers } from 'ethers';
 import { useAccount } from 'src/hooks';
-import { useStore } from 'src/store';
-import { DappCombinedInfo } from 'src/v2/models';
-import { computed, watchEffect, Ref } from 'vue';
-import { BN } from '@polkadot/util';
+import { Ref, ref, watchEffect } from 'vue';
 
 interface RewardDistributionConfig extends Struct {
   readonly baseTreasuryPercent: Perbill;
@@ -19,10 +15,18 @@ interface RewardDistributionConfig extends Struct {
   readonly idealDappsStakingTvl: Perbill;
 }
 
+interface StakerInfo {
+  dappAddress: string;
+  stakedTvl: number;
+  era: number;
+  eraTvl: number;
+  stakerRewardsPerEra?: number;
+  pendingRewards?: number;
+}
+
 export const usePendingRewards = (unclaimedEra: Ref<number>) => {
-  const store = useStore();
-  const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
   const { currentAccount } = useAccount();
+  const pendingRewards = ref<number>(0);
 
   const fetchRewardsDistributionConfig = async (
     api: ApiPromise
@@ -40,26 +44,37 @@ export const usePendingRewards = (unclaimedEra: Ref<number>) => {
     return { baseStakerPercent, adjustablePercent, idealDappsStakingTvl };
   };
 
-  const getPendingRewards = async (): Promise<number> => {
-    const dappsRef = dapps.value;
-    const apiRef = $api;
-    const currentAccountRef = currentAccount.value;
-    if (!apiRef || dappsRef.length === 0 || !currentAccountRef || !unclaimedEra.value) {
-      return 0;
+  const generateEraRange = (era: number, currentEra: number): number[] => {
+    const result = [];
+    for (let i = era; i < currentEra; i++) {
+      result.push(i);
     }
+    return result;
+  };
+
+  const getPendingRewards = async (): Promise<number> => {
+    const apiRef = $api;
+    if (!apiRef || !currentAccount.value || !unclaimedEra.value) return 0;
     try {
-      const results = await Promise.all([
+      const stakerInfo: StakerInfo[] = [];
+      const stakedEras: number[] = [];
+      const eraTokenIssuances: { era: number; eraTokenIssuance: number }[] = [];
+
+      const [
+        rawBlockRewards,
+        rewardsDistributionConfig,
+        eraInfo,
+        rawBlockPerEra,
+        generalStakerInfo,
+        blockHeight,
+      ] = await Promise.all([
         apiRef.consts.blockReward.rewardAmount.toString(),
         fetchRewardsDistributionConfig(apiRef),
-        apiRef.query.balances.totalIssuance(),
         apiRef.query.dappsStaking.generalEraInfo.entries(),
         apiRef.consts.dappsStaking.blockPerEra,
-        apiRef.query.dappsStaking.generalStakerInfo.entries(currentAccountRef),
+        apiRef.query.dappsStaking.generalStakerInfo.entries(currentAccount.value),
+        apiRef.query.system.number(),
       ]);
-
-      const eraInfo = results[3];
-      const blocksPerEra = Number(results[4]);
-      const generalStakerInfo = results[5];
 
       const eraTvls = eraInfo
         .map(([key, value]) => {
@@ -75,157 +90,92 @@ export const usePendingRewards = (unclaimedEra: Ref<number>) => {
         })
         .sort((a, b) => a.era - b.era);
 
-      // const totalStaked = eraTvls[eraTvls.length - 1].tvl;
       const currentEra = eraTvls[eraTvls.length - 1].era;
-
-      const rawBlockRewards = results[0];
       const blockRewards = Number(ethers.utils.formatEther(rawBlockRewards));
+      const blocksPerEra = Number(rawBlockPerEra);
       const eraRewards = blocksPerEra * blockRewards;
-
-      interface StakerInfo {
-        dappAddress: string;
-        stakedTvl: number;
-        era: number;
-        pendingRewards: number;
-        stakerRewardsPerEra: number;
-        eraTvl: number;
-        pendingRewardsBn: BN;
-      }
-
-      const stakerInfo: StakerInfo[] = [];
-
-      const stakedEras: number[] = [];
-
-      const generateEraRange = (era: number, currentEra: number): number[] => {
-        const result = [];
-        for (let i = era; i < currentEra; i++) {
-          result.push(i);
-        }
-        return result;
-      };
-
-      console.log('eraTvls', eraTvls);
 
       generalStakerInfo.forEach(([key, value]) => {
         const k = key.toHuman() as any[];
         const v = value.toHuman() as { stakes: { staked: string; era: string }[] };
-        console.log(v);
         const dappAddress = k[1].Evm;
 
         v.stakes.forEach((it) => {
-          const stakedTvl = new BN(Number(ethers.utils.formatEther(it.staked.replace(/,/g, ''))));
+          const stakedTvl = Number(ethers.utils.formatEther(it.staked.replace(/,/g, '')));
           const era = Number(it.era.replace(/,/g, ''));
           const eraRange = generateEraRange(era, currentEra);
-          // console.log('stakedTvl / eraTvl', stakedTvl / eraTvl);
-          // const pendingRewards = (stakedTvl / eraTvl) * stakerRewardsPerEra;
-          // console.log('pendingRewards', pendingRewards);
-          if (era !== currentEra) {
-            eraRange.forEach((e) => {
-              const isPushed = stakerInfo.some(
-                (it) => it.dappAddress === dappAddress && it.era === e
-              );
-              const eraTvl = eraTvls.find((it) => it.era === e)?.tvlStaked || 0;
+          if (era === currentEra) return;
 
-              if (!isPushed) {
-                stakerInfo.push({
-                  dappAddress,
-                  stakedTvl: stakedTvl.toNumber(),
-                  era: e,
-                  eraTvl,
-                  stakerRewardsPerEra: 0,
-                  pendingRewards: 0,
-                  pendingRewardsBn: new BN(0),
-                });
-                stakedEras.push(e);
-              }
+          eraRange.forEach((e) => {
+            const isPushed = stakerInfo.some(
+              (it) => it.dappAddress === dappAddress && it.era === e
+            );
+            if (isPushed) return;
+            const eraTvl = eraTvls.find((it) => it.era === e)?.tvlStaked || 0;
+            stakerInfo.push({
+              dappAddress,
+              stakedTvl,
+              era: e,
+              eraTvl,
             });
-          }
+            stakedEras.push(e);
+          });
         });
       });
 
-      console.log('stakerInfo', stakerInfo);
-      console.log('stakedEras', stakedEras);
+      const block7EraAgo = Number(blockHeight.toJSON()) - blocksPerEra * 7;
+      const [hash, currentIssuance] = await Promise.all([
+        apiRef.rpc.chain.getBlockHash(block7EraAgo > 0 ? block7EraAgo : 1),
+        apiRef.query.balances.totalIssuance(),
+      ]);
+      const block = await apiRef.at(hash);
+      const sevenEraAgoIssuance = await block.query.balances.totalIssuance();
+      const formattedCurrentIssuance = Number(ethers.utils.formatEther(currentIssuance.toString()));
+      const formattedSevenEraAgoIssuance = Number(
+        ethers.utils.formatEther(sevenEraAgoIssuance.toString())
+      );
+      const issueAmountSevenEra = formattedCurrentIssuance - formattedSevenEraAgoIssuance;
+      const issueAmountOneEra = Number((issueAmountSevenEra / 7).toFixed());
 
-      const eraTokenIssuances = await Promise.all(
-        stakedEras.map(async (era) => {
-          const blockHeight = await apiRef.query.system.number();
+      for await (const era of stakedEras) {
+        if (block7EraAgo > 0) {
+          const eraDifferent = currentEra - era;
+          const eraTokenIssuance = formattedCurrentIssuance - issueAmountOneEra * eraDifferent;
+          eraTokenIssuances.push({ era, eraTokenIssuance });
+        } else {
+          // When: fallback for localnode
           const blockEraAgo = Number(blockHeight.toJSON()) - (currentEra - era) * blocksPerEra;
           const hash = await apiRef.rpc.chain.getBlockHash(blockEraAgo);
           const block = await apiRef.at(hash);
           const eraIssuance = await block.query.balances.totalIssuance();
           const formattedIssuance = Number(ethers.utils.formatEther(eraIssuance.toString()));
-          return { era, eraTokenIssuance: formattedIssuance };
-        })
-      );
-
-      console.log('eraTokenIssuances', eraTokenIssuances);
+          eraTokenIssuances.push({ era, eraTokenIssuance: formattedIssuance });
+        }
+      }
 
       const pendingRewards = stakerInfo.map((it) => {
-        // const totalStaked = eraTvls[it.era].tvl;
         const totalStaked = eraTvls[it.era].tvlLocked;
-        const { baseStakerPercent, adjustablePercent, idealDappsStakingTvl } = results[1];
+        const { baseStakerPercent, adjustablePercent, idealDappsStakingTvl } =
+          rewardsDistributionConfig;
         const totalIssuance =
           eraTokenIssuances.find((that) => it.era === that.era)?.eraTokenIssuance || 0;
         const tvlPercentage = totalStaked / totalIssuance;
-        console.log('totalStaked', totalStaked);
-        console.log('totalIssuance', totalIssuance);
         const adjustableStakerPercentage =
           Math.min(1, tvlPercentage / idealDappsStakingTvl) * adjustablePercent;
-        // console.log('tvlPercentage', tvlPercentage);
-        // console.log('idealDappsStakingTvl', idealDappsStakingTvl);
-        console.log('adjustablePercent', adjustablePercent);
 
         const stakerBlockReward = adjustableStakerPercentage + baseStakerPercent;
-        // console.log('adjustableStakerPercentage', adjustableStakerPercentage);
-        // console.log('baseStakerPercent', baseStakerPercent);
-
-        // const stakerBlockReward = 0.538494865780933;
         const stakerRewardsPerEra = eraRewards * stakerBlockReward;
-        // console.log('eraRewards', eraRewards);
-        // console.log('stakerBlockReward', stakerBlockReward);
-        // console.log('stakerRewardsPerEra', stakerRewardsPerEra);
         const pendingRewards = (it.stakedTvl / it.eraTvl) * stakerRewardsPerEra;
-        // console.log('it.stakedTvl', it.stakedTvl);
-        // console.log('it.eraTvl', it.eraTvl);
-
-        // RewardsPerEra * staker's percentage
-        // const eraRewards = 1822176 * 0.538494865780933 // 981232.42054924
-        // 0.5265407512723972
-
-        // User's TVL (Era: 337) / TVL .staked
-        // 658068.626449004181879454/3137916084.265 = 0.00020972
-        // User's % * eraRewardsForStaker
-        // 0.00020972 * 981232.42054924 = 205.78406324
-
-        // 4393.973794866108/15028243.426426124 = 0.0002923811
-        // 0.0002923811 * 6622.482354092249 = 1.9362886754
-        // 1.93628868
-
-        // 658068/3138065994.452513191078838437 = 0.0002097
-        // 0.0002097 * 959084.6868892835=201.12005884
-
-        console.log('pendingRewards', pendingRewards);
 
         return {
           ...it,
           stakerRewardsPerEra,
           pendingRewards,
-          pendingRewardsBn: new BN(0),
         };
       });
 
-      let ttlPendingRewards = 0;
-      pendingRewards.forEach((it) => {
-        ttlPendingRewards = ttlPendingRewards + it.pendingRewards;
-      });
-      // pendingRewards.forEach((it) => {
-      //   ttlPendingRewards = ttlPendingRewards.addn(it.pendingRewards);
-      // });
-      console.log('stakerInfo', stakerInfo);
-      console.log('ttlPendingRewards', ttlPendingRewards);
-      // console.log('ttlPendingRewards ', ttlPendingRewards.toNumber());
-      console.log('ttlPendingRewards truncate', truncate(ttlPendingRewards));
-      return 0;
+      const ttlPendingRewards = pendingRewards.reduce((acc, it) => acc + it.pendingRewards, 0);
+      return ttlPendingRewards;
     } catch (error) {
       console.error(error);
       return 0;
@@ -233,7 +183,7 @@ export const usePendingRewards = (unclaimedEra: Ref<number>) => {
   };
 
   watchEffect(async () => {
-    await getPendingRewards();
+    pendingRewards.value = await getPendingRewards();
   });
-  return {};
+  return { pendingRewards };
 };
