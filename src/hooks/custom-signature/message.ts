@@ -63,6 +63,9 @@ const dispatchClaimMessage = ({
         return;
       }
 
+      console.log('totalClaimedStaker', totalClaimedStaker.claimedAmount);
+      console.log('totalClaimedStaker.formattedAmount', totalClaimedStaker.formattedAmount);
+
       store.commit('dapps/setClaimedRewardsAmount', totalClaimedStaker.claimedAmount);
 
       const msg = t('dappStaking.toast.successfullyClaimed', {

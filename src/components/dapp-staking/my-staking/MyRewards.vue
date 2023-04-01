@@ -97,6 +97,7 @@ import { RewardDestination } from 'src/hooks/dapps-staking/useCompoundRewards';
 import { endpointKey } from 'src/config/chainEndpoints';
 import { defineComponent, computed } from 'vue';
 import { useStore } from 'src/store';
+import { usePendingRewards } from 'src/hooks';
 
 export default defineComponent({
   components: {
@@ -106,6 +107,7 @@ export default defineComponent({
     const { nativeTokenSymbol } = useNetworkInfo();
     const { claimAll, canClaim, amountOfEras, isLoading, canClaimWithoutError } = useClaimAll();
     const { totalStaked, isLoadingTotalStaked } = useStakerInfo();
+    usePendingRewards(amountOfEras);
 
     const changeDestinationForRestaking = async () => {
       const newDestination = isCompounding.value
