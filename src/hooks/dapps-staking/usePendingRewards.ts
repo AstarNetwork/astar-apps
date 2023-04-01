@@ -4,7 +4,7 @@ import { Perbill } from '@polkadot/types/interfaces';
 import { $api } from 'boot/api';
 import { ethers } from 'ethers';
 import { useAccount } from 'src/hooks';
-import { Ref, ref, watchEffect } from 'vue';
+import { Ref, ref, watch } from 'vue';
 
 interface RewardDistributionConfig extends Struct {
   readonly baseTreasuryPercent: Perbill;
@@ -27,6 +27,7 @@ interface StakerInfo {
 export const usePendingRewards = (unclaimedEra: Ref<number>) => {
   const { currentAccount } = useAccount();
   const pendingRewards = ref<number>(0);
+  const isLoadingPendingRewards = ref<boolean>(false);
 
   const fetchRewardsDistributionConfig = async (
     api: ApiPromise
@@ -52,9 +53,13 @@ export const usePendingRewards = (unclaimedEra: Ref<number>) => {
     return result;
   };
 
-  const getPendingRewards = async (): Promise<number> => {
-    const apiRef = $api;
-    if (!apiRef || !currentAccount.value || !unclaimedEra.value) return 0;
+  const getPendingRewards = async ({
+    api,
+    currentAccount,
+  }: {
+    api: ApiPromise;
+    currentAccount: string;
+  }): Promise<number> => {
     try {
       const stakerInfo: StakerInfo[] = [];
       const stakedEras: number[] = [];
@@ -68,12 +73,12 @@ export const usePendingRewards = (unclaimedEra: Ref<number>) => {
         generalStakerInfo,
         blockHeight,
       ] = await Promise.all([
-        apiRef.consts.blockReward.rewardAmount.toString(),
-        fetchRewardsDistributionConfig(apiRef),
-        apiRef.query.dappsStaking.generalEraInfo.entries(),
-        apiRef.consts.dappsStaking.blockPerEra,
-        apiRef.query.dappsStaking.generalStakerInfo.entries(currentAccount.value),
-        apiRef.query.system.number(),
+        api.consts.blockReward.rewardAmount.toString(),
+        fetchRewardsDistributionConfig(api),
+        api.query.dappsStaking.generalEraInfo.entries(),
+        api.consts.dappsStaking.blockPerEra,
+        api.query.dappsStaking.generalStakerInfo.entries(currentAccount),
+        api.query.system.number(),
       ]);
 
       const eraTvls = eraInfo
@@ -111,6 +116,7 @@ export const usePendingRewards = (unclaimedEra: Ref<number>) => {
               (it) => it.dappAddress === dappAddress && it.era === e
             );
             if (isPushed) return;
+
             const eraTvl = eraTvls.find((it) => it.era === e)?.tvlStaked || 0;
             stakerInfo.push({
               dappAddress,
@@ -125,10 +131,10 @@ export const usePendingRewards = (unclaimedEra: Ref<number>) => {
 
       const block7EraAgo = Number(blockHeight.toJSON()) - blocksPerEra * 7;
       const [hash, currentIssuance] = await Promise.all([
-        apiRef.rpc.chain.getBlockHash(block7EraAgo > 0 ? block7EraAgo : 1),
-        apiRef.query.balances.totalIssuance(),
+        api.rpc.chain.getBlockHash(block7EraAgo > 0 ? block7EraAgo : 1),
+        api.query.balances.totalIssuance(),
       ]);
-      const block = await apiRef.at(hash);
+      const block = await api.at(hash);
       const sevenEraAgoIssuance = await block.query.balances.totalIssuance();
       const formattedCurrentIssuance = Number(ethers.utils.formatEther(currentIssuance.toString()));
       const formattedSevenEraAgoIssuance = Number(
@@ -139,14 +145,15 @@ export const usePendingRewards = (unclaimedEra: Ref<number>) => {
 
       for await (const era of stakedEras) {
         if (block7EraAgo > 0) {
+          // Memo: avoid calling API too much (`else` code is calling API too often but more accurate)
           const eraDifferent = currentEra - era;
           const eraTokenIssuance = formattedCurrentIssuance - issueAmountOneEra * eraDifferent;
           eraTokenIssuances.push({ era, eraTokenIssuance });
         } else {
           // When: fallback for localnode
           const blockEraAgo = Number(blockHeight.toJSON()) - (currentEra - era) * blocksPerEra;
-          const hash = await apiRef.rpc.chain.getBlockHash(blockEraAgo);
-          const block = await apiRef.at(hash);
+          const hash = await api.rpc.chain.getBlockHash(blockEraAgo);
+          const block = await api.at(hash);
           const eraIssuance = await block.query.balances.totalIssuance();
           const formattedIssuance = Number(ethers.utils.formatEther(eraIssuance.toString()));
           eraTokenIssuances.push({ era, eraTokenIssuance: formattedIssuance });
@@ -182,8 +189,19 @@ export const usePendingRewards = (unclaimedEra: Ref<number>) => {
     }
   };
 
-  watchEffect(async () => {
-    pendingRewards.value = await getPendingRewards();
-  });
-  return { pendingRewards };
+  watch(
+    [currentAccount, unclaimedEra],
+    async () => {
+      if (!currentAccount.value || !unclaimedEra.value) return;
+      isLoadingPendingRewards.value = true;
+      pendingRewards.value = await getPendingRewards({
+        api: $api!,
+        currentAccount: currentAccount.value,
+      });
+      isLoadingPendingRewards.value = false;
+    },
+    { immediate: false }
+  );
+
+  return { pendingRewards, isLoadingPendingRewards };
 };
