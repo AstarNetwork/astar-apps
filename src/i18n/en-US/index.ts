@@ -186,16 +186,16 @@ export default {
   },
   myReward: {
     totalStaked: 'Total Staked',
-    availableToClaim: 'Available to claim',
+    availableToClaim: 'Estimated Rewards',
     era: 'Era',
     claim: 'Claim',
-    restake: 'Re-Stake after claiming',
+    restake: 'Re-Stake After Claiming',
     turnOff: 'Turn Off',
-    totalEarned: 'Total Earned (all-time)',
+    totalEarned: 'Total Earned (all time)',
     availableToClaimTip:
-      "The amount of pending rewards(estimated) that is shown here is for Staker's. The Number of eras that is shown here is per dApp.",
+      'The amount of unclaimed rewards is estimated and there may be a small difference between what is shown and what you actually receive.',
     availableToClaimTip2:
-      'The maximum number of eras you can claim at once is 50. You may need to claim multiple times if you leave it too long.',
+      'The number of eras that is shown here is per dApp. The maximum number of eras you can claim at once is 50. You may need to claim multiple times if you leave it too long.',
     restakeTip:
       'By turning on, your rewards will be automatically re-staked when you make a claim.',
   },

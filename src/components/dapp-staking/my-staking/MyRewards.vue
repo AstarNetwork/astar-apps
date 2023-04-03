@@ -107,7 +107,7 @@ import { useAccount, useClaimAll, useNetworkInfo, useStakerInfo } from 'src/hook
 import { useClaimedReward } from 'src/hooks/dapps-staking/useClaimedReward';
 import { RewardDestination } from 'src/hooks/dapps-staking/useCompoundRewards';
 import { endpointKey } from 'src/config/chainEndpoints';
-import { defineComponent, computed, watchEffect } from 'vue';
+import { defineComponent, computed } from 'vue';
 import { useStore } from 'src/store';
 import { usePendingRewards } from 'src/hooks';
 import { truncate } from '@astar-network/astar-sdk-core';

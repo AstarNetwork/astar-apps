@@ -40,8 +40,8 @@ interface DistributionConfig {
   idealDappsStakingTvl: number;
 }
 
-export const removeKSeparator = (wei: string): string => {
-  return wei.replace(/,/g, '');
+export const removeKSeparator = (amount: string): string => {
+  return amount.replace(/,/g, '');
 };
 
 export const fmtAmtFromKSeparator = (wei: string): number => {
@@ -155,7 +155,7 @@ const estimateEraTokenIssuances = async ({
 
   for await (const era of stakedEras) {
     if (block7EraAgo > 0) {
-      // Memo: avoid calling API too much (`else` code is calling API too often but more accurate)
+      // Memo: minimize calling API
       const eraDifferent = currentEra - era;
       const eraTokenIssuance = formattedCurrentIssuance - issueAmountOneEra * eraDifferent;
       eraTokenIssuances.push({ era, eraTokenIssuance });
@@ -185,7 +185,7 @@ const formatStakerPendingRewards = ({
   eraRewards: number;
   rewardsDistributionConfig: DistributionConfig;
 }) => {
-  const pendingRewards = stakerInfo.map((it) => {
+  return stakerInfo.map((it) => {
     const totalStaked = eraTvls[it.era].tvlLocked;
     const { baseStakerPercent, adjustablePercent, idealDappsStakingTvl } =
       rewardsDistributionConfig;
@@ -204,7 +204,6 @@ const formatStakerPendingRewards = ({
       pendingRewards,
     };
   });
-  return pendingRewards;
 };
 
 export const getPendingRewards = async ({
@@ -216,19 +215,19 @@ export const getPendingRewards = async ({
 }): Promise<{ stakerPendingRewards: number }> => {
   try {
     const [
-      rawBlockRewards,
-      rewardsDistributionConfig,
       eraInfo,
-      rawBlockPerEra,
       generalStakerInfo,
       blockHeight,
+      rawBlockPerEra,
+      rawBlockRewards,
+      rewardsDistributionConfig,
     ] = await Promise.all([
-      api.consts.blockReward.rewardAmount.toString(),
-      fetchRewardsDistributionConfig(api),
       api.query.dappsStaking.generalEraInfo.entries(),
-      api.consts.dappsStaking.blockPerEra,
       api.query.dappsStaking.generalStakerInfo.entries(currentAccount),
       api.query.system.number(),
+      api.consts.dappsStaking.blockPerEra,
+      api.consts.blockReward.rewardAmount.toString(),
+      fetchRewardsDistributionConfig(api),
     ]);
 
     const eraTvls = formatEraTvls(eraInfo);
