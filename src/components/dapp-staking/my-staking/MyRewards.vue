@@ -144,10 +144,6 @@ export default defineComponent({
       window.open(link, '_blank');
     };
 
-    watchEffect(() => {
-      console.log('pendingRewards', pendingRewards.value);
-    });
-
     return {
       isLoading,
       amountOfEras,
