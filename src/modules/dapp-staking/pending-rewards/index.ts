@@ -155,8 +155,9 @@ const estimateEraTokenIssuances = async ({
   for await (const era of stakedEras) {
     if (block7EraAgo > 0) {
       // Memo: This block is for minimizing API calls
-      const eraDifferent = currentEra - era;
-      const eraTokenIssuance = formattedCurrentIssuance - issueAmountOneEra * eraDifferent;
+      // Assume `eraTokenIssuance` by taking the average of 7 era's amount of the token issuance
+      const eraDifference = currentEra - era;
+      const eraTokenIssuance = formattedCurrentIssuance - issueAmountOneEra * eraDifference;
       eraTokenIssuances.push({ era, eraTokenIssuance });
     } else {
       // When: fallback for localnode
