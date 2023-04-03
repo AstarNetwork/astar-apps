@@ -66,7 +66,7 @@ const formatEraTvls = (eraInfo: [StorageKey<any>, Codec][]): EraTvl[] => {
 
 // Params: era: 332, currentEra: 339
 // Returns:  [332, 333, 334, 335, 336, 337, 338]
-const generateEraRange = (era: number, currentEra: number): number[] => {
+const getClaimableEraRange = (era: number, currentEra: number): number[] => {
   const result = [];
   for (let i = era; i < currentEra; i++) {
     result.push(i);
@@ -94,13 +94,12 @@ const formatGeneralStakerInfo = ({
     v.stakes.forEach((it) => {
       const stakedTvl = fmtAmtFromKSeparator(it.staked);
       const era = Number(removeKSeparator(it.era));
-      const eraRange = generateEraRange(era, currentEra);
+      const eraRange = getClaimableEraRange(era, currentEra);
       if (era === currentEra) return;
 
       eraRange.forEach((e) => {
         const isPushed = stakerInfo.some((it) => it.dappAddress === dappAddress && it.era === e);
         if (isPushed) return;
-
         const eraTvl = eraTvls.find((it) => it.era === e)?.tvlStaked || 0;
         stakerInfo.push({
           dappAddress,
@@ -155,7 +154,7 @@ const estimateEraTokenIssuances = async ({
 
   for await (const era of stakedEras) {
     if (block7EraAgo > 0) {
-      // Memo: minimize calling API
+      // Memo: This block is for minimizing API calls
       const eraDifferent = currentEra - era;
       const eraTokenIssuance = formattedCurrentIssuance - issueAmountOneEra * eraDifferent;
       eraTokenIssuances.push({ era, eraTokenIssuance });
@@ -198,7 +197,6 @@ const formatStakerPendingRewards = ({
     const stakerBlockReward = adjustableStakerPercentage + baseStakerPercent;
     const stakerRewardsPerEra = eraRewards * stakerBlockReward;
     const pendingRewards = (it.stakedTvl / it.eraTvl) * stakerRewardsPerEra;
-
     return {
       ...it,
       pendingRewards,
@@ -262,7 +260,6 @@ export const getPendingRewards = async ({
       (acc, it) => acc + it.pendingRewards,
       0
     );
-
     return { stakerPendingRewards: amtStakerPendingRewards };
   } catch (error) {
     console.error(error);
