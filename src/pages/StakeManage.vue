@@ -20,6 +20,7 @@ export default defineComponent({
 </script>
 <style lang="scss" scoped>
 .stake-top {
+  padding: 0 16px;
   @media (min-width: $lg) {
     margin-top: 50px;
   }
