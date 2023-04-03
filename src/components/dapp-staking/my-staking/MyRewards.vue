@@ -7,7 +7,11 @@
         </div>
         <div class="row--data">
           <div class="value">
-            <q-skeleton v-if="isLoadingTotalStaked" animation="fade" class="skeleton--md" />
+            <q-skeleton
+              v-if="isLoadingTotalStaked || isLoading"
+              animation="fade"
+              class="skeleton--md"
+            />
             <token-balance
               v-else
               :balance="totalStaked"
