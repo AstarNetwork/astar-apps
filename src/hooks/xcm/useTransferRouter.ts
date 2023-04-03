@@ -357,19 +357,15 @@ export function useTransferRouter() {
   const isDisableXcmEnvironment = computed<boolean>(() => {
     const isProductionPage = window.location.origin === productionOrigin;
     const isDisabledXcmChain = disabledXcmChain === currentNetworkIdx.value;
-    // return isDisabledXcmChain && isProductionPage;
-
     const originChain = token.value ? token.value.originChain : '';
-    return checkIsDisabledToken(originChain);
+    return checkIsDisabledToken(originChain) || (isDisabledXcmChain && isProductionPage);
   });
 
   const checkIsDisabledXcmChain = (from: string, to: string): boolean => {
     if (!from || !to) return false;
     const chains = disabledXcmParachains.map((it) => it.toLowerCase());
     const isDisabled = chains.find((it) => it === from.toLowerCase() || it === to.toLowerCase());
-    // return !!isDisabled ||isDisableXcmEnvironment.value;
-
-    return !!isDisabled;
+    return !!isDisabled || isDisableXcmEnvironment.value;
   };
 
   // Memo: redirect to the assets page if users access to the XCM transfer page by inputting URL directly
