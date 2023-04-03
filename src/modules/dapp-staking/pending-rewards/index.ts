@@ -217,23 +217,21 @@ export const getPendingRewards = async ({
       eraInfo,
       generalStakerInfo,
       blockHeight,
-      rawBlockPerEra,
+      blocksPerEra,
       rawBlockRewards,
       rewardsDistributionConfig,
     ] = await Promise.all([
       api.query.dappsStaking.generalEraInfo.entries(),
       api.query.dappsStaking.generalStakerInfo.entries(currentAccount),
       api.query.system.number(),
-      api.consts.dappsStaking.blockPerEra,
-      api.consts.blockReward.rewardAmount.toString(),
+      Number(api.consts.dappsStaking.blockPerEra),
+      String(api.consts.blockReward.rewardAmount),
       fetchRewardsDistributionConfig(api),
     ]);
 
     const eraTvls = formatEraTvls(eraInfo);
     const currentEra = eraTvls[eraTvls.length - 1].era;
     const blockRewards = Number(ethers.utils.formatEther(rawBlockRewards));
-    const blocksPerEra = Number(rawBlockPerEra);
-    const eraRewards = blocksPerEra * blockRewards;
 
     const { stakerInfo, stakedEras } = formatGeneralStakerInfo({
       eraTvls,
@@ -253,7 +251,7 @@ export const getPendingRewards = async ({
       stakerInfo,
       eraTvls,
       eraTokenIssuances,
-      eraRewards,
+      eraRewards: blocksPerEra * blockRewards,
       rewardsDistributionConfig,
     });
 
