@@ -123,7 +123,6 @@ export default defineComponent({
   gap: 12px;
 
   @media (max-width: $widthCardLineUp) {
-    // display: flex;
     display: grid;
     grid-template-rows: auto auto;
     grid-auto-flow: column;
