@@ -48,13 +48,15 @@ export function useAppRouter() {
       networkIdxStore === undefined ||
       storedNetworkAlias !== networkParam;
     if (isReload) {
+      // Memo: `defaultCurrency` and `selectedEndpoint` are updated when the app connects to the API
+      const isFirstTimeVisitor = localStorage.length === 2;
       localStorage.setItem(
         SELECTED_ENDPOINT,
         JSON.stringify({ [endpointIdx]: selectedChain.endpoints[0].endpoint })
       );
       localStorage.setItem(NETWORK_IDX, endpointIdx);
       if (network.value === networkParam) {
-        window.location.reload();
+        !isFirstTimeVisitor && window.location.reload();
       } else {
         const redirectNetwork =
           network.value.toLowerCase() === 'shibuya' ? endpointKey.SHIBUYA : endpointKey.ASTAR;
