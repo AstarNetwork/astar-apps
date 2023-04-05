@@ -56,6 +56,8 @@ export function useAppRouter() {
       );
       localStorage.setItem(NETWORK_IDX, endpointIdx);
       if (network.value === networkParam) {
+        // Memo: Avoid loading the portal for browsers visiting the portal for the first time.
+        // Reload when users input the networks on the address bar manually.
         !isFirstTimeVisitor && window.location.reload();
       } else {
         const redirectNetwork =
