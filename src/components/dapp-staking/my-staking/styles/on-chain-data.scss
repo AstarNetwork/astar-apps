@@ -1,5 +1,13 @@
 @import 'src/css/quasar.variables.scss';
 
+.wrapper--onchain-data {
+  padding: 0 16px;
+
+  @media (min-width: $md) {
+    padding: 0;
+  }
+}
+
 .box--data {
   background: linear-gradient(
     93.75deg,

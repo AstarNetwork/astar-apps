@@ -15,9 +15,11 @@
 }
 
 .news-area {
+  padding: 0 16px;
   margin-bottom: 40px;
 
   @media (min-width: $md) {
+    padding: 0;
     margin-bottom: 0px;
   }
 }

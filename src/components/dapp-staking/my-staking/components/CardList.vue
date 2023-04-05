@@ -131,6 +131,7 @@ export default defineComponent({
     overflow-x: auto;
     overflow-y: hidden;
     justify-content: left;
+    padding: 10px 0px 10px 10px;
     &::-webkit-scrollbar {
       display: none;
     }
@@ -237,7 +238,7 @@ export default defineComponent({
   }
   @media (max-width: $widthCardLineUp) {
     @include hover;
-    box-shadow: 0px 0px 24px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 0px 8px 0px #0000001a;
   }
 }
 
