@@ -123,12 +123,15 @@ export default defineComponent({
   gap: 12px;
 
   @media (max-width: $widthCardLineUp) {
-    display: flex;
+    display: grid;
+    grid-template-rows: auto auto;
+    grid-auto-flow: column;
     width: 100%;
     flex-wrap: nowrap;
     overflow-x: auto;
     overflow-y: hidden;
     justify-content: left;
+    padding: 10px 0px 10px 10px;
     &::-webkit-scrollbar {
       display: none;
     }
@@ -235,7 +238,7 @@ export default defineComponent({
   }
   @media (max-width: $widthCardLineUp) {
     @include hover;
-    box-shadow: 0px 0px 12px 0px rgba(164, 162, 162, 0.1);
+    box-shadow: 0px 0px 8px 0px #0000001a;
   }
 }
 
