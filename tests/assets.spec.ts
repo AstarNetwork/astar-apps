@@ -4,6 +4,11 @@ test.beforeEach(async ({ page }) => {
   await page.goto('/astar/assets');
 });
 
-test.describe('init screen', () => {
-  //@TODO
+test('should wallet is opened', async ({ page }) => {
+  const walletWrapper = page.getByText('Select a Wallet');
+  await expect(walletWrapper).toBeVisible();
 });
+
+// test.describe('init screen', () => {
+//   //@TODO
+// });
