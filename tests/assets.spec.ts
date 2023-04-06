@@ -12,9 +12,13 @@ test.beforeEach(async ({ page, context }) => {
   const extensionAcceptButton2 = extensionWindow.getByText('Yes, allow this application access');
   await extensionAcceptButton2.click();
 
-  // Create test Polkadot account.
+  // Creates a new account with a random seed.
   await page.goto('chrome-extension://mopnmbcafieddcagagdcbnhejhlodfdd/index.html#/account/create');
-  await page.locator('label').filter({ hasText: 'I have saved my mnemonic seed safely.' }).locator('span').click();
+  await page
+    .locator('label')
+    .filter({ hasText: 'I have saved my mnemonic seed safely.' })
+    .locator('span')
+    .click();
   await page.getByRole('button', { name: 'Next step' }).click();
   await page.locator('input[type="text"]').fill('Test');
   await page.locator('input[type="password"]').click();
@@ -29,23 +33,46 @@ test.beforeEach(async ({ page, context }) => {
   await page.getByText('Polkadot.js').click();
   await page.getByText('Test (extension)').click();
   await page.getByRole('button', { name: 'Connect', exact: true }).click();
+
+  // Close popups
+  await page.getByRole('button', { name: 'Accept' }).click();
 });
 
-test.describe('wallet info', () => {
+test.describe('account panel', () => {
   test('should copy wallet address', async ({ page }) => {
-    const copyAddressButton = page.locator('.column_icons:first-child');
-    await copyAddressButton.click();
-    await expect(page).toContain('Copied!');
+    await page.locator('#copyAddress').click();
+    await expect(page.locator('.noti-content')).toBeVisible();
+  });
+
+  test('token folded info is visible until closed', async ({ page }) => {
+    const baloonNativeToken = await page
+      .getByText('NEW cancel All utilities for ASTR token are now folded - open up here!')
+      .first();
+    expect(baloonNativeToken).toBeVisible();
+    await page.getByRole('button', { name: 'cancel' }).click();
+    await expect(baloonNativeToken).not.toBeVisible();
+  });
+
+  test('account expander works', async ({ page }) => {
+    await page.locator('.icon--expand').first().click();
+    const transferButton = page.locator('#asset-expand').getByRole('button', { name: 'Transfer' });
+    await expect(transferButton).toBeVisible();
+
+    await page.locator('.icon--expand').first().click();
+    await expect(transferButton).not.toBeVisible();
   });
 });
 
 const getWindow = async (title: string, context: BrowserContext): Promise<Page> => {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     context.on('page', async (target) => {
       const pageTitle = await target.title();
       if (pageTitle === title) {
         resolve(target);
       }
     });
+    setTimeout(() => {
+      reject(`${title} window not found}`);
+    }, 30000);
   });
 };

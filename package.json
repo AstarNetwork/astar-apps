@@ -18,7 +18,8 @@
     "deploy": "push-dir --dir=dist/spa --remote=gh-pages --branch=main",
     "start": "node server.js",
     "heroku-postbuild": "yarn install && yarn build",
-    "heroku-deploy": "git push heroku main"
+    "heroku-deploy": "git push heroku main",
+    "playwright:codegen": "npx playwright codegen http://localhost:8080"
   },
   "dependencies": {
     "@astar-network/astar-sdk-core": "^0.1.16",
