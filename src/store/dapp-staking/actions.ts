@@ -96,7 +96,6 @@ const actions: ActionTree<State, StateInterface> = {
         axios.get<DappItem[]>(dappsUrl),
         service.getCombinedInfo(currentAccount),
       ]);
-      console.log('dapps', dapps);
 
       // Update combined info with dapp info
       combinedInfo.map((i) => {
