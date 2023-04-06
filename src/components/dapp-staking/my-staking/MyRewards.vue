@@ -43,7 +43,7 @@
           <div v-else class="value value--claim">
             <div>
               <span class="text--rewards-amount">
-                {{ truncate(pendingRewards, pendingRewards > 1 ? 0 : 1) }} {{ nativeTokenSymbol }}
+                {{ pendingRewards }} {{ nativeTokenSymbol }}
               </span>
             </div>
             <span class="text--eras">
@@ -111,10 +111,10 @@ import { useAccount, useClaimAll, useNetworkInfo, useStakerInfo } from 'src/hook
 import { useClaimedReward } from 'src/hooks/dapps-staking/useClaimedReward';
 import { RewardDestination } from 'src/hooks/dapps-staking/useCompoundRewards';
 import { endpointKey } from 'src/config/chainEndpoints';
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, ref, watch } from 'vue';
 import { useStore } from 'src/store';
-import { usePendingRewards } from 'src/hooks';
-import { truncate } from '@astar-network/astar-sdk-core';
+import { $api } from 'src/boot/api';
+import { getPendingRewards } from '@astar-network/astar-sdk-core';
 
 export default defineComponent({
   components: {
@@ -124,7 +124,9 @@ export default defineComponent({
     const { nativeTokenSymbol } = useNetworkInfo();
     const { claimAll, canClaim, amountOfEras, isLoading, canClaimWithoutError } = useClaimAll();
     const { totalStaked, isLoadingTotalStaked } = useStakerInfo();
-    const { pendingRewards, isLoadingPendingRewards } = usePendingRewards(amountOfEras);
+
+    const pendingRewards = ref<number>(0);
+    const isLoadingPendingRewards = ref<boolean>(false);
 
     const changeDestinationForRestaking = async () => {
       const newDestination = isCompounding.value
@@ -148,6 +150,22 @@ export default defineComponent({
       window.open(link, '_blank');
     };
 
+    const setPendingRewards = async (): Promise<void> => {
+      if (!currentAccount.value || !amountOfEras.value) {
+        pendingRewards.value = 0;
+        return;
+      }
+      isLoadingPendingRewards.value = true;
+      const { stakerPendingRewards } = await getPendingRewards({
+        api: $api!,
+        currentAccount: currentAccount.value,
+      });
+      pendingRewards.value = stakerPendingRewards;
+      isLoadingPendingRewards.value = false;
+    };
+
+    watch([currentAccount, amountOfEras], setPendingRewards, { immediate: false });
+
     return {
       isLoading,
       amountOfEras,
@@ -165,7 +183,6 @@ export default defineComponent({
       isH160,
       pendingRewards,
       isLoadingPendingRewards,
-      truncate,
     };
   },
 });
