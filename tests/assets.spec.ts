@@ -1,5 +1,5 @@
 import { expect, BrowserContext, Page } from '@playwright/test';
-import { test } from '../tests-examples/fixtures';
+import { test } from './fixtures';
 
 test.beforeEach(async ({ page, context }) => {
   await page.goto('/astar/assets');
