@@ -7,13 +7,20 @@ export const test = base.extend<{
 }>({
   context: async ({}, use) => {
     const pathToExtension = path.join(__dirname, 'polkadot_wallet');
+    const args = [
+      `--disable-extensions-except=${pathToExtension}`,
+      `--load-extension=${pathToExtension}`,
+    ];
+
+    if (process.env.HEADLESS) {
+      args.push(`--headless=new`,);
+    }
+
     const context = await chromium.launchPersistentContext('', {
       headless: false,
-      args: [
-        `--disable-extensions-except=${pathToExtension}`,
-        `--load-extension=${pathToExtension}`,
-      ],
+      args,
     });
+
     await use(context);
     await context.close();
   },
@@ -44,7 +51,7 @@ export const getWindow = async (title: string, context: BrowserContext): Promise
       }
     });
     setTimeout(() => {
-      reject(`${title} window not found}`);
-    }, 30000);
+      reject(`${title} window not found.`);
+    }, 10000);
   });
 };
