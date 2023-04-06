@@ -76,3 +76,11 @@ const getWindow = async (title: string, context: BrowserContext): Promise<Page> 
     }, 30000);
   });
 };
+// test('should wallet is opened', async ({ page }) => {
+//   const walletWrapper = page.getByText('Select a Wallet');
+//   await expect(walletWrapper).toBeVisible();
+// });
+
+// test.describe('init screen', () => {
+//   //@TODO
+// });
