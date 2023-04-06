@@ -1,4 +1,4 @@
-import { test as base, chromium, BrowserContext } from '@playwright/test';
+import { test as base, chromium, BrowserContext, Page } from '@playwright/test';
 import path from 'path';
 
 export const test = base.extend<{
@@ -34,3 +34,17 @@ export const test = base.extend<{
   },
 });
 export const expect = test.expect;
+
+export const getWindow = async (title: string, context: BrowserContext): Promise<Page> => {
+  return new Promise((resolve, reject) => {
+    context.on('page', async (target) => {
+      const pageTitle = await target.title();
+      if (pageTitle === title) {
+        resolve(target);
+      }
+    });
+    setTimeout(() => {
+      reject(`${title} window not found}`);
+    }, 30000);
+  });
+};

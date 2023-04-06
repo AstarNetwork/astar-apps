@@ -1,5 +1,5 @@
-import { expect, BrowserContext, Page } from '@playwright/test';
-import { test } from './fixtures';
+import { expect } from '@playwright/test';
+import { test, getWindow } from './fixtures';
 
 test.beforeEach(async ({ page, context }) => {
   await page.goto('/astar/assets');
@@ -62,25 +62,3 @@ test.describe('account panel', () => {
     await expect(transferButton).not.toBeVisible();
   });
 });
-
-const getWindow = async (title: string, context: BrowserContext): Promise<Page> => {
-  return new Promise((resolve, reject) => {
-    context.on('page', async (target) => {
-      const pageTitle = await target.title();
-      if (pageTitle === title) {
-        resolve(target);
-      }
-    });
-    setTimeout(() => {
-      reject(`${title} window not found}`);
-    }, 30000);
-  });
-};
-// test('should wallet is opened', async ({ page }) => {
-//   const walletWrapper = page.getByText('Select a Wallet');
-//   await expect(walletWrapper).toBeVisible();
-// });
-
-// test.describe('init screen', () => {
-//   //@TODO
-// });
