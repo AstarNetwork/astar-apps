@@ -1,4 +1,5 @@
-import { test, expect, Page } from '@playwright/test';
+import { test, expect } from '@playwright/test';
+import { checkPolicyInLocalStorage, checkInjectedWeb3 } from 'src/modules/playwright';
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/astar/dapp-staking/discover');
@@ -23,6 +24,7 @@ test.describe('init screen', () => {
       .getByRole('link', { name: 'privacy policy page.' });
     await expect(privatePolicy).toBeVisible();
   });
+
   test('should hide the private policy after accept the policy', async ({ page }) => {
     await checkPolicyInLocalStorage(page);
 
@@ -33,9 +35,11 @@ test.describe('init screen', () => {
     await page.click('button:has-text("Accept")');
     await expect(privatePolicy).not.toBeVisible();
   });
+
   test('should display the connect button', async ({ page }) => {
     await expect(page.getByRole('button', { name: 'box icon Connect' })).toBeVisible();
   });
+
   test('should display the Astar Network button', async ({ page }) => {
     await expect(page.getByRole('button', { name: 'Astar Network' })).toBeVisible();
   });
@@ -49,6 +53,10 @@ test.describe('init screen', () => {
 });
 
 test.describe('on dapp staking screen', () => {
+  test('has title', async ({ page }) => {
+    await expect(page).toHaveTitle(/Discover dApps/);
+  });
+
   test('should clickable the banner after loading is complete', async ({ page }) => {
     const closeButton = page.getByText('×');
     await closeButton.click();
@@ -92,17 +100,3 @@ test.describe('on dapp staking screen', () => {
 //     );
 //   });
 // });
-
-async function checkPolicyInLocalStorage(page: Page) {
-  return await page.waitForFunction((e) => {
-    return localStorage['confirmCookiePolicy'] === e;
-  }, undefined);
-}
-
-async function checkInjectedWeb3(page: Page) {
-  return await page.waitForFunction((e) => {
-    const wallets = Object.keys(window.injectedWeb3);
-    const isInstalledExtension = wallets.find((it) => 'polkadot-js' === it);
-    return isInstalledExtension === undefined;
-  }, undefined);
-}
