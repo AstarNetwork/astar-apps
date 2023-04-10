@@ -1,4 +1,5 @@
-import { test, expect, Page } from '@playwright/test';
+import { test, expect } from '@playwright/test';
+import { checkPolicyInLocalStorage, checkInjectedWeb3 } from 'src/modules/playwright';
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/astar/dapp-staking/discover');
@@ -57,7 +58,6 @@ test.describe('on dapp staking screen', () => {
     await page.waitForSelector('.loader', { state: 'hidden' });
     await bannerCard.click();
   });
-
   test('should redirect to dapp page when click the dapp card', async ({ page }) => {
     const closeButton = page.getByText('×');
     await closeButton.click();
@@ -67,7 +67,6 @@ test.describe('on dapp staking screen', () => {
     await dappCard.click();
     await page.waitForURL('**/astar/dapp-staking/dapp?dapp=*');
   });
-
   test('should display staking button when over the dapp card', async ({ page }) => {
     const closeButton = page.getByText('×');
     await closeButton.click();
@@ -92,17 +91,3 @@ test.describe('on dapp staking screen', () => {
 //     );
 //   });
 // });
-
-async function checkPolicyInLocalStorage(page: Page) {
-  return await page.waitForFunction((e) => {
-    return localStorage['confirmCookiePolicy'] === e;
-  }, undefined);
-}
-
-async function checkInjectedWeb3(page: Page) {
-  return await page.waitForFunction((e) => {
-    const wallets = Object.keys(window.injectedWeb3);
-    const isInstalledExtension = wallets.find((it) => 'polkadot-js' === it);
-    return isInstalledExtension === undefined;
-  }, undefined);
-}
