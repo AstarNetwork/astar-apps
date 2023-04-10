@@ -13,6 +13,7 @@ test.describe('init screen', () => {
     const connectionTroubleModal = page.locator('.wrapper--modal-connection-trouble');
     await expect(connectionTroubleModal).toBeVisible();
   });
+
   test('click the dapp staking page', async ({ page }) => {
     const dappStakingButton = page.locator('a:has-text("dApp Staking")');
     await dappStakingButton.click();

@@ -24,6 +24,7 @@ test.describe('init screen', () => {
       .getByRole('link', { name: 'privacy policy page.' });
     await expect(privatePolicy).toBeVisible();
   });
+
   test('should hide the private policy after accept the policy', async ({ page }) => {
     await checkPolicyInLocalStorage(page);
 
@@ -34,9 +35,11 @@ test.describe('init screen', () => {
     await page.click('button:has-text("Accept")');
     await expect(privatePolicy).not.toBeVisible();
   });
+
   test('should display the connect button', async ({ page }) => {
     await expect(page.getByRole('button', { name: 'box icon Connect' })).toBeVisible();
   });
+
   test('should display the Astar Network button', async ({ page }) => {
     await expect(page.getByRole('button', { name: 'Astar Network' })).toBeVisible();
   });
@@ -53,6 +56,7 @@ test.describe('on dapp staking screen', () => {
   test('has title', async ({ page }) => {
     await expect(page).toHaveTitle(/Discover dApps/);
   });
+
   test('should clickable the banner after loading is complete', async ({ page }) => {
     const closeButton = page.getByText('×');
     await closeButton.click();
@@ -61,6 +65,7 @@ test.describe('on dapp staking screen', () => {
     await page.waitForSelector('.loader', { state: 'hidden' });
     await bannerCard.click();
   });
+
   test('should redirect to dapp page when click the dapp card', async ({ page }) => {
     const closeButton = page.getByText('×');
     await closeButton.click();
@@ -70,6 +75,7 @@ test.describe('on dapp staking screen', () => {
     await dappCard.click();
     await page.waitForURL('**/astar/dapp-staking/dapp?dapp=*');
   });
+
   test('should display staking button when over the dapp card', async ({ page }) => {
     const closeButton = page.getByText('×');
     await closeButton.click();
