@@ -2,12 +2,7 @@
 # https://github.com/firebase/firebase-tools
 
 name: Deploy to Release hotfix
-on: 
-  workflow_dispatch:
-
-  push:
-    branches:
-      - release-hotfix
+on: workflow_dispatch
 
 env:
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
