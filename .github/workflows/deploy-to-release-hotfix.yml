@@ -5,6 +5,10 @@ name: Deploy to Release hotfix
 on: 
   workflow_dispatch:
 
+  push:
+    branches:
+      - release-hotfix
+
 env:
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
