@@ -50,6 +50,9 @@ test.describe('init screen', () => {
 });
 
 test.describe('on dapp staking screen', () => {
+  test('has title', async ({ page }) => {
+    await expect(page).toHaveTitle(/Discover dApps/);
+  });
   test('should clickable the banner after loading is complete', async ({ page }) => {
     const closeButton = page.getByText('×');
     await closeButton.click();
