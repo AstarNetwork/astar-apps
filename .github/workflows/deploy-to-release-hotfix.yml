@@ -7,10 +7,6 @@ on:
     branches: 
       - release-hotfix
 
-  push:
-    branches:
-      - release-hotfix
-
 env:
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
