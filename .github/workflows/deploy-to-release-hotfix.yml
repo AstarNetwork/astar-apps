@@ -4,10 +4,8 @@
 name: Deploy to Release hotfix
 on: 
   workflow_dispatch:
-    inputs:
-      release_notes:
-        description: 'Notes'
-        default: 'Astar Portal - hotfix'
+    branches: 
+      - release-hotfix
 
 env:
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
