@@ -35,7 +35,7 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Run Playwright tests
-        run: BASE_URL='${{needs.build_and_preview.outputs.output1}}' npx playwright test --project=chromium
+        run: BASE_URL='${{needs.build_and_preview.outputs.output1}}' HEADLESS='true' npx playwright test --project=chromium
       - uses: actions/upload-artifact@v3
         if: always()
         with:
