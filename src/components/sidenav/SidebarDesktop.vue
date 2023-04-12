@@ -78,7 +78,7 @@
       <div>
         <a :class="['link']" href="https://astar.network/community/ecosystem/" target="_blank">
           <astar-icon-base
-            :class="['iconAdd', isShiden ? 'shiden' : '']"
+            :class="['icon-add', isShiden ? 'shiden' : '']"
             stroke="currentColor"
             icon-name="staking"
           >
