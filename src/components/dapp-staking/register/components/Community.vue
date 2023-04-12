@@ -118,7 +118,6 @@ export default defineComponent({
     ]);
 
     const updateCommunities = (communities: Community[]): void => {
-      console.log(communities);
       data.communities = communities;
       handleModalAddCommunity({ isOpen: false });
     };

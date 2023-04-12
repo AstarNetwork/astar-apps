@@ -1,3 +1,4 @@
+import { AlertMsg } from 'src/modules/toast';
 import { BN } from '@polkadot/util';
 import { ethers } from 'ethers';
 import { inject, injectable } from 'inversify';
@@ -49,6 +50,7 @@ export class XcmService implements IXcmService {
     recipientAddress,
     amount,
     finalizedCallback,
+    successMessage,
   }: TransferParam): Promise<void> {
     Guard.ThrowIfUndefined('recipientAddress', recipientAddress);
     Guard.ThrowIfNegative('amount', amount);
@@ -75,7 +77,7 @@ export class XcmService implements IXcmService {
       });
       finalizedCallback && (await finalizedCallback(hash));
       this.eventAggregator.publish(
-        new ExtrinsicStatusMessage(true, `Completed at transaction hash ${hash}`)
+        new ExtrinsicStatusMessage(true, `${AlertMsg.COMPLETED_HASH} ${hash}`)
       );
       this.eventAggregator.publish(new BusyMessage(false));
       return;
@@ -107,12 +109,13 @@ export class XcmService implements IXcmService {
     }
 
     if (call) {
-      const hash = await this.wallet.signAndSend(
-        call,
+      const hash = await this.wallet.signAndSend({
+        extrinsic: call,
         senderAddress,
-        `You successfully transferred ${amount} ${token.metadata.symbol} to ${recipientAddress}`,
-        tip
-      );
+        successMessage,
+        transactionTip: tip,
+        subscan: from.subscan,
+      });
       this.eventAggregator.publish(new BusyMessage(true));
       finalizedCallback && hash && (await finalizedCallback(hash));
       this.eventAggregator.publish(new BusyMessage(false));

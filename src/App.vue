@@ -82,6 +82,7 @@ export default defineComponent({
         {
           msg: message.message,
           alertType: message.success ? 'success' : 'error',
+          subscanUrl: message.subscanUrl || '',
         },
         { root: true }
       );

@@ -3,6 +3,6 @@ export class ExtrinsicStatusMessage {
     public success: boolean,
     public message: string = '',
     public method: string = '',
-    hash: string = ''
+    public subscanUrl: string = ''
   ) {}
 }

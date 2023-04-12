@@ -9,6 +9,7 @@ export interface AssetTransferParam {
   receivingAddress: string;
   amount: string;
   finalizedCallback: (hash: string) => void;
+  successMessage: string;
 }
 
 export interface EvmTransferParam {

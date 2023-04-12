@@ -3,11 +3,11 @@ import { StateInterface } from '../index';
 import { AlertBox, GeneralStateInterface as State } from './state';
 
 const actions: ActionTree<State, StateInterface> = {
-  showAlertMsg({ commit }, { msg, alertType, txHash }) {
+  showAlertMsg({ commit }, { msg, alertType, subscanUrl }) {
     const alert: AlertBox = {
       alertMsg: msg,
       alertType,
-      txHash,
+      subscanUrl,
     };
     commit('pushAlertMsg', alert);
 

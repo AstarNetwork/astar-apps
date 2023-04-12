@@ -10,7 +10,12 @@ import {
   useNetworkInfo,
   useTransferRouter,
 } from 'src/hooks';
-import { capitalize, isValidEvmAddress, toSS58Address } from '@astar-network/astar-sdk-core';
+import {
+  capitalize,
+  getShortenAddress,
+  isValidEvmAddress,
+  toSS58Address,
+} from '@astar-network/astar-sdk-core';
 import {
   ASTAR_DECIMALS,
   ASTAR_SS58_FORMAT,
@@ -184,7 +189,8 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
   };
 
   const checkIsEnoughMinBal = (amount: number): boolean => {
-    const originChainMinBal = selectedToken.value && selectedToken.value.minBridgeAmount;
+    if (!selectedToken.value) return false;
+    const originChainMinBal = Number(selectedToken.value.minBridgeAmount);
     return fromAddressBalance.value - amount > (originChainMinBal || 0);
   };
 
@@ -380,6 +386,13 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
         ? inputtedAddress.value
         : currentAccount.value;
 
+      const successMessage = t('assets.toast.completedBridgeMessage', {
+        symbol: selectedToken.value.metadata.symbol,
+        transferAmt: amount.value,
+        fromChain: srcChain.value.name,
+        toChain: destChain.value.name,
+      });
+
       await xcmService.transfer({
         from: srcChain.value,
         to: destChain.value,
@@ -388,6 +401,7 @@ export function useXcmBridge(selectedToken: Ref<Asset>) {
         recipientAddress,
         amount: Number(amount.value),
         finalizedCallback,
+        successMessage,
       });
     } catch (error: any) {
       console.error(error.message);

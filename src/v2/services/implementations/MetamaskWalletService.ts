@@ -1,15 +1,14 @@
-import { SubmittableExtrinsic } from '@polkadot/api-base/types';
-import { ISubmittableResult } from '@polkadot/types/types';
-import { IWalletService } from 'src/v2/services';
-import { EthereumProvider } from 'src/hooks/types/CustomSignature';
 import { inject, injectable } from 'inversify';
-import { IEthCallRepository, ISystemRepository } from 'src/v2/repositories';
-import { Guard } from 'src/v2/common';
-import { WalletService } from 'src/v2/services/implementations';
-import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
-import Web3 from 'web3';
-import { Symbols } from 'src/v2/symbols';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
+import { EthereumProvider } from 'src/hooks/types/CustomSignature';
+import { AlertMsg } from 'src/modules/toast';
+import { Guard } from 'src/v2/common';
+import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
+import { IEthCallRepository, ISystemRepository } from 'src/v2/repositories';
+import { IWalletService, ParamSignAndSend } from 'src/v2/services';
+import { WalletService } from 'src/v2/services/implementations';
+import { Symbols } from 'src/v2/symbols';
+import Web3 from 'web3';
 
 @injectable()
 export class MetamaskWalletService extends WalletService implements IWalletService {
@@ -32,13 +31,13 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
     }
   }
 
-  public async signAndSend(
-    extrinsic: SubmittableExtrinsic<'promise', ISubmittableResult>,
-    senderAddress: string,
-    successMessage?: string,
-    transactionTip?: number,
-    finalizedCallback?: (result?: ISubmittableResult) => void
-  ): Promise<string | null> {
+  public async signAndSend({
+    extrinsic,
+    senderAddress,
+    successMessage,
+    transactionTip,
+    finalizedCallback,
+  }: ParamSignAndSend): Promise<string | null> {
     Guard.ThrowIfUndefined('extrinsic', extrinsic);
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
 
@@ -69,7 +68,7 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
                 this.eventAggregator.publish(
                   new ExtrinsicStatusMessage(
                     true,
-                    successMessage ?? 'Transaction successfully executed',
+                    successMessage ?? AlertMsg.SUCCESS,
                     `${extrinsic.method.section}.${extrinsic.method.method}`,
                     result.txHash.toHex()
                   )
