@@ -166,7 +166,6 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
       throw Error('Token is not selected');
     }
 
-    const receivingAddress = isValidEvmAddress(toAddress) ? toSS58Address(toAddress) : toAddress;
     const decimals = Number(selectedToken.value.metadata.decimals);
     const amount = ethers.utils.parseUnits(String(transferAmt), decimals).toString();
 
@@ -181,15 +180,21 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
       });
 
       if (isH160.value) {
+        const receivingAddress = isValidEvmAddress(toAddress)
+          ? toAddress
+          : buildEvmAddress(toAddress);
         await tokenTransferService.transferEvmAsset({
           senderAddress: currentAccount.value,
-          toAddress,
+          toAddress: receivingAddress,
           amount: String(transferAmt),
           contractAddress: selectedToken.value.mappedERC20Addr,
           decimals,
           finalizedCallback,
         });
       } else {
+        const receivingAddress = isValidEvmAddress(toAddress)
+          ? toSS58Address(toAddress)
+          : toAddress;
         await tokenTransferService.transferNativeAsset({
           assetId: selectedToken.value.id,
           senderAddress: currentAccount.value,

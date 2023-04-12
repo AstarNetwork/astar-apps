@@ -70,18 +70,22 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
               !isMobileDevice && this.detectExtensionsAction(false);
               if (result.isCompleted) {
                 if (!this.isExtrinsicFailed(result.events)) {
-                  const subscanUrl = this.getSubscan({
-                    subscanBase: subscan,
-                    hash: result.txHash.toHex(),
-                  });
-                  this.eventAggregator.publish(
-                    new ExtrinsicStatusMessage(
-                      true,
-                      successMessage ?? AlertMsg.SUCCESS,
-                      `${extrinsic.method.section}.${extrinsic.method.method}`,
-                      subscanUrl
-                    )
-                  );
+                  if (result.isError) {
+                    this.eventAggregator.publish(new ExtrinsicStatusMessage(false, AlertMsg.ERROR));
+                  } else {
+                    const subscanUrl = this.getSubscan({
+                      subscanBase: subscan,
+                      hash: result.txHash.toHex(),
+                    });
+                    this.eventAggregator.publish(
+                      new ExtrinsicStatusMessage(
+                        true,
+                        successMessage ?? AlertMsg.SUCCESS,
+                        `${extrinsic.method.section}.${extrinsic.method.method}`,
+                        subscanUrl
+                      )
+                    );
+                  }
                 }
 
                 this.eventAggregator.publish(new BusyMessage(false));
