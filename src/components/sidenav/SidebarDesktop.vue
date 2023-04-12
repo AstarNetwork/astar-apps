@@ -82,7 +82,7 @@
             stroke="currentColor"
             icon-name="staking"
           >
-            <astar-icon-ecosystem />
+            <icon-ecosystem />
           </astar-icon-base>
           <div class="row--item row--item-ecosystem">
             <astar-text type="H4">{{ $t('common.ecosystem') }}</astar-text>
@@ -116,6 +116,7 @@ import Logo from '../common/Logo.vue';
 import ConnectionTrouble from 'src/components/common/ConnectionTrouble.vue';
 import { useRouter } from 'vue-router';
 import { Path as RoutePath } from 'src/router/routes';
+import IconEcosystem from './IconEcosystem.vue';
 
 export default defineComponent({
   components: {
@@ -124,6 +125,7 @@ export default defineComponent({
     LocaleChanger,
     Logo,
     ConnectionTrouble,
+    IconEcosystem,
   },
   setup() {
     const { isOpen } = useSidebar();
