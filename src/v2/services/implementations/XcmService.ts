@@ -24,6 +24,7 @@ import {
   TransferParam,
 } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
+import { getSubscanExtrinsic } from 'src/links';
 
 @injectable()
 export class XcmService implements IXcmService {
@@ -76,8 +77,9 @@ export class XcmService implements IXcmService {
         token,
       });
       finalizedCallback && (await finalizedCallback(hash));
+      const explorerUrl = getSubscanExtrinsic({ subscanBase: from.subscan, hash });
       this.eventAggregator.publish(
-        new ExtrinsicStatusMessage(true, `${AlertMsg.COMPLETED_HASH} ${hash}`)
+        new ExtrinsicStatusMessage({ success: true, message: successMessage, explorerUrl })
       );
       this.eventAggregator.publish(new BusyMessage(false));
       return;

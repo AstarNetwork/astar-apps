@@ -25,7 +25,7 @@
       </div>
       <div v-if="!isCopiedType">
         <div class="message">{{ alertMsg }}</div>
-        <astar-button v-if="isSuccessType && subscanUrl" class="btn--check" @click="goToSubscan">{{
+        <astar-button v-if="isSuccessType && explorerUrl" class="btn--check" @click="goToSubscan">{{
           $t('toast.checkYourTransactions')
         }}</astar-button>
       </div>
@@ -53,9 +53,10 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    subscanUrl: {
+    explorerUrl: {
       type: String,
       default: null,
+      required: false,
     },
   },
   emits: ['close'],
@@ -82,7 +83,7 @@ export default defineComponent({
     const isCopiedType = computed<boolean>(() => props.alertType === AlertType.Copied);
 
     const goToSubscan = (): void => {
-      window.open(props.subscanUrl, '_blank');
+      window.open(props.explorerUrl, '_blank');
     };
 
     return {

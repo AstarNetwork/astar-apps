@@ -6,6 +6,7 @@ import { AssetTransferParam, EvmTransferParam, IWalletService } from 'src/v2/ser
 import { Symbols } from 'src/v2/symbols';
 import Web3 from 'web3';
 import { ITokenTransferService } from '../ITokenTransferService';
+import { getBlockscoutTx } from 'src/links';
 import { AlertMsg } from 'src/modules/toast';
 
 @injectable()
@@ -47,14 +48,26 @@ export class TokenTransferService implements ITokenTransferService {
         this.eventAggregator.publish(new BusyMessage(true));
       })
       .then(({ transactionHash }) => {
+        const explorerUrl = getBlockscoutTx(transactionHash);
         this.eventAggregator.publish(new BusyMessage(false));
-        this.eventAggregator.publish(new ExtrinsicStatusMessage(true, AlertMsg.SUCCESS));
+        this.eventAggregator.publish(
+          new ExtrinsicStatusMessage({
+            success: true,
+            message: param.successMessage,
+            explorerUrl,
+          })
+        );
         param.finalizedCallback(transactionHash);
       })
       .catch((error: any) => {
         console.error(error);
         this.eventAggregator.publish(new BusyMessage(false));
-        this.eventAggregator.publish(new ExtrinsicStatusMessage(false, error.message));
+        this.eventAggregator.publish(
+          new ExtrinsicStatusMessage({
+            success: false,
+            message: error.message || AlertMsg.ERROR,
+          })
+        );
       });
   }
 }

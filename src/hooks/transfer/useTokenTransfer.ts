@@ -173,16 +173,16 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
       const tokenTransferService = container.get<ITokenTransferService>(
         Symbols.TokenTransferService
       );
-      const successMessage = t('assets.toast.completedMessage', {
-        symbol,
-        transferAmt,
-        toAddress: getShortenAddress(toAddress, 5),
-      });
 
       if (isH160.value) {
         const receivingAddress = isValidEvmAddress(toAddress)
           ? toAddress
           : buildEvmAddress(toAddress);
+        const successMessage = t('assets.toast.completedMessage', {
+          symbol,
+          transferAmt,
+          toAddress: getShortenAddress(receivingAddress, 5),
+        });
         await tokenTransferService.transferEvmAsset({
           senderAddress: currentAccount.value,
           toAddress: receivingAddress,
@@ -190,11 +190,17 @@ export function useTokenTransfer(selectedToken: Ref<Asset>) {
           contractAddress: selectedToken.value.mappedERC20Addr,
           decimals,
           finalizedCallback,
+          successMessage,
         });
       } else {
         const receivingAddress = isValidEvmAddress(toAddress)
           ? toSS58Address(toAddress)
           : toAddress;
+        const successMessage = t('assets.toast.completedMessage', {
+          symbol,
+          transferAmt,
+          toAddress: getShortenAddress(receivingAddress, 5),
+        });
         await tokenTransferService.transferNativeAsset({
           assetId: selectedToken.value.id,
           senderAddress: currentAccount.value,

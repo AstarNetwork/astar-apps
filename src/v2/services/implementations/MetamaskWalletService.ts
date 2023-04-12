@@ -1,6 +1,7 @@
 import { inject, injectable } from 'inversify';
 import { getEvmProvider } from 'src/hooks/helper/wallet';
 import { EthereumProvider } from 'src/hooks/types/CustomSignature';
+import { getSubscanExtrinsic } from 'src/links';
 import { AlertMsg } from 'src/modules/toast';
 import { Guard } from 'src/v2/common';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
@@ -35,7 +36,6 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
     extrinsic,
     senderAddress,
     successMessage,
-    transactionTip,
     finalizedCallback,
   }: ParamSignAndSend): Promise<string | null> {
     Guard.ThrowIfUndefined('extrinsic', extrinsic);
@@ -65,13 +65,14 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
           try {
             if (result.isCompleted) {
               if (!this.isExtrinsicFailed(result.events)) {
+                const explorerUrl = getSubscanExtrinsic({ hash: result.txHash.toHex() });
                 this.eventAggregator.publish(
-                  new ExtrinsicStatusMessage(
-                    true,
-                    successMessage ?? AlertMsg.SUCCESS,
-                    `${extrinsic.method.section}.${extrinsic.method.method}`,
-                    result.txHash.toHex()
-                  )
+                  new ExtrinsicStatusMessage({
+                    success: true,
+                    message: successMessage ?? AlertMsg.SUCCESS,
+                    method: `${extrinsic.method.section}.${extrinsic.method.method}`,
+                    explorerUrl,
+                  })
                 );
               }
 
@@ -92,7 +93,9 @@ export class MetamaskWalletService extends WalletService implements IWalletServi
       });
     } catch (e) {
       const error = e as unknown as Error;
-      this.eventAggregator.publish(new ExtrinsicStatusMessage(false, error.message));
+      this.eventAggregator.publish(
+        new ExtrinsicStatusMessage({ success: false, message: error.message || AlertMsg.ERROR })
+      );
       this.eventAggregator.publish(new BusyMessage(false));
       throw Error(error.message);
     }
