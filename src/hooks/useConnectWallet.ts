@@ -290,8 +290,9 @@ export const useConnectWallet = () => {
       }
 
       await setEvmWallet(wallet as SupportWallet);
+    } else {
+      store.commit('general/setCurrentAddress', address);
     }
-    store.commit('general/setCurrentAddress', address);
   };
 
   const changeAccount = async (): Promise<void> => {
