@@ -109,13 +109,14 @@ export class XcmRepository implements IXcmRepository {
     token: Asset,
     amount: BN
   ): Promise<ExtrinsicPayload> {
+    console.log('getTransferToParachainCall');
     if (!to.parachainId) {
       throw `Parachain id for ${to.name} is not defined`;
     }
 
     // the target parachain connected to the current relaychain
     const destination = {
-      V1: {
+      V3: {
         interior: {
           X1: {
             Parachain: new BN(to.parachainId),
@@ -123,17 +124,25 @@ export class XcmRepository implements IXcmRepository {
         },
         parents: new BN(0),
       },
+      // V1: {
+      //   interior: {
+      //     X1: {
+      //       Parachain: new BN(to.parachainId),
+      //     },
+      //   },
+      //   parents: new BN(0),
+      // },
     };
 
     const recipientAddressId = this.getAddress(recipientAddress);
 
     // the account ID within the destination parachain
     const beneficiary = {
-      V1: {
+      V3: {
         interior: {
           X1: {
             AccountId32: {
-              network: 'Any',
+              // network: 'null',
               id: decodeAddress(recipientAddressId),
             },
           },
@@ -141,9 +150,22 @@ export class XcmRepository implements IXcmRepository {
         parents: new BN(0),
       },
     };
+    // const beneficiary = {
+    //   V1: {
+    //     interior: {
+    //       X1: {
+    //         AccountId32: {
+    //           network: 'Any',
+    //           id: decodeAddress(recipientAddressId),
+    //         },
+    //       },
+    //     },
+    //     parents: new BN(0),
+    //   },
+    // };
     // amount of fungible tokens to be transferred
     const assets = {
-      V1: [
+      V3: [
         {
           fun: {
             Fungible: amount,
@@ -157,6 +179,23 @@ export class XcmRepository implements IXcmRepository {
         },
       ],
     };
+
+    console.log('destination', JSON.stringify(destination));
+    console.log('beneficiary', JSON.stringify(beneficiary));
+    console.log('assets', JSON.stringify(assets));
+
+    console.log(
+      'first',
+      await this.buildTxCall(
+        from,
+        'xcmPallet',
+        'reserveTransferAssets',
+        destination,
+        beneficiary,
+        assets,
+        new BN(0)
+      )
+    );
 
     return await this.buildTxCall(
       from,
