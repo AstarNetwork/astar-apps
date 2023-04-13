@@ -92,21 +92,21 @@ export default defineComponent({
 
 .body--dark {
   .btn--account {
-    background: $gray-5 !important;
+    background: transparent;
     color: #fff;
-    border: 1px solid $gray-6 !important;
+    border: 1px solid $gray-3 !important;
   }
   .btn--account:hover {
     background: $gray-5-selected !important;
   }
 
   .m-btn--account {
-    background: $gray-6 !important;
+    background: transparent !important;
     color: $gray-3;
-    border: 1px solid $gray-4 !important;
+    border: 1px solid $gray-3 !important;
   }
   .iconbase {
-    color: $gray-4 !important;
+    color: $gray-3 !important;
   }
 }
 </style>

@@ -7,11 +7,13 @@
   column-gap: 6px;
   font-weight: 500;
   padding-top: 16px;
+  width: 140px;
   @media (min-width: $md) {
     margin-bottom: 16px;
   }
   @media (min-width: $lg) {
     padding-top: 0;
+    margin-top: -10px;
   }
   &:hover {
     transition: all 0.3s ease 0s;

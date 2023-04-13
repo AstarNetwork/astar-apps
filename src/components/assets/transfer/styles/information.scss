@@ -37,6 +37,7 @@
 .icon-play {
   margin-bottom: -4px;
   color: white;
+  transition: all 0.3s ease 0s;
   @media (min-width: $md) {
     color: rgba(255, 255, 255, 0.5);
   }
@@ -109,6 +110,7 @@
 .text-faq-link {
   font-weight: 500;
   transition: all 0.3s ease 0s;
+  color: $gray-3;
   &:hover {
     transition: all 0.3s ease 0s;
     color: $astar-blue;
@@ -120,6 +122,7 @@
 .text-topics-link {
   font-weight: 500;
   transition: all 0.3s ease 0s;
+  color: $gray-3;
 }
 
 .box--histories {
@@ -154,8 +157,8 @@
 .body--dark {
   .container--information {
     color: $gray-4;
-    background: $gray-7;
-    border: 1px solid $gray-5;
+    background: $container-bg-dark !important;
+    border: 1px solid transparent;
     @media (min-width: $md) {
       background: $gray-6;
     }
@@ -163,7 +166,6 @@
   .container--how-to-use {
     background: $astar-blue;
     @media (min-width: $md) {
-      background: rgba(0, 133, 255, 0.2);
       &:hover {
         background: $astar-blue;
       }
@@ -175,7 +177,7 @@
   .row--title {
     color: $gray-1;
     @media (min-width: $md) {
-      color: $gray-4;
+      color: $gray-3;
     }
   }
   .box--contents {
@@ -187,17 +189,17 @@
   .container--explorer-icon {
     stroke: $gray-1;
     @media (min-width: $md) {
-      stroke: $gray-4;
+      stroke: $gray-3;
     }
   }
   .text--title-feature {
     @media (min-width: $md) {
-      color: $gray-4;
+      color: black;
     }
   }
   .icon-play {
     @media (min-width: $md) {
-      color: rgba(255, 255, 255, 0.2);
+      color: black;
     }
   }
 }

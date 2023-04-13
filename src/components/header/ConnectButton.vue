@@ -14,14 +14,12 @@ import { defineComponent, toRefs } from 'vue';
 import { useBreakpoints } from 'src/hooks';
 
 export default defineComponent({
-  props: {},
-  setup(props) {
+  setup() {
     const { width, screenSize } = useBreakpoints();
 
     return {
       width,
       screenSize,
-      ...toRefs(props),
     };
   },
 });
@@ -69,25 +67,25 @@ export default defineComponent({
 
 .body--dark {
   .btn--connect {
-    background: $gray-5 !important;
+    background: transparent;
     color: #fff;
-    border: 1px solid $gray-6 !important;
+    border: 1px solid $gray-3 !important;
   }
   .btn--connect:hover {
     background: $gray-5-selected !important;
   }
 
   .m-btn--connect {
-    background: $gray-6 !important;
+    background: transparent !important;
     color: $gray-3;
-    border: 1px solid $gray-4 !important;
+    border: 1px solid $gray-3 !important;
   }
   .m-btn--connect:hover {
     background: $gray-5-selected;
   }
 
   .iconbase {
-    color: $gray-4 !important;
+    color: $gray-3 !important;
   }
 }
 </style>

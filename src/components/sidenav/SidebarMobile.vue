@@ -30,7 +30,11 @@
             </span>
           </div>
         </router-link>
-        <a :class="['link']" href="https://astar.network/community/ecosystem/" target="_blank">
+        <a
+          :class="['link tabs_ecosystem']"
+          href="https://astar.network/community/ecosystem/"
+          target="_blank"
+        >
           <div class="column--item">
             <span class="text--link">
               {{ $t('common.ecosystem') }}

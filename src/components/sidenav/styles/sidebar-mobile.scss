@@ -7,10 +7,6 @@
   justify-content: space-between;
   height: 48px;
   background: $gray-1;
-  opacity: 0.8;
-  backdrop-filter: blur(20px);
-  border-top: 1px solid $object-light;
-  border-bottom: 1px solid $object-light;
 }
 
 .tabs {
@@ -26,7 +22,8 @@
   line-height: 17px;
   text-align: center;
   color: $gray-3;
-  padding: 12px;
+  // padding: 12px;
+  padding: 10px;
 }
 
 .active-link {
@@ -86,12 +83,16 @@
 
 .tabs__assets {
   width: 72px;
-  left: 124px;
+  left: 117px;
 }
 
 .tabs__staking {
   width: 74px;
-  left: 199px;
+  left: 190px;
+}
+
+.tabs_ecosystem {
+  width: 84px;
 }
 
 .icon--dot {
@@ -117,9 +118,7 @@
 
 .body--dark {
   .header {
-    background: $gray-6 !important;
-    border-top: 1px solid $gray-5;
-    border-bottom: 1px solid $gray-5;
+    background: #080f3e;
   }
 
   .active-link {
@@ -139,7 +138,8 @@
     transition: all 0.3s ease 0s;
     border-radius: 100%;
     padding: 4px;
-    margin-top: 4px;
+    margin-top: 8px;
+    margin-left: 8px;
     &:hover {
       transition: all 0.3s ease 0s;
       background-color: $astar-blue;
@@ -152,18 +152,5 @@
   .wrapper--bottom {
     background: rgba(44, 51, 53, 0.8);
     border-top: 1px solid $gray-5;
-  }
-}
-
-@media screen and (max-width: 1024px) {
-  .header {
-    background: $gray-1;
-    opacity: 1;
-  }
-
-  .body--dark {
-    .header {
-      background: $gray-6 !important;
-    }
   }
 }
