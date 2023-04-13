@@ -57,6 +57,39 @@
         </router-link>
         <div v-else class="dummy-row" />
       </div>
+      <!-- MEMO: need to add later
+        <div>
+        <router-link
+          to="#"
+          :class="['link', $route.path.split('/')[1] === 'astar-nft' ? 'activeLink' : '']"
+        >
+          <astar-icon-base
+            :class="['iconAdd', isShiden ? 'shiden' : '']"
+            stroke="currentColor"
+            icon-name="staking"
+          >
+            <astar-icon-side-nft />
+          </astar-icon-base>
+          <div class="row--item">
+            <astar-text type="H4">NFT</astar-text>
+          </div>
+        </router-link>
+      </div> -->
+      <div>
+        <a :class="['link']" href="https://astar.network/community/ecosystem/" target="_blank">
+          <astar-icon-base
+            :class="['icon-add', isShiden ? 'shiden' : '']"
+            stroke="currentColor"
+            icon-name="staking"
+          >
+            <icon-ecosystem />
+          </astar-icon-base>
+          <div class="row--item row--item-ecosystem">
+            <astar-text type="H4">{{ $t('common.ecosystem') }}</astar-text>
+            <astar-icon-external-link />
+          </div>
+        </a>
+      </div>
       <div class="menu__indicator" :class="getIndicatorClass(path)" />
     </nav>
 
@@ -83,6 +116,7 @@ import Logo from '../common/Logo.vue';
 import ConnectionTrouble from 'src/components/common/ConnectionTrouble.vue';
 import { useRouter } from 'vue-router';
 import { Path as RoutePath } from 'src/router/routes';
+import IconEcosystem from './IconEcosystem.vue';
 
 export default defineComponent({
   components: {
@@ -91,6 +125,7 @@ export default defineComponent({
     LocaleChanger,
     Logo,
     ConnectionTrouble,
+    IconEcosystem,
   },
   setup() {
     const { isOpen } = useSidebar();

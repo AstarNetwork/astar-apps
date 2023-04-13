@@ -80,6 +80,7 @@ export default {
     dappStaking: 'dApp Staking',
     staking: 'Staking',
     contract: 'Contract',
+    ecosystem: 'Ecosystem',
     plasmLockdrop: 'Plasm Lockdrop',
     closeSidebar: 'Close sidebar',
     twitter: 'Twitter',
