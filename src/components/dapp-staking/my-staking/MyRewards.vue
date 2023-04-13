@@ -7,7 +7,11 @@
         </div>
         <div class="row--data">
           <div class="value">
-            <q-skeleton v-if="isLoadingTotalStaked" animation="fade" class="skeleton--md" />
+            <q-skeleton
+              v-if="isLoadingTotalStaked || isLoading"
+              animation="fade"
+              class="skeleton--md"
+            />
             <token-balance
               v-else
               :balance="totalStaked"
@@ -23,16 +27,28 @@
           <span class="wrapper--icon-help">
             <astar-icon-help size="16" />
             <q-tooltip max-width="200px" class="box--tooltip">
-              <span class="text--tooltip">{{ $t('myReward.availableToClaimTip') }}</span>
+              <div>
+                <span class="text--tooltip">{{ $t('myReward.availableToClaimTip') }}</span>
+              </div>
+              <div>
+                <span class="text--tooltip">{{ $t('myReward.availableToClaimTip2') }}</span>
+              </div>
             </q-tooltip>
           </span>
         </div>
         <div class="row--data">
-          <div v-if="isLoading" class="loading">
+          <div v-if="isLoadingPendingRewards" class="loading">
             <q-skeleton type="rect" animation="fade" />
           </div>
-          <div v-else class="value">
-            {{ amountOfEras }} {{ $t('myReward.era') }}{{ amountOfEras > 1 ? 's' : '' }}
+          <div v-else class="value value--claim">
+            <div>
+              <span class="text--rewards-amount">
+                {{ pendingRewards }} {{ nativeTokenSymbol }}
+              </span>
+            </div>
+            <span class="text--eras">
+              ({{ amountOfEras }} {{ $t('myReward.era') }}{{ amountOfEras > 1 ? 's' : '' }})
+            </span>
           </div>
           <astar-button
             :width="80"
@@ -95,8 +111,10 @@ import { useAccount, useClaimAll, useNetworkInfo, useStakerInfo } from 'src/hook
 import { useClaimedReward } from 'src/hooks/dapps-staking/useClaimedReward';
 import { RewardDestination } from 'src/hooks/dapps-staking/useCompoundRewards';
 import { endpointKey } from 'src/config/chainEndpoints';
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, ref, watch } from 'vue';
 import { useStore } from 'src/store';
+import { $api } from 'src/boot/api';
+import { getPendingRewards } from '@astar-network/astar-sdk-core';
 
 export default defineComponent({
   components: {
@@ -106,6 +124,9 @@ export default defineComponent({
     const { nativeTokenSymbol } = useNetworkInfo();
     const { claimAll, canClaim, amountOfEras, isLoading, canClaimWithoutError } = useClaimAll();
     const { totalStaked, isLoadingTotalStaked } = useStakerInfo();
+
+    const pendingRewards = ref<number>(0);
+    const isLoadingPendingRewards = ref<boolean>(false);
 
     const changeDestinationForRestaking = async () => {
       const newDestination = isCompounding.value
@@ -129,6 +150,22 @@ export default defineComponent({
       window.open(link, '_blank');
     };
 
+    const setPendingRewards = async (): Promise<void> => {
+      if (!currentAccount.value || !amountOfEras.value) {
+        pendingRewards.value = 0;
+        return;
+      }
+      isLoadingPendingRewards.value = true;
+      const { stakerPendingRewards } = await getPendingRewards({
+        api: $api!,
+        currentAccount: currentAccount.value,
+      });
+      pendingRewards.value = stakerPendingRewards;
+      isLoadingPendingRewards.value = false;
+    };
+
+    watch([currentAccount, amountOfEras], setPendingRewards, { immediate: false });
+
     return {
       isLoading,
       amountOfEras,
@@ -144,6 +181,8 @@ export default defineComponent({
       isLoadingTotalStaked,
       goToSubscan,
       isH160,
+      pendingRewards,
+      isLoadingPendingRewards,
     };
   },
 });

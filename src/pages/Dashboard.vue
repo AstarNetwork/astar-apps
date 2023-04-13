@@ -28,6 +28,7 @@ export default defineComponent({
 @import 'src/css/quasar.variables.scss';
 
 .wrapper--dashboard {
+  padding: 0 16px;
   @media (min-width: $lg) {
     margin-top: 70px;
   }

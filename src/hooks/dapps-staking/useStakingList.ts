@@ -27,7 +27,7 @@ export function useStakingList() {
     },
   ]);
 
-  const setStakingList = async () => {
+  const setStakingList = (): void => {
     const dappsRef = dapps.value;
     const accountDataRef = accountData.value;
     const currentAccountRef = currentAccount.value;
@@ -60,15 +60,11 @@ export function useStakingList() {
     }
   };
 
-  watchEffect(async () => {
+  watchEffect(() => {
     if (isLoading.value || !dapps.value) {
       return;
     }
-    try {
-      await setStakingList();
-    } catch (error) {
-      console.error(error);
-    }
+    setStakingList();
   });
 
   return {

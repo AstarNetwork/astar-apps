@@ -81,6 +81,7 @@ export default {
     dappStaking: 'dApp Staking',
     staking: 'Staking',
     contract: 'Contract',
+    ecosystem: 'Ecosystem',
     plasmLockdrop: 'Plasm Lockdrop',
     closeSidebar: 'Close sidebar',
     twitter: 'Twitter',
@@ -186,14 +187,16 @@ export default {
   },
   myReward: {
     totalStaked: 'Total Staked',
-    availableToClaim: 'Available to claim',
+    availableToClaim: 'Estimated Rewards',
     era: 'Era',
     claim: 'Claim',
-    restake: 'Re-Stake after claiming',
+    restake: 'Re-Stake After Claiming',
     turnOff: 'Turn Off',
-    totalEarned: 'Total Earned (all-time)',
+    totalEarned: 'Total Earned (all time)',
     availableToClaimTip:
-      'Number of eras that is shown here is per dApp. The maximum number of eras you can claim at once is 50. You may need to claim multiple times if you leave it too long.',
+      'The amount of unclaimed rewards is estimated and there may be a small difference between what is shown and what you actually receive.',
+    availableToClaimTip2:
+      'The number of eras that is shown here is per dApp. The maximum number of eras you can claim at once is 50. You may need to claim multiple times if you leave it too long.',
     restakeTip:
       'By turning on, your rewards will be automatically re-staked when you make a claim.',
   },
@@ -322,7 +325,7 @@ export default {
         'All funds will be transferred because the min. staking amount is {minStakingAmount} {symbol}',
       invalidBalance: 'Insufficient transferrable balance to complete the transaction',
       warningLeaveMinAmount:
-        'Account must hold greater than 10{symbol} in transferrable when you stake.',
+        'Account must hold greater than {amount}{symbol} in transferrable when you stake.',
     },
   },
   assets: {
