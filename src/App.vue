@@ -80,8 +80,9 @@ export default defineComponent({
       store.dispatch(
         'general/showAlertMsg',
         {
-          msg: message.message,
-          alertType: message.success ? 'success' : 'error',
+          msg: message.getMessage(),
+          alertType: message.isSuccess() ? 'success' : 'error',
+          explorerUrl: message.getExplorerUrl() || '',
         },
         { root: true }
       );

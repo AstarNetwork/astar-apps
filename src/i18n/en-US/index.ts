@@ -61,7 +61,6 @@ export default {
     transactionFailed: 'Transaction failed with error: {message}',
     completedHash: 'Completed at block hash #{hash}',
     completedTxHash: 'Completed at transaction hash #{hash}',
-    completedMessage: 'You have sent {transferAmt} {symbol} to {toAddress}',
     unableCalculateMsgPayload: 'Unable to calculate the message payload',
     amountMustNotBeZero: 'The amount of token to be transmitted must not be zero',
     copyAddressSuccessfully: 'Copy address success!',
@@ -316,6 +315,10 @@ export default {
         '{message} -Disable compounding, claim your rewards and then enable compounding again',
       successfullyWithdrew: 'Balance is successfully withdrew',
       successfullySetRewardDest: 'You successfully set reward destination',
+      successfullyStaked: 'You successfully staked to {contractAddress}',
+      successfullyUnbond: 'You successfully started unbonding process for {contractAddress}',
+      successfullyNominationTransfer:
+        'You successfully staked to {targetContractId} from {fromContractId}',
     },
     error: {
       onlySupportsSubstrate: 'dApp staking only supports Substrate wallets',
@@ -373,6 +376,10 @@ export default {
     unhideSmallBalances: 'Unhide small balances',
     tokenHasBeenAdded: 'The token has been added already',
     assetsAreNowFolded: 'All utilities for {token} token are now folded - open up here!',
+    toast: {
+      completedMessage: 'You have sent {transferAmt} {symbol} to {toAddress}',
+      completedBridgeMessage: 'You have sent {transferAmt} {symbol} from {fromChain} to {toChain}',
+    },
     transferPage: {
       backToAssets: 'Back to Assets',
       crossChainTransfer: 'Cross-chain Transfer',

@@ -25,6 +25,7 @@ describe('XcmService.ts', () => {
   describe('transfer', () => {
     const from = {} as XcmChain;
     const to = {} as XcmChain;
+    const successMessage = 'Transaction completed';
     const token = new Asset(
       '1',
       '2',
@@ -49,6 +50,7 @@ describe('XcmService.ts', () => {
           senderAddress: 'sender',
           recipientAddress: '',
           amount: 1,
+          successMessage,
         })
       ).rejects.toThrow(Error);
     });
@@ -64,6 +66,7 @@ describe('XcmService.ts', () => {
           senderAddress: 'sender',
           recipientAddress: 'recipient',
           amount: -1,
+          successMessage,
         })
       ).rejects.toThrow(Error);
     });
