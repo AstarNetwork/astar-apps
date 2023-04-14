@@ -37,7 +37,6 @@ export default defineComponent({
   align-items: center;
   padding: 8px 16px 8px 16px;
   background: transparent;
-  // box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
   border: 1px solid $gray-3;
   border-radius: 16px;
   margin-left: 8px;
@@ -58,7 +57,7 @@ export default defineComponent({
   background: #fff;
 }
 .iconbase {
-  color: $astar-blue-dark;
+  color: $gray-3;
   width: rem(20);
   height: rem(20);
   margin-left: -4px;
@@ -69,23 +68,19 @@ export default defineComponent({
   .btn--connect {
     background: transparent;
     color: #fff;
-    border: 1px solid $gray-3 !important;
+    border: 1px solid $gray-3;
   }
   .btn--connect:hover {
     background: $gray-5-selected !important;
   }
 
   .m-btn--connect {
-    background: transparent !important;
+    background: transparent;
     color: $gray-3;
-    border: 1px solid $gray-3 !important;
+    border: 1px solid $gray-3;
   }
   .m-btn--connect:hover {
     background: $gray-5-selected;
-  }
-
-  .iconbase {
-    color: $gray-3 !important;
   }
 }
 </style>
