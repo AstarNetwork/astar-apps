@@ -7,14 +7,38 @@ jobs:
   build_and_preview:
     if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
     runs-on: ubuntu-latest
+    outputs:
+      output1: ${{ steps.deploy_firebase_hosting_channel.outputs.details_url }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v3
         with:
           node-version: 18
       - run: yarn && yarn build
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      - id: deploy_firebase_hosting_channel
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_ASTAR_APPS }}'
           projectId: astar-apps
+  e2etest:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    needs: build_and_preview
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: yarn install --immutable --immutable-cache --check-cache
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+      - name: Run Playwright tests
+        run: BASE_URL='${{needs.build_and_preview.outputs.output1}}' HEADLESS='true' npx playwright test --project=chromium
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
