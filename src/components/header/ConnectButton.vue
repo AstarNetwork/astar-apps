@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs } from 'vue';
+import { defineComponent } from 'vue';
 import { useBreakpoints } from 'src/hooks';
 
 export default defineComponent({
