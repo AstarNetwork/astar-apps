@@ -116,7 +116,7 @@ export default defineComponent({
     max-width: 100%;
   }
   @media (min-width: $lg) {
-    margin-top: 48px;
+    margin-top: 50px;
   }
 }
 

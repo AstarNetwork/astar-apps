@@ -32,7 +32,9 @@
   cursor: pointer;
   background: #fff;
   border: 1px solid transparent;
+  transition: all 0.3s ease 0s;
 }
+
 .class-radio-off:hover {
   border: 1px solid $astar-blue;
 }
@@ -144,14 +146,14 @@
     color: #fff;
   }
   .class-radio-off {
-    background: $gray-6;
+    background: $modal-item-bg-dark;
   }
 
   .class-radio-on {
-    background: $gray-5-selected-dark;
+    background: $container-bg-dark;
   }
   .class-radio--custom-network {
-    background: $gray-6 !important;
+    background: $container-bg-dark !important;
   }
 
   .ip--network {
@@ -163,7 +165,7 @@
   }
 
   .ip-input {
-    background: $gray-5-selected-dark;
+    background: $body-bg-dark;
     border: 1px solid $gray-4;
     color: $gray-1;
   }

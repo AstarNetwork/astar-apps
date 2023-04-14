@@ -59,6 +59,7 @@
   border-radius: 6px;
   color: $gray-5;
   position: relative;
+  transition: all 0.3s ease 0s;
 }
 
 .link:hover {
@@ -108,16 +109,16 @@
 
 .body--dark {
   .menu__indicator {
-    background: $gray-5-selected;
+    background: $navy-3;
   }
   .sidebar {
-    background: $gray-5;
+    background: linear-gradient(140deg, #070c25 50%, #253585 80%, #3e2371 90%);
   }
   .link {
     color: $gray-1;
   }
   .link:hover {
-    background: #313a3d;
+    background: $navy-3;
   }
   .activeLink:hover {
     background: transparent;

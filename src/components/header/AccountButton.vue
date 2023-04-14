@@ -59,6 +59,7 @@ export default defineComponent({
   border-radius: 16px;
   margin-left: 16px;
   color: #fff;
+  transition: all 0.3s ease 0s;
 }
 
 .btn--account:hover {
@@ -69,6 +70,7 @@ export default defineComponent({
   color: $gray-3;
   width: rem(22);
   height: rem(22);
+  transition: all 0.3s ease 0s;
 }
 
 .m-btn--account {
@@ -76,10 +78,7 @@ export default defineComponent({
   border: 1px solid $gray-3;
   box-shadow: none;
   padding: 8px;
-
-  .iconbase {
-    color: $gray-3;
-  }
+  transition: all 0.3s ease 0s;
 }
 
 .icon {
@@ -90,16 +89,20 @@ export default defineComponent({
   .btn--account {
     background: transparent;
     color: #fff;
-    border: 1px solid $gray-3;
+    border: 1px solid $gray-4;
   }
   .btn--account:hover {
-    background: $gray-5-selected !important;
+    background: $astar-blue !important;
+    border: 1px solid transparent;
+    .iconbase {
+      color: $gray-1;
+    }
   }
 
   .m-btn--account {
     background: transparent;
     color: $gray-3;
-    border: 1px solid $gray-3;
+    border: 1px solid $gray-4;
   }
 }
 </style>

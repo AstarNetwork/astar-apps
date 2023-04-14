@@ -62,10 +62,13 @@
 .class-radio-off {
   background: #fff;
   border: 1px solid transparent;
+  transition: all 0.3s ease 0s;
 }
+
 .class-radio-off:hover {
   border: 1px solid $astar-blue-dark;
 }
+
 .class-radio-on {
   border: 2px solid $astar-blue-dark;
 }
@@ -192,11 +195,11 @@
     color: #fff;
   }
   .class-radio-off {
-    background: $gray-6;
+    background: $modal-item-bg-dark;
   }
 
   .class-radio-on {
-    background: $gray-5-selected-dark;
+    background: $container-bg-dark;
   }
 
   .wrapper--account-detail {
