@@ -55,6 +55,7 @@ export { xcmChains };
 export let kusamaParachains: any[];
 export let polkadotParachains: any[];
 
+// get the list of networks we can support
 export const getXcmChainObj = async (): Promise<XcmChainObj> => {
   const url = 'https://token-resources-chi.vercel.app/api/networks';
   const result = await axios.get<XcmChainObj>(url);
