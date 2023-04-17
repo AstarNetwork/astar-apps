@@ -18,7 +18,7 @@
 }
 
 .wrapper--icon-help {
-  padding-top: 7px;
+  margin-top: -1px;
 }
 
 .card {
@@ -73,6 +73,11 @@
     line-height: 18px;
     color: $gray-5-selected;
   }
+  .value--claim {
+    display: flex;
+    flex-direction: column;
+    row-gap: 2px;
+  }
 }
 
 .explorer-icon {
@@ -84,6 +89,14 @@
   &:hover {
     stroke: white;
   }
+}
+
+.text--eras {
+  font-size: 14px;
+}
+
+.text--rewards-amount {
+  font-size: 18px;
 }
 
 .body--dark {

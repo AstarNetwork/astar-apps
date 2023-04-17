@@ -19,7 +19,7 @@ export enum AlertType {
 export type AlertBox = {
   alertMsg: string;
   alertType: AlertType;
-  txHash?: string;
+  explorerUrl: string;
 };
 
 export type EcdsaAccount = {
@@ -63,6 +63,7 @@ function state(): GeneralStateInterface {
     alertBox: {
       alertMsg: '',
       alertType: AlertType.Success,
+      explorerUrl: '',
     },
     chainInfo: undefined,
     metaExtensions: {

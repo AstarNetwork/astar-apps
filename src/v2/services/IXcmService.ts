@@ -21,6 +21,7 @@ export interface TransferParam {
   senderAddress: string;
   recipientAddress: string;
   amount: number;
+  successMessage: string;
   finalizedCallback?: (hash: string) => Promise<void>;
 }
 

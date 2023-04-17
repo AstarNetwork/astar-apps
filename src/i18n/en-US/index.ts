@@ -61,7 +61,6 @@ export default {
     transactionFailed: 'Transaction failed with error: {message}',
     completedHash: 'Completed at block hash #{hash}',
     completedTxHash: 'Completed at transaction hash #{hash}',
-    completedMessage: 'You have sent {transferAmt} {symbol} to {toAddress}',
     unableCalculateMsgPayload: 'Unable to calculate the message payload',
     amountMustNotBeZero: 'The amount of token to be transmitted must not be zero',
     copyAddressSuccessfully: 'Copy address success!',
@@ -81,6 +80,7 @@ export default {
     dappStaking: 'dApp Staking',
     staking: 'Staking',
     contract: 'Contract',
+    ecosystem: 'Ecosystem',
     plasmLockdrop: 'Plasm Lockdrop',
     closeSidebar: 'Close sidebar',
     twitter: 'Twitter',
@@ -186,14 +186,16 @@ export default {
   },
   myReward: {
     totalStaked: 'Total Staked',
-    availableToClaim: 'Available to claim',
+    availableToClaim: 'Estimated Rewards',
     era: 'Era',
     claim: 'Claim',
-    restake: 'Re-Stake after claiming',
+    restake: 'Re-Stake After Claiming',
     turnOff: 'Turn Off',
-    totalEarned: 'Total Earned (all-time)',
+    totalEarned: 'Total Earned (all time)',
     availableToClaimTip:
-      'Number of eras that is shown here is per dApp. The maximum number of eras you can claim at once is 50. You may need to claim multiple times if you leave it too long.',
+      'The amount of unclaimed rewards is estimated and there may be a small difference between what is shown and what you actually receive.',
+    availableToClaimTip2:
+      'The number of eras that is shown here is per dApp. The maximum number of eras you can claim at once is 50. You may need to claim multiple times if you leave it too long.',
     restakeTip:
       'By turning on, your rewards will be automatically re-staked when you make a claim.',
   },
@@ -313,6 +315,10 @@ export default {
         '{message} -Disable compounding, claim your rewards and then enable compounding again',
       successfullyWithdrew: 'Balance is successfully withdrew',
       successfullySetRewardDest: 'You successfully set reward destination',
+      successfullyStaked: 'You successfully staked to {contractAddress}',
+      successfullyUnbond: 'You successfully started unbonding process for {contractAddress}',
+      successfullyNominationTransfer:
+        'You successfully staked to {targetContractId} from {fromContractId}',
     },
     error: {
       onlySupportsSubstrate: 'dApp staking only supports Substrate wallets',
@@ -370,6 +376,10 @@ export default {
     unhideSmallBalances: 'Unhide small balances',
     tokenHasBeenAdded: 'The token has been added already',
     assetsAreNowFolded: 'All utilities for {token} token are now folded - open up here!',
+    toast: {
+      completedMessage: 'You have sent {transferAmt} {symbol} to {toAddress}',
+      completedBridgeMessage: 'You have sent {transferAmt} {symbol} from {fromChain} to {toChain}',
+    },
     transferPage: {
       backToAssets: 'Back to Assets',
       crossChainTransfer: 'Cross-chain Transfer',
