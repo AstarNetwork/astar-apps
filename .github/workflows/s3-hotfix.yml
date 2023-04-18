@@ -12,7 +12,6 @@ jobs:
         with:
           fetch-depth: 0
           ref: release-hotfix
-          token: ${{ env.GH_TOKEN }}
       - uses: actions/setup-node@v3
         with:
           node-version: 18
