@@ -3,6 +3,11 @@ on:
   workflow_dispatch:
     branches: 
       - release-hotfix
+      
+env:
+  GH_TOKEN: ${{ secrets.GH_TOKEN }}
+  
+  
 jobs:
   # deploy to s3-prod
   build_and_deploy:
@@ -12,6 +17,7 @@ jobs:
         with:
           fetch-depth: 0
           ref: release-hotfix
+          token: ${{ env.GH_TOKEN }}
       - uses: actions/setup-node@v3
         with:
           node-version: 18
