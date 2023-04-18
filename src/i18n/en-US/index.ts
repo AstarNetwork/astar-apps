@@ -195,7 +195,7 @@ export default {
     availableToClaimTip:
       'The amount of unclaimed rewards is estimated and there may be a small difference between what is shown and what you actually receive.',
     availableToClaimTip2:
-      'The number of eras that is shown here is per dApp. The maximum number of eras you can claim at once is 50. You may need to claim multiple times if you leave it too long.',
+      'The number of eras that is shown here is per dApp. You may need to claim multiple times if you have too many unclaimed eras.',
     restakeTip:
       'By turning on, your rewards will be automatically re-staked when you make a claim.',
   },
