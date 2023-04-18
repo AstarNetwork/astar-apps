@@ -1,4 +1,4 @@
-name: Deploy to S3 Release hotfix
+name: Deploy to Release hotfix-S3
 on: 
   workflow_dispatch:
     branches: 
