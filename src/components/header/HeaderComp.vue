@@ -39,7 +39,16 @@ export default defineComponent({
   height: 4rem;
   padding-left: 16px;
   padding-right: 16px;
-  border-bottom: 0px !important;
+  border-bottom: 1px solid transparent !important;
+  border-image: linear-gradient(
+    121.48deg,
+    #e6007a -5.77%,
+    #703ac2 13.57%,
+    #0070eb 34.18%,
+    #0297fb 58.08%,
+    #0ae2ff 74.93%
+  );
+  border-image-slice: 1;
   @media (min-width: $lg) {
     padding: 40px 40px 25px 40px;
     height: 6rem;

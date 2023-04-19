@@ -65,7 +65,9 @@
 .link:hover {
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05)), $object-light;
 }
-
+.activeLink {
+  color: #fff;
+}
 .activeLink:hover {
   background: transparent;
 }
@@ -84,7 +86,7 @@
 
 // Memo: set the animation indicator from the bottom of the menu
 .menu__indicator {
-  background: #d3d6dc;
+  background: $astar-blue;
   transition: all 0.3s ease 0s;
   border-radius: 6px;
   height: 38px;
