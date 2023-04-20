@@ -23,22 +23,16 @@
 }
 
 .separator {
-  margin-bottom: 24px;
-  border-bottom: 1px solid $border-separator-light;
-}
-
-.body--dark {
-  .separator {
-    border-bottom: 1px solid;
-    border-image: linear-gradient(
-      90deg,
-      #e6007a -4%,
-      #e6007a -3.88%,
-      #703ac2 17.01%,
-      #0070eb 42.25%,
-      #0297fb 73.9%,
-      #0ae2ff 97.42%
-    );
-    border-image-slice: 1;
-  }
+  border-bottom: 1px solid;
+  border-image: linear-gradient(
+    90deg,
+    #e6007a -4%,
+    #e6007a -3.88%,
+    #703ac2 17.01%,
+    #0070eb 42.25%,
+    #0297fb 73.9%,
+    #0ae2ff 97.42%
+  );
+  border-image-slice: 1;
+  margin-bottom: 20px;
 }

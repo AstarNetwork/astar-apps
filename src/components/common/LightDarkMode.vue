@@ -64,7 +64,6 @@ export default defineComponent({
 
 .icon-light {
   @apply tw-pr-2 tw-rounded-full tw-relative;
-  color: $gray-3;
 }
 
 .icon-dark {
@@ -72,7 +71,7 @@ export default defineComponent({
 }
 
 .icon-outline-moon {
-  color: #fff;
+  color: $gray-4;
   @apply tw-h-5 tw-w-5 dark:tw-text-darkGray-100;
 }
 </style>
