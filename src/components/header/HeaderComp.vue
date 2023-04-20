@@ -66,7 +66,7 @@ export default defineComponent({
 
 .body--dark {
   .header {
-    background: $body-bg-dark;
+    background: rgba(8, 15, 46, 0.4);
     backdrop-filter: blur(200px);
     border-bottom: 1px solid !important;
     border-image: linear-gradient(
