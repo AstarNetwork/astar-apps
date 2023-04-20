@@ -1,79 +1,81 @@
 <template>
   <div class="container--register">
     <back-to-page :text="$t('dappStaking.stakePage.backToDappList')" :link="Path.DappStaking" />
-    <welcome-banner v-if="isNewDapp" class="welcome" />
-    <q-form ref="dappForm">
-      <div style="display: flex; flex-direction: column">
-        <q-input
-          v-model="data.name"
-          :label="$t('dappStaking.modals.name')"
-          outlined
-          label-color="input-label"
-          input-class="input"
-          :input-style="{ fontWeight: 'bold' }"
-          lazy-rules="ondemand"
-          :rules="[(v: string) => (v && v.length > 0) || `${$t('dappStaking.modals.dappNameRequired')}`]"
-          class="component"
-        />
-        <q-file
-          v-model="data.icon"
-          outlined
-          :label="$t('dappStaking.modals.projectLogo')"
-          accept="image/jpeg, .png"
-          class="component"
-          input-style="{ height: '120px'}"
-          lazy-rules="ondemand"
-          :rules="[(v: File) => v.size > 0 || `${$t('dappStaking.modals.dappImageRequired')}`]"
-          @update:model-value="updateDappLogo()"
-        >
-          <template #file="{ file }">
-            <image-card :base64-image="data.iconFile" :description="file.name" class="card">
-              <add-item-card />
-            </image-card>
-          </template>
-        </q-file>
+    <div class="wrapper--register-form">
+      <welcome-banner v-if="isNewDapp" class="welcome" />
+      <q-form ref="dappForm">
+        <div style="display: flex; flex-direction: column">
+          <q-input
+            v-model="data.name"
+            :label="$t('dappStaking.modals.name')"
+            outlined
+            label-color="input-label"
+            input-class="input"
+            :input-style="{ fontWeight: 'bold' }"
+            lazy-rules="ondemand"
+            :rules="[(v: string) => (v && v.length > 0) || `${$t('dappStaking.modals.dappNameRequired')}`]"
+            class="component"
+          />
+          <q-file
+            v-model="data.icon"
+            outlined
+            :label="$t('dappStaking.modals.projectLogo')"
+            accept="image/jpeg, .png"
+            class="component"
+            input-style="{ height: '120px'}"
+            lazy-rules="ondemand"
+            :rules="[(v: File) => v.size > 0 || `${$t('dappStaking.modals.dappImageRequired')}`]"
+            @update:model-value="updateDappLogo()"
+          >
+            <template #file="{ file }">
+              <image-card :base64-image="data.iconFile" :description="file.name" class="card">
+                <add-item-card />
+              </image-card>
+            </template>
+          </q-file>
 
-        <q-input
-          v-model="data.address"
-          :label="$t('dappStaking.modals.contractAddress')"
-          outlined
-          readonly
-          label-color="input-label"
-          input-class="input"
-          :input-style="{ fontWeight: 'bold' }"
-          class="address"
-        />
+          <q-input
+            v-model="data.address"
+            :label="$t('dappStaking.modals.contractAddress')"
+            outlined
+            readonly
+            label-color="input-label"
+            input-class="input"
+            :input-style="{ fontWeight: 'bold' }"
+            class="address"
+          />
 
-        <q-input
-          v-model="data.url"
-          :label="$t('dappStaking.modals.projectUrl')"
-          outlined
-          label-color="input-label"
-          input-class="input"
-          :input-style="{ fontWeight: 'bold' }"
-          lazy-rules="ondemand"
-          :rules="[
+          <q-input
+            v-model="data.url"
+            :label="$t('dappStaking.modals.projectUrl')"
+            outlined
+            label-color="input-label"
+            input-class="input"
+            :input-style="{ fontWeight: 'bold' }"
+            lazy-rules="ondemand"
+            :rules="[
             (v: string) => v !== '' || `${$t('dappStaking.modals.projectUrlRequired')}`,
             (v: string) => isUrlValid(v) || `${$t('dappStaking.modals.builder.error.invalidUrl')}`,
           ]"
-          class="component"
-        />
+            class="component"
+          />
 
-        <dapp-images :dapp="data" class="component" @dapp-changed="handleDappChanged" />
-        <builders :dapp="data" :validation-error="errors.builders" />
-        <description :dapp="data" class="custom-component" />
-        <community :dapp="data" :validation-error="errors.community" class="custom-component" />
-        <contract-types :dapp="data" class="custom-component" />
-        <main-category :dapp="data" class="custom-component" />
-        <tags :dapp="data" class="component" />
-        <license :dapp="data" class="component" />
-        <div class="button--container">
-          <astar-button class="button--submit" @click="handleSubmit">
-            {{ $t('dappStaking.modals.submit') }}
-          </astar-button>
+          <dapp-images :dapp="data" class="component" @dapp-changed="handleDappChanged" />
+          <builders :dapp="data" :validation-error="errors.builders" />
+          <description :dapp="data" class="custom-component" />
+          <community :dapp="data" :validation-error="errors.community" class="custom-component" />
+          <contract-types :dapp="data" class="custom-component" />
+          <main-category :dapp="data" class="custom-component" />
+          <tags :dapp="data" class="component" />
+          <license :dapp="data" class="component" />
+          <div class="button--container">
+            <astar-button class="button--submit" @click="handleSubmit">
+              {{ $t('dappStaking.modals.submit') }}
+            </astar-button>
+          </div>
         </div>
-      </div>
-    </q-form>
+      </q-form>
+    </div>
   </div>
 </template>
 
@@ -426,7 +428,7 @@ export default defineComponent({
 
 .q-field--outlined.q-field--dark.q-field--readonly .q-field__control:before {
   border-style: solid;
-  background-color: $gray-5;
+  background-color: $container-bg-dark;
 }
 
 .q-field--outlined:hover.q-field--dark.q-field--readonly .q-field__control:before {

@@ -66,10 +66,7 @@
 
 .body--dark {
   .box--input-chain {
-    background: $gray-6;
-    border: 1px solid $gray-4;
-  }
-  .text--to--balance {
-    color: $gray-4;
+    background: transparent;
+    border: 1px solid $gray-3;
   }
 }

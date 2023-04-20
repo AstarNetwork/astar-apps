@@ -61,6 +61,7 @@ export default defineComponent({
   appearance: none;
   border-radius: 6px;
   box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
 }
 .icon--select {
   color: $gray-5;
@@ -74,11 +75,11 @@ export default defineComponent({
 
 .body--dark {
   .select-language {
-    background: $gray-6;
-    color: $gray-1;
+    background: #9d9ccc;
+    color: black;
   }
   .icon--select {
-    color: $gray-1;
+    color: black;
   }
 }
 </style>

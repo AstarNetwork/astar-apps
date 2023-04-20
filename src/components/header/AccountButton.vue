@@ -55,11 +55,11 @@ export default defineComponent({
   flex-direction: row;
   align-items: center;
   padding: 8px 16px 8px 12px;
-  // box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
   border: 1px solid $gray-3;
   border-radius: 16px;
   margin-left: 16px;
   color: #fff;
+  transition: all 0.3s ease 0s;
 }
 
 .btn--account:hover {
@@ -67,12 +67,10 @@ export default defineComponent({
 }
 
 .iconbase {
-  color: $gray-3 !important;
+  color: $gray-3;
   width: rem(22);
   height: rem(22);
-  // @media (min-width: $sm) {
-  //   color: #e6e9ee !important;
-  // }
+  transition: all 0.3s ease 0s;
 }
 
 .m-btn--account {
@@ -80,10 +78,7 @@ export default defineComponent({
   border: 1px solid $gray-3;
   box-shadow: none;
   padding: 8px;
-
-  .iconbase {
-    color: $gray-3;
-  }
+  transition: all 0.3s ease 0s;
 }
 
 .icon {
@@ -92,21 +87,22 @@ export default defineComponent({
 
 .body--dark {
   .btn--account {
-    background: $gray-5 !important;
+    background: transparent;
     color: #fff;
-    border: 1px solid $gray-6 !important;
+    border: 1px solid $gray-4;
   }
   .btn--account:hover {
-    background: $gray-5-selected !important;
+    background: $astar-blue !important;
+    border: 1px solid transparent;
+    .iconbase {
+      color: $gray-1;
+    }
   }
 
   .m-btn--account {
-    background: $gray-6 !important;
+    background: transparent;
     color: $gray-3;
-    border: 1px solid $gray-4 !important;
-  }
-  .iconbase {
-    color: $gray-4 !important;
+    border: 1px solid $gray-4;
   }
 }
 </style>

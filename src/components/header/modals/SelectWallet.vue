@@ -177,7 +177,7 @@ export default defineComponent({
     box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.5);
   }
   .box__row--wallet {
-    background: $gray-6;
+    background: $modal-item-bg-dark;
     color: $gray-1;
   }
 }

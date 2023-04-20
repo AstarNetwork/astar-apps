@@ -41,7 +41,7 @@ export default defineComponent({
 
 .body--dark {
   .card-new-item {
-    background-color: $gray-5;
+    background-color: $container-bg-dark;
   }
 }
 

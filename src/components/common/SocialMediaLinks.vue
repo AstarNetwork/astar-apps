@@ -34,13 +34,23 @@
     </a>
 
     <a :href="socialUrl.github" target="_blank" :class="classes.link" rel="noreferrer">
-      <astar-icon-base :class="classes.iconBase" viewBox="0 0 496 512" icon-name="GitHub">
+      <astar-icon-base
+        class="github icon"
+        :class="classes.iconBase"
+        viewBox="0 0 496 512"
+        icon-name="GitHub"
+      >
         <astar-icon-github />
       </astar-icon-base>
     </a>
 
     <a :href="docsUrl.topPage" target="_blank" :class="classes.link" rel="noreferrer">
-      <astar-icon-base :class="classes.iconBase" viewBox="0 0 24 24" icon-name="Documentation">
+      <astar-icon-base
+        class="documentation icon"
+        :class="classes.iconBase"
+        viewBox="0 0 24 24"
+        icon-name="Documentation"
+      >
         <astar-icon-document />
       </astar-icon-base>
     </a>
@@ -87,7 +97,7 @@ export default defineComponent({
 }
 
 .icon-link {
-  color: $gray-4;
+  color: #fff;
   padding: 10px;
   height: 36px;
   width: 36px;
@@ -116,6 +126,14 @@ export default defineComponent({
 
   .discord {
     color: #7289da;
+  }
+
+  .github {
+    color: #1da1f2;
+  }
+
+  .documentation {
+    color: #1da1f2;
   }
 }
 
