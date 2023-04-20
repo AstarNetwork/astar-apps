@@ -125,10 +125,10 @@ export default defineComponent({
   align-items: center;
   background: transparent;
   padding: 8px 16px 8px 12px;
-  border: 1px solid $gray-3;
+  border: 1px solid $navy-3;
   border-radius: 16px;
   margin-left: 8px;
-  color: $gray-5;
+  color: $navy-1;
   transition: all 0.3s ease 0s;
   @media (min-width: $sm) {
     margin-left: 16px;
@@ -140,16 +140,19 @@ export default defineComponent({
 }
 
 .divider {
-  border-left: 1px solid $border-separator-light;
+  border-left: 1px solid $navy-3;
   margin: 0 8px;
   height: 22px;
 }
 
 .iconbase {
-  color: $gray-3;
+  color: $navy-3;
   width: rem(22);
   height: rem(22);
   transition: all 0.3s ease 0s;
+}
+.txt--status {
+  color: $navy-1 !important;
 }
 
 .icon {
@@ -161,13 +164,13 @@ export default defineComponent({
 
 .m-btn--network {
   background: transparent;
-  border: 1px solid $gray-3;
+  border: 1px solid $navy-3;
   box-shadow: none;
   padding: 8px;
 
   .divider {
     margin: 0 8px;
-    border-left-color: $gray-3;
+    border-left-color: $navy-3;
   }
 }
 
@@ -187,6 +190,9 @@ export default defineComponent({
     .iconbase {
       color: $gray-1;
     }
+  }
+  .iconbase {
+    color: $gray-3;
   }
   .divider {
     border-left: 1px solid $gray-6;

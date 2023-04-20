@@ -85,6 +85,7 @@
 }
 
 .column__address {
+  color: $gray-4;
   @media (min-width: $md) {
     margin-left: 42px;
   }
@@ -143,6 +144,9 @@
 }
 
 .body--dark {
+  .column__address {
+    color: $gray-3;
+  }
   .text--switch-account {
     color: $astar-blue-dark;
   }
