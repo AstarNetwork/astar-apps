@@ -23,8 +23,8 @@
     "playwright": "BASE_URL='http://localhost:8080' npx playwright test --project=chromium --debug"
   },
   "dependencies": {
-    "@astar-network/astar-sdk-core": "^0.2.2",
-    "@astar-network/astar-ui": "^0.0.77",
+    "@astar-network/astar-sdk-core": "^0.2.3",
+    "@astar-network/astar-ui": "^0.0.83",
     "@ethersproject/bignumber": "^5.5.0",
     "@polkadot/api": "^9.13.6",
     "@polkadot/api-contract": "^9.13.6",
@@ -131,7 +131,7 @@
     "last 5 Opera versions"
   ],
   "engines": {
-    "node": "18.x",
+    "node": ">=18.x",
     "yarn": ">=1.22.0"
   },
   "browser": {

@@ -43,7 +43,7 @@
           <div v-else class="value value--claim">
             <div>
               <span class="text--rewards-amount">
-                {{ $n(pendingRewards) }} {{ nativeTokenSymbol }}
+                {{ pendingRewards }} {{ nativeTokenSymbol }}
               </span>
             </div>
             <span class="text--eras">
@@ -114,7 +114,7 @@ import { endpointKey } from 'src/config/chainEndpoints';
 import { defineComponent, computed, ref, watch } from 'vue';
 import { useStore } from 'src/store';
 import { $api } from 'src/boot/api';
-import { getPendingRewards } from '@astar-network/astar-sdk-core';
+import { estimatePendingRewards } from '@astar-network/astar-sdk-core';
 
 export default defineComponent({
   components: {
@@ -156,9 +156,9 @@ export default defineComponent({
         return;
       }
       isLoadingPendingRewards.value = true;
-      const { stakerPendingRewards } = await getPendingRewards({
+      const { stakerPendingRewards } = await estimatePendingRewards({
         api: $api!,
-        currentAccount: currentAccount.value,
+        walletAddress: currentAccount.value,
       });
       pendingRewards.value = stakerPendingRewards;
       isLoadingPendingRewards.value = false;
