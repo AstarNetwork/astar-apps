@@ -1,40 +1,42 @@
 import { expect } from '@playwright/test';
-import { test, getWindow } from './fixtures';
+import { test } from './fixtures';
+import {
+  ALICE_ACCOUNT_NAME,
+  ALICE_ACCOUNT_SEED,
+  BOB_ACCOUNT_NAME,
+  BOB_ACCOUNT_SEED,
+  BOB_ADDRESS,
+  closePolkadotWelcomePopup,
+  connectToNetwork,
+  createAccount,
+  selectAccount,
+  signTransaction,
+} from './common';
+import { ApiPromise } from '@polkadot/api';
+import { chainDecimals, getApi, getBalance } from './common-api';
+
+let api: ApiPromise;
+test.beforeAll(async () => {
+  api = await getApi();
+});
+
+test.afterAll(async () => {
+  await api.disconnect();
+});
 
 test.beforeEach(async ({ page, context }) => {
+  // TODO consider moving this into beforeAll
   await page.goto('/astar/assets');
   const closeButton = page.getByText('Polkadot.js');
   await closeButton.click();
 
-  const extensionWindow = await getWindow('polkadot{.js}', context);
-  const extensionAcceptButton = extensionWindow.getByText('Understood, let me continue');
-  await extensionAcceptButton.click();
-  const extensionAcceptButton2 = extensionWindow.getByText('Yes, allow this application access');
-  await extensionAcceptButton2.click();
+  await closePolkadotWelcomePopup(context);
+  await createAccount(page, ALICE_ACCOUNT_SEED, ALICE_ACCOUNT_NAME);
+  await createAccount(page, BOB_ACCOUNT_SEED, BOB_ACCOUNT_NAME);
+  await selectAccount(page, ALICE_ACCOUNT_NAME);
+  await connectToNetwork(page);
 
-  // Creates a new account with a random seed.
-  await page.goto('chrome-extension://mopnmbcafieddcagagdcbnhejhlodfdd/index.html#/account/create');
-  await page
-    .locator('label')
-    .filter({ hasText: 'I have saved my mnemonic seed safely.' })
-    .locator('span')
-    .click();
-  await page.getByRole('button', { name: 'Next step' }).click();
-  await page.locator('input[type="text"]').fill('Test');
-  await page.locator('input[type="password"]').click();
-  await page.locator('input[type="password"]').fill('Test1234');
-  page.getByRole('textbox').nth(2).fill('Test1234');
-  await page.getByRole('button', { name: 'Add the account with the generated seed' }).click();
-
-  // Select account in Astar UI
-  await page.goto('/astar/assets');
-  await page.getByText('×').click();
-  await page.getByRole('button', { name: 'box icon Connect' }).click();
-  await page.getByText('Polkadot.js').click();
-  await page.getByText('Test (extension)').click();
-  await page.getByRole('button', { name: 'Connect', exact: true }).click();
-
-  // Close popups
+  // Close cookies popup
   await page.getByRole('button', { name: 'Accept' }).click();
 });
 
@@ -60,5 +62,25 @@ test.describe('account panel', () => {
 
     await page.locator('.icon--expand').first().click();
     await expect(transferButton).not.toBeVisible();
+  });
+
+  test('should transfer tokens from Alice to Bob', async ({ page, context }) => {
+    const transferAmount = BigInt(1000);
+    await page.locator('.icon--expand').first().click();
+    await page.locator('#asset-expand').getByRole('button', { name: 'Transfer' }).click();
+
+    await page.getByPlaceholder('Destination Address').fill(BOB_ADDRESS);
+    await page.getByPlaceholder('0.0').fill(transferAmount.toString());
+    await page.getByRole('button', { name: 'Confirm' }).click();
+
+    const bobBalanceBeforeTransaction = await getBalance(BOB_ADDRESS);
+    await signTransaction(context);
+    await page.waitForSelector('.loader', { state: 'hidden' });
+
+    await expect(page.getByText('Success')).toBeVisible();
+    const bobBalanceAfterTransaction = await getBalance(BOB_ADDRESS);
+    expect(bobBalanceAfterTransaction - bobBalanceBeforeTransaction).toEqual(
+      transferAmount * BigInt(Math.pow(10, chainDecimals))
+    );
   });
 });
