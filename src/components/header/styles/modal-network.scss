@@ -19,7 +19,6 @@
   background: #fff;
   border-radius: 6px;
   min-height: rem(56);
-  width: rem(314);
   font-weight: 700;
   font-size: 16px;
   line-height: 18px;
@@ -87,7 +86,7 @@
 }
 
 .ip-input {
-  width: 236px;
+  width: 360px;
   height: 48px;
   text-align: center;
   margin-top: 16px;
@@ -113,7 +112,7 @@
 }
 
 .btn--connect {
-  width: 315px;
+  width: 100%;
   font-size: 20px;
   font-weight: 600;
   border-radius: 30px;

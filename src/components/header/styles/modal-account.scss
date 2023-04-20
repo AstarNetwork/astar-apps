@@ -49,7 +49,6 @@
   align-items: center;
   background: #fff;
   border-radius: 6px;
-  width: rem(314);
   font-weight: 700;
   font-size: 16px;
   line-height: 18px;
@@ -152,7 +151,7 @@
 }
 
 .btn--connect {
-  width: 340px;
+  width: 100%;
   font-size: 20px;
   font-weight: 600;
   border-radius: 30px;

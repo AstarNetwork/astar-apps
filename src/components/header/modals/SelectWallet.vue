@@ -112,7 +112,6 @@ export default defineComponent({
   background: #fff;
   border-radius: 6px;
   height: rem(56);
-  width: rem(314);
   font-weight: 700;
   font-size: 16px;
   line-height: 18px;
@@ -150,7 +149,6 @@ export default defineComponent({
 
 .box--wallet-option {
   position: absolute;
-  width: rem(314);
   left: 50%;
   transform: translate(-50%);
   z-index: 10;
@@ -165,7 +163,7 @@ export default defineComponent({
   padding-top: 4px;
   overflow: auto;
   overflow-x: hidden;
-  width: rem(314);
+  width: 430px;
   &:focus {
     outline: none;
   }

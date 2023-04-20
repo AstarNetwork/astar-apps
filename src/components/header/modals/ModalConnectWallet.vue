@@ -121,7 +121,6 @@ export default defineComponent({
   background: #fff;
   border-radius: 6px;
   height: rem(56);
-  width: rem(314);
   font-weight: 700;
   font-size: 16px;
   line-height: 18px;
