@@ -8,6 +8,7 @@ import {
   CrustShadowXcmRepository,
   PhalaXcmRepository,
   BifrostXcmRepository,
+  EquilibriumXcmRepository,
 } from 'src/v2/repositories/implementations';
 import { Chain } from 'src/v2/models/XcmModels';
 import { TypeMapping } from 'src/v2/config/types';
@@ -30,6 +31,7 @@ export const XcmRepositoryConfiguration: TypeMapping = {
   [Chain.PHALA]: PhalaXcmRepository,
   [Chain.BIFROST_POLKADOT]: BifrostXcmRepository,
   [Chain.BIFROST_KUSAMA]: BifrostXcmRepository,
+  [Chain.EQUILIBRIUM]: EquilibriumXcmRepository,
 };
 
 export type AstarToken = 'ASTR' | 'SDN';

@@ -5,6 +5,7 @@
     :title="title || ''"
     :tooltip="tooltip"
     :default-value="tvlValue"
+    :default-value-add-on="tvlValueAddOn"
     class="wrapper--chart"
     :is-multiple-line="isMultipleLine"
     :second-value="secondValue"
@@ -33,6 +34,10 @@ export default defineComponent({
     tvlValue: {
       type: String,
       required: true,
+    },
+    tvlValueAddOn: {
+      type: String,
+      default: '',
     },
     secondValue: {
       type: String,

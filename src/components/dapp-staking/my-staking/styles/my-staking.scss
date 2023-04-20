@@ -1,5 +1,13 @@
 @import 'src/css/quasar.variables.scss';
 
+.wrapper--mystaking {
+  padding: 0 16px;
+
+  @media (min-width: $md) {
+    padding: 0;
+  }
+}
+
 .txt--header {
   font-weight: 600;
   font-size: 22px;

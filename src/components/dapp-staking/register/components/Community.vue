@@ -14,7 +14,7 @@
           @remove="removeCommunity(index)"
           @click="editCommunity()"
         >
-          <avatar :icon-name="getCommunityIconName(community.type)" class="avatar" />
+          <avatar :icon-name="getCommunityIconName(community.type) as SocialIcon" class="avatar" />
         </image-card>
         <image-card description="Add an account" class="card">
           <add-item-card @click="addCommunity" />
@@ -118,7 +118,6 @@ export default defineComponent({
     ]);
 
     const updateCommunities = (communities: Community[]): void => {
-      console.log(communities);
       data.communities = communities;
       handleModalAddCommunity({ isOpen: false });
     };
@@ -171,6 +170,7 @@ export default defineComponent({
       addCommunity,
       handleModalAddCommunity,
       validateUrl,
+      SocialIcon,
     };
   },
 });

@@ -10,6 +10,9 @@
       <div class="row chart--value">
         <div>
           <span class="text--value text-color--neon">{{ defaultValue }}</span>
+          <span v-if="defaultValueAddOn" class="text--value--addon text-color--neon">{{
+            defaultValueAddOn
+          }}</span>
         </div>
         <div v-if="secondValue">
           <div v-if="secondValue === '0'">
@@ -53,6 +56,11 @@ export default defineComponent({
     defaultValue: {
       type: String,
       required: true,
+    },
+    defaultValueAddOn: {
+      type: String,
+      required: false,
+      default: '',
     },
     secondValue: {
       type: String,

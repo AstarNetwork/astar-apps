@@ -37,6 +37,7 @@ export default defineComponent({
 @import 'src/css/quasar.variables.scss';
 
 .wrapper {
+  padding-left: 8px;
   .wrapper--header {
     display: flex;
     justify-content: space-between;

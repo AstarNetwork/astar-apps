@@ -25,7 +25,7 @@
       </div>
       <div v-if="!isCopiedType">
         <div class="message">{{ alertMsg }}</div>
-        <astar-button v-if="isSuccessType && txHash" class="btn--check" @click="goToSubscan">{{
+        <astar-button v-if="isSuccessType && explorerUrl" class="btn--check" @click="goToSubscan">{{
           $t('toast.checkYourTransactions')
         }}</astar-button>
       </div>
@@ -35,8 +35,6 @@
 
 <script lang="ts">
 import { AlertType } from 'src/store/general/state';
-import { useNetworkInfo } from 'src/hooks';
-import { endpointKey } from 'src/config/chainEndpoints';
 import { useI18n } from 'vue-i18n';
 import { defineComponent, toRefs, PropType, computed, ref } from 'vue';
 
@@ -55,9 +53,10 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    txHash: {
+    explorerUrl: {
       type: String,
       default: null,
+      required: false,
     },
   },
   emits: ['close'],
@@ -82,21 +81,9 @@ export default defineComponent({
     const showCloseBtn = ref<boolean>(false);
     const isSuccessType = computed<boolean>(() => props.alertType === AlertType.Success);
     const isCopiedType = computed<boolean>(() => props.alertType === AlertType.Copied);
-    const { currentNetworkIdx } = useNetworkInfo();
-    const isShiden = computed<boolean>(() => currentNetworkIdx.value === endpointKey.SHIDEN);
-    const isShibuya = computed<boolean>(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
 
-    const goToSubscan = () => {
-      if (!props.txHash) return;
-
-      let rootName = 'astar';
-      if (isShiden.value) {
-        rootName = 'shiden';
-      } else if (isShibuya.value) {
-        rootName = 'shibuya';
-      }
-      const link = `https://${rootName}.subscan.io/extrinsic/${props.txHash}`;
-      window.open(link, '_blank');
+    const goToSubscan = (): void => {
+      window.open(props.explorerUrl, '_blank');
     };
 
     return {
@@ -215,7 +202,7 @@ export default defineComponent({
   padding-left: 12px;
   padding-right: 12px;
   margin-top: 8px;
-  word-break: break-all;
+  word-break: keep-all;
 }
 .btn--check {
   width: 90%;

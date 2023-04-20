@@ -15,9 +15,11 @@
 }
 
 .news-area {
+  padding: 0 16px;
   margin-bottom: 40px;
 
   @media (min-width: $md) {
+    padding: 0;
     margin-bottom: 0px;
   }
 }
@@ -26,6 +28,7 @@
   display: flex;
   gap: 16px;
   margin-top: 20px;
+  padding-left: 16px;
   width: 100%;
   flex-wrap: nowrap;
   overflow-x: auto;
@@ -33,6 +36,9 @@
   justify-content: left;
   &::-webkit-scrollbar {
     display: none;
+  }
+  @media (min-width: $md) {
+    padding: 0;
   }
   @media (min-width: $xl) {
     margin-top: 0px;

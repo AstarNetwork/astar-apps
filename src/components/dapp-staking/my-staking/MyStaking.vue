@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="wrapper--mystaking">
     <div class="txt--header">{{ $t('dappStaking.myStaking') }}</div>
     <div class="staking-container">
       <div class="wrapper--tabs responsive">

@@ -30,6 +30,13 @@
             </span>
           </div>
         </router-link>
+        <a :class="['link']" href="https://astar.network/community/ecosystem/" target="_blank">
+          <div class="column--item">
+            <span class="text--link">
+              {{ $t('common.ecosystem') }}
+            </span>
+          </div>
+        </a>
         <div class="tabs__indicator" :class="getIndicatorClass(path)" />
       </nav>
 
