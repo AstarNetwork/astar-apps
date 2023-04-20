@@ -86,7 +86,7 @@
 }
 
 .ip-input {
-  width: 360px;
+  width: 98%;
   height: 48px;
   text-align: center;
   margin-top: 16px;
@@ -99,6 +99,9 @@
   font-weight: 400;
   font-size: 14px;
   color: $gray-5;
+  @media (min-width: $md) {
+    width: 360px;
+  }
 }
 
 .ip-input:focus {
