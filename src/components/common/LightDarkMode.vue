@@ -16,7 +16,7 @@
       </astar-icon-base>
     </button>
 
-    <span class="tw-text-gray-400 dark:tw-text-darkGray-500">/</span>
+    <span class="tw-text-gray-300 dark:tw-text-darkGray-500">/</span>
 
     <button type="button" class="icon-dark" @click="switchThemeTo('DARK')">
       <astar-icon-base
@@ -64,6 +64,7 @@ export default defineComponent({
 
 .icon-light {
   @apply tw-pr-2 tw-rounded-full tw-relative;
+  color: $gray-3;
 }
 
 .icon-dark {
@@ -71,7 +72,7 @@ export default defineComponent({
 }
 
 .icon-outline-moon {
-  color: $gray-4;
+  color: #fff;
   @apply tw-h-5 tw-w-5 dark:tw-text-darkGray-100;
 }
 </style>

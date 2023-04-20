@@ -27,7 +27,8 @@
   width: 224px;
   height: 100%;
   padding-top: 24px;
-  background: $border-separator-light;
+  // background: #fff;
+  background: linear-gradient(150deg, #fff 50%, #0070EB 80%, #0AE2FE 90%);
   display: flex;
   flex-direction: column;
 }
