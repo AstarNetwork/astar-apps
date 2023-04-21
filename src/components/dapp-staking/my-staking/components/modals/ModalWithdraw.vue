@@ -115,7 +115,7 @@ export default defineComponent({
     font-weight: 600;
     font-size: 22px;
     margin-top: 16px;
-    color: $gray-5-selected;
+    color: $navy-1;
   }
 }
 

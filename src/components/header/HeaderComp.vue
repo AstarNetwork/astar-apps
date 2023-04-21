@@ -62,7 +62,7 @@ export default defineComponent({
   align-items: center;
   font-weight: 590;
   font-size: 1.625rem;
-  color: $gray-5-selected;
+  color: $navy-1;
   padding: 0rem;
 }
 

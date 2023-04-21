@@ -15,7 +15,7 @@
   display: flex;
   align-items: center;
   letter-spacing: -0.02em;
-  color: $gray-5-selected;
+  color: $navy-1;
   margin-left: 6px;
   margin-bottom: 24px;
 }
@@ -79,7 +79,7 @@
   }
 
   .text--tab {
-    color: $gray-5-selected;
+    color: $navy-1;
     font-size: 14px;
     font-weight: 400;
     @media (min-width: 400px) {

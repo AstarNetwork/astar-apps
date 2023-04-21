@@ -63,7 +63,7 @@ export default defineComponent({
 }
 
 .btn--account:hover {
-  background: $gray-5-selected;
+  background: $navy-1;
 }
 
 .iconbase {
