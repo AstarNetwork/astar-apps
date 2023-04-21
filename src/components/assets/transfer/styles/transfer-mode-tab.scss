@@ -17,7 +17,7 @@
 
 .unselected-tab {
   cursor: pointer;
-  border-bottom: 2px solid rgba(95, 101, 111, 0.2);
+  border-bottom: 1px solid $navy-3;
   transition: all 0.3s ease 0s;
 }
 
@@ -48,7 +48,7 @@
 
 .row--mode-tab {
   display: flex;
-  column-gap: 12px;
+  // column-gap: 12px;
 }
 
 .option--disabled {

@@ -32,12 +32,12 @@ export default defineComponent({
 .btn--connect {
   display: flex;
   height: 32px;
-  color: $gray-5;
+  color: $navy-1;
   flex-direction: row;
   align-items: center;
   padding: 8px 16px 8px 16px;
   background: transparent;
-  border: 1px solid $gray-3;
+  border: 1px solid $navy-3;
   border-radius: 16px;
   margin-left: 8px;
   transition: all 0.3s ease 0s;
@@ -50,7 +50,7 @@ export default defineComponent({
   padding-left: 10px;
   width: 32px;
   height: 32px;
-  border: 1px solid $gray-3;
+  border: 1px solid $navy-3;
   border-radius: 16px;
   margin-left: 16px;
   transition: all 0.3s ease 0s;
@@ -59,7 +59,7 @@ export default defineComponent({
   background: #fff;
 }
 .iconbase {
-  color: $gray-3;
+  color: $navy-3;
   width: rem(20);
   height: rem(20);
   margin-left: -4px;
@@ -79,6 +79,9 @@ export default defineComponent({
     .iconbase {
       color: $gray-1;
     }
+  }
+  .iconbase {
+    color: $gray-3;
   }
 
   .m-btn--connect {

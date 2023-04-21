@@ -46,8 +46,8 @@ export default defineComponent({
 }
 
 .icon--plus {
-  stroke: $gray-5-selected;
-  border: 1px solid $gray-5-selected;
+  stroke: $navy-1;
+  border: 1px solid $navy-1;
   width: 24px;
   height: 24px;
   border-radius: 50%;

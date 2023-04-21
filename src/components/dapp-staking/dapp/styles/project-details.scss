@@ -75,17 +75,18 @@
 }
 
 .tag {
-  background-color: $gray-2;
+  background-color: $navy-3;
   border-radius: 6px;
   padding: 2px 8px;
   width: fit-content;
   text-align: center;
+  color: #fff;
 }
 
 .text--tag {
-  font-weight: 600;
-  font-size: 14px;
-  color: $gray-4;
+  font-weight: 500;
+  font-size: 13px;
+  color: #fff;
 }
 
 .icon {

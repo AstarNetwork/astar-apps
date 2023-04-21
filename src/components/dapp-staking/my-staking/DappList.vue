@@ -51,7 +51,7 @@ export default defineComponent({
     display: flex;
     align-items: center;
     letter-spacing: -0.02em;
-    color: $gray-5-selected;
+    color: $navy-1;
   }
 }
 

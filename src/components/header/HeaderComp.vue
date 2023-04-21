@@ -52,7 +52,7 @@ export default defineComponent({
   @media (min-width: $lg) {
     padding: 40px 40px 25px 40px;
     height: 6rem;
-    background: $gray-1;
+    background: #fff;
   }
 }
 
@@ -62,7 +62,7 @@ export default defineComponent({
   align-items: center;
   font-weight: 590;
   font-size: 1.625rem;
-  color: $gray-5-selected;
+  color: $navy-1;
   padding: 0rem;
 }
 
