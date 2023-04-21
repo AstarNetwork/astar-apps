@@ -51,10 +51,12 @@ export const useConnectWallet = () => {
 
   const currentRouter = computed(() => router.currentRoute.value.matched[0]);
   const currentNetworkStatus = computed(() => store.getters['general/networkStatus']);
-  const isH160 = computed(() => store.getters['general/isH160Formatted']);
-  const isEthWallet = computed(() => store.getters['general/isEthWallet']);
+  const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
+  const isEthWallet = computed<boolean>(() => store.getters['general/isEthWallet']);
   const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
-  const isConnectedNetwork = computed(() => store.getters['general/networkStatus'] === 'connected');
+  const isConnectedNetwork = computed<boolean>(
+    () => store.getters['general/networkStatus'] === 'connected'
+  );
   const { currentNetworkIdx } = useNetworkInfo();
 
   const selectedWalletSource = computed(() => {
@@ -74,11 +76,6 @@ export const useConnectWallet = () => {
   const openSelectModal = (): void => {
     modalName.value = WalletModalOption.SelectWallet;
     return;
-  };
-
-  // Memo: triggered after users (who haven't connected to wallet) have clicked 'Connect Wallet' button on dApp staking page
-  const handleOpenSelectModal = (): void => {
-    window.addEventListener(WalletModalOption.SelectWallet, openSelectModal);
   };
 
   const initializeWalletAccount = () => {
@@ -167,12 +164,7 @@ export const useConnectWallet = () => {
     }
 
     const ss58 = currentEcdsaAccount.value.ss58 ?? '';
-    let result = await loadEvmWallet({ ss58, currentWallet: wallet });
-    // Todo: remove this code later
-    // if (result) {
-    //   modalName.value = '';
-    //   return;
-    // }
+    await loadEvmWallet({ ss58, currentWallet: wallet });
   };
 
   const toggleEvmWalletSchema = async () => {
@@ -329,7 +321,6 @@ export const useConnectWallet = () => {
   };
 
   watch([selectedWallet, currentEcdsaAccount, currentAccount, isH160], changeEvmAccount);
-  watchEffect(handleOpenSelectModal);
 
   watchEffect(async () => {
     await selectLoginWallet();
@@ -347,9 +338,26 @@ export const useConnectWallet = () => {
     { immediate: true }
   );
 
+  // Memo: triggered after users (who haven't connected to wallet) have clicked 'Connect Wallet' button on dApp staking page
+  // const handleOpenSelectModal = (): void => {
+  window.addEventListener(WalletModalOption.SelectWallet, openSelectModal);
+  // };
+
   onUnmounted(() => {
     window.removeEventListener(WalletModalOption.SelectWallet, openSelectModal);
   });
+
+  // watch(
+  //   [currentAccount],
+  //   async () => {
+  //     // Memo: to avoid opening accounts drawer after changed account
+  //     await wait(2000);
+  //     if (!currentAccount.value) {
+  //       window.dispatchEvent(new CustomEvent(WalletModalOption.SelectWallet));
+  //     }
+  //   },
+  //   { immediate: true }
+  // );
 
   return {
     WalletModalOption,

@@ -3,6 +3,8 @@
     :show="isOpen && !isSelected"
     title="Wallet"
     :is-closing="isClosing"
+    :is-back="true"
+    :handle-back="backModal"
     @close="closeModal"
   >
     <div class="wrapper--modal-account">
@@ -11,7 +13,7 @@
           <div class="border--separator--account" />
         </div>
         <div>
-          <select-wallet :set-wallet-modal="setWalletModal" :selected-wallet="selectedWallet" />
+          <selected-wallet :selected-wallet="selectedWallet" />
         </div>
         <div v-if="isNativeWallet" class="row--balance-option">
           <div class="column--balance-option">
@@ -102,6 +104,9 @@
         >
           {{ $t('connect') }}
         </astar-button>
+        <astar-button :disabled="!currentAccountName" class="btn--connect" @click="disconnect()">
+          {{ $t('disconnect') }}
+        </astar-button>
       </div>
     </div>
   </astar-modal-drawer>
@@ -111,7 +116,7 @@ import { ApiPromise } from '@polkadot/api';
 import copy from 'copy-to-clipboard';
 import { ethers } from 'ethers';
 import { $api } from 'src/boot/api';
-import SelectWallet from 'src/components/header/modals/SelectWallet.vue';
+import SelectedWallet from 'src/components/header/modals/SelectedWallet.vue';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { SupportWallet } from 'src/config/wallets';
@@ -132,10 +137,11 @@ import { computed, defineComponent, PropType, ref, watch, onUnmounted } from 'vu
 import { useI18n } from 'vue-i18n';
 import { useExtensions } from 'src/hooks/useExtensions';
 import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
+import { useAccount } from 'src/hooks';
 
 export default defineComponent({
   components: {
-    SelectWallet,
+    SelectedWallet,
   },
   props: {
     isOpen: {
@@ -146,7 +152,7 @@ export default defineComponent({
       type: String as PropType<SupportWallet>,
       required: true,
     },
-    setWalletModal: {
+    openSelectModal: {
       type: Function,
       required: true,
     },
@@ -170,6 +176,7 @@ export default defineComponent({
     const isShowBalance = ref<boolean>(false);
     const isLoadingBalance = ref<boolean>(false);
     const accountBalanceMap = ref<SubstrateAccount[]>([]);
+    const { currentAccountName, disconnectAccount } = useAccount();
 
     const closeModal = async (): Promise<void> => {
       isClosing.value = true;
@@ -177,6 +184,16 @@ export default defineComponent({
       await wait(animationDuration);
       isClosing.value = false;
       emit('update:is-open', false);
+    };
+
+    const disconnect = async () => {
+      await disconnectAccount();
+      await backModal();
+    };
+
+    const backModal = async (): Promise<void> => {
+      await closeModal();
+      props.openSelectModal();
     };
 
     const isDarkTheme = computed<boolean>(() => store.getters['general/theme'] === 'DARK');
@@ -340,7 +357,10 @@ export default defineComponent({
       isSelected,
       isClosing,
       isShowBalance,
+      currentAccountName,
       displayBalance,
+      backModal,
+      disconnect,
     };
   },
 });

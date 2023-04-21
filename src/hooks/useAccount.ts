@@ -13,7 +13,7 @@ export const useAccount = () => {
   const currentEcdsaAccount = computed(() => store.getters['general/currentEcdsaAccount']);
   const substrateAccounts = computed(() => store.getters['general/substrateAccounts']);
   const currentAddress = computed(() => store.getters['general/selectedAddress']);
-  const { SELECTED_ADDRESS } = LOCAL_STORAGE;
+  const { SELECTED_ADDRESS, SELECTED_WALLET } = LOCAL_STORAGE;
 
   const disconnectAccount = async (): Promise<Boolean> => {
     // Memo: Gives time for syncing
@@ -29,6 +29,8 @@ export const useAccount = () => {
         ss58: '',
         h160: '',
       });
+      localStorage.removeItem(SELECTED_ADDRESS);
+      localStorage.removeItem(SELECTED_WALLET);
       resolve(true);
     });
   };

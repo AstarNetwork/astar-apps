@@ -1,0 +1,80 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--modal--wallet {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 42px;
+  padding-bottom: 20px;
+  padding-left: 24px;
+  padding-right: 24px;
+  row-gap: 20px;
+  @media (min-width: $sm) {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+}
+
+.title--account-type {
+  font-weight: 800;
+  font-size: 16px;
+  line-height: 16px;
+  color: $gray-5;
+  text-align: left;
+  margin-bottom: 18px;
+  @media (min-width: 500px) {
+    margin-left: 0px;
+  }
+}
+
+.wrapper--wallets {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  gap: 10px;
+}
+
+.box__row--wallet {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  row-gap: 12px;
+  align-items: center;
+  background: #fff;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 14px;
+  color: $gray-5;
+  cursor: pointer;
+  padding: 16px;
+  padding-left: 24px;
+  margin: 0 auto;
+
+  @media (min-width: 500px) {
+    flex-direction: row;
+    font-size: 16px;
+    column-gap: 8px;
+  }
+
+  &:hover {
+    border: 1px solid $astar-blue-dark;
+  }
+
+  &:active {
+    border: 2px solid $astar-blue-dark;
+  }
+
+  .box--img {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.body--dark {
+  .title--account-type {
+    color: $gray-1;
+  }
+  .box__row--wallet {
+    background: $modal-item-bg-dark;
+    color: $gray-1;
+  }
+}

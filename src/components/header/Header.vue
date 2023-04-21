@@ -22,8 +22,14 @@
       v-model:selectNetwork="currentNetworkIdx"
       :network-idx="currentNetworkIdx"
     />
+    <!-- <modal-connect-wallet
+      :is-modal-connect-wallet="modalName === WalletModalOption.SelectWallet || isNoAccount"
+      :set-wallet-modal="setWalletModal"
+      :set-close-modal="setCloseModal"
+      :connect-ethereum-wallet="connectEthereumWallet"
+    /> -->
     <modal-connect-wallet
-      :is-modal-connect-wallet="modalName === WalletModalOption.SelectWallet && !currentAccount"
+      :is-modal-connect-wallet="modalName === WalletModalOption.SelectWallet"
       :set-wallet-modal="setWalletModal"
       :set-close-modal="setCloseModal"
       :connect-ethereum-wallet="connectEthereumWallet"
@@ -32,7 +38,7 @@
     <modal-account
       v-if="modalAccountSelect"
       v-model:isOpen="modalAccountSelect"
-      :set-wallet-modal="setWalletModal"
+      :open-select-modal="openSelectModal"
       :selected-wallet="selectedWallet"
       :connect-ethereum-wallet="connectEthereumWallet"
       :disconnect-account="disconnectAccount"
@@ -54,7 +60,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, computed, ref, watch } from 'vue';
+import { defineComponent, reactive, toRefs, computed, ref, watch, watchEffect } from 'vue';
 import { useConnectWallet } from 'src/hooks';
 import { useStore } from 'src/store';
 import { useRoute } from 'vue-router';
@@ -121,11 +127,17 @@ export default defineComponent({
       modalAccountSelect.value = false;
     };
 
+    const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
+
+    // Memo: remove if it is not necessary
+    const isNoAccount = computed<boolean>(() => !isLoading.value && !currentAccount.value);
+
     const store = useStore();
-    const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
+    const currentNetworkIdx = computed<number>(() => store.getters['general/networkIdx']);
     const route = useRoute();
-    const path = computed(() => route.path);
+    const path = computed<string>(() => route.path);
     const headerName = ref<string>('');
+
     watch(
       path,
       () => {
@@ -149,6 +161,7 @@ export default defineComponent({
       modalAccountSelect,
       width,
       screenSize,
+      isNoAccount,
       clickAccountBtn,
       clickNetworkBtn,
       setCloseModal,
