@@ -75,7 +75,7 @@ test.describe('account panel', () => {
 
     const bobBalanceBeforeTransaction = await getBalance(BOB_ADDRESS);
     await signTransaction(context);
-    await page.waitForSelector('.loader', { state: 'hidden' });
+    await page.waitForSelector('.four', { state: 'hidden' });
 
     await expect(page.getByText('Success')).toBeVisible();
     const bobBalanceAfterTransaction = await getBalance(BOB_ADDRESS);

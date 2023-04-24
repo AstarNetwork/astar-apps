@@ -1,0 +1,11 @@
+Description: End to end tests
+Network: ./zombienet-config.toml
+Creds: config
+
+{% set nodes = ["relay01", "relay02", "relay03", "relay04"] %}
+{% for node in nodes %}
+  {{node}}: is up
+  {{node}}: reports node_roles is 4
+{% endfor %}
+
+astar: js-script ./start-playwright.js with "http://localhost:8080"
