@@ -8,4 +8,4 @@ Creds: config
   {{node}}: reports node_roles is 4
 {% endfor %}
 
-astar: js-script ./start-playwright.js with "http://localhost:8080"
+astar: js-script ./start-playwright.js with "{{BASE_URL}}"

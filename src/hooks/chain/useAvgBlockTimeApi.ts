@@ -17,6 +17,8 @@ export const useAvgBlockTimeApi = (network: string) => {
 
   // Fetch next era ETA from Token API
   const fetchNextEraEta = async (network: string) => {
+    if (network === 'custom-network') return;
+
     const eta = await repository.getNextEraEta(network);
 
     etaNextEra.value = DateTime.local()

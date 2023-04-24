@@ -24,10 +24,10 @@ export const createAccount = async (page: Page, seed: string, name: string): Pro
 };
 
 export const connectToNetwork = async (page: Page): Promise<void> => {
-  await page.getByRole('button', { name: 'network icon Astar Network Connected v0.0.55' }).click();
+  await page.locator('.btn--network').click();
   await page.getByText('Custom Network').click();
   await page.getByPlaceholder('IP Address / Domain').click();
-  await page.getByPlaceholder('IP Address / Domain').fill(NODE_ENDPOINT); // most likely URI will need to be configurable
+  await page.getByPlaceholder('IP Address / Domain').fill(NODE_ENDPOINT);
   await page.getByRole('button', { name: 'Connect', exact: true }).click();
 };
 
