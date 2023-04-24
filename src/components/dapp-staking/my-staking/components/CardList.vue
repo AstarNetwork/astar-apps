@@ -253,7 +253,7 @@ export default defineComponent({
         color: $gray-1;
       }
       .badge--tag {
-        background: $gray-5;
+        background: $navy-3;
         color: $gray-3;
       }
       .divider {

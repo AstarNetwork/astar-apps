@@ -25,6 +25,7 @@
   padding: 24px;
   max-height: 420px;
   overflow: auto;
+  padding-top: 0;
 }
 
 .row--title {
@@ -122,16 +123,14 @@
 .body--dark {
   .container--select-item {
     color: $gray-1;
-    background: $gray-6;
     border: 1px solid $gray-4;
     @media (min-width: $md) {
-      background: $gray-6;
+      background: $container-bg-dark;
     }
   }
   .row--item {
-    background-color: $gray-7;
+    background-color: transparent;
     @media (min-width: $md) {
-      background-color: $gray-6;
       &:hover {
         background: rgba(255, 255, 255, 0.02);
       }

@@ -3,34 +3,17 @@
 // Memo: Overwriting the astar-ui component
 
 .modal-header {
-  margin-bottom: 22px !important;
+  // margin-bottom: 22px !important;
 }
 
-.header {
-  // background: white !important;
-  .header-right {
-    padding: 0 !important;
-    @media (min-width: $lg) {
-      padding-right: 12px !important;
-    }
-  }
-  .header-left {
-    font-size: 26px;
-  }
-}
+// .header {
+//   .header-right {
+//     padding: 0 !important;
+//     @media (min-width: $lg) {
+//       padding-right: 12px !important;
+//     }
+//   }
+// }
 
 .body--dark {
-  .header {
-    // background: $body-bg-dark !important;
-    .header-left {
-      color: $gray-1 !important;
-    }
-  }
-  .transfer-modal {
-    .modal {
-      .modal-content {
-        background-color: $gray-6 !important;
-      }
-    }
-  }
 }
