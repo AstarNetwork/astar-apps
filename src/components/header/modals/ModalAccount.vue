@@ -22,7 +22,7 @@
             </span>
             <!-- Memo: `toggle--custom`: defined in app.scss due to unable to define in this file -->
             <div class="toggle--custom">
-              <q-toggle v-model="isShowBalance" color="light-blue" />
+              <q-toggle v-model="isShowBalance" color="#0085ff" />
             </div>
           </div>
         </div>
@@ -54,43 +54,53 @@
                   @change="selAccount = account.address"
                 />
                 <div class="wrapper--account-detail">
-                  <div class="accountName">{{ account.name }}</div>
-                  <div class="row--address-icons">
-                    <div class="address">{{ getShortenAddress(account.address) }}</div>
-                    <div class="icons">
-                      <button class="box--share btn--primary" @click="copyAddress(account.address)">
-                        <div class="icon--primary">
-                          <astar-icon-copy />
-                        </div>
-                        <q-tooltip>
-                          <span class="text--tooltip">{{ $t('copy') }}</span>
-                        </q-tooltip>
-                      </button>
-                      <a
-                        :href="subScan + account.address"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <button class="box--share btn--primary">
-                          <div class="icon--primary">
-                            <astar-icon-external-link />
-                          </div>
-                          <q-tooltip>
-                            <span class="text--tooltip">{{ $t('subscan') }}</span>
-                          </q-tooltip>
-                        </button>
-                      </a>
+                  <div class="box--account">
+                    <div class="row--account">
+                      <div class="account-name">
+                        <span>
+                          {{ account.name }}
+                        </span>
+                      </div>
+                      <div class="address">
+                        <span>
+                          {{ getShortenAddress(account.address, 4) }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="row--balance-icons">
+                      <div>
+                        <span v-if="isShowBalance && !isLoadingBalance" class="text--balance">
+                          {{ $n(displayBalance(account.address)) }}
+                          {{ nativeTokenSymbol }}
+                        </span>
+                        <span v-else class="text--balance-hide">
+                          ----- {{ nativeTokenSymbol }}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                  <div>
-                    <span v-if="isShowBalance && !isLoadingBalance" class="text--balance">
-                      {{ $n(displayBalance(account.address)) }}
-                      {{ nativeTokenSymbol }}
-                    </span>
-                    <span v-else class="text--balance-hide"> ----- {{ nativeTokenSymbol }} </span>
+                  <div class="icons">
+                    <button class="box--share btn--primary" @click="copyAddress(account.address)">
+                      <div class="icon--primary">
+                        <astar-icon-copy />
+                      </div>
+                      <q-tooltip>
+                        <span class="text--tooltip">{{ $t('copy') }}</span>
+                      </q-tooltip>
+                    </button>
+                    <a :href="subScan + account.address" target="_blank" rel="noopener noreferrer">
+                      <button class="box--share btn--primary">
+                        <div class="icon--primary">
+                          <astar-icon-external-link />
+                        </div>
+                        <q-tooltip>
+                          <span class="text--tooltip">{{ $t('subscan') }}</span>
+                        </q-tooltip>
+                      </button>
+                    </a>
                   </div>
                 </div>
-                <div v-if="index === previousSelIdx" class="dot"></div>
+                <div v-if="index === previousSelIdx" class="dot" />
               </label>
             </li>
           </ul>
@@ -98,7 +108,7 @@
       </div>
       <div class="wrapper__row--button">
         <astar-button
-          :disabled="substrateAccounts.length > 0 && !selAccount"
+          :disabled="(substrateAccounts.length > 0 && !selAccount) || !isNativeWallet"
           class="btn--connect"
           @click="selectAccount(selAccount)"
         >
@@ -137,7 +147,7 @@ import { computed, defineComponent, PropType, ref, watch, onUnmounted } from 'vu
 import { useI18n } from 'vue-i18n';
 import { useExtensions } from 'src/hooks/useExtensions';
 import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
-import { useAccount } from 'src/hooks';
+import { useAccount, useBreakpoints } from 'src/hooks';
 
 export default defineComponent({
   components: {
@@ -196,9 +206,9 @@ export default defineComponent({
       props.openSelectModal();
     };
 
-    const isDarkTheme = computed<boolean>(() => store.getters['general/theme'] === 'DARK');
     const store = useStore();
     const { t } = useI18n();
+    const { width, screenSize } = useBreakpoints();
 
     const isNativeWallet = computed<boolean>(() => checkIsNativeWallet(props.selectedWallet));
 
@@ -274,7 +284,8 @@ export default defineComponent({
 
     const windowHeight = ref<number>(window.innerHeight);
     const onHeightChange = () => {
-      windowHeight.value = window.innerHeight - 414;
+      const adjustment = width.value > screenSize.sm ? 546 : 390;
+      windowHeight.value = window.innerHeight - adjustment;
     };
 
     window.addEventListener('resize', onHeightChange);
@@ -343,7 +354,6 @@ export default defineComponent({
       substrateAccounts,
       SupportWallet,
       currentNetworkIdx,
-      isDarkTheme,
       subScan,
       isNativeWallet,
       nativeTokenSymbol,

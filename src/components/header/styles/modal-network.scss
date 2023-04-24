@@ -29,14 +29,14 @@
 }
 .class-radio-off {
   cursor: pointer;
-  background: #fff;
-  border: 1px solid transparent;
+  background: transparent;
+  border: 1px solid $gray-3;
   transition: all 0.3s ease 0s;
+  &:hover {
+    border: 1px solid $astar-blue !important;
+  }
 }
 
-.class-radio-off:hover {
-  border: 1px solid $astar-blue;
-}
 .class-radio-on {
   border: 2px solid $astar-blue;
 }
@@ -148,7 +148,7 @@
     color: #fff;
   }
   .class-radio-off {
-    background: $modal-item-bg-dark;
+    border: 1px solid $gray-4;
   }
 
   .class-radio-on {

@@ -4,15 +4,9 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-top: 42px;
+  padding-top: 38px;
   padding-bottom: 20px;
-  padding-left: 24px;
-  padding-right: 24px;
   row-gap: 20px;
-  @media (min-width: $sm) {
-    padding-left: 0px;
-    padding-right: 0px;
-  }
 }
 
 .title--account-type {
@@ -29,7 +23,7 @@
 
 .wrapper--wallets {
   display: grid;
-  grid-template-columns: 50% 50%;
+  grid-template-columns: 1fr 1fr;
   gap: 10px;
 }
 

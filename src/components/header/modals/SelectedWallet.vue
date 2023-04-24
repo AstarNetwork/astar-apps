@@ -34,7 +34,6 @@ export default defineComponent({
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #fff;
   border-radius: 6px;
   height: rem(56);
   font-weight: 700;
@@ -44,6 +43,7 @@ export default defineComponent({
   margin: 0 auto;
   margin-top: 16px;
   padding: 16px;
+  border: 1px solid $gray-3;
 
   .wrapper--row--wallet {
     display: flex;
@@ -69,7 +69,7 @@ export default defineComponent({
 
 .body--dark {
   .box__row--wallet {
-    background: $modal-item-bg-dark;
+    border: 1px solid $gray-4;
     color: $gray-1;
   }
 }
