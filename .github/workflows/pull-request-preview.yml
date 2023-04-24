@@ -45,18 +45,18 @@ jobs:
 
       - name: Download pre-built linux collator binary
         run: |
-          wget https://github.com/AstarNetwork/Astar/releases/download/v${{ github.event.pull_request.inputs.astar_tag }}/astar-collator-v${{ github.event.inputs.astar_tag }}-ubuntu-x86_64.tar.gz
+          wget https://github.com/AstarNetwork/Astar/releases/download/v4.47.1/astar-collator-v${{ github.event.inputs.astar_tag }}-ubuntu-x86_64.tar.gz
           tar -xvf astar-collator-*-ubuntu-x86_64.tar.gz
           chmod +x ./astar-collator
           mv astar-collator tests/bin/astar-collator
       - name: Copy polkadot relay chain binary
         run: |
-          wget https://github.com/paritytech/polkadot/releases/download/v${{ github.event.pull_request.inputs.polkadot_tag }}/polkadot
+          wget https://github.com/paritytech/polkadot/releases/download/v0.9.37/polkadot
           chmod +x ./polkadot
           mv polkadot tests/bin/polkadot
       - name: Copy zombinet testing binary
         run: |
-          wget https://github.com/paritytech/zombienet/releases/download/v${{ github.event.pull_request.inputs.zombienet_tag }}/zombienet-linux-x64
+          wget https://github.com/paritytech/zombienet/releases/download/v1.3.35/zombienet-linux-x64
           chmod +x ./zombienet-linux-x64
           mv zombienet-linux-x64 tests/bin/zombienet-linux-x64
 
