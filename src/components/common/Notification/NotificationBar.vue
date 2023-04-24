@@ -194,9 +194,9 @@ export default defineComponent({
 .column--close {
   width: 16px;
   height: 16px;
-  border: 1px solid $gray-3;
+  border: 1px solid $gray-4;
   border-radius: 30px;
-  color: $gray-3;
+  color: $gray-4;
   font-size: 30px;
   font-weight: 10;
   cursor: pointer;

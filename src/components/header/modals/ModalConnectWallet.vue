@@ -110,7 +110,7 @@ export default defineComponent({
   font-weight: 400;
   font-size: 14px;
   line-height: 16px;
-  color: $gray-5;
+  color: $navy-1;
   text-align: left;
   margin-left: 8px;
 }
@@ -125,7 +125,7 @@ export default defineComponent({
   font-weight: 700;
   font-size: 16px;
   line-height: 18px;
-  color: $gray-5;
+  color: $navy-1;
   margin: 0 auto;
   margin-top: 16px;
   padding: 16px;
@@ -133,11 +133,11 @@ export default defineComponent({
   cursor: pointer;
 
   &:hover {
-    border: 1px solid $astar-blue-dark;
+    border: 1px solid $astar-blue;
   }
 
   &:active {
-    border: 2px solid $astar-blue-dark;
+    border: 2px solid $astar-blue;
   }
 
   .box--img {

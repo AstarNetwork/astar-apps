@@ -73,7 +73,7 @@
   display: flex;
   flex-direction: column;
   row-gap: 8px;
-  color: $gray-5;
+  color: $navy-1;
   cursor: pointer;
   &:hover {
     .container--explorer-icon {
@@ -100,7 +100,7 @@
   margin-bottom: 12px;
   font-size: 16px;
   font-weight: 500;
-  color: $gray-5;
+  color: $navy-1;
   @media (min-width: $md) {
     color: $gray-4;
   }
@@ -136,7 +136,7 @@
 }
 
 .container--explorer-icon {
-  stroke: $gray-5;
+  stroke: $navy-1;
   display: flex;
   align-items: center;
   justify-content: center;

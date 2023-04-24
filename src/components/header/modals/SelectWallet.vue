@@ -116,7 +116,7 @@ export default defineComponent({
   font-weight: 700;
   font-size: 16px;
   line-height: 18px;
-  color: $gray-5;
+  color: $navy-1;
   margin: 0 auto;
   margin-top: 16px;
   padding: 16px;
@@ -124,7 +124,7 @@ export default defineComponent({
   border: 1px solid transparent;
 
   &:hover {
-    border: 1px solid $astar-blue-dark;
+    border: 1px solid $astar-blue;
   }
 
   .box--img {
@@ -143,7 +143,7 @@ export default defineComponent({
   }
 
   .txt--change {
-    color: $astar-blue-dark;
+    color: $astar-blue;
     margin-right: 8px;
   }
 }

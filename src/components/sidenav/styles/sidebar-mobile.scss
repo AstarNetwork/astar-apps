@@ -21,20 +21,19 @@
   font-size: 14px;
   line-height: 17px;
   text-align: center;
-  color: $gray-3;
-  // padding: 12px;
+  color: $gray-4;
   padding: 10px;
 }
 
 .active-link {
   font-weight: 700;
-  color: $gray-5;
+  color: $navy-1;
 }
 
 .button--option {
   width: 32px;
   height: 32px;
-  color: $gray-3;
+  color: $gray-4;
   border-radius: 16px;
   margin-top: 4px;
   margin-right: rem(16);
@@ -107,7 +106,7 @@
   transition: all 0.2s ease 0s;
   &:hover {
     font-weight: 700;
-    color: $gray-5;
+    color: $navy-1;
     transition: all 0.2s ease 0s;
   }
 }

@@ -54,7 +54,7 @@ export default defineComponent({
 }
 .select-language {
   background: #d3d6dc;
-  color: $gray-5;
+  color: $navy-1;
   width: 95px;
   height: 36px;
   padding-left: 15px;
@@ -64,7 +64,7 @@ export default defineComponent({
   cursor: pointer;
 }
 .icon--select {
-  color: $gray-5;
+  color: $navy-1;
 }
 
 @media (max-width: 768px) {
