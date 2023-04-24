@@ -121,9 +121,9 @@ import Logo from '../common/Logo.vue';
 import ConnectionTrouble from 'src/components/common/ConnectionTrouble.vue';
 import { useRouter } from 'vue-router';
 import { Path as RoutePath } from 'src/router/routes';
-import IconSideNft from './IconSideNFT.vue';
-import IconEcosystem from './IconEcosystem.vue';
-import Balloon from './Balloon.vue';
+import IconSideNft from './components/IconSideNFT.vue';
+import IconEcosystem from './components/IconEcosystem.vue';
+import Balloon from './components/Balloon.vue';
 
 export default defineComponent({
   components: {
