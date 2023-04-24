@@ -57,7 +57,7 @@
         </router-link>
         <div v-else class="dummy-row" />
       </div>
-      <div>
+      <div @mouseover="hoverNFT = true" @mouseleave="hoverNFT = false">
         <router-link
           to="#"
           :class="['link', $route.path.split('/')[1] === 'astar-nft' ? 'activeLink' : '']"
@@ -74,12 +74,10 @@
           </div>
         </router-link>
         <balloon
-          direction="right"
-          :is-balloon="true"
-          :is-balloon-closing="false"
-          :handle-close-balloon="() => {}"
-          :title="$t('new')"
-          :text="$t('assets.assetsAreNowFolded')"
+          class="balloon"
+          :is-balloon="hoverNFT"
+          :is-balloon-closing="!hoverNFT"
+          :text="$t('sidenavi.comingsoon')"
         />
       </div>
       <div>
@@ -125,7 +123,7 @@ import { useRouter } from 'vue-router';
 import { Path as RoutePath } from 'src/router/routes';
 import IconSideNft from './IconSideNFT.vue';
 import IconEcosystem from './IconEcosystem.vue';
-import Balloon from 'src/components/common/Balloon.vue';
+import Balloon from './Balloon.vue';
 
 export default defineComponent({
   components: {
@@ -150,6 +148,8 @@ export default defineComponent({
     const router = useRouter();
     const path = computed(() => router.currentRoute.value.path.split('/')[2]);
 
+    const hoverNFT = ref(false);
+
     const getIndicatorClass = (path: string): string => {
       switch (path) {
         case 'dashboard':
@@ -171,6 +171,7 @@ export default defineComponent({
       router,
       path,
       RoutePath,
+      hoverNFT,
     };
   },
 });

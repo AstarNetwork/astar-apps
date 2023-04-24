@@ -117,6 +117,7 @@ export default {
     theme: 'Theme',
     close: 'Close',
     connectionTrouble: 'Connection Trouble?',
+    comingsoon: 'Something ink!redible coming soon',
   },
   drawer: {
     endpoint: 'Endpoint',
