@@ -114,9 +114,9 @@
         >
           {{ $t('connect') }}
         </astar-button>
-        <astar-button :disabled="!currentAccountName" class="btn--connect" @click="disconnect()">
+        <button :disabled="!currentAccountName" class="btn--disconnect" @click="disconnect()">
           {{ $t('disconnect') }}
-        </astar-button>
+        </button>
       </div>
     </div>
   </astar-modal-drawer>
