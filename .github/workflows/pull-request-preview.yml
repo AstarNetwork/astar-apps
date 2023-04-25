@@ -45,7 +45,7 @@ jobs:
 
       - name: Download pre-built linux collator binary
         run: |
-          wget https://github.com/AstarNetwork/Astar/releases/download/v4.47.1/astar-collator-v4.47.1ubuntu-x86_64.tar.gz
+          wget https://github.com/AstarNetwork/Astar/releases/download/v4.47.1/astar-collator-v4.47.1-ubuntu-x86_64.tar.gz
           tar -xvf astar-collator-*-ubuntu-x86_64.tar.gz
           chmod +x ./astar-collator
           mv astar-collator tests/bin/astar-collator
