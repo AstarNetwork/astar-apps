@@ -1,8 +1,10 @@
+import { clickPolicyButton } from 'src/modules/playwright';
 import { expect } from '@playwright/test';
 import { test, getWindow } from './fixtures';
 
 test.beforeEach(async ({ page, context }) => {
   await page.goto('/astar/assets');
+  await clickPolicyButton(page);
   const closeButton = page.getByText('Polkadot.js');
   await closeButton.click();
 
@@ -28,14 +30,12 @@ test.beforeEach(async ({ page, context }) => {
 
   // Select account in Astar UI
   await page.goto('/astar/assets');
-  await page.locator('.modal-close').click();
-  await page.getByRole('button', { name: 'box icon Connect' }).click();
   await page.getByText('Polkadot.js').click();
   await page.getByText('Test (extension)').click();
   await page.getByRole('button', { name: 'Connect', exact: true }).click();
 
   // Close popups
-  await page.getByRole('button', { name: 'Accept' }).click();
+  // await page.getByRole('button', { name: 'Accept' }).click();
 });
 
 test.describe('account panel', () => {
