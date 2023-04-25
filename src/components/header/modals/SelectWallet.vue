@@ -124,7 +124,7 @@ export default defineComponent({
   border: 1px solid transparent;
 
   &:hover {
-    border: 1px solid $astar-blue-dark;
+    border: 1px solid $astar-blue;
   }
 
   .box--img {
@@ -143,7 +143,7 @@ export default defineComponent({
   }
 
   .txt--change {
-    color: $astar-blue-dark;
+    color: $astar-blue;
     margin-right: 8px;
   }
 }

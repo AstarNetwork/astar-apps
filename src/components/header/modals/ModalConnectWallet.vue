@@ -133,11 +133,11 @@ export default defineComponent({
   cursor: pointer;
 
   &:hover {
-    border: 1px solid $astar-blue-dark;
+    border: 1px solid $astar-blue;
   }
 
   &:active {
-    border: 2px solid $astar-blue-dark;
+    border: 2px solid $astar-blue;
   }
 
   .box--img {
