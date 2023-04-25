@@ -21,7 +21,7 @@
     "heroku-deploy": "git push heroku main",
     "playwright:codegen": "npx playwright codegen http://localhost:8080",
     "playwright": "BASE_URL='http://localhost:8080' npx playwright test --project=chromium --debug",
-    "playwright:ci": "cd bin; ./zombienet-linux-x64 test -p native ../e2e.zndsl"
+    "playwright:ci": "./zombienet-linux-x64 test -p native ./tests/e2e.zndsl"
   },
   "dependencies": {
     "@astar-network/astar-sdk-core": "^0.2.2",
@@ -86,7 +86,7 @@
   "devDependencies": {
     "@babel/eslint-parser": "^7.13.14",
     "@depay/web3-mock": "^13.26.0",
-    "@playwright/test": "^1.31.0",
+    "@playwright/test": "^1.32.3",
     "@polkadot/ts": "^0.4.22",
     "@quasar/quasar-app-extension-apollo": "^2.0.0-beta.5",
     "@quasar/quasar-app-extension-qmarkdown": "^2.0.0-alpha.8",
