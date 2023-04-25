@@ -181,7 +181,7 @@ export default defineComponent({
       font-weight: 600;
       font-size: 16px;
       line-height: 18px;
-      color: $gray-6;
+      color: $navy-1;
     }
 
     .badge--tag {
