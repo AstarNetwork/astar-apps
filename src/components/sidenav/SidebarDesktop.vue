@@ -77,11 +77,7 @@
       </div> -->
       <div>
         <a :class="['link']" href="https://astar.network/community/ecosystem/" target="_blank">
-          <astar-icon-base
-            :class="['icon-add', isShiden ? 'shiden' : '']"
-            icon-color="currentColor"
-            icon-name="staking"
-          >
+          <astar-icon-base :class="['icon-add', isShiden ? 'shiden' : '']" icon-name="ecosystem">
             <icon-ecosystem />
           </astar-icon-base>
           <div class="row--item row--item-ecosystem">
