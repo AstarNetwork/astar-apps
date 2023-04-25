@@ -89,6 +89,7 @@ export default defineComponent({
     );
     border-image-slice: 1;
   }
+
   .header-left {
     color: $gray-1;
     @media (min-width: $lg) {

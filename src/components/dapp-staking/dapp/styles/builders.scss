@@ -2,7 +2,7 @@
 
 .wrapper--builders {
   border-bottom: 1px solid $gray-2;
-  padding-bottom: 24px;
+  padding-bottom: 80px;
   margin-bottom: 24px;
 }
 
@@ -110,7 +110,7 @@
 
 .body--dark {
   .card--builders {
-    background: $gray-7;
+    background: $container-bg-dark;
   }
   .text--name {
     color: $gray-1;

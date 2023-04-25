@@ -131,7 +131,7 @@ export default defineComponent({
     #0ae2ff 74.93%
   );
   border-image-slice: 1;
-  margin-top: 24px;
+  margin-top: 80px;
   margin-bottom: 24px;
 }
 
