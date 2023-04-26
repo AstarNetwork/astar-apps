@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@astar-network/astar-sdk-core": "^0.2.2",
-    "@astar-network/astar-ui": "^0.0.88",
+    "@astar-network/astar-ui": "^0.0.89",
     "@ethersproject/bignumber": "^5.5.0",
     "@polkadot/api": "^9.13.6",
     "@polkadot/api-contract": "^9.13.6",

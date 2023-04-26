@@ -30,16 +30,13 @@
 .text--title-feature {
   font-weight: 800;
   font-size: 16px;
-  color: $navy-1;
+  color: $gray-1;
 }
 
 .icon-play {
   margin-bottom: -4px;
   color: white;
   transition: all 0.3s ease 0s;
-  @media (min-width: $md) {
-    color: rgba(255, 255, 255, 0.5);
-  }
 }
 
 .container--how-to-use {
@@ -183,11 +180,5 @@
     @media (min-width: $md) {
       stroke: $gray-4;
     }
-  }
-  .text--title-feature {
-    color: black;
-  }
-  .icon-play {
-    color: black;
   }
 }
