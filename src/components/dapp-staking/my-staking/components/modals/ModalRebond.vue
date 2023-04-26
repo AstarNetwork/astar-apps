@@ -102,7 +102,7 @@ export default defineComponent({
 
 .body--dark {
   .box--container {
-    background: $gray-7;
+    background: $container-bg-dark;
     .text--amount {
       color: $gray-1;
     }
