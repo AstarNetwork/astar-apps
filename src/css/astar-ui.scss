@@ -2,18 +2,15 @@
 
 // Memo: Overwriting the astar-ui component
 
-.modal-header {
-  // margin-bottom: 22px !important;
+.txt--status {
+  color: $gray-1 !important;
+  @media (min-width: $lg) {
+    color: $navy-1 !important;
+  }
 }
 
-// .header {
-//   .header-right {
-//     padding: 0 !important;
-//     @media (min-width: $lg) {
-//       padding-right: 12px !important;
-//     }
-//   }
-// }
-
 .body--dark {
+  .txt--status {
+    color: $gray-1 !important;
+  }
 }

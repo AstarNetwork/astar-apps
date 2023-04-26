@@ -33,7 +33,8 @@ export default defineComponent({
   overflow: hidden;
   display: flex;
   justify-content: space-between;
-  background: rgba(247, 247, 248, 0.8);
+  /* background: rgba(247, 247, 248, 0.8); */
+  background: #0e101d;
   mix-blend-mode: normal;
   backdrop-filter: blur(200px);
   height: 4rem;
@@ -49,6 +50,9 @@ export default defineComponent({
     #0ae2ff 74.93%
   );
   border-image-slice: 1;
+  @media (min-width: $lg) {
+    background: rgba(247, 247, 248, 0.8);
+  }
   @media (min-width: $lg) {
     padding: 40px 40px 25px 40px;
     height: 6rem;
