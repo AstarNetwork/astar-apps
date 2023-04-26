@@ -21,7 +21,8 @@
     "heroku-deploy": "git push heroku main",
     "playwright:codegen": "npx playwright codegen http://localhost:8080",
     "playwright": "BASE_URL='http://localhost:8080' npx playwright test --project=chromium --debug",
-    "playwright:ci": "./zombienet-linux-x64 test -p native ./tests/e2e.zndsl"
+    "playwright:ci": "./zombienet-linux-x64 test -p native ./tests/e2e.zndsl",
+    "playwright:cimacos": "./zombienet-macos test -p native ./tests/e2e.zndsl"
   },
   "dependencies": {
     "@astar-network/astar-sdk-core": "^0.2.2",

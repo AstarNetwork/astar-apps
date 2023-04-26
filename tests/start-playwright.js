@@ -28,7 +28,7 @@ const spawn = (cmd) =>
   });
 
 async function run(nodeName, networkInfo, args) {
-  console.log('Running playwright tests on node: ', nodeName, args);
+  console.log('Running Playwright tests on node: ', nodeName, args);
   const endpoint = networkInfo.nodesByName[nodeName].wsUri;
 
   let result = await spawn('npx playwright install');

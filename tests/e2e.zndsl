@@ -8,4 +8,5 @@ Creds: config
   {{node}}: reports node_roles is 4
 {% endfor %}
 
-astar: js-script ./start-playwright.js with "{{BASE_URL}}" return is equal to 1 within 100 seconds
+astar: js-script ./create-asset.js with "Alice" return is equal to 1 within 200 seconds
+astar: js-script ./start-playwright.js with "{{BASE_URL}}" return is equal to 1 within 400 seconds
