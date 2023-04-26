@@ -19,6 +19,8 @@ import { Symbols } from 'src/v2/symbols';
 import Web3 from 'web3';
 import { TransactionConfig } from 'web3-eth';
 import { AbiItem } from 'web3-utils';
+import { AlertMsg } from 'src/modules/toast';
+import { getBlockscoutTx } from 'src/links';
 
 // XCM precompiled contract address
 const PRECOMPILED_ADDR = '0x0000000000000000000000000000000000005004';
@@ -39,6 +41,7 @@ export class XcmEvmService implements IXcmEvmService {
     recipientAddress,
     amount,
     finalizedCallback,
+    successMessage,
   }: TransferParam): Promise<void> {
     Guard.ThrowIfUndefined('recipientAddress', recipientAddress);
     Guard.ThrowIfNegative('amount', amount);
@@ -101,14 +104,10 @@ export class XcmEvmService implements IXcmEvmService {
         await web3.eth
           .sendTransaction({ ...rawTx, gas: estimatedGas })
           .then(async ({ transactionHash }) => {
+            const explorerUrl = getBlockscoutTx(transactionHash);
             this.eventAggregator.publish(new BusyMessage(false));
             this.eventAggregator.publish(
-              new ExtrinsicStatusMessage(
-                true,
-                `Completed at transaction hash #${transactionHash}`, //TODO implement translation service.
-                'evmXcm',
-                transactionHash
-              )
+              new ExtrinsicStatusMessage({ success: true, message: successMessage, explorerUrl })
             );
             finalizedCallback && (await finalizedCallback(transactionHash));
             resolve();
@@ -117,7 +116,7 @@ export class XcmEvmService implements IXcmEvmService {
         console.error(e);
         this.eventAggregator.publish(new BusyMessage(false));
         this.eventAggregator.publish(
-          new ExtrinsicStatusMessage(false, `Transaction failed with error: ${e.message}`)
+          new ExtrinsicStatusMessage({ success: false, message: `${AlertMsg.ERROR}: ${e.message}` })
         );
         reject(e);
       }
