@@ -94,7 +94,7 @@ export default defineComponent({
     font-weight: 600;
     font-size: 20px;
     line-height: 18px;
-    color: $gray-5-selected;
+    color: $navy-1;
     margin-top: 10px;
   }
   @media (max-width: $sm) {

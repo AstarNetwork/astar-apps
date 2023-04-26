@@ -7,11 +7,11 @@
       <div>
         <router-link
           :to="RoutePath.Assets"
-          :class="['link', $route.path.split('/')[1] === 'assets' ? 'activeLink' : '']"
+          :class="['link', $route.path.split('/')[2] === 'assets' ? 'activeLink' : '']"
         >
           <astar-icon-base
             :class="['iconbase', isShiden ? 'shiden' : '']"
-            stroke="currentColor"
+            icon-color="currentColor"
             icon-name="assets"
           >
             <astar-icon-assets />
@@ -24,11 +24,11 @@
       <div>
         <router-link
           :to="RoutePath.Dashboard"
-          :class="['link', $route.path.split('/')[1] === 'dashboard' ? 'activeLink' : '']"
+          :class="['link', $route.path.split('/')[2] === 'dashboard' ? 'activeLink' : '']"
         >
           <astar-icon-base
             :class="['iconbase', isShiden ? 'shiden' : '']"
-            stroke="currentColor"
+            icon-color="#0085FF"
             icon-name="dashboard"
           >
             <astar-icon-dashboard />
@@ -42,11 +42,11 @@
         <router-link
           v-if="network.isStoreEnabled"
           :to="RoutePath.DappStaking"
-          :class="['link', $route.path.split('/')[1] === 'dapp-staking' ? 'activeLink' : '']"
+          :class="['link', $route.path.split('/')[2] === 'dapp-staking' ? 'activeLink' : '']"
         >
           <astar-icon-base
             :class="['iconbase', isShiden ? 'shiden' : '']"
-            stroke="currentColor"
+            icon-color="currentColor"
             icon-name="staking"
           >
             <astar-icon-dapp-staking />
@@ -82,11 +82,7 @@
       </div>
       <div>
         <a :class="['link']" href="https://astar.network/community/ecosystem/" target="_blank">
-          <astar-icon-base
-            :class="['icon-add', isShiden ? 'shiden' : '']"
-            stroke="currentColor"
-            icon-name="staking"
-          >
+          <astar-icon-base :class="['icon-add', isShiden ? 'shiden' : '']" icon-name="ecosystem">
             <icon-ecosystem />
           </astar-icon-base>
           <div class="row--item row--item-ecosystem">

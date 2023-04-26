@@ -60,6 +60,7 @@ export default defineComponent({
 .wrapper--components {
   @media (min-width: $lg) {
     padding: 0 40px;
+    padding-top: 12px;
   }
 }
 </style>

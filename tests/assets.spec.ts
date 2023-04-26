@@ -28,7 +28,7 @@ test.beforeEach(async ({ page, context }) => {
 
   // Select account in Astar UI
   await page.goto('/astar/assets');
-  await page.getByText('×').click();
+  await page.locator('.modal-close').click();
   await page.getByRole('button', { name: 'box icon Connect' }).click();
   await page.getByText('Polkadot.js').click();
   await page.getByText('Test (extension)').click();

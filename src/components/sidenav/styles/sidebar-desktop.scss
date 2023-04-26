@@ -10,13 +10,13 @@
 }
 
 .iconbase {
-  color: $astar-blue-dark;
+  color: $astar-blue;
   width: 20px;
   height: 20px;
 }
 
 .icon-add {
-  color: $astar-blue-dark;
+  color: $astar-blue;
   width: 20px;
   height: 20px;
   margin-top: 5px;
@@ -27,7 +27,7 @@
   width: 224px;
   height: 100%;
   padding-top: 24px;
-  background: $border-separator-light;
+  background: linear-gradient(140deg, #070c25 50%, #253585 80%, #3e2371 90%);
   display: flex;
   flex-direction: column;
 }
@@ -57,14 +57,17 @@
   padding: 8px;
   margin-bottom: 8px;
   border-radius: 6px;
-  color: $gray-5;
+  color: #fff;
   position: relative;
+  transition: all 0.3s ease 0s;
 }
 
 .link:hover {
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05)), $object-light;
+  background: $navy-3;
 }
-
+.activeLink {
+  color: #fff;
+}
 .activeLink:hover {
   background: transparent;
 }
@@ -83,7 +86,7 @@
 
 // Memo: set the animation indicator from the bottom of the menu
 .menu__indicator {
-  background: #d3d6dc;
+  background: $navy-3;
   transition: all 0.3s ease 0s;
   border-radius: 6px;
   height: 38px;
@@ -108,16 +111,16 @@
 
 .body--dark {
   .menu__indicator {
-    background: $gray-5-selected;
+    background: $navy-3;
   }
   .sidebar {
-    background: $gray-5;
+    background: linear-gradient(140deg, #070c25 50%, #253585 80%, #3e2371 90%);
   }
   .link {
     color: $gray-1;
   }
   .link:hover {
-    background: #313a3d;
+    background: $navy-3;
   }
   .activeLink:hover {
     background: transparent;
