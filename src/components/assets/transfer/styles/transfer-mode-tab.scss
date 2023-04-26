@@ -55,3 +55,10 @@
 .option--disabled {
   cursor: not-allowed !important;
 }
+
+.body--dark {
+  .text--title-tab,
+  .text--xcm {
+    color: $gray-1;
+  }
+}
