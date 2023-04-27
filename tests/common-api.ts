@@ -13,7 +13,7 @@ export const getApi = async (): Promise<ApiPromise> => {
   return api;
 };
 
-export const getBalance = async(address: string): Promise<bigint> => {
+export const getBalance = async (address: string): Promise<bigint> => {
   const api = await getApi();
   const balance = await api.query.system.account(address);
 
