@@ -1,5 +1,10 @@
 <template>
-  <astar-modal-drawer :show="isModalConnectWallet" title="Select a Wallet" @close="setCloseModal()">
+  <astar-modal-drawer
+    :show="isModalConnectWallet"
+    :is-closing="isClosing"
+    title="Select a Wallet"
+    @close="closeModal()"
+  >
     <div class="wrapper--modal--wallet">
       <div v-if="!isDappStakingPage">
         <div class="title--account-type">
@@ -143,71 +148,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import 'src/css/quasar.variables.scss';
-@import 'src/css/utils.scss';
-
-.wrapper--modal--wallet {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding-top: 24px;
-  padding-bottom: 20px;
-}
-
-.title--account-type {
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 16px;
-  color: $navy-1;
-  text-align: left;
-  margin-left: 8px;
-}
-
-.box__row--wallet {
-  display: flex;
-  align-items: center;
-  background: #fff;
-  border-radius: 6px;
-  height: rem(56);
-  width: rem(314);
-  font-weight: 700;
-  font-size: 16px;
-  line-height: 18px;
-  color: $navy-1;
-  margin: 0 auto;
-  margin-top: 16px;
-  padding: 16px;
-  padding-left: 24px;
-  cursor: pointer;
-
-  &:hover {
-    border: 1px solid $astar-blue;
-  }
-
-  &:active {
-    border: 2px solid $astar-blue;
-  }
-
-  .box--img {
-    width: 24px;
-    height: 24px;
-    margin-right: 13px;
-  }
-}
-
-.body--dark {
-  .title--account-type {
-    color: $gray-1;
-  }
-  .box__row--wallet {
-    background: $modal-item-bg-dark;
-    color: $gray-1;
-  }
-}
-
-@media screen and (max-width: $sm) {
-  .title--account-type {
-    margin-left: 46px;
-  }
-}
+@use 'src/components/header/styles/modal-connect-wallet.scss';
 </style>
