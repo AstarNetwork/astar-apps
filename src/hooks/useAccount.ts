@@ -6,6 +6,9 @@ import { SubstrateAccount } from 'src/store/general/state';
 
 export const ETHEREUM_EXTENSION = 'Ethereum Extension';
 
+// Memo: Gives some time for syncing
+const DELAY = 100;
+
 export const useAccount = () => {
   const store = useStore();
 
@@ -16,14 +19,13 @@ export const useAccount = () => {
   const { SELECTED_ADDRESS, SELECTED_WALLET } = LOCAL_STORAGE;
 
   const disconnectAccount = async (): Promise<Boolean> => {
-    // Memo: Gives time for syncing
-    const delay = 100;
     return await new Promise(async (resolve) => {
-      await wait(delay);
+      await wait(DELAY);
       store.commit('general/setCurrentAddress', null);
       store.commit('general/setIsH160Formatted', false);
       store.commit('general/setIsEthWallet', false);
       store.commit('dapps/setClaimedRewardsAmount', 0);
+      store.commit('general/setCurrentWallet', '');
       store.commit('general/setCurrentEcdsaAccount', {
         ethereum: '',
         ss58: '',
@@ -31,6 +33,8 @@ export const useAccount = () => {
       });
       localStorage.removeItem(SELECTED_ADDRESS);
       localStorage.removeItem(SELECTED_WALLET);
+      currentAccount.value = '';
+      currentAccountName.value = '';
       resolve(true);
     });
   };
@@ -62,13 +66,16 @@ export const useAccount = () => {
 
   watch(
     [currentAddress, substrateAccounts],
-    () => {
+    async () => {
+      await wait(DELAY);
       if (
         !substrateAccounts.value ||
         currentAddress.value === null ||
+        currentAddress.value === '' ||
         currentEcdsaAccount.value.ethereum
-      )
+      ) {
         return;
+      }
       const account = substrateAccounts.value.find(
         (it: SubstrateAccount) => it.address === currentAddress.value
       );

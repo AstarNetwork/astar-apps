@@ -17,6 +17,7 @@
             v-for="(wallet, index) in evmWallets"
             :key="index"
             class="box__row--wallet box--hover--active"
+            :class="currentWallet == wallet.source && 'border--active'"
             :wallet="wallet"
             @click="setEvmWalletModal(wallet.source)"
           >
@@ -41,7 +42,7 @@
           v-for="(wallet, index) in nativeWallets"
           :key="index"
           class="box__row--wallet box--hover--active"
-          :wallet="wallet"
+          :class="currentWallet == wallet.source && 'border--active'"
           @click="setSubstrateWalletModal(wallet.source)"
         >
           <div class="box--img">
@@ -61,6 +62,7 @@
 import { wait } from '@astar-network/astar-sdk-core';
 import { supportEvmWallets, supportWallets, Wallet } from 'src/config/wallets';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
+import { useStore } from 'src/store';
 import { computed, defineComponent, ref } from 'vue';
 import { useRoute } from 'vue-router';
 export default defineComponent({
@@ -84,6 +86,7 @@ export default defineComponent({
   },
   setup(props) {
     const route = useRoute();
+    const store = useStore();
     const isClosing = ref<boolean>(false);
     const closeModal = async (): Promise<void> => {
       isClosing.value = true;
@@ -132,12 +135,14 @@ export default defineComponent({
       await closeModal();
       props.connectEthereumWallet(source);
     };
+    const currentWallet = computed<string>(() => store.getters['general/currentWallet']);
 
     return {
       nativeWallets,
       evmWallets,
       isDappStakingPage,
       isClosing,
+      currentWallet,
       castWalletName,
       closeModal,
       setSubstrateWalletModal,

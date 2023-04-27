@@ -50,17 +50,21 @@
   }
 
   &:hover {
-    border: 1px solid $astar-blue-dark;
+    border: 1px solid $astar-blue;
   }
 
   &:active {
-    border: 2px solid $astar-blue-dark;
+    border: 2px solid $astar-blue;
   }
 
   .box--img {
     width: 24px;
     height: 24px;
   }
+}
+
+.border--active {
+  border: 1px solid $astar-blue !important;
 }
 
 .body--dark {
