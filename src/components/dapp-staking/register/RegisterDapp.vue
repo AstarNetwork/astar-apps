@@ -395,7 +395,7 @@ export default defineComponent({
 }
 
 .q-field__control {
-  color: $gray-3;
+  color: $gray-4;
   border-color: $gray-2;
 }
 
@@ -404,7 +404,7 @@ export default defineComponent({
 }
 
 .q-field--outlined.q-field--dark .q-field__control:before {
-  border-color: $gray-5;
+  border-color: $navy-1;
 }
 
 .q-field--outlined.q-field--dark .q-field__control {
@@ -419,7 +419,7 @@ export default defineComponent({
 }
 
 .q-field--outlined.q-field--dark.q-field--readonly .q-field__control:before {
-  border-color: $gray-5;
+  border-color: $navy-1;
 }
 
 .q-field--outlined:hover.q-field--readonly .q-field__control:before {
@@ -432,7 +432,7 @@ export default defineComponent({
 }
 
 .q-field--outlined:hover.q-field--dark.q-field--readonly .q-field__control:before {
-  border-color: $gray-5;
+  border-color: $navy-1;
 }
 
 // label

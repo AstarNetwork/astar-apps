@@ -21,12 +21,12 @@
         <img v-show="currentLogo" class="icon" width="16" :src="currentLogo" />
         <div class="column--network-name">
           <template v-if="width >= screenSize.md">
-            <span class="text--md">
+            <span class="text--network">
               {{ currentNetworkName }}
             </span>
           </template>
           <template v-else-if="width >= screenSize.sm">
-            <span class="text--md">
+            <span class="text--network">
               {{ currentNetworkName.replace('Network', '') }}
             </span>
           </template>
@@ -123,36 +123,62 @@ export default defineComponent({
   height: 32px;
   flex-direction: row;
   align-items: center;
-  background: transparent;
   padding: 8px 16px 8px 12px;
-  border: 1px solid $navy-3;
   border-radius: 16px;
   margin-left: 8px;
-  color: $navy-1;
   transition: all 0.3s ease 0s;
+  background: transparent;
+  color: #fff;
+  border: 1px solid $gray-4;
+
+  @media (min-width: $lg) {
+    border: 1px solid $navy-3;
+  }
+
   @media (min-width: $sm) {
     margin-left: 16px;
   }
-}
 
-.btn--network:hover {
-  background: #fff;
+  &:hover {
+    background: $astar-blue !important;
+    border: 1px solid transparent;
+    .iconbase {
+      color: $gray-1;
+    }
+    .divider {
+      border-left: 1px solid $gray-1;
+    }
+    @media (min-width: $lg) {
+      background: transparent !important;
+      border: 1px solid $gray-4;
+      .iconbase {
+        color: $gray-5;
+      }
+      .divider {
+        border-left: 1px solid $navy-3;
+      }
+    }
+  }
 }
 
 .divider {
-  border-left: 1px solid $navy-3;
+  border-left: 1px solid $gray-3;
   margin: 0 8px;
   height: 22px;
+  transition: all 0.3s ease 0s;
+  @media (min-width: $lg) {
+    border-left: 1px solid $navy-3;
+  }
 }
 
 .iconbase {
-  color: $navy-3;
+  color: $gray-3;
   width: rem(22);
   height: rem(22);
   transition: all 0.3s ease 0s;
-}
-.txt--status {
-  color: $navy-1 !important;
+  @media (min-width: $lg) {
+    color: $navy-3;
+  }
 }
 
 .icon {
@@ -164,13 +190,20 @@ export default defineComponent({
 
 .m-btn--network {
   background: transparent;
-  border: 1px solid $navy-3;
+  border: 1px solid $gray-4;
   box-shadow: none;
   padding: 8px;
 
+  @media (min-width: $lg) {
+    border: 1px solid $navy-3;
+  }
+
   .divider {
     margin: 0 8px;
-    border-left-color: $navy-3;
+    border-left-color: $gray-4;
+    @media (min-width: $lg) {
+      border-left-color: $navy-3;
+    }
   }
 }
 
@@ -178,33 +211,44 @@ export default defineComponent({
   margin-top: -1px;
 }
 
+.text--network {
+  font-weight: 400;
+  font-size: 14px;
+  color: $gray-1;
+  @media (min-width: $lg) {
+    color: $navy-1;
+  }
+}
+
 .body--dark {
   .btn--network {
-    background: transparent;
-    color: #fff;
     border: 1px solid $gray-4;
-  }
-  .btn--network:hover {
-    background: $astar-blue;
-    border: 1px solid transparent;
-    .iconbase {
-      color: $gray-1;
+    &:hover {
+      background: $astar-blue !important;
+      border: 1px solid transparent;
+      .iconbase {
+        color: $gray-1;
+      }
+      .divider {
+        border-left: 1px solid $gray-1;
+      }
     }
   }
+
   .iconbase {
     color: $gray-3;
   }
-  .divider {
-    border-left: 1px solid $gray-6;
-  }
 
   .m-btn--network {
-    background: transparent;
-    color: $gray-3;
     border: 1px solid $gray-4;
   }
+
   .divider {
     border-left: 1px solid $gray-4;
+  }
+
+  .text--network {
+    color: $gray-1;
   }
 }
 </style>

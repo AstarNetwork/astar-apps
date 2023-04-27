@@ -9,7 +9,8 @@
   max-width: 1290px;
 
   @media (min-width: $md) {
-    border-radius: 0px 0px 6px 6px;
+    border-radius: 6px;
+    margin-top: 62px;
   }
 
   @media (min-width: $xxl) {

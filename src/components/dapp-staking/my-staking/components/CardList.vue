@@ -181,7 +181,7 @@ export default defineComponent({
       font-weight: 600;
       font-size: 16px;
       line-height: 18px;
-      color: $gray-6;
+      color: $navy-1;
     }
 
     .badge--tag {
@@ -253,7 +253,7 @@ export default defineComponent({
         color: $gray-1;
       }
       .badge--tag {
-        background: $gray-5;
+        background: $navy-3;
         color: $gray-3;
       }
       .divider {

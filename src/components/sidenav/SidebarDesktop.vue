@@ -57,31 +57,32 @@
         </router-link>
         <div v-else class="dummy-row" />
       </div>
-      <!-- MEMO: need to add later
-        <div>
+      <div @mouseover="hoverNFT = true" @mouseleave="hoverNFT = false">
         <router-link
           to="#"
           :class="['link', $route.path.split('/')[2] === 'astar-nft' ? 'activeLink' : '']"
         >
           <astar-icon-base
-            :class="['iconAdd', isShiden ? 'shiden' : '']"
-            icon-color="currentColor"
+            :class="['icon-add', isShiden ? 'shiden' : '']"
+            stroke="currentColor"
             icon-name="staking"
           >
-            <astar-icon-side-nft />
+            <icon-side-nft />
           </astar-icon-base>
           <div class="row--item">
             <astar-text type="H4">NFT</astar-text>
           </div>
         </router-link>
-      </div> -->
+        <balloon
+          class="balloon"
+          :is-balloon="hoverNFT"
+          :is-balloon-closing="!hoverNFT"
+          :text="$t('sidenavi.comingsoon')"
+        />
+      </div>
       <div>
         <a :class="['link']" href="https://astar.network/community/ecosystem/" target="_blank">
-          <astar-icon-base
-            :class="['icon-add', isShiden ? 'shiden' : '']"
-            icon-color="currentColor"
-            icon-name="staking"
-          >
+          <astar-icon-base :class="['icon-add', isShiden ? 'shiden' : '']" icon-name="ecosystem">
             <icon-ecosystem />
           </astar-icon-base>
           <div class="row--item row--item-ecosystem">
@@ -116,7 +117,9 @@ import Logo from '../common/Logo.vue';
 import ConnectionTrouble from 'src/components/common/ConnectionTrouble.vue';
 import { useRouter } from 'vue-router';
 import { Path as RoutePath } from 'src/router/routes';
-import IconEcosystem from './IconEcosystem.vue';
+import IconSideNft from './components/IconSideNFT.vue';
+import IconEcosystem from './components/IconEcosystem.vue';
+import Balloon from './components/Balloon.vue';
 
 export default defineComponent({
   components: {
@@ -125,7 +128,9 @@ export default defineComponent({
     LocaleChanger,
     Logo,
     ConnectionTrouble,
+    IconSideNft,
     IconEcosystem,
+    Balloon,
   },
   setup() {
     const { isOpen } = useSidebar();
@@ -138,6 +143,8 @@ export default defineComponent({
 
     const router = useRouter();
     const path = computed(() => router.currentRoute.value.path.split('/')[2]);
+
+    const hoverNFT = ref(false);
 
     const getIndicatorClass = (path: string): string => {
       switch (path) {
@@ -160,6 +167,7 @@ export default defineComponent({
       router,
       path,
       RoutePath,
+      hoverNFT,
     };
   },
 });

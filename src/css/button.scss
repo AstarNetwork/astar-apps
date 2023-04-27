@@ -24,7 +24,7 @@
       color: #ffffff;
       background-color: $astar-blue;
       &:disabled {
-        background-color: $gray-3 !important;
+        background-color: $gray-4 !important;
       }
     }
   }
@@ -35,7 +35,7 @@
     background-color: $astar-blue;
     @media (min-width: $md) {
       background-color: transparent;
-      color: $astar-blue-dark;
+      color: $astar-blue;
       &:hover {
         color: #ffffff;
         background-color: $astar-blue;

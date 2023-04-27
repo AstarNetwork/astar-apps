@@ -31,16 +31,13 @@
 .text--title-feature {
   font-weight: 800;
   font-size: 16px;
-  color: black;
+  color: $gray-1;
 }
 
 .icon-play {
   margin-bottom: -4px;
-  color: white;
+  color: $gray-1;
   transition: all 0.3s ease 0s;
-  @media (min-width: $md) {
-    color: rgba(255, 255, 255, 0.5);
-  }
 }
 
 .container--how-to-use {
@@ -59,13 +56,6 @@
     &:hover {
       transition: all 0.4s ease 0s;
       background: $astar-blue;
-      .text--title-feature {
-        transition: all 0.4s ease 0s;
-        color: $gray-4;
-      }
-      .icon-play {
-        color: white;
-      }
     }
   }
 }
@@ -74,7 +64,7 @@
   display: flex;
   flex-direction: column;
   row-gap: 8px;
-  color: $gray-5;
+  color: $navy-1;
   cursor: pointer;
   &:hover {
     .container--explorer-icon {
@@ -101,7 +91,7 @@
   margin-bottom: 12px;
   font-size: 16px;
   font-weight: 500;
-  color: $gray-5;
+  color: $navy-1;
   @media (min-width: $md) {
     color: $gray-4;
   }
@@ -137,7 +127,7 @@
 }
 
 .container--explorer-icon {
-  stroke: $gray-5;
+  stroke: $navy-1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -190,16 +180,6 @@
     stroke: $gray-1;
     @media (min-width: $md) {
       stroke: $gray-4;
-    }
-  }
-  .text--title-feature {
-    @media (min-width: $md) {
-      color: black;
-    }
-  }
-  .icon-play {
-    @media (min-width: $md) {
-      color: black;
     }
   }
 }

@@ -4,7 +4,8 @@
   "description": "Astar Portal is the hub of a multi-chain, one-stop platform for managing assets and dApp Staking - build2earn protocol.",
   "productName": "Astar Portal - Astar & Shiden Network",
   "author": "Astar Network",
-  "private": true,
+  "private": false,
+  "license": "GPL-3.0-only",
   "scripts": {
     "dev": "quasar dev",
     "build": "yarn run build:spa",
@@ -24,7 +25,7 @@
   },
   "dependencies": {
     "@astar-network/astar-sdk-core": "^0.2.3",
-    "@astar-network/astar-ui": "^0.0.87",
+    "@astar-network/astar-ui": "^0.0.89",
     "@ethersproject/bignumber": "^5.5.0",
     "@polkadot/api": "^9.13.6",
     "@polkadot/api-contract": "^9.13.6",

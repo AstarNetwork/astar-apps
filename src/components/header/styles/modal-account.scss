@@ -42,7 +42,7 @@
 .text--option-label {
   font-weight: 500;
   font-size: 14px;
-  color: $gray-3;
+  color: $gray-4;
   padding-bottom: 2px;
 }
 
@@ -60,18 +60,24 @@
   font-weight: 700;
   font-size: 16px;
   line-height: 18px;
-  color: $gray-5;
+  color: $navy-1;
   margin: 0 auto;
   padding: 24px 16px;
   cursor: pointer;
 }
 
 .class-radio-off {
-  border: 1px solid $gray-3;
+  background: #fff;
+  border: 1px solid transparent;
   transition: all 0.3s ease 0s;
-  &:hover {
-    border: 1px solid $astar-blue !important;
-  }
+}
+
+.class-radio-off:hover {
+  border: 1px solid $astar-blue;
+}
+
+.class-radio-on {
+  border: 2px solid $astar-blue;
 }
 
 .class-radio-on {
@@ -96,12 +102,22 @@
   margin-top: 10px;
 }
 
-.row--account {
-  align-items: center;
-  column-gap: 24px;
-  @media (min-width: $sm) {
-    display: grid;
-    grid-template-columns: 220px auto;
+.wrapper--account-detail {
+  width: 100%;
+  text-align: left;
+  .accountName {
+    color: $navy-1;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 18px;
+  }
+  .address {
+    color: $gray-4;
+    font-weight: 510;
+    font-size: 12px;
+    line-height: 20px;
+    word-wrap: break-word;
+    margin-top: 9px;
   }
 }
 
@@ -216,13 +232,13 @@
 .text--balance {
   font-weight: 500;
   font-size: 12px;
-  color: $gray-5;
+  color: $navy-1;
 }
 
 .text--balance-hide {
   font-weight: 500;
   font-size: 12px;
-  color: $gray-3;
+  color: $gray-4;
 }
 
 .body--dark {
@@ -230,7 +246,7 @@
     color: #fff;
   }
   .class-radio-off {
-    border: 1px solid $gray-4;
+    background: $modal-item-bg-dark;
   }
 
   .class-radio-on {
