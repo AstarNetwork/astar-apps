@@ -1,4 +1,5 @@
 async function run(nodeName, networkInfo, args) {
+  console.log(networkInfo);
   const BN = require('bn.js');
   const ONE = new BN(10).pow(new BN(18));
 
