@@ -284,7 +284,7 @@ export default defineComponent({
 
     const windowHeight = ref<number>(window.innerHeight);
     const onHeightChange = () => {
-      const adjustment = width.value > screenSize.sm ? 546 : 390;
+      const adjustment = width.value > screenSize.sm ? 526 : 390;
       windowHeight.value = window.innerHeight - adjustment;
     };
 
