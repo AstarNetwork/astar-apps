@@ -54,7 +54,9 @@ export class InterlayXcmRepository extends XcmRepository {
       },
     };
 
-    const destWeight = new BN(10).pow(new BN(9)).muln(5);
+    const destWeight = {
+      limited: new BN(10).pow(new BN(9)).muln(5),
+    };
     return await this.buildTxCall(
       from,
       'xTokens',
