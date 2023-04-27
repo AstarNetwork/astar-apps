@@ -22,12 +22,7 @@
       v-model:selectNetwork="currentNetworkIdx"
       :network-idx="currentNetworkIdx"
     />
-    <!-- <modal-connect-wallet
-      :is-modal-connect-wallet="modalName === WalletModalOption.SelectWallet || isNoAccount"
-      :set-wallet-modal="setWalletModal"
-      :set-close-modal="setCloseModal"
-      :connect-ethereum-wallet="connectEthereumWallet"
-    /> -->
+
     <modal-connect-wallet
       :is-modal-connect-wallet="modalName === WalletModalOption.SelectWallet"
       :set-wallet-modal="setWalletModal"
@@ -60,7 +55,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, computed, ref, watch, watchEffect } from 'vue';
+import { defineComponent, reactive, toRefs, computed, ref, watch } from 'vue';
 import { useConnectWallet } from 'src/hooks';
 import { useStore } from 'src/store';
 import { useRoute } from 'vue-router';
@@ -118,7 +113,11 @@ export default defineComponent({
     } = useConnectWallet();
 
     const clickAccountBtn = () => {
-      changeAccount();
+      if (isH160.value) {
+        modalName.value = WalletModalOption.SelectWallet;
+      } else {
+        changeAccount();
+      }
       stateModal.modalNetwork = false;
     };
 
@@ -133,6 +132,7 @@ export default defineComponent({
     const isNoAccount = computed<boolean>(() => !isLoading.value && !currentAccount.value);
 
     const store = useStore();
+    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const currentNetworkIdx = computed<number>(() => store.getters['general/networkIdx']);
     const route = useRoute();
     const path = computed<string>(() => route.path);
