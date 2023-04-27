@@ -55,12 +55,16 @@
           </div>
         </div>
       </div>
+      <button :disabled="!currentAccountName" class="btn--disconnect" @click="disconnectAccount()">
+        {{ $t('disconnect') }}
+      </button>
     </div>
   </astar-modal-drawer>
 </template>
 <script lang="ts">
 import { wait } from '@astar-network/astar-sdk-core';
 import { supportEvmWallets, supportWallets, Wallet } from 'src/config/wallets';
+import { useAccount } from 'src/hooks';
 import { isMobileDevice } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { computed, defineComponent, ref } from 'vue';
@@ -87,6 +91,7 @@ export default defineComponent({
   setup(props) {
     const route = useRoute();
     const store = useStore();
+    const { currentAccountName, disconnectAccount } = useAccount();
     const isClosing = ref<boolean>(false);
     const closeModal = async (): Promise<void> => {
       isClosing.value = true;
@@ -95,6 +100,7 @@ export default defineComponent({
       isClosing.value = false;
       props.setCloseModal();
     };
+
     const isDappStakingPage = computed<boolean>(() => route.fullPath.includes('dapp-staking'));
     const nativeWallets = computed(() => {
       return supportWallets
@@ -143,10 +149,12 @@ export default defineComponent({
       isDappStakingPage,
       isClosing,
       currentWallet,
+      currentAccountName,
       castWalletName,
       closeModal,
       setSubstrateWalletModal,
       setEvmWalletModal,
+      disconnectAccount,
     };
   },
 });

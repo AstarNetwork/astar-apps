@@ -114,9 +114,6 @@
         >
           {{ $t('connect') }}
         </astar-button>
-        <button :disabled="!currentAccountName" class="btn--disconnect" @click="disconnect()">
-          {{ $t('disconnect') }}
-        </button>
       </div>
     </div>
   </astar-modal-drawer>
@@ -186,7 +183,6 @@ export default defineComponent({
     const isShowBalance = ref<boolean>(false);
     const isLoadingBalance = ref<boolean>(false);
     const accountBalanceMap = ref<SubstrateAccount[]>([]);
-    const { currentAccountName, disconnectAccount } = useAccount();
 
     const closeModal = async (): Promise<void> => {
       isClosing.value = true;
@@ -194,11 +190,6 @@ export default defineComponent({
       await wait(animationDuration);
       isClosing.value = false;
       emit('update:is-open', false);
-    };
-
-    const disconnect = async () => {
-      await disconnectAccount();
-      await backModal();
     };
 
     const backModal = async (): Promise<void> => {
@@ -284,7 +275,7 @@ export default defineComponent({
 
     const windowHeight = ref<number>(window.innerHeight);
     const onHeightChange = () => {
-      const adjustment = width.value > screenSize.sm ? 526 : 390;
+      const adjustment = width.value > screenSize.sm ? 450 : 320;
       windowHeight.value = window.innerHeight - adjustment;
     };
 
@@ -367,10 +358,8 @@ export default defineComponent({
       isSelected,
       isClosing,
       isShowBalance,
-      currentAccountName,
       displayBalance,
       backModal,
-      disconnect,
     };
   },
 });

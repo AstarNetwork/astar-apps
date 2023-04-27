@@ -67,6 +67,24 @@
   border: 1px solid $astar-blue !important;
 }
 
+.btn--disconnect {
+  margin-top: 24px;
+  width: 100%;
+  font-size: 20px;
+  font-weight: 600;
+  border-radius: 30px;
+  height: 52px;
+  background-color: transparent;
+  border: 1px solid $astar-blue;
+  color: $astar-blue;
+  transition: all 0.4s ease 0s;
+  &:hover {
+    background-color: $gray-5;
+    border: 1px solid $gray-2;
+    color: $gray-2;
+  }
+}
+
 .body--dark {
   .title--account-type {
     color: $gray-1;
