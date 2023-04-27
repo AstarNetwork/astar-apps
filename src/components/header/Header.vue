@@ -128,9 +128,6 @@ export default defineComponent({
 
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
 
-    // Memo: remove if it is not necessary
-    const isNoAccount = computed<boolean>(() => !isLoading.value && !currentAccount.value);
-
     const store = useStore();
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
     const currentNetworkIdx = computed<number>(() => store.getters['general/networkIdx']);
@@ -161,7 +158,6 @@ export default defineComponent({
       modalAccountSelect,
       width,
       screenSize,
-      isNoAccount,
       clickAccountBtn,
       clickNetworkBtn,
       setCloseModal,

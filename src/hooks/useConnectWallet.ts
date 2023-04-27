@@ -341,25 +341,11 @@ export const useConnectWallet = () => {
   );
 
   // Memo: triggered after users (who haven't connected to wallet) have clicked 'Connect Wallet' button on dApp staking page
-  // const handleOpenSelectModal = (): void => {
   window.addEventListener(WalletModalOption.SelectWallet, openSelectModal);
-  // };
 
   onUnmounted(() => {
     window.removeEventListener(WalletModalOption.SelectWallet, openSelectModal);
   });
-
-  // watch(
-  //   [currentAccount],
-  //   async () => {
-  //     // Memo: to avoid opening accounts drawer after changed account
-  //     await wait(2000);
-  //     if (!currentAccount.value) {
-  //       window.dispatchEvent(new CustomEvent(WalletModalOption.SelectWallet));
-  //     }
-  //   },
-  //   { immediate: true }
-  // );
 
   return {
     WalletModalOption,

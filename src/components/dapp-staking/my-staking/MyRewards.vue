@@ -43,7 +43,7 @@
           <div v-else class="value value--claim">
             <div>
               <span class="text--rewards-amount">
-                {{ pendingRewards }} {{ nativeTokenSymbol }}
+                {{ $n(pendingRewards) }} {{ nativeTokenSymbol }}
               </span>
             </div>
             <span class="text--eras">

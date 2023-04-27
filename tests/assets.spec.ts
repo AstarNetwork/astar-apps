@@ -33,9 +33,6 @@ test.beforeEach(async ({ page, context }) => {
   await page.getByText('Polkadot.js').click();
   await page.getByText('Test (extension)').click();
   await page.getByRole('button', { name: 'Connect', exact: true }).click();
-
-  // Close popups
-  // await page.getByRole('button', { name: 'Accept' }).click();
 });
 
 test.describe('account panel', () => {
