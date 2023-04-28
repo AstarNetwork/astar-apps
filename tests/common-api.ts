@@ -19,16 +19,19 @@ export const getAddress = (address: string) => {
   return { Evm: address };
 };
 
-export const getBalance = async(address: string): Promise<bigint> => {
+export const getBalance = async (address: string): Promise<bigint> => {
   const api = await getApi();
   const balance = await api.query.system.account(address);
 
   return balance.data.free.toBigInt();
 };
 
-export const getStakedAmount = async(address: string): Promise<bigint> => {
+export const getStakedAmount = async (address: string): Promise<bigint> => {
   const api = await getApi();
-  const eraStake = await api.query.dappsStaking.contractEraStake<Option<ContractStakeInfo>>(getAddress(address), 1);
+  const eraStake = await api.query.dappsStaking.contractEraStake<Option<ContractStakeInfo>>(
+    getAddress(address),
+    1
+  );
 
   return BigInt(eraStake.unwrap().total.toString());
-}
+};
