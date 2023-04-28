@@ -32,26 +32,28 @@
           </div>
         </div>
       </div>
-      <div class="title--account-type tw-mt-4">
-        <span>
-          {{ $t('wallet.nativeAccount') }}
-        </span>
-      </div>
-      <div class="wrapper--wallets">
-        <div
-          v-for="(wallet, index) in nativeWallets"
-          :key="index"
-          class="box__row--wallet box--hover--active"
-          :class="currentWallet == wallet.source && 'border--active'"
-          @click="setSubstrateWalletModal(wallet.source)"
-        >
-          <div class="box--img">
-            <img :src="wallet.img" />
-          </div>
-          <div>
-            <span>
-              {{ castWalletName(wallet.name) }}
-            </span>
+      <div>
+        <div class="title--account-type">
+          <span>
+            {{ $t('wallet.nativeAccount') }}
+          </span>
+        </div>
+        <div class="wrapper--wallets">
+          <div
+            v-for="(wallet, index) in nativeWallets"
+            :key="index"
+            class="box__row--wallet box--hover--active"
+            :class="currentWallet == wallet.source && 'border--active'"
+            @click="setSubstrateWalletModal(wallet.source)"
+          >
+            <div class="box--img">
+              <img :src="wallet.img" />
+            </div>
+            <div>
+              <span>
+                {{ castWalletName(wallet.name) }}
+              </span>
+            </div>
           </div>
         </div>
       </div>

@@ -113,6 +113,10 @@ export default defineComponent({
     } = useConnectWallet();
 
     const clickAccountBtn = () => {
+      if (modalName.value === WalletModalOption.SelectWallet) {
+        return;
+      }
+
       if (isH160.value) {
         modalName.value = WalletModalOption.SelectWallet;
       } else {
@@ -123,10 +127,9 @@ export default defineComponent({
 
     const clickNetworkBtn = () => {
       stateModal.modalNetwork = true;
+      modalName.value = '';
       modalAccountSelect.value = false;
     };
-
-    const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
 
     const store = useStore();
     const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);

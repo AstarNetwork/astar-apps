@@ -6,7 +6,7 @@
   justify-content: center;
   padding-top: 38px;
   padding-bottom: 20px;
-  row-gap: 20px;
+  row-gap: 32px;
 }
 
 .title--account-type {
@@ -15,7 +15,7 @@
   line-height: 16px;
   color: $gray-5;
   text-align: left;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
   @media (min-width: 500px) {
     margin-left: 0px;
   }
@@ -33,7 +33,6 @@
   flex-direction: column;
   row-gap: 12px;
   align-items: center;
-  background: #fff;
   border-radius: 6px;
   font-weight: 600;
   font-size: 14px;
@@ -42,6 +41,7 @@
   padding: 16px;
   padding-left: 24px;
   margin: 0 auto;
+  border: 1px solid $navy-1;
 
   @media (min-width: 500px) {
     flex-direction: row;
@@ -68,7 +68,6 @@
 }
 
 .btn--disconnect {
-  margin-top: 24px;
   width: 100%;
   font-size: 20px;
   font-weight: 600;
@@ -90,7 +89,7 @@
     color: $gray-1;
   }
   .box__row--wallet {
-    background: $modal-item-bg-dark;
     color: $gray-1;
+    border: 1px solid $gray-3;
   }
 }
