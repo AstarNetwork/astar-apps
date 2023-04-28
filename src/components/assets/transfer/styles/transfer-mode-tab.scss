@@ -11,13 +11,15 @@
 }
 
 .selected-tab {
+  color: $navy-1;
   border-bottom: 3px solid $blue;
   transition: all 0.3s ease 0s;
 }
 
 .unselected-tab {
+  color: $navy-1;
   cursor: pointer;
-  border-bottom: 2px solid rgba(95, 101, 111, 0.2);
+  border-bottom: 1px solid $navy-3;
   transition: all 0.3s ease 0s;
 }
 
@@ -48,9 +50,15 @@
 
 .row--mode-tab {
   display: flex;
-  column-gap: 12px;
 }
 
 .option--disabled {
   cursor: not-allowed !important;
+}
+
+.body--dark {
+  .text--title-tab,
+  .text--xcm {
+    color: $gray-1;
+  }
 }

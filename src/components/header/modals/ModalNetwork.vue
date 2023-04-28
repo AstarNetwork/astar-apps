@@ -397,6 +397,6 @@ export default defineComponent({
 .text--download {
   display: block;
   text-decoration: underline;
-  color: $astar-blue-dark;
+  color: $astar-blue;
 }
 </style>

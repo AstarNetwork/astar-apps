@@ -1,5 +1,5 @@
 <template>
-  <astar-modal-drawer :show="isModalConnectWallet" title="Select a Wallet" @close="setCloseModal">
+  <astar-modal-drawer :show="isModalConnectWallet" title="Select a Wallet" @close="setCloseModal()">
     <div class="wrapper--modal--wallet">
       <div v-if="!isDappStakingPage">
         <div class="title--account-type">{{ $t('wallet.evmAccount') }}</div>
@@ -110,7 +110,7 @@ export default defineComponent({
   font-weight: 400;
   font-size: 14px;
   line-height: 16px;
-  color: $gray-5;
+  color: $navy-1;
   text-align: left;
   margin-left: 8px;
 }
@@ -125,7 +125,7 @@ export default defineComponent({
   font-weight: 700;
   font-size: 16px;
   line-height: 18px;
-  color: $gray-5;
+  color: $navy-1;
   margin: 0 auto;
   margin-top: 16px;
   padding: 16px;
@@ -133,11 +133,11 @@ export default defineComponent({
   cursor: pointer;
 
   &:hover {
-    border: 1px solid $astar-blue-dark;
+    border: 1px solid $astar-blue;
   }
 
   &:active {
-    border: 2px solid $astar-blue-dark;
+    border: 2px solid $astar-blue;
   }
 
   .box--img {
@@ -152,7 +152,7 @@ export default defineComponent({
     color: $gray-1;
   }
   .box__row--wallet {
-    background: $gray-6;
+    background: $modal-item-bg-dark;
     color: $gray-1;
   }
 }

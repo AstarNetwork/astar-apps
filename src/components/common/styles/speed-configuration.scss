@@ -7,7 +7,7 @@
   border-radius: 6px;
   width: 320px;
   background: transparent;
-  border: 1px solid $gray-3;
+  border: 1px solid $navy-1;
   border-radius: 6px;
   @media (min-width: $xs) {
     width: 344px;
@@ -63,7 +63,7 @@
 .text--gas-price {
   font-weight: 500;
   font-size: 12px;
-  color: $gray-5;
+  color: $navy-1;
 }
 
 .body--dark {
@@ -71,7 +71,7 @@
     color: $gray-1;
   }
   .container--speed-configuration {
-    background: $gray-6;
-    border: 1px solid $gray-4;
+    background: transparent;
+    border: 1px solid $gray-3;
   }
 }

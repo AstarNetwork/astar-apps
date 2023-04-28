@@ -74,7 +74,7 @@ export default defineComponent({
 }
 .header-icon {
   width: 20px;
-  color: $gray-5-selected;
+  color: $navy-1;
   margin-right: 6px;
 }
 </style>

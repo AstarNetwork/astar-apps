@@ -1,7 +1,7 @@
 @import 'src/css/quasar.variables.scss';
 
 .wrapper--project-details {
-  padding-bottom: 24px;
+  padding-bottom: 80px;
   margin-bottom: 24px;
   min-width: 300px;
   @media (min-width: $sm) {
@@ -75,21 +75,22 @@
 }
 
 .tag {
-  background-color: $gray-2;
+  background-color: $navy-3;
   border-radius: 6px;
   padding: 2px 8px;
   width: fit-content;
   text-align: center;
+  color: #fff;
 }
 
 .text--tag {
-  font-weight: 600;
-  font-size: 14px;
-  color: $gray-4;
+  font-weight: 500;
+  font-size: 13px;
+  color: #fff;
 }
 
 .icon {
-  color: $gray-3;
+  color: $gray-4;
   margin-top: -1px;
 }
 
@@ -142,16 +143,16 @@
 
 .body--dark {
   .box--details {
-    background: $gray-7;
+    background: $container-bg-dark;
   }
   .tag {
-    background-color: $gray-5;
+    background-color: $navy-3;
   }
   .text--tag {
     color: $gray-1;
   }
   .separator--details {
-    border-bottom: 1px solid $gray-6;
+    border-bottom: 1px solid $navy-1;
   }
   .icon {
     color: $gray-4;

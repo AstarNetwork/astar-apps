@@ -7,7 +7,7 @@
       @click="switchThemeTo('LIGHT')"
     >
       <astar-icon-base
-        class="tw-h-5 tw-w-5 tw-text-gray-300 dark:tw-text-gray-300 dark:tw-text-darkGray-500"
+        class="tw-h-5 tw-w-5 tw-text-gray-400 dark:tw-text-gray-300 dark:tw-text-darkGray-500"
         viewBox="0 0 24 24"
         stroke="currentColor"
         icon-color="none"
