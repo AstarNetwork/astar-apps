@@ -45,7 +45,7 @@ interface EraInfo extends Struct {
   locked: Balance;
 }
 
-interface ContractStakeInfo extends Struct {
+export interface ContractStakeInfo extends Struct {
   total: BN;
   numberOfStakers: u32;
 }
