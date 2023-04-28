@@ -264,7 +264,7 @@ export default defineComponent({
   position: relative;
   bottom: 10px;
   float: right;
-  color: $gray-5-selected;
+  color: $navy-1;
 
   @media (min-width: $md) {
     bottom: 35px;
@@ -285,7 +285,7 @@ export default defineComponent({
   cursor: pointer;
   transition: all 0.2s ease-in;
   border-radius: 50%;
-  color: $gray-5-selected;
+  color: $navy-1;
   &:hover {
     transition: all 0.2s ease-in;
     background: rgba(255, 255, 255, 0.2);

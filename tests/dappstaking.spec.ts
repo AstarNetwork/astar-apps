@@ -12,7 +12,7 @@ test.describe('init screen', () => {
   });
   test('should wallet is closed', async ({ page }) => {
     const walletWrapper = page.getByText('Select a Wallet');
-    const closeButton = page.getByText('×');
+    const closeButton = page.locator('.modal-close');
     await closeButton.click();
     await expect(walletWrapper).toBeHidden();
   });
@@ -58,7 +58,7 @@ test.describe('on dapp staking screen', () => {
   });
 
   test('should clickable the banner after loading is complete', async ({ page }) => {
-    const closeButton = page.getByText('×');
+    const closeButton = page.locator('.modal-close');
     await closeButton.click();
     const bannerCard = page.locator('.wrapper--banners .card:first-child');
     await expect(bannerCard).toBeVisible();
@@ -67,7 +67,7 @@ test.describe('on dapp staking screen', () => {
   });
 
   test('should redirect to dapp page when click the dapp card', async ({ page }) => {
-    const closeButton = page.getByText('×');
+    const closeButton = page.locator('.modal-close');
     await closeButton.click();
     await page.waitForSelector('.loader', { state: 'hidden' });
     const dappCard = page.locator('.wrapper--list .card:first-child').first();
@@ -77,7 +77,7 @@ test.describe('on dapp staking screen', () => {
   });
 
   test('should display staking button when over the dapp card', async ({ page }) => {
-    const closeButton = page.getByText('×');
+    const closeButton = page.locator('.modal-close');
     await closeButton.click();
     await page.waitForSelector('.loader', { state: 'hidden' });
     const dappCard = page.locator('.wrapper--list .card:first-child').first();

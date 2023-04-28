@@ -110,7 +110,7 @@ import {
 import { formatNumber } from '@astar-network/astar-sdk-core';
 import { useStore } from 'src/store';
 import { TvlModel } from 'src/v2/models';
-import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
+import { DappCombinedInfo, SmartContractState } from 'src/v2/models/DappsStaking';
 import { computed, defineComponent, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import PieChart from 'src/components/common/PieChart.vue';
@@ -121,8 +121,11 @@ export default defineComponent({
     const store = useStore();
     const { stakerApr, stakerApy } = useAprFromApi();
     const { currentAccount } = useAccount();
-    const dappsCount = computed<DappCombinedInfo[]>(
-      () => store.getters['dapps/getRegisteredDapps']().length
+    const dappsCount = computed<number>(
+      () =>
+        store.getters['dapps/getRegisteredDapps']().filter(
+          (x: DappCombinedInfo) => x.contract.state === SmartContractState.Registered
+        ).length
     );
     const currentBlock = computed<number>(() => store.getters['general/getCurrentBlock']);
     const currentEra = computed<number>(() => store.getters['dapps/getCurrentEra']);

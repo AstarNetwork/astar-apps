@@ -41,16 +41,16 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid $gray-3;
+  border: 1px solid #fff;
   border-radius: 100px;
   padding: 8px;
   cursor: pointer;
   width: 100%;
   transition: all 0.3s ease 0s;
   &:hover {
-    border: 1px solid $astar-blue;
+    border: 1px solid #fff;
     .text--connection-trouble {
-      color: $astar-blue;
+      color: #fff;
     }
   }
 }
@@ -58,7 +58,7 @@ export default defineComponent({
 .text--connection-trouble {
   font-weight: 400;
   font-size: 14px;
-  color: $gray-3;
+  color: #fff;
   transition: all 0.3s ease 0s;
 }
 </style>

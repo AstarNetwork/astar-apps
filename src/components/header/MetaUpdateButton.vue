@@ -93,7 +93,7 @@ export default defineComponent({
   padding-left: 10px;
   width: 32px;
   height: 32px;
-  background: $gray-5;
+  background: $navy-1;
   color: $warning-red;
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
   border-radius: 16px;

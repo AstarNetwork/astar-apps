@@ -32,7 +32,7 @@
 .text--option-label {
   font-weight: 500;
   font-size: 14px;
-  color: $gray-3;
+  color: $gray-4;
   padding-bottom: 2px;
 }
 
@@ -53,7 +53,7 @@
   font-weight: 700;
   font-size: 16px;
   line-height: 18px;
-  color: $gray-5;
+  color: $navy-1;
   margin: 0 auto;
   padding: 24px 16px;
   cursor: pointer;
@@ -62,12 +62,15 @@
 .class-radio-off {
   background: #fff;
   border: 1px solid transparent;
+  transition: all 0.3s ease 0s;
 }
+
 .class-radio-off:hover {
-  border: 1px solid $astar-blue-dark;
+  border: 1px solid $astar-blue;
 }
+
 .class-radio-on {
-  border: 2px solid $astar-blue-dark;
+  border: 2px solid $astar-blue;
 }
 
 .row--address-icons {
@@ -92,7 +95,7 @@
   width: 100%;
   text-align: left;
   .accountName {
-    color: $gray-5;
+    color: $navy-1;
     font-weight: 700;
     font-size: 16px;
     line-height: 18px;
@@ -115,7 +118,7 @@
   .box--share {
     display: flex;
     align-items: center;
-    color: $astar-blue-dark;
+    color: $astar-blue;
     font-weight: 400;
     font-size: 14px;
     line-height: 17px;
@@ -134,7 +137,7 @@
   &:hover {
     color: white;
     stroke: white;
-    background-color: $astar-blue-dark;
+    background-color: $astar-blue;
     .icon--primary {
       stroke: white;
       background-color: transparent;
@@ -178,13 +181,13 @@
 .text--balance {
   font-weight: 500;
   font-size: 12px;
-  color: $gray-5;
+  color: $navy-1;
 }
 
 .text--balance-hide {
   font-weight: 500;
   font-size: 12px;
-  color: $gray-3;
+  color: $gray-4;
 }
 
 .body--dark {
@@ -192,11 +195,11 @@
     color: #fff;
   }
   .class-radio-off {
-    background: $gray-6;
+    background: $modal-item-bg-dark;
   }
 
   .class-radio-on {
-    background: $gray-5-selected-dark;
+    background: $container-bg-dark;
   }
 
   .wrapper--account-detail {

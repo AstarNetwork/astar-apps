@@ -105,7 +105,7 @@ export default defineComponent({
   display: none;
   border: 1px solid $astar-blue;
   border-radius: 6px;
-  color: $gray-5-selected;
+  color: $navy-1;
   width: 100%;
   background: #e5f2ff;
   mix-blend-mode: normal;
@@ -175,15 +175,15 @@ export default defineComponent({
   font-weight: 600;
   font-size: 16px;
   line-height: 19px;
-  color: $gray-5-selected;
+  color: $navy-1;
 }
 
 .column--close {
   width: 16px;
   height: 16px;
-  border: 1px solid $gray-3;
+  border: 1px solid $gray-4;
   border-radius: 30px;
-  color: $gray-3;
+  color: $gray-4;
   font-size: 30px;
   font-weight: 10;
   cursor: pointer;
@@ -197,7 +197,7 @@ export default defineComponent({
   font-weight: 500;
   font-size: 14px;
   line-height: 20px;
-  color: $gray-5-selected;
+  color: $navy-1;
   text-align: left;
   padding-left: 12px;
   padding-right: 12px;
