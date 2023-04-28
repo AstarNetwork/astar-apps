@@ -13,7 +13,7 @@ export const test = base.extend<{
     ];
 
     if (process.env.HEADLESS) {
-      args.push(`--headless=new`,);
+      args.push(`--headless=new`);
     }
 
     const context = await chromium.launchPersistentContext('', {
