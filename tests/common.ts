@@ -32,7 +32,6 @@ export const connectToNetwork = async (page: Page): Promise<void> => {
 };
 
 export const selectAccount = async (page: Page, accountName: string): Promise<void> => {
-  await page.goto('/astar/assets');
   await page.getByText('Polkadot.js').click();
   await page.getByText(`${accountName} (extension)`).click();
   await page.getByRole('button', { name: 'Connect', exact: true }).click();
