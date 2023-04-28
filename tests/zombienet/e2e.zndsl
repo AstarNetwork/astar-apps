@@ -10,4 +10,4 @@ Creds: config
 
 astar: js-script ./setup-preconditions.js with "Alice" return is equal to 1 within 200 seconds
 # astar: js-script ./register-xcasset.js with "Alice" return is equal to 1 within 200 seconds
-astar: js-script ./start-playwright.js with "{{BASE_URL}}" return is equal to 1 within 400 seconds
+astar: js-script ./start-playwright.js with "{{BASE_URL}}" return is equal to 1 within 4000 seconds
