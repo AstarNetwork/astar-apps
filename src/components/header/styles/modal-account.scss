@@ -67,7 +67,7 @@
 }
 
 .class-radio-off {
-  border: 1px solid $gray-3;
+  border: 1px solid $navy-1;
   transition: all 0.3s ease 0s;
   &:hover {
     border: 1px solid $astar-blue !important;
@@ -213,11 +213,7 @@
     color: #fff;
   }
   .class-radio-off {
-    border: 1px solid $gray-4;
-  }
-
-  .class-radio-on {
-    background: $container-bg-dark;
+    border: 1px solid $gray-3;
   }
 
   .wrapper--account-detail {

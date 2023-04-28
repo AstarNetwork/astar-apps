@@ -16,7 +16,6 @@
 .class-radio {
   display: flex;
   align-items: center;
-  background: #fff;
   border-radius: 6px;
   min-height: rem(56);
   font-weight: 700;
@@ -29,9 +28,9 @@
 }
 .class-radio-off {
   cursor: pointer;
-  background: #fff;
   border: 1px solid transparent;
   transition: all 0.3s ease 0s;
+  border: 1px solid $navy-1;
 }
 
 .class-radio-off:hover {
@@ -83,7 +82,6 @@
 
 .class-radio--custom-network {
   height: 120px;
-  background: #fff !important;
 }
 
 .ip-input {
@@ -93,8 +91,7 @@
   margin-top: 16px;
   margin-left: 8px;
   border-radius: 6px;
-  background-color: $gray-1;
-  border: 1px solid $gray-1;
+  border: 1px solid $navy-1;
   padding: 0 16px;
   text-align: left;
   font-weight: 400;
@@ -145,15 +142,9 @@
   .class-radio {
     color: #fff;
   }
-  .class-radio-off {
-    background: $modal-item-bg-dark;
-  }
 
-  .class-radio-on {
-    background: $container-bg-dark;
-  }
-  .class-radio--custom-network {
-    background: $container-bg-dark !important;
+  .class-radio-off {
+    border: 1px solid $gray-3;
   }
 
   .ip--network {
@@ -166,7 +157,7 @@
 
   .ip-input {
     background: $body-bg-dark;
-    border: 1px solid $gray-4;
+    border: 1px solid $gray-3;
     color: $gray-1;
   }
 

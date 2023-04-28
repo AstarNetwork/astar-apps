@@ -43,7 +43,7 @@ export default defineComponent({
   margin: 0 auto;
   margin-top: 16px;
   padding: 16px;
-  border: 1px solid $gray-3;
+  border: 1px solid $navy-1;
 
   .wrapper--row--wallet {
     display: flex;
@@ -69,7 +69,7 @@ export default defineComponent({
 
 .body--dark {
   .box__row--wallet {
-    border: 1px solid $gray-4;
+    border: 1px solid $gray-3;
     color: $gray-1;
   }
 }
