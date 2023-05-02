@@ -15,7 +15,7 @@
   height: 88px;
   background: transparent;
 
-  border: 1px solid $gray-3;
+  border: 1px solid $navy-1;
   @media (min-width: $xs) {
     width: 344px;
   }
@@ -126,7 +126,7 @@
 .text--to--balance {
   font-weight: 400;
   font-size: 12px;
-  color: $gray-3;
+  color: $gray-4;
 }
 
 .text--available {
@@ -166,7 +166,7 @@
   background: transparent;
   text-align: right;
   font-weight: 600;
-  color: $gray-5;
+  color: $navy-1;
   justify-self: flex-end;
   @media (min-width: $md) {
     width: 250px;
@@ -244,7 +244,16 @@
 }
 
 .separator {
-  border-top: 1px solid $gray-4;
+  border-top: 1px solid transparent;
+  border-image: linear-gradient(
+    121.48deg,
+    #e6007a -5.77%,
+    #703ac2 13.57%,
+    #0070eb 34.18%,
+    #0297fb 58.08%,
+    #0ae2ff 74.93%
+  );
+  border-image-slice: 1;
   opacity: 0.5;
   margin: 6px 0;
 }
@@ -299,8 +308,8 @@
 
 .body--dark {
   .box--input-field {
-    background: $gray-6;
-    border: 1px solid $gray-4;
+    background: transparent;
+    border: 1px solid $gray-3;
   }
   input {
     color: white;
@@ -309,16 +318,16 @@
   .text--connect-rpc {
     color: $astar-blue;
   }
+
   .row--box-error {
     background: $box-red-dark;
   }
+
   .box--warning--checked {
     background: $box-red-dark;
   }
+
   .color--not-checked {
     color: $gray-1;
-  }
-  .text--to--balance {
-    color: $gray-4;
   }
 }

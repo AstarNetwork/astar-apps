@@ -38,7 +38,7 @@
             </div>
             <div class="column__icons">
               <div>
-                <button type="button" class="icon--primary" @click="copyAddress">
+                <button id="copyAddress" type="button" class="icon--primary" @click="copyAddress">
                   <astar-icon-copy />
                 </button>
                 <q-tooltip>

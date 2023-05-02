@@ -15,7 +15,6 @@ import { IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { ethers } from 'ethers';
 import { computed, ref, watchEffect } from 'vue';
-import { useNetworkInfo } from 'src/hooks';
 import { useI18n } from 'vue-i18n';
 
 const MAX_BATCH_WEIGHT = new BN('50000000000');
@@ -33,9 +32,7 @@ export function useClaimAll() {
   const isSendingTx = computed(() => store.getters['general/isLoading']);
   const { t } = useI18n();
   const { era } = useCurrentEra();
-  const selectedAddress = computed(() => store.getters['general/selectedAddress']);
-  const { accountData } = useBalance(selectedAddress);
-  const { nativeTokenSymbol } = useNetworkInfo();
+  const { accountData } = useBalance(senderAddress);
 
   const transferableBalance = computed(() => {
     const balance = accountData.value

@@ -1,17 +1,18 @@
-import { isMobileDevice } from './../../../hooks/helper/wallet';
-import { SubmittableExtrinsic } from '@polkadot/api/types';
-import { ISubmittableResult, Signer } from '@polkadot/types/types';
+import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import { InjectedExtension } from '@polkadot/extension-inject/types';
-import { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
-import { inject, injectable } from 'inversify';
+import { Signer } from '@polkadot/types/types';
 import { ethers } from 'ethers';
-import { IWalletService, IGasPriceProvider } from 'src/v2/services';
+import { inject, injectable } from 'inversify';
+import { isMobileDevice } from 'src/hooks/helper/wallet';
+import { getSubscanExtrinsic } from 'src/links';
+import { AlertMsg } from 'src/modules/toast/index';
+import { Guard, wait } from 'src/v2/common';
+import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { Account } from 'src/v2/models';
 import { IMetadataRepository } from 'src/v2/repositories';
-import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
-import { WalletService } from './WalletService';
-import { Guard, wait } from 'src/v2/common';
+import { IGasPriceProvider, IWalletService, ParamSignAndSend } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
+import { WalletService } from './WalletService';
 
 @injectable()
 export class PolkadotWalletService extends WalletService implements IWalletService {
@@ -33,13 +34,14 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
    * If not defined, default message will be shown.
    * @param tip Transaction tip, If not provided it will be fetched from gas price provider,
    */
-  public async signAndSend(
-    extrinsic: SubmittableExtrinsic<'promise', ISubmittableResult>,
-    senderAddress: string,
-    successMessage?: string,
-    transactionTip?: number,
-    finalizedCallback?: (result?: ISubmittableResult) => void
-  ): Promise<string | null> {
+  public async signAndSend({
+    extrinsic,
+    senderAddress,
+    successMessage,
+    transactionTip,
+    finalizedCallback,
+    subscan,
+  }: ParamSignAndSend): Promise<string | null> {
     Guard.ThrowIfUndefined('extrinsic', extrinsic);
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
 
@@ -68,14 +70,24 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
               !isMobileDevice && this.detectExtensionsAction(false);
               if (result.isCompleted) {
                 if (!this.isExtrinsicFailed(result.events)) {
-                  this.eventAggregator.publish(
-                    new ExtrinsicStatusMessage(
-                      true,
-                      successMessage ?? 'Transaction successfully executed',
-                      `${extrinsic.method.section}.${extrinsic.method.method}`,
-                      result.txHash.toHex()
-                    )
-                  );
+                  if (result.isError) {
+                    this.eventAggregator.publish(
+                      new ExtrinsicStatusMessage({ success: false, message: AlertMsg.ERROR })
+                    );
+                  } else {
+                    const subscanUrl = getSubscanExtrinsic({
+                      subscanBase: subscan,
+                      hash: result.txHash.toHex(),
+                    });
+                    this.eventAggregator.publish(
+                      new ExtrinsicStatusMessage({
+                        success: true,
+                        message: successMessage ?? AlertMsg.SUCCESS,
+                        method: `${extrinsic.method.section}.${extrinsic.method.method}`,
+                        explorerUrl: subscanUrl,
+                      })
+                    );
+                  }
                 }
 
                 this.eventAggregator.publish(new BusyMessage(false));
@@ -98,7 +110,9 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
       });
     } catch (e) {
       const error = e as unknown as Error;
-      this.eventAggregator.publish(new ExtrinsicStatusMessage(false, error.message));
+      this.eventAggregator.publish(
+        new ExtrinsicStatusMessage({ success: false, message: error.message || AlertMsg.ERROR })
+      );
       this.eventAggregator.publish(new BusyMessage(false));
     }
 

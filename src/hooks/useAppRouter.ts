@@ -9,7 +9,7 @@ import { computed, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 
-const { NETWORK_IDX, SELECTED_ENDPOINT } = LOCAL_STORAGE;
+const { NETWORK_IDX, SELECTED_ENDPOINT, SELECTED_ADDRESS, SELECTED_WALLET } = LOCAL_STORAGE;
 
 export function useAppRouter() {
   const router = useRouter();
@@ -23,6 +23,18 @@ export function useAppRouter() {
     }
     const selectedChain = !!providerEndpoints.find((it) => it.networkAlias === name);
     return selectedChain ? name : '';
+  };
+
+  // Memo: reload the app if local storage is invalid
+  const handleInvalidStorage = (): void => {
+    const storedAddress = localStorage.getItem(SELECTED_ADDRESS);
+    const storedWallet = localStorage.getItem(SELECTED_WALLET);
+    const invalidCondition = (storedAddress && !storedWallet) || (storedWallet && !storedAddress);
+    if (invalidCondition) {
+      localStorage.removeItem(SELECTED_ADDRESS);
+      localStorage.removeItem(SELECTED_WALLET);
+      window.location.reload();
+    }
   };
 
   // Memo: this function is invoked whenever users change the `:network` param via browser's address bar
@@ -68,4 +80,5 @@ export function useAppRouter() {
   };
 
   watchEffect(handleInputNetworkParam);
+  watchEffect(handleInvalidStorage);
 }

@@ -44,7 +44,7 @@ export class WalletService {
       } else {
         msg = message;
       }
-      this.eventAggregator.publish(new ExtrinsicStatusMessage(false, msg));
+      this.eventAggregator.publish(new ExtrinsicStatusMessage({ success: false, message: msg }));
       throw Error(msg);
     }
     return result;

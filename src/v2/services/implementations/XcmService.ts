@@ -1,3 +1,4 @@
+import { AlertMsg } from 'src/modules/toast';
 import { BN } from '@polkadot/util';
 import { ethers } from 'ethers';
 import { inject, injectable } from 'inversify';
@@ -23,6 +24,7 @@ import {
   TransferParam,
 } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
+import { getSubscanExtrinsic } from 'src/links';
 
 @injectable()
 export class XcmService implements IXcmService {
@@ -49,6 +51,7 @@ export class XcmService implements IXcmService {
     recipientAddress,
     amount,
     finalizedCallback,
+    successMessage,
   }: TransferParam): Promise<void> {
     Guard.ThrowIfUndefined('recipientAddress', recipientAddress);
     Guard.ThrowIfNegative('amount', amount);
@@ -74,8 +77,9 @@ export class XcmService implements IXcmService {
         token,
       });
       finalizedCallback && (await finalizedCallback(hash));
+      const explorerUrl = getSubscanExtrinsic({ subscanBase: from.subscan, hash });
       this.eventAggregator.publish(
-        new ExtrinsicStatusMessage(true, `Completed at transaction hash ${hash}`)
+        new ExtrinsicStatusMessage({ success: true, message: successMessage, explorerUrl })
       );
       this.eventAggregator.publish(new BusyMessage(false));
       return;
@@ -107,12 +111,13 @@ export class XcmService implements IXcmService {
     }
 
     if (call) {
-      const hash = await this.wallet.signAndSend(
-        call,
+      const hash = await this.wallet.signAndSend({
+        extrinsic: call,
         senderAddress,
-        `You successfully transferred ${amount} ${token.metadata.symbol} to ${recipientAddress}`,
-        tip
-      );
+        successMessage,
+        transactionTip: tip,
+        subscan: from.subscan,
+      });
       this.eventAggregator.publish(new BusyMessage(true));
       finalizedCallback && hash && (await finalizedCallback(hash));
       this.eventAggregator.publish(new BusyMessage(false));

@@ -21,16 +21,28 @@ export interface IDappStakingService {
    * @param contractAddress Contract address.
    * @param stakerAddress Staked address.
    * @param amount Amount to stake.
+   * @param successMessage Message on the success toast.
    */
-  stake(contractAddress: string, stakerAddress: string, amount: BN): Promise<void>;
+  stake(
+    contractAddress: string,
+    stakerAddress: string,
+    amount: BN,
+    successMessage: string
+  ): Promise<void>;
 
   /**
    * Starts unbonding process.
    * @param contractAddress Contract address.
    * @param stakerAddress Staked address.
    * @param amount Amount to stake.
+   * @param successMessage Message on the success toast.
    */
-  unbondAndUnstake(contractAddress: string, stakerAddress: string, amount: BN): Promise<void>;
+  unbondAndUnstake(
+    contractAddress: string,
+    stakerAddress: string,
+    amount: BN,
+    successMessage: string
+  ): Promise<void>;
 
   /**
    * Nomination transfer
@@ -38,17 +50,20 @@ export interface IDappStakingService {
    * @param targetContractId Contract address transfer to.
    * @param address Staked address.
    * @param amount Amount to stake.
+   * @param successMessage Message on the success toast.
    */
   nominationTransfer({
     amount,
     fromContractId,
     targetContractId,
     address,
+    successMessage,
   }: {
     amount: BN;
     fromContractId: string;
     targetContractId: string;
     address: string;
+    successMessage: string;
   }): Promise<void>;
 
   /**

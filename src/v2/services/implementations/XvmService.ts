@@ -48,13 +48,14 @@ export class XvmService implements IXvmService {
 
     try {
       const transaction = await this.xvmRepository.getTransferCallData(param);
-      const hash = await this.wallet.signAndSend(
-        transaction,
-        param.senderAddress,
-        `You've successfully transferred ${param.amount} ${
+      const hash = await this.wallet.signAndSend({
+        extrinsic: transaction,
+        senderAddress: param.senderAddress,
+        // Todo: update translation file
+        successMessage: `You've successfully transferred ${param.amount} ${
           param.token.symbol
-        } to ${getShortenAddress(param.recipientAddress)}`
-      );
+        } to ${getShortenAddress(param.recipientAddress)}`,
+      });
       addXvmTxHistories({
         hash: String(hash),
         to: param.recipientAddress,

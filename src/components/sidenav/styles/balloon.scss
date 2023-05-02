@@ -1,0 +1,41 @@
+@import 'src/css/quasar.variables.scss';
+
+.balloon-right {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  row-gap: 8px;
+  padding: 16px;
+  left: 175px;
+  top: 120px;
+  border-radius: 6px;
+  background: $astar-blue;
+  width: 100%;
+  z-index: 99999;
+}
+
+.balloon-right:before {
+  content: '';
+  position: absolute;
+  top: 35%;
+  left: -13%;
+  margin-top: -5px;
+  border: 15px solid transparent;
+  border-right: 20px solid $astar-blue;
+}
+
+.balloon__title {
+  display: flex;
+  justify-content: space-between;
+}
+
+.text--ballon {
+  font-weight: 500;
+  font-size: 14px;
+  color: $gray-1;
+}
+
+.balloon_text-box {
+  text-align: left;
+}
+

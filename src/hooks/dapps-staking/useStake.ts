@@ -1,4 +1,4 @@
-import { ASTAR_DECIMALS } from '@astar-network/astar-sdk-core';
+import { ASTAR_DECIMALS, getShortenAddress } from '@astar-network/astar-sdk-core';
 import { BN } from '@polkadot/util';
 import { ethers } from 'ethers';
 import { useAccount, useStakingList } from 'src/hooks';
@@ -8,7 +8,6 @@ import { container } from 'src/v2/common';
 import { IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { computed, ref, watch } from 'vue';
-import { useNetworkInfo } from 'src/hooks';
 import { useStore } from 'src/store';
 import { useRouter, useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
@@ -22,7 +21,6 @@ export function useStake() {
   const addressTransferFrom = ref<string>(currentAccount.value);
   const { t } = useI18n();
   const store = useStore();
-  const { nativeTokenSymbol } = useNetworkInfo();
 
   const setAddressTransferFrom = (address: string) => {
     addressTransferFrom.value = address;
@@ -67,14 +65,27 @@ export function useStake() {
 
     if (formattedTransferFrom.value.isNominationTransfer) {
       if (!formattedTransferFrom.value.item) return;
+      const successMessage = t('dappStaking.toast.successfullyNominationTransfer', {
+        targetContractId: getShortenAddress(targetContractId, 5),
+        fromContractId: getShortenAddress(formattedTransferFrom.value.item.address, 5),
+      });
       await dappStakingService.nominationTransfer({
         fromContractId: formattedTransferFrom.value.item.address,
         targetContractId,
         address: currentAccount.value,
         amount: stakeAmount,
+        successMessage,
       });
     } else {
-      await dappStakingService.stake(targetContractId, currentAccount.value, stakeAmount);
+      const successMessage = t('dappStaking.toast.successfullyStaked', {
+        contractAddress: getShortenAddress(targetContractId, 5),
+      });
+      await dappStakingService.stake(
+        targetContractId,
+        currentAccount.value,
+        stakeAmount,
+        successMessage
+      );
     }
     isStakePage.value && router.push(Path.DappStaking);
   };
