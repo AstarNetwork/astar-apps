@@ -46,7 +46,7 @@ test.describe('init screen', () => {
 
   test('should display install extension popup when click Talisman button', async ({ page }) => {
     await checkInjectedWeb3(page);
-    const button = page.locator('div').filter({ hasText: 'Talisman (Native)' }).first();
+    const button = page.locator('div').filter({ hasText: 'Talisman' }).first();
     await expect(button).toBeVisible();
     await button.click();
   });

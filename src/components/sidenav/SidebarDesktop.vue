@@ -60,7 +60,7 @@
       <div @mouseover="hoverNFT = true" @mouseleave="hoverNFT = false">
         <router-link
           to="#"
-          :class="['link', $route.path.split('/')[1] === 'astar-nft' ? 'activeLink' : '']"
+          :class="['link', $route.path.split('/')[2] === 'astar-nft' ? 'activeLink' : '']"
         >
           <astar-icon-base
             :class="['icon-add', isShiden ? 'shiden' : '']"

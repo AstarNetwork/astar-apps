@@ -33,7 +33,6 @@ export default defineComponent({
   overflow: hidden;
   display: flex;
   justify-content: space-between;
-  /* background: rgba(247, 247, 248, 0.8); */
   background: #0e101d;
   mix-blend-mode: normal;
   backdrop-filter: blur(200px);

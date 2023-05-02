@@ -1,3 +1,4 @@
+import { clickPolicyButton } from 'src/modules/playwright';
 import { expect } from '@playwright/test';
 import { test } from './fixtures';
 import {
@@ -27,6 +28,7 @@ test.afterAll(async () => {
 test.beforeEach(async ({ page, context }) => {
   // TODO consider moving this into beforeAll
   await page.goto('/astar/assets');
+  await clickPolicyButton(page);
   const closeButton = page.getByText('Polkadot.js');
   await closeButton.click();
 
