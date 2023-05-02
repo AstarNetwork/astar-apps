@@ -19,8 +19,8 @@ async function run(nodeName, networkInfo, args) {
   await sendTransaction(api.tx.assets.create(999, { Id: sender.address }, ONE), sender);
   console.log('Setting metadata with sender: ', sender.address);
   await sendTransaction(api.tx.assets.setMetadata(999, 'Test', 'TST', 18), sender);
-  console.log('Minting asset with sender: ', sender.address)
-  await sendTransaction(api.tx.assets.mint(999, { Id: sender.address }, ONE.muln(1000)), sender);
+  // console.log('Minting asset with sender: ', sender.address)
+  // await sendTransaction(api.tx.assets.mint(999, { Id: sender.address }, ONE.muln(1000)), sender);
   // const tx1 = api.tx.assets.forceCreate(999, { Id: sender.address }, true, ONE);
   // //const tx1a = api.tx.assets.forceCreate(998, { Id: sender.address }, true, ONE);
   // //const batch1 = await api.tx.utility.batchAll([tx1, tx1a]);

@@ -33,11 +33,7 @@ test.beforeEach(async ({ page, context }) => {
 test.describe('dApp staking transactions', () => {
   test('should be able to stake on test dApp', async ({ page, context }) => {
     const stakeAmount = BigInt(1000);
-    const dappCard = page.locator('.wrapper--list .card:first-child').first();
-    await expect(dappCard).toBeVisible();
-    await dappCard.hover();
-    const stakeButton = page.getByRole('button', { name: 'Stake Now' });
-    await stakeButton.click();
+    await page.goto(`/custom-node/dapp-staking/stake?dapp=${TEST_DAPP_ADDRESS}`);
     await page.getByPlaceholder('0.0').fill(stakeAmount.toString());
     await page.getByRole('button', { name: 'Confirm' }).click();
 

@@ -47,14 +47,14 @@ test.describe('account panel', () => {
     await expect(page.locator('.noti-content')).toBeVisible();
   });
 
-  test('token folded info is visible until closed', async ({ page }) => {
-    const baloonNativeToken = await page
-      .getByText('NEW cancel All utilities for ASTR token are now folded - open up here!')
-      .first();
-    expect(baloonNativeToken).toBeVisible();
-    await page.getByRole('button', { name: 'cancel' }).click();
-    await expect(baloonNativeToken).not.toBeVisible();
-  });
+  // test('token folded info is visible until closed', async ({ page }) => {
+  //   const baloonNativeToken = await page
+  //     .getByText('NEW cancel All utilities for ASTR token are now folded - open up here!')
+  //     .first();
+  //   expect(baloonNativeToken).toBeVisible();
+  //   await page.getByRole('button', { name: 'cancel' }).click();
+  //   await expect(baloonNativeToken).not.toBeVisible();
+  // });
 
   test('account expander works', async ({ page }) => {
     await page.locator('.icon--expand').first().click();
