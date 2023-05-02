@@ -9,5 +9,7 @@ Creds: config
 {% endfor %}
 
 astar: js-script ./setup-preconditions.js with "Alice" return is equal to 1 within 200 seconds
-# astar: js-script ./register-xcasset.js with "Alice" return is equal to 1 within 200 seconds
 astar: js-script ./start-playwright.js with "{{BASE_URL}}" return is equal to 1 within 4000 seconds
+
+# Uncomment the line below if you want to keep Zombienet running (i.e. some tests are failing and you want to check UI or similar)
+# astar: js-script ./wait.js with "600000" return is equal to 1 within 360 seconds

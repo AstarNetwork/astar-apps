@@ -36,11 +36,8 @@ test.beforeEach(async ({ page, context }) => {
   await createAccount(page, ALICE_ACCOUNT_SEED, ALICE_ACCOUNT_NAME);
   await createAccount(page, BOB_ACCOUNT_SEED, BOB_ACCOUNT_NAME);
   await page.goto('/astar/assets');
-  await selectAccount(page, ALICE_ACCOUNT_NAME);
   await connectToNetwork(page);
-
-  // Close cookies popup
-  await page.getByRole('button', { name: 'Accept' }).click();
+  await selectAccount(page, ALICE_ACCOUNT_NAME);
 });
 
 test.describe('account panel', () => {
