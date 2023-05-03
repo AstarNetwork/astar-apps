@@ -15,6 +15,7 @@ export enum EvmChain {
   Astar = 592,
   Shiden = 336,
   Polygon = 137,
+  Injective = 999999997, // chain ID used in Cbridge API
 }
 
 export const astarSupportChains = [
@@ -23,6 +24,7 @@ export const astarSupportChains = [
   EvmChain.Astar,
   EvmChain.Shiden,
   EvmChain.Polygon,
+  EvmChain.Injective,
 ];
 
 export const shidenSupportChains = [EvmChain.Astar, EvmChain.Shiden];

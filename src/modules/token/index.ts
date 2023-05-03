@@ -26,6 +26,7 @@ export interface Erc20Token {
   isWrappedToken?: boolean;
   isXC20?: boolean;
   wrapUrl?: string | null;
+  bridgeUrl?: string | null;
   userBalance?: string;
   userBalanceUsd?: string;
   isCbridgeToken?: boolean;
@@ -49,8 +50,4 @@ export const registeredErc20Tokens: Erc20Token[] = [WASTR];
 export const tokenImageMap = {
   ARSW: 'https://assets.coingecko.com/coins/images/26048/small/arsw.png?1655440190',
   LAY: 'https://assets.coingecko.com/coins/images/25795/small/WKBrkX4y_400x400.png?1653920060',
-};
-
-export const wrappedTokenMap = {
-  WASTR: 'ASTR',
 };
