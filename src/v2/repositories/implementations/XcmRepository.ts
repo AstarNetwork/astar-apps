@@ -102,8 +102,9 @@ export class XcmRepository implements IXcmRepository {
     return result;
   }
 
-  private getXcmVersion(from: XcmChain): { version: string; isV3: boolean } {
-    const version = from.name === Chain.KUSAMA ? 'V3' : 'V1';
+  public getXcmVersion(from: XcmChain): { version: string; isV3: boolean } {
+    const v3s = [Chain.KUSAMA, Chain.SHIDEN];
+    const version = v3s.find((it) => it === from.name) ? 'V3' : 'V1';
     const isV3 = version === 'V3';
     return { version, isV3 };
   }
@@ -136,13 +137,14 @@ export class XcmRepository implements IXcmRepository {
 
     const recipientAddressId = this.getAddress(recipientAddress);
 
+    const id = decodeAddress(recipientAddressId);
     const AccountId32 = isV3
       ? {
-          id: decodeAddress(recipientAddressId),
+          id,
         }
       : {
           network: 'Any',
-          id: decodeAddress(recipientAddressId),
+          id,
         };
 
     const beneficiary = {
@@ -189,22 +191,31 @@ export class XcmRepository implements IXcmRepository {
     amount: BN
   ): Promise<ExtrinsicPayload> {
     const recipientAccountId = getPubkeyFromSS58Addr(recipientAddress);
+    // Todo: unify to 'V3' after Polkadot XCM version updates to V3
+    const { version, isV3 } = this.getXcmVersion(from);
 
     const destination = {
-      V1: {
+      [version]: {
         interior: 'Here',
         parents: new BN(1),
       },
     };
 
+    const id = decodeAddress(recipientAccountId);
+    const AccountId32 = isV3
+      ? {
+          id,
+        }
+      : {
+          network: 'Any',
+          id,
+        };
+
     const beneficiary = {
-      V1: {
+      [version]: {
         interior: {
           X1: {
-            AccountId32: {
-              network: 'Any',
-              id: decodeAddress(recipientAccountId),
-            },
+            AccountId32,
           },
         },
         parents: new BN(0),
@@ -219,7 +230,7 @@ export class XcmRepository implements IXcmRepository {
     };
 
     const assets = {
-      V1: [
+      [version]: [
         {
           fun: {
             Fungible: new BN(amount),
@@ -228,6 +239,17 @@ export class XcmRepository implements IXcmRepository {
         },
       ],
     };
+
+    console.log('XcmRepository');
+    console.log(
+      from,
+      'polkadotXcm',
+      'reserveWithdrawAssets',
+      destination,
+      beneficiary,
+      assets,
+      new BN(0)
+    );
 
     return await this.buildTxCall(
       from,
@@ -296,8 +318,11 @@ export class XcmRepository implements IXcmRepository {
     const config = await api.query.xcAssetConfig.assetIdToLocation<Option<AssetConfig>>(token.id);
 
     // return config.unwrap().v1;
+    const { isV3 } = this.getXcmVersion(source);
     const formattedAssetConfig = JSON.parse(config.toString());
-    return formattedAssetConfig.v1;
+
+    console.log('formattedAssetConfig', formattedAssetConfig);
+    return isV3 ? formattedAssetConfig.v3 : formattedAssetConfig.v1;
   }
 
   protected isAstarNativeToken(token: Asset): boolean {
