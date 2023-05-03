@@ -42,11 +42,6 @@
                 <button class="btn btn--sm">{{ $t('assets.wrap') }}</button>
               </a>
             </div>
-            <div v-if="token.bridgeUrl">
-              <a :href="token.bridgeUrl" target="_blank" rel="noopener noreferrer">
-                <button class="btn btn--sm">{{ $t('assets.bridge') }}</button>
-              </a>
-            </div>
             <div class="screen--xl">
               <a
                 class="box--explorer"

@@ -44,31 +44,7 @@ export const WASTR: Erc20Token = {
   wrapUrl: 'https://app.arthswap.org/#/swap',
 };
 
-export const ATOM: Erc20Token = {
-  srcChainId: Number(providerEndpoints[endpointKey.ASTAR].evmChainId),
-  address: '0xfFfFffff000000000000000000000000000186a2',
-  decimal: 6,
-  symbol: 'ATOM',
-  name: 'Cosmos Hub',
-  image: 'https://i.postimg.cc/zf4hRjfm/ATOM.png',
-  isWrappedToken: false,
-  isXC20: false,
-  bridgeUrl: 'https://cbridge.celer.network/999999997/592/ASTR',
-};
-
-export const INJ: Erc20Token = {
-  srcChainId: Number(providerEndpoints[endpointKey.ASTAR].evmChainId),
-  address: '0xFfFfFfFF000000000000000000000000000186a1',
-  decimal: 18,
-  symbol: 'INJ',
-  name: 'Injective',
-  image: 'https://i.postimg.cc/vZk23WdJ/INJtoken.png',
-  isWrappedToken: false,
-  isXC20: false,
-  bridgeUrl: 'https://cbridge.celer.network/999999997/592/INJ',
-};
-
-export const registeredErc20Tokens: Erc20Token[] = [WASTR, ATOM, INJ];
+export const registeredErc20Tokens: Erc20Token[] = [WASTR];
 
 // Memo: Define the token image source
 export const tokenImageMap = {
