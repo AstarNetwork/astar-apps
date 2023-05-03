@@ -87,7 +87,7 @@ export default defineComponent({
     font-weight: 800;
     font-size: 16px;
     line-height: 26px;
-    color: $gray-3;
+    color: $gray-4;
   }
 
   .row--values {

@@ -90,7 +90,7 @@ export default defineComponent({
 }
 
 .learnButton {
-  @apply tw-inline-flex tw-items-center tw-px-4 tw-py-3 tw-border tw-border-gray-300 dark:tw-border-darkGray-500 tw-text-sm tw-font-medium tw-rounded-full tw-text-gray-500 dark:tw-text-darkGray-400 tw-bg-white dark:tw-bg-darkGray-900 tw-mx-3;
+  @apply tw-inline-flex tw-items-center tw-px-4 tw-py-3 tw-border tw-border-gray-400 dark:tw-border-darkGray-500 tw-text-sm tw-font-medium tw-rounded-full tw-text-gray-500 dark:tw-text-darkGray-400 tw-bg-white dark:tw-bg-darkGray-900 tw-mx-3;
 }
 .learnButton:hover {
   @apply tw-bg-gray-100 dark:tw-bg-darkGray-700;

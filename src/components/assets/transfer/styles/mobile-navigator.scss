@@ -26,11 +26,11 @@
   align-items: center;
   column-gap: 4px;
   border-radius: 20px;
-  border: 1px solid $gray-3;
+  border: 1px solid $gray-4;
   padding: 8px 16px 8px 8px;
   white-space: nowrap;
   font-weight: 500;
-  color: $gray-3;
+  color: $gray-4;
   @media (min-width: $sm) {
     column-gap: 8px;
   }
@@ -38,7 +38,7 @@
 
 .body--dark {
   .wrapper--mobile-navigator {
-    background: $gray-7;
+    background: $container-bg-dark;
   }
   .circle--button {
     color: $gray-4;

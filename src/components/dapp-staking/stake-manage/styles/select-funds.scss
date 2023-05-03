@@ -1,11 +1,11 @@
 @import 'src/css/quasar.variables.scss';
 
 .container--select-item {
-  border: 1px solid $gray-3;
+  border: 1px solid $gray-4;
   border-radius: 6px;
   box-sizing: border-box;
   padding: 16px;
-  color: $gray-3;
+  color: $gray-4;
   height: 470px;
   width: 348px;
   overflow: auto;
@@ -20,11 +20,12 @@
 .container--select-item-mobile {
   border-radius: 6px;
   box-sizing: border-box;
-  color: $gray-3;
+  color: $gray-4;
   background-color: transparent;
   padding: 24px;
   max-height: 420px;
   overflow: auto;
+  padding-top: 0;
 }
 
 .row--title {
@@ -104,7 +105,7 @@
 }
 
 .text--item-name {
-  color: $gray-5;
+  color: $navy-1;
   font-weight: 700;
   font-size: 16px;
   @media (min-width: $md) {
@@ -116,22 +117,20 @@
 .text--token-amount {
   font-size: 12px;
   font-weight: 400;
-  color: $gray-5;
+  color: $navy-1;
 }
 
 .body--dark {
   .container--select-item {
     color: $gray-1;
-    background: $gray-6;
     border: 1px solid $gray-4;
     @media (min-width: $md) {
-      background: $gray-6;
+      background: $container-bg-dark;
     }
   }
   .row--item {
-    background-color: $gray-7;
+    background-color: transparent;
     @media (min-width: $md) {
-      background-color: $gray-6;
       &:hover {
         background: rgba(255, 255, 255, 0.02);
       }

@@ -22,8 +22,9 @@
       v-model:selectNetwork="currentNetworkIdx"
       :network-idx="currentNetworkIdx"
     />
+
     <modal-connect-wallet
-      :is-modal-connect-wallet="modalName === WalletModalOption.SelectWallet && !currentAccount"
+      :is-modal-connect-wallet="modalName === WalletModalOption.SelectWallet"
       :set-wallet-modal="setWalletModal"
       :set-close-modal="setCloseModal"
       :connect-ethereum-wallet="connectEthereumWallet"
@@ -32,7 +33,7 @@
     <modal-account
       v-if="modalAccountSelect"
       v-model:isOpen="modalAccountSelect"
-      :set-wallet-modal="setWalletModal"
+      :open-select-modal="openSelectModal"
       :selected-wallet="selectedWallet"
       :connect-ethereum-wallet="connectEthereumWallet"
       :disconnect-account="disconnectAccount"
@@ -112,20 +113,31 @@ export default defineComponent({
     } = useConnectWallet();
 
     const clickAccountBtn = () => {
-      changeAccount();
+      if (modalName.value === WalletModalOption.SelectWallet) {
+        return;
+      }
+
+      if (isH160.value) {
+        modalName.value = WalletModalOption.SelectWallet;
+      } else {
+        changeAccount();
+      }
       stateModal.modalNetwork = false;
     };
 
     const clickNetworkBtn = () => {
       stateModal.modalNetwork = true;
+      modalName.value = '';
       modalAccountSelect.value = false;
     };
 
     const store = useStore();
-    const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
+    const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
+    const currentNetworkIdx = computed<number>(() => store.getters['general/networkIdx']);
     const route = useRoute();
-    const path = computed(() => route.path);
+    const path = computed<string>(() => route.path);
     const headerName = ref<string>('');
+
     watch(
       path,
       () => {

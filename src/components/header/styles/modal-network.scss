@@ -16,33 +16,34 @@
 .class-radio {
   display: flex;
   align-items: center;
-  background: #fff;
   border-radius: 6px;
   min-height: rem(56);
-  width: rem(314);
   font-weight: 700;
   font-size: 16px;
   line-height: 18px;
-  color: $gray-5;
+  color: $navy-1;
   margin: 0 auto;
   margin-top: 16px;
   padding: 16px;
 }
 .class-radio-off {
   cursor: pointer;
-  background: #fff;
   border: 1px solid transparent;
+  transition: all 0.3s ease 0s;
+  border: 1px solid $navy-1;
 }
+
 .class-radio-off:hover {
   border: 1px solid $astar-blue;
 }
+
 .class-radio-on {
   border: 2px solid $astar-blue;
 }
 
 .box-input--endpoint {
   border-radius: 50%;
-  border: 4px solid $gray-3;
+  border: 4px solid $gray-4;
 }
 
 .input--endpoint[type='radio'] {
@@ -56,7 +57,7 @@
   align-items: center;
   &:checked {
     border: 1px solid white;
-    background-color: $gray-3;
+    background-color: $gray-4;
   }
 }
 
@@ -81,23 +82,21 @@
 
 .class-radio--custom-network {
   height: 120px;
-  background: #fff !important;
 }
 
 .ip-input {
-  width: 236px;
+  width: 98%;
   height: 48px;
   text-align: center;
   margin-top: 16px;
   margin-left: 8px;
   border-radius: 6px;
-  background-color: $gray-1;
-  border: 1px solid $gray-1;
+  border: 1px solid $navy-1;
   padding: 0 16px;
   text-align: left;
   font-weight: 400;
   font-size: 14px;
-  color: $gray-5;
+  color: $navy-1;
 }
 
 .ip-input:focus {
@@ -111,7 +110,7 @@
 }
 
 .btn--connect {
-  width: 315px;
+  width: 100%;
   font-size: 20px;
   font-weight: 600;
   border-radius: 30px;
@@ -143,15 +142,9 @@
   .class-radio {
     color: #fff;
   }
-  .class-radio-off {
-    background: $gray-6;
-  }
 
-  .class-radio-on {
-    background: $gray-5-selected-dark;
-  }
-  .class-radio--custom-network {
-    background: $gray-6 !important;
+  .class-radio-off {
+    border: 1px solid $gray-3;
   }
 
   .ip--network {
@@ -163,8 +156,8 @@
   }
 
   .ip-input {
-    background: $gray-5-selected-dark;
-    border: 1px solid $gray-4;
+    background: $body-bg-dark;
+    border: 1px solid $gray-3;
     color: $gray-1;
   }
 

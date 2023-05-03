@@ -22,7 +22,7 @@
   width: 344px;
   text-align: center;
   background: transparent;
-  border: 1px solid $gray-3;
+  border: 1px solid $gray-4;
   @media (min-width: $sm) {
     width: 412px;
   }
@@ -67,6 +67,6 @@
 
 .body--dark {
   .box--unlock-amount {
-    background: $gray-7;
+    background: $container-bg-dark;
   }
 }
