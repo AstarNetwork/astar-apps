@@ -25,6 +25,7 @@ export const useLedger = () => {
       const ledger = new Ledger('hid', 'astar');
       const { address } = await ledger.getAddress();
       const transport = await TransportWebUSB.create();
+      console.log('transport', transport);
       const model = transport.deviceModel?.productName.toLowerCase().replace(/\u00A0/g, ' ') || '';
       await transport.close();
       isLedgerAccount.value = address === currentAddress.value;
