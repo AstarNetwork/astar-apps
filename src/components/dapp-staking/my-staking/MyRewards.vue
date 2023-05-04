@@ -57,13 +57,10 @@
                     <span class="text--tooltip">{{ $t('myReward.claimable.limitation') }}</span>
                   </div>
                   <br />
-                  <div>
+                  <div class="row--ledgers">
                     <span class="text--tooltip">{{ $t('myReward.claimable.nativeWallets') }}</span>
-                  </div>
-                  <div>
                     <span class="text--tooltip">{{ $t('myReward.claimable.ledgerX') }}</span>
-                  </div>
-                  <div>
+                    <span class="text--tooltip">{{ $t('myReward.claimable.ledgerSPlus') }}</span>
                     <span class="text--tooltip">{{ $t('myReward.claimable.ledgerS') }}</span>
                   </div>
                 </q-tooltip>

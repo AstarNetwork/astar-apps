@@ -135,6 +135,11 @@
   padding: 8px 16px;
 }
 
+.row--ledgers {
+  display: flex;
+  flex-direction: column;
+}
+
 .body--dark {
   .claim-warning {
     color: $gray-1;

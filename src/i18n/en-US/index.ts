@@ -204,6 +204,7 @@ export default {
         'There is a limitation on the number of eras that can be claimed in one transaction.',
       nativeWallets: 'Native wallets: ≒56 eras',
       ledgerX: 'Ledger Nano X: 6 eras',
+      ledgerSPlus: 'Ledger Nano S Plus: 6 eras',
       ledgerS: 'Ledger Nano S: 2 eras',
     },
   },
