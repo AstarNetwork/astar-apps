@@ -9,7 +9,7 @@ export const useLedger = () => {
 
   const store = useStore();
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
-  const currentAddress = computed(() => store.getters['general/selectedAddress']);
+  const currentAddress = computed<string>(() => store.getters['general/selectedAddress']);
 
   const handleReset = () => {
     isLedgerAccount.value = false;
