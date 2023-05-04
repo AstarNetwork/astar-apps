@@ -99,6 +99,12 @@
   font-size: 18px;
 }
 
+.row--eras {
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+}
+
 .body--dark {
   .card {
     background: $body-bg-dark;
