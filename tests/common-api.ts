@@ -23,7 +23,7 @@ export const getBalance = async (address: string): Promise<bigint> => {
   const api = await getApi();
   const balance = await api.query.system.account(address);
 
-  return balance.data.free.toBigInt();
+  return balance.data.free.toBigInt() - balance.data.feeFrozen.toBigInt();
 };
 
 export const getStakedAmount = async (address: string): Promise<bigint> => {

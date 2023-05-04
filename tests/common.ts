@@ -5,6 +5,7 @@ import { NODE_ENDPOINT } from './common-api';
 export const ALICE_ACCOUNT_SEED =
   'bottom drive obey lake curtain smoke basket hold race lonely fit walk//Alice';
 export const ALICE_ACCOUNT_NAME = 'Alice';
+export const ALICE_ADDRESS = 'ajYMsCKsEAhEvHpeA4XqsfiA9v1CdzZPrCfS6pEfeGHW9j8';
 export const BOB_ACCOUNT_SEED =
   'bottom drive obey lake curtain smoke basket hold race lonely fit walk//Bob';
 export const BOB_ACCOUNT_NAME = 'Bob';

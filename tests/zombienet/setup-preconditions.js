@@ -19,26 +19,10 @@ async function run(nodeName, networkInfo, args) {
   await sendTransaction(api.tx.assets.create(999, { Id: sender.address }, ONE), sender);
   console.log('Setting metadata with sender: ', sender.address);
   await sendTransaction(api.tx.assets.setMetadata(999, 'Test', 'TST', 18), sender);
-  // console.log('Minting asset with sender: ', sender.address)
-  // await sendTransaction(api.tx.assets.mint(999, { Id: sender.address }, ONE.muln(1000)), sender);
-  // const tx1 = api.tx.assets.forceCreate(999, { Id: sender.address }, true, ONE);
-  // //const tx1a = api.tx.assets.forceCreate(998, { Id: sender.address }, true, ONE);
-  // //const batch1 = await api.tx.utility.batchAll([tx1, tx1a]);
-  // await sendTransaction(api.tx.sudo.sudo(tx1), sender);
-
-  // const tx2 = api.tx.assets.setMetadata(999, 'Test', 'TST', 18);
-  // await sendTransaction(api.tx.sudo.sudo(tx2), sender);
-  // const tx3 = api.tx.assets.mint(999, { Id: sender.address }, ONE.muln(1000));
-  // await sendTransaction(api.tx.sudo.sudo(tx3), sender);
-  //const tx2a = api.tx.assets.setMetadata(998, 'Test1', 'TST1', 18);
-  //const tx3a = api.tx.assets.mint(998, { Id: sender.address }, ONE.muln(1000));
+  
   // register dApp
   const tx4 = api.tx.dappsStaking.register(sender.address, { Evm: TEST_DAPP_ADDRESS });
   await sendTransaction(api.tx.sudo.sudo(tx4), sender);
-
-
-  // const batch = await api.tx.utility.batchAll([tx2, tx3, tx2a, tx3a]);
-  // await sendTransaction(api.tx.sudo.sudo(batch), sender);
 
   const result = 1;
   return result;
