@@ -27,13 +27,21 @@ export const useLedger = () => {
       console.log('ledger', ledger);
       const { address } = await ledger.getAddress();
       console.log('address', address);
-      const transport = await TransportWebUSB.create();
+      // const transport = await TransportWebUSB.create();
+      const internalApp = (ledger as any).__internal__app;
+      console.log('internalApp', internalApp);
+      const transport = internalApp.transport;
       console.log('transport', transport);
-      const model = transport.deviceModel?.productName.toLowerCase().replace(/\u00A0/g, ' ') || '';
-      await transport.close();
+      const deviceModel = transport.deviceModel;
+      console.log('deviceModel', deviceModel);
+      const model = deviceModel?.productName.toLowerCase().replace(/\u00A0/g, ' ') || '';
+      // await transport.close();
       isLedgerAccount.value = address === currentAddress.value;
       isLedgerNanoS.value = !!model.includes('nano s');
+      console.log('isLedgerAccount.value', isLedgerAccount.value);
+      console.log('isLedgerNanoS.value', isLedgerNanoS.value);
     } catch (error) {
+      console.error(error);
       handleReset();
     }
   };
