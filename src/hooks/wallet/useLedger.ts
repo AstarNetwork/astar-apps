@@ -30,11 +30,12 @@ export const useLedger = () => {
       console.log('isLedgerAccount.value', isLedgerAccount.value);
       console.log('isLedgerNanoS.value', isLedgerNanoS.value);
     } catch (error) {
+      console.error(error);
       handleReset();
     }
   };
 
-  watch([currentAddress], handleLedgerData, { immediate: false });
+  watch([currentAddress], handleLedgerData, { immediate: true });
 
   return { isLedgerAccount, isLedgerNanoS };
 };
