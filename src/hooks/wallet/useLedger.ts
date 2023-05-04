@@ -22,8 +22,11 @@ export const useLedger = () => {
       return;
     }
     try {
+      console.log('handleLedgerData');
       const ledger = new Ledger('hid', 'astar');
+      console.log('ledger', ledger);
       const { address } = await ledger.getAddress();
+      console.log('address', address);
       const transport = await TransportWebUSB.create();
       console.log('transport', transport);
       const model = transport.deviceModel?.productName.toLowerCase().replace(/\u00A0/g, ' ') || '';
