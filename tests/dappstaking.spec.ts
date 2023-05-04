@@ -87,16 +87,3 @@ test.describe('on dapp staking screen', () => {
     await expect(stakeButton).toBeVisible();
   });
 });
-
-//https://api.astar.network/api/v1/astar/dapps-staking/dapps
-// test.describe('api testing', () => {
-//   test('should get dapps list', async ({ request }) => {
-//     const dapps = await request.get('https://api.astar.network/api/v1/astar/dapps-staking/dapps');
-//     expect(dapps.ok()).toBeTruthy();
-//     expect(await dapps.json()).toContainEqual(
-//       expect.objectContaining({
-//         name: 'AstridDAO',
-//       })
-//     );
-//   });
-// });
