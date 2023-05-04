@@ -25,9 +25,10 @@ export const useLedger = () => {
       const { address } = await ledger.getAddress();
       const deviceModel = (ledger as any).__internal__app.transport.deviceModel;
       console.log('deviceModel', deviceModel);
-      const model = deviceModel?.productName.toLowerCase().replace(/\u00A0/g, ' ') || '';
       isLedgerAccount.value = address === currentAddress.value;
-      isLedgerNanoS.value = !!model.includes('nano s');
+      isLedgerNanoS.value = deviceModel.id === 'nanoS';
+      console.log('isLedgerAccount.value', isLedgerAccount.value);
+      console.log('isLedgerNanoS.value', isLedgerNanoS.value);
     } catch (error) {
       handleReset();
     }
