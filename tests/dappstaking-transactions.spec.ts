@@ -1,4 +1,4 @@
-import { expect } from '@playwright/test';
+import { BrowserContext, Page, expect } from '@playwright/test';
 import {
   ALICE_ACCOUNT_NAME,
   ALICE_ACCOUNT_SEED,
@@ -13,6 +13,24 @@ import { test } from './fixtures';
 import { chainDecimals, getAccountLedger, getBalance, getStakedAmount } from './common-api';
 
 const TEST_DAPP_ADDRESS = '0x0000000000000000000000000000000000000001';
+
+const stake = async (page: Page, context: BrowserContext, amount: bigint): Promise<void> => {
+  await page.goto(`/custom-node/dapp-staking/stake?dapp=${TEST_DAPP_ADDRESS}`);
+  await selectAccount(page, ALICE_ACCOUNT_NAME);
+  const balance = (await getBalance(ALICE_ADDRESS)) / BigInt(Math.pow(10, chainDecimals));
+  await page.getByPlaceholder('0.0').fill(amount.toString());
+  await page.getByRole('button', { name: 'Confirm' }).click();
+
+  const stakedAmountBefore = await getStakedAmount(TEST_DAPP_ADDRESS);
+  await signTransaction(context);
+  await page.waitForSelector('.four', { state: 'hidden' });
+
+  await expect(page.getByText('Success', { exact: true })).toBeVisible();
+  const stakedAmountAfter = await getStakedAmount(TEST_DAPP_ADDRESS);
+  expect(stakedAmountAfter - stakedAmountBefore).toEqual(
+    amount * BigInt(Math.pow(10, chainDecimals))
+  );
+};
 
 test.beforeEach(async ({ page, context }) => {
   await page.goto('/astar/dapp-staking/discover');
@@ -71,22 +89,7 @@ test.describe('dApp staking transactions', () => {
   // Test case: DS003
   test('should be able to unbond from the test dApp', async ({ page, context }) => {
     // Stake first
-    const stakeAmount = BigInt(1000);
-    await page.goto(`/custom-node/dapp-staking/stake?dapp=${TEST_DAPP_ADDRESS}`);
-    await selectAccount(page, ALICE_ACCOUNT_NAME);
-    const balance = await getBalance(ALICE_ADDRESS) / BigInt(Math.pow(10, chainDecimals));
-    await page.getByPlaceholder('0.0').fill(stakeAmount.toString());
-    await page.getByRole('button', { name: 'Confirm' }).click();
-
-    const stakedAmountBefore = await getStakedAmount(TEST_DAPP_ADDRESS);
-    await signTransaction(context);
-    await page.waitForSelector('.four', { state: 'hidden' });
-
-    await expect(page.getByText('Success', { exact: true })).toBeVisible();
-    const stakedAmountAfter = await getStakedAmount(TEST_DAPP_ADDRESS);
-    expect(stakedAmountAfter - stakedAmountBefore).toEqual(
-      stakeAmount * BigInt(Math.pow(10, chainDecimals))
-    );
+    await stake(page, context, BigInt(1000));
 
     // Unbond
     await page.goto('/custom-node/dapp-staking/discover');
@@ -100,6 +103,36 @@ test.describe('dApp staking transactions', () => {
     await expect(page.getByText('Success', { exact: true })).toBeVisible();
     const ledger = await getAccountLedger(ALICE_ADDRESS);
     expect(ledger.unbondingInfo.unlockingChunks.length).toEqual(1);
-    expect(ledger.unbondingInfo.unlockingChunks[0].amount.toString()).toEqual('1100000000000000000');
+    expect(ledger.unbondingInfo.unlockingChunks[0].amount.toString()).toEqual(
+      '1100000000000000000'
+    );
+  });
+
+  // Test case: DS006
+  test('should be able to turn on/off re-staking', async ({ page, context }) => {
+    // Stake first. User must be an active staker in order to change reward destination.
+    await stake(page, context, BigInt(1000));
+
+    // Check initial state
+    await expect(page.getByText('ON', { exact: true })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Turn off' })).toBeVisible();
+    let ledger = await getAccountLedger(ALICE_ADDRESS);
+    expect(ledger.rewardDestination.toString()).toEqual('StakeBalance');
+
+    page.getByRole('button', { name: 'Turn off' }).click();
+    await signTransaction(context);
+    await page.waitForSelector('.four', { state: 'hidden' });
+    await expect(page.getByText('OFF', { exact: true })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Turn on' })).toBeVisible();
+    ledger = await getAccountLedger(ALICE_ADDRESS);
+    expect(ledger.rewardDestination.toString()).toEqual('FreeBalance');
+
+    page.getByRole('button', { name: 'Turn on' }).click();
+    await signTransaction(context);
+    await page.waitForSelector('.four', { state: 'hidden' });
+    await expect(page.getByText('ON', { exact: true })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Turn off' })).toBeVisible();
+    ledger = await getAccountLedger(ALICE_ADDRESS);
+    expect(ledger.rewardDestination.toString()).toEqual('StakeBalance');
   });
 });
