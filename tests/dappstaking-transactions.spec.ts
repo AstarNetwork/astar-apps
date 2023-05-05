@@ -10,7 +10,7 @@ import {
   signTransaction,
 } from './common';
 import { test } from './fixtures';
-import { chainDecimals, getBalance, getStakedAmount } from './common-api';
+import { chainDecimals, getAccountLedger, getBalance, getStakedAmount } from './common-api';
 
 const TEST_DAPP_ADDRESS = '0x0000000000000000000000000000000000000001';
 
@@ -35,7 +35,7 @@ test.describe('dApp staking transactions', () => {
     const stakeAmount = BigInt(1000);
     await page.goto(`/custom-node/dapp-staking/stake?dapp=${TEST_DAPP_ADDRESS}`);
     await selectAccount(page, ALICE_ACCOUNT_NAME);
-    const balance = await getBalance(ALICE_ADDRESS) / BigInt(Math.pow(10, chainDecimals));
+    const balance = (await getBalance(ALICE_ADDRESS)) / BigInt(Math.pow(10, chainDecimals));
 
     // Test edge cases
     await page.getByPlaceholder('0.0').fill((balance - BigInt(5)).toString());
@@ -66,5 +66,40 @@ test.describe('dApp staking transactions', () => {
     expect(stakedAmountAfter - stakedAmountBefore).toEqual(
       stakeAmount * BigInt(Math.pow(10, chainDecimals))
     );
+  });
+
+  // Test case: DS003
+  test('should be able to unbond from the test dApp', async ({ page, context }) => {
+    // Stake first
+    const stakeAmount = BigInt(1000);
+    await page.goto(`/custom-node/dapp-staking/stake?dapp=${TEST_DAPP_ADDRESS}`);
+    await selectAccount(page, ALICE_ACCOUNT_NAME);
+    const balance = await getBalance(ALICE_ADDRESS) / BigInt(Math.pow(10, chainDecimals));
+    await page.getByPlaceholder('0.0').fill(stakeAmount.toString());
+    await page.getByRole('button', { name: 'Confirm' }).click();
+
+    const stakedAmountBefore = await getStakedAmount(TEST_DAPP_ADDRESS);
+    await signTransaction(context);
+    await page.waitForSelector('.four', { state: 'hidden' });
+
+    await expect(page.getByText('Success', { exact: true })).toBeVisible();
+    const stakedAmountAfter = await getStakedAmount(TEST_DAPP_ADDRESS);
+    expect(stakedAmountAfter - stakedAmountBefore).toEqual(
+      stakeAmount * BigInt(Math.pow(10, chainDecimals))
+    );
+
+    // Unbond
+    await page.goto('/custom-node/dapp-staking/discover');
+    await page.getByText('My dApps').click();
+    await page.getByRole('button', { name: 'Unbond' }).click();
+    await page.getByPlaceholder('0.0').fill('1.1');
+    await page.getByRole('button', { name: 'Start unbonding' }).click();
+    await signTransaction(context);
+    await page.waitForSelector('.four', { state: 'hidden' });
+
+    await expect(page.getByText('Success', { exact: true })).toBeVisible();
+    const ledger = await getAccountLedger(ALICE_ADDRESS);
+    expect(ledger.unbondingInfo.unlockingChunks.length).toEqual(1);
+    expect(ledger.unbondingInfo.unlockingChunks[0].amount.toString()).toEqual('1100000000000000000');
   });
 });

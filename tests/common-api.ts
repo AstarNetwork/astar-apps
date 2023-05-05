@@ -1,5 +1,6 @@
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { Option } from '@polkadot/types';
+import { AccountLedger } from 'src/hooks';
 import { ContractStakeInfo } from 'src/v2/repositories/implementations';
 
 export const NODE_ENDPOINT = process.env.ENDPOINT || 'ws://127.0.0.1:57083';
@@ -34,4 +35,11 @@ export const getStakedAmount = async (address: string): Promise<bigint> => {
   );
 
   return eraStake.isSome ? BigInt(eraStake.unwrap().total.toString()) : BigInt(0);
+};
+
+export const getAccountLedger = async (address: string): Promise<AccountLedger> => {
+  const api = await getApi();
+  const ledger = await api.query.dappsStaking.ledger<AccountLedger>(address);
+
+  return ledger;
 };
