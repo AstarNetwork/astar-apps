@@ -240,17 +240,6 @@ export class XcmRepository implements IXcmRepository {
       ],
     };
 
-    console.log('XcmRepository');
-    console.log(
-      from,
-      'polkadotXcm',
-      'reserveWithdrawAssets',
-      destination,
-      beneficiary,
-      assets,
-      new BN(0)
-    );
-
     return await this.buildTxCall(
       from,
       'polkadotXcm',
@@ -321,7 +310,6 @@ export class XcmRepository implements IXcmRepository {
     const { isV3 } = this.getXcmVersion(source);
     const formattedAssetConfig = JSON.parse(config.toString());
 
-    console.log('formattedAssetConfig', formattedAssetConfig);
     return isV3 ? formattedAssetConfig.v3 : formattedAssetConfig.v1;
   }
 
