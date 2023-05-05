@@ -178,7 +178,7 @@ export const xcmChainObj: XcmChainObj = {
     img: require('/src/assets/img/token/csm.svg'),
     parachainId: parachainIds.CRUST_SHADOW,
     endpoint: 'wss://rpc2-shadow.crust.network',
-    subscan: 'https://crust.subscan.io',
+    subscan: 'https://shadow.subscan.io/',
     isAstarNativeToken: true,
   },
   [Chain.KHALA]: {
