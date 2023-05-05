@@ -178,7 +178,7 @@ export const xcmChainObj: XcmChainObj = {
     img: require('/src/assets/img/token/csm.svg'),
     parachainId: parachainIds.CRUST_SHADOW,
     endpoint: 'wss://rpc2-shadow.crust.network',
-    subscan: 'https://shadow.subscan.io/',
+    subscan: 'https://shadow.subscan.io',
     isAstarNativeToken: true,
   },
   [Chain.KHALA]: {
@@ -205,7 +205,7 @@ export const xcmChainObj: XcmChainObj = {
     img: require('/src/assets/img/token/bnc.svg'),
     parachainId: parachainIds.BIFROST_POLKADOT,
     endpoint: 'wss://hk.p.bifrost-rpc.liebi.com/ws',
-    subscan: 'https://bifrost.subscan.io/',
+    subscan: 'https://bifrost.subscan.io',
     isAstarNativeToken: true,
   },
   [Chain.BIFROST_KUSAMA]: {
@@ -214,7 +214,7 @@ export const xcmChainObj: XcmChainObj = {
     img: require('/src/assets/img/token/bnc.svg'),
     parachainId: parachainIds.BIFROST_KUSAMA,
     endpoint: 'wss://bifrost-rpc.liebi.com/ws',
-    subscan: 'https://bifrost-kusama.subscan.io/',
+    subscan: 'https://bifrost-kusama.subscan.io',
     isAstarNativeToken: true,
   },
   [Chain.EQUILIBRIUM]: {
@@ -223,7 +223,7 @@ export const xcmChainObj: XcmChainObj = {
     img: require('/src/assets/img/EQ.png'),
     parachainId: parachainIds.EQUILIBRIUM,
     endpoint: 'wss://node.pol.equilibrium.io/',
-    subscan: 'https://equilibrium.subscan.io/',
+    subscan: 'https://equilibrium.subscan.io',
     isAstarNativeToken: true,
   },
 };

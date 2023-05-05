@@ -103,7 +103,7 @@ export class XcmRepository implements IXcmRepository {
   }
 
   public getXcmVersion(from: XcmChain): { version: string; isV3: boolean } {
-    const v3s = [Chain.KUSAMA, Chain.SHIDEN, Chain.STATEMINE];
+    const v3s = [Chain.KUSAMA, Chain.SHIDEN, Chain.STATEMINE, Chain.BIFROST_KUSAMA];
     const version = v3s.find((it) => it === from.name) ? 'V3' : 'V1';
     const isV3 = version === 'V3';
     return { version, isV3 };
