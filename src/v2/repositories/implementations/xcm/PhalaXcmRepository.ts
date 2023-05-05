@@ -62,7 +62,8 @@ export class PhalaXcmRepository extends XcmRepository {
       },
     };
 
-    const destWeight = { refTime: '6000000000', proofSize: '0' };
+    // const destWeight = { refTime: '6000000000', proofSize: '0' };
+    const destWeight = { refTime: '6000000000', proofSize: '1000000' };
     return await this.buildTxCall(from, 'xTransfer', 'transfer', asset, destination, destWeight);
   }
 
