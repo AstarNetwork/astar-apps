@@ -1,7 +1,10 @@
-import { ApiPromise, WsProvider } from '@polkadot/api';
+import { ApiPromise, Keyring, WsProvider } from '@polkadot/api';
 import { Option } from '@polkadot/types';
 import { AccountLedger } from 'src/hooks';
 import { ContractStakeInfo } from 'src/v2/repositories/implementations';
+import { sendTransaction } from './zombienet/tx-utils';
+import { KeyringPair } from '@polkadot/keyring/types';
+import { cryptoWaitReady } from '@polkadot/util-crypto';
 
 export const NODE_ENDPOINT = process.env.ENDPOINT || 'ws://127.0.0.1:57083';
 export let chainDecimals = 18;
@@ -29,9 +32,10 @@ export const getBalance = async (address: string): Promise<bigint> => {
 
 export const getStakedAmount = async (address: string): Promise<bigint> => {
   const api = await getApi();
+  const era = await api.query.dappsStaking.currentEra();
   const eraStake = await api.query.dappsStaking.contractEraStake<Option<ContractStakeInfo>>(
     getAddress(address),
-    1
+    era
   );
 
   return eraStake.isSome ? BigInt(eraStake.unwrap().total.toString()) : BigInt(0);
@@ -42,4 +46,19 @@ export const getAccountLedger = async (address: string): Promise<AccountLedger> 
   const ledger = await api.query.dappsStaking.ledger<AccountLedger>(address);
 
   return ledger;
+};
+
+const getSigner = async(): Promise<KeyringPair> => {
+  await cryptoWaitReady();
+  const keyring = new Keyring({ type: 'sr25519' });
+  return keyring.addFromUri('//Alice');
+};
+
+export const forceNewEra = async (): Promise<void> => {
+  const api = await getApi();
+  const tx =  api.tx.dappsStaking.forceNewEra();
+  const sudo = await api.tx.sudo.sudo(tx);
+  const signer = await getSigner();
+
+  await sendTransaction(sudo, signer);
 };
