@@ -69,4 +69,8 @@ export class XcmRepositoryMock implements IXcmRepository {
   public async getNativeBalance(address: string, chain: XcmChain): Promise<BN> {
     return new BN('0');
   }
+
+  public getXcmVersion(from: XcmChain): { version: string; isV3: boolean } {
+    return { version: 'V3', isV3: true };
+  }
 }
