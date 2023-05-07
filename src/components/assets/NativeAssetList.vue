@@ -106,7 +106,7 @@
               </div>
             </div>
 
-            <div class="row--bg--extend row--details-native bg--accent">
+            <div v-if="numEvmDeposit" class="row--bg--extend row--details-native bg--accent">
               <div class="row__left">
                 <span class="text--md">{{ $t('assets.yourEvmDeposit') }}</span>
               </div>
