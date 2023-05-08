@@ -1,0 +1,20 @@
+[
+    {
+      "background": "/img/banner/banner01.svg",
+      "title": "Go Decentralized!",
+      "subtitle": "Portal is now on IPFS!",
+      "link": "https://docs.astar.network/docs/dapp-staking/"
+    },
+    {
+      "background": "/img/banner/banner02.svg",
+      "title": "Astar Home",
+      "subtitle": "",
+      "link": "https://app.algem.io/liquid-staking"
+    },
+    {
+      "background": "/img/banner/banner03.svg",
+      "title": "Astar Docs",
+      "subtitle": "Multi-VM Lending Hub on Astar for Polkadot",
+      "link": "https://www.sio2.finance/"
+    }
+  ]

@@ -13,6 +13,9 @@
         :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
       />
       <div>
+        <dynamic-links />
+      </div>
+      <div>
         <div class="separator" />
         <span class="text--xl">{{ $t('assets.assets') }}</span>
       </div>
@@ -30,6 +33,7 @@
 </template>
 <script lang="ts">
 import Account from 'src/components/assets/Account.vue';
+import DynamicLinks from 'src/components/assets/DynamicLinks.vue';
 import EvmAssetList from 'src/components/assets/EvmAssetList.vue';
 import XcmNativeAssetList from 'src/components/assets/XcmNativeAssetList.vue';
 import XvmNativeAssetList from 'src/components/assets/XvmNativeAssetList.vue';
@@ -45,6 +49,7 @@ import { computed, defineComponent, ref, watch, watchEffect, onUnmounted } from 
 export default defineComponent({
   components: {
     Account,
+    DynamicLinks,
     EvmAssetList,
     XcmNativeAssetList,
     XvmNativeAssetList,
