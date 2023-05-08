@@ -26,8 +26,7 @@ export const deepLink = {
 };
 
 export const stagingOrigin = 'https://staging.portal.astar.network';
-// export const productionOrigin = 'https://portal.astar.network';
-export const productionOrigin = 'https://astar-apps--pr774-fix-enable-xcm-kusam-4b8c4ghq.web.app';
+export const productionOrigin = 'https://portal.astar.network';
 
 export const polkadotJsUrl = {
   settings: {
