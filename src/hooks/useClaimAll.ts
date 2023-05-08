@@ -18,9 +18,9 @@ import { ethers } from 'ethers';
 import { computed, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-const MAX_BATCH_WEIGHT = new BN('50000000000');
-const MAX_BATCH_WEIGHT_LEDGER = new BN('6000000000');
-const MAX_BATCH_WEIGHT_LEDGER_S = new BN('2000000000');
+const MAX_BATCH_WEIGHT = new BN('50000000000'); // Memo: ≒56 eras
+const MAX_BATCH_WEIGHT_LEDGER = new BN('6000000000'); //Memo: 6 eras
+const MAX_BATCH_WEIGHT_LEDGER_S = new BN('2000000000'); //Memo:2 eras
 
 export function useClaimAll() {
   let batchTxs: PayloadWithWeight[] = [];

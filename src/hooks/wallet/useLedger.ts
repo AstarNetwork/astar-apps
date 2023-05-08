@@ -17,7 +17,7 @@ export const useLedger = () => {
   const store = useStore();
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
 
-  const handleReset = () => {
+  const handleReset = (): void => {
     isLedgerAccount.value = false;
     isLedgerNanoS.value = false;
   };
