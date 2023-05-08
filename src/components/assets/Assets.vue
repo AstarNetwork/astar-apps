@@ -12,7 +12,7 @@
         :is-loading-erc20-amount="isLoading"
         :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
       />
-      <div>
+      <div class="row--links">
         <dynamic-links />
       </div>
       <div>
@@ -28,6 +28,9 @@
           <xcm-native-asset-list v-if="isEnableXcm" :xcm-assets="xcmAssets.assets" />
         </div>
       </div>
+    </div>
+    <div class="column--links">
+      <dynamic-links />
     </div>
   </div>
 </template>

@@ -6,6 +6,10 @@
     display: flex;
     gap: 16px;
   }
+  @media (min-width: $xxl) {
+    margin-top: 64px;
+    margin-left: 24px;
+  }
 }
 
 .wrapper--banners {
@@ -26,6 +30,9 @@
   }
   @media (min-width: $xl) {
     margin-top: 0px;
+  }
+  @media (min-width: $xxl) {
+    flex-direction: column;
   }
   .card {
     width: 240px;

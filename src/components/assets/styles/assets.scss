@@ -36,3 +36,17 @@
   border-image-slice: 1;
   margin-bottom: 20px;
 }
+
+.row--links {
+  display: none;
+  @media (max-width: $xxl) {
+    display: block;
+  }
+}
+
+.column--links {
+  display: none;
+  @media (min-width: $xxl) {
+    display: block;
+  }
+}
