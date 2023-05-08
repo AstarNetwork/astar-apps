@@ -10,7 +10,15 @@ import {
   signTransaction,
 } from './common';
 import { test } from './fixtures';
-import { chainDecimals, forceNewEra, getAccountLedger, getBalance, getStakedAmount } from './common-api';
+import {
+  chainDecimals,
+  forceNewEra,
+  getAccountLedger,
+  getBalance,
+  getContractEraStake,
+  getCurrentEra,
+  getStakedAmount,
+} from './common-api';
 
 const TEST_DAPP_ADDRESS = '0x0000000000000000000000000000000000000001';
 
@@ -111,6 +119,8 @@ test.describe('dApp staking transactions', () => {
   // Test case: DS005
   test('user should be able to claim rewards', async ({ page, context }) => {
     await stake(page, context, BigInt(1000));
+
+    const ledgerBefore = await getAccountLedger(ALICE_ADDRESS);
     await forceNewEra();
 
     await page.goto('/custom-node/dapp-staking/discover');
@@ -118,14 +128,16 @@ test.describe('dApp staking transactions', () => {
     await signTransaction(context);
     await expect(page.getByText('Success', { exact: true }).first()).toBeVisible();
 
-    // TODO check on chain
+    const ledgerAfter = await getAccountLedger(ALICE_ADDRESS);
+    expect(ledgerBefore.rewardDestination.toString()).toEqual('StakeBalance');
+    expect(ledgerBefore.locked < ledgerAfter.locked).toBeTruthy();
   });
 
   // Test case: DS006
   test('user should be able to turn on/off re-staking', async ({ page, context }) => {
     // Stake first. User must be an active staker in order to change reward destination.
     await stake(page, context, BigInt(1000));
-    
+
     // Check initial state
     await expect(page.getByText('ON', { exact: true })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Turn off' })).toBeVisible();
