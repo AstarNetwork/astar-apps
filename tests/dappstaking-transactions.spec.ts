@@ -35,7 +35,7 @@ test.describe('dApp staking transactions', () => {
     const stakeAmount = BigInt(1000);
     await page.goto(`/custom-node/dapp-staking/stake?dapp=${TEST_DAPP_ADDRESS}`);
     await selectAccount(page, ALICE_ACCOUNT_NAME);
-    const balance = await getBalance(ALICE_ADDRESS) / BigInt(Math.pow(10, chainDecimals));
+    const balance = (await getBalance(ALICE_ADDRESS)) / BigInt(Math.pow(10, chainDecimals));
 
     // Test edge cases
     await page.getByPlaceholder('0.0').fill((balance - BigInt(5)).toString());
