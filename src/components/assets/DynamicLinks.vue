@@ -1,15 +1,18 @@
 <template>
   <div class="wrapper">
-    <div class="wrapper-item wrapper--banners">
-      <div v-for="(t, index) in items" :key="index" class="card" @click="goToLink(t.link)">
-        <div class="wrapper--img">
-          <q-img :src="t.background" class="img--dapp" fit="contain" no-spinner />
-        </div>
+    <div class="wrapper--banners">
+      <div
+        v-for="(t, index) in items"
+        :key="index"
+        class="card"
+        :style="`background-image: url('${t.background}');`"
+        @click="goToLink(t.link)"
+      >
         <div class="card-info">
           <div class="txt--title">
             {{ t.title }}
           </div>
-          <div class="txt--subtitle">{{ t.subtitle }}</div>
+          <div v-if="t.subtitle" class="txt--subtitle">{{ t.subtitle }}</div>
         </div>
       </div>
     </div>
@@ -23,7 +26,18 @@ import linksData from 'src/data/dynamic_links.json';
 export default defineComponent({
   components: {},
   setup() {
-    const items = linksData;
+    const banners = [
+      require('/src/assets/img/banner/banner01.svg'),
+      require('/src/assets/img/banner/banner02.svg'),
+      require('/src/assets/img/banner/banner03.svg'),
+      require('/src/assets/img/banner/banner04.svg'),
+    ];
+    const items = linksData.map((item) => ({
+      background: banners[item.background],
+      title: item.title,
+      subtitle: item.subtitle,
+      link: item.link,
+    }));
 
     const goToLink = (link: string) => {
       window.open(link, '_blank');
