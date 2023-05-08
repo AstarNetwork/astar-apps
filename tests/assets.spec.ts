@@ -10,6 +10,7 @@ import {
   closePolkadotWelcomePopup,
   connectToNetwork,
   createAccount,
+  createMetamaskAccount,
   selectAccount,
   signTransaction,
 } from './common';
@@ -82,5 +83,10 @@ test.describe('account panel', () => {
     expect(bobBalanceAfterTransaction - bobBalanceBeforeTransaction).toEqual(
       transferAmount * BigInt(Math.pow(10, chainDecimals))
     );
+  });
+
+  test('EVM sample', async ({ page, context }) => {
+    await createMetamaskAccount(page, 'bottom drive obey lake curtain smoke basket hold race lonely fit walk', 'Test');
+    await page.goto('/astar/assets');
   });
 });
