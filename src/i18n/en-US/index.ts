@@ -512,6 +512,7 @@ export default {
   },
   links: {
     goDecentralized: 'Go Decentralized!',
+    portalIpfs: 'Portal is now on IPFS!',
     astarHome: 'Astar Home',
     astarDocs: 'Astar Docs',
   },
