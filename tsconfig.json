@@ -6,5 +6,5 @@
     "experimentalDecorators": true,
     "jsx": "preserve"
   },
-  "exclude": ["**/node_modules/**"]
+  "exclude": ["**/node_modules/**", "/tests/polkadot_wallet/", "/tests/metamask_wallet/"]
 }
