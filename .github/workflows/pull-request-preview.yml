@@ -28,7 +28,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-      - run: yarn && export NODE_OPTIONS=--max-old-space-size=4096 yarn build
+      - run: export NODE_OPTIONS="--max_old_space_size=4096" yarn && yarn build
       - id: deploy_firebase_hosting_channel
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
