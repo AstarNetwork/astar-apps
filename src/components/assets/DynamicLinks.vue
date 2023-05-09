@@ -22,10 +22,12 @@
 import { defineComponent, ref, watchEffect, computed } from 'vue';
 import { truncate } from '@astar-network/astar-sdk-core';
 import linksData from 'src/data/dynamic_links.json';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   components: {},
   setup() {
+    const { t } = useI18n();
     const banners = [
       require('/src/assets/img/banner/banner01.svg'),
       require('/src/assets/img/banner/banner02.svg'),
@@ -34,12 +36,12 @@ export default defineComponent({
     ];
     const items = linksData.map((item, index) => ({
       background: banners[index],
-      title: item.title,
-      subtitle: item.subtitle,
+      title: t(item.title),
+      subtitle: t(item.subtitle),
       link: item.link,
     }));
 
-    const goToLink = (link: string) => {
+    const goToLink = (link: string): void => {
       window.open(link, '_blank');
     };
 
