@@ -1,26 +1,22 @@
 [
     {
-      "background": 0,
       "title": "Go Decentralized!",
       "subtitle": "Portal is now on IPFS!",
       "link": "https://gd37h-eaaaa-aaaag-abira-cai.raw.ic0.app"
     },
     {
-      "background": 1,
       "title": "Astar Home",
       "subtitle": "",
       "link": "https://astar.network/"
     },
     {
-      "background": 2,
       "title": "Astar Docs",
       "subtitle": "",
       "link": "https://docs.astar.network/"
     },
     {
-        "background": 3,
-        "title": "",
-        "subtitle": "",
-        "link": "https://blog.injective.com/injective-integrates-astar-network-and-polkadot-assets-to-expand-ibc-interoperability/"
-      }
+      "title": "",
+      "subtitle": "",
+      "link": "https://blog.injective.com/injective-integrates-astar-network-and-polkadot-assets-to-expand-ibc-interoperability/"
+    }
   ]

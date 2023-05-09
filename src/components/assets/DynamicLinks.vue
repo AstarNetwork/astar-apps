@@ -8,7 +8,7 @@
         :style="`background-image: url('${t.background}');`"
         @click="goToLink(t.link)"
       >
-        <div class="card-info">
+        <div class="card--info">
           <div class="txt--title">
             {{ t.title }}
           </div>
@@ -32,8 +32,8 @@ export default defineComponent({
       require('/src/assets/img/banner/banner03.svg'),
       require('/src/assets/img/banner/banner04.svg'),
     ];
-    const items = linksData.map((item) => ({
-      background: banners[item.background],
+    const items = linksData.map((item, index) => ({
+      background: banners[index],
       title: item.title,
       subtitle: item.subtitle,
       link: item.link,
@@ -42,8 +42,6 @@ export default defineComponent({
     const goToLink = (link: string) => {
       window.open(link, '_blank');
     };
-
-    console.log(items);
 
     return {
       truncate,
@@ -56,4 +54,3 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import './styles/dynamic-links.scss';
 </style>
-  
