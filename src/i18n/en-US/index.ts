@@ -510,4 +510,10 @@ export default {
       tooltip: "Number of transactions users called to dApp's smart contract address",
     },
   },
+  links: {
+    goDecentralized: 'Go Decentralized!',
+    portalIpfs: 'Portal is now on IPFS!',
+    astarHome: 'Astar Home',
+    astarDocs: 'Astar Docs',
+  },
 };

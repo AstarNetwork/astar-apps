@@ -1,16 +1,16 @@
 [
     {
-      "title": "Go Decentralized!",
-      "subtitle": "Portal is now on IPFS!",
+      "title": "links.goDecentralized",
+      "subtitle": "links.portalIpfs",
       "link": "https://gd37h-eaaaa-aaaag-abira-cai.raw.ic0.app"
     },
     {
-      "title": "Astar Home",
+      "title": "links.astarHome",
       "subtitle": "",
       "link": "https://astar.network/"
     },
     {
-      "title": "Astar Docs",
+      "title": "links.astarDocs",
       "subtitle": "",
       "link": "https://docs.astar.network/"
     }
