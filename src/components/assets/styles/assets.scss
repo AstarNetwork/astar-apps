@@ -40,6 +40,8 @@
 .row--links {
   display: none;
   @media (max-width: $xxl) {
+    overflow-x: auto;
+    overflow-y: hidden;
     display: block;
   }
 }
