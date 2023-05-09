@@ -10,7 +10,6 @@ import {
   closePolkadotWelcomePopup,
   connectToNetwork,
   createAccount,
-  createMetamaskAccount,
   selectAccount,
   signTransaction,
 } from './common';
@@ -85,8 +84,10 @@ test.describe('account panel', () => {
     );
   });
 
-  test('EVM sample', async ({ page, context }) => {
-    await createMetamaskAccount(page, 'bottom drive obey lake curtain smoke basket hold race lonely fit walk', 'Test');
-    await page.goto('/astar/assets');
-  });
+  // TODO add Metamask after CI issue is fixed.
+  // Having Metamask extension in the project code causes the following CI error: Reached heap limit Allocation failed - JavaScript heap out of memory
+  // test('EVM sample', async ({ page, context }) => {
+  //   await createMetamaskAccount(page, 'bottom drive obey lake curtain smoke basket hold race lonely fit walk', 'Test');
+  //   await page.goto('/astar/assets');
+  // });
 });
