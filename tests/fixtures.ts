@@ -7,9 +7,10 @@ export const test = base.extend<{
 }>({
   context: async ({}, use) => {
     const pathToExtension = path.join(__dirname, 'polkadot_wallet');
+    const pathToMetamask = path.join(__dirname, 'metamask_wallet');
     const args = [
-      `--disable-extensions-except=${pathToExtension}`,
-      `--load-extension=${pathToExtension}`,
+      `--disable-extensions-except=${pathToExtension},${pathToMetamask}`,
+      `--load-extension=${pathToExtension},${pathToMetamask}`,
     ];
 
     if (process.env.HEADLESS) {
