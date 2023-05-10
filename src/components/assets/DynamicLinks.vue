@@ -76,7 +76,7 @@ export default defineComponent({
             };
           });
 
-          items.value.push(item[0]);
+          item?.length > 0 && items.value.push(item[0]);
         }
       },
       { immediate: true }
