@@ -24,6 +24,37 @@ export const createAccount = async (page: Page, seed: string, name: string): Pro
   await page.getByRole('button', { name: 'Add the account with the supplied seed' }).click();
 };
 
+export const createMetamaskAccount = async (
+  page: Page,
+  seed: string,
+  name: string
+): Promise<void> => {
+  await page.goto(
+    'chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/home.html#onboarding/welcome'
+  );
+  const words = seed.split(' ');
+  await page.getByText('Import an existing wallet').click();
+  await page.getByText('I agree').click();
+  await page.getByRole('textbox').first().fill(words[0]);
+  await page.getByRole('textbox').nth(1).fill(words[1]);
+  await page.getByRole('textbox').nth(2).fill(words[2]);
+  await page.getByRole('textbox').nth(3).fill(words[3]);
+  await page.getByRole('textbox').nth(4).fill(words[4]);
+  await page.getByRole('textbox').nth(5).fill(words[5]);
+  await page.getByRole('textbox').nth(6).fill(words[6]);
+  await page.getByRole('textbox').nth(7).fill(words[7]);
+  await page.getByRole('textbox').nth(8).fill(words[8]);
+  await page.getByRole('textbox').nth(9).fill(words[9]);
+  await page.getByRole('textbox').nth(10).fill(words[10]);
+  await page.getByRole('textbox').nth(11).fill(words[11]);
+  await page.getByRole('button').click();
+  await page.getByRole('textbox').first().fill('Test1234');
+  await page.getByRole('textbox').nth(1).fill('Test1234');
+  await page.getByRole('checkbox').click();
+  await page.getByRole('button').click();
+  await page.getByRole('button').nth(1).click();
+};
+
 export const connectToNetwork = async (page: Page): Promise<void> => {
   await page.locator('.btn--network').click();
   await page.getByText('Custom Network').click();
