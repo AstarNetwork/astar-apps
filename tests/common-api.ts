@@ -86,7 +86,7 @@ export const forceUnbondingPeriod = async (): Promise<void> => {
   const unbondingPeriod = <u32>api.consts.dappsStaking.unbondingPeriod;
   const signer = await getSigner();
 
-  for(let i = 0; i < unbondingPeriod.toNumber(); i++) {
+  for (let i = 0; i < unbondingPeriod.toNumber(); i++) {
     await sendTransaction(api.tx.sudo.sudo(api.tx.dappsStaking.forceNewEra()), signer);
   }
 };

@@ -24,7 +24,11 @@ export const createAccount = async (page: Page, seed: string, name: string): Pro
   await page.getByRole('button', { name: 'Add the account with the supplied seed' }).click();
 };
 
-export const createMetamaskAccount = async (page: Page, seed: string, name: string): Promise<void> => {
+export const createMetamaskAccount = async (
+  page: Page,
+  seed: string,
+  name: string
+): Promise<void> => {
   await page.goto(
     'chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/home.html#onboarding/welcome'
   );

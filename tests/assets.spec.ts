@@ -86,7 +86,11 @@ test.describe('account panel', () => {
   });
 
   test('EVM sample', async ({ page }) => {
-    await createMetamaskAccount(page, 'bottom drive obey lake curtain smoke basket hold race lonely fit walk', 'Test');
+    await createMetamaskAccount(
+      page,
+      'bottom drive obey lake curtain smoke basket hold race lonely fit walk',
+      'Test'
+    );
     await page.goto('/astar/assets');
   });
 });
