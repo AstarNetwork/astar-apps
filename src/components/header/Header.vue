@@ -177,12 +177,14 @@ export default defineComponent({
 @import 'src/css/quasar.variables.scss';
 .wrapper {
   z-index: 100;
+  background-color: $navy-2;
   @media (min-width: $lg) {
     width: 100%;
     position: absolute;
     top: 0;
     left: 224px;
     padding-right: 224px;
+    background-color: transparent;
   }
 }
 
