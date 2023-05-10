@@ -22,6 +22,14 @@
   }
 }
 
+.separator--top {
+  margin-top: 24px;
+  margin-bottom: 24px;
+  @media (min-width: $lg) {
+    display: none;
+  }
+}
+
 .separator {
   border-bottom: 1px solid;
   border-image: linear-gradient(
