@@ -37,6 +37,7 @@ export default {
   isComingSoon: '{value} is coming soon',
   amountToken: '{amount} {token}',
   select: 'Select',
+  help: 'Help',
   sort: {
     sortBy: 'Sort by',
     amountHightToLow: 'Amount: High to Low',
@@ -116,7 +117,6 @@ export default {
     language: 'Language',
     theme: 'Theme',
     close: 'Close',
-    connectionTrouble: 'Connection Trouble?',
     comingsoon: 'Something ink!redible coming soon',
   },
   drawer: {
