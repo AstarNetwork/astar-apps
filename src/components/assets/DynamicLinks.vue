@@ -45,8 +45,8 @@ export default defineComponent({
 
     // The subsocial space where the news updates come from: https://polkaverse.com/10802
     const astarSpace = 10802;
-    const item = ref<Data[]>([]);
-    const { result, loading, error } = useQuery(gql`
+    const items = ref<Data[]>([]);
+    const { result, error } = useQuery(gql`
       query PostsBySpaceId {
         posts(where: { space: { id_eq: "${astarSpace}" }, AND: { hidden_not_eq: true } }, orderBy: id_DESC, limit: 1) {
           background: image
@@ -56,7 +56,7 @@ export default defineComponent({
       }
     `);
 
-    let items = linksData.map((item, index) => ({
+    items.value = linksData.map((item, index) => ({
       background: banners[index],
       title: t(item.title),
       subtitle: t(item.subtitle),
@@ -67,7 +67,7 @@ export default defineComponent({
       [result, error],
       async () => {
         if (result.value) {
-          item.value = result.value.posts.map((x: Data) => {
+          const item = result.value.posts.map((x: Data) => {
             return {
               background: `https://ipfs.subsocial.network/ipfs/${x.background}`,
               title: '', // x.title,
@@ -75,8 +75,8 @@ export default defineComponent({
               link: `https://astar.network/blog/${x.link}`,
             };
           });
-          console.log('item.value[0]', item.value[0]);
-          items.push(item.value[0]);
+
+          items.value.push(item[0]);
         }
       },
       { immediate: true }
