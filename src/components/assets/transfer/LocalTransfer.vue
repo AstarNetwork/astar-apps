@@ -114,7 +114,7 @@
           <input id="do-not-send-to-cex" v-model="isChecked" type="checkbox" />
           <label for="do-not-send-to-cex">
             <div class="column--warning">
-              <div v-if="isNativeToEvm" class="row--warning-title">
+              <!-- <div v-if="isNativeToEvm" class="row--warning-title">
                 <div class="icon--warning">
                   <astar-icon-warning size="20" />
                 </div>
@@ -131,9 +131,9 @@
                 class="text--evm-warning"
               >
                 {{ $t('assets.modals.notSendToEvmExchanges') }}
-              </span>
-              <span v-else :class="isChecked ? 'color--gray1' : 'color--not-checked'">
-                {{ $t('assets.modals.understandWarning') }}
+              </span> -->
+              <span v-if="isNativeToEvm" :class="isChecked ? 'color--gray1' : 'color--not-checked'">
+                <span class="text--evm-warning">{{ $t('assets.modals.understandWarning') }}</span>
                 <div class="text--warn">
                   <span class="text--dot">・</span> {{ $t('assets.modals.notDestIsLedgerAccount') }}
                 </div>

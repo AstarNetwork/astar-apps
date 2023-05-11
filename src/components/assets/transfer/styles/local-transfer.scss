@@ -198,9 +198,9 @@
   box-sizing: border-box;
   width: 20px;
   height: 20px;
-  margin-top: -10px;
+  margin-top: 10px;
   left: 0;
-  top: 50%;
+  top: 0;
   border: 1px solid;
   border-color: $warning-red;
   background-color: transparent;
@@ -218,8 +218,8 @@
   box-sizing: border-box;
   width: 14px;
   height: 7px;
-  margin-top: -5px;
-  top: 50%;
+  margin-top: 15px;
+  top: 0;
   left: 3px;
   transform: rotate(-45deg);
   border-bottom: 3px solid;
