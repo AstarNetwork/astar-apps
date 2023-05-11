@@ -15,7 +15,7 @@ import { DappCombinedInfo } from 'src/v2/models/DappsStaking';
 import { IDappStakingService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { ethers } from 'ethers';
-import { computed, ref, watchEffect } from 'vue';
+import { computed, ref, watchEffect, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const MAX_BATCH_WEIGHT = new BN('50000000000'); // Memo: ≒56 eras
@@ -53,7 +53,7 @@ export function useClaimAll() {
     return Number(balance);
   });
 
-  watchEffect(async () => {
+  const updateClaimEras = async (): Promise<void> => {
     try {
       isLoading.value = true;
       const api = $api;
@@ -94,7 +94,9 @@ export function useClaimAll() {
     } finally {
       isLoading.value = false;
     }
-  });
+  };
+
+  watch([isSendingTx, senderAddress], updateClaimEras);
 
   const claimAll = async (): Promise<void> => {
     const api = $api;
@@ -159,6 +161,10 @@ export function useClaimAll() {
       console.error(error.message);
     }
   };
+
+  watchEffect(() => {
+    console.log('isLedgerAccount', isLedgerAccount.value);
+  });
 
   return {
     claimAll,

@@ -27,17 +27,21 @@ export const useLedger = () => {
   };
 
   const handleLedgerData = async (): Promise<void> => {
+    console.log(1);
     // Memo: make sure `transport` has been closed before creating ledger transport
     if (ledger.value && ledgerAccount.value) {
       const transport = (ledger.value as any).__internal__app.transport;
       transport.close();
     }
 
-    if (!currentAccount.value || currentAccount.value === null || isH160.value) {
+    console.log('2');
+    if (!currentAccount.value || isH160.value) {
+      console.log('error 1');
       handleReset();
       return;
     }
     try {
+      console.log(3);
       if (!('hid' in window.navigator)) {
         console.error('WebHID API is not supported in this browser.');
         handleReset();
@@ -45,23 +49,33 @@ export const useLedger = () => {
       }
 
       const hidDevices = (await (window.navigator as any).hid.getDevices()) as any;
+      console.log('hidDevices', hidDevices);
+      console.log(4);
       if (hidDevices.length === 0) {
         handleReset();
         return;
       }
 
+      console.log('hidDevices', hidDevices);
       hidDevices.some(async (device: any) => {
         try {
+          console.log('device', device);
           if (device?.productName?.toLowerCase().includes('nano')) {
+            console.log(5);
             const ledgerData = new Ledger('hid', 'astar');
             const { address } = await ledgerData.getAddress();
+            console.log(6);
             if (address) {
               ledger.value = ledgerData;
+              console.log('address', address);
+              const deviceModel = (ledgerData as any).__internal__app.transport.deviceModel;
+              ledgerAccount.value = address;
+              isLedgerAccount.value = address === currentAccount.value;
+              isLedgerNanoS.value = deviceModel.id === LedgerId.nanoS;
+            } else {
+              console.log('else');
+              handleReset();
             }
-            const deviceModel = (ledgerData as any).__internal__app.transport.deviceModel;
-            ledgerAccount.value = address;
-            isLedgerAccount.value = address === currentAccount.value;
-            isLedgerNanoS.value = deviceModel.id === LedgerId.nanoS;
           }
         } catch (error: any) {
           const idLedgerLocked = '0x5515';
