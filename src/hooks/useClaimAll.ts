@@ -162,10 +162,6 @@ export function useClaimAll() {
     }
   };
 
-  watchEffect(() => {
-    console.log('isLedgerAccount', isLedgerAccount.value);
-  });
-
   return {
     claimAll,
     canClaim,
