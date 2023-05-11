@@ -142,6 +142,9 @@
                   {{ $t('assets.modals.notDestIsExchangeAddress') }}
                 </div>
               </span>
+              <span v-else :class="isChecked ? 'color--gray1' : 'color--not-checked'">
+                {{ $t('assets.modals.notSendToExchanges') }}
+              </span>
             </div>
           </label>
         </div>
