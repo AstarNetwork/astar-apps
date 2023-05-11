@@ -3,8 +3,8 @@
   "id": "astar",
   "chainType": "Live",
   "bootNodes": [
-    "/dns/astar-02.wss-bootnode.astar.network/tcp/443/wss/p2p/12D3KooWMfHf9G1Mtawz4qySe1EqaBmrieidqn2xnEYckUYkpe52",
-    "/dns/astar-03.wss-bootnode.astar.network/tcp/443/wss/p2p/12D3KooWHV4YxifTpBkLWPPaF8EfoMSXeGNWWxXqUokGsBGxwioK"
+    "/dns/wss-bootnode-02.astar.network/tcp/443/wss/p2p/12D3KooWMfHf9G1Mtawz4qySe1EqaBmrieidqn2xnEYckUYkpe52",
+    "/dns/wss-bootnode-03.astar.network/tcp/443/wss/p2p/12D3KooWHV4YxifTpBkLWPPaF8EfoMSXeGNWWxXqUokGsBGxwioK"
   ],
   "protocolId": "astar",
   "properties": {
