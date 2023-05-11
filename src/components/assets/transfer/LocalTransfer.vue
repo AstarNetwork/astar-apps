@@ -140,13 +140,19 @@
               v-if="isH160 && !isNativeToEvm"
               :class="isChecked ? 'color--gray1' : 'color--not-checked'"
             >
-              <span class="text--evm-warning">{{ $t('assets.modals.understandWarning') }}</span>
-              <div class="text--warn">
-                <span class="text--dot">・</span> {{ $t('assets.modals.notDestIsLedgerAccount') }}
+              <div class="row--warning-title">
+                <div class="icon--warning">
+                  <astar-icon-warning size="20" />
+                </div>
+                <span
+                  class="text--title-evm-warning"
+                  :class="isChecked ? 'color--gray1' : 'color--not-checked'"
+                >
+                  {{ $t('warning.warning') }}
+                </span>
               </div>
               <div class="text--warn">
-                <span class="text--dot">・</span>
-                {{ $t('assets.modals.notDestIsExchangeAddress') }}
+                {{ $t('assets.modals.notDestIsLedgerAccount') }}
               </div>
             </span>
           </label>
