@@ -133,7 +133,14 @@
                 {{ $t('assets.modals.notSendToEvmExchanges') }}
               </span>
               <span v-else :class="isChecked ? 'color--gray1' : 'color--not-checked'">
-                {{ $t('assets.modals.notSendToExchanges') }}
+                {{ $t('assets.modals.understandWarning') }}
+                <div class="text--warn">
+                  <span class="text--dot">・</span> {{ $t('assets.modals.notDestIsLedgerAccount') }}
+                </div>
+                <div class="text--warn">
+                  <span class="text--dot">・</span>
+                  {{ $t('assets.modals.notDestIsExchangeAddress') }}
+                </div>
               </span>
             </div>
           </label>

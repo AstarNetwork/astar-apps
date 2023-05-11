@@ -403,6 +403,9 @@ export default {
       notSendToExchanges: 'I’m NOT sending tokens to Exchanges',
       notSendToEvmExchanges:
         "I’m NOT sending tokens to Exchange's EVM deposit addresses. I understand that if I do so, the funds will likely be lost.",
+      understandWarning: 'I understand the following. If don’t, I will lose my funds.',
+      notDestIsLedgerAccount: 'Destination address is not a ledger native account',
+      notDestIsExchangeAddress: 'Destination address is not an Exchange address',
       youWillReceive: 'You will receive',
       faucetNextRequest: 'Time left until the next request',
       countDown: '{hrs} hrs {mins} mins {secs} secs',
