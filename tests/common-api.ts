@@ -6,6 +6,7 @@ import { sendTransaction } from './zombienet/tx-utils';
 import { KeyringPair } from '@polkadot/keyring/types';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 import { EraStakingPointsIndividualClaim } from 'src/store/dapp-staking/calculation';
+import { RewardDestination } from 'src/v2/models';
 
 export const NODE_ENDPOINT = process.env.ENDPOINT || 'ws://127.0.0.1:57083';
 export let chainDecimals = 18;
@@ -89,4 +90,11 @@ export const forceUnbondingPeriod = async (): Promise<void> => {
   for (let i = 0; i < unbondingPeriod.toNumber(); i++) {
     await sendTransaction(api.tx.sudo.sudo(api.tx.dappsStaking.forceNewEra()), signer);
   }
+};
+
+export const setRewardDestination = async (rewardDestination: RewardDestination): Promise<void> => {
+  const api = await getApi();
+  const signer = await getSigner();
+  const tx = api.tx.dappsStaking.setRewardDestination(rewardDestination);
+  await sendTransaction(tx, signer);
 };

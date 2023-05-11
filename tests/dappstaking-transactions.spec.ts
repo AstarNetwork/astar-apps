@@ -15,9 +15,8 @@ import {
   forceNewEra,
   getAccountLedger,
   getBalance,
-  getContractEraStake,
-  getCurrentEra,
   getStakedAmount,
+  setRewardDestination,
 } from './common-api';
 
 const TEST_DAPP_ADDRESS = '0x0000000000000000000000000000000000000001';
@@ -124,7 +123,7 @@ test.describe('dApp staking transactions', () => {
     await forceNewEra();
 
     await page.goto('/custom-node/dapp-staking/discover');
-    page.getByRole('button', { name: 'Claim' }).click();
+    await page.getByRole('button', { name: 'Claim' }).click();
     await signTransaction(context);
     await expect(page.getByText('Success', { exact: true }).first()).toBeVisible();
 
@@ -139,12 +138,13 @@ test.describe('dApp staking transactions', () => {
     await stake(page, context, BigInt(1000));
 
     // Check initial state
+    await setRewardDestination('StakeBalance');
     await expect(page.getByText('ON', { exact: true })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Turn off' })).toBeVisible();
     let ledger = await getAccountLedger(ALICE_ADDRESS);
     expect(ledger.rewardDestination.toString()).toEqual('StakeBalance');
 
-    page.getByRole('button', { name: 'Turn off' }).click();
+    await page.getByRole('button', { name: 'Turn off' }).click();
     await signTransaction(context);
     await page.waitForSelector('.four', { state: 'hidden' });
     await expect(page.getByText('OFF', { exact: true })).toBeVisible();
@@ -152,7 +152,7 @@ test.describe('dApp staking transactions', () => {
     ledger = await getAccountLedger(ALICE_ADDRESS);
     expect(ledger.rewardDestination.toString()).toEqual('FreeBalance');
 
-    page.getByRole('button', { name: 'Turn on' }).click();
+    await page.getByRole('button', { name: 'Turn on' }).click();
     await signTransaction(context);
     await page.waitForSelector('.four', { state: 'hidden' });
     await expect(page.getByText('ON', { exact: true })).toBeVisible();
