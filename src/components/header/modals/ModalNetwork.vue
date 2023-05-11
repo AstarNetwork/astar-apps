@@ -198,7 +198,6 @@ export default defineComponent({
       );
       if (newEndpoint.value) {
         let endpoint = `${newEndpoint.value}`;
-        endpoint = !endpoint.includes('wss://') ? `wss://${endpoint}` : endpoint;
         localStorage.setItem(CUSTOM_ENDPOINT, endpoint);
       }
 

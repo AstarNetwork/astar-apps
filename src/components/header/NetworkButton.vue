@@ -22,11 +22,6 @@
         <div class="column--network-name">
           <template v-if="width >= screenSize.md">
             <span class="text--network">
-              {{ currentNetworkName }}
-            </span>
-          </template>
-          <template v-else-if="width >= screenSize.sm">
-            <span class="text--network">
               {{ currentNetworkName.replace('Network', '') }}
             </span>
           </template>

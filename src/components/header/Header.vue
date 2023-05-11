@@ -4,6 +4,7 @@
       <template #left>
         <div class="icon"><logo /></div>
       </template>
+      <trouble-help />
       <template v-if="!currentAccount">
         <connect-button @click="openSelectModal">
           <astar-icon-wallet />
@@ -61,6 +62,7 @@ import { useStore } from 'src/store';
 import { useRoute } from 'vue-router';
 import { getHeaderName } from 'src/router/routes';
 import { useBreakpoints } from 'src/hooks';
+import TroubleHelp from 'src/components/header/TroubleHelp.vue';
 import ConnectButton from 'src/components/header/ConnectButton.vue';
 import AccountButton from 'src/components/header/AccountButton.vue';
 import NetworkButton from 'src/components/header/NetworkButton.vue';
@@ -89,6 +91,7 @@ export default defineComponent({
     Logo,
     ModalUpdateWallet,
     HeaderComp,
+    TroubleHelp,
   },
   setup() {
     const { width, screenSize } = useBreakpoints();

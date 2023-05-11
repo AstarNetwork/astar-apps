@@ -53,8 +53,22 @@ export class BifrostXcmRepository extends XcmRepository {
     } else {
       throw `Token name for ${token.originAssetId} is not defined`;
     }
+
+    const { version, isV3 } = this.getXcmVersion(from);
+
+    const AccountId32 = isV3
+      ? {
+          id: decodeAddress(recipientAddress),
+        }
+      : {
+          id: decodeAddress(recipientAddress),
+          network: {
+            Any: null,
+          },
+        };
+
     const destination = {
-      V1: {
+      [version]: {
         parents: '1',
         interior: {
           X2: [
@@ -62,20 +76,17 @@ export class BifrostXcmRepository extends XcmRepository {
               Parachain: to.parachainId,
             },
             {
-              AccountId32: {
-                network: {
-                  Any: null,
-                },
-                id: decodeAddress(recipientAddress),
-              },
+              AccountId32,
             },
           ],
         },
       },
     };
     const destWeight = {
-      limited: new BN(10).pow(new BN(9)).muln(5),
+      // limited: new BN(10).pow(new BN(9)).muln(5),
+      Unlimited: null,
     };
+
     return await this.buildTxCall(
       from,
       'xTokens',

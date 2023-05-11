@@ -29,7 +29,7 @@ export class TokenTransferRepository implements ITokenTransferRepository {
     const api = await this.api.getApi();
     return assetId === idAstarNativeToken
       ? api.tx.balances.transferKeepAlive(receivingAddress, amount)
-      : api.tx.assets.transferKeepAlive(new BN(assetId), receivingAddress, amount);
+      : api.tx.assets.transfer(new BN(assetId), receivingAddress, amount);
   }
   public async getEvmTransferData({
     param,
