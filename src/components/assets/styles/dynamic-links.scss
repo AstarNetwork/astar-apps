@@ -33,7 +33,8 @@
     flex-direction: column;
   }
   .card {
-    width: 240px;
+    flex-basis: 33%;
+    min-width: 240px;
     height: 128px;
     cursor: pointer;
     background: rgba(196, 196, 196, 0.1);
