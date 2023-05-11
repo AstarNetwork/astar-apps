@@ -62,7 +62,6 @@ export const useLedger = () => {
             ledgerAccount.value = address;
             isLedgerAccount.value = address === currentAccount.value;
             isLedgerNanoS.value = deviceModel.id === LedgerId.nanoS;
-            console.log(5);
           }
         } catch (error: any) {
           const idLedgerLocked = '0x5515';
