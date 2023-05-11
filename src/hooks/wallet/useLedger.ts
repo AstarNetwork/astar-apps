@@ -27,6 +27,12 @@ export const useLedger = () => {
   };
 
   const handleLedgerData = async (): Promise<void> => {
+    // Memo: make sure `transport` has been closed before creating ledger transport
+    if (ledger.value && ledgerAccount.value) {
+      const transport = (ledger.value as any).__internal__app.transport;
+      transport.close();
+    }
+
     if (!currentAccount.value || currentAccount.value === null || isH160.value) {
       handleReset();
       return;
@@ -44,16 +50,9 @@ export const useLedger = () => {
         return;
       }
 
-      // Memo: make sure `transport` has been closed before creating ledger transport
-      if (ledger.value && ledgerAccount.value) {
-        const transport = (ledger.value as any).__internal__app.transport;
-        transport.close();
-      }
-
       hidDevices.some(async (device: any) => {
-        // Todo: check for Ledger Stax
-        if (device.productName.toLowerCase().includes('nano')) {
-          try {
+        try {
+          if (device?.productName?.toLowerCase().includes('nano')) {
             const ledgerData = new Ledger('hid', 'astar');
             const { address } = await ledgerData.getAddress();
             if (address) {
@@ -63,18 +62,19 @@ export const useLedger = () => {
             ledgerAccount.value = address;
             isLedgerAccount.value = address === currentAccount.value;
             isLedgerNanoS.value = deviceModel.id === LedgerId.nanoS;
-          } catch (error: any) {
-            const idLedgerLocked = '0x5515';
-            if (error.message.includes(idLedgerLocked)) {
-              store.dispatch('general/showAlertMsg', {
-                msg: error.message,
-                alertType: 'error',
-              });
-              handleReset();
-            }
-          } finally {
-            return;
+            console.log(5);
           }
+        } catch (error: any) {
+          const idLedgerLocked = '0x5515';
+          if (error.message.includes(idLedgerLocked)) {
+            store.dispatch('general/showAlertMsg', {
+              msg: error.message,
+              alertType: 'error',
+            });
+            handleReset();
+          }
+        } finally {
+          return;
         }
       });
     } catch (error) {
