@@ -40,8 +40,8 @@ test.describe('init screen', () => {
     await expect(page.getByRole('button', { name: 'box icon Connect' })).toBeVisible();
   });
 
-  test('should display the Astar Network button', async ({ page }) => {
-    await expect(page.getByRole('button', { name: 'Astar Network' })).toBeVisible();
+  test('should display the Astar button', async ({ page }) => {
+    await expect(page.getByRole('button', { name: 'Astar' })).toBeVisible();
   });
 
   test('should display install extension popup when click Talisman button', async ({ page }) => {
@@ -87,16 +87,3 @@ test.describe('on dapp staking screen', () => {
     await expect(stakeButton).toBeVisible();
   });
 });
-
-//https://api.astar.network/api/v1/astar/dapps-staking/dapps
-// test.describe('api testing', () => {
-//   test('should get dapps list', async ({ request }) => {
-//     const dapps = await request.get('https://api.astar.network/api/v1/astar/dapps-staking/dapps');
-//     expect(dapps.ok()).toBeTruthy();
-//     expect(await dapps.json()).toContainEqual(
-//       expect.objectContaining({
-//         name: 'AstridDAO',
-//       })
-//     );
-//   });
-// });

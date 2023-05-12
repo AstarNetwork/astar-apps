@@ -37,6 +37,7 @@ export default {
   isComingSoon: '{value} is coming soon',
   amountToken: '{amount} {token}',
   select: 'Select',
+  help: 'Help',
   sort: {
     sortBy: 'Sort by',
     amountHightToLow: 'Amount: High to Low',
@@ -116,7 +117,6 @@ export default {
     language: 'Language',
     theme: 'Theme',
     close: 'Close',
-    connectionTrouble: 'Connection Trouble?',
     comingsoon: 'Something ink!redible coming soon',
   },
   drawer: {
@@ -403,6 +403,10 @@ export default {
       notSendToExchanges: 'I’m NOT sending tokens to Exchanges',
       notSendToEvmExchanges:
         "I’m NOT sending tokens to Exchange's EVM deposit addresses. I understand that if I do so, the funds will likely be lost.",
+      understandWarning: 'I understand the following. If don’t, I will lose my funds.',
+      notDestIsLedgerAccount:
+        'The destination address is neither a ledger native account nor an exchange address. I understand that if I do so, the funds will likely be lost.',
+      notDestIsExchangeAddress: 'Destination address is not an Exchange address',
       youWillReceive: 'You will receive',
       faucetNextRequest: 'Time left until the next request',
       countDown: '{hrs} hrs {mins} mins {secs} secs',

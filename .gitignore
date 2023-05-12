@@ -41,3 +41,9 @@ yarn-error.log*
 /test-results/
 /playwright-report/
 /playwright/.cache/
+
+# Zombienet binaries
+zombienet-macos
+polkadot
+astar-collator
+

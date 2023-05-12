@@ -35,30 +35,24 @@ export class AstarXcmRepository extends XcmRepository {
     }
 
     const recipientAccountId = getPubkeyFromSS58Addr(recipientAddress);
+    const { version, isV3 } = this.getXcmVersion(from);
 
     const isWithdrawAssets = token.id !== this.astarNativeTokenId;
     const functionName = isWithdrawAssets ? 'reserveWithdrawAssets' : 'reserveTransferAssets';
-    const isSendToParachain = to.parachainId > 0;
-    const destination = isSendToParachain
-      ? {
-          V1: {
-            interior: {
-              X1: {
-                Parachain: new BN(to.parachainId),
-              },
-            },
-            parents: new BN(1),
+
+    const destination = {
+      [version]: {
+        interior: {
+          X1: {
+            Parachain: new BN(to.parachainId),
           },
-        }
-      : {
-          V1: {
-            interior: 'Here',
-            parents: new BN(1),
-          },
-        };
+        },
+        parents: new BN(1),
+      },
+    };
 
     const isAccountId20 = ethWalletChains.includes(to.name);
-    const X1 = isAccountId20
+    const X1_V1 = isAccountId20
       ? {
           AccountKey20: {
             network: 'Any',
@@ -72,30 +66,40 @@ export class AstarXcmRepository extends XcmRepository {
           },
         };
 
+    const X1_V3 = isAccountId20
+      ? {
+          AccountKey20: {
+            key: recipientAccountId,
+          },
+        }
+      : {
+          AccountId32: {
+            id: decodeAddress(recipientAccountId),
+          },
+        };
+
     const beneficiary = {
-      V1: {
+      [version]: {
         interior: {
-          X1,
+          X1: isV3 ? X1_V3 : X1_V1,
         },
         parents: new BN(0),
       },
     };
 
-    const isRegisteredAsset = isSendToParachain && isWithdrawAssets;
-
-    const asset = isRegisteredAsset
+    const asset = isWithdrawAssets
       ? {
           Concrete: await this.fetchAssetConfig(from, token),
         }
       : {
           Concrete: {
             interior: 'Here',
-            parents: new BN(isSendToParachain ? 0 : 1),
+            parents: new BN(0),
           },
         };
 
     const assets = {
-      V1: [
+      [version]: [
         {
           fun: {
             Fungible: new BN(amount),

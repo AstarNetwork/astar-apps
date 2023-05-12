@@ -4,6 +4,7 @@ import { container } from 'src/v2/common';
 import { IDappStakingRepository } from 'src/v2/repositories';
 import { Symbols } from 'src/v2/symbols';
 import { IEventAggregator, NewEraMessage } from 'src/v2/messaging';
+import { isCustomNetwork } from '../useNetworkInfo';
 
 export const useAvgBlockTimeApi = (network: string) => {
   const etaNextEra = ref<string>('');
@@ -17,6 +18,8 @@ export const useAvgBlockTimeApi = (network: string) => {
 
   // Fetch next era ETA from Token API
   const fetchNextEraEta = async (network: string) => {
+    if (isCustomNetwork(network)) return;
+
     const eta = await repository.getNextEraEta(network);
 
     etaNextEra.value = DateTime.local()

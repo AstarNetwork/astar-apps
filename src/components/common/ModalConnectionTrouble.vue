@@ -4,6 +4,7 @@
     :title="$t('assets.modals.connectionTroubles.connectionTroubles')"
     :is-closing="isClosingModal"
     :close-modal="closeModal"
+    class-name="highest-z-index"
   >
     <div class="wrapper--modal-connection-trouble">
       <div class="row--description">

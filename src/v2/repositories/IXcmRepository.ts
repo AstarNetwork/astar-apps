@@ -36,4 +36,6 @@ export interface IXcmRepository {
   ): Promise<string>;
 
   getNativeBalance(address: string, chain: XcmChain): Promise<BN>;
+
+  getXcmVersion(from: XcmChain): { version: string; isV3: boolean };
 }
