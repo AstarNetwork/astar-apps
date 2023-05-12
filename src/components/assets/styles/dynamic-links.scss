@@ -63,6 +63,10 @@
       line-height: 18px;
       color: $gray-2;
     }
+    .txt--bold {
+      font-style: italic;
+      font-weight: 800;
+    }
 
     @media (min-width: $xxl) {
       flex-basis: unset;

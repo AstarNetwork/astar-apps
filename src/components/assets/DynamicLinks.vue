@@ -9,7 +9,7 @@
         @click="goToLink(t.link)"
       >
         <div class="card--info">
-          <div class="txt--title">
+          <div class="txt--title" :class="index === 0 ? 'txt--bold' : ''">
             {{ t.title }}
           </div>
           <div v-if="t.subtitle" class="txt--subtitle">{{ t.subtitle }}</div>
