@@ -1,25 +1,27 @@
 <template>
   <div v-if="!isLoading" class="wrapper--assets">
     <div class="container--assets">
-      <div>
-        <span class="text--xl">
-          {{ $t(isH160 ? 'assets.astarEvmAccount' : 'assets.astarNativeAccount') }}
-        </span>
+      <div class="container--account">
+        <div class="title--account">
+          <span class="text--xl">
+            {{ $t(isH160 ? 'assets.astarEvmAccount' : 'assets.astarNativeAccount') }}
+          </span>
+        </div>
+        <account
+          :ttl-erc20-amount="evmAssets.ttlEvmUsdAmount"
+          :ttl-native-xcm-usd-amount="ttlNativeXcmUsdAmount"
+          :is-loading-erc20-amount="isLoading"
+          :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
+        />
       </div>
-      <account
-        :ttl-erc20-amount="evmAssets.ttlEvmUsdAmount"
-        :ttl-native-xcm-usd-amount="ttlNativeXcmUsdAmount"
-        :is-loading-erc20-amount="isLoading"
-        :is-loading-xcm-assets-amount="isLoadingXcmAssetsAmount"
-      />
       <div class="row--links">
         <dynamic-links />
       </div>
       <div>
         <div class="separator" />
-        <span class="text--xl">{{ $t('assets.assets') }}</span>
+        <span class="title--assets text--xl">{{ $t('assets.assets') }}</span>
       </div>
-      <div>
+      <div class="container--asset-list">
         <div v-if="isH160">
           <evm-asset-list :tokens="evmAssets.assets" />
         </div>

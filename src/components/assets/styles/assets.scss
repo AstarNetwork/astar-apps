@@ -22,6 +22,17 @@
   }
 }
 
+.container--account {
+  padding: 0 16px;
+  @media (min-width: $lg) {
+    padding: 0;
+  }
+}
+
+.title--account {
+  margin-bottom: 10px;
+}
+
 .separator {
   border-bottom: 1px solid;
   border-image: linear-gradient(
@@ -39,6 +50,10 @@
 
 .row--links {
   display: none;
+  padding-left: 16px;
+  @media (min-width: $lg) {
+    padding: 0;
+  }
   @media (max-width: $xxl) {
     overflow-x: auto;
     overflow-y: hidden;
@@ -51,4 +66,17 @@
   @media (min-width: $xxl) {
     display: block;
   }
+}
+
+.title--assets {
+  padding: 0 16px;
+  @media (min-width: $lg) {
+    padding: 0;
+  }
+}
+.container--asset-list {
+  padding: 0 16px;
+  @media (min-width: $lg) {
+    padding: 0;
+  } 
 }
