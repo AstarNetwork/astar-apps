@@ -2,7 +2,7 @@
 # https://github.com/firebase/firebase-tools
 
 name: Create Firebase Hosting Preview on PR
-on: 
+on:
   pull_request:
     inputs:
         astar_tag:
@@ -28,6 +28,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
+      - run: npm install -g yarn
       - run: yarn && yarn build
       - id: deploy_firebase_hosting_channel
         uses: FirebaseExtended/action-hosting-deploy@v0

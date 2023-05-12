@@ -33,6 +33,14 @@
   margin-bottom: 10px;
 }
 
+.separator--top {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  @media (min-width: $lg) {
+    display: none;
+  }
+}
+
 .separator {
   border-bottom: 1px solid;
   border-image: linear-gradient(

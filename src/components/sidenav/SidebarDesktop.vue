@@ -95,7 +95,6 @@
     </nav>
 
     <div class="wrapper--bottom">
-      <connection-trouble />
       <social-media-links />
       <div class="wrapper--option">
         <light-dark-mode />
@@ -114,7 +113,6 @@ import LocaleChanger from '../common/LocaleChanger.vue';
 import SocialMediaLinks from '../common/SocialMediaLinks.vue';
 import LightDarkMode from '../common/LightDarkMode.vue';
 import Logo from '../common/Logo.vue';
-import ConnectionTrouble from 'src/components/common/ConnectionTrouble.vue';
 import { useRouter } from 'vue-router';
 import { Path as RoutePath } from 'src/router/routes';
 import IconSideNft from './components/IconSideNFT.vue';
@@ -127,7 +125,6 @@ export default defineComponent({
     LightDarkMode,
     LocaleChanger,
     Logo,
-    ConnectionTrouble,
     IconSideNft,
     IconEcosystem,
     Balloon,

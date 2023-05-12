@@ -40,8 +40,8 @@ test.describe('init screen', () => {
     await expect(page.getByRole('button', { name: 'box icon Connect' })).toBeVisible();
   });
 
-  test('should display the Astar Network button', async ({ page }) => {
-    await expect(page.getByRole('button', { name: 'Astar Network' })).toBeVisible();
+  test('should display the Astar button', async ({ page }) => {
+    await expect(page.getByRole('button', { name: 'Astar' })).toBeVisible();
   });
 
   test('should display install extension popup when click Talisman button', async ({ page }) => {
