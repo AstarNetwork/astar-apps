@@ -98,8 +98,8 @@ const mutation: MutationTree<State> & GeneralMutations = {
   setHeaderName(state, name) {
     state.headerName = name;
   },
-  setCurrentWallet(state, walle: string) {
-    state.currentWallet = walle;
+  setCurrentWallet(state, wallet: string) {
+    state.currentWallet = wallet;
   },
   setGas(state, gas: GasTip) {
     state.gas = gas;

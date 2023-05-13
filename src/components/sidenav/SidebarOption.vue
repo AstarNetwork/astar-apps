@@ -168,7 +168,6 @@
           </div>
         </div>
       </q-expansion-item>
-      <connection-trouble />
       <div class="button--close" @click="closeMobileNavi">X {{ $t('sidenavi.close') }}</div>
     </q-list>
   </div>
@@ -181,12 +180,10 @@ import { useStore } from 'src/store';
 import { socialUrl, docsUrl } from 'src/links';
 import { languagesSelector } from 'src/i18n';
 import { i18n } from 'src/boot/i18n';
-import ConnectionTrouble from 'src/components/common/ConnectionTrouble.vue';
 
 export default defineComponent({
   components: {
     LightDarkMode,
-    ConnectionTrouble,
   },
   emits: ['closeNavi'],
   setup(props, { emit }) {

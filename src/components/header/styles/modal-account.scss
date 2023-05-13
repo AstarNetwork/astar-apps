@@ -16,11 +16,21 @@
 .row--balance-option {
   display: flex;
   justify-content: center;
-  padding-left: 130px;
-  @media (min-width: $sm) {
-    padding-left: 0px;
-    justify-content: flex-end;
-  }
+  justify-content: flex-end;
+}
+
+.box--account {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  row-gap: 8px;
+}
+
+.wrapper--account-detail {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .column--balance-option {
@@ -41,15 +51,12 @@
   flex-direction: column;
   justify-content: center;
   padding-top: 24px;
-  padding-bottom: 20px;
 }
 
 .class-radio {
   display: flex;
   align-items: center;
-  background: #fff;
   border-radius: 6px;
-  width: rem(314);
   font-weight: 700;
   font-size: 16px;
   line-height: 18px;
@@ -60,17 +67,18 @@
 }
 
 .class-radio-off {
-  background: #fff;
-  border: 1px solid transparent;
-}
-.class-radio-off:hover {
-  border: 1px solid $astar-blue-dark;
-}
-.class-radio-on {
-  border: 2px solid $astar-blue-dark;
+  border: 1px solid $navy-1;
+  transition: all 0.3s ease 0s;
+  &:hover {
+    border: 1px solid $astar-blue !important;
+  }
 }
 
-.row--address-icons {
+.class-radio-on {
+  border: 1px solid $astar-blue;
+}
+
+.row--balance-icons {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -78,7 +86,7 @@
 
 .radio-btn {
   width: 18px !important;
-  margin-right: 16px !important;
+  margin-right: 18px !important;
 }
 
 .icons {
@@ -88,24 +96,35 @@
   margin-top: 10px;
 }
 
-.wrapper--account-detail {
-  width: 100%;
-  text-align: left;
-  .accountName {
-    color: $gray-5;
-    font-weight: 700;
-    font-size: 16px;
-    line-height: 18px;
-  }
-  .address {
-    color: $gray-4;
-    font-weight: 510;
-    font-size: 12px;
-    line-height: 20px;
-    word-wrap: break-word;
-    margin-top: 9px;
+.row--account {
+  align-items: center;
+  column-gap: 24px;
+  @media (min-width: $sm) {
+    display: grid;
+    grid-template-columns: 220px auto;
   }
 }
+
+.account-name {
+  color: $gray-5;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 18px;
+  text-align: left;
+}
+
+.address {
+  color: $gray-4;
+  font-weight: 510;
+  font-size: 12px;
+  line-height: 20px;
+  text-align: left;
+  margin-top: 4px;
+  @media (min-width: $sm) {
+    margin-top: 0px;
+  }
+}
+
 .wrapper--share {
   display: flex;
   column-gap: 16px;
@@ -115,7 +134,7 @@
   .box--share {
     display: flex;
     align-items: center;
-    color: $astar-blue-dark;
+    color: $astar-blue;
     font-weight: 400;
     font-size: 14px;
     line-height: 17px;
@@ -134,7 +153,7 @@
   &:hover {
     color: white;
     stroke: white;
-    background-color: $astar-blue-dark;
+    background-color: $astar-blue;
     .icon--primary {
       stroke: white;
       background-color: transparent;
@@ -146,15 +165,17 @@
   flex-shrink: 0;
   display: flex;
   justify-content: center;
+  flex-direction: column;
+  margin-top: 32px;
+  row-gap: 24px;
 }
 
 .btn--connect {
-  width: 340px;
+  width: 100%;
   font-size: 20px;
   font-weight: 600;
   border-radius: 30px;
   height: 52px;
-  margin-top: 24px;
 }
 
 .column--remarks {
@@ -168,7 +189,7 @@
 
 .dot {
   position: relative;
-  top: -40px;
+  top: -30px;
   height: 7px;
   width: 8px;
   border-radius: 90%;
@@ -192,15 +213,11 @@
     color: #fff;
   }
   .class-radio-off {
-    background: $gray-6;
-  }
-
-  .class-radio-on {
-    background: $gray-5-selected-dark;
+    border: 1px solid $gray-3;
   }
 
   .wrapper--account-detail {
-    .accountName {
+    .account-name {
       color: $gray-1;
     }
     .address {

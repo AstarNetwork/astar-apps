@@ -12,13 +12,13 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: './tests',
   /* Maximum time one test can run for. */
-  timeout: 60 * 1000,
+  timeout: 240 * 1000,
   expect: {
     /**
      * Maximum time expect() should wait for the condition to be met.
      * For example in `await expect(locator).toHaveText();`
      */
-    timeout: 30000,
+    timeout: 60000,
   },
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -26,8 +26,12 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
+  /*
+  Limit workers to 1 because tests depends on a single Zombienet instance.
+  It shouldn't be like that but spawning Zombienet for every test is time consuming.
   workers: process.env.CI ? 1 : undefined,
+  */
+  workers: 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */

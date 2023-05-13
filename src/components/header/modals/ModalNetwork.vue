@@ -198,7 +198,6 @@ export default defineComponent({
       );
       if (newEndpoint.value) {
         let endpoint = `${newEndpoint.value}`;
-        endpoint = !endpoint.includes('wss://') ? `wss://${endpoint}` : endpoint;
         localStorage.setItem(CUSTOM_ENDPOINT, endpoint);
       }
 
@@ -398,6 +397,6 @@ export default defineComponent({
 .text--download {
   display: block;
   text-decoration: underline;
-  color: $astar-blue-dark;
+  color: $astar-blue;
 }
 </style>

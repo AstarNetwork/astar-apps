@@ -21,10 +21,10 @@
     tslib "^2.3.0"
     zen-observable-ts "^1.2.5"
 
-"@astar-network/astar-sdk-core@^0.2.2":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@astar-network/astar-sdk-core/-/astar-sdk-core-0.2.2.tgz#f6df2ec6a76f019b5150e74b66aab3caf50b3005"
-  integrity sha512-o6mOoONAm693XAY6qlhWZ22cR4f88XmiBPB3HnB22g7mc+dG9DyEOUXn79lJybRInUcWJzaHU/FOfICi/2A1hg==
+"@astar-network/astar-sdk-core@^0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@astar-network/astar-sdk-core/-/astar-sdk-core-0.2.3.tgz#607038888aed27ab8bf6beb771d3a28788e62757"
+  integrity sha512-hmCXNGIz7gP3p9mkoBPhIrHJ7lo0VGwYIT8yuEZMEecVeseG3XjQt+cjL0T4CBsk3KzK8bMxDk7me87V/MbSTQ==
   dependencies:
     "@ethersproject/bignumber" "^5.6.2"
     "@polkadot/util" "^10.3.1"
@@ -34,10 +34,10 @@
     ethers "^5.6.9"
     web3 "^1.7.3"
 
-"@astar-network/astar-ui@^0.0.77":
-  version "0.0.77"
-  resolved "https://registry.yarnpkg.com/@astar-network/astar-ui/-/astar-ui-0.0.77.tgz#5ae306cfdd1c7b4ec2b8f59f3bf39faa463ae2a3"
-  integrity sha512-ySgLguVKpgr5WI5BTczJWQ3lGbHUq395bkojrLUKEORF5bmZ39q+pEbJEMORGQwtnHLWQRxv6qkw0nBY2z/70Q==
+"@astar-network/astar-ui@^0.0.91":
+  version "0.0.91"
+  resolved "https://registry.yarnpkg.com/@astar-network/astar-ui/-/astar-ui-0.0.91.tgz#8cdbf0bc7a0f1e1b056844625841812014082619"
+  integrity sha512-oqEKbfXY72RFrHGUagms/B9urQVOUaAMlWkk3nFrB+0XywNEz83b5LoJnXUp0rNNuZsAo4ZYiqSZDQiVTm/kZA==
   dependencies:
     "@iconify-prerendered/vue-ic" "^0.21.1672653513"
     vue "^3.2.23"
@@ -2374,12 +2374,12 @@
     "@octokit/openapi-types" "^11.2.0"
 
 "@playwright/test@^1.31.0":
-  version "1.31.0"
-  resolved "https://registry.yarnpkg.com/@playwright/test/-/test-1.31.0.tgz#bde42ca06804164be54893525110adda946248d6"
-  integrity sha512-Ys5s/06Dg9g3zAIdCIb/UOBYim3U7Zjb3DvC6XBtnRmnglH5O47iwYzmtxXu9fhSyzI2Jn28apkXIOD81GgCdw==
+  version "1.32.3"
+  resolved "https://registry.yarnpkg.com/@playwright/test/-/test-1.32.3.tgz#75be8346d4ef289896835e1d2a86fdbe3d9be92a"
+  integrity sha512-BvWNvK0RfBriindxhLVabi8BRe3X0J9EVjKlcmhxjg4giWBD/xleLcg2dz7Tx0agu28rczjNIPQWznwzDwVsZQ==
   dependencies:
     "@types/node" "*"
-    playwright-core "1.31.0"
+    playwright-core "1.32.3"
   optionalDependencies:
     fsevents "2.3.2"
 
@@ -12295,10 +12295,10 @@ pkg-up@^3.1.0:
   dependencies:
     find-up "^3.0.0"
 
-playwright-core@1.31.0:
-  version "1.31.0"
-  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.31.0.tgz#dbd184771535e76c6743ef5c082def5564f07e85"
-  integrity sha512-/KquBjS5DcASCh8cGeNVHuC0kyb7c9plKTwaKxgOGtxT7+DZO2fjmFvPDBSXslEIK5CeOO/2kk5rOCktFXKEdA==
+playwright-core@1.32.3:
+  version "1.32.3"
+  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.32.3.tgz#e6dc7db0b49e9b6c0b8073c4a2d789a96f519c48"
+  integrity sha512-SB+cdrnu74ZIn5Ogh/8278ngEh9NEEV0vR4sJFmK04h2iZpybfbqBY0bX6+BLYWVdV12JLLI+JEFtSnYgR+mWg==
 
 portfinder@^1.0.28:
   version "1.0.28"

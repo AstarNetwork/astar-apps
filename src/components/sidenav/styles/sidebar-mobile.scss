@@ -6,11 +6,7 @@
   display: flex;
   justify-content: space-between;
   height: 48px;
-  background: $gray-1;
-  opacity: 0.8;
-  backdrop-filter: blur(20px);
-  border-top: 1px solid $object-light;
-  border-bottom: 1px solid $object-light;
+  background: $navy-2;
 }
 
 .tabs {
@@ -25,23 +21,38 @@
   font-size: 14px;
   line-height: 17px;
   text-align: center;
-  color: $gray-3;
-  padding: 12px;
+  color: $gray-4;
+  padding: 10px;
 }
 
 .active-link {
   font-weight: 700;
-  color: $gray-5;
+  color: $gray-1;
 }
 
 .button--option {
   width: 32px;
   height: 32px;
-  color: $gray-3;
   border-radius: 16px;
   margin-top: 4px;
   margin-right: rem(16);
   padding-left: 4px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease 0s;
+  border-radius: 100%;
+  padding: 4px;
+  margin-top: 8px;
+  margin-left: 8px;
+  &:hover {
+    transition: all 0.3s ease 0s;
+    background-color: $astar-blue;
+    .icon--dot {
+      color: white;
+    }
+  }
 }
 
 .wrapper--bottom {
@@ -61,6 +72,9 @@
     padding-left: rem(28.8);
     padding-right: rem(28.8);
     padding-top: rem(4.8);
+
+    background: rgba(44, 51, 53, 0.8);
+    border-top: 1px solid $gray-5;
   }
 }
 
@@ -86,12 +100,16 @@
 
 .tabs__assets {
   width: 72px;
-  left: 124px;
+  left: 117px;
 }
 
 .tabs__staking {
   width: 74px;
-  left: 199px;
+  left: 190px;
+}
+
+.tabs_ecosystem {
+  width: 84px;
 }
 
 .icon--dot {
@@ -106,64 +124,11 @@
   transition: all 0.2s ease 0s;
   &:hover {
     font-weight: 700;
-    color: $gray-5;
+    color: $gray-1;
     transition: all 0.2s ease 0s;
   }
 }
 
 .column--item--dashboard {
   min-width: 76px !important;
-}
-
-.body--dark {
-  .header {
-    background: $gray-6 !important;
-    border-top: 1px solid $gray-5;
-    border-bottom: 1px solid $gray-5;
-  }
-
-  .active-link {
-    color: $gray-1;
-  }
-
-  .column--item {
-    &:hover {
-      color: $gray-1;
-    }
-  }
-
-  .button--option {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: all 0.3s ease 0s;
-    border-radius: 100%;
-    padding: 4px;
-    margin-top: 4px;
-    &:hover {
-      transition: all 0.3s ease 0s;
-      background-color: $astar-blue;
-      .icon--dot {
-        color: white;
-      }
-    }
-  }
-
-  .wrapper--bottom {
-    background: rgba(44, 51, 53, 0.8);
-    border-top: 1px solid $gray-5;
-  }
-}
-
-@media screen and (max-width: 1024px) {
-  .header {
-    background: $gray-1;
-    opacity: 1;
-  }
-
-  .body--dark {
-    .header {
-      background: $gray-6 !important;
-    }
-  }
 }

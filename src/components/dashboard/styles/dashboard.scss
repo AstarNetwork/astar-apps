@@ -163,15 +163,14 @@
 
 .body--dark {
   .filter--tabs {
-    background-color: $gray-5-selected-dark;
-    border: 1px solid $gray-5;
+    border: 1px solid $gray-5-selected-dark;
 
     div:not(:last-child) {
       border-right: 1px solid $gray-5;
     }
 
     .selected {
-      background-color: $gray-5;
+      background-color: $gray-5-selected-dark;
     }
   }
 }
