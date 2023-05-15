@@ -26,3 +26,11 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
       - name: Deploy app build to S3 bucket
         run: aws s3 sync ./dist/spa  s3://astar-apps --delete
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          title: 'Merge main to release-hotfix'
+          body: 'This is an auto-generated PR to merge main to release-hotfix'
+          branch: release-hotfix
+          base: main
+          delete-branch: false

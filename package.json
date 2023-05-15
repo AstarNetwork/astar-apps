@@ -32,6 +32,7 @@
     "@polkadot/api": "^9.13.6",
     "@polkadot/api-contract": "^9.13.6",
     "@polkadot/extension-dapp": "0.44.8",
+    "@polkadot/hw-ledger": "^12.1.2",
     "@polkadot/keyring": "^10.3.1",
     "@polkadot/networks": "^10.3.1",
     "@polkadot/rpc-provider": "^9.13.6",
