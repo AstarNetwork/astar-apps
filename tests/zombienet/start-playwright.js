@@ -1,5 +1,4 @@
-const util = require('util');
-
+/* eslint-disable @typescript-eslint/no-var-requires */
 const spawn = (cmd) =>
   new Promise((resolve, reject) => {
     const cp = require('child_process').exec(cmd);
@@ -30,11 +29,16 @@ const spawn = (cmd) =>
 async function run(nodeName, networkInfo, args) {
   console.log('Running Playwright tests on node: ', nodeName, args);
   const endpoint = networkInfo.nodesByName[nodeName].wsUri;
+  console.log('endpoint :', endpoint);
 
   let result = await spawn('npx playwright install --with-deps');
-  
+  // result = await spawn(
+  //   `BASE_URL=\'${args[0]}\' ENDPOINT=\'${endpoint}\'  HEADLESS='true' CI='true' npx playwright test --project=chromium`
+  // );
+
+  // for debugging
   result = await spawn(
-    `BASE_URL=\'${args[0]}\' ENDPOINT=\'${endpoint}\'  HEADLESS='true' CI='true' npx playwright test --project=chromium`
+    `BASE_URL=\'${args[0]}\' ENDPOINT=\'${endpoint}\' npx playwright test tests/dappstaking-transactions.spec.ts --project=chromium --debug`
   );
 
   return result?.includes('failed') ? 0 : 1;
