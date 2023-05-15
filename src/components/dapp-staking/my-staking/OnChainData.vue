@@ -60,10 +60,12 @@
               <div class="column--balance">
                 <span class="text--value">
                   <token-balance
+                    v-if="filterBy === Filter.tvl"
                     :balance="dapp.balance"
                     :symbol="nativeTokenSymbol"
                     :decimals="0"
                   />
+                  <span v-else> {{ dapp.balance }} </span>
                 </span>
               </div>
             </div>
@@ -91,14 +93,19 @@
 </template>
 <script lang="ts">
 import { useBreakpoints, useNetworkInfo } from 'src/hooks';
-import { defineComponent, computed, watchEffect, ref } from 'vue';
+import { defineComponent, computed, watchEffect, ref, watch } from 'vue';
 import TokenBalance from 'src/components/common/TokenBalance.vue';
 import { DappCombinedInfo, SmartContractState } from 'src/v2/models';
 import { useStore } from 'src/store';
 import { paginate } from '@astar-network/astar-sdk-core';
+import { container } from 'src/v2/common';
+import { IDappStakingRepository, DappAggregatedMetrics } from 'src/v2/repositories';
+import { Symbols } from 'src/v2/symbols';
 
 enum Filter {
   tvl = 'dappStaking.stakingTvl',
+  transactions = 'dappStaking.transactions',
+  uaw = 'dappStaking.uaw',
 }
 enum SortBy {
   alphabeticalAtoZ = 'sort.alphabeticalAtoZ',
@@ -123,7 +130,7 @@ const sorts = [
   SortBy.amountLowToHigh,
 ];
 
-const filters = [Filter.tvl];
+const filters = [Filter.tvl, Filter.transactions, Filter.uaw];
 
 export default defineComponent({
   components: {
@@ -141,6 +148,7 @@ export default defineComponent({
     const isDisplay = ref<boolean>(true);
     const goToNext = ref<boolean>(true);
     const sortBy = ref<SortBy>(SortBy.amountHighToLow);
+    const aggregatedData = ref<DappAggregatedMetrics[]>([]);
 
     const numItems = computed<number>(() =>
       width.value > screenSize.md ? numItemsTablet : numItemsMobile
@@ -152,6 +160,15 @@ export default defineComponent({
       goToNext.value ? 'animate__fadeOutLeft' : 'animate__fadeOutRight'
     );
     const isShiden = computed<boolean>(() => currentNetworkName.value === 'Shiden');
+
+    const fetchAggregatedData = async () => {
+      if (aggregatedData.value.length === 0) {
+        const repo = container.get<IDappStakingRepository>(Symbols.DappStakingRepository);
+        aggregatedData.value = await repo.getAggregatedMetrics(
+          currentNetworkName.value.toLowerCase()
+        );
+      }
+    };
 
     const getDappStyle = (index: number): string => {
       if (screenSize.md > width.value) {
@@ -181,10 +198,24 @@ export default defineComponent({
       }
     };
 
-    const getBalance = (item: DappCombinedInfo): string => {
+    const getBalance = (item: DappCombinedInfo, filter: Filter): string => {
       try {
-        if (filterBy.value === Filter.tvl) {
+        if (filter === Filter.tvl) {
           return item.stakerInfo.totalStakeFormatted ? item.stakerInfo.totalStakeFormatted : '0';
+        } else {
+          const data = aggregatedData.value.find(
+            (x) =>
+              x.name.toLowerCase() === item?.dapp?.name?.toLowerCase() ||
+              x.url.toLowerCase() === item?.dapp?.url?.toLowerCase()
+          );
+
+          if (data) {
+            return filter === Filter.transactions
+              ? data.metrics.transactions.toString()
+              : data.metrics.uaw.toString();
+          }
+
+          return '';
         }
         return '0';
       } catch (error) {
@@ -201,7 +232,11 @@ export default defineComponent({
           }
 
           if (it.dapp && it.stakerInfo) {
-            const balance = getBalance(it);
+            const balance = getBalance(it, filterBy.value);
+            if (!balance) {
+              return undefined;
+            }
+
             return {
               iconUrl: it.dapp.iconUrl,
               name: it.dapp.name,
@@ -250,6 +285,14 @@ export default defineComponent({
 
     watchEffect(setDataArray);
     watchEffect(handlePageUpdate);
+    watch(
+      [currentNetworkName],
+      async () => {
+        if (!currentNetworkName.value) return;
+        await fetchAggregatedData();
+      },
+      { immediate: true }
+    );
 
     return {
       nativeTokenSymbol,
@@ -268,6 +311,7 @@ export default defineComponent({
       changePage,
       getDappStyle,
       getBorderStyle,
+      Filter,
     };
   },
 });

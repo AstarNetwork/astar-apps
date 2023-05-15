@@ -9,6 +9,7 @@ import { AccountLedger } from 'src/v2/models/DappsStaking';
 import { u32 } from '@polkadot/types';
 import { GeneralStakerInfo } from '@astar-network/astar-sdk-core';
 import { StakeInfo } from 'src/store/dapp-staking/actions';
+import { DappAggregatedMetrics } from 'src/v2/repositories';
 @injectable()
 export class DappStakingRepositoryMock implements IDappStakingRepository {
   public readonly bondAndStakeCallMock = jest.fn();
@@ -114,5 +115,9 @@ export class DappStakingRepositoryMock implements IDappStakingRepository {
     currentAccount: string
   ): Promise<StakeInfo | undefined> {
     return {} as StakeInfo;
+  }
+
+  public async getAggregatedMetrics(network: string): Promise<DappAggregatedMetrics[]> {
+    return [];
   }
 }
