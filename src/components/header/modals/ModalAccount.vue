@@ -187,7 +187,6 @@ export default defineComponent({
     const isClosing = ref<boolean>(false);
     const isShowBalance = ref<boolean>(false);
     const isLoadingBalance = ref<boolean>(false);
-    // const toggleIsLedger = ref<boolean>(Boolean(localStorage.getItem(LOCAL_STORAGE.IS_LEDGER)));
     const toggleIsLedger = ref<boolean>(false);
     const accountBalanceMap = ref<SubstrateAccount[]>([]);
 
@@ -338,7 +337,7 @@ export default defineComponent({
       store.commit('general/setIsLedger', isLedger);
       if (isLedger) {
         try {
-          // Memo: request for permission(first time only)
+          // Memo: send a popup request for permission(first time only)
           const ledgerData = new Ledger('hid', 'astar');
           const { address } = await ledgerData.getAddress();
           if (process.env.DEV) {
