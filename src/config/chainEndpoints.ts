@@ -161,7 +161,7 @@ export const providerEndpoints: ChainProvider[] = [
     subscan: '',
     blockscout: '',
     evmChainId: '692',
-    evmEndpoints: ['https://evm.rocstar.astar.network'],
+    evmEndpoints: ['https://rocstar.astar.network'],
     faucetEndpoint: '',
     defaultLogo:
       'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shibuya.png?raw=true',
