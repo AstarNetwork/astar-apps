@@ -15,8 +15,18 @@
 
 .row--balance-option {
   display: flex;
-  justify-content: center;
   justify-content: flex-end;
+}
+
+.text--is-ledger {
+  font-weight: 600;
+  color: $gray-5;
+}
+
+.row--ledger-check {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .box--account {
@@ -167,7 +177,7 @@
   justify-content: center;
   flex-direction: column;
   margin-top: 32px;
-  row-gap: 24px;
+  row-gap: 20px;
 }
 
 .btn--connect {
@@ -214,6 +224,10 @@
   }
   .class-radio-off {
     border: 1px solid $gray-3;
+  }
+
+  .text--is-ledger {
+    color: $gray-1;
   }
 
   .wrapper--account-detail {

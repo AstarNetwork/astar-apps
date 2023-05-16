@@ -33,13 +33,14 @@ export function useClaimAll() {
   const dapps = computed<DappCombinedInfo[]>(() => store.getters['dapps/getAllDapps']);
   const isH160 = computed<boolean>(() => store.getters['general/isH160Formatted']);
   const isSendingTx = computed(() => store.getters['general/isLoading']);
+  const isLedger = computed<boolean>(() => store.getters['general/isLedger']);
   const { t } = useI18n();
   const { era } = useCurrentEra();
   const { accountData } = useBalance(senderAddress);
-  const { isLedgerAccount, isLedgerNanoS } = useLedger();
+  const { isLedgerNanoS } = useLedger();
 
   const maxBatchWeight = computed<BN>(() => {
-    if (isLedgerAccount.value) {
+    if (isLedger.value) {
       return isLedgerNanoS.value ? MAX_BATCH_WEIGHT_LEDGER_S : MAX_BATCH_WEIGHT_LEDGER;
     } else {
       return MAX_BATCH_WEIGHT;

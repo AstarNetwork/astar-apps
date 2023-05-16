@@ -15,7 +15,7 @@
         <div>
           <selected-wallet :selected-wallet="selectedWallet" />
         </div>
-        <div v-if="isNativeWallet" class="row--balance-option">
+        <div class="row--balance-option">
           <div class="column--balance-option">
             <span class="text--option-label">
               {{ $t('wallet.showBalance', { token: nativeTokenSymbol }) }}
@@ -107,8 +107,16 @@
         </fieldset>
       </div>
       <div class="wrapper__row--button">
+        <div class="row--ledger-check">
+          <span class="text--is-ledger">
+            {{ $t('wallet.isLedgerAccount') }}
+          </span>
+          <div class="toggle--custom">
+            <q-toggle v-model="toggleIsLedger" color="#0085ff" />
+          </div>
+        </div>
         <astar-button
-          :disabled="(substrateAccounts.length > 0 && !selAccount) || !isNativeWallet"
+          :disabled="substrateAccounts.length > 0 && !selAccount"
           class="btn--connect"
           @click="selectAccount(selAccount)"
         >
@@ -133,18 +141,15 @@ import {
   wait,
   fetchNativeBalance,
 } from '@astar-network/astar-sdk-core';
-import {
-  castMobileSource,
-  checkIsEthereumWallet,
-  checkIsNativeWallet,
-} from 'src/hooks/helper/wallet';
+import { castMobileSource, checkIsEthereumWallet } from 'src/hooks/helper/wallet';
 import { useStore } from 'src/store';
 import { SubstrateAccount } from 'src/store/general/state';
 import { computed, defineComponent, PropType, ref, watch, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useExtensions } from 'src/hooks/useExtensions';
 import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
-import { useAccount, useBreakpoints } from 'src/hooks';
+import { useBreakpoints } from 'src/hooks';
+import { Ledger } from '@polkadot/hw-ledger';
 
 export default defineComponent({
   components: {
@@ -182,6 +187,8 @@ export default defineComponent({
     const isClosing = ref<boolean>(false);
     const isShowBalance = ref<boolean>(false);
     const isLoadingBalance = ref<boolean>(false);
+    // const toggleIsLedger = ref<boolean>(Boolean(localStorage.getItem(LOCAL_STORAGE.IS_LEDGER)));
+    const toggleIsLedger = ref<boolean>(false);
     const accountBalanceMap = ref<SubstrateAccount[]>([]);
 
     const closeModal = async (): Promise<void> => {
@@ -201,8 +208,6 @@ export default defineComponent({
     const { t } = useI18n();
     const { width, screenSize } = useBreakpoints();
 
-    const isNativeWallet = computed<boolean>(() => checkIsNativeWallet(props.selectedWallet));
-
     const substrateAccounts = computed<SubstrateAccount[]>(() => {
       const accounts: SubstrateAccount[] = accountBalanceMap.value || [];
       const filteredAccounts = accounts.filter((it) => {
@@ -218,6 +223,7 @@ export default defineComponent({
     );
 
     const isLoading = computed<boolean>(() => store.getters['general/isLoading']);
+    const isLedger = computed<boolean>(() => store.getters['general/isLedger']);
 
     const nativeTokenSymbol = computed<string>(() => {
       const chainInfo = store.getters['general/chainInfo'];
@@ -275,7 +281,7 @@ export default defineComponent({
 
     const windowHeight = ref<number>(window.innerHeight);
     const onHeightChange = () => {
-      const adjustment = width.value > screenSize.sm ? 450 : 320;
+      const adjustment = width.value > screenSize.sm ? 520 : 390;
       windowHeight.value = window.innerHeight - adjustment;
     };
 
@@ -320,7 +326,6 @@ export default defineComponent({
     );
 
     const requestExtensionsIfFirstAccess = (): void => {
-      if (!isNativeWallet.value) return;
       // Memo: displays wallet's authorization popup
       const { extensions } = useExtensions($api!!, store);
       const { metaExtensions, extensionCount } = useMetaExtensions($api!!, extensions)!!;
@@ -328,8 +333,51 @@ export default defineComponent({
       store.commit('general/setExtensionCount', extensionCount.value);
     };
 
-    watch([isNativeWallet, props.selectedWallet], requestExtensionsIfFirstAccess, {
-      immediate: false,
+    const updateIsLedgerAccount = async (isLedger: boolean): Promise<void> => {
+      localStorage.setItem(LOCAL_STORAGE.IS_LEDGER, isLedger.toString());
+      store.commit('general/setIsLedger', isLedger);
+      if (isLedger) {
+        try {
+          // Memo: request for permission(first time only)
+          const ledgerData = new Ledger('hid', 'astar');
+          const { address } = await ledgerData.getAddress();
+          if (process.env.DEV) {
+            console.info('ledgerData', ledgerData);
+          }
+          if (address) {
+            const transport = (ledgerData as any).__internal__app.transport;
+            transport.close();
+          }
+        } catch (error: any) {
+          const idLedgerLocked = '0x5515';
+          if (error.message.includes(idLedgerLocked)) {
+            store.dispatch('general/showAlertMsg', {
+              msg: error.message,
+              alertType: 'error',
+            });
+          }
+        }
+      }
+    };
+
+    watch([props.selectedWallet], requestExtensionsIfFirstAccess);
+
+    watch([selAccount], () => {
+      toggleIsLedger.value = false;
+    });
+
+    watch(
+      [isLedger],
+      () => {
+        toggleIsLedger.value = isLedger.value;
+      },
+      {
+        immediate: true,
+      }
+    );
+
+    watch([toggleIsLedger], async () => {
+      await updateIsLedgerAccount(toggleIsLedger.value);
     });
 
     onUnmounted(() => {
@@ -346,7 +394,6 @@ export default defineComponent({
       SupportWallet,
       currentNetworkIdx,
       subScan,
-      isNativeWallet,
       nativeTokenSymbol,
       isLoadingBalance,
       accountBalanceMap,
@@ -357,6 +404,7 @@ export default defineComponent({
       windowHeight,
       isSelected,
       isClosing,
+      toggleIsLedger,
       isShowBalance,
       displayBalance,
       backModal,
