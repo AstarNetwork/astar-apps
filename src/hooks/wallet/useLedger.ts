@@ -69,6 +69,7 @@ export const useLedger = () => {
       }
 
       const hidDevices = (await (window.navigator as any).hid.getDevices()) as any;
+      console.log('hidDevices', hidDevices);
       if (process.env.DEV) {
         console.info('hidDevices', hidDevices);
       }
