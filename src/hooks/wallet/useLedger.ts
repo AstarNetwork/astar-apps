@@ -26,6 +26,30 @@ export const useLedger = () => {
     ledgerAccount.value = '';
   };
 
+  const matchLedgerAccount = async (ledgerInstance: Ledger): Promise<string> => {
+    // Memo: Polkadot.js supports importing from Ledger from 0-19 account types and indexes
+    // Ref: https://gyazo.com/27b57e8a5f2c6bddaeb8e5b00180ba7b
+    const pjsLedgerIndexes = Array.from({ length: 20 }, (_, index) => index); // [0, 1, 2, ..19]
+
+    let found = false;
+    let ledgerAddress = '';
+
+    // Problem: it could be a time-consuming process if `accountType` is far from 0.
+    // Memo: we can't use `await Promise.all` here due to Ledger's limitation
+    for await (const accountType of pjsLedgerIndexes) {
+      if (found) break;
+      for await (const addressIndex of pjsLedgerIndexes) {
+        const { address } = await ledgerInstance.getAddress(undefined, accountType, addressIndex);
+        if (address === currentAccount.value) {
+          ledgerAddress = address;
+          found = true;
+          break;
+        }
+      }
+    }
+    return ledgerAddress;
+  };
+
   const handleLedgerData = async (): Promise<void> => {
     // Memo: make sure `transport` has been closed before creating ledger transport
     if (ledger.value && ledgerAccount.value) {
@@ -58,16 +82,16 @@ export const useLedger = () => {
         try {
           if (device?.productName?.toLowerCase().includes('nano')) {
             const ledgerData = new Ledger('hid', 'astar');
-            const { address } = await ledgerData.getAddress();
+
             if (process.env.DEV) {
               console.info('ledgerData', ledgerData);
             }
 
-            if (address) {
+            ledgerAccount.value = await matchLedgerAccount(ledgerData);
+            if (ledgerAccount.value) {
               ledger.value = ledgerData;
               const deviceModel = (ledgerData as any).__internal__app.transport.deviceModel;
-              ledgerAccount.value = address;
-              isLedgerAccount.value = address === currentAccount.value;
+              isLedgerAccount.value = true;
               isLedgerNanoS.value = deviceModel.id === LedgerId.nanoS;
             } else {
               handleReset();
