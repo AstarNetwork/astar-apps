@@ -97,7 +97,7 @@ export const providerEndpoints: ChainProvider[] = [
     evmEndpoints: ['https://evm.shibuya.astar.network'],
     faucetEndpoint: 'https://us-central1-facuet-bot.cloudfunctions.net/app/shibuya',
     defaultLogo:
-      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/ic_shibuya.png?raw=true',
+      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shibuya.png?raw=true',
     xvmErcTransferContract: 'ZdNJsZUK96jGxr8iRfT8xHXUi5iQ7XwL9qbyJkADPdH7C1U',
   },
   {
@@ -114,7 +114,7 @@ export const providerEndpoints: ChainProvider[] = [
     evmEndpoints: ['http://127.0.0.1:9933'],
     faucetEndpoint: '',
     defaultLogo:
-      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/ic_shibuya.png?raw=true',
+      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shibuya.png?raw=true',
     // Memo: paste the contract addresses after deployed the contracts on the local network
     // xvmErcTransferContract: '',
   },
@@ -132,7 +132,7 @@ export const providerEndpoints: ChainProvider[] = [
     evmEndpoints: [''],
     faucetEndpoint: '',
     defaultLogo:
-      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/ic_shibuya.png?raw=true',
+      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shibuya.png?raw=true',
   },
   {
     networkAlias: 'rocstar',
@@ -150,7 +150,7 @@ export const providerEndpoints: ChainProvider[] = [
     evmEndpoints: ['https://evm.rocstar.astar.network'],
     faucetEndpoint: '',
     defaultLogo:
-      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/ic_shibuya.png?raw=true',
+      'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shibuya.png?raw=true',
     xvmErcTransferContract: 'ZdNJsZUK96jGxr8iRfT8xHXUi5iQ7XwL9qbyJkADPdH7C1U',
   },
 ];
