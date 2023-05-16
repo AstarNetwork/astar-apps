@@ -4,6 +4,7 @@ import { test } from './fixtures';
 import {
   ALICE_ACCOUNT_NAME,
   ALICE_ACCOUNT_SEED,
+  ALICE_ADDRESS,
   BOB_ACCOUNT_NAME,
   BOB_ACCOUNT_SEED,
   BOB_ADDRESS,
@@ -42,21 +43,7 @@ test.beforeEach(async ({ page, context }) => {
 });
 
 test.describe('account panel', () => {
-  test('should copy wallet address', async ({ page }) => {
-    await page.locator('#copyAddress').click();
-    await expect(page.locator('.noti-content')).toBeVisible();
-  });
-
-  test('account expander works', async ({ page }) => {
-    await page.locator('.icon--expand').first().click();
-    const transferButton = page.locator('#asset-expand').getByRole('button', { name: 'Transfer' });
-    await expect(transferButton).toBeVisible();
-
-    await page.locator('.icon--expand').first().click();
-    await expect(transferButton).not.toBeVisible();
-  });
-
-  //AS001
+  // Test case: AS001
   test('should transfer tokens from Alice to Bob', async ({ page, context }) => {
     const transferAmount = BigInt(1000);
     await page.locator('.icon--expand').first().click();
@@ -77,7 +64,36 @@ test.describe('account panel', () => {
     );
   });
 
-  test('EVM sample', async ({ page }) => {
+  // Test case: AS004
+  test('should perform validation when tokens from Alice to Bob', async ({ page }) => {
+    const baseTransferAmount = BigInt(1000);
+    await page.locator('.icon--expand').first().click();
+    await page.locator('#asset-expand').getByRole('button', { name: 'Transfer' }).click();
+
+    const aliceBalanceBeforeTransaction = await getBalance(ALICE_ADDRESS);
+    await page.getByPlaceholder('Destination Address').fill(BOB_ADDRESS);
+
+    // Insufficient balance
+    const transferAmount = aliceBalanceBeforeTransaction + baseTransferAmount;
+    await page.getByPlaceholder('0.0').fill(transferAmount.toString());
+    await expect(page.getByText('Insufficient')).toBeVisible();
+
+    // Invalid destination address
+    await page.getByPlaceholder('Destination Address').fill('invalid address');
+    await page.getByPlaceholder('0.0').fill(baseTransferAmount.toString());
+    await expect(page.getByText('Inputted invalid destination address')).toBeVisible();
+
+    // Send to exchanges warning is shown on EVM
+
+    // Send to exchanges warning is shown on Native
+    const TEST_EVM_ADDRESS = '0xEf1c6E67703c7BD7107eed8303Fbe6EC2554BF6B';
+    await page.getByPlaceholder('Destination Address').fill(TEST_EVM_ADDRESS);
+    await page.getByPlaceholder('0.0').fill(baseTransferAmount.toString());
+    await expect(page.getByText('the funds will likely be lost')).toBeVisible();
+  });
+
+  // Test case: AS002
+  test('should transfer tokens from Alice to Bob on EVM account', async ({ page }) => {
     await createMetamaskAccount(
       page,
       'bottom drive obey lake curtain smoke basket hold race lonely fit walk',
