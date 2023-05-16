@@ -153,6 +153,7 @@ export default defineComponent({
     const bal = ref<number>(0);
     const balUsd = ref<number>(0);
     const isShibuya = ref<boolean>(false);
+    const isRocstar = ref<boolean>(false);
     const isFaucet = ref<boolean>(false);
     const isSearch = ref<boolean>(false);
     const search = ref<string>('');
@@ -263,7 +264,8 @@ export default defineComponent({
         const balWei = await getBalance($web3.value!, currentAccount.value);
         bal.value = Number(ethers.utils.formatEther(balWei));
         isShibuya.value = nativeTokenSymbol.value === 'SBY';
-        isFaucet.value = isShibuya.value || faucetBalRequirement > bal.value;
+        isRocstar.value = nativeTokenSymbol.value === 'RSTR';
+        isFaucet.value = isRocstar ? false : isShibuya.value || faucetBalRequirement > bal.value;
         if (nativeTokenUsd) {
           balUsd.value = nativeTokenUsd * bal.value;
         }

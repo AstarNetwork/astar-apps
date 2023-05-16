@@ -197,6 +197,7 @@ export default defineComponent({
     const balUsd = ref<number | null>(null);
     const vestingTtl = ref<number>(0);
     const lockInDappStaking = ref<number>(0);
+    const isRocstar = ref<boolean>(false);
     const isShibuya = ref<boolean>(false);
     const isFaucet = ref<boolean>(false);
 
@@ -238,9 +239,10 @@ export default defineComponent({
       const tokenSymbolRef = nativeTokenSymbol.value;
       if (!balance.value || !tokenSymbolRef) return;
       try {
-        isShibuya.value = tokenSymbolRef === 'SBY';
         bal.value = Number(ethers.utils.formatEther(balance.value.toString()));
-        isFaucet.value = isShibuya.value || faucetBalRequirement > bal.value;
+        isShibuya.value = tokenSymbolRef === 'SBY';
+        isRocstar.value = tokenSymbolRef === 'RSTR';
+        isFaucet.value = isRocstar ? false : isShibuya.value || faucetBalRequirement > bal.value;
         if (nativeTokenUsd.value) {
           balUsd.value = nativeTokenUsd.value * bal.value;
         } else {
